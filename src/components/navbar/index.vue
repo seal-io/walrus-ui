@@ -1,0 +1,550 @@
+<template>
+  <div class="navbar" :class="{ 'full-screen': fullScreen }">
+    <div class="left-side">
+      <a-space>
+        <img
+          alt="logo"
+          class="logo"
+          src="../../assets/images/seal-logo.png"
+          @click="handleToHome"
+        />
+        <!-- <icon-menu-fold
+          v-if="appStore.device === 'mobile'"
+          style="font-size: 22px; cursor: pointer"
+          @click="toggleDrawerMenu"
+        /> -->
+      </a-space>
+    </div>
+    <div v-if="hasNavList" class="nav-list">
+      <nav-list :list="navDataList" :default-active="defaultActive"></nav-list>
+    </div>
+    <ul class="right-side">
+      <!-- <li>
+        <a-tooltip :content="$t('settings.search')">
+          <a-button class="nav-btn" type="outline" :shape="'circle'">
+            <template #icon>
+              <icon-search />
+            </template>
+          </a-button>
+        </a-tooltip>
+      </li> -->
+      <li>
+        <a-tooltip :content="$t('navbar.search.text')">
+          <!-- <span class="search-icon" @click="handleGlobalSearch">
+            <icon-search
+              style="color: rgba(255, 255, 255, 0.6); font-size: 22px"
+            />
+          </span> -->
+          <a-button
+            class="nav-btn"
+            type="outline"
+            :shape="'circle'"
+            @click="handleGlobalSearch"
+          >
+            <template #icon>
+              <icon-bug />
+            </template>
+          </a-button>
+        </a-tooltip>
+        <!-- <slot name="searchBox">
+          <a-input-search
+            v-model="searchStr"
+            :readonly="true"
+            :style="{ width: '300px' }"
+            :placeholder="$t('navbar.search.text')"
+            @click="handleGlobalSearch"
+          >
+          </a-input-search>
+        </slot> -->
+      </li>
+      <li id="langWrap" style="position: relative">
+        <a-tooltip
+          :content="$t('settings.language')"
+          popup-container="#langWrap"
+        >
+          <a-button
+            class="nav-btn"
+            type="outline"
+            :shape="'circle'"
+            @click="setDropDownVisible"
+          >
+            <template #icon>
+              <icon-language />
+            </template>
+          </a-button>
+        </a-tooltip>
+        <a-dropdown
+          trigger="click"
+          style="top: 36px; z-index: 3000; width: 70px"
+          popup-container="#langWrap"
+          @select="changeLocale"
+        >
+          <div ref="triggerBtn" class="trigger-btn"></div>
+          <template #content>
+            <a-doption
+              v-for="item in locales"
+              :key="item.value"
+              :value="item.value"
+            >
+              {{ item.label }}
+            </a-doption>
+          </template>
+        </a-dropdown>
+      </li>
+      <!-- <li>
+        <a-tooltip
+          :content="
+            theme === 'light'
+              ? $t('settings.navbar.theme.toDark')
+              : $t('settings.navbar.theme.toLight')
+          "
+        >
+          <a-button
+            class="nav-btn"
+            type="outline"
+            :shape="'circle'"
+            @click="toggleTheme"
+          >
+            <template #icon>
+              <icon-moon-fill v-if="theme === 'dark'" />
+              <icon-sun-fill v-else />
+            </template>
+          </a-button>
+        </a-tooltip>
+      </li> -->
+      <!-- <li v-show="hasNavList">
+        <a-tooltip :content="$t('settings.navbar.alerts')">
+          <div class="message-box-trigger">
+            <a-badge :count="9" dot>
+              <a-button
+                class="nav-btn"
+                type="outline"
+                :shape="'circle'"
+                @click="setPopoverVisible"
+              >
+                <icon-notification />
+              </a-button>
+            </a-badge>
+          </div>
+        </a-tooltip>
+        <a-popover
+          trigger="click"
+          :arrow-style="{ display: 'none' }"
+          :content-style="{ padding: 0, minWidth: '400px' }"
+          content-class="message-popover"
+        >
+          <div ref="refBtn" class="ref-btn"></div>
+          <template #content>
+            <message-box />
+          </template>
+        </a-popover>
+      </li> -->
+      <li v-show="hasNavList" :class="{ active: defaultActive === 'user' }">
+        <a-tooltip :content="$t('settings.system')">
+          <a-button
+            class="nav-btn"
+            type="outline"
+            :shape="'circle'"
+            @click="setVisible"
+          >
+            <template #icon>
+              <icon-settings />
+            </template>
+          </a-button>
+        </a-tooltip>
+      </li>
+      <li v-show="hasNavList">
+        <a-dropdown trigger="click">
+          <a-avatar
+            :size="32"
+            :style="{
+              cursor: 'pointer',
+              backgroundColor: '#c9cdd4',
+            }"
+          >
+            <!-- <img alt="avatar" :src="avatar" /> -->
+            <IconUser />
+          </a-avatar>
+          <template #content>
+            <!-- <a-doption>
+              <a-space @click="switchRoles">
+                <icon-tag />
+                <span>
+                  {{ $t('messageBox.switchRoles') }}
+                </span>
+              </a-space>
+            </a-doption> -->
+            <a-doption>
+              <a-space @click="handleModifyPassword">
+                <icon-lock />
+                <span>
+                  {{ $t('account.settings.title') }}
+                </span>
+              </a-space>
+            </a-doption>
+            <!-- <a-doption>
+              <a-space @click="$router.push({ name: 'info' })">
+                <icon-user />
+                <span>
+                  {{ $t('messageBox.userCenter') }}
+                </span>
+              </a-space>
+            </a-doption> -->
+            <!-- <a-doption>
+              <a-space @click="handleToSetting">
+                <icon-settings />
+                <span>
+                  {{ $t('messageBox.userSettings') }}
+                </span>
+              </a-space>
+            </a-doption> -->
+            <a-doption>
+              <a-space @click="handleLogout">
+                <icon-export />
+                <span>
+                  {{ $t('messageBox.logout') }}
+                </span>
+              </a-space>
+            </a-doption>
+          </template>
+        </a-dropdown>
+      </li>
+    </ul>
+  </div>
+</template>
+
+<script lang="ts" setup>
+  import { get, hasIn } from 'lodash';
+  import { isLogin } from '@/utils/auth';
+  import { useRouter } from 'vue-router';
+  import { computed, ref, inject, toRaw, nextTick } from 'vue';
+  import { Message } from '@arco-design/web-vue';
+  import { useDark, useToggle } from '@vueuse/core';
+  import { useAppStore, useUserStore, useTabBarStore } from '@/store';
+  import { LOCALE_OPTIONS } from '@/locale';
+  import { listenerRouteChange } from '@/utils/route-listener';
+  import useLocale from '@/hooks/locale';
+  import useUser from '@/hooks/user';
+  import useGlobalSearch from '@/views/vulnerability/hooks/use-global-search';
+  import MessageBox from '../message-box/index.vue';
+  import navList from './components/nav-list.vue';
+  import { NO_LOGIN_CHECK_PATH } from './configs';
+
+  interface NavDataMap {
+    name: string;
+    label: string;
+    active: string;
+  }
+  defineProps({
+    fullScreen: {
+      type: Boolean,
+      default() {
+        return false;
+      },
+    },
+  });
+  const router = useRouter();
+  const appStore = useAppStore();
+  const userStore = useUserStore();
+  const tabBarStore = useTabBarStore();
+  const { logout } = useUser();
+  const { changeLocale } = useLocale();
+  const { searchStr, handleGlobalSearch } = useGlobalSearch();
+  const locales = [...LOCALE_OPTIONS];
+  const avatar = computed(() => {
+    return userStore.avatar;
+  });
+
+  const hasNavList = computed(() => {
+    return appStore.hasNavList;
+  });
+
+  //
+  const navDataList: NavDataMap[] = [
+    { name: 'dashboardMain', label: 'navbar.totalView', active: 'dashboard' },
+    {
+      name: 'graphMain',
+      label: 'navbar.graph',
+      active: 'graphIndex',
+    },
+    {
+      name: 'projectsList',
+      label: 'navbar.resource',
+      active: 'projects',
+    },
+    {
+      name: 'applicationsList',
+      label: 'navbar.application',
+      active: 'applications',
+    },
+    { name: 'sBomList', label: 'navbar.sbom', active: 'sBom' },
+    { name: 'policyBasicConfig', label: 'navbar.policy', active: 'policy' },
+    { name: 'logsList', label: 'navbar.logs', active: 'logs' },
+    {
+      name: 'allIntegration',
+      label: 'navbar.intergration',
+      active: 'intergration',
+    },
+    {
+      name: 'licenseList',
+      label: 'navbar.license',
+      active: 'license',
+    },
+  ];
+  const defaultActive = ref<string>('totalView');
+  const theme = computed(() => {
+    return appStore.theme;
+  });
+  const isDark = useDark({
+    selector: '.navbar',
+    attribute: 'arco-theme',
+    valueDark: 'dark',
+    valueLight: 'light',
+    storageKey: 'arco-theme',
+    onChanged(dark: boolean) {
+      // overridded default behavior
+      appStore.toggleTheme(dark);
+    },
+  });
+  const toggleTheme = useToggle(isDark);
+  const setVisible = () => {
+    router.push({
+      name: 'systemSetting',
+    });
+    // appStore.updateSettings({ globalSettings: true });
+  };
+
+  // control menu show
+  const handleControlMenuShow = (newRoute) => {
+    if (newRoute.name === 'repoConfig') {
+      appStore.updateSettings({ hideMenu: true });
+      return;
+    }
+    appStore.updateSettings({ hideMenu: false });
+  };
+
+  // set nav if show by login status and routes
+  const noLoginCheckRoute = (name): boolean => {
+    return NO_LOGIN_CHECK_PATH.includes(name);
+  };
+  const handleControlNavShow = (newRoute) => {
+    console.log('newRoute========', newRoute);
+    const needNavList =
+      hasIn(newRoute.meta, 'hasNavList') && !get(newRoute, 'meta.hasNavList');
+    if (needNavList || noLoginCheckRoute(newRoute.name)) {
+      appStore.updateSettings({ hasNavList: false });
+    } else {
+      appStore.updateSettings({ hasNavList: true });
+    }
+  };
+  const updateCacheList = (toRoute) => {
+    const currentRoute = router.currentRoute.value;
+    const to_ignoreCache = get(toRoute, 'meta.ignoreCache');
+    const curr_cachePages = get(currentRoute, 'meta.cachePages') || [];
+    if (!to_ignoreCache) {
+      tabBarStore.updateTabList(toRoute);
+      return;
+    }
+    if (
+      !get(currentRoute, 'meta.ignoreCache') &&
+      !curr_cachePages.includes(toRoute.name)
+    ) {
+      tabBarStore.deleteTag(0, {
+        title: '',
+        name: currentRoute.name as string,
+        fullPath: currentRoute.fullPath,
+      });
+    }
+  };
+  const setPageFullScreen = (newRoute) => {
+    appStore.updateSettings({ fullScreen: newRoute?.meta?.fullScreen });
+  };
+  listenerRouteChange(async (newRoute) => {
+    defaultActive.value = newRoute.matched[1]?.name as string;
+    const permissions = get(userStore, `permissions.${newRoute.fullPath}`);
+    handleControlNavShow(newRoute);
+    updateCacheList(newRoute);
+    setPageFullScreen(newRoute);
+    // nextTick(() => {
+    //   setTimeout(() => {
+    //     handleControlMenuShow(newRoute);
+    //   }, 100);
+    // });
+    console.log({ newRoute, permissions: toRaw(permissions) });
+  }, true);
+
+  const refBtn = ref();
+  const triggerBtn = ref();
+  const setPopoverVisible = () => {
+    const event = new MouseEvent('click', {
+      view: window,
+      bubbles: true,
+      cancelable: true,
+    });
+    refBtn.value.dispatchEvent(event);
+  };
+  const handleLogout = () => {
+    logout();
+  };
+  const handleModifyPassword = () => {
+    router.push({
+      name: 'modifyPassword',
+    });
+  };
+  const handleToHome = () => {
+    router.push({
+      name: 'dashboardMain',
+    });
+  };
+  const setDropDownVisible = () => {
+    const event = new MouseEvent('click', {
+      view: window,
+      bubbles: true,
+      cancelable: true,
+    });
+    triggerBtn.value.dispatchEvent(event);
+  };
+  const switchRoles = async () => {
+    const res = await userStore.switchRoles();
+    Message.success(res as string);
+  };
+  const toggleDrawerMenu = inject('toggleDrawerMenu');
+  const handleToSetting = () => {
+    router.push({
+      name: 'Setting',
+      // query: {
+      //   redirectPath: router.currentRoute.value.fullPath,
+      // },
+    });
+  };
+  // if (isLogin()) {
+  //   userStore.getUserSetting();
+  // }
+</script>
+
+<style scoped lang="less">
+  .search-icon {
+    cursor: pointer;
+  }
+  @media screen and (min-width: 1512px) {
+    .navbar {
+      box-sizing: border-box;
+      width: 1440px;
+    }
+
+    .navbar.full-screen {
+      width: 100%;
+      padding-right: 20px;
+      padding-left: 20px;
+    }
+  }
+  @media screen and (max-width: 1511px) {
+    .navbar {
+      box-sizing: border-box;
+      width: 100%;
+      padding-right: 20px;
+    }
+
+    .navbar.full-screen {
+      width: 100%;
+      padding-right: 20px;
+      padding-left: 20px;
+    }
+  }
+
+  .navbar {
+    display: flex;
+    justify-content: space-between;
+    height: 100%;
+    margin: 0 auto;
+    background-color: var(--seal-color-bg-1);
+    // border-bottom: 1px solid var(--color-border);
+    :deep(.arco-typography) {
+      color: #fff;
+    }
+  }
+
+  .nav-list {
+    display: flex;
+  }
+
+  .left-side {
+    display: flex;
+    align-items: center;
+    padding-left: 5px;
+
+    :deep(.arco-space-item) {
+      font-size: 0;
+    }
+
+    .logo {
+      width: 100px;
+      height: auto;
+      cursor: pointer;
+    }
+  }
+
+  .right-side {
+    display: flex;
+    list-style: none;
+    // padding-right: 10px;
+    :deep(.locale-select) {
+      border-radius: 20px;
+    }
+
+    li {
+      display: flex;
+      align-items: center;
+      padding: 0 10px;
+
+      &:last-child {
+        padding-right: 0;
+      }
+    }
+
+    a {
+      color: var(--color-text-1);
+      text-decoration: none;
+    }
+
+    .nav-btn {
+      color: rgb(var(--gray-8));
+      font-size: 16px;
+      border-color: var(--seal-color-text-1);
+    }
+
+    svg {
+      color: var(--seal-color-text-1);
+    }
+
+    .trigger-btn,
+    .ref-btn {
+      position: absolute;
+      bottom: 14px;
+    }
+
+    .trigger-btn {
+      margin-left: 14px;
+    }
+
+    :deep(li.active) {
+      .arco-btn-size-medium.arco-btn-shape-circle {
+        border-color: #fff;
+        border-width: 2px;
+
+        .arco-icon {
+          color: #fff;
+          transform: scale(1.3);
+        }
+      }
+    }
+  }
+</style>
+
+<style lang="less">
+  .message-popover {
+    .arco-popover-content {
+      margin-top: 0;
+    }
+  }
+</style>

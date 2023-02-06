@@ -1,0 +1,191 @@
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  font-size: 14px;
+  background-color: var(--color-fill-2);
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-font-smoothing: antialiased;
+}
+
+.echarts-tooltip-diy {
+  background: linear-gradient(
+    304.17deg,
+    rgba(253, 254, 255, 0.6) -6.04%,
+    rgba(244, 247, 252, 0.6) 85.2%
+  ) !important;
+  border: none !important;
+
+  /* Note: backdrop-filter has minimal browser support */
+
+  border-radius: 6px !important;
+  backdrop-filter: blur(10px) !important;
+
+  .content-panel {
+    display: flex;
+    justify-content: space-between;
+    width: 164px;
+    height: 32px;
+    margin-bottom: 4px;
+    padding: 0 9px;
+    line-height: 32px;
+    background: rgba(255, 255, 255, 0.8);
+    border-radius: 4px;
+    box-shadow: 6px 0 20px rgba(34, 87, 188, 0.1);
+  }
+
+  .tooltip-title {
+    margin: 0 0 10px 0;
+  }
+
+  p {
+    margin: 0;
+  }
+
+  .tooltip-title,
+  .tooltip-value {
+    display: flex;
+    align-items: center;
+    color: #1d2129;
+    font-weight: bold;
+    font-size: 13px;
+    line-height: 15px;
+    text-align: right;
+  }
+
+  .tooltip-item-icon {
+    display: inline-block;
+    width: 10px;
+    height: 10px;
+    margin-right: 8px;
+    border-radius: 50%;
+  }
+}
+
+.arco-card {
+  border-radius: 4px;
+}
+
+.general-card.q-s-w-card {
+  border: none;
+  border-radius: 4px;
+
+  & > .arco-card-header {
+    height: auto;
+    padding: 20px;
+    border: none;
+  }
+
+  & > .arco-card-body {
+    padding: 0 20px 20px 20px;
+  }
+}
+
+.split-line {
+  border-color: rgb(var(--gray-2));
+}
+
+// tabs-nav
+.arco-tabs-nav::before {
+  background-color: var(--seal-border-gray-2);
+}
+
+// arco-descriptions
+.arco-table-cell {
+  .circle {
+    display: inline-block;
+    width: 6px;
+    height: 6px;
+    margin-right: 4px;
+    background-color: rgb(var(--blue-6));
+    border-radius: 50%;
+
+    &.pass {
+      background-color: rgb(var(--green-6));
+    }
+  }
+}
+
+.arco-table-border:not(.arco-table-border-cell) .arco-table-container {
+  border-right: 1px solid var(--seal-color-table-border);
+}
+
+.arco-table-border {
+  .arco-table-container {
+    border-top: 1px solid var(--seal-color-table-border);
+    border-left: 1px solid var(--seal-color-table-border);
+  }
+
+  .arco-table-tr {
+    .arco-table-td,
+    .arco-table-th {
+      border-bottom: 1px solid var(--seal-color-table-border);
+    }
+
+    .arco-table-th {
+      position: relative;
+
+      &::after {
+        position: absolute;
+        top: calc(50% - 10px);
+        right: 0;
+        display: inline-block;
+        width: 1px;
+        height: 20px;
+        background-color: rgba(220, 220, 220, 0.4);
+        border-radius: 1px;
+        content: '';
+      }
+
+      &:last-child::after {
+        display: none;
+      }
+
+      &.arco-table-operation::after {
+        display: none;
+      }
+    }
+  }
+}
+
+.arco-table-td.arco-table-col-sorted {
+  background-color: inherit;
+}
+
+:deep(.arco-message-list.arco-message-list-top) {
+  z-index: 9999 !important;
+}
+
+/*
+* page common style
+*/
+
+.container {
+  margin-top: 20px;
+  // margin-bottom: 20px;
+  // padding: 0 20px 20px 20px;
+}
+
+.filter-wrap {
+  margin-bottom: 12px;
+}
+
+.hljs-tag {
+  color: #206ccf;
+}
+
+// .arco-select-dropdown .arco-select-option-active,
+// .arco-select-dropdown .arco-select-option:not(.arco-select-dropdown .arco-select-option-disabled):hover {
+//   background-color: #114ba3;
+//   color: #fff;
+// }
+
+@import url('./variable.less');
+@import url('./custom.less');
+@import url('https://at.alicdn.com/t/c/font_3626167_mi2o98lw4kb.css');

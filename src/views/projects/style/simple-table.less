@@ -1,0 +1,41 @@
+.detail-simple-wrap {
+  .title-wrap {
+    line-height: 1.2;
+  }
+
+  :deep(.simple-table-wrap) {
+    padding: 10px 0 0;
+
+    .arco-card-body {
+      padding: 0;
+    }
+  }
+
+  :deep(.arco-collapse) {
+    .arco-collapse-item-content-box {
+      padding: 0;
+    }
+
+    .arco-collapse-item-header {
+      padding-top: 12px;
+      padding-bottom: 12px;
+    }
+
+    .arco-collapse-item-content {
+      padding: 0;
+      background-color: var(--color-fill-2);
+    }
+  }
+
+  :deep(.arco-table) {
+    .arco-table-tr:last-child {
+      .arco-table-td {
+        // border-bottom: none;
+      }
+    }
+
+    .arco-table-th {
+      line-height: 1;
+    }
+  }
+}

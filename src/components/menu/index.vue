@@ -1,0 +1,205 @@
+<script lang="tsx">
+  import { defineComponent, ref, h, compile, computed } from 'vue';
+  import { useI18n } from 'vue-i18n';
+  import { useRouter, RouteRecordRaw, RouteRecordNormalized } from 'vue-router';
+  import { useAppStore } from '@/store';
+  import usePermission from '@/hooks/permission';
+  import { listenerRouteChange } from '@/utils/route-listener';
+
+  export default defineComponent({
+    emit: ['collapse'],
+    setup() {
+      const { t } = useI18n();
+      const currentRoute = ref<string>('');
+      const appStore = useAppStore();
+      const permission = usePermission();
+      const router = useRouter();
+      const collapsed = computed({
+        get() {
+          if (appStore.device === 'desktop') return appStore.menuCollapse;
+          return false;
+        },
+        set(value: boolean) {
+          appStore.updateSettings({ menuCollapse: value });
+        },
+      });
+      const appRoute = computed(() => {
+        return router
+          .getRoutes()
+          .find(
+            (el) => el.name === currentRoute.value
+          ) as RouteRecordNormalized;
+      });
+      const menuTree = computed(() => {
+        let copyRouter = JSON.parse(JSON.stringify(appRoute.value.children));
+        copyRouter = copyRouter.filter(
+          (r: RouteRecordNormalized) => !r?.meta || !r?.meta?.hideInMenu
+        );
+        copyRouter.sort(
+          (a: RouteRecordNormalized, b: RouteRecordNormalized) => {
+            return (a.meta.order || 0) - (b.meta.order || 0);
+          }
+        );
+        console.log({ copyRouter, appRoute });
+        function travel(_routes: RouteRecordRaw[], layer: number) {
+          if (!_routes || !_routes.length) {
+            // 隐藏菜单
+            appStore.updateSettings({ hideMenu: true });
+            return null;
+          }
+          appStore.updateSettings({ hideMenu: false });
+
+          const collector: any = _routes.map((element) => {
+            // no access
+            if (!permission.accessRouter(element)) {
+              return null;
+            }
+
+            // leaf node
+            if (!element.children) {
+              return element;
+            }
+
+            // route filter hideInMenu true
+            element.children = element.children.filter(
+              (x) => x.meta?.hideInMenu !== true
+            );
+
+            // Associated child node
+            const subItem = travel(element.children, layer);
+            if (subItem.length) {
+              element.children = subItem;
+              return element;
+            }
+            // the else logic
+            if (layer > 1) {
+              element.children = subItem;
+              return element;
+            }
+
+            if (element.meta?.hideInMenu === false) {
+              return element;
+            }
+
+            return null;
+          });
+          return collector.filter(Boolean);
+        }
+        return travel(copyRouter, 0);
+      });
+
+      // In this case only two levels of menus are available
+      // You can expand as needed
+
+      const goto = (item: RouteRecordRaw) => {
+        const query: any = item.meta?.query;
+        const isReplace: any = item.meta?.replace;
+        if (!isReplace) {
+          router.push({
+            name: item.name,
+            params: {
+              query,
+            },
+          });
+        }
+        if (isReplace) {
+          router.replace({
+            name: item.name,
+            params: {
+              query,
+            },
+          });
+        }
+      };
+      listenerRouteChange((newRoute) => {
+        console.log('route_change');
+        currentRoute.value = newRoute.matched[1]?.name as string;
+        if (newRoute.meta.requiresAuth && !newRoute.meta.hideInMenu) {
+          const { matched } = newRoute;
+          const key = newRoute.matched[matched.length - 1]?.name as string;
+          appStore.updateSettings({ selectedKey: [key] });
+        }
+      }, true);
+      const setCollapse = (val: boolean) => {
+        if (appStore.device === 'desktop')
+          appStore.updateSettings({ menuCollapse: val });
+      };
+
+      const renderSubMenu = () => {
+        function travel(_route: RouteRecordRaw[], nodes = []) {
+          if (_route) {
+            _route.forEach((element) => {
+              // This is demo, modify nodes as needed
+              const icon = element?.meta?.icon
+                ? `<${element?.meta?.icon}/>`
+                : ``;
+              const r =
+                element?.children && element.children.length ? (
+                  <a-sub-menu
+                    key={element?.name}
+                    v-slots={{
+                      // icon: () => h(compile(icon)),
+                      title: () => h(compile(t(element?.meta?.locale || ''))),
+                    }}
+                  >
+                    {element?.children?.map((elem) => {
+                      return (
+                        <a-menu-item key={elem.name} onClick={() => goto(elem)}>
+                          {t(elem?.meta?.locale || '')}
+                          {travel(elem.children ?? [])}
+                        </a-menu-item>
+                      );
+                    })}
+                  </a-sub-menu>
+                ) : (
+                  <a-menu-item key={element.name} onClick={() => goto(element)}>
+                    {t(element?.meta?.locale || '')}
+                    {travel(element.children ?? [])}
+                  </a-menu-item>
+                );
+              nodes.push(r as never);
+            });
+          }
+          return nodes;
+        }
+        return travel(menuTree.value);
+      };
+      // appStore.device !== 'mobile'
+      return () => (
+        <a-menu
+          v-model:collapsed={collapsed.value}
+          show-collapse-button={false}
+          auto-open={true}
+          selected-keys={appStore.selectedKey}
+          auto-open-selected={true}
+          level-indent={20}
+          style="height: 100%"
+          onCollapse={setCollapse}
+        >
+          {renderSubMenu()}
+        </a-menu>
+      );
+    },
+  });
+</script>
+
+<style lang="less" scoped>
+  :deep(.arco-menu-inner) {
+    padding-top: 0 !important;
+
+    .arco-menu-inline-header {
+      display: flex;
+      align-items: center;
+    }
+
+    .arco-menu-icon-suffix .arco-icon {
+      font-size: 16px;
+    }
+
+    .arco-icon {
+      &:not(.arco-icon-down) {
+        font-size: 18px;
+      }
+    }
+  }
+</style>

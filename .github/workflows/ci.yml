@@ -1,0 +1,54 @@
+name: Build and publish
+on:
+  push:
+    branches:
+      - 'master'
+    tags:
+      - 'v*.*.*'
+  pull_request:
+    branches:
+      - 'master'
+jobs:
+  build:
+    timeout-minutes: 30
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Set up node
+        uses: actions/setup-node@v3
+        with:
+          node-version: '17'
+      - name: Build latest
+        if: github.event_name == 'pull_request' || github.ref == 'refs/heads/master'
+        env:
+          COS_BUCKET: ${{ secrets.COS_BUCKET }}
+          COS_REGION: ${{ secrets.COS_REGION }}
+        run: scripts/build-hosted
+      - name: Publish latest
+        uses: TencentCloud/cos-action@b0aa648235fb35a1bdd6a77f529eb0ac4c2f1c25
+        if: github.event_name == 'push' && github.ref == 'refs/heads/master'
+        with:
+          secret_id: ${{ secrets.CI_TECENTCOS_SECRET_ID }}
+          secret_key: ${{ secrets.CI_TECENTCOS_SECRET_KEY }}
+          cos_bucket: ${{ secrets.COS_BUCKET }}
+          cos_region: ${{ secrets.COS_REGION }}
+          local_path: dist
+          remote_path: latest
+          accelerate: true
+          clean: false
+      - name: Build release
+        if: startsWith(github.ref, 'refs/tags/v')
+        run: scripts/build-embedded
+      - name: Publish release
+        uses: TencentCloud/cos-action@b0aa648235fb35a1bdd6a77f529eb0ac4c2f1c25
+        if: startsWith(github.ref, 'refs/tags/v')
+        with:
+          secret_id: ${{ secrets.CI_TECENTCOS_SECRET_ID }}
+          secret_key: ${{ secrets.CI_TECENTCOS_SECRET_KEY }}
+          cos_bucket: ${{ secrets.COS_BUCKET }}
+          cos_region: ${{ secrets.COS_REGION }}
+          local_path: dist/${{ github.ref_name }}.tar.gz
+          remote_path: releases/${{ github.ref_name }}.tar.gz
+          accelerate: true
+          clean: false

@@ -1,0 +1,11 @@
+#!/bin/bash
+set -e
+
+source scripts/version
+
+yarn install && yarn build
+
+TARBALL=${VERSION}.tar.gz
+echo "Compressing to ${TARBALL}..."
+tar -czf ${TARBALL} dist
+mv ${TARBALL} dist

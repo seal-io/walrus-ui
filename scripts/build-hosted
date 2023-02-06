@@ -1,0 +1,9 @@
+#!/bin/bash
+set -e
+
+if [[ -n "${COS_REGION}" && -n "${COS_BUCKET}" ]]; then
+    echo "Using base URL: https://${COS_BUCKET}.cos.${COS_REGION}.myqcloud.com/latest"
+    BASE_ARGS="--base https://${COS_BUCKET}.cos.${COS_REGION}.myqcloud.com/latest"
+fi
+
+yarn install && yarn build ${BASE_ARGS}

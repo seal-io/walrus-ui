@@ -1,0 +1,63 @@
+export default {
+  'sbom.filter.pkgtool': '包管理工具',
+  'sbom.filter.project': '资源',
+  'sbom.filter.issues': '是否包含漏洞',
+  'sbom.filter.name': '请输入组件名称',
+  'sbom.project.name': '资源',
+  'sbom.project.link': '地址',
+  'sbom.project.createtime': '创建时间',
+  'sbom.project.lasttime': '扫描时间',
+  'sbom.project.download': '导出SBOM',
+  'sbom.project.dependeny.collpase': '全部收起',
+  'sbom.table.name': '组件',
+  'sbom.table.version': '版本',
+  'sbom.table.lastversion': '最新版本',
+  'sbom.table.purl': 'PURL',
+  'sbom.table.pkgtool': '依赖管理工具',
+  'sbom.table.license': '许可证',
+  'sbom.table.project': '资源',
+  'sbom.table.relationship': '关系',
+  'sbom.table.openssf': 'OpenSSF 评分',
+  'sbom.table.vulner': '漏洞分布',
+  'sbom.table.vulner.cvss': 'CVSS严重等级分布',
+  'sbom.table.operation': '操作',
+  'sbom.component.detail.maintained': 'Maintained',
+  'sbom.component.detail.ciiBest': 'CII-Best-Practices',
+  'sbom.component.detail.vulnerabilities': 'Vulnerabilities',
+  'sbom.component.detail.signedReleases': 'Signed-Releases',
+  'sbom.component.detail.branchProtection': 'Branch-Protection',
+  'sbom.component.detail.securityPolicy': 'Security-Policy',
+  'sbom.component.detail.license': 'License',
+  'sbom.component.detail.tokenPermissions': 'Token-Permissions',
+  'sbom.component.detail.dangerousWorkflow': 'Dangerous-Workflow',
+  'sbom.component.detail.dependencyUpdateTool': 'Dependency-Update-Tool',
+  'sbom.component.detail.binaryArtifacts': 'Binary-Artifacts',
+  'sbom.component.detail.fuzzing': 'Fuzzing',
+  'sbom.component.detail.vulner': '安全漏洞',
+  'sbom.component.detail.basic': '组件基本信息',
+  'sbom.component.detail.title': '组件详情',
+  'sbom.component.basic.version': '版本',
+  'sbom.component.basic.latestversion': '最新版本',
+  'sbom.component.basic.projecturl': '项目地址',
+  'sbom.component.basic.trail': '依赖追踪',
+  'sbom.component.basic.name': '组件名',
+  'sbom.component.basic.component': '组件项目',
+  'sbom.component.basic.updateTime': '评测时间',
+  'sbom.component.detail.webhooks': 'Webhooks',
+  'sbom.component.detail.sast': 'SAST',
+  'sbom.component.detail.pinned': 'Pinned-Dependencies',
+  'sbom.component.detail.packaging': 'Packaging',
+  'sbom.component.detail.contributors': 'Contributors',
+  'sbom.component.detail.codereview': 'Code-Review',
+  'sbom.component.detail.citests': 'CI-Tests',
+  'sbom.component.detail.tips': `<div><strong>提示:</strong>
+  <a href="https://openssf.org/" target="_blank" class="arco-link arco-link-status-normal"
+    >开源安全基金</a>是一个跨行业的合作组织，旨在提高开源软件(OSS)的安全性。评分卡为开源项目提供安全健康指标。
+</div>
+<a
+  class="arco-link arco-link-status-normal"
+  href="https://github.com/ossf/scorecard/blob/main/docs/checks.md"
+  target="_blank"
+  >查看有关检查以及如何修复故障的信息。</a
+>`,
+};
