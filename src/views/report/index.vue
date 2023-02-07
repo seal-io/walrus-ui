@@ -237,16 +237,14 @@
   import { useRoute } from 'vue-router';
   import GroupTitle from '@/components/group-title/index.vue';
   import useLoading from '@/hooks/loading';
-  import { eventType, statusList } from '@/views/logs/config';
   import { getValueOnConfigs } from '@/utils/validate';
-  import { usePluginPolicy } from '@/views/policy/hooks/use-plugin-policy';
   import { getEventReport, issuesItem } from './api/report';
   import { getViolationType, ignoreOptions } from './configs';
   import pagerList from './components/pager-list.vue';
   import violationBarChart from './components/violation-bar-chart.vue';
   // import dataInfo from './components/data';
 
-  const { getPluginPolicySchemas, customTypeMap } = usePluginPolicy();
+  const customTypeMap = ref([]);
   const { loading, setLoading } = useLoading();
   const route = useRoute();
   const { id, provider } = route.query;
@@ -494,10 +492,10 @@
         } else if (item.key === 'createTime') {
           item.value = dayjs(eventInfo[item.key]).format('YYYY-MM-DD HH:mm:ss');
         } else if (item.key === 'status') {
-          item.value = getValueOnConfigs(eventInfo[item.key], statusList);
+          item.value = getValueOnConfigs(eventInfo[item.key], []);
           console.log('item.value===', item.value);
         } else if (item.key === 'type') {
-          item.value = getValueOnConfigs(eventInfo[item.key], eventType);
+          item.value = getValueOnConfigs(eventInfo[item.key], []);
         } else {
           item.value = eventInfo[item.key];
         }
@@ -520,7 +518,6 @@
   onMounted(async () => {
     try {
       pageLoading.value = false;
-      // await getPluginPolicySchemas();
       await fetchData();
       initData();
       pageLoading.value = true;

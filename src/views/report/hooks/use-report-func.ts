@@ -2,7 +2,6 @@ import { ref, computed, reactive } from 'vue';
 import dayjs from 'dayjs';
 import { cloneDeep, find, get } from 'lodash';
 import { getValueOnConfigs } from '@/utils/validate';
-import { actionList } from '@/views/policy/config';
 import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
 import { useLocaleKey } from '@/utils/func';
@@ -32,7 +31,7 @@ export default function useReportFunc(props) {
     const list = policyDataConfig.map((o) => {
       const item = cloneDeep(o);
       if (item.key === 'action') {
-        item.value = getValueOnConfigs(data[item.key], actionList);
+        item.value = getValueOnConfigs(data[item.key], []);
       } else if (item.key === 'type') {
         // item.value = getValueOnConfigs(data[item.key], props.typeList);
         const localeText = get(props.typeList, `${data.category}${data.type}`);

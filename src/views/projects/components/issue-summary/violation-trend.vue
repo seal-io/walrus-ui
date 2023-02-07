@@ -16,10 +16,6 @@
   import { useRoute } from 'vue-router';
   import issueStackTrend from '@/views/dashboard/components/issue-stack-trend.vue';
   import { getResourceTrendData } from '@/views/projects/api/resource';
-  import {
-    getApplicationsTrendData,
-    SeriesItem,
-  } from '@/views/applications/api/applications';
   import dateRange from '@/views/dashboard/components/date-range.vue';
 
   const props = defineProps({
@@ -61,7 +57,7 @@
   //   start: dayjs().subtract(30,'d').format('YYYY-MM-DD'),
   //   end: dayjs().subtract(1,'d').format('YYYY-MM-DD')
   // });
-  const issueCountData = ref<SeriesItem[]>([]);
+  const issueCountData = ref<any[]>([]);
   const stackData = computed(() => {
     const list = issueCountData.value;
     return {
@@ -94,7 +90,7 @@
         const { data } = await getResourceTrendData(params);
         issueCountData.value = data;
       } else if (props.page === 'application') {
-        const { data } = await getApplicationsTrendData(params);
+        const data = [];
         issueCountData.value = data;
       }
     } catch (error) {

@@ -13,7 +13,7 @@
 
 <script lang="ts" setup>
   import { toLower } from 'lodash';
-  import { repoIcon } from '@/views/intergration/config';
+  import { repoIcon } from './config';
 
   defineProps({
     provider: {

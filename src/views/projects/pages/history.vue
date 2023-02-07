@@ -134,7 +134,6 @@
   import GroupTitle from '@/components/group-title/index.vue';
   import { ref, reactive, PropType, defineExpose, onMounted } from 'vue';
   import useLoading from '@/hooks/loading';
-  import { statusList, eventType } from '@/views/logs/config';
   import severityBar from '@/components/severity-bar/index.vue';
   import { UseSortDirection } from '@/utils/common';
   import { TableRowData } from '../config/interface';
@@ -222,10 +221,12 @@
     fetchData();
   };
   const getStatus = (val: string | number) => {
+    const statusList: any[] = [];
     const obj = statusList.find((item) => item.value === val);
     return obj ? obj.label : '';
   };
   const getEventType = (val: string | number) => {
+    const eventType: any[] = [];
     const obj = eventType.find((item) => item.value === val);
     return obj ? obj.label : '';
   };

@@ -32,10 +32,6 @@
   import { useRoute } from 'vue-router';
   import issueStackTrend from '@/views/dashboard/components/issue-stack-trend.vue';
   import { getResourceTrendData } from '@/views/projects/api/resource';
-  import {
-    getApplicationsTrendData,
-    SeriesItem,
-  } from '@/views/applications/api/applications';
   import dateRange from '@/views/dashboard/components/date-range.vue';
 
   const props = defineProps({
@@ -77,8 +73,8 @@
     start: dayjs().subtract(30, 'd').format('YYYY-MM-DD'),
     end: dayjs().subtract(1, 'd').format('YYYY-MM-DD'),
   });
-  const issueAvgFixTimeData = ref<SeriesItem[]>([]);
-  const issueFixRateData = ref<SeriesItem[]>([]);
+  const issueAvgFixTimeData = ref<any[]>([]);
+  const issueFixRateData = ref<any[]>([]);
   const fixRateData = computed(() => {
     const list = issueFixRateData.value;
     return {
@@ -132,7 +128,7 @@
         const { data } = await getResourceTrendData(params);
         issueAvgFixTimeData.value = data;
       } else if (props.page === 'application') {
-        const { data } = await getApplicationsTrendData(params);
+        const data = [];
         issueAvgFixTimeData.value = data;
       }
     } catch (error) {
@@ -151,7 +147,7 @@
         const { data } = await getResourceTrendData(params);
         issueFixRateData.value = data;
       } else if (props.page === 'application') {
-        const { data } = await getApplicationsTrendData(params);
+        const data = [];
         issueFixRateData.value = data;
       }
     } catch (error) {

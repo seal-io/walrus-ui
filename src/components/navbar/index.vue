@@ -28,35 +28,7 @@
           </a-button>
         </a-tooltip>
       </li> -->
-      <li>
-        <a-tooltip :content="$t('navbar.search.text')">
-          <!-- <span class="search-icon" @click="handleGlobalSearch">
-            <icon-search
-              style="color: rgba(255, 255, 255, 0.6); font-size: 22px"
-            />
-          </span> -->
-          <a-button
-            class="nav-btn"
-            type="outline"
-            :shape="'circle'"
-            @click="handleGlobalSearch"
-          >
-            <template #icon>
-              <icon-bug />
-            </template>
-          </a-button>
-        </a-tooltip>
-        <!-- <slot name="searchBox">
-          <a-input-search
-            v-model="searchStr"
-            :readonly="true"
-            :style="{ width: '300px' }"
-            :placeholder="$t('navbar.search.text')"
-            @click="handleGlobalSearch"
-          >
-          </a-input-search>
-        </slot> -->
-      </li>
+
       <li id="langWrap" style="position: relative">
         <a-tooltip
           :content="$t('settings.language')"
@@ -225,7 +197,6 @@
   import { listenerRouteChange } from '@/utils/route-listener';
   import useLocale from '@/hooks/locale';
   import useUser from '@/hooks/user';
-  import useGlobalSearch from '@/views/vulnerability/hooks/use-global-search';
   import MessageBox from '../message-box/index.vue';
   import navList from './components/nav-list.vue';
   import { NO_LOGIN_CHECK_PATH } from './configs';
@@ -249,7 +220,6 @@
   const tabBarStore = useTabBarStore();
   const { logout } = useUser();
   const { changeLocale } = useLocale();
-  const { searchStr, handleGlobalSearch } = useGlobalSearch();
   const locales = [...LOCALE_OPTIONS];
   const avatar = computed(() => {
     return userStore.avatar;
@@ -271,24 +241,6 @@
       name: 'projectsList',
       label: 'navbar.resource',
       active: 'projects',
-    },
-    {
-      name: 'applicationsList',
-      label: 'navbar.application',
-      active: 'applications',
-    },
-    { name: 'sBomList', label: 'navbar.sbom', active: 'sBom' },
-    { name: 'policyBasicConfig', label: 'navbar.policy', active: 'policy' },
-    { name: 'logsList', label: 'navbar.logs', active: 'logs' },
-    {
-      name: 'allIntegration',
-      label: 'navbar.intergration',
-      active: 'intergration',
-    },
-    {
-      name: 'licenseList',
-      label: 'navbar.license',
-      active: 'license',
     },
   ];
   const defaultActive = ref<string>('totalView');

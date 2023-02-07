@@ -91,7 +91,6 @@
   import { useLocaleKey } from '@/utils/func';
   import { PropType, reactive, computed, ref } from 'vue';
   import { getValueOnConfigs } from '@/utils/validate';
-  import { actionList } from '@/views/policy/config';
   import ACollapseItem from '@arco-design/web-vue/es/collapse/collapse-item';
   import {
     licenseArtifactConfig,
@@ -160,7 +159,7 @@
     const list = policyDataConfig.map((o) => {
       const item = cloneDeep(o);
       if (item.key === 'action') {
-        item.value = getValueOnConfigs(data[item.key], actionList);
+        item.value = getValueOnConfigs(data[item.key], []);
       } else if (item.key === 'type') {
         // item.value = getValueOnConfigs(data[item.key], props.typeList);
         const localeText = get(props.typeList, `${data.category}${data.type}`);

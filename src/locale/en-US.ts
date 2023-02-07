@@ -14,19 +14,9 @@ import localeUserInfo from '@/views/user/info/locale/en-US';
 import localeUserSetting from '@/views/user/setting/locale/en-US';
 import localeUserSystem from '@/views/user/system/locale/en-US';
 
-import intergrationLocalEn from '@/views/intergration/locale/en-US';
-
-import localPolicy from '@/views/policy/locale/en-US';
-import localeLogs from '@/views/logs/locale/en-US';
 import localeProjects from '@/views/projects/locale/en-US';
-import localeLicense from '@/views/license/locale/en-US';
 
 import localeReport from '@/views/report/locale/en-US';
-import localeSbom from '@/views/soft-bom/locale/en-US';
-import localePlugins from '@/views/user/plugins/locale/en-US';
-
-import localeVulner from '@/views/vulnerability/locale/en-US';
-import localeSummary from '@/views/applications/locale/en-US';
 
 import localeGraph from '@/components/graph/locale/en-US';
 import localeDashboard from '@/views/dashboard/locale/en-US';
@@ -69,17 +59,9 @@ export default {
   ...locale500,
   ...localeUserInfo,
   ...localeUserSetting,
-  ...intergrationLocalEn,
-  ...localPolicy,
-  ...localeLogs,
   ...localeProjects,
   ...localeUserSystem,
   ...localeReport,
-  ...localeLicense,
-  ...localeSbom,
-  ...localePlugins,
-  ...localeVulner,
-  ...localeSummary,
   ...localeGraph,
   ...localeDashboard,
 };

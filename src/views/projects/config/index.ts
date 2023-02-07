@@ -131,11 +131,6 @@ export const issueTabList = [
     value: 'component',
     component: 'TabComponent',
   },
-  {
-    label: 'resource.detail.license.title',
-    value: 'license',
-    component: 'TabLicense',
-  },
 ];
 export const issueTypeFilter = [
   { label: 'projects.fixdetail.table.vulner', value: 'vuln' },

@@ -411,7 +411,6 @@
   import { repoIcon, integrationRepoMap } from '@/views/intergration/config';
   import severityBar from '@/components/severity-bar/index.vue';
   import { useWebsocket, wssResourceList } from '@/hooks/use-websocket';
-  import { queryResourceTags } from '@/views/applications/api/applications';
   import { deleteRepos } from '../api/import-repo';
   import addPop from '../components/add-pop.vue';
   import { childrenItem, withIssuesList, uploadSbomConfig } from '../config';
@@ -732,7 +731,7 @@
     }
   };
   const getResourceTags = async () => {
-    const { data } = await queryResourceTags();
+    const data = [];
     tagsDataList.value = map(data, (val) => {
       return {
         label: val,

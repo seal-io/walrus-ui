@@ -46,17 +46,5 @@ export default {
         roles: ['*'],
       },
     },
-    {
-      path: 'plugins',
-      name: 'pluginsList',
-      component: () => import('@/views/user/plugins/index.vue'),
-      meta: {
-        hideInMenu: false,
-        ignoreCache: true,
-        locale: 'menu.plugins.setting',
-        requiresAuth: true,
-        roles: ['*'],
-      },
-    },
   ],
 };

@@ -14,18 +14,9 @@ import localeUserInfo from '@/views/user/info/locale/zh-CN';
 import localeUserSetting from '@/views/user/setting/locale/zh-CN';
 import localeUserSystem from '@/views/user/system/locale/zh-CN';
 
-import intergrationLocalZh from '@/views/intergration/locale/zh-CN';
-
-import localePolicy from '@/views/policy/locale/zh-CN';
-import localeLogs from '@/views/logs/locale/zh-CN';
 import localeProjects from '@/views/projects/locale/zh-CN';
-import localeLicense from '@/views/license/locale/zh-CN';
 
 import localeReport from '@/views/report/locale/zh-CN';
-import localeSbom from '@/views/soft-bom/locale/zh-CN';
-import localePlugins from '@/views/user/plugins/locale/zh-CN';
-import localeVulner from '@/views/vulnerability/locale/zh-CN';
-import localeSummary from '@/views/applications/locale/zh-CN';
 
 import localeGraph from '@/components/graph/locale/zh-CN';
 
@@ -70,17 +61,9 @@ export default {
   ...locale500,
   ...localeUserInfo,
   ...localeUserSetting,
-  ...intergrationLocalZh,
-  ...localePolicy,
-  ...localeLogs,
   ...localeProjects,
   ...localeUserSystem,
   ...localeReport,
-  ...localeLicense,
-  ...localeSbom,
-  ...localePlugins,
-  ...localeVulner,
-  ...localeSummary,
   ...localeGraph,
   ...localeDashboard,
 };

@@ -3,7 +3,7 @@
     <violationList
       :loading="loading"
       :list="issuesList"
-      :type-list="customTypeMap"
+      :type-list="[]"
       @refresh="handleRefresh"
     ></violationList>
   </div>
@@ -25,11 +25,9 @@
     getViolationType,
   } from '@/views/report/configs';
   import useLoading from '@/hooks/loading';
-  import { usePluginPolicy } from '@/views/policy/hooks/use-plugin-policy';
   import violationList from './violation-list.vue';
 
   const emits = defineEmits(['refresh']);
-  const { customTypeMap } = usePluginPolicy();
   const { loading, setLoading } = useLoading();
   const { route } = useCallCommon();
   const id = route.query.id as string;

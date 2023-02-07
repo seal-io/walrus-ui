@@ -160,7 +160,6 @@
   import { useLocaleKey } from '@/utils/func';
   import { PropType, reactive, computed, ref } from 'vue';
   import { getValueOnConfigs } from '@/utils/validate';
-  import { actionList } from '@/views/policy/config';
   import { tableListRow } from '@/api/projects';
   import ACollapseItem from '@arco-design/web-vue/es/collapse/collapse-item';
   import ProviderIcon from '@/components/provider-icon/index.vue';
@@ -266,7 +265,7 @@
     const list = policyDataConfig.map((o) => {
       const item = cloneDeep(o);
       if (item.key === 'action') {
-        item.value = getValueOnConfigs(data[item.key], actionList);
+        item.value = getValueOnConfigs(data[item.key], []);
       } else if (item.key === 'type') {
         // item.value = getValueOnConfigs(`policy.${data[item.key]}`, props.typeList);
         const localeText = get(props.typeList, `${data.category}${data.type}`);

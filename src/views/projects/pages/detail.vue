@@ -146,7 +146,6 @@
   import TabComponent from '../components/tab-component/index.vue';
   import TabFix from '../components/tab-fix/index.vue';
   import TabViolation from '../components/tab-violation/index.vue';
-  import TabLicense from '../components/tab-license/index.vue';
   import {
     queryFixAdviceList,
     ListParams,
@@ -170,7 +169,6 @@
     TabComponent,
     TabViolation,
     TabFix,
-    TabLicense,
   };
   const query = reactive({
     timeUnit: 'day',

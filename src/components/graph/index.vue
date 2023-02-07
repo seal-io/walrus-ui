@@ -216,7 +216,6 @@
     pickBy,
     every,
   } from 'lodash';
-  import { queryResourceTags } from '@/views/applications/api/applications';
   import paramsEditor from './components/params-editor.vue';
   import comCard from '../page-wrap/com-card.vue';
   import spinCard from '../page-wrap/spin-card.vue';
@@ -364,7 +363,7 @@
   };
   const getResourceTagsList = async () => {
     try {
-      const { data } = await queryResourceTags();
+      const data = [];
       const list = map(data, (val) => {
         return {
           label: val,
