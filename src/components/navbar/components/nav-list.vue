@@ -46,13 +46,15 @@
 </script>
 
 <style lang="less" scoped>
+  @nav-tab-height: 55px;
+
   .nav-list-wrap {
     :deep(.arco-tabs-content) {
       padding-top: 0;
     }
 
     :deep(.arco-tabs-nav) {
-      height: 59px;
+      height: @nav-tab-height;
 
       &::before {
         height: 0;

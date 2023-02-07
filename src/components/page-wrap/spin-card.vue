@@ -70,8 +70,12 @@
   .header-border-less {
     :deep(.arco-card-header) {
       height: auto;
-      padding: 20px 20px 0;
+      padding: 16px 20px 0;
       border: none;
+
+      .arco-card-header-title {
+        font-weight: 400;
+      }
     }
   }
 </style>

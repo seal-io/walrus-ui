@@ -44,6 +44,7 @@
           >
             <a-input
               v-model="userInfo.username"
+              size="large"
               :placeholder="$t('login.form.userName.placeholder')"
             >
               <template #prefix>
@@ -61,6 +62,7 @@
           >
             <a-input-password
               v-model="userInfo.password"
+              size="large"
               :placeholder="$t('login.form.password.placeholder')"
               allow-clear
             >
@@ -78,7 +80,13 @@
                 {{ $t('login.form.rememberPassword') }}
               </a-checkbox>
             </div>
-            <a-button type="primary" html-type="submit" long :loading="loading">
+            <a-button
+              type="primary"
+              html-type="submit"
+              long
+              :loading="loading"
+              size="large"
+            >
               {{ $t('login.form.login') }}
             </a-button>
             <!-- <a-button type="text" long class="login-form-register-btn">

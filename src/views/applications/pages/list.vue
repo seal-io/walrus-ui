@@ -57,6 +57,7 @@
         :loading="loading"
         :data="dataList"
         :pagination="false"
+        :bordered="false"
         row-key="id"
         :row-selection="rowSelection"
         @selection-change="handleSelectChange"

@@ -1,4 +1,9 @@
 .arco-form {
+  .arco-form-item-label {
+    color: var(--color-text-3);
+    font-size: 13px;
+  }
+
   .arco-checkbox-label,
   .arco-radio-label {
     color: var(--color-text-2);
@@ -34,42 +39,6 @@
   &.table-cell-tag {
     display: inline-block;
     max-width: 100%;
-  }
-}
-
-.sbom-tree {
-  .arco-tree {
-    .arco-tree-node {
-      // &:first-child {
-      //   cursor: default;
-
-      //   .arco-tree-node-title {
-      //     background-color: var(--color-fill-2) !important;
-      //     border: none !important;
-
-      //     &:hover {
-      //       background-color: var(--color-fill-2);
-      //       border: none !important;
-      //       cursor: default !important;
-      //     }
-      //   }
-
-      //   .arco-tree-node-title::before {
-      //     display: none;
-      //   }
-      // }
-
-      // .arco-tree-node-title {
-      //   border: 1px solid var(--seal-border-gray-2) !important;
-      //   background-color: #fff !important;
-      //   transition: all 0.1s var(--seal-transition-func) !important;
-      // }
-
-      // .arco-tree-node-title:hover {
-      //   border: 1px solid var(--sealblue-6) !important;
-      //   transition: all 0.1s var(--seal-transition-func) !important;
-      // }
-    }
   }
 }
 
@@ -115,6 +84,11 @@ div#driver-highlighted-element-stage {
 }
 
 // table
+.arco-table {
+  overflow: hidden;
+  border-radius: 4px;
+}
+
 .arco-table-content {
   .arco-table-cell {
     padding: 9px 10px;

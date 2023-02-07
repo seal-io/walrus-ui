@@ -108,7 +108,7 @@
 </script>
 
 <style scoped lang="less">
-  @nav-size-height: 60px;
+  @nav-size-height: 56px;
   @layout-max-width: 1100px;
 
   .layout {

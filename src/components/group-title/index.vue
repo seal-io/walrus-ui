@@ -34,8 +34,10 @@
     justify-content: space-between;
     margin-bottom: 20px;
     padding-bottom: 10px;
+    font-weight: 400;
 
     &.bordered {
+      font-weight: 400;
       border-bottom: 1px solid var(--seal-border-gray);
     }
 
@@ -46,7 +48,7 @@
 
     .label {
       color: var(--color-text-2);
-      font-weight: 500;
+      font-weight: 400;
       font-size: 14px;
     }
   }
