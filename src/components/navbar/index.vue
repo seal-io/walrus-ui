@@ -199,13 +199,8 @@
   import useUser from '@/hooks/user';
   import MessageBox from '../message-box/index.vue';
   import navList from './components/nav-list.vue';
-  import { NO_LOGIN_CHECK_PATH } from './configs';
+  import { NO_LOGIN_CHECK_PATH, navDataList } from './configs';
 
-  interface NavDataMap {
-    name: string;
-    label: string;
-    active: string;
-  }
   defineProps({
     fullScreen: {
       type: Boolean,
@@ -229,20 +224,6 @@
     return appStore.hasNavList;
   });
 
-  //
-  const navDataList: NavDataMap[] = [
-    { name: 'dashboardMain', label: 'navbar.totalView', active: 'dashboard' },
-    {
-      name: 'graphMain',
-      label: 'navbar.graph',
-      active: 'graphIndex',
-    },
-    {
-      name: 'projectsList',
-      label: 'navbar.resource',
-      active: 'projects',
-    },
-  ];
   const defaultActive = ref<string>('totalView');
   const theme = computed(() => {
     return appStore.theme;

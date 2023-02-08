@@ -19,6 +19,7 @@
 
 <style scoped lang="less">
   @nav-size-height: 56px;
+  @nav-size-gap: 76px;
   @layout-max-width: 1100px;
 
   .layout {
@@ -62,7 +63,7 @@
 
   .layout-menu {
     position: absolute;
-    top: 80px;
+    top: @nav-size-gap;
     left: 0;
     width: 210px;
 
@@ -137,9 +138,9 @@
 
   .layout-content {
     position: relative;
-    min-height: calc(100vh - 80px);
+    min-height: calc(100vh - 76px);
     margin-bottom: 20px;
-    padding-top: 60px;
+    padding-top: @nav-size-height;
     overflow-y: hidden;
     background-color: var(--color-fill-2);
     // background-color: #fff;

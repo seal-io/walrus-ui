@@ -13,7 +13,7 @@ export default {
   children: [
     {
       path: 'list',
-      name: 'projectsList',
+      name: 'reourcesList',
       component: () => import('@/views/projects/pages/list.vue'),
       meta: {
         hideInMenu: true,

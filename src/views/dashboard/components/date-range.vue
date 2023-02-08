@@ -1,6 +1,7 @@
 <template>
   <div class="date-range-wrapper">
     <a-range-picker
+      v-model:popup-visible="popupVisible"
       size="small"
       shortcuts-position="left"
       :shortcuts="selectShortcut"
@@ -65,6 +66,7 @@
     year: 9,
   };
   const { t } = useI18n();
+  const popupVisible = ref(false);
   const startDate = ref('');
   const endDate = ref('');
   const selectShortcut = computed(() => {
@@ -143,7 +145,15 @@
     }
   };
   const handleSelectShortcut = (val) => {
+    const value = get(val, 'value') || [];
     emits('update:timeUnit', val.unit);
+    emits('update:start', get(value, '0'));
+    emits('update:end', get(value, '1'));
+    startDate.value = get(value, '0');
+    endDate.value = get(value, '1');
+    setTimeout(() => {
+      popupVisible.value = false;
+    }, 100);
   };
   const handleDateChange = (value) => {
     console.log('change:', value);
@@ -151,6 +161,9 @@
     emits('update:end', get(value, '1'));
     startDate.value = get(value, '0');
     endDate.value = get(value, '1');
+    setTimeout(() => {
+      popupVisible.value = false;
+    }, 100);
   };
 </script>
 

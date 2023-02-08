@@ -20,6 +20,11 @@ import localeReport from '@/views/report/locale/en-US';
 
 import localeGraph from '@/components/graph/locale/en-US';
 import localeDashboard from '@/views/dashboard/locale/en-US';
+
+import localeApplications from '@/views/application-management/locale/en-US';
+import localeCost from '@/views/cost-management/locale/en-US';
+import localeOperation from '@/views/operation-hub/locale/en-US';
+
 import localeCommon from './en-US/common';
 import localeSettings from './en-US/settings';
 
@@ -33,6 +38,9 @@ export default {
   'menu.visualization': 'Data Visualization',
   'menu.user': 'User Center',
   'navbar.docs': 'Docs',
+  'navbar.appmanagement': 'App Management',
+  'navbar.costmanagement': 'Cost Management',
+  'navbar.operatorhub': 'Operation Hub',
   'navbar.action.locale': 'Switch to English',
   'navbar.totalView': 'Dashboard',
   'navbar.intergration': 'Integration',
@@ -64,4 +72,7 @@ export default {
   ...localeReport,
   ...localeGraph,
   ...localeDashboard,
+  ...localeApplications,
+  ...localeCost,
+  ...localeOperation,
 };

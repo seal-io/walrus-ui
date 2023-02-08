@@ -1,5 +1,5 @@
 import type { RouteRecordRaw } from 'vue-router';
-import get from 'lodash/get';
+import { get } from 'lodash';
 import cloneDeep from 'lodash/cloneDeep';
 
 const modules = import.meta.globEager('./modules/*.ts');

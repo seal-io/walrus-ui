@@ -21,6 +21,11 @@ import localeReport from '@/views/report/locale/zh-CN';
 import localeGraph from '@/components/graph/locale/zh-CN';
 
 import localeDashboard from '@/views/dashboard/locale/zh-CN';
+
+import localeApplications from '@/views/application-management/locale/zh-CN';
+import localeCost from '@/views/cost-management/locale/zh-CN';
+import localeOperation from '@/views/operation-hub/locale/zh-CN';
+
 import localeCommon from './zh-CN/common';
 
 import localeSettings from './zh-CN/settings';
@@ -35,6 +40,9 @@ export default {
   'menu.visualization': '数据可视化',
   'menu.user': '个人中心',
   'navbar.docs': '文档中心',
+  'navbar.appmanagement': '应用管理',
+  'navbar.costmanagement': '成本管理',
+  'navbar.operatorhub': '运维中心',
   'navbar.action.locale': '切换为中文',
   'navbar.totalView': '概览',
   'navbar.intergration': '集成',
@@ -66,4 +74,7 @@ export default {
   ...localeReport,
   ...localeGraph,
   ...localeDashboard,
+  ...localeApplications,
+  ...localeCost,
+  ...localeOperation,
 };

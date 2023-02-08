@@ -69,7 +69,6 @@
   const route = useRoute();
   const permission = usePermission();
   useResponsive(true);
-  const navbarHeight = `60px`;
   const navbar = computed(() => appStore.navbar);
   const renderMenu = computed(() => appStore.menu);
   const hideMenu = computed(() => appStore.hideMenu);
@@ -85,7 +84,9 @@
       renderMenu.value && !hideMenu.value
         ? { paddingLeft: `${menuWidth.value}px` }
         : {};
-    const paddingTop = navbar.value ? { paddingTop: navbarHeight } : {};
+    const paddingTop = navbar.value
+      ? { paddingTop: `${appStore.navbarHeight}px` }
+      : {};
     return { ...paddingLeft, ...paddingTop };
   });
   const setCollapsed = (val: boolean) => {
@@ -109,6 +110,7 @@
 
 <style scoped lang="less">
   @nav-size-height: 56px;
+  @nav-size-gap: 76px;
   @layout-max-width: 1100px;
 
   .layout {
@@ -156,7 +158,7 @@
 
   .layout-menu {
     position: absolute;
-    top: 80px;
+    top: @nav-size-gap;
     left: 0;
     width: 210px;
 
@@ -231,7 +233,7 @@
 
   .layout-content {
     position: relative;
-    min-height: calc(100vh - 80px);
+    min-height: calc(100vh - 76px);
     margin-bottom: 20px;
     overflow-y: hidden;
     background-color: var(--color-fill-2);
