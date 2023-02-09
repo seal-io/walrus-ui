@@ -43,14 +43,20 @@
         </a-table-column>
         <a-table-column
           align="center"
-          :width="150"
+          :width="210"
           :title="$t('common.table.operation')"
         >
-          <template #cell>
-            <a-button type="text" size="small">
-              <template #icon><icon-edit /></template>
-              {{ $t('common.button.edit') }}
-            </a-button>
+          <template #cell="{ record }">
+            <a-space :size="20">
+              <a-link type="text" size="small" :href="handleEdit(record)">
+                <template #icon><icon-edit /></template>
+                {{ $t('common.button.edit') }}
+              </a-link>
+              <a-link type="text" size="small" :href="handleView(record)">
+                <template #icon><icon-list style="font-size: 16px" /></template>
+                {{ $t('common.button.detail') }}
+              </a-link>
+            </a-space>
           </template>
         </a-table-column>
       </template>
@@ -61,6 +67,7 @@
 <script lang="ts" setup>
   import { PropType, watchEffect } from 'vue';
   import useRowSelect from '@/hooks/use-row-select';
+  import useCallCommon from '@/hooks/use-call-common';
   import { ProjectItem } from '../config/interace';
 
   const props = defineProps({
@@ -85,12 +92,24 @@
   });
   type BaseType = string | number;
   const emits = defineEmits(['update:selectedList']);
+  const { router } = useCallCommon();
   const { rowSelection, selectedKeys } = useRowSelect();
   const handleSelectChange = (list: BaseType[]) => {
     rowSelection.selectedRowKeys = [...list];
     setTimeout(() => {
       emits('update:selectedList', list);
     }, 100);
+  };
+  const handleEdit = (row) => {
+    const path = router.resolve({ name: 'eventReport', query: { id: row.id } });
+    return path.href;
+  };
+  const handleView = (row) => {
+    const path = router.resolve({
+      name: 'applicationsList',
+      query: { id: row.id }
+    });
+    return path.href;
   };
   watchEffect(() => {
     rowSelection.selectedKeys = [].concat(props.selectedList as never[]);

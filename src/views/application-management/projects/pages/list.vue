@@ -22,26 +22,34 @@
             allow-clear
             style="width: 240px"
             :placeholder="$t('applications.projects.search.holder')"
-            @clear="handlerSearch"
-            @change="handlerSearch"
-            @press-enter="handlerSearch"
+            @clear="handleSearch"
+            @change="handleSearch"
+            @press-enter="handleSearch"
           >
             <template #prefix>
               <icon-search />
             </template>
           </a-input>
           <a-space style="margin-left: 10px">
-            <a-button type="primary">{{ $t('common.button.search') }}</a-button>
-            <a-button type="outline">{{ $t('common.button.clear') }}</a-button>
+            <a-button type="primary" @click="handleSearch">{{
+              $t('common.button.search')
+            }}</a-button>
+            <a-button type="outline" @click="handleReset">{{
+              $t('common.button.clear')
+            }}</a-button>
           </a-space>
         </template>
         <template #button-group>
           <a-button type="primary" @click="handleCreateProject">{{
             $t('applications.projects.create')
           }}</a-button>
-          <a-button type="primary" status="warning" @click="handleDelete">{{
-            $t('common.button.delete')
-          }}</a-button>
+          <a-button
+            type="primary"
+            status="warning"
+            :disabled="!selectedKeys.length"
+            @click="handleDelete"
+            >{{ $t('common.button.delete') }}</a-button
+          >
         </template>
       </FilterBox>
       <a-divider :margin="8"></a-divider>
@@ -88,6 +96,7 @@
   import ListView from '../components/list-view.vue';
   import { ProjectItem } from '../config/interace';
 
+  let timer: any = null;
   const loading = ref(false);
   const currentView = ref('thumb'); // thumb, list
   const selectedKeys = ref<string[]>([]);
@@ -95,11 +104,11 @@
     Array(10).fill({ name: 'project name', id: '1' })
   );
   const total = ref(100);
-  const queryParams = {
+  const queryParams = reactive({
     name: '',
     page: 1,
     perPage: 10
-  };
+  });
   const handleToggle = (val) => {
     currentView.value = val;
   };
@@ -110,7 +119,9 @@
     });
   };
   const fetchData = async () => {};
-  const handleFilter = () => {};
+  const handleFilter = () => {
+    fetchData();
+  };
   const handleCheckChange = (checked, id) => {
     if (checked) {
       selectedKeys.value.push(id);
@@ -118,7 +129,18 @@
       remove(selectedKeys.value, (val) => val === id);
     }
   };
-  const handlerSearch = () => {};
+  const handleSearch = () => {
+    clearTimeout(timer);
+    timer = setTimeout(() => {
+      queryParams.page = 1;
+      handleFilter();
+    }, 100);
+  };
+  const handleReset = () => {
+    queryParams.name = '';
+    queryParams.page = 1;
+    handleFilter();
+  };
   const handlePageChange = (page: number) => {
     queryParams.page = page;
     handleFilter();

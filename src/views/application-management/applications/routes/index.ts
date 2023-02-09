@@ -5,11 +5,11 @@ export default [
     component: () =>
       import('@/views/application-management/applications/pages/list.vue'),
     meta: {
-      hideInMenu: true,
+      hideInMenu: false,
       ignoreCache: true,
       locale: 'applications.applications.menu',
       requiresAuth: true,
-      icon: 'icon-apps',
-    },
-  },
+      icon: 'icon-apps'
+    }
+  }
 ];

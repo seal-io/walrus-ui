@@ -15,6 +15,7 @@
 <script lang="ts" setup>
   import { includes } from 'lodash';
   import { onMounted, PropType, defineEmits } from 'vue';
+  import useCallCommon from '@/hooks/use-call-common';
   import thumbButton from '@/components/buttons/thumb-button.vue';
   import thumbItem from './thumb-item.vue';
   import { ProjectItem } from '../config/interace';
@@ -34,6 +35,7 @@
     }
   });
   const emits = defineEmits(['create', 'change']);
+  const { router } = useCallCommon();
   const handleCreateProject = () => {
     emits('create');
   };
@@ -42,6 +44,12 @@
   };
   const handleClickProject = (project) => {
     console.log('project:', project);
+    router.push({
+      name: 'applicationsList',
+      query: {
+        id: project.id
+      }
+    });
   };
   onMounted(() => {
     console.log('onmounted');

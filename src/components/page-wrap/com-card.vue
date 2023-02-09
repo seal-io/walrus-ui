@@ -1,5 +1,5 @@
 <template>
-  <div class="com-card">
+  <div class="com-card" :class="{ 'top-gap': topGap }">
     <a-card
       :title="title"
       v-bind="attrs"
@@ -21,7 +21,7 @@
     padding: {
       type: String,
       default() {
-        return '12px 20px 20px 20px';
+        return '20px 20px 20px 20px';
       }
     },
     title: {
@@ -47,6 +47,12 @@
       default() {
         return {};
       }
+    },
+    topGap: {
+      type: Boolean,
+      default() {
+        return false;
+      }
     }
   });
 
@@ -63,6 +69,10 @@
     :deep(.arco-card) {
       overflow: hidden;
       border-radius: 4px;
+    }
+
+    &.top-gap {
+      margin-top: 20px;
     }
   }
 

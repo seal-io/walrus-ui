@@ -9,7 +9,7 @@ export default {
   'common.button.clear': '清除',
   'common.button.reset': '重置',
   'common.button.view': '查看明细',
-  'common.button.detail': '查看详情',
+  'common.button.detail': '详情',
   'common.button.delete': '删除',
   'common.button.create': '新建',
   'common.button.upgrade': '升级',
