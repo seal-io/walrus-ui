@@ -7,7 +7,8 @@ export default {
   'common.button.submit': 'Submit',
   'settings.system': 'System settings',
   'common.button.search': 'Search',
-  'common.holder.search': 'Seach',
+  'common.button.clear': 'Clear',
+  'common.holder.search': 'Search',
   'common.button.view': 'View details',
   'common.button.detail': 'View details',
   'common.button.reset': 'Reset',
@@ -20,6 +21,7 @@ export default {
   'common.table.operation': 'Operation',
   'common.table.createTime': 'Create Time',
   'common.table.updateTime': 'Update Time',
+  'common.table.description': 'Description',
   'common.copy.success': 'Copied success!',
   'common.copy.fail': 'Copied failed!',
   'common.delete.success': 'delete success!',
@@ -50,5 +52,5 @@ export default {
   'common.data.none': 'No Data',
   'common.action.none': 'Not Available',
   'common.button.addfile': 'Add File',
-  'common.logout.msg': 'Logout succeeded',
+  'common.logout.msg': 'Logout succeeded'
 };

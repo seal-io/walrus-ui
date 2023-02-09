@@ -31,12 +31,12 @@
     useAppVersion,
     showVersionModal,
     versionData,
-    getVersion,
+    getVersion
   } from '@/hooks/fetch-app-version';
 
   const versionInfo = ref({});
   const footerLinks = [
-    { label: 'settings.help', value: 'https://seal-io.github.io/docs/' },
+    { label: 'settings.help', value: 'https://seal-io.github.io/docs/' }
     // { label: 'settings.document', value: 'https://seal-io.github.io/docs/' },
     // { label: 'settings.privacy', value: 'provite' },
     // { label: 'settings.policies', value: 'policy' },
@@ -53,8 +53,10 @@
 </script>
 
 <style lang="less" scoped>
+  @footer-height: 56px;
+
   .footer {
-    height: 60px;
+    height: @footer-height;
     color: var(--color-text-2);
     text-align: center;
     // display: flex;

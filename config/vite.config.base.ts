@@ -21,7 +21,7 @@ export default defineConfig({
     // Rollupresolve() as any,
     vue(),
     vueJsx(),
-    svgLoader({ svgoConfig: {} }),
+    svgLoader({ svgoConfig: {} })
     // htmlTemplate({
     //   pages: {
     //     index: {
@@ -49,30 +49,30 @@ export default defineConfig({
     alias: [
       {
         find: '@',
-        replacement: resolve(__dirname, '../src'),
+        replacement: resolve(__dirname, '../src')
       },
       {
         find: 'assets',
-        replacement: resolve(__dirname, '../src/assets'),
+        replacement: resolve(__dirname, '../src/assets')
       },
       {
         find: 'vue-i18n',
-        replacement: 'vue-i18n/dist/vue-i18n.cjs.js', // Resolve the i18n warning issue
+        replacement: 'vue-i18n/dist/vue-i18n.cjs.js' // Resolve the i18n warning issue
       },
       {
         find: 'vue',
-        replacement: 'vue/dist/vue.esm-bundler.js', // compile template
-      },
+        replacement: 'vue/dist/vue.esm-bundler.js' // compile template
+      }
     ],
-    extensions: ['.ts', '.js'],
+    extensions: ['.ts', '.js']
   },
   define: {
     'process.env': {
-      dev_mode: mode,
+      dev_mode: mode
     },
     '_SEAL_': {
-      commitId: versions.commitId,
-    },
+      commitId: versions.commitId
+    }
   },
   css: {
     preprocessorOptions: {
@@ -80,10 +80,11 @@ export default defineConfig({
         modifyVars: {
           hack: `true; @import (reference) "${resolve(
             'src/assets/style/breakpoint.less'
-          )}";`,
+          )}";`
         },
-        javascriptEnabled: true,
-      },
-    },
-  },
+        additionalData: `@import "@/assets/style/mixins.less";`,
+        javascriptEnabled: true
+      }
+    }
+  }
 });

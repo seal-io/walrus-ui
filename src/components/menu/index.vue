@@ -21,7 +21,7 @@
         },
         set(value: boolean) {
           appStore.updateSettings({ menuCollapse: value });
-        },
+        }
       });
       const appRoute = computed(() => {
         return router
@@ -98,16 +98,16 @@
           router.push({
             name: item.name,
             params: {
-              query,
-            },
+              query
+            }
           });
         }
         if (isReplace) {
           router.replace({
             name: item.name,
             params: {
-              query,
-            },
+              query
+            }
           });
         }
       };
@@ -139,7 +139,7 @@
                     key={element?.name}
                     v-slots={{
                       // icon: () => h(compile(icon)),
-                      title: () => h(compile(t(element?.meta?.locale || ''))),
+                      title: () => h(compile(t(element?.meta?.locale || '')))
                     }}
                   >
                     {element?.children?.map((elem) => {
@@ -179,13 +179,17 @@
           {renderSubMenu()}
         </a-menu>
       );
-    },
+    }
   });
 </script>
 
 <style lang="less" scoped>
   :deep(.arco-menu-inner) {
     padding-top: 0 !important;
+
+    .arco-menu-item {
+      // line-height: 36px;
+    }
 
     .arco-menu-inline-header {
       display: flex;

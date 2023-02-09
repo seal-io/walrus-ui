@@ -6,6 +6,7 @@ export default {
   'common.button.discard': '放弃',
   'common.button.cancel': '取消',
   'common.button.search': '查询',
+  'common.button.clear': '清除',
   'common.button.reset': '重置',
   'common.button.view': '查看明细',
   'common.button.detail': '查看详情',
@@ -19,6 +20,7 @@ export default {
   'common.table.operation': '操作',
   'common.table.createTime': '创建时间',
   'common.table.updateTime': '更新时间',
+  'common.table.description': '描述',
   'common.copy.success': '复制成功',
   'common.copy.fail': '复制失败',
   'common.delete.success': '删除成功',
@@ -48,5 +50,5 @@ export default {
   'common.data.none': '暂无',
   'common.action.none': '无',
   'common.button.addfile': '添加文件',
-  'common.logout.msg': '登出成功',
+  'common.logout.msg': '登出成功'
 };

@@ -170,7 +170,7 @@
                         'background-image': `url(${get(
                           repoIcon,
                           toLower(record.provider)
-                        )})`,
+                        )})`
                       }"
                     ></span>
                     <span class="source"
@@ -219,7 +219,7 @@
                         :severity="{
                           high: get(record, 'issueHighCount'),
                           medium: get(record, 'issueMediumCount'),
-                          low: get(record, 'issueLowCount'),
+                          low: get(record, 'issueLowCount')
                         }"
                       ></severityBar>
                       <a-link
@@ -393,7 +393,7 @@
     cloneDeep,
     assignIn,
     capitalize,
-    some,
+    some
   } from 'lodash';
   import dayjs from 'dayjs';
   import { Message } from '@arco-design/web-vue';
@@ -404,7 +404,7 @@
     tableListRow,
     TableQueryParams,
     queryDataList,
-    scanProject,
+    scanProject
   } from '@/api/projects';
   import useLoading from '@/hooks/loading';
   import ADropdownButton from '@arco-design/web-vue/es/dropdown/dropdown-button';
@@ -421,7 +421,7 @@
     useAddTags,
     useQueryIntegration,
     useUploadSbom,
-    useScanSettings,
+    useScanSettings
   } from '../hooks/index';
   // modal components ...
   import jiraTicket from '../components/jira-ticket.vue';
@@ -435,8 +435,8 @@
       type: Boolean,
       default() {
         return true;
-      },
-    },
+      }
+    }
   });
   type strNum = string | number | boolean;
   interface filtersValue {
@@ -457,7 +457,7 @@
     getPlateList,
     jiraSpace,
     jiraIsPrivate,
-    handleCreateJiraTicket,
+    handleCreateJiraTicket
   } = useJiraTicket();
 
   // import oci resource
@@ -467,7 +467,7 @@
     registryId,
     imageData,
     handleResetContainer,
-    handleAddContainerRegistry,
+    handleAddContainerRegistry
   } = useContainerRegistry();
 
   // add tags
@@ -481,7 +481,7 @@
     modalResourceId,
     handleShowSettingModal,
     resourceKind,
-    resourceData,
+    resourceData
   } = useScanSettings();
   const { t, locale } = useI18n();
   const router = useRouter();
@@ -497,19 +497,19 @@
     tags: [],
     page: 1,
     perPage: 10,
-    all: false,
+    all: false
   });
 
   // add reource callback handler
   const popupClickhandlerMap = {
     oci: handleAddContainerRegistry,
-    uploaded: handleShowUploadSbomModal,
+    uploaded: handleShowUploadSbomModal
   };
 
   const rowSelection: any = reactive({
     type: 'checkbox',
     showCheckedAll: true,
-    selectedRowKeys: [] as string[],
+    selectedRowKeys: [] as string[]
   });
   const selectedKeys = ref<BaseType[]>([]);
   const { loading, setLoading } = useLoading(true);
@@ -518,7 +518,7 @@
   });
 
   const integrationList = ref<childrenItem[]>([
-    { checked: false, title: 'GitHub', value: 0, key: '', id: 'github' },
+    { checked: false, title: 'GitHub', value: 0, key: '', id: 'github' }
   ]);
   const repoMapList = ref<PopupItem[]>(uploadSbomConfig);
   const handleVisibleChange = (val) => {
@@ -533,7 +533,7 @@
         key: '',
         value: s.provider,
         id: s.provider,
-        clickHandler: s.clickHandler,
+        clickHandler: s.clickHandler
       };
       return item;
     });
@@ -549,14 +549,14 @@
     router.push({
       name: 'eventReport',
       query: {
-        id: row.lastEvaluationEventID,
-      },
+        id: row.lastEvaluationEventID
+      }
     });
   };
   const resolvePath = (row: any) => {
     const path = router.resolve({
       name: 'eventReport',
-      query: { id: row.lastEvaluationEventID, provider: row.provider },
+      query: { id: row.lastEvaluationEventID, provider: row.provider }
     });
     return path.href;
   };
@@ -564,7 +564,7 @@
     console.log({ data });
     popupClickhandlerMap[data.provider]?.({
       ...data,
-      containerRegistryID: data.id,
+      containerRegistryID: data.id
     });
   };
   const fetchData = async (params: TableQueryParams = { ...queryParams }) => {
@@ -576,7 +576,7 @@
       ) as TableQueryParams;
       const { data } = await queryDataList({
         ...params,
-        all: !!queryParams?.tags?.length,
+        all: !!queryParams?.tags?.length
       });
       let list: any = data?.items || [];
       list = map(list, (s) => {
@@ -673,7 +673,7 @@
       loading.value = true;
       const ids = map(selectedKeys.value, (val) => {
         return {
-          id: val,
+          id: val
         };
       });
       await deleteRepos(ids);
@@ -697,16 +697,16 @@
       name: 'projectSBom',
       query: {
         id: row.id,
-        versionId: 'latest',
-      },
+        versionId: 'latest'
+      }
     });
   };
   const handleViewHistory = (row) => {
     router.push({
       name: 'scanHistory',
       query: {
-        id: row.id,
-      },
+        id: row.id
+      }
     });
   };
   const handleCreateTicket = (row) => {
@@ -735,7 +735,7 @@
     tagsDataList.value = map(data, (val) => {
       return {
         label: val,
-        value: val,
+        value: val
       };
     });
   };
@@ -789,7 +789,7 @@
   const createWssConnect = () => {
     const { updateEvaluateTime } = useWebsocket({
       url: wssResourceList,
-      onmessage: wssOnMessage,
+      onmessage: wssOnMessage
     });
     nextTick(() => {
       updateEvaluateTime(loopUpdateRunTime);

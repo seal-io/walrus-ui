@@ -22,9 +22,9 @@ yarn build
 
 ```
 // with npm 
-npm run dev
+npm run dev --host
 
 // with yarn
-yarn dev
+yarn dev --host
 ```
 
