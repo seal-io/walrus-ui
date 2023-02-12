@@ -1,0 +1,38 @@
+<template>
+  <div class="module-card-wrap">
+    <div class="title">
+      <icon-tag />
+      <span>{{ title }}</span>
+    </div>
+    <slot></slot>
+  </div>
+</template>
+
+<script lang="ts" setup>
+  defineProps({
+    title: {
+      type: String,
+      default() {
+        return '';
+      }
+    }
+  });
+</script>
+
+<style lang="less" scoped>
+  .module-card-wrap {
+    .title {
+      display: flex;
+      align-items: center;
+      margin-top: @title-top-gap;
+      margin-bottom: @title-bottom-gap;
+      color: var(--color-text-2);
+      font-size: 14px;
+
+      :deep(.arco-icon) {
+        margin-right: 2px;
+        font-size: 13px;
+      }
+    }
+  }
+</style>

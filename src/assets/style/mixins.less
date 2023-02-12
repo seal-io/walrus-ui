@@ -1,4 +1,5 @@
-@seal-title-gap: '15px';
+@title-bottom-gap: 15px;
+@title-top-gap: 10px;
 
 // thumb card
 .thumbCard() {
@@ -11,7 +12,7 @@
 .thumbCardHover() {
   color: rgb(var(--arcoblue-5));
   border: 1px solid transparent;
-  box-shadow: 0 0 6px rgb(var(--arcoblue-5));
+  box-shadow: 0 0 4px rgb(var(--arcoblue-5));
   transition: all 0.3s;
 }
 
@@ -21,7 +22,7 @@
   transition: all 0.2s;
 }
 
-.hoverableHover {
+.hoverableHover() {
   box-shadow: var(--seal-hoverable-shadow);
-  transition: all 0.3s;
+  transition: all 0.2s;
 }

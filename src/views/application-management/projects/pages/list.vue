@@ -195,6 +195,7 @@
       }
 
       .arco-icon.active {
+        color: rgb(var(--arcoblue-6));
         box-shadow: var(--seal-hoverable-shadow);
       }
     }

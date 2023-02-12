@@ -14,6 +14,8 @@ export default {
   'common.button.reset': 'Reset',
   'common.button.delete': 'Delete',
   'common.button.create': 'Create',
+  'common.button.enabled': 'Enabled',
+  'common.button.disabled': 'Disabled',
   'common.button.upgrade': 'Upgrade',
   'common.input.holder': 'Please enter',
   'common.button.edit': 'Edit',

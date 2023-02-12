@@ -6,6 +6,7 @@ import AutoTooltip from '@arco-design/web-vue/es/_components/auto-tooltip/auto-t
 import ExpandTransition from '@arco-design/web-vue/es/_components/transition/expand-transition';
 import ComCard from '@/components/page-wrap/com-card.vue';
 import SpinCard from '@/components/page-wrap/spin-card.vue';
+import ModuleCard from '@/components/page-wrap/module-card.vue';
 import {
   BarChart,
   LineChart,
@@ -53,5 +54,6 @@ export default {
     Vue.component('CollapseTransition', ExpandTransition);
     Vue.component('ComCard', ComCard);
     Vue.component('SpinCard', SpinCard);
+    Vue.component('ModuleCard', ModuleCard);
   }
 };

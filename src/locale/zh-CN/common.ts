@@ -8,6 +8,8 @@ export default {
   'common.button.search': '查询',
   'common.button.clear': '清除',
   'common.button.reset': '重置',
+  'common.button.enabled': '启用',
+  'common.button.disabled': '禁用',
   'common.button.view': '查看明细',
   'common.button.detail': '详情',
   'common.button.delete': '删除',

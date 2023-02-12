@@ -177,7 +177,11 @@
     queryParams.perPage = pageSize;
     handleFilter();
   };
-  const handleCreate = () => {};
+  const handleCreate = () => {
+    router.push({
+      name: 'applicationsDetail'
+    });
+  };
   const handleDeleteConfirm = async () => {
     try {
       loading.value = true;
@@ -199,7 +203,10 @@
     }
   };
   const handleEdit = (row) => {
-    const path = router.resolve({ name: 'eventReport', query: { id: row.id } });
+    const path = router.resolve({
+      name: 'applicationsDetail',
+      query: { id: row.id }
+    });
     return path.href;
   };
   const handleView = (row) => {

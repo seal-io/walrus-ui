@@ -1,4 +1,12 @@
 .arco-form {
+  .arco-form-item-label-col {
+    padding-right: 10px;
+  }
+
+  .arco-input-wrapper {
+    width: 360px;
+  }
+
   .arco-form-item-label {
     color: var(--color-text-3);
     font-size: 13px;
@@ -112,7 +120,15 @@ div#driver-highlighted-element-stage {
     background-color: inherit;
   }
 }
+// tabs
+.module-tabs.arco-tabs .arco-tabs-tab {
+  margin-right: 10px;
+  margin-left: 0;
+}
 
+.module-tabs.arco-tabs .arco-tabs-tab-active {
+  font-weight: 400;
+}
 // modal
 .arco-modal {
   .arco-modal-close-btn {
@@ -145,10 +161,22 @@ div#driver-highlighted-element-stage {
 }
 // icon
 .arco-icon {
-  font-size: 14px;
+  font-size: 16px;
   stroke-linecap: round;
   stroke-linejoin: bevel;
   stroke-width: 3;
+
+  &.size-16 {
+    font-size: 16px;
+  }
+
+  &.size-18 {
+    font-size: 18px;
+  }
+}
+// input
+.arco-input-outer .arco-input-append {
+  border-left: 0;
 }
 
 .arco-empty-image {
