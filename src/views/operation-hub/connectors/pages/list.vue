@@ -10,6 +10,7 @@
       <a-tab-pane
         v-for="item in connectorTypeList"
         :key="item.value"
+        :disabled="item.value !== 'k8s'"
         :title="item.label"
       >
         <Component :is="connectorsMap[item.com]"></Component>

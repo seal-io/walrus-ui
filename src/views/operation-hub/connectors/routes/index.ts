@@ -8,7 +8,20 @@ export default [
       ignoreCache: true,
       locale: 'operation.connectors.menu',
       requiresAuth: true,
-      icon: 'icon-apps',
-    },
+      icon: 'icon-apps'
+    }
   },
+  {
+    path: 'connector/k8s-detail',
+    name: 'connectorK8sDetail',
+    component: () =>
+      import('@/views/operation-hub/connectors/pages/k8s-detail.vue'),
+    meta: {
+      hideInMenu: true,
+      ignoreCache: true,
+      locale: 'operation.connectors.menu',
+      requiresAuth: true,
+      icon: 'icon-apps'
+    }
+  }
 ];

@@ -1,6 +1,6 @@
 <template>
   <div class="connectors-list">
-    <FilterBox>
+    <FilterBox style="margin-bottom: 10px">
       <template #params>
         <a-select
           v-model="queryParams.projectId"
@@ -8,7 +8,7 @@
           allow-search
           :options="projectList"
           style="width: 240px"
-          :placeholder="$t('applications.projects.search.holder')"
+          :placeholder="$t('operation.connectors.table.holder')"
           @clear="handleSearch"
           @change="handleSearch"
         >
@@ -24,7 +24,7 @@
       </template>
       <template #button-group>
         <a-button type="primary" @click="handleCreate">{{
-          $t('applications.applications.create')
+          $t('operation.connectors.create')
         }}</a-button>
         <a-button
           type="primary"
@@ -35,7 +35,6 @@
         >
       </template>
     </FilterBox>
-    <a-divider :margin="8"></a-divider>
     <a-table
       column-resizable
       style="margin-bottom: 20px"
@@ -53,8 +52,29 @@
           tooltip
           :cell-style="{ minWidth: '40px' }"
           data-index="name"
-          :title="$t('applications.applications.table.name')"
+          :title="$t('operation.connectors.table.name')"
         >
+        </a-table-column>
+        <a-table-column
+          ellipsis
+          tooltip
+          :cell-style="{ minWidth: '40px' }"
+          align="center"
+          data-index="type"
+          :title="$t('operation.connectors.table.type')"
+        >
+        </a-table-column>
+        <a-table-column
+          ellipsis
+          tooltip
+          :cell-style="{ minWidth: '40px' }"
+          align="left"
+          data-index="status"
+          :title="$t('operation.connectors.table.status')"
+        >
+          <template #cell="{ record }">
+            <StatusLabel :status="record.status"></StatusLabel>
+          </template>
         </a-table-column>
         <a-table-column
           ellipsis
@@ -69,26 +89,8 @@
           </template>
         </a-table-column>
         <a-table-column
-          ellipsis
-          tooltip
-          :cell-style="{ minWidth: '40px' }"
           align="center"
-          data-index="service"
-          :title="$t('applications.applications.table.service')"
-        >
-        </a-table-column>
-        <a-table-column
-          ellipsis
-          tooltip
-          :cell-style="{ minWidth: '40px' }"
-          align="center"
-          data-index="status"
-          :title="$t('applications.applications.table.status')"
-        >
-        </a-table-column>
-        <a-table-column
-          align="center"
-          :width="210"
+          :width="160"
           :title="$t('common.table.operation')"
         >
           <template #cell="{ record }">
@@ -121,11 +123,6 @@
       @change="handlePageChange"
       @page-size-change="handlePageSizeChange"
     />
-    <!-- <createApplication
-      v-model:show="showAppModal"
-      :title="$t('applications.applications.create')"
-      @save="handleSaveAppInfo"
-    ></createApplication> -->
   </div>
 </template>
 
@@ -137,32 +134,38 @@
   import useRowSelect from '@/hooks/use-row-select';
   import FilterBox from '@/components/filter-box/index.vue';
   import { ConnectorRowData } from '../config/interface';
-  // import createApplication from '../components/create-application.vue';
+  import StatusLabel from './status-label.vue';
 
   const { rowSelection, selectedKeys, handleSelectChange } = useRowSelect();
   const { router } = useCallCommon();
   let timer: any = null;
   const loading = ref(false);
-  const showAppModal = ref(false);
   const total = ref(100);
   const queryParams = reactive({
     projectId: '1',
     page: 1,
     perPage: 10
   });
-  const dataList = ref<ConnectorRowData[]>(
-    Array(10).fill({
-      id: 1,
-      name: 'app-1',
+  const dataList = ref<ConnectorRowData[]>([
+    {
+      id: '1',
+      name: 'connector-1',
       createTime: '2023-02-09',
       type: 'EKS',
       status: 'ready'
-    })
-  );
+    },
+    {
+      id: '2',
+      name: 'connector-1',
+      createTime: '2023-02-09',
+      type: 'EKS',
+      status: 'unconnected'
+    }
+  ]);
   const projectList = ref<{ label: string; value: string }[]>([
-    { label: 'project1', value: '1' },
-    { label: 'project2', value: '2' },
-    { label: 'project3', value: '3' }
+    { label: 'connector-1', value: '1' },
+    { label: 'connector-2', value: '2' },
+    { label: 'connector-3', value: '3' }
   ]);
   const fetchData = async () => {};
   const handleFilter = () => {
@@ -190,7 +193,9 @@
     handleFilter();
   };
   const handleCreate = () => {
-    showAppModal.value = true;
+    router.push({
+      name: 'connectorK8sDetail'
+    });
   };
   const handleDeleteConfirm = async () => {
     try {
@@ -221,7 +226,7 @@
   };
   const handleClickEdite = (row) => {
     router.push({
-      name: 'applicationsDetail',
+      name: 'connectorK8sDetail',
       query: { id: row.id }
     });
   };

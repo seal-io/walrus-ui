@@ -32,7 +32,7 @@
   .group-title {
     display: flex;
     justify-content: space-between;
-    margin-bottom: 30px;
+    margin-bottom: 25px;
     padding-bottom: 10px;
     font-weight: 400;
 

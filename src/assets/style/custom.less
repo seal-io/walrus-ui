@@ -72,7 +72,8 @@
   display: none;
 }
 
-input::placeholder {
+input::placeholder,
+textarea::placeholder {
   font-size: 13px !important;
 }
 
@@ -187,9 +188,14 @@ div#driver-highlighted-element-stage {
 .arco-input-outer .arco-input-append {
   border-left: 0;
 }
-// .arco-input-group > .arco-input-wrapper:not(:last-child), .arco-input-group > .arco-input-outer:not(:last-child), .arco-input-group > .arco-input-tag:not(:last-child), .arco-input-group > .arco-select-view:not(:last-child) {
-//   border-right: 0 !important;
-// }
+
+.arco-input-group > .arco-input-disabled.arco-input-wrapper:not(:last-child),
+.arco-input-group > .arco-input-outer:not(:last-child),
+.arco-input-group > .arco-input-tag:not(:last-child),
+.arco-input-group > .arco-select-view:not(:last-child) {
+  border-right: 0 !important;
+}
+
 .arco-empty-image {
   .arco-icon {
     font-size: 24px;
