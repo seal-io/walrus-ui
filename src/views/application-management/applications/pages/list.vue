@@ -121,12 +121,12 @@
       @change="handlePageChange"
       @page-size-change="handlePageSizeChange"
     />
+    <createApplication
+      v-model:show="showAppModal"
+      :title="$t('applications.applications.create')"
+      @save="handleSaveAppInfo"
+    ></createApplication>
   </ComCard>
-  <createApplication
-    v-model:show="showAppModal"
-    :title="$t('applications.applications.create')"
-    @save="handleSaveAppInfo"
-  ></createApplication>
 </template>
 
 <script lang="ts" setup>
