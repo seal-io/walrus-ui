@@ -2,7 +2,9 @@
   <div class="module-card-wrap">
     <div class="title">
       <icon-tag />
-      <span>{{ title }}</span>
+      <slot name="title"
+        ><span>{{ title }}</span></slot
+      >
     </div>
     <slot></slot>
   </div>
@@ -27,6 +29,7 @@
       margin-top: @title-top-gap;
       margin-bottom: @title-bottom-gap;
       color: var(--color-text-2);
+      font-weight: 500;
       font-size: 14px;
 
       :deep(.arco-icon) {

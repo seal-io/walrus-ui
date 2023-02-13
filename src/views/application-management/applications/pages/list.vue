@@ -93,14 +93,18 @@
         >
           <template #cell="{ record }">
             <a-space :size="20">
-              <a-link type="text" size="small" :href="handleEdit(record)">
+              <a-link
+                type="text"
+                size="small"
+                @click="handleClickEdite(record)"
+              >
                 <template #icon><icon-edit /></template>
                 {{ $t('common.button.edit') }}
               </a-link>
-              <a-link type="text" size="small" :href="handleView(record)">
+              <!-- <a-link type="text" size="small" :href="handleView(record)">
                 <template #icon><icon-list style="font-size: 16px" /></template>
                 {{ $t('common.button.detail') }}
-              </a-link>
+              </a-link> -->
             </a-space>
           </template>
         </a-table-column>
@@ -118,21 +122,28 @@
       @page-size-change="handlePageSizeChange"
     />
   </ComCard>
+  <createApplication
+    v-model:show="showAppModal"
+    :title="$t('applications.applications.create')"
+    @save="handleSaveAppInfo"
+  ></createApplication>
 </template>
 
 <script lang="ts" setup>
   import { map } from 'lodash';
-  import { reactive, ref } from 'vue';
+  import { reactive, ref, onMounted } from 'vue';
   import useCallCommon from '@/hooks/use-call-common';
   import { deleteModal, execSucceed } from '@/utils/monitor';
   import useRowSelect from '@/hooks/use-row-select';
   import FilterBox from '@/components/filter-box/index.vue';
   import { AppRowData } from '../config/interface';
+  import createApplication from '../components/create-application.vue';
 
   const { rowSelection, selectedKeys, handleSelectChange } = useRowSelect();
   const { router } = useCallCommon();
   let timer: any = null;
   const loading = ref(false);
+  const showAppModal = ref(false);
   const total = ref(100);
   const queryParams = reactive({
     projectId: '1',
@@ -178,9 +189,7 @@
     handleFilter();
   };
   const handleCreate = () => {
-    router.push({
-      name: 'applicationsDetail'
-    });
+    showAppModal.value = true;
   };
   const handleDeleteConfirm = async () => {
     try {
@@ -209,13 +218,26 @@
     });
     return path.href;
   };
+  const handleClickEdite = (row) => {
+    router.push({
+      name: 'applicationsDetail',
+      query: { id: row.id }
+    });
+  };
   const handleView = (row) => {
-    const path = router.resolve({ name: 'eventReport', query: { id: row.id } });
-    return path.href;
+    // const path = router.resolve({ name: 'eventReport', query: { id: row.id } });
+    // return path.href;
   };
   const handleDelete = async () => {
     deleteModal({ onOk: handleDeleteConfirm });
   };
+  const handleSaveAppInfo = () => {
+    queryParams.page = 1;
+    handleFilter();
+  };
+  onMounted(() => {
+    console.log('application list');
+  });
 </script>
 
 <style lang="less" scoped>

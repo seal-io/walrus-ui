@@ -122,7 +122,7 @@
 
 <script lang="ts" setup>
   import { map } from 'lodash';
-  import { reactive, ref } from 'vue';
+  import { reactive, ref, onMounted } from 'vue';
   import useCallCommon from '@/hooks/use-call-common';
   import { deleteModal, execSucceed } from '@/utils/monitor';
   import useRowSelect from '@/hooks/use-row-select';
@@ -209,6 +209,9 @@
   const handleDelete = async () => {
     deleteModal({ onOk: handleDeleteConfirm });
   };
+  onMounted(() => {
+    console.log('workflows');
+  });
 </script>
 
 <style lang="less" scoped></style>

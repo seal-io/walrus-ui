@@ -15,3 +15,8 @@ export interface InstanceResource {
   type: string;
   status: string;
 }
+export interface HistoryData {
+  version: string;
+  createTime?: string;
+  operator: string;
+}

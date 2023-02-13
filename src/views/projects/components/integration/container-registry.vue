@@ -26,8 +26,8 @@
               :rules="[
                 {
                   required: true,
-                  message: $t('projects.resource.rule.registry'),
-                },
+                  message: $t('projects.resource.rule.registry')
+                }
               ]"
             >
               <template #label>
@@ -64,8 +64,8 @@
               :rules="[
                 {
                   required: true,
-                  message: $t('projects.resource.rule.name'),
-                },
+                  message: $t('projects.resource.rule.name')
+                }
               ]"
             >
               <a-input
@@ -149,8 +149,8 @@
                 :rules="[
                   {
                     required: true,
-                    message: $t('projects.resource.rule.tags'),
-                  },
+                    message: $t('projects.resource.rule.tags')
+                  }
                 ]"
               >
                 <a-select
@@ -160,7 +160,7 @@
                   :virtual-list-props="{
                     height: 150,
                     fixedSize: true,
-                    threshold: 10,
+                    threshold: 10
                   }"
                   :options="customTagsList"
                   :trigger-props="{ contentClass: 'image-import-modal' }"
@@ -192,8 +192,8 @@
                 :rules="[
                   {
                     required: true,
-                    message: $t('projects.resource.rule.value'),
-                  },
+                    message: $t('projects.resource.rule.value')
+                  }
                 ]"
               >
                 <a-input
@@ -222,8 +222,8 @@
                 :rules="[
                   {
                     required: true,
-                    message: $t('projects.resource.rule.limit'),
-                  },
+                    message: $t('projects.resource.rule.limit')
+                  }
                 ]"
               >
                 <a-input-number
@@ -253,7 +253,7 @@
                     contentClass:
                       !item.tags.length && !item?.tagsList?.length
                         ? 'input-select-drop-list'
-                        : '',
+                        : ''
                   }"
                   multiple
                   allow-create
@@ -262,7 +262,7 @@
                   :style="{
                     textAlign: 'left',
                     borderRadius:
-                      item.operator === 'equal' ? '0 2px 2px 0' : '0',
+                      item.operator === 'equal' ? '0 2px 2px 0' : '0'
                   }"
                   :placeholder="$t('projects.resource.container.tagholder')"
                 >
@@ -341,7 +341,7 @@
     each,
     get,
     split,
-    omit,
+    omit
   } from 'lodash';
   import useAxiosSource from '@/hooks/use-axios-cancel';
   import EditPageFooter from '@/components/edit-page-footer/index.vue';
@@ -350,37 +350,36 @@
   import useLocale from '@/hooks/locale';
   import {
     getRegistriesList,
-    getRegistyRepoTags,
+    getRegistyRepoTags
   } from '@/views/intergration/api/registry';
   import { submitFormData, tableListRow, updateFormData } from '@/api/projects';
   import useLoading from '@/hooks/loading';
-  import { source } from 'vfile-message';
 
   const props = defineProps({
     show: {
       type: Boolean,
       default() {
         return false;
-      },
+      }
     },
     provider: {
       type: String,
       default() {
         return '';
-      },
+      }
     },
     registryId: {
       type: String,
       default() {
         return '';
-      },
+      }
     },
     imageData: {
       type: Object as PropType<tableListRow>,
       default() {
         return {};
-      },
-    },
+      }
+    }
   });
   interface VersionSelector {
     operator: string;
@@ -406,13 +405,13 @@
     {
       label: 'resource.oci.tagType.lastn',
       value: 'latestN',
-      desc: 'resource.oci.tagType.lastn.desc',
+      desc: 'resource.oci.tagType.lastn.desc'
     },
     {
       label: 'resource.oci.tagType.greatThan',
       value: 'greaterThan',
-      desc: 'resource.oci.tagType.greatThan.desc',
-    },
+      desc: 'resource.oci.tagType.greatThan.desc'
+    }
   ];
   const customTagsList = ref<{ label: string; value: string }[]>([]);
   const emit = defineEmits(['save', 'update:show', 'reset']);
@@ -435,7 +434,7 @@
       //   tagsList: [] as Array<{ label: string; value: string }>,
       // },
     ] as VersionSelector[],
-    imageTags: [],
+    imageTags: []
   });
 
   const labelWidth = computed(() => {
@@ -454,7 +453,7 @@
       tagValue: [],
       limit: undefined,
       tags: [],
-      tagsList: [],
+      tagsList: []
     });
   };
   const handleClickDelete = (index) => {
@@ -473,7 +472,7 @@
       containerRegistryID: formData.containerRegistryID,
       provider: props.provider,
       kind: 'containerImage',
-      id: formData.id,
+      id: formData.id
     };
     const versionSelector: VersionSelector[] = formData.versionSelector.map(
       (item) => {
@@ -482,20 +481,20 @@
           item.limit = undefined;
         }
         return {
-          ...pick(item, ['value', 'tags', 'limit', 'operator']),
+          ...pick(item, ['value', 'tags', 'limit', 'operator'])
         };
       }
     );
     return {
       ...data,
-      versionSelector,
+      versionSelector
     };
   };
   const getRegistryRepoTags = async () => {
     try {
       const params = {
         repository: formData.name,
-        id: formData.containerRegistryID,
+        id: formData.containerRegistryID
       };
       queryLoading.value = true;
       const { data } = await getRegistyRepoTags(params, axiosToken?.token);
@@ -503,7 +502,7 @@
       customTagsList.value = map(list, (val) => {
         return {
           label: val,
-          value: val,
+          value: val
         };
       });
       queryLoading.value = false;
@@ -580,7 +579,7 @@
       const params = {
         page: 1,
         perPage: 1000,
-        provider: props.provider,
+        provider: props.provider
       };
       const result = await getRegistriesList(params);
       console.log('result===', result);
@@ -590,7 +589,7 @@
         return {
           ...item,
           label: item.url,
-          value: item.id,
+          value: item.id
         };
       });
       optionsList.value = [].concat(arr as never[]);
@@ -612,9 +611,9 @@
           tagsList: map(item.tags, (val) => {
             return {
               value: val,
-              label: val,
+              label: val
             };
-          }),
+          })
         };
       });
     }

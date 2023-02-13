@@ -101,7 +101,10 @@
     }, 100);
   };
   const handleEdit = (row) => {
-    const path = router.resolve({ name: 'eventReport', query: { id: row.id } });
+    const path = router.resolve({
+      name: 'applicationsList',
+      query: { id: row.id }
+    });
     return path.href;
   };
   const handleView = (row) => {

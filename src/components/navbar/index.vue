@@ -296,7 +296,6 @@
     handleControlNavShow(newRoute);
     updateCacheList(newRoute);
     setPageFullScreen(newRoute);
-    handleControlMenuShow(newRoute);
     nextTick(() => {
       setTimeout(() => {
         handleControlMenuShow(newRoute);

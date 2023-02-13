@@ -48,8 +48,8 @@
 
     .label {
       color: var(--color-text-2);
-      font-weight: 400;
-      font-size: 16px;
+      font-weight: 500;
+      font-size: 14px;
     }
   }
 </style>
