@@ -4,7 +4,7 @@
       <span class="text">
         <icon-double-right
           class="collapse-icon"
-          style="margin-right: 6px; font-size: 18px"
+          style="margin-right: 6px; font-size: 16px"
           :class="{ collapse: isCollapse }"
           @click="handleCollapse"
         />

@@ -55,6 +55,7 @@
           <a-divider :margin="8"></a-divider>
         </div>
         <a-tabs
+          lazy-load
           type="rounded"
           :active-key="activeKey"
           class="module-tabs"

@@ -250,8 +250,8 @@
   // control menu show
   const handleControlMenuShow = (newRoute) => {
     const hideMenu = get(newRoute, 'meta.hideMenu');
-    console.log('hideMenu:', hideMenu);
-    appStore.updateSettings({ hideMenu });
+    appStore.toggleMenu(hideMenu);
+    // appStore.updateSettings({ hideMenu });
   };
 
   // set nav if show by login status and routes
