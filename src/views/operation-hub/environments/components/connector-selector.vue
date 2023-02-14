@@ -6,7 +6,7 @@
       multiple
       allow-search
       size="small"
-      style="width: 300px"
+      style="width: 240px"
     >
       <a-option v-for="item in list" :key="item.value" :value="item.value">{{
         item.label

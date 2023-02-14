@@ -81,10 +81,12 @@
   import { ref, reactive } from 'vue';
   import GroupTitle from '@/components/group-title/index.vue';
   import EditPageFooter from '@/components/edit-page-footer/index.vue';
+  import useCallCommon from '@/hooks/use-call-common';
   import { EnvironFormData, EnvironmentRow } from '../config/interface';
   import connectorsTable from '../components/connectors.vue';
   import ConnectorSelector from '../components/connector-selector.vue';
 
+  const { router } = useCallCommon();
   const formref = ref();
   const selectedList = ref<string[]>([]);
   const connectorList = [
@@ -103,8 +105,21 @@
     showModal.value = true;
   };
   const handleConnectorChange = () => {};
-  const handleSubmit = async () => {};
-  const handleCancel = () => {};
+  const handleSubmit = async () => {
+    const res = await formref.value?.validate();
+    if (!res) {
+      try {
+        submitLoading.value = true;
+        // TODO
+        submitLoading.value = false;
+      } catch (error) {
+        submitLoading.value = false;
+      }
+    }
+  };
+  const handleCancel = () => {
+    router.back();
+  };
 </script>
 
 <style></style>

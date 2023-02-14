@@ -46,8 +46,7 @@
           <template #cell="{ record }">
             <a-space :size="20">
               <a-link type="text" size="small" @click="handleDelete(record)">
-                <template #icon><icon-edit /></template>
-                {{ $t('common.button.delete') }}
+                <template #icon><icon-delete /></template>
               </a-link>
             </a-space>
           </template>

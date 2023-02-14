@@ -1,12 +1,12 @@
 export default [
   {
-    path: 'projects/list',
+    path: 'project/list',
     name: 'projectsList',
     component: () =>
       import('@/views/application-management/projects/pages/list.vue'),
     meta: {
-      hideInMenu: true,
-      hideMenu: true,
+      hideInMenu: false,
+      hideMenu: false,
       ignoreCache: true,
       locale: 'applications.projects.menu',
       requiresAuth: true,
