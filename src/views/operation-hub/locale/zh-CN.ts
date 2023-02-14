@@ -15,5 +15,6 @@ export default {
   'operation.environments.table.name': '名称',
   'operation.environments.table.description': '描述',
   'operation.environments.detail.addConnector': '添加连接器',
+  'operation.environments.detail.holder': '请选择连接器',
   'operation.templates.menu': '模板'
 };
