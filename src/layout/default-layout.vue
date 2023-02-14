@@ -37,7 +37,7 @@
         </a-drawer> -->
         <a-layout class="layout-content" :style="paddingStyle">
           <!-- <TabBar v-if="appStore.tabBar" /> -->
-          <div v-show="!hideMenu" class="layout-menu">
+          <div v-if="!hideMenu" class="layout-menu">
             <Menu />
           </div>
           <a-layout-content>

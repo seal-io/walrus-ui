@@ -6,10 +6,11 @@ export default [
       import('@/views/application-management/projects/pages/list.vue'),
     meta: {
       hideInMenu: true,
+      hideMenu: true,
       ignoreCache: true,
-      locale: 'navbar.appManagement',
+      locale: 'applications.projects.menu',
       requiresAuth: true,
-      icon: 'icon-apps',
-    },
-  },
+      icon: 'icon-apps'
+    }
+  }
 ];

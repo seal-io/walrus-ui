@@ -8,7 +8,7 @@ export default [
       ignoreCache: true,
       locale: 'cost.optimize.menu',
       requiresAuth: true,
-      icon: 'icon-apps',
-    },
-  },
+      icon: 'icon-apps'
+    }
+  }
 ];

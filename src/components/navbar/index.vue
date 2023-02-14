@@ -131,7 +131,7 @@
             :size="32"
             :style="{
               cursor: 'pointer',
-              backgroundColor: '#c9cdd4',
+              backgroundColor: '#c9cdd4'
             }"
           >
             <!-- <img alt="avatar" :src="avatar" /> -->
@@ -206,8 +206,8 @@
       type: Boolean,
       default() {
         return false;
-      },
-    },
+      }
+    }
   });
   const router = useRouter();
   const appStore = useAppStore();
@@ -237,23 +237,21 @@
     onChanged(dark: boolean) {
       // overridded default behavior
       appStore.toggleTheme(dark);
-    },
+    }
   });
   const toggleTheme = useToggle(isDark);
   const setVisible = () => {
     router.push({
-      name: 'systemSetting',
+      name: 'systemSetting'
     });
     // appStore.updateSettings({ globalSettings: true });
   };
 
   // control menu show
   const handleControlMenuShow = (newRoute) => {
-    if (newRoute.name === 'repoConfig') {
-      appStore.updateSettings({ hideMenu: true });
-      return;
-    }
-    appStore.updateSettings({ hideMenu: false });
+    const hideMenu = get(newRoute, 'meta.hideMenu');
+    appStore.toggleMenu(hideMenu);
+    // appStore.updateSettings({ hideMenu });
   };
 
   // set nav if show by login status and routes
@@ -285,7 +283,7 @@
       tabBarStore.deleteTag(0, {
         title: '',
         name: currentRoute.name as string,
-        fullPath: currentRoute.fullPath,
+        fullPath: currentRoute.fullPath
       });
     }
   };
@@ -298,11 +296,11 @@
     handleControlNavShow(newRoute);
     updateCacheList(newRoute);
     setPageFullScreen(newRoute);
-    // nextTick(() => {
-    //   setTimeout(() => {
-    //     handleControlMenuShow(newRoute);
-    //   }, 100);
-    // });
+    nextTick(() => {
+      setTimeout(() => {
+        handleControlMenuShow(newRoute);
+      }, 100);
+    });
     console.log({ newRoute, permissions: toRaw(permissions) });
   }, true);
 
@@ -312,7 +310,7 @@
     const event = new MouseEvent('click', {
       view: window,
       bubbles: true,
-      cancelable: true,
+      cancelable: true
     });
     refBtn.value.dispatchEvent(event);
   };
@@ -321,19 +319,19 @@
   };
   const handleModifyPassword = () => {
     router.push({
-      name: 'modifyPassword',
+      name: 'modifyPassword'
     });
   };
   const handleToHome = () => {
     router.push({
-      name: 'dashboardMain',
+      name: 'dashboardMain'
     });
   };
   const setDropDownVisible = () => {
     const event = new MouseEvent('click', {
       view: window,
       bubbles: true,
-      cancelable: true,
+      cancelable: true
     });
     triggerBtn.value.dispatchEvent(event);
   };
@@ -344,7 +342,7 @@
   const toggleDrawerMenu = inject('toggleDrawerMenu');
   const handleToSetting = () => {
     router.push({
-      name: 'Setting',
+      name: 'Setting'
       // query: {
       //   redirectPath: router.currentRoute.value.fullPath,
       // },

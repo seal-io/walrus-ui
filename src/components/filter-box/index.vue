@@ -16,15 +16,15 @@
     display: flex;
     justify-content: space-between;
     width: 100%;
-    margin-top: 20px;
-    margin-bottom: 12px;
+    // margin-top: 20px;
+    // margin-bottom: 12px;
 
-    :deep(.arco-select) {
-      background-color: #fff;
-    }
+    // :deep(.arco-select) {
+    //   background-color: #fff;
+    // }
 
-    :deep(.arco-input-wrapper) {
-      background-color: #fff;
-    }
+    // :deep(.arco-input-wrapper) {
+    //   background-color: #fff;
+    // }
   }
 </style>

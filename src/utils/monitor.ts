@@ -1,6 +1,6 @@
 import { App, ComponentPublicInstance, h } from 'vue';
 import axios from 'axios';
-import { Modal } from '@arco-design/web-vue';
+import { Modal, Message } from '@arco-design/web-vue';
 import i18n from '@/locale/index';
 
 export default function handleError(Vue: App, baseUrl: string) {
@@ -16,7 +16,7 @@ export default function handleError(Vue: App, baseUrl: string) {
     axios.post(`${baseUrl}/report-error`, {
       err,
       instance,
-      info,
+      info
       // location: window.location.href,
       // message: err.message,
       // stack: err.stack,
@@ -38,6 +38,10 @@ export const deleteModal = async ({ onOk }) => {
     content: '',
     okText: i18n.global.t('common.button.confirm'),
     cancelText: i18n.global.t('common.button.cancel'),
-    onOk,
+    onOk
   });
+};
+
+export const execSucceed = () => {
+  Message.success(i18n.global.t('common.message.success'));
 };

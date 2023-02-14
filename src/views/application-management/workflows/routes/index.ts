@@ -5,11 +5,11 @@ export default [
     component: () =>
       import('@/views/application-management/workflows/pages/list.vue'),
     meta: {
-      hideInMenu: true,
+      hideInMenu: false,
       ignoreCache: true,
       locale: 'applications.workflows.menu',
       requiresAuth: true,
-      icon: 'icon-apps',
-    },
-  },
+      icon: 'icon-apps'
+    }
+  }
 ];

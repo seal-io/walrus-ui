@@ -28,6 +28,8 @@ body {
   --arcoblue-3: 142, 173, 231;
   --arcoblue-2: 185, 207, 243;
   --arcoblue-1: 232, 242, 255;
+  --border-radius-small: 4px;
+  --seal-hoverable-shadow: 0 0 4px rgb(var(--arcoblue-5));
 
   // input
   .arco-input-wrapper,
@@ -36,5 +38,28 @@ body {
   .arco-textarea-wrapper {
     background-color: #fff;
     border: 1px solid var(--color-border-2);
+    transition: all 0.2s;
+  }
+
+  .arco-input-wrapper:hover,
+  .arco-select-view-single:hover,
+  .arco-select-view-multiple:hover,
+  .arco-textarea-wrapper:hover {
+    background-color: #fff;
+    border: 1px solid var(--color-primary-light-2);
+    box-shadow: 0 0 2px 0 var(--color-primary-light-2);
+    transition: all 0.2s;
+  }
+
+  .arco-textarea-wrapper:focus-within,
+  .arco-textarea-wrapper.arco-textarea-focus .arco-input-wrapper:focus-within,
+  .arco-input-wrapper.arco-input-focus,
+  .arco-select-view-single:focus-within,
+  .arco-select-view-single.arco-select-view-focus,
+  .arco-select-view-multiple:focus-within,
+  .arco-select-view-multiple.arco-select-view-focus {
+    background-color: var(--color-bg-2);
+    border-color: rgb(var(--primary-6));
+    box-shadow: 0 0 0 0 var(--color-primary-light-2);
   }
 }

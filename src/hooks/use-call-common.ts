@@ -13,6 +13,6 @@ export default function useCallCommon() {
     route,
     router,
     loading,
-    setLoading,
+    setLoading
   };
 }

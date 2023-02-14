@@ -12,12 +12,13 @@
     onBeforeMount,
     defineEmits,
     watch,
-    ref,
+    ref
   } from 'vue';
   import ace from 'ace-builds';
   import 'ace-builds/src-noconflict/ext-language_tools';
   // import 'ace-builds/src-noconflict/ext-modelist';
-  import 'ace-builds/src-noconflict/theme-monokai';
+  // import 'ace-builds/src-noconflict/theme-monokai';
+  import 'ace-builds/src-noconflict/theme-twilight';
   import 'ace-builds/src-noconflict/mode-javascript';
   import 'ace-builds/src-noconflict/mode-text';
   import 'ace-builds/src-noconflict/mode-json';
@@ -33,26 +34,26 @@
       type: String,
       default() {
         return '';
-      },
+      }
     },
     lang: {
       type: String,
       default() {
         return 'text';
-      },
+      }
     },
     readOnly: {
       type: Boolean,
       default() {
         return false;
-      },
+      }
     },
     source: {
       type: Object,
       default() {
         return {};
-      },
-    },
+      }
+    }
   });
   const emits = defineEmits(['change', 'update:modelValue']);
   // let timer:any = null
@@ -68,13 +69,13 @@
       value: 'vulnerability',
       type: 'seal',
       score: 6,
-      meta: 'custom',
+      meta: 'custom'
     },
     { name: 'cvss3', value: 'cvss3', score: 6, meta: 'custom' },
     { name: 'serverity', value: 'serverity', score: 6, meta: 'custom' },
     { name: 'license', value: 'license', score: 6, meta: 'custom' },
     { name: 'file', value: 'file', score: 6, meta: 'custom' },
-    { name: 'myObj', value: 'file', score: 6, meta: 'custom' },
+    { name: 'myObj', value: 'file', score: 6, meta: 'custom' }
   ];
   const getValuePath = (wordRange) => {
     const ctx = wordRange.replace(/\n/g, '');
@@ -93,13 +94,13 @@
       path,
       source: props.source,
       initialPath,
-      lastItem,
+      lastItem
     });
     if (!initialPath.length) {
       list = _.map(_.keys(props.source), (key) => {
         return {
           name: key,
-          value: key,
+          value: key
         };
       }).filter((s) => _.toLower(s.name).startsWith(_.toLower(lastItem)));
       return list;
@@ -109,7 +110,7 @@
     list = _.map(_.keys(data), (key) => {
       return {
         name: key,
-        value: key,
+        value: key
       };
     });
     // a.
@@ -132,7 +133,7 @@
       ) {
         const wordRange = editor.session.getTextRange({
           start: { row: 0, column: 0 },
-          end: pos,
+          end: pos
         });
         console.log('wordRange===', wordRange);
         const valuePath = getValuePath(wordRange);
@@ -143,7 +144,7 @@
         // if (list.length) {
         //   editor.execCommand('startAutocomplete',{matches: list,})
         // }
-      },
+      }
     });
   };
   watch(
@@ -182,7 +183,7 @@
         enableSnippets: false,
         autoScrollEditorIntoView: false, // 自动滚动编辑器视图
         enableLiveAutocompletion: true, // 智能补全
-        enableBasicAutocompletion: true,
+        enableBasicAutocompletion: true
       });
     });
   });
@@ -197,6 +198,8 @@
     position: relative;
     width: 100%;
     height: 300px;
+    border: 1px solid var(--color-border-2);
+    border-radius: var(--border-radius-small);
   }
 
   #ace-editor {

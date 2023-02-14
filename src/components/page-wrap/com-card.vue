@@ -1,5 +1,5 @@
 <template>
-  <div class="com-card">
+  <div class="com-card" :class="{ 'top-gap': topGap }">
     <a-card
       :title="title"
       v-bind="attrs"
@@ -21,33 +21,39 @@
     padding: {
       type: String,
       default() {
-        return '12px 20px 20px 20px';
-      },
+        return '20px 20px 20px 20px';
+      }
     },
     title: {
       type: String,
       default() {
         return '';
-      },
+      }
     },
     bordered: {
       type: Boolean,
       default() {
         return false;
-      },
+      }
     },
     bodyStyle: {
       type: Object,
       default() {
         return {};
-      },
+      }
     },
     contentStyle: {
       type: Object,
       default() {
         return {};
-      },
+      }
     },
+    topGap: {
+      type: Boolean,
+      default() {
+        return false;
+      }
+    }
   });
 
   const attrs = useAttrs();
@@ -64,15 +70,22 @@
       overflow: hidden;
       border-radius: 4px;
     }
+
+    &.top-gap {
+      margin-top: 20px;
+    }
   }
 
   :deep(.arco-card-header) {
     height: auto;
-    padding: 16px 20px 0;
+    padding: 20px 20px 0;
+    overflow: visible;
     border: none;
 
     .arco-card-header-title {
+      overflow: visible;
       font-weight: 400;
+      line-height: 1;
     }
   }
 </style>

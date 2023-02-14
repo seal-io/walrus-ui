@@ -17,14 +17,14 @@
       type: Boolean,
       default() {
         return true;
-      },
+      }
     },
     isDetail: {
       type: Boolean,
       default() {
         return false;
-      },
-    },
+      }
+    }
   });
 </script>
 
@@ -32,7 +32,7 @@
   .group-title {
     display: flex;
     justify-content: space-between;
-    margin-bottom: 20px;
+    margin-bottom: 25px;
     padding-bottom: 10px;
     font-weight: 400;
 
@@ -48,7 +48,7 @@
 
     .label {
       color: var(--color-text-2);
-      font-weight: 400;
+      font-weight: 500;
       font-size: 14px;
     }
   }

@@ -1,4 +1,16 @@
 .arco-form {
+  .arco-form-item-label-col {
+    padding-right: 10px;
+  }
+
+  .arco-input-wrapper {
+    width: 360px;
+  }
+
+  .arco-select-view-single {
+    width: 360px;
+  }
+
   .arco-form-item-label {
     color: var(--color-text-3);
     font-size: 13px;
@@ -60,8 +72,13 @@
   display: none;
 }
 
-input::placeholder {
+input::placeholder,
+textarea::placeholder {
   font-size: 13px !important;
+}
+
+.arco-select-view .arco-select-view-mirror {
+  font-size: 13px;
 }
 
 #driver-page-overlay {
@@ -112,7 +129,20 @@ div#driver-highlighted-element-stage {
     background-color: inherit;
   }
 }
+// tabs
+.module-tabs.arco-tabs .arco-tabs-tab {
+  margin-right: 10px;
+  margin-left: 0;
+}
 
+.page-line-tabs.arco-tabs .arco-tabs-tab {
+  margin-right: 30px;
+  margin-left: 0;
+}
+
+.module-tabs.arco-tabs .arco-tabs-tab-active {
+  font-weight: 400;
+}
 // modal
 .arco-modal {
   .arco-modal-close-btn {
@@ -143,6 +173,42 @@ div#driver-highlighted-element-stage {
     }
   }
 }
+// icon
+.arco-icon {
+  font-size: 16px;
+  stroke-linecap: round;
+  stroke-linejoin: bevel;
+  stroke-width: 3;
+
+  &.size-16 {
+    font-size: 16px;
+  }
+
+  &.size-18 {
+    font-size: 18px;
+  }
+}
+// input
+.arco-input-outer .arco-input-append {
+  border-left: 0;
+}
+
+.arco-input-group > .arco-input-disabled.arco-input-wrapper:not(:last-child),
+.arco-input-group > .arco-input-outer:not(:last-child),
+.arco-input-group > .arco-input-tag:not(:last-child),
+.arco-input-group > .arco-select-view:not(:last-child) {
+  border-right: 0 !important;
+}
+
+.arco-empty-image {
+  .arco-icon {
+    font-size: 24px;
+  }
+}
+// checkbox
+.arco-checkbox-icon {
+  border-width: 1px;
+}
 
 .arco-pagination {
   justify-content: end;
@@ -171,26 +237,6 @@ div#driver-highlighted-element-stage {
     &.arco-pagination-item-active {
       font-weight: 700;
       background: none;
-    }
-  }
-}
-
-.container {
-  .filter-wrap {
-    margin-bottom: 12px;
-
-    .arco-select {
-      width: 150px;
-      background-color: #fff;
-    }
-
-    .arco-input-wrapper {
-      width: 300px;
-      background: #fff;
-
-      .acro-input {
-        background: #fff;
-      }
     }
   }
 }
