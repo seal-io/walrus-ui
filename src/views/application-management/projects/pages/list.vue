@@ -94,7 +94,7 @@
   import { deleteModal, execSucceed } from '@/utils/monitor';
   import ThumbView from '../components/thumb-view.vue';
   import ListView from '../components/list-view.vue';
-  import { ProjectItem } from '../config/interace';
+  import { ProjectItem } from '../config/interface';
 
   let timer: any = null;
   const loading = ref(false);

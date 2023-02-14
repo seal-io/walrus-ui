@@ -5,7 +5,7 @@
       :key="index"
       :data-info="item"
       :checked="includes(checkedList, item.id)"
-      @click="handleClickProject(item)"
+      @click="handleClickItem(item)"
       @change="handleCheckChange"
     ></thumbItem>
     <!-- <thumbButton @click="handleCreateProject"></thumbButton> -->
@@ -18,11 +18,11 @@
   import useCallCommon from '@/hooks/use-call-common';
   import thumbButton from '@/components/buttons/thumb-button.vue';
   import thumbItem from './thumb-item.vue';
-  import { ProjectItem } from '../config/interface';
+  import { EnvironmentRow } from '../config/interface';
 
   const props = defineProps({
     list: {
-      type: Array as PropType<ProjectItem[]>,
+      type: Array as PropType<EnvironmentRow[]>,
       default() {
         return [];
       }
@@ -42,10 +42,10 @@
   const handleCheckChange = (checked, id) => {
     emits('change', checked, id);
   };
-  const handleClickProject = (project) => {
+  const handleClickItem = (project) => {
     console.log('project:', project);
     router.push({
-      name: 'applicationsList',
+      name: 'environmentDetail',
       query: {
         id: project.id
       }

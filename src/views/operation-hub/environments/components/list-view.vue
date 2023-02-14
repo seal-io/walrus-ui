@@ -17,7 +17,16 @@
           tooltip
           :cell-style="{ minWidth: '40px' }"
           data-index="name"
-          :title="$t('applications.projects.table.name')"
+          :title="$t('operation.environments.table.name')"
+        >
+        </a-table-column>
+        <a-table-column
+          ellipsis
+          tooltip
+          :cell-style="{ minWidth: '40px' }"
+          align="center"
+          data-index="description"
+          :title="$t('common.table.description')"
         >
         </a-table-column>
         <a-table-column
@@ -33,28 +42,15 @@
           </template>
         </a-table-column>
         <a-table-column
-          ellipsis
-          tooltip
-          :cell-style="{ minWidth: '40px' }"
-          align="center"
-          data-index="description"
-          :title="$t('common.table.description')"
-        >
-        </a-table-column>
-        <a-table-column
           align="center"
           :width="210"
           :title="$t('common.table.operation')"
         >
           <template #cell="{ record }">
             <a-space :size="20">
-              <a-link type="text" size="small" :href="handleEdit(record)">
+              <a-link type="text" size="small" @click="handleEdit(record)">
                 <template #icon><icon-edit /></template>
                 {{ $t('common.button.edit') }}
-              </a-link>
-              <a-link type="text" size="small" :href="handleView(record)">
-                <template #icon><icon-list style="font-size: 16px" /></template>
-                {{ $t('common.button.detail') }}
               </a-link>
             </a-space>
           </template>
@@ -68,7 +64,7 @@
   import { PropType, watchEffect } from 'vue';
   import useRowSelect from '@/hooks/use-row-select';
   import useCallCommon from '@/hooks/use-call-common';
-  import { ProjectItem } from '../config/interface';
+  import { EnvironmentRow } from '../config/interface';
 
   const props = defineProps({
     loading: {
@@ -78,7 +74,7 @@
       }
     },
     list: {
-      type: Array as PropType<ProjectItem[]>,
+      type: Array as PropType<EnvironmentRow[]>,
       default() {
         return [];
       }
@@ -101,18 +97,10 @@
     }, 100);
   };
   const handleEdit = (row) => {
-    const path = router.resolve({
-      name: 'applicationsList',
+    router.push({
+      name: 'environmentDetail',
       query: { id: row.id }
     });
-    return path.href;
-  };
-  const handleView = (row) => {
-    const path = router.resolve({
-      name: 'applicationsList',
-      query: { id: row.id }
-    });
-    return path.href;
   };
   watchEffect(() => {
     rowSelection.selectedKeys = [].concat(props.selectedList as never[]);

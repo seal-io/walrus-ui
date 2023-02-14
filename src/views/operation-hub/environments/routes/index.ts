@@ -9,7 +9,20 @@ export default [
       ignoreCache: true,
       locale: 'operation.environments.menu',
       requiresAuth: true,
-      icon: 'icon-apps',
-    },
+      icon: 'icon-apps'
+    }
   },
+  {
+    path: 'environment/detail',
+    name: 'environmentDetail',
+    component: () =>
+      import('@/views/operation-hub/environments/pages/detail.vue'),
+    meta: {
+      hideInMenu: true,
+      ignoreCache: true,
+      locale: 'operation.environments.menu',
+      requiresAuth: true,
+      icon: 'icon-apps'
+    }
+  }
 ];

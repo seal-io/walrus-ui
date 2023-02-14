@@ -88,7 +88,6 @@
       <a-button
         type="outline"
         class="cap-title cancel-btn"
-        :loading="submitLoading"
         @click="handleCancel"
         >{{ $t('common.button.cancel') }}</a-button
       >

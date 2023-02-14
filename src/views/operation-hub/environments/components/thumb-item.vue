@@ -13,11 +13,11 @@
 
 <script lang="ts" setup>
   import { PropType } from 'vue';
-  import { ProjectItem } from '../config/interface';
+  import { EnvironmentRow } from '../config/interface';
 
   const props = defineProps({
     dataInfo: {
-      type: Object as PropType<ProjectItem>,
+      type: Object as PropType<EnvironmentRow>,
       default() {
         return {};
       }

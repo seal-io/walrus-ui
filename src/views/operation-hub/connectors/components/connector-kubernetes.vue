@@ -246,7 +246,4 @@
   });
 </script>
 
-<style lang="less" scoped>
-  .applications-list {
-  }
-</style>
+<style lang="less" scoped></style>
