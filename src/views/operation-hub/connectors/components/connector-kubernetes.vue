@@ -90,8 +90,10 @@
         </a-table-column>
         <a-table-column
           align="center"
-          :width="160"
           :title="$t('common.table.operation')"
+          ellipsis
+          tooltip
+          :cell-style="{ minWidth: '40px' }"
         >
           <template #cell="{ record }">
             <a-space :size="20">
@@ -101,7 +103,6 @@
                 @click="handleClickEdite(record)"
               >
                 <template #icon><icon-edit /></template>
-                {{ $t('common.button.edit') }}
               </a-link>
               <!-- <a-link type="text" size="small" :href="handleView(record)">
                 <template #icon><icon-list style="font-size: 16px" /></template>

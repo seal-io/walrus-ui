@@ -1,64 +1,36 @@
 <template>
-  <a-modal
-    top="10%"
+  <a-drawer
     :align-center="false"
-    :width="550"
+    :width="700"
     :ok-text="$t('common.button.save')"
     :visible="show"
     :mask-closable="false"
-    :body-style="{ 'max-height': '400px', 'overflow': 'auto' }"
-    modal-class="oci-modal"
     :title="title"
+    :unmount-on-close="true"
+    :closable="false"
+    style="margin-top: 56px"
     @cancel="handleCancel"
     @ok="handleOk"
-    @before-open="handleBeforeOpen"
-    @before-close="handleBeforeClose"
+    @open="handleBeforeOpen"
+    @close="handleBeforeClose"
   >
     <a-spin :loading="loading" style="width: 100%; text-align: center">
       <a-form ref="formref" :model="formData" auto-label-width>
         <a-form-item
-          :label="$t('applications.applications.table.name')"
+          :label="$t('cost.analyse.table.name')"
           field="name"
           validate-trigger="change"
-          :rules="[{ required: true, message: '应用名称必填' }]"
+          :rules="[{ required: true, message: '视角名称必填' }]"
         >
           <a-input v-model="formData.name"></a-input>
         </a-form-item>
-        <a-form-item
-          v-for="(item, index) in labelList"
-          :key="index"
-          :label="`标签${index + 1}`"
-        >
-          <a-input-group style="width: 360px">
-            <a-input></a-input><span style="padding: 0 4px">:</span
-            ><a-input></a-input>
-          </a-input-group>
-          <a-button
-            type="outline"
-            size="mini"
-            shape="round"
-            class="mini-icon-btn"
-            style="margin-left: 8px"
-            @click="handleAddLabel"
-          >
-            <icon-plus></icon-plus>
-          </a-button>
-          <a-button
-            v-if="labelList.length > 1"
-            type="outline"
-            size="mini"
-            shape="round"
-            class="mini-icon-btn"
-            style="margin-left: 8px"
-            @click="handleDeleteLabel(index)"
-          >
-            <icon-minus></icon-minus>
-          </a-button>
+        <a-form-item label="过滤器">
+          <ConditionFilter></ConditionFilter>
         </a-form-item>
       </a-form>
     </a-spin>
     <template #footer>
-      <EditPageFooter>
+      <EditPageFooter style="margin: 0; padding: 0" align="left">
         <template #save>
           <a-button
             :loading="submitLoading"
@@ -78,12 +50,13 @@
         </template>
       </EditPageFooter>
     </template>
-  </a-modal>
+  </a-drawer>
 </template>
 
 <script lang="ts" setup>
   import { ref, reactive } from 'vue';
   import EditPageFooter from '@/components/edit-page-footer/index.vue';
+  import ConditionFilter from './condition-filter.vue';
 
   const props = defineProps({
     show: {
@@ -126,12 +99,7 @@
       }
     }
   };
-  const handleAddLabel = () => {
-    labelList.value.push({ label: 'label1', value: 'dev' });
-  };
-  const handleDeleteLabel = (index) => {
-    labelList.value.splice(index, 1);
-  };
+
   const handleBeforeOpen = () => {};
   const handleBeforeClose = () => {};
 </script>

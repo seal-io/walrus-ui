@@ -41,7 +41,13 @@
           :title="$t('common.table.description')"
         >
         </a-table-column>
-        <a-table-column align="center" :title="$t('common.table.operation')">
+        <a-table-column
+          align="center"
+          :title="$t('common.table.operation')"
+          ellipsis
+          tooltip
+          :cell-style="{ minWidth: '40px' }"
+        >
           <template #cell="{ record }">
             <a-space :size="20">
               <a-link type="text" size="small" @click="handleEdit(record)">
