@@ -1,5 +1,10 @@
 <template>
-  <SpinCard borderless top-gap class="projects">
+  <SpinCard
+    borderless
+    top-gap
+    class="projects"
+    :title="$t('applications.projects.menu')"
+  >
     <template #title>
       <div class="title">
         <span>{{ $t('applications.projects.menu') }}</span>

@@ -10,8 +10,8 @@
       :body-style="{ padding: padding, ...bodyStyle }"
       :bordered="bordered"
     >
-      <template #title>
-        <slot name="title"></slot>
+      <template v-if="title" #title>
+        <slot name="title">{{ title }}</slot>
       </template>
       <div :style="contentStyle" class="spin-card-content">
         <slot></slot>

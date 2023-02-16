@@ -7,5 +7,6 @@ export default {
   'cost.analyse.table.type': 'Type',
   'cost.analyse.table.currentCost': 'Current Month Spend',
   'cost.analyse.table.time': 'Time Range',
+  'cost.analyse.detail.holder': 'please enter a keywords',
   'cost.optimize.menu': 'Cost Optimize'
 };

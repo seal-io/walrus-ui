@@ -1,7 +1,7 @@
 <template>
   <a-drawer
     :align-center="false"
-    :width="700"
+    :width="750"
     :ok-text="$t('common.button.save')"
     :visible="show"
     :mask-closable="false"
@@ -26,6 +26,22 @@
         </a-form-item>
         <a-form-item label="过滤器">
           <ConditionFilter></ConditionFilter>
+        </a-form-item>
+        <a-form-item label="GroupBy">
+          <ConditionFilter></ConditionFilter>
+          <template #extra>
+            <div style="display: flex; align-items: center; margin-top: 10px">
+              <div style="margin-right: 10px">Sharing Strategy</div>
+              <a-radio-group>
+                <a-radio
+                  v-for="item in costShareMode"
+                  :key="item.value"
+                  :value="item.value"
+                  >{{ item.label }}</a-radio
+                >
+              </a-radio-group>
+            </div>
+          </template>
         </a-form-item>
       </a-form>
     </a-spin>
@@ -57,6 +73,7 @@
   import { ref, reactive } from 'vue';
   import EditPageFooter from '@/components/edit-page-footer/index.vue';
   import ConditionFilter from './condition-filter.vue';
+  import { costShareMode } from '../config';
 
   const props = defineProps({
     show: {

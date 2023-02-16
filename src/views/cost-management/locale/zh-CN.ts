@@ -7,5 +7,6 @@ export default {
   'cost.analyse.table.type': '类型',
   'cost.analyse.table.currentCost': '当月消费',
   'cost.analyse.table.time': '时间范围',
+  'cost.analyse.detail.holder': '请输入关键字',
   'cost.optimize.menu': '成本优化'
 };

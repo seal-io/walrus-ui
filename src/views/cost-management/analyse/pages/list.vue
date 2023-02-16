@@ -210,7 +210,7 @@
     }
   };
   const handleView = (row) => {
-    router.push({ name: 'eventReport', query: { id: row.id } });
+    router.push({ name: 'costAnalyseAll', query: { id: row.id } });
   };
   const handleDelete = async () => {
     deleteModal({ onOk: handleDeleteConfirm });
