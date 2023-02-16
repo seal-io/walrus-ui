@@ -36,7 +36,7 @@
     justify-content: flex-start;
 
     .arco-icon {
-      color: var(--color-text-2);
+      color: rgb(var(--arcoblue-4));
       font-size: 20px;
       border-radius: 4px;
       .hoverable();

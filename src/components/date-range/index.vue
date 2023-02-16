@@ -9,6 +9,7 @@
       :mode="mode"
       :model-value="[start, end]"
       value-format="YYYY-MM-DD"
+      :class="{ 'border-less': borderLess }"
       @select-shortcut="handleSelectShortcut"
       @popup-visible-change="handlePopupChange"
       @change="handleDateChange"
@@ -65,6 +66,12 @@
       }
     },
     todayIn: {
+      type: Boolean,
+      default() {
+        return false;
+      }
+    },
+    borderLess: {
       type: Boolean,
       default() {
         return false;
@@ -151,7 +158,12 @@
     }
     return false;
   };
-  const emits = defineEmits(['update:timeUnit', 'update:start', 'update:end']);
+  const emits = defineEmits([
+    'update:timeUnit',
+    'update:start',
+    'update:end',
+    'change'
+  ]);
   const handleClick = (item) => {
     emits('update:timeUnit', item.value);
   };
@@ -168,6 +180,7 @@
     emits('update:end', get(value, '1'));
     startDate.value = get(value, '0');
     endDate.value = get(value, '1');
+    emits('change', value);
     setTimeout(() => {
       popupVisible.value = false;
     }, 100);
@@ -178,6 +191,7 @@
     emits('update:end', get(value, '1'));
     startDate.value = get(value, '0');
     endDate.value = get(value, '1');
+    emits('change', value);
     setTimeout(() => {
       popupVisible.value = false;
     }, 100);

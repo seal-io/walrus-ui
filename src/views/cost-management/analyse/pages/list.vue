@@ -147,15 +147,44 @@
     page: 1,
     perPage: 10
   });
-  const dataList = ref<CostAnalyRow[]>(
-    Array(10).fill({
-      name: 'app-1',
+  const dataList = ref<CostAnalyRow[]>([
+    {
+      name: 'all',
       createTime: '2023-02-09',
       type: 'BuiltIn',
       spend: '$100.345',
-      time: 'Last 7 Days'
-    })
-  );
+      time: 'Last 7 Days',
+      monthSpend: 'dsd',
+      timeRange: 'dd'
+    },
+    {
+      name: 'singleCluster',
+      createTime: '2023-02-09',
+      type: 'BuiltIn',
+      spend: '$100.345',
+      time: 'Last 7 Days',
+      monthSpend: 'dsd',
+      timeRange: 'dd'
+    },
+    {
+      name: 'singleProject',
+      createTime: '2023-02-09',
+      type: 'BuiltIn',
+      spend: '$100.345',
+      time: 'Last 7 Days',
+      monthSpend: 'dsd',
+      timeRange: 'dd'
+    },
+    {
+      name: 'Team Big Data',
+      createTime: '2023-02-09',
+      type: 'BuiltIn',
+      spend: '$100.345',
+      time: 'Last 7 Days',
+      monthSpend: 'dsd',
+      timeRange: 'dd'
+    }
+  ]);
   const viewList = ref<{ label: string; value: string }[]>([
     { label: 'view-1', value: '1' },
     { label: 'view-2', value: '2' },
@@ -210,7 +239,14 @@
     }
   };
   const handleView = (row) => {
-    router.push({ name: 'costAnalyseAll', query: { id: row.id } });
+    let routeName = 'costAnalyseAll';
+    if (row.name === 'singleCluster') {
+      routeName = 'costAnalyseCluster';
+    }
+    if (row.name === 'singleProject') {
+      routeName = 'costAnalyseProject';
+    }
+    router.push({ name: routeName, query: { id: row.id } });
   };
   const handleDelete = async () => {
     deleteModal({ onOk: handleDeleteConfirm });

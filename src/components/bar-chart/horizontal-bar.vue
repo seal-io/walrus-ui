@@ -23,20 +23,20 @@
       type: Array as PropType<{ value: number; name: string }[]>,
       default() {
         return [];
-      },
+      }
     },
     height: {
       type: String,
       default() {
         return '120px';
-      },
+      }
     },
     configOptions: {
       type: Object,
       default() {
         return {};
-      },
-    },
+      }
+    }
   });
   const { chartOption } = useChartOption(() => {
     const nameList = map(props.dataList, (item) => {
@@ -44,7 +44,7 @@
     });
     return {
       title: {
-        ...props.configOptions?.title,
+        ...props.configOptions?.title
       },
       grid: {
         left: 0,
@@ -52,44 +52,44 @@
         top: 16,
         bottom: 0,
         containLabel: true,
-        ...props.configOptions?.grid,
+        ...props.configOptions?.grid
       },
       xAxis: {
         type: 'value',
         axisLabel: {
-          show: true,
+          show: true
         },
         splitLine: {
           lineStyle: {
-            color: '#eaecee',
-          },
-        },
+            color: '#eaecee'
+          }
+        }
       },
       yAxis: {
         type: 'category',
         data: [...nameList],
         axisLabel: {
           show: true,
-          color: '#4E5969',
+          color: '#4E5969'
         },
         axisTick: {
           show: false,
           length: 2,
           lineStyle: {
-            color: '#A9AEB8',
+            color: '#A9AEB8'
           },
-          alignWithLabel: true,
+          alignWithLabel: true
         },
         axisLine: {
           show: false,
           lineStyle: {
-            color: 'rgba(29,33,41,0.8)',
-          },
-        },
+            color: 'rgba(29,33,41,0.8)'
+          }
+        }
       },
       tooltip: {
         show: true,
-        trigger: 'axis',
+        trigger: 'axis'
       },
       series: [
         {
@@ -98,10 +98,10 @@
           barWidth: 14,
           itemStyle: {
             color: '#206ccf',
-            borderRadius: [0, 0, 0, 0],
-          },
-        },
-      ],
+            borderRadius: [0, 0, 0, 0]
+          }
+        }
+      ]
     };
   });
 </script>

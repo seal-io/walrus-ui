@@ -6,6 +6,7 @@
       :show-extra="false"
       style="margin-bottom: 10px"
       today-in
+      border-less
     ></dateRange>
     <SpinCard title="All Resource" borderless style="margin-bottom: 10px">
       <a-grid :cols="24" :col-gap="20">
