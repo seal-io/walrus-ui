@@ -1,6 +1,37 @@
 <template>
   <div class="container">
-    <FilterBox style="margin-bottom: 10px">
+    <div
+      style="display: flex; justify-content: space-between; margin-bottom: 10px"
+    >
+      <a-select
+        v-model="queryParams.cluster"
+        :placeholder="$t('cost.analyse.cluster.holder')"
+        class="border-less"
+        style="width: 200px"
+        :options="clusterOptions"
+        @change="handleSearch"
+      >
+        <template #option="{ data }">
+          <a-tooltip :content="data.label" position="top">
+            <span
+              ><ProviderIcon :provider="data.provider" /><span
+                style="margin-left: 5px"
+                >{{ data.label }}</span
+              ></span
+            >
+          </a-tooltip>
+        </template>
+      </a-select>
+      <dateRange
+        v-model:start="queryParams.start"
+        v-model:end="queryParams.end"
+        :show-extra="false"
+        today-in
+        border-less
+        @change="handleSearch"
+      ></dateRange>
+    </div>
+    <!-- <FilterBox style="margin-bottom: 10px">
       <template #params>
         <dateRange
           v-model:start="queryParams.start"
@@ -11,6 +42,7 @@
           @change="handleSearch"
         ></dateRange>
         <a-select
+          :placeholder="$t('cost.analyse.cluster.holder')"
           v-model="queryParams.cluster"
           class="border-less"
           style="width: 200px"
@@ -37,7 +69,7 @@
           }}</a-button>
         </a-space>
       </template>
-    </FilterBox>
+    </FilterBox> -->
     <SpinCard title="My Cluster" borderless style="margin-bottom: 10px">
       <a-grid :cols="24" :col-gap="20">
         <a-grid-item
@@ -65,7 +97,7 @@
           <DataCard
             :title="item.label"
             :value="item.value"
-            bg-color="rgba(248,203,201,.6)"
+            bg-color="rgba(255, 197, 192,.5)"
           >
             <template #title>
               <span style="font-weight: 500">{{ item.label }}</span>

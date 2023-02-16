@@ -8,5 +8,12 @@ export default {
   'cost.analyse.table.currentCost': '当月消费',
   'cost.analyse.table.time': '时间范围',
   'cost.analyse.detail.holder': '请输入关键字',
-  'cost.optimize.menu': '成本优化'
+  'cost.analyse.cluster.holder': '请选择集群',
+  'cost.analyse.project.holder': '请选择项目',
+  'cost.optimize.menu': '成本优化',
+  'cost.optimize.table.region': '区域',
+  'cost.optimize.table.nodes': '节点数',
+  'cost.optimize.table.clusterCost': '集群消费金额',
+  'cost.optimize.table.costdown': '节省金额',
+  'cost.optimize.table.status': '状态'
 };

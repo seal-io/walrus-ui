@@ -1,24 +1,103 @@
 <template>
   <div class="container">
-    <dateRange
-      v-model:start="queryParams.start"
-      v-model:end="queryParams.end"
-      :show-extra="false"
-      style="margin-bottom: 10px"
-      today-in
-      border-less
-    ></dateRange>
-    <SpinCard title="All Resource" borderless style="margin-bottom: 10px">
+    <div
+      style="display: flex; justify-content: space-between; margin-bottom: 10px"
+    >
+      <a-select
+        v-model="queryParams.cluster"
+        :placeholder="$t('cost.analyse.project.holder')"
+        class="border-less"
+        style="width: 200px"
+        :options="clusterOptions"
+        @change="handleSearch"
+      >
+        <template #option="{ data }">
+          <a-tooltip :content="data.label" position="top">
+            <span
+              ><ProviderIcon :provider="data.provider" /><span
+                style="margin-left: 5px"
+                >{{ data.label }}</span
+              ></span
+            >
+          </a-tooltip>
+        </template>
+      </a-select>
+      <dateRange
+        v-model:start="queryParams.start"
+        v-model:end="queryParams.end"
+        :show-extra="false"
+        today-in
+        border-less
+        @change="handleSearch"
+      ></dateRange>
+    </div>
+    <!-- <FilterBox style="margin-bottom: 10px">
+      <template #params>
+        <dateRange
+          v-model:start="queryParams.start"
+          v-model:end="queryParams.end"
+          :show-extra="false"
+          today-in
+          border-less
+          @change="handleSearch"
+        ></dateRange>
+        <a-select
+          :placeholder="$t('cost.analyse.cluster.holder')"
+          v-model="queryParams.cluster"
+          class="border-less"
+          style="width: 200px"
+          :options="clusterOptions"
+          @change="handleSearch"
+        >
+          <template #option="{ data }">
+            <a-tooltip :content="data.label" position="top">
+              <span
+                ><ProviderIcon :provider="data.provider" /><span
+                  style="margin-left: 5px"
+                  >{{ data.label }}</span
+                ></span
+              >
+            </a-tooltip>
+          </template>
+        </a-select>
+        <a-space style="margin-left: 10px">
+          <a-button type="primary" @click="handleSearch">{{
+            $t('common.button.search')
+          }}</a-button>
+          <a-button type="outline" @click="handleReset">{{
+            $t('common.button.clear')
+          }}</a-button>
+        </a-space>
+      </template>
+    </FilterBox> -->
+    <SpinCard title="My Project" borderless style="margin-bottom: 10px">
       <a-grid :cols="24" :col-gap="20">
         <a-grid-item
-          v-for="(item, index) in costOverview"
+          v-for="(item, index) in clusterCostOverview"
           :key="index"
           :span="{ lg: 8, md: 8, sm: 12, xs: 24 }"
         >
           <DataCard
             :title="item.label"
             :value="item.value"
-            bg-color="rgba(230, 244, 254, 0.8)"
+            bg-color="rgba(159,232,219,.6)"
+          >
+            <template #title>
+              <span style="font-weight: 500">{{ item.label }}</span>
+            </template>
+          </DataCard>
+        </a-grid-item>
+      </a-grid>
+      <a-grid :cols="24" :col-gap="20" style="margin-top: 10px">
+        <a-grid-item
+          v-for="(item, index) in resourceCostOverview"
+          :key="index"
+          :span="{ lg: 6, md: 6, sm: 12, xs: 24 }"
+        >
+          <DataCard
+            :title="item.label"
+            :value="item.value"
+            bg-color="rgba(255, 197, 192,.5)"
           >
             <template #title>
               <span style="font-weight: 500">{{ item.label }}</span>
@@ -27,60 +106,29 @@
         </a-grid-item>
       </a-grid>
     </SpinCard>
-    <SpinCard title="Daily Cost" borderless style="margin-bottom: 10px">
-      <template #title>
-        <div style="display: flex; justify-content: space-between">
-          <div>Daily Cost</div>
-          <ChartBtn v-model:active="active"></ChartBtn>
-        </div>
-      </template>
+    <SpinCard title="应用消费金额" borderless style="margin-bottom: 10px">
       <LineBarChart
         height="220px"
-        :show-type="active"
+        show-type="line"
         :data-list="dataList"
         :data-config="dataConfig"
         :x-axis="xAxis"
-        :config-options="configOptions"
-      ></LineBarChart>
-      <TableList :columns="dailyCostCols" style="margin-top: 20px"></TableList>
-    </SpinCard>
-    <SpinCard title="Cost Per Project" borderless style="margin-bottom: 10px">
-      <template #title>
-        <div style="display: flex; justify-content: space-between">
-          <div>Cost Per Project</div>
-          <ChartBtn v-model:active="activeProject"></ChartBtn>
-        </div>
-      </template>
-      <LineBarChart
-        height="220px"
-        :show-type="activeProject"
-        :data-list="dataList"
-        :data-config="dataConfig"
-        :x-axis="xAxis"
-        :config-options="configOptions"
+        :config-options="{
+          title: {
+            ...title
+          },
+          legend: {
+            right: 'center',
+            top: 0
+          },
+          grid: {
+            ...grid,
+            top: 40
+          }
+        }"
       ></LineBarChart>
       <TableList
-        :columns="costPerProjectCols"
-        style="margin-top: 20px"
-      ></TableList>
-    </SpinCard>
-    <SpinCard title="Cost Per Cluster" borderless style="margin-bottom: 10px">
-      <template #title>
-        <div style="display: flex; justify-content: space-between">
-          <div>Cost Per Cluster</div>
-          <ChartBtn v-model:active="activeCluster"></ChartBtn>
-        </div>
-      </template>
-      <LineBarChart
-        height="220px"
-        :show-type="activeCluster"
-        :data-list="dataList"
-        :data-config="dataConfig"
-        :x-axis="xAxis"
-        :config-options="configOptions"
-      ></LineBarChart>
-      <TableList
-        :columns="costPerClusterCols"
+        :columns="workLoadCostCols"
         style="margin-top: 20px"
       ></TableList>
     </SpinCard>
@@ -88,18 +136,18 @@
 </template>
 
 <script lang="ts" setup>
+  import { filter } from 'lodash';
   import { reactive, ref, computed } from 'vue';
   import useCallCommon from '@/hooks/use-call-common';
   import DateRange from '@/components/date-range/index.vue';
   import DataCard from '@/components/data-card/index.vue';
   import LineBarChart from '@/components/line-bar-chart/index.vue';
-  import ChartBtn from '@/components/chart-btn/index.vue';
+  import FilterBox from '@/components/filter-box/index.vue';
   import TableList from '../components/table-list.vue';
   import {
-    costOverview,
-    dailyCostCols,
-    costPerClusterCols,
-    costPerProjectCols
+    clusterCostOverview,
+    resourceCostOverview,
+    projectCostCols
   } from '../config';
 
   const title = {
@@ -119,9 +167,10 @@
     containLabel: true
   };
   const { t } = useCallCommon();
-  const active = ref<'bar' | 'line'>('bar');
-  const activeProject = ref<'bar' | 'line'>('bar');
-  const activeCluster = ref<'bar' | 'line'>('bar');
+  const clusterOptions = [
+    { label: 'cluster-1', value: 'cluster1' },
+    { label: 'cluster-2', value: 'cluster2' }
+  ];
   const dataConfig = ref([
     { name: '一', label: '一', value: [1] },
     { name: '二', label: '二', value: [2] },
@@ -148,7 +197,8 @@
   ]);
   const queryParams = reactive({
     start: '',
-    end: ''
+    end: '',
+    cluster: ''
   });
 
   const dataList = ref([
@@ -163,20 +213,12 @@
     { name: '九', value: [9] },
     { name: '十', value: [10] }
   ]);
-  const configOptions = computed(() => {
-    return {
-      title: {
-        ...title,
-        top: 0
-      },
-      legend: {
-        show: false
-      },
-      grid: {
-        ...grid
-      }
-    };
+
+  const workLoadCostCols = computed(() => {
+    return projectCostCols;
   });
+  const handleSearch = () => {};
+  const handleReset = () => {};
 </script>
 
 <style></style>

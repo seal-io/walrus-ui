@@ -14,9 +14,19 @@ export const costShareMode = [
 ];
 
 export const costOverview = [
-  { label: 'Spend Total', key: '', value: 9, color: '#0F8584' },
-  { label: 'Total Projects', key: '', value: 12, color: '#7AB6B5' },
-  { label: 'Total Kubernetes Cluster', key: '', value: 23, color: '#324B4B' }
+  { label: 'Spend Total', key: '', value: 9, color: 'rgba(159,232,219,.6)' },
+  {
+    label: 'Total Projects',
+    key: '',
+    value: 12,
+    color: 'rgba(255,197,192,.6)'
+  },
+  {
+    label: 'Total Kubernetes Cluster',
+    key: '',
+    value: 23,
+    color: 'rgba(184,218,243,.6)'
+  }
 ];
 
 export const resourceCostOverview = [
@@ -164,6 +174,30 @@ export const clusterNamespaceCostCols = [
     tooltip: true,
     cellStyle: { minWidth: '40px' },
     dataIndex: 'spend',
+    title: '消费金额'
+  }
+];
+
+export const projectCostCols = [
+  {
+    ellipsis: true,
+    tooltip: true,
+    cellStyle: { minWidth: '40px' },
+    dataIndex: 'name',
+    title: '名称'
+  },
+  {
+    ellipsis: true,
+    tooltip: true,
+    cellStyle: { minWidth: '40px' },
+    dataIndex: 'project',
+    title: '项目'
+  },
+  {
+    ellipsis: true,
+    tooltip: true,
+    cellStyle: { minWidth: '40px' },
+    dataIndex: 'cost',
     title: '消费金额'
   }
 ];

@@ -18,7 +18,7 @@
           <DataCard
             :title="item.label"
             :value="item.value"
-            bg-color="rgba(230, 244, 254, 0.8)"
+            :bg-color="item.color"
           >
             <template #title>
               <span style="font-weight: 500">{{ item.label }}</span>
