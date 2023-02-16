@@ -43,18 +43,15 @@
         </a-table-column>
         <a-table-column
           align="center"
-          :width="210"
           :title="$t('common.table.operation')"
+          ellipsis
+          tooltip
+          :cell-style="{ minWidth: '40px' }"
         >
           <template #cell="{ record }">
             <a-space :size="20">
-              <a-link type="text" size="small" :href="handleEdit(record)">
+              <a-link type="text" size="small" @click="handleEdit(record)">
                 <template #icon><icon-edit /></template>
-                {{ $t('common.button.edit') }}
-              </a-link>
-              <a-link type="text" size="small" :href="handleView(record)">
-                <template #icon><icon-list style="font-size: 16px" /></template>
-                {{ $t('common.button.detail') }}
               </a-link>
             </a-space>
           </template>
@@ -101,18 +98,10 @@
     }, 100);
   };
   const handleEdit = (row) => {
-    const path = router.resolve({
-      name: 'applicationsList',
+    const path = router.push({
+      name: 'applicationsDetail',
       query: { id: row.id }
     });
-    return path.href;
-  };
-  const handleView = (row) => {
-    const path = router.resolve({
-      name: 'applicationsList',
-      query: { id: row.id }
-    });
-    return path.href;
   };
   watchEffect(() => {
     rowSelection.selectedKeys = [].concat(props.selectedList as never[]);

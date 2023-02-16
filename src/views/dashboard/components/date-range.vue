@@ -2,7 +2,6 @@
   <div class="date-range-wrapper">
     <a-range-picker
       v-model:popup-visible="popupVisible"
-      size="small"
       shortcuts-position="left"
       :shortcuts="selectShortcut"
       :disabled-date="disabledDate"
@@ -45,31 +44,38 @@
       type: String,
       default() {
         return 'day';
-      },
+      }
     },
     start: {
       type: String,
       default() {
         return '';
-      },
+      }
     },
     end: {
       type: String,
       default() {
         return '';
-      },
+      }
     },
+    todayIn: {
+      type: Boolean,
+      default() {
+        return false;
+      }
+    }
   });
   const selectRangeMap = {
     day: 29,
     month: 11,
-    year: 9,
+    year: 9
   };
   const { t } = useI18n();
   const popupVisible = ref(false);
   const startDate = ref('');
   const endDate = ref('');
   const selectShortcut = computed(() => {
+    const tDay = props.todayIn ? 0 : 1;
     return [
       {
         label: t('dashboard.datepicker.30days'),
@@ -77,8 +83,8 @@
         format: 'YYYY-MM-DD',
         value: [
           dayjs().subtract(30, 'day').format('YYYY-MM-DD'),
-          dayjs().subtract(1, 'day').format('YYYY-MM-DD'),
-        ],
+          dayjs().subtract(tDay, 'day').format('YYYY-MM-DD')
+        ]
       },
       {
         label: t('dashboard.datepicker.6months'),
@@ -86,8 +92,8 @@
         format: 'YYYY-MM-DD',
         value: [
           dayjs().subtract(5, 'month').format('YYYY-MM-DD'),
-          dayjs().format('YYYY-MM-DD'),
-        ],
+          dayjs().format('YYYY-MM-DD')
+        ]
       },
       {
         label: t('dashboard.datepicker.12months'),
@@ -95,9 +101,9 @@
         format: 'YYYY-MM-DD',
         value: [
           dayjs().subtract(11, 'month').format('YYYY-MM-DD'),
-          dayjs().format('YYYY-MM-DD'),
-        ],
-      },
+          dayjs().format('YYYY-MM-DD')
+        ]
+      }
     ];
   });
   const mode = computed(() => {
@@ -113,9 +119,14 @@
   const disabledDate = (current) => {
     const type = props.timeUnit as unitType;
     const range = get(selectRangeMap, type);
-    if (dayjs(current).isSameOrAfter(dayjs().format('YYYY-MM-DD'), 'day')) {
+    if (!props.todayIn) {
+      if (dayjs(current).isSameOrAfter(dayjs().format('YYYY-MM-DD'), 'day')) {
+        return true;
+      }
+    } else if (dayjs(current).isAfter(dayjs().format('YYYY-MM-DD'), 'day')) {
       return true;
     }
+
     if (
       dayjs(current).isAfter(
         dayjs(startDate.value).add(range, type).format('YYYY-MM-DD'),

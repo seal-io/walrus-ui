@@ -32,6 +32,14 @@ import component from '../images/component.png';
 import deps from '../images/deps.png';
 import policy from '../images/policy.png';
 import license from '../images/license.png';
+import alicloud from '../images/alicloud.png';
+import golang from '../images/golang.png';
+import java from '../images/java.png';
+import mysql from '../images/mysql.png';
+import nodejs from '../images/nodejs.png';
+import redis from '../images/redis.png';
+import springboot from '../images/spring-boot.png';
+import webservice from '../images/web-service.jpg';
 
 interface repoInconItem {
   [key: string]: any;
@@ -71,6 +79,14 @@ export const repoIcon: repoInconItem = {
   deps,
   policy,
   license,
+  alicloud,
+  java,
+  golang,
+  mysql,
+  nodejs,
+  redis,
+  springboot,
+  webservice
 };
 
 export default {};

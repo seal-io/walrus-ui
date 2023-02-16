@@ -13,5 +13,9 @@ export default {
   'operation.environments.table.description': 'Description',
   'operation.environments.detail.addConnector': 'Add Connector',
   'operation.environments.detail.holder': 'please select connector',
-  'operation.templates.menu': 'Templates'
+  'operation.templates.menu': 'Templates',
+  'operation.templates.detail.edit': 'Edit Template',
+  'operation.templates.detail.add': 'Create Template',
+  'operation.templates.detail.source': 'Source',
+  'operation.templates.detail.version': 'Version'
 };

@@ -35,10 +35,15 @@ body {
   .arco-input-wrapper,
   .arco-select-view-single,
   .arco-select-view-multiple,
+  .arco-picker,
   .arco-textarea-wrapper {
     background-color: #fff;
     border: 1px solid var(--color-border-2);
     transition: all 0.2s;
+
+    &.border-less {
+      border: 1px solid #fff;
+    }
   }
 
   .arco-input-wrapper:hover,
@@ -51,8 +56,22 @@ body {
     transition: all 0.2s;
   }
 
+  .date-range-wrapper .arco-picker:hover {
+    background-color: #fff;
+    border: 1px solid var(--color-primary-light-2);
+    box-shadow: 0 0 2px 0 var(--color-primary-light-2);
+    transition: all 0.2s;
+  }
+
+  .date-range-wrapper .arco-picker.arco-picker-focused {
+    background-color: var(--color-bg-2);
+    border-color: rgb(var(--primary-6));
+    box-shadow: 0 0 0 0 var(--color-primary-light-2);
+  }
+
   .arco-textarea-wrapper:focus-within,
   .arco-textarea-wrapper.arco-textarea-focus .arco-input-wrapper:focus-within,
+  .date-range-wrapper.arco-textarea-focus .date-range-wrapper:focus-within,
   .arco-input-wrapper.arco-input-focus,
   .arco-select-view-single:focus-within,
   .arco-select-view-single.arco-select-view-focus,

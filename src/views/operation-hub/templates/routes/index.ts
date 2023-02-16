@@ -8,7 +8,19 @@ export default [
       ignoreCache: true,
       locale: 'operation.templates.menu',
       requiresAuth: true,
-      icon: 'icon-apps',
-    },
+      icon: 'icon-apps'
+    }
   },
+  {
+    path: 'templates/detail',
+    name: 'templateDetail',
+    component: () => import('@/views/operation-hub/templates/pages/detail.vue'),
+    meta: {
+      hideInMenu: true,
+      ignoreCache: true,
+      locale: 'operation.templates.menu',
+      requiresAuth: true,
+      icon: 'icon-apps'
+    }
+  }
 ];

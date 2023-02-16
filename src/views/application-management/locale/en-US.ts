@@ -22,6 +22,7 @@ export default {
   'applications.workflows.create': 'New Pipeline',
   'applications.projects.menu': 'Projects List',
   'applications.projects.create': 'New Project',
+  'applications.projects.edit': 'Edit Project',
   'applications.projects.table.name': 'Project Name',
   'applications.projects.search.holder': 'please enter a project name'
 };

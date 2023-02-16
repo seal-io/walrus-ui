@@ -37,6 +37,7 @@
             type="outline"
             size="mini"
             shape="round"
+            class="mini-icon-btn"
             style="margin-left: 8px"
             @click="handleAddLabel"
           >
@@ -47,6 +48,7 @@
             type="outline"
             size="mini"
             shape="round"
+            class="mini-icon-btn"
             style="margin-left: 8px"
             @click="handleDeleteLabel(index)"
           >
