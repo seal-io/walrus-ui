@@ -33,7 +33,7 @@
       border-radius: 8px;
 
       &.ready {
-        background-color: var(--seal-color-success);
+        background-color: rgba(var(--seal-color-success-1), 0.7);
       }
 
       &.unconnected {

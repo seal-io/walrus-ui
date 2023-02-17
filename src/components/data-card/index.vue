@@ -1,5 +1,5 @@
 <template>
-  <div class="data-card-wrap" :style="{ backgroundColor: bgColor }">
+  <div class="data-card-wrap" :style="{ background: bgColor }">
     <a-statistic v-bind="attrs">
       <template v-for="k in Object.keys(slots)" :key="k" #[k]>
         <slot :name="k"></slot>

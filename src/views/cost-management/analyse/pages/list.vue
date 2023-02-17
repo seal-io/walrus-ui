@@ -1,6 +1,6 @@
 <template>
   <ComCard top-gap class="workflows-list">
-    <FilterBox>
+    <FilterBox style="margin-bottom: 10px">
       <template #params>
         <dateRange
           v-model:timeUnit="queryParams.timeUnit"
@@ -9,7 +9,7 @@
           today-in
         ></dateRange>
         <a-select
-          v-model="queryParams.timeUnit"
+          v-model="queryParams.perspective"
           allow-clear
           allow-search
           :options="viewList"
@@ -41,7 +41,7 @@
         >
       </template>
     </FilterBox>
-    <a-divider :margin="8"></a-divider>
+    <!-- <a-divider :margin="8"></a-divider> -->
     <a-table
       column-resizable
       style="margin-bottom: 20px"

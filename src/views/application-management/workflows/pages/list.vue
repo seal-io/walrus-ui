@@ -1,6 +1,6 @@
 <template>
   <ComCard top-gap class="workflows-list">
-    <FilterBox>
+    <FilterBox style="margin-bottom: 10px">
       <template #params>
         <a-select
           v-model="queryParams.projectId"
@@ -35,7 +35,7 @@
         >
       </template>
     </FilterBox>
-    <a-divider :margin="8"></a-divider>
+    <!-- <a-divider :margin="8"></a-divider> -->
     <a-table
       column-resizable
       style="margin-bottom: 20px"
