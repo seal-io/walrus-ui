@@ -2,12 +2,12 @@ name: Build and publish
 on:
   push:
     branches:
-      - 'master'
+      - 'main'
     tags:
       - 'v*.*.*'
   pull_request:
     branches:
-      - 'master'
+      - 'main'
 jobs:
   build:
     timeout-minutes: 30
@@ -20,14 +20,14 @@ jobs:
         with:
           node-version: '17'
       - name: Build latest
-        if: github.event_name == 'pull_request' || github.ref == 'refs/heads/master'
+        if: github.event_name == 'pull_request' || github.ref == 'refs/heads/main'
         env:
           COS_BUCKET: ${{ secrets.COS_BUCKET }}
           COS_REGION: ${{ secrets.COS_REGION }}
         run: scripts/build-hosted
       - name: Publish latest
         uses: TencentCloud/cos-action@b0aa648235fb35a1bdd6a77f529eb0ac4c2f1c25
-        if: github.event_name == 'push' && github.ref == 'refs/heads/master'
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
         with:
           secret_id: ${{ secrets.CI_TECENTCOS_SECRET_ID }}
           secret_key: ${{ secrets.CI_TECENTCOS_SECRET_KEY }}
