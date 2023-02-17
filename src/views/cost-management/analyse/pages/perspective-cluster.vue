@@ -179,7 +179,6 @@
     clusterCostOverview,
     resourceCostOverview,
     dailyCostCols,
-    costPerClusterCols,
     clusterNamespaceCostCols
   } from '../config';
 
@@ -205,7 +204,6 @@
     { label: 'cluster-2', value: 'cluster2' }
   ];
   const active = ref<'bar' | 'line'>('bar');
-  const activeCluster = ref<'bar' | 'line'>('bar');
   const dataConfig = ref([
     { name: '一', label: '一', value: [1] },
     { name: '二', label: '二', value: [2] },

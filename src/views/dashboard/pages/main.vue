@@ -2,8 +2,7 @@
   <div class="dashboard-wrapper">
     <a-space :size="8" direction="vertical" fill>
       <overview :basic-info="basicInfo"></overview>
-      <issueSummary :data="issueData"></issueSummary>
-      <infoSummary></infoSummary>
+      <DeploymentSummary :data="issueData"></DeploymentSummary>
       <licenseSummary></licenseSummary>
     </a-space>
   </div>
@@ -13,8 +12,7 @@
   import { get } from 'lodash';
   import { reactive, ref } from 'vue';
   import overview from '../components/overview.vue';
-  import issueSummary from '../components/issue-summary.vue';
-  import infoSummary from '../components/info-summary.vue';
+  import DeploymentSummary from '../components/deployment-summary.vue';
   import licenseSummary from '../components/license-summary.vue';
   import { getDashBoardOverview } from '../api/dashboard';
 

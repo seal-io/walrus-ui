@@ -1,5 +1,5 @@
 <template>
-  <spinCard :title="$t('dashboard.license.overview.title')" borderless>
+  <spinCard :title="$t('Cost Managment')" borderless>
     <div class="box">
       <a-grid :cols="24" :col-gap="10" :row-gap="10">
         <a-grid-item :span="{ xl: 16, lg: 16, md: 16, sm: 24 }">
@@ -17,8 +17,8 @@
           <div class="list">
             <licenseRank
               height="360px"
-              :title="$t('dashboard.license.overview.rank')"
-              :data-list="licenseRankList"
+              :title="$t('Top Application')"
+              :data-list="appCostRankList"
             ></licenseRank>
           </div>
         </a-grid-item>
@@ -45,10 +45,10 @@
       rich: {
         a: {
           lineHeight: 16,
-          fontSize: 11,
-        },
-      },
-    },
+          fontSize: 11
+        }
+      }
+    }
   };
   const center = ['50%', '55%'];
   const radius = ['0', '80%'];
@@ -57,7 +57,7 @@
     right: 0,
     top: 40,
     bottom: 0,
-    containLabel: true,
+    containLabel: true
   };
   const title = {
     text: '',
@@ -65,18 +65,18 @@
     top: 0,
     textStyle: {
       color: 'rgb(78,89,105)',
-      fontSize: 12,
-    },
+      fontSize: 12
+    }
   };
   const { t } = useI18n();
   const pieOptions = computed(() => {
     return {
       title: {
         ...title,
-        text: t('dashboard.license.overview.chartTitle'),
+        text: 'Cost By Application'
       },
       grid: {
-        ...grid,
+        ...grid
       },
       legend: {
         show: false,
@@ -84,12 +84,12 @@
         top: 'middle',
         left: '60%',
         itemWidth: 20,
-        itemHeight: 8,
-      },
+        itemHeight: 8
+      }
     };
   });
   const licenseDataList = ref<{ name: string; value: number }[]>([]);
-  const licenseRankList = ref<{ name: string; value: number }[]>([]);
+  const appCostRankList = ref<{ name: string; value: number }[]>([]);
   const fetchData = async () => {
     try {
       const { data } = await getDashboardLicenses();
@@ -99,16 +99,16 @@
         return {
           ...pieStyleConfig,
           itemStyle: {
-            color: colorList[index],
+            color: colorList[index]
           },
           name: item.name,
-          value: item.packageCount,
+          value: item.packageCount
         };
       }).filter((sItem) => sItem.value);
-      licenseRankList.value = map(rank, (item) => {
+      appCostRankList.value = map(rank, (item, i) => {
         return {
-          name: item.name,
-          value: item.packageCount,
+          name: `app-${i}`,
+          value: 10 - i
         };
       });
     } catch (error) {

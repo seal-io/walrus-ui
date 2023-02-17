@@ -19,7 +19,7 @@
   interface DataConfigItem {
     label: string;
     name: string;
-    color: string;
+    color?: string;
   }
   const props = defineProps({
     data: {
