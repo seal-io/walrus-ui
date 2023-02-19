@@ -1,11 +1,11 @@
 const proxyTableList = [
   'v1',
-  'auth',
+  'account',
   'debug',
   'openapi',
   'verify-auth',
   'ws',
-  'wss',
+  'wss'
 ];
 
 export default function createProxyTable(target?) {
@@ -17,8 +17,8 @@ export default function createProxyTable(target?) {
       ws: true,
       rewrite: (pth) => pth.replace(`/^/${api}/`, `/${api}`),
       headers: {
-        origin: target ? `${target}` : 'https://localhost',
-      },
+        origin: target ? `${target}` : 'https://localhost'
+      }
     };
     return obj;
   }, {});

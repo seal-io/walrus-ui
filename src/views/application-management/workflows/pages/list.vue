@@ -1,6 +1,6 @@
 <template>
   <ComCard top-gap class="workflows-list">
-    <FilterBox>
+    <FilterBox style="margin-bottom: 10px">
       <template #params>
         <a-select
           v-model="queryParams.projectId"
@@ -35,7 +35,7 @@
         >
       </template>
     </FilterBox>
-    <a-divider :margin="8"></a-divider>
+    <!-- <a-divider :margin="8"></a-divider> -->
     <a-table
       column-resizable
       style="margin-bottom: 20px"
@@ -95,11 +95,11 @@
             <a-space :size="20">
               <a-link type="text" size="small" :href="handleEdit(record)">
                 <template #icon><icon-edit /></template>
-                {{ $t('common.button.edit') }}
+                <!-- {{ $t('common.button.edit') }} -->
               </a-link>
               <a-link type="text" size="small" :href="handleView(record)">
                 <template #icon><icon-list style="font-size: 16px" /></template>
-                {{ $t('common.button.detail') }}
+                <!-- {{ $t('common.button.detail') }} -->
               </a-link>
             </a-space>
           </template>
@@ -199,12 +199,12 @@
     }
   };
   const handleEdit = (row) => {
-    const path = router.resolve({ name: 'eventReport', query: { id: row.id } });
-    return path.href;
+    // const path = router.resolve({ name: 'eventReport', query: { id: row.id } });
+    return '';
   };
   const handleView = (row) => {
-    const path = router.resolve({ name: 'eventReport', query: { id: row.id } });
-    return path.href;
+    // const path = router.resolve({ name: 'eventReport', query: { id: row.id } });
+    return '';
   };
   const handleDelete = async () => {
     deleteModal({ onOk: handleDeleteConfirm });

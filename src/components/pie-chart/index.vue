@@ -29,51 +29,51 @@
       type: Array as PropType<{ value: number; name: string }[]>,
       default() {
         return [];
-      },
+      }
     },
     height: {
       type: String,
       default() {
         return '120px';
-      },
+      }
     },
     radius: {
       type: [String, Array] as PropType<string | string[]>,
       default() {
         return '90%';
-      },
+      }
     },
     center: {
       type: Array as PropType<string[]>,
       default() {
         return ['50%', '50%'];
-      },
+      }
     },
     configOptions: {
       type: Object,
       default() {
         return {};
-      },
+      }
     },
     emphasisDisabled: {
       type: Boolean,
       default() {
         return false;
-      },
-    },
+      }
+    }
   });
   const { chartOption } = useChartOption(() => {
     return {
       tooltip: {
         show: false,
-        trigger: 'item',
+        trigger: 'item'
       },
       grid: {
         left: '0',
         right: '0',
         top: '0',
         bottom: '0',
-        containLabel: true,
+        containLabel: true
       },
       legend: {
         show: true,
@@ -81,7 +81,7 @@
         orient: 'vertical',
         align: 'left',
         itemWidth: 20,
-        itemHeight: 8,
+        itemHeight: 8
         // formatter(name) {
         //   return `${name}`;
         // },
@@ -96,14 +96,15 @@
           emphasis: {
             disabled: props.emphasisDisabled,
             itemStyle: {
-              shadowBlur: 2,
+              borderWidth: 0,
+              shadowBlur: 0,
               shadowOffsetX: 0,
-              shadowColor: 'rgba(0, 0, 0, 0.5)',
-            },
-          },
-        },
+              shadowColor: 'rgba(243, 246, 250, 0.5)'
+            }
+          }
+        }
       ],
-      ...props.configOptions,
+      ...props.configOptions
     };
   });
 </script>

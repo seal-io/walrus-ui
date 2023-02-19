@@ -2,7 +2,7 @@ import axios from 'axios';
 import { UserState } from '@/store/modules/user/types';
 
 interface ResList {
-  items: { id: string; value: string }[];
+  items: { id: string; value: string; name: string }[];
 }
 export interface LoginData {
   username: string;
@@ -11,26 +11,26 @@ export interface LoginData {
 
 interface SetPassword {
   oldPassword: string;
-  newPassword: string;
+  password: string;
   name?: string;
 }
 export interface LoginRes {
   token: string;
 }
 export function login(data: LoginData) {
-  return axios.post<LoginRes>('/auth/login', data);
+  return axios.post<LoginRes>('/account/login', data);
 }
 
 export function logout() {
-  return axios.post<LoginRes>('/auth/logout');
+  return axios.post<LoginRes>('/account/logout');
 }
 
 export function modifyPassword(data: SetPassword) {
-  return axios.put(`/users/${data.name}/password`, data);
+  return axios.post(`/account/info`, data);
 }
 
-export function getUserInfo(params) {
-  return axios.get('/users', { params });
+export function getUserInfo(params?) {
+  return axios.get('/account/info', { params });
 }
 
 export function updateUserSetting(data: { id: string; value: string }) {
@@ -42,7 +42,4 @@ export function getUserSetting() {
 }
 export function getFirstLoginStatus() {
   return axios.get<{ id: string; value: string }>(`/settings/FirstLogin`);
-}
-export function checkEnableAuth() {
-  return axios.get('/settings/EnableAuth');
 }

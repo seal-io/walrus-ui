@@ -6,8 +6,6 @@ declare module 'vue' {
   export interface GlobalComponents {
     AAlert: typeof import('@arco-design/web-vue')['Alert'];
     AAvatar: typeof import('@arco-design/web-vue')['Avatar'];
-    ABackTop: typeof import('@arco-design/web-vue')['BackTop'];
-    ABadge: typeof import('@arco-design/web-vue')['Badge'];
     ABreadcrumb: typeof import('@arco-design/web-vue')['Breadcrumb'];
     ABreadcrumbItem: typeof import('@arco-design/web-vue')['BreadcrumbItem'];
     AButton: typeof import('@arco-design/web-vue')['Button'];
@@ -15,12 +13,7 @@ declare module 'vue' {
     ACarousel: typeof import('@arco-design/web-vue')['Carousel'];
     ACarouselItem: typeof import('@arco-design/web-vue')['CarouselItem'];
     ACheckbox: typeof import('@arco-design/web-vue')['Checkbox'];
-    ACheckboxGroup: typeof import('@arco-design/web-vue')['CheckboxGroup'];
-    ACol: typeof import('@arco-design/web-vue')['Col'];
-    ACollapse: typeof import('@arco-design/web-vue')['Collapse'];
     AConfigProvider: typeof import('@arco-design/web-vue')['ConfigProvider'];
-    ADatePicker: typeof import('@arco-design/web-vue')['DatePicker'];
-    ADescriptions: typeof import('@arco-design/web-vue')['Descriptions'];
     ADivider: typeof import('@arco-design/web-vue')['Divider'];
     ADoption: typeof import('@arco-design/web-vue')['Doption'];
     ADrawer: typeof import('@arco-design/web-vue')['Drawer'];
@@ -31,9 +24,9 @@ declare module 'vue' {
     AGrid: typeof import('@arco-design/web-vue')['Grid'];
     AGridItem: typeof import('@arco-design/web-vue')['GridItem'];
     AInput: typeof import('@arco-design/web-vue')['Input'];
+    AInputGroup: typeof import('@arco-design/web-vue')['InputGroup'];
     AInputNumber: typeof import('@arco-design/web-vue')['InputNumber'];
     AInputPassword: typeof import('@arco-design/web-vue')['InputPassword'];
-    AInputSearch: typeof import('@arco-design/web-vue')['InputSearch'];
     ALayout: typeof import('@arco-design/web-vue')['Layout'];
     ALayoutContent: typeof import('@arco-design/web-vue')['LayoutContent'];
     ALayoutFooter: typeof import('@arco-design/web-vue')['LayoutFooter'];
@@ -46,13 +39,10 @@ declare module 'vue' {
     AModal: typeof import('@arco-design/web-vue')['Modal'];
     AOption: typeof import('@arco-design/web-vue')['Option'];
     APagination: typeof import('@arco-design/web-vue')['Pagination'];
-    APopconfirm: typeof import('@arco-design/web-vue')['Popconfirm'];
-    AProgress: typeof import('@arco-design/web-vue')['Progress'];
     ARadio: typeof import('@arco-design/web-vue')['Radio'];
     ARadioGroup: typeof import('@arco-design/web-vue')['RadioGroup'];
     ARangePicker: typeof import('@arco-design/web-vue')['RangePicker'];
     AResult: typeof import('@arco-design/web-vue')['Result'];
-    ARow: typeof import('@arco-design/web-vue')['Row'];
     ASelect: typeof import('@arco-design/web-vue')['Select'];
     ASpace: typeof import('@arco-design/web-vue')['Space'];
     ASpin: typeof import('@arco-design/web-vue')['Spin'];

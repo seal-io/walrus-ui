@@ -14,10 +14,6 @@ import localeUserInfo from '@/views/user/info/locale/en-US';
 import localeUserSetting from '@/views/user/setting/locale/en-US';
 import localeUserSystem from '@/views/user/system/locale/en-US';
 
-import localeProjects from '@/views/projects/locale/en-US';
-
-import localeReport from '@/views/report/locale/en-US';
-
 import localeGraph from '@/components/graph/locale/en-US';
 import localeDashboard from '@/views/dashboard/locale/en-US';
 
@@ -43,7 +39,6 @@ export default {
   'navbar.operatorhub': 'Operation Hub',
   'navbar.action.locale': 'Switch to English',
   'navbar.totalView': 'Dashboard',
-  'navbar.intergration': 'Integration',
   'navbar.resource': 'Resource',
   'navbar.graph': 'Graph',
   'navbar.application': 'Applications',
@@ -67,12 +62,10 @@ export default {
   ...locale500,
   ...localeUserInfo,
   ...localeUserSetting,
-  ...localeProjects,
   ...localeUserSystem,
-  ...localeReport,
   ...localeGraph,
   ...localeDashboard,
   ...localeApplications,
   ...localeCost,
-  ...localeOperation,
+  ...localeOperation
 };

@@ -29,6 +29,10 @@ export interface UserState {
   hasNavList?: boolean;
   role: RoleType;
   userSetting: {
-    [key: string]: string;
+    [key: string]: {
+      id: string;
+      name: string;
+      value?: string;
+    };
   };
 }

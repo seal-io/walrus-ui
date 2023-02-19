@@ -1,7 +1,7 @@
 <template>
   <span class="status-label">
     <span class="label">
-      <span class="dot" :class="[status]"></span>
+      <span class="dot" :style="{ backgroundColor: color }"></span>
       <span class="text">{{ status }}</span>
     </span>
   </span>
@@ -13,6 +13,12 @@
       type: String,
       default() {
         return 'unconnected';
+      }
+    },
+    color: {
+      type: String,
+      default() {
+        return '';
       }
     }
   });

@@ -9,10 +9,20 @@ export const saveOverview = [
     key: '',
     value: 15,
     suffix: '%',
-    color: 'rgba(159,232,219,.6)'
+    color: 'linear-gradient(rgba(159,232,219,.3) 0%,rgba(159,232,219,.4) 100%)'
   },
-  { label: '每月可节省', key: '', value: 23, color: 'rgba(133,209,224,.6)' },
-  { label: '每年可节省', key: '', value: 23, color: 'rgba(184,218,243,.6)' }
+  {
+    label: '每月可节省',
+    key: '',
+    value: 23,
+    color: 'linear-gradient(rgba(179,212,230,.3) 0%,rgba(179,212,230,.4) 100%)'
+  },
+  {
+    label: '每年可节省',
+    key: '',
+    value: 23,
+    color: 'linear-gradient(rgba(184,218,243,.3) 0%,rgba(184,218,243,.4) 100%)'
+  }
 ];
 
 export const registryResourceCols = [

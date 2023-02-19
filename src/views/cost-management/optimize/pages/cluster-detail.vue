@@ -14,7 +14,7 @@
           <DataCard
             :title="item.label"
             :value="item.value"
-            bg-color="rgba(159,232,219,.6)"
+            bg-color="linear-gradient(rgba(159,232,219,.3) 0%,rgba(159,232,219,.4) 100%)"
           >
             <template #title>
               <span style="font-weight: 500">{{ item.label }}</span>
@@ -31,7 +31,7 @@
           <DataCard
             :title="item.label"
             :value="item.value"
-            bg-color="rgba(255, 197, 192,.5)"
+            bg-color="linear-gradient(rgba(255, 197, 192,.3) 0%,rgba(255, 197, 192,.4) 100%)"
           >
             <template #title>
               <span style="font-weight: 500">{{ item.label }}</span>
@@ -95,10 +95,8 @@
   import { filter } from 'lodash';
   import { reactive, ref, computed } from 'vue';
   import useCallCommon from '@/hooks/use-call-common';
-  import DateRange from '@/components/date-range/index.vue';
   import DataCard from '@/components/data-card/index.vue';
   import LineBarChart from '@/components/line-bar-chart/index.vue';
-  import FilterBox from '@/components/filter-box/index.vue';
   import TableList from '@/views/cost-management/analyse/components/table-list.vue';
   import { resourceCostOverview } from '@/views/cost-management/analyse/config';
   import { saveOverview, registryResourceCols, volumeCols } from '../config';
@@ -120,28 +118,16 @@
     containLabel: true
   };
   const { t } = useCallCommon();
-  const clusterOptions = [
-    { label: 'cluster-1', value: 'cluster1' },
-    { label: 'cluster-2', value: 'cluster2' }
-  ];
   const dataConfig = ref([
-    { name: '一', label: '优化', value: [1, 3, 7, 8, 9] },
-    { name: '二', label: '当前', value: [2, 6, 10, 12, 21] }
+    { name: 'key1', label: '优化', value: [1, 3, 7, 8, 9] },
+    { name: 'key2', label: '当前', value: [2, 6, 10, 12, 21] }
   ]);
   const xAxis = ref(['一月', '二月', '三月', '四月', '五月']);
-  const queryParams = reactive({
-    start: '',
-    end: '',
-    cluster: ''
-  });
 
   const dataList = ref([
-    { name: '一', value: [1, 3, 7, 8, 9] },
-    { name: '二', value: [2, 6, 10, 12, 21] }
+    { name: 'key1', value: [1, 3, 7, 8, 9] },
+    { name: 'key2', value: [2, 6, 10, 12, 21] }
   ]);
-
-  const handleSearch = () => {};
-  const handleReset = () => {};
 </script>
 
 <style></style>

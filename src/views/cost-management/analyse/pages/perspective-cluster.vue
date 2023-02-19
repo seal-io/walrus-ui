@@ -80,7 +80,7 @@
           <DataCard
             :title="item.label"
             :value="item.value"
-            bg-color="rgba(159,232,219,.6)"
+            bg-color="linear-gradient(rgba(159,232,219,.3) 0%,rgba(159,232,219,.4) 100%)"
           >
             <template #title>
               <span style="font-weight: 500">{{ item.label }}</span>
@@ -97,7 +97,7 @@
           <DataCard
             :title="item.label"
             :value="item.value"
-            bg-color="rgba(255, 197, 192,.5)"
+            bg-color="linear-gradient(rgba(255, 197, 192,.3) 0%,rgba(255, 197, 192,.4) 100%)"
           >
             <template #title>
               <span style="font-weight: 500">{{ item.label }}</span>
@@ -179,7 +179,6 @@
     clusterCostOverview,
     resourceCostOverview,
     dailyCostCols,
-    costPerClusterCols,
     clusterNamespaceCostCols
   } from '../config';
 
@@ -205,7 +204,6 @@
     { label: 'cluster-2', value: 'cluster2' }
   ];
   const active = ref<'bar' | 'line'>('bar');
-  const activeCluster = ref<'bar' | 'line'>('bar');
   const dataConfig = ref([
     { name: '一', label: '一', value: [1] },
     { name: '二', label: '二', value: [2] },

@@ -1,166 +1,133 @@
 // issues summary bar
 import { riskColorMap } from '@/config/global';
 
+export const statusColorMap = {
+  running: 'rgba(102, 201, 255,.8)',
+  auditing: 'rgba(135, 145, 247, .5)',
+  failed: 'rgba(255, 197, 192, 1)',
+  done: 'rgba(159, 232, 219, 1)'
+};
+
 export const resourceIssueTypeConfig = [
   {
     name: 'dashboard.overview.repo',
     value: 11,
     key: 'repository',
-    itemStyle: { color: '#206ccf' },
+    itemStyle: { color: '#206ccf' }
   },
   {
     name: 'dashboard.overview.image',
     value: 22,
     key: 'containerImage',
-    itemStyle: { color: '#206ccf' },
+    itemStyle: { color: '#206ccf' }
   },
   {
     name: 'Kubernetes',
     value: 3,
     key: 'kubernetes',
-    itemStyle: { color: '#206ccf' },
+    itemStyle: { color: '#206ccf' }
   },
-  { name: 'SBOM', value: 1, key: 'sbom', itemStyle: { color: '#206ccf' } },
+  { name: 'SBOM', value: 1, key: 'sbom', itemStyle: { color: '#206ccf' } }
 ];
 
-export const severityDataConfig = [
+export const deployDataConfig = [
   {
-    name: 'projects.risk.high',
+    name: '成功',
     value: 20,
     key: 'high',
     label: { show: false },
-    itemStyle: { color: `rgba(${riskColorMap.high},.8)` },
+    itemStyle: { color: statusColorMap.done }
   },
   {
-    name: 'projects.risk.middle',
+    name: '失败',
     value: 8,
     key: 'medium',
     label: { show: false },
-    itemStyle: { color: `rgba(${riskColorMap.medium},.8)` },
+    itemStyle: { color: statusColorMap.failed }
   },
   {
-    name: 'projects.risk.low',
+    name: '运行中',
     value: 3,
     key: 'low',
     label: { show: false },
-    itemStyle: { color: `rgba(${riskColorMap.low},.8)` },
+    itemStyle: { color: statusColorMap.running }
   },
+  {
+    name: '审核中',
+    value: 3,
+    key: 'low',
+    label: { show: false },
+    itemStyle: { color: statusColorMap.auditing }
+  }
 ];
 
-export const issueTypeDataConfig = [
-  {
-    name: 'dashboard.issue.vuln',
-    value: 10,
-    key: 'vulnerability',
-    label: { show: false },
-    itemStyle: { color: '#206CCF' },
-  },
-  {
-    name: 'dashboard.issue.license',
-    value: 15,
-    key: 'license',
-    label: { show: false },
-    itemStyle: { color: '#00A3EC' },
-  },
-  {
-    name: 'dashboard.issue.config',
-    value: 9,
-    key: 'configuration',
-    label: { show: false },
-    itemStyle: { color: '#00D2E3' },
-  },
-  {
-    name: 'dashboard.issue.other',
-    value: 20,
-    key: 'other',
-    label: { show: false },
-    itemStyle: { color: '#6FFACB' },
-  },
-];
 export const issueTrendConfig = [
   {
     label: 'projects.risk.high',
     name: 'HighIssueCount',
-    color: `rgb(${riskColorMap.high})`,
+    color: `rgb(${riskColorMap.high})`
   },
   {
     label: 'projects.risk.middle',
     name: 'MiddleIssueCount',
-    color: `rgb(${riskColorMap.medium})`,
+    color: `rgb(${riskColorMap.medium})`
   },
   {
     label: 'projects.risk.low',
     name: 'LowIssueCount',
-    color: `rgb(${riskColorMap.low})`,
-  },
+    color: `rgb(${riskColorMap.low})`
+  }
 ];
 export const overViewConfig = [
   {
-    label: 'dashboard.overview.repo',
+    label: 'Applications',
     value: 0,
-    provider: 'repo',
     key: 'repository',
+    color:
+      'linear-gradient(rgba(159, 232, 219, 0.3) 0%, rgba(159, 232, 219, 0.4) 100%)'
   },
   {
-    label: 'dashboard.overview.image',
+    label: 'Services',
     value: 0,
-    provider: 'oci',
     key: 'containerImage',
+    // color:
+    //   'linear-gradient(rgba(163, 216, 245, 0.3) 0%, rgba(163, 216, 245, 0.4) 100%)',
+    color:
+      'linear-gradient(rgba(255, 197, 192, 0.3) 0%, rgba(255, 197, 192, 0.4) 100%)'
   },
   {
-    label: 'dashboard.overview.kubernetes',
+    label: 'Instances',
     value: 0,
-    provider: 'kubernetes',
     key: 'kubernetes',
+    // color:
+    //   'linear-gradient(rgba(173, 209, 235, 0.3) 0%, rgba(173, 209, 235, 0.4) 100%)',
+    color:
+      'linear-gradient(rgba(184, 218, 243, 0.3) 0%, rgba(184, 218, 243, 0.4) 100%)'
   },
   {
-    label: 'dashboard.overview.sbom',
+    label: 'Connectors',
     value: 0,
-    provider: 'uploaded',
     key: 'sbom',
-  },
+    color:
+      'linear-gradient(rgb(163 230 245 / 30%) 0%, rgb(163 230 245 / 40%) 100%)'
+  }
 ];
-export const overViewComponentConfig = [
-  {
-    label: 'dashboard.overview.policy',
-    value: 0,
-    provider: 'policy',
-    key: 'policy',
-  },
-  {
-    label: 'dashboard.overview.componentVersion',
-    value: 0,
-    provider: 'version',
-    key: 'package',
-  },
-  // {
-  //   label: 'dashboard.overview.componentDeps',
-  //   value: 0,
-  //   provider: 'deps',
-  //   key: 'package',
-  // },
-  {
-    label: 'dashboard.overview.license',
-    value: 0,
-    provider: 'license',
-    key: 'license',
-  },
-];
+
 export const colorList = [
-  '#5470c6',
-  '#91cc75',
-  '#fac858',
-  '#ee6666',
-  '#73c0de',
-  '#3ba272',
-  '#fc8452',
-  '#9a60b4',
-  '#ea7ccc',
-  '#722ED1',
+  'rgba(84,112,198,.5)',
+  'rgb(145 204 117 / 50%)',
+  'rgb(250 200 88 / 50%)',
+  'rgb(238 102 102 / 50%)',
+  'rgb(115 192 222 / 50%)',
+  'rgb(59 162 114 / 50%)',
+  'rgb(252 132 82 / 50%)',
+  'rgb(154 96 180 / 50%)',
+  'rgb(234 124 204 / 50%)',
+  'rgb(114 46 209 / 50%)'
 ];
 export const datePickerMode = [
   { label: 'dashboard.datepicker.day', value: 'day' },
   { label: 'dashboard.datepicker.month', value: 'month' },
-  { label: 'dashboard.datepicker.year', value: 'year' },
+  { label: 'dashboard.datepicker.year', value: 'year' }
 ];
 export default {};

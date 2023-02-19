@@ -14,18 +14,23 @@ export const costShareMode = [
 ];
 
 export const costOverview = [
-  { label: 'Spend Total', key: '', value: 9, color: 'rgba(159,232,219,.6)' },
+  {
+    label: 'Spend Total',
+    key: '',
+    value: 9,
+    color: 'linear-gradient(rgba(159,232,219,.3) 0%,rgba(159,232,219,.4) 100%)'
+  },
   {
     label: 'Total Projects',
     key: '',
     value: 12,
-    color: 'rgba(255,197,192,.6)'
+    color: 'linear-gradient(rgba(255,197,192,.3) 0%,rgba(255,197,192,.4) 100%)'
   },
   {
     label: 'Total Kubernetes Cluster',
     key: '',
     value: 23,
-    color: 'rgba(184,218,243,.6)'
+    color: 'linear-gradient(rgba(184,218,243,.3) 0%,rgba(184,218,243,.4) 100%)'
   }
 ];
 

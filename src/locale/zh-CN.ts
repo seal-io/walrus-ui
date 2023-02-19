@@ -14,10 +14,6 @@ import localeUserInfo from '@/views/user/info/locale/zh-CN';
 import localeUserSetting from '@/views/user/setting/locale/zh-CN';
 import localeUserSystem from '@/views/user/system/locale/zh-CN';
 
-import localeProjects from '@/views/projects/locale/zh-CN';
-
-import localeReport from '@/views/report/locale/zh-CN';
-
 import localeGraph from '@/components/graph/locale/zh-CN';
 
 import localeDashboard from '@/views/dashboard/locale/zh-CN';
@@ -45,7 +41,6 @@ export default {
   'navbar.operatorhub': '运维中心',
   'navbar.action.locale': '切换为中文',
   'navbar.totalView': '概览',
-  'navbar.intergration': '集成',
   'navbar.resource': '资源',
   'navbar.graph': '图',
   'navbar.application': '应用',
@@ -69,12 +64,10 @@ export default {
   ...locale500,
   ...localeUserInfo,
   ...localeUserSetting,
-  ...localeProjects,
   ...localeUserSystem,
-  ...localeReport,
   ...localeGraph,
   ...localeDashboard,
   ...localeApplications,
   ...localeCost,
-  ...localeOperation,
+  ...localeOperation
 };

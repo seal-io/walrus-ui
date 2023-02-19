@@ -10,10 +10,10 @@
     onClickOutside,
     useElementSize,
     useThrottleFn,
-    useResizeObserver,
+    useResizeObserver
   } from '@vueuse/core';
   import { severityMap, severityInactiveMap } from '@/config/global';
-  import { repoIcon } from '@/views/intergration/config';
+  import { repoIcon } from '@/components/provider-icon/config';
   import {
     nextTick,
     PropType,
@@ -24,7 +24,7 @@
     onUnmounted,
     onMounted,
     onBeforeUnmount,
-    toRaw,
+    toRaw
   } from 'vue';
   import G6, { Edge, Graph, Node } from '@antv/g6';
   import useNodeData from '../config/g6-config';
@@ -37,7 +37,7 @@
     nodeSizeMap,
     resourceNodeSizeMap,
     NodeType,
-    vulnNodeInfo,
+    vulnNodeInfo
   } from '../config';
 
   const props = defineProps({
@@ -45,27 +45,27 @@
       type: Object as PropType<{ Edges: EdgeItem[]; Nodes: NodeItem[] }>,
       default() {
         return {};
-      },
+      }
     },
     filterViewEnable: {
       type: Boolean,
       default() {
         return false;
-      },
+      }
     },
     filerViewByMode: {
       type: Function,
       default() {
         return null;
-      },
-    },
+      }
+    }
   });
   const { modes, defaultEdge, defaultNode, primaryColor } = useNodeData();
   const emits = defineEmits([
     'layoutEnd',
     'nodeClick',
     'canvasClick',
-    'edgeClick',
+    'edgeClick'
   ]);
   const chartMount = ref();
   const ChartMountWrap = ref();
@@ -115,7 +115,7 @@
       return {
         ...item,
         source: item.startNode,
-        target: item.endNode,
+        target: item.endNode
       };
     });
     console.log('edgesList===', edgesList);
@@ -152,7 +152,7 @@
         type: 'circle',
         size: nodeSizeMap.get(data.sizeLevel),
         inactive,
-        fill,
+        fill
       };
     }
     // resource
@@ -198,7 +198,7 @@
       type: NodeType.isResource(resourceType) ? 'image' : 'circle',
       inactive: NodeType.isResource(resourceType)
         ? '228,230,231'
-        : dataInactiveColorMap[get(data, 'resourceType')],
+        : dataInactiveColorMap[get(data, 'resourceType')]
     };
   };
   const setGraphData = () => {
@@ -218,14 +218,14 @@
           width: 12,
           img: NodeType.isResource(s.resourceType)
             ? repoIcon[get(s, 'properties.provider')]
-            : img,
+            : img
         };
         s.style = {
           fill: `rgba(${nodesizeInfo.fill},.8)`,
           lineWidth: NodeType.isResource(s.resourceType) ? 1.5 : 0,
           stroke: NodeType.isResource(s.resourceType)
             ? 'rgba(83, 129, 198,.8)'
-            : '',
+            : ''
         };
         s.stateStyles = {
           selected: {
@@ -233,30 +233,30 @@
             stroke: NodeType.isResource(s.resourceType)
               ? 'rgba(17, 75, 163,.9)'
               : '',
-            fill: `rgba(${s.primaryColor},1)`,
+            fill: `rgba(${s.primaryColor},1)`
           },
           hover: {
             lineWidth: NodeType.isResource(s.resourceType) ? 2 : 0,
             fill: `rgba(${s.primaryColor},1)`,
             stroke: NodeType.isResource(s.resourceType)
               ? 'rgba(17, 75, 163,.9)'
-              : '',
+              : ''
           },
           highlight: {
             lineWidth: NodeType.isResource(s.resourceType) ? 1.5 : 0,
             fill: `rgba(${s.primaryColor},1)`,
             stroke: NodeType.isResource(s.resourceType)
               ? 'rgba(17, 75, 163,.9)'
-              : '',
+              : ''
           },
           inactive: {
             lineWidth: 0,
-            fill: `rgb(${s.inactiveColor})`,
+            fill: `rgb(${s.inactiveColor})`
           },
           disabled: {
             lineWidth: 0,
-            fill: `rgb(${s.inactiveColor})`,
-          },
+            fill: `rgb(${s.inactiveColor})`
+          }
         };
         return s;
       }),
@@ -270,9 +270,9 @@
           endArrow: {
             path: G6.Arrow.triangle(3, 3, 20),
             fill: primaryColor,
-            fontSize: 5,
+            fontSize: 5
           },
-          ...styleObj,
+          ...styleObj
         };
         s.stateStyles = {
           hover: {
@@ -280,24 +280,24 @@
               s.type === 'AssociatesWith'
                 ? 'rgba(17, 75, 163,.7)'
                 : `rgb(${graphColorConfig.edge})`,
-            lineWidth: 2,
+            lineWidth: 2
           },
           highlight: {
             lineWidth: 1.5,
             stroke:
               s.type === 'AssociatesWith'
                 ? 'rgba(17, 75, 163,.7)'
-                : `rgba(${graphColorConfig.edge},1)`,
+                : `rgba(${graphColorConfig.edge},1)`
           },
           inactive: {
-            stroke: `rgba(${graphColorConfig.inactiveEdge},1)`,
+            stroke: `rgba(${graphColorConfig.inactiveEdge},1)`
           },
           disabled: {
-            stroke: `rgba(${graphColorConfig.edge},.5)`,
-          },
+            stroke: `rgba(${graphColorConfig.edge},.5)`
+          }
         };
         return s;
-      }),
+      })
     };
     return data;
   };
@@ -318,9 +318,9 @@
             position: 'bottom',
             offset: -8,
             style: {
-              fontSize: 16,
-            },
-          },
+              fontSize: 16
+            }
+          }
         });
       }
     });
@@ -345,8 +345,8 @@
             label: '+',
             labelCfg: {
               ...edgeSourceNodeModel.labelCfg,
-              position: 'center',
-            },
+              position: 'center'
+            }
           });
         }
       }
@@ -371,8 +371,8 @@
               label: '+',
               labelCfg: {
                 ...nNodeModel.labelCfg,
-                position: 'center',
-              },
+                position: 'center'
+              }
             });
           }
         });
@@ -393,8 +393,8 @@
           id: edge.id,
           style: {
             lineWidth: 2,
-            stroke: 'rgba(17, 75, 163,.8)',
-          },
+            stroke: 'rgba(17, 75, 163,.8)'
+          }
         };
       }
       return edge;
@@ -592,8 +592,8 @@
           isCollapsed: false,
           labelCfg: {
             ...vulnNodeModel.labelCfg,
-            position: 'top',
-          },
+            position: 'top'
+          }
         });
       });
       // remove target's plus icon
@@ -604,8 +604,8 @@
         label: nodeModel.name || '',
         labelCfg: {
           ...nodeModel.labelCfg,
-          position: 'top',
-        },
+          position: 'top'
+        }
       });
       graph.updateLayout();
       clearTimeout(updateTimer);
@@ -807,7 +807,7 @@
             </div>
         `;
         return box;
-      },
+      }
     });
     return toolTip;
   };
@@ -891,9 +891,9 @@
             }, 100);
             needLockPosition = false;
           }
-        },
+        }
       },
-      modes,
+      modes
     });
   };
 
@@ -928,13 +928,13 @@
       }
     },
     {
-      immediate: true,
+      immediate: true
     }
   );
   defineExpose({
     fitView,
     clearAllStats,
-    updateGraphViewBySwitch,
+    updateGraphViewBySwitch
   });
   // onUnmounted(() => {
   //   window.removeEventListener('resize', () => {

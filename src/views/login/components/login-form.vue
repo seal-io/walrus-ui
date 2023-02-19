@@ -37,7 +37,7 @@
           <a-form-item
             field="username"
             :rules="[
-              { required: true, message: $t('login.form.userName.errMsg') },
+              { required: true, message: $t('login.form.userName.errMsg') }
             ]"
             :validate-trigger="['change', 'blur']"
             hide-label
@@ -55,7 +55,7 @@
           <a-form-item
             field="password"
             :rules="[
-              { required: true, message: $t('login.form.password.errMsg') },
+              { required: true, message: $t('login.form.password.errMsg') }
             ]"
             :validate-trigger="['change', 'blur']"
             hide-label
@@ -119,7 +119,7 @@
   import {
     rememberPasswordFn,
     readLocalLoginInfo,
-    removeLocalLoginInfo,
+    removeLocalLoginInfo
   } from '@/utils/auth';
   import modifyPassword from './modify-password.vue';
 
@@ -135,7 +135,7 @@
   const showModify = ref<boolean>(false);
   const userInfo = reactive({
     username: '',
-    password: '',
+    password: ''
   });
 
   const handleModifyDefaultPassword = async (newpassword) => {
@@ -144,7 +144,7 @@
       rememberPasswordFn({
         rememberPswd: rememberPassword.value,
         username: userInfo.username,
-        password: newpassword,
+        password: newpassword
       });
     }
     await userStore.getUserSetting();
@@ -157,14 +157,15 @@
         if (rememberPassword.value) {
           rememberPasswordFn({
             rememberPswd: rememberPassword.value,
-            ...userInfo,
+            ...userInfo
           });
         } else {
           removeLocalLoginInfo();
         }
         await userStore.login(values);
         await userStore.getUserSetting();
-        if (userStore.userSetting.FirstLogin === 'true') {
+        console.log('userSetting.FirstLogin===', userStore.userSetting);
+        if (userStore?.userSetting?.FirstLogin?.value === 'true') {
           showModify.value = true;
           localStore.removeValue('POLICY_DRIVER_KEY');
           emits('loginSuccess');

@@ -1,5 +1,5 @@
 <template>
-  <div class="data-card-wrap" :style="{ backgroundColor: bgColor }">
+  <div class="data-card-wrap" :style="{ background: bgColor }">
     <a-statistic v-bind="attrs">
       <template v-for="k in Object.keys(slots)" :key="k" #[k]>
         <slot :name="k"></slot>
@@ -36,5 +36,9 @@
     text-align: center;
     border-radius: var(--border-radius-small);
     box-shadow: 0 0 6px rgba(229, 230, 235, 0.3);
+
+    :deep(.arco-statistic-title) {
+      font-size: 16px;
+    }
   }
 </style>
