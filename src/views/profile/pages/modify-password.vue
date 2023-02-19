@@ -8,7 +8,7 @@
           :label="$t('user.password.oldPassword')"
           :trigger="['change', 'blur']"
           :rules="[
-            { required: true, message: $t('user.password.rules.oldpassword') },
+            { required: true, message: $t('user.password.rules.oldpassword') }
           ]"
         >
           <a-input-password v-model="formData.oldPassword" allow-clear />
@@ -18,7 +18,7 @@
           :label="$t('user.password.newPassword')"
           :trigger="['change', 'blur']"
           :rules="[
-            { required: true, message: $t('user.password.rules.newpassword') },
+            { required: true, message: $t('user.password.rules.newpassword') }
           ]"
         >
           <a-input-password v-model="formData.newPassword" allow-clear />
@@ -30,8 +30,8 @@
           :rules="[
             {
               required: true,
-              validator: validateConfirmPassword,
-            },
+              validator: validateConfirmPassword
+            }
           ]"
         >
           <a-input-password v-model="formData.confirmPassword" allow-clear />
@@ -76,14 +76,14 @@
       type: Boolean,
       default() {
         return false;
-      },
-    },
+      }
+    }
   });
 
   const formData = reactive({
     oldPassword: '',
     newPassword: '',
-    confirmPassword: '',
+    confirmPassword: ''
   });
   const handleCancel = () => {
     router.back();
@@ -101,8 +101,8 @@
     if (!errors) {
       const data = {
         oldPassword: formData.oldPassword,
-        newPassword: formData.newPassword,
-        name: userStore.name,
+        password: formData.newPassword,
+        name: userStore.name
       };
       await modifyPassword(data);
       Message.success(t('common.message.success'));

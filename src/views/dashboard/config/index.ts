@@ -1,6 +1,13 @@
 // issues summary bar
 import { riskColorMap } from '@/config/global';
 
+export const statusColorMap = {
+  running: 'rgba(102, 201, 255,.8)',
+  auditing: 'rgba(135, 145, 247, .5)',
+  failed: 'rgba(255, 197, 192, 1)',
+  done: 'rgba(159, 232, 219, 1)'
+};
+
 export const resourceIssueTypeConfig = [
   {
     name: 'dashboard.overview.repo',
@@ -29,28 +36,28 @@ export const deployDataConfig = [
     value: 20,
     key: 'high',
     label: { show: false },
-    itemStyle: { color: 'rgba(159, 232, 219, 1)' }
+    itemStyle: { color: statusColorMap.done }
   },
   {
     name: '失败',
     value: 8,
     key: 'medium',
     label: { show: false },
-    itemStyle: { color: 'rgba(255, 197, 192, 1)' }
+    itemStyle: { color: statusColorMap.failed }
   },
   {
     name: '运行中',
     value: 3,
     key: 'low',
     label: { show: false },
-    itemStyle: { color: 'rgba(163, 230, 245, 1)' }
+    itemStyle: { color: statusColorMap.running }
   },
   {
     name: '审核中',
     value: 3,
     key: 'low',
     label: { show: false },
-    itemStyle: { color: 'rgba(184, 218, 243, 1)' }
+    itemStyle: { color: statusColorMap.auditing }
   }
 ];
 
@@ -83,6 +90,8 @@ export const overViewConfig = [
     label: 'Services',
     value: 0,
     key: 'containerImage',
+    // color:
+    //   'linear-gradient(rgba(163, 216, 245, 0.3) 0%, rgba(163, 216, 245, 0.4) 100%)',
     color:
       'linear-gradient(rgba(255, 197, 192, 0.3) 0%, rgba(255, 197, 192, 0.4) 100%)'
   },
@@ -90,6 +99,8 @@ export const overViewConfig = [
     label: 'Instances',
     value: 0,
     key: 'kubernetes',
+    // color:
+    //   'linear-gradient(rgba(173, 209, 235, 0.3) 0%, rgba(173, 209, 235, 0.4) 100%)',
     color:
       'linear-gradient(rgba(184, 218, 243, 0.3) 0%, rgba(184, 218, 243, 0.4) 100%)'
   },
@@ -102,23 +113,17 @@ export const overViewConfig = [
   }
 ];
 
-export const statusColorMap = {
-  running: 'rgba(163, 230, 245, 1)',
-  auditing: 'rgba(184, 218, 243, 1)',
-  failed: 'rgba(255, 197, 192, 1)',
-  done: 'rgba(159, 232, 219, 1)'
-};
 export const colorList = [
-  '#5470c6',
-  '#91cc75',
-  '#fac858',
-  '#ee6666',
-  '#73c0de',
-  '#3ba272',
-  '#fc8452',
-  '#9a60b4',
-  '#ea7ccc',
-  '#722ED1'
+  'rgba(84,112,198,.5)',
+  'rgb(145 204 117 / 50%)',
+  'rgb(250 200 88 / 50%)',
+  'rgb(238 102 102 / 50%)',
+  'rgb(115 192 222 / 50%)',
+  'rgb(59 162 114 / 50%)',
+  'rgb(252 132 82 / 50%)',
+  'rgb(154 96 180 / 50%)',
+  'rgb(234 124 204 / 50%)',
+  'rgb(114 46 209 / 50%)'
 ];
 export const datePickerMode = [
   { label: 'dashboard.datepicker.day', value: 'day' },

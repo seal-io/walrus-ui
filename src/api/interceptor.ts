@@ -20,16 +20,17 @@ if (import.meta.env.VITE_API_BASE_URL) {
 console.log('import.meta:', import.meta);
 
 const authApiList = [
-  '/auth/login',
-  '/auth/logout',
+  '/account/login',
+  '/account/info',
+  '/account/logout',
   '/openapi',
-  '/debug/version',
+  '/debug/version'
 ];
 const noToastAPI = [
   '/policies/_/test',
   '/notifiers/_/test',
   '/container-registries/verify',
-  '/container-registries/_/test',
+  '/container-registries/_/test'
 ];
 /**
  * 200: success
@@ -72,13 +73,13 @@ axios.interceptors.response.use(
     const result = {
       code: data?.status,
       msg: data?.message || response.statusText,
-      data: data?.data,
+      data: data?.data
     };
     if (!noToastAPI.includes(reqUrl) && error?.message) {
       Message.error({
         // id: 'request_error_01',
         content: result?.data?.msg || result.msg || 'Request Error',
-        duration: 3 * 1000,
+        duration: 3 * 1000
       });
     }
     if ([401, 403, 440].includes(result.code)) {

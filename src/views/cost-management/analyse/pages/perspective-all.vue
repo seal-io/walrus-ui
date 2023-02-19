@@ -153,7 +153,7 @@
 
   const dataList = ref([
     { name: '一', value: [1] },
-    { name: '二', value: [2] },
+    { name: '二', value: [0, 2] },
     { name: '三', value: [3] },
     { name: '四', value: [4] },
     { name: '五', value: [5] },

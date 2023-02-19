@@ -36,20 +36,20 @@
       type: Array as PropType<{ name: string; value: number }[]>,
       default() {
         return [];
-      },
+      }
     },
     height: {
       type: String,
       default() {
         return '120px';
-      },
+      }
     },
     title: {
       type: String,
       default() {
         return '';
-      },
-    },
+      }
+    }
   });
 </script>
 

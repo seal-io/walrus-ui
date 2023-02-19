@@ -40,7 +40,7 @@
   import pieChart from '@/components/pie-chart/index.vue';
   import lastDeployApp from './last-deploy-app.vue';
 
-  import { deployDataConfig } from '../config';
+  import { deployDataConfig, statusColorMap } from '../config';
 
   const props = defineProps({
     data: {
@@ -79,7 +79,7 @@
       fontSize: 12
     }
   };
-  const height = '240px';
+  const height = '280px';
   const pieCenter = ['50%', '50%'];
   const pieRadius = ['0%', '90%'];
   const { t } = useI18n();
@@ -88,22 +88,22 @@
     {
       name: '一',
       label: 'Running',
-      color: 'rgba(163, 230, 245, 1)'
+      color: statusColorMap.running
     },
     {
       name: '二',
       label: 'Auditing',
-      color: 'rgba(184, 218, 243, 1)'
+      color: statusColorMap.auditing
     },
     {
       name: '三',
       label: 'Failed',
-      color: 'rgba(255, 197, 192, 1)'
+      color: statusColorMap.failed
     },
     {
       name: '四',
       label: 'Successful',
-      color: 'rgba(159, 232, 219, 1)'
+      color: statusColorMap.done
     }
   ]);
   const xAxis = ref(['一月', '二月', '三月', '四月', '五月']);

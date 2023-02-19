@@ -22,14 +22,6 @@ export default function setupPermissionGuard(router: Router) {
 
     const userStore = useUserStore();
 
-    // ============ remove under line when always verify permission =========
-    if (userStore.userSetting.EnableAuth === 'false') {
-      next();
-      NProgress.done();
-      return;
-    }
-    // ================ end =====================
-
     // const settings = await userStore.getUserSetting()
     async function crossroads() {
       const Permission = usePermission();
@@ -39,20 +31,20 @@ export default function setupPermissionGuard(router: Router) {
           appRoutes,
           userStore.role
         ) || {
-          name: 'notFound',
+          name: 'notFound'
         };
         next(destination);
       }
       NProgress.done();
     }
-    if (userStore.userSetting.FirstLogin === 'false') {
+    if (userStore.userSetting?.FirstLogin?.value === 'false') {
       if (to.name === 'login') {
         const Permission = usePermission();
         const destination = Permission.getFirstRouteName(appRoutes) || {
-          name: 'notFound',
+          name: 'notFound'
         };
         next({
-          name: destination,
+          name: destination
         });
         NProgress.done();
       }
@@ -69,13 +61,13 @@ export default function setupPermissionGuard(router: Router) {
             query: {
               // redirect: to.name,
               // ...to.query,
-            } as LocationQueryRaw,
+            } as LocationQueryRaw
           });
           NProgress.done();
         }
       }
     } else {
-      if (userStore.userSetting.FirstLogin === 'true') {
+      if (userStore?.userSetting?.FirstLogin?.value === 'true') {
         Modal.warning({
           alignCenter: false,
           top: '20%',
@@ -86,7 +78,7 @@ export default function setupPermissionGuard(router: Router) {
               'div',
               { style: { 'text-align': 'center' } },
               i18n.global.t('login.form.login.complete')
-            ),
+            )
         });
       }
       if (to.name === 'login') {
@@ -98,8 +90,8 @@ export default function setupPermissionGuard(router: Router) {
         name: 'login',
         query: {
           // redirect: to.name,
-          ...to.query,
-        } as LocationQueryRaw,
+          ...to.query
+        } as LocationQueryRaw
       });
       NProgress.done();
     }

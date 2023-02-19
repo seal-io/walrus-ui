@@ -65,17 +65,6 @@
   };
 
   onMounted(async () => {
-    // ====== remove under line when always verify permission ======
-    try {
-      const enableAuth = await userStore.checkEnableAuth();
-      if (enableAuth.value === 'false') {
-        enterUserPage();
-        return;
-      }
-    } catch (error) {
-      console.log(error);
-    }
-    // ========= end ===============
     getUserLoginHistory();
   });
 </script>

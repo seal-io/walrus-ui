@@ -2,7 +2,6 @@
   <div class="list-view-wrap">
     <a-table
       column-resizable
-      style="margin-bottom: 20px"
       :bordered="false"
       :loading="loading"
       :data="list"

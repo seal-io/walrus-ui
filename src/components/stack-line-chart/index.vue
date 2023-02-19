@@ -62,8 +62,8 @@
   const { t } = useI18n();
   const generateSeries = (
     name: string,
-    lineColor: string,
-    data: number[]
+    data: number[],
+    lineColor?: string
   ): LineSeriesOption => {
     return {
       name: t(name),
@@ -109,8 +109,8 @@
       const valueData = find(props.data || [], (sItem) => {
         return item.name === sItem.name;
       });
-      const value = valueData?.value || [];
-      return generateSeries(item.label, item.color, value);
+      const value = valueData?.value || [1];
+      return generateSeries(item.label, value, item.color);
     });
     console.log('seriesDataList===', seriesDataList);
     return {

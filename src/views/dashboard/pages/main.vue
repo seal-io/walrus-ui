@@ -3,7 +3,7 @@
     <a-space :size="8" direction="vertical" fill>
       <overview :basic-info="basicInfo"></overview>
       <DeploymentSummary :data="issueData"></DeploymentSummary>
-      <licenseSummary></licenseSummary>
+      <CostSummary></CostSummary>
     </a-space>
   </div>
 </template>
@@ -13,7 +13,7 @@
   import { reactive, ref } from 'vue';
   import overview from '../components/overview.vue';
   import DeploymentSummary from '../components/deployment-summary.vue';
-  import licenseSummary from '../components/license-summary.vue';
+  import CostSummary from '../components/cost-summary.vue';
   import { getDashBoardOverview } from '../api/dashboard';
 
   const basicInfo = reactive({});
@@ -21,10 +21,10 @@
 
   const fetchData = async () => {
     try {
-      const { data } = await getDashBoardOverview();
-      const basic = get(data, 'basic') || {};
-      issueData.value = get(data, 'issue') || {};
-      Object.assign(basicInfo, basic);
+      // const { data } = await getDashBoardOverview();
+      // const basic = get(data, 'basic') || {};
+      // issueData.value = get(data, 'issue') || {};
+      // Object.assign(basicInfo, basic);
     } catch (error) {
       console.log(error);
     }

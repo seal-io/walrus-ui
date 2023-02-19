@@ -3,23 +3,34 @@
     <div class="box">
       <a-grid :cols="24" :col-gap="10" :row-gap="10">
         <a-grid-item :span="{ xl: 16, lg: 16, md: 16, sm: 24 }">
-          <pieChart
+          <!-- <pieChart
             class="pie"
             style="flex: 1"
-            :data-list="licenseDataList"
+            :data-list="appCostRankList"
             height="360px"
             :center="center"
             :radius="radius"
             :config-options="pieOptions"
-          ></pieChart>
+          ></pieChart> -->
+          <monthlyCost style="margin-bottom: 10px"></monthlyCost>
+          <dailyyCost></dailyyCost>
         </a-grid-item>
         <a-grid-item :span="{ xl: 8, lg: 8, md: 8, sm: 24 }">
-          <div class="list">
-            <licenseRank
+          <pieChart
+            class="pie"
+            style="flex: 1"
+            :data-list="appCostRankList"
+            height="292px"
+            :center="center"
+            :radius="radius"
+            :config-options="pieOptions"
+          ></pieChart>
+          <div class="list" style="margin-top: 10px">
+            <applicationRank
               height="360px"
-              :title="$t('Top Application')"
+              :title="$t('Top Application (this month)')"
               :data-list="appCostRankList"
-            ></licenseRank>
+            ></applicationRank>
           </div>
         </a-grid-item>
       </a-grid>
@@ -33,8 +44,10 @@
   import { useI18n } from 'vue-i18n';
   import spinCard from '@/components/page-wrap/spin-card.vue';
   import pieChart from '@/components/pie-chart/index.vue';
+  import monthlyCost from './monthly-cost.vue';
+  import dailyyCost from './daily-trend.vue';
   import { getDashboardLicenses } from '../api/dashboard';
-  import licenseRank from './license-rank.vue';
+  import applicationRank from './application-rank.vue';
   import { colorList } from '../config';
 
   const pieStyleConfig = {
@@ -61,7 +74,7 @@
   };
   const title = {
     text: '',
-    left: 'center',
+    left: 'auto',
     top: 0,
     textStyle: {
       color: 'rgb(78,89,105)',
@@ -88,26 +101,13 @@
       }
     };
   });
-  const licenseDataList = ref<{ name: string; value: number }[]>([]);
+  const appList = ref<{ name: string; value: number }[]>([]);
   const appCostRankList = ref<{ name: string; value: number }[]>([]);
   const fetchData = async () => {
     try {
-      const { data } = await getDashboardLicenses();
-      const rank = get(data, 'rank') || [];
-      const distribution = get(data, 'distribution') || [];
-      licenseDataList.value = map(distribution, (item, index) => {
+      appCostRankList.value = map(Array(10).fill(1), (item, i) => {
         return {
-          ...pieStyleConfig,
-          itemStyle: {
-            color: colorList[index]
-          },
-          name: item.name,
-          value: item.packageCount
-        };
-      }).filter((sItem) => sItem.value);
-      appCostRankList.value = map(rank, (item, i) => {
-        return {
-          name: `app-${i}`,
+          name: `app-${i + 1}`,
           value: 10 - i
         };
       });

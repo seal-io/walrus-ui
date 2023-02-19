@@ -18,8 +18,8 @@
             :rules="[
               {
                 required: true,
-                message: $t('user.password.rules.newpassword'),
-              },
+                message: $t('user.password.rules.newpassword')
+              }
             ]"
           >
             <a-input-password
@@ -39,8 +39,8 @@
             :rules="[
               {
                 required: true,
-                validator: validateConfirmPassword,
-              },
+                validator: validateConfirmPassword
+              }
             ]"
           >
             <a-input-password
@@ -66,8 +66,8 @@
               {
                 match: urlReg,
                 required: true,
-                message: t('system.rules.url'),
-              },
+                message: t('system.rules.url')
+              }
             ]"
           >
             <a-input v-model.trim="formData.serverUrl" placeholder="serverURL">
@@ -88,10 +88,10 @@
 </template>
 
 <script lang="ts" setup>
+  import { get } from 'lodash';
   import { reactive } from 'vue';
   import { useI18n } from 'vue-i18n';
   import { useRouter } from 'vue-router';
-  import { Message } from '@arco-design/web-vue';
   import { modifyPassword } from '@/api/user';
   import { useUserStore } from '@/store';
   import { urlReg } from '@/utils/validate';
@@ -105,21 +105,21 @@
       type: String,
       default() {
         return '';
-      },
+      }
     },
     userName: {
       type: String,
       default() {
         return '';
-      },
-    },
+      }
+    }
   });
 
   const formData = reactive({
     oldPassword: props.oldPassword,
     newPassword: '',
     confirmPassword: '',
-    serverUrl: window.location.origin,
+    serverUrl: window.location.origin
   });
   const handleCancel = () => {
     router.back();
@@ -137,19 +137,22 @@
     if (!errors) {
       const data = {
         oldPassword: props.oldPassword,
-        newPassword: formData.newPassword,
-        name: props.userName,
+        password: formData.newPassword,
+        name: props.userName
       };
+      const serverUrl = get(userStore, 'userInfo.userSetting.ServeUrl');
       const serverUrlData = {
-        id: 'ServerURL',
-        value: formData.serverUrl,
+        id: serverUrl.id,
+        value: formData.serverUrl
       };
       try {
         Promise.all([
           modifyPassword(data),
-          userStore.updateUserSetting(serverUrlData),
+          userStore.updateUserSetting(serverUrlData)
         ]).then(() => {
-          userStore.setInfo({ serverUrl: formData.serverUrl });
+          userStore.setInfo({
+            serverUrl: { ...serverUrl, value: formData.serverUrl }
+          });
           emits('updatePassword', formData.newPassword);
           // Message.success(t('common.message.success'));
         });

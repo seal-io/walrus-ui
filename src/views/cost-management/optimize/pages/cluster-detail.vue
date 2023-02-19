@@ -119,14 +119,14 @@
   };
   const { t } = useCallCommon();
   const dataConfig = ref([
-    { name: '一', label: '优化', value: [1, 3, 7, 8, 9] },
-    { name: '二', label: '当前', value: [2, 6, 10, 12, 21] }
+    { name: 'key1', label: '优化', value: [1, 3, 7, 8, 9] },
+    { name: 'key2', label: '当前', value: [2, 6, 10, 12, 21] }
   ]);
   const xAxis = ref(['一月', '二月', '三月', '四月', '五月']);
 
   const dataList = ref([
-    { name: '一', value: [1, 3, 7, 8, 9] },
-    { name: '二', value: [2, 6, 10, 12, 21] }
+    { name: 'key1', value: [1, 3, 7, 8, 9] },
+    { name: 'key2', value: [2, 6, 10, 12, 21] }
   ]);
 </script>
 

@@ -6,9 +6,8 @@ import {
   logout as userLogout,
   getUserInfo,
   LoginData,
-  checkEnableAuth,
   getUserSetting as userSettings,
-  updateUserSetting as updateSettings,
+  updateUserSetting as updateSettings
 } from '@/api/user';
 import { setToken, clearToken, getUserPermission } from '@/utils/auth';
 import { removeRouteListener } from '@/utils/route-listener';
@@ -16,7 +15,7 @@ import { UserState } from './types';
 
 const useUserStore = defineStore('user', {
   persist: {
-    key: 'user',
+    key: 'user'
   },
   state: (): UserState => ({
     name: undefined,
@@ -38,13 +37,13 @@ const useUserStore = defineStore('user', {
     userSetting: {},
     hasNavList: true,
     permissionsList: [],
-    role: '*',
+    role: '*'
   }),
 
   getters: {
     userInfo(state: UserState): UserState {
       return { ...state };
-    },
+    }
   },
 
   actions: {
@@ -69,7 +68,7 @@ const useUserStore = defineStore('user', {
 
     // Get user's information
     async info() {
-      const res = await getUserInfo({ me: true });
+      const res = await getUserInfo();
       console.log('userInfo:', res);
       const permissions: AnyObject = getUserPermission(
         get(res, 'data.permissionsList') || []
@@ -95,7 +94,9 @@ const useUserStore = defineStore('user', {
       const { data } = await userSettings();
       const items = data.items || [];
       const settingData = items.reduce((obj, item) => {
-        obj[item.id] = item.value;
+        obj[item.name] = {
+          ...item
+        };
         return obj;
       }, {});
       this.$patch({ userSetting: settingData });
@@ -106,11 +107,6 @@ const useUserStore = defineStore('user', {
       return updateSettings(data);
     },
 
-    async checkEnableAuth() {
-      const { data } = await checkEnableAuth();
-      this.$patch({ userSetting: { [data.id]: data.value } });
-      return data;
-    },
     // Logout
     async logout() {
       await userLogout();
@@ -123,10 +119,10 @@ const useUserStore = defineStore('user', {
       this.resetInfo();
       clearToken();
       removeRouteListener();
-    },
+    }
 
     // init permission
-  },
+  }
 });
 
 export default useUserStore;
