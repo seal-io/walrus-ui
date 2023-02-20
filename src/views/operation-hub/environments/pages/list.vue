@@ -7,8 +7,8 @@
   >
     <template #title>
       <div class="title">
-        <span>{{ $t('operation.environments.table.list') }}</span>
-        <a-divider direction="vertical" :margin="10"></a-divider>
+        <!-- <span>{{ $t('operation.environments.table.list') }}</span>
+        <a-divider direction="vertical" :margin="10"></a-divider> -->
         <icon-apps
           :class="{ active: currentView === 'thumb' }"
           @click="handleToggle('thumb')"

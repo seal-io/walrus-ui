@@ -1,61 +1,97 @@
 <template>
-  <div class="template-item" @click="handleEditTemplate">
+  <div class="template-item">
     <div class="img-box">
       <span
+        v-if="provider"
         class="img"
         :style="{
           'background-image': `url(${repoIcon[toLower(provider)]})`
         }"
       ></span>
+      <IconFont v-else type="icon-template-1"></IconFont>
     </div>
     <div class="content">
-      <div class="text">
-        Lorem ipsum, dolor sit amet consectetur adipisicing elit. Quisquam
-        deleniti sapiente quos ad maxime? Dignissimos natus nobis itaque
-        molestiae ab tempore, assumenda numquam, aut corporis deleniti maxime
-        delectus blanditiis cupiditate?
+      <div>
+        <div class="title">{{ dataInfo.id }}</div>
+        <div class="text">
+          {{ dataInfo.description }}
+        </div>
       </div>
       <a-button
         type="primary"
         size="small"
         style="width: 88px; margin-top: 10px"
         @click="handleEditTemplate"
-        >{{ $t('common.button.edit') }}</a-button
       >
+        <template #icon>
+          <icon-edit></icon-edit>
+        </template>
+        {{ $t('common.button.edit') }}
+      </a-button>
     </div>
+    <a-checkbox
+      class="check-box"
+      :value="dataInfo.id"
+      :model-value="checked"
+      @click.stop="() => {}"
+      @change="handleCheckedChange"
+    ></a-checkbox>
   </div>
 </template>
 
 <script lang="ts" setup>
+  import { PropType } from 'vue';
   import { toLower } from 'lodash';
   import { repoIcon } from '@/components/provider-icon/config';
   import { useRouter } from 'vue-router';
+  import { TemplateRowData } from '../config/interface';
 
-  defineProps({
+  const props = defineProps({
     provider: {
       type: String,
       default() {
         return '';
       }
+    },
+    dataInfo: {
+      type: Object as PropType<TemplateRowData>,
+      default() {
+        return {};
+      }
+    },
+    checked: {
+      type: Boolean,
+      default() {
+        return false;
+      }
     }
   });
 
+  const emits = defineEmits(['change']);
   const router = useRouter();
   const handleEditTemplate = () => {
-    router.push({
-      name: 'templateDetail'
-    });
+    // router.push({
+    //   name: 'templateDetail',
+    //   query: {
+    //     id: props.dataInfo.id
+    //   }
+    // });
+  };
+  const handleCheckedChange = (val) => {
+    console.log('val:', val);
+    emits('change', val, props.dataInfo.id);
   };
 </script>
 
 <style lang="less" scoped>
   .template-item {
+    position: relative;
     display: flex;
     height: 140px;
-    padding: 10px;
+    padding: 10px 25px 10px 10px;
     background-color: #fff;
     border: 1px solid transparent;
-    box-shadow: 0 0 4px var(--color-border-2);
+    box-shadow: 0 0 4px var(--color-border-3);
     .thumbCard();
 
     &:hover {
@@ -75,6 +111,12 @@
         background-position: center center;
         background-size: contain;
       }
+
+      :deep(.arco-icon) {
+        color: var(--sealblue-6);
+        font-size: 46px;
+        opacity: 0.9;
+      }
     }
 
     .content {
@@ -92,6 +134,18 @@
         -webkit-box-orient: vertical;
         -webkit-line-clamp: 4;
       }
+
+      .title {
+        margin-bottom: 5px;
+        font-weight: 500;
+        font-size: 16px;
+      }
+    }
+
+    .arco-checkbox {
+      position: absolute;
+      top: 5px;
+      right: 5px;
     }
   }
 </style>

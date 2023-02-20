@@ -1,13 +1,21 @@
 <template>
   <ComCard top-gap>
-    <GroupTitle title="模板编辑"></GroupTitle>
+    <GroupTitle
+      :title="
+        id
+          ? $t('operation.templates.detail.edit')
+          : $t('operation.templates.detail.add')
+      "
+    ></GroupTitle>
     <a-form ref="formref" :model="formData" auto-label-width>
       <a-form-item
-        :label="$t('operation.templates.detail.source')"
-        field="name"
+        :label="$t('operation.connectors.table.name')"
+        field="id"
+        :validate-trigger="['change']"
+        :rules="[{ required: true, message: '模板名称必填' }]"
       >
         <a-input
-          v-model="formData.name"
+          v-model="formData.id"
           :max-length="50"
           show-word-limit
         ></a-input>
@@ -24,7 +32,7 @@
           show-word-limit
         ></a-textarea>
       </a-form-item>
-      <a-form-item :label="$t('operation.connectors.table.type')" field="type">
+      <!-- <a-form-item :label="$t('operation.connectors.table.type')" field="type">
         <a-select v-model="formData.description">
           <a-option
             v-for="item in templateTypeList"
@@ -34,10 +42,12 @@
           >
           </a-option>
         </a-select>
-      </a-form-item>
+      </a-form-item> -->
       <a-form-item
         field="source"
         :label="$t('operation.templates.detail.source')"
+        :validate-trigger="['change']"
+        :rules="[{ required: true, message: '模板来源必填' }]"
       >
         <a-input v-model="formData.source"></a-input>
       </a-form-item>
@@ -85,7 +95,7 @@
 </template>
 
 <script lang="ts" setup>
-  import { ref, reactive, markRaw } from 'vue';
+  import { ref, reactive, onMounted, markRaw } from 'vue';
   import GroupTitle from '@/components/group-title/index.vue';
   import EditPageFooter from '@/components/edit-page-footer/index.vue';
   import useCallCommon from '@/hooks/use-call-common';
@@ -95,6 +105,7 @@
   import tabOutput from '../components/tab-output.vue';
   import tabResource from '../components/tab-resource.vue';
   import tabConnector from '../components/tab-conntector.vue';
+  import { queryItemModules, createModules } from '../api';
 
   const tabMap = {
     tabReadme,
@@ -104,16 +115,29 @@
     tabConnector
   };
   const activeKey = ref('tabReadme');
-  const { router } = useCallCommon();
+  const { router, route } = useCallCommon();
   const formref = ref();
+  const id = route.query.id as string;
   const submitLoading = ref(false);
   const formData = reactive({
-    name: '',
+    id: '',
+    name: 'test',
     description: '',
-    type: '',
     source: '',
     version: ''
   });
+
+  const getItemModules = async () => {
+    if (!id) return;
+    try {
+      const params = {
+        id
+      };
+      const { data } = await queryItemModules(params);
+    } catch (error) {
+      console.log('error');
+    }
+  };
 
   const handleSubmit = async () => {
     const res = await formref.value?.validate();
@@ -121,6 +145,7 @@
       try {
         submitLoading.value = true;
         // TODO
+        await createModules(formData);
         submitLoading.value = false;
       } catch (error) {
         submitLoading.value = false;
@@ -133,6 +158,9 @@
   const handleTabChange = (val) => {
     activeKey.value = val;
   };
+  onMounted(() => {
+    getItemModules();
+  });
 </script>
 
 <style></style>
