@@ -16,7 +16,7 @@ export default {
   'login.form.modifyPassword': '修改密码',
   'login.form.login': '登录',
   'login.form.register': '注册账号',
-  'login.banner.seal': '保护您的软件供应链',
+  'login.banner.seal': '',
   'login.banner.slogan1': '开箱即用的高质量模板',
   'login.banner.subSlogan1': '丰富的的页面模板，覆盖大多数典型业务场景',
   'login.banner.slogan2': '内置了常见问题的解决方案',
@@ -24,5 +24,5 @@ export default {
   'login.banner.slogan3': '接入可视化增强工具AUX',
   'login.banner.subSlogan3': '实现灵活的区块式开发',
   'login.config.serverUrl': '服务器地址必填',
-  'login.config.getPswd': '首次登录通过以下方式，获取初始admin密码',
+  'login.config.getPswd': '首次登录通过以下方式，获取初始admin密码'
 };

@@ -17,7 +17,7 @@ export default {
   'login.form.modifyPassword': 'Modify Password',
   'login.form.login': 'Login',
   'login.form.register': 'register account',
-  'login.banner.seal': 'Protect your software supply chain',
+  'login.banner.seal': '',
   'login.banner.slogan1': 'Out-of-the-box high-quality template',
   'login.banner.subSlogan1':
     'Rich page templates, covering most typical business scenarios',
@@ -28,5 +28,5 @@ export default {
   'login.banner.subSlogan3': 'Realize flexible block development',
   'login.config.serverUrl': 'serverUrl is required',
   'login.config.getPswd':
-    'For the first login, use the following way to get the initial admin password',
+    'For the first login, use the following way to get the initial admin password'
 };

@@ -6,6 +6,7 @@ import {
   logout as userLogout,
   getUserInfo,
   LoginData,
+  checkEnableAuth,
   getUserSetting as userSettings,
   updateUserSetting as updateSettings
 } from '@/api/user';
@@ -73,7 +74,7 @@ const useUserStore = defineStore('user', {
       const permissions: AnyObject = getUserPermission(
         get(res, 'data.permissionsList') || []
       );
-      const user = get(res, 'data.0');
+      const user = get(res, 'data');
       console.log('permissions:', permissions);
       this.setInfo({ ...user, permissions });
     },
@@ -107,6 +108,11 @@ const useUserStore = defineStore('user', {
       return updateSettings(data);
     },
 
+    async checkEnableAuth() {
+      const { data } = await checkEnableAuth();
+      this.$patch({ userSetting: { [data.name]: data.value } });
+      return data;
+    },
     // Logout
     async logout() {
       await userLogout();

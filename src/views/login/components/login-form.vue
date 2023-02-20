@@ -110,12 +110,10 @@
   import localStore from '@/utils/localStore';
   import { ref, reactive, onMounted } from 'vue';
   import { LOCALE_OPTIONS } from '@/locale';
-  import { ValidatedError } from '@arco-design/web-vue/es/form/interface';
   import useLocale from '@/hooks/locale';
   import { useUserStore } from '@/store';
   import useLoading from '@/hooks/loading';
   import useEnterPage from '@/hooks/use-enter-page';
-  import { LoginData } from '@/api/user';
   import {
     rememberPasswordFn,
     readLocalLoginInfo,
@@ -128,7 +126,6 @@
   const { changeLocale } = useLocale();
   const locales = [...LOCALE_OPTIONS];
   const errorMessage = ref('');
-  const visible = ref(false);
   const { loading, setLoading } = useLoading();
   const userStore = useUserStore();
   const rememberPassword = ref<boolean>(false);

@@ -128,14 +128,14 @@
       <li v-show="hasNavList">
         <a-dropdown trigger="click">
           <a-avatar
-            :size="32"
+            :size="34"
             :style="{
               cursor: 'pointer',
-              backgroundColor: '#c9cdd4'
+              backgroundColor: 'transparent'
             }"
           >
-            <!-- <img alt="avatar" :src="avatar" /> -->
-            <IconUser />
+            <img alt="avatar" src="../../assets/images/avatar.png" />
+            <!-- <IconUser /> -->
           </a-avatar>
           <template #content>
             <!-- <a-doption>
@@ -219,11 +219,10 @@
   const avatar = computed(() => {
     return userStore.avatar;
   });
-
   const hasNavList = computed(() => {
     return appStore.hasNavList;
   });
-
+  console.log('useUserStore===', userStore);
   const defaultActive = ref<string>('totalView');
   const theme = computed(() => {
     return appStore.theme;

@@ -65,8 +65,9 @@
   const { chartOption } = useChartOption(() => {
     return {
       tooltip: {
-        show: false,
-        trigger: 'item'
+        show: true,
+        trigger: 'item',
+        formatter: '{a}\n{b} : {c} ({d}%)'
       },
       grid: {
         left: '0',
