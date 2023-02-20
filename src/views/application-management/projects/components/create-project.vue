@@ -2,7 +2,7 @@
   <a-modal
     top="10%"
     :align-center="false"
-    :width="550"
+    :width="500"
     :ok-text="$t('common.button.save')"
     :visible="show"
     :mask-closable="false"
@@ -20,22 +20,25 @@
           :label="$t('applications.applications.table.name')"
           field="name"
           validate-trigger="change"
-          :rules="[{ required: true, message: '应用名称必填' }]"
+          :rules="[{ required: true, message: '项目名称必填' }]"
         >
-          <a-input v-model="formData.name"></a-input>
+          <a-input
+            v-model="formData.name"
+            style="width: 100%"
+            :max-length="50"
+            show-word-limit
+          ></a-input>
         </a-form-item>
-        <a-form-item
-          :label="$t('applications.applications.detail.env')"
-          field="environment"
-          validate-trigger="change"
-          :rules="[{ required: true, message: '实例部署环境必选' }]"
-        >
-          <a-select
-            v-model="formData.environment"
-            :options="environmentList"
-          ></a-select>
+        <a-form-item :label="$t('common.table.description')">
+          <a-textarea
+            v-model="formData.description"
+            :max-length="200"
+            show-word-limit
+            style="width: 100%"
+            :auto-size="{ minRows: 4, maxRows: 6 }"
+          ></a-textarea>
         </a-form-item>
-        <a-form-item
+        <!-- <a-form-item
           v-for="(item, index) in labelList"
           :key="index"
           :label="`标签${index + 1}`"
@@ -45,7 +48,6 @@
             ><a-input></a-input>
           </a-input-group>
           <a-button
-            v-if="index === labelList.length - 1"
             type="outline"
             size="mini"
             shape="round"
@@ -66,7 +68,7 @@
           >
             <icon-minus></icon-minus>
           </a-button>
-        </a-form-item>
+        </a-form-item> -->
       </a-form>
     </a-spin>
     <template #footer>
@@ -117,13 +119,8 @@
   const submitLoading = ref(false);
   const formData = reactive({
     name: '',
-    environment: ''
+    description: ''
   });
-  const environmentList = ref([
-    { label: 'Development', value: 'dev' },
-    { label: 'Production', value: 'prod' },
-    { label: 'Staging', value: 'stage' }
-  ]);
   const labelList = ref([{ label: 'label', value: 'dev' }]);
   const handleCancel = () => {
     emit('update:show', false);

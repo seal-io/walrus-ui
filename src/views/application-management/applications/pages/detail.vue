@@ -1,7 +1,7 @@
 <template>
   <ComCard top-gap class="application-detail-wrap">
     <GroupTitle title="新建应用"></GroupTitle>
-    <ModuleCard title="基本信息">
+    <!-- <ModuleCard title="基本信息">
       <template #title>
         <span>基本信息</span>
         <a-link style="line-height: 1">
@@ -28,7 +28,7 @@
           </a-input-group>
         </a-form-item>
       </a-form>
-    </ModuleCard>
+    </ModuleCard> -->
     <ModuleCard :title="`应用实例(${instanseList.length})`">
       <div class="content">
         <instanceThumb
@@ -36,9 +36,10 @@
           :key="item.id"
           :active="item.id === activeInstance"
           :data-info="item"
+          @edit="handleEditApp('edit')"
           @click="handleClickInstance(item)"
         ></instanceThumb>
-        <thumbButton :size="60" @click="handleAddInstance"></thumbButton>
+        <thumbButton :size="60" @click="handleEditApp('create')"></thumbButton>
       </div>
       <div class="instance-info">
         <div class="server">
@@ -71,9 +72,9 @@
         </a-tabs>
       </div>
     </ModuleCard>
-    <ModuleCard title="历史记录" style="margin-top: 30px">
+    <!-- <ModuleCard title="历史记录" style="margin-top: 30px">
       <applicationHistory></applicationHistory>
-    </ModuleCard>
+    </ModuleCard> -->
     <EditPageFooter>
       <template #save>
         <a-button
@@ -86,13 +87,13 @@
     </EditPageFooter>
     <createApplication
       v-model:show="showAppModal"
-      :title="$t('applications.applications.edit')"
+      :title="appModalTitle"
       @save="handleSaveAppInfo"
     ></createApplication>
-    <createInstance
+    <!-- <createInstance
       v-model:show="showInstanceModal"
       @save="handleSaveInstanceInfo"
-    ></createInstance>
+    ></createInstance> -->
   </ComCard>
 </template>
 
@@ -115,9 +116,10 @@
   import createInstance from '../components/create-instance.vue';
   import applicationHistory from '../components/application-history.vue';
 
-  const { router } = useCallCommon();
+  const { router, t } = useCallCommon();
   const formref = ref();
   const activeInstance = ref('1');
+  const appModalTitle = ref('');
   const showInstanceModal = ref(false);
   const showAppModal = ref(false);
   const activeKey = ref('configuration');
@@ -130,12 +132,13 @@
     tabLogs: markRaw(tabLogs),
     tabOutput: markRaw(tabOutput),
     tabOptimization: markRaw(tabOptimization),
-    tabGraph: markRaw(tabGraph)
+    tabGraph: markRaw(tabGraph),
+    tabHistory: markRaw(applicationHistory)
   };
   const instanseList = ref<InstanceData[]>([
-    { name: 'intance1', id: '1' },
-    { name: 'intance2', id: '2' },
-    { name: 'intance3', id: '3' }
+    { name: 'app1', id: '1' },
+    { name: 'app2', id: '2' },
+    { name: 'app3', id: '3' }
   ]);
   const labelList = ref([1, 2]);
   const handleAddInstance = () => {
@@ -144,13 +147,17 @@
   const handleTabChange = (val) => {
     activeKey.value = val;
   };
-  const handleEditApp = () => {
+  const handleEditApp = (type) => {
     showAppModal.value = true;
+    appModalTitle.value =
+      type === 'create'
+        ? t('applications.applications.create')
+        : t('applications.applications.edit');
   };
   const handleSaveAppInfo = () => {};
   const handleSaveInstanceInfo = () => {
     instanseList.value.push({
-      name: 'intance3',
+      name: 'app',
       id: `${instanseList.value.length + 1}`
     });
   };

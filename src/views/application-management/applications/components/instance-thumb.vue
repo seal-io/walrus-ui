@@ -1,6 +1,16 @@
 <template>
   <div class="thumb-item" :class="{ active: active }">
-    <span>{{ dataInfo.name }}</span>
+    <a-dropdown size="small" style="line-height: 30px" @select="handleClick">
+      <a-link size="mini" style="position: absolute; top: 0; right: 0">
+        <template #icon><icon-more style="font-size: 18px" /></template>
+      </a-link>
+      <template #content>
+        <a-doption value="edit"><icon-edit /></a-doption>
+      </template>
+    </a-dropdown>
+
+    <span class="name">{{ dataInfo.name }}</span>
+    <span>Env: dev</span>
   </div>
 </template>
 
@@ -22,10 +32,14 @@
       }
     }
   });
-  const emits = defineEmits(['change']);
+  const emits = defineEmits(['change', 'edit']);
   const handleCheckedChange = (val) => {
     console.log('val:', val);
     emits('change', val, props.dataInfo.id);
+  };
+  const handleClick = (val) => {
+    console.log('value===', val);
+    emits(val);
   };
 </script>
 
@@ -33,6 +47,7 @@
   .thumb-item {
     position: relative;
     display: flex;
+    flex-direction: column;
     align-items: center;
     justify-content: center;
     width: 100px;
@@ -42,6 +57,14 @@
 
     &:hover {
       .thumbCardHover();
+    }
+
+    .name {
+      margin-bottom: 10px;
+    }
+
+    :deep(.arco-link-icon) {
+      margin-right: 0;
     }
 
     &.active {

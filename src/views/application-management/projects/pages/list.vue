@@ -74,6 +74,7 @@
           <ListView
             v-model:selectedList="selectedKeys"
             :list="dataList"
+            @edit="handleEditProject"
           ></ListView>
         </a-tab-pane>
       </a-tabs>
@@ -89,20 +90,30 @@
         @page-size-change="handlePageSizeChange"
       />
     </div>
+    <CreateProject
+      v-model:show="showProjectModal"
+      :title="modalTitle"
+      @save="handleSaveProject"
+    ></CreateProject>
   </SpinCard>
 </template>
 
 <script lang="ts" setup>
   import { map, remove } from 'lodash';
   import { ref, reactive } from 'vue';
+  import useCallCommon from '@/hooks/use-call-common';
   import FilterBox from '@/components/filter-box/index.vue';
   import { deleteModal, execSucceed } from '@/utils/monitor';
   import ThumbView from '../components/thumb-view.vue';
   import ListView from '../components/list-view.vue';
+  import CreateProject from '../components/create-project.vue';
   import { ProjectItem } from '../config/interface';
 
   let timer: any = null;
+  const { t } = useCallCommon();
   const loading = ref(false);
+  const modalTitle = ref('');
+  const showProjectModal = ref(false);
   const currentView = ref('thumb'); // thumb, list
   const selectedKeys = ref<string[]>([]);
   const dataList = ref<ProjectItem[]>(
@@ -118,14 +129,21 @@
     currentView.value = val;
   };
   const handleCreateProject = () => {
-    dataList.value.push({
-      name: 'new project',
-      id: '1'
-    });
+    showProjectModal.value = true;
+    modalTitle.value = t('applications.projects.create');
+  };
+  const handleEditProject = (row) => {
+    showProjectModal.value = true;
+    modalTitle.value = t('applications.projects.edit');
   };
   const fetchData = async () => {};
   const handleFilter = () => {
     fetchData();
+  };
+  const handleSaveProject = () => {
+    queryParams.name = '';
+    queryParams.page = 1;
+    handleFilter();
   };
   const handleCheckChange = (checked, id) => {
     if (checked) {

@@ -128,13 +128,13 @@
       <li v-show="hasNavList">
         <a-dropdown trigger="click">
           <a-avatar
-            :size="34"
+            :size="32"
             :style="{
               cursor: 'pointer',
-              backgroundColor: 'transparent'
+              backgroundColor: 'rgba(201, 205, 212, 30%)'
             }"
           >
-            <img alt="avatar" src="../../assets/images/avatar.png" />
+            <img alt="avatar" src="../../assets/images/avatar-02.png" />
             <!-- <IconUser /> -->
           </a-avatar>
           <template #content>
