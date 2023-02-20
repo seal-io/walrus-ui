@@ -1,5 +1,5 @@
 <template>
-  <spinCard :title="$t('Cost Managment')" borderless>
+  <spinCard :title="$t('成本管理')" borderless>
     <div class="box">
       <a-grid :cols="24" :col-gap="10" :row-gap="10">
         <a-grid-item :span="{ xl: 16, lg: 16, md: 16, sm: 24 }">

@@ -4,7 +4,7 @@
       <span class="title">This Month Cost: </span>
       <span class="value">$ 150.56</span>
       <span class="rate">
-        <icon-arrow-fall class="icon-fall" /> 20% vs pervious month</span
+        <icon-arrow-fall class="icon-fall" />20% vs pervious month</span
       >
     </div>
     <LineBarChart
@@ -56,7 +56,7 @@
       name: 'key',
       label: 'Monthly Cost',
       value: [1, 3, 7, 8, 9],
-      color: 'rgb(33 74 196 / 50%)'
+      color: 'rgb(159, 232, 219)'
     }
   ]);
   const xAxis = ref(['一月', '二月', '三月', '四月', '五月']);

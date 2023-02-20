@@ -7,7 +7,7 @@
 <script lang="ts" setup>
   import { get, map, find } from 'lodash';
   import useChartOption from '@/hooks/chart-option';
-  import { LineSeriesOption, EChartsOption } from 'echarts';
+  import { LineSeriesOption, EChartsOption, graphic } from 'echarts';
   import { ToolTipFormatterParams } from '@/types/echarts';
   import { PropType, ref } from 'vue';
   import { useI18n } from 'vue-i18n';
@@ -20,6 +20,7 @@
     label: string;
     name: string;
     color?: string;
+    areaColor?: string[];
   }
   const props = defineProps({
     data: {
@@ -63,8 +64,23 @@
   const generateSeries = (
     name: string,
     data: number[],
-    lineColor?: string
+    lineColor?: string,
+    areaColor?: string[]
   ): LineSeriesOption => {
+    const areaStyle: any = areaColor?.length
+      ? {
+          color: new graphic.LinearGradient(0, 0, 0, 1, [
+            {
+              offset: 0,
+              color: areaColor[0]
+            },
+            {
+              offset: 1,
+              color: areaColor[1]
+            }
+          ])
+        }
+      : undefined;
     return {
       name: t(name),
       data,
@@ -86,7 +102,8 @@
       lineStyle: {
         width: 1.5,
         color: lineColor
-      }
+      },
+      areaStyle
     };
   };
   const tooltipItemsHtmlString = (items: ToolTipFormatterParams[]) => {
@@ -110,7 +127,7 @@
         return item.name === sItem.name;
       });
       const value = valueData?.value || [1];
-      return generateSeries(item.label, value, item.color);
+      return generateSeries(item.label, value, item.color, item.areaColor);
     });
     console.log('seriesDataList===', seriesDataList);
     return {

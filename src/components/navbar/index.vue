@@ -131,11 +131,11 @@
             :size="32"
             :style="{
               cursor: 'pointer',
-              backgroundColor: '#c9cdd4'
+              backgroundColor: 'rgba(201, 205, 212, 30%)'
             }"
           >
-            <!-- <img alt="avatar" :src="avatar" /> -->
-            <IconUser />
+            <img alt="avatar" src="../../assets/images/avatar-02.png" />
+            <!-- <IconUser /> -->
           </a-avatar>
           <template #content>
             <!-- <a-doption>
@@ -219,11 +219,10 @@
   const avatar = computed(() => {
     return userStore.avatar;
   });
-
   const hasNavList = computed(() => {
     return appStore.hasNavList;
   });
-
+  console.log('useUserStore===', userStore);
   const defaultActive = ref<string>('totalView');
   const theme = computed(() => {
     return appStore.theme;

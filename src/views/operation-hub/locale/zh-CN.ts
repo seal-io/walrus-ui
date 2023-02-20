@@ -9,7 +9,7 @@ export default {
   'operation.connectors.detail.readfile': '从文件读取',
   'operation.connectors.detail.fileformat': '文件格式: yaml或文本文件',
   'operation.environments.menu': '环境',
-  'operation.environments.create': '创建环境',
+  'operation.environments.create': '新建环境',
   'operation.environments.table.holder': '请输入环境名称',
   'operation.environments.table.list': '环境列表',
   'operation.environments.table.name': '名称',
@@ -17,8 +17,12 @@ export default {
   'operation.environments.detail.addConnector': '添加连接器',
   'operation.environments.detail.holder': '请选择连接器',
   'operation.templates.menu': '模板',
+  'operation.templates.table.title': '模板列表',
+  'operation.templates.table.holder': '请输入模板名称',
+  'operation.templates.type.holder': '请选择模板类型',
   'operation.templates.detail.edit': '模板编辑',
   'operation.templates.detail.add': '新建模板',
   'operation.templates.detail.source': '来源',
-  'operation.templates.detail.version': '版本'
+  'operation.templates.detail.version': '版本',
+  'operation.templates.table.type': '类型'
 };

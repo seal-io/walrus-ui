@@ -49,7 +49,8 @@
       name: 'key',
       label: 'Last 60 Days',
       value: [1, 3, 7, 8, 9],
-      color: 'rgb(33 74 196 / 50%)'
+      color: 'rgba(102, 201, 255, 0.6)'
+      // areaColor: ['rgba(102, 201, 255, 1)', 'rgba(102, 201, 255, 0.2)']
     }
   ]);
   const xAxis = ref(

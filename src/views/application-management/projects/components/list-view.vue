@@ -50,8 +50,15 @@
         >
           <template #cell="{ record }">
             <a-space :size="20">
-              <a-link type="text" size="small" @click="handleEdit(record)">
+              <a-link
+                type="text"
+                size="small"
+                @click="handleEditProject(record)"
+              >
                 <template #icon><icon-edit /></template>
+              </a-link>
+              <a-link type="text" size="small" @click="handleEdit(record)">
+                <template #icon><icon-list /></template>
               </a-link>
             </a-space>
           </template>
@@ -88,7 +95,7 @@
     }
   });
   type BaseType = string | number;
-  const emits = defineEmits(['update:selectedList']);
+  const emits = defineEmits(['update:selectedList', 'edit']);
   const { router } = useCallCommon();
   const { rowSelection, selectedKeys } = useRowSelect();
   const handleSelectChange = (list: BaseType[]) => {
@@ -102,6 +109,9 @@
       name: 'applicationsDetail',
       query: { id: row.id }
     });
+  };
+  const handleEditProject = (row) => {
+    emits('edit', row);
   };
   watchEffect(() => {
     rowSelection.selectedKeys = [].concat(props.selectedList as never[]);
