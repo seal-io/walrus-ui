@@ -84,15 +84,19 @@
 </script>
 
 <style lang="less" scoped>
+  .border() {
+    border: 1px solid transparent;
+  }
+
   .template-item {
     position: relative;
     display: flex;
     height: 140px;
     padding: 10px 25px 10px 10px;
     background-color: #fff;
-    border: 1px solid transparent;
     box-shadow: 0 0 4px var(--color-border-3);
     .thumbCard();
+    .border();
 
     &:hover {
       .thumbCardHover();
