@@ -5,7 +5,9 @@
         <template #icon><icon-more style="font-size: 18px" /></template>
       </a-link>
       <template #content>
-        <a-doption value="edit"><icon-edit /></a-doption>
+        <a-doption value="edit"
+          ><icon-edit />{{ $t('common.button.edit') }}</a-doption
+        >
       </template>
     </a-dropdown>
 

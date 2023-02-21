@@ -1,7 +1,18 @@
+type OutputItem = {
+  [k: string]: string | boolean;
+};
+export interface Schema {
+  Outputs: OutputItem[];
+  Inputs: OutputItem[];
+  Readme: string;
+  Variables: OutputItem[];
+  RequiredConnectorTypes: string[];
+}
+
 export interface TemplateRowData {
   id: string;
   source: string;
-  schema: object;
+  schema: Schema;
   description: string;
   status: string;
   createTime: string;
@@ -15,15 +26,4 @@ export interface TemplateFormData {
   description: string;
   source: string;
   version: string;
-}
-
-type OutputItem = {
-  [k: string]: string | boolean;
-};
-export interface Schema {
-  Outputs: OutputItem[];
-  Inputs: OutputItem[];
-  Readme: string;
-  Variables: OutputItem[];
-  RequiredConnectorTypes: string[];
 }

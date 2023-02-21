@@ -54,5 +54,7 @@ export default {
   'common.data.none': 'No Data',
   'common.action.none': 'Not Available',
   'common.button.addfile': 'Add File',
-  'common.logout.msg': 'Logout succeeded'
+  'common.logout.msg': 'Logout succeeded',
+  'common.form.rule.select': 'please select {name}',
+  'common.form.rule.input': '{name} is required'
 };

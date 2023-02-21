@@ -2,6 +2,7 @@ export default {
   'applications.applications.menu': 'Applications',
   'applications.applications.create': 'New Application',
   'applications.applications.edit': 'Edit Application',
+  'applications.applications.configuration.create': 'Add Module',
   'applications.applications.table.name': 'Name',
   'applications.applications.table.service': 'Services',
   'applications.applications.table.status': 'Status',

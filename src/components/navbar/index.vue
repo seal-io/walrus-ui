@@ -127,16 +127,17 @@
       </li>
       <li v-show="hasNavList">
         <a-dropdown trigger="click">
-          <a-avatar
-            :size="32"
-            :style="{
-              cursor: 'pointer',
-              backgroundColor: 'rgba(201, 205, 212, 30%)'
-            }"
-          >
-            <img alt="avatar" src="../../assets/images/avatar-02.png" />
-            <!-- <IconUser /> -->
-          </a-avatar>
+          <div>
+            <a-avatar
+              :size="32"
+              :style="{
+                cursor: 'pointer',
+                backgroundColor: 'rgba(201, 205, 212, 30%)'
+              }"
+            >
+              <img alt="avatar" src="../../assets/images/avatar-02.png" />
+            </a-avatar>
+          </div>
           <template #content>
             <!-- <a-doption>
               <a-space @click="switchRoles">

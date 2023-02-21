@@ -2,6 +2,7 @@ export default {
   'applications.applications.menu': '应用列表',
   'applications.applications.create': '新建应用',
   'applications.applications.edit': '编辑应用',
+  'applications.applications.configuration.create': '添加模块',
   'applications.applications.table.name': '名称',
   'applications.applications.table.service': '服务',
   'applications.applications.table.status': '状态',

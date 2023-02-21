@@ -43,7 +43,7 @@
         console.log({ copyRouter, appRoute });
         function travel(_routes: RouteRecordRaw[], layer: number) {
           if (!_routes || !_routes.length) {
-            // 隐藏菜单
+            // hide menu
             appStore.updateSettings({ hideMenu: true });
             return null;
           }

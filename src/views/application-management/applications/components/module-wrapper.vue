@@ -26,8 +26,9 @@
   import { ref } from 'vue';
   import slTransition from '@/components/sl-transition/index.vue';
   import { deleteModal, execSucceed } from '@/utils/monitor';
+  import { propsToAttrMap } from '@vue/shared';
 
-  defineProps({
+  const props = defineProps({
     title: {
       type: String,
       default() {
@@ -35,12 +36,14 @@
       }
     }
   });
+  const emits = defineEmits(['delete']);
   const isCollapse = ref(false);
   const handleCollapse = () => {
     isCollapse.value = !isCollapse.value;
   };
   const handleDeleteConfirm = () => {
     console.log('delete');
+    emits('delete');
   };
   const handleDelete = () => {
     deleteModal({ onOk: handleDeleteConfirm });
