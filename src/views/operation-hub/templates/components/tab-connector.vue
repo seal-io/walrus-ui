@@ -3,7 +3,7 @@
     <a-textarea
       readonly
       :auto-size="{ minRows: 10 }"
-      :model-value="get(schema, 'Resources')"
+      :model-value="get(schema, 'Connectors')"
     ></a-textarea>
   </div>
 </template>

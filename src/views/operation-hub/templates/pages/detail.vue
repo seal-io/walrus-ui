@@ -57,7 +57,7 @@
       >
         <a-input v-model="formData.version"></a-input>
       </a-form-item>
-      <a-form-item>
+      <!-- <a-form-item>
         <a-tabs
           :active-key="activeKey"
           lazy-load
@@ -69,11 +69,24 @@
             :key="item.com"
             :title="item.label"
           >
-            <Component :is="tabMap[item.com]"></Component>
+            <component
+              :is="tabMap[item.com]"
+              :schema="templateSchema"
+            ></component>
           </a-tab-pane>
         </a-tabs>
-      </a-form-item>
+      </a-form-item> -->
     </a-form>
+    <a-tabs
+      :active-key="activeKey"
+      lazy-load
+      class="page-line-tabs"
+      @change="handleTabChange"
+    >
+      <a-tab-pane v-for="item in tabList" :key="item.com" :title="item.label">
+        <component :is="tabMap[item.com]" :schema="templateSchema"></component>
+      </a-tab-pane>
+    </a-tabs>
     <EditPageFooter>
       <template #save>
         <a-button
@@ -95,17 +108,19 @@
 </template>
 
 <script lang="ts" setup>
+  import { assignIn, get } from 'lodash';
   import { ref, reactive, onMounted, markRaw } from 'vue';
   import GroupTitle from '@/components/group-title/index.vue';
   import EditPageFooter from '@/components/edit-page-footer/index.vue';
   import useCallCommon from '@/hooks/use-call-common';
   import { templateTypeList, tabList } from '../config';
+  import { Schema } from '../config/interface';
   import tabReadme from '../components/tab-readme.vue';
   import tabInput from '../components/tab-input.vue';
   import tabOutput from '../components/tab-output.vue';
   import tabResource from '../components/tab-resource.vue';
-  import tabConnector from '../components/tab-conntector.vue';
-  import { queryItemModules, createModules } from '../api';
+  import tabConnector from '../components/tab-connector.vue';
+  import { queryItemModules, createModules, updateModules } from '../api';
 
   const tabMap = {
     tabReadme,
@@ -119,6 +134,7 @@
   const formref = ref();
   const id = route.query.id as string;
   const submitLoading = ref(false);
+  const templateSchema = reactive({});
   const formData = reactive({
     id: '',
     name: 'test',
@@ -134,8 +150,12 @@
         id
       };
       const { data } = await queryItemModules(params);
+      assignIn(formData, data);
+      assignIn(templateSchema, get(data, 'schema') || {});
+      console.log('templateSchema==', templateSchema);
     } catch (error) {
       console.log('error');
+      formref.value.resetFields();
     }
   };
 
@@ -144,8 +164,11 @@
     if (!res) {
       try {
         submitLoading.value = true;
-        // TODO
-        await createModules(formData);
+        if (id) {
+          await updateModules(formData);
+        } else {
+          await createModules(formData);
+        }
         submitLoading.value = false;
       } catch (error) {
         submitLoading.value = false;

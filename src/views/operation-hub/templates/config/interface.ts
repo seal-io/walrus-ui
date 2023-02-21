@@ -16,3 +16,14 @@ export interface TemplateFormData {
   source: string;
   version: string;
 }
+
+type OutputItem = {
+  [k: string]: string | boolean;
+};
+export interface Schema {
+  Outputs: OutputItem[];
+  Inputs: OutputItem[];
+  Readme: string;
+  Variables: OutputItem[];
+  RequiredConnectorTypes: string[];
+}
