@@ -117,7 +117,7 @@
     />
     <CreatePerspective
       v-model:show="showDrawer"
-      title="创建视角"
+      :title="$t('cost.analyse.table.create')"
     ></CreatePerspective>
   </ComCard>
 </template>

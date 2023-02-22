@@ -4,3 +4,9 @@ export interface CostAnalyRow {
   monthSpend: string;
   timeRange: string;
 }
+
+export interface FilterItem {
+  filterName: string;
+  operator: string;
+  values: string[];
+}

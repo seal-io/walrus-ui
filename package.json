@@ -31,11 +31,11 @@
   "dependencies": {
     "@antv/g6": "^4.7.15",
     "@arco-design/web-vue": "2.37.4",
-    "@braks/vue-flow": "^0.4.27",
     "@highlightjs/vue-plugin": "^2.1.0",
     "@textcomplete/core": "^0.1.12",
     "@textcomplete/textarea": "^0.1.12",
     "@types/mockjs": "^1.0.4",
+    "@vue-flow/core": "^1.14.3",
     "@vueuse/core": "^7.3.0",
     "ace-builds": "^1.9.4",
     "arco-design-pro-vue": "^2.3.3",

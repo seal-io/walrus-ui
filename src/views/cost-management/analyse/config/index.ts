@@ -3,8 +3,8 @@ export const relationOptions = [
   { label: 'OR', value: 'or' }
 ];
 export const operatorList = [
-  { label: 'In', value: 'in' },
-  { label: 'Not In', value: 'NotIn' }
+  { label: 'In', value: 'IN' },
+  { label: 'Not In', value: 'NOTIN' }
 ];
 
 export const costShareMode = [
