@@ -122,7 +122,7 @@
   const appModalTitle = ref('');
   const showInstanceModal = ref(false);
   const showAppModal = ref(false);
-  const activeKey = ref('configuration');
+  const activeKey = ref('graph');
   const formData = reactive({
     name: ''
   });

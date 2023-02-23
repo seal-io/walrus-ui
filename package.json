@@ -35,6 +35,8 @@
     "@textcomplete/core": "^0.1.12",
     "@textcomplete/textarea": "^0.1.12",
     "@types/mockjs": "^1.0.4",
+    "@vue-flow/background": "^1.0.4",
+    "@vue-flow/controls": "^1.0.3",
     "@vue-flow/core": "^1.14.3",
     "@vueuse/core": "^7.3.0",
     "ace-builds": "^1.9.4",

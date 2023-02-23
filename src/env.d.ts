@@ -6,6 +6,13 @@ declare module '*.vue' {
   const component: DefineComponent<{}, {}, any>;
   export default component;
 }
+
+declare module '@vue-flow/background' {
+  export { Background } from '@vue-flow/background';
+}
+declare module '@vue-flow/controls' {
+  export { Controls } from '@vue-flow/controls';
+}
 interface ImportMetaEnv {
   readonly VITE_API_BASE_URL: string;
 }
