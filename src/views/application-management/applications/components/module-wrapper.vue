@@ -10,7 +10,7 @@
         />
         <span>{{ title }}</span>
       </span>
-      <icon-delete class="btn" style="font-size: 22px" @click="handleDelete" />
+      <icon-delete class="btn" style="font-size: 18px" @click="handleDelete" />
     </div>
     <slTransition>
       <div v-show="isCollapse">
