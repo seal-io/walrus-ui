@@ -28,7 +28,7 @@
           v-model="formData.description"
           style="width: 360px"
           :auto-size="{ minRows: 6, maxRows: 10 }"
-          :max-length="100"
+          :max-length="500"
           show-word-limit
         ></a-textarea>
       </a-form-item>
