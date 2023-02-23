@@ -27,8 +27,8 @@
 
     .dot {
       display: inline-block;
-      width: 16px;
-      height: 16px;
+      width: 14px;
+      height: 14px;
       margin-right: 6px;
       border-radius: 8px;
 

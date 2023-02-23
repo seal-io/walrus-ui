@@ -31,7 +31,7 @@ export default {
   'common.edit.success': 'update success!',
   'common.edit.fail': 'update failed',
   'common.message.fail': 'failed!',
-  'common.message.success': 'success!',
+  'common.message.success': 'succeed!',
   'common.delete.tips': 'Are you sure you want to delete?',
   'common.button.close': 'Close',
   'common.button.done': 'Done',

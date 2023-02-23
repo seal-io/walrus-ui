@@ -4,4 +4,8 @@ export const connectorTypeList = [
   { label: 'Custom', value: 'custom', com: 'custom' }
 ];
 
+export const finOpsStatus = [
+  { label: '集群成本分析工具为可用状态', value: 'ready' },
+  { label: '集群成本分析工具不可用，尝试重装', value: 'error' }
+];
 export default {};
