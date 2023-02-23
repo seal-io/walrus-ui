@@ -36,3 +36,10 @@ export function createConnector(data: ConnectorFormData) {
 export function updateConnector(data: ConnectorFormData) {
   return axios.put(`/connectors/${data.id}`, data);
 }
+
+export function reinstallFinOpsTools(data: ConnectorFormData) {
+  return axios.post(`/connectors/${data.id}/reinstall-finops-tools`, data);
+}
+export function syncFinOpsData(data: ConnectorFormData) {
+  return axios.post(`/connectors/${data.id}/sync-finops-data`, data);
+}

@@ -32,14 +32,20 @@
 </template>
 
 <script lang="ts" setup>
-  import { get } from 'lodash';
+  import { get, map } from 'lodash';
   import dayjs from 'dayjs';
-  import { computed, ref } from 'vue';
+  import { computed, ref, PropType } from 'vue';
   import { useI18n } from 'vue-i18n';
   import { datePickerMode } from './config';
 
   type timeType = 'date' | 'month' | 'year';
   type unitType = 'day' | 'month' | 'year';
+  type ShortCutsType = {
+    label: string;
+    unit: string;
+    format: string;
+    value: string[];
+  };
   const props = defineProps({
     timeUnit: {
       type: String,
@@ -76,6 +82,12 @@
       default() {
         return false;
       }
+    },
+    shortCuts: {
+      type: Array as PropType<ShortCutsType[]>,
+      default() {
+        return [];
+      }
     }
   });
   const selectRangeMap = {
@@ -88,6 +100,12 @@
   const startDate = ref('');
   const endDate = ref('');
   const selectShortcut = computed(() => {
+    if (props.shortCuts?.length) {
+      return map(props.shortCuts, (item) => {
+        item.label = t(item.label);
+        return item;
+      });
+    }
     const tDay = props.todayIn ? 0 : 1;
     return [
       {

@@ -1,11 +1,11 @@
 <template>
   <div class="condition-filter-wrap">
-    <a-space class="btn-wrap" :size="10" @click.stop="handleAddPolicy">
-      <a-button type="primary">
+    <a-space class="btn-wrap" :size="10">
+      <a-button type="outline" size="small" @click.stop="handleAddPolicy">
         <icon-plus style="margin-right: 4px" />
         <span>添加策略</span>
       </a-button>
-      <a-button type="primary" @click.stop="handleAddPolicyGroup">
+      <a-button type="outline" size="small" @click.stop="handleAddPolicyGroup">
         <icon-layers style="margin-right: 4px" />
         <span>添加策略组</span>
       </a-button>
@@ -28,7 +28,6 @@
             v-for="(item, index) in policyDataList"
             :key="index"
             class="condition-item"
-            style="width: 520px"
           >
             <a-select
               v-model="item[0].filterName"
@@ -38,9 +37,15 @@
             <a-select
               v-model="item[0].operator"
               :options="operatorList"
-              style="flex-basis: 100px"
+              style="flex-basis: 120px"
             ></a-select>
-            <a-input style="flex: 1"></a-input>
+            <a-select
+              v-model="item[0].values"
+              :max-tag-count="2"
+              multiple
+              :options="perspectiveDataList"
+              style="flex: 1"
+            ></a-select>
             <!-- <a-input style="flex: 1" v-model="item[0].values"></a-input> -->
             <a-button
               type="outline"
@@ -90,7 +95,6 @@
                 v-for="(pItem, pIndex) in sItem"
                 :key="pIndex"
                 class="condition-item"
-                style="width: 520px"
               >
                 <a-select
                   v-model="pItem.filterName"
@@ -100,9 +104,16 @@
                 <a-select
                   v-model="pItem.operator"
                   :options="operatorList"
-                  style="flex-basis: 100px"
+                  style="flex-basis: 120px"
                 ></a-select>
-                <a-input style="flex: 1"></a-input>
+                <a-select
+                  v-model="pItem.values"
+                  multiple
+                  :max-tag-count="2"
+                  :options="perspectiveDataList"
+                  style="flex: 1"
+                ></a-select>
+                <!-- <a-input style="flex: 1"></a-input> -->
                 <!-- <a-input style="flex: 1" v-model="pItem.values"></a-input> -->
 
                 <a-button
@@ -235,7 +246,7 @@
     border-radius: 2px;
 
     &.wrapper {
-      width: 640px;
+      // width: 640px;
     }
 
     &::before {
@@ -286,15 +297,18 @@
     .condition-item {
       position: relative;
       display: flex;
+      flex-wrap: wrap;
       align-items: center;
       justify-content: flex-start;
-      margin-left: 30px;
+      width: 650px;
+      // margin-left: 30px;
     }
 
     .operator {
       position: relative;
       display: flex;
       align-items: center;
+      margin-right: 30px;
 
       &::before {
         position: absolute;
