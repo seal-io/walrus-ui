@@ -142,7 +142,7 @@
                 <a-link
                   type="text"
                   size="small"
-                  @click="handleClickEdite(record)"
+                  @click="handleClickEdit(record)"
                 >
                   <template #icon><icon-edit class="size-16" /></template>
                 </a-link>
@@ -203,7 +203,12 @@
   import FilterBox from '@/components/filter-box/index.vue';
   import { ConnectorRowData } from '../config/interface';
   import StatusLabel from './status-label.vue';
-  import { queryConnectors, updateConnector } from '../api';
+  import {
+    queryConnectors,
+    updateConnector,
+    reinstallFinOpsTools,
+    syncFinOpsData
+  } from '../api';
 
   const { rowSelection, selectedKeys, handleSelectChange } = useRowSelect();
   const { router, t } = useCallCommon();
@@ -284,14 +289,34 @@
     });
     return path.href;
   };
-  const handleClickEdite = (row) => {
+  const handleClickEdit = (row) => {
     router.push({
       name: 'connectorK8sDetail',
       query: { id: row.id }
     });
   };
-  const handleReinstall = async (row) => {};
-  const handleFetchCost = async (row) => {};
+  const handleReinstall = async (row) => {
+    try {
+      loading.value = true;
+      await reinstallFinOpsTools(row);
+      Message.success(t('common.message.success'));
+      loading.value = false;
+    } catch (error) {
+      loading.value = false;
+      console.log(error);
+    }
+  };
+  const handleFetchCost = async (row) => {
+    try {
+      loading.value = true;
+      await syncFinOpsData(row);
+      Message.success(t('common.message.success'));
+      loading.value = false;
+    } catch (error) {
+      loading.value = false;
+      console.log(error);
+    }
+  };
   const handleEnableFinOps = async (enable, row) => {
     try {
       loading.value = true;
@@ -300,6 +325,7 @@
       loading.value = false;
       Message.success(t('common.message.success'));
     } catch (error) {
+      loading.value = false;
       console.log(error);
     }
   };

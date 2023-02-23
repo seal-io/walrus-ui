@@ -2,23 +2,25 @@
   <ComCard top-gap class="workflows-list">
     <FilterBox style="margin-bottom: 10px">
       <template #params>
-        <dateRange
+        <!-- <dateRange
           v-model:timeUnit="queryParams.timeUnit"
           v-model:start="queryParams.start"
           v-model:end="queryParams.end"
           today-in
-        ></dateRange>
-        <a-select
-          v-model="queryParams.perspective"
+        ></dateRange> -->
+        <a-input
+          v-model="queryParams.name"
           allow-clear
-          allow-search
-          :options="viewList"
-          style="width: 160px"
+          style="width: 240px"
           :placeholder="$t('cost.analyse.table.holder')"
           @clear="handleSearch"
           @change="handleSearch"
+          @press-enter="handleSearch"
         >
-        </a-select>
+          <template #prefix>
+            <icon-search />
+          </template>
+        </a-input>
         <a-space style="margin-left: 10px">
           <a-button type="primary" @click="handleSearch">{{
             $t('common.button.search')
@@ -67,11 +69,18 @@
           tooltip
           :cell-style="{ minWidth: '40px' }"
           align="center"
-          data-index="type"
+          data-index="builtin"
           :title="$t('cost.analyse.table.type')"
         >
+          <template #cell="{ record }">
+            <span>{{
+              record.builtin
+                ? $t('cost.analyse.table.builtin')
+                : $t('cost.analyse.table.custom')
+            }}</span>
+          </template>
         </a-table-column>
-        <a-table-column
+        <!-- <a-table-column
           ellipsis
           tooltip
           :cell-style="{ minWidth: '40px' }"
@@ -79,13 +88,13 @@
           data-index="spend"
           :title="$t('cost.analyse.table.currentCost')"
         >
-        </a-table-column>
+        </a-table-column> -->
         <a-table-column
           ellipsis
           tooltip
           :cell-style="{ minWidth: '40px' }"
           align="center"
-          data-index="time"
+          data-index="startTime"
           :title="$t('cost.analyse.table.time')"
         >
         </a-table-column>
@@ -97,9 +106,11 @@
           :title="$t('common.table.operation')"
         >
           <template #cell="{ record }">
-            <a-link type="text" size="small" @click="handleView(record)">
-              <template #icon><icon-list style="font-size: 16px" /></template>
-            </a-link>
+            <a-tooltip :content="$t('common.button.detail')">
+              <a-link type="text" size="small" @click="handleView(record)">
+                <template #icon><icon-list class="size-16" /></template>
+              </a-link>
+            </a-tooltip>
           </template>
         </a-table-column>
       </template>
@@ -123,15 +134,15 @@
 </template>
 
 <script lang="ts" setup>
-  import { map } from 'lodash';
+  import { map, capitalize } from 'lodash';
   import { reactive, ref, onMounted } from 'vue';
   import useCallCommon from '@/hooks/use-call-common';
   import { deleteModal, execSucceed } from '@/utils/monitor';
   import useRowSelect from '@/hooks/use-row-select';
   import FilterBox from '@/components/filter-box/index.vue';
-  import DateRange from '@/views/dashboard/components/date-range.vue';
-  import { CostAnalyRow } from '../config/interface';
+  import { PerspectiveRowData } from '../config/interface';
   import CreatePerspective from '../components/create-perspectiv.vue';
+  import { queryPerspectives } from '../api';
 
   const { rowSelection, selectedKeys, handleSelectChange } = useRowSelect();
   const { router } = useCallCommon();
@@ -140,57 +151,23 @@
   const showDrawer = ref(false);
   const total = ref(100);
   const queryParams = reactive({
-    perspective: '1',
-    start: '',
-    end: '',
-    timeUnit: 'day',
+    name: '',
     page: 1,
     perPage: 10
   });
-  const dataList = ref<CostAnalyRow[]>([
-    {
-      name: 'all',
-      createTime: '2023-02-09',
-      type: 'BuiltIn',
-      spend: '$100.345',
-      time: 'Last 7 Days',
-      monthSpend: 'dsd',
-      timeRange: 'dd'
-    },
-    {
-      name: 'singleCluster',
-      createTime: '2023-02-09',
-      type: 'BuiltIn',
-      spend: '$100.345',
-      time: 'Last 7 Days',
-      monthSpend: 'dsd',
-      timeRange: 'dd'
-    },
-    {
-      name: 'singleProject',
-      createTime: '2023-02-09',
-      type: 'BuiltIn',
-      spend: '$100.345',
-      time: 'Last 7 Days',
-      monthSpend: 'dsd',
-      timeRange: 'dd'
-    },
-    {
-      name: 'Team Big Data',
-      createTime: '2023-02-09',
-      type: 'BuiltIn',
-      spend: '$100.345',
-      time: 'Last 7 Days',
-      monthSpend: 'dsd',
-      timeRange: 'dd'
+  const dataList = ref<PerspectiveRowData[]>([]);
+  const fetchData = async () => {
+    try {
+      loading.value = true;
+      const { data } = await queryPerspectives(queryParams);
+      dataList.value = data?.items || [];
+      total.value = data?.pagination.total || 0;
+      loading.value = false;
+    } catch (error) {
+      loading.value = false;
+      console.log(error);
     }
-  ]);
-  const viewList = ref<{ label: string; value: string }[]>([
-    { label: 'view-1', value: '1' },
-    { label: 'view-2', value: '2' },
-    { label: 'view-3', value: '3' }
-  ]);
-  const fetchData = async () => {};
+  };
   const handleFilter = () => {
     fetchData();
   };
@@ -202,7 +179,7 @@
     }, 100);
   };
   const handleReset = () => {
-    queryParams.perspective = '';
+    queryParams.name = '';
     queryParams.page = 1;
     handleFilter();
   };
@@ -216,7 +193,10 @@
     handleFilter();
   };
   const handleCreate = () => {
-    showDrawer.value = true;
+    // showDrawer.value = true;
+    router.push({
+      name: 'costPerspectiveEdit'
+    });
   };
   const handleDeleteConfirm = async () => {
     try {
@@ -240,10 +220,10 @@
   };
   const handleView = (row) => {
     let routeName = 'costAnalyseAll';
-    if (row.name === 'singleCluster') {
+    if (capitalize(row.name) === 'Cluster') {
       routeName = 'costAnalyseCluster';
     }
-    if (row.name === 'singleProject') {
+    if (capitalize(row.name) === 'Project') {
       routeName = 'costAnalyseProject';
     }
     router.push({ name: routeName, query: { id: row.id } });
@@ -252,7 +232,7 @@
     deleteModal({ onOk: handleDeleteConfirm });
   };
   onMounted(() => {
-    console.log('workflows');
+    fetchData();
   });
 </script>
 

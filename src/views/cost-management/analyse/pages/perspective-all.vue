@@ -1,10 +1,11 @@
 <template>
   <div class="container">
     <dateRange
-      v-model:start="queryParams.start"
-      v-model:end="queryParams.end"
+      v-model:start="queryParams.startTime"
+      v-model:end="queryParams.endTime"
       :show-extra="false"
       style="margin-bottom: 10px"
+      :short-cuts="DateShortCuts"
       today-in
       border-less
     ></dateRange>
@@ -99,7 +100,8 @@
     costOverview,
     dailyCostCols,
     costPerClusterCols,
-    costPerProjectCols
+    costPerProjectCols,
+    DateShortCuts
   } from '../config';
 
   const title = {
@@ -147,8 +149,8 @@
     '十'
   ]);
   const queryParams = reactive({
-    start: '',
-    end: ''
+    startTime: '',
+    endTime: ''
   });
 
   const dataList = ref([

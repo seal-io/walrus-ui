@@ -23,9 +23,10 @@
         </template>
       </a-select>
       <dateRange
-        v-model:start="queryParams.start"
-        v-model:end="queryParams.end"
+        v-model:start="queryParams.startTime"
+        v-model:end="queryParams.endTime"
         :show-extra="false"
+        :short-cuts="DateShortCuts"
         today-in
         border-less
         @change="handleSearch"
@@ -147,7 +148,8 @@
   import {
     clusterCostOverview,
     resourceCostOverview,
-    projectCostCols
+    projectCostCols,
+    DateShortCuts
   } from '../config';
 
   const title = {
@@ -196,8 +198,8 @@
     '十'
   ]);
   const queryParams = reactive({
-    start: '',
-    end: '',
+    endTime: '',
+    startTime: '',
     cluster: ''
   });
 

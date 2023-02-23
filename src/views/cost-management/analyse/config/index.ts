@@ -1,3 +1,5 @@
+import dayjs from 'dayjs';
+
 export const relationOptions = [
   { label: 'AND', value: 'and' },
   { label: 'OR', value: 'or' }
@@ -13,6 +15,32 @@ export const costShareMode = [
   { label: 'Proportionally split', value: 'proportionally' }
 ];
 
+export const DateShortCuts = [
+  {
+    label: 'cost.analyse.datepicker.7days',
+    unit: 'day',
+    format: 'YYYY-MM-DD',
+    value: [
+      dayjs().subtract(6, 'day').format('YYYY-MM-DD'),
+      dayjs().subtract(0, 'day').format('YYYY-MM-DD')
+    ]
+  },
+  {
+    label: 'cost.analyse.datepicker.30days',
+    unit: 'day',
+    format: 'YYYY-MM-DD',
+    value: [
+      dayjs().subtract(29, 'day').format('YYYY-MM-DD'),
+      dayjs().subtract(0, 'day').format('YYYY-MM-DD')
+    ]
+  },
+  {
+    label: 'cost.analyse.datepicker.currentMonth',
+    unit: 'day',
+    format: 'YYYY-MM-DD',
+    value: [dayjs().format('YYYY-MM-01'), dayjs().format('YYYY-MM-DD')]
+  }
+];
 export const costOverview = [
   {
     label: 'Spend Total',
