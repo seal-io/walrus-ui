@@ -175,7 +175,7 @@ export default function usePerspectiveCost() {
       );
       const clusterFilter = find(
         allocationQueries,
-        (item) => item.groupBy === 'clusterName'
+        (item) => item.groupBy === 'cluster_name'
       );
       dailyCostFilters.value = {
         ...dailyFilter,
