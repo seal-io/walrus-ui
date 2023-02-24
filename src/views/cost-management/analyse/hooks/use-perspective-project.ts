@@ -54,7 +54,9 @@ export default function usePerspectiveCost() {
     try {
       const params = {
         ...omit(queryParams, ['project']),
-        fieldName: 'label:project'
+        fieldName: 'label:project',
+        startTime: dayjs(queryParams.startTime).format('YYYY-MM-DDTHH:mm:ssZ'),
+        endTime: dayjs(queryParams.endTime).format('YYYY-MM-DDTHH:mm:ssZ')
       };
       const { data } = await queryPerspectiveField(params);
       projectList.value = data?.items || [];
@@ -63,9 +65,9 @@ export default function usePerspectiveCost() {
       // set filter value
       const projectData = get(data, 'items.0') || {};
       projectName.value = projectData?.label || 'Project';
-      each(projectCostFilters.value, (vItem) => {
-        each(get(vItem, 'filters') || [], (fItem) => {
-          fItem.values = [queryParams.project];
+      each(get(projectCostFilters.value, 'filters') || [], (fItem) => {
+        each(fItem, (sItem) => {
+          sItem.values = [queryParams.project];
         });
       });
     } catch (error) {

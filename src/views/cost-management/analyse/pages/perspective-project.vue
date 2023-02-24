@@ -201,9 +201,9 @@
   const handleProjectChange = (val) => {
     const projectData = find(projectList.value, (item) => item.value === val);
     projectName.value = projectData?.label || 'Project';
-    each(projectCostFilters.value, (vItem) => {
-      each(get(vItem, 'filters') || [], (fItem) => {
-        fItem.values = [val];
+    each(get(projectCostFilters.value, 'filters') || [], (fItem) => {
+      each(fItem, (sItem) => {
+        sItem.values = [val];
       });
     });
     projectCostFilters.value = {

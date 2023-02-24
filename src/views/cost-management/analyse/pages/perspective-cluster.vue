@@ -290,9 +290,9 @@
     const clusterData = find(clusterList.value, (item) => item.value === val);
     clusterName.value = clusterData?.label || 'Cluster';
 
-    each(dailyCostFilters.value, (vItem) => {
-      each(get(vItem, 'filters') || [], (fItem) => {
-        fItem.values = [queryParams.connectorID];
+    each(get(dailyCostFilters.value, 'filters') || [], (fItem) => {
+      each(fItem, (sItem) => {
+        sItem.values = [val];
       });
     });
     workloadCostFilters.value = {

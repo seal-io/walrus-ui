@@ -48,6 +48,7 @@ export interface PerspectiveRowData {
   startTime: string;
   endTime: string;
   builtin: boolean;
+  disabled?: boolean;
   allocationQueries: AllocationQueriesItem[];
 }
 
