@@ -82,7 +82,9 @@ export default function usePerspectiveCost() {
     try {
       const params = {
         ...omit(queryParams, ['connectorID']),
-        fieldName: 'cluster_name'
+        fieldName: 'cluster_name',
+        startTime: dayjs(queryParams.startTime).format('YYYY-MM-DDTHH:mm:ssZ'),
+        endTime: dayjs(queryParams.endTime).format('YYYY-MM-DDTHH:mm:ssZ')
       };
       const { data } = await queryPerspectiveField(params);
       clusterList.value = data?.items || [];
@@ -91,9 +93,16 @@ export default function usePerspectiveCost() {
 
       each(dailyCostFilters.value, (vItem) => {
         each(get(vItem, 'filters') || [], (fItem) => {
+          console.log('dailyCostFilters=222=', fItem);
           fItem.values = [queryParams.connectorID];
         });
       });
+      each(get(dailyCostFilters.value, 'filters') || [], (fItem) => {
+        each(fItem, (sItem) => {
+          sItem.values = [queryParams.connectorID];
+        });
+      });
+      console.log('dailyCostFilters===', dailyCostFilters.value);
     } catch (error) {
       console.log(error);
     }

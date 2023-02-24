@@ -162,7 +162,11 @@
     try {
       loading.value = true;
       const { data } = await queryPerspectives(queryParams);
-      dataList.value = data?.items || [];
+      const list = data?.items || [];
+      dataList.value = map(list, (item) => {
+        item.disabled = item.builtin;
+        return item;
+      });
       total.value = data?.pagination.total || 0;
       loading.value = false;
     } catch (error) {
