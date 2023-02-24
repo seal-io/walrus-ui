@@ -198,7 +198,7 @@
     emits('update:end', get(value, '1'));
     startDate.value = get(value, '0');
     endDate.value = get(value, '1');
-    emits('change', value);
+    // emits('change', value);
     setTimeout(() => {
       popupVisible.value = false;
     }, 100);

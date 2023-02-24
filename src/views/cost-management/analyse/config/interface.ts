@@ -1,8 +1,11 @@
 export interface CostAnalyRow {
-  name: string;
-  type: string;
-  monthSpend: string;
-  timeRange: string;
+  itemName: string;
+  startTime: string;
+  totalCost: number;
+  sharedCost: number;
+  cpuCost: number;
+  ramCost: number;
+  pvCost: number;
 }
 
 export interface FilterItem {
@@ -46,4 +49,16 @@ export interface PerspectiveRowData {
   endTime: string;
   builtin: boolean;
   allocationQueries: AllocationQueriesItem[];
+}
+
+export interface FilterParamsType extends AllocationQueriesItem {
+  startTime: string;
+  endTime: string;
+}
+
+export interface ChartData {
+  xAxis: string[];
+  line: Array<{ name: string; value: number[] }>;
+  bar: Array<{ name: string; value: number[] }>;
+  dataConfig: Array<{ name: string; label: string; color?: string }>;
 }

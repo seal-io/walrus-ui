@@ -19,7 +19,6 @@
     </FilterBox>
     <a-table
       column-resizable
-      style="margin-bottom: 20px"
       :bordered="false"
       :loading="loading"
       :data="dataList"
@@ -28,6 +27,7 @@
     >
     </a-table>
     <a-pagination
+      style="margin-top: 20px"
       size="small"
       :total="total"
       :page-size="queryParams.perPage"
@@ -42,11 +42,12 @@
 </template>
 
 <script lang="ts" setup>
-  import { map } from 'lodash';
-  import { reactive, ref, onMounted, PropType } from 'vue';
+  import { map, omit, pick } from 'lodash';
+  import { reactive, ref, onMounted, PropType, watchEffect, watch } from 'vue';
   import FilterBox from '@/components/filter-box/index.vue';
-  import { commonRequestList } from '@/api/commonListRequest';
-  import { CostAnalyRow } from '../config/interface';
+  import { CostAnalyRow, FilterParamsType } from '../config/interface';
+  import { queryPerspectiveData } from '../api';
+  import testData from '../config/testData';
 
   const props = defineProps({
     columns: {
@@ -60,32 +61,44 @@
       default() {
         return '';
       }
+    },
+    filterParams: {
+      type: Object as PropType<FilterParamsType>,
+      default() {
+        return {};
+      }
     }
   });
   let timer: any = null;
   const loading = ref(false);
-  const total = ref(100);
+  const total = ref(0);
   const queryParams = reactive({
     query: '',
     page: 1,
     perPage: 10
   });
-  const dataList = ref<CostAnalyRow[]>(
-    Array(10).fill({
-      name: 'app-1',
-      createTime: '2023-02-09',
-      type: 'BuiltIn',
-      spend: '$100.345',
-      time: 'Last 7 Days'
-    })
-  );
+  const dataList = ref<CostAnalyRow[]>([]);
 
   const fetchData = async () => {
-    if (!props.api) return;
     try {
-      const { data } = await commonRequestList(props.api, queryParams);
+      loading.value = true;
+      const params = {
+        ...omit(props.filterParams, ['startTime']),
+        query: queryParams.query,
+        paging: {
+          ...pick(queryParams, ['page', 'perPage'])
+        }
+      };
+      const { data } = await queryPerspectiveData(params);
+      dataList.value = data?.items || [];
+      // dataList.value = testData;
+      total.value = data?.pagination?.total || 0;
+      loading.value = false;
     } catch (error) {
+      dataList.value = [];
+      // dataList.value = testData;
       console.log(error);
+      loading.value = false;
     }
   };
   const handleFilter = () => {
@@ -112,9 +125,20 @@
     queryParams.perPage = pageSize;
     handleFilter();
   };
-
+  watchEffect(() => {
+    // fetchData();
+  });
+  watch(
+    () => props.filterParams,
+    () => {
+      fetchData();
+    },
+    {
+      immediate: false
+    }
+  );
   onMounted(() => {
-    fetchData();
+    // fetchData();
   });
 </script>
 

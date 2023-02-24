@@ -134,8 +134,9 @@
 </template>
 
 <script lang="ts" setup>
-  import { map, capitalize } from 'lodash';
+  import { map, capitalize, cloneDeep } from 'lodash';
   import { reactive, ref, onMounted } from 'vue';
+  import { useCostManageStore } from '@/store';
   import useCallCommon from '@/hooks/use-call-common';
   import { deleteModal, execSucceed } from '@/utils/monitor';
   import useRowSelect from '@/hooks/use-row-select';
@@ -145,6 +146,7 @@
   import { queryPerspectives } from '../api';
 
   const { rowSelection, selectedKeys, handleSelectChange } = useRowSelect();
+  const costManageStore = useCostManageStore();
   const { router } = useCallCommon();
   let timer: any = null;
   const loading = ref(false);
@@ -226,6 +228,10 @@
     if (capitalize(row.name) === 'Project') {
       routeName = 'costAnalyseProject';
     }
+    const sKey = `cost${row.id}`;
+    costManageStore.setFilterInfo({
+      [sKey]: [...cloneDeep(row.allocationQueries)]
+    });
     router.push({ name: routeName, query: { id: row.id } });
   };
   const handleDelete = async () => {
