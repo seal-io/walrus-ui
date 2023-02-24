@@ -1,20 +1,20 @@
 <template>
   <ComCard top-gap class="application-detail-wrap">
     <GroupTitle title="新建应用"></GroupTitle>
-    <!-- <ModuleCard title="基本信息">
+    <ModuleCard title="基本信息">
       <template #title>
-        <span>基本信息</span>
-        <a-link style="line-height: 1">
+        <span>项目信息</span>
+        <!-- <a-link style="line-height: 1">
           <template #icon>
             <icon-edit
               style="margin-left: 4px; font-size: 16px"
               @click="handleEditApp"
             />
           </template>
-        </a-link>
+        </a-link> -->
       </template>
       <a-form ref="formref" :model="formData" auto-label-width disabled>
-        <a-form-item label="应用名">
+        <a-form-item label="项目名称">
           <a-input v-model="formData.name"></a-input>
         </a-form-item>
         <a-form-item
@@ -28,7 +28,7 @@
           </a-input-group>
         </a-form-item>
       </a-form>
-    </ModuleCard> -->
+    </ModuleCard>
     <ModuleCard :title="`应用实例(${instanseList.length})`">
       <div class="content">
         <instanceThumb
@@ -122,7 +122,7 @@
   const appModalTitle = ref('');
   const showInstanceModal = ref(false);
   const showAppModal = ref(false);
-  const activeKey = ref('graph');
+  const activeKey = ref('configuration');
   const formData = reactive({
     name: ''
   });

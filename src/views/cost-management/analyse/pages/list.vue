@@ -97,6 +97,9 @@
           data-index="startTime"
           :title="$t('cost.analyse.table.time')"
         >
+          <template #cell="{ record }">
+            <span>{{ getTimeValue(record?.startTime) }}</span>
+          </template>
         </a-table-column>
         <a-table-column
           ellipsis
@@ -134,7 +137,7 @@
 </template>
 
 <script lang="ts" setup>
-  import { map, capitalize, cloneDeep } from 'lodash';
+  import { map, capitalize, cloneDeep, find } from 'lodash';
   import { reactive, ref, onMounted } from 'vue';
   import { useCostManageStore } from '@/store';
   import useCallCommon from '@/hooks/use-call-common';
@@ -144,10 +147,11 @@
   import { PerspectiveRowData } from '../config/interface';
   import CreatePerspective from '../components/create-perspectiv.vue';
   import { queryPerspectives } from '../api';
+  import { DateShortCuts } from '../config';
 
   const { rowSelection, selectedKeys, handleSelectChange } = useRowSelect();
   const costManageStore = useCostManageStore();
-  const { router } = useCallCommon();
+  const { router, t } = useCallCommon();
   let timer: any = null;
   const loading = ref(false);
   const showDrawer = ref(false);
@@ -158,6 +162,10 @@
     perPage: 10
   });
   const dataList = ref<PerspectiveRowData[]>([]);
+  const getTimeValue = (val) => {
+    const data = find(DateShortCuts, (item) => item.timeControl === val);
+    return data ? t(data.label) : val;
+  };
   const fetchData = async () => {
     try {
       loading.value = true;
