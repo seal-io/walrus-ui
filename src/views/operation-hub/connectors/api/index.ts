@@ -38,8 +38,8 @@ export function updateConnector(data: ConnectorFormData) {
 }
 
 export function reinstallFinOpsTools(data: ConnectorFormData) {
-  return axios.post(`/connectors/${data.id}/reinstall-finops-tools`, data);
+  return axios.post(`/connectors/${data.id}/reinstall-cost-tools`, data);
 }
 export function syncFinOpsData(data: ConnectorFormData) {
-  return axios.post(`/connectors/${data.id}/sync-finops-data`, data);
+  return axios.post(`/connectors/${data.id}/sync-cost-data`, data);
 }
