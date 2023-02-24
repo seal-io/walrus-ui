@@ -1,12 +1,12 @@
 <template>
   <a-space class="chart-btn-wrap" :size="8">
     <IconFont
-      type="icon-zhuzhuangtu"
+      type="icon-chart"
       :class="{ active: active === 'bar' }"
       @click="handleClick('bar')"
     ></IconFont>
     <IconFont
-      type="icon-chartline"
+      type="icon-line_chart"
       :class="{ active: active === 'line' }"
       @click="handleClick('line')"
     ></IconFont>

@@ -1,6 +1,19 @@
 <template>
   <div class="issue-stack-trend">
-    <Chart :style="{ height: height }" :option="chartOption" />
+    <Chart
+      v-if="data.length"
+      :style="{ height: height }"
+      :option="chartOption"
+    />
+    <div
+      v-if="!data.length"
+      class="title"
+      :style="{ marginTop: `${get(configOptions, 'title.top')}px` }"
+      >{{ get(configOptions, 'title.text') }}</div
+    >
+    <div v-if="!data.length" :style="{ height: height }" class="empty-data">
+      <a-empty :style="{ marginTop: `${height}px` }"></a-empty>
+    </div>
   </div>
 </template>
 
@@ -226,4 +239,15 @@
   });
 </script>
 
-<style></style>
+<style lang="less" scoped>
+  .empty-data {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+
+    :deep(.arco-empty-description) {
+      font-size: 12px;
+    }
+  }
+</style>

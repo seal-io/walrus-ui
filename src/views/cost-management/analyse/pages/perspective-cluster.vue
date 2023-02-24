@@ -4,7 +4,7 @@
       style="display: flex; justify-content: space-between; margin-bottom: 10px"
     >
       <a-select
-        v-model="queryParams.cluster"
+        v-model="queryParams.query"
         :placeholder="$t('cost.analyse.cluster.holder')"
         class="border-less"
         style="width: 200px"
@@ -117,9 +117,10 @@
       <LineBarChart
         height="220px"
         :show-type="active"
-        :data-list="dataList"
-        :data-config="dataConfig"
-        :x-axis="xAxis"
+        :line-list="dailyCostChart.line"
+        :bar-list="dailyCostChart.bar"
+        :data-config="dailyCostChart.dataConfig"
+        :x-axis="dailyCostChart.xAxis"
         :config-options="configOptions"
       ></LineBarChart>
       <TableList :columns="dailyCostCols" style="margin-top: 20px"></TableList>
@@ -129,7 +130,7 @@
         style="flex: 1"
         :config-options="BarConfigOptions"
         height="260px"
-        :data-list="barDataList"
+        :data-list="nameSpaceCostChart.bar"
       ></horizontalBar>
       <TableList
         :columns="namespaceCostCols"
@@ -140,9 +141,9 @@
       <LineBarChart
         height="220px"
         show-type="line"
-        :data-list="dataList"
-        :data-config="dataConfig"
-        :x-axis="xAxis"
+        :line-list="[]"
+        :data-config="workloadCostChart.dataConfig"
+        :x-axis="workloadCostChart.xAxis"
         :config-options="{
           title: {
             ...title
@@ -167,7 +168,7 @@
 
 <script lang="ts" setup>
   import { filter } from 'lodash';
-  import { reactive, ref, computed } from 'vue';
+  import { reactive, ref, computed, onMounted } from 'vue';
   import useCallCommon from '@/hooks/use-call-common';
   import DateRange from '@/components/date-range/index.vue';
   import DataCard from '@/components/data-card/index.vue';
@@ -183,6 +184,7 @@
     clusterNamespaceCostCols,
     DateShortCuts
   } from '../config';
+  import usePerspectiveCost from '../hooks/use-perspective-cluster';
 
   const title = {
     text: '',
@@ -200,41 +202,25 @@
     bottom: 0,
     containLabel: true
   };
+  const {
+    getPerspectiveItemInfo,
+    getDailyCostChart,
+    getWorkloadCostChart,
+    getNamespaceCostChart,
+    dailyCostFilters,
+    workloadCostFilters,
+    nameSpaceCostFilters,
+    dailyCostChart,
+    workloadCostChart,
+    nameSpaceCostChart,
+    queryParams
+  } = usePerspectiveCost();
   const { t } = useCallCommon();
   const clusterOptions = [
     { label: 'cluster-1', value: 'cluster1' },
     { label: 'cluster-2', value: 'cluster2' }
   ];
   const active = ref<'bar' | 'line'>('bar');
-  const dataConfig = ref([
-    { name: '一', label: '一', value: [1] },
-    { name: '二', label: '二', value: [2] },
-    { name: '三', label: '三', value: [3] },
-    { name: '四', label: '四', value: [4] },
-    { name: '五', label: '五', value: [5] },
-    { name: '六', label: '六', value: [6] },
-    { name: '七', label: '七', value: [7] },
-    { name: '八', label: '八', value: [8] },
-    { name: '九', label: '九', value: [9] },
-    { name: '十', label: '十', value: [10] }
-  ]);
-  const xAxis = ref([
-    '一',
-    '二',
-    '三',
-    '四',
-    '五',
-    '六',
-    '七',
-    '八',
-    '九',
-    '十'
-  ]);
-  const queryParams = reactive({
-    endTime: '',
-    startTime: '',
-    cluster: ''
-  });
 
   const dataList = ref([
     { name: '一', value: [1] },
@@ -296,8 +282,32 @@
   const namespaceCostCols = computed(() => {
     return filter(clusterNamespaceCostCols, (item) => !item.showIn);
   });
-  const handleSearch = () => {};
-  const handleReset = () => {};
+  const handleSearch = () => {
+    workloadCostFilters.value = {
+      ...workloadCostFilters.value,
+      ...queryParams
+    };
+    dailyCostFilters.value = {
+      ...dailyCostFilters.value,
+      ...queryParams
+    };
+    nameSpaceCostFilters.value = {
+      ...nameSpaceCostFilters.value,
+      ...queryParams
+    };
+    getDailyCostChart();
+    getNamespaceCostChart();
+    // getWorkloadCostChart();
+  };
+  const initData = async () => {
+    await getPerspectiveItemInfo();
+    getDailyCostChart();
+    getNamespaceCostChart();
+    // getWorkloadCostChart();
+  };
+  onMounted(() => {
+    initData();
+  });
 </script>
 
 <style></style>

@@ -4,7 +4,7 @@
       style="display: flex; justify-content: space-between; margin-bottom: 10px"
     >
       <a-select
-        v-model="queryParams.cluster"
+        v-model="queryParams.query"
         :placeholder="$t('cost.analyse.project.holder')"
         class="border-less"
         style="width: 200px"
@@ -111,9 +111,9 @@
       <LineBarChart
         height="220px"
         show-type="line"
-        :data-list="dataList"
-        :data-config="dataConfig"
-        :x-axis="xAxis"
+        :line-list="projectCostChart.line"
+        :data-config="projectCostChart.dataConfig"
+        :x-axis="projectCostChart.xAxis"
         :config-options="{
           title: {
             ...title
@@ -129,7 +129,7 @@
         }"
       ></LineBarChart>
       <TableList
-        :columns="workLoadCostCols"
+        :columns="projectCostCols"
         style="margin-top: 20px"
       ></TableList>
     </SpinCard>
@@ -138,7 +138,7 @@
 
 <script lang="ts" setup>
   import { filter } from 'lodash';
-  import { reactive, ref, computed } from 'vue';
+  import { reactive, ref, computed, onMounted } from 'vue';
   import useCallCommon from '@/hooks/use-call-common';
   import DateRange from '@/components/date-range/index.vue';
   import DataCard from '@/components/data-card/index.vue';
@@ -151,6 +151,7 @@
     projectCostCols,
     DateShortCuts
   } from '../config';
+  import usePerspectiveProject from '../hooks/use-perspective-project';
 
   const title = {
     text: '',
@@ -162,65 +163,39 @@
     }
   };
   const grid = {
-    left: 0,
-    right: 0,
+    left: 10,
+    right: 10,
     top: 20,
     bottom: 0,
     containLabel: true
   };
+  const {
+    getPerspectiveItemInfo,
+    getProjectCostChart,
+    projectCostFilters,
+    projectCostChart,
+    queryParams
+  } = usePerspectiveProject();
   const { t } = useCallCommon();
   const clusterOptions = [
-    { label: 'cluster-1', value: 'cluster1' },
-    { label: 'cluster-2', value: 'cluster2' }
+    { label: 'project-1', value: 'project1' },
+    { label: 'project-2', value: 'project' }
   ];
-  const dataConfig = ref([
-    { name: '一', label: '一', value: [1] },
-    { name: '二', label: '二', value: [2] },
-    { name: '三', label: '三', value: [3] },
-    { name: '四', label: '四', value: [4] },
-    { name: '五', label: '五', value: [5] },
-    { name: '六', label: '六', value: [6] },
-    { name: '七', label: '七', value: [7] },
-    { name: '八', label: '八', value: [8] },
-    { name: '九', label: '九', value: [9] },
-    { name: '十', label: '十', value: [10] }
-  ]);
-  const xAxis = ref([
-    '一',
-    '二',
-    '三',
-    '四',
-    '五',
-    '六',
-    '七',
-    '八',
-    '九',
-    '十'
-  ]);
-  const queryParams = reactive({
-    endTime: '',
-    startTime: '',
-    cluster: ''
-  });
 
-  const dataList = ref([
-    { name: '一', value: [1] },
-    { name: '二', value: [2] },
-    { name: '三', value: [3] },
-    { name: '四', value: [4] },
-    { name: '五', value: [5] },
-    { name: '六', value: [6] },
-    { name: '七', value: [7] },
-    { name: '八', value: [8] },
-    { name: '九', value: [9] },
-    { name: '十', value: [10] }
-  ]);
-
-  const workLoadCostCols = computed(() => {
-    return projectCostCols;
+  const handleSearch = () => {
+    projectCostFilters.value = {
+      ...projectCostFilters.value,
+      ...queryParams
+    };
+    getProjectCostChart();
+  };
+  const initData = async () => {
+    await getPerspectiveItemInfo();
+    getProjectCostChart();
+  };
+  onMounted(() => {
+    initData();
   });
-  const handleSearch = () => {};
-  const handleReset = () => {};
 </script>
 
 <style></style>

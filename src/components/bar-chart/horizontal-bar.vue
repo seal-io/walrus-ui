@@ -20,7 +20,7 @@
 
   const props = defineProps({
     dataList: {
-      type: Array as PropType<{ value: number; name: string }[]>,
+      type: Array as PropType<{ value: number | number[]; name: string }[]>,
       default() {
         return [];
       }
@@ -93,7 +93,12 @@
       },
       series: [
         {
-          data: map(props.dataList, (item) => item.value),
+          data: props.dataList.map((o) => {
+            return {
+              name: o.name,
+              value: get(o, 'value.0') || o.value
+            };
+          }),
           type: 'bar',
           barWidth: 14,
           itemStyle: {

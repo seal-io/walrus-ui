@@ -8,12 +8,12 @@ export interface QueryType extends Pagination {
   sort?: string[];
   _group?: string[];
 }
-
 export interface ResultType {
   filters: unknown;
   items: PerspectiveRowData[];
   pagination: Pagination;
 }
+
 export function queryPerspectives(params: QueryType) {
   return axios.get<ResultType>('/perspectives', {
     params,
@@ -22,6 +22,7 @@ export function queryPerspectives(params: QueryType) {
     }
   });
 }
+
 export function queryItemPerspective(params: { id: string }) {
   return axios.get(`/perspectives/${params.id}`, {
     params,
@@ -30,12 +31,19 @@ export function queryItemPerspective(params: { id: string }) {
     }
   });
 }
+
 export function createPerspective(data: any) {
   return axios.post('/perspectives', data);
 }
+
 export function updatePerspective(data: { id: string }) {
   return axios.put(`/perspectives/${data.id}`, data);
 }
+
 export function deletePerspective(data: { id: string }) {
-  return axios.delete(`/perspectives/${data.id}`, data);
+  return axios.delete(`/perspectives/${data.id}`, { data });
+}
+
+export function queryPerspectiveData(data: any) {
+  return axios.post('/costs/_/allocation-costs', data);
 }

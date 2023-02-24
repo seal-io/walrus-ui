@@ -1,4 +1,5 @@
 import dayjs from 'dayjs';
+import { round } from 'lodash';
 
 export const relationOptions = [
   { label: 'AND', value: 'and' },
@@ -78,14 +79,17 @@ export const dailyCostCols = [
     ellipsis: true,
     tooltip: true,
     cellStyle: { minWidth: '40px' },
-    dataIndex: 'time',
+    dataIndex: 'startTime',
     title: '日期'
   },
   {
     ellipsis: true,
     tooltip: true,
     cellStyle: { minWidth: '40px' },
-    dataIndex: 'spend',
+    dataIndex: 'totalCost',
+    render({ record }) {
+      return round(record.totalCost, 3);
+    },
     title: '消费金额'
   }
 ];
@@ -94,21 +98,24 @@ export const costPerProjectCols = [
     ellipsis: true,
     tooltip: true,
     cellStyle: { minWidth: '40px' },
-    dataIndex: 'name',
+    dataIndex: 'itemName',
     title: '项目'
   },
+  // {
+  //   ellipsis: true,
+  //   tooltip: true,
+  //   cellStyle: { minWidth: '40px' },
+  //   dataIndex: 'count',
+  //   title: '应用数'
+  // },
   {
     ellipsis: true,
     tooltip: true,
     cellStyle: { minWidth: '40px' },
-    dataIndex: 'count',
-    title: '应用数'
-  },
-  {
-    ellipsis: true,
-    tooltip: true,
-    cellStyle: { minWidth: '40px' },
-    dataIndex: 'spend',
+    dataIndex: 'totalCost',
+    render({ record }) {
+      return round(record.totalCost, 3);
+    },
     title: '消费金额'
   }
 ];
@@ -117,37 +124,40 @@ export const costPerClusterCols = [
     ellipsis: true,
     tooltip: true,
     cellStyle: { minWidth: '40px' },
-    dataIndex: 'name',
+    dataIndex: 'itemName',
     title: '集群'
   },
+  // {
+  //   ellipsis: true,
+  //   tooltip: true,
+  //   cellStyle: { minWidth: '40px' },
+  //   dataIndex: 'region',
+  //   title: '区域'
+  // },
+  // {
+  //   ellipsis: true,
+  //   tooltip: true,
+  //   cellStyle: { minWidth: '40px' },
+  //   dataIndex: 'nodes',
+  //   title: '节点数'
+  // },
   {
     ellipsis: true,
     tooltip: true,
     cellStyle: { minWidth: '40px' },
-    dataIndex: 'region',
-    title: '区域'
-  },
-  {
-    ellipsis: true,
-    tooltip: true,
-    cellStyle: { minWidth: '40px' },
-    dataIndex: 'nodes',
-    title: '节点数'
-  },
-  {
-    ellipsis: true,
-    tooltip: true,
-    cellStyle: { minWidth: '40px' },
-    dataIndex: 'cost',
+    dataIndex: 'totalCost',
+    render({ record }) {
+      return round(record.totalCost, 3);
+    },
     title: '消费金额'
-  },
-  {
-    ellipsis: true,
-    tooltip: true,
-    cellStyle: { minWidth: '40px' },
-    dataIndex: 'status',
-    title: '状态'
   }
+  // {
+  //   ellipsis: true,
+  //   tooltip: true,
+  //   cellStyle: { minWidth: '40px' },
+  //   dataIndex: 'status',
+  //   title: '状态'
+  // }
 ];
 
 export const clusterNamespaceCostCols = [
@@ -155,82 +165,82 @@ export const clusterNamespaceCostCols = [
     ellipsis: true,
     tooltip: true,
     cellStyle: { minWidth: '40px' },
-    dataIndex: 'name',
+    dataIndex: 'itemName',
     showIn: 'workload',
     title: 'Name'
   },
+  // {
+  //   ellipsis: true,
+  //   tooltip: true,
+  //   cellStyle: { minWidth: '40px' },
+  //   dataIndex: 'namespace',
+  //   title: 'Namespace'
+  // },
+  // {
+  //   ellipsis: true,
+  //   tooltip: true,
+  //   cellStyle: { minWidth: '40px' },
+  //   dataIndex: 'pods',
+  //   title: 'Pods',
+  //   showIn: 'workload'
+  // },
   {
     ellipsis: true,
     tooltip: true,
     cellStyle: { minWidth: '40px' },
-    dataIndex: 'namespace',
-    title: 'Namespace'
-  },
-  {
-    ellipsis: true,
-    tooltip: true,
-    cellStyle: { minWidth: '40px' },
-    dataIndex: 'pods',
-    title: 'Pods',
-    showIn: 'workload'
-  },
-  {
-    ellipsis: true,
-    tooltip: true,
-    cellStyle: { minWidth: '40px' },
-    dataIndex: 'cpu',
+    dataIndex: 'cpuCost',
     title: 'CPU'
   },
   {
     ellipsis: true,
     tooltip: true,
     cellStyle: { minWidth: '40px' },
-    dataIndex: 'memory',
+    dataIndex: 'ramCost',
     title: 'Memory'
   },
   {
     ellipsis: true,
     tooltip: true,
     cellStyle: { minWidth: '40px' },
-    dataIndex: 'pv',
+    dataIndex: 'pvCost',
     title: 'PV'
   },
   {
     ellipsis: true,
     tooltip: true,
     cellStyle: { minWidth: '40px' },
-    dataIndex: 'shared',
+    dataIndex: 'sharedCost',
     title: 'Shared'
   },
   {
     ellipsis: true,
     tooltip: true,
     cellStyle: { minWidth: '40px' },
-    dataIndex: 'spend',
+    dataIndex: 'totalCost',
     title: '消费金额'
   }
 ];
 
 export const projectCostCols = [
+  // {
+  //   ellipsis: true,
+  //   tooltip: true,
+  //   cellStyle: { minWidth: '40px' },
+  //   dataIndex: 'itemName',
+  //   title: '名称'
+  // },
   {
     ellipsis: true,
     tooltip: true,
     cellStyle: { minWidth: '40px' },
-    dataIndex: 'name',
-    title: '名称'
-  },
-  {
-    ellipsis: true,
-    tooltip: true,
-    cellStyle: { minWidth: '40px' },
-    dataIndex: 'project',
+    dataIndex: 'itemName',
     title: '项目'
   },
   {
     ellipsis: true,
     tooltip: true,
     cellStyle: { minWidth: '40px' },
-    dataIndex: 'cost',
+    dataIndex: 'totalCost',
     title: '消费金额'
   }
 ];

@@ -3,14 +3,14 @@
     <BarChart
       v-if="showType === 'bar'"
       style="flex: 1"
-      :data-list="dataList"
+      :data-list="barList"
       v-bind="$attrs"
       :show-y-label="true"
     ></BarChart>
     <stackLineChart
       v-if="showType === 'line'"
       style="flex: 1"
-      :data="dataList"
+      :data="lineList"
       v-bind="$attrs"
       class="chart-item"
     ></stackLineChart>
@@ -27,7 +27,13 @@
     value: number[];
   }
   const props = defineProps({
-    dataList: {
+    barList: {
+      type: Array as PropType<DataItem[]>,
+      default() {
+        return [];
+      }
+    },
+    lineList: {
       type: Array as PropType<DataItem[]>,
       default() {
         return [];
