@@ -1,5 +1,5 @@
 import dayjs from 'dayjs';
-import { round } from 'lodash';
+import { find, round, get } from 'lodash';
 
 export const relationOptions = [
   { label: 'AND', value: 'and' },
@@ -21,6 +21,7 @@ export const DateShortCuts = [
     label: 'cost.analyse.datepicker.7days',
     unit: 'day',
     format: 'YYYY-MM-DD',
+    timeControl: 'now-7d',
     value: [
       dayjs().subtract(6, 'day').format('YYYY-MM-DD'),
       dayjs().subtract(0, 'day').format('YYYY-MM-DD')
@@ -30,6 +31,7 @@ export const DateShortCuts = [
     label: 'cost.analyse.datepicker.30days',
     unit: 'day',
     format: 'YYYY-MM-DD',
+    timeControl: 'now-30d',
     value: [
       dayjs().subtract(29, 'day').format('YYYY-MM-DD'),
       dayjs().subtract(0, 'day').format('YYYY-MM-DD')
@@ -39,30 +41,58 @@ export const DateShortCuts = [
     label: 'cost.analyse.datepicker.currentMonth',
     unit: 'day',
     format: 'YYYY-MM-DD',
+    timeControl: 'now/M',
     value: [dayjs().format('YYYY-MM-01'), dayjs().format('YYYY-MM-DD')]
   }
 ];
+
+export const getTimeRange = (val) => {
+  const data = find(DateShortCuts, (item) => item.timeControl === val);
+  return data
+    ? get(data, 'value')
+    : [dayjs().format('YYYY-MM-DD'), dayjs().format('YYYY-MM-DD')];
+};
 export const costOverview = [
   {
-    label: 'Spend Total',
-    key: '',
-    value: 9,
+    label: '总消费',
+    key: 'totalCost',
+    value: 0,
     color: 'linear-gradient(rgba(159,232,219,.3) 0%,rgba(159,232,219,.4) 100%)'
   },
   {
-    label: 'Total Projects',
-    key: '',
-    value: 12,
+    label: '项目数',
+    key: 'projectCount',
+    value: 0,
     color: 'linear-gradient(rgba(255,197,192,.3) 0%,rgba(255,197,192,.4) 100%)'
   },
   {
-    label: 'Total Kubernetes Cluster',
-    key: '',
-    value: 23,
+    label: '集群数',
+    key: 'clusterCount',
+    value: 0,
     color: 'linear-gradient(rgba(184,218,243,.3) 0%,rgba(184,218,243,.4) 100%)'
   }
 ];
 
+export const projectCostOverview = [
+  {
+    label: '当月消费',
+    key: 'totalCost',
+    value: 0,
+    color: 'linear-gradient(rgba(159,232,219,.3) 0%,rgba(159,232,219,.4) 100%)'
+  },
+  {
+    label: '日均消费',
+    key: 'averageDailyCost',
+    value: 0,
+    color: 'linear-gradient(rgba(255,197,192,.3) 0%,rgba(255,197,192,.4) 100%)'
+  }
+  // {
+  //   label: '可优化费用',
+  //   key: 'currency',
+  //   value: 0,
+  //   color: 'linear-gradient(rgba(184,218,243,.3) 0%,rgba(184,218,243,.4) 100%)'
+  // }
+];
 export const resourceCostOverview = [
   { label: '节点数', key: '', value: 9, color: '#0F8584' },
   { label: 'CPU', key: '', value: 12, color: '#7AB6B5' },
@@ -70,9 +100,12 @@ export const resourceCostOverview = [
   { label: 'Pods', key: '', value: 23, color: '#324B4B' }
 ];
 export const clusterCostOverview = [
-  { label: '当前消费', key: '', value: 9, color: '#0F8584' },
-  { label: '日均消费', key: '', value: 12, color: '#7AB6B5' },
-  { label: '可优化费用', key: '', value: 23, color: '#324B4B' }
+  { label: '总费用', key: 'totalCost', value: 0, color: '#0F8584' },
+  { label: '日均消费', key: 'averageDailyCost', value: 0, color: '#7AB6B5' },
+  { label: '工作负载费用', key: 'allocationCost', value: 0, color: '#7AB6B5' },
+  { label: '管理费用', key: 'managementCost', value: 0, color: '#7AB6B5' },
+  { label: '空闲费用', key: 'idleCost', value: 0, color: '#7AB6B5' }
+  // { label: '可优化费用', key: '', value: 0, color: '#324B4B' }
 ];
 export const dailyCostCols = [
   {

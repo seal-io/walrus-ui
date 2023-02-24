@@ -1,4 +1,4 @@
-import { ref, reactive } from 'vue';
+import { ref, reactive, computed } from 'vue';
 import dayjs from 'dayjs';
 import useCallCommon from '@/hooks/use-call-common';
 import {
@@ -10,10 +10,21 @@ import {
   sortBy,
   reduce,
   keys,
-  cloneDeep
+  cloneDeep,
+  assignIn
 } from 'lodash';
+import {
+  clusterCostOverview,
+  resourceCostOverview,
+  getTimeRange
+} from '../config';
 import { CostAnalyRow, ChartData } from '../config/interface';
-import { queryItemPerspective, queryPerspectiveData } from '../api';
+import {
+  queryItemPerspective,
+  queryPerspectiveData,
+  queryClusterPerspectiveSummary,
+  queryPerspectiveField
+} from '../api';
 import testData, { statckLineData } from '../config/testData';
 
 export default function usePerspectiveCost() {
@@ -43,18 +54,70 @@ export default function usePerspectiveCost() {
     bar: [],
     dataConfig: []
   });
-
+  const clusterList = ref<{ label: string; value: string }[]>([]);
+  const clusterName = ref('');
   const queryParams = reactive({
     startTime: '',
     endTime: '',
-    query: ''
+    connectorID: ''
   });
 
+  const overData = reactive({});
+  const summaryData = computed(() => {
+    const list = map(clusterCostOverview, (item) => {
+      item.value = get(summaryData, item.key) || 0;
+      return item;
+    });
+    return list;
+  });
+  const resourceSummaryData = computed(() => {
+    const list = map(resourceCostOverview, (item) => {
+      item.value = get(summaryData, item.key);
+      return item;
+    });
+    return list;
+  });
+
+  const getClusterList = async () => {
+    try {
+      const params = {
+        ...omit(queryParams, ['connectorID']),
+        fieldName: 'cluster_name'
+      };
+      const { data } = await queryPerspectiveField(params);
+      clusterList.value = data?.items || [];
+      queryParams.connectorID = get(clusterList.value, '0.value') || '';
+      clusterName.value = get(clusterList.value, '0.label') || 'Cluster';
+
+      each(dailyCostFilters.value, (vItem) => {
+        each(get(vItem, 'filters') || [], (fItem) => {
+          fItem.values = [queryParams.connectorID];
+        });
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  const getSummaryData = async () => {
+    try {
+      const params = {
+        ...queryParams,
+        startTime: dayjs(queryParams.startTime).format('YYYY-MM-DDTHH:mm:ssZ'),
+        endTime: dayjs(queryParams.endTime).format('YYYY-MM-DDTHH:mm:ssZ')
+      };
+      const { data } = await queryClusterPerspectiveSummary(params);
+      assignIn(overData, data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
   const getDailyCostChart = async () => {
     try {
       const params = {
         ...omit(dailyCostFilters.value, 'paging'),
-        ...queryParams
+        ...queryParams,
+        startTime: dayjs(queryParams.startTime).format('YYYY-MM-DDTHH:mm:ssZ'),
+        endTime: dayjs(queryParams.endTime).format('YYYY-MM-DDTHH:mm:ssZ')
       };
       const { data } = await queryPerspectiveData(params);
       const list = data?.items || [];
@@ -84,7 +147,9 @@ export default function usePerspectiveCost() {
     try {
       const params = {
         ...omit(nameSpaceCostFilters.value, 'paging'),
-        ...queryParams
+        ...queryParams,
+        startTime: dayjs(queryParams.startTime).format('YYYY-MM-DDTHH:mm:ssZ'),
+        endTime: dayjs(queryParams.endTime).format('YYYY-MM-DDTHH:mm:ssZ')
       };
       const { data } = await queryPerspectiveData(params);
       const list = data?.item || [];
@@ -122,7 +187,9 @@ export default function usePerspectiveCost() {
     try {
       const params = {
         ...omit(workloadCostFilters.value, 'paging'),
-        ...queryParams
+        ...queryParams,
+        startTime: dayjs(queryParams.startTime).format('YYYY-MM-DDTHH:mm:ssZ'),
+        endTime: dayjs(queryParams.endTime).format('YYYY-MM-DDTHH:mm:ssZ')
       };
       const { data } = await queryPerspectiveData(params);
       let list = data?.item || [];
@@ -190,6 +257,12 @@ export default function usePerspectiveCost() {
     try {
       const { data } = await queryItemPerspective({ id });
       const allocationQueries = get(data, 'allocationQueries') || [];
+
+      const startTime = get(data, 'startTime');
+      const timeRange = getTimeRange(startTime) || [];
+      queryParams.startTime = get(timeRange, '0');
+      queryParams.endTime = get(timeRange, '1');
+
       const dailyFilter = find(
         allocationQueries,
         (item) => item.groupBy === 'day'
@@ -225,12 +298,18 @@ export default function usePerspectiveCost() {
     getDailyCostChart,
     getWorkloadCostChart,
     getNamespaceCostChart,
+    getSummaryData,
+    getClusterList,
     dailyCostFilters,
     workloadCostFilters,
     nameSpaceCostFilters,
     dailyCostChart,
     workloadCostChart,
     nameSpaceCostChart,
+    summaryData,
+    resourceSummaryData,
+    clusterList,
+    clusterName,
     queryParams
   };
 }

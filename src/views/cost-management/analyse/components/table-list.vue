@@ -42,6 +42,7 @@
 </template>
 
 <script lang="ts" setup>
+  import dayjs from 'dayjs';
   import { map, omit, pick } from 'lodash';
   import { reactive, ref, onMounted, PropType, watchEffect, watch } from 'vue';
   import FilterBox from '@/components/filter-box/index.vue';
@@ -83,7 +84,13 @@
     try {
       loading.value = true;
       const params = {
-        ...omit(props.filterParams, ['startTime']),
+        ...props.filterParams,
+        startTime: dayjs(props.filterParams.startTime).format(
+          'YYYY-MM-DDTHH:mm:ssZ'
+        ),
+        endTime: dayjs(props.filterParams.endTime).format(
+          'YYYY-MM-DDTHH:mm:ssZ'
+        ),
         query: queryParams.query,
         paging: {
           ...pick(queryParams, ['page', 'perPage'])

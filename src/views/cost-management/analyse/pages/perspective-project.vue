@@ -4,12 +4,12 @@
       style="display: flex; justify-content: space-between; margin-bottom: 10px"
     >
       <a-select
-        v-model="queryParams.query"
+        v-model="queryParams.project"
         :placeholder="$t('cost.analyse.project.holder')"
         class="border-less"
         style="width: 200px"
-        :options="clusterOptions"
-        @change="handleSearch"
+        :options="projectList"
+        @change="handleProjectChange"
       >
         <template #option="{ data }">
           <a-tooltip :content="data.label" position="top">
@@ -21,6 +21,9 @@
             >
           </a-tooltip>
         </template>
+        <template #empty>
+          <span></span>
+        </template>
       </a-select>
       <dateRange
         v-model:start="queryParams.startTime"
@@ -29,7 +32,7 @@
         :short-cuts="DateShortCuts"
         today-in
         border-less
-        @change="handleSearch"
+        @change="handleDateChange"
       ></dateRange>
     </div>
     <!-- <FilterBox style="margin-bottom: 10px">
@@ -71,17 +74,17 @@
         </a-space>
       </template>
     </FilterBox> -->
-    <SpinCard title="My Project" borderless style="margin-bottom: 10px">
+    <SpinCard :title="projectName" borderless style="margin-bottom: 10px">
       <a-grid :cols="24" :col-gap="20">
         <a-grid-item
-          v-for="(item, index) in clusterCostOverview"
+          v-for="(item, index) in summaryData"
           :key="index"
-          :span="{ lg: 8, md: 8, sm: 12, xs: 24 }"
+          :span="{ lg: 12, md: 12, sm: 12, xs: 24 }"
         >
           <DataCard
             :title="item.label"
             :value="item.value"
-            bg-color="linear-gradient(rgba(159,232,219,.3) 0%,rgba(159,232,219,.4) 100%)"
+            :bg-color="item.color"
           >
             <template #title>
               <span style="font-weight: 500">{{ item.label }}</span>
@@ -89,7 +92,7 @@
           </DataCard>
         </a-grid-item>
       </a-grid>
-      <a-grid :cols="24" :col-gap="20" style="margin-top: 10px">
+      <!-- <a-grid :cols="24" :col-gap="20" style="margin-top: 10px">
         <a-grid-item
           v-for="(item, index) in resourceCostOverview"
           :key="index"
@@ -105,7 +108,7 @@
             </template>
           </DataCard>
         </a-grid-item>
-      </a-grid>
+      </a-grid> -->
     </SpinCard>
     <SpinCard title="应用消费金额" borderless style="margin-bottom: 10px">
       <LineBarChart
@@ -137,7 +140,7 @@
 </template>
 
 <script lang="ts" setup>
-  import { filter } from 'lodash';
+  import { set, get, find, map, each } from 'lodash';
   import { reactive, ref, computed, onMounted } from 'vue';
   import useCallCommon from '@/hooks/use-call-common';
   import DateRange from '@/components/date-range/index.vue';
@@ -172,8 +175,13 @@
   const {
     getPerspectiveItemInfo,
     getProjectCostChart,
+    getSummaryData,
+    getProjectList,
+    projectList,
     projectCostFilters,
     projectCostChart,
+    summaryData,
+    projectName,
     queryParams
   } = usePerspectiveProject();
   const { t } = useCallCommon();
@@ -181,16 +189,34 @@
     { label: 'project-1', value: 'project1' },
     { label: 'project-2', value: 'project' }
   ];
-
-  const handleSearch = () => {
+  const handleDateChange = async () => {
+    await getProjectList();
     projectCostFilters.value = {
       ...projectCostFilters.value,
       ...queryParams
     };
     getProjectCostChart();
+    getSummaryData();
+  };
+  const handleProjectChange = (val) => {
+    const projectData = find(projectList.value, (item) => item.value === val);
+    projectName.value = projectData?.label || 'Project';
+    each(projectCostFilters.value, (vItem) => {
+      each(get(vItem, 'filters') || [], (fItem) => {
+        fItem.values = [val];
+      });
+    });
+    projectCostFilters.value = {
+      ...projectCostFilters.value,
+      ...queryParams
+    };
+    getProjectCostChart();
+    getSummaryData();
   };
   const initData = async () => {
     await getPerspectiveItemInfo();
+    await getProjectList();
+    getSummaryData();
     getProjectCostChart();
   };
   onMounted(() => {

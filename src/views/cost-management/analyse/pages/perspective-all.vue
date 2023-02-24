@@ -13,7 +13,7 @@
     <SpinCard title="All Resource" borderless style="margin-bottom: 10px">
       <a-grid :cols="24" :col-gap="20">
         <a-grid-item
-          v-for="(item, index) in costOverview"
+          v-for="(item, index) in summaryData"
           :key="index"
           :span="{ lg: 8, md: 8, sm: 12, xs: 24 }"
         >
@@ -139,12 +139,14 @@
     getDailyCostChart,
     getProjectCostChart,
     getClusterCostChart,
+    getSummaryData,
     dailyCostFilters,
     projectCostFilters,
     clusterCostFilters,
     dailyCostChart,
     projectCostChart,
     clusterCostChart,
+    summaryData,
     queryParams
   } = usePerspectiveCost();
 
@@ -152,43 +154,6 @@
   const activeProject = ref<'bar' | 'line'>('bar');
   const activeCluster = ref<'bar' | 'line'>('bar');
 
-  const dataConfig = ref([
-    { name: 'd一', label: 'label一' },
-    { name: '二', label: 'label二' },
-    { name: '三', label: 'label三' },
-    { name: '四', label: 'label四' },
-    { name: '五', label: 'label五' },
-    { name: '六', label: 'label六' },
-    { name: '七', label: 'label七' },
-    { name: '八', label: 'label八' },
-    { name: '九', label: 'label九' },
-    { name: '十', label: 'label十' }
-  ]);
-  const xAxis = ref([
-    'x一',
-    'x二',
-    'x三',
-    'x四',
-    'x五',
-    'x六',
-    'x七',
-    'x八',
-    'x九',
-    'x十'
-  ]);
-
-  const dataList = ref([
-    { name: 'd一', value: [1] },
-    { name: '二', value: [0, 2] },
-    { name: '三', value: [3] },
-    { name: '四', value: [4] },
-    { name: '五', value: [5] },
-    { name: '六', value: [6] },
-    { name: '七', value: [7] },
-    { name: '八', value: [8] },
-    { name: '九', value: [9] },
-    { name: '十', value: [10] }
-  ]);
   const configOptions = computed(() => {
     return {
       title: {
@@ -219,9 +184,11 @@
     getDailyCostChart();
     getProjectCostChart();
     getClusterCostChart();
+    getSummaryData();
   };
   const initData = async () => {
     await getPerspectiveItemInfo();
+    getSummaryData();
     getDailyCostChart();
     getProjectCostChart();
     getClusterCostChart();
