@@ -114,6 +114,7 @@
       kubeConfig: ''
     },
     configVersion: 'v1',
+    type: 'Kubernetes',
     enableFinOps: true
   });
 
