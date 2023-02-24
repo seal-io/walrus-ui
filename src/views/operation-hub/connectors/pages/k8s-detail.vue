@@ -21,7 +21,7 @@
           ></a-input>
         </a-form-item>
         <a-form-item
-          field="configData.kubeConfig"
+          field="configData.kubeconfig"
           :hide-asterisk="false"
           label="KubeConfig"
           :validate-trigger="['change']"
@@ -33,7 +33,7 @@
           ]"
         >
           <a-textarea
-            v-model.trim="formData.configData.kubeConfig"
+            v-model.trim="formData.configData.kubeconfig"
             style="width: 500px"
             :placeholder="$t('operation.connectors.rules.kubeconfigTips')"
             :auto-size="{ minRows: 6, maxRows: 10 }"
@@ -111,7 +111,7 @@
   const formData: ConnectorFormData = reactive({
     name: '',
     configData: {
-      kubeConfig: ''
+      kubeconfig: ''
     },
     configVersion: 'v1',
     type: 'Kubernetes',
@@ -126,8 +126,8 @@
   });
   const handleUploadSuccess = async (list, fileItem) => {
     const res = await readBlob(fileItem.file);
-    formData.configData.kubeConfig = res as string;
-    formref.value.validateField('configData.kubeConfig');
+    formData.configData.kubeconfig = res as string;
+    formref.value.validateField('configData.kubeconfig');
   };
   const handleBeforeUpload = async (file) => {
     return true;

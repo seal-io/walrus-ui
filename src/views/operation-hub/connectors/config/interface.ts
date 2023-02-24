@@ -16,7 +16,7 @@ export interface ConnectorFormData {
   id?: string;
   name: string;
   configData: {
-    kubeConfig: string;
+    kubeconfig: string;
   };
   configVersion: string;
   enableFinOps: boolean;
