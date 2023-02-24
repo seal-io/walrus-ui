@@ -4,12 +4,12 @@
       style="display: flex; justify-content: space-between; margin-bottom: 10px"
     >
       <a-select
-        v-model="queryParams.query"
+        v-model="queryParams.connectorID"
         :placeholder="$t('cost.analyse.cluster.holder')"
         class="border-less"
         style="width: 200px"
-        :options="clusterOptions"
-        @change="handleSearch"
+        :options="clusterList"
+        @change="handleClusterChange"
       >
         <template #option="{ data }">
           <a-tooltip :content="data.label" position="top">
@@ -21,6 +21,9 @@
             >
           </a-tooltip>
         </template>
+        <template #empty>
+          <span></span>
+        </template>
       </a-select>
       <dateRange
         v-model:start="queryParams.startTime"
@@ -29,7 +32,7 @@
         :short-cuts="DateShortCuts"
         today-in
         border-less
-        @change="handleSearch"
+        @change="handleDateChange"
       ></dateRange>
     </div>
     <!-- <FilterBox style="margin-bottom: 10px">
@@ -71,12 +74,12 @@
         </a-space>
       </template>
     </FilterBox> -->
-    <SpinCard title="My Cluster" borderless style="margin-bottom: 10px">
-      <a-grid :cols="24" :col-gap="20">
+    <SpinCard :title="clusterName" borderless style="margin-bottom: 10px">
+      <a-grid :cols="15" :col-gap="20">
         <a-grid-item
-          v-for="(item, index) in clusterCostOverview"
+          v-for="(item, index) in summaryData"
           :key="index"
-          :span="{ lg: 8, md: 8, sm: 12, xs: 24 }"
+          :span="{ lg: 3, md: 3, sm: 5, xs: 15 }"
         >
           <DataCard
             :title="item.label"
@@ -89,9 +92,9 @@
           </DataCard>
         </a-grid-item>
       </a-grid>
-      <a-grid :cols="24" :col-gap="20" style="margin-top: 10px">
+      <!-- <a-grid :cols="24" :col-gap="20" style="margin-top: 10px">
         <a-grid-item
-          v-for="(item, index) in resourceCostOverview"
+          v-for="(item, index) in resourceSummaryData"
           :key="index"
           :span="{ lg: 6, md: 6, sm: 12, xs: 24 }"
         >
@@ -105,7 +108,7 @@
             </template>
           </DataCard>
         </a-grid-item>
-      </a-grid>
+      </a-grid> -->
     </SpinCard>
     <SpinCard title="Daily Cost" borderless style="margin-bottom: 10px">
       <template #title>
@@ -167,7 +170,7 @@
 </template>
 
 <script lang="ts" setup>
-  import { filter } from 'lodash';
+  import { filter, find, get, each } from 'lodash';
   import { reactive, ref, computed, onMounted } from 'vue';
   import useCallCommon from '@/hooks/use-call-common';
   import DateRange from '@/components/date-range/index.vue';
@@ -207,12 +210,18 @@
     getDailyCostChart,
     getWorkloadCostChart,
     getNamespaceCostChart,
+    getSummaryData,
+    getClusterList,
     dailyCostFilters,
     workloadCostFilters,
     nameSpaceCostFilters,
     dailyCostChart,
     workloadCostChart,
     nameSpaceCostChart,
+    summaryData,
+    resourceSummaryData,
+    clusterList,
+    clusterName,
     queryParams
   } = usePerspectiveCost();
   const { t } = useCallCommon();
@@ -222,30 +231,6 @@
   ];
   const active = ref<'bar' | 'line'>('bar');
 
-  const dataList = ref([
-    { name: '一', value: [1] },
-    { name: '二', value: [2] },
-    { name: '三', value: [3] },
-    { name: '四', value: [4] },
-    { name: '五', value: [5] },
-    { name: '六', value: [6] },
-    { name: '七', value: [7] },
-    { name: '八', value: [8] },
-    { name: '九', value: [9] },
-    { name: '十', value: [10] }
-  ]);
-  const barDataList = ref([
-    { name: '一', value: 1 },
-    { name: '二', value: 2 },
-    { name: '三', value: 3 },
-    { name: '四', value: 4 },
-    { name: '五', value: 5 },
-    { name: '六', value: 6 },
-    { name: '七', value: 7 },
-    { name: '八', value: 8 },
-    { name: '九', value: 9 },
-    { name: '十', value: 10 }
-  ]);
   const configOptions = computed(() => {
     return {
       title: {
@@ -282,7 +267,8 @@
   const namespaceCostCols = computed(() => {
     return filter(clusterNamespaceCostCols, (item) => !item.showIn);
   });
-  const handleSearch = () => {
+  const handleDateChange = async () => {
+    await getClusterList();
     workloadCostFilters.value = {
       ...workloadCostFilters.value,
       ...queryParams
@@ -297,12 +283,41 @@
     };
     getDailyCostChart();
     getNamespaceCostChart();
+    getSummaryData();
+    // getWorkloadCostChart();
+  };
+  const handleClusterChange = (val) => {
+    const clusterData = find(clusterList.value, (item) => item.value === val);
+    clusterName.value = clusterData?.label || 'Cluster';
+
+    each(dailyCostFilters.value, (vItem) => {
+      each(get(vItem, 'filters') || [], (fItem) => {
+        fItem.values = [queryParams.connectorID];
+      });
+    });
+    workloadCostFilters.value = {
+      ...workloadCostFilters.value,
+      ...queryParams
+    };
+    dailyCostFilters.value = {
+      ...dailyCostFilters.value,
+      ...queryParams
+    };
+    nameSpaceCostFilters.value = {
+      ...nameSpaceCostFilters.value,
+      ...queryParams
+    };
+    getDailyCostChart();
+    getNamespaceCostChart();
+    getSummaryData();
     // getWorkloadCostChart();
   };
   const initData = async () => {
     await getPerspectiveItemInfo();
+    await getClusterList();
     getDailyCostChart();
     getNamespaceCostChart();
+    getSummaryData();
     // getWorkloadCostChart();
   };
   onMounted(() => {
