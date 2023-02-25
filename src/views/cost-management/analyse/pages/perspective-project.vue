@@ -111,6 +111,7 @@
     </SpinCard>
     <SpinCard title="应用消费金额" borderless style="margin-bottom: 10px">
       <LineBarChart
+        :loading="apploading || projectloading || loading"
         height="220px"
         show-type="line"
         :line-list="projectCostChart.line"
@@ -131,6 +132,7 @@
         }"
       ></LineBarChart>
       <TableList
+        :loadeend="loadeend"
         :filter-params="{ ...projectCostFilters }"
         :columns="projectCostCols"
         source="project"
@@ -183,9 +185,13 @@
     projectCostChart,
     summaryData,
     projectName,
-    queryParams
+    queryParams,
+    projectloading,
+    apploading,
+    loading
   } = usePerspectiveProject();
   const { t } = useCallCommon();
+  const loadeend = ref(false);
   const clusterOptions = [
     { label: 'project-1', value: 'project1' },
     { label: 'project-2', value: 'project' }
@@ -217,6 +223,7 @@
   const initData = async () => {
     await getPerspectiveItemInfo();
     await getProjectList();
+    loadeend.value = true;
     getSummaryData();
     getProjectCostChart();
   };

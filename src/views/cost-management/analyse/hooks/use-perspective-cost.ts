@@ -19,6 +19,11 @@ export default function usePerspectiveCost() {
   const projectCostFilters = ref<any>({});
   const clusterCostFilters = ref<any>({});
 
+  const dailyloading = ref(false);
+  const projectloading = ref(false);
+  const clusterloading = ref(false);
+  const loading = ref(false);
+
   const dailyCostChart = ref<ChartData>({
     xAxis: [],
     line: [],
@@ -43,10 +48,10 @@ export default function usePerspectiveCost() {
     endTime: ''
   });
 
-  const overData = reactive({});
+  const overData = ref({});
   const summaryData = computed(() => {
     const list = map(costOverview, (item) => {
-      item.value = get(overData, item.key) || 0;
+      item.value = get(overData.value, item.key) || 0;
       return item;
     });
     return list;
@@ -61,13 +66,15 @@ export default function usePerspectiveCost() {
           .format('YYYY-MM-DDTHH:mm:ssZ')
       };
       const { data } = await queryAllPerspectiveSummary(params);
-      assignIn(overData, data);
+      overData.value = data || {};
     } catch (error) {
+      overData.value = {};
       console.log(error);
     }
   };
   const getDailyCostChart = async () => {
     try {
+      dailyloading.value = true;
       const params = {
         ...omit(dailyCostFilters.value, 'paging'),
         ...queryParams,
@@ -94,13 +101,16 @@ export default function usePerspectiveCost() {
       });
       dailyCostChart.value.line = [{ name: 'cost', value: values }];
       dailyCostChart.value.dataConfig = [{ name: 'cost', label: 'dailycost' }];
+      dailyloading.value = false;
     } catch (error) {
+      dailyloading.value = false;
       dailyCostChart.value = { xAxis: [], line: [], bar: [], dataConfig: [] };
       console.log(error);
     }
   };
   const getProjectCostChart = async () => {
     try {
+      projectloading.value = true;
       const params = {
         ...omit(projectCostFilters.value, 'paging'),
         ...queryParams,
@@ -126,13 +136,16 @@ export default function usePerspectiveCost() {
         { name: 'cost', label: 'projectCost' }
       ];
       projectCostChart.value.line = [{ name: 'cost', value: values }];
+      projectloading.value = false;
     } catch (error) {
+      projectloading.value = false;
       projectCostChart.value = { xAxis: [], line: [], bar: [], dataConfig: [] };
       console.log(error);
     }
   };
   const getClusterCostChart = async () => {
     try {
+      clusterloading.value = true;
       const params = {
         ...omit(clusterCostFilters.value, 'paging'),
         ...queryParams,
@@ -158,13 +171,16 @@ export default function usePerspectiveCost() {
         { name: 'cost', label: 'clusterCost' }
       ];
       clusterCostChart.value.line = [{ name: 'cost', value: values }];
+      clusterloading.value = false;
     } catch (error) {
+      clusterloading.value = false;
       clusterCostChart.value = { xAxis: [], line: [], bar: [], dataConfig: [] };
       console.log(error);
     }
   };
   const getPerspectiveItemInfo = async () => {
     try {
+      loading.value = true;
       const { data } = await queryItemPerspective({ id });
       const allocationQueries = get(data, 'allocationQueries') || [];
 
@@ -197,7 +213,9 @@ export default function usePerspectiveCost() {
         ...clusterFilter,
         ...queryParams
       };
+      loading.value = false;
     } catch (error) {
+      loading.value = false;
       console.log(error);
     }
   };
@@ -214,6 +232,10 @@ export default function usePerspectiveCost() {
     projectCostChart,
     clusterCostChart,
     summaryData,
-    queryParams
+    queryParams,
+    dailyloading,
+    projectloading,
+    clusterloading,
+    loading
   };
 }

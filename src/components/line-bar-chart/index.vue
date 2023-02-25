@@ -1,19 +1,21 @@
 <template>
   <div class="line-bar-box">
-    <BarChart
-      v-if="showType === 'bar'"
-      style="flex: 1"
-      :data-list="barList"
-      v-bind="$attrs"
-      :show-y-label="true"
-    ></BarChart>
-    <stackLineChart
-      v-if="showType === 'line'"
-      style="flex: 1"
-      :data="lineList"
-      v-bind="$attrs"
-      class="chart-item"
-    ></stackLineChart>
+    <a-spin style="width: 100%" :loading="loading">
+      <BarChart
+        v-if="showType === 'bar'"
+        style="flex: 1"
+        :data-list="barList"
+        v-bind="$attrs"
+        :show-y-label="true"
+      ></BarChart>
+      <stackLineChart
+        v-if="showType === 'line'"
+        style="flex: 1"
+        :data="lineList"
+        v-bind="$attrs"
+        class="chart-item"
+      ></stackLineChart>
+    </a-spin>
   </div>
 </template>
 
@@ -37,6 +39,12 @@
       type: Array as PropType<DataItem[]>,
       default() {
         return [];
+      }
+    },
+    loading: {
+      type: Boolean,
+      default() {
+        return false;
       }
     },
     showType: {

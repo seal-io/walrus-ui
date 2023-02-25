@@ -35,6 +35,12 @@ export default function usePerspectiveCost() {
   const workloadCostFilters = ref<any>({});
   const nameSpaceCostFilters = ref<any>({});
 
+  const dailyloading = ref(false);
+  const workloading = ref(false);
+  const spaceloading = ref(false);
+  const clusterloading = ref(false);
+  const loading = ref(false);
+
   const dailyCostChart = ref<ChartData>({
     xAxis: [],
     line: [],
@@ -62,10 +68,10 @@ export default function usePerspectiveCost() {
     connectorID: ''
   });
 
-  const overData = reactive({});
+  const overData = ref({});
   const summaryData = computed(() => {
     const list = map(clusterCostOverview, (item) => {
-      item.value = get(overData, item.key) || 0;
+      item.value = get(overData.value, item.key) || 0;
       return item;
     });
     return list;
@@ -80,6 +86,7 @@ export default function usePerspectiveCost() {
 
   const getClusterList = async () => {
     try {
+      clusterloading.value = true;
       const params = {
         ...omit(queryParams, ['connectorID']),
         fieldName: 'connector_id',
@@ -103,7 +110,9 @@ export default function usePerspectiveCost() {
           sItem.fieldName = 'connector_id';
         });
       });
+      clusterloading.value = false;
     } catch (error) {
+      clusterloading.value = false;
       console.log(error);
     }
   };
@@ -117,13 +126,15 @@ export default function usePerspectiveCost() {
           .format('YYYY-MM-DDTHH:mm:ssZ')
       };
       const { data } = await queryClusterPerspectiveSummary(params);
-      assignIn(overData, data);
+      overData.value = data || {};
     } catch (error) {
+      overData.value = {};
       console.log(error);
     }
   };
   const getDailyCostChart = async () => {
     try {
+      dailyloading.value = true;
       const params = {
         ...omit(dailyCostFilters.value, 'paging'),
         ...queryParams,
@@ -150,7 +161,9 @@ export default function usePerspectiveCost() {
       });
       dailyCostChart.value.line = [{ name: 'cost', value: values }];
       dailyCostChart.value.dataConfig = [{ name: 'cost', label: 'dailycost' }];
+      dailyloading.value = false;
     } catch (error) {
+      dailyloading.value = false;
       dailyCostChart.value = { xAxis: [], line: [], bar: [], dataConfig: [] };
       console.log(error);
     }
@@ -158,6 +171,7 @@ export default function usePerspectiveCost() {
 
   const getNamespaceCostChart = async () => {
     try {
+      spaceloading.value = true;
       const params = {
         ...omit(nameSpaceCostFilters.value, 'paging'),
         ...queryParams,
@@ -188,7 +202,9 @@ export default function usePerspectiveCost() {
         { name: 'cost', label: 'projectCost' }
       ];
       nameSpaceCostChart.value.line = [{ name: 'cost', value: values }];
+      spaceloading.value = false;
     } catch (error) {
+      spaceloading.value = false;
       nameSpaceCostChart.value = {
         xAxis: [],
         line: [],
@@ -200,6 +216,7 @@ export default function usePerspectiveCost() {
   };
   const getWorkloadCostChart = async () => {
     try {
+      workloading.value = true;
       const params = {
         ...omit(workloadCostFilters.value, 'paging'),
         ...queryParams,
@@ -260,7 +277,9 @@ export default function usePerspectiveCost() {
           return dayjs(kItem).format('YYYY.MM.DD');
         }
       );
+      workloading.value = false;
     } catch (error) {
+      workloading.value = false;
       workloadCostChart.value = {
         xAxis: [],
         line: [],
@@ -272,6 +291,7 @@ export default function usePerspectiveCost() {
   };
   const getPerspectiveItemInfo = async () => {
     try {
+      loading.value = true;
       const { data } = await queryItemPerspective({ id });
       const allocationQueries = get(data, 'allocationQueries') || [];
 
@@ -306,7 +326,9 @@ export default function usePerspectiveCost() {
         ...namespaceFilter,
         ...queryParams
       };
+      loading.value = false;
     } catch (error) {
+      loading.value = false;
       console.log(error);
     }
   };
@@ -327,6 +349,11 @@ export default function usePerspectiveCost() {
     resourceSummaryData,
     clusterList,
     clusterName,
-    queryParams
+    queryParams,
+    dailyloading,
+    workloading,
+    spaceloading,
+    clusterloading,
+    loading
   };
 }

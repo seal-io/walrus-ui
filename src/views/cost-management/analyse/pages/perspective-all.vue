@@ -38,6 +38,7 @@
       </template>
       <LineBarChart
         height="220px"
+        :loading="dailyloading || loading"
         :show-type="active"
         :bar-list="dailyCostChart.bar"
         :line-list="dailyCostChart.line"
@@ -53,15 +54,16 @@
     </SpinCard>
     <!-- ===========Project Cost================ -->
     <SpinCard title="Cost Per Project" borderless style="margin-bottom: 10px">
-      <template #title>
+      <!-- <template #title>
         <div style="display: flex; justify-content: space-between">
           <div>Cost Per Project</div>
           <ChartBtn v-model:active="activeProject"></ChartBtn>
         </div>
-      </template>
+      </template> -->
       <LineBarChart
         height="220px"
-        :show-type="activeProject"
+        show-type="bar"
+        :loading="projectloading || loading"
         :bar-list="projectCostChart.bar"
         :line-list="projectCostChart.line"
         :data-config="projectCostChart.dataConfig"
@@ -76,15 +78,16 @@
     </SpinCard>
     <!-- ===========Cluster Cost================ -->
     <SpinCard title="Cost Per Cluster" borderless style="margin-bottom: 10px">
-      <template #title>
+      <!-- <template #title>
         <div style="display: flex; justify-content: space-between">
           <div>Cost Per Cluster</div>
           <ChartBtn v-model:active="activeCluster"></ChartBtn>
         </div>
-      </template>
+      </template> -->
       <LineBarChart
         height="220px"
-        :show-type="activeCluster"
+        show-type="bar"
+        :loading="clusterloading || loading"
         :bar-list="clusterCostChart.bar"
         :line-list="clusterCostChart.line"
         :data-config="clusterCostChart.dataConfig"
@@ -147,7 +150,11 @@
     projectCostChart,
     clusterCostChart,
     summaryData,
-    queryParams
+    queryParams,
+    dailyloading,
+    projectloading,
+    clusterloading,
+    loading
   } = usePerspectiveCost();
 
   const active = ref<'bar' | 'line'>('bar');
