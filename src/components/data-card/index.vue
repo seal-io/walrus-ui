@@ -40,5 +40,11 @@
     :deep(.arco-statistic-title) {
       font-size: 16px;
     }
+
+    :deep(.arco-statistic-extra) {
+      margin-top: 0;
+      font-weight: 500;
+      font-size: 26px;
+    }
   }
 </style>

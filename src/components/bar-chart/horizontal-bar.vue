@@ -14,7 +14,7 @@
 </template>
 
 <script lang="ts" setup>
-  import { get, map } from 'lodash';
+  import { get, map, round } from 'lodash';
   import { PropType } from 'vue';
   import useChartOption from '@/hooks/chart-option';
 
@@ -96,7 +96,7 @@
           data: props.dataList.map((o) => {
             return {
               name: o.name,
-              value: get(o, 'value.0') || o.value
+              value: round(get(o, 'value.0') || o.value, 3)
             };
           }),
           type: 'bar',

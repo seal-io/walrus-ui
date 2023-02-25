@@ -207,7 +207,8 @@
     queryConnectors,
     updateConnector,
     reinstallFinOpsTools,
-    syncFinOpsData
+    syncFinOpsData,
+    deleteConnector
   } from '../api';
 
   const { rowSelection, selectedKeys, handleSelectChange } = useRowSelect();
@@ -270,7 +271,7 @@
           id: val
         };
       });
-      // await deleteRepos(ids);
+      await deleteConnector(ids);
       loading.value = false;
       execSucceed();
       queryParams.page = 1;
