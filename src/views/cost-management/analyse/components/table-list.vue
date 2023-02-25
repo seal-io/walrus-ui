@@ -68,6 +68,18 @@
       default() {
         return {};
       }
+    },
+    loadeend: {
+      type: Boolean,
+      default() {
+        return true;
+      }
+    },
+    source: {
+      type: String,
+      default() {
+        return '';
+      }
     }
   });
   let timer: any = null;
@@ -98,6 +110,7 @@
       };
       const { data } = await queryPerspectiveData(params);
       dataList.value = data?.items || [];
+      console.log('tableList===', props.source, dataList.value);
       // dataList.value = testData;
       total.value = data?.pagination?.total || 0;
       loading.value = false;
@@ -133,20 +146,19 @@
     handleFilter();
   };
   watchEffect(() => {
-    fetchData();
+    // fetchData();
   });
   watch(
     () => props.filterParams,
     () => {
-      // fetchData();
+      if (props.loadeend) {
+        fetchData();
+      }
     },
     {
       immediate: false
     }
   );
-  onMounted(() => {
-    // fetchData();
-  });
 </script>
 
 <style lang="less" scoped></style>

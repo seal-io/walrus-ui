@@ -138,6 +138,9 @@ export const dailyCostCols = [
     tooltip: true,
     cellStyle: { minWidth: '40px' },
     dataIndex: 'startTime',
+    render({ record }) {
+      return dayjs(record.startTime).format('YYYY-MM-DD');
+    },
     title: '日期'
   },
   {
@@ -146,7 +149,7 @@ export const dailyCostCols = [
     cellStyle: { minWidth: '40px' },
     dataIndex: 'totalCost',
     render({ record }) {
-      return round(record.totalCost, 3);
+      return round(record.totalCost, 4) || 0;
     },
     title: '消费金额'
   }
@@ -172,7 +175,7 @@ export const costPerProjectCols = [
     cellStyle: { minWidth: '40px' },
     dataIndex: 'totalCost',
     render({ record }) {
-      return round(record.totalCost, 3);
+      return round(record.totalCost, 4) || 0;
     },
     title: '消费金额'
   }
@@ -205,7 +208,7 @@ export const costPerClusterCols = [
     cellStyle: { minWidth: '40px' },
     dataIndex: 'totalCost',
     render({ record }) {
-      return round(record.totalCost, 3);
+      return round(record.totalCost, 4) || 0;
     },
     title: '消费金额'
   }
@@ -247,7 +250,7 @@ export const clusterNamespaceCostCols = [
     cellStyle: { minWidth: '40px' },
     dataIndex: 'cpuCost',
     render({ record }) {
-      return round(record.totalCost, 3);
+      return round(record.totalCost, 4) || 0;
     },
     title: 'CPU'
   },
@@ -257,7 +260,7 @@ export const clusterNamespaceCostCols = [
     cellStyle: { minWidth: '40px' },
     dataIndex: 'ramCost',
     render({ record }) {
-      return round(record.totalCost, 3);
+      return round(record.totalCost, 4) || 0;
     },
     title: 'Memory'
   },
@@ -267,7 +270,7 @@ export const clusterNamespaceCostCols = [
     cellStyle: { minWidth: '40px' },
     dataIndex: 'pvCost',
     render({ record }) {
-      return round(record.totalCost, 3);
+      return round(record.totalCost, 4) || 0;
     },
     title: 'PV'
   },
@@ -277,7 +280,7 @@ export const clusterNamespaceCostCols = [
     cellStyle: { minWidth: '40px' },
     dataIndex: 'sharedCost',
     render({ record }) {
-      return round(record.totalCost, 3);
+      return round(record.totalCost, 4) || 0;
     },
     title: 'Shared'
   },
@@ -287,7 +290,7 @@ export const clusterNamespaceCostCols = [
     cellStyle: { minWidth: '40px' },
     dataIndex: 'totalCost',
     render({ record }) {
-      return round(record.totalCost, 3);
+      return round(record.totalCost, 4) || 0;
     },
     title: '消费金额'
   }
@@ -314,7 +317,7 @@ export const projectCostCols = [
     cellStyle: { minWidth: '40px' },
     dataIndex: 'totalCost',
     render({ record }) {
-      return round(record.totalCost, 3);
+      return round(record.totalCost, 4) || 0;
     },
     title: '消费金额'
   }

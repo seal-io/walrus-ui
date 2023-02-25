@@ -3,6 +3,15 @@
     <div
       style="display: flex; justify-content: space-between; margin-bottom: 10px"
     >
+      <dateRange
+        v-model:start="queryParams.startTime"
+        v-model:end="queryParams.endTime"
+        :show-extra="false"
+        :short-cuts="DateShortCuts"
+        today-in
+        border-less
+        @change="handleDateChange"
+      ></dateRange>
       <a-select
         v-model="queryParams.project"
         :placeholder="$t('cost.analyse.project.holder')"
@@ -25,15 +34,6 @@
           <span></span>
         </template>
       </a-select>
-      <dateRange
-        v-model:start="queryParams.startTime"
-        v-model:end="queryParams.endTime"
-        :show-extra="false"
-        :short-cuts="DateShortCuts"
-        today-in
-        border-less
-        @change="handleDateChange"
-      ></dateRange>
     </div>
     <!-- <FilterBox style="margin-bottom: 10px">
       <template #params>
@@ -86,7 +86,7 @@
               <span style="font-weight: 500">{{ item.label }}</span>
             </template>
             <template #extra>
-              <span>{{ round(item.value, 3) }}</span>
+              <span>{{ round(item.value, 4) || 0 }}</span>
             </template>
           </DataCard>
         </a-grid-item>
@@ -131,7 +131,9 @@
         }"
       ></LineBarChart>
       <TableList
+        :filter-params="{ ...projectCostFilters }"
         :columns="projectCostCols"
+        source="project"
         style="margin-top: 20px"
       ></TableList>
     </SpinCard>
