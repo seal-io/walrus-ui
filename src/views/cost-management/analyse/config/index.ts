@@ -100,11 +100,36 @@ export const resourceCostOverview = [
   { label: 'Pods', key: '', value: 23, color: '#324B4B' }
 ];
 export const clusterCostOverview = [
-  { label: '总费用', key: 'totalCost', value: 0, color: '#0F8584' },
-  { label: '日均消费', key: 'averageDailyCost', value: 0, color: '#7AB6B5' },
-  { label: '工作负载费用', key: 'allocationCost', value: 0, color: '#7AB6B5' },
-  { label: '管理费用', key: 'managementCost', value: 0, color: '#7AB6B5' },
-  { label: '空闲费用', key: 'idleCost', value: 0, color: '#7AB6B5' }
+  {
+    label: '总费用',
+    key: 'totalCost',
+    value: 0,
+    color: 'linear-gradient(rgba(159,232,219,.3) 0%,rgba(159,232,219,.4) 100%)'
+  },
+  {
+    label: '日均消费',
+    key: 'averageDailyCost',
+    value: 0,
+    color: 'linear-gradient(rgba(255,197,192,.3) 0%,rgba(255,197,192,.4) 100%)'
+  },
+  {
+    label: '工作负载费用',
+    key: 'allocationCost',
+    value: 0,
+    color: 'linear-gradient(rgba(184,218,243,.3) 0%,rgba(184,218,243,.4) 100%)'
+  },
+  {
+    label: '管理费用',
+    key: 'managementCost',
+    value: 0,
+    color: 'linear-gradient(rgba(159,232,219,.3) 0%,rgba(159,232,219,.4) 100%)'
+  },
+  {
+    label: '空闲费用',
+    key: 'idleCost',
+    value: 0,
+    color: 'linear-gradient(rgba(184,218,243,.3) 0%,rgba(184,218,243,.4) 100%)'
+  }
   // { label: '可优化费用', key: '', value: 0, color: '#324B4B' }
 ];
 export const dailyCostCols = [

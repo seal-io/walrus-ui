@@ -91,18 +91,12 @@ export default function usePerspectiveCost() {
       queryParams.connectorID = get(clusterList.value, '0.value') || '';
       clusterName.value = get(clusterList.value, '0.label') || 'Cluster';
 
-      each(dailyCostFilters.value, (vItem) => {
-        each(get(vItem, 'filters') || [], (fItem) => {
-          fItem.values = [queryParams.connectorID];
-          fItem.fieldName = 'connector_id';
-        });
-      });
       each(get(dailyCostFilters.value, 'filters') || [], (fItem) => {
         each(fItem, (sItem) => {
           sItem.values = [queryParams.connectorID];
+          sItem.fieldName = 'connector_id';
         });
       });
-      console.log('dailyCostFilters===', dailyCostFilters.value);
     } catch (error) {
       console.log(error);
     }

@@ -84,7 +84,7 @@
           <DataCard
             :title="item.label"
             :value="item.value"
-            bg-color="linear-gradient(rgba(159,232,219,.3) 0%,rgba(159,232,219,.4) 100%)"
+            :bg-color="item.color"
           >
             <template #title>
               <span style="font-weight: 500">{{ item.label }}</span>
