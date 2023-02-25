@@ -1,15 +1,21 @@
 <template>
   <div class="bar-box">
-    <Chart v-if="dataList.length" :height="height" :option="chartOption" />
-    <div
-      v-if="!dataList.length"
-      class="title"
-      :style="{ marginTop: `${get(configOptions, 'title.top')}px` }"
-      >{{ get(configOptions, 'title.text') }}</div
-    >
-    <div v-if="!dataList.length" :style="{ height: height }" class="empty-data">
-      <a-empty :style="{ marginTop: `${height}px` }"></a-empty>
-    </div>
+    <a-spin style="width: 100%" :loading="loading">
+      <Chart v-if="dataList.length" :height="height" :option="chartOption" />
+      <div
+        v-if="!dataList.length"
+        class="title"
+        :style="{ marginTop: `${get(configOptions, 'title.top')}px` }"
+        >{{ get(configOptions, 'title.text') }}</div
+      >
+      <div
+        v-if="!dataList.length"
+        :style="{ height: height }"
+        class="empty-data"
+      >
+        <a-empty :style="{ marginTop: `${height}px` }"></a-empty>
+      </div>
+    </a-spin>
   </div>
 </template>
 
@@ -35,6 +41,12 @@
       type: Object,
       default() {
         return {};
+      }
+    },
+    loading: {
+      type: Boolean,
+      default() {
+        return false;
       }
     }
   });

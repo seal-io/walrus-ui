@@ -117,6 +117,7 @@
         </div>
       </template>
       <LineBarChart
+        :loading="dailyloading || loading || clusterloading"
         height="220px"
         :show-type="active"
         :line-list="dailyCostChart.line"
@@ -135,6 +136,7 @@
     </SpinCard>
     <SpinCard title="Namespace消费记录" borderless style="margin-bottom: 10px">
       <horizontalBar
+        :loading="spaceloading || loading || clusterloading"
         style="flex: 1"
         :config-options="BarConfigOptions"
         height="260px"
@@ -149,6 +151,7 @@
     </SpinCard>
     <SpinCard title="工作负载消费金额" borderless style="margin-bottom: 10px">
       <LineBarChart
+        :loading="workloading || loading || clusterloading"
         height="220px"
         show-type="line"
         :line-list="[]"
@@ -230,7 +233,12 @@
     resourceSummaryData,
     clusterList,
     clusterName,
-    queryParams
+    queryParams,
+    dailyloading,
+    workloading,
+    spaceloading,
+    clusterloading,
+    loading
   } = usePerspectiveCost();
   const { t } = useCallCommon();
   const loadeend = ref(false);

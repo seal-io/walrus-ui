@@ -35,6 +35,11 @@ export default function usePerspectiveCost() {
     bar: [],
     dataConfig: []
   });
+
+  const projectloading = ref(false);
+  const loading = ref(false);
+  const apploading = ref(false);
+
   const projectName = ref('');
   const queryParams = reactive({
     startTime: '',
@@ -42,16 +47,17 @@ export default function usePerspectiveCost() {
     project: ''
   });
 
-  const overData = reactive({});
+  const overData = ref({});
   const summaryData = computed(() => {
     const list = map(projectCostOverview, (item) => {
-      item.value = get(overData, item.key) || 0;
+      item.value = get(overData.value, item.key) || 0;
       return item;
     });
     return list;
   });
   const getProjectList = async () => {
     try {
+      projectloading.value = true;
       const params = {
         ...omit(queryParams, ['project']),
         fieldName: 'label:project',
@@ -72,7 +78,9 @@ export default function usePerspectiveCost() {
           sItem.values = [queryParams.project];
         });
       });
+      projectloading.value = false;
     } catch (error) {
+      projectloading.value = false;
       projectList.value = [];
       console.log(error);
     }
@@ -87,13 +95,15 @@ export default function usePerspectiveCost() {
           .format('YYYY-MM-DDTHH:mm:ssZ')
       };
       const { data } = await queryProjectPerspectiveSummary(params);
-      assignIn(overData, data);
+      overData.value = data || {};
     } catch (error) {
+      overData.value = {};
       console.log(error);
     }
   };
   const getProjectCostChart = async () => {
     try {
+      apploading.value = true;
       const params = {
         ...omit(projectCostFilters.value, 'paging'),
         ...queryParams,
@@ -149,7 +159,9 @@ export default function usePerspectiveCost() {
           return dayjs(kItem).format('YYYY.MM.DD');
         }
       );
+      apploading.value = false;
     } catch (error) {
+      apploading.value = false;
       projectCostChart.value = { xAxis: [], line: [], bar: [], dataConfig: [] };
       console.log(error);
     }
@@ -157,6 +169,7 @@ export default function usePerspectiveCost() {
 
   const getPerspectiveItemInfo = async () => {
     try {
+      loading.value = true;
       const { data } = await queryItemPerspective({ id });
       const allocationQueries = get(data, 'allocationQueries') || [];
       const startTime = get(data, 'startTime');
@@ -172,7 +185,9 @@ export default function usePerspectiveCost() {
         ...projectFilter,
         ...queryParams
       };
+      loading.value = false;
     } catch (error) {
+      loading.value = false;
       console.log(error);
     }
   };
@@ -186,6 +201,9 @@ export default function usePerspectiveCost() {
     projectCostChart,
     summaryData,
     projectName,
-    queryParams
+    queryParams,
+    projectloading,
+    apploading,
+    loading
   };
 }
