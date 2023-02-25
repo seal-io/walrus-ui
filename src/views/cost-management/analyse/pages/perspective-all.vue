@@ -17,13 +17,12 @@
           :key="index"
           :span="{ lg: 8, md: 8, sm: 12, xs: 24 }"
         >
-          <DataCard
-            :title="item.label"
-            :value="item.value"
-            :bg-color="item.color"
-          >
+          <DataCard :precision="3" :title="item.label" :bg-color="item.color">
             <template #title>
               <span style="font-weight: 500">{{ item.label }}</span>
+            </template>
+            <template #extra>
+              <span>{{ round(item.value, 3) }}</span>
             </template>
           </DataCard>
         </a-grid-item>
@@ -103,6 +102,7 @@
 
 <script lang="ts" setup>
   import dayjs from 'dayjs';
+  import { round } from 'lodash';
   import { reactive, ref, computed, onMounted } from 'vue';
   import DateRange from '@/components/date-range/index.vue';
   import DataCard from '@/components/data-card/index.vue';

@@ -9,7 +9,7 @@ import {
   queryAllPerspectiveSummary
 } from '../api';
 import { costOverview, getTimeRange } from '../config';
-import testData from '../config/testData';
+import testData, { overviewData } from '../config/testData';
 
 export default function usePerspectiveCost() {
   const { route } = useCallCommon();

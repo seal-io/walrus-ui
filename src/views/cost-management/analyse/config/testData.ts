@@ -54,7 +54,15 @@ export const statckLineData = [
     pvCost: 0.08271232794000008
   }
 ];
-
+export const overviewData = {
+  itemName: 'itemName2',
+  startTime: '2023-02-22T00:00:00Z',
+  totalCost: 2.7084200439384034,
+  sharedCost: 2.150695715998403,
+  cpuCost: 0.4404500000000005,
+  ramCost: 0.03456199999999999,
+  pvCost: 0.08271232794000008
+};
 export default [
   {
     itemName: 'itemName1',

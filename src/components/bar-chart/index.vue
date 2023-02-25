@@ -18,7 +18,7 @@
 </template>
 
 <script lang="ts" setup>
-  import { map, maxBy, ceil, get } from 'lodash';
+  import { map, maxBy, ceil, get, round } from 'lodash';
   import { PropType, ref } from 'vue';
   import { BarSeriesOption } from 'echarts';
 
@@ -125,7 +125,7 @@
         data: props.dataList.map((o) => {
           return {
             name: o.name,
-            value: get(o, 'value.0') || o.value
+            value: round(get(o, 'value.0') || o.value, 3)
           };
         }),
         type: 'bar',

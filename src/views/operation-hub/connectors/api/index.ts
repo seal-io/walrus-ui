@@ -36,7 +36,9 @@ export function createConnector(data: ConnectorFormData) {
 export function updateConnector(data: ConnectorFormData) {
   return axios.put(`/connectors/${data.id}`, data);
 }
-
+export function deleteConnector(data: Array<{ id: string | number }>) {
+  return axios.delete(`/connectors`, { data });
+}
 export function reinstallFinOpsTools(data: ConnectorFormData) {
   return axios.post(`/connectors/${data.id}/reinstall-cost-tools`, data);
 }

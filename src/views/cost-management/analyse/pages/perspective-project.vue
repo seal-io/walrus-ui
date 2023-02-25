@@ -81,13 +81,12 @@
           :key="index"
           :span="{ lg: 12, md: 12, sm: 12, xs: 24 }"
         >
-          <DataCard
-            :title="item.label"
-            :value="item.value"
-            :bg-color="item.color"
-          >
+          <DataCard :precision="3" :title="item.label" :bg-color="item.color">
             <template #title>
               <span style="font-weight: 500">{{ item.label }}</span>
+            </template>
+            <template #extra>
+              <span>{{ round(item.value, 3) }}</span>
             </template>
           </DataCard>
         </a-grid-item>
@@ -140,7 +139,7 @@
 </template>
 
 <script lang="ts" setup>
-  import { set, get, find, map, each } from 'lodash';
+  import { set, get, find, map, each, round } from 'lodash';
   import { reactive, ref, computed, onMounted } from 'vue';
   import useCallCommon from '@/hooks/use-call-common';
   import DateRange from '@/components/date-range/index.vue';

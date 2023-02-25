@@ -81,13 +81,12 @@
           :key="index"
           :span="{ lg: 3, md: 3, sm: 5, xs: 15 }"
         >
-          <DataCard
-            :title="item.label"
-            :value="item.value"
-            :bg-color="item.color"
-          >
+          <DataCard :precision="3" :title="item.label" :bg-color="item.color">
             <template #title>
               <span style="font-weight: 500">{{ item.label }}</span>
+            </template>
+            <template #extra>
+              <span>{{ round(item.value, 3) }}</span>
             </template>
           </DataCard>
         </a-grid-item>
@@ -136,7 +135,7 @@
         :data-list="nameSpaceCostChart.bar"
       ></horizontalBar>
       <TableList
-        :columns="namespaceCostCols"
+        :columns="clusterNamespaceCostCols"
         style="margin-top: 20px"
       ></TableList>
     </SpinCard>
@@ -170,7 +169,7 @@
 </template>
 
 <script lang="ts" setup>
-  import { filter, find, get, each } from 'lodash';
+  import { filter, find, get, each, round } from 'lodash';
   import { reactive, ref, computed, onMounted } from 'vue';
   import useCallCommon from '@/hooks/use-call-common';
   import DateRange from '@/components/date-range/index.vue';
@@ -264,9 +263,9 @@
   const workLoadCostCols = computed(() => {
     return clusterNamespaceCostCols;
   });
-  const namespaceCostCols = computed(() => {
-    return filter(clusterNamespaceCostCols, (item) => !item.showIn);
-  });
+  // const namespaceCostCols = computed(() => {
+  //   return filter(clusterNamespaceCostCols, (item) => !item.showIn);
+  // });
   const handleDateChange = async () => {
     await getClusterList();
     workloadCostFilters.value = {
@@ -322,7 +321,7 @@
     // getWorkloadCostChart();
   };
   onMounted(() => {
-    initData();
+    // initData();
   });
 </script>
 

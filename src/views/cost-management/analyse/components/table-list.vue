@@ -133,12 +133,12 @@
     handleFilter();
   };
   watchEffect(() => {
-    // fetchData();
+    fetchData();
   });
   watch(
     () => props.filterParams,
     () => {
-      fetchData();
+      // fetchData();
     },
     {
       immediate: false
