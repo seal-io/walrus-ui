@@ -3,6 +3,15 @@
     <div
       style="display: flex; justify-content: space-between; margin-bottom: 10px"
     >
+      <dateRange
+        v-model:start="queryParams.startTime"
+        v-model:end="queryParams.endTime"
+        :show-extra="false"
+        :short-cuts="DateShortCuts"
+        today-in
+        border-less
+        @change="handleDateChange"
+      ></dateRange>
       <a-select
         v-model="queryParams.connectorID"
         :placeholder="$t('cost.analyse.cluster.holder')"
@@ -25,15 +34,6 @@
           <span></span>
         </template>
       </a-select>
-      <dateRange
-        v-model:start="queryParams.startTime"
-        v-model:end="queryParams.endTime"
-        :show-extra="false"
-        :short-cuts="DateShortCuts"
-        today-in
-        border-less
-        @change="handleDateChange"
-      ></dateRange>
     </div>
     <!-- <FilterBox style="margin-bottom: 10px">
       <template #params>
@@ -86,7 +86,7 @@
               <span style="font-weight: 500">{{ item.label }}</span>
             </template>
             <template #extra>
-              <span>{{ round(item.value, 3) }}</span>
+              <span>{{ round(item.value, 4) || 0 }}</span>
             </template>
           </DataCard>
         </a-grid-item>
@@ -125,7 +125,13 @@
         :x-axis="dailyCostChart.xAxis"
         :config-options="configOptions"
       ></LineBarChart>
-      <TableList :columns="dailyCostCols" style="margin-top: 20px"></TableList>
+      <TableList
+        :filter-params="{ ...dailyCostFilters }"
+        :loadeend="loadeend"
+        :columns="dailyCostCols"
+        source="dailycost"
+        style="margin-top: 20px"
+      ></TableList>
     </SpinCard>
     <SpinCard title="Namespace消费记录" borderless style="margin-bottom: 10px">
       <horizontalBar
@@ -135,7 +141,9 @@
         :data-list="nameSpaceCostChart.bar"
       ></horizontalBar>
       <TableList
+        :filter-params="nameSpaceCostFilters"
         :columns="clusterNamespaceCostCols"
+        source="namespace"
         style="margin-top: 20px"
       ></TableList>
     </SpinCard>
@@ -160,6 +168,7 @@
           }
         }"
       ></LineBarChart>
+      <!-- TODO -->
       <TableList
         :columns="workLoadCostCols"
         style="margin-top: 20px"
@@ -224,6 +233,7 @@
     queryParams
   } = usePerspectiveCost();
   const { t } = useCallCommon();
+  const loadeend = ref(false);
   const clusterOptions = [
     { label: 'cluster-1', value: 'cluster1' },
     { label: 'cluster-2', value: 'cluster2' }
@@ -315,13 +325,14 @@
   const initData = async () => {
     await getPerspectiveItemInfo();
     await getClusterList();
+    loadeend.value = true;
     getDailyCostChart();
     getNamespaceCostChart();
     getSummaryData();
     // getWorkloadCostChart();
   };
   onMounted(() => {
-    // initData();
+    initData();
   });
 </script>
 

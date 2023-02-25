@@ -18,7 +18,7 @@ import { CostAnalyRow, ChartData } from '../config/interface';
 import {
   queryItemPerspective,
   queryPerspectiveData,
-  queryAllPerspectiveSummary,
+  queryProjectPerspectiveSummary,
   queryPerspectiveField
 } from '../api';
 // import testData, { statckLineData } from '../config/testData';
@@ -86,7 +86,7 @@ export default function usePerspectiveCost() {
           .add(1, 'd')
           .format('YYYY-MM-DDTHH:mm:ssZ')
       };
-      const { data } = await queryAllPerspectiveSummary(params);
+      const { data } = await queryProjectPerspectiveSummary(params);
       assignIn(overData, data);
     } catch (error) {
       console.log(error);

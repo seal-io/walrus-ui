@@ -1,16 +1,15 @@
 <template>
   <div class="container">
-    <div style="display: flex; justify-content: flex-end; margin-bottom: 10px">
-      <dateRange
-        v-model:start="queryParams.startTime"
-        v-model:end="queryParams.endTime"
-        :show-extra="false"
-        :short-cuts="DateShortCuts"
-        today-in
-        border-less
-        @change="handleDateChange"
-      ></dateRange>
-    </div>
+    <dateRange
+      v-model:start="queryParams.startTime"
+      v-model:end="queryParams.endTime"
+      :show-extra="false"
+      style="margin-bottom: 10px"
+      :short-cuts="DateShortCuts"
+      today-in
+      border-less
+      @change="handleDateChange"
+    ></dateRange>
     <SpinCard title="All Resource" borderless style="margin-bottom: 10px">
       <a-grid :cols="24" :col-gap="20">
         <a-grid-item
@@ -23,7 +22,7 @@
               <span style="font-weight: 500">{{ item.label }}</span>
             </template>
             <template #extra>
-              <span>{{ round(item.value, 3) }}</span>
+              <span>{{ round(item.value, 4) || 0 }}</span>
             </template>
           </DataCard>
         </a-grid-item>

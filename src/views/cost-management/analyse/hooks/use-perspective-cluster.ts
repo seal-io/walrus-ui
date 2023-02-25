@@ -93,6 +93,10 @@ export default function usePerspectiveCost() {
       queryParams.connectorID = get(clusterList.value, '0.value') || '';
       clusterName.value = get(clusterList.value, '0.label') || 'Cluster';
 
+      dailyCostFilters.value.connectorID = queryParams.connectorID;
+      workloadCostFilters.value.connectorID = queryParams.connectorID;
+      nameSpaceCostFilters.value.connectorID = queryParams.connectorID;
+      console.log('dailyCostFilters====', dailyCostFilters.value);
       each(get(dailyCostFilters.value, 'filters') || [], (fItem) => {
         each(fItem, (sItem) => {
           sItem.values = [queryParams.connectorID];
@@ -290,7 +294,7 @@ export default function usePerspectiveCost() {
         (item) => item.groupBy === 'namespace'
       );
       dailyCostFilters.value = {
-        ...dailyFilter,
+        ...cloneDeep(dailyFilter),
         ...queryParams
       };
 
