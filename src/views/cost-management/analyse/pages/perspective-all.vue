@@ -1,15 +1,16 @@
 <template>
   <div class="container">
-    <dateRange
-      v-model:start="queryParams.startTime"
-      v-model:end="queryParams.endTime"
-      :show-extra="false"
-      style="margin-bottom: 10px"
-      :short-cuts="DateShortCuts"
-      today-in
-      border-less
-      @change="handleDateChange"
-    ></dateRange>
+    <div style="display: flex; justify-content: flex-end; margin-bottom: 10px">
+      <dateRange
+        v-model:start="queryParams.startTime"
+        v-model:end="queryParams.endTime"
+        :show-extra="false"
+        :short-cuts="DateShortCuts"
+        today-in
+        border-less
+        @change="handleDateChange"
+      ></dateRange>
+    </div>
     <SpinCard title="All Resource" borderless style="margin-bottom: 10px">
       <a-grid :cols="24" :col-gap="20">
         <a-grid-item

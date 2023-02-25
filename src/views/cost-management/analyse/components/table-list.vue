@@ -88,9 +88,9 @@
         startTime: dayjs(props.filterParams.startTime).format(
           'YYYY-MM-DDTHH:mm:ssZ'
         ),
-        endTime: dayjs(props.filterParams.endTime).format(
-          'YYYY-MM-DDTHH:mm:ssZ'
-        ),
+        endTime: dayjs(props.filterParams.endTime)
+          .add(1, 'd')
+          .format('YYYY-MM-DDTHH:mm:ssZ'),
         query: queryParams.query,
         paging: {
           ...pick(queryParams, ['page', 'perPage'])
