@@ -84,7 +84,9 @@ export default function usePerspectiveCost() {
         ...omit(queryParams, ['connectorID']),
         fieldName: 'connector_id',
         startTime: dayjs(queryParams.startTime).format('YYYY-MM-DDTHH:mm:ssZ'),
-        endTime: dayjs(queryParams.endTime).format('YYYY-MM-DDTHH:mm:ssZ')
+        endTime: dayjs(queryParams.endTime)
+          .add(1, 'd')
+          .format('YYYY-MM-DDTHH:mm:ssZ')
       };
       const { data } = await queryPerspectiveField(params);
       clusterList.value = data?.items || [];
@@ -106,7 +108,9 @@ export default function usePerspectiveCost() {
       const params = {
         ...queryParams,
         startTime: dayjs(queryParams.startTime).format('YYYY-MM-DDTHH:mm:ssZ'),
-        endTime: dayjs(queryParams.endTime).format('YYYY-MM-DDTHH:mm:ssZ')
+        endTime: dayjs(queryParams.endTime)
+          .add(1, 'd')
+          .format('YYYY-MM-DDTHH:mm:ssZ')
       };
       const { data } = await queryClusterPerspectiveSummary(params);
       assignIn(overData, data);
@@ -120,7 +124,9 @@ export default function usePerspectiveCost() {
         ...omit(dailyCostFilters.value, 'paging'),
         ...queryParams,
         startTime: dayjs(queryParams.startTime).format('YYYY-MM-DDTHH:mm:ssZ'),
-        endTime: dayjs(queryParams.endTime).format('YYYY-MM-DDTHH:mm:ssZ')
+        endTime: dayjs(queryParams.endTime)
+          .add(1, 'd')
+          .format('YYYY-MM-DDTHH:mm:ssZ')
       };
       const { data } = await queryPerspectiveData(params);
       const list = data?.items || [];
@@ -152,7 +158,9 @@ export default function usePerspectiveCost() {
         ...omit(nameSpaceCostFilters.value, 'paging'),
         ...queryParams,
         startTime: dayjs(queryParams.startTime).format('YYYY-MM-DDTHH:mm:ssZ'),
-        endTime: dayjs(queryParams.endTime).format('YYYY-MM-DDTHH:mm:ssZ')
+        endTime: dayjs(queryParams.endTime)
+          .add(1, 'd')
+          .format('YYYY-MM-DDTHH:mm:ssZ')
       };
       const { data } = await queryPerspectiveData(params);
       const list = data?.items || [];
@@ -192,7 +200,9 @@ export default function usePerspectiveCost() {
         ...omit(workloadCostFilters.value, 'paging'),
         ...queryParams,
         startTime: dayjs(queryParams.startTime).format('YYYY-MM-DDTHH:mm:ssZ'),
-        endTime: dayjs(queryParams.endTime).format('YYYY-MM-DDTHH:mm:ssZ')
+        endTime: dayjs(queryParams.endTime)
+          .add(1, 'd')
+          .format('YYYY-MM-DDTHH:mm:ssZ')
       };
       const { data } = await queryPerspectiveData(params);
       let list = data?.items || [];

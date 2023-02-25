@@ -56,7 +56,9 @@ export default function usePerspectiveCost() {
         ...omit(queryParams, ['project']),
         fieldName: 'label:project',
         startTime: dayjs(queryParams.startTime).format('YYYY-MM-DDTHH:mm:ssZ'),
-        endTime: dayjs(queryParams.endTime).format('YYYY-MM-DDTHH:mm:ssZ')
+        endTime: dayjs(queryParams.endTime)
+          .add(1, 'd')
+          .format('YYYY-MM-DDTHH:mm:ssZ')
       };
       const { data } = await queryPerspectiveField(params);
       projectList.value = data?.items || [];
@@ -80,7 +82,9 @@ export default function usePerspectiveCost() {
       const params = {
         project: queryParams.project,
         startTime: dayjs(queryParams.startTime).format('YYYY-MM-DDTHH:mm:ssZ'),
-        endTime: dayjs(queryParams.endTime).format('YYYY-MM-DDTHH:mm:ssZ')
+        endTime: dayjs(queryParams.endTime)
+          .add(1, 'd')
+          .format('YYYY-MM-DDTHH:mm:ssZ')
       };
       const { data } = await queryAllPerspectiveSummary(params);
       assignIn(overData, data);
@@ -94,7 +98,9 @@ export default function usePerspectiveCost() {
         ...omit(projectCostFilters.value, 'paging'),
         ...queryParams,
         startTime: dayjs(queryParams.startTime).format('YYYY-MM-DDTHH:mm:ssZ'),
-        endTime: dayjs(queryParams.endTime).format('YYYY-MM-DDTHH:mm:ssZ')
+        endTime: dayjs(queryParams.endTime)
+          .add(1, 'd')
+          .format('YYYY-MM-DDTHH:mm:ssZ')
       };
       const { data } = await queryPerspectiveData(params);
       let list = data?.items || [];
