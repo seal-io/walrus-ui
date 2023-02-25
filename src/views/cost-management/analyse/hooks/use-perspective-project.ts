@@ -45,7 +45,7 @@ export default function usePerspectiveCost() {
   const overData = reactive({});
   const summaryData = computed(() => {
     const list = map(projectCostOverview, (item) => {
-      item.value = get(summaryData, item.key) || 0;
+      item.value = get(overData, item.key) || 0;
       return item;
     });
     return list;
