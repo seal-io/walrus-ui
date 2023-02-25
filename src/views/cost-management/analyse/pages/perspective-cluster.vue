@@ -293,6 +293,7 @@
     each(get(dailyCostFilters.value, 'filters') || [], (fItem) => {
       each(fItem, (sItem) => {
         sItem.values = [val];
+        fItem.fieldName = 'connector_id';
       });
     });
     workloadCostFilters.value = {

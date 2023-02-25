@@ -46,7 +46,7 @@ export default function usePerspectiveCost() {
   const overData = reactive({});
   const summaryData = computed(() => {
     const list = map(costOverview, (item) => {
-      item.value = get(summaryData, item.key) || 0;
+      item.value = get(overData, item.key) || 0;
       return item;
     });
     return list;
@@ -104,7 +104,7 @@ export default function usePerspectiveCost() {
         endTime: dayjs(queryParams.endTime).format('YYYY-MM-DDTHH:mm:ssZ')
       };
       const { data } = await queryPerspectiveData(params);
-      const list = data?.item || [];
+      const list = data?.items || [];
       // const list = testData;
       const values: number[] = [];
       projectCostChart.value = { xAxis: [], line: [], bar: [], dataConfig: [] };
@@ -134,7 +134,7 @@ export default function usePerspectiveCost() {
         endTime: dayjs(queryParams.endTime).format('YYYY-MM-DDTHH:mm:ssZ')
       };
       const { data } = await queryPerspectiveData(params);
-      const list = data?.item || [];
+      const list = data?.items || [];
       // const list = testData;
       const values: number[] = [];
       clusterCostChart.value = { xAxis: [], line: [], bar: [], dataConfig: [] };
