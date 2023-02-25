@@ -97,7 +97,7 @@ export default function usePerspectiveCost() {
         endTime: dayjs(queryParams.endTime).format('YYYY-MM-DDTHH:mm:ssZ')
       };
       const { data } = await queryPerspectiveData(params);
-      let list = data?.item || [];
+      let list = data?.items || [];
       // let list = statckLineData;
       projectCostChart.value = { xAxis: [], line: [], bar: [], dataConfig: [] };
       list = sortBy(list, (d) => d.startTime);

@@ -82,7 +82,7 @@ export default function usePerspectiveCost() {
     try {
       const params = {
         ...omit(queryParams, ['connectorID']),
-        fieldName: 'cluster_name',
+        fieldName: 'connector_id',
         startTime: dayjs(queryParams.startTime).format('YYYY-MM-DDTHH:mm:ssZ'),
         endTime: dayjs(queryParams.endTime).format('YYYY-MM-DDTHH:mm:ssZ')
       };
@@ -93,8 +93,8 @@ export default function usePerspectiveCost() {
 
       each(dailyCostFilters.value, (vItem) => {
         each(get(vItem, 'filters') || [], (fItem) => {
-          console.log('dailyCostFilters=222=', fItem);
           fItem.values = [queryParams.connectorID];
+          fItem.fieldName = 'connector_id';
         });
       });
       each(get(dailyCostFilters.value, 'filters') || [], (fItem) => {
@@ -161,7 +161,7 @@ export default function usePerspectiveCost() {
         endTime: dayjs(queryParams.endTime).format('YYYY-MM-DDTHH:mm:ssZ')
       };
       const { data } = await queryPerspectiveData(params);
-      const list = data?.item || [];
+      const list = data?.items || [];
       // const list = testData;
       const values: number[] = [];
       nameSpaceCostChart.value = {
@@ -201,7 +201,7 @@ export default function usePerspectiveCost() {
         endTime: dayjs(queryParams.endTime).format('YYYY-MM-DDTHH:mm:ssZ')
       };
       const { data } = await queryPerspectiveData(params);
-      let list = data?.item || [];
+      let list = data?.items || [];
       // let list = statckLineData;
       workloadCostChart.value = {
         xAxis: [],
