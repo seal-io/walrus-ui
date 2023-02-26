@@ -2,7 +2,7 @@
   <a-modal
     top="10%"
     :align-center="false"
-    :width="500"
+    :width="600"
     :ok-text="$t('common.button.save')"
     :visible="show"
     :mask-closable="false"
@@ -38,16 +38,17 @@
             :auto-size="{ minRows: 4, maxRows: 6 }"
           ></a-textarea>
         </a-form-item>
-        <!-- <a-form-item
+        <a-form-item
           v-for="(item, index) in labelList"
           :key="index"
           :label="`标签${index + 1}`"
         >
-          <a-input-group style="width: 360px">
+          <a-input-group style="width: 430px">
             <a-input></a-input><span style="padding: 0 4px">:</span
             ><a-input></a-input>
           </a-input-group>
           <a-button
+            v-if="index === labelList.length - 1"
             type="outline"
             size="mini"
             shape="round"
@@ -68,7 +69,7 @@
           >
             <icon-minus></icon-minus>
           </a-button>
-        </a-form-item> -->
+        </a-form-item>
       </a-form>
     </a-spin>
     <template #footer>

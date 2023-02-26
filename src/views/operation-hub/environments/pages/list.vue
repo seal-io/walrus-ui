@@ -1,14 +1,7 @@
 <template>
-  <SpinCard
-    borderless
-    top-gap
-    class="projects"
-    :title="$t('operation.environments.table.list')"
-  >
-    <template #title>
+  <SpinCard borderless top-gap class="projects">
+    <!-- <template #title>
       <div class="title">
-        <!-- <span>{{ $t('operation.environments.table.list') }}</span>
-        <a-divider direction="vertical" :margin="10"></a-divider> -->
         <icon-apps
           :class="{ active: currentView === 'thumb' }"
           @click="handleToggle('thumb')"
@@ -18,9 +11,9 @@
           @click="handleToggle('list')"
         />
       </div>
-    </template>
+    </template> -->
     <div class="content">
-      <FilterBox>
+      <FilterBox style="margin-bottom: 10px">
         <template #params>
           <a-input
             v-model="queryParams.name"
@@ -57,8 +50,8 @@
           >
         </template>
       </FilterBox>
-      <a-divider :margin="8"></a-divider>
-      <a-tabs
+      <!-- <a-divider :margin="8"></a-divider> -->
+      <!-- <a-tabs
         default-active-key="currentView"
         :active-key="currentView"
         @change="handleToggle"
@@ -76,7 +69,8 @@
             :list="dataList"
           ></ListView>
         </a-tab-pane>
-      </a-tabs>
+      </a-tabs> -->
+      <ListView v-model:selectedList="selectedKeys" :list="dataList"></ListView>
       <a-pagination
         size="small"
         :total="total"
