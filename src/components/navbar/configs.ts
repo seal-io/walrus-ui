@@ -10,18 +10,18 @@ export const navDataList: NavDataMap[] = [
   {
     name: 'projectsList',
     label: 'navbar.appmanagement',
-    active: 'appManagement',
+    active: 'appManagement'
   },
   {
-    name: 'costAnalyseList',
+    name: 'costPerspective',
     label: 'navbar.costmanagement',
-    active: 'costManagement',
+    active: 'costManagement'
   },
   {
     name: 'connectorsList',
     label: 'navbar.operatorhub',
-    active: 'operationHub',
-  },
+    active: 'operationHub'
+  }
   // {
   //   name: 'graphMain',
   //   label: 'navbar.graph',
@@ -34,5 +34,5 @@ export const navDataList: NavDataMap[] = [
   // },
 ];
 export default {
-  NO_LOGIN_CHECK_PATH,
+  NO_LOGIN_CHECK_PATH
 };

@@ -1,4 +1,4 @@
-import { ref, reactive, computed } from 'vue';
+import { ref, reactive, computed, toRefs } from 'vue';
 import dayjs from 'dayjs';
 import useCallCommon from '@/hooks/use-call-common';
 import { find, get, omit, map, each, assignIn } from 'lodash';
@@ -11,10 +11,9 @@ import {
 import { costOverview, getTimeRange } from '../config';
 import testData, { overviewData } from '../config/testData';
 
-export default function usePerspectiveCost() {
+export default function usePerspectiveCost(props) {
   const { route } = useCallCommon();
-  const id = route.query.id as string;
-
+  const { query } = route;
   const dailyCostFilters = ref<any>({});
   const projectCostFilters = ref<any>({});
   const clusterCostFilters = ref<any>({});
@@ -49,6 +48,9 @@ export default function usePerspectiveCost() {
   });
 
   const overData = ref({});
+  const pageId = computed(() => {
+    return query.id || props.viewId;
+  });
   const summaryData = computed(() => {
     const list = map(costOverview, (item) => {
       item.value = get(overData.value, item.key) || 0;
@@ -61,9 +63,7 @@ export default function usePerspectiveCost() {
       const params = {
         ...queryParams,
         startTime: dayjs(queryParams.startTime).format('YYYY-MM-DDTHH:mm:ssZ'),
-        endTime: dayjs(queryParams.endTime)
-          .add(1, 'd')
-          .format('YYYY-MM-DDTHH:mm:ssZ')
+        endTime: dayjs(queryParams.endTime).format('YYYY-MM-DDT23:59:59Z')
       };
       const { data } = await queryAllPerspectiveSummary(params);
       overData.value = data || {};
@@ -79,9 +79,7 @@ export default function usePerspectiveCost() {
         ...omit(dailyCostFilters.value, 'paging'),
         ...queryParams,
         startTime: dayjs(queryParams.startTime).format('YYYY-MM-DDTHH:mm:ssZ'),
-        endTime: dayjs(queryParams.endTime)
-          .add(1, 'd')
-          .format('YYYY-MM-DDTHH:mm:ssZ')
+        endTime: dayjs(queryParams.endTime).format('YYYY-MM-DDT23:59:59Z')
       };
       const { data } = await queryPerspectiveData(params);
       const list = data?.items || [];
@@ -115,9 +113,7 @@ export default function usePerspectiveCost() {
         ...omit(projectCostFilters.value, 'paging'),
         ...queryParams,
         startTime: dayjs(queryParams.startTime).format('YYYY-MM-DDTHH:mm:ssZ'),
-        endTime: dayjs(queryParams.endTime)
-          .add(1, 'd')
-          .format('YYYY-MM-DDTHH:mm:ssZ')
+        endTime: dayjs(queryParams.endTime).format('YYYY-MM-DDT23:59:59Z')
       };
       const { data } = await queryPerspectiveData(params);
       const list = data?.items || [];
@@ -150,9 +146,7 @@ export default function usePerspectiveCost() {
         ...omit(clusterCostFilters.value, 'paging'),
         ...queryParams,
         startTime: dayjs(queryParams.startTime).format('YYYY-MM-DDTHH:mm:ssZ'),
-        endTime: dayjs(queryParams.endTime)
-          .add(1, 'd')
-          .format('YYYY-MM-DDTHH:mm:ssZ')
+        endTime: dayjs(queryParams.endTime).format('YYYY-MM-DDT23:59:59Z')
       };
       const { data } = await queryPerspectiveData(params);
       const list = data?.items || [];
@@ -181,6 +175,7 @@ export default function usePerspectiveCost() {
   const getPerspectiveItemInfo = async () => {
     try {
       loading.value = true;
+      const id = route.query.id || props.viewId;
       const { data } = await queryItemPerspective({ id });
       const allocationQueries = get(data, 'allocationQueries') || [];
 
@@ -236,6 +231,7 @@ export default function usePerspectiveCost() {
     dailyloading,
     projectloading,
     clusterloading,
+    id: pageId,
     loading
   };
 }

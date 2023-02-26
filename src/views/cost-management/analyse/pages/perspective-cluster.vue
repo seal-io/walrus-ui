@@ -1,40 +1,69 @@
 <template>
   <div class="container">
-    <div
-      style="display: flex; justify-content: space-between; margin-bottom: 10px"
-    >
-      <dateRange
-        v-model:start="queryParams.startTime"
-        v-model:end="queryParams.endTime"
-        :show-extra="false"
-        :short-cuts="DateShortCuts"
-        today-in
-        border-less
-        @change="handleDateChange"
-      ></dateRange>
-      <a-select
-        v-model="queryParams.connectorID"
-        :placeholder="$t('cost.analyse.cluster.holder')"
-        class="border-less"
-        style="width: 200px"
-        :options="clusterList"
-        @change="handleClusterChange"
-      >
-        <template #option="{ data }">
-          <a-tooltip :content="data.label" position="top">
-            <span
-              ><ProviderIcon :provider="data.provider" /><span
-                style="margin-left: 5px"
-                >{{ data.label }}</span
-              ></span
-            >
-          </a-tooltip>
-        </template>
-        <template #empty>
-          <span></span>
-        </template>
-      </a-select>
-    </div>
+    <FilterBox style="margin-bottom: 10px">
+      <template #params>
+        <div v-if="isPage"><slot name="select"></slot></div>
+        <a-select
+          v-if="isPage"
+          v-model="queryParams.connectorID"
+          :placeholder="$t('cost.analyse.cluster.holder')"
+          class="border-less"
+          style="width: 200px"
+          :options="clusterList"
+          @change="handleClusterChange"
+        >
+          <template #option="{ data }">
+            <a-tooltip :content="data.label" position="top">
+              <span
+                ><ProviderIcon :provider="data.provider" /><span
+                  style="margin-left: 5px"
+                  >{{ data.label }}</span
+                ></span
+              >
+            </a-tooltip>
+          </template>
+          <template #empty>
+            <span></span>
+          </template>
+        </a-select>
+        <dateRange
+          v-model:start="queryParams.startTime"
+          v-model:end="queryParams.endTime"
+          :show-extra="false"
+          :short-cuts="DateShortCuts"
+          today-in
+          border-less
+          @change="handleDateChange"
+        ></dateRange>
+        <div><slot name="button"></slot></div>
+      </template>
+      <template #button-group>
+        <a-select
+          v-if="!isPage"
+          v-model="queryParams.connectorID"
+          :placeholder="$t('cost.analyse.cluster.holder')"
+          class="border-less"
+          style="width: 200px"
+          :options="clusterList"
+          @change="handleClusterChange"
+        >
+          <template #option="{ data }">
+            <a-tooltip :content="data.label" position="top">
+              <span
+                ><ProviderIcon :provider="data.provider" /><span
+                  style="margin-left: 5px"
+                  >{{ data.label }}</span
+                ></span
+              >
+            </a-tooltip>
+          </template>
+          <template #empty>
+            <span></span>
+          </template>
+        </a-select>
+        <div><slot name="view-btn"></slot></div>
+      </template>
+    </FilterBox>
     <!-- <FilterBox style="margin-bottom: 10px">
       <template #params>
         <dateRange
@@ -182,7 +211,7 @@
 
 <script lang="ts" setup>
   import { filter, find, get, each, round } from 'lodash';
-  import { reactive, ref, computed, onMounted } from 'vue';
+  import { reactive, ref, computed, onMounted, watch } from 'vue';
   import useCallCommon from '@/hooks/use-call-common';
   import DateRange from '@/components/date-range/index.vue';
   import DataCard from '@/components/data-card/index.vue';
@@ -200,6 +229,26 @@
   } from '../config';
   import usePerspectiveCost from '../hooks/use-perspective-cluster';
 
+  const props = defineProps({
+    viewId: {
+      type: String,
+      default() {
+        return '';
+      }
+    },
+    source: {
+      type: String,
+      default() {
+        return '';
+      }
+    },
+    isPage: {
+      type: Boolean,
+      default() {
+        return false;
+      }
+    }
+  });
   const title = {
     text: '',
     left: 'center',
@@ -238,8 +287,9 @@
     workloading,
     spaceloading,
     clusterloading,
+    id,
     loading
-  } = usePerspectiveCost();
+  } = usePerspectiveCost(props);
   const { t } = useCallCommon();
   const loadeend = ref(false);
   const clusterOptions = [
@@ -339,8 +389,19 @@
     getSummaryData();
     // getWorkloadCostChart();
   };
+  watch(
+    () => id.value,
+    () => {
+      if (id.value) {
+        initData();
+      }
+    },
+    {
+      immediate: true
+    }
+  );
   onMounted(() => {
-    initData();
+    // initData();
   });
 </script>
 

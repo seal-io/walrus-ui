@@ -43,6 +43,8 @@ export interface AllocationQueriesItem {
 export interface PerspectiveRowData {
   id: string;
   name: string;
+  label?: string;
+  value?: string;
   createTime: string;
   updateTime: string;
   startTime: string;

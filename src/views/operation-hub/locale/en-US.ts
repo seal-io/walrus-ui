@@ -4,7 +4,7 @@ export default {
   'operation.connectors.table.holder': 'Please enter a connector',
   'operation.connectors.table.name': 'Name',
   'operation.connectors.table.type': 'Type',
-  'operation.connectors.table.status': 'Cost Analyzer Status',
+  'operation.connectors.table.status': 'Status',
   'operation.connectors.table.enableFin': 'Enable Cost Analysis',
   'operation.connectors.table.install': 'Reinstalling Cost Analysis Tool',
   'operation.connectors.table.fetch': 'Synchronize cost data',

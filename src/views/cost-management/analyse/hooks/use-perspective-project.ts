@@ -23,10 +23,9 @@ import {
 } from '../api';
 // import testData, { statckLineData } from '../config/testData';
 
-export default function usePerspectiveCost() {
+export default function usePerspectiveCost(props) {
   const { route } = useCallCommon();
-  const id = route.query.id as string;
-
+  const { query } = route;
   const projectCostFilters = ref<any>({});
   const projectList = ref<{ label: string; value: string }[]>([]);
   const projectCostChart = ref<ChartData>({
@@ -48,6 +47,9 @@ export default function usePerspectiveCost() {
   });
 
   const overData = ref({});
+  const pageId = computed(() => {
+    return query.id || props.viewId;
+  });
   const summaryData = computed(() => {
     const list = map(projectCostOverview, (item) => {
       item.value = get(overData.value, item.key) || 0;
@@ -62,9 +64,7 @@ export default function usePerspectiveCost() {
         ...omit(queryParams, ['project']),
         fieldName: 'label:project',
         startTime: dayjs(queryParams.startTime).format('YYYY-MM-DDTHH:mm:ssZ'),
-        endTime: dayjs(queryParams.endTime)
-          .add(1, 'd')
-          .format('YYYY-MM-DDTHH:mm:ssZ')
+        endTime: dayjs(queryParams.endTime).format('YYYY-MM-DDT23:59:59Z')
       };
       const { data } = await queryPerspectiveField(params);
       projectList.value = data?.items || [];
@@ -90,9 +90,7 @@ export default function usePerspectiveCost() {
       const params = {
         project: queryParams.project,
         startTime: dayjs(queryParams.startTime).format('YYYY-MM-DDTHH:mm:ssZ'),
-        endTime: dayjs(queryParams.endTime)
-          .add(1, 'd')
-          .format('YYYY-MM-DDTHH:mm:ssZ')
+        endTime: dayjs(queryParams.endTime).format('YYYY-MM-DDT23:59:59Z')
       };
       const { data } = await queryProjectPerspectiveSummary(params);
       overData.value = data || {};
@@ -108,9 +106,7 @@ export default function usePerspectiveCost() {
         ...omit(projectCostFilters.value, 'paging'),
         ...queryParams,
         startTime: dayjs(queryParams.startTime).format('YYYY-MM-DDTHH:mm:ssZ'),
-        endTime: dayjs(queryParams.endTime)
-          .add(1, 'd')
-          .format('YYYY-MM-DDTHH:mm:ssZ')
+        endTime: dayjs(queryParams.endTime).format('YYYY-MM-DDT23:59:59Z')
       };
       const { data } = await queryPerspectiveData(params);
       let list = data?.items || [];
@@ -170,6 +166,7 @@ export default function usePerspectiveCost() {
   const getPerspectiveItemInfo = async () => {
     try {
       loading.value = true;
+      const id = route.query.id || props.viewId;
       const { data } = await queryItemPerspective({ id });
       const allocationQueries = get(data, 'allocationQueries') || [];
       const startTime = get(data, 'startTime');
@@ -204,6 +201,7 @@ export default function usePerspectiveCost() {
     queryParams,
     projectloading,
     apploading,
+    id: pageId,
     loading
   };
 }
