@@ -108,6 +108,7 @@
   import GroupTitle from '@/components/group-title/index.vue';
   import thumbButton from '@/components/buttons/thumb-button.vue';
   import EditPageFooter from '@/components/edit-page-footer/index.vue';
+  import tabTerminal from '@/components/x-terminal/index.vue';
   import CreateProject from '../../projects/components/create-project.vue';
   import instanceThumb from '../components/instance-thumb.vue';
   import { InstanceData } from '../config/interface';
@@ -118,6 +119,7 @@
   import tabOutput from '../components/tab-output.vue';
   import tabOptimization from '../components/tab-optimization.vue';
   import tabGraph from '../components/tab-graph.vue';
+
   import createApplication from '../components/create-application.vue';
   import createInstance from '../components/create-instance.vue';
   import applicationHistory from '../components/application-history.vue';
@@ -139,7 +141,8 @@
     tabOutput: markRaw(tabOutput),
     tabOptimization: markRaw(tabOptimization),
     tabGraph: markRaw(tabGraph),
-    tabHistory: markRaw(applicationHistory)
+    tabHistory: markRaw(applicationHistory),
+    tabTerminal: markRaw(tabTerminal)
   };
   const instanseList = ref<InstanceData[]>([
     { name: 'app1', id: '1' },

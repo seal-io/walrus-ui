@@ -1,12 +1,29 @@
 <template>
   <div class="thumb-item" :class="{ active: active }">
-    <a-dropdown size="small" style="line-height: 30px" @select="handleClick">
+    <a-dropdown
+      size="small"
+      style="line-height: 30px"
+      position="bl"
+      @select="handleClick"
+    >
       <a-link size="mini" style="position: absolute; top: 0; right: 0">
         <template #icon><icon-more style="font-size: 18px" /></template>
       </a-link>
       <template #content>
-        <a-doption value="edit"
-          ><icon-edit />{{ $t('common.button.edit') }}</a-doption
+        <a-doption value="edit">
+          <icon-edit style="margin-right: 5px" />{{
+            $t('common.button.edit')
+          }}</a-doption
+        >
+        <a-doption value="delete"
+          ><icon-delete style="margin-right: 5px" />{{
+            $t('common.button.delete')
+          }}</a-doption
+        >
+        <a-doption value="rollback"
+          ><icon-undo style="margin-right: 5px" />{{
+            $t('applications.applications.history.rollback')
+          }}</a-doption
         >
       </template>
     </a-dropdown>
