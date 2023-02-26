@@ -119,7 +119,7 @@
       :deep(.arco-icon) {
         color: var(--sealblue-6);
         font-size: 46px;
-        opacity: 0.9;
+        opacity: 0.8;
       }
     }
 

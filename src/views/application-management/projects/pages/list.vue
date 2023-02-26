@@ -1,11 +1,6 @@
 <template>
-  <SpinCard
-    borderless
-    top-gap
-    class="projects"
-    :title="$t('applications.projects.menu')"
-  >
-    <template #title>
+  <SpinCard borderless top-gap class="projects">
+    <!-- <template #title>
       <div class="title">
         <span>{{ $t('applications.projects.menu') }}</span>
         <a-divider direction="vertical" :margin="10"></a-divider>
@@ -18,9 +13,9 @@
           @click="handleToggle('list')"
         />
       </div>
-    </template>
+    </template> -->
     <div class="content">
-      <FilterBox>
+      <FilterBox style="margin-bottom: 10px">
         <template #params>
           <a-input
             v-model="queryParams.name"
@@ -57,8 +52,8 @@
           >
         </template>
       </FilterBox>
-      <a-divider :margin="8"></a-divider>
-      <a-tabs
+      <!-- <a-divider :margin="8"></a-divider> -->
+      <!-- <a-tabs
         default-active-key="currentView"
         :active-key="currentView"
         @change="handleToggle"
@@ -77,7 +72,12 @@
             @edit="handleEditProject"
           ></ListView>
         </a-tab-pane>
-      </a-tabs>
+      </a-tabs> -->
+      <ListView
+        v-model:selectedList="selectedKeys"
+        :list="dataList"
+        @edit="handleEditProject"
+      ></ListView>
       <a-pagination
         size="small"
         :total="total"

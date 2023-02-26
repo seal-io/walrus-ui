@@ -4,14 +4,14 @@
     <ModuleCard title="基本信息">
       <template #title>
         <span>项目信息</span>
-        <!-- <a-link style="line-height: 1">
+        <a-link style="line-height: 1">
           <template #icon>
             <icon-edit
               style="margin-left: 4px; font-size: 16px"
               @click="handleEditApp"
             />
           </template>
-        </a-link> -->
+        </a-link>
       </template>
       <a-form ref="formref" :model="formData" auto-label-width disabled>
         <a-form-item label="项目名称">
@@ -85,11 +85,16 @@
         >
       </template>
     </EditPageFooter>
-    <createApplication
+    <!-- <createApplication
       v-model:show="showAppModal"
       :title="appModalTitle"
       @save="handleSaveAppInfo"
-    ></createApplication>
+    ></createApplication> -->
+    <CreateProject
+      v-model:show="showAppModal"
+      :title="$t('applications.projects.edit')"
+      @save="handleSaveAppInfo"
+    ></CreateProject>
     <!-- <createInstance
       v-model:show="showInstanceModal"
       @save="handleSaveInstanceInfo"
@@ -103,6 +108,7 @@
   import GroupTitle from '@/components/group-title/index.vue';
   import thumbButton from '@/components/buttons/thumb-button.vue';
   import EditPageFooter from '@/components/edit-page-footer/index.vue';
+  import CreateProject from '../../projects/components/create-project.vue';
   import instanceThumb from '../components/instance-thumb.vue';
   import { InstanceData } from '../config/interface';
   import { instanceTabs } from '../config/index';

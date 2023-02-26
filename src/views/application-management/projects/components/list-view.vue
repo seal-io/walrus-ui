@@ -50,16 +50,20 @@
         >
           <template #cell="{ record }">
             <a-space :size="20">
-              <a-link
-                type="text"
-                size="small"
-                @click="handleEditProject(record)"
-              >
-                <template #icon><icon-edit /></template>
-              </a-link>
-              <a-link type="text" size="small" @click="handleEdit(record)">
-                <template #icon><icon-list /></template>
-              </a-link>
+              <a-tooltip :content="$t('common.button.edit')">
+                <a-link
+                  type="text"
+                  size="small"
+                  @click="handleEditProject(record)"
+                >
+                  <template #icon><icon-edit /></template>
+                </a-link>
+              </a-tooltip>
+              <a-tooltip :content="$t('common.button.detail')">
+                <a-link type="text" size="small" @click="handleEdit(record)">
+                  <template #icon><icon-list /></template>
+                </a-link>
+              </a-tooltip>
             </a-space>
           </template>
         </a-table-column>
