@@ -4,7 +4,7 @@ export default {
   'operation.connectors.table.holder': '请输入连接器',
   'operation.connectors.table.name': '名称',
   'operation.connectors.table.type': '类型',
-  'operation.connectors.table.status': '成本分析器状态',
+  'operation.connectors.table.status': '状态',
   'operation.connectors.table.enableFin': '启用成本分析',
   'operation.connectors.table.install': '重装成本分析工具',
   'operation.connectors.table.fetch': '同步成本数据',

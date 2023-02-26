@@ -1,10 +1,22 @@
 export default [
   {
+    path: 'cost/perspective',
+    name: 'costPerspective',
+    component: () => import('@/views/cost-management/analyse/pages/main.vue'),
+    meta: {
+      hideInMenu: false,
+      ignoreCache: true,
+      locale: 'cost.analyse.menu',
+      requiresAuth: true,
+      icon: 'icon-apps'
+    }
+  },
+  {
     path: 'cost/list',
     name: 'costAnalyseList',
     component: () => import('@/views/cost-management/analyse/pages/list.vue'),
     meta: {
-      hideInMenu: false,
+      hideInMenu: true,
       ignoreCache: true,
       locale: 'cost.analyse.menu',
       requiresAuth: true,

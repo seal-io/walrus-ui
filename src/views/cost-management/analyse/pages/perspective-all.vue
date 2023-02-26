@@ -1,15 +1,23 @@
 <template>
   <div class="container">
-    <dateRange
-      v-model:start="queryParams.startTime"
-      v-model:end="queryParams.endTime"
-      :show-extra="false"
-      style="margin-bottom: 10px"
-      :short-cuts="DateShortCuts"
-      today-in
-      border-less
-      @change="handleDateChange"
-    ></dateRange>
+    <FilterBox style="margin-bottom: 10px">
+      <template #params>
+        <div v-if="isPage"><slot name="select"></slot></div>
+        <dateRange
+          v-model:start="queryParams.startTime"
+          v-model:end="queryParams.endTime"
+          :show-extra="false"
+          :short-cuts="DateShortCuts"
+          today-in
+          border-less
+          @change="handleDateChange"
+        ></dateRange>
+        <div><slot name="button"></slot></div>
+      </template>
+      <template #button-group>
+        <div><slot name="view-btn"></slot></div>
+      </template>
+    </FilterBox>
     <SpinCard title="All Resource" borderless style="margin-bottom: 10px">
       <a-grid :cols="24" :col-gap="20">
         <a-grid-item
@@ -106,7 +114,8 @@
 <script lang="ts" setup>
   import dayjs from 'dayjs';
   import { round } from 'lodash';
-  import { reactive, ref, computed, onMounted } from 'vue';
+  import { reactive, ref, computed, onMounted, watchEffect, watch } from 'vue';
+  import FilterBox from '@/components/filter-box/index.vue';
   import DateRange from '@/components/date-range/index.vue';
   import DataCard from '@/components/data-card/index.vue';
   import LineBarChart from '@/components/line-bar-chart/index.vue';
@@ -120,7 +129,28 @@
     DateShortCuts
   } from '../config';
   import usePerspectiveCost from '../hooks/use-perspective-cost';
+  import useSelectPerspective from '../hooks/use-select-perspective';
 
+  const props = defineProps({
+    viewId: {
+      type: String,
+      default() {
+        return '';
+      }
+    },
+    source: {
+      type: String,
+      default() {
+        return '';
+      }
+    },
+    isPage: {
+      type: Boolean,
+      default() {
+        return false;
+      }
+    }
+  });
   const title = {
     text: '',
     left: 'center',
@@ -154,9 +184,9 @@
     dailyloading,
     projectloading,
     clusterloading,
-    loading
-  } = usePerspectiveCost();
-
+    loading,
+    id
+  } = usePerspectiveCost(props);
   const active = ref<'bar' | 'line'>('bar');
   const activeProject = ref<'bar' | 'line'>('bar');
   const activeCluster = ref<'bar' | 'line'>('bar');
@@ -200,8 +230,21 @@
     getProjectCostChart();
     getClusterCostChart();
   };
+  watch(
+    () => id.value,
+    () => {
+      if (id.value) {
+        initData();
+      }
+    },
+    {
+      immediate: true
+    }
+  );
   onMounted(() => {
-    initData();
+    // if (!props.isPage || props.viewId) {
+    //   initData();
+    // }
   });
 </script>
 

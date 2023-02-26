@@ -7,7 +7,7 @@
   import { Terminal } from 'xterm';
 
   const term = new Terminal();
-  const wrapper = ref();
+  const wrapper: any = ref();
   const initTerminal = () => {
     term?.open(wrapper);
     term?.write('Hello world!');

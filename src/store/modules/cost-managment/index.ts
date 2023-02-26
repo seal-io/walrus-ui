@@ -4,7 +4,9 @@ const useCostManageStore = defineStore('costManage', {
   persist: {
     key: 'costManage'
   },
-  state: (): any => ({}),
+  state: (): any => ({
+    perspectiveList: []
+  }),
   getters: {
     filterInfo(state: any): any {
       return { ...state };
@@ -13,6 +15,9 @@ const useCostManageStore = defineStore('costManage', {
   actions: {
     setFilterInfo(partial: any) {
       this.$patch(partial);
+    },
+    reset() {
+      this.$reset();
     }
   }
 });
