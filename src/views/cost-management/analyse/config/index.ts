@@ -311,6 +311,16 @@ export const projectCostCols = [
     dataIndex: 'itemName',
     title: '项目'
   },
+  // {
+  //   ellipsis: true,
+  //   tooltip: true,
+  //   cellStyle: { minWidth: '40px' },
+  //   dataIndex: 'startTime',
+  //   render({ record }) {
+  //     return dayjs(record.startTime).format('YYYY-MM-DD');
+  //   },
+  //   title: '日期'
+  // },
   {
     ellipsis: true,
     tooltip: true,

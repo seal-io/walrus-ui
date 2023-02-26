@@ -1,5 +1,5 @@
 <template>
-  <div class="workflows-list">
+  <div class="table-list-wrap">
     <FilterBox style="margin-bottom: 6px">
       <template #params>
         <a-input
@@ -161,4 +161,10 @@
   );
 </script>
 
-<style lang="less" scoped></style>
+<style lang="less" scoped>
+  .table-list-wrap {
+    :deep(.arco-table-th) {
+      background-color: rgba(230, 244, 254, 0.5);
+    }
+  }
+</style>
