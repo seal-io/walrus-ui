@@ -5,7 +5,8 @@ export const instanceTabs = [
   { label: '输出', value: 'outputs', com: 'tabOutput' },
   { label: '优化建议', value: 'optimization', com: 'tabOptimization' },
   { label: '关联图', value: 'graph', com: 'tabGraph' },
-  { label: '历史记录', value: 'history', com: 'tabHistory' }
+  { label: '历史记录', value: 'history', com: 'tabHistory' },
+  { label: '终端', value: 'terminal', com: 'tabTerminal' }
 ];
 export const createConfigOptions = [
   { label: 'webservice', value: 'webservice' },
