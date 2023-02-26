@@ -38,6 +38,7 @@ export default function usePerspectiveCost(props) {
   const projectloading = ref(false);
   const loading = ref(false);
   const apploading = ref(false);
+  const overviewloading = ref(false);
 
   const projectName = ref('');
   const queryParams = reactive({
@@ -87,6 +88,7 @@ export default function usePerspectiveCost(props) {
   };
   const getSummaryData = async () => {
     try {
+      overviewloading.value = true;
       const params = {
         project: queryParams.project,
         startTime: dayjs(queryParams.startTime).format('YYYY-MM-DDTHH:mm:ssZ'),
@@ -94,7 +96,9 @@ export default function usePerspectiveCost(props) {
       };
       const { data } = await queryProjectPerspectiveSummary(params);
       overData.value = data || {};
+      overviewloading.value = false;
     } catch (error) {
+      overviewloading.value = false;
       overData.value = {};
       console.log(error);
     }
@@ -202,6 +206,7 @@ export default function usePerspectiveCost(props) {
     projectloading,
     apploading,
     id: pageId,
-    loading
+    loading,
+    overviewloading
   };
 }

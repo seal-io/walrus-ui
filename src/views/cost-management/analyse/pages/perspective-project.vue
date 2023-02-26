@@ -104,7 +104,12 @@
         </a-space>
       </template>
     </FilterBox> -->
-    <SpinCard :title="projectName" borderless style="margin-bottom: 10px">
+    <SpinCard
+      :loading="overviewloading || projectloading || loading"
+      :title="projectName || 'Project'"
+      borderless
+      style="margin-bottom: 10px"
+    >
       <a-grid :cols="24" :col-gap="20">
         <a-grid-item
           v-for="(item, index) in summaryData"
@@ -239,7 +244,8 @@
     projectloading,
     apploading,
     loading,
-    id
+    id,
+    overviewloading
   } = usePerspectiveProject(props);
   const { t } = useCallCommon();
   const loadeend = ref(false);

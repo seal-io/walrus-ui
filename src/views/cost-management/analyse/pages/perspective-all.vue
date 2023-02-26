@@ -18,7 +18,12 @@
         <div><slot name="view-btn"></slot></div>
       </template>
     </FilterBox>
-    <SpinCard title="All Resource" borderless style="margin-bottom: 10px">
+    <SpinCard
+      title="All Resource"
+      borderless
+      style="margin-bottom: 10px"
+      :loading="overviewloading || loading"
+    >
       <a-grid :cols="24" :col-gap="20">
         <a-grid-item
           v-for="(item, index) in summaryData"
@@ -185,7 +190,8 @@
     projectloading,
     clusterloading,
     loading,
-    id
+    id,
+    overviewloading
   } = usePerspectiveCost(props);
   const active = ref<'bar' | 'line'>('bar');
   const activeProject = ref<'bar' | 'line'>('bar');

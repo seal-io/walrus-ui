@@ -38,6 +38,7 @@ export default function usePerspectiveCost(props) {
   const workloading = ref(false);
   const spaceloading = ref(false);
   const clusterloading = ref(false);
+  const overviewloading = ref(false);
   const loading = ref(false);
 
   const dailyCostChart = ref<ChartData>({
@@ -118,6 +119,7 @@ export default function usePerspectiveCost(props) {
   };
   const getSummaryData = async () => {
     try {
+      overviewloading.value = true;
       const params = {
         ...queryParams,
         startTime: dayjs(queryParams.startTime).format('YYYY-MM-DDTHH:mm:ssZ'),
@@ -125,7 +127,9 @@ export default function usePerspectiveCost(props) {
       };
       const { data } = await queryClusterPerspectiveSummary(params);
       overData.value = data || {};
+      overviewloading.value = false;
     } catch (error) {
+      overviewloading.value = false;
       overData.value = {};
       console.log(error);
     }
@@ -348,6 +352,7 @@ export default function usePerspectiveCost(props) {
     spaceloading,
     clusterloading,
     id: pageId,
-    loading
+    loading,
+    overviewloading
   };
 }
