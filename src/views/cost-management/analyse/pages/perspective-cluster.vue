@@ -103,7 +103,12 @@
         </a-space>
       </template>
     </FilterBox> -->
-    <SpinCard :title="clusterName" borderless style="margin-bottom: 10px">
+    <SpinCard
+      :loading="overviewloading || clusterloading || loading"
+      :title="clusterName || 'Cluster'"
+      borderless
+      style="margin-bottom: 10px"
+    >
       <a-grid :cols="15" :col-gap="20">
         <a-grid-item
           v-for="(item, index) in summaryData"
@@ -288,7 +293,8 @@
     spaceloading,
     clusterloading,
     id,
-    loading
+    loading,
+    overviewloading
   } = usePerspectiveCost(props);
   const { t } = useCallCommon();
   const loadeend = ref(false);
