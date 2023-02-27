@@ -44,7 +44,7 @@
     :deep(.arco-statistic-extra) {
       margin-top: 0;
       font-weight: 500;
-      font-size: 26px;
+      font-size: 24px;
     }
   }
 </style>

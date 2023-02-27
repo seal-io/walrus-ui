@@ -1,230 +1,115 @@
 <template>
   <div class="condition-filter-wrap">
-    <a-space class="btn-wrap" :size="10">
-      <a-button type="outline" size="small" @click.stop="handleAddPolicy">
-        <icon-plus style="margin-right: 4px" />
-        <span>添加策略</span>
-      </a-button>
-      <a-button type="outline" size="small" @click.stop="handleAddPolicyGroup">
-        <icon-layers style="margin-right: 4px" />
-        <span>添加策略组</span>
-      </a-button>
-    </a-space>
-    <div
-      class="condition-box wrapper"
-      :class="{ only: conditionCount.length < 2 }"
-    >
-      <div v-if="conditionCount.length > 1" class="operator">
-        <!-- <a-select
-        :options="relationOptions"
-        style="width: 80px"
-        size="small"
-      ></a-select> -->
-        OR
-      </div>
-      <a-space class="condition" :size="10" direction="vertical">
-        <template v-if="policyDataList.length">
-          <div
-            v-for="(item, index) in policyDataList"
-            :key="index"
+    <div class="btn-wrap">
+      <span class="icon-btn-wrap plus" @click="handleAddORFilter"
+        ><icon-plus-circle-fill class="size-20" />OR</span
+      >
+    </div>
+    <div class="condition-box wrapper">
+      <div v-if="filterDataList.length">
+        <div
+          v-for="(item, index) in filterDataList"
+          :key="index"
+          class="content-wrap"
+          :class="{ group: item?.length > 1 }"
+        >
+          <a-space
+            v-for="(sItem, sIndex) in item"
+            :key="sIndex"
+            :size="5"
+            fill
             class="condition-item"
           >
             <a-select
-              v-model="item[0].filterName"
+              v-model="sItem.filterName"
               :options="perspectiveDataList"
-              style="flex: 1"
+              style="flex: 1; width: 200px"
             ></a-select>
             <a-select
-              v-model="item[0].operator"
+              v-model="sItem.operator"
               :options="operatorList"
-              style="flex-basis: 120px"
+              style="width: 120px"
             ></a-select>
             <a-select
-              v-model="item[0].values"
+              v-model="sItem.values"
               :max-tag-count="2"
               multiple
               :options="perspectiveDataList"
-              style="flex: 1"
+              style="flex: 1; min-width: 240px"
             ></a-select>
-            <!-- <a-input style="flex: 1" v-model="item[0].values"></a-input> -->
-            <a-button
-              type="outline"
-              size="mini"
-              shape="round"
-              class="mini-icon-btn"
-              style="margin-left: 8px"
-              @click="handleDeleteFilter('or', index)"
-            >
-              <icon-minus></icon-minus>
-            </a-button>
-            <a-button
-              v-if="index === policyDataList.length - 1"
-              type="primary"
-              size="mini"
-              shape="round"
-              class="mini-icon-btn"
-              style="margin-left: 8px"
-              @click="handleAddFilter('or')"
-            >
-              <icon-plus></icon-plus>
-            </a-button>
-          </div>
-        </template>
-
-        <template v-if="policyGroupDataList.length">
-          <div
-            v-for="(sItem, sIndex) in policyGroupDataList"
-            :key="sIndex"
-            class="condition-box and"
-          >
-            <div class="operator">
-              <!-- <a-select
-            :options="relationOptions"
-            style="width: 80px"
-            size="small"
-          ></a-select> -->
-              AND
-            </div>
-            <a-space
-              v-if="sItem.length"
-              class="condition"
-              :size="10"
-              direction="vertical"
-            >
-              <div
-                v-for="(pItem, pIndex) in sItem"
-                :key="pIndex"
-                class="condition-item"
+            <span class="icon-btn-box">
+              <span
+                class="icon-btn-wrap"
+                @click="handleDeleteFilter(item, sIndex)"
+                ><icon-minus-circle class="size-20"></icon-minus-circle
+              ></span>
+              <span
+                v-if="sIndex === item?.length - 1"
+                class="icon-btn-wrap plus"
+                @click="handleAddFilter(item)"
+                ><icon-plus-circle-fill class="size-20" />AND</span
               >
-                <a-select
-                  v-model="pItem.filterName"
-                  :options="perspectiveDataList"
-                  style="flex: 1"
-                ></a-select>
-                <a-select
-                  v-model="pItem.operator"
-                  :options="operatorList"
-                  style="flex-basis: 120px"
-                ></a-select>
-                <a-select
-                  v-model="pItem.values"
-                  multiple
-                  :max-tag-count="2"
-                  :options="perspectiveDataList"
-                  style="flex: 1"
-                ></a-select>
-                <!-- <a-input style="flex: 1"></a-input> -->
-                <!-- <a-input style="flex: 1" v-model="pItem.values"></a-input> -->
-
-                <a-button
-                  type="outline"
-                  size="mini"
-                  shape="round"
-                  class="mini-icon-btn"
-                  style="margin-left: 8px"
-                  @click="handleDeleteFilter('and', pIndex, sItem)"
-                >
-                  <icon-minus></icon-minus>
-                </a-button>
-                <a-button
-                  v-if="pIndex === sItem.length - 1"
-                  type="primary"
-                  size="mini"
-                  shape="round"
-                  class="mini-icon-btn"
-                  style="margin-left: 8px"
-                  @click="handleAddFilter('and', sItem)"
-                >
-                  <icon-plus></icon-plus>
-                </a-button>
-              </div>
-            </a-space>
-          </div>
-        </template>
-      </a-space>
+            </span>
+          </a-space>
+        </div>
+      </div>
     </div>
   </div>
 </template>
 
 <script lang="ts" setup>
-  import { ref, onMounted, computed } from 'vue';
+  import { ref, onMounted, computed, PropType } from 'vue';
   import { filter } from 'lodash';
   import { relationOptions, operatorList } from '../config';
   import { FilterItem } from '../config/interface';
 
   type FilterDataItem = FilterItem[];
+  const props = defineProps({
+    filterList: {
+      type: Array as PropType<FilterDataItem[]>,
+      default() {
+        return [];
+      }
+    }
+  });
   const perspectiveDataList = ref<{ label: string; value: string }[]>([
-    { label: 'cluster-1', value: 'cluster1' },
+    { label: 'connectorID', value: 'cluster1' },
     { label: 'cluster-2', value: 'cluster2' },
     { label: 'clusterNamespace', value: 'clusterNamespace' },
     { label: 'workload', value: 'workload' },
     { label: 'app', value: 'app' }
   ]);
   const filterDataList = ref<FilterDataItem[]>([
-    // [
-    //   { filterName: 'cluster-1', operator: 'IN', values: ['a', 'b'] },
-    //   { filterName: 'cluster-2', operator: 'NOTIN', values: ['a1', 'b1'] }
-    // ],
+    [
+      { filterName: 'workload', operator: 'IN', values: ['w1', 'w2'] },
+      { filterName: 'workload', operator: 'IN', values: ['w1', 'w2'] }
+    ],
+    [{ filterName: 'workload', operator: 'IN', values: ['w1', 'w2'] }],
     [{ filterName: 'workload', operator: 'IN', values: ['w1', 'w2'] }]
   ]);
-  const policyDataList = ref<FilterDataItem[]>([]);
-  const policyGroupDataList = ref<FilterDataItem[]>([]);
-  const setPolicyData = () => {
-    policyDataList.value = filter(
-      filterDataList.value,
-      (item) => item.length === 1
-    );
-    policyGroupDataList.value = filter(
-      filterDataList.value,
-      (item) => item.length > 1
-    );
+  const setPolicyData = () => {};
+
+  const handleAddFilter = (item) => {
+    item.push({
+      filterName: '',
+      operator: '',
+      values: []
+    });
   };
-  const conditionCount = computed(() => {
-    return [...policyDataList.value, ...policyGroupDataList.value];
-  });
-  const handleAddFilter = (type, group?) => {
-    if (type === 'or') {
-      policyDataList.value.push([
-        {
-          filterName: '',
-          operator: '',
-          values: []
-        }
-      ]);
-    }
-    if (type === 'and') {
-      group?.push([
-        {
-          filterName: '',
-          operator: '',
-          values: []
-        }
-      ]);
-    }
-  };
-  const handleDeleteFilter = (type, index, group?) => {
-    if (type === 'or') {
-      policyDataList.value.splice(index, 1);
-      console.log('policyDataList:', policyDataList.value);
-    }
-    if (type === 'and') {
-      group?.splice(index, 1);
-      policyGroupDataList.value = filter(
-        policyGroupDataList.value,
-        (item) => !!item.length
-      );
-    }
-  };
-  const handleAddPolicy = () => {
-    policyDataList.value.push([{ filterName: '', operator: '', values: [] }]);
-  };
-  const handleAddPolicyGroup = () => {
-    policyGroupDataList.value.push([
-      { filterName: '', operator: '', values: [] },
-      { filterName: '', operator: '', values: [] }
+  const handleAddORFilter = () => {
+    filterDataList.value.push([
+      {
+        filterName: '',
+        operator: '',
+        values: []
+      }
     ]);
-    console.log('policyDataList===', policyDataList.value);
   };
+  const handleDeleteFilter = (item, index) => {
+    item.splice(index, 1);
+    filterDataList.value = filter(filterDataList.value, (o) => !!o.length);
+  };
+
   onMounted(() => {
     setPolicyData();
   });
@@ -233,44 +118,53 @@
 <style lang="less" scoped>
   .condition-filter-wrap {
     .btn-wrap {
-      display: flex;
-      margin-bottom: 20px;
+      margin-top: 6px;
+      margin-bottom: 10px;
+
+      .icon-btn-wrap {
+        color: var(--sealblue-6);
+        font-size: 14px;
+        cursor: pointer;
+
+        &:hover {
+          color: rgb(var(--arcoblue-5));
+        }
+
+        &.plus {
+          display: flex;
+          align-items: center;
+        }
+      }
     }
   }
 
   .condition-box {
     position: relative;
     display: flex;
-    padding: 16px 10px;
-    background-color: var(--color-fill-2);
-    border-radius: 2px;
+    padding: 16px;
+    // background-color: var(--color-fill-2);
+    border: 1px solid var(--color-border-2);
+    border-radius: var(--border-radius-small);
 
-    &.wrapper {
-      // width: 640px;
-    }
+    .content-wrap {
+      position: relative;
+      margin-bottom: 20px;
 
-    &::before {
-      position: absolute;
-      top: 15px;
-      left: 20px;
-      // left: 50px;
-      display: inline-block;
-      // width: 60px;
-      width: 40px;
-      border-top: 1px solid var(--color-border-3);
-      content: '';
-    }
+      &:last-child {
+        margin-bottom: 0;
+      }
 
-    &::after {
-      position: absolute;
-      bottom: 15px;
-      left: 20px;
-      // left: 50px;
-      display: inline-block;
-      // width: 60px;
-      width: 40px;
-      border-top: 1px solid var(--color-border-3);
-      content: '';
+      &.group::before {
+        position: absolute;
+        top: -6px;
+        right: -8px;
+        bottom: -6px;
+        left: -8px;
+        display: inline-block;
+        background-color: rgba(168, 186, 240, 0.2);
+        border-radius: 4px;
+        content: '';
+      }
     }
 
     &.and::after {
@@ -300,8 +194,35 @@
       flex-wrap: wrap;
       align-items: center;
       justify-content: flex-start;
-      width: 650px;
+      margin-bottom: 6px;
+
+      &:last-child {
+        margin-bottom: 0;
+      }
+      // width: 650px;
       // margin-left: 30px;
+    }
+
+    .icon-btn-box {
+      display: flex;
+      align-items: center;
+      margin-left: 8px;
+      color: var(--sealblue-6);
+
+      .icon-btn-wrap {
+        font-size: 14px;
+        cursor: pointer;
+
+        &:hover {
+          color: rgb(var(--arcoblue-5));
+        }
+
+        &.plus {
+          display: flex;
+          align-items: center;
+          margin-left: 12px;
+        }
+      }
     }
 
     .operator {

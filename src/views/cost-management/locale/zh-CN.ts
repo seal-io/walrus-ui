@@ -4,6 +4,8 @@ export default {
   'cost.analyse.table.manage': '视图管理',
   'cost.analyse.table.holder': '请输入视图',
   'cost.analyse.view.holder': '请选择视图',
+  'cost.analyse.view.strategy': '添加条件',
+  'cost.analyse.view.strategyGroup': '添加条件组',
   'cost.analyse.table.picker': '请选择日期',
   'cost.analyse.table.name': '名称',
   'cost.analyse.table.type': '类型',
