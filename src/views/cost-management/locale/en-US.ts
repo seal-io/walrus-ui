@@ -4,6 +4,8 @@ export default {
   'cost.analyse.table.manage': 'Perspective Management',
   'cost.analyse.table.holder': 'please enter a perspective',
   'cost.analyse.view.holder': 'please select a perspective',
+  'cost.analyse.view.strategy': 'Add Strategy',
+  'cost.analyse.view.strategyGroup': 'Add Strategy Group',
   'cost.analyse.table.picker': 'please select a date',
   'cost.analyse.table.name': 'Name',
   'cost.analyse.table.type': 'Type',

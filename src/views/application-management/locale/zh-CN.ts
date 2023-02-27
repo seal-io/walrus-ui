@@ -22,7 +22,7 @@ export default {
   'applications.workflows.create': '新建流程',
   'applications.projects.menu': '项目列表',
   'applications.projects.create': '新建项目',
-  'applications.projects.edit': '编辑项目',
+  'applications.projects.edit': '编辑基本信息',
   'applications.projects.table.name': '项目名称',
   'applications.projects.search.holder': '请输入项目名称'
 };

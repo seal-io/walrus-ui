@@ -1,6 +1,6 @@
 <template>
   <ComCard top-gap>
-    <GroupTitle title="新建视角"></GroupTitle>
+    <GroupTitle title="新建视图"></GroupTitle>
     <a-form ref="formref" :model="formData" auto-label-width>
       <a-form-item
         :label="$t('cost.analyse.table.name')"
@@ -14,12 +14,13 @@
           show-word-limit
         ></a-input>
       </a-form-item>
-      <a-form-item label="过滤器">
-        <ConditionFilter></ConditionFilter>
-      </a-form-item>
       <a-form-item label="Group By">
         <a-select></a-select>
       </a-form-item>
+      <a-form-item label="过滤器">
+        <ConditionFilter></ConditionFilter>
+      </a-form-item>
+
       <a-form-item label="Share Cost">
         <template #label>
           <div style="display: flex; align-items: center">
@@ -45,8 +46,8 @@
           </div>
         </template>
       </a-form-item>
-      <a-form-item label="Idle Cost">
-        <template #label>
+      <a-form-item label="">
+        <!-- <template #label>
           <div style="display: flex; align-items: center">
             <span
               >Idle Cost
@@ -54,8 +55,8 @@
                 <icon-info-circle /> </a-tooltip
             ></span>
           </div>
-        </template>
-        <a-select :options="costShareMode"></a-select>
+        </template> -->
+        <a-select :options="costShareMode" placeholder="Idle Cost"></a-select>
       </a-form-item>
     </a-form>
     <EditPageFooter>
@@ -87,6 +88,7 @@
   import EditPageFooter from '@/components/edit-page-footer/index.vue';
   import ConditionFilter from '../components/condition-filter.vue';
   import { costShareMode } from '../config';
+  import { filtersData } from '../config/testData';
   import {
     queryItemPerspective,
     createPerspective,

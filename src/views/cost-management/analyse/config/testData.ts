@@ -83,3 +83,49 @@ export default [
     pvCost: 0.08271232794000008
   }
 ];
+
+export const filtersData = {
+  filters: [
+    [
+      {
+        fieldName: 'namespace',
+        operator: 'IN',
+        values: ['default']
+      },
+      {
+        fieldName: 'namespace',
+        operator: 'IN',
+        values: ['default']
+      }
+    ],
+    [
+      {
+        fieldName: 'namespace',
+        operator: 'IN',
+        values: ['default']
+      }
+    ]
+  ],
+  groupBys: ['pod'],
+  step: '1d',
+  shareCosts: [
+    {
+      name: 'management',
+      sharingStrategy: 'equallySplit',
+      filters: [
+        [
+          {
+            fieldName: 'clusterName',
+            operatory: 'Equal',
+            values: ['test']
+          },
+          {
+            fieldName: 'managementCost',
+            operatory: 'Equal',
+            values: ['true']
+          }
+        ]
+      ]
+    }
+  ]
+};
