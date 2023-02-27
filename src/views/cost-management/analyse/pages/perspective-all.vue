@@ -22,7 +22,7 @@
       title="All Resource"
       borderless
       style="margin-bottom: 10px"
-      :loading="overviewloading || loading"
+      :loading="overviewloading || preloading"
     >
       <a-grid :cols="24" :col-gap="20">
         <a-grid-item
@@ -51,7 +51,7 @@
       </template>
       <LineBarChart
         height="220px"
-        :loading="dailyloading || loading"
+        :loading="dailyloading || preloading"
         :show-type="active"
         :bar-list="dailyCostChart.bar"
         :line-list="dailyCostChart.line"
@@ -76,7 +76,7 @@
       <LineBarChart
         height="220px"
         show-type="bar"
-        :loading="projectloading || loading"
+        :loading="projectloading || preloading"
         :bar-list="projectCostChart.bar"
         :line-list="projectCostChart.line"
         :data-config="projectCostChart.dataConfig"
@@ -100,7 +100,7 @@
       <LineBarChart
         height="220px"
         show-type="bar"
-        :loading="clusterloading || loading"
+        :loading="clusterloading || preloading"
         :bar-list="clusterCostChart.bar"
         :line-list="clusterCostChart.line"
         :data-config="clusterCostChart.dataConfig"
@@ -119,7 +119,7 @@
 <script lang="ts" setup>
   import dayjs from 'dayjs';
   import { round } from 'lodash';
-  import { reactive, ref, computed, onMounted, watchEffect, watch } from 'vue';
+  import { reactive, ref, computed, onMounted, watch } from 'vue';
   import FilterBox from '@/components/filter-box/index.vue';
   import DateRange from '@/components/date-range/index.vue';
   import DataCard from '@/components/data-card/index.vue';
@@ -150,6 +150,12 @@
       }
     },
     isPage: {
+      type: Boolean,
+      default() {
+        return false;
+      }
+    },
+    pageloading: {
       type: Boolean,
       default() {
         return false;
@@ -197,6 +203,9 @@
   const activeProject = ref<'bar' | 'line'>('bar');
   const activeCluster = ref<'bar' | 'line'>('bar');
 
+  const preloading = computed(() => {
+    return props.pageloading || loading.value;
+  });
   const configOptions = computed(() => {
     return {
       title: {

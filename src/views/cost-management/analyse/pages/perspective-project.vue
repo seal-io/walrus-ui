@@ -105,7 +105,7 @@
       </template>
     </FilterBox> -->
     <SpinCard
-      :loading="overviewloading || projectloading || loading"
+      :loading="overviewloading || preloading"
       :title="projectName || 'Project'"
       borderless
       style="margin-bottom: 10px"
@@ -146,7 +146,7 @@
     </SpinCard>
     <SpinCard title="应用消费金额" borderless style="margin-bottom: 10px">
       <LineBarChart
-        :loading="apploading || projectloading || loading"
+        :loading="apploading || preloading"
         height="220px"
         show-type="line"
         :line-list="projectCostChart.line"
@@ -254,6 +254,10 @@
     { label: 'project-1', value: 'project1' },
     { label: 'project-2', value: 'project' }
   ];
+
+  const preloading = computed(() => {
+    return projectloading.value || loading.value;
+  });
   const handleDateChange = async () => {
     await getProjectList();
     projectCostFilters.value = {
