@@ -104,7 +104,7 @@
       </template>
     </FilterBox> -->
     <SpinCard
-      :loading="overviewloading || clusterloading || loading"
+      :loading="overviewloading || preloading"
       :title="clusterName || 'Cluster'"
       borderless
       style="margin-bottom: 10px"
@@ -151,7 +151,7 @@
         </div>
       </template>
       <LineBarChart
-        :loading="dailyloading || loading || clusterloading"
+        :loading="dailyloading || preloading"
         height="220px"
         :show-type="active"
         :line-list="dailyCostChart.line"
@@ -170,7 +170,7 @@
     </SpinCard>
     <SpinCard title="Namespace消费记录" borderless style="margin-bottom: 10px">
       <horizontalBar
-        :loading="spaceloading || loading || clusterloading"
+        :loading="spaceloading || preloading"
         style="flex: 1"
         :config-options="BarConfigOptions"
         height="260px"
@@ -185,7 +185,7 @@
     </SpinCard>
     <SpinCard title="工作负载消费金额" borderless style="margin-bottom: 10px">
       <LineBarChart
-        :loading="workloading || loading || clusterloading"
+        :loading="workloading || preloading"
         height="220px"
         show-type="line"
         :line-list="[]"
@@ -304,6 +304,9 @@
   ];
   const active = ref<'bar' | 'line'>('bar');
 
+  const preloading = computed(() => {
+    return loading.value || clusterloading.value;
+  });
   const configOptions = computed(() => {
     return {
       title: {

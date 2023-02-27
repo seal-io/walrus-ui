@@ -4,6 +4,7 @@
       :is="perspectiveMap[viewComponent]"
       :source="viewComponent"
       :is-page="true"
+      :pageloading="loading"
       :view-id="viewId"
     >
       <template #select>
@@ -56,6 +57,7 @@
     project: markRaw(perspectiveProject)
   };
   const { router } = useCallCommon();
+  const loading = ref(false);
   const viewList = ref<{ value: string; label: string }[]>([]);
   const viewId = ref('');
   const viewComponent = ref('all');
@@ -72,6 +74,7 @@
   };
   const getViewList = async () => {
     try {
+      loading.value = true;
       const params = {
         page: 1,
         perPage: 1000
@@ -85,7 +88,9 @@
       }) as Array<{ value: string; label: string }>;
       const allView = find(viewList.value, (sItem) => sItem.label === 'all');
       viewId.value = allView?.value || '';
+      loading.value = false;
     } catch (error) {
+      loading.value = false;
       viewList.value = [];
       viewId.value = '';
       console.log(error);
