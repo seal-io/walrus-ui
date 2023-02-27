@@ -103,7 +103,7 @@
   const selectedKeys = ref<string[]>([]);
   const dataList = ref<EnvironmentRow[]>(
     Array(10).fill({
-      name: 'project name',
+      name: 'Environment',
       description: 'description',
       id: '1'
     })

@@ -80,6 +80,12 @@
       default() {
         return '';
       }
+    },
+    timeRange: {
+      type: String,
+      default() {
+        return '';
+      }
     }
   });
   let timer: any = null;
@@ -97,9 +103,12 @@
       loading.value = true;
       const params = {
         ...props.filterParams,
-        startTime: dayjs(props.filterParams.startTime).format(
-          'YYYY-MM-DDTHH:mm:ssZ'
-        ),
+        startTime:
+          props.timeRange === 'single'
+            ? dayjs(props.filterParams.endTime).format('YYYY-MM-DDTHH:mm:ssZ')
+            : dayjs(props.filterParams.startTime).format(
+                'YYYY-MM-DDTHH:mm:ssZ'
+              ),
         endTime: dayjs(props.filterParams.endTime).format(
           'YYYY-MM-DDT23:59:59Z'
         ),

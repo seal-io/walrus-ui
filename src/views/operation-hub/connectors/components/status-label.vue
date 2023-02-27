@@ -1,8 +1,16 @@
 <template>
   <span class="status-label">
     <span class="label">
-      <span class="dot" :class="[status]"></span>
-      <span class="text">{{ status }}</span>
+      <span v-if="status !== 'error'" class="dot" :class="[status]"></span>
+      <icon-font
+        v-if="status === 'error'"
+        class="size-16"
+        style="margin-right: 5px"
+        type="icon-warning-filling"
+      ></icon-font>
+      <span class="text">
+        {{ status }}
+      </span>
     </span>
   </span>
 </template>
@@ -13,6 +21,12 @@
       type: String,
       default() {
         return 'unconnected';
+      }
+    },
+    label: {
+      type: String,
+      default() {
+        return '';
       }
     }
   });
@@ -38,6 +52,10 @@
 
       &.unconnected {
         background-color: var(--color-text-4);
+      }
+
+      &.initializing {
+        background-color: rgba(var(--arcoblue-5), 0.7);
       }
     }
   }

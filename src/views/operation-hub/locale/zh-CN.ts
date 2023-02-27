@@ -18,7 +18,7 @@ export default {
   'operation.connectors.rules.name': '集群名称必填',
   'operation.connectors.rules.kubeconfig': 'kubeconfig为必填',
   'operation.connectors.rules.kubeconfigTips': '可从文件读取或者直接输入',
-  'operation.connectors.rules.enable': '是否部署成本分析器(可选)',
+  'operation.connectors.rules.enable': '启用成本分析(可选)',
   'operation.environments.menu': '环境',
   'operation.environments.create': '新建环境',
   'operation.environments.table.holder': '请输入环境名称',
