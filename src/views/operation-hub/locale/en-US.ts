@@ -21,8 +21,7 @@ export default {
   'operation.connectors.rules.kubeconfig': 'kubeconfig is required',
   'operation.connectors.rules.kubeconfigTips':
     'can be read from a file or entered directly',
-  'operation.connectors.rules.enable':
-    'whether to deploy cost analyzer (optional)',
+  'operation.connectors.rules.enable': 'Enable cost analysis (optional)',
   'operation.environments.menu': 'Environments',
   'operation.environments.create': 'New Environment',
   'operation.environments.table.name': 'Name',

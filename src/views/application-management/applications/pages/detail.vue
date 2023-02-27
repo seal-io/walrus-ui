@@ -1,9 +1,9 @@
 <template>
   <ComCard top-gap class="application-detail-wrap">
-    <GroupTitle title="新建应用"></GroupTitle>
+    <GroupTitle title="编辑项目"></GroupTitle>
     <ModuleCard title="基本信息">
       <template #title>
-        <span>项目信息</span>
+        <span>基本信息</span>
         <a-link style="line-height: 1">
           <template #icon>
             <icon-edit
@@ -29,7 +29,7 @@
         </a-form-item>
       </a-form>
     </ModuleCard>
-    <ModuleCard :title="`应用实例(${instanseList.length})`">
+    <ModuleCard :title="`应用(${instanseList.length})`">
       <div class="content">
         <instanceThumb
           v-for="item in instanseList"

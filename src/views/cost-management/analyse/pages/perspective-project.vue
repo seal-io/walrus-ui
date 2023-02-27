@@ -167,6 +167,7 @@
         }"
       ></LineBarChart>
       <TableList
+        time-range="single"
         :loadeend="loadeend"
         :filter-params="{ ...projectCostFilters }"
         :columns="projectCostCols"
