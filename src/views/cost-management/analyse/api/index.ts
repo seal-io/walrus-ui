@@ -8,6 +8,10 @@ export interface FieldValueType {
   startTime: string;
   endTime: string;
 }
+export interface FieldsType {
+  startTime: string;
+  endTime: string;
+}
 export interface QueryType extends Pagination {
   name?: string;
   sort?: string[];
@@ -29,7 +33,7 @@ export function queryPerspectives(params: QueryType) {
 }
 
 export function queryItemPerspective(params: { id: string }) {
-  return axios.get(`/perspectives/${params.id}`, {
+  return axios.get<PerspectiveRowData>(`/perspectives/${params.id}`, {
     params,
     paramsSerializer: (obj) => {
       return qs.stringify(obj);
@@ -37,7 +41,7 @@ export function queryItemPerspective(params: { id: string }) {
   });
 }
 
-export function queryPerspectiveField(params: FieldValueType) {
+export function queryPerspectiveFieldValues(params: FieldValueType) {
   return axios.get(`/perspectives/_/field-values`, {
     params,
     paramsSerializer: (obj) => {
@@ -45,6 +49,16 @@ export function queryPerspectiveField(params: FieldValueType) {
     }
   });
 }
+
+export function queryPerspectiveFields(params?: FieldsType) {
+  return axios.get(`/perspectives/_/fields`, {
+    params,
+    paramsSerializer: (obj) => {
+      return qs.stringify(obj);
+    }
+  });
+}
+
 export function createPerspective(data: any) {
   return axios.post('/perspectives', data);
 }

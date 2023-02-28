@@ -23,7 +23,7 @@ import {
   queryItemPerspective,
   queryPerspectiveData,
   queryClusterPerspectiveSummary,
-  queryPerspectiveField
+  queryPerspectiveFieldValues
 } from '../api';
 import testData, { statckLineData, overviewData } from '../config/testData';
 
@@ -96,7 +96,7 @@ export default function usePerspectiveCost(props) {
         startTime: dayjs(queryParams.startTime).format('YYYY-MM-DDTHH:mm:ssZ'),
         endTime: dayjs(queryParams.endTime).format('YYYY-MM-DDT23:59:59Z')
       };
-      const { data } = await queryPerspectiveField(params);
+      const { data } = await queryPerspectiveFieldValues(params);
       clusterList.value = data?.items || [];
       queryParams.connectorID = get(clusterList.value, '0.value') || '';
       clusterName.value = get(clusterList.value, '0.label') || 'Cluster';
