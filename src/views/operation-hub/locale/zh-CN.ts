@@ -21,6 +21,7 @@ export default {
   'operation.connectors.rules.enable': '启用成本分析(可选)',
   'operation.environments.menu': '环境',
   'operation.environments.create': '新建环境',
+  'operation.environments.edit': '编辑环境',
   'operation.environments.table.holder': '请输入环境名称',
   'operation.environments.table.list': '环境列表',
   'operation.environments.table.name': '名称',

@@ -10,6 +10,8 @@ export interface ConnectorRowData {
   createTime: string;
   edges: object;
   id: string;
+  label?: string;
+  value?: string;
 }
 
 export interface ConnectorFormData {

@@ -1,8 +1,14 @@
 export interface AppRowData {
   name: string;
   id: string;
-  services: number;
-  status: string;
+  labels: object;
+  description: string;
+  environmentID: string;
+  modules: Array<{
+    moduleID: string;
+    name: string;
+    variables: object;
+  }>;
 }
 
 export interface InstanceData {
