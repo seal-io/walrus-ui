@@ -7,7 +7,7 @@
     :visible="show"
     :mask-closable="false"
     :body-style="{ 'max-height': '400px', 'overflow': 'auto' }"
-    modal-class="oci-modal"
+    modal-class="project-modal"
     :title="title"
     @cancel="handleCancel"
     @ok="handleOk"
@@ -47,28 +47,19 @@
             <a-input></a-input><span style="padding: 0 4px">:</span
             ><a-input></a-input>
           </a-input-group>
-          <a-button
-            v-if="index === labelList.length - 1"
-            type="outline"
-            size="mini"
-            shape="round"
-            class="mini-icon-btn"
-            style="margin-left: 8px"
-            @click="handleAddLabel"
-          >
-            <icon-plus></icon-plus>
-          </a-button>
-          <a-button
-            v-if="labelList.length > 1"
-            type="outline"
-            size="mini"
-            shape="round"
-            class="mini-icon-btn"
-            style="margin-left: 8px"
-            @click="handleDeleteLabel(index)"
-          >
-            <icon-minus></icon-minus>
-          </a-button>
+          <a-space class="btn-wrapper">
+            <icon-minus-circle
+              v-if="labelList.length > 1"
+              class="size-20"
+              @click="handleDeleteLabel(index)"
+            ></icon-minus-circle>
+            <icon-plus-circle-fill
+              v-if="index === labelList.length - 1"
+              class="size-20"
+              style="margin-left: 5px"
+              @click="handleAddLabel"
+            ></icon-plus-circle-fill>
+          </a-space>
         </a-form-item>
       </a-form>
     </a-spin>
@@ -152,4 +143,19 @@
   const handleBeforeClose = () => {};
 </script>
 
-<style></style>
+<style lang="less">
+  .arco-modal.project-modal {
+    .btn-wrapper {
+      margin-left: 12px;
+
+      .arco-icon {
+        color: rgb(var(--arcoblue-6));
+        cursor: pointer;
+
+        &:hover {
+          color: rgb(var(--arcoblue-5));
+        }
+      }
+    }
+  }
+</style>

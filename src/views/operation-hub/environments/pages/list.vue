@@ -70,7 +70,11 @@
           ></ListView>
         </a-tab-pane>
       </a-tabs> -->
-      <ListView v-model:selectedList="selectedKeys" :list="dataList"></ListView>
+      <ListView
+        v-model:selectedList="selectedKeys"
+        :list="dataList"
+        :loading="loading"
+      ></ListView>
       <a-pagination
         size="small"
         :total="total"
@@ -95,20 +99,15 @@
   import ThumbView from '../components/thumb-view.vue';
   import ListView from '../components/list-view.vue';
   import { EnvironmentRow } from '../config/interface';
+  import { queryEnvironments } from '../api';
 
   let timer: any = null;
   const { router } = useCallCommon();
   const loading = ref(false);
   const currentView = ref('thumb'); // thumb, list
   const selectedKeys = ref<string[]>([]);
-  const dataList = ref<EnvironmentRow[]>(
-    Array(10).fill({
-      name: 'Environment',
-      description: 'description',
-      id: '1'
-    })
-  );
-  const total = ref(100);
+  const dataList = ref<EnvironmentRow[]>([]);
+  const total = ref(0);
   const queryParams = reactive({
     name: '',
     page: 1,
@@ -122,7 +121,17 @@
       name: 'environmentDetail'
     });
   };
-  const fetchData = async () => {};
+  const fetchData = async () => {
+    try {
+      loading.value = true;
+      const { data } = await queryEnvironments(queryParams);
+      dataList.value = data?.items || [];
+      loading.value = false;
+    } catch (error) {
+      loading.value = false;
+      console.log(error);
+    }
+  };
   const handleFilter = () => {
     fetchData();
   };
@@ -176,6 +185,7 @@
   const handleDelete = async () => {
     deleteModal({ onOk: handleDeleteConfirm });
   };
+  fetchData();
 </script>
 
 <style lang="less" scoped>

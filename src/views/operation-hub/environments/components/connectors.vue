@@ -2,10 +2,9 @@
   <div class="connectors-list">
     <a-table
       column-resizable
-      style="margin-bottom: 20px"
       :bordered="true"
       :loading="loading"
-      :data="dataList"
+      :data="list"
       :pagination="false"
     >
       <template #columns>
@@ -43,10 +42,14 @@
           :width="160"
           :title="$t('common.table.operation')"
         >
-          <template #cell="{ record }">
+          <template #cell="{ record, rowIndex }">
             <a-space :size="20">
-              <a-link type="text" size="small" @click="handleDelete(record)">
-                <template #icon><icon-delete /></template>
+              <a-link
+                type="text"
+                size="small"
+                @click="handleDelete(record, rowIndex)"
+              >
+                <template #icon><icon-delete class="size=20" /></template>
               </a-link>
             </a-space>
           </template>
@@ -58,33 +61,24 @@
 
 <script lang="ts" setup>
   import { map } from 'lodash';
-  import { reactive, ref, onMounted } from 'vue';
+  import { reactive, ref, onMounted, PropType, watchEffect } from 'vue';
   import useCallCommon from '@/hooks/use-call-common';
   import { deleteModal, execSucceed } from '@/utils/monitor';
   import { ConnectorRowData } from '../../connectors/config/interface';
 
-  const { router } = useCallCommon();
+  const props = defineProps({
+    list: {
+      type: Array as PropType<ConnectorRowData[]>,
+      default() {
+        return [];
+      }
+    }
+  });
+  const emits = defineEmits(['delete']);
   const loading = ref(false);
   const selectedKeys = ref([]);
-  const dataList = ref<ConnectorRowData[]>([
-    {
-      id: '1',
-      name: 'connector-1',
-      createTime: '2023-02-09',
-      type: 'EKS',
-      status: 'ready'
-    },
-    {
-      id: '2',
-      name: 'connector-1',
-      createTime: '2023-02-09',
-      type: 'EKS',
-      status: 'unconnected'
-    }
-  ]);
 
-  const fetchData = async () => {};
-  const handleDeleteConfirm = async () => {
+  const handleDeleteConfirm = async (record, rowIndex) => {
     try {
       loading.value = true;
       const ids = map(selectedKeys.value, (val) => {
@@ -92,17 +86,17 @@
           id: val
         };
       });
-      // await deleteRepos(ids);
+      emits('delete', record, rowIndex);
       loading.value = false;
-      execSucceed();
+      // execSucceed();
     } catch (error) {
       console.log(error);
       loading.value = false;
     }
   };
 
-  const handleDelete = async (row) => {
-    deleteModal({ onOk: handleDeleteConfirm });
+  const handleDelete = async (record, rowIndex) => {
+    deleteModal({ onOk: handleDeleteConfirm(record, rowIndex) });
   };
   onMounted(() => {
     console.log('application list');

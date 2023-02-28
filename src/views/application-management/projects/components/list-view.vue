@@ -56,12 +56,12 @@
                   size="small"
                   @click="handleEditProject(record)"
                 >
-                  <template #icon><icon-edit /></template>
+                  <template #icon><icon-edit class="size-16" /></template>
                 </a-link>
               </a-tooltip>
               <a-tooltip :content="$t('common.button.detail')">
                 <a-link type="text" size="small" @click="handleEdit(record)">
-                  <template #icon><icon-list /></template>
+                  <template #icon><icon-list class="size-16" /></template>
                 </a-link>
               </a-tooltip>
             </a-space>

@@ -45,10 +45,12 @@ export default [
   },
   {
     Name: 'init_db_script',
-    Type: 'string',
+    Type: 'number',
     Default: null,
+    min: 0,
+    max: 100,
     Required: false,
-    Sensitive: false,
+    Sensitive: true,
     Description: '(Optional) Init db scripts '
   }
 ];

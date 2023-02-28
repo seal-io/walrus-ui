@@ -47,12 +47,12 @@
           :title="$t('common.table.operation')"
         >
           <template #cell="{ record }">
-            <a-space :size="20">
+            <a-tooltip :content="$t('common.button.edit')">
               <a-link type="text" size="small" @click="handleEdit(record)">
-                <template #icon><icon-edit /></template>
-                {{ $t('common.button.edit') }}
+                <template #icon><icon-edit class="size-16" /></template>
+                <!-- {{ $t('common.button.edit') }} -->
               </a-link>
-            </a-space>
+            </a-tooltip>
           </template>
         </a-table-column>
       </template>
