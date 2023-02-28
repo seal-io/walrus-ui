@@ -15,10 +15,13 @@
         ></a-input>
       </a-form-item>
       <a-form-item label="Group By">
-        <a-select></a-select>
+        <a-select v-model="formData.allocationQueries[0].groupBy"> </a-select>
       </a-form-item>
       <a-form-item label="过滤器">
-        <ConditionFilter></ConditionFilter>
+        <ConditionFilter
+          v-model:conditions="formData.allocationQueries[0].filters"
+          :perspective-fields="perspectiveFields"
+        ></ConditionFilter>
       </a-form-item>
 
       <a-form-item label="Share Cost">
@@ -31,32 +34,53 @@
             ></span>
           </div>
         </template>
-        <ConditionFilter></ConditionFilter>
-        <template #extra>
-          <div style="display: flex; align-items: center; margin-top: 10px">
-            <div style="margin-right: 10px">Sharing Strategy</div>
-            <a-radio-group>
-              <a-radio
-                v-for="item in costShareMode"
-                :key="item.value"
-                :value="item.value"
-                >{{ item.label }}</a-radio
-              >
-            </a-radio-group>
-          </div>
-        </template>
+        <ConditionFilter
+          v-model:conditions="
+            formData.allocationQueries[0].shareCosts[0].filters
+          "
+          :perspective-fields="perspectiveFields"
+        ></ConditionFilter>
       </a-form-item>
-      <a-form-item label="">
-        <!-- <template #label>
-          <div style="display: flex; align-items: center">
-            <span
-              >Idle Cost
-              <a-tooltip content="Manage Idle Cost Sharing Strategy">
-                <icon-info-circle /> </a-tooltip
-            ></span>
-          </div>
-        </template> -->
-        <a-select :options="costShareMode" placeholder="Idle Cost"></a-select>
+      <a-form-item
+        label=""
+        field="formData.allocationQueries.0.shareCosts.0.sharingStrategy"
+      >
+        <span class="label">Sharing Strategy</span>
+        <a-radio-group
+          v-model="formData.allocationQueries[0].shareCosts[0].sharingStrategy"
+        >
+          <a-radio
+            v-for="item in costShareMode"
+            :key="item.value"
+            :value="item.value"
+            >{{ item.label }}</a-radio
+          >
+        </a-radio-group>
+      </a-form-item>
+      <a-form-item
+        label=""
+        field="formData.allocationQueries.0.shareCosts.0.idleCostFilters"
+      >
+        <span class="label">Idle Cost Filters</span>
+        <a-select
+          v-model="formData.allocationQueries[0].shareCosts[0].idleCostFilters"
+          multiple
+          style="width: 360px"
+          :options="costShareMode"
+          placeholder="Idle Cost"
+        ></a-select>
+      </a-form-item>
+      <a-form-item label="" field="managementCostFilters">
+        <span class="label">Management Cost Filters</span>
+        <a-select
+          v-model="
+            formData.allocationQueries[0].shareCosts[0].managementCostFilters
+          "
+          multiple
+          style="width: 360px"
+          :options="costShareMode"
+          placeholder="Idle Cost"
+        ></a-select>
       </a-form-item>
     </a-form>
     <EditPageFooter>
@@ -83,42 +107,125 @@
 
 <script lang="ts" setup>
   import { ref, reactive } from 'vue';
+  import { map, each, startsWith } from 'lodash';
   import useCallCommon from '@/hooks/use-call-common';
   import GroupTitle from '@/components/group-title/index.vue';
   import EditPageFooter from '@/components/edit-page-footer/index.vue';
   import ConditionFilter from '../components/condition-filter.vue';
   import { costShareMode } from '../config';
+  import { PerspectiveRowData, FieldsOptions } from '../config/interface';
   import { filtersData } from '../config/testData';
   import {
     queryItemPerspective,
     createPerspective,
-    updatePerspective
+    updatePerspective,
+    queryPerspectiveFields
   } from '../api';
 
   const { t, router, route } = useCallCommon();
   const id = route.query.id as string;
   const formref = ref();
+  const perspectiveInfo = ref<any>({});
   const loading = ref(false);
   const submitLoading = ref(false);
+  const perspectiveFields = ref<FieldsOptions[]>([]);
   const formData = reactive({
-    name: ''
+    name: '',
+    builtin: false,
+    allocationQueries: [
+      {
+        groupBy: '',
+        step: '',
+        filters: [],
+        shareCosts: [
+          {
+            filters: [],
+            idleCostFilters: [],
+            managementCostFilters: [],
+            sharingStrategy: ''
+          }
+        ]
+      }
+    ]
   });
   const handleCancel = () => {
     router.back();
   };
+
   const handleOk = async () => {
     const res = await formref.value?.validate();
+    console.log('formData====', formData);
     if (!res) {
       try {
         submitLoading.value = true;
         // TODO
+        if (id) {
+          await updatePerspective({ ...formData, id });
+        } else {
+          await createPerspective(formData);
+        }
+        router.back();
         submitLoading.value = false;
       } catch (error) {
         submitLoading.value = false;
       }
     }
   };
-  const getPerspectiveInfo = () => {};
+  const getPerspectiveInfo = async () => {
+    if (!id) return;
+    try {
+      const { data } = await queryItemPerspective({ id });
+      perspectiveInfo.value = data;
+    } catch (error) {
+      perspectiveInfo.value = {};
+      console.log(error);
+    }
+  };
+  const getPerspectiveFields = async () => {
+    try {
+      const { data } = await queryPerspectiveFields();
+      const list = data?.items || [];
+      const labelList: Array<{ label: string; value: string }> = [];
+      const fieldList: Array<{ label: string; value: string }> = [];
+      each(list, (o) => {
+        if (startsWith(o.fieldName, 'label:')) {
+          labelList.push({
+            ...o,
+            value: o.fieldName
+          });
+        } else {
+          fieldList.push({
+            ...o,
+            value: o.fieldName
+          });
+        }
+      });
+      perspectiveFields.value = [
+        {
+          label: 'Label',
+          value: 'labelGroup',
+          children: [...labelList]
+        },
+        ...fieldList
+      ];
+    } catch (error) {
+      perspectiveFields.value = [];
+      console.log(error);
+    }
+  };
+  const init = async () => {
+    await getPerspectiveFields();
+    getPerspectiveInfo();
+  };
+  init();
 </script>
 
-<style></style>
+<style lang="less" scoped>
+  .arco-form-item-content {
+    .label {
+      display: inline-block;
+      width: 180px;
+      padding-right: 10px;
+    }
+  }
+</style>

@@ -12,6 +12,8 @@ export interface FilterItem {
   filterName: string;
   operator: string;
   values: string[];
+  loading?: boolean;
+  fieldValues?: { label: string; value: string }[];
   includeAll?: boolean;
 }
 export interface IdleCostFiltersItem {
@@ -53,7 +55,11 @@ export interface PerspectiveRowData {
   disabled?: boolean;
   allocationQueries: AllocationQueriesItem[];
 }
-
+export interface FieldsOptions {
+  label: string;
+  value: string;
+  children?: Array<{ label: string; value: string }>;
+}
 export interface FilterParamsType extends AllocationQueriesItem {
   startTime: string;
   endTime: string;

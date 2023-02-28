@@ -19,7 +19,7 @@ import {
   queryItemPerspective,
   queryPerspectiveData,
   queryProjectPerspectiveSummary,
-  queryPerspectiveField
+  queryPerspectiveFieldValues
 } from '../api';
 // import testData, { statckLineData } from '../config/testData';
 
@@ -67,7 +67,7 @@ export default function usePerspectiveCost(props) {
         startTime: dayjs(queryParams.startTime).format('YYYY-MM-DDTHH:mm:ssZ'),
         endTime: dayjs(queryParams.endTime).format('YYYY-MM-DDT23:59:59Z')
       };
-      const { data } = await queryPerspectiveField(params);
+      const { data } = await queryPerspectiveFieldValues(params);
       projectList.value = data?.items || [];
       queryParams.project = get(data, 'items.0.value') || '';
       projectName.value = get(data, 'items.0.label') || 'Project';

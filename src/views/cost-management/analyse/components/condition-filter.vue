@@ -6,6 +6,12 @@
       >
     </div>
     <div class="condition-box wrapper">
+      <div v-if="!filterDataList.length" class="no-data">
+        <a-button type="text" size="small" @click="handleAddORFilter">
+          <template #icon><icon-plus /></template>
+          {{ $t('cost.analyse.view.strategy') }}
+        </a-button>
+      </div>
       <div v-if="filterDataList.length">
         <div
           v-for="(item, index) in filterDataList"
@@ -20,22 +26,30 @@
             fill
             class="condition-item"
           >
-            <a-select
+            <a-cascader
               v-model="sItem.filterName"
-              :options="perspectiveDataList"
-              style="flex: 1; width: 200px"
-            ></a-select>
+              allow-search
+              :options="perspectiveFields"
+              style="flex: 1; width: 220px"
+              @change="(val) => handleCascaderChange(val, sItem)"
+            >
+            </a-cascader>
             <a-select
               v-model="sItem.operator"
               :options="operatorList"
               style="width: 120px"
+              @change="handleOperatorChange"
             ></a-select>
             <a-select
               v-model="sItem.values"
               :max-tag-count="2"
               multiple
-              :options="perspectiveDataList"
-              style="flex: 1; min-width: 240px"
+              :loading="sItem.loading"
+              :options="sItem.fieldValues"
+              style="flex: 1; width: 240px"
+              @popup-visible-change="
+                (visible) => handlePopupVisible(visible, sItem)
+              "
             ></a-select>
             <span class="icon-btn-box">
               <span
@@ -58,10 +72,12 @@
 </template>
 
 <script lang="ts" setup>
-  import { ref, onMounted, computed, PropType } from 'vue';
-  import { filter } from 'lodash';
+  import { ref, onMounted, computed, PropType, watch } from 'vue';
+  import { cloneDeep, filter } from 'lodash';
+  import dayjs from 'dayjs';
   import { relationOptions, operatorList } from '../config';
   import { FilterItem } from '../config/interface';
+  import { queryPerspectiveFieldValues } from '../api';
 
   type FilterDataItem = FilterItem[];
   const props = defineProps({
@@ -70,22 +86,22 @@
       default() {
         return [];
       }
+    },
+    perspectiveFields: {
+      type: Array as PropType<{ label: string; value: string }[]>,
+      default() {
+        return [];
+      }
     }
   });
-  const perspectiveDataList = ref<{ label: string; value: string }[]>([
-    { label: 'connectorID', value: 'cluster1' },
-    { label: 'cluster-2', value: 'cluster2' },
-    { label: 'clusterNamespace', value: 'clusterNamespace' },
-    { label: 'workload', value: 'workload' },
-    { label: 'app', value: 'app' }
-  ]);
+  const emits = defineEmits(['update:conditions']);
   const filterDataList = ref<FilterDataItem[]>([
-    [
-      { filterName: 'workload', operator: 'IN', values: ['w1', 'w2'] },
-      { filterName: 'workload', operator: 'IN', values: ['w1', 'w2'] }
-    ],
-    [{ filterName: 'workload', operator: 'IN', values: ['w1', 'w2'] }],
-    [{ filterName: 'workload', operator: 'IN', values: ['w1', 'w2'] }]
+    // [
+    //   { filterName: 'workload', operator: 'IN', values: ['w1', 'w2'] },
+    //   { filterName: 'workload', operator: 'IN', values: ['w1', 'w2'] }
+    // ],
+    // [{ filterName: 'workload', operator: 'IN', values: ['w1', 'w2'] }],
+    // [{ filterName: 'workload', operator: 'IN', values: ['w1', 'w2'] }]
   ]);
   const setPolicyData = () => {};
 
@@ -95,6 +111,10 @@
       operator: '',
       values: []
     });
+    emits('update:conditions', filterDataList.value);
+  };
+  const handleOperatorChange = () => {
+    emits('update:conditions', filterDataList.value);
   };
   const handleAddORFilter = () => {
     filterDataList.value.push([
@@ -104,12 +124,45 @@
         values: []
       }
     ]);
+    emits('update:conditions', filterDataList.value);
   };
   const handleDeleteFilter = (item, index) => {
     item.splice(index, 1);
     filterDataList.value = filter(filterDataList.value, (o) => !!o.length);
+    emits('update:conditions', filterDataList.value);
   };
-
+  const handleCascaderChange = (val, sItem) => {
+    sItem.values = [];
+    sItem.fieldValues = [];
+    emits('update:conditions', filterDataList.value);
+  };
+  const handlePopupVisible = async (visible, sItem) => {
+    try {
+      if (visible && !sItem?.fieldValues?.length && sItem.filterName) {
+        sItem.loading = true;
+        const { data } = await queryPerspectiveFieldValues({
+          fieldName: sItem.filterName,
+          startTime: dayjs().format('YYYY-MM-25THH:mm:ssZ'),
+          endTime: dayjs().format('YYYY-MM-DDT23:59:59Z')
+        });
+        sItem.fieldValues = data?.items || [];
+        sItem.loading = false;
+      }
+    } catch (error) {
+      sItem.loading = false;
+      sItem.fieldValues = [];
+      console.log(error);
+    }
+  };
+  watch(
+    () => props.filterList,
+    () => {
+      filterDataList.value = cloneDeep(props.filterList);
+    },
+    {
+      immediate: true
+    }
+  );
   onMounted(() => {
     setPolicyData();
   });
@@ -133,6 +186,7 @@
         &.plus {
           display: flex;
           align-items: center;
+          width: 55px;
         }
       }
     }
@@ -141,10 +195,18 @@
   .condition-box {
     position: relative;
     display: flex;
+    min-width: 540px;
     padding: 16px;
-    // background-color: var(--color-fill-2);
     border: 1px solid var(--color-border-2);
     border-radius: var(--border-radius-small);
+
+    .no-data {
+      width: 100%;
+      color: var(--sealblue-6);
+      font-size: 12px;
+      text-align: center;
+      cursor: pointer;
+    }
 
     .content-wrap {
       position: relative;
