@@ -13,18 +13,19 @@
           </template>
         </a-link>
       </template>
-      <a-form ref="formref" :model="formData" auto-label-width disabled>
+      <a-form ref="formref" :model="projectBasicInfo" auto-label-width disabled>
         <a-form-item label="项目名称">
-          <a-input v-model="formData.name"></a-input>
+          <a-input v-model="projectBasicInfo.name"></a-input>
         </a-form-item>
         <a-form-item
           v-for="(item, index) in labelList"
           :key="index"
-          :label="`标签${index + 1}`"
+          :label="$t('applications.projects.form.label', { index: index + 1 })"
         >
           <a-input-group style="width: 360px">
-            <a-input></a-input><span style="padding: 0 4px">:</span
-            ><a-input></a-input>
+            <a-input :model-value="item.key"></a-input
+            ><span style="padding: 0 4px">:</span
+            ><a-input :model-value="item.value"></a-input>
           </a-input-group>
         </a-form-item>
       </a-form>
@@ -93,6 +94,8 @@
     <CreateProject
       v-model:show="showAppModal"
       :title="$t('applications.projects.edit')"
+      action="edit"
+      :info="projectBasicInfo"
       @save="handleSaveAppInfo"
     ></CreateProject>
     <!-- <createInstance
@@ -104,11 +107,13 @@
 
 <script lang="ts" setup>
   import { reactive, ref, markRaw } from 'vue';
+  import { keys, get } from 'lodash';
   import useCallCommon from '@/hooks/use-call-common';
   import GroupTitle from '@/components/group-title/index.vue';
   import thumbButton from '@/components/buttons/thumb-button.vue';
   import EditPageFooter from '@/components/edit-page-footer/index.vue';
   import tabTerminal from '@/components/x-terminal/index.vue';
+  import { queryItemProject } from '@/views/application-management/projects/api';
   import CreateProject from '../../projects/components/create-project.vue';
   import instanceThumb from '../components/instance-thumb.vue';
   import { InstanceData } from '../config/interface';
@@ -124,13 +129,15 @@
   import createInstance from '../components/create-instance.vue';
   import applicationHistory from '../components/application-history.vue';
 
-  const { router, t } = useCallCommon();
+  const { router, route, t } = useCallCommon();
   const formref = ref();
+  const id = route.query.id as string;
   const activeInstance = ref('1');
   const appModalTitle = ref('');
   const showInstanceModal = ref(false);
   const showAppModal = ref(false);
   const activeKey = ref('configuration');
+  const projectBasicInfo = ref<any>({});
   const formData = reactive({
     name: ''
   });
@@ -149,9 +156,33 @@
     { name: 'app2', id: '2' },
     { name: 'app3', id: '3' }
   ]);
-  const labelList = ref([1, 2]);
+  const labelList = ref<{ key: string; value: string }[]>([]);
   const handleAddInstance = () => {
     showInstanceModal.value = true;
+  };
+  const transformlabels = () => {
+    const labelKeys = keys(projectBasicInfo.value.labels);
+    if (labelKeys.length) {
+      labelList.value = labelKeys.map((k) => {
+        return {
+          key: k,
+          value: get(projectBasicInfo.value, `labels.${k}`)
+        };
+      });
+    } else {
+      labelList.value = [];
+    }
+  };
+  const getProjectInfo = async () => {
+    try {
+      const { data } = await queryItemProject({ id });
+      projectBasicInfo.value = data;
+    } catch (error) {
+      projectBasicInfo.value = {};
+      console.log(error);
+    } finally {
+      transformlabels();
+    }
   };
   const handleTabChange = (val) => {
     activeKey.value = val;
@@ -163,7 +194,9 @@
         ? t('applications.applications.create')
         : t('applications.applications.edit');
   };
-  const handleSaveAppInfo = () => {};
+  const handleSaveAppInfo = () => {
+    getProjectInfo();
+  };
   const handleSaveInstanceInfo = () => {
     instanseList.value.push({
       name: 'app',
@@ -176,6 +209,10 @@
   const handleOk = () => {
     router.back();
   };
+  const init = async () => {
+    getProjectInfo();
+  };
+  init();
 </script>
 
 <style lang="less" scoped>
