@@ -52,32 +52,75 @@
           >
         </template>
       </FilterBox>
-      <!-- <a-divider :margin="8"></a-divider> -->
-      <!-- <a-tabs
-        default-active-key="currentView"
-        :active-key="currentView"
-        @change="handleToggle"
+      <a-table
+        column-resizable
+        style="margin-bottom: 20px"
+        :bordered="false"
+        :loading="loading"
+        :data="dataList"
+        :pagination="false"
+        row-key="id"
+        :row-selection="rowSelection"
+        @selection-change="handleSelectChange"
       >
-        <a-tab-pane key="thumb">
-          <ThumbView
-            :list="dataList"
-            :checked-list="selectedKeys"
-            @change="handleCheckChange"
-          ></ThumbView>
-        </a-tab-pane>
-        <a-tab-pane key="list">
-          <ListView
-            v-model:selectedList="selectedKeys"
-            :list="dataList"
-            @edit="handleEditProject"
-          ></ListView>
-        </a-tab-pane>
-      </a-tabs> -->
-      <ListView
-        v-model:selectedList="selectedKeys"
-        :list="dataList"
-        @edit="handleEditProject"
-      ></ListView>
+        <template #columns>
+          <a-table-column
+            ellipsis
+            tooltip
+            :cell-style="{ minWidth: '40px' }"
+            data-index="name"
+            :title="$t('applications.projects.table.name')"
+          >
+          </a-table-column>
+          <a-table-column
+            ellipsis
+            tooltip
+            :cell-style="{ minWidth: '40px' }"
+            align="center"
+            data-index="createTime"
+            :title="$t('common.table.createTime')"
+          >
+            <template #cell="{ record }">
+              <span>{{ dayjs(record.createTime).format('YYYY-MM-DD') }}</span>
+            </template>
+          </a-table-column>
+          <a-table-column
+            ellipsis
+            tooltip
+            :cell-style="{ minWidth: '40px' }"
+            align="center"
+            data-index="description"
+            :title="$t('common.table.description')"
+          >
+          </a-table-column>
+          <a-table-column
+            align="center"
+            :title="$t('common.table.operation')"
+            ellipsis
+            tooltip
+            :cell-style="{ minWidth: '40px' }"
+          >
+            <template #cell="{ record }">
+              <a-space :size="20">
+                <a-tooltip :content="$t('common.button.edit')">
+                  <a-link
+                    type="text"
+                    size="small"
+                    @click="handleEditProject(record)"
+                  >
+                    <template #icon><icon-edit class="size-16" /></template>
+                  </a-link>
+                </a-tooltip>
+                <a-tooltip :content="$t('common.button.detail')">
+                  <a-link type="text" size="small" @click="handleEdit(record)">
+                    <template #icon><icon-list class="size-16" /></template>
+                  </a-link>
+                </a-tooltip>
+              </a-space>
+            </template>
+          </a-table-column>
+        </template>
+      </a-table>
       <a-pagination
         size="small"
         :total="total"
@@ -90,36 +133,39 @@
         @page-size-change="handlePageSizeChange"
       />
     </div>
-    <CreateProject
+    <CreateProjectModal
       v-model:show="showProjectModal"
       :title="modalTitle"
+      :action="action"
+      :info="projectInfo"
       @save="handleSaveProject"
-    ></CreateProject>
+    ></CreateProjectModal>
   </SpinCard>
 </template>
 
 <script lang="ts" setup>
-  import { map, remove } from 'lodash';
+  import { cloneDeep, map, remove } from 'lodash';
   import { ref, reactive } from 'vue';
+  import dayjs from 'dayjs';
   import useCallCommon from '@/hooks/use-call-common';
   import FilterBox from '@/components/filter-box/index.vue';
   import { deleteModal, execSucceed } from '@/utils/monitor';
-  import ThumbView from '../components/thumb-view.vue';
-  import ListView from '../components/list-view.vue';
-  import CreateProject from '../components/create-project.vue';
-  import { ProjectItem } from '../config/interface';
+  import useRowSelect from '@/hooks/use-row-select';
+  import CreateProjectModal from '../components/create-project.vue';
+  import { ProjectRowData, ProjectFormData } from '../config/interface';
+  import { queryProjects } from '../api';
 
   let timer: any = null;
-  const { t } = useCallCommon();
+  const { t, router } = useCallCommon();
+  const { rowSelection, selectedKeys, handleSelectChange } = useRowSelect();
   const loading = ref(false);
   const modalTitle = ref('');
   const showProjectModal = ref(false);
   const currentView = ref('thumb'); // thumb, list
-  const selectedKeys = ref<string[]>([]);
-  const dataList = ref<ProjectItem[]>(
-    Array(10).fill({ name: 'project name', id: '1' })
-  );
-  const total = ref(100);
+  const dataList = ref<ProjectRowData[]>([]);
+  const total = ref(0);
+  const projectInfo = ref<any>({});
+  const action = ref<'create' | 'edit'>('create');
   const queryParams = reactive({
     name: '',
     page: 1,
@@ -129,14 +175,39 @@
     currentView.value = val;
   };
   const handleCreateProject = () => {
-    showProjectModal.value = true;
+    action.value = 'create';
+    projectInfo.value = {};
+    setTimeout(() => {
+      showProjectModal.value = true;
+    }, 100);
     modalTitle.value = t('applications.projects.create');
   };
-  const handleEditProject = (row) => {
-    showProjectModal.value = true;
-    modalTitle.value = t('applications.projects.edit');
+  const handleEditProject = (row: any) => {
+    action.value = 'edit';
+    projectInfo.value = { ...cloneDeep(row) };
+    setTimeout(() => {
+      showProjectModal.value = true;
+      modalTitle.value = t('applications.projects.edit');
+    }, 100);
   };
-  const fetchData = async () => {};
+  const handleEdit = (row) => {
+    const path = router.push({
+      name: 'applicationsDetail',
+      query: { id: row.id }
+    });
+  };
+  const fetchData = async () => {
+    try {
+      loading.value = true;
+      const { data } = await queryProjects(queryParams);
+      dataList.value = data?.items || [];
+      total.value = data?.pagination?.total || 0;
+      loading.value = false;
+    } catch (error) {
+      loading.value = false;
+      console.log(error);
+    }
+  };
   const handleFilter = () => {
     fetchData();
   };
@@ -145,13 +216,7 @@
     queryParams.page = 1;
     handleFilter();
   };
-  const handleCheckChange = (checked, id) => {
-    if (checked) {
-      selectedKeys.value.push(id);
-    } else {
-      remove(selectedKeys.value, (val) => val === id);
-    }
-  };
+
   const handleSearch = () => {
     clearTimeout(timer);
     timer = setTimeout(() => {
@@ -186,6 +251,7 @@
       execSucceed();
       queryParams.page = 1;
       selectedKeys.value = [];
+      rowSelection.selectedKeys = [];
       handleFilter();
     } catch (error) {
       console.log(error);
@@ -195,6 +261,7 @@
   const handleDelete = async () => {
     deleteModal({ onOk: handleDeleteConfirm });
   };
+  fetchData();
 </script>
 
 <style lang="less" scoped>

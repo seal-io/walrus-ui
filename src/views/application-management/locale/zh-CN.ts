@@ -24,5 +24,6 @@ export default {
   'applications.projects.create': '新建项目',
   'applications.projects.edit': '编辑基本信息',
   'applications.projects.table.name': '项目名称',
-  'applications.projects.search.holder': '请输入项目名称'
+  'applications.projects.search.holder': '请输入项目名称',
+  'applications.projects.form.label': '标签{index}'
 };
