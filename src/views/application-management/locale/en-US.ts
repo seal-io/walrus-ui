@@ -25,5 +25,6 @@ export default {
   'applications.projects.create': 'New Project',
   'applications.projects.edit': 'Edit Project',
   'applications.projects.table.name': 'Project Name',
-  'applications.projects.search.holder': 'please enter a project name'
+  'applications.projects.search.holder': 'please enter a project name',
+  'applications.projects.form.label': 'Label{index}'
 };

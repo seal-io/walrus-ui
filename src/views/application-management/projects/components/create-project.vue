@@ -39,22 +39,33 @@
           ></a-textarea>
         </a-form-item>
         <a-form-item
-          v-for="(item, index) in labelList"
+          v-for="(item, index) in formData.labelList"
           :key="index"
-          :label="`标签${index + 1}`"
+          :label="$t(`applications.projects.form.label`, { index: index + 1 })"
         >
           <a-input-group style="width: 430px">
-            <a-input></a-input><span style="padding: 0 4px">:</span
-            ><a-input></a-input>
+            <a-input
+              v-model="item.key"
+              placeholder="key"
+              :max-length="50"
+              show-word-limit
+            ></a-input
+            ><span style="padding: 0 4px">:</span
+            ><a-input
+              v-model="item.value"
+              placeholder="value"
+              :max-length="50"
+              show-word-limit
+            ></a-input>
           </a-input-group>
           <a-space class="btn-wrapper">
             <icon-minus-circle
-              v-if="labelList.length > 1"
+              v-if="(formData?.labelList?.length || 0) > 1"
               class="size-20"
               @click="handleDeleteLabel(index)"
             ></icon-minus-circle>
             <icon-plus-circle-fill
-              v-if="index === labelList.length - 1"
+              v-if="index === (formData?.labelList?.length || 0) - 1"
               class="size-20"
               style="margin-left: 5px"
               @click="handleAddLabel"
@@ -88,8 +99,11 @@
 </template>
 
 <script lang="ts" setup>
-  import { ref, reactive } from 'vue';
+  import { ref, reactive, PropType } from 'vue';
+  import { reduce, omit, keys, get } from 'lodash';
   import EditPageFooter from '@/components/edit-page-footer/index.vue';
+  import { createProject, updateProject } from '../api';
+  import { ProjectFormData } from '../config/interface';
 
   const props = defineProps({
     show: {
@@ -103,29 +117,76 @@
       default() {
         return '';
       }
+    },
+    info: {
+      type: Object as PropType<ProjectFormData>,
+      default() {
+        return {};
+      }
+    },
+    action: {
+      type: String as PropType<'create' | 'edit'>,
+      default() {
+        return 'create';
+      }
     }
   });
   const emit = defineEmits(['save', 'update:show', 'reset']);
   const formref = ref();
   const loading = ref(false);
   const submitLoading = ref(false);
-  const formData = reactive({
+  const formData = ref<ProjectFormData>({
     name: '',
-    description: ''
+    description: '',
+    labelList: [{ key: '', value: '' }],
+    labels: {}
   });
-  const labelList = ref([{ label: 'label', value: 'dev' }]);
   const handleCancel = () => {
     emit('update:show', false);
+  };
+  const setLabels = () => {
+    if (formData.value?.labelList?.length) {
+      formData.value.labels = reduce(
+        formData.value.labelList,
+        (obj, item) => {
+          obj[item.key] = item.value;
+          return obj;
+        },
+        {}
+      );
+    } else {
+      formData.value.labels = {};
+    }
+  };
+  const transformlabels = () => {
+    const labelKeys = keys(formData.value.labels);
+    if (labelKeys.length) {
+      formData.value.labelList = labelKeys.map((k) => {
+        return {
+          key: k,
+          value: get(formData.value, `labels.${k}`)
+        };
+      });
+    } else {
+      formData.value.labelList = [];
+    }
   };
   const handleOk = async () => {
     const res = await formref.value?.validate();
     if (!res) {
       try {
+        setLabels();
+        const data = omit(formData.value, ['labelList']);
         submitLoading.value = true;
         // TODO
+        if (props.action === 'create') {
+          await createProject(data);
+        } else {
+          await updateProject(data);
+        }
         setTimeout(() => {
           emit('save');
-        }, 200);
+        }, 100);
         emit('update:show', false);
         submitLoading.value = false;
       } catch (error) {
@@ -134,13 +195,29 @@
     }
   };
   const handleAddLabel = () => {
-    labelList.value.push({ label: 'label1', value: 'dev' });
+    formData.value?.labelList?.push({ key: 'key', value: 'value' });
   };
   const handleDeleteLabel = (index) => {
-    labelList.value.splice(index, 1);
+    const len = formData.value?.labelList?.length || 0;
+    if (len < 2) return;
+    formData.value.labelList?.splice(index, 1);
   };
-  const handleBeforeOpen = () => {};
-  const handleBeforeClose = () => {};
+  const handleBeforeOpen = () => {
+    if (props.action === 'create') {
+      formData.value = {
+        name: '',
+        description: '',
+        labelList: [{ key: '', value: '' }],
+        labels: {}
+      };
+    } else {
+      formData.value = props.info;
+      transformlabels();
+    }
+  };
+  const handleBeforeClose = () => {
+    formref.value.resetFields();
+  };
 </script>
 
 <style lang="less">
