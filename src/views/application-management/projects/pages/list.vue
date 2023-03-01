@@ -81,7 +81,9 @@
             :title="$t('common.table.createTime')"
           >
             <template #cell="{ record }">
-              <span>{{ dayjs(record.createTime).format('YYYY-MM-DD') }}</span>
+              <span>{{
+                dayjs(record.createTime).format('YYYY-MM-DD HH:mm:ss')
+              }}</span>
             </template>
           </a-table-column>
           <a-table-column
@@ -152,7 +154,7 @@
   import { deleteModal, execSucceed } from '@/utils/monitor';
   import useRowSelect from '@/hooks/use-row-select';
   import CreateProjectModal from '../components/create-project.vue';
-  import { ProjectRowData, ProjectFormData } from '../config/interface';
+  import { ProjectRowData } from '../config/interface';
   import { queryProjects } from '../api';
 
   let timer: any = null;

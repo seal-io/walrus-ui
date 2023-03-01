@@ -89,15 +89,7 @@
 
 <script lang="ts" setup>
   import { ref, reactive } from 'vue';
-  import {
-    assignIn,
-    concat,
-    each,
-    includes,
-    map,
-    remove,
-    takeWhile
-  } from 'lodash';
+  import { assignIn, concat, each, includes, map, remove, get } from 'lodash';
   import GroupTitle from '@/components/group-title/index.vue';
   import EditPageFooter from '@/components/edit-page-footer/index.vue';
   import useCallCommon from '@/hooks/use-call-common';
@@ -125,10 +117,21 @@
       connectors: []
     }
   });
+  const setFormDataConnectors = (values) => {
+    each(connectorList.value, (item) => {
+      if (includes(values, item.value)) {
+        formData.value?.edges?.connectors?.push(item);
+      }
+    });
+  };
   const getItemEnvironmentInfo = async () => {
+    if (!id) return;
     try {
       const { data } = await queryItemEnvironments({ id });
       formData.value = data;
+      formData.value.edges.connectors = [];
+      setFormDataConnectors(get(data, 'connectorIDs') || []);
+      console.log('formData======', formData.value);
     } catch (error) {
       formData.value = {
         name: '',
@@ -162,13 +165,7 @@
   const handleAddConnector = () => {
     showModal.value = true;
   };
-  const setFormDataConnectors = (values) => {
-    each(connectorList.value, (item) => {
-      if (includes(values, item.value)) {
-        formData.value?.edges?.connectors.push(item);
-      }
-    });
-  };
+
   const handleConnectorChange = (values) => {
     formData.value.connectorIDs = concat(formData.value.connectorIDs, values);
     setFormDataConnectors(values);
@@ -200,9 +197,9 @@
   const handleCancel = () => {
     router.back();
   };
-  const init = () => {
+  const init = async () => {
+    await getConnectors();
     getItemEnvironmentInfo();
-    getConnectors();
   };
   init();
 </script>

@@ -76,17 +76,14 @@
   });
   const emits = defineEmits(['delete']);
   const loading = ref(false);
+  const record = ref<any>({});
+  const rowIndex = ref(undefined);
   const selectedKeys = ref([]);
 
-  const handleDeleteConfirm = async (record, rowIndex) => {
+  const handleDeleteConfirm = async () => {
     try {
       loading.value = true;
-      const ids = map(selectedKeys.value, (val) => {
-        return {
-          id: val
-        };
-      });
-      emits('delete', record, rowIndex);
+      emits('delete', record.value, rowIndex.value);
       loading.value = false;
       // execSucceed();
     } catch (error) {
@@ -95,8 +92,10 @@
     }
   };
 
-  const handleDelete = async (record, rowIndex) => {
-    deleteModal({ onOk: handleDeleteConfirm(record, rowIndex) });
+  const handleDelete = async (row, index) => {
+    record.value = row;
+    rowIndex.value = index;
+    deleteModal({ onOk: handleDeleteConfirm });
   };
   onMounted(() => {
     console.log('application list');

@@ -38,7 +38,9 @@
           :title="$t('common.table.createTime')"
         >
           <template #cell="{ record }">
-            <span>{{ record.createTime }}</span>
+            <span>{{
+              dayjs(record.createTime).format('YYYY-MM-DD HH:mm:ss')
+            }}</span>
           </template>
         </a-table-column>
         <a-table-column
@@ -62,6 +64,7 @@
 
 <script lang="ts" setup>
   import { PropType, watchEffect } from 'vue';
+  import dayjs from 'dayjs';
   import useRowSelect from '@/hooks/use-row-select';
   import useCallCommon from '@/hooks/use-call-common';
   import { EnvironmentRow } from '../config/interface';

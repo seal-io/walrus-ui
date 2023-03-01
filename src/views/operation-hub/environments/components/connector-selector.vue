@@ -8,6 +8,7 @@
       allow-search
       size="small"
       style="width: 300px"
+      @change="handleChange"
     >
       <a-option style="display: none"></a-option>
       <a-option
@@ -55,9 +56,11 @@
       }
     }
   });
-  const emits = defineEmits(['confirm', 'update:show', 'change']);
+  const emits = defineEmits(['confirm', 'update:show']);
   const values = ref<string[]>([]);
-
+  const handleChange = () => {
+    console.log('change');
+  };
   const handleConfirm = () => {
     emits('confirm', values.value);
     setTimeout(() => {
