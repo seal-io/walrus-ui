@@ -15,7 +15,11 @@ export const costShareMode = [
   { label: 'Equally split', value: 'equally' },
   { label: 'Proportionally split', value: 'proportionally' }
 ];
-
+export const timeRangeOptions = [
+  { label: 'cost.analyse.datepicker.7days', value: 'now-7d' },
+  { label: 'cost.analyse.datepicker.30days', value: 'now-30d' },
+  { label: 'cost.analyse.datepicker.currentMonth', value: 'now/M' }
+];
 export const DateShortCuts = [
   {
     label: 'cost.analyse.datepicker.7days',

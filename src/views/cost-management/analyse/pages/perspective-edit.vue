@@ -14,6 +14,15 @@
           show-word-limit
         ></a-input>
       </a-form-item>
+      <a-form-item :label="$t('cost.analyse.table.time')">
+        <a-select>
+          <a-option
+            v-for="item in timeRangeOptions"
+            :key="item.value"
+            :label="$t(item.label)"
+          ></a-option>
+        </a-select>
+      </a-form-item>
       <a-form-item label="Group By">
         <a-select v-model="formData.allocationQueries[0].groupBy"> </a-select>
       </a-form-item>
@@ -109,10 +118,11 @@
   import { ref, reactive } from 'vue';
   import { map, each, startsWith } from 'lodash';
   import useCallCommon from '@/hooks/use-call-common';
+  import DateRange from '@/components/date-range/index.vue';
   import GroupTitle from '@/components/group-title/index.vue';
   import EditPageFooter from '@/components/edit-page-footer/index.vue';
   import ConditionFilter from '../components/condition-filter.vue';
-  import { costShareMode } from '../config';
+  import { costShareMode, timeRangeOptions } from '../config';
   import { PerspectiveRowData, FieldsOptions } from '../config/interface';
   import { filtersData } from '../config/testData';
   import {
@@ -131,6 +141,8 @@
   const perspectiveFields = ref<FieldsOptions[]>([]);
   const formData = reactive({
     name: '',
+    startTime: '',
+    endTime: '',
     builtin: false,
     allocationQueries: [
       {
@@ -213,6 +225,7 @@
       console.log(error);
     }
   };
+  const handleDateChange = () => {};
   const init = async () => {
     await getPerspectiveFields();
     getPerspectiveInfo();

@@ -1,6 +1,6 @@
 <template>
   <ComCard top-gap class="application-detail-wrap">
-    <GroupTitle title="项目详情"></GroupTitle>
+    <GroupTitle title="新建应用"></GroupTitle>
     <ModuleCard title="基本信息">
       <template #title>
         <span>基本信息</span>

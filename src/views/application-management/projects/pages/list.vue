@@ -176,6 +176,7 @@
   const handleToggle = (val) => {
     currentView.value = val;
   };
+
   const handleCreateProject = () => {
     action.value = 'create';
     projectInfo.value = {};

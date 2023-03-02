@@ -5,7 +5,7 @@
       shortcuts-position="left"
       :shortcuts="selectShortcut"
       :disabled-date="disabledDate"
-      style="width: 240px"
+      :style="{ width: width }"
       :mode="mode"
       :model-value="[start, end]"
       value-format="YYYY-MM-DD"
@@ -51,6 +51,12 @@
       type: String,
       default() {
         return 'day';
+      }
+    },
+    width: {
+      type: String,
+      default() {
+        return '240px';
       }
     },
     showExtra: {
