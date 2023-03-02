@@ -190,6 +190,7 @@
     }
 
     .arco-input-wrapper {
+      width: 100%;
       background-color: #fff;
     }
   }

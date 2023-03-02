@@ -216,6 +216,10 @@
       }
     }
 
+    .arco-input-wrapper {
+      width: 100%;
+    }
+
     &-title {
       text-align: center;
     }

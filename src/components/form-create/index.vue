@@ -9,20 +9,49 @@
         :label="fm.Label || fm.Name"
         :validate-trigger="['change']"
       >
-        <component
-          :is="formComponents[fm.parentCom]"
-          v-model="formData[fm.Name]"
-        >
-          <template v-if="fm.childCom">
-            <component
-              :is="formComponents[fm.childCom]"
-              v-for="com in fm.Options"
-              :key="com"
-              :value="com"
-              >{{ com }}</component
-            >
-          </template>
-        </component>
+        <div v-if="fm.labelList?.length">
+          <component
+            :is="formComponents[fm.parentCom]"
+            v-for="(sItem, sIndex) in fm.labelList"
+            :key="sIndex"
+            v-model:dataKey="sItem.key"
+            v-model:dataValue="sItem.value"
+            v-model:value="formData[fm.Name]"
+            class="group-item"
+            :label-list="fm.labelList"
+            :position="sIndex"
+            v-bind="fm.props"
+            @add="(obj) => handleAddLabel(obj, fm.labelList)"
+            @delete="handleDeleteLabel(fm.labelList, sIndex)"
+          >
+            <template v-if="fm.childCom">
+              <component
+                :is="formComponents[fm.childCom]"
+                v-for="com in fm.Options"
+                :key="com"
+                :value="com"
+                >{{ com }}</component
+              >
+            </template>
+          </component>
+        </div>
+        <template v-else>
+          <component
+            :is="formComponents[fm.parentCom]"
+            v-bind="fm.props"
+            v-model="formData[fm.Name]"
+          >
+            <template v-if="fm.childCom">
+              <component
+                :is="formComponents[fm.childCom]"
+                v-for="com in fm.Options"
+                :key="com"
+                :value="com"
+                >{{ com }}</component
+              >
+            </template>
+          </component>
+        </template>
       </a-form-item>
       <a-form-item>
         <editPageFooter style="display: flex; margin-top: 0; padding-bottom: 0">
@@ -51,12 +80,23 @@
 </template>
 
 <script lang="ts" setup>
-  import { each, get, map, cloneDeep, sortBy } from 'lodash';
-  import { PropType, reactive, ref, computed, onMounted } from 'vue';
+  import { each, get, map, cloneDeep, sortBy, keys } from 'lodash';
+  import {
+    PropType,
+    reactive,
+    ref,
+    computed,
+    onMounted,
+    watchEffect
+  } from 'vue';
   import axios, { CancelToken } from 'axios';
   import { useI18n } from 'vue-i18n';
   import editPageFooter from '@/components/edit-page-footer/index.vue';
-  import { ComponentSchema, parseComponentSchema } from './config/interface';
+  import {
+    ComponentSchema,
+    parseComponentSchema,
+    LabelListItem
+  } from './config/interface';
   import formComponents from './components';
   import testData from './config/test';
 
@@ -94,6 +134,7 @@
   const emits = defineEmits(['done', 'cancel']);
   const submitLoading = ref(false);
   const formref = ref();
+  const schemaList = ref<ComponentSchema[]>([]);
   const formData = reactive({});
 
   const doSubmit = async () => {
@@ -104,7 +145,38 @@
       formData[item.Name] = get(props.model, item.Name) || item.Default;
     });
   };
-  const schemaList = computed(() => {
+  // List
+  const parseMapstring = (comSchema) => {
+    let labelList: LabelListItem[] = [];
+    const schemaType = get(comSchema, 'Type');
+    if (schemaType === 'map(string)') {
+      const defaultValue = keys(get(comSchema, 'Default') || {});
+      if (defaultValue.length) {
+        labelList = map(defaultValue, (k) => {
+          return {
+            key: k,
+            value: get(comSchema, `Default.${k}`)
+          };
+        });
+      } else {
+        labelList = [{ key: '', value: '' }];
+      }
+    } else if (['list(number)', 'list(string)'].includes(schemaType)) {
+      const defaultValue = get(comSchema, 'Default') || [];
+      if (defaultValue.length) {
+        labelList = map(defaultValue, (val) => {
+          return {
+            label: val,
+            value: val
+          };
+        });
+      } else {
+        labelList = [];
+      }
+    }
+    return labelList;
+  };
+  const setSchemaList = () => {
     const groupOrderMap = {};
     let list = map(props.formSchema, (o, i) => {
       const item = cloneDeep(o);
@@ -112,6 +184,7 @@
       item.order = 10 * (i + 1);
       item.parentCom = get(content, 'component.0');
       item.childCom = get(content, 'component.1');
+      item.labelList = parseMapstring(item);
       item.rules = map(content.rules, (sItem) => {
         sItem.message = t(sItem?.message, { name: item.Label || item.Name });
         return sItem;
@@ -124,8 +197,14 @@
       return item;
     });
     list = sortBy(list, (pItem) => pItem.order);
-    return list;
-  });
+    schemaList.value = list;
+  };
+  const handleAddLabel = (obj, list) => {
+    list.push({ ...obj });
+  };
+  const handleDeleteLabel = (list, index) => {
+    list.splice(index, 1);
+  };
   const handleSubmit = async () => {
     console.log('formData:', formData);
     const res = await formref.value?.validate();
@@ -146,7 +225,9 @@
       }
     }
   };
-
+  watchEffect(() => {
+    setSchemaList();
+  });
   const handleCancel = () => {
     emits('cancel');
   };
@@ -154,3 +235,13 @@
     setFormData();
   });
 </script>
+
+<style lang="less" scoped>
+  .group-item {
+    margin-bottom: 10px;
+
+    &:only-child {
+      margin-bottom: 0;
+    }
+  }
+</style>

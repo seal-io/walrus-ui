@@ -11,8 +11,11 @@
       <a-form-item
         :label="$t('operation.connectors.table.name')"
         field="id"
+        :disabled="!!id"
         :validate-trigger="['change']"
-        :rules="[{ required: true, message: '模板名称必填' }]"
+        :rules="[
+          { required: true, message: $t('operation.templates.rules.name') }
+        ]"
       >
         <a-input
           v-model="formData.id"
@@ -47,7 +50,9 @@
         field="source"
         :label="$t('operation.templates.detail.source')"
         :validate-trigger="['change']"
-        :rules="[{ required: true, message: '模板来源必填' }]"
+        :rules="[
+          { required: true, message: $t('operation.templates.rules.source') }
+        ]"
       >
         <a-input v-model="formData.source"></a-input>
       </a-form-item>
@@ -137,7 +142,6 @@
   const templateSchema = reactive({});
   const formData = reactive({
     id: '',
-    name: 'test',
     description: '',
     source: '',
     version: ''
@@ -169,6 +173,7 @@
         } else {
           await createModules(formData);
         }
+        router.back();
         submitLoading.value = false;
       } catch (error) {
         submitLoading.value = false;

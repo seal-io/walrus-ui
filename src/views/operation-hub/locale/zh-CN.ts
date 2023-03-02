@@ -36,5 +36,7 @@ export default {
   'operation.templates.detail.add': '新建模板',
   'operation.templates.detail.source': '来源',
   'operation.templates.detail.version': '版本',
-  'operation.templates.table.type': '类型'
+  'operation.templates.table.type': '类型',
+  'operation.templates.rules.name': '模板名称必填',
+  'operation.templates.rules.sourece': '模板来源必填'
 };
