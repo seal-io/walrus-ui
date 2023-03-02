@@ -189,7 +189,9 @@
     handleFilter();
   };
   const handleCreate = () => {
-    showAppModal.value = true;
+    router.push({
+      name: 'applicationsEdit'
+    });
   };
   const handleDeleteConfirm = async () => {
     try {

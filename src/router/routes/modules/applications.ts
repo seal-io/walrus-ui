@@ -9,7 +9,7 @@ export default {
   meta: {
     locale: 'navbar.appmanagement',
     requiresAuth: true,
-    order: 1,
+    order: 1
   },
-  children: [...applicationsRoutes, ...projectsRoutes, ...workflowsRoutes],
+  children: [...projectsRoutes, ...applicationsRoutes, ...workflowsRoutes]
 };
