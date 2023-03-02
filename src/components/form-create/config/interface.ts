@@ -1,5 +1,10 @@
 import { FieldRule } from '@arco-design/web-vue';
 
+export interface LabelListItem {
+  key?: string;
+  label?: string;
+  value: string | number;
+}
 export interface ComponentSchema {
   Name: string;
   Type: string;
@@ -20,6 +25,7 @@ export interface ComponentSchema {
   Group?: string;
   props?: object;
   rules?: FieldRule[];
+  labelList?: LabelListItem[];
 }
 
 export const parseComponentSchema = (schema: ComponentSchema) => {
@@ -69,7 +75,7 @@ export const parseComponentSchema = (schema: ComponentSchema) => {
       };
     }
     //  ============Input===========
-    if (!schema.Sensitive) {
+    if (!schema.Sensitive && schema.Type === 'string') {
       return {
         component: ['Input'],
         props: { ...props },
@@ -78,6 +84,15 @@ export const parseComponentSchema = (schema: ComponentSchema) => {
         ]
       };
     }
+  }
+
+  // =====Input group==============
+  if (schema.Type === 'map(string)') {
+    return {
+      component: ['XInputGroup'],
+      props: { ...props },
+      rules: [{ required: schema.Required, message: 'common.form.rule.input' }]
+    };
   }
   // boolean
   if (schema.Type === 'boolean') {

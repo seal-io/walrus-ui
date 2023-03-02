@@ -10,6 +10,7 @@ import {
   CheckboxGroup,
   Switch
 } from '@arco-design/web-vue/es';
+import XInputGroup from './custom-components/x-input-group.vue';
 
 export default {
   Input,
@@ -21,5 +22,6 @@ export default {
   RadioGroup,
   Checkbox,
   CheckboxGroup,
-  Switch
+  Switch,
+  XInputGroup
 };

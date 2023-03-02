@@ -35,6 +35,15 @@ export default [
     Description: '(Optional) Username'
   },
   {
+    Name: 'Env',
+    Type: 'map(string)',
+    Default: { user: 'tom', work: 'web' },
+    Required: false,
+    Sensitive: false,
+    Group: 'user',
+    Description: '(Optional) Username'
+  },
+  {
     Name: 'password',
     Type: 'string',
     Default: 'mysql',

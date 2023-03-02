@@ -60,6 +60,7 @@
       </FilterBox>
       <a-divider :margin="8"></a-divider>
       <a-tabs
+        lazy-load
         default-active-key="currentView"
         :active-key="currentView"
         @change="handleToggle"
