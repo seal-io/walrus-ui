@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="form-create-wrap">
     <a-form ref="formref" :model="formData" auto-label-width>
       <a-form-item
         v-for="fm in schemaList"
@@ -9,7 +9,10 @@
         :label="fm.Label || fm.Name"
         :validate-trigger="['change']"
       >
-        <div v-if="fm.labelList?.length">
+        <div
+          v-if="fm.labelList?.length"
+          style="display: flex; flex-direction: column"
+        >
           <component
             :is="formComponents[fm.parentCom]"
             v-for="(sItem, sIndex) in fm.labelList"
@@ -20,7 +23,7 @@
             class="group-item"
             :label-list="fm.labelList"
             :position="sIndex"
-            v-bind="fm.props"
+            v-bind="{ ...fm.props }"
             @add="(obj) => handleAddLabel(obj, fm.labelList)"
             @delete="handleDeleteLabel(fm.labelList, sIndex)"
           >
@@ -38,16 +41,20 @@
         <template v-else>
           <component
             :is="formComponents[fm.parentCom]"
-            v-bind="fm.props"
+            v-bind="{ ...fm.props }"
             v-model="formData[fm.Name]"
           >
             <template v-if="fm.childCom">
               <component
                 :is="formComponents[fm.childCom]"
+                style="display: none"
+              ></component>
+              <component
+                :is="formComponents[fm.childCom]"
                 v-for="com in fm.Options"
-                :key="com"
-                :value="com"
-                >{{ com }}</component
+                :key="com.label"
+                :value="com.value"
+                >{{ com.value }}</component
               >
             </template>
           </component>
@@ -76,6 +83,7 @@
         </editPageFooter>
       </a-form-item>
     </a-form>
+    <slot></slot>
   </div>
 </template>
 
@@ -99,6 +107,7 @@
   } from './config/interface';
   import formComponents from './components';
   import testData from './config/test';
+  import { parseMapstring, parseOptions } from './config/utils';
 
   const props = defineProps({
     formSchema: {
@@ -145,37 +154,7 @@
       formData[item.Name] = get(props.model, item.Name) || item.Default;
     });
   };
-  // List
-  const parseMapstring = (comSchema) => {
-    let labelList: LabelListItem[] = [];
-    const schemaType = get(comSchema, 'Type');
-    if (schemaType === 'map(string)') {
-      const defaultValue = keys(get(comSchema, 'Default') || {});
-      if (defaultValue.length) {
-        labelList = map(defaultValue, (k) => {
-          return {
-            key: k,
-            value: get(comSchema, `Default.${k}`)
-          };
-        });
-      } else {
-        labelList = [{ key: '', value: '' }];
-      }
-    } else if (['list(number)', 'list(string)'].includes(schemaType)) {
-      const defaultValue = get(comSchema, 'Default') || [];
-      if (defaultValue.length) {
-        labelList = map(defaultValue, (val) => {
-          return {
-            label: val,
-            value: val
-          };
-        });
-      } else {
-        labelList = [];
-      }
-    }
-    return labelList;
-  };
+
   const setSchemaList = () => {
     const groupOrderMap = {};
     let list = map(props.formSchema, (o, i) => {
@@ -185,6 +164,8 @@
       item.parentCom = get(content, 'component.0');
       item.childCom = get(content, 'component.1');
       item.labelList = parseMapstring(item);
+      item.Options = parseOptions(item);
+      item.props = get(content, 'props') || {};
       item.rules = map(content.rules, (sItem) => {
         sItem.message = t(sItem?.message, { name: item.Label || item.Name });
         return sItem;
@@ -198,6 +179,7 @@
     });
     list = sortBy(list, (pItem) => pItem.order);
     schemaList.value = list;
+    console.log('schemaList===', schemaList.value);
   };
   const handleAddLabel = (obj, list) => {
     list.push({ ...obj });
@@ -237,6 +219,12 @@
 </script>
 
 <style lang="less" scoped>
+  .form-create-wrap {
+    :deep(.arco-select-view) {
+      width: 360px;
+    }
+  }
+
   .group-item {
     margin-bottom: 10px;
 

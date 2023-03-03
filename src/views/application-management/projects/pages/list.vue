@@ -1,19 +1,5 @@
 <template>
   <SpinCard borderless top-gap class="projects">
-    <!-- <template #title>
-      <div class="title">
-        <span>{{ $t('applications.projects.menu') }}</span>
-        <a-divider direction="vertical" :margin="10"></a-divider>
-        <icon-apps
-          :class="{ active: currentView === 'thumb' }"
-          @click="handleToggle('thumb')"
-        />
-        <icon-nav
-          :class="{ active: currentView === 'list' }"
-          @click="handleToggle('list')"
-        />
-      </div>
-    </template> -->
     <div class="content">
       <FilterBox style="margin-bottom: 10px">
         <template #params>

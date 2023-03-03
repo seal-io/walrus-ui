@@ -7,6 +7,8 @@ export interface ProjectRowData {
   labels: object;
   createTime: string;
   upateTime: string;
+  label?: string;
+  value?: string;
   edges: {
     applications: AppRowData[];
   };

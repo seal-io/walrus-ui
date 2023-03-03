@@ -5,6 +5,7 @@ export interface LabelListItem {
   label?: string;
   value: string | number;
 }
+
 export interface ComponentSchema {
   Name: string;
   Type: string;
@@ -20,7 +21,7 @@ export interface ComponentSchema {
   max?: number;
   maxLength?: number;
   minLength?: number;
-  Options?: string[];
+  Options?: { label: string; value: string }[];
   Label?: string;
   Group?: string;
   props?: object;
@@ -92,6 +93,18 @@ export const parseComponentSchema = (schema: ComponentSchema) => {
       component: ['XInputGroup'],
       props: { ...props },
       rules: [{ required: schema.Required, message: 'common.form.rule.input' }]
+    };
+  }
+  // ====== select ======
+  if (schema.Type === 'list(number)' || schema.Type === 'list(string)') {
+    return {
+      component: ['Select', 'Option'],
+      props: {
+        ...props,
+        multiple: true,
+        allowCreate: !schema.Options?.length
+      },
+      rules: [{ required: schema.Required, message: 'common.form.rule.select' }]
     };
   }
   // boolean
