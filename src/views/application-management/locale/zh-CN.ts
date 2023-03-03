@@ -9,6 +9,8 @@ export default {
   'applications.applications.table.type': '类型',
   'applications.applications.table.content': '内容',
   'applications.applications.table.target': '目标',
+  'applications.applications.table.instance': '实例',
+  'applications.applications.table.template': '生成模板',
   'applications.applications.table.currentval': '当前值',
   'applications.applications.table.recommendation': '建议值',
   'applications.applications.container.holder': '请选择容器',

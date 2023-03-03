@@ -3,8 +3,12 @@ import qs from 'query-string';
 import { Pagination } from '@/types/global';
 import { AppRowData } from '../config/interface';
 
+export interface ResultType {
+  items: AppRowData[];
+  pagination: Pagination;
+}
 export const queryApplications = (params) => {
-  return axios.get('/applications', {
+  return axios.get<ResultType>('/applications', {
     params,
     paramsSerializer: (obj) => {
       return qs.stringify(obj);

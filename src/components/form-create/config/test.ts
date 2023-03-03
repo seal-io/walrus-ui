@@ -29,9 +29,19 @@ export default [
     Name: 'username',
     Type: 'string',
     Default: 'mysql',
+    ShowIf: '',
     Required: false,
     Sensitive: false,
     Group: 'user',
+    Description: '(Optional) Username'
+  },
+  {
+    Name: 'Port',
+    Type: 'list(number)',
+    Default: [12, 23],
+    Required: false,
+    Sensitive: false,
+    Group: '',
     Description: '(Optional) Username'
   },
   {

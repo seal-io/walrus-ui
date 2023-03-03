@@ -103,11 +103,17 @@
         :title="module.title"
         @delete="handleDeleteModule(index)"
       >
-        <formCreate :form-schema="module.varibles"></formCreate>
+        <formCreate
+          v-if="module?.varibles?.length"
+          action="post"
+          api=""
+          :submit="() => {}"
+          :model="{}"
+          :form-schema="module.varibles"
+        >
+        </formCreate>
+        <div v-else>无相关配置</div>
       </moduleWrapper>
-      <!-- <moduleWrapper title="test module">
-        <formCreate></formCreate>
-      </moduleWrapper> -->
     </a-space>
   </div>
 </template>

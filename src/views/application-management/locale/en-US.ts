@@ -9,6 +9,8 @@ export default {
   'applications.applications.table.type': 'Type',
   'applications.applications.table.content': 'Content',
   'applications.applications.table.target': 'Target',
+  'applications.applications.table.instance': 'Instances',
+  'applications.applications.table.template': 'Generate a template',
   'applications.applications.table.currentval': 'Current Value',
   'applications.applications.table.recommendation': 'Recommendation',
   'applications.applications.container.holder': 'please select a container',

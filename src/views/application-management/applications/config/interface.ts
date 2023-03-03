@@ -2,6 +2,7 @@ export interface AppRowData {
   name: string;
   id: string;
   labels: object;
+  status: string;
   description: string;
   environmentID: string;
   modules: Array<{

@@ -1,18 +1,31 @@
 <template>
   <ComCard top-gap class="applications-list">
-    <FilterBox>
+    <FilterBox style="margin-bottom: 10px">
       <template #params>
         <a-select
           v-model="queryParams.projectId"
           allow-clear
           allow-search
           :options="projectList"
-          style="width: 240px"
+          style="width: 220px"
           :placeholder="$t('applications.projects.search.holder')"
           @clear="handleSearch"
           @change="handleSearch"
         >
         </a-select>
+        <a-input
+          v-model="queryParams.name"
+          allow-clear
+          style="width: 220px"
+          :placeholder="$t('applications.projects.search.holder')"
+          @clear="handleSearch"
+          @change="handleSearch"
+          @press-enter="handleSearch"
+        >
+          <template #prefix>
+            <icon-search />
+          </template>
+        </a-input>
         <a-space style="margin-left: 10px">
           <a-button type="primary" @click="handleSearch">{{
             $t('common.button.search')
@@ -35,7 +48,6 @@
         >
       </template>
     </FilterBox>
-    <a-divider :margin="8"></a-divider>
     <a-table
       column-resizable
       style="margin-bottom: 20px"
@@ -60,12 +72,18 @@
           ellipsis
           tooltip
           :cell-style="{ minWidth: '40px' }"
-          align="center"
-          data-index="createTime"
-          :title="$t('common.table.createTime')"
+          data-index="instances"
+          :title="$t('applications.applications.table.instance')"
         >
-          <template #cell="{ record }">
-            <span>{{ record.createTime }}</span>
+          <template #cell>
+            <a-space :size="4" wrap>
+              <InstanceStatus
+                status="running"
+                label="development"
+              ></InstanceStatus>
+              <InstanceStatus status="warning" label="test"></InstanceStatus>
+              <InstanceStatus status="error" label="prod"></InstanceStatus>
+            </a-space>
           </template>
         </a-table-column>
         <a-table-column
@@ -73,18 +91,12 @@
           tooltip
           :cell-style="{ minWidth: '40px' }"
           align="center"
-          data-index="service"
-          :title="$t('applications.applications.table.service')"
+          data-index="createTime"
+          :title="$t('common.table.createTime')"
         >
-        </a-table-column>
-        <a-table-column
-          ellipsis
-          tooltip
-          :cell-style="{ minWidth: '40px' }"
-          align="center"
-          data-index="status"
-          :title="$t('applications.applications.table.status')"
-        >
+          <template #cell="{ record }">
+            <span>{{ dayjs(record.createTime).locale(locale).fromNow() }}</span>
+          </template>
         </a-table-column>
         <a-table-column
           align="center"
@@ -93,18 +105,37 @@
         >
           <template #cell="{ record }">
             <a-space :size="20">
-              <a-link
-                type="text"
-                size="small"
-                @click="handleClickEdite(record)"
+              <a-tooltip :content="$t('common.button.edit')">
+                <a-link
+                  type="text"
+                  size="small"
+                  @click="handleClickEdite(record)"
+                >
+                  <template #icon><icon-edit class="size-16" /></template>
+                </a-link>
+              </a-tooltip>
+              <a-tooltip
+                :content="$t('applications.applications.history.clone')"
               >
-                <template #icon><icon-edit /></template>
-                {{ $t('common.button.edit') }}
-              </a-link>
-              <!-- <a-link type="text" size="small" :href="handleView(record)">
-                <template #icon><icon-list style="font-size: 16px" /></template>
-                {{ $t('common.button.detail') }}
-              </a-link> -->
+                <a-link type="text" size="small" @click="handleClone(record)">
+                  <template #icon
+                    ><icon-font type="icon-Clone-Cloud" class="size-16"
+                  /></template>
+                </a-link>
+              </a-tooltip>
+              <a-tooltip
+                :content="$t('applications.applications.table.template')"
+              >
+                <a-link
+                  type="text"
+                  size="small"
+                  @click="handleGenerateTemplate(record)"
+                >
+                  <template #icon
+                    ><icon-font type="icon-Template" class="size-16"
+                  /></template>
+                </a-link>
+              </a-tooltip>
             </a-space>
           </template>
         </a-table-column>
@@ -130,40 +161,64 @@
 </template>
 
 <script lang="ts" setup>
-  import { map } from 'lodash';
+  import { map, get } from 'lodash';
+  import dayjs from 'dayjs';
   import { reactive, ref, onMounted } from 'vue';
   import useCallCommon from '@/hooks/use-call-common';
   import { deleteModal, execSucceed } from '@/utils/monitor';
   import useRowSelect from '@/hooks/use-row-select';
   import FilterBox from '@/components/filter-box/index.vue';
+  import { queryProjects } from '../../projects/api';
   import { AppRowData } from '../config/interface';
   import createApplication from '../components/create-application.vue';
+  import { queryApplications } from '../api';
+  import InstanceStatus from '../components/instance-status.vue';
 
   const { rowSelection, selectedKeys, handleSelectChange } = useRowSelect();
-  const { router } = useCallCommon();
+  const { router, locale } = useCallCommon();
   let timer: any = null;
   const loading = ref(false);
   const showAppModal = ref(false);
-  const total = ref(100);
+  const total = ref(0);
   const queryParams = reactive({
-    projectId: '1',
+    projectId: '',
+    name: '',
     page: 1,
     perPage: 10
   });
-  const dataList = ref<AppRowData[]>(
-    Array(10).fill({
-      name: 'app-1',
-      createTime: '2023-02-09',
-      service: 3,
-      status: 'ready'
-    })
-  );
-  const projectList = ref<{ label: string; value: string }[]>([
-    { label: 'project1', value: '1' },
-    { label: 'project2', value: '2' },
-    { label: 'project3', value: '3' }
-  ]);
-  const fetchData = async () => {};
+  const dataList = ref<AppRowData[]>([{ name: 'app-1', status: 'running' }]);
+  const projectList = ref<{ label: string; value: string }[]>([]);
+
+  const getProjectList = async () => {
+    try {
+      const params = {
+        page: 1,
+        perPage: 1000
+      };
+      const { data } = await queryProjects(params);
+      projectList.value = map(data?.items || [], (item) => {
+        item.label = item.name;
+        item.value = item.id;
+        return item;
+      }) as Array<{ label: string; value: string }>;
+      queryParams.projectId = get(projectList.value, '0.value') || '';
+    } catch (error) {
+      projectList.value = [];
+      console.log(error);
+    }
+  };
+  const fetchData = async () => {
+    try {
+      loading.value = true;
+      const { data } = await queryApplications(queryParams);
+      dataList.value = data?.items || [];
+      total.value = data?.pagination?.total || 0;
+      loading.value = false;
+    } catch (error) {
+      loading.value = false;
+      console.log(error);
+    }
+  };
   const handleFilter = () => {
     fetchData();
   };
@@ -213,23 +268,15 @@
       loading.value = false;
     }
   };
-  const handleEdit = (row) => {
-    const path = router.resolve({
-      name: 'applicationsDetail',
-      query: { id: row.id }
-    });
-    return path.href;
-  };
   const handleClickEdite = (row) => {
     router.push({
       name: 'applicationsDetail',
       query: { id: row.id }
     });
   };
-  const handleView = (row) => {
-    // const path = router.resolve({ name: 'eventReport', query: { id: row.id } });
-    // return path.href;
-  };
+  const handleGenerateTemplate = async (row) => {};
+  const handleClone = async (row) => {};
+
   const handleDelete = async () => {
     deleteModal({ onOk: handleDeleteConfirm });
   };
@@ -237,8 +284,12 @@
     queryParams.page = 1;
     handleFilter();
   };
+  const init = async () => {
+    await getProjectList();
+    fetchData();
+  };
   onMounted(() => {
-    console.log('application list');
+    // init();
   });
 </script>
 
