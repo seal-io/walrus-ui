@@ -42,12 +42,6 @@
   import { useAttrs, PropType } from 'vue';
 
   const props = defineProps({
-    data: {
-      type: Object as PropType<{ key: string; value: string }>,
-      default() {
-        return {};
-      }
-    },
     dataKey: {
       type: String,
       default() {

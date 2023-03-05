@@ -6,7 +6,7 @@
         :label="$t('cost.analyse.table.name')"
         field="name"
         validate-trigger="change"
-        :rules="[{ required: true, message: '视角名称必填' }]"
+        :rules="[{ required: true, message: '视图名称必填' }]"
       >
         <a-input
           v-model="formData.name"
@@ -14,11 +14,17 @@
           show-word-limit
         ></a-input>
       </a-form-item>
-      <a-form-item :label="$t('cost.analyse.table.time')">
-        <a-select>
+      <a-form-item
+        :label="$t('cost.analyse.table.time')"
+        field="timeRange"
+        :validate-trigger="['change']"
+        :rules="[{ required: true, message: '时间范围必选' }]"
+      >
+        <a-select v-model="formData.timeRange" @change="handleTimeChange">
           <a-option
             v-for="item in timeRangeOptions"
             :key="item.value"
+            :value="item.value"
             :label="$t(item.label)"
           ></a-option>
         </a-select>
@@ -30,6 +36,7 @@
         <ConditionFilter
           v-model:conditions="formData.allocationQueries[0].filters"
           :perspective-fields="perspectiveFields"
+          :time-range="formData.timeRange"
         ></ConditionFilter>
       </a-form-item>
 
@@ -47,8 +54,57 @@
           v-model:conditions="
             formData.allocationQueries[0].shareCosts[0].filters
           "
+          :time-range="formData.timeRange"
           :perspective-fields="perspectiveFields"
         ></ConditionFilter>
+      </a-form-item>
+
+      <a-form-item
+        label=""
+        field="formData.allocationQueries.0.shareCosts.0.idleCostFilters"
+      >
+        <span class="label">Idle Cost Filters</span>
+        <!-- <a-select
+          v-model="formData.allocationQueries[0].shareCosts[0].idleCostFilters"
+          multiple
+          style="width: 360px"
+          :options="perspectiveFields"
+          placeholder=""
+        ></a-select> -->
+        <a-cascader
+          v-model="formData.allocationQueries[0].shareCosts[0].idleCostFilters"
+          allow-search
+          multiple
+          :max-tag-count="1"
+          :options="perspectiveFields"
+          style="width: 360px"
+          @change="handleCostFilterChange"
+        >
+        </a-cascader>
+      </a-form-item>
+      <a-form-item label="" field="managementCostFilters">
+        <span class="label">Management Cost Filters</span>
+        <!-- <a-select
+          v-model="
+            formData.allocationQueries[0].shareCosts[0].managementCostFilters
+          "
+          multiple
+          style="width: 360px"
+          :options="perspectiveFields"
+          placeholder=""
+        ></a-select> -->
+        <a-cascader
+          v-model="
+            formData.allocationQueries[0].shareCosts[0].managementCostFilters
+          "
+          allow-search
+          multiple
+          :max-tag-count="1"
+          :options="perspectiveFields"
+          style="width: 360px"
+          @change="handleCostFilterChange"
+        >
+        </a-cascader>
       </a-form-item>
       <a-form-item
         label=""
@@ -65,31 +121,6 @@
             >{{ item.label }}</a-radio
           >
         </a-radio-group>
-      </a-form-item>
-      <a-form-item
-        label=""
-        field="formData.allocationQueries.0.shareCosts.0.idleCostFilters"
-      >
-        <span class="label">Idle Cost Filters</span>
-        <a-select
-          v-model="formData.allocationQueries[0].shareCosts[0].idleCostFilters"
-          multiple
-          style="width: 360px"
-          :options="costShareMode"
-          placeholder="Idle Cost"
-        ></a-select>
-      </a-form-item>
-      <a-form-item label="" field="managementCostFilters">
-        <span class="label">Management Cost Filters</span>
-        <a-select
-          v-model="
-            formData.allocationQueries[0].shareCosts[0].managementCostFilters
-          "
-          multiple
-          style="width: 360px"
-          :options="costShareMode"
-          placeholder="Idle Cost"
-        ></a-select>
       </a-form-item>
     </a-form>
     <EditPageFooter>
@@ -115,16 +146,24 @@
 </template>
 
 <script lang="ts" setup>
+  import dayjs from 'dayjs';
   import { ref, reactive } from 'vue';
-  import { map, each, startsWith } from 'lodash';
+  import {
+    map,
+    each,
+    startsWith,
+    find,
+    get,
+    pick,
+    cloneDeep,
+    assignIn
+  } from 'lodash';
   import useCallCommon from '@/hooks/use-call-common';
-  import DateRange from '@/components/date-range/index.vue';
   import GroupTitle from '@/components/group-title/index.vue';
   import EditPageFooter from '@/components/edit-page-footer/index.vue';
   import ConditionFilter from '../components/condition-filter.vue';
-  import { costShareMode, timeRangeOptions } from '../config';
+  import { costShareMode, timeRangeOptions, DateShortCuts } from '../config';
   import { PerspectiveRowData, FieldsOptions } from '../config/interface';
-  import { filtersData } from '../config/testData';
   import {
     queryItemPerspective,
     createPerspective,
@@ -141,9 +180,10 @@
   const perspectiveFields = ref<FieldsOptions[]>([]);
   const formData = reactive({
     name: '',
-    startTime: '',
-    endTime: '',
+    startTime: dayjs().subtract(6, 'day').format('YYYY-MM-DDTHH:mm:ssZ'),
+    endTime: dayjs().subtract(0, 'day').format('YYYY-MM-DDT23:59:59Z'),
     builtin: false,
+    timeRange: 'now-7d',
     allocationQueries: [
       {
         groupBy: '',
@@ -160,21 +200,44 @@
       }
     ]
   });
+
   const handleCancel = () => {
     router.back();
   };
 
+  const setPerspectiveCostFilter = (data, callback) => {
+    const idleCostFilters =
+      get(data, 'allocationQueries.0.shareCosts.0.idleCostFilters') || [];
+    const managementCostFilters =
+      get(data, 'allocationQueries.0.shareCosts.0.managementCostFilters') || [];
+    data.allocationQueries[0].shareCosts[0].idleCostFilters = map(
+      idleCostFilters,
+      callback
+    ) as never[];
+    data.allocationQueries[0].shareCosts[0].managementCostFilters = map(
+      managementCostFilters,
+      callback
+    ) as never[];
+  };
   const handleOk = async () => {
     const res = await formref.value?.validate();
     console.log('formData====', formData);
     if (!res) {
       try {
         submitLoading.value = true;
-        // TODO
+        const data = cloneDeep(formData);
+        data.endTime = 'now';
+        data.startTime = data.timeRange;
+        setPerspectiveCostFilter(data, (val) => {
+          return {
+            connectorID: val
+          };
+        });
+        console.log('formData:', formData);
         if (id) {
-          await updatePerspective({ ...formData, id });
+          await updatePerspective({ ...data, id });
         } else {
-          await createPerspective(formData);
+          await createPerspective(data);
         }
         router.back();
         submitLoading.value = false;
@@ -183,11 +246,17 @@
       }
     }
   };
+
   const getPerspectiveInfo = async () => {
     if (!id) return;
     try {
       const { data } = await queryItemPerspective({ id });
       perspectiveInfo.value = data;
+      assignIn(formData, data);
+      formData.timeRange = formData.startTime;
+      setPerspectiveCostFilter(formData, (item) => {
+        return item.connectorID;
+      });
     } catch (error) {
       perspectiveInfo.value = {};
       console.log(error);
@@ -195,7 +264,10 @@
   };
   const getPerspectiveFields = async () => {
     try {
-      const { data } = await queryPerspectiveFields();
+      const params = {
+        ...pick(formData, ['startTime', 'endTime'])
+      };
+      const { data } = await queryPerspectiveFields(params);
       const list = data?.items || [];
       const labelList: Array<{ label: string; value: string }> = [];
       const fieldList: Array<{ label: string; value: string }> = [];
@@ -212,20 +284,32 @@
           });
         }
       });
-      perspectiveFields.value = [
-        {
-          label: 'Label',
-          value: 'labelGroup',
-          children: [...labelList]
-        },
-        ...fieldList
-      ];
+      const labelGroup = labelList.length
+        ? [
+            {
+              label: 'Label',
+              value: 'labelGroup',
+              children: [...labelList]
+            }
+          ]
+        : [];
+      perspectiveFields.value = [...labelGroup, ...fieldList];
     } catch (error) {
       perspectiveFields.value = [];
       console.log(error);
     }
   };
-  const handleDateChange = () => {};
+  const handleTimeChange = (val) => {
+    const data = find(DateShortCuts, (item) => item.timeControl === val);
+    formData.startTime =
+      get(data, 'value.0') || dayjs().format('YYYY-MM-DDTHH:mm:ssZ');
+    formData.endTime =
+      get(data, 'value.1') || dayjs().format('YYYY-MM-DDT23:59:59Z');
+    getPerspectiveFields();
+  };
+  const handleCostFilterChange = (val) => {
+    console.log('val====', formData);
+  };
   const init = async () => {
     await getPerspectiveFields();
     getPerspectiveInfo();

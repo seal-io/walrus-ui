@@ -109,11 +109,18 @@
           :title="$t('common.table.operation')"
         >
           <template #cell="{ record }">
-            <a-tooltip :content="$t('common.button.detail')">
-              <a-link type="text" size="small" @click="handleView(record)">
-                <template #icon><icon-list class="size-16" /></template>
-              </a-link>
-            </a-tooltip>
+            <a-space :size="20">
+              <a-tooltip :content="$t('common.button.edit')">
+                <a-link type="text" size="small" @click="handleEdit(record)">
+                  <template #icon><icon-edit class="size-16" /></template>
+                </a-link>
+              </a-tooltip>
+              <a-tooltip :content="$t('common.button.detail')">
+                <a-link type="text" size="small" @click="handleView(record)">
+                  <template #icon><icon-list class="size-16" /></template>
+                </a-link>
+              </a-tooltip>
+            </a-space>
           </template>
         </a-table-column>
       </template>
@@ -231,6 +238,14 @@
       console.log(error);
       loading.value = false;
     }
+  };
+  const handleEdit = (row) => {
+    router.push({
+      name: 'costPerspectiveEdit',
+      query: {
+        id: row.id
+      }
+    });
   };
   const handleView = (row) => {
     let routeName = 'costAnalyseAll';

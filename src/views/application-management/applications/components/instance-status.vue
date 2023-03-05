@@ -30,7 +30,7 @@
 
 <style lang="less" scoped>
   .label-wrapper {
-    padding: 4px 2px;
+    padding: 2px;
     background-color: var(--seal-color-bg);
     border-radius: 2px;
 
