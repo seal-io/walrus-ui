@@ -99,11 +99,11 @@
                     <template #icon><icon-edit class="size-16" /></template>
                   </a-link>
                 </a-tooltip>
-                <a-tooltip :content="$t('common.button.detail')">
+                <!-- <a-tooltip :content="$t('common.button.detail')">
                   <a-link type="text" size="small" @click="handleEdit(record)">
                     <template #icon><icon-list class="size-16" /></template>
                   </a-link>
-                </a-tooltip>
+                </a-tooltip> -->
               </a-space>
             </template>
           </a-table-column>
