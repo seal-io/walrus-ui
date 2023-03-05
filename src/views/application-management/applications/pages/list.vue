@@ -245,7 +245,7 @@
   };
   const handleCreate = () => {
     router.push({
-      name: 'applicationsEdit'
+      name: 'applicationsDetail'
     });
   };
   const handleDeleteConfirm = async () => {
