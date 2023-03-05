@@ -1,5 +1,9 @@
 <template>
-  <div class="thumb-item" :class="{ active: active }">
+  <div
+    class="thumb-item"
+    :class="{ active: active }"
+    :style="{ width: `${size}px`, height: `${size}px` }"
+  >
     <a-dropdown
       size="small"
       style="line-height: 30px"
@@ -10,26 +14,20 @@
         <template #icon><icon-more style="font-size: 18px" /></template>
       </a-link>
       <template #content>
-        <a-doption value="edit">
-          <icon-edit style="margin-right: 5px" />{{
-            $t('common.button.edit')
-          }}</a-doption
-        >
-        <a-doption value="delete"
+        <a-doption v-for="item in actions" :key="item.value" :value="item.value"
           ><icon-delete style="margin-right: 5px" />{{
-            $t('common.button.delete')
-          }}</a-doption
-        >
-        <a-doption value="rollback"
-          ><icon-undo style="margin-right: 5px" />{{
-            $t('applications.applications.history.rollback')
+            $t(item.label)
           }}</a-doption
         >
       </template>
     </a-dropdown>
 
-    <span class="name">{{ dataInfo.name }}</span>
-    <span>Env: dev</span>
+    <div class="name"
+      ><slot>{{ dataInfo.name }}</slot></div
+    >
+    <div
+      ><slot name="description">{{ dataInfo.type }}</slot></div
+    >
   </div>
 </template>
 
@@ -37,11 +35,28 @@
   import { PropType } from 'vue';
   import { InstanceData } from '../config/interface';
 
+  type actioneItem = {
+    label: string;
+    value: string;
+    icon: string;
+  };
   const props = defineProps({
+    actions: {
+      type: Array as PropType<actioneItem[]>,
+      default() {
+        return [];
+      }
+    },
     dataInfo: {
       type: Object as PropType<InstanceData>,
       default() {
         return {};
+      }
+    },
+    size: {
+      type: Number,
+      default() {
+        return 100;
       }
     },
     active: {

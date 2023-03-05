@@ -128,8 +128,8 @@
     TemplateRowData,
     Schema
   } from '@/views/operation-hub/templates/config/interface';
-  import moduleWrapper from './module-wrapper.vue';
-  import { instanceConfiguration } from '../config';
+  import moduleWrapper from '../module-wrapper.vue';
+  import { instanceConfiguration } from '../../config';
 
   const formref = ref();
   const formData = ref({});

@@ -1,6 +1,7 @@
 <template>
   <div class="form-create-wrap">
-    <a-form ref="formref" :model="formData" auto-label-width>
+    <a-form ref="formref" :model="formData" auto-label-width :layout="layout">
+      <slot></slot>
       <a-form-item
         v-for="fm in schemaList"
         :key="fm.Name"
@@ -60,7 +61,7 @@
           </component>
         </template>
       </a-form-item>
-      <a-form-item>
+      <a-form-item v-if="showFooter">
         <editPageFooter style="display: flex; margin-top: 0; padding-bottom: 0">
           <template #save>
             <a-button
@@ -83,7 +84,6 @@
         </editPageFooter>
       </a-form-item>
     </a-form>
-    <slot></slot>
   </div>
 </template>
 
@@ -113,7 +113,13 @@
     formSchema: {
       type: Array as PropType<ComponentSchema[]>,
       default() {
-        return testData;
+        return {};
+      }
+    },
+    layout: {
+      type: String as PropType<'horizontal' | 'vertical' | 'inline'>,
+      default() {
+        return 'horizontal';
       }
     },
     submit: {
@@ -123,6 +129,12 @@
       type: String,
       default() {
         return '';
+      }
+    },
+    showFooter: {
+      type: Boolean,
+      default() {
+        return true;
       }
     },
     action: {

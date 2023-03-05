@@ -1,6 +1,6 @@
 <template>
   <div class="x-input">
-    <a-input-group style="width: 360px">
+    <a-input-group :style="{ width: width }">
       <a-input
         :model-value="dataKey"
         placeholder="key"
@@ -52,6 +52,12 @@
       type: String,
       default() {
         return 'value';
+      }
+    },
+    width: {
+      type: String,
+      default() {
+        return '360px';
       }
     },
     labelList: {
@@ -106,7 +112,8 @@
 
 <script lang="ts">
   export default {
-    name: 'XInputGroup'
+    name: 'XInputGroup',
+    inheritAttrs: false
   };
 </script>
 
