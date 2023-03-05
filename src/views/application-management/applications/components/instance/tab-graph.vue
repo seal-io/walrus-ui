@@ -21,7 +21,7 @@
   import '@vue-flow/core/dist/style.css';
   import '@vue-flow/core/dist/theme-default.css';
   import '@vue-flow/controls/dist/style.css';
-  import { initialElements } from '../config/flow-test';
+  import { initialElements } from '../../config/flow-test';
 
   const { onConnect, addEdges } = useVueFlow({
     maxZoom: 4,
@@ -31,7 +31,7 @@
 </script>
 
 <style lang="less">
-  @import url('../config/flow-chart.less');
+  @import url('../../config/flow-chart.less');
 
   .flow-wrapper {
     width: 100%;

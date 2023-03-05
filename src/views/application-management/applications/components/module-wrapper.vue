@@ -23,10 +23,11 @@
 </template>
 
 <script lang="ts" setup>
-  import { ref } from 'vue';
+  import { ref, watchEffect } from 'vue';
   import slTransition from '@/components/sl-transition/index.vue';
   import { deleteModal, execSucceed } from '@/utils/monitor';
   import { propsToAttrMap } from '@vue/shared';
+  import { watch } from 'fs';
 
   const props = defineProps({
     title: {
@@ -34,10 +35,16 @@
       default() {
         return '';
       }
+    },
+    status: {
+      type: Boolean,
+      default() {
+        return false;
+      }
     }
   });
   const emits = defineEmits(['delete']);
-  const isCollapse = ref(false);
+  const isCollapse = ref(props.status);
   const handleCollapse = () => {
     isCollapse.value = !isCollapse.value;
   };
@@ -48,6 +55,9 @@
   const handleDelete = () => {
     deleteModal({ onOk: handleDeleteConfirm });
   };
+  watchEffect(() => {
+    isCollapse.value = props.status;
+  });
 </script>
 
 <style lang="less" scoped>

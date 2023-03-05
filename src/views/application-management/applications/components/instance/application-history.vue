@@ -1,5 +1,5 @@
 <template>
-  <div class="resource-wrap">
+  <div class="history-wrap">
     <a-table
       column-resizable
       style="margin-bottom: 20px"
@@ -12,8 +12,8 @@
           ellipsis
           tooltip
           :cell-style="{ minWidth: '40px' }"
-          data-index="name"
-          :title="$t('applications.applications.table.name')"
+          data-index="version"
+          :title="$t('applications.applications.history.version')"
         >
         </a-table-column>
         <a-table-column
@@ -33,17 +33,8 @@
           tooltip
           :cell-style="{ minWidth: '40px' }"
           align="center"
-          data-index="type"
-          :title="$t('applications.applications.table.type')"
-        >
-        </a-table-column>
-        <a-table-column
-          ellipsis
-          tooltip
-          :cell-style="{ minWidth: '40px' }"
-          align="center"
-          data-index="status"
-          :title="$t('applications.applications.table.status')"
+          data-index="operator"
+          :title="$t('applications.applications.history.operator')"
         >
         </a-table-column>
         <a-table-column
@@ -53,13 +44,13 @@
         >
           <template #cell="{ record }">
             <a-space :size="20">
-              <a-link type="text" size="small" @click="handleEnabled(record)">
+              <a-link type="text" size="small" @click="handleClone(record)">
                 <!-- <template #icon><icon-edit /></template> -->
-                {{ $t('common.button.enabled') }}
+                {{ $t('applications.applications.history.clone') }}
               </a-link>
-              <a-link type="text" size="small" @click="handleDisabled(record)">
+              <a-link type="text" size="small" @click="handleRollback(record)">
                 <!-- <template #icon><icon-list style="font-size: 16px" /></template> -->
-                {{ $t('common.button.disabled') }}
+                {{ $t('applications.applications.history.rollback') }}
               </a-link>
             </a-space>
           </template>
@@ -71,16 +62,16 @@
 
 <script lang="ts" setup>
   import { onMounted, ref } from 'vue';
-  import { InstanceResource } from '../config/interface';
+  import { HistoryData } from '../../config/interface';
 
-  const dataList = ref<InstanceResource[]>([
-    { name: 'mydb', type: 'rds', status: 'ready' },
-    { name: 'configmap', type: 'k8s', status: 'ready' }
+  const dataList = ref<HistoryData[]>([
+    { version: 'v1.0', operator: 'Jackson', createTime: '2023-02-06' },
+    { version: 'v1.2', operator: 'Tomson', createTime: '2023-02-07' }
   ]);
-  const handleEnabled = (row) => {
+  const handleClone = (row) => {
     console.log(row);
   };
-  const handleDisabled = (row) => {
+  const handleRollback = (row) => {
     console.log(row);
   };
   onMounted(() => {

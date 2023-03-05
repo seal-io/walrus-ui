@@ -14,6 +14,7 @@
   .drop-slider-enter-from,
   .drop-slider-leave-to {
     height: 0;
+    overflow: hidden;
   }
 
   .drop-slider-enter-active,

@@ -118,16 +118,16 @@
   import instanceThumb from '../components/instance-thumb.vue';
   import { InstanceData } from '../config/interface';
   import { instanceTabs } from '../config/index';
-  import tabConfiguration from '../components/tab-configuration.vue';
-  import tabResource from '../components/tab-resource.vue';
-  import tabLogs from '../components/tab-logs.vue';
-  import tabOutput from '../components/tab-output.vue';
-  import tabOptimization from '../components/tab-optimization.vue';
-  import tabGraph from '../components/tab-graph.vue';
+  import tabConfiguration from '../components/instance/tab-configuration.vue';
+  import tabResource from '../components/instance/tab-resource.vue';
+  import tabLogs from '../components/instance/tab-logs.vue';
+  import tabOutput from '../components/instance/tab-output.vue';
+  import tabOptimization from '../components/instance/tab-optimization.vue';
+  import tabGraph from '../components/instance/tab-graph.vue';
 
   import createApplication from '../components/create-application.vue';
   import createInstance from '../components/create-instance.vue';
-  import applicationHistory from '../components/application-history.vue';
+  import applicationHistory from '../components/instance/application-history.vue';
 
   const { router, route, t } = useCallCommon();
   const formref = ref();

@@ -2,52 +2,42 @@
   <a-modal
     top="10%"
     :align-center="false"
-    :width="500"
+    :width="600"
     :ok-text="$t('common.button.save')"
     :visible="show"
     :mask-closable="false"
     :body-style="{ 'max-height': '400px', 'overflow': 'auto' }"
     modal-class="oci-modal"
-    :title="$t('applications.applications.detail.createInstance')"
+    title="添加Module"
     @cancel="handleCancel"
     @ok="handleOk"
     @before-open="handleBeforeOpen"
     @before-close="handleBeforeClose"
   >
-    <a-spin :loading="loading" style="width: 100%; text-align: center">
-      <a-form ref="formref" :model="formData" auto-label-width>
-        <a-form-item
-          :disabled="status === 'edit'"
-          :label="$t('applications.applications.table.name')"
-          field="name"
-          validate-trigger="change"
-          :rules="[{ required: true, message: '实例名称必填' }]"
-        >
-          <a-input v-model="formData.name"></a-input>
+    <div>
+      <a-form :model="formData" auto-label-width>
+        <a-form-item label="Name">
+          <a-input></a-input>
         </a-form-item>
-        <a-form-item
-          :disabled="status === 'edit'"
-          :label="$t('applications.applications.detail.env')"
-          field="environment"
-          validate-trigger="change"
-          :rules="[{ required: true, message: '实例部署环境必选' }]"
-        >
-          <a-select
-            v-model="formData.environment"
-            :options="environmentList"
-          ></a-select>
-        </a-form-item>
-        <div style="margin-bottom: 10px; text-align: left">Variables</div>
-        <a-form-item
-          label="Image"
-          field="name"
-          validate-trigger="change"
-          :rules="[{ required: true, message: '实例名称必填' }]"
-        >
-          <a-input v-model="formData.name"></a-input>
+        <a-form-item label="Type">
+          <a-select v-model="formData.module" @change="handleTemplateChange">
+            <a-option v-for="item in templates" :key="item.id"></a-option>
+          </a-select>
         </a-form-item>
       </a-form>
-    </a-spin>
+      <div class="variables">
+        <GroupTitle title="Variables"></GroupTitle>
+        <formCreate
+          action="post"
+          api=""
+          :show-footer="false"
+          :submit="() => {}"
+          :model="{}"
+          :form-schema="moduleInfo.Variables"
+        >
+        </formCreate>
+      </div>
+    </div>
     <template #footer>
       <EditPageFooter>
         <template #save>
@@ -73,8 +63,13 @@
 </template>
 
 <script lang="ts" setup>
-  import { ref, reactive } from 'vue';
+  import { get } from 'lodash';
+  import { ref, reactive, PropType } from 'vue';
   import EditPageFooter from '@/components/edit-page-footer/index.vue';
+  import formCreate from '@/components/form-create/index.vue';
+  import GroupTitle from '@/components/group-title/index.vue';
+  import { TemplateRowData } from '@/views/operation-hub/templates/config/interface';
+  import { emitKeypressEvents } from 'readline';
 
   const props = defineProps({
     show: {
@@ -83,29 +78,30 @@
         return false;
       }
     },
-    status: {
+    action: {
       type: String,
       default() {
         return 'create';
       }
+    },
+    templates: {
+      type: Array as PropType<TemplateRowData[]>,
+      default() {}
     }
   });
-  const emit = defineEmits(['save', 'update:show', 'reset']);
+  const emit = defineEmits(['save', 'update:show', 'reset', 'update:action']);
   const formref = ref();
   const loading = ref(false);
   const submitLoading = ref(false);
+  const moduleInfo = ref<any>({});
   const formData = reactive({
     name: '',
-    environment: ''
+    module: ''
   });
-  const environmentList = ref([
-    { label: 'Development', value: 'dev' },
-    { label: 'Production', value: 'prod' },
-    { label: 'Staging', value: 'stage' }
-  ]);
   const handleCancel = () => {
     emit('update:show', false);
   };
+  const handleTemplateChange = (val) => {};
   const handleOk = async () => {
     const res = await formref.value?.validate();
     if (!res) {
@@ -122,8 +118,15 @@
       }
     }
   };
-  const handleBeforeOpen = () => {};
-  const handleBeforeClose = () => {};
+  const handleBeforeOpen = () => {
+    if (props.action === 'create') {
+      moduleInfo.value = get(props.templates, '0.schema') || {};
+      console.log('moduleInfo====', moduleInfo.value);
+    }
+  };
+  const handleBeforeClose = () => {
+    emit('update:action', 'create');
+  };
 </script>
 
-<style></style>
+<style lang="less" scoped></style>

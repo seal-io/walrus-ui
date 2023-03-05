@@ -15,6 +15,7 @@ export interface AppRowData {
 export interface InstanceData {
   name: string;
   id: string;
+  type: string;
 }
 
 export interface InstanceResource {
