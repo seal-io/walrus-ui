@@ -73,18 +73,24 @@
 
 <script lang="ts" setup>
   import { ref, onMounted, computed, PropType, watch } from 'vue';
-  import { cloneDeep, filter } from 'lodash';
+  import { cloneDeep, filter, find, get } from 'lodash';
   import dayjs from 'dayjs';
-  import { relationOptions, operatorList } from '../config';
+  import { relationOptions, operatorList, DateShortCuts } from '../config';
   import { FilterItem } from '../config/interface';
   import { queryPerspectiveFieldValues } from '../api';
 
   type FilterDataItem = FilterItem[];
   const props = defineProps({
-    filterList: {
+    conditions: {
       type: Array as PropType<FilterDataItem[]>,
       default() {
         return [];
+      }
+    },
+    timeRange: {
+      type: String,
+      default() {
+        return 'now-7d';
       }
     },
     perspectiveFields: {
@@ -140,10 +146,16 @@
     try {
       if (visible && !sItem?.fieldValues?.length && sItem.filterName) {
         sItem.loading = true;
+        const date = find(
+          DateShortCuts,
+          (item) => item.timeControl === props.timeRange
+        );
         const { data } = await queryPerspectiveFieldValues({
           fieldName: sItem.filterName,
-          startTime: dayjs().format('YYYY-MM-25THH:mm:ssZ'),
-          endTime: dayjs().format('YYYY-MM-DDT23:59:59Z')
+          startTime:
+            get(date, 'value.0') || dayjs().format('YYYY-MM-DDTHH:mm:ssZ'),
+          endTime:
+            get(date, 'value.1') || dayjs().format('YYYY-MM-DDT23:59:59Z')
         });
         sItem.fieldValues = data?.items || [];
         sItem.loading = false;
@@ -155,9 +167,9 @@
     }
   };
   watch(
-    () => props.filterList,
+    () => props.conditions,
     () => {
-      filterDataList.value = cloneDeep(props.filterList);
+      filterDataList.value = cloneDeep(props.conditions);
     },
     {
       immediate: true

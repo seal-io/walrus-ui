@@ -104,7 +104,7 @@
           :title="$t('common.table.operation')"
         >
           <template #cell="{ record }">
-            <a-space :size="20">
+            <a-space :size="10">
               <a-tooltip :content="$t('common.button.edit')">
                 <a-link
                   type="text"
