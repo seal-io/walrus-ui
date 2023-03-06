@@ -9,7 +9,7 @@ export interface CostAnalyRow {
 }
 
 export interface FilterItem {
-  filterName: string;
+  fieldName: string;
   operator: string;
   values: string[];
   loading?: boolean;

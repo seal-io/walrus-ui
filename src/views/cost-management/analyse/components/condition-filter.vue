@@ -1,6 +1,6 @@
 <template>
   <div class="condition-filter-wrap">
-    <div class="btn-wrap">
+    <div v-if="filterDataList.length" class="btn-wrap">
       <span class="icon-btn-wrap plus" @click="handleAddORFilter"
         ><icon-plus-circle-fill class="size-20" />OR</span
       >
@@ -27,7 +27,8 @@
             class="condition-item"
           >
             <a-cascader
-              v-model="sItem.filterName"
+              v-model="sItem.fieldName"
+              :error="!sItem.fieldName && triggerValidate"
               allow-search
               :options="perspectiveFields"
               style="flex: 1; width: 220px"
@@ -36,12 +37,14 @@
             </a-cascader>
             <a-select
               v-model="sItem.operator"
+              :error="!sItem.operator && triggerValidate"
               :options="operatorList"
               style="width: 120px"
               @change="handleOperatorChange"
             ></a-select>
             <a-select
               v-model="sItem.values"
+              :error="!sItem?.values?.length && triggerValidate"
               :max-tag-count="2"
               multiple
               :loading="sItem.loading"
@@ -72,8 +75,8 @@
 </template>
 
 <script lang="ts" setup>
-  import { ref, onMounted, computed, PropType, watch } from 'vue';
-  import { cloneDeep, filter, find, get } from 'lodash';
+  import { ref, onMounted, computed, PropType, watch, defineExpose } from 'vue';
+  import { cloneDeep, filter, find, get, some, keys, every } from 'lodash';
   import dayjs from 'dayjs';
   import { relationOptions, operatorList, DateShortCuts } from '../config';
   import { FilterItem } from '../config/interface';
@@ -85,6 +88,12 @@
       type: Array as PropType<FilterDataItem[]>,
       default() {
         return [];
+      }
+    },
+    validate: {
+      type: Boolean,
+      default() {
+        return true;
       }
     },
     timeRange: {
@@ -101,19 +110,25 @@
     }
   });
   const emits = defineEmits(['update:conditions']);
-  const filterDataList = ref<FilterDataItem[]>([
-    // [
-    //   { filterName: 'workload', operator: 'IN', values: ['w1', 'w2'] },
-    //   { filterName: 'workload', operator: 'IN', values: ['w1', 'w2'] }
-    // ],
-    // [{ filterName: 'workload', operator: 'IN', values: ['w1', 'w2'] }],
-    // [{ filterName: 'workload', operator: 'IN', values: ['w1', 'w2'] }]
-  ]);
+  const filterDataList = ref<FilterDataItem[]>([]);
+  const triggerValidate = ref(false);
   const setPolicyData = () => {};
 
+  const fieldVaildator = () => {
+    if (props.validate) {
+      triggerValidate.value = true;
+      const result = every(filterDataList.value, (item) => {
+        return every(item, (s) => {
+          return !!s.fieldName && !!s.operator && !!s?.values?.length;
+        });
+      });
+      return result;
+    }
+    return true;
+  };
   const handleAddFilter = (item) => {
     item.push({
-      filterName: '',
+      fieldName: '',
       operator: '',
       values: []
     });
@@ -125,7 +140,7 @@
   const handleAddORFilter = () => {
     filterDataList.value.push([
       {
-        filterName: '',
+        fieldName: '',
         operator: '',
         values: []
       }
@@ -144,14 +159,15 @@
   };
   const handlePopupVisible = async (visible, sItem) => {
     try {
-      if (visible && !sItem?.fieldValues?.length && sItem.filterName) {
+      if (visible && !sItem?.fieldValues?.length && sItem.fieldName) {
         sItem.loading = true;
         const date = find(
           DateShortCuts,
           (item) => item.timeControl === props.timeRange
         );
         const { data } = await queryPerspectiveFieldValues({
-          fieldName: sItem.filterName,
+          fieldName: sItem.fieldName,
+          fieldType: 'filter',
           startTime:
             get(date, 'value.0') || dayjs().format('YYYY-MM-DDTHH:mm:ssZ'),
           endTime:
@@ -175,6 +191,9 @@
       immediate: true
     }
   );
+  defineExpose({
+    fieldVaildator
+  });
   onMounted(() => {
     setPolicyData();
   });
@@ -207,7 +226,7 @@
   .condition-box {
     position: relative;
     display: flex;
-    min-width: 540px;
+    min-width: 360px;
     padding: 16px;
     border: 1px solid var(--color-border-2);
     border-radius: var(--border-radius-small);

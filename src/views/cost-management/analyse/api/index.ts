@@ -5,12 +5,14 @@ import { PerspectiveRowData } from '../config/interface';
 
 export interface FieldValueType {
   fieldName: string;
+  fieldType: string;
   startTime: string;
   endTime: string;
 }
 export interface FieldsType {
-  startTime: string;
-  endTime: string;
+  startTime?: string;
+  endTime?: string;
+  fieldType: string;
 }
 export interface QueryType extends Pagination {
   name?: string;
@@ -50,7 +52,7 @@ export function queryPerspectiveFieldValues(params: FieldValueType) {
   });
 }
 
-export function queryPerspectiveFields(params?: FieldsType) {
+export function queryPerspectiveFields(params: FieldsType) {
   return axios.get(`/perspectives/_/fields`, {
     params,
     paramsSerializer: (obj) => {

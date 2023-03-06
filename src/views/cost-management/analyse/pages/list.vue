@@ -255,10 +255,6 @@
     if (capitalize(row.name) === 'Project') {
       routeName = 'costAnalyseProject';
     }
-    const sKey = `cost${row.id}`;
-    costManageStore.setFilterInfo({
-      [sKey]: [...cloneDeep(row.allocationQueries)]
-    });
     router.push({ name: routeName, query: { id: row.id } });
   };
   const handleDelete = async () => {

@@ -64,6 +64,7 @@ export default function usePerspectiveCost(props) {
       const params = {
         ...omit(queryParams, ['project']),
         fieldName: 'label:seal.io/project',
+        fieldType: 'filter',
         startTime: dayjs(queryParams.startTime).format('YYYY-MM-DDTHH:mm:ssZ'),
         endTime: dayjs(queryParams.endTime).format('YYYY-MM-DDT23:59:59Z')
       };
