@@ -10,7 +10,12 @@
         />
         <span>{{ title }}</span>
       </span>
-      <icon-delete class="btn" style="font-size: 18px" @click="handleDelete" />
+      <icon-delete
+        v-if="showDelete"
+        class="btn"
+        style="font-size: 18px"
+        @click="handleDelete"
+      />
     </div>
     <slTransition>
       <div v-show="isCollapse">
@@ -40,6 +45,12 @@
       type: Boolean,
       default() {
         return false;
+      }
+    },
+    showDelete: {
+      type: Boolean,
+      default() {
+        return true;
       }
     }
   });

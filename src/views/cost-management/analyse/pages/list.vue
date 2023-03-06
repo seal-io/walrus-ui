@@ -110,7 +110,10 @@
         >
           <template #cell="{ record }">
             <a-space :size="20">
-              <a-tooltip :content="$t('common.button.edit')">
+              <a-tooltip
+                v-if="!record.builtin"
+                :content="$t('common.button.edit')"
+              >
                 <a-link type="text" size="small" @click="handleEdit(record)">
                   <template #icon><icon-edit class="size-16" /></template>
                 </a-link>
@@ -254,6 +257,9 @@
     }
     if (capitalize(row.name) === 'Project') {
       routeName = 'costAnalyseProject';
+    }
+    if (!row.builtin) {
+      routeName = 'costAnalyseCustom';
     }
     router.push({ name: routeName, query: { id: row.id } });
   };

@@ -63,6 +63,19 @@ export default [
     }
   },
   {
+    path: 'cost/perspective-custom',
+    name: 'costAnalyseCustom',
+    component: () =>
+      import('@/views/cost-management/analyse/pages/perspective-custom.vue'),
+    meta: {
+      hideInMenu: true,
+      ignoreCache: true,
+      locale: 'cost.analyse.menu',
+      requiresAuth: true,
+      icon: 'icon-apps'
+    }
+  },
+  {
     path: 'cost/perspective-cluster',
     name: 'costAnalyseCluster',
     component: () =>

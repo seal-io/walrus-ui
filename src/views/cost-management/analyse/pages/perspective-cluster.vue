@@ -360,7 +360,7 @@
     getDailyCostChart();
     getNamespaceCostChart();
     getSummaryData();
-    // getWorkloadCostChart();
+    getWorkloadCostChart();
   };
   const handleClusterChange = (val) => {
     const clusterData = find(clusterList.value, (item) => item.value === val);
@@ -387,7 +387,7 @@
     getDailyCostChart();
     getNamespaceCostChart();
     getSummaryData();
-    // getWorkloadCostChart();
+    getWorkloadCostChart();
   };
   const initData = async () => {
     await getPerspectiveItemInfo();
@@ -396,7 +396,7 @@
     getDailyCostChart();
     getNamespaceCostChart();
     getSummaryData();
-    // getWorkloadCostChart();
+    getWorkloadCostChart();
   };
   watch(
     () => id.value,

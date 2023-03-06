@@ -1,0 +1,252 @@
+<template>
+  <div class="container">
+    <FilterBox style="margin-bottom: 10px">
+      <template #params>
+        <div v-if="isPage"><slot name="select"></slot></div>
+        <div v-if="isPage">
+          <a-select
+            v-model="queryParams.project"
+            :placeholder="$t('cost.analyse.project.holder')"
+            class="border-less"
+            style="width: 200px"
+            :options="projectList"
+            @change="handleProjectChange"
+          >
+            <template #option="{ data }">
+              <a-tooltip :content="data.label" position="top">
+                <span
+                  ><ProviderIcon :provider="data.provider" /><span
+                    style="margin-left: 5px"
+                    >{{ data.label }}</span
+                  ></span
+                >
+              </a-tooltip>
+            </template>
+            <template #empty>
+              <span></span>
+            </template>
+          </a-select>
+        </div>
+        <dateRange
+          v-model:start="queryParams.startTime"
+          v-model:end="queryParams.endTime"
+          :show-extra="false"
+          :short-cuts="DateShortCuts"
+          today-in
+          border-less
+          @change="handleDateChange"
+        ></dateRange>
+        <div><slot name="button"></slot></div>
+      </template>
+      <template #button-group>
+        <a-select
+          v-if="!isPage"
+          v-model="queryParams.project"
+          :placeholder="$t('cost.analyse.project.holder')"
+          class="border-less"
+          style="width: 200px"
+          :options="projectList"
+          @change="handleProjectChange"
+        >
+          <template #option="{ data }">
+            <a-tooltip :content="data.label" position="top">
+              <span
+                ><ProviderIcon :provider="data.provider" /><span
+                  style="margin-left: 5px"
+                  >{{ data.label }}</span
+                ></span
+              >
+            </a-tooltip>
+          </template>
+          <template #empty>
+            <span></span>
+          </template>
+        </a-select>
+        <div><slot name="view-btn"></slot></div>
+      </template>
+    </FilterBox>
+    <SpinCard
+      :loading="overviewloading || preloading"
+      :title="projectName || 'Project'"
+      borderless
+      style="margin-bottom: 10px"
+    >
+      <a-grid :cols="24" :col-gap="20">
+        <a-grid-item
+          v-for="(item, index) in summaryData"
+          :key="index"
+          :span="{ lg: 12, md: 12, sm: 12, xs: 24 }"
+        >
+          <DataCard :precision="3" :title="item.label" :bg-color="item.color">
+            <template #title>
+              <span style="font-weight: 500">{{ item.label }}</span>
+            </template>
+            <template #extra>
+              <span>{{ round(item.value, 4) || 0 }}</span>
+            </template>
+          </DataCard>
+        </a-grid-item>
+      </a-grid>
+    </SpinCard>
+    <SpinCard title="应用消费金额" borderless style="margin-bottom: 10px">
+      <LineBarChart
+        :loading="apploading || preloading"
+        height="220px"
+        show-type="line"
+        :line-list="projectCostChart.line"
+        :data-config="projectCostChart.dataConfig"
+        :x-axis="projectCostChart.xAxis"
+        :config-options="{
+          title: {
+            ...title
+          },
+          legend: {
+            right: 'center',
+            top: 0
+          },
+          grid: {
+            ...grid,
+            top: 40
+          }
+        }"
+      ></LineBarChart>
+      <TableList
+        time-range="single"
+        :loadeend="loadeend"
+        :filter-params="{ ...projectCostFilters }"
+        :columns="projectCostCols"
+        source="project"
+        style="margin-top: 20px"
+      ></TableList>
+    </SpinCard>
+  </div>
+</template>
+
+<script lang="ts" setup>
+  import { set, get, find, map, each, round } from 'lodash';
+  import { reactive, ref, computed, onMounted, watch } from 'vue';
+  import useCallCommon from '@/hooks/use-call-common';
+  import DateRange from '@/components/date-range/index.vue';
+  import DataCard from '@/components/data-card/index.vue';
+  import LineBarChart from '@/components/line-bar-chart/index.vue';
+  import FilterBox from '@/components/filter-box/index.vue';
+  import TableList from '../components/table-list.vue';
+  import {
+    clusterCostOverview,
+    resourceCostOverview,
+    projectCostCols,
+    DateShortCuts
+  } from '../config';
+  import usePerspectiveProject from '../hooks/use-perspective-project';
+
+  const props = defineProps({
+    viewId: {
+      type: String,
+      default() {
+        return '';
+      }
+    },
+    source: {
+      type: String,
+      default() {
+        return '';
+      }
+    },
+    isPage: {
+      type: Boolean,
+      default() {
+        return false;
+      }
+    }
+  });
+  const title = {
+    text: '',
+    left: 'center',
+    top: 8,
+    textStyle: {
+      color: 'rgb(78,89,105)',
+      fontSize: 12
+    }
+  };
+  const grid = {
+    left: 10,
+    right: 10,
+    top: 20,
+    bottom: 0,
+    containLabel: true
+  };
+  const {
+    getPerspectiveItemInfo,
+    getProjectCostChart,
+    getSummaryData,
+    getProjectList,
+    projectList,
+    projectCostFilters,
+    projectCostChart,
+    summaryData,
+    projectName,
+    queryParams,
+    projectloading,
+    apploading,
+    loading,
+    id,
+    overviewloading
+  } = usePerspectiveProject(props);
+  const { t } = useCallCommon();
+  const loadeend = ref(false);
+  const clusterOptions = [
+    { label: 'project-1', value: 'project1' },
+    { label: 'project-2', value: 'project' }
+  ];
+
+  const preloading = computed(() => {
+    return projectloading.value || loading.value;
+  });
+  const handleDateChange = async () => {
+    await getProjectList();
+    projectCostFilters.value = {
+      ...projectCostFilters.value,
+      ...queryParams
+    };
+    getProjectCostChart();
+    getSummaryData();
+  };
+  const handleProjectChange = (val) => {
+    const projectData = find(projectList.value, (item) => item.value === val);
+    projectName.value = projectData?.label || 'Project';
+    each(get(projectCostFilters.value, 'filters') || [], (fItem) => {
+      each(fItem, (sItem) => {
+        sItem.values = [val];
+      });
+    });
+    projectCostFilters.value = {
+      ...projectCostFilters.value,
+      ...queryParams
+    };
+    getProjectCostChart();
+    getSummaryData();
+  };
+  const initData = async () => {
+    await getPerspectiveItemInfo();
+    await getProjectList();
+    loadeend.value = true;
+    getSummaryData();
+    getProjectCostChart();
+  };
+  watch(
+    () => id.value,
+    () => {
+      if (id.value) {
+        initData();
+      }
+    },
+    {
+      immediate: true
+    }
+  );
+  onMounted(() => {
+    // initData();
+  });
+</script>
+
+<style></style>

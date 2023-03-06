@@ -14,6 +14,7 @@
           show-word-limit
         ></a-input>
       </a-form-item>
+      <GroupTitle title="定义过滤条件"></GroupTitle>
       <a-form-item
         :label="$t('cost.analyse.table.time')"
         field="timeRange"
@@ -29,13 +30,33 @@
           ></a-option>
         </a-select>
       </a-form-item>
-      <a-form-item label="Group By">
+      <a-form-item
+        label="分组依据"
+        field="allocationQueries.0.groupBy"
+        :rules="[{ required: true, message: '分组依据不能为空' }]"
+      >
         <a-cascader
           v-model="formData.allocationQueries[0].groupBy"
           allow-search
           :options="groupByList"
           style="width: 360px"
-          @change="handleCostFilterChange"
+          @change="handleGroupByChange"
+        >
+        </a-cascader>
+      </a-form-item>
+      <a-form-item
+        v-if="!groupByDate.includes(formData.allocationQueries[0].groupBy)"
+        label="粒度"
+        :validate-trigger="['change']"
+        field="allocationQueries.0.step"
+        :rules="[{ required: true, message: '粒度不能为空' }]"
+      >
+        <a-cascader
+          v-model="formData.allocationQueries[0].step"
+          allow-search
+          :options="stepList"
+          style="width: 360px"
+          @change="handleStepChange"
         >
         </a-cascader>
       </a-form-item>
@@ -47,11 +68,7 @@
           :time-range="formData.timeRange"
         ></ConditionFilter>
       </a-form-item>
-      <GroupTitle
-        title="Define Share Cost Buckets"
-        :bordered="false"
-        style="margin-bottom: 10px"
-      ></GroupTitle>
+      <GroupTitle title="Define Share Cost Buckets"></GroupTitle>
       <a-form-item label="过滤器">
         <ConditionFilter
           ref="costfilter"
@@ -161,11 +178,13 @@
     pick,
     cloneDeep,
     assignIn,
-    some
+    some,
+    filter
   } from 'lodash';
   import useCallCommon from '@/hooks/use-call-common';
   import GroupTitle from '@/components/group-title/index.vue';
   import EditPageFooter from '@/components/edit-page-footer/index.vue';
+  import moduleWrapper from '@/views/application-management/applications/components/module-wrapper.vue';
   import ConditionFilter from '../components/condition-filter.vue';
   import { costShareMode, timeRangeOptions, DateShortCuts } from '../config';
   import { PerspectiveRowData, FieldsOptions } from '../config/interface';
@@ -181,11 +200,13 @@
   const formref = ref();
   const allfilter = ref();
   const costfilter = ref();
+  const groupByDate = ['day', 'week', 'month', 'year'];
   const perspectiveInfo = ref<any>({});
   const loading = ref(false);
   const submitLoading = ref(false);
   const perspectiveFields = ref<FieldsOptions[]>([]);
   const groupByList = ref<FieldsOptions[]>([]);
+  const stepList = ref<FieldsOptions[]>([]);
   const formData = reactive({
     name: '',
     startTime: dayjs().subtract(6, 'day').format('YYYY-MM-DDTHH:mm:ssZ'),
@@ -326,6 +347,21 @@
       console.log(error);
     }
   };
+  const getPerspectiveStep = async () => {
+    try {
+      const params = {
+        ...pick(formData, ['startTime', 'endTime']),
+        fieldType: 'step'
+      };
+      const { data } = await queryPerspectiveFields(params);
+      const list = data?.items || [];
+      const resultList = generatePerspectiveFields(list);
+      stepList.value = resultList;
+    } catch (error) {
+      stepList.value = [];
+      console.log(error);
+    }
+  };
   const getPerspectiveFields = async () => {
     try {
       const params = {
@@ -349,12 +385,26 @@
       get(data, 'value.1') || dayjs().format('YYYY-MM-DDT23:59:59Z');
     getPerspectiveFields();
     getPerspectiveGroupBy();
+    getPerspectiveStep();
+  };
+  const handleGroupByChange = (val) => {
+    if (!groupByDate.includes(val)) {
+      formData.allocationQueries[0].step = '';
+    }
+  };
+  const handleStepChange = (val) => {
+    if (val) {
+      groupByList.value = filter(groupByList.value, (item) => {
+        return !groupByDate.includes(item.value);
+      });
+    }
   };
   const handleCostFilterChange = (val) => {};
   const init = async () => {
     await getPerspectiveFields();
     getPerspectiveInfo();
     getPerspectiveGroupBy();
+    getPerspectiveStep();
   };
   init();
 </script>
