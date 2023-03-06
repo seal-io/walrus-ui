@@ -20,7 +20,7 @@
             v-for="item in viewList"
             :key="item.value"
             :value="item.value"
-            :label="item.label"
+            :label="item.name"
           ></a-option>
           <template #empty><span></span></template>
         </a-select>
@@ -46,19 +46,21 @@
   import { markRaw, ref, onBeforeUnmount } from 'vue';
   import { find, map, toLower } from 'lodash';
   import useCallCommon from '@/hooks/use-call-common';
+  import { useCostManageStore } from '@/store';
   import perspectiveAll from './perspective-all.vue';
   import perspectiveCluster from './perspective-cluster.vue';
   import perspectiveProject from './perspective-project.vue';
-  import { queryPerspectives } from '../api';
+  import { queryPerspectives, queryPerspectiveFields } from '../api';
 
   const perspectiveMap = {
     all: markRaw(perspectiveAll),
     cluster: markRaw(perspectiveCluster),
-    project: markRaw(perspectiveProject)
+    project: markRaw(perspectiveProject),
+    custom: ''
   };
   const { router } = useCallCommon();
   const loading = ref(false);
-  const viewList = ref<{ value: string; label: string }[]>([]);
+  const viewList = ref<{ value: string; label: string; name: string }[]>([]);
   const viewId = ref('');
   const viewComponent = ref('all');
   const handleViewChange = (val) => {
@@ -72,6 +74,13 @@
       name: 'costAnalyseList'
     });
   };
+  const getPerspectiveFields = async () => {
+    try {
+      const { data } = await queryPerspectiveFields();
+    } catch (error) {
+      console.log(error);
+    }
+  };
   const getViewList = async () => {
     try {
       loading.value = true;
@@ -82,7 +91,7 @@
       const { data } = await queryPerspectives(params);
       const list = data?.items || [];
       viewList.value = map(list, (item) => {
-        item.label = toLower(item.name);
+        item.label = item?.builtin ? toLower(item.name) : 'custom';
         item.value = item.id;
         return item;
       }) as Array<{ value: string; label: string }>;
@@ -100,6 +109,7 @@
     viewId.value = '';
   });
   getViewList();
+  getPerspectiveFields();
 </script>
 
 <style lang="less" scoped>

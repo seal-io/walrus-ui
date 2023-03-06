@@ -40,7 +40,7 @@ export function deleteConnector(data: Array<{ id: string | number }>) {
   return axios.delete(`/connectors`, { data });
 }
 export function reinstallFinOpsTools(data: ConnectorFormData) {
-  return axios.post(`/connectors/${data.id}/reinstall-cost-tools`, data);
+  return axios.post(`/connectors/${data.id}/apply-cost-tools`, data);
 }
 export function syncFinOpsData(data: ConnectorFormData) {
   return axios.post(`/connectors/${data.id}/sync-cost-data`, data);

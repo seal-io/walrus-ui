@@ -63,7 +63,7 @@ export default function usePerspectiveCost(props) {
       projectloading.value = true;
       const params = {
         ...omit(queryParams, ['project']),
-        fieldName: 'label:project',
+        fieldName: 'label:seal.io/project',
         startTime: dayjs(queryParams.startTime).format('YYYY-MM-DDTHH:mm:ssZ'),
         endTime: dayjs(queryParams.endTime).format('YYYY-MM-DDT23:59:59Z')
       };
@@ -179,7 +179,7 @@ export default function usePerspectiveCost(props) {
       queryParams.endTime = get(timeRange, '1');
       const projectFilter = find(
         allocationQueries,
-        (item) => item.groupBy === 'label:app'
+        (item) => item.groupBy === 'label:seal.io/app'
       );
 
       projectCostFilters.value = {

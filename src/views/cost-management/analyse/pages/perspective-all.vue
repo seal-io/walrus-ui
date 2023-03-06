@@ -127,14 +127,12 @@
   import ChartBtn from '@/components/chart-btn/index.vue';
   import TableList from '../components/table-list.vue';
   import {
-    costOverview,
     dailyCostCols,
     costPerClusterCols,
     costPerProjectCols,
     DateShortCuts
   } from '../config';
   import usePerspectiveCost from '../hooks/use-perspective-cost';
-  import useSelectPerspective from '../hooks/use-select-perspective';
 
   const props = defineProps({
     viewId: {
