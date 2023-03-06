@@ -59,8 +59,9 @@
     custom: ''
   };
   const { router } = useCallCommon();
+  const costManageStore = useCostManageStore();
   const loading = ref(false);
-  const viewList = ref<{ value: string; label: string; name: string }[]>([]);
+  const viewList = ref<{ value: string; label: string; name?: string }[]>([]);
   const viewId = ref('');
   const viewComponent = ref('all');
   const handleViewChange = (val) => {
@@ -76,8 +77,15 @@
   };
   const getPerspectiveFields = async () => {
     try {
-      const { data } = await queryPerspectiveFields();
+      const { data } = await queryPerspectiveFields({ fieldType: 'filter' });
+      const list = data?.items || [];
+      costManageStore.setFilterInfo({
+        fieldNameList: list
+      });
     } catch (error) {
+      costManageStore.setFilterInfo({
+        fieldNameList: []
+      });
       console.log(error);
     }
   };

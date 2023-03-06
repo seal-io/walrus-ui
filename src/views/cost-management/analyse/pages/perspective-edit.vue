@@ -30,27 +30,31 @@
         </a-select>
       </a-form-item>
       <a-form-item label="Group By">
-        <a-select v-model="formData.allocationQueries[0].groupBy"> </a-select>
+        <a-cascader
+          v-model="formData.allocationQueries[0].groupBy"
+          allow-search
+          :options="groupByList"
+          style="width: 360px"
+          @change="handleCostFilterChange"
+        >
+        </a-cascader>
       </a-form-item>
       <a-form-item label="过滤器">
         <ConditionFilter
+          ref="allfilter"
           v-model:conditions="formData.allocationQueries[0].filters"
           :perspective-fields="perspectiveFields"
           :time-range="formData.timeRange"
         ></ConditionFilter>
       </a-form-item>
-
-      <a-form-item label="Share Cost">
-        <template #label>
-          <div style="display: flex; align-items: center">
-            <span
-              >Share Cost
-              <a-tooltip content="Define Share Cost Buckets">
-                <icon-info-circle /> </a-tooltip
-            ></span>
-          </div>
-        </template>
+      <GroupTitle
+        title="Define Share Cost Buckets"
+        :bordered="false"
+        style="margin-bottom: 10px"
+      ></GroupTitle>
+      <a-form-item label="过滤器">
         <ConditionFilter
+          ref="costfilter"
           v-model:conditions="
             formData.allocationQueries[0].shareCosts[0].filters
           "
@@ -60,10 +64,9 @@
       </a-form-item>
 
       <a-form-item
-        label=""
+        label="Idle Cost Filters"
         field="formData.allocationQueries.0.shareCosts.0.idleCostFilters"
       >
-        <span class="label">Idle Cost Filters</span>
         <!-- <a-select
           v-model="formData.allocationQueries[0].shareCosts[0].idleCostFilters"
           multiple
@@ -82,8 +85,10 @@
         >
         </a-cascader>
       </a-form-item>
-      <a-form-item label="" field="managementCostFilters">
-        <span class="label">Management Cost Filters</span>
+      <a-form-item
+        label="Management Cost Filters"
+        field="managementCostFilters"
+      >
         <!-- <a-select
           v-model="
             formData.allocationQueries[0].shareCosts[0].managementCostFilters
@@ -107,10 +112,9 @@
         </a-cascader>
       </a-form-item>
       <a-form-item
-        label=""
+        label="Sharing Strategy"
         field="formData.allocationQueries.0.shareCosts.0.sharingStrategy"
       >
-        <span class="label">Sharing Strategy</span>
         <a-radio-group
           v-model="formData.allocationQueries[0].shareCosts[0].sharingStrategy"
         >
@@ -156,7 +160,8 @@
     get,
     pick,
     cloneDeep,
-    assignIn
+    assignIn,
+    some
   } from 'lodash';
   import useCallCommon from '@/hooks/use-call-common';
   import GroupTitle from '@/components/group-title/index.vue';
@@ -174,10 +179,13 @@
   const { t, router, route } = useCallCommon();
   const id = route.query.id as string;
   const formref = ref();
+  const allfilter = ref();
+  const costfilter = ref();
   const perspectiveInfo = ref<any>({});
   const loading = ref(false);
   const submitLoading = ref(false);
   const perspectiveFields = ref<FieldsOptions[]>([]);
+  const groupByList = ref<FieldsOptions[]>([]);
   const formData = reactive({
     name: '',
     startTime: dayjs().subtract(6, 'day').format('YYYY-MM-DDTHH:mm:ssZ'),
@@ -201,6 +209,13 @@
     ]
   });
 
+  const validateFilters = (val, callback) => {
+    console.log('validateFilters=', val);
+    const filters = get(formData, 'allocationQueries.0.filters') || [];
+    if (some(filters, val)) {
+      callback('值不能为空');
+    }
+  };
   const handleCancel = () => {
     router.back();
   };
@@ -219,10 +234,16 @@
       callback
     ) as never[];
   };
-  const handleOk = async () => {
+  const validateForm = async () => {
     const res = await formref.value?.validate();
-    console.log('formData====', formData);
-    if (!res) {
+    const allres = allfilter.value.fieldVaildator();
+    const costres = costfilter.value.fieldVaildator();
+    return !res && allres && costres;
+  };
+  const handleOk = async () => {
+    const res = await validateForm();
+    console.log('formData====', res, formData);
+    if (res) {
       try {
         submitLoading.value = true;
         const data = cloneDeep(formData);
@@ -254,6 +275,7 @@
       perspectiveInfo.value = data;
       assignIn(formData, data);
       formData.timeRange = formData.startTime;
+      console.log('perspectiveInfo===', formData);
       setPerspectiveCostFilter(formData, (item) => {
         return item.connectorID;
       });
@@ -262,38 +284,58 @@
       console.log(error);
     }
   };
-  const getPerspectiveFields = async () => {
+  const generatePerspectiveFields = (list) => {
+    const labelList: Array<{ label: string; value: string }> = [];
+    const fieldList: Array<{ label: string; value: string }> = [];
+    each(list, (o) => {
+      if (startsWith(o.fieldName, 'label:')) {
+        labelList.push({
+          ...o,
+          value: o.fieldName
+        });
+      } else {
+        fieldList.push({
+          ...o,
+          value: o.fieldName
+        });
+      }
+    });
+    const labelGroup = labelList.length
+      ? [
+          {
+            label: 'Label',
+            value: 'labelGroup',
+            children: [...labelList]
+          }
+        ]
+      : [];
+    return [...labelGroup, ...fieldList];
+  };
+  const getPerspectiveGroupBy = async () => {
     try {
       const params = {
-        ...pick(formData, ['startTime', 'endTime'])
+        ...pick(formData, ['startTime', 'endTime']),
+        fieldType: 'groupBy'
       };
       const { data } = await queryPerspectiveFields(params);
       const list = data?.items || [];
-      const labelList: Array<{ label: string; value: string }> = [];
-      const fieldList: Array<{ label: string; value: string }> = [];
-      each(list, (o) => {
-        if (startsWith(o.fieldName, 'label:')) {
-          labelList.push({
-            ...o,
-            value: o.fieldName
-          });
-        } else {
-          fieldList.push({
-            ...o,
-            value: o.fieldName
-          });
-        }
-      });
-      const labelGroup = labelList.length
-        ? [
-            {
-              label: 'Label',
-              value: 'labelGroup',
-              children: [...labelList]
-            }
-          ]
-        : [];
-      perspectiveFields.value = [...labelGroup, ...fieldList];
+      const resultList = generatePerspectiveFields(list);
+      groupByList.value = resultList;
+    } catch (error) {
+      groupByList.value = [];
+      console.log(error);
+    }
+  };
+  const getPerspectiveFields = async () => {
+    try {
+      const params = {
+        ...pick(formData, ['startTime', 'endTime']),
+        fieldType: 'filter'
+      };
+      const { data } = await queryPerspectiveFields(params);
+      const list = data?.items || [];
+      const resultList = generatePerspectiveFields(list);
+      perspectiveFields.value = resultList;
     } catch (error) {
       perspectiveFields.value = [];
       console.log(error);
@@ -306,13 +348,13 @@
     formData.endTime =
       get(data, 'value.1') || dayjs().format('YYYY-MM-DDT23:59:59Z');
     getPerspectiveFields();
+    getPerspectiveGroupBy();
   };
-  const handleCostFilterChange = (val) => {
-    console.log('val====', formData);
-  };
+  const handleCostFilterChange = (val) => {};
   const init = async () => {
     await getPerspectiveFields();
     getPerspectiveInfo();
+    getPerspectiveGroupBy();
   };
   init();
 </script>

@@ -5,7 +5,8 @@ const useCostManageStore = defineStore('costManage', {
     key: 'costManage'
   },
   state: (): any => ({
-    perspectiveList: []
+    perspectiveList: [],
+    fieldNameList: []
   }),
   getters: {
     filterInfo(state: any): any {
