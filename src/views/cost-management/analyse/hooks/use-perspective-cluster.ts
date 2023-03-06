@@ -312,7 +312,7 @@ export default function usePerspectiveCost(props) {
         (item) => item.groupBy === 'namespace'
       );
       dailyCostFilters.value = {
-        ...cloneDeep(dailyFilter),
+        ...cloneDeep({ ...dailyFilter, step: '' }),
         ...queryParams
       };
 

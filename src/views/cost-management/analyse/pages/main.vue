@@ -50,13 +50,14 @@
   import perspectiveAll from './perspective-all.vue';
   import perspectiveCluster from './perspective-cluster.vue';
   import perspectiveProject from './perspective-project.vue';
+  import perspectiveCustom from './perspective-custom.vue';
   import { queryPerspectives, queryPerspectiveFields } from '../api';
 
   const perspectiveMap = {
     all: markRaw(perspectiveAll),
     cluster: markRaw(perspectiveCluster),
     project: markRaw(perspectiveProject),
-    custom: ''
+    custom: markRaw(perspectiveCustom)
   };
   const { router } = useCallCommon();
   const costManageStore = useCostManageStore();

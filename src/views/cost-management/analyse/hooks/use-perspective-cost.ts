@@ -202,7 +202,8 @@ export default function usePerspectiveCost(props) {
       );
       dailyCostFilters.value = {
         ...dailyFilter,
-        ...queryParams
+        ...queryParams,
+        step: ''
       };
       projectCostFilters.value = {
         ...projectFilter,
