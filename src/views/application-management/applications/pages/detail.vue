@@ -18,7 +18,7 @@
             :active="item.id === activeInstance"
             :data-info="item"
             :actions="instanceActions"
-            @edit="handleEditApp('edit')"
+            @delete="handleDeleteInstance('edit')"
             @click="handleClickInstance(item)"
           ></instanceThumb>
           <a-tooltip content="添加应用实例">
@@ -109,7 +109,7 @@
       transformlabels();
     }
   };
-  const handleEditApp = (type) => {};
+  const handleDeleteInstance = (type) => {};
   const handleClickApp = () => {
     activeInstance.value = 'app';
     pgCom.value = 'appDetail';
