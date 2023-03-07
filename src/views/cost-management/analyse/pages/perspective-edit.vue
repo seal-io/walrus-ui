@@ -92,46 +92,30 @@
         label="空闲费用"
         field="formData.allocationQueries.0.shareCosts.0.idleCostFilters"
       >
-        <!-- <a-select
-          v-model="formData.allocationQueries[0].shareCosts[0].idleCostFilters"
-          multiple
-          style="width: 360px"
-          :options="perspectiveFields"
-          placeholder=""
-        ></a-select> -->
-        <a-cascader
+        <a-select
           v-model="formData.allocationQueries[0].shareCosts[0].idleCostFilters"
           allow-search
           multiple
           :max-tag-count="1"
-          :options="perspectiveFields"
+          :options="idleCostFieldList"
           style="width: 360px"
           @change="handleCostFilterChange"
         >
-        </a-cascader>
+        </a-select>
       </a-form-item>
       <a-form-item label="管理费用" field="managementCostFilters">
-        <!-- <a-select
-          v-model="
-            formData.allocationQueries[0].shareCosts[0].managementCostFilters
-          "
-          multiple
-          style="width: 360px"
-          :options="perspectiveFields"
-          placeholder=""
-        ></a-select> -->
-        <a-cascader
+        <a-select
           v-model="
             formData.allocationQueries[0].shareCosts[0].managementCostFilters
           "
           allow-search
           multiple
           :max-tag-count="1"
-          :options="perspectiveFields"
+          :options="idleCostFieldList"
           style="width: 360px"
           @change="handleCostFilterChange"
         >
-        </a-cascader>
+        </a-select>
       </a-form-item>
       <a-form-item
         label="共享策略"
@@ -197,7 +181,8 @@
     queryItemPerspective,
     createPerspective,
     updatePerspective,
-    queryPerspectiveFields
+    queryPerspectiveFields,
+    queryPerspectiveFieldValues
   } from '../api';
 
   const { t, router, route } = useCallCommon();
@@ -212,6 +197,7 @@
   const perspectiveFields = ref<FieldsOptions[]>([]);
   const groupByList = ref<FieldsOptions[]>([]);
   const stepList = ref<FieldsOptions[]>([]);
+  const idleCostFieldList = ref<FieldsOptions[]>([]);
   const formData = reactive({
     name: '',
     startTime: dayjs().subtract(6, 'day').format('YYYY-MM-DDTHH:mm:ssZ'),
@@ -319,6 +305,7 @@
       console.log(error);
     }
   };
+
   const generatePerspectiveFields = (list) => {
     const labelList: Array<{ label: string; value: string }> = [];
     const fieldList: Array<{ label: string; value: string }> = [];
@@ -345,6 +332,29 @@
         ]
       : [];
     return [...labelGroup, ...fieldList];
+  };
+  const getFieldValues = async () => {
+    try {
+      const dateData = find(
+        DateShortCuts,
+        (item) => item.timeControl === formData.timeRange
+      );
+      const params = {
+        endTime:
+          get(dateData, 'value.1') || dayjs().format('YYYY-MM-DDT23:59:59Z'),
+        startTime:
+          get(dateData, 'value.0') || dayjs().format('YYYY-MM-DDTHH:mm:ssZ'),
+        fieldName: 'connector_id',
+        fieldType: 'filter'
+      };
+      const { data } = await queryPerspectiveFieldValues(params);
+      const list = data?.items || [];
+      idleCostFieldList.value = list;
+      console.log('idleCostFieldList;', idleCostFieldList.value);
+    } catch (error) {
+      idleCostFieldList.value = [];
+      console.log(error);
+    }
   };
   const getPerspectiveGroupBy = async () => {
     try {
@@ -406,6 +416,7 @@
     getPerspectiveFields();
     getPerspectiveGroupBy();
     getPerspectiveStep();
+    getFieldValues();
   };
   const handleGroupByChange = (val) => {
     if (!groupByDate.includes(val)) {
@@ -426,6 +437,7 @@
     getPerspectiveInfo();
     getPerspectiveGroupBy();
     getPerspectiveStep();
+    getFieldValues();
   };
   init();
 </script>

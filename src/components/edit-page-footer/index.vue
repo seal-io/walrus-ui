@@ -29,6 +29,12 @@
       default() {
         return 'center';
       }
+    },
+    bordered: {
+      type: Boolean,
+      default() {
+        return false;
+      }
     }
   });
 </script>
