@@ -224,6 +224,7 @@ export default function usePerspectiveCost(props) {
       };
       const { data } = await queryPerspectiveData(params);
       let list = data?.items || [];
+      console.log('workload==1=', list, params);
       // let list = statckLineData;
       workloadCostChart.value = {
         xAxis: [],
@@ -305,7 +306,7 @@ export default function usePerspectiveCost(props) {
 
       const workloadFilter = find(
         allocationQueries,
-        (item) => item.groupBy === 'namespace'
+        (item) => item.groupBy === 'workload'
       );
       const namespaceFilter = find(
         allocationQueries,

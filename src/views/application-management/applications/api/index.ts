@@ -7,8 +7,11 @@ export interface ResultType {
   items: AppRowData[];
   pagination: Pagination;
 }
-export const queryApplications = (params) => {
-  return axios.get<ResultType>('/applications', {
+export interface QueryType extends Pagination {
+  projectId: string;
+}
+export const queryApplications = (params: QueryType) => {
+  return axios.get<ResultType>(`/projects/${params.projectId}/applications`, {
     params,
     paramsSerializer: (obj) => {
       return qs.stringify(obj);

@@ -123,7 +123,7 @@
     router.back();
   };
   const init = async () => {
-    getProjectInfo();
+    // getProjectInfo();
   };
   init();
 </script>

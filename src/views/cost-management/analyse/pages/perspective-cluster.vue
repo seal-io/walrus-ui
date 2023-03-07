@@ -188,7 +188,7 @@
         :loading="workloading || preloading"
         height="220px"
         show-type="line"
-        :line-list="[]"
+        :line-list="workloadCostChart.line"
         :data-config="workloadCostChart.dataConfig"
         :x-axis="workloadCostChart.xAxis"
         :config-options="{
@@ -207,7 +207,9 @@
       ></LineBarChart>
       <!-- TODO -->
       <TableList
+        :filter-params="workloadCostFilters"
         :columns="workLoadCostCols"
+        source="workload"
         style="margin-top: 20px"
       ></TableList>
     </SpinCard>
@@ -265,7 +267,7 @@
   };
   const grid = {
     left: 0,
-    right: 0,
+    right: 10,
     top: 20,
     bottom: 0,
     containLabel: true

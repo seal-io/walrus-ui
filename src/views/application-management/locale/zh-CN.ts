@@ -12,6 +12,8 @@ export default {
   'applications.applications.table.instance': '实例',
   'applications.applications.table.template': '生成模板',
   'applications.applications.table.currentval': '当前值',
+  'applications.applications.table.holder': '请输入应用名称',
+  'applications.applications.project.holder': '请选择项目名称',
   'applications.applications.table.recommendation': '建议值',
   'applications.applications.container.holder': '请选择容器',
   'applications.applications.detail.createInstance': '新建应用实例',

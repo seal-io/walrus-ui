@@ -8,7 +8,7 @@
           allow-search
           :options="projectList"
           style="width: 220px"
-          :placeholder="$t('applications.projects.search.holder')"
+          :placeholder="$t('applications.applications.project.holder')"
           @clear="handleSearch"
           @change="handleSearch"
         >
@@ -17,7 +17,7 @@
           v-model="queryParams.name"
           allow-clear
           style="width: 220px"
-          :placeholder="$t('applications.projects.search.holder')"
+          :placeholder="$t('applications.applications.table.holder')"
           @clear="handleSearch"
           @change="handleSearch"
           @press-enter="handleSearch"
@@ -36,9 +36,19 @@
         </a-space>
       </template>
       <template #button-group>
-        <a-button type="primary" @click="handleCreate">{{
-          $t('applications.applications.create')
-        }}</a-button>
+        <a-dropdown @select="handleCreate">
+          <a-button type="primary"
+            >{{ $t('applications.applications.create')
+            }}<icon-down style="margin-left: 5px"
+          /></a-button>
+          <template #content>
+            <a-doption value="system">{{
+              $t('applications.applications.create')
+            }}</a-doption>
+            <a-doption value="template">从模板创建</a-doption>
+          </template>
+        </a-dropdown>
+
         <a-button
           type="primary"
           status="warning"
@@ -186,7 +196,7 @@
     page: 1,
     perPage: 10
   });
-  const dataList = ref<AppRowData[]>([{ name: 'app-1', status: 'running' }]);
+  const dataList = ref<AppRowData[]>([]);
   const projectList = ref<{ label: string; value: string }[]>([]);
 
   const getProjectList = async () => {
@@ -243,10 +253,13 @@
     queryParams.perPage = pageSize;
     handleFilter();
   };
-  const handleCreate = () => {
-    router.push({
-      name: 'applicationsDetail'
-    });
+  const handleCreate = (type) => {
+    console.log('create:', type);
+    if (type === 'system') {
+      router.push({
+        name: 'applicationsDetail'
+      });
+    }
   };
   const handleDeleteConfirm = async () => {
     try {

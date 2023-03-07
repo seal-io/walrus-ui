@@ -60,7 +60,11 @@
         >
         </a-cascader>
       </a-form-item>
-      <a-form-item label="过滤器">
+      <a-form-item
+        label="过滤器"
+        field="allocationQueries.0.filters"
+        :rules="[{ required: true, message: '过滤器不能为空' }]"
+      >
         <ConditionFilter
           ref="allfilter"
           v-model:conditions="formData.allocationQueries[0].filters"
@@ -68,8 +72,12 @@
           :time-range="formData.timeRange"
         ></ConditionFilter>
       </a-form-item>
-      <GroupTitle title="Define Share Cost Buckets"></GroupTitle>
-      <a-form-item label="过滤器">
+      <GroupTitle title="定义共享费用"></GroupTitle>
+      <a-form-item
+        label="过滤器"
+        field="allocationQueries.shareCosts.0.filters"
+        :rules="[{ required: false, message: '过滤器不能为空' }]"
+      >
         <ConditionFilter
           ref="costfilter"
           v-model:conditions="
@@ -81,7 +89,7 @@
       </a-form-item>
 
       <a-form-item
-        label="Idle Cost Filters"
+        label="空闲费用"
         field="formData.allocationQueries.0.shareCosts.0.idleCostFilters"
       >
         <!-- <a-select
@@ -102,10 +110,7 @@
         >
         </a-cascader>
       </a-form-item>
-      <a-form-item
-        label="Management Cost Filters"
-        field="managementCostFilters"
-      >
+      <a-form-item label="管理费用" field="managementCostFilters">
         <!-- <a-select
           v-model="
             formData.allocationQueries[0].shareCosts[0].managementCostFilters
@@ -129,7 +134,7 @@
         </a-cascader>
       </a-form-item>
       <a-form-item
-        label="Sharing Strategy"
+        label="共享策略"
         field="formData.allocationQueries.0.shareCosts.0.sharingStrategy"
       >
         <a-radio-group

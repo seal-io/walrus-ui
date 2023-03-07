@@ -10,6 +10,8 @@ export default {
   'applications.applications.table.content': 'Content',
   'applications.applications.table.target': 'Target',
   'applications.applications.table.instance': 'Instances',
+  'applications.applications.table.holder': 'please enter an application name',
+  'applications.applications.project.holder': 'please select a project name',
   'applications.applications.table.template': 'Generate a template',
   'applications.applications.table.currentval': 'Current Value',
   'applications.applications.table.recommendation': 'Recommendation',

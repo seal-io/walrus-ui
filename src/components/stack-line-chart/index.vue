@@ -164,6 +164,9 @@
       },
       legend: {
         right: 0,
+        type: 'scroll',
+        orient: 'horizontal',
+        align: 'auto',
         icon: 'circle',
         textStyle: {
           color: '#4E5969'

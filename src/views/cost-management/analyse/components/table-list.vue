@@ -102,6 +102,7 @@
     try {
       loading.value = true;
       const params = {
+        source: props.source,
         ...props.filterParams,
         startTime:
           props.timeRange === 'single'
