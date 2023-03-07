@@ -16,16 +16,18 @@
       @select="handleSelect"
     >
       <template v-if="showExtra" #extra>
-        <div class="date-type-wrapper">
-          <span
-            v-for="item in datePickerMode"
-            :key="item.value"
-            class="item"
-            :class="{ active: timeUnit === item.value }"
-            @click="handleClick(item)"
-            >{{ $t(item.label) }}</span
-          >
-        </div>
+        <slot name="extra">
+          <div class="date-type-wrapper">
+            <span
+              v-for="item in datePickerMode"
+              :key="item.value"
+              class="item"
+              :class="{ active: timeUnit === item.value }"
+              @click="handleClick(item)"
+              >{{ $t(item.label) }}</span
+            >
+          </div>
+        </slot>
       </template>
     </a-range-picker>
   </div>

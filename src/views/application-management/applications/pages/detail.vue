@@ -30,16 +30,6 @@
     <div>
       <component :is="pageComMap[pgCom]"></component>
     </div>
-    <EditPageFooter>
-      <template #save>
-        <a-button
-          type="primary"
-          class="cap-title cancel-btn"
-          @click="handleOk"
-          >{{ $t('common.button.confirm') }}</a-button
-        >
-      </template>
-    </EditPageFooter>
     <createInstance
       v-model:show="showInstanceModal"
       title="创建实例"
@@ -54,14 +44,13 @@
   import useCallCommon from '@/hooks/use-call-common';
   import GroupTitle from '@/components/group-title/index.vue';
   import thumbButton from '@/components/buttons/thumb-button.vue';
-  import EditPageFooter from '@/components/edit-page-footer/index.vue';
   import { queryItemProject } from '@/views/application-management/projects/api';
   import instanceThumb from '../components/instance-thumb.vue';
   import { InstanceData } from '../config/interface';
   import { instanceActions } from '../config/index';
 
-  import AppDetail from '../components/app-info/applicaiton-detail.vue';
-  import InstanceDetail from '../components/instance/instance-detail.vue';
+  import AppDetail from '../components/app-info/index.vue';
+  import InstanceDetail from '../components/instance/index.vue';
   import createInstance from '../components/create-instance.vue';
 
   const { router, route, t } = useCallCommon();

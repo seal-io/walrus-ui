@@ -40,6 +40,24 @@
         <Component :is="instanceTabMap[item.com]"></Component>
       </a-tab-pane>
     </a-tabs>
+    <EditPageFooter>
+      <template #save>
+        <a-button
+          type="primary"
+          class="cap-title cancel-btn"
+          @click="handleOk"
+          >{{ $t('common.button.save') }}</a-button
+        >
+      </template>
+      <template #cancel>
+        <a-button
+          type="outline"
+          class="cap-title cancel-btn"
+          @click="handleCancel"
+          >{{ $t('common.button.cancel') }}</a-button
+        >
+      </template>
+    </EditPageFooter>
     <createInstance
       v-model:show="showInstanceModal"
       title="升级实例"
@@ -51,6 +69,7 @@
 
 <script lang="ts" setup>
   import { markRaw, ref } from 'vue';
+  import useCallCommon from '@/hooks/use-call-common';
   import tabTerminal from '@/components/x-terminal/index.vue';
   import EditPageFooter from '@/components/edit-page-footer/index.vue';
   import tabResource from './tab-resource.vue';
@@ -63,6 +82,7 @@
   import BasicInfo from './basic-info.vue';
   import { instanceTabs } from '../../config';
 
+  const { router, route } = useCallCommon();
   const activeKey = ref('resource');
   const showInstanceModal = ref(false);
   const status = ref('edit');
@@ -83,4 +103,7 @@
     showInstanceModal.value = true;
   };
   const handleOk = () => {};
+  const handleCancel = () => {
+    router.back();
+  };
 </script>

@@ -11,10 +11,11 @@ import {
   reduce,
   cloneDeep,
   keys,
+  concat,
   assignIn
 } from 'lodash';
 import { getTimeRange, projectCostOverview } from '../config';
-import { CostAnalyRow, ChartData } from '../config/interface';
+import { ChartData } from '../config/interface';
 import {
   queryItemPerspective,
   queryPerspectiveData,
@@ -102,7 +103,10 @@ export default function usePerspectiveCost(props) {
           if (obj[item.itemName]) {
             each(keys(item), (k) => {
               if (k !== 'itemName') {
-                obj[item.itemName][k] = [...obj[item.itemName][k], ...item[k]];
+                obj[item.itemName][k] = concat(
+                  get(obj, `${item.itemName}.${k}`),
+                  item[k]
+                );
               }
             });
           } else {

@@ -10,7 +10,11 @@
       position="bl"
       @select="handleClick"
     >
-      <a-link size="mini" style="position: absolute; top: 0; right: 0">
+      <a-link
+        size="mini"
+        style="position: absolute; top: 0; right: 0"
+        @click.stop="() => {}"
+      >
         <template #icon><icon-more style="font-size: 18px" /></template>
       </a-link>
       <template #content>

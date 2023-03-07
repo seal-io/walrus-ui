@@ -257,7 +257,7 @@ export const clusterNamespaceCostCols = [
     cellStyle: { minWidth: '40px' },
     dataIndex: 'cpuCost',
     render({ record }) {
-      return round(record.totalCost, 4) || 0;
+      return round(record.cpuCost, 4) || 0;
     },
     title: 'CPU'
   },
@@ -267,7 +267,7 @@ export const clusterNamespaceCostCols = [
     cellStyle: { minWidth: '40px' },
     dataIndex: 'ramCost',
     render({ record }) {
-      return round(record.totalCost, 4) || 0;
+      return round(record.ramCost, 4) || 0;
     },
     title: 'Memory'
   },
@@ -277,7 +277,7 @@ export const clusterNamespaceCostCols = [
     cellStyle: { minWidth: '40px' },
     dataIndex: 'pvCost',
     render({ record }) {
-      return round(record.totalCost, 4) || 0;
+      return round(record.pvCost, 4) || 0;
     },
     title: 'PV'
   },
@@ -287,7 +287,7 @@ export const clusterNamespaceCostCols = [
     cellStyle: { minWidth: '40px' },
     dataIndex: 'sharedCost',
     render({ record }) {
-      return round(record.totalCost, 4) || 0;
+      return round(record.sharedCost, 4) || 0;
     },
     title: 'Shared'
   },

@@ -1,16 +1,19 @@
 <template>
   <div class="x-input">
     <a-input-group :style="{ width: width }">
-      <a-input
-        :model-value="dataKey"
-        placeholder="key"
-        :max-length="50"
-        v-bind="$attrs"
-        show-word-limit
-        @input="(val) => handleDataChange(val, 'key')"
-        @change="(val) => handleDataChange(val, 'key')"
-      ></a-input
-      ><span style="padding: 0 4px">:</span
+      <a-tooltip :popup-visible="popupvisible" :content="$t('common.form.key')">
+        <a-input
+          :error="isError"
+          :model-value="dataKey"
+          placeholder="key"
+          :max-length="50"
+          v-bind="$attrs"
+          show-word-limit
+          @input="(val) => handleDataChange(val, 'key')"
+          @change="(val) => handleDataChange(val, 'key', 'change')"
+        ></a-input>
+      </a-tooltip>
+      <span style="padding: 0 4px">:</span
       ><a-input
         :model-value="dataValue"
         v-bind="$attrs"
@@ -38,8 +41,8 @@
 </template>
 
 <script lang="ts" setup>
-  import { cloneDeep, reduce } from 'lodash';
-  import { useAttrs, PropType } from 'vue';
+  import { cloneDeep, reduce, get } from 'lodash';
+  import { useAttrs, PropType, ref } from 'vue';
 
   const props = defineProps({
     dataKey: {
@@ -71,6 +74,12 @@
       default() {
         return 0;
       }
+    },
+    value: {
+      type: Object,
+      default() {
+        return {};
+      }
     }
   });
   const emits = defineEmits([
@@ -81,6 +90,8 @@
     'update:dataValue'
   ]);
   const $attrs = useAttrs();
+  const isError = ref(false);
+  const popupvisible = ref(false);
   const getDataObj = () => {
     const result = reduce(
       props.labelList,
@@ -99,13 +110,23 @@
   const handleDeleteLabel = () => {
     emits('delete');
   };
-  const handleDataChange = (val, prop) => {
+  const handleDataChange = (val, prop, type?) => {
+    if (get(props.value, val) && prop === 'key' && type === 'change') {
+      isError.value = true;
+      popupvisible.value = true;
+      setTimeout(() => {
+        popupvisible.value = false;
+      }, 1000);
+      emits('update:dataKey', '');
+      return;
+    }
     if (prop === 'key') {
       emits('update:dataKey', val);
     }
     if (prop === 'value') {
       emits('update:dataValue', val);
     }
+    isError.value = false;
     getDataObj();
   };
 </script>

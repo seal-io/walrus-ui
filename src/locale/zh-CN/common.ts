@@ -54,5 +54,6 @@ export default {
   'common.button.addfile': '添加文件',
   'common.logout.msg': '登出成功',
   'common.form.rule.select': '请选择{name}',
-  'common.form.rule.input': '{name}不能为空'
+  'common.form.rule.input': '{name}不能为空',
+  'common.form.key': '存在相同的key'
 };
