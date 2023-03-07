@@ -90,6 +90,7 @@
     <editModule
       v-model:show="showEditModal"
       :templates="moduleTemplates"
+      @save="handleSaveModule"
     ></editModule>
     <createInstance
       v-model:show="showInstanceModal"
@@ -101,6 +102,7 @@
 
 <script lang="ts" setup>
   import { reactive, ref, computed } from 'vue';
+  import { cloneDeep } from 'lodash';
   import useCallCommon from '@/hooks/use-call-common';
   import thumbButton from '@/components/buttons/thumb-button.vue';
   import { queryModules } from '@/views/operation-hub/templates/api';
@@ -124,6 +126,9 @@
     labels: {},
     project: {
       id: route.params.projectId
+    },
+    environment: {
+      id: 'test'
     },
     modules: []
   }) as AppFormData;
@@ -186,6 +191,11 @@
       submitLoading.value = false;
       console.log(error);
     }
+  };
+  const handleSaveModule = (data) => {
+    appInfo.modules.push({
+      ...cloneDeep(data)
+    });
   };
   const handleCancel = () => {
     router.back();

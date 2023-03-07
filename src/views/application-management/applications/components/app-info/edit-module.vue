@@ -12,14 +12,27 @@
     @cancel="handleCancel"
     @ok="handleOk"
     @before-open="handleBeforeOpen"
+    @open="handleOpened"
     @before-close="handleBeforeClose"
   >
     <div>
       <a-form :model="formData" auto-label-width>
-        <a-form-item label="Name">
-          <a-input></a-input>
+        <a-form-item
+          label="Name"
+          field="name"
+          :rules="[{ required: true, message: '名称必填' }]"
+        >
+          <a-input
+            v-model="formData.name"
+            :max-length="50"
+            show-word-limit
+          ></a-input>
         </a-form-item>
-        <a-form-item label="Type">
+        <a-form-item
+          label="Type"
+          field="module.id"
+          :rules="[{ required: true, message: '类型必选' }]"
+        >
           <a-select v-model="formData.module.id" @change="handleTemplateChange">
             <a-option
               v-for="item in templates"
@@ -45,7 +58,7 @@
       </div>
     </div>
     <template #footer>
-      <EditPageFooter>
+      <EditPageFooter style="margin-top: 0">
         <template #save>
           <a-button
             :loading="submitLoading"
@@ -69,13 +82,12 @@
 </template>
 
 <script lang="ts" setup>
-  import { get, find } from 'lodash';
+  import { get, find, cloneDeep, each, set } from 'lodash';
   import { ref, reactive, PropType } from 'vue';
   import EditPageFooter from '@/components/edit-page-footer/index.vue';
   import formCreate from '@/components/form-create/index.vue';
   import GroupTitle from '@/components/group-title/index.vue';
   import { TemplateRowData } from '@/views/operation-hub/templates/config/interface';
-  import { emitKeypressEvents } from 'readline';
 
   const props = defineProps({
     show: {
@@ -118,12 +130,12 @@
   const handleOk = async () => {
     const res = await formref.value?.validate();
     const moduleForm = await schemaForm.value.getFormData();
-    if (!res) {
+    if (!res && moduleForm) {
       try {
         submitLoading.value = true;
-        // TODO
+        formData.variables = { ...cloneDeep(moduleForm) };
         setTimeout(() => {
-          emit('save');
+          emit('save', formData);
         }, 200);
         emit('update:show', false);
         submitLoading.value = false;
@@ -132,12 +144,24 @@
       }
     }
   };
+  const setFormData = (schemas) => {
+    each(get(schemas, 'Variables'), (item) => {
+      formData.variables[item.Name] = item.Default;
+    });
+  };
   const handleBeforeOpen = () => {
     if (props.action === 'create') {
       moduleInfo.value = get(props.templates, '0.schema') || {};
-      console.log('moduleInfo====', moduleInfo.value, props.templates);
+      formData.module.id = get(props.templates, '0.id') || '';
+
+      // TODO  set variables
+      setTimeout(() => {
+        setFormData(moduleInfo.value);
+      }, 200);
+      console.log('moduleInfo====', moduleInfo.value, formData);
     }
   };
+  const handleOpened = () => {};
   const handleBeforeClose = () => {
     emit('update:action', 'create');
   };

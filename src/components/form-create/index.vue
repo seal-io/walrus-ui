@@ -96,7 +96,8 @@
     ref,
     computed,
     onMounted,
-    watchEffect
+    watchEffect,
+    watch
   } from 'vue';
   import axios, { CancelToken } from 'axios';
   import { useI18n } from 'vue-i18n';
@@ -233,11 +234,20 @@
   watchEffect(() => {
     setSchemaList();
   });
+  watch(
+    () => props.model,
+    () => {
+      setFormData();
+    },
+    {
+      immediate: true
+    }
+  );
   const handleCancel = () => {
     emits('cancel');
   };
   onMounted(() => {
-    setFormData();
+    // setFormData();
   });
 </script>
 
