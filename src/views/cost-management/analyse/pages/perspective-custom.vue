@@ -3,30 +3,6 @@
     <FilterBox style="margin-bottom: 10px">
       <template #params>
         <div v-if="isPage"><slot name="select"></slot></div>
-        <div v-if="isPage">
-          <a-select
-            v-model="queryParams.project"
-            :placeholder="$t('cost.analyse.project.holder')"
-            class="border-less"
-            style="width: 200px"
-            :options="projectList"
-            @change="handleProjectChange"
-          >
-            <template #option="{ data }">
-              <a-tooltip :content="data.label" position="top">
-                <span
-                  ><ProviderIcon :provider="data.provider" /><span
-                    style="margin-left: 5px"
-                    >{{ data.label }}</span
-                  ></span
-                >
-              </a-tooltip>
-            </template>
-            <template #empty>
-              <span></span>
-            </template>
-          </a-select>
-        </div>
         <dateRange
           v-model:start="queryParams.startTime"
           v-model:end="queryParams.endTime"
@@ -39,35 +15,12 @@
         <div><slot name="button"></slot></div>
       </template>
       <template #button-group>
-        <a-select
-          v-if="!isPage"
-          v-model="queryParams.project"
-          :placeholder="$t('cost.analyse.project.holder')"
-          class="border-less"
-          style="width: 200px"
-          :options="projectList"
-          @change="handleProjectChange"
-        >
-          <template #option="{ data }">
-            <a-tooltip :content="data.label" position="top">
-              <span
-                ><ProviderIcon :provider="data.provider" /><span
-                  style="margin-left: 5px"
-                  >{{ data.label }}</span
-                ></span
-              >
-            </a-tooltip>
-          </template>
-          <template #empty>
-            <span></span>
-          </template>
-        </a-select>
         <div><slot name="view-btn"></slot></div>
       </template>
     </FilterBox>
     <SpinCard
       :loading="overviewloading || preloading"
-      :title="projectName || 'Project'"
+      :title="projectName || 'Custom'"
       borderless
       style="margin-bottom: 10px"
     >
@@ -88,7 +41,7 @@
         </a-grid-item>
       </a-grid>
     </SpinCard>
-    <SpinCard title="应用消费金额" borderless style="margin-bottom: 10px">
+    <SpinCard title="消费金额" borderless style="margin-bottom: 10px">
       <LineBarChart
         :loading="apploading || preloading"
         height="220px"
@@ -114,7 +67,7 @@
         time-range="single"
         :loadeend="loadeend"
         :filter-params="{ ...projectCostFilters }"
-        :columns="projectCostCols"
+        :columns="customTableCols"
         source="project"
         style="margin-top: 20px"
       ></TableList>
@@ -131,13 +84,9 @@
   import LineBarChart from '@/components/line-bar-chart/index.vue';
   import FilterBox from '@/components/filter-box/index.vue';
   import TableList from '../components/table-list.vue';
-  import {
-    clusterCostOverview,
-    resourceCostOverview,
-    projectCostCols,
-    DateShortCuts
-  } from '../config';
-  import usePerspectiveProject from '../hooks/use-perspective-project';
+  import { DateShortCuts } from '../config';
+  import usePerspectiveCost from '../hooks/use-perspective-custom';
+  import groupbyData from '../config/groupby-data';
 
   const props = defineProps({
     viewId: {
@@ -179,46 +128,47 @@
     getPerspectiveItemInfo,
     getProjectCostChart,
     getSummaryData,
-    getProjectList,
-    projectList,
     projectCostFilters,
     projectCostChart,
     summaryData,
     projectName,
     queryParams,
-    projectloading,
     apploading,
     loading,
     id,
     overviewloading
-  } = usePerspectiveProject(props);
+  } = usePerspectiveCost(props);
   const { t } = useCallCommon();
   const loadeend = ref(false);
-  const clusterOptions = [
-    { label: 'project-1', value: 'project1' },
-    { label: 'project-2', value: 'project' }
-  ];
 
   const preloading = computed(() => {
-    return projectloading.value || loading.value;
+    return loading.value;
+  });
+  const customTableCols = computed(() => {
+    const groupBy = find(groupbyData, (item) => {
+      return item.fieldName === get(projectCostFilters.value, 'groupBy');
+    });
+    return [
+      {
+        ellipsis: true,
+        tooltip: true,
+        cellStyle: { minWidth: '40px' },
+        dataIndex: 'itemName',
+        title: groupBy?.title || '名称'
+      },
+      {
+        ellipsis: true,
+        tooltip: true,
+        cellStyle: { minWidth: '40px' },
+        dataIndex: 'totalCost',
+        render({ record }) {
+          return round(record.totalCost, 4) || 0;
+        },
+        title: '消费金额'
+      }
+    ];
   });
   const handleDateChange = async () => {
-    await getProjectList();
-    projectCostFilters.value = {
-      ...projectCostFilters.value,
-      ...queryParams
-    };
-    getProjectCostChart();
-    getSummaryData();
-  };
-  const handleProjectChange = (val) => {
-    const projectData = find(projectList.value, (item) => item.value === val);
-    projectName.value = projectData?.label || 'Project';
-    each(get(projectCostFilters.value, 'filters') || [], (fItem) => {
-      each(fItem, (sItem) => {
-        sItem.values = [val];
-      });
-    });
     projectCostFilters.value = {
       ...projectCostFilters.value,
       ...queryParams
@@ -228,7 +178,6 @@
   };
   const initData = async () => {
     await getPerspectiveItemInfo();
-    await getProjectList();
     loadeend.value = true;
     getSummaryData();
     getProjectCostChart();

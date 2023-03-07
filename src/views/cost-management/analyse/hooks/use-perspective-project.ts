@@ -91,6 +91,7 @@ export default function usePerspectiveCost(props) {
     try {
       overviewloading.value = true;
       const params = {
+        ...omit(projectCostFilters.value, 'paging'),
         project: queryParams.project,
         startTime: dayjs(queryParams.startTime).format('YYYY-MM-DDTHH:mm:ssZ'),
         endTime: dayjs(queryParams.endTime).format('YYYY-MM-DDT23:59:59Z')

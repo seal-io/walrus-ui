@@ -85,3 +85,7 @@ export function queryProjectPerspectiveSummary(data: any) {
 export function queryClusterPerspectiveSummary(data: any) {
   return axios.post('/costs/_/summary-cluster-costs', data);
 }
+
+export function queryCustomPerspectiveSummary(data: any) {
+  return axios.post('/costs/_/summary-queried-costs', data);
+}
