@@ -30,7 +30,8 @@ body {
   .content-panel {
     display: flex;
     justify-content: space-between;
-    width: 164px;
+    min-width: 164px;
+    max-width: max-content;
     height: 32px;
     margin-bottom: 4px;
     padding: 0 9px;
@@ -52,6 +53,7 @@ body {
   .tooltip-value {
     display: flex;
     align-items: center;
+    margin-left: 5px;
     color: #1d2129;
     font-weight: bold;
     font-size: 13px;
