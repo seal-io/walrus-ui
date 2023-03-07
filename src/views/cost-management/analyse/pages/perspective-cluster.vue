@@ -205,9 +205,13 @@
           }
         }"
       ></LineBarChart>
-      <!-- TODO -->
       <TableList
-        :filter-params="workloadCostFilters"
+        :filter-params="{
+          ...workloadCostFilters,
+          startTime: dayjs(workloadCostFilters.endTime).format(
+            'YYYY-MM-DDT00:00:00Z'
+          )
+        }"
         :columns="workLoadCostCols"
         source="workload"
         style="margin-top: 20px"
@@ -217,6 +221,7 @@
 </template>
 
 <script lang="ts" setup>
+  import dayjs from 'dayjs';
   import { filter, find, get, each, round } from 'lodash';
   import { reactive, ref, computed, onMounted, watch } from 'vue';
   import useCallCommon from '@/hooks/use-call-common';

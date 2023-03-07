@@ -254,10 +254,12 @@
     handleFilter();
   };
   const handleCreate = (type) => {
-    console.log('create:', type);
     if (type === 'system') {
       router.push({
-        name: 'applicationsDetail'
+        name: 'applicationsDetail',
+        params: {
+          projectId: queryParams.projectId
+        }
       });
     }
   };
@@ -302,7 +304,7 @@
     fetchData();
   };
   onMounted(() => {
-    // init();
+    init();
   });
 </script>
 

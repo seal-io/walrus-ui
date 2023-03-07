@@ -7,7 +7,7 @@
             <a-input v-model="formData.name" style="width: 100%"></a-input>
           </a-form-item>
         </a-col>
-        <a-col :span="12">
+        <a-col v-if="id" :span="12">
           <a-form-item label="创建时间">
             <a-input
               v-model="formData.createTime"
@@ -26,7 +26,7 @@
             ></a-textarea>
           </a-form-item>
         </a-col>
-        <a-col :span="12">
+        <a-col v-if="id" :span="12">
           <a-form-item label="更新时间">
             <a-input
               v-model="formData.updateTime"
@@ -60,6 +60,7 @@
 </template>
 
 <script lang="ts" setup>
+  import useCallCommon from '@/hooks/use-call-common';
   import { assignIn, keys, get, each, map } from 'lodash';
   import { ref, reactive, PropType, watch } from 'vue';
   import xInputGroup from '@/components/form-create/custom-components/x-input-group.vue';
@@ -72,6 +73,8 @@
       }
     }
   });
+  const { route } = useCallCommon();
+  const id = route.query.id as string;
   const formData = reactive({
     name: '',
     createTime: '',

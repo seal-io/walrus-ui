@@ -68,6 +68,24 @@
         <variableForm :key="index" :data-info="item"></variableForm>
       </moduleWrapper>
     </ModuleCard>
+    <EditPageFooter>
+      <template #save>
+        <a-button
+          type="primary"
+          class="cap-title cancel-btn"
+          @click="handleOk"
+          >{{ $t('common.button.save') }}</a-button
+        >
+      </template>
+      <template #cancel>
+        <a-button
+          type="outline"
+          class="cap-title cancel-btn"
+          @click="handleCancel"
+          >{{ $t('common.button.cancel') }}</a-button
+        >
+      </template>
+    </EditPageFooter>
     <editModule
       v-model:show="showEditModal"
       :templates="moduleTemplates"
@@ -82,6 +100,7 @@
 
 <script lang="ts" setup>
   import { reactive, ref, computed } from 'vue';
+  import useCallCommon from '@/hooks/use-call-common';
   import thumbButton from '@/components/buttons/thumb-button.vue';
   import { queryModules } from '@/views/operation-hub/templates/api';
   import EditPageFooter from '@/components/edit-page-footer/index.vue';
@@ -95,6 +114,7 @@
   import { InstanceData } from '../../config/interface';
   import { instanceActions } from '../../config';
 
+  const { router, route } = useCallCommon();
   const appInfo = reactive({
     name: 'app-1',
     labels: {
@@ -149,6 +169,9 @@
     showInstanceModal.value = true;
   };
   const handleOk = () => {};
+  const handleCancel = () => {
+    router.back();
+  };
   getModules();
 </script>
 

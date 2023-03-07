@@ -11,7 +11,8 @@ import {
   reduce,
   keys,
   cloneDeep,
-  assignIn
+  assignIn,
+  concat
 } from 'lodash';
 import {
   clusterCostOverview,
@@ -224,7 +225,7 @@ export default function usePerspectiveCost(props) {
       };
       const { data } = await queryPerspectiveData(params);
       let list = data?.items || [];
-      console.log('workload==1=', list, params);
+      console.log('workload==1=2', list);
       // let list = statckLineData;
       workloadCostChart.value = {
         xAxis: [],
@@ -247,7 +248,10 @@ export default function usePerspectiveCost(props) {
           if (obj[item.itemName]) {
             each(keys(item), (k) => {
               if (k !== 'itemName') {
-                obj[item.itemName][k] = [...obj[item.itemName][k], ...item[k]];
+                obj[item.itemName][k] = concat(
+                  get(obj, `${item.itemName}.${k}`),
+                  item[k]
+                );
               }
             });
           } else {
@@ -276,6 +280,7 @@ export default function usePerspectiveCost(props) {
         }
       );
       workloading.value = false;
+      console.log('workloadCostChart======', workloadCostChart.value);
     } catch (error) {
       workloading.value = false;
       workloadCostChart.value = {
