@@ -20,7 +20,11 @@
             :actions="instanceActions"
             @delete="handleDeleteInstance('edit')"
             @click="handleClickInstance(item)"
-          ></instanceThumb>
+          >
+            <template #description>
+              <span style="font-weight: 700">{{ item.type }}</span>
+            </template>
+          </instanceThumb>
           <a-tooltip content="添加应用实例">
             <thumbButton :size="60" @click="handleAddInstance"></thumbButton>
           </a-tooltip>
@@ -65,9 +69,9 @@
     instanceDetail: markRaw(InstanceDetail)
   };
   const instanseList = ref<InstanceData[]>([
-    { name: 'instance-1', id: '1', type: 'dev' },
-    { name: 'instance-2', id: '2', type: 'staging' },
-    { name: 'instance-3', id: '3', type: 'prod' }
+    // { name: 'instance-1', id: '1', type: 'dev' },
+    // { name: 'instance-2', id: '2', type: 'staging' },
+    // { name: 'instance-3', id: '3', type: 'prod' }
   ]);
   const labelList = ref<{ key: string; value: string }[]>([]);
   const handleAddInstance = () => {
@@ -157,6 +161,7 @@
           display: flex;
           flex-wrap: wrap;
           align-items: center;
+          min-height: 112px;
 
           .thumb-item {
             margin-right: 12px;

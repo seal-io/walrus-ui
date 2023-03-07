@@ -68,6 +68,7 @@
               type="primary"
               size="small"
               class="cap-title"
+              :loading="submitLoading"
               @click="handleSubmit"
               >{{ $t('common.button.save') }}</a-button
             >
@@ -199,6 +200,13 @@
   const handleDeleteLabel = (list, index) => {
     list.splice(index, 1);
   };
+  const getFormData = async () => {
+    const result = await formref.value?.validate();
+    if (!result) {
+      return formData;
+    }
+    return false;
+  };
   const handleSubmit = async () => {
     console.log('formData:', formData);
     const res = await formref.value?.validate();
@@ -219,6 +227,9 @@
       }
     }
   };
+  defineExpose({
+    getFormData
+  });
   watchEffect(() => {
     setSchemaList();
   });

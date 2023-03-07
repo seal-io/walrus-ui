@@ -43,7 +43,7 @@
 
 <script lang="ts" setup>
   import dayjs from 'dayjs';
-  import { map, omit, pick } from 'lodash';
+  import { map, omit, pick, get } from 'lodash';
   import { reactive, ref, onMounted, PropType, watchEffect, watch } from 'vue';
   import FilterBox from '@/components/filter-box/index.vue';
   import { CostAnalyRow, FilterParamsType } from '../config/interface';
@@ -101,15 +101,13 @@
   const fetchData = async () => {
     try {
       loading.value = true;
+      // props.timeRange === 'single'
       const params = {
         source: props.source,
         ...props.filterParams,
-        startTime:
-          props.timeRange === 'single'
-            ? dayjs(props.filterParams.endTime).format('YYYY-MM-DDTHH:mm:ssZ')
-            : dayjs(props.filterParams.startTime).format(
-                'YYYY-MM-DDTHH:mm:ssZ'
-              ),
+        startTime: get(props.filterParams, 'step')
+          ? dayjs(props.filterParams.endTime).format('YYYY-MM-DDT00:00:00Z')
+          : dayjs(props.filterParams.startTime).format('YYYY-MM-DDTHH:mm:ssZ'),
         endTime: dayjs(props.filterParams.endTime).format(
           'YYYY-MM-DDT23:59:59Z'
         ),

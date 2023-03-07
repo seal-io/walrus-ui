@@ -207,10 +207,7 @@
       ></LineBarChart>
       <TableList
         :filter-params="{
-          ...workloadCostFilters,
-          startTime: dayjs(workloadCostFilters.endTime).format(
-            'YYYY-MM-DDT00:00:00Z'
-          )
+          ...workloadCostFilters
         }"
         :columns="workLoadCostCols"
         source="workload"

@@ -9,7 +9,7 @@
           :max-length="50"
           v-bind="$attrs"
           show-word-limit
-          @input="(val) => handleDataChange(val, 'key')"
+          @input="(val) => handleDataChange(val, 'key', 'input')"
           @change="(val) => handleDataChange(val, 'key', 'change')"
         ></a-input>
       </a-tooltip>
@@ -41,7 +41,7 @@
 </template>
 
 <script lang="ts" setup>
-  import { cloneDeep, reduce, get } from 'lodash';
+  import { cloneDeep, reduce, get, hasIn } from 'lodash';
   import { useAttrs, PropType, ref } from 'vue';
 
   const props = defineProps({
@@ -111,12 +111,13 @@
     emits('delete');
   };
   const handleDataChange = (val, prop, type?) => {
-    if (get(props.value, val) && prop === 'key' && type === 'change') {
+    console.log('key>>', val, props.value);
+    if (hasIn(props.value, val) && prop === 'key' && type === 'input') {
       isError.value = true;
       popupvisible.value = true;
       setTimeout(() => {
         popupvisible.value = false;
-      }, 1000);
+      }, 2000);
       emits('update:dataKey', '');
       return;
     }

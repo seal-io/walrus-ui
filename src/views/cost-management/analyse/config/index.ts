@@ -144,9 +144,9 @@ export const dailyCostCols = [
     ellipsis: true,
     tooltip: true,
     cellStyle: { minWidth: '40px' },
-    dataIndex: 'startTime',
+    dataIndex: 'itemName',
     render({ record }) {
-      return dayjs(record.startTime).format('YYYY-MM-DD');
+      return dayjs(record.itemName).format('YYYY-MM-DD');
     },
     title: '日期'
   },
