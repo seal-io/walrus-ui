@@ -18,7 +18,7 @@ import { CostAnalyRow, ChartData } from '../config/interface';
 import {
   queryItemPerspective,
   queryPerspectiveData,
-  queryProjectPerspectiveSummary,
+  queryCustomPerspectiveSummary,
   queryPerspectiveFieldValues
 } from '../api';
 // import testData, { statckLineData } from '../config/testData';
@@ -27,7 +27,6 @@ export default function usePerspectiveCost(props) {
   const { route } = useCallCommon();
   const { query } = route;
   const projectCostFilters = ref<any>({});
-  const projectList = ref<{ label: string; value: string }[]>([]);
   const projectCostChart = ref<ChartData>({
     xAxis: [],
     line: [],
@@ -35,7 +34,6 @@ export default function usePerspectiveCost(props) {
     dataConfig: []
   });
 
-  const projectloading = ref(false);
   const loading = ref(false);
   const apploading = ref(false);
   const overviewloading = ref(false);
@@ -43,8 +41,7 @@ export default function usePerspectiveCost(props) {
   const projectName = ref('');
   const queryParams = reactive({
     startTime: '',
-    endTime: '',
-    project: ''
+    endTime: ''
   });
 
   const overData = ref({});
@@ -58,44 +55,17 @@ export default function usePerspectiveCost(props) {
     });
     return list;
   });
-  const getProjectList = async () => {
-    try {
-      projectloading.value = true;
-      const params = {
-        ...omit(queryParams, ['project']),
-        fieldName: 'label:seal.io/project',
-        fieldType: 'filter',
-        startTime: dayjs(queryParams.startTime).format('YYYY-MM-DDTHH:mm:ssZ'),
-        endTime: dayjs(queryParams.endTime).format('YYYY-MM-DDT23:59:59Z')
-      };
-      const { data } = await queryPerspectiveFieldValues(params);
-      projectList.value = data?.items || [];
-      queryParams.project = get(data, 'items.0.value') || '';
-      projectName.value = get(data, 'items.0.label') || 'Custom Perspective';
-      // set filter value
-      const projectData = get(data, 'items.0') || {};
-      projectName.value = projectData?.label || 'Project';
-      each(get(projectCostFilters.value, 'filters') || [], (fItem) => {
-        each(fItem, (sItem) => {
-          sItem.values = [queryParams.project];
-        });
-      });
-      projectloading.value = false;
-    } catch (error) {
-      projectloading.value = false;
-      projectList.value = [];
-      console.log(error);
-    }
-  };
+
   const getSummaryData = async () => {
     try {
       overviewloading.value = true;
       const params = {
-        project: queryParams.project,
+        ...omit(projectCostFilters.value, 'paging'),
+        ...queryParams,
         startTime: dayjs(queryParams.startTime).format('YYYY-MM-DDTHH:mm:ssZ'),
         endTime: dayjs(queryParams.endTime).format('YYYY-MM-DDT23:59:59Z')
       };
-      const { data } = await queryProjectPerspectiveSummary(params);
+      const { data } = await queryCustomPerspectiveSummary(params);
       overData.value = data || {};
       overviewloading.value = false;
     } catch (error) {
@@ -173,15 +143,13 @@ export default function usePerspectiveCost(props) {
       loading.value = true;
       const id = route.query.id || props.viewId;
       const { data } = await queryItemPerspective({ id });
+      projectName.value = get(data, 'name') || 'Custom';
       const allocationQueries = get(data, 'allocationQueries') || [];
       const startTime = get(data, 'startTime');
       const timeRange = getTimeRange(startTime) || [];
       queryParams.startTime = get(timeRange, '0');
       queryParams.endTime = get(timeRange, '1');
-      const projectFilter = find(
-        allocationQueries,
-        (item) => item.groupBy === 'label:seal.io/app'
-      );
+      const projectFilter = get(allocationQueries, '0') || {};
 
       projectCostFilters.value = {
         ...projectFilter,
@@ -197,14 +165,11 @@ export default function usePerspectiveCost(props) {
     getPerspectiveItemInfo,
     getProjectCostChart,
     getSummaryData,
-    getProjectList,
-    projectList,
     projectCostFilters,
     projectCostChart,
     summaryData,
     projectName,
     queryParams,
-    projectloading,
     apploading,
     id: pageId,
     loading,

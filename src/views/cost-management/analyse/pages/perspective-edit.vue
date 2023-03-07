@@ -347,6 +347,7 @@
       const list = data?.items || [];
       const resultList = generatePerspectiveFields(list);
       groupByList.value = resultList;
+      console.log('groupByList===', JSON.stringify(list));
     } catch (error) {
       groupByList.value = [];
       console.log(error);
