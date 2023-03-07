@@ -52,7 +52,7 @@
       }
     },
     dataInfo: {
-      type: Object as PropType<InstanceData>,
+      type: Object,
       default() {
         return {};
       }

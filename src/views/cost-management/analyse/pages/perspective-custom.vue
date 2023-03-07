@@ -66,7 +66,9 @@
       <TableList
         time-range="single"
         :loadeend="loadeend"
-        :filter-params="{ ...projectCostFilters }"
+        :filter-params="{
+          ...projectCostFilters
+        }"
         :columns="customTableCols"
         source="project"
         style="margin-top: 20px"
@@ -76,6 +78,7 @@
 </template>
 
 <script lang="ts" setup>
+  import dayjs from 'dayjs';
   import { set, get, find, map, each, round } from 'lodash';
   import { reactive, ref, computed, onMounted, watch } from 'vue';
   import useCallCommon from '@/hooks/use-call-common';

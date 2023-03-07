@@ -20,19 +20,25 @@
           <a-input></a-input>
         </a-form-item>
         <a-form-item label="Type">
-          <a-select v-model="formData.module" @change="handleTemplateChange">
-            <a-option v-for="item in templates" :key="item.id"></a-option>
+          <a-select v-model="formData.module.id" @change="handleTemplateChange">
+            <a-option
+              v-for="item in templates"
+              :key="item.id"
+              :value="item.id"
+              >{{ item.id }}</a-option
+            >
           </a-select>
         </a-form-item>
       </a-form>
       <div class="variables">
         <GroupTitle title="Variables"></GroupTitle>
         <formCreate
+          ref="schemaForm"
           action="post"
           api=""
           :show-footer="false"
           :submit="() => {}"
-          :model="{}"
+          :model="formData.variables"
           :form-schema="moduleInfo.Variables"
         >
         </formCreate>
@@ -63,7 +69,7 @@
 </template>
 
 <script lang="ts" setup>
-  import { get } from 'lodash';
+  import { get, find } from 'lodash';
   import { ref, reactive, PropType } from 'vue';
   import EditPageFooter from '@/components/edit-page-footer/index.vue';
   import formCreate from '@/components/form-create/index.vue';
@@ -86,24 +92,32 @@
     },
     templates: {
       type: Array as PropType<TemplateRowData[]>,
-      default() {}
+      default() {
+        return [];
+      }
     }
   });
   const emit = defineEmits(['save', 'update:show', 'reset', 'update:action']);
   const formref = ref();
   const loading = ref(false);
+  const schemaForm = ref();
   const submitLoading = ref(false);
   const moduleInfo = ref<any>({});
   const formData = reactive({
     name: '',
-    module: ''
+    module: { id: '' },
+    variables: {}
   });
   const handleCancel = () => {
     emit('update:show', false);
   };
-  const handleTemplateChange = (val) => {};
+  const handleTemplateChange = (val) => {
+    const moduleData = find(props.templates, (item) => item.id === val);
+    moduleInfo.value = get(moduleData, 'schema') || {};
+  };
   const handleOk = async () => {
     const res = await formref.value?.validate();
+    const moduleForm = await schemaForm.value.getFormData();
     if (!res) {
       try {
         submitLoading.value = true;
@@ -121,7 +135,7 @@
   const handleBeforeOpen = () => {
     if (props.action === 'create') {
       moduleInfo.value = get(props.templates, '0.schema') || {};
-      console.log('moduleInfo====', moduleInfo.value);
+      console.log('moduleInfo====', moduleInfo.value, props.templates);
     }
   };
   const handleBeforeClose = () => {

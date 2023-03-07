@@ -11,7 +11,19 @@ export interface AppRowData {
     variables: object;
   }>;
 }
-
+export interface AppFormData {
+  name: string;
+  description: string;
+  labels: object;
+  project: { id: string };
+  modules: Array<{
+    name: string;
+    variables: object;
+    module: {
+      id: string;
+    };
+  }>;
+}
 export interface InstanceData {
   name: string;
   id: string;

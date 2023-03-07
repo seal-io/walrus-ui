@@ -1,5 +1,5 @@
 <template>
-  <ComCard top-gap>
+  <SpinCard top-gap :loading="loading">
     <GroupTitle title="新建视图"></GroupTitle>
     <a-form ref="formref" :model="formData" auto-label-width>
       <a-form-item
@@ -168,7 +168,7 @@
         >
       </template>
     </EditPageFooter>
-  </ComCard>
+  </SpinCard>
 </template>
 
 <script lang="ts" setup>
@@ -273,6 +273,9 @@
       try {
         submitLoading.value = true;
         const data = cloneDeep(formData);
+        if (get(data, 'allocationQueries.0.step') === 'null') {
+          data.allocationQueries[0].step = '';
+        }
         data.endTime = 'now';
         data.startTime = data.timeRange;
         setPerspectiveCostFilter(data, (val) => {
@@ -297,7 +300,11 @@
   const getPerspectiveInfo = async () => {
     if (!id) return;
     try {
+      loading.value = true;
       const { data } = await queryItemPerspective({ id });
+      if (!get(data, 'allocationQueries.0.step')) {
+        data.allocationQueries[0].step = 'null';
+      }
       perspectiveInfo.value = data;
       assignIn(formData, data);
       formData.timeRange = formData.startTime;
@@ -305,7 +312,9 @@
       setPerspectiveCostFilter(formData, (item) => {
         return item.connectorID;
       });
+      loading.value = false;
     } catch (error) {
+      loading.value = false;
       perspectiveInfo.value = {};
       console.log(error);
     }
@@ -363,6 +372,11 @@
       const list = data?.items || [];
       const resultList = generatePerspectiveFields(list);
       stepList.value = resultList;
+      each(stepList.value, (o) => {
+        if (o.label === 'Cumulative') {
+          o.value = 'null';
+        }
+      });
     } catch (error) {
       stepList.value = [];
       console.log(error);
@@ -407,6 +421,7 @@
   };
   const handleCostFilterChange = (val) => {};
   const init = async () => {
+    loading.value = true;
     await getPerspectiveFields();
     getPerspectiveInfo();
     getPerspectiveGroupBy();

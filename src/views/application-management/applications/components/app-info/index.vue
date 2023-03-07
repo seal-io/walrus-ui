@@ -20,14 +20,14 @@
           >
         </div>
       </template>
-      <BasicInfo :data-info="appInfo"></BasicInfo>
+      <BasicInfo ref="basicform" :data-info="appInfo"></BasicInfo>
     </ModuleCard>
     <ModuleCard title="Moudles">
       <div class="content">
         <instanceThumb
-          v-for="item in instanseList"
-          :key="item.id"
-          :active="item.id === active"
+          v-for="item in appInfo.modules"
+          :key="item?.module?.id"
+          :active="item?.module?.id === active"
           :data-info="item"
           :size="130"
           :actions="instanceActions"
@@ -35,7 +35,7 @@
           @click="handleClickInstance(item)"
         >
           <template #description>
-            <span>Type: {{ item.type }}</span>
+            <span>Type: {{ item?.module?.id }}</span>
           </template>
         </instanceThumb>
         <a-tooltip content="Add Module">
@@ -73,6 +73,7 @@
         <a-button
           type="primary"
           class="cap-title cancel-btn"
+          :loading="submitLoading"
           @click="handleOk"
           >{{ $t('common.button.save') }}</a-button
         >
@@ -111,24 +112,24 @@
   import moduleWrapper from '../module-wrapper.vue';
   import editModule from './edit-module.vue';
   import BasicInfo from './basic-info.vue';
-  import { InstanceData } from '../../config/interface';
+  import { AppFormData } from '../../config/interface';
   import { instanceActions } from '../../config';
+  import { createApplication } from '../../api';
 
   const { router, route } = useCallCommon();
+  const basicform = ref();
   const appInfo = reactive({
-    name: 'app-1',
-    labels: {
-      user: 'user',
-      name: 'name'
-    }
-  });
-  const instanseList = ref<InstanceData[]>([
-    { name: 'moudle-1', id: '1', type: 'webservice' },
-    { name: 'moudle-2', id: '2', type: 'rds' },
-    { name: 'moudle-3', id: '3', type: 'mysql' }
-  ]);
-  const variableList = ref([{ name: '', value: '', description: '' }]);
+    name: '',
+    description: '',
+    labels: {},
+    project: {
+      id: route.params.projectId
+    },
+    modules: []
+  }) as AppFormData;
 
+  const variableList = ref([{ name: '', value: '', description: '' }]);
+  const submitLoading = ref(false);
   const moduleTemplates = ref<TemplateRowData[]>([]);
   const active = ref('');
   const showInstanceModal = ref(false);
@@ -149,11 +150,12 @@
     try {
       const params = {
         page: 1,
-        perPage: 100
+        perPage: 1000
       };
       const { data } = await queryModules(params);
-      moduleTemplates.value = data.items || [];
+      moduleTemplates.value = data?.items || [];
     } catch (error) {
+      moduleTemplates.value = [];
       console.log(error);
     }
   };
@@ -168,7 +170,23 @@
   const handleDeployApp = () => {
     showInstanceModal.value = true;
   };
-  const handleOk = () => {};
+  const handleOk = async () => {
+    const result = await basicform.value.getFormData();
+    if (!result) return;
+    try {
+      const data = {
+        ...appInfo,
+        ...result
+      };
+      submitLoading.value = true;
+      await createApplication(data);
+      submitLoading.value = false;
+      router.back();
+    } catch (error) {
+      submitLoading.value = false;
+      console.log(error);
+    }
+  };
   const handleCancel = () => {
     router.back();
   };
@@ -181,6 +199,7 @@
       display: flex;
       flex-wrap: wrap;
       align-items: center;
+      min-height: 110px;
 
       .thumb-item {
         margin-right: 12px;

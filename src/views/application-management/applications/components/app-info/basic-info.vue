@@ -8,7 +8,7 @@
           </a-form-item>
         </a-col>
         <a-col v-if="id" :span="12">
-          <a-form-item label="创建时间">
+          <a-form-item label="创建时间" disabled>
             <a-input
               v-model="formData.createTime"
               style="width: 100%"
@@ -27,7 +27,7 @@
           </a-form-item>
         </a-col>
         <a-col v-if="id" :span="12">
-          <a-form-item label="更新时间">
+          <a-form-item label="更新时间" disabled>
             <a-input
               v-model="formData.updateTime"
               style="width: 100%"
@@ -74,6 +74,7 @@
     }
   });
   const { route } = useCallCommon();
+  const formref = ref();
   const id = route.query.id as string;
   const formData = reactive({
     name: '',
@@ -98,7 +99,20 @@
         value: get(formData, `labels.${k}`)
       };
     });
+    if (!labelList.value.length) {
+      labelList.value = [{ key: '', value: '' }];
+    }
   };
+  const getFormData = async () => {
+    const res = await formref.value.validate();
+    if (!res) {
+      return formData;
+    }
+    return false;
+  };
+  defineExpose({
+    getFormData
+  });
   watch(
     () => props.dataInfo,
     () => {
