@@ -1,6 +1,6 @@
 <template>
   <SpinCard top-gap :loading="loading">
-    <GroupTitle title="新建视图"></GroupTitle>
+    <GroupTitle title="新建视图" show-back></GroupTitle>
     <a-form ref="formref" :model="formData" auto-label-width>
       <a-form-item
         :label="$t('cost.analyse.table.name')"
@@ -14,7 +14,11 @@
           show-word-limit
         ></a-input>
       </a-form-item>
-      <GroupTitle title="定义过滤条件"></GroupTitle>
+      <GroupTitle
+        title="定义过滤条件"
+        style="margin-top: 10px"
+        :bordered="true"
+      ></GroupTitle>
       <a-form-item
         :label="$t('cost.analyse.table.time')"
         field="timeRange"
@@ -72,7 +76,11 @@
           :time-range="formData.timeRange"
         ></ConditionFilter>
       </a-form-item>
-      <GroupTitle title="定义共享费用"></GroupTitle>
+      <GroupTitle
+        title="定义共享费用"
+        style="margin-top: 10px"
+        :bordered="true"
+      ></GroupTitle>
       <a-form-item
         label="过滤器"
         field="allocationQueries.shareCosts.0.filters"
@@ -168,7 +176,8 @@
     cloneDeep,
     assignIn,
     some,
-    filter
+    filter,
+    includes
   } from 'lodash';
   import useCallCommon from '@/hooks/use-call-common';
   import GroupTitle from '@/components/group-title/index.vue';
@@ -246,6 +255,16 @@
       callback
     ) as never[];
   };
+  const setConditionFilterFieldValues = (data) => {
+    const filtersList = get(data, 'allocationQueries.0.filters') || [];
+    each(filtersList, (item) => {
+      each(item, (s) => {
+        s.fieldValues = filter(idleCostFieldList.value, (p) => {
+          return includes(s?.values, p.value);
+        });
+      });
+    });
+  };
   const validateForm = async () => {
     const res = await formref.value?.validate();
     const allres = allfilter.value.fieldVaildator();
@@ -298,6 +317,7 @@
       setPerspectiveCostFilter(formData, (item) => {
         return item.connectorID;
       });
+      setConditionFilterFieldValues(formData);
       loading.value = false;
     } catch (error) {
       loading.value = false;
@@ -433,12 +453,11 @@
   const handleCostFilterChange = (val) => {};
   const init = async () => {
     loading.value = true;
-    await getPerspectiveFields();
+    await Promise.all([getPerspectiveFields(), getFieldValues()]);
     loading.value = false;
     getPerspectiveInfo();
     getPerspectiveGroupBy();
     getPerspectiveStep();
-    getFieldValues();
   };
   init();
 </script>

@@ -1,6 +1,6 @@
 <template>
   <ComCard top-gap class="application-detail-wrap">
-    <GroupTitle :title="id ? '应用详情' : '新建应用'"></GroupTitle>
+    <GroupTitle show-back :title="id ? '应用详情' : '新建应用'"></GroupTitle>
     <div v-if="id" class="instance-box">
       <div
         class="app"

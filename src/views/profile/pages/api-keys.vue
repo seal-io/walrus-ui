@@ -1,7 +1,7 @@
 <template>
   <div class="container">
     <a-card class="general-card q-s-w-card">
-      <GroupTitle :title="$t('account.settings.apikeys')">
+      <GroupTitle :title="$t('account.settings.apikeys')" show-back>
         <template #right
           ><a-button type="primary" size="small" @click="handleCreate">{{
             $t('account.settings.tokens.button')
@@ -82,7 +82,7 @@
   const dataList = ref<FormDataType[]>([]);
   const query = {
     page: 1,
-    perPage: 100,
+    perPage: 100
   };
   const handleCreate = () => {
     show.value = true;
@@ -110,7 +110,7 @@
     try {
       isLoad.value = false;
       const params = {
-        ...query,
+        ...query
       };
       const { data } = await queryTokens(params);
       dataList.value = get(data, 'items') || [];

@@ -1,7 +1,7 @@
 import { ref, reactive, computed, toRefs } from 'vue';
 import dayjs from 'dayjs';
 import useCallCommon from '@/hooks/use-call-common';
-import { find, get, omit, map, each, assignIn } from 'lodash';
+import { find, get, omit, map, each, assignIn, sortBy } from 'lodash';
 import { CostAnalyRow, ChartData } from '../config/interface';
 import {
   queryItemPerspective,
@@ -87,7 +87,8 @@ export default function usePerspectiveCost(props) {
         source: 'daily chart'
       };
       const { data } = await queryPerspectiveData(params);
-      const list = data?.items || [];
+      let list = data?.items || [];
+      list = sortBy(list, (s) => s.itemName);
       // const list = testData;
       dailyCostChart.value = { xAxis: [], line: [], bar: [], dataConfig: [] };
       const values: number[] = [];

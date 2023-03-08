@@ -23,6 +23,7 @@ export default mergeConfig(
       //   origin: 'https://localhost:4000'
       // },
       proxy: createProxyTable('https://54.199.33.191:8444')
+      // proxy: createProxyTable('https://stability.tsfxwx.com')
       // proxy: createProxyTable()
     },
     plugins: [

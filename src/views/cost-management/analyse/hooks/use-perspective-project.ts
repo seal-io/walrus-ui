@@ -117,6 +117,7 @@ export default function usePerspectiveCost(props) {
       };
       const { data } = await queryPerspectiveData(params);
       let list = data?.items || [];
+      list = sortBy(list, (s) => s.itemName);
       // let list = statckLineData;
       projectCostChart.value = { xAxis: [], line: [], bar: [], dataConfig: [] };
       list = sortBy(list, (d) => d.startTime);

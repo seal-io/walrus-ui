@@ -111,8 +111,15 @@ div#driver-highlighted-element-stage {
   overflow: hidden;
   border-radius: 4px;
 
-  .arco-table-th {
-    background-color: var(--color-neutral-1);
+  .arco-table-tr {
+    .arco-table-th {
+      background-color: var(--color-neutral-1);
+      border-bottom: none;
+    }
+  }
+
+  .arco-table-tr.arco-table-tr-empty .arco-table-td {
+    border-bottom: none;
   }
 }
 
