@@ -3,7 +3,11 @@
     <a-form ref="formref" :model="formData" auto-label-width layout="vertical">
       <a-row :gutter="20">
         <a-col :span="12">
-          <a-form-item label="应用名称">
+          <a-form-item
+            label="应用名称"
+            field="name"
+            :rules="[{ required: true, message: '名称必填' }]"
+          >
             <a-input v-model="formData.name" style="width: 100%"></a-input>
           </a-form-item>
         </a-col>

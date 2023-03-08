@@ -1,6 +1,12 @@
 <template>
   <div>
-    <a-form ref="formref" :model="formData" auto-label-width>
+    <a-form
+      ref="formref"
+      :model="formData"
+      auto-label-width
+      disabled
+      layout="vertical"
+    >
       <a-row :gutter="20">
         <a-col :span="12">
           <a-form-item label="Name">

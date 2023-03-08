@@ -2,7 +2,7 @@
   <div class="resource-wrap">
     <a-table
       column-resizable
-      style="margin-bottom: 20px"
+      style="margin-bottom: 10px"
       :bordered="false"
       :data="dataList"
       :pagination="false"
@@ -66,13 +66,29 @@
         </a-table-column>
       </template>
     </a-table>
+    <a-pagination
+      size="small"
+      :total="total"
+      :page-size="queryParams.perPage"
+      :current="queryParams.page"
+      show-total
+      show-page-size
+      :hide-on-single-page="queryParams.perPage === 10"
+      @change="handlePageChange"
+      @page-size-change="handlePageSizeChange"
+    />
   </div>
 </template>
 
 <script lang="ts" setup>
-  import { onMounted, ref } from 'vue';
+  import { onMounted, ref, reactive } from 'vue';
   import { InstanceResource } from '../../config/interface';
 
+  const total = ref(100);
+  const queryParams = reactive({
+    page: 1,
+    perPage: 10
+  });
   const dataList = ref<InstanceResource[]>([
     { name: 'mydb', type: 'rds', status: 'ready' },
     { name: 'configmap', type: 'k8s', status: 'ready' }
@@ -82,6 +98,19 @@
   };
   const handleDisabled = (row) => {
     console.log(row);
+  };
+  const fetchData = async () => {};
+  const handleFilter = () => {
+    fetchData();
+  };
+  const handlePageChange = (page: number) => {
+    queryParams.page = page;
+    handleFilter();
+  };
+  const handlePageSizeChange = (pageSize: number) => {
+    queryParams.page = 1;
+    queryParams.perPage = pageSize;
+    handleFilter();
   };
   onMounted(() => {
     console.log('resource');
