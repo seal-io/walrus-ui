@@ -65,9 +65,9 @@ export default function usePerspectiveCost(props) {
       const params = {
         ...omit(queryParams, ['project']),
         fieldName: 'label:seal.io/project',
-        fieldType: 'filter',
-        startTime: dayjs(queryParams.startTime).format('YYYY-MM-DDTHH:mm:ssZ'),
-        endTime: dayjs(queryParams.endTime).format('YYYY-MM-DDT23:59:59Z')
+        fieldType: 'filter'
+        // startTime: dayjs(queryParams.startTime).format('YYYY-MM-DDTHH:mm:ssZ'),
+        // endTime: dayjs(queryParams.endTime).format('YYYY-MM-DDT23:59:59Z')
       };
       const { data } = await queryPerspectiveFieldValues(params);
       projectList.value = data?.items || [];
@@ -93,9 +93,9 @@ export default function usePerspectiveCost(props) {
       overviewloading.value = true;
       const params = {
         ...omit(projectCostFilters.value, 'paging'),
-        project: queryParams.project,
-        startTime: dayjs(queryParams.startTime).format('YYYY-MM-DDTHH:mm:ssZ'),
-        endTime: dayjs(queryParams.endTime).format('YYYY-MM-DDT23:59:59Z')
+        project: queryParams.project
+        // startTime: dayjs(queryParams.startTime).format('YYYY-MM-DDTHH:mm:ssZ'),
+        // endTime: dayjs(queryParams.endTime).format('YYYY-MM-DDT23:59:59Z')
       };
       const { data } = await queryProjectPerspectiveSummary(params);
       overData.value = data || {};
@@ -111,9 +111,9 @@ export default function usePerspectiveCost(props) {
       apploading.value = true;
       const params = {
         ...omit(projectCostFilters.value, 'paging'),
-        ...queryParams,
-        startTime: dayjs(queryParams.startTime).format('YYYY-MM-DDTHH:mm:ssZ'),
-        endTime: dayjs(queryParams.endTime).format('YYYY-MM-DDT23:59:59Z')
+        ...queryParams
+        // startTime: dayjs(queryParams.startTime).format('YYYY-MM-DDTHH:mm:ssZ'),
+        // endTime: dayjs(queryParams.endTime).format('YYYY-MM-DDT23:59:59Z')
       };
       const { data } = await queryPerspectiveData(params);
       let list = data?.items || [];

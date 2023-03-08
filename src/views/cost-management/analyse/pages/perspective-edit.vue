@@ -360,10 +360,8 @@
         (item) => item.timeControl === formData.timeRange
       );
       const params = {
-        endTime:
-          get(dateData, 'value.1') || dayjs().format('YYYY-MM-DDT23:59:59Z'),
-        startTime:
-          get(dateData, 'value.0') || dayjs().format('YYYY-MM-DDTHH:mm:ssZ'),
+        endTime: get(dateData, 'value.1') || dayjs().utc().format(),
+        startTime: get(dateData, 'value.0') || dayjs().utc().format(),
         fieldName: 'connector_id',
         fieldType: 'filter'
       };
@@ -429,10 +427,8 @@
   };
   const handleTimeChange = (val) => {
     const data = find(DateShortCuts, (item) => item.timeControl === val);
-    formData.startTime =
-      get(data, 'value.0') || dayjs().format('YYYY-MM-DDTHH:mm:ssZ');
-    formData.endTime =
-      get(data, 'value.1') || dayjs().format('YYYY-MM-DDT23:59:59Z');
+    formData.startTime = get(data, 'value.0') || dayjs().utc().format();
+    formData.endTime = get(data, 'value.1') || dayjs().utc().format();
     getPerspectiveFields();
     getPerspectiveGroupBy();
     getPerspectiveStep();

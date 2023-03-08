@@ -63,9 +63,9 @@ export default function usePerspectiveCost(props) {
     try {
       overviewloading.value = true;
       const params = {
-        ...queryParams,
-        startTime: dayjs(queryParams.startTime).format('YYYY-MM-DDTHH:mm:ssZ'),
-        endTime: dayjs(queryParams.endTime).format('YYYY-MM-DDT23:59:59Z')
+        ...queryParams
+        // startTime: dayjs(queryParams.startTime).format('YYYY-MM-DDTHH:mm:ssZ'),
+        // endTime: dayjs(queryParams.endTime).format('YYYY-MM-DDT23:59:59Z')
       };
       const { data } = await queryAllPerspectiveSummary(params);
       overData.value = data || {};
@@ -82,8 +82,8 @@ export default function usePerspectiveCost(props) {
       const params = {
         ...omit(dailyCostFilters.value, 'paging'),
         ...queryParams,
-        startTime: dayjs(queryParams.startTime).format('YYYY-MM-DDTHH:mm:ssZ'),
-        endTime: dayjs(queryParams.endTime).format('YYYY-MM-DDT23:59:59Z'),
+        // startTime: dayjs(queryParams.startTime).format('YYYY-MM-DDTHH:mm:ssZ'),
+        // endTime: dayjs(queryParams.endTime).format('YYYY-MM-DDT23:59:59Z'),
         source: 'daily chart'
       };
       const { data } = await queryPerspectiveData(params);
@@ -117,9 +117,9 @@ export default function usePerspectiveCost(props) {
       projectloading.value = true;
       const params = {
         ...omit(projectCostFilters.value, 'paging'),
-        ...queryParams,
-        startTime: dayjs(queryParams.startTime).format('YYYY-MM-DDTHH:mm:ssZ'),
-        endTime: dayjs(queryParams.endTime).format('YYYY-MM-DDT23:59:59Z')
+        ...queryParams
+        // startTime: dayjs(queryParams.startTime).format('YYYY-MM-DDTHH:mm:ssZ'),
+        // endTime: dayjs(queryParams.endTime).format('YYYY-MM-DDT23:59:59Z')
       };
       const { data } = await queryPerspectiveData(params);
       const list = data?.items || [];
@@ -150,9 +150,9 @@ export default function usePerspectiveCost(props) {
       clusterloading.value = true;
       const params = {
         ...omit(clusterCostFilters.value, 'paging'),
-        ...queryParams,
-        startTime: dayjs(queryParams.startTime).format('YYYY-MM-DDTHH:mm:ssZ'),
-        endTime: dayjs(queryParams.endTime).format('YYYY-MM-DDT23:59:59Z')
+        ...queryParams
+        // startTime: dayjs(queryParams.startTime).format('YYYY-MM-DDTHH:mm:ssZ'),
+        // endTime: dayjs(queryParams.endTime).format('YYYY-MM-DDT23:59:59Z')
       };
       const { data } = await queryPerspectiveData(params);
       const list = data?.items || [];

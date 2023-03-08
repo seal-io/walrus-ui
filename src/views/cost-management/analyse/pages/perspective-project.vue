@@ -27,15 +27,17 @@
             </template>
           </a-select>
         </div>
-        <dateRange
+        <DateRange
           v-model:start="queryParams.startTime"
           v-model:end="queryParams.endTime"
-          :show-extra="false"
+          v-model:timeMode="timeMode"
           :short-cuts="DateShortCuts"
+          :show-extra="true"
+          timezone
           today-in
           border-less
           @change="handleDateChange"
-        ></dateRange>
+        ></DateRange>
         <div><slot name="button"></slot></div>
       </template>
       <template #button-group>
@@ -168,6 +170,7 @@
       ></LineBarChart>
       <TableList
         time-range="single"
+        :time-mode="timeMode"
         :loadeend="loadeend"
         :filter-params="{ ...projectCostFilters }"
         :columns="projectCostCols"
@@ -250,6 +253,7 @@
   } = usePerspectiveProject(props);
   const { t } = useCallCommon();
   const loadeend = ref(false);
+  const timeMode = ref('utc');
   const clusterOptions = [
     { label: 'project-1', value: 'project1' },
     { label: 'project-2', value: 'project' }

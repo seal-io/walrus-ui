@@ -17,7 +17,17 @@
     >
       <template v-if="showExtra" #extra>
         <slot name="extra">
-          <div class="date-type-wrapper">
+          <div v-if="timezone" class="date-type-wrapper">
+            <span
+              v-for="item in timeZoneMode"
+              :key="item.value"
+              class="item"
+              :class="{ active: timeMode === item.value }"
+              @click="handleChangeTimeMode(item)"
+              >{{ $t(item.label) }}</span
+            >
+          </div>
+          <div v-else class="date-type-wrapper">
             <span
               v-for="item in datePickerMode"
               :key="item.value"
@@ -38,7 +48,7 @@
   import dayjs from 'dayjs';
   import { computed, ref, PropType } from 'vue';
   import { useI18n } from 'vue-i18n';
-  import { datePickerMode } from './config';
+  import { datePickerMode, timeZoneMode } from './config';
 
   type timeType = 'date' | 'month' | 'year';
   type unitType = 'day' | 'month' | 'year';
@@ -53,6 +63,18 @@
       type: String,
       default() {
         return 'day';
+      }
+    },
+    timezone: {
+      type: Boolean,
+      default() {
+        return false;
+      }
+    },
+    timeMode: {
+      type: String,
+      default() {
+        return 'utc';
       }
     },
     width: {
@@ -103,10 +125,18 @@
     month: 11,
     year: 9
   };
+  const emits = defineEmits([
+    'update:timeUnit',
+    'update:start',
+    'update:end',
+    'change',
+    'update:timeMode'
+  ]);
   const { t } = useI18n();
   const popupVisible = ref(false);
   const startDate = ref('');
   const endDate = ref('');
+
   const selectShortcut = computed(() => {
     if (props.shortCuts?.length) {
       return map(props.shortCuts, (item) => {
@@ -151,7 +181,21 @@
     }
     return props.timeUnit as timeType;
   });
-  const handleSelect = (value) => {
+
+  const generateTimezoneFormat = (value) => {
+    if (!props.timezone) {
+      return value;
+    }
+    if (props.timeMode === 'utc') {
+      return [
+        dayjs(get(value, 0)).utc().format(),
+        dayjs(get(value, 1)).utc().format()
+      ];
+    }
+    return [dayjs(get(value, 0)).format(), dayjs(get(value, 1)).format()];
+  };
+  const handleSelect = (val) => {
+    const value = generateTimezoneFormat(val);
     endDate.value = get(value, '1') || props.end;
     startDate.value = get(value, '0') || props.start;
   };
@@ -184,14 +228,25 @@
     }
     return false;
   };
-  const emits = defineEmits([
-    'update:timeUnit',
-    'update:start',
-    'update:end',
-    'change'
-  ]);
+
   const handleClick = (item) => {
     emits('update:timeUnit', item.value);
+  };
+
+  const setRangeValue = (metaValue) => {
+    const value = generateTimezoneFormat(metaValue);
+    emits('update:start', get(value, '0'));
+    emits('update:end', get(value, '1'));
+    startDate.value = get(value, '0');
+    endDate.value = get(value, '1');
+    return value;
+  };
+  const handleChangeTimeMode = (item) => {
+    emits('update:timeMode', item.value);
+    setTimeout(() => {
+      const values = setRangeValue([startDate.value, endDate.value]);
+      emits('change', values);
+    }, 100);
   };
   const handlePopupChange = (visible) => {
     if (visible) {
@@ -200,23 +255,18 @@
     }
   };
   const handleSelectShortcut = (val) => {
-    const value = get(val, 'value') || [];
+    const metaValue = get(val, 'value') || [];
+    const value = setRangeValue(metaValue);
+    // console.log('value====', value);
     emits('update:timeUnit', val.unit);
-    emits('update:start', get(value, '0'));
-    emits('update:end', get(value, '1'));
-    startDate.value = get(value, '0');
-    endDate.value = get(value, '1');
     // emits('change', value);
     setTimeout(() => {
       popupVisible.value = false;
     }, 100);
   };
-  const handleDateChange = (value) => {
-    console.log('change:', value);
-    emits('update:start', get(value, '0'));
-    emits('update:end', get(value, '1'));
-    startDate.value = get(value, '0');
-    endDate.value = get(value, '1');
+  const handleDateChange = (val) => {
+    console.log('change:', val);
+    const value = setRangeValue(val);
     emits('change', value);
     setTimeout(() => {
       popupVisible.value = false;

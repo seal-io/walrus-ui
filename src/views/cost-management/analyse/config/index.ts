@@ -31,8 +31,8 @@ export const DateShortCuts = [
     format: 'YYYY-MM-DD',
     timeControl: 'now-7d',
     value: [
-      dayjs().subtract(6, 'day').format('YYYY-MM-DDT00:00:00Z'),
-      dayjs().subtract(0, 'day').format('YYYY-MM-DDT23:59:59Z')
+      dayjs().hour(0).minute(0).second(0).subtract(6, 'day').utc().format(),
+      dayjs().subtract(0, 'day').utc().format()
     ]
   },
   {
@@ -41,8 +41,8 @@ export const DateShortCuts = [
     format: 'YYYY-MM-DD',
     timeControl: 'now-30d',
     value: [
-      dayjs().subtract(29, 'day').format('YYYY-MM-DDT00:00:00Z'),
-      dayjs().subtract(0, 'day').format('YYYY-MM-DDT23:59:59Z')
+      dayjs().hour(0).minute(0).second(0).subtract(29, 'day').utc().format(),
+      dayjs().subtract(0, 'day').utc().format()
     ]
   },
   {
@@ -51,8 +51,8 @@ export const DateShortCuts = [
     format: 'YYYY-MM-DD',
     timeControl: 'now/M',
     value: [
-      dayjs().format('YYYY-MM-01T00:00:00Z'),
-      dayjs().format('YYYY-MM-DDT23:59:59')
+      dayjs().hour(0).minute(0).second(0).utc().format(),
+      dayjs().utc().format()
     ]
   }
 ];
@@ -61,7 +61,7 @@ export const getTimeRange = (val) => {
   const data = find(DateShortCuts, (item) => item.timeControl === val);
   return data
     ? get(data, 'value')
-    : [dayjs().format('YYYY-MM-DD'), dayjs().format('YYYY-MM-DD')];
+    : [dayjs().utc().format(), dayjs().utc().format()];
 };
 export const costOverview = [
   {
