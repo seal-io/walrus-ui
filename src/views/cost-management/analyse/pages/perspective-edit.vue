@@ -118,7 +118,7 @@
         </a-select>
       </a-form-item>
       <a-form-item
-        label="共享策略"
+        label="分配方法"
         field="formData.allocationQueries.0.shareCosts.0.sharingStrategy"
       >
         <a-radio-group
@@ -434,6 +434,7 @@
   const init = async () => {
     loading.value = true;
     await getPerspectiveFields();
+    loading.value = false;
     getPerspectiveInfo();
     getPerspectiveGroupBy();
     getPerspectiveStep();

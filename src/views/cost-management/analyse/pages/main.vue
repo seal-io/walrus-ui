@@ -20,8 +20,8 @@
             v-for="item in viewList"
             :key="item.value"
             :value="item.value"
-            :label="item.name"
-          ></a-option>
+            >{{ builtinViewMap[item.label] ?? item.name }}</a-option
+          >
           <template #empty><span></span></template>
         </a-select>
       </template>
@@ -52,6 +52,7 @@
   import perspectiveProject from './perspective-project.vue';
   import perspectiveCustom from './perspective-custom.vue';
   import { queryPerspectives, queryPerspectiveFields } from '../api';
+  import { builtinViewMap } from '../config';
 
   const perspectiveMap = {
     all: markRaw(perspectiveAll),
@@ -65,6 +66,7 @@
   const viewList = ref<{ value: string; label: string; name?: string }[]>([]);
   const viewId = ref('');
   const viewComponent = ref('all');
+
   const handleViewChange = (val) => {
     const data = find(viewList.value, (item) => item.value === val);
     viewId.value = val;

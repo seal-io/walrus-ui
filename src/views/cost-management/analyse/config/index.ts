@@ -11,9 +11,13 @@ export const operatorList = [
 ];
 
 export const costShareMode = [
-  { label: 'Show', value: 'show' },
-  { label: 'Equally split', value: 'equally' },
-  { label: 'Proportionally split', value: 'proportionally' }
+  // { label: '展示', name: 'Show', value: 'show' },
+  { label: '平均分摊', name: 'Equally split', value: 'equally' },
+  {
+    label: '基于成本比例分摊',
+    name: 'Proportionally split',
+    value: 'proportionally'
+  }
 ];
 export const timeRangeOptions = [
   { label: 'cost.analyse.datepicker.7days', value: 'now-7d' },
@@ -234,7 +238,7 @@ export const clusterNamespaceCostCols = [
     tooltip: true,
     cellStyle: { minWidth: '40px' },
     dataIndex: 'itemName',
-    title: 'Name'
+    title: '名称'
   },
   // {
   //   ellipsis: true,
@@ -269,7 +273,7 @@ export const clusterNamespaceCostCols = [
     render({ record }) {
       return round(record.ramCost, 4) || 0;
     },
-    title: 'Memory'
+    title: '内存'
   },
   {
     ellipsis: true,
@@ -289,7 +293,7 @@ export const clusterNamespaceCostCols = [
     render({ record }) {
       return round(record.sharedCost, 4) || 0;
     },
-    title: 'Shared'
+    title: '共享资源费用'
   },
   {
     ellipsis: true,
@@ -339,4 +343,10 @@ export const projectCostCols = [
     title: '消费金额'
   }
 ];
+
+export const builtinViewMap = {
+  all: '所有资源',
+  project: '项目',
+  cluster: '集群'
+};
 export default {};

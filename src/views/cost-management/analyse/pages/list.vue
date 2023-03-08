@@ -63,6 +63,13 @@
           data-index="name"
           :title="$t('cost.analyse.table.name')"
         >
+          <template #cell="{ record }">
+            <span>{{
+              record.builtin
+                ? builtinViewMap[toLower(record.name)]
+                : record.name
+            }}</span>
+          </template>
         </a-table-column>
         <a-table-column
           ellipsis
@@ -147,7 +154,7 @@
 </template>
 
 <script lang="ts" setup>
-  import { map, capitalize, cloneDeep, find } from 'lodash';
+  import { map, capitalize, cloneDeep, find, toLower } from 'lodash';
   import { reactive, ref, onMounted } from 'vue';
   import { useCostManageStore } from '@/store';
   import useCallCommon from '@/hooks/use-call-common';
@@ -157,7 +164,7 @@
   import { PerspectiveRowData } from '../config/interface';
   import CreatePerspective from '../components/create-perspectiv.vue';
   import { queryPerspectives } from '../api';
-  import { DateShortCuts } from '../config';
+  import { DateShortCuts, builtinViewMap } from '../config';
 
   const { rowSelection, selectedKeys, handleSelectChange } = useRowSelect();
   const costManageStore = useCostManageStore();

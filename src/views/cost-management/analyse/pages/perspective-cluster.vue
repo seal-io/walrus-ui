@@ -105,7 +105,7 @@
     </FilterBox> -->
     <SpinCard
       :loading="overviewloading || preloading"
-      :title="clusterName || 'Cluster'"
+      :title="`集群: ${clusterName}`"
       borderless
       style="margin-bottom: 10px"
     >
@@ -143,10 +143,10 @@
         </a-grid-item>
       </a-grid> -->
     </SpinCard>
-    <SpinCard title="Daily Cost" borderless style="margin-bottom: 10px">
+    <SpinCard title="消费趋势" borderless style="margin-bottom: 10px">
       <template #title>
         <div style="display: flex; justify-content: space-between">
-          <div>Daily Cost</div>
+          <div>消费趋势</div>
           <ChartBtn v-model:active="active"></ChartBtn>
         </div>
       </template>
@@ -168,7 +168,7 @@
         style="margin-top: 20px"
       ></TableList>
     </SpinCard>
-    <SpinCard title="Namespace消费记录" borderless style="margin-bottom: 10px">
+    <SpinCard title="命名空间消费分布" borderless style="margin-bottom: 10px">
       <horizontalBar
         :loading="spaceloading || preloading"
         style="flex: 1"
@@ -183,7 +183,7 @@
         style="margin-top: 20px"
       ></TableList>
     </SpinCard>
-    <SpinCard title="工作负载消费金额" borderless style="margin-bottom: 10px">
+    <SpinCard title="工作负载消费分布" borderless style="margin-bottom: 10px">
       <LineBarChart
         :loading="workloading || preloading"
         height="220px"
