@@ -60,6 +60,7 @@
         :config-options="configOptions"
       ></LineBarChart>
       <TableList
+        source="daily table"
         :filter-params="dailyCostFilters"
         :columns="dailyCostCols"
         style="margin-top: 20px"
@@ -84,6 +85,7 @@
         :config-options="configOptions"
       ></LineBarChart>
       <TableList
+        source="project table"
         :filter-params="projectCostFilters"
         :columns="costPerProjectCols"
         style="margin-top: 20px"
@@ -108,6 +110,7 @@
         :config-options="configOptions"
       ></LineBarChart>
       <TableList
+        source="cluster table"
         :filter-params="clusterCostFilters"
         :columns="costPerClusterCols"
         style="margin-top: 20px"

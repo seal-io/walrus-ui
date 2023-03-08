@@ -164,7 +164,7 @@
         :filter-params="{ ...dailyCostFilters }"
         :loadeend="loadeend"
         :columns="dailyCostCols"
-        source="dailycost"
+        source="daily table"
         style="margin-top: 20px"
       ></TableList>
     </SpinCard>

@@ -143,7 +143,8 @@ export default function usePerspectiveCost(props) {
         ...omit(dailyCostFilters.value, 'paging'),
         ...queryParams,
         startTime: dayjs(queryParams.startTime).format('YYYY-MM-DDTHH:mm:ssZ'),
-        endTime: dayjs(queryParams.endTime).format('YYYY-MM-DDT23:59:59Z')
+        endTime: dayjs(queryParams.endTime).format('YYYY-MM-DDT23:59:59Z'),
+        source: 'daily chart'
       };
       const { data } = await queryPerspectiveData(params);
       const list = data?.items || [];
@@ -153,7 +154,7 @@ export default function usePerspectiveCost(props) {
       each(list, (item, index) => {
         const arr: any[] = [];
         arr[index] = item.totalCost;
-        const d = dayjs(item.startTime).format('YYYY-MM-DD');
+        const d = dayjs(item.itemName).format('YYYY-MM-DD');
         dailyCostChart.value.xAxis.push(d);
         dailyCostChart.value.bar.push({
           name: d,
