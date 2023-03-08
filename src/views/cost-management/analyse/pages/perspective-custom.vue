@@ -20,7 +20,7 @@
     </FilterBox>
     <SpinCard
       :loading="overviewloading || preloading"
-      :title="projectName || 'Custom'"
+      :title="`自定义: ${projectName}`"
       borderless
       style="margin-bottom: 10px"
     >
@@ -41,7 +41,7 @@
         </a-grid-item>
       </a-grid>
     </SpinCard>
-    <SpinCard title="消费金额" borderless style="margin-bottom: 10px">
+    <SpinCard title="消费趋势" borderless style="margin-bottom: 10px">
       <LineBarChart
         :loading="apploading || preloading"
         height="220px"

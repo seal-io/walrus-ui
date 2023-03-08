@@ -19,7 +19,7 @@
       </template>
     </FilterBox>
     <SpinCard
-      title="All Resource"
+      title="所有资源"
       borderless
       style="margin-bottom: 10px"
       :loading="overviewloading || preloading"
@@ -42,10 +42,10 @@
       </a-grid>
     </SpinCard>
     <!-- ===========Daily Cost================ -->
-    <SpinCard title="Daily Cost" borderless style="margin-bottom: 10px">
+    <SpinCard title="消费趋势" borderless style="margin-bottom: 10px">
       <template #title>
         <div style="display: flex; justify-content: space-between">
-          <div>Daily Cost</div>
+          <div>消费趋势</div>
           <ChartBtn v-model:active="active"></ChartBtn>
         </div>
       </template>
@@ -67,7 +67,7 @@
       ></TableList>
     </SpinCard>
     <!-- ===========Project Cost================ -->
-    <SpinCard title="Cost Per Project" borderless style="margin-bottom: 10px">
+    <SpinCard title="项目消费分布" borderless style="margin-bottom: 10px">
       <!-- <template #title>
         <div style="display: flex; justify-content: space-between">
           <div>Cost Per Project</div>
@@ -92,7 +92,7 @@
       ></TableList>
     </SpinCard>
     <!-- ===========Cluster Cost================ -->
-    <SpinCard title="Cost Per Cluster" borderless style="margin-bottom: 10px">
+    <SpinCard title="集群消费分布" borderless style="margin-bottom: 10px">
       <!-- <template #title>
         <div style="display: flex; justify-content: space-between">
           <div>Cost Per Cluster</div>
