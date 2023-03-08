@@ -16,7 +16,7 @@
     @before-close="handleBeforeClose"
   >
     <div>
-      <a-form :model="formData" auto-label-width>
+      <a-form ref="formref" :model="formData" auto-label-width>
         <a-form-item
           label="Name"
           field="name"
@@ -46,6 +46,7 @@
       <div class="variables">
         <GroupTitle title="Variables"></GroupTitle>
         <formCreate
+          v-if="show"
           ref="schemaForm"
           action="post"
           api=""
@@ -82,7 +83,7 @@
 </template>
 
 <script lang="ts" setup>
-  import { get, find, cloneDeep, each, set } from 'lodash';
+  import { get, find, cloneDeep, each, assignIn } from 'lodash';
   import { ref, reactive, PropType } from 'vue';
   import EditPageFooter from '@/components/edit-page-footer/index.vue';
   import formCreate from '@/components/form-create/index.vue';
@@ -100,6 +101,12 @@
       type: String,
       default() {
         return 'create';
+      }
+    },
+    dataInfo: {
+      type: Object,
+      default() {
+        return {};
       }
     },
     templates: {
@@ -123,9 +130,15 @@
   const handleCancel = () => {
     emit('update:show', false);
   };
+  const setFormData = (schemas) => {
+    each(get(schemas, 'Variables'), (item) => {
+      formData.variables[item.Name] = item.Default;
+    });
+  };
   const handleTemplateChange = (val) => {
     const moduleData = find(props.templates, (item) => item.id === val);
     moduleInfo.value = get(moduleData, 'schema') || {};
+    setFormData(moduleInfo.value);
   };
   const handleOk = async () => {
     const res = await formref.value?.validate();
@@ -133,36 +146,34 @@
     if (!res && moduleForm) {
       try {
         submitLoading.value = true;
-        formData.variables = { ...cloneDeep(moduleForm) };
+        formData.variables = { ...moduleForm };
+        emit('save', cloneDeep(formData));
         setTimeout(() => {
-          emit('save', formData);
-        }, 200);
-        emit('update:show', false);
+          emit('update:show', false);
+        }, 100);
         submitLoading.value = false;
       } catch (error) {
         submitLoading.value = false;
       }
     }
   };
-  const setFormData = (schemas) => {
-    each(get(schemas, 'Variables'), (item) => {
-      formData.variables[item.Name] = item.Default;
-    });
-  };
+
   const handleBeforeOpen = () => {
     if (props.action === 'create') {
       moduleInfo.value = get(props.templates, '0.schema') || {};
+      setFormData(moduleInfo.value);
       formData.module.id = get(props.templates, '0.id') || '';
-
-      // TODO  set variables
-      setTimeout(() => {
-        setFormData(moduleInfo.value);
-      }, 200);
-      console.log('moduleInfo====', moduleInfo.value, formData);
+    } else {
+      // set the default value
+      each(get(moduleInfo.value, 'Variables') || [], (item) => {
+        item.Default = get(props.dataInfo.variables, item.Name);
+      });
+      assignIn(formData, props.dataInfo);
     }
   };
   const handleOpened = () => {};
   const handleBeforeClose = () => {
+    formref.value.resetFields();
     emit('update:action', 'create');
   };
 </script>

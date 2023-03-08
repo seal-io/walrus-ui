@@ -92,9 +92,9 @@
   const $attrs = useAttrs();
   const isError = ref(false);
   const popupvisible = ref(false);
-  const getDataObj = () => {
+  const getDataObj = (list) => {
     const result = reduce(
-      props.labelList,
+      list,
       (obj, item) => {
         obj[item.key] = item.value;
         return obj;
@@ -108,10 +108,12 @@
     emits('add', item);
   };
   const handleDeleteLabel = () => {
+    const list = cloneDeep(props.labelList);
+    list?.splice(props.position, 1);
+    getDataObj(list);
     emits('delete');
   };
   const handleDataChange = (val, prop, type?) => {
-    console.log('key>>', val, props.value);
     if (hasIn(props.value, val) && prop === 'key' && type === 'input') {
       isError.value = true;
       popupvisible.value = true;
@@ -128,7 +130,7 @@
       emits('update:dataValue', val);
     }
     isError.value = false;
-    getDataObj();
+    getDataObj(props.labelList);
   };
 </script>
 

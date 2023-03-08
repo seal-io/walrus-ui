@@ -12,6 +12,7 @@
         >
           <span>基本信息</span>
           <a-button
+            v-if="id"
             type="primary"
             size="small"
             style="width: 98px"
@@ -25,17 +26,18 @@
     <ModuleCard title="Moudles">
       <div class="content">
         <instanceThumb
-          v-for="item in appInfo.modules"
+          v-for="(item, index) in appInfo.modules"
           :key="item?.module?.id"
           :active="item?.module?.id === active"
           :data-info="item"
           :size="130"
-          :actions="instanceActions"
-          @edit="handleEditApp"
+          :actions="moduleActions"
+          @edit="handleEditModule(item)"
+          @delete="handleDeleteModule(index)"
           @click="handleClickInstance(item)"
         >
           <template #description>
-            <span>Type: {{ item?.module?.id }}</span>
+            <span style="font-weight: 700">{{ item?.module?.id }}</span>
           </template>
         </instanceThumb>
         <a-tooltip content="Add Module">
@@ -89,6 +91,8 @@
     </EditPageFooter>
     <editModule
       v-model:show="showEditModal"
+      v-model:action="moduleAction"
+      :data-info="moduleInfo"
       :templates="moduleTemplates"
       @save="handleSaveModule"
     ></editModule>
@@ -102,7 +106,7 @@
 
 <script lang="ts" setup>
   import { reactive, ref, computed } from 'vue';
-  import { cloneDeep } from 'lodash';
+  import { cloneDeep, assignIn } from 'lodash';
   import useCallCommon from '@/hooks/use-call-common';
   import thumbButton from '@/components/buttons/thumb-button.vue';
   import { queryModules } from '@/views/operation-hub/templates/api';
@@ -115,7 +119,7 @@
   import editModule from './edit-module.vue';
   import BasicInfo from './basic-info.vue';
   import { AppFormData } from '../../config/interface';
-  import { instanceActions } from '../../config';
+  import { moduleActions } from '../../config';
   import { createApplication } from '../../api';
 
   const { router, route } = useCallCommon();
@@ -135,17 +139,32 @@
 
   const variableList = ref([{ name: '', value: '', description: '' }]);
   const submitLoading = ref(false);
+  const id = route.params.id as string;
   const moduleTemplates = ref<TemplateRowData[]>([]);
   const active = ref('');
+  const moduleInfo = ref({});
+  const moduleAction = ref('create');
   const showInstanceModal = ref(false);
   const showEditModal = ref(false);
 
   const collapseStatus = computed(() => {
     return variableList.value.length - 1;
   });
-  const handleEditApp = () => {};
+  const handleEditModule = (item) => {
+    moduleAction.value = 'edit';
+    moduleInfo.value = item;
+    setTimeout(() => {
+      showEditModal.value = true;
+    }, 100);
+  };
+  const handleDeleteModule = (index) => {
+    appInfo.modules.splice(index, 1);
+  };
   const handleAddModule = () => {
-    showEditModal.value = true;
+    moduleAction.value = 'create';
+    setTimeout(() => {
+      showEditModal.value = true;
+    }, 100);
   };
   const handleClickInstance = (data) => {};
   const handleDeleteVariable = (index) => {
@@ -193,9 +212,15 @@
     }
   };
   const handleSaveModule = (data) => {
-    appInfo.modules.push({
-      ...cloneDeep(data)
-    });
+    console.log('saveModule===', data);
+    if (moduleAction.value === 'create') {
+      appInfo.modules.push({
+        ...cloneDeep(data)
+      });
+    } else {
+      assignIn(moduleInfo.value, data);
+    }
+    moduleInfo.value = {};
   };
   const handleCancel = () => {
     router.back();

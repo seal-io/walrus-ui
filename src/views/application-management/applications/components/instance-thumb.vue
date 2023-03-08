@@ -19,9 +19,8 @@
       </a-link>
       <template #content>
         <a-doption v-for="item in actions" :key="item.value" :value="item.value"
-          ><icon-delete style="margin-right: 5px" />{{
-            $t(item.label)
-          }}</a-doption
+          ><component :is="item.icon" style="margin-right: 5px"></component
+          >{{ $t(item.label) }}</a-doption
         >
       </template>
     </a-dropdown>
