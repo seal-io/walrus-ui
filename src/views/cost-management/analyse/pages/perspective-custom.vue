@@ -3,15 +3,17 @@
     <FilterBox style="margin-bottom: 10px">
       <template #params>
         <div v-if="isPage"><slot name="select"></slot></div>
-        <dateRange
+        <DateRange
           v-model:start="queryParams.startTime"
           v-model:end="queryParams.endTime"
-          :show-extra="false"
+          v-model:timeMode="timeMode"
           :short-cuts="DateShortCuts"
+          :show-extra="true"
+          timezone
           today-in
           border-less
           @change="handleDateChange"
-        ></dateRange>
+        ></DateRange>
         <div><slot name="button"></slot></div>
       </template>
       <template #button-group>
@@ -65,6 +67,7 @@
       ></LineBarChart>
       <TableList
         time-range="single"
+        :time-mode="timeMode"
         :loadeend="loadeend"
         :filter-params="{
           ...projectCostFilters
@@ -143,6 +146,7 @@
   } = usePerspectiveCost(props);
   const { t } = useCallCommon();
   const loadeend = ref(false);
+  const timeMode = ref('utc');
 
   const preloading = computed(() => {
     return loading.value;

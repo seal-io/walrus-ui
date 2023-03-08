@@ -26,15 +26,17 @@
             <span></span>
           </template>
         </a-select>
-        <dateRange
+        <DateRange
           v-model:start="queryParams.startTime"
           v-model:end="queryParams.endTime"
-          :show-extra="false"
+          v-model:timeMode="timeMode"
           :short-cuts="DateShortCuts"
+          :show-extra="true"
+          timezone
           today-in
           border-less
           @change="handleDateChange"
-        ></dateRange>
+        ></DateRange>
         <div><slot name="button"></slot></div>
       </template>
       <template #button-group>
@@ -161,6 +163,7 @@
         :config-options="configOptions"
       ></LineBarChart>
       <TableList
+        :time-mode="timeMode"
         :filter-params="{ ...dailyCostFilters }"
         :loadeend="loadeend"
         :columns="dailyCostCols"
@@ -177,6 +180,7 @@
         :data-list="nameSpaceCostChart.bar"
       ></horizontalBar>
       <TableList
+        :time-mode="timeMode"
         :filter-params="nameSpaceCostFilters"
         :columns="clusterNamespaceCostCols"
         source="namespace"
@@ -209,6 +213,7 @@
         :filter-params="{
           ...workloadCostFilters
         }"
+        :time-mode="timeMode"
         :columns="workLoadCostCols"
         source="workload"
         style="margin-top: 20px"
@@ -302,6 +307,7 @@
   } = usePerspectiveCost(props);
   const { t } = useCallCommon();
   const loadeend = ref(false);
+  const timeMode = ref('utc');
   const clusterOptions = [
     { label: 'cluster-1', value: 'cluster1' },
     { label: 'cluster-2', value: 'cluster2' }

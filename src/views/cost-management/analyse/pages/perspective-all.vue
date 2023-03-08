@@ -3,15 +3,17 @@
     <FilterBox style="margin-bottom: 10px">
       <template #params>
         <div v-if="isPage"><slot name="select"></slot></div>
-        <dateRange
+        <DateRange
           v-model:start="queryParams.startTime"
           v-model:end="queryParams.endTime"
-          :show-extra="false"
+          v-model:timeMode="timeMode"
+          :show-extra="true"
+          timezone
           :short-cuts="DateShortCuts"
           today-in
           border-less
           @change="handleDateChange"
-        ></dateRange>
+        ></DateRange>
         <div><slot name="button"></slot></div>
       </template>
       <template #button-group>
@@ -60,6 +62,7 @@
         :config-options="configOptions"
       ></LineBarChart>
       <TableList
+        :time-mode="timeMode"
         source="daily table"
         :filter-params="dailyCostFilters"
         :columns="dailyCostCols"
@@ -85,6 +88,7 @@
         :config-options="configOptions"
       ></LineBarChart>
       <TableList
+        :time-mode="timeMode"
         source="project table"
         :filter-params="projectCostFilters"
         :columns="costPerProjectCols"
@@ -110,6 +114,7 @@
         :config-options="configOptions"
       ></LineBarChart>
       <TableList
+        :time-mode="timeMode"
         source="cluster table"
         :filter-params="clusterCostFilters"
         :columns="costPerClusterCols"
@@ -203,6 +208,7 @@
   const active = ref<'bar' | 'line'>('bar');
   const activeProject = ref<'bar' | 'line'>('bar');
   const activeCluster = ref<'bar' | 'line'>('bar');
+  const timeMode = ref('utc');
 
   const preloading = computed(() => {
     return props.pageloading || loading.value;
@@ -221,7 +227,8 @@
       }
     };
   });
-  const handleDateChange = () => {
+  const handleDateChange = (val) => {
+    console.log('dateChange=1==', val, queryParams);
     dailyCostFilters.value = {
       ...dailyCostFilters.value,
       ...queryParams

@@ -86,6 +86,12 @@
       default() {
         return '';
       }
+    },
+    timeMode: {
+      type: String,
+      default() {
+        return 'utc';
+      }
     }
   });
   let timer: any = null;
@@ -98,19 +104,33 @@
   });
   const dataList = ref<CostAnalyRow[]>([]);
 
+  const setStartTime = () => {
+    const start = dayjs(props.filterParams.endTime)
+      .set('hour', 0)
+      .set('minute', 0)
+      .set('second', 0);
+    if (props.timeMode === 'utc') {
+      return dayjs(start).utc().format();
+    }
+    return dayjs(start).format();
+  };
   const fetchData = async () => {
     try {
       loading.value = true;
       // props.timeRange === 'single'
+      console.log('filterParams===', props.filterParams);
       const params = {
         source: props.source,
         ...props.filterParams,
         startTime: get(props.filterParams, 'step')
-          ? dayjs(props.filterParams.endTime).format('YYYY-MM-DDT00:00:00Z')
-          : dayjs(props.filterParams.startTime).format('YYYY-MM-DDTHH:mm:ssZ'),
-        endTime: dayjs(props.filterParams.endTime).format(
-          'YYYY-MM-DDT23:59:59Z'
-        ),
+          ? setStartTime()
+          : props.filterParams.startTime,
+        // startTime: get(props.filterParams, 'step')
+        //   ? dayjs(props.filterParams.endTime).format('YYYY-MM-DDT00:00:00Z')
+        //   : dayjs(props.filterParams.startTime).format('YYYY-MM-DDTHH:mm:ssZ'),
+        // endTime: dayjs(props.filterParams.endTime).format(
+        //   'YYYY-MM-DDT23:59:59Z'
+        // ),
         query: queryParams.query,
         paging: {
           ...pick(queryParams, ['page', 'perPage'])

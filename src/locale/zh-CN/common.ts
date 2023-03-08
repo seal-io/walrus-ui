@@ -55,5 +55,7 @@ export default {
   'common.logout.msg': '登出成功',
   'common.form.rule.select': '请选择{name}',
   'common.form.rule.input': '{name}不能为空',
-  'common.form.key': '存在相同的key'
+  'common.form.key': '存在相同的key',
+  'common.date.utc': 'UTC时间',
+  'common.date.local': '本地时间'
 };

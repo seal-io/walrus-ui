@@ -57,5 +57,7 @@ export default {
   'common.logout.msg': 'Logout succeeded',
   'common.form.rule.select': 'please select {name}',
   'common.form.rule.input': '{name} is required',
-  'common.form.key': 'the same key exists'
+  'common.form.key': 'the same key exists',
+  'common.date.utc': 'UTC time',
+  'common.date.local': 'Local time'
 };
