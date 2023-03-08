@@ -240,7 +240,8 @@
       setFormData();
     },
     {
-      immediate: true
+      immediate: true,
+      deep: true
     }
   );
   const handleCancel = () => {
@@ -258,7 +259,7 @@
     }
   }
 
-  .group-item {
+  .x-input {
     margin-bottom: 10px;
 
     &:only-child {

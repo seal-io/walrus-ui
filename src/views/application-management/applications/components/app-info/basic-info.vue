@@ -1,6 +1,6 @@
 <template>
   <div>
-    <a-form ref="formref" :model="formData" auto-label-width>
+    <a-form ref="formref" :model="formData" auto-label-width layout="vertical">
       <a-row :gutter="20">
         <a-col :span="12">
           <a-form-item label="应用名称">
@@ -46,7 +46,7 @@
             v-model:dataKey="sItem.key"
             v-model:dataValue="sItem.value"
             v-model:value="formData.labels"
-            width="518px"
+            width="580px"
             class="group-item"
             :label-list="labelList"
             :position="sIndex"
