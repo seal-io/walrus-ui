@@ -59,8 +59,8 @@
 
   const { router, route, t } = useCallCommon();
   const id = route.query.id as string;
-  const activeInstance = ref('app');
-  const pgCom = ref('appDetail');
+  const activeInstance = ref('app'); //
+  const pgCom = ref('appDetail'); // instanceDetail、appDetail
   const showInstanceModal = ref(false);
   const projectBasicInfo = ref<any>({});
 

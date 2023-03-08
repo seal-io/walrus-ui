@@ -3,6 +3,7 @@ import qs from 'query-string';
 import { Pagination } from '@/types/global';
 import { AppRowData } from '../config/interface';
 
+// interface ParamsType extends Pagination {}
 export interface ResultType {
   items: AppRowData[];
   pagination: Pagination;
@@ -35,3 +36,6 @@ export const queryItemApplication = (params) => {
     }
   });
 };
+
+// =========history================
+export const queryApplicationRevisions = (params: Pagination) => {};
