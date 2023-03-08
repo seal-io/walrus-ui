@@ -3,14 +3,20 @@
     class="group-title"
     :class="{ 'bordered': bordered, 'is-detail': isDetail }"
   >
-    <div class="label"
-      ><slot name="title">{{ title }}</slot></div
-    >
+    <div class="label">
+      <a-link v-if="showBack" @click="handleBack"
+        ><icon-arrow-left style="stroke-width: 5; font-size: 16px"
+      /></a-link>
+      <a-divider v-if="showBack" direction="vertical"></a-divider>
+      <slot name="title">{{ title }}</slot>
+    </div>
     <div><slot name="right"></slot></div>
   </div>
 </template>
 
 <script lang="ts" setup>
+  import useCallCommon from '@/hooks/use-call-common';
+
   defineProps({
     title: String,
     bordered: {
@@ -24,8 +30,18 @@
       default() {
         return false;
       }
+    },
+    showBack: {
+      type: Boolean,
+      default() {
+        return false;
+      }
     }
   });
+  const { router } = useCallCommon();
+  const handleBack = () => {
+    router.back();
+  };
 </script>
 
 <style lang="less" scoped>
@@ -47,6 +63,8 @@
     }
 
     .label {
+      display: flex;
+      align-items: center;
       color: var(--color-text-2);
       font-weight: 500;
       font-size: 14px;

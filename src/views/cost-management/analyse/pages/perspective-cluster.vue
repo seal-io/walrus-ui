@@ -196,7 +196,7 @@
             ...title
           },
           legend: {
-            right: 'center',
+            right: 'auto',
             top: 0
           },
           grid: {

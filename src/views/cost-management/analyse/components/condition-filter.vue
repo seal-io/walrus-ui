@@ -45,7 +45,7 @@
             <a-select
               v-model="sItem.values"
               :error="!sItem?.values?.length && triggerValidate"
-              :max-tag-count="2"
+              :max-tag-count="1"
               multiple
               :loading="sItem.loading"
               :options="sItem.fieldValues"
@@ -159,7 +159,7 @@
   };
   const handlePopupVisible = async (visible, sItem) => {
     try {
-      if (visible && !sItem?.fieldValues?.length && sItem.fieldName) {
+      if (visible && sItem.fieldName) {
         sItem.loading = true;
         const date = find(
           DateShortCuts,

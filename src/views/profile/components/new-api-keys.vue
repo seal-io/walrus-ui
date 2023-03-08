@@ -2,6 +2,7 @@
   <div class="container">
     <a-modal
       top="10%"
+      :closable="false"
       :align-center="false"
       :visible="show"
       :mask-closable="false"
@@ -20,8 +21,8 @@
           :rules="[
             {
               required: true,
-              message: $t('account.settings.token.rules.name'),
-            },
+              message: $t('account.settings.token.rules.name')
+            }
           ]"
         >
           <a-input v-model="formData.name" />
@@ -33,8 +34,8 @@
           :rules="[
             {
               required: true,
-              message: $t('account.settings.token.rules.expire'),
-            },
+              message: $t('account.settings.token.rules.expire')
+            }
           ]"
         >
           <a-select v-model="formData.expiration" class="expire-select">
@@ -100,14 +101,14 @@
       type: Boolean,
       default() {
         return false;
-      },
-    },
+      }
+    }
   });
   const emit = defineEmits(['tokenSave', 'update:show']);
   const formref = ref();
   const formData: FormDataType = reactive({
     name: '',
-    expiration: 'account.settings.expire.never',
+    expiration: 'account.settings.expire.never'
   });
 
   const handleCancel = () => {
@@ -145,7 +146,7 @@
   const handleBeforeClose = () => {
     Object.assign(formData, {
       name: '',
-      expiration: 'account.settings.expire.never',
+      expiration: 'account.settings.expire.never'
     });
     emit('tokenSave');
   };

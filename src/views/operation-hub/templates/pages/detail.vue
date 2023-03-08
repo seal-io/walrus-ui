@@ -1,6 +1,7 @@
 <template>
   <ComCard top-gap>
     <GroupTitle
+      show-back
       :title="
         id
           ? $t('operation.templates.detail.edit')

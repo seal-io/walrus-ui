@@ -1,6 +1,6 @@
 <template>
   <comCard top-gap class="kuber-detail-wrap">
-    <GroupTitle :title="title"></GroupTitle>
+    <GroupTitle :title="title" show-back></GroupTitle>
     <div>
       <a-form ref="formref" :model="formData" auto-label-width>
         <a-form-item

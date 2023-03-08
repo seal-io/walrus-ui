@@ -1,6 +1,7 @@
 <template>
   <a-modal
     top="10%"
+    :closable="false"
     :align-center="false"
     :width="500"
     :ok-text="$t('common.button.save')"

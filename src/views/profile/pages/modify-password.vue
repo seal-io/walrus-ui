@@ -1,7 +1,7 @@
 <template>
   <div class="container">
     <a-card class="general-card q-s-w-card">
-      <GroupTitle :title="$t('user.password.modify')"></GroupTitle>
+      <GroupTitle :title="$t('user.password.modify')" show-back></GroupTitle>
       <a-form :model="formData" auto-label-width @submit="handleSubmit">
         <a-form-item
           field="oldPassword"
