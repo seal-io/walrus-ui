@@ -85,18 +85,24 @@
 </template>
 
 <script lang="ts" setup>
-  import { each } from 'lodash';
-  import { ref, reactive, PropType, watch } from 'vue';
+  import { each, get } from 'lodash';
+  import { ref, reactive, PropType, watch, inject } from 'vue';
   import useCallCommon from '@/hooks/use-call-common';
   import EditPageFooter from '@/components/edit-page-footer/index.vue';
   import { Variables } from '../config/interface';
-  import { deployApplication } from '../api';
+  import { deployApplication, upgradeApplicationInstance } from '../api';
 
   const props = defineProps({
     show: {
       type: Boolean,
       default() {
         return false;
+      }
+    },
+    dataInfo: {
+      type: Object,
+      default() {
+        return {};
       }
     },
     status: {
@@ -118,7 +124,18 @@
       }
     }
   });
-  const emit = defineEmits(['save', 'update:show', 'reset']);
+  const emit = defineEmits(['save', 'update:show', 'update:status', 'reset']);
+  const instanceId = inject('instanceId', ref(''));
+  const instanceInfo = inject(
+    'instanceInfo',
+    ref({
+      name: '',
+
+      environment: {
+        id: ''
+      }
+    })
+  );
   const { route } = useCallCommon();
   const formref = ref();
   const loading = ref(false);
@@ -140,7 +157,14 @@
       try {
         submitLoading.value = true;
         // TODO
-        await deployApplication({ ...formData, id: route.query.id || '' });
+        if (props.status === 'create') {
+          await deployApplication({ ...formData, id: route.query.id || '' });
+        } else {
+          await upgradeApplicationInstance({
+            ...formData,
+            id: instanceId.value
+          });
+        }
         setTimeout(() => {
           emit('save');
         }, 200);
@@ -171,8 +195,21 @@
       deep: true
     }
   );
+  watch(
+    () => props.status,
+    () => {
+      if (props.status === 'edit') {
+        formData.name = instanceInfo.value.name;
+        formData.environment.id = instanceInfo.value.environment.id;
+      }
+    },
+    {
+      immediate: true
+    }
+  );
   const handleBeforeOpen = () => {};
   const handleBeforeClose = () => {
+    emit('update:status', 'create');
     resetForm();
   };
 </script>

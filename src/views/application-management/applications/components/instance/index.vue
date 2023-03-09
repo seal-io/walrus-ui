@@ -22,7 +22,7 @@
       </template>
       <BasicInfo></BasicInfo>
     </ModuleCard>
-    <ModuleCard title="History">
+    <ModuleCard title="历史版本">
       <applicationHistory></applicationHistory>
     </ModuleCard>
     <a-tabs
@@ -60,15 +60,18 @@
     </EditPageFooter>
     <createInstance
       v-model:show="showInstanceModal"
+      v-model:status="status"
       title="升级实例"
-      :status="status"
+      :variables="appInfoVariables"
+      :environment-list="environmentList"
       @save="handleSaveInstanceInfo"
     ></createInstance>
   </div>
 </template>
 
 <script lang="ts" setup>
-  import { markRaw, ref } from 'vue';
+  import { cloneDeep, get } from 'lodash';
+  import { markRaw, ref, reactive, watch, inject, computed } from 'vue';
   import useCallCommon from '@/hooks/use-call-common';
   import tabTerminal from '@/components/x-terminal/index.vue';
   import EditPageFooter from '@/components/edit-page-footer/index.vue';
@@ -81,7 +84,18 @@
   import createInstance from '../create-instance.vue';
   import BasicInfo from './basic-info.vue';
   import { instanceTabs } from '../../config';
+  import { queryItemApplicationInstances } from '../../api';
 
+  const props = defineProps({
+    instanceId: {
+      type: String,
+      default() {
+        return '';
+      }
+    }
+  });
+  const environmentList = inject('environmentList', ref([]));
+  const appInfo = inject('appInfo', reactive({}));
   const { router, route } = useCallCommon();
   const activeKey = ref('resource');
   const showInstanceModal = ref(false);
@@ -95,13 +109,38 @@
     tabHistory: markRaw(applicationHistory),
     tabTerminal: markRaw(tabTerminal)
   };
+
+  const appInfoVariables = computed(() => {
+    return cloneDeep(get(appInfo, 'variables') || []);
+  });
   const handleTabChange = (val) => {
     activeKey.value = val;
   };
   const handleSaveInstanceInfo = () => {};
   const handleUpgradeInstance = () => {
+    status.value = 'edit';
     showInstanceModal.value = true;
   };
+  const getInstanceInfo = async () => {
+    if (!props.instanceId) return;
+    try {
+      const { data } = await queryItemApplicationInstances({
+        id: props.instanceId
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  watch(
+    () => props.instanceId,
+    () => {
+      // getInstanceInfo();
+    },
+    {
+      immediate: true
+    }
+  );
   const handleOk = () => {};
   const handleCancel = () => {
     router.back();

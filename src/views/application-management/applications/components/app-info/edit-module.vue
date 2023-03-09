@@ -85,7 +85,7 @@
 </template>
 
 <script lang="ts" setup>
-  import { get, find, cloneDeep, each, assignIn } from 'lodash';
+  import { get, find, cloneDeep, each, assignIn, pick, omit } from 'lodash';
   import { ref, reactive, PropType } from 'vue';
   import useCallCommon from '@/hooks/use-call-common';
   import EditPageFooter from '@/components/edit-page-footer/index.vue';
@@ -151,6 +151,8 @@
   const handleTemplateChange = (val) => {
     const moduleData = find(props.templates, (item) => item.id === val);
     moduleInfo.value = cloneDeep(get(moduleData, 'schema')) || {};
+    formData.application = { id: '' };
+    formData.attributes = {};
     setFormData(moduleInfo.value);
   };
   const handleOk = async () => {
@@ -159,7 +161,9 @@
     if (!res && moduleForm) {
       try {
         submitLoading.value = true;
-        formData.attributes = { ...moduleForm };
+        formData.attributes = {
+          ...moduleForm
+        };
         emit('save', cloneDeep(formData));
         setTimeout(() => {
           emit('update:show', false);

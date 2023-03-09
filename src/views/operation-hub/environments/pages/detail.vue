@@ -114,6 +114,7 @@
     name: '',
     description: '',
     connectorIDs: [],
+    connectors: [],
     edges: {
       connectors: []
     }
@@ -123,6 +124,13 @@
       if (includes(values, item.value)) {
         formData.value?.edges?.connectors?.push(item);
       }
+    });
+    formData.value.connectors = map(formData.value.connectorIDs, (val) => {
+      return {
+        connector: {
+          id: val
+        }
+      };
     });
   };
   const getItemEnvironmentInfo = async () => {
@@ -138,6 +146,7 @@
         name: '',
         description: '',
         connectorIDs: [],
+        connectors: [],
         edges: {
           connectors: []
         }

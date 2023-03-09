@@ -18,7 +18,7 @@
             :active="item.id === activeInstance"
             :data-info="item"
             :actions="instanceActions"
-            @delete="handleDeleteInstance('edit')"
+            @delete="handleDeleteInstance(item)"
             @click="handleClickInstance(item)"
           >
             <template #description>
@@ -34,10 +34,16 @@
       </div>
     </div>
     <div>
-      <component :is="pageComMap[pgCom]" @deploy="handleDeployDone"></component>
+      <component
+        :is="pageComMap[pgCom]"
+        :instance-id="currentInstance"
+        @deploy="handleDeployDone"
+      ></component>
     </div>
     <createInstance
       v-model:show="showInstanceModal"
+      :variables="appInfoVariables"
+      :environment-list="environmentList"
       title="创建实例"
       @save="handleSaveInstanceInfo"
     ></createInstance>
@@ -45,43 +51,67 @@
 </template>
 
 <script lang="ts" setup>
-  import { reactive, ref, markRaw } from 'vue';
-  import { keys, get } from 'lodash';
+  import { reactive, ref, markRaw, provide, computed } from 'vue';
+  import { keys, get, map, assignIn, cloneDeep } from 'lodash';
   import useCallCommon from '@/hooks/use-call-common';
   import GroupTitle from '@/components/group-title/index.vue';
   import thumbButton from '@/components/buttons/thumb-button.vue';
+  import { queryEnvironments } from '@/views/operation-hub/environments/api';
   import { queryItemProject } from '@/views/application-management/projects/api';
   import instanceThumb from '../components/instance-thumb.vue';
-  import { InstanceData } from '../config/interface';
+  import { InstanceData, AppFormData } from '../config/interface';
   import { instanceActions } from '../config/index';
 
   import AppDetail from '../components/app-info/index.vue';
   import InstanceDetail from '../components/instance/index.vue';
   import createInstance from '../components/create-instance.vue';
 
-  import { queryApplicationInstances } from '../api';
+  import {
+    queryApplicationInstances,
+    deleteApplicationInstance,
+    queryItemApplication
+  } from '../api';
 
   const { router, route, t } = useCallCommon();
   const id = route.query.id as string;
   const activeInstance = ref('app'); //
+  const currentInstance = ref('');
+  const environmentList = ref<{ label: string; value: string }[]>([]);
   const pgCom = ref('appDetail'); // instanceDetail、appDetail
   const showInstanceModal = ref(false);
   const projectBasicInfo = ref<any>({});
-
+  const instanceInfo = ref({});
+  const appInfo = reactive({
+    name: '',
+    description: '',
+    labels: {},
+    variables: [],
+    project: {
+      id: route.params.projectId
+    },
+    environment: {
+      id: 'test'
+    },
+    modules: []
+  }) as AppFormData;
+  provide('instanceId', currentInstance);
+  provide('environmentList', environmentList);
+  provide('appInfo', appInfo);
+  provide('instanceInfo', instanceInfo);
   const pageComMap = {
     appDetail: markRaw(AppDetail),
     instanceDetail: markRaw(InstanceDetail)
   };
-  const instanseList = ref<InstanceData[]>([
-    // { name: 'instance-1', id: '1', type: 'dev' },
-    // { name: 'instance-2', id: '2', type: 'staging' },
-    // { name: 'instance-3', id: '3', type: 'prod' }
-  ]);
+  const instanseList = ref<InstanceData[]>([]);
   const labelList = ref<{ key: string; value: string }[]>([]);
+
+  const appInfoVariables = computed(() => {
+    return cloneDeep(get(appInfo, 'variables') || []);
+  });
   const handleAddInstance = () => {
     showInstanceModal.value = true;
   };
-  const handleSaveInstanceInfo = () => {};
+
   const transformlabels = () => {
     const labelKeys = keys(projectBasicInfo.value.labels);
     if (labelKeys.length) {
@@ -95,18 +125,7 @@
       labelList.value = [];
     }
   };
-  const getProjectInfo = async () => {
-    try {
-      const { data } = await queryItemProject({ id });
-      projectBasicInfo.value = data;
-    } catch (error) {
-      projectBasicInfo.value = {};
-      console.log(error);
-    } finally {
-      transformlabels();
-    }
-  };
-  const handleDeleteInstance = (type) => {};
+
   const handleClickApp = () => {
     activeInstance.value = 'app';
     pgCom.value = 'appDetail';
@@ -114,20 +133,66 @@
 
   const handleClickInstance = (item) => {
     activeInstance.value = item.id;
+    currentInstance.value = item.id;
+    instanceInfo.value = item;
     pgCom.value = 'instanceDetail';
   };
   const getApplicationInstances = async () => {
+    if (!id) return;
     try {
       const params = {
         page: 1,
         perPage: -1,
-        applicationID: route.query.id,
-        extract: ['application']
+        applicationID: route.query.id
       };
       const { data } = await queryApplicationInstances(params);
       instanseList.value = data?.items || [];
     } catch (error) {
       instanseList.value = [];
+      console.log(error);
+    }
+  };
+  const handleSaveInstanceInfo = () => {
+    getApplicationInstances();
+  };
+  const getEnvironmentList = async () => {
+    try {
+      const params = {
+        page: 1,
+        perPage: -1
+      };
+      const { data } = await queryEnvironments(params);
+      const list = data?.items || [];
+      environmentList.value = map(list, (item) => {
+        return {
+          label: item.name,
+          value: item.id
+        };
+      });
+    } catch (error) {
+      environmentList.value = [];
+      console.log(error);
+    }
+  };
+  const getApplicationDetail = async () => {
+    if (!id) return;
+    try {
+      const params = {
+        id,
+        extract: ['modules']
+      };
+      const { data } = await queryItemApplication(params);
+      assignIn(appInfo, data);
+      console.log('appInfo===', appInfo);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  const handleDeleteInstance = async (item) => {
+    try {
+      await deleteApplicationInstance({ id: item.id });
+      getApplicationInstances();
+    } catch (error) {
       console.log(error);
     }
   };
@@ -138,8 +203,9 @@
     router.back();
   };
   const init = async () => {
-    // getProjectInfo();
     getApplicationInstances();
+    getEnvironmentList();
+    getApplicationDetail();
   };
   init();
 </script>
