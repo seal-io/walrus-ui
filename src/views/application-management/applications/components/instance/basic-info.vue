@@ -16,7 +16,9 @@
         <a-col :span="12">
           <a-form-item label="CreateTime">
             <a-input
-              v-model="formData.createTime"
+              :model-value="
+                dayjs(formData.createTime).format('YYYY-MM-DD HH:mm:ss')
+              "
               style="width: 100%"
             ></a-input>
           </a-form-item>
@@ -25,19 +27,25 @@
       <a-row :gutter="20">
         <a-col :span="12">
           <a-form-item label="Application">
-            <a-input style="width: 100%"></a-input>
+            <a-input
+              v-model="formData.application.name"
+              style="width: 100%"
+            ></a-input>
           </a-form-item>
         </a-col>
         <a-col :span="12">
           <a-form-item label="Environment">
-            <a-input style="width: 100%"></a-input>
+            <a-input
+              v-model="formData.environment.name"
+              style="width: 100%"
+            ></a-input>
           </a-form-item>
         </a-col>
       </a-row>
       <a-row :gutter="20">
         <a-col :span="12">
           <a-form-item label="Status">
-            <a-input style="width: 100%"></a-input>
+            <a-input v-model="formData.status" style="width: 100%"></a-input>
           </a-form-item>
         </a-col>
         <a-col :span="12">
@@ -51,8 +59,10 @@
 </template>
 
 <script lang="ts" setup>
+  import dayjs from 'dayjs';
   import { assignIn, keys, get, each, map } from 'lodash';
-  import { ref, reactive, PropType, watch } from 'vue';
+  import { ref, reactive, PropType, watch, inject, watchEffect } from 'vue';
+  import { InstanceData } from '../../config/interface';
 
   const props = defineProps({
     dataInfo: {
@@ -66,9 +76,21 @@
     name: '',
     createTime: '',
     updateTime: '',
-    description: '',
-    labels: {}
+    status: '',
+    environment: { name: '' },
+    application: {
+      name: ''
+    }
   });
+  const instanceInfo = inject(
+    'instanceInfo',
+    ref({
+      name: '',
+      createTime: '',
+      updateTime: ''
+    })
+  );
+  const appInfo = inject('appInfo', reactive({ name: '' }));
   const labelList = ref<{ key: string; value: string }[]>([]);
   const handleAddLabel = (obj, list) => {
     list.push({ ...obj });
@@ -76,15 +98,12 @@
   const handleDeleteLabel = (list, index) => {
     list.splice(index, 1);
   };
-  watch(
-    () => props.dataInfo,
-    () => {
-      assignIn(formData, props.dataInfo);
-    },
-    {
-      immediate: true
-    }
-  );
+
+  watchEffect(() => {
+    assignIn(formData, instanceInfo.value, {
+      application: { name: appInfo.name }
+    });
+  });
 </script>
 
 <style lang="less"></style>

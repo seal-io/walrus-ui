@@ -114,11 +114,10 @@
 </template>
 
 <script lang="ts" setup>
-  import { reactive, ref, computed } from 'vue';
+  import { reactive, ref, computed, provide, inject } from 'vue';
   import { cloneDeep, assignIn, omit, pick, get, concat, map } from 'lodash';
   import useCallCommon from '@/hooks/use-call-common';
   import thumbButton from '@/components/buttons/thumb-button.vue';
-  import { queryEnvironments } from '@/views/operation-hub/environments/api';
   import { queryModules } from '@/views/operation-hub/templates/api';
   import EditPageFooter from '@/components/edit-page-footer/index.vue';
   import { TemplateRowData } from '@/views/operation-hub/templates/config/interface';
@@ -136,6 +135,10 @@
     updateApplication
   } from '../../api';
 
+  const environmentList = inject(
+    'environmentList',
+    ref<{ label: string; value: string }[]>([])
+  );
   const { router, route } = useCallCommon();
   const basicform = ref();
   const appInfo = reactive({
@@ -153,8 +156,6 @@
   }) as AppFormData;
 
   const emits = defineEmits(['deploy']);
-  const variableList = ref([{ name: '', value: '', description: '' }]);
-  const environmentList = ref<{ label: string; value: string }[]>([]);
   const submitLoading = ref(false);
   const id = route.query.id as string;
   const moduleTemplates = ref<TemplateRowData[]>([]);
@@ -270,32 +271,13 @@
       console.log(error);
     }
   };
-  const getEnvironmentList = async () => {
-    try {
-      const params = {
-        page: 1,
-        perPage: -1
-      };
-      const { data } = await queryEnvironments(params);
-      const list = data?.items || [];
-      environmentList.value = map(list, (item) => {
-        return {
-          label: item.name,
-          value: item.id
-        };
-      });
-    } catch (error) {
-      environmentList.value = [];
-      console.log(error);
-    }
-  };
+
   const handleCancel = () => {
     router.back();
   };
   const init = async () => {
     getModules();
     getApplicationDetail();
-    getEnvironmentList();
   };
   init();
 </script>

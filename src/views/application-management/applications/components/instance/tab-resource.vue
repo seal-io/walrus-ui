@@ -1,6 +1,7 @@
 <template>
   <div class="resource-wrap">
     <a-table
+      :loading="loading"
       column-resizable
       style="margin-bottom: 10px"
       :bordered="false"
@@ -81,25 +82,40 @@
 </template>
 
 <script lang="ts" setup>
-  import { onMounted, ref, reactive } from 'vue';
+  import { onMounted, ref, reactive, inject, watch } from 'vue';
   import { InstanceResource } from '../../config/interface';
+  import { queryApplicationResource } from '../../api';
 
-  const total = ref(100);
+  const instanceId = inject('instanceId', ref(''));
+  const total = ref(0);
+  const loading = ref(false);
   const queryParams = reactive({
     page: 1,
     perPage: 10
   });
-  const dataList = ref<InstanceResource[]>([
-    { name: 'mydb', type: 'rds', status: 'ready' },
-    { name: 'configmap', type: 'k8s', status: 'ready' }
-  ]);
+  const dataList = ref<InstanceResource[]>([]);
   const handleEnabled = (row) => {
     console.log(row);
   };
   const handleDisabled = (row) => {
     console.log(row);
   };
-  const fetchData = async () => {};
+  const fetchData = async () => {
+    try {
+      loading.value = true;
+      const params = {
+        ...queryParams,
+        instanceID: instanceId.value
+      };
+      const { data } = await queryApplicationResource(params);
+      dataList.value = data?.items || [];
+      loading.value = false;
+    } catch (error) {
+      dataList.value = [];
+      loading.value = false;
+      console.log(error);
+    }
+  };
   const handleFilter = () => {
     fetchData();
   };
@@ -112,6 +128,16 @@
     queryParams.perPage = pageSize;
     handleFilter();
   };
+  watch(
+    () => instanceId.value,
+    () => {
+      queryParams.page = 1;
+      fetchData();
+    },
+    {
+      immediate: true
+    }
+  );
   onMounted(() => {
     console.log('resource');
   });

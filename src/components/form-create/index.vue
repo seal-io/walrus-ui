@@ -158,14 +158,15 @@
   const submitLoading = ref(false);
   const formref = ref();
   const schemaList = ref<ComponentSchema[]>([]);
-  const formData = reactive({});
+  const formData = ref({});
 
   const doSubmit = async () => {
-    return axios[props.action](props.api, formData);
+    return axios[props.action](props.api, formData.value);
   };
   const setFormData = () => {
+    formData.value = {};
     each(props.formSchema, (item) => {
-      formData[item.Name] = get(props.model, item.Name) || item.Default;
+      formData.value[item.Name] = get(props.model, item.Name) || item.Default;
     });
   };
 
@@ -204,7 +205,7 @@
   const getFormData = async () => {
     const result = await formref.value?.validate();
     if (!result) {
-      return formData;
+      return formData.value;
     }
     return false;
   };
@@ -215,7 +216,7 @@
       try {
         submitLoading.value = true;
         if (props.submit) {
-          await props.submit?.(formData);
+          await props.submit?.(formData.value);
         } else {
           await doSubmit();
         }

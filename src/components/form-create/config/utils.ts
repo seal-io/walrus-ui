@@ -27,19 +27,31 @@ export const parseMapstring = (comSchema) => {
 export const parseOptions = (comSchema) => {
   const schemaType = get(comSchema, 'Type');
   let options: OptionsItem[] = [];
-  if (['list(number)', 'list(string)'].includes(schemaType)) {
-    const defaultValue =
-      get(comSchema, 'Default') || get(comSchema, 'Options') || [];
-    if (defaultValue.length) {
-      options = map(defaultValue, (val) => {
-        return {
-          label: val,
-          value: val
-        };
-      });
-    } else {
-      options = [];
-    }
+  // if (['list(number)', 'list(string)'].includes(schemaType)) {
+  //   const defaultValue =
+  //     get(comSchema, 'Options') || get(comSchema, 'Default') || [];
+  //   if (defaultValue.length) {
+  //     options = map(defaultValue, (val) => {
+  //       return {
+  //         label: val,
+  //         value: val
+  //       };
+  //     });
+  //   } else {
+  //     options = [];
+  //   }
+  // }
+  const defaultValue =
+    get(comSchema, 'Options') || get(comSchema, 'Default') || [];
+  if (defaultValue.length) {
+    options = map(defaultValue, (val) => {
+      return {
+        label: val,
+        value: val
+      };
+    });
+  } else {
+    options = [];
   }
   return options;
 };

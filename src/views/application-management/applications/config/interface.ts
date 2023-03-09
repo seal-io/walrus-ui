@@ -44,12 +44,23 @@ export interface InstanceData {
 }
 
 export interface InstanceResource {
+  id: string;
   name: string;
   type: string;
   status: string;
+  createTime: string;
 }
 export interface HistoryData {
-  version: string;
-  createTime?: string;
-  operator: string;
+  id: string;
+  status: string;
+  statusMessage: string;
+  createTime: string;
+  deployerType: string;
+  instance: {
+    id: string;
+    name: string;
+    status: string;
+    createTime: string;
+    statusMessage: string;
+  };
 }

@@ -48,5 +48,45 @@ export const queryApplicationInstances = (params) => {
     }
   });
 };
+export const queryItemApplicationInstances = (params) => {
+  return axios.get(`/application-instances/${params.id}`, {
+    params,
+    paramsSerializer: (obj) => {
+      return qs.stringify(obj);
+    }
+  });
+};
+export const deleteApplicationInstance = (data) => {
+  return axios.delete(`/application-instances/${data.id}`);
+};
+export const upgradeApplicationInstance = (data) => {
+  return axios.put(`/application-instances/${data.id}/upgrade`, data);
+};
 // =========history================
-export const queryApplicationRevisions = (params: Pagination) => {};
+interface ApplicationRevisionParams extends Pagination {
+  instanceID: string;
+}
+
+export const queryApplicationRevisions = (
+  params: ApplicationRevisionParams
+) => {
+  return axios.get(`/application-revisions`, {
+    params,
+    paramsSerializer: (obj) => {
+      return qs.stringify(obj);
+    }
+  });
+};
+
+export const deleteApplicationRevisions = (data: { id: string }[]) => {
+  return axios.delete(`/application-revisions`, { data });
+};
+// ===========resource==========
+export const queryApplicationResource = (params: ApplicationRevisionParams) => {
+  return axios.get(`/application-resources`, {
+    params,
+    paramsSerializer: (obj) => {
+      return qs.stringify(obj);
+    }
+  });
+};
