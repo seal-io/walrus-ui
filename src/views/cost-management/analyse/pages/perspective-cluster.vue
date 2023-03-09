@@ -239,7 +239,8 @@
     resourceCostOverview,
     dailyCostCols,
     clusterNamespaceCostCols,
-    DateShortCuts
+    DateShortCuts,
+    setEndTimeAddDay
   } from '../config';
   import usePerspectiveCost from '../hooks/use-perspective-cluster';
 
@@ -303,11 +304,11 @@
     clusterloading,
     id,
     loading,
-    overviewloading
+    overviewloading,
+    timeMode
   } = usePerspectiveCost(props);
   const { t } = useCallCommon();
   const loadeend = ref(false);
-  const timeMode = ref('utc');
   const clusterOptions = [
     { label: 'cluster-1', value: 'cluster1' },
     { label: 'cluster-2', value: 'cluster2' }
@@ -357,15 +358,18 @@
     await getClusterList();
     workloadCostFilters.value = {
       ...workloadCostFilters.value,
-      ...queryParams
+      ...queryParams,
+      endTime: setEndTimeAddDay(queryParams.endTime, timeMode.value)
     };
     dailyCostFilters.value = {
       ...dailyCostFilters.value,
-      ...queryParams
+      ...queryParams,
+      endTime: setEndTimeAddDay(queryParams.endTime, timeMode.value)
     };
     nameSpaceCostFilters.value = {
       ...nameSpaceCostFilters.value,
-      ...queryParams
+      ...queryParams,
+      endTime: setEndTimeAddDay(queryParams.endTime, timeMode.value)
     };
     getDailyCostChart();
     getNamespaceCostChart();

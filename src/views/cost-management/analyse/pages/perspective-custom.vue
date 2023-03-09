@@ -90,7 +90,7 @@
   import LineBarChart from '@/components/line-bar-chart/index.vue';
   import FilterBox from '@/components/filter-box/index.vue';
   import TableList from '../components/table-list.vue';
-  import { DateShortCuts } from '../config';
+  import { DateShortCuts, setEndTimeAddDay } from '../config';
   import usePerspectiveCost from '../hooks/use-perspective-custom';
   import groupbyData from '../config/groupby-data';
 
@@ -142,11 +142,11 @@
     apploading,
     loading,
     id,
-    overviewloading
+    overviewloading,
+    timeMode
   } = usePerspectiveCost(props);
   const { t } = useCallCommon();
   const loadeend = ref(false);
-  const timeMode = ref('utc');
 
   const preloading = computed(() => {
     return loading.value;
@@ -178,7 +178,8 @@
   const handleDateChange = async () => {
     projectCostFilters.value = {
       ...projectCostFilters.value,
-      ...queryParams
+      ...queryParams,
+      endTime: setEndTimeAddDay(queryParams.endTime, timeMode.value)
     };
     getProjectCostChart();
     getSummaryData();

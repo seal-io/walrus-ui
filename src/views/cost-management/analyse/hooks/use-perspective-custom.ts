@@ -14,7 +14,7 @@ import {
   concat,
   assignIn
 } from 'lodash';
-import { getTimeRange, projectCostOverview } from '../config';
+import { getTimeRange, projectCostOverview, setEndTimeAddDay } from '../config';
 import { ChartData } from '../config/interface';
 import {
   queryItemPerspective,
@@ -39,6 +39,8 @@ export default function usePerspectiveCost(props) {
   const apploading = ref(false);
   const overviewloading = ref(false);
 
+  const timeMode = ref('utc');
+
   const projectName = ref('');
   const queryParams = reactive({
     startTime: '',
@@ -62,7 +64,7 @@ export default function usePerspectiveCost(props) {
       overviewloading.value = true;
       const params = {
         ...omit(projectCostFilters.value, 'paging'),
-        ...queryParams
+        ...omit(queryParams, 'endTime')
         // startTime: dayjs(queryParams.startTime).format('YYYY-MM-DDTHH:mm:ssZ'),
         // endTime: dayjs(queryParams.endTime).format('YYYY-MM-DDT23:59:59Z')
       };
@@ -80,7 +82,7 @@ export default function usePerspectiveCost(props) {
       apploading.value = true;
       const params = {
         ...omit(projectCostFilters.value, 'paging'),
-        ...queryParams
+        ...omit(queryParams, 'endTime')
         // startTime: dayjs(queryParams.startTime).format('YYYY-MM-DDTHH:mm:ssZ'),
         // endTime: dayjs(queryParams.endTime).format('YYYY-MM-DDT23:59:59Z')
       };
@@ -157,7 +159,8 @@ export default function usePerspectiveCost(props) {
 
       projectCostFilters.value = {
         ...projectFilter,
-        ...queryParams
+        ...queryParams,
+        endTime: setEndTimeAddDay(queryParams.endTime, timeMode.value)
       };
       loading.value = false;
     } catch (error) {
@@ -177,6 +180,7 @@ export default function usePerspectiveCost(props) {
     apploading,
     id: pageId,
     loading,
-    overviewloading
+    overviewloading,
+    timeMode
   };
 }

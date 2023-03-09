@@ -17,7 +17,8 @@ import {
 import {
   clusterCostOverview,
   resourceCostOverview,
-  getTimeRange
+  getTimeRange,
+  setEndTimeAddDay
 } from '../config';
 import { CostAnalyRow, ChartData } from '../config/interface';
 import {
@@ -41,6 +42,7 @@ export default function usePerspectiveCost(props) {
   const clusterloading = ref(false);
   const overviewloading = ref(false);
   const loading = ref(false);
+  const timeMode = ref('utc');
 
   const dailyCostChart = ref<ChartData>({
     xAxis: [],
@@ -141,7 +143,7 @@ export default function usePerspectiveCost(props) {
       dailyloading.value = true;
       const params = {
         ...omit(dailyCostFilters.value, 'paging'),
-        ...queryParams,
+        ...omit(queryParams, 'endTime'),
         // startTime: dayjs(queryParams.startTime).format('YYYY-MM-DDTHH:mm:ssZ'),
         // endTime: dayjs(queryParams.endTime).format('YYYY-MM-DDT23:59:59Z'),
         source: 'daily chart'
@@ -178,7 +180,7 @@ export default function usePerspectiveCost(props) {
       spaceloading.value = true;
       const params = {
         ...omit(nameSpaceCostFilters.value, 'paging'),
-        ...queryParams
+        ...omit(queryParams, 'endTime')
         // startTime: dayjs(queryParams.startTime).format('YYYY-MM-DDTHH:mm:ssZ'),
         // endTime: dayjs(queryParams.endTime).format('YYYY-MM-DDT23:59:59Z')
       };
@@ -221,7 +223,7 @@ export default function usePerspectiveCost(props) {
       workloading.value = true;
       const params = {
         ...omit(workloadCostFilters.value, 'paging'),
-        ...queryParams
+        ...omit(queryParams, 'endTime')
         // startTime: dayjs(queryParams.startTime).format('YYYY-MM-DDTHH:mm:ssZ'),
         // endTime: dayjs(queryParams.endTime).format('YYYY-MM-DDT23:59:59Z')
       };
@@ -322,16 +324,19 @@ export default function usePerspectiveCost(props) {
       );
       dailyCostFilters.value = {
         ...cloneDeep({ ...dailyFilter, step: '' }),
-        ...queryParams
+        ...queryParams,
+        endTime: setEndTimeAddDay(queryParams.endTime, timeMode.value)
       };
 
       workloadCostFilters.value = {
         ...workloadFilter,
-        ...queryParams
+        ...queryParams,
+        endTime: setEndTimeAddDay(queryParams.endTime, timeMode.value)
       };
       nameSpaceCostFilters.value = {
         ...namespaceFilter,
-        ...queryParams
+        ...queryParams,
+        endTime: setEndTimeAddDay(queryParams.endTime, timeMode.value)
       };
       loading.value = false;
     } catch (error) {
@@ -363,6 +368,7 @@ export default function usePerspectiveCost(props) {
     clusterloading,
     id: pageId,
     loading,
-    overviewloading
+    overviewloading,
+    timeMode
   };
 }

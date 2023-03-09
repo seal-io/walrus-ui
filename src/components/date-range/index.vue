@@ -186,13 +186,14 @@
     if (!props.timezone) {
       return value;
     }
+    const start = dayjs(get(value, 0))
+      .set('hour', 0)
+      .set('minute', 0)
+      .set('second', 0);
     if (props.timeMode === 'utc') {
-      return [
-        dayjs(get(value, 0)).utc().format(),
-        dayjs(get(value, 1)).utc().format()
-      ];
+      return [dayjs(start).utc().format(), dayjs(get(value, 1)).utc().format()];
     }
-    return [dayjs(get(value, 0)).format(), dayjs(get(value, 1)).format()];
+    return [dayjs(start).format(), dayjs(get(value, 1)).format()];
   };
   const handleSelect = (val) => {
     const value = generateTimezoneFormat(val);
@@ -239,6 +240,9 @@
     emits('update:end', get(value, '1'));
     startDate.value = get(value, '0');
     endDate.value = get(value, '1');
+    setTimeout(() => {
+      popupVisible.value = false;
+    }, 100);
     return value;
   };
   const handleChangeTimeMode = (item) => {
@@ -256,21 +260,15 @@
   };
   const handleSelectShortcut = (val) => {
     const metaValue = get(val, 'value') || [];
-    const value = setRangeValue(metaValue);
+    setRangeValue(metaValue);
     // console.log('value====', value);
     emits('update:timeUnit', val.unit);
     // emits('change', value);
-    setTimeout(() => {
-      popupVisible.value = false;
-    }, 100);
   };
   const handleDateChange = (val) => {
     console.log('change:', val);
     const value = setRangeValue(val);
     emits('change', value);
-    setTimeout(() => {
-      popupVisible.value = false;
-    }, 100);
   };
 </script>
 

@@ -138,7 +138,8 @@
     dailyCostCols,
     costPerClusterCols,
     costPerProjectCols,
-    DateShortCuts
+    DateShortCuts,
+    setEndTimeAddDay
   } from '../config';
   import usePerspectiveCost from '../hooks/use-perspective-cost';
 
@@ -203,12 +204,12 @@
     clusterloading,
     loading,
     id,
-    overviewloading
+    overviewloading,
+    timeMode
   } = usePerspectiveCost(props);
   const active = ref<'bar' | 'line'>('bar');
   const activeProject = ref<'bar' | 'line'>('bar');
   const activeCluster = ref<'bar' | 'line'>('bar');
-  const timeMode = ref('utc');
 
   const preloading = computed(() => {
     return props.pageloading || loading.value;
@@ -231,15 +232,18 @@
     console.log('dateChange=1==', val, queryParams);
     dailyCostFilters.value = {
       ...dailyCostFilters.value,
-      ...queryParams
+      ...queryParams,
+      endTime: setEndTimeAddDay(queryParams.endTime, timeMode.value)
     };
     projectCostFilters.value = {
       ...projectCostFilters.value,
-      ...queryParams
+      ...queryParams,
+      endTime: setEndTimeAddDay(queryParams.endTime, timeMode.value)
     };
     clusterCostFilters.value = {
       ...clusterCostFilters.value,
-      ...queryParams
+      ...queryParams,
+      endTime: setEndTimeAddDay(queryParams.endTime, timeMode.value)
     };
     getDailyCostChart();
     getProjectCostChart();
