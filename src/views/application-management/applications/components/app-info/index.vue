@@ -21,7 +21,11 @@
           >
         </div>
       </template>
-      <BasicInfo ref="basicform" :data-info="appInfo"></BasicInfo>
+      <BasicInfo
+        ref="basicform"
+        :data-info="appInfo"
+        :default-value="defaultBasicInfo"
+      ></BasicInfo>
     </ModuleCard>
     <ModuleCard title="Moudles">
       <div class="content">
@@ -60,14 +64,17 @@
         </template>
       </a-dropdown>
       <moduleWrapper
-        v-for="(item, index) in variableList"
+        v-for="(item, index) in get(appInfo, 'variables') || []"
         :key="index"
         style="margin-bottom: 10px"
-        title="Variable Name"
+        :title="item.name || 'Variable Name'"
         :status="collapseStatus === index"
         @delete="handleDeleteVariable(index)"
       >
-        <variableForm :key="index" :data-info="item"></variableForm>
+        <variableForm
+          :key="index"
+          v-model:data-info="appInfo.variables[index]"
+        ></variableForm>
       </moduleWrapper>
     </ModuleCard>
     <EditPageFooter>
@@ -98,6 +105,8 @@
     ></editModule>
     <createInstance
       v-model:show="showInstanceModal"
+      :variables="appInfoVariables"
+      :environment-list="environmentList"
       title="部署应用"
       @save="handleSaveInstanceInfo"
     ></createInstance>
@@ -106,9 +115,10 @@
 
 <script lang="ts" setup>
   import { reactive, ref, computed } from 'vue';
-  import { cloneDeep, assignIn } from 'lodash';
+  import { cloneDeep, assignIn, omit, pick, get, concat, map } from 'lodash';
   import useCallCommon from '@/hooks/use-call-common';
   import thumbButton from '@/components/buttons/thumb-button.vue';
+  import { queryEnvironments } from '@/views/operation-hub/environments/api';
   import { queryModules } from '@/views/operation-hub/templates/api';
   import EditPageFooter from '@/components/edit-page-footer/index.vue';
   import { TemplateRowData } from '@/views/operation-hub/templates/config/interface';
@@ -118,9 +128,13 @@
   import moduleWrapper from '../module-wrapper.vue';
   import editModule from './edit-module.vue';
   import BasicInfo from './basic-info.vue';
-  import { AppFormData } from '../../config/interface';
+  import { AppFormData, Variables } from '../../config/interface';
   import { moduleActions } from '../../config';
-  import { createApplication } from '../../api';
+  import {
+    createApplication,
+    queryItemApplication,
+    updateApplication
+  } from '../../api';
 
   const { router, route } = useCallCommon();
   const basicform = ref();
@@ -128,6 +142,7 @@
     name: '',
     description: '',
     labels: {},
+    variables: [],
     project: {
       id: route.params.projectId
     },
@@ -137,18 +152,22 @@
     modules: []
   }) as AppFormData;
 
+  const emits = defineEmits(['deploy']);
   const variableList = ref([{ name: '', value: '', description: '' }]);
+  const environmentList = ref<{ label: string; value: string }[]>([]);
   const submitLoading = ref(false);
-  const id = route.params.id as string;
+  const id = route.query.id as string;
   const moduleTemplates = ref<TemplateRowData[]>([]);
+  const appInfoVariables = ref<Variables[]>([]);
   const active = ref('');
-  const moduleInfo = ref({});
+  const moduleInfo = ref({}); // item module
+  const defaultBasicInfo = ref({});
   const moduleAction = ref('create');
   const showInstanceModal = ref(false);
   const showEditModal = ref(false);
 
   const collapseStatus = computed(() => {
-    return variableList.value.length - 1;
+    return appInfo?.variables?.length - 1;
   });
   const handleEditModule = (item) => {
     moduleAction.value = 'edit';
@@ -168,7 +187,7 @@
   };
   const handleClickInstance = (data) => {};
   const handleDeleteVariable = (index) => {
-    variableList.value.splice(index, 1);
+    appInfo.variables.splice(index, 1);
   };
   const getModules = async () => {
     try {
@@ -184,15 +203,19 @@
     }
   };
   const handleSelect = () => {
-    variableList.value.push({
+    appInfo.variables = concat(appInfo.variables, {
       name: '',
-      value: '',
-      description: ''
+      default: '',
+      description: '',
+      type: 'string'
     });
   };
-  const handleSaveInstanceInfo = () => {};
+  const handleSaveInstanceInfo = () => {
+    emits('deploy');
+  };
   const handleDeployApp = () => {
     showInstanceModal.value = true;
+    appInfoVariables.value = cloneDeep(appInfo.variables);
   };
   const handleOk = async () => {
     const result = await basicform.value.getFormData();
@@ -202,8 +225,14 @@
         ...appInfo,
         ...result
       };
+      console.log('submit:', appInfo, result);
       submitLoading.value = true;
-      await createApplication(data);
+      if (id) {
+        await updateApplication(data);
+      } else {
+        console.log('submit:', data);
+        await createApplication(data);
+      }
       submitLoading.value = false;
       router.back();
     } catch (error) {
@@ -212,7 +241,7 @@
     }
   };
   const handleSaveModule = (data) => {
-    console.log('saveModule===', data);
+    console.log('saveModule===', data, moduleAction.value);
     if (moduleAction.value === 'create') {
       appInfo.modules.push({
         ...cloneDeep(data)
@@ -220,12 +249,55 @@
     } else {
       assignIn(moduleInfo.value, data);
     }
-    moduleInfo.value = {};
+  };
+  const getApplicationDetail = async () => {
+    if (!id) return;
+    try {
+      const params = {
+        id
+      };
+      const { data } = await queryItemApplication(params);
+      defaultBasicInfo.value = pick(data, [
+        'name',
+        'description',
+        'labels',
+        'createTime',
+        'updateTime'
+      ]);
+      assignIn(appInfo, data);
+      console.log('appInfo===', appInfo);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  const getEnvironmentList = async () => {
+    try {
+      const params = {
+        page: 1,
+        perPage: -1
+      };
+      const { data } = await queryEnvironments(params);
+      const list = data?.items || [];
+      environmentList.value = map(list, (item) => {
+        return {
+          label: item.name,
+          value: item.id
+        };
+      });
+    } catch (error) {
+      environmentList.value = [];
+      console.log(error);
+    }
   };
   const handleCancel = () => {
     router.back();
   };
-  getModules();
+  const init = async () => {
+    getModules();
+    getApplicationDetail();
+    getEnvironmentList();
+  };
+  init();
 </script>
 
 <style lang="less" scoped>

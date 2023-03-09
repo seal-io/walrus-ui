@@ -9,10 +9,10 @@ export interface ResultType {
   pagination: Pagination;
 }
 export interface QueryType extends Pagination {
-  projectId: string;
+  projectID: string;
 }
 export const queryApplications = (params: QueryType) => {
-  return axios.get<ResultType>(`/projects/${params.projectId}/applications`, {
+  return axios.get<ResultType>(`/applications`, {
     params,
     paramsSerializer: (obj) => {
       return qs.stringify(obj);
@@ -22,6 +22,9 @@ export const queryApplications = (params: QueryType) => {
 
 export const createApplication = (data) => {
   return axios.post(`/applications`, data);
+};
+export const deployApplication = (data) => {
+  return axios.post(`/applications/${data.id}/deploy`, data);
 };
 
 export const updateApplication = (data) => {
@@ -36,6 +39,14 @@ export const queryItemApplication = (params) => {
     }
   });
 };
-
+// ========instance======
+export const queryApplicationInstances = (params) => {
+  return axios.get(`/application-instances`, {
+    params,
+    paramsSerializer: (obj) => {
+      return qs.stringify(obj);
+    }
+  });
+};
 // =========history================
 export const queryApplicationRevisions = (params: Pagination) => {};

@@ -3,8 +3,7 @@
     <FilterBox style="margin-bottom: 10px">
       <template #params>
         <a-select
-          v-model="queryParams.projectId"
-          allow-clear
+          v-model="queryParams.projectID"
           allow-search
           :options="projectList"
           style="width: 220px"
@@ -87,12 +86,12 @@
         >
           <template #cell>
             <a-space :size="4" wrap>
-              <InstanceStatus
+              <!-- <InstanceStatus
                 status="running"
                 label="development"
               ></InstanceStatus>
               <InstanceStatus status="warning" label="test"></InstanceStatus>
-              <InstanceStatus status="error" label="prod"></InstanceStatus>
+              <InstanceStatus status="error" label="prod"></InstanceStatus> -->
             </a-space>
           </template>
         </a-table-column>
@@ -191,7 +190,7 @@
   const showAppModal = ref(false);
   const total = ref(0);
   const queryParams = reactive({
-    projectId: '',
+    projectID: '',
     name: '',
     page: 1,
     perPage: 10
@@ -211,7 +210,7 @@
         item.value = item.id;
         return item;
       }) as Array<{ label: string; value: string }>;
-      queryParams.projectId = get(projectList.value, '0.value') || '';
+      queryParams.projectID = get(projectList.value, '0.value') || '';
     } catch (error) {
       projectList.value = [];
       console.log(error);
@@ -226,6 +225,7 @@
       loading.value = false;
     } catch (error) {
       loading.value = false;
+      dataList.value = [];
       console.log(error);
     }
   };
@@ -240,7 +240,7 @@
     }, 100);
   };
   const handleReset = () => {
-    queryParams.projectId = '';
+    queryParams.projectID = '';
     queryParams.page = 1;
     handleFilter();
   };
@@ -258,7 +258,7 @@
       router.push({
         name: 'applicationsDetail',
         params: {
-          projectId: queryParams.projectId
+          projectId: queryParams.projectID
         }
       });
     }
@@ -286,6 +286,9 @@
   const handleClickEdite = (row) => {
     router.push({
       name: 'applicationsDetail',
+      params: {
+        projectId: row.project?.id || queryParams.projectID
+      },
       query: { id: row.id }
     });
   };

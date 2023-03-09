@@ -14,7 +14,9 @@
         <a-col v-if="id" :span="12">
           <a-form-item label="创建时间" disabled>
             <a-input
-              v-model="formData.createTime"
+              :model-value="
+                dayjs(formData.createTime).format('YYYY-MM-DD HH:mm:ss')
+              "
               style="width: 100%"
             ></a-input>
           </a-form-item>
@@ -33,7 +35,9 @@
         <a-col v-if="id" :span="12">
           <a-form-item label="更新时间" disabled>
             <a-input
-              v-model="formData.updateTime"
+              :model-value="
+                dayjs(formData.updateTime).format('YYYY-MM-DD HH:mm:ss')
+              "
               style="width: 100%"
             ></a-input>
           </a-form-item>
@@ -64,6 +68,7 @@
 </template>
 
 <script lang="ts" setup>
+  import dayjs from 'dayjs';
   import useCallCommon from '@/hooks/use-call-common';
   import { assignIn, keys, get, each, map } from 'lodash';
   import { ref, reactive, PropType, watch } from 'vue';
@@ -71,6 +76,12 @@
 
   const props = defineProps({
     dataInfo: {
+      type: Object,
+      default() {
+        return {};
+      }
+    },
+    defaultValue: {
       type: Object,
       default() {
         return {};
@@ -118,13 +129,14 @@
     getFormData
   });
   watch(
-    () => props.dataInfo,
+    () => props.defaultValue,
     () => {
-      assignIn(formData, props.dataInfo);
+      assignIn(formData, props.defaultValue);
       getLabelList();
     },
     {
-      immediate: true
+      immediate: true,
+      deep: true
     }
   );
 </script>

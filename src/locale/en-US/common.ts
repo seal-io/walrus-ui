@@ -59,5 +59,6 @@ export default {
   'common.form.rule.input': '{name} is required',
   'common.form.key': 'the same key exists',
   'common.date.utc': 'UTC time',
-  'common.date.local': 'Local time'
+  'common.date.local': 'Local time',
+  'common.button.deploy': 'Deploy'
 };

@@ -33,4 +33,6 @@ export const moduleActions = [
   { label: 'common.button.edit', value: 'edit', icon: 'icon-edit' },
   { label: 'common.button.delete', value: 'delete', icon: 'icon-delete' }
 ];
+
+export const variablesTypeList = [{ label: 'string', value: 'string' }];
 export default {};

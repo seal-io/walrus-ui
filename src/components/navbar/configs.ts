@@ -8,7 +8,7 @@ export const NO_LOGIN_CHECK_PATH = ['eventReport'];
 export const navDataList: NavDataMap[] = [
   { name: 'dashboardMain', label: 'navbar.totalView', active: 'dashboard' },
   {
-    name: 'projectsList',
+    name: 'applicationsList',
     label: 'navbar.appmanagement',
     active: 'appManagement'
   },

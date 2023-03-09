@@ -57,5 +57,6 @@ export default {
   'common.form.rule.input': '{name}不能为空',
   'common.form.key': '存在相同的key',
   'common.date.utc': 'UTC时间',
-  'common.date.local': '本地时间'
+  'common.date.local': '本地时间',
+  'common.button.deploy': '部署'
 };
