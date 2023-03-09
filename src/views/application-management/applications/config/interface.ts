@@ -1,3 +1,10 @@
+export interface Variables {
+  name: string;
+  default: any;
+  type: string;
+  description: string;
+  required?: boolean;
+}
 export interface AppRowData {
   name: string;
   id: string;
@@ -16,6 +23,12 @@ export interface AppFormData {
   description: string;
   labels: object;
   project: { id: string };
+  variables: Array<{
+    name: string;
+    default: any;
+    type: string;
+    description: string;
+  }>;
   modules: Array<{
     name: string;
     variables: object;

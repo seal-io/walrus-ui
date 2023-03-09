@@ -1,6 +1,6 @@
 <template>
   <ComCard top-gap class="application-detail-wrap">
-    <GroupTitle show-back :title="id ? '应用详情' : '新建应用'"></GroupTitle>
+    <GroupTitle show-back :title="id ? '编辑应用' : '新建应用'"></GroupTitle>
     <div v-if="id" class="instance-box">
       <div
         class="app"
@@ -22,7 +22,9 @@
             @click="handleClickInstance(item)"
           >
             <template #description>
-              <span style="font-weight: 700">{{ item.type }}</span>
+              <span style="font-weight: 700">{{
+                get(item, 'environment.name')
+              }}</span>
             </template>
           </instanceThumb>
           <a-tooltip content="添加应用实例">
@@ -32,7 +34,7 @@
       </div>
     </div>
     <div>
-      <component :is="pageComMap[pgCom]"></component>
+      <component :is="pageComMap[pgCom]" @deploy="handleDeployDone"></component>
     </div>
     <createInstance
       v-model:show="showInstanceModal"
@@ -56,6 +58,8 @@
   import AppDetail from '../components/app-info/index.vue';
   import InstanceDetail from '../components/instance/index.vue';
   import createInstance from '../components/create-instance.vue';
+
+  import { queryApplicationInstances } from '../api';
 
   const { router, route, t } = useCallCommon();
   const id = route.query.id as string;
@@ -112,11 +116,30 @@
     activeInstance.value = item.id;
     pgCom.value = 'instanceDetail';
   };
+  const getApplicationInstances = async () => {
+    try {
+      const params = {
+        page: 1,
+        perPage: -1,
+        applicationID: route.query.id,
+        extract: ['application']
+      };
+      const { data } = await queryApplicationInstances(params);
+      instanseList.value = data?.items || [];
+    } catch (error) {
+      instanseList.value = [];
+      console.log(error);
+    }
+  };
+  const handleDeployDone = async () => {
+    getApplicationInstances();
+  };
   const handleOk = () => {
     router.back();
   };
   const init = async () => {
     // getProjectInfo();
+    getApplicationInstances();
   };
   init();
 </script>

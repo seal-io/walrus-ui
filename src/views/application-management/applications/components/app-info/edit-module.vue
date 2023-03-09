@@ -32,6 +32,7 @@
         <a-form-item
           label="Type"
           field="module.id"
+          :disabled="action === 'edit'"
           :rules="[{ required: true, message: '类型必选' }]"
         >
           <a-select v-model="formData.module.id" @change="handleTemplateChange">
@@ -45,7 +46,7 @@
         </a-form-item>
       </a-form>
       <div class="variables">
-        <GroupTitle title="Variables"></GroupTitle>
+        <GroupTitle title="属性"></GroupTitle>
         <formCreate
           v-if="show"
           ref="schemaForm"
@@ -53,8 +54,8 @@
           api=""
           :show-footer="false"
           :submit="() => {}"
-          :model="formData.variables"
-          :form-schema="moduleInfo.Variables"
+          :model="formData.attributes"
+          :form-schema="moduleInfo?.Variables"
         >
         </formCreate>
       </div>
@@ -86,6 +87,7 @@
 <script lang="ts" setup>
   import { get, find, cloneDeep, each, assignIn } from 'lodash';
   import { ref, reactive, PropType } from 'vue';
+  import useCallCommon from '@/hooks/use-call-common';
   import EditPageFooter from '@/components/edit-page-footer/index.vue';
   import formCreate from '@/components/form-create/index.vue';
   import GroupTitle from '@/components/group-title/index.vue';
@@ -118,6 +120,7 @@
     }
   });
   const emit = defineEmits(['save', 'update:show', 'reset', 'update:action']);
+  const { route } = useCallCommon();
   const formref = ref();
   const loading = ref(false);
   const schemaForm = ref();
@@ -126,19 +129,28 @@
   const formData = reactive({
     name: '',
     module: { id: '' },
-    variables: {}
+    application: {
+      id: route.query.id || ''
+    },
+    attributes: {}
   });
   const handleCancel = () => {
     emit('update:show', false);
   };
+  const resetForm = () => {
+    formData.name = '';
+    formData.module = { id: '' };
+    formData.application = { id: '' };
+    formData.attributes = {};
+  };
   const setFormData = (schemas) => {
     each(get(schemas, 'Variables'), (item) => {
-      formData.variables[item.Name] = item.Default;
+      formData.attributes[item.Name] = item.Default;
     });
   };
   const handleTemplateChange = (val) => {
     const moduleData = find(props.templates, (item) => item.id === val);
-    moduleInfo.value = get(moduleData, 'schema') || {};
+    moduleInfo.value = cloneDeep(get(moduleData, 'schema')) || {};
     setFormData(moduleInfo.value);
   };
   const handleOk = async () => {
@@ -147,7 +159,7 @@
     if (!res && moduleForm) {
       try {
         submitLoading.value = true;
-        formData.variables = { ...moduleForm };
+        formData.attributes = { ...moduleForm };
         emit('save', cloneDeep(formData));
         setTimeout(() => {
           emit('update:show', false);
@@ -161,20 +173,25 @@
 
   const handleBeforeOpen = () => {
     if (props.action === 'create') {
-      moduleInfo.value = get(props.templates, '0.schema') || {};
+      moduleInfo.value = cloneDeep(get(props.templates, '0.schema')) || {};
       setFormData(moduleInfo.value);
       formData.module.id = get(props.templates, '0.id') || '';
     } else {
-      // set the default value
+      // 1. get the template meta data 2.set the default value
+      const templateMetaData = find(
+        props.templates,
+        (item) => item.id === get(props.dataInfo, 'module.id')
+      );
+      moduleInfo.value = cloneDeep(get(templateMetaData, 'schema'));
       each(get(moduleInfo.value, 'Variables') || [], (item) => {
-        item.Default = get(props.dataInfo.variables, item.Name);
+        item.Default = get(props.dataInfo, `attributes.${item.Name}`);
       });
       assignIn(formData, props.dataInfo);
     }
   };
   const handleOpened = () => {};
   const handleBeforeClose = () => {
-    formref.value.resetFields();
+    resetForm();
     emit('update:action', 'create');
   };
 </script>

@@ -34,18 +34,29 @@
           :rules="[{ required: true, message: '实例部署环境必选' }]"
         >
           <a-select
-            v-model="formData.environment"
+            v-model="formData.environment.id"
             :options="environmentList"
           ></a-select>
         </a-form-item>
-        <div style="margin-bottom: 10px; text-align: left">Variables</div>
-        <a-form-item
-          label="Image"
-          field="name"
-          validate-trigger="change"
-          :rules="[{ required: true, message: '实例名称必填' }]"
+        <div
+          v-if="variables?.length"
+          style="margin-bottom: 10px; text-align: left"
+          >Variables</div
         >
-          <a-input v-model="formData.name"></a-input>
+        <a-form-item
+          v-for="(item, index) in variables"
+          :key="index"
+          :label="item.name"
+          :field="`variables.${item.name}`"
+          validate-trigger="change"
+          :rules="[
+            {
+              required: item.required,
+              message: $t('common.form.rule.input', { name: item.name })
+            }
+          ]"
+        >
+          <a-input v-model="formData.variables[item.name]"></a-input>
         </a-form-item>
       </a-form>
     </a-spin>
@@ -57,7 +68,7 @@
             type="primary"
             class="cap-title cancel-btn"
             @click="handleOk"
-            >{{ $t('common.button.save') }}</a-button
+            >{{ $t('common.button.deploy') }}</a-button
           >
         </template>
         <template #cancel>
@@ -74,8 +85,12 @@
 </template>
 
 <script lang="ts" setup>
-  import { ref, reactive } from 'vue';
+  import { each } from 'lodash';
+  import { ref, reactive, PropType, watch } from 'vue';
+  import useCallCommon from '@/hooks/use-call-common';
   import EditPageFooter from '@/components/edit-page-footer/index.vue';
+  import { Variables } from '../config/interface';
+  import { deployApplication } from '../api';
 
   const props = defineProps({
     show: {
@@ -89,21 +104,33 @@
       default() {
         return 'create';
       }
+    },
+    variables: {
+      type: Array as PropType<Variables[]>,
+      default() {
+        return [];
+      }
+    },
+    environmentList: {
+      type: Array as PropType<{ label: string; value: string }[]>,
+      default() {
+        return [];
+      }
     }
   });
   const emit = defineEmits(['save', 'update:show', 'reset']);
+  const { route } = useCallCommon();
   const formref = ref();
   const loading = ref(false);
   const submitLoading = ref(false);
   const formData = reactive({
     name: '',
-    environment: ''
+    variables: {},
+    environment: {
+      id: ''
+    }
   });
-  const environmentList = ref([
-    { label: 'Development', value: 'dev' },
-    { label: 'Production', value: 'prod' },
-    { label: 'Staging', value: 'stage' }
-  ]);
+
   const handleCancel = () => {
     emit('update:show', false);
   };
@@ -113,6 +140,7 @@
       try {
         submitLoading.value = true;
         // TODO
+        await deployApplication({ ...formData, id: route.query.id || '' });
         setTimeout(() => {
           emit('save');
         }, 200);
@@ -123,8 +151,30 @@
       }
     }
   };
+  const resetForm = () => {
+    formData.name = '';
+    formData.environment.id = '';
+    formData.variables = {};
+  };
+  const setDeployVariables = () => {
+    each(props.variables, (item) => {
+      formData.variables[item.name] = item.default;
+    });
+  };
+  watch(
+    () => props.variables,
+    () => {
+      setDeployVariables();
+    },
+    {
+      immediate: true,
+      deep: true
+    }
+  );
   const handleBeforeOpen = () => {};
-  const handleBeforeClose = () => {};
+  const handleBeforeClose = () => {
+    resetForm();
+  };
 </script>
 
 <style></style>
