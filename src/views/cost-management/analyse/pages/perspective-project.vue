@@ -194,7 +194,8 @@
     clusterCostOverview,
     resourceCostOverview,
     projectCostCols,
-    DateShortCuts
+    DateShortCuts,
+    setEndTimeAddDay
   } from '../config';
   import usePerspectiveProject from '../hooks/use-perspective-project';
 
@@ -249,11 +250,11 @@
     apploading,
     loading,
     id,
-    overviewloading
+    overviewloading,
+    timeMode
   } = usePerspectiveProject(props);
   const { t } = useCallCommon();
   const loadeend = ref(false);
-  const timeMode = ref('utc');
   const clusterOptions = [
     { label: 'project-1', value: 'project1' },
     { label: 'project-2', value: 'project' }
@@ -281,7 +282,8 @@
     });
     projectCostFilters.value = {
       ...projectCostFilters.value,
-      ...queryParams
+      ...queryParams,
+      endTime: setEndTimeAddDay(queryParams.endTime, timeMode.value)
     };
     getProjectCostChart();
     getSummaryData();
