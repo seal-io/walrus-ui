@@ -82,7 +82,7 @@ export default function usePerspectiveCost(props) {
       dailyloading.value = true;
       const params = {
         ...omit(dailyCostFilters.value, 'paging'),
-        ...omit(queryParams, 'endTime'),
+        // ...omit(queryParams, 'endTime'),
         // startTime: dayjs(queryParams.startTime).format('YYYY-MM-DDTHH:mm:ssZ'),
         // endTime: dayjs(queryParams.endTime).format('YYYY-MM-DDT23:59:59Z'),
         source: 'daily chart'
@@ -117,8 +117,8 @@ export default function usePerspectiveCost(props) {
     try {
       projectloading.value = true;
       const params = {
-        ...omit(projectCostFilters.value, 'paging'),
-        ...omit(queryParams, 'endTime')
+        ...omit(projectCostFilters.value, 'paging')
+        // ...omit(queryParams, 'endTime')
         // startTime: dayjs(queryParams.startTime).format('YYYY-MM-DDTHH:mm:ssZ'),
         // endTime: dayjs(queryParams.endTime).format('YYYY-MM-DDT23:59:59Z')
       };
@@ -150,8 +150,8 @@ export default function usePerspectiveCost(props) {
     try {
       clusterloading.value = true;
       const params = {
-        ...omit(clusterCostFilters.value, 'paging'),
-        ...omit(queryParams, 'endTime')
+        ...omit(clusterCostFilters.value, 'paging')
+        // ...omit(queryParams, 'endTime')
         // startTime: dayjs(queryParams.startTime).format('YYYY-MM-DDTHH:mm:ssZ'),
         // endTime: dayjs(queryParams.endTime).format('YYYY-MM-DDT23:59:59Z')
       };

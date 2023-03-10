@@ -50,6 +50,7 @@
               :loading="sItem.loading"
               :options="sItem.fieldValues"
               style="flex: 1; width: 240px"
+              @change="handleFilterValueChange"
               @popup-visible-change="
                 (visible) => handlePopupVisible(visible, sItem)
               "
@@ -155,6 +156,9 @@
   const handleCascaderChange = (val, sItem) => {
     sItem.values = [];
     sItem.fieldValues = [];
+    emits('update:conditions', filterDataList.value);
+  };
+  const handleFilterValueChange = () => {
     emits('update:conditions', filterDataList.value);
   };
   const handlePopupVisible = async (visible, sItem) => {

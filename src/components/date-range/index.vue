@@ -191,7 +191,10 @@
       .set('minute', 0)
       .set('second', 0);
     if (props.timeMode === 'utc') {
-      return [dayjs(start).utc().format(), dayjs(get(value, 1)).utc().format()];
+      return [
+        dayjs(start).format('YYYY-MM-DDTHH:mm:ss+00:00'),
+        dayjs(get(value, 1)).format('YYYY-MM-DDTHH:mm:ss+00:00')
+      ];
     }
     return [dayjs(start).format(), dayjs(get(value, 1)).format()];
   };

@@ -291,8 +291,8 @@
   };
   const initData = async () => {
     await getPerspectiveItemInfo();
-    if (!queryParams.project) return;
     await getProjectList();
+    if (!queryParams.project) return;
     loadeend.value = true;
     getSummaryData();
     getProjectCostChart();
