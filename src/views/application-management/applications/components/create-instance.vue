@@ -26,7 +26,7 @@
         >
           <a-input v-model="formData.name"></a-input>
         </a-form-item>
-        <a-form-item
+        <!-- <a-form-item
           :disabled="status === 'edit'"
           label="服务地址"
           field="name"
@@ -34,7 +34,7 @@
           :rules="[{ required: false, message: '服务地址必填' }]"
         >
           <a-input v-model="formData.ServeUrl"></a-input>
-        </a-form-item>
+        </a-form-item> -->
         <a-form-item
           :disabled="status === 'edit'"
           :label="$t('applications.applications.detail.env')"
@@ -151,7 +151,6 @@
   const submitLoading = ref(false);
   const formData = reactive({
     name: '',
-    ServeUrl: '',
     variables: {},
     environment: {
       id: ''

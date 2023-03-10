@@ -25,7 +25,8 @@
     inject,
     computed,
     onBeforeUnmount,
-    watch
+    watch,
+    onUnmounted
   } from 'vue';
   import AceEditor from '@/components/ace-editor/index.vue';
   import { InstanceResource, Cascader } from '../../config/interface';
@@ -50,7 +51,7 @@
   const createWebSockerConnection = () => {
     if (!logKey.value || !resourceId.value) return;
     const wssURL = createWebSocketUrl(
-      `/application-resources/${resourceId.value}/log?key=${logKey.value}`
+      `/application-resources/${resourceId.value}/log?key=${logKey.value}&tail=true`
     );
     wssInstance.value = useWebSocket(wssURL, {
       // autoReconnect: {
@@ -95,6 +96,7 @@
     const result = getResourceId(val);
     logKey.value = result.key;
     resourceId.value = result.id;
+    content.value = '';
     createWebSockerConnection();
 
     console.log('object:', val, wssInstance.value);
@@ -127,6 +129,9 @@
     }
   );
   onBeforeUnmount(() => {
+    wssInstance.value?.close?.();
+  });
+  onUnmounted(() => {
     wssInstance.value?.close?.();
   });
 </script>

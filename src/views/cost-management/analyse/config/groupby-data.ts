@@ -1,6 +1,6 @@
 export default [
   { label: 'Connector', fieldName: 'connector_id', title: '连接器' },
-  { label: 'Project', fieldName: 'label:seal.io/project', title: '项目' },
+  { label: 'Project', fieldName: 'label:seal.io/project', title: '应用' },
   {
     label: 'Environment',
     fieldName: 'label:seal.io/environment',

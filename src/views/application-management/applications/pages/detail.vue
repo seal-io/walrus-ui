@@ -27,9 +27,10 @@
               }}</span>
             </template>
           </instanceThumb>
-          <a-tooltip content="添加应用实例">
+          <!-- <a-tooltip content="添加应用实例">
             <thumbButton :size="60" @click="handleAddInstance"></thumbButton>
-          </a-tooltip>
+          </a-tooltip> -->
+          <!-- <div>应用实例</div> -->
         </div>
       </div>
     </div>
@@ -253,7 +254,7 @@
           display: flex;
           flex-wrap: wrap;
           align-items: center;
-          min-height: 112px;
+          min-height: 100px;
 
           .thumb-item {
             margin-right: 12px;

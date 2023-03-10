@@ -33,6 +33,9 @@ export function queryItemModules(params: { id: string }) {
 export function createModules(data: TemplateFormData) {
   return axios.post('/modules', data);
 }
+export function deleteModules(data) {
+  return axios.delete('/modules', { data });
+}
 export function updateModules(data: TemplateFormData) {
   return axios.put(`/modules/${data.id}`, data);
 }

@@ -264,12 +264,12 @@
     return projectloading.value || loading.value;
   });
   const handleDateChange = async () => {
-    if (!queryParams.project) return;
-    await getProjectList();
     projectCostFilters.value = {
       ...projectCostFilters.value,
       ...queryParams
     };
+    await getProjectList();
+    if (!queryParams.project) return;
     getProjectCostChart();
     getSummaryData();
   };

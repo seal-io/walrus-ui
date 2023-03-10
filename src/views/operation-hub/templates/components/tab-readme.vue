@@ -38,6 +38,7 @@
   .tab-content-wrap {
     min-height: 200px;
     max-height: 500px;
+    padding: 10px;
     overflow: auto;
     background-color: var(--color-fill-2);
     border-radius: var(--border-radius-small);

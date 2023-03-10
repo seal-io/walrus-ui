@@ -2,65 +2,77 @@
   <div class="form-create-wrap">
     <a-form ref="formref" :model="formData" auto-label-width :layout="layout">
       <slot></slot>
-      <a-form-item
-        v-for="fm in schemaList"
-        :key="fm.Name"
-        :field="fm.Name"
-        :rules="fm.rules"
-        :label="fm.Label || fm.Name"
-        :validate-trigger="['change']"
-      >
-        <div
-          v-if="fm.labelList?.length"
-          style="display: flex; flex-direction: column"
-        >
-          <component
-            :is="formComponents[fm.parentCom]"
-            v-for="(sItem, sIndex) in fm.labelList"
-            :key="sIndex"
-            v-model:dataKey="sItem.key"
-            v-model:dataValue="sItem.value"
-            v-model:value="formData[fm.Name]"
-            class="group-item"
-            :label-list="fm.labelList"
-            :position="sIndex"
-            v-bind="{ ...fm.props }"
-            @add="(obj) => handleAddLabel(obj, fm.labelList)"
-            @delete="handleDeleteLabel(fm.labelList, sIndex)"
+      <a-grid :cols="24">
+        <template v-for="fm in schemaList" :key="fm.Name">
+          <a-grid-item
+            v-if="
+              fm.ShowIf
+                ? toString(get(formData, `${fm.ShowCondition.key}`)) ===
+                  fm?.ShowCondition?.value
+                : true
+            "
+            :span="12"
           >
-            <template v-if="fm.childCom">
-              <component
-                :is="formComponents[fm.childCom]"
-                v-for="com in fm.Options"
-                :key="com"
-                :value="com"
-                >{{ com }}</component
+            <a-form-item
+              :field="fm.Name"
+              :rules="fm.rules"
+              :label="fm.Label || fm.Name"
+              :validate-trigger="['change']"
+            >
+              <div
+                v-if="fm.labelList?.length"
+                style="display: flex; flex-direction: column"
               >
-            </template>
-          </component>
-        </div>
-        <template v-else>
-          <component
-            :is="formComponents[fm.parentCom]"
-            v-bind="{ ...fm.props }"
-            v-model="formData[fm.Name]"
-          >
-            <template v-if="fm.childCom">
-              <component
-                :is="formComponents[fm.childCom]"
-                style="display: none"
-              ></component>
-              <component
-                :is="formComponents[fm.childCom]"
-                v-for="com in fm.Options"
-                :key="com.label"
-                :value="com.value"
-                >{{ com.value }}</component
-              >
-            </template>
-          </component>
+                <component
+                  :is="formComponents[fm.parentCom]"
+                  v-for="(sItem, sIndex) in fm.labelList"
+                  :key="sIndex"
+                  v-model:dataKey="sItem.key"
+                  v-model:dataValue="sItem.value"
+                  v-model:value="formData[fm.Name]"
+                  class="group-item"
+                  :label-list="fm.labelList"
+                  :position="sIndex"
+                  v-bind="{ ...fm.props }"
+                  @add="(obj) => handleAddLabel(obj, fm.labelList)"
+                  @delete="handleDeleteLabel(fm.labelList, sIndex)"
+                >
+                  <template v-if="fm.childCom">
+                    <component
+                      :is="formComponents[fm.childCom]"
+                      v-for="com in fm.Options"
+                      :key="com"
+                      :value="com"
+                      >{{ com }}</component
+                    >
+                  </template>
+                </component>
+              </div>
+              <template v-else>
+                <component
+                  :is="formComponents[fm.parentCom]"
+                  v-bind="{ ...fm.props }"
+                  v-model="formData[fm.Name]"
+                >
+                  <template v-if="fm.childCom">
+                    <component
+                      :is="formComponents[fm.childCom]"
+                      style="display: none"
+                    ></component>
+                    <component
+                      :is="formComponents[fm.childCom]"
+                      v-for="com in fm.Options"
+                      :key="com.label"
+                      :value="com.value"
+                      >{{ com.value }}</component
+                    >
+                  </template>
+                </component>
+              </template>
+            </a-form-item>
+          </a-grid-item>
         </template>
-      </a-form-item>
+      </a-grid>
       <a-form-item v-if="showFooter">
         <editPageFooter style="display: flex; margin-top: 0; padding-bottom: 0">
           <template #save>
@@ -89,7 +101,16 @@
 </template>
 
 <script lang="ts" setup>
-  import { each, get, map, cloneDeep, sortBy, keys } from 'lodash';
+  import {
+    each,
+    get,
+    map,
+    cloneDeep,
+    sortBy,
+    keys,
+    add,
+    toString
+  } from 'lodash';
   import {
     PropType,
     reactive,
@@ -109,7 +130,7 @@
   } from './config/interface';
   import formComponents from './components';
   import testData from './config/test';
-  import { parseMapstring, parseOptions } from './config/utils';
+  import { parseMapstring, parseOptions, parseQuery } from './config/utils';
 
   const props = defineProps({
     formSchema: {
@@ -172,10 +193,12 @@
 
   const setSchemaList = () => {
     const groupOrderMap = {};
+    const showIfMap = {};
     let list = map(props.formSchema, (o, i) => {
       const item = cloneDeep(o);
       const content = parseComponentSchema(item);
-      item.order = 10 * (i + 1);
+      item.ShowCondition = parseQuery(item.ShowIf);
+      item.order = item.Required ? 0 : 10 * (i + 1);
       item.parentCom = get(content, 'component.0');
       item.childCom = get(content, 'component.1');
       item.labelList = parseMapstring(item);
@@ -185,16 +208,23 @@
         sItem.message = t(sItem?.message, { name: item.Label || item.Name });
         return sItem;
       });
-      if (item.Group && groupOrderMap[item.Group]) {
-        item.order = groupOrderMap[item.Group];
-      } else if (item.Group) {
-        groupOrderMap[item.Group] = item.order;
-      }
+
+      // if (item.Group && groupOrderMap[item.Group] && !item.Required) {
+      //   item.order = groupOrderMap[item.Group];
+      // } else if (item.Group) {
+      //   groupOrderMap[item.Group] = item.order;
+      // }
+      showIfMap[item.Name] = item.order;
       return item;
+    });
+    list = map(list, (sItem) => {
+      if (sItem.ShowIf) {
+        sItem.order = add(get(showIfMap, `${sItem?.ShowCondition?.key}`), 0.1);
+      }
+      return sItem;
     });
     list = sortBy(list, (pItem) => pItem.order);
     schemaList.value = list;
-    console.log('schemaList===', schemaList.value);
   };
   const handleAddLabel = (obj, list) => {
     list.push({ ...obj });
@@ -202,9 +232,22 @@
   const handleDeleteLabel = (list, index) => {
     list.splice(index, 1);
   };
+  // reset field default value when showIf is negative
+  const resetFieldsDefaultValue = () => {
+    each(schemaList.value, (item) => {
+      if (
+        item.ShowIf &&
+        toString(get(formData.value, `${item.ShowCondition.key}`)) !==
+          item?.ShowCondition?.value
+      ) {
+        formData.value[item.Name] = item.Default;
+      }
+    });
+  };
   const getFormData = async () => {
     const result = await formref.value?.validate();
     if (!result) {
+      resetFieldsDefaultValue();
       return formData.value;
     }
     return false;
@@ -215,6 +258,7 @@
     if (!res) {
       try {
         submitLoading.value = true;
+        resetFieldsDefaultValue();
         if (props.submit) {
           await props.submit?.(formData.value);
         } else {
@@ -250,6 +294,7 @@
   };
   onMounted(() => {
     // setFormData();
+    console.log('qs==test');
   });
 </script>
 

@@ -29,14 +29,14 @@ export default {
   'operation.environments.detail.addConnector': '添加连接器',
   'operation.environments.detail.holder': '请选择连接器',
   'operation.templates.menu': '模块',
-  'operation.templates.table.title': '模板列表',
-  'operation.templates.table.holder': '请输入模板名称',
-  'operation.templates.type.holder': '请选择模板类型',
-  'operation.templates.detail.edit': '模板编辑',
-  'operation.templates.detail.add': '新建模板',
+  'operation.templates.table.title': '模块列表',
+  'operation.templates.table.holder': '请输入模块名称',
+  'operation.templates.type.holder': '请选择模块类型',
+  'operation.templates.detail.edit': '模块编辑',
+  'operation.templates.detail.add': '新建模块',
   'operation.templates.detail.source': '来源',
   'operation.templates.detail.version': '版本',
   'operation.templates.table.type': '类型',
-  'operation.templates.rules.name': '模板名称必填',
-  'operation.templates.rules.sourece': '模板来源必填'
+  'operation.templates.rules.name': '模块名称必填',
+  'operation.templates.rules.sourece': '模块来源必填'
 };

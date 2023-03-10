@@ -104,7 +104,7 @@
   import ThumbView from '../components/thumb-view.vue';
   import ListView from '../components/list-view.vue';
   import { TemplateRowData } from '../config/interface';
-  import { queryModules } from '../api';
+  import { queryModules, deleteModules } from '../api';
 
   let timer: any = null;
   const { router } = useCallCommon();
@@ -177,7 +177,7 @@
           id: val
         };
       });
-      // await deleteRepos(ids);
+      await deleteModules(ids);
       loading.value = false;
       execSucceed();
       queryParams.page = 1;

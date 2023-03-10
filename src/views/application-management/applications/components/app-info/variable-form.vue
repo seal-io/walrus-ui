@@ -16,7 +16,7 @@
               @input="handleInput"
             ></a-input>
           </a-form-item>
-          <a-form-item label="类型">
+          <!-- <a-form-item label="类型">
             <a-select
               v-model="formData.type"
               style="width: 100%"
@@ -24,7 +24,7 @@
               @change="handleInput"
             >
             </a-select>
-          </a-form-item>
+          </a-form-item> -->
           <a-form-item label="值">
             <a-input
               v-model="formData.default"
