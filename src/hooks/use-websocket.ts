@@ -6,7 +6,9 @@ const protocal = import.meta.env.MODE === 'development' ? 'wss' : 'wss';
 export const wssResourceList = `${protocal}://${localServer}/v1/resources`;
 
 export const wssEventList = `${protocal}://${localServer}/v1/events`;
-
+export const createWebSocketUrl = (url) => {
+  return `${protocal}://${localServer}/v1/${url}`;
+};
 export function useWebsocket({ url, onmessage }) {
   // ws.readyState
   // CONNECTING: 0
@@ -84,7 +86,7 @@ export function useWebsocket({ url, onmessage }) {
     wss,
     wssClose,
     wssSend,
-    updateEvaluateTime,
+    updateEvaluateTime
   };
 }
 

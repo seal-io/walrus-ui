@@ -90,3 +90,21 @@ export const queryApplicationResource = (params: ApplicationRevisionParams) => {
     }
   });
 };
+
+export const queryApplicationResourceKeys = (params: { id: string }) => {
+  return axios.get(`/application-resources/${params.id}/keys`, {
+    params,
+    paramsSerializer: (obj) => {
+      return qs.stringify(obj);
+    }
+  });
+};
+
+export const queryApplicationResourceLogs = (params: { id: string }) => {
+  return axios.get(`/application-resources/${params.id}/log`, {
+    params,
+    paramsSerializer: (obj) => {
+      return qs.stringify(obj);
+    }
+  });
+};
