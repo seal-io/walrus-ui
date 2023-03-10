@@ -6,8 +6,8 @@ export const relationOptions = [
   { label: 'OR', value: 'or' }
 ];
 export const operatorList = [
-  { label: 'In', value: 'IN' },
-  { label: 'Not In', value: 'NOTIN' }
+  { label: 'In', value: 'in' },
+  { label: 'Not In', value: 'notin' }
 ];
 
 export const costShareMode = [
@@ -31,8 +31,13 @@ export const DateShortCuts = [
     format: 'YYYY-MM-DD',
     timeControl: 'now-7d',
     value: [
-      dayjs().subtract(6, 'day').utc().hour(0).minute(0).second(0).format(),
-      dayjs().subtract(0, 'day').utc().format()
+      dayjs()
+        .subtract(6, 'day')
+        .hour(0)
+        .minute(0)
+        .second(0)
+        .format('YYYY-MM-DDTHH:mm:ss+00:00'),
+      dayjs().subtract(0, 'day').format('YYYY-MM-DDTHH:mm:ss+00:00')
     ]
   },
   {
@@ -41,8 +46,13 @@ export const DateShortCuts = [
     format: 'YYYY-MM-DD',
     timeControl: 'now-30d',
     value: [
-      dayjs().subtract(29, 'day').utc().hour(0).minute(0).second(0).format(),
-      dayjs().subtract(0, 'day').utc().format()
+      dayjs()
+        .subtract(29, 'day')
+        .hour(0)
+        .minute(0)
+        .second(0)
+        .format('YYYY-MM-DDTHH:mm:ss+00:00'),
+      dayjs().subtract(0, 'day').format('YYYY-MM-DDTHH:mm:ss+00:00')
     ]
   },
   {
@@ -51,8 +61,8 @@ export const DateShortCuts = [
     format: 'YYYY-MM-DD',
     timeControl: 'now/M',
     value: [
-      dayjs().utc().hour(0).minute(0).second(0).format(),
-      dayjs().utc().format()
+      dayjs().hour(0).minute(0).second(0).format('YYYY-MM-DDTHH:mm:ss+00:00'),
+      dayjs().format('YYYY-MM-DDTHH:mm:ss+00:00')
     ]
   }
 ];
@@ -62,14 +72,14 @@ export const getTimeRange = (val) => {
   return data
     ? get(data, 'value')
     : [
-        dayjs().utc().hour(0).minute(0).second(0).format(),
-        dayjs().utc().format()
+        dayjs().hour(0).minute(0).second(0).format('YYYY-MM-DDTHH:mm:ss+00:00'),
+        dayjs().format('YYYY-MM-DDTHH:mm:ss+00:00')
       ];
 };
 
 export const setEndTimeAddDay = (time, mode) => {
   if (mode === 'utc') {
-    return dayjs(time).add(1, 'day').utc().format();
+    return dayjs(time).add(1, 'day').format('YYYY-MM-DDTHH:mm:ss+00:00');
   }
   return dayjs(time).add(1, 'day').format();
 };

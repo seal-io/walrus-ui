@@ -177,7 +177,9 @@
     assignIn,
     some,
     filter,
-    includes
+    includes,
+    pickBy,
+    keys
   } from 'lodash';
   import useCallCommon from '@/hooks/use-call-common';
   import GroupTitle from '@/components/group-title/index.vue';
@@ -271,9 +273,16 @@
     const costres = costfilter.value.fieldVaildator();
     return !res && allres && costres;
   };
+  const setShareCostFilter = (list) => {
+    const arr = map(list, (item) => {
+      return {
+        ...pickBy(item, (val) => val?.length)
+      };
+    });
+    return filter(arr, (o) => keys(o).length);
+  };
   const handleOk = async () => {
     const res = await validateForm();
-    console.log('formData====', res, formData);
     if (res) {
       try {
         submitLoading.value = true;
@@ -289,6 +298,10 @@
           };
         });
         console.log('formData:', formData);
+        const shareCost = setShareCostFilter(
+          get(data, 'allocationQueries.0.shareCosts') || []
+        );
+        data.allocationQueries[0].shareCosts = shareCost as never[];
         if (id) {
           await updatePerspective({ ...data, id });
         } else {
@@ -360,8 +373,12 @@
         (item) => item.timeControl === formData.timeRange
       );
       const params = {
-        endTime: get(dateData, 'value.1') || dayjs().utc().format(),
-        startTime: get(dateData, 'value.0') || dayjs().utc().format(),
+        endTime:
+          get(dateData, 'value.1') ||
+          dayjs().format('YYYY-MM-DDTHH:mm:ss+00:00'),
+        startTime:
+          get(dateData, 'value.0') ||
+          dayjs().format('YYYY-MM-DDTHH:mm:ss+00:00'),
         fieldName: 'connector_id',
         fieldType: 'filter'
       };
@@ -427,8 +444,10 @@
   };
   const handleTimeChange = (val) => {
     const data = find(DateShortCuts, (item) => item.timeControl === val);
-    formData.startTime = get(data, 'value.0') || dayjs().utc().format();
-    formData.endTime = get(data, 'value.1') || dayjs().utc().format();
+    formData.startTime =
+      get(data, 'value.0') || dayjs().format('YYYY-MM-DDTHH:mm:ss+00:00');
+    formData.endTime =
+      get(data, 'value.1') || dayjs().format('YYYY-MM-DDTHH:mm:ss+00:00');
     getPerspectiveFields();
     getPerspectiveGroupBy();
     getPerspectiveStep();

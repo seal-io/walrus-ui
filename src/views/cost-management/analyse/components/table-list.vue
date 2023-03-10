@@ -105,12 +105,12 @@
   const dataList = ref<CostAnalyRow[]>([]);
 
   const setStartTime = () => {
-    const start = dayjs(props.filterParams.endTime)
+    const start = dayjs(props.filterParams.startTime)
       .set('hour', 0)
       .set('minute', 0)
       .set('second', 0);
     if (props.timeMode === 'utc') {
-      return dayjs(start).utc().format();
+      return dayjs(start).format('YYYY-MM-DDTHH:mm:ss+00:00');
     }
     return dayjs(start).format();
   };
