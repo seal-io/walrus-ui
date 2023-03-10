@@ -33,6 +33,7 @@ export function queryItemConnector(params: { id: string }) {
 export function createConnector(data: ConnectorFormData) {
   return axios.post('/connectors', data);
 }
+
 export function updateConnector(data: ConnectorFormData) {
   return axios.put(`/connectors/${data.id}`, data);
 }

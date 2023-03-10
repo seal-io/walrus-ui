@@ -40,7 +40,7 @@ export const moduleActions = [
 export const variablesTypeList = [{ label: 'string', value: 'string' }];
 
 export const generateResourcesKeys = (reources: InstanceResource[], type) => {
-  const loop = (keysItem: KeysItem) => {
+  const loop = (keysItem: KeysItem, id) => {
     let list: KeysItem[] = keysItem.keys || [];
     if (type === 'loggable') {
       list = filter(list, (s) => s.loggable) as KeysItem[];
@@ -54,8 +54,8 @@ export const generateResourcesKeys = (reources: InstanceResource[], type) => {
         loggable: item.loggable,
         executable: item.executable,
         label: item.name,
-        value: item.value,
-        children: loop(item)
+        value: `${item.value || item.name}?id=${id}`,
+        children: loop(item, id)
       };
     });
     return resultList;
@@ -67,15 +67,16 @@ export const generateResourcesKeys = (reources: InstanceResource[], type) => {
       children: map(get(o, 'keys.keys') || [], (s) => {
         return {
           label: s.name,
-          value: s.value,
+          value: `${s.type || s.name}?id=${o.id}`,
           loggable: s.loggable,
           executable: s.executable,
-          children: loop(s)
+          children: loop(s, o.id)
         };
       })
     };
     return item;
   });
-  return list;
+  const res = filter(list, (o) => o?.children?.length) as never[];
+  return res;
 };
 export default {};

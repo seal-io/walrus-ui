@@ -2,7 +2,7 @@ import {
   wildDomainReg,
   ipReg,
   domainReg,
-  validateCron,
+  validateCron
 } from '@/utils/validate';
 import i18n from '@/locale/index';
 import { split } from 'lodash';
@@ -18,24 +18,24 @@ export const settingList: Array<SettingsItem> = [
       type: 'input',
       required: true,
       match: 'urlReg',
-      message: 'system.rules.url',
+      message: 'system.rules.url'
     },
     value: '',
     type: 'layout',
     dataList: [
       {
-        id: 'ServerURL',
+        id: 'ServeUrl',
         label: 'system.setting.serverurl',
         parentId: '',
         component: {
           type: 'input',
           required: true,
           match: 'urlReg',
-          message: 'system.rules.url',
+          message: 'system.rules.url'
         },
         value: '',
-        type: 'string',
-      },
+        type: 'string'
+      }
       // {
       //   id: 'TokenRefreshCronExpr',
       //   label: 'system.setting.TokenRefreshCronExpr',
@@ -56,47 +56,47 @@ export const settingList: Array<SettingsItem> = [
       //   value: '',
       //   type: 'string',
       // },
-      {
-        id: 'ScanCheckCronExpr',
-        label: 'system.setting.ScanCheckCronExpr',
-        desc: 'system.setting.ScanCheckCronExpr.desc',
-        parentId: '',
-        component: {
-          type: 'input',
-          required: true,
-          validator(val, callback) {
-            if (validateCron(val)) {
-              callback();
-            } else {
-              callback(i18n.global.t('system.setting.rules.cron'));
-            }
-          },
-          extra: 'system.setting.cron.extra',
-        },
-        value: '',
-        type: 'string',
-      },
-      {
-        id: 'MetaSyncCronExpr',
-        label: 'system.setting.MetaSyncCronExpr',
-        desc: 'system.setting.MetaSyncCronExpr.desc',
-        parentId: '',
-        component: {
-          type: 'input',
-          required: true,
-          validator(val, callback) {
-            if (validateCron(val)) {
-              callback();
-            } else {
-              callback(i18n.global.t('system.setting.rules.cron'));
-            }
-          },
-          extra: 'system.setting.cron.extra',
-        },
-        value: '',
-        type: 'string',
-      },
-    ],
+      // {
+      //   id: 'ScanCheckCronExpr',
+      //   label: 'system.setting.ScanCheckCronExpr',
+      //   desc: 'system.setting.ScanCheckCronExpr.desc',
+      //   parentId: '',
+      //   component: {
+      //     type: 'input',
+      //     required: true,
+      //     validator(val, callback) {
+      //       if (validateCron(val)) {
+      //         callback();
+      //       } else {
+      //         callback(i18n.global.t('system.setting.rules.cron'));
+      //       }
+      //     },
+      //     extra: 'system.setting.cron.extra'
+      //   },
+      //   value: '',
+      //   type: 'string'
+      // },
+      // {
+      //   id: 'MetaSyncCronExpr',
+      //   label: 'system.setting.MetaSyncCronExpr',
+      //   desc: 'system.setting.MetaSyncCronExpr.desc',
+      //   parentId: '',
+      //   component: {
+      //     type: 'input',
+      //     required: true,
+      //     validator(val, callback) {
+      //       if (validateCron(val)) {
+      //         callback();
+      //       } else {
+      //         callback(i18n.global.t('system.setting.rules.cron'));
+      //       }
+      //     },
+      //     extra: 'system.setting.cron.extra'
+      //   },
+      //   value: '',
+      //   type: 'string'
+      // }
+    ]
   },
   {
     id: 'InterceptorManage',
@@ -106,7 +106,7 @@ export const settingList: Array<SettingsItem> = [
     editable: true,
     component: {
       type: 'switch',
-      required: true,
+      required: true
     },
     type: 'layout',
     dataList: [
@@ -118,9 +118,9 @@ export const settingList: Array<SettingsItem> = [
         value: '',
         component: {
           type: 'switch',
-          required: true,
+          required: true
         },
-        type: 'boolean',
+        type: 'boolean'
       },
       {
         id: 'ApplyVulnerabilityPrioritization',
@@ -130,9 +130,9 @@ export const settingList: Array<SettingsItem> = [
         value: '',
         component: {
           type: 'switch',
-          required: true,
+          required: true
         },
-        type: 'boolean',
+        type: 'boolean'
       },
       {
         id: 'EnableFixAdvice',
@@ -142,9 +142,9 @@ export const settingList: Array<SettingsItem> = [
         value: '',
         component: {
           type: 'switch',
-          required: true,
+          required: true
         },
-        type: 'boolean',
+        type: 'boolean'
       },
       {
         id: 'FixAdviceMaxEvaluateVersionPerPackage',
@@ -165,10 +165,10 @@ export const settingList: Array<SettingsItem> = [
             max: 50,
             min: 1,
             step: 1,
-            precision: 0,
-          },
+            precision: 0
+          }
         },
-        type: 'number',
+        type: 'number'
       },
       {
         id: '',
@@ -181,8 +181,8 @@ export const settingList: Array<SettingsItem> = [
           'fontWeight': 500,
           'marginBottom': '20px',
           'padding-bottom': '10px',
-          'border-bottom': '1px solid #eaecee',
-        },
+          'border-bottom': '1px solid #eaecee'
+        }
       },
       {
         id: '',
@@ -193,8 +193,8 @@ export const settingList: Array<SettingsItem> = [
         parentId: '',
         style: {
           fontWeight: 500,
-          marginBottom: '15px',
-        },
+          marginBottom: '15px'
+        }
       },
       {
         id: 'AnalyzeWithMavenRepository',
@@ -207,9 +207,9 @@ export const settingList: Array<SettingsItem> = [
           required: false,
           match: 'urlHttp',
           message: 'system.setting.rules.mavenRepo',
-          extra: 'system.setting.rules.mavenRepo',
+          extra: 'system.setting.rules.mavenRepo'
         },
-        type: 'string',
+        type: 'string'
       },
       {
         id: '',
@@ -221,8 +221,8 @@ export const settingList: Array<SettingsItem> = [
         style: {
           fontWeight: 500,
           marginTop: '10px',
-          marginBottom: '15px',
-        },
+          marginBottom: '15px'
+        }
       },
       {
         id: 'AnalyzeWithGoModuleRepository',
@@ -233,7 +233,7 @@ export const settingList: Array<SettingsItem> = [
         value: {
           Repository: '',
           GOPRIVATE: '',
-          GONOPROXY: '',
+          GONOPROXY: ''
         },
         childProperties: [
           {
@@ -248,9 +248,9 @@ export const settingList: Array<SettingsItem> = [
               required: false,
               match: 'urlReg',
               message: 'system.rules.url',
-              extra: '',
+              extra: ''
             },
-            type: 'string',
+            type: 'string'
           },
           {
             id: 'private',
@@ -264,9 +264,9 @@ export const settingList: Array<SettingsItem> = [
               required: false,
               match: '',
               message: '',
-              extra: '',
+              extra: ''
             },
-            type: 'string',
+            type: 'string'
           },
           {
             id: 'noProxy',
@@ -280,21 +280,21 @@ export const settingList: Array<SettingsItem> = [
               required: false,
               match: '',
               message: '',
-              extra: '',
+              extra: ''
             },
-            type: 'string',
-          },
+            type: 'string'
+          }
         ],
         component: {
           type: 'input',
           required: false,
           match: 'urlReg',
           message: '',
-          extra: '',
+          extra: ''
         },
-        type: 'string',
-      },
-    ],
+        type: 'string'
+      }
+    ]
   },
   {
     id: 'ProxyManage',
@@ -306,7 +306,7 @@ export const settingList: Array<SettingsItem> = [
     value: '',
     component: {
       type: 'input',
-      required: false,
+      required: false
     },
     dataList: [
       {
@@ -324,10 +324,10 @@ export const settingList: Array<SettingsItem> = [
             } else {
               callback(i18n.global.t('system.setting.rules.genericdomain'));
             }
-          },
+          }
         },
         value: '',
-        type: 'string',
+        type: 'string'
       },
       {
         id: 'ProxyTLS',
@@ -336,7 +336,7 @@ export const settingList: Array<SettingsItem> = [
         parentId: '',
         component: {
           type: 'select',
-          required: true,
+          required: true
         },
         type: 'string',
         // value: 'ProxyTLSAcmeGen',
@@ -346,27 +346,27 @@ export const settingList: Array<SettingsItem> = [
             id: 'Customize',
             value: 'Customize',
             label: 'system.setting.customize',
-            desc: 'system.setting.customize.desc',
+            desc: 'system.setting.customize.desc'
           },
           {
             id: 'Terminate',
             value: 'Terminate',
             label: 'system.setting.terminate',
-            desc: 'system.setting.terminate.desc',
+            desc: 'system.setting.terminate.desc'
           },
           {
             id: 'ACME',
             value: 'ACME',
             label: 'system.setting.acme',
-            desc: 'system.setting.acme.desc',
+            desc: 'system.setting.acme.desc'
           },
           {
             id: 'Disable',
             value: 'Disable',
             label: 'system.setting.disabled',
-            desc: 'system.setting.disabled.desc',
-          },
-        ],
+            desc: 'system.setting.disabled.desc'
+          }
+        ]
       },
       {
         id: 'ProxyTLSCustomizeCrt',
@@ -375,10 +375,10 @@ export const settingList: Array<SettingsItem> = [
         parentValue: 'Customize',
         component: {
           type: 'textarea',
-          required: true,
+          required: true
         },
         value: '',
-        type: 'string',
+        type: 'string'
       },
       {
         id: 'ProxyTLSCustomizeKey',
@@ -387,12 +387,12 @@ export const settingList: Array<SettingsItem> = [
         parentValue: 'Customize',
         component: {
           type: 'textarea',
-          required: true,
+          required: true
         },
         value: '',
-        type: 'string',
-      },
-    ],
+        type: 'string'
+      }
+    ]
   },
   {
     id: 'offlineManage',
@@ -402,7 +402,7 @@ export const settingList: Array<SettingsItem> = [
     editable: true,
     component: {
       type: 'input',
-      required: true,
+      required: true
     },
     type: 'layout',
     dataList: [
@@ -417,9 +417,9 @@ export const settingList: Array<SettingsItem> = [
           type: 'input',
           required: false,
           match: 'urlHttp',
-          message: 'system.setting.rules.mavenRepo',
+          message: 'system.setting.rules.mavenRepo'
         },
-        type: 'string',
+        type: 'string'
       },
       {
         id: 'HTTPSProxy',
@@ -432,9 +432,9 @@ export const settingList: Array<SettingsItem> = [
           type: 'input',
           required: false,
           match: 'urlHttp',
-          message: 'system.setting.rules.mavenRepo',
+          message: 'system.setting.rules.mavenRepo'
         },
-        type: 'string',
+        type: 'string'
       },
       {
         id: 'AllProxy',
@@ -448,9 +448,9 @@ export const settingList: Array<SettingsItem> = [
           required: false,
           match: 'scoksReg',
           message: 'system.setting.rules.socks',
-          extra: 'system.setting.rules.socks',
+          extra: 'system.setting.rules.socks'
         },
-        type: 'string',
+        type: 'string'
       },
       {
         id: 'NoProxy',
@@ -475,13 +475,13 @@ export const settingList: Array<SettingsItem> = [
               callback(i18n.global.t('system.setting.rules.noProxy'));
             }
           },
-          extra: 'system.setting.offlineManage.noProxy.extra',
+          extra: 'system.setting.offlineManage.noProxy.extra'
         },
-        type: 'string',
-      },
-    ],
-  },
+        type: 'string'
+      }
+    ]
+  }
 ];
 export default {
-  settingList,
+  settingList
 };

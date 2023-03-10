@@ -23,8 +23,8 @@ export default mergeConfig(
       //   origin: 'https://localhost:4000'
       // },
       // proxy: createProxyTable('https://54.199.33.191:8444')
-      proxy: createProxyTable('https://192.168.2.11')
-      // proxy: createProxyTable()
+      // proxy: createProxyTable('https://192.168.2.11')
+      proxy: createProxyTable()
     },
     plugins: [
       // setRequestHeader(),

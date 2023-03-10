@@ -148,6 +148,13 @@
     });
   };
   watch(
+    () => props.modelValue,
+    (newVal) => {
+      aceEditor?.insertNewLine(props.modelValue);
+    },
+    { immediate: false }
+  );
+  watch(
     () => props.lang,
     (newVal) => {
       aceEditor?.setOption('mode', `ace/mode/${newVal}`);
@@ -165,12 +172,11 @@
     nextTick(() => {
       setLanguageTools();
       aceEditor = ace.edit('ace-editor');
-      aceEditor.setValue(props.modelValue);
+      // aceEditor.setValue(props.modelValue);
       aceEditor.on('change', function (args: any) {
-        const val = aceEditor.getValue();
-        emits('change', val);
-        emits('update:modelValue', val);
-        console.log('args===', val);
+        // const val = aceEditor.getValue();
+        // emits('change', val);
+        // emits('update:modelValue', val);
       });
       aceEditor.setOptions({
         wrap: true, // 换行

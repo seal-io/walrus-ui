@@ -35,7 +35,10 @@
         </a-space>
       </template>
       <template #button-group>
-        <a-dropdown @select="handleCreate">
+        <a-button type="primary" @click="handleCreate">{{
+          $t('applications.applications.create')
+        }}</a-button>
+        <!-- <a-dropdown @select="handleCreate">
           <a-button type="primary"
             >{{ $t('applications.applications.create')
             }}<icon-down style="margin-left: 5px"
@@ -46,7 +49,7 @@
             }}</a-doption>
             <a-doption value="template">从模板创建</a-doption>
           </template>
-        </a-dropdown>
+        </a-dropdown> -->
 
         <a-button
           type="primary"
@@ -180,7 +183,7 @@
   import { queryProjects } from '../../projects/api';
   import { AppRowData } from '../config/interface';
   import createApplication from '../components/create-application.vue';
-  import { queryApplications } from '../api';
+  import { queryApplications, deleteApplication } from '../api';
   import InstanceStatus from '../components/instance-status.vue';
 
   const { rowSelection, selectedKeys, handleSelectChange } = useRowSelect();
@@ -254,14 +257,12 @@
     handleFilter();
   };
   const handleCreate = (type) => {
-    if (type === 'system') {
-      router.push({
-        name: 'applicationsDetail',
-        params: {
-          projectId: queryParams.projectID
-        }
-      });
-    }
+    router.push({
+      name: 'applicationsDetail',
+      params: {
+        projectId: queryParams.projectID
+      }
+    });
   };
   const handleDeleteConfirm = async () => {
     try {
@@ -271,7 +272,7 @@
           id: val
         };
       });
-      // await deleteRepos(ids);
+      await deleteApplication(ids);
       loading.value = false;
       execSucceed();
       queryParams.page = 1;

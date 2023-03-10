@@ -28,7 +28,7 @@ export default {
   'operation.environments.table.description': '描述',
   'operation.environments.detail.addConnector': '添加连接器',
   'operation.environments.detail.holder': '请选择连接器',
-  'operation.templates.menu': '模板',
+  'operation.templates.menu': '模块',
   'operation.templates.table.title': '模板列表',
   'operation.templates.table.holder': '请输入模板名称',
   'operation.templates.type.holder': '请选择模板类型',

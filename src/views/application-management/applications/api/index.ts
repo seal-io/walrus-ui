@@ -23,6 +23,9 @@ export const queryApplications = (params: QueryType) => {
 export const createApplication = (data) => {
   return axios.post(`/applications`, data);
 };
+export const deleteApplication = (data) => {
+  return axios.delete(`/applications`, { data });
+};
 export const deployApplication = (data) => {
   return axios.post(`/applications/${data.id}/deploy`, data);
 };

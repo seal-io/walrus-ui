@@ -48,7 +48,7 @@
           ...(settingFormData.value[item.id] || {}),
           value: settingFormData.value[item.id]
             ? settingFormData.value[item.id].value
-            : '',
+            : ''
         };
       }
       // set dataList
@@ -72,7 +72,7 @@
           sItem = {
             ...sItem,
             ...(settingFormData.value[sItem.id] || {}),
-            value,
+            value
           };
           return sItem;
         });
@@ -80,7 +80,7 @@
         item.dataList = list.filter((o) => !o.hidden);
       }
       return {
-        ...item,
+        ...item
       };
     });
 
@@ -97,8 +97,9 @@
       console.log('data:', data);
       const items = data.items || [];
       settingFormData.value = items.reduce((obj, item) => {
-        obj[item.id] = {
+        obj[item.name] = {
           ...item,
+          id: item.name
         };
         return obj;
       }, {});

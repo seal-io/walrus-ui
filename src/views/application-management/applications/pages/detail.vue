@@ -245,6 +245,9 @@
 
       .instance {
         flex: 1;
+        max-height: 260px;
+        padding: 2px;
+        overflow: auto;
 
         .content {
           display: flex;

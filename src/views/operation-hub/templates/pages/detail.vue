@@ -132,7 +132,6 @@
     tabReadme,
     tabInput,
     tabOutput,
-    tabResource,
     tabConnector
   };
   const activeKey = ref('tabReadme');
