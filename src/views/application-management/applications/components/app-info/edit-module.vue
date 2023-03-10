@@ -3,13 +3,16 @@
     top="10%"
     :closable="false"
     :align-center="false"
-    :width="600"
+    :width="900"
     :ok-text="$t('common.button.save')"
     :visible="show"
     :mask-closable="false"
-    :body-style="{ 'max-height': '400px', 'overflow': 'auto' }"
+    :body-style="{
+      'max-height': '500px',
+      'overflow': 'auto'
+    }"
     modal-class="oci-modal"
-    title="添加Module"
+    :title="action === 'edit' ? '编辑Module' : '添加Module'"
     @cancel="handleCancel"
     @ok="handleOk"
     @before-open="handleBeforeOpen"
@@ -17,40 +20,55 @@
     @before-close="handleBeforeClose"
   >
     <div>
-      <a-form ref="formref" :model="formData" auto-label-width>
-        <a-form-item
-          label="Name"
-          field="name"
-          :disabled="action === 'edit'"
-          :rules="[{ required: true, message: '名称必填' }]"
-        >
-          <a-input
-            v-model="formData.name"
-            :max-length="50"
-            show-word-limit
-          ></a-input>
-        </a-form-item>
-        <a-form-item
-          label="Type"
-          field="module.id"
-          :disabled="action === 'edit'"
-          :rules="[{ required: true, message: '类型必选' }]"
-        >
-          <a-select v-model="formData.module.id" @change="handleTemplateChange">
-            <a-option
-              v-for="item in templates"
-              :key="item.id"
-              :value="item.id"
-              >{{ item.id }}</a-option
+      <a-form
+        ref="formref"
+        :model="formData"
+        auto-label-width
+        layout="vertical"
+      >
+        <a-grid :cols="24">
+          <a-grid-item :span="12">
+            <a-form-item
+              label="Name"
+              field="name"
+              :disabled="action === 'edit'"
+              :rules="[{ required: true, message: '名称必填' }]"
             >
-          </a-select>
-        </a-form-item>
+              <a-input
+                v-model="formData.name"
+                :max-length="50"
+                show-word-limit
+              ></a-input>
+            </a-form-item>
+          </a-grid-item>
+          <a-grid-item :span="12">
+            <a-form-item
+              label="Type"
+              field="module.id"
+              :disabled="action === 'edit'"
+              :rules="[{ required: true, message: '类型必选' }]"
+            >
+              <a-select
+                v-model="formData.module.id"
+                @change="handleTemplateChange"
+              >
+                <a-option
+                  v-for="item in templates"
+                  :key="item.id"
+                  :value="item.id"
+                  >{{ item.id }}</a-option
+                >
+              </a-select>
+            </a-form-item>
+          </a-grid-item>
+        </a-grid>
       </a-form>
       <div class="variables">
         <GroupTitle title="属性"></GroupTitle>
         <formCreate
           v-if="show"
           ref="schemaForm"
+          layout="vertical"
           action="post"
           api=""
           :show-footer="false"

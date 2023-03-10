@@ -167,6 +167,46 @@
         ellipsis: true,
         tooltip: true,
         cellStyle: { minWidth: '40px' },
+        dataIndex: 'cpuCost',
+        render({ record }) {
+          return round(record.cpuCost, 4) || 0;
+        },
+        title: 'CPU'
+      },
+      {
+        ellipsis: true,
+        tooltip: true,
+        cellStyle: { minWidth: '40px' },
+        dataIndex: 'ramCost',
+        render({ record }) {
+          return round(record.ramCost, 4) || 0;
+        },
+        title: '内存'
+      },
+      {
+        ellipsis: true,
+        tooltip: true,
+        cellStyle: { minWidth: '40px' },
+        dataIndex: 'pvCost',
+        render({ record }) {
+          return round(record.pvCost, 4) || 0;
+        },
+        title: 'PV'
+      },
+      {
+        ellipsis: true,
+        tooltip: true,
+        cellStyle: { minWidth: '40px' },
+        dataIndex: 'sharedCost',
+        render({ record }) {
+          return round(record.sharedCost, 4) || 0;
+        },
+        title: '共享资源费用'
+      },
+      {
+        ellipsis: true,
+        tooltip: true,
+        cellStyle: { minWidth: '40px' },
         dataIndex: 'totalCost',
         render({ record }) {
           return round(record.totalCost, 4) || 0;

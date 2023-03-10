@@ -1,4 +1,4 @@
-import { get, map, keys } from 'lodash';
+import { get, map, keys, split, toString } from 'lodash';
 import { LabelListItem } from './interface';
 
 interface OptionsItem {
@@ -23,7 +23,13 @@ export const parseMapstring = (comSchema) => {
   }
   return labelList;
 };
-
+export const parseQuery = (query) => {
+  const parsestr = split(query, '=');
+  return {
+    key: get(parsestr, '0'),
+    value: toString(get(parsestr, '1'))
+  };
+};
 export const parseOptions = (comSchema) => {
   const schemaType = get(comSchema, 'Type');
   let options: OptionsItem[] = [];

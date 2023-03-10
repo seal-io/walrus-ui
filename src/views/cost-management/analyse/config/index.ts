@@ -340,7 +340,7 @@ export const projectCostCols = [
     tooltip: true,
     cellStyle: { minWidth: '40px' },
     dataIndex: 'itemName',
-    title: '项目'
+    title: '应用'
   },
   // {
   //   ellipsis: true,

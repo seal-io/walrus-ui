@@ -27,7 +27,7 @@
         :default-value="defaultBasicInfo"
       ></BasicInfo>
     </ModuleCard>
-    <ModuleCard title="Moudles">
+    <ModuleCard title="Modules">
       <div class="content">
         <instanceThumb
           v-for="(item, index) in appInfo.modules"
@@ -65,7 +65,7 @@
         type="outline"
         style="margin-bottom: 8px"
         @click="handleSelect"
-        ><icon-plus style="margin-right: 5px" />Add a variabel</a-button
+        ><icon-plus style="margin-right: 5px" />Add a variable</a-button
       >
       <!-- <a-dropdown @select="handleSelect">
         <a-button size="small" type="outline" style="margin-bottom: 8px"

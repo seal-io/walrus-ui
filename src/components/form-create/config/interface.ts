@@ -10,6 +10,7 @@ export interface ComponentSchema {
   Name: string;
   Type: string;
   Default: any;
+  ShowCondition: { key: string; value: string };
   parentCom: string;
   childCom: string;
   Required: boolean;
@@ -108,7 +109,7 @@ export const parseComponentSchema = (schema: ComponentSchema) => {
     };
   }
   // boolean
-  if (schema.Type === 'boolean') {
+  if (schema.Type === 'bool') {
     // ================Checkbox================
     return {
       component: ['Checkbox'],

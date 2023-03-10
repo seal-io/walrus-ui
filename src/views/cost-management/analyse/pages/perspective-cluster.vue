@@ -354,9 +354,9 @@
   // const namespaceCostCols = computed(() => {
   //   return filter(clusterNamespaceCostCols, (item) => !item.showIn);
   // });
-  const handleDateChange = async () => {
-    await getClusterList();
-    if (!queryParams.connectorID) return;
+  const handleDateChange = async (val) => {
+    console.log('date===', val);
+
     workloadCostFilters.value = {
       ...workloadCostFilters.value,
       ...queryParams,
@@ -372,6 +372,8 @@
       ...queryParams,
       endTime: setEndTimeAddDay(queryParams.endTime, timeMode.value)
     };
+    await getClusterList();
+    if (!queryParams.connectorID) return;
     getDailyCostChart();
     getNamespaceCostChart();
     getSummaryData();
