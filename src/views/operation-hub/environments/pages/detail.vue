@@ -41,7 +41,7 @@
         :rules="[{ required: true, message: '请添加连接器' }]"
       >
         <connectorsTable
-          :list="formData?.edges?.connectors || []"
+          :list="formData?.edges || []"
           @delete="handleDeleteConnector"
         ></connectorsTable>
         <template #extra>
@@ -60,7 +60,7 @@
             <ConnectorSelector
               v-if="showModal"
               v-model:show="showModal"
-              v-model:selected="formData.connectorIDs"
+              :selected="formData.connectorIDs"
               :list="connectorList"
               @confirm="handleConnectorChange"
             ></ConnectorSelector>
@@ -115,14 +115,12 @@
     description: '',
     connectorIDs: [],
     connectors: [],
-    edges: {
-      connectors: []
-    }
+    edges: []
   });
-  const setFormDataConnectors = (values) => {
+  const setFormDataConnectors = (connectors) => {
     each(connectorList.value, (item) => {
-      if (includes(values, item.value)) {
-        formData.value?.edges?.connectors?.push(item);
+      if (includes(connectors, item.value)) {
+        formData.value?.edges?.push(item);
       }
     });
     formData.value.connectors = map(formData.value.connectorIDs, (val) => {
@@ -138,18 +136,18 @@
     try {
       const { data } = await queryItemEnvironments({ id });
       formData.value = data;
-      formData.value.edges.connectors = [];
-      setFormDataConnectors(get(data, 'connectorIDs') || []);
-      console.log('formData======', formData.value);
+      formData.value.edges = [];
+      formData.value.connectorIDs = map(get(data, 'connectors') || [], (s) => {
+        return s?.connector?.id;
+      });
+      setFormDataConnectors(formData.value.connectorIDs);
     } catch (error) {
       formData.value = {
         name: '',
         description: '',
         connectorIDs: [],
         connectors: [],
-        edges: {
-          connectors: []
-        }
+        edges: []
       };
       console.log(error);
     }
@@ -158,7 +156,7 @@
     try {
       const params = {
         page: 1,
-        perPage: 1000
+        perPage: -1
       };
       const { data } = await queryConnectors(params);
       const list = data?.items || [];
@@ -179,12 +177,13 @@
   const handleConnectorChange = (values) => {
     formData.value.connectorIDs = concat(formData.value.connectorIDs, values);
     setFormDataConnectors(values);
-    console.log('formData.connectorIDs', formData.value.connectorIDs);
+    formref.value.validateField('connectorIDs');
   };
   const handleDeleteConnector = (record, index) => {
-    formData.value?.edges?.connectors?.splice(index, 1);
+    formData.value.edges?.splice(index, 1);
     remove(formData.value.connectorIDs, (val) => record.id === val);
-    console.log('formData.connectorIDs', formData.value.connectorIDs);
+    remove(formData.value.connectors, (o) => o.connector.id === record.id);
+    formref.value.validateField('connectorIDs');
   };
   const handleSubmit = async () => {
     const res = await formref.value?.validate();

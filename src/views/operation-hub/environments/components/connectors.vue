@@ -34,7 +34,7 @@
           :title="$t('common.table.createTime')"
         >
           <template #cell="{ record }">
-            <span>{{ record.createTime }}</span>
+            <span>{{ dayjs(record.createTime).format('YYYY-MM-DD') }}</span>
           </template>
         </a-table-column>
         <a-table-column
@@ -61,6 +61,7 @@
 
 <script lang="ts" setup>
   import { map } from 'lodash';
+  import dayjs from 'dayjs';
   import { reactive, ref, onMounted, PropType, watchEffect } from 'vue';
   import useCallCommon from '@/hooks/use-call-common';
   import { deleteModal, execSucceed } from '@/utils/monitor';
