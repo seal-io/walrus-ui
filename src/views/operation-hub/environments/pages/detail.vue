@@ -38,7 +38,7 @@
         :label="$t('operation.connectors.menu')"
         field="connectorIDs"
         :validate-trigger="['change']"
-        :rules="[{ required: true, message: '请添加连接器' }]"
+        :rules="[{ required: false, message: '请添加连接器' }]"
       >
         <connectorsTable
           :list="formData?.edges || []"

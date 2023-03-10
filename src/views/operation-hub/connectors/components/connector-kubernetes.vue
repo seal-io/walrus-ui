@@ -61,15 +61,6 @@
           ellipsis
           tooltip
           :cell-style="{ minWidth: '40px' }"
-          align="center"
-          data-index="type"
-          :title="$t('operation.connectors.table.type')"
-        >
-        </a-table-column>
-        <a-table-column
-          ellipsis
-          tooltip
-          :cell-style="{ minWidth: '40px' }"
           align="left"
           data-index="finOpsStatus"
           :title="$t('operation.connectors.table.status')"

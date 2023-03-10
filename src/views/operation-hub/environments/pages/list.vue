@@ -99,7 +99,7 @@
   import ThumbView from '../components/thumb-view.vue';
   import ListView from '../components/list-view.vue';
   import { EnvironmentRow } from '../config/interface';
-  import { queryEnvironments } from '../api';
+  import { queryEnvironments, deleteEnvironment } from '../api';
 
   let timer: any = null;
   const { router } = useCallCommon();
@@ -171,7 +171,7 @@
           id: val
         };
       });
-      // await deleteRepos(ids);
+      await deleteEnvironment(ids);
       loading.value = false;
       execSucceed();
       queryParams.page = 1;

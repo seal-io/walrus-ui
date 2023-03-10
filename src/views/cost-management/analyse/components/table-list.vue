@@ -121,15 +121,10 @@
       console.log('filterParams===', props.filterParams);
       const params = {
         source: props.source,
-        ...props.filterParams,
+        ...omit(props.filterParams, 'step'),
         startTime: get(props.filterParams, 'step')
           ? setStartTime()
           : props.filterParams.startTime,
-        // startTime: get(props.filterParams, 'step')
-        //   ? dayjs(props.filterParams.endTime).format('YYYY-MM-DDT00:00:00Z')
-        //   : dayjs(props.filterParams.startTime).format('YYYY-MM-DDTHH:mm:ssZ'),
-        // endTime: dayjs(props.filterParams.endTime).format(
-        //   'YYYY-MM-DDT23:59:59Z'
         // ),
         query: queryParams.query,
         paging: {

@@ -33,6 +33,9 @@ export function queryItemEnvironments(params: { id: string }) {
 export function createEnvironment(data: EnvironFormData) {
   return axios.post('/environments', data);
 }
+export function deleteEnvironment(data) {
+  return axios.delete('/environments', { data });
+}
 
 export function updateEnvironment(data: EnvironFormData) {
   return axios.put(`/environments/${data.id}`, data);

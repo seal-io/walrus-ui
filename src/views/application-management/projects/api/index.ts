@@ -24,6 +24,9 @@ export const queryProjects = (params: QueryType) => {
 export const createProject = (data: ProjectFormData) => {
   return axios.post(`/projects`, data);
 };
+export const deleteProjects = (data) => {
+  return axios.delete(`/projects`, { data });
+};
 
 export const updateProject = (data: ProjectFormData) => {
   return axios.put(`/projects/${data.id}`, data);

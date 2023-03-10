@@ -33,7 +33,9 @@ export function queryPerspectives(params: QueryType) {
     }
   });
 }
-
+export function deletePerspectives(data) {
+  return axios.delete('/perspectives', { data });
+}
 export function queryItemPerspective(params: { id: string }) {
   return axios.get<PerspectiveRowData>(`/perspectives/${params.id}`, {
     params,

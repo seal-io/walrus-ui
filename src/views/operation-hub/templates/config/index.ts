@@ -12,7 +12,7 @@ export const tabList = [
   { label: 'Readme', value: '', com: 'tabReadme' },
   { label: 'Inputs', value: '', com: 'tabInput' },
   { label: 'Outputs', value: '', com: 'tabOutput' },
-  { label: 'Resources', value: '', com: 'tabResource' },
-  { label: 'Connectors', value: '', com: 'tabConnector' }
+  // { label: 'Resources', value: '', com: 'tabResource' },
+  { label: 'Providers', value: '', com: 'tabConnector' }
 ];
 export default {};

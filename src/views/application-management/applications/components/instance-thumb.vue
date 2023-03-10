@@ -2,7 +2,10 @@
   <div
     class="thumb-item"
     :class="{ active: active }"
-    :style="{ width: `${size}px`, height: `${size}px` }"
+    :style="{
+      width: `${get(size, 0) || size}px`,
+      height: `${get(size, 1) || size}px`
+    }"
   >
     <a-dropdown
       size="small"
@@ -35,6 +38,7 @@
 </template>
 
 <script lang="ts" setup>
+  import { get } from 'lodash';
   import { PropType } from 'vue';
   import { InstanceData } from '../config/interface';
 
@@ -57,7 +61,7 @@
       }
     },
     size: {
-      type: Number,
+      type: [Number, Array],
       default() {
         return 100;
       }

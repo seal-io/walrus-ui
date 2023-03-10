@@ -163,7 +163,7 @@
   import FilterBox from '@/components/filter-box/index.vue';
   import { PerspectiveRowData } from '../config/interface';
   import CreatePerspective from '../components/create-perspectiv.vue';
-  import { queryPerspectives } from '../api';
+  import { queryPerspectives, deletePerspectives } from '../api';
   import { DateShortCuts, builtinViewMap } from '../config';
 
   const { rowSelection, selectedKeys, handleSelectChange } = useRowSelect();
@@ -237,7 +237,7 @@
           id: val
         };
       });
-      // await deleteRepos(ids);
+      await deletePerspectives(ids);
       loading.value = false;
       execSucceed();
       queryParams.page = 1;

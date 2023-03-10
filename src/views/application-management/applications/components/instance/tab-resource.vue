@@ -26,7 +26,9 @@
           :title="$t('common.table.createTime')"
         >
           <template #cell="{ record }">
-            <span>{{ record.createTime }}</span>
+            <span>{{
+              dayjs(record.createTime).format('YYYY-MM-DD HH:mm:ss')
+            }}</span>
           </template>
         </a-table-column>
         <a-table-column
@@ -47,12 +49,12 @@
           :title="$t('applications.applications.table.status')"
         >
         </a-table-column>
-        <a-table-column
+        <!-- <a-table-column
           align="center"
           :width="210"
           :title="$t('common.table.operation')"
         >
-          <!-- <template #cell="{ record }">
+          <template #cell="{ record }">
             <a-space :size="20">
               <a-link type="text" size="small" @click="handleEnabled(record)">
                 <template #icon><icon-edit /></template>
@@ -63,8 +65,8 @@
                 {{ $t('common.button.disabled') }}
               </a-link>
             </a-space>
-          </template> -->
-        </a-table-column>
+          </template>
+        </a-table-column> -->
       </template>
     </a-table>
     <a-pagination
@@ -82,6 +84,7 @@
 </template>
 
 <script lang="ts" setup>
+  import dayjs from 'dayjs';
   import { onMounted, ref, reactive, inject, watch } from 'vue';
   import { InstanceResource } from '../../config/interface';
   import { queryApplicationResource } from '../../api';
@@ -93,9 +96,7 @@
     page: 1,
     perPage: 10
   });
-  const dataList = ref<InstanceResource[]>([
-    { name: 'test', createTime: '2023-03-10', type: 'web', status: 'ready' }
-  ]);
+  const dataList = ref<InstanceResource[]>([]);
   const handleEnabled = (row) => {
     console.log(row);
   };
@@ -110,7 +111,7 @@
         instanceID: instanceId.value
       };
       const { data } = await queryApplicationResource(params);
-      // dataList.value = data?.items || [];
+      dataList.value = data?.items || [];
       loading.value = false;
     } catch (error) {
       dataList.value = [];

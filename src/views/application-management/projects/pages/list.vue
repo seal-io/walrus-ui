@@ -141,7 +141,7 @@
   import useRowSelect from '@/hooks/use-row-select';
   import CreateProjectModal from '../components/create-project.vue';
   import { ProjectRowData } from '../config/interface';
-  import { queryProjects } from '../api';
+  import { queryProjects, deleteProjects } from '../api';
 
   let timer: any = null;
   const { t, router } = useCallCommon();
@@ -235,7 +235,7 @@
           id: val
         };
       });
-      // await deleteRepos(ids);
+      await deleteProjects(ids);
       loading.value = false;
       execSucceed();
       queryParams.page = 1;

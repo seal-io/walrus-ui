@@ -43,7 +43,7 @@
     }
   });
   const dataList = computed(() => {
-    const list = get(props.schema, 'Inputs');
+    const list = get(props.schema, 'Variables');
     return list || [];
   });
 </script>

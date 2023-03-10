@@ -21,6 +21,7 @@
         <a-form-item
           label="Name"
           field="name"
+          :disabled="action === 'edit'"
           :rules="[{ required: true, message: '名称必填' }]"
         >
           <a-input

@@ -34,14 +34,24 @@
           :key="item?.module?.id"
           :active="item?.module?.id === active"
           :data-info="item"
-          :size="130"
+          :size="[200, 100]"
           :actions="moduleActions"
           @edit="handleEditModule(item)"
           @delete="handleDeleteModule(index)"
           @click="handleClickInstance(item)"
         >
           <template #description>
-            <span style="font-weight: 700">{{ item?.module?.id }}</span>
+            <div
+              style="
+                width: 180px;
+                overflow: hidden;
+                font-weight: 700;
+                white-space: nowrap;
+                text-align: center;
+                text-overflow: ellipsis;
+              "
+              >{{ item?.module?.id }}</div
+            >
           </template>
         </instanceThumb>
         <a-tooltip content="Add Module">
@@ -50,7 +60,14 @@
       </div>
     </ModuleCard>
     <ModuleCard title="Variables">
-      <a-dropdown @select="handleSelect">
+      <a-button
+        size="small"
+        type="outline"
+        style="margin-bottom: 8px"
+        @click="handleSelect"
+        ><icon-plus style="margin-right: 5px" />Add a variabel</a-button
+      >
+      <!-- <a-dropdown @select="handleSelect">
         <a-button size="small" type="outline" style="margin-bottom: 8px"
           >Add a variabel<icon-down style="margin-left: 5px"
         /></a-button>
@@ -62,7 +79,7 @@
             >{{ item.id }}</a-doption
           >
         </template>
-      </a-dropdown>
+      </a-dropdown> -->
       <moduleWrapper
         v-for="(item, index) in get(appInfo, 'variables') || []"
         :key="index"
