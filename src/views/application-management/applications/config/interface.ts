@@ -42,13 +42,31 @@ export interface InstanceData {
   id: string;
   type: string;
 }
-
+export interface KeysItem {
+  executable?: boolean;
+  loggable?: boolean;
+  name: string;
+  value: string;
+  keys?: KeysItem[];
+}
+export interface Cascader {
+  label: string;
+  value: string;
+  executable?: boolean;
+  loggable?: boolean;
+  children: Cascader[];
+}
+export interface ResourceKeysItem {
+  labels?: string[];
+  keys: KeysItem[];
+}
 export interface InstanceResource {
   id: string;
   name: string;
   type: string;
   status: string;
   createTime: string;
+  keys: ResourceKeysItem;
 }
 export interface HistoryData {
   id: string;

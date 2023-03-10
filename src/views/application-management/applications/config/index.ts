@@ -1,3 +1,6 @@
+import { filter, map, get } from 'lodash';
+import { KeysItem, InstanceResource, Cascader } from './interface';
+
 export const instanceTabs = [
   // { label: '配置定义', value: 'configuration', com: 'tabConfiguration' },
   { label: '资源', value: 'resource', com: 'tabResource' },
@@ -35,4 +38,44 @@ export const moduleActions = [
 ];
 
 export const variablesTypeList = [{ label: 'string', value: 'string' }];
+
+export const generateResourcesKeys = (reources: InstanceResource[], type) => {
+  const loop = (keysItem: KeysItem) => {
+    let list: KeysItem[] = keysItem.keys || [];
+    if (type === 'loggable') {
+      list = filter(list, (s) => s.loggable) as KeysItem[];
+    }
+    if (type === 'executable') {
+      list = filter(list, (s) => s.executable) as KeysItem[];
+    }
+    if (!list.length) return null;
+    const resultList = map(list, (item) => {
+      return {
+        loggable: item.loggable,
+        executable: item.executable,
+        label: item.name,
+        value: item.value,
+        children: loop(item)
+      };
+    });
+    return resultList;
+  };
+  const list = map(reources, (o) => {
+    const item = {
+      label: o.name,
+      value: o.name,
+      children: map(get(o, 'keys.keys') || [], (s) => {
+        return {
+          label: s.name,
+          value: s.value,
+          loggable: s.loggable,
+          executable: s.executable,
+          children: loop(s)
+        };
+      })
+    };
+    return item;
+  });
+  return list;
+};
 export default {};
