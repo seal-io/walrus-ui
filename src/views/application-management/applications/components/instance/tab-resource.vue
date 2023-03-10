@@ -52,18 +52,18 @@
           :width="210"
           :title="$t('common.table.operation')"
         >
-          <template #cell="{ record }">
+          <!-- <template #cell="{ record }">
             <a-space :size="20">
               <a-link type="text" size="small" @click="handleEnabled(record)">
-                <!-- <template #icon><icon-edit /></template> -->
+                <template #icon><icon-edit /></template>
                 {{ $t('common.button.enabled') }}
               </a-link>
               <a-link type="text" size="small" @click="handleDisabled(record)">
-                <!-- <template #icon><icon-list style="font-size: 16px" /></template> -->
+                <template #icon><icon-list style="font-size: 16px" /></template>
                 {{ $t('common.button.disabled') }}
               </a-link>
             </a-space>
-          </template>
+          </template> -->
         </a-table-column>
       </template>
     </a-table>
@@ -93,7 +93,9 @@
     page: 1,
     perPage: 10
   });
-  const dataList = ref<InstanceResource[]>([]);
+  const dataList = ref<InstanceResource[]>([
+    { name: 'test', createTime: '2023-03-10', type: 'web', status: 'ready' }
+  ]);
   const handleEnabled = (row) => {
     console.log(row);
   };
@@ -108,7 +110,7 @@
         instanceID: instanceId.value
       };
       const { data } = await queryApplicationResource(params);
-      dataList.value = data?.items || [];
+      // dataList.value = data?.items || [];
       loading.value = false;
     } catch (error) {
       dataList.value = [];
@@ -128,6 +130,8 @@
     queryParams.perPage = pageSize;
     handleFilter();
   };
+  const handleShowLogs = () => {};
+  const handleShowTerm = () => {};
   watch(
     () => instanceId.value,
     () => {

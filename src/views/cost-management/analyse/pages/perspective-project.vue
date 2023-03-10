@@ -264,6 +264,7 @@
     return projectloading.value || loading.value;
   });
   const handleDateChange = async () => {
+    if (!queryParams.project) return;
     await getProjectList();
     projectCostFilters.value = {
       ...projectCostFilters.value,
@@ -290,6 +291,7 @@
   };
   const initData = async () => {
     await getPerspectiveItemInfo();
+    if (!queryParams.project) return;
     await getProjectList();
     loadeend.value = true;
     getSummaryData();

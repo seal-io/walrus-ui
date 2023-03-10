@@ -1,27 +1,10 @@
 <template>
   <div class="tab-logs-wrap">
-    <a-space>
-      <a-select
-        style="width: 200px; margin-bottom: 8px"
-        allow-search
-        placeholder="请选择资源"
-      >
-        <a-option
-          v-for="(item, index) in dataList"
-          :key="index"
-          :value="item.id"
-          :label="item.name"
-        ></a-option>
-        <template #empty>
-          <span></span>
-        </template>
-      </a-select>
-      <a-select
-        style="width: 200px; margin-bottom: 8px"
-        :options="containerList"
-        :placeholder="$t('applications.applications.container.holder')"
-      ></a-select>
-    </a-space>
+    <a-cascader
+      style="width: 240px; margin-bottom: 8px"
+      :options="containerList"
+      :placeholder="$t('applications.applications.container.holder')"
+    ></a-cascader>
     <AceEditor :model-value="content" read-only></AceEditor>
   </div>
 </template>
@@ -29,26 +12,24 @@
 <script lang="ts" setup>
   import { useWebSocket } from '@vueuse/core';
   import { createWebSocketUrl } from '@/hooks/use-websocket';
-  import { get } from 'lodash';
+  import { get, map, filter } from 'lodash';
   import { onMounted, ref, inject } from 'vue';
   import AceEditor from '@/components/ace-editor/index.vue';
-  import { InstanceResource } from '../../config/interface';
+  import { InstanceResource, KeysItem, Cascader } from '../../config/interface';
+  import { generateResourcesKeys } from '../../config';
   import {
     queryApplicationResource,
     queryApplicationResourceKeys,
     queryApplicationResourceLogs
   } from '../../api';
+  import testData from '../../config/data';
 
   const instanceId = inject('instanceId', ref(''));
   const resourceId = ref('');
   const content = ref('');
   const dataList = ref<InstanceResource[]>([]);
-  const podList = ref([]);
-  const containerList = ref([
-    { label: 'container1', value: 'a' },
-    { label: 'container2', value: 'b' },
-    { label: 'container3', value: 'c' }
-  ]);
+  const containerList = ref<Cascader[]>([]);
+
   const createWebSockerConnection = () => {
     const wssURL = createWebSocketUrl(
       `/application-resources/${resourceId.value}/log`
@@ -63,6 +44,7 @@
       }
     });
   };
+
   const getApplicationResource = async () => {
     if (!instanceId.value) return;
     try {
@@ -72,11 +54,14 @@
         perPage: -1
       };
       const { data } = await queryApplicationResource(params);
-      dataList.value = data?.items || [];
-      resourceId.value = get(dataList.value, '0.id') || '';
+      // const list = data?.items || [];
+      const list = testData;
+      containerList.value = generateResourcesKeys(list, 'loggable');
+      console.log('containerList=====', containerList.value);
     } catch (error) {
       console.log(error);
-      dataList.value = [];
+      containerList.value = [];
+      // dataList.value = [];
     }
   };
   const getResourceKeys = async () => {
@@ -91,7 +76,7 @@
   };
   const init = async () => {
     await getApplicationResource();
-    await getResourceKeys();
+    // await getResourceKeys();
   };
   onMounted(() => {
     init();

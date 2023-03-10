@@ -356,6 +356,7 @@
   // });
   const handleDateChange = async () => {
     await getClusterList();
+    if (!queryParams.connectorID) return;
     workloadCostFilters.value = {
       ...workloadCostFilters.value,
       ...queryParams,
@@ -406,6 +407,7 @@
   const initData = async () => {
     await getPerspectiveItemInfo();
     await getClusterList();
+    if (!queryParams.connectorID) return;
     loadeend.value = true;
     getDailyCostChart();
     getNamespaceCostChart();

@@ -46,17 +46,17 @@
           type="primary"
           class="cap-title cancel-btn"
           @click="handleOk"
-          >{{ $t('common.button.save') }}</a-button
+          >{{ $t('common.button.back') }}</a-button
         >
       </template>
-      <template #cancel>
+      <!-- <template #cancel>
         <a-button
           type="outline"
           class="cap-title cancel-btn"
           @click="handleCancel"
           >{{ $t('common.button.cancel') }}</a-button
         >
-      </template>
+      </template> -->
     </EditPageFooter>
     <createInstance
       v-model:show="showInstanceModal"
@@ -141,7 +141,9 @@
       immediate: true
     }
   );
-  const handleOk = () => {};
+  const handleOk = () => {
+    router.back();
+  };
   const handleCancel = () => {
     router.back();
   };
