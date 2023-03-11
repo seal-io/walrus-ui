@@ -2,47 +2,33 @@
   <div>
     <a-form ref="formref" :model="formData" auto-label-width layout="vertical">
       <a-row :gutter="20">
-        <a-col v-if="id" :span="12">
-          <a-form-item label="创建时间" disabled>
-            <a-input
-              :model-value="
-                dayjs(formData.createTime).format('YYYY-MM-DD HH:mm:ss')
-              "
-              style="width: 100%"
-            ></a-input>
-          </a-form-item>
-        </a-col>
-        <a-col v-if="id" :span="12">
-          <a-form-item label="更新时间" disabled>
-            <a-input
-              :model-value="
-                dayjs(formData.updateTime).format('YYYY-MM-DD HH:mm:ss')
-              "
-              style="width: 100%"
-            ></a-input>
-          </a-form-item>
-        </a-col>
-      </a-row>
-      <a-row :gutter="20">
         <a-col :span="12">
           <a-form-item
             label="应用名称"
             field="name"
             :rules="[{ required: true, message: '名称必填' }]"
           >
-            <a-input v-model="formData.name" style="width: 100%"></a-input>
+            <a-input
+              v-model="formData.name"
+              :max-length="50"
+              show-word-limit
+              style="width: 100%"
+            ></a-input>
           </a-form-item>
           <a-form-item label="描述">
-            <a-textarea
+            <a-input
               v-model="formData.description"
+              :max-length="200"
+              show-word-limit
               style="width: 100%"
               :auto-size="{ minRows: 4, maxRows: 6 }"
-            ></a-textarea>
+            ></a-input>
           </a-form-item>
         </a-col>
         <a-col :span="12">
           <a-form-item :label="$t('applications.projects.form.label')">
             <a-space
+              v-if="labelList.length"
               style="display: flex; flex-direction: column"
               direction="vertical"
             >
@@ -60,8 +46,37 @@
                 @delete="handleDeleteLabel(labelList, sIndex)"
               ></xInputGroup>
             </a-space>
+            <div v-else class="labels-tips">
+              <a-button type="text" size="small" @click="handleAdd">
+                <icon-plus style="margin-right: 6px" />
+                <span>添加标签</span>
+              </a-button>
+            </div>
           </a-form-item>
         </a-col>
+      </a-row>
+      <a-row :gutter="20">
+        <a-col v-if="id" :span="12">
+          <a-form-item label="创建时间" disabled>
+            <a-input
+              :model-value="
+                dayjs(formData.createTime).format('YYYY-MM-DD HH:mm:ss')
+              "
+              style="width: 100%"
+            ></a-input>
+          </a-form-item>
+          <a-form-item label="更新时间" disabled>
+            <a-input
+              :model-value="
+                dayjs(formData.updateTime).format('YYYY-MM-DD HH:mm:ss')
+              "
+              style="width: 100%"
+            ></a-input>
+          </a-form-item>
+        </a-col>
+        <!-- <a-col v-if="id" :span="12">
+          
+        </a-col> -->
       </a-row>
     </a-form>
   </div>
@@ -105,6 +120,9 @@
   const handleDeleteLabel = (list, index) => {
     list.splice(index, 1);
   };
+  const handleAdd = () => {
+    labelList.value.push({ key: '', value: '' });
+  };
   const getLabelList = () => {
     labelList.value = [];
     const labelKeys = keys(get(formData, 'labels'));
@@ -114,9 +132,9 @@
         value: get(formData, `labels.${k}`)
       };
     });
-    if (!labelList.value.length) {
-      labelList.value = [{ key: '', value: '' }];
-    }
+    // if (!labelList.value.length) {
+    //   labelList.value = [{ key: '', value: '' }];
+    // }
   };
   const getFormData = async () => {
     const res = await formref.value.validate();
@@ -141,4 +159,13 @@
   );
 </script>
 
-<style lang="less"></style>
+<style lang="less" scoped>
+  .labels-tips {
+    width: 100%;
+    height: 80px;
+    line-height: 80px;
+    text-align: center;
+    border: 1px solid var(--color-border-2);
+    border-radius: var(--border-radius-small);
+  }
+</style>

@@ -51,7 +51,7 @@
   const createWebSockerConnection = () => {
     if (!logKey.value || !resourceId.value) return;
     const wssURL = createWebSocketUrl(
-      `/application-resources/${resourceId.value}/log?key=${logKey.value}&tail=true`
+      `/application-resources/${resourceId.value}/log?key=${logKey.value}`
     );
     wssInstance.value = useWebSocket(wssURL, {
       // autoReconnect: {
@@ -129,9 +129,6 @@
     }
   );
   onBeforeUnmount(() => {
-    wssInstance.value?.close?.();
-  });
-  onUnmounted(() => {
     wssInstance.value?.close?.();
   });
 </script>

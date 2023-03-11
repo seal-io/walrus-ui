@@ -65,16 +65,39 @@
       </a-form>
       <div class="variables">
         <GroupTitle title="属性"></GroupTitle>
+        <a-tabs
+          v-if="show && keys(variablesGroup)?.length > 1"
+          :active-key="activeKey"
+          @change="handleTabChange"
+        >
+          <a-tab-pane
+            v-for="(group, index) in keys(variablesGroup)"
+            :key="`schemaForm${index}`"
+            :title="variablesGroup[group]?.label"
+          >
+            <formCreate
+              :ref="(el: refItem) => setRefMap(el, `schemaForm${index}`)"
+              layout="vertical"
+              action="post"
+              api=""
+              :show-footer="false"
+              :submit="() => {}"
+              :model="variablesGroupForm[group]?.attributes"
+              :form-schema="variablesGroup[group]?.Variables"
+            >
+            </formCreate>
+          </a-tab-pane>
+        </a-tabs>
         <formCreate
-          v-if="show"
+          v-if="show && keys(variablesGroup)?.length < 2"
           ref="schemaForm"
           layout="vertical"
           action="post"
           api=""
           :show-footer="false"
           :submit="() => {}"
-          :model="formData.attributes"
-          :form-schema="moduleInfo?.Variables"
+          :model="variablesGroupForm[defaultGroupKey]?.attributes"
+          :form-schema="variablesGroup[defaultGroupKey]?.Variables"
         >
         </formCreate>
       </div>
@@ -104,14 +127,30 @@
 </template>
 
 <script lang="ts" setup>
-  import { get, find, cloneDeep, each, assignIn, pick, omit } from 'lodash';
-  import { ref, reactive, PropType } from 'vue';
+  import {
+    get,
+    find,
+    cloneDeep,
+    each,
+    assignIn,
+    pick,
+    omit,
+    set,
+    keys,
+    every,
+    reduce
+  } from 'lodash';
+  import { ref, reactive, PropType, ComponentPublicInstance, Ref } from 'vue';
   import useCallCommon from '@/hooks/use-call-common';
   import EditPageFooter from '@/components/edit-page-footer/index.vue';
   import formCreate from '@/components/form-create/index.vue';
   import GroupTitle from '@/components/group-title/index.vue';
   import { TemplateRowData } from '@/views/operation-hub/templates/config/interface';
 
+  interface Group {
+    Variables: object[];
+    label: string;
+  }
   const props = defineProps({
     show: {
       type: Boolean,
@@ -138,13 +177,20 @@
       }
     }
   });
+  type refItem = Element | ComponentPublicInstance | null;
+
+  const defaultGroupKey = '_default_default_';
   const emit = defineEmits(['save', 'update:show', 'reset', 'update:action']);
   const { route } = useCallCommon();
   const formref = ref();
   const loading = ref(false);
+  const activeKey = ref('schemaForm0');
   const schemaForm = ref();
   const submitLoading = ref(false);
   const moduleInfo = ref<any>({});
+  const variablesGroup = ref<any>({});
+  const variablesGroupForm = ref<any>({});
+  let refMap: Record<string, refItem> = {};
   const formData = reactive({
     name: '',
     module: { id: '' },
@@ -162,6 +208,56 @@
     formData.application = { id: '' };
     formData.attributes = {};
   };
+  const setRefMap = (el: refItem, name) => {
+    if (el) {
+      refMap[`${name}`] = el;
+    }
+  };
+  const handleTabChange = (val) => {
+    activeKey.value = val;
+  };
+  // get set: edit create
+  const generateVariablesGroup = (type) => {
+    variablesGroup.value = {};
+    variablesGroupForm.value = {};
+    each(get(moduleInfo.value, 'Variables'), (item) => {
+      // set initial value
+      const initialValue =
+        type === 'create'
+          ? item.Default
+          : get(props.dataInfo, `attributes.${item.Name}`);
+      if (item.Group) {
+        if (!variablesGroup.value[item.Group]) {
+          variablesGroup.value[item.Group] = {
+            Variables: [],
+            label: item.Group
+          };
+          variablesGroup.value[item.Group].Variables.push(item);
+        } else {
+          variablesGroup.value[item.Group].Variables.push(item);
+        }
+
+        set(
+          variablesGroupForm.value,
+          `${item.Group}.attributes.${item.Name}`,
+          initialValue
+        );
+      } else {
+        if (!variablesGroup.value[defaultGroupKey]) {
+          variablesGroup.value[defaultGroupKey] = {
+            Variables: [],
+            label: 'BASIC'
+          };
+        }
+        variablesGroup.value[defaultGroupKey].Variables.push(item);
+        set(
+          variablesGroupForm.value,
+          `${defaultGroupKey}.attributes.${item.Name}`,
+          initialValue
+        );
+      }
+    });
+  };
   const setFormData = (schemas) => {
     each(get(schemas, 'Variables'), (item) => {
       formData.attributes[item.Name] = item.Default;
@@ -172,16 +268,55 @@
     moduleInfo.value = cloneDeep(get(moduleData, 'schema')) || {};
     formData.application = { id: '' };
     formData.attributes = {};
-    setFormData(moduleInfo.value);
+    refMap = {};
+
+    // setFormData(moduleInfo.value);
+    generateVariablesGroup(props.action);
+  };
+  // get group form data
+  const getRefFormData = async () => {
+    const resultList: any[] = [];
+    await Promise.all(
+      keys(refMap).map(async (key) => {
+        const refEL = refMap[key];
+        const moduleForm = await refEL?.getFormData?.();
+        resultList.push({
+          tab: key,
+          formData: moduleForm
+        });
+      })
+    );
+    return resultList;
   };
   const handleOk = async () => {
     const res = await formref.value?.validate();
-    const moduleForm = await schemaForm.value.getFormData();
-    if (!res && moduleForm) {
+    let moduleFormList: any[] = [];
+    if (keys(variablesGroup).length > 1) {
+      moduleFormList = await getRefFormData();
+    } else {
+      const result = await schemaForm.value?.getFormData();
+      moduleFormList = [{ formData: result }];
+    }
+    console.log('moduleFormList===', moduleFormList);
+    const validFailedForm = find(moduleFormList, (item) => !item.formData);
+    if (validFailedForm && validFailedForm.tab) {
+      activeKey.value = validFailedForm.tab;
+    }
+    if (!res && !validFailedForm) {
       try {
         submitLoading.value = true;
         formData.attributes = {
-          ...moduleForm
+          ...reduce(
+            moduleFormList,
+            (obj, s) => {
+              obj = {
+                ...obj,
+                ...s.formData
+              };
+              return obj;
+            },
+            {}
+          )
         };
         emit('save', cloneDeep(formData));
         setTimeout(() => {
@@ -197,7 +332,7 @@
   const handleBeforeOpen = () => {
     if (props.action === 'create') {
       moduleInfo.value = cloneDeep(get(props.templates, '0.schema')) || {};
-      setFormData(moduleInfo.value);
+      // setFormData(moduleInfo.value);
       formData.module.id = get(props.templates, '0.id') || '';
     } else {
       // 1. get the template meta data 2.set the default value
@@ -211,6 +346,7 @@
       });
       assignIn(formData, props.dataInfo);
     }
+    generateVariablesGroup(props.action);
   };
   const handleOpened = () => {};
   const handleBeforeClose = () => {

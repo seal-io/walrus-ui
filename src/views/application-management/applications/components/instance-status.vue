@@ -5,7 +5,7 @@
         ><span>{{ label }}</span></slot
       >
       <template #icon>
-        <span class="dot" :class="[status]"></span>
+        <span class="dot" :class="[statusMap[status] || status]"></span>
       </template>
     </a-link>
   </span>
@@ -23,6 +23,12 @@
       type: String,
       default() {
         return '';
+      }
+    },
+    statusMap: {
+      type: Object, // {running: string, warning: string, error: string}
+      default() {
+        return {};
       }
     }
   });

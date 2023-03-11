@@ -39,6 +39,17 @@ export const moduleActions = [
 
 export const variablesTypeList = [{ label: 'string', value: 'string' }];
 
+export const instanceStatus = [
+  { label: 'Deploying', value: 'Deploying' },
+  { label: 'Deployed', value: 'Deployed' },
+  { label: 'DeployFailed', value: 'DeployFailed' },
+  { label: 'Deleting', value: 'Deleting' },
+  { label: 'DeleteFailed', value: 'DeleteFailed' }
+];
+export const statusMap = {
+  Deployed: 'running',
+  DeployFailed: 'error'
+};
 export const generateResourcesKeys = (reources: InstanceResource[], type) => {
   const loop = (keysItem: KeysItem, id) => {
     let list: KeysItem[] = keysItem.keys || [];

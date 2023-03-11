@@ -34,7 +34,8 @@ export const parseComponentSchema = (schema: ComponentSchema) => {
   const props = {
     min: schema?.min || null,
     max: schema?.max || null,
-    maxLength: schema?.maxLength || null,
+    maxLength: schema?.maxLength || 100,
+    showWordLimit: true,
     minLength: schema?.minLength || null
   };
   // string

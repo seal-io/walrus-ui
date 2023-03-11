@@ -87,14 +87,15 @@
           data-index="instances"
           :title="$t('applications.applications.table.instance')"
         >
-          <template #cell>
-            <a-space :size="4" wrap>
-              <!-- <InstanceStatus
-                status="running"
-                label="development"
+          <template #cell="{ record }">
+            <a-space v-if="record?.instances?.length" :size="4" wrap>
+              <InstanceStatus
+                v-for="(item, index) in record?.instances"
+                :key="index"
+                :status="item.status"
+                :label="`${item.name}(Env: ${item?.environment?.name})`"
+                :status-map="statusMap"
               ></InstanceStatus>
-              <InstanceStatus status="warning" label="test"></InstanceStatus>
-              <InstanceStatus status="error" label="prod"></InstanceStatus> -->
             </a-space>
           </template>
         </a-table-column>
@@ -182,6 +183,7 @@
   import FilterBox from '@/components/filter-box/index.vue';
   import { queryProjects } from '../../projects/api';
   import { AppRowData } from '../config/interface';
+  import { statusMap } from '../config';
   import createApplication from '../components/create-application.vue';
   import { queryApplications, deleteApplication } from '../api';
   import InstanceStatus from '../components/instance-status.vue';
