@@ -30,7 +30,15 @@
           <!-- <a-tooltip content="添加应用实例">
             <thumbButton :size="60" @click="handleAddInstance"></thumbButton>
           </a-tooltip> -->
-          <!-- <div>应用实例</div> -->
+          <div class="tips-box"
+            ><a-button
+              type="text"
+              size="small"
+              style="font-weight: 500; font-size: 18px"
+              @click="handleAddInstance"
+              >部署</a-button
+            >可添加应用实例</div
+          >
         </div>
       </div>
     </div>
@@ -268,6 +276,15 @@
       display: flex;
       flex-wrap: wrap;
       align-items: center;
+
+      .tips-box {
+        width: 200px;
+        height: 80px;
+        line-height: 80px;
+        text-align: center;
+        border: 1px solid var(--color-border-2);
+        border-radius: var(--border-radius-small);
+      }
 
       .thumb-item {
         margin-right: 12px;

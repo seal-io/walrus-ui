@@ -17,7 +17,8 @@
             size="small"
             style="width: 98px"
             @click="handleDeployApp"
-            >部署</a-button
+          >
+            部署</a-button
           >
         </div>
       </template>
