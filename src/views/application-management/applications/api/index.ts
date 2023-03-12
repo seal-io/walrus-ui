@@ -111,3 +111,11 @@ export const queryApplicationResourceLogs = (params: { id: string }) => {
     }
   });
 };
+export const queryApplicationResourceExec = (params: { id: string }) => {
+  return axios.get(`/application-resources/${params.id}/exec`, {
+    params,
+    paramsSerializer: (obj) => {
+      return qs.stringify(obj);
+    }
+  });
+};

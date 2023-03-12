@@ -13,6 +13,9 @@ declare module '@vue-flow/background' {
 declare module '@vue-flow/controls' {
   export { Controls } from '@vue-flow/controls';
 }
+declare module 'xterm-addon-fit' {
+  export { FitAddon } from 'xterm-addon-fit';
+}
 interface ImportMetaEnv {
   readonly VITE_API_BASE_URL: string;
 }
