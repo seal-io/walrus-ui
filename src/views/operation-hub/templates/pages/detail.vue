@@ -58,6 +58,18 @@
         <a-input v-model="formData.source"></a-input>
       </a-form-item>
       <a-form-item
+        field="icon"
+        label="Icon"
+        :rules="[
+          {
+            match: urlReg,
+            message: $t('system.rules.url')
+          }
+        ]"
+      >
+        <a-input v-model="formData.icon"></a-input>
+      </a-form-item>
+      <a-form-item
         field="version"
         :label="$t('operation.templates.detail.version')"
       >
@@ -115,6 +127,7 @@
 
 <script lang="ts" setup>
   import { assignIn, get } from 'lodash';
+  import { urlReg } from '@/utils/validate';
   import { ref, reactive, onMounted, markRaw } from 'vue';
   import GroupTitle from '@/components/group-title/index.vue';
   import EditPageFooter from '@/components/edit-page-footer/index.vue';
@@ -144,7 +157,8 @@
     id: '',
     description: '',
     source: '',
-    version: ''
+    version: '',
+    icon: ''
   });
 
   const getItemModules = async () => {
