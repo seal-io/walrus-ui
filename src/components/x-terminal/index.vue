@@ -3,9 +3,8 @@
 </template>
 
 <script lang="ts" setup>
-  import qs from 'query-string';
   import { ref, onMounted, onBeforeUnmount, watch } from 'vue';
-  import { debounce, trim, split, get } from 'lodash';
+  import { debounce, trim, split, get, throttle } from 'lodash';
   import { Terminal } from 'xterm';
   import { FitAddon } from 'xterm-addon-fit';
   import 'xterm/css/xterm.css';
@@ -49,7 +48,7 @@
   // 发送给后端,调整后端终端大小,和前端保持一致,不然前端只是范围变大了,命令还是会换行
   const resizeRemoteTerminal = () => {
     const { cols, rows } = term.value;
-    console.log('wss: resize');
+    console.log('wss: resize', cols, rows);
     if (isWsOpen()) {
       terminalSocket.value.send(
         JSON.stringify({
@@ -179,8 +178,9 @@
 
   const fitTerm = () => {
     fitAddon.fit();
+    resizeRemoteTerminal();
   };
-  const onResize = debounce(() => fitTerm(), 800);
+  const onResize = debounce(() => fitTerm(), 500);
 
   const termData = () => {
     // 输入与粘贴的情况,onData不能重复绑定,不然会发送多次
