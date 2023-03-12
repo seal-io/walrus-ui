@@ -291,13 +291,13 @@
   const handleOk = async () => {
     const res = await formref.value?.validate();
     let moduleFormList: any[] = [];
-    if (keys(variablesGroup).length > 1) {
+    if (keys(variablesGroup.value).length > 1) {
       moduleFormList = await getRefFormData();
     } else {
       const result = await schemaForm.value?.getFormData();
       moduleFormList = [{ formData: result }];
     }
-    console.log('moduleFormList===', moduleFormList);
+    console.log('moduleFormList===', moduleFormList, variablesGroup);
     const validFailedForm = find(moduleFormList, (item) => !item.formData);
     if (validFailedForm && validFailedForm.tab) {
       activeKey.value = validFailedForm.tab;
