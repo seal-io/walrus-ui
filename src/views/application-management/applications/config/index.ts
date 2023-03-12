@@ -1,4 +1,4 @@
-import { filter, map, get } from 'lodash';
+import { filter, map, get, split } from 'lodash';
 import { KeysItem, InstanceResource, Cascader } from './interface';
 
 export const instanceTabs = [
@@ -89,5 +89,13 @@ export const generateResourcesKeys = (reources: InstanceResource[], type) => {
   });
   const res = filter(list, (o) => o?.children?.length) as never[];
   return res;
+};
+export const getResourceId = (val) => {
+  const res = split(val, '?');
+  const d = get(res, 1);
+  return {
+    key: get(res, 0),
+    id: get(split(d, '='), 1)
+  };
 };
 export default {};
