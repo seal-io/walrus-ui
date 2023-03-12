@@ -31,10 +31,7 @@
   import AceEditor from '@/components/ace-editor/index.vue';
   import { InstanceResource, Cascader } from '../../config/interface';
   import { generateResourcesKeys } from '../../config';
-  import {
-    queryApplicationResource,
-    queryApplicationResourceKeys
-  } from '../../api';
+  import { queryApplicationResource } from '../../api';
   import testData from '../../config/data';
 
   const instanceId = inject('instanceId', ref(''));
@@ -42,7 +39,7 @@
   const logKey = ref('');
   const wssInstance: any = ref('');
   const content = ref('');
-  const dataList = ref<InstanceResource[]>([]);
+  // const dataList = ref<InstanceResource[]>([]);
   const containerList = ref<Cascader[]>([]);
 
   // const content = computed(() => {
@@ -80,7 +77,7 @@
     } catch (error) {
       console.log(error);
       containerList.value = [];
-      dataList.value = [];
+      // dataList.value = [];
     }
   };
 

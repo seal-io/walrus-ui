@@ -73,8 +73,8 @@
   import { cloneDeep, get } from 'lodash';
   import { markRaw, ref, reactive, watch, inject, computed } from 'vue';
   import useCallCommon from '@/hooks/use-call-common';
-  import tabTerminal from '@/components/x-terminal/index.vue';
   import EditPageFooter from '@/components/edit-page-footer/index.vue';
+  import tabTerminal from './x-terminal/tab-terminal.vue';
   import tabResource from './tab-resource.vue';
   import tabLogs from './tab-logs.vue';
   import tabOutput from './tab-output.vue';
