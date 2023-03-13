@@ -125,7 +125,8 @@ export default function usePerspectiveCost(props) {
     try {
       overviewloading.value = true;
       const params = {
-        ...queryParams
+        ...queryParams,
+        endTime: setEndTimeAddDay(queryParams.endTime, timeMode.value)
         // startTime: dayjs(queryParams.startTime).format('YYYY-MM-DDTHH:mm:ssZ'),
         // endTime: dayjs(queryParams.endTime).format('YYYY-MM-DDT23:59:59Z')
       };

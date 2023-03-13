@@ -176,6 +176,7 @@
   const emits = defineEmits(['deploy']);
   const submitLoading = ref(false);
   const id = route.query.id as string;
+  const cloneId = route.query.cloneId as string;
   const moduleTemplates = ref<TemplateRowData[]>([]);
   const appInfoVariables = ref<Variables[]>([]);
   const active = ref('');
@@ -270,12 +271,16 @@
     }
   };
   const getApplicationDetail = async () => {
-    if (!id) return;
+    if (!id && !cloneId) return;
+    const queryId = id || cloneId;
     try {
       const params = {
-        id
+        id: queryId
       };
       const { data } = await queryItemApplication(params);
+      if (cloneId) {
+        data.name = `${data.name}(clone)`;
+      }
       defaultBasicInfo.value = pick(data, [
         'name',
         'description',
@@ -283,7 +288,9 @@
         'createTime',
         'updateTime'
       ]);
+
       assignIn(appInfo, data);
+
       console.log('appInfo===', appInfo);
     } catch (error) {
       console.log(error);
