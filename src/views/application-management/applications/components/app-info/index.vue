@@ -212,7 +212,7 @@
     try {
       const params = {
         page: 1,
-        perPage: 1000
+        perPage: -1
       };
       const { data } = await queryModules(params);
       moduleTemplates.value = data?.items || [];

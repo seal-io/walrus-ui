@@ -39,38 +39,25 @@
             :auto-size="{ minRows: 4, maxRows: 6 }"
           ></a-textarea>
         </a-form-item>
-        <a-form-item
-          v-for="(item, index) in formData.labelList"
-          :key="index"
-          :label="$t(`applications.projects.form.label`, { index: index + 1 })"
-        >
-          <a-input-group style="width: 430px">
-            <a-input
-              v-model="item.key"
-              placeholder="key"
-              :max-length="50"
-              show-word-limit
-            ></a-input
-            ><span style="padding: 0 4px">:</span
-            ><a-input
-              v-model="item.value"
-              placeholder="value"
-              :max-length="50"
-              show-word-limit
-            ></a-input>
-          </a-input-group>
-          <a-space class="btn-wrapper">
-            <icon-minus-circle
-              v-if="(formData?.labelList?.length || 0) > 1"
-              class="size-20"
-              @click="handleDeleteLabel(index)"
-            ></icon-minus-circle>
-            <icon-plus-circle-fill
-              v-if="index === (formData?.labelList?.length || 0) - 1"
-              class="size-20"
-              style="margin-left: 5px"
-              @click="handleAddLabel"
-            ></icon-plus-circle-fill>
+        <a-form-item :label="$t(`applications.projects.form.label`)">
+          <a-space
+            v-if="formData?.labelList?.length"
+            style="display: flex; flex-direction: column"
+            direction="vertical"
+          >
+            <xInputGroup
+              v-for="(sItem, sIndex) in formData.labelList"
+              :key="sIndex"
+              v-model:dataKey="sItem.key"
+              v-model:dataValue="sItem.value"
+              v-model:value="formData.labels"
+              width="440px"
+              class="group-item"
+              :label-list="formData.labelList"
+              :position="sIndex"
+              @add="(obj) => handleAddLabel(obj, formData.labelList)"
+              @delete="handleDeleteLabel(formData.labelList, sIndex)"
+            ></xInputGroup>
           </a-space>
         </a-form-item>
       </a-form>
@@ -103,6 +90,7 @@
   import { ref, reactive, PropType } from 'vue';
   import { reduce, omit, keys, get } from 'lodash';
   import EditPageFooter from '@/components/edit-page-footer/index.vue';
+  import xInputGroup from '@/components/form-create/custom-components/x-input-group.vue';
   import { createProject, updateProject } from '../api';
   import { ProjectFormData } from '../config/interface';
 
@@ -195,13 +183,13 @@
       }
     }
   };
-  const handleAddLabel = () => {
-    formData.value?.labelList?.push({ key: 'key', value: 'value' });
+  const handleAddLabel = (obj, list) => {
+    list?.push(obj);
   };
-  const handleDeleteLabel = (index) => {
-    const len = formData.value?.labelList?.length || 0;
+  const handleDeleteLabel = (list, index) => {
+    const len = list.length || 0;
     if (len < 2) return;
-    formData.value.labelList?.splice(index, 1);
+    list?.splice(index, 1);
   };
   const handleBeforeOpen = () => {
     if (props.action === 'create') {

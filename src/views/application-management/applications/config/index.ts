@@ -48,7 +48,8 @@ export const instanceStatus = [
 ];
 export const statusMap = {
   Deployed: 'running',
-  DeployFailed: 'error'
+  DeployFailed: 'error',
+  DeleteFailed: 'error'
 };
 export const generateResourcesKeys = (reources: InstanceResource[], type) => {
   const loop = (keysItem: KeysItem, id) => {

@@ -29,7 +29,7 @@
         <a-grid :cols="24">
           <a-grid-item :span="12">
             <a-form-item
-              label="Name"
+              label="名称"
               field="name"
               :disabled="action === 'edit'"
               :rules="[{ required: true, message: '名称必填' }]"
@@ -43,7 +43,7 @@
           </a-grid-item>
           <a-grid-item :span="12">
             <a-form-item
-              label="Type"
+              label="类型"
               field="module.id"
               :disabled="action === 'edit'"
               :rules="[{ required: true, message: '类型必选' }]"

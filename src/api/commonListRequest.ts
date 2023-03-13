@@ -5,7 +5,7 @@ export function commonRequestList(api, params?) {
   return axios.get(`${api}`, {
     params: {
       page: 1,
-      perPage: 1000,
+      perPage: -1,
       ...params
     },
     paramsSerializer: (obj) => {

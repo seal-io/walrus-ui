@@ -66,7 +66,6 @@
   import GroupTitle from '@/components/group-title/index.vue';
   import thumbButton from '@/components/buttons/thumb-button.vue';
   import { queryEnvironments } from '@/views/operation-hub/environments/api';
-  import { queryItemProject } from '@/views/application-management/projects/api';
   import instanceThumb from '../components/instance-thumb.vue';
   import { InstanceData, AppFormData } from '../config/interface';
   import { instanceActions } from '../config/index';
@@ -99,7 +98,7 @@
       id: route.params.projectId
     },
     environment: {
-      id: 'test'
+      id: ''
     },
     modules: []
   }) as AppFormData;
