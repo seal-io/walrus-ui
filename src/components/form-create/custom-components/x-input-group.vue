@@ -115,7 +115,7 @@
   };
   const handleDataChange = (val, attr, type?) => {
     // check duplication key
-    // console.log('props.value===', val, props.value);
+    console.log('props.value===', val, props.value);
     // if (
     //   hasIn(props.value, val) &&
     //   attr === 'key' &&

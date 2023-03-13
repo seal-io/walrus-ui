@@ -324,6 +324,17 @@
         data.allocationQueries[0].step = 'null';
       }
       perspectiveInfo.value = data;
+      const shareCost = {
+        filters: get(data, 'allocationQueries.0.shareCosts.0.filters') || [],
+        idleCostFilters:
+          get(data, 'allocationQueries.0.shareCosts.0.idleCostFilters') || [],
+        managementCostFilters:
+          get(data, 'allocationQueries.0.shareCosts.0.managementCostFilters') ||
+          [],
+        sharingStrategy:
+          get(data, 'allocationQueries.0.shareCosts.0.sharingStrategy') || ''
+      };
+      data.allocationQueries[0].shareCosts = [{ ...shareCost }];
       assignIn(formData, data);
       formData.timeRange = formData.startTime;
       console.log('perspectiveInfo===', formData);

@@ -79,9 +79,9 @@ export const getTimeRange = (val) => {
 
 export const setEndTimeAddDay = (time, mode) => {
   if (mode === 'utc') {
-    return dayjs(time).add(1, 'day').format('YYYY-MM-DDTHH:mm:ss+00:00');
+    return dayjs(time).add(1, 'day').format('YYYY-MM-DDT00:00:00+00:00');
   }
-  return dayjs(time).add(1, 'day').format();
+  return dayjs(time).hour(0).minute(0).second(0).add(1, 'day').format();
 };
 export const costOverview = [
   {

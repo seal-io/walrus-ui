@@ -136,7 +136,7 @@
                   /></template>
                 </a-link>
               </a-tooltip>
-              <a-tooltip
+              <!-- <a-tooltip
                 :content="$t('applications.applications.table.template')"
               >
                 <a-link
@@ -148,7 +148,7 @@
                     ><icon-font type="icon-Template" class="size-16"
                   /></template>
                 </a-link>
-              </a-tooltip>
+              </a-tooltip> -->
             </a-space>
           </template>
         </a-table-column>
