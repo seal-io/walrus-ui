@@ -5,7 +5,7 @@
         v-if="provider"
         class="img"
         :style="{
-          'background-image': `url(${repoIcon[toLower(provider)]})`
+          'background-image': `url(${provider})`
         }"
       ></span>
       <IconFont v-else type="icon-template-1"></IconFont>

@@ -8,6 +8,7 @@
       >
         <templateItem
           :data-info="item"
+          :provider="item.icon"
           :checked="includes(checkedList, item.id)"
           @click="handleClickItem(item)"
           @change="handleCheckChange"
