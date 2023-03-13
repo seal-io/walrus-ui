@@ -8,7 +8,7 @@
       :class="{ 'full-screen': appStore.fullScreen }"
     >
       <a-layout>
-        <!-- <a-layout-sider
+        <a-layout-sider
           v-if="renderMenu"
           v-show="!hideMenu"
           class="layout-sider"
@@ -34,12 +34,12 @@
           @cancel="drawerCancel"
         >
           <Menu />
-        </a-drawer> -->
+        </a-drawer>
         <a-layout class="layout-content" :style="paddingStyle">
-          <!-- <TabBar v-if="appStore.tabBar" /> -->
-          <div v-if="!hideMenu" class="layout-menu">
+          <TabBar v-if="appStore.tabBar" />
+          <!-- <div v-if="!hideMenu" class="layout-menu">
             <Menu />
-          </div>
+          </div> -->
           <a-layout-content>
             <PageLayout />
           </a-layout-content>
@@ -47,7 +47,7 @@
         </a-layout>
       </a-layout>
     </a-layout>
-    <Footer v-if="footer" />
+    <!-- <Footer v-if="footer" /> -->
   </a-layout>
 </template>
 
@@ -82,12 +82,12 @@
   const paddingStyle = computed(() => {
     const paddingLeft =
       renderMenu.value && !hideMenu.value
-        ? { paddingLeft: `${menuWidth.value}px` }
+        ? { paddingLeft: `${menuWidth.value + 20}px` }
         : {};
     const paddingTop = navbar.value
       ? { paddingTop: `${appStore.navbarHeight}px` }
       : {};
-    return { ...paddingLeft, ...paddingTop };
+    return { ...paddingLeft, ...paddingTop, paddingRight: '20px' };
   });
   const setCollapsed = (val: boolean) => {
     appStore.updateSettings({ menuCollapse: val });
@@ -130,7 +130,7 @@
   @media screen and (min-width: 1512px) {
     .main-layout.arco-layout {
       box-sizing: border-box;
-      width: 1440px;
+      // width: 1440px;
     }
   }
   // @media screen and (max-width: 1599px) and (min-width: 1200px) {

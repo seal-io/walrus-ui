@@ -7,7 +7,7 @@ export default {
     locale: 'menu.dashboard',
     requiresAuth: true,
     icon: 'icon-dashboard',
-    order: 0,
+    order: 0
   },
   children: [
     {
@@ -15,13 +15,13 @@ export default {
       name: 'dashboardMain',
       component: () => import('@/views/dashboard/pages/main.vue'),
       meta: {
-        hideInMenu: true,
+        hideInMenu: false,
         ignoreCache: true,
         locale: '',
         requiresAuth: true,
         icon: '',
-        order: 0,
-      },
-    },
-  ],
+        order: 0
+      }
+    }
+  ]
 };
