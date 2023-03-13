@@ -58,13 +58,14 @@
     const { cols, rows } = term.value;
     console.log('wss: resize', cols, rows);
     if (isWsOpen()) {
-      terminalSocket.value.send(
-        JSON.stringify({
-          Op: 'resize',
-          Cols: cols,
-          Rows: rows
-        })
-      );
+      terminalSocket.value.send(`#{"width":${cols},"height":${rows}}#`);
+      // terminalSocket.value.send(
+      //   JSON.stringify({
+      //     Op: 'resize',
+      //     Cols: cols,
+      //     Rows: rows
+      //   })
+      // );
     }
   };
   const clearCommand = () => {
@@ -78,12 +79,13 @@
   const runCommand = () => {
     const data = trim(command.value);
     if (isWsOpen()) {
-      terminalSocket.value.send(
-        JSON.stringify({
-          Op: 'stdin',
-          Data: `${data}\r\n`
-        })
-      );
+      terminalSocket.value.send(`${data}\r\n`);
+      // terminalSocket.value.send(
+      //   JSON.stringify({
+      //     Op: 'stdin',
+      //     Data: `${data}\r\n`
+      //   })
+      // );
     }
     enterPrompt();
     console.log('wss: commond', data, command.value);
@@ -122,7 +124,9 @@
       first.value = false;
       resizeRemoteTerminal();
     }
-    const data = JSON.parse(message.data) || '';
+    const data = { Data: message.data };
+    console.log('wss: receive', message);
+    // const data = JSON.parse(message.data) || '';
     if (term.value.element) term.value.focus();
     const inputCommand = `${command.value}\r\n`;
     const output = data.Data;
@@ -136,8 +140,6 @@
     setTimeout(() => {
       clearCommand();
     }, 100);
-
-    console.log('wss: receive', message);
   };
 
   const errorRealTerminal = (ex) => {
