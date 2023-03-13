@@ -4,7 +4,15 @@
 
 <script lang="ts" setup>
   import { ref, onMounted, onBeforeUnmount, watch } from 'vue';
-  import { debounce, trim, split, get, throttle } from 'lodash';
+  import {
+    debounce,
+    trim,
+    split,
+    get,
+    throttle,
+    replace,
+    includes
+  } from 'lodash';
   import { Terminal } from 'xterm';
   import { FitAddon } from 'xterm-addon-fit';
   import 'xterm/css/xterm.css';
@@ -35,10 +43,10 @@
     return `\x1B[1;3;31m\x1B[0m`;
   };
   const setData = (data) => {
-    return `- ${data}\x1B[1;3;31m\x1B[0m`;
+    return `${data}\x1B[1;3;31m\x1B[0m`;
   };
   const setErrorData = (data) => {
-    return `- \x1b[31m${data}\x1b[m`;
+    return `\x1b[31m${data}\x1b[m`;
   };
   // 是否连接中0 1 2 3
   const isWsOpen = () => {
@@ -59,22 +67,21 @@
       );
     }
   };
-  const prompt = () => {
+  const clearCommand = () => {
     command.value = '';
-    term.value.write('\r\n$ ');
+    // term.value.write('\r\n$ ');
   };
   const enterPrompt = () => {
-    command.value = '';
-    term.value.write('\r\n');
+    // command.value = '';
+    // term.value.write('\r\n');
   };
   const runCommand = () => {
     const data = trim(command.value);
-
     if (isWsOpen()) {
       terminalSocket.value.send(
         JSON.stringify({
           Op: 'stdin',
-          Data: data
+          Data: `${data}\r\n`
         })
       );
     }
@@ -85,13 +92,13 @@
     switch (e) {
       case '\u0003': // Ctrl+C
         term.value.write('^C');
-        prompt();
+        clearCommand();
         break;
       case '\r': // Enter
         runCommand();
         break;
       case '\u007F': // Backspace (DEL)
-        // Do not delete the prompt
+        // Do not delete the clearCommand
         if (term.value._core.buffer.x > 2) {
           term.value.write('\b \b');
           if (command.value.length > 0) {
@@ -117,8 +124,19 @@
     }
     const data = JSON.parse(message.data) || '';
     if (term.value.element) term.value.focus();
-    term.value.write(setData(data.Data));
-    prompt();
+    const inputCommand = `${command.value}\r\n`;
+    const output = data.Data;
+    const index = output.indexOf(inputCommand);
+    if (index > -1) {
+      const str2 = output.substring(index + inputCommand.length);
+      term.value.write(setData(`${str2}`));
+    } else {
+      term.value.write(setData(output));
+    }
+    setTimeout(() => {
+      clearCommand();
+    }, 100);
+
     console.log('wss: receive', message);
   };
 
@@ -126,12 +144,12 @@
     let { message } = ex;
     if (!message) message = 'disconnected';
     term.value.write(setErrorData(message));
-    prompt();
+    clearCommand();
     console.log('wss: err', message);
   };
   const closeRealTerminal = (data) => {
     term.value.write(setData(data.reason));
-    prompt();
+    clearCommand();
     console.log('wss: close:');
   };
 
@@ -207,17 +225,18 @@
     if (!terminalSocket?.value) return;
     const status = terminalSocket?.value?.readyState;
     if (status === 0) {
-      term.value?.write?.('Connecting...');
-      term.value?.write?.('\r\n$ ');
+      // const text = `bin boot dev\tdocker-entrypoint.d docker-entrypoint.sh etc\thome lib media mnt opt proc product_uuid\troot run sbin srv sys tmp\tusr var\r\n# # `;
+      // term.value?.write?.(text);
+      // term.value?.write?.('\r\n$ ');
     }
     if (status === 1) {
       term.value?.write?.(initData());
     }
     if (status === 2) {
-      term.value?.write?.('Closing...');
+      // term.value?.write?.('Closing...');
     }
     if (status === 3) {
-      term.value.write('Closed!');
+      // term.value.write('Closed!');
     }
   };
   const init = () => {

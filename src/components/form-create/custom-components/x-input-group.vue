@@ -113,20 +113,27 @@
     getDataObj(list);
     emits('delete');
   };
-  const handleDataChange = (val, prop, type?) => {
-    if (hasIn(props.value, val) && prop === 'key' && type === 'input') {
-      isError.value = true;
-      popupvisible.value = true;
-      setTimeout(() => {
-        popupvisible.value = false;
-      }, 2000);
-      emits('update:dataKey', '');
-      return;
-    }
-    if (prop === 'key') {
+  const handleDataChange = (val, attr, type?) => {
+    // check duplication key
+    // console.log('props.value===', val, props.value);
+    // if (
+    //   hasIn(props.value, val) &&
+    //   attr === 'key' &&
+    //   !!val &&
+    //   type === 'change'
+    // ) {
+    //   isError.value = true;
+    //   popupvisible.value = true;
+    //   setTimeout(() => {
+    //     popupvisible.value = false;
+    //   }, 2000);
+    //   emits('update:dataKey', '');
+    //   return;
+    // }
+    if (attr === 'key') {
       emits('update:dataKey', val);
     }
-    if (prop === 'value') {
+    if (attr === 'value') {
       emits('update:dataValue', val);
     }
     isError.value = false;

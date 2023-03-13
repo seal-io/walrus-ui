@@ -97,7 +97,7 @@
       loading.value = true;
       const params = {
         page: 1,
-        perPage: 1000
+        perPage: -1
       };
       const { data } = await queryPerspectives(params);
       const list = data?.items || [];

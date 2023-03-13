@@ -1,6 +1,6 @@
 <template>
   <SpinCard top-gap :loading="loading">
-    <GroupTitle title="新建视图" show-back></GroupTitle>
+    <GroupTitle :title="id ? '编辑视图' : '新建视图'" show-back></GroupTitle>
     <a-form ref="formref" :model="formData" auto-label-width>
       <a-form-item
         :label="$t('cost.analyse.table.name')"
