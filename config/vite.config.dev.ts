@@ -22,9 +22,9 @@ export default mergeConfig(
       // cors: {
       //   origin: 'https://localhost:4000'
       // },
-      // proxy: createProxyTable('https://54.199.33.191:8444')
+      proxy: createProxyTable('https://192.168.2.5')
       // proxy: createProxyTable('https://thxcode.softsealer.com.cn/')
-      proxy: createProxyTable()
+      // proxy: createProxyTable()
     },
     plugins: [
       // setRequestHeader(),
