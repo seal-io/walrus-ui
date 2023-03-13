@@ -296,7 +296,15 @@
     });
   };
   const handleGenerateTemplate = async (row) => {};
-  const handleClone = async (row) => {};
+  const handleClone = async (row) => {
+    router.push({
+      name: 'applicationsDetail',
+      params: {
+        projectId: row.project?.id || queryParams.projectID
+      },
+      query: { cloneId: row.id }
+    });
+  };
 
   const handleDelete = async () => {
     deleteModal({ onOk: handleDeleteConfirm });

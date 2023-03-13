@@ -1,6 +1,6 @@
 <template>
   <ComCard top-gap class="application-detail-wrap">
-    <GroupTitle show-back :title="id ? '编辑应用' : '新建应用'"></GroupTitle>
+    <GroupTitle show-back :title="title"></GroupTitle>
     <div v-if="id" class="instance-box">
       <div
         class="app"
@@ -82,6 +82,7 @@
 
   const { router, route, t } = useCallCommon();
   const id = route.query.id as string;
+  const cloneId = route.query.cloneId as string;
   const activeInstance = ref('app'); //
   const currentInstance = ref('');
   const environmentList = ref<{ label: string; value: string }[]>([]);
@@ -113,6 +114,15 @@
   const instanseList = ref<InstanceData[]>([]);
   const labelList = ref<{ key: string; value: string }[]>([]);
 
+  const title = computed(() => {
+    if (cloneId) {
+      return '克隆应用';
+    }
+    if (id) {
+      return '编辑应用';
+    }
+    return '新建应用';
+  });
   const appInfoVariables = computed(() => {
     return cloneDeep(get(appInfo, 'variables') || []);
   });
@@ -184,9 +194,10 @@
   };
   const getApplicationDetail = async () => {
     if (!id) return;
+    const queryId = id;
     try {
       const params = {
-        id,
+        id: queryId,
         extract: ['modules']
       };
       const { data } = await queryItemApplication(params);
