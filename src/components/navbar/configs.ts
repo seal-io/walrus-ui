@@ -6,22 +6,22 @@ interface NavDataMap {
 export const NO_LOGIN_CHECK_PATH = ['eventReport'];
 
 export const navDataList: NavDataMap[] = [
-  { name: 'dashboardMain', label: 'navbar.totalView', active: 'dashboard' },
-  {
-    name: 'applicationsList',
-    label: 'navbar.appmanagement',
-    active: 'appManagement'
-  },
-  {
-    name: 'costPerspective',
-    label: 'navbar.costmanagement',
-    active: 'costManagement'
-  },
-  {
-    name: 'connectorsList',
-    label: 'navbar.operatorhub',
-    active: 'operationHub'
-  }
+  // { name: 'dashboardMain', label: 'navbar.totalView', active: 'dashboard' },
+  // {
+  //   name: 'applicationsList',
+  //   label: 'navbar.appmanagement',
+  //   active: 'appManagement'
+  // },
+  // {
+  //   name: 'costPerspective',
+  //   label: 'navbar.costmanagement',
+  //   active: 'costManagement'
+  // },
+  // {
+  //   name: 'connectorsList',
+  //   label: 'navbar.operatorhub',
+  //   active: 'operationHub'
+  // }
   // {
   //   name: 'graphMain',
   //   label: 'navbar.graph',

@@ -3,11 +3,12 @@ export default {
   name: 'user',
   component: () => import('@/views/user/index.vue'),
   meta: {
+    hideInMenu: true,
     ignoreCache: true,
     locale: 'menu.user',
     icon: 'icon-user',
     requiresAuth: true,
-    order: 6,
+    order: 6
   },
   children: [
     // {
@@ -39,12 +40,12 @@ export default {
       name: 'systemSetting',
       component: () => import('@/views/user/system/setting.vue'),
       meta: {
-        hideInMenu: false,
+        hideInMenu: true,
         ignoreCache: true,
         locale: 'menu.system.setting',
         requiresAuth: true,
-        roles: ['*'],
-      },
-    },
-  ],
+        roles: ['*']
+      }
+    }
+  ]
 };

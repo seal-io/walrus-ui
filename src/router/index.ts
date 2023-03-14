@@ -1,7 +1,7 @@
 import {
   createRouter,
   createWebHistory,
-  createWebHashHistory,
+  createWebHashHistory
 } from 'vue-router';
 import NProgress from 'nprogress'; // progress bar
 import 'nprogress/nprogress.css';
@@ -19,7 +19,7 @@ const router = createRouter({
   routes: [
     {
       path: '/',
-      redirect: 'login',
+      redirect: 'login'
     },
     Login,
     ...resetRoutes,
@@ -27,19 +27,19 @@ const router = createRouter({
       name: 'root',
       path: '/',
       component: DefaultLayout,
-      children: appRoutes,
+      children: appRoutes
     },
     {
       path: '/:pathMatch(.*)*',
       name: 'notFound',
-      component: () => import('@/views/not-found/index.vue'),
-    },
+      component: () => import('@/views/not-found/index.vue')
+    }
   ],
   scrollBehavior() {
     return { top: 0 };
-  },
+  }
 });
 
-// console.log('route>>>>', router.getRoutes())
+console.log('route>>>>', router.getRoutes());
 createRouteGuard(router);
 export default router;

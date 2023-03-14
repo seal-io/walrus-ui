@@ -8,7 +8,7 @@ export default [
       ignoreCache: true,
       locale: 'cost.optimize.menu',
       requiresAuth: true,
-      icon: 'icon-apps'
+      icon: ''
     },
     children: [
       {
@@ -21,7 +21,7 @@ export default [
           ignoreCache: true,
           locale: 'K8s',
           requiresAuth: true,
-          icon: 'icon-apps'
+          icon: ''
         }
       },
       {

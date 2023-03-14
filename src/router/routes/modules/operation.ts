@@ -7,9 +7,10 @@ export default {
   name: 'operationHub',
   component: () => import('@/views/operation-hub/index.vue'),
   meta: {
-    locale: 'navbar.operationHub',
+    locale: 'navbar.operatorhub',
     requiresAuth: true,
     order: 3,
+    icon: 'icon-relation'
   },
-  children: [...connectorRoutes, ...environmentRoutes, ...templateRoutes],
+  children: [...connectorRoutes, ...environmentRoutes, ...templateRoutes]
 };
