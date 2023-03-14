@@ -150,9 +150,10 @@
     console.log('wss: err', message);
   };
   const closeRealTerminal = (data) => {
+    const code = get(data, 'code');
     term.value.write(setData(data.reason));
     clearCommand();
-    console.log('wss: close:');
+    console.log('wss: close:', data);
   };
 
   const createWS = () => {

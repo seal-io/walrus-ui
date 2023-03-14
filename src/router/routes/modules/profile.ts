@@ -4,10 +4,11 @@ export default {
   component: () => import('@/views/profile/index.vue'),
   meta: {
     // isRemove: true,
-    locale: 'menu.profile',
+    hideInMenu: true,
+    locale: 'account.settings.title',
     requiresAuth: true,
-    icon: 'icon-file',
-    order: 8,
+    icon: 'icon-settings',
+    order: 8
   },
   children: [
     {
@@ -15,23 +16,25 @@ export default {
       name: 'modifyPassword',
       component: () => import('@/views/profile/pages/modify-password.vue'),
       meta: {
+        hideInMenu: true,
         ignoreCache: true,
         locale: 'user.password.modify',
         requiresAuth: true,
-        roles: ['*'],
-      },
+        roles: ['*']
+      }
     },
     {
       path: 'api-keys',
       name: 'apiKeys',
       component: () => import('@/views/profile/pages/api-keys.vue'),
       meta: {
+        hideInMenu: true,
         ignoreCache: true,
         locale: 'account.settings.apikeys',
         requiresAuth: true,
-        roles: ['*'],
-      },
-    },
+        roles: ['*']
+      }
+    }
     // {
     //   path: '',
     //   name: 'Basic',
@@ -42,5 +45,5 @@ export default {
     //     roles: ['admin'],
     //   },
     // },
-  ],
+  ]
 };

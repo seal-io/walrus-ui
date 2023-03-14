@@ -1,5 +1,5 @@
 <template>
-  <SpinCard top-gap :loading="loading">
+  <SpinCard top-gap :loading="loading" style="width: 100%">
     <GroupTitle :title="id ? '编辑视图' : '新建视图'" show-back></GroupTitle>
     <a-form ref="formref" :model="formData" auto-label-width>
       <a-form-item

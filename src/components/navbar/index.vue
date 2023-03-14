@@ -357,10 +357,14 @@
   .search-icon {
     cursor: pointer;
   }
+
+  .navbar {
+    padding: 0 20px;
+  }
   @media screen and (min-width: 1512px) {
     .navbar {
       box-sizing: border-box;
-      width: 1440px;
+      // width: 1440px;
     }
 
     .navbar.full-screen {
@@ -402,8 +406,7 @@
   .left-side {
     display: flex;
     align-items: center;
-    padding-left: 5px;
-
+    // padding-left: 5px;
     :deep(.arco-space-item) {
       font-size: 0;
     }

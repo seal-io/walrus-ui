@@ -24,17 +24,17 @@
         }
       });
       const appRoute = computed(() => {
-        return router
-          .getRoutes()
-          .find(
-            (el) => el.name === currentRoute.value
-          ) as RouteRecordNormalized;
+        return router.getRoutes().find((el) => {
+          // return el.name === currentRoute.value;
+          return el.name === 'root';
+        }) as RouteRecordNormalized;
       });
       const menuTree = computed(() => {
         let copyRouter = JSON.parse(JSON.stringify(appRoute.value.children));
         copyRouter = copyRouter.filter(
           (r: RouteRecordNormalized) => !r?.meta || !r?.meta?.hideInMenu
         );
+        console.log('routes====2===', copyRouter);
         copyRouter.sort(
           (a: RouteRecordNormalized, b: RouteRecordNormalized) => {
             return (a.meta.order || 0) - (b.meta.order || 0);
@@ -67,7 +67,7 @@
 
             // Associated child node
             const subItem = travel(element.children, layer);
-            if (subItem.length) {
+            if (subItem?.length) {
               element.children = subItem;
               return element;
             }
@@ -138,7 +138,7 @@
                   <a-sub-menu
                     key={element?.name}
                     v-slots={{
-                      // icon: () => h(compile(icon)),
+                      icon: () => h(compile(icon)),
                       title: () => h(compile(t(element?.meta?.locale || '')))
                     }}
                   >
@@ -152,9 +152,14 @@
                     })}
                   </a-sub-menu>
                 ) : (
-                  <a-menu-item key={element.name} onClick={() => goto(element)}>
+                  <a-menu-item
+                    key={element.name}
+                    onClick={() => goto(element)}
+                    v-slots={{
+                      icon: () => h(compile(icon))
+                    }}
+                  >
                     {t(element?.meta?.locale || '')}
-                    {travel(element.children ?? [])}
                   </a-menu-item>
                 );
               nodes.push(r as never);
@@ -168,8 +173,8 @@
       return () => (
         <a-menu
           v-model:collapsed={collapsed.value}
-          show-collapse-button={false}
-          auto-open={true}
+          show-collapse-button={true}
+          auto-open={false}
           selected-keys={appStore.selectedKey}
           auto-open-selected={true}
           level-indent={20}
@@ -184,9 +189,10 @@
 </script>
 
 <style lang="less" scoped>
-  :deep(.arco-menu-inner) {
-    padding-top: 0 !important;
+  @import url('./style.less');
 
+  :deep(.arco-menu-inner) {
+    // padding-top: 0 !important;
     .arco-menu-item {
       // line-height: 36px;
     }

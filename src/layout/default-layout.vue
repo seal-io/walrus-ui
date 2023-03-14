@@ -16,7 +16,7 @@
           :collapsed="collapsed"
           :collapsible="true"
           :width="menuWidth"
-          :style="{ paddingTop: navbar ? '60px' : '' }"
+          :style="{ paddingTop: navbar ? '56px' : '' }"
           :hide-trigger="true"
           @collapse="setCollapsed"
         >
@@ -116,6 +116,10 @@
   .layout {
     width: 100%;
     height: 100%;
+
+    .arco-layout-sider-light {
+      box-shadow: none;
+    }
   }
 
   .layout-navbar {
@@ -141,15 +145,14 @@
   @media screen and (max-width: 1511px) {
     .main-layout.arco-layout {
       box-sizing: border-box;
-      width: 100%;
-      padding: 0 20px;
+      // width: 100%;
+      // padding: 0 20px;
     }
   }
 
   :deep(.main-layout.arco-layout) {
-    position: relative;
-    margin: 0 auto;
-    // background-color: #fff;
+    // position: relative;
+    // margin: 0 auto;
   }
 
   .main-layout.full-screen {
@@ -180,24 +183,24 @@
   }
 
   .layout-sider {
-    position: absolute;
+    position: fixed;
     top: 0;
     left: 0;
     z-index: 99;
     height: 100%;
+    background-color: #fff;
     transition: all 0.2s cubic-bezier(0.34, 0.69, 0.1, 1);
 
-    &::after {
-      position: absolute;
-      top: 0;
-      right: -1px;
-      display: block;
-      width: 1px;
-      height: 100%;
-      background-color: var(--color-border);
-      content: '';
-    }
-
+    // &::after {
+    //   position: absolute;
+    //   top: 0;
+    //   right: -1px;
+    //   display: block;
+    //   width: 1px;
+    //   height: 100%;
+    //   background-color: var(--color-border);
+    //   content: '';
+    // }
     > :deep(.arco-layout-sider-children) {
       overflow-y: hidden;
     }
