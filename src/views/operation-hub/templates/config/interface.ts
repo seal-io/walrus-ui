@@ -25,5 +25,5 @@ export interface TemplateFormData {
   id: string;
   description: string;
   source: string;
-  version: string;
+  version?: string;
 }

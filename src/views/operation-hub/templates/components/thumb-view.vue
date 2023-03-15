@@ -10,7 +10,6 @@
           :data-info="item"
           :provider="item.icon"
           :checked="includes(checkedList, item.id)"
-          @click="handleClickItem(item)"
           @change="handleCheckChange"
         ></templateItem>
       </a-grid-item>
@@ -49,6 +48,7 @@
   const handleCheckChange = (checked, id) => {
     emits('change', checked, id);
   };
+
   const handleClickItem = (project) => {
     console.log('project:', project);
     router.push({

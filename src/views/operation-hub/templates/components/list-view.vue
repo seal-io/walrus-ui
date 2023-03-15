@@ -4,7 +4,7 @@
       column-resizable
       :bordered="false"
       :loading="loading"
-      :data="dataList"
+      :data="list"
       :pagination="false"
       row-key="id"
       :row-selection="rowSelection"
@@ -58,9 +58,16 @@
         >
           <template #cell="{ record }">
             <a-space :size="20">
-              <a-link type="text" size="small" @click="handleEdit(record)">
-                <template #icon><icon-edit /></template>
-              </a-link>
+              <a-tooltip :content="$t('common.button.edit')">
+                <a-link type="text" size="small" @click="handleEdit(record)">
+                  <template #icon><icon-edit /></template>
+                </a-link>
+              </a-tooltip>
+              <a-tooltip :content="$t('common.button.refresh')">
+                <a-link type="text" size="small" @click="handlRefresh(record)">
+                  <template #icon><icon-refresh /></template>
+                </a-link>
+              </a-tooltip>
             </a-space>
           </template>
         </a-table-column>
@@ -83,14 +90,28 @@
 <script lang="ts" setup>
   import { map } from 'lodash';
   import dayjs from 'dayjs';
-  import { reactive, ref, onMounted } from 'vue';
+  import { reactive, ref, onMounted, PropType } from 'vue';
   import useCallCommon from '@/hooks/use-call-common';
   import { deleteModal, execSucceed } from '@/utils/monitor';
   import useRowSelect from '@/hooks/use-row-select';
   import FilterBox from '@/components/filter-box/index.vue';
   import { TemplateRowData } from '../config/interface';
-  import { queryModules } from '../api';
+  import { queryModules, refreshModules, deleteModules } from '../api';
 
+  const props = defineProps({
+    list: {
+      type: Array as PropType<TemplateRowData[]>,
+      default() {
+        return [];
+      }
+    },
+    selectedList: {
+      type: Array as PropType<Array<string | number>>,
+      default() {
+        return [];
+      }
+    }
+  });
   type BaseType = string | number;
   const emits = defineEmits(['update:selectedList']);
   const { rowSelection, selectedKeys } = useRowSelect();
@@ -105,11 +126,7 @@
     perPage: 10
   });
   const dataList = ref<TemplateRowData[]>([]);
-  const projectList = ref<{ label: string; value: string }[]>([
-    { label: 'MySQL', value: '1' },
-    { label: 'Redis', value: '2' },
-    { label: 'Webservice', value: '3' }
-  ]);
+
   const fetchData = async () => {
     try {
       loading.value = true;
@@ -163,7 +180,7 @@
           id: val
         };
       });
-      // await deleteRepos(ids);
+      await deleteModules(ids);
       loading.value = false;
       execSucceed();
       queryParams.page = 1;
@@ -178,7 +195,14 @@
   const handleEdit = (row) => {
     router.push({ name: 'templateDetail', query: { id: row.id } });
   };
-
+  const handlRefresh = async (row) => {
+    try {
+      await refreshModules({ id: row.id });
+      execSucceed();
+    } catch (error) {
+      console.log('error');
+    }
+  };
   const handleDelete = async () => {
     deleteModal({ onOk: handleDeleteConfirm });
   };
