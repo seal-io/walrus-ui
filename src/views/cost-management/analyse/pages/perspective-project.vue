@@ -266,7 +266,8 @@
   const handleDateChange = async () => {
     projectCostFilters.value = {
       ...projectCostFilters.value,
-      ...queryParams
+      ...queryParams,
+      endTime: setEndTimeAddDay(queryParams.endTime, timeMode.value)
     };
     await getProjectList();
     if (!queryParams.project) return;

@@ -1,17 +1,5 @@
 export default [
   {
-    path: 'cost/list',
-    name: 'costAnalyseList',
-    component: () => import('@/views/cost-management/analyse/pages/list.vue'),
-    meta: {
-      hideInMenu: true,
-      ignoreCache: true,
-      locale: 'cost.analyse.table.manage',
-      requiresAuth: true,
-      icon: 'icon-apps'
-    }
-  },
-  {
     path: 'cost/perspective',
     name: 'costPerspective',
     component: () => import('@/views/cost-management/analyse/pages/main.vue'),
@@ -23,7 +11,18 @@ export default [
       icon: 'icon-apps'
     }
   },
-
+  {
+    path: 'cost/list',
+    name: 'costAnalyseList',
+    component: () => import('@/views/cost-management/analyse/pages/list.vue'),
+    meta: {
+      hideInMenu: true,
+      ignoreCache: true,
+      locale: 'cost.analyse.table.manage',
+      requiresAuth: true,
+      icon: 'icon-apps'
+    }
+  },
   {
     path: 'cost/perspective-all',
     name: 'costAnalyseAll',

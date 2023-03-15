@@ -157,7 +157,7 @@
         };
       });
     } else {
-      formData.value.labelList = [];
+      formData.value.labelList = [{ key: '', value: '' }];
     }
   };
   const handleOk = async () => {

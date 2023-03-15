@@ -18,11 +18,11 @@
   import useCallCommon from '@/hooks/use-call-common';
   import thumbButton from '@/components/buttons/thumb-button.vue';
   import thumbItem from './thumb-item.vue';
-  import { ProjectItem } from '../config/interface';
+  import { ProjectRowData } from '../config/interface';
 
   const props = defineProps({
     list: {
-      type: Array as PropType<ProjectItem[]>,
+      type: Array as PropType<ProjectRowData[]>,
       default() {
         return [];
       }
