@@ -1,11 +1,12 @@
 // issues summary bar
 import { riskColorMap } from '@/config/global';
+import dayjs from 'dayjs';
 
 export const statusColorMap = {
   running: 'rgba(102, 201, 255,.8)',
   auditing: 'rgba(135, 145, 247, .5)',
   failed: 'rgba(255, 197, 192, 1)',
-  done: 'rgba(159, 232, 219, 1)'
+  succeed: 'rgba(159, 232, 219, 1)'
 };
 
 export const resourceIssueTypeConfig = [
@@ -32,33 +33,33 @@ export const resourceIssueTypeConfig = [
 
 export const deployDataConfig = [
   {
-    name: '成功',
-    value: 20,
-    key: 'high',
+    name: 'dashboard.deployment.succeed',
+    value: 0,
+    key: 'succeed',
     label: { show: false },
-    itemStyle: { color: statusColorMap.done }
+    itemStyle: { color: statusColorMap.succeed }
   },
   {
-    name: '失败',
-    value: 8,
-    key: 'medium',
+    name: 'dashboard.deployment.failed',
+    value: 0,
+    key: 'failed',
     label: { show: false },
     itemStyle: { color: statusColorMap.failed }
   },
   {
-    name: '运行中',
-    value: 3,
-    key: 'low',
+    name: 'dashboard.deployment.running',
+    value: 0,
+    key: 'running',
     label: { show: false },
     itemStyle: { color: statusColorMap.running }
-  },
-  {
-    name: '审核中',
-    value: 3,
-    key: 'low',
-    label: { show: false },
-    itemStyle: { color: statusColorMap.auditing }
   }
+  // {
+  //   name: '审核中',
+  //   value: 3,
+  //   key: 'low',
+  //   label: { show: false },
+  //   itemStyle: { color: statusColorMap.auditing }
+  // }
 ];
 
 export const issueTrendConfig = [
@@ -80,39 +81,81 @@ export const issueTrendConfig = [
 ];
 export const overViewConfig = [
   {
-    label: 'Applications',
+    label: 'dashboard.overview.applications',
     value: 0,
-    key: 'repository',
+    key: 'application',
     color:
       'linear-gradient(rgba(159, 232, 219, 0.3) 0%, rgba(159, 232, 219, 0.4) 100%)'
   },
+
   {
-    label: 'Services',
+    label: 'dashboard.overview.instance',
     value: 0,
-    key: 'containerImage',
-    // color:
-    //   'linear-gradient(rgba(163, 216, 245, 0.3) 0%, rgba(163, 216, 245, 0.4) 100%)',
-    color:
-      'linear-gradient(rgba(255, 197, 192, 0.3) 0%, rgba(255, 197, 192, 0.4) 100%)'
-  },
-  {
-    label: 'Instances',
-    value: 0,
-    key: 'kubernetes',
+    key: 'instance',
     // color:
     //   'linear-gradient(rgba(173, 209, 235, 0.3) 0%, rgba(173, 209, 235, 0.4) 100%)',
     color:
       'linear-gradient(rgba(184, 218, 243, 0.3) 0%, rgba(184, 218, 243, 0.4) 100%)'
   },
   {
-    label: 'Connectors',
+    label: 'dashboard.overview.environment',
     value: 0,
-    key: 'sbom',
+    key: 'environment',
+    // color:
+    //   'linear-gradient(rgba(163, 216, 245, 0.3) 0%, rgba(163, 216, 245, 0.4) 100%)',
+    color:
+      'linear-gradient(rgba(255, 197, 192, 0.3) 0%, rgba(255, 197, 192, 0.4) 100%)'
+  },
+  {
+    label: 'dashboard.overview.connector',
+    value: 0,
+    key: 'connector',
     color:
       'linear-gradient(rgb(163 230 245 / 30%) 0%, rgb(163 230 245 / 40%) 100%)'
   }
 ];
-
+export const DateShortCuts = [
+  {
+    label: 'cost.analyse.datepicker.7days',
+    unit: 'day',
+    format: 'YYYY-MM-DD',
+    timeControl: 'now-7d',
+    value: [
+      dayjs()
+        .subtract(6, 'day')
+        .hour(0)
+        .minute(0)
+        .second(0)
+        .format('YYYY-MM-DDTHH:mm:ss+00:00'),
+      dayjs().subtract(0, 'day').format('YYYY-MM-DDTHH:mm:ss+00:00')
+    ]
+  },
+  {
+    label: 'cost.analyse.datepicker.30days',
+    unit: 'day',
+    format: 'YYYY-MM-DD',
+    timeControl: 'now-30d',
+    value: [
+      dayjs()
+        .subtract(29, 'day')
+        .hour(0)
+        .minute(0)
+        .second(0)
+        .format('YYYY-MM-DDTHH:mm:ss+00:00'),
+      dayjs().subtract(0, 'day').format('YYYY-MM-DDTHH:mm:ss+00:00')
+    ]
+  },
+  {
+    label: 'cost.analyse.datepicker.currentMonth',
+    unit: 'day',
+    format: 'YYYY-MM-DD',
+    timeControl: 'now/M',
+    value: [
+      dayjs().hour(0).minute(0).second(0).format('YYYY-MM-DDTHH:mm:ss+00:00'),
+      dayjs().format('YYYY-MM-DDTHH:mm:ss+00:00')
+    ]
+  }
+];
 export const colorList = [
   'rgba(84,112,198,.5)',
   'rgb(145 204 117 / 50%)',
@@ -130,4 +173,5 @@ export const datePickerMode = [
   { label: 'dashboard.datepicker.month', value: 'month' },
   { label: 'dashboard.datepicker.year', value: 'year' }
 ];
+
 export default {};

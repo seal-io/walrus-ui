@@ -1,5 +1,19 @@
 <template>
-  <spinCard :title="$t('成本管理')" borderless>
+  <spinCard :title="$t('dashboard.cost.title')" borderless>
+    <template #title>
+      <div>
+        <span>{{ $t('dashboard.cost.title') }}</span>
+        <DateRange
+          v-model:start="queryParams.startTime"
+          v-model:end="queryParams.endTime"
+          v-model:timeUnit="queryParams.step"
+          :show-extra="false"
+          :short-cuts="DateShortCuts"
+          today-in
+          @change="handleDateChange"
+        ></DateRange>
+      </div>
+    </template>
     <div class="box">
       <a-grid :cols="24" :col-gap="10" :row-gap="10">
         <a-grid-item :span="{ xl: 16, lg: 16, md: 16, sm: 24 }">
@@ -39,6 +53,7 @@
 </template>
 
 <script lang="ts" setup>
+  import dayjs from 'dayjs';
   import { computed, onMounted, ref } from 'vue';
   import { get, map } from 'lodash';
   import { useI18n } from 'vue-i18n';
@@ -48,7 +63,7 @@
   import dailyyCost from './daily-trend.vue';
   import { getDashboardLicenses } from '../api/dashboard';
   import applicationRank from './application-rank.vue';
-  import { colorList } from '../config';
+  import { colorList, DateShortCuts } from '../config';
 
   const pieStyleConfig = {
     label: {
@@ -82,6 +97,23 @@
     }
   };
   const { t } = useI18n();
+  const queryParams = {
+    source: 'daily table',
+    filters: [[{ includeAll: true }]],
+    shareCosts: [
+      {
+        idleCostFilters: [{ includeAll: true }],
+        managementCostFilters: [{ includeAll: true }],
+        sharingStrategy: 'proportionally'
+      }
+    ],
+    groupBy: 'day',
+    step: 'day',
+    paging: { page: 1, perPage: 10 },
+    query: '',
+    startTime: dayjs().subtract(29, 'd').format('YYYY-MM-DDT00:00:00Z'),
+    endTime: dayjs().format('YYYY-MM-DDTHH:mm:ssZ')
+  };
   const pieOptions = computed(() => {
     return {
       title: {
@@ -115,6 +147,7 @@
       console.log(error);
     }
   };
+  const handleDateChange = () => {};
   onMounted(() => {
     fetchData();
   });

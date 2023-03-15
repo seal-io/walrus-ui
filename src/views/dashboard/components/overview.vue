@@ -21,29 +21,40 @@
 </template>
 
 <script lang="ts" setup>
-  import { cloneDeep, get, map } from 'lodash';
-  import { ref, computed } from 'vue';
+  import { cloneDeep, get, map, assignIn } from 'lodash';
+  import { ref, computed, reactive } from 'vue';
   import spinCard from '@/components/page-wrap/spin-card.vue';
   import DataCard from '@/components/data-card/index.vue';
   import { overViewConfig } from '../config';
+  import { getDashBoardOverview } from '../api/dashboard';
 
-  const props = defineProps({
-    basicInfo: {
-      type: Object,
-      default() {
-        return {};
-      }
-    }
-  });
-
+  const basicInfo = reactive({});
   const overviewData = computed(() => {
     const list = map(overViewConfig, (o) => {
       const item = cloneDeep(o);
-      item.value = get(props.basicInfo, item.key) || 0;
+      item.value = get(basicInfo, item.key) || 0;
       return item;
     });
     return list;
   });
+  const fetchData = async () => {
+    try {
+      const { data } = await getDashBoardOverview();
+      assignIn(basicInfo, data);
+    } catch (error) {
+      assignIn(basicInfo, {
+        application: 0,
+        module: 0,
+        instance: 0,
+        resource: 0,
+        revision: 0,
+        environment: 0,
+        connector: 0
+      });
+      console.log(error);
+    }
+  };
+  fetchData();
 </script>
 
 <style lang="less" scoped>
