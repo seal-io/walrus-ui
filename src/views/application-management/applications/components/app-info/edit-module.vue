@@ -43,7 +43,7 @@
           </a-grid-item>
           <a-grid-item :span="12">
             <a-form-item
-              label="类型"
+              label="模块"
               field="module.id"
               :disabled="action === 'edit'"
               :rules="[{ required: true, message: '类型必选' }]"
@@ -57,6 +57,26 @@
                   :key="item.id"
                   :value="item.id"
                   >{{ item.id }}</a-option
+                >
+              </a-select>
+            </a-form-item>
+          </a-grid-item>
+          <a-grid-item :span="12">
+            <a-form-item
+              label="版本"
+              field="version"
+              :disabled="action === 'edit'"
+              :rules="[{ required: true, message: '类型必选' }]"
+            >
+              <a-select
+                v-model="formData.version"
+                @change="handleVersionChange"
+              >
+                <a-option
+                  v-for="item in moduleVersionList"
+                  :key="item.value"
+                  :value="item.value"
+                  >{{ item.label }}</a-option
                 >
               </a-select>
             </a-form-item>
@@ -138,7 +158,8 @@
     set,
     keys,
     every,
-    reduce
+    reduce,
+    map
   } from 'lodash';
   import { ref, reactive, PropType, ComponentPublicInstance, Ref } from 'vue';
   import useCallCommon from '@/hooks/use-call-common';
@@ -146,6 +167,7 @@
   import formCreate from '@/components/form-create/index.vue';
   import GroupTitle from '@/components/group-title/index.vue';
   import { TemplateRowData } from '@/views/operation-hub/templates/config/interface';
+  import { queryModulesVersions } from '@/views/operation-hub/templates/api';
 
   interface Group {
     Variables: object[];
@@ -190,10 +212,12 @@
   const moduleInfo = ref<any>({});
   const variablesGroup = ref<any>({});
   const variablesGroupForm = ref<any>({});
+  const moduleVersionList = ref<{ label: string; value: string }[]>([]);
   let refMap: Record<string, refItem> = {};
   const formData = reactive({
     name: '',
     module: { id: '' },
+    version: '',
     application: {
       id: route.query.id || ''
     },
@@ -263,8 +287,28 @@
       formData.attributes[item.Name] = item.Default;
     });
   };
-  const handleTemplateChange = (val) => {
-    const moduleData = find(props.templates, (item) => item.id === val);
+  const getModuleVersionList = async () => {
+    try {
+      const { data } = await queryModulesVersions({
+        moduleID: formData.module.id
+      });
+      const list = data.items || [];
+      moduleVersionList.value = map(list, (item) => {
+        return {
+          label: item.version,
+          value: item.id
+        };
+      });
+      formData.version = get(list, '0.id');
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  const handleVersionChange = async () => {
+    const moduleData = find(
+      moduleVersionList.value,
+      (item) => item.value === formData.version
+    );
     moduleInfo.value = cloneDeep(get(moduleData, 'schema')) || {};
     formData.application = { id: '' };
     formData.attributes = {};
@@ -272,6 +316,10 @@
 
     // setFormData(moduleInfo.value);
     generateVariablesGroup(props.action);
+  };
+  const handleTemplateChange = async (val) => {
+    await getModuleVersionList();
+    handleVersionChange();
   };
   // get group form data
   const getRefFormData = async () => {

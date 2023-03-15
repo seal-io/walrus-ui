@@ -69,33 +69,9 @@
       >
         <a-input v-model="formData.icon"></a-input>
       </a-form-item>
-      <a-form-item
-        field="version"
-        :label="$t('operation.templates.detail.version')"
-      >
-        <a-input v-model="formData.version"></a-input>
-      </a-form-item>
-      <!-- <a-form-item>
-        <a-tabs
-          :active-key="activeKey"
-          lazy-load
-          class="page-line-tabs"
-          @change="handleTabChange"
-        >
-          <a-tab-pane
-            v-for="item in tabList"
-            :key="item.com"
-            :title="item.label"
-          >
-            <component
-              :is="tabMap[item.com]"
-              :schema="templateSchema"
-            ></component>
-          </a-tab-pane>
-        </a-tabs>
-      </a-form-item> -->
     </a-form>
     <a-tabs
+      v-if="id"
       :active-key="activeKey"
       lazy-load
       class="page-line-tabs"
@@ -104,6 +80,20 @@
       <a-tab-pane v-for="item in tabList" :key="item.com" :title="item.label">
         <component :is="tabMap[item.com]" :schema="templateSchema"></component>
       </a-tab-pane>
+      <template #extra>
+        <div style="display: flex">
+          <a-select
+            v-model="version"
+            style="width: 200px"
+            :options="versionList"
+            @change="handleVersonChange"
+          >
+            <template #prefix>
+              <span>{{ $t('operation.templates.detail.version') }}</span>
+            </template>
+          </a-select>
+        </div>
+      </template>
     </a-tabs>
     <EditPageFooter>
       <template #save>
@@ -126,7 +116,7 @@
 </template>
 
 <script lang="ts" setup>
-  import { assignIn, get } from 'lodash';
+  import { assignIn, find, get, map } from 'lodash';
   import { urlReg } from '@/utils/validate';
   import { ref, reactive, onMounted, markRaw } from 'vue';
   import GroupTitle from '@/components/group-title/index.vue';
@@ -137,9 +127,13 @@
   import tabReadme from '../components/tab-readme.vue';
   import tabInput from '../components/tab-input.vue';
   import tabOutput from '../components/tab-output.vue';
-  import tabResource from '../components/tab-resource.vue';
   import tabConnector from '../components/tab-connector.vue';
-  import { queryItemModules, createModules, updateModules } from '../api';
+  import {
+    queryItemModules,
+    createModules,
+    updateModules,
+    queryModulesVersions
+  } from '../api';
 
   const tabMap = {
     tabReadme,
@@ -147,20 +141,42 @@
     tabOutput,
     tabConnector
   };
+  const versionList = ref<{ label: string; value: string }[]>([]);
+  const version = ref('');
   const activeKey = ref('tabReadme');
   const { router, route } = useCallCommon();
   const formref = ref();
   const id = route.query.id as string;
   const submitLoading = ref(false);
-  const templateSchema = reactive({});
+  const templateSchema = ref({});
   const formData = reactive({
     id: '',
     description: '',
     source: '',
-    version: '',
+    // version: '',
     icon: ''
   });
-
+  const getModuleVersions = async () => {
+    if (!id) return;
+    try {
+      const params = {
+        moduleID: id
+      };
+      const { data } = await queryModulesVersions(params);
+      const list = data.items || [];
+      versionList.value = map(list, (item) => {
+        return {
+          label: item.version,
+          value: item.id
+        };
+      });
+      version.value = get(list, '0.id');
+      templateSchema.value = get(list, '0.schema') || {};
+    } catch (error) {
+      versionList.value = [];
+      console.log(error);
+    }
+  };
   const getItemModules = async () => {
     if (!id) return;
     try {
@@ -169,14 +185,15 @@
       };
       const { data } = await queryItemModules(params);
       assignIn(formData, data);
-      assignIn(templateSchema, get(data, 'schema') || {});
-      console.log('templateSchema==', templateSchema);
     } catch (error) {
       console.log('error');
       formref.value.resetFields();
     }
   };
-
+  const handleVersonChange = (value) => {
+    const data = find(versionList.value, (item) => item.value === value);
+    templateSchema.value = data || {};
+  };
   const handleSubmit = async () => {
     const res = await formref.value?.validate();
     if (!res) {
@@ -202,6 +219,7 @@
   };
   onMounted(() => {
     getItemModules();
+    getModuleVersions();
   });
 </script>
 

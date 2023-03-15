@@ -39,3 +39,14 @@ export function deleteModules(data) {
 export function updateModules(data: TemplateFormData) {
   return axios.put(`/modules/${data.id}`, data);
 }
+export function refreshModules(data: { id: string }) {
+  return axios.post(`/modules/${data.id}/refresh`);
+}
+export function queryModulesVersions(params: { moduleID: string }) {
+  return axios.get(`/module-versions`, {
+    params,
+    paramsSerializer: (obj) => {
+      return qs.stringify(obj);
+    }
+  });
+}

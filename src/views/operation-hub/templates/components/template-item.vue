@@ -17,17 +17,30 @@
           {{ dataInfo.description }}
         </div>
       </div>
-      <a-button
-        type="primary"
-        size="small"
-        style="width: 88px; margin-top: 10px"
-        @click="handleEditTemplate"
-      >
-        <template #icon>
-          <icon-edit></icon-edit>
-        </template>
-        {{ $t('common.button.edit') }}
-      </a-button>
+      <a-space class="btn-wrap">
+        <a-button
+          type="primary"
+          size="small"
+          style="width: 88px"
+          @click="handleEditTemplate"
+        >
+          <template #icon>
+            <icon-edit></icon-edit>
+          </template>
+          {{ $t('common.button.edit') }}
+        </a-button>
+        <a-button
+          size="small"
+          status="success"
+          style="width: 88px"
+          @click="handleRefresh"
+        >
+          <template #icon>
+            <icon-refresh />
+          </template>
+          {{ $t('common.button.refresh') }}
+        </a-button>
+      </a-space>
     </div>
     <a-checkbox
       class="check-box"
@@ -42,9 +55,10 @@
 <script lang="ts" setup>
   import { PropType } from 'vue';
   import { toLower } from 'lodash';
-  import { repoIcon } from '@/components/provider-icon/config';
   import { useRouter } from 'vue-router';
+  import { execSucceed } from '@/utils/monitor';
   import { TemplateRowData } from '../config/interface';
+  import { refreshModules } from '../api';
 
   const props = defineProps({
     provider: {
@@ -67,15 +81,23 @@
     }
   });
 
-  const emits = defineEmits(['change']);
+  const emits = defineEmits(['change', 'refresh']);
   const router = useRouter();
   const handleEditTemplate = () => {
-    // router.push({
-    //   name: 'templateDetail',
-    //   query: {
-    //     id: props.dataInfo.id
-    //   }
-    // });
+    router.push({
+      name: 'templateDetail',
+      query: {
+        id: props.dataInfo.id
+      }
+    });
+  };
+  const handleRefresh = async () => {
+    try {
+      await refreshModules({ id: props.dataInfo.id });
+      execSucceed();
+    } catch (error) {
+      console.log(error);
+    }
   };
   const handleCheckedChange = (val) => {
     console.log('val:', val);
