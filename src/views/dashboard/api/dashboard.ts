@@ -58,17 +58,24 @@ export interface Result {
   name: string;
   series: SeriesItem[];
 }
-
+export interface RevisionParams {
+  step: string;
+  startTime: string;
+  endTime: string;
+}
 export const getDashBoardOverview = () => {
-  return axios.get('/statistics');
+  return axios.get('/dashboards/_/basic-infos');
 };
 
+export const queryApplicationRevisions = (data: RevisionParams) => {
+  return axios.post('/dashboards/_/application-revision-statistics', data);
+};
 export const getDashBoardIssueTrend = (params: ParamsType) => {
   return axios.get<SeriesItem[]>('/statistics/_/metrics', {
     params,
     paramsSerializer: (obj) => {
       return qs.stringify(obj);
-    },
+    }
   });
 };
 

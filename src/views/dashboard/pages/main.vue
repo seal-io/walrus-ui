@@ -1,7 +1,7 @@
 <template>
   <div class="dashboard-wrapper">
     <a-space :size="8" direction="vertical" fill>
-      <overview :basic-info="basicInfo"></overview>
+      <overview></overview>
       <DeploymentSummary :data="issueData"></DeploymentSummary>
       <CostSummary></CostSummary>
     </a-space>
@@ -16,20 +16,7 @@
   import CostSummary from '../components/cost-summary.vue';
   import { getDashBoardOverview } from '../api/dashboard';
 
-  const basicInfo = reactive({});
   const issueData = ref({});
-
-  const fetchData = async () => {
-    try {
-      // const { data } = await getDashBoardOverview();
-      // const basic = get(data, 'basic') || {};
-      // issueData.value = get(data, 'issue') || {};
-      // Object.assign(basicInfo, basic);
-    } catch (error) {
-      console.log(error);
-    }
-  };
-  fetchData();
 </script>
 
 <style lang="less" scoped>

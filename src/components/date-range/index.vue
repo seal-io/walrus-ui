@@ -8,7 +8,7 @@
       :style="{ width: width }"
       :mode="mode"
       :model-value="[start, end]"
-      value-format="YYYY-MM-DD"
+      :value-format="valueFormat || 'YYYY-MM-DD'"
       :class="{ 'border-less': borderLess }"
       @select-shortcut="handleSelectShortcut"
       @popup-visible-change="handlePopupChange"
@@ -118,6 +118,12 @@
       default() {
         return [];
       }
+    },
+    maxRange: {
+      type: Object as PropType<{ type: any; range: number }>,
+      default() {
+        return { type: 'month', range: 2 };
+      }
     }
   });
   const selectRangeMap = {
@@ -207,8 +213,8 @@
   const disabledDate = (current) => {
     // const type = props.timeUnit as unitType;
     // const range = get(selectRangeMap, type);
-    const type = 'month';
-    const range = 2;
+
+    const { type, range } = props.maxRange;
 
     if (!props.todayIn) {
       if (dayjs(current).isSameOrAfter(dayjs().format('YYYY-MM-DD'), 'day')) {

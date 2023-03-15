@@ -1,5 +1,19 @@
 <template>
-  <SpinCard title="应用部署" borderless>
+  <SpinCard :title="$t('dashboard.deployment.title')" borderless>
+    <template #title>
+      <div style="display: flex; justify-content: space-between">
+        <span>{{ $t('dashboard.deployment.title') }}</span>
+        <DateRange
+          v-model:start="queryParams.startTime"
+          v-model:end="queryParams.endTime"
+          v-model:timeUnit="queryParams.step"
+          :show-extra="false"
+          :short-cuts="DateShortCuts"
+          today-in
+          @change="handleDateChange"
+        ></DateRange>
+      </div>
+    </template>
     <div class="data-wrapper">
       <a-grid :cols="24" :col-gap="10" :row-gap="10">
         <a-grid-item :span="{ lg: 16, md: 12, sm: 24, xs: 24 }">
@@ -9,7 +23,7 @@
             :data-config="dataConfig"
             :data="dataList"
             :x-axis="xAxis"
-            title="历史记录"
+            :title="$t('dashboard.deployment.history')"
           ></StackLineChart>
         </a-grid-item>
         <a-grid-item :span="{ lg: 8, md: 12, sm: 24, xs: 24 }">
@@ -26,21 +40,24 @@
       </a-grid>
     </div>
     <div>
-      <div class="app-list-title">最新10条部署</div>
+      <div class="app-list-title">{{ $t('dashboard.deployment.lastest') }}</div>
       <lastDeployApp :list="appList"></lastDeployApp>
     </div>
   </SpinCard>
 </template>
 
 <script lang="ts" setup>
+  import dayjs from 'dayjs';
   import { computed, ref } from 'vue';
   import { useI18n } from 'vue-i18n';
   import { map, get, ceil } from 'lodash';
   import StackLineChart from '@/components/stack-line-chart/index.vue';
   import pieChart from '@/components/pie-chart/index.vue';
+  import DateRange from '@/components/date-range/index.vue';
+  import { getStackLineDataList, setEndTimeAddDay } from '@/views/config';
   import lastDeployApp from './last-deploy-app.vue';
-
-  import { deployDataConfig, statusColorMap } from '../config';
+  import { deployDataConfig, statusColorMap, DateShortCuts } from '../config';
+  import { queryApplicationRevisions } from '../api/dashboard';
 
   const props = defineProps({
     data: {
@@ -83,36 +100,19 @@
   const pieCenter = ['50%', '50%'];
   const pieRadius = ['0%', '90%'];
   const { t } = useI18n();
+  const queryParams = {
+    step: 'day', // day month year
+    startTime: dayjs().subtract(29, 'd').format('YYYY-MM-DDT00:00:00Z'),
+    endTime: dayjs().format('YYYY-MM-DDTHH:mm:ssZ')
+  };
 
-  const dataConfig = ref([
-    {
-      name: '一',
-      label: 'Running',
-      color: statusColorMap.running
-    },
-    {
-      name: '二',
-      label: 'Auditing',
-      color: statusColorMap.auditing
-    },
-    {
-      name: '三',
-      label: 'Failed',
-      color: statusColorMap.failed
-    },
-    {
-      name: '四',
-      label: 'Successful',
-      color: statusColorMap.done
-    }
-  ]);
-  const xAxis = ref(['一月', '二月', '三月', '四月', '五月']);
+  const xAxis = ref<string[]>([]);
   const appList = ref([
     {
       name: 'app-1',
       time: '2022-10-01',
       duration: '3min',
-      status: 'done',
+      status: 'succeed',
       env: 'dev',
       assignee: '张'
     },
@@ -141,17 +141,32 @@
       assignee: '李'
     }
   ]);
-  const dataList = ref([
-    { name: '一', value: [5, 3, 7, 8, 9] },
-    { name: '二', value: [1, 6, 10, 12, 21] },
-    { name: '三', value: [9, 10, 15, 6, 15] },
-    { name: '四', value: [4, 21, 8, 16, 18] }
-  ]);
+  const summaryData = ref({});
+  const dataList = ref<{ name: string; value: number[] }[]>([]);
+  const dataConfig = computed(() => {
+    return [
+      {
+        name: 'running',
+        label: t('dashboard.deployment.running'),
+        color: statusColorMap.running
+      },
+      {
+        name: 'failed',
+        label: t('dashboard.deployment.failed'),
+        color: statusColorMap.failed
+      },
+      {
+        name: 'succeed',
+        label: t('dashboard.deployment.succeed'),
+        color: statusColorMap.succeed
+      }
+    ];
+  });
   const pieOptions = computed(() => {
     return {
       title: {
         ...title,
-        text: '统计'
+        text: t('dashboard.deployment.summary')
       },
       grid: {
         ...grid
@@ -171,12 +186,41 @@
       return {
         ...item,
         ...pieStyleConfig,
-        value: item.value,
+        value: summaryData.value[item.key],
         name: t(item.name)
       };
     }).filter((sItem) => sItem.value);
     return list;
   });
+  const getApplicationRevisions = async () => {
+    try {
+      const params = {
+        ...queryParams,
+        startTime: dayjs(queryParams.startTime).format('YYYY-MM-DDT00:00:00Z'),
+        endTime: setEndTimeAddDay(queryParams.endTime, 'local')
+      };
+      const { data } = await queryApplicationRevisions(params);
+      summaryData.value = get(data, 'revisionStatusCount') || {};
+      const revisions = get(data, 'revisionStatusStats');
+      const result = getStackLineDataList(revisions, {
+        fields: ['running', 'succeed', 'failed'],
+        xAxis: 'startTime'
+      });
+      dataList.value = result.data;
+      xAxis.value = result.xAxis;
+    } catch (error) {
+      dataList.value = [];
+      xAxis.value = [];
+      console.log(error);
+    }
+  };
+  const init = () => {
+    getApplicationRevisions();
+  };
+  const handleDateChange = () => {
+    init();
+  };
+  init();
 </script>
 
 <style lang="less" scoped>
