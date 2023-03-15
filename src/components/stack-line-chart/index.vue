@@ -139,7 +139,7 @@
       const valueData = find(props.data || [], (sItem) => {
         return item.name === sItem.name;
       });
-      const value = valueData?.value || [1];
+      const value = valueData?.value || [];
       return generateSeries(item.label, value, item.color, item.areaColor);
     });
     console.log('seriesDataList===', seriesDataList);
