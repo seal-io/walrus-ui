@@ -27,6 +27,7 @@
       }
     }
   });
+  const terminalEnvList = ['bash', 'sh', 'powershell', 'pwsh', 'cmd'];
   const fitAddon = new FitAddon();
 
   const terminal = ref(null);
@@ -167,11 +168,10 @@
   const initWS = () => {
     if (!terminalSocket.value) {
       createWS();
+      return;
     }
-    if (terminalSocket.value && terminalSocket.value.readyState > 1) {
-      terminalSocket.value.close();
-      createWS();
-    }
+    terminalSocket.value.close();
+    createWS();
   };
 
   const initTerm = () => {
@@ -224,24 +224,7 @@
   const removeResizeListener = () => {
     window.removeEventListener('resize', onResize);
   };
-  const setTerminalStatus = () => {
-    if (!terminalSocket?.value) return;
-    const status = terminalSocket?.value?.readyState;
-    if (status === 0) {
-      // const text = `bin boot dev\tdocker-entrypoint.d docker-entrypoint.sh etc\thome lib media mnt opt proc product_uuid\troot run sbin srv sys tmp\tusr var\r\n# # `;
-      // term.value?.write?.(text);
-      // term.value?.write?.('\r\n$ ');
-    }
-    if (status === 1) {
-      term.value?.write?.(initData());
-    }
-    if (status === 2) {
-      // term.value?.write?.('Closing...');
-    }
-    if (status === 3) {
-      // term.value.write('Closed!');
-    }
-  };
+
   const init = () => {
     initWS();
     initTerm();
@@ -253,10 +236,8 @@
     () => props.url,
     () => {
       if (!props.url) return;
-      console.log('wss: url===', props.url);
       first.value = true;
       loading.value = true;
-      terminalSocket.value = null;
       initWS();
       // 重置
       term.value.reset();
@@ -265,15 +246,7 @@
       immediate: true
     }
   );
-  watch(
-    () => terminalSocket.value?.readyState,
-    () => {
-      setTerminalStatus();
-    },
-    {
-      immediate: true
-    }
-  );
+
   onMounted(() => {
     init();
   });

@@ -136,13 +136,17 @@
         line-height: 20px;
         text-overflow: ellipsis;
         -webkit-box-orient: vertical;
-        -webkit-line-clamp: 4;
+        -webkit-line-clamp: 3;
       }
 
       .title {
+        max-width: 300px;
         margin-bottom: 5px;
+        overflow: hidden;
         font-weight: 500;
         font-size: 16px;
+        white-space: nowrap;
+        text-overflow: ellipsis;
       }
     }
 

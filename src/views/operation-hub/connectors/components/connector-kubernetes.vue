@@ -138,7 +138,10 @@
                   <template #icon><icon-edit class="size-16" /></template>
                 </a-link>
               </a-tooltip>
-              <a-tooltip :content="$t('operation.connectors.table.install')">
+              <a-tooltip
+                v-if="record.enableFinOps"
+                :content="$t('operation.connectors.table.install')"
+              >
                 <a-link
                   type="text"
                   size="small"
@@ -149,7 +152,10 @@
                   /></template>
                 </a-link>
               </a-tooltip>
-              <a-tooltip :content="$t('operation.connectors.table.fetch')">
+              <a-tooltip
+                v-if="record.enableFinOps"
+                :content="$t('operation.connectors.table.fetch')"
+              >
                 <a-link
                   type="text"
                   size="small"

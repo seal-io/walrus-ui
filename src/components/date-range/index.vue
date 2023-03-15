@@ -202,10 +202,14 @@
     const value = generateTimezoneFormat(val);
     endDate.value = get(value, '1') || props.end;
     startDate.value = get(value, '0') || props.start;
+    console.log('select==', endDate.value, startDate.value);
   };
   const disabledDate = (current) => {
-    const type = props.timeUnit as unitType;
-    const range = get(selectRangeMap, type);
+    // const type = props.timeUnit as unitType;
+    // const range = get(selectRangeMap, type);
+    const type = 'month';
+    const range = 2;
+
     if (!props.todayIn) {
       if (dayjs(current).isSameOrAfter(dayjs().format('YYYY-MM-DD'), 'day')) {
         return true;
@@ -213,19 +217,18 @@
     } else if (dayjs(current).isAfter(dayjs().format('YYYY-MM-DD'), 'day')) {
       return true;
     }
-
     if (
-      dayjs(current).isAfter(
-        dayjs(startDate.value).add(range, type).format('YYYY-MM-DD'),
-        type
+      dayjs(current).isBefore(
+        dayjs(endDate.value).subtract(range, type).format('YYYY-MM-DD'),
+        'day'
       )
     ) {
       return true;
     }
     if (
-      dayjs(current).isBefore(
-        dayjs(startDate.value).subtract(range, type).format('YYYY-MM-DD'),
-        type
+      dayjs(current).isAfter(
+        dayjs(endDate.value).add(range, type).format('YYYY-MM-DD'),
+        'day'
       )
     ) {
       return true;
