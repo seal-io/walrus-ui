@@ -46,6 +46,7 @@
       <component
         :is="pageComMap[pgCom]"
         :instance-id="currentInstance"
+        @save="handleSaveApp"
         @deploy="handleDeployDone"
       ></component>
     </div>
@@ -220,6 +221,9 @@
   };
   const handleOk = () => {
     router.back();
+  };
+  const handleSaveApp = () => {
+    getApplicationDetail();
   };
   const init = async () => {
     getApplicationInstances();

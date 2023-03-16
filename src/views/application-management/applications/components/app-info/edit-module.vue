@@ -27,7 +27,7 @@
         layout="vertical"
       >
         <a-grid :cols="24">
-          <a-grid-item :span="12">
+          <a-grid-item :span="24">
             <a-form-item
               label="名称"
               field="name"
@@ -50,7 +50,7 @@
             >
               <a-select
                 v-model="formData.module.id"
-                @change="handleTemplateChange"
+                @change="handleModuleChange"
               >
                 <a-option
                   v-for="item in templates"
@@ -74,7 +74,7 @@
               >
                 <a-option
                   v-for="item in moduleVersionList"
-                  :key="item.value"
+                  :key="item.id"
                   :value="item.value"
                   >{{ item.label }}</a-option
                 >
@@ -86,12 +86,12 @@
       <div class="variables">
         <GroupTitle title="属性"></GroupTitle>
         <a-tabs
-          v-if="show && keys(variablesGroup)?.length > 1"
+          v-if="show && formTabs.length > 1"
           :active-key="activeKey"
           @change="handleTabChange"
         >
           <a-tab-pane
-            v-for="(group, index) in keys(variablesGroup)"
+            v-for="(group, index) in formTabs"
             :key="`schemaForm${index}`"
             :title="variablesGroup[group]?.label"
           >
@@ -109,7 +109,7 @@
           </a-tab-pane>
         </a-tabs>
         <formCreate
-          v-if="show && keys(variablesGroup)?.length < 2"
+          v-if="show && formTabs.length < 2"
           ref="schemaForm"
           layout="vertical"
           action="post"
@@ -153,20 +153,30 @@
     cloneDeep,
     each,
     assignIn,
-    pick,
-    omit,
+    pull,
     set,
     keys,
     every,
     reduce,
-    map
+    map,
+    includes
   } from 'lodash';
-  import { ref, reactive, PropType, ComponentPublicInstance, Ref } from 'vue';
+  import {
+    ref,
+    reactive,
+    PropType,
+    ComponentPublicInstance,
+    computed
+  } from 'vue';
   import useCallCommon from '@/hooks/use-call-common';
   import EditPageFooter from '@/components/edit-page-footer/index.vue';
   import formCreate from '@/components/form-create/index.vue';
   import GroupTitle from '@/components/group-title/index.vue';
-  import { TemplateRowData } from '@/views/operation-hub/templates/config/interface';
+  import paramsEditor from '@/components/graph/components/params-editor.vue';
+  import {
+    TemplateRowData,
+    ModuleVersionData
+  } from '@/views/operation-hub/templates/config/interface';
   import { queryModulesVersions } from '@/views/operation-hub/templates/api';
 
   interface Group {
@@ -199,8 +209,12 @@
       }
     }
   });
-  type refItem = Element | ComponentPublicInstance | null;
 
+  type refItem = Element | ComponentPublicInstance | null;
+  interface ModuleVersion extends ModuleVersionData {
+    label: string;
+    value: string;
+  }
   const defaultGroupKey = '_default_default_';
   const emit = defineEmits(['save', 'update:show', 'reset', 'update:action']);
   const { route } = useCallCommon();
@@ -212,7 +226,7 @@
   const moduleInfo = ref<any>({});
   const variablesGroup = ref<any>({});
   const variablesGroupForm = ref<any>({});
-  const moduleVersionList = ref<{ label: string; value: string }[]>([]);
+  const moduleVersionList = ref<ModuleVersion[]>([]);
   let refMap: Record<string, refItem> = {};
   const formData = reactive({
     name: '',
@@ -223,14 +237,26 @@
     },
     attributes: {}
   });
+
+  const formTabs = computed(() => {
+    const list = keys(variablesGroup.value);
+    if (includes(list, defaultGroupKey)) {
+      const res = [defaultGroupKey, ...pull(list, defaultGroupKey)];
+      return res;
+    }
+    return list;
+  });
   const handleCancel = () => {
     emit('update:show', false);
   };
   const resetForm = () => {
     formData.name = '';
     formData.module = { id: '' };
+    formData.version = '';
     formData.application = { id: '' };
     formData.attributes = {};
+
+    activeKey.value = 'schemaForm0';
   };
   const setRefMap = (el: refItem, name) => {
     if (el) {
@@ -270,7 +296,7 @@
         if (!variablesGroup.value[defaultGroupKey]) {
           variablesGroup.value[defaultGroupKey] = {
             Variables: [],
-            label: 'BASIC'
+            label: 'Basic'
           };
         }
         variablesGroup.value[defaultGroupKey].Variables.push(item);
@@ -287,6 +313,22 @@
       formData.attributes[item.Name] = item.Default;
     });
   };
+  //  change module ...
+  const getModuleSchemaById = () => {
+    const moduleTemplate = find(
+      moduleVersionList.value,
+      (item) => item.module.id === formData.module.id
+    );
+    return moduleTemplate;
+  };
+  // change version ...
+  const getModuleSchemaByVersion = () => {
+    const moduleTemplate = find(
+      moduleVersionList.value,
+      (item) => item.value === formData.version
+    );
+    return moduleTemplate;
+  };
   const getModuleVersionList = async () => {
     try {
       const { data } = await queryModulesVersions({
@@ -295,20 +337,17 @@
       const list = data.items || [];
       moduleVersionList.value = map(list, (item) => {
         return {
+          ...item,
           label: item.version,
-          value: item.id
+          value: item.version
         };
       });
-      formData.version = get(list, '0.id');
     } catch (error) {
       console.log(error);
     }
   };
   const handleVersionChange = async () => {
-    const moduleData = find(
-      moduleVersionList.value,
-      (item) => item.value === formData.version
-    );
+    const moduleData = getModuleSchemaByVersion();
     moduleInfo.value = cloneDeep(get(moduleData, 'schema')) || {};
     formData.application = { id: '' };
     formData.attributes = {};
@@ -317,8 +356,9 @@
     // setFormData(moduleInfo.value);
     generateVariablesGroup(props.action);
   };
-  const handleTemplateChange = async (val) => {
+  const handleModuleChange = async (val) => {
     await getModuleVersionList();
+    formData.version = get(moduleVersionList.value, '0.version');
     handleVersionChange();
   };
   // get group form data
@@ -377,23 +417,25 @@
     }
   };
 
-  const handleBeforeOpen = () => {
+  const handleBeforeOpen = async () => {
     if (props.action === 'create') {
-      moduleInfo.value = cloneDeep(get(props.templates, '0.schema')) || {};
-      // setFormData(moduleInfo.value);
       formData.module.id = get(props.templates, '0.id') || '';
+      await getModuleVersionList();
+      const moduleTemplate = getModuleSchemaById();
+      formData.version = get(moduleTemplate, 'version') || '';
+      moduleInfo.value = cloneDeep(get(moduleTemplate, 'schema')) || {};
+      // setFormData(moduleInfo.value);
     } else {
+      assignIn(formData, props.dataInfo);
       // 1. get the template meta data 2.set the default value
-      const templateMetaData = find(
-        props.templates,
-        (item) => item.id === get(props.dataInfo, 'module.id')
-      );
-      moduleInfo.value = cloneDeep(get(templateMetaData, 'schema'));
+      await getModuleVersionList();
+      const moduleTemplate = getModuleSchemaByVersion();
+      moduleInfo.value = cloneDeep(get(moduleTemplate, 'schema'));
       each(get(moduleInfo.value, 'Variables') || [], (item) => {
         item.Default = get(props.dataInfo, `attributes.${item.Name}`);
       });
-      assignIn(formData, props.dataInfo);
     }
+
     generateVariablesGroup(props.action);
   };
   const handleOpened = () => {};

@@ -173,7 +173,7 @@
     modules: []
   }) as AppFormData;
 
-  const emits = defineEmits(['deploy']);
+  const emits = defineEmits(['deploy', 'save']);
   const submitLoading = ref(false);
   const id = route.query.id as string;
   const cloneId = route.query.cloneId as string;
@@ -254,7 +254,7 @@
         await createApplication(data);
       }
       submitLoading.value = false;
-      router.back();
+      emits('save');
     } catch (error) {
       submitLoading.value = false;
       console.log(error);
