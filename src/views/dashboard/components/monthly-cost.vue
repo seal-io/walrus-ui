@@ -1,24 +1,25 @@
 <template>
   <div class="wrapper">
-    <div class="content" direction="vertical" align="end">
+    <!-- <div class="content" direction="vertical" align="end">
       <span class="title">This Month Cost: </span>
       <span class="value">$ 150.56</span>
       <span class="rate">
         <icon-arrow-fall class="icon-fall" />20% vs pervious month</span
       >
-    </div>
+    </div> -->
     <LineBarChart
       class="chart-wrapper"
       height="260px"
       show-type="line"
-      :data-list="dataList"
+      :line-list="data.list"
       :data-config="dataConfig"
-      :x-axis="xAxis"
+      :x-axis="data.xAxis"
       :config-options="{
         title: {
           ...title
         },
         legend: {
+          show: false,
           right: 'center',
           top: 0
         },
@@ -35,8 +36,19 @@
   import { ref } from 'vue';
   import LineBarChart from '@/components/line-bar-chart/index.vue';
 
+  defineProps({
+    data: {
+      type: Object,
+      default() {
+        return {
+          xAxis: [],
+          list: []
+        };
+      }
+    }
+  });
   const title = {
-    text: '',
+    text: 'Daily Cost Trend',
     left: 'center',
     top: 0,
     textStyle: {
@@ -53,15 +65,15 @@
   };
   const dataConfig = ref([
     {
-      name: 'key',
-      label: 'Monthly Cost',
+      name: 'totalCost',
+      label: 'Daily Cost Trend',
       value: [1, 3, 7, 8, 9],
       color: 'rgb(159, 232, 219)'
     }
   ]);
-  const xAxis = ref(['一月', '二月', '三月', '四月', '五月']);
+  // const xAxis = ref([]);
 
-  const dataList = ref([{ name: 'key', value: [1, 3, 7, 8, 9] }]);
+  // const dataList = ref([]);
 </script>
 
 <style lang="less" scoped>

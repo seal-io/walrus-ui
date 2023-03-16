@@ -4,9 +4,9 @@
       class="chart-wrapper"
       height="360px"
       show-type="line"
-      :data-list="dataList"
-      :data-config="dataConfig"
-      :x-axis="xAxis"
+      :line-list="data.list"
+      :data-config="data.dataConfig"
+      :x-axis="data.xAxis"
       :config-options="{
         title: {
           ...title
@@ -28,6 +28,18 @@
   import { ref } from 'vue';
   import LineBarChart from '@/components/line-bar-chart/index.vue';
 
+  defineProps({
+    data: {
+      type: Object,
+      default() {
+        return {
+          xAxis: [],
+          list: [],
+          dataConfig: []
+        };
+      }
+    }
+  });
   const title = {
     text: '',
     left: 'center',
@@ -46,29 +58,11 @@
   };
   const dataConfig = ref([
     {
-      name: 'key',
-      label: 'Last 60 Days',
+      name: 'totalCost',
+      label: '',
       value: [1, 3, 7, 8, 9],
       color: 'rgba(102, 201, 255, 0.6)'
       // areaColor: ['rgba(102, 201, 255, 1)', 'rgba(102, 201, 255, 0.2)']
-    }
-  ]);
-  const xAxis = ref(
-    Array(30)
-      .fill(1)
-      .map((val, i) => {
-        return `2023-01-${i + 1}`;
-      })
-  );
-
-  const dataList = ref([
-    {
-      name: 'key',
-      value: Array(30)
-        .fill(1)
-        .map((val, i) => {
-          return i + 2;
-        })
     }
   ]);
 </script>

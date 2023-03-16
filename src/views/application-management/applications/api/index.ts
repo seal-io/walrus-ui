@@ -67,7 +67,7 @@ export const upgradeApplicationInstance = (data) => {
 };
 // =========history================
 interface ApplicationRevisionParams extends Pagination {
-  instanceID: string;
+  instanceID?: string;
 }
 
 export const queryApplicationRevisions = (

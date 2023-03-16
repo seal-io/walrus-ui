@@ -17,20 +17,14 @@
     <div class="box">
       <a-grid :cols="24" :col-gap="10" :row-gap="10">
         <a-grid-item :span="{ xl: 16, lg: 16, md: 16, sm: 24 }">
-          <!-- <pieChart
-            class="pie"
-            style="flex: 1"
-            :data-list="appCostRankList"
-            height="360px"
-            :center="center"
-            :radius="radius"
-            :config-options="pieOptions"
-          ></pieChart> -->
-          <monthlyCost style="margin-bottom: 10px"></monthlyCost>
-          <dailyyCost></dailyyCost>
+          <monthlyCost
+            style="margin-bottom: 10px"
+            :data="dailyCostData"
+          ></monthlyCost>
+          <dailyyCost :data="projectCostData"></dailyyCost>
         </a-grid-item>
         <a-grid-item :span="{ xl: 8, lg: 8, md: 8, sm: 24 }">
-          <pieChart
+          <!-- <pieChart
             class="pie"
             style="flex: 1"
             :data-list="appCostRankList"
@@ -38,11 +32,48 @@
             :center="center"
             :radius="radius"
             :config-options="pieOptions"
-          ></pieChart>
+          ></pieChart> -->
+          <DataCard
+            :precision="3"
+            title="This Month Cost"
+            bg-color="linear-gradient(rgba(184, 218, 243, 0.3) 0%, rgba(184, 218, 243, 0.4) 100%)"
+          >
+            <template #title>
+              <span style="font-weight: 500; font-size: 16px"
+                >This Month Cost</span
+              >
+            </template>
+            <template #extra>
+              <span>{{ round(monthlyCostData.currentMonth, 4) || 0 }}</span>
+              <span class="rate">
+                <icon-arrow-up
+                  v-if="
+                    subtract(
+                      monthlyCostData.currentMonth,
+                      monthlyCostData.lastMonth
+                    ) > 0
+                  "
+                  class="icon-fall"
+                />
+                <icon-arrow-fall
+                  v-if="
+                    subtract(
+                      monthlyCostData.currentMonth,
+                      monthlyCostData.lastMonth
+                    ) < 0
+                  "
+                  class="icon-fall"
+                />
+                <span>{{ monthCostGrowRate }} vs pervious month</span>
+              </span>
+            </template>
+          </DataCard>
           <div class="list" style="margin-top: 10px">
+            <div class="title">{{
+              $t('Applications Cost Rank (this month)')
+            }}</div>
             <applicationRank
               height="360px"
-              :title="$t('Top Application (this month)')"
               :data-list="appCostRankList"
             ></applicationRank>
           </div>
@@ -54,14 +85,19 @@
 
 <script lang="ts" setup>
   import dayjs from 'dayjs';
-  import { computed, onMounted, ref } from 'vue';
-  import { get, map } from 'lodash';
+  import { computed, onMounted, ref, reactive } from 'vue';
+  import { find, get, map, round, divide, subtract, sortBy } from 'lodash';
   import { useI18n } from 'vue-i18n';
+  import {
+    getStackLineDataList,
+    getStackLineChartDataList
+  } from '@/views/config';
   import spinCard from '@/components/page-wrap/spin-card.vue';
   import pieChart from '@/components/pie-chart/index.vue';
+  import DataCard from '@/components/data-card/index.vue';
   import monthlyCost from './monthly-cost.vue';
   import dailyyCost from './daily-trend.vue';
-  import { getDashboardLicenses } from '../api/dashboard';
+  import { queryCostManagemantData } from '../api/dashboard';
   import applicationRank from './application-rank.vue';
   import { colorList, DateShortCuts } from '../config';
 
@@ -97,8 +133,7 @@
     }
   };
   const { t } = useI18n();
-  const queryParams = {
-    source: 'daily table',
+  const queryParams = ref({
     filters: [[{ includeAll: true }]],
     shareCosts: [
       {
@@ -109,11 +144,33 @@
     ],
     groupBy: 'day',
     step: 'day',
-    paging: { page: 1, perPage: 10 },
     query: '',
     startTime: dayjs().subtract(29, 'd').format('YYYY-MM-DDT00:00:00Z'),
     endTime: dayjs().format('YYYY-MM-DDTHH:mm:ssZ')
-  };
+  });
+  const monthlyCostData = reactive({
+    currentMonth: 0,
+    lastMonth: 0
+  });
+  const dailyCostData = reactive({
+    xAxis: [],
+    list: []
+  });
+  const projectCostData = reactive({
+    xAxis: [],
+    list: [],
+    dataConfig: []
+  });
+  const appList = ref<{ name: string; value: number }[]>([]);
+  const appCostRankList = ref<{ name: string; value: number }[]>([]);
+
+  const monthCostGrowRate = computed(() => {
+    const rate = divide(
+      subtract(monthlyCostData.currentMonth, monthlyCostData.lastMonth),
+      monthlyCostData.lastMonth
+    );
+    return `${round(rate * 100, 2)}%`;
+  });
   const pieOptions = computed(() => {
     return {
       title: {
@@ -133,23 +190,109 @@
       }
     };
   });
-  const appList = ref<{ name: string; value: number }[]>([]);
-  const appCostRankList = ref<{ name: string; value: number }[]>([]);
-  const fetchData = async () => {
+
+  const getMonthlyCost = async () => {
     try {
-      appCostRankList.value = map(Array(10).fill(1), (item, i) => {
+      const params = {
+        ...queryParams.value,
+        groupBy: 'month',
+        startTime: dayjs().subtract(1, 'month').format('YYYY-MM-01T00:00:00Z'),
+        endTime: dayjs().format('YYYY-MM-DDTHH:mm:ssZ'),
+        step: ''
+      };
+      const { data } = await queryCostManagemantData(params);
+      const currentMonth = find(data.items || [], (o) =>
+        dayjs(o.itemName).isSame(params.endTime, 'month')
+      );
+      const lastMonth = find(data.items || [], (o) =>
+        dayjs(o.itemName).isSame(params.startTime, 'month')
+      );
+      monthlyCostData.currentMonth = get(currentMonth, 'totalCost') || 0;
+      monthlyCostData.lastMonth = get(lastMonth, 'totalCost') || 0;
+    } catch (error) {
+      monthlyCostData.currentMonth = 0;
+      monthlyCostData.lastMonth = 0;
+      console.log(error);
+    }
+  };
+  const getDailyCost = async () => {
+    try {
+      const params = {
+        ...queryParams.value,
+        groupBy: 'day',
+        startTime: dayjs().subtract(29, 'd').format('YYYY-MM-01T00:00:00Z'),
+        endTime: dayjs().format('YYYY-MM-DDTHH:mm:ssZ'),
+        step: ''
+      };
+      const { data } = await queryCostManagemantData(params);
+      const result = getStackLineDataList(data.items || [], {
+        fields: ['totalCost'],
+        xAxis: 'itemName'
+      });
+      dailyCostData.list = result.data as never[];
+      dailyCostData.xAxis = result.xAxis as never[];
+      console.log('dailyCostData==', dailyCostData);
+    } catch (error) {
+      dailyCostData.list = [];
+      dailyCostData.xAxis = [];
+      console.log(error);
+    }
+  };
+  const getProjectCost = async () => {
+    try {
+      const params = {
+        ...queryParams.value,
+        groupBy: 'label:seal.io/project',
+        startTime: dayjs().subtract(1, 'month').format('YYYY-MM-01T00:00:00Z'),
+        endTime: dayjs().format('YYYY-MM-DDTHH:mm:ssZ'),
+        step: 'day'
+      };
+      const { data } = await queryCostManagemantData(params);
+      const result = getStackLineChartDataList(data.items || [], {
+        value: 'totalCost',
+        name: 'itemName',
+        xAxis: 'startTime'
+      });
+      projectCostData.list = result.line as never[];
+      projectCostData.xAxis = result.xAxis as never[];
+      projectCostData.dataConfig = result.dataConfig as never[];
+    } catch (error) {
+      projectCostData.list = [];
+      projectCostData.xAxis = [];
+      projectCostData.dataConfig = [];
+      console.log(error);
+    }
+  };
+  const getAppCostRank = async () => {
+    try {
+      const params = {
+        ...queryParams.value,
+        groupBy: 'label:seal.io/app',
+        // startTime: dayjs().subtract(1, 'month').format('YYYY-MM-01T00:00:00Z'),
+        // endTime: dayjs().format('YYYY-MM-DDTHH:mm:ssZ'),
+        step: ''
+      };
+      const { data } = await queryCostManagemantData(params);
+      appCostRankList.value = map(data.items || [], (item) => {
         return {
-          name: `app-${i + 1}`,
-          value: 10 - i
+          name: item.itemName,
+          value: round(item.totalCost, 4)
         };
       });
     } catch (error) {
+      appCostRankList.value = [];
       console.log(error);
     }
   };
   const handleDateChange = () => {};
+  const init = () => {
+    getMonthlyCost();
+    getDailyCost();
+    getProjectCost();
+    getAppCostRank();
+  };
   onMounted(() => {
-    fetchData();
+    init();
   });
 </script>
 
@@ -165,6 +308,17 @@
     .list {
       // flex-basis: 400px;
       // margin-left: 20px;
+      .title {
+        color: var(--color-text-1);
+        font-weight: 500;
+      }
+    }
+
+    .rate {
+      margin-left: 6px;
+      color: var(--seal-color-warning);
+      font-weight: 500;
+      font-size: 14px;
     }
   }
 </style>

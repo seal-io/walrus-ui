@@ -54,10 +54,11 @@
   import StackLineChart from '@/components/stack-line-chart/index.vue';
   import pieChart from '@/components/pie-chart/index.vue';
   import DateRange from '@/components/date-range/index.vue';
+  import { queryApplicationRevisions } from '@/views/application-management/applications/api';
   import { getStackLineDataList, setEndTimeAddDay } from '@/views/config';
   import lastDeployApp from './last-deploy-app.vue';
   import { deployDataConfig, statusColorMap, DateShortCuts } from '../config';
-  import { queryApplicationRevisions } from '../api/dashboard';
+  import { queryApplicationRevisionsChart } from '../api/dashboard';
 
   const props = defineProps({
     data: {
@@ -107,40 +108,7 @@
   };
 
   const xAxis = ref<string[]>([]);
-  const appList = ref([
-    {
-      name: 'app-1',
-      time: '2022-10-01',
-      duration: '3min',
-      status: 'succeed',
-      env: 'dev',
-      assignee: '张'
-    },
-    {
-      name: 'app-2',
-      time: '2022-10-02',
-      duration: '4min',
-      status: 'auditing',
-      env: 'prod',
-      assignee: '王'
-    },
-    {
-      name: 'app-3',
-      time: '2022-10-03',
-      duration: '5min',
-      status: 'running',
-      env: 'pre',
-      assignee: '钱'
-    },
-    {
-      name: 'app-4',
-      time: '2022-10-04',
-      duration: '6min',
-      status: 'failed',
-      env: 'uat',
-      assignee: '李'
-    }
-  ]);
+  const appList = ref([]);
   const summaryData = ref({});
   const dataList = ref<{ name: string; value: number[] }[]>([]);
   const dataConfig = computed(() => {
@@ -192,14 +160,14 @@
     }).filter((sItem) => sItem.value);
     return list;
   });
-  const getApplicationRevisions = async () => {
+  const getApplicationRevisionsChart = async () => {
     try {
       const params = {
         ...queryParams,
         startTime: dayjs(queryParams.startTime).format('YYYY-MM-DDT00:00:00Z'),
         endTime: setEndTimeAddDay(queryParams.endTime, 'local')
       };
-      const { data } = await queryApplicationRevisions(params);
+      const { data } = await queryApplicationRevisionsChart(params);
       summaryData.value = get(data, 'revisionStatusCount') || {};
       const revisions = get(data, 'revisionStatusStats');
       const result = getStackLineDataList(revisions, {
@@ -214,8 +182,24 @@
       console.log(error);
     }
   };
+  const getApplicationRevisionsList = async () => {
+    try {
+      const params = {
+        page: 1,
+        perPage: 10,
+        sort: ['-createTime']
+      };
+      const { data } = await queryApplicationRevisions(params);
+
+      appList.value = data.items || [];
+    } catch (error) {
+      appList.value = [];
+      console.log(error);
+    }
+  };
   const init = () => {
-    getApplicationRevisions();
+    getApplicationRevisionsChart();
+    getApplicationRevisionsList();
   };
   const handleDateChange = () => {
     init();
