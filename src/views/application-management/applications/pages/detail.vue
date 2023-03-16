@@ -222,7 +222,21 @@
   const handleOk = () => {
     router.back();
   };
-  const handleSaveApp = () => {
+  const handleSaveApp = async (resId) => {
+    if (!id) {
+      router.replace({
+        name: 'applicationsDetail',
+        params: {
+          projectId: route.params.projectId
+        },
+        query: {
+          id: resId
+        }
+      });
+      setTimeout(() => {
+        window.location.reload();
+      }, 100);
+    }
     getApplicationDetail();
   };
   const init = async () => {

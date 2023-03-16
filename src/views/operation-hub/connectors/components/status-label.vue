@@ -1,26 +1,33 @@
 <template>
   <span class="status-label">
-    <span class="label">
-      <span v-if="status !== 'error'" class="dot" :class="[status]"></span>
-      <icon-font
-        v-if="status === 'error'"
-        class="size-16"
-        style="margin-right: 5px"
-        type="icon-warning-filling"
-      ></icon-font>
-      <span class="text">
-        {{ status }}
-      </span>
+    <span v-if="status.status">
+      <a-tag :color="color">
+        <span v-if="status.error || status.transitioning"
+          ><a-tooltip :content="status.message">
+            <icon-exclamation-circle-fill
+              style="margin-right: 4px; color: #fff"
+            /> </a-tooltip
+        ></span>
+        <span>{{ status.status }}</span>
+      </a-tag>
     </span>
   </span>
 </template>
 
 <script lang="ts" setup>
-  defineProps({
+  import { PropType, computed } from 'vue';
+
+  interface StatusType {
+    status: string;
+    message: string;
+    error?: boolean;
+    transitioning?: boolean;
+  }
+  const props = defineProps({
     status: {
-      type: String,
+      type: Object as PropType<StatusType>,
       default() {
-        return 'unconnected';
+        return {};
       }
     },
     label: {
@@ -30,33 +37,22 @@
       }
     }
   });
+  const color = computed(() => {
+    if (props.status.error) {
+      return '#f53f3f';
+    }
+    if (props.status.transitioning) {
+      return '#f7ba1e';
+    }
+    return '#00bf72';
+  });
 </script>
 
 <style lang="less" scoped>
   .status-label {
-    .label {
-      display: inline-flex;
-      align-items: center;
-    }
-
-    .dot {
-      display: inline-block;
-      width: 14px;
-      height: 14px;
-      margin-right: 6px;
-      border-radius: 8px;
-
-      &.ready {
-        background-color: rgba(var(--seal-color-success-1), 0.7);
-      }
-
-      &.unconnected {
-        background-color: var(--color-text-4);
-      }
-
-      &.initializing {
-        background-color: rgba(var(--arcoblue-5), 0.7);
-      }
+    :deep(.arco-tag) {
+      height: 20px;
+      border-radius: 12px;
     }
   }
 </style>

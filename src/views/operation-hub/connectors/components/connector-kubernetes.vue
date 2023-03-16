@@ -61,33 +61,19 @@
           ellipsis
           tooltip
           :cell-style="{ minWidth: '40px' }"
-          align="left"
+          align="center"
           data-index="finOpsStatus"
           :title="$t('operation.connectors.table.status')"
         >
           <template #cell="{ record }">
-            <span style="display: flex; align-items: center">
-              <StatusLabel :status="record.finOpsStatus"></StatusLabel>
-              <a-tooltip
-                :content="
-                  record.finOpsStatus === 'ready'
-                    ? $t('operation.connectors.ready.tips')
-                    : $t('operation.connectors.error.tips')
-                "
-              >
-                <icon-info-circle
-                  v-if="record.finOpsStatus === 'ready'"
-                  style="margin-left: 6px"
-                />
-                <icon-info-circle
-                  v-if="
-                    record.finOpsStatus === 'error' &&
-                    get(record, 'enableFinOps')
-                  "
-                  style="margin-left: 6px"
-                />
-              </a-tooltip>
-            </span>
+            <StatusLabel
+              :status="{
+                status: get(record, 'status.status'),
+                message: get(record, 'status.statusMessage'),
+                transitioning: get(record, 'status.transitioning'),
+                error: get(record, 'status.error')
+              }"
+            ></StatusLabel>
           </template>
         </a-table-column>
         <a-table-column

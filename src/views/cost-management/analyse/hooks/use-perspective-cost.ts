@@ -200,7 +200,7 @@ export default function usePerspectiveCost(props) {
       );
       const clusterFilter = find(
         allocationQueries,
-        (item) => item.groupBy === 'cluster_name'
+        (item) => item.groupBy === 'connector_id'
       );
       dailyCostFilters.value = {
         ...dailyFilter,

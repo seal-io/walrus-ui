@@ -90,6 +90,22 @@ export default function usePerspectiveCost(props) {
     return list;
   });
 
+  const setFilterModelValue = (costFilter, connectorID) => {
+    each(get(costFilter, 'filters') || [], (fItem) => {
+      each(fItem, (sItem) => {
+        sItem.values = [connectorID];
+        sItem.fieldName = 'connector_id';
+      });
+    });
+    each(get(costFilter, 'shareCosts') || [], (fItem) => {
+      each(get(fItem, 'idleCostFilters') || [], (pItem) => {
+        pItem.connectorID = connectorID;
+      });
+      each(get(fItem, 'managementCostFilters') || [], (oItem) => {
+        oItem.connectorID = connectorID;
+      });
+    });
+  };
   const getClusterList = async () => {
     try {
       clusterloading.value = true;
@@ -109,12 +125,15 @@ export default function usePerspectiveCost(props) {
       workloadCostFilters.value.connectorID = queryParams.connectorID;
       nameSpaceCostFilters.value.connectorID = queryParams.connectorID;
       console.log('dailyCostFilters====', dailyCostFilters.value);
-      each(get(dailyCostFilters.value, 'filters') || [], (fItem) => {
-        each(fItem, (sItem) => {
-          sItem.values = [queryParams.connectorID];
-          sItem.fieldName = 'connector_id';
-        });
-      });
+      // each(get(dailyCostFilters.value, 'filters') || [], (fItem) => {
+      //   each(fItem, (sItem) => {
+      //     sItem.values = [queryParams.connectorID];
+      //     sItem.fieldName = 'connector_id';
+      //   });
+      // });
+      setFilterModelValue(dailyCostFilters.value, queryParams.connectorID);
+      setFilterModelValue(workloadCostFilters.value, queryParams.connectorID);
+      setFilterModelValue(nameSpaceCostFilters.value, queryParams.connectorID);
       clusterloading.value = false;
     } catch (error) {
       clusterloading.value = false;
@@ -352,6 +371,7 @@ export default function usePerspectiveCost(props) {
     getNamespaceCostChart,
     getSummaryData,
     getClusterList,
+    setFilterModelValue,
     dailyCostFilters,
     workloadCostFilters,
     nameSpaceCostFilters,

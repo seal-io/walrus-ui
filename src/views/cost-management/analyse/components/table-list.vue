@@ -92,6 +92,12 @@
       default() {
         return 'utc';
       }
+    },
+    requestWork: {
+      type: Boolean,
+      default() {
+        return false;
+      }
     }
   });
   let timer: any = null;
@@ -115,6 +121,7 @@
     return dayjs(start).format();
   };
   const fetchData = async () => {
+    if (!props.requestWork) return;
     try {
       loading.value = true;
       // props.timeRange === 'single'

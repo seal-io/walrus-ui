@@ -241,20 +241,22 @@
     const result = await basicform.value.getFormData();
     if (!result) return;
     try {
-      const data = {
+      const params = {
         ...appInfo,
         ...result
       };
       console.log('submit:', appInfo, result);
       submitLoading.value = true;
+      const res = { id: '' };
       if (id) {
-        await updateApplication(data);
+        await updateApplication(params);
       } else {
-        console.log('submit:', data);
-        await createApplication(data);
+        console.log('submit:', params);
+        const { data } = await createApplication(params);
+        res.id = data.id;
       }
       submitLoading.value = false;
-      emits('save');
+      emits('save', res.id);
     } catch (error) {
       submitLoading.value = false;
       console.log(error);
