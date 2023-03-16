@@ -67,7 +67,7 @@ export const getDashBoardOverview = () => {
   return axios.get('/dashboards/_/basic-infos');
 };
 
-export const queryApplicationRevisions = (data: RevisionParams) => {
+export const queryApplicationRevisionsChart = (data: RevisionParams) => {
   return axios.post('/dashboards/_/application-revision-statistics', data);
 };
 export const getDashBoardIssueTrend = (params: ParamsType) => {
@@ -85,4 +85,8 @@ export const getDashboardPackages = () => {
 export const getDashboardLicenses = () => {
   return axios.get<LicenseResult>('/statistics/_/licenses');
 };
+
+export function queryCostManagemantData(data: any) {
+  return axios.post('/costs/_/allocation-costs', data);
+}
 export default {};

@@ -25,7 +25,9 @@
           :title="$t('Time')"
         >
           <template #cell="{ record }">
-            <span>{{ record.createTime }}</span>
+            <span>{{
+              dayjs(record.createTime).format('YYYY-MM-DD HH:mm:ss')
+            }}</span>
           </template>
         </a-table-column>
         <a-table-column
@@ -61,7 +63,7 @@
           :title="$t('Environment')"
         >
         </a-table-column>
-        <a-table-column
+        <!-- <a-table-column
           ellipsis
           tooltip
           :cell-style="{ minWidth: '40px' }"
@@ -69,7 +71,7 @@
           data-index="assignee"
           :title="$t('Assignee')"
         >
-        </a-table-column>
+        </a-table-column> -->
         <!-- <a-table-column
           align="center"
           :title="$t('common.table.operation')"
@@ -91,6 +93,7 @@
 </template>
 
 <script lang="ts" setup>
+  import dayjs from 'dayjs';
   import { PropType } from 'vue';
   import useCallCommon from '@/hooks/use-call-common';
   import StatusLabel from './status-label.vue';
