@@ -1,29 +1,39 @@
 <template>
-  <div ref="editorWrap" class="autocomplete-area arco-input-wrapper">
-    <icon-search style="margin-right: 5px" />
-    <input
-      id="textarea"
-      ref="input"
-      v-model.trim="expression"
-      class="arco-input completer arco-input-size-medium"
-      :spellcheck="false"
-      :rows="5"
-      :readonly="disabled"
-      autocomplete="off"
-      :placeholder="placeholder"
-      @focus="handleFocus"
-      @click="handleClick"
-      @input="handleInput"
-      @keydown.enter="handleEnter"
-      @keyup.delete="handleDelete"
-      @change="handleExpressionChange"
-    />
+  <div ref="editorWrap" class="autocomplete-area">
     <span
+      class="arco-input-wrapper"
+      :class="{ 'arco-input-focus': isFocus }"
+      @click="handleClick"
+    >
+      <input
+        :id="editorId"
+        ref="input"
+        v-model.trim="expression"
+        class="arco-input completer arco-input-size-medium"
+        :spellcheck="false"
+        :rows="5"
+        :readonly="disabled"
+        autocomplete="off"
+        :placeholder="placeholder"
+        v-bind="$attrs"
+        @focus="handleFocus"
+        @input="handleInput"
+        @keydown.enter="handleEnter"
+        @keyup.delete="handleDelete"
+        @change="handleExpressionChange"
+      />
+      <span v-if="$attrs.showWordLimit" class="arco-input-suffix">
+        <span class="arco-input-word-limit"
+          >{{ expression.length }}/{{ $attrs.maxLength }}</span
+        >
+      </span>
+    </span>
+    <!-- <span
       class="arco-icon-hover arco-input-icon-hover arco-input-clear-btn"
       @click.stop="handleClear"
     >
       <icon-close />
-    </span>
+    </span> -->
   </div>
 </template>
 
@@ -48,7 +58,7 @@
     isBoolean
   } from 'lodash';
   import { onClickOutside } from '@vueuse/core';
-  import { nextTick, onMounted, ref, onUnmounted, watch } from 'vue';
+  import { nextTick, onMounted, ref, onUnmounted, watch, useAttrs } from 'vue';
   import { Textcomplete, TextcompleteOption } from '@textcomplete/core';
   import { TextareaEditor } from '@textcomplete/textarea';
 
@@ -72,7 +82,19 @@
         return '';
       }
     },
+    editorId: {
+      type: String,
+      default() {
+        return 'expressionEditor';
+      }
+    },
     disabled: {
+      type: Boolean,
+      default() {
+        return false;
+      }
+    },
+    show: {
       type: Boolean,
       default() {
         return false;
@@ -85,65 +107,63 @@
       }
     }
   });
+  const $attrs = useAttrs();
   const emits = defineEmits(['update:modelValue', 'input', 'change']);
   const expression = ref('');
   const editorCtx = ref('');
   const editorWrap = ref();
   const input = ref();
+  const isFocus = ref(false);
   const inputFlag = ref(false);
   const isMatchWork = ref(true);
   let timer: any = null;
   // const textarea = ref()
   let textcomplete: any = null;
   const handleSearch = (term: string, ctx): Array<resultItem> => {
+    const regx = /^(\w+)?\.?(\w*)$/;
+    if (!ctx || !regx.test(ctx)) return [];
+    console.log('term===1', term, ctx, textcomplete, props.source);
     const dataSource = cloneDeep(props.source);
-    const textValue = trim(ctx);
-    if (!textValue) {
+    const path = split(ctx, '.');
+    const initialPath = initial(path);
+    const lastItem = last(path);
+    if (!initialPath.length) {
       const arr = map(keys(props.source), (key) => {
         return {
           label: key,
-          value: key,
-          type: isBoolean(props.source[key]) ? 'boolean' : 'string'
+          value: key
         };
-      });
+      }).filter((s) => toLower(s.label).startsWith(toLower(ctx)));
+      console.log('term===1 arr', arr);
       return arr;
     }
-    const path = split(ctx, ':');
-    const sourceKey = get(path, '0');
-    const option = get(path, '1');
-    console.log('search:', path);
-    if (path.length === 1) {
-      const arr = map(keys(props.source), (key) => {
-        return {
-          label: key,
-          value: key,
-          type: isBoolean(props.source[key]) ? 'boolean' : 'string'
-        };
-      }).filter((item) => includes(item.label, sourceKey));
-      return arr;
+    const data = get(dataSource, `${join(initialPath, '.')}`);
+    console.log('data:', dataSource, ctx, data, initialPath);
+    if (!data) return [];
+    const list = map(keys(data), (key) => {
+      return {
+        label: key,
+        value: key
+      };
+    });
+    if (!lastItem) {
+      return list;
     }
-    const data = get(dataSource, sourceKey);
-    if (!data || !data.length) return [];
-    if (isArray(data)) {
-      return data.filter((item) => {
-        if (!option) {
-          return true;
-        }
-        return includes(item.label, option);
-      });
-    }
-    return [];
+    console.log('completeList===', list, term, data);
+    return list.filter((o) => toLower(o.label).startsWith(toLower(lastItem)));
   };
   const Strategy: any = [
     {
-      id: 'expressionEditor',
-      match: /(:|\s*|\w+)$/,
+      id: props.editorId,
+      // match: /(\w+)\.(\w*)$/,
+      match: /(\w+)?\.?(\w*)$/,
       index: 1,
       search(term: string, callback: SearchCallback<resultItem>, match: any) {
-        const regx = /(\w+:?\w*|\s+)$/g;
-        const allResult = editorCtx.value.match(regx);
-        const ctx = head(allResult);
-        // const ctx = get(list, '0.0');
+        const regx = /'?(\w+\.)*(\w*)$/g;
+        console.log('term===2=', term, editorCtx.value);
+        const allResult = editorCtx.value.matchAll(regx);
+        const list = Array.from(allResult);
+        const ctx = get(list, '0.0');
         callback(handleSearch(term, ctx));
       },
       context(beforeCursor: string) {
@@ -151,24 +171,19 @@
         return isMatchWork.value; // true、false
       },
       template(data: resultItem) {
-        return data.type
-          ? `<span>${data.label}</span><span class='type'>(${data.type})</span>`
-          : `<span>${data.label}</span>`;
+        return `<span>${data.label}</span>`;
       },
       // replace the text match result
       replace(result: resultItem) {
-        const reg = /(\w+):(\w*)$/g;
+        const reg = /(\w+)\.(\w*)$/g;
         const matches = editorCtx.value.matchAll(reg);
         const list = Array.from(matches);
-        console.log('list==1==', list, result, editorCtx.value);
+        // console.log('matches===', list, matches)
         editorCtx.value = '';
         if (!list.length) {
-          return ` ${result.label}`;
-        }
-        if (get(list, '0.2')) {
           return `${result.label}`;
         }
-        return `:${result.label}`;
+        return `${get(list, '0.1')}.${result.label}`;
       }
     }
   ];
@@ -183,7 +198,7 @@
     }
   };
   const isNeedHide = () => {
-    const regx = /(\w+|\s+|:+)$/;
+    const regx = /(\w+|\s+|.+)$/;
     if (!regx.test(expression.value)) {
       isMatchWork.value = false;
       textcomplete.hide();
@@ -192,10 +207,12 @@
     }
   };
   const initEditor = () => {
-    const textarea = document.getElementById('textarea') as HTMLTextAreaElement;
-    console.log('area:', textarea);
+    const textarea = document.getElementById(
+      `${props.editorId}`
+    ) as HTMLTextAreaElement;
     const editor = new TextareaEditor(textarea);
     textcomplete = new Textcomplete(editor, Strategy, options);
+    console.log('area:', textarea, textcomplete);
   };
   const dispatchInput = () => {
     emits('update:modelValue', expression.value);
@@ -222,6 +239,7 @@
   };
   onClickOutside(editorWrap, (ev) => {
     handleBlur();
+    isFocus.value = false;
   });
   const handleEnter = () => {
     // if (!textcomplete?.dropdown?.shown) {
@@ -249,6 +267,7 @@
   };
   const handleClick = () => {
     console.log('click');
+    isFocus.value = true;
   };
   const handleClear = () => {
     expression.value = '';
@@ -268,6 +287,18 @@
       immediate: true
     }
   );
+  // watch(
+  //   () => props.show,
+  //   () => {
+  //     expression.value = props.modelValue;
+  //     nextTick(() => {
+  //       initEditor();
+  //     });
+  //   },
+  //   {
+  //     immediate: true
+  //   }
+  // );
   onMounted(async () => {
     console.log('area:');
     expression.value = props.modelValue;
@@ -281,16 +312,19 @@
 </script>
 
 <style lang="less" scoped>
-  .autocomplete-area.arco-input-wrapper {
-    display: flex;
-    align-items: center;
-    padding-left: 10px;
-    border: 1px solid var(--seal-border-gray-2);
+  // .autocomplete-area.arco-input-wrapper {
+  //   display: flex;
+  //   align-items: center;
+  //   padding-left: 10px;
+  //   border: 1px solid var(--seal-border-gray-2);
 
-    &:focus-within {
-      border: 1px solid rgb(var(--primary-6));
-      transition: all 0.2s var(--seal-transition-func);
-    }
+  //   &:focus-within {
+  //     border: 1px solid rgb(var(--primary-6));
+  //     transition: all 0.2s var(--seal-transition-func);
+  //   }
+  // }
+  .autocomplete-area {
+    position: relative;
   }
 
   .close {
@@ -315,8 +349,8 @@
     font-size: 14px;
     // background-color: rgb(29 33 41 / 80%);
     &.arco-input {
-      padding: 5px 6px;
-      border-radius: 2px;
+      padding: 4px 0;
+      border-radius: var(--border-radius-small);
     }
   }
 
@@ -327,6 +361,7 @@
 
 <style lang="less">
   .autocomplete-dropdown-list {
+    z-index: 9999 !important;
     box-sizing: border-box;
     min-width: 120px;
     max-height: 160px;
