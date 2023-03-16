@@ -61,7 +61,7 @@
 </template>
 
 <script lang="ts" setup>
-  import { reactive, ref, markRaw, provide, computed } from 'vue';
+  import { reactive, ref, markRaw, provide, computed, inject } from 'vue';
   import { keys, get, map, assignIn, cloneDeep } from 'lodash';
   import useCallCommon from '@/hooks/use-call-common';
   import GroupTitle from '@/components/group-title/index.vue';
@@ -104,6 +104,7 @@
     },
     modules: []
   }) as AppFormData;
+  const execReload = inject('execReload', () => {});
   provide('instanceId', currentInstance);
   provide('environmentList', environmentList);
   provide('appInfo', appInfo);
@@ -234,7 +235,7 @@
         }
       });
       setTimeout(() => {
-        window.location.reload();
+        execReload?.();
       }, 100);
     }
     getApplicationDetail();
