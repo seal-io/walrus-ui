@@ -164,6 +164,7 @@
       ></LineBarChart>
       <TableList
         :time-mode="timeMode"
+        :request-work="requestWork"
         :filter-params="{ ...dailyCostFilters }"
         :loadeend="loadeend"
         :columns="dailyCostCols"
@@ -180,6 +181,7 @@
         :data-list="nameSpaceCostChart.bar"
       ></horizontalBar>
       <TableList
+        :request-work="requestWork"
         :time-mode="timeMode"
         :filter-params="nameSpaceCostFilters"
         :columns="clusterNamespaceCostCols"
@@ -213,6 +215,7 @@
         :filter-params="{
           ...workloadCostFilters
         }"
+        :request-work="requestWork"
         :time-mode="timeMode"
         :columns="workLoadCostCols"
         source="workload"
@@ -287,6 +290,7 @@
     getNamespaceCostChart,
     getSummaryData,
     getClusterList,
+    setFilterModelValue,
     dailyCostFilters,
     workloadCostFilters,
     nameSpaceCostFilters,
@@ -332,6 +336,9 @@
       }
     };
   });
+  const requestWork = computed(() => {
+    return !!queryParams.connectorID;
+  });
   const BarConfigOptions = computed(() => {
     return {
       title: {
@@ -351,9 +358,7 @@
   const workLoadCostCols = computed(() => {
     return clusterNamespaceCostCols;
   });
-  // const namespaceCostCols = computed(() => {
-  //   return filter(clusterNamespaceCostCols, (item) => !item.showIn);
-  // });
+
   const handleDateChange = async (val) => {
     console.log('date===', val);
 
@@ -383,12 +388,10 @@
     const clusterData = find(clusterList.value, (item) => item.value === val);
     clusterName.value = clusterData?.label || 'Cluster';
 
-    each(get(dailyCostFilters.value, 'filters') || [], (fItem) => {
-      each(fItem, (sItem) => {
-        sItem.values = [val];
-        fItem.fieldName = 'connector_id';
-      });
-    });
+    setFilterModelValue(dailyCostFilters.value, val);
+    setFilterModelValue(workloadCostFilters.value, val);
+    setFilterModelValue(nameSpaceCostFilters.value, val);
+
     workloadCostFilters.value = {
       ...workloadCostFilters.value,
       ...queryParams
@@ -410,6 +413,10 @@
     await getPerspectiveItemInfo();
     await getClusterList();
     if (!queryParams.connectorID) return;
+    console.log('connenctID:', queryParams.connectorID);
+    setFilterModelValue(dailyCostFilters.value, queryParams.connectorID);
+    setFilterModelValue(workloadCostFilters.value, queryParams.connectorID);
+    setFilterModelValue(nameSpaceCostFilters.value, queryParams.connectorID);
     loadeend.value = true;
     getDailyCostChart();
     getNamespaceCostChart();

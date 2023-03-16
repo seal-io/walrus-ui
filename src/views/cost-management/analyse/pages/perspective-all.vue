@@ -62,6 +62,7 @@
         :config-options="configOptions"
       ></LineBarChart>
       <TableList
+        :request-work="true"
         :time-mode="timeMode"
         source="daily table"
         :filter-params="dailyCostFilters"
@@ -88,6 +89,7 @@
         :config-options="configOptions"
       ></LineBarChart>
       <TableList
+        :request-work="true"
         :time-mode="timeMode"
         source="project table"
         :filter-params="projectCostFilters"
@@ -114,6 +116,7 @@
         :config-options="configOptions"
       ></LineBarChart>
       <TableList
+        :request-work="true"
         :time-mode="timeMode"
         source="cluster table"
         :filter-params="clusterCostFilters"

@@ -66,6 +66,7 @@
         }"
       ></LineBarChart>
       <TableList
+        :request-work="true"
         time-range="single"
         :time-mode="timeMode"
         :loadeend="loadeend"

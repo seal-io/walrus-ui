@@ -19,7 +19,7 @@
         <a-grid-item :span="{ lg: 16, md: 12, sm: 24, xs: 24 }">
           <StackLineChart
             class="bar-item"
-            :height="height"
+            height="302px"
             :data-config="dataConfig"
             :data="dataList"
             :x-axis="xAxis"
@@ -168,14 +168,15 @@
         endTime: setEndTimeAddDay(queryParams.endTime, 'local')
       };
       const { data } = await queryApplicationRevisionsChart(params);
-      summaryData.value = get(data, 'revisionStatusCount') || {};
-      const revisions = get(data, 'revisionStatusStats');
+      summaryData.value = get(data, 'statusCount') || {};
+      const revisions = get(data, 'statusStats');
       const result = getStackLineDataList(revisions, {
         fields: ['running', 'succeed', 'failed'],
         xAxis: 'startTime'
       });
       dataList.value = result.data;
       xAxis.value = result.xAxis;
+      console.log('result==', result);
     } catch (error) {
       dataList.value = [];
       xAxis.value = [];

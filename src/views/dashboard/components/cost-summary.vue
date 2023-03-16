@@ -86,7 +86,16 @@
 <script lang="ts" setup>
   import dayjs from 'dayjs';
   import { computed, onMounted, ref, reactive } from 'vue';
-  import { find, get, map, round, divide, subtract, sortBy } from 'lodash';
+  import {
+    find,
+    get,
+    map,
+    round,
+    divide,
+    subtract,
+    sortBy,
+    isNaN
+  } from 'lodash';
   import { useI18n } from 'vue-i18n';
   import {
     getStackLineDataList,
@@ -169,7 +178,7 @@
       subtract(monthlyCostData.currentMonth, monthlyCostData.lastMonth),
       monthlyCostData.lastMonth
     );
-    return `${round(rate * 100, 2)}%`;
+    return isNaN(rate) ? '0%' : `${round(rate * 100, 2)}%`;
   });
   const pieOptions = computed(() => {
     return {

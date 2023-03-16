@@ -64,7 +64,7 @@ export interface RevisionParams {
   endTime: string;
 }
 export const getDashBoardOverview = () => {
-  return axios.get('/dashboards/_/basic-infos');
+  return axios.get('/dashboards/_/basic-information');
 };
 
 export const queryApplicationRevisionsChart = (data: RevisionParams) => {
