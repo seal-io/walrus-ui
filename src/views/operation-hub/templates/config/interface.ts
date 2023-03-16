@@ -20,7 +20,9 @@ export interface TemplateRowData {
   edges: object;
   icon?: string;
 }
-
+export interface ModuleVersionData extends TemplateRowData {
+  module: { id: string };
+}
 export interface TemplateFormData {
   id: string;
   description: string;
