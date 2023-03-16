@@ -50,3 +50,6 @@ export function queryModulesVersions(params: { moduleID: string }) {
     }
   });
 }
+export function queryModulesAllVersions() {
+  return axios.get(`/module-versions`);
+}

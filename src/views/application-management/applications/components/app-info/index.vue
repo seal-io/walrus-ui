@@ -165,6 +165,7 @@
   import BasicInfo from './basic-info.vue';
   import { AppFormData, Variables } from '../../config/interface';
   import { moduleActions } from '../../config';
+  import HintInput from '../hint-input.vue';
   import {
     createApplication,
     queryItemApplication,
@@ -210,6 +211,17 @@
   const collapseStatus = computed(() => {
     return appInfo?.variables?.length - 1;
   });
+  const completeData = computed(() => {
+    const data = reduce(
+      appInfo.modules || [],
+      (obj, item) => {
+        obj[item.name] = {};
+        return obj;
+      },
+      {}
+    );
+    return data;
+  });
   const handleEditModule = (item) => {
     moduleAction.value = 'edit';
     moduleInfo.value = item;
@@ -241,6 +253,14 @@
       moduleTemplates.value = data?.items || [];
     } catch (error) {
       moduleTemplates.value = [];
+      console.log(error);
+    }
+  };
+  const getModuleVersionList = async () => {
+    try {
+      const { data } = await queryModulesVersions();
+      console.log('module version:', data);
+    } catch (error) {
       console.log(error);
     }
   };
@@ -366,6 +386,7 @@
   // });
   const init = async () => {
     getModules();
+    getModuleVersionList();
     getApplicationDetail();
   };
   init();
