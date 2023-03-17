@@ -61,7 +61,7 @@ export const DateShortCuts = [
     format: 'YYYY-MM-DD',
     timeControl: 'now/M',
     value: [
-      dayjs().hour(0).minute(0).second(0).format('YYYY-MM-DDTHH:mm:ss+00:00'),
+      dayjs().hour(0).minute(0).second(0).format('YYYY-MM-01THH:mm:ss+00:00'),
       dayjs().format('YYYY-MM-DDTHH:mm:ss+00:00')
     ]
   }

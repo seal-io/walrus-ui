@@ -2,6 +2,8 @@ export default {
   'applications.applications.menu': '应用列表',
   'applications.applications.create': '新建应用',
   'applications.applications.edit': '编辑应用',
+  'applications.applications.secret': '密钥管理',
+  'applications.applications.secret.holder': '请输入密钥名称',
   'applications.applications.configuration.create': '添加模块',
   'applications.applications.table.name': '名称',
   'applications.applications.table.service': '服务',
@@ -29,5 +31,9 @@ export default {
   'applications.projects.edit': '编辑基本信息',
   'applications.projects.table.name': '项目名称',
   'applications.projects.search.holder': '请输入项目名称',
-  'applications.projects.form.label': '标签{index}'
+  'applications.projects.form.label': '标签{index}',
+  'applications.secret.create': '新建密钥',
+  'applications.secret.edit': '更新密钥',
+  'applications.secret.value': '密钥',
+  'applications.secret.rules.value': '密钥必填'
 };

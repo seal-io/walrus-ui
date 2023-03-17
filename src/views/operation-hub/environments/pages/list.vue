@@ -16,7 +16,7 @@
       <FilterBox style="margin-bottom: 10px">
         <template #params>
           <a-input
-            v-model="queryParams.name"
+            v-model="queryParams.query"
             allow-clear
             style="width: 240px"
             :placeholder="$t('operation.environments.table.holder')"
@@ -91,7 +91,7 @@
 </template>
 
 <script lang="ts" setup>
-  import { map, remove } from 'lodash';
+  import { map, pickBy, remove } from 'lodash';
   import { ref, reactive } from 'vue';
   import useCallCommon from '@/hooks/use-call-common';
   import FilterBox from '@/components/filter-box/index.vue';
@@ -109,7 +109,7 @@
   const dataList = ref<EnvironmentRow[]>([]);
   const total = ref(0);
   const queryParams = reactive({
-    name: '',
+    query: '',
     page: 1,
     perPage: 10
   });
@@ -124,7 +124,10 @@
   const fetchData = async () => {
     try {
       loading.value = true;
-      const { data } = await queryEnvironments(queryParams);
+      const params: any = {
+        ...pickBy(queryParams, (val) => !!val)
+      };
+      const { data } = await queryEnvironments(params);
       dataList.value = data?.items || [];
       loading.value = false;
     } catch (error) {

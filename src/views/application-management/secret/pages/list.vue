@@ -1,13 +1,21 @@
 <template>
-  <SpinCard borderless top-gap class="projects">
-    <div class="content">
+  <comCard borderless top-gap>
+    <div class="connectors-list">
       <FilterBox style="margin-bottom: 10px">
         <template #params>
+          <a-select
+            v-model="queryParams.projectID"
+            style="width: 200px"
+            allow-clear
+            :options="projectList"
+            placeholder="请选择项目"
+            @change="handleSearch"
+          ></a-select>
           <a-input
             v-model="queryParams.query"
             allow-clear
-            style="width: 240px"
-            :placeholder="$t('applications.projects.search.holder')"
+            style="width: 200px"
+            :placeholder="$t('applications.applications.secret.holder')"
             @clear="handleSearch"
             @change="handleSearch"
             @press-enter="handleSearch"
@@ -26,8 +34,8 @@
           </a-space>
         </template>
         <template #button-group>
-          <a-button type="primary" @click="handleCreateProject">{{
-            $t('applications.projects.create')
+          <a-button type="primary" @click="handleCreate">{{
+            $t('applications.secret.create')
           }}</a-button>
           <a-button
             type="primary"
@@ -55,8 +63,23 @@
             tooltip
             :cell-style="{ minWidth: '40px' }"
             data-index="name"
-            :title="$t('applications.projects.table.name')"
+            :title="$t('operation.connectors.table.name')"
           >
+          </a-table-column>
+          <a-table-column
+            ellipsis
+            tooltip
+            :cell-style="{ minWidth: '40px' }"
+            data-index="scope"
+            title="应用范围"
+          >
+            <template #cell="{ record }">
+              <span>{{
+                !get(record, 'project.id')
+                  ? '全局'
+                  : setSecretScope(get(record, 'project.id'))
+              }}</span>
+            </template>
           </a-table-column>
           <a-table-column
             ellipsis
@@ -73,15 +96,6 @@
             </template>
           </a-table-column>
           <a-table-column
-            ellipsis
-            tooltip
-            :cell-style="{ minWidth: '40px' }"
-            align="center"
-            data-index="description"
-            :title="$t('common.table.description')"
-          >
-          </a-table-column>
-          <a-table-column
             align="center"
             :title="$t('common.table.operation')"
             ellipsis
@@ -89,21 +103,16 @@
             :cell-style="{ minWidth: '40px' }"
           >
             <template #cell="{ record }">
-              <a-space :size="20">
+              <a-space :size="10">
                 <a-tooltip :content="$t('common.button.edit')">
                   <a-link
                     type="text"
                     size="small"
-                    @click="handleEditProject(record)"
+                    @click="handleClickEdit(record)"
                   >
                     <template #icon><icon-edit class="size-16" /></template>
                   </a-link>
                 </a-tooltip>
-                <!-- <a-tooltip :content="$t('common.button.detail')">
-                  <a-link type="text" size="small" @click="handleEdit(record)">
-                    <template #icon><icon-list class="size-16" /></template>
-                  </a-link>
-                </a-tooltip> -->
               </a-space>
             </template>
           </a-table-column>
@@ -121,69 +130,75 @@
         @page-size-change="handlePageSizeChange"
       />
     </div>
-    <CreateProjectModal
-      v-model:show="showProjectModal"
+    <createSecret
+      v-model:show="showModal"
       :title="modalTitle"
       :action="action"
-      :info="projectInfo"
-      @save="handleSaveProject"
-    ></CreateProjectModal>
-  </SpinCard>
+      :info="itemInfo"
+      :project-list="projectList"
+      @save="handleSaveItem"
+    ></createSecret>
+  </comCard>
 </template>
 
 <script lang="ts" setup>
-  import { cloneDeep, map, pickBy, remove } from 'lodash';
-  import { ref, reactive } from 'vue';
   import dayjs from 'dayjs';
+  import { cloneDeep, find, get, map, pickBy } from 'lodash';
+  import { reactive, ref, onMounted, computed } from 'vue';
   import useCallCommon from '@/hooks/use-call-common';
-  import FilterBox from '@/components/filter-box/index.vue';
+  import { Message } from '@arco-design/web-vue';
   import { deleteModal, execSucceed } from '@/utils/monitor';
   import useRowSelect from '@/hooks/use-row-select';
-  import CreateProjectModal from '../components/create-project.vue';
-  import { ProjectRowData } from '../config/interface';
-  import { queryProjects, deleteProjects } from '../api';
+  import FilterBox from '@/components/filter-box/index.vue';
+  import { queryProjects } from '../../projects/api';
+  import { SecretRow } from '../config/interface';
+  import { querySecrets, deleteSecret } from '../api';
+  import createSecret from '../components/create-secret.vue';
 
-  let timer: any = null;
-  const { t, router } = useCallCommon();
   const { rowSelection, selectedKeys, handleSelectChange } = useRowSelect();
+  const { router, t, route } = useCallCommon();
+  let timer: any = null;
+  const projectList = ref<{ label: string; value: string }[]>([]);
   const loading = ref(false);
-  const modalTitle = ref('');
-  const showProjectModal = ref(false);
-  const currentView = ref('thumb'); // thumb, list
-  const dataList = ref<ProjectRowData[]>([]);
-  const total = ref(0);
-  const projectInfo = ref<any>({});
+  const showModal = ref(false);
+  const itemInfo = ref<any>({});
   const action = ref<'create' | 'edit'>('create');
+  const total = ref(100);
   const queryParams = reactive({
     query: '',
+    projectID: '',
     page: 1,
     perPage: 10
   });
-  const handleToggle = (val) => {
-    currentView.value = val;
-  };
+  const dataList = ref<SecretRow[]>([]);
 
-  const handleCreateProject = () => {
-    action.value = 'create';
-    projectInfo.value = {};
-    setTimeout(() => {
-      showProjectModal.value = true;
-    }, 100);
-    modalTitle.value = t('applications.projects.create');
+  const modalTitle = computed(() => {
+    if (action.value === 'create') {
+      return t('applications.secret.create');
+    }
+    return t('applications.secret.edit');
+  });
+  const setSecretScope = (val) => {
+    const itemData = find(projectList.value, (item) => item.value === val);
+    return itemData?.label || '';
   };
-  const handleEditProject = (row: any) => {
-    action.value = 'edit';
-    projectInfo.value = { ...cloneDeep(row) };
-    setTimeout(() => {
-      showProjectModal.value = true;
-      modalTitle.value = t('applications.projects.edit');
-    }, 100);
-  };
-  const handleEdit = (row) => {
-    const path = router.push({
-      name: 'applicationsDetail',
-      query: { id: row.id }
-    });
+  const getProjectList = async () => {
+    try {
+      const params = {
+        page: 1,
+        perPage: -1
+      };
+      const { data } = await queryProjects(params);
+      projectList.value = map(data.items || [], (item) => {
+        return {
+          label: item.name,
+          value: item.id
+        };
+      });
+    } catch (error) {
+      projectList.value = [];
+      console.log(error);
+    }
   };
   const fetchData = async () => {
     try {
@@ -191,24 +206,18 @@
       const params: any = {
         ...pickBy(queryParams, (val) => !!val)
       };
-      const { data } = await queryProjects(params);
+      const { data } = await querySecrets(params);
       dataList.value = data?.items || [];
       total.value = data?.pagination?.total || 0;
       loading.value = false;
     } catch (error) {
-      loading.value = false;
       console.log(error);
+      loading.value = false;
     }
   };
   const handleFilter = () => {
     fetchData();
   };
-  const handleSaveProject = () => {
-    queryParams.query = '';
-    queryParams.page = 1;
-    handleFilter();
-  };
-
   const handleSearch = () => {
     clearTimeout(timer);
     timer = setTimeout(() => {
@@ -230,6 +239,16 @@
     queryParams.perPage = pageSize;
     handleFilter();
   };
+  const handleCreate = () => {
+    itemInfo.value = {};
+    action.value = 'create';
+    setTimeout(() => {
+      showModal.value = true;
+    }, 100);
+    // router.push({
+    //   name: 'secretDetail'
+    // });
+  };
   const handleDeleteConfirm = async () => {
     try {
       loading.value = true;
@@ -238,7 +257,7 @@
           id: val
         };
       });
-      await deleteProjects(ids);
+      await deleteSecret(ids);
       loading.value = false;
       execSucceed();
       queryParams.page = 1;
@@ -250,46 +269,31 @@
       loading.value = false;
     }
   };
+
+  const handleClickEdit = (row) => {
+    itemInfo.value = cloneDeep(row);
+    action.value = 'edit';
+    setTimeout(() => {
+      showModal.value = true;
+    }, 100);
+    // router.push({
+    //   name: 'secretDetail',
+    //   query: { id: row.id }
+    // });
+  };
+
   const handleDelete = async () => {
     deleteModal({ onOk: handleDeleteConfirm });
   };
-  fetchData();
+  const handleSaveItem = () => {
+    queryParams.page = 1;
+    handleFilter();
+  };
+  onMounted(() => {
+    fetchData();
+    getProjectList();
+    console.log('application list');
+  });
 </script>
 
-<style lang="less" scoped>
-  .projects {
-    .title {
-      display: flex;
-      align-items: center;
-
-      :deep(.arco-icon) {
-        margin-right: 6px;
-        color: var(--color-text-2);
-        font-size: 20px;
-        border-radius: 4px;
-        cursor: pointer;
-        .hoverable();
-
-        &:hover {
-          color: rgb(var(--arcoblue-6));
-          .hoverableHover();
-        }
-      }
-
-      .arco-icon.active {
-        color: rgb(var(--arcoblue-6));
-        box-shadow: var(--seal-hoverable-shadow);
-      }
-    }
-
-    .content {
-      :deep(.arco-tabs-nav-tab) {
-        display: none;
-      }
-
-      :deep(.arco-tabs-content) {
-        padding-top: 0;
-      }
-    }
-  }
-</style>
+<style lang="less" scoped></style>

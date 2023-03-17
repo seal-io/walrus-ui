@@ -13,7 +13,7 @@
         >
         </a-select>
         <a-input
-          v-model="queryParams.name"
+          v-model="queryParams.query"
           allow-clear
           style="width: 220px"
           :placeholder="$t('applications.applications.table.holder')"
@@ -174,7 +174,7 @@
 </template>
 
 <script lang="ts" setup>
-  import { map, get } from 'lodash';
+  import { map, get, pickBy } from 'lodash';
   import dayjs from 'dayjs';
   import { reactive, ref, onMounted } from 'vue';
   import useCallCommon from '@/hooks/use-call-common';
@@ -196,7 +196,7 @@
   const total = ref(0);
   const queryParams = reactive({
     projectID: '',
-    name: '',
+    query: '',
     page: 1,
     perPage: 10
   });
@@ -224,7 +224,10 @@
   const fetchData = async () => {
     try {
       loading.value = true;
-      const { data } = await queryApplications(queryParams);
+      const params: any = {
+        ...pickBy(queryParams, (val) => !!val)
+      };
+      const { data } = await queryApplications(params);
       dataList.value = data?.items || [];
       total.value = data?.pagination?.total || 0;
       loading.value = false;
@@ -245,7 +248,7 @@
     }, 100);
   };
   const handleReset = () => {
-    queryParams.projectID = '';
+    queryParams.query = '';
     queryParams.page = 1;
     handleFilter();
   };
