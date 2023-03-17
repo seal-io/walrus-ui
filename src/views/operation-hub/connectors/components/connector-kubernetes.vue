@@ -3,7 +3,7 @@
     <FilterBox style="margin-bottom: 10px">
       <template #params>
         <a-input
-          v-model="queryParams.name"
+          v-model="queryParams.query"
           allow-clear
           style="width: 240px"
           :placeholder="$t('operation.connectors.table.holder')"
@@ -177,7 +177,7 @@
 
 <script lang="ts" setup>
   import dayjs from 'dayjs';
-  import { get, map } from 'lodash';
+  import { get, map, pickBy } from 'lodash';
   import { reactive, ref, onMounted } from 'vue';
   import useCallCommon from '@/hooks/use-call-common';
   import { Message } from '@arco-design/web-vue';
@@ -200,7 +200,7 @@
   const loading = ref(false);
   const total = ref(100);
   const queryParams = reactive({
-    name: '',
+    query: '',
     page: 1,
     perPage: 10
   });
@@ -208,7 +208,10 @@
   const fetchData = async () => {
     try {
       loading.value = true;
-      const { data } = await queryConnectors(queryParams);
+      const params: any = {
+        ...pickBy(queryParams, (val) => !!val)
+      };
+      const { data } = await queryConnectors(params);
       dataList.value = data?.items || [];
       total.value = data?.pagination?.total || 0;
       loading.value = false;
@@ -228,7 +231,7 @@
     }, 100);
   };
   const handleReset = () => {
-    queryParams.name = '';
+    queryParams.query = '';
     queryParams.page = 1;
     handleFilter();
   };

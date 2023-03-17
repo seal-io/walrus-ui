@@ -1,6 +1,7 @@
 import applicationsRoutes from '@/views/application-management/applications/routes';
 import projectsRoutes from '@/views/application-management/projects/routes';
 import workflowsRoutes from '@/views/application-management/workflows/routes';
+import secretsRoutes from '@/views/application-management/secret/routes';
 
 export default {
   path: 'app-management',
@@ -12,5 +13,10 @@ export default {
     order: 1,
     icon: 'icon-apps'
   },
-  children: [...projectsRoutes, ...applicationsRoutes, ...workflowsRoutes]
+  children: [
+    ...projectsRoutes,
+    ...applicationsRoutes,
+    ...workflowsRoutes,
+    ...secretsRoutes
+  ]
 };

@@ -2,6 +2,7 @@ export default {
   'applications.applications.menu': 'Applications',
   'applications.applications.create': 'New Application',
   'applications.applications.edit': 'Edit Application',
+  'applications.applications.secret': 'Secrets Management',
   'applications.applications.configuration.create': 'Add Module',
   'applications.applications.table.name': 'Name',
   'applications.applications.table.service': 'Services',
@@ -30,5 +31,6 @@ export default {
   'applications.projects.edit': 'Edit Project',
   'applications.projects.table.name': 'Project Name',
   'applications.projects.search.holder': 'please enter a project name',
-  'applications.projects.form.label': 'Label{index}'
+  'applications.projects.form.label': 'Label{index}',
+  'applications.secret.create': 'New Secret'
 };

@@ -18,7 +18,9 @@
         style="position: absolute; top: 0; right: 0"
         @click.stop="() => {}"
       >
-        <template #icon><icon-more style="font-size: 18px" /></template>
+        <template #icon
+          ><icon-more style="font-size: 18px; stroke-width: 5"
+        /></template>
       </a-link>
       <template #content>
         <a-doption v-for="item in actions" :key="item.value" :value="item.value"

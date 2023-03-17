@@ -453,12 +453,18 @@
       console.log(error);
     }
   };
-  const handleTimeChange = (val) => {
-    const data = find(DateShortCuts, (item) => item.timeControl === val);
+  const setDateRange = () => {
+    const data = find(
+      DateShortCuts,
+      (item) => item.timeControl === formData.timeRange
+    );
     formData.startTime =
       get(data, 'value.0') || dayjs().format('YYYY-MM-DDTHH:mm:ss+00:00');
     formData.endTime =
       get(data, 'value.1') || dayjs().format('YYYY-MM-DDTHH:mm:ss+00:00');
+  };
+  const handleTimeChange = (val) => {
+    setDateRange();
     getPerspectiveFields();
     getPerspectiveGroupBy();
     getPerspectiveStep();
@@ -477,8 +483,10 @@
     }
   };
   const handleCostFilterChange = (val) => {};
+
   const init = async () => {
     loading.value = true;
+    setDateRange();
     await Promise.all([getPerspectiveFields(), getFieldValues()]);
     loading.value = false;
     getPerspectiveInfo();

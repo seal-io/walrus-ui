@@ -9,7 +9,7 @@
           today-in
         ></dateRange> -->
         <a-input
-          v-model="queryParams.name"
+          v-model="queryParams.query"
           allow-clear
           style="width: 240px"
           :placeholder="$t('cost.analyse.table.holder')"
@@ -154,7 +154,7 @@
 </template>
 
 <script lang="ts" setup>
-  import { map, capitalize, cloneDeep, find, toLower } from 'lodash';
+  import { map, capitalize, cloneDeep, find, toLower, pickBy } from 'lodash';
   import { reactive, ref, onMounted } from 'vue';
   import { useCostManageStore } from '@/store';
   import useCallCommon from '@/hooks/use-call-common';
@@ -174,7 +174,7 @@
   const showDrawer = ref(false);
   const total = ref(100);
   const queryParams = reactive({
-    name: '',
+    query: '',
     page: 1,
     perPage: 10
   });
@@ -186,7 +186,10 @@
   const fetchData = async () => {
     try {
       loading.value = true;
-      const { data } = await queryPerspectives(queryParams);
+      const params: any = {
+        ...pickBy(queryParams, (val) => !!val)
+      };
+      const { data } = await queryPerspectives(params);
       const list = data?.items || [];
       dataList.value = map(list, (item) => {
         item.disabled = item.builtin;
@@ -210,7 +213,7 @@
     }, 100);
   };
   const handleReset = () => {
-    queryParams.name = '';
+    queryParams.query = '';
     queryParams.page = 1;
     handleFilter();
   };

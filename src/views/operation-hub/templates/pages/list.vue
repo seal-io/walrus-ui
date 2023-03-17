@@ -24,7 +24,7 @@
       <FilterBox>
         <template #params>
           <a-input
-            v-model="queryParams.name"
+            v-model="queryParams.query"
             allow-clear
             style="width: 240px"
             :placeholder="$t('operation.templates.table.holder')"
@@ -96,7 +96,7 @@
 </template>
 
 <script lang="ts" setup>
-  import { map, remove } from 'lodash';
+  import { map, pickBy, remove } from 'lodash';
   import { ref, reactive, onMounted } from 'vue';
   import useCallCommon from '@/hooks/use-call-common';
   import FilterBox from '@/components/filter-box/index.vue';
@@ -114,7 +114,7 @@
   const dataList = ref<TemplateRowData[]>([]);
   const total = ref(100);
   const queryParams = reactive({
-    name: '',
+    query: '',
     page: 1,
     perPage: 10
   });
@@ -129,7 +129,10 @@
   const fetchData = async () => {
     try {
       loading.value = true;
-      const { data } = await queryModules(queryParams);
+      const params: any = {
+        ...pickBy(queryParams, (val) => !!val)
+      };
+      const { data } = await queryModules(params);
       dataList.value = data?.items || [];
       total.value = data?.pagination?.total || 0;
     } catch (error) {
@@ -156,7 +159,7 @@
     }, 100);
   };
   const handleReset = () => {
-    queryParams.name = '';
+    queryParams.query = '';
     queryParams.page = 1;
     handleFilter();
   };
