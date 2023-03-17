@@ -63,6 +63,7 @@
 <script lang="ts" setup>
   import { reactive, ref, markRaw, provide, computed, inject } from 'vue';
   import { keys, get, map, assignIn, cloneDeep } from 'lodash';
+  import { deleteModal, execSucceed } from '@/utils/monitor';
   import useCallCommon from '@/hooks/use-call-common';
   import GroupTitle from '@/components/group-title/index.vue';
   import thumbButton from '@/components/buttons/thumb-button.vue';
@@ -209,13 +210,20 @@
       console.log(error);
     }
   };
-  const handleDeleteInstance = async (item) => {
+  const handleDeleteConfirm = async (item) => {
     try {
-      await deleteApplicationInstance({ id: item.id });
+      await deleteApplicationInstance([{ id: item.id }]);
       getApplicationInstances();
     } catch (error) {
       console.log(error);
     }
+  };
+  const handleDeleteInstance = async (item) => {
+    deleteModal({
+      onOk() {
+        handleDeleteConfirm(item);
+      }
+    });
   };
   const handleDeployDone = async () => {
     getApplicationInstances();
@@ -243,6 +251,7 @@
   const init = async () => {
     getApplicationInstances();
     getEnvironmentList();
+    // provide app info to instances
     getApplicationDetail();
   };
   init();

@@ -24,7 +24,11 @@
           validate-trigger="change"
           :rules="[{ required: true, message: '实例名称必填' }]"
         >
-          <a-input v-model="formData.name"></a-input>
+          <a-input
+            v-model="formData.name"
+            :max-length="50"
+            show-word-limit
+          ></a-input>
         </a-form-item>
         <!-- <a-form-item
           :disabled="status === 'edit'"

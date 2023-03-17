@@ -133,9 +133,20 @@
 
 <script lang="ts" setup>
   import { reactive, ref, computed, provide, inject } from 'vue';
-  import { cloneDeep, assignIn, omit, pick, get, concat, map } from 'lodash';
+  import { onBeforeRouteLeave } from 'vue-router';
+  import {
+    cloneDeep,
+    assignIn,
+    omit,
+    pick,
+    get,
+    concat,
+    map,
+    isEqual
+  } from 'lodash';
   import useCallCommon from '@/hooks/use-call-common';
   import thumbButton from '@/components/buttons/thumb-button.vue';
+  import { beforeLeaveCallback } from '@/hooks/save-before-leave';
   import {
     queryModules,
     queryModulesVersions
@@ -194,6 +205,7 @@
   const showEditModal = ref(false);
   const projectSecretList = ref<{ name: string }[]>([]);
   const appModuleVersions = ref<ModuleVersionData[]>([]);
+  let copyFormData: any = {};
 
   const collapseStatus = computed(() => {
     return appInfo?.variables?.length - 1;
@@ -284,6 +296,7 @@
       console.log('submit:', appInfo, result);
       submitLoading.value = true;
       const res = { id: '' };
+      copyFormData = cloneDeep(params);
       if (id) {
         await updateApplication(params);
       } else {
@@ -328,7 +341,7 @@
       ]);
 
       assignIn(appInfo, data);
-
+      copyFormData = cloneDeep(appInfo);
       console.log('appInfo===', appInfo);
     } catch (error) {
       console.log(error);
@@ -338,6 +351,19 @@
   const handleCancel = () => {
     router.back();
   };
+  // onBeforeRouteLeave(async (to, from) => {
+  //   console.log('leave');
+  //   if (!isEqual(copyFormData, appInfo)) {
+  //     beforeLeaveCallback(to, from, () => {
+  //       copyFormData = cloneDeep(appInfo);
+  //       router.push({
+  //         name: to.name as string
+  //       });
+  //     });
+  //     return false;
+  //   }
+  //   return true;
+  // });
   const init = async () => {
     getModules();
     getApplicationDetail();

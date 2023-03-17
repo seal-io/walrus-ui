@@ -32,13 +32,24 @@
               label="名称"
               field="name"
               :disabled="action === 'edit'"
-              :rules="[{ required: true, message: '名称必填' }]"
+              :rules="[
+                { required: true, message: '名称必填' },
+                {
+                  match: /^[^\d][0-9A-Za-z_]+$/,
+                  message: '由字母、数字、下划线组成，不能以数字开头'
+                }
+              ]"
             >
               <a-input
                 v-model="formData.name"
                 :max-length="50"
                 show-word-limit
               ></a-input>
+              <template #extra>
+                <span class="tips"
+                  >模块名称全局唯一，由字母、数字、下划线组成，不能以数字开头</span
+                >
+              </template>
             </a-form-item>
           </a-grid-item>
           <a-grid-item :span="12">
