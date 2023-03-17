@@ -13,7 +13,7 @@
           ellipsis
           tooltip
           :cell-style="{ minWidth: '40px' }"
-          data-index="name"
+          data-index="resourceID"
           :title="$t('applications.applications.table.name')"
         >
         </a-table-column>
@@ -21,13 +21,15 @@
           ellipsis
           tooltip
           :cell-style="{ minWidth: '40px' }"
-          align="center"
-          data-index="createTime"
-          :title="$t('common.table.createTime')"
+          align="left"
+          data-index="resourceKind"
+          :title="$t('applications.applications.table.type')"
         >
           <template #cell="{ record }">
             <span>{{
-              dayjs(record.createTime).format('YYYY-MM-DD HH:mm:ss')
+              record.resourceSubKind
+                ? `${record.resourceKind}/${record.resourceSubKind}`
+                : record.resourceKind
             }}</span>
           </template>
         </a-table-column>
@@ -35,38 +37,28 @@
           ellipsis
           tooltip
           :cell-style="{ minWidth: '40px' }"
-          align="center"
+          align="left"
           data-index="type"
-          :title="$t('applications.applications.table.type')"
-        >
-        </a-table-column>
-        <a-table-column
-          ellipsis
-          tooltip
-          :cell-style="{ minWidth: '40px' }"
-          align="center"
-          data-index="status"
-          :title="$t('applications.applications.table.status')"
-        >
-        </a-table-column>
-        <!-- <a-table-column
-          align="center"
-          :width="210"
-          :title="$t('common.table.operation')"
+          title="入口"
         >
           <template #cell="{ record }">
-            <a-space :size="20">
-              <a-link type="text" size="small" @click="handleEnabled(record)">
-                <template #icon><icon-edit /></template>
-                {{ $t('common.button.enabled') }}
-              </a-link>
-              <a-link type="text" size="small" @click="handleDisabled(record)">
-                <template #icon><icon-list style="font-size: 16px" /></template>
-                {{ $t('common.button.disabled') }}
-              </a-link>
-            </a-space>
+            <a-link
+              v-for="(item, index) in record.endpoints"
+              :key="index"
+              :href="
+                !includes(item, 'https') || !includes(item, 'http')
+                  ? `http://${item}`
+                  : item
+              "
+              target="_blank"
+              >{{
+                record.resourceSubKind === 'NodePort'
+                  ? get(split(item, ':'), 1)
+                  : item
+              }}</a-link
+            >
           </template>
-        </a-table-column> -->
+        </a-table-column>
       </template>
     </a-table>
     <a-pagination
@@ -86,10 +78,10 @@
 </template>
 
 <script lang="ts" setup>
-  import dayjs from 'dayjs';
+  import { split, get, includes } from 'lodash';
   import { onMounted, ref, reactive, inject, watch } from 'vue';
-  import { InstanceResource } from '../../config/interface';
-  import { queryApplicationResource } from '../../api';
+  import { EndPointRow } from '../../config/interface';
+  import { queryInstanceEndpoints } from '../../api';
 
   const instanceId = inject('instanceId', ref(''));
   const total = ref(0);
@@ -98,13 +90,7 @@
     page: 1,
     perPage: -1
   });
-  const dataList = ref<InstanceResource[]>([]);
-  const handleEnabled = (row) => {
-    console.log(row);
-  };
-  const handleDisabled = (row) => {
-    console.log(row);
-  };
+  const dataList = ref<EndPointRow[]>([]);
   const fetchData = async () => {
     try {
       loading.value = true;
@@ -112,8 +98,8 @@
         ...queryParams,
         instanceID: instanceId.value
       };
-      const { data } = await queryApplicationResource(params);
-      dataList.value = data?.items || [];
+      const { data } = await queryInstanceEndpoints(params);
+      dataList.value = data?.endpoints || [];
       loading.value = false;
     } catch (error) {
       dataList.value = [];
@@ -121,6 +107,7 @@
       console.log(error);
     }
   };
+
   const handleFilter = () => {
     fetchData();
   };

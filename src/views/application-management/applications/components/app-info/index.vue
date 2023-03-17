@@ -136,9 +136,16 @@
   import { cloneDeep, assignIn, omit, pick, get, concat, map } from 'lodash';
   import useCallCommon from '@/hooks/use-call-common';
   import thumbButton from '@/components/buttons/thumb-button.vue';
-  import { queryModules } from '@/views/operation-hub/templates/api';
+  import {
+    queryModules,
+    queryModulesVersions
+  } from '@/views/operation-hub/templates/api';
   import EditPageFooter from '@/components/edit-page-footer/index.vue';
-  import { TemplateRowData } from '@/views/operation-hub/templates/config/interface';
+  import {
+    TemplateRowData,
+    ModuleVersionData
+  } from '@/views/operation-hub/templates/config/interface';
+  import { querySecrets } from '@/views/application-management/secret/api';
   import createInstance from '../create-instance.vue';
   import instanceThumb from '../instance-thumb.vue';
   import variableForm from './variable-form.vue';
@@ -185,6 +192,8 @@
   const moduleAction = ref('create');
   const showInstanceModal = ref(false);
   const showEditModal = ref(false);
+  const projectSecretList = ref<{ name: string }[]>([]);
+  const appModuleVersions = ref<ModuleVersionData[]>([]);
 
   const collapseStatus = computed(() => {
     return appInfo?.variables?.length - 1;
@@ -209,6 +218,7 @@
   const handleDeleteVariable = (index) => {
     appInfo.variables.splice(index, 1);
   };
+  // modules options
   const getModules = async () => {
     try {
       const params = {
@@ -236,6 +246,32 @@
   const handleDeployApp = () => {
     showInstanceModal.value = true;
     appInfoVariables.value = cloneDeep(appInfo.variables);
+  };
+  // apply for edit module config
+  const getProjectSecrets = async () => {
+    try {
+      const params = {
+        page: 1,
+        perPage: -1,
+        projectID: route.params.projectId as string
+      };
+      const { data } = await querySecrets(params);
+      projectSecretList.value = data.items || [];
+    } catch (error) {
+      projectSecretList.value = [];
+      console.log(error);
+    }
+  };
+  // apply for edit module config
+  const getModulesVersions = async () => {
+    try {
+      const params = {
+        moduleID: ''
+      };
+      await queryModulesVersions(params);
+    } catch (error) {
+      console.log(error);
+    }
   };
   const handleOk = async () => {
     const result = await basicform.value.getFormData();

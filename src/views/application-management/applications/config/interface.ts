@@ -82,3 +82,10 @@ export interface HistoryData {
     statusMessage: string;
   };
 }
+
+export interface EndPointRow {
+  resourceID: string;
+  resourceKind: string;
+  resourceSubKind: string;
+  endpoints: string[];
+}

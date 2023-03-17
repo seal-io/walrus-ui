@@ -80,6 +80,7 @@
   import tabOutput from './tab-output.vue';
   import tabOptimization from './tab-optimization.vue';
   import tabGraph from './tab-graph.vue';
+  import tabEndpoint from './tab-endpoint.vue';
   import applicationHistory from './application-history.vue';
   import createInstance from '../create-instance.vue';
   import BasicInfo from './basic-info.vue';
@@ -103,11 +104,12 @@
   const instanceTabMap = {
     tabResource: markRaw(tabResource),
     tabLogs: markRaw(tabLogs),
-    tabOutput: markRaw(tabOutput),
-    tabOptimization: markRaw(tabOptimization),
-    tabGraph: markRaw(tabGraph),
+    // tabOutput: markRaw(tabOutput),
+    // tabOptimization: markRaw(tabOptimization),
+    // tabGraph: markRaw(tabGraph),
     tabHistory: markRaw(applicationHistory),
-    tabTerminal: markRaw(tabTerminal)
+    tabTerminal: markRaw(tabTerminal),
+    tabEndpoint: markRaw(tabEndpoint)
   };
 
   const appInfoVariables = computed(() => {
