@@ -14,13 +14,8 @@
           </a-form-item>
         </a-col>
         <a-col :span="12">
-          <a-form-item label="CreateTime">
-            <a-input
-              :model-value="
-                dayjs(formData.createTime).format('YYYY-MM-DD HH:mm:ss')
-              "
-              style="width: 100%"
-            ></a-input>
+          <a-form-item label="Status">
+            <a-input v-model="formData.status" style="width: 100%"></a-input>
           </a-form-item>
         </a-col>
       </a-row>
@@ -44,15 +39,20 @@
       </a-row>
       <a-row :gutter="20">
         <a-col :span="12">
-          <a-form-item label="Status">
-            <a-input v-model="formData.status" style="width: 100%"></a-input>
+          <a-form-item label="CreateTime">
+            <a-input
+              :model-value="
+                dayjs(formData.createTime).format('YYYY-MM-DD HH:mm:ss')
+              "
+              style="width: 100%"
+            ></a-input>
           </a-form-item>
         </a-col>
-        <a-col :span="12">
+        <!-- <a-col :span="12">
           <a-form-item label="Access URL">
             <a-input style="width: 100%"></a-input>
           </a-form-item>
-        </a-col>
+        </a-col> -->
       </a-row>
     </a-form>
   </div>

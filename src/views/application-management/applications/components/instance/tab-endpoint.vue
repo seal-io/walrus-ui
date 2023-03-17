@@ -42,21 +42,24 @@
           title="入口"
         >
           <template #cell="{ record }">
-            <a-link
-              v-for="(item, index) in record.endpoints"
-              :key="index"
-              :href="
-                !includes(item, 'https') || !includes(item, 'http')
-                  ? `http://${item}`
-                  : item
-              "
-              target="_blank"
-              >{{
-                record.resourceSubKind === 'NodePort'
-                  ? get(split(item, ':'), 1)
-                  : item
-              }}</a-link
-            >
+            <a-space direction="vertical" :size="5">
+              <a-link
+                v-for="(item, index) in record.endpoints"
+                :key="index"
+                style="line-height: 1"
+                :href="
+                  !includes(item, 'https') || !includes(item, 'http')
+                    ? `http://${item}`
+                    : item
+                "
+                target="_blank"
+                >{{
+                  record.resourceSubKind === 'NodePort'
+                    ? get(split(item, ':'), 1)
+                    : item
+                }}</a-link
+              >
+            </a-space>
           </template>
         </a-table-column>
       </template>
