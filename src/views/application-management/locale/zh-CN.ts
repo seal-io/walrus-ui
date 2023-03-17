@@ -35,5 +35,6 @@ export default {
   'applications.secret.create': '新建密钥',
   'applications.secret.edit': '更新密钥',
   'applications.secret.value': '密钥',
-  'applications.secret.rules.value': '密钥必填'
+  'applications.secret.rules.value': '密钥必填',
+  'applications.endpoint.access': '访问'
 };

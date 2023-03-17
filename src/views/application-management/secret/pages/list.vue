@@ -69,6 +69,7 @@
           <a-table-column
             ellipsis
             tooltip
+            align="center"
             :cell-style="{ minWidth: '40px' }"
             data-index="scope"
             title="应用范围"

@@ -1,7 +1,7 @@
 import axios from 'axios';
 import qs from 'query-string';
 import { Pagination } from '@/types/global';
-import { AppRowData } from '../config/interface';
+import { AppRowData, EndPointRow } from '../config/interface';
 
 // interface ParamsType extends Pagination {}
 export interface ResultType {
@@ -118,4 +118,19 @@ export const queryApplicationResourceExec = (params: { id: string }) => {
       return qs.stringify(obj);
     }
   });
+};
+interface EndPointResult {
+  endpoints: EndPointRow[];
+  pagination: Pagination;
+}
+export const queryInstanceEndpoints = (params: { instanceID: string }) => {
+  return axios.get<EndPointResult>(
+    `/application-instances/${params.instanceID}/access-endpoints`,
+    {
+      params,
+      paramsSerializer: (obj) => {
+        return qs.stringify(obj);
+      }
+    }
+  );
 };
