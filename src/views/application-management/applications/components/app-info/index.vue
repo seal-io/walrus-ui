@@ -68,19 +68,6 @@
         @click="handleSelect"
         ><icon-plus style="margin-right: 5px" />Add a variable</a-button
       >
-      <!-- <a-dropdown @select="handleSelect">
-        <a-button size="small" type="outline" style="margin-bottom: 8px"
-          >Add a variabel<icon-down style="margin-left: 5px"
-        /></a-button>
-        <template #content>
-          <a-doption
-            v-for="item in moduleTemplates"
-            :key="item.id"
-            :value="item.schema"
-            >{{ item.id }}</a-doption
-          >
-        </template>
-      </a-dropdown> -->
       <moduleWrapper
         v-for="(item, index) in get(appInfo, 'variables') || []"
         :key="index"
@@ -142,14 +129,18 @@
     get,
     concat,
     map,
-    isEqual
+    isEqual,
+    reduce,
+    uniq,
+    uniqBy,
+    find
   } from 'lodash';
   import useCallCommon from '@/hooks/use-call-common';
   import thumbButton from '@/components/buttons/thumb-button.vue';
   import { beforeLeaveCallback } from '@/hooks/save-before-leave';
   import {
     queryModules,
-    queryModulesVersions
+    queryModulesAllVersions
   } from '@/views/operation-hub/templates/api';
   import EditPageFooter from '@/components/edit-page-footer/index.vue';
   import {
@@ -163,9 +154,8 @@
   import moduleWrapper from '../module-wrapper.vue';
   import editModule from './edit-module.vue';
   import BasicInfo from './basic-info.vue';
-  import { AppFormData, Variables } from '../../config/interface';
+  import { AppFormData, Variables, AppModule } from '../../config/interface';
   import { moduleActions } from '../../config';
-  import HintInput from '../hint-input.vue';
   import {
     createApplication,
     queryItemApplication,
@@ -205,23 +195,16 @@
   const showInstanceModal = ref(false);
   const showEditModal = ref(false);
   const projectSecretList = ref<{ name: string }[]>([]);
-  const appModuleVersions = ref<ModuleVersionData[]>([]);
+  const appModuleVersions = ref<any>({});
+  const appModules = ref<AppModule[]>([]);
+  const completeData = ref<Record<string, any>>({});
   let copyFormData: any = {};
-
+  provide('completeData', completeData);
+  provide('showHintInput', true);
   const collapseStatus = computed(() => {
     return appInfo?.variables?.length - 1;
   });
-  const completeData = computed(() => {
-    const data = reduce(
-      appInfo.modules || [],
-      (obj, item) => {
-        obj[item.name] = {};
-        return obj;
-      },
-      {}
-    );
-    return data;
-  });
+
   const handleEditModule = (item) => {
     moduleAction.value = 'edit';
     moduleInfo.value = item;
@@ -256,14 +239,7 @@
       console.log(error);
     }
   };
-  const getModuleVersionList = async () => {
-    try {
-      const { data } = await queryModulesVersions();
-      console.log('module version:', data);
-    } catch (error) {
-      console.log(error);
-    }
-  };
+
   const handleSelect = () => {
     appInfo.variables = concat(appInfo.variables, {
       name: '',
@@ -287,21 +263,65 @@
         perPage: -1,
         projectID: route.params.projectId as string
       };
-      const { data } = await querySecrets(params);
-      projectSecretList.value = data.items || [];
+      const [{ data }, { data: globalData }] = await Promise.all([
+        querySecrets(params),
+        querySecrets({ page: 1, perPage: -1 })
+      ]);
+      projectSecretList.value = uniqBy(
+        concat(data.items, globalData.items),
+        (item) => item.name
+      );
     } catch (error) {
       projectSecretList.value = [];
       console.log(error);
     }
   };
+  // app module version has added; it's map to a {name: <moduleName>, type: <moduleType>, version: <moduleVersion>}
+  const getAppModulesVersionMap = () => {
+    const list = map(appModules.value, (item) => {
+      return {
+        name: item.name,
+        type: item.module.id,
+        version: item.version
+      };
+    });
+    return list;
+  };
   // apply for edit module config
   const getModulesVersions = async () => {
     try {
       const params = {
-        moduleID: ''
+        moduleID: uniq(
+          map(appModules.value, (item) => {
+            return item?.module.id;
+          })
+        )
       };
-      await queryModulesVersions(params);
+      const { data } = await queryModulesAllVersions(params);
+      const addedVersionMap = getAppModulesVersionMap();
+      appModuleVersions.value = reduce(
+        data.items || [],
+        (obj, item) => {
+          // The version corresponding to the module that has been added
+          const addedModule = find(addedVersionMap, (s) => {
+            return s.type === item.module.id && s.version === item.version;
+          });
+          const k = addedModule?.name || item.name;
+          obj[k] = [
+            ...map(get(item, 'schema.Outputs') || [], (s) => {
+              return {
+                label: s.Description,
+                value: s.Name
+              };
+            })
+          ];
+          return obj;
+        },
+        {}
+      );
+      console.log('appModuleVersions======', appModuleVersions.value);
     } catch (error) {
+      appModuleVersions.value = {};
       console.log(error);
     }
   };
@@ -361,13 +381,31 @@
       ]);
 
       assignIn(appInfo, data);
+      appModules.value = get(appInfo, 'modules') || [];
       copyFormData = cloneDeep(appInfo);
       console.log('appInfo===', appInfo);
     } catch (error) {
       console.log(error);
     }
   };
-
+  const setCompleteData = () => {
+    const secret = reduce(
+      projectSecretList.value,
+      (obj, item) => {
+        obj[item.name] = '';
+        return obj;
+      },
+      {}
+    );
+    completeData.value = {
+      secret: {
+        ...secret
+      },
+      module: {
+        ...appModuleVersions.value
+      }
+    };
+  };
   const handleCancel = () => {
     router.back();
   };
@@ -386,8 +424,9 @@
   // });
   const init = async () => {
     getModules();
-    getModuleVersionList();
-    getApplicationDetail();
+    await getApplicationDetail();
+    await Promise.all([getModulesVersions(), getProjectSecrets()]);
+    setCompleteData();
   };
   init();
 </script>

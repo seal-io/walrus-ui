@@ -2,8 +2,8 @@
   <div class="form-create-wrap">
     <a-form ref="formref" :model="formData" auto-label-width :layout="layout">
       <slot></slot>
-      <a-grid :cols="24">
-        <template v-for="fm in schemaList" :key="fm.Name">
+      <a-grid :cols="24" :col-gap="10">
+        <template v-for="(fm, index) in schemaList" :key="fm.Name">
           <a-grid-item
             v-if="
               fm.ShowIf
@@ -23,6 +23,7 @@
                 v-if="fm.labelList?.length"
                 style="display: flex; flex-direction: column"
               >
+                <!-- XInputGroup component -->
                 <component
                   :is="formComponents[fm.parentCom]"
                   v-for="(sItem, sIndex) in fm.labelList"
@@ -30,6 +31,9 @@
                   v-model:dataKey="sItem.key"
                   v-model:dataValue="sItem.value"
                   v-model:value="formData[fm.Name]"
+                  style="width: 100%"
+                  width="100%"
+                  :form-id="formId"
                   class="group-item"
                   :label-list="fm.labelList"
                   :position="sIndex"
@@ -42,6 +46,7 @@
                       :is="formComponents[fm.childCom]"
                       v-for="com in fm.Options"
                       :key="com"
+                      :form-id="formId"
                       :value="com"
                       >{{ com }}</component
                     >
@@ -51,12 +56,18 @@
               <template v-else>
                 <component
                   :is="formComponents[fm.parentCom]"
+                  :key="`${formId}_editorId_${index}`"
                   v-bind="{ ...fm.props }"
                   v-model="formData[fm.Name]"
+                  style="width: 100%"
+                  width="100%"
+                  :editor-id="`${formId}_editorId_${index}`"
                 >
                   <template v-if="fm.childCom">
                     <component
                       :is="formComponents[fm.childCom]"
+                      :key="`${formId}_child_editorId_${index}`"
+                      :editor-id="`${formId}_child_editorId_${index}`"
                       style="display: none"
                     ></component>
                     <component
@@ -118,7 +129,8 @@
     computed,
     onMounted,
     watchEffect,
-    watch
+    watch,
+    inject
   } from 'vue';
   import axios, { CancelToken } from 'axios';
   import { useI18n } from 'vue-i18n';
@@ -137,6 +149,12 @@
       type: Array as PropType<ComponentSchema[]>,
       default() {
         return {};
+      }
+    },
+    formId: {
+      type: String,
+      default() {
+        return 'lcoal';
       }
     },
     layout: {
@@ -174,6 +192,7 @@
     }
   });
 
+  const completerData = inject('completerData', ref({}));
   const { t } = useI18n();
   const emits = defineEmits(['done', 'cancel']);
   const submitLoading = ref(false);

@@ -27,7 +27,7 @@
         layout="vertical"
       >
         <a-grid :cols="24">
-          <a-grid-item :span="12">
+          <a-grid-item :span="24">
             <a-form-item
               label="名称"
               field="name"
@@ -52,7 +52,7 @@
               </template>
             </a-form-item>
           </a-grid-item>
-          <a-grid-item :span="12">
+          <!-- <a-grid-item :span="12">
             <HintInput
               v-model="query"
               :show="show"
@@ -60,7 +60,7 @@
               controller="input"
               :source="completerData"
             ></HintInput>
-          </a-grid-item>
+          </a-grid-item> -->
           <a-grid-item :span="12">
             <a-form-item
               label="模块"
@@ -117,6 +117,7 @@
           >
             <formCreate
               :ref="(el: refItem) => setRefMap(el, `schemaForm${index}`)"
+              :form-id="`schemaForm${index}`"
               layout="vertical"
               action="post"
               api=""
@@ -131,6 +132,7 @@
         <formCreate
           v-if="show && formTabs.length < 2"
           ref="schemaForm"
+          form-id="schemaForm"
           layout="vertical"
           action="post"
           api=""
@@ -186,7 +188,9 @@
     reactive,
     PropType,
     ComponentPublicInstance,
-    computed
+    computed,
+    provide,
+    watch
   } from 'vue';
   import useCallCommon from '@/hooks/use-call-common';
   import EditPageFooter from '@/components/edit-page-footer/index.vue';
@@ -197,7 +201,7 @@
     ModuleVersionData
   } from '@/views/operation-hub/templates/config/interface';
   import { queryModulesVersions } from '@/views/operation-hub/templates/api';
-  import HintInput from '../hint-input.vue';
+  import HintInput from '../../../../../components/hint-input/index.vue';
 
   interface Group {
     Variables: object[];
@@ -235,7 +239,6 @@
     label: string;
     value: string;
   }
-  const query = ref('');
   const defaultGroupKey = '_default_default_';
   const emit = defineEmits(['save', 'update:show', 'reset', 'update:action']);
   const { route } = useCallCommon();
@@ -267,7 +270,6 @@
     }
     return list;
   });
-  const completerData = ref({});
   const handleQueryInput = () => {};
   const handleCancel = () => {
     emit('update:show', false);

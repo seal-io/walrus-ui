@@ -29,13 +29,13 @@ export interface ComponentSchema {
   rules?: FieldRule[];
   labelList?: LabelListItem[];
 }
-
+// replace input width hintInput
 export const parseComponentSchema = (schema: ComponentSchema) => {
   const props = {
     min: schema?.min || null,
     max: schema?.max || null,
     maxLength: schema?.maxLength || 100,
-    showWordLimit: true,
+    showWordLimit: schema?.maxLength,
     minLength: schema?.minLength || null
   };
   // string
@@ -56,7 +56,7 @@ export const parseComponentSchema = (schema: ComponentSchema) => {
     //  ===========InputPassword============
     if (schema.Sensitive && schema.Type === 'string') {
       return {
-        component: ['InputPassword'],
+        component: ['hintInput'],
         props: {
           ...props
         },
@@ -80,7 +80,7 @@ export const parseComponentSchema = (schema: ComponentSchema) => {
     //  ============Input===========
     if (!schema.Sensitive && schema.Type === 'string') {
       return {
-        component: ['Input'],
+        component: ['hintInput'],
         props: { ...props },
         rules: [
           { required: schema.Required, message: 'common.form.rule.input' }
@@ -119,7 +119,7 @@ export const parseComponentSchema = (schema: ComponentSchema) => {
     };
   }
   return {
-    component: ['Input'],
+    component: ['hintInput'],
     props: { ...props },
     rules: [{ required: schema.Required, message: 'common.form.rule.input' }]
   };

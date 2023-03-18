@@ -2,6 +2,7 @@
   <div ref="editorWrap" class="autocomplete-area">
     <span
       class="arco-input-wrapper"
+      style="width: 100%"
       :class="{ 'arco-input-focus': isFocus }"
       @click="handleClick"
     >
@@ -11,7 +12,6 @@
         v-model.trim="expression"
         class="arco-input completer arco-input-size-medium"
         :spellcheck="false"
-        :rows="5"
         :readonly="disabled"
         autocomplete="off"
         :placeholder="placeholder"
@@ -52,13 +52,24 @@
     initial,
     toLower,
     isArray,
+    remove,
     includes,
     head,
     clone,
-    isBoolean
+    isBoolean,
+    pick
   } from 'lodash';
   import { onClickOutside } from '@vueuse/core';
-  import { nextTick, onMounted, ref, onUnmounted, watch, useAttrs } from 'vue';
+  import {
+    nextTick,
+    onMounted,
+    ref,
+    onUnmounted,
+    watch,
+    useAttrs,
+    PropType,
+    inject
+  } from 'vue';
   import { Textcomplete, TextcompleteOption } from '@textcomplete/core';
   import { TextareaEditor } from '@textcomplete/textarea';
 
@@ -67,6 +78,7 @@
     label: string;
     value: string;
     type?: string;
+    description?: string;
   };
 
   const props = defineProps({
@@ -101,12 +113,13 @@
       }
     },
     source: {
-      type: Object,
+      type: Object as PropType<Record<string, any>>,
       default() {
         return {};
       }
     }
   });
+  const completeData = inject('completeData', ref(null));
   const $attrs = useAttrs();
   const emits = defineEmits(['update:modelValue', 'input', 'change']);
   const expression = ref('');
@@ -120,15 +133,36 @@
   // const textarea = ref()
   let textcomplete: any = null;
   const handleSearch = (term: string, ctx): Array<resultItem> => {
-    const regx = /^(\w+)?\.?(\w*)$/;
+    const sourceData = completeData.value || props.source;
+    console.log('completeData...999', sourceData, completeData.value);
+    const regx = /^(\w+)?\.?(\w*)\.?$/;
+    console.log('array==3=', regx.test(ctx), ctx);
     if (!ctx || !regx.test(ctx)) return [];
     console.log('term===1', term, ctx, textcomplete, props.source);
-    const dataSource = cloneDeep(props.source);
+    const dataSource = cloneDeep(sourceData);
     const path = split(ctx, '.');
+    const valuePath = join(
+      filter(path, (v) => !!v),
+      '.'
+    );
+    console.log('valuePath===', { path, ctx, valuePath });
     const initialPath = initial(path);
     const lastItem = last(path);
+    const data = get(dataSource, `${join(initialPath, '.')}`); // path
+    console.log('array==1=', valuePath);
+    if (isArray(get(sourceData, valuePath))) {
+      const list = map(get(sourceData, valuePath) || [], (s) => {
+        return {
+          label: s.value,
+          value: s.value,
+          description: s.label
+        };
+      });
+      console.log('array==2=', list);
+      return list;
+    }
     if (!initialPath.length) {
-      const arr = map(keys(props.source), (key) => {
+      const arr = map(keys(sourceData), (key) => {
         return {
           label: key,
           value: key
@@ -137,9 +171,10 @@
       console.log('term===1 arr', arr);
       return arr;
     }
-    const data = get(dataSource, `${join(initialPath, '.')}`);
+
     console.log('data:', dataSource, ctx, data, initialPath);
     if (!data) return [];
+
     const list = map(keys(data), (key) => {
       return {
         label: key,
@@ -171,7 +206,9 @@
         return isMatchWork.value; // true、false
       },
       template(data: resultItem) {
-        return `<span>${data.label}</span>`;
+        return data.description
+          ? `<span>${data.label}<span class="desc">(${data.description})</span></span>`
+          : `<span>${data.label}</span>`;
       },
       // replace the text match result
       replace(result: resultItem) {
@@ -251,7 +288,7 @@
     emits('update:modelValue', expression.value);
     setTimeout(() => {
       runChange();
-    }, 200);
+    }, 100);
   };
   const handleDelete = (val) => {
     const regx = /:$/;
@@ -288,7 +325,7 @@
     }
   );
   // watch(
-  //   () => props.show,
+  //   () => props.editorId,
   //   () => {
   //     expression.value = props.modelValue;
   //     nextTick(() => {
@@ -300,15 +337,22 @@
   //   }
   // );
   onMounted(async () => {
-    console.log('area:');
     expression.value = props.modelValue;
     nextTick(() => {
+      console.log('area:');
       initEditor();
     });
   });
   onUnmounted(() => {
     textcomplete.destroy();
   });
+</script>
+
+<script lang="ts">
+  export default {
+    name: 'HintInput',
+    inheritAttrs: false
+  };
 </script>
 
 <style lang="less" scoped>
@@ -325,6 +369,7 @@
   // }
   .autocomplete-area {
     position: relative;
+    width: 100%;
   }
 
   .close {
@@ -388,6 +433,12 @@
       .type {
         color: #fff;
       }
+
+      .desc {
+        color: var(--color-text-3);
+        font-size: 12px;
+        opacity: 0.8;
+      }
     }
 
     li {
@@ -410,6 +461,12 @@
 
     .complete-item {
       list-style-type: none;
+
+      .desc {
+        color: var(--color-text-3);
+        font-size: 12px;
+        opacity: 0.7;
+      }
 
       &::marker {
         display: none;

@@ -18,6 +18,14 @@ export interface AppRowData {
     variables: object;
   }>;
 }
+export interface AppModule {
+  name: string;
+  variables: object;
+  module: {
+    id: string;
+  };
+  version: string;
+}
 export interface AppFormData {
   name: string;
   description: string;
