@@ -3,6 +3,7 @@
     <a-input-group :style="{ width: width }">
       <a-tooltip :popup-visible="popupvisible" :content="$t('common.form.key')">
         <a-input
+          v-if="!showHintInput"
           :error="isError"
           :model-value="dataKey"
           placeholder="key"
@@ -12,9 +13,22 @@
           @input="(val) => handleDataChange(val, 'key', 'input')"
           @change="(val) => handleDataChange(val, 'key', 'change')"
         ></a-input>
+        <hintInput
+          v-else
+          :model-value="dataKey"
+          placeholder="key"
+          :max-length="50"
+          v-bind="$attrs"
+          :editor-id="`${formId}_keyEditor${position}`"
+          :source="completeData"
+          show-word-limit
+          @input="(val) => handleDataChange(val, 'key', 'input')"
+          @change="(val) => handleDataChange(val, 'key', 'change')"
+        ></hintInput>
       </a-tooltip>
       <span style="padding: 0 4px">:</span
       ><a-input
+        v-if="!showHintInput"
         :model-value="dataValue"
         v-bind="$attrs"
         placeholder="value"
@@ -23,6 +37,18 @@
         @input="(val) => handleDataChange(val, 'value')"
         @change="(val) => handleDataChange(val, 'value')"
       ></a-input>
+      <hintInput
+        v-else
+        :model-value="dataValue"
+        v-bind="$attrs"
+        placeholder="value"
+        :max-length="50"
+        :editor-id="`${formId}_valueEditor${position}`"
+        :source="completeData"
+        show-word-limit
+        @input="(val) => handleDataChange(val, 'value')"
+        @change="(val) => handleDataChange(val, 'value')"
+      ></hintInput>
     </a-input-group>
     <a-space class="btn-wrapper">
       <icon-minus-circle
@@ -42,7 +68,8 @@
 
 <script lang="ts" setup>
   import { cloneDeep, reduce, get, hasIn } from 'lodash';
-  import { useAttrs, PropType, ref } from 'vue';
+  import { useAttrs, PropType, ref, inject } from 'vue';
+  import hintInput from '@/components/hint-input/index.vue';
 
   const props = defineProps({
     dataKey: {
@@ -57,6 +84,12 @@
         return 'value';
       }
     },
+    // showHintInput: {
+    //   type: Boolean,
+    //   default() {
+    //     return false;
+    //   }
+    // },
     width: {
       type: String,
       default() {
@@ -67,6 +100,12 @@
       type: Array as PropType<{ key: string; value: string }[]>,
       default() {
         return [];
+      }
+    },
+    formId: {
+      type: String,
+      default() {
+        return 'local';
       }
     },
     position: {
@@ -89,6 +128,8 @@
     'update:dataKey',
     'update:dataValue'
   ]);
+  const showHintInput = inject('showHintInput', ref(false));
+  const completeData = inject('completeData', ref({}));
   const $attrs = useAttrs();
   const isError = ref(false);
   const popupvisible = ref(false);
