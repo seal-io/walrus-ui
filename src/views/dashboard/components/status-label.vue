@@ -33,10 +33,10 @@
 
     .dot {
       display: inline-block;
-      width: 16px;
-      height: 16px;
+      width: 14px;
+      height: 14px;
       margin-right: 6px;
-      border-radius: 8px;
+      border-radius: 7px;
 
       &.ready {
         background-color: rgba(var(--seal-color-success-1), 0.7);

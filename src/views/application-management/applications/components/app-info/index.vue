@@ -147,7 +147,6 @@
     TemplateRowData,
     ModuleVersionData
   } from '@/views/operation-hub/templates/config/interface';
-  import { querySecrets } from '@/views/application-management/secret/api';
   import createInstance from '../create-instance.vue';
   import instanceThumb from '../instance-thumb.vue';
   import variableForm from './variable-form.vue';
@@ -303,18 +302,18 @@
       const { data } = await queryModulesAllVersions(params);
       const addedVersionMap = getAppModulesVersionMap();
       appModuleVersions.value = reduce(
-        data.items || [],
+        addedVersionMap,
         (obj, item) => {
           // The version corresponding to the module that has been added
-          const addedModule = find(addedVersionMap, (s) => {
-            return s.type === item.module.id && s.version === item.version;
+          const addedModule = find(data.items || [], (s) => {
+            return item.type === s.module.id && s.version === item.version;
           });
-          const k = addedModule?.name || item.name;
+          const k = item.name || addedModule?.name;
           obj[k] = [
-            ...map(get(item, 'schema.Outputs') || [], (s) => {
+            ...map(get(addedModule, 'schema.Outputs') || [], (o) => {
               return {
-                label: s.Description,
-                value: s.Name
+                label: o.Description,
+                value: o.Name
               };
             })
           ];

@@ -284,6 +284,7 @@
         color: var(--sealblue-6);
         line-height: 100px;
         text-align: center;
+        background-color: rgba(var(--arcoblue-1), 0.3);
         cursor: pointer;
         .thumbCard();
 

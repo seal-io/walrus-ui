@@ -35,13 +35,13 @@
           ></pieChart> -->
           <DataCard
             :precision="3"
-            title="This Month Cost"
+            :title="$t('dashboard.cost.currentMonth')"
             bg-color="linear-gradient(rgba(184, 218, 243, 0.3) 0%, rgba(184, 218, 243, 0.4) 100%)"
           >
             <template #title>
-              <span style="font-weight: 500; font-size: 16px"
-                >This Month Cost</span
-              >
+              <span style="font-weight: 500; font-size: 16px">{{
+                $t('dashboard.cost.currentMonth')
+              }}</span>
             </template>
             <template #extra>
               <span>{{ round(monthlyCostData.currentMonth, 4) || 0 }}</span>
@@ -64,15 +64,17 @@
                   "
                   class="icon-fall"
                 />
-                <span>{{ monthCostGrowRate }} vs pervious month</span>
+                <span
+                  >{{ monthCostGrowRate }} vs
+                  {{ $t('dashboard.cost.pervisious') }}</span
+                >
               </span>
             </template>
           </DataCard>
           <div class="list" style="margin-top: 10px">
-            <div class="title">{{
-              $t('Applications Cost Rank (this month)')
-            }}</div>
+            <div class="title">{{ $t('dashboard.cost.rank') }}</div>
             <applicationRank
+              title=""
               height="360px"
               :data-list="appCostRankList"
             ></applicationRank>
