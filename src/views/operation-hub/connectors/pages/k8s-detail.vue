@@ -35,6 +35,7 @@
           <a-textarea
             v-model.trim="formData.configData.kubeconfig"
             style="width: 500px"
+            :spellcheck="false"
             :placeholder="$t('operation.connectors.rules.kubeconfigTips')"
             :auto-size="{ minRows: 6, maxRows: 10 }"
           />

@@ -289,6 +289,7 @@
   };
   // apply for edit module config
   const getModulesVersions = async () => {
+    if (!id && !cloneId) return;
     try {
       const params = {
         moduleID: uniq(
