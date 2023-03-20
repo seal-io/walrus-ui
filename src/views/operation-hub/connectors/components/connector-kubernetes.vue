@@ -145,6 +145,7 @@
                 <a-link
                   type="text"
                   size="small"
+                  :loading="record.loading"
                   @click="handleFetchCost(record)"
                 >
                   <template #icon
@@ -295,12 +296,12 @@
   };
   const handleFetchCost = async (row) => {
     try {
-      loading.value = true;
+      row.loading = true;
       await syncFinOpsData(row);
       Message.success(t('common.message.success'));
-      loading.value = false;
+      row.loading = false;
     } catch (error) {
-      loading.value = false;
+      row.loading = false;
       console.log(error);
     }
   };

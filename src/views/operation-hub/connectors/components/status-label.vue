@@ -35,6 +35,12 @@
       default() {
         return '';
       }
+    },
+    zoom: {
+      type: Number,
+      default() {
+        return 1;
+      }
     }
   });
   const color = computed(() => {

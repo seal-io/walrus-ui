@@ -48,7 +48,7 @@
                 :key="index"
                 style="line-height: 1"
                 :href="
-                  !includes(item, 'https') || !includes(item, 'http')
+                  !includes(item, 'https') && !includes(item, 'http')
                     ? `http://${item}`
                     : item
                 "

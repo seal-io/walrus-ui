@@ -22,7 +22,7 @@ import {
   queryProjectPerspectiveSummary,
   queryPerspectiveFieldValues
 } from '../api';
-// import testData, { statckLineData } from '../config/testData';
+import testData, { statckLineData, workloadData } from '../config/testData';
 
 export default function usePerspectiveCost(props) {
   const { route } = useCallCommon();
@@ -119,6 +119,7 @@ export default function usePerspectiveCost(props) {
         // endTime: dayjs(queryParams.endTime).format('YYYY-MM-DDT23:59:59Z')
       };
       const { data } = await queryPerspectiveData(params);
+      // const data = workloadData;
       let list = data?.items || [];
       list = sortBy(list, (s) => s.itemName);
       // let list = statckLineData;

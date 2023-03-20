@@ -47,7 +47,7 @@
         </a-layout>
       </a-layout>
     </a-layout>
-    <!-- <Footer v-if="footer" /> -->
+    <Footer v-if="footer" />
   </a-layout>
 </template>
 

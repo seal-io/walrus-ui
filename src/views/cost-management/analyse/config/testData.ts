@@ -129,3 +129,44 @@ export const filtersData = {
     }
   ]
 };
+export const workloadData = {
+  items: [
+    {
+      totalCost: 15.400544344179284,
+      sharedCost: 12.44309434417929,
+      cpuCost: 2.899569999999995,
+      ramCost: 0.05788000000000007,
+      itemName: '__unallocated__'
+    },
+    {
+      totalCost: 5.072189289085003,
+      sharedCost: 4.0981492890850015,
+      cpuCost: 0.8921699999999992,
+      ramCost: 0.08186999999999978,
+      itemName: 'kube-system/deployment/coredns'
+    },
+    {
+      totalCost: 2.4773034069405795,
+      sharedCost: 2.00157340694058,
+      cpuCost: 0.4460899999999996,
+      ramCost: 0.0296399999999999,
+      itemName: 'kube-system/daemonset/kindnet'
+    },
+    {
+      totalCost: 0.3968538722446377,
+      sharedCost: 0.3206438722446378,
+      cpuCost: 0.045160000000000096,
+      ramCost: 0.031050000000000084,
+      itemName: 'seal-system/deployment/seal-opencost'
+    },
+    { itemName: 'argo/deployment/argo-server' },
+    {
+      itemName: 'seal-system/daemonset/seal-prometheus-prometheus-node-exporter'
+    },
+    { itemName: 'kube-system/daemonset/kube-proxy' },
+    { itemName: 'argo/deployment/workflow-controller' },
+    { itemName: 'seal-system/deployment/seal-prometheus-server' },
+    { itemName: 'local-path-storage/deployment/local-path-provisioner' }
+  ],
+  pagination: { page: 1, perPage: 100, total: 11, totalPage: 1, partial: true }
+};
