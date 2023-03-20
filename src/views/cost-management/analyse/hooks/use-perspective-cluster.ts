@@ -27,7 +27,11 @@ import {
   queryClusterPerspectiveSummary,
   queryPerspectiveFieldValues
 } from '../api';
-import testData, { statckLineData, overviewData } from '../config/testData';
+import testData, {
+  statckLineData,
+  overviewData,
+  workloadChartData
+} from '../config/testData';
 
 export default function usePerspectiveCost(props) {
   const { route } = useCallCommon();
