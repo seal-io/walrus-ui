@@ -370,38 +370,7 @@
       console.log(error);
     }
   };
-  const handleOk = async () => {
-    const result = await basicform.value.getFormData();
-    const variableFormResult = await getRefFormData();
-    const validateVariabel = find(variableFormResult, (val) => !val.formData);
-    if (!result || validateVariabel) {
-      const i = get(split(validateVariabel.tab, 'variableform'), 1);
-      collapseStatus.value = +i;
-      return;
-    }
-    try {
-      const params = {
-        ...appInfo,
-        ...result
-      };
-      console.log('submit:', appInfo, result);
-      submitLoading.value = true;
-      const res = { id: '' };
-      copyFormData = cloneDeep(params);
-      if (id) {
-        await updateApplication(params);
-      } else {
-        console.log('submit:', params);
-        const { data } = await createApplication(params);
-        res.id = data.id;
-      }
-      submitLoading.value = false;
-      emits('save', res.id);
-    } catch (error) {
-      submitLoading.value = false;
-      console.log(error);
-    }
-  };
+
   const handleSaveModule = (data) => {
     console.log('saveModule===', data, moduleAction.value);
     if (moduleAction.value === 'create') {
@@ -468,6 +437,40 @@
       }
     };
     console.log('completeData.value===', completeData.value);
+  };
+  const handleOk = async () => {
+    const result = await basicform.value.getFormData();
+    const variableFormResult = await getRefFormData();
+    const validateVariabel = find(variableFormResult, (val) => !val.formData);
+    if (!result || validateVariabel) {
+      const i = get(split(validateVariabel.tab, 'variableform'), 1);
+      collapseStatus.value = +i;
+      return;
+    }
+    try {
+      const params = {
+        ...appInfo,
+        ...result
+      };
+      console.log('submit:', appInfo, result);
+      submitLoading.value = true;
+      const res = { id: '' };
+      copyFormData = cloneDeep(params);
+      if (id) {
+        await updateApplication(params);
+      } else {
+        console.log('submit:', params);
+        const { data } = await createApplication(params);
+        res.id = data.id;
+      }
+      submitLoading.value = false;
+      await Promise.all([getModulesVersions(), getApplicationDetail()]);
+      setCompleteData();
+      emits('save', res.id);
+    } catch (error) {
+      submitLoading.value = false;
+      console.log(error);
+    }
   };
   const handleCancel = () => {
     router.back();

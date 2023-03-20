@@ -62,11 +62,11 @@
 </template>
 
 <script lang="ts" setup>
-  import { assignIn, keys, get, each, map, cloneDeep, includes } from 'lodash';
+  import { assignIn, cloneDeep, uniq } from 'lodash';
   import { ref, reactive, PropType, watch, defineExpose } from 'vue';
-  import EditPageFooter from '@/components/edit-page-footer/index.vue';
-  import xInputGroup from '@/components/form-create/custom-components/x-input-group.vue';
-  import { variablesTypeList } from '../../config';
+  // import EditPageFooter from '@/components/edit-page-footer/index.vue';
+  // import xInputGroup from '@/components/form-create/custom-components/x-input-group.vue';
+  // import { variablesTypeList } from '../../config';
 
   const props = defineProps({
     dataInfo: {
@@ -104,7 +104,8 @@
     return false;
   };
   const validatorName = (value, callback) => {
-    if (value && includes(props.variablesData, value)) {
+    const list = cloneDeep(props.variablesData || []);
+    if (value && uniq(list).length !== props.variablesData.length) {
       callback('存在相同的变量名');
     } else {
       callback();
