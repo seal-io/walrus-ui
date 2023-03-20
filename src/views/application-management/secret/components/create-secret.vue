@@ -40,7 +40,7 @@
             <span class="tips">由字母、数字、下划线组成，不能以数字开头</span>
           </template>
         </a-form-item>
-        <a-form-item
+        <!-- <a-form-item
           :disabled="!!formData.id && action === 'edit'"
           label="应用范围"
         >
@@ -52,7 +52,7 @@
           >
             <a-option :value="0" label="全局"></a-option>
           </a-select>
-        </a-form-item>
+        </a-form-item> -->
         <a-form-item
           :label="$t('applications.secret.value')"
           field="value"
@@ -132,6 +132,12 @@
       default() {
         return 'create';
       }
+    },
+    projectID: {
+      type: String,
+      default() {
+        return '';
+      }
     }
   });
   const emit = defineEmits(['save', 'update:show']);
@@ -157,6 +163,7 @@
       try {
         submitLoading.value = true;
         // TODO
+        formData.value.project.id = props.projectID;
         const params: any = {
           ...omitBy(formData.value, (val, key) => {
             return key === 'project' && !get(formData.value, `${key}.id`);
