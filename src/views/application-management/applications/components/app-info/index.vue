@@ -78,7 +78,9 @@
       >
         <variableForm
           :key="index"
+          :ref="(el: refItem) => setRefMap(el, `variableform${index}`)"
           v-model:data-info="appInfo.variables[index]"
+          :variables-data="variablesData"
         ></variableForm>
       </moduleWrapper>
     </ModuleCard>
@@ -119,7 +121,14 @@
 </template>
 
 <script lang="ts" setup>
-  import { reactive, ref, computed, provide, inject } from 'vue';
+  import {
+    reactive,
+    ref,
+    computed,
+    provide,
+    inject,
+    ComponentPublicInstance
+  } from 'vue';
   import { onBeforeRouteLeave } from 'vue-router';
   import {
     cloneDeep,
@@ -133,7 +142,9 @@
     reduce,
     uniq,
     uniqBy,
-    find
+    find,
+    keys,
+    split
   } from 'lodash';
   import useCallCommon from '@/hooks/use-call-common';
   import thumbButton from '@/components/buttons/thumb-button.vue';
@@ -182,6 +193,8 @@
     modules: []
   }) as AppFormData;
 
+  type refItem = Element | ComponentPublicInstance | null;
+  const refMap: Record<string, refItem> = {};
   const emits = defineEmits(['deploy', 'save']);
   const submitLoading = ref(false);
   const id = route.query.id as string;
@@ -198,12 +211,41 @@
   const appModuleVersions = ref<any>({});
   const appModules = ref<AppModule[]>([]);
   const completeData = ref<Record<string, any>>({});
+  const collapseStatus = ref(0);
   let copyFormData: any = {};
+
   provide('completeData', completeData);
   provide('showHintInput', true);
-  const collapseStatus = computed(() => {
-    return appInfo?.variables?.length - 1;
+
+  // const collapseStatus = computed(() => {
+  //   return appInfo?.variables?.length - 1;
+  // });
+  const variablesData = computed(() => {
+    const res = map(appInfo?.variables, (item) => {
+      return item.name;
+    });
+    return res;
   });
+  const setRefMap = (el: refItem, name) => {
+    if (el) {
+      refMap[`${name}`] = el;
+    }
+  };
+
+  const getRefFormData = async () => {
+    const resultList: any[] = [];
+    await Promise.all(
+      keys(refMap).map(async (key) => {
+        const refEL = refMap[key];
+        const moduleForm = await refEL?.getFormData?.();
+        resultList.push({
+          tab: key,
+          formData: moduleForm
+        });
+      })
+    );
+    return resultList;
+  };
 
   const handleEditModule = (item) => {
     moduleAction.value = 'edit';
@@ -247,6 +289,7 @@
       description: '',
       type: 'string'
     });
+    collapseStatus.value = appInfo?.variables?.length - 1 || 0;
   };
   const handleSaveInstanceInfo = () => {
     emits('deploy');
@@ -329,7 +372,13 @@
   };
   const handleOk = async () => {
     const result = await basicform.value.getFormData();
-    if (!result) return;
+    const variableFormResult = await getRefFormData();
+    const validateVariabel = find(variableFormResult, (val) => !val.formData);
+    if (!result || validateVariabel) {
+      const i = get(split(validateVariabel.tab, 'variableform'), 1);
+      collapseStatus.value = +i;
+      return;
+    }
     try {
       const params = {
         ...appInfo,
@@ -391,6 +440,14 @@
     }
   };
   const setCompleteData = () => {
+    const variables = reduce(
+      get(appInfo, 'variables') || [],
+      (obj, item) => {
+        obj[item.name] = '';
+        return obj;
+      },
+      {}
+    );
     const secret = reduce(
       projectSecretList.value,
       (obj, item) => {
@@ -405,6 +462,9 @@
       },
       module: {
         ...appModuleVersions.value
+      },
+      var: {
+        ...variables
       }
     };
     console.log('completeData.value===', completeData.value);

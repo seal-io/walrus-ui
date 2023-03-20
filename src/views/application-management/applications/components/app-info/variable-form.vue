@@ -6,7 +6,10 @@
           <a-form-item
             label="名称"
             field="name"
-            :rules="[{ required: false, message: '名称必填' }]"
+            :rules="[
+              { required: true, message: '名称必填' },
+              { validator: validatorName }
+            ]"
           >
             <a-input
               v-model="formData.name"
@@ -59,8 +62,8 @@
 </template>
 
 <script lang="ts" setup>
-  import { assignIn, keys, get, each, map, cloneDeep } from 'lodash';
-  import { ref, reactive, PropType, watch } from 'vue';
+  import { assignIn, keys, get, each, map, cloneDeep, includes } from 'lodash';
+  import { ref, reactive, PropType, watch, defineExpose } from 'vue';
   import EditPageFooter from '@/components/edit-page-footer/index.vue';
   import xInputGroup from '@/components/form-create/custom-components/x-input-group.vue';
   import { variablesTypeList } from '../../config';
@@ -70,6 +73,12 @@
       type: Object,
       default() {
         return {};
+      }
+    },
+    variablesData: {
+      type: Array as PropType<string[]>,
+      default() {
+        return [];
       }
     }
   });
@@ -87,6 +96,20 @@
       emits('comfirm');
     }
   };
+  const getFormData = async () => {
+    const result = await formref.value?.validate();
+    if (!result) {
+      return formData;
+    }
+    return false;
+  };
+  const validatorName = (value, callback) => {
+    if (value && includes(props.variablesData, value)) {
+      callback('存在相同的变量名');
+    } else {
+      callback();
+    }
+  };
   const handleInput = () => {
     emits('update:dataInfo', formData);
   };
@@ -100,6 +123,9 @@
       deep: true
     }
   );
+  defineExpose({
+    getFormData
+  });
 </script>
 
 <style lang="less" scoped>
