@@ -33,7 +33,7 @@
                   v-model:value="formData[fm.Name]"
                   style="width: 100%"
                   width="100%"
-                  :form-id="formId"
+                  :form-id="fm.Name"
                   class="group-item"
                   :label-list="fm.labelList"
                   :position="sIndex"
@@ -61,13 +61,13 @@
                   v-model="formData[fm.Name]"
                   style="width: 100%"
                   width="100%"
-                  :editor-id="`${formId}_editorId_${index}`"
+                  :editor-id="`${fm.Name}_editorId_${index}`"
                 >
                   <template v-if="fm.childCom">
                     <component
                       :is="formComponents[fm.childCom]"
                       :key="`${formId}_child_editorId_${index}`"
-                      :editor-id="`${formId}_child_editorId_${index}`"
+                      :editor-id="`${fm.Name}_child_editorId_${index}`"
                       style="display: none"
                     ></component>
                     <component

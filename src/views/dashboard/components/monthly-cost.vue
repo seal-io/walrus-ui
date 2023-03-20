@@ -33,7 +33,8 @@
 </template>
 
 <script lang="ts" setup>
-  import { ref } from 'vue';
+  import useCallCommon from '@/hooks/use-call-common';
+  import { ref, computed } from 'vue';
   import LineBarChart from '@/components/line-bar-chart/index.vue';
 
   defineProps({
@@ -47,15 +48,7 @@
       }
     }
   });
-  const title = {
-    text: 'Daily Cost Trend',
-    left: 'center',
-    top: 0,
-    textStyle: {
-      color: 'rgb(78,89,105)',
-      fontSize: 12
-    }
-  };
+  const { t } = useCallCommon();
   const grid = {
     left: 0,
     right: 5,
@@ -71,6 +64,17 @@
       color: 'rgb(159, 232, 219)'
     }
   ]);
+  const title = computed(() => {
+    return {
+      text: t('dashboard.cost.daily'),
+      left: 'center',
+      top: 0,
+      textStyle: {
+        color: 'rgb(78,89,105)',
+        fontSize: 12
+      }
+    };
+  });
   // const xAxis = ref([]);
 
   // const dataList = ref([]);

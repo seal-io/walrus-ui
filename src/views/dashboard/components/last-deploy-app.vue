@@ -12,8 +12,16 @@
           ellipsis
           tooltip
           :cell-style="{ minWidth: '40px' }"
-          data-index="name"
-          :title="$t('Name')"
+          data-index="instance.name"
+          :title="$t('dashboard.table.instance')"
+        >
+        </a-table-column>
+        <a-table-column
+          ellipsis
+          tooltip
+          :cell-style="{ minWidth: '40px' }"
+          data-index="instance.application.name"
+          :title="$t('dashboard.table.name')"
         >
         </a-table-column>
         <a-table-column
@@ -22,7 +30,7 @@
           :cell-style="{ minWidth: '40px' }"
           align="center"
           data-index="time"
-          :title="$t('Time')"
+          :title="$t('dashboard.table.time')"
         >
           <template #cell="{ record }">
             <span>{{
@@ -36,16 +44,19 @@
           :cell-style="{ minWidth: '40px' }"
           align="center"
           data-index="duration"
-          :title="$t('Duration')"
+          :title="$t('dashboard.table.duration')"
         >
+          <template #cell="{ record }">
+            <span>{{ setDurationValue(record.duration) }}</span>
+          </template>
         </a-table-column>
         <a-table-column
           ellipsis
           tooltip
           :cell-style="{ minWidth: '40px' }"
-          align="left"
+          align="center"
           data-index="status"
-          :title="$t('Status')"
+          :title="$t('dashboard.table.status')"
         >
           <template #cell="{ record }">
             <StatusLabel
@@ -59,8 +70,8 @@
           tooltip
           :cell-style="{ minWidth: '40px' }"
           align="center"
-          data-index="env"
-          :title="$t('Environment')"
+          data-index="environment.name"
+          :title="$t('dashboard.table.envrionment')"
         >
         </a-table-column>
         <!-- <a-table-column
@@ -120,6 +131,12 @@
       name: 'applicationsDetail',
       query: { id: row.id }
     });
+  };
+  const setDurationValue = (val) => {
+    if (!val) return '-';
+    const seconds = val % 60;
+    const min = Math.floor(val / 60);
+    return `${min}'${seconds}"`;
   };
 </script>
 
