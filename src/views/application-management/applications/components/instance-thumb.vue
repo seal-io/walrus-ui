@@ -122,7 +122,8 @@
     .status {
       position: absolute;
       top: 5px;
-      left: 5px;
+      left: 0;
+      transform: scale(0.8);
     }
 
     :deep(.arco-link-icon) {

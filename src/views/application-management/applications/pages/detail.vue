@@ -29,6 +29,7 @@
             </template>
             <template #status>
               <StatusLabel
+                :zoom="0.9"
                 :status="{
                   status: get(item, 'status'),
                   message: get(item, 'statusMessage'),

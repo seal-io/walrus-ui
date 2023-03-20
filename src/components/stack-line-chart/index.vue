@@ -18,7 +18,7 @@
 </template>
 
 <script lang="ts" setup>
-  import { get, map, find } from 'lodash';
+  import { get, map, find, functionsIn } from 'lodash';
   import useChartOption from '@/hooks/chart-option';
   import { LineSeriesOption, EChartsOption, graphic } from 'echarts';
   import { ToolTipFormatterParams } from '@/types/echarts';

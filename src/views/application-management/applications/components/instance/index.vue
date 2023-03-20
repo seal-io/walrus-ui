@@ -25,21 +25,23 @@
     <ModuleCard title="历史版本">
       <applicationHistory></applicationHistory>
     </ModuleCard>
-    <a-tabs
-      lazy-load
-      type="rounded"
-      :active-key="activeKey"
-      class="module-tabs"
-      @change="handleTabChange"
-    >
-      <a-tab-pane
-        v-for="item in instanceTabs"
-        :key="item.value"
-        :title="item.label"
+    <ModuleCard title="资源信息" style="margin-top: 20px">
+      <a-tabs
+        lazy-load
+        type="rounded"
+        :active-key="activeKey"
+        class="module-tabs"
+        @change="handleTabChange"
       >
-        <Component :is="instanceTabMap[item.com]"></Component>
-      </a-tab-pane>
-    </a-tabs>
+        <a-tab-pane
+          v-for="item in instanceTabs"
+          :key="item.value"
+          :title="item.label"
+        >
+          <Component :is="instanceTabMap[item.com]"></Component>
+        </a-tab-pane>
+      </a-tabs>
+    </ModuleCard>
     <EditPageFooter>
       <template #save>
         <a-button
