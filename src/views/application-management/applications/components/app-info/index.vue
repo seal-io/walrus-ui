@@ -298,6 +298,9 @@
           })
         )
       };
+      if (!params.moduleID.length) {
+        return;
+      }
       const { data } = await queryModulesAllVersions(params);
       const addedVersionMap = getAppModulesVersionMap();
       appModuleVersions.value = reduce(

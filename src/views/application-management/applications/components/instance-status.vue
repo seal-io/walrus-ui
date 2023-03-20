@@ -1,6 +1,6 @@
 <template>
   <span class="label-wrapper">
-    <a-link href="#" target="_blank" style="display: inline">
+    <a-link style="display: inline">
       <slot name="label"
         ><span>{{ label }}</span></slot
       >

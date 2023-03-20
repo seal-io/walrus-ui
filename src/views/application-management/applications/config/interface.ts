@@ -40,6 +40,7 @@ export interface AppFormData {
   modules: Array<{
     name: string;
     variables: object;
+    version: string;
     module: {
       id: string;
     };

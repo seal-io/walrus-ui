@@ -3,7 +3,7 @@
     <span v-if="status.status">
       <a-tag :color="color">
         <span v-if="status.error || status.transitioning"
-          ><a-tooltip :content="status.message">
+          ><a-tooltip v-if="status.message" :content="status.message">
             <icon-exclamation-circle-fill
               style="margin-right: 4px; color: #fff"
             /> </a-tooltip
