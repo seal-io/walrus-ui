@@ -29,11 +29,13 @@
         >
       </template>
     </a-dropdown>
-
+    <div class="status">
+      <slot name="status"></slot>
+    </div>
     <div class="name"
       ><slot>{{ dataInfo.name }}</slot></div
     >
-    <div
+    <div class="description"
       ><slot name="description">{{ dataInfo.type }}</slot></div
     >
   </div>
@@ -103,7 +105,24 @@
     }
 
     .name {
+      width: -webkit-fill-available;
       margin-bottom: 10px;
+      overflow: hidden;
+      text-align: center;
+      text-overflow: ellipsis;
+    }
+
+    .description {
+      width: -webkit-fill-available;
+      overflow: hidden;
+      text-align: center;
+      text-overflow: ellipsis;
+    }
+
+    .status {
+      position: absolute;
+      top: 5px;
+      left: 5px;
     }
 
     :deep(.arco-link-icon) {

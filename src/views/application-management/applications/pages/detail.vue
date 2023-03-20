@@ -7,7 +7,7 @@
         :class="{ active: activeInstance === 'app' }"
         @click="handleClickApp"
       >
-        <span>应用信息</span>
+        <span>应用配置</span>
         <icon-right />
       </div>
       <div class="instance">
@@ -15,6 +15,7 @@
           <instanceThumb
             v-for="item in instanseList"
             :key="item.id"
+            :size="[160, 100]"
             :active="item.id === activeInstance"
             :data-info="item"
             :actions="instanceActions"
@@ -25,6 +26,16 @@
               <span style="font-weight: 700">{{
                 get(item, 'environment.name')
               }}</span>
+            </template>
+            <template #status>
+              <StatusLabel
+                :status="{
+                  status: get(item, 'status'),
+                  message: get(item, 'statusMessage'),
+                  transitioning: get(item, 'status') === 'Deploying',
+                  error: get(item, 'status') === 'DeployFailed'
+                }"
+              ></StatusLabel>
             </template>
           </instanceThumb>
           <!-- <a-tooltip content="添加应用实例">
@@ -68,6 +79,7 @@
   import GroupTitle from '@/components/group-title/index.vue';
   import thumbButton from '@/components/buttons/thumb-button.vue';
   import { queryEnvironments } from '@/views/operation-hub/environments/api';
+  import StatusLabel from '@/views/operation-hub/connectors/components/status-label.vue';
   import instanceThumb from '../components/instance-thumb.vue';
   import { InstanceData, AppFormData } from '../config/interface';
   import { instanceActions } from '../config/index';
