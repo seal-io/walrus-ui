@@ -159,7 +159,8 @@
   import {
     createApplication,
     queryItemApplication,
-    updateApplication
+    updateApplication,
+    queryProjectSecrets
   } from '../../api';
 
   const environmentList = inject(
@@ -263,14 +264,12 @@
         perPage: -1,
         projectID: route.params.projectId as string
       };
-      const [{ data }, { data: globalData }] = await Promise.all([
-        querySecrets(params),
-        querySecrets({ page: 1, perPage: -1 })
-      ]);
-      projectSecretList.value = uniqBy(
-        concat(data.items, globalData.items),
-        (item) => item.name
-      );
+      const { data } = await queryProjectSecrets(params);
+      // const [{ data }, { data: globalData }] = await Promise.all([
+      //   querySecrets(params),
+      //   querySecrets({ page: 1, perPage: -1 })
+      // ]);
+      projectSecretList.value = uniqBy(data, (item) => item.name);
     } catch (error) {
       projectSecretList.value = [];
       console.log(error);
@@ -409,6 +408,7 @@
         ...appModuleVersions.value
       }
     };
+    console.log('completeData.value===', completeData.value);
   };
   const handleCancel = () => {
     router.back();
