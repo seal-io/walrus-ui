@@ -191,7 +191,7 @@
     {
       id: props.editorId,
       // match: /(\w+)\.(\w*)$/,
-      match: /(\w+)?\.?(\w*)$/,
+      match: /(?<=\$\{.*)(\w+)?\.?(\w*)$/,
       index: 1,
       search(term: string, callback: SearchCallback<resultItem>, match: any) {
         const regx = /'?(\w+\.)*(\w*)$/g;

@@ -134,3 +134,12 @@ export const queryInstanceEndpoints = (params: { instanceID: string }) => {
     }
   );
 };
+
+export const queryProjectSecrets = (params) => {
+  return axios.get(`/projects/${params.projectID}/secrets`, {
+    params,
+    paramsSerializer: (obj) => {
+      return qs.stringify(obj);
+    }
+  });
+};
