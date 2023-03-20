@@ -72,14 +72,10 @@
             align="center"
             :cell-style="{ minWidth: '40px' }"
             data-index="scope"
-            title="应用范围"
+            title="项目"
           >
             <template #cell="{ record }">
-              <span>{{
-                !get(record, 'project.id')
-                  ? '全局'
-                  : setSecretScope(get(record, 'project.id'))
-              }}</span>
+              <span>{{ setSecretScope(get(record, 'project.id')) }}</span>
             </template>
           </a-table-column>
           <a-table-column
@@ -137,6 +133,7 @@
       :action="action"
       :info="itemInfo"
       :project-list="projectList"
+      :project-i-d="queryParams.projectID"
       @save="handleSaveItem"
     ></createSecret>
   </comCard>
@@ -196,12 +193,14 @@
           value: item.id
         };
       });
+      queryParams.projectID = get(projectList.value, '0.value') || '';
     } catch (error) {
       projectList.value = [];
       console.log(error);
     }
   };
   const fetchData = async () => {
+    if (!queryParams.projectID) return;
     try {
       loading.value = true;
       const params: any = {
@@ -290,9 +289,9 @@
     queryParams.page = 1;
     handleFilter();
   };
-  onMounted(() => {
+  onMounted(async () => {
+    await getProjectList();
     fetchData();
-    getProjectList();
     console.log('application list');
   });
 </script>
