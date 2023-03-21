@@ -106,7 +106,7 @@
     });
   };
   watchEffect(() => {
-    rowSelection.selectedKeys = [].concat(props.selectedList as never[]);
+    rowSelection.selectedRowKeys = [].concat(props.selectedList as never[]);
   });
 </script>
 

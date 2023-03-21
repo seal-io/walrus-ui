@@ -76,7 +76,7 @@
   import { PropType, watchEffect } from 'vue';
   import useRowSelect from '@/hooks/use-row-select';
   import useCallCommon from '@/hooks/use-call-common';
-  import { ProjectItem } from '../config/interface';
+  import { ProjectRowData } from '../config/interface';
 
   const props = defineProps({
     loading: {
@@ -86,7 +86,7 @@
       }
     },
     list: {
-      type: Array as PropType<ProjectItem[]>,
+      type: Array as PropType<ProjectRowData[]>,
       default() {
         return [];
       }
@@ -118,7 +118,7 @@
     emits('edit', row);
   };
   watchEffect(() => {
-    rowSelection.selectedKeys = [].concat(props.selectedList as never[]);
+    rowSelection.selectedRowKeys = [].concat(props.selectedList as never[]);
   });
 </script>
 

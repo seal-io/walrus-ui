@@ -26,6 +26,7 @@ export default {
   'operation.connectors.reinstall.button': 'Sure to reinstall',
   'operation.environments.menu': 'Environments',
   'operation.environments.create': 'New Environment',
+  'operation.environments.table.holder': 'please enter an environment name',
   'operation.environments.table.name': 'Name',
   'operation.environments.table.description': 'Description',
   'operation.environments.detail.addConnector': 'Add Connector',

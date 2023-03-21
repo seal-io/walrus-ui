@@ -245,7 +245,7 @@
       execSucceed();
       queryParams.page = 1;
       selectedKeys.value = [];
-      rowSelection.selectedKeys = [];
+      rowSelection.selectedRowKeys = [];
       handleFilter();
     } catch (error) {
       console.log(error);
