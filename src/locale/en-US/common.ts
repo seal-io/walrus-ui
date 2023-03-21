@@ -61,5 +61,7 @@ export default {
   'common.form.key': 'the same key exists',
   'common.date.utc': 'UTC time',
   'common.date.local': 'Local time',
-  'common.button.deploy': 'Deploy'
+  'common.button.deploy': 'Deploy',
+  'common.ws.close': 'The connection was lost, do you want to reconnect?',
+  'common.ws.reconnect': 'Reconnect'
 };

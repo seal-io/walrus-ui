@@ -1,8 +1,10 @@
 <template>
   <div class="tab-logs-wrap">
     <a-cascader
+      :loading="loading"
       style="width: 240px; margin-bottom: 8px"
       :options="containerList"
+      :model-value="logKey"
       placeholder="请选择对象"
       @change="handleObjectChange"
     ></a-cascader>
@@ -30,7 +32,7 @@
   } from 'vue';
   import AceEditor from '@/components/ace-editor/index.vue';
   import { InstanceResource, Cascader } from '../../config/interface';
-  import { generateResourcesKeys } from '../../config';
+  import { generateResourcesKeys, getDefaultValue } from '../../config';
   import { queryApplicationResource } from '../../api';
   import testData from '../../config/data';
 
@@ -39,6 +41,7 @@
   const logKey = ref('');
   const wssInstance: any = ref('');
   const content = ref('');
+  const loading = ref(false);
   // const dataList = ref<InstanceResource[]>([]);
   const containerList = ref<Cascader[]>([]);
 
@@ -61,26 +64,6 @@
       autoReconnect: false
     });
   };
-
-  const getApplicationResource = async () => {
-    if (!instanceId.value) return;
-    try {
-      const params = {
-        instanceID: instanceId.value,
-        page: 1,
-        perPage: -1
-      };
-      const { data } = await queryApplicationResource(params);
-      const list = data?.items || [];
-      // const list = testData;
-      containerList.value = generateResourcesKeys(list, 'loggable');
-    } catch (error) {
-      console.log(error);
-      containerList.value = [];
-      // dataList.value = [];
-    }
-  };
-
   const getResourceId = (val) => {
     const res = split(val, '?');
     const d = get(res, 1);
@@ -98,6 +81,30 @@
 
     console.log('object:', val, wssInstance.value);
   };
+  const getApplicationResource = async () => {
+    if (!instanceId.value) return;
+    try {
+      loading.value = true;
+      const params = {
+        instanceID: instanceId.value,
+        page: 1,
+        perPage: -1
+      };
+      const { data } = await queryApplicationResource(params);
+      const list = data?.items || [];
+      // const list = testData;
+      containerList.value = generateResourcesKeys(list, 'loggable');
+      const defaultValue = getDefaultValue(containerList.value);
+      handleObjectChange(defaultValue);
+      loading.value = false;
+    } catch (error) {
+      loading.value = false;
+      console.log(error);
+      containerList.value = [];
+      // dataList.value = [];
+    }
+  };
+
   const init = async () => {
     await getApplicationResource();
     // await getResourceKeys();

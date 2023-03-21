@@ -59,5 +59,7 @@ export default {
   'common.form.key': '存在相同的key',
   'common.date.utc': 'UTC时间',
   'common.date.local': '本地时间',
-  'common.button.deploy': '部署'
+  'common.button.deploy': '部署',
+  'common.ws.close': '连接已断开，是否重新连接？',
+  'common.ws.reconnect': '重新连接'
 };

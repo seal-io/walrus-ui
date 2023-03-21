@@ -1,9 +1,15 @@
 <template>
-  <div ref="terminal"></div>
+  <div class="wrap">
+    <div v-if="conReadyState === 0" class="status-text"
+      ><span>{{ statusText }}</span
+      ><icon-loading class="size-12"
+    /></div>
+    <div ref="terminal"></div>
+  </div>
 </template>
 
 <script lang="ts" setup>
-  import { ref, onMounted, onBeforeUnmount, watch } from 'vue';
+  import { ref, onMounted, onBeforeUnmount, watch, computed } from 'vue';
   import {
     debounce,
     trim,
@@ -11,11 +17,13 @@
     get,
     throttle,
     replace,
-    includes
+    includes,
+    compact
   } from 'lodash';
   import { Terminal } from 'xterm';
   import { FitAddon } from 'xterm-addon-fit';
   import 'xterm/css/xterm.css';
+  import { deleteModal } from '@/utils/monitor';
 
   const props = defineProps({
     terminalDetail: Object,
@@ -36,7 +44,10 @@
   const terminalSocket = ref<any>(null);
   const term = ref<any>(null);
   const command = ref('');
+  const statusText = ref('connecting...');
+  const actived = ref(true);
 
+  const conReadyState = ref(0);
   const runRealTerminal = () => {
     loading.value = false;
   };
@@ -126,6 +137,7 @@
       resizeRemoteTerminal();
     }
     const data = { Data: message.data };
+    conReadyState.value = terminalSocket.value.readyState;
     console.log('wss: receive', message);
     // const data = JSON.parse(message.data) || '';
     if (term.value.element) term.value.focus();
@@ -232,6 +244,13 @@
     termData();
     onTerminalResize();
   };
+  const handleTryConnect = () => {
+    deleteModal({
+      title: 'common.ws.close',
+      onOk: init,
+      okText: 'common.ws.reconnect'
+    });
+  };
   // 监听类型变化，重置term
   watch(
     () => props.url,
@@ -247,6 +266,17 @@
       immediate: true
     }
   );
+  watch(
+    () => conReadyState.value,
+    (ov) => {
+      if (ov === 3 && actived.value) {
+        handleTryConnect();
+      }
+    },
+    {
+      immediate: true
+    }
+  );
 
   onMounted(() => {
     init();
@@ -254,6 +284,7 @@
   onBeforeUnmount(() => {
     removeResizeListener();
     console.log('wss: dispose');
+    actived.value = false;
     if (terminalSocket.value) terminalSocket.value.close();
   });
 </script>
@@ -262,5 +293,19 @@
   #terminal {
     width: 100%;
     height: 100%;
+  }
+
+  .wrap {
+    position: relative;
+
+    .status-text {
+      position: absolute;
+      top: 0;
+      left: 0;
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      color: #fff;
+    }
   }
 </style>

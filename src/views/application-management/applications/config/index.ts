@@ -132,4 +132,14 @@ export const getResourceId = (val) => {
   };
 };
 
+export const getDefaultValue = (list: Cascader[]) => {
+  const data: Cascader = get(list, '0') || {};
+  const loop = (obj: Cascader) => {
+    if (!obj.children || !obj?.children?.length) {
+      return obj.value;
+    }
+    return loop(get(obj, 'children.0'));
+  };
+  return loop(data);
+};
 export default {};
