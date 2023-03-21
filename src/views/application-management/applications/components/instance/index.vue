@@ -23,7 +23,7 @@
       <BasicInfo></BasicInfo>
     </ModuleCard>
     <ModuleCard title="历史版本">
-      <applicationHistory></applicationHistory>
+      <applicationHistory :deploy-id="deployId"></applicationHistory>
     </ModuleCard>
     <ModuleCard title="资源信息" style="margin-top: 20px">
       <a-tabs
@@ -85,6 +85,7 @@
   import tabEndpoint from './tab-endpoint.vue';
   import applicationHistory from './application-history.vue';
   import createInstance from '../create-instance.vue';
+  import deployLogs from '../deploy-logs.vue';
   import BasicInfo from './basic-info.vue';
   import { instanceTabs } from '../../config';
   import { queryItemApplicationInstances } from '../../api';
@@ -103,6 +104,7 @@
   const activeKey = ref('resource');
   const showInstanceModal = ref(false);
   const status = ref('edit');
+  const deployId = ref('');
   const instanceTabMap = {
     tabResource: markRaw(tabResource),
     tabLogs: markRaw(tabLogs),
@@ -120,7 +122,9 @@
   const handleTabChange = (val) => {
     activeKey.value = val;
   };
-  const handleSaveInstanceInfo = () => {};
+  const handleSaveInstanceInfo = (res) => {
+    deployId.value = res?.data.id;
+  };
   const handleUpgradeInstance = () => {
     status.value = 'edit';
     showInstanceModal.value = true;
@@ -139,6 +143,7 @@
   watch(
     () => props.instanceId,
     () => {
+      deployId.value = '';
       // getInstanceInfo();
     },
     {

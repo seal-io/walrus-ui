@@ -80,6 +80,14 @@ export const queryApplicationRevisions = (
     }
   });
 };
+export const queryApplicationRevisionsDetail = (params: { id: string }) => {
+  return axios.get(`/application-revisions/${params.id}`, {
+    params,
+    paramsSerializer: (obj) => {
+      return qs.stringify(obj);
+    }
+  });
+};
 
 export const deleteApplicationRevisions = (data: { id: string }[]) => {
   return axios.delete(`/application-revisions`, { data });

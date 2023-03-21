@@ -259,11 +259,15 @@
         step: 'day'
       };
       const { data } = await queryCostManagemantData(params);
-      const result = getStackLineChartDataList(data.items || [], {
-        value: 'totalCost',
-        name: 'itemName',
-        xAxis: 'startTime'
-      });
+      const list = data.items || [];
+      const result = getStackLineChartDataList(
+        sortBy(list, (s) => s.startTime),
+        {
+          value: 'totalCost',
+          name: 'itemName',
+          xAxis: 'startTime'
+        }
+      );
       projectCostData.list = result.line as never[];
       projectCostData.xAxis = result.xAxis as never[];
       projectCostData.dataConfig = result.dataConfig as never[];

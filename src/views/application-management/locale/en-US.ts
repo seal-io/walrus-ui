@@ -25,6 +25,7 @@ export default {
   'applications.applications.history.operator': 'Operator',
   'applications.applications.history.clone': 'Clone',
   'applications.applications.history.rollback': 'Rollback',
+  'applications.applications.history.detail': 'Revision Details',
   'applications.workflows.menu': 'Workflows',
   'applications.workflows.create': 'New Pipeline',
   'applications.projects.menu': 'Projects List',

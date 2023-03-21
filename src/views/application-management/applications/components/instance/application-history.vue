@@ -1,5 +1,11 @@
 <template>
   <div class="history-wrap">
+    <deployLogs
+      v-if="showLogs"
+      title="升级实例"
+      :revision-id="revisionId"
+      @close="handleCloseLogs"
+    ></deployLogs>
     <a-table
       :loading="loading"
       column-resizable
@@ -28,6 +34,33 @@
             <span>{{
               dayjs(record.createTime).format('YYYY-MM-DD HH:mm:ss')
             }}</span>
+          </template>
+        </a-table-column>
+        <a-table-column
+          ellipsis
+          tooltip
+          :cell-style="{ minWidth: '40px' }"
+          data-index="duration"
+          :title="$t('dashboard.table.duration')"
+        >
+          <template #cell="{ record }">
+            <span>{{ setDurationValue(record.duration) }}</span>
+          </template>
+        </a-table-column>
+        <a-table-column
+          ellipsis
+          tooltip
+          :cell-style="{ minWidth: '40px' }"
+          data-index="status"
+          :title="$t('dashboard.table.status')"
+        >
+          <template #cell="{ record }">
+            <span>{{ record.status }}</span>
+            <a-link
+              v-if="record.status === 'Running'"
+              @click="handleShowDetail(record)"
+              >{{ $t('common.button.detail') }}</a-link
+            >
           </template>
         </a-table-column>
         <!-- <a-table-column
@@ -60,6 +93,16 @@
                 /></template>
                 <!-- {{ $t('common.button.delete') }} -->
               </a-link>
+              <a-link
+                type="text"
+                size="small"
+                @click="handleViewDetail(record)"
+              >
+                <template #icon
+                  ><icon-font type="icon-rizhi" style="font-size: 16px"
+                /></template>
+                <!-- {{ $t('common.button.delete') }} -->
+              </a-link>
             </a-space>
           </template>
         </a-table-column>
@@ -76,24 +119,44 @@
       @change="handlePageChange"
       @page-size-change="handlePageSizeChange"
     />
+    <revisionDetailVue
+      v-model:show="showDetailModal"
+      :revision-id="revisionDetailId"
+    ></revisionDetailVue>
   </div>
 </template>
 
 <script lang="ts" setup>
   import dayjs from 'dayjs';
-  import { map } from 'lodash';
+  import { map, get, find } from 'lodash';
   import { onMounted, ref, reactive, inject, watch, InjectionKey } from 'vue';
   import { deleteModal } from '@/utils/monitor';
   import { HistoryData } from '../../config/interface';
+  import { setDurationValue } from '../../config';
+  import deployLogs from '../deploy-logs.vue';
+  import revisionDetailVue from '../revision-detail.vue';
   import {
     queryApplicationRevisions,
     deleteApplicationRevisions
   } from '../../api';
 
+  const props = defineProps({
+    deployId: {
+      type: String,
+      default() {
+        return '';
+      }
+    }
+  });
   const instanceId = inject('instanceId', ref(''));
+  const revisionId = ref('');
+  const revisionDetailId = ref('');
   const total = ref(0);
   const loading = ref(false);
+  const showDetailModal = ref(false);
   const ids = ref<{ id: string }[]>([]);
+  const showLogs = ref(false);
+  const hasLogs = ref(false);
   const queryParams = reactive({
     page: 1,
     perPage: 10
@@ -105,6 +168,14 @@
   const handleRollback = (row) => {
     console.log(row);
   };
+  const handleCloseLogs = () => {
+    showLogs.value = false;
+  };
+  const handleShowDetail = (row) => {
+    revisionId.value = row.id;
+    showLogs.value = true;
+  };
+
   const fetchData = async () => {
     if (!instanceId) return;
     try {
@@ -151,11 +222,31 @@
     ids.value = [{ id: row.id }];
     deleteModal({ onOk: handleDeleteConfirm });
   };
+  const handleViewDetail = (row) => {
+    revisionDetailId.value = row.id;
+    setTimeout(() => {
+      showDetailModal.value = true;
+    }, 100);
+  };
   watch(
     () => instanceId.value,
     () => {
       queryParams.page = 1;
       fetchData();
+    },
+    {
+      immediate: true
+    }
+  );
+  watch(
+    () => props.deployId,
+    (val) => {
+      if (val) {
+        revisionId.value = props.deployId;
+        showLogs.value = true;
+      } else {
+        showLogs.value = false;
+      }
     },
     {
       immediate: true

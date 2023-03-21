@@ -28,6 +28,13 @@
         :default-value="defaultBasicInfo"
       ></BasicInfo>
     </ModuleCard>
+    <ModuleCard v-if="showLogs" title="部署日志">
+      <DeployLogs
+        title="部署实例"
+        :revision-id="revisionId"
+        @click="handleClostLogs"
+      ></DeployLogs>
+    </ModuleCard>
     <ModuleCard title="Modules">
       <div class="content">
         <instanceThumb
@@ -164,6 +171,7 @@
   import moduleWrapper from '../module-wrapper.vue';
   import editModule from './edit-module.vue';
   import BasicInfo from './basic-info.vue';
+  import DeployLogs from '../deploy-logs.vue';
   import { AppFormData, Variables, AppModule } from '../../config/interface';
   import { moduleActions } from '../../config';
   import {
@@ -179,6 +187,7 @@
   );
   const { router, route } = useCallCommon();
   const basicform = ref();
+  const revisionId = ref('');
   const appInfo = reactive({
     name: '',
     description: '',
@@ -212,6 +221,7 @@
   const appModules = ref<AppModule[]>([]);
   const completeData = ref<Record<string, any>>({});
   const collapseStatus = ref(0);
+  const showLogs = ref(false);
   let copyFormData: any = {};
 
   provide('completeData', completeData);
@@ -291,8 +301,13 @@
     });
     collapseStatus.value = appInfo?.variables?.length - 1 || 0;
   };
-  const handleSaveInstanceInfo = () => {
+  const handleSaveInstanceInfo = (res) => {
+    revisionId.value = res?.data?.id;
+    showLogs.value = !!revisionId.value;
     emits('deploy');
+  };
+  const handleClostLogs = () => {
+    showLogs.value = false;
   };
   const handleDeployApp = () => {
     showInstanceModal.value = true;
