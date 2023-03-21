@@ -49,6 +49,7 @@
 
 <script lang="ts" setup>
   import { each, get, map } from 'lodash';
+  import ADescriptionsItem from '@arco-design/web-vue/es/descriptions/descriptions-item';
   import { ref, PropType, watch, computed } from 'vue';
   import useCallCommon from '@/hooks/use-call-common';
   import EditPageFooter from '@/components/edit-page-footer/index.vue';
