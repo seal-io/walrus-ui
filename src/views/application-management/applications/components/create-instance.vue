@@ -169,17 +169,21 @@
     if (!res) {
       try {
         submitLoading.value = true;
+        let resData: any = null;
         // TODO
         if (props.status === 'create') {
-          await deployApplication({ ...formData, id: route.query.id || '' });
+          resData = await deployApplication({
+            ...formData,
+            id: route.query.id || ''
+          });
         } else {
-          await upgradeApplicationInstance({
+          resData = await upgradeApplicationInstance({
             ...formData,
             id: instanceId.value
           });
         }
         setTimeout(() => {
-          emit('save');
+          emit('save', resData);
         }, 200);
         emit('update:show', false);
         submitLoading.value = false;

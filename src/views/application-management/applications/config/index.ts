@@ -1,4 +1,5 @@
 import { filter, map, get, split } from 'lodash';
+import dayjs from 'dayjs';
 import { KeysItem, InstanceResource, Cascader } from './interface';
 
 export const instanceTabs = [
@@ -52,6 +53,35 @@ export const statusMap = {
   DeployFailed: 'error',
   DeleteFailed: 'error'
 };
+export const setDurationValue = (val) => {
+  if (!val) return '-';
+  const seconds = val % 60;
+  const min = Math.floor(val / 60);
+  return `${min}'${seconds}"`;
+};
+export const revisionDetailConfig = [
+  {
+    label: '创建日期',
+    key: 'createTime',
+    value: '',
+    formatter(val) {
+      return dayjs(val).format('YYYY-MM-DD HH:mm:ss');
+    }
+  },
+  {
+    label: '状态',
+    key: 'status',
+    value: ''
+  },
+  {
+    label: '部署时长',
+    key: 'duration',
+    value: '',
+    formatter(val) {
+      return setDurationValue(val);
+    }
+  }
+];
 export const generateResourcesKeys = (reources: InstanceResource[], type) => {
   const loop = (keysItem: KeysItem, id) => {
     let list: KeysItem[] = keysItem.keys || [];
@@ -92,6 +122,7 @@ export const generateResourcesKeys = (reources: InstanceResource[], type) => {
   const res = filter(list, (o) => o?.children?.length) as never[];
   return res;
 };
+
 export const getResourceId = (val) => {
   const res = split(val, '?');
   const d = get(res, 1);
@@ -100,4 +131,5 @@ export const getResourceId = (val) => {
     id: get(split(d, '='), 1)
   };
 };
+
 export default {};

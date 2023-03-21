@@ -32,7 +32,7 @@
                 :zoom="0.9"
                 :status="{
                   status: get(item, 'status'),
-                  message: get(item, 'statusMessage'),
+                  message: '',
                   transitioning: get(item, 'status') === 'Deploying',
                   error: get(item, 'status') === 'DeployFailed'
                 }"

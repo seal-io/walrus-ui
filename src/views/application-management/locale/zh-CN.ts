@@ -24,6 +24,7 @@ export default {
   'applications.applications.history.operator': '操作人',
   'applications.applications.history.clone': '克隆',
   'applications.applications.history.rollback': '回滚',
+  'applications.applications.history.detail': '版本详情',
   'applications.workflows.menu': '工作流',
   'applications.workflows.create': '新建流程',
   'applications.projects.menu': '项目列表',

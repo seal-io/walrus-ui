@@ -60,7 +60,7 @@
         >
           <template #cell="{ record }">
             <StatusLabel
-              :color="statusColorMap[record.status]"
+              :color="get(statusColorMap, toLower(record.status))"
               :status="record.status"
             ></StatusLabel>
           </template>
@@ -104,6 +104,7 @@
 </template>
 
 <script lang="ts" setup>
+  import { toLower, get } from 'lodash';
   import dayjs from 'dayjs';
   import { PropType } from 'vue';
   import useCallCommon from '@/hooks/use-call-common';

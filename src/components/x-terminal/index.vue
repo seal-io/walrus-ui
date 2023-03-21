@@ -178,7 +178,8 @@
     term.value = new Terminal({
       lineHeight: 1.2,
       fontSize: 12,
-      fontFamily: "Monaco, Menlo, Consolas, 'Courier New', monospace",
+      fontFamily:
+        "'Menlo For Powerline', Consolas, 'Liberation Mono', Menlo, Courier, monospace",
       theme: {
         background: '#181d28'
       },
