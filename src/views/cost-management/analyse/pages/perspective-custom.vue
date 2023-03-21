@@ -47,8 +47,9 @@
       <LineBarChart
         :loading="apploading || preloading"
         height="220px"
-        show-type="line"
+        :show-type="projectCostFilters.step ? 'line' : 'bar'"
         :line-list="projectCostChart.line"
+        :bar-list="projectCostChart.bar"
         :data-config="projectCostChart.dataConfig"
         :x-axis="projectCostChart.xAxis"
         :config-options="{

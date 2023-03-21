@@ -6,6 +6,7 @@ export const statusColorMap = {
   running: 'rgba(102, 201, 255,.8)',
   auditing: 'rgba(135, 145, 247, .5)',
   failed: 'rgba(255, 197, 192, 1)',
+  succeed: 'rgba(159, 232, 219, 1)',
   succeeded: 'rgba(159, 232, 219, 1)'
 };
 

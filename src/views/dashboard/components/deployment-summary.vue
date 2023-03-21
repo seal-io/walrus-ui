@@ -99,7 +99,7 @@
   };
   const height = '280px';
   const pieCenter = ['50%', '50%'];
-  const pieRadius = ['0%', '90%'];
+  const pieRadius = ['0%', '80%'];
   const { t } = useI18n();
   const queryParams = {
     step: 'day', // day month year

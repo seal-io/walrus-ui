@@ -155,6 +155,7 @@
   } from 'lodash';
   import useCallCommon from '@/hooks/use-call-common';
   import thumbButton from '@/components/buttons/thumb-button.vue';
+  import { execSucceed } from '@/utils/monitor';
   import { beforeLeaveCallback } from '@/hooks/save-before-leave';
   import {
     queryModules,
@@ -479,8 +480,11 @@
         res.id = data.id;
       }
       submitLoading.value = false;
-      await Promise.all([getModulesVersions(), getApplicationDetail()]);
-      setCompleteData();
+      if (id) {
+        await Promise.all([getModulesVersions(), getApplicationDetail()]);
+        setCompleteData();
+      }
+      execSucceed();
       emits('save', res.id);
     } catch (error) {
       submitLoading.value = false;

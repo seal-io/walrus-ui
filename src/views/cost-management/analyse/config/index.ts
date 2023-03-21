@@ -9,7 +9,12 @@ export const operatorList = [
   { label: 'In', value: 'in' },
   { label: 'Not In', value: 'notin' }
 ];
-
+export const dateFormatMap = {
+  day: 'YYYY.MM.DD',
+  week: 'YYYY.MM.DD',
+  month: 'YYYY.MM',
+  year: 'YYYY'
+};
 export const costShareMode = [
   // { label: '展示', name: 'Show', value: 'show' },
   { label: '平均分摊', name: 'Equally split', value: 'equally' },

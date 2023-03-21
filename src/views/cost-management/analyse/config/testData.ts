@@ -132,41 +132,316 @@ export const filtersData = {
 export const workloadData = {
   items: [
     {
-      totalCost: 15.400544344179284,
-      sharedCost: 12.44309434417929,
-      cpuCost: 2.899569999999995,
-      ramCost: 0.05788000000000007,
-      itemName: '__unallocated__'
+      totalCost: 0.38400000000000006,
+      cpuCost: 0.3385999999999999,
+      ramCost: 0.04539999999999998,
+      itemName: 'comic-mule'
     },
     {
-      totalCost: 5.072189289085003,
-      sharedCost: 4.0981492890850015,
-      cpuCost: 0.8921699999999992,
-      ramCost: 0.08186999999999978,
-      itemName: 'kube-system/deployment/coredns'
+      totalCost: 0.28091000000000005,
+      cpuCost: 0.24768999999999994,
+      ramCost: 0.03322,
+      itemName: 'organic-garfish'
     },
     {
-      totalCost: 2.4773034069405795,
-      sharedCost: 2.00157340694058,
-      cpuCost: 0.4460899999999996,
-      ramCost: 0.0296399999999999,
-      itemName: 'kube-system/daemonset/kindnet'
+      totalCost: 0.21516000000000002,
+      cpuCost: 0.18971999999999997,
+      ramCost: 0.02544,
+      itemName: 'calm-lobster'
     },
     {
-      totalCost: 0.3968538722446377,
-      sharedCost: 0.3206438722446378,
-      cpuCost: 0.045160000000000096,
-      ramCost: 0.031050000000000084,
-      itemName: 'seal-system/deployment/seal-opencost'
+      totalCost: 0.19662000000000013,
+      cpuCost: 0.18011999999999992,
+      ramCost: 0.016500000000000004,
+      itemName: 'kube-system'
     },
-    { itemName: 'argo/deployment/argo-server' },
     {
-      itemName: 'seal-system/daemonset/seal-prometheus-prometheus-node-exporter'
+      totalCost: 0.02606388888888891,
+      pvCost: 0.02606388888888891,
+      itemName: 'default'
     },
-    { itemName: 'kube-system/daemonset/kube-proxy' },
-    { itemName: 'argo/deployment/workflow-controller' },
-    { itemName: 'seal-system/deployment/seal-prometheus-server' },
-    { itemName: 'local-path-storage/deployment/local-path-provisioner' }
+    {
+      totalCost: 0.015380000000000005,
+      cpuCost: 0.009120000000000003,
+      ramCost: 0.006259999999999998,
+      itemName: 'seal-system'
+    },
+    { totalCost: 0.00066, pvCost: 0.00066, itemName: '__unallocated__' }
   ],
-  pagination: { page: 1, perPage: 100, total: 11, totalPage: 1, partial: true }
+  pagination: { page: 1, perPage: 100, total: 7, totalPage: 1, partial: false }
+};
+// namespace by day
+export const namespaceData = {
+  items: [
+    {
+      totalCost: 0.19873000000000002,
+      cpuCost: 0.17522999999999997,
+      ramCost: 0.0235,
+      itemName: 'comic-mule',
+      startTime: '2023-03-20T00:00:00Z'
+    },
+    {
+      totalCost: 0.19873000000000002,
+      cpuCost: 0.17522999999999997,
+      ramCost: 0.0235,
+      itemName: 'organic-garfish',
+      startTime: '2023-03-20T00:00:00Z'
+    },
+    {
+      totalCost: 0.19723000000000002,
+      cpuCost: 0.17390999999999998,
+      ramCost: 0.02332,
+      itemName: 'calm-lobster',
+      startTime: '2023-03-20T00:00:00Z'
+    },
+    {
+      totalCost: 0.1378121794871795,
+      cpuCost: 0.11594000000000003,
+      ramCost: 0.015550000000000001,
+      pvCost: 0.006322179487179486,
+      itemName: 'default',
+      startTime: '2023-03-10T00:00:00Z'
+    },
+    {
+      totalCost: 0.10310000000000001,
+      cpuCost: 0.09091000000000002,
+      ramCost: 0.012190000000000001,
+      itemName: 'comic-mule',
+      startTime: '2023-03-17T00:00:00Z'
+    },
+    {
+      totalCost: 0.09461166666666666,
+      cpuCost: 0.08169000000000001,
+      ramCost: 0.01096,
+      pvCost: 0.0019616666666666667,
+      itemName: 'default',
+      startTime: '2023-03-09T00:00:00Z'
+    },
+    {
+      totalCost: 0.08624,
+      cpuCost: 0.079,
+      ramCost: 0.0072400000000000025,
+      itemName: 'kube-system',
+      startTime: '2023-03-11T00:00:00Z'
+    },
+    {
+      totalCost: 0.07646000000000001,
+      cpuCost: 0.07004000000000002,
+      ramCost: 0.006420000000000002,
+      itemName: 'kube-system',
+      startTime: '2023-03-20T00:00:00Z'
+    },
+    {
+      totalCost: 0.06425,
+      cpuCost: 0.056650000000000006,
+      ramCost: 0.007599999999999999,
+      itemName: 'organic-garfish',
+      startTime: '2023-03-17T00:00:00Z'
+    },
+    {
+      totalCost: 0.06424,
+      cpuCost: 0.05665000000000001,
+      ramCost: 0.0075899999999999995,
+      itemName: 'comic-mule',
+      startTime: '2023-03-16T00:00:00Z'
+    },
+    {
+      totalCost: 0.054600000000000024,
+      cpuCost: 0.05002000000000002,
+      ramCost: 0.00458,
+      itemName: 'kube-system',
+      startTime: '2023-03-14T00:00:00Z'
+    },
+    {
+      totalCost: 0.04886000000000002,
+      cpuCost: 0.04476000000000002,
+      ramCost: 0.0040999999999999995,
+      itemName: 'kube-system',
+      startTime: '2023-03-10T00:00:00Z'
+    },
+    {
+      totalCost: 0.039660000000000015,
+      cpuCost: 0.03634000000000001,
+      ramCost: 0.0033199999999999996,
+      itemName: 'kube-system',
+      startTime: '2023-03-15T00:00:00Z'
+    },
+    {
+      totalCost: 0.039660000000000015,
+      cpuCost: 0.03634000000000001,
+      ramCost: 0.0033199999999999996,
+      itemName: 'kube-system',
+      startTime: '2023-03-17T00:00:00Z'
+    },
+    {
+      totalCost: 0.03586,
+      cpuCost: 0.03162,
+      ramCost: 0.00424,
+      itemName: 'calm-lobster',
+      startTime: '2023-03-21T00:00:00Z'
+    },
+    {
+      totalCost: 0.03586,
+      cpuCost: 0.03162,
+      ramCost: 0.00424,
+      itemName: 'comic-mule',
+      startTime: '2023-03-21T00:00:00Z'
+    },
+    {
+      totalCost: 0.03586,
+      cpuCost: 0.03162,
+      ramCost: 0.00424,
+      itemName: 'organic-garfish',
+      startTime: '2023-03-21T00:00:00Z'
+    },
+    {
+      totalCost: 0.035060000000000015,
+      cpuCost: 0.03212000000000001,
+      ramCost: 0.0029399999999999995,
+      itemName: 'kube-system',
+      startTime: '2023-03-09T00:00:00Z'
+    },
+    {
+      totalCost: 0.035060000000000015,
+      cpuCost: 0.03212000000000001,
+      ramCost: 0.0029399999999999995,
+      itemName: 'kube-system',
+      startTime: '2023-03-13T00:00:00Z'
+    },
+    {
+      totalCost: 0.03394,
+      cpuCost: 0.031079999999999997,
+      ramCost: 0.0028599999999999997,
+      itemName: 'kube-system',
+      startTime: '2023-03-16T00:00:00Z'
+    },
+    {
+      totalCost: 0.0138,
+      cpuCost: 0.01264,
+      ramCost: 0.00116,
+      itemName: 'kube-system',
+      startTime: '2023-03-21T00:00:00Z'
+    },
+    {
+      totalCost: 0.01035833333333333,
+      pvCost: 0.01035833333333333,
+      itemName: 'default',
+      startTime: '2023-03-20T00:00:00Z'
+    },
+    {
+      totalCost: 0.006749999999999998,
+      cpuCost: 0.004,
+      ramCost: 0.0027500000000000003,
+      itemName: 'seal-system',
+      startTime: '2023-03-11T00:00:00Z'
+    },
+    {
+      totalCost: 0.005989999999999999,
+      cpuCost: 0.00355,
+      ramCost: 0.0024400000000000003,
+      itemName: 'seal-system',
+      startTime: '2023-03-20T00:00:00Z'
+    },
+    {
+      totalCost: 0.005481666666666666,
+      pvCost: 0.005481666666666666,
+      itemName: 'default',
+      startTime: '2023-03-17T00:00:00Z'
+    },
+    {
+      totalCost: 0.005367333333333334,
+      cpuCost: 0.00395,
+      ramCost: 0.00053,
+      pvCost: 0.0008873333333333333,
+      itemName: 'default',
+      startTime: '2023-03-11T00:00:00Z'
+    },
+    {
+      totalCost: 0.0051516666666666655,
+      pvCost: 0.0051516666666666655,
+      itemName: 'default',
+      startTime: '2023-03-15T00:00:00Z'
+    },
+    {
+      totalCost: 0.004632222222222222,
+      pvCost: 0.004632222222222222,
+      itemName: 'default',
+      startTime: '2023-03-16T00:00:00Z'
+    },
+    {
+      totalCost: 0.00427,
+      cpuCost: 0.00253,
+      ramCost: 0.0017399999999999998,
+      itemName: 'seal-system',
+      startTime: '2023-03-14T00:00:00Z'
+    },
+    {
+      totalCost: 0.0038300000000000005,
+      cpuCost: 0.0022700000000000003,
+      ramCost: 0.00156,
+      itemName: 'seal-system',
+      startTime: '2023-03-10T00:00:00Z'
+    },
+    {
+      totalCost: 0.003776666666666666,
+      pvCost: 0.003776666666666666,
+      itemName: 'default',
+      startTime: '2023-03-14T00:00:00Z'
+    },
+    {
+      totalCost: 0.0031000000000000003,
+      cpuCost: 0.00184,
+      ramCost: 0.00126,
+      itemName: 'seal-system',
+      startTime: '2023-03-17T00:00:00Z'
+    },
+    {
+      totalCost: 0.0031000000000000003,
+      cpuCost: 0.00184,
+      ramCost: 0.00126,
+      itemName: 'seal-system',
+      startTime: '2023-03-15T00:00:00Z'
+    },
+    {
+      totalCost: 0.0027500000000000003,
+      cpuCost: 0.0016300000000000002,
+      ramCost: 0.0011200000000000001,
+      itemName: 'seal-system',
+      startTime: '2023-03-13T00:00:00Z'
+    },
+    {
+      totalCost: 0.0027500000000000003,
+      cpuCost: 0.0016300000000000002,
+      ramCost: 0.0011200000000000001,
+      itemName: 'seal-system',
+      startTime: '2023-03-09T00:00:00Z'
+    },
+    {
+      totalCost: 0.00265,
+      cpuCost: 0.00157,
+      ramCost: 0.0010800000000000002,
+      itemName: 'seal-system',
+      startTime: '2023-03-16T00:00:00Z'
+    },
+    {
+      totalCost: 0.00242,
+      pvCost: 0.00242,
+      itemName: 'default',
+      startTime: '2023-03-13T00:00:00Z'
+    },
+    {
+      totalCost: 0.00108,
+      cpuCost: 0.00064,
+      ramCost: 0.00044,
+      itemName: 'seal-system',
+      startTime: '2023-03-21T00:00:00Z'
+    },
+    {
+      totalCost: 0.00044,
+      pvCost: 0.00044,
+      itemName: 'default',
+      startTime: '2023-03-21T00:00:00Z'
+    }
+  ],
+  pagination: { page: 1, perPage: 100, total: 39, totalPage: 1, partial: false }
 };

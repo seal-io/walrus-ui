@@ -45,7 +45,7 @@
             </template>
             <template #extra>
               <span>{{ round(monthlyCostData.currentMonth, 4) || 0 }}</span>
-              <span class="rate">
+              <span v-if="monthlyCostData.lastMonth" class="rate">
                 <icon-arrow-up
                   v-if="
                     subtract(
