@@ -48,9 +48,9 @@
                 :key="index"
                 style="line-height: 1"
                 :href="
-                  !includes(item, 'https') && !includes(item, 'http')
-                    ? `http://${item}`
-                    : item
+                  includes(item, 'https') || includes(item, 'http')
+                    ? item
+                    : `http://${item}`
                 "
                 target="_blank"
                 >{{

@@ -153,7 +153,7 @@
     }, 100);
   };
   const handleReset = () => {
-    queryParams.name = '';
+    queryParams.query = '';
     queryParams.page = 1;
     handleFilter();
   };
