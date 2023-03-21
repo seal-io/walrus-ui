@@ -29,14 +29,30 @@ export default function handleError(Vue: App, baseUrl: string) {
   };
 }
 
-export const deleteModal = async ({ onOk }) => {
+export const deleteModal = async ({
+  onOk,
+  content,
+  title = 'common.delete.tips',
+  okText = 'common.button.confirm'
+}: {
+  onOk: () => void;
+  content?: string;
+  title?: string;
+  okText?: string;
+}) => {
   Modal.warning({
     alignCenter: false,
     top: '20%',
     hideCancel: false,
-    title: i18n.global.t('common.delete.tips'),
-    content: '',
-    okText: i18n.global.t('common.button.confirm'),
+    title: i18n.global.t(title),
+    content: () => {
+      return h(
+        'div',
+        { style: { 'text-align': 'center' } },
+        i18n.global.t(content || '')
+      );
+    },
+    okText: i18n.global.t(okText),
     cancelText: i18n.global.t('common.button.cancel'),
     onOk
   });

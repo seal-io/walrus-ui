@@ -19,6 +19,8 @@ export default {
   'operation.connectors.rules.kubeconfig': 'kubeconfig为必填',
   'operation.connectors.rules.kubeconfigTips': '可从文件读取或者直接输入',
   'operation.connectors.rules.enable': '启用成本分析(可选)',
+  'operation.connectors.reinstall.tips': '重装历史数据将被删除',
+  'operation.connectors.reinstall.button': '确定重装',
   'operation.environments.menu': '环境',
   'operation.environments.create': '新建环境',
   'operation.environments.edit': '编辑环境',

@@ -22,6 +22,8 @@ export default {
   'operation.connectors.rules.kubeconfigTips':
     'can be read from a file or entered directly',
   'operation.connectors.rules.enable': 'Enable cost analysis (optional)',
+  'operation.connectors.reinstall.tips': 'Reload history data will be deleted',
+  'operation.connectors.reinstall.button': 'Sure to reinstall',
   'operation.environments.menu': 'Environments',
   'operation.environments.create': 'New Environment',
   'operation.environments.table.name': 'Name',
