@@ -93,7 +93,10 @@ export default function usePerspectiveCost(props) {
         // endTime: dayjs(queryParams.endTime).format('YYYY-MM-DDT23:59:59Z')
       };
       const { data } = await queryPerspectiveData(params);
-      let list = data?.items || [];
+      let list = map(data?.items || [], (s) => {
+        s.totalCost = s.totalCost || 0;
+        return s;
+      });
       // let list = statckLineData;
       projectCostChart.value = { xAxis: [], line: [], bar: [], dataConfig: [] };
       if (!projectCostFilters.value.step) {
@@ -139,11 +142,13 @@ export default function usePerspectiveCost(props) {
           {}
         );
 
+        console.log('dataObj>>>>>>>', dataObj);
         each(keys(dataObj), (pKey) => {
           projectCostChart.value.line.push({
             name: pKey,
             value: dataObj[pKey]['totalCost']
           });
+          // legend
           projectCostChart.value.dataConfig.push({
             name: pKey,
             label: pKey
@@ -159,6 +164,7 @@ export default function usePerspectiveCost(props) {
           }
         );
       }
+      console.log('projectCostChart===', projectCostChart.value);
       apploading.value = false;
     } catch (error) {
       apploading.value = false;

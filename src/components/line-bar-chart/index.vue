@@ -3,6 +3,7 @@
     <a-spin style="width: 100%" :loading="loading">
       <BarChart
         v-if="showType === 'bar'"
+        :key="barList.length"
         style="flex: 1"
         :data-list="barList"
         v-bind="$attrs"
@@ -10,6 +11,7 @@
       ></BarChart>
       <stackLineChart
         v-if="showType === 'line'"
+        :key="lineList.length"
         style="flex: 1"
         :data="lineList"
         v-bind="$attrs"

@@ -1,6 +1,7 @@
 <template>
   <div>
     <a-cascader
+      :loading="loading"
       :model-value="resourceKey"
       style="width: 240px; margin-bottom: 8px"
       :options="containerList"
@@ -16,13 +17,18 @@
   import xTerminal from '@/components/x-terminal/index.vue';
   import { queryApplicationResource } from '../../../api';
   import { Cascader } from '../../../config/interface';
-  import { generateResourcesKeys, getResourceId } from '../../../config';
+  import {
+    generateResourcesKeys,
+    getResourceId,
+    getDefaultValue
+  } from '../../../config';
 
   const localServer = window.location.host;
   const instanceId = inject('instanceId', ref(''));
   const resourceId = ref('');
   const resourceKey = ref('');
   const containerList = ref<Cascader[]>([]);
+  const loading = ref(false);
 
   const wssURL = computed(() => {
     if (!resourceId.value || !resourceKey.value) {
@@ -35,9 +41,11 @@
     resourceKey.value = result.key;
     resourceId.value = result.id;
   };
+
   const getApplicationResource = async () => {
     if (!instanceId.value) return;
     try {
+      loading.value = true;
       const params = {
         instanceID: instanceId.value,
         page: 1,
@@ -47,7 +55,12 @@
       const list = data?.items || [];
       // const list = testData;
       containerList.value = generateResourcesKeys(list, 'executable');
+      const defaultValue = getDefaultValue(containerList.value);
+      handleObjectChange(defaultValue);
+      loading.value = false;
+      console.log('containerList===', defaultValue);
     } catch (error) {
+      loading.value = false;
       console.log(error);
       containerList.value = [];
     }
