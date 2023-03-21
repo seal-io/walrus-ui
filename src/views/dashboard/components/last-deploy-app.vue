@@ -54,7 +54,7 @@
           ellipsis
           tooltip
           :cell-style="{ minWidth: '40px' }"
-          align="center"
+          align="left"
           data-index="status"
           :title="$t('dashboard.table.status')"
         >

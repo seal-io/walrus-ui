@@ -14,7 +14,12 @@ import {
   concat,
   assignIn
 } from 'lodash';
-import { getTimeRange, projectCostOverview, setEndTimeAddDay } from '../config';
+import {
+  getTimeRange,
+  projectCostOverview,
+  setEndTimeAddDay,
+  dateFormatMap
+} from '../config';
 import { ChartData } from '../config/interface';
 import {
   queryItemPerspective,
@@ -91,52 +96,69 @@ export default function usePerspectiveCost(props) {
       let list = data?.items || [];
       // let list = statckLineData;
       projectCostChart.value = { xAxis: [], line: [], bar: [], dataConfig: [] };
-      list = sortBy(list, (d) => d.startTime);
-      const dataObj = reduce(
-        list,
-        (obj, o) => {
-          const item: any = {};
-          each(keys(o), (key) => {
-            if (key !== 'itemName') {
-              item[key] = [o[key]];
-            } else {
-              item[key] = o[key];
-            }
+      if (!projectCostFilters.value.step) {
+        each(list, (item) => {
+          const itemName = get(dateFormatMap, projectCostFilters.value.groupBy)
+            ? dayjs(item.itemName).format(
+                get(dateFormatMap, projectCostFilters.value.groupBy)
+              )
+            : item.itemName;
+          projectCostChart.value.xAxis.push(itemName);
+          projectCostChart.value.bar.push({
+            name: itemName,
+            value: [item.totalCost]
           });
-          if (obj[item.itemName]) {
-            each(keys(item), (k) => {
-              if (k !== 'itemName') {
-                obj[item.itemName][k] = concat(
-                  get(obj, `${item.itemName}.${k}`),
-                  item[k]
-                );
+        });
+      } else {
+        list = sortBy(list, (d) => d.startTime);
+        const dataObj = reduce(
+          list,
+          (obj, o) => {
+            const item: any = {};
+            each(keys(o), (key) => {
+              if (key !== 'itemName') {
+                item[key] = [o[key]];
+              } else {
+                item[key] = o[key];
               }
             });
-          } else {
-            obj[item.itemName] = cloneDeep(item);
-          }
-          return obj;
-        },
-        {}
-      );
+            if (obj[item.itemName]) {
+              each(keys(item), (k) => {
+                if (k !== 'itemName') {
+                  obj[item.itemName][k] = concat(
+                    get(obj, `${item.itemName}.${k}`),
+                    item[k]
+                  );
+                }
+              });
+            } else {
+              obj[item.itemName] = cloneDeep(item);
+            }
+            return obj;
+          },
+          {}
+        );
 
-      each(keys(dataObj), (pKey) => {
-        projectCostChart.value.line.push({
-          name: pKey,
-          value: dataObj[pKey]['totalCost']
+        each(keys(dataObj), (pKey) => {
+          projectCostChart.value.line.push({
+            name: pKey,
+            value: dataObj[pKey]['totalCost']
+          });
+          projectCostChart.value.dataConfig.push({
+            name: pKey,
+            label: pKey
+          });
+          projectCostChart.value.xAxis = dataObj[pKey]['startTime'];
         });
-        projectCostChart.value.dataConfig.push({
-          name: pKey,
-          label: pKey
-        });
-        projectCostChart.value.xAxis = dataObj[pKey]['startTime'];
-      });
-      projectCostChart.value.xAxis = map(
-        projectCostChart.value.xAxis,
-        (kItem) => {
-          return dayjs(kItem).format('YYYY.MM.DD');
-        }
-      );
+        projectCostChart.value.xAxis = map(
+          projectCostChart.value.xAxis,
+          (kItem) => {
+            return dayjs(kItem).format(
+              get(dateFormatMap, projectCostFilters.value.step)
+            );
+          }
+        );
+      }
       apploading.value = false;
     } catch (error) {
       apploading.value = false;
