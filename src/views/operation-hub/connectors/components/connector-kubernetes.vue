@@ -283,7 +283,7 @@
       query: { id: row.id }
     });
   };
-  const handleReinstall = async (row) => {
+  const handleReinstallConfirm = async (row) => {
     try {
       loading.value = true;
       await reinstallFinOpsTools(row);
@@ -293,6 +293,15 @@
       loading.value = false;
       console.log(error);
     }
+  };
+  const handleReinstall = async (row) => {
+    deleteModal({
+      title: 'operation.connectors.reinstall.tips',
+      okText: 'operation.connectors.reinstall.button',
+      onOk: () => {
+        handleReinstallConfirm(row);
+      }
+    });
   };
   const handleFetchCost = async (row) => {
     try {
