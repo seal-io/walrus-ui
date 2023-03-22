@@ -23,7 +23,11 @@
         /></template>
       </a-link>
       <template #content>
-        <a-doption v-for="item in actions" :key="item.value" :value="item.value"
+        <a-doption
+          v-for="item in actions"
+          :key="item.value"
+          :value="item.value"
+          style="line-height: 32px"
           ><component :is="item.icon" style="margin-right: 5px"></component
           >{{ $t(item.label) }}</a-doption
         >
@@ -77,7 +81,7 @@
       }
     }
   });
-  const emits = defineEmits(['change', 'edit']);
+  const emits = defineEmits(['change', 'edit', 'upgrade']);
   const handleCheckedChange = (val) => {
     console.log('val:', val);
     emits('change', val, props.dataInfo.id);
@@ -122,7 +126,7 @@
     .status {
       position: absolute;
       top: 5px;
-      left: 0;
+      left: 5px;
       transform: scale(0.8);
     }
 

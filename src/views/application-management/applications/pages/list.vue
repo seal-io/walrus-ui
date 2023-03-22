@@ -108,7 +108,9 @@
           :title="$t('common.table.createTime')"
         >
           <template #cell="{ record }">
-            <span>{{ dayjs(record.createTime).locale(locale).fromNow() }}</span>
+            <span>{{
+              dayjs(record.createTime).format('YYYY-MM-DD HH:mm:ss')
+            }}</span>
           </template>
         </a-table-column>
         <a-table-column

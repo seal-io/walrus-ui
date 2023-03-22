@@ -31,6 +31,7 @@ export default {
   'applications.applications.variables.button': 'Add a variable',
   'applications.applications.variables.label': 'Variable Name',
   'applications.applications.modules.button': 'Add a module',
+  'applications.applications.button.upgrade': 'Upgrade',
   'applications.workflows.menu': 'Workflows',
   'applications.workflows.create': 'New Pipeline',
   'applications.projects.menu': 'Projects List',

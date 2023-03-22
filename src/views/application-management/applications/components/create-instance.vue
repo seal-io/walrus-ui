@@ -54,7 +54,7 @@
         <div
           v-if="variables?.length"
           style="margin-bottom: 10px; text-align: left"
-          >Variables</div
+          >变量</div
         >
         <a-form-item
           v-for="(item, index) in variables"
@@ -135,15 +135,33 @@
       default() {
         return [];
       }
+    },
+    activeInstanceId: {
+      type: String,
+      default() {
+        return '';
+      }
+    },
+    activeInstanceInfo: {
+      type: Object,
+      default() {
+        return {};
+      }
     }
   });
-  const emit = defineEmits(['save', 'update:show', 'update:status', 'reset']);
+  const emit = defineEmits([
+    'save',
+    'update:show',
+    'update:status',
+    'reset',
+    'update:activeInstanceId',
+    'update:activeInstanceInfo'
+  ]);
   const instanceId = inject('instanceId', ref(''));
   const instanceInfo = inject(
     'instanceInfo',
     ref({
       name: '',
-
       environment: {
         id: ''
       }
@@ -185,6 +203,8 @@
         setTimeout(() => {
           emit('save', resData);
         }, 200);
+        emit('update:activeInstanceId', '');
+        emit('update:activeInstanceId', {});
         emit('update:show', false);
         submitLoading.value = false;
       } catch (error) {
@@ -205,7 +225,7 @@
   watch(
     () => props.variables,
     () => {
-      setDeployVariables();
+      // setDeployVariables();
     },
     {
       immediate: true,
@@ -216,15 +236,20 @@
     () => props.status,
     () => {
       if (props.status === 'edit') {
-        formData.name = instanceInfo.value.name;
-        formData.environment.id = instanceInfo.value.environment.id;
+        formData.name =
+          get(props.activeInstanceInfo, 'name') || instanceInfo.value.name;
+        formData.environment.id =
+          get(props.activeInstanceInfo, 'environment.id') ||
+          instanceInfo.value.environment.id;
       }
     },
     {
       immediate: true
     }
   );
-  const handleBeforeOpen = () => {};
+  const handleBeforeOpen = () => {
+    setDeployVariables();
+  };
   const handleBeforeClose = () => {
     emit('update:status', 'create');
     resetForm();

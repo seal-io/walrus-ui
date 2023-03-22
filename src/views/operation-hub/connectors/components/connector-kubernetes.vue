@@ -69,6 +69,7 @@
             <StatusLabel
               :status="{
                 status: get(record, 'status.status'),
+                text: get(record, 'status.status'),
                 message: get(record, 'status.statusMessage'),
                 transitioning: get(record, 'status.transitioning'),
                 error: get(record, 'status.error')
