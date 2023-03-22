@@ -129,7 +129,7 @@
   };
   const handleDraftModule = () => {
     router.push({
-      name: ''
+      name: 'templateGPT'
     });
   };
   const fetchData = async () => {

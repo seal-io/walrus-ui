@@ -22,5 +22,17 @@ export default [
       requiresAuth: true,
       icon: 'icon-apps'
     }
+  },
+  {
+    path: 'templates/gpt',
+    name: 'templateGPT',
+    component: () => import('@/views/operation-hub/templates/pages/gpt.vue'),
+    meta: {
+      hideInMenu: true,
+      ignoreCache: true,
+      locale: 'operation.templates.menu',
+      requiresAuth: true,
+      icon: 'icon-apps'
+    }
   }
 ];

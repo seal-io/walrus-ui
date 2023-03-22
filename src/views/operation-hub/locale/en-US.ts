@@ -42,5 +42,6 @@ export default {
   'operation.templates.detail.version': 'Version',
   'operation.templates.table.type': 'Type',
   'operation.templates.rules.name': 'template name is required',
-  'operation.templates.rules.source': 'template source is required'
+  'operation.templates.rules.source': 'template source is required',
+  'operation.templates.gpt.create': 'Create a PR'
 };
