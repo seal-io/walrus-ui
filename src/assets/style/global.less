@@ -27,11 +27,16 @@ body {
   border-radius: 6px !important;
   backdrop-filter: blur(10px) !important;
 
+  .chart-tooltip-wrap {
+    .content-wrap {
+      column-gap: 10px;
+    }
+  }
+
   .content-panel {
     display: flex;
     justify-content: space-between;
     min-width: 164px;
-    max-width: max-content;
     height: 32px;
     margin-bottom: 4px;
     padding: 0 9px;
@@ -39,6 +44,13 @@ body {
     background: rgba(255, 255, 255, 0.8);
     border-radius: 4px;
     box-shadow: 6px 0 20px rgba(34, 87, 188, 0.1);
+
+    .series-name {
+      width: 180px;
+      overflow: hidden;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+    }
   }
 
   .tooltip-title {

@@ -29,7 +29,7 @@ import {
   queryCustomPerspectiveSummary,
   queryPerspectiveFieldValues
 } from '../api';
-import testData, { dailyCostData } from '../config/testData';
+import testData, { dailyCostData, namespaceData } from '../config/testData';
 
 export default function usePerspectiveCost(props) {
   const { route } = useCallCommon();
@@ -176,7 +176,7 @@ export default function usePerspectiveCost(props) {
         // endTime: dayjs(queryParams.endTime).format('YYYY-MM-DDT23:59:59Z')
       };
       const { data } = await queryPerspectiveData(params);
-      // const data = dailyCostData;
+      // const data = namespaceData;
       const list = map(data?.items || [], (s) => {
         s.totalCost = s.totalCost || 0;
         return s;
