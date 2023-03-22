@@ -8,7 +8,7 @@
               style="margin-right: 4px; color: #fff"
             /> </a-tooltip
         ></span>
-        <span>{{ status.status }}</span>
+        <span>{{ status.text }}</span>
       </a-tag>
     </span>
   </span>
@@ -19,6 +19,7 @@
 
   interface StatusType {
     status: string;
+    text?: string;
     message: string;
     error?: boolean;
     transitioning?: boolean;
@@ -57,6 +58,7 @@
 <style lang="less" scoped>
   .status-label {
     :deep(.arco-tag) {
+      min-width: 20px;
       height: 20px;
       border-radius: 12px;
     }

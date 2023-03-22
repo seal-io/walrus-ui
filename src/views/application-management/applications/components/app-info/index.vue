@@ -11,7 +11,7 @@
           "
         >
           <span>基本信息</span>
-          <a-button
+          <!-- <a-button
             v-if="id"
             type="primary"
             size="small"
@@ -19,7 +19,7 @@
             @click="handleDeployApp"
           >
             部署</a-button
-          >
+          > -->
         </div>
       </template>
       <BasicInfo
@@ -389,16 +389,6 @@
     }
   };
 
-  const handleSaveModule = (data) => {
-    console.log('saveModule===', data, moduleAction.value);
-    if (moduleAction.value === 'create') {
-      appInfo.modules.push({
-        ...cloneDeep(data)
-      });
-    } else {
-      assignIn(moduleInfo.value, data);
-    }
-  };
   const getApplicationDetail = async () => {
     if (!id && !cloneId) return;
     const queryId = id || cloneId;
@@ -483,7 +473,11 @@
       }
       submitLoading.value = false;
       if (id) {
-        await Promise.all([getModulesVersions(), getApplicationDetail()]);
+        await Promise.all([
+          getApplicationDetail(),
+          getModulesVersions(),
+          getApplicationDetail()
+        ]);
         setCompleteData();
       }
       execSucceed();
@@ -495,6 +489,17 @@
   };
   const handleCancel = () => {
     router.back();
+  };
+  const handleSaveModule = (data) => {
+    console.log('saveModule===', data, moduleAction.value);
+    if (moduleAction.value === 'create') {
+      appInfo.modules.push({
+        ...cloneDeep(data)
+      });
+    } else {
+      assignIn(moduleInfo.value, data);
+    }
+    handleOk();
   };
   // onBeforeRouteLeave(async (to, from) => {
   //   console.log('leave');

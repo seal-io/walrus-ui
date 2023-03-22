@@ -14,6 +14,7 @@ export interface EnvironmentRow {
     revisions: any[];
     environmentConnectorRelationships: any[];
   };
+  connectors?: any[];
   connectorIDs: string[];
 }
 

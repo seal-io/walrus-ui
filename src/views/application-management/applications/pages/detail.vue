@@ -19,6 +19,7 @@
             :active="item.id === activeInstance"
             :data-info="item"
             :actions="instanceActions"
+            @upgrade="handleInstanceUpgrade(item)"
             @delete="handleDeleteInstance(item)"
             @click="handleClickInstance(item)"
           >
@@ -39,17 +40,17 @@
               ></StatusLabel>
             </template>
           </instanceThumb>
-          <!-- <a-tooltip content="添加应用实例">
+          <a-tooltip content="添加应用实例">
             <thumbButton :size="60" @click="handleAddInstance"></thumbButton>
-          </a-tooltip> -->
+          </a-tooltip>
           <div v-if="!instanseList.length" class="tips-box"
             ><a-button
               type="text"
               size="small"
               style="font-weight: 500; font-size: 18px"
               @click="handleAddInstance"
-              >部署</a-button
-            >可添加应用实例</div
+              >添加应用实例</a-button
+            ></div
           >
         </div>
       </div>
@@ -64,9 +65,12 @@
     </div>
     <createInstance
       v-model:show="showInstanceModal"
+      v-model:status="status"
+      v-model:active-instance-id="activeInstanceId"
+      v-model:active-instance-info="activeInstanceInfo"
       :variables="appInfoVariables"
       :environment-list="environmentList"
-      title="创建实例"
+      :title="status === 'create' ? '创建实例' : '升级实例'"
       @save="handleSaveInstanceInfo"
     ></createInstance>
   </ComCard>
@@ -105,6 +109,8 @@
   const showInstanceModal = ref(false);
   const projectBasicInfo = ref<any>({});
   const instanceInfo = ref({});
+  const activeInstanceId = ref('');
+  const activeInstanceInfo = ref({});
   const appInfo = reactive({
     name: '',
     description: '',
@@ -123,6 +129,7 @@
   provide('environmentList', environmentList);
   provide('appInfo', appInfo);
   provide('instanceInfo', instanceInfo);
+  const status = ref('create');
   const pageComMap = {
     appDetail: markRaw(AppDetail),
     instanceDetail: markRaw(InstanceDetail)
@@ -144,6 +151,15 @@
   });
   const handleAddInstance = () => {
     showInstanceModal.value = true;
+    status.value = 'create';
+  };
+  const handleInstanceUpgrade = (item) => {
+    status.value = 'edit';
+    activeInstanceId.value = item.id;
+    activeInstanceInfo.value = item;
+    setTimeout(() => {
+      showInstanceModal.value = true;
+    }, 100);
   };
 
   const transformlabels = () => {
@@ -200,7 +216,8 @@
       environmentList.value = map(list, (item) => {
         return {
           label: item.name,
-          value: item.id
+          value: item.id,
+          disabled: !item?.connectors?.length
         };
       });
     } catch (error) {

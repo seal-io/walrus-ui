@@ -30,6 +30,7 @@ export default {
   'applications.applications.variables.button': '添加变量',
   'applications.applications.variables.label': '变量名',
   'applications.applications.modules.button': '添加模块',
+  'applications.applications.button.upgrade': '升级',
   'applications.workflows.menu': '工作流',
   'applications.workflows.create': '新建流程',
   'applications.projects.menu': '项目列表',

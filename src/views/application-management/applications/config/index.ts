@@ -26,7 +26,11 @@ export const instanceConfiguration = [
 ];
 
 export const instanceActions = [
-  // { label: 'common.button.edit', value: 'edit', icon: 'icon-edit' },
+  {
+    label: 'applications.applications.button.upgrade',
+    value: 'upgrade',
+    icon: 'icon-sync'
+  },
   { label: 'common.button.delete', value: 'delete', icon: 'icon-delete' }
   // {
   //   label: 'applications.applications.history.rollback',
