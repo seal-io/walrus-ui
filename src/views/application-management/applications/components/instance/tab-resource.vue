@@ -45,7 +45,7 @@
           tooltip
           :cell-style="{ minWidth: '40px' }"
           align="center"
-          data-index="status"
+          data-index="status.summaryStatus"
           :title="$t('applications.applications.table.status')"
         >
         </a-table-column>

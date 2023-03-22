@@ -49,6 +49,7 @@
           <a-button type="primary" @click="handleCreateProject">{{
             $t('operation.templates.detail.add')
           }}</a-button>
+          <a-button type="primary" @click="handleDraftModule">草稿</a-button>
           <a-button
             type="primary"
             status="warning"
@@ -124,6 +125,11 @@
   const handleCreateProject = () => {
     router.push({
       name: 'templateDetail'
+    });
+  };
+  const handleDraftModule = () => {
+    router.push({
+      name: ''
     });
   };
   const fetchData = async () => {
