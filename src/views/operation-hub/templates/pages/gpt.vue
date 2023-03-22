@@ -1,8 +1,18 @@
 <template>
   <ComCard top-gap>
     <GroupTitle show-back title="新建模块"></GroupTitle>
-    <a-select v-model="type" :options="optionList" style="width: 300px">
+    <a-select
+      v-model="type"
+      :options="optionList"
+      style="width: 300px; margin-bottom: 10px"
+    >
     </a-select>
+    <AceEditor
+      v-model="code"
+      lang="json"
+      height="500px"
+      @change="handleCodeChange"
+    ></AceEditor>
     <EditPageFooter>
       <template #save>
         <a-button
@@ -32,7 +42,9 @@
   import useCallCommon from '@/hooks/use-call-common';
   import GroupTitle from '@/components/group-title/index.vue';
   import EditPageFooter from '@/components/edit-page-footer/index.vue';
+  import AceEditor from '@/components/ace-editor/index.vue';
   import CreatePR from '../components/create-pr.vue';
+  import TFEditor from '../components/tf-editor.vue';
 
   const optionList = [
     { label: 'create a kubernetes workload', value: 'k8s' },
@@ -41,9 +53,13 @@
   const { router } = useCallCommon();
   const type = ref('k8s');
   const status = ref('create');
+  const code = ref('');
   const showModal = ref(false);
   const submitLoading = ref(false);
 
+  const handleCodeChange = (val) => {
+    console.log('code===', val);
+  };
   const handleCreatePR = async () => {
     showModal.value = true;
   };
