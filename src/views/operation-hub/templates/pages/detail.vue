@@ -105,12 +105,14 @@
           >{{ $t('common.button.confirm') }}</a-button
         >
       </template>
-      <a-button
-        type="outline"
-        class="cap-title cancel-btn"
-        @click="handleCancel"
-        >{{ $t('common.button.cancel') }}</a-button
-      >
+      <template #cancel>
+        <a-button
+          type="outline"
+          class="cap-title cancel-btn"
+          @click="handleCancel"
+          >{{ $t('common.button.cancel') }}</a-button
+        >
+      </template>
     </EditPageFooter>
   </ComCard>
 </template>

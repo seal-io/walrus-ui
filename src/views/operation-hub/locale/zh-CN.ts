@@ -41,5 +41,8 @@ export default {
   'operation.templates.detail.version': '版本',
   'operation.templates.table.type': '类型',
   'operation.templates.rules.name': '模块名称必填',
-  'operation.templates.rules.sourece': '模块来源必填'
+  'operation.templates.rules.sourece': '模块来源必填',
+  'operation.templates.gpt.create': '创建PR',
+  'operation.templates.create.title': '创建PR',
+  'operation.templates.edit.title': '编辑PR'
 };
