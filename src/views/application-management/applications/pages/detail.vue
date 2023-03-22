@@ -43,7 +43,7 @@
           <a-tooltip content="添加应用实例">
             <thumbButton :size="60" @click="handleAddInstance"></thumbButton>
           </a-tooltip>
-          <div v-if="!instanseList.length" class="tips-box"
+          <!-- <div v-if="!instanseList.length" class="tips-box"
             ><a-button
               type="text"
               size="small"
@@ -51,7 +51,7 @@
               @click="handleAddInstance"
               >添加应用实例</a-button
             ></div
-          >
+          > -->
         </div>
       </div>
     </div>

@@ -68,8 +68,8 @@
           <template #cell="{ record }">
             <StatusLabel
               :status="{
-                status: get(record, 'status.status'),
-                text: get(record, 'status.status'),
+                status: get(record, 'status.summaryStatus'),
+                text: get(record, 'status.summaryStatus'),
                 message: get(record, 'status.statusMessage'),
                 transitioning: get(record, 'status.transitioning'),
                 error: get(record, 'status.error')
