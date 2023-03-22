@@ -161,6 +161,8 @@ export default function usePerspectiveCost(props) {
     each(diffFieldName, (sItem) => {
       result.line.push(get(dataObj, sItem[fieldName]));
     });
+    console.log('result=====', result, xAxisList);
+    result.xAxis = uniq(result.xAxis);
     return result;
   };
 
