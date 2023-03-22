@@ -1,5 +1,5 @@
 <template>
-  <div class="ace-box">
+  <div class="ace-box" :style="{ height }">
     <div id="ace-editor"></div>
   </div>
 </template>
@@ -17,7 +17,7 @@
   import ace from 'ace-builds';
   import 'ace-builds/src-noconflict/ext-language_tools';
   // import 'ace-builds/src-noconflict/ext-modelist';
-  // import 'ace-builds/src-noconflict/theme-monokai';
+  import 'ace-builds/src-noconflict/theme-monokai';
   import 'ace-builds/src-noconflict/theme-twilight';
   import 'ace-builds/src-noconflict/mode-javascript';
   import 'ace-builds/src-noconflict/mode-text';
@@ -40,6 +40,12 @@
       type: String,
       default() {
         return 'text';
+      }
+    },
+    height: {
+      type: String,
+      default() {
+        return '300px';
       }
     },
     readOnly: {
@@ -147,13 +153,13 @@
       }
     });
   };
-  watch(
-    () => props.modelValue,
-    (newVal) => {
-      aceEditor?.insertNewLine(props.modelValue);
-    },
-    { immediate: false }
-  );
+  // watch(
+  //   () => props.modelValue,
+  //   (newVal) => {
+  //     aceEditor?.insertNewLine(props.modelValue);
+  //   },
+  //   { immediate: false }
+  // );
   watch(
     () => props.lang,
     (newVal) => {
@@ -174,9 +180,9 @@
       aceEditor = ace.edit('ace-editor');
       // aceEditor.setValue(props.modelValue);
       aceEditor.on('change', function (args: any) {
-        // const val = aceEditor.getValue();
-        // emits('change', val);
-        // emits('update:modelValue', val);
+        const val = aceEditor.getValue();
+        emits('change', val);
+        emits('update:modelValue', val);
       });
       aceEditor.setOptions({
         wrap: true, // 换行
@@ -194,8 +200,8 @@
     });
   });
   onBeforeMount(() => {
-    // aceEditor.destroy();
-    // aceEditor.container.remove();
+    aceEditor?.destroy?.();
+    aceEditor?.container?.remove();
   });
 </script>
 
@@ -203,7 +209,7 @@
   .ace-box {
     position: relative;
     width: 100%;
-    height: 300px;
+    // height: 300px;
     border: 1px solid var(--color-border-2);
     border-radius: var(--border-radius-small);
   }
