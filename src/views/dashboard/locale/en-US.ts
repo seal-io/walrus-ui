@@ -21,7 +21,7 @@ export default {
   'dashboard.cost.currentMonth': 'This Month Cost',
   'dashboard.cost.rank': 'Application Cost Rank(this month)',
   'dashboard.cost.pervisious': 'vs pervisous month',
-  'dashboard.cost.daily': 'Cost Trend',
+  'dashboard.cost.daily': 'Total Cost Trend',
   'dashboard.datepicker.30days': 'Last 30 days',
   'dashboard.datepicker.6months': 'Last 6 months',
   'dashboard.datepicker.12months': 'Last 12 months',

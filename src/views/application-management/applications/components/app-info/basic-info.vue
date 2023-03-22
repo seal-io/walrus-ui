@@ -24,6 +24,24 @@
               :auto-size="{ minRows: 4, maxRows: 6 }"
             ></a-input>
           </a-form-item>
+          <div v-if="id">
+            <a-form-item label="创建时间" disabled>
+              <a-input
+                :model-value="
+                  dayjs(formData.createTime).format('YYYY-MM-DD HH:mm:ss')
+                "
+                style="width: 100%"
+              ></a-input>
+            </a-form-item>
+            <a-form-item label="更新时间" disabled>
+              <a-input
+                :model-value="
+                  dayjs(formData.updateTime).format('YYYY-MM-DD HH:mm:ss')
+                "
+                style="width: 100%"
+              ></a-input>
+            </a-form-item>
+          </div>
         </a-col>
         <a-col :span="12">
           <a-form-item :label="$t('applications.projects.form.label')">
@@ -55,29 +73,6 @@
           </a-form-item>
         </a-col>
       </a-row>
-      <a-row :gutter="20">
-        <a-col v-if="id" :span="12">
-          <a-form-item label="创建时间" disabled>
-            <a-input
-              :model-value="
-                dayjs(formData.createTime).format('YYYY-MM-DD HH:mm:ss')
-              "
-              style="width: 100%"
-            ></a-input>
-          </a-form-item>
-          <a-form-item label="更新时间" disabled>
-            <a-input
-              :model-value="
-                dayjs(formData.updateTime).format('YYYY-MM-DD HH:mm:ss')
-              "
-              style="width: 100%"
-            ></a-input>
-          </a-form-item>
-        </a-col>
-        <!-- <a-col v-if="id" :span="12">
-          
-        </a-col> -->
-      </a-row>
     </a-form>
   </div>
 </template>
@@ -86,7 +81,7 @@
   import dayjs from 'dayjs';
   import useCallCommon from '@/hooks/use-call-common';
   import { assignIn, keys, get, each, map } from 'lodash';
-  import { ref, reactive, PropType, watch } from 'vue';
+  import { ref, reactive, PropType, watch, provide } from 'vue';
   import xInputGroup from '@/components/form-create/custom-components/x-input-group.vue';
 
   const props = defineProps({
@@ -103,6 +98,7 @@
       }
     }
   });
+  provide('showHintInput', false);
   const { route } = useCallCommon();
   const formref = ref();
   const id = route.query.id as string;

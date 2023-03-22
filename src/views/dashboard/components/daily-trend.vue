@@ -41,8 +41,8 @@
     }
   });
   const title = {
-    text: '',
-    left: 'center',
+    text: '项目消费趋势',
+    left: 'auto',
     top: 0,
     textStyle: {
       color: 'rgb(78,89,105)',
