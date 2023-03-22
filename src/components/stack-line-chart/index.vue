@@ -18,7 +18,7 @@
 </template>
 
 <script lang="ts" setup>
-  import { get, map, find } from 'lodash';
+  import { get, map, find, divide } from 'lodash';
   import useChartOption from '@/hooks/chart-option';
   import { LineSeriesOption, EChartsOption, graphic } from 'echarts';
   import { ToolTipFormatterParams } from '@/types/echarts';
@@ -114,7 +114,8 @@
       },
       lineStyle: {
         width: 1.5,
-        color: lineColor
+        color: lineColor,
+        opacity: 0.7
       },
       areaStyle
     };
@@ -123,11 +124,11 @@
     return items
       .map(
         (el) => `<div class="content-panel">
-        <p>
+        <div class='series-name'>
           <span style="background-color: ${
             el.color
           }" class="tooltip-item-icon"></span><span>${el.seriesName}</span>
-        </p>
+        </div>
         <span class="tooltip-value">${el.value?.toLocaleString()}</span>
       </div>`
       )
@@ -228,11 +229,20 @@
       },
       tooltip: {
         trigger: 'axis',
+        position(point, params, dom, rect, size) {
+          // 固定在顶部
+          return [point[0], '10%'];
+        },
         formatter(params) {
+          console.log('params======', params);
           const [firstElement] = params as ToolTipFormatterParams[];
-          return `<div>
-            <p class="tooltip-title">${firstElement.axisValueLabel}</p>
-            ${tooltipItemsHtmlString(params as ToolTipFormatterParams[])}
+          return `<div class="chart-tooltip-wrap">
+            <div class="tooltip-title">${firstElement.axisValueLabel}</div>
+            <div class="content-wrap" style="column-count: ${Math.ceil(
+              divide(params.length, 10)
+            )}">
+              ${tooltipItemsHtmlString(params as ToolTipFormatterParams[])}
+              </div>
           </div>`;
         },
         className: 'echarts-tooltip-diy'
