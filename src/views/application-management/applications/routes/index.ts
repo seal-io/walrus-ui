@@ -13,19 +13,6 @@ export default [
     }
   },
   {
-    path: 'applications/edit',
-    name: 'applicationsEdit',
-    component: () =>
-      import('@/views/application-management/applications/pages/edit.vue'),
-    meta: {
-      hideInMenu: true,
-      ignoreCache: true,
-      locale: 'applications.applications.menu',
-      requiresAuth: true,
-      icon: 'icon-apps'
-    }
-  },
-  {
     path: 'applications/:projectId/detail',
     name: 'applicationsDetail',
     component: () =>
