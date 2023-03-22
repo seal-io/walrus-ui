@@ -129,46 +129,60 @@ export const filtersData = {
     }
   ]
 };
-export const workloadData = {
+export const dailyCostData = {
   items: [
     {
-      totalCost: 0.38400000000000006,
-      cpuCost: 0.3385999999999999,
-      ramCost: 0.04539999999999998,
-      itemName: 'comic-mule'
+      totalCost: 0.7622400000000003,
+      cpuCost: 0.7281600000000007,
+      ramCost: 0.03408000000000001,
+      itemName: 'local-control-plane',
+      startTime: '2023-03-19T00:00:00Z'
     },
     {
-      totalCost: 0.28091000000000005,
-      cpuCost: 0.24768999999999994,
-      ramCost: 0.03322,
-      itemName: 'organic-garfish'
+      totalCost: 0.7622400000000001,
+      cpuCost: 0.7281600000000008,
+      ramCost: 0.03408000000000001,
+      itemName: 'local-control-plane',
+      startTime: '2023-03-20T00:00:00Z'
     },
     {
-      totalCost: 0.21516000000000002,
-      cpuCost: 0.18971999999999997,
-      ramCost: 0.02544,
-      itemName: 'calm-lobster'
+      totalCost: 0.7622400000000001,
+      cpuCost: 0.7281600000000008,
+      ramCost: 0.034080000000000006,
+      itemName: 'local-control-plane',
+      startTime: '2023-03-18T00:00:00Z'
     },
     {
-      totalCost: 0.19662000000000013,
-      cpuCost: 0.18011999999999992,
-      ramCost: 0.016500000000000004,
-      itemName: 'kube-system'
+      totalCost: 0.7569300000000002,
+      cpuCost: 0.7231000000000007,
+      ramCost: 0.03383000000000001,
+      itemName: 'local-control-plane',
+      startTime: '2023-03-16T00:00:00Z'
     },
     {
-      totalCost: 0.02606388888888891,
-      pvCost: 0.02606388888888891,
-      itemName: 'default'
+      totalCost: 0.7543000000000002,
+      cpuCost: 0.7205800000000008,
+      ramCost: 0.033720000000000014,
+      itemName: 'local-control-plane',
+      startTime: '2023-03-21T00:00:00Z'
     },
     {
-      totalCost: 0.015380000000000005,
-      cpuCost: 0.009120000000000003,
-      ramCost: 0.006259999999999998,
-      itemName: 'seal-system'
+      totalCost: 0.7384000000000001,
+      cpuCost: 0.7054000000000007,
+      ramCost: 0.033000000000000015,
+      itemName: 'local-control-plane',
+      startTime: '2023-03-17T00:00:00Z'
     },
-    { totalCost: 0.00066, pvCost: 0.00066, itemName: '__unallocated__' }
+    {
+      totalCost: 0.06352000000000001,
+      cpuCost: 0.06068000000000001,
+      ramCost: 0.00284,
+      itemName: 'local-control-plane',
+      startTime: '2023-03-22T00:00:00Z'
+    },
+    { itemName: '__unallocated__', startTime: '2023-03-17T00:00:00Z' }
   ],
-  pagination: { page: 1, perPage: 100, total: 7, totalPage: 1, partial: false }
+  pagination: { page: 1, perPage: 100, total: 8, totalPage: 1, partial: false }
 };
 // namespace by day
 export const namespaceData = {
