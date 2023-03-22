@@ -31,6 +31,7 @@ export default {
   'operation.environments.detail.addConnector': '添加连接器',
   'operation.environments.detail.holder': '请选择连接器',
   'operation.templates.menu': '模块',
+  'operation.secret.menu': '全局密钥',
   'operation.templates.table.title': '模块列表',
   'operation.templates.table.holder': '请输入模块名称',
   'operation.templates.type.holder': '请选择模块类型',

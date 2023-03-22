@@ -6,7 +6,7 @@ export default [
     meta: {
       hideInMenu: false,
       ignoreCache: true,
-      locale: 'applications.applications.secret',
+      locale: 'operation.secret.menu',
       requiresAuth: true,
       icon: 'icon-apps'
     }

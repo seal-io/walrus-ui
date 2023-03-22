@@ -32,6 +32,7 @@ export default {
   'operation.environments.detail.addConnector': 'Add Connector',
   'operation.environments.detail.holder': 'please select connector',
   'operation.templates.menu': 'Templates',
+  'operation.secret.menu': 'Global Secrets',
   'operation.templates.table.title': 'Template List',
   'operation.templates.table.holder': 'please enter a template name',
   'operation.templates.type.holder': 'please select a template type',

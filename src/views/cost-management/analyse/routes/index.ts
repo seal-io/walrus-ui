@@ -16,7 +16,7 @@ export default [
     name: 'costAnalyseList',
     component: () => import('@/views/cost-management/analyse/pages/list.vue'),
     meta: {
-      hideInMenu: true,
+      hideInMenu: false,
       ignoreCache: true,
       locale: 'cost.analyse.table.manage',
       requiresAuth: true,
