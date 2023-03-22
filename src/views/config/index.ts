@@ -7,6 +7,7 @@ import {
   keys,
   concat,
   cloneDeep,
+  uniq,
   map
 } from 'lodash';
 
@@ -28,7 +29,7 @@ export const getStackLineDataList = (
     });
     dataList.push(itemData);
   });
-  return { data: dataList, xAxis };
+  return { data: dataList, xAxis: uniq(xAxis) };
 };
 
 // obj:{value: 'totalCost', name: 'itemName', xAxis: 'startTime'}

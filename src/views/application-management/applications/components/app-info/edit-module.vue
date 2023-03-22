@@ -12,7 +12,7 @@
       'overflow': 'auto'
     }"
     modal-class="oci-modal"
-    :title="action === 'edit' ? '编辑Module' : '添加Module'"
+    :title="action === 'edit' ? '编辑模块' : '添加模块'"
     @cancel="handleCancel"
     @ok="handleOk"
     @before-open="handleBeforeOpen"
@@ -104,7 +104,7 @@
         </a-grid>
       </a-form>
       <div class="variables">
-        <GroupTitle title="属性"></GroupTitle>
+        <GroupTitle title="配置"></GroupTitle>
         <a-tabs
           v-if="show && formTabs.length > 1"
           :active-key="activeKey"

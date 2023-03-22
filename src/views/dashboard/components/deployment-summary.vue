@@ -19,7 +19,7 @@
         <a-grid-item :span="{ lg: 16, md: 12, sm: 24, xs: 24 }">
           <StackLineChart
             class="bar-item"
-            height="302px"
+            :height="height"
             :data-config="dataConfig"
             :data="dataList"
             :x-axis="xAxis"
@@ -50,7 +50,7 @@
   import dayjs from 'dayjs';
   import { computed, ref } from 'vue';
   import { useI18n } from 'vue-i18n';
-  import { map, get, ceil } from 'lodash';
+  import { map, get, ceil, sortBy } from 'lodash';
   import StackLineChart from '@/components/stack-line-chart/index.vue';
   import pieChart from '@/components/pie-chart/index.vue';
   import DateRange from '@/components/date-range/index.vue';
@@ -84,7 +84,7 @@
   const grid = {
     left: 0,
     right: 0,
-    top: 60,
+    top: 40,
     bottom: 0,
     containLabel: true
   };
@@ -97,7 +97,7 @@
       fontSize: 12
     }
   };
-  const height = '280px';
+  const height = '300px';
   const pieCenter = ['50%', '50%'];
   const pieRadius = ['0%', '80%'];
   const { t } = useI18n();
@@ -170,6 +170,7 @@
       const { data } = await queryApplicationRevisionsChart(params);
       summaryData.value = get(data, 'statusCount') || {};
       const revisions = get(data, 'statusStats');
+      // revisions = sortBy(revisions, (s) => s.startTime);
       const result = getStackLineDataList(revisions, {
         fields: ['running', 'succeed', 'failed'],
         xAxis: 'startTime'

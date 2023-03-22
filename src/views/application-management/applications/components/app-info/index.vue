@@ -35,7 +35,7 @@
         @click="handleClostLogs"
       ></DeployLogs>
     </ModuleCard>
-    <ModuleCard title="Modules">
+    <ModuleCard :title="$t('applications.applications.modules.title')">
       <div class="content">
         <instanceThumb
           v-for="(item, index) in appInfo.modules"
@@ -62,24 +62,26 @@
             >
           </template>
         </instanceThumb>
-        <a-tooltip content="Add Module">
+        <a-tooltip :content="$t('applications.applications.modules.button')">
           <thumbButton :size="60" @click="handleAddModule"></thumbButton>
         </a-tooltip>
       </div>
     </ModuleCard>
-    <ModuleCard title="Variables">
+    <ModuleCard :title="$t('applications.applications.variables.title')">
       <a-button
         size="small"
         type="outline"
         style="margin-bottom: 8px"
         @click="handleSelect"
-        ><icon-plus style="margin-right: 5px" />Add a variable</a-button
+        ><icon-plus style="margin-right: 5px" />{{
+          $t('applications.applications.variables.button')
+        }}</a-button
       >
       <moduleWrapper
         v-for="(item, index) in get(appInfo, 'variables') || []"
         :key="index"
         style="margin-bottom: 10px"
-        :title="item.name || 'Variable Name'"
+        :title="item.name || $t('applications.applications.variables.label')"
         :status="collapseStatus === index"
         @delete="handleDeleteVariable(index)"
       >

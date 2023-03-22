@@ -67,7 +67,7 @@
   const title = computed(() => {
     return {
       text: t('dashboard.cost.daily'),
-      left: 'center',
+      left: 'auto',
       top: 0,
       textStyle: {
         color: 'rgb(78,89,105)',
