@@ -58,3 +58,18 @@ export function queryModulesAllVersions(params: { moduleID: string[] }) {
     }
   });
 }
+
+export function postCompletionsCorrect(data) {
+  return axios.post(`/module-completions/_/correct`, data);
+}
+
+export function postCompletionsExplain(data) {
+  return axios.post(`/module-completions/_/explain`, data);
+}
+export function postCompletionsGenerate(data) {
+  return axios.post(`/module-completions/_/generate`, data);
+}
+
+export function queryCompletionExamples() {
+  return axios.get(`/module-completions/_/examples`);
+}
