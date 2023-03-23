@@ -1,11 +1,11 @@
 <template>
   <div class="history-wrap">
-    <deployLogs
+    <!-- <deployLogs
       v-if="showLogs"
       title="升级实例"
       :revision-id="revisionId"
       @close="handleCloseLogs"
-    ></deployLogs>
+    ></deployLogs> -->
     <a-table
       :loading="loading"
       column-resizable
@@ -56,11 +56,6 @@
         >
           <template #cell="{ record }">
             <span>{{ record.status }}</span>
-            <a-link
-              v-if="record.status === 'Running'"
-              @click="handleShowDetail(record)"
-              >{{ $t('common.button.detail') }}</a-link
-            >
           </template>
         </a-table-column>
         <!-- <a-table-column
@@ -87,22 +82,24 @@
                 <template #icon><icon-list style="font-size: 16px" /></template>
                 {{ $t('applications.applications.history.rollback') }}
               </a-link> -->
-              <a-link type="text" size="small" @click="handleDelete(record)">
-                <template #icon
-                  ><icon-delete style="font-size: 16px"
-                /></template>
-                <!-- {{ $t('common.button.delete') }} -->
-              </a-link>
-              <a-link
-                type="text"
-                size="small"
-                @click="handleViewDetail(record)"
-              >
-                <template #icon
-                  ><icon-font type="icon-rizhi" style="font-size: 16px"
-                /></template>
-                <!-- {{ $t('common.button.delete') }} -->
-              </a-link>
+              <a-tooltip content="删除">
+                <a-link type="text" size="small" @click="handleDelete(record)">
+                  <template #icon
+                    ><icon-delete style="font-size: 16px"
+                  /></template>
+                </a-link>
+              </a-tooltip>
+              <a-tooltip content="查看日志">
+                <a-link
+                  type="text"
+                  size="small"
+                  @click="handleViewDetail(record)"
+                >
+                  <template #icon
+                    ><icon-font type="icon-rizhi" style="font-size: 16px"
+                  /></template>
+                </a-link>
+              </a-tooltip>
             </a-space>
           </template>
         </a-table-column>
@@ -244,6 +241,8 @@
       if (val) {
         revisionId.value = props.deployId;
         showLogs.value = true;
+        queryParams.page = 1;
+        handleFilter();
       } else {
         showLogs.value = false;
       }

@@ -63,6 +63,20 @@ export const setDurationValue = (val) => {
   const min = Math.floor(val / 60);
   return `${min}'${seconds}"`;
 };
+export const instanceBasicInfo = [
+  { label: '名称', value: '', key: 'name' },
+  { label: '状态', value: '', key: 'status' },
+  { label: '应用', value: '', key: 'application.name' },
+  { label: '环境', value: '', key: 'environment.name' },
+  {
+    label: '创建时间',
+    value: '',
+    key: 'createTime',
+    formatter(val) {
+      return dayjs(val).format('YYYY-MM-DD HH:mm:ss');
+    }
+  }
+];
 export const revisionDetailConfig = [
   {
     label: '创建日期',

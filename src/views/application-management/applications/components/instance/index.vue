@@ -11,13 +11,14 @@
           "
         >
           <span>实例基本信息</span>
-          <a-button
+          <!-- <a-button
+            v-if="get(instanceInfo, 'status') !== 'Deploying'"
             type="primary"
             size="small"
             style="width: 98px"
             @click="handleUpgradeInstance"
             >升级</a-button
-          >
+          > -->
         </div>
       </template>
       <BasicInfo></BasicInfo>
@@ -85,7 +86,6 @@
   import tabEndpoint from './tab-endpoint.vue';
   import applicationHistory from './application-history.vue';
   import createInstance from '../create-instance.vue';
-  import deployLogs from '../deploy-logs.vue';
   import BasicInfo from './basic-info.vue';
   import { instanceTabs } from '../../config';
   import { queryItemApplicationInstances } from '../../api';
@@ -99,6 +99,7 @@
     }
   });
   const environmentList = inject('environmentList', ref([]));
+  const instanceInfo = inject('instanceInfo', ref({}));
   const appInfo = inject('appInfo', reactive({}));
   const { router, route } = useCallCommon();
   const activeKey = ref('resource');

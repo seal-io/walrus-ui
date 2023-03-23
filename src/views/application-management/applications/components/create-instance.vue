@@ -192,7 +192,9 @@
         if (props.status === 'create') {
           resData = await deployApplication({
             ...formData,
-            id: route.query.id || ''
+            application: {
+              id: route.query.id || ''
+            }
           });
         } else {
           resData = await upgradeApplicationInstance({
