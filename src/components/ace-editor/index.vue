@@ -1,6 +1,6 @@
 <template>
   <div class="ace-box" :style="{ height }">
-    <div id="ace-editor"></div>
+    <div :id="editorId" style="height: 100%"></div>
   </div>
 </template>
 
@@ -12,12 +12,13 @@
     onBeforeMount,
     defineEmits,
     watch,
-    ref
+    ref,
+    ComponentPublicInstance
   } from 'vue';
   import ace from 'ace-builds';
   import 'ace-builds/src-noconflict/ext-language_tools';
   // import 'ace-builds/src-noconflict/ext-modelist';
-  import 'ace-builds/src-noconflict/theme-monokai';
+  // import 'ace-builds/src-noconflict/theme-monokai';
   import 'ace-builds/src-noconflict/theme-twilight';
   import 'ace-builds/src-noconflict/mode-javascript';
   import 'ace-builds/src-noconflict/mode-text';
@@ -29,8 +30,15 @@
   import { Position, Completer } from './config/interface';
 
   const langTools = ace.require('ace/ext/language_tools');
+  // const { Split } = ace.require('ace/ext/split');
   const props = defineProps({
     modelValue: {
+      type: String,
+      default() {
+        return '';
+      }
+    },
+    defaultValue: {
       type: String,
       default() {
         return '';
@@ -42,6 +50,12 @@
         return 'text';
       }
     },
+    editorId: {
+      type: String,
+      default() {
+        return 'aceEditor';
+      }
+    },
     height: {
       type: String,
       default() {
@@ -49,6 +63,12 @@
       }
     },
     readOnly: {
+      type: Boolean,
+      default() {
+        return false;
+      }
+    },
+    split: {
       type: Boolean,
       default() {
         return false;
@@ -83,6 +103,7 @@
     { name: 'file', value: 'file', score: 6, meta: 'custom' },
     { name: 'myObj', value: 'file', score: 6, meta: 'custom' }
   ];
+
   const getValuePath = (wordRange) => {
     const ctx = wordRange.replace(/\n/g, '');
     const result = ctx.matchAll(regx);
@@ -153,13 +174,16 @@
       }
     });
   };
-  // watch(
-  //   () => props.modelValue,
-  //   (newVal) => {
-  //     aceEditor?.insertNewLine(props.modelValue);
-  //   },
-  //   { immediate: false }
-  // );
+  const execSplitEditor = () => {
+    // if (!props.split) return;
+  };
+  watch(
+    () => props.defaultValue,
+    (newVal) => {
+      aceEditor?.setValue(props.defaultValue, -1);
+    },
+    { immediate: true }
+  );
   watch(
     () => props.lang,
     (newVal) => {
@@ -177,7 +201,7 @@
   onMounted(() => {
     nextTick(() => {
       setLanguageTools();
-      aceEditor = ace.edit('ace-editor');
+      aceEditor = ace.edit(`${props.editorId}`);
       // aceEditor.setValue(props.modelValue);
       aceEditor.on('change', function (args: any) {
         const val = aceEditor.getValue();
@@ -191,7 +215,7 @@
         fontSize: 14,
         readOnly: props.readOnly,
         mode: `ace/mode/${props.lang}`,
-        theme: 'ace/theme/monokai',
+        // theme: 'ace/theme/monokai',
         enableSnippets: false,
         autoScrollEditorIntoView: false, // 自动滚动编辑器视图
         enableLiveAutocompletion: true, // 智能补全

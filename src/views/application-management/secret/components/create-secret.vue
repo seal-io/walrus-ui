@@ -25,7 +25,7 @@
           :rules="[
             { required: true, message: '密钥名称必填' },
             {
-              match: /^[^\d][0-9A-Za-z_]+$/,
+              match: /^(?![\d])[0-9A-Za-z_]+$/,
               message: '由字母、数字、下划线组成，不能以数字开头'
             }
           ]"
