@@ -28,7 +28,7 @@
           tooltip
           :cell-style="{ minWidth: '40px' }"
           data-index="createTime"
-          :title="$t('common.table.createTime')"
+          title="部署时间"
         >
           <template #cell="{ record }">
             <span>{{
@@ -55,7 +55,16 @@
           :title="$t('dashboard.table.status')"
         >
           <template #cell="{ record }">
-            <span>{{ record.status }}</span>
+            <StatusLabel
+              :zoom="10"
+              :status="{
+                status: record.status,
+                text: record.status,
+                message: '',
+                transitioning: record.status === 'Running',
+                error: record.status === 'Failed'
+              }"
+            ></StatusLabel>
           </template>
         </a-table-column>
         <!-- <a-table-column
@@ -127,6 +136,7 @@
   import dayjs from 'dayjs';
   import { map, get, find } from 'lodash';
   import { onMounted, ref, reactive, inject, watch, InjectionKey } from 'vue';
+  import StatusLabel from '@/views/operation-hub/connectors/components/status-label.vue';
   import { deleteModal } from '@/utils/monitor';
   import { HistoryData } from '../../config/interface';
   import { setDurationValue } from '../../config';

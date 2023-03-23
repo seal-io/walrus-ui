@@ -1,7 +1,10 @@
 <template>
   <span class="status-label">
     <span v-if="status.status">
-      <a-tag :color="color">
+      <a-tag
+        :color="color"
+        :style="{ height: `${size}px`, minWidth: `${size}px` }"
+      >
         <span v-if="status.error || status.transitioning"
           ><a-tooltip v-if="status.message" :content="status.message">
             <icon-exclamation-circle-fill
@@ -42,6 +45,12 @@
       default() {
         return 1;
       }
+    },
+    size: {
+      type: Number,
+      default() {
+        return 20;
+      }
     }
   });
   const color = computed(() => {
@@ -57,9 +66,11 @@
 
 <style lang="less" scoped>
   .status-label {
+    font-size: 0;
+
     :deep(.arco-tag) {
-      min-width: 20px;
-      height: 20px;
+      // min-width: 20px;
+      // height: 20px;
       border-radius: 12px;
     }
   }

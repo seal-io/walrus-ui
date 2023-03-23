@@ -18,7 +18,7 @@
 </template>
 
 <script lang="ts" setup>
-  import { get, map, find, divide } from 'lodash';
+  import { get, map, find, divide, sortBy } from 'lodash';
   import useChartOption from '@/hooks/chart-option';
   import { LineSeriesOption, EChartsOption, graphic } from 'echarts';
   import { ToolTipFormatterParams } from '@/types/echarts';
@@ -233,8 +233,9 @@
         //   // 固定在顶部
         //   return [point[1], '10%'];
         // },
-        formatter(params) {
-          console.log('params======', params);
+        formatter(result) {
+          console.log('params======', result);
+          const params = sortBy(result, (item) => item.value);
           const [firstElement] = params as ToolTipFormatterParams[];
           return `<div class="chart-tooltip-wrap">
             <div class="tooltip-title">${firstElement.axisValueLabel}</div>

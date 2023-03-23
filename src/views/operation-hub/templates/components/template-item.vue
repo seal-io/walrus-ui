@@ -12,35 +12,54 @@
     </div>
     <div class="content">
       <div>
-        <div class="title">{{ dataInfo.id }}</div>
+        <div class="title-wrap">
+          <div class="title">
+            <StatusLabel
+              :size="12"
+              :status="{
+                status: get(dataInfo, 'status'),
+                text: '',
+                message: '',
+                transitioning: get(dataInfo, 'status') === 'Initializing',
+                error: get(dataInfo, 'status') === 'Error'
+              }"
+            ></StatusLabel>
+            <span class="title-text">{{ dataInfo.id }}</span>
+          </div>
+          <div class="btn-wrap">
+            <a-dropdown>
+              <a-link size="mini" @click.stop="() => {}">
+                <template #icon
+                  ><icon-more style="font-size: 18px; stroke-width: 5"
+                /></template>
+              </a-link>
+              <template #content>
+                <a-doption>
+                  <a-tooltip :content="$t('common.button.edit')">
+                    <a-link @click="handleEditTemplate">
+                      <template #icon>
+                        <icon-edit></icon-edit>
+                      </template>
+                    </a-link>
+                  </a-tooltip>
+                </a-doption>
+                <a-doption>
+                  <a-tooltip :content="$t('common.button.refresh')">
+                    <a-link @click="handleRefresh">
+                      <template #icon>
+                        <icon-refresh />
+                      </template>
+                    </a-link>
+                  </a-tooltip>
+                </a-doption>
+              </template>
+            </a-dropdown>
+          </div>
+        </div>
         <div class="text">
           {{ dataInfo.description }}
         </div>
       </div>
-      <a-space class="btn-wrap">
-        <a-button
-          type="primary"
-          size="small"
-          style="width: 88px"
-          @click="handleEditTemplate"
-        >
-          <template #icon>
-            <icon-edit></icon-edit>
-          </template>
-          {{ $t('common.button.edit') }}
-        </a-button>
-        <a-button
-          size="small"
-          status="success"
-          style="width: 88px"
-          @click="handleRefresh"
-        >
-          <template #icon>
-            <icon-refresh />
-          </template>
-          {{ $t('common.button.refresh') }}
-        </a-button>
-      </a-space>
     </div>
     <a-checkbox
       class="check-box"
@@ -54,9 +73,10 @@
 
 <script lang="ts" setup>
   import { PropType } from 'vue';
-  import { toLower } from 'lodash';
+  import { toLower, get } from 'lodash';
   import { useRouter } from 'vue-router';
   import { execSucceed } from '@/utils/monitor';
+  import StatusLabel from '../../connectors/components/status-label.vue';
   import { TemplateRowData } from '../config/interface';
   import { refreshModules } from '../api';
 
@@ -126,6 +146,11 @@
       color: inherit;
     }
 
+    .btn-wrap {
+      display: flex;
+      justify-content: flex-end;
+    }
+
     .img-box {
       flex-basis: 50px;
 
@@ -152,6 +177,11 @@
       justify-content: space-between;
       margin-left: 10px;
 
+      .title-wrap {
+        display: flex;
+        justify-content: space-between;
+      }
+
       .text {
         display: -webkit-box;
         overflow: hidden;
@@ -162,19 +192,26 @@
       }
 
       .title {
-        max-width: 300px;
+        display: flex;
+        align-items: center;
+        max-width: 160px;
         margin-bottom: 5px;
         overflow: hidden;
         font-weight: 500;
         font-size: 16px;
         white-space: nowrap;
         text-overflow: ellipsis;
+
+        .title-text {
+          height: 21px;
+          margin-left: 5px;
+        }
       }
     }
 
     .arco-checkbox {
       position: absolute;
-      top: 5px;
+      top: 10px;
       right: 5px;
     }
   }
