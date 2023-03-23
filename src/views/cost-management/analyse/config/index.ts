@@ -111,7 +111,7 @@ export const costOverview = [
 
 export const projectCostOverview = [
   {
-    label: '当月消费',
+    label: '当前消费',
     key: 'totalCost',
     value: 0,
     color: 'linear-gradient(rgba(159,232,219,.3) 0%,rgba(159,232,219,.4) 100%)'

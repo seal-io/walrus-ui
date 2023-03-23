@@ -9,9 +9,9 @@ export const templateTypeList = [
   { value: 'redis', desc: '', label: 'Redis' }
 ];
 export const tabList = [
-  { label: 'Readme', value: '', com: 'tabReadme' },
-  { label: 'Inputs', value: '', com: 'tabInput' },
-  { label: 'Outputs', value: '', com: 'tabOutput' },
+  { label: '说明', value: '', com: 'tabReadme' },
+  { label: '输入', value: '', com: 'tabInput' },
+  { label: '输出', value: '', com: 'tabOutput' },
   // { label: 'Resources', value: '', com: 'tabResource' },
   { label: 'Providers', value: '', com: 'tabConnector' }
 ];

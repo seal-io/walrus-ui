@@ -91,7 +91,7 @@
             }}</span>
           </template>
         </a-table-column>
-        <a-table-column
+        <!-- <a-table-column
           ellipsis
           tooltip
           :cell-style="{ minWidth: '40px' }"
@@ -106,7 +106,7 @@
               @change="(val) => handleEnableFinOps(val, record)"
             ></a-switch>
           </template>
-        </a-table-column>
+        </a-table-column> -->
         <a-table-column
           align="center"
           :title="$t('common.table.operation')"
@@ -116,44 +116,65 @@
         >
           <template #cell="{ record }">
             <a-space :size="10">
-              <a-tooltip :content="$t('common.button.edit')">
-                <a-link
-                  type="text"
-                  size="small"
-                  @click="handleClickEdit(record)"
-                >
-                  <template #icon><icon-edit class="size-16" /></template>
-                </a-link>
-              </a-tooltip>
-              <a-tooltip
-                v-if="record.enableFinOps"
-                :content="$t('operation.connectors.table.install')"
-              >
-                <a-link
-                  type="text"
-                  size="small"
-                  @click="handleReinstall(record)"
-                >
-                  <template #icon
-                    ><icon-font type="icon-install" class="size-16"
-                  /></template>
-                </a-link>
-              </a-tooltip>
-              <a-tooltip
-                v-if="record.enableFinOps"
-                :content="$t('operation.connectors.table.fetch')"
-              >
-                <a-link
-                  type="text"
-                  size="small"
-                  :loading="record.loading"
-                  @click="handleFetchCost(record)"
-                >
-                  <template #icon
-                    ><icon-cloud-download class="size-16"
-                  /></template>
-                </a-link>
-              </a-tooltip>
+              <a-dropdown-button size="small">
+                <a-tooltip :content="$t('common.button.edit')">
+                  <a-link
+                    type="text"
+                    size="small"
+                    @click="handleClickEdit(record)"
+                  >
+                    <template #icon><icon-edit class="size-16" /></template>
+                  </a-link>
+                </a-tooltip>
+                <template #icon>
+                  <icon-more style="font-size: 18px; stroke-width: 5" />
+                </template>
+                <template #content>
+                  <a-doption v-if="record.enableFinOps">
+                    <a-tooltip
+                      :content="$t('operation.connectors.table.install')"
+                    >
+                      <a-link
+                        type="text"
+                        size="small"
+                        @click="handleReinstall(record)"
+                      >
+                        <template #icon
+                          ><icon-font type="icon-install" class="size-16"
+                        /></template>
+                      </a-link>
+                    </a-tooltip>
+                  </a-doption>
+                  <a-doption v-if="record.enableFinOps">
+                    <a-tooltip
+                      :content="$t('operation.connectors.table.fetch')"
+                    >
+                      <a-link
+                        type="text"
+                        size="small"
+                        :loading="record.loading"
+                        @click="handleFetchCost(record)"
+                      >
+                        <template #icon
+                          ><icon-cloud-download class="size-16"
+                        /></template>
+                      </a-link>
+                    </a-tooltip>
+                  </a-doption>
+                  <a-doption>
+                    <a-tooltip
+                      :content="$t('operation.connectors.table.enableFin')"
+                    >
+                      <a-switch
+                        v-model="record.enableFinOps"
+                        size="small"
+                        @change="(val) => handleEnableFinOps(val, record)"
+                      ></a-switch>
+                    </a-tooltip>
+                  </a-doption>
+                </template>
+              </a-dropdown-button>
+
               <!-- <a-link type="text" size="small" :href="handleView(record)">
                 <template #icon><icon-list style="font-size: 16px" /></template>
                 {{ $t('common.button.detail') }}

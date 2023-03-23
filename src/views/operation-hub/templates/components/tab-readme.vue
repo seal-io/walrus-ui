@@ -1,6 +1,6 @@
 <template>
   <div class="tab-content-wrap">
-    {{ content }}
+    <div v-html="mdParse(content)"></div>
     <!-- <a-textarea
       readonly
       :auto-size="{ minRows: 10 }"
@@ -12,6 +12,7 @@
 <script lang="ts" setup>
   import { get } from 'lodash';
   import { PropType, computed } from 'vue';
+  import useMarkdownHtml from '@/hooks/use-markdown-html';
   import { Schema } from '../config/interface';
 
   const props = defineProps({
@@ -22,6 +23,7 @@
       }
     }
   });
+  const { mdParse } = useMarkdownHtml();
   const content = computed(() => {
     const list = get(props.schema, 'Readme');
     return list || '';

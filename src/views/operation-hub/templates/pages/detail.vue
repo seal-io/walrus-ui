@@ -69,6 +69,17 @@
       >
         <a-input v-model="formData.icon"></a-input>
       </a-form-item>
+      <a-form-item :label="$t('operation.connectors.table.status')">
+        <StatusLabel
+          :status="{
+            status: get(formData, 'status'),
+            text: get(formData, 'status'),
+            message: '',
+            transitioning: get(formData, 'status') === 'Initializing',
+            error: get(formData, 'status') === 'Error'
+          }"
+        ></StatusLabel>
+      </a-form-item>
     </a-form>
     <a-tabs
       v-if="id"
@@ -81,7 +92,7 @@
         <component :is="tabMap[item.com]" :schema="templateSchema"></component>
       </a-tab-pane>
       <template #extra>
-        <div style="display: flex">
+        <div style="display: flex; line-height: 34px">
           <a-select
             v-model="version"
             style="width: 200px"
@@ -124,6 +135,7 @@
   import GroupTitle from '@/components/group-title/index.vue';
   import EditPageFooter from '@/components/edit-page-footer/index.vue';
   import useCallCommon from '@/hooks/use-call-common';
+  import StatusLabel from '../../connectors/components/status-label.vue';
   import { templateTypeList, tabList } from '../config';
   import { Schema } from '../config/interface';
   import tabReadme from '../components/tab-readme.vue';
@@ -143,7 +155,10 @@
     tabOutput,
     tabConnector
   };
-  const versionList = ref<{ label: string; value: string }[]>([]);
+
+  const versionList = ref<{ label: string; value: string; schema: object }[]>(
+    []
+  );
   const version = ref('');
   const activeKey = ref('tabReadme');
   const { router, route } = useCallCommon();
@@ -168,6 +183,7 @@
       const list = data.items || [];
       versionList.value = map(list, (item) => {
         return {
+          schema: item.schema,
           label: item.version,
           value: item.id
         };
@@ -194,7 +210,8 @@
   };
   const handleVersonChange = (value) => {
     const data = find(versionList.value, (item) => item.value === value);
-    templateSchema.value = data || {};
+    console.log('data======', data);
+    templateSchema.value = data?.schema || {};
   };
   const handleSubmit = async () => {
     const res = await formref.value?.validate();
