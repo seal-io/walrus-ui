@@ -28,13 +28,6 @@
         :default-value="defaultBasicInfo"
       ></BasicInfo>
     </ModuleCard>
-    <ModuleCard v-if="showLogs" title="部署日志">
-      <DeployLogs
-        title="部署实例"
-        :revision-id="revisionId"
-        @click="handleClostLogs"
-      ></DeployLogs>
-    </ModuleCard>
     <ModuleCard :title="$t('applications.applications.modules.title')">
       <div class="content">
         <instanceThumb
@@ -157,7 +150,7 @@
   } from 'lodash';
   import useCallCommon from '@/hooks/use-call-common';
   import thumbButton from '@/components/buttons/thumb-button.vue';
-  import { execSucceed } from '@/utils/monitor';
+  import { execSucceed, deleteModal } from '@/utils/monitor';
   import { beforeLeaveCallback } from '@/hooks/save-before-leave';
   import {
     queryModules,
@@ -174,7 +167,6 @@
   import moduleWrapper from '../module-wrapper.vue';
   import editModule from './edit-module.vue';
   import BasicInfo from './basic-info.vue';
-  import DeployLogs from '../deploy-logs.vue';
   import { AppFormData, Variables, AppModule } from '../../config/interface';
   import { moduleActions } from '../../config';
   import {
@@ -190,7 +182,6 @@
   );
   const { router, route } = useCallCommon();
   const basicform = ref();
-  const revisionId = ref('');
   const appInfo = reactive({
     name: '',
     description: '',
@@ -267,9 +258,7 @@
       showEditModal.value = true;
     }, 100);
   };
-  const handleDeleteModule = (index) => {
-    appInfo.modules.splice(index, 1);
-  };
+
   const handleAddModule = () => {
     moduleAction.value = 'create';
     setTimeout(() => {
@@ -305,12 +294,7 @@
     collapseStatus.value = appInfo?.variables?.length - 1 || 0;
   };
   const handleSaveInstanceInfo = (res) => {
-    revisionId.value = res?.data?.id;
-    showLogs.value = !!revisionId.value;
     emits('deploy');
-  };
-  const handleClostLogs = () => {
-    showLogs.value = false;
   };
   const handleDeployApp = () => {
     showInstanceModal.value = true;
@@ -487,8 +471,17 @@
       console.log(error);
     }
   };
+
   const handleCancel = () => {
     router.back();
+  };
+  const handleDeleteModule = (index) => {
+    deleteModal({
+      onOk() {
+        appInfo.modules.splice(index, 1);
+        handleOk();
+      }
+    });
   };
   const handleSaveModule = (data) => {
     console.log('saveModule===', data, moduleAction.value);

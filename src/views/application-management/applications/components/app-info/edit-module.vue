@@ -85,7 +85,6 @@
             <a-form-item
               label="版本"
               field="version"
-              :disabled="action === 'edit'"
               :rules="[{ required: true, message: '类型必选' }]"
             >
               <a-select

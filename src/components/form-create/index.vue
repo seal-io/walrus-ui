@@ -19,6 +19,14 @@
               :label="fm.Label || fm.Name"
               :validate-trigger="['change']"
             >
+              <template #label>
+                <span>{{ fm.Label || fm.Name }}</span>
+                <a-tooltip v-if="fm.Description" :content="fm.Description">
+                  <icon-info-circle
+                    style="margin-left: 2px; stroke-linecap: initial"
+                  />
+                </a-tooltip>
+              </template>
               <div
                 v-if="fm.labelList?.length"
                 style="display: flex; flex-direction: column"

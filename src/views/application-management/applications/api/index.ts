@@ -27,7 +27,7 @@ export const deleteApplication = (data) => {
   return axios.delete(`/applications`, { data });
 };
 export const deployApplication = (data) => {
-  return axios.post(`/applications/${data.id}/deploy`, data);
+  return axios.post(`/application-instances`, data);
 };
 
 export const updateApplication = (data) => {

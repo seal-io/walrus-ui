@@ -48,6 +48,17 @@
           data-index="status.summaryStatus"
           :title="$t('applications.applications.table.status')"
         >
+          <template #cell="{ record }">
+            <StatusLabel
+              :status="{
+                status: get(record, 'status.summaryStatus'),
+                text: get(record, 'status.summaryStatus'),
+                message: get(record, 'status.summaryStatusMessage'),
+                transitioning: get(record, 'status.transitioning'),
+                error: get(record, 'status.error')
+              }"
+            ></StatusLabel>
+          </template>
         </a-table-column>
         <!-- <a-table-column
           align="center"
@@ -87,7 +98,9 @@
 
 <script lang="ts" setup>
   import dayjs from 'dayjs';
+  import { get } from 'lodash';
   import { onMounted, ref, reactive, inject, watch } from 'vue';
+  import StatusLabel from '@/views/operation-hub/connectors/components/status-label.vue';
   import { InstanceResource } from '../../config/interface';
   import { queryApplicationResource } from '../../api';
 

@@ -22,12 +22,29 @@
           :key="index"
           :label="item.label"
         >
-          <span>{{ item.value }}</span>
+          <StatusLabel
+            v-if="item.key === 'status'"
+            :zoom="0.9"
+            :status="{
+              status: item.value,
+              text: item.value,
+              message: '',
+              transitioning: get(item, 'value') === 'Running',
+              error: get(item, 'value') === 'Failed'
+            }"
+          ></StatusLabel>
+          <span v-else>{{ item.value }}</span>
         </a-descriptions-item>
       </a-descriptions>
       <div class="logs-content" style="text-align: left">
-        <div class="label">异常日志</div>
-        <div class="content-wrap">
+        <div class="label">{{
+          get(revisionData, 'status') === 'Running' ? '运行日志' : '异常日志'
+        }}</div>
+        <deployLogs
+          v-if="get(revisionData, 'status') === 'Running'"
+          :revision-id="get(revisionData, 'id')"
+        ></deployLogs>
+        <div v-else class="content-wrap">
           {{ get(revisionData, 'statusMessage') || '' }}
         </div>
       </div>
@@ -53,6 +70,8 @@
   import { ref, PropType, watch, computed } from 'vue';
   import useCallCommon from '@/hooks/use-call-common';
   import EditPageFooter from '@/components/edit-page-footer/index.vue';
+  import StatusLabel from '@/views/operation-hub/connectors/components/status-label.vue';
+  import deployLogs from './deploy-logs.vue';
   import { revisionDetailConfig } from '../config';
   import { queryApplicationRevisionsDetail } from '../api';
 
@@ -79,6 +98,7 @@
     const res = map(revisionDetailConfig, (item) => {
       return {
         label: t(item.label),
+        key: item.key,
         value:
           item?.formatter?.(get(revisionData.value, item.key)) ||
           get(revisionData.value, item.key) ||
@@ -135,7 +155,7 @@
         max-height: 360px;
         padding: 0 10px;
         overflow-y: auto;
-        white-space: pre;
+        white-space: pre-wrap;
         background-color: var(--color-fill-2);
         border: 1px solid var(--color-border-2);
         border-radius: var(--border-radius-small);

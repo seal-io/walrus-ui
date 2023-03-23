@@ -1,22 +1,9 @@
 <template>
   <div class="logs-wrap">
-    <span class="close-btn" @click="handleClose">
-      <icon-close class="size-20" />
-    </span>
-    <div class="tips">
-      <slot name="header">{{ title }}... </slot>
+    <div class="log-text">
+      {{ content }}
     </div>
-    <a-textarea
-      v-model="content"
-      class="log-text"
-      disabled
-      readonly
-      :auto-size="{ minRows: 10, maxRows: 20 }"
-    ></a-textarea>
-    <div class="tips">
-      <slot>点击右上角按钮可关闭</slot>
-    </div>
-    <!-- <AceEditor :model-value="val" read-only></AceEditor> -->
+    <!-- <AceEditor :model-value="content" read-only></AceEditor> -->
   </div>
 </template>
 
@@ -44,7 +31,7 @@
     title: {
       type: String,
       default() {
-        return '部署实例';
+        return '日志';
       }
     }
   });
@@ -108,36 +95,15 @@
 
 <style lang="less" scoped>
   .logs-wrap {
-    position: relative;
-    margin-bottom: 20px;
-    background-color: #1c1c1c;
-    border-radius: var(--border-radius-small);
-
-    .tips {
-      padding: 5px;
-      color: #fff;
-      text-align: left;
-    }
-
-    cursor: auto;
-
     .log-text {
-      color: #fff;
-      background-color: #1c1c1c;
-      cursor: auto;
-
-      &:hover {
-        background-color: #1c1c1c;
-      }
-    }
-
-    .close-btn {
-      position: absolute;
-      top: 5px;
-      right: 5px;
-      z-index: 100;
-      color: #fff;
-      cursor: pointer;
+      min-height: 200px;
+      max-height: 360px;
+      padding: 0 10px;
+      overflow-y: auto;
+      white-space: pre-wrap;
+      background-color: var(--color-fill-2);
+      border: 1px solid var(--color-border-2);
+      border-radius: var(--border-radius-small);
     }
   }
 </style>

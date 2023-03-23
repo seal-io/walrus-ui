@@ -1,11 +1,31 @@
 <template>
-  <div>
-    <a-form
+  <div class="basic-info">
+    <a-descriptions :data="basicDataList">
+      <a-descriptions-item
+        v-for="(item, index) in basicDataList"
+        :key="index"
+        :label="item.label"
+      >
+        <StatusLabel
+          v-if="item.key === 'status'"
+          :zoom="0.9"
+          :status="{
+            status: item.value,
+            text: item.value,
+            message: '',
+            transitioning: get(item, 'value') === 'Deploying',
+            error: get(item, 'value') === 'DeployFailed'
+          }"
+        ></StatusLabel>
+        <span v-else>{{ item.value }}</span>
+      </a-descriptions-item>
+    </a-descriptions>
+    <!-- <a-form
       ref="formref"
       :model="formData"
       auto-label-width
       disabled
-      layout="vertical"
+      layout="inline"
     >
       <a-row :gutter="20">
         <a-col :span="12">
@@ -48,21 +68,27 @@
             ></a-input>
           </a-form-item>
         </a-col>
-        <!-- <a-col :span="12">
-          <a-form-item label="Access URL">
-            <a-input style="width: 100%"></a-input>
-          </a-form-item>
-        </a-col> -->
       </a-row>
-    </a-form>
+    </a-form> -->
   </div>
 </template>
 
 <script lang="ts" setup>
   import dayjs from 'dayjs';
+  import ADescriptionsItem from '@arco-design/web-vue/es/descriptions/descriptions-item';
+  import StatusLabel from '@/views/operation-hub/connectors/components/status-label.vue';
   import { assignIn, keys, get, each, map } from 'lodash';
-  import { ref, reactive, PropType, watch, inject, watchEffect } from 'vue';
+  import {
+    ref,
+    reactive,
+    PropType,
+    watch,
+    inject,
+    watchEffect,
+    computed
+  } from 'vue';
   import { InstanceData } from '../../config/interface';
+  import { instanceBasicInfo } from '../../config';
 
   const props = defineProps({
     dataInfo: {
@@ -92,6 +118,18 @@
   );
   const appInfo = inject('appInfo', reactive({ name: '' }));
   const labelList = ref<{ key: string; value: string }[]>([]);
+
+  const basicDataList = computed(() => {
+    return map(instanceBasicInfo, (item) => {
+      return {
+        label: item.label,
+        key: item.key,
+        value: item.formatter
+          ? item.formatter(get(formData, item.key))
+          : get(formData, item.key)
+      };
+    });
+  });
   const handleAddLabel = (obj, list) => {
     list.push({ ...obj });
   };
@@ -106,4 +144,12 @@
   });
 </script>
 
-<style lang="less"></style>
+<style lang="less" scoped>
+  .basic-info {
+    :deep(.arco-descriptions-row) {
+      .arco-descriptions-item-label-block {
+        font-weight: 400;
+      }
+    }
+  }
+</style>
