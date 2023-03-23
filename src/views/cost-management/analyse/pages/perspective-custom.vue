@@ -75,7 +75,7 @@
           ...projectCostFilters
         }"
         :columns="customTableCols"
-        source="project"
+        source="cost table"
         style="margin-top: 20px"
       ></TableList>
     </SpinCard>

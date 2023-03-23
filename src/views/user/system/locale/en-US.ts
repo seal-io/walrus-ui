@@ -98,4 +98,5 @@ export default {
     'List of glob patterns of module path prefixes that should always be fetched directly or that should not be compared against the checksum database.',
   'system.setting.analyze.repoconfig': 'Repository Configuration',
   'system.setting.analyze.enableFixAdvice': 'whether to enable fix advice',
+  'system.setting.rule.openai': 'openai api token is required'
 };

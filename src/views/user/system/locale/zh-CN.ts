@@ -87,4 +87,5 @@ export default {
     '用于设置 Go 环境变量 GONOPROXY，配置需要跳过使用代理或校验和数据库的模块',
   'system.setting.analyze.repoconfig': '仓库配置',
   'system.setting.analyze.enableFixAdvice': '是否开启修复建议',
+  'system.setting.rule.openai': 'openai api token 必填'
 };

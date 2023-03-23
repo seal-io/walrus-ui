@@ -175,7 +175,7 @@
         :loadeend="loadeend"
         :filter-params="{ ...projectCostFilters }"
         :columns="projectCostCols"
-        source="project"
+        source="app table"
         style="margin-top: 20px"
       ></TableList>
     </SpinCard>
