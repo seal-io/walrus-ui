@@ -199,7 +199,10 @@
         } else {
           resData = await upgradeApplicationInstance({
             ...formData,
-            id: instanceId.value
+            application: {
+              id: route.query.id || ''
+            },
+            id: props.activeInstanceInfo.id
           });
         }
         setTimeout(() => {

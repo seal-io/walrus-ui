@@ -101,7 +101,8 @@
   import { useI18n } from 'vue-i18n';
   import {
     getStackLineDataList,
-    getStackLineChartDataList
+    getStackLineChartDataList,
+    getStackLineData
   } from '@/views/config';
   import spinCard from '@/components/page-wrap/spin-card.vue';
   import pieChart from '@/components/pie-chart/index.vue';
@@ -260,14 +261,7 @@
       };
       const { data } = await queryCostManagemantData(params);
       const list = data.items || [];
-      const result = getStackLineChartDataList(
-        sortBy(list, (s) => s.startTime),
-        {
-          value: 'totalCost',
-          name: 'itemName',
-          xAxis: 'startTime'
-        }
-      );
+      const result = getStackLineData({ list });
       projectCostData.list = result.line as never[];
       projectCostData.xAxis = result.xAxis as never[];
       projectCostData.dataConfig = result.dataConfig as never[];

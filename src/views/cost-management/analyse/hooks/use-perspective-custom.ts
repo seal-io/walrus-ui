@@ -16,6 +16,7 @@ import {
   uniq,
   uniqBy
 } from 'lodash';
+import { getStackLineData } from '@/views/config';
 import {
   getTimeRange,
   projectCostOverview,
@@ -84,86 +85,6 @@ export default function usePerspectiveCost(props) {
       overData.value = {};
       console.log(error);
     }
-  };
-
-  /**
-   *
-   * @date 2023-03-22
-   * @param {any} {list: source list
-   * @param {any} key: data key
-   * @param {any} xAxis}:
-   */
-  const getStackLineData = ({
-    list,
-    key = 'totalCost',
-    fieldName = 'itemName',
-    xAxis = 'startTime',
-    step = 'day'
-  }: {
-    list: object[];
-    key?: string;
-    fieldName?: string;
-    xAxis?: string;
-    step?: string;
-  }) => {
-    const result = {
-      bar: [],
-      line: [] as any[],
-      xAxis: [] as string[],
-      dataConfig: [] as any[]
-    };
-    list = sortBy(list, (s) => s[xAxis]);
-    const diffFieldName = uniqBy(list, (s) => s[fieldName]);
-    // {[key]: {name: key, value: []}}
-    const dataObj = reduce(
-      diffFieldName,
-      (obj, item) => {
-        obj[get(item, fieldName)] = {
-          name: get(item, fieldName),
-          value: []
-        };
-        result.dataConfig.push({
-          name: get(item, fieldName),
-          label: get(item, fieldName)
-        });
-        return obj;
-      },
-      {}
-    );
-    // {'2023-03-22': {fieldName: ''}}
-    const fielNameValueInxAixs = reduce(
-      list,
-      (obj, item) => {
-        const xAxisVal = dayjs(item[xAxis]).format(get(dateFormatMap, step));
-        result.xAxis.push(xAxisVal);
-        const fieldNameVal = item[fieldName];
-        if (obj[xAxisVal]) {
-          if (!get(obj, `${xAxisVal}.${fieldNameVal}`)) {
-            obj[xAxisVal][fieldNameVal] = item[key];
-          }
-        } else {
-          obj[xAxisVal] = {};
-          obj[xAxisVal][fieldNameVal] = item[key];
-        }
-        return obj;
-      },
-      {}
-    );
-    // ['2023-1','2023-1',...]
-    const xAxisList = keys(fielNameValueInxAixs);
-    each(diffFieldName, (p) => {
-      const k = get(p, fieldName);
-      each(xAxisList, (x) => {
-        dataObj[k].value.push(get(fielNameValueInxAixs[x], `${k}`) || 0);
-      });
-    });
-
-    each(diffFieldName, (sItem) => {
-      result.line.push(get(dataObj, sItem[fieldName]));
-    });
-    console.log('result=====', result, xAxisList);
-    result.xAxis = uniq(result.xAxis);
-    return result;
   };
 
   const getProjectCostChart = async () => {
