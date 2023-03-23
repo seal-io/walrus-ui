@@ -47,25 +47,37 @@
       </a-split>
     </a-spin>
     <a-space style="margin-top: 10px">
-      <a-button type="primary" @click="handleCompletionGenerate">
+      <a-button
+        type="primary"
+        :disabled="loading"
+        @click="handleCompletionGenerate"
+      >
         <template #icon><icon-common /></template>
-        <span>Generate</span>
+        <span>生成</span>
       </a-button>
-      <a-button type="primary" @click="handleCompletionExplain">
+      <a-button
+        type="primary"
+        :disabled="loading"
+        @click="handleCompletionExplain"
+      >
         <template #icon>
           <icon-font type="icon-shengchenglujing-01"></icon-font>
         </template>
-        <span>Explain</span>
+        <span>解释</span>
       </a-button>
-      <a-button type="primary" @click="handleCompletionCorrect">
+      <a-button
+        type="primary"
+        :disabled="loading"
+        @click="handleCompletionCorrect"
+      >
         <template #icon>
           <icon-find-replace />
         </template>
-        <span>Correction</span>
+        <span>纠错</span>
       </a-button>
-      <a-button type="outline" @click="handleClear">
+      <a-button type="outline" :disabled="loading" @click="handleClear">
         <template #icon><icon-delete /></template>
-        <span>Clear</span>
+        <span>清空</span>
       </a-button>
       <!-- <a-button type="outline" status="success">
           <template #icon
