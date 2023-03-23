@@ -229,10 +229,10 @@
       },
       tooltip: {
         trigger: 'axis',
-        position(point, params, dom, rect, size) {
-          // 固定在顶部
-          return [point[0], '10%'];
-        },
+        // position(point, params, dom, rect, size) {
+        //   // 固定在顶部
+        //   return [point[1], '10%'];
+        // },
         formatter(params) {
           console.log('params======', params);
           const [firstElement] = params as ToolTipFormatterParams[];

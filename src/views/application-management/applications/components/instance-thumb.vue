@@ -27,7 +27,13 @@
           v-for="item in actions"
           :key="item.value"
           :value="item.value"
-          style="line-height: 32px"
+          :style="{
+            'line-height': '32px',
+            'color':
+              item.value === 'delete'
+                ? 'rgb(var(--danger-6))'
+                : 'var(--color-text-2)'
+          }"
           ><component :is="item.icon" style="margin-right: 5px"></component
           >{{ $t(item.label) }}</a-doption
         >
