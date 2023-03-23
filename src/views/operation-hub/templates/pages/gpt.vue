@@ -170,10 +170,11 @@
       };
       loading.value = true;
       const { data } = await postCompletionsCorrect(params);
-      diffValue.value = data.text;
+      diffValue.value = `${data.corrected}\n\n${data.explanation}`;
       loading.value = false;
     } catch (error) {
       loading.value = false;
+      diffValue.value = '';
       console.log(error);
     }
   };
@@ -189,7 +190,7 @@
       code.value = '';
     } catch (error) {
       loading.value = false;
-      defaultValue.value = '';
+      diffValue.value = '';
       code.value = '';
       console.log(error);
     }
@@ -200,6 +201,7 @@
         text: code.value
       };
       loading.value = true;
+      diffValue.value = '';
       const { data } = await postCompletionsGenerate(params);
       loading.value = false;
       defaultValue.value = data.text;
@@ -217,10 +219,12 @@
   const handleClear = () => {
     code.value = '';
     defaultValue.value = '';
+    diffValue.value = '';
   };
   const handleTyeChange = (val) => {
     code.value = val;
     defaultValue.value = val;
+    diffValue.value = '';
   };
   getCompletionExample();
 </script>
