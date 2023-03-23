@@ -185,7 +185,7 @@
         :time-mode="timeMode"
         :filter-params="nameSpaceCostFilters"
         :columns="clusterNamespaceCostCols"
-        source="namespace"
+        source="namespace table"
         style="margin-top: 20px"
       ></TableList>
     </SpinCard>
@@ -218,7 +218,7 @@
         :request-work="requestWork"
         :time-mode="timeMode"
         :columns="workLoadCostCols"
-        source="workload"
+        source="workload table"
         style="margin-top: 20px"
       ></TableList>
     </SpinCard>

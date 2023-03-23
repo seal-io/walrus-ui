@@ -97,6 +97,38 @@ export const settingList: Array<SettingsItem> = [
       //   type: 'string'
       // }
     ]
+  },
+  {
+    id: 'openAiToken',
+    label: 'OpenAI API Token',
+    parentId: '',
+    value: '',
+    editable: true,
+    component: {
+      type: 'input',
+      required: true
+    },
+    type: 'layout',
+    dataList: [
+      {
+        id: 'openAiApiToken',
+        label: 'openai-api-token',
+        parentId: '',
+        component: {
+          type: 'input',
+          required: true,
+          validator(val, callback) {
+            if (val) {
+              callback();
+            } else {
+              callback(i18n.global.t('system.setting.rule.openai'));
+            }
+          }
+        },
+        value: '',
+        type: 'string'
+      }
+    ]
   }
   // {
   //   id: 'InterceptorManage',

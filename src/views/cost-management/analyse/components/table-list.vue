@@ -121,7 +121,6 @@
     return dayjs(start).format();
   };
   const fetchData = async () => {
-    if (!props.requestWork) return;
     try {
       loading.value = true;
       // props.timeRange === 'single'
@@ -181,7 +180,7 @@
   watch(
     () => props.filterParams,
     () => {
-      if (props.loadeend) {
+      if (props.loadeend && props.requestWork) {
         fetchData();
       }
     },

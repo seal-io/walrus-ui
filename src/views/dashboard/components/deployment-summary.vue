@@ -203,7 +203,8 @@
     getApplicationRevisionsChart();
     getApplicationRevisionsList();
   };
-  const handleDateChange = () => {
+  const handleDateChange = (val) => {
+    console.log('handleDateChange:', val);
     init();
   };
   init();

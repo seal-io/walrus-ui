@@ -8,7 +8,7 @@
       :style="{ width: width }"
       :mode="mode"
       :model-value="[start, end]"
-      :value-format="valueFormat || 'YYYY-MM-DD'"
+      :value-format="'YYYY-MM-DD'"
       :class="{ 'border-less': borderLess }"
       @select-shortcut="handleSelectShortcut"
       @popup-visible-change="handlePopupChange"
@@ -46,7 +46,7 @@
 <script lang="ts" setup>
   import { get, map } from 'lodash';
   import dayjs from 'dayjs';
-  import { computed, ref, PropType } from 'vue';
+  import { computed, ref, PropType, watch } from 'vue';
   import { useI18n } from 'vue-i18n';
   import { datePickerMode, timeZoneMode } from './config';
 
@@ -142,6 +142,7 @@
   const popupVisible = ref(false);
   const startDate = ref('');
   const endDate = ref('');
+  const pointDate = ref('');
 
   const selectShortcut = computed(() => {
     if (props.shortCuts?.length) {
@@ -151,13 +152,14 @@
       });
     }
     const tDay = props.todayIn ? 0 : 1;
+    const subDay = props.todayIn ? 30 : 29;
     return [
       {
         label: t('dashboard.datepicker.30days'),
         unit: 'day',
         format: 'YYYY-MM-DD',
         value: [
-          dayjs().subtract(30, 'day').format('YYYY-MM-DD'),
+          dayjs().subtract(subDay, 'day').format('YYYY-MM-DD'),
           dayjs().subtract(tDay, 'day').format('YYYY-MM-DD')
         ]
       },
@@ -205,10 +207,11 @@
     return [dayjs(start).format(), dayjs(get(value, 1)).format()];
   };
   const handleSelect = (val) => {
-    const value = generateTimezoneFormat(val);
-    endDate.value = get(value, '1') || props.end;
-    startDate.value = get(value, '0') || props.start;
-    console.log('select==', endDate.value, startDate.value);
+    console.log('valueString:', val);
+    // const value = generateTimezoneFormat(val);
+    // endDate.value = get(value, '1') || props.end;
+    // startDate.value = get(value, '0') || props.start;
+    pointDate.value = get(val, '1') || get(val, '0');
   };
   const disabledDate = (current) => {
     // const type = props.timeUnit as unitType;
@@ -225,7 +228,7 @@
     }
     if (
       dayjs(current).isBefore(
-        dayjs(endDate.value).subtract(range, type).format('YYYY-MM-DD'),
+        dayjs(pointDate.value).subtract(range, type).format('YYYY-MM-DD'),
         'day'
       )
     ) {
@@ -233,7 +236,7 @@
     }
     if (
       dayjs(current).isAfter(
-        dayjs(endDate.value).add(range, type).format('YYYY-MM-DD'),
+        dayjs(pointDate.value).add(range, type).format('YYYY-MM-DD'),
         'day'
       )
     ) {
@@ -275,13 +278,22 @@
     setRangeValue(metaValue);
     // console.log('value====', value);
     emits('update:timeUnit', val.unit);
-    // emits('change', value);
+    emits('change', metaValue);
   };
   const handleDateChange = (val) => {
     console.log('change:', val);
     const value = setRangeValue(val);
     emits('change', value);
   };
+  watch(
+    () => endDate.value,
+    (val) => {
+      pointDate.value = val;
+    },
+    {
+      immediate: true
+    }
+  );
 </script>
 
 <style lang="less">
