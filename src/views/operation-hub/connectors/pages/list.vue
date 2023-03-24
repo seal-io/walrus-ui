@@ -10,7 +10,7 @@
       <a-tab-pane
         v-for="item in connectorTypeList"
         :key="item.value"
-        :disabled="item.value !== 'k8s'"
+        :disabled="!item.enable"
         :title="item.label"
       >
         <Component :is="connectorsMap[item.com]"></Component>
@@ -25,11 +25,13 @@
   import connectorKubernetes from '../components/connector-kubernetes.vue';
   import connectorCustom from '../components/connector-custom.vue';
   import connectorCloud from '../components/connector-cloud.vue';
+  import connectorScm from '../components/connector-scm.vue';
 
   const connectorsMap = {
     kubernetes: markRaw(connectorKubernetes),
     custom: markRaw(connectorCustom),
-    cloud: markRaw(connectorCloud)
+    cloud: markRaw(connectorCloud),
+    versionControl: markRaw(connectorScm)
   };
   const activeKey = ref('k8s');
 
