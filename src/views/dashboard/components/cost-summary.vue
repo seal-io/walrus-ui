@@ -99,11 +99,7 @@
     isNaN
   } from 'lodash';
   import { useI18n } from 'vue-i18n';
-  import {
-    getStackLineDataList,
-    getStackLineChartDataList,
-    getStackLineData
-  } from '@/views/config';
+  import { getStackLineDataList, getStackLineData } from '@/views/config';
   import spinCard from '@/components/page-wrap/spin-card.vue';
   import pieChart from '@/components/pie-chart/index.vue';
   import DataCard from '@/components/data-card/index.vue';

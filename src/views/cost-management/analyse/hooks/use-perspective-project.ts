@@ -91,6 +91,10 @@ export default function usePerspectiveCost(props) {
     }
   };
   const getSummaryData = async () => {
+    if (!queryParams.project) {
+      overData.value = {};
+      return;
+    }
     try {
       overviewloading.value = true;
       const params = {
@@ -110,6 +114,10 @@ export default function usePerspectiveCost(props) {
     }
   };
   const getProjectCostChart = async () => {
+    if (!queryParams.project) {
+      projectCostChart.value = { xAxis: [], line: [], bar: [], dataConfig: [] };
+      return;
+    }
     try {
       apploading.value = true;
       const params = {

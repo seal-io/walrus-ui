@@ -118,7 +118,7 @@
         }
       },
       tooltip: {
-        show: false,
+        show: true,
         trigger: 'axis'
       },
       series: {
@@ -129,9 +129,11 @@
           };
         }),
         type: 'bar',
-        barWidth: 16,
+        // barWidth: 16,
+        barMaxWidth: 16,
+        barMinWidth: 6,
         label: {
-          show: true,
+          show: false, // show label on the bar
           position: 'top',
           fontWeight: 500,
           fontSize: 12
