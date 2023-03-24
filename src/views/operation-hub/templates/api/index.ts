@@ -14,6 +14,14 @@ export interface ResultType {
   items: TemplateRowData[];
   pagination: Pagination;
 }
+
+export interface FormDataPR {
+  connectorID: string;
+  repository: string;
+  branch: string;
+  path: string;
+  content: string;
+}
 export function queryModules(params: QueryType) {
   return axios.get<ResultType>('/modules', {
     params,
@@ -69,7 +77,27 @@ export function postCompletionsExplain(data) {
 export function postCompletionsGenerate(data) {
   return axios.post(`/module-completions/_/generate`, data);
 }
+export function postCompletionsPR(data: FormDataPR) {
+  return axios.post(`/module-completions/_/create-pr`, data);
+}
 
 export function queryCompletionExamples() {
   return axios.get(`/module-completions/_/examples`);
+}
+
+export function queryConnectorRepositories(params: { id: string }) {
+  return axios.get(`/connectors/${params.id}/repositories`, {
+    params,
+    paramsSerializer: (obj) => {
+      return qs.stringify(obj);
+    }
+  });
+}
+export function queryConnectorRepositoriesBranch(params: { id: string }) {
+  return axios.get(`/connectors/${params.id}/repository-branches`, {
+    params,
+    paramsSerializer: (obj) => {
+      return qs.stringify(obj);
+    }
+  });
 }

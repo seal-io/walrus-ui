@@ -73,6 +73,10 @@ export const getStackLineData = ({
     xAxis: [] as string[],
     dataConfig: [] as any[]
   };
+  list = map(list || [], (s) => {
+    s[key] = s[key] || 0;
+    return s;
+  });
   list = sortBy(list, (s) => s[xAxis]);
   const diffFieldName = uniqBy(list, (s) => s[fieldName]);
   // {[key]: {name: key, value: []}}

@@ -17,8 +17,11 @@ export interface ConnectorRowData {
 export interface ConnectorFormData {
   id?: string;
   name: string;
+  description?: string;
+  type: string;
   configData: {
-    kubeconfig: string;
+    kubeconfig?: string;
+    token?: string;
   };
   configVersion: string;
   enableFinOps: boolean;

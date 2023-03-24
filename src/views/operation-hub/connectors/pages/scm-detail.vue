@@ -4,12 +4,12 @@
     <div>
       <a-form ref="formref" :model="formData" auto-label-width>
         <a-form-item
-          :label="$t('operation.connectors.detail.clusterName')"
+          label="名称"
           field="name"
           :rules="[
             {
               required: true,
-              message: $t('operation.connectors.rules.name')
+              message: '名称必填'
             }
           ]"
         >
@@ -21,23 +21,46 @@
           ></a-input>
         </a-form-item>
         <a-form-item
-          field="configData.kubeconfig"
+          field="description"
           :hide-asterisk="false"
           label="描述"
           :validate-trigger="['change']"
         >
           <a-textarea
-            v-model.trim="formData.configData.kubeconfig"
+            v-model.trim="formData.description"
             style="width: 500px"
             :spellcheck="false"
             :auto-size="{ minRows: 4, maxRows: 6 }"
           />
         </a-form-item>
-        <a-form-item label="类型">
-          <a-select :options="typeOptions" style="width: 500px"></a-select>
+        <a-form-item
+          label="类型"
+          field="type"
+          :rules="[{ required: true, message: '类型必选' }]"
+        >
+          <a-select v-model="formData.type" style="width: 500px">
+            <a-option
+              v-for="(item, index) in typeOptions"
+              :key="index"
+              :value="item.value"
+            >
+              <ProviderIcon :provider="toLower(item.value)"></ProviderIcon>
+              <span style="margin-left: 5px">{{ item.label }}</span>
+            </a-option>
+            <template #prefix>
+              <ProviderIcon :provider="toLower(formData.type)"></ProviderIcon>
+            </template>
+          </a-select>
         </a-form-item>
-        <a-form-item label="访问令牌">
-          <a-input style="width: 500px"></a-input>
+        <a-form-item
+          label="访问令牌"
+          field="configData.token"
+          :rules="[{ required: true, message: '访问令牌必填' }]"
+        >
+          <a-input-password
+            v-model="formData.configData.token"
+            style="width: 500px"
+          ></a-input-password>
         </a-form-item>
       </a-form>
     </div>
@@ -62,12 +85,13 @@
 </template>
 
 <script lang="ts" setup>
-  import { assignIn } from 'lodash';
+  import { assignIn, toLower } from 'lodash';
   import { ref, reactive, onMounted, computed } from 'vue';
   import GroupTitle from '@/components/group-title/index.vue';
   import readBlob from '@/utils/readBlob';
   import EditPageFooter from '@/components/edit-page-footer/index.vue';
   import useCallCommon from '@/hooks/use-call-common';
+  import ProviderIcon from '@/components/provider-icon/index.vue';
   import { ConnectorFormData } from '../config/interface';
   import { createConnector, updateConnector, queryItemConnector } from '../api';
 
@@ -78,22 +102,23 @@
   const formData: ConnectorFormData = reactive({
     name: '',
     configData: {
-      kubeconfig: ''
+      token: ''
     },
+    description: '',
     configVersion: 'v1',
-    type: 'Kubernetes',
-    enableFinOps: true
+    type: 'Github',
+    enableFinOps: false
   });
 
   const typeOptions = [
-    { label: 'GitHub', value: 'github' },
-    { label: 'GitLab', value: 'gitlab' }
+    { label: 'GitHub', value: 'Github' },
+    { label: 'GitLab', value: 'Gitlab' }
   ];
   const title = computed(() => {
     if (id) {
-      return t('operation.connectors.title.edit', { type: 'Kubernetes' });
+      return t('operation.connectors.title.edit', { type: '版本管理' });
     }
-    return t('operation.connectors.title.new', { type: 'Kubernetes' });
+    return t('operation.connectors.title.new', { type: '版本管理' });
   });
   const handleUploadSuccess = async (list, fileItem) => {
     const res = await readBlob(fileItem.file);
@@ -143,6 +168,12 @@
 
       .text {
         margin-right: 8px;
+      }
+    }
+
+    :deep(.arco-select-view-single) {
+      .arco-select-view-prefix {
+        padding-right: 5px;
       }
     }
   }

@@ -14,6 +14,7 @@ import {
   concat,
   assignIn
 } from 'lodash';
+import { getStackLineData } from '@/views/config';
 import { getTimeRange, projectCostOverview, setEndTimeAddDay } from '../config';
 import { CostAnalyRow, ChartData } from '../config/interface';
 import {
@@ -124,8 +125,6 @@ export default function usePerspectiveCost(props) {
       const params = {
         ...omit(projectCostFilters.value, 'paging'),
         ...omit(queryParams, 'endTime')
-        // startTime: dayjs(queryParams.startTime).format('YYYY-MM-DDTHH:mm:ssZ'),
-        // endTime: dayjs(queryParams.endTime).format('YYYY-MM-DDT23:59:59Z')
       };
       const { data } = await queryPerspectiveData(params);
       // const data = workloadData;
@@ -133,52 +132,11 @@ export default function usePerspectiveCost(props) {
       list = sortBy(list, (s) => s.itemName);
       // let list = statckLineData;
       projectCostChart.value = { xAxis: [], line: [], bar: [], dataConfig: [] };
-      list = sortBy(list, (d) => d.startTime);
-      const dataObj = reduce(
+      const result = getStackLineData({
         list,
-        (obj, o) => {
-          const item: any = {};
-          each(keys(o), (key) => {
-            if (key !== 'itemName') {
-              item[key] = [o[key]];
-            } else {
-              item[key] = o[key];
-            }
-          });
-          if (obj[item.itemName]) {
-            each(keys(item), (k) => {
-              if (k !== 'itemName') {
-                obj[item.itemName][k] = concat(
-                  get(obj, `${item.itemName}.${k}`),
-                  item[k]
-                );
-              }
-            });
-          } else {
-            obj[item.itemName] = cloneDeep(item);
-          }
-          return obj;
-        },
-        {}
-      );
-
-      each(keys(dataObj), (pKey) => {
-        projectCostChart.value.line.push({
-          name: pKey,
-          value: dataObj[pKey]['totalCost']
-        });
-        projectCostChart.value.dataConfig.push({
-          name: pKey,
-          label: pKey
-        });
-        projectCostChart.value.xAxis = dataObj[pKey]['startTime'];
+        step: projectCostFilters.value.step
       });
-      projectCostChart.value.xAxis = map(
-        projectCostChart.value.xAxis,
-        (kItem) => {
-          return dayjs(kItem).format('YYYY.MM.DD');
-        }
-      );
+      projectCostChart.value = result;
       apploading.value = false;
     } catch (error) {
       apploading.value = false;

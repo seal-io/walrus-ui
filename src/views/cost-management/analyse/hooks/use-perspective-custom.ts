@@ -93,8 +93,6 @@ export default function usePerspectiveCost(props) {
       const params = {
         ...omit(projectCostFilters.value, 'paging'),
         ...omit(queryParams, 'endTime')
-        // startTime: dayjs(queryParams.startTime).format('YYYY-MM-DDTHH:mm:ssZ'),
-        // endTime: dayjs(queryParams.endTime).format('YYYY-MM-DDT23:59:59Z')
       };
       const { data } = await queryPerspectiveData(params);
       // const data = namespaceData;
