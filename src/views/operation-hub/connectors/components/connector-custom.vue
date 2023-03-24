@@ -1,7 +1,9 @@
 <template>
-  <div class="connector-custom">custom</div>
+  <TableList category="Custom" edit-page="connectorCustomDetail"></TableList>
 </template>
 
-<script lang="ts" setup></script>
+<script lang="ts" setup>
+  import TableList from './table-list.vue';
+</script>
 
-<style></style>
+<style lang="less" scoped></style>

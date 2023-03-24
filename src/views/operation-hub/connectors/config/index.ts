@@ -6,8 +6,8 @@ export const connectorTypeList = [
     value: 'scm',
     com: 'versionControl'
   },
-  { label: 'Cloud Provider', value: 'cloud', com: 'cloud' },
-  { label: '自定义', value: 'custom', com: 'custom' }
+  { label: '自定义', enable: true, value: 'custom', com: 'custom' },
+  { label: 'Cloud Provider', value: 'cloud', com: 'cloud' }
 ];
 
 export const finOpsStatus = [

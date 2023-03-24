@@ -59,6 +59,11 @@
           <thumbButton :size="60" @click="handleAddModule"></thumbButton>
         </a-tooltip>
       </div>
+      <div v-if="validateModule && !id" class="tips">
+        <span :style="{ 'font-size': '12px', 'color': 'rgb(var(--danger-6))' }"
+          >模块不能为空</span
+        >
+      </div>
     </ModuleCard>
     <ModuleCard :title="$t('applications.applications.variables.title')">
       <a-button
@@ -215,7 +220,7 @@
   const appModules = ref<AppModule[]>([]);
   const completeData = ref<Record<string, any>>({});
   const collapseStatus = ref(0);
-  const showLogs = ref(false);
+  const validateModule = ref(false);
   let copyFormData: any = {};
 
   provide('completeData', completeData);
@@ -434,9 +439,16 @@
     const result = await basicform.value.getFormData();
     const variableFormResult = await getRefFormData();
     const validateVariabel = find(variableFormResult, (val) => !val.formData);
+    validateModule.value = !!appInfo.modules.length;
+    if (!id) {
+      if (!validateModule.value) {
+        return;
+      }
+    }
     if (!result || validateVariabel) {
-      const i = get(split(validateVariabel.tab, 'variableform'), 1);
+      const i = get(split(validateVariabel?.tab || '', 'variableform'), 1);
       collapseStatus.value = +i;
+
       return;
     }
     try {
