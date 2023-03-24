@@ -113,8 +113,8 @@
         item.value = item.id;
         return item;
       }) as Array<{ value: string; label: string }>;
-      // const allView = find(viewList.value, (sItem) => sItem.label === 'all');
-      // viewId.value = allView?.value || '';
+      const allView = find(viewList.value, (sItem) => sItem.label === 'all');
+      viewId.value = allView?.value || '';
       loading.value = false;
     } catch (error) {
       loading.value = false;
@@ -126,8 +126,8 @@
   const setView = () => {
     if (route.query.id) {
       viewId.value = (route.query.id || '') as string;
-      handleViewChange(viewId.value);
     }
+    handleViewChange(viewId.value);
   };
   const init = async () => {
     await getViewList();

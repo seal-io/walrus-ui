@@ -23,5 +23,18 @@ export default [
       requiresAuth: true,
       icon: 'icon-apps'
     }
+  },
+  {
+    path: 'connector/scm-detail',
+    name: 'connectorScmDetail',
+    component: () =>
+      import('@/views/operation-hub/connectors/pages/scm-detail.vue'),
+    meta: {
+      hideInMenu: true,
+      ignoreCache: true,
+      locale: 'operation.connectors.menu',
+      requiresAuth: true,
+      icon: 'icon-apps'
+    }
   }
 ];
