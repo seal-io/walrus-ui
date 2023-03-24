@@ -33,6 +33,9 @@
             :label="$t(item.label)"
           ></a-option>
         </a-select>
+        <template #extra>
+          <span class="tips">切换时间范围将清空过滤器选项的值</span>
+        </template>
       </a-form-item>
       <a-form-item
         label="分组依据"
@@ -463,8 +466,24 @@
     formData.endTime =
       get(data, 'value.1') || dayjs().format('YYYY-MM-DDTHH:mm:ss+00:00');
   };
+  const resetFilterFieldValue = () => {
+    // formData.allocationQueries[0].filters
+    // formData.allocationQueries[0].shareCosts[0].filters
+    each(formData.allocationQueries[0].filters, (item) => {
+      each(item || [], (sItem: any) => {
+        console.log('sItem=======', sItem);
+        sItem.values = [];
+      });
+    });
+    each(formData.allocationQueries[0].shareCosts[0].filters, (item) => {
+      each(item || [], (sItem: any) => {
+        sItem.values = [];
+      });
+    });
+  };
   const handleTimeChange = (val) => {
     setDateRange();
+    resetFilterFieldValue();
     getPerspectiveFields();
     getPerspectiveGroupBy();
     getPerspectiveStep();

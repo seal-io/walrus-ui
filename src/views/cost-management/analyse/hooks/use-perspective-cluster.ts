@@ -106,24 +106,30 @@ export default function usePerspectiveCost(props) {
       });
     });
   };
-  const getClusterList = async () => {
+  const getClusterList = async (flag?) => {
     try {
       clusterloading.value = true;
       const params = {
         ...omit(queryParams, ['connectorID']),
         fieldName: 'connector_id',
-        fieldType: 'filter'
-        // startTime: dayjs(queryParams.startTime).format('YYYY-MM-DDTHH:mm:ssZ'),
-        // endTime: dayjs(queryParams.endTime).format('YYYY-MM-DDT23:59:59Z')
+        fieldType: 'filter',
+        endTime: setEndTimeAddDay(queryParams.endTime, timeMode.value)
       };
       const { data } = await queryPerspectiveFieldValues(params);
       clusterList.value = data?.items || [];
-      queryParams.connectorID = get(clusterList.value, '0.value') || '';
-      clusterName.value = get(clusterList.value, '0.label') || 'Cluster';
-
-      dailyCostFilters.value.connectorID = queryParams.connectorID;
-      workloadCostFilters.value.connectorID = queryParams.connectorID;
-      nameSpaceCostFilters.value.connectorID = queryParams.connectorID;
+      if (!flag) {
+        queryParams.connectorID = get(clusterList.value, '0.value') || '';
+        clusterName.value = get(clusterList.value, '0.label') || 'Cluster';
+        dailyCostFilters.value.connectorID = queryParams.connectorID;
+        workloadCostFilters.value.connectorID = queryParams.connectorID;
+        nameSpaceCostFilters.value.connectorID = queryParams.connectorID;
+        setFilterModelValue(dailyCostFilters.value, queryParams.connectorID);
+        setFilterModelValue(workloadCostFilters.value, queryParams.connectorID);
+        setFilterModelValue(
+          nameSpaceCostFilters.value,
+          queryParams.connectorID
+        );
+      }
       console.log('dailyCostFilters====', dailyCostFilters.value);
       // each(get(dailyCostFilters.value, 'filters') || [], (fItem) => {
       //   each(fItem, (sItem) => {
@@ -131,9 +137,7 @@ export default function usePerspectiveCost(props) {
       //     sItem.fieldName = 'connector_id';
       //   });
       // });
-      setFilterModelValue(dailyCostFilters.value, queryParams.connectorID);
-      setFilterModelValue(workloadCostFilters.value, queryParams.connectorID);
-      setFilterModelValue(nameSpaceCostFilters.value, queryParams.connectorID);
+
       clusterloading.value = false;
     } catch (error) {
       clusterloading.value = false;
@@ -344,9 +348,10 @@ export default function usePerspectiveCost(props) {
     }
   };
   const getPerspectiveItemInfo = async () => {
+    if (!route.query.id) return;
     try {
       loading.value = true;
-      const id = route.query.id || props.viewId;
+      const id = route.query.id as string;
       const { data } = await queryItemPerspective({ id });
       const allocationQueries = get(data, 'allocationQueries') || [];
 

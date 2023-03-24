@@ -6,6 +6,7 @@
         <a-select
           v-if="isPage"
           v-model="queryParams.connectorID"
+          allow-search
           :placeholder="$t('cost.analyse.cluster.holder')"
           class="border-less"
           style="width: 200px"
@@ -228,7 +229,7 @@
 <script lang="ts" setup>
   import dayjs from 'dayjs';
   import { filter, find, get, each, round } from 'lodash';
-  import { reactive, ref, computed, onMounted, watch } from 'vue';
+  import { reactive, ref, computed, onMounted, watch, inject } from 'vue';
   import useCallCommon from '@/hooks/use-call-common';
   import DateRange from '@/components/date-range/index.vue';
   import DataCard from '@/components/data-card/index.vue';
@@ -311,7 +312,8 @@
     overviewloading,
     timeMode
   } = usePerspectiveCost(props);
-  const { t } = useCallCommon();
+  const componentName = inject('componentName', ref('cluster'));
+  const { t, route } = useCallCommon();
   const loadeend = ref(false);
   const clusterOptions = [
     { label: 'cluster-1', value: 'cluster1' },
@@ -377,7 +379,7 @@
       ...queryParams,
       endTime: setEndTimeAddDay(queryParams.endTime, timeMode.value)
     };
-    await getClusterList();
+    await getClusterList(true);
     getDailyCostChart();
     getNamespaceCostChart();
     getSummaryData();
@@ -424,9 +426,20 @@
     }, 50);
   };
   watch(
-    () => id.value,
-    () => {
-      if (id.value) {
+    () => route.query.id,
+    (ov) => {
+      if (ov && route.query.page === 'cluster') {
+        initData();
+      }
+    },
+    {
+      immediate: true
+    }
+  );
+  watch(
+    () => route.query.page,
+    (ov) => {
+      if (ov && route.query.page === 'cluster') {
         initData();
       }
     },

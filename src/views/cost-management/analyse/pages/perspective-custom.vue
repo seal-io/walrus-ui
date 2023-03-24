@@ -147,7 +147,7 @@
     overviewloading,
     timeMode
   } = usePerspectiveCost(props);
-  const { t } = useCallCommon();
+  const { t, route } = useCallCommon();
   const loadeend = ref(false);
 
   const preloading = computed(() => {
@@ -235,9 +235,20 @@
     }, 50);
   };
   watch(
-    () => id.value,
-    () => {
-      if (id.value) {
+    () => route.query.id,
+    (ov) => {
+      if (ov && route.query.page === 'custom') {
+        initData();
+      }
+    },
+    {
+      immediate: true
+    }
+  );
+  watch(
+    () => route.query.page,
+    (ov) => {
+      if (ov && route.query.page === 'custom') {
         initData();
       }
     },

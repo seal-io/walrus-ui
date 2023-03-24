@@ -154,9 +154,16 @@
 </template>
 
 <script lang="ts" setup>
-  import { map, capitalize, cloneDeep, find, toLower, pickBy } from 'lodash';
+  import {
+    map,
+    capitalize,
+    cloneDeep,
+    find,
+    toLower,
+    pickBy,
+    includes
+  } from 'lodash';
   import { reactive, ref, onMounted } from 'vue';
-  import { useCostManageStore } from '@/store';
   import useCallCommon from '@/hooks/use-call-common';
   import { deleteModal, execSucceed } from '@/utils/monitor';
   import useRowSelect from '@/hooks/use-row-select';
@@ -167,7 +174,6 @@
   import { DateShortCuts, builtinViewMap } from '../config';
 
   const { rowSelection, selectedKeys, handleSelectChange } = useRowSelect();
-  const costManageStore = useCostManageStore();
   const { router, t } = useCallCommon();
   let timer: any = null;
   const loading = ref(false);
@@ -193,6 +199,9 @@
       const list = data?.items || [];
       dataList.value = map(list, (item) => {
         item.disabled = item.builtin;
+        item.labelFlag = includes(['ALL', 'Cluster', 'Project'], item.name)
+          ? toLower(item.name)
+          : 'custom';
         return item;
       });
       total.value = data?.pagination.total || 0;
@@ -261,17 +270,17 @@
     });
   };
   const handleView = (row) => {
-    let routeName = 'costAnalyseAll';
-    if (capitalize(row.name) === 'Cluster') {
-      routeName = 'costAnalyseCluster';
-    }
-    if (capitalize(row.name) === 'Project') {
-      routeName = 'costAnalyseProject';
-    }
-    if (!row.builtin) {
-      routeName = 'costAnalyseCustom';
-    }
-    router.push({ name: routeName, query: { id: row.id } });
+    // let routeName = 'costAnalyseAll';
+    // if (capitalize(row.name) === 'Cluster') {
+    //   routeName = 'costAnalyseCluster';
+    // }
+    // if (capitalize(row.name) === 'Project') {
+    //   routeName = 'costAnalyseProject';
+    // }
+    // if (!row.builtin) {
+    //   routeName = 'costAnalyseCustom';
+    // }
+    router.push({ name: 'costPerspective', query: { id: row.id } });
   };
   const handleDelete = async () => {
     deleteModal({ onOk: handleDeleteConfirm });
