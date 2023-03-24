@@ -14,6 +14,7 @@ import {
   assignIn,
   concat
 } from 'lodash';
+import { getStackLineData } from '@/views/config';
 import {
   clusterCostOverview,
   resourceCostOverview,
@@ -288,52 +289,11 @@ export default function usePerspectiveCost(props) {
         bar: [],
         dataConfig: []
       };
-      list = sortBy(list, (d) => d.startTime);
-      const dataObj = reduce(
+      const result = getStackLineData({
         list,
-        (obj, o) => {
-          const item: any = {};
-          each(keys(o), (key) => {
-            if (key !== 'itemName') {
-              item[key] = [o[key]];
-            } else {
-              item[key] = o[key];
-            }
-          });
-          if (obj[item.itemName]) {
-            each(keys(item), (k) => {
-              if (k !== 'itemName') {
-                obj[item.itemName][k] = concat(
-                  get(obj, `${item.itemName}.${k}`),
-                  item[k]
-                );
-              }
-            });
-          } else {
-            obj[item.itemName] = cloneDeep(item);
-          }
-          return obj;
-        },
-        {}
-      );
-
-      each(keys(dataObj), (pKey) => {
-        workloadCostChart.value.line.push({
-          name: pKey,
-          value: dataObj[pKey]['totalCost']
-        });
-        workloadCostChart.value.dataConfig.push({
-          name: pKey,
-          label: pKey
-        });
-        workloadCostChart.value.xAxis = dataObj[pKey]['startTime'];
+        step: workloadCostFilters.value.step
       });
-      workloadCostChart.value.xAxis = map(
-        workloadCostChart.value.xAxis,
-        (kItem) => {
-          return dayjs(kItem).format('YYYY.MM.DD');
-        }
-      );
+      workloadCostChart.value = result;
       workloading.value = false;
       console.log('workloadCostChart======', workloadCostChart.value);
     } catch (error) {

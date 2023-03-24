@@ -17,25 +17,64 @@
   >
     <a-spin :loading="loading" style="width: 100%; text-align: center">
       <a-form ref="formref" :model="formData" auto-label-width>
-        <a-form-item label="Connector">
+        <a-form-item
+          label="连接器"
+          field="connectorID"
+          :rules="[{ required: true, message: '连接器必选' }]"
+        >
           <a-select
-            v-model="formData.connector"
+            v-model="formData.connectorID"
             style="width: 100%"
-            :options="connectorList"
-            allow-search
+            @change="handleConnectorChange"
           >
+            <a-option
+              v-for="(item, index) in connectorList"
+              :key="index"
+              :value="item.value"
+            >
+              <ProviderIcon :provider="toLower(item.type)"></ProviderIcon>
+              <span style="margin-left: 5px">{{ item.label }}</span>
+            </a-option>
+            <template #prefix>
+              <ProviderIcon :provider="toLower(iconType)"></ProviderIcon>
+            </template>
           </a-select>
         </a-form-item>
-        <a-form-item label="Repository">
+        <a-form-item
+          label="代码仓库"
+          field="repository"
+          :rules="[{ required: true, message: '代码仓库' }]"
+        >
           <a-select
             v-model="formData.repository"
+            :loading="repoloading"
             style="width: 100%"
-            :options="repositorys"
+            :options="repositories"
             allow-search
+            @change="handleRepoChange"
           >
           </a-select>
         </a-form-item>
-        <a-form-item label="Path" field="value" validate-trigger="change">
+        <a-form-item
+          label="分支"
+          field="branch"
+          :rules="[{ required: true, message: '分支必选' }]"
+        >
+          <a-select
+            v-model="formData.branch"
+            style="width: 100%"
+            :options="branchList"
+            allow-search
+            @change="handleBranchChange"
+          >
+          </a-select>
+        </a-form-item>
+        <a-form-item
+          label="提交地址"
+          field="path"
+          validate-trigger="change"
+          :rules="[{ required: true, message: '提交地址必填' }]"
+        >
           <a-input v-model="formData.path" style="width: 100%"></a-input>
         </a-form-item>
       </a-form>
@@ -65,10 +104,17 @@
 </template>
 
 <script lang="ts" setup>
-  import { ref, reactive, PropType } from 'vue';
-  import { reduce, omit, keys, get, pickBy, omitBy } from 'lodash';
-  import useCallCommon from '@/hooks/use-call-common';
+  import { ref, reactive, PropType, computed } from 'vue';
+  import { map, filter, includes, toLower, find } from 'lodash';
   import EditPageFooter from '@/components/edit-page-footer/index.vue';
+  import ProviderIcon from '@/components/provider-icon/index.vue';
+  import { queryConnectors } from '../../connectors/api';
+  import {
+    queryConnectorRepositories,
+    queryConnectorRepositoriesBranch,
+    FormDataPR,
+    postCompletionsPR
+  } from '../api';
 
   const props = defineProps({
     show: {
@@ -88,39 +134,127 @@
       default() {
         return 'create';
       }
+    },
+    content: {
+      type: String,
+      default() {
+        return '';
+      }
     }
   });
   const emit = defineEmits(['save', 'update:show']);
-  const { router, route } = useCallCommon();
   const formref = ref();
   const loading = ref(false);
   const submitLoading = ref(false);
-  const formData = reactive({
-    connector: '',
+  const formData: FormDataPR = reactive({
+    connectorID: '',
     repository: '',
-    path: ''
+    branch: '',
+    path: '',
+    content: ''
   });
 
-  const connectorList = ref([
-    { label: 'github', value: 'github' },
-    { label: 'gitlab', value: 'gitlab' },
-    { label: 'gitee', value: 'gitee' }
-  ]);
-  const repositorys = ref([
-    { label: 'foo/bar', value: 'foo/bar' },
-    { label: 'env/test', value: 'env/test' },
-    { label: 'deps/web', value: 'deps/web' }
-  ]);
+  const connectorList = ref<{ label: string; value: string; type: string }[]>(
+    []
+  );
+  const repositories = ref<{ label: string; value: string }[]>([]);
+  const branchList = ref<{ label: string; value: string }[]>([]);
+  const repoloading = ref(false);
+
+  const iconType = computed(() => {
+    const d = find(
+      connectorList.value,
+      (item) => item.value === formData.connectorID
+    );
+    return d?.type || '';
+  });
   const handleCancel = () => {
     emit('update:show', false);
   };
-
+  const getConnectorList = async () => {
+    try {
+      const { data } = await queryConnectors({ page: 1, perPage: -1 });
+      const list = filter(data.items || [], (item) => {
+        return includes(['Github', 'Gitlab'], item.type);
+      });
+      connectorList.value = map(list, (sItem) => {
+        return {
+          label: sItem.name,
+          value: sItem.id,
+          type: sItem.type
+        };
+      });
+    } catch (error) {
+      connectorList.value = [];
+      console.log(error);
+    }
+  };
+  const getRepositories = async () => {
+    try {
+      repoloading.value = true;
+      const params = {
+        id: formData.connectorID,
+        page: 1,
+        perPage: -1
+      };
+      const { data } = await queryConnectorRepositories(params);
+      repositories.value = map(data || [], (item) => {
+        return {
+          value: `${item.Namespace}/${item.Name}`,
+          label: `${item.Namespace}/${item.Name}`
+        };
+      });
+      repoloading.value = false;
+    } catch (error) {
+      repoloading.value = false;
+      console.log(error);
+    }
+  };
+  const getRepositoriesBranch = async () => {
+    try {
+      const params = {
+        id: formData.connectorID,
+        repository: formData.repository,
+        page: 1,
+        perPage: -1
+      };
+      const { data } = await queryConnectorRepositoriesBranch(params);
+      branchList.value = map(data || [], (item) => {
+        return {
+          value: item.Path,
+          label: item.Name
+        };
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  const handleConnectorChange = async () => {
+    try {
+      formData.repository = '';
+      formData.branch = '';
+      getRepositories();
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  const handleRepoChange = () => {
+    try {
+      formData.branch = '';
+      getRepositoriesBranch();
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  const handleBranchChange = () => {};
   const handleOk = async () => {
     const res = await formref.value?.validate();
     if (!res) {
       try {
         submitLoading.value = true;
+        formData.content = props.content;
         // TODO
+        await postCompletionsPR(formData);
         setTimeout(() => {
           emit('save');
         }, 100);
@@ -131,8 +265,12 @@
       }
     }
   };
-
-  const handleBeforeOpen = () => {};
+  const init = async () => {
+    getConnectorList();
+  };
+  const handleBeforeOpen = () => {
+    init();
+  };
   const handleBeforeClose = () => {
     formref.value.resetFields();
   };
@@ -151,6 +289,14 @@
           color: rgb(var(--arcoblue-5));
         }
       }
+    }
+  }
+</style>
+
+<style lang="less" scoped>
+  :deep(.arco-select-view-single) {
+    .arco-select-view-prefix {
+      padding-right: 5px;
     }
   }
 </style>

@@ -49,7 +49,9 @@
           <a-button type="primary" @click="handleCreateProject">{{
             $t('operation.templates.detail.add')
           }}</a-button>
-          <a-button type="primary" @click="handleDraftModule">草稿</a-button>
+          <a-button type="primary" @click="handleDraftModule">
+            <span>编写模块</span>
+          </a-button>
           <a-button
             type="primary"
             status="warning"

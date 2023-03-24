@@ -22,25 +22,25 @@ export default [
       requiresAuth: true,
       icon: 'icon-apps'
     }
+  },
+  {
+    path: 'cost/perspective-edit',
+    name: 'costPerspectiveEdit',
+    component: () =>
+      import('@/views/cost-management/analyse/pages/perspective-edit.vue'),
+    meta: {
+      hideInMenu: true,
+      ignoreCache: true,
+      locale: 'cost.analyse.menu',
+      requiresAuth: true,
+      icon: 'icon-apps'
+    }
   }
   // {
   //   path: 'cost/perspective-all',
   //   name: 'costAnalyseAll',
   //   component: () =>
   //     import('@/views/cost-management/analyse/pages/perspective-all.vue'),
-  //   meta: {
-  //     hideInMenu: true,
-  //     ignoreCache: true,
-  //     locale: 'cost.analyse.menu',
-  //     requiresAuth: true,
-  //     icon: 'icon-apps'
-  //   }
-  // },
-  // {
-  //   path: 'cost/perspective-edit',
-  //   name: 'costPerspectiveEdit',
-  //   component: () =>
-  //     import('@/views/cost-management/analyse/pages/perspective-edit.vue'),
   //   meta: {
   //     hideInMenu: true,
   //     ignoreCache: true,

@@ -6,19 +6,15 @@
         <a-select
           v-model="type"
           :options="optionList"
-          :style="{
-            'width': show ? '300px' : 0,
-            'overflow': 'hidden',
-            'border-width': show ? '1px' : '0'
-          }"
+          style="width: 300px"
+          placeholder="请选择示例"
           @change="handleTyeChange"
         >
         </a-select>
-        <span class="label" @click="handleShowExample">
-          <!-- <icon-code-square /> -->
+        <!-- <span class="label" @click="handleShowExample">
           <span>示例</span>
           <icon-question-circle-fill />
-        </span>
+        </span> -->
       </div>
     </div>
     <!-- <a-divider :margin="5"></a-divider> -->
@@ -105,7 +101,12 @@
         >
       </template>
     </EditPageFooter>
-    <CreatePR v-model:show="showModal" title="创建PR" :status="status">
+    <CreatePR
+      v-model:show="showModal"
+      title="创建PR"
+      :status="status"
+      :content="code"
+    >
     </CreatePR>
   </ComCard>
 </template>
@@ -187,11 +188,9 @@
       const { data } = await postCompletionsExplain(params);
       loading.value = false;
       diffValue.value = data.text;
-      code.value = '';
     } catch (error) {
       loading.value = false;
       diffValue.value = '';
-      code.value = '';
       console.log(error);
     }
   };
@@ -205,11 +204,9 @@
       const { data } = await postCompletionsGenerate(params);
       loading.value = false;
       defaultValue.value = data.text;
-      code.value = '';
+      code.value = data.text;
     } catch (error) {
       loading.value = false;
-      defaultValue.value = '';
-      code.value = '';
       console.log(error);
     }
   };
