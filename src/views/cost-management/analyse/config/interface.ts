@@ -53,6 +53,7 @@ export interface PerspectiveRowData {
   endTime: string;
   builtin: boolean;
   disabled?: boolean;
+  labelFlag?: string;
   allocationQueries: AllocationQueriesItem[];
 }
 export interface FieldsOptions {

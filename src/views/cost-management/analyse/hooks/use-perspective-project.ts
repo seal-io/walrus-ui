@@ -22,7 +22,7 @@ import {
   queryProjectPerspectiveSummary,
   queryPerspectiveFieldValues
 } from '../api';
-import testData, { statckLineData, workloadData } from '../config/testData';
+import testData, { statckLineData } from '../config/testData';
 
 export default function usePerspectiveCost(props) {
   const { route } = useCallCommon();
@@ -52,7 +52,7 @@ export default function usePerspectiveCost(props) {
 
   const overData = ref({});
   const pageId = computed(() => {
-    return query.id || props.viewId;
+    return query.id;
   });
   const summaryData = computed(() => {
     const list = map(projectCostOverview, (item) => {
@@ -61,28 +61,29 @@ export default function usePerspectiveCost(props) {
     });
     return list;
   });
-  const getProjectList = async () => {
+  const getProjectList = async (flag?) => {
     try {
       projectloading.value = true;
       const params = {
         ...omit(queryParams, ['project']),
         fieldName: 'label:seal.io/project',
-        fieldType: 'filter'
-        // startTime: dayjs(queryParams.startTime).format('YYYY-MM-DDTHH:mm:ssZ'),
-        // endTime: dayjs(queryParams.endTime).format('YYYY-MM-DDT23:59:59Z')
+        fieldType: 'filter',
+        endTime: setEndTimeAddDay(queryParams.endTime, timeMode.value)
       };
       const { data } = await queryPerspectiveFieldValues(params);
       projectList.value = data?.items || [];
-      queryParams.project = get(data, 'items.0.value') || '';
-      projectName.value = get(data, 'items.0.label') || 'Project';
-      // set filter value
-      const projectData = get(data, 'items.0') || {};
-      projectName.value = projectData?.label || 'Project';
-      each(get(projectCostFilters.value, 'filters') || [], (fItem) => {
-        each(fItem, (sItem) => {
-          sItem.values = [queryParams.project];
+      if (!flag) {
+        queryParams.project = get(data, 'items.0.value') || '';
+        projectName.value = get(data, 'items.0.label') || 'Project';
+        // set filter value
+        const projectData = get(data, 'items.0') || {};
+        projectName.value = projectData?.label || 'Project';
+        each(get(projectCostFilters.value, 'filters') || [], (fItem) => {
+          each(fItem, (sItem) => {
+            sItem.values = [queryParams.project];
+          });
         });
-      });
+      }
       projectloading.value = false;
     } catch (error) {
       projectloading.value = false;
@@ -187,9 +188,10 @@ export default function usePerspectiveCost(props) {
   };
 
   const getPerspectiveItemInfo = async () => {
+    if (!route.query.id) return;
     try {
       loading.value = true;
-      const id = route.query.id || props.viewId;
+      const id = route.query.id as string;
       const { data } = await queryItemPerspective({ id });
       const allocationQueries = get(data, 'allocationQueries') || [];
       const startTime = get(data, 'startTime');

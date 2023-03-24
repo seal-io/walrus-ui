@@ -134,6 +134,8 @@
   import dayjs from 'dayjs';
   import { round } from 'lodash';
   import { reactive, ref, computed, onMounted, watch } from 'vue';
+  import useCallCommon from '@/hooks/use-call-common';
+  import { onBeforeRouteUpdate } from 'vue-router';
   import FilterBox from '@/components/filter-box/index.vue';
   import DateRange from '@/components/date-range/index.vue';
   import DataCard from '@/components/data-card/index.vue';
@@ -213,6 +215,7 @@
     overviewloading,
     timeMode
   } = usePerspectiveCost(props);
+  const { route } = useCallCommon();
   const active = ref<'bar' | 'line'>('bar');
   const activeProject = ref<'bar' | 'line'>('bar');
   const activeCluster = ref<'bar' | 'line'>('bar');
@@ -268,9 +271,9 @@
     }, 50);
   };
   watch(
-    () => id.value,
-    () => {
-      if (id.value) {
+    () => route.query.id,
+    (ov) => {
+      if (ov && route.query.page === 'all') {
         initData();
       }
     },
@@ -278,6 +281,23 @@
       immediate: true
     }
   );
+  watch(
+    () => route.query.page,
+    (ov) => {
+      if (ov && route.query.page === 'all') {
+        console.log('route.quert===', route.query);
+        initData();
+      }
+    },
+    {
+      immediate: true
+    }
+  );
+  onBeforeRouteUpdate(() => {
+    if (route.query.id && route.query.page === 'all') {
+      initData();
+    }
+  });
   onMounted(() => {
     // if (!props.isPage || props.viewId) {
     //   initData();

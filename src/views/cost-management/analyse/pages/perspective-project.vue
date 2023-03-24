@@ -6,6 +6,7 @@
         <div v-if="isPage">
           <a-select
             v-model="queryParams.project"
+            allow-search
             :placeholder="$t('cost.analyse.project.holder')"
             class="border-less"
             style="width: 200px"
@@ -184,7 +185,7 @@
 
 <script lang="ts" setup>
   import { set, get, find, map, each, round } from 'lodash';
-  import { reactive, ref, computed, onMounted, watch } from 'vue';
+  import { reactive, ref, computed, onMounted, watch, inject } from 'vue';
   import useCallCommon from '@/hooks/use-call-common';
   import DateRange from '@/components/date-range/index.vue';
   import DataCard from '@/components/data-card/index.vue';
@@ -250,11 +251,11 @@
     projectloading,
     apploading,
     loading,
-    id,
     overviewloading,
     timeMode
   } = usePerspectiveProject(props);
-  const { t } = useCallCommon();
+  const componentName = inject('componentName', ref('project'));
+  const { t, route } = useCallCommon();
   const loadeend = ref(false);
   const clusterOptions = [
     { label: 'project-1', value: 'project1' },
@@ -273,7 +274,7 @@
       ...queryParams,
       endTime: setEndTimeAddDay(queryParams.endTime, timeMode.value)
     };
-    await getProjectList();
+    await getProjectList(true);
     getProjectCostChart();
     getSummaryData();
   };
@@ -303,9 +304,20 @@
     }, 50);
   };
   watch(
-    () => id.value,
-    () => {
-      if (id.value) {
+    () => route.query.id,
+    (ov) => {
+      if (ov && route.query.page === 'project') {
+        initData();
+      }
+    },
+    {
+      immediate: true
+    }
+  );
+  watch(
+    () => route.query.page,
+    (ov) => {
+      if (ov && route.query.page === 'project') {
         initData();
       }
     },

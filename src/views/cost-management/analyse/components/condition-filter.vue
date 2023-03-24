@@ -193,7 +193,8 @@
       filterDataList.value = cloneDeep(props.conditions);
     },
     {
-      immediate: true
+      immediate: true,
+      deep: true
     }
   );
   defineExpose({

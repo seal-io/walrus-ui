@@ -5,7 +5,6 @@
       :source="viewComponent"
       :is-page="true"
       :pageloading="loading"
-      :view-id="viewId"
     >
       <template #select>
         <a-select
@@ -43,7 +42,7 @@
 </template>
 
 <script lang="ts" setup>
-  import { markRaw, ref, onBeforeUnmount } from 'vue';
+  import { markRaw, ref, onMounted, provide } from 'vue';
   import { find, map, toLower } from 'lodash';
   import useCallCommon from '@/hooks/use-call-common';
   import { useCostManageStore } from '@/store';
@@ -60,17 +59,25 @@
     project: markRaw(perspectiveProject),
     custom: markRaw(perspectiveCustom)
   };
-  const { router } = useCallCommon();
+
+  const { router, route } = useCallCommon();
   const costManageStore = useCostManageStore();
   const loading = ref(false);
   const viewList = ref<{ value: string; label: string; name?: string }[]>([]);
   const viewId = ref('');
-  const viewComponent = ref('all');
+  const viewComponent = ref('');
+  provide('componentName', viewComponent.value);
 
   const handleViewChange = (val) => {
     const data = find(viewList.value, (item) => item.value === val);
     viewId.value = val;
     viewComponent.value = toLower(data?.label);
+    router.replace({
+      query: {
+        id: val,
+        page: data?.label
+      }
+    });
   };
   const handleSearch = () => {};
   const handleViewManage = () => {
@@ -106,8 +113,8 @@
         item.value = item.id;
         return item;
       }) as Array<{ value: string; label: string }>;
-      const allView = find(viewList.value, (sItem) => sItem.label === 'all');
-      viewId.value = allView?.value || '';
+      // const allView = find(viewList.value, (sItem) => sItem.label === 'all');
+      // viewId.value = allView?.value || '';
       loading.value = false;
     } catch (error) {
       loading.value = false;
@@ -116,11 +123,20 @@
       console.log(error);
     }
   };
-  onBeforeUnmount(() => {
-    viewId.value = '';
+  const setView = () => {
+    if (route.query.id) {
+      viewId.value = (route.query.id || '') as string;
+      handleViewChange(viewId.value);
+    }
+  };
+  const init = async () => {
+    await getViewList();
+    setView();
+    // getPerspectiveFields();
+  };
+  onMounted(() => {
+    init();
   });
-  getViewList();
-  getPerspectiveFields();
 </script>
 
 <style lang="less" scoped>
