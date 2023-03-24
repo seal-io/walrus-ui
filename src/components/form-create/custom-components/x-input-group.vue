@@ -4,7 +4,7 @@
       <a-tooltip :popup-visible="popupvisible" :content="$t('common.form.key')">
         <a-input
           v-if="!showHintInput"
-          :error="isError"
+          :error="!dataKey && triggerValidate"
           :model-value="dataKey"
           placeholder="key"
           :max-length="50"
@@ -30,6 +30,7 @@
       ><a-input
         v-if="!showHintInput"
         :model-value="dataValue"
+        :error="!dataValue && triggerValidate"
         v-bind="$attrs"
         placeholder="value"
         :max-length="50"
@@ -118,6 +119,12 @@
       type: Object,
       default() {
         return {};
+      }
+    },
+    triggerValidate: {
+      type: Boolean,
+      default() {
+        return false;
       }
     }
   });

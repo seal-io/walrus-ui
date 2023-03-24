@@ -36,5 +36,18 @@ export default [
       requiresAuth: true,
       icon: 'icon-apps'
     }
+  },
+  {
+    path: 'connector/custom-detail',
+    name: 'connectorCustomDetail',
+    component: () =>
+      import('@/views/operation-hub/connectors/pages/custom-detail.vue'),
+    meta: {
+      hideInMenu: true,
+      ignoreCache: true,
+      locale: 'operation.connectors.menu',
+      requiresAuth: true,
+      icon: 'icon-apps'
+    }
   }
 ];

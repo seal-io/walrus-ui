@@ -182,7 +182,8 @@
     filter,
     includes,
     pickBy,
-    keys
+    keys,
+    isEqual
   } from 'lodash';
   import useCallCommon from '@/hooks/use-call-common';
   import GroupTitle from '@/components/group-title/index.vue';
@@ -212,6 +213,7 @@
   const groupByList = ref<FieldsOptions[]>([]);
   const stepList = ref<FieldsOptions[]>([]);
   const idleCostFieldList = ref<FieldsOptions[]>([]);
+  let copyFormData = {};
   const formData = reactive({
     name: '',
     startTime: dayjs().subtract(6, 'day').format('YYYY-MM-DDTHH:mm:ssZ'),
@@ -285,6 +287,10 @@
     return filter(arr, (o) => keys(o).length);
   };
   const handleOk = async () => {
+    if (isEqual(copyFormData, formData)) {
+      router.back();
+      return;
+    }
     const res = await validateForm();
     if (res) {
       try {
@@ -511,6 +517,9 @@
     getPerspectiveInfo();
     getPerspectiveGroupBy();
     getPerspectiveStep();
+    setTimeout(() => {
+      copyFormData = cloneDeep(formData);
+    }, 100);
   };
   init();
 </script>

@@ -36,31 +36,44 @@
         <a-form-item
           label="类型"
           field="type"
-          :rules="[{ required: true, message: '类型必选' }]"
+          :rules="[{ required: true, message: '类型填' }]"
         >
-          <a-select v-model="formData.type" style="width: 500px">
-            <a-option
-              v-for="(item, index) in typeOptions"
-              :key="index"
-              :value="item.value"
-            >
-              <ProviderIcon :provider="toLower(item.value)"></ProviderIcon>
-              <span style="margin-left: 5px">{{ item.label }}</span>
-            </a-option>
-            <template #prefix>
-              <ProviderIcon :provider="toLower(formData.type)"></ProviderIcon>
-            </template>
-          </a-select>
+          <a-input v-model="formData.type" style="width: 500px"></a-input>
+          <template #extra>
+            <span class="tips"></span>
+          </template>
         </a-form-item>
         <a-form-item
-          label="访问令牌"
-          field="configData.token"
-          :rules="[{ required: true, message: '访问令牌必填' }]"
+          label="属性"
+          field="configData.attribute"
+          :rules="[
+            {
+              validator: validatorAttribute,
+              required: true,
+              message: '属性必填'
+            }
+          ]"
         >
-          <a-input-password
-            v-model="formData.configData.token"
-            style="width: 500px"
-          ></a-input-password>
+          <a-space
+            v-if="labelList?.length"
+            style="display: flex; flex-direction: column"
+            direction="vertical"
+          >
+            <xInputGroup
+              v-for="(sItem, sIndex) in labelList"
+              :key="sIndex"
+              v-model:dataKey="sItem.key"
+              v-model:dataValue="sItem.value"
+              v-model:value="formData.configData.attribute"
+              :trigger-validate="triggerValidate"
+              width="500px"
+              class="group-item"
+              :label-list="labelList"
+              :position="sIndex"
+              @add="(obj) => handleAddLabel(obj, labelList)"
+              @delete="handleDeleteLabel(labelList, sIndex)"
+            ></xInputGroup>
+          </a-space>
         </a-form-item>
       </a-form>
     </div>
@@ -85,11 +98,12 @@
 </template>
 
 <script lang="ts" setup>
-  import { assignIn, toLower } from 'lodash';
+  import { assignIn, toLower, keys, map, get } from 'lodash';
   import { ref, reactive, onMounted, computed } from 'vue';
   import GroupTitle from '@/components/group-title/index.vue';
   import readBlob from '@/utils/readBlob';
   import EditPageFooter from '@/components/edit-page-footer/index.vue';
+  import xInputGroup from '@/components/form-create/custom-components/x-input-group.vue';
   import useCallCommon from '@/hooks/use-call-common';
   import ProviderIcon from '@/components/provider-icon/index.vue';
   import { ConnectorFormData } from '../config/interface';
@@ -99,41 +113,63 @@
   const id = route.query.id as string;
   const formref = ref();
   const submitLoading = ref(false);
+  const triggerValidate = ref(false);
   const formData: ConnectorFormData = reactive({
     name: '',
     configData: {
-      token: ''
+      attribute: {}
     },
     description: '',
     configVersion: 'v1',
-    type: 'Github',
-    category: 'VersionControl',
+    type: '',
+    category: 'Custom',
     enableFinOps: false
   });
 
-  const typeOptions = [
-    { label: 'GitHub', value: 'Github' },
-    { label: 'GitLab', value: 'Gitlab' }
-  ];
+  const labelList = ref<{ key: string; value: string }[]>([
+    { key: '', value: '' }
+  ]);
   const title = computed(() => {
     if (id) {
-      return t('operation.connectors.title.edit', { type: '版本管理' });
+      return t('operation.connectors.title.edit', { type: '自定义' });
     }
-    return t('operation.connectors.title.new', { type: '版本管理' });
+    return t('operation.connectors.title.new', { type: '自定义' });
   });
-  const handleUploadSuccess = async (list, fileItem) => {
-    const res = await readBlob(fileItem.file);
-    formData.configData.kubeconfig = res as string;
-    formref.value.validateField('configData.kubeconfig');
+  const handleAddLabel = (obj, list) => {
+    list?.push(obj);
   };
-  const handleBeforeUpload = async (file) => {
-    return true;
+  const handleDeleteLabel = (list, index) => {
+    const len = list.length || 0;
+    if (len < 2) return;
+    list?.splice(index, 1);
+  };
+  const validatorAttribute = (val, callback) => {
+    if (!keys(formData.configData.attribute).length) {
+      callback('属性必填');
+    } else {
+      callback();
+    }
+  };
+  const setLabelList = () => {
+    const attributes = keys(formData.configData.attribute) || [];
+
+    labelList.value = map(attributes, (key) => {
+      return {
+        key,
+        value: get(formData, `configData.attribute.${key}`)
+      };
+    });
+    if (!labelList.value.length) {
+      labelList.value = [{ key: '', value: '' }];
+    }
   };
   const handleSubmit = async () => {
     const res = await formref.value?.validate();
+    triggerValidate.value = !res;
     if (!res) {
       try {
         submitLoading.value = true;
+        console.log('formData===', formData);
         if (id) {
           await updateConnector(formData);
         } else {
@@ -151,6 +187,7 @@
     try {
       const { data } = await queryItemConnector({ id });
       assignIn(formData, data);
+      setLabelList();
     } catch (error) {
       console.log(error);
     }
