@@ -50,6 +50,9 @@
             $t('operation.templates.detail.add')
           }}</a-button>
           <a-button type="primary" @click="handleDraftModule">
+            <template #icon>
+              <icon-font type="icon-ChatGPT"></icon-font>
+            </template>
             <span>编写模块</span>
           </a-button>
           <a-button
@@ -209,6 +212,16 @@
 
 <style lang="less" scoped>
   .projects {
+    .gpt-button {
+      display: flex;
+      align-items: center;
+
+      .size-14 {
+        margin-right: 4px;
+        font-size: 12px;
+      }
+    }
+
     .title {
       display: flex;
       align-items: center;
