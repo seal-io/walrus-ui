@@ -74,7 +74,7 @@
           :status="{
             status: get(formData, 'status'),
             text: get(formData, 'status'),
-            message: '',
+            message: get(formData, 'statusMessage'),
             transitioning: get(formData, 'status') === 'Initializing',
             error: get(formData, 'status') === 'Error'
           }"

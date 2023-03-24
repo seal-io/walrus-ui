@@ -50,6 +50,17 @@
           data-index="status"
           :title="$t('applications.applications.table.status')"
         >
+          <template #cell="{ record }">
+            <StatusLabel
+              :status="{
+                status: get(record, 'status'),
+                text: get(record, 'status'),
+                message: get(record, 'statusMessage'),
+                transitioning: get(record, 'status') === 'Initializing',
+                error: get(record, 'status') === 'Error'
+              }"
+            ></StatusLabel>
+          </template>
         </a-table-column>
         <a-table-column
           align="center"
@@ -88,7 +99,7 @@
 </template>
 
 <script lang="ts" setup>
-  import { map } from 'lodash';
+  import { map, get } from 'lodash';
   import dayjs from 'dayjs';
   import { reactive, ref, onMounted, PropType } from 'vue';
   import useCallCommon from '@/hooks/use-call-common';
@@ -96,6 +107,7 @@
   import useRowSelect from '@/hooks/use-row-select';
   import FilterBox from '@/components/filter-box/index.vue';
   import { TemplateRowData } from '../config/interface';
+  import StatusLabel from '../../connectors/components/status-label.vue';
   import { queryModules, refreshModules, deleteModules } from '../api';
 
   const props = defineProps({

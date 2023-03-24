@@ -70,10 +70,10 @@
           </a-select>
         </a-form-item>
         <a-form-item
-          label="提交地址"
+          label="提交路径"
           field="path"
           validate-trigger="change"
-          :rules="[{ required: true, message: '提交地址必填' }]"
+          :rules="[{ required: true, message: '提交路径必填' }]"
         >
           <a-input v-model="formData.path" style="width: 100%"></a-input>
         </a-form-item>
