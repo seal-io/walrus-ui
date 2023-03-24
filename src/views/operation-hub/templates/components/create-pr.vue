@@ -106,6 +106,7 @@
 <script lang="ts" setup>
   import { ref, reactive, PropType, computed } from 'vue';
   import { map, filter, includes, toLower, find } from 'lodash';
+  import { execSucceed } from '@/utils/monitor';
   import EditPageFooter from '@/components/edit-page-footer/index.vue';
   import ProviderIcon from '@/components/provider-icon/index.vue';
   import { queryConnectors } from '../../connectors/api';
@@ -259,6 +260,7 @@
           emit('save');
         }, 100);
         emit('update:show', false);
+        execSucceed();
         submitLoading.value = false;
       } catch (error) {
         submitLoading.value = false;

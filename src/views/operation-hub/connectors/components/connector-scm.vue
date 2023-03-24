@@ -174,11 +174,6 @@
                   </a-doption>
                 </template>
               </a-dropdown-button>
-
-              <!-- <a-link type="text" size="small" :href="handleView(record)">
-                <template #icon><icon-list style="font-size: 16px" /></template>
-                {{ $t('common.button.detail') }}
-              </a-link> -->
             </a-space>
           </template>
         </a-table-column>
@@ -302,7 +297,7 @@
   };
   const handleClickEdit = (row) => {
     router.push({
-      name: 'connectorK8sDetail',
+      name: 'connectorScmDetail',
       query: { id: row.id }
     });
   };
