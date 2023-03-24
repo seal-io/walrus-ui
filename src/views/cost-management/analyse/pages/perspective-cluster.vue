@@ -165,7 +165,7 @@
       <TableList
         :time-mode="timeMode"
         :request-work="requestWork"
-        :filter-params="{ ...dailyCostFilters }"
+        :filter-params="dailyCostFilters"
         :loadeend="loadeend"
         :columns="dailyCostCols"
         source="daily table"
@@ -183,6 +183,7 @@
       <TableList
         :request-work="requestWork"
         :time-mode="timeMode"
+        :loadeend="loadeend"
         :filter-params="nameSpaceCostFilters"
         :columns="clusterNamespaceCostCols"
         source="namespace table"
@@ -212,11 +213,10 @@
         }"
       ></LineBarChart>
       <TableList
-        :filter-params="{
-          ...workloadCostFilters
-        }"
+        :filter-params="workloadCostFilters"
         :request-work="requestWork"
         :time-mode="timeMode"
+        :loadeend="loadeend"
         :columns="workLoadCostCols"
         source="workload table"
         style="margin-top: 20px"
@@ -378,7 +378,6 @@
       endTime: setEndTimeAddDay(queryParams.endTime, timeMode.value)
     };
     await getClusterList();
-    if (!queryParams.connectorID) return;
     getDailyCostChart();
     getNamespaceCostChart();
     getSummaryData();
@@ -412,16 +411,17 @@
   const initData = async () => {
     await getPerspectiveItemInfo();
     await getClusterList();
-    if (!queryParams.connectorID) return;
     console.log('connenctID:', queryParams.connectorID);
     setFilterModelValue(dailyCostFilters.value, queryParams.connectorID);
     setFilterModelValue(workloadCostFilters.value, queryParams.connectorID);
     setFilterModelValue(nameSpaceCostFilters.value, queryParams.connectorID);
-    loadeend.value = true;
     getDailyCostChart();
     getNamespaceCostChart();
     getSummaryData();
     getWorkloadCostChart();
+    setTimeout(() => {
+      loadeend.value = true;
+    }, 50);
   };
   watch(
     () => id.value,

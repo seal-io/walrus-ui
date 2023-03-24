@@ -63,6 +63,7 @@
       ></LineBarChart>
       <TableList
         :request-work="true"
+        :loadeend="loadeend"
         :time-mode="timeMode"
         source="daily table"
         :filter-params="dailyCostFilters"
@@ -91,6 +92,7 @@
       <TableList
         :request-work="true"
         :time-mode="timeMode"
+        :loadeend="loadeend"
         source="project table"
         :filter-params="projectCostFilters"
         :columns="costPerProjectCols"
@@ -117,6 +119,7 @@
       ></LineBarChart>
       <TableList
         :request-work="true"
+        :loadeend="loadeend"
         :time-mode="timeMode"
         source="cluster table"
         :filter-params="clusterCostFilters"
@@ -213,6 +216,7 @@
   const active = ref<'bar' | 'line'>('bar');
   const activeProject = ref<'bar' | 'line'>('bar');
   const activeCluster = ref<'bar' | 'line'>('bar');
+  const loadeend = ref(false);
 
   const preloading = computed(() => {
     return props.pageloading || loading.value;
@@ -259,6 +263,9 @@
     getDailyCostChart();
     getProjectCostChart();
     getClusterCostChart();
+    setTimeout(() => {
+      loadeend.value = true;
+    }, 50);
   };
   watch(
     () => id.value,

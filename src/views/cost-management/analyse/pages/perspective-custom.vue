@@ -228,9 +228,11 @@
   };
   const initData = async () => {
     await getPerspectiveItemInfo();
-    loadeend.value = true;
     getSummaryData();
     getProjectCostChart();
+    setTimeout(() => {
+      loadeend.value = true;
+    }, 50);
   };
   watch(
     () => id.value,

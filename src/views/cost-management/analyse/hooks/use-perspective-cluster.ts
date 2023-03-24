@@ -27,11 +27,7 @@ import {
   queryClusterPerspectiveSummary,
   queryPerspectiveFieldValues
 } from '../api';
-import testData, {
-  statckLineData,
-  overviewData,
-  workloadChartData
-} from '../config/testData';
+import testData, { statckLineData, overviewData } from '../config/testData';
 
 export default function usePerspectiveCost(props) {
   const { route } = useCallCommon();
@@ -145,6 +141,10 @@ export default function usePerspectiveCost(props) {
     }
   };
   const getSummaryData = async () => {
+    if (!queryParams.connectorID) {
+      overData.value = {};
+      return;
+    }
     try {
       overviewloading.value = true;
       const params = {
@@ -163,6 +163,10 @@ export default function usePerspectiveCost(props) {
     }
   };
   const getDailyCostChart = async () => {
+    if (!queryParams.connectorID) {
+      dailyCostChart.value = { xAxis: [], line: [], bar: [], dataConfig: [] };
+      return;
+    }
     try {
       dailyloading.value = true;
       const params = {
@@ -200,6 +204,15 @@ export default function usePerspectiveCost(props) {
   };
 
   const getNamespaceCostChart = async () => {
+    if (!queryParams.connectorID) {
+      nameSpaceCostChart.value = {
+        xAxis: [],
+        line: [],
+        bar: [],
+        dataConfig: []
+      };
+      return;
+    }
     try {
       spaceloading.value = true;
       const params = {
@@ -243,6 +256,15 @@ export default function usePerspectiveCost(props) {
     }
   };
   const getWorkloadCostChart = async () => {
+    if (!queryParams.connectorID) {
+      workloadCostChart.value = {
+        xAxis: [],
+        line: [],
+        bar: [],
+        dataConfig: []
+      };
+      return;
+    }
     try {
       workloading.value = true;
       const params = {

@@ -169,11 +169,11 @@
         }"
       ></LineBarChart>
       <TableList
-        :request-work="true"
+        :request-work="requestWork"
         time-range="single"
         :time-mode="timeMode"
         :loadeend="loadeend"
-        :filter-params="{ ...projectCostFilters }"
+        :filter-params="projectCostFilters"
         :columns="projectCostCols"
         source="app table"
         style="margin-top: 20px"
@@ -264,6 +264,9 @@
   const preloading = computed(() => {
     return projectloading.value || loading.value;
   });
+  const requestWork = computed(() => {
+    return !!queryParams.project;
+  });
   const handleDateChange = async () => {
     projectCostFilters.value = {
       ...projectCostFilters.value,
@@ -271,7 +274,6 @@
       endTime: setEndTimeAddDay(queryParams.endTime, timeMode.value)
     };
     await getProjectList();
-    if (!queryParams.project) return;
     getProjectCostChart();
     getSummaryData();
   };
@@ -294,10 +296,11 @@
   const initData = async () => {
     await getPerspectiveItemInfo();
     await getProjectList();
-    if (!queryParams.project) return;
-    loadeend.value = true;
     getSummaryData();
     getProjectCostChart();
+    setTimeout(() => {
+      loadeend.value = true;
+    }, 50);
   };
   watch(
     () => id.value,

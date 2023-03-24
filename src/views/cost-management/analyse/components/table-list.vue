@@ -72,7 +72,7 @@
     loadeend: {
       type: Boolean,
       default() {
-        return true;
+        return false;
       }
     },
     source: {
@@ -121,6 +121,10 @@
     return dayjs(start).format();
   };
   const fetchData = async () => {
+    if (!props.requestWork) {
+      dataList.value = [];
+      return;
+    }
     try {
       loading.value = true;
       // props.timeRange === 'single'
@@ -180,12 +184,23 @@
   watch(
     () => props.filterParams,
     () => {
-      if (props.loadeend && props.requestWork) {
+      if (props.loadeend) {
         fetchData();
       }
     },
     {
       immediate: false
+    }
+  );
+  watch(
+    () => props.loadeend,
+    () => {
+      if (props.loadeend) {
+        fetchData();
+      }
+    },
+    {
+      immediate: true
     }
   );
 </script>
