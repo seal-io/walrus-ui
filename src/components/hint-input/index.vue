@@ -187,6 +187,23 @@
     console.log('completeList===', list, term, data);
     return list.filter((o) => toLower(o.label).startsWith(toLower(lastItem)));
   };
+  const getResultOptions = () => {
+    return [
+      {
+        label: '{}',
+        value: '{}'
+      }
+    ];
+  };
+  const setCursorPos = () => {
+    const selection = window.getSelection();
+    const range = document.createRange();
+    range.setStart(input.value, input.value.selectionStart);
+    range.setEnd(input.value, input.value.selectionEnd);
+    selection?.removeAllRanges();
+    selection?.addRange(range);
+    input.value.selectionStart -= input.value.selectionStart;
+  };
   const Strategy: any = [
     {
       id: props.editorId,
@@ -221,6 +238,24 @@
           return `${result.label}`;
         }
         return `${get(list, '0.1')}.${result.label}`;
+      }
+    },
+    {
+      id: props.editorId,
+      // match: /(\w+)\.(\w*)$/,
+      match: /(?<=\$\{?).*(?=.*)/,
+      index: 2,
+      search(term: string, callback: SearchCallback<resultItem>, match: any) {
+        callback(getResultOptions());
+      },
+      template(data: resultItem) {
+        return `<span>${data.label}</span>`;
+      },
+      replace: (result: resultItem): string => {
+        setTimeout(() => {
+          input.value.selectionEnd -= 1;
+        }, 100);
+        return `${result.label}`;
       }
     }
   ];

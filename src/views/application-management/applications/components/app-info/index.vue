@@ -440,10 +440,8 @@
     const variableFormResult = await getRefFormData();
     const validateVariabel = find(variableFormResult, (val) => !val.formData);
     validateModule.value = !!appInfo.modules.length;
-    if (!id) {
-      if (!validateModule.value) {
-        return;
-      }
+    if (!id && !validateModule.value) {
+      return;
     }
     if (!result || validateVariabel) {
       const i = get(split(validateVariabel?.tab || '', 'variableform'), 1);
