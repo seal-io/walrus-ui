@@ -15,14 +15,43 @@
               style="width: 100%"
             ></a-input>
           </a-form-item>
+          <a-form-item label="标签管理" field="labels">
+            <template #label>
+              <span>标签管理</span>
+              <a-link type="text">
+                <template #icon>
+                  <a-tooltip :content="$t('common.button.edit')">
+                    <icon-edit @click="handleEditLabels" />
+                  </a-tooltip>
+                </template>
+              </a-link>
+            </template>
+            <div class="labels-wrap">
+              <span
+                v-for="(item, index) in keys(formData.labels)"
+                :key="index"
+                class="label-item"
+              >
+                <AutoTip
+                  :tooltip-props="{
+                    content: `${item}:${get(formData.labels, item)}`
+                  }"
+                >
+                  <span>
+                    <span>{{ item }}:{{ get(formData.labels, item) }}</span>
+                  </span>
+                </AutoTip>
+              </span>
+            </div>
+          </a-form-item>
           <a-form-item label="描述">
-            <a-input
+            <a-textarea
               v-model="formData.description"
               :max-length="200"
               show-word-limit
               style="width: 100%"
               :auto-size="{ minRows: 4, maxRows: 6 }"
-            ></a-input>
+            ></a-textarea>
           </a-form-item>
           <div v-if="id">
             <a-form-item label="创建时间" disabled>
@@ -43,7 +72,7 @@
             </a-form-item>
           </div>
         </a-col>
-        <a-col :span="12">
+        <!-- <a-col :span="12">
           <a-form-item :label="$t('applications.projects.form.label')">
             <a-space
               v-if="labelList.length"
@@ -71,9 +100,13 @@
               </a-button>
             </div>
           </a-form-item>
-        </a-col>
+        </a-col> -->
       </a-row>
     </a-form>
+    <labelsModal
+      v-model:show="showLabelsModal"
+      v-model:labels="formData.labels"
+    ></labelsModal>
   </div>
 </template>
 
@@ -83,6 +116,7 @@
   import { assignIn, keys, get, each, map } from 'lodash';
   import { ref, reactive, PropType, watch, provide } from 'vue';
   import xInputGroup from '@/components/form-create/custom-components/x-input-group.vue';
+  import labelsModal from './labels-modal.vue';
 
   const props = defineProps({
     dataInfo: {
@@ -102,6 +136,7 @@
   const { route } = useCallCommon();
   const formref = ref();
   const id = route.query.id as string;
+  const showLabelsModal = ref(false);
   const formData = reactive({
     name: '',
     createTime: '',
@@ -118,6 +153,9 @@
   };
   const handleAdd = () => {
     labelList.value.push({ key: '', value: '' });
+  };
+  const handleEditLabels = () => {
+    showLabelsModal.value = true;
   };
   const getLabelList = () => {
     labelList.value = [];
@@ -163,5 +201,28 @@
     text-align: center;
     border: 1px solid var(--color-border-2);
     border-radius: var(--border-radius-small);
+  }
+
+  .labels-wrap {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+
+    .label-item {
+      display: inline-block;
+      max-width: 160px;
+      height: 24px;
+      margin-right: 10px;
+      margin-bottom: 10px;
+      padding: 2px 10px;
+      line-height: 20px;
+      // text-align: center;
+      // text-overflow: ellipsis;
+      // overflow: hidden;
+      white-space: nowrap;
+      background-color: rgba(var(--arcoblue-1), 1);
+      // color: var(--color-text-2);
+      border-radius: 12px;
+    }
   }
 </style>

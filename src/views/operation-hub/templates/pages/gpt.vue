@@ -1,6 +1,6 @@
 <template>
   <ComCard top-gap class="gpt-box">
-    <GroupTitle show-back title="新建模块"></GroupTitle>
+    <GroupTitle show-back title="编写模块"></GroupTitle>
     <div class="opration-wrap">
       <div class="sel">
         <a-select

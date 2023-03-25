@@ -53,7 +53,7 @@
           </a-select>
         </a-form-item>
         <a-form-item
-          label="访问令牌"
+          label="Access Token"
           field="configData.token"
           :rules="[{ required: true, message: '访问令牌必填' }]"
         >
