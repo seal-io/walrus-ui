@@ -1,11 +1,11 @@
 <template>
   <div class="ace-box" :style="{ height }">
-    <div :id="editorId" style="height: 100%"></div>
+    <div :id="editorId" :style="{ minHeight: height }"></div>
   </div>
 </template>
 
 <script lang="ts" setup>
-  import _, { each, get } from 'lodash';
+  import _, { cloneDeep, each, get } from 'lodash';
   import {
     onMounted,
     nextTick,
@@ -99,6 +99,9 @@
   // let timer:any = null
   let aceEditor: any = null;
   const isInitialValue = ref(false);
+  const markerIdList = ref<number[]>([]);
+  const backupAddlines = ref<number[]>([]);
+  const backupRemoveLines = ref<number[]>([]);
   const regx = /(\w+\.)*(\w*)$/g;
   const identifer = /[a-zA-Z_0-9$\-\u00A2-\u2000\u2070-\uFFFF]/;
   const identifer2 =
@@ -122,24 +125,48 @@
     aceEditor?.session?.removeGutterDecoration(row, 'row-add-icon');
     aceEditor?.session?.removeGutterDecoration(row, 'row-delete-icon');
   };
-  const setHighLightLine = (nodeList, row, className) => {
-    if (!nodeList.length) {
-      return;
+  const setHighLightLine = (row, className) => {
+    const markerId = aceEditor?.session?.addMarker(
+      new Range(row, 0, row, 1000),
+      className,
+      'fullLine'
+    );
+    markerIdList.value.push(markerId);
+    console.log('markerId===', markerIdList, markerId);
+  };
+  const removeMarkers = () => {
+    // clear highlight lines
+    if (markerIdList.value.length) {
+      each(markerIdList.value, (markerId) => {
+        aceEditor?.session?.removeMarker(markerId);
+      });
     }
-    // aceEditor
-    //   ?.getSession()
-    //   ?.addMarker(new Range(row, 1000, row, 1000), className, 'background');
-    nodeList[row].classList.add(className);
+    // clear highlight gutter
+    if (backupAddlines.value.length) {
+      each(backupAddlines.value, (row) => {
+        aceEditor?.session?.removeGutterDecoration(row - 1, 'row-add-icon');
+      });
+    }
+    if (backupRemoveLines.value.length) {
+      each(backupRemoveLines.value, (row) => {
+        aceEditor?.session?.removeGutterDecoration(row - 1, 'row-delete-icon');
+      });
+    }
   };
   const setDiffRowDecoration = () => {
+    removeMarkers();
     each(props.addLines, (row) => {
       resetGutterDiffDecoration(row - 1);
       aceEditor?.session?.addGutterDecoration(row - 1, 'row-add-icon');
+      setHighLightLine(row - 1, 'text-add-line');
     });
     each(props.removeLines, (row) => {
       resetGutterDiffDecoration(row - 1);
       aceEditor?.session?.addGutterDecoration(row - 1, 'row-delete-icon');
+      setHighLightLine(row - 1, 'text-delete-line');
     });
+    backupAddlines.value = cloneDeep(props.addLines);
+    backupRemoveLines.value = cloneDeep(props.removeLines);
   };
   const clearDiffRowDecoration = (args) => {
     if (args?.action === 'remove' && get(args, 'end.column') === 0) {
@@ -252,6 +279,10 @@
       aceEditor = ace.edit(`${props.editorId}`);
       // aceEditor.setValue(props.modelValue);
       console.log('aceEditor==', aceEditor);
+
+      aceEditor.session.on('change', (args) => {
+        console.log('session change:', args);
+      });
       aceEditor.on('change', function (args: any) {
         const val = aceEditor.getValue();
         emits('change', val);
@@ -306,6 +337,7 @@
   .ace-box {
     position: relative;
     width: 100%;
+    overflow: auto;
     // height: 300px;
     border: 1px solid var(--color-border-2);
     border-radius: var(--border-radius-small);

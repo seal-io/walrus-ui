@@ -100,7 +100,7 @@
     </CreatePR>
     <CodeExplainModal
       v-model:show="showExplainModal"
-      v-model:content="explainContent"
+      v-model:content="explainValue"
       title="说明信息"
     ></CodeExplainModal>
   </ComCard>
@@ -212,7 +212,7 @@
       };
       loading.value = true;
       const { data } = await postCompletionsCorrect(params);
-      explainContent.value = `${data.explanation}`;
+      explainValue.value = `${data.explanation}`;
       loading.value = false;
       diffResult.value = Diff.diffLines(code.value, data.corrected);
       defaultValue.value = getCorrectDiffValue(diffResult.value);
@@ -274,10 +274,10 @@
     diffValue.value = '';
   };
   watch(
-    () => explainContent.value,
+    () => explainValue.value,
     () => {
       setTimeout(() => {
-        showExplainModal.value = !!explainContent.value;
+        showExplainModal.value = !!explainValue.value;
       }, 100);
     },
     {
