@@ -276,9 +276,9 @@
   watch(
     () => explainContent.value,
     () => {
-      // setTimeout(() => {
-      //   showExplainModal.value = !!explainContent.value;
-      // }, 100);
+      setTimeout(() => {
+        showExplainModal.value = !!explainContent.value;
+      }, 100);
     },
     {
       immediate: true

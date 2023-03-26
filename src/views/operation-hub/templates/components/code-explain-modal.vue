@@ -7,7 +7,12 @@
     :ok-text="$t('common.button.save')"
     :visible="show"
     :mask-closable="false"
-    :body-style="{ 'max-height': '400px', 'overflow': 'auto' }"
+    :body-style="{
+      'max-height': '400px',
+      'min-height': '200px',
+      'overflow': 'auto',
+      'backgroundColor': 'var(--color-fill-2)'
+    }"
     modal-class="project-modal"
     :title="title"
     @cancel="handleCancel"
@@ -17,7 +22,7 @@
   >
     <div class="content" style="white-space: pre-wrap">{{ content }}</div>
     <template #footer>
-      <EditPageFooter>
+      <EditPageFooter style="margin-top: 0">
         <template #save>
           <a-button
             type="primary"
