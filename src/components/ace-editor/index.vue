@@ -5,17 +5,18 @@
 </template>
 
 <script lang="ts" setup>
-  import _ from 'lodash';
+  import _, { each, get } from 'lodash';
   import {
     onMounted,
     nextTick,
     onBeforeMount,
     defineEmits,
     watch,
+    PropType,
     ref,
     ComponentPublicInstance
   } from 'vue';
-  import ace from 'ace-builds';
+  import ace, { Range } from 'ace-builds';
   import 'ace-builds/src-noconflict/ext-language_tools';
   // import 'ace-builds/src-noconflict/ext-modelist';
   // import 'ace-builds/src-noconflict/theme-monokai';
@@ -30,6 +31,7 @@
   import { Position, Completer } from './config/interface';
 
   const langTools = ace.require('ace/ext/language_tools');
+
   // const { Split } = ace.require('ace/ext/split');
   const props = defineProps({
     modelValue: {
@@ -79,11 +81,24 @@
       default() {
         return {};
       }
+    },
+    addLines: {
+      type: Array as PropType<number[]>,
+      default() {
+        return [];
+      }
+    },
+    removeLines: {
+      type: Array as PropType<number[]>,
+      default() {
+        return [];
+      }
     }
   });
   const emits = defineEmits(['change', 'update:modelValue']);
   // let timer:any = null
   let aceEditor: any = null;
+  const isInitialValue = ref(false);
   const regx = /(\w+\.)*(\w*)$/g;
   const identifer = /[a-zA-Z_0-9$\-\u00A2-\u2000\u2070-\uFFFF]/;
   const identifer2 =
@@ -103,7 +118,34 @@
     { name: 'file', value: 'file', score: 6, meta: 'custom' },
     { name: 'myObj', value: 'file', score: 6, meta: 'custom' }
   ];
-
+  const resetGutterDiffDecoration = (row) => {
+    aceEditor?.session?.removeGutterDecoration(row, 'row-add-icon');
+    aceEditor?.session?.removeGutterDecoration(row, 'row-delete-icon');
+  };
+  const setHighLightLine = (nodeList, row, className) => {
+    if (!nodeList.length) {
+      return;
+    }
+    // aceEditor
+    //   ?.getSession()
+    //   ?.addMarker(new Range(row, 1000, row, 1000), className, 'background');
+    nodeList[row].classList.add(className);
+  };
+  const setDiffRowDecoration = () => {
+    each(props.addLines, (row) => {
+      resetGutterDiffDecoration(row - 1);
+      aceEditor?.session?.addGutterDecoration(row - 1, 'row-add-icon');
+    });
+    each(props.removeLines, (row) => {
+      resetGutterDiffDecoration(row - 1);
+      aceEditor?.session?.addGutterDecoration(row - 1, 'row-delete-icon');
+    });
+  };
+  const clearDiffRowDecoration = (args) => {
+    if (args?.action === 'remove' && get(args, 'end.column') === 0) {
+      resetGutterDiffDecoration(get(args, 'end.row'));
+    }
+  };
   const getValuePath = (wordRange) => {
     const ctx = wordRange.replace(/\n/g, '');
     const result = ctx.matchAll(regx);
@@ -179,8 +221,12 @@
   };
   watch(
     () => props.defaultValue,
-    (newVal) => {
+    () => {
+      isInitialValue.value = true;
       aceEditor?.setValue(props.defaultValue, -1);
+      nextTick(() => {
+        setDiffRowDecoration();
+      });
     },
     { immediate: true }
   );
@@ -198,15 +244,38 @@
     },
     { immediate: false }
   );
+
   onMounted(() => {
     nextTick(() => {
       setLanguageTools();
+
       aceEditor = ace.edit(`${props.editorId}`);
       // aceEditor.setValue(props.modelValue);
+      console.log('aceEditor==', aceEditor);
       aceEditor.on('change', function (args: any) {
         const val = aceEditor.getValue();
         emits('change', val);
         emits('update:modelValue', val);
+        clearDiffRowDecoration(args);
+        if (isInitialValue.value) {
+          // isInitialValue.value = false;
+          // setDiffRowDecoration();
+          console.log('initialValue===', props.addLines, props.removeLines);
+        }
+        // aceEditor.session.removeGutterDecoration(3, 'gutter-rm-line');
+        // aceEditor.session.addGutterDecoration(3, 'gutter-rm-line');
+        // aceEditor.session.setBreakpoints([2, 3, 4, 5]);
+        // const hlRange = aceEditor.session.highlightLines(3, 3, 'hight-light');
+        // aceEditor.session.addMarker(new Range(2, 5), 'myMarker', 'text');
+        // aceEditor.getSession().setAnnotations([
+        //   {
+        //     row: 1,
+        //     column: 10,
+        //     text: 'Strange error',
+        //     type: 'delete' // also warning and information
+        //   }
+        // ]);
+        console.log('args======', args);
       });
       aceEditor.setOptions({
         wrap: true, // 换行
@@ -228,6 +297,10 @@
     aceEditor?.container?.remove();
   });
 </script>
+
+<style lang="less">
+  @import url('./style.less');
+</style>
 
 <style lang="less" scoped>
   .ace-box {
