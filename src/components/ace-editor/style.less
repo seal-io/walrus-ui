@@ -1,0 +1,37 @@
+.ace_editor.ace-tm {
+  .ace_marker-layer {
+    .text-delete-line {
+      background-color: var(--code-remove-text-line);
+    }
+
+    .text-add-line {
+      background-color: var(--code-add-text-line);
+    }
+  }
+
+  .ace_gutter-layer {
+    .ace_gutter-cell {
+      &.row-delete-icon {
+        background-color: var(--code-remove-number-line);
+
+        &::before {
+          position: absolute;
+          left: 4px;
+          font-size: 14px;
+          content: '-';
+        }
+      }
+
+      &.row-add-icon {
+        background-color: var(--code-add-number-line);
+
+        &::before {
+          position: absolute;
+          left: 4px;
+          font-size: 14px;
+          content: '+';
+        }
+      }
+    }
+  }
+}

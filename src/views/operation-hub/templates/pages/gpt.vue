@@ -5,6 +5,7 @@
       <div class="sel">
         <a-select
           v-model="type"
+          :disabled="loading"
           :options="optionList"
           style="width: 300px"
           placeholder="请选择示例"
@@ -19,28 +20,16 @@
     </div>
     <!-- <a-divider :margin="5"></a-divider> -->
     <a-spin :loading="loading" style="width: 100%">
-      <a-split>
-        <template #first>
-          <AceEditor
-            v-model="code"
-            editor-id="firstEditor"
-            :default-value="defaultValue"
-            lang="json"
-            height="500px"
-            @change="handleCodeChange"
-          ></AceEditor>
-        </template>
-        <template #second>
-          <AceEditor
-            editor-id="secondEditor"
-            :default-value="diffValue"
-            read-only
-            lang="json"
-            height="500px"
-            @change="handleCodeChange"
-          ></AceEditor>
-        </template>
-      </a-split>
+      <AceEditor
+        v-model="code"
+        :remove-lines="removeLines"
+        :add-lines="addLines"
+        editor-id="firstEditor"
+        :default-value="defaultValue"
+        lang="json"
+        height="500px"
+        @change="handleCodeChange"
+      ></AceEditor>
     </a-spin>
     <a-space style="margin-top: 10px">
       <a-button
@@ -87,6 +76,7 @@
         <a-button
           type="primary"
           class="cap-title cancel-btn"
+          :disabled="loading"
           :loading="submitLoading"
           @click="handleCreatePR"
           >{{ $t('operation.templates.gpt.create') }}</a-button
@@ -108,17 +98,24 @@
       :content="code"
     >
     </CreatePR>
+    <CodeExplainModal
+      v-model:show="showExplainModal"
+      v-model:content="explainContent"
+      title="说明信息"
+    ></CodeExplainModal>
   </ComCard>
 </template>
 
 <script lang="ts" setup>
-  import { ref } from 'vue';
-  import { get, map } from 'lodash';
+  import { ref, computed, watch, nextTick } from 'vue';
+  import { get, map, each, reduce } from 'lodash';
+  import * as Diff from 'diff';
   import useCallCommon from '@/hooks/use-call-common';
   import GroupTitle from '@/components/group-title/index.vue';
   import EditPageFooter from '@/components/edit-page-footer/index.vue';
   import AceEditor from '@/components/ace-editor/index.vue';
   import CreatePR from '../components/create-pr.vue';
+  import CodeExplainModal from '../components/code-explain-modal.vue';
   import {
     postCompletionsCorrect,
     postCompletionsExplain,
@@ -126,17 +123,30 @@
     queryCompletionExamples
   } from '../api';
 
+  interface DiffItem {
+    count: number;
+    value: string;
+    line: number;
+    removed?: boolean;
+    added?: boolean;
+  }
   const optionList = ref<{ label: string; value: string }[]>([]);
   const { router } = useCallCommon();
   const type = ref('');
   const status = ref('create');
   const code = ref('');
-  const defaultValue = ref('');
+  const defaultValue = ref(``);
   const diffValue = ref('');
+  const explainValue = ref('');
   const showModal = ref(false);
   const submitLoading = ref(false);
   const loading = ref(false);
   const show = ref(false);
+  const diffResult = ref<DiffItem[]>([]);
+  const removeLines = ref<number[]>([]);
+  const addLines = ref<number[]>([]);
+  const explainContent = ref('');
+  const showExplainModal = ref(false);
 
   const handleCodeChange = (val) => {
     console.log('code===', val);
@@ -147,6 +157,40 @@
   const handleCancel = () => {
     router.back();
   };
+  const clearDiffLines = () => {
+    removeLines.value = [];
+    addLines.value = [];
+  };
+  const getDiffResultLines = () => {
+    clearDiffLines();
+    diffResult.value = map(diffResult.value, (item, index) => {
+      if (index === 0) {
+        item.line = item.count;
+      } else {
+        item.line = item.count + get(diffResult.value, `${index - 1}.line`);
+      }
+      return item;
+    });
+    each(diffResult.value, (item) => {
+      if (item.removed) {
+        removeLines.value.push(item.line);
+      }
+      if (item.added) {
+        addLines.value.push(item.line);
+      }
+    });
+  };
+  const getCorrectDiffValue = (corrected: DiffItem[]) => {
+    const res = reduce(
+      corrected,
+      (str, item) => {
+        str += item.value;
+        return str;
+      },
+      ''
+    );
+    return res;
+  };
   const getCompletionExample = async () => {
     try {
       const { data } = await queryCompletionExamples();
@@ -156,9 +200,6 @@
           value: item.prompt
         };
       });
-      // type.value = get(optionList.value, '0.value');
-      // code.value = get(optionList.value, '0.value');
-      // defaultValue.value = get(optionList.value, '0.value');
     } catch (error) {
       optionList.value = [];
       console.log(error);
@@ -171,11 +212,16 @@
       };
       loading.value = true;
       const { data } = await postCompletionsCorrect(params);
-      diffValue.value = `${data.corrected}\n\n${data.explanation}`;
+      explainContent.value = `${data.explanation}`;
       loading.value = false;
+      diffResult.value = Diff.diffLines(code.value, data.corrected);
+      defaultValue.value = getCorrectDiffValue(diffResult.value);
+      console.log('diffResult==', defaultValue.value, diffResult.value);
+      getDiffResultLines();
     } catch (error) {
       loading.value = false;
       diffValue.value = '';
+      diffResult.value = [];
       console.log(error);
     }
   };
@@ -187,7 +233,8 @@
       loading.value = true;
       const { data } = await postCompletionsExplain(params);
       loading.value = false;
-      diffValue.value = data.text;
+      // diffValue.value = data.text;
+      explainValue.value = data.text;
     } catch (error) {
       loading.value = false;
       diffValue.value = '';
@@ -195,6 +242,7 @@
     }
   };
   const handleCompletionGenerate = async () => {
+    clearDiffLines();
     try {
       const params = {
         text: code.value
@@ -214,15 +262,28 @@
     show.value = !show.value;
   };
   const handleClear = () => {
+    clearDiffLines();
     code.value = '';
     defaultValue.value = '';
     diffValue.value = '';
   };
   const handleTyeChange = (val) => {
+    clearDiffLines();
     code.value = val;
     defaultValue.value = val;
     diffValue.value = '';
   };
+  watch(
+    () => explainContent.value,
+    () => {
+      // setTimeout(() => {
+      //   showExplainModal.value = !!explainContent.value;
+      // }, 100);
+    },
+    {
+      immediate: true
+    }
+  );
   getCompletionExample();
 </script>
 
