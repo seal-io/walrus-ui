@@ -38,7 +38,7 @@ export const settingList: Array<SettingsItem> = [
       },
       {
         id: 'openAiApiToken',
-        label: 'openai-api-token',
+        label: 'OpenAI API令牌',
         parentId: '',
         component: {
           type: 'password',
