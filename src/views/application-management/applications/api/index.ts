@@ -60,7 +60,7 @@ export const queryItemApplicationInstances = (params) => {
   });
 };
 export const deleteApplicationInstance = (data) => {
-  return axios.delete(`/application-instances`, { data });
+  return axios.delete(`/application-instances/${data.id}?force=${data.force}`);
 };
 export const upgradeApplicationInstance = (data) => {
   return axios.put(`/application-instances/${data.id}/upgrade`, data);

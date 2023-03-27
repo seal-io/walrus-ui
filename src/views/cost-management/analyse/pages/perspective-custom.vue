@@ -199,6 +199,16 @@
         ellipsis: true,
         tooltip: true,
         cellStyle: { minWidth: '40px' },
+        dataIndex: 'pvCost',
+        render({ record }) {
+          return round(record.loadBalanceCost, 4) || 0;
+        },
+        title: '负载均衡费用'
+      },
+      {
+        ellipsis: true,
+        tooltip: true,
+        cellStyle: { minWidth: '40px' },
         dataIndex: 'sharedCost',
         render({ record }) {
           return round(record.sharedCost, 4) || 0;

@@ -10,6 +10,16 @@
         @input="(val) => handleInput(val)"
       ></a-input>
     </template>
+    <template v-if="comType === 'password'">
+      <a-input-password
+        :model-value="modelValue"
+        :class="{ 'arco-input-focus': !attrs.editable }"
+        :disabled="attrs.isDisabled || !attrs.editable"
+        @change="handleInputChange"
+        @blur="handleBlur"
+        @input="(val) => handleInput(val)"
+      ></a-input-password>
+    </template>
     <template v-if="comType === 'number'">
       <a-input-number
         v-bind="attrs.binds"
@@ -68,32 +78,32 @@
       modelValue: {
         default() {
           return '';
-        },
+        }
       },
       dataInfo: {
         type: Object,
         default() {
           return {};
-        },
+        }
       },
       comType: {
         type: [String],
         default() {
           return 'input';
-        },
+        }
       },
       matchType: {
         type: [String],
         default() {
           return '';
-        },
+        }
       },
       options: {
         type: Array as PropType<ChildrenItem[]>,
         default() {
           return [];
-        },
-      },
+        }
+      }
     },
     emits: ['update:modelValue'],
     setup(props: any) {},
@@ -107,7 +117,7 @@
       },
       attrs() {
         return this.$attrs as any;
-      },
+      }
     },
     watch: {
       modelValue: {
@@ -115,8 +125,8 @@
           console.log('modelValue===', this.modelValue);
         },
         deep: true,
-        immediate: true,
-      },
+        immediate: true
+      }
     },
     methods: {
       handleInputChange(value) {
@@ -144,8 +154,8 @@
           return list.join('/');
         }
         return list.join('/');
-      },
-    },
+      }
+    }
   });
 </script>
 

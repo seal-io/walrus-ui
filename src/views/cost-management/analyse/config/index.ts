@@ -19,7 +19,7 @@ export const costShareMode = [
   // { label: '展示', name: 'Show', value: 'show' },
   { label: '平均分摊', name: 'Equally split', value: 'equally' },
   {
-    label: '基于成本比例分摊',
+    label: '按比例分摊',
     name: 'Proportionally split',
     value: 'proportionally'
   }
@@ -309,6 +309,16 @@ export const clusterNamespaceCostCols = [
       return round(record.pvCost, 4) || 0;
     },
     title: 'PV'
+  },
+  {
+    ellipsis: true,
+    tooltip: true,
+    cellStyle: { minWidth: '40px' },
+    dataIndex: 'pvCost',
+    render({ record }) {
+      return round(record.loadBalanceCost, 4) || 0;
+    },
+    title: '负载均衡费用'
   },
   {
     ellipsis: true,

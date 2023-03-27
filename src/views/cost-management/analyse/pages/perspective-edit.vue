@@ -15,7 +15,7 @@
         ></a-input>
       </a-form-item>
       <GroupTitle
-        title="定义过滤条件"
+        title="定义费用单元"
         style="margin-top: 10px"
         :bordered="true"
       ></GroupTitle>
@@ -68,9 +68,9 @@
         </a-cascader>
       </a-form-item>
       <a-form-item
-        label="过滤器"
+        label="费用来源"
         field="allocationQueries.0.filters"
-        :rules="[{ required: true, message: '过滤器不能为空' }]"
+        :rules="[{ required: true, message: '费用来源不能为空' }]"
       >
         <ConditionFilter
           ref="allfilter"
@@ -80,14 +80,14 @@
         ></ConditionFilter>
       </a-form-item>
       <GroupTitle
-        title="定义共享费用"
+        title="公摊费用拆分规则"
         style="margin-top: 10px"
         :bordered="true"
       ></GroupTitle>
       <a-form-item
-        label="过滤器"
+        label="公摊费用来源"
         field="allocationQueries.shareCosts.0.filters"
-        :rules="[{ required: false, message: '过滤器不能为空' }]"
+        :rules="[{ required: false, message: '公摊费用来源不能为空' }]"
       >
         <ConditionFilter
           ref="costfilter"
@@ -100,7 +100,7 @@
       </a-form-item>
 
       <a-form-item
-        label="空闲费用"
+        label="分摊集群空闲费用"
         field="formData.allocationQueries.0.shareCosts.0.idleCostFilters"
       >
         <a-select
@@ -114,7 +114,7 @@
         >
         </a-select>
       </a-form-item>
-      <a-form-item label="管理费用" field="managementCostFilters">
+      <a-form-item label="分摊集群管理费用" field="managementCostFilters">
         <a-select
           v-model="
             formData.allocationQueries[0].shareCosts[0].managementCostFilters
@@ -129,7 +129,7 @@
         </a-select>
       </a-form-item>
       <a-form-item
-        label="分配方法"
+        label="分摊方式"
         field="formData.allocationQueries.0.shareCosts.0.sharingStrategy"
       >
         <a-radio-group

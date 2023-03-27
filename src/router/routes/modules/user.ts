@@ -42,6 +42,7 @@ export default {
       meta: {
         hideInMenu: true,
         ignoreCache: true,
+        clearMenuStatus: true,
         locale: 'menu.system.setting',
         requiresAuth: true,
         roles: ['*']

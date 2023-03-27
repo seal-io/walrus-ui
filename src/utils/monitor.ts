@@ -1,4 +1,4 @@
-import { App, ComponentPublicInstance, h } from 'vue';
+import { App, ComponentPublicInstance, h, compile } from 'vue';
 import axios from 'axios';
 import { Modal, Message } from '@arco-design/web-vue';
 import i18n from '@/locale/index';

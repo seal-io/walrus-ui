@@ -119,6 +119,9 @@
           const key = newRoute.matched[matched.length - 1]?.name as string;
           appStore.updateSettings({ selectedKey: [key] });
         }
+        if (newRoute.meta.clearMenuStatus) {
+          appStore.updateSettings({ selectedKey: [] });
+        }
       }, true);
       const setCollapse = (val: boolean) => {
         if (appStore.device === 'desktop')
