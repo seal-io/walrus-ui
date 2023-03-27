@@ -59,7 +59,7 @@
           <thumbButton :size="60" @click="handleAddModule"></thumbButton>
         </a-tooltip>
       </div>
-      <div v-if="validateModule && !id" class="tips">
+      <div v-if="!validateModule && !id && triggerModule" class="tips">
         <span :style="{ 'font-size': '12px', 'color': 'rgb(var(--danger-6))' }"
           >模块不能为空</span
         >
@@ -220,7 +220,8 @@
   const appModules = ref<AppModule[]>([]);
   const completeData = ref<Record<string, any>>({});
   const collapseStatus = ref(0);
-  const validateModule = ref(false);
+  // const validateModule = ref(false);
+  const triggerModule = ref(false);
   let copyFormData: any = {};
 
   provide('completeData', completeData);
@@ -234,6 +235,9 @@
       return item.name;
     });
     return res;
+  });
+  const validateModule = computed(() => {
+    return !!appInfo.modules.length;
   });
   const setRefMap = (el: refItem, name) => {
     if (el) {
@@ -439,7 +443,7 @@
     const result = await basicform.value.getFormData();
     const variableFormResult = await getRefFormData();
     const validateVariabel = find(variableFormResult, (val) => !val.formData);
-    validateModule.value = !!appInfo.modules.length;
+    triggerModule.value = true;
     if (!id && !validateModule.value) {
       return;
     }

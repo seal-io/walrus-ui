@@ -1,6 +1,6 @@
 <template>
-  <div class="ace-box" :style="{ height }">
-    <div :id="editorId" :style="{ minHeight: height }"></div>
+  <div class="ace-box" :style="{ height: `${height + 2}px` }">
+    <div :id="editorId" :style="{ minHeight: `${height}px` }"></div>
   </div>
 </template>
 
@@ -59,9 +59,9 @@
       }
     },
     height: {
-      type: String,
+      type: Number,
       default() {
-        return '300px';
+        return 300;
       }
     },
     readOnly: {
@@ -86,6 +86,12 @@
       type: Array as PropType<number[]>,
       default() {
         return [];
+      }
+    },
+    showGutter: {
+      type: Boolean,
+      default() {
+        return true;
       }
     },
     removeLines: {
@@ -317,6 +323,7 @@
         mode: `ace/mode/${props.lang}`,
         // theme: 'ace/theme/monokai',
         enableSnippets: false,
+        showGutter: props.showGutter,
         autoScrollEditorIntoView: false, // 自动滚动编辑器视图
         enableLiveAutocompletion: true, // 智能补全
         enableBasicAutocompletion: true

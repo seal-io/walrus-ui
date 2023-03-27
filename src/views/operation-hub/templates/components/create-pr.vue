@@ -222,7 +222,7 @@
       const { data } = await queryConnectorRepositoriesBranch(params);
       branchList.value = map(data || [], (item) => {
         return {
-          value: item.Path,
+          value: item.Name,
           label: item.Name
         };
       });
@@ -234,6 +234,7 @@
     try {
       formData.repository = '';
       formData.branch = '';
+      branchList.value = [];
       getRepositories();
     } catch (error) {
       console.log(error);
