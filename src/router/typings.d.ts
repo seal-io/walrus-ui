@@ -2,6 +2,7 @@ import 'vue-router';
 
 declare module 'vue-router' {
   interface RouteMeta {
+    clearMenuStatus?: boolean; // clear menu selected status when no-menu page active
     cachePages?: string[]; // when to the page that in cachePages cache Current route
     roles?: string[]; // Controls roles that have access to the page
     requiresAuth: boolean; // Whether login is required to access the current page (every route must declare)

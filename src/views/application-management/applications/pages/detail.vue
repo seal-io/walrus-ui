@@ -73,6 +73,12 @@
       :title="status === 'create' ? '创建实例' : '升级实例'"
       @save="handleSaveInstanceInfo"
     ></createInstance>
+    <deleteInstanceModal
+      v-model:show="showDeleteModal"
+      :callback="handleDeleteConfirm"
+      :title="$t('common.delete.tips')"
+    >
+    </deleteInstanceModal>
   </ComCard>
 </template>
 
@@ -92,6 +98,7 @@
   import AppDetail from '../components/app-info/index.vue';
   import InstanceDetail from '../components/instance/index.vue';
   import createInstance from '../components/create-instance.vue';
+  import deleteInstanceModal from '../components/delete-instance-modal.vue';
 
   import {
     queryApplicationInstances,
@@ -104,6 +111,7 @@
   const cloneId = route.query.cloneId as string;
   const activeInstance = ref('app'); //
   const currentInstance = ref('');
+  const showDeleteModal = ref(false);
   const environmentList = ref<{ label: string; value: string }[]>([]);
   const pgCom = ref('appDetail'); // instanceDetail、appDetail
   const showInstanceModal = ref(false);
@@ -135,6 +143,7 @@
     instanceDetail: markRaw(InstanceDetail)
   };
   const instanseList = ref<InstanceData[]>([]);
+  const instanceId = ref('');
   const labelList = ref<{ key: string; value: string }[]>([]);
 
   const title = computed(() => {
@@ -240,20 +249,19 @@
       console.log(error);
     }
   };
-  const handleDeleteConfirm = async (item) => {
+  const handleDeleteConfirm = async (force) => {
     try {
-      await deleteApplicationInstance([{ id: item.id }]);
+      await deleteApplicationInstance({ id: instanceId.value, force });
       getApplicationInstances();
     } catch (error) {
       console.log(error);
     }
   };
   const handleDeleteInstance = async (item) => {
-    deleteModal({
-      onOk() {
-        handleDeleteConfirm(item);
-      }
-    });
+    instanceId.value = item.id;
+    setTimeout(() => {
+      showDeleteModal.value = true;
+    }, 100);
   };
   const handleDeployDone = async () => {
     getApplicationInstances();

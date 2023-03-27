@@ -18,6 +18,7 @@ export default {
       meta: {
         hideInMenu: true,
         ignoreCache: true,
+        clearMenuStatus: true,
         locale: 'user.password.modify',
         requiresAuth: true,
         roles: ['*']
@@ -30,6 +31,7 @@ export default {
       meta: {
         hideInMenu: true,
         ignoreCache: true,
+        clearMenuStatus: true,
         locale: 'account.settings.apikeys',
         requiresAuth: true,
         roles: ['*']
