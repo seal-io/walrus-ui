@@ -275,10 +275,9 @@
   };
   const handleSelectShortcut = (val) => {
     const metaValue = get(val, 'value') || [];
-    setRangeValue(metaValue);
+    const values = setRangeValue(metaValue);
     // console.log('value====', value);
     emits('update:timeUnit', val.unit);
-    emits('change', metaValue);
   };
   const handleDateChange = (val) => {
     console.log('change:', val);

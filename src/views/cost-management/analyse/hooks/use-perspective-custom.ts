@@ -96,7 +96,7 @@ export default function usePerspectiveCost(props) {
       };
       const { data } = await queryPerspectiveData(params);
       // const data = namespaceData;
-      const list = map(data?.items || [], (s) => {
+      let list = map(data?.items || [], (s) => {
         s.totalCost = s.totalCost || 0;
         return s;
       });
@@ -104,6 +104,9 @@ export default function usePerspectiveCost(props) {
       // let list = statckLineData;
       projectCostChart.value = { xAxis: [], line: [], bar: [], dataConfig: [] };
       if (!projectCostFilters.value.step) {
+        if (get(dateFormatMap, projectCostFilters.value.groupBy)) {
+          list = sortBy(list, (s) => s.itemName);
+        }
         each(list, (item) => {
           const itemName = get(dateFormatMap, projectCostFilters.value.groupBy)
             ? dayjs(item.itemName).format(

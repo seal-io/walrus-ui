@@ -7,6 +7,7 @@
           <a-select
             v-model="queryParams.project"
             allow-search
+            :format-label="formatLabel"
             :placeholder="$t('cost.analyse.project.holder')"
             class="border-less"
             style="width: 200px"
@@ -268,7 +269,12 @@
   const requestWork = computed(() => {
     return !!queryParams.project;
   });
+  const formatLabel = (val) => {
+    const d = find(projectList.value, (item) => item.value === val);
+    return d ? d.label : projectName.value;
+  };
   const handleDateChange = async () => {
+    console.log('date Change');
     projectCostFilters.value = {
       ...projectCostFilters.value,
       ...queryParams,
@@ -303,26 +309,17 @@
       loadeend.value = true;
     }, 50);
   };
-  watch(
-    () => route.query.id,
-    (ov) => {
-      if (ov && route.query.page === 'project') {
-        initData();
-      }
-    },
-    {
-      immediate: true
-    }
-  );
+
   watch(
     () => route.query.page,
     (ov) => {
-      if (ov && route.query.page === 'project') {
+      if (route.query.id && route.query.page === 'project') {
         initData();
       }
     },
     {
-      immediate: true
+      immediate: true,
+      deep: true
     }
   );
   onMounted(() => {

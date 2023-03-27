@@ -6,6 +6,7 @@
         <a-select
           v-if="isPage"
           v-model="queryParams.connectorID"
+          :format-label="formatLabel"
           allow-search
           :placeholder="$t('cost.analyse.cluster.holder')"
           class="border-less"
@@ -361,6 +362,10 @@
     return clusterNamespaceCostCols;
   });
 
+  const formatLabel = (val) => {
+    const d = find(clusterList.value, (item) => item.value === val);
+    return d ? d.label : clusterName.value;
+  };
   const handleDateChange = async (val) => {
     console.log('date===', val);
 
@@ -395,15 +400,18 @@
 
     workloadCostFilters.value = {
       ...workloadCostFilters.value,
-      ...queryParams
+      ...queryParams,
+      endTime: setEndTimeAddDay(queryParams.endTime, timeMode.value)
     };
     dailyCostFilters.value = {
       ...dailyCostFilters.value,
-      ...queryParams
+      ...queryParams,
+      endTime: setEndTimeAddDay(queryParams.endTime, timeMode.value)
     };
     nameSpaceCostFilters.value = {
       ...nameSpaceCostFilters.value,
-      ...queryParams
+      ...queryParams,
+      endTime: setEndTimeAddDay(queryParams.endTime, timeMode.value)
     };
     getDailyCostChart();
     getNamespaceCostChart();
@@ -426,25 +434,15 @@
     }, 50);
   };
   watch(
-    () => route.query.id,
+    () => route.query,
     (ov) => {
-      if (ov && route.query.page === 'cluster') {
+      if (route.query.id && route.query.page === 'cluster') {
         initData();
       }
     },
     {
-      immediate: true
-    }
-  );
-  watch(
-    () => route.query.page,
-    (ov) => {
-      if (ov && route.query.page === 'cluster') {
-        initData();
-      }
-    },
-    {
-      immediate: true
+      immediate: true,
+      deep: true
     }
   );
   onMounted(() => {

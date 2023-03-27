@@ -71,9 +71,7 @@
         time-range="single"
         :time-mode="timeMode"
         :loadeend="loadeend"
-        :filter-params="{
-          ...projectCostFilters
-        }"
+        :filter-params="projectCostFilters"
         :columns="customTableCols"
         source="cost table"
         style="margin-top: 20px"
@@ -201,7 +199,7 @@
         cellStyle: { minWidth: '40px' },
         dataIndex: 'pvCost',
         render({ record }) {
-          return round(record.loadBalanceCost, 4) || 0;
+          return round(record.loadBalancerCost, 4) || 0;
         },
         title: '负载均衡费用'
       },
@@ -227,7 +225,9 @@
       }
     ];
   });
-  const handleDateChange = async () => {
+  const handleDateChange = async (values) => {
+    queryParams.endTime = get(values, '1');
+    queryParams.startTime = get(values, '0');
     projectCostFilters.value = {
       ...projectCostFilters.value,
       ...queryParams,
@@ -244,26 +244,17 @@
       loadeend.value = true;
     }, 50);
   };
-  watch(
-    () => route.query.id,
-    (ov) => {
-      if (ov && route.query.page === 'custom') {
-        initData();
-      }
-    },
-    {
-      immediate: true
-    }
-  );
+
   watch(
     () => route.query.page,
     (ov) => {
-      if (ov && route.query.page === 'custom') {
+      if (route.query.id && route.query.page === 'custom') {
         initData();
       }
     },
     {
-      immediate: true
+      immediate: true,
+      deep: true
     }
   );
   onMounted(() => {

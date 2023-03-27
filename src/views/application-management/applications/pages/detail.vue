@@ -34,8 +34,12 @@
                 :status="{
                   status: get(item, 'status'),
                   message: '',
-                  transitioning: get(item, 'status') === 'Deploying',
-                  error: get(item, 'status') === 'DeployFailed'
+                  transitioning: ['Deleting', 'Deploying'].includes(
+                    get(item, 'status')
+                  ),
+                  error: ['DeployFailed', 'DeleteFailed'].includes(
+                    get(item, 'status')
+                  )
                 }"
               ></StatusLabel>
             </template>
@@ -252,7 +256,12 @@
   const handleDeleteConfirm = async (force) => {
     try {
       await deleteApplicationInstance({ id: instanceId.value, force });
-      getApplicationInstances();
+      await getApplicationInstances();
+      if (instanseList.value.length) {
+        handleClickInstance(get(instanseList.value, '0'));
+      } else {
+        handleClickApp();
+      }
     } catch (error) {
       console.log(error);
     }

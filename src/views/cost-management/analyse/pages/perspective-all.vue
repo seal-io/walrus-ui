@@ -270,27 +270,28 @@
       loadeend.value = true;
     }, 50);
   };
+  // watch(
+  //   () => route.query.id,
+  //   (ov) => {
+  //     if (ov && route.query.page === 'all') {
+  //       initData();
+  //     }
+  //   },
+  //   {
+  //     immediate: true
+  //   }
+  // );
   watch(
-    () => route.query.id,
+    () => route.query,
     (ov) => {
-      if (ov && route.query.page === 'all') {
-        initData();
-      }
-    },
-    {
-      immediate: true
-    }
-  );
-  watch(
-    () => route.query.page,
-    (ov) => {
-      if (ov && route.query.page === 'all') {
+      if (route.query.id && route.query.page === 'all') {
         console.log('route.quert===', route.query);
         initData();
       }
     },
     {
-      immediate: true
+      immediate: true,
+      deep: true
     }
   );
   onBeforeRouteUpdate(() => {

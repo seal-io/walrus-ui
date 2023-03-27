@@ -184,16 +184,17 @@
         axisLabel: {
           interval: 'auto',
           color: '#4E5969',
-          rotate: 30
-          // formatter(value: number, idx: number) {
-          //   if (idx === 0) return '';
-          //   if (
-          //     get(props.data, 'xAxis')?.length &&
-          //     idx === get(props.data, 'xAxis')?.length - 1
-          //   )
-          //     return '';
-          //   return `${value}`;
-          // },
+          rotate: 30,
+          formatter(value: number, idx: number) {
+            if (props.xAxis?.length === 1) {
+              return `${value}`;
+            }
+            if (idx === 0 || idx === props.xAxis?.length - 1) {
+              return '';
+            }
+
+            return `${value}`;
+          }
         },
         axisLine: {
           show: false

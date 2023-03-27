@@ -101,7 +101,7 @@
 
       <a-form-item
         label="分摊集群空闲费用"
-        field="formData.allocationQueries.0.shareCosts.0.idleCostFilters"
+        field="allocationQueries.0.shareCosts.0.idleCostFilters"
       >
         <a-select
           v-model="formData.allocationQueries[0].shareCosts[0].idleCostFilters"
@@ -130,7 +130,10 @@
       </a-form-item>
       <a-form-item
         label="分摊方式"
-        field="formData.allocationQueries.0.shareCosts.0.sharingStrategy"
+        field="allocationQueries.0.shareCosts.0.sharingStrategy"
+        :rules="[
+          { required: sharingStrategyRequired, message: '分摊方式不能为空' }
+        ]"
       >
         <a-radio-group
           v-model="formData.allocationQueries[0].shareCosts[0].sharingStrategy"
@@ -168,7 +171,7 @@
 
 <script lang="ts" setup>
   import dayjs from 'dayjs';
-  import { ref, reactive } from 'vue';
+  import { ref, reactive, computed } from 'vue';
   import {
     map,
     each,
@@ -237,6 +240,28 @@
     ]
   });
 
+  const sharingStrategyRequired = computed(() => {
+    const shareCostFilter = get(
+      formData,
+      'allocationQueries.0.shareCosts.0.filters'
+    );
+    const shareCostIdleCostFilters = get(
+      formData,
+      'allocationQueries.0.shareCosts.0.idleCostFilters'
+    );
+    const shareCostmanagementCostFilters = get(
+      formData,
+      'allocationQueries.0.shareCosts.0.managementCostFilters'
+    );
+    if (
+      shareCostFilter?.length ||
+      shareCostIdleCostFilters?.length ||
+      shareCostmanagementCostFilters?.length
+    ) {
+      return true;
+    }
+    return false;
+  });
   const validateFilters = (val, callback) => {
     console.log('validateFilters=', val);
     const filters = get(formData, 'allocationQueries.0.filters') || [];
@@ -264,7 +289,16 @@
   };
   const setConditionFilterFieldValues = (data) => {
     const filtersList = get(data, 'allocationQueries.0.filters') || [];
+    const shareCostsFiltersList =
+      get(data, 'allocationQueries.0.shareCosts.0.filters') || [];
     each(filtersList, (item) => {
+      each(item, (s) => {
+        s.fieldValues = filter(idleCostFieldList.value, (p) => {
+          return includes(s?.values, p.value);
+        });
+      });
+    });
+    each(shareCostsFiltersList, (item) => {
       each(item, (s) => {
         s.fieldValues = filter(idleCostFieldList.value, (p) => {
           return includes(s?.values, p.value);
@@ -405,7 +439,6 @@
       const { data } = await queryPerspectiveFieldValues(params);
       const list = data?.items || [];
       idleCostFieldList.value = list;
-      console.log('idleCostFieldList;', idleCostFieldList.value);
     } catch (error) {
       idleCostFieldList.value = [];
       console.log(error);

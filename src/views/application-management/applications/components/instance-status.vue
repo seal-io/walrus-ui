@@ -1,13 +1,11 @@
 <template>
   <span class="label-wrapper">
-    <a-link style="display: inline">
+    <span style="display: inline">
+      <span class="dot" :class="[statusMap[status] || status]"></span>
       <slot name="label"
         ><span>{{ label }}</span></slot
       >
-      <template #icon>
-        <span class="dot" :class="[statusMap[status] || status]"></span>
-      </template>
-    </a-link>
+    </span>
   </span>
 </template>
 
@@ -44,6 +42,7 @@
       display: inline-block;
       width: 10px;
       height: 10px;
+      margin-right: 5px;
       border-radius: 50%;
 
       &.running {
