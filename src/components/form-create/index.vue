@@ -67,6 +67,7 @@
                   :key="`${formId}_editorId_${index}`"
                   v-bind="{ ...fm.props }"
                   v-model="formData[fm.Name]"
+                  :editor-default-value="fm.Default"
                   style="width: 100%"
                   width="100%"
                   :editor-id="`${fm.Name}_editorId_${index}`"
@@ -252,6 +253,7 @@
     });
     list = sortBy(list, (pItem) => pItem.order);
     schemaList.value = list;
+    console.log('schemaList===', schemaList.value);
   };
   const handleAddLabel = (obj, list) => {
     list.push({ ...obj });

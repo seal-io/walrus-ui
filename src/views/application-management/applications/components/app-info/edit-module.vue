@@ -106,6 +106,7 @@
         <GroupTitle title="配置"></GroupTitle>
         <a-tabs
           v-if="show && formTabs.length > 1"
+          lazy-load
           :active-key="activeKey"
           @change="handleTabChange"
         >

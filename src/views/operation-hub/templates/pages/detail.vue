@@ -59,7 +59,7 @@
       </a-form-item>
       <a-form-item
         field="icon"
-        label="Icon"
+        label="图标"
         :rules="[
           {
             match: urlReg,
@@ -69,7 +69,7 @@
       >
         <a-input v-model="formData.icon"></a-input>
       </a-form-item>
-      <a-form-item :label="$t('operation.connectors.table.status')">
+      <a-form-item v-if="id" :label="$t('operation.connectors.table.status')">
         <StatusLabel
           :status="{
             status: get(formData, 'status'),

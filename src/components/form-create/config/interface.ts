@@ -119,8 +119,12 @@ export const parseComponentSchema = (schema: ComponentSchema) => {
     };
   }
   return {
-    component: ['hintInput'],
-    props: { ...props },
+    component: ['AceEditor'],
+    props: {
+      ...props,
+      lang: 'json',
+      showGutter: false
+    },
     rules: [{ required: schema.Required, message: 'common.form.rule.input' }]
   };
 };

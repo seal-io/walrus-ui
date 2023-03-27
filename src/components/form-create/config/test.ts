@@ -1,8 +1,8 @@
 export default [
   {
     Name: 'name',
-    Type: 'string',
-    Default: null,
+    Type: 'use',
+    Default: 'dfasdjflksdjflksdjfksdlkfsdlkl',
     Required: true,
     Sensitive: false,
     Group: 'user',

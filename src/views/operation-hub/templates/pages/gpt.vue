@@ -42,7 +42,7 @@
             :remove-lines="removeLines"
             :add-lines="addLines"
             editor-id="firstEditor"
-            :default-value="defaultValue"
+            :editor-default-value="defaultValue"
             lang="json"
             :height="500"
             @change="handleCodeChange"
@@ -56,7 +56,7 @@
           >
             <AceEditor
               editor-id="infoEditor"
-              :default-value="explainContent"
+              :editor-default-value="explainContent"
               :show-gutter="false"
               read-only
               :height="500"
@@ -389,7 +389,7 @@
       },
       ''
     );
-    removeLines.value = [];
+    clearDiffLines();
     defaultValue.value = res;
     code.value = res;
     showFix.value = false;
