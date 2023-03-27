@@ -118,6 +118,13 @@ export const parseComponentSchema = (schema: ComponentSchema) => {
       rules: [{ required: schema.Required, message: 'common.form.rule.select' }]
     };
   }
+  if (!schema.Type) {
+    return {
+      component: ['hintInput'],
+      props: { ...props },
+      rules: [{ required: schema.Required, message: 'common.form.rule.input' }]
+    };
+  }
   return {
     component: ['AceEditor'],
     props: {
