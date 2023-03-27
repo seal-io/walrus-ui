@@ -30,7 +30,8 @@
             <a-dropdown>
               <a-link size="mini" @click.stop="() => {}">
                 <template #icon
-                  ><icon-more style="font-size: 18px; stroke-width: 5"
+                  ><icon-more
+                    style="margin-right: 0; font-size: 18px; stroke-width: 5"
                 /></template>
               </a-link>
               <template #content>
@@ -147,6 +148,8 @@
     }
 
     .btn-wrap {
+      position: relative;
+      top: -4px;
       display: flex;
       justify-content: flex-end;
     }

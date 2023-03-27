@@ -69,7 +69,8 @@ export default function usePerspectiveCost(props) {
   const queryParams = reactive({
     startTime: '',
     endTime: '',
-    connectorID: ''
+    connectorID: '',
+    connectorLabel: ''
   });
 
   const overData = ref({});
@@ -120,6 +121,7 @@ export default function usePerspectiveCost(props) {
       clusterList.value = data?.items || [];
       if (!flag) {
         queryParams.connectorID = get(clusterList.value, '0.value') || '';
+        queryParams.connectorLabel = get(clusterList.value, '0.label') || '';
         clusterName.value = get(clusterList.value, '0.label') || 'Cluster';
         dailyCostFilters.value.connectorID = queryParams.connectorID;
         workloadCostFilters.value.connectorID = queryParams.connectorID;

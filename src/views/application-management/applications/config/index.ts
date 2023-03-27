@@ -54,6 +54,8 @@ export const instanceStatus = [
 ];
 export const statusMap = {
   Deployed: 'running',
+  Deleting: 'warning',
+  Deploying: 'warning',
   DeployFailed: 'error',
   DeleteFailed: 'error'
 };

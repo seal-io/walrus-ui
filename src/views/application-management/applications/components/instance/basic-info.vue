@@ -13,8 +13,10 @@
             status: item.value,
             text: item.value,
             message: '',
-            transitioning: get(item, 'value') === 'Deploying',
-            error: get(item, 'value') === 'DeployFailed'
+            transitioning: ['Deleting', 'Deploying'].includes(
+              get(item, 'value')
+            ),
+            error: ['DeployFailed', 'DeleteFailed'].includes(get(item, 'value'))
           }"
         ></StatusLabel>
         <span v-else>{{ item.value }}</span>
