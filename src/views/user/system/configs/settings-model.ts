@@ -35,7 +35,83 @@ export const settingList: Array<SettingsItem> = [
         },
         value: '',
         type: 'string'
-      },
+      }
+      // {
+      //   id: 'TokenRefreshCronExpr',
+      //   label: 'system.setting.TokenRefreshCronExpr',
+      //   desc: 'system.setting.TokenRefreshCronExpr.desc',
+      //   parentId: '',
+      //   component: {
+      //     type: 'input',
+      //     required: true,
+      //     validator(val, callback) {
+      //       if (validateCron(val)) {
+      //         callback();
+      //       } else {
+      //         callback(i18n.global.t('system.setting.rules.cron'));
+      //       }
+      //     },
+      //     extra: 'system.setting.cron.extra',
+      //   },
+      //   value: '',
+      //   type: 'string',
+      // },
+      // {
+      //   id: 'ScanCheckCronExpr',
+      //   label: 'system.setting.ScanCheckCronExpr',
+      //   desc: 'system.setting.ScanCheckCronExpr.desc',
+      //   parentId: '',
+      //   component: {
+      //     type: 'input',
+      //     required: true,
+      //     validator(val, callback) {
+      //       if (validateCron(val)) {
+      //         callback();
+      //       } else {
+      //         callback(i18n.global.t('system.setting.rules.cron'));
+      //       }
+      //     },
+      //     extra: 'system.setting.cron.extra'
+      //   },
+      //   value: '',
+      //   type: 'string'
+      // },
+      // {
+      //   id: 'MetaSyncCronExpr',
+      //   label: 'system.setting.MetaSyncCronExpr',
+      //   desc: 'system.setting.MetaSyncCronExpr.desc',
+      //   parentId: '',
+      //   component: {
+      //     type: 'input',
+      //     required: true,
+      //     validator(val, callback) {
+      //       if (validateCron(val)) {
+      //         callback();
+      //       } else {
+      //         callback(i18n.global.t('system.setting.rules.cron'));
+      //       }
+      //     },
+      //     extra: 'system.setting.cron.extra'
+      //   },
+      //   value: '',
+      //   type: 'string'
+      // }
+    ]
+  },
+  {
+    id: 'openAiApiToken',
+    label: 'OpenAI API令牌',
+    parentId: '',
+    editable: true,
+    component: {
+      type: 'input',
+      required: true,
+      match: 'urlReg',
+      message: 'system.rules.url'
+    },
+    value: '',
+    type: 'layout',
+    dataList: [
       {
         id: 'openAiApiToken',
         label: 'OpenAI API令牌',

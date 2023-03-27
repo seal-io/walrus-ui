@@ -36,7 +36,7 @@
     <!-- <a-divider :margin="5"></a-divider> -->
     <a-spin :loading="loading" style="width: 100%">
       <a-grid :cols="24" :col-gap="10">
-        <a-grid-item :span="showExplainModal ? 16 : 24">
+        <a-grid-item :span="24">
           <AceEditor
             v-model="code"
             :remove-lines="removeLines"
@@ -48,7 +48,7 @@
             @change="handleCodeChange"
           ></AceEditor>
         </a-grid-item>
-        <a-grid-item :span="showExplainModal ? 8 : 0">
+        <!-- <a-grid-item :span="showExplainModal ? 8 : 0">
           <div
             v-show="showExplainModal"
             id="modal-container"
@@ -62,7 +62,7 @@
               :height="500"
             ></AceEditor>
           </div>
-        </a-grid-item>
+        </a-grid-item> -->
       </a-grid>
     </a-spin>
     <div class="tools-wrap">
@@ -107,22 +107,35 @@
         </a-button> -->
       </a-space>
       <a-space>
-        <a-button type="primary" :disabled="loading" @click="handleViewExplain">
-          <template #icon>
-            <icon-info-circle />
-          </template>
-          <span>查看解释</span>
-        </a-button>
-        <a-button
-          type="primary"
-          :disabled="loading"
-          @click="handleViewCorrection"
+        <a-tooltip
+          trigger="click"
+          position="tr"
+          :content-style="{ maxHeight: '300px' }"
+          background-color="#f3f6fa"
+          :popup-visible="showExplainModal"
         >
-          <template #icon>
-            <icon-font type="icon-shoudongxiaoyan"></icon-font>
+          <template #content>
+            <div style="color: #4e5969; font-size: 14px">
+              {{ correctionExplain || '无纠错信息' }}
+            </div>
           </template>
-          <span>纠错说明</span>
-        </a-button>
+          <a-button
+            ref="correctionButton"
+            type="outline"
+            shape="circle"
+            class="correction-btn"
+            @click="handleViewCorrection"
+          >
+            <a-tooltip content="查看纠错说明">
+              <span>
+                <icon-font
+                  type="icon-shoudongxiaoyan"
+                  class="size-16"
+                ></icon-font>
+              </span>
+            </a-tooltip>
+          </a-button>
+        </a-tooltip>
       </a-space>
     </div>
     <EditPageFooter>
@@ -152,18 +165,19 @@
       :content="code"
     >
     </CreatePR>
-    <!-- <CodeExplainModal
-      v-model:show="showExplainModal"
-      v-model:content="explainContent"
-      title="说明信息"
-    ></CodeExplainModal> -->
+    <CodeExplainModal
+      v-model:show="showExplain"
+      :content="explainValue"
+      title="解释信息"
+    ></CodeExplainModal>
   </ComCard>
 </template>
 
 <script lang="ts" setup>
   import { ref, computed, watch, nextTick } from 'vue';
-  import { get, map, each, reduce } from 'lodash';
+  import { get, map, each, reduce, add } from 'lodash';
   import * as Diff from 'diff';
+  import { onClickOutside } from '@vueuse/core';
   import { deleteModal } from '@/utils/monitor';
   import useCallCommon from '@/hooks/use-call-common';
   import GroupTitle from '@/components/group-title/index.vue';
@@ -187,6 +201,7 @@
   }
   const optionList = ref<{ label: string; value: string }[]>([]);
   const { router } = useCallCommon();
+  const correctionButton = ref();
   const type = ref('');
   const status = ref('create');
   const code = ref('');
@@ -203,14 +218,11 @@
   // const explainContent = ref('');
   const correctionExplain = ref('');
   const showExplainModal = ref(false);
-  const explainStatus = ref('explain'); // explain、correction
+  const showExplain = ref(false);
   const showFix = ref(false);
 
-  const explainContent = computed(() => {
-    if (explainStatus.value === 'explain') {
-      return explainValue.value;
-    }
-    return correctionExplain.value;
+  onClickOutside(correctionButton, (ev) => {
+    showExplainModal.value = false;
   });
   const handleCodeChange = (val) => {
     console.log('code===', val);
@@ -235,12 +247,20 @@
       }
       return item;
     });
-    each(diffResult.value, (item) => {
-      if (item.removed) {
-        removeLines.value.push(item.line);
-      }
-      if (item.added) {
-        addLines.value.push(item.line);
+    each(diffResult.value, (item, index) => {
+      let { count } = item;
+      while (count > 0) {
+        if (item.removed) {
+          removeLines.value.push(
+            add(get(diffResult.value, `${index - 1}.line`) || 0, count)
+          );
+        }
+        if (item.added) {
+          addLines.value.push(
+            add(get(diffResult.value, `${index - 1}.line`) || 0, count)
+          );
+        }
+        count -= 1;
       }
     });
   };
@@ -277,10 +297,6 @@
       loading.value = true;
       const { data } = await postCompletionsCorrect(params);
       correctionExplain.value = `${data.explanation}`;
-      explainStatus.value = 'correction';
-      setTimeout(() => {
-        showExplainModal.value = true;
-      }, 100);
       loading.value = false;
       diffResult.value = Diff.diffLines(code.value, data.corrected);
       defaultValue.value = getCorrectDiffValue(diffResult.value);
@@ -296,6 +312,10 @@
     }
   };
   const handleCompletionExplain = async () => {
+    if (explainValue.value) {
+      showExplain.value = true;
+      return;
+    }
     try {
       const params = {
         text: code.value
@@ -305,9 +325,8 @@
       loading.value = false;
       // diffValue.value = data.text;
       explainValue.value = data.text;
-      explainStatus.value = 'explain';
       setTimeout(() => {
-        showExplainModal.value = true;
+        showExplain.value = !!explainValue.value;
       }, 100);
     } catch (error) {
       loading.value = false;
@@ -318,6 +337,8 @@
   const handleCompletionGenerate = async () => {
     clearDiffLines();
     showExplainModal.value = false;
+    explainValue.value = '';
+    correctionExplain.value = '';
     showFix.value = false;
     try {
       const params = {
@@ -343,12 +364,19 @@
     code.value = '';
     defaultValue.value = '';
     diffValue.value = '';
+    diffResult.value = [];
+    showFix.value = false;
+    explainValue.value = '';
+    correctionExplain.value = '';
   };
   const handleTyeChange = (val) => {
     clearDiffLines();
     code.value = val;
     defaultValue.value = val;
     diffValue.value = '';
+    showFix.value = false;
+    explainValue.value = '';
+    correctionExplain.value = '';
   };
 
   const handleUndo = () => {
@@ -381,7 +409,7 @@
       diffResult.value,
       (str, item) => {
         if (item.removed) {
-          str += '\n';
+          str += '';
         } else {
           str += `${item.value}`;
         }
@@ -402,32 +430,9 @@
     });
   };
   const handleViewCorrection = () => {
-    if (explainStatus.value === 'correction') {
-      showExplainModal.value = !showExplainModal.value;
-    } else {
-      showExplainModal.value = true;
-      explainStatus.value = 'correction';
-    }
+    showExplainModal.value = !showExplainModal.value;
   };
-  const handleViewExplain = () => {
-    if (explainStatus.value === 'explain') {
-      showExplainModal.value = !showExplainModal.value;
-    } else {
-      showExplainModal.value = true;
-      explainStatus.value = 'explain';
-    }
-  };
-  watch(
-    () => explainValue.value,
-    () => {
-      setTimeout(() => {
-        showExplainModal.value = !!explainValue.value;
-      }, 100);
-    },
-    {
-      immediate: true
-    }
-  );
+
   getCompletionExample();
 </script>
 
@@ -436,6 +441,12 @@
     .tools-wrap {
       display: flex;
       justify-content: space-between;
+    }
+
+    .correction-btn {
+      // position: fixed;
+      // right: 40px;
+      // bottom: 180px;
     }
     // .modal-container {
     //   padding: 10px;
