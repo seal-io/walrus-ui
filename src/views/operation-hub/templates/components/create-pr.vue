@@ -51,6 +51,7 @@
             style="width: 100%"
             :options="repositories"
             allow-search
+            @search="getRepositories"
             @change="handleRepoChange"
           >
           </a-select>
@@ -105,7 +106,7 @@
 
 <script lang="ts" setup>
   import { ref, reactive, PropType, computed } from 'vue';
-  import { map, filter, includes, toLower, find } from 'lodash';
+  import { map, filter, includes, toLower, find, pickBy } from 'lodash';
   import { execSucceed } from '@/utils/monitor';
   import EditPageFooter from '@/components/edit-page-footer/index.vue';
   import ProviderIcon from '@/components/provider-icon/index.vue';
@@ -190,14 +191,16 @@
       console.log(error);
     }
   };
-  const getRepositories = async () => {
+  const getRepositories = async (query?: string) => {
     try {
       repoloading.value = true;
-      const params = {
+      let params = {
         id: formData.connectorID,
         page: 1,
-        perPage: -1
+        perPage: 50,
+        query
       };
+      params = pickBy(params, (val) => !!val) as any;
       const { data } = await queryConnectorRepositories(params);
       repositories.value = map(data || [], (item) => {
         return {
@@ -211,6 +214,7 @@
       console.log(error);
     }
   };
+
   const getRepositoriesBranch = async () => {
     try {
       const params = {

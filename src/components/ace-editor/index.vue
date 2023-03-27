@@ -40,7 +40,7 @@
         return '';
       }
     },
-    defaultValue: {
+    editorDefaultValue: {
       type: String,
       default() {
         return '';
@@ -61,7 +61,7 @@
     height: {
       type: Number,
       default() {
-        return 300;
+        return 200;
       }
     },
     readOnly: {
@@ -253,10 +253,18 @@
     // if (!props.split) return;
   };
   watch(
-    () => props.defaultValue,
+    () => props.editorDefaultValue,
     () => {
-      isInitialValue.value = true;
-      aceEditor?.setValue(props.defaultValue, -1);
+      // aceEditor?.setValue(props.editorDefaultValue, -1);
+      console.log(
+        'editorDefaultValue==',
+        props.editorId,
+        props.editorDefaultValue,
+        props.modelValue
+      );
+      setTimeout(() => {
+        aceEditor?.setValue(props.editorDefaultValue, -1);
+      }, 200);
       nextTick(() => {
         setDiffRowDecoration();
       });
@@ -294,11 +302,7 @@
         emits('change', val);
         emits('update:modelValue', val);
         clearDiffRowDecoration(args);
-        if (isInitialValue.value) {
-          // isInitialValue.value = false;
-          // setDiffRowDecoration();
-          console.log('initialValue===', props.addLines, props.removeLines);
-        }
+        console.log('editor change===', val);
         // aceEditor.session.removeGutterDecoration(3, 'gutter-rm-line');
         // aceEditor.session.addGutterDecoration(3, 'gutter-rm-line');
         // aceEditor.session.setBreakpoints([2, 3, 4, 5]);
