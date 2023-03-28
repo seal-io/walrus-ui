@@ -45,7 +45,7 @@
         <a-cascader
           v-model="formData.allocationQueries[0].groupBy"
           allow-search
-          :options="groupByList"
+          :options="groupList"
           style="width: 360px"
           @change="handleGroupByChange"
         >
@@ -240,6 +240,13 @@
     ]
   });
 
+  const groupList = computed(() => {
+    const step = get(formData, 'allocationQueries.0.step');
+    if (step === 'null') return cloneDeep(groupByList.value);
+    return filter(groupByList.value, (item) => {
+      return !groupByDate.includes(item.value);
+    });
+  });
   const sharingStrategyRequired = computed(() => {
     const shareCostFilter = get(
       formData,
@@ -454,7 +461,7 @@
       const list = data?.items || [];
       const resultList = generatePerspectiveFields(list);
       groupByList.value = resultList;
-      console.log('groupByList===', JSON.stringify(list));
+      // console.log('groupByList===', JSON.stringify(list));
     } catch (error) {
       groupByList.value = [];
       console.log(error);
@@ -534,11 +541,7 @@
     }
   };
   const handleStepChange = (val) => {
-    if (val) {
-      groupByList.value = filter(groupByList.value, (item) => {
-        return !groupByDate.includes(item.value);
-      });
-    }
+    console.log('step:', val);
   };
   const handleCostFilterChange = (val) => {};
 

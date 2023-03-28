@@ -20,7 +20,7 @@
             show-word-limit
           ></a-input>
         </a-form-item>
-        <a-form-item
+        <!-- <a-form-item
           field="description"
           :hide-asterisk="false"
           label="描述"
@@ -32,11 +32,11 @@
             :spellcheck="false"
             :auto-size="{ minRows: 4, maxRows: 6 }"
           />
-        </a-form-item>
+        </a-form-item> -->
         <a-form-item
           label="类型"
           field="type"
-          :rules="[{ required: true, message: '类型填' }]"
+          :rules="[{ required: true, message: '类型必填' }]"
         >
           <a-input v-model="formData.type" style="width: 500px"></a-input>
           <template #extra>

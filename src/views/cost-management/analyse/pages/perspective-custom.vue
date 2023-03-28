@@ -90,7 +90,7 @@
   import LineBarChart from '@/components/line-bar-chart/index.vue';
   import FilterBox from '@/components/filter-box/index.vue';
   import TableList from '../components/table-list.vue';
-  import { DateShortCuts, setEndTimeAddDay } from '../config';
+  import { DateShortCuts, setEndTimeAddDay, dateFormatMap } from '../config';
   import usePerspectiveCost from '../hooks/use-perspective-custom';
   import groupbyData from '../config/groupby-data';
 
@@ -155,13 +155,20 @@
     const groupBy = find(groupbyData, (item) => {
       return item.fieldName === get(projectCostFilters.value, 'groupBy');
     });
+    const dfmt = get(dateFormatMap, projectCostFilters.value.groupBy);
     return [
       {
         ellipsis: true,
         tooltip: true,
         cellStyle: { minWidth: '40px' },
         dataIndex: 'itemName',
-        title: groupBy?.title || '名称'
+        title: groupBy?.title || '名称',
+        render({ record }) {
+          if (dfmt) {
+            return dayjs(record.itemName).format(dfmt);
+          }
+          return record.itemName;
+        }
       },
       {
         ellipsis: true,

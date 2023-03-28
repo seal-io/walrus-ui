@@ -3,9 +3,9 @@ import { riskColorMap } from '@/config/global';
 import dayjs from 'dayjs';
 
 export const statusColorMap = {
-  running: 'rgba(102, 201, 255,1)',
+  running: 'rgba(102, 201, 255,.8)',
   auditing: 'rgba(135, 145, 247, .5)',
-  failed: 'rgba(255, 197, 192, 1)',
+  failed: 'rgba(242, 166, 159, .8)',
   succeed: 'rgba(159, 232, 219, 1)',
   succeeded: 'rgba(159, 232, 219, 1)'
 };
