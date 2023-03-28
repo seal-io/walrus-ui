@@ -110,6 +110,7 @@
         <a-tooltip
           trigger="click"
           position="tr"
+          :disabled="loading"
           :content-style="{ maxHeight: '300px' }"
           background-color="#f3f6fa"
           :popup-visible="showExplainModal"
@@ -121,6 +122,7 @@
           </template>
           <a-button
             ref="correctionButton"
+            :disabled="loading"
             type="outline"
             shape="circle"
             class="correction-btn"
@@ -163,6 +165,7 @@
       title="创建PR"
       :status="status"
       :content="code"
+      @save="handleShowPRLink"
     >
     </CreatePR>
     <CodeExplainModal
@@ -174,9 +177,10 @@
 </template>
 
 <script lang="ts" setup>
-  import { ref, computed, watch, nextTick } from 'vue';
+  import { ref, computed, watch, nextTick, h } from 'vue';
   import { get, map, each, reduce, add } from 'lodash';
   import * as Diff from 'diff';
+  import { Modal, Button, Link } from '@arco-design/web-vue';
   import { onClickOutside } from '@vueuse/core';
   import { deleteModal } from '@/utils/monitor';
   import useCallCommon from '@/hooks/use-call-common';
@@ -220,6 +224,7 @@
   const showExplainModal = ref(false);
   const showExplain = ref(false);
   const showFix = ref(false);
+  let modalInstance: any = null;
 
   onClickOutside(correctionButton, (ev) => {
     showExplainModal.value = false;
@@ -431,6 +436,46 @@
   };
   const handleViewCorrection = () => {
     showExplainModal.value = !showExplainModal.value;
+  };
+
+  const handleShowPRLink = (url) => {
+    modalInstance = Modal.info({
+      title: 'PR创建成功',
+      top: '20%',
+      width: 500,
+      maskClosable: false,
+      // okText: '前往处理PR',
+      // hideCancel: false,
+      // cancelText: '关闭',
+      footer: () => {
+        return h('div', {}, [
+          h(
+            Button,
+            {
+              type: 'primary',
+              onClick: () => {
+                window.open(url);
+                setTimeout(() => {
+                  modalInstance?.close?.();
+                }, 100);
+              }
+            },
+            '前往处理PR'
+          ),
+          h(
+            Button,
+            {
+              type: 'outline',
+              onClick: () => {
+                modalInstance?.close?.();
+              }
+            },
+            '关闭'
+          )
+        ]);
+      },
+      content: ''
+    });
   };
 
   getCompletionExample();

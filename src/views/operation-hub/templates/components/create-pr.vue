@@ -260,12 +260,12 @@
         submitLoading.value = true;
         formData.content = props.content;
         // TODO
-        await postCompletionsPR(formData);
+        const { data } = await postCompletionsPR(formData);
         setTimeout(() => {
-          emit('save');
+          emit('save', data?.link);
         }, 100);
         emit('update:show', false);
-        execSucceed();
+        // execSucceed();
         submitLoading.value = false;
       } catch (error) {
         submitLoading.value = false;
