@@ -27,7 +27,7 @@
           :validate-trigger="['change']"
         >
           <a-textarea
-            v-model.trim="formData.description"
+            v-model="formData.description"
             style="width: 500px"
             :spellcheck="false"
             :auto-size="{ minRows: 4, maxRows: 6 }"

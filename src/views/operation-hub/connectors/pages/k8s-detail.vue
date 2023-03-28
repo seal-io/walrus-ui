@@ -33,7 +33,7 @@
           ]"
         >
           <a-textarea
-            v-model.trim="formData.configData.kubeconfig"
+            v-model="formData.configData.kubeconfig"
             style="width: 500px"
             :spellcheck="false"
             :placeholder="$t('operation.connectors.rules.kubeconfigTips')"
