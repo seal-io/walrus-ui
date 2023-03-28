@@ -3,34 +3,12 @@ import { riskColorMap } from '@/config/global';
 import dayjs from 'dayjs';
 
 export const statusColorMap = {
-  running: 'rgba(102, 201, 255,.8)',
+  running: 'rgba(102, 201, 255,1)',
   auditing: 'rgba(135, 145, 247, .5)',
   failed: 'rgba(255, 197, 192, 1)',
   succeed: 'rgba(159, 232, 219, 1)',
   succeeded: 'rgba(159, 232, 219, 1)'
 };
-
-export const resourceIssueTypeConfig = [
-  {
-    name: 'dashboard.overview.repo',
-    value: 11,
-    key: 'repository',
-    itemStyle: { color: '#206ccf' }
-  },
-  {
-    name: 'dashboard.overview.image',
-    value: 22,
-    key: 'containerImage',
-    itemStyle: { color: '#206ccf' }
-  },
-  {
-    name: 'Kubernetes',
-    value: 3,
-    key: 'kubernetes',
-    itemStyle: { color: '#206ccf' }
-  },
-  { name: 'SBOM', value: 1, key: 'sbom', itemStyle: { color: '#206ccf' } }
-];
 
 export const deployDataConfig = [
   {
