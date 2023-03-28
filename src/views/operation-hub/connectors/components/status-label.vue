@@ -69,6 +69,8 @@
     font-size: 0;
 
     :deep(.arco-tag) {
+      box-sizing: border-box;
+      padding: 0 5px;
       // min-width: 20px;
       // height: 20px;
       border-radius: 12px;

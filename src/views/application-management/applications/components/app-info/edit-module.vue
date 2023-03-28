@@ -1,6 +1,8 @@
 <template>
   <a-modal
     top="10%"
+    mask-animation-name="fadeOut"
+    modal-animation-name="fadeIn"
     :closable="false"
     :align-center="false"
     :width="900"
@@ -52,15 +54,6 @@
               </template>
             </a-form-item>
           </a-grid-item>
-          <!-- <a-grid-item :span="12">
-            <HintInput
-              v-model="query"
-              :show="show"
-              editor-id="hintEditor"
-              controller="input"
-              :source="completerData"
-            ></HintInput>
-          </a-grid-item> -->
           <a-grid-item :span="12">
             <a-form-item
               label="模块"
@@ -85,7 +78,7 @@
             <a-form-item
               label="版本"
               field="version"
-              :rules="[{ required: true, message: '类型必选' }]"
+              :rules="[{ required: true, message: '版本必选' }]"
             >
               <a-select
                 v-model="formData.version"
@@ -181,7 +174,10 @@
     every,
     reduce,
     map,
-    includes
+    includes,
+    pickBy,
+    toString,
+    clone
   } from 'lodash';
   import {
     ref,
@@ -190,7 +186,8 @@
     ComponentPublicInstance,
     computed,
     provide,
-    watch
+    watch,
+    nextTick
   } from 'vue';
   import useCallCommon from '@/hooks/use-call-common';
   import EditPageFooter from '@/components/edit-page-footer/index.vue';
@@ -201,7 +198,6 @@
     ModuleVersionData
   } from '@/views/operation-hub/templates/config/interface';
   import { queryModulesVersions } from '@/views/operation-hub/templates/api';
-  import HintInput from '../../../../../components/hint-input/index.vue';
 
   interface Group {
     Variables: object[];
@@ -251,7 +247,9 @@
   const variablesGroup = ref<any>({});
   const variablesGroupForm = ref<any>({});
   const moduleVersionList = ref<ModuleVersion[]>([]);
+  const moduleVersionFormCache = ref({});
   let refMap: Record<string, refItem> = {};
+  const versionMap = ref({ nv: '', ov: '' });
   const formData = reactive({
     name: '',
     module: { id: '' },
@@ -280,7 +278,7 @@
     formData.version = '';
     formData.application = { id: '' };
     formData.attributes = {};
-
+    moduleVersionFormCache.value = {};
     activeKey.value = 'schemaForm0';
   };
   const setRefMap = (el: refItem, name) => {
@@ -291,16 +289,34 @@
   const handleTabChange = (val) => {
     activeKey.value = val;
   };
+  const getInitialValue = (item, sourceData, action) => {
+    let initialValue = item.Default;
+    if (
+      get(moduleVersionFormCache.value, formData.version) ||
+      action === 'edit'
+    ) {
+      initialValue = get(sourceData, `attributes.${item.Name}`);
+    }
+    return initialValue;
+  };
   // get set: edit create
   const generateVariablesGroup = (type) => {
     variablesGroup.value = {};
     variablesGroupForm.value = {};
+    const sourceData = {
+      attributes: {
+        ...cloneDeep(get(props.dataInfo, 'attributes')),
+        ...get(moduleVersionFormCache.value, formData.version)
+      }
+    };
+    console.log('sourceData===', sourceData);
     each(get(moduleInfo.value, 'Variables'), (item) => {
       // set initial value
-      const initialValue =
-        type === 'create'
-          ? item.Default
-          : get(props.dataInfo, `attributes.${item.Name}`);
+      // const initialValue =
+      //   type === 'create'
+      //     ? item.Default
+      //     : get(sourceData, `attributes.${item.Name}`);
+      const initialValue = getInitialValue(item, sourceData, type);
       if (item.Group) {
         if (!variablesGroup.value[item.Group]) {
           variablesGroup.value[item.Group] = {
@@ -371,20 +387,11 @@
       console.log(error);
     }
   };
-  const handleVersionChange = async () => {
-    const moduleData = getModuleSchemaByVersion();
-    moduleInfo.value = cloneDeep(get(moduleData, 'schema')) || {};
-    formData.application = { id: '' };
-    formData.attributes = {};
-    refMap = {};
-
-    // setFormData(moduleInfo.value);
-    generateVariablesGroup(props.action);
-  };
-  const handleModuleChange = async (val) => {
-    await getModuleVersionList();
-    formData.version = get(moduleVersionList.value, '0.version');
-    handleVersionChange();
+  const clearFormValidStatus = () => {
+    keys(refMap).map(async (key) => {
+      const refEL = refMap[key];
+      refEL?.clearFormValidStatus?.();
+    });
   };
   // get group form data
   const getRefFormData = async () => {
@@ -401,6 +408,51 @@
     );
     return resultList;
   };
+  // cache the user inputs when change the module version
+  const setModuleVersionFormCache = async () => {
+    if (!versionMap.value.ov) return;
+    const moduleFormList = await getRefFormData();
+    const inputs = reduce(
+      moduleFormList,
+      (obj, s) => {
+        obj = {
+          ...obj,
+          ...s.formData
+        };
+        return obj;
+      },
+      {}
+    );
+    moduleVersionFormCache.value[versionMap.value.ov] = {
+      ...pickBy(inputs, (val) => toString(val))
+    };
+  };
+  const handleVersionChange = async () => {
+    await setModuleVersionFormCache();
+    const moduleData = getModuleSchemaByVersion();
+    moduleInfo.value = cloneDeep(get(moduleData, 'schema')) || {};
+    formData.application = { id: '' };
+    formData.attributes = {};
+    refMap = {};
+    console.log('version args...', moduleVersionFormCache.value);
+    // setFormData(moduleInfo.value);
+    generateVariablesGroup(props.action);
+    nextTick(() => {
+      clearFormValidStatus();
+    });
+  };
+  // module change: exec version change
+  const handleModuleChange = async (val) => {
+    await getModuleVersionList();
+    formData.version = get(moduleVersionList.value, '0.version');
+    moduleVersionFormCache.value = {};
+    versionMap.value = { ov: '', nv: '' };
+    handleVersionChange();
+    nextTick(() => {
+      handleTabChange('schemaForm0');
+    });
+  };
+
   const handleOk = async () => {
     const res = await formref.value?.validate();
     let moduleFormList: any[] = [];
@@ -468,6 +520,18 @@
     resetForm();
     emit('update:action', 'create');
   };
+  watch(
+    () => formData.version,
+    (nv, ov) => {
+      versionMap.value = {
+        nv,
+        ov: ov || ''
+      };
+    },
+    {
+      immediate: true
+    }
+  );
 </script>
 
 <style lang="less" scoped></style>

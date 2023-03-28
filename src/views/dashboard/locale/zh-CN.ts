@@ -12,6 +12,7 @@ export default {
   'dashboard.deployment.lastest': '最新10条部署',
   'dashboard.cost.title': '成本管理',
   'dashboard.table.name': '应用',
+  'dashboard.table.project': '项目',
   'dashboard.table.instance': '实例',
   'dashboard.table.time': '创建时间',
   'dashboard.table.duration': '部署时长',

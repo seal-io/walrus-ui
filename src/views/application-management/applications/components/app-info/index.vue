@@ -69,7 +69,7 @@
       <template #title>
         <span>{{ $t('applications.applications.variables.title') }}</span>
         <a-tooltip
-          content="字段: source , version , providers , count , for_each , lifecycle , depends_on , locals为保留字段，请避免使用。"
+          content="source , version , providers , count , for_each , lifecycle , depends_on , locals为保留字段，请避免使用。"
         >
           <icon-info-circle style="margin-left: 5px" />
         </a-tooltip>

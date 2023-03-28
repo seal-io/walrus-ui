@@ -20,6 +20,14 @@
           ellipsis
           tooltip
           :cell-style="{ minWidth: '40px' }"
+          data-index="instance.application.project.name"
+          :title="$t('dashboard.table.project')"
+        >
+        </a-table-column>
+        <a-table-column
+          ellipsis
+          tooltip
+          :cell-style="{ minWidth: '40px' }"
           data-index="instance.application.name"
           :title="$t('dashboard.table.name')"
         >
