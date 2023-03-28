@@ -1,0 +1,24 @@
+.icon-btn-group {
+  display: flex;
+  align-items: center;
+  padding: 2px;
+
+  :deep(.arco-icon) {
+    margin-right: 6px;
+    color: var(--color-text-2);
+    // font-size: 20px;
+    border-radius: 4px;
+    cursor: pointer;
+    .hoverable();
+
+    &:hover {
+      color: rgb(var(--arcoblue-6));
+      .hoverableHover();
+    }
+  }
+
+  .arco-icon.active {
+    color: rgb(var(--arcoblue-6));
+    box-shadow: var(--seal-hoverable-shadow);
+  }
+}
