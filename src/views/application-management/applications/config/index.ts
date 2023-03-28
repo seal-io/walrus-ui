@@ -24,7 +24,16 @@ export const instanceConfiguration = [
   { label: 'SSH密码', value: '2' },
   { label: '无', value: '3' }
 ];
-
+export const reserveFields = [
+  'source',
+  'version',
+  'providers',
+  'count',
+  'for_each',
+  'lifecycle',
+  'depends_on',
+  'locals'
+];
 export const instanceActions = [
   {
     label: 'applications.applications.button.upgrade',

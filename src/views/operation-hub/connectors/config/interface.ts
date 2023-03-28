@@ -22,7 +22,7 @@ export interface ConnectorFormData {
   configData: {
     kubeconfig?: string;
     token?: string;
-    attribute?: object;
+    attributes?: object;
   };
   configVersion: string;
   enableFinOps: boolean;

@@ -45,7 +45,7 @@
         </a-form-item>
         <a-form-item
           label="属性"
-          field="configData.attribute"
+          field="configData.attributes"
           :rules="[
             {
               validator: validatorAttribute,
@@ -64,7 +64,7 @@
               :key="sIndex"
               v-model:dataKey="sItem.key"
               v-model:dataValue="sItem.value"
-              v-model:value="formData.configData.attribute"
+              v-model:value="formData.configData.attributes"
               :trigger-validate="triggerValidate"
               width="500px"
               class="group-item"
@@ -117,7 +117,7 @@
   const formData: ConnectorFormData = reactive({
     name: '',
     configData: {
-      attribute: {}
+      attributes: {}
     },
     description: '',
     configVersion: 'v1',
@@ -144,19 +144,19 @@
     list?.splice(index, 1);
   };
   const validatorAttribute = (val, callback) => {
-    if (!keys(formData.configData.attribute).length) {
+    if (!keys(formData.configData.attributes).length) {
       callback('属性必填');
     } else {
       callback();
     }
   };
   const setLabelList = () => {
-    const attributes = keys(formData.configData.attribute) || [];
+    const attributes = keys(formData.configData.attributes) || [];
 
     labelList.value = map(attributes, (key) => {
       return {
         key,
-        value: get(formData, `configData.attribute.${key}`)
+        value: get(formData, `configData.attributes.${key}`)
       };
     });
     if (!labelList.value.length) {

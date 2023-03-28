@@ -66,6 +66,14 @@
       </div>
     </ModuleCard>
     <ModuleCard :title="$t('applications.applications.variables.title')">
+      <template #title>
+        <span>{{ $t('applications.applications.variables.title') }}</span>
+        <a-tooltip
+          content="字段: source , version , providers , count , for_each , lifecycle , depends_on , locals为保留字段，请避免使用。"
+        >
+          <icon-info-circle style="margin-left: 5px" />
+        </a-tooltip>
+      </template>
       <a-button
         size="small"
         type="outline"
@@ -87,6 +95,7 @@
           :key="index"
           :ref="(el: refItem) => setRefMap(el, `variableform${index}`)"
           v-model:data-info="appInfo.variables[index]"
+          :reserve-fields="reserveFields"
           :variables-data="variablesData"
         ></variableForm>
       </moduleWrapper>
@@ -173,7 +182,7 @@
   import editModule from './edit-module.vue';
   import BasicInfo from './basic-info.vue';
   import { AppFormData, Variables, AppModule } from '../../config/interface';
-  import { moduleActions } from '../../config';
+  import { moduleActions, reserveFields } from '../../config';
   import {
     createApplication,
     queryItemApplication,
@@ -506,7 +515,9 @@
     } else {
       assignIn(moduleInfo.value, data);
     }
-    handleOk();
+    if (id) {
+      handleOk();
+    }
   };
   // onBeforeRouteLeave(async (to, from) => {
   //   console.log('leave');
