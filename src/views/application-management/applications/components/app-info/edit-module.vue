@@ -410,6 +410,7 @@
   };
   // cache the user inputs when change the module version
   const setModuleVersionFormCache = async () => {
+    console.log('versionMap==3=', versionMap.value);
     if (!versionMap.value.ov) return;
     const moduleFormList = await getRefFormData();
     const inputs = reduce(
@@ -426,8 +427,9 @@
     moduleVersionFormCache.value[versionMap.value.ov] = {
       ...pickBy(inputs, (val) => toString(val))
     };
+    console.log('moduleVersionFormCache===', moduleVersionFormCache.value);
   };
-  const handleVersionChange = async () => {
+  const execVersionChangeCallback = async () => {
     await setModuleVersionFormCache();
     const moduleData = getModuleSchemaByVersion();
     moduleInfo.value = cloneDeep(get(moduleData, 'schema')) || {};
@@ -440,6 +442,11 @@
     nextTick(() => {
       clearFormValidStatus();
     });
+  };
+  const handleVersionChange = () => {
+    setTimeout(() => {
+      execVersionChangeCallback();
+    }, 50);
   };
   // module change: exec version change
   const handleModuleChange = async (val) => {
@@ -527,6 +534,7 @@
         nv,
         ov: ov || ''
       };
+      console.log('versionMap===', versionMap.value);
     },
     {
       immediate: true

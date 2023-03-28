@@ -405,7 +405,7 @@
   };
   const handleUndoCall = () => {
     deleteModal({
-      title: '确定取消全部修复？',
+      title: '确定放弃修复？',
       onOk: handleUndo
     });
   };
@@ -430,7 +430,7 @@
   };
   const handleFixCall = () => {
     deleteModal({
-      title: '确定接受全部修复？',
+      title: '确定接受修复？',
       onOk: handleFixAll
     });
   };
