@@ -281,6 +281,9 @@
     }
     return false;
   };
+  const clearFormValidStatus = () => {
+    formref.value?.clearValidate();
+  };
   const handleSubmit = async () => {
     console.log('formData:', formData);
     const res = await formref.value?.validate();
@@ -303,7 +306,8 @@
     }
   };
   defineExpose({
-    getFormData
+    getFormData,
+    clearFormValidStatus
   });
   watchEffect(() => {
     setSchemaList();

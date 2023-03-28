@@ -12,6 +12,7 @@ export default {
   'dashboard.deployment.lastest': 'Latest 10 Deployments',
   'dashboard.cost.title': 'Cost Management',
   'dashboard.table.name': 'Application',
+  'dashboard.table.project': 'Project',
   'dashboard.table.instance': 'Instance',
   'dashboard.table.time': 'CreateTime',
   'dashboard.table.duration': 'Duration',
