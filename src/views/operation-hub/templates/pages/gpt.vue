@@ -439,7 +439,7 @@
   };
 
   const handleShowPRLink = (url) => {
-    modalInstance = Modal.info({
+    modalInstance = Modal.success({
       title: 'PR创建成功',
       top: '20%',
       width: 500,
@@ -455,9 +455,7 @@
               type: 'primary',
               onClick: () => {
                 window.open(url);
-                setTimeout(() => {
-                  modalInstance?.close?.();
-                }, 100);
+                modalInstance?.close?.();
               }
             },
             '前往处理PR'
