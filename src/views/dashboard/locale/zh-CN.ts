@@ -21,7 +21,7 @@ export default {
   'dashboard.deployment.summary': '统计',
   'dashboard.cost.currentMonth': '本月消费',
   'dashboard.cost.rank': '应用消费排行(本月)',
-  'dashboard.cost.pervisious': '较上个月',
+  'dashboard.cost.pervisious': '上个月',
   'dashboard.cost.daily': '总消费趋势',
   'dashboard.datepicker.30days': '最近30天',
   'dashboard.datepicker.6months': '最近6个月',

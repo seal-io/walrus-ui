@@ -189,7 +189,7 @@
             if (props.xAxis?.length === 1) {
               return `${value}`;
             }
-            if (idx === 0 || idx === props.xAxis?.length - 1) {
+            if (idx === 0) {
               return '';
             }
 
