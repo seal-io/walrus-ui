@@ -1,6 +1,6 @@
 export default [
   {
-    path: 'applications/list',
+    path: 'project/applications/list',
     name: 'applicationsList',
     component: () =>
       import('@/views/application-management/applications/pages/list.vue'),
@@ -13,7 +13,7 @@ export default [
     }
   },
   {
-    path: 'applications/:projectId/detail',
+    path: 'project/:projectId/application/detail',
     name: 'applicationsDetail',
     component: () =>
       import('@/views/application-management/applications/pages/detail.vue'),
