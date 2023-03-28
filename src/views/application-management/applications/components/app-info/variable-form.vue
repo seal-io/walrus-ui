@@ -62,8 +62,9 @@
 </template>
 
 <script lang="ts" setup>
-  import { assignIn, cloneDeep, uniq } from 'lodash';
+  import { assignIn, cloneDeep, includes, uniq } from 'lodash';
   import { ref, reactive, PropType, watch, defineExpose } from 'vue';
+  import { reserveFields } from '../../config';
   // import EditPageFooter from '@/components/edit-page-footer/index.vue';
   // import xInputGroup from '@/components/form-create/custom-components/x-input-group.vue';
   // import { variablesTypeList } from '../../config';
@@ -105,7 +106,9 @@
   };
   const validatorName = (value, callback) => {
     const list = cloneDeep(props.variablesData || []);
-    if (value && uniq(list).length !== props.variablesData.length) {
+    if (includes(reserveFields, value)) {
+      callback(`${value}为保留字段`);
+    } else if (value && uniq(list).length !== props.variablesData.length) {
       callback('存在相同的变量名');
     } else {
       callback();
