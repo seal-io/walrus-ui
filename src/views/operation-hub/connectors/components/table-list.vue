@@ -66,6 +66,7 @@
         >
         </a-table-column>
         <a-table-column
+          v-if="category === 'Kubernetes'"
           ellipsis
           tooltip
           :cell-style="{ minWidth: '40px' }"
@@ -83,6 +84,19 @@
                 error: get(record, 'status.error')
               }"
             ></StatusLabel>
+          </template>
+        </a-table-column>
+        <a-table-column
+          v-if="category === 'Kubernetes'"
+          ellipsis
+          tooltip
+          :cell-style="{ minWidth: '40px' }"
+          align="center"
+          data-index="CostSynced"
+          :title="$t('operation.connectors.table.coststatus')"
+        >
+          <template #cell="{ record }">
+            <span>{{ getCostStatus(record.status.conditions || []) }}</span>
           </template>
         </a-table-column>
         <a-table-column
@@ -204,8 +218,8 @@
 <script lang="ts" setup>
   import ADropdownButton from '@arco-design/web-vue/es/dropdown/dropdown-button';
   import dayjs from 'dayjs';
-  import { get, map, pickBy } from 'lodash';
-  import { reactive, ref, onMounted } from 'vue';
+  import { get, map, pickBy, find } from 'lodash';
+  import { reactive, ref, onMounted, onActivated, watch, inject } from 'vue';
   import useCallCommon from '@/hooks/use-call-common';
   import { Message } from '@arco-design/web-vue';
   import { deleteModal, execSucceed } from '@/utils/monitor';
@@ -240,6 +254,7 @@
   let timer: any = null;
   const loading = ref(false);
   const total = ref(100);
+  const activeKey = inject('activeKey', ref(''));
   const queryParams = reactive({
     query: '',
     page: 1,
@@ -247,6 +262,13 @@
     category: props.category
   });
   const dataList = ref<ConnectorRowData[]>([]);
+
+  const getCostStatus = (conditions) => {
+    const d = find(conditions, (item) => {
+      return item.type === 'CostSynced';
+    });
+    return d?.message;
+  };
   const fetchData = async () => {
     try {
       loading.value = true;
@@ -368,10 +390,23 @@
     queryParams.page = 1;
     handleFilter();
   };
+  onActivated(() => {
+    if (activeKey.value === props.category) {
+      fetchData();
+    }
+  });
   onMounted(() => {
     fetchData();
-    console.log('application list');
   });
+  watch(
+    () => props.category,
+    () => {
+      // fetchData();
+    },
+    {
+      immediate: true
+    }
+  );
 </script>
 
 <style lang="less" scoped></style>

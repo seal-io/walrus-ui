@@ -14,5 +14,7 @@ declare module 'vue-router' {
     ignoreCache?: boolean; // if set true, the page will not be cached
     fullScreen?: boolean; // set the page display in fullscreen
     hasNavList?: boolean; // set the navbar show navlist, it is true by default;
+    keepAlive?: string[]; // when new route excludes in keepAlive ,shoule be delete from cacheList
+    onlyRenderChildren?: boolean; // only render children
   }
 }

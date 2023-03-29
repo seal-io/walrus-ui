@@ -94,6 +94,7 @@
   import GroupTitle from '@/components/group-title/index.vue';
   import EditPageFooter from '@/components/edit-page-footer/index.vue';
   import useCallCommon from '@/hooks/use-call-common';
+  import { useTabBarStore } from '@/store';
   import { queryConnectors } from '@/views/operation-hub/connectors/api';
   import { EnvironFormData, EnvironmentRow } from '../config/interface';
   import connectorsTable from '../components/connectors.vue';
@@ -104,6 +105,7 @@
     queryItemEnvironments
   } from '../api';
 
+  const tabBarStore = useTabBarStore();
   const { router, route } = useCallCommon();
   const id = route.query.id as string;
   const formref = ref();
@@ -195,6 +197,11 @@
           await updateEnvironment(formData.value);
         } else {
           await createEnvironment(formData.value);
+          tabBarStore.deleteTag(0, {
+            title: '',
+            name: 'environmentList',
+            fullPath: ''
+          });
         }
         router.back();
         submitLoading.value = false;

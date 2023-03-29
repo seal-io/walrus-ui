@@ -5,10 +5,11 @@ export default [
     component: () => import('@/views/operation-hub/templates/pages/list.vue'),
     meta: {
       hideInMenu: false,
-      ignoreCache: true,
+      ignoreCache: false,
       locale: 'operation.templates.menu',
       requiresAuth: true,
-      icon: 'icon-apps'
+      icon: 'icon-apps',
+      cachePage: ['templateGPT', 'templateDetail']
     }
   },
   {

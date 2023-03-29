@@ -48,6 +48,9 @@ axios.interceptors.request.use(
     // Authorization is a custom headers key
     // please modify it according to the actual situation
     const url = config.url || '';
+    // config.headers = {
+    //   'Accept-Language': 'xyz'
+    // };
     if (authApiList.includes(url)) {
       config.baseURL = '';
     }

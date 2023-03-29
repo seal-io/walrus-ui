@@ -55,7 +55,8 @@
       affixRef.value.updatePosition();
     }
   );
-  listenerRouteChange((route: RouteLocationNormalized) => {
+  listenerRouteChange((to: RouteLocationNormalized) => {
+    const route = to;
     if (
       !route.meta.noAffix &&
       !tagList.value.some((tag) => tag.fullPath === route.fullPath)

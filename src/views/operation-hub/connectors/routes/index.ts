@@ -5,10 +5,15 @@ export default [
     component: () => import('@/views/operation-hub/connectors/pages/list.vue'),
     meta: {
       hideInMenu: false,
-      ignoreCache: true,
+      ignoreCache: false,
       locale: 'operation.connectors.menu',
       requiresAuth: true,
-      icon: 'icon-apps'
+      icon: 'icon-apps',
+      cachePages: [
+        'connectorK8sDetail',
+        'connectorScmDetail',
+        'connectorCustomDetail'
+      ]
     }
   },
   {

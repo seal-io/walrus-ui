@@ -61,7 +61,7 @@
       name: 'totalCost',
       label: 'Daily Cost Trend',
       value: [1, 3, 7, 8, 9],
-      color: 'rgb(159, 232, 219)'
+      color: 'rgba(128, 212, 197, 1)'
     }
   ]);
   const title = computed(() => {

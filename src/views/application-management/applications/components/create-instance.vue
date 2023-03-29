@@ -50,6 +50,9 @@
             v-model="formData.environment.id"
             :options="environmentList"
           ></a-select>
+          <template #extra>
+            <span class="tips">未添加连接器的环境不可用</span>
+          </template>
         </a-form-item>
         <div
           v-if="variables?.length"

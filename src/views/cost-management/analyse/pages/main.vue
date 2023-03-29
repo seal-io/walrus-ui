@@ -32,17 +32,17 @@
           >{{ $t('common.button.search') }}</a-button
         >
       </template> -->
-      <template #view-btn>
+      <!-- <template #view-btn>
         <a-button type="primary" @click="handleViewManage">{{
           $t('cost.analyse.table.manage')
         }}</a-button>
-      </template>
+      </template> -->
     </component>
   </div>
 </template>
 
 <script lang="ts" setup>
-  import { markRaw, ref, onMounted, provide } from 'vue';
+  import { markRaw, ref, onMounted, provide, nextTick } from 'vue';
   import { find, map, toLower } from 'lodash';
   import useCallCommon from '@/hooks/use-call-common';
   import { useCostManageStore } from '@/store';
@@ -63,21 +63,24 @@
   const { router, route } = useCallCommon();
   const costManageStore = useCostManageStore();
   const loading = ref(false);
+  const loadend = ref(false);
   const viewList = ref<{ value: string; label: string; name?: string }[]>([]);
   const viewId = ref('');
   const viewComponent = ref('');
   provide('componentName', viewComponent.value);
-
+  provide('perspectiveList', viewList);
   const handleViewChange = (val) => {
     const data = find(viewList.value, (item) => item.value === val);
     viewId.value = val;
-    viewComponent.value = toLower(data?.label);
     router.replace({
       query: {
         id: val,
         page: data?.label
       }
     });
+    setTimeout(() => {
+      viewComponent.value = toLower(data?.label);
+    }, 50);
   };
   const handleSearch = () => {};
   const handleViewManage = () => {
@@ -85,21 +88,9 @@
       name: 'costAnalyseList'
     });
   };
-  const getPerspectiveFields = async () => {
-    try {
-      const { data } = await queryPerspectiveFields({ fieldType: 'filter' });
-      const list = data?.items || [];
-      costManageStore.setFilterInfo({
-        fieldNameList: list
-      });
-    } catch (error) {
-      costManageStore.setFilterInfo({
-        fieldNameList: []
-      });
-      console.log(error);
-    }
-  };
   const getViewList = async () => {
+    if (viewList.value.length) return;
+    console.log('queryPerspectives===1', viewList.value.length);
     try {
       loading.value = true;
       const params = {
@@ -132,7 +123,6 @@
   const init = async () => {
     await getViewList();
     setView();
-    // getPerspectiveFields();
   };
   onMounted(() => {
     init();

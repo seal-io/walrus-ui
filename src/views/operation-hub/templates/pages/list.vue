@@ -210,6 +210,12 @@
   });
 </script>
 
+<script lang="ts">
+  export default {
+    name: 'TemplateList'
+  };
+</script>
+
 <style lang="less" scoped>
   .projects {
     .gpt-button {
