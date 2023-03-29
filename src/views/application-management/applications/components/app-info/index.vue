@@ -165,6 +165,7 @@
   import useCallCommon from '@/hooks/use-call-common';
   import thumbButton from '@/components/buttons/thumb-button.vue';
   import { execSucceed, deleteModal } from '@/utils/monitor';
+  import { useTabBarStore } from '@/store';
   import { beforeLeaveCallback } from '@/hooks/save-before-leave';
   import {
     queryModules,
@@ -194,6 +195,7 @@
     'environmentList',
     ref<{ label: string; value: string }[]>([])
   );
+  const tabBarStore = useTabBarStore();
   const { router, route } = useCallCommon();
   const basicform = ref();
   const appInfo = reactive({
@@ -477,6 +479,11 @@
         console.log('submit:', params);
         const { data } = await createApplication(params);
         res.id = data.id;
+        tabBarStore.deleteTag(0, {
+          title: '',
+          name: 'applicationsList',
+          fullPath: ''
+        });
       }
       submitLoading.value = false;
       if (id) {

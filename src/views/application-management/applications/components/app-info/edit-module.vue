@@ -446,7 +446,7 @@
   const handleVersionChange = () => {
     setTimeout(() => {
       execVersionChangeCallback();
-    }, 50);
+    }, 100);
   };
   // module change: exec version change
   const handleModuleChange = async (val) => {

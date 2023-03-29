@@ -1,12 +1,12 @@
 export const connectorTypeList = [
-  { label: 'Kubernetes', enable: true, value: 'k8s', com: 'kubernetes' },
+  { label: 'Kubernetes', enable: true, value: 'Kubernetes', com: 'kubernetes' },
   {
     label: '版本管理',
     enable: true,
-    value: 'scm',
+    value: 'VersionControl',
     com: 'versionControl'
   },
-  { label: '自定义', enable: true, value: 'custom', com: 'custom' },
+  { label: '自定义', enable: true, value: 'Custom', com: 'custom' },
   { label: 'Cloud Provider', value: 'cloud', com: 'cloud' }
 ];
 

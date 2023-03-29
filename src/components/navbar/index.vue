@@ -187,7 +187,7 @@
 </template>
 
 <script lang="ts" setup>
-  import { get, hasIn } from 'lodash';
+  import { get, hasIn, includes } from 'lodash';
   import { isLogin } from '@/utils/auth';
   import { useRouter } from 'vue-router';
   import { computed, ref, inject, toRaw, nextTick } from 'vue';
@@ -268,40 +268,46 @@
       appStore.updateSettings({ hasNavList: true });
     }
   };
-  const updateCacheList = (toRoute) => {
+  const updateCacheList = (toRoute, from) => {
     const currentRoute = router.currentRoute.value;
     const to_ignoreCache = get(toRoute, 'meta.ignoreCache');
-    const curr_cachePages = get(currentRoute, 'meta.cachePages') || [];
+    const from_cachePages = get(from, 'meta.cachePages') || [];
+    // to
     if (!to_ignoreCache) {
       tabBarStore.updateTabList(toRoute);
-      return;
     }
+
+    // from
     if (
-      !get(currentRoute, 'meta.ignoreCache') &&
-      !curr_cachePages.includes(toRoute.name)
+      !get(from, 'meta.ignoreCache') &&
+      !from_cachePages.includes(toRoute.name)
     ) {
       tabBarStore.deleteTag(0, {
         title: '',
-        name: currentRoute.name as string,
-        fullPath: currentRoute.fullPath
+        name: from.name as string,
+        fullPath: from.fullPath
       });
     }
   };
   const setPageFullScreen = (newRoute) => {
     appStore.updateSettings({ fullScreen: newRoute?.meta?.fullScreen });
   };
-  listenerRouteChange(async (newRoute) => {
+  listenerRouteChange(async ({ to: newRoute, from }) => {
     defaultActive.value = newRoute.matched[1]?.name as string;
     const permissions = get(userStore, `permissions.${newRoute.fullPath}`);
     handleControlNavShow(newRoute);
-    updateCacheList(newRoute);
+    updateCacheList(newRoute, from);
     setPageFullScreen(newRoute);
     nextTick(() => {
       setTimeout(() => {
         handleControlMenuShow(newRoute);
       }, 100);
     });
-    console.log({ newRoute, permissions: toRaw(permissions) });
+    console.log('listenerRouteChange=======', {
+      to: newRoute,
+      from,
+      permissions: toRaw(permissions)
+    });
   }, true);
 
   const refBtn = ref();

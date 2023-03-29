@@ -6,10 +6,11 @@ export default [
       import('@/views/operation-hub/environments/pages/list.vue'),
     meta: {
       hideInMenu: false,
-      ignoreCache: true,
+      ignoreCache: false,
       locale: 'operation.environments.menu',
       requiresAuth: true,
-      icon: 'icon-apps'
+      icon: 'icon-apps',
+      cachePages: ['environmentDetail']
     }
   },
   {

@@ -17,10 +17,11 @@ export default [
     component: () => import('@/views/cost-management/analyse/pages/list.vue'),
     meta: {
       hideInMenu: false,
-      ignoreCache: true,
+      ignoreCache: false,
       locale: 'cost.analyse.table.manage',
       requiresAuth: true,
-      icon: 'icon-apps'
+      icon: 'icon-apps',
+      cachePages: ['costPerspectiveEdit']
     }
   },
   {

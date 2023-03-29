@@ -191,6 +191,7 @@
   import useCallCommon from '@/hooks/use-call-common';
   import GroupTitle from '@/components/group-title/index.vue';
   import EditPageFooter from '@/components/edit-page-footer/index.vue';
+  import { useTabBarStore } from '@/store';
   import moduleWrapper from '@/views/application-management/applications/components/module-wrapper.vue';
   import ConditionFilter from '../components/condition-filter.vue';
   import { costShareMode, timeRangeOptions, DateShortCuts } from '../config';
@@ -203,6 +204,7 @@
     queryPerspectiveFieldValues
   } from '../api';
 
+  const tabBarStore = useTabBarStore();
   const { t, router, route } = useCallCommon();
   const id = route.query.id as string;
   const formref = ref();
@@ -242,7 +244,7 @@
 
   const groupList = computed(() => {
     const step = get(formData, 'allocationQueries.0.step');
-    if (step === 'null') return cloneDeep(groupByList.value);
+    if (step === 'null' || !step) return cloneDeep(groupByList.value);
     return filter(groupByList.value, (item) => {
       return !groupByDate.includes(item.value);
     });
@@ -356,6 +358,11 @@
           await updatePerspective({ ...data, id });
         } else {
           await createPerspective(data);
+          tabBarStore.deleteTag(0, {
+            title: '',
+            name: 'costAnalyseList',
+            fullPath: ''
+          });
         }
         router.back();
         submitLoading.value = false;

@@ -20,7 +20,7 @@
 </template>
 
 <script lang="ts" setup>
-  import { ref, markRaw } from 'vue';
+  import { ref, markRaw, provide } from 'vue';
   import { connectorTypeList } from '../config';
   import connectorKubernetes from '../components/connector-kubernetes.vue';
   import connectorCustom from '../components/connector-custom.vue';
@@ -33,10 +33,17 @@
     cloud: markRaw(connectorCloud),
     versionControl: markRaw(connectorScm)
   };
-  const activeKey = ref('k8s');
+  const activeKey = ref('Kubernetes');
 
+  provide('activeKey', activeKey);
   const handleTabChange = (val) => {
     activeKey.value = val;
+  };
+</script>
+
+<script lang="ts">
+  export default {
+    name: 'ConnectorsList'
   };
 </script>
 

@@ -2,6 +2,8 @@
   import { defineComponent, ref, h, compile, computed } from 'vue';
   import { useI18n } from 'vue-i18n';
   import { useRouter, RouteRecordRaw, RouteRecordNormalized } from 'vue-router';
+  // import type { RouteLocationNormalized } from 'vue-router';
+
   import { useAppStore } from '@/store';
   import usePermission from '@/hooks/permission';
   import { listenerRouteChange } from '@/utils/route-listener';
@@ -111,7 +113,8 @@
           });
         }
       };
-      listenerRouteChange((newRoute) => {
+      listenerRouteChange(({ to }) => {
+        const newRoute = to;
         console.log('route_change');
         currentRoute.value = newRoute.matched[1]?.name as string;
         if (newRoute.meta.requiresAuth && !newRoute.meta.hideInMenu) {
@@ -136,8 +139,13 @@
               const icon = element?.meta?.icon
                 ? `<${element?.meta?.icon}/>`
                 : ``;
-              const r =
-                element?.children && element.children.length ? (
+              let rt: any = null;
+              if (
+                element?.children &&
+                element.children.length &&
+                !element.meta?.onlyRenderChildren
+              ) {
+                rt = (
                   <a-sub-menu
                     key={element?.name}
                     v-slots={{
@@ -154,7 +162,9 @@
                       );
                     })}
                   </a-sub-menu>
-                ) : (
+                );
+              } else if (!element?.children || !element.children.length) {
+                rt = (
                   <a-menu-item
                     key={element.name}
                     onClick={() => goto(element)}
@@ -165,7 +175,26 @@
                     {t(element?.meta?.locale || '')}
                   </a-menu-item>
                 );
-              nodes.push(r as never);
+              } else if (
+                element?.children &&
+                element.children.length &&
+                element.meta?.onlyRenderChildren
+              ) {
+                rt = element?.children?.map((elem) => {
+                  return (
+                    <a-menu-item
+                      key={elem.name}
+                      onClick={() => goto(elem)}
+                      v-slots={{
+                        icon: () => h(compile(icon))
+                      }}
+                    >
+                      {t(elem?.meta?.locale || '')}
+                    </a-menu-item>
+                  );
+                });
+              }
+              nodes.push(rt as never);
             });
           }
           return nodes;

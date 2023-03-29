@@ -290,4 +290,10 @@
   });
 </script>
 
+<script lang="ts">
+  export default {
+    name: 'CostAnalyseList'
+  };
+</script>
+
 <style lang="less" scoped></style>

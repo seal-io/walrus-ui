@@ -191,6 +191,12 @@
   fetchData();
 </script>
 
+<script lang="ts">
+  export default {
+    name: 'EnvironmentList'
+  };
+</script>
+
 <style lang="less" scoped>
   .projects {
     .title {

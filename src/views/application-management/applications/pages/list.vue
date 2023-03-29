@@ -38,19 +38,6 @@
         <a-button type="primary" @click="handleCreate">{{
           $t('applications.applications.create')
         }}</a-button>
-        <!-- <a-dropdown @select="handleCreate">
-          <a-button type="primary"
-            >{{ $t('applications.applications.create')
-            }}<icon-down style="margin-left: 5px"
-          /></a-button>
-          <template #content>
-            <a-doption value="system">{{
-              $t('applications.applications.create')
-            }}</a-doption>
-            <a-doption value="template">从模板创建</a-doption>
-          </template>
-        </a-dropdown> -->
-
         <a-button
           type="primary"
           status="warning"
@@ -178,7 +165,7 @@
 <script lang="ts" setup>
   import { map, get, pickBy } from 'lodash';
   import dayjs from 'dayjs';
-  import { reactive, ref, onMounted } from 'vue';
+  import { reactive, ref, onMounted, onActivated } from 'vue';
   import useCallCommon from '@/hooks/use-call-common';
   import { deleteModal, execSucceed } from '@/utils/monitor';
   import useRowSelect from '@/hooks/use-row-select';
@@ -322,9 +309,19 @@
     await getProjectList();
     fetchData();
   };
+  // onActivated(() => {
+  //   console.log('add=');
+  //   init();
+  // });
   onMounted(() => {
     init();
   });
+</script>
+
+<script lang="ts">
+  export default {
+    name: 'ApplicationsList'
+  };
 </script>
 
 <style lang="less" scoped>

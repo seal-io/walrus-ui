@@ -135,6 +135,7 @@
   import GroupTitle from '@/components/group-title/index.vue';
   import EditPageFooter from '@/components/edit-page-footer/index.vue';
   import useCallCommon from '@/hooks/use-call-common';
+  import { useTabBarStore } from '@/store';
   import StatusLabel from '../../connectors/components/status-label.vue';
   import { templateTypeList, tabList } from '../config';
   import { Schema } from '../config/interface';
@@ -159,6 +160,7 @@
   const versionList = ref<{ label: string; value: string; schema: object }[]>(
     []
   );
+  const tabBarStore = useTabBarStore();
   const version = ref('');
   const activeKey = ref('tabReadme');
   const { router, route } = useCallCommon();
@@ -222,6 +224,11 @@
           await updateModules(formData);
         } else {
           await createModules(formData);
+          tabBarStore.deleteTag(0, {
+            title: '',
+            name: 'templateList',
+            fullPath: ''
+          });
         }
         router.back();
         submitLoading.value = false;

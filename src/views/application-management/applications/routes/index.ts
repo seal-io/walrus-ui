@@ -6,10 +6,11 @@ export default [
       import('@/views/application-management/applications/pages/list.vue'),
     meta: {
       hideInMenu: false,
-      ignoreCache: true,
+      ignoreCache: false,
       locale: 'applications.applications.menu',
       requiresAuth: true,
-      icon: 'icon-apps'
+      icon: 'icon-apps',
+      cachePages: ['applicationsDetail']
     }
   },
   {
