@@ -3,7 +3,7 @@ import analyseRoutes from '@/views/cost-management/analyse/routes';
 
 export default {
   path: 'cost-management',
-  name: 'costManagement',
+  name: 'CostManagement',
   component: () => import('@/views/cost-management/index.vue'),
   meta: {
     locale: 'navbar.costmanagement',

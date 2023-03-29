@@ -1,7 +1,7 @@
 export default [
   {
     path: 'templates/list',
-    name: 'templateList',
+    name: 'TemplateList',
     component: () => import('@/views/operation-hub/templates/pages/list.vue'),
     meta: {
       hideInMenu: false,
@@ -14,7 +14,7 @@ export default [
   },
   {
     path: 'templates/detail',
-    name: 'templateDetail',
+    name: 'TemplateDetail',
     component: () => import('@/views/operation-hub/templates/pages/detail.vue'),
     meta: {
       hideInMenu: true,
@@ -26,7 +26,7 @@ export default [
   },
   {
     path: 'templates/gpt',
-    name: 'templateGPT',
+    name: 'TemplateGPT',
     component: () => import('@/views/operation-hub/templates/pages/gpt.vue'),
     meta: {
       hideInMenu: true,

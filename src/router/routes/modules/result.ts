@@ -1,13 +1,13 @@
 export default {
   path: 'result',
-  name: 'result',
+  name: 'Result',
   component: () => import('@/views/result/index.vue'),
   meta: {
     isRemove: true,
     locale: 'menu.result',
     icon: 'icon-check-circle',
     requiresAuth: true,
-    order: 5,
+    order: 5
   },
   children: [
     {
@@ -17,8 +17,8 @@ export default {
       meta: {
         locale: 'menu.result.success',
         requiresAuth: true,
-        roles: ['admin'],
-      },
+        roles: ['admin']
+      }
     },
     {
       path: 'error',
@@ -27,8 +27,8 @@ export default {
       meta: {
         locale: 'menu.result.error',
         requiresAuth: true,
-        roles: ['admin'],
-      },
-    },
-  ],
+        roles: ['admin']
+      }
+    }
+  ]
 };

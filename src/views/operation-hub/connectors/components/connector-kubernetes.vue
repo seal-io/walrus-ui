@@ -1,5 +1,5 @@
 <template>
-  <TableList category="Kubernetes" edit-page="connectorK8sDetail"></TableList>
+  <TableList category="Kubernetes" edit-page="ConnectorK8sDetail"></TableList>
 </template>
 
 <script lang="ts" setup>

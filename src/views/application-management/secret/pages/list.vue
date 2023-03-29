@@ -246,7 +246,7 @@
       showModal.value = true;
     }, 100);
     // router.push({
-    //   name: 'secretDetail'
+    //   name: 'SecretDetail'
     // });
   };
   const handleDeleteConfirm = async () => {
@@ -277,7 +277,7 @@
       showModal.value = true;
     }, 100);
     // router.push({
-    //   name: 'secretDetail',
+    //   name: 'SecretDetail',
     //   query: { id: row.id }
     // });
   };

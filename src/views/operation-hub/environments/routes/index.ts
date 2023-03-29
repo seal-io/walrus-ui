@@ -1,7 +1,7 @@
 export default [
   {
     path: 'environment/list',
-    name: 'environmentList',
+    name: 'EnvironmentList',
     component: () =>
       import('@/views/operation-hub/environments/pages/list.vue'),
     meta: {
@@ -10,12 +10,12 @@ export default [
       locale: 'operation.environments.menu',
       requiresAuth: true,
       icon: 'icon-apps',
-      cachePages: ['environmentDetail']
+      cachePages: ['EnvironmentDetail']
     }
   },
   {
     path: 'environment/detail',
-    name: 'environmentDetail',
+    name: 'EnvironmentDetail',
     component: () =>
       import('@/views/operation-hub/environments/pages/detail.vue'),
     meta: {

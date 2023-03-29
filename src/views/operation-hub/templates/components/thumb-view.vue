@@ -52,7 +52,7 @@
   const handleClickItem = (project) => {
     console.log('project:', project);
     router.push({
-      name: 'templateDetail',
+      name: 'TemplateDetail',
       query: {
         id: project.id
       }

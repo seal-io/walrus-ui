@@ -252,7 +252,7 @@
   };
   const handleCreate = (type) => {
     router.push({
-      name: 'applicationsDetail',
+      name: 'ApplicationsDetail',
       params: {
         projectId: queryParams.projectID
       }
@@ -280,7 +280,7 @@
   };
   const handleClickEdite = (row) => {
     router.push({
-      name: 'applicationsDetail',
+      name: 'ApplicationsDetail',
       params: {
         projectId: row.project?.id || queryParams.projectID
       },
@@ -290,7 +290,7 @@
   const handleGenerateTemplate = async (row) => {};
   const handleClone = async (row) => {
     router.push({
-      name: 'applicationsDetail',
+      name: 'ApplicationsDetail',
       params: {
         projectId: row.project?.id || queryParams.projectID
       },

@@ -360,7 +360,7 @@
           await createPerspective(data);
           tabBarStore.deleteTag(0, {
             title: '',
-            name: 'costAnalyseList',
+            name: 'CostAnalyseList',
             fullPath: ''
           });
         }

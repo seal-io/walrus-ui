@@ -238,7 +238,7 @@
   const handleCreate = () => {
     // showDrawer.value = true;
     router.push({
-      name: 'costPerspectiveEdit'
+      name: 'CostPerspectiveEdit'
     });
   };
   const handleDeleteConfirm = async () => {
@@ -263,7 +263,7 @@
   };
   const handleEdit = (row) => {
     router.push({
-      name: 'costPerspectiveEdit',
+      name: 'CostPerspectiveEdit',
       query: {
         id: row.id
       }
@@ -280,7 +280,7 @@
     // if (!row.builtin) {
     //   routeName = 'costAnalyseCustom';
     // }
-    router.push({ name: 'costPerspective', query: { id: row.id } });
+    router.push({ name: 'CostPerspective', query: { id: row.id } });
   };
   const handleDelete = async () => {
     deleteModal({ onOk: handleDeleteConfirm });

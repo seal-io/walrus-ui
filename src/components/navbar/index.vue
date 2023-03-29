@@ -224,7 +224,7 @@
     return appStore.hasNavList;
   });
   console.log('useUserStore===', userStore);
-  const defaultActive = ref<string>('totalView');
+  const defaultActive = ref<string>('TotalView');
   const theme = computed(() => {
     return appStore.theme;
   });
@@ -242,7 +242,7 @@
   const toggleTheme = useToggle(isDark);
   const setVisible = () => {
     router.push({
-      name: 'systemSetting'
+      name: 'SystemSetting'
     });
     // appStore.updateSettings({ globalSettings: true });
   };
@@ -256,7 +256,7 @@
 
   // set nav if show by login status and routes
   const noLoginCheckRoute = (name): boolean => {
-    return NO_LOGIN_CHECK_PATH.includes(name);
+    return includes(NO_LOGIN_CHECK_PATH, name);
   };
   const handleControlNavShow = (newRoute) => {
     console.log('newRoute========', newRoute);
@@ -325,12 +325,12 @@
   };
   const handleModifyPassword = () => {
     router.push({
-      name: 'modifyPassword'
+      name: 'ModifyPassword'
     });
   };
   const handleToHome = () => {
     router.push({
-      name: 'dashboardMain'
+      name: 'DashboardMain'
     });
   };
   const setDropDownVisible = () => {

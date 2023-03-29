@@ -1,7 +1,7 @@
 export default [
   // {
   //   path: 'workflows/list',
-  //   name: 'workflowsList',
+  //   name: 'WorkflowsList',
   //   component: () =>
   //     import('@/views/application-management/workflows/pages/list.vue'),
   //   meta: {

@@ -137,7 +137,7 @@
 
   const handleEdit = (row) => {
     router.push({
-      name: 'applicationsDetail',
+      name: 'ApplicationsDetail',
       query: { id: row.id }
     });
   };

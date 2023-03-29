@@ -10,14 +10,14 @@ export default function useUser() {
     const currentRoute = router.currentRoute.value;
     Message.success(t('common.logout.msg'));
     router.push({
-      name: logoutTo && typeof logoutTo === 'string' ? logoutTo : 'login',
+      name: logoutTo && typeof logoutTo === 'string' ? logoutTo : 'Login',
       query: {
         // ...router.currentRoute.value.query,
         // redirect: currentRoute.name as string,
-      },
+      }
     });
   };
   return {
-    logout,
+    logout
   };
 }

@@ -106,7 +106,7 @@
   const router = useRouter();
   const handleEditTemplate = () => {
     router.push({
-      name: 'templateDetail',
+      name: 'TemplateDetail',
       query: {
         id: props.dataInfo.id
       }

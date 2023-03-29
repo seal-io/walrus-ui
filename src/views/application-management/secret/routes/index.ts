@@ -1,7 +1,7 @@
 export default [
   {
     path: 'secrets/list',
-    name: 'secretsList',
+    name: 'SecretsList',
     component: () =>
       import('@/views/application-management/secret/pages/list.vue'),
     meta: {
@@ -14,7 +14,7 @@ export default [
   },
   {
     path: 'secrets/detail',
-    name: 'secretDetail',
+    name: 'SecretDetail',
     component: () =>
       import('@/views/application-management/secret/pages/detail.vue'),
     meta: {

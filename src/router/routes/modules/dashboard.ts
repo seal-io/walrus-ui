@@ -1,6 +1,6 @@
 export default {
   path: 'dashboard',
-  name: 'dashboard',
+  name: 'Dashboard',
   component: () => import('@/views/dashboard/index.vue'),
   meta: {
     locale: 'navbar.totalView',
@@ -12,7 +12,7 @@ export default {
   children: [
     {
       path: 'main',
-      name: 'dashboardMain',
+      name: 'DashboardMain',
       component: () => import('@/views/dashboard/pages/main.vue'),
       meta: {
         hideInMenu: false,
@@ -28,7 +28,7 @@ export default {
 
 // export default {
 //   path: 'dashboard',
-//   name: 'dashboardMain',
+//   name: 'DashboardMain',
 //   component: () => import('@/views/dashboard/pages/main.vue'),
 //   meta: {
 //     hideInMenu: false,

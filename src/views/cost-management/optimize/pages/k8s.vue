@@ -208,7 +208,7 @@
   };
   const handleView = (row) => {
     router.push({
-      name: 'costOptimizeClusterDetail',
+      name: 'CostOptimizeClusterDetail',
       query: row.id
     });
   };

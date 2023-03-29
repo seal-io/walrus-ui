@@ -199,7 +199,7 @@
           await createEnvironment(formData.value);
           tabBarStore.deleteTag(0, {
             title: '',
-            name: 'environmentList',
+            name: 'EnvironmentList',
             fullPath: ''
           });
         }

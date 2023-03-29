@@ -181,7 +181,7 @@
   };
   const handleEdit = (row) => {
     const path = router.push({
-      name: 'applicationsDetail',
+      name: 'ApplicationsDetail',
       query: { id: row.id }
     });
   };
