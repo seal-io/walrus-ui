@@ -1,6 +1,6 @@
 export default {
   path: 'profile',
-  name: 'profile',
+  name: 'Profile',
   component: () => import('@/views/profile/index.vue'),
   meta: {
     // isRemove: true,
@@ -13,7 +13,7 @@ export default {
   children: [
     {
       path: 'modify-password',
-      name: 'modifyPassword',
+      name: 'ModifyPassword',
       component: () => import('@/views/profile/pages/modify-password.vue'),
       meta: {
         hideInMenu: true,
@@ -26,7 +26,7 @@ export default {
     },
     {
       path: 'api-keys',
-      name: 'apiKeys',
+      name: 'ApiKeys',
       component: () => import('@/views/profile/pages/api-keys.vue'),
       meta: {
         hideInMenu: true,

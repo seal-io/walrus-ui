@@ -1,7 +1,7 @@
 export default [
   {
     path: 'connector/list',
-    name: 'connectorsList',
+    name: 'ConnectorsList',
     component: () => import('@/views/operation-hub/connectors/pages/list.vue'),
     meta: {
       hideInMenu: false,
@@ -10,15 +10,15 @@ export default [
       requiresAuth: true,
       icon: 'icon-apps',
       cachePages: [
-        'connectorK8sDetail',
-        'connectorScmDetail',
-        'connectorCustomDetail'
+        'ConnectorK8sDetail',
+        'ConnectorScmDetail',
+        'ConnectorCustomDetail'
       ]
     }
   },
   {
     path: 'connector/k8s-detail',
-    name: 'connectorK8sDetail',
+    name: 'ConnectorK8sDetail',
     component: () =>
       import('@/views/operation-hub/connectors/pages/k8s-detail.vue'),
     meta: {
@@ -31,7 +31,7 @@ export default [
   },
   {
     path: 'connector/scm-detail',
-    name: 'connectorScmDetail',
+    name: 'ConnectorScmDetail',
     component: () =>
       import('@/views/operation-hub/connectors/pages/scm-detail.vue'),
     meta: {
@@ -44,7 +44,7 @@ export default [
   },
   {
     path: 'connector/custom-detail',
-    name: 'connectorCustomDetail',
+    name: 'ConnectorCustomDetail',
     component: () =>
       import('@/views/operation-hub/connectors/pages/custom-detail.vue'),
     meta: {

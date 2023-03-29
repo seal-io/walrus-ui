@@ -199,11 +199,9 @@
     }
   };
   const handleEdit = (row) => {
-    // const path = router.resolve({ name: 'eventReport', query: { id: row.id } });
     return '';
   };
   const handleView = (row) => {
-    // const path = router.resolve({ name: 'eventReport', query: { id: row.id } });
     return '';
   };
   const handleDelete = async () => {

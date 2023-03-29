@@ -1,7 +1,7 @@
 export default [
   {
     path: 'optimize',
-    // name: 'costOptimizeK8s',
+    // name: 'CostOptimizeK8s',
     // component: () => import('@/views/cost-management/optimize/pages/k8s.vue'),
     meta: {
       hideInMenu: false,
@@ -13,7 +13,7 @@ export default [
     children: [
       {
         path: 'k8s',
-        name: 'costOptimizeKube',
+        name: 'CostOptimizeKube',
         component: () =>
           import('@/views/cost-management/optimize/pages/k8s.vue'),
         meta: {
@@ -26,7 +26,7 @@ export default [
       },
       {
         path: 'k8s-detail',
-        name: 'costOptimizeClusterDetail',
+        name: 'CostOptimizeClusterDetail',
         component: () =>
           import('@/views/cost-management/optimize/pages/cluster-detail.vue'),
         meta: {

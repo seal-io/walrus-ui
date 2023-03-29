@@ -45,7 +45,7 @@
   const handleClickProject = (project) => {
     console.log('project:', project);
     router.push({
-      name: 'applicationsDetail',
+      name: 'ApplicationsDetail',
       query: {
         id: project.id
       }

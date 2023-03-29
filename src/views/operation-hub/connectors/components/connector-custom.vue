@@ -1,5 +1,5 @@
 <template>
-  <TableList category="Custom" edit-page="connectorCustomDetail"></TableList>
+  <TableList category="Custom" edit-page="ConnectorCustomDetail"></TableList>
 </template>
 
 <script lang="ts" setup>

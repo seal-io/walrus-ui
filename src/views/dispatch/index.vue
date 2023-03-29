@@ -11,10 +11,10 @@
     const { page, ...othersQuery } = router.currentRoute.value.query;
     console.log({ page });
     router.replace({
-      name: (page as string) || 'dashboardMain',
+      name: (page as string) || 'DashboardMain',
       query: {
-        ...othersQuery,
-      },
+        ...othersQuery
+      }
     });
   };
   onMounted(() => {

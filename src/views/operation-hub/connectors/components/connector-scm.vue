@@ -1,7 +1,7 @@
 <template>
   <TableList
     category="VersionControl"
-    edit-page="connectorScmDetail"
+    edit-page="ConnectorScmDetail"
   ></TableList>
 </template>
 

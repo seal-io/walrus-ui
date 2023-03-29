@@ -1,7 +1,7 @@
 export default [
   {
     path: 'global-secrets/list',
-    name: 'globalSecretsList',
+    name: 'GlobalSecretsList',
     component: () => import('../pages/list.vue'),
     meta: {
       hideInMenu: false,

@@ -129,12 +129,12 @@
   };
   const handleCreateProject = () => {
     router.push({
-      name: 'templateDetail'
+      name: 'TemplateDetail'
     });
   };
   const handleDraftModule = () => {
     router.push({
-      name: 'templateGPT'
+      name: 'TemplateGPT'
     });
   };
   const fetchData = async () => {

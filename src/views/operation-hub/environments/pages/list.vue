@@ -118,7 +118,7 @@
   };
   const handleCreateProject = () => {
     router.push({
-      name: 'environmentDetail'
+      name: 'EnvironmentDetail'
     });
   };
   const fetchData = async () => {

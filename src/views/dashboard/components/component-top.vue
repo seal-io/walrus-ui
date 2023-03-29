@@ -107,22 +107,22 @@
       type: Array as PropType<PackageItem[]>,
       default() {
         return [];
-      },
+      }
     },
     height: {
       type: String,
       default() {
         return '120px';
-      },
-    },
+      }
+    }
   });
   const router = useRouter();
   const handleToComponentDetail = (row) => {
     router.push({
-      name: 'componentDetail',
+      name: 'ComponentDetail',
       query: {
-        id: row.ID,
-      },
+        id: row.ID
+      }
     });
   };
 </script>

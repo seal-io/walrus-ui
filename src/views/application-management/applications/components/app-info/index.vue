@@ -481,7 +481,7 @@
         res.id = data.id;
         tabBarStore.deleteTag(0, {
           title: '',
-          name: 'applicationsList',
+          name: 'ApplicationsList',
           fullPath: ''
         });
       }

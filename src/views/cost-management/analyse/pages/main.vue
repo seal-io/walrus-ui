@@ -85,7 +85,7 @@
   const handleSearch = () => {};
   const handleViewManage = () => {
     router.push({
-      name: 'costAnalyseList'
+      name: 'CostAnalyseList'
     });
   };
   const getViewList = async () => {

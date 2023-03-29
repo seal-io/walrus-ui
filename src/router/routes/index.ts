@@ -9,7 +9,7 @@ Object.keys(modules).forEach((key) => {
   const defaultModule = modules[key].default;
   // filter routes
   if (!defaultModule || defaultModule?.meta?.isRemove) return;
-  if (defaultModule.name === 'login') return;
+  if (defaultModule.name === 'Login') return;
   const moduleList = Array.isArray(defaultModule)
     ? [...defaultModule]
     : [defaultModule];
@@ -24,7 +24,7 @@ const copyAppRoutes = appRoutes.map((o: RouteRecordRaw) => {
       sRoute.meta = sRoute.meta || {
         roles: ['*'],
         requiresAuth: true,
-        order: 999,
+        order: 999
       };
       sRoute.meta.order = route?.meta?.order || 999;
     });

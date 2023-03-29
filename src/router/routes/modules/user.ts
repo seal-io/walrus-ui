@@ -1,6 +1,6 @@
 export default {
   path: 'user',
-  name: 'user',
+  name: 'User',
   component: () => import('@/views/user/index.vue'),
   meta: {
     hideInMenu: true,
@@ -37,7 +37,7 @@ export default {
     // },
     {
       path: 'settings',
-      name: 'systemSetting',
+      name: 'SystemSetting',
       component: () => import('@/views/user/system/setting.vue'),
       meta: {
         hideInMenu: true,

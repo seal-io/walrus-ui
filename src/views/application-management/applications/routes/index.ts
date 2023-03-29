@@ -1,7 +1,7 @@
 export default [
   {
     path: 'project/applications/list',
-    name: 'applicationsList',
+    name: 'ApplicationsList',
     component: () =>
       import('@/views/application-management/applications/pages/list.vue'),
     meta: {
@@ -10,12 +10,12 @@ export default [
       locale: 'applications.applications.menu',
       requiresAuth: true,
       icon: 'icon-apps',
-      cachePages: ['applicationsDetail']
+      cachePages: ['ApplicationsDetail']
     }
   },
   {
     path: 'project/:projectId/application/detail',
-    name: 'applicationsDetail',
+    name: 'ApplicationsDetail',
     component: () =>
       import('@/views/application-management/applications/pages/detail.vue'),
     meta: {

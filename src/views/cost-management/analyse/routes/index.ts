@@ -1,7 +1,7 @@
 export default [
   {
     path: 'cost/perspective',
-    name: 'costPerspective',
+    name: 'CostPerspective',
     component: () => import('@/views/cost-management/analyse/pages/main.vue'),
     meta: {
       hideInMenu: false,
@@ -13,7 +13,7 @@ export default [
   },
   {
     path: 'cost/list',
-    name: 'costAnalyseList',
+    name: 'CostAnalyseList',
     component: () => import('@/views/cost-management/analyse/pages/list.vue'),
     meta: {
       hideInMenu: false,
@@ -21,12 +21,12 @@ export default [
       locale: 'cost.analyse.table.manage',
       requiresAuth: true,
       icon: 'icon-apps',
-      cachePages: ['costPerspectiveEdit']
+      cachePages: ['CostPerspectiveEdit']
     }
   },
   {
     path: 'cost/perspective-edit',
-    name: 'costPerspectiveEdit',
+    name: 'CostPerspectiveEdit',
     component: () =>
       import('@/views/cost-management/analyse/pages/perspective-edit.vue'),
     meta: {
@@ -39,7 +39,7 @@ export default [
   }
   // {
   //   path: 'cost/perspective-all',
-  //   name: 'costAnalyseAll',
+  //   name: 'CostAnalyseAll',
   //   component: () =>
   //     import('@/views/cost-management/analyse/pages/perspective-all.vue'),
   //   meta: {
@@ -52,7 +52,7 @@ export default [
   // },
   // {
   //   path: 'cost/perspective-project',
-  //   name: 'costAnalyseProject',
+  //   name: 'CostAnalyseProject',
   //   component: () =>
   //     import('@/views/cost-management/analyse/pages/perspective-project.vue'),
   //   meta: {
@@ -65,7 +65,7 @@ export default [
   // },
   // {
   //   path: 'cost/perspective-custom',
-  //   name: 'costAnalyseCustom',
+  //   name: 'CostAnalyseCustom',
   //   component: () =>
   //     import('@/views/cost-management/analyse/pages/perspective-custom.vue'),
   //   meta: {
@@ -78,7 +78,7 @@ export default [
   // },
   // {
   //   path: 'cost/perspective-cluster',
-  //   name: 'costAnalyseCluster',
+  //   name: 'CostAnalyseCluster',
   //   component: () =>
   //     import('@/views/cost-management/analyse/pages/perspective-cluster.vue'),
   //   meta: {

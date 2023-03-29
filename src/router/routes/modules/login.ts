@@ -1,9 +1,9 @@
 export default {
   path: '/login',
-  name: 'login',
+  name: 'Login',
   component: () => import('@/views/login/index.vue'),
   meta: {
     requiresAuth: false,
-    order: 999,
-  },
+    order: 999
+  }
 };

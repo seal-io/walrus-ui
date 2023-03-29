@@ -36,7 +36,7 @@
                 :severity="{
                   high: get(item, 'issueHighCount'),
                   medium: get(item, 'issueMediumCount'),
-                  low: get(item, 'issueLowCount'),
+                  low: get(item, 'issueLowCount')
                 }"
               ></severityBar>
             </div>
@@ -62,37 +62,36 @@
   import { useRouter } from 'vue-router';
   import ProviderIcon from '@/components/provider-icon/index.vue';
   import severityBar from '@/components/severity-bar/index.vue';
-  import { tableListRow } from '@/api/projects';
 
   defineProps({
     dataList: {
-      type: Array as PropType<tableListRow[]>,
+      type: Array as PropType<any[]>,
       default() {
         return [];
-      },
+      }
     },
     height: {
       type: String,
       default() {
         return '120px';
-      },
+      }
     },
     title: {
       type: String,
       default() {
         return '';
-      },
-    },
+      }
+    }
   });
   const router = useRouter();
   const handleViewDetail = (row) => {
     console.log({ row });
     router.push({
-      name: 'projectSBom',
+      name: 'ProjectSBom',
       query: {
         id: row.id,
-        versionId: 'latest',
-      },
+        versionId: 'latest'
+      }
     });
   };
 </script>

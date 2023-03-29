@@ -3,7 +3,7 @@ interface NavDataMap {
   label: string;
   active: string;
 }
-export const NO_LOGIN_CHECK_PATH = ['eventReport'];
+export const NO_LOGIN_CHECK_PATH = [];
 
 export const navDataList: NavDataMap[] = [
   // { name: 'dashboardMain', label: 'navbar.totalView', active: 'dashboard' },

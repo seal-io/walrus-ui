@@ -5,7 +5,7 @@ import secretRoutes from '@/views/operation-hub/secret/routes';
 
 export default {
   path: 'operation',
-  name: 'operationHub',
+  name: 'OperationHub',
   component: () => import('@/views/operation-hub/index.vue'),
   meta: {
     locale: 'navbar.operatorhub',

@@ -281,7 +281,7 @@
   const handleSaveApp = async (resId) => {
     if (!id) {
       router.replace({
-        name: 'applicationsDetail',
+        name: 'ApplicationsDetail',
         params: {
           projectId: route.params.projectId
         },

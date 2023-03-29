@@ -5,7 +5,7 @@ import secretsRoutes from '@/views/application-management/secret/routes';
 
 export default {
   path: 'app-management',
-  name: 'appManagement',
+  name: 'AppManagement',
   component: () => import('@/views/application-management/index.vue'),
   meta: {
     locale: 'navbar.appmanagement',

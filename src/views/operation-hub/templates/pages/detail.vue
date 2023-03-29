@@ -226,7 +226,7 @@
           await createModules(formData);
           tabBarStore.deleteTag(0, {
             title: '',
-            name: 'templateList',
+            name: 'TemplateList',
             fullPath: ''
           });
         }

@@ -182,7 +182,7 @@
     handleFilter();
   };
   const handleCreate = () => {
-    router.push({ name: 'templateDetail' });
+    router.push({ name: 'TemplateDetail' });
   };
   const handleDeleteConfirm = async () => {
     try {
@@ -205,7 +205,7 @@
     }
   };
   const handleEdit = (row) => {
-    router.push({ name: 'templateDetail', query: { id: row.id } });
+    router.push({ name: 'TemplateDetail', query: { id: row.id } });
   };
   const handlRefresh = async (row) => {
     try {

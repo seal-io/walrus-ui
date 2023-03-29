@@ -1,7 +1,7 @@
 export default [
   {
     path: 'project/list',
-    name: 'projectsList',
+    name: 'ProjectsList',
     component: () =>
       import('@/views/application-management/projects/pages/list.vue'),
     meta: {

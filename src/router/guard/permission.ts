@@ -46,7 +46,7 @@ export default function setupPermissionGuard(router: Router) {
       NProgress.done();
     }
     if (userStore.userSetting?.FirstLogin?.value === 'false') {
-      if (to.name === 'login') {
+      if (to.name === 'Login') {
         const Permission = usePermission();
         const destination = Permission.getFirstRouteName(appRoutes) || {
           name: 'notFound'
@@ -65,7 +65,7 @@ export default function setupPermissionGuard(router: Router) {
           crossroads();
         } catch (error) {
           next({
-            name: 'login',
+            name: 'Login',
             query: {
               // redirect: to.name,
               // ...to.query,
@@ -89,13 +89,13 @@ export default function setupPermissionGuard(router: Router) {
             )
         });
       }
-      if (to.name === 'login') {
+      if (to.name === 'Login') {
         next();
         NProgress.done();
         return;
       }
       next({
-        name: 'login',
+        name: 'Login',
         query: {
           // redirect: to.name,
           ...to.query

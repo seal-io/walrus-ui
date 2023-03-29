@@ -1,6 +1,6 @@
 export default {
   path: 'graph',
-  name: 'graphIndex',
+  name: 'GraphIndex',
   component: () => import('@/views/graph/index.vue'),
   meta: {
     ignoreCache: true,
@@ -8,12 +8,12 @@ export default {
     requiresAuth: true,
     icon: 'icon-apps',
     roles: ['*'],
-    order: 3,
+    order: 3
   },
   children: [
     {
       path: 'main',
-      name: 'graphMain',
+      name: 'GraphMain',
       component: () => import('@/views/graph/pages/graph.vue'),
       meta: {
         fullScreen: true,
@@ -21,8 +21,8 @@ export default {
         ignoreCache: true,
         locale: 'graph.filter.title',
         requiresAuth: true,
-        icon: '',
-      },
-    },
-  ],
+        icon: ''
+      }
+    }
+  ]
 };

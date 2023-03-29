@@ -101,7 +101,7 @@
   };
   const handleEdit = (row) => {
     router.push({
-      name: 'environmentDetail',
+      name: 'EnvironmentDetail',
       query: { id: row.id }
     });
   };
