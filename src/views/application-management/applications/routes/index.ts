@@ -14,7 +14,7 @@ export default [
     }
   },
   {
-    path: 'project/:projectId/application/detail',
+    path: 'project/:projectId/application/detail/:action',
     name: 'ApplicationsDetail',
     component: () =>
       import('@/views/application-management/applications/pages/detail.vue'),

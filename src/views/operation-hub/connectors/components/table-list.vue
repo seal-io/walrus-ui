@@ -138,7 +138,7 @@
         >
           <template #cell="{ record }">
             <a-space :size="10">
-              <a-dropdown-button size="small">
+              <a-dropdown-button v-if="category === 'Kubernetes'" size="small">
                 <a-tooltip :content="$t('common.button.edit')">
                   <a-link
                     type="text"
@@ -196,6 +196,14 @@
                   </a-doption>
                 </template>
               </a-dropdown-button>
+              <a-link
+                v-else
+                type="text"
+                size="small"
+                @click="handleClickEdit(record)"
+              >
+                <template #icon><icon-edit class="size-16" /></template>
+              </a-link>
             </a-space>
           </template>
         </a-table-column>

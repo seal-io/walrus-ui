@@ -1,7 +1,13 @@
 <template>
   <div class="x-input">
-    <a-input-group :style="{ width: width }">
-      <a-tooltip :popup-visible="popupvisible" :content="$t('common.form.key')">
+    <div :cols="24" style="display: flex; align-items: center; width: 100%">
+      <!-- key -->
+      <div :span="8" style="display: flex; flex: 1; align-items: center">
+        <!-- <a-tooltip
+          :popup-visible="popupvisible"
+          :content="$t('common.form.key')"
+        >
+        </a-tooltip> -->
         <a-input
           v-if="!showHintInput"
           :error="!dataKey && triggerValidate"
@@ -10,6 +16,7 @@
           :max-length="50"
           v-bind="$attrs"
           show-word-limit
+          style="width: 100%"
           @input="(val) => handleDataChange(val, 'key', 'input')"
           @change="(val) => handleDataChange(val, 'key', 'change')"
         ></a-input>
@@ -19,39 +26,64 @@
           placeholder="key"
           :max-length="50"
           v-bind="$attrs"
+          style="width: 100%"
           :editor-id="`${formId}_keyEditor${position}`"
           :source="completeData"
           show-word-limit
           @input="(val) => handleDataChange(val, 'key', 'input')"
           @change="(val) => handleDataChange(val, 'key', 'change')"
         ></hintInput>
-      </a-tooltip>
-      <span style="padding: 0 4px">:</span
-      ><a-input
-        v-if="!showHintInput"
-        :model-value="dataValue"
-        :error="!dataValue && triggerValidate"
-        v-bind="$attrs"
-        placeholder="value"
-        :max-length="50"
-        show-word-limit
-        @input="(val) => handleDataChange(val, 'value')"
-        @change="(val) => handleDataChange(val, 'value')"
-      ></a-input>
-      <hintInput
-        v-else
-        :model-value="dataValue"
-        v-bind="$attrs"
-        placeholder="value"
-        :max-length="50"
-        :editor-id="`${formId}_valueEditor${position}`"
-        :source="completeData"
-        show-word-limit
-        @input="(val) => handleDataChange(val, 'value')"
-        @change="(val) => handleDataChange(val, 'value')"
-      ></hintInput>
-    </a-input-group>
-    <a-space class="btn-wrapper">
+      </div>
+      <!-- value -->
+      <div :span="8" style="display: flex; flex: 1; align-items: center">
+        <span style="padding: 0 4px">:</span>
+        <a-input
+          v-if="!showHintInput"
+          style="width: 100%"
+          :model-value="dataValue"
+          :error="!dataValue && triggerValidate"
+          v-bind="$attrs"
+          placeholder="value"
+          :max-length="50"
+          show-word-limit
+          @input="(val) => handleDataChange(val, 'value')"
+          @change="(val) => handleDataChange(val, 'value')"
+        ></a-input>
+        <hintInput
+          v-else
+          :model-value="dataValue"
+          v-bind="$attrs"
+          placeholder="value"
+          style="width: 100%"
+          :max-length="50"
+          :editor-id="`${formId}_valueEditor${position}`"
+          :source="completeData"
+          show-word-limit
+          @input="(val) => handleDataChange(val, 'value')"
+          @change="(val) => handleDataChange(val, 'value')"
+        ></hintInput>
+      </div>
+      <!-- description -->
+      <div
+        v-if="showDescription"
+        :span="8"
+        style="display: flex; flex: 1; align-items: center"
+      >
+        <span style="padding: 0 4px">:</span>
+        <a-input
+          style="width: 100%"
+          :error="!dataDesc && triggerValidate"
+          :model-value="dataDesc"
+          placeholder="description"
+          :max-length="50"
+          v-bind="$attrs"
+          show-word-limit
+          @input="(val) => handleDataChange(val, 'description', 'input')"
+          @change="(val) => handleDataChange(val, 'description', 'change')"
+        ></a-input>
+      </div>
+    </div>
+    <div class="btn-wrapper">
       <icon-minus-circle
         v-if="(labelList?.length || 0) > 1"
         class="size-20"
@@ -60,10 +92,10 @@
       <icon-plus-circle-fill
         v-if="position === (labelList?.length || 0) - 1"
         class="size-20"
-        style="margin-left: 5px"
+        style="margin-left: 10px"
         @click="handleAddLabel"
       ></icon-plus-circle-fill>
-    </a-space>
+    </div>
   </div>
 </template>
 
@@ -83,6 +115,12 @@
       type: String,
       default() {
         return 'value';
+      }
+    },
+    dataDesc: {
+      type: String,
+      default() {
+        return 'description';
       }
     },
     // showHintInput: {
@@ -126,6 +164,18 @@
       default() {
         return false;
       }
+    },
+    showDescription: {
+      type: Boolean,
+      default() {
+        return false;
+      }
+    },
+    showDelete: {
+      type: Boolean,
+      default() {
+        return false;
+      }
     }
   });
   const emits = defineEmits([
@@ -133,7 +183,8 @@
     'delete',
     'update:value',
     'update:dataKey',
-    'update:dataValue'
+    'update:dataValue',
+    'update:dataDesc'
   ]);
   const showHintInput = inject('showHintInput', ref(false));
   const completeData = inject('completeData', ref({}));
@@ -184,6 +235,9 @@
     if (attr === 'value') {
       emits('update:dataValue', val);
     }
+    if (attr === 'description') {
+      emits('update:dataDesc', val);
+    }
     isError.value = false;
     getDataObj(props.labelList);
   };
@@ -203,6 +257,9 @@
   }
 
   .btn-wrapper {
+    display: flex;
+    justify-content: space-between;
+    width: 60px;
     margin-left: 12px;
 
     .arco-icon {

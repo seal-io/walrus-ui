@@ -1,10 +1,10 @@
 <template>
   <div>
     <a-form ref="formref" :model="formData" auto-label-width layout="vertical">
-      <a-row :gutter="20">
-        <a-col :span="12">
+      <a-grid :cols="24">
+        <a-grid-item :span="12">
           <a-form-item
-            label="应用名称"
+            label="名称"
             field="name"
             :rules="[{ required: true, message: '名称必填' }]"
           >
@@ -15,35 +15,6 @@
               style="width: 100%"
             ></a-input>
           </a-form-item>
-          <a-form-item label="标签管理" field="labels">
-            <template #label>
-              <span>标签管理</span>
-              <a-link type="text">
-                <template #icon>
-                  <a-tooltip :content="$t('common.button.edit')">
-                    <icon-edit @click="handleEditLabels" />
-                  </a-tooltip>
-                </template>
-              </a-link>
-            </template>
-            <div class="labels-wrap">
-              <span
-                v-for="(item, index) in keys(formData.labels)"
-                :key="index"
-                class="label-item"
-              >
-                <AutoTip
-                  :tooltip-props="{
-                    content: `${item}:${get(formData.labels, item)}`
-                  }"
-                >
-                  <span>
-                    <span>{{ item }}:{{ get(formData.labels, item) }}</span>
-                  </span>
-                </AutoTip>
-              </span>
-            </div>
-          </a-form-item>
           <a-form-item label="描述">
             <a-textarea
               v-model="formData.description"
@@ -53,55 +24,42 @@
               :auto-size="{ minRows: 4, maxRows: 6 }"
             ></a-textarea>
           </a-form-item>
-          <div v-if="id">
-            <a-form-item label="创建时间" disabled>
-              <a-input
-                :model-value="
-                  dayjs(formData.createTime).format('YYYY-MM-DD HH:mm:ss')
-                "
-                style="width: 100%"
-              ></a-input>
-            </a-form-item>
-            <a-form-item label="更新时间" disabled>
-              <a-input
-                :model-value="
-                  dayjs(formData.updateTime).format('YYYY-MM-DD HH:mm:ss')
-                "
-                style="width: 100%"
-              ></a-input>
-            </a-form-item>
-          </div>
-        </a-col>
-        <!-- <a-col :span="12">
           <a-form-item :label="$t('applications.projects.form.label')">
-            <a-space
-              v-if="labelList.length"
-              style="display: flex; flex-direction: column"
-              direction="vertical"
-            >
-              <xInputGroup
+            <div style="display: flex; flex-direction: column; width: 100%">
+              <div v-if="labelList.length" class="var-item-title">
+                <span class="label">键</span>
+                <span class="label">
+                  <span class="holder"></span>
+                  <span>值</span>
+                </span>
+                <span class="btn"></span>
+              </div>
+              <div
                 v-for="(sItem, sIndex) in labelList"
                 :key="sIndex"
-                v-model:dataKey="sItem.key"
-                v-model:dataValue="sItem.value"
-                v-model:value="formData.labels"
-                width="500px"
-                class="group-item"
-                :label-list="labelList"
-                :position="sIndex"
-                @add="(obj) => handleAddLabel(obj, labelList)"
-                @delete="handleDeleteLabel(labelList, sIndex)"
-              ></xInputGroup>
-            </a-space>
-            <div v-else class="labels-tips">
-              <a-button type="text" size="small" @click="handleAdd">
-                <icon-plus style="margin-right: 6px" />
-                <span>添加标签</span>
-              </a-button>
+                style="margin-bottom: 10px"
+              >
+                <xInputGroup
+                  v-model:dataKey="sItem.key"
+                  v-model:dataValue="sItem.value"
+                  v-model:value="formData.labels"
+                  width="100%"
+                  class="group-item"
+                  :label-list="labelList"
+                  :position="sIndex"
+                  @add="(obj) => handleAddLabel(obj, labelList)"
+                  @delete="handleDeleteLabel(labelList, sIndex)"
+                ></xInputGroup>
+              </div>
+              <div v-if="!labelList.length">
+                <a-tooltip content="添加标签">
+                  <thumbButton :size="60" @click="handleAdd"></thumbButton>
+                </a-tooltip>
+              </div>
             </div>
           </a-form-item>
-        </a-col> -->
-      </a-row>
+        </a-grid-item>
+      </a-grid>
     </a-form>
     <labelsModal
       v-model:show="showLabelsModal"
@@ -116,6 +74,7 @@
   import { assignIn, keys, get, each, map } from 'lodash';
   import { ref, reactive, PropType, watch, provide } from 'vue';
   import xInputGroup from '@/components/form-create/custom-components/x-input-group.vue';
+  import thumbButton from '@/components/buttons/thumb-button.vue';
   import labelsModal from './labels-modal.vue';
 
   const props = defineProps({
@@ -137,6 +96,11 @@
   const formref = ref();
   const id = route.query.id as string;
   const showLabelsModal = ref(false);
+  const editEnable = reactive({
+    name: false,
+    description: false,
+    label: false
+  });
   const formData = reactive({
     name: '',
     createTime: '',
@@ -166,9 +130,9 @@
         value: get(formData, `labels.${k}`)
       };
     });
-    // if (!labelList.value.length) {
-    //   labelList.value = [{ key: '', value: '' }];
-    // }
+    if (!labelList.value.length) {
+      labelList.value = [{ key: '', value: '' }];
+    }
   };
   const getFormData = async () => {
     const res = await formref.value.validate();
@@ -223,6 +187,24 @@
       background-color: rgba(var(--arcoblue-1), 1);
       // color: var(--color-text-2);
       border-radius: 12px;
+    }
+  }
+
+  .var-item-title {
+    display: flex;
+    margin-bottom: 10px;
+
+    .label {
+      flex: 1;
+      font-weight: 500;
+    }
+
+    .holder {
+      padding: 0 4px;
+    }
+
+    .btn {
+      flex-basis: 54px;
     }
   }
 </style>

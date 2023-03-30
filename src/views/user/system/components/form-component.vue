@@ -3,7 +3,6 @@
     <template v-if="comType === 'input'">
       <a-input
         :model-value="modelValue"
-        :class="{ 'arco-input-focus': !attrs.editable }"
         :disabled="attrs.isDisabled || !attrs.editable"
         @change="handleInputChange"
         @blur="handleBlur"
@@ -13,7 +12,6 @@
     <template v-if="comType === 'password'">
       <a-input-password
         :model-value="modelValue"
-        :class="{ 'arco-input-focus': !attrs.editable }"
         :disabled="attrs.isDisabled || !attrs.editable"
         @change="handleInputChange"
         @blur="handleBlur"
@@ -24,7 +22,6 @@
       <a-input-number
         v-bind="attrs.binds"
         :model-value="Number(modelValue)"
-        :class="{ 'arco-input-focus': !attrs.editable }"
         :disabled="attrs.isDisabled || !attrs.editable"
         @change="(val) => $emit('update:modelValue', String(val))"
       ></a-input-number>
@@ -41,7 +38,6 @@
     <template v-if="comType === 'textarea'">
       <a-textarea
         :model-value="modelValue"
-        :class="{ 'arco-input-focus': !attrs.editable }"
         :disabled="attrs.isDisabled || !attrs.editable"
         @input="(val) => $emit('update:modelValue', val)"
       ></a-textarea>

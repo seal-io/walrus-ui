@@ -14,7 +14,7 @@
       'overflow': 'auto'
     }"
     modal-class="oci-modal"
-    :title="action === 'edit' ? '编辑模块' : '添加模块'"
+    title="查看模块"
     @cancel="handleCancel"
     @ok="handleOk"
     @before-open="handleBeforeOpen"
@@ -22,75 +22,25 @@
     @before-close="handleBeforeClose"
   >
     <div>
-      <a-form
-        ref="formref"
-        :model="formData"
-        auto-label-width
-        layout="vertical"
-      >
+      <a-form ref="formref" :model="formData" auto-label-width>
         <a-grid :cols="24">
-          <a-grid-item :span="24">
-            <a-form-item
-              label="名称"
-              field="name"
-              :disabled="action === 'edit'"
-              :rules="[
-                { required: true, message: '名称必填' },
-                {
-                  match: /^(?![\d])[0-9A-Za-z_]+$/,
-                  message: '由字母、数字、下划线组成，不能以数字开头'
-                }
-              ]"
-            >
-              <a-input
-                v-model="formData.name"
-                :max-length="50"
-                show-word-limit
-              ></a-input>
-              <template #extra>
-                <span class="tips"
-                  >模块名称全局唯一，由字母、数字、下划线组成，不能以数字开头</span
-                >
-              </template>
+          <a-grid-item :span="8">
+            <a-form-item label="名称" field="name">
+              <span>{{ formData.name }}</span>
             </a-form-item>
           </a-grid-item>
-          <a-grid-item :span="12">
-            <a-form-item
-              label="模块"
-              field="module.id"
-              :disabled="action === 'edit'"
-              :rules="[{ required: true, message: '类型必选' }]"
-            >
-              <a-select
-                v-model="formData.module.id"
-                @change="handleModuleChange"
-              >
-                <a-option
-                  v-for="item in templates"
-                  :key="item.id"
-                  :value="item.id"
-                  >{{ item.id }}</a-option
-                >
-              </a-select>
+          <a-grid-item :span="8">
+            <a-form-item label="模块" field="module.id">
+              <span>{{
+                getListValue(formData.module.id, templates, 'id')
+              }}</span>
             </a-form-item>
           </a-grid-item>
-          <a-grid-item :span="12">
-            <a-form-item
-              label="版本"
-              field="version"
-              :rules="[{ required: true, message: '版本必选' }]"
-            >
-              <a-select
-                v-model="formData.version"
-                @change="handleVersionChange"
-              >
-                <a-option
-                  v-for="item in moduleVersionList"
-                  :key="item.id"
-                  :value="item.value"
-                  >{{ item.label }}</a-option
-                >
-              </a-select>
+          <a-grid-item :span="8">
+            <a-form-item label="版本" field="version">
+              <span>{{
+                getListValue(formData.version, moduleVersionList, 'value')
+              }}</span>
             </a-form-item>
           </a-grid-item>
         </a-grid>
@@ -108,52 +58,60 @@
             :key="`schemaForm${index}`"
             :title="variablesGroup[group]?.label"
           >
-            <formCreate
-              :ref="(el: refItem) => setRefMap(el, `schemaForm${index}`)"
-              :form-id="`schemaForm${index}`"
-              layout="vertical"
-              action="post"
-              api=""
-              :show-footer="false"
-              :submit="() => {}"
-              :model="variablesGroupForm[group]?.attributes"
-              :form-schema="variablesGroup[group]?.Variables"
+            <a-descriptions
+              :column="2"
+              :data="variablesGroup[group]?.Variables"
             >
-            </formCreate>
+              <template #value="{ data }">
+                <span v-if="data.Type === 'list(number)'">{{
+                  join(
+                    get(variablesGroupForm, `${group}.attributes.${data.Name}`),
+                    ','
+                  )
+                }}</span>
+                <span v-else-if="data.Type === 'map(string)'">
+                  <LabelsList
+                    :labels="
+                      get(
+                        variablesGroupForm,
+                        `${group}.attributes.${data.Name}`
+                      )
+                    "
+                  ></LabelsList>
+                </span>
+                <span v-else>{{
+                  get(variablesGroupForm, `${group}.attributes.${data.Name}`)
+                }}</span>
+              </template>
+              <template #label="{ data }">
+                <span style="font-weight: 400">{{ data.Label }}</span>
+              </template>
+            </a-descriptions>
           </a-tab-pane>
         </a-tabs>
-        <formCreate
-          v-if="show && formTabs.length < 2"
-          ref="schemaForm"
-          form-id="schemaForm"
-          layout="vertical"
-          action="post"
-          api=""
-          :show-footer="false"
-          :submit="() => {}"
-          :model="variablesGroupForm[defaultGroupKey]?.attributes"
-          :form-schema="variablesGroup[defaultGroupKey]?.Variables"
-        >
-        </formCreate>
+        <a-descriptions v-if="show && formTabs.length < 2" :column="2">
+          <a-descriptions-item
+            v-for="(item, index) in variablesGroup[defaultGroupKey]?.Variables"
+            :key="index"
+            :label="item.Name"
+          >
+            <template #value>
+              <span style="font-weight: 400">{{
+                get(variablesGroupForm[defaultGroupKey]?.attributes, item.Name)
+              }}</span>
+            </template>
+          </a-descriptions-item>
+        </a-descriptions>
       </div>
     </div>
     <template #footer>
       <EditPageFooter style="margin-top: 0">
-        <template #save>
-          <a-button
-            :loading="submitLoading"
-            type="primary"
-            class="cap-title cancel-btn"
-            @click="handleOk"
-            >{{ $t('common.button.confirm') }}</a-button
-          >
-        </template>
         <template #cancel>
           <a-button
-            :type="'outline'"
+            type="primary"
             class="cap-title cancel-btn"
             @click="handleCancel"
-            >{{ $t('common.button.cancel') }}</a-button
+            >{{ $t('common.button.confirm') }}</a-button
           >
         </template>
       </EditPageFooter>
@@ -177,7 +135,8 @@
     includes,
     pickBy,
     toString,
-    clone
+    clone,
+    join
   } from 'lodash';
   import {
     ref,
@@ -190,6 +149,7 @@
     nextTick
   } from 'vue';
   import useCallCommon from '@/hooks/use-call-common';
+  import ADescriptionsItem from '@arco-design/web-vue/es/descriptions/descriptions-item';
   import EditPageFooter from '@/components/edit-page-footer/index.vue';
   import formCreate from '@/components/form-create/index.vue';
   import GroupTitle from '@/components/group-title/index.vue';
@@ -198,6 +158,7 @@
     ModuleVersionData
   } from '@/views/operation-hub/templates/config/interface';
   import { queryModulesVersions } from '@/views/operation-hub/templates/api';
+  import LabelsList from './labels-list.vue';
 
   interface Group {
     Variables: object[];
@@ -226,6 +187,12 @@
       type: Array as PropType<TemplateRowData[]>,
       default() {
         return [];
+      }
+    },
+    pageAction: {
+      type: String,
+      default() {
+        return 'edit';
       }
     }
   });
@@ -285,6 +252,12 @@
     if (el) {
       refMap[`${name}`] = el;
     }
+  };
+  const getListValue = (value, list, k) => {
+    const d = find(list, (item) => {
+      return item[k] === value;
+    });
+    return d?.label || d?.id;
   };
   const handleTabChange = (val) => {
     activeKey.value = val;

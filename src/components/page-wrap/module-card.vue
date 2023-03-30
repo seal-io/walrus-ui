@@ -1,7 +1,7 @@
 <template>
   <div class="module-card-wrap">
     <div class="title">
-      <icon-tag />
+      <icon-tag v-if="showIcon" />
       <slot name="title"
         ><span>{{ title }}</span></slot
       >
@@ -16,6 +16,12 @@
       type: String,
       default() {
         return '';
+      }
+    },
+    showIcon: {
+      type: Boolean,
+      default() {
+        return true;
       }
     }
   });

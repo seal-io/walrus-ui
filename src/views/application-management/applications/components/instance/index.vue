@@ -10,7 +10,7 @@
             width: 100%;
           "
         >
-          <span>实例基本信息</span>
+          <span>实例信息</span>
           <!-- <a-button
             v-if="get(instanceInfo, 'status') !== 'Deploying'"
             type="primary"

@@ -3,7 +3,7 @@ import { CSSProperties } from 'vue';
 export const valueTypeMap = {
   proxyWildcardDomainName: 'url',
   proxyPort: 'str',
-  serverURL: 'url',
+  serverURL: 'url'
 };
 
 export interface ComponentType {
@@ -44,6 +44,7 @@ export interface DataListItem {
   component: ComponentType;
   type: string;
   children?: ChildrenItem[];
+  subGroup?: Array<DataListItem>;
 }
 export interface SettingsItem {
   parentId: string;
@@ -63,5 +64,5 @@ export interface SettingsItem {
 
 export const nonComponentList = ['layout', 'select-item'];
 export default {
-  valueTypeMap,
+  valueTypeMap
 };
