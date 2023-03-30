@@ -76,9 +76,6 @@ export const setDurationValue = (val) => {
 };
 export const instanceBasicInfo = [
   { label: '名称', value: '', key: 'name' },
-  { label: '状态', value: '', key: 'status' },
-  { label: '应用', value: '', key: 'application.name' },
-  { label: '环境', value: '', key: 'environment.name' },
   {
     label: '创建时间',
     value: '',
@@ -86,7 +83,65 @@ export const instanceBasicInfo = [
     formatter(val) {
       return dayjs(val).format('YYYY-MM-DD HH:mm:ss');
     }
-  }
+  },
+  { label: '环境', value: '', key: 'environment.name' },
+  { label: '部署状态', value: '', key: 'status' },
+  { label: '应用', value: '', key: 'application.name', span: 3 }
+];
+export const applicationBasicInfo = [
+  {
+    label: '名称',
+    key: 'name',
+    value: '',
+    editable: false,
+    required: true,
+    span: 8,
+    form: 'input'
+  },
+  {
+    label: '创建时间',
+    key: 'createTime',
+    value: '',
+    span: 8,
+    disabled: true,
+    formatter(val) {
+      return dayjs(val).format('YYYY-MM-DD HH:mm:ss');
+    }
+  },
+
+  {
+    label: '',
+    key: '',
+    value: '',
+    span: 8,
+    disabled: true
+  },
+  {
+    label: '描述',
+    key: 'description',
+    value: '',
+    span: 8,
+    editable: false,
+    form: 'textarea'
+  },
+  {
+    label: '更新时间',
+    key: 'updateTime',
+    value: '',
+    span: 8,
+    disabled: true,
+    formatter(val) {
+      return dayjs(val).format('YYYY-MM-DD HH:mm:ss');
+    }
+  },
+  {
+    label: '',
+    key: '',
+    value: '',
+    span: 8,
+    disabled: true
+  },
+  { label: '标签', key: 'labels', value: '', span: 16, editable: false }
 ];
 export const revisionDetailConfig = [
   {

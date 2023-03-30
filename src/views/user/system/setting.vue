@@ -55,11 +55,8 @@
       if (item.dataList && item.dataList.length) {
         item.dataList = item.dataList.map((sItem) => {
           let value: any = null;
-          if (!isArray(sItem.childProperties)) {
-            value = settingFormData.value[sItem.id]
-              ? settingFormData.value[sItem.id].value
-              : '';
-          } else {
+          const subGroupValue = {};
+          if (sItem?.childProperties?.length) {
             value = {};
             each(sItem.childProperties, (child) => {
               if (sItem.id && settingFormData.value[sItem.id]) {
@@ -68,6 +65,15 @@
                 value[child.id] = obj[child.id] || child.value;
               }
             });
+          } else if (sItem?.subGroup?.length) {
+            value = {};
+            each(sItem.subGroup, (child) => {
+              value[child.id] = settingFormData.value[child.id]['value'];
+            });
+          } else {
+            value = settingFormData.value[sItem.id]
+              ? settingFormData.value[sItem.id].value
+              : '';
           }
           sItem = {
             ...sItem,

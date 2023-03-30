@@ -66,6 +66,9 @@
           data-index="name"
           :title="$t('applications.applications.table.name')"
         >
+          <template #cell="{ record }">
+            <a-link @click="handleClickView(record)">{{ record.name }}</a-link>
+          </template>
         </a-table-column>
         <a-table-column
           ellipsis
@@ -106,14 +109,12 @@
           :title="$t('common.table.operation')"
         >
           <template #cell="{ record }">
-            <a-space :size="10">
+            <a-space>
               <a-tooltip :content="$t('common.button.edit')">
-                <a-link
-                  type="text"
-                  size="small"
-                  @click="handleClickEdite(record)"
-                >
-                  <template #icon><icon-edit class="size-16" /></template>
+                <a-link @click="handleClickEdite(record)">
+                  <template #icon>
+                    <icon-edit></icon-edit>
+                  </template>
                 </a-link>
               </a-tooltip>
               <a-tooltip
@@ -125,19 +126,6 @@
                   /></template>
                 </a-link>
               </a-tooltip>
-              <!-- <a-tooltip
-                :content="$t('applications.applications.table.template')"
-              >
-                <a-link
-                  type="text"
-                  size="small"
-                  @click="handleGenerateTemplate(record)"
-                >
-                  <template #icon
-                    ><icon-font type="icon-Template" class="size-16"
-                  /></template>
-                </a-link>
-              </a-tooltip> -->
             </a-space>
           </template>
         </a-table-column>
@@ -254,7 +242,8 @@
     router.push({
       name: 'ApplicationsDetail',
       params: {
-        projectId: queryParams.projectID
+        projectId: queryParams.projectID,
+        action: 'edit'
       }
     });
   };
@@ -282,9 +271,24 @@
     router.push({
       name: 'ApplicationsDetail',
       params: {
-        projectId: row.project?.id || queryParams.projectID
+        projectId: row.project?.id || queryParams.projectID,
+        action: 'edit'
       },
-      query: { id: row.id }
+      query: {
+        id: row.id
+      }
+    });
+  };
+  const handleClickView = (row) => {
+    router.push({
+      name: 'ApplicationsDetail',
+      params: {
+        projectId: row.project?.id || queryParams.projectID,
+        action: 'view'
+      },
+      query: {
+        id: row.id
+      }
     });
   };
   const handleGenerateTemplate = async (row) => {};
@@ -292,7 +296,8 @@
     router.push({
       name: 'ApplicationsDetail',
       params: {
-        projectId: row.project?.id || queryParams.projectID
+        projectId: row.project?.id || queryParams.projectID,
+        action: 'edit'
       },
       query: { cloneId: row.id }
     });

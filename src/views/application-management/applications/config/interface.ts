@@ -5,6 +5,7 @@ export interface Variables {
   description: string;
   required?: boolean;
 }
+
 export interface AppRowData {
   name: string;
   id: string;

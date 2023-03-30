@@ -22,7 +22,7 @@
         v-model:dataKey="sItem.key"
         v-model:dataValue="sItem.value"
         v-model:value="labelsData"
-        :validate-trigger="validateTrigger"
+        :trigger-validate="validateTrigger"
         width="600px"
         class="group-item"
         :label-list="labelList"
@@ -38,7 +38,7 @@
             type="primary"
             class="cap-title cancel-btn"
             @click="handleOk"
-            >{{ $t('common.button.confirm') }}</a-button
+            >{{ $t('common.button.save') }}</a-button
           >
         </template>
         <template #cancel>
@@ -56,7 +56,7 @@
 
 <script lang="ts" setup>
   import { cloneDeep, get, keys, map, some } from 'lodash';
-  import { ref, watch } from 'vue';
+  import { ref, watch, provide } from 'vue';
   import EditPageFooter from '@/components/edit-page-footer/index.vue';
   import xInputGroup from '@/components/form-create/custom-components/x-input-group.vue';
 
@@ -75,6 +75,7 @@
     }
   });
   const emit = defineEmits(['save', 'update:show', 'update:labels']);
+  provide('showHintInput', false);
   const labelList = ref<{ key: string; value: string }[]>([]);
   const labelsData = ref({});
   const validateTrigger = ref(false);
@@ -93,10 +94,12 @@
     validateTrigger.value = some(labelList.value, (item) => {
       return !item.key || !item.value;
     });
+    console.log('labels=====', validateTrigger.value, labelList.value);
     if (!validateTrigger.value) {
       try {
         // TODO
         emit('update:labels', labelsData.value);
+
         setTimeout(() => {
           emit('save');
         }, 200);

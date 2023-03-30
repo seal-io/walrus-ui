@@ -112,8 +112,8 @@
   });
 
   const typeOptions = [
-    { label: 'GitHub', value: 'Github' },
-    { label: 'GitLab', value: 'Gitlab' }
+    { label: 'GitHub', value: 'Github' }
+    // { label: 'GitLab', value: 'Gitlab' }
   ];
   const title = computed(() => {
     if (id) {

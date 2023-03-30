@@ -1,10 +1,11 @@
 <template>
   <div class="basic-info">
-    <a-descriptions :data="basicDataList">
+    <a-descriptions :data="basicDataList" :column="2">
       <a-descriptions-item
         v-for="(item, index) in basicDataList"
         :key="index"
         :label="item.label"
+        :span="item.span"
       >
         <StatusLabel
           v-if="item.key === 'status'"
@@ -22,56 +23,6 @@
         <span v-else>{{ item.value }}</span>
       </a-descriptions-item>
     </a-descriptions>
-    <!-- <a-form
-      ref="formref"
-      :model="formData"
-      auto-label-width
-      disabled
-      layout="inline"
-    >
-      <a-row :gutter="20">
-        <a-col :span="12">
-          <a-form-item label="Name">
-            <a-input v-model="formData.name" style="width: 100%"></a-input>
-          </a-form-item>
-        </a-col>
-        <a-col :span="12">
-          <a-form-item label="Status">
-            <a-input v-model="formData.status" style="width: 100%"></a-input>
-          </a-form-item>
-        </a-col>
-      </a-row>
-      <a-row :gutter="20">
-        <a-col :span="12">
-          <a-form-item label="Application">
-            <a-input
-              v-model="formData.application.name"
-              style="width: 100%"
-            ></a-input>
-          </a-form-item>
-        </a-col>
-        <a-col :span="12">
-          <a-form-item label="Environment">
-            <a-input
-              v-model="formData.environment.name"
-              style="width: 100%"
-            ></a-input>
-          </a-form-item>
-        </a-col>
-      </a-row>
-      <a-row :gutter="20">
-        <a-col :span="12">
-          <a-form-item label="CreateTime">
-            <a-input
-              :model-value="
-                dayjs(formData.createTime).format('YYYY-MM-DD HH:mm:ss')
-              "
-              style="width: 100%"
-            ></a-input>
-          </a-form-item>
-        </a-col>
-      </a-row>
-    </a-form> -->
   </div>
 </template>
 
@@ -124,6 +75,7 @@
   const basicDataList = computed(() => {
     return map(instanceBasicInfo, (item) => {
       return {
+        ...item,
         label: item.label,
         key: item.key,
         value: item.formatter

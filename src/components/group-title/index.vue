@@ -65,6 +65,7 @@
     .label {
       display: flex;
       align-items: center;
+      width: 100%;
       color: var(--color-text-2);
       font-weight: 500;
       font-size: 14px;

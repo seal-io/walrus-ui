@@ -8,6 +8,7 @@
     }"
   >
     <a-dropdown
+      v-if="actions.length"
       size="small"
       style="line-height: 30px"
       position="bl"

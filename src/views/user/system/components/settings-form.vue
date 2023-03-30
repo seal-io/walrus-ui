@@ -9,12 +9,7 @@
       </a-space>
     </template>
     <div>
-      <a-form
-        ref="formref"
-        :model="formData"
-        :disabled="!editable || isDisabled"
-        layout="vertical"
-      >
+      <a-form ref="formref" :model="formData" layout="vertical">
         <!-- top node -->
         <template v-if="!dataInfo.dataList || !dataInfo.dataList.length">
           <a-form-item
@@ -45,50 +40,124 @@
             </template>
           </a-form-item>
         </template>
+
         <template v-if="dataInfo.dataList && dataInfo.dataList.length">
           <div v-for="item in dataInfo.dataList" :key="item.id">
-            <template v-if="item.type === 'text'">
-              <div :style="item.style">{{ $t(item.label) }}</div>
+            <template v-if="item?.childProperties?.length">
+              <template v-for="child in item.childProperties" :key="child.id">
+                <a-form-item
+                  v-if="showId(child) && formData[item.id]"
+                  :class="{ 's-item': child.component.type === 'switch' }"
+                  :label="$t(child.label)"
+                  :hide-label="false"
+                  :hide-asterisk="false"
+                  :field="`${item.id}.${child.id}`"
+                  :validate-trigger="['blur', 'change']"
+                  :rules="getRules(child)"
+                >
+                  <form-component
+                    :key="child.id"
+                    v-model="formData[item.id][child.id]"
+                    :editable="child.editable"
+                    :options="child.children || []"
+                    :com-type="child.component.type"
+                    :binds="child.component.binds"
+                    :data-info="dataInfo"
+                  ></form-component>
+                  <template #label>
+                    <span
+                      ><span>{{ $t(child.label) }}</span>
+                      <a-tooltip v-if="child.desc" :content="$t(child.desc)">
+                        <icon-question-circle class="label-item-icon" />
+                      </a-tooltip>
+                    </span>
+                  </template>
+                  <template #extra>
+                    <span v-if="child.component.extra">{{
+                      $t(child.component.extra)
+                    }}</span>
+                  </template>
+                </a-form-item>
+              </template>
             </template>
-            <template
-              v-for="child in item.childProperties"
-              v-else-if="item?.childProperties?.length"
-              :key="child.id"
-            >
-              <a-form-item
-                v-if="showId(child) && formData[item.id]"
-                :class="{ 's-item': child.component.type === 'switch' }"
-                :label="$t(child.label)"
-                :hide-label="false"
-                :hide-asterisk="false"
-                :field="`${item.id}.${child.id}`"
-                :validate-trigger="['blur', 'change']"
-                :rules="getRules(child)"
+            <!-- ====== subGroupTitle  start===== -->
+            <template v-else-if="item?.subGroup?.length">
+              <div
+                :style="{ ...item.style, display: 'flex', alignItems: 'cener' }"
               >
-                <form-component
-                  :key="child.id"
-                  v-model="formData[item.id][child.id]"
-                  :editable="child.editable"
-                  :options="child.children || []"
-                  :com-type="child.component.type"
-                  :binds="child.component.binds"
-                  :data-info="dataInfo"
-                ></form-component>
-                <template #label>
-                  <span
-                    ><span>{{ $t(child.label) }}</span>
-                    <a-tooltip v-if="child.desc" :content="$t(child.desc)">
-                      <icon-question-circle class="label-item-icon" />
-                    </a-tooltip>
-                  </span>
-                </template>
-                <template #extra>
-                  <span v-if="child.component.extra">{{
-                    $t(child.component.extra)
-                  }}</span>
-                </template>
-              </a-form-item>
+                <span>{{ $t(item.label) }}</span>
+                <span style="margin-left: 5px">
+                  <a-tooltip
+                    v-if="!item.editable"
+                    :content="$t('common.button.edit')"
+                  >
+                    <a-link @click="handleEditSubGroup(item)"
+                      ><icon-edit
+                    /></a-link>
+                  </a-tooltip>
+                  <a-tooltip
+                    v-if="item.editable"
+                    :content="$t('common.button.cancel')"
+                  >
+                    <a-link @click="handleEditCancel(item)"
+                      ><icon-font type="icon-quxiao" class="size-14"
+                    /></a-link>
+                  </a-tooltip>
+                  <a-tooltip
+                    v-if="item.editable"
+                    :content="$t('common.button.save')"
+                  >
+                    <a-link @click="handleSaveSubGroup(item)"
+                      ><icon-save
+                    /></a-link>
+                  </a-tooltip>
+                </span>
+              </div>
+              <template
+                v-for="subGroupItem in item.subGroup"
+                :key="subGroupItem.id"
+              >
+                <a-form-item
+                  v-if="showId(subGroupItem)"
+                  :class="{
+                    's-item': subGroupItem.component.type === 'switch'
+                  }"
+                  :label="$t(subGroupItem.label)"
+                  :hide-label="false"
+                  :hide-asterisk="false"
+                  :field="`${subGroupItem.id}`"
+                  :validate-trigger="['blur', 'change']"
+                  :rules="getRules(subGroupItem)"
+                >
+                  <form-component
+                    :key="subGroupItem.id"
+                    v-model="formData[subGroupItem.id]"
+                    :editable="item.editable"
+                    :options="subGroupItem.children || []"
+                    :com-type="subGroupItem.component.type"
+                    :binds="subGroupItem.component.binds"
+                    :data-info="dataInfo"
+                  ></form-component>
+                  <template #label>
+                    <span
+                      ><span>{{ $t(subGroupItem.label) }}</span>
+                      <a-tooltip
+                        v-if="subGroupItem.desc"
+                        :content="$t(subGroupItem.desc)"
+                      >
+                        <icon-question-circle class="label-item-icon" />
+                      </a-tooltip>
+                    </span>
+                  </template>
+                  <template #extra>
+                    <span v-if="subGroupItem.component.extra">{{
+                      $t(subGroupItem.component.extra)
+                    }}</span>
+                  </template>
+                </a-form-item>
+              </template>
             </template>
+            <!-- ====== subGroupTitle  end===== -->
             <a-form-item
               v-else-if="showId(item)"
               :class="{ 's-item': item.component.type === 'switch' }"
@@ -151,7 +220,7 @@
     PropType,
     watch,
     toRef,
-    toRefs,
+    toRefs
   } from 'vue';
   import { useRouter } from 'vue-router';
   import { Message } from '@arco-design/web-vue';
@@ -169,20 +238,20 @@
       type: Boolean,
       default() {
         return false;
-      },
+      }
     },
     title: {
       type: String,
       default() {
         return '';
-      },
+      }
     },
     dataInfo: {
       type: Object as PropType<SettingsItem>,
       default() {
         return {};
-      },
-    },
+      }
+    }
   });
 
   const { t } = useI18n();
@@ -201,26 +270,26 @@
       return [
         {
           required: data.component.required,
-          message: t('system.rules.value'),
+          message: t('system.rules.value')
         },
         {
           match: validate[matchReg],
           required: data.component.required,
-          message: t(msg),
+          message: t(msg)
         },
         {
-          validator,
-        },
+          validator
+        }
       ];
     }
     return [
       {
         required: data.component.required,
-        message: t('system.rules.value'),
+        message: t('system.rules.value')
       },
       {
-        validator,
-      },
+        validator
+      }
     ];
   };
   const setFormData = () => {
@@ -234,6 +303,11 @@
           each(item.childProperties, (child) => {
             formData.value[item.id][child.id] = item.value[child.id];
           });
+        } else if (item?.subGroup?.length) {
+          const subList = item?.subGroup;
+          each(subList, (child) => {
+            formData.value[child.id] = item.value[child.id];
+          });
         } else {
           formData.value[item.id] = item.value;
         }
@@ -241,6 +315,7 @@
     }
     console.log('formData11==', formData.value);
   };
+  // check those fields that must has Id attribute
   const showId = (item) => {
     if (item.type === 'layout') return false;
     if (item.show) return item.show(formData.value);
@@ -286,28 +361,34 @@
           id: item.id,
           value: isObject(formData.value[item.id])
             ? JSON.stringify(formData.value[item.id])
-            : formData.value[item.id],
+            : formData.value[item.id]
         });
       }
     });
     return list;
   };
   const handleUpdate = async (value) => {
-    formref.value.validate((errors) => {
-      console.log('errors==', errors);
-      if (errors) return;
+    const res = await formref.value.validate();
+    if (!res) {
       try {
         const valueList = getValueList();
-        updateUserSettingBatch(valueList).then((res) => {
-          Message.success(t('common.message.success'));
-          isDisabled.value = true;
-          emits('settingSave');
-        });
+        await updateUserSettingBatch(valueList);
+        Message.success(t('common.message.success'));
+        isDisabled.value = true;
+        emits('settingSave');
       } catch (error) {
         console.log(error);
       }
-    });
+    }
   };
+  const handleEditSubGroup = (item) => {
+    item.editable = true;
+    console.log('group:', item);
+  };
+  const handleEditCancel = (item) => {
+    item.editable = false;
+  };
+  const handleSaveSubGroup = async (item) => {};
   watch(
     () => props.dataInfo,
     (val) => {
@@ -316,7 +397,7 @@
     },
     {
       deep: true,
-      immediate: false,
+      immediate: false
     }
   );
   // watch(formData, (val)=> {

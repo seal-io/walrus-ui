@@ -1,34 +1,26 @@
 <template>
   <div class="detail-info">
-    <ModuleCard title="基本信息">
-      <template #title>
-        <div
-          style="
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            width: 100%;
-          "
+    <GroupTitle title="基本信息" style="margin-top: 20px"> </GroupTitle>
+    <BasicView
+      v-if="pageAction === 'view'"
+      ref="basicform"
+      v-model:data-info="defaultBasicInfo"
+      @save="handleOk"
+    ></BasicView>
+    <BasicInfo
+      v-else
+      ref="basicform"
+      :data-info="appInfo"
+      :default-value="defaultBasicInfo"
+    ></BasicInfo>
+    <GroupTitle title="配置" style="margin-top: 20px"></GroupTitle>
+    <div>
+      <div style="margin-bottom: 20px; color: var(--color-text-3)">
+        <span>模块</span>
+        <span v-if="pageAction === 'edit'" class="optional-notes"
+          >(新建应用必填)</span
         >
-          <span>基本信息</span>
-          <!-- <a-button
-            v-if="id"
-            type="primary"
-            size="small"
-            style="width: 98px"
-            @click="handleDeployApp"
-          >
-            部署</a-button
-          > -->
-        </div>
-      </template>
-      <BasicInfo
-        ref="basicform"
-        :data-info="appInfo"
-        :default-value="defaultBasicInfo"
-      ></BasicInfo>
-    </ModuleCard>
-    <ModuleCard :title="$t('applications.applications.modules.title')">
+      </div>
       <div class="content">
         <instanceThumb
           v-for="(item, index) in appInfo.modules"
@@ -36,7 +28,7 @@
           :active="item?.module?.id === active"
           :data-info="item"
           :size="[200, 100]"
-          :actions="moduleActions"
+          :actions="pageAction === 'edit' ? moduleActions : []"
           @edit="handleEditModule(item)"
           @delete="handleDeleteModule(index)"
           @click="handleClickInstance(item)"
@@ -55,7 +47,10 @@
             >
           </template>
         </instanceThumb>
-        <a-tooltip :content="$t('applications.applications.modules.button')">
+        <a-tooltip
+          v-if="pageAction === 'edit'"
+          :content="$t('applications.applications.modules.button')"
+        >
           <thumbButton :size="60" @click="handleAddModule"></thumbButton>
         </a-tooltip>
       </div>
@@ -64,43 +59,59 @@
           >模块不能为空</span
         >
       </div>
-    </ModuleCard>
-    <ModuleCard :title="$t('applications.applications.variables.title')">
-      <template #title>
-        <span>{{ $t('applications.applications.variables.title') }}</span>
-        <a-tooltip
-          content="source , version , providers , count , for_each , lifecycle , depends_on , locals为保留字段，请避免使用。"
+    </div>
+    <div title="变量">
+      <div class="var-title">
+        <span>变量</span>
+      </div>
+      <div
+        v-if="get(appInfo, 'variables').length && pageAction === 'edit'"
+        class="var-item var-item-title"
+      >
+        <span class="label">键</span>
+        <span class="label">
+          <span class="holder"></span>
+          <span>值</span>
+        </span>
+        <span class="label">
+          <span class="holder"></span>
+          <span>描述</span>
+        </span>
+        <span class="btn"></span>
+      </div>
+      <div v-if="pageAction === 'edit'">
+        <div
+          v-for="(sItem, sIndex) in get(appInfo, 'variables')"
+          :key="sIndex"
+          class="var-item"
         >
-          <icon-info-circle style="margin-left: 5px" />
-        </a-tooltip>
-      </template>
-      <a-button
-        size="small"
-        type="outline"
-        style="margin-bottom: 8px"
-        @click="handleSelect"
-        ><icon-plus style="margin-right: 5px" />{{
-          $t('applications.applications.variables.button')
-        }}</a-button
+          <xInputGroup
+            v-model:dataKey="sItem.name"
+            v-model:dataValue="sItem.default"
+            v-model:dataDesc="sItem.description"
+            show-description
+            width="100%"
+            class="group-item"
+            :label-list="variableList"
+            :position="sIndex"
+            @add="handleAddVariables"
+            @delete="handleDeleteVariable(sIndex)"
+          ></xInputGroup>
+        </div>
+      </div>
+
+      <a-tooltip
+        v-if="!get(appInfo, 'variables').length && pageAction === 'edit'"
+        :content="$t('applications.applications.variables.button')"
       >
-      <moduleWrapper
-        v-for="(item, index) in get(appInfo, 'variables') || []"
-        :key="index"
-        style="margin-bottom: 10px"
-        :title="item.name || $t('applications.applications.variables.label')"
-        :status="collapseStatus === index"
-        @delete="handleDeleteVariable(index)"
-      >
-        <variableForm
-          :key="index"
-          :ref="(el: refItem) => setRefMap(el, `variableform${index}`)"
-          v-model:data-info="appInfo.variables[index]"
-          :reserve-fields="reserveFields"
-          :variables-data="variablesData"
-        ></variableForm>
-      </moduleWrapper>
-    </ModuleCard>
-    <EditPageFooter>
+        <thumbButton :size="60" @click="handleAddVariables"></thumbButton>
+      </a-tooltip>
+      <LabelsList
+        v-if="get(appInfo, 'variables').length && pageAction === 'view'"
+        :labels="variablesObj"
+      ></LabelsList>
+    </div>
+    <EditPageFooter v-if="pageAction === 'edit'">
       <template #save>
         <a-button
           type="primary"
@@ -126,13 +137,24 @@
       :templates="moduleTemplates"
       @save="handleSaveModule"
     ></editModule>
-    <createInstance
+    <viewModule
+      v-model:show="showViewModal"
+      action="edit"
+      :data-info="viewModuleInfo"
+      :templates="moduleTemplates"
+    ></viewModule>
+    <!-- <createInstance
       v-model:show="showInstanceModal"
       :variables="appInfoVariables"
       :environment-list="environmentList"
       title="部署应用"
       @save="handleSaveInstanceInfo"
-    ></createInstance>
+    ></createInstance> -->
+    <variablesModal
+      v-model:show="editableVar"
+      v-model:variables="appInfo.variables"
+      @save="handleOk"
+    ></variablesModal>
   </div>
 </template>
 
@@ -146,6 +168,7 @@
     ComponentPublicInstance
   } from 'vue';
   import { onBeforeRouteLeave } from 'vue-router';
+  import GroupTitle from '@/components/group-title/index.vue';
   import {
     cloneDeep,
     assignIn,
@@ -172,16 +195,22 @@
     queryModulesAllVersions
   } from '@/views/operation-hub/templates/api';
   import EditPageFooter from '@/components/edit-page-footer/index.vue';
+  import xInputGroup from '@/components/form-create/custom-components/x-input-group.vue';
   import {
     TemplateRowData,
     ModuleVersionData
   } from '@/views/operation-hub/templates/config/interface';
+  import variablesModal from './variables-modal.vue';
+  import LabelsList from './labels-list.vue';
+  import operationBtn from './operation-btn.vue';
   import createInstance from '../create-instance.vue';
   import instanceThumb from '../instance-thumb.vue';
   import variableForm from './variable-form.vue';
   import moduleWrapper from '../module-wrapper.vue';
   import editModule from './edit-module.vue';
+  import viewModule from './view-module.vue';
   import BasicInfo from './basic-info.vue';
+  import BasicView from './basic-view.vue';
   import { AppFormData, Variables, AppModule } from '../../config/interface';
   import { moduleActions, reserveFields } from '../../config';
   import {
@@ -202,7 +231,14 @@
     name: '',
     description: '',
     labels: {},
-    variables: [],
+    variables: [
+      {
+        name: '',
+        default: '',
+        description: '',
+        type: 'string'
+      }
+    ],
     project: {
       id: route.params.projectId
     },
@@ -212,9 +248,11 @@
     modules: []
   }) as AppFormData;
 
+  const pageAction = inject('pageAction', ref('create'));
   type refItem = Element | ComponentPublicInstance | null;
   const refMap: Record<string, refItem> = {};
-  const emits = defineEmits(['deploy', 'save']);
+  const editableVar = ref(false);
+  const emits = defineEmits(['deploy', 'save', 'cancel']);
   const submitLoading = ref(false);
   const id = route.query.id as string;
   const cloneId = route.query.cloneId as string;
@@ -222,8 +260,10 @@
   const appInfoVariables = ref<Variables[]>([]);
   const active = ref('');
   const moduleInfo = ref({}); // item module
+  const viewModuleInfo = ref({});
   const defaultBasicInfo = ref({});
   const moduleAction = ref('create');
+  const showViewModal = ref(false);
   const showInstanceModal = ref(false);
   const showEditModal = ref(false);
   const projectSecretList = ref<{ name: string }[]>([]);
@@ -233,6 +273,7 @@
   const collapseStatus = ref(0);
   // const validateModule = ref(false);
   const triggerModule = ref(false);
+  const showVariableModal = ref(false);
   let copyFormData: any = {};
 
   provide('completeData', completeData);
@@ -241,35 +282,37 @@
   // const collapseStatus = computed(() => {
   //   return appInfo?.variables?.length - 1;
   // });
-  const variablesData = computed(() => {
-    const res = map(appInfo?.variables, (item) => {
-      return item.name;
-    });
+  // const variablesData = computed(() => {
+  //   const res = map(appInfo?.variables, (item) => {
+  //     return item.name;
+  //   });
+  //   return res;
+  // });
+  const variablesObj = computed(() => {
+    const res = reduce(
+      appInfo?.variables,
+      (obj, item) => {
+        if (item.name) {
+          obj[item.name] = item.default;
+        }
+        return obj;
+      },
+      {}
+    );
     return res;
+  });
+  const variableList = computed(() => {
+    const list = map(appInfo.variables || [], (item) => {
+      return {
+        key: item.name,
+        value: item.default
+      };
+    });
+    return list;
   });
   const validateModule = computed(() => {
     return !!appInfo.modules.length;
   });
-  const setRefMap = (el: refItem, name) => {
-    if (el) {
-      refMap[`${name}`] = el;
-    }
-  };
-
-  const getRefFormData = async () => {
-    const resultList: any[] = [];
-    await Promise.all(
-      keys(refMap).map(async (key) => {
-        const refEL = refMap[key];
-        const moduleForm = await refEL?.getFormData?.();
-        resultList.push({
-          tab: key,
-          formData: moduleForm
-        });
-      })
-    );
-    return resultList;
-  };
 
   const handleEditModule = (item) => {
     moduleAction.value = 'edit';
@@ -285,7 +328,12 @@
       showEditModal.value = true;
     }, 100);
   };
-  const handleClickInstance = (data) => {};
+  const handleClickInstance = (data) => {
+    viewModuleInfo.value = data;
+    setTimeout(() => {
+      showViewModal.value = true;
+    }, 100);
+  };
   const handleDeleteVariable = (index) => {
     appInfo.variables.splice(index, 1);
   };
@@ -304,14 +352,14 @@
     }
   };
 
-  const handleSelect = () => {
-    appInfo.variables = concat(appInfo.variables, {
+  const handleAddVariables = () => {
+    console.log('adad');
+    appInfo.variables.push({
       name: '',
       default: '',
       description: '',
       type: 'string'
     });
-    collapseStatus.value = appInfo?.variables?.length - 1 || 0;
   };
   const handleSaveInstanceInfo = (res) => {
     emits('deploy');
@@ -451,17 +499,13 @@
     console.log('completeData.value===', completeData.value);
   };
   const handleOk = async () => {
+    console.log('handleOk====', appInfo);
     const result = await basicform.value.getFormData();
-    const variableFormResult = await getRefFormData();
-    const validateVariabel = find(variableFormResult, (val) => !val.formData);
     triggerModule.value = true;
     if (!id && !validateModule.value) {
       return;
     }
-    if (!result || validateVariabel) {
-      const i = get(split(validateVariabel?.tab || '', 'variableform'), 1);
-      collapseStatus.value = +i;
-
+    if (!result) {
       return;
     }
     try {
@@ -503,6 +547,10 @@
   };
 
   const handleCancel = () => {
+    if (pageAction.value === 'edit' && route.params.action === 'view') {
+      emits('cancel');
+      return;
+    }
     router.back();
   };
   const handleDeleteModule = (index) => {
@@ -521,9 +569,6 @@
       });
     } else {
       assignIn(moduleInfo.value, data);
-    }
-    if (id) {
-      handleOk();
     }
   };
   // onBeforeRouteLeave(async (to, from) => {
@@ -559,6 +604,38 @@
       .thumb-item {
         margin-right: 12px;
         margin-bottom: 12px;
+      }
+    }
+
+    .var-title {
+      margin-top: 10px;
+      margin-bottom: 20px;
+      color: var(--color-text-3);
+    }
+
+    .var-item {
+      width: 50%;
+      margin-bottom: 10px;
+
+      &:last-child {
+        margin-bottom: 0;
+      }
+
+      &.var-item-title {
+        display: flex;
+
+        .label {
+          flex: 1;
+          font-weight: 500;
+        }
+
+        .holder {
+          padding: 0 4px;
+        }
+
+        .btn {
+          flex-basis: 54px;
+        }
       }
     }
   }

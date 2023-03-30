@@ -1,16 +1,45 @@
 <template>
   <ComCard top-gap class="application-detail-wrap">
-    <GroupTitle show-back :title="title"></GroupTitle>
-    <div v-if="id" class="instance-box">
+    <GroupTitle show-back :title="title">
+      <template #title>
+        <div
+          style="
+            display: flex;
+            flex: 1;
+            align-items: center;
+            justify-content: space-between;
+          "
+        >
+          <span>{{ title }}</span>
+          <span>
+            <a-link v-if="pageAction === 'view'" @click="handleEdit">
+              <icon-edit></icon-edit>
+              <span class="mleft-5">{{ $t('common.button.edit') }}</span>
+            </a-link>
+            <!-- <a-link
+              v-if="pageEditable"
+              style="margin-left: 10px"
+              @click="handleCancel"
+            >
+              <icon-font type="icon-quxiao"></icon-font>
+              <icon-save></icon-save>
+              <span class="mleft-5">{{ $t('common.button.confirm') }}</span>
+            </a-link> -->
+          </span>
+        </div>
+      </template>
+    </GroupTitle>
+    <div class="instance-box">
       <div
+        v-if="pageAction === 'view'"
         class="app"
         :class="{ active: activeInstance === 'app' }"
         @click="handleClickApp"
       >
-        <span>应用配置</span>
-        <icon-right />
+        <span>应用信息</span>
+        <!-- <icon-right /> -->
       </div>
-      <div class="instance">
+      <div v-if="pageAction === 'view'" class="instance">
         <div class="content">
           <instanceThumb
             v-for="item in instanseList"
@@ -47,15 +76,6 @@
           <a-tooltip content="添加应用实例">
             <thumbButton :size="60" @click="handleAddInstance"></thumbButton>
           </a-tooltip>
-          <!-- <div v-if="!instanseList.length" class="tips-box"
-            ><a-button
-              type="text"
-              size="small"
-              style="font-weight: 500; font-size: 18px"
-              @click="handleAddInstance"
-              >添加应用实例</a-button
-            ></div
-          > -->
         </div>
       </div>
     </div>
@@ -64,6 +84,7 @@
         :is="pageComMap[pgCom]"
         :instance-id="currentInstance"
         @save="handleSaveApp"
+        @cancel="handleCancelEdit"
         @deploy="handleDeployDone"
       ></component>
     </div>
@@ -112,6 +133,8 @@
 
   const { router, route, t } = useCallCommon();
   const id = route.query.id as string;
+  const pageAction = ref(route.params.action || 'create');
+  const pageEditable = ref(false);
   const cloneId = route.query.cloneId as string;
   const activeInstance = ref('app'); //
   const currentInstance = ref('');
@@ -141,6 +164,7 @@
   provide('environmentList', environmentList);
   provide('appInfo', appInfo);
   provide('instanceInfo', instanceInfo);
+  provide('pageAction', pageAction);
   const status = ref('create');
   const pageComMap = {
     appDetail: markRaw(AppDetail),
@@ -152,10 +176,13 @@
 
   const title = computed(() => {
     if (cloneId) {
-      return '克隆应用';
+      return '克隆';
     }
-    if (id) {
-      return '编辑应用';
+    if (pageAction.value === 'view') {
+      return '详情';
+    }
+    if (pageAction.value === 'edit' && id) {
+      return '编辑';
     }
     return '新建应用';
   });
@@ -278,22 +305,34 @@
   const handleOk = () => {
     router.back();
   };
+  const handleEdit = () => {
+    pageAction.value = 'edit';
+    pageEditable.value = true;
+  };
+  const handleCancel = () => {
+    pageAction.value = 'view';
+    pageEditable.value = false;
+  };
   const handleSaveApp = async (resId) => {
-    if (!id) {
-      router.replace({
-        name: 'ApplicationsDetail',
-        params: {
-          projectId: route.params.projectId
-        },
-        query: {
-          id: resId
-        }
-      });
-      setTimeout(() => {
-        execReload?.();
-      }, 100);
-    }
-    getApplicationDetail();
+    router.replace({
+      name: 'ApplicationsDetail',
+      params: {
+        projectId: route.params.projectId,
+        action: 'view'
+      },
+      query: {
+        id: resId || id
+      }
+    });
+    setTimeout(() => {
+      execReload?.();
+    }, 100);
+    handleCancel();
+    // getApplicationDetail();
+  };
+
+  const handleCancelEdit = () => {
+    handleCancel();
   };
   const init = async () => {
     getApplicationInstances();

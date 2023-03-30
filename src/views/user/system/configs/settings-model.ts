@@ -35,6 +35,19 @@ export const settingList: Array<SettingsItem> = [
         },
         value: '',
         type: 'string'
+      },
+      {
+        id: 'TerraformDeployerImage',
+        label: 'Terraform 部署器镜像',
+        parentId: '',
+        component: {
+          type: 'input',
+          required: true,
+          match: '',
+          message: ''
+        },
+        value: '',
+        type: 'string'
       }
       // {
       //   id: 'TokenRefreshCronExpr',
@@ -96,6 +109,133 @@ export const settingList: Array<SettingsItem> = [
       //   value: '',
       //   type: 'string'
       // }
+    ]
+  },
+  {
+    id: 'TaskSettings',
+    label: '任务设置',
+    parentId: '',
+    editable: true,
+    component: {
+      type: 'input',
+      required: true,
+      match: 'urlReg',
+      message: 'system.rules.url'
+    },
+    value: '',
+    type: 'layout',
+    dataList: [
+      {
+        id: '',
+        label: '基础任务',
+        value: '',
+        type: 'groupTitle',
+        component: {},
+        parentId: '',
+        editable: false,
+        style: {
+          fontWeight: 500,
+          marginTop: '10px',
+          marginBottom: '15px'
+        },
+        subGroup: [
+          {
+            id: 'ConnectorCheckCronExpr',
+            label: '检查连接器状态',
+            desc: '默认是每10分钟执行一次',
+            parentId: '',
+            component: {
+              type: 'input',
+              required: true,
+              validator(val, callback) {
+                if (validateCron(val)) {
+                  callback();
+                } else {
+                  callback(i18n.global.t('system.setting.rules.cron'));
+                }
+              },
+              extra: 'system.setting.cron.extra'
+            },
+            value: '',
+            type: 'string'
+          },
+          {
+            id: 'ResourceStatusCheckCronExpr',
+            label: '检查应用资源状态',
+            desc: '默认是每1分钟执行一次',
+            parentId: '',
+            component: {
+              type: 'input',
+              required: true,
+              validator(val, callback) {
+                if (validateCron(val)) {
+                  callback();
+                } else {
+                  callback(i18n.global.t('system.setting.rules.cron'));
+                }
+              },
+              extra: 'system.setting.cron.extra'
+            },
+            value: '',
+            type: 'string'
+          }
+        ]
+      },
+      {
+        id: '',
+        label: 'FinOps 任务',
+        value: '',
+        type: 'groupTitle',
+        component: {},
+        parentId: '',
+        style: {
+          fontWeight: 500,
+          marginTop: '10px',
+          marginBottom: '15px'
+        },
+        subGroup: [
+          {
+            id: 'ResourceLabelApplyCronExpr',
+            label: '标记应用资源',
+            desc: '默认是每2分钟执行一次',
+            parentId: '',
+            component: {
+              type: 'input',
+              required: true,
+              validator(val, callback) {
+                if (validateCron(val)) {
+                  callback();
+                } else {
+                  callback(i18n.global.t('system.setting.rules.cron'));
+                }
+              },
+              extra: 'system.setting.cron.extra'
+            },
+            value: '',
+            type: 'string'
+          },
+          {
+            id: 'CostCollectCronExpr',
+            label: '收集使用成本',
+            desc: '默认是每小时执行一次',
+            parentId: '',
+            component: {
+              type: 'input',
+              required: true,
+              validator(val, callback) {
+                if (validateCron(val)) {
+                  callback();
+                } else {
+                  callback(i18n.global.t('system.setting.rules.cron'));
+                }
+              },
+              extra: 'system.setting.cron.extra'
+            },
+            value: '',
+            type: 'string'
+          }
+        ]
+      }
     ]
   },
   {
