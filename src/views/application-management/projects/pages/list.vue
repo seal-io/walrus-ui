@@ -63,6 +63,15 @@
             tooltip
             :cell-style="{ minWidth: '40px' }"
             align="center"
+            data-index="description"
+            :title="$t('common.table.description')"
+          >
+          </a-table-column>
+          <a-table-column
+            ellipsis
+            tooltip
+            :cell-style="{ minWidth: '40px' }"
+            align="center"
             data-index="createTime"
             :title="$t('common.table.createTime')"
           >
@@ -72,15 +81,7 @@
               }}</span>
             </template>
           </a-table-column>
-          <a-table-column
-            ellipsis
-            tooltip
-            :cell-style="{ minWidth: '40px' }"
-            align="center"
-            data-index="description"
-            :title="$t('common.table.description')"
-          >
-          </a-table-column>
+
           <a-table-column
             align="center"
             :title="$t('common.table.operation')"

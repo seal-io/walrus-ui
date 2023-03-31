@@ -1,7 +1,7 @@
 export default {
   'cost.analyse.menu': '成本分析',
   'cost.analyse.table.create': '新建视图',
-  'cost.analyse.table.manage': '视图管理',
+  'cost.analyse.table.manage': '视图',
   'cost.analyse.table.holder': '请输入视图',
   'cost.analyse.view.holder': '请选择视图',
   'cost.analyse.view.strategy': '添加过滤条件',

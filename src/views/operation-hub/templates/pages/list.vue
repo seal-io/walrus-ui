@@ -46,15 +46,16 @@
           </a-space>
         </template>
         <template #button-group>
-          <a-button type="primary" @click="handleCreateProject">{{
-            $t('operation.templates.detail.add')
-          }}</a-button>
           <a-button type="primary" @click="handleDraftModule">
             <template #icon>
               <icon-font type="icon-ChatGPT"></icon-font>
             </template>
             <span>编写模块</span>
           </a-button>
+          <a-button type="primary" @click="handleCreateProject">{{
+            $t('operation.templates.detail.add')
+          }}</a-button>
+
           <a-button
             type="primary"
             status="warning"

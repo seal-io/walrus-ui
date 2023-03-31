@@ -21,6 +21,14 @@
           ellipsis
           tooltip
           :cell-style="{ minWidth: '40px' }"
+          data-index="module"
+          :title="$t('applications.applications.table.module')"
+        >
+        </a-table-column>
+        <a-table-column
+          ellipsis
+          tooltip
+          :cell-style="{ minWidth: '40px' }"
           align="center"
           data-index="createTime"
           :title="$t('common.table.createTime')"

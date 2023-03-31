@@ -19,7 +19,7 @@
       <a-form ref="formref" :model="formData" auto-label-width>
         <a-form-item
           :disabled="status === 'edit'"
-          :label="$t('applications.applications.table.name')"
+          label="名称"
           field="name"
           validate-trigger="change"
           :rules="[{ required: true, message: '实例名称必填' }]"

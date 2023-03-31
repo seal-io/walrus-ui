@@ -16,23 +16,10 @@
           tooltip
           :cell-style="{ minWidth: '40px' }"
           data-index="id"
-          :title="$t('applications.applications.table.name')"
+          title="模块"
         >
         </a-table-column>
-        <a-table-column
-          ellipsis
-          tooltip
-          :cell-style="{ minWidth: '40px' }"
-          align="center"
-          data-index="createTime"
-          :title="$t('common.table.createTime')"
-        >
-          <template #cell="{ record }">
-            <span>{{
-              dayjs(record.createTime).format('YYYY-MM-DD HH:mm:ss')
-            }}</span>
-          </template>
-        </a-table-column>
+
         <a-table-column
           ellipsis
           tooltip
@@ -60,6 +47,20 @@
                 error: get(record, 'status') === 'Error'
               }"
             ></StatusLabel>
+          </template>
+        </a-table-column>
+        <a-table-column
+          ellipsis
+          tooltip
+          :cell-style="{ minWidth: '40px' }"
+          align="center"
+          data-index="createTime"
+          :title="$t('common.table.createTime')"
+        >
+          <template #cell="{ record }">
+            <span>{{
+              dayjs(record.createTime).format('YYYY-MM-DD HH:mm:ss')
+            }}</span>
           </template>
         </a-table-column>
         <a-table-column

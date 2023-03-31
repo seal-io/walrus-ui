@@ -132,8 +132,8 @@
 
     .status {
       position: absolute;
-      top: 5px;
-      left: 5px;
+      top: 0;
+      left: 4px;
       transform: scale(0.8);
     }
 

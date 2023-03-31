@@ -3,8 +3,8 @@ import { Message, Modal } from '@arco-design/web-vue';
 import { useUserStore } from '@/store';
 import router from '@/router';
 import { get } from 'lodash';
+import i18n from '@/locale/index';
 // import { getToken } from '@/utils/auth';
-// import i18n from '@/locale/index';
 // import { h } from 'vue';
 
 export interface HttpResponse<T = unknown> {
@@ -19,6 +19,10 @@ if (import.meta.env.VITE_API_BASE_URL) {
 }
 console.log('import.meta:', import.meta);
 
+const localeMap = {
+  'en-US': 'en;q=0.9,zh;q=0.8',
+  'zh-CN': 'zh;q=0.9,en;q=0.8'
+};
 const authApiList = [
   '/account/login',
   '/account/info',
@@ -48,9 +52,11 @@ axios.interceptors.request.use(
     // Authorization is a custom headers key
     // please modify it according to the actual situation
     const url = config.url || '';
-    // config.headers = {
-    //   'Accept-Language': 'xyz'
-    // };
+    const { locale } = i18n.global;
+    console.log('local===', locale);
+    config.headers = {
+      'Accept-Language': localeMap[locale] || 'en'
+    };
     if (authApiList.includes(url)) {
       config.baseURL = '';
     }
