@@ -1,18 +1,33 @@
 <template>
   <SpinCard top-gap :loading="loading" style="width: 100%">
-    <GroupTitle :title="id ? '编辑视图' : '新建视图'" show-back></GroupTitle>
-    <a-form ref="formref" :model="formData" auto-label-width>
+    <GroupTitle
+      :title="title"
+      show-back
+      :show-edit="pageAction === 'view' && !builtin"
+      @edit="handleEdit"
+    ></GroupTitle>
+    <a-form
+      ref="formref"
+      :model="formData"
+      auto-label-width
+      label-align="right"
+    >
       <a-form-item
         :label="$t('cost.analyse.table.name')"
         field="name"
         validate-trigger="change"
-        :rules="[{ required: true, message: '视图名称必填' }]"
+        :rules="[{ required: !viewable, message: '视图名称必填' }]"
       >
         <a-input
+          v-if="!viewable"
           v-model="formData.name"
           :max-length="50"
-          show-word-limit
+          :show-word-limit="!viewable"
         ></a-input>
+        <span v-else class="readonly-view-label">{{ formData.name }}</span>
+        <template #extra>
+          <span>All, Project, Cluster为系统内置名称</span>
+        </template>
       </a-form-item>
       <GroupTitle
         title="定义费用单元"
@@ -23,9 +38,13 @@
         :label="$t('cost.analyse.table.time')"
         field="timeRange"
         :validate-trigger="['change']"
-        :rules="[{ required: true, message: '时间范围必选' }]"
+        :rules="[{ required: !viewable, message: '时间范围必选' }]"
       >
-        <a-select v-model="formData.timeRange" @change="handleTimeChange">
+        <a-select
+          v-if="!viewable"
+          v-model="formData.timeRange"
+          @change="handleTimeChange"
+        >
           <a-option
             v-for="item in timeRangeOptions"
             :key="item.value"
@@ -33,16 +52,20 @@
             :label="$t(item.label)"
           ></a-option>
         </a-select>
-        <template #extra>
+        <span v-else class="readonly-view-label">{{
+          $t(getListLabel(formData.timeRange, timeRangeOptions) || '-')
+        }}</span>
+        <template v-if="!viewable" #extra>
           <span class="tips">切换时间范围将清空过滤器选项的值</span>
         </template>
       </a-form-item>
       <a-form-item
         label="分组依据"
         field="allocationQueries.0.groupBy"
-        :rules="[{ required: true, message: '分组依据不能为空' }]"
+        :rules="[{ required: !viewable, message: '分组依据不能为空' }]"
       >
         <a-cascader
+          v-if="!viewable"
           v-model="formData.allocationQueries[0].groupBy"
           allow-search
           :options="groupList"
@@ -50,15 +73,19 @@
           @change="handleGroupByChange"
         >
         </a-cascader>
+        <span v-else class="readonly-view-label">{{
+          getListLabel(formData.allocationQueries[0].groupBy, groupList) || '-'
+        }}</span>
       </a-form-item>
       <a-form-item
         v-if="!groupByDate.includes(formData.allocationQueries[0].groupBy)"
         label="粒度"
         :validate-trigger="['change']"
         field="allocationQueries.0.step"
-        :rules="[{ required: true, message: '粒度不能为空' }]"
+        :rules="[{ required: !viewable, message: '粒度不能为空' }]"
       >
         <a-cascader
+          v-if="!viewable"
           v-model="formData.allocationQueries[0].step"
           allow-search
           :options="stepList"
@@ -66,18 +93,29 @@
           @change="handleStepChange"
         >
         </a-cascader>
+        <span v-else class="readonly-view-label">{{
+          getListLabel(formData.allocationQueries[0].step, stepList) || '-'
+        }}</span>
       </a-form-item>
       <a-form-item
         label="费用来源"
         field="allocationQueries.0.filters"
-        :rules="[{ required: true, message: '费用来源不能为空' }]"
+        :rules="[{ required: !viewable, message: '费用来源不能为空' }]"
       >
         <ConditionFilter
+          v-if="
+            (!viewable || formData.allocationQueries[0].filters.length) &&
+            perspectiveInfo.name !== 'All'
+          "
           ref="allfilter"
           v-model:conditions="formData.allocationQueries[0].filters"
+          :viewable="viewable"
           :perspective-fields="perspectiveFields"
           :time-range="formData.timeRange"
         ></ConditionFilter>
+        <span v-else class="readonly-view-label">{{
+          perspectiveInfo.name === 'All' ? 'All' : '-'
+        }}</span>
       </a-form-item>
       <GroupTitle
         title="公摊费用拆分规则"
@@ -90,13 +128,19 @@
         :rules="[{ required: false, message: '公摊费用来源不能为空' }]"
       >
         <ConditionFilter
+          v-if="
+            !viewable ||
+            formData.allocationQueries[0].shareCosts[0].filters.length
+          "
           ref="costfilter"
           v-model:conditions="
             formData.allocationQueries[0].shareCosts[0].filters
           "
+          :viewable="viewable"
           :time-range="formData.timeRange"
           :perspective-fields="perspectiveFields"
         ></ConditionFilter>
+        <span v-else class="readonly-view-label"> - </span>
       </a-form-item>
 
       <a-form-item
@@ -104,6 +148,7 @@
         field="allocationQueries.0.shareCosts.0.idleCostFilters"
       >
         <a-select
+          v-if="!viewable"
           v-model="formData.allocationQueries[0].shareCosts[0].idleCostFilters"
           allow-search
           multiple
@@ -113,9 +158,16 @@
           @change="handleCostFilterChange"
         >
         </a-select>
+        <span v-else class="readonly-view-label">{{
+          getListLabel(
+            formData.allocationQueries[0].shareCosts[0].idleCostFilters,
+            idleCostFieldList
+          ) || '-'
+        }}</span>
       </a-form-item>
       <a-form-item label="分摊集群管理费用" field="managementCostFilters">
         <a-select
+          v-if="!viewable"
           v-model="
             formData.allocationQueries[0].shareCosts[0].managementCostFilters
           "
@@ -127,15 +179,25 @@
           @change="handleCostFilterChange"
         >
         </a-select>
+        <span v-else class="readonly-view-label">{{
+          getListLabel(
+            formData.allocationQueries[0].shareCosts[0].managementCostFilters,
+            idleCostFieldList
+          ) || '-'
+        }}</span>
       </a-form-item>
       <a-form-item
         label="分摊方式"
         field="allocationQueries.0.shareCosts.0.sharingStrategy"
         :rules="[
-          { required: sharingStrategyRequired, message: '分摊方式不能为空' }
+          {
+            required: sharingStrategyRequired && !viewable,
+            message: '分摊方式不能为空'
+          }
         ]"
       >
         <a-radio-group
+          v-if="!viewable"
           v-model="formData.allocationQueries[0].shareCosts[0].sharingStrategy"
         >
           <a-radio
@@ -145,9 +207,15 @@
             >{{ item.label }}</a-radio
           >
         </a-radio-group>
+        <span v-else class="readonly-view-label">{{
+          getListLabel(
+            formData.allocationQueries[0].shareCosts[0].sharingStrategy,
+            costShareMode
+          ) || '-'
+        }}</span>
       </a-form-item>
     </a-form>
-    <EditPageFooter>
+    <EditPageFooter v-if="!viewable && !builtin">
       <template #save>
         <a-button
           :loading="submitLoading"
@@ -192,6 +260,8 @@
   import GroupTitle from '@/components/group-title/index.vue';
   import EditPageFooter from '@/components/edit-page-footer/index.vue';
   import { useTabBarStore } from '@/store';
+  import { getListLabel } from '@/utils/func';
+  import usePageAction from '@/hooks/use-page-action';
   import moduleWrapper from '@/views/application-management/applications/components/module-wrapper.vue';
   import ConditionFilter from '../components/condition-filter.vue';
   import { costShareMode, timeRangeOptions, DateShortCuts } from '../config';
@@ -205,8 +275,10 @@
   } from '../api';
 
   const tabBarStore = useTabBarStore();
+  const { pageAction, handleEdit } = usePageAction();
   const { t, router, route } = useCallCommon();
   const id = route.query.id as string;
+  const builtin = ref(route.query.builtin || false);
   const formref = ref();
   const allfilter = ref();
   const costfilter = ref();
@@ -242,6 +314,18 @@
     ]
   });
 
+  const title = computed(() => {
+    if (!id) {
+      return '新建视图';
+    }
+    if (id && (pageAction.value === 'view' || builtin.value)) {
+      return '视图详情';
+    }
+    return '编辑视图';
+  });
+  const viewable = computed(() => {
+    return pageAction.value === 'view' || !!builtin.value;
+  });
   const groupList = computed(() => {
     const step = get(formData, 'allocationQueries.0.step');
     if (step === 'null' || !step) return cloneDeep(groupByList.value);
@@ -277,9 +361,6 @@
     if (some(filters, val)) {
       callback('值不能为空');
     }
-  };
-  const handleCancel = () => {
-    router.back();
   };
 
   const setPerspectiveCostFilter = (data, callback) => {
@@ -377,6 +458,7 @@
     try {
       loading.value = true;
       const { data } = await queryItemPerspective({ id });
+      builtin.value = data?.builtin || false;
       if (!get(data, 'allocationQueries.0.step')) {
         data.allocationQueries[0].step = 'null';
       }
@@ -399,9 +481,13 @@
         return item.connectorID;
       });
       setConditionFilterFieldValues(formData);
-      loading.value = false;
+      setTimeout(() => {
+        loading.value = false;
+      }, 100);
     } catch (error) {
-      loading.value = false;
+      setTimeout(() => {
+        loading.value = false;
+      }, 100);
       perspectiveInfo.value = {};
       console.log(error);
     }
@@ -551,7 +637,18 @@
     console.log('step:', val);
   };
   const handleCostFilterChange = (val) => {};
-
+  const handleCancel = () => {
+    if (
+      pageAction.value === 'edit' &&
+      route.params.action === 'view' &&
+      !builtin.value
+    ) {
+      pageAction.value = 'view';
+      getPerspectiveInfo();
+      return;
+    }
+    router.back();
+  };
   const init = async () => {
     loading.value = true;
     setDateRange();

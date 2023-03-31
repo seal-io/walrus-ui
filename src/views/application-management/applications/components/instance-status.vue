@@ -1,16 +1,18 @@
 <template>
   <span class="label-wrapper">
-    <span style="display: inline">
+    <a-link style="display: inline" @click="handleViewInstance">
       <span class="dot" :class="[statusMap[status] || status]"></span>
       <slot name="label"
         ><span>{{ label }}</span></slot
       >
-    </span>
+    </a-link>
   </span>
 </template>
 
 <script lang="ts" setup>
-  defineProps({
+  import { useRouter } from 'vue-router';
+
+  const props = defineProps({
     status: {
       type: String,
       default() {
@@ -28,8 +30,40 @@
       default() {
         return {};
       }
+    },
+    instanceId: {
+      type: String,
+      default() {
+        return '';
+      }
+    },
+    applicationId: {
+      type: String,
+      default() {
+        return '';
+      }
+    },
+    projectId: {
+      type: String,
+      default() {
+        return '';
+      }
     }
   });
+  const router = useRouter();
+  const handleViewInstance = () => {
+    router.push({
+      name: 'ApplicationsDetail',
+      params: {
+        projectId: props.projectId,
+        action: 'view'
+      },
+      query: {
+        id: props.applicationId,
+        instanceId: props.instanceId
+      }
+    });
+  };
 </script>
 
 <style lang="less" scoped>

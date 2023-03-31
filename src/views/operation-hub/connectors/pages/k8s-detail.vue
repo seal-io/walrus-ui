@@ -25,7 +25,9 @@
             :max-length="50"
             show-word-limit
           ></a-input>
-          <span v-else>{{ formData.name }}</span>
+          <span v-else class="readonly-view-label">{{
+            formData.name || '-'
+          }}</span>
         </a-form-item>
         <a-form-item
           v-if="pageAction === 'edit'"
@@ -82,7 +84,9 @@
             v-model="formData.enableFinOps"
             >{{ $t('operation.connectors.rules.enable') }}</a-checkbox
           >
-          <span v-else>{{ formData.enableFinOps ? '已开启' : '未部署' }}</span>
+          <span v-else class="readonly-view-label">{{
+            formData.enableFinOps ? '已开启' : '未开启'
+          }}</span>
         </a-form-item>
       </a-form>
     </div>

@@ -20,7 +20,9 @@
           :max-length="50"
           show-word-limit
         ></a-input>
-        <span v-else>{{ formData.name }}</span>
+        <span v-else class="readonly-view-label">{{
+          formData.name || '-'
+        }}</span>
       </a-form-item>
       <a-form-item
         :label="$t('operation.environments.table.description')"
@@ -34,7 +36,9 @@
           show-word-limit
           :auto-size="{ minRows: 6, maxRows: 10 }"
         ></a-textarea>
-        <div v-else class="description-content">{{ formData.description }}</div>
+        <div v-else class="description-content readonly-view-label">{{
+          formData.description || '-'
+        }}</div>
       </a-form-item>
       <a-form-item
         :label="$t('operation.connectors.menu')"
@@ -43,6 +47,7 @@
         :rules="[{ required: false, message: '请添加连接器' }]"
       >
         <connectorsTable
+          :style="{ marginLeft: pageAction === 'view' ? '12px' : 0 }"
           :action="pageAction"
           :list="formData?.edges || []"
           @delete="handleDeleteConnector"

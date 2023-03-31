@@ -83,6 +83,9 @@
                 v-for="(item, index) in record?.instances"
                 :key="index"
                 :status="item.status"
+                :instance-id="item.id"
+                :application-id="record.id"
+                :project-id="queryParams.projectID"
                 :label="`${item.name}(Env: ${item?.environment?.name})`"
                 :status-map="statusMap"
               ></InstanceStatus>

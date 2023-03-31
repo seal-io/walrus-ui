@@ -64,11 +64,17 @@
           :title="$t('cost.analyse.table.manage')"
         >
           <template #cell="{ record }">
-            <span>{{
-              record.builtin
-                ? builtinViewMap[toLower(record.name)]
-                : record.name
-            }}</span>
+            <a-link
+              v-if="!record.builtin"
+              size="small"
+              @click="handleViewPerspective(record)"
+              >{{
+                record.builtin
+                  ? builtinViewMap[toLower(record.name)]
+                  : record.name
+              }}</a-link
+            >
+            <span v-else>{{ record.name }}</span>
           </template>
         </a-table-column>
         <a-table-column
@@ -253,7 +259,10 @@
   const handleCreate = () => {
     // showDrawer.value = true;
     router.push({
-      name: 'CostPerspectiveEdit'
+      name: 'CostPerspectiveEdit',
+      params: {
+        action: 'edit'
+      }
     });
   };
   const handleDeleteConfirm = async () => {
@@ -279,8 +288,23 @@
   const handleEdit = (row) => {
     router.push({
       name: 'CostPerspectiveEdit',
+      params: {
+        action: 'edit'
+      },
       query: {
         id: row.id
+      }
+    });
+  };
+  const handleViewPerspective = (row) => {
+    router.push({
+      name: 'CostPerspectiveEdit',
+      params: {
+        action: 'view'
+      },
+      query: {
+        id: row.id,
+        builtin: row.builtin || false
       }
     });
   };

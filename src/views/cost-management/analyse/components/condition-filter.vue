@@ -1,12 +1,15 @@
 <template>
   <div class="condition-filter-wrap">
-    <div v-if="filterDataList.length" class="btn-wrap">
+    <div v-if="filterDataList.length && !viewable" class="btn-wrap">
       <span class="icon-btn-wrap plus" @click="handleAddORFilter"
         ><icon-plus-circle-fill class="size-20" />OR</span
       >
     </div>
-    <div class="condition-box wrapper">
-      <div v-if="!filterDataList.length" class="no-data">
+    <div
+      class="condition-box wrapper"
+      :class="{ readonly: viewable && !filterDataList.length }"
+    >
+      <div v-if="!filterDataList.length && !viewable" class="no-data">
         <a-button type="text" size="small" @click="handleAddORFilter">
           <template #icon><icon-plus /></template>
           {{ $t('cost.analyse.view.strategy') }}
@@ -27,6 +30,7 @@
             class="condition-item"
           >
             <a-cascader
+              v-if="!viewable"
               v-model="sItem.fieldName"
               :error="!sItem.fieldName && triggerValidate"
               allow-search
@@ -35,14 +39,33 @@
               @change="(val) => handleCascaderChange(val, sItem)"
             >
             </a-cascader>
+            <!-- <a-input
+              v-else
+              :class="{ readonly: viewable }"
+              :readonly="viewable"
+              :model-value="sItem.fieldName"
+              :max-length="50"
+              :show-word-limit="!viewable"
+            ></a-input> -->
+            <div
+              v-else
+              class="readonly-view-label bg"
+              style="flex: 1; width: 220px"
+              >{{ sItem.fieldName }}</div
+            >
             <a-select
+              v-if="!viewable"
               v-model="sItem.operator"
               :error="!sItem.operator && triggerValidate"
               :options="operatorList"
               style="width: 120px"
               @change="handleOperatorChange"
             ></a-select>
+            <div v-else class="readonly-view-label bg" style="width: 60px">{{
+              sItem.operator
+            }}</div>
             <a-select
+              v-if="!viewable"
               v-model="sItem.values"
               :error="!sItem?.values?.length && triggerValidate"
               :max-tag-count="1"
@@ -55,7 +78,41 @@
                 (visible) => handlePopupVisible(visible, sItem)
               "
             ></a-select>
-            <span class="icon-btn-box">
+            <div v-else style="flex: 1; width: 240px">
+              <AutoTip
+                v-if="sItem.fieldName === 'connector_id'"
+                :tooltip-props="{
+                  content: join(
+                    getLabelList(sItem.values, sItem.fieldValues),
+                    ','
+                  )
+                }"
+              >
+                <a-tag
+                  v-for="(l, i) in getLabelList(
+                    sItem.values,
+                    sItem.fieldValues
+                  )"
+                  :key="i"
+                  class="source-label"
+                  >{{ l }}</a-tag
+                >
+              </AutoTip>
+              <AutoTip
+                v-else
+                :tooltip-props="{
+                  content: join(sItem.values, ' , ')
+                }"
+              >
+                <a-tag
+                  v-for="(l, i) in sItem.values"
+                  :key="i"
+                  class="source-label"
+                  >{{ l }}</a-tag
+                >
+              </AutoTip>
+            </div>
+            <span v-if="!viewable" class="icon-btn-box">
               <span
                 class="icon-btn-wrap"
                 @click="handleDeleteFilter(item, sIndex)"
@@ -77,8 +134,18 @@
 
 <script lang="ts" setup>
   import { ref, onMounted, computed, PropType, watch, defineExpose } from 'vue';
-  import { cloneDeep, filter, find, get, some, keys, every } from 'lodash';
+  import {
+    cloneDeep,
+    filter,
+    find,
+    get,
+    some,
+    keys,
+    every,
+    join
+  } from 'lodash';
   import dayjs from 'dayjs';
+  import { getLabelList } from '@/utils/func';
   import { relationOptions, operatorList, DateShortCuts } from '../config';
   import { FilterItem } from '../config/interface';
   import { queryPerspectiveFieldValues } from '../api';
@@ -107,6 +174,12 @@
       type: Array as PropType<{ label: string; value: string }[]>,
       default() {
         return [];
+      }
+    },
+    viewable: {
+      type: Boolean,
+      default() {
+        return true;
       }
     }
   });
@@ -237,12 +310,29 @@
     border: 1px solid var(--color-border-2);
     border-radius: var(--border-radius-small);
 
+    &.readonly {
+      border: none;
+    }
+
     .no-data {
       width: 100%;
       color: var(--sealblue-6);
       font-size: 12px;
       text-align: center;
       cursor: pointer;
+    }
+
+    .readonly-view-label.bg {
+      background-color: #fff;
+      border-radius: var(--border-radius-small);
+    }
+
+    .source-label {
+      margin-right: 4px;
+      margin-bottom: 4px;
+      padding: 4px 6px;
+      background-color: rgb(var(--arcoblue-2));
+      border-radius: 6px;
     }
 
     .content-wrap {

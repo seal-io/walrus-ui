@@ -25,7 +25,7 @@
           :max-length="50"
           show-word-limit
         ></a-input>
-        <span v-else>{{ formData.id }}</span>
+        <span v-else class="readonly-view-label">{{ formData.id || '-' }}</span>
       </a-form-item>
       <a-form-item
         :label="$t('operation.environments.table.description')"
@@ -39,7 +39,9 @@
           :max-length="500"
           show-word-limit
         ></a-textarea>
-        <div v-else class="description-content">{{ formData.description }}</div>
+        <div v-else class="description-content readonly-view-label">{{
+          formData.description || '-'
+        }}</div>
       </a-form-item>
       <!-- <a-form-item :label="$t('operation.connectors.table.type')" field="type">
         <a-select v-model="formData.description">
@@ -67,7 +69,9 @@
           v-if="pageAction === 'edit'"
           v-model="formData.source"
         ></a-input>
-        <span v-else>{{ formData.source }}</span>
+        <span v-else class="readonly-view-label">{{
+          formData.source || '-'
+        }}</span>
       </a-form-item>
       <a-form-item
         field="icon"
@@ -80,13 +84,16 @@
         ]"
       >
         <a-input v-if="pageAction === 'edit'" v-model="formData.icon"></a-input>
-        <span v-else>{{ formData.icon }}</span>
+        <span v-else class="readonly-view-label">{{
+          formData.icon || '-'
+        }}</span>
       </a-form-item>
       <a-form-item
         v-if="id && pageAction === 'view'"
         :label="$t('operation.connectors.table.status')"
       >
         <StatusLabel
+          style="margin-left: 12px"
           :status="{
             status: get(formData, 'status'),
             text: get(formData, 'status'),
