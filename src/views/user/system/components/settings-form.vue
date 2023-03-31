@@ -1,13 +1,13 @@
 <template>
   <a-card class="setting-params" :bordered="false" hoverable>
-    <template #title>
+    <!-- <template #title>
       <div>{{ $t(title) }}</div>
     </template>
     <template #extra>
       <a-space>
         <a-link v-show="editable" @click="handleEdit"><icon-edit /></a-link>
       </a-space>
-    </template>
+    </template> -->
     <div>
       <a-form ref="formref" :model="formData" layout="vertical">
         <!-- top node -->
@@ -83,12 +83,13 @@
             <!-- ====== subGroupTitle  start===== -->
             <template v-else-if="item?.subGroup?.length">
               <div
+                class="sub-group-title"
                 :style="{ ...item.style, display: 'flex', alignItems: 'cener' }"
               >
                 <span>{{ $t(item.label) }}</span>
                 <span style="margin-left: 5px">
                   <a-tooltip
-                    v-if="!item.editable"
+                    v-if="!item.isEditable"
                     :content="$t('common.button.edit')"
                   >
                     <a-link @click="handleEditSubGroup(item)"
@@ -96,18 +97,20 @@
                     /></a-link>
                   </a-tooltip>
                   <a-tooltip
-                    v-if="item.editable"
+                    v-if="item.isEditable"
                     :content="$t('common.button.cancel')"
                   >
                     <a-link @click="handleEditCancel(item)"
-                      ><icon-font type="icon-quxiao" class="size-14"
+                      ><icon-undo
                     /></a-link>
                   </a-tooltip>
                   <a-tooltip
-                    v-if="item.editable"
+                    v-if="item.isEditable"
                     :content="$t('common.button.save')"
                   >
-                    <a-link @click="handleSaveSubGroup(item)"
+                    <a-link
+                      style="margin-left: 5px"
+                      @click="handleSaveSubGroup(item)"
                       ><icon-save
                     /></a-link>
                   </a-tooltip>
@@ -132,7 +135,7 @@
                   <form-component
                     :key="subGroupItem.id"
                     v-model="formData[subGroupItem.id]"
-                    :editable="item.editable"
+                    :editable="item.isEditable && subGroupItem.editable"
                     :options="subGroupItem.children || []"
                     :com-type="subGroupItem.component.type"
                     :binds="subGroupItem.component.binds"
@@ -194,7 +197,7 @@
         </template>
       </a-form>
     </div>
-    <EditPageFooter v-show="!isDisabled">
+    <!-- <EditPageFooter v-show="!isDisabled">
       <template #save>
         <a-button type="primary" class="save-btn" @click="handleUpdate">{{
           $t('common.button.save')
@@ -205,13 +208,13 @@
           $t('common.button.cancel')
         }}</a-button>
       </template>
-    </EditPageFooter>
+    </EditPageFooter> -->
   </a-card>
 </template>
 
 <script lang="ts" setup>
   import EditPageFooter from '@/components/edit-page-footer/index.vue';
-  import { isArray, each, isObject, keys } from 'lodash';
+  import { isArray, map, each, isObject, keys } from 'lodash';
   import {
     reactive,
     ref,
@@ -293,7 +296,7 @@
     ];
   };
   const setFormData = () => {
-    formref.value.resetFields();
+    formref.value?.resetFields();
     if (!props.dataInfo.dataList || !props.dataInfo.dataList.length) {
       formData.value[props.dataInfo.id] = props.dataInfo.value;
     } else {
@@ -306,7 +309,7 @@
         } else if (item?.subGroup?.length) {
           const subList = item?.subGroup;
           each(subList, (child) => {
-            formData.value[child.id] = item.value[child.id];
+            formData.value[child.id] = child.value;
           });
         } else {
           formData.value[item.id] = item.value;
@@ -353,9 +356,9 @@
     }
     return list.join('/');
   };
-  const getValueList = () => {
+  const getValueList = (fieldList) => {
     const list: Array<BatchItem> = [];
-    rawDataList.forEach((item) => {
+    fieldList.forEach((item) => {
       if (item.editable) {
         list.push({
           id: item.id,
@@ -367,28 +370,36 @@
     });
     return list;
   };
-  const handleUpdate = async (value) => {
-    const res = await formref.value.validate();
+  const handleUpdate = async (group) => {
+    const fieldList = group.subGroup || [];
+    const fields = map(fieldList, (item) => {
+      return item.id;
+    });
+    const res = await formref.value.validateField([...fields]);
     if (!res) {
       try {
-        const valueList = getValueList();
+        const valueList = getValueList(fieldList);
         await updateUserSettingBatch(valueList);
         Message.success(t('common.message.success'));
-        isDisabled.value = true;
+        // isDisabled.value = true;
         emits('settingSave');
+        group.isEditable = false;
       } catch (error) {
         console.log(error);
       }
     }
   };
   const handleEditSubGroup = (item) => {
-    item.editable = true;
+    item.isEditable = true;
     console.log('group:', item);
   };
   const handleEditCancel = (item) => {
-    item.editable = false;
+    item.isEditable = false;
   };
-  const handleSaveSubGroup = async (item) => {};
+  const handleSaveSubGroup = async (item) => {
+    console.log('formData:', item, formData.value, rawDataList);
+    handleUpdate(item);
+  };
   watch(
     () => props.dataInfo,
     (val) => {
@@ -439,6 +450,11 @@
       .arco-icon {
         font-size: 16px;
       }
+    }
+
+    .sub-group-title {
+      padding-bottom: 8px;
+      border-bottom: 1px solid var(--color-border-2);
     }
   }
 </style>

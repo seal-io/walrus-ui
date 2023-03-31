@@ -19,7 +19,7 @@
 </template>
 
 <script lang="ts" setup>
-  import { cloneDeep, isArray, each, isObject } from 'lodash';
+  import { cloneDeep, isArray, each, isObject, map } from 'lodash';
   import { onMounted, ref, computed, reactive } from 'vue';
   import { useUserStore } from '@/store';
   import { useRoute } from 'vue-router';
@@ -66,9 +66,12 @@
               }
             });
           } else if (sItem?.subGroup?.length) {
-            value = {};
-            each(sItem.subGroup, (child) => {
-              value[child.id] = settingFormData.value[child.id]['value'];
+            sItem.subGroup = map(sItem.subGroup, (child) => {
+              // value[child.id] = settingFormData.value[child.id]['value'];
+              return {
+                ...child,
+                ...settingFormData.value[child.id]
+              };
             });
           } else {
             value = settingFormData.value[sItem.id]

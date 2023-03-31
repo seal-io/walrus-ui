@@ -39,6 +39,7 @@ export interface DataListItem {
   label: string;
   desc?: string;
   editable?: boolean;
+  isEditable?: boolean;
   style?: Record<string, any>;
   private?: boolean;
   component: ComponentType;
