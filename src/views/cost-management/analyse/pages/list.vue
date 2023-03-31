@@ -64,17 +64,11 @@
           :title="$t('cost.analyse.table.manage')"
         >
           <template #cell="{ record }">
-            <a-link
-              v-if="!record.builtin"
-              size="small"
-              @click="handleViewPerspective(record)"
-              >{{
-                record.builtin
-                  ? builtinViewMap[toLower(record.name)]
-                  : record.name
-              }}</a-link
-            >
-            <span v-else>{{ record.name }}</span>
+            <a-link size="small" @click="handleView(record)">{{
+              record.builtin
+                ? builtinViewMap[toLower(record.name)]
+                : record.name
+            }}</a-link>
           </template>
         </a-table-column>
         <a-table-column
@@ -145,11 +139,15 @@
                   <template #icon><icon-edit class="size-16" /></template>
                 </a-link>
               </a-tooltip>
-              <a-tooltip :content="$t('common.button.detail')">
-                <a-link type="text" size="small" @click="handleView(record)">
+              <!-- <a-tooltip :content="$t('common.button.detail')">
+                <a-link
+                  type="text"
+                  size="small"
+                  @click="handleViewPerspective(record)"
+                >
                   <template #icon><icon-list class="size-16" /></template>
                 </a-link>
-              </a-tooltip>
+              </a-tooltip> -->
             </a-space>
           </template>
         </a-table-column>

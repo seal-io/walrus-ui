@@ -9,7 +9,7 @@
             allow-clear
             :options="projectList"
             placeholder="请选择项目"
-            @change="handleSearch"
+            @change="handleProjectChange"
           ></a-select>
           <a-input
             v-model="queryParams.query"
@@ -145,6 +145,7 @@
   import { reactive, ref, onMounted, computed } from 'vue';
   import useCallCommon from '@/hooks/use-call-common';
   import { Message } from '@arco-design/web-vue';
+  import localStore from '@/utils/localStore';
   import { deleteModal, execSucceed } from '@/utils/monitor';
   import useRowSelect from '@/hooks/use-row-select';
   import FilterBox from '@/components/filter-box/index.vue';
@@ -153,6 +154,7 @@
   import { querySecrets, deleteSecret } from '../api';
   import createSecret from '../components/create-secret.vue';
 
+  const HOT_SECRET_ID = 'HOT_SECRET_ID';
   const { rowSelection, selectedKeys, handleSelectChange } = useRowSelect();
   const { router, t, route } = useCallCommon();
   let timer: any = null;
@@ -181,6 +183,7 @@
     return itemData?.label || '';
   };
   const getProjectList = async () => {
+    const hotSecretId = await localStore.getValue(HOT_SECRET_ID);
     try {
       const params = {
         page: 1,
@@ -193,7 +196,15 @@
           value: item.id
         };
       });
-      queryParams.projectID = get(projectList.value, '0.value') || '';
+      const hotItem = find(
+        projectList.value,
+        (item) => item.value === hotSecretId
+      );
+      if (hotItem) {
+        queryParams.projectID = hotSecretId;
+      } else {
+        queryParams.projectID = get(projectList.value, '0.value') || '';
+      }
     } catch (error) {
       projectList.value = [];
       console.log(error);
@@ -224,6 +235,10 @@
       queryParams.page = 1;
       handleFilter();
     }, 100);
+  };
+  const handleProjectChange = (val) => {
+    localStore.setValue(HOT_SECRET_ID, val);
+    handleSearch();
   };
   const handleReset = () => {
     queryParams.query = '';

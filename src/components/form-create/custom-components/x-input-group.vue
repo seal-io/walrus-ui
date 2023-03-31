@@ -13,7 +13,7 @@
           :error="!dataKey && triggerValidate"
           :model-value="dataKey"
           placeholder="key"
-          :max-length="50"
+          :max-length="100"
           v-bind="$attrs"
           show-word-limit
           style="width: 100%"
@@ -24,7 +24,7 @@
           v-else
           :model-value="dataKey"
           placeholder="key"
-          :max-length="50"
+          :max-length="100"
           v-bind="$attrs"
           style="width: 100%"
           :editor-id="`${formId}_keyEditor${position}`"
@@ -44,7 +44,7 @@
           :error="!dataValue && triggerValidate"
           v-bind="$attrs"
           placeholder="value"
-          :max-length="50"
+          :max-length="$attrs.MaxLength"
           show-word-limit
           @input="(val) => handleDataChange(val, 'value')"
           @change="(val) => handleDataChange(val, 'value')"
@@ -67,7 +67,7 @@
           v-bind="$attrs"
           placeholder="value"
           style="width: 100%"
-          :max-length="50"
+          :max-length="100"
           :editor-id="`${formId}_valueEditor${position}`"
           :source="completeData"
           show-word-limit
@@ -87,7 +87,7 @@
           :error="!dataDesc && triggerValidate"
           :model-value="dataDesc"
           placeholder="description"
-          :max-length="50"
+          :max-length="100"
           v-bind="$attrs"
           show-word-limit
           @input="(val) => handleDataChange(val, 'description', 'input')"

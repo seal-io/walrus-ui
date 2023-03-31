@@ -142,6 +142,7 @@
       }
     }
   });
+  // 1: create 2: update 3: delete
   const accessURLList = ref<EndPointRow[]>([]);
   const environmentList = inject('environmentList', ref([]));
   const instanceInfo = inject('instanceInfo', ref({}));

@@ -71,7 +71,7 @@
         >
         </a-table-column>
         <a-table-column
-          v-if="category === 'Kubernetes'"
+          v-if="category !== 'Custom'"
           ellipsis
           tooltip
           :cell-style="{ minWidth: '40px' }"

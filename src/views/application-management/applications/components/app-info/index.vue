@@ -175,6 +175,7 @@
     omit,
     pick,
     get,
+    filter,
     concat,
     map,
     isEqual,
@@ -326,13 +327,13 @@
     moduleAction.value = 'create';
     setTimeout(() => {
       showEditModal.value = true;
-    }, 100);
+    }, 150);
   };
   const handleClickInstance = (data) => {
     viewModuleInfo.value = data;
     setTimeout(() => {
       showViewModal.value = true;
-    }, 100);
+    }, 150);
   };
   const handleDeleteVariable = (index) => {
     appInfo.variables.splice(index, 1);
@@ -511,7 +512,8 @@
     try {
       const params = {
         ...appInfo,
-        ...result
+        ...result,
+        variables: filter(appInfo.variables, (item) => item.name)
       };
       console.log('submit:', appInfo, result);
       submitLoading.value = true;

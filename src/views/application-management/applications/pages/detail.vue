@@ -86,7 +86,15 @@
 </template>
 
 <script lang="ts" setup>
-  import { reactive, ref, markRaw, provide, computed, inject } from 'vue';
+  import {
+    reactive,
+    ref,
+    markRaw,
+    provide,
+    computed,
+    inject,
+    onMounted
+  } from 'vue';
   import { keys, get, map, assignIn, cloneDeep, find } from 'lodash';
   import { deleteModal, execSucceed } from '@/utils/monitor';
   import useCallCommon from '@/hooks/use-call-common';
@@ -94,10 +102,10 @@
   import thumbButton from '@/components/buttons/thumb-button.vue';
   import { queryEnvironments } from '@/views/operation-hub/environments/api';
   import StatusLabel from '@/views/operation-hub/connectors/components/status-label.vue';
+  import { createWebsocketInstance } from '@/hooks/use-websocket';
   import instanceThumb from '../components/instance-thumb.vue';
   import { InstanceData, AppFormData } from '../config/interface';
   import { instanceActions } from '../config/index';
-
   import AppDetail from '../components/app-info/index.vue';
   import InstanceDetail from '../components/instance/index.vue';
   import createInstance from '../components/create-instance.vue';
@@ -120,10 +128,10 @@
   const environmentList = ref<{ label: string; value: string }[]>([]);
   const pgCom = ref('appDetail'); // instanceDetail、appDetail
   const showInstanceModal = ref(false);
-  const projectBasicInfo = ref<any>({});
   const instanceInfo = ref({});
   const activeInstanceId = ref('');
   const activeInstanceInfo = ref({});
+  const websocketInstanceList = ref<any>(null);
   const appInfo = reactive({
     name: '',
     description: '',
@@ -178,20 +186,6 @@
     setTimeout(() => {
       showInstanceModal.value = true;
     }, 100);
-  };
-
-  const transformlabels = () => {
-    const labelKeys = keys(projectBasicInfo.value.labels);
-    if (labelKeys.length) {
-      labelList.value = labelKeys.map((k) => {
-        return {
-          key: k,
-          value: get(projectBasicInfo.value, `labels.${k}`)
-        };
-      });
-    } else {
-      labelList.value = [];
-    }
   };
 
   const handleClickApp = () => {
@@ -319,6 +313,20 @@
       handleClickInstance(data);
     }
   };
+  const updateInstanceList = (message) => {
+    console.log('message:', message);
+  };
+  const createInstanceListWebsocket = () => {
+    const appId = route.query.id || '';
+    if (!id) return;
+    websocketInstanceList.value?.close?.();
+    websocketInstanceList.value = createWebsocketInstance({
+      url: `/application-instances?applicationID=${appId}`,
+      onmessage: updateInstanceList
+    });
+    console.log('websocketInstanceList==', websocketInstanceList.value);
+  };
+
   const init = async () => {
     await getApplicationInstances();
     getEnvironmentList();
@@ -326,6 +334,10 @@
     getApplicationDetail();
     handleActiveInstance();
   };
+  onMounted(() => {
+    // createInstanceListWebsocket();
+  });
+
   init();
 </script>
 
