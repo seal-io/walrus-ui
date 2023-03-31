@@ -54,14 +54,14 @@
           tooltip
           :cell-style="{ minWidth: '40px' }"
           data-index="name"
-          :title="$t('operation.connectors.table.name')"
+          title="连接器"
         >
         </a-table-column>
         <a-table-column
           ellipsis
           tooltip
           :cell-style="{ minWidth: '40px' }"
-          data-index="category"
+          data-index="type"
           :title="$t('operation.connectors.table.type')"
         >
         </a-table-column>

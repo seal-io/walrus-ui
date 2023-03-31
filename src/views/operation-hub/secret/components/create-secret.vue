@@ -19,11 +19,11 @@
       <a-form ref="formref" :model="formData" auto-label-width>
         <a-form-item
           :disabled="!!formData.id && action === 'edit'"
-          :label="$t('applications.applications.table.name')"
+          label="名称"
           field="name"
           validate-trigger="change"
           :rules="[
-            { required: true, message: '密钥名称必填' },
+            { required: true, message: '名称必填' },
             {
               match: /^(?![\d])[0-9A-Za-z_]+$/,
               message: '由字母、数字、下划线组成，不能以数字开头'
@@ -54,7 +54,7 @@
           </a-select>
         </a-form-item> -->
         <a-form-item
-          :label="$t('applications.secret.value')"
+          label="内容"
           field="value"
           validate-trigger="change"
           :rules="[

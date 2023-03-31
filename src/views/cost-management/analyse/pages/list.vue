@@ -61,7 +61,7 @@
           tooltip
           :cell-style="{ minWidth: '40px' }"
           data-index="name"
-          :title="$t('cost.analyse.table.name')"
+          :title="$t('cost.analyse.table.manage')"
         >
           <template #cell="{ record }">
             <span>{{
@@ -106,6 +106,20 @@
         >
           <template #cell="{ record }">
             <span>{{ getTimeValue(record?.startTime) }}</span>
+          </template>
+        </a-table-column>
+        <a-table-column
+          ellipsis
+          tooltip
+          :cell-style="{ minWidth: '40px' }"
+          align="center"
+          data-index="createTime"
+          :title="$t('common.table.createTime')"
+        >
+          <template #cell="{ record }">
+            <span>{{
+              dayjs(record?.createTime).format('YYYY-MM-DD HH:mm:ss')
+            }}</span>
           </template>
         </a-table-column>
         <a-table-column
@@ -163,6 +177,7 @@
     pickBy,
     includes
   } from 'lodash';
+  import dayjs from 'dayjs';
   import { reactive, ref, onMounted } from 'vue';
   import useCallCommon from '@/hooks/use-call-common';
   import { deleteModal, execSucceed } from '@/utils/monitor';

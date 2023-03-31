@@ -17,7 +17,7 @@
           tooltip
           :cell-style="{ minWidth: '40px' }"
           data-index="name"
-          :title="$t('operation.environments.table.name')"
+          title="环境"
         >
         </a-table-column>
         <a-table-column

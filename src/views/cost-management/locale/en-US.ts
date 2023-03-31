@@ -1,7 +1,7 @@
 export default {
   'cost.analyse.menu': 'Cost Analyse',
   'cost.analyse.table.create': 'New Perspective',
-  'cost.analyse.table.manage': 'Perspective Management',
+  'cost.analyse.table.manage': 'Perspective',
   'cost.analyse.table.holder': 'please enter a perspective',
   'cost.analyse.view.holder': 'please select a perspective',
   'cost.analyse.view.strategy': 'Add Filter Conditions',

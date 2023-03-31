@@ -54,5 +54,5 @@ export default {
   'account.settings.token.expireDate': '到期时间',
   'account.settings.token.desc': '密钥可用于访问 Seal API.',
   'account.settings.token.tips':
-    '确保立即复制您的个人访问密钥。您将无法再次看到它！',
+    '确保立即复制您的个人访问密钥。您将无法再次看到它！'
 };
