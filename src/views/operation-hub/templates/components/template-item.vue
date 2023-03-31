@@ -24,7 +24,9 @@
                 error: get(dataInfo, 'status') === 'Error'
               }"
             ></StatusLabel>
-            <span class="title-text">{{ dataInfo.id }}</span>
+            <a-link class="title-text" size="small" @click="handleView">{{
+              dataInfo.id
+            }}</a-link>
           </div>
           <div class="btn-wrap">
             <a-dropdown>
@@ -107,6 +109,16 @@
   const handleEditTemplate = () => {
     router.push({
       name: 'TemplateDetail',
+      params: { action: 'edit' },
+      query: {
+        id: props.dataInfo.id
+      }
+    });
+  };
+  const handleView = () => {
+    router.push({
+      name: 'TemplateDetail',
+      params: { action: 'view' },
       query: {
         id: props.dataInfo.id
       }

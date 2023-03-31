@@ -15,6 +15,7 @@ export default {
     'The cluster cost analysis tool is unavailable, try reinstalling',
   'operation.connectors.detail.readfile': 'Read from a file',
   'operation.connectors.title.edit': 'Edit {type} Connector',
+  'operation.connectors.title.view': '{type} Connector Details',
   'operation.connectors.title.new': 'New {type} Connector',
   'operation.connectors.detail.fileformat': 'File format: yaml or text file',
   'operation.connectors.detail.clusterName': 'Cluster Name',

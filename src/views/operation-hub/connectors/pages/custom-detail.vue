@@ -1,6 +1,11 @@
 <template>
   <comCard top-gap class="kuber-detail-wrap">
-    <GroupTitle :title="title" show-back></GroupTitle>
+    <GroupTitle
+      :title="title"
+      show-back
+      :show-edit="pageAction === 'view'"
+      @edit="handleEdit"
+    ></GroupTitle>
     <div>
       <a-form ref="formref" :model="formData" auto-label-width>
         <a-form-item
@@ -8,17 +13,19 @@
           field="name"
           :rules="[
             {
-              required: true,
+              required: pageAction === 'edit',
               message: '名称必填'
             }
           ]"
         >
           <a-input
+            v-if="pageAction === 'edit'"
             v-model="formData.name"
             style="width: 500px"
             :max-length="50"
             show-word-limit
           ></a-input>
+          <span v-else>{{ formData.name }}</span>
         </a-form-item>
         <!-- <a-form-item
           field="description"
@@ -36,12 +43,14 @@
         <a-form-item
           label="类型"
           field="type"
-          :rules="[{ required: true, message: '类型必填' }]"
+          :rules="[{ required: pageAction === 'edit', message: '类型必填' }]"
         >
-          <a-input v-model="formData.type" style="width: 500px"></a-input>
-          <template #extra>
-            <span class="tips"></span>
-          </template>
+          <a-input
+            v-if="pageAction === 'edit'"
+            v-model="formData.type"
+            style="width: 500px"
+          ></a-input>
+          <span v-else>{{ formData.type }}</span>
         </a-form-item>
         <a-form-item
           label="属性"
@@ -49,13 +58,13 @@
           :rules="[
             {
               validator: validatorAttribute,
-              required: true,
+              required: pageAction === 'edit',
               message: '属性必填'
             }
           ]"
         >
           <a-space
-            v-if="labelList?.length"
+            v-if="labelList?.length && pageAction === 'edit'"
             style="display: flex; flex-direction: column"
             direction="vertical"
           >
@@ -75,10 +84,13 @@
               @delete="handleDeleteLabel(labelList, sIndex)"
             ></xInputGroup>
           </a-space>
+          <template v-if="pageAction === 'view' && labelList?.length">
+            <labelsList :labels="formData.configData.attributes"></labelsList>
+          </template>
         </a-form-item>
       </a-form>
     </div>
-    <EditPageFooter>
+    <EditPageFooter v-if="pageAction === 'edit'">
       <template #save>
         <a-button
           type="primary"
@@ -103,14 +115,17 @@
   import { ref, reactive, onMounted, computed } from 'vue';
   import GroupTitle from '@/components/group-title/index.vue';
   import readBlob from '@/utils/readBlob';
+  import usePageAction from '@/hooks/use-page-action';
   import EditPageFooter from '@/components/edit-page-footer/index.vue';
   import xInputGroup from '@/components/form-create/custom-components/x-input-group.vue';
   import useCallCommon from '@/hooks/use-call-common';
   import ProviderIcon from '@/components/provider-icon/index.vue';
+  import labelsList from '@/views/application-management/applications/components/app-info/labels-list.vue';
   import { ConnectorFormData } from '../config/interface';
   import { createConnector, updateConnector, queryItemConnector } from '../api';
 
   const { t, router, route } = useCallCommon();
+  const { pageAction, handleEdit } = usePageAction();
   const id = route.query.id as string;
   const formref = ref();
   const submitLoading = ref(false);
@@ -194,6 +209,11 @@
     }
   };
   const handleCancel = () => {
+    if (pageAction.value === 'edit' && route.params.action === 'view') {
+      pageAction.value = 'view';
+      getConnectorInfo();
+      return;
+    }
     router.back();
   };
   getConnectorInfo();

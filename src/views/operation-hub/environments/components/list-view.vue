@@ -19,6 +19,11 @@
           data-index="name"
           title="环境"
         >
+          <template #cell="{ record }">
+            <a-link type="text" size="small" @click="handleView(record)">
+              {{ record.name }}
+            </a-link>
+          </template>
         </a-table-column>
         <a-table-column
           ellipsis
@@ -102,6 +107,18 @@
   const handleEdit = (row) => {
     router.push({
       name: 'EnvironmentDetail',
+      params: {
+        action: 'edit'
+      },
+      query: { id: row.id }
+    });
+  };
+  const handleView = (row) => {
+    router.push({
+      name: 'EnvironmentDetail',
+      params: {
+        action: 'view'
+      },
       query: { id: row.id }
     });
   };
