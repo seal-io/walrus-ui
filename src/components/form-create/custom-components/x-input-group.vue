@@ -37,8 +37,20 @@
       <!-- value -->
       <div :span="8" style="display: flex; flex: 1; align-items: center">
         <span style="padding: 0 4px">:</span>
+        <a-input-password
+          v-if="showPassword"
+          style="width: 100%"
+          :model-value="dataValue"
+          :error="!dataValue && triggerValidate"
+          v-bind="$attrs"
+          placeholder="value"
+          :max-length="50"
+          show-word-limit
+          @input="(val) => handleDataChange(val, 'value')"
+          @change="(val) => handleDataChange(val, 'value')"
+        ></a-input-password>
         <a-input
-          v-if="!showHintInput"
+          v-else-if="!showHintInput"
           style="width: 100%"
           :model-value="dataValue"
           :error="!dataValue && triggerValidate"
@@ -166,6 +178,12 @@
       }
     },
     showDescription: {
+      type: Boolean,
+      default() {
+        return false;
+      }
+    },
+    showPassword: {
       type: Boolean,
       default() {
         return false;
