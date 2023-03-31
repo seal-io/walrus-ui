@@ -38,6 +38,7 @@
           </template>
         </a-table-column>
         <a-table-column
+          v-if="action === 'edit'"
           align="center"
           :width="160"
           :title="$t('common.table.operation')"
@@ -72,6 +73,12 @@
       type: Array as PropType<ConnectorRowData[]>,
       default() {
         return [];
+      }
+    },
+    action: {
+      type: String,
+      default() {
+        return 'edit';
       }
     }
   });

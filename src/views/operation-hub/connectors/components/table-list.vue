@@ -56,6 +56,11 @@
           data-index="name"
           title="连接器"
         >
+          <template #cell="{ record }">
+            <a-link type="text" size="small" @click="handleView(record)">
+              {{ record.name }}
+            </a-link>
+          </template>
         </a-table-column>
         <a-table-column
           ellipsis
@@ -318,7 +323,21 @@
   };
   const handleCreate = () => {
     router.push({
-      name: props.editPage
+      name: props.editPage,
+      params: {
+        action: 'edit'
+      }
+    });
+  };
+  const handleView = (row) => {
+    router.push({
+      name: props.editPage,
+      params: {
+        action: 'view'
+      },
+      query: {
+        id: row.id
+      }
     });
   };
   const handleDeleteConfirm = async () => {
@@ -345,6 +364,9 @@
   const handleClickEdit = (row) => {
     router.push({
       name: props.editPage,
+      params: {
+        action: 'edit'
+      },
       query: { id: row.id }
     });
   };

@@ -1,6 +1,11 @@
 <template>
   <comCard top-gap class="kuber-detail-wrap">
-    <GroupTitle :title="title" show-back></GroupTitle>
+    <GroupTitle
+      :title="title"
+      show-back
+      :show-edit="pageAction === 'view'"
+      @edit="handleEdit"
+    ></GroupTitle>
     <div>
       <a-form ref="formref" :model="formData" auto-label-width>
         <a-form-item
@@ -14,13 +19,16 @@
           ]"
         >
           <a-input
+            v-if="pageAction === 'edit'"
             v-model="formData.name"
             style="width: 500px"
             :max-length="50"
             show-word-limit
           ></a-input>
+          <span v-else>{{ formData.name }}</span>
         </a-form-item>
         <a-form-item
+          v-if="pageAction === 'edit'"
           field="configData.kubeconfig"
           :hide-asterisk="false"
           label="KubeConfig"
@@ -64,18 +72,21 @@
           </template>
         </a-form-item>
         <a-form-item label="">
-          <!-- <template #label>
+          <template #label>
             <div class="label-wrap">
-              <span class="text">是否部署成本分析器(可选)</span>
+              <span class="text">成本分析器(可选)</span>
             </div>
-          </template> -->
-          <a-checkbox v-model="formData.enableFinOps">{{
-            $t('operation.connectors.rules.enable')
-          }}</a-checkbox>
+          </template>
+          <a-checkbox
+            v-if="pageAction == 'edit'"
+            v-model="formData.enableFinOps"
+            >{{ $t('operation.connectors.rules.enable') }}</a-checkbox
+          >
+          <span v-else>{{ formData.enableFinOps ? '已开启' : '未部署' }}</span>
         </a-form-item>
       </a-form>
     </div>
-    <EditPageFooter>
+    <EditPageFooter v-if="pageAction === 'edit'">
       <template #save>
         <a-button
           type="primary"
@@ -102,10 +113,12 @@
   import readBlob from '@/utils/readBlob';
   import EditPageFooter from '@/components/edit-page-footer/index.vue';
   import useCallCommon from '@/hooks/use-call-common';
+  import usePageAction from '@/hooks/use-page-action';
   import { ConnectorFormData } from '../config/interface';
   import { createConnector, updateConnector, queryItemConnector } from '../api';
 
   const { t, router, route } = useCallCommon();
+  const { pageAction, handleEdit } = usePageAction();
   const id = route.query.id as string;
   const formref = ref();
   const submitLoading = ref(false);
@@ -121,10 +134,16 @@
   });
 
   const title = computed(() => {
-    if (id) {
+    if (!id) {
+      return t('operation.connectors.title.new', { type: 'Kubernetes' });
+    }
+    if (id && pageAction.value === 'edit') {
       return t('operation.connectors.title.edit', { type: 'Kubernetes' });
     }
-    return t('operation.connectors.title.new', { type: 'Kubernetes' });
+    if (id && pageAction.value === 'view') {
+      return t('operation.connectors.title.view', { type: 'Kubernetes' });
+    }
+    return t('operation.connectors.title.edit', { type: 'Kubernetes' });
   });
   const handleUploadSuccess = async (list, fileItem) => {
     const res = await readBlob(fileItem.file);
@@ -161,6 +180,11 @@
     }
   };
   const handleCancel = () => {
+    if (pageAction.value === 'edit' && route.params.action === 'view') {
+      pageAction.value = 'view';
+      getConnectorInfo();
+      return;
+    }
     router.back();
   };
   getConnectorInfo();

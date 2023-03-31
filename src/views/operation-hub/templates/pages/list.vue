@@ -130,7 +130,10 @@
   };
   const handleCreateProject = () => {
     router.push({
-      name: 'TemplateDetail'
+      name: 'TemplateDetail',
+      params: {
+        action: 'edit'
+      }
     });
   };
   const handleDraftModule = () => {

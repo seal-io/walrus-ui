@@ -18,6 +18,11 @@
           data-index="id"
           title="模块"
         >
+          <template #cell="{ record }">
+            <a-link size="small" @click="handleView(record)">{{
+              record.id
+            }}</a-link>
+          </template>
         </a-table-column>
 
         <a-table-column
@@ -206,7 +211,18 @@
     }
   };
   const handleEdit = (row) => {
-    router.push({ name: 'TemplateDetail', query: { id: row.id } });
+    router.push({
+      name: 'TemplateDetail',
+      params: { action: 'edit' },
+      query: { id: row.id }
+    });
+  };
+  const handleView = (row) => {
+    router.push({
+      name: 'TemplateDetail',
+      params: { action: 'view' },
+      query: { id: row.id }
+    });
   };
   const handlRefresh = async (row) => {
     try {

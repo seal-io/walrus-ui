@@ -2,37 +2,39 @@
   <ComCard top-gap>
     <GroupTitle
       show-back
-      :title="
-        id
-          ? $t('operation.environments.edit')
-          : $t('operation.environments.create')
-      "
+      :show-edit="pageAction === 'view'"
+      :title="title"
+      @edit="handleEdit"
     ></GroupTitle>
     <a-form ref="formref" :model="formData" auto-label-width>
       <a-form-item
         :label="$t('operation.environments.table.name')"
         field="name"
         :validate-trigger="['change']"
-        :rules="[{ required: true, message: '环境名称必填' }]"
+        :rules="[{ required: pageAction === 'edit', message: '环境名称必填' }]"
       >
         <a-input
+          v-if="pageAction === 'edit'"
           v-model="formData.name"
           style="width: 500px"
           :max-length="50"
           show-word-limit
         ></a-input>
+        <span v-else>{{ formData.name }}</span>
       </a-form-item>
       <a-form-item
         :label="$t('operation.environments.table.description')"
         field="description"
       >
         <a-textarea
+          v-if="pageAction === 'edit'"
           v-model="formData.description"
           style="width: 500px"
           :max-length="200"
           show-word-limit
           :auto-size="{ minRows: 6, maxRows: 10 }"
         ></a-textarea>
+        <div v-else class="description-content">{{ formData.description }}</div>
       </a-form-item>
       <a-form-item
         :label="$t('operation.connectors.menu')"
@@ -41,12 +43,14 @@
         :rules="[{ required: false, message: '请添加连接器' }]"
       >
         <connectorsTable
+          :action="pageAction"
           :list="formData?.edges || []"
           @delete="handleDeleteConnector"
         ></connectorsTable>
         <template #extra>
           <div style="display: flex">
             <a-button
+              v-if="pageAction === 'edit'"
               type="primary"
               size="small"
               style="margin-right: 8px; padding: 0 6px"
@@ -68,7 +72,7 @@
         </template>
       </a-form-item>
     </a-form>
-    <EditPageFooter>
+    <EditPageFooter v-if="pageAction === 'edit'">
       <template #save>
         <a-button
           type="primary"
@@ -89,14 +93,15 @@
 </template>
 
 <script lang="ts" setup>
-  import { ref, reactive } from 'vue';
-  import { assignIn, concat, each, includes, map, remove, get } from 'lodash';
+  import { ref, computed } from 'vue';
+  import { concat, each, includes, map, remove, get } from 'lodash';
   import GroupTitle from '@/components/group-title/index.vue';
   import EditPageFooter from '@/components/edit-page-footer/index.vue';
   import useCallCommon from '@/hooks/use-call-common';
   import { useTabBarStore } from '@/store';
   import { queryConnectors } from '@/views/operation-hub/connectors/api';
-  import { EnvironFormData, EnvironmentRow } from '../config/interface';
+  import usePageAction from '@/hooks/use-page-action';
+  import { EnvironFormData } from '../config/interface';
   import connectorsTable from '../components/connectors.vue';
   import ConnectorSelector from '../components/connector-selector.vue';
   import {
@@ -107,6 +112,7 @@
 
   const tabBarStore = useTabBarStore();
   const { router, route } = useCallCommon();
+  const { pageAction, handleEdit } = usePageAction();
   const id = route.query.id as string;
   const formref = ref();
   const connectorList = ref<{ label: string; value: string }[]>([]);
@@ -118,6 +124,16 @@
     connectorIDs: [],
     connectors: [],
     edges: []
+  });
+
+  const title = computed(() => {
+    if (!id) {
+      return '新建环境';
+    }
+    if (id && pageAction.value === 'edit') {
+      return '编辑环境';
+    }
+    return '环境详情';
   });
   const setFormDataConnectors = (connectors) => {
     each(connectorList.value, (item) => {
@@ -211,6 +227,11 @@
     }
   };
   const handleCancel = () => {
+    if (pageAction.value === 'edit' && route.params.action === 'view') {
+      pageAction.value = 'view';
+      getItemEnvironmentInfo();
+      return;
+    }
     router.back();
   };
   const init = async () => {

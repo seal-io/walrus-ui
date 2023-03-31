@@ -9,11 +9,11 @@ export default [
       locale: 'operation.templates.menu',
       requiresAuth: true,
       icon: 'icon-apps',
-      cachePage: ['templateGPT', 'templateDetail']
+      cachePages: ['templateGPT', 'TemplateDetail']
     }
   },
   {
-    path: 'templates/detail',
+    path: 'templates/detail/:action',
     name: 'TemplateDetail',
     component: () => import('@/views/operation-hub/templates/pages/detail.vue'),
     meta: {

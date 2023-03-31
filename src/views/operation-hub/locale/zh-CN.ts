@@ -12,6 +12,7 @@ export default {
   'operation.connectors.ready.tips': '集群成本分析工具为可用状态',
   'operation.connectors.error.tips': '集群成本分析工具不可用，尝试重装',
   'operation.connectors.title.edit': '编辑{type}连接器',
+  'operation.connectors.title.view': '{type}连接器详情',
   'operation.connectors.title.new': '新建{type}连接器',
   'operation.connectors.detail.clusterName': '集群名称',
   'operation.connectors.detail.readfile': '从文件读取',

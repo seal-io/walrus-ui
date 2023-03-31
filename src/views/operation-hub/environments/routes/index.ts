@@ -14,7 +14,7 @@ export default [
     }
   },
   {
-    path: 'environment/detail',
+    path: 'environment/detail/:action',
     name: 'EnvironmentDetail',
     component: () =>
       import('@/views/operation-hub/environments/pages/detail.vue'),

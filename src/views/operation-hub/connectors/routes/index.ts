@@ -17,7 +17,7 @@ export default [
     }
   },
   {
-    path: 'connector/k8s-detail',
+    path: 'connector/k8s-detail/:action',
     name: 'ConnectorK8sDetail',
     component: () =>
       import('@/views/operation-hub/connectors/pages/k8s-detail.vue'),
@@ -30,7 +30,7 @@ export default [
     }
   },
   {
-    path: 'connector/scm-detail',
+    path: 'connector/scm-detail/:action',
     name: 'ConnectorScmDetail',
     component: () =>
       import('@/views/operation-hub/connectors/pages/scm-detail.vue'),
@@ -43,7 +43,7 @@ export default [
     }
   },
   {
-    path: 'connector/custom-detail',
+    path: 'connector/custom-detail/:action',
     name: 'ConnectorCustomDetail',
     component: () =>
       import('@/views/operation-hub/connectors/pages/custom-detail.vue'),

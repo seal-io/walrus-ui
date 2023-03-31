@@ -111,7 +111,7 @@
 
   const { router, route, t } = useCallCommon();
   const id = route.query.id as string;
-  const pageAction = ref(route.params.action || 'create');
+  const pageAction = ref(route.params.action || 'edit');
   const pageEditable = ref(false);
   const cloneId = route.query.cloneId as string;
   const activeInstance = ref('app'); //

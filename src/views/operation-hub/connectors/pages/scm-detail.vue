@@ -1,6 +1,11 @@
 <template>
   <comCard top-gap class="kuber-detail-wrap">
-    <GroupTitle :title="title" show-back></GroupTitle>
+    <GroupTitle
+      :title="title"
+      show-back
+      :show-edit="pageAction === 'view'"
+      @edit="handleEdit"
+    ></GroupTitle>
     <div>
       <a-form ref="formref" :model="formData" auto-label-width>
         <a-form-item
@@ -8,17 +13,19 @@
           field="name"
           :rules="[
             {
-              required: true,
+              required: pageAction === 'edit',
               message: '名称必填'
             }
           ]"
         >
           <a-input
+            v-if="pageAction === 'edit'"
             v-model="formData.name"
             style="width: 500px"
             :max-length="50"
             show-word-limit
           ></a-input>
+          <span v-else>{{ formData.name }}</span>
         </a-form-item>
         <!-- <a-form-item
           field="description"
@@ -36,9 +43,13 @@
         <a-form-item
           label="类型"
           field="type"
-          :rules="[{ required: true, message: '类型必选' }]"
+          :rules="[{ required: pageAction === 'edit', message: '类型必选' }]"
         >
-          <a-select v-model="formData.type" style="width: 500px">
+          <a-select
+            v-if="pageAction === 'edit'"
+            v-model="formData.type"
+            style="width: 500px"
+          >
             <a-option
               v-for="(item, index) in typeOptions"
               :key="index"
@@ -51,11 +62,21 @@
               <ProviderIcon :provider="toLower(formData.type)"></ProviderIcon>
             </template>
           </a-select>
+          <span v-else
+            ><ProviderIcon
+              :provider="toLower(formData.type)"
+              class="mright-5"
+            ></ProviderIcon>
+            <span>{{ formData.type }}</span>
+          </span>
         </a-form-item>
         <a-form-item
+          v-if="pageAction === 'edit'"
           label="Access Token"
           field="configData.token"
-          :rules="[{ required: true, message: '访问令牌必填' }]"
+          :rules="[
+            { required: pageAction === 'edit', message: '访问令牌必填' }
+          ]"
         >
           <a-input-password
             v-model="formData.configData.token"
@@ -64,7 +85,7 @@
         </a-form-item>
       </a-form>
     </div>
-    <EditPageFooter>
+    <EditPageFooter v-if="pageAction === 'edit'">
       <template #save>
         <a-button
           type="primary"
@@ -91,11 +112,13 @@
   import readBlob from '@/utils/readBlob';
   import EditPageFooter from '@/components/edit-page-footer/index.vue';
   import useCallCommon from '@/hooks/use-call-common';
+  import usePageAction from '@/hooks/use-page-action';
   import ProviderIcon from '@/components/provider-icon/index.vue';
   import { ConnectorFormData } from '../config/interface';
   import { createConnector, updateConnector, queryItemConnector } from '../api';
 
   const { t, router, route } = useCallCommon();
+  const { pageAction, handleEdit } = usePageAction();
   const id = route.query.id as string;
   const formref = ref();
   const submitLoading = ref(false);
@@ -116,10 +139,16 @@
     // { label: 'GitLab', value: 'Gitlab' }
   ];
   const title = computed(() => {
-    if (id) {
-      return t('operation.connectors.title.edit', { type: '版本管理' });
+    if (!id) {
+      return t('operation.connectors.title.new', { type: '版本控制' });
     }
-    return t('operation.connectors.title.new', { type: '版本管理' });
+    if (id && pageAction.value === 'edit') {
+      return t('operation.connectors.title.edit', { type: '版本控制' });
+    }
+    if (id && pageAction.value === 'view') {
+      return t('operation.connectors.title.view', { type: '版本控制' });
+    }
+    return t('operation.connectors.title.edit', { type: '版本控制' });
   });
   const handleUploadSuccess = async (list, fileItem) => {
     const res = await readBlob(fileItem.file);
@@ -156,6 +185,11 @@
     }
   };
   const handleCancel = () => {
+    if (pageAction.value === 'edit' && route.params.action === 'view') {
+      pageAction.value = 'view';
+      getConnectorInfo();
+      return;
+    }
     router.back();
   };
   getConnectorInfo();

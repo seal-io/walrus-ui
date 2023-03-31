@@ -2,11 +2,9 @@
   <ComCard top-gap>
     <GroupTitle
       show-back
-      :title="
-        id
-          ? $t('operation.templates.detail.edit')
-          : $t('operation.templates.detail.add')
-      "
+      :show-edit="pageAction === 'view'"
+      :title="title"
+      @edit="handleEdit"
     ></GroupTitle>
     <a-form ref="formref" :model="formData" auto-label-width>
       <a-form-item
@@ -15,26 +13,33 @@
         :disabled="!!id"
         :validate-trigger="['change']"
         :rules="[
-          { required: true, message: $t('operation.templates.rules.name') }
+          {
+            required: pageAction === 'edit',
+            message: $t('operation.templates.rules.name')
+          }
         ]"
       >
         <a-input
+          v-if="pageAction === 'edit'"
           v-model="formData.id"
           :max-length="50"
           show-word-limit
         ></a-input>
+        <span v-else>{{ formData.id }}</span>
       </a-form-item>
       <a-form-item
         :label="$t('operation.environments.table.description')"
         field="description"
       >
         <a-textarea
+          v-if="pageAction === 'edit'"
           v-model="formData.description"
           style="width: 360px"
           :auto-size="{ minRows: 6, maxRows: 10 }"
           :max-length="500"
           show-word-limit
         ></a-textarea>
+        <div v-else class="description-content">{{ formData.description }}</div>
       </a-form-item>
       <!-- <a-form-item :label="$t('operation.connectors.table.type')" field="type">
         <a-select v-model="formData.description">
@@ -52,10 +57,17 @@
         :label="$t('operation.templates.detail.source')"
         :validate-trigger="['change']"
         :rules="[
-          { required: true, message: $t('operation.templates.rules.source') }
+          {
+            required: pageAction === 'edit',
+            message: $t('operation.templates.rules.source')
+          }
         ]"
       >
-        <a-input v-model="formData.source"></a-input>
+        <a-input
+          v-if="pageAction === 'edit'"
+          v-model="formData.source"
+        ></a-input>
+        <span v-else>{{ formData.source }}</span>
       </a-form-item>
       <a-form-item
         field="icon"
@@ -67,9 +79,13 @@
           }
         ]"
       >
-        <a-input v-model="formData.icon"></a-input>
+        <a-input v-if="pageAction === 'edit'" v-model="formData.icon"></a-input>
+        <span v-else>{{ formData.icon }}</span>
       </a-form-item>
-      <a-form-item v-if="id" :label="$t('operation.connectors.table.status')">
+      <a-form-item
+        v-if="id && pageAction === 'view'"
+        :label="$t('operation.connectors.table.status')"
+      >
         <StatusLabel
           :status="{
             status: get(formData, 'status'),
@@ -82,7 +98,7 @@
       </a-form-item>
     </a-form>
     <a-tabs
-      v-if="id"
+      v-if="id && pageAction === 'view'"
       :active-key="activeKey"
       lazy-load
       class="page-line-tabs"
@@ -106,7 +122,7 @@
         </div>
       </template>
     </a-tabs>
-    <EditPageFooter>
+    <EditPageFooter v-if="pageAction === 'edit'">
       <template #save>
         <a-button
           type="primary"
@@ -131,10 +147,11 @@
 <script lang="ts" setup>
   import { assignIn, find, get, map } from 'lodash';
   import { urlReg } from '@/utils/validate';
-  import { ref, reactive, onMounted, markRaw } from 'vue';
+  import { ref, reactive, onMounted, computed } from 'vue';
   import GroupTitle from '@/components/group-title/index.vue';
   import EditPageFooter from '@/components/edit-page-footer/index.vue';
   import useCallCommon from '@/hooks/use-call-common';
+  import usePageAction from '@/hooks/use-page-action';
   import { useTabBarStore } from '@/store';
   import StatusLabel from '../../connectors/components/status-label.vue';
   import { templateTypeList, tabList } from '../config';
@@ -161,6 +178,7 @@
     []
   );
   const tabBarStore = useTabBarStore();
+  const { pageAction, handleEdit } = usePageAction();
   const version = ref('');
   const activeKey = ref('tabReadme');
   const { router, route } = useCallCommon();
@@ -174,6 +192,16 @@
     source: '',
     // version: '',
     icon: ''
+  });
+
+  const title = computed(() => {
+    if (!id) {
+      return '新建模块';
+    }
+    if (id && pageAction.value === 'view') {
+      return '模块详情';
+    }
+    return '编辑模块';
   });
   const getModuleVersions = async () => {
     if (!id) return;
@@ -224,12 +252,12 @@
           await updateModules(formData);
         } else {
           await createModules(formData);
-          tabBarStore.deleteTag(0, {
-            title: '',
-            name: 'TemplateList',
-            fullPath: ''
-          });
         }
+        tabBarStore.deleteTag(0, {
+          title: '',
+          name: 'TemplateList',
+          fullPath: ''
+        });
         router.back();
         submitLoading.value = false;
       } catch (error) {
@@ -238,6 +266,11 @@
     }
   };
   const handleCancel = () => {
+    if (pageAction.value === 'edit' && route.params.action === 'view') {
+      pageAction.value = 'view';
+      getItemModules();
+      return;
+    }
     router.back();
   };
   const handleTabChange = (val) => {
