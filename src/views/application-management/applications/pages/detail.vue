@@ -87,7 +87,7 @@
 
 <script lang="ts" setup>
   import { reactive, ref, markRaw, provide, computed, inject } from 'vue';
-  import { keys, get, map, assignIn, cloneDeep } from 'lodash';
+  import { keys, get, map, assignIn, cloneDeep, find } from 'lodash';
   import { deleteModal, execSucceed } from '@/utils/monitor';
   import useCallCommon from '@/hooks/use-call-common';
   import GroupTitle from '@/components/group-title/index.vue';
@@ -312,11 +312,19 @@
   const handleCancelEdit = () => {
     handleCancel();
   };
+  const handleActiveInstance = () => {
+    const instance_id = route.query.instanceId || '';
+    if (instance_id) {
+      const data = find(instanseList.value, (item) => item.id === instance_id);
+      handleClickInstance(data);
+    }
+  };
   const init = async () => {
-    getApplicationInstances();
+    await getApplicationInstances();
     getEnvironmentList();
     // provide app info to instances
     getApplicationDetail();
+    handleActiveInstance();
   };
   init();
 </script>

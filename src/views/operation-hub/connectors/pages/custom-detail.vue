@@ -25,7 +25,9 @@
             :max-length="50"
             show-word-limit
           ></a-input>
-          <span v-else>{{ formData.name }}</span>
+          <span v-else class="readonly-view-label">{{
+            formData.name || '-'
+          }}</span>
         </a-form-item>
         <!-- <a-form-item
           field="description"
@@ -50,7 +52,9 @@
             v-model="formData.type"
             style="width: 500px"
           ></a-input>
-          <span v-else>{{ formData.type }}</span>
+          <span v-else class="readonly-view-label">{{
+            formData.type || '-'
+          }}</span>
         </a-form-item>
         <a-form-item
           label="属性"
@@ -85,7 +89,10 @@
             ></xInputGroup>
           </a-space>
           <template v-if="pageAction === 'view' && labelList?.length">
-            <labelsList :labels="formData.configData.attributes"></labelsList>
+            <labelsList
+              style="margin-left: 12px"
+              :labels="formData.configData.attributes"
+            ></labelsList>
           </template>
         </a-form-item>
       </a-form>

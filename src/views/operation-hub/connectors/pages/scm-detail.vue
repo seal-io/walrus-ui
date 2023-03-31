@@ -25,7 +25,9 @@
             :max-length="50"
             show-word-limit
           ></a-input>
-          <span v-else>{{ formData.name }}</span>
+          <span v-else class="readonly-view-label">{{
+            formData.name || '-'
+          }}</span>
         </a-form-item>
         <!-- <a-form-item
           field="description"
@@ -62,7 +64,7 @@
               <ProviderIcon :provider="toLower(formData.type)"></ProviderIcon>
             </template>
           </a-select>
-          <span v-else
+          <span v-else class="readonly-view-label"
             ><ProviderIcon
               :provider="toLower(formData.type)"
               class="mright-5"

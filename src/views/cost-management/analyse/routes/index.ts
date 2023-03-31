@@ -25,7 +25,7 @@ export default [
     }
   },
   {
-    path: 'cost/perspective-edit',
+    path: 'cost/perspective-edit/:action',
     name: 'CostPerspectiveEdit',
     component: () =>
       import('@/views/cost-management/analyse/pages/perspective-edit.vue'),
