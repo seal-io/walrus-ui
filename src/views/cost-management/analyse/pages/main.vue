@@ -44,6 +44,7 @@
 <script lang="ts" setup>
   import { markRaw, ref, onMounted, provide, nextTick } from 'vue';
   import { find, map, toLower } from 'lodash';
+  import localStore from '@/utils/localStore';
   import useCallCommon from '@/hooks/use-call-common';
   import { useCostManageStore } from '@/store';
   import perspectiveAll from './perspective-all.vue';
@@ -53,13 +54,13 @@
   import { queryPerspectives, queryPerspectiveFields } from '../api';
   import { builtinViewMap } from '../config';
 
+  const HOT_PERSPECTIVE_ID = 'HOT_PERSPECTIVE_ID';
   const perspectiveMap = {
     all: markRaw(perspectiveAll),
     cluster: markRaw(perspectiveCluster),
     project: markRaw(perspectiveProject),
     custom: markRaw(perspectiveCustom)
   };
-
   const { router, route } = useCallCommon();
   const costManageStore = useCostManageStore();
   const loading = ref(false);
@@ -70,6 +71,7 @@
   provide('componentName', viewComponent.value);
   provide('perspectiveList', viewList);
   const handleViewChange = (val) => {
+    localStore.setValue(HOT_PERSPECTIVE_ID, val);
     const data = find(viewList.value, (item) => item.value === val);
     viewId.value = val;
     router.replace({
@@ -90,6 +92,7 @@
   };
   const getViewList = async () => {
     if (viewList.value.length) return;
+    const hotProjectId = await localStore.getValue(HOT_PERSPECTIVE_ID);
     console.log('queryPerspectives===1', viewList.value.length);
     try {
       loading.value = true;
@@ -104,8 +107,16 @@
         item.value = item.id;
         return item;
       }) as Array<{ value: string; label: string }>;
-      const allView = find(viewList.value, (sItem) => sItem.label === 'all');
-      viewId.value = allView?.value || '';
+      const hotItem = find(
+        viewList.value,
+        (sItem) => sItem.value === hotProjectId
+      );
+      if (hotItem) {
+        viewId.value = hotItem?.value || '';
+      } else {
+        const allView = find(viewList.value, (sItem) => sItem.label === 'all');
+        viewId.value = allView?.value || '';
+      }
       loading.value = false;
     } catch (error) {
       loading.value = false;

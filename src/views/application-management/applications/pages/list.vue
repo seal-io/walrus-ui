@@ -9,7 +9,7 @@
           style="width: 220px"
           :placeholder="$t('applications.applications.project.holder')"
           @clear="handleSearch"
-          @change="handleSearch"
+          @change="handleProjectChange"
         >
         </a-select>
         <a-input
@@ -67,7 +67,9 @@
           :title="$t('applications.applications.table.name')"
         >
           <template #cell="{ record }">
-            <a-link @click="handleClickView(record)">{{ record.name }}</a-link>
+            <a-link @click.stop="handleClickView(record)">{{
+              record.name
+            }}</a-link>
           </template>
         </a-table-column>
         <a-table-column
@@ -154,13 +156,14 @@
 </template>
 
 <script lang="ts" setup>
-  import { map, get, pickBy } from 'lodash';
+  import { map, get, pickBy, find } from 'lodash';
   import dayjs from 'dayjs';
-  import { reactive, ref, onMounted, onActivated } from 'vue';
+  import { reactive, ref, onMounted } from 'vue';
   import useCallCommon from '@/hooks/use-call-common';
   import { deleteModal, execSucceed } from '@/utils/monitor';
   import useRowSelect from '@/hooks/use-row-select';
   import FilterBox from '@/components/filter-box/index.vue';
+  import localStore from '@/utils/localStore';
   import { queryProjects } from '../../projects/api';
   import { AppRowData } from '../config/interface';
   import { statusMap } from '../config';
@@ -168,6 +171,7 @@
   import { queryApplications, deleteApplication } from '../api';
   import InstanceStatus from '../components/instance-status.vue';
 
+  const HOT_PROJECT_ID = 'HOT_PROJECT_ID';
   const { rowSelection, selectedKeys, handleSelectChange } = useRowSelect();
   const { router, locale } = useCallCommon();
   let timer: any = null;
@@ -183,7 +187,12 @@
   const dataList = ref<AppRowData[]>([]);
   const projectList = ref<{ label: string; value: string }[]>([]);
 
+  const setDefaultProject = async () => {
+    const val = await localStore.getValue(HOT_PROJECT_ID);
+    queryParams.projectID = val || '';
+  };
   const getProjectList = async () => {
+    const hotProjectId = await localStore.getValue(HOT_PROJECT_ID);
     try {
       const params = {
         page: 1,
@@ -195,7 +204,15 @@
         item.value = item.id;
         return item;
       }) as Array<{ label: string; value: string }>;
-      queryParams.projectID = get(projectList.value, '0.value') || '';
+      const hotItem = find(
+        projectList.value,
+        (item) => item.value === hotProjectId
+      );
+      if (hotItem) {
+        queryParams.projectID = hotProjectId;
+      } else {
+        queryParams.projectID = get(projectList.value, '0.value') || '';
+      }
     } catch (error) {
       projectList.value = [];
       console.log(error);
@@ -226,6 +243,10 @@
       queryParams.page = 1;
       handleFilter();
     }, 100);
+  };
+  const handleProjectChange = (val) => {
+    localStore.setValue(HOT_PROJECT_ID, val);
+    handleSearch();
   };
   const handleReset = () => {
     queryParams.query = '';
@@ -317,13 +338,8 @@
     await getProjectList();
     fetchData();
   };
-  // onActivated(() => {
-  //   console.log('add=');
-  //   init();
-  // });
-  onMounted(() => {
-    init();
-  });
+
+  init();
 </script>
 
 <script lang="ts">

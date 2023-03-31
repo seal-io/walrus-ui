@@ -57,6 +57,11 @@
             data-index="name"
             :title="$t('applications.projects.table.name')"
           >
+            <template #cell="{ record }">
+              <a-link size="small" @click="handleViewProject(record)">{{
+                record.name
+              }}</a-link>
+            </template>
           </a-table-column>
           <a-table-column
             ellipsis
@@ -100,11 +105,6 @@
                     <template #icon><icon-edit class="size-16" /></template>
                   </a-link>
                 </a-tooltip>
-                <!-- <a-tooltip :content="$t('common.button.detail')">
-                  <a-link type="text" size="small" @click="handleEdit(record)">
-                    <template #icon><icon-list class="size-16" /></template>
-                  </a-link>
-                </a-tooltip> -->
               </a-space>
             </template>
           </a-table-column>
@@ -180,9 +180,9 @@
       modalTitle.value = t('applications.projects.edit');
     }, 100);
   };
-  const handleEdit = (row) => {
-    const path = router.push({
-      name: 'ApplicationsDetail',
+  const handleViewProject = (row) => {
+    router.push({
+      name: 'ApplicationsList',
       query: { id: row.id }
     });
   };

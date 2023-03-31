@@ -1,8 +1,6 @@
 <template>
   <a-modal
     top="10%"
-    mask-animation-name="fadeOut"
-    modal-animation-name="fadeIn"
     :closable="false"
     :align-center="false"
     :width="900"

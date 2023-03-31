@@ -82,6 +82,7 @@
               :trigger-validate="triggerValidate"
               width="500px"
               class="group-item"
+              :max-length="null"
               :label-list="labelList"
               :position="sIndex"
               @add="(obj) => handleAddLabel(obj, labelList)"

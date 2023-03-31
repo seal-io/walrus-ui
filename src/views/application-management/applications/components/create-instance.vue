@@ -55,12 +55,12 @@
           </template>
         </a-form-item>
         <div
-          v-if="variables?.length"
+          v-if="variablesList?.length"
           style="margin-bottom: 10px; text-align: left"
           >变量</div
         >
         <a-form-item
-          v-for="(item, index) in variables"
+          v-for="(item, index) in variablesList"
           :key="index"
           :label="item.name"
           :field="`variables.${item.name}`"
@@ -101,8 +101,8 @@
 </template>
 
 <script lang="ts" setup>
-  import { each, get } from 'lodash';
-  import { ref, reactive, PropType, watch, inject } from 'vue';
+  import { each, filter, get } from 'lodash';
+  import { ref, reactive, PropType, watch, inject, computed } from 'vue';
   import useCallCommon from '@/hooks/use-call-common';
   import EditPageFooter from '@/components/edit-page-footer/index.vue';
   import { Variables } from '../config/interface';
@@ -182,6 +182,12 @@
     }
   });
 
+  const variablesList = computed(() => {
+    const list = filter(props.variables, (item) => {
+      return item.name;
+    });
+    return list as Variables[];
+  });
   const handleCancel = () => {
     emit('update:show', false);
   };
