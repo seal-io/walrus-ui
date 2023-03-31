@@ -65,6 +65,7 @@
               v-model:dataKey="sItem.key"
               v-model:dataValue="sItem.value"
               v-model:value="formData.configData.attributes"
+              show-password
               :trigger-validate="triggerValidate"
               width="500px"
               class="group-item"

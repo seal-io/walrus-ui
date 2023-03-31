@@ -1,13 +1,13 @@
 export const connectorTypeList = [
   { label: 'Kubernetes', enable: true, value: 'Kubernetes', com: 'kubernetes' },
   {
-    label: '版本管理',
+    label: '版本控制',
     enable: true,
     value: 'VersionControl',
     com: 'versionControl'
   },
-  { label: '自定义', enable: true, value: 'Custom', com: 'custom' },
-  { label: 'Cloud Provider', value: 'cloud', com: 'cloud' }
+  { label: '自定义', enable: true, value: 'Custom', com: 'custom' }
+  // { label: 'Cloud Provider', value: 'cloud', com: 'cloud' }
 ];
 
 export const finOpsStatus = [
