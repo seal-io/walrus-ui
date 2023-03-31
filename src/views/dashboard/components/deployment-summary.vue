@@ -57,7 +57,12 @@
   import { queryApplicationRevisions } from '@/views/application-management/applications/api';
   import { getStackLineDataList, setEndTimeAddDay } from '@/views/config';
   import lastDeployApp from './last-deploy-app.vue';
-  import { deployDataConfig, statusColorMap, DateShortCuts } from '../config';
+  import {
+    deployDataConfig,
+    statusColorMap,
+    DateShortCuts,
+    chartStatusColorMap
+  } from '../config';
   import { queryApplicationRevisionsChart } from '../api/dashboard';
 
   const props = defineProps({

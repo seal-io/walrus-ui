@@ -116,7 +116,7 @@
           :popup-visible="showExplainModal"
         >
           <template #content>
-            <div style="color: #4e5969; font-size: 14px">
+            <div style="color: #4e5969; font-size: 14px; white-space: pre-wrap">
               {{ correctionExplain || '无纠错信息' }}
             </div>
           </template>
