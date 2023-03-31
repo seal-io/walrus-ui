@@ -8,7 +8,13 @@
         ><icon-arrow-left style="stroke-width: 5; font-size: 16px"
       /></a-link>
       <a-divider v-if="showBack" direction="vertical"></a-divider>
-      <slot name="title">{{ title }}</slot>
+      <div class="title-wrap">
+        <slot name="title">{{ title }}</slot>
+        <a-link v-if="showEdit" @click="handleEdit">
+          <icon-edit></icon-edit>
+          <span class="mleft-5">{{ $t('common.button.edit') }}</span>
+        </a-link>
+      </div>
     </div>
     <div><slot name="right"></slot></div>
   </div>
@@ -36,11 +42,21 @@
       default() {
         return false;
       }
+    },
+    showEdit: {
+      type: Boolean,
+      default() {
+        return false;
+      }
     }
   });
+  const emits = defineEmits(['edit']);
   const { router } = useCallCommon();
   const handleBack = () => {
     router.back();
+  };
+  const handleEdit = () => {
+    emits('edit');
   };
 </script>
 
@@ -69,6 +85,13 @@
       color: var(--color-text-2);
       font-weight: 500;
       font-size: 14px;
+
+      .title-wrap {
+        display: flex;
+        flex: 1;
+        align-items: center;
+        justify-content: space-between;
+      }
     }
   }
 </style>

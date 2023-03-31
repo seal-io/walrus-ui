@@ -1,33 +1,11 @@
 <template>
   <ComCard top-gap class="application-detail-wrap">
-    <GroupTitle show-back :title="title">
-      <template #title>
-        <div
-          style="
-            display: flex;
-            flex: 1;
-            align-items: center;
-            justify-content: space-between;
-          "
-        >
-          <span>{{ title }}</span>
-          <span>
-            <a-link v-if="pageAction === 'view'" @click="handleEdit">
-              <icon-edit></icon-edit>
-              <span class="mleft-5">{{ $t('common.button.edit') }}</span>
-            </a-link>
-            <!-- <a-link
-              v-if="pageEditable"
-              style="margin-left: 10px"
-              @click="handleCancel"
-            >
-              <icon-font type="icon-quxiao"></icon-font>
-              <icon-save></icon-save>
-              <span class="mleft-5">{{ $t('common.button.confirm') }}</span>
-            </a-link> -->
-          </span>
-        </div>
-      </template>
+    <GroupTitle
+      show-back
+      :title="title"
+      :show-edit="pageAction === 'view' && activeInstance === 'app'"
+      @edit="handleEdit"
+    >
     </GroupTitle>
     <div class="instance-box">
       <div
@@ -37,7 +15,7 @@
         @click="handleClickApp"
       >
         <span>应用信息</span>
-        <!-- <icon-right /> -->
+        <icon-right />
       </div>
       <div v-if="pageAction === 'view'" class="instance">
         <div class="content">

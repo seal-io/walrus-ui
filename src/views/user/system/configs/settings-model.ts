@@ -24,31 +24,82 @@ export const settingList: Array<SettingsItem> = [
     type: 'layout',
     dataList: [
       {
-        id: 'ServeUrl',
-        label: 'system.setting.serverurl',
-        parentId: '',
-        component: {
-          type: 'input',
-          required: true,
-          match: 'urlReg',
-          message: 'system.rules.url'
-        },
+        id: '',
+        label: '基础任务',
         value: '',
-        type: 'string'
+        type: 'groupTitle',
+        component: {},
+        parentId: '',
+        isEditable: false,
+        style: {
+          fontWeight: 500,
+          marginTop: '10px',
+          marginBottom: '15px'
+        },
+        subGroup: [
+          {
+            id: 'ServeUrl',
+            label: 'system.setting.serverurl',
+            parentId: '',
+            component: {
+              type: 'input',
+              required: true,
+              match: 'urlReg',
+              message: 'system.rules.url'
+            },
+            value: '',
+            type: 'string'
+          },
+          {
+            id: 'TerraformDeployerImage',
+            label: 'Terraform 部署器镜像',
+            parentId: '',
+            component: {
+              type: 'input',
+              required: true,
+              match: '',
+              message: ''
+            },
+            value: '',
+            type: 'string'
+          }
+        ]
       },
       {
-        id: 'TerraformDeployerImage',
-        label: 'Terraform 部署器镜像',
-        parentId: '',
-        component: {
-          type: 'input',
-          required: true,
-          match: '',
-          message: ''
-        },
+        id: '',
+        label: '增强管理',
         value: '',
-        type: 'string'
+        type: 'groupTitle',
+        component: {},
+        parentId: '',
+        isEditable: false,
+        style: {
+          fontWeight: 500,
+          marginTop: '10px',
+          marginBottom: '15px'
+        },
+        subGroup: [
+          {
+            id: 'openAiApiToken',
+            label: 'OpenAI API令牌',
+            parentId: '',
+            component: {
+              type: 'password',
+              required: true,
+              validator(val, callback) {
+                if (val) {
+                  callback();
+                } else {
+                  callback(i18n.global.t('system.setting.rule.openai'));
+                }
+              }
+            },
+            value: '',
+            type: 'string'
+          }
+        ]
       }
+
       // {
       //   id: 'TokenRefreshCronExpr',
       //   label: 'system.setting.TokenRefreshCronExpr',
@@ -132,7 +183,7 @@ export const settingList: Array<SettingsItem> = [
         type: 'groupTitle',
         component: {},
         parentId: '',
-        editable: false,
+        isEditable: false,
         style: {
           fontWeight: 500,
           marginTop: '10px',
@@ -188,6 +239,7 @@ export const settingList: Array<SettingsItem> = [
         type: 'groupTitle',
         component: {},
         parentId: '',
+        isEditable: false,
         style: {
           fontWeight: 500,
           marginTop: '10px',
@@ -237,101 +289,83 @@ export const settingList: Array<SettingsItem> = [
         ]
       }
     ]
-  },
-  {
-    id: 'openAiApiToken',
-    label: 'OpenAI API令牌',
-    parentId: '',
-    editable: true,
-    component: {
-      type: 'input',
-      required: true,
-      match: 'urlReg',
-      message: 'system.rules.url'
-    },
-    value: '',
-    type: 'layout',
-    dataList: [
-      {
-        id: 'openAiApiToken',
-        label: 'OpenAI API令牌',
-        parentId: '',
-        component: {
-          type: 'password',
-          required: true,
-          validator(val, callback) {
-            if (val) {
-              callback();
-            } else {
-              callback(i18n.global.t('system.setting.rule.openai'));
-            }
-          }
-        },
-        value: '',
-        type: 'string'
-      }
-      // {
-      //   id: 'TokenRefreshCronExpr',
-      //   label: 'system.setting.TokenRefreshCronExpr',
-      //   desc: 'system.setting.TokenRefreshCronExpr.desc',
-      //   parentId: '',
-      //   component: {
-      //     type: 'input',
-      //     required: true,
-      //     validator(val, callback) {
-      //       if (validateCron(val)) {
-      //         callback();
-      //       } else {
-      //         callback(i18n.global.t('system.setting.rules.cron'));
-      //       }
-      //     },
-      //     extra: 'system.setting.cron.extra',
-      //   },
-      //   value: '',
-      //   type: 'string',
-      // },
-      // {
-      //   id: 'ScanCheckCronExpr',
-      //   label: 'system.setting.ScanCheckCronExpr',
-      //   desc: 'system.setting.ScanCheckCronExpr.desc',
-      //   parentId: '',
-      //   component: {
-      //     type: 'input',
-      //     required: true,
-      //     validator(val, callback) {
-      //       if (validateCron(val)) {
-      //         callback();
-      //       } else {
-      //         callback(i18n.global.t('system.setting.rules.cron'));
-      //       }
-      //     },
-      //     extra: 'system.setting.cron.extra'
-      //   },
-      //   value: '',
-      //   type: 'string'
-      // },
-      // {
-      //   id: 'MetaSyncCronExpr',
-      //   label: 'system.setting.MetaSyncCronExpr',
-      //   desc: 'system.setting.MetaSyncCronExpr.desc',
-      //   parentId: '',
-      //   component: {
-      //     type: 'input',
-      //     required: true,
-      //     validator(val, callback) {
-      //       if (validateCron(val)) {
-      //         callback();
-      //       } else {
-      //         callback(i18n.global.t('system.setting.rules.cron'));
-      //       }
-      //     },
-      //     extra: 'system.setting.cron.extra'
-      //   },
-      //   value: '',
-      //   type: 'string'
-      // }
-    ]
   }
+  // {
+  // id: 'openAiApiToken',
+  // label: 'OpenAI API令牌',
+  // parentId: '',
+  // editable: true,
+  // component: {
+  //   type: 'input',
+  //   required: true,
+  //   match: 'urlReg',
+  //   message: 'system.rules.url'
+  // },
+  // value: '',
+  // type: 'layout',
+  // dataList: [
+  // {
+  //   id: 'TokenRefreshCronExpr',
+  //   label: 'system.setting.TokenRefreshCronExpr',
+  //   desc: 'system.setting.TokenRefreshCronExpr.desc',
+  //   parentId: '',
+  //   component: {
+  //     type: 'input',
+  //     required: true,
+  //     validator(val, callback) {
+  //       if (validateCron(val)) {
+  //         callback();
+  //       } else {
+  //         callback(i18n.global.t('system.setting.rules.cron'));
+  //       }
+  //     },
+  //     extra: 'system.setting.cron.extra',
+  //   },
+  //   value: '',
+  //   type: 'string',
+  // },
+  // {
+  //   id: 'ScanCheckCronExpr',
+  //   label: 'system.setting.ScanCheckCronExpr',
+  //   desc: 'system.setting.ScanCheckCronExpr.desc',
+  //   parentId: '',
+  //   component: {
+  //     type: 'input',
+  //     required: true,
+  //     validator(val, callback) {
+  //       if (validateCron(val)) {
+  //         callback();
+  //       } else {
+  //         callback(i18n.global.t('system.setting.rules.cron'));
+  //       }
+  //     },
+  //     extra: 'system.setting.cron.extra'
+  //   },
+  //   value: '',
+  //   type: 'string'
+  // },
+  // {
+  //   id: 'MetaSyncCronExpr',
+  //   label: 'system.setting.MetaSyncCronExpr',
+  //   desc: 'system.setting.MetaSyncCronExpr.desc',
+  //   parentId: '',
+  //   component: {
+  //     type: 'input',
+  //     required: true,
+  //     validator(val, callback) {
+  //       if (validateCron(val)) {
+  //         callback();
+  //       } else {
+  //         callback(i18n.global.t('system.setting.rules.cron'));
+  //       }
+  //     },
+  //     extra: 'system.setting.cron.extra'
+  //   },
+  //   value: '',
+  //   type: 'string'
+  // }
+  // ]
+  // },
   // {
   //   id: 'InterceptorManage',
   //   label: 'system.setting.interceptor',
