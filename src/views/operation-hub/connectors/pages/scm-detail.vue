@@ -85,6 +85,19 @@
             style="width: 500px"
           ></a-input-password>
         </a-form-item>
+        <a-form-item v-if="pageAction === 'view'" label="状态">
+          <span class="readonly-view-label">
+            <StatusLabel
+              :status="{
+                status: get(formData, 'status.summaryStatus'),
+                text: get(formData, 'status.summaryStatus'),
+                message: get(formData, 'status.summaryStatusMessage'),
+                transitioning: get(formData, 'status.transitioning'),
+                error: get(formData, 'status.error')
+              }"
+            ></StatusLabel>
+          </span>
+        </a-form-item>
       </a-form>
     </div>
     <EditPageFooter v-if="pageAction === 'edit'">
@@ -108,7 +121,7 @@
 </template>
 
 <script lang="ts" setup>
-  import { assignIn, toLower } from 'lodash';
+  import { assignIn, toLower, get } from 'lodash';
   import { ref, reactive, onMounted, computed } from 'vue';
   import GroupTitle from '@/components/group-title/index.vue';
   import readBlob from '@/utils/readBlob';
@@ -116,6 +129,7 @@
   import useCallCommon from '@/hooks/use-call-common';
   import usePageAction from '@/hooks/use-page-action';
   import ProviderIcon from '@/components/provider-icon/index.vue';
+  import StatusLabel from '../components/status-label.vue';
   import { ConnectorFormData } from '../config/interface';
   import { createConnector, updateConnector, queryItemConnector } from '../api';
 

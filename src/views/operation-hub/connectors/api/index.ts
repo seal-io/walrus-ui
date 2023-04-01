@@ -14,9 +14,10 @@ export interface ResultType {
   items: ConnectorRowData[];
   pagination: Pagination;
 }
-export function queryConnectors(params: QueryType) {
+export function queryConnectors(params: QueryType, cancelToken?) {
   return axios.get<ResultType>('/connectors', {
     params,
+    cancelToken,
     paramsSerializer: (obj) => {
       return qs.stringify(obj);
     }
