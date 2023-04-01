@@ -26,19 +26,19 @@
         <a-grid :cols="24">
           <a-grid-item :span="8">
             <a-form-item label="名称" field="name">
-              <span>{{ formData.name }}</span>
+              <span class="readonly-view-label">{{ formData.name }}</span>
             </a-form-item>
           </a-grid-item>
           <a-grid-item :span="8">
             <a-form-item label="模块" field="module.id">
-              <span>{{
+              <span class="readonly-view-label">{{
                 getListValue(formData.module.id, templates, 'id')
               }}</span>
             </a-form-item>
           </a-grid-item>
           <a-grid-item :span="8">
             <a-form-item label="版本" field="version">
-              <span>{{
+              <span class="readonly-view-label">{{
                 getListValue(formData.version, moduleVersionList, 'value')
               }}</span>
             </a-form-item>
@@ -89,18 +89,22 @@
             </a-descriptions>
           </a-tab-pane>
         </a-tabs>
-        <a-descriptions v-if="show && formTabs.length < 2" :column="2">
-          <a-descriptions-item
-            v-for="(item, index) in variablesGroup[defaultGroupKey]?.Variables"
-            :key="index"
-            :label="item.Name"
-          >
-            <template #value>
-              <span style="font-weight: 400">{{
-                get(variablesGroupForm[defaultGroupKey]?.attributes, item.Name)
-              }}</span>
-            </template>
-          </a-descriptions-item>
+        <a-descriptions
+          v-if="show && formTabs.length < 2"
+          :column="2"
+          :data="variablesGroup[defaultGroupKey]?.Variables"
+        >
+          <template #value="{ data }">
+            <span style="font-weight: 400">{{
+              get(
+                variablesGroupForm[defaultGroupKey]?.attributes,
+                `${data.Name}`
+              )
+            }}</span>
+          </template>
+          <template #label="{ data }">
+            <span style="font-weight: 400">{{ data.Name }}</span>
+          </template>
         </a-descriptions>
       </div>
     </div>
@@ -496,6 +500,7 @@
       each(get(moduleInfo.value, 'Variables') || [], (item) => {
         item.Default = get(props.dataInfo, `attributes.${item.Name}`);
       });
+      console.log('dataInfo===', props.dataInfo);
     }
 
     generateVariablesGroup(props.action);
