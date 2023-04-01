@@ -106,13 +106,24 @@
 
 <script lang="ts" setup>
   import dayjs from 'dayjs';
-  import { get } from 'lodash';
-  import { onMounted, ref, reactive, inject, watch } from 'vue';
+  import _, { get } from 'lodash';
+  import {
+    onMounted,
+    ref,
+    reactive,
+    inject,
+    watch,
+    nextTick,
+    onBeforeUnmount
+  } from 'vue';
   import StatusLabel from '@/views/operation-hub/connectors/components/status-label.vue';
+  import { createWebsocketInstance } from '@/hooks/use-websocket';
   import { InstanceResource } from '../../config/interface';
+  import { websocketEventType } from '../../config';
   import { queryApplicationResource } from '../../api';
 
   const instanceId = inject('instanceId', ref(''));
+  const websocketInstance = ref<any>(null);
   const total = ref(0);
   const loading = ref(false);
   const queryParams = reactive({
@@ -154,18 +165,50 @@
     queryParams.perPage = pageSize;
     handleFilter();
   };
-  const handleShowLogs = () => {};
-  const handleShowTerm = () => {};
+  const updateDataList = (data) => {
+    if (data?.type !== websocketEventType.update) return;
+    const collections = data.collection || [];
+    _.each(collections, (item) => {
+      const updateIndex = _.findIndex(
+        dataList.value,
+        (sItem) => sItem.id === item.id
+      );
+      if (updateIndex > -1) {
+        const updateItem = _.cloneDeep(item);
+        dataList.value[updateIndex] = updateItem;
+      } else {
+        dataList.value = _.concat(_.cloneDeep(item), dataList.value);
+      }
+    });
+  };
+  const createInstanceListWebsocket = () => {
+    try {
+      if (!instanceId.value) return;
+      websocketInstance.value?.close?.();
+      websocketInstance.value = createWebsocketInstance({
+        url: `/application-resources?instanceID=${instanceId.value}`,
+        onmessage: updateDataList
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  };
   watch(
     () => instanceId.value,
     () => {
       queryParams.page = 1;
       fetchData();
+      nextTick(() => {
+        createInstanceListWebsocket();
+      });
     },
     {
       immediate: true
     }
   );
+  onBeforeUnmount(() => {
+    websocketInstance.value?.close?.();
+  });
   onMounted(() => {
     console.log('resource');
   });

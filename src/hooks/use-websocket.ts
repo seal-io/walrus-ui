@@ -4,7 +4,7 @@ const localServer = window.location.host;
 const protocal = import.meta.env.MODE === 'development' ? 'wss' : 'wss';
 
 export const createWebSocketUrl = (url) => {
-  return `wss://${localServer}/v1/${url}`;
+  return `wss://${localServer}/v1${url}`;
 };
 export function createWebsocketInstance({ url, onmessage }) {
   // ws.readyState
@@ -27,12 +27,12 @@ export function createWebsocketInstance({ url, onmessage }) {
   const reConnect = () => {
     tryCount = 3;
     connectTimer = setInterval(() => {
-      if (wss.readyState === 3 || tryCount > 0) {
+      if (wss.readyState === 3 && tryCount > 0) {
         tryCount -= 1;
-        console.log('wss re-connecting...', wss.readyState);
+        console.log('wss re-connecting...', tryCount);
         wss = new WebSocket(url);
       } else {
-        console.log('wss stop re-connecting...', wss.readyState);
+        console.log('wss stop re-connecting...', tryCount);
         clearInterval(connectTimer);
       }
     }, TRY_FREQ);
@@ -45,14 +45,18 @@ export function createWebsocketInstance({ url, onmessage }) {
 
   // receive message from server
   wss.onmessage = (res) => {
-    // const data = JSON.parse(res.data);
-    console.log('wss message:', { res });
-    onmessage(res);
+    try {
+      console.log('wss message:', { [url]: res });
+      const data = JSON.parse(res.data);
+      onmessage(data);
+    } catch (error) {
+      console.log('wss message error...', error);
+    }
   };
   wss.onclose = () => {
     console.log('wss closed...');
     if (isneedReconnect) {
-      reConnect();
+      // reConnect();
     }
   };
   const close = () => {
@@ -63,15 +67,17 @@ export function createWebsocketInstance({ url, onmessage }) {
   };
 
   window.addEventListener('offline', () => {
-    reConnect();
+    // reConnect();
   });
   onBeforeUnmount(() => {
     isneedReconnect = false;
+    close();
+    console.log('wss onBeforeUnmount');
   });
   onUnmounted(() => {
     close();
     window.removeEventListener('offline', () => {
-      reConnect();
+      // reConnect();
     });
   });
   return {

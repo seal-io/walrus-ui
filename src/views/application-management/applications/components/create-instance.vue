@@ -30,15 +30,6 @@
             show-word-limit
           ></a-input>
         </a-form-item>
-        <!-- <a-form-item
-          :disabled="status === 'edit'"
-          label="服务地址"
-          field="name"
-          validate-trigger="change"
-          :rules="[{ required: false, message: '服务地址必填' }]"
-        >
-          <a-input v-model="formData.ServeUrl"></a-input>
-        </a-form-item> -->
         <a-form-item
           :disabled="status === 'edit'"
           :label="$t('applications.applications.detail.env')"
@@ -49,6 +40,7 @@
           <a-select
             v-model="formData.environment.id"
             :options="environmentList"
+            @change="handleEnvChange"
           ></a-select>
           <template #extra>
             <span class="tips">未添加连接器的环境不可用</span>
@@ -101,7 +93,7 @@
 </template>
 
 <script lang="ts" setup>
-  import { each, filter, get } from 'lodash';
+  import { each, filter, get, find, assignIn, cloneDeep } from 'lodash';
   import { ref, reactive, PropType, watch, inject, computed } from 'vue';
   import useCallCommon from '@/hooks/use-call-common';
   import EditPageFooter from '@/components/edit-page-footer/index.vue';
@@ -139,12 +131,7 @@
         return [];
       }
     },
-    activeInstanceId: {
-      type: String,
-      default() {
-        return '';
-      }
-    },
+
     activeInstanceInfo: {
       type: Object,
       default() {
@@ -152,15 +139,7 @@
       }
     }
   });
-  const emit = defineEmits([
-    'save',
-    'update:show',
-    'update:status',
-    'reset',
-    'update:activeInstanceId',
-    'update:activeInstanceInfo'
-  ]);
-  const instanceId = inject('instanceId', ref(''));
+  const emit = defineEmits(['save', 'upgrade', 'update:show', 'update:status']);
   const instanceInfo = inject(
     'instanceInfo',
     ref({
@@ -178,7 +157,8 @@
     name: '',
     variables: {},
     environment: {
-      id: ''
+      id: '',
+      name: ''
     }
   });
 
@@ -188,6 +168,10 @@
     });
     return list as Variables[];
   });
+  const handleEnvChange = (val) => {
+    const data = find(props.environmentList, (item) => item.value === val);
+    formData.environment.name = data?.label || '';
+  };
   const handleCancel = () => {
     emit('update:show', false);
   };
@@ -196,29 +180,37 @@
     if (!res) {
       try {
         submitLoading.value = true;
-        let resData: any = null;
         // TODO
         if (props.status === 'create') {
-          resData = await deployApplication({
+          const resData = await deployApplication({
             ...formData,
             application: {
               id: route.query.id || ''
             }
           });
+          const environment = cloneDeep(formData.environment);
+          setTimeout(() => {
+            emit(
+              'save',
+              {
+                ...resData?.data,
+                environment
+              },
+              props.status
+            );
+          }, 100);
         } else {
-          resData = await upgradeApplicationInstance({
+          await upgradeApplicationInstance({
             ...formData,
             application: {
               id: route.query.id || ''
             },
             id: props.activeInstanceInfo.id
           });
+          setTimeout(() => {
+            emit('upgrade', props.activeInstanceInfo.id);
+          }, 100);
         }
-        setTimeout(() => {
-          emit('save', resData);
-        }, 200);
-        emit('update:activeInstanceId', '');
-        emit('update:activeInstanceId', {});
         emit('update:show', false);
         submitLoading.value = false;
       } catch (error) {
@@ -229,6 +221,7 @@
   const resetForm = () => {
     formData.name = '';
     formData.environment.id = '';
+    formData.environment.name = '';
     formData.variables = {};
   };
   const setDeployVariables = () => {

@@ -15,6 +15,7 @@
       @select="handleClick"
     >
       <a-link
+        :loading="actionLoading"
         size="mini"
         style="position: absolute; top: 0; right: 0"
         @click.stop="() => {}"
@@ -82,6 +83,12 @@
       }
     },
     active: {
+      type: Boolean,
+      default() {
+        return false;
+      }
+    },
+    actionLoading: {
       type: Boolean,
       default() {
         return false;

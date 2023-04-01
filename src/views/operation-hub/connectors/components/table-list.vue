@@ -101,7 +101,7 @@
           :title="$t('operation.connectors.table.coststatus')"
         >
           <template #cell="{ record }">
-            <span>{{ getCostStatus(record.status.conditions || []) }}</span>
+            <span>{{ getCostStatus(record.status?.conditions || []) }}</span>
           </template>
         </a-table-column>
         <a-table-column

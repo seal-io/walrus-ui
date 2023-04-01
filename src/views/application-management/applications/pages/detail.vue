@@ -3,7 +3,7 @@
     <GroupTitle
       show-back
       :title="title"
-      :show-edit="pageAction === 'view' && activeInstance === 'app'"
+      :show-edit="pageAction === 'view' && activeInstanceTab === 'app'"
       @edit="handleEdit"
     >
     </GroupTitle>
@@ -11,7 +11,7 @@
       <div
         v-if="pageAction === 'view'"
         class="app"
-        :class="{ active: activeInstance === 'app' }"
+        :class="{ active: activeInstanceTab === 'app' }"
         @click="handleClickApp"
       >
         <span>应用信息</span>
@@ -23,9 +23,10 @@
             v-for="item in instanseList"
             :key="item.id"
             :size="[160, 100]"
-            :active="item.id === activeInstance"
+            :active="item.id === activeInstanceTab"
             :data-info="item"
             :actions="instanceActions"
+            :action-loading="includes(['Deleting', 'Deploying'], item.status)"
             @upgrade="handleInstanceUpgrade(item)"
             @delete="handleDeleteInstance(item)"
             @click="handleClickInstance(item)"
@@ -62,19 +63,18 @@
         :is="pageComMap[pgCom]"
         :instance-id="currentInstance"
         @save="handleSaveApp"
-        @cancel="handleCancelEdit"
-        @deploy="handleDeployDone"
+        @cancelEdit="handleCancelEdit"
       ></component>
     </div>
     <createInstance
       v-model:show="showInstanceModal"
       v-model:status="status"
-      v-model:active-instance-id="activeInstanceId"
       v-model:active-instance-info="activeInstanceInfo"
       :variables="appInfoVariables"
       :environment-list="environmentList"
       :title="status === 'create' ? '创建实例' : '升级实例'"
       @save="handleSaveInstanceInfo"
+      @upgrade="handleInstanceUpgradeSucceed"
     ></createInstance>
     <deleteInstanceModal
       v-model:show="showDeleteModal"
@@ -93,9 +93,22 @@
     provide,
     computed,
     inject,
-    onMounted
+    onMounted,
+    nextTick,
+    onBeforeUnmount
   } from 'vue';
-  import { keys, get, map, assignIn, cloneDeep, find } from 'lodash';
+  import _, {
+    keys,
+    get,
+    map,
+    assignIn,
+    cloneDeep,
+    find,
+    each,
+    findIndex,
+    remove,
+    includes
+  } from 'lodash';
   import { deleteModal, execSucceed } from '@/utils/monitor';
   import useCallCommon from '@/hooks/use-call-common';
   import GroupTitle from '@/components/group-title/index.vue';
@@ -122,14 +135,13 @@
   const pageAction = ref(route.params.action || 'edit');
   const pageEditable = ref(false);
   const cloneId = route.query.cloneId as string;
-  const activeInstance = ref('app'); //
+  const activeInstanceTab = ref('app'); //
   const currentInstance = ref('');
   const showDeleteModal = ref(false);
   const environmentList = ref<{ label: string; value: string }[]>([]);
   const pgCom = ref('appDetail'); // instanceDetail、appDetail
   const showInstanceModal = ref(false);
   const instanceInfo = ref({});
-  const activeInstanceId = ref('');
   const activeInstanceInfo = ref({});
   const websocketInstanceList = ref<any>(null);
   const appInfo = reactive({
@@ -158,7 +170,6 @@
   };
   const instanseList = ref<InstanceData[]>([]);
   const instanceId = ref('');
-  const labelList = ref<{ key: string; value: string }[]>([]);
 
   const title = computed(() => {
     if (cloneId) {
@@ -181,7 +192,6 @@
   };
   const handleInstanceUpgrade = (item) => {
     status.value = 'edit';
-    activeInstanceId.value = item.id;
     activeInstanceInfo.value = item;
     setTimeout(() => {
       showInstanceModal.value = true;
@@ -189,12 +199,12 @@
   };
 
   const handleClickApp = () => {
-    activeInstance.value = 'app';
+    activeInstanceTab.value = 'app';
     pgCom.value = 'appDetail';
   };
 
   const handleClickInstance = (item) => {
-    activeInstance.value = item.id;
+    activeInstanceTab.value = item.id;
     currentInstance.value = item.id;
     instanceInfo.value = item;
     pgCom.value = 'instanceDetail';
@@ -214,8 +224,19 @@
       console.log(error);
     }
   };
-  const handleSaveInstanceInfo = () => {
-    getApplicationInstances();
+  const handleSaveInstanceInfo = (data, action) => {
+    console.log('data===', data);
+    if (action === 'create') {
+      const newInstance = cloneDeep(data);
+      instanseList.value.push(newInstance);
+      setTimeout(() => {
+        handleClickInstance(newInstance);
+      }, 100);
+    }
+  };
+  const handleInstanceUpgradeSucceed = (deleteId) => {
+    const data = find(instanseList.value, (item) => item.id === deleteId) || {};
+    _.set(data, 'status', 'Deploying');
   };
   const getEnvironmentList = async () => {
     try {
@@ -242,8 +263,7 @@
     const queryId = id;
     try {
       const params = {
-        id: queryId,
-        extract: ['modules']
+        id: queryId
       };
       const { data } = await queryItemApplication(params);
       assignIn(appInfo, data);
@@ -255,12 +275,15 @@
   const handleDeleteConfirm = async (force) => {
     try {
       await deleteApplicationInstance({ id: instanceId.value, force });
-      await getApplicationInstances();
-      if (instanseList.value.length) {
-        handleClickInstance(get(instanseList.value, '0'));
-      } else {
-        handleClickApp();
-      }
+      const data =
+        find(instanseList.value, (item) => item.id === instanceId.value) || {};
+      _.set(data, 'status', 'Deleting');
+      // await getApplicationInstances();
+      // if (instanseList.value.length) {
+      //   handleClickInstance(get(instanseList.value, '0'));
+      // } else {
+      //   handleClickApp();
+      // }
     } catch (error) {
       console.log(error);
     }
@@ -271,41 +294,33 @@
       showDeleteModal.value = true;
     }, 100);
   };
-  const handleDeployDone = async () => {
-    getApplicationInstances();
-  };
   const handleOk = () => {
     router.back();
   };
   const handleEdit = () => {
     pageAction.value = 'edit';
-    pageEditable.value = true;
   };
-  const handleCancel = () => {
+  const handleCancelEdit = () => {
     pageAction.value = 'view';
-    pageEditable.value = false;
   };
-  const handleSaveApp = async (resId) => {
-    router.replace({
-      name: 'ApplicationsDetail',
-      params: {
-        projectId: route.params.projectId,
-        action: 'view'
-      },
-      query: {
-        id: resId || id
-      }
-    });
-    setTimeout(() => {
-      execReload?.();
-    }, 100);
-    handleCancel();
-    // getApplicationDetail();
+  const handleSaveApp = async (resId, action) => {
+    if (!id) {
+      router.replace({
+        name: 'ApplicationsDetail',
+        params: {
+          projectId: route.params.projectId,
+          action: 'view'
+        },
+        query: {
+          id: resId || id
+        }
+      });
+    } else {
+      getApplicationDetail();
+      pageAction.value = 'view';
+    }
   };
 
-  const handleCancelEdit = () => {
-    handleCancel();
-  };
   const handleActiveInstance = () => {
     const instance_id = route.query.instanceId || '';
     if (instance_id) {
@@ -313,18 +328,55 @@
       handleClickInstance(data);
     }
   };
-  const updateInstanceList = (message) => {
-    console.log('message:', message);
-  };
-  const createInstanceListWebsocket = () => {
-    const appId = route.query.id || '';
-    if (!id) return;
-    websocketInstanceList.value?.close?.();
-    websocketInstanceList.value = createWebsocketInstance({
-      url: `/application-instances?applicationID=${appId}`,
-      onmessage: updateInstanceList
+  // update instance data from websocket
+  const updateInstanceList = (data) => {
+    // 1: create, 2: update, 3: delete
+    if (data?.type === 1) return;
+
+    // delete
+    if (data?.type === 3) {
+      const ids = data?.ids || [];
+      remove(instanseList.value, (item) => includes(ids, item.id));
+      if (!instanseList.value.length) {
+        handleClickApp();
+        return;
+      }
+      // active instance deleted
+      if (includes(ids, activeInstanceTab.value)) {
+        handleClickInstance(get(instanseList.value, '0'));
+      }
+      return;
+    }
+    const collections = data?.collection || [];
+    each(collections, (item) => {
+      const updateIndex = findIndex(
+        instanseList.value,
+        (sItem) => sItem.id === item.id
+      );
+
+      if (updateIndex > -1) {
+        const updateItem = cloneDeep(item);
+        instanseList.value[updateIndex] = updateItem;
+        if (currentInstance.value === updateItem.id) {
+          instanceInfo.value = updateItem;
+        }
+      }
     });
-    console.log('websocketInstanceList==', websocketInstanceList.value);
+    console.log('message:', data);
+  };
+  // create websocket  connecting
+  const createInstanceListWebsocket = () => {
+    try {
+      const appId = route.query.id || '';
+      if (!id) return;
+      websocketInstanceList.value?.close?.();
+      websocketInstanceList.value = createWebsocketInstance({
+        url: `/application-instances?applicationID=${appId}`,
+        onmessage: updateInstanceList
+      });
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   const init = async () => {
@@ -335,9 +387,13 @@
     handleActiveInstance();
   };
   onMounted(() => {
-    // createInstanceListWebsocket();
+    nextTick(() => {
+      createInstanceListWebsocket();
+    });
   });
-
+  onBeforeUnmount(() => {
+    websocketInstanceList.value?.close?.();
+  });
   init();
 </script>
 
