@@ -30,6 +30,26 @@
           tooltip
           :cell-style="{ minWidth: '40px' }"
           align="center"
+          data-index="status"
+          :title="$t('operation.connectors.table.status')"
+        >
+          <template #cell="{ record }">
+            <StatusLabel
+              :status="{
+                status: get(record, 'status.summaryStatus'),
+                text: get(record, 'status.summaryStatus'),
+                message: get(record, 'status.summaryStatusMessage'),
+                transitioning: get(record, 'status.transitioning'),
+                error: get(record, 'status.error')
+              }"
+            ></StatusLabel>
+          </template>
+        </a-table-column>
+        <a-table-column
+          ellipsis
+          tooltip
+          :cell-style="{ minWidth: '40px' }"
+          align="center"
           data-index="createTime"
           :title="$t('common.table.createTime')"
         >
@@ -61,12 +81,13 @@
 </template>
 
 <script lang="ts" setup>
-  import { map } from 'lodash';
+  import { map, get } from 'lodash';
   import dayjs from 'dayjs';
   import { reactive, ref, onMounted, PropType, watchEffect } from 'vue';
   import useCallCommon from '@/hooks/use-call-common';
   import { deleteModal, execSucceed } from '@/utils/monitor';
   import { ConnectorRowData } from '../../connectors/config/interface';
+  import StatusLabel from '../../connectors/components/status-label.vue';
 
   const props = defineProps({
     list: {
