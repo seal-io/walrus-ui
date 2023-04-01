@@ -32,8 +32,8 @@ export interface ComponentSchema {
 // replace input width hintInput
 export const parseComponentSchema = (schema: ComponentSchema) => {
   const props = {
-    min: schema?.min || null,
-    max: schema?.max || null,
+    min: schema?.min || -Infinity,
+    max: schema?.max || Infinity,
     maxLength: schema?.maxLength || 100,
     showWordLimit: schema?.maxLength,
     minLength: schema?.minLength || null

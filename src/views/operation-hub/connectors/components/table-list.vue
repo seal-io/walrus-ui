@@ -69,6 +69,12 @@
           data-index="type"
           :title="$t('operation.connectors.table.type')"
         >
+          <template #cell="{ record }">
+            <span v-if="category === 'VersionControl'" class="mright-5">
+              <ProviderIcon :provider="toLower(record.type)"></ProviderIcon>
+            </span>
+            <span>{{ record.type }}</span>
+          </template>
         </a-table-column>
         <a-table-column
           v-if="category !== 'Custom'"
@@ -230,8 +236,10 @@
 
 <script lang="ts" setup>
   import ADropdownButton from '@arco-design/web-vue/es/dropdown/dropdown-button';
+  import useAxiosSource from '@/hooks/use-axios-cancel';
+  import ProviderIcon from '@/components/provider-icon/index.vue';
   import dayjs from 'dayjs';
-  import { get, map, pickBy, find } from 'lodash';
+  import { get, map, pickBy, find, toLower } from 'lodash';
   import { reactive, ref, onMounted, onActivated, watch, inject } from 'vue';
   import useCallCommon from '@/hooks/use-call-common';
   import { Message } from '@arco-design/web-vue';
@@ -262,6 +270,8 @@
       }
     }
   });
+  const axiosSource = useAxiosSource();
+  let axiosToken: any = null;
   const { rowSelection, selectedKeys, handleSelectChange } = useRowSelect();
   const { router, t } = useCallCommon();
   let timer: any = null;
@@ -283,12 +293,14 @@
     return d?.message;
   };
   const fetchData = async () => {
+    axiosToken?.cancel();
+    axiosToken = axiosSource();
     try {
       loading.value = true;
       const params: any = {
         ...pickBy(queryParams, (val) => !!val)
       };
-      const { data } = await queryConnectors(params);
+      const { data } = await queryConnectors(params, axiosToken?.token);
       dataList.value = data?.items || [];
       total.value = data?.pagination?.total || 0;
       loading.value = false;

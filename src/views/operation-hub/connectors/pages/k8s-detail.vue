@@ -88,6 +88,26 @@
             formData.enableFinOps ? '已开启' : '未开启'
           }}</span>
         </a-form-item>
+        <a-form-item v-if="pageAction === 'view'" label="状态">
+          <span class="readonly-view-label">
+            <StatusLabel
+              :status="{
+                status: get(formData, 'status.summaryStatus'),
+                text: get(formData, 'status.summaryStatus'),
+                message: get(formData, 'status.summaryStatusMessage'),
+                transitioning: get(formData, 'status.transitioning'),
+                error: get(formData, 'status.error')
+              }"
+            ></StatusLabel>
+          </span>
+        </a-form-item>
+        <a-form-item v-if="pageAction === 'view'" label="成本数据状态">
+          <div class="readonly-view-label description-content">
+            <span>{{
+              getCostStatus(get(formData, 'status.conditions') || [])
+            }}</span>
+          </div>
+        </a-form-item>
       </a-form>
     </div>
     <EditPageFooter v-if="pageAction === 'edit'">
@@ -111,7 +131,7 @@
 </template>
 
 <script lang="ts" setup>
-  import { assignIn } from 'lodash';
+  import { assignIn, get, find } from 'lodash';
   import { ref, reactive, onMounted, computed } from 'vue';
   import GroupTitle from '@/components/group-title/index.vue';
   import readBlob from '@/utils/readBlob';
@@ -119,6 +139,7 @@
   import useCallCommon from '@/hooks/use-call-common';
   import usePageAction from '@/hooks/use-page-action';
   import { ConnectorFormData } from '../config/interface';
+  import StatusLabel from '../components/status-label.vue';
   import { createConnector, updateConnector, queryItemConnector } from '../api';
 
   const { t, router, route } = useCallCommon();
@@ -149,6 +170,12 @@
     }
     return t('operation.connectors.title.edit', { type: 'Kubernetes' });
   });
+  const getCostStatus = (conditions) => {
+    const d = find(conditions, (item) => {
+      return item.type === 'CostSynced';
+    });
+    return d?.message;
+  };
   const handleUploadSuccess = async (list, fileItem) => {
     const res = await readBlob(fileItem.file);
     formData.configData.kubeconfig = res as string;
