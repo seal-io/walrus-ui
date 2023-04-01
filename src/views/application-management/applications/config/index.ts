@@ -61,12 +61,18 @@ export const instanceStatus = [
   { label: 'Deleting', value: 'Deleting' },
   { label: 'DeleteFailed', value: 'DeleteFailed' }
 ];
+
 export const statusMap = {
   Deployed: 'running',
   Deleting: 'warning',
   Deploying: 'warning',
   DeployFailed: 'error',
   DeleteFailed: 'error'
+};
+export const websocketEventType = {
+  create: 1,
+  update: 2,
+  delete: 3
 };
 export const setDurationValue = (val) => {
   if (!val) return '-';

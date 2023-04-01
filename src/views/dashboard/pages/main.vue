@@ -14,7 +14,6 @@
   import overview from '../components/overview.vue';
   import DeploymentSummary from '../components/deployment-summary.vue';
   import CostSummary from '../components/cost-summary.vue';
-  import { getDashBoardOverview } from '../api/dashboard';
 
   const issueData = ref({});
 </script>

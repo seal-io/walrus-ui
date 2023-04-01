@@ -51,7 +51,7 @@
   const createWebSockerConnection = () => {
     if (!logKey.value || !resourceId.value) return;
     const wssURL = createWebSocketUrl(
-      `application-resources/${resourceId.value}/log?key=${logKey.value}`
+      `/application-resources/${resourceId.value}/log?key=${logKey.value}`
     );
     wssInstance.value = useWebSocket(wssURL, {
       // autoReconnect: {

@@ -11,14 +11,6 @@
           "
         >
           <span>实例信息</span>
-          <!-- <a-button
-            v-if="get(instanceInfo, 'status') !== 'Deploying'"
-            type="primary"
-            size="small"
-            style="width: 98px"
-            @click="handleUpgradeInstance"
-            >升级</a-button
-          > -->
         </div>
       </template>
       <BasicInfo></BasicInfo>
@@ -28,42 +20,6 @@
     </ModuleCard>
     <ModuleCard title="访问URL">
       <tabEndpoint></tabEndpoint>
-      <!-- <span
-        v-for="(record, sIndex) in accessURLList"
-        :key="sIndex"
-        class="url-wrap"
-      >
-        <span
-          v-for="(item, index) in record.endpoints"
-          :key="index"
-          class="access-link-item"
-        >
-          <AutoTip
-            :tooltip-props="{
-              content:
-                record.resourceSubKind === 'NodePort'
-                  ? get(split(item, ':'), 1)
-                  : item
-            }"
-          >
-            <a-link
-              style="line-height: 1"
-              :href="
-                includes(item, 'https') || includes(item, 'http')
-                  ? item
-                  : `http://${item}`
-              "
-              target="_blank"
-            >
-              <span>{{
-                record.resourceSubKind === 'NodePort'
-                  ? get(split(item, ':'), 1)
-                  : item
-              }}</span>
-            </a-link>
-          </AutoTip>
-        </span>
-      </span> -->
     </ModuleCard>
 
     <ModuleCard title="资源信息" style="margin-top: 20px">
@@ -178,29 +134,7 @@
         instanceID: props.instanceId
       };
       const { data } = await queryInstanceEndpoints(params);
-      accessURLList.value = data?.endpoints || [
-        {
-          endpoints: [
-            '192.168.1.2192.168.1.2192.168.1.2192.168.1.2192.168.1.2',
-            '192.168.1.3'
-          ]
-        },
-        { endpoints: ['192.168.1.5', '192.168.1.7'] },
-        { endpoints: ['192.168.1.6', '192.168.1.8'] },
-        { endpoints: ['192.168.1.6', '192.168.1.8'] },
-        { endpoints: ['192.168.1.6', '192.168.1.8'] },
-        { endpoints: ['192.168.1.6', '192.168.1.8'] },
-        { endpoints: ['192.168.1.6', '192.168.1.8'] },
-        { endpoints: ['192.168.1.6', '192.168.1.8'] },
-        { endpoints: ['192.168.1.6', '192.168.1.8'] },
-        { endpoints: ['192.168.1.6', '192.168.1.8'] },
-        { endpoints: ['192.168.1.6', '192.168.1.8'] },
-        { endpoints: ['192.168.1.6', '192.168.1.8'] },
-        { endpoints: ['192.168.1.6', '192.168.1.8'] },
-        { endpoints: ['192.168.1.6', '192.168.1.8'] },
-        { endpoints: ['192.168.1.6', '192.168.1.8'] },
-        { endpoints: ['192.168.1.6', '192.168.1.8'] }
-      ];
+      accessURLList.value = data?.endpoints || [];
     } catch (error) {
       accessURLList.value = [];
       console.log(error);

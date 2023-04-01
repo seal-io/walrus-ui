@@ -5,7 +5,6 @@
       v-if="pageAction === 'view'"
       ref="basicform"
       v-model:data-info="defaultBasicInfo"
-      @save="handleOk"
     ></BasicView>
     <BasicInfo
       v-else
@@ -143,18 +142,6 @@
       :data-info="viewModuleInfo"
       :templates="moduleTemplates"
     ></viewModule>
-    <!-- <createInstance
-      v-model:show="showInstanceModal"
-      :variables="appInfoVariables"
-      :environment-list="environmentList"
-      title="部署应用"
-      @save="handleSaveInstanceInfo"
-    ></createInstance> -->
-    <variablesModal
-      v-model:show="editableVar"
-      v-model:variables="appInfo.variables"
-      @save="handleOk"
-    ></variablesModal>
   </div>
 </template>
 
@@ -203,17 +190,13 @@
   } from '@/views/operation-hub/templates/config/interface';
   import variablesModal from './variables-modal.vue';
   import LabelsList from './labels-list.vue';
-  import operationBtn from './operation-btn.vue';
-  import createInstance from '../create-instance.vue';
   import instanceThumb from '../instance-thumb.vue';
-  import variableForm from './variable-form.vue';
-  import moduleWrapper from '../module-wrapper.vue';
   import editModule from './edit-module.vue';
   import viewModule from './view-module.vue';
   import BasicInfo from './basic-info.vue';
   import BasicView from './basic-view.vue';
   import { AppFormData, Variables, AppModule } from '../../config/interface';
-  import { moduleActions, reserveFields } from '../../config';
+  import { moduleActions } from '../../config';
   import {
     createApplication,
     queryItemApplication,
@@ -249,11 +232,8 @@
     modules: []
   }) as AppFormData;
 
-  const pageAction = inject('pageAction', ref('create'));
-  type refItem = Element | ComponentPublicInstance | null;
-  const refMap: Record<string, refItem> = {};
-  const editableVar = ref(false);
-  const emits = defineEmits(['deploy', 'save', 'cancel']);
+  const pageAction = inject('pageAction', ref('edit'));
+  const emits = defineEmits(['save', 'cancelEdit']);
   const submitLoading = ref(false);
   const id = route.query.id as string;
   const cloneId = route.query.cloneId as string;
@@ -265,30 +245,17 @@
   const defaultBasicInfo = ref({});
   const moduleAction = ref('create');
   const showViewModal = ref(false);
-  const showInstanceModal = ref(false);
   const showEditModal = ref(false);
   const projectSecretList = ref<{ name: string }[]>([]);
   const appModuleVersions = ref<any>({});
   const appModules = ref<AppModule[]>([]);
   const completeData = ref<Record<string, any>>({});
-  const collapseStatus = ref(0);
-  // const validateModule = ref(false);
   const triggerModule = ref(false);
-  const showVariableModal = ref(false);
   let copyFormData: any = {};
 
   provide('completeData', completeData);
   provide('showHintInput', true);
 
-  // const collapseStatus = computed(() => {
-  //   return appInfo?.variables?.length - 1;
-  // });
-  // const variablesData = computed(() => {
-  //   const res = map(appInfo?.variables, (item) => {
-  //     return item.name;
-  //   });
-  //   return res;
-  // });
   const variablesObj = computed(() => {
     const res = reduce(
       appInfo?.variables,
@@ -362,13 +329,6 @@
       type: 'string'
     });
   };
-  const handleSaveInstanceInfo = (res) => {
-    emits('deploy');
-  };
-  const handleDeployApp = () => {
-    showInstanceModal.value = true;
-    appInfoVariables.value = cloneDeep(appInfo.variables);
-  };
   // apply for edit module config
   const getProjectSecrets = async () => {
     try {
@@ -378,10 +338,6 @@
         projectID: route.params.projectId as string
       };
       const { data } = await queryProjectSecrets(params);
-      // const [{ data }, { data: globalData }] = await Promise.all([
-      //   querySecrets(params),
-      //   querySecrets({ page: 1, perPage: -1 })
-      // ]);
       projectSecretList.value = uniqBy(data, (item) => item.name);
     } catch (error) {
       projectSecretList.value = [];
@@ -532,14 +488,6 @@
         });
       }
       submitLoading.value = false;
-      if (id) {
-        await Promise.all([
-          getApplicationDetail(),
-          getModulesVersions(),
-          getApplicationDetail()
-        ]);
-        setCompleteData();
-      }
       execSucceed();
       emits('save', res.id);
     } catch (error) {
@@ -550,7 +498,9 @@
 
   const handleCancel = () => {
     if (pageAction.value === 'edit' && route.params.action === 'view') {
-      emits('cancel');
+      emits('cancelEdit');
+      // reset the editing data
+      getApplicationDetail();
       return;
     }
     router.back();
@@ -559,16 +509,18 @@
     deleteModal({
       onOk() {
         appInfo.modules.splice(index, 1);
-        handleOk();
+        setCompleteData();
       }
     });
   };
-  const handleSaveModule = (data) => {
+  const handleSaveModule = async (data) => {
     console.log('saveModule===', data, moduleAction.value);
     if (moduleAction.value === 'create') {
       appInfo.modules.push({
         ...cloneDeep(data)
       });
+      await getModulesVersions();
+      setCompleteData();
     } else {
       assignIn(moduleInfo.value, data);
     }

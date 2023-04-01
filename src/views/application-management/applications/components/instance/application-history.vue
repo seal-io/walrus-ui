@@ -1,11 +1,5 @@
 <template>
   <div class="history-wrap">
-    <!-- <deployLogs
-      v-if="showLogs"
-      title="升级实例"
-      :revision-id="revisionId"
-      @close="handleCloseLogs"
-    ></deployLogs> -->
     <a-table
       :loading="loading"
       column-resizable
@@ -134,12 +128,21 @@
 
 <script lang="ts" setup>
   import dayjs from 'dayjs';
-  import { map, get, find } from 'lodash';
-  import { onMounted, ref, reactive, inject, watch, InjectionKey } from 'vue';
+  import { map, get, find, each, findIndex, cloneDeep, concat } from 'lodash';
+  import {
+    onMounted,
+    ref,
+    reactive,
+    inject,
+    watch,
+    nextTick,
+    onBeforeUnmount
+  } from 'vue';
   import StatusLabel from '@/views/operation-hub/connectors/components/status-label.vue';
   import { deleteModal } from '@/utils/monitor';
+  import { createWebsocketInstance } from '@/hooks/use-websocket';
   import { HistoryData } from '../../config/interface';
-  import { setDurationValue } from '../../config';
+  import { setDurationValue, websocketEventType } from '../../config';
   import deployLogs from '../deploy-logs.vue';
   import revisionDetailVue from '../revision-detail.vue';
   import {
@@ -162,8 +165,8 @@
   const loading = ref(false);
   const showDetailModal = ref(false);
   const ids = ref<{ id: string }[]>([]);
+  const websocketRevisions = ref<any>(null);
   const showLogs = ref(false);
-  const hasLogs = ref(false);
   const queryParams = reactive({
     page: 1,
     perPage: 10
@@ -175,16 +178,9 @@
   const handleRollback = (row) => {
     console.log(row);
   };
-  const handleCloseLogs = () => {
-    showLogs.value = false;
-  };
-  const handleShowDetail = (row) => {
-    revisionId.value = row.id;
-    showLogs.value = true;
-  };
 
   const fetchData = async () => {
-    if (!instanceId) return;
+    if (!instanceId.value) return;
     try {
       loading.value = true;
       const { data } = await queryApplicationRevisions({
@@ -235,11 +231,42 @@
       showDetailModal.value = true;
     }, 100);
   };
+  const updateRevisions = (data) => {
+    if (data?.type !== websocketEventType.update) return;
+    const collections = data.collection || [];
+    each(collections, (item) => {
+      const updateIndex = findIndex(
+        dataList.value,
+        (sItem) => sItem.id === item.id
+      );
+      if (updateIndex > -1) {
+        const updateItem = cloneDeep(item);
+        dataList.value[updateIndex] = updateItem;
+      } else {
+        dataList.value = concat(cloneDeep(item), dataList.value);
+      }
+    });
+  };
+  const createInstanceListWebsocket = () => {
+    try {
+      if (!instanceId.value) return;
+      websocketRevisions.value?.close?.();
+      websocketRevisions.value = createWebsocketInstance({
+        url: `/application-revisions?instanceID=${instanceId.value}`,
+        onmessage: updateRevisions
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  };
   watch(
     () => instanceId.value,
     () => {
       queryParams.page = 1;
       fetchData();
+      nextTick(() => {
+        createInstanceListWebsocket();
+      });
     },
     {
       immediate: true
@@ -261,6 +288,9 @@
       immediate: true
     }
   );
+  onBeforeUnmount(() => {
+    websocketRevisions.value?.close?.();
+  });
   onMounted(() => {
     console.log('resource');
   });

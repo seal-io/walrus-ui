@@ -156,17 +156,25 @@
 </template>
 
 <script lang="ts" setup>
-  import { map, get, pickBy, find } from 'lodash';
+  import _, { map, get, pickBy, find } from 'lodash';
   import dayjs from 'dayjs';
-  import { reactive, ref, onMounted } from 'vue';
+  import {
+    reactive,
+    ref,
+    onMounted,
+    watch,
+    nextTick,
+    onBeforeUnmount
+  } from 'vue';
   import useCallCommon from '@/hooks/use-call-common';
+  import { createWebsocketInstance } from '@/hooks/use-websocket';
   import { deleteModal, execSucceed } from '@/utils/monitor';
   import useRowSelect from '@/hooks/use-row-select';
   import FilterBox from '@/components/filter-box/index.vue';
   import localStore from '@/utils/localStore';
   import { queryProjects } from '../../projects/api';
   import { AppRowData } from '../config/interface';
-  import { statusMap } from '../config';
+  import { statusMap, websocketEventType } from '../config';
   import createApplication from '../components/create-application.vue';
   import { queryApplications, deleteApplication } from '../api';
   import InstanceStatus from '../components/instance-status.vue';
@@ -185,6 +193,7 @@
     perPage: 10
   });
   const dataList = ref<AppRowData[]>([]);
+  const websocketInstance = ref<any>(null);
   const projectList = ref<{ label: string; value: string }[]>([]);
 
   const setDefaultProject = async () => {
@@ -339,6 +348,48 @@
     fetchData();
   };
 
+  const updateRevisions = (data) => {
+    if (data?.type !== websocketEventType.update) return;
+    const collections = data.collection || [];
+    _.each(collections, (item) => {
+      const updateIndex = _.findIndex(
+        dataList.value,
+        (sItem) => sItem.id === item.id
+      );
+      if (updateIndex > -1) {
+        const updateItem = _.cloneDeep(item);
+        dataList.value[updateIndex] = updateItem;
+      } else {
+        dataList.value = _.concat(_.cloneDeep(item), dataList.value);
+      }
+    });
+  };
+  const createInstanceListWebsocket = () => {
+    try {
+      if (!queryParams.projectID) return;
+      websocketInstance.value?.close?.();
+      websocketInstance.value = createWebsocketInstance({
+        url: `/applications?projectID=${queryParams.projectID}`,
+        onmessage: updateRevisions
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  watch(
+    () => queryParams.projectID,
+    () => {
+      nextTick(() => {
+        createInstanceListWebsocket();
+      });
+    },
+    {
+      immediate: true
+    }
+  );
+  onBeforeUnmount(() => {
+    websocketInstance.value?.close?.();
+  });
   init();
 </script>
 

@@ -51,6 +51,11 @@ export interface InstanceData {
   name: string;
   id: string;
   type: string;
+  status: string;
+  environment: {
+    id: string;
+    name: string;
+  };
 }
 export interface KeysItem {
   executable?: boolean;
