@@ -23,11 +23,11 @@ export default function setupPermissionGuard(router: Router) {
     const userStore = useUserStore();
 
     // ============ remove under line when always verify permission =========
-    if (userStore.userSetting?.EnableAuth?.value === 'false') {
-      next();
-      NProgress.done();
-      return;
-    }
+    // if (userStore.userSetting?.EnableAuth?.value === 'false') {
+    //   next();
+    //   NProgress.done();
+    //   return;
+    // }
     // ================ end =====================
 
     // const settings = await userStore.getUserSetting()
