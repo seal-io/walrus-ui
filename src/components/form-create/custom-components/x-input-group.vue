@@ -199,6 +199,7 @@
   const emits = defineEmits([
     'add',
     'delete',
+    'keyChange',
     'update:value',
     'update:dataKey',
     'update:dataValue',
@@ -249,6 +250,7 @@
     // }
     if (attr === 'key') {
       emits('update:dataKey', val);
+      emits('keyChange');
     }
     if (attr === 'value') {
       emits('update:dataValue', val);

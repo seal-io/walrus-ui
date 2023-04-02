@@ -175,7 +175,8 @@
     includes,
     pickBy,
     toString,
-    clone
+    clone,
+    filter
   } from 'lodash';
   import {
     ref,
@@ -222,6 +223,12 @@
     },
     templates: {
       type: Array as PropType<TemplateRowData[]>,
+      default() {
+        return [];
+      }
+    },
+    allModuleVersions: {
+      type: Array as PropType<ModuleVersionData[]>,
       default() {
         return [];
       }
@@ -375,10 +382,13 @@
   };
   const getModuleVersionList = async () => {
     try {
-      const { data } = await queryModulesVersions({
-        moduleID: formData.module.id
-      });
-      const list = data.items || [];
+      // const { data } = await queryModulesVersions({
+      //   moduleID: formData.module.id
+      // });
+      const list = filter(
+        props.allModuleVersions,
+        (item) => item.module.id === formData.module.id
+      );
       moduleVersionList.value = map(list, (item) => {
         return {
           ...item,
