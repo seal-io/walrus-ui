@@ -93,6 +93,7 @@
             class="group-item"
             :label-list="variableList"
             :position="sIndex"
+            @keyChange="handleKeyChange"
             @add="handleAddVariables"
             @delete="handleDeleteVariable(sIndex)"
           ></xInputGroup>
@@ -134,6 +135,7 @@
       v-model:action="moduleAction"
       :data-info="moduleInfo"
       :templates="moduleTemplates"
+      :all-module-versions="allModuleVersions"
       @save="handleSaveModule"
     ></editModule>
     <viewModule
@@ -141,6 +143,7 @@
       action="edit"
       :data-info="viewModuleInfo"
       :templates="moduleTemplates"
+      :all-module-versions="allModuleVersions"
     ></viewModule>
   </div>
 </template>
@@ -231,7 +234,6 @@
     },
     modules: []
   }) as AppFormData;
-
   const pageAction = inject('pageAction', ref('edit'));
   const emits = defineEmits(['save', 'cancelEdit']);
   const submitLoading = ref(false);
@@ -248,9 +250,11 @@
   const showEditModal = ref(false);
   const projectSecretList = ref<{ name: string }[]>([]);
   const appModuleVersions = ref<any>({});
+  const allModuleVersions = ref<ModuleVersionData[]>([]);
   const appModules = ref<AppModule[]>([]);
   const completeData = ref<Record<string, any>>({});
   const triggerModule = ref(false);
+  let completeDataSetter: any = {};
   let copyFormData: any = {};
 
   provide('completeData', completeData);
@@ -297,14 +301,13 @@
     }, 150);
   };
   const handleClickInstance = (data) => {
+    if (pageAction.value === 'edit') return;
     viewModuleInfo.value = data;
     setTimeout(() => {
       showViewModal.value = true;
     }, 150);
   };
-  const handleDeleteVariable = (index) => {
-    appInfo.variables.splice(index, 1);
-  };
+
   // modules options
   const getModules = async () => {
     try {
@@ -346,6 +349,7 @@
   };
   // app module version has added; it's map to a {name: <moduleName>, type: <moduleType>, version: <moduleVersion>}
   const getAppModulesVersionMap = () => {
+    appModules.value = get(appInfo, 'modules') || [];
     const list = map(appModules.value, (item) => {
       return {
         name: item.name,
@@ -355,14 +359,15 @@
     });
     return list;
   };
+
   // apply for edit module config
   const getModulesVersions = async () => {
     if (!id && !cloneId) return;
     try {
       const params = {
         moduleID: uniq(
-          map(appModules.value, (item) => {
-            return item?.module.id;
+          map(moduleTemplates.value, (item) => {
+            return item.id;
           })
         )
       };
@@ -370,34 +375,37 @@
         return;
       }
       const { data } = await queryModulesAllVersions(params);
-      const addedVersionMap = getAppModulesVersionMap();
-      appModuleVersions.value = reduce(
-        addedVersionMap,
-        (obj, item) => {
-          // The version corresponding to the module that has been added
-          const addedModule = find(data.items || [], (s) => {
-            return item.type === s.module.id && s.version === item.version;
-          });
-          const k = item.name || addedModule?.name;
-          obj[k] = [
-            ...map(get(addedModule, 'schema.Outputs') || [], (o) => {
-              return {
-                label: o.Description,
-                value: o.Name
-              };
-            })
-          ];
-          return obj;
-        },
-        {}
-      );
-      console.log('appModuleVersions======', appModuleVersions.value);
+      allModuleVersions.value = data?.items || [];
+      console.log('allModuleVersions======', allModuleVersions.value);
     } catch (error) {
-      appModuleVersions.value = {};
+      allModuleVersions.value = [];
       console.log(error);
     }
   };
 
+  const setAddedMoudleCompleteData = () => {
+    const addedVersionMap = getAppModulesVersionMap();
+    appModuleVersions.value = reduce(
+      addedVersionMap,
+      (obj, item) => {
+        // The version corresponding to the module that has been added
+        const addedModule = find(allModuleVersions.value || [], (s) => {
+          return item.type === s.module.id && s.version === item.version;
+        });
+        const k = item.name;
+        obj[k] = [
+          ...map(get(addedModule, 'schema.Outputs') || [], (o) => {
+            return {
+              label: o.Description,
+              value: o.Name
+            };
+          })
+        ];
+        return obj;
+      },
+      {}
+    );
+  };
   const getApplicationDetail = async () => {
     if (!id && !cloneId) return;
     const queryId = id || cloneId;
@@ -425,16 +433,21 @@
       console.log(error);
     }
   };
-  const setCompleteData = () => {
+  const setVariablesCompleteData = () => {
     const variables = reduce(
       get(appInfo, 'variables') || [],
       (obj, item) => {
-        obj[item.name] = '';
+        if (item.name) {
+          obj[item.name] = '';
+        }
         return obj;
       },
       {}
     );
-    const secret = reduce(
+    return variables;
+  };
+  const setSecretCompleteData = () => {
+    const secrets = reduce(
       projectSecretList.value,
       (obj, item) => {
         obj[item.name] = '';
@@ -442,18 +455,33 @@
       },
       {}
     );
-    completeData.value = {
-      secret: {
-        ...secret
+    return secrets;
+  };
+  const setCompleteData = () => {
+    completeDataSetter = {
+      updateSecretCompleteData() {
+        const secrets = setSecretCompleteData();
+        completeData.value.secret = { ...secrets };
       },
-      module: {
-        ...appModuleVersions.value
+      updateModuleCompleteData() {
+        setAddedMoudleCompleteData();
+        completeData.value.module = { ...appModuleVersions.value };
       },
-      var: {
-        ...variables
+      updateVariablesCompleteData() {
+        const variables = setVariablesCompleteData();
+        completeData.value.var = { ...variables };
       }
     };
-    console.log('completeData.value===', completeData.value);
+    completeDataSetter?.updateSecretCompleteData?.();
+    completeDataSetter?.updateModuleCompleteData?.();
+    completeDataSetter?.updateVariablesCompleteData?.();
+  };
+  const handleKeyChange = () => {
+    completeDataSetter?.updateVariablesCompleteData?.();
+  };
+  const handleDeleteVariable = (index) => {
+    appInfo.variables.splice(index, 1);
+    completeDataSetter?.updateVariablesCompleteData?.();
   };
   const handleOk = async () => {
     console.log('handleOk====', appInfo);
@@ -509,7 +537,7 @@
     deleteModal({
       onOk() {
         appInfo.modules.splice(index, 1);
-        setCompleteData();
+        completeDataSetter?.updateModuleCompleteData?.();
       }
     });
   };
@@ -519,8 +547,7 @@
       appInfo.modules.push({
         ...cloneDeep(data)
       });
-      await getModulesVersions();
-      setCompleteData();
+      completeDataSetter?.updateModuleCompleteData?.();
     } else {
       assignIn(moduleInfo.value, data);
     }

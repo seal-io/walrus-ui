@@ -140,7 +140,8 @@
     pickBy,
     toString,
     clone,
-    join
+    join,
+    filter
   } from 'lodash';
   import {
     ref,
@@ -197,6 +198,12 @@
       type: String,
       default() {
         return 'edit';
+      }
+    },
+    allModuleVersions: {
+      type: Array as PropType<ModuleVersionData[]>,
+      default() {
+        return [];
       }
     }
   });
@@ -354,10 +361,13 @@
   };
   const getModuleVersionList = async () => {
     try {
-      const { data } = await queryModulesVersions({
-        moduleID: formData.module.id
-      });
-      const list = data.items || [];
+      // const { data } = await queryModulesVersions({
+      //   moduleID: formData.module.id
+      // });
+      const list = filter(
+        props.allModuleVersions,
+        (item) => item.module.id === formData.module.id
+      );
       moduleVersionList.value = map(list, (item) => {
         return {
           ...item,
