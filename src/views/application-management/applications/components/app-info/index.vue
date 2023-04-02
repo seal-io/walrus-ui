@@ -566,8 +566,8 @@
   //   return true;
   // });
   const init = async () => {
-    getModules();
     await getApplicationDetail();
+    await getModules();
     await Promise.all([getModulesVersions(), getProjectSecrets()]);
     setCompleteData();
   };
