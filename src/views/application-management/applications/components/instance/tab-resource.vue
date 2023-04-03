@@ -201,7 +201,7 @@
       queryParams.page = 1;
       fetchData();
       nextTick(() => {
-        // createInstanceListWebsocket();
+        createInstanceListWebsocket();
       });
     },
     {
@@ -209,6 +209,7 @@
     }
   );
   onBeforeUnmount(() => {
+    console.log('wss unmounted');
     websocketInstance.value?.close?.();
   });
   onMounted(() => {

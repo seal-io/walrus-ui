@@ -181,7 +181,8 @@
 
   const HOT_PROJECT_ID = 'HOT_PROJECT_ID';
   const { rowSelection, selectedKeys, handleSelectChange } = useRowSelect();
-  const { router, locale } = useCallCommon();
+  const { router, locale, route } = useCallCommon();
+  const id = route.query.id || '';
   let timer: any = null;
   const loading = ref(false);
   const showAppModal = ref(false);
@@ -201,7 +202,7 @@
     queryParams.projectID = val || '';
   };
   const getProjectList = async () => {
-    const hotProjectId = await localStore.getValue(HOT_PROJECT_ID);
+    const hotProjectId = id || (await localStore.getValue(HOT_PROJECT_ID));
     try {
       const params = {
         page: 1,
@@ -219,6 +220,7 @@
       );
       if (hotItem) {
         queryParams.projectID = hotProjectId;
+        localStore.setValue(HOT_PROJECT_ID, hotProjectId);
       } else {
         queryParams.projectID = get(projectList.value, '0.value') || '';
       }
@@ -371,7 +373,7 @@
     try {
       if (websocketInstance.value) return;
       websocketInstance.value = createWebsocketInstance({
-        url: `/applications?projectID`,
+        url: `/applications`,
         onmessage: updateApplicationList
       });
     } catch (error) {
@@ -382,7 +384,7 @@
     () => queryParams.projectID,
     () => {
       nextTick(() => {
-        // createInstanceListWebsocket();
+        createInstanceListWebsocket();
       });
     },
     {
@@ -390,6 +392,7 @@
     }
   );
   onBeforeUnmount(() => {
+    console.log('wss app unmount');
     websocketInstance.value?.close?.();
   });
   init();

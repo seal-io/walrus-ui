@@ -14,6 +14,7 @@
     watch,
     PropType,
     ref,
+    defineExpose,
     ComponentPublicInstance
   } from 'vue';
   import ace, { Range } from 'ace-builds';
@@ -271,6 +272,9 @@
     },
     { immediate: true }
   );
+  const clear = () => {
+    aceEditor?.setValue('');
+  };
   watch(
     () => props.lang,
     (newVal) => {
@@ -333,6 +337,9 @@
         enableBasicAutocompletion: true
       });
     });
+  });
+  defineExpose({
+    clear
   });
   onBeforeMount(() => {
     aceEditor?.destroy?.();
