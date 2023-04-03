@@ -38,9 +38,9 @@ export function createWebsocketInstance({ url, onmessage }) {
     }, TRY_FREQ);
   };
   // error
-  wss.onerror = () => {
-    console.log('wss error...');
-    wss = new WebSocket(url);
+  wss.onerror = (error) => {
+    console.log('wss error...', error);
+    // wss = new WebSocket(url);
   };
 
   // receive message from server

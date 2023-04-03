@@ -110,7 +110,7 @@
     </FilterBox> -->
     <SpinCard
       :loading="overviewloading || preloading"
-      :title="`项目: ${projectName}`"
+      :title="`${$t('cost.analyse.detail.project')}: ${projectName}`"
       borderless
       style="margin-bottom: 10px"
     >
@@ -148,7 +148,11 @@
         </a-grid-item>
       </a-grid> -->
     </SpinCard>
-    <SpinCard title="应用消费分布" borderless style="margin-bottom: 10px">
+    <SpinCard
+      :title="$t('cost.analyse.detail.appCost')"
+      borderless
+      style="margin-bottom: 10px"
+    >
       <LineBarChart
         :loading="apploading || preloading"
         height="220px"
@@ -176,7 +180,7 @@
         :time-mode="timeMode"
         :loadeend="loadeend"
         :filter-params="projectCostFilters"
-        :columns="projectCostCols"
+        :columns="projectCostColsList"
         source="app table"
         style="margin-top: 20px"
       ></TableList>
@@ -185,7 +189,16 @@
 </template>
 
 <script lang="ts" setup>
-  import { set, get, find, map, each, round } from 'lodash';
+  import {
+    set,
+    get,
+    find,
+    map,
+    each,
+    round,
+    cloneDeep,
+    template
+  } from 'lodash';
   import { reactive, ref, computed, onMounted, watch, inject } from 'vue';
   import useCallCommon from '@/hooks/use-call-common';
   import DateRange from '@/components/date-range/index.vue';
@@ -265,6 +278,13 @@
 
   const preloading = computed(() => {
     return projectloading.value || loading.value;
+  });
+  const projectCostColsList = computed(() => {
+    const list = cloneDeep(projectCostCols);
+    return map(list, (item) => {
+      item.title = t(item.title);
+      return item;
+    });
   });
   const requestWork = computed(() => {
     return !!queryParams.project;

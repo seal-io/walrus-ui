@@ -20,6 +20,7 @@ export default {
   'dashboard.table.envrionment': '环境',
   'dashboard.deployment.summary': '统计',
   'dashboard.cost.currentMonth': '本月消费',
+  'dashboard.cost.costTrend': '项目消费趋势',
   'dashboard.cost.rank': '应用消费排行(本月)',
   'dashboard.cost.pervisious': '上个月',
   'dashboard.cost.daily': '总消费趋势',

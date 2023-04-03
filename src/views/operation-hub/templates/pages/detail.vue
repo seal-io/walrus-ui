@@ -75,7 +75,7 @@
       </a-form-item>
       <a-form-item
         field="icon"
-        label="图标"
+        :label="$t('operation.templates.detail.icon')"
         :rules="[
           {
             match: urlReg,
@@ -111,7 +111,11 @@
       class="page-line-tabs"
       @change="handleTabChange"
     >
-      <a-tab-pane v-for="item in tabList" :key="item.com" :title="item.label">
+      <a-tab-pane
+        v-for="item in tabList"
+        :key="item.com"
+        :title="$t(item.label)"
+      >
         <component :is="tabMap[item.com]" :schema="templateSchema"></component>
       </a-tab-pane>
       <template #extra>
@@ -188,7 +192,7 @@
   const { pageAction, handleEdit } = usePageAction();
   const version = ref('');
   const activeKey = ref('tabReadme');
-  const { router, route } = useCallCommon();
+  const { router, route, t } = useCallCommon();
   const formref = ref();
   const id = route.query.id as string;
   const submitLoading = ref(false);
@@ -203,12 +207,12 @@
 
   const title = computed(() => {
     if (!id) {
-      return '新建模块';
+      return t('operation.templates.detail.add');
     }
     if (id && pageAction.value === 'view') {
-      return '模块详情';
+      return t('operation.templates.detail.view');
     }
-    return '编辑模块';
+    return t('operation.templates.detail.edit');
   });
   const getModuleVersions = async () => {
     if (!id) return;

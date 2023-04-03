@@ -31,7 +31,7 @@ import {
 import testData, { statckLineData, overviewData } from '../config/testData';
 
 export default function usePerspectiveCost(props) {
-  const { route } = useCallCommon();
+  const { route, t } = useCallCommon();
   const { query } = route;
   const dailyCostFilters = ref<any>({});
   const workloadCostFilters = ref<any>({});
@@ -78,8 +78,10 @@ export default function usePerspectiveCost(props) {
     return query.id || props.viewId;
   });
   const summaryData = computed(() => {
-    const list = map(clusterCostOverview, (item) => {
+    const arr = cloneDeep(clusterCostOverview);
+    const list = map(arr, (item) => {
       item.value = get(overData.value, item.key) || 0;
+      item.label = t(item.label);
       return item;
     });
     return list;

@@ -1,7 +1,16 @@
 import { ref, reactive, computed, toRefs } from 'vue';
 import dayjs from 'dayjs';
 import useCallCommon from '@/hooks/use-call-common';
-import { find, get, omit, map, each, assignIn, sortBy } from 'lodash';
+import {
+  find,
+  get,
+  omit,
+  map,
+  each,
+  assignIn,
+  sortBy,
+  cloneDeep
+} from 'lodash';
 import { CostAnalyRow, ChartData } from '../config/interface';
 import {
   queryItemPerspective,
@@ -12,7 +21,7 @@ import { costOverview, getTimeRange, setEndTimeAddDay } from '../config';
 import testData, { overviewData } from '../config/testData';
 
 export default function usePerspectiveCost(props) {
-  const { route } = useCallCommon();
+  const { route, t } = useCallCommon();
   const { query } = route;
   const dailyCostFilters = ref<any>({});
   const projectCostFilters = ref<any>({});
@@ -54,8 +63,10 @@ export default function usePerspectiveCost(props) {
     return query.id || props.viewId;
   });
   const summaryData = computed(() => {
-    const list = map(costOverview, (item) => {
+    const arr = cloneDeep(costOverview);
+    const list = map(arr, (item) => {
       item.value = get(overData.value, item.key) || 0;
+      item.label = t(item.label);
       return item;
     });
     return list;

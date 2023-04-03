@@ -38,7 +38,9 @@
       </a-descriptions>
       <div class="logs-content" style="text-align: left">
         <div class="label">{{
-          get(revisionData, 'status') === 'Running' ? '运行日志' : '异常日志'
+          get(revisionData, 'status') === 'Running'
+            ? $t('applications.applications.logs.live')
+            : $t('applications.applications.instance.log')
         }}</div>
         <deployLogs
           v-if="get(revisionData, 'status') === 'Running'"

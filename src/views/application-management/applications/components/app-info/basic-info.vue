@@ -4,9 +4,14 @@
       <a-grid :cols="24">
         <a-grid-item :span="12">
           <a-form-item
-            label="名称"
+            :label="$t('applications.applications.form.name')"
             field="name"
-            :rules="[{ required: true, message: '名称必填' }]"
+            :rules="[
+              {
+                required: true,
+                message: $t('applications.applications.rule.name')
+              }
+            ]"
           >
             <a-input
               v-model="formData.name"
@@ -15,7 +20,7 @@
               style="width: 100%"
             ></a-input>
           </a-form-item>
-          <a-form-item label="描述">
+          <a-form-item :label="$t('common.table.name')">
             <a-textarea
               v-model="formData.description"
               :max-length="200"
@@ -24,13 +29,15 @@
               :auto-size="{ minRows: 4, maxRows: 6 }"
             ></a-textarea>
           </a-form-item>
-          <a-form-item :label="$t('applications.projects.form.label')">
+          <a-form-item :label="$t('applications.applications.form.label')">
             <div style="display: flex; flex-direction: column; width: 100%">
               <div v-if="labelList.length" class="var-item-title">
-                <span class="label">键</span>
+                <span class="label">{{
+                  $t('applications.applications.form.key')
+                }}</span>
                 <span class="label">
                   <span class="holder"></span>
-                  <span>值</span>
+                  <span>{{ $t('applications.applications.form.value') }}</span>
                 </span>
                 <span class="btn"></span>
               </div>

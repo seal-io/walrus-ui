@@ -9,7 +9,8 @@
       :x-axis="data.xAxis"
       :config-options="{
         title: {
-          ...title
+          ...title,
+          text: $t('dashboard.cost.costTrend')
         },
         legend: {
           right: 'center',
@@ -41,7 +42,6 @@
     }
   });
   const title = {
-    text: '项目消费趋势',
     left: 'auto',
     top: 0,
     textStyle: {

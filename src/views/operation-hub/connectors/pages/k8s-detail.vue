@@ -76,7 +76,9 @@
         <a-form-item label="">
           <template #label>
             <div class="label-wrap">
-              <span class="text">成本分析器(可选)</span>
+              <span class="text">{{
+                $t('operation.connectors.form.finopsenable')
+              }}</span>
             </div>
           </template>
           <a-checkbox

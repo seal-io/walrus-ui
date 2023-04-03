@@ -1,6 +1,9 @@
 <template>
   <ComCard top-gap class="gpt-box">
-    <GroupTitle show-back title="编写模块"></GroupTitle>
+    <GroupTitle
+      show-back
+      :title="$t('operation.templates.button.gpt')"
+    ></GroupTitle>
     <div class="opration-wrap">
       <div class="sel">
         <a-select
@@ -8,7 +11,7 @@
           :disabled="loading"
           :options="optionList"
           style="width: 300px"
-          placeholder="请选择示例"
+          :placeholder="$t('operation.templates.detail.example')"
           @change="handleTyeChange"
         >
         </a-select>
@@ -23,13 +26,13 @@
           <template #icon>
             <icon-font type="icon-icontypropertyrepair"></icon-font>
           </template>
-          <span>接受修复</span>
+          <span>{{ $t('operation.templates.detail.receiveFix') }}</span>
         </a-link>
         <a-link class="link-btn" @click="handleUndoCall">
           <template #icon>
             <icon-font type="icon-quxiao"></icon-font>
           </template>
-          <span>放弃修复</span>
+          <span>{{ $t('operation.templates.detail.cancelFix') }}</span>
         </a-link>
       </a-space>
     </div>
@@ -73,7 +76,7 @@
           @click="handleCompletionGenerate"
         >
           <template #icon><icon-common /></template>
-          <span>生成</span>
+          <span>{{ $t('operation.templates.detail.gptcreate') }}</span>
         </a-button>
         <a-button
           type="primary"
@@ -83,7 +86,7 @@
           <template #icon>
             <icon-font type="icon-shengchenglujing-01"></icon-font>
           </template>
-          <span>解释</span>
+          <span>{{ $t('operation.templates.detail.explain') }}</span>
         </a-button>
         <a-button
           type="primary"
@@ -93,11 +96,11 @@
           <template #icon>
             <icon-find-replace />
           </template>
-          <span>纠错</span>
+          <span>{{ $t('operation.templates.detail.correction') }}</span>
         </a-button>
         <a-button type="outline" :disabled="loading" @click="handleClear">
           <template #icon><icon-delete /></template>
-          <span>清空</span>
+          <span>{{ $t('common.button.clear') }}</span>
         </a-button>
         <!-- <a-button type="outline" status="success">
           <template #icon
@@ -117,7 +120,10 @@
         >
           <template #content>
             <div style="color: #4e5969; font-size: 14px; white-space: pre-wrap">
-              {{ correctionExplain || '无纠错信息' }}
+              {{
+                correctionExplain ||
+                $t('operation.templates.detail.nocorrection')
+              }}
             </div>
           </template>
           <a-button
@@ -128,7 +134,14 @@
             class="correction-btn"
             @click="handleViewCorrection"
           >
-            <a-tooltip content="查看纠错说明">
+            <a-tooltip
+              :content="$t('operation.templates.detail.correctionview')"
+            >
+              <template #content>
+                <div style="width: max-content">{{
+                  $t('operation.templates.detail.correctionview')
+                }}</div>
+              </template>
               <span>
                 <icon-font
                   type="icon-shoudongxiaoyan"
@@ -162,7 +175,7 @@
     </EditPageFooter>
     <CreatePR
       v-model:show="showModal"
-      title="创建PR"
+      :title="$t('operation.templates.create.title')"
       :status="status"
       :content="code"
       @save="handleShowPRLink"
@@ -171,7 +184,7 @@
     <CodeExplainModal
       v-model:show="showExplain"
       :content="explainValue"
-      title="解释信息"
+      :title="$t('operation.templates.detail.explainInfo')"
     ></CodeExplainModal>
   </ComCard>
 </template>
@@ -204,7 +217,7 @@
     added?: boolean;
   }
   const optionList = ref<{ label: string; value: string }[]>([]);
-  const { router } = useCallCommon();
+  const { router, t } = useCallCommon();
   const correctionButton = ref();
   const type = ref('');
   const status = ref('create');
@@ -405,7 +418,7 @@
   };
   const handleUndoCall = () => {
     deleteModal({
-      title: '确定放弃修复？',
+      title: 'operation.templates.detail.cancelFix.tips',
       onOk: handleUndo
     });
   };
@@ -430,7 +443,7 @@
   };
   const handleFixCall = () => {
     deleteModal({
-      title: '确定接受修复？',
+      title: 'operation.templates.detail.receiveFix.tips',
       onOk: handleFixAll
     });
   };
@@ -440,7 +453,7 @@
 
   const handleShowPRLink = (url) => {
     modalInstance = Modal.success({
-      title: 'PR创建成功',
+      title: t('operation.templates.pr.done'),
       top: '20%',
       width: 500,
       maskClosable: false,
@@ -458,7 +471,7 @@
                 modalInstance?.close?.();
               }
             },
-            '前往处理PR'
+            t('operation.templates.pr.handle')
           ),
           h(
             Button,
@@ -468,7 +481,7 @@
                 modalInstance?.close?.();
               }
             },
-            '关闭'
+            t('common.button.close')
           )
         ]);
       },

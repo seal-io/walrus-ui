@@ -8,7 +8,7 @@
             style="width: 200px"
             allow-clear
             :options="projectList"
-            placeholder="请选择项目"
+            :placeholder="$t('applications.applications.project.holder')"
             @change="handleProjectChange"
           ></a-select>
           <a-input
@@ -63,7 +63,7 @@
             tooltip
             :cell-style="{ minWidth: '40px' }"
             data-index="name"
-            title="密钥"
+            :title="$t('applications.applications.secret')"
           >
           </a-table-column>
           <a-table-column
@@ -72,7 +72,7 @@
             align="center"
             :cell-style="{ minWidth: '40px' }"
             data-index="scope"
-            title="项目"
+            :title="$t('applications.projects.table.name')"
           >
             <template #cell="{ record }">
               <span>{{ setSecretScope(get(record, 'project.id')) }}</span>

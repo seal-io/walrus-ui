@@ -24,6 +24,7 @@ export default {
   'common.table.createTime': '创建时间',
   'common.table.updateTime': '更新时间',
   'common.table.description': '描述',
+  'common.table.name': '名称',
   'common.copy.success': '复制成功',
   'common.copy.fail': '复制失败',
   'common.delete.success': '删除成功',
@@ -60,6 +61,7 @@ export default {
   'common.date.utc': 'UTC时间',
   'common.date.local': '本地时间',
   'common.button.deploy': '部署',
+  'common.button.logs': '查看日志',
   'common.ws.close': '连接已断开，是否重新连接？',
   'common.ws.reconnect': '重新连接'
 };

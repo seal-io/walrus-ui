@@ -27,7 +27,9 @@
       <span>{{ title }}</span>
     </template>
     <div style="display: center">
-      <a-checkbox v-model="force">清理所有资源</a-checkbox>
+      <a-checkbox v-model="force">{{
+        $t('applications.applications.instance.deleteTips')
+      }}</a-checkbox>
     </div>
     <template #footer>
       <EditPageFooter style="margin-top: 0">

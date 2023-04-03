@@ -26,7 +26,7 @@ import {
 import testData, { statckLineData } from '../config/testData';
 
 export default function usePerspectiveCost(props) {
-  const { route } = useCallCommon();
+  const { route, t } = useCallCommon();
   const { query } = route;
   const projectCostFilters = ref<any>({});
   const projectList = ref<{ label: string; value: string }[]>([]);
@@ -56,8 +56,10 @@ export default function usePerspectiveCost(props) {
     return query.id;
   });
   const summaryData = computed(() => {
-    const list = map(projectCostOverview, (item) => {
+    const arr = cloneDeep(projectCostOverview);
+    const list = map(arr, (item) => {
       item.value = get(overData.value, item.key) || 0;
+      item.label = t(item.label);
       return item;
     });
     return list;

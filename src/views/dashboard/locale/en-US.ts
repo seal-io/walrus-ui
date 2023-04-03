@@ -20,6 +20,7 @@ export default {
   'dashboard.table.envrionment': 'Environment',
   'dashboard.deployment.summary': 'Summary',
   'dashboard.cost.currentMonth': 'This Month Cost',
+  'dashboard.cost.costTrend': 'Project Cost Trend',
   'dashboard.cost.rank': 'Application Cost Rank(this month)',
   'dashboard.cost.pervisious': 'pervisous month',
   'dashboard.cost.daily': 'Total Cost Trend',

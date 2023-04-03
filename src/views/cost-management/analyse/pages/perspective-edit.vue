@@ -16,7 +16,9 @@
         :label="$t('cost.analyse.table.name')"
         field="name"
         validate-trigger="change"
-        :rules="[{ required: !viewable, message: '视图名称必填' }]"
+        :rules="[
+          { required: !viewable, message: $t('cost.optimize.form.rule.name') }
+        ]"
       >
         <a-input
           v-if="!viewable"
@@ -26,11 +28,11 @@
         ></a-input>
         <span v-else class="readonly-view-label">{{ formData.name }}</span>
         <template #extra>
-          <span>All, Project, Cluster为系统内置名称</span>
+          <span>{{ $t('cost.optimize.form.name.tips') }}</span>
         </template>
       </a-form-item>
       <GroupTitle
-        title="定义费用单元"
+        :title="$t('cost.optimize.form.title.group1')"
         style="margin-top: 10px"
         :bordered="true"
       ></GroupTitle>
@@ -38,7 +40,9 @@
         :label="$t('cost.analyse.table.time')"
         field="timeRange"
         :validate-trigger="['change']"
-        :rules="[{ required: !viewable, message: '时间范围必选' }]"
+        :rules="[
+          { required: !viewable, message: $t('cost.optimize.form.rule.time') }
+        ]"
       >
         <a-select
           v-if="!viewable"
@@ -56,13 +60,20 @@
           $t(getListLabel(formData.timeRange, timeRangeOptions) || '-')
         }}</span>
         <template v-if="!viewable" #extra>
-          <span class="tips">切换时间范围将清空过滤器选项的值</span>
+          <span class="tips">{{
+            $t('cost.optimize.form.timeRange.tips')
+          }}</span>
         </template>
       </a-form-item>
       <a-form-item
-        label="分组依据"
+        :label="$t('cost.optimize.form.groupby')"
         field="allocationQueries.0.groupBy"
-        :rules="[{ required: !viewable, message: '分组依据不能为空' }]"
+        :rules="[
+          {
+            required: !viewable,
+            message: $t('cost.optimize.form.rule.groupby')
+          }
+        ]"
       >
         <a-cascader
           v-if="!viewable"
@@ -74,15 +85,20 @@
         >
         </a-cascader>
         <span v-else class="readonly-view-label">{{
-          getListLabel(formData.allocationQueries[0].groupBy, groupList) || '-'
+          $t(
+            getListLabel(formData.allocationQueries[0].groupBy, groupList) ||
+              '-'
+          )
         }}</span>
       </a-form-item>
       <a-form-item
         v-if="!groupByDate.includes(formData.allocationQueries[0].groupBy)"
-        label="粒度"
+        :label="$t('cost.optimize.form.step')"
         :validate-trigger="['change']"
         field="allocationQueries.0.step"
-        :rules="[{ required: !viewable, message: '粒度不能为空' }]"
+        :rules="[
+          { required: !viewable, message: $t('cost.optimize.form.rule.step') }
+        ]"
       >
         <a-cascader
           v-if="!viewable"
@@ -94,13 +110,15 @@
         >
         </a-cascader>
         <span v-else class="readonly-view-label">{{
-          getListLabel(formData.allocationQueries[0].step, stepList) || '-'
+          $t(getListLabel(formData.allocationQueries[0].step, stepList) || '-')
         }}</span>
       </a-form-item>
       <a-form-item
-        label="费用来源"
+        :label="$t('cost.optimize.form.costFilter')"
         field="allocationQueries.0.filters"
-        :rules="[{ required: !viewable, message: '费用来源不能为空' }]"
+        :rules="[
+          { required: !viewable, message: $t('cost.optimize.form.rule.cost') }
+        ]"
       >
         <ConditionFilter
           v-if="
@@ -118,14 +136,13 @@
         }}</span>
       </a-form-item>
       <GroupTitle
-        title="公摊费用拆分规则"
+        :title="$t('cost.optimize.form.title.group2')"
         style="margin-top: 10px"
         :bordered="true"
       ></GroupTitle>
       <a-form-item
-        label="公摊费用来源"
+        :label="$t('cost.optimize.form.commonCost')"
         field="allocationQueries.shareCosts.0.filters"
-        :rules="[{ required: false, message: '公摊费用来源不能为空' }]"
       >
         <ConditionFilter
           v-if="
@@ -144,7 +161,7 @@
       </a-form-item>
 
       <a-form-item
-        label="分摊集群空闲费用"
+        :label="$t('cost.optimize.form.shareCost')"
         field="allocationQueries.0.shareCosts.0.idleCostFilters"
       >
         <a-select
@@ -159,13 +176,18 @@
         >
         </a-select>
         <span v-else class="readonly-view-label">{{
-          getListLabel(
-            formData.allocationQueries[0].shareCosts[0].idleCostFilters,
-            idleCostFieldList
-          ) || '-'
+          $t(
+            getListLabel(
+              formData.allocationQueries[0].shareCosts[0].idleCostFilters,
+              idleCostFieldList
+            ) || '-'
+          )
         }}</span>
       </a-form-item>
-      <a-form-item label="分摊集群管理费用" field="managementCostFilters">
+      <a-form-item
+        :label="$t('cost.optimize.form.sharemngCost')"
+        field="managementCostFilters"
+      >
         <a-select
           v-if="!viewable"
           v-model="
@@ -180,19 +202,21 @@
         >
         </a-select>
         <span v-else class="readonly-view-label">{{
-          getListLabel(
-            formData.allocationQueries[0].shareCosts[0].managementCostFilters,
-            idleCostFieldList
-          ) || '-'
+          $t(
+            getListLabel(
+              formData.allocationQueries[0].shareCosts[0].managementCostFilters,
+              idleCostFieldList
+            ) || '-'
+          )
         }}</span>
       </a-form-item>
       <a-form-item
-        label="分摊方式"
+        :label="$t('cost.optimize.form.shareType')"
         field="allocationQueries.0.shareCosts.0.sharingStrategy"
         :rules="[
           {
             required: sharingStrategyRequired && !viewable,
-            message: '分摊方式不能为空'
+            message: $t('cost.optimize.form.rule.shareType')
           }
         ]"
       >
@@ -204,14 +228,16 @@
             v-for="item in costShareMode"
             :key="item.value"
             :value="item.value"
-            >{{ item.label }}</a-radio
+            >{{ $t(item.label) }}</a-radio
           >
         </a-radio-group>
         <span v-else class="readonly-view-label">{{
-          getListLabel(
-            formData.allocationQueries[0].shareCosts[0].sharingStrategy,
-            costShareMode
-          ) || '-'
+          $t(
+            getListLabel(
+              formData.allocationQueries[0].shareCosts[0].sharingStrategy,
+              costShareMode
+            ) || '-'
+          )
         }}</span>
       </a-form-item>
     </a-form>
@@ -316,12 +342,12 @@
 
   const title = computed(() => {
     if (!id) {
-      return '新建视图';
+      return t('cost.analyse.table.create');
     }
     if (id && (pageAction.value === 'view' || builtin.value)) {
-      return '视图详情';
+      return t('cost.analyse.table.view');
     }
-    return '编辑视图';
+    return t('cost.analyse.table.edit');
   });
   const viewable = computed(() => {
     return pageAction.value === 'view' || !!builtin.value;
@@ -411,7 +437,7 @@
     return filter(arr, (o) => keys(o).length);
   };
   const handleOk = async () => {
-    if (isEqual(copyFormData, formData)) {
+    if (isEqual(copyFormData, formData) && id) {
       router.back();
       return;
     }

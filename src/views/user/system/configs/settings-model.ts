@@ -25,7 +25,7 @@ export const settingList: Array<SettingsItem> = [
     dataList: [
       {
         id: '',
-        label: '基础任务',
+        label: 'system.setting.task.basic',
         value: '',
         type: 'groupTitle',
         component: {},
@@ -52,7 +52,7 @@ export const settingList: Array<SettingsItem> = [
           },
           {
             id: 'TerraformDeployerImage',
-            label: 'Terraform 部署器镜像',
+            label: 'system.setting.TerraformDeployerImage',
             parentId: '',
             component: {
               type: 'input',
@@ -67,7 +67,7 @@ export const settingList: Array<SettingsItem> = [
       },
       {
         id: '',
-        label: '增强管理',
+        label: 'system.setting.task.enhance',
         value: '',
         type: 'groupTitle',
         component: {},
@@ -81,7 +81,7 @@ export const settingList: Array<SettingsItem> = [
         subGroup: [
           {
             id: 'openAiApiToken',
-            label: 'OpenAI API令牌',
+            label: 'system.setting.openAiApiToken',
             parentId: '',
             component: {
               type: 'password',
@@ -164,7 +164,7 @@ export const settingList: Array<SettingsItem> = [
   },
   {
     id: 'TaskSettings',
-    label: '任务设置',
+    label: 'system.setting.task',
     parentId: '',
     editable: true,
     component: {
@@ -178,7 +178,7 @@ export const settingList: Array<SettingsItem> = [
     dataList: [
       {
         id: '',
-        label: '基础任务',
+        label: 'system.setting.task.basic',
         value: '',
         type: 'groupTitle',
         component: {},
@@ -192,8 +192,8 @@ export const settingList: Array<SettingsItem> = [
         subGroup: [
           {
             id: 'ConnectorCheckCronExpr',
-            label: '检查连接器状态',
-            desc: '默认是每10分钟执行一次',
+            label: 'system.setting.ConnectorCheckCronExpr',
+            desc: 'system.setting.ConnectorCheckCronExpr.desc',
             parentId: '',
             component: {
               type: 'input',
@@ -212,8 +212,8 @@ export const settingList: Array<SettingsItem> = [
           },
           {
             id: 'ResourceStatusCheckCronExpr',
-            label: '检查应用资源状态',
-            desc: '默认是每1分钟执行一次',
+            label: 'system.setting.ResourceStatusCheckCronExpr',
+            desc: 'system.setting.ResourceStatusCheckCronExpr.desc',
             parentId: '',
             component: {
               type: 'input',
@@ -234,7 +234,7 @@ export const settingList: Array<SettingsItem> = [
       },
       {
         id: '',
-        label: 'FinOps 任务',
+        label: 'system.setting.task.finops',
         value: '',
         type: 'groupTitle',
         component: {},
@@ -248,8 +248,8 @@ export const settingList: Array<SettingsItem> = [
         subGroup: [
           {
             id: 'ResourceLabelApplyCronExpr',
-            label: '标记应用资源',
-            desc: '默认是每2分钟执行一次',
+            label: 'system.setting.ResourceLabelApplyCronExpr',
+            desc: 'system.setting.ResourceLabelApplyCronExpr.desc',
             parentId: '',
             component: {
               type: 'input',
@@ -268,8 +268,8 @@ export const settingList: Array<SettingsItem> = [
           },
           {
             id: 'CostCollectCronExpr',
-            label: '收集使用成本',
-            desc: '默认是每小时执行一次',
+            label: 'system.setting.CostCollectCronExpr',
+            desc: 'system.setting.CostCollectCronExpr.desc',
             parentId: '',
             component: {
               type: 'input',

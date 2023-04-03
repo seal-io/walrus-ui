@@ -9,7 +9,7 @@
       >
         <div class="custom-grid-content">
           <div class="label">
-            <span>{{ item.label }}</span>
+            <span>{{ $t(item.label) }}</span>
             <!-- <span class="btn-wrap" v-if="!item.disabled">
               <a-tooltip
                 v-if="!item.editable || item.key === 'labels'"

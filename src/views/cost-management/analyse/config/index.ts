@@ -17,9 +17,13 @@ export const dateFormatMap = {
 };
 export const costShareMode = [
   // { label: '展示', name: 'Show', value: 'show' },
-  { label: '平均分摊', name: 'Equally split', value: 'equally' },
   {
-    label: '按比例分摊',
+    label: 'cost.optimize.form.share.avg',
+    name: 'Equally split',
+    value: 'equally'
+  },
+  {
+    label: 'cost.optimize.form.share.ratio',
     name: 'Proportionally split',
     value: 'proportionally'
   }
@@ -90,19 +94,19 @@ export const setEndTimeAddDay = (time, mode) => {
 };
 export const costOverview = [
   {
-    label: '总消费',
+    label: 'cost.analyse.detail.totalCost',
     key: 'totalCost',
     value: 0,
     color: 'linear-gradient(rgba(159,232,219,.3) 0%,rgba(159,232,219,.4) 100%)'
   },
   {
-    label: '项目数',
+    label: 'cost.analyse.detail.projects',
     key: 'projectCount',
     value: 0,
     color: 'linear-gradient(rgba(255,197,192,.3) 0%,rgba(255,197,192,.4) 100%)'
   },
   {
-    label: '集群数',
+    label: 'cost.analyse.detail.clusters',
     key: 'clusterCount',
     value: 0,
     color: 'linear-gradient(rgba(184,218,243,.3) 0%,rgba(184,218,243,.4) 100%)'
@@ -111,13 +115,13 @@ export const costOverview = [
 
 export const projectCostOverview = [
   {
-    label: '消费金额',
+    label: 'cost.analyse.detail.totalCost',
     key: 'totalCost',
     value: 0,
     color: 'linear-gradient(rgba(159,232,219,.3) 0%,rgba(159,232,219,.4) 100%)'
   },
   {
-    label: '日均消费',
+    label: 'cost.analyse.detail.daily',
     key: 'averageDailyCost',
     value: 0,
     color: 'linear-gradient(rgba(255,197,192,.3) 0%,rgba(255,197,192,.4) 100%)'
@@ -137,31 +141,31 @@ export const resourceCostOverview = [
 ];
 export const clusterCostOverview = [
   {
-    label: '总费用',
+    label: 'cost.analyse.detail.allCost',
     key: 'totalCost',
     value: 0,
     color: 'linear-gradient(rgba(159,232,219,.3) 0%,rgba(159,232,219,.4) 100%)'
   },
   {
-    label: '日均消费',
+    label: 'cost.analyse.detail.dailyCost',
     key: 'averageDailyCost',
     value: 0,
     color: 'linear-gradient(rgba(255,197,192,.3) 0%,rgba(255,197,192,.4) 100%)'
   },
   {
-    label: '工作负载费用',
+    label: 'cost.analyse.detail.loadCost',
     key: 'allocationCost',
     value: 0,
     color: 'linear-gradient(rgba(184,218,243,.3) 0%,rgba(184,218,243,.4) 100%)'
   },
   {
-    label: '管理费用',
+    label: 'cost.analyse.detail.mngCost',
     key: 'managementCost',
     value: 0,
     color: 'linear-gradient(rgba(159,232,219,.3) 0%,rgba(159,232,219,.4) 100%)'
   },
   {
-    label: '空闲费用',
+    label: 'cost.analyse.detail.idleCost',
     key: 'idleCost',
     value: 0,
     color: 'linear-gradient(rgba(184,218,243,.3) 0%,rgba(184,218,243,.4) 100%)'
@@ -177,7 +181,7 @@ export const dailyCostCols = [
     render({ record }) {
       return dayjs(record.itemName).format('YYYY-MM-DD');
     },
-    title: '日期'
+    title: 'cost.analyse.table.date'
   },
   {
     ellipsis: true,
@@ -187,7 +191,7 @@ export const dailyCostCols = [
     render({ record }) {
       return round(record.totalCost, 4) || 0;
     },
-    title: '消费金额'
+    title: 'cost.analyse.detail.totalCost'
   }
 ];
 export const costPerProjectCols = [
@@ -196,7 +200,7 @@ export const costPerProjectCols = [
     tooltip: true,
     cellStyle: { minWidth: '40px' },
     dataIndex: 'itemName',
-    title: '项目'
+    title: 'cost.analyse.detail.project'
   },
   // {
   //   ellipsis: true,
@@ -213,7 +217,7 @@ export const costPerProjectCols = [
     render({ record }) {
       return round(record.totalCost, 4) || 0;
     },
-    title: '消费金额'
+    title: 'cost.analyse.detail.totalCost'
   }
 ];
 export const costPerClusterCols = [
@@ -222,7 +226,7 @@ export const costPerClusterCols = [
     tooltip: true,
     cellStyle: { minWidth: '40px' },
     dataIndex: 'itemName',
-    title: '集群'
+    title: 'cost.analyse.detail.cluster'
   },
   // {
   //   ellipsis: true,
@@ -246,7 +250,7 @@ export const costPerClusterCols = [
     render({ record }) {
       return round(record.totalCost, 4) || 0;
     },
-    title: '消费金额'
+    title: 'cost.analyse.detail.totalCost'
   }
   // {
   //   ellipsis: true,
@@ -263,7 +267,7 @@ export const clusterNamespaceCostCols = [
     tooltip: true,
     cellStyle: { minWidth: '40px' },
     dataIndex: 'itemName',
-    title: '名称'
+    title: 'cost.optimize.form.name'
   },
   // {
   //   ellipsis: true,
@@ -298,7 +302,7 @@ export const clusterNamespaceCostCols = [
     render({ record }) {
       return round(record.ramCost, 4) || 0;
     },
-    title: '内存'
+    title: 'cost.analyse.table.ram'
   },
   {
     ellipsis: true,
@@ -318,7 +322,7 @@ export const clusterNamespaceCostCols = [
     render({ record }) {
       return round(record.loadBalancerCost, 4) || 0;
     },
-    title: '负载均衡费用'
+    title: 'cost.analyse.table.loadbalance'
   },
   {
     ellipsis: true,
@@ -328,7 +332,7 @@ export const clusterNamespaceCostCols = [
     render({ record }) {
       return round(record.sharedCost, 4) || 0;
     },
-    title: '共享资源费用'
+    title: 'cost.analyse.table.shareCost'
   },
   {
     ellipsis: true,
@@ -338,7 +342,7 @@ export const clusterNamespaceCostCols = [
     render({ record }) {
       return round(record.totalCost, 4) || 0;
     },
-    title: '消费金额'
+    title: 'cost.analyse.detail.totalCost'
   }
 ];
 
@@ -355,7 +359,7 @@ export const projectCostCols = [
     tooltip: true,
     cellStyle: { minWidth: '40px' },
     dataIndex: 'itemName',
-    title: '应用'
+    title: 'cost.analyse.table.application'
   },
   // {
   //   ellipsis: true,
@@ -375,13 +379,13 @@ export const projectCostCols = [
     render({ record }) {
       return round(record.totalCost, 4) || 0;
     },
-    title: '消费金额'
+    title: 'cost.analyse.detail.totalCost'
   }
 ];
 
 export const builtinViewMap = {
-  all: '所有资源',
-  project: '项目',
-  cluster: '集群'
+  all: 'cost.optimize.table.all',
+  project: 'cost.optimize.table.project',
+  cluster: 'cost.optimize.table.cluster'
 };
 export default {};

@@ -14,7 +14,7 @@
         :class="{ active: activeInstanceTab === 'app' }"
         @click="handleClickApp"
       >
-        <span>应用信息</span>
+        <span>{{ $t('applications.applications.detail.info') }}</span>
         <icon-right />
       </div>
       <div v-if="pageAction === 'view'" class="instance">
@@ -52,7 +52,7 @@
               ></StatusLabel>
             </template>
           </instanceThumb>
-          <a-tooltip content="添加应用实例">
+          <a-tooltip :content="$t('applications.applications.instance.add')">
             <thumbButton :size="60" @click="handleAddInstance"></thumbButton>
           </a-tooltip>
         </div>
@@ -72,7 +72,11 @@
       v-model:active-instance-info="activeInstanceInfo"
       :variables="appInfoVariables"
       :environment-list="environmentList"
-      :title="status === 'create' ? '创建实例' : '升级实例'"
+      :title="
+        status === 'create'
+          ? $t('applications.applications.instance.add')
+          : $t('applications.applications.instance.upgrade')
+      "
       @save="handleSaveInstanceInfo"
       @upgrade="handleInstanceUpgradeSucceed"
     ></createInstance>
@@ -173,15 +177,15 @@
 
   const title = computed(() => {
     if (cloneId) {
-      return '克隆';
+      return t('applications.applications.title.clone');
     }
     if (pageAction.value === 'view') {
-      return '详情';
+      return t('applications.applications.title.view');
     }
     if (pageAction.value === 'edit' && id) {
-      return '编辑';
+      return t('applications.applications.title.edit');
     }
-    return '新建应用';
+    return t('applications.applications.create');
   });
   const appInfoVariables = computed(() => {
     return cloneDeep(get(appInfo, 'variables') || []);
@@ -405,11 +409,13 @@
       // border-radius: var(--border-radius-small);
       .app {
         position: relative;
-        flex-basis: 100px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 100px;
         height: 100px;
         margin-right: 40px;
         color: var(--sealblue-6);
-        line-height: 100px;
         text-align: center;
         background-color: rgba(var(--arcoblue-1), 0.3);
         cursor: pointer;

@@ -25,6 +25,7 @@ export default {
   'common.table.createTime': 'Create Time',
   'common.table.updateTime': 'Update Time',
   'common.table.description': 'Description',
+  'common.table.name': 'Name',
   'common.copy.success': 'Copied success!',
   'common.copy.fail': 'Copied failed!',
   'common.delete.success': 'delete success!',
@@ -62,6 +63,7 @@ export default {
   'common.date.utc': 'UTC time',
   'common.date.local': 'Local time',
   'common.button.deploy': 'Deploy',
+  'common.button.logs': 'Log Details',
   'common.ws.close': 'The connection was lost, do you want to reconnect?',
   'common.ws.reconnect': 'Reconnect'
 };

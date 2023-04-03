@@ -39,7 +39,7 @@
           :cell-style="{ minWidth: '40px' }"
           align="left"
           data-index="type"
-          title="入口"
+          :title="$t('applications.applications.instance.endpoint')"
         >
           <template #cell="{ record }">
             <a-space direction="vertical" :size="5">

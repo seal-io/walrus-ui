@@ -18,9 +18,14 @@
     <a-spin :loading="loading" style="width: 100%; text-align: center">
       <a-form ref="formref" :model="formData" auto-label-width>
         <a-form-item
-          label="连接器"
+          :label="$t('operation.templates.detail.form.connector')"
           field="connectorID"
-          :rules="[{ required: true, message: '连接器必选' }]"
+          :rules="[
+            {
+              required: true,
+              message: $t('operation.templates.detail.rule.connector')
+            }
+          ]"
         >
           <a-select
             v-model="formData.connectorID"
@@ -41,9 +46,14 @@
           </a-select>
         </a-form-item>
         <a-form-item
-          label="代码仓库"
+          :label="$t('operation.templates.detail.form.repo')"
           field="repository"
-          :rules="[{ required: true, message: '代码仓库' }]"
+          :rules="[
+            {
+              required: true,
+              message: $t('operation.templates.detail.rule.repo')
+            }
+          ]"
         >
           <a-select
             v-model="formData.repository"
@@ -57,9 +67,14 @@
           </a-select>
         </a-form-item>
         <a-form-item
-          label="分支"
+          :label="$t('operation.templates.detail.form.branch')"
           field="branch"
-          :rules="[{ required: true, message: '分支必选' }]"
+          :rules="[
+            {
+              required: true,
+              message: $t('operation.templates.detail.rule.branch')
+            }
+          ]"
         >
           <a-select
             v-model="formData.branch"
@@ -71,10 +86,15 @@
           </a-select>
         </a-form-item>
         <a-form-item
-          label="提交路径"
+          :label="$t('operation.templates.detail.form.locationfile')"
           field="path"
           validate-trigger="change"
-          :rules="[{ required: true, message: '提交路径必填' }]"
+          :rules="[
+            {
+              required: true,
+              message: $t('operation.templates.detail.rule.locationfile')
+            }
+          ]"
         >
           <a-input v-model="formData.path" style="width: 100%"></a-input>
         </a-form-item>

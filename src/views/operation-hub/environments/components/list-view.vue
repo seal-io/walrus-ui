@@ -17,7 +17,7 @@
           tooltip
           :cell-style="{ minWidth: '40px' }"
           data-index="name"
-          title="环境"
+          :title="$t('operation.environments.menu')"
         >
           <template #cell="{ record }">
             <a-link type="text" size="small" @click="handleView(record)">

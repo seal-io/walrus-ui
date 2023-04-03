@@ -9,12 +9,12 @@
     <div>
       <a-form ref="formref" :model="formData" auto-label-width>
         <a-form-item
-          label="名称"
+          :label="$t('operation.connectors.form.name')"
           field="name"
           :rules="[
             {
               required: pageAction === 'edit',
-              message: '名称必填'
+              message: t('operation.connectors.rule.name')
             }
           ]"
         >
@@ -43,9 +43,14 @@
           />
         </a-form-item> -->
         <a-form-item
-          label="类型"
+          :label="$t('operation.connectors.form.type')"
           field="type"
-          :rules="[{ required: pageAction === 'edit', message: '类型必填' }]"
+          :rules="[
+            {
+              required: pageAction === 'edit',
+              message: $t('operation.connectors.type.rule')
+            }
+          ]"
         >
           <a-input
             v-if="pageAction === 'edit'"
@@ -57,13 +62,13 @@
           }}</span>
         </a-form-item>
         <a-form-item
-          label="属性"
+          :label="$t('operation.connectors.form.attribute')"
           field="configData.attributes"
           :rules="[
             {
               validator: validatorAttribute,
               required: pageAction === 'edit',
-              message: '属性必填'
+              message: $t('operation.connectors.attribute.rule')
             }
           ]"
         >

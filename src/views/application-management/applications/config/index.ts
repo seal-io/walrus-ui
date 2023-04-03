@@ -4,14 +4,22 @@ import { KeysItem, InstanceResource, Cascader } from './interface';
 
 export const instanceTabs = [
   // { label: '配置定义', value: 'configuration', com: 'tabConfiguration' },
-  { label: '资源', value: 'resource', com: 'tabResource' },
+  {
+    label: 'applications.instance.tab.resource',
+    value: 'resource',
+    com: 'tabResource'
+  },
   // { label: '入口', value: 'endpoint', com: 'tabEndpoint' },
-  { label: '日志', value: 'logs', com: 'tabLogs' },
+  { label: 'applications.instance.tab.log', value: 'logs', com: 'tabLogs' },
   // { label: '输出', value: 'outputs', com: 'tabOutput' },
   // { label: '优化建议', value: 'optimization', com: 'tabOptimization' },
   // { label: '关联图', value: 'graph', com: 'tabGraph' },
   // { label: '历史记录', value: 'history', com: 'tabHistory' },
-  { label: '终端', value: 'terminal', com: 'tabTerminal' }
+  {
+    label: 'applications.instance.tab.term',
+    value: 'terminal',
+    com: 'tabTerminal'
+  }
 ];
 export const createConfigOptions = [
   { label: 'webservice', value: 'webservice' },
@@ -81,22 +89,35 @@ export const setDurationValue = (val) => {
   return `${min}'${seconds}"`;
 };
 export const instanceBasicInfo = [
-  { label: '名称', value: '', key: 'name' },
+  { label: 'applications.applications.form.name', value: '', key: 'name' },
   {
-    label: '创建时间',
+    label: 'common.table.createTime',
     value: '',
     key: 'createTime',
     formatter(val) {
       return dayjs(val).format('YYYY-MM-DD HH:mm:ss');
     }
   },
-  { label: '环境', value: '', key: 'environment.name' },
-  { label: '部署状态', value: '', key: 'status' },
-  { label: '应用', value: '', key: 'application.name', span: 3 }
+  {
+    label: 'applications.applications.detail.env',
+    value: '',
+    key: 'environment.name'
+  },
+  {
+    label: 'applications.applications.instance.status',
+    value: '',
+    key: 'status'
+  },
+  {
+    label: 'applications.applications.instance.application',
+    value: '',
+    key: 'application.name',
+    span: 3
+  }
 ];
 export const applicationBasicInfo = [
   {
-    label: '名称',
+    label: 'applications.applications.form.name',
     key: 'name',
     value: '',
     editable: false,
@@ -105,7 +126,7 @@ export const applicationBasicInfo = [
     form: 'input'
   },
   {
-    label: '创建时间',
+    label: 'common.table.createTime',
     key: 'createTime',
     value: '',
     span: 8,
@@ -123,7 +144,7 @@ export const applicationBasicInfo = [
     disabled: true
   },
   {
-    label: '描述',
+    label: 'common.table.description',
     key: 'description',
     value: '',
     span: 8,
@@ -131,7 +152,7 @@ export const applicationBasicInfo = [
     form: 'textarea'
   },
   {
-    label: '更新时间',
+    label: 'common.table.updateTime',
     key: 'updateTime',
     value: '',
     span: 8,
@@ -147,11 +168,17 @@ export const applicationBasicInfo = [
     span: 8,
     disabled: true
   },
-  { label: '标签', key: 'labels', value: '', span: 16, editable: false }
+  {
+    label: 'applications.applications.form.label',
+    key: 'labels',
+    value: '',
+    span: 16,
+    editable: false
+  }
 ];
 export const revisionDetailConfig = [
   {
-    label: '创建日期',
+    label: 'common.table.createTime',
     key: 'createTime',
     value: '',
     formatter(val) {
@@ -159,12 +186,12 @@ export const revisionDetailConfig = [
     }
   },
   {
-    label: '状态',
+    label: 'dashboard.table.status',
     key: 'status',
     value: ''
   },
   {
-    label: '部署时长',
+    label: 'dashboard.table.duration',
     key: 'duration',
     value: '',
     formatter(val) {

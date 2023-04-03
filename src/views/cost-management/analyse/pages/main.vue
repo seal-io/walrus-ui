@@ -19,7 +19,7 @@
             v-for="item in viewList"
             :key="item.value"
             :value="item.value"
-            >{{ builtinViewMap[item.label] ?? item.name }}</a-option
+            >{{ $t(item.name || '') }}</a-option
           >
           <template #empty><span></span></template>
         </a-select>

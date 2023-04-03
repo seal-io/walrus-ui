@@ -28,6 +28,7 @@
 
 <script lang="ts" setup>
   import dayjs from 'dayjs';
+  import useCallCommon from '@/hooks/use-call-common';
   import ADescriptionsItem from '@arco-design/web-vue/es/descriptions/descriptions-item';
   import StatusLabel from '@/views/operation-hub/connectors/components/status-label.vue';
   import { assignIn, keys, get, each, map } from 'lodash';
@@ -51,6 +52,7 @@
       }
     }
   });
+  const { t } = useCallCommon();
   const formData = reactive({
     name: '',
     createTime: '',
@@ -76,7 +78,7 @@
     return map(instanceBasicInfo, (item) => {
       return {
         ...item,
-        label: item.label,
+        label: t(item.label),
         key: item.key,
         value: item.formatter
           ? item.formatter(get(formData, item.key))
