@@ -1,6 +1,10 @@
 <template>
   <div class="detail-info">
-    <GroupTitle title="基本信息" style="margin-top: 20px"> </GroupTitle>
+    <GroupTitle
+      :title="$t('applications.applications.detail.basic')"
+      style="margin-top: 20px"
+    >
+    </GroupTitle>
     <BasicView
       v-if="pageAction === 'view'"
       ref="basicform"
@@ -12,12 +16,15 @@
       :data-info="appInfo"
       :default-value="defaultBasicInfo"
     ></BasicInfo>
-    <GroupTitle title="配置" style="margin-top: 20px"></GroupTitle>
+    <GroupTitle
+      :title="$t('applications.applications.detail.configuration')"
+      style="margin-top: 20px"
+    ></GroupTitle>
     <div>
       <div style="margin-bottom: 20px; color: var(--color-text-3)">
-        <span>模块</span>
+        <span>{{ $t('applications.applications.modules.title') }}</span>
         <span v-if="pageAction === 'edit'" class="optional-notes"
-          >(新建应用必填)</span
+          >({{ $t('applications.applications.modules.tips') }})</span
         >
       </div>
       <div class="content">
@@ -54,27 +61,30 @@
         </a-tooltip>
       </div>
       <div v-if="!validateModule && !id && triggerModule" class="tips">
-        <span :style="{ 'font-size': '12px', 'color': 'rgb(var(--danger-6))' }"
-          >模块不能为空</span
+        <span
+          :style="{ 'font-size': '12px', 'color': 'rgb(var(--danger-6))' }"
+          >{{ $t('applications.applications.rules.modules') }}</span
         >
       </div>
     </div>
-    <div title="变量">
+    <div :title="$t('applications.applications.variables.title')">
       <div class="var-title">
-        <span>变量</span>
+        <span>{{ $t('applications.applications.variables.title') }}</span>
       </div>
       <div
         v-if="get(appInfo, 'variables').length && pageAction === 'edit'"
         class="var-item var-item-title"
       >
-        <span class="label">键</span>
+        <span class="label">{{
+          $t('applications.applications.form.key')
+        }}</span>
         <span class="label">
           <span class="holder"></span>
-          <span>值</span>
+          <span>{{ $t('applications.applications.form.value') }}</span>
         </span>
         <span class="label">
           <span class="holder"></span>
-          <span>描述</span>
+          <span>{{ $t('common.table.description') }}</span>
         </span>
         <span class="btn"></span>
       </div>

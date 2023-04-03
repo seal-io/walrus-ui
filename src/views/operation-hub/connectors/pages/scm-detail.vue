@@ -9,12 +9,12 @@
     <div>
       <a-form ref="formref" :model="formData" auto-label-width>
         <a-form-item
-          label="名称"
+          :label="$t('operation.connectors.form.name')"
           field="name"
           :rules="[
             {
               required: pageAction === 'edit',
-              message: '名称必填'
+              message: $t('operation.connectors.rule.name')
             }
           ]"
         >
@@ -43,9 +43,14 @@
           />
         </a-form-item> -->
         <a-form-item
-          label="类型"
+          :label="$t('operation.connectors.form.type')"
           field="type"
-          :rules="[{ required: pageAction === 'edit', message: '类型必选' }]"
+          :rules="[
+            {
+              required: pageAction === 'edit',
+              message: $t('operation.connectors.type.rule')
+            }
+          ]"
         >
           <a-select
             v-if="pageAction === 'edit'"
@@ -77,7 +82,10 @@
           label="Access Token"
           field="configData.token"
           :rules="[
-            { required: pageAction === 'edit', message: '访问令牌必填' }
+            {
+              required: pageAction === 'edit',
+              message: $t('operation.connectors.accesstoken.rule')
+            }
           ]"
         >
           <a-input-password
@@ -85,7 +93,10 @@
             style="width: 500px"
           ></a-input-password>
         </a-form-item>
-        <a-form-item v-if="pageAction === 'view'" label="状态">
+        <a-form-item
+          v-if="pageAction === 'view'"
+          :label="$t('operation.connectors.table.status')"
+        >
           <span class="readonly-view-label">
             <StatusLabel
               :status="{
@@ -156,15 +167,23 @@
   ];
   const title = computed(() => {
     if (!id) {
-      return t('operation.connectors.title.new', { type: '版本控制' });
+      return t('operation.connectors.title.new', {
+        type: t('operation.connectors.table.versioncontrol')
+      });
     }
     if (id && pageAction.value === 'edit') {
-      return t('operation.connectors.title.edit', { type: '版本控制' });
+      return t('operation.connectors.title.edit', {
+        type: t('operation.connectors.table.versioncontrol')
+      });
     }
     if (id && pageAction.value === 'view') {
-      return t('operation.connectors.title.view', { type: '版本控制' });
+      return t('operation.connectors.title.view', {
+        type: t('operation.connectors.table.versioncontrol')
+      });
     }
-    return t('operation.connectors.title.edit', { type: '版本控制' });
+    return t('operation.connectors.title.edit', {
+      type: t('operation.connectors.table.versioncontrol')
+    });
   });
   const handleUploadSuccess = async (list, fileItem) => {
     const res = await readBlob(fileItem.file);

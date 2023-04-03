@@ -18,10 +18,12 @@
     <a-spin :loading="loading" style="width: 100%; text-align: center">
       <a-form ref="formref" :model="formData" auto-label-width>
         <a-form-item
-          :label="$t('applications.applications.table.name')"
+          :label="$t('common.table.name')"
           field="name"
           validate-trigger="change"
-          :rules="[{ required: true, message: '项目名称必填' }]"
+          :rules="[
+            { required: true, message: $t('applications.projects.rule.name') }
+          ]"
         >
           <a-input
             v-model="formData.name"

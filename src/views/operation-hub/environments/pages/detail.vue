@@ -11,7 +11,12 @@
         :label="$t('operation.environments.table.name')"
         field="name"
         :validate-trigger="['change']"
-        :rules="[{ required: pageAction === 'edit', message: '环境名称必填' }]"
+        :rules="[
+          {
+            required: pageAction === 'edit',
+            message: $t('operation.environments.rule.name')
+          }
+        ]"
       >
         <a-input
           v-if="pageAction === 'edit'"
@@ -44,7 +49,6 @@
         :label="$t('operation.connectors.menu')"
         field="connectorIDs"
         :validate-trigger="['change']"
-        :rules="[{ required: false, message: '请添加连接器' }]"
       >
         <connectorsTable
           :style="{ marginLeft: pageAction === 'view' ? '12px' : 0 }"
@@ -116,7 +120,7 @@
   } from '../api';
 
   const tabBarStore = useTabBarStore();
-  const { router, route } = useCallCommon();
+  const { router, route, t } = useCallCommon();
   const { pageAction, handleEdit } = usePageAction();
   const id = route.query.id as string;
   const formref = ref();
@@ -133,12 +137,12 @@
 
   const title = computed(() => {
     if (!id) {
-      return '新建环境';
+      return t('operation.environments.create');
     }
     if (id && pageAction.value === 'edit') {
-      return '编辑环境';
+      return t('operation.environments.edit');
     }
-    return '环境详情';
+    return t('operation.environments.view');
   });
   const setFormDataConnectors = (connectors) => {
     each(connectorList.value, (item) => {

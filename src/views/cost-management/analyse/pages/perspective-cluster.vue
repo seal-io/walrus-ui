@@ -109,7 +109,7 @@
     </FilterBox> -->
     <SpinCard
       :loading="overviewloading || preloading"
-      :title="`集群: ${clusterName}`"
+      :title="`${$t('cost.analyse.detail.cluster')}: ${clusterName}`"
       borderless
       style="margin-bottom: 10px"
     >
@@ -147,10 +147,14 @@
         </a-grid-item>
       </a-grid> -->
     </SpinCard>
-    <SpinCard title="消费趋势" borderless style="margin-bottom: 10px">
+    <SpinCard
+      :title="$t('cost.analyse.detail.costtrend')"
+      borderless
+      style="margin-bottom: 10px"
+    >
       <template #title>
         <div style="display: flex; justify-content: space-between">
-          <div>消费趋势</div>
+          <div>{{ $t('cost.analyse.detail.costtrend') }}</div>
           <ChartBtn v-model:active="active"></ChartBtn>
         </div>
       </template>
@@ -169,12 +173,16 @@
         :request-work="requestWork"
         :filter-params="dailyCostFilters"
         :loadeend="loadeend"
-        :columns="dailyCostCols"
+        :columns="dailyColumns"
         source="daily table"
         style="margin-top: 20px"
       ></TableList>
     </SpinCard>
-    <SpinCard title="命名空间消费分布" borderless style="margin-bottom: 10px">
+    <SpinCard
+      :title="$t('cost.analyse.table.namespaceCost')"
+      borderless
+      style="margin-bottom: 10px"
+    >
       <horizontalBar
         :loading="spaceloading || preloading"
         style="flex: 1"
@@ -187,12 +195,16 @@
         :time-mode="timeMode"
         :loadeend="loadeend"
         :filter-params="nameSpaceCostFilters"
-        :columns="clusterNamespaceCostCols"
+        :columns="namespaceCostCols"
         source="namespace table"
         style="margin-top: 20px"
       ></TableList>
     </SpinCard>
-    <SpinCard title="工作负载消费分布" borderless style="margin-bottom: 10px">
+    <SpinCard
+      :title="$t('cost.analyse.table.workloadCost')"
+      borderless
+      style="margin-bottom: 10px"
+    >
       <LineBarChart
         :loading="workloading || preloading"
         height="220px"
@@ -229,7 +241,7 @@
 
 <script lang="ts" setup>
   import dayjs from 'dayjs';
-  import { filter, find, get, each, round } from 'lodash';
+  import { filter, find, get, each, round, cloneDeep, map } from 'lodash';
   import { reactive, ref, computed, onMounted, watch, inject } from 'vue';
   import useCallCommon from '@/hooks/use-call-common';
   import DateRange from '@/components/date-range/index.vue';
@@ -339,6 +351,27 @@
       }
     };
   });
+  const dailyColumns = computed(() => {
+    const list = cloneDeep(dailyCostCols);
+    return map(list, (item) => {
+      item.title = t(item.title);
+      return item;
+    });
+  });
+  const namespaceCostCols = computed(() => {
+    const list = cloneDeep(clusterNamespaceCostCols);
+    return map(list, (item) => {
+      item.title = t(item.title);
+      return item;
+    });
+  });
+  const workLoadCostCols = computed(() => {
+    const list = cloneDeep(clusterNamespaceCostCols);
+    return map(list, (item) => {
+      item.title = t(item.title);
+      return item;
+    });
+  });
   const requestWork = computed(() => {
     return !!queryParams.connectorID;
   });
@@ -357,9 +390,6 @@
         right: 20
       }
     };
-  });
-  const workLoadCostCols = computed(() => {
-    return clusterNamespaceCostCols;
   });
 
   const formatLabel = (val) => {

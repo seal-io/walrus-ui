@@ -22,7 +22,7 @@
     </FilterBox>
     <SpinCard
       :loading="overviewloading || preloading"
-      :title="`自定义: ${projectName}`"
+      :title="`${$t('cost.analyse.detail.custom')}: ${projectName}`"
       borderless
       style="margin-bottom: 10px"
     >
@@ -43,7 +43,11 @@
         </a-grid-item>
       </a-grid>
     </SpinCard>
-    <SpinCard title="消费趋势" borderless style="margin-bottom: 10px">
+    <SpinCard
+      :title="$t('cost.analyse.detail.costtrend')"
+      borderless
+      style="margin-bottom: 10px"
+    >
       <LineBarChart
         :loading="apploading || preloading"
         height="220px"
@@ -162,7 +166,7 @@
         tooltip: true,
         cellStyle: { minWidth: '40px' },
         dataIndex: 'itemName',
-        title: groupBy?.title || '名称',
+        title: t(groupBy?.title || '') || t('cost.analyse.table.name'),
         render({ record }) {
           if (dfmt) {
             return dayjs(record.itemName).format(dfmt);
@@ -188,7 +192,7 @@
         render({ record }) {
           return round(record.ramCost, 4) || 0;
         },
-        title: '内存'
+        title: t('cost.analyse.table.ram')
       },
       {
         ellipsis: true,
@@ -208,7 +212,7 @@
         render({ record }) {
           return round(record.loadBalancerCost, 4) || 0;
         },
-        title: '负载均衡费用'
+        title: t('cost.analyse.table.loadbalance')
       },
       {
         ellipsis: true,
@@ -218,7 +222,7 @@
         render({ record }) {
           return round(record.sharedCost, 4) || 0;
         },
-        title: '共享资源费用'
+        title: t('cost.analyse.table.shareCost')
       },
       {
         ellipsis: true,
@@ -228,7 +232,7 @@
         render({ record }) {
           return round(record.totalCost, 4) || 0;
         },
-        title: '消费金额'
+        title: t('cost.analyse.detail.totalCost')
       }
     ];
   });

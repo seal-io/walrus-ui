@@ -19,10 +19,12 @@
       <a-form ref="formref" :model="formData" auto-label-width>
         <a-form-item
           :disabled="status === 'edit'"
-          label="名称"
+          :label="$t('common.table.name')"
           field="name"
           validate-trigger="change"
-          :rules="[{ required: true, message: '实例名称必填' }]"
+          :rules="[
+            { required: true, message: $t('applications.module.rule.name') }
+          ]"
         >
           <a-input
             v-model="formData.name"
@@ -33,9 +35,11 @@
         <a-form-item
           :disabled="status === 'edit'"
           :label="$t('applications.applications.detail.env')"
-          field="environment"
+          field="environment.id"
           validate-trigger="change"
-          :rules="[{ required: true, message: '实例部署环境必选' }]"
+          :rules="[
+            { required: true, message: $t('applications.instance.rule.env') }
+          ]"
         >
           <a-select
             v-model="formData.environment.id"
@@ -43,7 +47,7 @@
             @change="handleEnvChange"
           ></a-select>
           <template #extra>
-            <span class="tips">未添加连接器的环境不可用</span>
+            <span class="tips">{{ $t('applications.instance.env.tips') }}</span>
           </template>
         </a-form-item>
         <div

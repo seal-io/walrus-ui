@@ -1,6 +1,6 @@
 <template>
   <div>
-    <ModuleCard title="实例基本信息">
+    <ModuleCard :title="$t('applications.instance.basic.title')">
       <template #title>
         <div
           style="
@@ -10,19 +10,22 @@
             width: 100%;
           "
         >
-          <span>实例信息</span>
+          <span>{{ $t('applications.instance.basic.title') }}</span>
         </div>
       </template>
       <BasicInfo></BasicInfo>
     </ModuleCard>
-    <ModuleCard title="历史版本">
+    <ModuleCard :title="$t('applications.applications.instance.history')">
       <applicationHistory :deploy-id="deployId"></applicationHistory>
     </ModuleCard>
-    <ModuleCard title="访问URL">
+    <ModuleCard :title="$t('applications.applications.instance.accessUrl')">
       <tabEndpoint></tabEndpoint>
     </ModuleCard>
 
-    <ModuleCard title="资源信息" style="margin-top: 20px">
+    <ModuleCard
+      :title="$t('applications.applications.instance.resource')"
+      style="margin-top: 20px"
+    >
       <a-tabs
         lazy-load
         type="rounded"
@@ -33,7 +36,7 @@
         <a-tab-pane
           v-for="item in instanceTabs"
           :key="item.value"
-          :title="item.label"
+          :title="$t(item.label)"
         >
           <Component :is="instanceTabMap[item.com]"></Component>
         </a-tab-pane>
@@ -60,7 +63,7 @@
     <createInstance
       v-model:show="showInstanceModal"
       v-model:status="status"
-      title="升级实例"
+      :title="$t('applications.applications.instance.upgrade')"
       :variables="appInfoVariables"
       :environment-list="environmentList"
       @save="handleSaveInstanceInfo"

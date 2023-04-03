@@ -156,7 +156,7 @@
 </template>
 
 <script lang="ts" setup>
-  import _, { map, get, pickBy, find } from 'lodash';
+  import _, { map, get, pickBy, find, filter } from 'lodash';
   import dayjs from 'dayjs';
   import {
     reactive,
@@ -348,9 +348,12 @@
     fetchData();
   };
 
-  const updateRevisions = (data) => {
+  const updateApplicationList = (data) => {
     if (data?.type !== websocketEventType.update) return;
-    const collections = data.collection || [];
+    const collections = filter(
+      data.collection || [],
+      (sItem) => sItem?.project?.id === queryParams.projectID
+    );
     _.each(collections, (item) => {
       const updateIndex = _.findIndex(
         dataList.value,
@@ -366,11 +369,10 @@
   };
   const createInstanceListWebsocket = () => {
     try {
-      if (!queryParams.projectID) return;
-      websocketInstance.value?.close?.();
+      if (websocketInstance.value) return;
       websocketInstance.value = createWebsocketInstance({
-        url: `/applications?projectID=${queryParams.projectID}`,
-        onmessage: updateRevisions
+        url: `/applications?projectID`,
+        onmessage: updateApplicationList
       });
     } catch (error) {
       console.log(error);
@@ -380,7 +382,7 @@
     () => queryParams.projectID,
     () => {
       nextTick(() => {
-        createInstanceListWebsocket();
+        // createInstanceListWebsocket();
       });
     },
     {

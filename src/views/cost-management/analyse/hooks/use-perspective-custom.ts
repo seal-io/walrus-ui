@@ -33,7 +33,7 @@ import {
 import testData, { dailyCostData, namespaceData } from '../config/testData';
 
 export default function usePerspectiveCost(props) {
-  const { route } = useCallCommon();
+  const { route, t } = useCallCommon();
   const { query } = route;
   const projectCostFilters = ref<any>({});
   const projectCostChart = ref<ChartData>({
@@ -60,8 +60,10 @@ export default function usePerspectiveCost(props) {
     return query.id || props.viewId;
   });
   const summaryData = computed(() => {
-    const list = map(projectCostOverview, (item) => {
+    const arr = cloneDeep(projectCostOverview);
+    const list = map(arr, (item) => {
       item.value = get(overData.value, item.key) || 0;
+      item.label = t(item.label);
       return item;
     });
     return list;

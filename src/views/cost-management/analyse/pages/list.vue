@@ -66,7 +66,7 @@
           <template #cell="{ record }">
             <a-link size="small" @click="handleView(record)">{{
               record.builtin
-                ? builtinViewMap[toLower(record.name)]
+                ? $t(builtinViewMap[toLower(record.name)])
                 : record.name
             }}</a-link>
           </template>

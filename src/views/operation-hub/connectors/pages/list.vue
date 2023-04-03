@@ -11,7 +11,7 @@
         v-for="item in connectorTypeList"
         :key="item.value"
         :disabled="!item.enable"
-        :title="item.label"
+        :title="$t(item.label)"
       >
         <Component :is="connectorsMap[item.com]"></Component>
       </a-tab-pane>

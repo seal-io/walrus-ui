@@ -22,7 +22,7 @@
           tooltip
           :cell-style="{ minWidth: '40px' }"
           data-index="createTime"
-          title="部署时间"
+          :title="$t('applications.applications.history.duration')"
         >
           <template #cell="{ record }">
             <span>{{
@@ -85,14 +85,14 @@
                 <template #icon><icon-list style="font-size: 16px" /></template>
                 {{ $t('applications.applications.history.rollback') }}
               </a-link> -->
-              <a-tooltip content="删除">
+              <a-tooltip :content="$t('common.button.delete')">
                 <a-link type="text" size="small" @click="handleDelete(record)">
                   <template #icon
                     ><icon-delete style="font-size: 16px"
                   /></template>
                 </a-link>
               </a-tooltip>
-              <a-tooltip content="查看日志">
+              <a-tooltip :content="$t('common.button.logs')">
                 <a-link
                   type="text"
                   size="small"
@@ -128,7 +128,16 @@
 
 <script lang="ts" setup>
   import dayjs from 'dayjs';
-  import { map, get, find, each, findIndex, cloneDeep, concat } from 'lodash';
+  import {
+    map,
+    get,
+    find,
+    each,
+    findIndex,
+    cloneDeep,
+    concat,
+    filter
+  } from 'lodash';
   import {
     onMounted,
     ref,
@@ -233,7 +242,10 @@
   };
   const updateRevisions = (data) => {
     if (data?.type !== websocketEventType.update) return;
-    const collections = data.collection || [];
+    const collections = filter(
+      data.collection || [],
+      (sItem) => sItem?.instance?.id === instanceId.value
+    );
     each(collections, (item) => {
       const updateIndex = findIndex(
         dataList.value,
@@ -249,10 +261,9 @@
   };
   const createInstanceListWebsocket = () => {
     try {
-      if (!instanceId.value) return;
-      websocketRevisions.value?.close?.();
+      if (websocketRevisions.value) return;
       websocketRevisions.value = createWebsocketInstance({
-        url: `/application-revisions?instanceID=${instanceId.value}`,
+        url: `/application-revisions`,
         onmessage: updateRevisions
       });
     } catch (error) {
@@ -265,7 +276,7 @@
       queryParams.page = 1;
       fetchData();
       nextTick(() => {
-        createInstanceListWebsocket();
+        // createInstanceListWebsocket();
       });
     },
     {

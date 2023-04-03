@@ -98,5 +98,24 @@ export default {
     'List of glob patterns of module path prefixes that should always be fetched directly or that should not be compared against the checksum database.',
   'system.setting.analyze.repoconfig': 'Repository Configuration',
   'system.setting.analyze.enableFixAdvice': 'whether to enable fix advice',
-  'system.setting.rule.openai': 'openai api token is required'
+  'system.setting.rule.openai': 'openai api token is required',
+  'system.setting.task': 'Task Settings',
+  'system.setting.task.basic': 'Basic Task',
+  'system.setting.task.finops': 'FinOps Task',
+  'system.setting.task.enhance': 'Enhanced Management',
+  'system.setting.openAiApiToken': 'OpenAI API Token',
+  'system.setting.TerraformDeployerImage': 'Terraform Deployer Image',
+  'system.setting.ConnectorCheckCronExpr': 'Check Connector Status',
+  'system.setting.ConnectorCheckCronExpr.desc':
+    'The default is to execute every 10 minutes',
+  'system.setting.ResourceStatusCheckCronExpr':
+    'Check application resource status',
+  'system.setting.ResourceStatusCheckCronExpr.desc':
+    'The default is to execute every 1 minute',
+  'system.setting.ResourceLabelApplyCronExpr': 'Tag application resources',
+  'system.setting.ResourceLabelApplyCronExpr.desc':
+    'The default is to execute every 2 minutes',
+  'system.setting.CostCollectCronExpr': 'Collect usage costs',
+  'system.setting.CostCollectCronExpr.desc':
+    'The default is to execute every hour'
 };

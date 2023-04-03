@@ -19,14 +19,14 @@
       <a-form ref="formref" :model="formData" auto-label-width>
         <a-form-item
           :disabled="!!formData.id && action === 'edit'"
-          label="名称"
+          :label="$t('applications.applications.form.name')"
           field="name"
           validate-trigger="change"
           :rules="[
-            { required: true, message: '名称必填' },
+            { required: true, message: $t('applications.projects.rule.name') },
             {
               match: /^(?![\d])[0-9A-Za-z_]+$/,
-              message: '由字母、数字、下划线组成，不能以数字开头'
+              message: $t('applications.secret.name.tips')
             }
           ]"
         >
@@ -37,24 +37,11 @@
             show-word-limit
           ></a-input>
           <template #extra>
-            <span class="tips">由字母、数字、下划线组成，不能以数字开头</span>
+            <span class="tips">{{ $t('applications.secret.name.tips') }}</span>
           </template>
         </a-form-item>
-        <!-- <a-form-item
-          :disabled="!!formData.id && action === 'edit'"
-          label="应用范围"
-        >
-          <a-select
-            v-model="formData.project.id"
-            style="width: 100%"
-            :options="projectList"
-            allow-search
-          >
-            <a-option :value="0" label="全局"></a-option>
-          </a-select>
-        </a-form-item> -->
         <a-form-item
-          label="内容"
+          :label="$t('applications.secret.form.name')"
           field="value"
           validate-trigger="change"
           :rules="[

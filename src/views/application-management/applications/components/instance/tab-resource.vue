@@ -106,7 +106,7 @@
 
 <script lang="ts" setup>
   import dayjs from 'dayjs';
-  import _, { get } from 'lodash';
+  import _, { get, filter } from 'lodash';
   import {
     onMounted,
     ref,
@@ -167,7 +167,10 @@
   };
   const updateDataList = (data) => {
     if (data?.type !== websocketEventType.update) return;
-    const collections = data.collection || [];
+    const collections = filter(
+      data.collection || [],
+      (sItem) => sItem?.instance?.id === instanceId.value
+    );
     _.each(collections, (item) => {
       const updateIndex = _.findIndex(
         dataList.value,
@@ -183,10 +186,9 @@
   };
   const createInstanceListWebsocket = () => {
     try {
-      if (!instanceId.value) return;
-      websocketInstance.value?.close?.();
+      if (websocketInstance.value) return;
       websocketInstance.value = createWebsocketInstance({
-        url: `/application-resources?instanceID=${instanceId.value}`,
+        url: `/application-resources`,
         onmessage: updateDataList
       });
     } catch (error) {
@@ -199,7 +201,7 @@
       queryParams.page = 1;
       fetchData();
       nextTick(() => {
-        createInstanceListWebsocket();
+        // createInstanceListWebsocket();
       });
     },
     {

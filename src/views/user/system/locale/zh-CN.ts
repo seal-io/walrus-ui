@@ -87,5 +87,19 @@ export default {
     '用于设置 Go 环境变量 GONOPROXY，配置需要跳过使用代理或校验和数据库的模块',
   'system.setting.analyze.repoconfig': '仓库配置',
   'system.setting.analyze.enableFixAdvice': '是否开启修复建议',
-  'system.setting.rule.openai': 'openai api token 必填'
+  'system.setting.rule.openai': 'openai api token 必填',
+  'system.setting.task': '任务设置',
+  'system.setting.task.basic': '基础任务',
+  'system.setting.task.finops': 'FinOps任务',
+  'system.setting.task.enhance': '增强管理',
+  'system.setting.openAiApiToken': 'OpenAI API令牌',
+  'system.setting.TerraformDeployerImage': 'Terraform部署镜像',
+  'system.setting.ConnectorCheckCronExpr': '检查连接器状态',
+  'system.setting.ConnectorCheckCronExpr.desc': '默认是每10分钟执行一次',
+  'system.setting.ResourceStatusCheckCronExpr': '检查应用资源状态',
+  'system.setting.ResourceStatusCheckCronExpr.desc': '默认是每1分钟执行一次',
+  'system.setting.ResourceLabelApplyCronExpr': '标记应用资源',
+  'system.setting.ResourceLabelApplyCronExpr.desc': '默认是每2分钟执行一次',
+  'system.setting.CostCollectCronExpr': '收集使用成本',
+  'system.setting.CostCollectCronExpr.desc': '默认是每小时执行一次'
 };

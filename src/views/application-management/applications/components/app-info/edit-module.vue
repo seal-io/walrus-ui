@@ -12,7 +12,11 @@
       'overflow': 'auto'
     }"
     modal-class="oci-modal"
-    :title="action === 'edit' ? '编辑模块' : '添加模块'"
+    :title="
+      action === 'edit'
+        ? $t('applications.module.title.edit')
+        : $t('applications.module.title.new')
+    "
     @cancel="handleCancel"
     @ok="handleOk"
     @before-open="handleBeforeOpen"
@@ -29,14 +33,17 @@
         <a-grid :cols="24">
           <a-grid-item :span="24">
             <a-form-item
-              label="名称"
+              :label="$t('common.table.name')"
               field="name"
               :disabled="action === 'edit'"
               :rules="[
-                { required: true, message: '名称必填' },
+                {
+                  required: true,
+                  message: $t('applications.module.rule.name')
+                },
                 {
                   match: /^(?![\d])[0-9A-Za-z_]+$/,
-                  message: '由字母、数字、下划线组成，不能以数字开头'
+                  message: $t('applications.module.name.tips')
                 }
               ]"
             >
@@ -46,18 +53,23 @@
                 show-word-limit
               ></a-input>
               <template #extra>
-                <span class="tips"
-                  >模块名称全局唯一，由字母、数字、下划线组成，不能以数字开头</span
-                >
+                <span class="tips">{{
+                  $t('applications.module.rule.name.tips')
+                }}</span>
               </template>
             </a-form-item>
           </a-grid-item>
           <a-grid-item :span="12">
             <a-form-item
-              label="模块"
+              :label="$t('applications.applications.table.module')"
               field="module.id"
               :disabled="action === 'edit'"
-              :rules="[{ required: true, message: '类型必选' }]"
+              :rules="[
+                {
+                  required: true,
+                  message: $t('applications.applications.rules.modules')
+                }
+              ]"
             >
               <a-select
                 v-model="formData.module.id"
@@ -74,9 +86,14 @@
           </a-grid-item>
           <a-grid-item :span="12">
             <a-form-item
-              label="版本"
+              :label="$t('applications.applications.history.version')"
               field="version"
-              :rules="[{ required: true, message: '版本必选' }]"
+              :rules="[
+                {
+                  required: true,
+                  message: $t('applications.applications.rules.versions')
+                }
+              ]"
             >
               <a-select
                 v-model="formData.version"
@@ -94,7 +111,9 @@
         </a-grid>
       </a-form>
       <div class="variables">
-        <GroupTitle title="配置"></GroupTitle>
+        <GroupTitle
+          :title="$t('applications.applications.detail.configuration')"
+        ></GroupTitle>
         <a-tabs
           v-if="show && formTabs.length > 1"
           lazy-load
@@ -285,6 +304,7 @@
     formData.attributes = {};
     moduleVersionFormCache.value = {};
     activeKey.value = 'schemaForm0';
+    formref.value?.clearValidate?.();
   };
   const setRefMap = (el: refItem, name) => {
     if (el) {
@@ -538,6 +558,7 @@
   const handleOpened = () => {};
   const handleBeforeClose = () => {
     resetForm();
+    clearFormValidStatus();
     emit('update:action', 'create');
   };
   watch(

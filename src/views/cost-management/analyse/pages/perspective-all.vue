@@ -21,7 +21,7 @@
       </template>
     </FilterBox>
     <SpinCard
-      title="所有资源"
+      :title="$t('cost.optimize.table.all')"
       borderless
       style="margin-bottom: 10px"
       :loading="overviewloading || preloading"
@@ -44,10 +44,14 @@
       </a-grid>
     </SpinCard>
     <!-- ===========Daily Cost================ -->
-    <SpinCard title="消费趋势" borderless style="margin-bottom: 10px">
+    <SpinCard
+      :title="$t('cost.analyse.detail.costtrend')"
+      borderless
+      style="margin-bottom: 10px"
+    >
       <template #title>
         <div style="display: flex; justify-content: space-between">
-          <div>消费趋势</div>
+          <div>{{ $t('cost.analyse.detail.costtrend') }}</div>
           <ChartBtn v-model:active="active"></ChartBtn>
         </div>
       </template>
@@ -67,12 +71,16 @@
         :time-mode="timeMode"
         source="daily table"
         :filter-params="dailyCostFilters"
-        :columns="dailyCostCols"
+        :columns="dailyCostColumns"
         style="margin-top: 20px"
       ></TableList>
     </SpinCard>
     <!-- ===========Project Cost================ -->
-    <SpinCard title="项目消费分布" borderless style="margin-bottom: 10px">
+    <SpinCard
+      :title="$t('cost.analyse.detail.projectCost')"
+      borderless
+      style="margin-bottom: 10px"
+    >
       <!-- <template #title>
         <div style="display: flex; justify-content: space-between">
           <div>Cost Per Project</div>
@@ -95,12 +103,16 @@
         :loadeend="loadeend"
         source="project table"
         :filter-params="projectCostFilters"
-        :columns="costPerProjectCols"
+        :columns="perProjectCols"
         style="margin-top: 20px"
       ></TableList>
     </SpinCard>
     <!-- ===========Cluster Cost================ -->
-    <SpinCard title="集群消费分布" borderless style="margin-bottom: 10px">
+    <SpinCard
+      :title="$t('cost.analyse.detail.clusterCost')"
+      borderless
+      style="margin-bottom: 10px"
+    >
       <!-- <template #title>
         <div style="display: flex; justify-content: space-between">
           <div>Cost Per Cluster</div>
@@ -123,7 +135,7 @@
         :time-mode="timeMode"
         source="cluster table"
         :filter-params="clusterCostFilters"
-        :columns="costPerClusterCols"
+        :columns="perClusterCols"
         style="margin-top: 20px"
       ></TableList>
     </SpinCard>
@@ -132,7 +144,7 @@
 
 <script lang="ts" setup>
   import dayjs from 'dayjs';
-  import { round } from 'lodash';
+  import { cloneDeep, map, round } from 'lodash';
   import { reactive, ref, computed, onMounted, watch } from 'vue';
   import useCallCommon from '@/hooks/use-call-common';
   import { onBeforeRouteUpdate } from 'vue-router';
@@ -215,7 +227,7 @@
     overviewloading,
     timeMode
   } = usePerspectiveCost(props);
-  const { route } = useCallCommon();
+  const { route, t } = useCallCommon();
   const active = ref<'bar' | 'line'>('bar');
   const activeProject = ref<'bar' | 'line'>('bar');
   const activeCluster = ref<'bar' | 'line'>('bar');
@@ -237,6 +249,27 @@
         ...grid
       }
     };
+  });
+  const dailyCostColumns = computed(() => {
+    const list = cloneDeep(dailyCostCols);
+    return map(list, (item) => {
+      item.title = t(item.title);
+      return item;
+    });
+  });
+  const perClusterCols = computed(() => {
+    const list = cloneDeep(costPerClusterCols);
+    return map(list, (item) => {
+      item.title = t(item.title);
+      return item;
+    });
+  });
+  const perProjectCols = computed(() => {
+    const list = cloneDeep(costPerProjectCols);
+    return map(list, (item) => {
+      item.title = t(item.title);
+      return item;
+    });
   });
   const handleDateChange = (val) => {
     console.log('dateChange=1==', val, queryParams);
