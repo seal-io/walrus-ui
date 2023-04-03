@@ -44,6 +44,7 @@
         }}</div>
         <deployLogs
           v-if="get(revisionData, 'status') === 'Running'"
+          :show="show"
           :revision-id="get(revisionData, 'id')"
         ></deployLogs>
         <div v-else class="content-wrap">

@@ -33,16 +33,21 @@
       default() {
         return '日志';
       }
+    },
+    show: {
+      type: Boolean,
+      default() {
+        return false;
+      }
     }
   });
   const emits = defineEmits(['close']);
   const wssInstance: any = ref('');
   const content = ref('');
-  const val = ref('');
   const createWebSockerConnection = () => {
     if (!props.revisionId) return;
     const wssURL = createWebSocketUrl(
-      `application-revisions/${props.revisionId}/log`
+      `/application-revisions/${props.revisionId}/log`
     );
     wssInstance.value = useWebSocket(wssURL, {
       // autoReconnect: {
@@ -64,15 +69,11 @@
 
     console.log('object:', wssInstance.value, props.revisionId);
   };
-  onMounted(() => {
-    init();
-  });
   watch(
     () => wssInstance.value?.data,
     (newVal) => {
       if (newVal) {
         content.value = `${content.value}${newVal}`;
-        console.log('message:', newVal);
       }
     },
     {
@@ -80,9 +81,14 @@
     }
   );
   watch(
-    () => props.revisionId,
-    () => {
-      init();
+    () => props.show,
+    (val) => {
+      if (val && props.revisionId) {
+        init();
+      } else if (!val) {
+        wssInstance.value?.close?.();
+        content.value = '';
+      }
     },
     {
       immediate: true

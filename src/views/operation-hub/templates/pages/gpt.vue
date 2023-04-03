@@ -41,6 +41,7 @@
       <a-grid :cols="24" :col-gap="10">
         <a-grid-item :span="24">
           <AceEditor
+            ref="editor"
             v-model="code"
             :remove-lines="removeLines"
             :add-lines="addLines"
@@ -222,6 +223,7 @@
   const type = ref('');
   const status = ref('create');
   const code = ref('');
+  const editor = ref();
   const defaultValue = ref(``);
   const diffValue = ref('');
   const explainValue = ref('');
@@ -386,6 +388,7 @@
     showFix.value = false;
     explainValue.value = '';
     correctionExplain.value = '';
+    editor.value?.clear();
   };
   const handleTyeChange = (val) => {
     clearDiffLines();

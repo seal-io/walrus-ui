@@ -1,3 +1,4 @@
+import { isObject } from 'lodash';
 import { onBeforeUnmount, onUnmounted } from 'vue';
 
 const localServer = window.location.host;
@@ -47,7 +48,9 @@ export function createWebsocketInstance({ url, onmessage }) {
   wss.onmessage = (res) => {
     try {
       console.log('wss message:', { [url]: res });
-      const data = JSON.parse(res.data);
+      const data = isObject(JSON.parse(res.data))
+        ? JSON.parse(res.data)
+        : res.data;
       onmessage(data);
     } catch (error) {
       console.log('wss message error...', error);
