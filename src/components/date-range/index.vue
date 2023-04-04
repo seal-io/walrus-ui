@@ -15,6 +15,9 @@
       @change="handleDateChange"
       @select="handleSelect"
     >
+      <template #cell="{ date }">
+        <slot name="cell" :date="date"></slot>
+      </template>
       <template v-if="showExtra" #extra>
         <slot name="extra">
           <div v-if="timezone" class="date-type-wrapper">

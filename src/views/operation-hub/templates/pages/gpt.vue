@@ -191,7 +191,7 @@
 </template>
 
 <script lang="ts" setup>
-  import { ref, computed, watch, nextTick, h } from 'vue';
+  import { ref, computed, watch, nextTick, h, inject } from 'vue';
   import { get, map, each, reduce, add } from 'lodash';
   import * as Diff from 'diff';
   import { Modal, Button, Link } from '@arco-design/web-vue';
@@ -218,7 +218,7 @@
     added?: boolean;
   }
   const optionList = ref<{ label: string; value: string }[]>([]);
-  const { router, t } = useCallCommon();
+  const { router, t, locale } = useCallCommon();
   const correctionButton = ref();
   const type = ref('');
   const status = ref('create');
@@ -494,7 +494,16 @@
       content: ''
     });
   };
-
+  watch(
+    () => locale.value,
+    () => {
+      console.log('locale===', locale.value);
+      getCompletionExample();
+    },
+    {
+      immediate: false
+    }
+  );
   getCompletionExample();
 </script>
 

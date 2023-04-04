@@ -146,9 +146,9 @@
         value: get(formData, `labels.${k}`)
       };
     });
-    if (!labelList.value.length) {
-      labelList.value = [{ key: '', value: '' }];
-    }
+    // if (!labelList.value.length) {
+    //   labelList.value = [{ key: '', value: '' }];
+    // }
   };
   const validateLabels = () => {
     triggerValidate.value = some(labelList.value, (item) => !item.key);
