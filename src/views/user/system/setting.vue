@@ -1,5 +1,6 @@
 <template>
-  <div class="container">
+  <ComCard class="container">
+    <GroupTitle :title="$t('menu.system.setting')" show-back></GroupTitle>
     <a-space direction="vertical" fill>
       <a-tabs v-model="activeKey" :default-active-key="activeKey">
         <a-tab-pane
@@ -15,7 +16,7 @@
         </a-tab-pane>
       </a-tabs>
     </a-space>
-  </div>
+  </ComCard>
 </template>
 
 <script lang="ts" setup>
@@ -23,6 +24,7 @@
   import { onMounted, ref, computed, reactive } from 'vue';
   import { useUserStore } from '@/store';
   import { useRoute } from 'vue-router';
+  import GroupTitle from '@/components/group-title/index.vue';
   import { SettingsItem, valueTypeMap, ValueType } from './configs';
   import settingsForm from './components/settings-form.vue';
   import dataInfo from './components/data';
