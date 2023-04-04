@@ -163,7 +163,7 @@ export const applicationBasicInfo = [
 ];
 export const revisionDetailConfig = [
   {
-    label: 'common.table.createTime',
+    label: 'applications.applications.history.deploymentTime',
     key: 'createTime',
     value: '',
     formatter(val) {

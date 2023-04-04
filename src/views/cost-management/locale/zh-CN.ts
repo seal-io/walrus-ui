@@ -16,6 +16,8 @@ export default {
   'cost.analyse.table.time': '时间范围',
   'cost.analyse.detail.holder': '请输入关键字',
   'cost.analyse.cluster.holder': '请选择集群',
+  'cost.analyse.cluster.date.startTips': '收集起始时间',
+  'cost.analyse.cluster.date.endTips': '收集结束时间',
   'cost.analyse.project.holder': '请选择项目',
   'cost.analyse.datepicker.7days': '最近7天',
   'cost.analyse.datepicker.30days': '最近30天',

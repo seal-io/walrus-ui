@@ -236,14 +236,7 @@
     name: '',
     description: '',
     labels: {},
-    variables: [
-      {
-        name: '',
-        default: '',
-        description: '',
-        type: 'string'
-      }
-    ],
+    variables: [],
     project: {
       id: route.params.projectId
     },
@@ -258,7 +251,6 @@
   const id = route.query.id as string;
   const cloneId = route.query.cloneId as string;
   const moduleTemplates = ref<TemplateRowData[]>([]);
-  const appInfoVariables = ref<Variables[]>([]);
   const active = ref('');
   const moduleInfo = ref({}); // item module
   const viewModuleInfo = ref({});
@@ -523,6 +515,13 @@
         ...result,
         variables: filter(appInfo.variables, (item) => item.name)
       };
+      defaultBasicInfo.value = pick(params, [
+        'name',
+        'description',
+        'labels',
+        'createTime',
+        'updateTime'
+      ]);
       console.log('submit:', appInfo, result);
       submitLoading.value = true;
       const res = { id: '' };
