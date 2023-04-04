@@ -20,7 +20,7 @@
             error: ['DeployFailed', 'DeleteFailed'].includes(get(item, 'value'))
           }"
         ></StatusLabel>
-        <span v-else>{{ item.value }}</span>
+        <div v-else>{{ item.value }}</div>
       </a-descriptions-item>
     </a-descriptions>
   </div>

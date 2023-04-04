@@ -19,14 +19,14 @@
       <a-form ref="formref" :model="formData" auto-label-width>
         <a-form-item
           :disabled="!!formData.id && action === 'edit'"
-          label="名称"
+          :label="$t('operation.environments.table.name')"
           field="name"
           validate-trigger="change"
           :rules="[
-            { required: true, message: '名称必填' },
+            { required: true, message: $t('operation.secret.rule.name') },
             {
               match: /^(?![\d])[0-9A-Za-z_]+$/,
-              message: '由字母、数字、下划线组成，不能以数字开头'
+              message: $t('operation.secret.name.tips')
             }
           ]"
         >
@@ -37,7 +37,7 @@
             show-word-limit
           ></a-input>
           <template #extra>
-            <span class="tips">由字母、数字、下划线组成，不能以数字开头</span>
+            <span class="tips">{{ $t('operation.secret.name.tips') }}</span>
           </template>
         </a-form-item>
         <!-- <a-form-item
@@ -54,7 +54,7 @@
           </a-select>
         </a-form-item> -->
         <a-form-item
-          label="内容"
+          :label="$t('operation.secret.content')"
           field="value"
           validate-trigger="change"
           :rules="[

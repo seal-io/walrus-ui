@@ -50,6 +50,8 @@
                   v-model:dataKey="sItem.key"
                   v-model:dataValue="sItem.value"
                   v-model:value="formData.labels"
+                  always-delete
+                  :trigger-validate="triggerValidate"
                   width="100%"
                   class="group-item"
                   :label-list="labelList"
@@ -59,8 +61,14 @@
                 ></xInputGroup>
               </div>
               <div v-if="!labelList.length">
-                <a-tooltip content="添加标签">
-                  <thumbButton :size="60" @click="handleAdd"></thumbButton>
+                <a-tooltip
+                  :content="$t('applications.applications.labels.title')"
+                >
+                  <thumbButton
+                    :size="30"
+                    font-size="16px"
+                    @click="handleAdd"
+                  ></thumbButton>
                 </a-tooltip>
               </div>
             </div>
@@ -78,7 +86,7 @@
 <script lang="ts" setup>
   import dayjs from 'dayjs';
   import useCallCommon from '@/hooks/use-call-common';
-  import { assignIn, keys, get, each, map } from 'lodash';
+  import { assignIn, keys, get, each, map, some } from 'lodash';
   import { ref, reactive, PropType, watch, provide } from 'vue';
   import xInputGroup from '@/components/form-create/custom-components/x-input-group.vue';
   import thumbButton from '@/components/buttons/thumb-button.vue';
@@ -103,6 +111,7 @@
   const formref = ref();
   const id = route.query.id as string;
   const showLabelsModal = ref(false);
+  const triggerValidate = ref(false);
   const editEnable = reactive({
     name: false,
     description: false,
@@ -141,9 +150,14 @@
       labelList.value = [{ key: '', value: '' }];
     }
   };
+  const validateLabels = () => {
+    triggerValidate.value = some(labelList.value, (item) => !item.key);
+    return triggerValidate.value;
+  };
   const getFormData = async () => {
+    const labelsRes = validateLabels();
     const res = await formref.value.validate();
-    if (!res) {
+    if (!res && !labelsRes) {
       return formData;
     }
     return false;

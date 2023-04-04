@@ -1,6 +1,34 @@
 <template>
   <div class="basic-info">
-    <a-grid :cols="24" class="custom-grid">
+    <a-row :cols="24">
+      <a-col :span="16">
+        <a-descriptions :data="basicConfigList" :column="2">
+          <template #label="{ label }">
+            <span>{{ $t(label) }}</span>
+          </template>
+          <template #value="{ data }">
+            <LabelsList
+              v-if="data.key === 'labels'"
+              :labels="formData[data.key]"
+            ></LabelsList>
+            <span
+              v-else
+              style="
+                display: inline-block;
+                min-width: fit-content;
+                white-space: pre-wrap;
+              "
+              >{{
+                data.formatter
+                  ? data.formatter(formData[data.key])
+                  : formData[data.key]
+              }}</span
+            >
+          </template>
+        </a-descriptions>
+      </a-col>
+    </a-row>
+    <!-- <a-grid :cols="24" class="custom-grid">
       <a-grid-item
         v-for="(item, index) in basicConfigList"
         :key="index"
@@ -10,38 +38,6 @@
         <div class="custom-grid-content">
           <div class="label">
             <span>{{ $t(item.label) }}</span>
-            <!-- <span class="btn-wrap" v-if="!item.disabled">
-              <a-tooltip
-                v-if="!item.editable || item.key === 'labels'"
-                :content="$t('common.button.edit')"
-              >
-                <a-link>
-                  <icon-edit @click="handleEdit(item)"></icon-edit>
-                </a-link>
-              </a-tooltip>
-              <a-tooltip
-                v-if="item.editable && item.key !== 'labels'"
-                :content="$t('common.button.cancel')"
-              >
-                <a-link>
-                  <icon-font
-                    type="icon-quxiao"
-                    @click="handleCancel(item)"
-                  ></icon-font>
-                </a-link>
-              </a-tooltip>
-              <a-tooltip
-                v-if="item.editable && item.key !== 'labels'"
-                :content="$t('common.button.save')"
-              >
-                <a-link>
-                  <icon-save
-                    stype="icon-quxiao"
-                    @click="handleSave(item)"
-                  ></icon-save>
-                </a-link>
-              </a-tooltip>
-            </span> -->
           </div>
           <div class="value">
             <LabelsList
@@ -71,7 +67,7 @@
           </div>
         </div>
       </a-grid-item>
-    </a-grid>
+    </a-grid> -->
     <labelsModal
       v-model:show="showLabelsModal"
       v-model:labels="formData.labels"
@@ -82,6 +78,7 @@
 
 <script lang="ts" setup>
   import _ from 'lodash';
+  import ADescriptionsItem from '@arco-design/web-vue/es/descriptions/descriptions-item';
   import { BasicDescription } from '@/views/config/interface';
   import { ref, watch, computed, defineExpose } from 'vue';
   import labelsModal from './labels-modal.vue';

@@ -235,12 +235,23 @@
 </template>
 
 <script lang="ts" setup>
+  import { websocketEventType } from '@/views/config';
+  import { createWebsocketInstance } from '@/hooks/use-websocket';
   import ADropdownButton from '@arco-design/web-vue/es/dropdown/dropdown-button';
   import useAxiosSource from '@/hooks/use-axios-cancel';
   import ProviderIcon from '@/components/provider-icon/index.vue';
   import dayjs from 'dayjs';
-  import { get, map, pickBy, find, toLower } from 'lodash';
-  import { reactive, ref, onMounted, onActivated, watch, inject } from 'vue';
+  import _, { get, filter, map, pickBy, find, toLower } from 'lodash';
+  import {
+    reactive,
+    ref,
+    onMounted,
+    onActivated,
+    watch,
+    nextTick,
+    inject,
+    onBeforeUnmount
+  } from 'vue';
   import useCallCommon from '@/hooks/use-call-common';
   import { Message } from '@arco-design/web-vue';
   import { deleteModal, execSucceed } from '@/utils/monitor';
@@ -276,6 +287,7 @@
   const { router, t } = useCallCommon();
   let timer: any = null;
   const loading = ref(false);
+  const websocketInstance = ref<any>('');
   const total = ref(100);
   const activeKey = inject('activeKey', ref(''));
   const queryParams = reactive({
@@ -432,6 +444,36 @@
     queryParams.page = 1;
     handleFilter();
   };
+  const upateDataList = (data) => {
+    if (data?.type !== websocketEventType.update) return;
+    const collections = filter(
+      data.collection || [],
+      (sItem) => sItem?.category === props.category
+    );
+    _.each(collections, (item) => {
+      const updateIndex = _.findIndex(
+        dataList.value,
+        (sItem) => sItem.id === item.id
+      );
+      if (updateIndex > -1) {
+        const updateItem = _.cloneDeep(item);
+        dataList.value[updateIndex] = updateItem;
+      } else {
+        dataList.value = _.concat(_.cloneDeep(item), dataList.value);
+      }
+    });
+  };
+  const createInstanceListWebsocket = () => {
+    try {
+      if (websocketInstance.value) return;
+      websocketInstance.value = createWebsocketInstance({
+        url: `/connectors`,
+        onmessage: upateDataList
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  };
   onActivated(() => {
     if (activeKey.value === props.category) {
       fetchData();
@@ -439,6 +481,9 @@
   });
   onMounted(() => {
     fetchData();
+    nextTick(() => {
+      createInstanceListWebsocket();
+    });
   });
   watch(
     () => props.category,
@@ -449,6 +494,9 @@
       immediate: true
     }
   );
+  onBeforeUnmount(() => {
+    websocketInstance.value?.close?.();
+  });
 </script>
 
 <style lang="less" scoped></style>

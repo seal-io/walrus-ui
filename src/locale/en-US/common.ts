@@ -65,5 +65,8 @@ export default {
   'common.button.deploy': 'Deploy',
   'common.button.logs': 'Log Details',
   'common.ws.close': 'The connection was lost, do you want to reconnect?',
-  'common.ws.reconnect': 'Reconnect'
+  'common.ws.reconnect': 'Reconnect',
+  'common.input.key': 'key',
+  'common.input.value': 'value',
+  'common.input.description': 'description'
 };

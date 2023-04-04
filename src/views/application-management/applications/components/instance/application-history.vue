@@ -22,7 +22,7 @@
           tooltip
           :cell-style="{ minWidth: '40px' }"
           data-index="createTime"
-          :title="$t('applications.applications.history.duration')"
+          :title="$t('applications.applications.history.deploymentTime')"
         >
           <template #cell="{ record }">
             <span>{{
@@ -121,6 +121,7 @@
     />
     <revisionDetailVue
       v-model:show="showDetailModal"
+      :data-info="revisionData"
       :revision-id="revisionDetailId"
     ></revisionDetailVue>
   </div>
@@ -170,6 +171,7 @@
   const instanceId = inject('instanceId', ref(''));
   const revisionId = ref('');
   const revisionDetailId = ref('');
+  const revisionData = ref({});
   const total = ref(0);
   const loading = ref(false);
   const showDetailModal = ref(false);
@@ -236,6 +238,7 @@
   };
   const handleViewDetail = (row) => {
     revisionDetailId.value = row.id;
+    revisionData.value = row;
     setTimeout(() => {
       showDetailModal.value = true;
     }, 100);
@@ -246,6 +249,13 @@
       data.collection || [],
       (sItem) => sItem?.instance?.id === instanceId.value
     );
+    const openRevisionData = find(
+      collections,
+      (item) => item.id === get(revisionData.value, 'id')
+    );
+    if (openRevisionData) {
+      revisionData.value = openRevisionData;
+    }
     each(collections, (item) => {
       const updateIndex = findIndex(
         dataList.value,

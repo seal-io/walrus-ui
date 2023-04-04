@@ -122,32 +122,24 @@ export const applicationBasicInfo = [
     value: '',
     editable: false,
     required: true,
-    span: 8,
+    span: 1,
     form: 'input'
   },
   {
     label: 'common.table.createTime',
     key: 'createTime',
     value: '',
-    span: 8,
+    span: 1,
     disabled: true,
     formatter(val) {
       return dayjs(val).format('YYYY-MM-DD HH:mm:ss');
     }
   },
-
-  {
-    label: '',
-    key: '',
-    value: '',
-    span: 8,
-    disabled: true
-  },
   {
     label: 'common.table.description',
     key: 'description',
     value: '',
-    span: 8,
+    span: 1,
     editable: false,
     form: 'textarea'
   },
@@ -155,24 +147,17 @@ export const applicationBasicInfo = [
     label: 'common.table.updateTime',
     key: 'updateTime',
     value: '',
-    span: 8,
+    span: 1,
     disabled: true,
     formatter(val) {
       return dayjs(val).format('YYYY-MM-DD HH:mm:ss');
     }
   },
   {
-    label: '',
-    key: '',
-    value: '',
-    span: 8,
-    disabled: true
-  },
-  {
     label: 'applications.applications.form.label',
     key: 'labels',
     value: '',
-    span: 16,
+    span: 1,
     editable: false
   }
 ];
