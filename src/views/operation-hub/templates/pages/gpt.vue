@@ -116,7 +116,7 @@
           position="tr"
           :disabled="loading"
           :content-style="{ maxHeight: '300px' }"
-          background-color="#f3f6fa"
+          background-color="#e8f2ff"
           :popup-visible="showExplainModal"
         >
           <template #content>
@@ -295,6 +295,9 @@
     );
     return res;
   };
+  const handleViewCorrection = () => {
+    showExplainModal.value = !showExplainModal.value;
+  };
   const getCompletionExample = async () => {
     try {
       const { data } = await queryCompletionExamples();
@@ -323,6 +326,9 @@
       showFix.value = true;
       console.log('diffResult==', defaultValue.value, diffResult.value);
       getDiffResultLines();
+      setTimeout(() => {
+        handleViewCorrection();
+      }, 100);
     } catch (error) {
       loading.value = false;
       showFix.value = false;
@@ -449,9 +455,6 @@
       title: 'operation.templates.detail.receiveFix.tips',
       onOk: handleFixAll
     });
-  };
-  const handleViewCorrection = () => {
-    showExplainModal.value = !showExplainModal.value;
   };
 
   const handleShowPRLink = (url) => {

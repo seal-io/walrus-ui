@@ -48,9 +48,7 @@ export function createWebsocketInstance({ url, onmessage }) {
   wss.onmessage = (res) => {
     try {
       console.log('wss message:', { [url]: res });
-      const data = isObject(JSON.parse(res.data))
-        ? JSON.parse(res.data)
-        : res.data;
+      const data = JSON.parse(res.data);
       onmessage(data);
     } catch (error) {
       console.log('wss message error...', error);

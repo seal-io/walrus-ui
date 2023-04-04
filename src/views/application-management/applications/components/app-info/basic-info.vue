@@ -20,7 +20,7 @@
               style="width: 100%"
             ></a-input>
           </a-form-item>
-          <a-form-item :label="$t('common.table.name')">
+          <a-form-item :label="$t('common.table.description')">
             <a-textarea
               v-model="formData.description"
               :max-length="200"
