@@ -67,12 +67,10 @@
                   {{ date.getDate() }}
                 </div>
               </a-tooltip>
-              <div
-                v-else
-                class="arco-picker-date-value"
-                :style="getCellStyle(date)"
-              >
-                {{ date.getDate() }}
+              <div v-else class="arco-picker-date">
+                <div class="arco-picker-date-value" :style="getCellStyle(date)">
+                  {{ date.getDate() }}
+                </div>
               </div>
             </div>
           </template>

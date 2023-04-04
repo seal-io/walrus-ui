@@ -15,11 +15,6 @@
           @change="handleTyeChange"
         >
         </a-select>
-
-        <!-- <span class="label" @click="handleShowExample">
-          <span>示例</span>
-          <icon-question-circle-fill />
-        </span> -->
       </div>
       <a-space v-if="showFix">
         <a-link class="link-btn" @click="handleFixCall">
@@ -300,6 +295,7 @@
   };
   const getCompletionExample = async () => {
     try {
+      type.value = '';
       const { data } = await queryCompletionExamples();
       optionList.value = map(data || [], (item) => {
         return {
@@ -388,6 +384,7 @@
   const handleClear = () => {
     clearDiffLines();
     code.value = '';
+    type.value = '';
     defaultValue.value = '';
     diffValue.value = '';
     diffResult.value = [];
@@ -498,6 +495,7 @@
     () => locale.value,
     () => {
       console.log('locale===', locale.value);
+
       getCompletionExample();
     },
     {

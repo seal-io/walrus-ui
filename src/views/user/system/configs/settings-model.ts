@@ -25,7 +25,7 @@ export const settingList: Array<SettingsItem> = [
     dataList: [
       {
         id: '',
-        label: 'system.setting.task.basic',
+        label: 'system.setting.task.basicmng',
         value: '',
         type: 'groupTitle',
         component: {},

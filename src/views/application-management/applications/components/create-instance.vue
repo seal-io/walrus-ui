@@ -53,7 +53,7 @@
         <div
           v-if="variablesList?.length"
           style="margin-bottom: 10px; text-align: left"
-          >变量</div
+          >{{ $t('applications.applications.variables.title') }}</div
         >
         <a-form-item
           v-for="(item, index) in variablesList"

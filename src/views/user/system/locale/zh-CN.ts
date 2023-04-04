@@ -90,6 +90,7 @@ export default {
   'system.setting.rule.openai': 'openai api token 必填',
   'system.setting.task': '任务设置',
   'system.setting.task.basic': '基础任务',
+  'system.setting.task.basicmng': '基础管理',
   'system.setting.task.finops': 'FinOps任务',
   'system.setting.task.enhance': '增强管理',
   'system.setting.openAiApiToken': 'OpenAI API令牌',

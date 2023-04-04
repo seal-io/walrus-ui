@@ -82,7 +82,7 @@
 
 <script lang="ts" setup>
   import { split, get, includes } from 'lodash';
-  import { onMounted, ref, reactive, inject, watch } from 'vue';
+  import { onMounted, ref, reactive, inject, watch, defineExpose } from 'vue';
   import { EndPointRow } from '../../config/interface';
   import { queryInstanceEndpoints } from '../../api';
 
@@ -123,6 +123,10 @@
     queryParams.perPage = pageSize;
     handleFilter();
   };
+  const refreshDataList = () => {
+    queryParams.page = 1;
+    fetchData();
+  };
   const handleShowLogs = () => {};
   const handleShowTerm = () => {};
   watch(
@@ -135,6 +139,9 @@
       immediate: true
     }
   );
+  defineExpose({
+    refreshDataList
+  });
   onMounted(() => {
     console.log('resource');
   });

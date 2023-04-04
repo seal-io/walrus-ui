@@ -15,9 +15,15 @@
       @change="handleDateChange"
       @select="handleSelect"
     >
-      <template #cell="{ date }">
-        <slot name="cell" :date="date"></slot>
-      </template>
+      <!-- <template #cell="{ date }">
+        <slot name="cell" :date="date">
+          <div class="arco-picker-date">
+            <div class="arco-picker-date-value">
+              {{ date.getDate() }}
+            </div>
+          </div>
+        </slot>
+      </template> -->
       <template v-if="showExtra" #extra>
         <slot name="extra">
           <div v-if="timezone" class="date-type-wrapper">

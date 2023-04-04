@@ -5,8 +5,12 @@
         v-for="(item, index) in dataList"
         :key="index"
         style="line-height: 22px"
-        >{{ item }}</li
       >
+        <span>{{ item.name }}</span>
+        <span style="margin-left: 20px">{{
+          join(item.version_constraints, ', ')
+        }}</span>
+      </li>
     </ul>
     <!-- <a-textarea
       readonly
@@ -17,7 +21,7 @@
 </template>
 
 <script lang="ts" setup>
-  import { get } from 'lodash';
+  import { get, join } from 'lodash';
   import { PropType, computed } from 'vue';
   import { Schema } from '../config/interface';
 
@@ -30,7 +34,7 @@
     }
   });
   const dataList = computed(() => {
-    const list = get(props.schema, 'RequiredConnectorTypes');
+    const list = get(props.schema, 'RequiredProviders');
     return list || [];
   });
 </script>

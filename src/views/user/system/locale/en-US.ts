@@ -101,6 +101,7 @@ export default {
   'system.setting.rule.openai': 'openai api token is required',
   'system.setting.task': 'Task Settings',
   'system.setting.task.basic': 'Basic Task',
+  'system.setting.task.basicmng': 'Basic Management',
   'system.setting.task.finops': 'FinOps Task',
   'system.setting.task.enhance': 'Enhanced Management',
   'system.setting.openAiApiToken': 'OpenAI API Token',
