@@ -14,7 +14,7 @@
       'overflow': 'auto'
     }"
     modal-class="oci-modal"
-    title="查看模块"
+    :title="$t('applications.module.title.view')"
     @cancel="handleCancel"
     @ok="handleOk"
     @before-open="handleBeforeOpen"
@@ -25,19 +25,25 @@
       <a-form ref="formref" :model="formData" auto-label-width>
         <a-grid :cols="24">
           <a-grid-item :span="8">
-            <a-form-item label="名称" field="name">
+            <a-form-item :label="$t('common.table.name')" field="name">
               <span class="readonly-view-label">{{ formData.name }}</span>
             </a-form-item>
           </a-grid-item>
           <a-grid-item :span="8">
-            <a-form-item label="模块" field="module.id">
+            <a-form-item
+              :label="$t('applications.applications.table.module')"
+              field="module.id"
+            >
               <span class="readonly-view-label">{{
                 getListValue(formData.module.id, templates, 'id')
               }}</span>
             </a-form-item>
           </a-grid-item>
           <a-grid-item :span="8">
-            <a-form-item label="版本" field="version">
+            <a-form-item
+              :label="$t('applications.applications.history.version')"
+              field="version"
+            >
               <span class="readonly-view-label">{{
                 getListValue(formData.version, moduleVersionList, 'value')
               }}</span>
@@ -46,7 +52,9 @@
         </a-grid>
       </a-form>
       <div class="variables">
-        <GroupTitle title="配置"></GroupTitle>
+        <GroupTitle
+          :title="$t('applications.applications.detail.configuration')"
+        ></GroupTitle>
         <a-tabs
           v-if="show && formTabs.length > 1"
           lazy-load
@@ -294,7 +302,11 @@
       }
     };
     console.log('sourceData===', sourceData);
-    each(get(moduleInfo.value, 'Variables'), (item) => {
+    const variablesList = filter(
+      get(moduleInfo.value, 'Variables'),
+      (v) => !v.Hidden
+    );
+    each(variablesList, (item) => {
       // set initial value
       // const initialValue =
       //   type === 'create'
@@ -339,7 +351,8 @@
     );
   };
   const setFormData = (schemas) => {
-    each(get(schemas, 'Variables'), (item) => {
+    const variablesList = filter(get(schemas, 'Variables'), (v) => !v.Hidden);
+    each(variablesList, (item) => {
       formData.attributes[item.Name] = item.Default;
     });
   };
@@ -507,7 +520,11 @@
       await getModuleVersionList();
       const moduleTemplate = getModuleSchemaByVersion();
       moduleInfo.value = cloneDeep(get(moduleTemplate, 'schema'));
-      each(get(moduleInfo.value, 'Variables') || [], (item) => {
+      const variablesList = filter(
+        get(moduleInfo.value, 'Variables'),
+        (v) => !v.Hidden
+      );
+      each(variablesList || [], (item) => {
         item.Default = get(props.dataInfo, `attributes.${item.Name}`);
       });
       console.log('dataInfo===', props.dataInfo);

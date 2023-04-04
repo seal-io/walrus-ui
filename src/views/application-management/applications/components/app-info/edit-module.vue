@@ -336,7 +336,11 @@
       }
     };
     console.log('sourceData===', sourceData);
-    each(get(moduleInfo.value, 'Variables'), (item) => {
+    const variablesList = filter(
+      get(moduleInfo.value, 'Variables'),
+      (v) => !v.Hidden
+    );
+    each(variablesList, (item) => {
       // set initial value
       // const initialValue =
       //   type === 'create'
@@ -381,7 +385,10 @@
     );
   };
   const setFormData = (schemas) => {
-    each(get(schemas, 'Variables'), (item) => {
+    const variablesList = filter(get(schemas, 'Variables'), (v) => {
+      return !v.Hidden;
+    });
+    each(variablesList, (item) => {
       formData.attributes[item.Name] = item.Default;
     });
   };
@@ -549,7 +556,11 @@
       await getModuleVersionList();
       const moduleTemplate = getModuleSchemaByVersion();
       moduleInfo.value = cloneDeep(get(moduleTemplate, 'schema'));
-      each(get(moduleInfo.value, 'Variables') || [], (item) => {
+      const variablesList = filter(
+        get(moduleInfo.value, 'Variables'),
+        (v) => !v.Hidden
+      );
+      each(variablesList || [], (item) => {
         item.Default = get(props.dataInfo, `attributes.${item.Name}`);
       });
     }

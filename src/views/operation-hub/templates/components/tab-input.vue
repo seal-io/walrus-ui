@@ -52,7 +52,7 @@
 </template>
 
 <script lang="ts" setup>
-  import { get, reduce } from 'lodash';
+  import { get, reduce, filter } from 'lodash';
   import { PropType, computed, ref } from 'vue';
   import AceEditor from '@/components/ace-editor/index.vue';
   import { Schema } from '../config/interface';
@@ -67,7 +67,9 @@
   });
   const currentView = ref('list');
   const dataList = computed(() => {
-    const list = get(props.schema, 'Variables');
+    const list = filter(get(props.schema, 'Variables'), (item) => {
+      return !item.Hidden;
+    });
     return list || [];
   });
   const jsonData = computed(() => {

@@ -53,7 +53,7 @@ export default {
   'applications.applications.instance.resource': 'Resource Information',
   'applications.applications.instance.endpoint': 'EndPoint',
   'applications.applications.instance.log': 'Exception Logs',
-  'applications.applications.logs.live': 'Run Logs',
+  'applications.applications.logs.live': 'Running Logs',
   'applications.instance.rule.env': 'the deployment environment is required',
   'applications.instance.env.tips':
     'environments without added connectors are not available',

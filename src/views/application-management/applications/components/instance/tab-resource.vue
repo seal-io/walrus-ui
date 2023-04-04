@@ -122,6 +122,7 @@
   import { websocketEventType } from '../../config';
   import { queryApplicationResource } from '../../api';
 
+  const emits = defineEmits(['updateEndpoint']);
   const instanceId = inject('instanceId', ref(''));
   const websocketInstance = ref<any>(null);
   const total = ref(0);
@@ -174,6 +175,11 @@
     if (data?.type === websocketEventType.create) {
       dataList.value = concat(collections, dataList.value);
       return;
+    }
+    if (collections.length) {
+      setTimeout(() => {
+        emits('updateEndpoint');
+      }, 100);
     }
     _.each(collections, (item) => {
       const updateIndex = _.findIndex(

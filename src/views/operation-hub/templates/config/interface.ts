@@ -6,7 +6,11 @@ export interface Schema {
   Inputs: OutputItem[];
   Readme: string;
   Variables: OutputItem[];
-  RequiredConnectorTypes: string[];
+  RequiredProviders: Array<{
+    name: string;
+    source: string;
+    version_constraints: string[];
+  }>;
 }
 
 export interface TemplateRowData {

@@ -143,7 +143,11 @@
   watch(
     () => props.dataInfo,
     () => {
-      revisionData.value = cloneDeep(props.dataInfo);
+      if (get(props.dataInfo, 'status') === 'Running') {
+        revisionData.value = cloneDeep(props.dataInfo);
+      } else {
+        fetchData();
+      }
     },
     {
       immediate: true,

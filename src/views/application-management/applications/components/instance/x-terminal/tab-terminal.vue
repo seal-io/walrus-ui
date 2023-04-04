@@ -30,6 +30,7 @@
   const containerList = ref<Cascader[]>([]);
   const loading = ref(false);
 
+  const terminalTypeList = ['bash', 'sh', 'powershell', 'pwsh', 'cmd'];
   const wssURL = computed(() => {
     if (!resourceId.value || !resourceKey.value) {
       return '';

@@ -9,6 +9,7 @@
 </template>
 
 <script lang="ts" setup>
+  import qs from 'query-string';
   import { ref, onMounted, onBeforeUnmount, watch, computed } from 'vue';
   import {
     debounce,
@@ -35,7 +36,7 @@
       }
     }
   });
-  const terminalEnvList = ['bash', 'sh', 'powershell', 'pwsh', 'cmd'];
+  const terminalEnvList = ['bash', 'sh', 'powershell', 'pwsh', 'cmd', 'bash'];
   const fitAddon = new FitAddon();
 
   const terminal = ref(null);
@@ -46,6 +47,9 @@
   const command = ref('');
   const statusText = ref('connecting...');
   const actived = ref(true);
+  const statusCode = ref<number>(0);
+  const terminalEnvIndex = ref(0);
+  const wssUrl = ref('');
 
   const conReadyState = ref(0);
   const runRealTerminal = () => {
@@ -106,7 +110,8 @@
     switch (e) {
       case '\u0003': // Ctrl+C
         term.value.write('^C');
-        clearCommand();
+        command.value = '';
+        runCommand();
         break;
       case '\r': // Enter
         runCommand();
@@ -158,20 +163,35 @@
   const errorRealTerminal = (ex) => {
     let { message } = ex;
     if (!message) message = 'disconnected';
+    conReadyState.value = terminalSocket.value.readyState;
     term.value.write(setErrorData(message));
     clearCommand();
     console.log('wss: err', message);
   };
+  const setWssUrl = (flag?) => {
+    if (terminalEnvIndex.value >= terminalEnvList.length - 1) return;
+    if (flag) {
+      terminalEnvIndex.value = 0;
+    } else {
+      terminalEnvIndex.value += 1;
+    }
+    const params = qs.stringify({
+      shell: terminalEnvList[terminalEnvIndex.value]
+    });
+    wssUrl.value = `${props.url}&${params}`;
+    console.log('wssUrl===', params);
+  };
   const closeRealTerminal = (data) => {
-    const code = get(data, 'code');
+    statusCode.value = get(data, 'code');
+    conReadyState.value = terminalSocket.value.readyState;
     term.value.write(setData(data.reason));
     clearCommand();
-    console.log('wss: close:', data);
+    console.log('wss: close:', statusCode.value, data);
   };
-
   const createWS = () => {
     if (!props.url) return;
-    terminalSocket.value = new WebSocket(props.url);
+    term.value?.write?.('');
+    terminalSocket.value = new WebSocket(wssUrl.value);
     terminalSocket.value.onopen = runRealTerminal;
     terminalSocket.value.onmessage = onWSReceive;
     terminalSocket.value.onclose = closeRealTerminal;
@@ -185,7 +205,6 @@
     terminalSocket.value.close();
     createWS();
   };
-
   const initTerm = () => {
     term.value = new Terminal({
       lineHeight: 1.2,
@@ -244,10 +263,16 @@
     termData();
     onTerminalResize();
   };
+  const retry = () => {
+    term.value?.dispose?.();
+    terminalSocket.value.close?.();
+    init();
+    term.value.reset();
+  };
   const handleTryConnect = () => {
     deleteModal({
       title: 'common.ws.close',
-      onOk: init,
+      onOk: retry,
       okText: 'common.ws.reconnect'
     });
   };
@@ -256,21 +281,26 @@
     () => props.url,
     () => {
       if (!props.url) return;
+      console.log('querystring===', qs.parse(props.url));
       first.value = true;
       loading.value = true;
+      setWssUrl(true);
       initWS();
       // 重置
       term.value.reset();
     },
     {
-      immediate: true
+      immediate: false
     }
   );
   watch(
-    () => conReadyState.value,
+    () => statusCode.value,
     (ov) => {
-      if (ov === 3 && actived.value) {
-        handleTryConnect();
+      if (statusCode.value === 1003) {
+        term.value?.write?.('');
+        setWssUrl();
+        initWS();
+        term.value.reset();
       }
     },
     {
@@ -285,6 +315,7 @@
     removeResizeListener();
     console.log('wss: dispose');
     actived.value = false;
+    term.value?.dispose?.();
     if (terminalSocket.value) terminalSocket.value.close();
   });
 </script>
