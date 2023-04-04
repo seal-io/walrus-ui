@@ -52,6 +52,12 @@ export default {
   'operation.environments.detail.holder': 'please select connector',
   'operation.templates.menu': 'Templates',
   'operation.secret.menu': 'Global Secrets',
+  'operation.secret.name': 'Secret',
+  'operation.secret.name.tips':
+    'consists of letters, numbers, underscores, cannot start with a number',
+  'operation.secret.content': 'Content',
+  'operation.secret.rule.content': 'content is required',
+  'operation.secret.rule.name': 'name is required',
   'operation.templates.table.title': 'Template List',
   'operation.templates.table.holder': 'please enter a template',
   'operation.templates.type.holder': 'please select a template type',

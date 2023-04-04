@@ -98,7 +98,9 @@
             v-model:dataKey="sItem.name"
             v-model:dataValue="sItem.default"
             v-model:dataDesc="sItem.description"
+            :trigger-validate="triggerValidate"
             show-description
+            always-delete
             width="100%"
             class="group-item"
             :label-list="variableList"
@@ -114,7 +116,11 @@
         v-if="!get(appInfo, 'variables').length && pageAction === 'edit'"
         :content="$t('applications.applications.variables.button')"
       >
-        <thumbButton :size="60" @click="handleAddVariables"></thumbButton>
+        <thumbButton
+          :size="30"
+          font-size="16px"
+          @click="handleAddVariables"
+        ></thumbButton>
       </a-tooltip>
       <LabelsList
         v-if="get(appInfo, 'variables').length && pageAction === 'view'"
@@ -184,7 +190,8 @@
     uniqBy,
     find,
     keys,
-    split
+    split,
+    some
   } from 'lodash';
   import useCallCommon from '@/hooks/use-call-common';
   import thumbButton from '@/components/buttons/thumb-button.vue';
@@ -224,6 +231,7 @@
   const tabBarStore = useTabBarStore();
   const { router, route } = useCallCommon();
   const basicform = ref();
+  const triggerValidate = ref(false);
   const appInfo = reactive({
     name: '',
     description: '',
@@ -268,8 +276,6 @@
   let copyFormData: any = {};
 
   provide('completeData', completeData);
-  provide('showHintInput', true);
-
   const variablesObj = computed(() => {
     const res = reduce(
       appInfo?.variables,
@@ -492,14 +498,23 @@
     appInfo.variables.splice(index, 1);
     completeDataSetter?.updateVariablesCompleteData?.();
   };
+  const validateVariabels = () => {
+    triggerValidate.value = some(
+      get(appInfo, 'variables'),
+      (item) => !item.name
+    );
+    return triggerValidate.value;
+  };
   const handleOk = async () => {
     console.log('handleOk====', appInfo);
+    const validateVarRes = validateVariabels();
+    console.log('validateVarRes===', validateVarRes);
     const result = await basicform.value.getFormData();
     triggerModule.value = true;
     if (!id && !validateModule.value) {
       return;
     }
-    if (!result) {
+    if (!result || validateVarRes) {
       return;
     }
     try {

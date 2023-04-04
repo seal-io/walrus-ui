@@ -68,7 +68,7 @@
 </template>
 
 <script lang="ts" setup>
-  import { each, get, map } from 'lodash';
+  import { each, get, map, cloneDeep } from 'lodash';
   import ADescriptionsItem from '@arco-design/web-vue/es/descriptions/descriptions-item';
   import { ref, PropType, watch, computed } from 'vue';
   import useCallCommon from '@/hooks/use-call-common';
@@ -89,6 +89,12 @@
       type: String,
       default() {
         return '';
+      }
+    },
+    dataInfo: {
+      type: Object,
+      default() {
+        return {};
       }
     }
   });
@@ -135,12 +141,13 @@
   };
 
   watch(
-    () => props.revisionId,
+    () => props.dataInfo,
     () => {
-      fetchData();
+      revisionData.value = cloneDeep(props.dataInfo);
     },
     {
-      immediate: true
+      immediate: true,
+      deep: true
     }
   );
   const handleBeforeOpen = () => {};

@@ -130,3 +130,11 @@ export const getStackLineData = ({
   result.xAxis = uniq(result.xAxis);
   return result;
 };
+
+export const websocketEventType = {
+  create: 1,
+  update: 2,
+  delete: 3
+};
+
+export default {};

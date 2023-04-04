@@ -63,5 +63,8 @@ export default {
   'common.button.deploy': '部署',
   'common.button.logs': '查看日志',
   'common.ws.close': '连接已断开，是否重新连接？',
-  'common.ws.reconnect': '重新连接'
+  'common.ws.reconnect': '重新连接',
+  'common.input.key': '键',
+  'common.input.value': '值',
+  'common.input.description': '描述'
 };

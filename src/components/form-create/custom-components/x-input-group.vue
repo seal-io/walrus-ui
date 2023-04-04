@@ -12,7 +12,7 @@
           v-if="!showHintInput"
           :error="!dataKey && triggerValidate"
           :model-value="dataKey"
-          placeholder="key"
+          :placeholder="$t('common.input.key')"
           :max-length="100"
           v-bind="$attrs"
           show-word-limit
@@ -23,7 +23,8 @@
         <hintInput
           v-else
           :model-value="dataKey"
-          placeholder="key"
+          :error="!dataKey && triggerValidate"
+          :placeholder="$t('common.input.key')"
           :max-length="100"
           v-bind="$attrs"
           style="width: 100%"
@@ -41,9 +42,8 @@
           v-if="showPassword"
           style="width: 100%"
           :model-value="dataValue"
-          :error="!dataValue && triggerValidate"
           v-bind="$attrs"
-          placeholder="value"
+          :placeholder="$t('common.input.value')"
           :max-length="$attrs.MaxLength"
           show-word-limit
           @input="(val) => handleDataChange(val, 'value')"
@@ -53,9 +53,8 @@
           v-else-if="!showHintInput"
           style="width: 100%"
           :model-value="dataValue"
-          :error="!dataValue && triggerValidate"
           v-bind="$attrs"
-          placeholder="value"
+          :placeholder="$t('common.input.value')"
           :max-length="50"
           show-word-limit
           @input="(val) => handleDataChange(val, 'value')"
@@ -65,7 +64,7 @@
           v-else
           :model-value="dataValue"
           v-bind="$attrs"
-          placeholder="value"
+          :placeholder="$t('common.input.value')"
           style="width: 100%"
           :max-length="100"
           :editor-id="`${formId}_valueEditor${position}`"
@@ -84,9 +83,8 @@
         <span style="padding: 0 4px">:</span>
         <a-input
           style="width: 100%"
-          :error="!dataDesc && triggerValidate"
           :model-value="dataDesc"
-          placeholder="description"
+          :placeholder="$t('common.input.description')"
           :max-length="100"
           v-bind="$attrs"
           show-word-limit
@@ -97,7 +95,7 @@
     </div>
     <div class="btn-wrapper">
       <icon-minus-circle
-        v-if="(labelList?.length || 0) > 1"
+        v-if="(labelList?.length || 0) > 1 || alwaysDelete"
         class="size-20"
         @click="handleDeleteLabel"
       ></icon-minus-circle>
@@ -120,19 +118,19 @@
     dataKey: {
       type: String,
       default() {
-        return 'key';
+        return '';
       }
     },
     dataValue: {
       type: String,
       default() {
-        return 'value';
+        return '';
       }
     },
     dataDesc: {
       type: String,
       default() {
-        return 'description';
+        return '';
       }
     },
     // showHintInput: {
@@ -190,6 +188,12 @@
       }
     },
     showDelete: {
+      type: Boolean,
+      default() {
+        return false;
+      }
+    },
+    alwaysDelete: {
       type: Boolean,
       default() {
         return false;

@@ -160,9 +160,13 @@
   ]);
   const title = computed(() => {
     if (id) {
-      return t('operation.connectors.title.edit', { type: '自定义' });
+      return t('operation.connectors.title.edit', {
+        type: t('operation.connectors.reinstall.custom')
+      });
     }
-    return t('operation.connectors.title.new', { type: '自定义' });
+    return t('operation.connectors.title.new', {
+      type: t('operation.connectors.reinstall.custom')
+    });
   });
   const handleAddLabel = (obj, list) => {
     list?.push(obj);
@@ -174,7 +178,7 @@
   };
   const validatorAttribute = (val, callback) => {
     if (!keys(formData.configData.attributes).length) {
-      callback('属性必填');
+      callback(t('operation.connectors.attribute.rule'));
     } else {
       callback();
     }

@@ -259,6 +259,7 @@
     label: string;
     value: string;
   }
+  provide('showHintInput', true);
   const defaultGroupKey = '_default_default_';
   const emit = defineEmits(['save', 'update:show', 'reset', 'update:action']);
   const { route } = useCallCommon();

@@ -106,7 +106,7 @@
 
 <script lang="ts" setup>
   import dayjs from 'dayjs';
-  import _, { get, filter } from 'lodash';
+  import _, { get, filter, concat } from 'lodash';
   import {
     onMounted,
     ref,
@@ -166,11 +166,15 @@
     handleFilter();
   };
   const updateDataList = (data) => {
-    if (data?.type !== websocketEventType.update) return;
+    if (data?.type === websocketEventType.delete) return;
     const collections = filter(
       data.collection || [],
       (sItem) => sItem?.instance?.id === instanceId.value
     );
+    if (data?.type === websocketEventType.create) {
+      dataList.value = concat(collections, dataList.value);
+      return;
+    }
     _.each(collections, (item) => {
       const updateIndex = _.findIndex(
         dataList.value,

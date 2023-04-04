@@ -63,7 +63,7 @@
             tooltip
             :cell-style="{ minWidth: '40px' }"
             data-index="name"
-            title="密钥"
+            :title="$t('operation.secret.name')"
           >
           </a-table-column>
           <!-- <a-table-column
