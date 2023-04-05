@@ -288,7 +288,7 @@
   let timer: any = null;
   const loading = ref(false);
   const websocketInstance = ref<any>('');
-  const total = ref(100);
+  const total = ref(0);
   const activeKey = inject('activeKey', ref(''));
   const queryParams = reactive({
     query: '',

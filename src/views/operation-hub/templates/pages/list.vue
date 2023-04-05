@@ -119,7 +119,7 @@
   const currentView = ref('thumb'); // thumb, list
   const selectedKeys = ref<string[]>([]);
   const dataList = ref<TemplateRowData[]>([]);
-  const total = ref(100);
+  const total = ref(0);
   const queryParams = reactive({
     query: '',
     page: 1,
