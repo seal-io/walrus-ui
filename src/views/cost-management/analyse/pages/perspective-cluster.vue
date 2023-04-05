@@ -223,7 +223,7 @@
         :loading="spaceloading || preloading"
         style="flex: 1"
         :config-options="BarConfigOptions"
-        height="260px"
+        :height="`${(nameSpaceCostChart?.bar?.length || 10) * 25}px`"
         :data-list="nameSpaceCostChart.bar"
       ></horizontalBar>
       <TableList

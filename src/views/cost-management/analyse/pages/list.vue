@@ -197,7 +197,7 @@
   let timer: any = null;
   const loading = ref(false);
   const showDrawer = ref(false);
-  const total = ref(100);
+  const total = ref(0);
   const queryParams = reactive({
     query: '',
     page: 1,

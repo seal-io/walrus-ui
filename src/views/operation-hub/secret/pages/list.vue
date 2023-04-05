@@ -164,7 +164,7 @@
   const showModal = ref(false);
   const itemInfo = ref<any>({});
   const action = ref<'create' | 'edit'>('create');
-  const total = ref(100);
+  const total = ref(0);
   const queryParams = reactive({
     query: '',
     projectID: '',

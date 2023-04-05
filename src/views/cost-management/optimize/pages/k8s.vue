@@ -159,7 +159,7 @@
   const { t, router } = useCallCommon();
   let timer: any = null;
   const loading = ref(false);
-  const total = ref(100);
+  const total = ref();
   const queryParams = reactive({
     query: '',
     page: 1,

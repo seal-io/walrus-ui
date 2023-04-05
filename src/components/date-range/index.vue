@@ -1,6 +1,7 @@
 <template>
   <div class="date-range-wrapper">
     <a-range-picker
+      ref="dateRangePicker"
       v-model:popup-visible="popupVisible"
       shortcuts-position="left"
       :shortcuts="selectShortcut"
@@ -10,12 +11,13 @@
       :model-value="[start, end]"
       :value-format="'YYYY-MM-DD'"
       :class="{ 'border-less': borderLess }"
+      @picker-value-change="handlePickValueChange"
       @select-shortcut="handleSelectShortcut"
       @popup-visible-change="handlePopupChange"
       @change="handleDateChange"
       @select="handleSelect"
     >
-      <!-- <template #cell="{ date }">
+      <template v-if="mode === 'date'" #cell="{ date }">
         <slot name="cell" :date="date">
           <div class="arco-picker-date">
             <div class="arco-picker-date-value">
@@ -23,7 +25,7 @@
             </div>
           </div>
         </slot>
-      </template> -->
+      </template>
       <template v-if="showExtra" #extra>
         <slot name="extra">
           <div v-if="timezone" class="date-type-wrapper">
@@ -55,12 +57,12 @@
 <script lang="ts" setup>
   import { get, map } from 'lodash';
   import dayjs from 'dayjs';
-  import { computed, ref, PropType, watch } from 'vue';
+  import { computed, ref, PropType, watch, onMounted } from 'vue';
   import { useI18n } from 'vue-i18n';
   import { datePickerMode, timeZoneMode } from './config';
 
   type timeType = 'date' | 'month' | 'year';
-  type unitType = 'day' | 'month' | 'year';
+  type unitType = 'day' | 'month' | 'year' | 'date';
   type ShortCutsType = {
     label: string;
     unit: string;
@@ -69,7 +71,7 @@
   };
   const props = defineProps({
     timeUnit: {
-      type: String,
+      type: String as PropType<unitType>,
       default() {
         return 'day';
       }
@@ -152,6 +154,8 @@
   const startDate = ref('');
   const endDate = ref('');
   const pointDate = ref('');
+  const dateRangePicker = ref();
+  const mode = ref<timeType>('date');
 
   const selectShortcut = computed(() => {
     if (props.shortCuts?.length) {
@@ -192,12 +196,6 @@
       }
     ];
   });
-  const mode = computed(() => {
-    if (props.timeUnit === 'day') {
-      return 'date';
-    }
-    return props.timeUnit as timeType;
-  });
 
   const generateTimezoneFormat = (value) => {
     if (!props.timezone) {
@@ -225,9 +223,12 @@
   const disabledDate = (current) => {
     // const type = props.timeUnit as unitType;
     // const range = get(selectRangeMap, type);
+    let rangValue = props.maxRange;
 
-    const { type, range } = props.maxRange;
-
+    if (mode.value !== 'date') {
+      rangValue = { type: 'month', range: 12 };
+    }
+    const { type, range } = rangValue;
     if (!props.todayIn) {
       if (dayjs(current).isSameOrAfter(dayjs().format('YYYY-MM-DD'), 'day')) {
         return true;
@@ -276,7 +277,8 @@
       emits('change', values);
     }, 100);
   };
-  const handlePopupChange = (visible) => {
+  const handlePopupChange = (visible, ...args) => {
+    console.log('popupchange===', args);
     if (visible) {
       startDate.value = props.start;
       endDate.value = props.end;
@@ -288,10 +290,13 @@
     // console.log('value====', value);
     emits('update:timeUnit', val.unit);
   };
-  const handleDateChange = (val) => {
-    console.log('change:', val);
+  const handleDateChange = (val, ...args) => {
+    console.log('change:', val, args);
     const value = setRangeValue(val);
     emits('change', value);
+  };
+  const handlePickValueChange = (...args) => {
+    console.log('pick value change:', args);
   };
   watch(
     () => endDate.value,
@@ -302,6 +307,33 @@
       immediate: true
     }
   );
+  watch(
+    () => props.timeUnit,
+    (val) => {
+      if (val === 'day') {
+        mode.value = 'date';
+      } else {
+        mode.value = val;
+      }
+    },
+    {
+      immediate: true
+    }
+  );
+  watch(
+    () => dateRangePicker?.value?.rangePanelProps.startHeaderMode,
+    (val) => {
+      console.log('dateRangePicker?.value===', val);
+      mode.value = val ?? 'date';
+    },
+    {
+      immediate: true,
+      deep: true
+    }
+  );
+  onMounted(() => {
+    console.log('dateRangePicker?.value===', dateRangePicker?.value);
+  });
 </script>
 
 <style lang="less">

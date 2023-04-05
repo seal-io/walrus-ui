@@ -2,7 +2,7 @@
   <router-view>
     <template #default>
       <router-view v-slot="{ Component, route }">
-        <transition name="fade" mode="out-in" appear>
+        <transition name="fade" mode="out-in">
           <!-- <component
             :is="Component"
             v-if="route.meta.ignoreCache"
@@ -39,4 +39,20 @@
   );
 </script>
 
-<style scoped lang="less"></style>
+<style lang="less">
+  .fade-enter-active {
+    transition: opacity 0.3s ease;
+  }
+
+  .fade-leave-active {
+    transition: opacity ease;
+  }
+
+  .fade-enter {
+    opacity: 0;
+  }
+
+  .fade-leave-to {
+    opacity: 0;
+  }
+</style>
