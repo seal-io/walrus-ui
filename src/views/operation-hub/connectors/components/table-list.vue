@@ -22,9 +22,9 @@
           <a-button type="outline" @click="handleReset">{{
             $t('common.button.clear')
           }}</a-button>
-          <a-button type="primary" @click="handleClosews">
+          <!-- <a-button type="primary" @click="handleClosews">
             close websocket
-          </a-button>
+          </a-button> -->
         </a-space>
       </template>
       <template #button-group>
