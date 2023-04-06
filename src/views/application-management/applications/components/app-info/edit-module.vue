@@ -119,7 +119,7 @@
           :title="$t('applications.applications.detail.configuration')"
         >
           <template #title>
-            <span>
+            <div>
               <span>{{
                 $t('applications.applications.detail.configuration')
               }}</span>
@@ -146,7 +146,7 @@
                 </template>
                 <icon-question-circle class="mleft-5" />
               </a-tooltip>
-            </span>
+            </div>
           </template>
         </GroupTitle>
         <a-tabs

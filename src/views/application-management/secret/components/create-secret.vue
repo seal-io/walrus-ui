@@ -54,7 +54,7 @@
             :auto-size="{ minRows: 4, maxRows: 6 }"
           ></a-textarea>
         </a-form-item>
-        <a-form-item>
+        <!-- <a-form-item>
           <dl class="tips-wrap">
             <dt style="float: left">
               <icon-info-circle-fill style="color: rgb(var(--arcoblue-6))" />
@@ -64,7 +64,7 @@
               v-html="$t('applications.secret.form.tips')"
             ></dd>
           </dl>
-        </a-form-item>
+        </a-form-item> -->
       </a-form>
     </a-spin>
     <template #footer>
