@@ -55,6 +55,8 @@ export default {
   'operation.templates.menu': 'Templates',
   'operation.secret.menu': 'Global Secrets',
   'operation.secret.name': 'Secret',
+  'operation.secret.tips':
+    'The function of the secret is to use it when configuring the relevant parameters in the module when creating the application. A global secret can be used for all project applications. For specific usage, please refer to the user documentation.',
   'operation.secret.name.tips':
     'consists of letters, numbers, "_", cannot start with a number',
   'operation.secret.content': 'Content',

@@ -39,17 +39,21 @@
               :rules="[
                 {
                   required: true,
-                  message: $t('applications.module.rule.name')
+                  message: $t('applications.module.rule.name.tips')
                 },
                 {
-                  match: /^(?![\d])[0-9A-Za-z_]+$/,
-                  message: $t('applications.module.name.tips')
+                  match: validateAppNameRegx,
+                  message: $t('applications.module.rule.name.tips')
+                },
+                {
+                  validator: validateNameuniq,
+                  message: $t('applications.applications.rule.modules.name')
                 }
               ]"
             >
               <a-input
                 v-model="formData.name"
-                :max-length="50"
+                :max-length="30"
                 show-word-limit
               ></a-input>
               <template #extra>
@@ -215,6 +219,7 @@
     TemplateRowData,
     ModuleVersionData
   } from '@/views/operation-hub/templates/config/interface';
+  import { validateAppNameRegx } from '@/views/config';
   import { queryModulesVersions } from '@/views/operation-hub/templates/api';
 
   interface Group {
@@ -251,6 +256,12 @@
       default() {
         return [];
       }
+    },
+    modules: {
+      type: Array,
+      default() {
+        return [];
+      }
     }
   });
 
@@ -263,7 +274,7 @@
   const defaultGroupKey = '_default_default_';
   const hiddenGroup = '__hidden_hidden__s_l_';
   const emit = defineEmits(['save', 'update:show', 'reset', 'update:action']);
-  const { route } = useCallCommon();
+  const { route, t } = useCallCommon();
   const formref = ref();
   const loading = ref(false);
   const activeKey = ref('schemaForm0');
@@ -307,6 +318,14 @@
     moduleVersionFormCache.value = {};
     activeKey.value = 'schemaForm0';
     formref.value?.clearValidate?.();
+  };
+  const validateNameuniq = (val, callback) => {
+    const data = find(props.modules, (item) => get(item, 'name') === val);
+    if (data) {
+      callback(t('applications.applications.rule.modules.name'));
+      return;
+    }
+    callback();
   };
   const setRefMap = (el: refItem, name) => {
     if (el) {
@@ -563,7 +582,14 @@
 
   const handleBeforeOpen = async () => {
     if (props.action === 'create') {
-      formData.module.id = get(props.templates, '0.id') || '';
+      // webservice
+      const webservice = find(
+        props.templates,
+        (item) => item.id === 'webservice'
+      );
+      formData.module.id = webservice
+        ? webservice.id
+        : get(props.templates, '0.id') || '';
       await getModuleVersionList();
       const moduleTemplate = getModuleSchemaById();
       formData.version = get(moduleTemplate, 'version') || '';

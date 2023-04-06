@@ -6,8 +6,8 @@
       shortcuts-position="left"
       :shortcuts="selectShortcut"
       :disabled-date="disabledDate"
-      :style="{ width: width }"
       :mode="mode"
+      :style="{ width: width }"
       :model-value="[start, end]"
       :value-format="'YYYY-MM-DD'"
       :class="{ 'border-less': borderLess }"
@@ -214,7 +214,12 @@
     return [dayjs(start).format(), dayjs(get(value, 1)).format()];
   };
   const handleSelect = (val) => {
-    console.log('valueString:', val);
+    console.log(
+      'valueString:',
+      val,
+      mode.value,
+      dateRangePicker?.value?.rangePanelProps.startHeaderMode
+    );
     // const value = generateTimezoneFormat(val);
     // endDate.value = get(value, '1') || props.end;
     // startDate.value = get(value, '0') || props.start;
@@ -329,14 +334,29 @@
   watch(
     () => dateRangePicker?.value?.rangePanelProps.startHeaderMode,
     (val) => {
-      console.log('dateRangePicker?.value===', val);
-      setTimeout(() => {
-        mode.value = val ?? 'date';
-      }, 100);
+      console.log(
+        'dateRangePicker?.value==start=',
+        val,
+        dateRangePicker?.value?.rangePanelProps
+      );
+      mode.value = val ?? 'date';
     },
     {
-      immediate: true,
-      deep: true
+      immediate: true
+    }
+  );
+  watch(
+    () => dateRangePicker?.value?.rangePanelProps.endHeaderMode,
+    (val) => {
+      console.log(
+        'dateRangePicker?.value==end=',
+        val,
+        dateRangePicker?.value?.rangePanelProps
+      );
+      mode.value = val ?? 'date';
+    },
+    {
+      immediate: true
     }
   );
   onMounted(() => {

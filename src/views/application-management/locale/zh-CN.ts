@@ -28,7 +28,7 @@ export default {
   'applications.module.rule.name': '名称必填',
   'applications.module.name.tips': '由字母、数字、下划线组成，不能以数字开头',
   'applications.module.rule.name.tips':
-    '模块名称全局唯一，由字母、数字、下划线组成，不能以数字开头',
+    '由小写字母、数字或"-"组成，以字母开头，字母或数字结尾',
   'applications.module.title.edit': '编辑模块',
   'applications.module.title.view': '模块详情',
   'applications.module.title.new': '添加模块',
@@ -73,6 +73,7 @@ export default {
   'applications.applications.rules.modules': '模块不能为空',
   'applications.applications.rules.versions': '版本必选',
   'applications.applications.modules.tips': '新建应用必填',
+  'applications.applications.rule.modules.name': '存在相同的名称',
   'applications.applications.variables.title': '变量',
   'applications.applications.variables.button': '添加变量',
   'applications.applications.variables.label': '变量名',
@@ -93,5 +94,7 @@ export default {
   'applications.secret.rules.value': '内容必填',
   'applications.secret.name.tips': '由字母、数字、下划线组成，不能以数字开头',
   'applications.secret.form.name': '内容',
+  'applications.secret.form.tips':
+    '密钥的作用为在创建应用时，配置模块中的相关参数时使用。项目密钥仅在指定项目的应用中使用。具体使用方法可参考用户文档。',
   'applications.endpoint.access': '访问'
 };

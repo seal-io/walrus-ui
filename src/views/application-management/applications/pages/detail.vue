@@ -32,9 +32,10 @@
             @click="handleClickInstance(item)"
           >
             <template #description>
-              <span style="font-weight: 700">{{
-                get(item, 'environment.name')
-              }}</span>
+              <span>{{ get(item, 'environment.name') }}</span>
+            </template>
+            <template #default>
+              <span style="font-weight: 700">{{ get(item, 'name') }}</span>
             </template>
             <template #status>
               <StatusLabel

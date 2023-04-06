@@ -54,6 +54,12 @@
             :auto-size="{ minRows: 4, maxRows: 6 }"
           ></a-textarea>
         </a-form-item>
+        <a-form-item>
+          <dl style="text-align: left">
+            <dt style="float: left">{{ $t('common.tips.title') }}</dt>
+            <dd>{{ $t('applications.secret.form.tips') }}</dd>
+          </dl>
+        </a-form-item>
       </a-form>
     </a-spin>
     <template #footer>

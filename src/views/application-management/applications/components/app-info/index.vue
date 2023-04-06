@@ -151,6 +151,7 @@
       v-model:action="moduleAction"
       :data-info="moduleInfo"
       :templates="moduleTemplates"
+      :modules="appInfo.modules"
       :all-module-versions="allModuleVersions"
       @save="handleSaveModule"
     ></editModule>
@@ -422,7 +423,7 @@
       };
       const { data } = await queryItemApplication(params);
       if (cloneId) {
-        data.name = `${data.name}(clone)`;
+        data.name = `${data.name}-clone`;
       }
       defaultBasicInfo.value = pick(data, [
         'name',

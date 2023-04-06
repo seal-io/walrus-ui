@@ -53,6 +53,8 @@ export default {
   'operation.secret.name': '密钥',
   'operation.secret.name.tips': '由字母、数字、"_"组成，不能以数字开头',
   'operation.secret.content': '内容',
+  'operation.secret.tips':
+    '密钥的作用为在创建应用时，配置模块中的相关参数时使用。全局密钥可使用于所有项目的应用。具体使用方法可参考用户文档。',
   'operation.secret.rule.content': '内容必填',
   'operation.secret.rule.name': '名称必填',
   'operation.templates.table.title': '模块列表',
