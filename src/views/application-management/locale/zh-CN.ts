@@ -73,6 +73,14 @@ export default {
   'applications.applications.rules.modules': '模块不能为空',
   'applications.applications.rules.versions': '版本必选',
   'applications.applications.modules.tips': '新建应用必填',
+  'applications.applications.modules.params.title':
+    '若要使用密钥、变量、同一应用模块中的相关属性，方法如下：',
+  'applications.applications.modules.params.tips1':
+    '1. 使用密钥：可在输入框输入$<span></span>{secret.密钥名称}',
+  'applications.applications.modules.params.tips2':
+    '2. 使用变量：可在输入框输入$<span></span>{var.变量键}',
+  'applications.applications.modules.params.tips3':
+    '3. 使用模块中属性：可在输入框输入$<span></span>{module.模块名称.属性名}',
   'applications.applications.rule.modules.name': '存在相同的名称',
   'applications.applications.variables.title': '变量',
   'applications.applications.variables.button': '添加变量',

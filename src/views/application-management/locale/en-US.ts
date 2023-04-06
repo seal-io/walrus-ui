@@ -75,6 +75,14 @@ export default {
   'applications.applications.rules.modules': 'module is required',
   'applications.applications.rules.versions': 'version is required',
   'applications.applications.modules.tips': 'Required for new applications',
+  'applications.applications.modules.params.title':
+    "To use secrets, variables, or related attributes in the same application module, here's how:",
+  'applications.applications.modules.params.tips1':
+    '1. Use the secret: you can enter $<span></span>{secret.<b>secretName</b>} in the input box',
+  'applications.applications.modules.params.tips2':
+    '2. Use variables: you can enter $<span></span>{var.<b>variableKey</b>} in the input box',
+  'applications.applications.modules.params.tips3':
+    '3. Use the attributes in the module: you can enter $<span></span>{module.<b>moduleName</b>.<b>attributeName</b>} in the input box',
   'applications.applications.rule.modules.name': 'exists with the same name',
   'applications.applications.variables.title': 'Variables',
   'applications.applications.variables.button': 'Add a variable',
