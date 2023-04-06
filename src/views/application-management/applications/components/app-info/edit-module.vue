@@ -123,24 +123,26 @@
               }}</span>
               <a-tooltip style="width: 500px">
                 <template #content>
-                  <div>{{
-                    $t('applications.applications.modules.params.title')
-                  }}</div>
-                  <div
-                    v-html="
-                      $t('applications.applications.modules.params.tips1')
-                    "
-                  ></div>
-                  <div
-                    v-html="
-                      $t('applications.applications.modules.params.tips2')
-                    "
-                  ></div>
-                  <div
-                    v-html="
-                      $t('applications.applications.modules.params.tips3')
-                    "
-                  ></div>
+                  <div>
+                    <div>{{
+                      $t('applications.applications.modules.params.title')
+                    }}</div>
+                    <div
+                      v-html="
+                        $t('applications.applications.modules.params.tips1')
+                      "
+                    ></div>
+                    <div
+                      v-html="
+                        $t('applications.applications.modules.params.tips2')
+                      "
+                    ></div>
+                    <div
+                      v-html="
+                        $t('applications.applications.modules.params.tips3')
+                      "
+                    ></div>
+                  </div>
                 </template>
                 <icon-question-circle class="mleft-5" />
               </a-tooltip>
