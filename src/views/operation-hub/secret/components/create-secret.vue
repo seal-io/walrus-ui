@@ -68,9 +68,11 @@
           ></a-textarea>
         </a-form-item>
         <a-form-item>
-          <dl style="text-align: left">
-            <dt style="float: left">{{ $t('common.tips.title') }}</dt>
-            <dd>{{ $t('operation.secret.tips') }}</dd>
+          <dl class="tips-wrap">
+            <dt style="float: left">
+              <icon-info-circle-fill style="color: rgb(var(--arcoblue-6))" />
+            </dt>
+            <dd class="content" v-html="$t('operation.secret.tips')"></dd>
           </dl>
         </a-form-item>
       </a-form>
@@ -216,6 +218,25 @@
         &:hover {
           color: rgb(var(--arcoblue-5));
         }
+      }
+    }
+  }
+</style>
+
+<style lang="less" scoped>
+  .arco-form-item-content {
+    .tips-wrap {
+      padding: 6px;
+      color: var(--color-text-3);
+      font-size: 13px;
+      text-align: left;
+      text-align: left;
+      background-color: rgb(var(--arcoblue-1));
+      border-radius: var(--border-radius-small);
+
+      .content {
+        margin-left: 20px;
+        opacity: 0.7;
       }
     }
   }
