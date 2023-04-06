@@ -115,9 +115,7 @@
         </a-grid>
       </a-form>
       <div class="variables">
-        <GroupTitle
-          :title="$t('applications.applications.detail.configuration')"
-        >
+        <GroupTitle>
           <template #title>
             <div>
               <span>{{
