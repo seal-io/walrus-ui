@@ -23,9 +23,9 @@
     <div>
       <div style="margin-bottom: 20px; color: var(--color-text-3)">
         <span>{{ $t('applications.applications.modules.title') }}</span>
-        <span v-if="pageAction === 'edit'" class="optional-notes"
+        <!-- <span v-if="pageAction === 'edit'" class="optional-notes"
           >({{ $t('applications.applications.modules.tips') }})</span
-        >
+        > -->
       </div>
       <div class="content">
         <instanceThumb
@@ -60,12 +60,12 @@
           <thumbButton :size="60" @click="handleAddModule"></thumbButton>
         </a-tooltip>
       </div>
-      <div v-if="!validateModule && !id && triggerModule" class="tips">
+      <!-- <div v-if="!validateModule && !id && triggerModule" class="tips">
         <span
           :style="{ 'font-size': '12px', 'color': 'rgb(var(--danger-6))' }"
           >{{ $t('applications.applications.rules.modules') }}</span
         >
-      </div>
+      </div> -->
     </div>
     <div :title="$t('applications.applications.variables.title')">
       <div class="var-title">
@@ -503,9 +503,7 @@
     console.log('validateVarRes===', validateVarRes);
     const result = await basicform.value.getFormData();
     triggerModule.value = true;
-    if (!id && !validateModule.value) {
-      return;
-    }
+
     if (!result || validateVarRes) {
       return;
     }

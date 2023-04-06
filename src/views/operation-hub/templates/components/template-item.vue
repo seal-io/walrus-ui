@@ -24,9 +24,11 @@
                 error: get(dataInfo, 'status') === 'Error'
               }"
             ></StatusLabel>
-            <a-link class="title-text" size="small" @click="handleView">{{
-              dataInfo.id
-            }}</a-link>
+            <AutoTip :tooltip-props="{ content: dataInfo.id }">
+              <a-link class="title-text" size="small" @click="handleView">{{
+                dataInfo.id
+              }}</a-link>
+            </AutoTip>
           </div>
           <div class="btn-wrap">
             <a-dropdown>
@@ -146,6 +148,7 @@
   .template-item {
     position: relative;
     display: flex;
+    width: inherit;
     height: 140px;
     padding: 10px 25px 10px 10px;
     background-color: #fff;
@@ -190,6 +193,7 @@
       flex: 1;
       flex-direction: column;
       justify-content: space-between;
+      width: calc(100% - 80px);
       margin-left: 10px;
 
       .title-wrap {
@@ -209,7 +213,6 @@
       .title {
         display: flex;
         align-items: center;
-        max-width: 160px;
         margin-bottom: 5px;
         overflow: hidden;
         font-weight: 500;
@@ -218,6 +221,7 @@
         text-overflow: ellipsis;
 
         .title-text {
+          display: inline;
           height: 21px;
           margin-left: 5px;
         }
