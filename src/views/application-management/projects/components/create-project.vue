@@ -3,7 +3,7 @@
     top="10%"
     :closable="false"
     :align-center="false"
-    :width="600"
+    :width="660"
     :ok-text="$t('common.button.save')"
     :visible="show"
     :mask-closable="false"
@@ -22,15 +22,24 @@
           field="name"
           validate-trigger="change"
           :rules="[
-            { required: true, message: $t('applications.projects.rule.name') }
+            { required: true, message: $t('applications.projects.rule.name') },
+            {
+              match: /^[a-z]([-a-z0-9]*[a-z0-9])?$/,
+              message: $t('applications.applications.rule.allName')
+            }
           ]"
         >
           <a-input
             v-model="formData.name"
             style="width: 100%"
-            :max-length="50"
+            :max-length="30"
             show-word-limit
           ></a-input>
+          <template #extra>
+            <span class="tips">{{
+              $t('applications.applications.rule.allName')
+            }}</span>
+          </template>
         </a-form-item>
         <a-form-item :label="$t('common.table.description')">
           <a-textarea

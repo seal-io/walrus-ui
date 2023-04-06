@@ -15,7 +15,6 @@
       @select="handleClick"
     >
       <a-link
-        v-if="!actionLoading"
         size="mini"
         style="position: absolute; top: 0; right: 0"
         @click.stop="() => {}"

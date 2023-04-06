@@ -46,10 +46,12 @@ export default {
   'operation.environments.table.description': '描述',
   'operation.environments.detail.addConnector': '添加连接器',
   'operation.environments.detail.holder': '请选择连接器',
+  'operation.environments.name.tips':
+    '由字母、数字或"-"、"_"组成，以字母或数字开头和结尾',
   'operation.templates.menu': '模块',
   'operation.secret.menu': '全局密钥',
   'operation.secret.name': '密钥',
-  'operation.secret.name.tips': '由字母、数字、下划线组成，不能以数字开头',
+  'operation.secret.name.tips': '由字母、数字、"_"组成，不能以数字开头',
   'operation.secret.content': '内容',
   'operation.secret.rule.content': '内容必填',
   'operation.secret.rule.name': '名称必填',

@@ -10,15 +10,24 @@
               {
                 required: true,
                 message: $t('applications.applications.rule.name')
+              },
+              {
+                match: /^[a-z]([-a-z0-9]*[a-z0-9])?$/,
+                message: $t('applications.applications.rule.allName')
               }
             ]"
           >
             <a-input
               v-model="formData.name"
-              :max-length="50"
+              :max-length="30"
               show-word-limit
               style="width: 100%"
             ></a-input>
+            <template #extra>
+              <span class="tips">{{
+                $t('applications.applications.rule.allName')
+              }}</span>
+            </template>
           </a-form-item>
           <a-form-item :label="$t('common.table.description')">
             <a-textarea

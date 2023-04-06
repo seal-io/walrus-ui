@@ -23,6 +23,8 @@ export default {
   'applications.applications.form.description': 'Description',
   'applications.applications.rule.name': 'name is required',
   'applications.module.rule.name': 'name is required',
+  'applications.applications.rule.allName':
+    'consists of letters, numbers or "-", starts with a letter and ends with a letter or number',
   'applications.module.name.tips':
     'consists of letters, numbers, underscores, cannot start with a number',
   'applications.module.rule.name.tips':
@@ -58,6 +60,7 @@ export default {
   'applications.instance.env.tips':
     'environments without added connectors are not available',
   'applications.instance.tab.resource': 'Resources',
+  'applications.instance.tab.resourceName': 'Resource Name',
   'applications.instance.tab.log': 'Logs',
   'applications.instance.tab.term': 'Terminal',
   'applications.instance.basic.title': 'Instance Information',
