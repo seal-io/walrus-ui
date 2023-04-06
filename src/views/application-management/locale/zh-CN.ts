@@ -24,7 +24,7 @@ export default {
   'applications.applications.form.description': '描述',
   'applications.applications.rule.name': '名称必填',
   'applications.applications.rule.allName':
-    '由字母、数字或"-"组成，以字母开头，字母或数字结尾',
+    '由小写字母、数字或"-", "_"组成，以字母开头，字母或数字结尾',
   'applications.module.rule.name': '名称必填',
   'applications.module.name.tips': '由字母、数字、下划线组成，不能以数字开头',
   'applications.module.rule.name.tips':

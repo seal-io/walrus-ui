@@ -12,7 +12,7 @@
                 message: $t('applications.applications.rule.name')
               },
               {
-                match: /^[a-z]([-a-z0-9]*[a-z0-9])?$/,
+                match: validateAppNameRegx,
                 message: $t('applications.applications.rule.allName')
               }
             ]"
@@ -99,6 +99,7 @@
   import { ref, reactive, PropType, watch, provide } from 'vue';
   import xInputGroup from '@/components/form-create/custom-components/x-input-group.vue';
   import thumbButton from '@/components/buttons/thumb-button.vue';
+  import { validateAppNameRegx } from '@/views/config';
   import labelsModal from './labels-modal.vue';
 
   const props = defineProps({

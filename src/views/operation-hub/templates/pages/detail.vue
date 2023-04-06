@@ -18,20 +18,22 @@
             message: $t('operation.templates.rules.name')
           },
           {
-            match: /^(?![\d])[0-9A-Za-z_]+$/,
-            message: $t('operation.secret.name.tips')
+            match: validateAppNameRegx,
+            message: $t('applications.applications.rule.allName')
           }
         ]"
       >
         <a-input
           v-if="pageAction === 'edit'"
           v-model="formData.id"
-          :max-length="50"
+          :max-length="30"
           show-word-limit
         ></a-input>
         <span v-else class="readonly-view-label">{{ formData.id || '-' }}</span>
         <template v-if="pageAction === 'edit'" #extra>
-          <span class="tips">{{ $t('operation.secret.name.tips') }}</span>
+          <span class="tips">{{
+            $t('applications.applications.rule.allName')
+          }}</span>
         </template>
       </a-form-item>
       <a-form-item
@@ -171,6 +173,7 @@
   import useCallCommon from '@/hooks/use-call-common';
   import usePageAction from '@/hooks/use-page-action';
   import { useTabBarStore } from '@/store';
+  import { validateAppNameRegx } from '@/views/config';
   import StatusLabel from '../../connectors/components/status-label.vue';
   import { templateTypeList, tabList } from '../config';
   import { Schema } from '../config/interface';

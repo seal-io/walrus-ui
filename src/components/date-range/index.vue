@@ -225,21 +225,27 @@
     // const range = get(selectRangeMap, type);
     let rangValue = props.maxRange;
 
-    if (mode.value !== 'date') {
-      rangValue = { type: 'month', range: 12 };
+    if (mode.value === 'date') {
+      rangValue = { type: 'month', range: 2 };
+    }
+    if (mode.value === 'month') {
+      rangValue = { type: 'month', range: 2 };
+    }
+    if (mode.value === 'year') {
+      rangValue = { type: 'year', range: 1 };
     }
     const { type, range } = rangValue;
     if (!props.todayIn) {
-      if (dayjs(current).isSameOrAfter(dayjs().format('YYYY-MM-DD'), 'day')) {
+      if (dayjs(current).isSameOrAfter(dayjs().format('YYYY-MM-DD'), type)) {
         return true;
       }
-    } else if (dayjs(current).isAfter(dayjs().format('YYYY-MM-DD'), 'day')) {
+    } else if (dayjs(current).isAfter(dayjs().format('YYYY-MM-DD'), type)) {
       return true;
     }
     if (
       dayjs(current).isBefore(
         dayjs(pointDate.value).subtract(range, type).format('YYYY-MM-DD'),
-        'day'
+        type
       )
     ) {
       return true;
@@ -247,7 +253,7 @@
     if (
       dayjs(current).isAfter(
         dayjs(pointDate.value).add(range, type).format('YYYY-MM-DD'),
-        'day'
+        type
       )
     ) {
       return true;
