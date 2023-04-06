@@ -24,7 +24,7 @@
           :rules="[
             { required: true, message: $t('applications.projects.rule.name') },
             {
-              match: /^[a-z]([-a-z0-9]*[a-z0-9])?$/,
+              match: validateAppNameRegx,
               message: $t('applications.applications.rule.allName')
             }
           ]"
@@ -102,6 +102,7 @@
   import { reduce, omit, keys, get } from 'lodash';
   import EditPageFooter from '@/components/edit-page-footer/index.vue';
   import xInputGroup from '@/components/form-create/custom-components/x-input-group.vue';
+  import { validateAppNameRegx } from '@/views/config';
   import { createProject, updateProject } from '../api';
   import { ProjectFormData } from '../config/interface';
 

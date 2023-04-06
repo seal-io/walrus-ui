@@ -17,7 +17,7 @@ export function createWebsocketInstance({ url, onmessage }) {
   const wss_url = createWebSocketUrl(url);
   let connectTimer: any = null;
   let wss = new WebSocket(wss_url);
-  let isneedReconnect = true;
+  const isneedReconnect = true;
   let tryCount = 3;
   const TRY_FREQ = 1000;
 
@@ -56,6 +56,7 @@ export function createWebsocketInstance({ url, onmessage }) {
   };
   wss.onclose = () => {
     console.log('wss closed...');
+    wss?.close?.();
     if (isneedReconnect) {
       // reConnect();
     }
@@ -70,17 +71,17 @@ export function createWebsocketInstance({ url, onmessage }) {
   window.addEventListener('offline', () => {
     // reConnect();
   });
-  onBeforeUnmount(() => {
-    isneedReconnect = false;
-    close();
-    console.log('wss onBeforeUnmount');
-  });
-  onUnmounted(() => {
-    close();
-    window.removeEventListener('offline', () => {
-      // reConnect();
-    });
-  });
+  // onBeforeUnmount(() => {
+  //   isneedReconnect = false;
+  //   close();
+  //   console.log('wss onBeforeUnmount');
+  // });
+  // onUnmounted(() => {
+  //   close();
+  //   window.removeEventListener('offline', () => {
+  //     // reConnect();
+  //   });
+  // });
   return {
     wss,
     close,

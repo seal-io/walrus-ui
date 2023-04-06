@@ -272,6 +272,10 @@
     try {
       const params = {
         ...queryParams.value,
+        paging: {
+          page: 1,
+          perPage: 15
+        },
         groupBy: 'label:seal.io/app',
         // startTime: dayjs().subtract(1, 'month').format('YYYY-MM-01T00:00:00Z'),
         // endTime: dayjs().format('YYYY-MM-DDTHH:mm:ssZ'),

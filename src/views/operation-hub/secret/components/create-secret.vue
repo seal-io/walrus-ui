@@ -25,7 +25,7 @@
           :rules="[
             { required: true, message: $t('operation.secret.rule.name') },
             {
-              match: /^(?![\d])[0-9A-Za-z_]+$/,
+              match: validateSecretNameRegx,
               message: $t('operation.secret.name.tips')
             }
           ]"
@@ -33,7 +33,7 @@
           <a-input
             v-model="formData.name"
             style="width: 100%"
-            :max-length="100"
+            :max-length="30"
             show-word-limit
           ></a-input>
           <template #extra>
@@ -98,6 +98,7 @@
   import { reduce, omit, keys, get, pickBy, omitBy } from 'lodash';
   import useCallCommon from '@/hooks/use-call-common';
   import EditPageFooter from '@/components/edit-page-footer/index.vue';
+  import { validateSecretNameRegx } from '@/views/config';
   import xInputGroup from '@/components/form-create/custom-components/x-input-group.vue';
   import { createSecret, updateSecret } from '../api';
   import { SecretFormData } from '../config/interface';

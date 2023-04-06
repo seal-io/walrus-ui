@@ -15,10 +15,6 @@
           {
             required: pageAction === 'edit',
             message: $t('operation.environments.rule.name')
-          },
-          {
-            match: /^[A-Za-z0-9]([A-Za-z0-9-_]*[A-Za-z0-9])?$/,
-            message: $t('operation.environments.name.tips')
           }
         ]"
       >
@@ -26,15 +22,12 @@
           v-if="pageAction === 'edit'"
           v-model="formData.name"
           style="width: 500px"
-          :max-length="50"
+          :max-length="30"
           show-word-limit
         ></a-input>
         <span v-else class="readonly-view-label">{{
           formData.name || '-'
         }}</span>
-        <template v-if="pageAction === 'edit'" #extra>
-          <span class="tips">{{ $t('operation.environments.name.tips') }}</span>
-        </template>
       </a-form-item>
       <a-form-item
         :label="$t('operation.environments.table.description')"

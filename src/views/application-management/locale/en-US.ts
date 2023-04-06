@@ -24,7 +24,7 @@ export default {
   'applications.applications.rule.name': 'name is required',
   'applications.module.rule.name': 'name is required',
   'applications.applications.rule.allName':
-    'consists of letters, numbers or "-", starts with a letter and ends with a letter or number',
+    'consists of lowercase letters, numbers or "-", "_", starts with a letter and ends with a letter or number',
   'applications.module.name.tips':
     'consists of letters, numbers, underscores, cannot start with a number',
   'applications.module.rule.name.tips':

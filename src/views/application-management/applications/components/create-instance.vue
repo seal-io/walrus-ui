@@ -25,7 +25,7 @@
           :rules="[
             { required: true, message: $t('applications.module.rule.name') },
             {
-              match: /^[a-z]([-a-z0-9]*[a-z0-9])?$/,
+              match: validateAppNameRegx,
               message: $t('applications.applications.rule.allName')
             }
           ]"
@@ -115,6 +115,7 @@
   import { ref, reactive, PropType, watch, inject, computed } from 'vue';
   import useCallCommon from '@/hooks/use-call-common';
   import EditPageFooter from '@/components/edit-page-footer/index.vue';
+  import { validateAppNameRegx } from '@/views/config';
   import { Variables } from '../config/interface';
   import { deployApplication, upgradeApplicationInstance } from '../api';
 

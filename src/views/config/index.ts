@@ -136,5 +136,13 @@ export const websocketEventType = {
   update: 2,
   delete: 3
 };
+// project, appliation, instance, module
+export const validateAppNameRegx = /^[a-z]([a-z0-9-_]*[a-z0-9])?$/;
+
+// secret
+export const validateSecretNameRegx = /^(?![\d])[0-9A-Za-z_]+$/;
+
+// environment
+export const validateEvnNameRegx = /^[A-Za-z0-9]([A-Za-z0-9-_]*[A-Za-z0-9])?$/;
 
 export default {};
