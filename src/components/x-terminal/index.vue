@@ -150,13 +150,13 @@
     const inputCommand = `${command.value}\r\n`;
     const output = data.Data;
     const index = output.indexOf(inputCommand);
-    // if (index > -1) {
-    //   const str2 = output.substring(index + inputCommand.length);
-    //   term.value.write(setData(`${str2}`));
-    // } else {
-    //   term.value.write(setData(output));
-    // }
-    term.value.write(setData(`${output}`));
+    if (index > -1) {
+      const str2 = output.substring(index + inputCommand.length);
+      term.value.write(setData(`\r\n${str2}`));
+    } else {
+      term.value.write(setData(output));
+    }
+    // term.value.write(setData(`${output}`));
     setTimeout(() => {
       clearCommand();
     }, 100);
