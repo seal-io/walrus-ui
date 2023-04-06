@@ -16,6 +16,10 @@
           {
             required: pageAction === 'edit',
             message: $t('operation.templates.rules.name')
+          },
+          {
+            match: /^(?![\d])[0-9A-Za-z_]+$/,
+            message: $t('operation.secret.name.tips')
           }
         ]"
       >
@@ -26,6 +30,9 @@
           show-word-limit
         ></a-input>
         <span v-else class="readonly-view-label">{{ formData.id || '-' }}</span>
+        <template v-if="pageAction === 'edit'" #extra>
+          <span class="tips">{{ $t('operation.secret.name.tips') }}</span>
+        </template>
       </a-form-item>
       <a-form-item
         :label="$t('operation.environments.table.description')"
