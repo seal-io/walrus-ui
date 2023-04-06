@@ -496,6 +496,7 @@
   );
   onBeforeUnmount(() => {
     websocketInstance.value?.close?.();
+    console.log('close:======');
   });
 </script>
 

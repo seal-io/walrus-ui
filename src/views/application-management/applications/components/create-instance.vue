@@ -3,7 +3,7 @@
     top="10%"
     :closable="false"
     :align-center="false"
-    :width="660"
+    :width="700"
     :ok-text="$t('common.button.save')"
     :visible="show"
     :mask-closable="false"

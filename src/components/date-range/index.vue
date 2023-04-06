@@ -330,7 +330,9 @@
     () => dateRangePicker?.value?.rangePanelProps.startHeaderMode,
     (val) => {
       console.log('dateRangePicker?.value===', val);
-      mode.value = val ?? 'date';
+      setTimeout(() => {
+        mode.value = val ?? 'date';
+      }, 100);
     },
     {
       immediate: true,
