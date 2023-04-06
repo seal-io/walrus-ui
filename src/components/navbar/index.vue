@@ -112,7 +112,10 @@
         </a-popover>
       </li> -->
       <li v-show="hasNavList" :class="{ active: defaultActive === 'user' }">
-        <a-tooltip :content="$t('settings.system')">
+        <a-tooltip
+          :content="$t('settings.system')"
+          style="top: 56px; z-index: 3000"
+        >
           <a-button
             class="nav-btn"
             type="outline"
@@ -126,7 +129,11 @@
         </a-tooltip>
       </li>
       <li v-show="hasNavList">
-        <a-dropdown trigger="click">
+        <a-dropdown
+          trigger="click"
+          style="top: 56px"
+          content-class="count-list-wrap"
+        >
           <div>
             <a-avatar
               :size="32"
@@ -172,7 +179,7 @@
               </a-space>
             </a-doption> -->
             <a-doption>
-              <a-space @click="handleLogout">
+              <a-space style="width: 100%" @click="handleLogout">
                 <icon-export />
                 <span>
                   {{ $t('messageBox.logout') }}
@@ -485,6 +492,12 @@
   .message-popover {
     .arco-popover-content {
       margin-top: 0;
+    }
+  }
+
+  .arco-trigger-content.count-list-wrap {
+    .arco-dropdown-option-content {
+      flex: 1;
     }
   }
 </style>

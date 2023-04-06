@@ -137,7 +137,7 @@ export const websocketEventType = {
   delete: 3
 };
 // project, appliation, instance, module
-export const validateAppNameRegx = /^[a-z]([a-z0-9-_]*[a-z0-9])?$/;
+export const validateAppNameRegx = /^[a-z]([a-z0-9-]*[a-z0-9])?$/;
 
 // secret
 export const validateSecretNameRegx = /^(?![\d])[0-9A-Za-z_]+$/;

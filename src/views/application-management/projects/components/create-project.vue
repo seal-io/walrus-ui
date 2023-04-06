@@ -3,7 +3,7 @@
     top="10%"
     :closable="false"
     :align-center="false"
-    :width="660"
+    :width="700"
     :ok-text="$t('common.button.save')"
     :visible="show"
     :mask-closable="false"
@@ -53,7 +53,7 @@
         <a-form-item :label="$t(`applications.projects.form.label`)">
           <a-space
             v-if="formData?.labelList?.length"
-            style="display: flex; flex-direction: column"
+            style="display: flex; flex-direction: column; width: 100%"
             direction="vertical"
           >
             <xInputGroup
@@ -62,7 +62,6 @@
               v-model:dataKey="sItem.key"
               v-model:dataValue="sItem.value"
               v-model:value="formData.labels"
-              width="440px"
               class="group-item"
               :label-list="formData.labelList"
               :position="sIndex"
