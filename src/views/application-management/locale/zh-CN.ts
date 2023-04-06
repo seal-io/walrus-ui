@@ -103,6 +103,6 @@ export default {
   'applications.secret.name.tips': '由字母、数字、下划线组成，不能以数字开头',
   'applications.secret.form.name': '内容',
   'applications.secret.form.tips':
-    '密钥的作用为在创建应用时，配置模块中的相关参数时使用。项目密钥仅在指定项目的应用中使用。具体使用方法可参考用户文档。',
+    '密钥的作用为在创建应用时，配置模块中的相关参数时使用。项目密钥仅在指定项目的应用中使用。使用方法：在输入框中输入$<span></span>{secret.密钥名称}。',
   'applications.endpoint.access': '访问'
 };

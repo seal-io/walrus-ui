@@ -104,6 +104,6 @@ export default {
     'consists of letters, numbers, underscores, cannot start with a number',
   'applications.secret.form.name': 'Content',
   'applications.secret.form.tips':
-    'The function of the secret is to use it when configuring the relevant parameters in the module when creating the application. Project secret are used only in apps for the specified project. For specific usage, please refer to the user documentation.',
+    'The function of the secret is to use it when configuring the relevant parameters in the module when creating the application. Project secret are used only in apps for the specified project. Useage: Enter $<span></span>{secret.secretName} in the input box',
   'applications.endpoint.access': 'Access Points'
 };
