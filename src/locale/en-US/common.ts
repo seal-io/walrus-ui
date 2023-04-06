@@ -43,7 +43,7 @@ export default {
   'common.tips.save':
     'You have unsaved changes. Leaving this page will discard changes.',
   'common.tips.discard': 'Discard Changes?',
-  'common.tips.title': 'Tips',
+  'common.tips.title': 'Tips:',
   'common.input.range.start': 'start value',
   'common.input.range.end': 'end value',
   'common.footer.version': 'Versions',

@@ -41,7 +41,7 @@ export default {
   'common.button.back': '返回',
   'common.tips.save': '您有未保存的更改。离开此页面将放弃更改。',
   'common.tips.discard': '放弃更改?',
-  'common.tips.title': '提示',
+  'common.tips.title': '提示:',
   'common.input.range.start': '起始值',
   'common.input.range.end': '结束值',
   'common.footer.version': '版本',

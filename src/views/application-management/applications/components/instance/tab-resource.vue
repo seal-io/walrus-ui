@@ -21,6 +21,15 @@
           ellipsis
           tooltip
           :cell-style="{ minWidth: '40px' }"
+          align="center"
+          data-index="type"
+          :title="$t('applications.applications.table.type')"
+        >
+        </a-table-column>
+        <a-table-column
+          ellipsis
+          tooltip
+          :cell-style="{ minWidth: '40px' }"
           data-index="module"
           :title="$t('applications.applications.table.module')"
         >
@@ -39,15 +48,7 @@
             }}</span>
           </template>
         </a-table-column>
-        <a-table-column
-          ellipsis
-          tooltip
-          :cell-style="{ minWidth: '40px' }"
-          align="center"
-          data-index="type"
-          :title="$t('applications.applications.table.type')"
-        >
-        </a-table-column>
+
         <a-table-column
           ellipsis
           tooltip

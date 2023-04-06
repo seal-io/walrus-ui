@@ -28,7 +28,7 @@ export default {
   'applications.module.name.tips':
     'consists of letters, numbers, underscores, cannot start with a number',
   'applications.module.rule.name.tips':
-    'the module name is globally unique, consisting of letters, numbers, and underscores, and cannot start with a number',
+    'consisting of letters, numbers, and underscores, and cannot start with a number',
   'applications.module.title.edit': 'Edit Module',
   'applications.module.title.view': 'Module Details',
   'applications.module.title.new': 'Add Module',
@@ -75,6 +75,7 @@ export default {
   'applications.applications.rules.modules': 'module is required',
   'applications.applications.rules.versions': 'version is required',
   'applications.applications.modules.tips': 'Required for new applications',
+  'applications.applications.rule.modules.name': 'exists with the same name',
   'applications.applications.variables.title': 'Variables',
   'applications.applications.variables.button': 'Add a variable',
   'applications.applications.variables.label': 'Variable Name',
@@ -94,5 +95,7 @@ export default {
   'applications.secret.name.tips':
     'consists of letters, numbers, underscores, cannot start with a number',
   'applications.secret.form.name': 'Content',
+  'applications.secret.form.tips':
+    'The function of the secret is to use it when configuring the relevant parameters in the module when creating the application. Project secret are used only in apps for the specified project. For specific usage, please refer to the user documentation.',
   'applications.endpoint.access': 'Access Points'
 };
