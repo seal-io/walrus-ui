@@ -23,6 +23,8 @@ export default {
   'applications.applications.detail.configuration': '配置',
   'applications.applications.form.description': '描述',
   'applications.applications.rule.name': '名称必填',
+  'applications.applications.rule.allName':
+    '由字母、数字或"-"组成，以字母开头，字母或数字结尾',
   'applications.module.rule.name': '名称必填',
   'applications.module.name.tips': '由字母、数字、下划线组成，不能以数字开头',
   'applications.module.rule.name.tips':
@@ -55,6 +57,7 @@ export default {
   'applications.instance.rule.env': '部署环境必选',
   'applications.instance.env.tips': '未添加连接器的环境不可用',
   'applications.instance.tab.resource': '资源',
+  'applications.instance.tab.resourceName': '资源名称',
   'applications.instance.tab.log': '日志',
   'applications.instance.tab.term': '终端',
   'applications.instance.basic.title': '实例信息',

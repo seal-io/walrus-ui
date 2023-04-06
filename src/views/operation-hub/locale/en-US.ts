@@ -50,11 +50,13 @@ export default {
   'operation.environments.table.description': 'Description',
   'operation.environments.detail.addConnector': 'Add Connector',
   'operation.environments.detail.holder': 'please select connector',
+  'operation.environments.name.tips':
+    'consists of letters, numbers or "-"、"_", starts and ends with a letter or number',
   'operation.templates.menu': 'Templates',
   'operation.secret.menu': 'Global Secrets',
   'operation.secret.name': 'Secret',
   'operation.secret.name.tips':
-    'consists of letters, numbers, underscores, cannot start with a number',
+    'consists of letters, numbers, "_", cannot start with a number',
   'operation.secret.content': 'Content',
   'operation.secret.rule.content': 'content is required',
   'operation.secret.rule.name': 'name is required',

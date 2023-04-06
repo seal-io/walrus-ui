@@ -14,7 +14,7 @@
           tooltip
           :cell-style="{ minWidth: '40px' }"
           data-index="resourceID"
-          :title="$t('applications.applications.table.name')"
+          :title="$t('applications.instance.tab.resourceName')"
         >
         </a-table-column>
         <a-table-column

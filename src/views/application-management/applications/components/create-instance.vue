@@ -3,7 +3,7 @@
     top="10%"
     :closable="false"
     :align-center="false"
-    :width="500"
+    :width="660"
     :ok-text="$t('common.button.save')"
     :visible="show"
     :mask-closable="false"
@@ -23,14 +23,24 @@
           field="name"
           validate-trigger="change"
           :rules="[
-            { required: true, message: $t('applications.module.rule.name') }
+            { required: true, message: $t('applications.module.rule.name') },
+            {
+              match: /^[a-z]([-a-z0-9]*[a-z0-9])?$/,
+              message: $t('applications.applications.rule.allName')
+            }
           ]"
         >
           <a-input
             v-model="formData.name"
-            :max-length="50"
+            style="width: 100%"
+            :max-length="30"
             show-word-limit
           ></a-input>
+          <template #extra>
+            <span class="tips">{{
+              $t('applications.applications.rule.allName')
+            }}</span>
+          </template>
         </a-form-item>
         <a-form-item
           :disabled="status === 'edit'"
@@ -43,6 +53,7 @@
         >
           <a-select
             v-model="formData.environment.id"
+            style="width: 100%"
             :options="environmentList"
             @change="handleEnvChange"
           ></a-select>
@@ -68,7 +79,10 @@
             }
           ]"
         >
-          <a-input v-model="formData.variables[item.name]"></a-input>
+          <a-input
+            v-model="formData.variables[item.name]"
+            style="width: 100%"
+          ></a-input>
         </a-form-item>
       </a-form>
     </a-spin>
