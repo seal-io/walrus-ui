@@ -117,10 +117,40 @@
       <div class="variables">
         <GroupTitle
           :title="$t('applications.applications.detail.configuration')"
-        ></GroupTitle>
+        >
+          <template #title>
+            <span>
+              <span>{{
+                $t('applications.applications.detail.configuration')
+              }}</span>
+              <a-tooltip style="width: 500px">
+                <template #content>
+                  <div>{{
+                    $t('applications.applications.modules.params.title')
+                  }}</div>
+                  <div
+                    v-html="
+                      $t('applications.applications.modules.params.tips1')
+                    "
+                  ></div>
+                  <div
+                    v-html="
+                      $t('applications.applications.modules.params.tips2')
+                    "
+                  ></div>
+                  <div
+                    v-html="
+                      $t('applications.applications.modules.params.tips3')
+                    "
+                  ></div>
+                </template>
+                <icon-question-circle class="mleft-5" />
+              </a-tooltip>
+            </span>
+          </template>
+        </GroupTitle>
         <a-tabs
           v-if="show && formTabs.length > 1"
-          lazy-load
           :active-key="activeKey"
           @change="handleTabChange"
         >
@@ -320,6 +350,10 @@
     formref.value?.clearValidate?.();
   };
   const validateNameuniq = (val, callback) => {
+    if (props.action === 'edit') {
+      callback();
+      return;
+    }
     const data = find(props.modules, (item) => get(item, 'name') === val);
     if (data) {
       callback(t('applications.applications.rule.modules.name'));
