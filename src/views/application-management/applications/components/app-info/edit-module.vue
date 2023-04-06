@@ -261,6 +261,7 @@
   }
   provide('showHintInput', true);
   const defaultGroupKey = '_default_default_';
+  const hiddenGroup = '__hidden_hidden__s_l_';
   const emit = defineEmits(['save', 'update:show', 'reset', 'update:action']);
   const { route } = useCallCommon();
   const formref = ref();
@@ -447,6 +448,24 @@
         });
       })
     );
+    const hiddenList = filter(
+      get(moduleInfo.value, 'Variables'),
+      (item) => item.Hidden
+    );
+    if (hiddenList.length) {
+      const hiddenForm = {
+        tab: hiddenGroup,
+        formData: reduce(
+          hiddenList,
+          (obj, s) => {
+            obj[s.Name] = s.Default;
+            return obj;
+          },
+          {}
+        )
+      };
+      resultList.push(hiddenForm);
+    }
     return resultList;
   };
   // cache the user inputs when change the module version
