@@ -10,6 +10,7 @@
       <a-divider v-if="showBack" direction="vertical"></a-divider>
       <div class="title-wrap">
         <slot name="title">{{ title }}</slot>
+        <slot name="extra"></slot>
         <a-link v-if="showEdit" @click="handleEdit">
           <icon-edit></icon-edit>
           <span class="mleft-5">{{ $t('common.button.edit') }}</span>
