@@ -1,31 +1,31 @@
 <template>
   <div class="main-wrapper">
-    <transition name="fade" mode="out-in">
-      <component
-        :is="perspectiveMap[viewComponent]"
-        :source="viewComponent"
-        :is-page="true"
-        :pageloading="loading"
-      >
-        <template #select>
-          <a-select
-            v-model="viewId"
-            style="width: 180px"
-            class="border-less"
-            :placeholder="$t('cost.analyse.view.holder')"
-            allow-search
-            @change="handleViewChange"
+    <!-- <transition name="fade" mode="out-in"> -->
+    <component
+      :is="perspectiveMap[viewComponent]"
+      :source="viewComponent"
+      :is-page="true"
+      :pageloading="loading"
+    >
+      <template #select>
+        <a-select
+          v-model="viewId"
+          style="width: 180px"
+          class="border-less"
+          :placeholder="$t('cost.analyse.view.holder')"
+          allow-search
+          @change="handleViewChange"
+        >
+          <a-option
+            v-for="item in viewList"
+            :key="item.value"
+            :value="item.value"
+            >{{ $t(item.name || '') }}</a-option
           >
-            <a-option
-              v-for="item in viewList"
-              :key="item.value"
-              :value="item.value"
-              >{{ $t(item.name || '') }}</a-option
-            >
-            <template #empty><span></span></template>
-          </a-select>
-        </template>
-        <!-- <template #button>
+          <template #empty><span></span></template>
+        </a-select>
+      </template>
+      <!-- <template #button>
         <a-button
           type="primary"
           @click="handleSearch"
@@ -33,13 +33,13 @@
           >{{ $t('common.button.search') }}</a-button
         >
       </template> -->
-        <!-- <template #view-btn>
+      <!-- <template #view-btn>
         <a-button type="primary" @click="handleViewManage">{{
           $t('cost.analyse.table.manage')
         }}</a-button>
       </template> -->
-      </component>
-    </transition>
+    </component>
+    <!-- </transition> -->
   </div>
 </template>
 
@@ -83,7 +83,7 @@
       }
     });
     setTimeout(() => {
-      viewComponent.value = toLower(data?.label);
+      viewComponent.value = toLower(data?.label || 'all');
     }, 50);
   };
   const handleSearch = () => {};
