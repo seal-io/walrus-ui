@@ -47,4 +47,11 @@
   };
 </script>
 
-<style></style>
+<style lang="less" scoped>
+  .connectors {
+    :deep(.arco-tabs-tab) {
+      justify-content: center;
+      width: 75px;
+    }
+  }
+</style>
