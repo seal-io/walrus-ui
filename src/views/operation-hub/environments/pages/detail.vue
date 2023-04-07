@@ -222,12 +222,12 @@
           await updateEnvironment(formData.value);
         } else {
           await createEnvironment(formData.value);
-          tabBarStore.deleteTag(0, {
-            title: '',
-            name: 'EnvironmentList',
-            fullPath: ''
-          });
         }
+        tabBarStore.deleteTag(0, {
+          title: '',
+          name: 'EnvironmentList',
+          fullPath: ''
+        });
         router.back();
         submitLoading.value = false;
       } catch (error) {
