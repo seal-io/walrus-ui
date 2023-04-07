@@ -7,7 +7,7 @@ export default {
   'operation.connectors.table.status': 'Status',
   'operation.connectors.finops.enable': 'Enable',
   'operation.connectors.finops.disable': 'Disable',
-  'operation.connectors.table.coststatus': 'Cost Data Info',
+  'operation.connectors.table.coststatus': 'Cost Data Information',
   'operation.connectors.table.enableFin': 'Enable Cost Analysis',
   'operation.connectors.table.install': 'Reinstalling Cost Analysis Tool',
   'operation.connectors.table.fetch': 'Synchronize cost data',
