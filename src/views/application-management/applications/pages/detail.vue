@@ -26,7 +26,12 @@
             :active="item.id === activeInstanceTab"
             :data-info="item"
             :actions="instanceActions"
-            :action-loading="includes(['Deleting', 'Deploying'], item.status)"
+            :action-loading="
+              includes(
+                [AppInstanceStatus.Deleting, AppInstanceStatus.Deploying],
+                item.status
+              )
+            "
             @upgrade="handleInstanceUpgrade(item)"
             @delete="handleDeleteInstance(item)"
             @click="handleClickInstance(item)"
@@ -123,7 +128,11 @@
   import { createWebsocketInstance } from '@/hooks/use-websocket';
   import instanceThumb from '../components/instance-thumb.vue';
   import { InstanceData, AppFormData } from '../config/interface';
-  import { instanceActions } from '../config/index';
+  import {
+    instanceActions,
+    instanceStatus,
+    AppInstanceStatus
+  } from '../config/index';
   import AppDetail from '../components/app-info/index.vue';
   import InstanceDetail from '../components/instance/index.vue';
   import createInstance from '../components/create-instance.vue';
