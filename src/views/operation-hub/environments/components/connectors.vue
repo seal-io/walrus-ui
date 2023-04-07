@@ -34,7 +34,9 @@
           :title="$t('operation.connectors.table.status')"
         >
           <template #cell="{ record }">
+            <span v-if="record.category === 'Custom'">-</span>
             <StatusLabel
+              v-else
               :status="{
                 status: get(record, 'status.summaryStatus'),
                 text: get(record, 'status.summaryStatus'),
