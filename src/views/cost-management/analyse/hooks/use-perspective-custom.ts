@@ -46,6 +46,7 @@ export default function usePerspectiveCost(props) {
   const loading = ref(false);
   const apploading = ref(false);
   const overviewloading = ref(false);
+  const collectedTimeRange = ref<string[]>([]);
 
   const timeMode = ref('utc');
 
@@ -82,6 +83,18 @@ export default function usePerspectiveCost(props) {
       const { data } = await queryCustomPerspectiveSummary(params);
       overData.value = data || {};
       overviewloading.value = false;
+      collectedTimeRange.value = [];
+      if (get(data, `collectedTimeRange.firstTime`)) {
+        collectedTimeRange.value.push(
+          dayjs(get(data, `collectedTimeRange.firstTime`)).format('YYYY-MM-DD')
+        );
+      }
+
+      if (get(data, `collectedTimeRange.lastTime`)) {
+        collectedTimeRange.value.push(
+          dayjs(get(data, `collectedTimeRange.lastTime`)).format('YYYY-MM-DD')
+        );
+      }
     } catch (error) {
       overviewloading.value = false;
       overData.value = {};
@@ -175,6 +188,7 @@ export default function usePerspectiveCost(props) {
     id: pageId,
     loading,
     overviewloading,
-    timeMode
+    timeMode,
+    collectedTimeRange
   };
 }

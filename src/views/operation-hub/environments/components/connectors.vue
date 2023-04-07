@@ -133,4 +133,12 @@
   });
 </script>
 
-<style lang="less" scoped></style>
+<style lang="less" scoped>
+  .connectors-list {
+    :deep(.arco-table) {
+      .arco-table-tr.arco-table-tr-empty .arco-table-td {
+        border-bottom: 1px solid var(--seal-color-table-border);
+      }
+    }
+  }
+</style>

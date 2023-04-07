@@ -9,7 +9,6 @@
       :mode="mode"
       :style="{ width: width }"
       :model-value="[start, end]"
-      :value-format="'YYYY-MM-DD'"
       :class="{ 'border-less': borderLess }"
       @picker-value-change="handlePickValueChange"
       @select-shortcut="handleSelectShortcut"
@@ -229,28 +228,33 @@
     // const type = props.timeUnit as unitType;
     // const range = get(selectRangeMap, type);
     let rangValue = props.maxRange;
-
+    let dateType: any = 'day';
     if (mode.value === 'date') {
       rangValue = { type: 'month', range: 2 };
+      dateType = 'day';
     }
     if (mode.value === 'month') {
-      rangValue = { type: 'month', range: 2 };
+      rangValue = { type: 'month', range: 1 };
+      dateType = 'month';
     }
     if (mode.value === 'year') {
       rangValue = { type: 'year', range: 1 };
+      dateType = 'year';
     }
     const { type, range } = rangValue;
     if (!props.todayIn) {
-      if (dayjs(current).isSameOrAfter(dayjs().format('YYYY-MM-DD'), type)) {
+      if (
+        dayjs(current).isSameOrAfter(dayjs().format('YYYY-MM-DD'), dateType)
+      ) {
         return true;
       }
-    } else if (dayjs(current).isAfter(dayjs().format('YYYY-MM-DD'), type)) {
+    } else if (dayjs(current).isAfter(dayjs().format('YYYY-MM-DD'), dateType)) {
       return true;
     }
     if (
       dayjs(current).isBefore(
         dayjs(pointDate.value).subtract(range, type).format('YYYY-MM-DD'),
-        type
+        dateType
       )
     ) {
       return true;
@@ -258,7 +262,7 @@
     if (
       dayjs(current).isAfter(
         dayjs(pointDate.value).add(range, type).format('YYYY-MM-DD'),
-        type
+        dateType
       )
     ) {
       return true;

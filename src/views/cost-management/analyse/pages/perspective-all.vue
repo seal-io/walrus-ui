@@ -13,7 +13,43 @@
           today-in
           border-less
           @change="handleDateChange"
-        ></DateRange>
+        >
+          <template #cell="{ date }">
+            <div class="arco-picker-date">
+              <a-tooltip
+                v-if="
+                  get(collectedTimeRange, '0') &&
+                  dayjs(get(collectedTimeRange, '0')).isSame(
+                    dayjs(date).format('YYYY-MM-DD')
+                  )
+                "
+                :content="$t('cost.analyse.cluster.date.startTips')"
+              >
+                <div class="arco-picker-date-value" :style="getCellStyle(date)">
+                  {{ date.getDate() }}
+                </div>
+              </a-tooltip>
+              <a-tooltip
+                v-else-if="
+                  get(collectedTimeRange, '1') &&
+                  dayjs(get(collectedTimeRange, '1')).isSame(
+                    dayjs(date).format('YYYY-MM-DD')
+                  )
+                "
+                :content="$t('cost.analyse.cluster.date.endTips')"
+              >
+                <div class="arco-picker-date-value" :style="getCellStyle(date)">
+                  {{ date.getDate() }}
+                </div>
+              </a-tooltip>
+              <div v-else class="arco-picker-date">
+                <div class="arco-picker-date-value" :style="getCellStyle(date)">
+                  {{ date.getDate() }}
+                </div>
+              </div>
+            </div>
+          </template>
+        </DateRange>
         <div><slot name="button"></slot></div>
       </template>
       <template #button-group>
@@ -144,7 +180,7 @@
 
 <script lang="ts" setup>
   import dayjs from 'dayjs';
-  import { cloneDeep, map, round } from 'lodash';
+  import { cloneDeep, map, round, get, includes } from 'lodash';
   import { reactive, ref, computed, onMounted, watch } from 'vue';
   import useCallCommon from '@/hooks/use-call-common';
   import { onBeforeRouteUpdate } from 'vue-router';
@@ -225,14 +261,17 @@
     loading,
     id,
     overviewloading,
-    timeMode
+    timeMode,
+    collectedTimeRange
   } = usePerspectiveCost(props);
   const { route, t } = useCallCommon();
   const active = ref<'bar' | 'line'>('bar');
   const activeProject = ref<'bar' | 'line'>('bar');
   const activeCluster = ref<'bar' | 'line'>('bar');
   const loadeend = ref(false);
-
+  const markCellStyle = {
+    border: '1px solid rgb(var(--arcoblue-6))'
+  };
   const preloading = computed(() => {
     return props.pageloading || loading.value;
   });
@@ -271,6 +310,11 @@
       return item;
     });
   });
+  const getCellStyle = (date) => {
+    return includes(collectedTimeRange.value, dayjs(date).format('YYYY-MM-DD'))
+      ? markCellStyle
+      : {};
+  };
   const handleDateChange = (val) => {
     console.log('dateChange=1==', val, queryParams);
     dailyCostFilters.value = {
