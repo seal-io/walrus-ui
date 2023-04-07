@@ -87,10 +87,15 @@
             >{{ $t('operation.connectors.rules.enable') }}</a-checkbox
           >
           <span v-else class="readonly-view-label">{{
-            formData.enableFinOps ? '已开启' : '未开启'
+            formData.enableFinOps
+              ? $t('operation.connectors.finops.enable')
+              : $t('operation.connectors.finops.disable')
           }}</span>
         </a-form-item>
-        <a-form-item v-if="pageAction === 'view'" label="状态">
+        <a-form-item
+          v-if="pageAction === 'view'"
+          :label="$t('operation.connectors.table.status')"
+        >
           <span class="readonly-view-label">
             <StatusLabel
               :status="{
@@ -103,7 +108,10 @@
             ></StatusLabel>
           </span>
         </a-form-item>
-        <a-form-item v-if="pageAction === 'view'" label="成本数据状态">
+        <a-form-item
+          v-if="pageAction === 'view'"
+          :label="$t('operation.connectors.table.coststatus')"
+        >
           <div class="readonly-view-label description-content">
             <span>{{
               getCostStatus(get(formData, 'status.conditions') || [])
