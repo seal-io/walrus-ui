@@ -77,12 +77,9 @@ export default {
   'applications.applications.modules.tips': 'Required for new applications',
   'applications.applications.modules.params.title':
     "To use secrets, variables, or related attributes in the same application module, here's how:",
-  'applications.applications.modules.params.tips1':
-    '1. Use the secret: you can enter $<span></span>{secret.<b>secretName</b>} in the input box',
-  'applications.applications.modules.params.tips2':
-    '2. Use variables: you can enter $<span></span>{var.<b>variableKey</b>} in the input box',
-  'applications.applications.modules.params.tips3':
-    '3. Use the attributes in the module: you can enter $<span></span>{module.<b>moduleName</b>.<b>attributeName</b>} in the input box',
+  'applications.applications.modules.params.tips1': `1. Use the secret: you can enter {'$'}{'{'}secret.secretName{'}'} in the input box`,
+  'applications.applications.modules.params.tips2': `2. Use variables: you can enter {'$'}{'{'}var.variableKey{'}'} in the input box`,
+  'applications.applications.modules.params.tips3': `3. Use the attributes in the module: you can enter {'$'}{'{'}module.moduleName.attributeName{'}'} in the input box`,
   'applications.applications.rule.modules.name': 'exists with the same name',
   'applications.applications.variables.title': 'Variables',
   'applications.applications.variables.button': 'Add a variable',
@@ -103,7 +100,6 @@ export default {
   'applications.secret.name.tips':
     'consists of letters, numbers, underscores, cannot start with a number',
   'applications.secret.form.name': 'Content',
-  'applications.secret.form.tips':
-    'The function of the secret is to use it when configuring the relevant parameters in the module when creating the application. Project secret are used only in apps for the specified project. Useage: Enter $<span></span>{secret.secretName} in the input box',
+  'applications.secret.form.tips': `The function of the secret is to use it when configuring the relevant parameters in the module when creating the application. Project secret are used only in apps for the specified project. Useage: Enter {'$'}<span></span>{'{'}secret.secretName{'}'} in the input box`,
   'applications.endpoint.access': 'Access Points'
 };
