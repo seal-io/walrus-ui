@@ -244,4 +244,19 @@ export const getDefaultValue = (list: Cascader[]) => {
   };
   return loop(data);
 };
+
+export enum RevisionStatus {
+  Succeeded = 'Succeeded',
+  Running = 'Running',
+  Failed = 'Failed'
+}
+
+export enum AppInstanceStatus {
+  Deployed = 'Deployed',
+  Deleting = 'Deleting',
+  Deploying = 'Deploying',
+  DeployFailed = 'DeployFailed',
+  DeleteFailed = 'DeleteFailed'
+}
+
 export default {};

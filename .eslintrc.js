@@ -10,13 +10,13 @@ module.exports = {
     sourceType: 'module',
     ecmaVersion: 2020,
     ecmaFeatures: {
-      jsx: true,
-    },
+      jsx: true
+    }
   },
   env: {
     'browser': true,
     'node': true,
-    'vue/setup-compiler-macros': true,
+    'vue/setup-compiler-macros': true
   },
   plugins: ['@typescript-eslint'],
   extends: [
@@ -26,19 +26,21 @@ module.exports = {
     'plugin:import/recommended',
     'plugin:import/typescript',
     'plugin:vue/vue3-recommended',
-    'plugin:prettier/recommended',
+    'plugin:prettier/recommended'
   ],
   settings: {
     'import/resolver': {
       typescript: {
-        project: path.resolve(__dirname, './tsconfig.json'),
-      },
-    },
+        project: path.resolve(__dirname, './tsconfig.json')
+      }
+    }
   },
   rules: {
     '@typescript-eslint/no-var-requires': 0,
     'prettier/prettier': 1,
     'no-nest-ternary': 0,
+    'no-shadow': 'off',
+    '@typescript-eslint/no-shadow': 'warn',
     'class-methods-use-this': 'off',
     // Vue: Recommended rules to be closed or modify
     'vue/require-default-prop': 0,
@@ -66,12 +68,12 @@ module.exports = {
         js: 'never',
         jsx: 'never',
         ts: 'never',
-        tsx: 'never',
-      },
+        tsx: 'never'
+      }
     ],
     'no-debugger': process.env.NODE_ENV === 'production' ? 2 : 0,
     'no-param-reassign': 0,
     'prefer-regex-literals': 0,
-    'import/no-extraneous-dependencies': 0,
-  },
+    'import/no-extraneous-dependencies': 0
+  }
 };

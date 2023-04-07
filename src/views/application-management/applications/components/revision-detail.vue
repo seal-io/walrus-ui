@@ -29,21 +29,34 @@
               status: item.value,
               text: item.value,
               message: '',
-              transitioning: get(item, 'value') === 'Running',
-              error: get(item, 'value') === 'Failed'
+              transitioning: get(item, 'value') === RevisionStatus.Running,
+              error: get(item, 'value') === RevisionStatus.Failed
             }"
           ></StatusLabel>
+          <!-- <span
+            v-else-if="
+              item.key === 'duration' &&
+              get(revisionData, 'status') === RevisionStatus.Succeeded
+            "
+          >
+            <ClockTimer
+              :start-time="get(revisionData, 'createTime')"
+              :stopped="
+                get(revisionData, 'status') === RevisionStatus.Succeeded
+              "
+            ></ClockTimer>
+          </span> -->
           <span v-else>{{ item.value }}</span>
         </a-descriptions-item>
       </a-descriptions>
       <div class="logs-content" style="text-align: left">
         <div class="label">{{
-          get(revisionData, 'status') === 'Running'
+          get(revisionData, 'status') === RevisionStatus.Running
             ? $t('applications.applications.logs.live')
             : $t('applications.applications.instance.log')
         }}</div>
         <deployLogs
-          v-if="get(revisionData, 'status') === 'Running'"
+          v-if="get(revisionData, 'status') === RevisionStatus.Running"
           :show="show"
           :revision-id="get(revisionData, 'id')"
         ></deployLogs>
@@ -74,8 +87,9 @@
   import useCallCommon from '@/hooks/use-call-common';
   import EditPageFooter from '@/components/edit-page-footer/index.vue';
   import StatusLabel from '@/views/operation-hub/connectors/components/status-label.vue';
+  import ClockTimer from '@/components/clock-timer/index.vue';
   import deployLogs from './deploy-logs.vue';
-  import { revisionDetailConfig } from '../config';
+  import { revisionDetailConfig, RevisionStatus } from '../config';
   import { queryApplicationRevisionsDetail } from '../api';
 
   const props = defineProps({
