@@ -36,13 +36,14 @@
           <!-- <span
             v-else-if="
               item.key === 'duration' &&
-              get(revisionData, 'status') === RevisionStatus.Succeeded
+              get(revisionData, 'status') === RevisionStatus.Running
             "
           >
             <ClockTimer
               :start-time="get(revisionData, 'createTime')"
               :stopped="
-                get(revisionData, 'status') === RevisionStatus.Succeeded
+                get(revisionData, 'status') === RevisionStatus.Succeeded ||
+                !show
               "
             ></ClockTimer>
           </span> -->
@@ -147,6 +148,10 @@
       const { data } = await queryApplicationRevisionsDetail(params);
       revisionData.value = data;
       loading.value = false;
+      console.log(
+        'stopped=====',
+        get(revisionData.value, 'status') === RevisionStatus.Succeeded
+      );
     } catch (error) {
       loading.value = false;
       revisionData.value = {};

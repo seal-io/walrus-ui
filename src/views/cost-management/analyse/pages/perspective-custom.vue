@@ -13,7 +13,43 @@
           today-in
           border-less
           @change="handleDateChange"
-        ></DateRange>
+        >
+          <template #cell="{ date }">
+            <div class="arco-picker-date">
+              <a-tooltip
+                v-if="
+                  get(collectedTimeRange, '0') &&
+                  dayjs(get(collectedTimeRange, '0')).isSame(
+                    dayjs(date).format('YYYY-MM-DD')
+                  )
+                "
+                :content="$t('cost.analyse.cluster.date.startTips')"
+              >
+                <div class="arco-picker-date-value" :style="getCellStyle(date)">
+                  {{ date.getDate() }}
+                </div>
+              </a-tooltip>
+              <a-tooltip
+                v-else-if="
+                  get(collectedTimeRange, '1') &&
+                  dayjs(get(collectedTimeRange, '1')).isSame(
+                    dayjs(date).format('YYYY-MM-DD')
+                  )
+                "
+                :content="$t('cost.analyse.cluster.date.endTips')"
+              >
+                <div class="arco-picker-date-value" :style="getCellStyle(date)">
+                  {{ date.getDate() }}
+                </div>
+              </a-tooltip>
+              <div v-else class="arco-picker-date">
+                <div class="arco-picker-date-value" :style="getCellStyle(date)">
+                  {{ date.getDate() }}
+                </div>
+              </div>
+            </div>
+          </template>
+        </DateRange>
         <div><slot name="button"></slot></div>
       </template>
       <template #button-group>
@@ -86,7 +122,7 @@
 
 <script lang="ts" setup>
   import dayjs from 'dayjs';
-  import { set, get, find, map, each, round } from 'lodash';
+  import { set, get, find, map, each, round, includes } from 'lodash';
   import { reactive, ref, computed, onMounted, watch } from 'vue';
   import useCallCommon from '@/hooks/use-call-common';
   import DateRange from '@/components/date-range/index.vue';
@@ -147,11 +183,14 @@
     loading,
     id,
     overviewloading,
-    timeMode
+    timeMode,
+    collectedTimeRange
   } = usePerspectiveCost(props);
   const { t, route } = useCallCommon();
   const loadeend = ref(false);
-
+  const markCellStyle = {
+    border: '1px solid rgb(var(--arcoblue-6))'
+  };
   const preloading = computed(() => {
     return loading.value;
   });
@@ -236,6 +275,11 @@
       }
     ];
   });
+  const getCellStyle = (date) => {
+    return includes(collectedTimeRange.value, dayjs(date).format('YYYY-MM-DD'))
+      ? markCellStyle
+      : {};
+  };
   const handleDateChange = async (values) => {
     queryParams.endTime = get(values, '1');
     queryParams.startTime = get(values, '0');

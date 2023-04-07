@@ -33,6 +33,7 @@
     timer = setInterval(() => {
       const res = dayjs().diff(dayjs(props.startTime));
       time.value = dayjs(res).format('HH:mm:ss');
+      console.log('time>>>>>', res, time.value);
     }, 1000);
   };
   watch(
@@ -48,8 +49,10 @@
     () => props.stopped,
     (newVal) => {
       if (newVal) {
+        console.log('stopped======', props.stopped);
         clearInterval(timer);
       }
+      console.log('stopped======', props.stopped);
     },
     {
       immediate: true
