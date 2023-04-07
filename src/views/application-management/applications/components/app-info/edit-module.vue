@@ -118,50 +118,38 @@
         <div
           style="
             display: flex;
-            align-items: center;
             justify-content: flex-start;
             margin-bottom: 10px;
             border-bottom: 1px solid var(--color-border-2);
           "
         >
-          <GroupTitle :bordered="false" style="margin-bottom: 0">
-            <template #title>
-              <div>
-                <span>{{
-                  $t('applications.applications.detail.configuration')
-                }}</span>
-              </div>
-            </template>
-            <template #extra>
-              <div>
-                <a-tooltip style="width: 500px">
-                  <template #content>
-                    <div>
-                      <div>{{
-                        $t('applications.applications.modules.params.title')
-                      }}</div>
-                      <div
-                        v-html="
-                          $t('applications.applications.modules.params.tips1')
-                        "
-                      ></div>
-                      <div
-                        v-html="
-                          $t('applications.applications.modules.params.tips2')
-                        "
-                      ></div>
-                      <div
-                        v-html="
-                          $t('applications.applications.modules.params.tips3')
-                        "
-                      ></div>
-                    </div>
-                  </template>
-                  <icon-question-circle class="mleft-5" />
-                </a-tooltip>
-              </div>
-            </template>
+          <GroupTitle
+            :bordered="false"
+            style="margin-bottom: 0"
+            :title="$t('applications.applications.detail.configuration')"
+          >
           </GroupTitle>
+          <div>
+            <a-tooltip style="width: 500px">
+              <template #content>
+                <div>
+                  <div>{{
+                    $t('applications.applications.modules.params.title')
+                  }}</div>
+                  <div>{{
+                    $t('applications.applications.modules.params.tips1')
+                  }}</div>
+                  <div>{{
+                    $t('applications.applications.modules.params.tips2')
+                  }}</div>
+                  <div>{{
+                    $t('applications.applications.modules.params.tips3')
+                  }}</div>
+                </div>
+              </template>
+              <icon-question-circle class="mleft-5" />
+            </a-tooltip>
+          </div>
         </div>
         <a-tabs
           v-if="show && formTabs.length > 1"

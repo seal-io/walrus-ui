@@ -75,12 +75,9 @@ export default {
   'applications.applications.modules.tips': '新建应用必填',
   'applications.applications.modules.params.title':
     '若要使用密钥、变量、同一应用模块中的相关属性，方法如下：',
-  'applications.applications.modules.params.tips1':
-    '1. 使用密钥：可在输入框输入$<span></span>{secret.密钥名称}',
-  'applications.applications.modules.params.tips2':
-    '2. 使用变量：可在输入框输入$<span></span>{var.变量键}',
-  'applications.applications.modules.params.tips3':
-    '3. 使用模块中属性：可在输入框输入$<span></span>{module.模块名称.属性名}',
+  'applications.applications.modules.params.tips1': `1. 使用密钥：可在输入框输入{'$'}{'{'}secret.密钥名称{'}'}`,
+  'applications.applications.modules.params.tips2': `2. 使用变量：可在输入框输入{'$'}{'{'}var.变量键{'}'}`,
+  'applications.applications.modules.params.tips3': `3. 使用模块中属性：可在输入框输入{'$'}{'{'}module.模块名称.属性名{'}'}`,
   'applications.applications.rule.modules.name': '存在相同的名称',
   'applications.applications.variables.title': '变量',
   'applications.applications.variables.button': '添加变量',
@@ -102,7 +99,6 @@ export default {
   'applications.secret.rules.value': '内容必填',
   'applications.secret.name.tips': '由字母、数字、下划线组成，不能以数字开头',
   'applications.secret.form.name': '内容',
-  'applications.secret.form.tips':
-    '密钥的作用为在创建应用时，配置模块中的相关参数时使用。项目密钥仅在指定项目的应用中使用。使用方法：在输入框中输入$<span></span>{secret.密钥名称}。',
+  'applications.secret.form.tips': `密钥的作用为在创建应用时，配置模块中的相关参数时使用。项目密钥仅在指定项目的应用中使用。使用方法：在输入框中输入{'$'}<span></span>{'{'}secret.密钥名称{'}'}。`,
   'applications.endpoint.access': '访问'
 };
