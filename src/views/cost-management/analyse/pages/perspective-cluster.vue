@@ -239,7 +239,7 @@
     <SpinCard
       :title="$t('cost.analyse.table.workloadCost')"
       borderless
-      style="margin-bottom: 10px"
+      style="position: relative; margin-bottom: 10px"
     >
       <LineBarChart
         :loading="workloading || preloading"
@@ -262,7 +262,22 @@
             top: 45
           }
         }"
-      ></LineBarChart>
+      >
+        <template #filter>
+          <a-select
+            v-model="filterKey"
+            style="width: 200px"
+            @change="handleFilterChange"
+          >
+            <a-option
+              v-for="(item, index) in workloadCostFilterKeys"
+              :key="index"
+              :value="item.dataIndex"
+              :label="item.title"
+            ></a-option>
+          </a-select>
+        </template>
+      </LineBarChart>
       <TableList
         :filter-params="workloadCostFilters"
         :request-work="requestWork"
@@ -296,6 +311,7 @@
   import ChartBtn from '@/components/chart-btn/index.vue';
   import FilterBox from '@/components/filter-box/index.vue';
   import horizontalBar from '@/components/bar-chart/horizontal-bar.vue';
+  import { getStackLineData } from '@/views/config';
   import TableList from '../components/table-list.vue';
   import {
     clusterCostOverview,
@@ -371,6 +387,7 @@
     overviewloading,
     timeMode,
     overData,
+    workloadDataList,
     collectedTimeRange
   } = usePerspectiveCost(props);
   const markCellStyle = {
@@ -384,7 +401,7 @@
     { label: 'cluster-2', value: 'cluster2' }
   ];
   const active = ref<'bar' | 'line'>('bar');
-
+  const filterKey = ref('totalCost');
   const preloading = computed(() => {
     return loading.value || clusterloading.value;
   });
@@ -423,6 +440,16 @@
       return item;
     });
   });
+  const workloadCostFilterKeys = computed(() => {
+    const list = cloneDeep(clusterNamespaceCostCols);
+    const resList = filter(list, (item) => {
+      return item.dataIndex !== 'itemName';
+    });
+    return map(resList, (sItem) => {
+      sItem.title = t(sItem.title);
+      return sItem;
+    });
+  });
   const requestWork = computed(() => {
     return !!queryParams.connectorID;
   });
@@ -442,7 +469,14 @@
       }
     };
   });
-
+  const handleFilterChange = (key) => {
+    const result = getStackLineData({
+      list: workloadDataList.value,
+      key,
+      step: workloadCostFilters.value.step
+    });
+    workloadCostChart.value = result;
+  };
   const getCellStyle = (date) => {
     return includes(collectedTimeRange.value, dayjs(date).format('YYYY-MM-DD'))
       ? markCellStyle
@@ -536,4 +570,9 @@
   });
 </script>
 
-<style></style>
+<style lang="less" scoped>
+  .data-key-filter {
+    position: absolute;
+    z-index: 100;
+  }
+</style>

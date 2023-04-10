@@ -16,7 +16,11 @@
         :data="lineList"
         v-bind="$attrs"
         class="chart-item"
-      ></stackLineChart>
+      >
+        <template #filter>
+          <slot name="filter"></slot>
+        </template>
+      </stackLineChart>
     </a-spin>
   </div>
 </template>

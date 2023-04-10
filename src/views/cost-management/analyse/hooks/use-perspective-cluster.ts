@@ -44,6 +44,7 @@ export default function usePerspectiveCost(props) {
   const overviewloading = ref(false);
   const loading = ref(false);
   const timeMode = ref('utc');
+  const workloadDataList = ref<any[]>([]);
   const collectedTimeRange = ref<string[]>([]);
 
   const dailyCostChart = ref<ChartData>({
@@ -299,6 +300,7 @@ export default function usePerspectiveCost(props) {
       const { data } = await queryPerspectiveData(params);
       let list = data?.items || [];
       list = sortBy(list, (s) => s.itemName);
+      workloadDataList.value = list;
       console.log('workload==1=2', list);
       // let list = statckLineData;
       workloadCostChart.value = {
@@ -401,6 +403,7 @@ export default function usePerspectiveCost(props) {
     overviewloading,
     timeMode,
     overData,
-    collectedTimeRange
+    collectedTimeRange,
+    workloadDataList
   };
 }
