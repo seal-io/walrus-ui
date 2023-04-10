@@ -66,5 +66,6 @@ export default {
   'common.ws.reconnect': '重新连接',
   'common.input.key': '键',
   'common.input.value': '值',
-  'common.input.description': '描述'
+  'common.input.description': '描述',
+  'common.time.day': '天'
 };
