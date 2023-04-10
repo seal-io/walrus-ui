@@ -243,7 +243,7 @@
     >
       <LineBarChart
         :loading="workloading || preloading"
-        height="220px"
+        height="300px"
         show-type="line"
         :line-list="workloadCostChart.line"
         :data-config="workloadCostChart.dataConfig"
@@ -254,11 +254,12 @@
           },
           legend: {
             right: 'auto',
-            top: 0
+            top: 0,
+            show: workloadCostChart.line?.length < 5
           },
           grid: {
             ...grid,
-            top: 40
+            top: 45
           }
         }"
       ></LineBarChart>

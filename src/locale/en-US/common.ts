@@ -69,5 +69,6 @@ export default {
   'common.input.key': 'key',
   'common.input.value': 'value',
   'common.input.description': 'description',
-  'common.time.day': 'day'
+  'common.time.day': 'day',
+  'common.chart.filter.holder': 'filter data items'
 };

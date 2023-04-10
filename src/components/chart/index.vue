@@ -1,6 +1,7 @@
 <template>
   <VCharts
     v-if="renderChart"
+    :update-options="{ notMerge: true }"
     :option="options"
     :manual-update="false"
     :autoresize="autoresize"
@@ -9,29 +10,29 @@
 </template>
 
 <script lang="ts" setup>
-  import { ref, nextTick } from 'vue';
+  import { ref, nextTick, watch } from 'vue';
   import VCharts from 'vue-echarts';
   // import { useAppStore } from '@/store';
 
-  defineProps({
+  const props = defineProps({
     options: {
       type: Object,
       default() {
         return {};
-      },
+      }
     },
     autoresize: {
       type: Boolean,
-      default: true,
+      default: true
     },
     width: {
       type: String,
-      default: '100%',
+      default: '100%'
     },
     height: {
       type: String,
-      default: '100%',
-    },
+      default: '100%'
+    }
   });
   // const appStore = useAppStore();
   // const theme = computed(() => {
