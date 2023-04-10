@@ -7,6 +7,7 @@
       :line-list="data.list"
       :data-config="data.dataConfig"
       :x-axis="data.xAxis"
+      :max-legend="8"
       :config-options="{
         title: {
           ...title,
@@ -14,7 +15,8 @@
         },
         legend: {
           right: 'center',
-          top: 0
+          top: 0,
+          show: data.list.length < 8
         },
         grid: {
           ...grid,

@@ -3,7 +3,7 @@
     <Chart
       v-if="data.length"
       :style="{ height: height }"
-      :option="chartOption"
+      :options="chartOption"
     />
     <div
       v-if="!data.length"
@@ -14,15 +14,50 @@
     <div v-if="!data.length" :style="{ height: height }" class="empty-data">
       <a-empty :style="{ marginTop: `${height}px` }"></a-empty>
     </div>
+    <div
+      v-if="showFilter"
+      class="options-list"
+      :style="{ [filterPosition]: '10px' }"
+    >
+      <a-select
+        v-model="selectedList"
+        style="text-align: left"
+        :placeholder="$t('common.chart.filter.holder')"
+        multiple
+        :max-tag-count="1"
+        allow-clear
+        allow-search
+        @change="handleSelectedChange"
+      >
+        <template #prefix>
+          <icon-font type="icon-filter" style="color: var(--color-text-2)" />
+        </template>
+        <a-option
+          v-for="(item, index) in dataConfig"
+          :key="index"
+          :value="item.name"
+          :label="$t(item.label)"
+        ></a-option>
+      </a-select>
+    </div>
   </div>
 </template>
 
 <script lang="ts" setup>
-  import { get, map, find, divide, sortBy } from 'lodash';
+  import {
+    get,
+    map,
+    find,
+    divide,
+    sortBy,
+    filter,
+    includes,
+    cloneDeep
+  } from 'lodash';
   import useChartOption from '@/hooks/chart-option';
   import { LineSeriesOption, EChartsOption, graphic } from 'echarts';
   import { ToolTipFormatterParams } from '@/types/echarts';
-  import { PropType, ref } from 'vue';
+  import { PropType, ref, computed } from 'vue';
   import { useI18n } from 'vue-i18n';
 
   interface ChartData {
@@ -71,9 +106,26 @@
       default() {
         return {};
       }
+    },
+    maxLegend: {
+      type: Number,
+      default() {
+        return 5;
+      }
+    },
+    filterPosition: {
+      type: String,
+      default() {
+        return 'right';
+      }
     }
   });
+  const selectedList = ref<string[]>([]);
   const { t } = useI18n();
+
+  const showFilter = computed(() => {
+    return props.data?.length >= props.maxLegend;
+  });
   const generateSeries = (
     name: string,
     data: number[],
@@ -95,7 +147,7 @@
         }
       : undefined;
     return {
-      name: t(name), // from dataConfig
+      name: t(name),
       data: [...data],
       type: 'line',
       smooth: true,
@@ -120,6 +172,9 @@
       areaStyle
     };
   };
+  const handleSelectedChange = () => {
+    console.log('selectedList===', selectedList.value);
+  };
   const tooltipItemsHtmlString = (items: ToolTipFormatterParams[]) => {
     return items
       .map(
@@ -136,14 +191,26 @@
       .join('');
   };
   const { chartOption } = useChartOption((): any => {
-    const seriesDataList = map(props.dataConfig, (item) => {
-      const valueData = find(props.data || [], (sItem) => {
+    let configData: DataConfigItem[] = [];
+    let listData: ChartData[] = [];
+    if (!selectedList.value.length) {
+      configData = cloneDeep(props.dataConfig);
+      listData = cloneDeep(props.data);
+    } else {
+      configData = filter(cloneDeep(props.dataConfig), (sItem) => {
+        return includes(selectedList.value, sItem.name);
+      });
+      listData = filter(cloneDeep(props.data), (sItem) => {
+        return includes(selectedList.value, sItem.name);
+      });
+    }
+    const seriesDataList = map(configData, (item) => {
+      const valueData = find(listData || [], (sItem) => {
         return item.name === sItem.name;
       });
       const value = valueData?.value || [];
       return generateSeries(item.label, value, item.color, item.areaColor);
     });
-    console.log('seriesDataList===', seriesDataList);
     return {
       title: {
         text: props.title,
@@ -235,7 +302,7 @@
         //   return [point[1], '10%'];
         // },
         formatter(result) {
-          console.log('params======', result);
+          // console.log('params======', result);
           const params = sortBy(result, (item) => item.value);
           const [firstElement] = params as ToolTipFormatterParams[];
           return `<div class="chart-tooltip-wrap">
@@ -255,6 +322,16 @@
 </script>
 
 <style lang="less" scoped>
+  .issue-stack-trend {
+    position: relative;
+
+    .options-list {
+      position: absolute;
+      top: 0;
+      min-width: 300px;
+    }
+  }
+
   .empty-data {
     display: flex;
     flex-direction: column;
