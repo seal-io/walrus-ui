@@ -14,14 +14,12 @@
     <div v-if="!data.length" :style="{ height: height }" class="empty-data">
       <a-empty :style="{ marginTop: `${height}px` }"></a-empty>
     </div>
-    <div
-      v-if="showFilter"
-      class="options-list"
-      :style="{ [filterPosition]: '10px' }"
-    >
+    <a-space class="options-list" :style="{ [filterPosition]: '10px' }">
+      <slot name="filter"></slot>
       <a-select
+        v-if="showFilter"
         v-model="selectedList"
-        style="text-align: left"
+        style="min-width: 300px; text-align: left"
         :placeholder="$t('common.chart.filter.holder')"
         multiple
         :max-tag-count="1"
@@ -39,7 +37,7 @@
           :label="$t(item.label)"
         ></a-option>
       </a-select>
-    </div>
+    </a-space>
   </div>
 </template>
 
@@ -328,7 +326,8 @@
     .options-list {
       position: absolute;
       top: 0;
-      min-width: 300px;
+      display: flex;
+      align-items: center;
     }
   }
 
