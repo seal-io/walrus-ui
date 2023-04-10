@@ -134,15 +134,11 @@
   });
   const handleCancel = () => {
     showTimer.value = false;
-    setTimeout(() => {
-      emit('update:show', false);
-    }, 50);
+    emit('update:show', false);
   };
   const handleOk = async () => {
     showTimer.value = false;
-    setTimeout(() => {
-      emit('update:show', false);
-    }, 50);
+    emit('update:show', false);
   };
 
   const fetchData = async () => {
@@ -195,9 +191,7 @@
   };
   const handleBeforeClose = () => {
     showTimer.value = false;
-    setTimeout(() => {
-      emit('update:show', false);
-    }, 50);
+    emit('update:show', false);
     // revisionData.value = {};
   };
 </script>
