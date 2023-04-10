@@ -7,7 +7,7 @@
     :ok-text="$t('common.button.save')"
     :visible="show"
     :mask-closable="false"
-    :body-style="{ height: '490px', overflow: 'auto' }"
+    :body-style="{ height: '500px', overflow: 'auto', paddingBottom: 0 }"
     modal-class="log-detail-modal"
     :title="$t('applications.applications.history.detail')"
     @cancel="handleCancel"
@@ -16,7 +16,7 @@
     @before-close="handleBeforeClose"
   >
     <a-spin :loading="loading" style="width: 100%; text-align: center">
-      <a-descriptions :data="dataList" :column="{ xs: 1, md: 3, lg: 4 }">
+      <a-descriptions :data="dataList" :column="{ xs: 1, md: 2, lg: 2 }">
         <a-descriptions-item
           v-for="(item, index) in dataList"
           :key="index"
@@ -33,20 +33,14 @@
               error: get(item, 'value') === RevisionStatus.Failed
             }"
           ></StatusLabel>
-          <!-- <span
-            v-else-if="
-              item.key === 'duration' &&
-              get(revisionData, 'status') === RevisionStatus.Running
-            "
-          >
+          <span v-else-if="item.key === 'duration'">
             <ClockTimer
               :start-time="get(revisionData, 'createTime')"
-              :stopped="
-                get(revisionData, 'status') === RevisionStatus.Succeeded ||
-                !show
-              "
+              :show="showTimer"
+              :value="item.value"
+              :stopped="isStopped"
             ></ClockTimer>
-          </span> -->
+          </span>
           <span v-else>{{ item.value }}</span>
         </a-descriptions-item>
       </a-descriptions>
@@ -82,6 +76,7 @@
 </template>
 
 <script lang="ts" setup>
+  import dayjs from 'dayjs';
   import { each, get, map, cloneDeep } from 'lodash';
   import ADescriptionsItem from '@arco-design/web-vue/es/descriptions/descriptions-item';
   import { ref, PropType, watch, computed } from 'vue';
@@ -116,8 +111,14 @@
   const emit = defineEmits(['update:show']);
   const { t } = useCallCommon();
   const loading = ref(false);
+  const showTimer = ref(true);
   const revisionData = ref({});
+  const runStatus = ref('');
 
+  const isStopped = computed(() => {
+    const status = get(revisionData.value, 'status');
+    return [RevisionStatus.Succeeded, RevisionStatus.Failed].includes(status);
+  });
   const dataList = computed(() => {
     const res = map(revisionDetailConfig, (item) => {
       return {
@@ -132,10 +133,16 @@
     return res;
   });
   const handleCancel = () => {
-    emit('update:show', false);
+    showTimer.value = false;
+    setTimeout(() => {
+      emit('update:show', false);
+    }, 50);
   };
   const handleOk = async () => {
-    emit('update:show', false);
+    showTimer.value = false;
+    setTimeout(() => {
+      emit('update:show', false);
+    }, 50);
   };
 
   const fetchData = async () => {
@@ -149,7 +156,7 @@
       revisionData.value = data;
       loading.value = false;
       console.log(
-        'stopped=====',
+        'stopped==2===',
         get(revisionData.value, 'status') === RevisionStatus.Succeeded
       );
     } catch (error) {
@@ -173,9 +180,24 @@
       deep: true
     }
   );
-  const handleBeforeOpen = () => {};
+  watch(
+    () => revisionData.value,
+    () => {
+      runStatus.value = get(revisionData.value, 'status');
+    },
+    {
+      immediate: true,
+      deep: true
+    }
+  );
+  const handleBeforeOpen = () => {
+    showTimer.value = true;
+  };
   const handleBeforeClose = () => {
-    emit('update:show', false);
+    showTimer.value = false;
+    setTimeout(() => {
+      emit('update:show', false);
+    }, 50);
     // revisionData.value = {};
   };
 </script>
