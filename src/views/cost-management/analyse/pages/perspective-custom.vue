@@ -86,7 +86,7 @@
     >
       <LineBarChart
         :loading="apploading || preloading"
-        height="220px"
+        height="260px"
         :show-type="projectCostFilters.step ? 'line' : 'bar'"
         :line-list="projectCostChart.line"
         :bar-list="projectCostChart.bar"
@@ -98,14 +98,31 @@
           },
           legend: {
             right: 'center',
-            top: 0
+            top: 0,
+            show: projectCostChart.line?.length < 5
           },
           grid: {
             ...grid,
             top: 40
           }
         }"
-      ></LineBarChart>
+      >
+        <template #filter>
+          <a-select
+            v-model="filterKey"
+            style="width: 200px"
+            @change="handleFilterChange"
+          >
+            <a-option
+              v-for="(item, index) in optionsList"
+              :key="index"
+              :value="item.dataIndex"
+            >
+              <span>{{ $t(item.title) }}</span>
+            </a-option>
+          </a-select>
+        </template>
+      </LineBarChart>
       <TableList
         :request-work="true"
         time-range="single"
@@ -122,15 +139,31 @@
 
 <script lang="ts" setup>
   import dayjs from 'dayjs';
-  import { set, get, find, map, each, round, includes } from 'lodash';
+  import {
+    set,
+    get,
+    find,
+    map,
+    each,
+    filter,
+    cloneDeep,
+    round,
+    includes
+  } from 'lodash';
   import { reactive, ref, computed, onMounted, watch } from 'vue';
   import useCallCommon from '@/hooks/use-call-common';
   import DateRange from '@/components/date-range/index.vue';
   import DataCard from '@/components/data-card/index.vue';
+  import { getStackLineData } from '@/views/config';
   import LineBarChart from '@/components/line-bar-chart/index.vue';
   import FilterBox from '@/components/filter-box/index.vue';
   import TableList from '../components/table-list.vue';
-  import { DateShortCuts, setEndTimeAddDay, dateFormatMap } from '../config';
+  import {
+    DateShortCuts,
+    setEndTimeAddDay,
+    dateFormatMap,
+    costTableCols
+  } from '../config';
   import usePerspectiveCost from '../hooks/use-perspective-custom';
   import groupbyData from '../config/groupby-data';
 
@@ -174,6 +207,7 @@
     getPerspectiveItemInfo,
     getProjectCostChart,
     getSummaryData,
+    setProjectCostChartData,
     projectCostFilters,
     projectCostChart,
     summaryData,
@@ -184,10 +218,13 @@
     id,
     overviewloading,
     timeMode,
+    projectChartDataList,
     collectedTimeRange
   } = usePerspectiveCost(props);
   const { t, route } = useCallCommon();
   const loadeend = ref(false);
+  const optionsList = ref(cloneDeep(costTableCols));
+  const filterKey = ref('totalCost');
   const markCellStyle = {
     border: '1px solid rgb(var(--arcoblue-6))'
   };
@@ -199,13 +236,13 @@
       return item.fieldName === get(projectCostFilters.value, 'groupBy');
     });
     const dfmt = get(dateFormatMap, projectCostFilters.value.groupBy);
-    return [
+    const list = [
       {
         ellipsis: true,
         tooltip: true,
         cellStyle: { minWidth: '40px' },
         dataIndex: 'itemName',
-        title: t(groupBy?.title || '') || t('cost.analyse.table.name'),
+        title: groupBy?.title || 'cost.analyse.table.name',
         render({ record }) {
           if (dfmt) {
             return dayjs(record.itemName).format(dfmt);
@@ -213,68 +250,30 @@
           return record.itemName;
         }
       },
-      {
-        ellipsis: true,
-        tooltip: true,
-        cellStyle: { minWidth: '40px' },
-        dataIndex: 'cpuCost',
-        render({ record }) {
-          return round(record.cpuCost, 4) || 0;
-        },
-        title: 'CPU'
-      },
-      {
-        ellipsis: true,
-        tooltip: true,
-        cellStyle: { minWidth: '40px' },
-        dataIndex: 'ramCost',
-        render({ record }) {
-          return round(record.ramCost, 4) || 0;
-        },
-        title: t('cost.analyse.table.ram')
-      },
-      {
-        ellipsis: true,
-        tooltip: true,
-        cellStyle: { minWidth: '40px' },
-        dataIndex: 'pvCost',
-        render({ record }) {
-          return round(record.pvCost, 4) || 0;
-        },
-        title: 'PV'
-      },
-      {
-        ellipsis: true,
-        tooltip: true,
-        cellStyle: { minWidth: '40px' },
-        dataIndex: 'pvCost',
-        render({ record }) {
-          return round(record.loadBalancerCost, 4) || 0;
-        },
-        title: t('cost.analyse.table.loadbalance')
-      },
-      {
-        ellipsis: true,
-        tooltip: true,
-        cellStyle: { minWidth: '40px' },
-        dataIndex: 'sharedCost',
-        render({ record }) {
-          return round(record.sharedCost, 4) || 0;
-        },
-        title: t('cost.analyse.table.shareCost')
-      },
-      {
-        ellipsis: true,
-        tooltip: true,
-        cellStyle: { minWidth: '40px' },
-        dataIndex: 'totalCost',
-        render({ record }) {
-          return round(record.totalCost, 4) || 0;
-        },
-        title: t('cost.analyse.detail.totalCost')
-      }
+      ...costTableCols
     ];
+    return map(list, (sItem) => {
+      sItem.title = t(sItem.title);
+      return sItem;
+    });
   });
+
+  const handleFilterChange = (key) => {
+    let result: any = {};
+    if (!projectCostFilters.value.step) {
+      result = setProjectCostChartData({
+        list: projectChartDataList.value,
+        key
+      });
+    } else {
+      result = getStackLineData({
+        list: projectChartDataList.value,
+        key,
+        step: projectCostFilters.value.step
+      });
+    }
+    projectCostChart.value = result;
+  };
   const getCellStyle = (date) => {
     return includes(collectedTimeRange.value, dayjs(date).format('YYYY-MM-DD'))
       ? markCellStyle

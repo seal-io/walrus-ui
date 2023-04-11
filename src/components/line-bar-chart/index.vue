@@ -8,7 +8,11 @@
         :data-list="barList"
         v-bind="$attrs"
         :show-y-label="true"
-      ></BarChart>
+      >
+        <template #filter>
+          <slot name="filter"></slot>
+        </template>
+      </BarChart>
       <stackLineChart
         v-if="showType === 'line'"
         :key="lineList.length"

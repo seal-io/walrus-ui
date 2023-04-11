@@ -46,7 +46,7 @@ export default function usePerspectiveCost(props) {
   const timeMode = ref('utc');
   const workloadDataList = ref<any[]>([]);
   const collectedTimeRange = ref<string[]>([]);
-
+  const namespaceDataList = ref<any[]>([]);
   const dailyCostChart = ref<ChartData>({
     xAxis: [],
     line: [],
@@ -247,6 +247,7 @@ export default function usePerspectiveCost(props) {
       };
       const { data } = await queryPerspectiveData(params);
       const list = data?.items || [];
+      namespaceDataList.value = list;
       // const list = testData;
       const values: number[] = [];
       nameSpaceCostChart.value = {
@@ -256,7 +257,7 @@ export default function usePerspectiveCost(props) {
         dataConfig: []
       };
       each(list, (item) => {
-        values.push(item.totalCost);
+        // values.push(item.totalCost);
         nameSpaceCostChart.value.xAxis.push(item.itemName);
         nameSpaceCostChart.value.bar.push({
           name: item.itemName,
@@ -266,7 +267,7 @@ export default function usePerspectiveCost(props) {
       nameSpaceCostChart.value.dataConfig = [
         { name: 'cost', label: 'projectCost' }
       ];
-      nameSpaceCostChart.value.line = [{ name: 'cost', value: values }];
+      // nameSpaceCostChart.value.line = [{ name: 'cost', value: values }];
       spaceloading.value = false;
     } catch (error) {
       spaceloading.value = false;
@@ -324,6 +325,7 @@ export default function usePerspectiveCost(props) {
         bar: [],
         dataConfig: []
       };
+      workloadDataList.value = [];
       console.log(error);
     }
   };
@@ -404,6 +406,7 @@ export default function usePerspectiveCost(props) {
     timeMode,
     overData,
     collectedTimeRange,
-    workloadDataList
+    workloadDataList,
+    namespaceDataList
   };
 }
