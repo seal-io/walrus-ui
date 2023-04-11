@@ -42,7 +42,7 @@ export default function usePerspectiveCost(props) {
     bar: [],
     dataConfig: []
   });
-
+  const projectChartDataList = ref<any[]>([]);
   const loading = ref(false);
   const apploading = ref(false);
   const overviewloading = ref(false);
@@ -101,7 +101,25 @@ export default function usePerspectiveCost(props) {
       console.log(error);
     }
   };
-
+  const setProjectCostChartData = ({ list, key = 'totalCost' }) => {
+    const result: ChartData = { xAxis: [], line: [], bar: [], dataConfig: [] };
+    if (get(dateFormatMap, projectCostFilters.value.groupBy)) {
+      list = sortBy(list, (s) => s.itemName);
+    }
+    each(list, (item) => {
+      const itemName = get(dateFormatMap, projectCostFilters.value.groupBy)
+        ? dayjs(item.itemName).format(
+            get(dateFormatMap, projectCostFilters.value.groupBy)
+          )
+        : item.itemName;
+      result.xAxis.push(itemName);
+      result.bar.push({
+        name: itemName,
+        value: get(item, key)
+      });
+    });
+    return result;
+  };
   const getProjectCostChart = async () => {
     try {
       apploading.value = true;
@@ -111,29 +129,17 @@ export default function usePerspectiveCost(props) {
       };
       const { data } = await queryPerspectiveData(params);
       // const data = namespaceData;
-      let list = map(data?.items || [], (s) => {
+      const list = map(data?.items || [], (s) => {
         s.totalCost = s.totalCost || 0;
         return s;
       });
 
       // let list = statckLineData;
+      projectChartDataList.value = list;
       projectCostChart.value = { xAxis: [], line: [], bar: [], dataConfig: [] };
       if (!projectCostFilters.value.step) {
-        if (get(dateFormatMap, projectCostFilters.value.groupBy)) {
-          list = sortBy(list, (s) => s.itemName);
-        }
-        each(list, (item) => {
-          const itemName = get(dateFormatMap, projectCostFilters.value.groupBy)
-            ? dayjs(item.itemName).format(
-                get(dateFormatMap, projectCostFilters.value.groupBy)
-              )
-            : item.itemName;
-          projectCostChart.value.xAxis.push(itemName);
-          projectCostChart.value.bar.push({
-            name: itemName,
-            value: [item.totalCost]
-          });
-        });
+        const result = setProjectCostChartData({ list, key: 'totalCost' });
+        projectCostChart.value = result;
       } else {
         const result = getStackLineData({
           list,
@@ -144,6 +150,7 @@ export default function usePerspectiveCost(props) {
       console.log('projectCostChart===', projectCostChart.value);
       apploading.value = false;
     } catch (error) {
+      projectChartDataList.value = [];
       apploading.value = false;
       projectCostChart.value = { xAxis: [], line: [], bar: [], dataConfig: [] };
       console.log(error);
@@ -179,6 +186,7 @@ export default function usePerspectiveCost(props) {
     getPerspectiveItemInfo,
     getProjectCostChart,
     getSummaryData,
+    setProjectCostChartData,
     projectCostFilters,
     projectCostChart,
     summaryData,
@@ -189,6 +197,7 @@ export default function usePerspectiveCost(props) {
     loading,
     overviewloading,
     timeMode,
-    collectedTimeRange
+    collectedTimeRange,
+    projectChartDataList
   };
 }

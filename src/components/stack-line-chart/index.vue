@@ -19,7 +19,7 @@
       <a-select
         v-if="showFilter"
         v-model="selectedList"
-        style="min-width: 300px; text-align: left"
+        style="min-width: 200px; text-align: left"
         :placeholder="$t('common.chart.filter.holder')"
         multiple
         :max-tag-count="1"

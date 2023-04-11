@@ -219,6 +219,23 @@
       borderless
       style="margin-bottom: 10px"
     >
+      <template #title>
+        <div style="display: flex; justify-content: space-between">
+          <span>{{ $t('cost.analyse.table.namespaceCost') }}</span>
+          <a-select
+            v-model="namespaceFilterKey"
+            style="width: 200px"
+            @change="handleNamespaceFilterChange"
+          >
+            <a-option
+              v-for="(item, index) in workloadCostFilterKeys"
+              :key="index"
+              :value="item.dataIndex"
+              :label="$t(item.title)"
+            ></a-option>
+          </a-select>
+        </div>
+      </template>
       <horizontalBar
         :loading="spaceloading || preloading"
         style="flex: 1"
@@ -273,7 +290,7 @@
               v-for="(item, index) in workloadCostFilterKeys"
               :key="index"
               :value="item.dataIndex"
-              :label="item.title"
+              :label="$t(item.title)"
             ></a-option>
           </a-select>
         </template>
@@ -301,7 +318,8 @@
     each,
     round,
     cloneDeep,
-    map
+    map,
+    sortBy
   } from 'lodash';
   import { reactive, ref, computed, onMounted, watch, inject } from 'vue';
   import useCallCommon from '@/hooks/use-call-common';
@@ -388,7 +406,8 @@
     timeMode,
     overData,
     workloadDataList,
-    collectedTimeRange
+    collectedTimeRange,
+    namespaceDataList
   } = usePerspectiveCost(props);
   const markCellStyle = {
     border: '1px solid rgb(var(--arcoblue-6))'
@@ -396,6 +415,7 @@
   const componentName = inject('componentName', ref('cluster'));
   const { t, route } = useCallCommon();
   const loadeend = ref(false);
+  const namespaceFilterKey = ref('totalCost');
   const clusterOptions = [
     { label: 'cluster-1', value: 'cluster1' },
     { label: 'cluster-2', value: 'cluster2' }
@@ -445,10 +465,7 @@
     const resList = filter(list, (item) => {
       return item.dataIndex !== 'itemName';
     });
-    return map(resList, (sItem) => {
-      sItem.title = t(sItem.title);
-      return sItem;
-    });
+    return resList;
   });
   const requestWork = computed(() => {
     return !!queryParams.connectorID;
@@ -469,6 +486,21 @@
       }
     };
   });
+  const handleNamespaceFilterChange = (key) => {
+    const list = sortBy(namespaceDataList.value, (s) => s[key]).reverse();
+    const xAxis: string[] = [];
+    const bar: Array<{ name: string; value: string }> = [];
+    each(list, (item) => {
+      // values.push(item.totalCost);
+      xAxis.push(item.itemName);
+      bar.push({
+        name: item.itemName,
+        value: get(item, key)
+      });
+    });
+    nameSpaceCostChart.value.xAxis = [].concat(xAxis as never[]);
+    nameSpaceCostChart.value.bar = [].concat(bar as never[]);
+  };
   const handleFilterChange = (key) => {
     const result = getStackLineData({
       list: workloadDataList.value,

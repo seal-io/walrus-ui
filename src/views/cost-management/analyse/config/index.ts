@@ -382,7 +382,68 @@ export const projectCostCols = [
     title: 'cost.analyse.detail.totalCost'
   }
 ];
-
+export const costTableCols = [
+  {
+    ellipsis: true,
+    tooltip: true,
+    cellStyle: { minWidth: '40px' },
+    dataIndex: 'cpuCost',
+    render({ record }) {
+      return round(record.cpuCost, 4) || 0;
+    },
+    title: 'CPU'
+  },
+  {
+    ellipsis: true,
+    tooltip: true,
+    cellStyle: { minWidth: '40px' },
+    dataIndex: 'ramCost',
+    render({ record }) {
+      return round(record.ramCost, 4) || 0;
+    },
+    title: 'cost.analyse.table.ram'
+  },
+  {
+    ellipsis: true,
+    tooltip: true,
+    cellStyle: { minWidth: '40px' },
+    dataIndex: 'pvCost',
+    render({ record }) {
+      return round(record.pvCost, 4) || 0;
+    },
+    title: 'PV'
+  },
+  {
+    ellipsis: true,
+    tooltip: true,
+    cellStyle: { minWidth: '40px' },
+    dataIndex: 'pvCost',
+    render({ record }) {
+      return round(record.loadBalancerCost, 4) || 0;
+    },
+    title: 'cost.analyse.table.loadbalance'
+  },
+  {
+    ellipsis: true,
+    tooltip: true,
+    cellStyle: { minWidth: '40px' },
+    dataIndex: 'sharedCost',
+    render({ record }) {
+      return round(record.sharedCost, 4) || 0;
+    },
+    title: 'cost.analyse.table.shareCost'
+  },
+  {
+    ellipsis: true,
+    tooltip: true,
+    cellStyle: { minWidth: '40px' },
+    dataIndex: 'totalCost',
+    render({ record }) {
+      return round(record.totalCost, 4) || 0;
+    },
+    title: 'cost.analyse.detail.totalCost'
+  }
+];
 export const builtinViewMap = {
   all: 'cost.optimize.table.all',
   project: 'cost.optimize.table.project',

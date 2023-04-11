@@ -14,6 +14,9 @@
     <div v-if="!dataList.length" :style="{ height: height }" class="empty-data">
       <a-empty :style="{ marginTop: `${height}px` }"></a-empty>
     </div>
+    <div class="filter-opts">
+      <slot name="filter"></slot>
+    </div>
   </div>
 </template>
 
@@ -150,6 +153,14 @@
 
 <style lang="less" scoped>
   .bar-box {
+    position: relative;
+
+    .filter-opts {
+      position: absolute;
+      top: 0;
+      right: 10px;
+    }
+
     .empty-data {
       display: flex;
       flex-direction: column;
