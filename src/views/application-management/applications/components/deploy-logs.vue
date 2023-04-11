@@ -1,6 +1,6 @@
 <template>
   <div class="logs-wrap">
-    <div class="log-text">
+    <div ref="scroller" class="log-text">
       {{ content }}
     </div>
     <!-- <AceEditor :model-value="content" read-only></AceEditor> -->
@@ -44,6 +44,7 @@
   const emits = defineEmits(['close']);
   const wssInstance: any = ref('');
   const content = ref('');
+  const scroller = ref();
   const createWebSockerConnection = () => {
     if (!props.revisionId) return;
     const wssURL = createWebSocketUrl(
@@ -63,6 +64,18 @@
   const handleClose = () => {
     emits('close');
   };
+  const updateScrollerPosition = () => {
+    const { scrollHeight, clientHeight, scrollTop } = scroller.value;
+    console.log('scroller===1===', scrollHeight, clientHeight, scrollTop);
+    if (scrollHeight > clientHeight + scrollTop) {
+      scroller.value.scrollTop = scrollHeight - clientHeight;
+      window.requestAnimationFrame(updateScrollerPosition);
+    }
+  };
+  const updateContent = (newVal) => {
+    content.value = `${content.value}${newVal}`;
+    window.requestAnimationFrame(updateScrollerPosition);
+  };
   const init = () => {
     content.value = '';
     createWebSockerConnection();
@@ -73,7 +86,7 @@
     () => wssInstance.value?.data,
     (newVal) => {
       if (newVal) {
-        content.value = `${content.value}${newVal}`;
+        updateContent(newVal);
       }
     },
     {

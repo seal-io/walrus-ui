@@ -9,7 +9,11 @@
     :mask-closable="false"
     :body-style="{ height: '500px', overflow: 'auto', paddingBottom: 0 }"
     modal-class="log-detail-modal"
-    :title="$t('applications.applications.history.detail')"
+    :title="
+      initialStatus === RevisionStatus.Running
+        ? $t('applications.applications.history.running')
+        : $t('applications.applications.history.detail')
+    "
     @cancel="handleCancel"
     @ok="handleOk"
     @before-open="handleBeforeOpen"
@@ -46,12 +50,12 @@
       </a-descriptions>
       <div class="logs-content" style="text-align: left">
         <div class="label">{{
-          get(revisionData, 'status') === RevisionStatus.Running
+          initialStatus === RevisionStatus.Running
             ? $t('applications.applications.logs.live')
             : $t('applications.applications.instance.log')
         }}</div>
         <deployLogs
-          v-if="get(revisionData, 'status') === RevisionStatus.Running"
+          v-if="initialStatus === RevisionStatus.Running"
           :show="show"
           :revision-id="get(revisionData, 'id')"
         ></deployLogs>
@@ -106,6 +110,12 @@
       default() {
         return {};
       }
+    },
+    initialStatus: {
+      type: String,
+      default() {
+        return '';
+      }
     }
   });
   const emit = defineEmits(['update:show']);
@@ -113,7 +123,6 @@
   const loading = ref(false);
   const showTimer = ref(true);
   const revisionData = ref({});
-  const runStatus = ref('');
 
   const isStopped = computed(() => {
     const status = get(revisionData.value, 'status');
@@ -165,21 +174,11 @@
   watch(
     () => props.dataInfo,
     () => {
-      if (get(props.dataInfo, 'status') === 'Running') {
+      if (props.initialStatus === RevisionStatus.Running) {
         revisionData.value = cloneDeep(props.dataInfo);
       } else {
         fetchData();
       }
-    },
-    {
-      immediate: true,
-      deep: true
-    }
-  );
-  watch(
-    () => revisionData.value,
-    () => {
-      runStatus.value = get(revisionData.value, 'status');
     },
     {
       immediate: true,

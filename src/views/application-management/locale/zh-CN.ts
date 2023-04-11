@@ -68,6 +68,8 @@ export default {
   'applications.applications.history.createTime': '部署时间',
   'applications.applications.history.rollback': '回滚',
   'applications.applications.history.detail': '版本详情',
+  'applications.applications.history.running': '部署详情',
+  'applications.applications.logs.holder': '请选择对象',
   'applications.applications.modules.title': '模块',
   'applications.applications.labels.title': '添加标签',
   'applications.applications.rules.modules': '模块不能为空',

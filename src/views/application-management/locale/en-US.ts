@@ -70,6 +70,8 @@ export default {
   'applications.applications.history.deploymentTime': 'Deployment Time',
   'applications.applications.history.rollback': 'Rollback',
   'applications.applications.history.detail': 'Revision Details',
+  'applications.applications.history.running': 'Deployment details',
+  'applications.applications.logs.holder': 'please select an object',
   'applications.applications.modules.title': 'Modules',
   'applications.applications.labels.title': 'Add labels',
   'applications.applications.rules.modules': 'module is required',

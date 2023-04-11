@@ -123,6 +123,7 @@
       v-model:show="showDetailModal"
       :data-info="revisionData"
       :revision-id="revisionDetailId"
+      :initial-status="initialStatus"
     ></revisionDetailVue>
   </div>
 </template>
@@ -176,6 +177,7 @@
   const loading = ref(false);
   const showDetailModal = ref(false);
   const ids = ref<{ id: string }[]>([]);
+  const initialStatus = ref('');
   const websocketRevisions = ref<any>(null);
   const showLogs = ref(false);
   const queryParams = reactive({
@@ -239,6 +241,7 @@
   const handleViewDetail = (row) => {
     revisionDetailId.value = row.id;
     revisionData.value = row;
+    initialStatus.value = row.status;
     setTimeout(() => {
       showDetailModal.value = true;
     }, 100);
