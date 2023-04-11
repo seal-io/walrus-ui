@@ -293,6 +293,7 @@
   };
   // get set: edit create
   const generateVariablesGroup = (type) => {
+    refMap = {};
     variablesGroup.value = {};
     variablesGroupForm.value = {};
     const sourceData = {
