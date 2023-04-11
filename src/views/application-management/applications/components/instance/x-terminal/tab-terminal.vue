@@ -5,7 +5,7 @@
       :model-value="resourceKey"
       style="width: 240px; margin-bottom: 8px"
       :options="containerList"
-      placeholder="请选择对象"
+      :placeholder="$t('applications.applications.logs.holder')"
       @change="handleObjectChange"
     ></a-cascader>
     <xTerminal :url="wssURL"></xTerminal>
@@ -13,7 +13,7 @@
 </template>
 
 <script lang="ts" setup>
-  import { inject, ref, computed, onMounted } from 'vue';
+  import { inject, ref, computed, onMounted, watch, nextTick } from 'vue';
   import xTerminal from '@/components/x-terminal/index.vue';
   import { queryApplicationResource } from '../../../api';
   import { Cascader } from '../../../config/interface';
@@ -39,11 +39,15 @@
   });
   const handleObjectChange = (val) => {
     const result = getResourceId(val);
+    console.log('handleObjectChange:', result);
     resourceKey.value = result.key;
     resourceId.value = result.id;
   };
-
+  const resetData = () => {
+    containerList.value = [];
+  };
   const getApplicationResource = async () => {
+    resetData();
     if (!instanceId.value) return;
     try {
       loading.value = true;
@@ -67,8 +71,19 @@
     }
   };
   onMounted(() => {
-    getApplicationResource();
+    // getApplicationResource();
   });
+  watch(
+    () => instanceId.value,
+    () => {
+      nextTick(() => {
+        getApplicationResource();
+      });
+    },
+    {
+      immediate: true
+    }
+  );
 </script>
 
 <style lang="less" scoped></style>

@@ -10,7 +10,16 @@
 
 <script lang="ts" setup>
   import qs from 'query-string';
-  import { ref, onMounted, onBeforeUnmount, watch, computed } from 'vue';
+  import hasAnsi from 'has-ansi';
+  import stripAnsi from 'strip-ansi';
+  import {
+    ref,
+    onMounted,
+    onBeforeUnmount,
+    watch,
+    computed,
+    nextTick
+  } from 'vue';
   import {
     debounce,
     trim,
@@ -64,24 +73,16 @@
   const setErrorData = (data) => {
     return `\x1b[31m${data}\x1b[m`;
   };
-  // 是否连接中0 1 2 3
+  // readyState: 0 1 2 3
   const isWsOpen = () => {
     const readyState = terminalSocket.value && terminalSocket.value.readyState;
     return readyState === 1;
   };
-  // 发送给后端,调整后端终端大小,和前端保持一致,不然前端只是范围变大了,命令还是会换行
   const resizeRemoteTerminal = () => {
     const { cols, rows } = term.value;
     console.log('wss: resize', cols, rows);
     if (isWsOpen()) {
       terminalSocket.value.send(`#{"width":${cols},"height":${rows}}#`);
-      // terminalSocket.value.send(
-      //   JSON.stringify({
-      //     Op: 'resize',
-      //     Cols: cols,
-      //     Rows: rows
-      //   })
-      // );
     }
   };
   const clearCommand = () => {
@@ -97,17 +98,12 @@
     console.log('command===', JSON.stringify(data));
     if (isWsOpen()) {
       terminalSocket.value.send(`${data}\r\n`);
-      // terminalSocket.value.send(
-      //   JSON.stringify({
-      //     Op: 'stdin',
-      //     Data: `${data}\r\n`
-      //   })
-      // );
     }
     enterPrompt();
     console.log('wss: commond', data, command.value);
   };
   const onDataCallback = (e) => {
+    console.log('data code===', e);
     switch (e) {
       case '\u0003': // Ctrl+C
         term.value.write('^C');
@@ -137,7 +133,6 @@
     }
   };
   const onWSReceive = (message) => {
-    // 首次接收消息,发送给后端，进行同步适配
     if (first.value === true) {
       first.value = false;
       resizeRemoteTerminal();
@@ -204,7 +199,7 @@
       createWS();
       return;
     }
-    terminalSocket.value.close();
+    terminalSocket.value?.close?.();
     createWS();
   };
   const initTerm = () => {
@@ -224,11 +219,9 @@
     });
     term.value.open(terminal.value);
     term.value.loadAddon(fitAddon);
-    // term.value.write(initData());
-    // 不能初始化的时候fit,需要等terminal准备就绪,可以设置延时操作
-    setTimeout(() => {
+    nextTick(() => {
       fitAddon.fit();
-    }, 100);
+    });
   };
 
   const fitTerm = () => {
@@ -238,18 +231,9 @@
   const onResize = debounce(() => fitTerm(), 500);
 
   const termData = () => {
-    // 输入与粘贴的情况,onData不能重复绑定,不然会发送多次
     term.value.onData((data) => {
       console.log('wss: data', data, isWsOpen());
       onDataCallback(data);
-      // if (isWsOpen()) {
-      //   terminalSocket.value.send(
-      //     JSON.stringify({
-      //       Op: 'stdin',
-      //       Data: data
-      //     })
-      //   );
-      // }
     });
   };
   const onTerminalResize = () => {
@@ -278,18 +262,21 @@
       okText: 'common.ws.reconnect'
     });
   };
-  // 监听类型变化，重置term
+
   watch(
     () => props.url,
     () => {
-      if (!props.url) return;
-      console.log('querystring===', qs.parse(props.url));
-      first.value = true;
-      loading.value = true;
-      setWssUrl(true);
-      initWS();
-      // 重置
-      term.value.reset();
+      if (!props.url) {
+        term.value?.reset?.();
+        terminalSocket.value?.close?.();
+        terminalSocket.value = {};
+      } else {
+        first.value = true;
+        loading.value = true;
+        setWssUrl(true);
+        initWS();
+        term.value.reset();
+      }
     },
     {
       immediate: false

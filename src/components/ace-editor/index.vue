@@ -47,6 +47,12 @@
         return '';
       }
     },
+    theme: {
+      type: String,
+      default() {
+        return '';
+      }
+    },
     lang: {
       type: String,
       default() {
@@ -329,7 +335,7 @@
         fontSize: 14,
         readOnly: props.readOnly,
         mode: `ace/mode/${props.lang}`,
-        // theme: 'ace/theme/monokai',
+        theme: props.theme ? `ace/theme/${props.theme}` : '',
         enableSnippets: false,
         showGutter: props.showGutter,
         autoScrollEditorIntoView: false, // 自动滚动编辑器视图

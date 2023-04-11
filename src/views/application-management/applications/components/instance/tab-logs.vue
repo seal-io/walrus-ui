@@ -5,7 +5,7 @@
       style="width: 240px; margin-bottom: 8px"
       :options="containerList"
       :model-value="logKey"
-      placeholder="请选择对象"
+      :placeholder="$t('applications.applications.logs.holder')"
       @change="handleObjectChange"
     ></a-cascader>
     <a-textarea
@@ -13,7 +13,12 @@
       readonly
       :auto-size="{ minRows: 10, maxRows: 20 }"
     ></a-textarea>
-    <!-- <AceEditor :model-value="content" read-only></AceEditor> -->
+    <!-- <AceEditor
+      :editor-default-value="content"
+      read-only
+      :show-gutter="false"
+      :height="400"
+    ></AceEditor> -->
   </div>
 </template>
 
@@ -21,6 +26,8 @@
   import { useWebSocket } from '@vueuse/core';
   import { createWebSocketUrl } from '@/hooks/use-websocket';
   import { get, split, map, filter } from 'lodash';
+  import stripAnsi from 'strip-ansi';
+  import hasAnsi from 'has-ansi';
   import {
     onMounted,
     ref,
@@ -28,7 +35,7 @@
     computed,
     onBeforeUnmount,
     watch,
-    onUnmounted
+    nextTick
   } from 'vue';
   import AceEditor from '@/components/ace-editor/index.vue';
   import { InstanceResource, Cascader } from '../../config/interface';
@@ -42,7 +49,6 @@
   const wssInstance: any = ref('');
   const content = ref('');
   const loading = ref(false);
-  // const dataList = ref<InstanceResource[]>([]);
   const containerList = ref<Cascader[]>([]);
 
   // const content = computed(() => {
@@ -81,8 +87,15 @@
 
     console.log('object:', val, wssInstance.value);
   };
+  const resetData = () => {
+    containerList.value = [];
+    content.value = '';
+  };
   const getApplicationResource = async () => {
-    if (!instanceId.value) return;
+    resetData();
+    if (!instanceId.value) {
+      return;
+    }
     try {
       loading.value = true;
       const params = {
@@ -95,29 +108,44 @@
       // const list = testData;
       containerList.value = generateResourcesKeys(list, 'loggable');
       const defaultValue = getDefaultValue(containerList.value);
+      console.log('defaultValue===', defaultValue);
       handleObjectChange(defaultValue);
       loading.value = false;
     } catch (error) {
       loading.value = false;
       console.log(error);
       containerList.value = [];
-      // dataList.value = [];
     }
   };
-
+  const updateContent = (newVal) => {
+    if (hasAnsi(newVal)) {
+      content.value = `${content.value}${stripAnsi(newVal)}`;
+    } else {
+      content.value = `${content.value}${newVal}`;
+    }
+  };
   const init = async () => {
     await getApplicationResource();
     // await getResourceKeys();
   };
-  onMounted(() => {
-    init();
-  });
   watch(
     () => wssInstance.value?.data,
     (newVal) => {
       if (newVal) {
-        content.value = `${content.value}${newVal}`;
+        updateContent(newVal);
       }
+    },
+    {
+      immediate: true
+    }
+  );
+  watch(
+    () => instanceId.value,
+    () => {
+      wssInstance.value?.close?.();
+      nextTick(() => {
+        init();
+      });
     },
     {
       immediate: true
