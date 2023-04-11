@@ -342,6 +342,7 @@
     emit('update:show', false);
   };
   const resetForm = () => {
+    refMap = {};
     formData.name = '';
     formData.module = { id: '' };
     formData.version = '';
@@ -383,6 +384,7 @@
   };
   // get set: edit create
   const generateVariablesGroup = (type) => {
+    refMap = {};
     variablesGroup.value = {};
     variablesGroupForm.value = {};
     const sourceData = {
@@ -493,6 +495,7 @@
   // get group form data
   const getRefFormData = async () => {
     const resultList: any[] = [];
+    console.log('refMap==1212====', keys(refMap));
     await Promise.all(
       keys(refMap).map(async (key) => {
         const refEL = refMap[key];
@@ -584,7 +587,7 @@
       const result = await schemaForm.value?.getFormData();
       moduleFormList = [{ formData: result }];
     }
-    console.log('moduleFormList===', moduleFormList, variablesGroup);
+    console.log('moduleFormList===', refMap, moduleFormList, variablesGroup);
     const validFailedForm = find(moduleFormList, (item) => !item.formData);
     if (validFailedForm && validFailedForm.tab) {
       activeKey.value = validFailedForm.tab;
