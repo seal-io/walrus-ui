@@ -34,6 +34,7 @@
   import { FitAddon } from 'xterm-addon-fit';
   import 'xterm/css/xterm.css';
   import { deleteModal } from '@/utils/monitor';
+  import platformCall from '@/utils/platform';
 
   const props = defineProps({
     terminalDetail: Object,
@@ -45,6 +46,7 @@
       }
     }
   });
+  const platform = platformCall();
   const terminalEnvList = ['bash', 'sh', 'powershell', 'pwsh', 'cmd', 'bash'];
   const fitAddon = new FitAddon();
   const terminal = ref(null);
@@ -94,17 +96,15 @@
     // term.value.write('\r\n');
   };
   const runCommand = () => {
-    const data = trim(command.value);
-    console.log('command===', JSON.stringify(data));
+    command.value = trim(command.value);
     if (isWsOpen()) {
-      terminalSocket.value.send(`${data}\r\n`);
+      terminalSocket.value.send(`${command.value}\r`);
     }
-    enterPrompt();
-    console.log('wss: commond', data, command.value);
+    console.log('wss: commond', command.value);
   };
   const runCancel = () => {
     if (isWsOpen()) {
-      terminalSocket.value.send(`\r\n`);
+      terminalSocket.value.send(`exit\r`);
     }
     command.value = '';
   };
@@ -157,12 +157,7 @@
       term.value.write(setData(output));
     }
     bufferLength.value = term.value._core.buffer.x;
-    console.log(
-      'wss: receive',
-      term.value._core,
-      term.value._core.buffer.x,
-      bufferLength.value
-    );
+    console.log('wss: receive', term.value.buffer, data.Data);
     // term.value.write(setData(`${output}`));
     setTimeout(() => {
       clearCommand();
@@ -242,10 +237,24 @@
   };
   const onResize = debounce(() => fitTerm(), 500);
 
-  const termData = () => {
+  const registerTermHandler = () => {
     term.value.onData((data) => {
       console.log('wss: data', data, isWsOpen());
       onDataCallback(data);
+    });
+    term.value.onKey((e) => {
+      console.log('key>>ee>>=1==', e);
+    });
+    term.value.attachCustomKeyEventHandler(async (e) => {
+      if (platform.isMac && e.metaKey && e.code === 'KeyV') {
+        const val = await navigator.clipboard.readText();
+        command.value = val;
+        term.value.write(val);
+      } else if (e.ctrlKey && e.code === 'KeyV') {
+        const val = await navigator.clipboard.readText();
+        command.value = val;
+        term.value.write(val);
+      }
     });
   };
   const onTerminalResize = () => {
@@ -258,11 +267,10 @@
   const init = () => {
     initWS();
     initTerm();
-    termData();
+    registerTermHandler();
     onTerminalResize();
   };
   const retry = () => {
-    term.value?.dispose?.();
     terminalSocket.value.close?.();
     init();
     term.value.reset();
@@ -280,6 +288,7 @@
     () => {
       if (!props.url) {
         term.value?.reset?.();
+        term.value?.dispose?.();
         terminalSocket.value?.close?.();
         terminalSocket.value = {};
       } else {
@@ -317,7 +326,7 @@
     console.log('wss: dispose');
     actived.value = false;
     term.value?.dispose?.();
-    if (terminalSocket.value) terminalSocket.value.close();
+    if (terminalSocket.value) terminalSocket.value.close?.();
   });
 </script>
 
