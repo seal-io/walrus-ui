@@ -70,5 +70,6 @@ export default {
   'common.input.value': 'value',
   'common.input.description': 'description',
   'common.time.day': 'day',
-  'common.chart.filter.holder': 'filter data items'
+  'common.chart.filter.holder': 'filter data items',
+  'common.chart.filter.tips': 'View more by filter'
 };

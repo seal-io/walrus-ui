@@ -31,7 +31,7 @@
     title: {
       type: String,
       default() {
-        return '日志';
+        return '';
       }
     },
     show: {
@@ -51,13 +51,6 @@
       `/application-revisions/${props.revisionId}/log`
     );
     wssInstance.value = useWebSocket(wssURL, {
-      // autoReconnect: {
-      //   retries: 3,
-      //   delay: 1000,
-      //   onFailed() {
-      //     console.log('Failed to connect WebSocket after 3 retries');
-      //   }
-      // }
       autoReconnect: false
     });
   };
@@ -68,7 +61,8 @@
     const { scrollHeight, clientHeight, scrollTop } = scroller.value;
     console.log('scroller===1===', scrollHeight, clientHeight, scrollTop);
     if (scrollHeight > clientHeight + scrollTop) {
-      scroller.value.scrollTop = scrollHeight - clientHeight;
+      scroller.value.scrollTop += 1;
+      // scroller.value.scrollTop = scrollHeight - clientHeight;
       window.requestAnimationFrame(updateScrollerPosition);
     }
   };
@@ -79,8 +73,6 @@
   const init = () => {
     content.value = '';
     createWebSockerConnection();
-
-    console.log('object:', wssInstance.value, props.revisionId);
   };
   watch(
     () => wssInstance.value?.data,

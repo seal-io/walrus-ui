@@ -161,14 +161,6 @@
     deleteApplicationRevisions
   } from '../../api';
 
-  const props = defineProps({
-    deployId: {
-      type: String,
-      default() {
-        return '';
-      }
-    }
-  });
   const instanceId = inject('instanceId', ref(''));
   const revisionId = ref('');
   const revisionDetailId = ref('');
@@ -291,22 +283,6 @@
       nextTick(() => {
         createInstanceListWebsocket();
       });
-    },
-    {
-      immediate: true
-    }
-  );
-  watch(
-    () => props.deployId,
-    (val) => {
-      if (val) {
-        revisionId.value = props.deployId;
-        showLogs.value = true;
-        queryParams.page = 1;
-        handleFilter();
-      } else {
-        showLogs.value = false;
-      }
     },
     {
       immediate: true

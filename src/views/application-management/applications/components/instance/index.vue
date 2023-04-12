@@ -16,7 +16,7 @@
       <BasicInfo></BasicInfo>
     </ModuleCard>
     <ModuleCard :title="$t('applications.applications.instance.history')">
-      <applicationHistory :deploy-id="deployId"></applicationHistory>
+      <applicationHistory></applicationHistory>
     </ModuleCard>
     <ModuleCard :title="$t('applications.applications.instance.accessUrl')">
       <tabEndpoint ref="tabEndpointCom"></tabEndpoint>
@@ -63,14 +63,6 @@
         >
       </template> -->
     </EditPageFooter>
-    <createInstance
-      v-model:show="showInstanceModal"
-      v-model:status="status"
-      :title="$t('applications.applications.instance.upgrade')"
-      :variables="appInfoVariables"
-      :environment-list="environmentList"
-      @save="handleSaveInstanceInfo"
-    ></createInstance>
   </div>
 </template>
 
@@ -87,7 +79,6 @@
   import tabGraph from './tab-graph.vue';
   import tabEndpoint from './tab-endpoint.vue';
   import applicationHistory from './application-history.vue';
-  import createInstance from '../create-instance.vue';
   import BasicInfo from './basic-info.vue';
   import { instanceTabs } from '../../config';
   import { EndPointRow } from '../../config/interface';
@@ -102,14 +93,8 @@
     }
   });
   // 1: create 2: update 3: delete
-  const environmentList = inject('environmentList', ref([]));
-  const instanceInfo = inject('instanceInfo', ref({}));
-  const appInfo = inject('appInfo', reactive({}));
   const { router, route } = useCallCommon();
   const activeKey = ref('resource');
-  const showInstanceModal = ref(false);
-  const status = ref('edit');
-  const deployId = ref('');
   const tabEndpointCom = ref();
   const instanceTabMap = {
     tabResource: markRaw(tabResource),
@@ -121,23 +106,12 @@
     tabTerminal: markRaw(tabTerminal)
     // tabEndpoint: markRaw(tabEndpoint)
   };
-
-  const appInfoVariables = computed(() => {
-    return cloneDeep(get(appInfo, 'variables') || []);
-  });
   const handleTabChange = (val) => {
     activeKey.value = val;
   };
   const handleCallUpdateEndpoint = () => {
     console.log('update endpoint');
     tabEndpointCom.value.refreshDataList();
-  };
-  const handleSaveInstanceInfo = (res) => {
-    deployId.value = res?.data.id;
-  };
-  const handleUpgradeInstance = () => {
-    status.value = 'edit';
-    showInstanceModal.value = true;
   };
   const getInstanceInfo = async () => {
     if (!props.instanceId) return;
@@ -153,7 +127,6 @@
   watch(
     () => props.instanceId,
     () => {
-      deployId.value = '';
       // getInstanceInfo();
       // getEndpoints();
     },

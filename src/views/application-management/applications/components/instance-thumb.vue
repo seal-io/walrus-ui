@@ -40,6 +40,16 @@
         >
       </template>
     </a-dropdown>
+    <!-- <div
+      v-if="actions.length === 1"
+      style="position: absolute; top: 2px; right: 0"
+    >
+      <a-link>
+        <template #icon>
+          <component :is="get(actions, '0.icon')"></component>
+        </template>
+      </a-link>
+    </div> -->
     <div class="status">
       <slot name="status"></slot>
     </div>

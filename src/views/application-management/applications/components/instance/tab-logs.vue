@@ -8,15 +8,16 @@
       :placeholder="$t('applications.applications.logs.holder')"
       @change="handleObjectChange"
     ></a-cascader>
-    <a-textarea
-      v-model="content"
-      readonly
-      :auto-size="{ minRows: 10, maxRows: 20 }"
-    ></a-textarea>
+    <div class="wrap">
+      <div class="content">
+        <div v-html="content"></div>
+      </div>
+    </div>
     <!-- <AceEditor
       :editor-default-value="content"
       read-only
       :show-gutter="false"
+      lang="html"
       :height="400"
     ></AceEditor> -->
   </div>
@@ -25,8 +26,9 @@
 <script lang="ts" setup>
   import { useWebSocket } from '@vueuse/core';
   import { createWebSocketUrl } from '@/hooks/use-websocket';
+  import Convert from 'ansi-to-html';
   import { get, split, map, filter } from 'lodash';
-  import stripAnsi from 'strip-ansi';
+  // import stripAnsi from 'strip-ansi';
   import hasAnsi from 'has-ansi';
   import {
     onMounted,
@@ -50,6 +52,7 @@
   const content = ref('');
   const loading = ref(false);
   const containerList = ref<Cascader[]>([]);
+  const convert = new Convert();
 
   // const content = computed(() => {
   //   return wssInstance.value?.data;
@@ -119,7 +122,7 @@
   };
   const updateContent = (newVal) => {
     if (hasAnsi(newVal)) {
-      content.value = `${content.value}${stripAnsi(newVal)}`;
+      content.value = `${content.value}${convert.toHtml(newVal)}`;
     } else {
       content.value = `${content.value}${newVal}`;
     }
@@ -165,4 +168,23 @@
   });
 </script>
 
-<style></style>
+<style lang="less" scoped>
+  .tab-logs-wrap {
+    .wrap {
+      height: 460px;
+      padding: 5px 0 5px 10px;
+      overflow: hidden;
+      background-color: var(--color-fill-2);
+      border-radius: var(--border-radius-small);
+
+      .content {
+        height: 450px;
+        overflow: auto;
+        font-size: 14px;
+        line-height: 22px;
+        white-space: pre-wrap;
+        background-color: var(--color-fill-2);
+      }
+    }
+  }
+</style>

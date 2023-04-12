@@ -50,7 +50,8 @@
     sortBy,
     filter,
     includes,
-    cloneDeep
+    cloneDeep,
+    slice
   } from 'lodash';
   import useChartOption from '@/hooks/chart-option';
   import { LineSeriesOption, EChartsOption, graphic } from 'echarts';
@@ -174,9 +175,10 @@
     console.log('selectedList===', selectedList.value);
   };
   const tooltipItemsHtmlString = (items: ToolTipFormatterParams[]) => {
-    return items
-      .map(
-        (el) => `<div class="content-panel">
+    const maxCount = 25;
+    const list = items.length > maxCount ? slice(items, 0, maxCount) : items;
+    const result = list.map(
+      (el) => `<div class="content-panel">
         <div class='series-name'>
           <span style="background-color: ${
             el.color
@@ -184,9 +186,16 @@
         </div>
         <span class="tooltip-value">${el.value?.toLocaleString()}</span>
       </div>`
-      )
-      .reverse()
-      .join('');
+    );
+    result.reverse();
+    if (items.length > maxCount) {
+      result.push(
+        `<div class="content-panel dot"><div class="series-name"></div></div><div class="content-panel notes-text"><div class="series-name">${t(
+          'common.chart.filter.tips'
+        )}</div></div>`
+      );
+    }
+    return result.join('');
   };
   const { chartOption } = useChartOption((): any => {
     let configData: DataConfigItem[] = [];
