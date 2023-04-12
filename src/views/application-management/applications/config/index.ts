@@ -21,17 +21,7 @@ export const instanceTabs = [
     com: 'tabTerminal'
   }
 ];
-export const createConfigOptions = [
-  { label: 'webservice', value: 'webservice' },
-  { label: '阿里云RDS', value: 'aliRds' },
-  { label: 'S3', value: 's3' }
-];
-// instance configuration
-export const instanceConfiguration = [
-  { label: '用户密码', value: '1' },
-  { label: 'SSH密码', value: '2' },
-  { label: '无', value: '3' }
-];
+
 export const reserveFields = [
   'source',
   'version',

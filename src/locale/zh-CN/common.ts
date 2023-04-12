@@ -68,5 +68,6 @@ export default {
   'common.input.value': '值',
   'common.input.description': '描述',
   'common.time.day': '天',
-  'common.chart.filter.holder': '过滤数据项'
+  'common.chart.filter.holder': '过滤数据项',
+  'common.chart.filter.tips': '过滤查看更多数据项'
 };

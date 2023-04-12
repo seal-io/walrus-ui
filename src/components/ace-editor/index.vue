@@ -25,6 +25,8 @@
   import 'ace-builds/src-noconflict/mode-javascript';
   import 'ace-builds/src-noconflict/mode-text';
   import 'ace-builds/src-noconflict/mode-json';
+  // import 'ace-builds/src-noconflict/mode-html';
+  // import 'ace-builds/src-noconflict/mode-terraform';
   import 'ace-builds/src-noconflict/mode-yaml';
   import 'ace-builds/src-noconflict/mode-sh';
   import 'ace-builds/src-noconflict/mode-xml';
@@ -109,6 +111,7 @@
     }
   });
   const emits = defineEmits(['change', 'update:modelValue']);
+  console.log('terraform');
   // let timer:any = null
   let aceEditor: any = null;
   const isInitialValue = ref(false);

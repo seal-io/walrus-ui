@@ -37,7 +37,7 @@
           :actions="pageAction === 'edit' ? moduleActions : []"
           @edit="handleEditModule(item)"
           @delete="handleDeleteModule(index)"
-          @click="handleClickInstance(item)"
+          @click="handleClickModule(item)"
         >
           <template #description>
             <div
@@ -309,8 +309,11 @@
       showEditModal.value = true;
     }, 150);
   };
-  const handleClickInstance = (data) => {
-    if (pageAction.value === 'edit') return;
+  const handleClickModule = (data) => {
+    if (pageAction.value === 'edit') {
+      handleEditModule(data);
+      return;
+    }
     viewModuleInfo.value = data;
     setTimeout(() => {
       showViewModal.value = true;

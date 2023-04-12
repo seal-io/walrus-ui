@@ -47,7 +47,6 @@
   });
   const terminalEnvList = ['bash', 'sh', 'powershell', 'pwsh', 'cmd', 'bash'];
   const fitAddon = new FitAddon();
-
   const terminal = ref(null);
   const first = ref(true);
   const loading = ref(true);
@@ -59,6 +58,7 @@
   const statusCode = ref<number>(0);
   const terminalEnvIndex = ref(0);
   const wssUrl = ref('');
+  const bufferLength = ref(0);
 
   const conReadyState = ref(0);
   const runRealTerminal = () => {
@@ -102,13 +102,18 @@
     enterPrompt();
     console.log('wss: commond', data, command.value);
   };
+  const runCancel = () => {
+    if (isWsOpen()) {
+      terminalSocket.value.send(`\r\n`);
+    }
+    command.value = '';
+  };
   const onDataCallback = (e) => {
     console.log('data code===', e);
     switch (e) {
       case '\u0003': // Ctrl+C
         term.value.write('^C');
-        command.value = '';
-        runCommand();
+        runCancel();
         break;
       case '\r': // Enter
         runCommand();
@@ -139,7 +144,7 @@
     }
     const data = { Data: message.data };
     conReadyState.value = terminalSocket.value.readyState;
-    console.log('wss: receive', message);
+
     // const data = JSON.parse(message.data) || '';
     if (term.value.element) term.value.focus();
     const inputCommand = `${command.value}\r\n`;
@@ -151,6 +156,13 @@
     } else {
       term.value.write(setData(output));
     }
+    bufferLength.value = term.value._core.buffer.x;
+    console.log(
+      'wss: receive',
+      term.value._core,
+      term.value._core.buffer.x,
+      bufferLength.value
+    );
     // term.value.write(setData(`${output}`));
     setTimeout(() => {
       clearCommand();

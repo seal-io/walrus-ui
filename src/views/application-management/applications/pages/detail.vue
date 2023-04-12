@@ -166,9 +166,6 @@
     project: {
       id: route.params.projectId
     },
-    environment: {
-      id: ''
-    },
     modules: []
   }) as AppFormData;
   const execReload = inject('execReload', () => {});
@@ -281,6 +278,9 @@
       };
       const { data } = await queryItemApplication(params);
       assignIn(appInfo, data);
+      appInfo.labels = data.labels || {};
+      appInfo.modules = data.modules || [];
+      appInfo.variables = data.variables || [];
       console.log('appInfo===', appInfo);
     } catch (error) {
       console.log(error);
