@@ -312,11 +312,12 @@
           // console.log('params======', result);
           const params = sortBy(result, (item) => item.value);
           const [firstElement] = params as ToolTipFormatterParams[];
+          const colCount = Math.ceil(divide(params.length, 10));
           return `<div class="chart-tooltip-wrap">
             <div class="tooltip-title">${firstElement.axisValueLabel}</div>
-            <div class="content-wrap" style="column-count: ${Math.ceil(
-              divide(params.length, 10)
-            )}">
+            <div class="content-wrap" style="column-count: ${
+              colCount > 3 ? 3 : colCount
+            }">
               ${tooltipItemsHtmlString(params as ToolTipFormatterParams[])}
               </div>
           </div>`;
