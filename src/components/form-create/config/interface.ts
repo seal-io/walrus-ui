@@ -93,7 +93,7 @@ export const parseComponentSchema = (schema: ComponentSchema) => {
   if (schema.Type === 'map(string)') {
     return {
       component: ['XInputGroup'],
-      props: { ...props },
+      props: { ...props, alwaysDelete: true },
       rules: [{ required: schema.Required, message: 'common.form.rule.input' }]
     };
   }

@@ -26,6 +26,9 @@
         </slot>
       </template>
       <template v-if="showExtra" #extra>
+        <div class="picker-tips">
+          <slot name="tips"></slot>
+        </div>
         <slot name="extra">
           <div v-if="timezone" class="date-type-wrapper">
             <span
@@ -43,7 +46,7 @@
               :key="item.value"
               class="item"
               :class="{ active: timeUnit === item.value }"
-              @click="handleClick(item)"
+              @click="handleSelectModel(item)"
               >{{ $t(item.label) }}</span
             >
           </div>
@@ -133,6 +136,12 @@
       type: Object as PropType<{ type: any; range: number }>,
       default() {
         return { type: 'month', range: 2 };
+      }
+    },
+    step: {
+      type: String,
+      default() {
+        return '';
       }
     }
   });
@@ -225,8 +234,9 @@
     pointDate.value = get(val, '1') || get(val, '0');
   };
   const disabledDate = (current) => {
-    // const type = props.timeUnit as unitType;
-    // const range = get(selectRangeMap, type);
+    if (props.step === 'month') {
+      return false;
+    }
     let rangValue = props.maxRange;
     let dateType: any = 'day';
     if (mode.value === 'date') {
@@ -240,6 +250,9 @@
     if (mode.value === 'year') {
       rangValue = { type: 'year', range: 1 };
       dateType = 'year';
+    }
+    if (['day', 'week'].includes(props.step)) {
+      rangValue.range = 12;
     }
     const { type, range } = rangValue;
     if (!props.todayIn) {
@@ -270,7 +283,7 @@
     return false;
   };
 
-  const handleClick = (item) => {
+  const handleSelectModel = (item) => {
     emits('update:timeUnit', item.value);
   };
 
@@ -399,4 +412,21 @@
   }
 </style>
 
-<style lang="less" scoped></style>
+<style lang="less" scoped>
+  .picker-tips {
+    margin-bottom: 10px;
+    padding: 5px 10px;
+    color: var(--color-text-3);
+    line-height: 18px;
+    background-color: var(--color-fill-2);
+    border-radius: var(--border-radius-small);
+  }
+</style>
+
+<style lang="less">
+  .arco-picker-footer {
+    .arco-picker-footer-extra-wrapper {
+      padding: 8px 16px;
+    }
+  }
+</style>

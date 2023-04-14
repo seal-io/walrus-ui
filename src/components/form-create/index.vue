@@ -28,38 +28,48 @@
                 </a-tooltip>
               </template>
               <div
-                v-if="fm.labelList?.length"
+                v-if="fm.Type === 'map(string)'"
                 style="display: flex; flex-direction: column"
               >
                 <!-- XInputGroup component -->
-                <component
-                  :is="formComponents[fm.parentCom]"
-                  v-for="(sItem, sIndex) in fm.labelList"
-                  :key="sIndex"
-                  v-model:dataKey="sItem.key"
-                  v-model:dataValue="sItem.value"
-                  v-model:value="formData[fm.Name]"
-                  style="width: 100%"
-                  width="100%"
-                  :form-id="fm.Name"
-                  class="group-item"
-                  :label-list="fm.labelList"
-                  :position="sIndex"
-                  v-bind="{ ...fm.props }"
-                  @add="(obj) => handleAddLabel(obj, fm.labelList)"
-                  @delete="handleDeleteLabel(fm.labelList, sIndex)"
-                >
-                  <template v-if="fm.childCom">
-                    <component
-                      :is="formComponents[fm.childCom]"
-                      v-for="com in fm.Options"
-                      :key="com"
-                      :form-id="formId"
-                      :value="com"
-                      >{{ com }}</component
-                    >
-                  </template>
-                </component>
+                <template v-if="fm?.labelList?.length">
+                  <component
+                    :is="formComponents[fm.parentCom]"
+                    v-for="(sItem, sIndex) in fm.labelList"
+                    :key="sIndex"
+                    v-model:dataKey="sItem.key"
+                    v-model:dataValue="sItem.value"
+                    v-model:value="formData[fm.Name]"
+                    style="width: 100%"
+                    width="100%"
+                    :form-id="fm.Name"
+                    class="group-item"
+                    :label-list="fm.labelList"
+                    :position="sIndex"
+                    v-bind="{ ...fm.props }"
+                    @add="(obj) => handleAddLabel(obj, fm.labelList)"
+                    @delete="handleDeleteLabel(fm.labelList, sIndex)"
+                  >
+                    <template v-if="fm.childCom">
+                      <component
+                        :is="formComponents[fm.childCom]"
+                        v-for="com in fm.Options"
+                        :key="com"
+                        :form-id="formId"
+                        :value="com"
+                        >{{ com }}</component
+                      >
+                    </template>
+                  </component>
+                </template>
+                <template v-else>
+                  <thumbButton
+                    :size="24"
+                    class="mleft-5"
+                    font-size="14px"
+                    @click="handleAddOne(fm.labelList)"
+                  ></thumbButton>
+                </template>
               </div>
               <template v-else>
                 <component
@@ -144,6 +154,7 @@
   import axios, { CancelToken } from 'axios';
   import { useI18n } from 'vue-i18n';
   import editPageFooter from '@/components/edit-page-footer/index.vue';
+  import thumbButton from '@/components/buttons/thumb-button.vue';
   import {
     ComponentSchema,
     parseComponentSchema,
@@ -258,8 +269,12 @@
   const handleAddLabel = (obj, list) => {
     list.push({ ...obj });
   };
+  const handleAddOne = (list) => {
+    list.push({ key: '', value: '' });
+  };
   const handleDeleteLabel = (list, index) => {
     list.splice(index, 1);
+    console.log('fmlabelList===', list);
   };
   // reset field default value when showIf is negative
   const resetFieldsDefaultValue = () => {

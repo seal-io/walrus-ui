@@ -19,7 +19,7 @@
           :title="$t('operation.templates.menu')"
         >
           <template #cell="{ record }">
-            <a-link size="small" @click="handleView(record)">{{
+            <a-link size="small" @click="handleEdit(record)">{{
               record.id
             }}</a-link>
           </template>
@@ -75,9 +75,11 @@
         >
           <template #cell="{ record }">
             <a-space :size="20">
-              <a-tooltip :content="$t('common.button.edit')">
-                <a-link type="text" size="small" @click="handleEdit(record)">
-                  <template #icon><icon-edit /></template>
+              <a-tooltip :content="$t('common.button.detail')">
+                <a-link type="text" size="small" @click="handleView(record)">
+                  <template #icon
+                    ><icon-font type="icon-xiangqing" class="size-14"
+                  /></template>
                 </a-link>
               </a-tooltip>
               <a-tooltip :content="$t('common.button.refresh')">

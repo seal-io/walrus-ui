@@ -22,6 +22,11 @@ export default {
   'cost.analyse.datepicker.7days': '最近7天',
   'cost.analyse.datepicker.30days': '最近30天',
   'cost.analyse.datepicker.currentMonth': '当月',
+  'cost.analyse.datepicker.notes': '内置视图时间粒度为Daily,最大选择范围12个月',
+  'cost.analyse.datepicker.notes.title': '自定义视图时间选择范围：',
+  'cost.analyse.datepicker.notes.daily':
+    '1.粒度为Daily、Weekly时间最大可选范围12个月',
+  'cost.analyse.datepicker.notes.monthly': '2.粒度为Monthly时间可选范围不限制',
   'cost.analyse.detail.custom': '自定义',
   'cost.analyse.detail.totalCost': '消费金额',
   'cost.analyse.detail.daily': '日均消费金额',

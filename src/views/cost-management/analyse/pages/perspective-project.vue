@@ -40,8 +40,18 @@
           border-less
           @change="handleDateChange"
         >
+          <template #tips>
+            <dl style="margin: 0">
+              <dt style="float: left"
+                ><icon-info-circle-fill style="color: rgb(var(--arcoblue-5))"
+              /></dt>
+              <dd style="margin-left: 16px">
+                <span>{{ $t('cost.analyse.datepicker.notes') }}</span>
+              </dd>
+            </dl>
+          </template>
           <template #cell="{ date }">
-            <div class="arco-picker-date">
+            <div class="arco-picker-date" style="align-items: center">
               <a-tooltip
                 v-if="
                   get(collectedTimeRange, '0') &&
