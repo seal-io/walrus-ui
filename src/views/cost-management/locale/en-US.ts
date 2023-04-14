@@ -22,6 +22,13 @@ export default {
   'cost.analyse.datepicker.7days': 'Last 7 Days',
   'cost.analyse.datepicker.30days': 'Last 30 Days',
   'cost.analyse.datepicker.currentMonth': 'This Month',
+  'cost.analyse.datepicker.notes':
+    'The date step of the built-in view is Daily, and the maximum selection range is 12 months',
+  'cost.analyse.datepicker.notes.title': 'Custom view time selection range:',
+  'cost.analyse.datepicker.notes.daily':
+    '1. The date step is Daily and Weekly, and the maximum optional time range is 12 months',
+  'cost.analyse.datepicker.notes.monthly':
+    '2. The date step is Monthly, and the optional range is not limited',
   'cost.analyse.detail.custom': 'Custom',
   'cost.analyse.detail.totalCost': 'Total Costs',
   'cost.analyse.detail.daily': 'Average Daily Costs',

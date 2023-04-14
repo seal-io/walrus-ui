@@ -7,6 +7,7 @@
           v-model:start="queryParams.startTime"
           v-model:end="queryParams.endTime"
           v-model:timeMode="timeMode"
+          :step="projectCostFilters.step"
           :short-cuts="DateShortCuts"
           :show-extra="true"
           timezone
@@ -14,8 +15,20 @@
           border-less
           @change="handleDateChange"
         >
+          <template #tips>
+            <dl style="margin: 0">
+              <dt style="float: left"
+                ><icon-info-circle-fill style="color: rgb(var(--arcoblue-5))"
+              /></dt>
+              <dd style="margin-left: 16px">
+                <span>{{ $t('cost.analyse.datepicker.notes.title') }}</span>
+                <div>{{ $t('cost.analyse.datepicker.notes.daily') }}</div>
+                <span>{{ $t('cost.analyse.datepicker.notes.monthly') }}</span>
+              </dd>
+            </dl>
+          </template>
           <template #cell="{ date }">
-            <div class="arco-picker-date">
+            <div class="arco-picker-date" style="align-items: center">
               <a-tooltip
                 v-if="
                   get(collectedTimeRange, '0') &&

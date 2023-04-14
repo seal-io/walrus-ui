@@ -135,7 +135,7 @@
   const handleSearch = (term: string, ctx): Array<resultItem> => {
     const sourceData = completeData.value || props.source;
     console.log('completeData...999', sourceData, completeData.value);
-    const regx = /^(\w+)?\.?(\w*)\.?$/;
+    const regx = /^([A-Za-z0-9_-]+)?\.?([A-Za-z0-9_-]*)\.?$/;
     console.log('array==3=', regx.test(ctx), ctx);
     if (!ctx || !regx.test(ctx)) return [];
     console.log('term===1', term, ctx, textcomplete, props.source);
@@ -208,10 +208,10 @@
     {
       id: props.editorId,
       // match: /(\w+)\.(\w*)$/,
-      match: /(?<=\$\{.*)(\w+)?\.?(\w*)$/,
+      match: /(?<=\$\{.*)([A-Za-z0-9_-]+)?\.?([A-Za-z0-9_-]*)$/,
       index: 1,
       search(term: string, callback: SearchCallback<resultItem>, match: any) {
-        const regx = /'?(\w+\.)*(\w*)$/g;
+        const regx = /'?([A-Za-z0-9_-]+\.)*([A-Za-z0-9_-]*)$/g;
         console.log('term===2=', term, editorCtx.value);
         const allResult = editorCtx.value.matchAll(regx);
         const list = Array.from(allResult);
@@ -229,7 +229,7 @@
       },
       // replace the text match result
       replace(result: resultItem) {
-        const reg = /(\w+)\.(\w*)$/g;
+        const reg = /([A-Za-z0-9_-]+)\.([A-Za-z0-9_-]*)$/g;
         const matches = editorCtx.value.matchAll(reg);
         const list = Array.from(matches);
         // console.log('matches===', list, matches)

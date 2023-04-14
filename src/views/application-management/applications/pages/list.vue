@@ -67,7 +67,7 @@
           :title="$t('applications.applications.table.name')"
         >
           <template #cell="{ record }">
-            <a-link @click.stop="handleClickView(record)">{{
+            <a-link @click.stop="handleClickEdit(record)">{{
               record.name
             }}</a-link>
           </template>
@@ -115,10 +115,10 @@
         >
           <template #cell="{ record }">
             <a-space>
-              <a-tooltip :content="$t('common.button.edit')">
-                <a-link @click="handleClickEdite(record)">
+              <a-tooltip :content="$t('common.button.detail')">
+                <a-link @click="handleClickView(record)">
                   <template #icon>
-                    <icon-edit></icon-edit>
+                    <icon-font type="icon-xiangqing"></icon-font>
                   </template>
                 </a-link>
               </a-tooltip>
@@ -302,7 +302,7 @@
       loading.value = false;
     }
   };
-  const handleClickEdite = (row) => {
+  const handleClickEdit = (row) => {
     router.push({
       name: 'ApplicationsDetail',
       params: {

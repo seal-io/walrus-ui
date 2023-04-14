@@ -1,5 +1,5 @@
 <template>
-  <div class="template-item">
+  <div class="template-item" @click="handleView">
     <div class="img-box">
       <span
         v-if="provider"
@@ -25,9 +25,12 @@
               }"
             ></StatusLabel>
             <AutoTip :tooltip-props="{ content: dataInfo.id }">
-              <a-link class="title-text" size="small" @click="handleView">{{
-                dataInfo.id
-              }}</a-link>
+              <a-link
+                class="title-text"
+                size="small"
+                @click.stop="handleEditTemplate"
+                >{{ dataInfo.id }}</a-link
+              >
             </AutoTip>
           </div>
           <div class="btn-wrap">
