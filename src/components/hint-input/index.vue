@@ -3,7 +3,7 @@
     <span
       class="arco-input-wrapper"
       style="width: 100%"
-      :class="{ 'arco-input-focus': isFocus }"
+      :class="{ 'arco-input-focus': isFocus, 'arco-input-error': $attrs.error }"
       @click="handleClick"
     >
       <input

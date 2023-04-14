@@ -42,6 +42,7 @@
                     v-model:value="formData[fm.Name]"
                     style="width: 100%"
                     width="100%"
+                    :trigger-validate="triggerValidate"
                     :form-id="fm.Name"
                     class="group-item"
                     :label-list="fm.labelList"
@@ -139,7 +140,8 @@
     sortBy,
     keys,
     add,
-    toString
+    toString,
+    some
   } from 'lodash';
   import {
     PropType,
@@ -219,6 +221,7 @@
   const formref = ref();
   const schemaList = ref<ComponentSchema[]>([]);
   const formData = ref({});
+  const triggerValidate = ref(false);
 
   const doSubmit = async () => {
     return axios[props.action](props.api, formData.value);
@@ -288,9 +291,22 @@
       }
     });
   };
+  const validateLabels = () => {
+    const result = some(schemaList.value, (sItem) => {
+      if (sItem.labelList?.length) {
+        return some(sItem.labelList, (item) => {
+          return !item.key;
+        });
+      }
+      return false;
+    });
+    return result;
+  };
   const getFormData = async () => {
+    triggerValidate.value = true;
     const result = await formref.value?.validate();
-    if (!result) {
+    const validLabels = validateLabels();
+    if (!result && !validLabels) {
       resetFieldsDefaultValue();
       return formData.value;
     }
