@@ -191,7 +191,7 @@ export const settingList: Array<SettingsItem> = [
         },
         subGroup: [
           {
-            id: 'ConnectorCheckCronExpr',
+            id: 'ConnectorStatusSyncCronExpr',
             label: 'system.setting.ConnectorCheckCronExpr',
             desc: 'system.setting.ConnectorCheckCronExpr.desc',
             parentId: '',
@@ -211,7 +211,7 @@ export const settingList: Array<SettingsItem> = [
             type: 'string'
           },
           {
-            id: 'ResourceStatusCheckCronExpr',
+            id: 'ResourceStatusSyncCronExpr',
             label: 'system.setting.ResourceStatusCheckCronExpr',
             desc: 'system.setting.ResourceStatusCheckCronExpr.desc',
             parentId: '',
@@ -267,7 +267,7 @@ export const settingList: Array<SettingsItem> = [
             type: 'string'
           },
           {
-            id: 'CostCollectCronExpr',
+            id: 'ConnectorCostCollectCronExpr',
             label: 'system.setting.CostCollectCronExpr',
             desc: 'system.setting.CostCollectCronExpr.desc',
             parentId: '',
