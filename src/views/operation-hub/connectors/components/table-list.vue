@@ -60,7 +60,7 @@
           :title="$t('operation.connectors.menu')"
         >
           <template #cell="{ record }">
-            <a-link type="text" size="small" @click="handleClickEdit(record)">
+            <a-link type="text" size="small" @click="handleView(record)">
               {{ record.name }}
             </a-link>
           </template>
@@ -153,16 +153,14 @@
           <template #cell="{ record }">
             <a-space :size="10">
               <a-dropdown-button v-if="category === 'Kubernetes'" size="small">
-                <a-tooltip :content="$t('common.button.detail')">
+                <a-tooltip :content="$t('common.button.edit')">
                   <a-link
                     class="mright-0"
                     type="text"
                     size="small"
-                    @click="handleView(record)"
+                    @click="handleClickEdit(record)"
                   >
-                    <template #icon
-                      ><icon-font class="size-14" type="icon-xiangqing"
-                    /></template>
+                    <template #icon><icon-edit class="size-14" /></template>
                   </a-link>
                 </a-tooltip>
                 <template #icon>

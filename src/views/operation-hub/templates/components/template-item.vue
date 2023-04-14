@@ -28,7 +28,7 @@
               <a-link
                 class="title-text"
                 size="small"
-                @click.stop="handleEditTemplate"
+                @click.stop="handleView"
                 >{{ dataInfo.id }}</a-link
               >
             </AutoTip>

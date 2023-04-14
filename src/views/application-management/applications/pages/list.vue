@@ -67,7 +67,7 @@
           :title="$t('applications.applications.table.name')"
         >
           <template #cell="{ record }">
-            <a-link @click.stop="handleClickEdit(record)">{{
+            <a-link @click.stop="handleClickView(record)">{{
               record.name
             }}</a-link>
           </template>
@@ -115,10 +115,10 @@
         >
           <template #cell="{ record }">
             <a-space>
-              <a-tooltip :content="$t('common.button.detail')">
-                <a-link @click="handleClickView(record)">
+              <a-tooltip :content="$t('common.button.edit')">
+                <a-link @click="handleClickEdit(record)">
                   <template #icon>
-                    <icon-font type="icon-xiangqing"></icon-font>
+                    <icon-edit></icon-edit>
                   </template>
                 </a-link>
               </a-tooltip>
