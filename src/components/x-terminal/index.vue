@@ -104,7 +104,7 @@
   };
   const runCancel = () => {
     if (isWsOpen()) {
-      terminalSocket.value.send(`exit\r`);
+      terminalSocket.value.send(`\r`);
     }
     command.value = '';
   };
@@ -149,7 +149,7 @@
     if (term.value.element) term.value.focus();
     const inputCommand = `${command.value}\r\n`;
     const output = data.Data;
-    const index = output.indexOf(inputCommand);
+    const index = command.value ? output.indexOf(inputCommand) : -1;
     if (index > -1) {
       const str2 = output.substring(index + inputCommand.length);
       term.value.write(setData(`\r\n${str2}`));
@@ -157,7 +157,7 @@
       term.value.write(setData(output));
     }
     bufferLength.value = term.value._core.buffer.x;
-    console.log('wss: receive', term.value.buffer, data.Data);
+    console.log('wss: receive', { index, output, inputCommand });
     // term.value.write(setData(`${output}`));
     setTimeout(() => {
       clearCommand();
