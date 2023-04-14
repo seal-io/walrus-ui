@@ -28,7 +28,8 @@
     throttle,
     replace,
     includes,
-    compact
+    compact,
+    trimStart
   } from 'lodash';
   import { Terminal } from 'xterm';
   import { FitAddon } from 'xterm-addon-fit';
@@ -88,54 +89,25 @@
     }
   };
   const clearCommand = () => {
-    command.value = '';
-    // term.value.write('\r\n$ ');
-  };
-  const enterPrompt = () => {
-    // command.value = '';
-    // term.value.write('\r\n');
-  };
-  const runCommand = () => {
-    command.value = trim(command.value);
-    if (isWsOpen()) {
-      terminalSocket.value.send(`${command.value}\r`);
-    }
-    console.log('wss: commond', command.value);
-  };
-  const runCancel = () => {
-    if (isWsOpen()) {
-      terminalSocket.value.send(`\r`);
+    for (let i = 0; i < command.value.length; i += 1) {
+      term.value.write('\b \b');
     }
     command.value = '';
   };
-  const onDataCallback = (e) => {
-    console.log('data code===', e);
-    switch (e) {
-      case '\u0003': // Ctrl+C
-        term.value.write('^C');
-        runCancel();
-        break;
-      case '\r': // Enter
-        runCommand();
-        break;
-      case '\u007F': // Backspace (DEL)
-        // Do not delete the clearCommand
-        if (term.value._core.buffer.x > 2) {
-          term.value.write('\b \b');
-          if (command.value.length > 0) {
-            command.value = command.value.substr(0, command.value.length - 1);
-          }
-        }
-        break;
-      default: // Print all other characters
-        if (
-          (e >= String.fromCharCode(0x20) && e <= String.fromCharCode(0x7e)) ||
-          e >= '\u00a0'
-        ) {
-          command.value += e;
-          term.value.write(e);
-        }
-    }
+  const closeRealTerminal = (data) => {
+    statusCode.value = get(data, 'code');
+    conReadyState.value = terminalSocket.value.readyState;
+    term.value.write(setData(data.reason));
+    clearCommand();
+    console.log('wss: close:', statusCode.value, data);
+  };
+  const errorRealTerminal = (ex) => {
+    let { message } = ex;
+    if (!message) message = 'disconnected';
+    conReadyState.value = terminalSocket.value.readyState;
+    term.value.write(setErrorData(message));
+    clearCommand();
+    console.log('wss: err', message);
   };
   const onWSReceive = (message) => {
     if (first.value === true) {
@@ -149,48 +121,24 @@
     if (term.value.element) term.value.focus();
     const inputCommand = `${command.value}\r\n`;
     const output = data.Data;
-    const index = command.value ? output.indexOf(inputCommand) : -1;
-    if (index > -1) {
-      const str2 = output.substring(index + inputCommand.length);
-      term.value.write(setData(`\r\n${str2}`));
-    } else {
-      term.value.write(setData(output));
-    }
-    bufferLength.value = term.value._core.buffer.x;
-    console.log('wss: receive', { index, output, inputCommand });
-    // term.value.write(setData(`${output}`));
+    // const index = command.value ? output.indexOf(inputCommand) : -1;
+    // if (index > -1) {
+    //   const str2 = output.substring(index + inputCommand.length);
+    //   term.value.write(setData(`\r\n${str2}`));
+    //   bufferLength.value = output(str2).length;
+    // } else {
+    //   term.value.write(setData(output));
+    //   bufferLength.value = stripAnsi(output).length;
+    // }
+    term.value.write(setData(output));
     setTimeout(() => {
-      clearCommand();
+      bufferLength.value = term.value._core.buffer.x;
+      console.log('wss: receive', term.value._core.buffer.x, {
+        bufferLength: bufferLength.value,
+        output,
+        inputCommand
+      });
     }, 100);
-  };
-
-  const errorRealTerminal = (ex) => {
-    let { message } = ex;
-    if (!message) message = 'disconnected';
-    conReadyState.value = terminalSocket.value.readyState;
-    term.value.write(setErrorData(message));
-    clearCommand();
-    console.log('wss: err', message);
-  };
-  const setWssUrl = (flag?) => {
-    if (terminalEnvIndex.value >= terminalEnvList.length - 1) return;
-    if (flag) {
-      terminalEnvIndex.value = 0;
-    } else {
-      terminalEnvIndex.value += 1;
-    }
-    const params = qs.stringify({
-      shell: terminalEnvList[terminalEnvIndex.value]
-    });
-    wssUrl.value = `${props.url}&${params}`;
-    console.log('wssUrl===', params);
-  };
-  const closeRealTerminal = (data) => {
-    statusCode.value = get(data, 'code');
-    conReadyState.value = terminalSocket.value.readyState;
-    term.value.write(setData(data.reason));
-    clearCommand();
-    console.log('wss: close:', statusCode.value, data);
   };
   const createWS = () => {
     if (!props.url) return;
@@ -209,6 +157,68 @@
     terminalSocket.value?.close?.();
     createWS();
   };
+  const runCommand = () => {
+    command.value = trim(command.value);
+    if (isWsOpen()) {
+      terminalSocket.value.send(`${command.value}\r`);
+      clearCommand();
+    }
+    console.log('wss: commond', command.value);
+  };
+  const runCancel = () => {
+    if (isWsOpen()) {
+      terminalSocket.value.send(`exit\r`);
+    }
+    command.value = '';
+    setTimeout(() => {
+      first.value = true;
+      initWS();
+    }, 100);
+  };
+  const onDataCallback = (e) => {
+    console.log('data code===', e);
+    switch (e) {
+      case '\u0003': // Ctrl+C
+        term.value.write('^C');
+        runCancel();
+        break;
+      case '\r': // Enter
+        runCommand();
+        break;
+      case '\u007F': // Backspace (DEL)
+        // Do not delete the clearCommand
+        if (term.value._core.buffer.x > bufferLength.value) {
+          term.value.write('\b \b');
+          if (command.value.length > 0) {
+            command.value = command.value.substr(0, command.value.length - 1);
+          }
+        }
+        break;
+      default: // Print all other characters
+        if (
+          (e >= String.fromCharCode(0x20) && e <= String.fromCharCode(0x7e)) ||
+          e >= '\u00a0'
+        ) {
+          command.value += e;
+          term.value.write(e);
+        }
+    }
+  };
+
+  const setWssUrl = (flag?) => {
+    if (terminalEnvIndex.value >= terminalEnvList.length - 1) return;
+    if (flag) {
+      terminalEnvIndex.value = 0;
+    } else {
+      terminalEnvIndex.value += 1;
+    }
+    const params = qs.stringify({
+      shell: terminalEnvList[terminalEnvIndex.value]
+    });
+    wssUrl.value = `${props.url}&${params}`;
+    console.log('wssUrl===', params);
+  };
+
   const initTerm = () => {
     term.value = new Terminal({
       lineHeight: 1.2,
