@@ -22,8 +22,6 @@ export default mergeConfig(
       // cors: {
       //   origin: 'https://localhost:4000'
       // },
-      // proxy: createProxyTable('https://192.168.2.5')
-      // proxy: createProxyTable('https://e5a5-13-213-92-132.ap.ngrok.io/')
       proxy: createProxyTable()
     },
     plugins: [

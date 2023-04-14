@@ -4,7 +4,7 @@
       ><span>{{ statusText }}</span
       ><icon-loading class="size-12"
     /></div>
-    <div ref="terminal"></div>
+    <div ref="terminal" class="terminal"></div>
   </div>
 </template>
 
@@ -167,19 +167,14 @@
   };
   const runCancel = () => {
     if (isWsOpen()) {
-      terminalSocket.value.send(`exit\r`);
+      terminalSocket.value.send(`\x03`);
+      command.value = '';
     }
-    command.value = '';
-    setTimeout(() => {
-      first.value = true;
-      initWS();
-    }, 100);
   };
   const onDataCallback = (e) => {
     console.log('data code===', e);
     switch (e) {
       case '\u0003': // Ctrl+C
-        term.value.write('^C');
         runCancel();
         break;
       case '\r': // Enter
@@ -253,16 +248,38 @@
       onDataCallback(data);
     });
     term.value.onKey((e) => {
-      console.log('key>>ee>>=1==', e);
+      console.log('key>>ee>>=code==', e);
+      // up
+      if (e.key === '\x1B[A') {
+        terminalSocket.value.send(`\x1B[A`);
+      }
+      // down
+      if (e.key === '\x1B[B') {
+        terminalSocket.value.send(`\x1B[B`);
+      }
+      // left
+      if (e.key === '\x1B[D') {
+        terminalSocket.value.send(`\x1B[D`);
+      }
+      // left
+      if (e.key === '\x7F') {
+        terminalSocket.value.send(`\x7F`);
+      }
+      // tab
+      if (e.key === '\t') {
+        terminalSocket.value.send(`${command.value}\t`);
+        clearCommand();
+      }
     });
     term.value.attachCustomKeyEventHandler(async (e) => {
+      console.log('key>>ee>>=1==', e);
       if (platform.isMac && e.metaKey && e.code === 'KeyV') {
         const val = await navigator.clipboard.readText();
-        command.value = val;
+        command.value = `${command.value}${val}`;
         term.value.write(val);
       } else if (e.ctrlKey && e.code === 'KeyV') {
         const val = await navigator.clipboard.readText();
-        command.value = val;
+        command.value = `${command.value}${val}`;
         term.value.write(val);
       }
     });
@@ -340,6 +357,14 @@
   });
 </script>
 
+<style lang="less">
+  .xterm {
+    .xterm-viewport {
+      overflow-y: auto;
+    }
+  }
+</style>
+
 <style lang="less" scoped>
   #terminal {
     width: 100%;
@@ -348,6 +373,11 @@
 
   .wrap {
     position: relative;
+
+    .terminal {
+      padding: 2px;
+      background-color: #181d28;
+    }
 
     .status-text {
       position: absolute;
