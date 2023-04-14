@@ -62,10 +62,12 @@
   const terminalEnvIndex = ref(0);
   const wssUrl = ref('');
   const bufferLength = ref(0);
+  const toRetry = ref(false);
 
   const conReadyState = ref(0);
   const runRealTerminal = () => {
     loading.value = false;
+    toRetry.value = false;
   };
   const initData = () => {
     return `\x1B[1;3;31m\x1B[0m`;
@@ -97,13 +99,20 @@
   const closeRealTerminal = (data) => {
     statusCode.value = get(data, 'code');
     conReadyState.value = terminalSocket.value.readyState;
-    term.value.write(setData(data.reason));
+    const message = '--- enter any key to reconnect! ---';
+    term.value.write(setErrorData(`${data.reason} ${message}`));
     clearCommand();
+    toRetry.value = true;
+    first.value = true;
     console.log('wss: close:', statusCode.value, data);
   };
   const errorRealTerminal = (ex) => {
     let { message } = ex;
-    if (!message) message = 'disconnected';
+    if (!message) {
+      message = 'disconnected!';
+      toRetry.value = true;
+      first.value = true;
+    }
     conReadyState.value = terminalSocket.value.readyState;
     term.value.write(setErrorData(message));
     clearCommand();
@@ -121,15 +130,6 @@
     if (term.value.element) term.value.focus();
     const inputCommand = `${command.value}\r\n`;
     const output = data.Data;
-    // const index = command.value ? output.indexOf(inputCommand) : -1;
-    // if (index > -1) {
-    //   const str2 = output.substring(index + inputCommand.length);
-    //   term.value.write(setData(`\r\n${str2}`));
-    //   bufferLength.value = output(str2).length;
-    // } else {
-    //   term.value.write(setData(output));
-    //   bufferLength.value = stripAnsi(output).length;
-    // }
     term.value.write(setData(output));
     setTimeout(() => {
       bufferLength.value = term.value._core.buffer.x;
@@ -157,6 +157,11 @@
     terminalSocket.value?.close?.();
     createWS();
   };
+  const retry = () => {
+    terminalSocket.value.close?.();
+    term.value.reset();
+    initWS();
+  };
   const runCommand = () => {
     command.value = trim(command.value);
     if (isWsOpen()) {
@@ -181,7 +186,6 @@
         runCommand();
         break;
       case '\u007F': // Backspace (DEL)
-        // Do not delete the clearCommand
         if (term.value._core.buffer.x > bufferLength.value) {
           term.value.write('\b \b');
           if (command.value.length > 0) {
@@ -215,6 +219,7 @@
   };
 
   const initTerm = () => {
+    term.value?.dispose?.();
     term.value = new Terminal({
       lineHeight: 1.2,
       fontSize: 12,
@@ -223,7 +228,6 @@
       theme: {
         background: '#181d28'
       },
-      // 光标闪烁
       cursorBlink: true,
       cursorStyle: 'underline',
       scrollback: 100,
@@ -245,43 +249,53 @@
   const registerTermHandler = () => {
     term.value.onData((data) => {
       console.log('wss: data', data, isWsOpen());
-      onDataCallback(data);
+      if (isWsOpen()) {
+        terminalSocket.value.send(data);
+      }
+      // onDataCallback(data);
     });
     term.value.onKey((e) => {
-      console.log('key>>ee>>=code==', e);
+      // console.log('key>>ee>>=code==', e);
+      if (toRetry.value) {
+        retry();
+      }
       // up
-      if (e.key === '\x1B[A') {
-        terminalSocket.value.send(`\x1B[A`);
-      }
-      // down
-      if (e.key === '\x1B[B') {
-        terminalSocket.value.send(`\x1B[B`);
-      }
-      // left
-      if (e.key === '\x1B[D') {
-        terminalSocket.value.send(`\x1B[D`);
-      }
-      // left
-      if (e.key === '\x7F') {
-        terminalSocket.value.send(`\x7F`);
-      }
-      // tab
-      if (e.key === '\t') {
-        terminalSocket.value.send(`${command.value}\t`);
-        clearCommand();
-      }
+      // if (e.key === '\x1B[A') {
+      //   terminalSocket.value.send(`\x1B[A`);
+      // }
+      // // down
+      // if (e.key === '\x1B[B') {
+      //   terminalSocket.value.send(`\x1B[B`);
+      // }
+      // // left
+      // if (e.key === '\x1B[D') {
+      //   terminalSocket.value.send(`\x1B[D`);
+      // }
+      // // right
+      // if (e.key === '\x1B[C') {
+      //   terminalSocket.value.send(`\x1B[C`);
+      // }
+      // // backspace
+      // if (e.key === '\x7F') {
+      //   terminalSocket.value.send(`\x7F`);
+      // }
+      // // tab
+      // if (e.key === '\t') {
+      //   terminalSocket.value.send(`${command.value}\t`);
+      //   clearCommand();
+      // }
     });
     term.value.attachCustomKeyEventHandler(async (e) => {
-      console.log('key>>ee>>=1==', e);
-      if (platform.isMac && e.metaKey && e.code === 'KeyV') {
-        const val = await navigator.clipboard.readText();
-        command.value = `${command.value}${val}`;
-        term.value.write(val);
-      } else if (e.ctrlKey && e.code === 'KeyV') {
-        const val = await navigator.clipboard.readText();
-        command.value = `${command.value}${val}`;
-        term.value.write(val);
-      }
+      // console.log('key>>ee>>=1==', e);
+      // if (platform.isMac && e.metaKey && e.code === 'KeyV') {
+      //   const val = await navigator.clipboard.readText();
+      //   command.value = `${command.value}${val}`;
+      //   term.value.write(val);
+      // } else if (e.ctrlKey && e.code === 'KeyV') {
+      //   const val = await navigator.clipboard.readText();
+      //   command.value = `${command.value}${val}`;
+      //   term.value.write(val);
+      // }
     });
   };
   const onTerminalResize = () => {
@@ -297,11 +311,7 @@
     registerTermHandler();
     onTerminalResize();
   };
-  const retry = () => {
-    terminalSocket.value.close?.();
-    init();
-    term.value.reset();
-  };
+
   const handleTryConnect = () => {
     deleteModal({
       title: 'common.ws.close',
@@ -352,7 +362,7 @@
     removeResizeListener();
     console.log('wss: dispose');
     actived.value = false;
-    term.value?.dispose?.();
+    // term.value?.dispose?.();
     if (terminalSocket.value) terminalSocket.value.close?.();
   });
 </script>
