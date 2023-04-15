@@ -1,6 +1,6 @@
 <template>
   <div class="wrap">
-    <div v-if="conReadyState === 0" class="status-text"
+    <div v-if="conReadyState === 0 || loading" class="status-text"
       ><span>{{ statusText }}</span
       ><icon-loading class="size-12"
     /></div>
@@ -99,11 +99,16 @@
   const closeRealTerminal = (data) => {
     statusCode.value = get(data, 'code');
     conReadyState.value = terminalSocket.value.readyState;
-    const message = '--- enter any key to reconnect! ---';
-    term.value.write(setErrorData(`${data.reason} ${message}`));
+    const message = '--- press Y to reconnect! ---';
     clearCommand();
-    toRetry.value = true;
-    first.value = true;
+    if ([1011, 1006, 1000].includes(statusCode.value)) {
+      toRetry.value = true;
+      first.value = true;
+      term.value.write(setData(`${data.reason}\r\n`));
+      term.value.write(setErrorData(`\r${message}`));
+    }
+
+    loading.value = false;
     console.log('wss: close:', statusCode.value, data);
   };
   const errorRealTerminal = (ex) => {
@@ -112,9 +117,10 @@
       message = 'disconnected!';
       toRetry.value = true;
       first.value = true;
+      loading.value = false;
     }
     conReadyState.value = terminalSocket.value.readyState;
-    term.value.write(setErrorData(message));
+    term.value.write(setErrorData(`\r${message}`));
     clearCommand();
     console.log('wss: err', message);
   };
@@ -158,7 +164,7 @@
     createWS();
   };
   const retry = () => {
-    terminalSocket.value.close?.();
+    loading.value = true;
     term.value.reset();
     initWS();
   };
@@ -222,9 +228,9 @@
     term.value?.dispose?.();
     term.value = new Terminal({
       lineHeight: 1.2,
-      fontSize: 12,
+      fontSize: 14,
       fontFamily:
-        "'Menlo For Powerline', Consolas, 'Liberation Mono', Menlo, Courier, monospace",
+        "monospace,Menlo,Courier,'Courier New',Consolas,Monaco, 'Liberation Mono'",
       theme: {
         background: '#181d28'
       },
@@ -256,7 +262,7 @@
     });
     term.value.onKey((e) => {
       // console.log('key>>ee>>=code==', e);
-      if (toRetry.value) {
+      if (toRetry.value && e.domEvent.code === 'KeyY') {
         retry();
       }
       // up
@@ -331,9 +337,9 @@
       } else {
         first.value = true;
         loading.value = true;
+        term.value?.reset?.();
         setWssUrl(true);
         initWS();
-        term.value.reset();
       }
     },
     {
@@ -385,7 +391,7 @@
     position: relative;
 
     .terminal {
-      padding: 2px;
+      padding: 5px;
       background-color: #181d28;
     }
 
