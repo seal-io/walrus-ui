@@ -17,8 +17,6 @@ export const parseMapstring = (comSchema) => {
           value: get(comSchema, `Default.${k}`)
         };
       });
-    } else {
-      labelList = [{ key: '', value: '' }];
     }
   }
   return labelList;
