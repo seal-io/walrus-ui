@@ -6,6 +6,7 @@
       style="margin-bottom: 10px"
       :bordered="false"
       :data="dataList"
+      :row-class="setRowClass"
       :pagination="false"
     >
       <template #columns>
@@ -139,6 +140,12 @@
   const handleDisabled = (row) => {
     console.log(row);
   };
+  const setRowClass = (record) => {
+    if (record.raw.isChilren) {
+      return 'row-child';
+    }
+    return '';
+  };
   const fetchData = async () => {
     try {
       loading.value = true;
@@ -147,7 +154,24 @@
         instanceID: instanceId.value
       };
       const { data } = await queryApplicationResource(params);
-      dataList.value = data?.items || [];
+      let list: any = data?.items || [];
+      list = _.map(list, (s) => {
+        const children = s.components || [];
+        s.isLeaf = !children.length;
+        s.isParent = true;
+        s.key = s.id;
+        if (children.length) {
+          _.each(children, (c) => {
+            c.isLeaf = true;
+            c.isChilren = true;
+            c.parentId = s.id;
+            c.key = s.id;
+          });
+          s.children = children;
+        }
+        return s;
+      });
+      dataList.value = [].concat(list);
       loading.value = false;
     } catch (error) {
       dataList.value = [];
@@ -228,4 +252,24 @@
   });
 </script>
 
-<style></style>
+<style lang="less" scoped>
+  .resource-wrap {
+    :deep(.arco-table-cell-inline-icon) {
+      margin-right: 6px;
+    }
+
+    :deep(.arco-table-tr) {
+      background-color: red;
+
+      &.row-child {
+        .arco-table-td:first-child {
+          .arco-table-cell {
+            span:first-child {
+              padding-left: 10px !important;
+            }
+          }
+        }
+      }
+    }
+  }
+</style>
