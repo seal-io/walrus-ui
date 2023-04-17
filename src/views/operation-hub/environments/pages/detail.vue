@@ -103,10 +103,21 @@
 
 <script lang="ts" setup>
   import { ref, computed } from 'vue';
-  import { concat, each, includes, map, remove, get } from 'lodash';
+  import {
+    concat,
+    each,
+    includes,
+    map,
+    remove,
+    get,
+    isEqual,
+    cloneDeep
+  } from 'lodash';
   import GroupTitle from '@/components/group-title/index.vue';
   import EditPageFooter from '@/components/edit-page-footer/index.vue';
   import useCallCommon from '@/hooks/use-call-common';
+  import { beforeLeaveCallback } from '@/hooks/save-before-leave';
+  import { onBeforeRouteLeave } from 'vue-router';
   import { useTabBarStore } from '@/store';
   import { queryConnectors } from '@/views/operation-hub/connectors/api';
   import usePageAction from '@/hooks/use-page-action';
@@ -127,6 +138,7 @@
   const connectorList = ref<{ label: string; value: string }[]>([]);
   const showModal = ref(false);
   const submitLoading = ref(false);
+  let copyFormData: any = {};
   const formData = ref<EnvironFormData>({
     name: '',
     description: '',
@@ -168,6 +180,7 @@
         return s?.connector?.id;
       });
       setFormDataConnectors(formData.value.connectorIDs);
+      copyFormData = cloneDeep(formData.value);
     } catch (error) {
       formData.value = {
         name: '',
@@ -217,7 +230,7 @@
     if (!res) {
       try {
         submitLoading.value = true;
-        // TODO
+        copyFormData = cloneDeep(formData.value);
         if (id) {
           await updateEnvironment(formData.value);
         } else {
@@ -235,7 +248,7 @@
       }
     }
   };
-  const handleCancel = () => {
+  const cancelCallback = () => {
     if (pageAction.value === 'edit' && route.params.action === 'view') {
       pageAction.value = 'view';
       getItemEnvironmentInfo();
@@ -243,6 +256,35 @@
     }
     router.back();
   };
+  const handleCancel = () => {
+    if (!isEqual(copyFormData, formData.value)) {
+      beforeLeaveCallback({
+        isCancel: true,
+        onOk: () => {
+          copyFormData = cloneDeep(formData.value);
+          cancelCallback();
+        }
+      });
+    } else {
+      cancelCallback();
+    }
+  };
+  onBeforeRouteLeave(async (to, from) => {
+    if (!isEqual(copyFormData, formData.value)) {
+      beforeLeaveCallback({
+        to,
+        from,
+        onOk: () => {
+          copyFormData = cloneDeep(formData.value);
+          router.push({
+            name: to.name as string
+          });
+        }
+      });
+      return false;
+    }
+    return true;
+  });
   const init = async () => {
     await getConnectors();
     getItemEnvironmentInfo();

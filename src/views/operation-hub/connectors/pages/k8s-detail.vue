@@ -141,10 +141,12 @@
 </template>
 
 <script lang="ts" setup>
-  import { assignIn, get, find } from 'lodash';
+  import { assignIn, get, find, isEqual, cloneDeep } from 'lodash';
   import { ref, reactive, onMounted, computed } from 'vue';
   import GroupTitle from '@/components/group-title/index.vue';
   import readBlob from '@/utils/readBlob';
+  import { beforeLeaveCallback } from '@/hooks/save-before-leave';
+  import { onBeforeRouteLeave } from 'vue-router';
   import EditPageFooter from '@/components/edit-page-footer/index.vue';
   import useCallCommon from '@/hooks/use-call-common';
   import usePageAction from '@/hooks/use-page-action';
@@ -157,6 +159,7 @@
   const id = route.query.id as string;
   const formref = ref();
   const submitLoading = ref(false);
+  let copyFormData: any = {};
   const formData: ConnectorFormData = reactive({
     name: '',
     configData: {
@@ -199,6 +202,7 @@
     if (!res) {
       try {
         submitLoading.value = true;
+        copyFormData = cloneDeep(formData);
         if (id) {
           await updateConnector(formData);
         } else {
@@ -216,11 +220,12 @@
     try {
       const { data } = await queryItemConnector({ id });
       assignIn(formData, data);
+      copyFormData = cloneDeep(formData);
     } catch (error) {
       console.log(error);
     }
   };
-  const handleCancel = () => {
+  const cancelCallback = () => {
     if (pageAction.value === 'edit' && route.params.action === 'view') {
       pageAction.value = 'view';
       getConnectorInfo();
@@ -228,6 +233,35 @@
     }
     router.back();
   };
+  const handleCancel = () => {
+    if (!isEqual(copyFormData, formData)) {
+      beforeLeaveCallback({
+        isCancel: true,
+        onOk: () => {
+          copyFormData = cloneDeep(formData);
+          cancelCallback();
+        }
+      });
+    } else {
+      cancelCallback();
+    }
+  };
+  onBeforeRouteLeave(async (to, from) => {
+    if (!isEqual(copyFormData, formData)) {
+      beforeLeaveCallback({
+        to,
+        from,
+        onOk: () => {
+          copyFormData = cloneDeep(formData);
+          router.push({
+            name: to.name as string
+          });
+        }
+      });
+      return false;
+    }
+    return true;
+  });
   getConnectorInfo();
 </script>
 

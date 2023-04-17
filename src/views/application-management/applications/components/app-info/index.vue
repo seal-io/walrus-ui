@@ -166,14 +166,7 @@
 </template>
 
 <script lang="ts" setup>
-  import {
-    reactive,
-    ref,
-    computed,
-    provide,
-    inject,
-    ComponentPublicInstance
-  } from 'vue';
+  import { reactive, ref, computed, provide, inject } from 'vue';
   import { onBeforeRouteLeave } from 'vue-router';
   import GroupTitle from '@/components/group-title/index.vue';
   import {
@@ -209,14 +202,13 @@
     TemplateRowData,
     ModuleVersionData
   } from '@/views/operation-hub/templates/config/interface';
-  import variablesModal from './variables-modal.vue';
   import LabelsList from './labels-list.vue';
   import instanceThumb from '../instance-thumb.vue';
   import editModule from './edit-module.vue';
   import viewModule from './view-module.vue';
   import BasicInfo from './basic-info.vue';
   import BasicView from './basic-view.vue';
-  import { AppFormData, Variables, AppModule } from '../../config/interface';
+  import { AppFormData, AppModule } from '../../config/interface';
   import { moduleActions } from '../../config';
   import {
     createApplication,
@@ -269,6 +261,7 @@
   let copyFormData: any = {};
 
   provide('completeData', completeData);
+
   const variablesObj = computed(() => {
     const res = reduce(
       appInfo?.variables,
@@ -438,6 +431,8 @@
 
       assignIn(appInfo, data);
       appModules.value = get(appInfo, 'modules') || [];
+      appInfo.modules = data.modules || [];
+      appInfo.variables = data.variables || [];
       copyFormData = cloneDeep(appInfo);
       console.log('appInfo===', appInfo);
     } catch (error) {
@@ -502,9 +497,8 @@
     return triggerValidate.value;
   };
   const handleOk = async () => {
-    console.log('handleOk====', appInfo);
     const validateVarRes = validateVariabels();
-    console.log('validateVarRes===', validateVarRes);
+    console.log('handleOk====', validateVarRes, appInfo);
     const result = await basicform.value.getFormData();
     triggerModule.value = true;
 
@@ -548,8 +542,7 @@
       console.log(error);
     }
   };
-
-  const handleCancel = () => {
+  const cancelCallback = () => {
     if (pageAction.value === 'edit' && route.params.action === 'view') {
       emits('cancelEdit');
       // reset the editing data
@@ -557,6 +550,23 @@
       return;
     }
     router.back();
+  };
+  const handleCancel = async () => {
+    const appInfoData = {
+      ...appInfo,
+      ...(await basicform.value.getFormData())
+    };
+    if (!isEqual(copyFormData, appInfoData)) {
+      beforeLeaveCallback({
+        isCancel: true,
+        onOk: () => {
+          copyFormData = cloneDeep(appInfo);
+          cancelCallback();
+        }
+      });
+    } else {
+      cancelCallback();
+    }
   };
   const handleDeleteModule = (index) => {
     deleteModal({
@@ -577,19 +587,26 @@
       assignIn(moduleInfo.value, data);
     }
   };
-  // onBeforeRouteLeave(async (to, from) => {
-  //   console.log('leave');
-  //   if (!isEqual(copyFormData, appInfo)) {
-  //     beforeLeaveCallback(to, from, () => {
-  //       copyFormData = cloneDeep(appInfo);
-  //       router.push({
-  //         name: to.name as string
-  //       });
-  //     });
-  //     return false;
-  //   }
-  //   return true;
-  // });
+  onBeforeRouteLeave(async (to, from) => {
+    const appInfoData = {
+      ...appInfo,
+      ...(await basicform.value.getFormData())
+    };
+    if (!isEqual(copyFormData, appInfoData)) {
+      beforeLeaveCallback({
+        to,
+        from,
+        onOk: () => {
+          copyFormData = cloneDeep(appInfoData);
+          router.push({
+            name: to.name as string
+          });
+        }
+      });
+      return false;
+    }
+    return true;
+  });
   const init = async () => {
     await getApplicationDetail();
     await getModules();

@@ -283,6 +283,8 @@
     isEqual
   } from 'lodash';
   import useCallCommon from '@/hooks/use-call-common';
+  import { beforeLeaveCallback } from '@/hooks/save-before-leave';
+  import { onBeforeRouteLeave } from 'vue-router';
   import GroupTitle from '@/components/group-title/index.vue';
   import EditPageFooter from '@/components/edit-page-footer/index.vue';
   import { useTabBarStore } from '@/store';
@@ -381,13 +383,6 @@
     }
     return false;
   });
-  const validateFilters = (val, callback) => {
-    console.log('validateFilters=', val);
-    const filters = get(formData, 'allocationQueries.0.filters') || [];
-    if (some(filters, val)) {
-      callback('值不能为空');
-    }
-  };
 
   const setPerspectiveCostFilter = (data, callback) => {
     const idleCostFilters =
@@ -461,6 +456,7 @@
           get(data, 'allocationQueries.0.shareCosts') || []
         );
         data.allocationQueries[0].shareCosts = shareCost as never[];
+        copyFormData = cloneDeep(formData);
         if (id) {
           await updatePerspective({ ...data, id });
         } else {
@@ -663,7 +659,7 @@
     console.log('step:', val);
   };
   const handleCostFilterChange = (val) => {};
-  const handleCancel = () => {
+  const cancelCallback = () => {
     if (
       pageAction.value === 'edit' &&
       route.params.action === 'view' &&
@@ -675,6 +671,35 @@
     }
     router.back();
   };
+  const handleCancel = () => {
+    if (!isEqual(copyFormData, formData)) {
+      beforeLeaveCallback({
+        isCancel: true,
+        onOk: () => {
+          copyFormData = cloneDeep(formData);
+          cancelCallback();
+        }
+      });
+    } else {
+      cancelCallback();
+    }
+  };
+  onBeforeRouteLeave(async (to, from) => {
+    if (!isEqual(copyFormData, formData)) {
+      beforeLeaveCallback({
+        to,
+        from,
+        onOk: () => {
+          copyFormData = cloneDeep(formData);
+          router.push({
+            name: to.name as string
+          });
+        }
+      });
+      return false;
+    }
+    return true;
+  });
   const init = async () => {
     loading.value = true;
     setDateRange();
