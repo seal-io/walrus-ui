@@ -135,57 +135,56 @@
   const handleSearch = (term: string, ctx): Array<resultItem> => {
     const sourceData = completeData.value || props.source;
     console.log('completeData...999', sourceData, completeData.value);
-    const regx = /^([A-Za-z0-9_-]+)?\.?([A-Za-z0-9_-]*)\.?$/;
+    const regx = /([A-Za-z0-9_-]+)?\.?([A-Za-z0-9_-]*)\.?$/;
     console.log('array==3=', regx.test(ctx), ctx);
     if (!ctx || !regx.test(ctx)) return [];
     console.log('term===1', term, ctx, textcomplete, props.source);
     const dataSource = cloneDeep(sourceData);
     const path = split(ctx, '.');
-    const valuePath = join(
-      filter(path, (v) => !!v),
-      '.'
-    );
-    console.log('valuePath===', { path, ctx, valuePath });
+
+    // exludes the last item
     const initialPath = initial(path);
     const lastItem = last(path);
-    const data = get(dataSource, `${join(initialPath, '.')}`); // path
-    console.log('array==1=', valuePath);
-    if (isArray(get(sourceData, valuePath))) {
-      const list = map(get(sourceData, valuePath) || [], (s) => {
+
+    if (!initialPath.length) {
+      const resultList = map(keys(sourceData), (key) => {
+        return {
+          label: key,
+          value: key
+        };
+      }).filter((s) => {
+        return toLower(s.label).startsWith(toLower(lastItem));
+      });
+      return resultList;
+    }
+
+    const data = get(dataSource, `${join(initialPath, '.')}`);
+    if (!data) return [];
+
+    let resultList: resultItem[] = [];
+
+    if (isArray(data)) {
+      resultList = map(data || [], (s) => {
         return {
           label: s.value,
           value: s.value,
           description: s.label
         };
       });
-      console.log('array==2=', list);
-      return list;
-    }
-    if (!initialPath.length) {
-      const arr = map(keys(sourceData), (key) => {
+    } else {
+      resultList = map(keys(data), (key) => {
         return {
           label: key,
           value: key
         };
-      }).filter((s) => toLower(s.label).startsWith(toLower(ctx)));
-      console.log('term===1 arr', arr);
-      return arr;
+      });
     }
-
-    console.log('data:', dataSource, ctx, data, initialPath);
-    if (!data) return [];
-
-    const list = map(keys(data), (key) => {
-      return {
-        label: key,
-        value: key
-      };
-    });
-    if (!lastItem) {
-      return list;
+    if (lastItem) {
+      resultList = filter(resultList, (s) =>
+        toLower(s.label).startsWith(toLower(lastItem))
+      );
     }
-    console.log('completeList===', list, term, data);
-    return list.filter((o) => toLower(o.label).startsWith(toLower(lastItem)));
+    return resultList;
   };
   const getResultOptions = () => {
     return [
@@ -211,7 +210,7 @@
       match: /(?<=\$\{.*)([A-Za-z0-9_-]+)?\.?([A-Za-z0-9_-]*)$/,
       index: 1,
       search(term: string, callback: SearchCallback<resultItem>, match: any) {
-        const regx = /'?([A-Za-z0-9_-]+\.)*([A-Za-z0-9_-]*)$/g;
+        const regx = /([A-Za-z0-9_-]+\.)*([A-Za-z0-9_-]*)$/g;
         console.log('term===2=', term, editorCtx.value);
         const allResult = editorCtx.value.matchAll(regx);
         const list = Array.from(allResult);
@@ -326,13 +325,13 @@
     }, 100);
   };
   const handleDelete = (val) => {
-    const regx = /:$/;
-    if (!regx.test(expression.value)) {
-      isMatchWork.value = false;
-      textcomplete.hide();
-    } else {
-      isMatchWork.value = true;
-    }
+    // const regx = /\.$/;
+    // if (!regx.test(expression.value)) {
+    //   isMatchWork.value = false;
+    //   textcomplete.hide();
+    // } else {
+    //   isMatchWork.value = true;
+    // }
   };
   const handleFocus = () => {
     console.log('focus');
