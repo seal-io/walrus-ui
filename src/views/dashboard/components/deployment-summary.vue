@@ -7,6 +7,7 @@
           v-model:start="queryParams.startTime"
           v-model:end="queryParams.endTime"
           v-model:timeUnit="queryParams.step"
+          step="month"
           :show-extra="false"
           :short-cuts="DateShortCuts"
           today-in
@@ -107,7 +108,7 @@
   const pieRadius = ['0%', '80%'];
   const { t } = useI18n();
   const queryParams = {
-    step: 'day', // day month year
+    step: 'day' as any, // day month year
     startTime: dayjs().subtract(29, 'd').format('YYYY-MM-DDT00:00:00Z'),
     endTime: dayjs().format('YYYY-MM-DDTHH:mm:ssZ')
   };

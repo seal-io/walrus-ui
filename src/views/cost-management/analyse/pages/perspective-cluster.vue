@@ -246,13 +246,15 @@
           </a-select>
         </div>
       </template>
-      <horizontalBar
-        :loading="spaceloading || preloading"
-        style="flex: 1"
-        :config-options="BarConfigOptions"
-        :height="`${(nameSpaceCostChart?.bar?.length || 10) * 25}px`"
-        :data-list="nameSpaceCostChart.bar"
-      ></horizontalBar>
+      <div style="max-height: 600px; overflow-y: auto">
+        <horizontalBar
+          :loading="spaceloading || preloading"
+          style="flex: 1"
+          :config-options="BarConfigOptions"
+          :height="`${(nameSpaceCostChart?.bar?.length || 10) * 25}px`"
+          :data-list="nameSpaceCostChart.bar"
+        ></horizontalBar>
+      </div>
       <TableList
         :request-work="requestWork"
         :time-mode="timeMode"
@@ -426,10 +428,7 @@
   const { t, route } = useCallCommon();
   const loadeend = ref(false);
   const namespaceFilterKey = ref('totalCost');
-  const clusterOptions = [
-    { label: 'cluster-1', value: 'cluster1' },
-    { label: 'cluster-2', value: 'cluster2' }
-  ];
+  const clusterOptions = [];
   const active = ref<'bar' | 'line'>('bar');
   const filterKey = ref('totalCost');
   const preloading = computed(() => {
@@ -497,6 +496,9 @@
     };
   });
   const handleNamespaceFilterChange = (key) => {
+    each(namespaceDataList.value, (s) => {
+      s[key] = s[key] ?? 0;
+    });
     const list = sortBy(namespaceDataList.value, (s) => s[key]).reverse();
     const xAxis: string[] = [];
     const bar: Array<{ name: string; value: string }> = [];
@@ -505,9 +507,10 @@
       xAxis.push(item.itemName);
       bar.push({
         name: item.itemName,
-        value: get(item, key)
+        value: get(item, key) || 0
       });
     });
+    bar.reverse();
     nameSpaceCostChart.value.xAxis = [].concat(xAxis as never[]);
     nameSpaceCostChart.value.bar = [].concat(bar as never[]);
   };

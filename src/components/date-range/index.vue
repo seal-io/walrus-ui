@@ -64,7 +64,7 @@
   import { datePickerMode, timeZoneMode } from './config';
 
   type timeType = 'date' | 'month' | 'year';
-  type unitType = 'day' | 'month' | 'year' | 'date';
+  type unitType = 'day' | 'month' | 'year' | 'date' | undefined;
   type ShortCutsType = {
     label: string;
     unit: string;
@@ -252,7 +252,8 @@
       dateType = 'year';
     }
     if (['day', 'week'].includes(props.step)) {
-      rangValue.range = 12;
+      rangValue.range = 366;
+      rangValue.type = 'day';
     }
     const { type, range } = rangValue;
     if (!props.todayIn) {
@@ -261,7 +262,7 @@
       ) {
         return true;
       }
-    } else if (dayjs(current).isAfter(dayjs().format('YYYY-MM-DD'), dateType)) {
+    } else if (dayjs(current).isAfter(dayjs().format('YYYY-MM-DD'), 'day')) {
       return true;
     }
     if (
