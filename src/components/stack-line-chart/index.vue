@@ -19,12 +19,14 @@
       <a-select
         v-if="showFilter"
         v-model="selectedList"
+        v-model:input-value="inputValue"
         style="min-width: 200px; text-align: left"
         :placeholder="$t('common.chart.filter.holder')"
         multiple
         :max-tag-count="1"
         allow-clear
-        allow-search
+        :allow-search="{ retainInputValue: true }"
+        @popup-visible-change="handlePopVisibleChange"
         @change="handleSelectedChange"
       >
         <template #prefix>
@@ -120,6 +122,7 @@
     }
   });
   const selectedList = ref<string[]>([]);
+  const inputValue = ref('');
   const { t } = useI18n();
 
   const showFilter = computed(() => {
@@ -173,6 +176,11 @@
   };
   const handleSelectedChange = () => {
     console.log('selectedList===', selectedList.value);
+  };
+  const handlePopVisibleChange = (visible) => {
+    if (!visible) {
+      inputValue.value = '';
+    }
   };
   const tooltipItemsHtmlString = (items: ToolTipFormatterParams[]) => {
     const maxCount = 25;
