@@ -183,7 +183,7 @@
     }
   };
   const tooltipItemsHtmlString = (items: ToolTipFormatterParams[]) => {
-    const maxCount = 25;
+    const maxCount = 29;
     const list = items.length > maxCount ? slice(items, 0, maxCount) : items;
     const result = list.map(
       (el) => `<div class="content-panel">
@@ -198,7 +198,7 @@
     result.reverse();
     if (items.length > maxCount) {
       result.push(
-        `<div class="content-panel dot"><div class="series-name"></div></div><div class="content-panel notes-text"><div class="series-name">${t(
+        `<div class="content-panel notes-text"><div class="series-name">${t(
           'common.chart.filter.tips'
         )}</div></div>`
       );

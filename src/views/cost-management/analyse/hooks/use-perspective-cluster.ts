@@ -261,9 +261,10 @@ export default function usePerspectiveCost(props) {
         nameSpaceCostChart.value.xAxis.push(item.itemName);
         nameSpaceCostChart.value.bar.push({
           name: item.itemName,
-          value: [item.totalCost]
+          value: [item.totalCost || 0]
         });
       });
+      nameSpaceCostChart.value.bar.reverse();
       nameSpaceCostChart.value.dataConfig = [
         { name: 'cost', label: 'projectCost' }
       ];

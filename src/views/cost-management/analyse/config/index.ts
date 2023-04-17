@@ -318,7 +318,7 @@ export const clusterNamespaceCostCols = [
     ellipsis: true,
     tooltip: true,
     cellStyle: { minWidth: '40px' },
-    dataIndex: 'pvCost',
+    dataIndex: 'loadBalancerCost',
     render({ record }) {
       return round(record.loadBalancerCost, 4) || 0;
     },

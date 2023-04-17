@@ -575,7 +575,7 @@
       const { data } = await queryPerspectiveFields(params);
       const list = data?.items || [];
       const resultList = generatePerspectiveFields(list);
-      groupByList.value = resultList;
+      groupByList.value = resultList.filter((sItem) => sItem.value !== 'year');
       // console.log('groupByList===', JSON.stringify(list));
     } catch (error) {
       groupByList.value = [];
@@ -591,7 +591,7 @@
       const { data } = await queryPerspectiveFields(params);
       const list = data?.items || [];
       const resultList = generatePerspectiveFields(list);
-      stepList.value = resultList;
+      stepList.value = resultList.filter((sItem) => sItem.value !== 'year');
       each(stepList.value, (o) => {
         if (o.label === 'Cumulative') {
           o.value = 'null';
@@ -722,5 +722,11 @@
       width: 180px;
       padding-right: 10px;
     }
+  }
+</style>
+
+<style lang="less">
+  .arco-cascader-panel {
+    height: max-content;
   }
 </style>
