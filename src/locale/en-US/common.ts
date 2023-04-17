@@ -3,7 +3,7 @@ export default {
   'common.button.upload': 'Upload',
   'common.button.save': 'Save',
   'common.button.cancel': 'Cancel',
-  'common.button.discard': 'Discard',
+  'common.button.discard': 'Sure to discard',
   'common.button.submit': 'Submit',
   'settings.system': 'System settings',
   'common.button.search': 'Search',
@@ -42,6 +42,8 @@ export default {
   'common.button.back': 'Back',
   'common.tips.save':
     'You have unsaved changes. Leaving this page will discard changes.',
+  'common.tips.cancel':
+    'You have unsaved changes. Are you sure you want to discard changes?',
   'common.tips.discard': 'Discard Changes?',
   'common.tips.title': 'Tips:',
   'common.input.range.start': 'start value',

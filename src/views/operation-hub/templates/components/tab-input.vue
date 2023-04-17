@@ -27,7 +27,7 @@
           tooltip
           :cell-style="{ minWidth: '40px' }"
           data-index="Name"
-          :title="$t('applications.applications.table.name')"
+          :title="$t('common.table.name')"
         >
         </a-table-column>
         <a-table-column
@@ -43,6 +43,7 @@
     <AceEditor
       v-if="currentView === 'json'"
       lang="json"
+      :height="300"
       read-only
       :show-gutter="false"
       :editor-default-value="jsonData"

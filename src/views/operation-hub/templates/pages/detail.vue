@@ -165,9 +165,11 @@
 </template>
 
 <script lang="ts" setup>
-  import { assignIn, find, get, map } from 'lodash';
+  import { assignIn, find, get, map, isEqual, cloneDeep } from 'lodash';
   import { urlReg } from '@/utils/validate';
   import { ref, reactive, onMounted, computed } from 'vue';
+  import { beforeLeaveCallback } from '@/hooks/save-before-leave';
+  import { onBeforeRouteLeave } from 'vue-router';
   import GroupTitle from '@/components/group-title/index.vue';
   import EditPageFooter from '@/components/edit-page-footer/index.vue';
   import useCallCommon from '@/hooks/use-call-common';
@@ -207,6 +209,7 @@
   const id = route.query.id as string;
   const submitLoading = ref(false);
   const templateSchema = ref({});
+  let copyFormData: any = {};
   const formData = reactive({
     id: '',
     description: '',
@@ -254,6 +257,7 @@
       };
       const { data } = await queryItemModules(params);
       assignIn(formData, data);
+      copyFormData = cloneDeep(formData);
     } catch (error) {
       console.log('error');
       formref.value.resetFields();
@@ -269,6 +273,7 @@
     if (!res) {
       try {
         submitLoading.value = true;
+        copyFormData = cloneDeep(formData);
         if (id) {
           await updateModules(formData);
         } else {
@@ -286,7 +291,7 @@
       }
     }
   };
-  const handleCancel = () => {
+  const cancelCallback = () => {
     if (pageAction.value === 'edit' && route.params.action === 'view') {
       pageAction.value = 'view';
       getItemModules();
@@ -294,9 +299,38 @@
     }
     router.back();
   };
+  const handleCancel = () => {
+    if (!isEqual(copyFormData, formData)) {
+      beforeLeaveCallback({
+        isCancel: true,
+        onOk: () => {
+          copyFormData = cloneDeep(formData);
+          cancelCallback();
+        }
+      });
+    } else {
+      cancelCallback();
+    }
+  };
   const handleTabChange = (val) => {
     activeKey.value = val;
   };
+  onBeforeRouteLeave(async (to, from) => {
+    if (!isEqual(copyFormData, formData)) {
+      beforeLeaveCallback({
+        to,
+        from,
+        onOk: () => {
+          copyFormData = cloneDeep(formData);
+          router.push({
+            name: to.name as string
+          });
+        }
+      });
+      return false;
+    }
+    return true;
+  });
   onMounted(() => {
     getItemModules();
     getModuleVersions();

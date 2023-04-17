@@ -12,7 +12,7 @@
           tooltip
           :cell-style="{ minWidth: '40px' }"
           data-index="Name"
-          :title="$t('applications.applications.table.name')"
+          :title="$t('common.table.name')"
         >
         </a-table-column>
         <a-table-column
