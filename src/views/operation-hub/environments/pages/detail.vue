@@ -171,6 +171,7 @@
     });
   };
   const getItemEnvironmentInfo = async () => {
+    copyFormData = cloneDeep(formData.value);
     if (!id) return;
     try {
       const { data } = await queryItemEnvironments({ id });

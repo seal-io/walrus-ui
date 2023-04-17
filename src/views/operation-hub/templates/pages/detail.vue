@@ -250,6 +250,7 @@
     }
   };
   const getItemModules = async () => {
+    copyFormData = cloneDeep(formData);
     if (!id) return;
     try {
       const params = {
