@@ -78,7 +78,8 @@
         >
           <a-space
             v-if="labelList?.length && pageAction === 'edit'"
-            style="display: flex; flex-direction: column"
+            fill
+            style="display: flex; flex-direction: column; width: 500px"
             direction="vertical"
           >
             <xInputGroup
@@ -132,6 +133,7 @@
     assignIn,
     toLower,
     keys,
+    some,
     map,
     get,
     isEqual,
@@ -192,7 +194,8 @@
     list?.splice(index, 1);
   };
   const validatorAttribute = (val, callback) => {
-    if (!keys(formData.configData.attributes).length) {
+    const valid = some(keys(formData.configData.attributes), (s) => !s);
+    if (valid || !keys(formData.configData.attributes).length) {
       callback(t('operation.connectors.attribute.rule'));
     } else {
       callback();
@@ -213,7 +216,7 @@
   };
   const handleSubmit = async () => {
     const res = await formref.value?.validate();
-    triggerValidate.value = !res;
+    triggerValidate.value = true;
     if (!res) {
       try {
         submitLoading.value = true;
