@@ -612,6 +612,9 @@
     await getModules();
     await Promise.all([getModulesVersions(), getProjectSecrets()]);
     setCompleteData();
+    setTimeout(() => {
+      copyFormData = cloneDeep(appInfo);
+    }, 100);
   };
   init();
 </script>

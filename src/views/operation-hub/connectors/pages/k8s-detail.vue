@@ -216,6 +216,7 @@
     }
   };
   const getConnectorInfo = async () => {
+    copyFormData = cloneDeep(formData);
     if (!id) return;
     try {
       const { data } = await queryItemConnector({ id });
