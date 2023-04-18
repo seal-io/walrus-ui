@@ -26,7 +26,7 @@
   import 'ace-builds/src-noconflict/mode-text';
   import 'ace-builds/src-noconflict/mode-json';
   // import 'ace-builds/src-noconflict/mode-html';
-  // import 'ace-builds/src-noconflict/mode-terraform';
+  import 'ace-builds/src-noconflict/mode-terraform';
   import 'ace-builds/src-noconflict/mode-yaml';
   import 'ace-builds/src-noconflict/mode-sh';
   import 'ace-builds/src-noconflict/mode-xml';
