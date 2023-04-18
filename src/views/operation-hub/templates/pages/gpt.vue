@@ -42,7 +42,7 @@
             :add-lines="addLines"
             editor-id="firstEditor"
             :editor-default-value="defaultValue"
-            lang="json"
+            lang="terraform"
             :height="500"
             @change="handleCodeChange"
           ></AceEditor>
