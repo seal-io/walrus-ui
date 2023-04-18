@@ -23,7 +23,8 @@
     getDefaultValue
   } from '../../../config';
 
-  const localServer = window.location.host;
+  const { host, protocol } = window.location;
+  const proto = protocol === 'https:' ? 'wss' : 'ws';
   const instanceId = inject('instanceId', ref(''));
   const resourceId = ref('');
   const resourceKey = ref('');
@@ -35,7 +36,7 @@
     if (!resourceId.value || !resourceKey.value) {
       return '';
     }
-    return `wss://${localServer}/v1/application-resources/${resourceId.value}/exec?key=${resourceKey.value}`;
+    return `${proto}://${host}/v1/application-resources/${resourceId.value}/exec?key=${resourceKey.value}`;
   });
   const handleObjectChange = (val) => {
     const result = getResourceId(val);

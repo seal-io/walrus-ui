@@ -17,7 +17,7 @@ export default mergeConfig(
       fs: {
         strict: true
       },
-      https: true,
+      https: false,
       port: 4000,
       // cors: {
       //   origin: 'https://localhost:4000'
