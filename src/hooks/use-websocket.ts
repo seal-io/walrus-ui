@@ -1,11 +1,8 @@
-import { isObject } from 'lodash';
-import { onBeforeUnmount, onUnmounted } from 'vue';
-
-const localServer = window.location.host;
-const protocal = import.meta.env.MODE === 'development' ? 'wss' : 'wss';
+const { host, protocol } = window.location;
+const proto = protocol === 'https:' ? 'wss' : 'ws';
 
 export const createWebSocketUrl = (url) => {
-  return `wss://${localServer}/v1${url}`;
+  return `${proto}://${host}/v1${url}`;
 };
 export function createWebsocketInstance({ url, onmessage }) {
   // ws.readyState
