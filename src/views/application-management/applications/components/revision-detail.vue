@@ -28,6 +28,7 @@
         >
           <StatusLabel
             v-if="item.key === 'status'"
+            style="display: flex; align-items: center"
             :zoom="0.9"
             :status="{
               status: item.value,
