@@ -192,11 +192,39 @@
     handleFilter();
   };
   const updateDataList = (data) => {
-    if (data?.type === websocketEventType.delete) return;
     const collections = filter(
       data.collection || [],
       (sItem) => sItem?.instance?.id === instanceId.value
     );
+    let ids = data.ids || [];
+    // DELETE
+    if (data?.type === websocketEventType.delete) {
+      // delete parent resource
+      ids = _.filter(ids, (childId) => {
+        const updateIndex = _.findIndex(
+          dataList.value,
+          (sItem) => sItem.id === childId
+        );
+        if (updateIndex > -1) {
+          dataList.value.splice(updateIndex, 1);
+        }
+        return updateIndex === -1;
+      });
+      //  delete sub resource
+      _.each(ids, (childId) => {
+        _.each(dataList.value, (sItem) => {
+          const deleteIndex = _.findIndex(
+            sItem.components || [],
+            (item) => item.id === childId
+          );
+          if (deleteIndex > -1) {
+            sItem.components.splice(deleteIndex, 1);
+          }
+        });
+      });
+      return;
+    }
+    // CREATE
     if (data?.type === websocketEventType.create) {
       dataList.value = concat(collections, dataList.value);
       return;
