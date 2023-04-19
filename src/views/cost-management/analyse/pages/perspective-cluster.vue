@@ -32,6 +32,7 @@
           v-model:start="queryParams.startTime"
           v-model:end="queryParams.endTime"
           v-model:timeMode="timeMode"
+          step="day"
           :short-cuts="DateShortCuts"
           :show-extra="true"
           timezone

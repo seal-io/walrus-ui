@@ -235,7 +235,7 @@
   };
   const disabledDate = (current) => {
     if (props.step === 'month') {
-      return false;
+      return dayjs(current).isAfter(dayjs().format('YYYY-MM-DD'), 'day');
     }
     let rangValue = props.maxRange;
     let dateType: any = 'day';

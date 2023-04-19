@@ -245,6 +245,15 @@
         containLabel: true,
         ...get(props.configOptions, 'grid')
       },
+      dataZoom: [
+        {
+          type: 'slider',
+          height: 25,
+          show: props.xAxis.length > 200,
+          startValue: 0,
+          endValue: 200
+        }
+      ],
       legend: {
         right: 0,
         type: 'scroll',

@@ -21,7 +21,7 @@
 </template>
 
 <script lang="ts" setup>
-  import { map, maxBy, ceil, get, round } from 'lodash';
+  import { map, maxBy, ceil, get, round, omit } from 'lodash';
   import { PropType, ref } from 'vue';
   import { BarSeriesOption } from 'echarts';
 
@@ -85,9 +85,22 @@
         left: 0,
         right: 0,
         top: 16,
-        bottom: 0,
-        containLabel: true
+        containLabel: true,
+        ...get(props.configOptions, 'grid'),
+        bottom:
+          props.dataList.length > 200
+            ? 50
+            : get(props.configOptions, 'grid.bottom') || 0
       },
+      dataZoom: [
+        {
+          type: 'slider',
+          height: 25,
+          show: props.dataList.length > 200,
+          startValue: 0,
+          endValue: 200
+        }
+      ],
       xAxis: {
         type: 'category',
         show: true,
@@ -134,7 +147,7 @@
         type: 'bar',
         // barWidth: 16,
         barMaxWidth: 16,
-        barMinWidth: 6,
+        barMinWidth: 4,
         label: {
           show: false, // show label on the bar
           position: 'top',
@@ -146,7 +159,7 @@
           borderRadius: 0
         }
       },
-      ...props.configOptions
+      ...omit(props.configOptions, 'grid')
     };
   });
 </script>
