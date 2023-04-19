@@ -19,7 +19,8 @@
     watch,
     onUnmounted
   } from 'vue';
-  import AceEditor from '@/components/ace-editor/index.vue';
+  import { AppInstanceStatus } from '../config';
+  // import AceEditor from '@/components/ace-editor/index.vue';
 
   const props = defineProps({
     revisionId: {
@@ -41,14 +42,25 @@
       }
     }
   });
+  const instanceInfo = inject(
+    'instanceInfo',
+    ref({
+      status: ''
+    })
+  );
   const emits = defineEmits(['close']);
   const wssInstance: any = ref('');
   const content = ref('');
   const scroller = ref();
   const createWebSockerConnection = () => {
     if (!props.revisionId) return;
+    console.log('instanceInfo===', instanceInfo.value);
+    const jobType =
+      instanceInfo.value.status === AppInstanceStatus.Deleting
+        ? 'destroy'
+        : 'apply';
     const wssURL = createWebSocketUrl(
-      `/application-revisions/${props.revisionId}/log`
+      `/application-revisions/${props.revisionId}/log?jobType=${jobType}`
     );
     wssInstance.value = useWebSocket(wssURL, {
       autoReconnect: false

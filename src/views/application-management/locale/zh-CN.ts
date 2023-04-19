@@ -52,7 +52,7 @@ export default {
   'applications.applications.instance.accessUrl': '访问URL',
   'applications.applications.instance.resource': '资源信息',
   'applications.applications.instance.endpoint': '入口',
-  'applications.applications.instance.log': '异常日志',
+  'applications.applications.instance.log': '日志',
   'applications.applications.logs.live': '运行日志',
   'applications.instance.rule.env': '部署环境必选',
   'applications.instance.env.tips': '未添加连接器的环境不可用',
