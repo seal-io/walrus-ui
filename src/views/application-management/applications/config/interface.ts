@@ -82,6 +82,7 @@ export interface InstanceResource {
   status: string;
   createTime: string;
   keys: ResourceKeysItem;
+  components: InstanceResource[];
 }
 export interface HistoryData {
   id: string;
