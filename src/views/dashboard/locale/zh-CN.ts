@@ -6,7 +6,7 @@ export default {
   'dashboard.overview.connector': '连接器',
   'dashboard.deployment.title': '应用部署',
   'dashboard.deployment.history': '历史记录',
-  'dashboard.deployment.running': ' 运行中',
+  'dashboard.deployment.running': '运行中',
   'dashboard.deployment.failed': '失败',
   'dashboard.deployment.succeed': '成功',
   'dashboard.deployment.lastest': '最新10条部署',

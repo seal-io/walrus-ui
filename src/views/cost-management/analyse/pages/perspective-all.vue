@@ -7,6 +7,7 @@
           v-model:start="queryParams.startTime"
           v-model:end="queryParams.endTime"
           v-model:timeMode="timeMode"
+          step="day"
           :show-extra="true"
           timezone
           :short-cuts="DateShortCuts"
