@@ -98,7 +98,7 @@ export default function setupPermissionGuard(router: Router) {
         name: 'Login',
         query: {
           // redirect: to.name,
-          ...to.query
+          // ...to.query
         } as LocationQueryRaw
       });
       NProgress.done();
