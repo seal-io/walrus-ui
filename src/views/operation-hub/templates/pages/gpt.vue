@@ -395,6 +395,7 @@
   };
   const handleTyeChange = (val) => {
     clearDiffLines();
+    diffResult.value = [];
     code.value = val;
     defaultValue.value = val;
     diffValue.value = '';
@@ -416,7 +417,7 @@
       },
       ''
     );
-    defaultValue.value = res;
+    defaultValue.value = `${res}\n`;
     code.value = res;
     clearDiffLines();
     showFix.value = false;
@@ -442,7 +443,7 @@
       ''
     );
     clearDiffLines();
-    defaultValue.value = res;
+    defaultValue.value = `${res}\n`;
     code.value = res;
     showFix.value = false;
     showExplainModal.value = false;
