@@ -3,37 +3,37 @@
     <div :cols="24" style="display: flex; align-items: center; width: 100%">
       <!-- key -->
       <div :span="8" style="display: flex; flex: 1; align-items: center">
-        <!-- <a-tooltip
+        <a-tooltip
           :popup-visible="popupvisible"
           :content="$t('common.form.key')"
         >
-        </a-tooltip> -->
-        <a-input
-          v-if="!showHintInput"
-          :error="!dataKey && triggerValidate"
-          :model-value="dataKey"
-          :placeholder="$t('common.input.key')"
-          :max-length="100"
-          v-bind="$attrs"
-          show-word-limit
-          style="width: 100%"
-          @input="(val) => handleDataChange(val, 'key', 'input')"
-          @change="(val) => handleDataChange(val, 'key', 'change')"
-        ></a-input>
-        <hintInput
-          v-else
-          :model-value="dataKey"
-          :error="!dataKey && triggerValidate"
-          :placeholder="$t('common.input.key')"
-          :max-length="100"
-          v-bind="$attrs"
-          style="width: 100%"
-          :editor-id="`${formId}_keyEditor${position}`"
-          :source="completeData"
-          show-word-limit
-          @input="(val) => handleDataChange(val, 'key', 'input')"
-          @change="(val) => handleDataChange(val, 'key', 'change')"
-        ></hintInput>
+          <a-input
+            v-if="!showHintInput"
+            :error="!dataKey && triggerValidate"
+            :model-value="dataKey"
+            :placeholder="$t('common.input.key')"
+            :max-length="100"
+            v-bind="$attrs"
+            show-word-limit
+            style="width: 100%"
+            @input="(val) => handleDataChange(val, 'key', 'input')"
+            @change="(val) => handleDataChange(val, 'key', 'change')"
+          ></a-input>
+          <hintInput
+            v-else
+            :model-value="dataKey"
+            :error="!dataKey && triggerValidate"
+            :placeholder="$t('common.input.key')"
+            :max-length="100"
+            v-bind="$attrs"
+            style="width: 100%"
+            :editor-id="`${formId}_keyEditor${position}`"
+            :source="completeData"
+            show-word-limit
+            @input="(val) => handleDataChange(val, 'key', 'input')"
+            @change="(val) => handleDataChange(val, 'key', 'change')"
+          ></hintInput>
+        </a-tooltip>
       </div>
       <!-- value -->
       <div :span="8" style="display: flex; flex: 1; align-items: center">
@@ -110,7 +110,7 @@
 </template>
 
 <script lang="ts" setup>
-  import { cloneDeep, reduce, get, hasIn } from 'lodash';
+  import { cloneDeep, reduce, get, hasIn, filter } from 'lodash';
   import { useAttrs, PropType, ref, inject } from 'vue';
   import hintInput from '@/components/hint-input/index.vue';
 
@@ -243,21 +243,19 @@
   };
   const handleDataChange = (val, attr, type?) => {
     // check duplication key
-    console.log('props.value===', val, props.value);
-    // if (
-    //   hasIn(props.value, val) &&
-    //   attr === 'key' &&
-    //   !!val &&
-    //   type === 'change'
-    // ) {
-    //   isError.value = true;
-    //   popupvisible.value = true;
-    //   setTimeout(() => {
-    //     popupvisible.value = false;
-    //   }, 2000);
-    //   emits('update:dataKey', '');
-    //   return;
-    // }
+    if (
+      attr === 'key' &&
+      !!val &&
+      type === 'change' &&
+      filter(props.labelList, (s) => s.key === val).length > 1
+    ) {
+      popupvisible.value = true;
+      setTimeout(() => {
+        popupvisible.value = false;
+      }, 2000);
+      emits('update:dataKey', '');
+      return;
+    }
     if (attr === 'key') {
       emits('update:dataKey', val);
       emits('keyChange');
@@ -268,7 +266,6 @@
     if (attr === 'description') {
       emits('update:dataDesc', val);
     }
-    isError.value = false;
     getDataObj(props.labelList);
   };
 </script>
