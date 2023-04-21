@@ -3,6 +3,7 @@
     <a-table
       :loading="loading"
       column-resizable
+      hide-expand-button-on-empty
       style="margin-bottom: 10px"
       :bordered="false"
       :data="dataList"
@@ -146,6 +147,31 @@
     }
     return '';
   };
+  const setParentDataProperties = (data) => {
+    data.isLeaf = !data.components?.length;
+    data.isParent = true;
+    data.key = data.id;
+  };
+  const setChildDataProperties = (parent) => {
+    setParentDataProperties(parent);
+    const children = parent.components || [];
+    if (children.length) {
+      _.each(children, (data) => {
+        data.isLeaf = true;
+        data.isChilren = true;
+        data.parentId = parent.id;
+        data.key = parent.id;
+      });
+    }
+    parent.children = children;
+  };
+
+  const setDataList = (list) => {
+    return _.map(list, (s) => {
+      setChildDataProperties(s);
+      return s;
+    });
+  };
   const fetchData = async () => {
     try {
       loading.value = true;
@@ -155,22 +181,7 @@
       };
       const { data } = await queryApplicationResource(params);
       let list: any = data?.items || [];
-      list = _.map(list, (s) => {
-        const children = s.components || [];
-        s.isLeaf = !children.length;
-        s.isParent = true;
-        s.key = s.id;
-        if (children.length) {
-          _.each(children, (c) => {
-            c.isLeaf = true;
-            c.isChilren = true;
-            c.parentId = s.id;
-            c.key = s.id;
-          });
-          s.children = children;
-        }
-        return s;
-      });
+      list = setDataList(list);
       dataList.value = [].concat(list);
       loading.value = false;
     } catch (error) {
@@ -196,7 +207,18 @@
       data.collection || [],
       (sItem) => sItem?.instance?.id === instanceId.value
     );
+
+    const childResources = _.filter(collections, (item) =>
+      _.get(item, 'composition.id')
+    );
+    const parentResources = _.filter(
+      collections,
+      (item) => !_.get(item, 'composition.id')
+    );
+
+    // use it only delete action
     let ids = data.ids || [];
+
     // DELETE
     if (data?.type === websocketEventType.delete) {
       // delete parent resource
@@ -210,6 +232,7 @@
         }
         return updateIndex === -1;
       });
+
       //  delete sub resource
       _.each(ids, (childId) => {
         _.each(dataList.value, (sItem) => {
@@ -222,19 +245,36 @@
           }
         });
       });
+      dataList.value = setDataList(dataList.value);
       return;
     }
+
     // CREATE
     if (data?.type === websocketEventType.create) {
-      dataList.value = concat(collections, dataList.value);
+      // parent resource
+      dataList.value = concat(_.cloneDeep(parentResources), dataList.value);
+      // sub resource
+      _.each(childResources, (item) => {
+        _.each(dataList.value, (pItem) => {
+          if (item?.composition?.id === pItem.id) {
+            pItem.components = concat(
+              _.cloneDeep(item),
+              pItem.components || []
+            );
+          }
+        });
+      });
+      dataList.value = setDataList(dataList.value);
       return;
     }
+
+    // UPDATE
     if (collections.length) {
       setTimeout(() => {
         emits('updateEndpoint');
       }, 100);
     }
-    _.each(collections, (item) => {
+    _.each(parentResources, (item) => {
       const updateIndex = _.findIndex(
         dataList.value,
         (sItem) => sItem.id === item.id
@@ -246,6 +286,24 @@
         dataList.value = _.concat(_.cloneDeep(item), dataList.value);
       }
     });
+
+    _.each(childResources, (item) => {
+      _.each(dataList.value, (pItem) => {
+        if (item.composition.id === pItem.id) {
+          const updateIndex = _.findIndex(
+            pItem.components,
+            (cItem) => cItem.id === item.id
+          );
+          if (updateIndex > -1) {
+            const updateItem = _.cloneDeep(item);
+            pItem.components[updateIndex] = updateItem;
+          } else {
+            pItem.components = _.concat(_.cloneDeep(item), pItem.components);
+          }
+        }
+      });
+    });
+    dataList.value = setDataList(dataList.value);
   };
   const createInstanceListWebsocket = () => {
     try {

@@ -19,7 +19,7 @@ export function fetchAppVersion(): { version: string; commitId: string } {
   const appHash = html.getAttribute('data-hash') || '';
   return {
     version: appVersion,
-    commitId: appHash ? appHash.substring(0, 15) : '',
+    commitId: appHash ? appHash.substring(0, 15) : ''
   };
 }
 
@@ -29,6 +29,7 @@ export function queryAppServerVersion() {
 export function showVersionModal(data: versionData) {
   Modal.info({
     title: i18n.global.t('common.footer.version.title'),
+    top: '20%',
     footer: () => h('span'),
     // title: () => h('div', {}, i18n.global.t('common.footer.version.title')),
     simple: true,
@@ -40,7 +41,7 @@ export function showVersionModal(data: versionData) {
             'span',
             {
               style:
-                'font-weight: 500;display: inline-block;width: 60px;padding-right: 10px;text-align: right;',
+                'font-weight: 500;display: inline-block;width: 60px;padding-right: 10px;text-align: right;'
             },
             `${i18n.global.t('common.footer.version.web')}`
           ),
@@ -48,14 +49,14 @@ export function showVersionModal(data: versionData) {
             'span',
             { style: 'display: inline-block;width: 100px;text-align: left' },
             `${getVersion(get(data, 'web'))}`
-          ),
+          )
         ]),
         h('div', {}, [
           h(
             'span',
             {
               style:
-                'font-weight: 500;display: inline-block;width: 60px;padding-right: 10px;text-align: right;',
+                'font-weight: 500;display: inline-block;width: 60px;padding-right: 10px;text-align: right;'
             },
             `${i18n.global.t('common.footer.version.server')}`
           ),
@@ -63,9 +64,9 @@ export function showVersionModal(data: versionData) {
             'span',
             { style: 'display: inline-block;width: 100px;text-align: left' },
             `${getVersion(get(data, 'server'))}`
-          ),
-        ]),
-      ]),
+          )
+        ])
+      ])
   });
 }
 
@@ -76,8 +77,8 @@ export async function useAppVersion(): Promise<versionData> {
     web,
     server: {
       version: get(data, 'version') || '',
-      commitId: get(data, 'commit') ? get(data, 'commit').substring(0, 15) : '',
-    },
+      commitId: get(data, 'commit') ? get(data, 'commit').substring(0, 15) : ''
+    }
   };
 }
 

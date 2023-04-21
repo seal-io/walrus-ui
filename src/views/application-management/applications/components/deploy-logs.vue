@@ -70,7 +70,8 @@
     emits('close');
   };
   const updateScrollerPosition = () => {
-    const { scrollHeight, clientHeight, scrollTop } = scroller.value;
+    const scrollerContainer = scroller.value || {};
+    const { scrollHeight, clientHeight, scrollTop } = scrollerContainer;
     console.log('scroller===1===', scrollHeight, clientHeight, scrollTop);
     if (scrollHeight > clientHeight + scrollTop) {
       scroller.value.scrollTop += 1;
