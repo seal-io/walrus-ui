@@ -13,7 +13,7 @@
       'max-height': '500px',
       'overflow': 'auto'
     }"
-    modal-class="oci-modal"
+    modal-class="app-module-modal"
     :title="$t('applications.module.title.view')"
     @cancel="handleCancel"
     @ok="handleOk"
@@ -553,4 +553,11 @@
   );
 </script>
 
-<style lang="less" scoped></style>
+<style lang="less">
+  .app-module-modal.arco-modal {
+    .arco-tabs-tab {
+      margin-right: 30px;
+      margin-left: 0;
+    }
+  }
+</style>

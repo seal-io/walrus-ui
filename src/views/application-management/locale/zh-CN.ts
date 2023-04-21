@@ -36,6 +36,8 @@ export default {
   'applications.applications.table.recommendation': '建议值',
   'applications.applications.container.holder': '请选择容器',
   'applications.applications.detail.createInstance': '新建应用实例',
+  'applications.applications.module.delete':
+    '1. 可能影响已部署实例的升级\n 2. 可能影响已部署实例删除时资源清理',
   'applications.applications.detail.env': '环境',
   'applications.applications.detail.basic': '基本信息',
   'applications.applications.title.edit': '编辑应用',

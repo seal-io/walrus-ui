@@ -48,7 +48,13 @@ export const deleteModal = async ({
     content: () => {
       return h(
         'div',
-        { style: { 'text-align': 'center' } },
+        {
+          style: {
+            'text-align': 'center',
+            'white-space': 'pre-wrap',
+            'line-height': 1.6
+          }
+        },
         i18n.global.t(content || '')
       );
     },

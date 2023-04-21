@@ -82,6 +82,8 @@ export interface InstanceResource {
   status: string;
   createTime: string;
   keys: ResourceKeysItem;
+  children?: InstanceResource[];
+  composition: { id?: string; status: object };
   components: InstanceResource[];
 }
 export interface HistoryData {

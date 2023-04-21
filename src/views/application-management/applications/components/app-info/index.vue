@@ -560,7 +560,7 @@
       beforeLeaveCallback({
         isCancel: true,
         onOk: () => {
-          copyFormData = cloneDeep(appInfo);
+          copyFormData = cloneDeep(appInfoData);
           cancelCallback();
         }
       });
@@ -573,7 +573,8 @@
       onOk() {
         appInfo.modules.splice(index, 1);
         completeDataSetter?.updateModuleCompleteData?.();
-      }
+      },
+      content: `applications.applications.module.delete`
     });
   };
   const handleSaveModule = async (data) => {

@@ -44,6 +44,8 @@ export default {
   'applications.applications.title.view': 'Application Details',
   'applications.applications.title.clone': 'Clone Application',
   'applications.applications.detail.info': 'Application Information',
+  'applications.applications.module.delete': `1. May affect the upgrade of deployed instances
+    2. May affect resource cleanup when the deployed instance is deleted`,
   'applications.applications.instance.add': 'Add Application Instance',
   'applications.applications.instance.create': 'Add Instance',
   'applications.applications.instance.deleteTips': 'Clean up all resources',
