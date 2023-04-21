@@ -133,6 +133,12 @@
         return '';
       }
     },
+    comType: {
+      type: String, // comText, comPassword, ComHintText, comSelect
+      default() {
+        return 'comText';
+      }
+    },
     // showHintInput: {
     //   type: Boolean,
     //   default() {
