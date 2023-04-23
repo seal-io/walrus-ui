@@ -26,7 +26,7 @@
           ellipsis
           tooltip
           :cell-style="{ minWidth: '40px' }"
-          data-index="Name"
+          data-index="name"
           :title="$t('common.table.name')"
         >
         </a-table-column>
@@ -34,7 +34,15 @@
           ellipsis
           tooltip
           :cell-style="{ minWidth: '40px' }"
-          data-index="Description"
+          data-index="type"
+          :title="$t('common.table.type')"
+        >
+        </a-table-column>
+        <a-table-column
+          ellipsis
+          tooltip
+          :cell-style="{ minWidth: '40px' }"
+          data-index="description"
           :title="$t('common.table.description')"
         >
         </a-table-column>
@@ -69,7 +77,7 @@
   const currentView = ref('list');
   const dataList = computed(() => {
     const list = filter(get(props.schema, 'variables'), (item) => {
-      return !item.Hidden;
+      return !item.hidden;
     });
     return list || [];
   });
@@ -77,8 +85,8 @@
     const data = reduce(
       get(props.schema, 'variables') || [],
       (obj, item) => {
-        const key = item.Name as string;
-        obj[key] = `// ${item.description}`;
+        const key = item.name as string;
+        obj[key] = `// ${item.type} ${item.description || ''}`;
         return obj;
       },
       {}

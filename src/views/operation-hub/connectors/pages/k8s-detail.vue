@@ -30,26 +30,28 @@
           }}</span>
         </a-form-item>
         <a-form-item
-          v-if="pageAction === 'edit'"
-          field="configData.kubeconfig"
+          field="configData.kubeconfig.value"
           :hide-asterisk="false"
           label="KubeConfig"
           :validate-trigger="['change']"
           :rules="[
             {
-              required: true,
+              required: pageAction === 'edit',
               message: $t('operation.connectors.rules.kubeconfig')
             }
           ]"
         >
-          <a-textarea
-            v-model="formData.configData.kubeconfig"
-            style="width: 500px"
-            :spellcheck="false"
-            :placeholder="$t('operation.connectors.rules.kubeconfigTips')"
-            :auto-size="{ minRows: 6, maxRows: 10 }"
-          />
-          <template #extra>
+          <span :class="pageAction === 'view' ? 'readonly-view-label' : ''">
+            <a-textarea
+              v-model="formData.configData.kubeconfig.value"
+              :readonly="pageAction === 'view'"
+              style="width: 500px"
+              :spellcheck="false"
+              :placeholder="$t('operation.connectors.rules.kubeconfigTips')"
+              :auto-size="{ minRows: 6, maxRows: 10 }"
+            />
+          </span>
+          <template v-if="pageAction === 'edit'" #extra>
             <div>
               <a-upload
                 action="/"
@@ -72,6 +74,22 @@
               </a-upload>
             </div>
           </template>
+        </a-form-item>
+        <a-form-item label="是否可见">
+          <template #label>
+            <span>
+              <span>是否可见</span>
+              <a-tooltip content="编辑时KubeConfig的内容是否显示">
+                <icon-info-circle />
+              </a-tooltip>
+            </span>
+          </template>
+          <a-checkbox
+            v-if="pageAction == 'edit'"
+            v-model="formData.configData.kubeconfig.visible"
+          >
+          </a-checkbox>
+          <span v-else class="readonly-view-label">可见</span>
         </a-form-item>
         <a-form-item label="">
           <template #label>
@@ -163,7 +181,11 @@
   const formData: ConnectorFormData = reactive({
     name: '',
     configData: {
-      kubeconfig: ''
+      kubeconfig: {
+        visible: false,
+        value: '',
+        type: 'string'
+      }
     },
     configVersion: 'v1',
     type: 'Kubernetes',
@@ -191,8 +213,12 @@
   };
   const handleUploadSuccess = async (list, fileItem) => {
     const res = await readBlob(fileItem.file);
-    formData.configData.kubeconfig = res as string;
-    formref.value.validateField('configData.kubeconfig');
+    const kubeValue = formData.configData.kubeconfig;
+    formData.configData.kubeconfig = {
+      ...kubeValue,
+      value: res as string
+    };
+    formref.value.validateField('configData.kubeconfig.value');
   };
   const handleBeforeUpload = async (file) => {
     return true;

@@ -42,6 +42,8 @@ export default {
   'operation.connectors.type.rule': 'type is required',
   'operation.connectors.accesstoken.rule': 'access token is required',
   'operation.connectors.attribute.rule': 'attributes is required',
+  'operation.connectors.attribute.visible': 'visible',
+  'operation.connectors.attribute.invisible': 'invisible',
   'operation.environments.menu': 'Environments',
   'operation.environments.create': 'New Environment',
   'operation.environments.edit': 'Edit Environment',

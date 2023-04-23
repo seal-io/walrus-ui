@@ -37,6 +37,8 @@ export default {
   'operation.connectors.type.rule': '类型必选',
   'operation.connectors.accesstoken.rule': 'access token 必填',
   'operation.connectors.attribute.rule': '属性必填',
+  'operation.connectors.attribute.visible': '可见',
+  'operation.connectors.attribute.invisible': '不可见',
   'operation.environments.menu': '环境',
   'operation.environments.create': '新建环境',
   'operation.environments.edit': '编辑环境',

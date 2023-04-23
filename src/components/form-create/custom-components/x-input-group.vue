@@ -9,7 +9,7 @@
       }"
     >
       <!-- key -->
-      <div :span="8" style="display: flex; flex: 1; align-items: center">
+      <div :span="8" :style="getItemStyle('key')">
         <a-tooltip
           :popup-visible="popupvisible"
           :content="$t('common.form.key')"
@@ -47,7 +47,7 @@
         </a-tooltip>
       </div>
       <!-- value -->
-      <div :span="8" style="display: flex; flex: 1; align-items: center">
+      <div :span="8" :style="getItemStyle('value')">
         <span style="padding: 0 4px">{{ separator }}</span>
         <a-select
           v-if="valueOptions.length"
@@ -104,11 +104,31 @@
           @change="(val) => handleDataChange(val, 'value')"
         ></hintInput>
       </div>
+      <!-- extra -->
+      <div v-if="showExtra" :span="8" :style="getItemStyle('extra')">
+        <span style="padding: 0 4px">{{ separator }}</span>
+        <component
+          v-bind="{ ...$attrs, ...get(dataItem, 'extraProps') }"
+          :is="get(internalComponents, get(dataItem, 'extraCom'))"
+          style="width: 100%"
+          :placeholder="
+            get($attrs?.placeholder, 'extra') || $t('common.input.extra')
+          "
+          show-word-limit
+          live-input
+          :show-gutter="false"
+          :model-value="dataExtra"
+          :editor-id="`${token}-${position}`"
+          :editor-default-value="dataExtra"
+          @input="(val) => handleDataChange(val, 'extra', 'input')"
+          @change="(val) => handleDataChange(val, 'extra', 'change')"
+        ></component>
+      </div>
       <!-- description -->
       <div
         v-if="showDescription"
         :span="8"
-        style="display: flex; flex: 1; align-items: center"
+        :style="getItemStyle('description')"
       >
         <span style="padding: 0 4px">{{ separator }}</span>
         <template v-if="!valueOptions.length">
@@ -188,6 +208,12 @@
         return '';
       }
     },
+    dataExtra: {
+      type: [String, Boolean],
+      default() {
+        return '';
+      }
+    },
     separator: {
       type: String,
       default() {
@@ -254,6 +280,12 @@
         return false;
       }
     },
+    showExtra: {
+      type: Boolean,
+      default() {
+        return false;
+      }
+    },
     showPassword: {
       type: Boolean,
       default() {
@@ -277,6 +309,12 @@
       default() {
         return false;
       }
+    },
+    dataItem: {
+      type: Object,
+      default() {
+        return {};
+      }
     }
   });
   const emits = defineEmits([
@@ -286,7 +324,8 @@
     'update:value',
     'update:dataKey',
     'update:dataValue',
-    'update:dataDesc'
+    'update:dataDesc',
+    'update:dataExtra'
   ]);
   const showHintInput = inject('showHintInput', ref(false));
   const completeData = inject('completeData', ref({}));
@@ -303,6 +342,15 @@
       {}
     );
     emits('update:value', result);
+  };
+  const getItemStyle = (key) => {
+    return (
+      get(props.dataItem, `style.${key}`) || {
+        'display': 'flex',
+        'flex': 1,
+        'align-items': 'center'
+      }
+    );
   };
   const handleAddLabel = () => {
     const item = { key: '', value: '' };
@@ -339,6 +387,10 @@
     if (attr === 'description') {
       emits('update:dataDesc', val);
     }
+    if (attr === 'extra') {
+      emits('update:dataExtra', val);
+    }
+
     getDataObj(props.labelList);
   };
 </script>
