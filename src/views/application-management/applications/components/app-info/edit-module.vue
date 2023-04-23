@@ -170,7 +170,7 @@
               :show-footer="false"
               :submit="() => {}"
               :model="variablesGroupForm[group]?.attributes"
-              :form-schema="variablesGroup[group]?.Variables"
+              :form-schema="variablesGroup[group]?.variables"
             >
             </formCreate>
           </a-tab-pane>
@@ -185,7 +185,7 @@
           :show-footer="false"
           :submit="() => {}"
           :model="variablesGroupForm[defaultGroupKey]?.attributes"
-          :form-schema="variablesGroup[defaultGroupKey]?.Variables"
+          :form-schema="variablesGroup[defaultGroupKey]?.variables"
         >
         </formCreate>
       </div>
@@ -255,7 +255,7 @@
   import { queryModulesVersions } from '@/views/operation-hub/templates/api';
 
   interface Group {
-    Variables: object[];
+    variables: object[];
     label: string;
   }
   const props = defineProps({
@@ -379,12 +379,12 @@
     activeKey.value = val;
   };
   const getInitialValue = (item, sourceData, action) => {
-    let initialValue = item.Default;
+    let initialValue = item.default;
     if (
       get(moduleVersionFormCache.value, formData.version) ||
       action === 'edit'
     ) {
-      initialValue = get(sourceData, `attributes.${item.Name}`);
+      initialValue = get(sourceData, `attributes.${item.name}`);
     }
     return initialValue;
   };
@@ -401,43 +401,43 @@
     };
     console.log('sourceData===', sourceData);
     const variablesList = filter(
-      get(moduleInfo.value, 'Variables'),
-      (v) => !v.Hidden
+      get(moduleInfo.value, 'variables'),
+      (v) => !v.hidden
     );
     each(variablesList, (item) => {
       // set initial value
       // const initialValue =
       //   type === 'create'
-      //     ? item.Default
-      //     : get(sourceData, `attributes.${item.Name}`);
+      //     ? item.default
+      //     : get(sourceData, `attributes.${item.name}`);
       const initialValue = getInitialValue(item, sourceData, type);
-      if (item.Group) {
-        if (!variablesGroup.value[item.Group]) {
-          variablesGroup.value[item.Group] = {
-            Variables: [],
-            label: item.Group
+      if (item.group) {
+        if (!variablesGroup.value[item.group]) {
+          variablesGroup.value[item.group] = {
+            variables: [],
+            label: item.group
           };
-          variablesGroup.value[item.Group].Variables.push(item);
+          variablesGroup.value[item.group].variables.push(item);
         } else {
-          variablesGroup.value[item.Group].Variables.push(item);
+          variablesGroup.value[item.group].variables.push(item);
         }
 
         set(
           variablesGroupForm.value,
-          `${item.Group}.attributes.${item.Name}`,
+          `${item.group}.attributes.${item.name}`,
           initialValue
         );
       } else {
         if (!variablesGroup.value[defaultGroupKey]) {
           variablesGroup.value[defaultGroupKey] = {
-            Variables: [],
+            variables: [],
             label: 'Basic'
           };
         }
-        variablesGroup.value[defaultGroupKey].Variables.push(item);
+        variablesGroup.value[defaultGroupKey].variables.push(item);
         set(
           variablesGroupForm.value,
-          `${defaultGroupKey}.attributes.${item.Name}`,
+          `${defaultGroupKey}.attributes.${item.name}`,
           initialValue
         );
       }
@@ -449,11 +449,11 @@
     );
   };
   const setFormData = (schemas) => {
-    const variablesList = filter(get(schemas, 'Variables'), (v) => {
-      return !v.Hidden;
+    const variablesList = filter(get(schemas, 'variables'), (v) => {
+      return !v.hidden;
     });
     each(variablesList, (item) => {
-      formData.attributes[item.Name] = item.Default;
+      formData.attributes[item.name] = item.default;
     });
   };
   //  change module ...
@@ -513,8 +513,8 @@
       })
     );
     // const hiddenList = filter(
-    //   get(moduleInfo.value, 'Variables'),
-    //   (item) => item.Hidden
+    //   get(moduleInfo.value, 'variables'),
+    //   (item) => item.hidden
     // );
     // if (hiddenList.length) {
     //   const hiddenForm = {
@@ -522,8 +522,8 @@
     //     formData: reduce(
     //       hiddenList,
     //       (obj, s) => {
-    //         if (!includes(systemHiddenFields, s.Name)) {
-    //           obj[s.Name] = s.Default;
+    //         if (!includes(systemHiddenFields, s.name)) {
+    //           obj[s.name] = s.default;
     //         }
     //         return obj;
     //       },
@@ -561,13 +561,10 @@
     moduleInfo.value = cloneDeep(get(moduleData, 'schema')) || {};
     formData.application = { id: '' };
     formData.attributes = {};
-    refMap = {};
     console.log('version args...', moduleVersionFormCache.value);
     // setFormData(moduleInfo.value);
+    clearFormValidStatus();
     generateVariablesGroup(props.action);
-    nextTick(() => {
-      clearFormValidStatus();
-    });
   };
   const handleVersionChange = () => {
     setTimeout(() => {
@@ -649,11 +646,11 @@
       const moduleTemplate = getModuleSchemaByVersion();
       moduleInfo.value = cloneDeep(get(moduleTemplate, 'schema'));
       const variablesList = filter(
-        get(moduleInfo.value, 'Variables'),
-        (v) => !v.Hidden
+        get(moduleInfo.value, 'variables'),
+        (v) => !v.hidden
       );
       each(variablesList || [], (item) => {
-        item.Default = get(props.dataInfo, `attributes.${item.Name}`);
+        item.default = get(props.dataInfo, `attributes.${item.name}`);
       });
     }
 

@@ -1,5 +1,5 @@
 import { get, map, keys, split, toString } from 'lodash';
-import { LabelListItem } from './interface';
+import { LabelListItem, schemaType } from './interface';
 
 interface OptionsItem {
   label: string;
@@ -7,14 +7,14 @@ interface OptionsItem {
 }
 export const parseMapstring = (comSchema) => {
   let labelList: LabelListItem[] = [];
-  const schemaType = get(comSchema, 'Type');
-  if (schemaType === 'map(string)') {
-    const defaultValue = keys(get(comSchema, 'Default') || {});
+  const type = get(comSchema, 'type');
+  if (schemaType.isMapString(type)) {
+    const defaultValue = keys(get(comSchema, 'default') || {});
     if (defaultValue.length) {
       labelList = map(defaultValue, (k) => {
         return {
           key: k,
-          value: get(comSchema, `Default.${k}`)
+          value: get(comSchema, `default.${k}`)
         };
       });
     }
@@ -29,11 +29,11 @@ export const parseQuery = (query) => {
   };
 };
 export const parseOptions = (comSchema) => {
-  const schemaType = get(comSchema, 'Type');
+  const type = get(comSchema, 'type');
   let options: OptionsItem[] = [];
-  // if (['list(number)', 'list(string)'].includes(schemaType)) {
+  // if (schemaType.isListNumber(type) || schemaType.isListString(type)) {
   //   const defaultValue =
-  //     get(comSchema, 'Options') || get(comSchema, 'Default') || [];
+  //     get(comSchema, 'options') || get(comSchema, 'default') || [];
   //   if (defaultValue.length) {
   //     options = map(defaultValue, (val) => {
   //       return {
@@ -46,7 +46,7 @@ export const parseOptions = (comSchema) => {
   //   }
   // }
   const defaultValue =
-    get(comSchema, 'Options') || get(comSchema, 'Default') || [];
+    get(comSchema, 'options') || get(comSchema, 'default') || [];
   if (defaultValue.length) {
     options = map(defaultValue, (val) => {
       return {

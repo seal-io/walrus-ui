@@ -68,17 +68,17 @@
   });
   const currentView = ref('list');
   const dataList = computed(() => {
-    const list = filter(get(props.schema, 'Variables'), (item) => {
+    const list = filter(get(props.schema, 'variables'), (item) => {
       return !item.Hidden;
     });
     return list || [];
   });
   const jsonData = computed(() => {
     const data = reduce(
-      get(props.schema, 'Variables') || [],
+      get(props.schema, 'variables') || [],
       (obj, item) => {
         const key = item.Name as string;
-        obj[key] = `// ${item.Description}`;
+        obj[key] = `// ${item.description}`;
         return obj;
       },
       {}

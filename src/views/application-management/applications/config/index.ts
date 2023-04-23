@@ -174,6 +174,14 @@ export const revisionDetailConfig = [
     }
   }
 ];
+
+export const variableTypeList = [
+  { label: 'string', value: 'string' },
+  { label: 'number', value: 'number' },
+  { label: 'bool', value: 'bool' },
+  { label: 'dynamic', value: 'dynamic' }
+];
+
 export const generateResourcesKeys = (reources: InstanceResource[], type) => {
   const loop = (keysItem: KeysItem, id) => {
     let list: KeysItem[] = keysItem.keys || [];

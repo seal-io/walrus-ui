@@ -43,6 +43,12 @@
         return '';
       }
     },
+    liveInput: {
+      type: Boolean,
+      default() {
+        return false;
+      }
+    },
     editorDefaultValue: {
       type: String,
       default() {
@@ -110,7 +116,7 @@
       }
     }
   });
-  const emits = defineEmits(['change', 'update:modelValue']);
+  const emits = defineEmits(['change', 'update:modelValue', 'input']);
   console.log('terraform');
   // let timer:any = null
   let aceEditor: any = null;
@@ -232,6 +238,12 @@
       _.toLower(o.name).startsWith(_.toLower(lastItem))
     );
   };
+  const setDefaultValue = () => {
+    if (props.liveInput) return;
+    setTimeout(() => {
+      aceEditor?.setValue(props.editorDefaultValue, -1);
+    }, 100);
+  };
   const setLanguageTools = () => {
     langTools.setCompleters();
     langTools.addCompleter({
@@ -272,9 +284,7 @@
         props.editorDefaultValue,
         props.modelValue
       );
-      setTimeout(() => {
-        aceEditor?.setValue(props.editorDefaultValue, -1);
-      }, 200);
+      setDefaultValue();
       nextTick(() => {
         setDiffRowDecoration();
       });
@@ -313,23 +323,9 @@
       aceEditor.on('change', function (args: any) {
         const val = aceEditor.getValue();
         emits('change', val);
+        emits('input', val);
         emits('update:modelValue', val);
         clearDiffRowDecoration(args);
-        console.log('editor change===', val);
-        // aceEditor.session.removeGutterDecoration(3, 'gutter-rm-line');
-        // aceEditor.session.addGutterDecoration(3, 'gutter-rm-line');
-        // aceEditor.session.setBreakpoints([2, 3, 4, 5]);
-        // const hlRange = aceEditor.session.highlightLines(3, 3, 'hight-light');
-        // aceEditor.session.addMarker(new Range(2, 5), 'myMarker', 'text');
-        // aceEditor.getSession().setAnnotations([
-        //   {
-        //     row: 1,
-        //     column: 10,
-        //     text: 'Strange error',
-        //     type: 'delete' // also warning and information
-        //   }
-        // ]);
-        console.log('args======', args);
       });
       aceEditor.setOptions({
         wrap: true, // 换行

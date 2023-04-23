@@ -36,7 +36,7 @@ export interface AppFormData {
     name: string;
     default: any;
     type: string;
-    description: string;
+    description?: string;
   }>;
   modules: Array<{
     name: string;

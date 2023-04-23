@@ -2,11 +2,11 @@ type OutputItem = {
   [k: string]: string | boolean;
 };
 export interface Schema {
-  Outputs: OutputItem[];
-  Inputs: OutputItem[];
-  Readme: string;
-  Variables: OutputItem[];
-  RequiredProviders: Array<{
+  outputs: OutputItem[];
+  inputs: OutputItem[];
+  readme: string;
+  variables: OutputItem[];
+  requiredProviders: Array<{
     name: string;
     source: string;
     version_constraints: string[];

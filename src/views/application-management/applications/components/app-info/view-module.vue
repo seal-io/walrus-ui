@@ -68,31 +68,31 @@
           >
             <a-descriptions
               :column="2"
-              :data="variablesGroup[group]?.Variables"
+              :data="variablesGroup[group]?.variables"
             >
               <template #value="{ data }">
-                <span v-if="data.Type === 'list(number)'">{{
+                <span v-if="schemaType.isListNumber(data.type)">{{
                   join(
-                    get(variablesGroupForm, `${group}.attributes.${data.Name}`),
+                    get(variablesGroupForm, `${group}.attributes.${data.name}`),
                     ','
                   )
                 }}</span>
-                <span v-else-if="data.Type === 'map(string)'">
+                <span v-else-if="schemaType.isMapString(data.type)">
                   <LabelsList
                     :labels="
                       get(
                         variablesGroupForm,
-                        `${group}.attributes.${data.Name}`
+                        `${group}.attributes.${data.name}`
                       )
                     "
                   ></LabelsList>
                 </span>
                 <span v-else>{{
-                  get(variablesGroupForm, `${group}.attributes.${data.Name}`)
+                  get(variablesGroupForm, `${group}.attributes.${data.name}`)
                 }}</span>
               </template>
               <template #label="{ data }">
-                <span style="font-weight: 400">{{ data.Label }}</span>
+                <span style="font-weight: 400">{{ data.label }}</span>
               </template>
             </a-descriptions>
           </a-tab-pane>
@@ -100,18 +100,18 @@
         <a-descriptions
           v-if="show && formTabs.length < 2"
           :column="2"
-          :data="variablesGroup[defaultGroupKey]?.Variables"
+          :data="variablesGroup[defaultGroupKey]?.variables"
         >
           <template #value="{ data }">
             <span style="font-weight: 400">{{
               get(
                 variablesGroupForm[defaultGroupKey]?.attributes,
-                `${data.Name}`
+                `${data.name}`
               )
             }}</span>
           </template>
           <template #label="{ data }">
-            <span style="font-weight: 400">{{ data.Name }}</span>
+            <span style="font-weight: 400">{{ data.name }}</span>
           </template>
         </a-descriptions>
       </div>
@@ -162,9 +162,8 @@
     nextTick
   } from 'vue';
   import useCallCommon from '@/hooks/use-call-common';
-  import ADescriptionsItem from '@arco-design/web-vue/es/descriptions/descriptions-item';
   import EditPageFooter from '@/components/edit-page-footer/index.vue';
-  import formCreate from '@/components/form-create/index.vue';
+  import { schemaType } from '@/components/form-create/config/interface';
   import GroupTitle from '@/components/group-title/index.vue';
   import {
     TemplateRowData,
@@ -174,7 +173,7 @@
   import LabelsList from './labels-list.vue';
 
   interface Group {
-    Variables: object[];
+    variables: object[];
     label: string;
   }
   const props = defineProps({
@@ -282,12 +281,12 @@
     activeKey.value = val;
   };
   const getInitialValue = (item, sourceData, action) => {
-    let initialValue = item.Default;
+    let initialValue = item.default;
     if (
       get(moduleVersionFormCache.value, formData.version) ||
       action === 'edit'
     ) {
-      initialValue = get(sourceData, `attributes.${item.Name}`);
+      initialValue = get(sourceData, `attributes.${item.name}`);
     }
     return initialValue;
   };
@@ -304,43 +303,43 @@
     };
     console.log('sourceData===', sourceData);
     const variablesList = filter(
-      get(moduleInfo.value, 'Variables'),
-      (v) => !v.Hidden
+      get(moduleInfo.value, 'variables'),
+      (v) => !v.hidden
     );
     each(variablesList, (item) => {
       // set initial value
       // const initialValue =
       //   type === 'create'
-      //     ? item.Default
-      //     : get(sourceData, `attributes.${item.Name}`);
+      //     ? item.default
+      //     : get(sourceData, `attributes.${item.name}`);
       const initialValue = getInitialValue(item, sourceData, type);
-      if (item.Group) {
-        if (!variablesGroup.value[item.Group]) {
-          variablesGroup.value[item.Group] = {
-            Variables: [],
-            label: item.Group
+      if (item.group) {
+        if (!variablesGroup.value[item.group]) {
+          variablesGroup.value[item.group] = {
+            variables: [],
+            label: item.group
           };
-          variablesGroup.value[item.Group].Variables.push(item);
+          variablesGroup.value[item.group].variables.push(item);
         } else {
-          variablesGroup.value[item.Group].Variables.push(item);
+          variablesGroup.value[item.group].variables.push(item);
         }
 
         set(
           variablesGroupForm.value,
-          `${item.Group}.attributes.${item.Name}`,
+          `${item.group}.attributes.${item.name}`,
           initialValue
         );
       } else {
         if (!variablesGroup.value[defaultGroupKey]) {
           variablesGroup.value[defaultGroupKey] = {
-            Variables: [],
+            variables: [],
             label: 'Basic'
           };
         }
-        variablesGroup.value[defaultGroupKey].Variables.push(item);
+        variablesGroup.value[defaultGroupKey].variables.push(item);
         set(
           variablesGroupForm.value,
-          `${defaultGroupKey}.attributes.${item.Name}`,
+          `${defaultGroupKey}.attributes.${item.name}`,
           initialValue
         );
       }
@@ -352,9 +351,9 @@
     );
   };
   const setFormData = (schemas) => {
-    const variablesList = filter(get(schemas, 'Variables'), (v) => !v.Hidden);
+    const variablesList = filter(get(schemas, 'variables'), (v) => !v.hidden);
     each(variablesList, (item) => {
-      formData.attributes[item.Name] = item.Default;
+      formData.attributes[item.name] = item.default;
     });
   };
   //  change module ...
@@ -522,11 +521,11 @@
       const moduleTemplate = getModuleSchemaByVersion();
       moduleInfo.value = cloneDeep(get(moduleTemplate, 'schema'));
       const variablesList = filter(
-        get(moduleInfo.value, 'Variables'),
-        (v) => !v.Hidden
+        get(moduleInfo.value, 'variables'),
+        (v) => !v.hidden
       );
       each(variablesList || [], (item) => {
-        item.Default = get(props.dataInfo, `attributes.${item.Name}`);
+        item.default = get(props.dataInfo, `attributes.${item.name}`);
       });
       console.log('dataInfo===', props.dataInfo);
     }
