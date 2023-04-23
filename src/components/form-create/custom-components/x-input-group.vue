@@ -4,7 +4,7 @@
       :cols="24"
       :style="{
         'display': 'flex',
-        'align-items': get($attrs, 'wrapAlign') || 'center',
+        'align-items': get($attrs, 'wrap-align') || 'center',
         'width': '100%'
       }"
     >
@@ -129,7 +129,7 @@
         <template v-else>
           <component
             v-bind="$attrs"
-            :is="get(internalComponents, get($attrs?.componentsMap, dataValue))"
+            :is="get(internalComponents, get($attrs?.components, dataValue))"
             style="width: 100%"
             :placeholder="
               get($attrs?.placeholder, 'description') ||
