@@ -11,7 +11,7 @@
           ellipsis
           tooltip
           :cell-style="{ minWidth: '40px' }"
-          data-index="Name"
+          data-index="name"
           :title="$t('common.table.name')"
         >
         </a-table-column>
@@ -19,7 +19,7 @@
           ellipsis
           tooltip
           :cell-style="{ minWidth: '40px' }"
-          data-index="Description"
+          data-index="description"
           :title="$t('common.table.description')"
         >
         </a-table-column>
@@ -42,7 +42,7 @@
     }
   });
   const dataList = computed(() => {
-    const list = get(props.schema, 'Outputs');
+    const list = get(props.schema, 'outputs');
     return list || [];
   });
 </script>

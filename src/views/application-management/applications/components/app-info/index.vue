@@ -75,16 +75,14 @@
         v-if="get(appInfo, 'variables').length && pageAction === 'edit'"
         class="var-item var-item-title"
       >
-        <span class="label">{{
-          $t('applications.applications.form.key')
-        }}</span>
+        <span class="label">{{ $t('common.input.key') }}</span>
         <span class="label">
           <span class="holder"></span>
-          <span>{{ $t('applications.applications.form.value') }}</span>
+          <span>{{ $t('common.input.type') }}</span>
         </span>
         <span class="label">
           <span class="holder"></span>
-          <span>{{ $t('common.table.description') }}</span>
+          <span>{{ $t('common.input.value') }}</span>
         </span>
         <span class="btn"></span>
       </div>
@@ -96,8 +94,8 @@
         >
           <xInputGroup
             v-model:dataKey="sItem.name"
-            v-model:dataValue="sItem.default"
-            v-model:dataDesc="sItem.description"
+            v-model:dataValue="sItem.type"
+            v-model:dataDesc="sItem.default"
             :trigger-validate="triggerValidate"
             show-description
             always-delete
@@ -105,6 +103,21 @@
             class="group-item"
             :label-list="variableList"
             :position="sIndex"
+            token="variable"
+            :wrap-align="sItem.type === 'dynamic' ? 'flex-start' : 'center'"
+            separator=""
+            :placeholder="{
+              value: $t('common.input.type'),
+              description: $t('common.input.value'),
+              key: $t('common.input.key')
+            }"
+            :components-map="{
+              string: 'Input',
+              number: 'InputNumber',
+              bool: 'Checkbox',
+              dynamic: 'AceEditor'
+            }"
+            :value-options="variableTypeList"
             @keyChange="handleKeyChange"
             @add="handleAddVariables"
             @delete="handleDeleteVariable(sIndex)"
@@ -209,7 +222,7 @@
   import BasicInfo from './basic-info.vue';
   import BasicView from './basic-view.vue';
   import { AppFormData, AppModule } from '../../config/interface';
-  import { moduleActions } from '../../config';
+  import { moduleActions, variableTypeList } from '../../config';
   import {
     createApplication,
     queryItemApplication,
@@ -333,7 +346,6 @@
     appInfo.variables.push({
       name: '',
       default: '',
-      description: '',
       type: 'string'
     });
   };
@@ -398,10 +410,10 @@
         });
         const k = item.name;
         obj[k] = [
-          ...map(get(addedModule, 'schema.Outputs') || [], (o) => {
+          ...map(get(addedModule, 'schema.outputs') || [], (o) => {
             return {
-              label: o.Description,
-              value: o.Name
+              label: o.description,
+              value: o.name
             };
           })
         ];

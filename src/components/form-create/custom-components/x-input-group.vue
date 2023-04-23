@@ -1,6 +1,13 @@
 <template>
   <div class="x-input">
-    <div :cols="24" style="display: flex; align-items: center; width: 100%">
+    <div
+      :cols="24"
+      :style="{
+        'display': 'flex',
+        'align-items': get($attrs, 'wrapAlign') || 'center',
+        'width': '100%'
+      }"
+    >
       <!-- key -->
       <div :span="8" style="display: flex; flex: 1; align-items: center">
         <a-tooltip
@@ -11,9 +18,11 @@
             v-if="!showHintInput"
             :error="!dataKey && triggerValidate"
             :model-value="dataKey"
-            :placeholder="$t('common.input.key')"
             :max-length="100"
             v-bind="$attrs"
+            :placeholder="
+              get($attrs?.placeholder, 'key') || $t('common.input.key')
+            "
             show-word-limit
             style="width: 100%"
             @input="(val) => handleDataChange(val, 'key', 'input')"
@@ -23,7 +32,9 @@
             v-else
             :model-value="dataKey"
             :error="!dataKey && triggerValidate"
-            :placeholder="$t('common.input.key')"
+            :placeholder="
+              get($attrs?.placeholder, 'key') || $t('common.input.key')
+            "
             :max-length="100"
             v-bind="$attrs"
             style="width: 100%"
@@ -37,13 +48,28 @@
       </div>
       <!-- value -->
       <div :span="8" style="display: flex; flex: 1; align-items: center">
-        <span style="padding: 0 4px">:</span>
+        <span style="padding: 0 4px">{{ separator }}</span>
+        <a-select
+          v-if="valueOptions.length"
+          v-bind="$attrs"
+          :error="!dataValue && triggerValidate"
+          :options="valueOptions"
+          style="width: 100%"
+          :model-value="dataValue"
+          :placeholder="
+            get($attrs?.placeholder, 'value') || $t('common.input.value')
+          "
+          @change="(val) => handleDataChange(val, 'value')"
+        >
+        </a-select>
         <a-input-password
-          v-if="showPassword"
+          v-else-if="showPassword"
           style="width: 100%"
           :model-value="dataValue"
           v-bind="$attrs"
-          :placeholder="$t('common.input.value')"
+          :placeholder="
+            get($attrs?.placeholder, 'value') || $t('common.input.value')
+          "
           :max-length="$attrs.MaxLength"
           show-word-limit
           @input="(val) => handleDataChange(val, 'value')"
@@ -54,7 +80,9 @@
           style="width: 100%"
           :model-value="dataValue"
           v-bind="$attrs"
-          :placeholder="$t('common.input.value')"
+          :placeholder="
+            get($attrs?.placeholder, 'value') || $t('common.input.value')
+          "
           :max-length="50"
           show-word-limit
           @input="(val) => handleDataChange(val, 'value')"
@@ -63,10 +91,12 @@
         <hintInput
           v-else
           :model-value="dataValue"
-          v-bind="$attrs"
-          :placeholder="$t('common.input.value')"
-          style="width: 100%"
           :max-length="100"
+          v-bind="$attrs"
+          :placeholder="
+            get($attrs?.placeholder, 'value') || $t('common.input.value')
+          "
+          style="width: 100%"
           :editor-id="`${formId}_valueEditor${position}`"
           :source="completeData"
           show-word-limit
@@ -80,17 +110,41 @@
         :span="8"
         style="display: flex; flex: 1; align-items: center"
       >
-        <span style="padding: 0 4px">:</span>
-        <a-input
-          style="width: 100%"
-          :model-value="dataDesc"
-          :placeholder="$t('common.input.description')"
-          :max-length="100"
-          v-bind="$attrs"
-          show-word-limit
-          @input="(val) => handleDataChange(val, 'description', 'input')"
-          @change="(val) => handleDataChange(val, 'description', 'change')"
-        ></a-input>
+        <span style="padding: 0 4px">{{ separator }}</span>
+        <template v-if="!valueOptions.length">
+          <a-input
+            :max-length="100"
+            v-bind="$attrs"
+            style="width: 100%"
+            :model-value="dataDesc"
+            :placeholder="
+              get($attrs?.placeholder, 'description') ||
+              $t('common.input.description')
+            "
+            show-word-limit
+            @input="(val) => handleDataChange(val, 'description', 'input')"
+            @change="(val) => handleDataChange(val, 'description', 'change')"
+          ></a-input>
+        </template>
+        <template v-else>
+          <component
+            v-bind="$attrs"
+            :is="get(internalComponents, get($attrs?.componentsMap, dataValue))"
+            style="width: 100%"
+            :placeholder="
+              get($attrs?.placeholder, 'description') ||
+              $t('common.input.description')
+            "
+            show-word-limit
+            live-input
+            :show-gutter="false"
+            :model-value="dataDesc"
+            :editor-id="`${token}-${position}`"
+            :editor-default-value="dataDesc"
+            @input="(val) => handleDataChange(val, 'description', 'input')"
+            @change="(val) => handleDataChange(val, 'description', 'change')"
+          ></component>
+        </template>
       </div>
     </div>
     <div class="btn-wrapper">
@@ -113,6 +167,7 @@
   import { cloneDeep, reduce, get, hasIn, filter } from 'lodash';
   import { useAttrs, PropType, ref, inject } from 'vue';
   import hintInput from '@/components/hint-input/index.vue';
+  import internalComponents from '../components/internal';
 
   const props = defineProps({
     dataKey: {
@@ -131,6 +186,12 @@
       type: String,
       default() {
         return '';
+      }
+    },
+    separator: {
+      type: String,
+      default() {
+        return ':';
       }
     },
     comType: {
@@ -169,6 +230,12 @@
         return 0;
       }
     },
+    token: {
+      type: String,
+      default() {
+        return 'X';
+      }
+    },
     value: {
       type: Object,
       default() {
@@ -191,6 +258,12 @@
       type: Boolean,
       default() {
         return false;
+      }
+    },
+    valueOptions: {
+      type: Array as PropType<{ value: string; label: string }[]>,
+      default() {
+        return [];
       }
     },
     showDelete: {
@@ -252,7 +325,7 @@
       popupvisible.value = true;
       setTimeout(() => {
         popupvisible.value = false;
-      }, 2000);
+      }, 1500);
       emits('update:dataKey', '');
       return;
     }

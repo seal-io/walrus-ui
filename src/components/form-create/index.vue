@@ -6,29 +6,29 @@
         <template v-for="(fm, index) in schemaList" :key="fm.Name">
           <a-grid-item
             v-if="
-              fm.ShowIf
-                ? toString(get(formData, `${fm.ShowCondition.key}`)) ===
-                  fm?.ShowCondition?.value
+              fm.showIf
+                ? toString(get(formData, `${fm.showCondition.key}`)) ===
+                  fm?.showCondition?.value
                 : true
             "
             :span="12"
           >
             <a-form-item
-              :field="fm.Name"
+              :field="fm.name"
               :rules="fm.rules"
-              :label="fm.Label || fm.Name"
+              :label="fm.label || fm.name"
               :validate-trigger="['change']"
             >
               <template #label>
-                <span>{{ fm.Label || fm.Name }}</span>
-                <a-tooltip v-if="fm.Description" :content="fm.Description">
+                <span>{{ fm.label || fm.name }}</span>
+                <a-tooltip v-if="fm.description" :content="fm.description">
                   <icon-info-circle
                     style="margin-left: 2px; stroke-linecap: initial"
                   />
                 </a-tooltip>
               </template>
               <div
-                v-if="fm.Type === 'map(string)'"
+                v-if="schemaType.isMapString(fm.type)"
                 style="display: flex; flex-direction: column"
               >
                 <!-- XInputGroup component -->
@@ -39,11 +39,11 @@
                     :key="sIndex"
                     v-model:dataKey="sItem.key"
                     v-model:dataValue="sItem.value"
-                    v-model:value="formData[fm.Name]"
+                    v-model:value="formData[fm.name]"
                     style="width: 100%"
                     width="100%"
                     :trigger-validate="triggerValidate"
-                    :form-id="fm.Name"
+                    :form-id="fm.name"
                     class="group-item"
                     :label-list="fm.labelList"
                     :position="sIndex"
@@ -54,7 +54,7 @@
                     <template v-if="fm.childCom">
                       <component
                         :is="formComponents[fm.childCom]"
-                        v-for="com in fm.Options"
+                        v-for="com in fm.options"
                         :key="com"
                         :form-id="formId"
                         :value="com"
@@ -77,22 +77,22 @@
                   :is="formComponents[fm.parentCom]"
                   :key="`${formId}_editorId_${index}`"
                   v-bind="{ ...fm.props }"
-                  v-model="formData[fm.Name]"
-                  :editor-default-value="fm.Default"
+                  v-model="formData[fm.name]"
+                  :editor-default-value="fm.default"
                   style="width: 100%"
                   width="100%"
-                  :editor-id="`${fm.Name}_editorId_${index}`"
+                  :editor-id="`${fm.name}_editorId_${index}`"
                 >
                   <template v-if="fm.childCom">
                     <component
                       :is="formComponents[fm.childCom]"
                       :key="`${formId}_child_editorId_${index}`"
-                      :editor-id="`${fm.Name}_child_editorId_${index}`"
+                      :editor-id="`${fm.name}_child_editorId_${index}`"
                       style="display: none"
                     ></component>
                     <component
                       :is="formComponents[fm.childCom]"
-                      v-for="com in fm.Options"
+                      v-for="com in fm.options"
                       :key="com.label"
                       :value="com.value"
                       >{{ com.value }}</component
@@ -160,6 +160,7 @@
   import {
     ComponentSchema,
     parseComponentSchema,
+    schemaType,
     LabelListItem
   } from './config/interface';
   import formComponents from './components';
@@ -229,7 +230,7 @@
   const setFormData = () => {
     formData.value = {};
     each(props.formSchema, (item) => {
-      formData.value[item.Name] = get(props.model, item.Name) || item.Default;
+      formData.value[item.name] = get(props.model, item.name) || item.default;
     });
   };
 
@@ -239,29 +240,29 @@
     let list = map(props.formSchema, (o, i) => {
       const item = cloneDeep(o);
       const content = parseComponentSchema(item);
-      item.ShowCondition = parseQuery(item.ShowIf);
-      item.order = item.Required ? 0 : 10 * (i + 1);
+      item.showCondition = parseQuery(item.showIf);
+      item.order = item.required ? 0 : 10 * (i + 1);
       item.parentCom = get(content, 'component.0');
       item.childCom = get(content, 'component.1');
       item.labelList = parseMapstring(item);
-      item.Options = parseOptions(item);
+      item.options = parseOptions(item);
       item.props = get(content, 'props') || {};
       item.rules = map(content.rules, (sItem) => {
-        sItem.message = t(sItem?.message, { name: item.Label || item.Name });
+        sItem.message = t(sItem?.message, { name: item.label || item.name });
         return sItem;
       });
 
-      // if (item.Group && groupOrderMap[item.Group] && !item.Required) {
-      //   item.order = groupOrderMap[item.Group];
-      // } else if (item.Group) {
+      // if (item.group && groupOrderMap[item.group] && !item.required) {
+      //   item.order = groupOrderMap[item.group];
+      // } else if (item.group) {
       //   groupOrderMap[item.Group] = item.order;
       // }
-      showIfMap[item.Name] = item.order;
+      showIfMap[item.name] = item.order;
       return item;
     });
     list = map(list, (sItem) => {
-      if (sItem.ShowIf) {
-        sItem.order = add(get(showIfMap, `${sItem?.ShowCondition?.key}`), 0.1);
+      if (sItem.showIf) {
+        sItem.order = add(get(showIfMap, `${sItem?.showCondition?.key}`), 0.1);
       }
       return sItem;
     });
@@ -283,11 +284,11 @@
   const resetFieldsDefaultValue = () => {
     each(schemaList.value, (item) => {
       if (
-        item.ShowIf &&
-        toString(get(formData.value, `${item.ShowCondition.key}`)) !==
-          item?.ShowCondition?.value
+        item.showIf &&
+        toString(get(formData.value, `${item.showCondition.key}`)) !==
+          item?.showCondition?.value
       ) {
-        formData.value[item.Name] = item.Default;
+        formData.value[item.name] = item.default;
       }
     });
   };
@@ -302,7 +303,11 @@
     });
     return result;
   };
+  const clearFormValidStatus = () => {
+    formref.value?.clearValidate?.();
+  };
   const getFormData = async () => {
+    clearFormValidStatus();
     triggerValidate.value = true;
     const result = await formref.value?.validate();
     const validLabels = validateLabels();
@@ -312,9 +317,7 @@
     }
     return false;
   };
-  const clearFormValidStatus = () => {
-    formref.value?.clearValidate();
-  };
+
   const handleSubmit = async () => {
     console.log('formData:', formData);
     const res = await formref.value?.validate();
@@ -347,6 +350,9 @@
     () => props.model,
     () => {
       setFormData();
+      setTimeout(() => {
+        clearFormValidStatus();
+      });
     },
     {
       immediate: true,

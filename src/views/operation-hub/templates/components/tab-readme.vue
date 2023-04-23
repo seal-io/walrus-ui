@@ -29,7 +29,7 @@
   watch(
     () => props.schema,
     () => {
-      const mdStr = get(props.schema, 'Readme') || '';
+      const mdStr = get(props.schema, 'readme') || '';
       content.value = marked.parse(mdStr);
     },
     {

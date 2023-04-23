@@ -70,6 +70,7 @@ export default {
   'common.ws.reconnect': 'Reconnect',
   'common.input.key': 'key',
   'common.input.value': 'value',
+  'common.input.type': 'type',
   'common.input.description': 'description',
   'common.time.day': 'day',
   'common.chart.filter.holder': 'filter data items',

@@ -8,24 +8,24 @@ export interface LabelListItem {
 }
 
 export interface ComponentSchema {
-  Name: string;
-  Type: string;
-  Default: any;
-  ShowCondition: { key: string; value: string };
+  name: string;
+  type: string;
+  default: any;
+  showCondition: { key: string; value: string };
   parentCom: string;
   childCom: string;
-  Required: boolean;
-  Sensitive: boolean;
-  Description: string;
-  ShowIf?: string;
+  required: boolean;
+  sensitive: boolean;
+  description: string;
+  showIf?: string;
   order?: number;
   min?: number;
   max?: number;
   maxLength?: number;
   minLength?: number;
-  Options?: { label: string; value: string }[];
-  Label?: string;
-  Group?: string;
+  options?: { label: string; value: string }[];
+  label?: string;
+  group?: string;
   props?: object;
   rules?: FieldRule[];
   labelList?: LabelListItem[];
@@ -74,14 +74,14 @@ export const parseComponentSchema = (schema: ComponentSchema) => {
     showWordLimit: schema?.maxLength,
     minLength: schema?.minLength || null
   };
-  const { Type: type, Required: required, Sensitive: sensitive } = schema;
+  const { type, required, sensitive } = schema;
 
   const rules = { required };
 
   // string
   if (schemaType.isStringType(type) || schemaType.isNumberType(type)) {
     // =============Select======================
-    if (schema?.Options?.length) {
+    if (schema?.options?.length) {
       return {
         component: ['Select', 'Option'],
         props: {
@@ -136,7 +136,7 @@ export const parseComponentSchema = (schema: ComponentSchema) => {
       props: {
         ...props,
         multiple: true,
-        allowCreate: !schema.Options?.length
+        allowCreate: !schema.options?.length
       },
       rules: [{ ...rules, message: 'common.form.rule.select' }]
     };
