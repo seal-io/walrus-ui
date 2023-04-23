@@ -111,7 +111,7 @@
               description: $t('common.input.value'),
               key: $t('common.input.key')
             }"
-            :components-map="{
+            :components="{
               string: 'Input',
               number: 'InputNumber',
               bool: 'Checkbox',
