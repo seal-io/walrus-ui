@@ -62,6 +62,7 @@
                   always-delete
                   :trigger-validate="triggerValidate"
                   width="100%"
+                  separator=""
                   class="group-item"
                   :label-list="labelList"
                   :position="sIndex"

@@ -80,7 +80,7 @@
         <a-form-item
           v-if="pageAction === 'edit'"
           label="Access Token"
-          field="configData.token"
+          field="configData.token.value"
           :rules="[
             {
               required: pageAction === 'edit',
@@ -89,7 +89,7 @@
           ]"
         >
           <a-input-password
-            v-model="formData.configData.token"
+            v-model="formData.configData.token.value"
             style="width: 500px"
           ></a-input-password>
         </a-form-item>
@@ -155,7 +155,11 @@
   const formData: ConnectorFormData = reactive({
     name: '',
     configData: {
-      token: ''
+      token: {
+        value: '',
+        visible: false,
+        type: 'string'
+      }
     },
     description: '',
     configVersion: 'v1',
@@ -188,11 +192,6 @@
       type: t('operation.connectors.table.versioncontrol')
     });
   });
-  const handleUploadSuccess = async (list, fileItem) => {
-    const res = await readBlob(fileItem.file);
-    formData.configData.kubeconfig = res as string;
-    formref.value.validateField('configData.kubeconfig');
-  };
   const handleBeforeUpload = async (file) => {
     return true;
   };

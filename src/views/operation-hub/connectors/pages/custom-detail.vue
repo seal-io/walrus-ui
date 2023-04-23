@@ -67,10 +67,9 @@
         </a-form-item>
         <a-form-item
           :label="$t('operation.connectors.form.attribute')"
-          field="configData.attributes"
+          field="configData"
           :rules="[
             {
-              validator: validatorAttribute,
               required: pageAction === 'edit',
               message: $t('operation.connectors.attribute.rule')
             }
@@ -79,23 +78,41 @@
           <a-space
             v-if="labelList?.length && pageAction === 'edit'"
             fill
-            style="display: flex; flex-direction: column; width: 500px"
+            style="display: flex; flex-direction: column; width: 1000px"
             direction="vertical"
           >
             <xInputGroup
               v-for="(sItem, sIndex) in labelList"
               :key="sIndex"
               v-model:dataKey="sItem.key"
-              v-model:dataValue="sItem.value"
-              v-model:value="formData.configData.attributes"
-              show-password
+              v-model:dataValue="sItem.type"
+              v-model:dataDesc="sItem.value"
+              v-model:dataExtra="sItem.visible"
+              :data-item="sItem"
+              show-description
+              show-extra
+              separator=""
               :trigger-validate="triggerValidate"
               width="500px"
               class="group-item"
+              :wrap-align="sItem.type === 'dynamic' ? 'flex-start' : 'center'"
+              :placeholder="{
+                value: $t('common.input.type'),
+                description: $t('common.input.value'),
+                key: $t('common.input.key'),
+                extra: $t('common.input.visible')
+              }"
+              :components="{
+                string: 'Input',
+                number: 'InputNumber',
+                bool: 'Checkbox',
+                dynamic: 'AceEditor'
+              }"
+              :value-options="variableTypeList"
               :max-length="null"
               :label-list="labelList"
               :position="sIndex"
-              @add="(obj) => handleAddLabel(obj, labelList)"
+              @add="(obj) => handleAddLabel(obj)"
               @delete="handleDeleteLabel(labelList, sIndex)"
             ></xInputGroup>
           </a-space>
@@ -137,7 +154,9 @@
     map,
     get,
     isEqual,
-    cloneDeep
+    cloneDeep,
+    reduce,
+    pick
   } from 'lodash';
   import { ref, reactive, onMounted, computed } from 'vue';
   import GroupTitle from '@/components/group-title/index.vue';
@@ -148,11 +167,20 @@
   import EditPageFooter from '@/components/edit-page-footer/index.vue';
   import xInputGroup from '@/components/form-create/custom-components/x-input-group.vue';
   import useCallCommon from '@/hooks/use-call-common';
+  import i18n from '@/locale/index';
   import ProviderIcon from '@/components/provider-icon/index.vue';
+  import { variableTypeList } from '@/views/application-management/applications/config';
   import labelsList from '@/views/application-management/applications/components/app-info/labels-list.vue';
-  import { ConnectorFormData } from '../config/interface';
+  import { ConnectorFormData, CustomAttrbute } from '../config/interface';
   import { createConnector, updateConnector, queryItemConnector } from '../api';
 
+  const setPropertyStyle = (style) => {
+    return {
+      'display': 'flex',
+      'align-items': 'center',
+      ...style
+    };
+  };
   const { t, router, route } = useCallCommon();
   const { pageAction, handleEdit } = usePageAction();
   const id = route.query.id as string;
@@ -162,19 +190,74 @@
   let copyFormData: any = {};
   const formData: ConnectorFormData = reactive({
     name: '',
-    configData: {
-      attributes: {}
-    },
+    configData: {},
     description: '',
     configVersion: 'v1',
     type: '',
     category: 'Custom',
     enableFinOps: false
   });
-
-  const labelList = ref<{ key: string; value: string }[]>([
-    { key: '', value: '' }
+  const labelOption = computed(() => {
+    return {
+      extraCom: 'Select',
+      extraProps: {
+        options: [
+          {
+            label: i18n.global.t('operation.connectors.attribute.visible'),
+            value: true
+          },
+          {
+            label: i18n.global.t('operation.connectors.attribute.invisible'),
+            value: false
+          }
+        ]
+      },
+      style: {
+        key: setPropertyStyle({ 'flex-basis': '200px' }),
+        value: setPropertyStyle({ 'flex-basis': '200px' }),
+        extra: setPropertyStyle({ 'flex-basis': '160px' })
+      }
+    };
+  });
+  const labelList = ref<CustomAttrbute[]>([
+    {
+      key: '',
+      value: '',
+      type: 'string',
+      visible: false,
+      extraCom: 'Select',
+      extraProps: {
+        options: [
+          {
+            label: i18n.global.t('operation.connectors.attribute.visible'),
+            value: true
+          },
+          {
+            label: i18n.global.t('operation.connectors.attribute.invisible'),
+            value: false
+          }
+        ]
+      },
+      style: {
+        key: {
+          'display': 'flex',
+          'align-items': 'center',
+          'flex-basis': '200px'
+        },
+        value: {
+          'display': 'flex',
+          'align-items': 'center',
+          'flex-basis': '200px'
+        },
+        extra: {
+          'display': 'flex',
+          'align-items': 'center',
+          'flex-basis': '160px'
+        }
+      }
+    }
   ]);
+
   const title = computed(() => {
     if (id) {
       return t('operation.connectors.title.edit', {
@@ -185,8 +268,16 @@
       type: t('operation.connectors.reinstall.custom')
     });
   });
-  const handleAddLabel = (obj, list) => {
-    list?.push(obj);
+
+  const handleAddLabel = (obj) => {
+    labelList.value.push({
+      key: '',
+      value: '',
+      type: 'string',
+      visible: false,
+      ...labelOption.value
+    });
+    console.log('labelList===', labelList.value);
   };
   const handleDeleteLabel = (list, index) => {
     const len = list.length || 0;
@@ -194,25 +285,51 @@
     list?.splice(index, 1);
   };
   const validatorAttribute = (val, callback) => {
-    const valid = some(keys(formData.configData.attributes), (s) => !s);
-    if (valid || !keys(formData.configData.attributes).length) {
+    const valid = some(keys(formData.configData), (s) => !s);
+    if (valid || !keys(formData.configData).length) {
       callback(t('operation.connectors.attribute.rule'));
     } else {
       callback();
     }
   };
   const setLabelList = () => {
-    const attributes = keys(formData.configData.attributes) || [];
-
-    labelList.value = map(attributes, (key) => {
+    const configData = formData.configData || {};
+    labelList.value = map(keys(configData), (key) => {
       return {
         key,
-        value: get(formData, `configData.attributes.${key}`)
+        value: get(configData, `${key}.value`) || '',
+        type: get(configData, `${key}.type`) || 'string',
+        visible: get(configData, `${key}.visible`) || false,
+        ...labelOption.value
       };
-    });
+    }) as never[];
     if (!labelList.value.length) {
-      labelList.value = [{ key: '', value: '' }];
+      labelList.value = [
+        {
+          key: '',
+          value: '',
+          type: 'string',
+          visible: false,
+          ...labelOption.value
+        }
+      ];
     }
+    console.log('labelList===', labelList.value);
+  };
+  const setConfigData = () => {
+    const data = reduce(
+      labelList.value,
+      (obj, item) => {
+        if (item.key) {
+          obj[item.key] = {
+            ...pick(item, ['value', 'type', 'visible'])
+          };
+        }
+        return obj;
+      },
+      {}
+    );
+    formData.configData = data;
   };
   const handleSubmit = async () => {
     const res = await formref.value?.validate();
@@ -220,6 +337,7 @@
     if (!res) {
       try {
         submitLoading.value = true;
+        setConfigData();
         copyFormData = cloneDeep(formData);
         if (id) {
           await updateConnector(formData);
@@ -239,7 +357,6 @@
     try {
       const { data } = await queryItemConnector({ id });
       assignIn(formData, data);
-      setLabelList();
       copyFormData = cloneDeep(formData);
     } catch (error) {
       console.log(error);
@@ -267,6 +384,7 @@
     }
   };
   onBeforeRouteLeave(async (to, from) => {
+    setConfigData();
     if (!isEqual(copyFormData, formData)) {
       beforeLeaveCallback({
         to,
@@ -282,7 +400,11 @@
     }
     return true;
   });
-  getConnectorInfo();
+  const init = async () => {
+    await getConnectorInfo();
+    setLabelList();
+  };
+  init();
 </script>
 
 <style lang="less" scoped>

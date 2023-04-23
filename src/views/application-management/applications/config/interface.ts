@@ -2,7 +2,7 @@ export interface Variables {
   name: string;
   default: any;
   type: string;
-  description: string;
+  description?: string;
   required?: boolean;
 }
 
