@@ -76,13 +76,13 @@
           ]"
         >
           <a-space
-            v-if="labelList?.length && pageAction === 'edit'"
+            v-if="attributeList?.length && pageAction === 'edit'"
             fill
             style="display: flex; flex-direction: column; width: 1000px"
             direction="vertical"
           >
             <xInputGroup
-              v-for="(sItem, sIndex) in labelList"
+              v-for="(sItem, sIndex) in attributeList"
               :key="sIndex"
               v-model:dataKey="sItem.key"
               v-model:dataValue="sItem.type"
@@ -111,13 +111,13 @@
               }"
               :value-options="variableTypeList"
               :max-length="null"
-              :label-list="labelList"
+              :label-list="attributeList"
               :position="sIndex"
               @add="(obj) => handleAddLabel(obj)"
-              @delete="handleDeleteLabel(labelList, sIndex)"
+              @delete="handleDeleteLabel(attributeList, sIndex)"
             ></xInputGroup>
           </a-space>
-          <template v-if="pageAction === 'view' && labelList?.length">
+          <template v-if="pageAction === 'view' && attributeList?.length">
             <labelsList
               style="margin-left: 12px"
               :labels="formData.configData"
@@ -168,7 +168,6 @@
   import EditPageFooter from '@/components/edit-page-footer/index.vue';
   import xInputGroup from '@/components/form-create/custom-components/x-input-group.vue';
   import useCallCommon from '@/hooks/use-call-common';
-  import i18n from '@/locale/index';
   import ProviderIcon from '@/components/provider-icon/index.vue';
   import { variableTypeList } from '@/views/application-management/applications/config';
   import labelsList from '@/views/application-management/applications/components/app-info/labels-list.vue';
@@ -182,16 +181,7 @@
       ...style
     };
   };
-  const visibleOptions = ref([
-    {
-      label: i18n.global.t('operation.connectors.attribute.visible'),
-      value: 1
-    },
-    {
-      label: i18n.global.t('operation.connectors.attribute.invisible'),
-      value: 0
-    }
-  ]);
+
   const { t, router, route } = useCallCommon();
   const { pageAction, handleEdit } = usePageAction();
   const id = route.query.id as string;
@@ -209,7 +199,19 @@
     enableFinOps: false
   });
 
-  const labelList = ref<CustomAttrbute[]>([
+  const visibleOptions = computed(() => {
+    return [
+      {
+        label: t('operation.connectors.attribute.visible'),
+        value: 1
+      },
+      {
+        label: t('operation.connectors.attribute.invisible'),
+        value: 0
+      }
+    ];
+  });
+  const attributeList = ref<CustomAttrbute[]>([
     {
       key: '',
       value: '',
@@ -238,11 +240,21 @@
       }
     }
   ]);
+
   const labelOption = computed(() => {
     return {
       extraCom: 'Select',
       extraProps: {
-        options: visibleOptions
+        options: [
+          {
+            label: t('operation.connectors.attribute.visible'),
+            value: 1
+          },
+          {
+            label: t('operation.connectors.attribute.invisible'),
+            value: 0
+          }
+        ]
       },
       style: {
         key: setPropertyStyle({ 'flex-basis': '200px' }),
@@ -263,31 +275,27 @@
   });
 
   const handleAddLabel = (obj) => {
-    labelList.value.push({
+    attributeList.value.push({
       key: '',
       value: '',
       type: 'string',
       visible: 0,
       ...labelOption.value
     });
-    console.log('labelList===', labelList.value);
+    console.log('attributeList===', attributeList.value);
   };
   const handleDeleteLabel = (list, index) => {
     const len = list.length || 0;
     if (len < 2) return;
     list?.splice(index, 1);
   };
-  const validatorAttribute = (val, callback) => {
-    const valid = some(keys(formData.configData), (s) => !s);
-    if (valid || !keys(formData.configData).length) {
-      callback(t('operation.connectors.attribute.rule'));
-    } else {
-      callback();
-    }
+
+  const checkAttributeValid = () => {
+    triggerValidate.value = some(attributeList.value, (item) => !item.key);
   };
   const setLabelList = () => {
     const configData = formData.configData || {};
-    labelList.value = map(keys(configData), (key) => {
+    attributeList.value = map(keys(configData), (key) => {
       return {
         key,
         value: get(configData, `${key}.value`) || '',
@@ -297,8 +305,8 @@
         ...labelOption.value
       };
     }) as never[];
-    if (!labelList.value.length) {
-      labelList.value = [
+    if (!attributeList.value.length) {
+      attributeList.value = [
         {
           key: '',
           value: '',
@@ -308,11 +316,11 @@
         }
       ];
     }
-    console.log('labelList===', labelList.value);
+    console.log('attributeList===', attributeList.value);
   };
   const setConfigData = () => {
     const data = reduce(
-      labelList.value,
+      attributeList.value,
       (obj, item) => {
         if (item.key) {
           obj[item.key] = {
@@ -328,8 +336,8 @@
   };
   const handleSubmit = async () => {
     const res = await formref.value?.validate();
-    triggerValidate.value = true;
-    if (!res) {
+    checkAttributeValid();
+    if (!res && !triggerValidate.value) {
       try {
         submitLoading.value = true;
         setConfigData();
