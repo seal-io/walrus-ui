@@ -88,6 +88,7 @@
               v-model:dataValue="sItem.type"
               v-model:dataDesc="sItem.value"
               v-model:dataExtra="sItem.visible"
+              :data-default="sItem.default"
               :data-item="sItem"
               show-description
               show-extra
@@ -119,7 +120,7 @@
           <template v-if="pageAction === 'view' && labelList?.length">
             <labelsList
               style="margin-left: 12px"
-              :labels="formData.configData.attributes"
+              :labels="formData.configData"
             ></labelsList>
           </template>
         </a-form-item>
@@ -181,6 +182,16 @@
       ...style
     };
   };
+  const visibleOptions = ref([
+    {
+      label: i18n.global.t('operation.connectors.attribute.visible'),
+      value: 1
+    },
+    {
+      label: i18n.global.t('operation.connectors.attribute.invisible'),
+      value: 0
+    }
+  ]);
   const { t, router, route } = useCallCommon();
   const { pageAction, handleEdit } = usePageAction();
   const id = route.query.id as string;
@@ -197,46 +208,16 @@
     category: 'Custom',
     enableFinOps: false
   });
-  const labelOption = computed(() => {
-    return {
-      extraCom: 'Select',
-      extraProps: {
-        options: [
-          {
-            label: i18n.global.t('operation.connectors.attribute.visible'),
-            value: true
-          },
-          {
-            label: i18n.global.t('operation.connectors.attribute.invisible'),
-            value: false
-          }
-        ]
-      },
-      style: {
-        key: setPropertyStyle({ 'flex-basis': '200px' }),
-        value: setPropertyStyle({ 'flex-basis': '200px' }),
-        extra: setPropertyStyle({ 'flex-basis': '160px' })
-      }
-    };
-  });
+
   const labelList = ref<CustomAttrbute[]>([
     {
       key: '',
       value: '',
       type: 'string',
-      visible: false,
+      visible: 0,
       extraCom: 'Select',
       extraProps: {
-        options: [
-          {
-            label: i18n.global.t('operation.connectors.attribute.visible'),
-            value: true
-          },
-          {
-            label: i18n.global.t('operation.connectors.attribute.invisible'),
-            value: false
-          }
-        ]
+        options: visibleOptions
       },
       style: {
         key: {
@@ -247,17 +228,29 @@
         value: {
           'display': 'flex',
           'align-items': 'center',
-          'flex-basis': '200px'
+          'flex-basis': '150px'
         },
         extra: {
           'display': 'flex',
           'align-items': 'center',
-          'flex-basis': '160px'
+          'flex-basis': '150px'
         }
       }
     }
   ]);
-
+  const labelOption = computed(() => {
+    return {
+      extraCom: 'Select',
+      extraProps: {
+        options: visibleOptions
+      },
+      style: {
+        key: setPropertyStyle({ 'flex-basis': '200px' }),
+        value: setPropertyStyle({ 'flex-basis': '150px' }),
+        extra: setPropertyStyle({ 'flex-basis': '150px' })
+      }
+    };
+  });
   const title = computed(() => {
     if (id) {
       return t('operation.connectors.title.edit', {
@@ -274,7 +267,7 @@
       key: '',
       value: '',
       type: 'string',
-      visible: false,
+      visible: 0,
       ...labelOption.value
     });
     console.log('labelList===', labelList.value);
@@ -298,8 +291,9 @@
       return {
         key,
         value: get(configData, `${key}.value`) || '',
+        default: get(configData, `${key}.value`) || '',
         type: get(configData, `${key}.type`) || 'string',
-        visible: get(configData, `${key}.visible`) || false,
+        visible: get(configData, `${key}.visible`) ? 1 : 0,
         ...labelOption.value
       };
     }) as never[];
@@ -309,7 +303,7 @@
           key: '',
           value: '',
           type: 'string',
-          visible: false,
+          visible: 0,
           ...labelOption.value
         }
       ];
@@ -322,7 +316,8 @@
       (obj, item) => {
         if (item.key) {
           obj[item.key] = {
-            ...pick(item, ['value', 'type', 'visible'])
+            ...pick(item, ['value', 'type']),
+            visible: !!item.visible
           };
         }
         return obj;
@@ -357,6 +352,8 @@
     try {
       const { data } = await queryItemConnector({ id });
       assignIn(formData, data);
+      setLabelList();
+      setConfigData();
       copyFormData = cloneDeep(formData);
     } catch (error) {
       console.log(error);
@@ -371,6 +368,7 @@
     router.back();
   };
   const handleCancel = () => {
+    setConfigData();
     if (!isEqual(copyFormData, formData)) {
       beforeLeaveCallback({
         isCancel: true,
@@ -385,6 +383,7 @@
   };
   onBeforeRouteLeave(async (to, from) => {
     setConfigData();
+    console.log('formData====', formData, copyFormData);
     if (!isEqual(copyFormData, formData)) {
       beforeLeaveCallback({
         to,
@@ -402,7 +401,6 @@
   });
   const init = async () => {
     await getConnectorInfo();
-    setLabelList();
   };
   init();
 </script>

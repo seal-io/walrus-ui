@@ -60,12 +60,6 @@
           <thumbButton :size="60" @click="handleAddModule"></thumbButton>
         </a-tooltip>
       </div>
-      <!-- <div v-if="!validateModule && !id && triggerModule" class="tips">
-        <span
-          :style="{ 'font-size': '12px', 'color': 'rgb(var(--danger-6))' }"
-          >{{ $t('applications.applications.rules.modules') }}</span
-        >
-      </div> -->
     </div>
     <div :title="$t('applications.applications.variables.title')">
       <div class="var-title">
@@ -75,8 +69,15 @@
         v-if="get(appInfo, 'variables').length && pageAction === 'edit'"
         class="var-item var-item-title"
       >
-        <span class="label">{{ $t('common.input.key') }}</span>
-        <span class="label">
+        <span
+          class="label"
+          :style="setPropertyStyle({ 'flex-basis': '200px' })"
+          >{{ $t('common.input.key') }}</span
+        >
+        <span
+          class="label"
+          :style="setPropertyStyle({ 'flex-basis': '150px' })"
+        >
           <span class="holder"></span>
           <span>{{ $t('common.input.type') }}</span>
         </span>
@@ -88,14 +89,16 @@
       </div>
       <div v-if="pageAction === 'edit'">
         <div
-          v-for="(sItem, sIndex) in get(appInfo, 'variables')"
+          v-for="(sItem, sIndex) in variableList"
           :key="sIndex"
           class="var-item"
         >
           <xInputGroup
-            v-model:dataKey="sItem.name"
+            v-model:dataKey="sItem.key"
             v-model:dataValue="sItem.type"
-            v-model:dataDesc="sItem.default"
+            v-model:dataDesc="sItem.value"
+            :data-item="sItem"
+            :data-default="sItem.default"
             :trigger-validate="triggerValidate"
             show-description
             always-delete
@@ -211,6 +214,7 @@
   } from '@/views/operation-hub/templates/api';
   import EditPageFooter from '@/components/edit-page-footer/index.vue';
   import xInputGroup from '@/components/form-create/custom-components/x-input-group.vue';
+  import { CustomAttrbute } from '@/views/operation-hub/connectors/config/interface';
   import {
     TemplateRowData,
     ModuleVersionData
@@ -270,6 +274,7 @@
   const appModules = ref<AppModule[]>([]);
   const completeData = ref<Record<string, any>>({});
   const triggerModule = ref(false);
+  const variableList = ref<CustomAttrbute[]>([]);
   let completeDataSetter: any = {};
   let copyFormData: any = {};
 
@@ -288,19 +293,45 @@
     );
     return res;
   });
-  const variableList = computed(() => {
-    const list = map(appInfo.variables || [], (item) => {
+  // const variableList = computed(() => {
+  //   const list = map(appInfo.variables || [], (item) => {
+  //     return {
+  //       key: item.name,
+  //       value: item.default
+  //     };
+  //   });
+  //   return list;
+  // });
+  const setPropertyStyle = (style) => {
+    return {
+      'display': 'flex',
+      'align-items': 'center',
+      ...style
+    };
+  };
+  const setVariableList = () => {
+    variableList.value = map(appInfo.variables || [], (item) => {
       return {
         key: item.name,
-        value: item.default
+        value: item.default,
+        type: item.type,
+        default: item.default,
+        style: {
+          key: setPropertyStyle({ 'flex-basis': '200px' }),
+          value: setPropertyStyle({ 'flex-basis': '150px' })
+        }
       };
     });
-    return list;
-  });
-  const validateModule = computed(() => {
-    return !!appInfo.modules.length;
-  });
-
+  };
+  const setAppInfoVariables = () => {
+    appInfo.variables = map(variableList.value, (item) => {
+      return {
+        name: item.key,
+        type: item.type,
+        default: item.value
+      };
+    });
+  };
   const handleEditModule = (item) => {
     moduleAction.value = 'edit';
     moduleInfo.value = item;
@@ -343,10 +374,15 @@
 
   const handleAddVariables = () => {
     console.log('adad');
-    appInfo.variables.push({
-      name: '',
+    variableList.value.push({
+      key: '',
+      value: '',
       default: '',
-      type: 'string'
+      type: 'string',
+      style: {
+        key: setPropertyStyle({ 'flex-basis': '200px' }),
+        value: setPropertyStyle({ 'flex-basis': '150px' })
+      }
     });
   };
   // apply for edit module config
@@ -445,6 +481,7 @@
       appModules.value = get(appInfo, 'modules') || [];
       appInfo.modules = data.modules || [];
       appInfo.variables = data.variables || [];
+      setVariableList();
       copyFormData = cloneDeep(appInfo);
       console.log('appInfo===', appInfo);
     } catch (error) {
@@ -502,15 +539,11 @@
     completeDataSetter?.updateVariablesCompleteData?.();
   };
   const validateVariabels = () => {
-    triggerValidate.value = some(
-      get(appInfo, 'variables'),
-      (item) => !item.name
-    );
+    triggerValidate.value = some(variableList.value, (item) => !item.key);
     return triggerValidate.value;
   };
   const handleOk = async () => {
     const validateVarRes = validateVariabels();
-    console.log('handleOk====', validateVarRes, appInfo);
     const result = await basicform.value.getFormData();
     triggerModule.value = true;
 
@@ -518,6 +551,7 @@
       return;
     }
     try {
+      setAppInfoVariables();
       const params = {
         ...appInfo,
         ...result,
@@ -564,6 +598,7 @@
     router.back();
   };
   const handleCancel = async () => {
+    setAppInfoVariables();
     const appInfoData = {
       ...appInfo,
       ...(await basicform.value.getFormData())
@@ -601,6 +636,7 @@
     }
   };
   onBeforeRouteLeave(async (to, from) => {
+    setAppInfoVariables();
     const appInfoData = {
       ...appInfo,
       ...(await basicform.value.getFormData())
@@ -653,7 +689,7 @@
     }
 
     .var-item {
-      width: 50%;
+      width: 60%;
       margin-bottom: 10px;
 
       &:last-child {
@@ -664,7 +700,6 @@
         display: flex;
 
         .label {
-          flex: 1;
           font-weight: 500;
         }
 

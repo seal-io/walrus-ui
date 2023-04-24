@@ -115,11 +115,10 @@
             get($attrs?.placeholder, 'extra') || $t('common.input.extra')
           "
           show-word-limit
-          live-input
           :show-gutter="false"
           :model-value="dataExtra"
           :editor-id="`${token}-${position}`"
-          :editor-default-value="dataExtra"
+          :editor-default-value="dataDefault"
           @input="(val) => handleDataChange(val, 'extra', 'input')"
           @change="(val) => handleDataChange(val, 'extra', 'change')"
         ></component>
@@ -156,11 +155,10 @@
               $t('common.input.description')
             "
             show-word-limit
-            live-input
             :show-gutter="false"
             :model-value="dataDesc"
             :editor-id="`${token}-${position}`"
-            :editor-default-value="dataDesc"
+            :editor-default-value="dataDefault"
             @input="(val) => handleDataChange(val, 'description', 'input')"
             @change="(val) => handleDataChange(val, 'description', 'change')"
           ></component>
@@ -209,7 +207,13 @@
       }
     },
     dataExtra: {
-      type: [String, Boolean],
+      type: [String, Boolean, Number],
+      default() {
+        return false;
+      }
+    },
+    dataDefault: {
+      type: String,
       default() {
         return '';
       }
@@ -390,7 +394,9 @@
     if (attr === 'extra') {
       emits('update:dataExtra', val);
     }
-
+    setTimeout(() => {
+      console.log('labelLIst=====', props.labelList, val);
+    });
     getDataObj(props.labelList);
   };
 </script>

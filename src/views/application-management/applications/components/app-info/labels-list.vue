@@ -8,7 +8,7 @@
     >
       <AutoTip
         :tooltip-props="{
-          content: `${item.key}:${item.value}`
+          content: `${item.key}:${JSON.stringify(item.value)}`
         }"
       >
         <span>

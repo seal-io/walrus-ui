@@ -3,5 +3,5 @@ import customComponents from '../custom-components';
 
 export default {
   ...internal,
-  customComponents
+  ...customComponents
 };

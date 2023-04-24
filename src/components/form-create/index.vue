@@ -278,7 +278,6 @@
   };
   const handleDeleteLabel = (list, index) => {
     list.splice(index, 1);
-    console.log('fmlabelList===', list);
   };
   // reset field default value when showIf is negative
   const resetFieldsDefaultValue = () => {
