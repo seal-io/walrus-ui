@@ -129,7 +129,7 @@
       </div>
 
       <a-tooltip
-        v-if="!get(appInfo, 'variables').length && pageAction === 'edit'"
+        v-if="!variableList.length && pageAction === 'edit'"
         :content="$t('applications.applications.variables.button')"
       >
         <thumbButton
@@ -139,7 +139,7 @@
         ></thumbButton>
       </a-tooltip>
       <LabelsList
-        v-if="get(appInfo, 'variables').length && pageAction === 'view'"
+        v-if="variableList.length && pageAction === 'view'"
         :labels="variablesObj"
       ></LabelsList>
     </div>
@@ -490,10 +490,10 @@
   };
   const setVariablesCompleteData = () => {
     const variables = reduce(
-      get(appInfo, 'variables') || [],
+      variableList.value || [],
       (obj, item) => {
-        if (item.name) {
-          obj[item.name] = '';
+        if (item.key) {
+          obj[item.key] = '';
         }
         return obj;
       },
@@ -535,7 +535,7 @@
     completeDataSetter?.updateVariablesCompleteData?.();
   };
   const handleDeleteVariable = (index) => {
-    appInfo.variables.splice(index, 1);
+    variableList.value.splice(index, 1);
     completeDataSetter?.updateVariablesCompleteData?.();
   };
   const validateVariabels = () => {
@@ -689,7 +689,7 @@
     }
 
     .var-item {
-      width: 60%;
+      width: 70%;
       margin-bottom: 10px;
 
       &:last-child {
