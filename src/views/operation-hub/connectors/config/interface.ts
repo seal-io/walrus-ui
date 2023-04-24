@@ -18,8 +18,9 @@ export interface CustomAttrbute {
   key: string;
   value: string;
   type: string;
+  default?: string;
   extraCom?: string;
-  visible?: boolean;
+  visible?: number;
   extraProps?: any;
   style?: object;
 }

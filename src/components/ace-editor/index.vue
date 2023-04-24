@@ -239,9 +239,8 @@
     );
   };
   const setDefaultValue = () => {
-    if (props.liveInput) return;
     setTimeout(() => {
-      aceEditor?.setValue(props.editorDefaultValue, -1);
+      aceEditor?.setValue(props.editorDefaultValue, 1);
     }, 100);
   };
   const setLanguageTools = () => {
