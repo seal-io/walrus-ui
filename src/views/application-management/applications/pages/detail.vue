@@ -272,10 +272,10 @@
     console.log('data===', data);
     if (action === 'create') {
       const newInstance = cloneDeep(data);
-      instanseList.value.push(newInstance);
+      // instanseList.value.push(newInstance);
       setTimeout(() => {
         handleClickInstance(newInstance);
-      }, 100);
+      });
     }
   };
   const handleInstanceUpgradeSucceed = (deleteId) => {
