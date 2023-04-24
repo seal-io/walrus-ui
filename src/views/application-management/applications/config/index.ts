@@ -38,6 +38,14 @@ export const instanceActions = [
     value: 'upgrade',
     icon: 'icon-sync'
   },
+  {
+    label: 'common.button.clone',
+    value: 'clone',
+    icon: 'icon-font',
+    props: {
+      type: 'icon-Clone-Cloud'
+    }
+  },
   { label: 'common.button.delete', value: 'delete', icon: 'icon-delete' }
   // {
   //   label: 'applications.applications.history.rollback',
@@ -257,4 +265,10 @@ export const AppInstanceStatus = {
   DeleteFailed: 'DeleteFailed'
 };
 
+export const componentsMap = {
+  string: 'Input',
+  number: 'InputNumber',
+  bool: 'Checkbox',
+  dynamic: 'AceEditor'
+};
 export default {};

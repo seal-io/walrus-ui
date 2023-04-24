@@ -1,0 +1,122 @@
+<template>
+  <a-modal
+    top="10%"
+    simple
+    :closable="false"
+    :align-center="false"
+    :width="500"
+    :ok-text="$t('common.button.save')"
+    :visible="show"
+    :mask-closable="false"
+    :body-style="{
+      'max-height': '400px',
+      'overflow': 'auto',
+      'text-align': 'center'
+    }"
+    modal-class="oci-modal"
+    :title="title"
+    @cancel="handleCancel"
+    @ok="handleOk"
+    @before-open="handleBeforeOpen"
+    @before-close="handleBeforeClose"
+  >
+    <div style="display: center">
+      <a-form ref="formref" :model="formData" auto-label-width>
+        <a-form-item
+          field="name"
+          validate-trigger="change"
+          hide-asterisk
+          :rules="[
+            { required: true, message: $t('applications.module.rule.name') },
+            {
+              match: validateAppNameRegx,
+              message: $t('applications.applications.rule.allName')
+            }
+          ]"
+        >
+          <a-input
+            v-model="formData.name"
+            style="width: 100%"
+            :max-length="30"
+            show-word-limit
+            :placeholder="$t('applications.applications.instance.cloneName')"
+          ></a-input>
+          <template #extra>
+            <span class="tips">{{
+              $t('applications.applications.rule.allName')
+            }}</span>
+          </template>
+        </a-form-item>
+      </a-form>
+    </div>
+    <template #footer>
+      <EditPageFooter style="margin-top: 0">
+        <template #save>
+          <a-button
+            :loading="submitLoading"
+            type="primary"
+            class="cap-title cancel-btn"
+            @click="handleOk"
+            >{{ $t('common.button.confirm') }}</a-button
+          >
+        </template>
+        <template #cancel>
+          <a-button
+            :type="'outline'"
+            class="cap-title cancel-btn"
+            @click="handleCancel"
+            >{{ $t('common.button.cancel') }}</a-button
+          >
+        </template>
+      </EditPageFooter>
+    </template>
+  </a-modal>
+</template>
+
+<script lang="ts" setup>
+  import { ref, reactive } from 'vue';
+  import EditPageFooter from '@/components/edit-page-footer/index.vue';
+  import { validateAppNameRegx } from '@/views/config';
+
+  const props = defineProps({
+    show: {
+      type: Boolean,
+      default() {
+        return false;
+      }
+    },
+    title: {
+      type: String,
+      default() {
+        return '';
+      }
+    }
+  });
+
+  const emit = defineEmits(['save', 'update:show']);
+  const formData = reactive({
+    name: ''
+  });
+  const submitLoading = ref(false);
+
+  const handleCancel = () => {
+    emit('update:show', false);
+  };
+  const handleOk = async () => {
+    try {
+      submitLoading.value = true;
+      emit('update:show', false);
+      emit('save', formData.name);
+      submitLoading.value = false;
+    } catch (error) {
+      submitLoading.value = false;
+    }
+  };
+
+  const handleBeforeOpen = () => {
+    formData.name = '';
+  };
+  const handleBeforeClose = () => {};
+</script>
+
+<style></style>

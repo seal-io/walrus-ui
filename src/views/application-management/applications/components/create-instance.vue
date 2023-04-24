@@ -9,6 +9,7 @@
     :mask-closable="false"
     :body-style="{ 'max-height': '400px', 'overflow': 'auto' }"
     modal-class="oci-modal"
+    unmount-on-close
     :title="$t('applications.applications.detail.createInstance')"
     @cancel="handleCancel"
     @ok="handleOk"
@@ -79,10 +80,19 @@
             }
           ]"
         >
-          <a-input
+          <!-- <a-input
             v-model="formData.variables[item.name]"
             style="width: 100%"
-          ></a-input>
+          ></a-input> -->
+          <component
+            :is="get(internalComponents, componentsMap[item.type])"
+            v-model="formData.variables[item.name]"
+            style="width: 100%"
+            show-word-limit
+            :show-gutter="false"
+            :editor-id="`${item.name}`"
+            :editor-default-value="item.default"
+          ></component>
         </a-form-item>
       </a-form>
     </a-spin>
@@ -116,7 +126,9 @@
   import useCallCommon from '@/hooks/use-call-common';
   import EditPageFooter from '@/components/edit-page-footer/index.vue';
   import { validateAppNameRegx } from '@/views/config';
+  import internalComponents from '@/components/form-create/components/internal';
   import { Variables } from '../config/interface';
+  import { componentsMap } from '../config';
   import { deployApplication, upgradeApplicationInstance } from '../api';
 
   const props = defineProps({
@@ -158,6 +170,7 @@
       }
     }
   });
+
   const emit = defineEmits(['save', 'upgrade', 'update:show', 'update:status']);
   const instanceInfo = inject(
     'instanceInfo',
@@ -185,6 +198,7 @@
     const list = filter(props.variables, (item) => {
       return item.name;
     });
+    console.log('variables===', props.variables);
     return list as Variables[];
   });
   const handleEnvChange = (val) => {
@@ -196,6 +210,7 @@
   };
   const handleOk = async () => {
     const res = await formref.value?.validate();
+    console.log('formData===', formData);
     if (!res) {
       try {
         submitLoading.value = true;

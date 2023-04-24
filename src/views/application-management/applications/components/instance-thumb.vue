@@ -35,7 +35,11 @@
                 ? 'rgb(var(--danger-6))'
                 : 'var(--color-text-2)'
           }"
-          ><component :is="item.icon" style="margin-right: 5px"></component
+          ><component
+            :is="item.icon"
+            v-bind="item.props"
+            style="margin-right: 5px"
+          ></component
           >{{ $t(item.label) }}</a-doption
         >
       </template>
@@ -65,12 +69,12 @@
 <script lang="ts" setup>
   import { get } from 'lodash';
   import { PropType } from 'vue';
-  import { InstanceData } from '../config/interface';
 
   type actioneItem = {
     label: string;
     value: string;
     icon: string;
+    props?: object;
   };
   const props = defineProps({
     actions: {
@@ -104,13 +108,12 @@
       }
     }
   });
-  const emits = defineEmits(['change', 'edit', 'upgrade']);
+  const emits = defineEmits(['change', 'edit', 'upgrade', 'clone']);
   const handleCheckedChange = (val) => {
     console.log('val:', val);
     emits('change', val, props.dataInfo.id);
   };
   const handleClick = (val) => {
-    console.log('value===', val);
     emits(val);
   };
 </script>

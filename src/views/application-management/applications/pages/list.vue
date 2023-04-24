@@ -147,11 +147,6 @@
       @change="handlePageChange"
       @page-size-change="handlePageSizeChange"
     />
-    <createApplication
-      v-model:show="showAppModal"
-      :title="$t('applications.applications.create')"
-      @save="handleSaveAppInfo"
-    ></createApplication>
   </ComCard>
 </template>
 
@@ -175,7 +170,6 @@
   import { queryProjects } from '../../projects/api';
   import { AppRowData } from '../config/interface';
   import { statusMap, websocketEventType } from '../config';
-  import createApplication from '../components/create-application.vue';
   import { queryApplications, deleteApplication } from '../api';
   import InstanceStatus from '../components/instance-status.vue';
 
@@ -185,7 +179,6 @@
   const id = route.query.id || '';
   let timer: any = null;
   const loading = ref(false);
-  const showAppModal = ref(false);
   const total = ref(0);
   const queryParams = reactive({
     projectID: '',
@@ -340,10 +333,6 @@
 
   const handleDelete = async () => {
     deleteModal({ onOk: handleDeleteConfirm });
-  };
-  const handleSaveAppInfo = () => {
-    queryParams.page = 1;
-    handleFilter();
   };
   const init = async () => {
     await getProjectList();

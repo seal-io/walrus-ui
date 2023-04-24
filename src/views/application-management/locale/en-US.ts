@@ -57,6 +57,9 @@ export default {
   'applications.applications.instance.resource': 'Resource Information',
   'applications.applications.instance.endpoint': 'EndPoint',
   'applications.applications.instance.log': 'Logs',
+  'applications.applications.instance.cloneName':
+    'please enter a new instance name',
+  'applications.applications.instance.clonetitle': 'Clone Instance ({from})',
   'applications.applications.logs.live': 'Running Logs',
   'applications.instance.rule.env': 'the deployment environment is required',
   'applications.instance.env.tips':
@@ -69,10 +72,18 @@ export default {
   'applications.applications.history.version': 'Version',
   'applications.applications.history.operator': 'Operator',
   'applications.applications.history.clone': 'Clone',
+  'applications.applications.history.rollbackapp': 'Application Rollback',
+  'applications.applications.history.rollbackinstance': 'Instance Rollback',
   'applications.applications.history.deploymentTime': 'Deployment Time',
   'applications.applications.history.rollback': 'Rollback',
   'applications.applications.history.detail': 'Revision Details',
   'applications.applications.history.running': 'Deployment details',
+  'applications.applications.history.diff.title':
+    'Comparison between the current version and the latest version configuration',
+  'applications.applications.history.diff.remove':
+    'marker as the latest version configuration',
+  'applications.applications.history.diff.add':
+    'marker as current version configuration',
   'applications.applications.logs.holder': 'please select an object',
   'applications.applications.modules.title': 'Modules',
   'applications.applications.labels.title': 'Add labels',

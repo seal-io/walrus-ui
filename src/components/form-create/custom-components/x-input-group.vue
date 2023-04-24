@@ -46,82 +46,86 @@
           ></hintInput>
         </a-tooltip>
       </div>
-      <!-- value -->
+      <!-- value  show as select when there are valueOptions-->
       <div :span="8" :style="getItemStyle('value')">
         <span style="padding: 0 4px">{{ separator }}</span>
-        <a-select
-          v-if="valueOptions.length"
-          v-bind="$attrs"
-          :error="!dataValue && triggerValidate"
-          :options="valueOptions"
-          style="width: 100%"
-          :model-value="dataValue"
-          :placeholder="
-            get($attrs?.placeholder, 'value') || $t('common.input.value')
-          "
-          @change="(val) => handleDataChange(val, 'value')"
-        >
-        </a-select>
-        <a-input-password
-          v-else-if="showPassword"
-          style="width: 100%"
-          :model-value="dataValue"
-          v-bind="$attrs"
-          :placeholder="
-            get($attrs?.placeholder, 'value') || $t('common.input.value')
-          "
-          :max-length="$attrs.MaxLength"
-          show-word-limit
-          @input="(val) => handleDataChange(val, 'value')"
-          @change="(val) => handleDataChange(val, 'value')"
-        ></a-input-password>
-        <a-input
-          v-else-if="!showHintInput"
-          style="width: 100%"
-          :model-value="dataValue"
-          v-bind="$attrs"
-          :placeholder="
-            get($attrs?.placeholder, 'value') || $t('common.input.value')
-          "
-          :max-length="50"
-          show-word-limit
-          @input="(val) => handleDataChange(val, 'value')"
-          @change="(val) => handleDataChange(val, 'value')"
-        ></a-input>
-        <hintInput
-          v-else
-          :model-value="dataValue"
-          :max-length="100"
-          v-bind="$attrs"
-          :placeholder="
-            get($attrs?.placeholder, 'value') || $t('common.input.value')
-          "
-          style="width: 100%"
-          :editor-id="`${formId}_valueEditor${position}`"
-          :source="completeData"
-          show-word-limit
-          @input="(val) => handleDataChange(val, 'value')"
-          @change="(val) => handleDataChange(val, 'value')"
-        ></hintInput>
+        <slot name="value">
+          <a-select
+            v-if="valueOptions.length"
+            v-bind="$attrs"
+            :error="!dataValue && triggerValidate"
+            :options="valueOptions"
+            style="width: 100%"
+            :model-value="dataValue"
+            :placeholder="
+              get($attrs?.placeholder, 'value') || $t('common.input.value')
+            "
+            @change="(val) => handleDataChange(val, 'value', 'change')"
+          >
+          </a-select>
+          <a-input-password
+            v-else-if="showPassword"
+            style="width: 100%"
+            :model-value="dataValue"
+            v-bind="$attrs"
+            :placeholder="
+              get($attrs?.placeholder, 'value') || $t('common.input.value')
+            "
+            :max-length="$attrs.MaxLength"
+            show-word-limit
+            @input="(val) => handleDataChange(val, 'value', 'input')"
+            @change="(val) => handleDataChange(val, 'value', 'change')"
+          ></a-input-password>
+          <a-input
+            v-else-if="!showHintInput"
+            style="width: 100%"
+            :model-value="dataValue"
+            v-bind="$attrs"
+            :placeholder="
+              get($attrs?.placeholder, 'value') || $t('common.input.value')
+            "
+            :max-length="50"
+            show-word-limit
+            @input="(val) => handleDataChange(val, 'value', 'input')"
+            @change="(val) => handleDataChange(val, 'value', 'change')"
+          ></a-input>
+          <hintInput
+            v-else
+            :model-value="dataValue"
+            :max-length="100"
+            v-bind="$attrs"
+            :placeholder="
+              get($attrs?.placeholder, 'value') || $t('common.input.value')
+            "
+            style="width: 100%"
+            :editor-id="`${formId}_valueEditor${position}`"
+            :source="completeData"
+            show-word-limit
+            @input="(val) => handleDataChange(val, 'value', 'input')"
+            @change="(val) => handleDataChange(val, 'value', 'change')"
+          ></hintInput>
+        </slot>
       </div>
       <!-- extra -->
       <div v-if="showExtra" :span="8" :style="getItemStyle('extra')">
         <span style="padding: 0 4px">{{ separator }}</span>
-        <component
-          v-bind="{ ...$attrs, ...get(dataItem, 'extraProps') }"
-          :is="get(internalComponents, get(dataItem, 'extraCom'))"
-          style="width: 100%"
-          :placeholder="
-            get($attrs?.placeholder, 'extra') || $t('common.input.extra')
-          "
-          show-word-limit
-          :show-gutter="false"
-          :model-value="dataExtra"
-          :editor-id="`${token}-${position}`"
-          :editor-default-value="dataDefault"
-          @input="(val) => handleDataChange(val, 'extra', 'input')"
-          @change="(val) => handleDataChange(val, 'extra', 'change')"
-        ></component>
+        <slot name="extra">
+          <component
+            v-bind="{ ...$attrs, ...get(dataItem, 'extraProps') }"
+            :is="get(internalComponents, get(dataItem, 'extraCom'))"
+            style="width: 100%"
+            :placeholder="
+              get($attrs?.placeholder, 'extra') || $t('common.input.extra')
+            "
+            show-word-limit
+            :show-gutter="false"
+            :model-value="dataExtra"
+            :editor-id="`${token}-${position}`"
+            :editor-default-value="dataDefault"
+            @input="(val) => handleDataChange(val, 'extra', 'input')"
+            @change="(val) => handleDataChange(val, 'extra', 'change')"
+          ></component>
+        </slot>
       </div>
       <!-- description -->
       <div
@@ -130,39 +134,41 @@
         :style="getItemStyle('description')"
       >
         <span style="padding: 0 4px">{{ separator }}</span>
-        <template v-if="!valueOptions.length">
-          <a-input
-            :max-length="100"
-            v-bind="$attrs"
-            style="width: 100%"
-            :model-value="dataDesc"
-            :placeholder="
-              get($attrs?.placeholder, 'description') ||
-              $t('common.input.description')
-            "
-            show-word-limit
-            @input="(val) => handleDataChange(val, 'description', 'input')"
-            @change="(val) => handleDataChange(val, 'description', 'change')"
-          ></a-input>
-        </template>
-        <template v-else>
-          <component
-            v-bind="$attrs"
-            :is="get(internalComponents, get($attrs?.components, dataValue))"
-            style="width: 100%"
-            :placeholder="
-              get($attrs?.placeholder, 'description') ||
-              $t('common.input.description')
-            "
-            show-word-limit
-            :show-gutter="false"
-            :model-value="dataDesc"
-            :editor-id="`${token}-${position}`"
-            :editor-default-value="dataDefault"
-            @input="(val) => handleDataChange(val, 'description', 'input')"
-            @change="(val) => handleDataChange(val, 'description', 'change')"
-          ></component>
-        </template>
+        <slot name="description">
+          <template v-if="!valueOptions.length">
+            <a-input
+              :max-length="100"
+              v-bind="$attrs"
+              style="width: 100%"
+              :model-value="dataDesc"
+              :placeholder="
+                get($attrs?.placeholder, 'description') ||
+                $t('common.input.description')
+              "
+              show-word-limit
+              @input="(val) => handleDataChange(val, 'description', 'input')"
+              @change="(val) => handleDataChange(val, 'description', 'change')"
+            ></a-input>
+          </template>
+          <template v-else>
+            <component
+              v-bind="$attrs"
+              :is="get(internalComponents, get($attrs?.components, dataValue))"
+              style="width: 100%"
+              :placeholder="
+                get($attrs?.placeholder, 'description') ||
+                $t('common.input.description')
+              "
+              show-word-limit
+              :show-gutter="false"
+              :model-value="dataDesc"
+              :editor-id="`${token}-${position}`"
+              :editor-default-value="dataDefault"
+              @input="(val) => handleDataChange(val, 'description', 'input')"
+              @change="(val) => handleDataChange(val, 'description', 'change')"
+            ></component>
+          </template>
+        </slot>
       </div>
     </div>
     <div class="btn-wrapper">
@@ -366,8 +372,9 @@
     getDataObj(list);
     emits('delete');
   };
-  const handleDataChange = (val, attr, type?) => {
+  const handleDataChange = (value, attr, type?) => {
     // check duplication key
+    const val = value;
     if (
       attr === 'key' &&
       !!val &&
@@ -380,6 +387,10 @@
       }, 1500);
       emits('update:dataKey', '');
       return;
+    }
+    if (props.dataValue === 'bool' && props.valueOptions.length) {
+      // val = !val;
+      console.log('checkbox===', val);
     }
     if (attr === 'key') {
       emits('update:dataKey', val);
@@ -394,8 +405,9 @@
     if (attr === 'extra') {
       emits('update:dataExtra', val);
     }
+
     setTimeout(() => {
-      console.log('labelLIst=====', props.labelList, val);
+      console.log('labelLIst22=====', props.labelList, { val, attr, type });
     });
     getDataObj(props.labelList);
   };
