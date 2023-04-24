@@ -293,15 +293,7 @@
     );
     return res;
   });
-  // const variableList = computed(() => {
-  //   const list = map(appInfo.variables || [], (item) => {
-  //     return {
-  //       key: item.name,
-  //       value: item.default
-  //     };
-  //   });
-  //   return list;
-  // });
+
   const setPropertyStyle = (style) => {
     return {
       'display': 'flex',

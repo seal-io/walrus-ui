@@ -65,6 +65,16 @@ export const deleteApplicationInstance = (data) => {
 export const upgradeApplicationInstance = (data) => {
   return axios.put(`/application-instances/${data.id}/upgrade`, data);
 };
+
+export const cloneApplicationInstance = (data: {
+  id: string;
+  name: string;
+}) => {
+  return axios.post(`/application-instances/${data.id}/clone`, {
+    name: data.name
+  });
+};
+
 // =========history================
 interface ApplicationRevisionParams extends Pagination {
   instanceID?: string;
@@ -91,6 +101,26 @@ export const queryApplicationRevisionsDetail = (params: { id: string }) => {
 
 export const deleteApplicationRevisions = (data: { id: string }[]) => {
   return axios.delete(`/application-revisions`, { data });
+};
+
+export const diffRevisionSpec = (params: {
+  id: string;
+  instanceID: string;
+}) => {
+  return axios.get(`/application-revisions/${params.id}/revision-diff`, {
+    params,
+    paramsSerializer: (obj) => {
+      return qs.stringify(obj);
+    }
+  });
+};
+
+export const rollbackInstance = (data: { id: string }) => {
+  return axios.post(`/application-revisions/${data.id}/rollback-instances`);
+};
+
+export const rollbackApplication = (data: { id: string }) => {
+  return axios.post(`/application-revisions/${data.id}/rollback-applications`);
 };
 // ===========resource==========
 export const queryApplicationResource = (params: ApplicationRevisionParams) => {

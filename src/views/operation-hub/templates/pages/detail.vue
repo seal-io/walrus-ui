@@ -26,7 +26,8 @@
         <a-input
           v-if="pageAction === 'edit'"
           v-model="formData.id"
-          :max-length="30"
+          style="width: 500px"
+          :max-length="50"
           show-word-limit
         ></a-input>
         <span v-else class="readonly-view-label">{{ formData.id || '-' }}</span>
@@ -43,9 +44,9 @@
         <a-textarea
           v-if="pageAction === 'edit'"
           v-model="formData.description"
-          style="width: 360px"
+          style="width: 500px"
           :auto-size="{ minRows: 6, maxRows: 10 }"
-          :max-length="500"
+          :max-length="200"
           show-word-limit
         ></a-textarea>
         <div v-else class="description-content readonly-view-label">{{
@@ -77,6 +78,7 @@
         <a-input
           v-if="pageAction === 'edit'"
           v-model="formData.source"
+          style="width: 500px"
         ></a-input>
         <span v-else class="readonly-view-label">{{
           formData.source || '-'
@@ -92,7 +94,11 @@
           }
         ]"
       >
-        <a-input v-if="pageAction === 'edit'" v-model="formData.icon"></a-input>
+        <a-input
+          v-if="pageAction === 'edit'"
+          v-model="formData.icon"
+          style="width: 500px"
+        ></a-input>
         <span v-else class="readonly-view-label">{{
           formData.icon || '-'
         }}</span>

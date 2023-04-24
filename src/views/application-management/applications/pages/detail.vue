@@ -32,7 +32,8 @@
                 item.status
               )
             "
-            @upgrade="handleInstanceUpgrade(item)"
+            @clone="handleCloneInstance(item)"
+            @upgrade="handleUpgradeInstance(item)"
             @delete="handleDeleteInstance(item)"
             @click="handleClickInstance(item)"
           >
@@ -92,6 +93,15 @@
       :title="$t('common.delete.tips')"
     >
     </deleteInstanceModal>
+    <cloneInstanceModal
+      v-model:show="showCloneModal"
+      :title="
+        $t('applications.applications.instance.clonetitle', {
+          from: get(cloneInstance, 'name')
+        })
+      "
+      @save="cloneHandler"
+    ></cloneInstanceModal>
   </ComCard>
 </template>
 
@@ -119,7 +129,7 @@
     remove,
     includes
   } from 'lodash';
-  import { deleteModal, execSucceed } from '@/utils/monitor';
+  import { execSucceed } from '@/utils/monitor';
   import useCallCommon from '@/hooks/use-call-common';
   import GroupTitle from '@/components/group-title/index.vue';
   import thumbButton from '@/components/buttons/thumb-button.vue';
@@ -137,11 +147,13 @@
   import InstanceDetail from '../components/instance/index.vue';
   import createInstance from '../components/create-instance.vue';
   import deleteInstanceModal from '../components/delete-instance-modal.vue';
+  import cloneInstanceModal from '../components/clone-instance-modal.vue';
 
   import {
     queryApplicationInstances,
     deleteApplicationInstance,
-    queryItemApplication
+    queryItemApplication,
+    cloneApplicationInstance
   } from '../api';
 
   const { router, route, t } = useCallCommon();
@@ -152,10 +164,12 @@
   const activeInstanceTab = ref('app'); //
   const currentInstance = ref('');
   const showDeleteModal = ref(false);
+  const showCloneModal = ref(false);
   const environmentList = ref<{ label: string; value: string }[]>([]);
   const pgCom = ref('appDetail'); // instanceDetail、appDetail
   const showInstanceModal = ref(false);
   const instanceInfo = ref({});
+  const cloneInstance = ref({});
   const activeInstanceInfo = ref({});
   const websocketInstanceList = ref<any>(null);
   const appInfo = reactive({
@@ -201,11 +215,29 @@
     showInstanceModal.value = true;
     status.value = 'create';
   };
-  const handleInstanceUpgrade = (item) => {
+
+  const handleUpgradeInstance = (item) => {
     status.value = 'edit';
     activeInstanceInfo.value = item;
     setTimeout(() => {
       showInstanceModal.value = true;
+    }, 100);
+  };
+  const cloneHandler = async (name) => {
+    try {
+      await cloneApplicationInstance({
+        id: get(cloneInstance.value, 'id'),
+        name
+      });
+      execSucceed();
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  const handleCloneInstance = async (item) => {
+    cloneInstance.value = item;
+    setTimeout(() => {
+      showCloneModal.value = true;
     }, 100);
   };
 
@@ -220,6 +252,7 @@
     instanceInfo.value = item;
     pgCom.value = 'instanceDetail';
   };
+
   const getApplicationInstances = async () => {
     if (!id) return;
     try {
@@ -344,8 +377,12 @@
   };
   // update instance data from websocket
   const updateInstanceList = (data) => {
+    const collections = data?.collection || [];
     // 1: create, 2: update, 3: delete
-    if (data?.type === 1) return;
+    if (data?.type === 1) {
+      instanseList.value = _.concat(collections, instanseList.value);
+      return;
+    }
 
     // delete
     if (data?.type === 3) {
@@ -361,7 +398,7 @@
       }
       return;
     }
-    const collections = data?.collection || [];
+
     each(collections, (item) => {
       const updateIndex = findIndex(
         instanseList.value,

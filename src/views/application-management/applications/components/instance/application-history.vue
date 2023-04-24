@@ -61,37 +61,9 @@
             ></StatusLabel>
           </template>
         </a-table-column>
-        <!-- <a-table-column
-          ellipsis
-          tooltip
-          :cell-style="{ minWidth: '40px' }"
-          align="center"
-          data-index="operator"
-          :title="$t('applications.applications.history.operator')"
-        >
-        </a-table-column> -->
-        <a-table-column
-          align="center"
-          :width="210"
-          :title="$t('common.table.operation')"
-        >
+        <a-table-column align="center" :title="$t('common.table.operation')">
           <template #cell="{ record }">
             <a-space :size="20">
-              <!-- <a-link type="text" size="small" @click="handleClone(record)">
-                <template #icon><icon-edit /></template>
-                {{ $t('applications.applications.history.clone') }}
-              </a-link>
-              <a-link type="text" size="small" @click="handleRollback(record)">
-                <template #icon><icon-list style="font-size: 16px" /></template>
-                {{ $t('applications.applications.history.rollback') }}
-              </a-link> -->
-              <a-tooltip :content="$t('common.button.delete')">
-                <a-link type="text" size="small" @click="handleDelete(record)">
-                  <template #icon
-                    ><icon-delete style="font-size: 16px"
-                  /></template>
-                </a-link>
-              </a-tooltip>
               <a-tooltip :content="$t('common.button.logs')">
                 <a-link
                   type="text"
@@ -100,6 +72,60 @@
                 >
                   <template #icon
                     ><icon-font type="icon-rizhi" style="font-size: 16px"
+                  /></template>
+                </a-link>
+              </a-tooltip>
+              <a-tooltip :content="rollbackTips">
+                <a-dropdown @select="(value) => handleRollback(value, record)">
+                  <a-link
+                    :disabled="
+                      includes(
+                        [
+                          AppInstanceStatus.Deleting,
+                          AppInstanceStatus.Deploying
+                        ],
+                        instanceInfo.status
+                      )
+                    "
+                    @mouseover="handlehoverButton('button')"
+                  >
+                    <icon-font type="icon-qingkong" style="font-size: 16px" />
+                  </a-link>
+                  <template #content>
+                    <div>
+                      <a-doption value="app"
+                        ><a-link @mouseover="handlehoverButton('app')"
+                          ><icon-apps></icon-apps></a-link
+                      ></a-doption>
+                      <a-doption value="instance"
+                        ><a-link @mouseover="handlehoverButton('instance')"
+                          ><icon-cloud /></a-link
+                      ></a-doption>
+                    </div>
+                  </template>
+                </a-dropdown>
+              </a-tooltip>
+              <a-tooltip :content="$t('common.button.clone')">
+                <a-link
+                  type="text"
+                  size="small"
+                  :disabled="
+                    includes(
+                      [AppInstanceStatus.Deleting, AppInstanceStatus.Deploying],
+                      instanceInfo.status
+                    )
+                  "
+                  @click="handleClone(record)"
+                >
+                  <template #icon
+                    ><icon-font type="icon-Clone-Cloud"
+                  /></template>
+                </a-link>
+              </a-tooltip>
+              <a-tooltip :content="$t('common.button.delete')">
+                <a-link type="text" size="small" @click="handleDelete(record)">
+                  <template #icon
+                    ><icon-delete style="font-size: 16px"
                   /></template>
                 </a-link>
               </a-tooltip>
@@ -119,12 +145,17 @@
       @change="handlePageChange"
       @page-size-change="handlePageSizeChange"
     />
-    <revisionDetailVue
+    <revisionDetail
       v-model:show="showDetailModal"
       :data-info="revisionData"
       :revision-id="revisionDetailId"
       :initial-status="initialStatus"
-    ></revisionDetailVue>
+    ></revisionDetail>
+    <instanceSpecDiff
+      v-model:show="showDiffModal"
+      :content="diffContent"
+      @confirm="handleConfirmDiff"
+    ></instanceSpecDiff>
   </div>
 </template>
 
@@ -138,7 +169,9 @@
     findIndex,
     cloneDeep,
     concat,
-    filter
+    filter,
+    includes,
+    pick
   } from 'lodash';
   import {
     onMounted,
@@ -147,43 +180,121 @@
     inject,
     watch,
     nextTick,
-    onBeforeUnmount
+    onBeforeUnmount,
+    computed
   } from 'vue';
+  import useCallCommon from '@/hooks/use-call-common';
   import StatusLabel from '@/views/operation-hub/connectors/components/status-label.vue';
-  import { deleteModal } from '@/utils/monitor';
+  import { deleteModal, execSucceed } from '@/utils/monitor';
   import { createWebsocketInstance } from '@/hooks/use-websocket';
   import { HistoryData } from '../../config/interface';
-  import { setDurationValue, websocketEventType } from '../../config';
-  import deployLogs from '../deploy-logs.vue';
-  import revisionDetailVue from '../revision-detail.vue';
+  import revisionDetail from '../revision-detail.vue';
+  import instanceSpecDiff from '../instance-spec-diff.vue';
+  import {
+    setDurationValue,
+    websocketEventType,
+    AppInstanceStatus
+  } from '../../config';
   import {
     queryApplicationRevisions,
-    deleteApplicationRevisions
+    deleteApplicationRevisions,
+    diffRevisionSpec,
+    rollbackApplication,
+    rollbackInstance
   } from '../../api';
 
+  const { t } = useCallCommon();
   const instanceId = inject('instanceId', ref(''));
-  const revisionId = ref('');
+  const instanceInfo = inject('instanceInfo', ref<any>({}));
   const revisionDetailId = ref('');
   const revisionData = ref({});
   const total = ref(0);
   const loading = ref(false);
   const showDetailModal = ref(false);
-  const ids = ref<{ id: string }[]>([]);
+  const showDiffModal = ref(false);
   const initialStatus = ref('');
+  const rollbackType = ref('');
+  const diffContent = ref({});
+  const rollbackData = ref<any>({});
+  const ids = ref<{ id: string }[]>([]);
   const websocketRevisions = ref<any>(null);
-  const showLogs = ref(false);
+  const dataList = ref<HistoryData[]>([]);
   const queryParams = reactive({
     page: 1,
     perPage: 10
   });
-  const dataList = ref<HistoryData[]>([]);
+
+  const rollbackTips = computed(() => {
+    if (rollbackType.value === 'app') {
+      return t('applications.applications.history.rollbackapp');
+    }
+    if (rollbackType.value === 'instance') {
+      return t('applications.applications.history.rollbackinstance');
+    }
+    return t('applications.applications.history.rollback');
+  });
   const handleClone = (row) => {
     console.log(row);
   };
-  const handleRollback = (row) => {
-    console.log(row);
+  const handleDiffRevisionSpec = async (row) => {
+    try {
+      const params = {
+        id: row.id,
+        instanceID: instanceId.value
+      };
+      const { data } = await diffRevisionSpec(params);
+      diffContent.value = {
+        old: JSON.stringify(
+          pick(data.old, ['inputVariables', 'modules']),
+          null,
+          2
+        ),
+        new: JSON.stringify(
+          pick(data.new, ['inputVariables', 'modules']),
+          null,
+          2
+        )
+      };
+      showDiffModal.value = true;
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  const handleRollbackApplication = async () => {
+    try {
+      await rollbackApplication({ id: rollbackData.value.id });
+      execSucceed();
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  const handleRollbackInstance = async () => {
+    try {
+      await rollbackInstance({ id: rollbackData.value.id });
+      execSucceed();
+    } catch (error) {
+      console.log(error);
+    }
   };
 
+  const handleRollback = async (value, row) => {
+    console.log('rollback=====', value, row);
+    rollbackType.value = value;
+    rollbackData.value = row;
+    handleDiffRevisionSpec(row);
+  };
+
+  const handlehoverButton = (type) => {
+    rollbackType.value = type;
+  };
+  const handleConfirmDiff = async () => {
+    if (rollbackType.value === 'app') {
+      handleRollbackApplication();
+    }
+    if (rollbackType.value === 'instance') {
+      handleRollbackInstance();
+    }
+  };
   const fetchData = async () => {
     if (!instanceId.value) return;
     try {
