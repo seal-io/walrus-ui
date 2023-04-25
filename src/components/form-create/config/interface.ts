@@ -78,7 +78,7 @@ export const parseComponentSchema = (schema: ComponentSchema) => {
 
   const rules = { required };
 
-  // string
+  // ========= string ==============
   if (schemaType.isStringType(type) || schemaType.isNumberType(type)) {
     // =============Select======================
     if (schema?.options?.length) {
@@ -121,7 +121,7 @@ export const parseComponentSchema = (schema: ComponentSchema) => {
     }
   }
 
-  // =====Input group==============
+  // ========== Input group ==============
   if (schemaType.isMapString(type)) {
     return {
       component: ['XInputGroup'],
@@ -129,19 +129,19 @@ export const parseComponentSchema = (schema: ComponentSchema) => {
       rules: [{ ...rules, message: 'common.form.rule.input' }]
     };
   }
-  // ====== select ======
+  // ============ select =============
   if (schemaType.isListNumber(type) || schemaType.isListString(type)) {
     return {
       component: ['Select', 'Option'],
       props: {
         ...props,
-        multiple: true,
-        allowCreate: !schema.options?.length
+        multiple: true
+        // allowCreate: !schema.options?.length
       },
       rules: [{ ...rules, message: 'common.form.rule.select' }]
     };
   }
-  // boolean
+  // ============ boolean ============
   if (schemaType.isBoolenType(type)) {
     // ================Checkbox================
     return {
@@ -150,6 +150,7 @@ export const parseComponentSchema = (schema: ComponentSchema) => {
       rules: [{ ...rules, message: 'common.form.rule.select' }]
     };
   }
+  // ============ editor ============
   if (schemaType.isCollectionType(type) || schemaType.isUnknownType(type)) {
     return {
       component: ['AceEditor'],

@@ -50,7 +50,7 @@
                   JSON.stringify(record.type, null, 2)
                 }}</span>
               </template>
-              <span>{{ JSON.stringify(record.type) }}</span>
+              <span>{{ record.type }}</span>
             </a-tooltip>
           </template>
         </a-table-column>

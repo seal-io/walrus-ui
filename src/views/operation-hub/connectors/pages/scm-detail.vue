@@ -157,7 +157,7 @@
     configData: {
       token: {
         value: '',
-        visible: false,
+        visiable: false,
         type: 'string'
       }
     },
