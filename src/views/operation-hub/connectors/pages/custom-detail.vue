@@ -114,7 +114,7 @@
             >
               <template #value>
                 <a-input
-                  v-if="sItem.visible"
+                  v-if="!sItem.visible"
                   v-model="sItem.value"
                   style="width: 100%"
                   :error="!sItem.value && triggerValidate"
@@ -130,8 +130,18 @@
               </template>
               <template #description>
                 <a-checkbox v-model="sItem.visible">{{
-                  $t('operation.connectors.attribute.visibility')
+                  $t('operation.connectors.attribute.sensitive')
                 }}</a-checkbox>
+                <a-tooltip
+                  :content="$t('operation.connectors.attribute.sensitive.tips')"
+                >
+                  <template #content>
+                    <div style="white-space: pre-wrap">{{
+                      $t('operation.connectors.attribute.sensitive.tips')
+                    }}</div>
+                  </template>
+                  <icon-info-circle class="mleft-5" />
+                </a-tooltip>
               </template>
             </xInputGroup>
           </a-space>
@@ -175,7 +185,8 @@
     isEqual,
     cloneDeep,
     reduce,
-    pick
+    pick,
+    each
   } from 'lodash';
   import { ref, reactive, onMounted, computed } from 'vue';
   import GroupTitle from '@/components/group-title/index.vue';
@@ -202,7 +213,7 @@
   const labelOption = {
     style: {
       key: setPropertyStyle({ 'flex-basis': '200px' }),
-      description: setPropertyStyle({ 'flex-basis': '100px' })
+      description: setPropertyStyle({ 'flex-basis': '110px' })
       // value: setPropertyStyle({ 'flex-basis': '150px' })
     }
   };
@@ -240,7 +251,7 @@
       key: '',
       value: '',
       type: 'string',
-      visible: false,
+      visible: true,
       ...labelOption
     }
   ]);
@@ -261,7 +272,7 @@
       key: '',
       value: '',
       type: 'string',
-      visible: false,
+      visible: true,
       ...labelOption
     });
     console.log('attributeList===', attributeList.value);
@@ -278,15 +289,15 @@
       (item) => !item.key || !item.value
     );
   };
-  const setLabelList = () => {
+  const setAttributeList = () => {
     const configData = formData.configData || {};
     attributeList.value = map(keys(configData), (key) => {
       return {
         key,
         value: get(configData, `${key}.value`) || '',
-        default: get(configData, `${key}.value`) || '',
+        default: get(configData, `${key}.value`) || '', // default value
         type: get(configData, `${key}.type`) || 'string',
-        visible: get(configData, `${key}.visible`) || false,
+        visible: !get(configData, `${key}.visible`),
         ...labelOption
       };
     }) as never[];
@@ -296,20 +307,22 @@
           key: '',
           value: '',
           type: 'string',
-          visible: false,
+          visible: true,
           ...labelOption
         }
       ];
     }
     console.log('attributeList===', attributeList.value);
   };
+
   const setConfigData = () => {
     const data = reduce(
       attributeList.value,
       (obj, item) => {
         if (item.key) {
           obj[item.key] = {
-            ...pick(item, ['value', 'type', 'visible'])
+            ...pick(item, ['value', 'type']),
+            visible: !item.visible
           };
         }
         return obj;
@@ -338,14 +351,21 @@
       }
     }
   };
+  const initConfigDataValue = () => {
+    const configData = formData.configData || {};
+    each(keys(configData) || [], (key) => {
+      configData[key].value = configData[key].value || '';
+    });
+  };
   const getConnectorInfo = async () => {
     copyFormData = cloneDeep(formData);
     if (!id) return;
     try {
       const { data } = await queryItemConnector({ id });
       assignIn(formData, data);
-      setLabelList();
-      setConfigData();
+      setAttributeList();
+      initConfigDataValue();
+      // setConfigData();
       copyFormData = cloneDeep(formData);
     } catch (error) {
       console.log(error);

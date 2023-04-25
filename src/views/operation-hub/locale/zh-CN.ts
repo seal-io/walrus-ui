@@ -39,7 +39,9 @@ export default {
   'operation.connectors.attribute.rule': '属性必填',
   'operation.connectors.attribute.visible': '可见',
   'operation.connectors.attribute.invisible': '不可见',
-  'operation.connectors.attribute.visibility': '是否可见',
+  'operation.connectors.attribute.sensitive': '是否敏感',
+  'operation.connectors.attribute.sensitive.tips':
+    '若为敏感则输入时不可见，编辑时需重新输入；\n若为非敏感则输入时可见，编辑时不需重新输入',
   'operation.environments.menu': '环境',
   'operation.environments.create': '新建环境',
   'operation.environments.edit': '编辑环境',

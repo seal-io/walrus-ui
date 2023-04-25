@@ -32,7 +32,7 @@
           :title="capitalize($t('common.input.type'))"
         >
           <template #cell="{ record }">
-            <span>{{ JSON.stringify(record.type) }}</span>
+            <span>{{ record.type }}</span>
           </template>
         </a-table-column>
         <a-table-column

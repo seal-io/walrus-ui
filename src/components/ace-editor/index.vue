@@ -196,8 +196,8 @@
     }
   };
   const getValuePath = (wordRange) => {
-    const ctx = wordRange.replace(/\n/g, '');
-    const result = ctx.matchAll(regx);
+    const ctx = wordRange?.replace(/\n/g, '');
+    const result = ctx?.matchAll(regx);
     const valList = Array.from(result);
     console.log('prefix===3===', ctx);
     return _.get(valList, '0.0');
@@ -310,7 +310,7 @@
 
   onMounted(() => {
     nextTick(() => {
-      setLanguageTools();
+      // setLanguageTools();
 
       aceEditor = ace.edit(`${props.editorId}`);
       // aceEditor.setValue(props.modelValue);
