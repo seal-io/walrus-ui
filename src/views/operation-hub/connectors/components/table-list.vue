@@ -449,11 +449,20 @@
     handleFilter();
   };
   const upateDataList = (data) => {
-    if (data?.type !== websocketEventType.update) return;
     const collections = filter(
       data.collection || [],
       (sItem) => sItem?.category === props.category
     );
+    if (data?.type === websocketEventType.delete) {
+      dataList.value = _.filter(dataList.value, (item) => {
+        return !_.find(collections, (sItem) => sItem.id === item.id);
+      });
+      return;
+    }
+    if (data?.type === websocketEventType.create) {
+      dataList.value = _.concat(collections, dataList.value);
+      return;
+    }
     _.each(collections, (item) => {
       const updateIndex = _.findIndex(
         dataList.value,

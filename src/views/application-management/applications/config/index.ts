@@ -11,7 +11,11 @@ export const instanceTabs = [
   },
   // { label: '入口', value: 'endpoint', com: 'tabEndpoint' },
   { label: 'applications.instance.tab.log', value: 'logs', com: 'tabLogs' },
-  // { label: '输出', value: 'outputs', com: 'tabOutput' },
+  {
+    label: 'applications.instance.tab.output',
+    value: 'outputs',
+    com: 'tabOutput'
+  },
   // { label: '优化建议', value: 'optimization', com: 'tabOptimization' },
   // { label: '关联图', value: 'graph', com: 'tabGraph' },
   // { label: '历史记录', value: 'history', com: 'tabHistory' },

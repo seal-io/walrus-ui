@@ -99,7 +99,7 @@
   const instanceTabMap = {
     tabResource: markRaw(tabResource),
     tabLogs: markRaw(tabLogs),
-    // tabOutput: markRaw(tabOutput),
+    tabOutput: markRaw(tabOutput),
     // tabOptimization: markRaw(tabOptimization),
     // tabGraph: markRaw(tabGraph),
     tabHistory: markRaw(applicationHistory),

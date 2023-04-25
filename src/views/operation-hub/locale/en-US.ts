@@ -44,6 +44,7 @@ export default {
   'operation.connectors.attribute.rule': 'attributes is required',
   'operation.connectors.attribute.visible': 'visible',
   'operation.connectors.attribute.invisible': 'invisible',
+  'operation.connectors.attribute.visibility': 'Visibility',
   'operation.environments.menu': 'Environments',
   'operation.environments.create': 'New Environment',
   'operation.environments.edit': 'Edit Environment',
@@ -87,6 +88,8 @@ export default {
   'operation.templates.detail.nocorrection': 'No correction information',
   'operation.templates.detail.receiveFix': 'Accept Fix',
   'operation.templates.detail.cancelFix': 'Drop Fix',
+  'operation.templates.detail.type.tips':
+    'Composite type and nested type, the first in the array is the main type, and the second is the subtype',
   'operation.templates.table.type': 'Type',
   'operation.templates.rules.name': 'name is required',
   'operation.templates.rules.source': 'source is required',
