@@ -9,6 +9,7 @@
       :pagination="false"
       row-key="id"
       :row-selection="rowSelection"
+      @sorter-change="handleSortChange"
       @selection-change="handleSelectChange"
     >
       <template #columns>
@@ -40,6 +41,12 @@
           :cell-style="{ minWidth: '40px' }"
           align="center"
           data-index="createTime"
+          :sortable="{
+            sortDirections: ['ascend', 'descend'],
+            defaultSortOrder: 'descend',
+            sorter: true,
+            sortOrder: sortOrder
+          }"
           :title="$t('common.table.createTime')"
         >
           <template #cell="{ record }">
@@ -72,6 +79,7 @@
   import dayjs from 'dayjs';
   import useRowSelect from '@/hooks/use-row-select';
   import useCallCommon from '@/hooks/use-call-common';
+  import { UseSortDirection } from '@/utils/common';
   import { EnvironmentRow } from '../config/interface';
 
   const props = defineProps({
@@ -95,13 +103,24 @@
     }
   });
   type BaseType = string | number;
-  const emits = defineEmits(['update:selectedList']);
+  const emits = defineEmits(['update:selectedList', 'sort', 'update:sort']);
   const { router } = useCallCommon();
+  const { sort, sortOrder, setSortDirection } = UseSortDirection({
+    defaultSortField: '-createTime',
+    defaultOrder: 'descend'
+  });
   const { rowSelection, selectedKeys } = useRowSelect();
   const handleSelectChange = (list: BaseType[]) => {
     rowSelection.selectedRowKeys = [...list];
     setTimeout(() => {
       emits('update:selectedList', list);
+    }, 100);
+  };
+  const handleSortChange = (dataIndex: string, direction: string) => {
+    setSortDirection(dataIndex, direction);
+    emits('update:sort', sort.value);
+    setTimeout(() => {
+      emits('sort');
     }, 100);
   };
   const handleEdit = (row) => {

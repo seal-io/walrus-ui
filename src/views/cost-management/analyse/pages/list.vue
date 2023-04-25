@@ -53,6 +53,7 @@
       :pagination="false"
       row-key="id"
       :row-selection="rowSelection"
+      @sorter-change="handleSortChange"
       @selection-change="handleSelectChange"
     >
       <template #columns>
@@ -114,6 +115,12 @@
           :cell-style="{ minWidth: '40px' }"
           align="center"
           data-index="createTime"
+          :sortable="{
+            sortDirections: ['ascend', 'descend'],
+            defaultSortOrder: 'descend',
+            sorter: true,
+            sortOrder: sortOrder
+          }"
           :title="$t('common.table.createTime')"
         >
           <template #cell="{ record }">
@@ -186,6 +193,7 @@
   import useCallCommon from '@/hooks/use-call-common';
   import { deleteModal, execSucceed } from '@/utils/monitor';
   import useRowSelect from '@/hooks/use-row-select';
+  import { UseSortDirection } from '@/utils/common';
   import FilterBox from '@/components/filter-box/index.vue';
   import { PerspectiveRowData } from '../config/interface';
   import CreatePerspective from '../components/create-perspectiv.vue';
@@ -194,6 +202,10 @@
 
   const { rowSelection, selectedKeys, handleSelectChange } = useRowSelect();
   const { router, t } = useCallCommon();
+  const { sort, sortOrder, setSortDirection } = UseSortDirection({
+    defaultSortField: '-createTime',
+    defaultOrder: 'descend'
+  });
   let timer: any = null;
   const loading = ref(false);
   const showDrawer = ref(false);
@@ -212,7 +224,8 @@
     try {
       loading.value = true;
       const params: any = {
-        ...pickBy(queryParams, (val) => !!val)
+        ...pickBy(queryParams, (val) => !!val),
+        sort: [sort.value]
       };
       const { data } = await queryPerspectives(params);
       const list = data?.items || [];
@@ -233,6 +246,11 @@
   const handleFilter = () => {
     fetchData();
   };
+  const handleSortChange = (dataIndex: string, direction: string) => {
+    setSortDirection(dataIndex, direction);
+    console.log('dataIndex===', dataIndex, direction);
+    fetchData();
+  };
   const handleSearch = () => {
     clearTimeout(timer);
     timer = setTimeout(() => {
@@ -245,6 +263,7 @@
     queryParams.page = 1;
     handleFilter();
   };
+
   const handlePageChange = (page: number) => {
     queryParams.page = page;
     handleFilter();

@@ -7,6 +7,7 @@
       :bordered="false"
       :data="dataList"
       :pagination="false"
+      @sorter-change="handleSortChange"
     >
       <template #columns>
         <!-- <a-table-column
@@ -21,6 +22,12 @@
           ellipsis
           tooltip
           :cell-style="{ minWidth: '40px' }"
+          :sortable="{
+            sortDirections: ['ascend', 'descend'],
+            defaultSortOrder: 'descend',
+            sorter: true,
+            sortOrder: sortOrder
+          }"
           data-index="createTime"
           :title="$t('applications.applications.history.deploymentTime')"
         >
@@ -186,6 +193,7 @@
   import useCallCommon from '@/hooks/use-call-common';
   import StatusLabel from '@/views/operation-hub/connectors/components/status-label.vue';
   import { deleteModal, execSucceed } from '@/utils/monitor';
+  import { UseSortDirection } from '@/utils/common';
   import { createWebsocketInstance } from '@/hooks/use-websocket';
   import { HistoryData } from '../../config/interface';
   import revisionDetail from '../revision-detail.vue';
@@ -204,6 +212,10 @@
   } from '../../api';
 
   const { t } = useCallCommon();
+  const { sort, sortOrder, setSortDirection } = UseSortDirection({
+    defaultSortField: '-createTime',
+    defaultOrder: 'descend'
+  });
   const instanceId = inject('instanceId', ref(''));
   const instanceInfo = inject('instanceInfo', ref<any>({}));
   const revisionDetailId = ref('');
@@ -301,7 +313,8 @@
       loading.value = true;
       const { data } = await queryApplicationRevisions({
         ...queryParams,
-        instanceID: instanceId.value
+        instanceID: instanceId.value,
+        sort: [sort.value]
       });
       dataList.value = data?.items || [];
       loading.value = false;
@@ -312,6 +325,11 @@
     }
   };
   const handleFilter = () => {
+    fetchData();
+  };
+  const handleSortChange = (dataIndex: string, direction: string) => {
+    setSortDirection(dataIndex, direction);
+    console.log('dataIndex===', dataIndex, direction);
     fetchData();
   };
   const handlePageChange = (page: number) => {

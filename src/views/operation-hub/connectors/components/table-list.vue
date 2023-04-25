@@ -49,6 +49,7 @@
       :pagination="false"
       row-key="id"
       :row-selection="rowSelection"
+      @sorter-change="handleSortChange"
       @selection-change="handleSelectChange"
     >
       <template #columns>
@@ -119,6 +120,12 @@
           :cell-style="{ minWidth: '40px' }"
           align="center"
           data-index="createTime"
+          :sortable="{
+            sortDirections: ['ascend', 'descend'],
+            defaultSortOrder: 'descend',
+            sorter: true,
+            sortOrder: sortOrder
+          }"
           :title="$t('common.table.createTime')"
         >
           <template #cell="{ record }">
@@ -243,6 +250,7 @@
   import { createWebsocketInstance } from '@/hooks/use-websocket';
   import ADropdownButton from '@arco-design/web-vue/es/dropdown/dropdown-button';
   import useAxiosSource from '@/hooks/use-axios-cancel';
+  import { UseSortDirection } from '@/utils/common';
   import ProviderIcon from '@/components/provider-icon/index.vue';
   import dayjs from 'dayjs';
   import _, { get, filter, map, pickBy, find, toLower } from 'lodash';
@@ -289,6 +297,10 @@
   let axiosToken: any = null;
   const { rowSelection, selectedKeys, handleSelectChange } = useRowSelect();
   const { router, t } = useCallCommon();
+  const { sort, sortOrder, setSortDirection } = UseSortDirection({
+    defaultSortField: '-createTime',
+    defaultOrder: 'descend'
+  });
   let timer: any = null;
   const loading = ref(false);
   const websocketInstance = ref<any>('');
@@ -314,7 +326,8 @@
     try {
       loading.value = true;
       const params: any = {
-        ...pickBy(queryParams, (val) => !!val)
+        ...pickBy(queryParams, (val) => !!val),
+        sort: [sort.value]
       };
       const { data } = await queryConnectors(params, axiosToken?.token);
       dataList.value = data?.items || [];
@@ -326,6 +339,11 @@
     }
   };
   const handleFilter = () => {
+    fetchData();
+  };
+  const handleSortChange = (dataIndex: string, direction: string) => {
+    setSortDirection(dataIndex, direction);
+    console.log('dataIndex===', dataIndex, direction);
     fetchData();
   };
   const handleSearch = () => {

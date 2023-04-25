@@ -56,6 +56,7 @@
       :pagination="false"
       row-key="id"
       :row-selection="rowSelection"
+      @sorter-change="handleSortChange"
       @selection-change="handleSelectChange"
     >
       <template #columns>
@@ -100,6 +101,12 @@
           :cell-style="{ minWidth: '40px' }"
           align="center"
           data-index="createTime"
+          :sortable="{
+            sortDirections: ['ascend', 'descend'],
+            defaultSortOrder: 'descend',
+            sorter: true,
+            sortOrder: sortOrder
+          }"
           :title="$t('common.table.createTime')"
         >
           <template #cell="{ record }">
@@ -164,6 +171,7 @@
   import useCallCommon from '@/hooks/use-call-common';
   import { createWebsocketInstance } from '@/hooks/use-websocket';
   import { deleteModal, execSucceed } from '@/utils/monitor';
+  import { UseSortDirection } from '@/utils/common';
   import useRowSelect from '@/hooks/use-row-select';
   import FilterBox from '@/components/filter-box/index.vue';
   import localStore from '@/utils/localStore';
@@ -176,6 +184,10 @@
   const HOT_PROJECT_ID = 'HOT_PROJECT_ID';
   const { rowSelection, selectedKeys, handleSelectChange } = useRowSelect();
   const { router, locale, route } = useCallCommon();
+  const { sort, sortOrder, setSortDirection } = UseSortDirection({
+    defaultSortField: '-createTime',
+    defaultOrder: 'descend'
+  });
   const id = route.query.id || '';
   let timer: any = null;
   const loading = ref(false);
@@ -226,7 +238,8 @@
     try {
       loading.value = true;
       const params: any = {
-        ...pickBy(queryParams, (val) => !!val)
+        ...pickBy(queryParams, (val) => !!val),
+        sort: [sort.value]
       };
       const { data } = await queryApplications(params);
       dataList.value = data?.items || [];
@@ -239,6 +252,11 @@
     }
   };
   const handleFilter = () => {
+    fetchData();
+  };
+  const handleSortChange = (dataIndex: string, direction: string) => {
+    setSortDirection(dataIndex, direction);
+    console.log('dataIndex===', dataIndex, direction);
     fetchData();
   };
   const handleSearch = () => {

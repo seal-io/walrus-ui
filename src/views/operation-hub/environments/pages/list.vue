@@ -72,8 +72,10 @@
       </a-tabs> -->
       <ListView
         v-model:selectedList="selectedKeys"
+        v-model:sort="sort"
         :list="dataList"
         :loading="loading"
+        @sort="handleSort"
       ></ListView>
       <a-pagination
         size="small"
@@ -108,6 +110,7 @@
   const selectedKeys = ref<string[]>([]);
   const dataList = ref<EnvironmentRow[]>([]);
   const total = ref(0);
+  const sort = ref<string[]>(['-createTim']);
   const queryParams = reactive({
     query: '',
     page: 1,
@@ -128,7 +131,8 @@
     try {
       loading.value = true;
       const params: any = {
-        ...pickBy(queryParams, (val) => !!val)
+        ...pickBy(queryParams, (val) => !!val),
+        sort: [sort.value]
       };
       const { data } = await queryEnvironments(params);
       dataList.value = data?.items || [];
@@ -139,6 +143,9 @@
     }
   };
   const handleFilter = () => {
+    fetchData();
+  };
+  const handleSort = () => {
     fetchData();
   };
   const handleCheckChange = (checked, id) => {

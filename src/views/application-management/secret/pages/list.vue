@@ -55,6 +55,7 @@
         :pagination="false"
         row-key="id"
         :row-selection="rowSelection"
+        @sorter-change="handleSortChange"
         @selection-change="handleSelectChange"
       >
         <template #columns>
@@ -84,6 +85,12 @@
             :cell-style="{ minWidth: '40px' }"
             align="center"
             data-index="createTime"
+            :sortable="{
+              sortDirections: ['ascend', 'descend'],
+              defaultSortOrder: 'descend',
+              sorter: true,
+              sortOrder: sortOrder
+            }"
             :title="$t('common.table.createTime')"
           >
             <template #cell="{ record }">
@@ -149,6 +156,7 @@
   import { deleteModal, execSucceed } from '@/utils/monitor';
   import useRowSelect from '@/hooks/use-row-select';
   import FilterBox from '@/components/filter-box/index.vue';
+  import { UseSortDirection } from '@/utils/common';
   import { queryProjects } from '../../projects/api';
   import { SecretRow } from '../config/interface';
   import { querySecrets, deleteSecret } from '../api';
@@ -157,6 +165,10 @@
   const HOT_SECRET_ID = 'HOT_SECRET_ID';
   const { rowSelection, selectedKeys, handleSelectChange } = useRowSelect();
   const { router, t, route } = useCallCommon();
+  const { sort, sortOrder, setSortDirection } = UseSortDirection({
+    defaultSortField: '-createTime',
+    defaultOrder: 'descend'
+  });
   let timer: any = null;
   const projectList = ref<{ label: string; value: string }[]>([]);
   const loading = ref(false);
@@ -215,7 +227,8 @@
     try {
       loading.value = true;
       const params: any = {
-        ...pickBy(queryParams, (val) => !!val)
+        ...pickBy(queryParams, (val) => !!val),
+        sort: [sort.value]
       };
       const { data } = await querySecrets(params);
       dataList.value = data?.items || [];
@@ -227,6 +240,11 @@
     }
   };
   const handleFilter = () => {
+    fetchData();
+  };
+  const handleSortChange = (dataIndex: string, direction: string) => {
+    setSortDirection(dataIndex, direction);
+    console.log('dataIndex===', dataIndex, direction);
     fetchData();
   };
   const handleSearch = () => {
