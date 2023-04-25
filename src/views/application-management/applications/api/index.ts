@@ -86,6 +86,7 @@ export const cloneApplicationInstance = (data: {
 // =========history================
 interface ApplicationRevisionParams extends Pagination {
   instanceID?: string;
+  sort?: string[];
 }
 
 export const queryApplicationRevisions = (

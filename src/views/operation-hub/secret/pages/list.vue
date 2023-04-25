@@ -55,6 +55,7 @@
         :pagination="false"
         row-key="id"
         :row-selection="rowSelection"
+        @sorter-change="handleSortChange"
         @selection-change="handleSelectChange"
       >
         <template #columns>
@@ -88,6 +89,12 @@
             :cell-style="{ minWidth: '40px' }"
             align="center"
             data-index="createTime"
+            :sortable="{
+              sortDirections: ['ascend', 'descend'],
+              defaultSortOrder: 'descend',
+              sorter: true,
+              sortOrder: sortOrder
+            }"
             :title="$t('common.table.createTime')"
           >
             <template #cell="{ record }">
@@ -147,9 +154,11 @@
   import { cloneDeep, find, get, map, pickBy } from 'lodash';
   import { reactive, ref, onMounted, computed } from 'vue';
   import useCallCommon from '@/hooks/use-call-common';
+
   import { Message } from '@arco-design/web-vue';
   import { deleteModal, execSucceed } from '@/utils/monitor';
   import useRowSelect from '@/hooks/use-row-select';
+  import { UseSortDirection } from '@/utils/common';
   import FilterBox from '@/components/filter-box/index.vue';
   import { queryProjects } from '@/views/application-management/projects/api';
   import { SecretRow } from '../config/interface';
@@ -158,6 +167,10 @@
 
   const { rowSelection, selectedKeys, handleSelectChange } = useRowSelect();
   const { router, t, route } = useCallCommon();
+  const { sort, sortOrder, setSortDirection } = UseSortDirection({
+    defaultSortField: '-createTime',
+    defaultOrder: 'descend'
+  });
   let timer: any = null;
   const projectList = ref<{ label: string; value: string }[]>([]);
   const loading = ref(false);
@@ -205,7 +218,8 @@
     try {
       loading.value = true;
       const params: any = {
-        ...pickBy(queryParams, (val) => !!val)
+        ...pickBy(queryParams, (val) => !!val),
+        sort: [sort.value]
       };
       const { data } = await querySecrets(params);
       dataList.value = data?.items || [];
@@ -217,6 +231,11 @@
     }
   };
   const handleFilter = () => {
+    fetchData();
+  };
+  const handleSortChange = (dataIndex: string, direction: string) => {
+    setSortDirection(dataIndex, direction);
+    console.log('dataIndex===', dataIndex, direction);
     fetchData();
   };
   const handleSearch = () => {

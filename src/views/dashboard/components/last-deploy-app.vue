@@ -37,7 +37,7 @@
           tooltip
           :cell-style="{ minWidth: '40px' }"
           align="center"
-          data-index="time"
+          data-index="createTime"
           :title="$t('dashboard.table.time')"
         >
           <template #cell="{ record }">
@@ -141,6 +141,7 @@
       query: { id: row.id }
     });
   };
+
   const setDurationValue = (val) => {
     if (!val) return '-';
     const seconds = val % 60;

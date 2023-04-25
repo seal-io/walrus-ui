@@ -8,6 +8,7 @@
       :pagination="false"
       row-key="id"
       :row-selection="rowSelection"
+      @sorter-change="handleSortChange"
       @selection-change="handleSelectChange"
     >
       <template #columns>
@@ -60,6 +61,12 @@
           :cell-style="{ minWidth: '40px' }"
           align="center"
           data-index="createTime"
+          :sortable="{
+            sortDirections: ['ascend', 'descend'],
+            defaultSortOrder: 'descend',
+            sorter: true,
+            sortOrder: sortOrder
+          }"
           :title="$t('common.table.createTime')"
         >
           <template #cell="{ record }">
@@ -111,6 +118,7 @@
   import useCallCommon from '@/hooks/use-call-common';
   import { deleteModal, execSucceed } from '@/utils/monitor';
   import useRowSelect from '@/hooks/use-row-select';
+  import { UseSortDirection } from '@/utils/common';
   import FilterBox from '@/components/filter-box/index.vue';
   import { TemplateRowData } from '../config/interface';
   import StatusLabel from '../../connectors/components/status-label.vue';
@@ -134,6 +142,10 @@
   const emits = defineEmits(['update:selectedList']);
   const { rowSelection, selectedKeys } = useRowSelect();
   const { router } = useCallCommon();
+  const { sort, sortOrder, setSortDirection } = UseSortDirection({
+    defaultSortField: '-createTime',
+    defaultOrder: 'descend'
+  });
   let timer: any = null;
   const loading = ref(false);
   const total = ref(100);
@@ -148,7 +160,10 @@
   const fetchData = async () => {
     try {
       loading.value = true;
-      const { data } = await queryModules(queryParams);
+      const { data } = await queryModules({
+        ...queryParams,
+        sort: [sort.value]
+      });
       dataList.value = data?.items || [];
       total.value = data?.pagination?.total || 0;
     } catch (error) {
@@ -158,6 +173,10 @@
     }
   };
   const handleFilter = () => {
+    fetchData();
+  };
+  const handleSortChange = (dataIndex: string, direction: string) => {
+    setSortDirection(dataIndex, direction);
     fetchData();
   };
   const handleSearch = () => {
