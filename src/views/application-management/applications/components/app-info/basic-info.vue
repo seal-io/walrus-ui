@@ -41,12 +41,10 @@
           <a-form-item :label="$t('applications.applications.form.label')">
             <div style="display: flex; flex-direction: column; width: 100%">
               <div v-if="labelList.length" class="var-item-title">
-                <span class="label">{{
-                  $t('applications.applications.form.key')
-                }}</span>
+                <span class="label">{{ $t('common.input.key') }}</span>
                 <span class="label">
                   <span class="holder"></span>
-                  <span>{{ $t('applications.applications.form.value') }}</span>
+                  <span>{{ $t('common.input.value') }}</span>
                 </span>
                 <span class="btn"></span>
               </div>
@@ -68,7 +66,14 @@
                   :position="sIndex"
                   @add="(obj) => handleAddLabel(obj, labelList)"
                   @delete="handleDeleteLabel(labelList, sIndex)"
-                ></xInputGroup>
+                >
+                  <template #value>
+                    <a-input
+                      v-model="sItem.value"
+                      :error="!sItem.value && triggerValidate"
+                    ></a-input>
+                  </template>
+                </xInputGroup>
               </div>
               <div v-if="!labelList.length">
                 <a-tooltip
@@ -162,7 +167,10 @@
     // }
   };
   const validateLabels = () => {
-    triggerValidate.value = some(labelList.value, (item) => !item.key);
+    triggerValidate.value = some(
+      labelList.value,
+      (item) => !item.key || !item.value
+    );
     return triggerValidate.value;
   };
   const getFormData = async () => {

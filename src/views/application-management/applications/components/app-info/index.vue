@@ -124,7 +124,8 @@
             @keyChange="handleKeyChange"
             @add="handleAddVariables"
             @delete="handleDeleteVariable(sIndex)"
-          ></xInputGroup>
+          >
+          </xInputGroup>
         </div>
       </div>
 

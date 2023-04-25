@@ -37,6 +37,22 @@
           data-index="type"
           :title="$t('common.table.type')"
         >
+          <template #title>
+            <span>{{ $t('common.table.type') }}</span>
+            <a-tooltip :content="$t('operation.templates.detail.type.tips')">
+              <icon-info-circle class="mleft-5" />
+            </a-tooltip>
+          </template>
+          <template #cell="{ record }">
+            <a-tooltip>
+              <template #content>
+                <span style="white-space: pre-wrap">{{
+                  JSON.stringify(record.type, null, 2)
+                }}</span>
+              </template>
+              <span>{{ JSON.stringify(record.type) }}</span>
+            </a-tooltip>
+          </template>
         </a-table-column>
         <a-table-column
           ellipsis
@@ -51,7 +67,7 @@
     <AceEditor
       v-if="currentView === 'json'"
       lang="json"
-      :height="300"
+      :height="400"
       read-only
       :show-gutter="false"
       :editor-default-value="jsonData"
@@ -61,7 +77,7 @@
 </template>
 
 <script lang="ts" setup>
-  import { get, reduce, filter } from 'lodash';
+  import { get, reduce, filter, pick, map } from 'lodash';
   import { PropType, computed, ref } from 'vue';
   import AceEditor from '@/components/ace-editor/index.vue';
   import { Schema } from '../config/interface';
@@ -86,11 +102,18 @@
       get(props.schema, 'variables') || [],
       (obj, item) => {
         const key = item.name as string;
-        obj[key] = `// ${item.type} ${item.description || ''}`;
+        obj[key] = {
+          ...pick(item, ['type', 'default', 'description', 'required'])
+        };
         return obj;
       },
       {}
     );
+    // const data = map(get(props.schema, 'variables') || [], (item) => {
+    //   return {
+    //     ...pick(item, ['name', 'type', 'default', 'description', 'required'])
+    //   };
+    // });
     return JSON.stringify(data, null, 2);
   });
   const handleToggle = (type) => {

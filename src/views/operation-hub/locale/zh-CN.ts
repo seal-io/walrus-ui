@@ -39,6 +39,7 @@ export default {
   'operation.connectors.attribute.rule': '属性必填',
   'operation.connectors.attribute.visible': '可见',
   'operation.connectors.attribute.invisible': '不可见',
+  'operation.connectors.attribute.visibility': '是否可见',
   'operation.environments.menu': '环境',
   'operation.environments.create': '新建环境',
   'operation.environments.edit': '编辑环境',
@@ -82,6 +83,8 @@ export default {
   'operation.templates.detail.receiveFix': '接受修复',
   'operation.templates.detail.cancelFix': '放弃修复',
   'operation.templates.detail.outputs': '输出',
+  'operation.templates.detail.type.tips':
+    '复合类型及嵌套类型，数组中第一个为主类型，第二个为子类型',
   'operation.templates.table.type': '类型',
   'operation.templates.rules.name': '名称必填',
   'operation.templates.rules.sourece': '来源必填',

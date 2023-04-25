@@ -4,7 +4,7 @@
       :cols="24"
       :style="{
         'display': 'flex',
-        'align-items': get($attrs, 'wrap-align') || 'center',
+        'align-items': wrapAlign,
         'width': '100%'
       }"
     >
@@ -18,7 +18,7 @@
             v-if="!showHintInput"
             :error="!dataKey && triggerValidate"
             :model-value="dataKey"
-            :max-length="100"
+            :max-length="30"
             v-bind="$attrs"
             :placeholder="
               get($attrs?.placeholder, 'key') || $t('common.input.key')
@@ -67,11 +67,10 @@
             v-else-if="showPassword"
             style="width: 100%"
             :model-value="dataValue"
-            v-bind="$attrs"
             :placeholder="
               get($attrs?.placeholder, 'value') || $t('common.input.value')
             "
-            :max-length="$attrs.MaxLength"
+            v-bind="$attrs"
             show-word-limit
             @input="(val) => handleDataChange(val, 'value', 'input')"
             @change="(val) => handleDataChange(val, 'value', 'change')"
@@ -79,12 +78,12 @@
           <a-input
             v-else-if="!showHintInput"
             style="width: 100%"
-            :model-value="dataValue"
+            :max-length="50"
             v-bind="$attrs"
+            :model-value="dataValue"
             :placeholder="
               get($attrs?.placeholder, 'value') || $t('common.input.value')
             "
-            :max-length="50"
             show-word-limit
             @input="(val) => handleDataChange(val, 'value', 'input')"
             @change="(val) => handleDataChange(val, 'value', 'change')"
@@ -104,27 +103,6 @@
             @input="(val) => handleDataChange(val, 'value', 'input')"
             @change="(val) => handleDataChange(val, 'value', 'change')"
           ></hintInput>
-        </slot>
-      </div>
-      <!-- extra -->
-      <div v-if="showExtra" :span="8" :style="getItemStyle('extra')">
-        <span style="padding: 0 4px">{{ separator }}</span>
-        <slot name="extra">
-          <component
-            v-bind="{ ...$attrs, ...get(dataItem, 'extraProps') }"
-            :is="get(internalComponents, get(dataItem, 'extraCom'))"
-            style="width: 100%"
-            :placeholder="
-              get($attrs?.placeholder, 'extra') || $t('common.input.extra')
-            "
-            show-word-limit
-            :show-gutter="false"
-            :model-value="dataExtra"
-            :editor-id="`${token}-${position}`"
-            :editor-default-value="dataDefault"
-            @input="(val) => handleDataChange(val, 'extra', 'input')"
-            @change="(val) => handleDataChange(val, 'extra', 'change')"
-          ></component>
         </slot>
       </div>
       <!-- description -->
@@ -151,22 +129,37 @@
             ></a-input>
           </template>
           <template v-else>
-            <component
-              v-bind="$attrs"
-              :is="get(internalComponents, get($attrs?.components, dataValue))"
-              style="width: 100%"
-              :placeholder="
-                get($attrs?.placeholder, 'description') ||
-                $t('common.input.description')
-              "
-              show-word-limit
-              :show-gutter="false"
-              :model-value="dataDesc"
-              :editor-id="`${token}-${position}`"
-              :editor-default-value="dataDefault"
-              @input="(val) => handleDataChange(val, 'description', 'input')"
-              @change="(val) => handleDataChange(val, 'description', 'change')"
-            ></component>
+            <template v-if="get($attrs?.components, dataValue) === 'Checkbox'">
+              <a-checkbox
+                :default-checked="!!dataDesc"
+                @change="
+                  (val) => handleDataChange(val, 'description', 'change')
+                "
+              >
+              </a-checkbox>
+            </template>
+            <template v-else>
+              <component
+                v-bind="$attrs"
+                :is="
+                  get(internalComponents, get($attrs?.components, dataValue))
+                "
+                style="width: 100%"
+                :placeholder="
+                  get($attrs?.placeholder, 'description') ||
+                  $t('common.input.description')
+                "
+                show-word-limit
+                :show-gutter="false"
+                :model-value="dataDesc"
+                :editor-id="`${token}-${position}`"
+                :editor-default-value="dataDefault"
+                @input="(val) => handleDataChange(val, 'description', 'input')"
+                @change="
+                  (val) => handleDataChange(val, 'description', 'change')
+                "
+              ></component>
+            </template>
           </template>
         </slot>
       </div>
@@ -212,12 +205,6 @@
         return '';
       }
     },
-    dataExtra: {
-      type: [String, Boolean, Number],
-      default() {
-        return false;
-      }
-    },
     dataDefault: {
       type: String,
       default() {
@@ -228,6 +215,12 @@
       type: String,
       default() {
         return ':';
+      }
+    },
+    wrapAlign: {
+      type: String,
+      default() {
+        return 'center';
       }
     },
     comType: {
@@ -285,12 +278,6 @@
       }
     },
     showDescription: {
-      type: Boolean,
-      default() {
-        return false;
-      }
-    },
-    showExtra: {
       type: Boolean,
       default() {
         return false;
@@ -388,10 +375,6 @@
       emits('update:dataKey', '');
       return;
     }
-    if (props.dataValue === 'bool' && props.valueOptions.length) {
-      // val = !val;
-      console.log('checkbox===', val);
-    }
     if (attr === 'key') {
       emits('update:dataKey', val);
       emits('keyChange');
@@ -402,13 +385,6 @@
     if (attr === 'description') {
       emits('update:dataDesc', val);
     }
-    if (attr === 'extra') {
-      emits('update:dataExtra', val);
-    }
-
-    setTimeout(() => {
-      console.log('labelLIst22=====', props.labelList, { val, attr, type });
-    });
     getDataObj(props.labelList);
   };
 </script>

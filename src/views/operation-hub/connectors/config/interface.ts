@@ -20,7 +20,7 @@ export interface CustomAttrbute {
   type: string;
   default?: string;
   extraCom?: string;
-  visible?: number;
+  visible?: boolean;
   extraProps?: any;
   style?: object;
 }

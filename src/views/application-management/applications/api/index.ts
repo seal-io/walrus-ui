@@ -59,6 +59,14 @@ export const queryItemApplicationInstances = (params) => {
     }
   });
 };
+export const queryInstanceOutputs = (params) => {
+  return axios.get(`/application-instances/${params.id}/outputs`, {
+    params,
+    paramsSerializer: (obj) => {
+      return qs.stringify(obj);
+    }
+  });
+};
 export const deleteApplicationInstance = (data) => {
   return axios.delete(`/application-instances/${data.id}?force=${data.force}`);
 };

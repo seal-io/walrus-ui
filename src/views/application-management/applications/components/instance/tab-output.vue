@@ -13,17 +13,39 @@
           tooltip
           :cell-style="{ minWidth: '40px' }"
           data-index="name"
-          :title="$t('applications.applications.table.name')"
+          :title="$t('common.table.name')"
         >
         </a-table-column>
         <a-table-column
           ellipsis
           tooltip
           :cell-style="{ minWidth: '40px' }"
-          align="left"
-          data-index="content"
-          :title="$t('applications.applications.table.content')"
+          data-index="moduleName"
+          :title="$t('applications.applications.table.module')"
         >
+        </a-table-column>
+        <a-table-column
+          ellipsis
+          tooltip
+          :cell-style="{ minWidth: '40px' }"
+          data-index="type"
+          :title="capitalize($t('common.input.type'))"
+        >
+          <template #cell="{ record }">
+            <span>{{ JSON.stringify(record.type) }}</span>
+          </template>
+        </a-table-column>
+        <a-table-column
+          ellipsis
+          tooltip
+          :cell-style="{ minWidth: '40px' }"
+          align="left"
+          data-index="value"
+          :title="capitalize($t('common.input.value'))"
+        >
+          <template #cell="{ record }">
+            <span>{{ record.sensitive ? '******' : record.value }}</span>
+          </template>
         </a-table-column>
       </template>
     </a-table>
@@ -31,16 +53,31 @@
 </template>
 
 <script lang="ts" setup>
-  import { onMounted, ref } from 'vue';
+  import { capitalize } from 'lodash';
+  import { onMounted, ref, inject, watch } from 'vue';
+  import { queryInstanceOutputs } from '../../api';
 
-  const dataList = ref([
-    { name: 'SERVICE_URL', content: 'https://4uese.service.myorg.com' },
-    { name: 'DB_ADDRESS', content: 'mmysql://user@172.21.2.5:3306' },
-    { name: 'DB_USERNAME', content: 'user' },
-    { name: 'DB_PASSWORD', content: 'password' }
-  ]);
+  const instanceId = inject('instanceId', ref(''));
+  const dataList = ref([]);
+  const fetchData = async () => {
+    try {
+      const { data } = await queryInstanceOutputs({ id: instanceId.value });
+      dataList.value = data || [];
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  watch(
+    () => instanceId.value,
+    () => {
+      fetchData();
+    },
+    {
+      immediate: true
+    }
+  );
   onMounted(() => {
-    console.log('output');
+    // fetchData();
   });
 </script>
 

@@ -78,30 +78,27 @@
           <a-space
             v-if="attributeList?.length && pageAction === 'edit'"
             fill
-            style="display: flex; flex-direction: column; width: 1000px"
+            style="display: flex; flex-direction: column; width: 60%"
             direction="vertical"
           >
             <xInputGroup
               v-for="(sItem, sIndex) in attributeList"
               :key="sIndex"
               v-model:dataKey="sItem.key"
-              v-model:dataValue="sItem.type"
-              v-model:dataDesc="sItem.value"
-              v-model:dataExtra="sItem.visible"
+              v-model:dataValue="sItem.value"
+              v-model:dataDesc="sItem.type"
               :data-default="sItem.default"
               :data-item="sItem"
               show-description
-              show-extra
               separator=""
               :trigger-validate="triggerValidate"
               width="500px"
               class="group-item"
               :wrap-align="sItem.type === 'dynamic' ? 'flex-start' : 'center'"
               :placeholder="{
-                value: $t('common.input.type'),
+                value: $t('common.input.value'),
                 description: $t('common.input.value'),
-                key: $t('common.input.key'),
-                extra: $t('common.input.visible')
+                key: $t('common.input.key')
               }"
               :components="{
                 string: 'Input',
@@ -109,13 +106,34 @@
                 bool: 'Checkbox',
                 dynamic: 'AceEditor'
               }"
-              :value-options="variableTypeList"
               :max-length="null"
               :label-list="attributeList"
               :position="sIndex"
               @add="(obj) => handleAddLabel(obj)"
               @delete="handleDeleteLabel(attributeList, sIndex)"
-            ></xInputGroup>
+            >
+              <template #value>
+                <a-input
+                  v-if="sItem.visible"
+                  v-model="sItem.value"
+                  style="width: 100%"
+                  :error="!sItem.value && triggerValidate"
+                  :placeholder="$t('common.input.value')"
+                ></a-input>
+                <a-input-password
+                  v-else
+                  v-model="sItem.value"
+                  style="width: 100%"
+                  :error="!sItem.value && triggerValidate"
+                  :placeholder="$t('common.input.value')"
+                ></a-input-password>
+              </template>
+              <template #description>
+                <a-checkbox v-model="sItem.visible">{{
+                  $t('operation.connectors.attribute.visibility')
+                }}</a-checkbox>
+              </template>
+            </xInputGroup>
           </a-space>
           <template v-if="pageAction === 'view' && attributeList?.length">
             <labelsList
@@ -181,7 +199,13 @@
       ...style
     };
   };
-
+  const labelOption = {
+    style: {
+      key: setPropertyStyle({ 'flex-basis': '200px' }),
+      description: setPropertyStyle({ 'flex-basis': '100px' })
+      // value: setPropertyStyle({ 'flex-basis': '150px' })
+    }
+  };
   const { t, router, route } = useCallCommon();
   const { pageAction, handleEdit } = usePageAction();
   const id = route.query.id as string;
@@ -216,53 +240,11 @@
       key: '',
       value: '',
       type: 'string',
-      visible: 0,
-      extraCom: 'Select',
-      extraProps: {
-        options: visibleOptions
-      },
-      style: {
-        key: {
-          'display': 'flex',
-          'align-items': 'center',
-          'flex-basis': '200px'
-        },
-        value: {
-          'display': 'flex',
-          'align-items': 'center',
-          'flex-basis': '150px'
-        },
-        extra: {
-          'display': 'flex',
-          'align-items': 'center',
-          'flex-basis': '150px'
-        }
-      }
+      visible: false,
+      ...labelOption
     }
   ]);
 
-  const labelOption = computed(() => {
-    return {
-      extraCom: 'Select',
-      extraProps: {
-        options: [
-          {
-            label: t('operation.connectors.attribute.visible'),
-            value: 1
-          },
-          {
-            label: t('operation.connectors.attribute.invisible'),
-            value: 0
-          }
-        ]
-      },
-      style: {
-        key: setPropertyStyle({ 'flex-basis': '200px' }),
-        value: setPropertyStyle({ 'flex-basis': '150px' }),
-        extra: setPropertyStyle({ 'flex-basis': '150px' })
-      }
-    };
-  });
   const title = computed(() => {
     if (id) {
       return t('operation.connectors.title.edit', {
@@ -279,8 +261,8 @@
       key: '',
       value: '',
       type: 'string',
-      visible: 0,
-      ...labelOption.value
+      visible: false,
+      ...labelOption
     });
     console.log('attributeList===', attributeList.value);
   };
@@ -291,7 +273,10 @@
   };
 
   const checkAttributeValid = () => {
-    triggerValidate.value = some(attributeList.value, (item) => !item.key);
+    triggerValidate.value = some(
+      attributeList.value,
+      (item) => !item.key || !item.value
+    );
   };
   const setLabelList = () => {
     const configData = formData.configData || {};
@@ -301,8 +286,8 @@
         value: get(configData, `${key}.value`) || '',
         default: get(configData, `${key}.value`) || '',
         type: get(configData, `${key}.type`) || 'string',
-        visible: get(configData, `${key}.visible`) ? 1 : 0,
-        ...labelOption.value
+        visible: get(configData, `${key}.visible`) || false,
+        ...labelOption
       };
     }) as never[];
     if (!attributeList.value.length) {
@@ -311,8 +296,8 @@
           key: '',
           value: '',
           type: 'string',
-          visible: 0,
-          ...labelOption.value
+          visible: false,
+          ...labelOption
         }
       ];
     }
@@ -324,8 +309,7 @@
       (obj, item) => {
         if (item.key) {
           obj[item.key] = {
-            ...pick(item, ['value', 'type']),
-            visible: !!item.visible
+            ...pick(item, ['value', 'type', 'visible'])
           };
         }
         return obj;

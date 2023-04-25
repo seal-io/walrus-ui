@@ -75,22 +75,6 @@
             </div>
           </template>
         </a-form-item>
-        <a-form-item label="是否可见">
-          <template #label>
-            <span>
-              <span>是否可见</span>
-              <a-tooltip content="编辑时KubeConfig的内容是否显示">
-                <icon-info-circle />
-              </a-tooltip>
-            </span>
-          </template>
-          <a-checkbox
-            v-if="pageAction == 'edit'"
-            v-model="formData.configData.kubeconfig.visible"
-          >
-          </a-checkbox>
-          <span v-else class="readonly-view-label">可见</span>
-        </a-form-item>
         <a-form-item label="">
           <template #label>
             <div class="label-wrap">
@@ -182,7 +166,7 @@
     name: '',
     configData: {
       kubeconfig: {
-        visible: false,
+        visible: true,
         value: '',
         type: 'string'
       }

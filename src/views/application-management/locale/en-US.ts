@@ -57,6 +57,7 @@ export default {
   'applications.applications.instance.resource': 'Resource Information',
   'applications.applications.instance.endpoint': 'EndPoint',
   'applications.applications.instance.log': 'Logs',
+  'applications.applications.instance.value': 'Value',
   'applications.applications.instance.cloneName':
     'please enter a new instance name',
   'applications.applications.instance.clonetitle': 'Clone Instance ({from})',
@@ -68,6 +69,7 @@ export default {
   'applications.instance.tab.resourceName': 'Resource Name',
   'applications.instance.tab.log': 'Logs',
   'applications.instance.tab.term': 'Terminal',
+  'applications.instance.tab.output': 'Outputs',
   'applications.instance.basic.title': 'Instance Information',
   'applications.applications.history.version': 'Version',
   'applications.applications.history.operator': 'Operator',
