@@ -2,108 +2,133 @@
   <div class="form-create-wrap">
     <a-form ref="formref" :model="formData" auto-label-width :layout="layout">
       <slot></slot>
-      <a-grid :cols="24" :col-gap="10">
-        <template v-for="(fm, index) in schemaList" :key="fm.Name">
-          <a-grid-item
-            v-if="
-              fm.showIf
-                ? toString(get(formData, `${fm.showCondition.key}`)) ===
-                  fm?.showCondition?.value
-                : true
-            "
-            :span="12"
+      <div class="content-wrap">
+        <div v-if="keys(subGroupCache).length" class="side-menu">
+          <div
+            v-for="k in keys(subGroupCache)"
+            :key="k"
+            class="menu-item"
+            :class="{ active: activeMenu === k }"
+            @click.stop="handleClickSubGroup(k)"
+            >{{ k }}</div
           >
-            <a-form-item
-              :field="fm.name"
-              :rules="fm.rules"
-              :label="fm.label || fm.name"
-              :validate-trigger="['change']"
+        </div>
+        <a-grid :cols="24" :col-gap="10" style="flex: 1">
+          <template v-for="(fm, index) in schemaList" :key="fm.Name">
+            <a-grid-item
+              v-if="
+                activeMenu === fm.subGroup &&
+                fm.thirdGroup &&
+                !fm.thirdGroupOrder
+              "
+              :span="24"
             >
-              <template #label>
-                <span>{{ fm.label || fm.name }}</span>
-                <a-tooltip v-if="fm.description" :content="fm.description">
-                  <icon-info-circle
-                    style="margin-left: 2px; stroke-linecap: initial"
-                  />
-                </a-tooltip>
-              </template>
-              <div
-                v-if="schemaType.isMapString(fm.type)"
-                style="display: flex; flex-direction: column"
+              <div class="sub-group-title"
+                ><icon-bulb class="mright-5" />{{ fm.thirdGroup }}</div
               >
-                <!-- XInputGroup component -->
-                <template v-if="fm?.labelList?.length">
+            </a-grid-item>
+            <a-grid-item
+              v-show="activeMenu === fm.subGroup"
+              v-if="
+                fm.showIf
+                  ? toString(get(formData, `${fm.showCondition.key}`)) ===
+                    fm?.showCondition?.value
+                  : true
+              "
+              :span="12"
+            >
+              <a-form-item
+                :field="fm.name"
+                :rules="fm.rules"
+                :label="fm.label || fm.name"
+                :validate-trigger="['change']"
+              >
+                <template #label>
+                  <span>{{ fm.label || fm.name }}</span>
+                  <a-tooltip v-if="fm.description" :content="fm.description">
+                    <icon-info-circle
+                      style="margin-left: 2px; stroke-linecap: initial"
+                    />
+                  </a-tooltip>
+                </template>
+                <div
+                  v-if="schemaType.isMapString(fm.type)"
+                  style="display: flex; flex: 1; flex-direction: column"
+                >
+                  <!-- XInputGroup component -->
+                  <template v-if="fm?.labelList?.length">
+                    <component
+                      :is="formComponents[fm.parentCom]"
+                      v-for="(sItem, sIndex) in fm.labelList"
+                      :key="sIndex"
+                      v-model:dataKey="sItem.key"
+                      v-model:dataValue="sItem.value"
+                      v-model:value="formData[fm.name]"
+                      class="group-item"
+                      style="width: 100%"
+                      width="100%"
+                      :trigger-validate="triggerValidate"
+                      :form-id="fm.name"
+                      :label-list="fm.labelList"
+                      :position="sIndex"
+                      v-bind="{ ...fm.props }"
+                      @add="(obj) => handleAddLabel(obj, fm.labelList)"
+                      @delete="handleDeleteLabel(fm.labelList, sIndex)"
+                    >
+                      <template v-if="fm.childCom">
+                        <component
+                          :is="formComponents[fm.childCom]"
+                          v-for="com in fm.options"
+                          :key="com"
+                          :form-id="formId"
+                          :value="com"
+                          >{{ com }}</component
+                        >
+                      </template>
+                    </component>
+                  </template>
+                  <template v-else>
+                    <thumbButton
+                      :size="24"
+                      class="mleft-5"
+                      font-size="14px"
+                      @click="handleAddOne(fm.labelList)"
+                    ></thumbButton>
+                  </template>
+                </div>
+                <template v-else>
                   <component
                     :is="formComponents[fm.parentCom]"
-                    v-for="(sItem, sIndex) in fm.labelList"
-                    :key="sIndex"
-                    v-model:dataKey="sItem.key"
-                    v-model:dataValue="sItem.value"
-                    v-model:value="formData[fm.name]"
+                    :key="`${formId}_editorId_${index}`"
+                    v-bind="{ ...fm.props }"
+                    v-model="formData[fm.name]"
+                    :editor-default-value="fm.default || ''"
                     style="width: 100%"
                     width="100%"
-                    :trigger-validate="triggerValidate"
-                    :form-id="fm.name"
-                    class="group-item"
-                    :label-list="fm.labelList"
-                    :position="sIndex"
-                    v-bind="{ ...fm.props }"
-                    @add="(obj) => handleAddLabel(obj, fm.labelList)"
-                    @delete="handleDeleteLabel(fm.labelList, sIndex)"
+                    :editor-id="`${fm.name}_editorId_${index}`"
                   >
                     <template v-if="fm.childCom">
                       <component
                         :is="formComponents[fm.childCom]"
+                        :key="`${formId}_child_editorId_${index}`"
+                        :editor-id="`${fm.name}_child_editorId_${index}`"
+                        style="display: none"
+                      ></component>
+                      <component
+                        :is="formComponents[fm.childCom]"
                         v-for="com in fm.options"
-                        :key="com"
-                        :form-id="formId"
-                        :value="com"
-                        >{{ com }}</component
+                        :key="com.label"
+                        :value="com.value"
+                        >{{ com.value }}</component
                       >
                     </template>
                   </component>
                 </template>
-                <template v-else>
-                  <thumbButton
-                    :size="24"
-                    class="mleft-5"
-                    font-size="14px"
-                    @click="handleAddOne(fm.labelList)"
-                  ></thumbButton>
-                </template>
-              </div>
-              <template v-else>
-                <component
-                  :is="formComponents[fm.parentCom]"
-                  :key="`${formId}_editorId_${index}`"
-                  v-bind="{ ...fm.props }"
-                  v-model="formData[fm.name]"
-                  :editor-default-value="fm.default"
-                  style="width: 100%"
-                  width="100%"
-                  :editor-id="`${fm.name}_editorId_${index}`"
-                >
-                  <template v-if="fm.childCom">
-                    <component
-                      :is="formComponents[fm.childCom]"
-                      :key="`${formId}_child_editorId_${index}`"
-                      :editor-id="`${fm.name}_child_editorId_${index}`"
-                      style="display: none"
-                    ></component>
-                    <component
-                      :is="formComponents[fm.childCom]"
-                      v-for="com in fm.options"
-                      :key="com.label"
-                      :value="com.value"
-                      >{{ com.value }}</component
-                    >
-                  </template>
-                </component>
-              </template>
-            </a-form-item>
-          </a-grid-item>
-        </template>
-      </a-grid>
+              </a-form-item>
+            </a-grid-item>
+          </template>
+        </a-grid>
+      </div>
       <a-form-item v-if="showFooter">
         <editPageFooter style="display: flex; margin-top: 0; padding-bottom: 0">
           <template #save>
@@ -141,7 +166,9 @@
     keys,
     add,
     toString,
-    some
+    some,
+    split,
+    find
   } from 'lodash';
   import {
     PropType,
@@ -155,6 +182,7 @@
   } from 'vue';
   import axios, { CancelToken } from 'axios';
   import { useI18n } from 'vue-i18n';
+  import { parse, stringify } from 'fastjson';
   import editPageFooter from '@/components/edit-page-footer/index.vue';
   import thumbButton from '@/components/buttons/thumb-button.vue';
   import {
@@ -177,7 +205,7 @@
     formId: {
       type: String,
       default() {
-        return 'lcoal';
+        return 'local';
       }
     },
     layout: {
@@ -222,6 +250,11 @@
   const formref = ref();
   const schemaList = ref<ComponentSchema[]>([]);
   const formData = ref({});
+  const subGroupCache = ref({});
+  const subGroupListCache = ref({});
+  const thirdGroupCache = ref({});
+  const activeMenu = ref('');
+  const OTHER_SUB_GROUP = 'Other';
   const triggerValidate = ref(false);
 
   const doSubmit = async () => {
@@ -230,21 +263,46 @@
   const setFormData = () => {
     formData.value = {};
     each(props.formSchema, (item) => {
-      formData.value[item.name] = get(props.model, item.name) || item.default;
+      let val = get(props.model, item.name) || item.default;
+      // transform data type
+      if (
+        schemaType.isCollectionType(item.type) ||
+        schemaType.isUnknownType(item.type)
+      ) {
+        val = JSON.stringify(val);
+      }
+      formData.value[item.name] = val;
     });
+    console.log('formData.value===init==', formData.value);
   };
-
+  const handleClickSubGroup = (k) => {
+    activeMenu.value = k;
+  };
   const setSchemaList = () => {
-    const groupOrderMap = {};
     const showIfMap = {};
+    activeMenu.value = '';
+    subGroupCache.value = {};
+    subGroupListCache.value = {};
+    thirdGroupCache.value = {};
+
     let list = map(props.formSchema, (o, i) => {
       const item = cloneDeep(o);
       const content = parseComponentSchema(item);
+      const groupConfig = split(item.group, '/') || [];
+      const subGroup = get(groupConfig, '1') || '';
+      const mainGroup = get(groupConfig, '0') || '';
+      const thirdGroup = get(groupConfig, '2') || '';
+
       item.showCondition = parseQuery(item.showIf);
       item.order = item.required ? 0 : 10 * (i + 1);
       item.parentCom = get(content, 'component.0');
       item.childCom = get(content, 'component.1');
       item.labelList = parseMapstring(item);
+      item.subGroup = subGroup;
+      item.mainGroup = mainGroup;
+      item.thirdGroup = thirdGroup;
+      item.subGroupOrder = !get(subGroupCache.value, subGroup) ? 0 : 1;
+      item.thirdGroupOrder = !get(thirdGroupCache.value, thirdGroup) ? 0 : 1;
       item.options = parseOptions(item);
       item.props = get(content, 'props') || {};
       item.rules = map(content.rules, (sItem) => {
@@ -252,17 +310,41 @@
         return sItem;
       });
 
-      // if (item.group && groupOrderMap[item.group] && !item.required) {
-      //   item.order = groupOrderMap[item.group];
-      // } else if (item.group) {
-      //   groupOrderMap[item.Group] = item.order;
-      // }
+      if (subGroup) {
+        subGroupCache.value[subGroup] = 1;
+      }
+      if (thirdGroup) {
+        thirdGroupCache.value[thirdGroup] = 1;
+      }
+      // default active subgroup
+      if (!activeMenu.value) {
+        activeMenu.value = subGroup;
+      }
+
+      // for set other Group
+      if (subGroupListCache.value[mainGroup] && subGroup) {
+        subGroupListCache.value[mainGroup] = 1;
+      }
       showIfMap[item.name] = item.order;
       return item;
     });
     list = map(list, (sItem) => {
       if (sItem.showIf) {
         sItem.order = add(get(showIfMap, `${sItem?.showCondition?.key}`), 0.1);
+      }
+      if (
+        sItem.mainGroup &&
+        subGroupListCache.value[sItem.mainGroup] &&
+        !sItem.subGroup
+      ) {
+        sItem.subGroup = OTHER_SUB_GROUP;
+      }
+      // transform default value data type
+      if (
+        schemaType.isCollectionType(sItem.type) ||
+        schemaType.isUnknownType(sItem.type)
+      ) {
+        sItem.default = JSON.stringify(sItem.default);
       }
       return sItem;
     });
@@ -291,8 +373,20 @@
       }
     });
   };
+  // transform data before submit
+  const transformDataByType = () => {
+    each(schemaList.value, (item) => {
+      if (
+        schemaType.isCollectionType(item.type) ||
+        schemaType.isUnknownType(item.type)
+      ) {
+        console.log('transform===data===', formData.value[item.name]);
+        // formData.value[item.name] = JSON.parse(`${formData.value[item.name]}`);
+      }
+    });
+  };
   const validateLabels = () => {
-    const result = some(schemaList.value, (sItem) => {
+    const result = find(schemaList.value, (sItem) => {
       if (sItem.labelList?.length) {
         return some(sItem.labelList, (item) => {
           return !item.key;
@@ -310,8 +404,20 @@
     triggerValidate.value = true;
     const result = await formref.value?.validate();
     const validLabels = validateLabels();
+    console.log('result===', result, validLabels);
+
+    if (result) {
+      const errorField = get(keys(result), '0');
+      const d = find(schemaList.value, (item) => item.name === errorField);
+      activeMenu.value = d?.subGroup || activeMenu.value;
+    } else if (validLabels) {
+      activeMenu.value = validLabels?.subGroup || activeMenu.value;
+    }
+
     if (!result && !validLabels) {
       resetFieldsDefaultValue();
+      transformDataByType();
+      console.log('formData.value=====', formData.value);
       return formData.value;
     }
     return false;
@@ -342,9 +448,19 @@
     getFormData,
     clearFormValidStatus
   });
-  watchEffect(() => {
-    setSchemaList();
-  });
+  // watchEffect(() => {
+  //   setSchemaList();
+  // });
+  watch(
+    () => props.formSchema,
+    () => {
+      setSchemaList();
+    },
+    {
+      deep: true,
+      immediate: true
+    }
+  );
   watch(
     () => props.model,
     () => {
@@ -368,9 +484,21 @@
 </script>
 
 <style lang="less" scoped>
+  @import url('./style/side-menu.less');
+
   .form-create-wrap {
     :deep(.arco-select-view) {
       width: 360px;
+    }
+
+    .sub-group-title {
+      z-index: 10;
+      margin-bottom: 10px;
+      padding: 2px 0;
+      color: var(--color-text-1);
+      font-weight: 500;
+      font-size: 14px;
+      background-color: var(--color-fill-2);
     }
   }
 

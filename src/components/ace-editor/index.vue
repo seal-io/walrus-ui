@@ -5,7 +5,7 @@
 </template>
 
 <script lang="ts" setup>
-  import _, { cloneDeep, each, get } from 'lodash';
+  import _, { cloneDeep, each, get, isString, toString } from 'lodash';
   import {
     onMounted,
     nextTick,
@@ -240,6 +240,9 @@
   };
   const setDefaultValue = () => {
     setTimeout(() => {
+      // const defaultvalue = isString(props.editorDefaultValue)
+      //   ? props.editorDefaultValue
+      //   : JSON.stringify(props.editorDefaultValue, null, 2);
       aceEditor?.setValue(props.editorDefaultValue, 1);
     }, 100);
   };
@@ -310,7 +313,7 @@
 
   onMounted(() => {
     nextTick(() => {
-      // setLanguageTools();
+      setLanguageTools();
 
       aceEditor = ace.edit(`${props.editorId}`);
       // aceEditor.setValue(props.modelValue);

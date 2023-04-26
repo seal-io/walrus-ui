@@ -32,7 +32,6 @@
         </a-table-column>
         <a-table-column
           ellipsis
-          tooltip
           :cell-style="{ minWidth: '40px' }"
           data-index="type"
           :title="$t('common.table.type')"

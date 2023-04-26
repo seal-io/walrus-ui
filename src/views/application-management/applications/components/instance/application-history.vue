@@ -77,9 +77,7 @@
                   size="small"
                   @click="handleViewDetail(record)"
                 >
-                  <template #icon
-                    ><icon-font type="icon-rizhi" style="font-size: 16px"
-                  /></template>
+                  <icon-font type="icon-rizhi" style="font-size: 16px" />
                 </a-link>
               </a-tooltip>
               <a-tooltip :content="rollbackTips">
@@ -96,7 +94,7 @@
                     "
                     @mouseover="handlehoverButton('button')"
                   >
-                    <icon-font type="icon-qingkong" style="font-size: 16px" />
+                    <icon-font type="icon-tihuan" style="font-size: 16px" />
                   </a-link>
                   <template #content>
                     <div>

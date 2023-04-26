@@ -26,6 +26,11 @@ export interface ComponentSchema {
   options?: { label: string; value: string }[];
   label?: string;
   group?: string;
+  subGroup?: string;
+  mainGroup?: string;
+  thirdGroup?: string;
+  subGroupOrder?: number;
+  thirdGroupOrder?: number;
   props?: object;
   rules?: FieldRule[];
   labelList?: LabelListItem[];
@@ -156,7 +161,7 @@ export const parseComponentSchema = (schema: ComponentSchema) => {
       component: ['AceEditor'],
       props: {
         ...props,
-        lang: 'json',
+        lang: 'yaml',
         showGutter: false
       },
       rules: [{ ...rules, message: 'common.form.rule.input' }]

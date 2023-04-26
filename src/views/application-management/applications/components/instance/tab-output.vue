@@ -31,6 +31,12 @@
           data-index="type"
           :title="capitalize($t('common.input.type'))"
         >
+          <template #title>
+            <span>{{ $t('common.table.type') }}</span>
+            <a-tooltip :content="$t('operation.templates.detail.type.tips')">
+              <icon-info-circle class="mleft-5" />
+            </a-tooltip>
+          </template>
           <template #cell="{ record }">
             <span>{{ record.type }}</span>
           </template>

@@ -22,6 +22,7 @@ export default mergeConfig(
       // cors: {
       //   origin: 'https://localhost:4000'
       // },
+      // proxy: createProxyTable('https://192.168.2.8')
       proxy: createProxyTable()
     },
     plugins: [

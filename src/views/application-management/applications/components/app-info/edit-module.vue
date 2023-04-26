@@ -3,7 +3,7 @@
     top="10%"
     :closable="false"
     :align-center="false"
-    :width="900"
+    :width="1000"
     :ok-text="$t('common.button.save')"
     :visible="show"
     :mask-closable="false"
@@ -77,6 +77,7 @@
             >
               <a-select
                 v-model="formData.module.id"
+                allow-search
                 @change="handleModuleChange"
               >
                 <a-option
@@ -231,7 +232,8 @@
     pickBy,
     toString,
     clone,
-    filter
+    filter,
+    split
   } from 'lodash';
   import {
     ref,
@@ -343,7 +345,6 @@
     }
     return list;
   });
-  const handleQueryInput = () => {};
   const handleCancel = () => {
     emit('update:show', false);
   };
@@ -405,26 +406,22 @@
       (v) => !v.hidden
     );
     each(variablesList, (item) => {
-      // set initial value
-      // const initialValue =
-      //   type === 'create'
-      //     ? item.default
-      //     : get(sourceData, `attributes.${item.name}`);
       const initialValue = getInitialValue(item, sourceData, type);
-      if (item.group) {
-        if (!variablesGroup.value[item.group]) {
-          variablesGroup.value[item.group] = {
+      const group = get(split(item.group, '/'), '0');
+      if (group) {
+        if (!variablesGroup.value[group]) {
+          variablesGroup.value[group] = {
             variables: [],
-            label: item.group
+            label: group
           };
-          variablesGroup.value[item.group].variables.push(item);
+          variablesGroup.value[group].variables.push(item);
         } else {
-          variablesGroup.value[item.group].variables.push(item);
+          variablesGroup.value[group].variables.push(item);
         }
 
         set(
           variablesGroupForm.value,
-          `${item.group}.attributes.${item.name}`,
+          `${group}.attributes.${item.name}`,
           initialValue
         );
       } else {
@@ -474,9 +471,6 @@
   };
   const getModuleVersionList = async () => {
     try {
-      // const { data } = await queryModulesVersions({
-      //   moduleID: formData.module.id
-      // });
       const list = filter(
         props.allModuleVersions,
         (item) => item.module.id === formData.module.id

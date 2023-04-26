@@ -5,12 +5,13 @@
     modal-animation-name="fadeIn"
     :closable="false"
     :align-center="false"
-    :width="900"
+    :width="1000"
     :ok-text="$t('common.button.save')"
     :visible="show"
     :mask-closable="false"
     :body-style="{
       'max-height': '500px',
+      'min-height': '400px',
       'overflow': 'auto'
     }"
     modal-class="app-module-modal"
@@ -62,39 +63,66 @@
           @change="handleTabChange"
         >
           <a-tab-pane
-            v-for="(group, index) in formTabs"
-            :key="`schemaForm${index}`"
+            v-for="group in formTabs"
+            :key="group"
             :title="variablesGroup[group]?.label"
           >
-            <a-descriptions
-              :column="2"
-              :data="variablesGroup[group]?.variables"
-            >
-              <template #value="{ data }">
-                <span v-if="schemaType.isListNumber(data.type)">{{
-                  join(
-                    get(variablesGroupForm, `${group}.attributes.${data.name}`),
-                    ','
-                  )
-                }}</span>
-                <span v-else-if="schemaType.isMapString(data.type)">
-                  <LabelsList
-                    :labels="
+            <div class="content-wrap">
+              <div v-if="subGroupList.length" class="side-menu">
+                <div
+                  v-for="k in subGroupList"
+                  :key="k"
+                  class="menu-item"
+                  :class="{ active: activeSubGroup === k }"
+                  @click.stop="handleClickSubGroup(k)"
+                  >{{ k }}</div
+                >
+              </div>
+              <a-descriptions
+                :column="2"
+                style="flex: 1"
+                :data="variablesDataList"
+              >
+                <template #value="{ data }">
+                  <div>
+                    <span
+                      v-if="
+                        schemaType.isListNumber(data.type) ||
+                        schemaType.isListString(data.type)
+                      "
+                      >{{
+                        join(
+                          get(
+                            variablesGroupForm,
+                            `${group}.attributes.${data.name}`
+                          ),
+                          ','
+                        )
+                      }}</span
+                    >
+                    <span v-else-if="schemaType.isMapString(data.type)">
+                      <LabelsList
+                        :labels="
+                          get(
+                            variablesGroupForm,
+                            `${group}.attributes.${data.name}`
+                          )
+                        "
+                      ></LabelsList>
+                    </span>
+                    <span v-else>{{
                       get(
                         variablesGroupForm,
                         `${group}.attributes.${data.name}`
                       )
-                    "
-                  ></LabelsList>
-                </span>
-                <span v-else>{{
-                  get(variablesGroupForm, `${group}.attributes.${data.name}`)
-                }}</span>
-              </template>
-              <template #label="{ data }">
-                <span style="font-weight: 400">{{ data.label }}</span>
-              </template>
-            </a-descriptions>
+                    }}</span>
+                  </div>
+                </template>
+                <template #label="{ data }">
+                  <span style="font-weight: 400">{{ data.label }}</span>
+                </template>
+              </a-descriptions>
+            </div>
           </a-tab-pane>
         </a-tabs>
         <a-descriptions
@@ -149,7 +177,8 @@
     toString,
     clone,
     join,
-    filter
+    filter,
+    split
   } from 'lodash';
   import {
     ref,
@@ -225,7 +254,7 @@
   const { route } = useCallCommon();
   const formref = ref();
   const loading = ref(false);
-  const activeKey = ref('schemaForm0');
+  const activeKey = ref('');
   const schemaForm = ref();
   const submitLoading = ref(false);
   const moduleInfo = ref<any>({});
@@ -233,8 +262,12 @@
   const variablesGroupForm = ref<any>({});
   const moduleVersionList = ref<ModuleVersion[]>([]);
   const moduleVersionFormCache = ref({});
+  const OTHER_SUB_GROUP = 'Other';
+  const subGroupList = ref<string[]>([]);
+  const activeSubGroup = ref('');
   let refMap: Record<string, refItem> = {};
   const versionMap = ref({ nv: '', ov: '' });
+  const subGroupCache = ref({});
   const formData = reactive({
     name: '',
     module: { id: '' },
@@ -253,9 +286,18 @@
     }
     return list;
   });
-  const handleQueryInput = () => {};
+  const variablesDataList = computed(() => {
+    const list =
+      get(variablesGroup.value, `${activeKey.value}.variables`) || [];
+    return filter(list, (item) => {
+      return !item.subGroup || item.subGroup === activeSubGroup.value;
+    });
+  });
   const handleCancel = () => {
     emit('update:show', false);
+  };
+  const handleClickSubGroup = (k) => {
+    activeSubGroup.value = k;
   };
   const resetForm = () => {
     formData.name = '';
@@ -264,7 +306,7 @@
     formData.application = { id: '' };
     formData.attributes = {};
     moduleVersionFormCache.value = {};
-    activeKey.value = 'schemaForm0';
+    activeKey.value = '';
   };
   const setRefMap = (el: refItem, name) => {
     if (el) {
@@ -277,8 +319,14 @@
     });
     return d?.label || d?.id;
   };
+  const setSubGroupList = () => {
+    const groupData = get(variablesGroup.value, activeKey.value);
+    subGroupList.value = [...groupData?.subGroup];
+    activeSubGroup.value = get(subGroupList.value, '0');
+  };
   const handleTabChange = (val) => {
     activeKey.value = val;
+    setSubGroupList();
   };
   const getInitialValue = (item, sourceData, action) => {
     let initialValue = item.default;
@@ -295,6 +343,9 @@
     refMap = {};
     variablesGroup.value = {};
     variablesGroupForm.value = {};
+    subGroupCache.value = {};
+    subGroupList.value = [];
+
     const sourceData = {
       attributes: {
         ...cloneDeep(get(props.dataInfo, 'attributes')),
@@ -306,34 +357,47 @@
       get(moduleInfo.value, 'variables'),
       (v) => !v.hidden
     );
-    each(variablesList, (item) => {
+    each(variablesList, (item, i) => {
       // set initial value
       // const initialValue =
       //   type === 'create'
       //     ? item.default
       //     : get(sourceData, `attributes.${item.name}`);
       const initialValue = getInitialValue(item, sourceData, type);
-      if (item.group) {
-        if (!variablesGroup.value[item.group]) {
-          variablesGroup.value[item.group] = {
+      const groupConfig = split(item.group, '/') || [];
+      const group = get(groupConfig, '0');
+      const subGroup = get(groupConfig, '1');
+      if (group && subGroup) {
+        subGroupCache.value[group] = 1;
+      }
+      item.order = item.required ? 0 : 10 * (i + 1);
+      item.subGroup = subGroup || '';
+      item.mainGroup = group;
+      if (group) {
+        if (!variablesGroup.value[group]) {
+          variablesGroup.value[group] = {
             variables: [],
-            label: item.group
+            label: group,
+            subGroup: new Set()
           };
-          variablesGroup.value[item.group].variables.push(item);
-        } else {
-          variablesGroup.value[item.group].variables.push(item);
+        }
+
+        variablesGroup.value[group].variables.push(item);
+        if (subGroup) {
+          variablesGroup.value[group].subGroup.add(subGroup);
         }
 
         set(
           variablesGroupForm.value,
-          `${item.group}.attributes.${item.name}`,
+          `${group}.attributes.${item.name}`,
           initialValue
         );
       } else {
-        if (!variablesGroup.value[defaultGroupKey]) {
+        if (variablesGroup.value && !variablesGroup.value[defaultGroupKey]) {
           variablesGroup.value[defaultGroupKey] = {
             variables: [],
-            label: 'Basic'
+            label: 'Basic',
+            subGroup: []
           };
         }
         variablesGroup.value[defaultGroupKey].variables.push(item);
@@ -343,6 +407,22 @@
           initialValue
         );
       }
+    });
+    // set 'other' sub group
+    each(variablesList, (pItem) => {
+      if (pItem.mainGroup) {
+        each(variablesGroup.value[pItem.mainGroup].variables, (sItem) => {
+          if (
+            variablesGroup.value[pItem.mainGroup].subGroup.size &&
+            !sItem.subGroup
+          ) {
+            sItem.subGroup = OTHER_SUB_GROUP;
+          }
+        });
+      }
+    });
+    nextTick(() => {
+      handleTabChange(get(formTabs.value, '0'));
     });
     console.log(
       'variablesGroupForm===',
@@ -461,7 +541,8 @@
     versionMap.value = { ov: '', nv: '' };
     handleVersionChange();
     nextTick(() => {
-      handleTabChange('schemaForm0');
+      console.log('formTabs.value===', formTabs.value);
+      handleTabChange(get(formTabs.value, '0'));
     });
   };
 
@@ -558,5 +639,17 @@
       margin-right: 30px;
       margin-left: 0;
     }
+
+    .arco-modal-body {
+      padding-bottom: 0;
+    }
+
+    .arco-modal-footer {
+      border-top: 1px solid var(--color-neutral-3);
+    }
   }
+</style>
+
+<style lang="less" scoped>
+  @import url('@/components/form-create/style/side-menu.less');
 </style>
