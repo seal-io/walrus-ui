@@ -78,9 +78,7 @@ export const cloneApplicationInstance = (data: {
   id: string;
   name: string;
 }) => {
-  return axios.post(`/application-instances/${data.id}/clone`, {
-    name: data.name
-  });
+  return axios.post(`/application-instances/${data.id}/clone`, data);
 };
 
 // =========history================
