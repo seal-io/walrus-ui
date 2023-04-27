@@ -182,7 +182,6 @@
   } from 'vue';
   import axios, { CancelToken } from 'axios';
   import { useI18n } from 'vue-i18n';
-  import { parse, stringify } from 'fastjson';
   import editPageFooter from '@/components/edit-page-footer/index.vue';
   import thumbButton from '@/components/buttons/thumb-button.vue';
   import {
@@ -191,6 +190,7 @@
     schemaType,
     LabelListItem
   } from './config/interface';
+  import { json2Yaml, yaml2Json } from './config/yaml-parse';
   import formComponents from './components';
   import testData from './config/test';
   import { parseMapstring, parseOptions, parseQuery } from './config/utils';
@@ -269,11 +269,10 @@
         schemaType.isCollectionType(item.type) ||
         schemaType.isUnknownType(item.type)
       ) {
-        val = JSON.stringify(val);
+        val = json2Yaml(val);
       }
       formData.value[item.name] = val;
     });
-    console.log('formData.value===init==', formData.value);
   };
   const handleClickSubGroup = (k) => {
     activeMenu.value = k;
@@ -344,7 +343,7 @@
         schemaType.isCollectionType(sItem.type) ||
         schemaType.isUnknownType(sItem.type)
       ) {
-        sItem.default = JSON.stringify(sItem.default);
+        sItem.default = json2Yaml(sItem.default);
       }
       return sItem;
     });
@@ -375,15 +374,16 @@
   };
   // transform data before submit
   const transformDataByType = () => {
+    const result = cloneDeep(formData.value);
     each(schemaList.value, (item) => {
       if (
         schemaType.isCollectionType(item.type) ||
         schemaType.isUnknownType(item.type)
       ) {
-        console.log('transform===data===', formData.value[item.name]);
-        // formData.value[item.name] = JSON.parse(`${formData.value[item.name]}`);
+        result[item.name] = yaml2Json(formData.value[item.name], item.type);
       }
     });
+    return result;
   };
   const validateLabels = () => {
     const result = find(schemaList.value, (sItem) => {
@@ -416,15 +416,15 @@
 
     if (!result && !validLabels) {
       resetFieldsDefaultValue();
-      transformDataByType();
+      const resultFormData = transformDataByType();
       console.log('formData.value=====', formData.value);
-      return formData.value;
+      return resultFormData;
     }
     return false;
   };
 
   const handleSubmit = async () => {
-    console.log('formData:', formData);
+    console.log('formData:', formData.value);
     const res = await formref.value?.validate();
     if (!res) {
       try {

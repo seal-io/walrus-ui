@@ -43,13 +43,14 @@
             </a-tooltip>
           </template>
           <template #cell="{ record }">
-            <a-tooltip>
+            <span v-if="isString(record.type)">{{ record.type }}</span>
+            <a-tooltip v-else>
               <template #content>
                 <span style="white-space: pre-wrap">{{
                   JSON.stringify(record.type, null, 2)
                 }}</span>
               </template>
-              <span>{{ record.type }}</span>
+              <span>{{ get(record.type, '0') }}</span>
             </a-tooltip>
           </template>
         </a-table-column>
@@ -76,7 +77,7 @@
 </template>
 
 <script lang="ts" setup>
-  import { get, reduce, filter, pick, map } from 'lodash';
+  import { get, reduce, filter, pick, map, isString } from 'lodash';
   import { PropType, computed, ref } from 'vue';
   import AceEditor from '@/components/ace-editor/index.vue';
   import { Schema } from '../config/interface';

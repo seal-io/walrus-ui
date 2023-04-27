@@ -26,6 +26,14 @@
       :title="$t('applications.applications.instance.resource')"
       style="margin-top: 20px"
     >
+      <template #title>
+        <span>{{ $t('applications.applications.instance.resource') }}</span>
+        <a-tooltip
+          :content="$t('applications.applications.instance.resource.tips')"
+        >
+          <icon-info-circle class="mleft-5" />
+        </a-tooltip>
+      </template>
       <a-tabs
         lazy-load
         type="rounded"

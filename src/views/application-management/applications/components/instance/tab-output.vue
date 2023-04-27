@@ -38,7 +38,15 @@
             </a-tooltip>
           </template>
           <template #cell="{ record }">
-            <span>{{ record.type }}</span>
+            <span v-if="_.isString(record.type)">{{ record.type }}</span>
+            <a-tooltip v-else>
+              <template #content>
+                <span style="white-space: pre-wrap">{{
+                  JSON.stringify(record.type, null, 2)
+                }}</span>
+              </template>
+              <span>{{ _.get(record.type, '0') }}</span>
+            </a-tooltip>
           </template>
         </a-table-column>
         <a-table-column
@@ -59,7 +67,7 @@
 </template>
 
 <script lang="ts" setup>
-  import { capitalize } from 'lodash';
+  import _, { capitalize } from 'lodash';
   import { onMounted, ref, inject, watch } from 'vue';
   import { queryInstanceOutputs } from '../../api';
 

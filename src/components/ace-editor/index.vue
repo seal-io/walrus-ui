@@ -116,6 +116,9 @@
       }
     }
   });
+  const defaultHolder = {
+    yaml: '# yaml format'
+  };
   const emits = defineEmits(['change', 'update:modelValue', 'input']);
   console.log('terraform');
   // let timer:any = null
@@ -243,7 +246,10 @@
       // const defaultvalue = isString(props.editorDefaultValue)
       //   ? props.editorDefaultValue
       //   : JSON.stringify(props.editorDefaultValue, null, 2);
-      aceEditor?.setValue(props.editorDefaultValue, 1);
+      aceEditor?.setValue(
+        props.editorDefaultValue || get(defaultHolder, props.lang),
+        1
+      );
     }, 100);
   };
   const setLanguageTools = () => {

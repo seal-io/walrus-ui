@@ -86,11 +86,12 @@
           ></a-input> -->
           <component
             :is="get(internalComponents, componentsMap[item.type])"
-            v-model="formData.variables[item.name]"
+            v-model="item.value"
             style="width: 100%"
             show-word-limit
             :show-gutter="false"
             :editor-id="`${item.name}`"
+            lang="yaml"
             :editor-default-value="item.default"
           ></component>
         </a-form-item>
@@ -121,8 +122,13 @@
 </template>
 
 <script lang="ts" setup>
-  import { each, filter, get, find, assignIn, cloneDeep } from 'lodash';
+  import _, { each, filter, get, find, assignIn, cloneDeep } from 'lodash';
   import { ref, reactive, PropType, watch, inject, computed } from 'vue';
+  import {
+    json2Yaml,
+    yaml2Json,
+    unknowType
+  } from '@/components/form-create/config/yaml-parse';
   import useCallCommon from '@/hooks/use-call-common';
   import EditPageFooter from '@/components/edit-page-footer/index.vue';
   import { validateAppNameRegx } from '@/views/config';
@@ -185,6 +191,7 @@
   const formref = ref();
   const loading = ref(false);
   const submitLoading = ref(false);
+  const variablesList = ref<Variables[]>([]);
   const formData = reactive({
     name: '',
     variables: {},
@@ -194,13 +201,32 @@
     }
   });
 
-  const variablesList = computed(() => {
-    const list = filter(props.variables, (item) => {
-      return item.name;
+  const setVariablesList = () => {
+    variablesList.value = _.map(props.variables, (o) => {
+      const item = cloneDeep(o);
+      if (item.type === unknowType.dynamic) {
+        item.value = json2Yaml(item.default);
+        item.default = json2Yaml(item.default);
+      } else {
+        item.value = item.default;
+      }
+      return item;
     });
-    console.log('variables===', props.variables);
-    return list as Variables[];
-  });
+  };
+  const setFormVariables = () => {
+    formData.variables = _.reduce(
+      variablesList.value,
+      (obj, item) => {
+        if (item.type === unknowType.dynamic) {
+          obj[item.name] = yaml2Json(item.value);
+        } else {
+          obj[item.name] = item.value;
+        }
+        return obj;
+      },
+      {}
+    );
+  };
   const handleEnvChange = (val) => {
     const data = find(props.environmentList, (item) => item.value === val);
     formData.environment.name = data?.label || '';
@@ -209,6 +235,7 @@
     emit('update:show', false);
   };
   const handleOk = async () => {
+    setFormVariables();
     const res = await formref.value?.validate();
     console.log('formData===', formData);
     if (!res) {
@@ -266,7 +293,7 @@
   watch(
     () => props.variables,
     () => {
-      // setDeployVariables();
+      setVariablesList();
     },
     {
       immediate: true,

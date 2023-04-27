@@ -55,6 +55,8 @@ export default {
   'applications.applications.instance.history': 'History Revisions',
   'applications.applications.instance.accessUrl': 'Access URL',
   'applications.applications.instance.resource': 'Resource Information',
+  'applications.applications.instance.resource.tips':
+    'When the connector of the environment is customized, the resources and outputs of the instance are static data, which will be updated when the instance is upgraded',
   'applications.applications.instance.endpoint': 'EndPoint',
   'applications.applications.instance.log': 'Logs',
   'applications.applications.instance.value': 'Value',

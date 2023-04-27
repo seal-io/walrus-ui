@@ -8,7 +8,10 @@
     >
       <AutoTip
         :tooltip-props="{
-          content: `${item.key}:${JSON.stringify(item.value)}`
+          content:
+            mode === 'yaml'
+              ? json2Yaml(item.value)
+              : `${item.key}:${JSON.stringify(item.value)}`
         }"
       >
         <span>
@@ -22,12 +25,19 @@
 <script lang="ts" setup>
   import { computed } from 'vue';
   import { get, keys, map } from 'lodash';
+  import { json2Yaml } from '@/components/form-create/config/yaml-parse';
 
   const props = defineProps({
     labels: {
       type: Object,
       default() {
         return {};
+      }
+    },
+    mode: {
+      type: String,
+      default() {
+        return 'json';
       }
     },
     bgColor: {

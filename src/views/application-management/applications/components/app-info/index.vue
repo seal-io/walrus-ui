@@ -114,6 +114,7 @@
               description: $t('common.input.value'),
               key: $t('common.input.key')
             }"
+            lang="yaml"
             :components="{
               string: 'Input',
               number: 'InputNumber',
@@ -141,6 +142,7 @@
       </a-tooltip>
       <LabelsList
         v-if="variableList.length && pageAction === 'view'"
+        mode="yaml"
         :labels="variablesObj"
       ></LabelsList>
     </div>
@@ -215,6 +217,11 @@
   } from '@/views/operation-hub/templates/api';
   import EditPageFooter from '@/components/edit-page-footer/index.vue';
   import xInputGroup from '@/components/form-create/custom-components/x-input-group.vue';
+  import {
+    yaml2Json,
+    json2Yaml
+  } from '@/components/form-create/config/yaml-parse';
+  import { schemaType } from '@/components/form-create/config/interface';
   import { CustomAttrbute } from '@/views/operation-hub/connectors/config/interface';
   import {
     TemplateRowData,
@@ -304,11 +311,15 @@
   };
   const setVariableList = () => {
     variableList.value = map(appInfo.variables || [], (item) => {
+      let val = item.default;
+      if (item.type === 'dynamic') {
+        val = json2Yaml(val);
+      }
       return {
         key: item.name,
-        value: item.default,
+        value: val,
         type: item.type,
-        default: item.default,
+        default: val,
         style: {
           key: setPropertyStyle({ 'flex-basis': '200px' }),
           value: setPropertyStyle({ 'flex-basis': '150px' })
@@ -318,10 +329,14 @@
   };
   const setAppInfoVariables = () => {
     appInfo.variables = map(variableList.value, (item) => {
+      let val = item.value;
+      if (item.type === 'dynamic') {
+        val = yaml2Json(val);
+      }
       return {
         name: item.key,
         type: item.type,
-        default: item.value
+        default: val
       };
     });
   };
