@@ -106,6 +106,7 @@
                     style="width: 100%"
                     width="100%"
                     :editor-id="`${fm.name}_editorId_${index}`"
+                    @input="(e) => handleSelectInputChange(e, fm.type)"
                   >
                     <template v-if="fm.childCom">
                       <component
@@ -157,7 +158,7 @@
 </template>
 
 <script lang="ts" setup>
-  import {
+  import _, {
     each,
     get,
     map,
@@ -242,7 +243,7 @@
       }
     }
   });
-
+  const numberReg = /\d+/;
   const completerData = inject('completerData', ref({}));
   const { t } = useI18n();
   const emits = defineEmits(['done', 'cancel']);
@@ -273,6 +274,11 @@
       }
       formData.value[item.name] = val;
     });
+  };
+  const handleSelectInputChange = (e: any, type) => {
+    if (schemaType.isListNumber(type) && !numberReg.test(e.data)) {
+      e.target.value = e.target.value.replace(/[^\d]/g, '');
+    }
   };
   const handleClickSubGroup = (k) => {
     activeMenu.value = k;

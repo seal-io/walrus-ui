@@ -257,7 +257,6 @@
     ModuleVersionData
   } from '@/views/operation-hub/templates/config/interface';
   import { validateAppNameRegx } from '@/views/config';
-  import { queryModulesVersions } from '@/views/operation-hub/templates/api';
 
   interface Group {
     variables: object[];
@@ -658,6 +657,7 @@
     resetForm();
     clearFormValidStatus();
     emit('update:action', 'create');
+    emit('reset');
   };
   watch(
     () => formData.version,
