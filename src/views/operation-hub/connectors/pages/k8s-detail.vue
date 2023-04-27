@@ -166,7 +166,7 @@
     name: '',
     configData: {
       kubeconfig: {
-        visible: true,
+        visible: false,
         value: '',
         type: 'string'
       }

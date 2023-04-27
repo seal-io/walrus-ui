@@ -7,8 +7,11 @@
     :ok-text="$t('common.button.save')"
     :visible="show"
     :mask-closable="false"
+    :esc-to-close="false"
+    unmount-on-close
     :body-style="{
       'max-height': '500px',
+      'min-height': '400px',
       'overflow': 'auto'
     }"
     modal-class="app-module-modal"

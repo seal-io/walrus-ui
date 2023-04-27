@@ -42,6 +42,15 @@ const UNKNOWN_TYPE = ['dynamic'];
 const COLLECTION_TYPE = ['map', 'object', 'list', 'tuple'];
 
 export const schemaType = {
+  isListPrimaryType(type) {
+    return _.get(type, '0') === 'list';
+  },
+  isObjectPrimaryType(type) {
+    return _.get(type, '0') === 'map' || _.get(type, '0') === 'object';
+  },
+  isTuplePrimaryType(type) {
+    return _.get(type, '0') === 'tuple';
+  },
   isBasicType(type) {
     return _.includes(BASIC_TYPE, type);
   },
@@ -162,7 +171,7 @@ export const parseComponentSchema = (schema: ComponentSchema) => {
       props: {
         ...props,
         lang: 'yaml',
-        showGutter: false
+        showGutter: true
       },
       rules: [{ ...rules, message: 'common.form.rule.input' }]
     };

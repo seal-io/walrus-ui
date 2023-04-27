@@ -4008,11 +4008,6 @@ fastest-levenshtein@^1.0.12:
   resolved "https://registry.npmmirror.com/fastest-levenshtein/-/fastest-levenshtein-1.0.16.tgz#210e61b6ff181de91ea9b3d1b84fdedd47e034e5"
   integrity sha512-eRnCtTTtGZFpQCwhJiUOuxPQWRXVKYDn0b2PeHfXL6/Zi53SLAzAHfVhVWK2AryC/WH05kGfxhFIPvTF0SXQzg==
 
-fastjson@^3.0.0:
-  version "3.0.0"
-  resolved "https://registry.npmmirror.com/fastjson/-/fastjson-3.0.0.tgz#322c42f1ca9a84c7b38cd229ab6a8393fe113c03"
-  integrity sha512-xS8wb2ocz8UNiVPuGYqfgS2pmKaxFYEqAKgCPDkOwofSmsKpmsNQfhaZV+GEsJ1nKWSsSaCbM9FD27d/fRHPMg==
-
 fastq@^1.6.0:
   version "1.13.0"
   resolved "https://registry.npmmirror.com/fastq/-/fastq-1.13.0.tgz#616760f88a7526bdfc596b7cab8c18938c36b98c"
@@ -4201,11 +4196,6 @@ flatted@^3.1.0:
   version "3.2.6"
   resolved "https://registry.npmmirror.com/flatted/-/flatted-3.2.6.tgz#022e9218c637f9f3fc9c35ab9c9193f05add60b2"
   integrity sha512-0sQoMh9s0BYsm+12Huy/rkKxVu4R1+r96YX5cG44rHV0pQ6iC3Q+mkoMFaGWObMFYQxCVT+ssG1ksneA2MI9KQ==
-
-flatted@^3.2.7:
-  version "3.2.7"
-  resolved "https://registry.npmmirror.com/flatted/-/flatted-3.2.7.tgz#609f39207cb614b89d0765b477cb2d437fbf9787"
-  integrity sha512-5nqDSxl8nn5BSNxyR3n4I6eDmbolI6WT+QqR547RwxQapgjQBmtktdP+HTBb/a/zLsbzERTONyUB5pefh5TtjQ==
 
 follow-redirects@^1.14.4:
   version "1.15.1"
@@ -9761,11 +9751,6 @@ vue@^3.2.31:
     "@vue/runtime-dom" "3.2.37"
     "@vue/server-renderer" "3.2.37"
     "@vue/shared" "3.2.37"
-
-vuln-vects@^1.1.0:
-  version "1.1.0"
-  resolved "https://registry.npmmirror.com/vuln-vects/-/vuln-vects-1.1.0.tgz#537d403615610446c1d687934584ea9dfb2a63ed"
-  integrity sha512-LGDwn9nRz94YoeqOn2TZqQXzyonBc5FJppSgH34S/1U+3bgPONq/vvfiCbCQ4MeBll58xx+kDmhS73ac+EHBBw==
 
 webpack-virtual-modules@^0.4.3:
   version "0.4.4"
