@@ -66,7 +66,7 @@
         <span>{{ $t('applications.applications.variables.title') }}</span>
       </div>
       <div
-        v-if="get(appInfo, 'variables').length && pageAction === 'edit'"
+        v-if="variableList.length && pageAction === 'edit'"
         class="var-item var-item-title"
       >
         <span
@@ -172,6 +172,7 @@
       :templates="moduleTemplates"
       :modules="appInfo.modules"
       :all-module-versions="allModuleVersions"
+      @reset="handleResetModuleInfo"
       @save="handleSaveModule"
     ></editModule>
     <viewModule
@@ -631,6 +632,9 @@
       },
       content: `applications.applications.module.delete`
     });
+  };
+  const handleResetModuleInfo = () => {
+    moduleInfo.value = {};
   };
   const handleSaveModule = async (data) => {
     console.log('saveModule===', data, moduleAction.value);

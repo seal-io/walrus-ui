@@ -37,6 +37,28 @@ export const json2Yaml = (obj) => {
   return res;
 };
 
+export const json2Str = (obj) => {
+  if (!obj || !Object.keys(obj).length) return '';
+  return JSON.stringify(obj, null, 2);
+};
+
+export const str2Json = (str, type) => {
+  str = trim(str);
+  console.log('yaml2json===', str, type, str);
+  if (!str) {
+    let res: any = [];
+    if (schemaType.isListPrimaryType(type)) {
+      res = [];
+    } else if (schemaType.isObjectPrimaryType(type)) {
+      res = {};
+    } else if (schemaType.isTuplePrimaryType(type)) {
+      res = [];
+    }
+    return res;
+  }
+  return JSON.parse(str);
+};
+
 export const unknowType = {
   dynamic: 'dynamic'
 };

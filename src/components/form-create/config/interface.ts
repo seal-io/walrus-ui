@@ -149,8 +149,8 @@ export const parseComponentSchema = (schema: ComponentSchema) => {
       component: ['Select', 'Option'],
       props: {
         ...props,
-        multiple: true
-        // allowCreate: !schema.options?.length
+        multiple: true,
+        allowCreate: !schema.options?.length
       },
       rules: [{ ...rules, message: 'common.form.rule.select' }]
     };

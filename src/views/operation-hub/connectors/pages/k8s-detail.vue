@@ -30,6 +30,7 @@
           }}</span>
         </a-form-item>
         <a-form-item
+          v-if="pageAction === 'edit'"
           field="configData.kubeconfig.value"
           :hide-asterisk="false"
           label="KubeConfig"
@@ -41,10 +42,9 @@
             }
           ]"
         >
-          <span :class="pageAction === 'view' ? 'readonly-view-label' : ''">
+          <span>
             <a-textarea
               v-model="formData.configData.kubeconfig.value"
-              :readonly="pageAction === 'view'"
               style="width: 500px"
               :spellcheck="false"
               :placeholder="$t('operation.connectors.rules.kubeconfigTips')"
