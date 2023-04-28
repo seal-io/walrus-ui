@@ -16,6 +16,7 @@
               style="
                 display: inline-block;
                 min-width: fit-content;
+                max-width: 200px;
                 white-space: pre-wrap;
               "
               >{{

@@ -75,21 +75,18 @@
           validate-trigger="change"
           :rules="[
             {
-              required: item.required,
-              message: $t('common.form.rule.input', { name: item.name })
+              validator(val, callback) {
+                validateVariable(item.value, callback, item.type);
+              }
             }
           ]"
         >
-          <!-- <a-input
-            v-model="formData.variables[item.name]"
-            style="width: 100%"
-          ></a-input> -->
           <component
             :is="get(internalComponents, componentsMap[item.type])"
             v-model="item.value"
             style="width: 100%"
             show-word-limit
-            :show-gutter="false"
+            :show-gutter="true"
             :editor-id="`${item.name}`"
             lang="yaml"
             :editor-default-value="item.default"
@@ -98,7 +95,7 @@
       </a-form>
     </a-spin>
     <template #footer>
-      <EditPageFooter>
+      <EditPageFooter style="margin-top: 0">
         <template #save>
           <a-button
             :loading="submitLoading"
@@ -122,12 +119,21 @@
 </template>
 
 <script lang="ts" setup>
-  import _, { each, filter, get, find, assignIn, cloneDeep } from 'lodash';
+  import _, {
+    each,
+    filter,
+    get,
+    find,
+    assignIn,
+    cloneDeep,
+    reduce
+  } from 'lodash';
   import { ref, reactive, PropType, watch, inject, computed } from 'vue';
   import {
     json2Yaml,
     yaml2Json,
-    unknowType
+    unknowType,
+    validateYaml
   } from '@/components/form-create/config/yaml-parse';
   import useCallCommon from '@/hooks/use-call-common';
   import EditPageFooter from '@/components/edit-page-footer/index.vue';
@@ -201,6 +207,18 @@
     }
   });
 
+  const validateVariable = (val, callback, type) => {
+    if (type !== unknowType.dynamic) {
+      callback();
+    }
+    const result = validateYaml(val);
+    console.log('result=======', result);
+    if (!result.empty && result.error) {
+      callback(`${result.error?.message}`);
+    }
+    callback();
+  };
+
   const setVariablesList = () => {
     variablesList.value = _.map(props.variables, (o) => {
       const item = cloneDeep(o);
@@ -235,11 +253,10 @@
     emit('update:show', false);
   };
   const handleOk = async () => {
-    setFormVariables();
     const res = await formref.value?.validate();
-    console.log('formData===', formData);
     if (!res) {
       try {
+        setFormVariables();
         submitLoading.value = true;
         // TODO
         if (props.status === 'create') {
@@ -286,14 +303,21 @@
     formData.variables = {};
   };
   const setDeployVariables = () => {
-    each(props.variables, (item) => {
-      formData.variables[item.name] = item.default;
-    });
+    formData.variables = _.reduce(
+      props.variables,
+      (obj, item) => {
+        obj[item.name] = item.default;
+        return obj;
+      },
+      {}
+    );
   };
   watch(
     () => props.variables,
     () => {
-      setVariablesList();
+      setTimeout(() => {
+        setVariablesList();
+      }, 100);
     },
     {
       immediate: true,

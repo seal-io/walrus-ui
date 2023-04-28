@@ -43,12 +43,37 @@ const UNKNOWN_TYPE = ['dynamic'];
 
 const COLLECTION_TYPE = ['map', 'object', 'list', 'tuple'];
 
-export const yamlLoad = (str) => {
-  str = trim(str);
-  const obj = jsYaml.load(str);
-  return obj;
+export const validateYaml = (str) => {
+  let result: any = {};
+  try {
+    str = trim(str);
+    const obj = jsYaml.load(str);
+    if (!obj || !Object.keys(obj).length) {
+      result = {
+        empty: true,
+        error: null
+      };
+    } else {
+      result = {
+        empty: false,
+        error: null
+      };
+    }
+  } catch (error) {
+    console.log('error=======', error);
+    result = {
+      empty: false,
+      error: {
+        line: _.get(error, 'mark.line') + 1,
+        reason: _.get(error, 'reason'),
+        message: `${_.get(error, 'reason')} (line:${
+          _.get(error, 'mark.line') + 1
+        })`
+      }
+    };
+  }
+  return result;
 };
-
 export const schemaType = {
   isListPrimaryType(type) {
     return _.get(type, '0') === 'list';
@@ -188,11 +213,15 @@ export const parseComponentSchema = (schema: ComponentSchema) => {
             if (!required) {
               callback();
             } else {
-              const obj = yamlLoad(val);
-              if (!obj || !Object.keys(obj).length) {
+              const result = validateYaml(val);
+              if (result?.empty) {
                 callback(
                   `${schema.name}${i18n.global.t('common.form.rule.input')}`
                 );
+              } else if (!result.empty && result.error) {
+                callback(`${result.error?.message}`);
+              } else {
+                callback();
               }
             }
           },

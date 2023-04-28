@@ -319,7 +319,7 @@
     if (!activeMenu.value) {
       return calcGridItemSpan(fm, i);
     }
-    if (!activeMenu.value === fm.subGroup) {
+    if (activeMenu.value !== fm.subGroup) {
       return 12;
     }
     const index = _.findIndex(activeSchemaList.value || [], (item) => {

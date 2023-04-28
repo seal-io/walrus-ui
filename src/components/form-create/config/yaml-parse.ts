@@ -1,5 +1,5 @@
 import jsYaml from 'js-yaml';
-import { trim } from 'lodash';
+import _, { trim } from 'lodash';
 import { schemaType } from './interface';
 
 const SexyYamlType = new jsYaml.Type('!sexy', {
@@ -17,10 +17,39 @@ export const yamlLoad = (str) => {
   const obj = jsYaml.load(str, { schema: SEXY_SCHEMA });
   return obj;
 };
+export const validateYaml = (str) => {
+  let result: any = {};
+  try {
+    str = trim(str);
+    const obj = jsYaml.load(str, { schema: SEXY_SCHEMA });
+    if (!obj || !Object.keys(obj).length) {
+      result = {
+        empty: true,
+        error: null
+      };
+    } else {
+      result = {
+        empty: false,
+        error: null
+      };
+    }
+  } catch (error) {
+    result = {
+      empty: false,
+      error: {
+        line: _.get(error, 'mark.line') + 1,
+        reason: _.get(error, 'reason'),
+        message: `${_.get(error, 'reason')} (line:${
+          _.get(error, 'mark.line') + 1
+        })`
+      }
+    };
+  }
+  return result;
+};
 export const yaml2Json = (str, type?) => {
   str = trim(str);
   const obj = jsYaml.load(str, { schema: SEXY_SCHEMA });
-  console.log('yaml2json===', obj, type, str);
   if (!obj || !Object.keys(obj).length) {
     let res: any = [];
     if (schemaType.isListPrimaryType(type)) {

@@ -320,7 +320,8 @@
       await deleteApplicationInstance({ id: instanceId.value, force });
       const data =
         find(instanseList.value, (item) => item.id === instanceId.value) || {};
-      _.set(data, 'status', 'Deleting');
+      _.set(data, 'status.summaryStatus', AppInstanceStatus.Deleting);
+      _.set(data, 'status.transitioning', true);
       // await getApplicationInstances();
       // if (instanseList.value.length) {
       //   handleClickInstance(get(instanseList.value, '0'));
