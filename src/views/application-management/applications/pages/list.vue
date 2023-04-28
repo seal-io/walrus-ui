@@ -85,12 +85,11 @@
               <InstanceStatus
                 v-for="(item, index) in record?.instances"
                 :key="index"
-                :status="item.status"
+                :status="setInstanceStatus(item.status)"
                 :instance-id="item.id"
                 :application-id="record.id"
                 :project-id="queryParams.projectID"
                 :label="`${item.name}(Env: ${item?.environment?.name})`"
-                :status-map="statusMap"
               ></InstanceStatus>
             </a-space>
           </template>
@@ -177,7 +176,7 @@
   import localStore from '@/utils/localStore';
   import { queryProjects } from '../../projects/api';
   import { AppRowData } from '../config/interface';
-  import { statusMap, websocketEventType } from '../config';
+  import { statusMap, websocketEventType, setInstanceStatus } from '../config';
   import { queryApplications, deleteApplication } from '../api';
   import InstanceStatus from '../components/instance-status.vue';
 

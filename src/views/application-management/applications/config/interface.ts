@@ -106,5 +106,7 @@ export interface EndPointRow {
   resourceID: string;
   resourceKind: string;
   resourceSubKind: string;
+  moduleName: string;
+  name: string;
   endpoints: string[];
 }

@@ -12,6 +12,11 @@ const SexyYamlType = new jsYaml.Type('!sexy', {
 });
 const SEXY_SCHEMA = jsYaml.DEFAULT_SCHEMA.extend([SexyYamlType]);
 
+export const yamlLoad = (str) => {
+  str = trim(str);
+  const obj = jsYaml.load(str, { schema: SEXY_SCHEMA });
+  return obj;
+};
 export const yaml2Json = (str, type?) => {
   str = trim(str);
   const obj = jsYaml.load(str, { schema: SEXY_SCHEMA });
@@ -35,6 +40,19 @@ export const json2Yaml = (obj) => {
   if (!obj || !Object.keys(obj).length) return '';
   const res = jsYaml.dump(JSON.parse(JSON.stringify(obj)));
   return res;
+};
+
+export const isJSONstr = (str) => {
+  let result = true;
+  try {
+    const obj = JSON.parse(str);
+    if (typeof obj === 'object') {
+      result = true;
+    }
+  } catch (error) {
+    result = false;
+  }
+  return result;
 };
 
 export const json2Str = (obj) => {

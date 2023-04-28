@@ -55,7 +55,6 @@
               >
                 <xInputGroup
                   v-model:dataKey="sItem.key"
-                  v-model:dataValue="sItem.value"
                   v-model:value="formData.labels"
                   always-delete
                   :trigger-validate="triggerValidate"
@@ -101,7 +100,7 @@
 <script lang="ts" setup>
   import dayjs from 'dayjs';
   import useCallCommon from '@/hooks/use-call-common';
-  import { assignIn, keys, get, each, map, some } from 'lodash';
+  import { assignIn, keys, get, each, map, some, reduce } from 'lodash';
   import { ref, reactive, PropType, watch, provide } from 'vue';
   import xInputGroup from '@/components/form-create/custom-components/x-input-group.vue';
   import thumbButton from '@/components/buttons/thumb-button.vue';
@@ -162,9 +161,6 @@
         value: get(formData, `labels.${k}`)
       };
     });
-    // if (!labelList.value.length) {
-    //   labelList.value = [{ key: '', value: '' }];
-    // }
   };
   const validateLabels = () => {
     triggerValidate.value = some(
@@ -177,6 +173,16 @@
     const labelsRes = validateLabels();
     const res = await formref.value.validate();
     if (!res && !labelsRes) {
+      formData.labels = reduce(
+        labelList.value,
+        (obj, item) => {
+          if (item.key) {
+            obj[item.key] = item.value;
+          }
+          return obj;
+        },
+        {}
+      );
       return formData;
     }
     return false;

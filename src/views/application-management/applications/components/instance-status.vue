@@ -1,7 +1,7 @@
 <template>
   <span class="label-wrapper">
     <a-link style="display: inline" @click="handleViewInstance">
-      <span class="dot" :class="[statusMap[status] || status]"></span>
+      <span class="dot" :class="[get(statusMap, status) || status]"></span>
       <slot name="label"
         ><span>{{ label }}</span></slot
       >
@@ -10,6 +10,7 @@
 </template>
 
 <script lang="ts" setup>
+  import { get } from 'lodash';
   import { useRouter } from 'vue-router';
 
   const props = defineProps({

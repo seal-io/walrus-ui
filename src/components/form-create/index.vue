@@ -15,6 +15,7 @@
         </div>
         <a-grid :cols="24" :col-gap="10" style="flex: 1">
           <template v-for="(fm, index) in schemaList" :key="fm.Name">
+            <!-- three level title -->
             <a-grid-item
               v-if="
                 activeMenu === fm.subGroup &&
@@ -28,14 +29,16 @@
               >
             </a-grid-item>
             <a-grid-item
-              v-show="activeMenu === fm.subGroup"
               v-if="
                 fm.showIf
                   ? toString(get(formData, `${fm.showCondition.key}`)) ===
-                    fm?.showCondition?.value
+                    toString(fm?.showCondition?.value)
                   : true
               "
-              :span="12"
+              :class="{
+                'hidden-field': activeMenu && activeMenu !== fm.subGroup
+              }"
+              :span="setGridItemSpan(fm, index)"
             >
               <a-form-item
                 :field="fm.name"
@@ -169,7 +172,8 @@
     toString,
     some,
     split,
-    find
+    find,
+    filter
   } from 'lodash';
   import {
     PropType,
@@ -250,6 +254,7 @@
   const submitLoading = ref(false);
   const formref = ref();
   const schemaList = ref<ComponentSchema[]>([]);
+  // const activeSchemaList = ref<ComponentSchema[]>([]);
   const formData = ref({});
   const subGroupCache = ref({});
   const subGroupListCache = ref({});
@@ -258,6 +263,13 @@
   const OTHER_SUB_GROUP = 'Other';
   const triggerValidate = ref(false);
 
+  const activeSchemaList = computed(() => {
+    if (!activeMenu.value) return schemaList.value;
+    const list = filter(schemaList.value, (sItem) => {
+      return sItem.subGroup === activeMenu.value;
+    });
+    return list;
+  });
   const doSubmit = async () => {
     return axios[props.action](props.api, formData.value);
   };
@@ -274,6 +286,43 @@
       }
       formData.value[item.name] = val;
     });
+  };
+  const setGridItemSpan = (fm, i) => {
+    if (!activeMenu.value || !activeMenu.value === fm.subGroup) {
+      return 12;
+    }
+    const index = _.findIndex(activeSchemaList.value || [], (item) => {
+      return item.name === fm.name;
+    });
+    if (index === -1) {
+      return 12;
+    }
+    const isEvenPosition = (index + 1) % 2 === 0;
+    const fmSchemaIsCollectionType =
+      schemaType.isCollectionType(fm.type) || schemaType.isUnknownType(fm.type);
+    let bilingSchema: any = {};
+    if (isEvenPosition) {
+      bilingSchema = activeSchemaList.value[index - 1];
+    } else {
+      bilingSchema = activeSchemaList.value[index + 1] || {};
+    }
+    const bilingSchemaIsCollectionType =
+      schemaType.isCollectionType(bilingSchema.type) ||
+      schemaType.isUnknownType(bilingSchema.type);
+
+    if (
+      (fmSchemaIsCollectionType && bilingSchemaIsCollectionType) ||
+      (!fmSchemaIsCollectionType && !bilingSchemaIsCollectionType)
+    ) {
+      return 12;
+    }
+    if (
+      (!fmSchemaIsCollectionType && bilingSchemaIsCollectionType) ||
+      (fmSchemaIsCollectionType && !bilingSchemaIsCollectionType)
+    ) {
+      return 24;
+    }
+    return 12;
   };
   const handleSelectInputChange = (e: any, type) => {
     if (schemaType.isListNumber(type) && !numberReg.test(e.data)) {
@@ -454,9 +503,7 @@
     getFormData,
     clearFormValidStatus
   });
-  // watchEffect(() => {
-  //   setSchemaList();
-  // });
+
   watch(
     () => props.formSchema,
     () => {
@@ -480,6 +527,7 @@
       deep: true
     }
   );
+
   const handleCancel = () => {
     emits('cancel');
   };
@@ -495,6 +543,10 @@
   .form-create-wrap {
     :deep(.arco-select-view) {
       width: 360px;
+    }
+
+    .hidden-field {
+      display: none;
     }
 
     .sub-group-title {

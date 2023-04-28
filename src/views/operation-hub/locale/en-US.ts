@@ -46,7 +46,7 @@ export default {
   'operation.connectors.attribute.invisible': 'invisible',
   'operation.connectors.attribute.sensitive': 'Sensitive',
   'operation.connectors.attribute.sensitive.tips':
-    'If it is sensitive, it will not be visible when typing, and you need to re-enter it when editing;\nIf it is non-sensitive, it will be visible when typing, and you don’t need to re-enter it when editing',
+    'If it is sensitive, it will not be visible after saving, and it needs to be re-entered when editing',
   'operation.environments.menu': 'Environments',
   'operation.environments.create': 'New Environment',
   'operation.environments.edit': 'Edit Environment',

@@ -164,10 +164,7 @@ export const queryApplicationResourceExec = (params: { id: string }) => {
     }
   });
 };
-interface EndPointResult {
-  endpoints: EndPointRow[];
-  pagination: Pagination;
-}
+type EndPointResult = EndPointRow[];
 export const queryInstanceEndpoints = (params: { instanceID: string }) => {
   return axios.get<EndPointResult>(
     `/application-instances/${params.instanceID}/access-endpoints`,

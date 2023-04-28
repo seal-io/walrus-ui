@@ -94,7 +94,7 @@
                     "
                     @mouseover="handlehoverButton('button')"
                   >
-                    <icon-font type="icon-tihuan" style="font-size: 16px" />
+                    <icon-font type="icon-rollback" style="font-size: 16px" />
                   </a-link>
                   <template #content>
                     <div>
@@ -109,23 +109,6 @@
                     </div>
                   </template>
                 </a-dropdown>
-              </a-tooltip>
-              <a-tooltip :content="$t('common.button.clone')">
-                <a-link
-                  type="text"
-                  size="small"
-                  :disabled="
-                    includes(
-                      [AppInstanceStatus.Deleting, AppInstanceStatus.Deploying],
-                      instanceInfo.status
-                    )
-                  "
-                  @click="handleClone(record)"
-                >
-                  <template #icon
-                    ><icon-font type="icon-Clone-Cloud"
-                  /></template>
-                </a-link>
               </a-tooltip>
               <a-tooltip :content="$t('common.button.delete')">
                 <a-link type="text" size="small" @click="handleDelete(record)">

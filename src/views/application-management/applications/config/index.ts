@@ -1,4 +1,4 @@
-import { filter, map, get, split } from 'lodash';
+import { get, filter, map, get, split } from 'lodash';
 import dayjs from 'dayjs';
 import { KeysItem, InstanceResource, Cascader } from './interface';
 
@@ -78,6 +78,11 @@ export const statusMap = {
   Deploying: 'warning',
   DeployFailed: 'error',
   DeleteFailed: 'error'
+};
+export const setInstanceStatus = (status) => {
+  if (get(status, 'transitioning')) return 'warning';
+  if (get(status, 'error')) return 'error';
+  return 'running';
 };
 export const websocketEventType = {
   create: 1,

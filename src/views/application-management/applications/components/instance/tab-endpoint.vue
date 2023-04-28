@@ -13,7 +13,7 @@
           ellipsis
           tooltip
           :cell-style="{ minWidth: '40px' }"
-          data-index="resourceID"
+          data-index="name"
           :title="$t('applications.instance.tab.resourceName')"
         >
         </a-table-column>
@@ -22,16 +22,9 @@
           tooltip
           :cell-style="{ minWidth: '40px' }"
           align="left"
-          data-index="resourceKind"
-          :title="$t('applications.applications.table.type')"
+          data-index="moduleName"
+          :title="$t('applications.applications.table.module')"
         >
-          <template #cell="{ record }">
-            <span>{{
-              record.resourceSubKind
-                ? `${record.resourceKind}/${record.resourceSubKind}`
-                : record.resourceKind
-            }}</span>
-          </template>
         </a-table-column>
         <a-table-column
           ellipsis
@@ -42,7 +35,11 @@
           :title="$t('applications.applications.instance.endpoint')"
         >
           <template #cell="{ record }">
-            <a-space direction="vertical" :size="5">
+            <a-space
+              v-if="record?.endpoints?.length"
+              direction="vertical"
+              :size="5"
+            >
               <a-link
                 v-for="(item, index) in record.endpoints"
                 :key="index"
@@ -102,7 +99,7 @@
         instanceID: instanceId.value
       };
       const { data } = await queryInstanceEndpoints(params);
-      dataList.value = data?.endpoints || [];
+      dataList.value = data || [];
       loading.value = false;
     } catch (error) {
       dataList.value = [];
