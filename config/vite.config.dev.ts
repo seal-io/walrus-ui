@@ -23,7 +23,7 @@ export default mergeConfig(
       //   origin: 'https://localhost:4000'
       // },
       // proxy: createProxyTable('https://192.168.2.8')
-      proxy: createProxyTable()
+      proxy: createProxyTable('https://192.168.2.7')
     },
     plugins: [
       // setRequestHeader(),

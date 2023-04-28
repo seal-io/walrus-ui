@@ -287,16 +287,7 @@
       formData.value[item.name] = val;
     });
   };
-  const setGridItemSpan = (fm, i) => {
-    if (!activeMenu.value || !activeMenu.value === fm.subGroup) {
-      return 12;
-    }
-    const index = _.findIndex(activeSchemaList.value || [], (item) => {
-      return item.name === fm.name;
-    });
-    if (index === -1) {
-      return 12;
-    }
+  const calcGridItemSpan = (fm, index) => {
     const isEvenPosition = (index + 1) % 2 === 0;
     const fmSchemaIsCollectionType =
       schemaType.isCollectionType(fm.type) || schemaType.isUnknownType(fm.type);
@@ -323,6 +314,21 @@
       return 24;
     }
     return 12;
+  };
+  const setGridItemSpan = (fm, i) => {
+    if (!activeMenu.value) {
+      return calcGridItemSpan(fm, i);
+    }
+    if (!activeMenu.value === fm.subGroup) {
+      return 12;
+    }
+    const index = _.findIndex(activeSchemaList.value || [], (item) => {
+      return item.name === fm.name;
+    });
+    if (index === -1) {
+      return 12;
+    }
+    return calcGridItemSpan(fm, index);
   };
   const handleSelectInputChange = (e: any, type) => {
     if (schemaType.isListNumber(type) && !numberReg.test(e.data)) {
