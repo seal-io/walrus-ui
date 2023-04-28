@@ -44,7 +44,7 @@
           </template>
           <template #cell="{ record }">
             <span v-if="isString(record.type)">{{ record.type }}</span>
-            <a-tooltip v-else>
+            <a-tooltip v-else :content-style="{ maxHeight: '240px' }">
               <template #content>
                 <span style="white-space: pre-wrap">{{
                   JSON.stringify(record.type, null, 2)

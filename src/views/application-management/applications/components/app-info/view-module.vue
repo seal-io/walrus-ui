@@ -110,6 +110,23 @@
                         "
                       ></LabelsList>
                     </span>
+                    <a-textarea
+                      v-else-if="
+                        schemaType.isCollectionType(data.type) ||
+                        schemaType.isUnknownType(data.type)
+                      "
+                      class="border-less"
+                      readonly
+                      :auto-size="{ maxRows: 10 }"
+                      :model-value="
+                        json2Yaml(
+                          get(
+                            variablesGroupForm,
+                            `${group}.attributes.${data.name}`
+                          )
+                        )
+                      "
+                    ></a-textarea>
                     <span v-else>{{
                       get(
                         variablesGroupForm,
@@ -193,6 +210,7 @@
   import useCallCommon from '@/hooks/use-call-common';
   import EditPageFooter from '@/components/edit-page-footer/index.vue';
   import { schemaType } from '@/components/form-create/config/interface';
+  import { json2Yaml } from '@/components/form-create/config/yaml-parse';
   import GroupTitle from '@/components/group-title/index.vue';
   import {
     TemplateRowData,

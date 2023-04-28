@@ -34,7 +34,7 @@
             </AutoTip>
           </div>
           <div class="btn-wrap">
-            <a-dropdown>
+            <a-dropdown @select="handleSelectAction">
               <a-link size="mini" @click.stop="() => {}">
                 <template #icon
                   ><icon-more
@@ -42,18 +42,18 @@
                 /></template>
               </a-link>
               <template #content>
-                <a-doption>
+                <a-doption value="edit">
                   <a-tooltip :content="$t('common.button.edit')">
-                    <a-link @click="handleEditTemplate">
+                    <a-link>
                       <template #icon>
                         <icon-edit></icon-edit>
                       </template>
                     </a-link>
                   </a-tooltip>
                 </a-doption>
-                <a-doption>
+                <a-doption value="refresh">
                   <a-tooltip :content="$t('common.button.refresh')">
-                    <a-link @click="handleRefresh">
+                    <a-link>
                       <template #icon>
                         <icon-refresh />
                       </template>
@@ -135,6 +135,14 @@
       execSucceed();
     } catch (error) {
       console.log(error);
+    }
+  };
+  const handleSelectAction = (val) => {
+    if (val === 'edit') {
+      handleEditTemplate();
+    }
+    if (val === 'refresh') {
+      handleRefresh();
     }
   };
   const handleCheckedChange = (val) => {

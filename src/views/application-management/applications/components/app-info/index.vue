@@ -21,7 +21,7 @@
       style="margin-top: 20px"
     ></GroupTitle>
     <div>
-      <div style="margin-bottom: 20px; color: var(--color-text-3)">
+      <div style="margin-bottom: 20px; color: var(--color-text-2)">
         <span>{{ $t('applications.applications.modules.title') }}</span>
         <!-- <span v-if="pageAction === 'edit'" class="optional-notes"
           >({{ $t('applications.applications.modules.tips') }})</span
@@ -107,7 +107,9 @@
             :label-list="variableList"
             :position="sIndex"
             token="variable"
-            :wrap-align="sItem.type === 'dynamic' ? 'flex-start' : 'center'"
+            :wrap-align="
+              sItem.type === unknowType.dynamic ? 'flex-start' : 'center'
+            "
             separator=""
             :placeholder="{
               value: $t('common.input.type'),
@@ -140,11 +142,28 @@
           @click="handleAddVariables"
         ></thumbButton>
       </a-tooltip>
-      <LabelsList
+      <DescriptionTable
         v-if="variableList.length && pageAction === 'view'"
+        style="width: 600px"
+        :data-list="variableList"
+      >
+        <template #value="{ row, value }">
+          <a-textarea
+            v-if="get(row, 'type') === unknowType.dynamic"
+            readonly
+            :auto-size="{ maxRows: 10 }"
+            :model-value="row.value"
+          ></a-textarea>
+          <span v-else>{{ value }}</span>
+        </template>
+      </DescriptionTable>
+      <!-- <LabelsList
+        v-if="variableList.length && pageAction === 'edit'"
         mode="yaml"
+        :description-list="variableList"
         :labels="variablesObj"
-      ></LabelsList>
+      >
+      </LabelsList> -->
     </div>
     <EditPageFooter v-if="pageAction === 'edit'">
       <template #save>
@@ -216,11 +235,13 @@
     queryModules,
     queryModulesAllVersions
   } from '@/views/operation-hub/templates/api';
+  import DescriptionTable from '@/components/description-table/index.vue';
   import EditPageFooter from '@/components/edit-page-footer/index.vue';
   import xInputGroup from '@/components/form-create/custom-components/x-input-group.vue';
   import {
     yaml2Json,
-    json2Yaml
+    json2Yaml,
+    unknowType
   } from '@/components/form-create/config/yaml-parse';
   import { schemaType } from '@/components/form-create/config/interface';
   import { CustomAttrbute } from '@/views/operation-hub/connectors/config/interface';
@@ -243,10 +264,6 @@
     queryProjectSecrets
   } from '../../api';
 
-  const environmentList = inject(
-    'environmentList',
-    ref<{ label: string; value: string }[]>([])
-  );
   const tabBarStore = useTabBarStore();
   const { router, route } = useCallCommon();
   const basicform = ref();
@@ -293,7 +310,9 @@
     const res = reduce(
       appInfo?.variables,
       (obj, item) => {
-        if (item.name) {
+        if (item.name && item.type === unknowType.dynamic) {
+          obj[item.name] = json2Yaml(item.default);
+        } else if (item.name) {
           obj[item.name] = item.default;
         }
         return obj;
@@ -564,7 +583,18 @@
       const params = {
         ...appInfo,
         ...result,
-        variables: filter(appInfo.variables, (item) => item.name)
+        variables: filter(variableList.value, (item) => item.key).map(
+          (sItem: any) => {
+            return {
+              name: sItem.key,
+              type: sItem.type,
+              default:
+                unknowType.dynamic === sItem.type
+                  ? yaml2Json(sItem.value)
+                  : sItem.value
+            };
+          }
+        )
       };
       defaultBasicInfo.value = pick(params, [
         'name',
@@ -687,6 +717,10 @@
       flex-wrap: wrap;
       align-items: center;
       min-height: 110px;
+      max-height: 300px;
+      padding-top: 2px;
+      padding-left: 2px;
+      overflow-y: auto;
 
       .thumb-item {
         margin-right: 12px;
@@ -697,7 +731,7 @@
     .var-title {
       margin-top: 10px;
       margin-bottom: 20px;
-      color: var(--color-text-3);
+      color: var(--color-text-2);
     }
 
     .var-item {

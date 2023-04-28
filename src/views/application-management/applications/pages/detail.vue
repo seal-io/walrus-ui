@@ -47,14 +47,10 @@
               <StatusLabel
                 :zoom="0.9"
                 :status="{
-                  status: get(item, 'status'),
+                  status: get(item, 'status.summaryStatus'),
                   message: '',
-                  transitioning: ['Deleting', 'Deploying'].includes(
-                    get(item, 'status')
-                  ),
-                  error: ['DeployFailed', 'DeleteFailed'].includes(
-                    get(item, 'status')
-                  )
+                  transitioning: get(item, 'status.transitioning'),
+                  error: get(item, 'status.error')
                 }"
               ></StatusLabel>
             </template>

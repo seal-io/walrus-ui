@@ -1,5 +1,7 @@
-import _ from 'lodash';
+import _, { trim } from 'lodash';
 import { FieldRule } from '@arco-design/web-vue';
+import i18n from '@/locale';
+import jsYaml from 'js-yaml';
 
 export interface LabelListItem {
   key?: string;
@@ -40,6 +42,12 @@ const BASIC_TYPE = ['number', 'string', 'bool'];
 const UNKNOWN_TYPE = ['dynamic'];
 
 const COLLECTION_TYPE = ['map', 'object', 'list', 'tuple'];
+
+export const yamlLoad = (str) => {
+  str = trim(str);
+  const obj = jsYaml.load(str);
+  return obj;
+};
 
 export const schemaType = {
   isListPrimaryType(type) {
@@ -173,13 +181,35 @@ export const parseComponentSchema = (schema: ComponentSchema) => {
         lang: 'yaml',
         showGutter: true
       },
-      rules: [{ ...rules, message: 'common.form.rule.input' }]
+      rules: [
+        {
+          ...rules,
+          validator(val, callback) {
+            if (!required) {
+              callback();
+            } else {
+              const obj = yamlLoad(val);
+              if (!obj || !Object.keys(obj).length) {
+                callback(
+                  `${schema.name}${i18n.global.t('common.form.rule.input')}`
+                );
+              }
+            }
+          },
+          message: 'common.form.rule.input'
+        }
+      ]
     };
   }
   return {
     component: ['hintInput'],
     props: { ...props },
-    rules: [{ ...rules, message: 'common.form.rule.input' }]
+    rules: [
+      {
+        ...rules,
+        message: 'common.form.rule.input'
+      }
+    ]
   };
 };
 

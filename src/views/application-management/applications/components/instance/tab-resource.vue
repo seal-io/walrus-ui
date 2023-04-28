@@ -18,6 +18,14 @@
           data-index="name"
           :title="$t('common.table.name')"
         >
+          <template #cell="{ record }">
+            <icon-font
+              v-if="get(record, 'composition.id')"
+              type="icon-node"
+              class="mright-5"
+            ></icon-font>
+            <span>{{ record.name }}</span>
+          </template>
         </a-table-column>
         <a-table-column
           ellipsis

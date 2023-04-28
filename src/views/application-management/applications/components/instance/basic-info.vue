@@ -11,16 +11,14 @@
           v-if="item.key === 'status'"
           :zoom="0.9"
           :status="{
-            status: item.value,
-            text: item.value,
+            status: get(item, 'value.summaryStatus'),
+            text: get(item, 'value.summaryStatus'),
             message: '',
-            transitioning: ['Deleting', 'Deploying'].includes(
-              get(item, 'value')
-            ),
-            error: ['DeployFailed', 'DeleteFailed'].includes(get(item, 'value'))
+            transitioning: get(item, 'value.transitioning'),
+            error: get(item, 'value.error')
           }"
         ></StatusLabel>
-        <div v-else>{{ item.value }}</div>
+        <div v-else>{{ get(item, 'value') }}</div>
       </a-descriptions-item>
     </a-descriptions>
   </div>
@@ -57,7 +55,7 @@
     name: '',
     createTime: '',
     updateTime: '',
-    status: '',
+    status: {},
     environment: { name: '' },
     application: {
       name: ''
@@ -67,6 +65,7 @@
     'instanceInfo',
     ref({
       name: '',
+      status: {},
       createTime: '',
       updateTime: ''
     })
@@ -75,7 +74,7 @@
   const labelList = ref<{ key: string; value: string }[]>([]);
 
   const basicDataList = computed(() => {
-    return map(instanceBasicInfo, (item) => {
+    const list = map(instanceBasicInfo, (item) => {
       return {
         ...item,
         label: t(item.label),
@@ -85,6 +84,8 @@
           : get(formData, item.key)
       };
     });
+    console.log('basicDataList===', list);
+    return list;
   });
   const handleAddLabel = (obj, list) => {
     list.push({ ...obj });
@@ -92,7 +93,6 @@
   const handleDeleteLabel = (list, index) => {
     list.splice(index, 1);
   };
-
   watchEffect(() => {
     assignIn(formData, instanceInfo.value, {
       application: { name: appInfo.name }

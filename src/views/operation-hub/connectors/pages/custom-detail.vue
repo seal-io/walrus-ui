@@ -78,7 +78,7 @@
           <a-space
             v-if="attributeList?.length && pageAction === 'edit'"
             fill
-            style="display: flex; flex-direction: column; width: 60%"
+            style="display: flex; flex-direction: column; width: 680px"
             direction="vertical"
           >
             <xInputGroup
@@ -146,10 +146,15 @@
             </xInputGroup>
           </a-space>
           <template v-if="pageAction === 'view' && attributeList?.length">
-            <labelsList
+            <!-- <labelsList
               style="margin-left: 12px"
               :labels="formData.configData"
-            ></labelsList>
+            ></labelsList> -->
+            <DescriptionTable
+              style="width: 600px; margin-left: 12px"
+              :data-list="attributeList"
+            >
+            </DescriptionTable>
           </template>
         </a-form-item>
       </a-form>
@@ -197,6 +202,7 @@
   import EditPageFooter from '@/components/edit-page-footer/index.vue';
   import xInputGroup from '@/components/form-create/custom-components/x-input-group.vue';
   import useCallCommon from '@/hooks/use-call-common';
+  import DescriptionTable from '@/components/description-table/index.vue';
   import ProviderIcon from '@/components/provider-icon/index.vue';
   import { variableTypeList } from '@/views/application-management/applications/config';
   import labelsList from '@/views/application-management/applications/components/app-info/labels-list.vue';
@@ -212,9 +218,9 @@
   };
   const labelOption = {
     style: {
-      key: setPropertyStyle({ 'flex-basis': '200px' }),
-      description: setPropertyStyle({ 'flex-basis': '110px' })
-      // value: setPropertyStyle({ 'flex-basis': '150px' })
+      key: setPropertyStyle({ 'flex-basis': '180px' }),
+      description: setPropertyStyle({ 'flex-basis': '110px' }),
+      value: setPropertyStyle({ 'flex-basis': '320px' })
     }
   };
   const { t, router, route } = useCallCommon();

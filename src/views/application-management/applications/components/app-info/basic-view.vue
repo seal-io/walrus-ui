@@ -151,6 +151,7 @@
     () => props.dataInfo,
     () => {
       formData.value = _.cloneDeep(props.dataInfo);
+      console.log('formData===999', formData.value);
     },
     {
       immediate: true,
