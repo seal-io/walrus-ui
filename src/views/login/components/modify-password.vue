@@ -24,6 +24,7 @@
           >
             <a-input-password
               v-model.trim="formData.newPassword"
+              size="large"
               :placeholder="$t('user.password.newPassword')"
               allow-clear
             >
@@ -45,6 +46,7 @@
           >
             <a-input-password
               v-model.trim="formData.confirmPassword"
+              size="large"
               :placeholder="$t('user.password.confirmPassword')"
               allow-clear
             >
@@ -70,7 +72,11 @@
               }
             ]"
           >
-            <a-input v-model.trim="formData.serverUrl" placeholder="serverURL">
+            <a-input
+              v-model.trim="formData.serverUrl"
+              size="large"
+              placeholder="serverURL"
+            >
               <template #prefix>
                 <icon-home />
               </template>

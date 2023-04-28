@@ -117,7 +117,7 @@
                       "
                       class="border-less"
                       readonly
-                      :auto-size="{ maxRows: 10 }"
+                      :auto-size="{ maxRows: 8 }"
                       :model-value="
                         json2Yaml(
                           get(
@@ -148,7 +148,23 @@
           :data="variablesGroup[defaultGroupKey]?.variables"
         >
           <template #value="{ data }">
-            <span style="font-weight: 400">{{
+            <a-textarea
+              v-if="
+                schemaType.isCollectionType(data.type) ||
+                schemaType.isUnknownType(data.type)
+              "
+              readonly
+              :auto-size="{ maxRows: 8 }"
+              :model-value="
+                json2Yaml(
+                  get(
+                    variablesGroupForm,
+                    `${defaultGroupKey}.attributes.${data.name}`
+                  )
+                )
+              "
+            ></a-textarea>
+            <span v-else style="font-weight: 400">{{
               get(
                 variablesGroupForm[defaultGroupKey]?.attributes,
                 `${data.name}`
@@ -307,6 +323,7 @@
   const variablesDataList = computed(() => {
     const list =
       get(variablesGroup.value, `${activeKey.value}.variables`) || [];
+    console.log('list===', list);
     return filter(list, (item) => {
       return !item.subGroup || item.subGroup === activeSubGroup.value;
     });

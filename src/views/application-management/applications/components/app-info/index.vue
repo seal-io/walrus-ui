@@ -61,7 +61,7 @@
         </a-tooltip>
       </div>
     </div>
-    <div :title="$t('applications.applications.variables.title')">
+    <div class="variable-wrapper">
       <div class="var-title">
         <span>{{ $t('applications.applications.variables.title') }}</span>
       </div>
@@ -117,6 +117,7 @@
               key: $t('common.input.key')
             }"
             lang="yaml"
+            :show-gutter="true"
             :components="{
               string: 'Input',
               number: 'InputNumber',
@@ -128,6 +129,9 @@
             @add="handleAddVariables"
             @delete="handleDeleteVariable(sIndex)"
           >
+            <template #descExtra>
+              <div v-if="sItem.error" class="error-msg">{{ sItem.error }}</div>
+            </template>
           </xInputGroup>
         </div>
       </div>
@@ -224,7 +228,8 @@
     find,
     keys,
     split,
-    some
+    some,
+    each
   } from 'lodash';
   import useCallCommon from '@/hooks/use-call-common';
   import thumbButton from '@/components/buttons/thumb-button.vue';
@@ -241,7 +246,8 @@
   import {
     yaml2Json,
     json2Yaml,
-    unknowType
+    unknowType,
+    validateYaml
   } from '@/components/form-create/config/yaml-parse';
   import { schemaType } from '@/components/form-create/config/interface';
   import { CustomAttrbute } from '@/views/operation-hub/connectors/config/interface';
@@ -567,7 +573,22 @@
     completeDataSetter?.updateVariablesCompleteData?.();
   };
   const validateVariabels = () => {
-    triggerValidate.value = some(variableList.value, (item) => !item.key);
+    each(variableList.value, (item) => {
+      if (item.type === unknowType.dynamic) {
+        const result = validateYaml(item.value);
+        if (!result.empty && result.error) {
+          item.error = result.error.message;
+        } else {
+          item.error = '';
+        }
+      } else {
+        item.error = '';
+      }
+    });
+    triggerValidate.value = some(
+      variableList.value,
+      (item) => !item.key || item.error
+    );
     return triggerValidate.value;
   };
   const handleOk = async () => {
@@ -620,6 +641,7 @@
         });
       }
       submitLoading.value = false;
+      setVariableList();
       execSucceed();
       emits('save', res.id);
     } catch (error) {
@@ -637,7 +659,7 @@
     router.back();
   };
   const handleCancel = async () => {
-    setAppInfoVariables();
+    // setAppInfoVariables();
     const appInfoData = {
       ...appInfo,
       ...(await basicform.value.getFormData())
@@ -711,6 +733,8 @@
 </script>
 
 <style lang="less" scoped>
+  @import url('../style/app.less');
+
   .detail-info {
     .content {
       display: flex;
@@ -736,7 +760,6 @@
 
     .var-item {
       width: 70%;
-      margin-bottom: 10px;
 
       &:last-child {
         margin-bottom: 0;

@@ -241,13 +241,14 @@
       _.toLower(o.name).startsWith(_.toLower(lastItem))
     );
   };
+  // default value is empty str,or will throw error in console
   const setDefaultValue = () => {
     setTimeout(() => {
       // const defaultvalue = isString(props.editorDefaultValue)
       //   ? props.editorDefaultValue
       //   : JSON.stringify(props.editorDefaultValue, null, 2);
       aceEditor?.setValue(
-        props.editorDefaultValue || get(defaultHolder, props.lang),
+        props.editorDefaultValue || get(defaultHolder, props.lang) || '',
         1
       );
     }, 100);

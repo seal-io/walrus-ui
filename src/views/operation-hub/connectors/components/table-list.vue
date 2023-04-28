@@ -253,7 +253,15 @@
   import { UseSortDirection } from '@/utils/common';
   import ProviderIcon from '@/components/provider-icon/index.vue';
   import dayjs from 'dayjs';
-  import _, { get, filter, map, pickBy, find, toLower } from 'lodash';
+  import _, {
+    get,
+    filter,
+    map,
+    pickBy,
+    find,
+    toLower,
+    cloneDeep
+  } from 'lodash';
   import {
     reactive,
     ref,
@@ -447,10 +455,12 @@
       console.log(error);
     }
   };
-  const handleEnableFinOps = async (enable, row) => {
+  const handleEnableFinOps = async (enable, data) => {
     try {
       loading.value = true;
+      const row = cloneDeep(data);
       row.enableFinOps = enable;
+      row.configData = null;
       await updateConnector(row);
       loading.value = false;
       Message.success(t('common.message.success'));

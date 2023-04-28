@@ -22,6 +22,7 @@ export interface CustomAttrbute {
   extraCom?: string;
   visible?: boolean;
   extraProps?: any;
+  error?: string;
   style?: object;
 }
 

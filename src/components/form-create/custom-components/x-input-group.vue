@@ -109,7 +109,10 @@
       <div
         v-if="showDescription"
         :span="8"
-        :style="getItemStyle('description')"
+        :style="{
+          ...getItemStyle('description'),
+          position: 'relative'
+        }"
       >
         <span style="padding: 0 4px">{{ separator }}</span>
         <slot name="description">
@@ -144,13 +147,13 @@
                 :is="
                   get(internalComponents, get($attrs?.components, dataValue))
                 "
+                :show-gutter="false"
                 style="width: 100%"
                 :placeholder="
                   get($attrs?.placeholder, 'description') ||
                   $t('common.input.description')
                 "
                 show-word-limit
-                :show-gutter="false"
                 :model-value="dataDesc"
                 :editor-id="`${token}-${position}`"
                 :editor-default-value="dataDefault"
@@ -162,6 +165,7 @@
             </template>
           </template>
         </slot>
+        <slot name="descExtra"> </slot>
       </div>
     </div>
     <div class="btn-wrapper">
