@@ -668,6 +668,7 @@
     if (pageAction.value === 'edit' && route.params.action === 'view') {
       emits('cancelEdit');
       // reset the editing data
+      triggerValidate.value = false;
       getApplicationDetail();
       return;
     }
