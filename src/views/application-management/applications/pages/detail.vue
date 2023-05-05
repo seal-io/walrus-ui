@@ -125,6 +125,7 @@
     remove,
     includes
   } from 'lodash';
+  import axiosChunkRequest from '@/api/axios-chunk-request';
   import { execSucceed } from '@/utils/monitor';
   import useCallCommon from '@/hooks/use-call-common';
   import GroupTitle from '@/components/group-title/index.vue';
@@ -137,7 +138,8 @@
   import {
     instanceActions,
     instanceStatus,
-    AppInstanceStatus
+    AppInstanceStatus,
+    websocketEventType
   } from '../config/index';
   import AppDetail from '../components/app-info/index.vue';
   import InstanceDetail from '../components/instance/index.vue';
@@ -178,6 +180,7 @@
     },
     modules: []
   }) as AppFormData;
+  let axiosInstance: any = null;
   const execReload = inject('execReload', () => {});
   provide('instanceId', currentInstance);
   provide('environmentList', environmentList);
@@ -221,10 +224,12 @@
   };
   const cloneHandler = async (name) => {
     try {
-      await cloneApplicationInstance({
+      const { data } = await cloneApplicationInstance({
         id: get(cloneInstance.value, 'id'),
         name
       });
+      // TODO
+      instanseList.value.push(data);
       execSucceed();
     } catch (error) {
       console.log(error);
@@ -268,8 +273,10 @@
     console.log('data===', data);
     if (action === 'create') {
       const newInstance = cloneDeep(data);
-      // instanseList.value.push(newInstance);
+      // TODO
+      instanseList.value.push(newInstance);
       setTimeout(() => {
+        instanseList.value = _.uniqBy(instanseList.value, 'id');
         handleClickInstance(newInstance);
       });
     }
@@ -380,13 +387,14 @@
   const updateInstanceList = (data) => {
     const collections = data?.collection || [];
     // 1: create, 2: update, 3: delete
-    if (data?.type === 1) {
+    if (data?.type === websocketEventType.create) {
       instanseList.value = _.concat(collections, instanseList.value);
+      instanseList.value = _.uniqBy(instanseList.value, 'id');
       return;
     }
 
     // delete
-    if (data?.type === 3) {
+    if (data?.type === websocketEventType.delete) {
       const ids = data?.ids || [];
       remove(instanseList.value, (item) => includes(ids, item.id));
       if (!instanseList.value.length) {
@@ -416,15 +424,24 @@
     });
     console.log('message:', data);
   };
+  const updateHandler = (list) => {
+    _.each(list, (data) => {
+      updateInstanceList(data);
+    });
+  };
   // create websocket  connecting
-  const createInstanceListWebsocket = () => {
+  const createInstanceListChunkConnection = () => {
     try {
       const appId = route.query.id || '';
       if (!id) return;
-      websocketInstanceList.value?.close?.();
-      websocketInstanceList.value = createWebsocketInstance({
-        url: `/application-instances?applicationID=${appId}`,
-        onmessage: updateInstanceList
+      // websocketInstanceList.value?.close?.();
+      axiosInstance?.cancel?.();
+      axiosInstance = axiosChunkRequest({
+        url: `/application-instances`,
+        params: {
+          applicationID: appId
+        },
+        handler: updateHandler
       });
     } catch (error) {
       console.log(error);
@@ -440,11 +457,12 @@
   };
   onMounted(() => {
     nextTick(() => {
-      createInstanceListWebsocket();
+      createInstanceListChunkConnection();
     });
   });
   onBeforeUnmount(() => {
-    websocketInstanceList.value?.close?.();
+    // websocketInstanceList.value?.close?.();
+    axiosInstance?.cancel?.();
   });
   init();
 </script>

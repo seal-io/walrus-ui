@@ -13,7 +13,8 @@ export interface AppRowData {
   labels: object;
   status: string;
   description: string;
-  environmentID: string;
+  environmentID: { id: string; name: string };
+  instances: Array<AppRowData>;
   modules: Array<{
     moduleID: string;
     name: string;

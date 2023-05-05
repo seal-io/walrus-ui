@@ -171,6 +171,7 @@
     onBeforeUnmount,
     computed
   } from 'vue';
+  import axiosChunkRequest from '@/api/axios-chunk-request';
   import useCallCommon from '@/hooks/use-call-common';
   import StatusLabel from '@/views/operation-hub/connectors/components/status-label.vue';
   import { deleteModal, execSucceed } from '@/utils/monitor';
@@ -192,6 +193,7 @@
     rollbackInstance
   } from '../../api';
 
+  let axiosInstance: any = null;
   const { t } = useCallCommon();
   const { sort, sortOrder, setSortDirection } = UseSortDirection({
     defaultSortField: '-createTime',
@@ -344,10 +346,11 @@
   };
   const updateRevisions = (data) => {
     if (data?.type !== websocketEventType.update) return;
-    const collections = filter(
-      data.collection || [],
-      (sItem) => sItem?.instance?.id === instanceId.value
-    );
+    // const collections = filter(
+    //   data.collection || [],
+    //   (sItem) => sItem?.instance?.id === instanceId.value
+    // );
+    const collections = data?.collection || [];
     const openRevisionData = find(
       collections,
       (item) => item.id === get(revisionData.value, 'id')
@@ -368,12 +371,21 @@
       }
     });
   };
+  const updateHandler = (list) => {
+    each(list, (data) => {
+      updateRevisions(data);
+    });
+  };
   const createInstanceListWebsocket = () => {
     try {
-      if (websocketRevisions.value) return;
-      websocketRevisions.value = createWebsocketInstance({
+      // if (websocketRevisions.value) return;
+      axiosInstance?.cancel?.();
+      axiosInstance = axiosChunkRequest({
         url: `/application-revisions`,
-        onmessage: updateRevisions
+        params: {
+          instanceID: instanceId.value
+        },
+        handler: updateHandler
       });
     } catch (error) {
       console.log(error);
@@ -394,7 +406,8 @@
   );
   onBeforeUnmount(() => {
     console.log('wss unmounted');
-    websocketRevisions.value?.close?.();
+    // websocketRevisions.value?.close?.();
+    axiosInstance?.cancel?.();
   });
   onMounted(() => {
     console.log('resource');

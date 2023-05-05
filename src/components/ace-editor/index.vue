@@ -1,6 +1,19 @@
 <template>
-  <div class="ace-box" :style="{ height: `${height + 2}px` }">
-    <div :id="editorId" :style="{ minHeight: `${height}px` }"></div>
+  <div class="ace-wrapper">
+    <div v-show="isAce" class="ace-box" :style="{ height: `${height + 2}px` }">
+      <div :id="editorId" :style="{ minHeight: `${height}px` }"></div>
+    </div>
+    <a-input
+      v-show="!isAce"
+      v-model="inputVal"
+      :default-value="editorDefaultValue"
+      @input="handleInput"
+    ></a-input>
+    <icon-launch
+      v-if="showToggle"
+      class="icon-btn"
+      @click="handleToggleInput"
+    />
   </div>
 </template>
 
@@ -114,6 +127,12 @@
       default() {
         return [];
       }
+    },
+    showToggle: {
+      type: Boolean,
+      default() {
+        return false;
+      }
     }
   });
   const defaultHolder = {
@@ -123,6 +142,8 @@
   console.log('terraform');
   // let timer:any = null
   let aceEditor: any = null;
+  const isAce = ref(true);
+  const inputVal = ref('');
   const isInitialValue = ref(false);
   const markerIdList = ref<number[]>([]);
   const backupAddlines = ref<number[]>([]);
@@ -247,10 +268,10 @@
       // const defaultvalue = isString(props.editorDefaultValue)
       //   ? props.editorDefaultValue
       //   : JSON.stringify(props.editorDefaultValue, null, 2);
-      aceEditor?.setValue(
-        props.editorDefaultValue || get(defaultHolder, props.lang) || '',
-        1
-      );
+      const val =
+        props.editorDefaultValue || get(defaultHolder, props.lang) || '';
+      aceEditor?.setValue(val, 1);
+      inputVal.value = val;
     }, 100);
   };
   const setLanguageTools = () => {
@@ -279,6 +300,15 @@
         // }
       }
     });
+  };
+  const handleInput = (val) => {
+    console.log('input===', val);
+    emits('change', val);
+    emits('input', val);
+    emits('update:modelValue', val);
+  };
+  const handleToggleInput = () => {
+    isAce.value = !isAce.value;
   };
   const execSplitEditor = () => {
     // if (!props.split) return;
@@ -331,6 +361,7 @@
       });
       aceEditor.on('change', function (args: any) {
         const val = aceEditor.getValue();
+        inputVal.value = val;
         emits('change', val);
         emits('input', val);
         emits('update:modelValue', val);
@@ -382,5 +413,28 @@
     bottom: 0;
     left: 0;
     z-index: 100;
+  }
+
+  .ace-wrapper {
+    position: relative;
+
+    &:hover {
+      .icon-btn {
+        background-color: #fff;
+        opacity: 1;
+        transition: opacity 0.3s;
+      }
+    }
+
+    .icon-btn {
+      position: absolute;
+      top: 1px;
+      right: 1px;
+      color: rgb(var(--arcoblue-4));
+      background-color: #fff;
+      cursor: pointer;
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
   }
 </style>

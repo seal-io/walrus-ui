@@ -167,6 +167,7 @@
     nextTick,
     onBeforeUnmount
   } from 'vue';
+  import axiosChunkRequest from '@/api/axios-chunk-request';
   import useCallCommon from '@/hooks/use-call-common';
   import { createWebsocketInstance } from '@/hooks/use-websocket';
   import { deleteModal, execSucceed } from '@/utils/monitor';
@@ -197,6 +198,7 @@
     page: 1,
     perPage: 10
   });
+  let axiosInstance: any = null;
   const dataList = ref<AppRowData[]>([]);
   const websocketInstance = ref<any>(null);
   const projectList = ref<{ label: string; value: string }[]>([]);
@@ -358,10 +360,11 @@
 
   const updateApplicationList = (data) => {
     if (data?.type !== websocketEventType.update) return;
-    const collections = filter(
-      data.collection || [],
-      (sItem) => sItem?.project?.id === queryParams.projectID
-    );
+    // const collections = filter(
+    //   data.collection || [],
+    //   (sItem) => sItem?.project?.id === queryParams.projectID
+    // );
+    const collections = data?.collection || [];
     _.each(collections, (item) => {
       const updateIndex = _.findIndex(
         dataList.value,
@@ -375,12 +378,20 @@
       }
     });
   };
+  const updateHandler = (list) => {
+    _.each(list, (data) => {
+      updateApplicationList(data);
+    });
+  };
   const createInstanceListWebsocket = () => {
     try {
-      if (websocketInstance.value) return;
-      websocketInstance.value = createWebsocketInstance({
+      if (axiosInstance || !queryParams.projectID) return;
+      axiosInstance = axiosChunkRequest({
         url: `/applications`,
-        onmessage: updateApplicationList
+        params: {
+          projectID: queryParams.projectID
+        },
+        handler: updateHandler
       });
     } catch (error) {
       console.log(error);
@@ -399,7 +410,7 @@
   );
   onBeforeUnmount(() => {
     console.log('wss app unmount');
-    websocketInstance.value?.close?.();
+    axiosInstance?.cancel?.();
   });
   init();
 </script>

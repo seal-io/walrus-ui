@@ -246,6 +246,7 @@
 </template>
 
 <script lang="ts" setup>
+  import axiosChunkRequest from '@/api/axios-chunk-request';
   import { websocketEventType } from '@/views/config';
   import { createWebsocketInstance } from '@/hooks/use-websocket';
   import ADropdownButton from '@arco-design/web-vue/es/dropdown/dropdown-button';
@@ -303,6 +304,7 @@
   });
   const axiosSource = useAxiosSource();
   let axiosToken: any = null;
+  let axiosInstance: any = null;
   const { rowSelection, selectedKeys, handleSelectChange } = useRowSelect();
   const { router, t } = useCallCommon();
   const { sort, sortOrder, setSortDirection } = UseSortDirection({
@@ -477,10 +479,11 @@
     handleFilter();
   };
   const upateDataList = (data) => {
-    const collections = filter(
-      data.collection || [],
-      (sItem) => sItem?.category === props.category
-    );
+    // const collections = filter(
+    //   data.collection || [],
+    //   (sItem) => sItem?.category === props.category
+    // );
+    const collections = data?.collection || [];
     if (data?.type === websocketEventType.delete) {
       dataList.value = _.filter(dataList.value, (item) => {
         return !_.find(collections, (sItem) => sItem.id === item.id);
@@ -489,6 +492,7 @@
     }
     if (data?.type === websocketEventType.create) {
       dataList.value = _.concat(collections, dataList.value);
+      dataList.value = _.uniqBy(dataList.value, 'id');
       return;
     }
     _.each(collections, (item) => {
@@ -504,19 +508,28 @@
       }
     });
   };
+  const updateHandler = (list) => {
+    _.each(list, (data) => {
+      upateDataList(data);
+    });
+  };
   const createInstanceListWebsocket = () => {
     try {
-      if (websocketInstance.value) return;
-      websocketInstance.value = createWebsocketInstance({
+      if (axiosInstance) return;
+      axiosInstance = axiosChunkRequest({
         url: `/connectors`,
-        onmessage: upateDataList
+        params: {
+          category: props.category
+        },
+        handler: updateHandler
       });
     } catch (error) {
       console.log(error);
     }
   };
   const handleClosews = () => {
-    websocketInstance.value?.close?.();
+    // websocketInstance.value?.close?.();
+    axiosInstance?.cancel?.();
   };
   onActivated(() => {
     if (activeKey.value === props.category) {
@@ -539,7 +552,8 @@
     }
   );
   onBeforeUnmount(() => {
-    websocketInstance.value?.close?.();
+    // websocketInstance.value?.close?.();
+    axiosInstance?.cancel?.();
     console.log('close:======');
   });
 </script>
