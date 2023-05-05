@@ -1,7 +1,7 @@
 <template>
   <div class="tab-logs-wrap">
     <a-cascader
-      :loading="loading"
+      :loading="isLoading"
       style="width: 240px; margin-bottom: 8px"
       :options="containerList"
       :model-value="logKey"
@@ -13,19 +13,13 @@
         <div v-html="content"></div>
       </div>
     </div>
-    <!-- <AceEditor
-      :editor-default-value="content"
-      read-only
-      :show-gutter="false"
-      lang="html"
-      :height="400"
-    ></AceEditor> -->
   </div>
 </template>
 
 <script lang="ts" setup>
   import { useWebSocket } from '@vueuse/core';
   import { createWebSocketUrl } from '@/hooks/use-websocket';
+  import axiosChunkRequest from '@/api/axios-chunk-request';
   import Convert from 'ansi-to-html';
   import { get, split, map, filter } from 'lodash';
   // import stripAnsi from 'strip-ansi';
@@ -37,40 +31,63 @@
     computed,
     onBeforeUnmount,
     watch,
-    nextTick
+    nextTick,
+    PropType
   } from 'vue';
-  import AceEditor from '@/components/ace-editor/index.vue';
   import { InstanceResource, Cascader } from '../../config/interface';
-  import { generateResourcesKeys, getDefaultValue } from '../../config';
+  import { generateResourcesKeys, getDefaultValue } from '../../config/utils';
   import { queryApplicationResource } from '../../api';
   import testData from '../../config/data';
 
+  const props = defineProps({
+    resourceList: {
+      type: Array as PropType<InstanceResource[]>,
+      default() {
+        return [];
+      }
+    },
+    isLoading: {
+      type: Boolean,
+      default() {
+        return false;
+      }
+    }
+  });
   const instanceId = inject('instanceId', ref(''));
   const resourceId = ref('');
   const logKey = ref('');
   const wssInstance: any = ref('');
   const content = ref('');
   const loading = ref(false);
+  let timer: any = null;
+  let axiosInstance: any = null;
   const containerList = ref<Cascader[]>([]);
   const convert = new Convert();
 
   // const content = computed(() => {
   //   return wssInstance.value?.data;
   // });
-  const createWebSockerConnection = () => {
+  const updateContent = (newVal) => {
+    if (hasAnsi(newVal)) {
+      // content.value = `${content.value}${convert.toHtml(newVal)}`;
+      content.value = `${convert.toHtml(newVal)}`;
+    } else {
+      // content.value = `${content.value}${newVal}`;
+      content.value = `${newVal}`;
+    }
+  };
+  const createChunkConnection = async () => {
     if (!logKey.value || !resourceId.value) return;
-    const wssURL = createWebSocketUrl(
-      `/application-resources/${resourceId.value}/log?key=${logKey.value}`
-    );
-    wssInstance.value = useWebSocket(wssURL, {
-      // autoReconnect: {
-      //   retries: 3,
-      //   delay: 1000,
-      //   onFailed() {
-      //     console.log('Failed to connect WebSocket after 3 retries');
-      //   }
-      // }
-      autoReconnect: false
+    axiosInstance?.cancel?.();
+    const url = `/application-resources/${resourceId.value}/log`;
+    axiosInstance = axiosChunkRequest({
+      url,
+      params: {
+        key: logKey.value,
+        watch: true
+      },
+      contentType: 'text',
+      handler: updateContent
     });
   };
   const getResourceId = (val) => {
@@ -86,9 +103,7 @@
     logKey.value = result.key;
     resourceId.value = result.id;
     content.value = '';
-    createWebSockerConnection();
-
-    console.log('object:', val, wssInstance.value);
+    createChunkConnection();
   };
   const resetData = () => {
     containerList.value = [];
@@ -120,51 +135,51 @@
       containerList.value = [];
     }
   };
-  const updateContent = (newVal) => {
-    if (hasAnsi(newVal)) {
-      content.value = `${content.value}${convert.toHtml(newVal)}`;
-    } else {
-      content.value = `${content.value}${newVal}`;
-    }
-  };
+
   const init = async () => {
     await getApplicationResource();
     // await getResourceKeys();
   };
+  // watch(
+  //   () => wssInstance.value?.data,
+  //   (newVal) => {
+  //     if (newVal) {
+  //       updateContent(newVal);
+  //     }
+  //   },
+  //   {
+  //     immediate: true
+  //   }
+  // );
   watch(
-    () => wssInstance.value?.data,
-    (newVal) => {
-      if (newVal) {
-        updateContent(newVal);
-      }
+    () => props.resourceList,
+    (list) => {
+      clearTimeout(timer);
+      timer = setTimeout(() => {
+        containerList.value = generateResourcesKeys(list, 'loggable');
+        const defaultValue = getDefaultValue(containerList.value);
+        handleObjectChange(defaultValue);
+      }, 100);
     },
     {
-      immediate: true
+      immediate: true,
+      deep: true
     }
   );
-  watch(
-    () => instanceId.value,
-    () => {
-      wssInstance.value?.close?.();
-      nextTick(() => {
-        init();
-      });
-    },
-    {
-      immediate: true
-    }
-  );
-  watch(
-    () => wssInstance.value?.status,
-    (newVal) => {
-      console.log('wss status:', newVal);
-    },
-    {
-      immediate: true
-    }
-  );
+  // watch(
+  //   () => instanceId.value,
+  //   () => {
+  //     wssInstance.value?.close?.();
+  //     nextTick(() => {
+  //       init();
+  //     });
+  //   },
+  //   {
+  //     immediate: true
+  //   }
+  // );
   onBeforeUnmount(() => {
-    wssInstance.value?.close?.();
+    axiosInstance?.cancel?.();
   });
 </script>
 

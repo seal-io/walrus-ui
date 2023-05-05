@@ -1,12 +1,12 @@
 <template>
   <div class="resource-wrap">
     <a-table
-      :loading="loading"
+      :loading="isLoading"
       column-resizable
       hide-expand-button-on-empty
       style="margin-bottom: 10px"
       :bordered="false"
-      :data="dataList"
+      :data="resourceList"
       :row-class="setRowClass"
       :pagination="false"
     >
@@ -125,6 +125,7 @@
     inject,
     watch,
     nextTick,
+    PropType,
     onBeforeUnmount
   } from 'vue';
   import StatusLabel from '@/views/operation-hub/connectors/components/status-label.vue';
@@ -133,6 +134,20 @@
   import { websocketEventType } from '../../config';
   import { queryApplicationResource } from '../../api';
 
+  defineProps({
+    resourceList: {
+      type: Array as PropType<InstanceResource[]>,
+      default() {
+        return [];
+      }
+    },
+    isLoading: {
+      type: Boolean,
+      default() {
+        return false;
+      }
+    }
+  });
   const emits = defineEmits(['updateEndpoint']);
   const instanceId = inject('instanceId', ref(''));
   const websocketInstance = ref<any>(null);
@@ -324,22 +339,22 @@
       console.log(error);
     }
   };
-  watch(
-    () => instanceId.value,
-    () => {
-      queryParams.page = 1;
-      fetchData();
-      nextTick(() => {
-        createInstanceListWebsocket();
-      });
-    },
-    {
-      immediate: true
-    }
-  );
+  // watch(
+  //   () => instanceId.value,
+  //   () => {
+  //     queryParams.page = 1;
+  //     fetchData();
+  //     nextTick(() => {
+  //       createInstanceListWebsocket();
+  //     });
+  //   },
+  //   {
+  //     immediate: true
+  //   }
+  // );
   onBeforeUnmount(() => {
     console.log('wss unmounted');
-    websocketInstance.value?.close?.();
+    // websocketInstance.value?.close?.();
   });
   onMounted(() => {
     console.log('resource');

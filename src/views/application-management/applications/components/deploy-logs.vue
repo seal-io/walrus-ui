@@ -9,6 +9,7 @@
 
 <script lang="ts" setup>
   import { useWebSocket } from '@vueuse/core';
+  import axiosChunkRequest from '@/api/axios-chunk-request';
   import { createWebSocketUrl } from '@/hooks/use-websocket';
   import {
     onMounted,
@@ -48,27 +49,12 @@
       status: ''
     })
   );
+  let axiosInstance: any = null;
   const emits = defineEmits(['close']);
   const wssInstance: any = ref('');
   const content = ref('');
   const scroller = ref();
-  const createWebSockerConnection = () => {
-    if (!props.revisionId) return;
-    console.log('instanceInfo===', instanceInfo.value);
-    const jobType =
-      instanceInfo.value.status === AppInstanceStatus.Deleting
-        ? 'destroy'
-        : 'apply';
-    const wssURL = createWebSocketUrl(
-      `/application-revisions/${props.revisionId}/log?jobType=${jobType}`
-    );
-    wssInstance.value = useWebSocket(wssURL, {
-      autoReconnect: false
-    });
-  };
-  const handleClose = () => {
-    emits('close');
-  };
+
   const updateScrollerPosition = () => {
     const scrollerContainer = scroller.value || {};
     const { scrollHeight, clientHeight, scrollTop } = scrollerContainer;
@@ -79,10 +65,36 @@
       window.requestAnimationFrame(updateScrollerPosition);
     }
   };
+
   const updateContent = (newVal) => {
-    content.value = `${content.value}${newVal}`;
+    // content.value = `${content.value}${newVal}`;
+    content.value = `${newVal}`;
     window.requestAnimationFrame(updateScrollerPosition);
   };
+
+  const createWebSockerConnection = () => {
+    if (!props.revisionId) return;
+    axiosInstance?.cancel?.();
+    const jobType =
+      instanceInfo.value.status === AppInstanceStatus.Deleting
+        ? 'destroy'
+        : 'apply';
+    // const wssURL = createWebSocketUrl(
+    //   `/application-revisions/${props.revisionId}/log?jobType=${jobType}`
+    // );
+    // wssInstance.value = useWebSocket(wssURL, {
+    //   autoReconnect: false
+    // });
+    axiosInstance = axiosChunkRequest({
+      url: `/application-revisions/${props.revisionId}/log?jobType=${jobType}`,
+      contentType: 'text',
+      handler: updateContent
+    });
+  };
+  const handleClose = () => {
+    emits('close');
+  };
+
   const init = () => {
     content.value = '';
     createWebSockerConnection();
@@ -104,7 +116,8 @@
       if (val && props.revisionId) {
         init();
       } else if (!val) {
-        wssInstance.value?.close?.();
+        // wssInstance.value?.close?.();
+        axiosInstance?.cancel?.();
         content.value = '';
       }
     },
@@ -113,7 +126,8 @@
     }
   );
   onBeforeUnmount(() => {
-    wssInstance.value?.close?.();
+    // wssInstance.value?.close?.();
+    axiosInstance?.cancel?.();
   });
 </script>
 

@@ -1,7 +1,7 @@
 <template>
   <div>
     <a-cascader
-      :loading="loading"
+      :loading="isLoading"
       :model-value="resourceKey"
       style="width: 240px; margin-bottom: 8px"
       :options="containerList"
@@ -13,25 +13,47 @@
 </template>
 
 <script lang="ts" setup>
-  import { inject, ref, computed, onMounted, watch, nextTick } from 'vue';
+  import {
+    inject,
+    ref,
+    computed,
+    onMounted,
+    watch,
+    nextTick,
+    PropType
+  } from 'vue';
   import xTerminal from '@/components/x-terminal/index.vue';
   import { queryApplicationResource } from '../../../api';
-  import { Cascader } from '../../../config/interface';
+  import { Cascader, InstanceResource } from '../../../config/interface';
   import {
     generateResourcesKeys,
     getResourceId,
     getDefaultValue
-  } from '../../../config';
+  } from '../../../config/utils';
 
+  const props = defineProps({
+    resourceList: {
+      type: Array as PropType<InstanceResource[]>,
+      default() {
+        return [];
+      }
+    },
+    isLoading: {
+      type: Boolean,
+      default() {
+        return false;
+      }
+    }
+  });
   const { host, protocol } = window.location;
   const proto = protocol === 'https:' ? 'wss' : 'ws';
   const instanceId = inject('instanceId', ref(''));
   const resourceId = ref('');
   const resourceKey = ref('');
+  let timer: any = null;
   const containerList = ref<Cascader[]>([]);
   const loading = ref(false);
 
-  const terminalTypeList = ['bash', 'sh', 'powershell', 'pwsh', 'cmd'];
   const wssURL = computed(() => {
     if (!resourceId.value || !resourceKey.value) {
       return '';
@@ -75,16 +97,31 @@
     // getApplicationResource();
   });
   watch(
-    () => instanceId.value,
-    () => {
-      nextTick(() => {
-        getApplicationResource();
-      });
+    () => props.resourceList,
+    (list) => {
+      clearTimeout(timer);
+      timer = setTimeout(() => {
+        containerList.value = generateResourcesKeys(list, 'executable');
+        const defaultValue = getDefaultValue(containerList.value);
+        handleObjectChange(defaultValue);
+      }, 100);
     },
     {
-      immediate: true
+      immediate: true,
+      deep: true
     }
   );
+  // watch(
+  //   () => instanceId.value,
+  //   () => {
+  //     nextTick(() => {
+  //       getApplicationResource();
+  //     });
+  //   },
+  //   {
+  //     immediate: true
+  //   }
+  // );
 </script>
 
 <style lang="less" scoped></style>

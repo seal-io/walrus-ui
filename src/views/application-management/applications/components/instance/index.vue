@@ -48,6 +48,8 @@
         >
           <Component
             :is="instanceTabMap[item.com]"
+            :resource-list="dataList"
+            :is-loading="loading"
             @updateEndpoint="handleCallUpdateEndpoint"
           ></Component>
         </a-tab-pane>
@@ -76,7 +78,15 @@
 
 <script lang="ts" setup>
   import { cloneDeep, get, split, includes } from 'lodash';
-  import { markRaw, ref, reactive, watch, inject, computed } from 'vue';
+  import {
+    markRaw,
+    ref,
+    reactive,
+    watch,
+    inject,
+    computed,
+    nextTick
+  } from 'vue';
   import useCallCommon from '@/hooks/use-call-common';
   import EditPageFooter from '@/components/edit-page-footer/index.vue';
   import tabTerminal from './x-terminal/tab-terminal.vue';
@@ -91,6 +101,7 @@
   import { instanceTabs } from '../../config';
   import { EndPointRow } from '../../config/interface';
   import { queryItemApplicationInstances } from '../../api';
+  import useFetchResource from '../hooks/use-fetch-chunk-data';
 
   const props = defineProps({
     instanceId: {
@@ -102,6 +113,8 @@
   });
   // 1: create 2: update 3: delete
   const { router, route } = useCallCommon();
+  const { loading, fetchData, createResourceChunkConnection, dataList } =
+    useFetchResource();
   const activeKey = ref('resource');
   const tabEndpointCom = ref();
   const instanceTabMap = {
@@ -137,6 +150,13 @@
     () => {
       // getInstanceInfo();
       // getEndpoints();
+      fetchData(props.instanceId);
+      nextTick(() => {
+        createResourceChunkConnection({
+          instanceId: props.instanceId,
+          callback: handleCallUpdateEndpoint
+        });
+      });
     },
     {
       immediate: true

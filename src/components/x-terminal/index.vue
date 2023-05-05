@@ -1,6 +1,6 @@
 <template>
   <div class="wrap">
-    <div v-if="conReadyState === 0 || loading" class="status-text"
+    <div v-if="(conReadyState === 0 || loading) && url" class="status-text"
       ><span>{{ statusText }}</span
       ><icon-loading class="size-12"
     /></div>
@@ -331,7 +331,7 @@
     () => {
       if (!props.url) {
         term.value?.reset?.();
-        term.value?.dispose?.();
+        // term.value?.dispose?.();
         terminalSocket.value?.close?.();
         terminalSocket.value = {};
       } else {
@@ -369,7 +369,7 @@
     console.log('wss: dispose');
     actived.value = false;
     // term.value?.dispose?.();
-    if (terminalSocket.value) terminalSocket.value.close?.();
+    if (terminalSocket.value) terminalSocket.value?.close?.();
   });
 </script>
 
