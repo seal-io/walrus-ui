@@ -225,6 +225,8 @@
       if (item.type === unknowType.dynamic) {
         item.value = json2Yaml(item.default);
         item.default = json2Yaml(item.default);
+      } else if (item.type === 'bool') {
+        item.value = !!item.default;
       } else {
         item.value = item.default;
       }

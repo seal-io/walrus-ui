@@ -6,7 +6,7 @@
     :data="dataList"
     :pagination="false"
     :virtual-list-props="{
-      height: dataList.length > 10 ? 400 : 43 * dataList.length
+      height: 43 * dataList.length > 400 ? 400 : 300
     }"
   >
     <template #columns>
@@ -69,6 +69,12 @@
   .description-table {
     :deep(.arco-table-element) {
       width: auto;
+    }
+
+    :deep(.arco-virtual-list) {
+      &.arco-table-body {
+        overflow-x: hidden !important;
+      }
     }
 
     :deep(.arco-table-tr) {

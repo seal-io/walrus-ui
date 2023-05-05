@@ -236,17 +236,11 @@
         instanceID: instanceId.value
       };
       const { data } = await diffRevisionSpec(params);
+      const variables =
+        rollbackType.value === 'app' ? 'variables' : 'inputVariables';
       diffContent.value = {
-        old: JSON.stringify(
-          pick(data.old, ['inputVariables', 'modules']),
-          null,
-          2
-        ),
-        new: JSON.stringify(
-          pick(data.new, ['inputVariables', 'modules']),
-          null,
-          2
-        )
+        old: JSON.stringify(pick(data.old, [variables, 'modules']), null, 2),
+        new: JSON.stringify(pick(data.new, [variables, 'modules']), null, 2)
       };
       showDiffModal.value = true;
     } catch (error) {

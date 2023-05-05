@@ -83,7 +83,7 @@ export default {
   'applications.applications.history.detail': 'Revision Details',
   'applications.applications.history.running': 'Deployment details',
   'applications.applications.history.diff.title':
-    'Comparison between the current version and the latest version configuration',
+    'Comparison between the current version and the target version configuration',
   'applications.applications.history.diff.remove':
     'marker as the latest version configuration',
   'applications.applications.history.diff.add':
