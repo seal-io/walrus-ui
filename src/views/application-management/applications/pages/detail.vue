@@ -276,7 +276,11 @@
   };
   const handleInstanceUpgradeSucceed = (deleteId) => {
     const data = find(instanseList.value, (item) => item.id === deleteId) || {};
-    _.set(data, 'status', 'Deploying');
+    _.set(data, 'status', {
+      summaryStatus: AppInstanceStatus.Deploying,
+      summaryStatusMessage: 'Upgrading',
+      transitioning: true
+    });
   };
   const getEnvironmentList = async () => {
     try {

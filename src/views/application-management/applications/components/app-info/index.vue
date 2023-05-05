@@ -217,7 +217,7 @@
 </template>
 
 <script lang="ts" setup>
-  import { reactive, ref, computed, provide, inject, markRaw } from 'vue';
+  import { reactive, ref, computed, provide, inject, toRaw } from 'vue';
   import { onBeforeRouteLeave } from 'vue-router';
   import GroupTitle from '@/components/group-title/index.vue';
   import {
@@ -617,13 +617,17 @@
         ...result,
         variables: filter(variableList.value, (item) => item.key).map(
           (sItem: any) => {
+            let val = sItem.value;
+            if (sItem.type === 'dynamic') {
+              val = yaml2Json(val);
+            }
+            if (sItem.type === 'bool') {
+              val = !!val;
+            }
             return {
               name: sItem.key,
               type: sItem.type,
-              default:
-                unknowType.dynamic === sItem.type
-                  ? yaml2Json(sItem.value)
-                  : sItem.value
+              default: val
             };
           }
         )
@@ -716,8 +720,12 @@
       ...appInfo,
       ...(await basicform.value.getFormData())
     };
-    console.log('onBeforeRouteLeave===', copyFormData, markRaw(appInfoData));
-    if (!isEqual(copyFormData, appInfoData)) {
+    console.log(
+      'onBeforeRouteLeave===',
+      copyFormData,
+      JSON.parse(JSON.stringify(appInfoData))
+    );
+    if (!isEqual(copyFormData, JSON.parse(JSON.stringify(appInfoData)))) {
       beforeLeaveCallback({
         to,
         from,

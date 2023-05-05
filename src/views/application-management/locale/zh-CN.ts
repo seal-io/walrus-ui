@@ -79,7 +79,7 @@ export default {
   'applications.applications.history.rollback': '回滚',
   'applications.applications.history.detail': '版本详情',
   'applications.applications.history.running': '部署详情',
-  'applications.applications.history.diff.title': '当前版本与最新版本配置对比',
+  'applications.applications.history.diff.title': '当前版本与目标版本配置对比',
   'applications.applications.history.diff.remove': '标记为最新版本配置',
   'applications.applications.history.diff.add': '标记为当前版本配置',
   'applications.applications.logs.holder': '请选择对象',

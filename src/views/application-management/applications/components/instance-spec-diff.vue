@@ -16,7 +16,7 @@
     @before-close="handleBeforeClose"
   >
     <div>
-      <a-space class="tips" :size="20">
+      <!-- <a-space class="tips" :size="20">
         <span class="rm"
           ><span>- </span
           >{{ $t('applications.applications.history.diff.remove') }}</span
@@ -25,7 +25,7 @@
           ><span>+ </span
           >{{ $t('applications.applications.history.diff.add') }}</span
         >
-      </a-space>
+      </a-space> -->
       <AceEditor
         ref="editor"
         read-only
