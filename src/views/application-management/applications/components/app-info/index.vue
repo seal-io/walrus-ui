@@ -158,7 +158,15 @@
             :auto-size="{ maxRows: 10 }"
             :model-value="row.value"
           ></a-textarea>
-          <span v-else>{{ value }}</span>
+          <AutoTip
+            v-else
+            style="width: 350px"
+            :tooltip-props="{
+              content: value
+            }"
+          >
+            <span>{{ value }}</span>
+          </AutoTip>
         </template>
       </DescriptionTable>
       <!-- <LabelsList
@@ -209,7 +217,7 @@
 </template>
 
 <script lang="ts" setup>
-  import { reactive, ref, computed, provide, inject } from 'vue';
+  import { reactive, ref, computed, provide, inject, markRaw } from 'vue';
   import { onBeforeRouteLeave } from 'vue-router';
   import GroupTitle from '@/components/group-title/index.vue';
   import {
@@ -359,6 +367,9 @@
       if (item.type === 'dynamic') {
         val = yaml2Json(val);
       }
+      if (item.type === 'bool') {
+        val = !!val;
+      }
       return {
         name: item.key,
         type: item.type,
@@ -503,21 +514,21 @@
       if (cloneId) {
         data.name = `${data.name}-clone`;
       }
-      defaultBasicInfo.value = pick(data, [
+      assignIn(appInfo, data);
+      appModules.value = get(appInfo, 'modules') || [];
+      appInfo.modules = data.modules || [];
+      appInfo.variables = data.variables || [];
+      appInfo.labels = data.labels || {};
+      defaultBasicInfo.value = pick(appInfo, [
         'name',
         'description',
         'labels',
         'createTime',
         'updateTime'
       ]);
-
-      assignIn(appInfo, data);
-      appModules.value = get(appInfo, 'modules') || [];
-      appInfo.modules = data.modules || [];
-      appInfo.variables = data.variables || [];
-      setVariableList();
       copyFormData = cloneDeep(appInfo);
-      console.log('appInfo===', appInfo);
+      setVariableList();
+      console.log('appInfo==11=', appInfo);
     } catch (error) {
       console.log(error);
     }
@@ -705,6 +716,7 @@
       ...appInfo,
       ...(await basicform.value.getFormData())
     };
+    console.log('onBeforeRouteLeave===', copyFormData, markRaw(appInfoData));
     if (!isEqual(copyFormData, appInfoData)) {
       beforeLeaveCallback({
         to,
