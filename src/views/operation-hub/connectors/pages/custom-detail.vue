@@ -154,6 +154,16 @@
               style="width: 600px; margin-left: 12px"
               :data-list="attributeList"
             >
+              <template #value="{ row }">
+                <AutoTip
+                  style="width: 350px"
+                  :tooltip-props="{
+                    content: row.value
+                  }"
+                >
+                  <span>{{ row.sensitive ? '******' : row.value }}</span>
+                </AutoTip>
+              </template>
             </DescriptionTable>
           </template>
         </a-form-item>
@@ -304,6 +314,7 @@
         default: get(configData, `${key}.value`) || '', // default value
         type: get(configData, `${key}.type`) || 'string',
         visible: !get(configData, `${key}.visible`),
+        sensitive: !get(configData, `${key}.visible`),
         ...labelOption
       };
     }) as never[];

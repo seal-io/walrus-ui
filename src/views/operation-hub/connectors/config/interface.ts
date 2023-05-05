@@ -16,9 +16,9 @@ export interface ConnectorRowData {
 
 export interface CustomAttrbute {
   key: string;
-  value: string;
+  value: any;
   type: string;
-  default?: string;
+  default?: any;
   extraCom?: string;
   visible?: boolean;
   extraProps?: any;
