@@ -236,7 +236,8 @@
     keys,
     split,
     some,
-    each
+    each,
+    isNumber
   } from 'lodash';
   import useCallCommon from '@/hooks/use-call-common';
   import thumbButton from '@/components/buttons/thumb-button.vue';
@@ -368,6 +369,9 @@
       }
       if (item.type === 'bool') {
         val = !!val;
+      }
+      if (item.type === 'number') {
+        val = isNumber(val) ? val : '';
       }
       return {
         name: item.key,
