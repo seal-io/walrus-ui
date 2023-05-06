@@ -322,6 +322,8 @@
     'add',
     'delete',
     'keyChange',
+    'valueChange',
+    'descChange',
     'update:value',
     'update:dataKey',
     'update:dataValue',
@@ -381,13 +383,15 @@
     }
     if (attr === 'key') {
       emits('update:dataKey', val);
-      emits('keyChange');
+      emits('keyChange', val);
     }
     if (attr === 'value') {
       emits('update:dataValue', val);
+      emits('valueChange', val);
     }
     if (attr === 'description') {
       emits('update:dataDesc', val);
+      emits('descChange', val);
     }
     getDataObj(props.labelList);
   };

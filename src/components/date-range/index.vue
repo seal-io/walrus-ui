@@ -133,9 +133,9 @@
       }
     },
     maxRange: {
-      type: Object as PropType<{ type: any; range: number }>,
+      type: Object as PropType<{ type: any; range: number; offset: number }>,
       default() {
-        return { type: 'month', range: 2 };
+        return { type: 'month', range: 2, offset: 0 };
       }
     },
     step: {
@@ -240,22 +240,23 @@
     let rangValue = props.maxRange;
     let dateType: any = 'day';
     if (mode.value === 'date') {
-      rangValue = { type: 'month', range: 2 };
+      rangValue = { type: 'month', range: 2, offset: 0 };
       dateType = 'day';
     }
     if (mode.value === 'month') {
-      rangValue = { type: 'month', range: 1 };
+      rangValue = { type: 'month', range: 1, offset: 0 };
       dateType = 'month';
     }
     if (mode.value === 'year') {
-      rangValue = { type: 'year', range: 1 };
+      rangValue = { type: 'year', range: 1, offset: 0 };
       dateType = 'year';
     }
     if (['day', 'week'].includes(props.step)) {
       rangValue.range = 1;
       rangValue.type = 'year';
+      rangValue.offset = 1;
     }
-    const { type, range } = rangValue;
+    const { type, range, offset } = rangValue;
     if (!props.todayIn) {
       if (
         dayjs(current).isSameOrAfter(dayjs().format('YYYY-MM-DD'), dateType)
@@ -275,7 +276,10 @@
     }
     if (
       dayjs(current).isAfter(
-        dayjs(pointDate.value).add(range, type).format('YYYY-MM-DD'),
+        dayjs(pointDate.value)
+          .add(range, type)
+          .subtract(offset, 'day')
+          .format('YYYY-MM-DD'),
         dateType
       )
     ) {
