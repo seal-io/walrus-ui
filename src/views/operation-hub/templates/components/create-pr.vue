@@ -195,7 +195,7 @@
   };
   const getConnectorList = async () => {
     try {
-      const { data } = await queryConnectors({ page: 1, perPage: -1 });
+      const { data } = await queryConnectors({ page: -1 });
       const list = filter(data.items || [], (item) => {
         return includes(['Github', 'Gitlab'], item.type);
       });
@@ -240,8 +240,7 @@
       const params = {
         id: formData.connectorID,
         repository: formData.repository,
-        page: 1,
-        perPage: -1
+        page: -1
       };
       const { data } = await queryConnectorRepositoriesBranch(params);
       branchList.value = map(data || [], (item) => {

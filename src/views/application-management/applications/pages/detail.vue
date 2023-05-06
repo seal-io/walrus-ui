@@ -261,8 +261,7 @@
     if (!id) return;
     try {
       const params = {
-        page: 1,
-        perPage: -1,
+        page: -1,
         applicationID: route.query.id
       };
       const { data } = await queryApplicationInstances(params);
@@ -295,8 +294,7 @@
   const getEnvironmentList = async () => {
     try {
       const params = {
-        page: 1,
-        perPage: -1
+        page: -1
       };
       const { data } = await queryEnvironments(params);
       const list = data?.items || [];

@@ -154,8 +154,7 @@
   const total = ref(0);
   const loading = ref(false);
   const queryParams = reactive({
-    page: 1,
-    perPage: -1
+    page: -1
   });
   const dataList = ref<InstanceResource[]>([]);
   const handleEnabled = (row) => {

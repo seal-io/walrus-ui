@@ -4,8 +4,7 @@ import qs from 'query-string';
 export function commonRequestList(api, params?) {
   return axios.get(`${api}`, {
     params: {
-      page: 1,
-      perPage: -1,
+      page: -1,
       ...params
     },
     paramsSerializer: (obj) => {

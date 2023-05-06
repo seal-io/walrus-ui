@@ -42,7 +42,6 @@
           <template #description>
             <div
               style="
-                width: 180px;
                 overflow: hidden;
                 font-weight: 700;
                 white-space: nowrap;
@@ -153,7 +152,7 @@
       >
         <template #value="{ row, value }">
           <a-textarea
-            v-if="get(row, 'type') === unknowType.dynamic"
+            v-if="get(row, 'type') === unknowType.dynamic && row.value"
             readonly
             :auto-size="{ maxRows: 10 }"
             :model-value="row.value"
@@ -406,8 +405,7 @@
   const getModules = async () => {
     try {
       const params = {
-        page: 1,
-        perPage: -1
+        page: -1
       };
       const { data } = await queryModules(params);
       moduleTemplates.value = data?.items || [];
@@ -434,8 +432,7 @@
   const getProjectSecrets = async () => {
     try {
       const params = {
-        page: 1,
-        perPage: -1,
+        page: -1,
         projectID: route.params.projectId as string
       };
       const { data } = await queryProjectSecrets(params);

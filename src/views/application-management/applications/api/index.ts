@@ -88,10 +88,12 @@ interface ApplicationRevisionParams extends Pagination {
 }
 
 export const queryApplicationRevisions = (
-  params: ApplicationRevisionParams
+  params: ApplicationRevisionParams,
+  token
 ) => {
   return axios.get(`/application-revisions`, {
     params,
+    cancelToken: token,
     paramsSerializer: (obj) => {
       return qs.stringify(obj);
     }
@@ -132,7 +134,7 @@ export const rollbackApplication = (data: { id: string }) => {
 // ===========resource==========
 export const queryApplicationResource = (
   params: ApplicationRevisionParams,
-  token
+  token?
 ) => {
   return axios.get(`/application-resources`, {
     params,

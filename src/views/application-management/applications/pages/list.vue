@@ -211,8 +211,7 @@
     const hotProjectId = id || (await localStore.getValue(HOT_PROJECT_ID));
     try {
       const params = {
-        page: 1,
-        perPage: -1
+        page: -1
       };
       const { data } = await queryProjects(params);
       projectList.value = map(data?.items || [], (item) => {
@@ -412,6 +411,8 @@
     console.log('wss app unmount');
     axiosInstance?.cancel?.();
   });
+  const res = dayjs('2022-04-25').diff('2023-04-26', 'day');
+  console.log('res===', res);
   init();
 </script>
 

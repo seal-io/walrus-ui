@@ -5,9 +5,7 @@
     :bordered="true"
     :data="dataList"
     :pagination="false"
-    :virtual-list-props="{
-      height: 43 * dataList.length > 400 ? 400 : 300
-    }"
+    :virtual-list-props="virtualProps"
   >
     <template #columns>
       <a-table-column
@@ -47,7 +45,8 @@
 </template>
 
 <script lang="ts" setup>
-  import { PropType } from 'vue';
+  import _ from 'lodash';
+  import { PropType, computed } from 'vue';
 
   interface RowData {
     key: string;
@@ -55,13 +54,29 @@
     description?: string;
     sensitive?: boolean;
   }
-  defineProps({
+  const props = defineProps({
     dataList: {
       type: Array as PropType<RowData[]>,
       default() {
         return [];
       }
     }
+  });
+  const virtualProps = computed(() => {
+    const h = _.reduce(
+      props.dataList,
+      (total, item) => {
+        if (_.get(item, 'type') === 'dynamic' && _.get(item, 'value')) {
+          total += 100;
+        } else {
+          total += 43;
+        }
+        return total;
+      },
+      0
+    );
+    const res: any = h > 400 ? { height: 400 } : null;
+    return res;
   });
 </script>
 
@@ -89,6 +104,10 @@
 
       .arco-table-td {
         background-color: #fff;
+      }
+
+      .arco-table-cell {
+        padding: 9px 10px;
       }
     }
   }
