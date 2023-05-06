@@ -130,9 +130,13 @@ export const rollbackApplication = (data: { id: string }) => {
   return axios.post(`/application-revisions/${data.id}/rollback-applications`);
 };
 // ===========resource==========
-export const queryApplicationResource = (params: ApplicationRevisionParams) => {
+export const queryApplicationResource = (
+  params: ApplicationRevisionParams,
+  token
+) => {
   return axios.get(`/application-resources`, {
     params,
+    cancelToken: token,
     paramsSerializer: (obj) => {
       return qs.stringify(obj);
     }

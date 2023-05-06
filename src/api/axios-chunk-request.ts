@@ -54,7 +54,7 @@ export const sliceBlobData = async (data, loaded, loadedSize) => {
   return [result];
 };
 // upgrade to 1.1.3, cache-control: 'no-cache'
-export default async function axiosChunkRequest({
+export default function axiosChunkRequest({
   url,
   handler,
   params = {},
@@ -62,7 +62,7 @@ export default async function axiosChunkRequest({
 }: RequestConfig) {
   const axiosToken = createAxiosToken();
   const loadedSize = { value: 0 };
-  const data = await axios.get(url, {
+  axios.get(url, {
     params: {
       ...params,
       watch: true
@@ -83,6 +83,5 @@ export default async function axiosChunkRequest({
       });
     }
   });
-  console.log('response==chunk=11', data);
   return axiosToken;
 }

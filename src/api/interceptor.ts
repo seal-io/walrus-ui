@@ -75,14 +75,15 @@ axios.interceptors.response.use(
   },
   (error) => {
     // const isCancel = axios.isCancel(error)
-    console.log('error:', error.response, axios.isCancel('1'));
+    console.log('error:', error.response, axios.isCancel(error));
     const reqUrl = get(error.response, 'config.url');
     const response = get(error, 'response') || {};
     const data = get(response, 'data') || {};
     const result = {
       code: data?.status,
       msg: data?.message || response.statusText,
-      data: data?.data
+      data: data?.data,
+      api: reqUrl
     };
     if (!noToastAPI.includes(reqUrl) && error?.message) {
       Message.error({
@@ -120,6 +121,9 @@ axios.interceptors.response.use(
       //     },
       //   });
       // }, 50);
+    }
+    if (axios.isCancel(error)) {
+      return '';
     }
     return Promise.reject(result);
   }
