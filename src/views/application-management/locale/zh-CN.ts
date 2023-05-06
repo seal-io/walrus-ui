@@ -49,7 +49,7 @@ export default {
   'applications.applications.instance.deleteTips': '清理所有资源',
   'applications.applications.instance.upgrade': '升级实例',
   'applications.applications.instance.application': '应用',
-  'applications.applications.instance.status': '部署状态',
+  'applications.applications.instance.status': '状态',
   'applications.applications.instance.history': '历史版本',
   'applications.applications.instance.accessUrl': '访问URL',
   'applications.applications.instance.resource': '资源信息',

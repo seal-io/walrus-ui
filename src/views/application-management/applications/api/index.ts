@@ -169,11 +169,15 @@ export const queryApplicationResourceExec = (params: { id: string }) => {
   });
 };
 type EndPointResult = EndPointRow[];
-export const queryInstanceEndpoints = (params: { instanceID: string }) => {
+export const queryInstanceEndpoints = (
+  params: { instanceID: string },
+  token
+) => {
   return axios.get<EndPointResult>(
     `/application-instances/${params.instanceID}/access-endpoints`,
     {
       params,
+      cancelToken: token,
       paramsSerializer: (obj) => {
         return qs.stringify(obj);
       }

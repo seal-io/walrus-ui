@@ -14,7 +14,7 @@
           tooltip
           :cell-style="{ minWidth: '40px' }"
           data-index="name"
-          :title="$t('applications.instance.tab.resourceName')"
+          :title="$t('common.table.name')"
         >
         </a-table-column>
         <a-table-column
@@ -79,10 +79,20 @@
 
 <script lang="ts" setup>
   import { split, get, includes } from 'lodash';
-  import { onMounted, ref, reactive, inject, watch, defineExpose } from 'vue';
+  import {
+    onMounted,
+    ref,
+    reactive,
+    inject,
+    watch,
+    defineExpose,
+    onBeforeUnmount
+  } from 'vue';
+  import { createAxiosToken } from '@/api/axios-chunk-request';
   import { EndPointRow } from '../../config/interface';
   import { queryInstanceEndpoints } from '../../api';
 
+  let axiosInstance = createAxiosToken();
   const instanceId = inject('instanceId', ref(''));
   const total = ref(0);
   const loading = ref(false);
@@ -92,13 +102,18 @@
   });
   const dataList = ref<EndPointRow[]>([]);
   const fetchData = async () => {
+    axiosInstance?.cancel?.();
+    axiosInstance = createAxiosToken();
     try {
       loading.value = true;
       const params = {
         ...queryParams,
         instanceID: instanceId.value
       };
-      const { data } = await queryInstanceEndpoints(params);
+      const { data } = await queryInstanceEndpoints(
+        params,
+        axiosInstance?.token
+      );
       dataList.value = data || [];
       loading.value = false;
     } catch (error) {
@@ -141,6 +156,9 @@
   });
   onMounted(() => {
     console.log('resource');
+  });
+  onBeforeUnmount(() => {
+    axiosInstance?.cancel?.();
   });
 </script>
 

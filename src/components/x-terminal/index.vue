@@ -66,6 +66,7 @@
 
   const conReadyState = ref(0);
   const runRealTerminal = () => {
+    term.value?.clear?.();
     loading.value = false;
     toRetry.value = false;
   };
@@ -103,11 +104,13 @@
     clearCommand();
     if ([1011, 1006, 1000].includes(statusCode.value)) {
       toRetry.value = true;
+      if (first.value) {
+        term.value?.reset?.();
+      }
       first.value = true;
       term.value.write(setData(`${data.reason}\r\n`));
       term.value.write(setErrorData(`\r${message}`));
     }
-
     loading.value = false;
     console.log('wss: close:', statusCode.value, data);
   };
@@ -119,9 +122,9 @@
       first.value = true;
       loading.value = false;
     }
+    clearCommand();
     conReadyState.value = terminalSocket.value.readyState;
     term.value.write(setErrorData(`\r${message}`));
-    clearCommand();
     console.log('wss: err', message);
   };
   const onWSReceive = (message) => {
@@ -331,7 +334,6 @@
     () => {
       if (!props.url) {
         term.value?.reset?.();
-        // term.value?.dispose?.();
         terminalSocket.value?.close?.();
         terminalSocket.value = {};
       } else {

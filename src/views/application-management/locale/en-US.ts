@@ -51,7 +51,7 @@ export default {
   'applications.applications.instance.deleteTips': 'Clean up all resources',
   'applications.applications.instance.upgrade': 'Upgrade Instance',
   'applications.applications.instance.application': 'Application',
-  'applications.applications.instance.status': 'Deployment Status',
+  'applications.applications.instance.status': 'Status',
   'applications.applications.instance.history': 'History Revisions',
   'applications.applications.instance.accessUrl': 'Access URL',
   'applications.applications.instance.resource': 'Resource Information',
