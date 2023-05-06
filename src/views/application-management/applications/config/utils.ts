@@ -1,15 +1,28 @@
-import { filter, map, get, split } from 'lodash';
+import { filter, map, get, split, pickBy, toString, includes } from 'lodash';
 import { KeysItem, InstanceResource, Cascader } from './interface';
 
-export const generateResourcesKeys = (reources: InstanceResource[], type) => {
+export const generateResourcesKeys = (
+  reourcesList: InstanceResource[],
+  type
+) => {
+  const filterLoop = (keys: KeysItem[]) => {
+    if (!keys.length) return [];
+    return filter(keys, (o) => {
+      if (get(o, 'keys')?.length) {
+        filterLoop(get(o, 'keys') || []);
+        return true;
+      }
+      return get(o, type);
+    });
+  };
+  const reources = filter(reourcesList, (r) => {
+    let keysList = get(r, 'keys.keys');
+    keysList = filterLoop(get(r, 'keys.keys') || []);
+    return keysList.length;
+  });
   const loop = (keysItem: KeysItem, id) => {
     let list: KeysItem[] = keysItem.keys || [];
-    if (type === 'loggable') {
-      list = filter(list, (s) => s.loggable) as KeysItem[];
-    }
-    if (type === 'executable') {
-      list = filter(list, (s) => s.executable) as KeysItem[];
-    }
+    list = filter(list, (s) => get(s, type)) as KeysItem[];
     if (!list.length) return null;
     const resultList = map(list, (item) => {
       return {
@@ -28,17 +41,19 @@ export const generateResourcesKeys = (reources: InstanceResource[], type) => {
       value: o.name,
       children: map(get(o, 'keys.keys') || [], (s) => {
         return {
-          label: s.name,
-          value: `${s.type || s.name}?id=${o.id}`,
           loggable: s.loggable,
           executable: s.executable,
+          label: s.name,
+          value: `${s.type || s.name}?id=${o.id}`,
           children: loop(s, o.id)
         };
       })
     };
     return item;
   });
-  const res = filter(list, (o) => o?.children?.length) as never[];
+  const res = filter(list, (o) => {
+    return o?.children?.length;
+  }) as never[];
   return res;
 };
 

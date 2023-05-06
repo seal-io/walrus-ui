@@ -411,8 +411,8 @@
     console.log('wss app unmount');
     axiosInstance?.cancel?.();
   });
-  const res = dayjs('2020-02-01').diff('2021-02-01', 'day');
-  console.log('res===', res);
+  // const res = dayjs('2020-02-01').diff('2021-02-01', 'day');
+  // console.log('res===', res);
   init();
 </script>
 

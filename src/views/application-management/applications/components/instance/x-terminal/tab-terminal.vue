@@ -103,6 +103,11 @@
         containerList.value = generateResourcesKeys(list, 'executable');
         const defaultValue = getDefaultValue(containerList.value);
         handleObjectChange(defaultValue);
+        console.log(
+          'containerList====',
+          containerList.value,
+          props.resourceList
+        );
       }, 100);
     },
     {
