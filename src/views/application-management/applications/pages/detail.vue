@@ -45,7 +45,7 @@
             </template>
             <template #status>
               <StatusLabel
-                :zoom="0.9"
+                :size="16"
                 :status="{
                   status: get(item, 'status.summaryStatus'),
                   message: '',

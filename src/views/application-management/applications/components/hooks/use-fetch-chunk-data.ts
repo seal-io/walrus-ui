@@ -1,6 +1,6 @@
 import { ref, onBeforeUnmount } from 'vue';
 import _ from 'lodash';
-import axiosChunkRequest from '@/api/axios-chunk-request';
+import axiosChunkRequest, { createAxiosToken } from '@/api/axios-chunk-request';
 import { InstanceResource } from '../../config/interface';
 import { websocketEventType } from '../../config';
 import { queryApplicationResource } from '../../api';
@@ -11,6 +11,7 @@ export default function useFetchResource() {
   const updateEndpoint = ref<any>(null);
   const instanceId = ref('');
   let axiosInstance: any = null;
+  const fetchToken = createAxiosToken();
   let timer: any = null;
 
   const setParentDataProperties = (data) => {
@@ -145,6 +146,7 @@ export default function useFetchResource() {
   };
   const fetchData = async (instanceId) => {
     if (!instanceId) return;
+    fetchToken?.cancel?.();
     try {
       loading.value = true;
       const params = {
@@ -152,7 +154,7 @@ export default function useFetchResource() {
         perPage: -1,
         instanceID: instanceId
       };
-      const { data } = await queryApplicationResource(params);
+      const { data } = await queryApplicationResource(params, fetchToken.token);
       let list: any = data?.items || [];
       list = setDataList(list);
       dataList.value = [].concat(list);
@@ -190,6 +192,7 @@ export default function useFetchResource() {
   onBeforeUnmount(() => {
     console.log('wss unmounted 11');
     axiosInstance?.cancel?.();
+    fetchToken?.cancel?.();
   });
   return {
     fetchData,
