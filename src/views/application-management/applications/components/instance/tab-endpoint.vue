@@ -61,7 +61,7 @@
         </a-table-column>
       </template>
     </a-table>
-    <a-pagination
+    <!-- <a-pagination
       size="small"
       :total="total"
       :page-size="queryParams.perPage"
@@ -69,11 +69,11 @@
       show-total
       show-page-size
       :hide-on-single-page="
-        queryParams.perPage === 10 || queryParams.perPage === -1
+        queryParams.perPage === 10 || queryParams.page === -1
       "
       @change="handlePageChange"
       @page-size-change="handlePageSizeChange"
-    />
+    /> -->
   </div>
 </template>
 

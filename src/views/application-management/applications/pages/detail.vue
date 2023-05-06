@@ -233,6 +233,7 @@
       });
       // TODO
       instanseList.value.push(data);
+      instanseList.value = _.uniqBy(instanseList.value, 'id');
       execSucceed();
     } catch (error) {
       console.log(error);
