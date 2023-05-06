@@ -11,7 +11,7 @@ export default function useFetchResource() {
   const updateEndpoint = ref<any>(null);
   const instanceId = ref('');
   let axiosInstance: any = null;
-  const fetchToken = createAxiosToken();
+  let fetchToken = createAxiosToken();
   let timer: any = null;
 
   const setParentDataProperties = (data) => {
@@ -147,6 +147,7 @@ export default function useFetchResource() {
   const fetchData = async (instanceId) => {
     if (!instanceId) return;
     fetchToken?.cancel?.();
+    fetchToken = createAxiosToken();
     try {
       loading.value = true;
       const params = {
