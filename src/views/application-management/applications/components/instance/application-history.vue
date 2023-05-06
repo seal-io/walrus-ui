@@ -192,6 +192,7 @@
     rollbackApplication,
     rollbackInstance
   } from '../../api';
+  import { updateApplicationEmitter } from '../../hooks/update-application-listener';
 
   let axiosInstance: any = null;
   const { t } = useCallCommon();
@@ -253,6 +254,7 @@
     try {
       await rollbackApplication({ id: rollbackData.value.id });
       execSucceed();
+      updateApplicationEmitter();
     } catch (error) {
       console.log(error);
     }

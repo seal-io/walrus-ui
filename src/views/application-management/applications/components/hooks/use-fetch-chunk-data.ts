@@ -10,9 +10,10 @@ export default function useFetchResource() {
   const loading = ref(false);
   const updateEndpoint = ref<any>(null);
   const instanceId = ref('');
+  const needUpdateEndpoint = ref(false);
   let axiosInstance: any = null;
   let fetchToken = createAxiosToken();
-  let timer: any = null;
+  const timer: any = null;
 
   const setParentDataProperties = (data) => {
     data.isLeaf = !data.components?.length;
@@ -108,10 +109,8 @@ export default function useFetchResource() {
 
     // UPDATE
     if (collections.length) {
-      clearTimeout(timer);
-      timer = setTimeout(() => {
-        updateEndpoint.value?.();
-      }, 100);
+      needUpdateEndpoint.value = true;
+      // updateEndpoint.value?.();
     }
     _.each(parentResources, (item) => {
       const updateIndex = _.findIndex(
@@ -167,9 +166,13 @@ export default function useFetchResource() {
     }
   };
   const updateCallback = (list: object[]) => {
+    needUpdateEndpoint.value = false;
     _.each(list, (data) => {
       updateDataList(data);
     });
+    if (needUpdateEndpoint.value) {
+      updateEndpoint.value?.();
+    }
   };
   const createResourceChunkConnection = ({
     instanceId: currentInstanceId,

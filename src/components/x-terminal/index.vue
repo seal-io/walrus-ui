@@ -20,17 +20,7 @@
     computed,
     nextTick
   } from 'vue';
-  import {
-    debounce,
-    trim,
-    split,
-    get,
-    throttle,
-    replace,
-    includes,
-    compact,
-    trimStart
-  } from 'lodash';
+  import _, { debounce, trim, get } from 'lodash';
   import { Terminal } from 'xterm';
   import { FitAddon } from 'xterm-addon-fit';
   import 'xterm/css/xterm.css';
@@ -328,7 +318,12 @@
       okText: 'common.ws.reconnect'
     });
   };
-
+  const debounceCall = _.debounce(() => {
+    first.value = true;
+    loading.value = true;
+    setWssUrl(true);
+    initWS();
+  }, 100);
   watch(
     () => props.url,
     () => {
@@ -337,11 +332,8 @@
         terminalSocket.value?.close?.();
         terminalSocket.value = {};
       } else {
-        first.value = true;
-        loading.value = true;
         term.value?.reset?.();
-        setWssUrl(true);
-        initWS();
+        debounceCall();
       }
     },
     {

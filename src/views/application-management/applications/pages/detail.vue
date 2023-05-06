@@ -146,13 +146,16 @@
   import createInstance from '../components/create-instance.vue';
   import deleteInstanceModal from '../components/delete-instance-modal.vue';
   import cloneInstanceModal from '../components/clone-instance-modal.vue';
-
   import {
     queryApplicationInstances,
     deleteApplicationInstance,
     queryItemApplication,
     cloneApplicationInstance
   } from '../api';
+  import {
+    listenerUpdateAppAction,
+    removeUpdateAppActionListener
+  } from '../hooks/update-application-listener';
 
   const { router, route, t } = useCallCommon();
   const id = route.query.id as string;
@@ -331,8 +334,10 @@
       await deleteApplicationInstance({ id: instanceId.value, force });
       const data =
         find(instanseList.value, (item) => item.id === instanceId.value) || {};
-      _.set(data, 'status.summaryStatus', AppInstanceStatus.Deleting);
-      _.set(data, 'status.transitioning', true);
+      _.set(data, 'status', {
+        summaryStatus: AppInstanceStatus.Deleting,
+        transitioning: true
+      });
       // await getApplicationInstances();
       // if (instanseList.value.length) {
       //   handleClickInstance(get(instanseList.value, '0'));
@@ -459,10 +464,14 @@
     nextTick(() => {
       createInstanceListChunkConnection();
     });
+    // update application listener
+    listenerUpdateAppAction(getApplicationDetail);
   });
   onBeforeUnmount(() => {
     // websocketInstanceList.value?.close?.();
     axiosInstance?.cancel?.();
+    // remove application listener
+    removeUpdateAppActionListener();
   });
   init();
 </script>
