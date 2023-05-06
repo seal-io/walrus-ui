@@ -721,12 +721,8 @@
       ...appInfo,
       ...(await basicform.value.getFormData())
     };
-    console.log(
-      'onBeforeRouteLeave===',
-      copyFormData,
-      JSON.parse(JSON.stringify(appInfoData))
-    );
-    if (!isEqual(copyFormData, JSON.parse(JSON.stringify(appInfoData)))) {
+
+    if (!isEqual(copyFormData, appInfoData)) {
       beforeLeaveCallback({
         to,
         from,
