@@ -97,9 +97,11 @@
       if (first.value) {
         term.value?.reset?.();
       }
+      if (!loading.value) {
+        term.value.write(setData(`${data.reason}\r\n`));
+        term.value.write(setErrorData(`\r${message}`));
+      }
       first.value = true;
-      term.value.write(setData(`${data.reason}\r\n`));
-      term.value.write(setErrorData(`\r${message}`));
     }
     loading.value = false;
     console.log('wss: close:', statusCode.value, data);

@@ -196,8 +196,7 @@
   const getConnectors = async () => {
     try {
       const params = {
-        page: 1,
-        perPage: -1
+        page: -1
       };
       const { data } = await queryConnectors(params);
       const list = data?.items || [];

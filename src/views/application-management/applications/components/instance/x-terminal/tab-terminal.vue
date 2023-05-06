@@ -76,8 +76,7 @@
       loading.value = true;
       const params = {
         instanceID: instanceId.value,
-        page: 1,
-        perPage: -1
+        page: -1
       };
       const { data } = await queryApplicationResource(params);
       const list = data?.items || [];

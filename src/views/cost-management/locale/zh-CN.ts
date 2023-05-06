@@ -22,7 +22,7 @@ export default {
   'cost.analyse.datepicker.7days': '最近7天',
   'cost.analyse.datepicker.30days': '最近30天',
   'cost.analyse.datepicker.currentMonth': '当月',
-  'cost.analyse.datepicker.notes': '内置视图时间粒度为Daily,最大选择范围366天',
+  'cost.analyse.datepicker.notes': '内置视图时间粒度为Daily,最大选择范围1年',
   'cost.analyse.datepicker.notes.title': '自定义视图时间选择范围：',
   'cost.analyse.datepicker.notes.daily':
     '1.粒度为Daily、Weekly时间最大可选范围366天',

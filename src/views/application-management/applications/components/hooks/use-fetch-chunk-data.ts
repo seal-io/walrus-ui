@@ -150,8 +150,7 @@ export default function useFetchResource() {
     try {
       loading.value = true;
       const params = {
-        page: 1,
-        perPage: -1,
+        page: -1,
         instanceID: instanceId
       };
       const { data } = await queryApplicationResource(params, fetchToken.token);

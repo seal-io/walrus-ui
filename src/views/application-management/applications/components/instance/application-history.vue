@@ -171,7 +171,9 @@
     onBeforeUnmount,
     computed
   } from 'vue';
-  import axiosChunkRequest from '@/api/axios-chunk-request';
+  import axiosChunkRequest, {
+    createAxiosToken
+  } from '@/api/axios-chunk-request';
   import useCallCommon from '@/hooks/use-call-common';
   import StatusLabel from '@/views/operation-hub/connectors/components/status-label.vue';
   import { deleteModal, execSucceed } from '@/utils/monitor';
@@ -195,6 +197,7 @@
   import { updateApplicationEmitter } from '../../hooks/update-application-listener';
 
   let axiosInstance: any = null;
+  let axiosListInstance = createAxiosToken();
   const { t } = useCallCommon();
   const { sort, sortOrder, setSortDirection } = UseSortDirection({
     defaultSortField: '-createTime',
@@ -288,13 +291,18 @@
   };
   const fetchData = async () => {
     if (!instanceId.value) return;
+    axiosListInstance.cancel?.();
+    axiosListInstance = createAxiosToken();
     try {
       loading.value = true;
-      const { data } = await queryApplicationRevisions({
-        ...queryParams,
-        instanceID: instanceId.value,
-        sort: [sort.value]
-      });
+      const { data } = await queryApplicationRevisions(
+        {
+          ...queryParams,
+          instanceID: instanceId.value,
+          sort: [sort.value]
+        },
+        axiosListInstance.token
+      );
       dataList.value = data?.items || [];
       loading.value = false;
     } catch (error) {
@@ -410,6 +418,7 @@
     console.log('wss unmounted');
     // websocketRevisions.value?.close?.();
     axiosInstance?.cancel?.();
+    axiosListInstance.cancel?.();
   });
   onMounted(() => {
     console.log('resource');

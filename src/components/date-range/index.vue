@@ -252,8 +252,8 @@
       dateType = 'year';
     }
     if (['day', 'week'].includes(props.step)) {
-      rangValue.range = 366;
-      rangValue.type = 'day';
+      rangValue.range = 1;
+      rangValue.type = 'year';
     }
     const { type, range } = rangValue;
     if (!props.todayIn) {

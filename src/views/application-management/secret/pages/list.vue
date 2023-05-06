@@ -198,8 +198,7 @@
     const hotSecretId = await localStore.getValue(HOT_SECRET_ID);
     try {
       const params = {
-        page: 1,
-        perPage: -1
+        page: -1
       };
       const { data } = await queryProjects(params);
       projectList.value = map(data.items || [], (item) => {
