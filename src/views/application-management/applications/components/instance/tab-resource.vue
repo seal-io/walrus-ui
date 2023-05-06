@@ -99,7 +99,7 @@
         </a-table-column> -->
       </template>
     </a-table>
-    <a-pagination
+    <!-- <a-pagination
       size="small"
       :total="total"
       :page-size="queryParams.perPage"
@@ -111,7 +111,7 @@
       "
       @change="handlePageChange"
       @page-size-change="handlePageSizeChange"
-    />
+    /> -->
   </div>
 </template>
 
