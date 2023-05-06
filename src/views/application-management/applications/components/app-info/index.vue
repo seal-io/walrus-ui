@@ -625,6 +625,9 @@
             if (sItem.type === 'bool') {
               val = !!val;
             }
+            if (sItem.type === 'number') {
+              val = isNumber(val) ? val : '';
+            }
             return {
               name: sItem.key,
               type: sItem.type,

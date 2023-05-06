@@ -19,7 +19,7 @@ export const generateResourcesKeys = (
     let keysList = get(r, 'keys.keys');
     keysList = filterLoop(get(r, 'keys.keys') || []);
     return keysList.length;
-  });
+  }) as InstanceResource[];
   const loop = (keysItem: KeysItem, id) => {
     let list: KeysItem[] = keysItem.keys || [];
     list = filter(list, (s) => get(s, type)) as KeysItem[];
