@@ -85,7 +85,7 @@ axios.interceptors.response.use(
       data: data?.data,
       api: reqUrl
     };
-    if (!noToastAPI.includes(reqUrl) && error?.message) {
+    if (!noToastAPI.includes(reqUrl) && !axios.isCancel(error)) {
       Message.error({
         // id: 'request_error_01',
         content: result?.data?.msg || result.msg || 'Request Error',
@@ -123,7 +123,7 @@ axios.interceptors.response.use(
       // }, 50);
     }
     if (axios.isCancel(error)) {
-      return '';
+      return Promise.reject(error);
     }
     return Promise.reject(result);
   }

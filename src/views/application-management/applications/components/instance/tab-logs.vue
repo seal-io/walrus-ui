@@ -19,7 +19,9 @@
 <script lang="ts" setup>
   import { useWebSocket } from '@vueuse/core';
   import { createWebSocketUrl } from '@/hooks/use-websocket';
-  import axiosChunkRequest from '@/api/axios-chunk-request';
+  import axiosChunkRequest, {
+    useSetChunkRequest
+  } from '@/api/axios-chunk-request';
   import Convert from 'ansi-to-html';
   import { get, split, map, filter } from 'lodash';
   // import stripAnsi from 'strip-ansi';
@@ -53,6 +55,7 @@
       }
     }
   });
+  const { setChunkRequest } = useSetChunkRequest();
   const instanceId = inject('instanceId', ref(''));
   const resourceId = ref('');
   const logKey = ref('');
@@ -60,7 +63,7 @@
   const content = ref('');
   const loading = ref(false);
   let timer: any = null;
-  let axiosInstance: any = null;
+  const axiosInstance: any = null;
   const containerList = ref<Cascader[]>([]);
   const convert = new Convert();
 
@@ -80,7 +83,7 @@
     if (!logKey.value || !resourceId.value) return;
     axiosInstance?.cancel?.();
     const url = `/application-resources/${resourceId.value}/log`;
-    axiosInstance = axiosChunkRequest({
+    setChunkRequest({
       url,
       params: {
         key: logKey.value,

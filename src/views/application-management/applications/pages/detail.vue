@@ -125,7 +125,9 @@
     remove,
     includes
   } from 'lodash';
-  import axiosChunkRequest from '@/api/axios-chunk-request';
+  import axiosChunkRequest, {
+    useSetChunkRequest
+  } from '@/api/axios-chunk-request';
   import { execSucceed } from '@/utils/monitor';
   import useCallCommon from '@/hooks/use-call-common';
   import GroupTitle from '@/components/group-title/index.vue';
@@ -157,6 +159,7 @@
     removeUpdateAppActionListener
   } from '../hooks/update-application-listener';
 
+  const { setChunkRequest } = useSetChunkRequest();
   const { router, route, t } = useCallCommon();
   const id = route.query.id as string;
   const pageAction = ref(route.params.action || 'edit');
@@ -183,7 +186,7 @@
     },
     modules: []
   }) as AppFormData;
-  let axiosInstance: any = null;
+  const axiosInstance: any = null;
   const execReload = inject('execReload', () => {});
   provide('instanceId', currentInstance);
   provide('environmentList', environmentList);
@@ -440,7 +443,7 @@
       if (!id) return;
       // websocketInstanceList.value?.close?.();
       axiosInstance?.cancel?.();
-      axiosInstance = axiosChunkRequest({
+      setChunkRequest({
         url: `/application-instances`,
         params: {
           applicationID: appId

@@ -129,11 +129,7 @@
     queryParams.page = page;
     handleFilter();
   };
-  const handlePageSizeChange = (pageSize: number) => {
-    queryParams.page = 1;
-    queryParams.perPage = pageSize;
-    handleFilter();
-  };
+
   const refreshDataList = () => {
     queryParams.page = 1;
     fetchData();

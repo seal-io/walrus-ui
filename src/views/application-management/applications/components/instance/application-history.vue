@@ -172,7 +172,8 @@
     computed
   } from 'vue';
   import axiosChunkRequest, {
-    createAxiosToken
+    createAxiosToken,
+    useSetChunkRequest
   } from '@/api/axios-chunk-request';
   import useCallCommon from '@/hooks/use-call-common';
   import StatusLabel from '@/views/operation-hub/connectors/components/status-label.vue';
@@ -196,9 +197,10 @@
   } from '../../api';
   import { updateApplicationEmitter } from '../../hooks/update-application-listener';
 
-  let axiosInstance: any = null;
+  const axiosInstance: any = null;
   let axiosListInstance = createAxiosToken();
   const { t } = useCallCommon();
+  const { setChunkRequest } = useSetChunkRequest();
   const { sort, sortOrder, setSortDirection } = UseSortDirection({
     defaultSortField: '-createTime',
     defaultOrder: 'descend'
@@ -390,7 +392,7 @@
     try {
       // if (websocketRevisions.value) return;
       axiosInstance?.cancel?.();
-      axiosInstance = axiosChunkRequest({
+      setChunkRequest({
         url: `/application-revisions`,
         params: {
           instanceID: instanceId.value

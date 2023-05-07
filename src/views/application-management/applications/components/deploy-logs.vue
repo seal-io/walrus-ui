@@ -9,7 +9,9 @@
 
 <script lang="ts" setup>
   import { useWebSocket } from '@vueuse/core';
-  import axiosChunkRequest from '@/api/axios-chunk-request';
+  import axiosChunkRequest, {
+    useSetChunkRequest
+  } from '@/api/axios-chunk-request';
   import { createWebSocketUrl } from '@/hooks/use-websocket';
   import {
     onMounted,
@@ -49,11 +51,12 @@
       status: ''
     })
   );
-  let axiosInstance: any = null;
+  const axiosInstance: any = null;
   const emits = defineEmits(['close']);
   const wssInstance: any = ref('');
   const content = ref('');
   const scroller = ref();
+  const { setChunkRequest } = useSetChunkRequest();
 
   const updateScrollerPosition = () => {
     const scrollerContainer = scroller.value || {};
@@ -85,7 +88,7 @@
     // wssInstance.value = useWebSocket(wssURL, {
     //   autoReconnect: false
     // });
-    axiosInstance = axiosChunkRequest({
+    setChunkRequest({
       url: `/application-revisions/${props.revisionId}/log?jobType=${jobType}`,
       contentType: 'text',
       handler: updateContent

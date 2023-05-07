@@ -1,7 +1,7 @@
 import axios from 'axios';
 import qs from 'query-string';
 import _ from 'lodash';
-import { testData } from './test';
+import { ref, watch, onBeforeUnmount } from 'vue';
 
 interface RequestConfig {
   url: string;
@@ -53,7 +53,99 @@ export const sliceBlobData = async (data, loaded, loadedSize) => {
   console.log('blob===', blob.size, result, loadedSize.value, loaded, data);
   return [result];
 };
-// upgrade to 1.1.3, cache-control: 'no-cache'
+export function useSetChunkRequest() {
+  const loaded = ref(0);
+  const total = ref(0);
+  const requestReadyState = ref(3);
+  const axiosToken = ref<any>(null);
+  const requestConfig = ref<any>({});
+  const retryCount = ref(3);
+  const particalConfig = { params: {}, contentType: 'json' };
+
+  const axiosChunkRequest = async ({
+    url,
+    handler,
+    params = {},
+    contentType = 'json'
+  }: RequestConfig) => {
+    requestReadyState.value = 3;
+    axiosToken.value?.cancel?.();
+    axiosToken.value = createAxiosToken();
+    const loadedSize = { value: 0 };
+    try {
+      const { request } = await axios.get(url, {
+        params: {
+          ...params,
+          watch: true
+        },
+        cancelToken: axiosToken.value.token,
+        paramsSerializer: (obj) => {
+          return qs.stringify(obj);
+        },
+        async onDownloadProgress(e) {
+          const { response, readyState } = e.currentTarget;
+          requestReadyState.value = readyState;
+          loaded.value = e.loaded || 0;
+          total.value = e.total || 0;
+          // const resultList = await sliceBlobData(response, loaded, loadedSize);
+          const res = contentType === 'json' ? parseData(response) : response;
+          handler(res);
+          console.log(
+            `response==chunk====${qs.stringify(params)}`,
+            requestReadyState.value,
+            readyState,
+            e,
+            {
+              url,
+              res
+            }
+          );
+        }
+      });
+      requestReadyState.value = request?.readyState;
+      if (retryCount.value > 0) {
+        retryCount.value -= 1;
+      }
+    } catch (error) {
+      if (!axios.isCancel(error)) {
+        requestReadyState.value = 4;
+        if (retryCount.value > 0) {
+          retryCount.value -= 1;
+        }
+      }
+    }
+
+    return axiosToken;
+  };
+
+  const setChunkRequest = (config: RequestConfig) => {
+    requestConfig.value = { ...particalConfig, ...config };
+    loaded.value = 0;
+    total.value = 0;
+    retryCount.value = 3;
+    requestReadyState.value = 3;
+    axiosChunkRequest(requestConfig.value);
+  };
+  watch(
+    () => requestReadyState.value,
+    (val) => {
+      if (val === 4 && retryCount.value > 0) {
+        axiosChunkRequest(requestConfig.value);
+      }
+    },
+    {
+      immediate: true
+    }
+  );
+  onBeforeUnmount(() => {
+    axiosToken.value?.cancel?.();
+  });
+
+  return {
+    setChunkRequest
+  };
+}
+// upgrade to 1.1.3
 export default function axiosChunkRequest({
   url,
   handler,

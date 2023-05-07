@@ -1,17 +1,21 @@
 import { ref, onBeforeUnmount } from 'vue';
 import _ from 'lodash';
-import axiosChunkRequest, { createAxiosToken } from '@/api/axios-chunk-request';
+import axiosChunkRequest, {
+  createAxiosToken,
+  useSetChunkRequest
+} from '@/api/axios-chunk-request';
 import { InstanceResource } from '../../config/interface';
 import { websocketEventType } from '../../config';
 import { queryApplicationResource } from '../../api';
 
 export default function useFetchResource() {
+  const { setChunkRequest } = useSetChunkRequest();
   const dataList = ref<InstanceResource[]>([]);
   const loading = ref(false);
   const updateEndpoint = ref<any>(null);
   const instanceId = ref('');
   const needUpdateEndpoint = ref(false);
-  let axiosInstance: any = null;
+  const axiosInstance: any = null;
   let fetchToken = createAxiosToken();
   const timer: any = null;
 
@@ -181,7 +185,7 @@ export default function useFetchResource() {
       axiosInstance?.cancel?.();
       instanceId.value = currentInstanceId;
       updateEndpoint.value = callback;
-      axiosInstance = axiosChunkRequest({
+      setChunkRequest({
         url: `/application-resources`,
         params: {
           instanceID: currentInstanceId
