@@ -167,7 +167,9 @@
     nextTick,
     onBeforeUnmount
   } from 'vue';
-  import axiosChunkRequest from '@/api/axios-chunk-request';
+  import axiosChunkRequest, {
+    useSetChunkRequest
+  } from '@/api/axios-chunk-request';
   import useCallCommon from '@/hooks/use-call-common';
   import { createWebsocketInstance } from '@/hooks/use-websocket';
   import { deleteModal, execSucceed } from '@/utils/monitor';
@@ -182,6 +184,7 @@
   import InstanceStatus from '../components/instance-status.vue';
 
   const HOT_PROJECT_ID = 'HOT_PROJECT_ID';
+  const { setChunkRequest } = useSetChunkRequest();
   const { rowSelection, selectedKeys, handleSelectChange } = useRowSelect();
   const { router, locale, route } = useCallCommon();
   const { sort, sortOrder, setSortDirection } = UseSortDirection({
@@ -198,7 +201,7 @@
     page: 1,
     perPage: 10
   });
-  let axiosInstance: any = null;
+  const axiosInstance: any = null;
   const dataList = ref<AppRowData[]>([]);
   const websocketInstance = ref<any>(null);
   const projectList = ref<{ label: string; value: string }[]>([]);
@@ -384,8 +387,9 @@
   };
   const createInstanceListWebsocket = () => {
     try {
-      if (axiosInstance || !queryParams.projectID) return;
-      axiosInstance = axiosChunkRequest({
+      // if (axiosInstance || !queryParams.projectID) return;
+      if (!queryParams.projectID) return;
+      setChunkRequest({
         url: `/applications`,
         params: {
           projectID: queryParams.projectID

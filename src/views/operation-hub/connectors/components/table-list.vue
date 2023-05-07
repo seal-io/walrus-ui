@@ -246,7 +246,9 @@
 </template>
 
 <script lang="ts" setup>
-  import axiosChunkRequest from '@/api/axios-chunk-request';
+  import axiosChunkRequest, {
+    useSetChunkRequest
+  } from '@/api/axios-chunk-request';
   import { websocketEventType } from '@/views/config';
   import { createWebsocketInstance } from '@/hooks/use-websocket';
   import ADropdownButton from '@arco-design/web-vue/es/dropdown/dropdown-button';
@@ -302,9 +304,10 @@
       }
     }
   });
+  const { setChunkRequest } = useSetChunkRequest();
   const axiosSource = useAxiosSource();
   let axiosToken: any = null;
-  let axiosInstance: any = null;
+  const axiosInstance: any = null;
   const { rowSelection, selectedKeys, handleSelectChange } = useRowSelect();
   const { router, t } = useCallCommon();
   const { sort, sortOrder, setSortDirection } = UseSortDirection({
@@ -515,8 +518,8 @@
   };
   const createInstanceListWebsocket = () => {
     try {
-      if (axiosInstance) return;
-      axiosInstance = axiosChunkRequest({
+      // if (axiosInstance) return;
+      setChunkRequest({
         url: `/connectors`,
         params: {
           category: props.category
