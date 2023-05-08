@@ -58,7 +58,7 @@
           tooltip
           :cell-style="{ minWidth: '40px' }"
           data-index="name"
-          :title="$t('operation.connectors.menu')"
+          :title="$t('operation.connectors.table.connector')"
         >
           <template #cell="{ record }">
             <a-link type="text" size="small" @click="handleView(record)">

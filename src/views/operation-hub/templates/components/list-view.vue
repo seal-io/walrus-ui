@@ -17,7 +17,7 @@
           tooltip
           :cell-style="{ minWidth: '40px' }"
           data-index="id"
-          :title="$t('operation.templates.menu')"
+          :title="$t('operation.templates.table.name')"
         >
           <template #cell="{ record }">
             <a-link size="small" @click="handleView(record)">{{
