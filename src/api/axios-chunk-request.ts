@@ -29,7 +29,6 @@ export const sliceJsonStr = (text: string) => {
 };
 export const parseJsonStr = (list: string[]) => {
   return _.map(list, (str) => {
-    console.log('parseJsonStr=======', str);
     return JSON.parse(str);
   });
 };
@@ -45,13 +44,10 @@ export const createAxiosToken = () => {
   return source();
 };
 
-export const sliceBlobData = async (data, loaded, loadedSize) => {
-  const blob = new Blob([data]);
-  const subText = blob.slice(loadedSize.value);
-  const result = await subText.text();
-  loadedSize.value = loaded - loadedSize.value;
-  console.log('blob===', blob.size, result, loadedSize.value, loaded, data);
-  return [result];
+export const sliceData = (data, loaded, loadedSize) => {
+  const result = data.slice(loadedSize.value);
+  loadedSize.value = loaded;
+  return result;
 };
 export function useSetChunkRequest() {
   const loaded = ref(0);
@@ -62,13 +58,19 @@ export function useSetChunkRequest() {
   const retryCount = ref(3);
   const particalConfig = { params: {}, contentType: 'json' };
 
+  const reset = () => {
+    loaded.value = 0;
+    total.value = 0;
+    requestReadyState.value = 3;
+  };
+
   const axiosChunkRequest = async ({
     url,
     handler,
     params = {},
     contentType = 'json'
   }: RequestConfig) => {
-    requestReadyState.value = 3;
+    reset();
     axiosToken.value?.cancel?.();
     axiosToken.value = createAxiosToken();
     const loadedSize = { value: 0 };
@@ -87,22 +89,23 @@ export function useSetChunkRequest() {
           requestReadyState.value = readyState;
           loaded.value = e.loaded || 0;
           total.value = e.total || 0;
-          // const resultList = await sliceBlobData(response, loaded, loadedSize);
-          const res = contentType === 'json' ? parseData(response) : response;
-          handler(res);
-          console.log(
-            `response==chunk====${qs.stringify(params)}`,
-            requestReadyState.value,
-            readyState,
-            e,
-            {
-              url,
-              res
-            }
-          );
+
+          let result = response;
+          if (contentType === 'json') {
+            const currentRes = sliceData(response, e.loaded, loadedSize);
+            result = parseData(currentRes);
+          }
+          handler(result);
+
+          console.log(`response==chunk====${qs.stringify(params)}`, e, {
+            loadedSize: loadedSize.value,
+            url,
+            result
+          });
         }
       });
       requestReadyState.value = request?.readyState;
+      console.log('requestReadyState===', requestReadyState.value);
       if (retryCount.value > 0) {
         retryCount.value -= 1;
       }
@@ -120,16 +123,14 @@ export function useSetChunkRequest() {
 
   const setChunkRequest = (config: RequestConfig) => {
     requestConfig.value = { ...particalConfig, ...config };
-    loaded.value = 0;
-    total.value = 0;
     retryCount.value = 3;
-    requestReadyState.value = 3;
     axiosChunkRequest(requestConfig.value);
   };
   watch(
     () => requestReadyState.value,
     (val) => {
       if (val === 4 && retryCount.value > 0) {
+        console.log('requestReadyState=====', requestReadyState.value);
         axiosChunkRequest(requestConfig.value);
       }
     },
