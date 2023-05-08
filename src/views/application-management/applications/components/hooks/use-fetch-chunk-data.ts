@@ -1,6 +1,6 @@
 import { ref, onBeforeUnmount } from 'vue';
 import _ from 'lodash';
-import axiosChunkRequest, {
+import {
   createAxiosToken,
   useSetChunkRequest
 } from '@/api/axios-chunk-request';

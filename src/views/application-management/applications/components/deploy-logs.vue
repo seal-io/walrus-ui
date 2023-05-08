@@ -9,9 +9,7 @@
 
 <script lang="ts" setup>
   import { useWebSocket } from '@vueuse/core';
-  import axiosChunkRequest, {
-    useSetChunkRequest
-  } from '@/api/axios-chunk-request';
+  import { useSetChunkRequest } from '@/api/axios-chunk-request';
   import { createWebSocketUrl } from '@/hooks/use-websocket';
   import {
     onMounted,

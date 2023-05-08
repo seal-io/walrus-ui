@@ -79,24 +79,6 @@
             ></StatusLabel>
           </template>
         </a-table-column>
-        <!-- <a-table-column
-          align="center"
-          :width="210"
-          :title="$t('common.table.operation')"
-        >
-          <template #cell="{ record }">
-            <a-space :size="20">
-              <a-link type="text" size="small" @click="handleEnabled(record)">
-                <template #icon><icon-edit /></template>
-                {{ $t('common.button.enabled') }}
-              </a-link>
-              <a-link type="text" size="small" @click="handleDisabled(record)">
-                <template #icon><icon-list style="font-size: 16px" /></template>
-                {{ $t('common.button.disabled') }}
-              </a-link>
-            </a-space>
-          </template>
-        </a-table-column> -->
       </template>
     </a-table>
     <!-- <a-pagination
@@ -157,12 +139,6 @@
     page: -1
   });
   const dataList = ref<InstanceResource[]>([]);
-  const handleEnabled = (row) => {
-    console.log(row);
-  };
-  const handleDisabled = (row) => {
-    console.log(row);
-  };
   const setRowClass = (record) => {
     if (record.raw.isChilren) {
       return 'row-child';

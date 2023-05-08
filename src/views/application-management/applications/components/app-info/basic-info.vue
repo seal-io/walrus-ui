@@ -90,10 +90,6 @@
         </a-grid-item>
       </a-grid>
     </a-form>
-    <labelsModal
-      v-model:show="showLabelsModal"
-      v-model:labels="formData.labels"
-    ></labelsModal>
   </div>
 </template>
 
@@ -105,7 +101,6 @@
   import xInputGroup from '@/components/form-create/custom-components/x-input-group.vue';
   import thumbButton from '@/components/buttons/thumb-button.vue';
   import { validateAppNameRegx } from '@/views/config';
-  import labelsModal from './labels-modal.vue';
 
   const props = defineProps({
     dataInfo: {
@@ -125,7 +120,6 @@
   const { route } = useCallCommon();
   const formref = ref();
   const id = route.query.id as string;
-  const showLabelsModal = ref(false);
   const triggerValidate = ref(false);
   const editEnable = reactive({
     name: false,
@@ -149,9 +143,7 @@
   const handleAdd = () => {
     labelList.value.push({ key: '', value: '' });
   };
-  const handleEditLabels = () => {
-    showLabelsModal.value = true;
-  };
+
   const getLabelList = () => {
     labelList.value = [];
     const labelKeys = keys(get(formData, 'labels'));

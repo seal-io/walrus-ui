@@ -89,7 +89,7 @@ interface ApplicationRevisionParams extends Pagination {
 
 export const queryApplicationRevisions = (
   params: ApplicationRevisionParams,
-  token
+  token?
 ) => {
   return axios.get(`/application-revisions`, {
     params,
