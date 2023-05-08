@@ -125,9 +125,7 @@
     remove,
     includes
   } from 'lodash';
-  import axiosChunkRequest, {
-    useSetChunkRequest
-  } from '@/api/axios-chunk-request';
+  import { useSetChunkRequest } from '@/api/axios-chunk-request';
   import { execSucceed } from '@/utils/monitor';
   import useCallCommon from '@/hooks/use-call-common';
   import GroupTitle from '@/components/group-title/index.vue';

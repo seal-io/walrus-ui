@@ -29,60 +29,13 @@
         </a-descriptions>
       </a-col>
     </a-row>
-    <!-- <a-grid :cols="24" class="custom-grid">
-      <a-grid-item
-        v-for="(item, index) in basicConfigList"
-        :key="index"
-        :span="item.span"
-        :label="item.label"
-      >
-        <div class="custom-grid-content">
-          <div class="label">
-            <span>{{ $t(item.label) }}</span>
-          </div>
-          <div class="value">
-            <LabelsList
-              v-if="item.key === 'labels'"
-              :labels="formData[item.key]"
-            ></LabelsList>
-            <div v-if="!item.editable && item.key !== 'labels'">
-              <span>{{
-                item.formatter
-                  ? item.formatter(formData[item.key])
-                  : formData[item.key]
-              }}</span>
-            </div>
-            <a-input
-              v-if="item.editable && item.form === 'input'"
-              v-model="formData[item.key]"
-              :max-length="50"
-              show-word-limit
-              :error="!formData[item.key] && item.required"
-            ></a-input>
-            <a-textarea
-              v-if="item.editable && item.form === 'textarea'"
-              v-model="formData[item.key]"
-              :max-length="200"
-              show-word-limit
-            ></a-textarea>
-          </div>
-        </div>
-      </a-grid-item>
-    </a-grid> -->
-    <labelsModal
-      v-model:show="showLabelsModal"
-      v-model:labels="formData.labels"
-      @save="handleSaveCall"
-    ></labelsModal>
   </div>
 </template>
 
 <script lang="ts" setup>
   import _ from 'lodash';
-  import ADescriptionsItem from '@arco-design/web-vue/es/descriptions/descriptions-item';
   import { BasicDescription } from '@/views/config/interface';
   import { ref, watch, computed, defineExpose } from 'vue';
-  import labelsModal from './labels-modal.vue';
   import LabelsList from './labels-list.vue';
   import { applicationBasicInfo } from '../../config';
 
@@ -103,7 +56,6 @@
   });
 
   const emits = defineEmits(['save', 'update:dataInfo']);
-  const labelList = ref<{ key: string; value: string }[]>([]);
   const showLabelsModal = ref(false);
   const basicConfigList = ref<BasicDescription[]>(
     _.cloneDeep(applicationBasicInfo)

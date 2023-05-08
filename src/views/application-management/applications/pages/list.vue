@@ -167,9 +167,7 @@
     nextTick,
     onBeforeUnmount
   } from 'vue';
-  import axiosChunkRequest, {
-    useSetChunkRequest
-  } from '@/api/axios-chunk-request';
+  import { useSetChunkRequest } from '@/api/axios-chunk-request';
   import useCallCommon from '@/hooks/use-call-common';
   import { createWebsocketInstance } from '@/hooks/use-websocket';
   import { deleteModal, execSucceed } from '@/utils/monitor';

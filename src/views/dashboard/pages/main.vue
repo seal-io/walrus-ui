@@ -2,7 +2,7 @@
   <div class="dashboard-wrapper">
     <a-space :size="8" direction="vertical" fill>
       <overview></overview>
-      <DeploymentSummary :data="issueData"></DeploymentSummary>
+      <DeploymentSummary></DeploymentSummary>
       <CostSummary></CostSummary>
     </a-space>
   </div>
@@ -14,8 +14,6 @@
   import overview from '../components/overview.vue';
   import DeploymentSummary from '../components/deployment-summary.vue';
   import CostSummary from '../components/cost-summary.vue';
-
-  const issueData = ref({});
 </script>
 
 <style lang="less" scoped>

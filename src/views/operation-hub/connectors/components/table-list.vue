@@ -246,9 +246,7 @@
 </template>
 
 <script lang="ts" setup>
-  import axiosChunkRequest, {
-    useSetChunkRequest
-  } from '@/api/axios-chunk-request';
+  import { useSetChunkRequest } from '@/api/axios-chunk-request';
   import { websocketEventType } from '@/views/config';
   import { createWebsocketInstance } from '@/hooks/use-websocket';
   import ADropdownButton from '@arco-design/web-vue/es/dropdown/dropdown-button';

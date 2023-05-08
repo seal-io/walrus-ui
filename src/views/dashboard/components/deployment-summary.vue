@@ -66,14 +66,6 @@
   } from '../config';
   import { queryApplicationRevisionsChart } from '../api/dashboard';
 
-  const props = defineProps({
-    data: {
-      type: Object,
-      default() {
-        return {};
-      }
-    }
-  });
   const pieStyleConfig = {
     label: {
       show: true,

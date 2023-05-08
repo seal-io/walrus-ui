@@ -247,13 +247,11 @@
     unknowType,
     validateYaml
   } from '@/components/form-create/config/yaml-parse';
-  import { schemaType } from '@/components/form-create/config/interface';
   import { CustomAttrbute } from '@/views/operation-hub/connectors/config/interface';
   import {
     TemplateRowData,
     ModuleVersionData
   } from '@/views/operation-hub/templates/config/interface';
-  import LabelsList from './labels-list.vue';
   import instanceThumb from '../instance-thumb.vue';
   import editModule from './edit-module.vue';
   import viewModule from './view-module.vue';
@@ -309,22 +307,6 @@
   let copyFormData: any = {};
 
   provide('completeData', completeData);
-
-  const variablesObj = computed(() => {
-    const res = reduce(
-      appInfo?.variables,
-      (obj, item) => {
-        if (item.name && item.type === unknowType.dynamic) {
-          obj[item.name] = json2Yaml(item.default);
-        } else if (item.name) {
-          obj[item.name] = item.default;
-        }
-        return obj;
-      },
-      {}
-    );
-    return res;
-  });
 
   const setPropertyStyle = (style) => {
     return {

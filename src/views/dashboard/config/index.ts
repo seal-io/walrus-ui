@@ -1,5 +1,4 @@
 // issues summary bar
-import { riskColorMap } from '@/config/global';
 import dayjs from 'dayjs';
 
 export const statusColorMap = {
@@ -48,23 +47,6 @@ export const deployDataConfig = [
   // }
 ];
 
-export const issueTrendConfig = [
-  {
-    label: 'projects.risk.high',
-    name: 'HighIssueCount',
-    color: `rgb(${riskColorMap.high})`
-  },
-  {
-    label: 'projects.risk.middle',
-    name: 'MiddleIssueCount',
-    color: `rgb(${riskColorMap.medium})`
-  },
-  {
-    label: 'projects.risk.low',
-    name: 'LowIssueCount',
-    color: `rgb(${riskColorMap.low})`
-  }
-];
 export const overViewConfig = [
   {
     label: 'dashboard.overview.applications',

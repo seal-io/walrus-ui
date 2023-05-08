@@ -19,11 +19,9 @@
 <script lang="ts" setup>
   import { useWebSocket } from '@vueuse/core';
   import { createWebSocketUrl } from '@/hooks/use-websocket';
-  import axiosChunkRequest, {
-    useSetChunkRequest
-  } from '@/api/axios-chunk-request';
+  import { useSetChunkRequest } from '@/api/axios-chunk-request';
   import Convert from 'ansi-to-html';
-  import { get, split, map, filter } from 'lodash';
+  import { get, split } from 'lodash';
   // import stripAnsi from 'strip-ansi';
   import hasAnsi from 'has-ansi';
   import {

@@ -171,7 +171,7 @@
     onBeforeUnmount,
     computed
   } from 'vue';
-  import axiosChunkRequest, {
+  import {
     createAxiosToken,
     useSetChunkRequest
   } from '@/api/axios-chunk-request';
