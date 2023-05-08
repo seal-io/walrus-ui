@@ -81,6 +81,7 @@
         </a-tab-pane>
         <a-tab-pane key="list">
           <ListView
+            ref="listViewRef"
             v-model:selectedList="selectedKeys"
             :list="dataList"
           ></ListView>
@@ -119,6 +120,7 @@
   const currentView = ref('thumb'); // thumb, list
   const selectedKeys = ref<string[]>([]);
   const dataList = ref<TemplateRowData[]>([]);
+  const listViewRef = ref();
   const total = ref(0);
   const queryParams = reactive({
     query: '',
@@ -201,6 +203,7 @@
       queryParams.page = 1;
       selectedKeys.value = [];
       handleFilter();
+      listViewRef.value.clearSelection?.();
     } catch (error) {
       console.log(error);
       loading.value = false;

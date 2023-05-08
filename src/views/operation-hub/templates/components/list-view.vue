@@ -254,6 +254,13 @@
   const handleDelete = async () => {
     deleteModal({ onOk: handleDeleteConfirm });
   };
+  const clearSelection = () => {
+    selectedKeys.value = [];
+    rowSelection.selectedRowKeys = [];
+  };
+  defineExpose({
+    clearSelection
+  });
   onMounted(() => {
     fetchData();
   });
