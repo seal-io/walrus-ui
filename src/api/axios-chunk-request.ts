@@ -50,12 +50,14 @@ export const sliceData = (data, loaded, loadedSize) => {
   return result;
 };
 export function useSetChunkRequest() {
+  let timer: any = null;
   const loaded = ref(0);
   const total = ref(0);
   const requestReadyState = ref(3);
   const axiosToken = ref<any>(null);
   const requestConfig = ref<any>({});
-  const retryCount = ref(3);
+  const totalCount = 5;
+  const retryCount = ref(totalCount);
   const particalConfig = { params: {}, contentType: 'json' };
 
   const reset = () => {
@@ -105,7 +107,7 @@ export function useSetChunkRequest() {
         }
       });
       requestReadyState.value = request?.readyState;
-      console.log('requestReadyState===', requestReadyState.value);
+      console.log('requestReadyState===', request);
       if (retryCount.value > 0) {
         retryCount.value -= 1;
       }
@@ -123,15 +125,18 @@ export function useSetChunkRequest() {
 
   const setChunkRequest = (config: RequestConfig) => {
     requestConfig.value = { ...particalConfig, ...config };
-    retryCount.value = 3;
+    retryCount.value = totalCount;
+    clearTimeout(timer);
     axiosChunkRequest(requestConfig.value);
   };
   watch(
     () => requestReadyState.value,
     (val) => {
       if (val === 4 && retryCount.value > 0) {
-        console.log('requestReadyState=====', requestReadyState.value);
-        axiosChunkRequest(requestConfig.value);
+        clearTimeout(timer);
+        timer = setTimeout(() => {
+          axiosChunkRequest(requestConfig.value);
+        }, 2 ** (totalCount - retryCount.value) * 1000);
       }
     },
     {
@@ -145,36 +150,4 @@ export function useSetChunkRequest() {
   return {
     setChunkRequest
   };
-}
-// upgrade to 1.1.3
-export default function axiosChunkRequest({
-  url,
-  handler,
-  params = {},
-  contentType = 'json'
-}: RequestConfig) {
-  const axiosToken = createAxiosToken();
-  const loadedSize = { value: 0 };
-  axios.get(url, {
-    params: {
-      ...params,
-      watch: true
-    },
-    cancelToken: axiosToken.token,
-    paramsSerializer: (obj) => {
-      return qs.stringify(obj);
-    },
-    async onDownloadProgress(e) {
-      const { response } = e.currentTarget;
-      const { loaded } = e;
-      // const resultList = await sliceBlobData(response, loaded, loadedSize);
-      const res = contentType === 'json' ? parseData(response) : response;
-      handler(res);
-      console.log(`response==chunk====${qs.stringify(params)}`, e, {
-        url,
-        res
-      });
-    }
-  });
-  return axiosToken;
 }

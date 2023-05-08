@@ -63,7 +63,7 @@
   import { useI18n } from 'vue-i18n';
   import { datePickerMode, timeZoneMode } from './config';
 
-  type timeType = 'date' | 'month' | 'year';
+  type timeType = 'date' | 'month' | 'year' | undefined;
   type unitType = 'day' | 'month' | 'year' | 'date' | undefined;
   type ShortCutsType = {
     label: string;
@@ -234,6 +234,7 @@
     pointDate.value = get(val, '1') || get(val, '0');
   };
   const disabledDate = (current) => {
+    console.log('pointDate=======', pointDate.value);
     if (props.step === 'month') {
       return dayjs(current).isAfter(dayjs().format('YYYY-MM-DD'), 'day');
     }
@@ -268,7 +269,10 @@
     }
     if (
       dayjs(current).isBefore(
-        dayjs(pointDate.value).subtract(range, type).format('YYYY-MM-DD'),
+        dayjs(pointDate.value)
+          .subtract(range, type)
+          .add(offset, 'day')
+          .format('YYYY-MM-DD'),
         dateType
       )
     ) {
