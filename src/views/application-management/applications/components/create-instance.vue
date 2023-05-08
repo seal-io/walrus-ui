@@ -239,6 +239,8 @@
       (obj, item) => {
         if (item.type === unknowType.dynamic) {
           obj[item.name] = yaml2Json(item.value);
+        } else if (item.type === 'number') {
+          obj[item.name] = _.isNumber(item.value) ? item.value : null;
         } else {
           obj[item.name] = item.value;
         }

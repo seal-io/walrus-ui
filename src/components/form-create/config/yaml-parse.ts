@@ -2,26 +2,26 @@ import jsYaml from 'js-yaml';
 import _, { trim } from 'lodash';
 import { schemaType } from './interface';
 
-const SexyYamlType = new jsYaml.Type('!sexy', {
+const SealYamlType = new jsYaml.Type('!seal', {
   kind: 'sequence', // See node kinds in YAML spec: http://www.yaml.org/spec/1.2/spec.html#kind//
   construct(data) {
     return data.map(function (string) {
-      return `sexy${string}`;
+      return `seal${string}`;
     });
   }
 });
-const SEXY_SCHEMA = jsYaml.DEFAULT_SCHEMA.extend([SexyYamlType]);
+const SEAL_SCHEMA = jsYaml.DEFAULT_SCHEMA.extend([SealYamlType]);
 
 export const yamlLoad = (str) => {
   str = trim(str);
-  const obj = jsYaml.load(str, { schema: SEXY_SCHEMA });
+  const obj = jsYaml.load(str, { schema: SEAL_SCHEMA });
   return obj;
 };
 export const validateYaml = (str) => {
   let result: any = {};
   try {
     str = trim(str);
-    const obj = jsYaml.load(str, { schema: SEXY_SCHEMA });
+    const obj = jsYaml.load(str, { schema: SEAL_SCHEMA });
     if (!obj || !Object.keys(obj).length) {
       result = {
         empty: true,
@@ -49,7 +49,7 @@ export const validateYaml = (str) => {
 };
 export const yaml2Json = (str, type?) => {
   str = trim(str);
-  const obj = jsYaml.load(str, { schema: SEXY_SCHEMA });
+  const obj = jsYaml.load(str, { schema: SEAL_SCHEMA });
   if (!obj || !Object.keys(obj).length) {
     let res: any = [];
     if (schemaType.isListPrimaryType(type)) {

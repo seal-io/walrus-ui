@@ -23,9 +23,6 @@
     <div>
       <div style="margin-bottom: 20px; color: var(--color-text-2)">
         <span>{{ $t('applications.applications.modules.title') }}</span>
-        <!-- <span v-if="pageAction === 'edit'" class="optional-notes"
-          >({{ $t('applications.applications.modules.tips') }})</span
-        > -->
       </div>
       <div class="content">
         <instanceThumb
@@ -168,13 +165,6 @@
           </AutoTip>
         </template>
       </DescriptionTable>
-      <!-- <LabelsList
-        v-if="variableList.length && pageAction === 'edit'"
-        mode="yaml"
-        :description-list="variableList"
-        :labels="variablesObj"
-      >
-      </LabelsList> -->
     </div>
     <EditPageFooter v-if="pageAction === 'edit'">
       <template #save>
