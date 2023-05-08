@@ -368,7 +368,7 @@
         clearDiffRowDecoration(args);
       });
       aceEditor.setOptions({
-        wrap: true, // 换行
+        wrap: true,
         useWorker: false,
         showPrintMargin: false,
         fontSize: 14,
@@ -377,8 +377,8 @@
         theme: props.theme ? `ace/theme/${props.theme}` : '',
         enableSnippets: false,
         showGutter: props.showGutter,
-        autoScrollEditorIntoView: false, // 自动滚动编辑器视图
-        enableLiveAutocompletion: true, // 智能补全
+        autoScrollEditorIntoView: false,
+        enableLiveAutocompletion: true,
         enableBasicAutocompletion: true
       });
     });
