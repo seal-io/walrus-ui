@@ -480,11 +480,11 @@
     handleFilter();
   };
   const upateDataList = (data) => {
-    // const collections = filter(
-    //   data.collection || [],
-    //   (sItem) => sItem?.category === props.category
-    // );
-    const collections = data?.collection || [];
+    const collections = filter(
+      data.collection || [],
+      (sItem) => sItem?.category === props.category
+    );
+    // const collections = data?.collection || [];
     if (data?.type === websocketEventType.delete) {
       dataList.value = _.filter(dataList.value, (item) => {
         return !_.find(collections, (sItem) => sItem.id === item.id);

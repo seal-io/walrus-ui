@@ -338,7 +338,6 @@
       }
     });
   };
-  const handleGenerateTemplate = async (row) => {};
   const handleClone = async (row) => {
     router.push({
       name: 'ApplicationsDetail',
@@ -360,11 +359,11 @@
 
   const updateApplicationList = (data) => {
     if (data?.type !== websocketEventType.update) return;
-    // const collections = filter(
-    //   data.collection || [],
-    //   (sItem) => sItem?.project?.id === queryParams.projectID
-    // );
-    const collections = data?.collection || [];
+    const collections = filter(
+      data.collection || [],
+      (sItem) => sItem?.project?.id === queryParams.projectID
+    );
+    // const collections = data?.collection || [];
     _.each(collections, (item) => {
       const updateIndex = _.findIndex(
         dataList.value,
