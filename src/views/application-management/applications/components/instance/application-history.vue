@@ -358,11 +358,11 @@
   };
   const updateRevisions = (data) => {
     if (data?.type !== websocketEventType.update) return;
-    // const collections = filter(
-    //   data.collection || [],
-    //   (sItem) => sItem?.instance?.id === instanceId.value
-    // );
-    const collections = data?.collection || [];
+    const collections = filter(
+      data.collection || [],
+      (sItem) => sItem?.instance?.id === instanceId.value
+    );
+    // const collections = data?.collection || [];
     const openRevisionData = find(
       collections,
       (item) => item.id === get(revisionData.value, 'id')

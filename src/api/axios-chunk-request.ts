@@ -112,6 +112,7 @@ export function useSetChunkRequest() {
         retryCount.value -= 1;
       }
     } catch (error) {
+      console.log('requestReadyState===', 111);
       if (!axios.isCancel(error)) {
         requestReadyState.value = 4;
         if (retryCount.value > 0) {

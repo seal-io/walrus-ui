@@ -110,7 +110,7 @@
   const selectedKeys = ref<string[]>([]);
   const dataList = ref<EnvironmentRow[]>([]);
   const total = ref(0);
-  const sort = ref<string[]>(['-createTim']);
+  const sort = ref<string[]>(['-createTime']);
   const queryParams = reactive({
     query: '',
     page: 1,
