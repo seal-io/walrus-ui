@@ -22,7 +22,7 @@
             <icon-font
               v-if="get(record, 'composition.id')"
               type="icon-node"
-              class="mright-5"
+              class="mright-5 icon-node"
             ></icon-font>
             <span>{{ record.name }}</span>
           </template>
@@ -336,6 +336,12 @@
   .resource-wrap {
     :deep(.arco-table-cell-inline-icon) {
       margin-right: 6px;
+    }
+
+    :deep(.arco-icon) {
+      &.icon-node {
+        color: var(--color-text-2);
+      }
     }
 
     :deep(.arco-table-tr) {

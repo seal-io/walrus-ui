@@ -316,18 +316,7 @@
       {}
     );
   };
-  watch(
-    () => props.variables,
-    () => {
-      setTimeout(() => {
-        setVariablesList();
-      }, 100);
-    },
-    {
-      immediate: true,
-      deep: true
-    }
-  );
+
   watch(
     () => props.status,
     () => {
@@ -344,6 +333,7 @@
     }
   );
   const handleBeforeOpen = () => {
+    setVariablesList();
     setDeployVariables();
   };
   const handleBeforeClose = () => {
