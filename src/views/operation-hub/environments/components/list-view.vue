@@ -103,6 +103,7 @@
     }
   });
   type BaseType = string | number;
+  let timer: any = null;
   const emits = defineEmits(['update:selectedList', 'sort', 'update:sort']);
   const { router } = useCallCommon();
   const { sort, sortOrder, setSortDirection } = UseSortDirection({
@@ -119,7 +120,8 @@
   const handleSortChange = (dataIndex: string, direction: string) => {
     setSortDirection(dataIndex, direction);
     emits('update:sort', sort.value);
-    setTimeout(() => {
+    clearTimeout(timer);
+    timer = setTimeout(() => {
       emits('sort');
     }, 100);
   };

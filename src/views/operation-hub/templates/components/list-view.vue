@@ -139,7 +139,7 @@
     }
   });
   type BaseType = string | number;
-  const emits = defineEmits(['update:selectedList']);
+  const emits = defineEmits(['update:selectedList', 'update:sort', 'sort']);
   const { rowSelection, selectedKeys } = useRowSelect();
   const { router } = useCallCommon();
   const { sort, sortOrder, setSortDirection } = UseSortDirection({
@@ -177,7 +177,12 @@
   };
   const handleSortChange = (dataIndex: string, direction: string) => {
     setSortDirection(dataIndex, direction);
-    fetchData();
+    emits('update:sort', sort.value);
+    clearTimeout(timer);
+    timer = setTimeout(() => {
+      emits('sort');
+    }, 100);
+    // fetchData();
   };
   const handleSearch = () => {
     clearTimeout(timer);
@@ -262,7 +267,7 @@
     clearSelection
   });
   onMounted(() => {
-    fetchData();
+    // fetchData();
   });
 </script>
 

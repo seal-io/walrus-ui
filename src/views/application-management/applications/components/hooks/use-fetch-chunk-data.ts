@@ -45,11 +45,11 @@ export default function useFetchResource() {
     });
   };
   const updateDataList = (data) => {
-    // const collections = _.filter(
-    //   data.collection || [],
-    //   (sItem) => sItem?.instance?.id === instanceId.value
-    // );
-    const collections = data?.collection || [];
+    const collections = _.filter(
+      data.collection || [],
+      (sItem) => sItem?.instance?.id === instanceId.value
+    );
+    // const collections = data?.collection || [];
     const childResources = _.filter(collections, (item) =>
       _.get(item, 'composition.id')
     );

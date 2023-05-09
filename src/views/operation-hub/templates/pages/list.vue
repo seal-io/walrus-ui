@@ -82,8 +82,10 @@
         <a-tab-pane key="list">
           <ListView
             ref="listViewRef"
+            v-model:sort="sort"
             v-model:selectedList="selectedKeys"
             :list="dataList"
+            @sort="handleSort"
           ></ListView>
         </a-tab-pane>
       </a-tabs>
@@ -119,6 +121,7 @@
   const loading = ref(false);
   const currentView = ref('thumb'); // thumb, list
   const selectedKeys = ref<string[]>([]);
+  const sort = ref<string[]>(['-createTime']);
   const dataList = ref<TemplateRowData[]>([]);
   const listViewRef = ref();
   const total = ref(0);
@@ -147,7 +150,8 @@
     try {
       loading.value = true;
       const params: any = {
-        ...pickBy(queryParams, (val) => !!val)
+        ...pickBy(queryParams, (val) => !!val),
+        sort: [sort.value]
       };
       const { data } = await queryModules(params);
       dataList.value = data?.items || [];
@@ -159,6 +163,9 @@
     }
   };
   const handleFilter = () => {
+    fetchData();
+  };
+  const handleSort = () => {
     fetchData();
   };
   const handleCheckChange = (checked, id) => {
