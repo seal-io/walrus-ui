@@ -18,7 +18,7 @@ export default mergeConfig(
       },
       https: true,
       port: 4000,
-      proxy: createProxyTable('https://stability.tsfxwx.com/')
+      proxy: createProxyTable()
     },
     plugins: [
       eslint({

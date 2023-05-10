@@ -96,6 +96,7 @@
   const instanceId = inject('instanceId', ref(''));
   const total = ref(0);
   const loading = ref(false);
+  const requestCacheList = ref<number[]>([]);
   const queryParams = reactive({
     page: -1
   });
@@ -105,6 +106,7 @@
     axiosInstance = createAxiosToken();
     try {
       loading.value = true;
+      requestCacheList.value.push(1);
       const params = {
         ...queryParams,
         instanceID: instanceId.value
@@ -115,9 +117,11 @@
       );
       dataList.value = data || [];
       loading.value = false;
+      requestCacheList.value.pop();
     } catch (error) {
+      requestCacheList.value.pop();
       dataList.value = [];
-      loading.value = false;
+      loading.value = !!requestCacheList.value.length;
       console.log(error);
     }
   };

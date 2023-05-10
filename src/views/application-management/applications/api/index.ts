@@ -134,7 +134,7 @@ export const rollbackApplication = (data: { id: string }) => {
 // ===========resource==========
 export const queryApplicationResource = (
   params: ApplicationRevisionParams,
-  token?
+  token
 ) => {
   return axios.get(`/application-resources`, {
     params,
