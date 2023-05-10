@@ -190,6 +190,7 @@
   });
   const id = route.query.id || '';
   let timer: any = null;
+  let loopTimer: any = null;
   const loading = ref(false);
   const total = ref(0);
   const queryParams = reactive({
@@ -408,17 +409,47 @@
       console.log(error);
     }
   };
+  const loopUpdateCall = async () => {
+    try {
+      const params: any = {
+        ...pickBy(queryParams, (val) => !!val),
+        sort: [sort.value]
+      };
+      const { data } = await queryApplications(params);
+      dataList.value = data?.items || [];
+      total.value = data?.pagination?.total || 0;
+    } catch (error) {
+      dataList.value = [];
+      console.log(error);
+    }
+  };
+  const loopUpdateList = () => {
+    clearInterval(loopTimer);
+    loopTimer = setInterval(() => {
+      loopUpdateCall();
+    }, 15 * 1000);
+  };
   watch(
-    () => queryParams.projectID,
+    () => queryParams,
     () => {
-      nextTick(() => {
-        createInstanceListWebsocket();
-      });
+      loopUpdateList();
     },
     {
-      immediate: true
+      immediate: true,
+      deep: true
     }
   );
+  // watch(
+  //   () => queryParams.projectID,
+  //   () => {
+  //     nextTick(() => {
+  //       createInstanceListWebsocket();
+  //     });
+  //   },
+  //   {
+  //     immediate: true
+  //   }
+  // );
   onBeforeUnmount(() => {
     console.log('wss app unmount');
     axiosInstance?.cancel?.();

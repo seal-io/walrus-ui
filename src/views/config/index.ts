@@ -1,16 +1,5 @@
 import dayjs from 'dayjs';
-import {
-  reduce,
-  each,
-  get,
-  sortBy,
-  keys,
-  concat,
-  cloneDeep,
-  uniq,
-  map,
-  uniqBy
-} from 'lodash';
+import _, { reduce, each, get, sortBy, keys, uniq, map, uniqBy } from 'lodash';
 
 export const dateFormatMap = {
   day: 'YYYY.MM.DD',
