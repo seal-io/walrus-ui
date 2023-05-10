@@ -490,10 +490,11 @@
       data.collection || [],
       (sItem) => sItem?.category === props.category
     );
+    const ids = data?.ids || [];
     // const collections = data?.collection || [];
     if (data?.type === websocketEventType.delete) {
       dataList.value = _.filter(dataList.value, (item) => {
-        return !_.find(collections, (sItem) => sItem.id === item.id);
+        return !_.find(ids, (id) => id === item.id);
       });
       return;
     }

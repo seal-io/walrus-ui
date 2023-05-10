@@ -224,9 +224,17 @@
   };
   const updateModuleList = (data) => {
     const collections = data?.collection || [];
+    const ids = data?.ids || [];
     // CREATE
     if (data?.type === websocketEventType.create) {
       dataList.value = _.concat(collections, dataList.value);
+      return;
+    }
+    // DELETE
+    if (data?.type === websocketEventType.delete) {
+      dataList.value = _.filter(dataList.value, (item) => {
+        return !_.find(ids, (id) => id === item.id);
+      });
       return;
     }
     // UPDATE
@@ -261,7 +269,7 @@
   onMounted(() => {
     fetchData();
     nextTick(() => {
-      // createInstanceListWebsocket();
+      createInstanceListWebsocket();
     });
   });
 </script>

@@ -16,6 +16,7 @@ export default function useFetchResource() {
   const instanceId = inject('instanceId', ref(''));
   const needUpdateEndpoint = ref(false);
   const axiosInstance: any = null;
+  const requestCacheList = ref<number[]>([]);
   let fetchToken = createAxiosToken();
 
   const setParentDataProperties = (data) => {
@@ -148,12 +149,11 @@ export default function useFetchResource() {
   };
   const fetchData = async () => {
     if (!instanceId.value) return;
-    loading.value = false;
     fetchToken?.cancel?.();
     fetchToken = createAxiosToken();
     try {
       loading.value = true;
-      console.log('loading===1', loading.value);
+      requestCacheList.value.push(1);
       const params = {
         page: -1,
         instanceID: instanceId.value
@@ -163,14 +163,14 @@ export default function useFetchResource() {
         data?.items || [],
         (item) => item?.instance?.id === instanceId.value
       );
-      console.log('loading===2', loading.value);
       list = setDataList(list);
       dataList.value = [].concat(list);
       loading.value = false;
+      requestCacheList.value.pop();
     } catch (error) {
+      requestCacheList.value.pop();
       dataList.value = [];
-      loading.value = false;
-      console.log('loading===3', loading.value);
+      loading.value = !!requestCacheList.value.length;
     }
   };
   const updateCallback = (list: object[]) => {
