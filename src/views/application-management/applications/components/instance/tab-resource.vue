@@ -21,7 +21,7 @@
         >
           <template #cell="{ record }">
             <icon-font
-              v-if="get(record, 'composition.id')"
+              v-if="_.get(record, 'composition.id')"
               type="icon-node"
               class="mright-5 icon-node"
             ></icon-font>
@@ -72,11 +72,11 @@
           <template #cell="{ record }">
             <StatusLabel
               :status="{
-                status: get(record, 'status.summaryStatus'),
-                text: get(record, 'status.summaryStatus'),
-                message: get(record, 'status.summaryStatusMessage'),
-                transitioning: get(record, 'status.transitioning'),
-                error: get(record, 'status.error')
+                status: _.get(record, 'status.summaryStatus'),
+                text: _.get(record, 'status.summaryStatus'),
+                message: _.get(record, 'status.summaryStatusMessage'),
+                transitioning: _.get(record, 'status.transitioning'),
+                error: _.get(record, 'status.error')
               }"
             ></StatusLabel>
           </template>
@@ -101,7 +101,7 @@
 
 <script lang="ts" setup>
   import dayjs from 'dayjs';
-  import _, { get, filter, concat } from 'lodash';
+  import _ from 'lodash';
   import {
     onMounted,
     ref,

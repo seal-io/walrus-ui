@@ -144,12 +144,12 @@
       </a-tooltip>
       <DescriptionTable
         v-if="variableList.length && pageAction === 'view'"
-        style="width: 600px"
+        style="width: 625px"
         :data-list="variableList"
       >
         <template #value="{ row, value }">
           <a-textarea
-            v-if="get(row, 'type') === unknowType.dynamic && row.value"
+            v-if="_.get(row, 'type') === unknowType.dynamic && row.value"
             readonly
             :auto-size="{ maxRows: 10 }"
             :model-value="row.value"
@@ -209,26 +209,7 @@
   import { reactive, ref, computed, provide, inject, toRaw } from 'vue';
   import { onBeforeRouteLeave } from 'vue-router';
   import GroupTitle from '@/components/group-title/index.vue';
-  import {
-    cloneDeep,
-    assignIn,
-    omit,
-    pick,
-    get,
-    filter,
-    concat,
-    map,
-    isEqual,
-    reduce,
-    uniq,
-    uniqBy,
-    find,
-    keys,
-    split,
-    some,
-    each,
-    isNumber
-  } from 'lodash';
+  import _ from 'lodash';
   import useCallCommon from '@/hooks/use-call-common';
   import thumbButton from '@/components/buttons/thumb-button.vue';
   import { execSucceed, deleteModal } from '@/utils/monitor';
@@ -316,7 +297,7 @@
     };
   };
   const setVariableList = () => {
-    variableList.value = map(appInfo.variables || [], (item) => {
+    variableList.value = _.map(appInfo.variables || [], (item) => {
       let val = item.default;
       if (item.type === 'dynamic') {
         val = json2Yaml(val);
@@ -334,7 +315,7 @@
     });
   };
   const setAppInfoVariables = () => {
-    appInfo.variables = map(variableList.value, (item) => {
+    appInfo.variables = _.map(variableList.value, (item) => {
       let val = item.value;
       if (item.type === 'dynamic') {
         val = yaml2Json(val);
@@ -343,7 +324,7 @@
         val = !!val;
       }
       if (item.type === 'number') {
-        val = isNumber(val) ? val : '';
+        val = _.isNumber(val) ? val : '';
       }
       return {
         name: item.key,
@@ -412,7 +393,7 @@
         projectID: route.params.projectId as string
       };
       const { data } = await queryProjectSecrets(params);
-      projectSecretList.value = uniqBy(data, (item) => item.name);
+      projectSecretList.value = _.uniqBy(data, (item) => item.name);
     } catch (error) {
       projectSecretList.value = [];
       console.log(error);
@@ -420,8 +401,8 @@
   };
   // app module version has added; it's map to a {name: <moduleName>, type: <moduleType>, version: <moduleVersion>}
   const getAppModulesVersionMap = () => {
-    appModules.value = get(appInfo, 'modules') || [];
-    const list = map(appModules.value, (item) => {
+    appModules.value = _.get(appInfo, 'modules') || [];
+    const list = _.map(appModules.value, (item) => {
       return {
         name: item.name,
         type: item.module.id,
@@ -435,8 +416,8 @@
   const getModulesVersions = async () => {
     try {
       const params = {
-        moduleID: uniq(
-          map(moduleTemplates.value, (item) => {
+        moduleID: _.uniq(
+          _.map(moduleTemplates.value, (item) => {
             return item.id;
           })
         )
@@ -455,16 +436,16 @@
 
   const setAddedMoudleCompleteData = () => {
     const addedVersionMap = getAppModulesVersionMap();
-    appModuleVersions.value = reduce(
+    appModuleVersions.value = _.reduce(
       addedVersionMap,
       (obj, item) => {
         // The version corresponding to the module that has been added
-        const addedModule = find(allModuleVersions.value || [], (s) => {
+        const addedModule = _.find(allModuleVersions.value || [], (s) => {
           return item.type === s.module.id && s.version === item.version;
         });
         const k = item.name;
         obj[k] = [
-          ...map(get(addedModule, 'schema.outputs') || [], (o) => {
+          ..._.map(_.get(addedModule, 'schema.outputs') || [], (o) => {
             return {
               label: o.description,
               value: o.name
@@ -487,19 +468,19 @@
       if (cloneId) {
         data.name = `${data.name}-clone`;
       }
-      assignIn(appInfo, data);
-      appModules.value = get(appInfo, 'modules') || [];
+      _.assignIn(appInfo, data);
+      appModules.value = _.get(appInfo, 'modules') || [];
       appInfo.modules = data.modules || [];
       appInfo.variables = data.variables || [];
       appInfo.labels = data.labels || {};
-      defaultBasicInfo.value = pick(appInfo, [
+      defaultBasicInfo.value = _.pick(appInfo, [
         'name',
         'description',
         'labels',
         'createTime',
         'updateTime'
       ]);
-      copyFormData = cloneDeep(appInfo);
+      copyFormData = _.cloneDeep(appInfo);
       setVariableList();
       console.log('appInfo==11=', appInfo);
     } catch (error) {
@@ -507,7 +488,7 @@
     }
   };
   const setVariablesCompleteData = () => {
-    const variables = reduce(
+    const variables = _.reduce(
       variableList.value || [],
       (obj, item) => {
         if (item.key) {
@@ -520,7 +501,7 @@
     return variables;
   };
   const setSecretCompleteData = () => {
-    const secrets = reduce(
+    const secrets = _.reduce(
       projectSecretList.value,
       (obj, item) => {
         obj[item.name] = '';
@@ -557,7 +538,7 @@
     completeDataSetter?.updateVariablesCompleteData?.();
   };
   const validateVariabels = () => {
-    each(variableList.value, (item) => {
+    _.each(variableList.value, (item) => {
       if (item.type === unknowType.dynamic) {
         const result = validateYaml(item.value);
         if (!result.empty && result.error) {
@@ -569,7 +550,7 @@
         item.error = '';
       }
     });
-    triggerValidate.value = some(
+    triggerValidate.value = _.some(
       variableList.value,
       (item) => !item.key || item.error
     );
@@ -588,7 +569,7 @@
       const params = {
         ...appInfo,
         ...result,
-        variables: filter(variableList.value, (item) => item.key).map(
+        variables: _.filter(variableList.value, (item) => item.key).map(
           (sItem: any) => {
             let val = sItem.value;
             if (sItem.type === 'dynamic') {
@@ -598,7 +579,7 @@
               val = !!val;
             }
             if (sItem.type === 'number') {
-              val = isNumber(val) ? val : '';
+              val = _.isNumber(val) ? val : '';
             }
             return {
               name: sItem.key,
@@ -608,7 +589,7 @@
           }
         )
       };
-      defaultBasicInfo.value = pick(params, [
+      defaultBasicInfo.value = _.pick(params, [
         'name',
         'description',
         'labels',
@@ -618,7 +599,7 @@
       console.log('submit:', appInfo, result);
       submitLoading.value = true;
       const res = { id: '' };
-      copyFormData = cloneDeep(params);
+      copyFormData = _.cloneDeep(params);
       if (id) {
         await updateApplication(params);
       } else {
@@ -656,11 +637,11 @@
       ...appInfo,
       ...(await basicform.value.getFormData())
     };
-    if (!isEqual(copyFormData, appInfoData)) {
+    if (!_.isEqual(copyFormData, appInfoData)) {
       beforeLeaveCallback({
         isCancel: true,
         onOk: () => {
-          copyFormData = cloneDeep(appInfoData);
+          copyFormData = _.cloneDeep(appInfoData);
           cancelCallback();
         }
       });
@@ -684,11 +665,11 @@
     console.log('saveModule===', data, moduleAction.value);
     if (moduleAction.value === 'create') {
       appInfo.modules.push({
-        ...cloneDeep(data)
+        ..._.cloneDeep(data)
       });
       completeDataSetter?.updateModuleCompleteData?.();
     } else {
-      assignIn(moduleInfo.value, data);
+      _.assignIn(moduleInfo.value, data);
     }
   };
   onBeforeRouteLeave(async (to, from) => {
@@ -698,12 +679,12 @@
       ...(await basicform.value.getFormData())
     };
 
-    if (!isEqual(copyFormData, appInfoData)) {
+    if (!_.isEqual(copyFormData, appInfoData)) {
       beforeLeaveCallback({
         to,
         from,
         onOk: () => {
-          copyFormData = cloneDeep(appInfoData);
+          copyFormData = _.cloneDeep(appInfoData);
           router.push({
             name: to.name as string
           });
@@ -719,7 +700,7 @@
     await Promise.all([getModulesVersions(), getProjectSecrets()]);
     setCompleteData();
     setTimeout(() => {
-      copyFormData = cloneDeep(appInfo);
+      copyFormData = _.cloneDeep(appInfo);
     }, 100);
   };
   init();

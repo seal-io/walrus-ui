@@ -23,19 +23,14 @@ const localeMap = {
   'en-US': 'en;q=0.9,zh;q=0.8',
   'zh-CN': 'zh;q=0.9,en;q=0.8'
 };
-const authApiList = [
+const authApiList: string[] = [
   '/account/login',
   '/account/info',
   '/account/logout',
   '/openapi',
   '/debug/version'
 ];
-const noToastAPI = [
-  '/policies/_/test',
-  '/notifiers/_/test',
-  '/container-registries/verify',
-  '/container-registries/_/test'
-];
+const noToastAPI: string[] = [];
 /**
  * 200: success
  * 440: login Timeout
@@ -44,13 +39,8 @@ const noToastAPI = [
  * 404: no page on server
  */
 
-// let responseModalTimer: any = null;
 axios.interceptors.request.use(
   (config: AxiosRequestConfig) => {
-    // let each request carry token
-    // this example using the JWT token
-    // Authorization is a custom headers key
-    // please modify it according to the actual situation
     const url = config.url || '';
     const { locale } = i18n.global;
     console.log('local===', locale);

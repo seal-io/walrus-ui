@@ -25,33 +25,32 @@ export default mergeConfig(
         inject: {
           data: {
             version: versions.version ? versions.version : 'DEV',
-            commitId: versions.commitId,
-          },
-        },
-      }),
+            commitId: versions.commitId
+          }
+        }
+      })
     ],
     build: {
       minify: 'terser',
       terserOptions: {
         compress: {
-          drop_console: true,
-        },
+          drop_console: true
+        }
       },
       rollupOptions: {
         input: {
-          index: path.resolve(__dirname, '../index.html'),
-          // external: path.resolve(__dirname, '../external.html'),
+          index: path.resolve(__dirname, '../index.html')
         },
         output: {
           manualChunks: {
             arco: ['@arco-design/web-vue'],
             chart: ['echarts', 'vue-echarts'],
-            vue: ['vue', 'vue-router', 'pinia', '@vueuse/core', 'vue-i18n'],
-          },
-        },
+            vue: ['vue', 'vue-router', 'pinia', '@vueuse/core', 'vue-i18n']
+          }
+        }
       },
-      chunkSizeWarningLimit: 2000,
-    },
+      chunkSizeWarningLimit: 2000
+    }
   },
   baseConig
 );

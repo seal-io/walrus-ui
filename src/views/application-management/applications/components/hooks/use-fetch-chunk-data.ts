@@ -1,4 +1,4 @@
-import { ref, onBeforeUnmount } from 'vue';
+import { ref, onBeforeUnmount, inject } from 'vue';
 import _ from 'lodash';
 import {
   createAxiosToken,
@@ -13,11 +13,10 @@ export default function useFetchResource() {
   const dataList = ref<InstanceResource[]>([]);
   const loading = ref(false);
   const updateEndpoint = ref<any>(null);
-  const instanceId = ref('');
+  const instanceId = inject('instanceId', ref(''));
   const needUpdateEndpoint = ref(false);
   const axiosInstance: any = null;
   let fetchToken = createAxiosToken();
-  const timer: any = null;
 
   const setParentDataProperties = (data) => {
     data.isLeaf = !data.components?.length;
@@ -147,8 +146,8 @@ export default function useFetchResource() {
     });
     dataList.value = setDataList(dataList.value);
   };
-  const fetchData = async (instanceId) => {
-    if (!instanceId) return;
+  const fetchData = async () => {
+    if (!instanceId.value) return;
     loading.value = false;
     fetchToken?.cancel?.();
     fetchToken = createAxiosToken();
@@ -156,10 +155,13 @@ export default function useFetchResource() {
       loading.value = true;
       const params = {
         page: -1,
-        instanceID: instanceId
+        instanceID: instanceId.value
       };
       const { data } = await queryApplicationResource(params, fetchToken.token);
-      let list: any = data?.items || [];
+      let list: any = _.filter(
+        data?.items || [],
+        (item) => item?.instance?.id === instanceId.value
+      );
       list = setDataList(list);
       dataList.value = [].concat(list);
       loading.value = false;
@@ -177,18 +179,14 @@ export default function useFetchResource() {
       updateEndpoint.value?.();
     }
   };
-  const createResourceChunkConnection = ({
-    instanceId: currentInstanceId,
-    callback
-  }) => {
+  const createResourceChunkConnection = ({ callback }) => {
     try {
       axiosInstance?.cancel?.();
-      instanceId.value = currentInstanceId;
       updateEndpoint.value = callback;
       setChunkRequest({
         url: `/application-resources`,
         params: {
-          instanceID: currentInstanceId
+          instanceID: instanceId.value
         },
         handler: updateCallback
       });

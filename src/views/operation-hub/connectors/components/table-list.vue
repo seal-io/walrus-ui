@@ -258,7 +258,6 @@
 <script lang="ts" setup>
   import { useSetChunkRequest } from '@/api/axios-chunk-request';
   import { websocketEventType } from '@/views/config';
-  import { createWebsocketInstance } from '@/hooks/use-websocket';
   import ADropdownButton from '@arco-design/web-vue/es/dropdown/dropdown-button';
   import useAxiosSource from '@/hooks/use-axios-cancel';
   import { UseSortDirection } from '@/utils/common';
@@ -324,7 +323,6 @@
   });
   let timer: any = null;
   const loading = ref(false);
-  const websocketInstance = ref<any>('');
   const total = ref(0);
   const activeKey = inject('activeKey', ref(''));
   const queryParams = reactive({
@@ -526,7 +524,6 @@
   };
   const createInstanceListWebsocket = () => {
     try {
-      // if (axiosInstance) return;
       setChunkRequest({
         url: `/connectors`,
         params: {
@@ -537,10 +534,6 @@
     } catch (error) {
       console.log(error);
     }
-  };
-  const handleClosews = () => {
-    // websocketInstance.value?.close?.();
-    axiosInstance?.cancel?.();
   };
   onActivated(() => {
     if (activeKey.value === props.category) {

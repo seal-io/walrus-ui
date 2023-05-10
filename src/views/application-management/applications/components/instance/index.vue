@@ -135,9 +135,8 @@
 
   const debunceFun = _.debounce(() => {
     if (!props.instanceId) return;
-    fetchData(props.instanceId);
+    fetchData();
     createResourceChunkConnection({
-      instanceId: props.instanceId,
       callback: handleCallUpdateEndpoint
     });
   }, 100);

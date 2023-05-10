@@ -16,33 +16,7 @@ const mode = argv.mode || 'development';
 const versions = getBranchInfo();
 
 export default defineConfig({
-  plugins: [
-    // commonjs(),
-    // Rollupresolve() as any,
-    vue(),
-    vueJsx(),
-    svgLoader({ svgoConfig: {} })
-    // htmlTemplate({
-    //   pages: {
-    //     index: {
-    //       template: resolve(__dirname, '../index.html'),
-    //     },
-    //   },
-    //   data: {
-    //     version: versions.version ? versions.version : 'DEV',
-    //     commitId: versions.commitId,
-    //   },
-    // }),
-    // createHtmlPlugin({
-    //   template: 'index.html',
-    //   inject: {
-    //     data: {
-    //       version: versions.version ? versions.version : 'DEV',
-    //       commitId: versions.commitId,
-    //     }
-    //   }
-    // })
-  ],
+  plugins: [vue(), vueJsx(), svgLoader({ svgoConfig: {} })],
   base: baseUrl,
   // root: './',
   resolve: {
