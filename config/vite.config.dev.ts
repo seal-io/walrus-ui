@@ -5,7 +5,6 @@ import htmlTemplate from 'vite-plugin-html-template';
 import baseConig from './vite.config.base';
 import { getBranchInfo } from './utils';
 import createProxyTable from './proxy-table';
-import setRequestHeader from './plugin/setRequestHeader';
 
 const versions = getBranchInfo();
 
@@ -19,15 +18,9 @@ export default mergeConfig(
       },
       https: true,
       port: 4000,
-      // cors: {
-      //   origin: 'https://localhost:4000'
-      // },
-      // proxy: createProxyTable('https://192.168.2.8')
-      // proxy: createProxyTable('https://192.168.2.3')
       proxy: createProxyTable()
     },
     plugins: [
-      // setRequestHeader(),
       eslint({
         cache: false,
         include: ['src/**/*.ts', 'src/**/*.tsx', 'src/**/*.vue'],
@@ -49,7 +42,6 @@ export default mergeConfig(
       rollupOptions: {
         input: {
           index: path.resolve(__dirname, '../index.html')
-          // external: path.resolve(__dirname, '../external.html'),
         }
       }
     }

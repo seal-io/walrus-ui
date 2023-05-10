@@ -181,7 +181,6 @@
   import StatusLabel from '@/views/operation-hub/connectors/components/status-label.vue';
   import { deleteModal, execSucceed } from '@/utils/monitor';
   import { UseSortDirection } from '@/utils/common';
-  import { createWebsocketInstance } from '@/hooks/use-websocket';
   import { HistoryData } from '../../config/interface';
   import revisionDetail from '../revision-detail.vue';
   import instanceSpecDiff from '../instance-spec-diff.vue';
@@ -220,7 +219,6 @@
   const diffContent = ref({});
   const rollbackData = ref<any>({});
   const ids = ref<{ id: string }[]>([]);
-  const websocketRevisions = ref<any>(null);
   const dataList = ref<HistoryData[]>([]);
   const queryParams = reactive({
     page: 1,
@@ -392,7 +390,6 @@
   };
   const createInstanceListWebsocket = () => {
     try {
-      // if (websocketRevisions.value) return;
       axiosInstance?.cancel?.();
       setChunkRequest({
         url: `/application-revisions`,
@@ -420,7 +417,6 @@
   );
   onBeforeUnmount(() => {
     console.log('wss unmounted');
-    // websocketRevisions.value?.close?.();
     axiosInstance?.cancel?.();
     axiosListInstance.cancel?.();
   });
