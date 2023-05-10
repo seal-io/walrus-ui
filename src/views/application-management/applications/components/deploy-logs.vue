@@ -8,9 +8,7 @@
 </template>
 
 <script lang="ts" setup>
-  import { useWebSocket } from '@vueuse/core';
   import { useSetChunkRequest } from '@/api/axios-chunk-request';
-  import { createWebSocketUrl } from '@/hooks/use-websocket';
   import {
     onMounted,
     ref,
@@ -49,7 +47,6 @@
       status: ''
     })
   );
-  const axiosInstance: any = null;
   const emits = defineEmits(['close']);
   const wssInstance: any = ref('');
   const content = ref('');
@@ -75,17 +72,10 @@
 
   const createWebSockerConnection = () => {
     if (!props.revisionId) return;
-    axiosInstance?.cancel?.();
     const jobType =
       instanceInfo.value.status === AppInstanceStatus.Deleting
         ? 'destroy'
         : 'apply';
-    // const wssURL = createWebSocketUrl(
-    //   `/application-revisions/${props.revisionId}/log?jobType=${jobType}`
-    // );
-    // wssInstance.value = useWebSocket(wssURL, {
-    //   autoReconnect: false
-    // });
     setChunkRequest({
       url: `/application-revisions/${props.revisionId}/log?jobType=${jobType}`,
       contentType: 'text',
@@ -101,24 +91,11 @@
     createWebSockerConnection();
   };
   watch(
-    () => wssInstance.value?.data,
-    (newVal) => {
-      if (newVal) {
-        updateContent(newVal);
-      }
-    },
-    {
-      immediate: true
-    }
-  );
-  watch(
     () => props.show,
     (val) => {
       if (val && props.revisionId) {
         init();
       } else if (!val) {
-        // wssInstance.value?.close?.();
-        axiosInstance?.cancel?.();
         content.value = '';
       }
     },
@@ -128,7 +105,6 @@
   );
   onBeforeUnmount(() => {
     // wssInstance.value?.close?.();
-    axiosInstance?.cancel?.();
   });
 </script>
 

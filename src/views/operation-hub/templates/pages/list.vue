@@ -106,17 +106,20 @@
 </template>
 
 <script lang="ts" setup>
-  import { map, pickBy, remove } from 'lodash';
-  import { ref, reactive, onMounted } from 'vue';
+  import _, { map, pickBy, remove } from 'lodash';
+  import { ref, reactive, onMounted, nextTick } from 'vue';
   import useCallCommon from '@/hooks/use-call-common';
   import FilterBox from '@/components/filter-box/index.vue';
+  import { useSetChunkRequest } from '@/api/axios-chunk-request';
   import { deleteModal, execSucceed } from '@/utils/monitor';
+  import { websocketEventType } from '@/views/config';
   import ThumbView from '../components/thumb-view.vue';
   import ListView from '../components/list-view.vue';
   import { TemplateRowData } from '../config/interface';
   import { queryModules, deleteModules } from '../api';
 
   let timer: any = null;
+  const { setChunkRequest } = useSetChunkRequest();
   const { router } = useCallCommon();
   const loading = ref(false);
   const currentView = ref('thumb'); // thumb, list
@@ -219,8 +222,47 @@
   const handleDelete = async () => {
     deleteModal({ onOk: handleDeleteConfirm });
   };
+  const updateModuleList = (data) => {
+    const collections = data?.collection || [];
+    // CREATE
+    if (data?.type === websocketEventType.create) {
+      dataList.value = _.concat(collections, dataList.value);
+      return;
+    }
+    // UPDATE
+    _.each(collections, (item) => {
+      const updateIndex = _.findIndex(
+        dataList.value,
+        (sItem) => sItem.id === item.id
+      );
+      if (updateIndex > -1) {
+        const updateItem = _.cloneDeep(item);
+        dataList.value[updateIndex] = updateItem;
+      } else {
+        dataList.value = _.concat(_.cloneDeep(item), dataList.value);
+      }
+    });
+  };
+  const updateHandler = (list) => {
+    _.each(list, (data) => {
+      updateModuleList(data);
+    });
+  };
+  const createInstanceListWebsocket = () => {
+    try {
+      setChunkRequest({
+        url: `/modules`,
+        handler: updateHandler
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  };
   onMounted(() => {
     fetchData();
+    nextTick(() => {
+      // createInstanceListWebsocket();
+    });
   });
 </script>
 

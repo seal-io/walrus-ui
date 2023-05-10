@@ -149,6 +149,7 @@ export default function useFetchResource() {
   };
   const fetchData = async (instanceId) => {
     if (!instanceId) return;
+    loading.value = false;
     fetchToken?.cancel?.();
     fetchToken = createAxiosToken();
     try {
@@ -165,7 +166,6 @@ export default function useFetchResource() {
     } catch (error) {
       dataList.value = [];
       loading.value = false;
-      console.log(error);
     }
   };
   const updateCallback = (list: object[]) => {

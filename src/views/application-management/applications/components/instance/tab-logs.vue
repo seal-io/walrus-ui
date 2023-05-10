@@ -17,8 +17,6 @@
 </template>
 
 <script lang="ts" setup>
-  import { useWebSocket } from '@vueuse/core';
-  import { createWebSocketUrl } from '@/hooks/use-websocket';
   import { useSetChunkRequest } from '@/api/axios-chunk-request';
   import Convert from 'ansi-to-html';
   import { get, split } from 'lodash';
@@ -65,9 +63,6 @@
   const containerList = ref<Cascader[]>([]);
   const convert = new Convert();
 
-  // const content = computed(() => {
-  //   return wssInstance.value?.data;
-  // });
   const updateContent = (newVal) => {
     if (hasAnsi(newVal)) {
       // content.value = `${content.value}${convert.toHtml(newVal)}`;
@@ -138,19 +133,7 @@
 
   const init = async () => {
     await getApplicationResource();
-    // await getResourceKeys();
   };
-  // watch(
-  //   () => wssInstance.value?.data,
-  //   (newVal) => {
-  //     if (newVal) {
-  //       updateContent(newVal);
-  //     }
-  //   },
-  //   {
-  //     immediate: true
-  //   }
-  // );
   watch(
     () => props.resourceList,
     (list) => {
