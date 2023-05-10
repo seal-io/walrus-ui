@@ -66,7 +66,7 @@
         <a-table-column
           ellipsis
           tooltip
-          align="center"
+          align="left"
           :cell-style="{ minWidth: '40px' }"
           data-index="type"
           :title="$t('operation.connectors.table.type')"
@@ -255,7 +255,7 @@
 
 <script lang="ts" setup>
   import { useSetChunkRequest } from '@/api/axios-chunk-request';
-  import { websocketEventType } from '@/views/config';
+  import { useUpdateChunkedList } from '@/views/commons/hooks/use-update-chunked-list';
   import ADropdownButton from '@arco-design/web-vue/es/dropdown/dropdown-button';
   import useAxiosSource from '@/hooks/use-axios-cancel';
   import { UseSortDirection } from '@/utils/common';
@@ -312,7 +312,6 @@
   const { setChunkRequest } = useSetChunkRequest();
   const axiosSource = useAxiosSource();
   let axiosToken: any = null;
-  const axiosInstance: any = null;
   const { rowSelection, selectedKeys, handleSelectChange } = useRowSelect();
   const { router, t } = useCallCommon();
   const { sort, sortOrder, setSortDirection } = UseSortDirection({
@@ -331,6 +330,9 @@
   });
   const dataList = ref<ConnectorRowData[]>([]);
 
+  const { updateChunkedList } = useUpdateChunkedList(dataList, (item) => {
+    return item?.category === props.category;
+  });
   const getCostStatus = (conditions) => {
     const d = find(conditions, (item) => {
       return item.type === 'CostSynced';
@@ -481,44 +483,10 @@
   const handleDelete = async () => {
     deleteModal({ onOk: handleDeleteConfirm });
   };
-  const handleSaveAppInfo = () => {
-    queryParams.page = 1;
-    handleFilter();
-  };
-  const upateDataList = (data) => {
-    const collections = filter(
-      data.collection || [],
-      (sItem) => sItem?.category === props.category
-    );
-    const ids = data?.ids || [];
-    // const collections = data?.collection || [];
-    if (data?.type === websocketEventType.delete) {
-      dataList.value = _.filter(dataList.value, (item) => {
-        return !_.find(ids, (id) => id === item.id);
-      });
-      return;
-    }
-    if (data?.type === websocketEventType.create) {
-      dataList.value = _.concat(collections, dataList.value);
-      dataList.value = _.uniqBy(dataList.value, 'id');
-      return;
-    }
-    _.each(collections, (item) => {
-      const updateIndex = _.findIndex(
-        dataList.value,
-        (sItem) => sItem.id === item.id
-      );
-      if (updateIndex > -1) {
-        const updateItem = _.cloneDeep(item);
-        dataList.value[updateIndex] = updateItem;
-      } else {
-        dataList.value = _.concat(_.cloneDeep(item), dataList.value);
-      }
-    });
-  };
+
   const updateHandler = (list) => {
     _.each(list, (data) => {
-      upateDataList(data);
+      updateChunkedList(data);
     });
   };
   const createInstanceListWebsocket = () => {
@@ -554,11 +522,6 @@
       immediate: true
     }
   );
-  onBeforeUnmount(() => {
-    // websocketInstance.value?.close?.();
-    axiosInstance?.cancel?.();
-    console.log('close:======');
-  });
 </script>
 
 <style lang="less" scoped>

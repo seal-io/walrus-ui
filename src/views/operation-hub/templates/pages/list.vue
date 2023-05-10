@@ -113,6 +113,7 @@
   import { useSetChunkRequest } from '@/api/axios-chunk-request';
   import { deleteModal, execSucceed } from '@/utils/monitor';
   import { websocketEventType } from '@/views/config';
+  import { useUpdateChunkedList } from '@/views/commons/hooks/use-update-chunked-list';
   import ThumbView from '../components/thumb-view.vue';
   import ListView from '../components/list-view.vue';
   import { TemplateRowData } from '../config/interface';
@@ -133,6 +134,7 @@
     page: 1,
     perPage: 10
   });
+  const { updateChunkedList } = useUpdateChunkedList(dataList);
   const handleToggle = (val) => {
     currentView.value = val;
   };
@@ -222,38 +224,10 @@
   const handleDelete = async () => {
     deleteModal({ onOk: handleDeleteConfirm });
   };
-  const updateModuleList = (data) => {
-    const collections = data?.collection || [];
-    const ids = data?.ids || [];
-    // CREATE
-    if (data?.type === websocketEventType.create) {
-      dataList.value = _.concat(collections, dataList.value);
-      return;
-    }
-    // DELETE
-    if (data?.type === websocketEventType.delete) {
-      dataList.value = _.filter(dataList.value, (item) => {
-        return !_.find(ids, (id) => id === item.id);
-      });
-      return;
-    }
-    // UPDATE
-    _.each(collections, (item) => {
-      const updateIndex = _.findIndex(
-        dataList.value,
-        (sItem) => sItem.id === item.id
-      );
-      if (updateIndex > -1) {
-        const updateItem = _.cloneDeep(item);
-        dataList.value[updateIndex] = updateItem;
-      } else {
-        dataList.value = _.concat(_.cloneDeep(item), dataList.value);
-      }
-    });
-  };
+
   const updateHandler = (list) => {
     _.each(list, (data) => {
-      updateModuleList(data);
+      updateChunkedList(data);
     });
   };
   const createInstanceListWebsocket = () => {
