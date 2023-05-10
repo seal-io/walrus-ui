@@ -39,6 +39,7 @@
         <a-table-column
           ellipsis
           tooltip
+          align="center"
           :cell-style="{ minWidth: '40px' }"
           data-index="module"
           :title="$t('applications.applications.table.module')"

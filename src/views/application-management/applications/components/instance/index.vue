@@ -77,7 +77,7 @@
 </template>
 
 <script lang="ts" setup>
-  import { cloneDeep, get, split, includes } from 'lodash';
+  import _, { cloneDeep, get, split, includes } from 'lodash';
   import {
     markRaw,
     ref,
@@ -144,19 +144,19 @@
       console.log(error);
     }
   };
-
+  const debunceFun = _.debounce(() => {
+    fetchData(props.instanceId);
+    createResourceChunkConnection({
+      instanceId: props.instanceId,
+      callback: handleCallUpdateEndpoint
+    });
+  }, 100);
   watch(
     () => props.instanceId,
     () => {
       // getInstanceInfo();
       // getEndpoints();
-      fetchData(props.instanceId);
-      nextTick(() => {
-        createResourceChunkConnection({
-          instanceId: props.instanceId,
-          callback: handleCallUpdateEndpoint
-        });
-      });
+      debunceFun();
     },
     {
       immediate: true

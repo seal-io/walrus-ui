@@ -358,11 +358,15 @@
   };
 
   const updateApplicationList = (data) => {
-    if (data?.type !== websocketEventType.update) return;
     const collections = filter(
       data.collection || [],
       (sItem) => sItem?.project?.id === queryParams.projectID
     );
+    // CREATE
+    if (data?.type === websocketEventType.create) {
+      dataList.value = _.concat(collections, dataList.value);
+      return;
+    }
     // const collections = data?.collection || [];
     _.each(collections, (item) => {
       const updateIndex = _.findIndex(
