@@ -1,6 +1,5 @@
 <template>
   <div class="resource-wrap">
-    <span>isLoading:{{ isLoading }}</span>
     <a-table
       :loading="isLoading"
       column-resizable
@@ -187,7 +186,7 @@
     }
   };
   const handleFilter = () => {
-    fetchData();
+    // fetchData();
   };
   const handlePageChange = (page: number) => {
     queryParams.page = page;

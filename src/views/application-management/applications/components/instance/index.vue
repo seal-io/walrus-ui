@@ -133,13 +133,13 @@
     tabEndpointCom.value.refreshDataList();
   };
 
-  const debunceFun = _.debounce(() => {
+  const debunceFun = () => {
     if (!props.instanceId) return;
     fetchData();
     createResourceChunkConnection({
       callback: handleCallUpdateEndpoint
     });
-  }, 100);
+  };
   watch(
     () => props.instanceId,
     () => {

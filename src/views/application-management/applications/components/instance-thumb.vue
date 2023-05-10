@@ -135,7 +135,7 @@
     }
 
     .name {
-      width: -webkit-fill-available;
+      width: 100%;
       margin-bottom: 10px;
       overflow: hidden;
       text-align: center;
@@ -143,7 +143,7 @@
     }
 
     .description {
-      width: -webkit-fill-available;
+      width: 100%;
       overflow: hidden;
       text-align: center;
       text-overflow: ellipsis;

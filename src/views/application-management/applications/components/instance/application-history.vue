@@ -198,7 +198,6 @@
   } from '../../api';
   import { updateApplicationEmitter } from '../../hooks/update-application-listener';
 
-  const axiosInstance: any = null;
   let axiosListInstance = createAxiosToken();
   const { t } = useCallCommon();
   const { setChunkRequest } = useSetChunkRequest();
@@ -390,7 +389,6 @@
   };
   const createInstanceListWebsocket = () => {
     try {
-      axiosInstance?.cancel?.();
       setChunkRequest({
         url: `/application-revisions`,
         params: {
@@ -417,7 +415,6 @@
   );
   onBeforeUnmount(() => {
     console.log('wss unmounted');
-    axiosInstance?.cancel?.();
     axiosListInstance.cancel?.();
   });
   onMounted(() => {

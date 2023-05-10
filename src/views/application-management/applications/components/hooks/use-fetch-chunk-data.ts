@@ -153,6 +153,7 @@ export default function useFetchResource() {
     fetchToken = createAxiosToken();
     try {
       loading.value = true;
+      console.log('loading===1', loading.value);
       const params = {
         page: -1,
         instanceID: instanceId.value
@@ -162,12 +163,14 @@ export default function useFetchResource() {
         data?.items || [],
         (item) => item?.instance?.id === instanceId.value
       );
+      console.log('loading===2', loading.value);
       list = setDataList(list);
       dataList.value = [].concat(list);
       loading.value = false;
     } catch (error) {
       dataList.value = [];
       loading.value = false;
+      console.log('loading===3', loading.value);
     }
   };
   const updateCallback = (list: object[]) => {
