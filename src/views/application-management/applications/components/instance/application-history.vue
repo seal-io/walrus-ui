@@ -273,7 +273,6 @@
   };
 
   const handleRollback = async (value, row) => {
-    console.log('rollback=====', value, row);
     rollbackType.value = value;
     rollbackData.value = row;
     handleDiffRevisionSpec(row);
@@ -306,6 +305,7 @@
       );
       dataList.value = data?.items || [];
       loading.value = false;
+      total.value = data?.pagination?.total || 0;
     } catch (error) {
       dataList.value = [];
       loading.value = false;
@@ -317,7 +317,6 @@
   };
   const handleSortChange = (dataIndex: string, direction: string) => {
     setSortDirection(dataIndex, direction);
-    console.log('dataIndex===', dataIndex, direction);
     fetchData();
   };
   const handlePageChange = (page: number) => {
