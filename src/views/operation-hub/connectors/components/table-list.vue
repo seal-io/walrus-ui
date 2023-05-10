@@ -74,8 +74,18 @@
           :title="$t('operation.connectors.table.type')"
         >
           <template #cell="{ record }">
-            <span v-if="category === 'VersionControl'" class="mright-5">
+            <span
+              v-if="_.includes(['Kubernetes', 'VersionControl'], category)"
+              class="mright-5"
+            >
               <ProviderIcon :provider="toLower(record.type)"></ProviderIcon>
+            </span>
+            <span v-else class="mright-5">
+              <icon-font
+                type="icon-custom"
+                class="size-16"
+                style="color: rgb(var(--arcoblue-5))"
+              ></icon-font>
             </span>
             <span>{{ record.type }}</span>
           </template>

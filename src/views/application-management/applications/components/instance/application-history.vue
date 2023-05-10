@@ -42,6 +42,7 @@
           tooltip
           :cell-style="{ minWidth: '40px' }"
           data-index="duration"
+          align="center"
           :title="$t('dashboard.table.duration')"
         >
           <template #cell="{ record }">
@@ -53,6 +54,7 @@
           tooltip
           :cell-style="{ minWidth: '40px' }"
           data-index="status"
+          align="center"
           :title="$t('dashboard.table.status')"
         >
           <template #cell="{ record }">
