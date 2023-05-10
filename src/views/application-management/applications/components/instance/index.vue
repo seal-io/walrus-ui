@@ -77,7 +77,7 @@
 </template>
 
 <script lang="ts" setup>
-  import _, { cloneDeep, get, split, includes } from 'lodash';
+  import _ from 'lodash';
   import {
     markRaw,
     ref,
@@ -99,8 +99,6 @@
   import applicationHistory from './application-history.vue';
   import BasicInfo from './basic-info.vue';
   import { instanceTabs } from '../../config';
-  import { EndPointRow } from '../../config/interface';
-  import { queryItemApplicationInstances } from '../../api';
   import useFetchResource from '../hooks/use-fetch-chunk-data';
 
   const props = defineProps({
@@ -134,17 +132,9 @@
     console.log('update endpoint');
     tabEndpointCom.value.refreshDataList();
   };
-  const getInstanceInfo = async () => {
-    if (!props.instanceId) return;
-    try {
-      const { data } = await queryItemApplicationInstances({
-        id: props.instanceId
-      });
-    } catch (error) {
-      console.log(error);
-    }
-  };
+
   const debunceFun = _.debounce(() => {
+    if (!props.instanceId) return;
     fetchData(props.instanceId);
     createResourceChunkConnection({
       instanceId: props.instanceId,
@@ -154,8 +144,6 @@
   watch(
     () => props.instanceId,
     () => {
-      // getInstanceInfo();
-      // getEndpoints();
       debunceFun();
     },
     {

@@ -169,7 +169,6 @@
   } from 'vue';
   import { useSetChunkRequest } from '@/api/axios-chunk-request';
   import useCallCommon from '@/hooks/use-call-common';
-  import { createWebsocketInstance } from '@/hooks/use-websocket';
   import { deleteModal, execSucceed } from '@/utils/monitor';
   import { UseSortDirection } from '@/utils/common';
   import useRowSelect from '@/hooks/use-row-select';
@@ -201,7 +200,6 @@
   });
   const axiosInstance: any = null;
   const dataList = ref<AppRowData[]>([]);
-  const websocketInstance = ref<any>(null);
   const projectList = ref<{ label: string; value: string }[]>([]);
 
   const setDefaultProject = async () => {
@@ -368,6 +366,7 @@
       return;
     }
     // const collections = data?.collection || [];
+    // UPDATE
     _.each(collections, (item) => {
       const updateIndex = _.findIndex(
         dataList.value,

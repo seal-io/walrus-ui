@@ -115,17 +115,6 @@
       deep: true
     }
   );
-  // watch(
-  //   () => instanceId.value,
-  //   () => {
-  //     nextTick(() => {
-  //       getApplicationResource();
-  //     });
-  //   },
-  //   {
-  //     immediate: true
-  //   }
-  // );
 </script>
 
 <style lang="less" scoped></style>

@@ -231,6 +231,7 @@
     try {
       const { data } = await queryItemConnector({ id });
       assignIn(formData, data);
+      formData.enableFinOps = data.enableFinOps || false;
       copyFormData = cloneDeep(formData);
     } catch (error) {
       console.log(error);
