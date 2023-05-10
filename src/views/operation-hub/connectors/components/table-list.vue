@@ -22,9 +22,6 @@
           <a-button type="outline" @click="handleReset">{{
             $t('common.button.clear')
           }}</a-button>
-          <!-- <a-button type="primary" @click="handleClosews">
-            close websocket
-          </a-button> -->
         </a-space>
       </template>
       <template #button-group>
@@ -69,6 +66,7 @@
         <a-table-column
           ellipsis
           tooltip
+          align="center"
           :cell-style="{ minWidth: '40px' }"
           data-index="type"
           :title="$t('operation.connectors.table.type')"
