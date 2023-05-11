@@ -195,7 +195,6 @@
         <span class="tooltip-value">${el.value?.toLocaleString()}</span>
       </div>`
     );
-    result.reverse();
     if (items.length > maxCount) {
       result.push(
         `<div class="content-panel notes-text"><div class="series-name">${t(
@@ -326,8 +325,9 @@
         //   return [point[1], '10%'];
         // },
         formatter(result) {
-          // console.log('params======', result);
           const params = sortBy(result, (item) => item.value);
+          params.reverse();
+          // console.log('params======', result);
           const [firstElement] = params as ToolTipFormatterParams[];
           const colCount = Math.ceil(divide(params.length, 10));
           return `<div class="chart-tooltip-wrap">
