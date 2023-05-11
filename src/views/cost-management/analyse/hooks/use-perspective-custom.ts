@@ -1,21 +1,7 @@
 import { ref, reactive, computed } from 'vue';
 import dayjs from 'dayjs';
 import useCallCommon from '@/hooks/use-call-common';
-import {
-  find,
-  get,
-  omit,
-  map,
-  each,
-  sortBy,
-  reduce,
-  cloneDeep,
-  keys,
-  concat,
-  assignIn,
-  uniq,
-  uniqBy
-} from 'lodash';
+import { find, get, omit, map, each, sortBy, cloneDeep } from 'lodash';
 import { getStackLineData } from '@/views/config';
 import {
   getTimeRange,
