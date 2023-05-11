@@ -15,4 +15,9 @@ export const tabList = [
   // { label: 'Resources', value: '', com: 'tabResource' },
   { label: 'Providers', value: '', com: 'tabConnector' }
 ];
+
+export const actionList = [
+  { label: 'common.button.edit', value: 'edit', icon: 'icon-edit' },
+  { label: 'common.button.refresh', value: 'refresh', icon: 'icon-refresh' }
+];
 export default {};

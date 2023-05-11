@@ -34,7 +34,12 @@
             </AutoTip>
           </div>
           <div class="btn-wrap">
-            <a-dropdown @select="handleSelectAction">
+            <a-dropdown
+              size="small"
+              style="line-height: 30px"
+              position="bl"
+              @select="handleSelectAction"
+            >
               <a-link size="mini" @click.stop="() => {}">
                 <template #icon
                   ><icon-more
@@ -42,23 +47,20 @@
                 /></template>
               </a-link>
               <template #content>
-                <a-doption value="edit">
-                  <a-tooltip :content="$t('common.button.edit')">
-                    <a-link>
-                      <template #icon>
-                        <icon-edit></icon-edit>
-                      </template>
-                    </a-link>
-                  </a-tooltip>
-                </a-doption>
-                <a-doption value="refresh">
-                  <a-tooltip :content="$t('common.button.refresh')">
-                    <a-link>
-                      <template #icon>
-                        <icon-refresh />
-                      </template>
-                    </a-link>
-                  </a-tooltip>
+                <a-doption
+                  v-for="(item, index) in actionList"
+                  :key="index"
+                  :value="item.value"
+                  :style="{
+                    lineHeight: '32px',
+                    color: 'var(--color-text-2)'
+                  }"
+                >
+                  <component
+                    :is="item.icon"
+                    style="margin-right: 5px"
+                  ></component
+                  >{{ $t(item.label) }}
                 </a-doption>
               </template>
             </a-dropdown>
@@ -86,6 +88,7 @@
   import { execSucceed } from '@/utils/monitor';
   import StatusLabel from '../../connectors/components/status-label.vue';
   import { TemplateRowData } from '../config/interface';
+  import { actionList } from '../config';
   import { refreshModules } from '../api';
 
   const props = defineProps({
