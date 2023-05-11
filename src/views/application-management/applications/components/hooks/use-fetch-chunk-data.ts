@@ -12,10 +12,7 @@ export default function useFetchResource() {
   const { setChunkRequest } = useSetChunkRequest();
   const dataList = ref<InstanceResource[]>([]);
   const loading = ref(false);
-  const updateEndpoint = ref<any>(null);
   const instanceId = inject('instanceId', ref(''));
-  const needUpdateEndpoint = ref(false);
-  const axiosInstance: any = null;
   const requestCacheList = ref<number[]>([]);
   let fetchToken = createAxiosToken();
 
@@ -112,10 +109,6 @@ export default function useFetchResource() {
     }
 
     // UPDATE
-    if (collections.length) {
-      needUpdateEndpoint.value = true;
-      // updateEndpoint.value?.();
-    }
     _.each(parentResources, (item) => {
       const updateIndex = _.findIndex(
         dataList.value,
@@ -174,18 +167,12 @@ export default function useFetchResource() {
     }
   };
   const updateCallback = (list: object[]) => {
-    needUpdateEndpoint.value = false;
     _.each(list, (data) => {
       updateDataList(data);
     });
-    if (needUpdateEndpoint.value) {
-      updateEndpoint.value?.();
-    }
   };
-  const createResourceChunkConnection = ({ callback }) => {
+  const createResourceChunkConnection = () => {
     try {
-      axiosInstance?.cancel?.();
-      updateEndpoint.value = callback;
       setChunkRequest({
         url: `/application-resources`,
         params: {
@@ -199,7 +186,6 @@ export default function useFetchResource() {
   };
   onBeforeUnmount(() => {
     console.log('wss unmounted 11');
-    axiosInstance?.cancel?.();
     fetchToken?.cancel?.();
   });
   return {

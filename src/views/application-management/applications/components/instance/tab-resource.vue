@@ -82,38 +82,15 @@
         </a-table-column>
       </template>
     </a-table>
-    <!-- <a-pagination
-      size="small"
-      :total="total"
-      :page-size="queryParams.perPage"
-      :current="queryParams.page"
-      show-total
-      show-page-size
-      :hide-on-single-page="
-        queryParams.perPage === 10 || queryParams.perPage === -1
-      "
-      @change="handlePageChange"
-      @page-size-change="handlePageSizeChange"
-    /> -->
   </div>
 </template>
 
 <script lang="ts" setup>
   import dayjs from 'dayjs';
   import _ from 'lodash';
-  import {
-    onMounted,
-    ref,
-    reactive,
-    inject,
-    watch,
-    nextTick,
-    PropType,
-    onBeforeUnmount
-  } from 'vue';
+  import { PropType } from 'vue';
   import StatusLabel from '@/views/operation-hub/connectors/components/status-label.vue';
   import { InstanceResource } from '../../config/interface';
-  import { queryApplicationResource } from '../../api';
 
   defineProps({
     resourceList: {
@@ -129,76 +106,13 @@
       }
     }
   });
-  const instanceId = inject('instanceId', ref(''));
-  const total = ref(0);
-  const loading = ref(false);
-  const queryParams = reactive({
-    page: -1
-  });
-  const dataList = ref<InstanceResource[]>([]);
+
   const setRowClass = (record) => {
     if (record.raw.isChilren) {
       return 'row-child';
     }
     return '';
   };
-  const setParentDataProperties = (data) => {
-    data.isLeaf = !data.components?.length;
-    data.isParent = true;
-    data.key = data.id;
-  };
-  const setChildDataProperties = (parent) => {
-    setParentDataProperties(parent);
-    const children = parent.components || [];
-    if (children.length) {
-      _.each(children, (data) => {
-        data.isLeaf = true;
-        data.isChilren = true;
-        data.parentId = parent.id;
-        data.key = parent.id;
-      });
-    }
-    parent.children = children;
-  };
-
-  const setDataList = (list) => {
-    return _.map(list, (s) => {
-      setChildDataProperties(s);
-      return s;
-    });
-  };
-  const fetchData = async () => {
-    try {
-      loading.value = true;
-      const params = {
-        ...queryParams,
-        instanceID: instanceId.value
-      };
-      const { data } = await queryApplicationResource(params);
-      let list: any = data?.items || [];
-      list = setDataList(list);
-      dataList.value = [].concat(list);
-      loading.value = false;
-    } catch (error) {
-      dataList.value = [];
-      loading.value = false;
-      console.log(error);
-    }
-  };
-  const handleFilter = () => {
-    // fetchData();
-  };
-  const handlePageChange = (page: number) => {
-    queryParams.page = page;
-    handleFilter();
-  };
-
-  onBeforeUnmount(() => {
-    console.log('wss unmounted');
-  });
-  onMounted(() => {
-    console.log('resource');
-  });
 </script>
 
 <style lang="less" scoped>

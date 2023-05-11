@@ -50,7 +50,6 @@
             :is="instanceTabMap[item.com]"
             :resource-list="dataList"
             :is-loading="loading"
-            @updateEndpoint="handleCallUpdateEndpoint"
           ></Component>
         </a-tab-pane>
       </a-tabs>
@@ -128,17 +127,11 @@
   const handleTabChange = (val) => {
     activeKey.value = val;
   };
-  const handleCallUpdateEndpoint = () => {
-    console.log('update endpoint');
-    tabEndpointCom.value.refreshDataList();
-  };
 
   const debunceFun = () => {
     if (!props.instanceId) return;
     fetchData();
-    createResourceChunkConnection({
-      callback: handleCallUpdateEndpoint
-    });
+    createResourceChunkConnection();
   };
   watch(
     () => props.instanceId,

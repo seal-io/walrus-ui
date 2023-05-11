@@ -59,7 +59,6 @@
   const content = ref('');
   const loading = ref(false);
   let timer: any = null;
-  const axiosInstance: any = null;
   const containerList = ref<Cascader[]>([]);
   const convert = new Convert();
 
@@ -74,7 +73,6 @@
   };
   const createChunkConnection = async () => {
     if (!logKey.value || !resourceId.value) return;
-    axiosInstance?.cancel?.();
     const url = `/application-resources/${resourceId.value}/log`;
     setChunkRequest({
       url,
@@ -161,9 +159,6 @@
   //     immediate: true
   //   }
   // );
-  onBeforeUnmount(() => {
-    axiosInstance?.cancel?.();
-  });
 </script>
 
 <style lang="less" scoped>
