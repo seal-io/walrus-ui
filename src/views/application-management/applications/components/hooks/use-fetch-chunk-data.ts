@@ -7,6 +7,7 @@ import {
 import { InstanceResource } from '../../config/interface';
 import { websocketEventType } from '../../config';
 import { queryApplicationResource } from '../../api';
+import { updateResourceEmitter } from '../../hooks/update-resource-listener';
 
 export default function useFetchResource() {
   const { setChunkRequest } = useSetChunkRequest();
@@ -14,6 +15,7 @@ export default function useFetchResource() {
   const loading = ref(false);
   const instanceId = inject('instanceId', ref(''));
   const requestCacheList = ref<number[]>([]);
+  const helmResourceNeedUpdate = new Set();
   let fetchToken = createAxiosToken();
 
   const setParentDataProperties = (data) => {
@@ -50,6 +52,13 @@ export default function useFetchResource() {
     const childResources = _.filter(collections, (item) =>
       _.get(item, 'composition.id')
     );
+
+    // TODO
+    if (childResources.length) {
+      _.each(childResources, (item) => {
+        helmResourceNeedUpdate.add(_.get(item, 'composition.id'));
+      });
+    }
     const parentResources = _.filter(
       collections,
       (item) => !_.get(item, 'composition.id')
@@ -166,12 +175,46 @@ export default function useFetchResource() {
       loading.value = !!requestCacheList.value.length;
     }
   };
+  // TODO get helm resource ids
+  const getHelmResourceIDs = async () => {
+    if (!helmResourceNeedUpdate.size) return;
+    const ids = [...helmResourceNeedUpdate];
+    const resultList = _.filter(dataList.value, (item) => {
+      return _.includes(ids, item.id) && item.type === 'helm_release';
+    });
+    if (resultList.length) {
+      try {
+        fetchToken?.cancel?.();
+        fetchToken = createAxiosToken();
+        const params = {
+          page: -1,
+          instanceID: instanceId.value
+        };
+        const { data } = await queryApplicationResource(
+          params,
+          fetchToken.token
+        );
+        let list: any = _.filter(
+          data?.items || [],
+          (item) => item?.instance?.id === instanceId.value
+        );
+        list = setDataList(list);
+        dataList.value = [].concat(list);
+      } catch (error) {
+        console.log(error);
+      }
+    }
+  };
   const updateCallback = (list: object[]) => {
+    helmResourceNeedUpdate.clear();
     _.each(list, (data) => {
       updateDataList(data);
     });
+    // TODO
+    getHelmResourceIDs();
   };
   const createResourceChunkConnection = () => {
+    requestCacheList.value = [];
     try {
       setChunkRequest({
         url: `/application-resources`,

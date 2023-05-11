@@ -10,12 +10,21 @@ interface ChunkedCollection {
 // Only used to update lists without nested state
 export function useUpdateChunkedList(
   dataList: Ref<{ id: string }[]>,
-  filterFun?: (args: any) => boolean
+  options?: {
+    filterFun?: (args: any) => boolean;
+    computedID?: (d: object) => string;
+  }
 ) {
   const updateChunkedList = (data: ChunkedCollection) => {
     let collections = data?.collection || [];
-    if (filterFun) {
-      collections = _.filter(data?.collection, filterFun);
+    if (options?.computedID) {
+      collections = _.map(collections, (item) => {
+        item.id = options?.computedID?.(item);
+        return item;
+      });
+    }
+    if (options?.filterFun) {
+      collections = _.filter(data?.collection, options?.filterFun);
     }
     const ids = data?.ids || [];
     // CREATE
