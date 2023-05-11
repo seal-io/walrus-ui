@@ -451,8 +451,8 @@
   //   }
   // );
   onBeforeUnmount(() => {
-    console.log('wss app unmount');
     axiosInstance?.cancel?.();
+    clearInterval(loopTimer);
   });
   // const res = dayjs('2020-02-01').diff('2021-02-01', 'day');
   // console.log('res===', res);
