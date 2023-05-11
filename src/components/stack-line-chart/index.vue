@@ -350,6 +350,12 @@
   .issue-stack-trend {
     position: relative;
 
+    .title {
+      font-weight: 500;
+      font-size: 12px;
+      text-align: left;
+    }
+
     .options-list {
       position: absolute;
       top: 0;
