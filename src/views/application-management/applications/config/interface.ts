@@ -110,4 +110,13 @@ export interface EndPointRow {
   moduleName: string;
   name: string;
   endpoints: string[];
+  id?: string;
+}
+
+export interface OutputsRow {
+  moduleName: string;
+  name: string;
+  type: string[];
+  value: any;
+  id?: string;
 }

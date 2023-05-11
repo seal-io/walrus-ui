@@ -61,24 +61,11 @@
         </a-table-column>
       </template>
     </a-table>
-    <!-- <a-pagination
-      size="small"
-      :total="total"
-      :page-size="queryParams.perPage"
-      :current="queryParams.page"
-      show-total
-      show-page-size
-      :hide-on-single-page="
-        queryParams.perPage === 10 || queryParams.page === -1
-      "
-      @change="handlePageChange"
-      @page-size-change="handlePageSizeChange"
-    /> -->
   </div>
 </template>
 
 <script lang="ts" setup>
-  import { split, get, includes } from 'lodash';
+  import _, { split, get, includes } from 'lodash';
   import {
     onMounted,
     ref,
@@ -86,21 +73,28 @@
     inject,
     watch,
     defineExpose,
-    onBeforeUnmount
+    onBeforeUnmount,
+    nextTick
   } from 'vue';
-  import { createAxiosToken } from '@/api/axios-chunk-request';
+  import {
+    useSetChunkRequest,
+    createAxiosToken
+  } from '@/api/axios-chunk-request';
+  import { websocketEventType } from '@/views/config/index';
   import { EndPointRow } from '../../config/interface';
   import { queryInstanceEndpoints } from '../../api';
 
+  const { setChunkRequest } = useSetChunkRequest();
   let axiosInstance = createAxiosToken();
+  let chunkRequesSource: any = null;
   const instanceId = inject('instanceId', ref(''));
-  const total = ref(0);
   const loading = ref(false);
   const requestCacheList = ref<number[]>([]);
   const queryParams = reactive({
     page: -1
   });
   const dataList = ref<EndPointRow[]>([]);
+
   const fetchData = async () => {
     axiosInstance?.cancel?.();
     axiosInstance = createAxiosToken();
@@ -115,7 +109,10 @@
         params,
         axiosInstance?.token
       );
-      dataList.value = data || [];
+      dataList.value = _.map(data || [], (item) => {
+        item.id = `${item.moduleName}/${item.name}`;
+        return item;
+      });
       loading.value = false;
       requestCacheList.value.pop();
     } catch (error) {
@@ -126,36 +123,60 @@
     }
   };
 
-  const handleFilter = () => {
-    fetchData();
-  };
-  const handlePageChange = (page: number) => {
-    queryParams.page = page;
-    handleFilter();
-  };
+  const updateChunkedList = (data) => {
+    const collections = _.map(data?.collection, (item) => {
+      item.id = `${item.moduleName}/${item.name}`;
+      return item;
+    });
 
-  const refreshDataList = () => {
-    queryParams.page = 1;
-    fetchData();
+    // CREATE
+    if (data?.type === websocketEventType.create) {
+      dataList.value = _.concat(collections, dataList.value);
+      return;
+    }
+    // DELETE
+    if (data?.type === websocketEventType.delete) {
+      dataList.value = _.filter(dataList.value, (item) => {
+        return !_.find(collections, (sItem) => sItem.id === item.id);
+      });
+      return;
+    }
+    // UPDATE
+    _.each(collections, (item) => {
+      const updateIndex = _.findIndex(
+        dataList.value,
+        (sItem) => sItem.id === item.id
+      );
+      if (updateIndex > -1) {
+        const updateItem = _.cloneDeep(item);
+        dataList.value[updateIndex] = updateItem;
+      } else {
+        dataList.value = _.concat(_.cloneDeep(item), dataList.value);
+      }
+    });
   };
-  const handleShowLogs = () => {};
-  const handleShowTerm = () => {};
+  const updateHandler = (list: object[]) => {
+    _.each(list, (data) => {
+      updateChunkedList(data);
+    });
+  };
   watch(
     () => instanceId.value,
     () => {
       queryParams.page = 1;
       fetchData();
+      chunkRequesSource?.cancel?.();
+      nextTick(() => {
+        chunkRequesSource = setChunkRequest({
+          url: `/application-instances/${instanceId.value}/access-endpoint`,
+          handler: updateHandler
+        });
+      });
     },
     {
       immediate: true
     }
   );
-  defineExpose({
-    refreshDataList
-  });
-  onMounted(() => {
-    console.log('resource');
-  });
   onBeforeUnmount(() => {
     axiosInstance?.cancel?.();
   });
