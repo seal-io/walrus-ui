@@ -337,12 +337,6 @@
         summaryStatus: AppInstanceStatus.Deleting,
         transitioning: true
       });
-      // await getApplicationInstances();
-      // if (instanseList.value.length) {
-      //   handleClickInstance(get(instanseList.value, '0'));
-      // } else {
-      //   handleClickApp();
-      // }
     } catch (error) {
       console.log(error);
     }
