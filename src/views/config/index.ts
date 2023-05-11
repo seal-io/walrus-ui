@@ -134,4 +134,9 @@ export const validateSecretNameRegx = /^(?![\d])[0-9A-Za-z_]+$/;
 // environment
 export const validateEvnNameRegx = /^[A-Za-z0-9]([A-Za-z0-9-_]*[A-Za-z0-9])?$/;
 
+// page state
+export enum PageAction {
+  EDIT = 'edit',
+  VIEW = 'view'
+}
 export default {};
