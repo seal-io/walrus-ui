@@ -119,7 +119,7 @@
     tabLogs: markRaw(tabLogs),
     tabOutput: markRaw(tabOutput),
     // tabOptimization: markRaw(tabOptimization),
-    // tabGraph: markRaw(tabGraph),
+    tabGraph: markRaw(tabGraph),
     tabHistory: markRaw(applicationHistory),
     tabTerminal: markRaw(tabTerminal)
     // tabEndpoint: markRaw(tabEndpoint)

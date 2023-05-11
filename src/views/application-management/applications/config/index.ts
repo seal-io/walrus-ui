@@ -16,7 +16,7 @@ export const instanceTabs = [
     com: 'tabOutput'
   },
   // { label: '优化建议', value: 'optimization', com: 'tabOptimization' },
-  // { label: '关联图', value: 'graph', com: 'tabGraph' },
+  { label: '关联图', value: 'graph', com: 'tabGraph' },
   // { label: '历史记录', value: 'history', com: 'tabHistory' },
   {
     label: 'applications.instance.tab.term',
