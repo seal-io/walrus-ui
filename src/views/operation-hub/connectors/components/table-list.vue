@@ -330,8 +330,10 @@
   });
   const dataList = ref<ConnectorRowData[]>([]);
 
-  const { updateChunkedList } = useUpdateChunkedList(dataList, (item) => {
-    return item?.category === props.category;
+  const { updateChunkedList } = useUpdateChunkedList(dataList, {
+    filterFun(item) {
+      return item?.category === props.category;
+    }
   });
   const getCostStatus = (conditions) => {
     const d = find(conditions, (item) => {
