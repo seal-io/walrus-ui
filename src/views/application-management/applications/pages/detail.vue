@@ -172,7 +172,6 @@
   const instanceInfo = ref({});
   const cloneInstance = ref({});
   const activeInstanceInfo = ref({});
-  const websocketInstanceList = ref<any>(null);
   const appInfo = reactive({
     name: '',
     description: '',
@@ -183,7 +182,6 @@
     },
     modules: []
   }) as AppFormData;
-  const axiosInstance: any = null;
   const execReload = inject('execReload', () => {});
   provide('instanceId', currentInstance);
   provide('environmentList', environmentList);
@@ -432,13 +430,12 @@
     try {
       const appId = route.query.id || '';
       if (!id) return;
-      // websocketInstanceList.value?.close?.();
-      axiosInstance?.cancel?.();
       setChunkRequest({
         url: `/application-instances`,
         params: {
           applicationID: appId
         },
+        beforeReconnect: getApplicationInstances,
         handler: updateHandler
       });
     } catch (error) {
@@ -461,8 +458,6 @@
     listenerUpdateAppAction(getApplicationDetail);
   });
   onBeforeUnmount(() => {
-    // websocketInstanceList.value?.close?.();
-    axiosInstance?.cancel?.();
     // remove application listener
     removeUpdateAppActionListener();
   });

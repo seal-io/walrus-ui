@@ -1,11 +1,12 @@
 import axios from 'axios';
 import qs from 'query-string';
 import _ from 'lodash';
-import { ref, watch, onBeforeUnmount } from 'vue';
+import { ref, watch, onBeforeUnmount, onMounted } from 'vue';
 
 interface RequestConfig {
   url: string;
   handler: (data: any) => any;
+  beforeReconnect?: () => void;
   params?: object;
   contentType?: 'json' | 'text';
 }
@@ -69,6 +70,7 @@ export function useSetChunkRequest() {
   const axiosChunkRequest = async ({
     url,
     handler,
+    beforeReconnect,
     params = {},
     contentType = 'json'
   }: RequestConfig) => {
@@ -107,12 +109,10 @@ export function useSetChunkRequest() {
         }
       });
       requestReadyState.value = request?.readyState;
-      console.log('requestReadyState===', request);
       if (retryCount.value > 0) {
         retryCount.value -= 1;
       }
     } catch (error) {
-      console.log('requestReadyState===', 111);
       if (!axios.isCancel(error)) {
         requestReadyState.value = 4;
         if (retryCount.value > 0) {
@@ -134,6 +134,8 @@ export function useSetChunkRequest() {
     () => requestReadyState.value,
     (val) => {
       if (val === 4 && retryCount.value > 0) {
+        requestConfig.value.beforeReconnect?.();
+
         clearTimeout(timer);
         timer = setTimeout(() => {
           axiosChunkRequest(requestConfig.value);
@@ -146,8 +148,15 @@ export function useSetChunkRequest() {
   );
   onBeforeUnmount(() => {
     axiosToken.value?.cancel?.();
+    window.removeEventListener('unbeforeunload', () => {
+      axiosToken.value?.cancel?.();
+    });
   });
-
+  onMounted(() => {
+    window.addEventListener('unbeforeunload', () => {
+      axiosToken.value?.cancel?.();
+    });
+  });
   return {
     setChunkRequest
   };
