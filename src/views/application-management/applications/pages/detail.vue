@@ -425,6 +425,16 @@
       updateInstanceList(data);
     });
   };
+  const beforeReconnectHandler = async () => {
+    await getApplicationInstances();
+    const current = _.find(
+      instanseList.value,
+      (item) => item.id === currentInstance.value
+    );
+    if (current) {
+      handleClickInstance(current);
+    }
+  };
   // create websocket  connecting
   const createInstanceListChunkConnection = () => {
     try {
@@ -435,7 +445,7 @@
         params: {
           applicationID: appId
         },
-        beforeReconnect: getApplicationInstances,
+        beforeReconnect: beforeReconnectHandler,
         handler: updateHandler
       });
     } catch (error) {
