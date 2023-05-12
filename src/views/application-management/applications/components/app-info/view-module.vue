@@ -9,6 +9,7 @@
     :ok-text="$t('common.button.save')"
     :visible="show"
     :mask-closable="false"
+    :unmount-on-close="true"
     :body-style="{
       'max-height': '500px',
       'min-height': '400px',
@@ -194,6 +195,7 @@
 
 <script lang="ts" setup>
   import {
+    debounce,
     get,
     find,
     cloneDeep,
@@ -208,7 +210,6 @@
     includes,
     pickBy,
     toString,
-    clone,
     join,
     filter,
     split
@@ -302,6 +303,7 @@
   let refMap: Record<string, refItem> = {};
   const versionMap = ref({ nv: '', ov: '' });
   const subGroupCache = ref({});
+  const formTabs = ref<string[]>([]);
   const formData = reactive({
     name: '',
     module: { id: '' },
@@ -312,14 +314,6 @@
     attributes: {}
   });
 
-  const formTabs = computed(() => {
-    const list = keys(variablesGroup.value);
-    if (includes(list, defaultGroupKey)) {
-      const res = [defaultGroupKey, ...pull(list, defaultGroupKey)];
-      return res;
-    }
-    return list;
-  });
   const variablesDataList = computed(() => {
     const list =
       get(variablesGroup.value, `${activeKey.value}.variables`) || [];
@@ -328,6 +322,14 @@
       return !item.subGroup || item.subGroup === activeSubGroup.value;
     });
   });
+  const setFormTabs = () => {
+    let list = keys(variablesGroup.value);
+    if (includes(list, defaultGroupKey)) {
+      list = [defaultGroupKey, ...pull(list, defaultGroupKey)];
+    }
+    formTabs.value = list;
+    console.log('formTabs===', variablesGroup.value, formTabs.value);
+  };
   const handleCancel = () => {
     emit('update:show', false);
   };
@@ -356,7 +358,8 @@
   };
   const setSubGroupList = () => {
     const groupData = get(variablesGroup.value, activeKey.value);
-    subGroupList.value = [...groupData?.subGroup];
+    console.log('groupData>>>>>>>>', variablesGroup.value, groupData);
+    subGroupList.value = [...(groupData?.subGroup || [])];
     activeSubGroup.value = get(subGroupList.value, '0');
   };
   const handleTabChange = (val) => {
@@ -387,7 +390,6 @@
         ...get(moduleVersionFormCache.value, formData.version)
       }
     };
-    console.log('sourceData===', sourceData);
     const variablesList = filter(
       get(moduleInfo.value, 'variables'),
       (v) => !v.hidden
@@ -456,6 +458,7 @@
         });
       }
     });
+    setFormTabs();
     nextTick(() => {
       handleTabChange(get(formTabs.value, '0'));
     });
@@ -643,9 +646,7 @@
       each(variablesList || [], (item) => {
         item.default = get(props.dataInfo, `attributes.${item.name}`);
       });
-      console.log('dataInfo===', props.dataInfo);
     }
-
     generateVariablesGroup(props.action);
   };
   const handleOpened = () => {};

@@ -1,171 +1,175 @@
 <template>
   <div class="detail-info">
-    <GroupTitle
-      :title="$t('applications.applications.detail.basic')"
-      style="margin-top: 20px"
-    >
-    </GroupTitle>
-    <BasicView
-      v-if="pageAction === 'view'"
-      ref="basicform"
-      v-model:data-info="defaultBasicInfo"
-    ></BasicView>
-    <BasicInfo
-      v-else
-      ref="basicform"
-      :data-info="appInfo"
-      :default-value="defaultBasicInfo"
-    ></BasicInfo>
-    <GroupTitle
-      :title="$t('applications.applications.detail.configuration')"
-      style="margin-top: 20px"
-    ></GroupTitle>
-    <div>
-      <div style="margin-bottom: 20px; color: var(--color-text-2)">
-        <span>{{ $t('applications.applications.modules.title') }}</span>
-      </div>
-      <div class="content">
-        <instanceThumb
-          v-for="(item, index) in appInfo.modules"
-          :key="item?.module?.id"
-          :active="item?.module?.id === active"
-          :data-info="item"
-          :size="[200, 100]"
-          :actions="pageAction === 'edit' ? moduleActions : []"
-          @edit="handleEditModule(item)"
-          @delete="handleDeleteModule(index)"
-          @click="handleClickModule(item)"
-        >
-          <template #description>
-            <div
-              style="
-                overflow: hidden;
-                font-weight: 700;
-                white-space: nowrap;
-                text-align: center;
-                text-overflow: ellipsis;
-              "
-              >{{ item?.module?.id }}</div
-            >
-          </template>
-        </instanceThumb>
-        <a-tooltip
-          v-if="pageAction === 'edit'"
-          :content="$t('applications.applications.modules.button')"
-        >
-          <thumbButton :size="60" @click="handleAddModule"></thumbButton>
-        </a-tooltip>
-      </div>
-    </div>
-    <div class="variable-wrapper">
-      <div class="var-title">
-        <span>{{ $t('applications.applications.variables.title') }}</span>
-      </div>
-      <div
-        v-if="variableList.length && pageAction === 'edit'"
-        class="var-item var-item-title"
+    <a-spin :loading="loading" style="width: 100%">
+      <GroupTitle
+        :title="$t('applications.applications.detail.basic')"
+        style="margin-top: 20px"
       >
-        <span
-          class="label"
-          :style="setPropertyStyle({ 'flex-basis': '200px' })"
-          >{{ $t('common.input.key') }}</span
-        >
-        <span
-          class="label"
-          :style="setPropertyStyle({ 'flex-basis': '150px' })"
-        >
-          <span class="holder"></span>
-          <span>{{ $t('common.input.type') }}</span>
-        </span>
-        <span class="label">
-          <span class="holder"></span>
-          <span>{{ $t('common.input.value') }}</span>
-        </span>
-        <span class="btn"></span>
-      </div>
-      <div v-if="pageAction === 'edit'">
-        <div
-          v-for="(sItem, sIndex) in variableList"
-          :key="sIndex"
-          class="var-item"
-        >
-          <xInputGroup
-            v-model:dataKey="sItem.key"
-            v-model:dataValue="sItem.type"
-            v-model:dataDesc="sItem.value"
-            :data-item="sItem"
-            :data-default="sItem.default"
-            :trigger-validate="triggerValidate"
-            show-description
-            always-delete
-            width="100%"
-            class="group-item"
-            :label-list="variableList"
-            :position="sIndex"
-            token="variable"
-            :wrap-align="
-              sItem.type === unknowType.dynamic ? 'flex-start' : 'center'
-            "
-            separator=""
-            :placeholder="{
-              value: $t('common.input.type'),
-              description: $t('common.input.value'),
-              key: $t('common.input.key')
-            }"
-            lang="yaml"
-            :show-gutter="true"
-            :components="{
-              string: 'Input',
-              number: 'InputNumber',
-              bool: 'Checkbox',
-              dynamic: 'AceEditor'
-            }"
-            :value-options="variableTypeList"
-            @keyChange="handleKeyChange"
-            @add="handleAddVariables"
-            @delete="handleDeleteVariable(sIndex)"
+      </GroupTitle>
+      <BasicView
+        v-if="pageAction === 'view'"
+        ref="basicform"
+        v-model:data-info="defaultBasicInfo"
+      ></BasicView>
+      <BasicInfo
+        v-else
+        ref="basicform"
+        :data-info="appInfo"
+        :default-value="defaultBasicInfo"
+      ></BasicInfo>
+      <GroupTitle
+        :title="$t('applications.applications.detail.configuration')"
+        style="margin-top: 20px"
+      ></GroupTitle>
+      <div>
+        <div style="margin-bottom: 20px; color: var(--color-text-2)">
+          <span>{{ $t('applications.applications.modules.title') }}</span>
+        </div>
+        <div class="content">
+          <instanceThumb
+            v-for="(item, index) in appInfo.modules"
+            :key="item?.module?.id"
+            :active="item?.module?.id === active"
+            :data-info="item"
+            :size="[200, 100]"
+            :actions="pageAction === 'edit' ? moduleActions : []"
+            @edit="handleEditModule(item)"
+            @delete="handleDeleteModule(index)"
+            @click="handleClickModule(item)"
           >
-            <template #descExtra>
-              <div v-if="sItem.error" class="error-msg">{{ sItem.error }}</div>
+            <template #description>
+              <div
+                style="
+                  overflow: hidden;
+                  font-weight: 700;
+                  white-space: nowrap;
+                  text-align: center;
+                  text-overflow: ellipsis;
+                "
+                >{{ item?.module?.id }}</div
+              >
             </template>
-          </xInputGroup>
+          </instanceThumb>
+          <a-tooltip
+            v-if="pageAction === 'edit'"
+            :content="$t('applications.applications.modules.button')"
+          >
+            <thumbButton :size="60" @click="handleAddModule"></thumbButton>
+          </a-tooltip>
         </div>
       </div>
-
-      <a-tooltip
-        v-if="!variableList.length && pageAction === 'edit'"
-        :content="$t('applications.applications.variables.button')"
-      >
-        <thumbButton
-          :size="30"
-          font-size="16px"
-          @click="handleAddVariables"
-        ></thumbButton>
-      </a-tooltip>
-      <DescriptionTable
-        v-if="variableList.length && pageAction === 'view'"
-        style="width: 625px"
-        :data-list="variableList"
-      >
-        <template #value="{ row, value }">
-          <a-textarea
-            v-if="_.get(row, 'type') === unknowType.dynamic && row.value"
-            readonly
-            :auto-size="{ maxRows: 10 }"
-            :model-value="row.value"
-          ></a-textarea>
-          <AutoTip
-            v-else
-            style="width: 350px"
-            :tooltip-props="{
-              content: value
-            }"
+      <div class="variable-wrapper">
+        <div class="var-title">
+          <span>{{ $t('applications.applications.variables.title') }}</span>
+        </div>
+        <div
+          v-if="variableList.length && pageAction === 'edit'"
+          class="var-item var-item-title"
+        >
+          <span
+            class="label"
+            :style="setPropertyStyle({ 'flex-basis': '200px' })"
+            >{{ $t('common.input.key') }}</span
           >
-            <span>{{ value }}</span>
-          </AutoTip>
-        </template>
-      </DescriptionTable>
-    </div>
+          <span
+            class="label"
+            :style="setPropertyStyle({ 'flex-basis': '150px' })"
+          >
+            <span class="holder"></span>
+            <span>{{ $t('common.input.type') }}</span>
+          </span>
+          <span class="label">
+            <span class="holder"></span>
+            <span>{{ $t('common.input.value') }}</span>
+          </span>
+          <span class="btn"></span>
+        </div>
+        <div v-if="pageAction === 'edit'">
+          <div
+            v-for="(sItem, sIndex) in variableList"
+            :key="sIndex"
+            class="var-item"
+          >
+            <xInputGroup
+              v-model:dataKey="sItem.key"
+              v-model:dataValue="sItem.type"
+              v-model:dataDesc="sItem.value"
+              :data-item="sItem"
+              :data-default="sItem.default"
+              :trigger-validate="triggerValidate"
+              show-description
+              always-delete
+              width="100%"
+              class="group-item"
+              :label-list="variableList"
+              :position="sIndex"
+              token="variable"
+              :wrap-align="
+                sItem.type === unknowType.dynamic ? 'flex-start' : 'center'
+              "
+              separator=""
+              :placeholder="{
+                value: $t('common.input.type'),
+                description: $t('common.input.value'),
+                key: $t('common.input.key')
+              }"
+              lang="yaml"
+              :show-gutter="true"
+              :components="{
+                string: 'Input',
+                number: 'InputNumber',
+                bool: 'Checkbox',
+                dynamic: 'AceEditor'
+              }"
+              :value-options="variableTypeList"
+              @keyChange="handleKeyChange"
+              @add="handleAddVariables"
+              @delete="handleDeleteVariable(sIndex)"
+            >
+              <template #descExtra>
+                <div v-if="sItem.error" class="error-msg">{{
+                  sItem.error
+                }}</div>
+              </template>
+            </xInputGroup>
+          </div>
+        </div>
+
+        <a-tooltip
+          v-if="!variableList.length && pageAction === 'edit'"
+          :content="$t('applications.applications.variables.button')"
+        >
+          <thumbButton
+            :size="30"
+            font-size="16px"
+            @click="handleAddVariables"
+          ></thumbButton>
+        </a-tooltip>
+        <DescriptionTable
+          v-if="variableList.length && pageAction === 'view'"
+          style="width: 625px"
+          :data-list="variableList"
+        >
+          <template #value="{ row, value }">
+            <a-textarea
+              v-if="_.get(row, 'type') === unknowType.dynamic && row.value"
+              readonly
+              :auto-size="{ maxRows: 10 }"
+              :model-value="row.value"
+            ></a-textarea>
+            <AutoTip
+              v-else
+              style="width: 350px"
+              :tooltip-props="{
+                content: value
+              }"
+            >
+              <span>{{ value }}</span>
+            </AutoTip>
+          </template>
+        </DescriptionTable>
+      </div>
+    </a-spin>
     <EditPageFooter v-if="pageAction === 'edit'">
       <template #save>
         <a-button
@@ -251,6 +255,7 @@
   const { router, route } = useCallCommon();
   const basicform = ref();
   const triggerValidate = ref(false);
+  const loading = ref(false);
   const appInfo = reactive({
     name: '',
     description: '',
@@ -695,13 +700,18 @@
     return true;
   });
   const init = async () => {
-    await getApplicationDetail();
-    await getModules();
-    await Promise.all([getModulesVersions(), getProjectSecrets()]);
-    setCompleteData();
-    setTimeout(() => {
-      copyFormData = _.cloneDeep(appInfo);
-    }, 100);
+    try {
+      loading.value = true;
+      await Promise.all([getModules(), getApplicationDetail()]);
+      await Promise.all([getModulesVersions(), getProjectSecrets()]);
+      loading.value = false;
+      setCompleteData();
+      setTimeout(() => {
+        copyFormData = _.cloneDeep(appInfo);
+      }, 100);
+    } catch (error) {
+      loading.value = false;
+    }
   };
   init();
 </script>
