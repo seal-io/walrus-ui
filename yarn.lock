@@ -1417,6 +1417,11 @@
     d3-selection "^3.0.0"
     d3-zoom "^3.0.0"
 
+"@vue-flow/node-toolbar@^1.0.7":
+  version "1.0.7"
+  resolved "https://registry.npmmirror.com/@vue-flow/node-toolbar/-/node-toolbar-1.0.7.tgz#c75bd99095bc4c360d2e7bcf9496a622ab0fe6a0"
+  integrity sha512-hy43xBwI52HqEhQsIKpidTa9t5f6/znPFfPmE9hA0G08CDA/yRtf6bSqeeBAYI0j9aiMBmjupZHDrK2io0sUGw==
+
 "@vue/babel-helper-vue-transform-on@^1.0.2":
   version "1.0.2"
   resolved "https://registry.npmmirror.com/@vue/babel-helper-vue-transform-on/-/babel-helper-vue-transform-on-1.0.2.tgz#9b9c691cd06fc855221a2475c3cc831d774bc7dc"

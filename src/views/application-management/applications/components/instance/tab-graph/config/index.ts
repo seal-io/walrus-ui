@@ -12,15 +12,53 @@ export const initialElements = [
     position: { x: 250, y: 0 },
     class: 'light'
   },
+
+  {
+    id: '3',
+    type: 'custom',
+    label: 'custom 2',
+    position: { x: 400, y: 100 },
+    class: 'light',
+    data: {
+      status: {
+        summaryStatus: 'Unready',
+        transitioning: true,
+        error: false
+      }
+    },
+    toolbar: {
+      isVisible: false
+    }
+  },
+  {
+    id: '4',
+    type: 'custom',
+    label: 'custom 3',
+    position: { x: 150, y: 200 },
+    class: 'light',
+    toolbar: {
+      isVisible: false
+    }
+  },
   {
     id: '2',
-    type: 'output',
-    label: 'Node 2',
+    type: 'custom',
+    data: {
+      status: {
+        summaryStatus: 'Unready',
+        error: true
+      }
+    },
+    toolbar: {
+      isVisible: false
+    },
+    label: 'custom 1',
     position: { x: 100, y: 100 },
-    class: 'light'
+    class: 'light',
+    style: {}
   },
-  { id: '3', label: 'Node 3', position: { x: 400, y: 100 }, class: 'light' },
-  { id: '4', label: 'Node 4', position: { x: 150, y: 200 }, class: 'light' },
+  // { id: '3', label: 'Node 3', position: { x: 400, y: 100 }, class: 'light' },
+  // { id: '4', label: 'Node 4', position: { x: 150, y: 200 }, class: 'light' },
   {
     id: '5',
     type: 'output',
@@ -28,7 +66,7 @@ export const initialElements = [
     position: { x: 300, y: 300 },
     class: 'light'
   },
-  { id: 'e1-2', source: '1', target: '2', animated: true },
+  { id: 'e1-2', source: '1', target: '2', animated: false },
   {
     id: 'e1-3',
     label: 'edge with arrowhead',

@@ -93,7 +93,7 @@
   import tabLogs from './tab-logs.vue';
   import tabOutput from './tab-output.vue';
   import tabOptimization from './tab-optimization.vue';
-  import tabGraph from './tab-graph.vue';
+  import tabGraph from './tab-graph/index.vue';
   import tabEndpoint from './tab-endpoint.vue';
   import applicationHistory from './application-history.vue';
   import BasicInfo from './basic-info.vue';
