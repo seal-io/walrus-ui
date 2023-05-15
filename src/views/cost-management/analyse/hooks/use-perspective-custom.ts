@@ -144,10 +144,10 @@ export default function usePerspectiveCost(props) {
   };
 
   const getPerspectiveItemInfo = async () => {
-    if (!route.query.id) return;
+    if (!pageId.value) return;
     try {
       loading.value = true;
-      const id = (route.query.id || '') as string;
+      const id = pageId.value;
       const { data } = await queryItemPerspective({ id });
       projectName.value = get(data, 'name') || 'Custom';
       const allocationQueries = get(data, 'allocationQueries') || [];

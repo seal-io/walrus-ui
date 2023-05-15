@@ -1,5 +1,5 @@
 <template>
-  <div class="container">
+  <div>
     <FilterBox style="margin-bottom: 10px">
       <template #params>
         <div v-if="isPage"><slot name="select"></slot></div>
@@ -600,9 +600,9 @@
     }, 50);
   };
   watch(
-    () => route.query,
+    () => props.viewId,
     (ov) => {
-      if (route.query.id && route.query.page === 'cluster') {
+      if (ov && props.source === 'cluster') {
         initData();
       }
     },

@@ -2,12 +2,6 @@
   <ComCard top-gap class="workflows-list">
     <FilterBox style="margin-bottom: 10px">
       <template #params>
-        <!-- <dateRange
-          v-model:timeUnit="queryParams.timeUnit"
-          v-model:start="queryParams.start"
-          v-model:end="queryParams.end"
-          today-in
-        ></dateRange> -->
         <a-input
           v-model="queryParams.query"
           allow-clear
@@ -88,15 +82,6 @@
             }}</span>
           </template>
         </a-table-column>
-        <!-- <a-table-column
-          ellipsis
-          tooltip
-          :cell-style="{ minWidth: '40px' }"
-          align="center"
-          data-index="spend"
-          :title="$t('cost.analyse.table.currentCost')"
-        >
-        </a-table-column> -->
         <a-table-column
           ellipsis
           tooltip
@@ -146,15 +131,6 @@
                   <template #icon><icon-edit class="size-16" /></template>
                 </a-link>
               </a-tooltip>
-              <!-- <a-tooltip :content="$t('common.button.detail')">
-                <a-link
-                  type="text"
-                  size="small"
-                  @click="handleViewPerspective(record)"
-                >
-                  <template #icon><icon-list class="size-16" /></template>
-                </a-link>
-              </a-tooltip> -->
             </a-space>
           </template>
         </a-table-column>
@@ -179,15 +155,7 @@
 </template>
 
 <script lang="ts" setup>
-  import {
-    map,
-    capitalize,
-    cloneDeep,
-    find,
-    toLower,
-    pickBy,
-    includes
-  } from 'lodash';
+  import { map, find, toLower, pickBy, includes } from 'lodash';
   import dayjs from 'dayjs';
   import { reactive, ref, onMounted } from 'vue';
   import useCallCommon from '@/hooks/use-call-common';
@@ -336,7 +304,10 @@
     // if (!row.builtin) {
     //   routeName = 'costAnalyseCustom';
     // }
-    router.push({ name: 'CostPerspective', query: { id: row.id } });
+    router.push({
+      name: 'CostPerspective',
+      query: { id: row.id, page: row.builtin ? toLower(row.name) : 'custom' }
+    });
   };
   const handleDelete = async () => {
     deleteModal({ onOk: handleDeleteConfirm });
