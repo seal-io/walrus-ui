@@ -1,7 +1,6 @@
 <template>
   <div class="main-wrapper">
-    <!-- <transition name="fade" mode="out-in"> -->
-    <component
+    <!-- <component
       :is="perspectiveMap[viewComponent]"
       :source="viewComponent"
       :is-page="true"
@@ -25,36 +24,70 @@
           <template #empty><span></span></template>
         </a-select>
       </template>
-      <!-- <template #button>
-        <a-button
-          type="primary"
-          @click="handleSearch"
-          style="margin-left: 10px"
-          >{{ $t('common.button.search') }}</a-button
+    </component> -->
+    <!-- <a-select
+      v-model="viewId"
+      style="width: 180px"
+      class="border-less"
+      :placeholder="$t('cost.analyse.view.holder')"
+      allow-search
+      @change="handleViewChange"
+    >
+      <a-option
+        v-for="item in viewList"
+        :key="item.value"
+        :value="item.value"
+        >{{ $t(item.name || '') }}</a-option
+      >
+      <template #empty><span></span></template>
+    </a-select> -->
+    <a-tabs
+      :default-active-key="page"
+      :active-key="viewComponent"
+      destroy-on-hide
+    >
+      <a-tab-pane v-for="k in keys(perspectiveMap)" :key="k">
+        <component
+          :is="perspectiveMap[k]"
+          :source="viewComponent"
+          :is-page="true"
+          :view-id="viewId"
+          :pageloading="loading"
         >
-      </template> -->
-      <!-- <template #view-btn>
-        <a-button type="primary" @click="handleViewManage">{{
-          $t('cost.analyse.table.manage')
-        }}</a-button>
-      </template> -->
-    </component>
-    <!-- </transition> -->
+          <template #select>
+            <a-select
+              v-model="viewId"
+              style="width: 180px"
+              class="border-less"
+              :placeholder="$t('cost.analyse.view.holder')"
+              allow-search
+              @change="handleViewChange"
+            >
+              <a-option
+                v-for="item in viewList"
+                :key="item.value"
+                :value="item.value"
+                >{{ $t(item.name || '') }}</a-option
+              >
+              <template #empty><span></span></template>
+            </a-select>
+          </template>
+        </component>
+      </a-tab-pane>
+    </a-tabs>
   </div>
 </template>
 
 <script lang="ts" setup>
   import { markRaw, ref, onMounted, provide, nextTick } from 'vue';
-  import { find, map, toLower } from 'lodash';
+  import { keys, find, map, toLower } from 'lodash';
   import localStore from '@/utils/localStore';
   import useCallCommon from '@/hooks/use-call-common';
-  import { useCostManageStore } from '@/store';
   import perspectiveAll from './perspective-all.vue';
   import perspectiveCluster from './perspective-cluster.vue';
   import perspectiveProject from './perspective-project.vue';
   import perspectiveCustom from './perspective-custom.vue';
   import { queryPerspectives, queryPerspectiveFields } from '../api';
-  import { builtinViewMap } from '../config';
 
   const HOT_PERSPECTIVE_ID = 'HOT_PERSPECTIVE_ID';
   const perspectiveMap = {
@@ -64,38 +97,36 @@
     custom: markRaw(perspectiveCustom)
   };
   const { router, route } = useCallCommon();
-  const costManageStore = useCostManageStore();
+  const page = (route.query.page || 'all') as string;
   const loading = ref(false);
   const loadend = ref(false);
   const viewList = ref<{ value: string; label: string; name?: string }[]>([]);
   const viewId = ref('');
-  const viewComponent = ref('');
+  const viewComponent = ref(page);
   provide('componentName', viewComponent.value);
   provide('perspectiveList', viewList);
   const handleViewChange = (val) => {
-    localStore.setValue(HOT_PERSPECTIVE_ID, val);
     const data = find(viewList.value, (item) => item.value === val);
-    viewId.value = val;
-    router.replace({
-      query: {
-        id: val,
-        page: data?.label
-      }
+    localStore.setValue(HOT_PERSPECTIVE_ID, {
+      hotProjectId: val,
+      page: toLower(data?.label || 'all')
     });
+    // viewId.value = val;
+    // router.replace({
+    //   query: {
+    //     id: val,
+    //     page: data?.label
+    //   }
+    // });
     setTimeout(() => {
+      viewId.value = val;
       viewComponent.value = toLower(data?.label || 'all');
     }, 50);
   };
-  const handleSearch = () => {};
-  const handleViewManage = () => {
-    router.push({
-      name: 'CostAnalyseList'
-    });
-  };
+
   const getViewList = async () => {
     if (viewList.value.length) return;
-    const hotProjectId = await localStore.getValue(HOT_PERSPECTIVE_ID);
-    console.log('queryPerspectives===1', viewList.value.length);
+    const { hotProjectId } = await localStore.getValue(HOT_PERSPECTIVE_ID);
     try {
       loading.value = true;
       const params = {
@@ -126,23 +157,41 @@
       console.log(error);
     }
   };
+  const setPageComponent = async () => {
+    const { hotProjectId, page } = await localStore.getValue(
+      HOT_PERSPECTIVE_ID
+    );
+    console.log('hotProjectId===', { hotProjectId, page });
+    viewComponent.value = page || 'all';
+    viewId.value = hotProjectId || '';
+  };
   const setView = () => {
-    if (route.query.id) {
-      viewId.value = (route.query.id || '') as string;
-    }
-    handleViewChange(viewId.value);
+    localStore.setValue(HOT_PERSPECTIVE_ID, {
+      hotProjectId: viewId.value,
+      page: viewComponent.value
+    });
   };
   const init = async () => {
+    setPageComponent();
     await getViewList();
     setView();
   };
-  onMounted(() => {
-    init();
-  });
+  // onMounted(() => {
+  //   init();
+  // });
+  init();
 </script>
 
 <style lang="less" scoped>
   .main-wrapper {
     margin-top: 20px;
+
+    :deep(.arco-tabs-content) {
+      padding-top: 0;
+    }
+
+    :deep(.arco-tabs-nav-tab) {
+      display: none;
+    }
   }
 </style>

@@ -1,5 +1,5 @@
 <template>
-  <div class="container">
+  <div>
     <FilterBox style="margin-bottom: 10px">
       <template #params>
         <div v-if="isPage"><slot name="select"></slot></div>
@@ -313,9 +313,9 @@
   };
 
   watch(
-    () => route.query.page,
+    () => props.viewId,
     (ov) => {
-      if (route.query.id && route.query.page === 'custom') {
+      if (ov && props.source === 'custom') {
         initData();
       }
     },

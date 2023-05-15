@@ -1,5 +1,5 @@
 <template>
-  <div class="container">
+  <div>
     <FilterBox style="margin-bottom: 10px">
       <template #params>
         <div v-if="isPage"><slot name="select"></slot></div>
@@ -283,6 +283,9 @@
   const markCellStyle = {
     border: '1px solid rgb(var(--arcoblue-6))'
   };
+  const loadPage = computed(() => {
+    return props.viewId && props.source === 'all';
+  });
   const preloading = computed(() => {
     return props.pageloading || loading.value;
   });
@@ -358,22 +361,10 @@
       loadeend.value = true;
     }, 50);
   };
-  // watch(
-  //   () => route.query.id,
-  //   (ov) => {
-  //     if (ov && route.query.page === 'all') {
-  //       initData();
-  //     }
-  //   },
-  //   {
-  //     immediate: true
-  //   }
-  // );
   watch(
-    () => route.query,
+    () => props.viewId,
     (ov) => {
-      if (route.query.id && route.query.page === 'all') {
-        console.log('route.quert===', route.query);
+      if (ov && props.source === 'all') {
         initData();
       }
     },
@@ -382,15 +373,13 @@
       deep: true
     }
   );
-  onBeforeRouteUpdate(() => {
-    if (route.query.id && route.query.page === 'all') {
-      initData();
-    }
-  });
+  // onBeforeRouteUpdate(() => {
+  //   if (props.viewId && props.source === 'all') {
+  //     initData();
+  //   }
+  // });
   onMounted(() => {
-    // if (!props.isPage || props.viewId) {
-    //   initData();
-    // }
+    // initData();
   });
 </script>
 
