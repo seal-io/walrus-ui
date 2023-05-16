@@ -152,16 +152,16 @@
         value: formData.serverUrl
       };
       try {
-        Promise.all([
+        await Promise.all([
           modifyPassword(data),
           userStore.updateUserSetting(serverUrlData)
-        ]).then(() => {
-          userStore.setInfo({
-            serverUrl: { ...serverUrl, value: formData.serverUrl }
-          });
-          emits('updatePassword', formData.newPassword);
-          // Message.success(t('common.message.success'));
+        ]);
+        userStore.setInfo({
+          serverUrl: { ...serverUrl, value: formData.serverUrl },
+          FirstLogin: { value: 'false' }
         });
+        emits('updatePassword', formData.newPassword);
+        // Message.success(t('common.message.success'));
       } catch (error) {
         console.log(error);
       }

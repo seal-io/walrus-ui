@@ -131,7 +131,6 @@
   import thumbButton from '@/components/buttons/thumb-button.vue';
   import { queryEnvironments } from '@/views/operation-hub/environments/api';
   import StatusLabel from '@/views/operation-hub/connectors/components/status-label.vue';
-  import { createWebsocketInstance } from '@/hooks/use-websocket';
   import instanceThumb from '../components/instance-thumb.vue';
   import { InstanceData, AppFormData } from '../config/interface';
   import {

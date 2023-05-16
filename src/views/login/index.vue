@@ -54,11 +54,16 @@
   const handleLoginSuccess = () => {
     isFirstLogin.value = true;
   };
-  const getUserLoginHistory = async () => {
+  const getUserLoginStatus = async () => {
     try {
       const { data } = await getFirstLoginStatus();
-      const value = data ? data.value ?? '' : '';
+      const value = data?.value;
       isFirstLogin.value = value === 'true';
+      userStore.setInfo({
+        userSetting: {
+          FirstLogin: { ...data }
+        }
+      });
     } catch (error) {
       console.log(error);
     }
@@ -76,7 +81,7 @@
     //   console.log(error);
     // }
     // ========= end ===============
-    getUserLoginHistory();
+    getUserLoginStatus();
   });
 </script>
 

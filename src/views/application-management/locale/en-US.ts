@@ -68,6 +68,7 @@ export default {
   'applications.instance.env.tips':
     'environments without added connectors are not available',
   'applications.instance.tab.resource': 'Resources',
+  'applications.instance.tab.resource.holder': 'please enter a resource name',
   'applications.instance.tab.resourceName': 'Resource Name',
   'applications.instance.tab.log': 'Logs',
   'applications.instance.tab.term': 'Terminal',
@@ -81,9 +82,14 @@ export default {
   'applications.applications.history.deploymentTime': 'Deployment Time',
   'applications.applications.history.rollback': 'Rollback',
   'applications.applications.history.detail': 'Revision Details',
+  'applications.applications.history.changeList': 'History Change',
   'applications.applications.history.running': 'Deployment details',
   'applications.applications.history.diff.title':
     'Comparison between the current version and the target version configuration',
+  'applications.applications.history.diff.upgrade':
+    'Comparison between the current version and the latest version configuration',
+  'applications.applications.history.change.title':
+    'Comparison between the current version and the previous version configuration',
   'applications.applications.history.diff.remove':
     'marker as the latest version configuration',
   'applications.applications.history.diff.add':
@@ -91,6 +97,8 @@ export default {
   'applications.applications.logs.holder': 'please select an object',
   'applications.applications.modules.title': 'Modules',
   'applications.applications.labels.title': 'Add labels',
+  'applications.applications.tags.title': 'Tags',
+  'applications.applications.tags.button': 'Add tags',
   'applications.applications.rules.modules': 'module is required',
   'applications.applications.rules.versions': 'version is required',
   'applications.applications.modules.tips': 'Required for new applications',

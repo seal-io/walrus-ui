@@ -70,6 +70,7 @@ export const queryInstanceOutputs = (params) => {
 export const deleteApplicationInstance = (data) => {
   return axios.delete(`/application-instances/${data.id}?force=${data.force}`);
 };
+
 export const upgradeApplicationInstance = (data) => {
   return axios.put(`/application-instances/${data.id}/upgrade`, data);
 };
@@ -79,6 +80,15 @@ export const cloneApplicationInstance = (data: {
   name: string;
 }) => {
   return axios.post(`/application-instances/${data.id}/clone`, data);
+};
+
+export const diffInstanceSpec = (params: { instanceID: string }) => {
+  return axios.get(`/application-instances/${params.instanceID}/diff-latest`, {
+    params,
+    paramsSerializer: (obj) => {
+      return qs.stringify(obj);
+    }
+  });
 };
 
 // =========history================
@@ -117,6 +127,17 @@ export const diffRevisionSpec = (params: {
   instanceID: string;
 }) => {
   return axios.get(`/application-revisions/${params.id}/revision-diff`, {
+    params,
+    paramsSerializer: (obj) => {
+      return qs.stringify(obj);
+    }
+  });
+};
+export const queryRevisionChange = (params: {
+  id: string;
+  instanceID: string;
+}) => {
+  return axios.get(`/application-revisions/${params.id}/diff-previous`, {
     params,
     paramsSerializer: (obj) => {
       return qs.stringify(obj);

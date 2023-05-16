@@ -24,6 +24,7 @@
       <a-form ref="formref" :model="formData" auto-label-width>
         <a-form-item
           field="name"
+          :label="$t('common.table.name')"
           validate-trigger="change"
           hide-asterisk
           :rules="[
@@ -46,6 +47,9 @@
               $t('applications.applications.rule.allName')
             }}</span>
           </template>
+        </a-form-item>
+        <a-form-item :label="$t('applications.applications.tags.title')">
+          <createTags v-model:tags="formData.remarkTags"></createTags>
         </a-form-item>
       </a-form>
     </div>
@@ -77,6 +81,7 @@
   import { ref, reactive } from 'vue';
   import EditPageFooter from '@/components/edit-page-footer/index.vue';
   import { validateAppNameRegx } from '@/views/config';
+  import createTags from './create-tags.vue';
 
   const props = defineProps({
     show: {
@@ -95,7 +100,8 @@
 
   const emit = defineEmits(['save', 'update:show']);
   const formData = reactive({
-    name: ''
+    name: '',
+    remarkTags: []
   });
   const submitLoading = ref(false);
 
@@ -115,6 +121,7 @@
 
   const handleBeforeOpen = () => {
     formData.name = '';
+    formData.remarkTags = [];
   };
   const handleBeforeClose = () => {};
 </script>
