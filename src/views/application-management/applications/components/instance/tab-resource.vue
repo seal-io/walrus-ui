@@ -1,12 +1,29 @@
 <template>
   <div class="resource-wrap">
+    <FilterBox style="margin-bottom: 10px">
+      <template #params>
+        <a-input
+          v-model="query"
+          :placeholder="$t('applications.instance.tab.resource.holder')"
+          allow-clear
+          style="width: 240px"
+          @clear="handleSearch"
+          @change="handleSearch"
+          @press-enter="handleSearch"
+        >
+          <template #prefix>
+            <icon-search />
+          </template>
+        </a-input>
+      </template>
+    </FilterBox>
     <a-table
       :loading="isLoading"
       column-resizable
       hide-expand-button-on-empty
       style="margin-bottom: 10px"
       :bordered="false"
-      :data="resourceList"
+      :data="dataList"
       :row-class="setRowClass"
       :pagination="false"
     >
@@ -88,11 +105,12 @@
 <script lang="ts" setup>
   import dayjs from 'dayjs';
   import _ from 'lodash';
-  import { PropType } from 'vue';
+  import { PropType, ref, computed } from 'vue';
   import StatusLabel from '@/views/operation-hub/connectors/components/status-label.vue';
+  import FilterBox from '@/components/filter-box/index.vue';
   import { InstanceResource } from '../../config/interface';
 
-  defineProps({
+  const props = defineProps({
     resourceList: {
       type: Array as PropType<InstanceResource[]>,
       default() {
@@ -106,12 +124,31 @@
       }
     }
   });
+  const query = ref('');
 
+  const dataList = computed(() => {
+    if (!query.value) {
+      return props.resourceList;
+    }
+    const list = _.map(props.resourceList, (item) => {
+      item.children = _.filter(item.children, (sItem) =>
+        _.includes(sItem.name, query.value)
+      );
+      return item;
+    });
+    const result = _.filter(list, (cItem) => {
+      return _.includes(cItem.name, query.value) || cItem?.children?.length;
+    });
+    return result as InstanceResource[];
+  });
   const setRowClass = (record) => {
     if (record.raw.isChilren) {
       return 'row-child';
     }
     return '';
+  };
+  const handleSearch = () => {
+    console.log('resourceList=======', props.resourceList);
   };
 </script>
 

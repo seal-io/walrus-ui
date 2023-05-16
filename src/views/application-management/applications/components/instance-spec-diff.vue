@@ -9,7 +9,7 @@
     :mask-closable="false"
     :body-style="{ 'max-height': '560px', 'overflow': 'auto' }"
     modal-class="spec-diff-modal"
-    :title="$t('applications.applications.history.diff.title')"
+    :title="title"
     @cancel="handleCancel"
     @ok="handleOk"
     @before-open="handleBeforeOpen"
@@ -66,6 +66,7 @@
   import AceEditor from '@/components/ace-editor/index.vue';
 
   const props = defineProps({
+    title: String,
     show: {
       type: Boolean,
       default() {

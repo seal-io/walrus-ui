@@ -41,6 +41,32 @@
           ellipsis
           tooltip
           :cell-style="{ minWidth: '40px' }"
+          data-index="tags"
+          align="center"
+          :title="$t('applications.applications.tags.title')"
+        >
+          <template #cell="{ record }">
+            <Autotip
+              :tooltip-props="{
+                content: _.join(record.tags, ',')
+              }"
+            >
+              <a-space :margin="8">
+                <a-tag
+                  v-for="tag in record.tags"
+                  :key="tag"
+                  color="rgb(232, 242, 255)"
+                  style="color: inherit"
+                  >{{ tag }}</a-tag
+                >
+              </a-space>
+            </Autotip>
+          </template>
+        </a-table-column>
+        <a-table-column
+          ellipsis
+          tooltip
+          :cell-style="{ minWidth: '40px' }"
           data-index="duration"
           align="center"
           :title="$t('dashboard.table.duration')"
@@ -80,6 +106,17 @@
                   @click="handleViewDetail(record)"
                 >
                   <icon-font type="icon-rizhi" style="font-size: 16px" />
+                </a-link>
+              </a-tooltip>
+              <a-tooltip
+                :content="$t('applications.applications.history.changeList')"
+              >
+                <a-link
+                  type="text"
+                  size="small"
+                  @click="handleViewHistoryChange(record)"
+                >
+                  <icon-clock-circle class="size-16" />
                 </a-link>
               </a-tooltip>
               <a-tooltip :content="rollbackTips">
@@ -143,6 +180,7 @@
     ></revisionDetail>
     <instanceSpecDiff
       v-model:show="showDiffModal"
+      :title="title"
       :content="diffContent"
       @confirm="handleConfirmDiff"
     ></instanceSpecDiff>
@@ -151,7 +189,7 @@
 
 <script lang="ts" setup>
   import dayjs from 'dayjs';
-  import {
+  import _, {
     map,
     get,
     find,
@@ -194,7 +232,8 @@
     deleteApplicationRevisions,
     diffRevisionSpec,
     rollbackApplication,
-    rollbackInstance
+    rollbackInstance,
+    queryRevisionChange
   } from '../../api';
   import { updateApplicationEmitter } from '../../hooks/update-application-listener';
 
@@ -205,6 +244,7 @@
     defaultSortField: '-createTime',
     defaultOrder: 'descend'
   });
+  const title = ref('');
   const instanceId = inject('instanceId', ref(''));
   const instanceInfo = inject('instanceInfo', ref<any>({}));
   const revisionDetailId = ref('');
@@ -250,6 +290,7 @@
         new: JSON.stringify(pick(data.new, [variables, 'modules']), null, 2)
       };
       showDiffModal.value = true;
+      title.value = t('applications.applications.history.diff.title');
     } catch (error) {
       console.log(error);
     }
@@ -287,6 +328,23 @@
     }
     if (rollbackType.value === 'instance') {
       handleRollbackInstance();
+    }
+  };
+  const handleViewHistoryChange = async (row) => {
+    try {
+      const params = {
+        instanceID: instanceId.value,
+        id: row.id
+      };
+      const { data } = await queryRevisionChange(params);
+      diffContent.value = {
+        old: JSON.stringify(pick(data.old, ['variables', 'modules']), null, 2),
+        new: JSON.stringify(pick(data.new, ['variables', 'modules']), null, 2)
+      };
+      showDiffModal.value = true;
+      title.value = t('applications.applications.history.change.title');
+    } catch (error) {
+      console.log(error);
     }
   };
   const fetchData = async () => {

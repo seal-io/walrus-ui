@@ -218,4 +218,13 @@ export const componentsMap = {
   bool: 'Checkbox',
   dynamic: 'AceEditor'
 };
+
+export const instanceUpgradeView = [
+  { label: 'common.table.name', value: '', key: 'name' },
+  {
+    label: 'applications.applications.detail.env',
+    value: '',
+    key: 'environment.id'
+  }
+];
 export default {};

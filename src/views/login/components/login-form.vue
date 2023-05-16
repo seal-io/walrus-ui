@@ -144,7 +144,7 @@
         password: newpassword
       });
     }
-    await userStore.getUserSetting();
+    // await userStore.getUserSetting();
     enterUserPage();
   };
   const handleSubmit = async ({ errors, values }) => {
@@ -160,11 +160,9 @@
           removeLocalLoginInfo();
         }
         await userStore.login(values);
-        await userStore.getUserSetting();
-        console.log('userSetting.FirstLogin===', userStore.userSetting);
+        // await userStore.getUserSetting();
         if (userStore?.userSetting?.FirstLogin?.value === 'true') {
           showModify.value = true;
-          localStore.removeValue('POLICY_DRIVER_KEY');
           emits('loginSuccess');
           return;
         }

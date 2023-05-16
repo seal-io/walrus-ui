@@ -7,7 +7,7 @@
     :ok-text="$t('common.button.save')"
     :visible="show"
     :mask-closable="false"
-    :body-style="{ 'max-height': '400px', 'overflow': 'auto' }"
+    :body-style="{ 'max-height': '500px', 'overflow': 'auto' }"
     modal-class="oci-modal"
     unmount-on-close
     :title="$t('applications.applications.detail.createInstance')"
@@ -17,9 +17,19 @@
     @before-close="handleBeforeClose"
   >
     <a-spin :loading="loading" style="width: 100%; text-align: center">
-      <a-form ref="formref" :model="formData" auto-label-width>
+      <a-form
+        ref="formref"
+        :model="formData"
+        auto-label-width
+        layout="vertical"
+      >
+        <a-descriptions
+          v-if="status === 'edit'"
+          :data="dataList"
+          class="margin-b10"
+        />
         <a-form-item
-          :disabled="status === 'edit'"
+          v-if="status === 'create'"
           :label="$t('common.table.name')"
           field="name"
           validate-trigger="change"
@@ -44,7 +54,7 @@
           </template>
         </a-form-item>
         <a-form-item
-          :disabled="status === 'edit'"
+          v-if="status === 'create'"
           :label="$t('applications.applications.detail.env')"
           field="environment.id"
           validate-trigger="change"
@@ -62,6 +72,60 @@
             <span class="tips">{{ $t('applications.instance.env.tips') }}</span>
           </template>
         </a-form-item>
+        <a-form-item :label="$t('applications.applications.tags.title')">
+          <createTags v-model:tags="formData.remarkTags"></createTags>
+        </a-form-item>
+        <!-- <a-form-item
+          :label="$t('common.table.description')"
+          field="description"
+        >
+          <a-textarea
+            v-model="formData.description"
+            :max-length="200"
+            show-word-limit
+            style="width: 100%"
+            :auto-size="{ minRows: 4, maxRows: 6 }"
+          >
+          </a-textarea>
+        </a-form-item> -->
+        <!-- <a-form-item label="标签">
+          <div
+            v-for="(sItem, sIndex) in labelList"
+            :key="sIndex"
+            style="margin-bottom: 10px"
+          >
+            <xInputGroup
+              v-model:dataKey="sItem.key"
+              v-model:value="formData.labels"
+              always-delete
+              :trigger-validate="triggerValidate"
+              width="100%"
+              separator=""
+              class="group-item"
+              :label-list="labelList"
+              :position="sIndex"
+              @add="(obj) => handleAddLabel(obj, labelList)"
+              @delete="handleDeleteLabel(labelList, sIndex)"
+            >
+              <template #value>
+                <a-input
+                  v-model="sItem.value"
+                  :placeholder="$t('common.input.value')"
+                  :error="!sItem.value && triggerValidate"
+                ></a-input>
+              </template>
+            </xInputGroup>
+          </div>
+          <div v-if="!labelList.length">
+            <a-tooltip :content="$t('applications.applications.labels.title')">
+              <thumbButton
+                :size="30"
+                font-size="16px"
+                @click="handleAdd"
+              ></thumbButton>
+            </a-tooltip>
+          </div>
+        </a-form-item> -->
         <div
           v-if="variablesList?.length"
           style="margin-bottom: 10px; text-align: left"
@@ -92,6 +156,22 @@
             :editor-default-value="item.default"
           ></component>
         </a-form-item>
+        <div v-if="status === 'edit'">
+          <div class="margin-b10" style="text-align: left">{{
+            $t('applications.applications.history.diff.upgrade')
+          }}</div>
+          <AceEditor
+            ref="editor"
+            read-only
+            style="width: 100%"
+            :remove-lines="removeLines"
+            :add-lines="addLines"
+            editor-id="firstEditor"
+            :editor-default-value="codeResult"
+            lang="json"
+            :height="460"
+          ></AceEditor>
+        </div>
       </a-form>
     </a-spin>
     <template #footer>
@@ -119,15 +199,7 @@
 </template>
 
 <script lang="ts" setup>
-  import _, {
-    each,
-    filter,
-    get,
-    find,
-    assignIn,
-    cloneDeep,
-    reduce
-  } from 'lodash';
+  import _, { get, find, cloneDeep } from 'lodash';
   import { ref, reactive, PropType, watch, inject, computed } from 'vue';
   import {
     json2Yaml,
@@ -139,21 +211,25 @@
   import EditPageFooter from '@/components/edit-page-footer/index.vue';
   import { validateAppNameRegx } from '@/views/config';
   import internalComponents from '@/components/form-create/components/internal';
+  import xInputGroup from '@/components/form-create/custom-components/x-input-group.vue';
+  import AceEditor from '@/components/ace-editor/index.vue';
+  import thumbButton from '@/components/buttons/thumb-button.vue';
+  import { getListLabel } from '@/utils/func';
+  import useCodeDiff from '@/hooks/use-code-diff';
   import { Variables } from '../config/interface';
-  import { componentsMap } from '../config';
-  import { deployApplication, upgradeApplicationInstance } from '../api';
+  import { componentsMap, instanceUpgradeView } from '../config';
+  import createTags from './create-tags.vue';
+  import {
+    deployApplication,
+    upgradeApplicationInstance,
+    diffInstanceSpec
+  } from '../api';
 
   const props = defineProps({
     show: {
       type: Boolean,
       default() {
         return false;
-      }
-    },
-    dataInfo: {
-      type: Object,
-      default() {
-        return {};
       }
     },
     status: {
@@ -193,32 +269,80 @@
       }
     })
   );
-  const { route } = useCallCommon();
+  const {
+    removeLines,
+    addLines,
+    codeResult,
+    setDiffResult,
+    getCodeResult,
+    getDiffResultLines,
+    clearDiffLines
+  } = useCodeDiff();
+  const { route, t } = useCallCommon();
   const formref = ref();
   const loading = ref(false);
   const submitLoading = ref(false);
   const variablesList = ref<Variables[]>([]);
+  const labelList = ref<{ key: string; value: string }[]>([]);
+  const triggerValidate = ref(false);
   const formData = reactive({
     name: '',
     variables: {},
+    remarkTags: [],
+    // description: '',
+    // labels: {},
     environment: {
       id: '',
       name: ''
     }
   });
 
+  const dataList = computed(() => {
+    const list = _.map(instanceUpgradeView, (o) => {
+      const item = _.cloneDeep(o);
+      if (item.key === 'environment.id') {
+        item.value = getListLabel(
+          _.get(formData, item.key),
+          props.environmentList
+        );
+      } else {
+        item.value = _.get(formData, item.key);
+      }
+      item.label = t(item.label);
+      return item;
+    });
+    return list;
+  });
+
+  const handleAddLabel = (obj, list) => {
+    list.push({ ...obj });
+  };
+  const handleDeleteLabel = (list, index) => {
+    list.splice(index, 1);
+  };
+  const handleAdd = () => {
+    labelList.value.push({ key: '', value: '' });
+  };
+
   const validateVariable = (val, callback, type) => {
     if (type !== unknowType.dynamic) {
       callback();
     }
     const result = validateYaml(val);
-    console.log('result=======', result);
     if (!result.empty && result.error) {
       callback(`${result.error?.message}`);
     }
     callback();
   };
 
+  const setLabelList = () => {
+    labelList.value = _.map(_.keys(formData.labels), (k) => {
+      return {
+        key: k,
+        value: _.get(formData, `labels.${k}`)
+      };
+    });
+  };
   const setVariablesList = () => {
     variablesList.value = _.map(props.variables, (o) => {
       const item = cloneDeep(o);
@@ -305,6 +429,10 @@
     formData.environment.id = '';
     formData.environment.name = '';
     formData.variables = {};
+    formData.remarkTags = [];
+    // formData.description = '';
+    // formData.labels = {};
+    clearDiffLines();
   };
   const setDeployVariables = () => {
     formData.variables = _.reduce(
@@ -316,7 +444,28 @@
       {}
     );
   };
-
+  const getInstanceSpecDiff = async () => {
+    if (!props.activeInstanceInfo.id) return;
+    try {
+      const params = {
+        instanceID: props.activeInstanceInfo.id
+      };
+      const { data } = await diffInstanceSpec(params);
+      const diffContent = {
+        old: JSON.stringify(
+          _.pick(data.old, ['variables', 'modules']),
+          null,
+          2
+        ),
+        new: JSON.stringify(_.pick(data.new, ['variables', 'modules']), null, 2)
+      };
+      setDiffResult(diffContent.old, diffContent.new);
+      getCodeResult();
+      getDiffResultLines();
+    } catch (error) {
+      console.log(error);
+    }
+  };
   watch(
     () => props.status,
     () => {
@@ -333,8 +482,10 @@
     }
   );
   const handleBeforeOpen = () => {
+    // setLabelList();
     setVariablesList();
     setDeployVariables();
+    getInstanceSpecDiff();
   };
   const handleBeforeClose = () => {
     emit('update:status', 'create');
