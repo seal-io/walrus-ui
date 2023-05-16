@@ -146,6 +146,7 @@
         password: formData.newPassword,
         name: props.userName
       };
+      const userSetting = get(userStore, 'userInfo.userSetting');
       const serverUrl = get(userStore, 'userInfo.userSetting.ServeUrl');
       const serverUrlData = {
         id: serverUrl.id,
@@ -157,8 +158,11 @@
           userStore.updateUserSetting(serverUrlData)
         ]);
         userStore.setInfo({
-          serverUrl: { ...serverUrl, value: formData.serverUrl },
-          FirstLogin: { value: 'false' }
+          userSetting: {
+            ...userSetting,
+            serverUrl: { ...serverUrl, value: formData.serverUrl },
+            FirstLogin: { value: 'false' }
+          }
         });
         emits('updatePassword', formData.newPassword);
         // Message.success(t('common.message.success'));

@@ -35,4 +35,10 @@ export interface UserState {
       value?: string;
     };
   };
+  policies: Array<{
+    actions: string[];
+    objectIDs: string[];
+    resources: string[];
+    scope: string;
+  }>;
 }

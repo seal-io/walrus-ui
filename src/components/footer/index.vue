@@ -33,7 +33,9 @@
     versionData,
     getVersion
   } from '@/hooks/fetch-app-version';
+  import { useUserStore } from '@/store';
 
+  const userStore = useUserStore();
   const versionInfo = ref({});
   const footerLinks = [
     { label: 'settings.help', value: 'https://seal-io.github.io/docs/' }
@@ -47,9 +49,13 @@
   const handleShowVersion = () => {
     showVersionModal(versionInfo.value as versionData);
   };
+  const getUserInfo = () => {
+    userStore.info();
+  };
   onMounted(() => {
     getAppVersion();
   });
+  getUserInfo();
 </script>
 
 <style lang="less" scoped>

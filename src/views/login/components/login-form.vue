@@ -160,7 +160,9 @@
           removeLocalLoginInfo();
         }
         await userStore.login(values);
-        // await userStore.getUserSetting();
+        // help to get serverURL id
+        await userStore.getUserSetting();
+        userStore.setInfo({ name: 'admin' });
         if (userStore?.userSetting?.FirstLogin?.value === 'true') {
           showModify.value = true;
           emits('loginSuccess');
