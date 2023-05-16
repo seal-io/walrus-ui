@@ -38,6 +38,7 @@ const useUserStore = defineStore('user', {
     userSetting: {},
     hasNavList: true,
     permissionsList: [],
+    policies: [],
     role: '*'
   }),
 
@@ -70,12 +71,10 @@ const useUserStore = defineStore('user', {
     // Get user's information
     async info() {
       const res = await getUserInfo();
-      console.log('userInfo:', res);
       const permissions: AnyObject = getUserPermission(
         get(res, 'data.permissionsList') || []
       );
       const user = get(res, 'data');
-      console.log('permissions:', permissions);
       this.setInfo({ ...user, permissions });
     },
 

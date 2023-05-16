@@ -45,7 +45,11 @@ export default function setupPermissionGuard(router: Router) {
       }
       NProgress.done();
     }
-    if (userStore.userSetting?.FirstLogin?.value === 'false') {
+
+    if (
+      userStore.name &&
+      userStore?.userSetting?.FirstLogin?.value === 'false'
+    ) {
       if (to.name === 'Login') {
         const Permission = usePermission();
         const destination = Permission.getFirstRouteName(appRoutes) || {
@@ -55,27 +59,28 @@ export default function setupPermissionGuard(router: Router) {
           name: destination
         });
         NProgress.done();
+        return;
       }
-
-      if (userStore.role) {
-        crossroads();
-      } else {
-        try {
-          await userStore.info();
-          crossroads();
-        } catch (error) {
-          next({
-            name: 'Login',
-            query: {
-              // redirect: to.name,
-              // ...to.query,
-            } as LocationQueryRaw
-          });
-          NProgress.done();
-        }
-      }
+      next();
+      // if (userStore.role) {
+      //   crossroads();
+      // } else {
+      //   try {
+      //     await userStore.info();
+      //     crossroads();
+      //   } catch (error) {
+      //     next({
+      //       name: 'Login',
+      //       query: {} as LocationQueryRaw
+      //     });
+      //     NProgress.done();
+      //   }
+      // }
     } else {
-      if (userStore?.userSetting?.FirstLogin?.value === 'true') {
+      if (
+        userStore?.userSetting?.FirstLogin?.value === 'true' &&
+        userStore.name
+      ) {
         Modal.warning({
           alignCenter: false,
           top: '20%',
@@ -95,11 +100,7 @@ export default function setupPermissionGuard(router: Router) {
         return;
       }
       next({
-        name: 'Login',
-        query: {
-          // redirect: to.name,
-          // ...to.query
-        } as LocationQueryRaw
+        name: 'Login'
       });
       NProgress.done();
     }

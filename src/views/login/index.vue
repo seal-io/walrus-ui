@@ -37,6 +37,7 @@
 </template>
 
 <script lang="ts" setup>
+  import _ from 'lodash';
   import { onMounted, ref } from 'vue';
   import { getFirstLoginStatus } from '@/api/user';
   import { useUserStore } from '@/store';
@@ -59,8 +60,10 @@
       const { data } = await getFirstLoginStatus();
       const value = data?.value;
       isFirstLogin.value = value === 'true';
+      const userSetting = _.get(userStore, 'userInfo.userSetting');
       userStore.setInfo({
         userSetting: {
+          ...userSetting,
           FirstLogin: { ...data }
         }
       });
@@ -81,6 +84,7 @@
     //   console.log(error);
     // }
     // ========= end ===============
+    userStore.resetInfo();
     getUserLoginStatus();
   });
 </script>
