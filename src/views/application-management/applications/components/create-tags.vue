@@ -27,7 +27,7 @@
     </a-tag>
     <a-tag
       v-for="(tag, index) in tagList"
-      :key="index"
+      :key="tag"
       closable
       color="rgb(232, 242, 255)"
       style="color: inherit"
