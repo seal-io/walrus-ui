@@ -22,11 +22,12 @@
       column-resizable
       hide-expand-button-on-empty
       style="margin-bottom: 10px"
-      :expanded-keys="expandedKeys"
       :bordered="false"
       :data="dataList"
+      :expanded-keys="expandedKeys"
       :row-class="setRowClass"
       :pagination="false"
+      @expanded-change="handleExpandedChange"
     >
       <template #columns>
         <a-table-column
@@ -106,7 +107,7 @@
 <script lang="ts" setup>
   import dayjs from 'dayjs';
   import _ from 'lodash';
-  import { PropType, ref, computed } from 'vue';
+  import { PropType, ref, computed, watchEffect } from 'vue';
   import StatusLabel from '@/views/operation-hub/connectors/components/status-label.vue';
   import FilterBox from '@/components/filter-box/index.vue';
   import { InstanceResource } from '../../config/interface';
@@ -126,12 +127,14 @@
     }
   });
   const query = ref('');
+  const expandedKeys = ref<string[]>([]);
 
   const dataList = computed(() => {
     if (!query.value) {
-      return props.resourceList;
+      return _.cloneDeep(props.resourceList);
     }
-    const list = _.map(props.resourceList, (item) => {
+    const list = _.map(props.resourceList, (o) => {
+      const item = _.cloneDeep(o);
       item.children = _.filter(item.children, (sItem) =>
         _.includes(sItem.name, query.value)
       );
@@ -142,21 +145,29 @@
     });
     return result as InstanceResource[];
   });
-  const expandedKeys = computed(() => {
+  const setExpandedKeys = () => {
     if (!query.value) {
-      return [];
+      expandedKeys.value = [];
+    } else {
+      expandedKeys.value = _.map(
+        _.filter(dataList.value, (item) => !!item.children?.length),
+        (sItem) => sItem.key
+      );
     }
-    return _.map(dataList.value, (item) => item.key);
-  });
+  };
   const setRowClass = (record) => {
     if (record.raw.isChilren) {
       return 'row-child';
     }
     return '';
   };
-  const handleSearch = () => {
-    console.log('resourceList=======', props.resourceList);
+  const handleSearch = () => {};
+  const handleExpandedChange = (keys) => {
+    expandedKeys.value = keys;
   };
+  watchEffect(() => {
+    setExpandedKeys();
+  });
 </script>
 
 <style lang="less" scoped>
