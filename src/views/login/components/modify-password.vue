@@ -120,7 +120,7 @@
       }
     }
   });
-
+  const serverUrlID = 'ServeUrl';
   const formData = reactive({
     oldPassword: props.oldPassword,
     newPassword: '',
@@ -147,9 +147,9 @@
         name: props.userName
       };
       const userSetting = get(userStore, 'userInfo.userSetting');
-      const serverUrl = get(userStore, 'userInfo.userSetting.ServeUrl');
+      // const serverUrl = get(userStore, 'userInfo.userSetting.ServeUrl');
       const serverUrlData = {
-        id: serverUrl.id,
+        id: serverUrlID,
         value: formData.serverUrl
       };
       try {
@@ -160,7 +160,7 @@
         userStore.setInfo({
           userSetting: {
             ...userSetting,
-            serverUrl: { ...serverUrl, value: formData.serverUrl },
+            serverUrl: { id: serverUrlID, value: formData.serverUrl },
             FirstLogin: { value: 'false' }
           }
         });

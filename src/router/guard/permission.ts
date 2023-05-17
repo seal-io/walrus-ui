@@ -46,10 +46,7 @@ export default function setupPermissionGuard(router: Router) {
       NProgress.done();
     }
 
-    if (
-      userStore.name &&
-      userStore?.userSetting?.FirstLogin?.value === 'false'
-    ) {
+    if (userStore?.userSetting?.FirstLogin?.value === 'false') {
       if (to.name === 'Login') {
         const Permission = usePermission();
         const destination = Permission.getFirstRouteName(appRoutes) || {
@@ -77,10 +74,7 @@ export default function setupPermissionGuard(router: Router) {
       //   }
       // }
     } else {
-      if (
-        userStore?.userSetting?.FirstLogin?.value === 'true' &&
-        userStore.name
-      ) {
+      if (userStore?.userSetting?.FirstLogin?.value === 'true') {
         Modal.warning({
           alignCenter: false,
           top: '20%',

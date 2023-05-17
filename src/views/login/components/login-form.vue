@@ -107,7 +107,7 @@
 </template>
 
 <script lang="ts" setup>
-  import localStore from '@/utils/localStore';
+  import _ from 'lodash';
   import { ref, reactive, onMounted } from 'vue';
   import { LOCALE_OPTIONS } from '@/locale';
   import useLocale from '@/hooks/locale';
@@ -121,6 +121,14 @@
   } from '@/utils/auth';
   import modifyPassword from './modify-password.vue';
 
+  const props = defineProps({
+    firstLoginStatus: {
+      type: Object,
+      default() {
+        return {};
+      }
+    }
+  });
   const emits = defineEmits(['loginSuccess']);
   const { enterUserPage } = useEnterPage();
   const { changeLocale } = useLocale();
@@ -161,8 +169,14 @@
         }
         await userStore.login(values);
         // help to get serverURL id
-        await userStore.getUserSetting();
-        userStore.setInfo({ name: 'admin' });
+        // await userStore.getUserSetting();
+        const userSetting = _.get(userStore, 'userInfo.userSetting');
+        userStore.setInfo({
+          userSetting: {
+            ...userSetting,
+            FirstLogin: { ...props.firstLoginStatus }
+          }
+        });
         if (userStore?.userSetting?.FirstLogin?.value === 'true') {
           showModify.value = true;
           emits('loginSuccess');

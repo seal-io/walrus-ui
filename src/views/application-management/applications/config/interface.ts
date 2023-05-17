@@ -83,6 +83,7 @@ export interface InstanceResource {
   type: string;
   status: string;
   createTime: string;
+  key: string;
   keys: ResourceKeysItem;
   children?: InstanceResource[];
   composition: { id?: string; status: object };

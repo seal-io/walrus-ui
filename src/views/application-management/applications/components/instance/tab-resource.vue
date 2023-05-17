@@ -22,6 +22,7 @@
       column-resizable
       hide-expand-button-on-empty
       style="margin-bottom: 10px"
+      :expanded-keys="expandedKeys"
       :bordered="false"
       :data="dataList"
       :row-class="setRowClass"
@@ -140,6 +141,12 @@
       return _.includes(cItem.name, query.value) || cItem?.children?.length;
     });
     return result as InstanceResource[];
+  });
+  const expandedKeys = computed(() => {
+    if (!query.value) {
+      return [];
+    }
+    return _.map(dataList.value, (item) => item.key);
   });
   const setRowClass = (record) => {
     if (record.raw.isChilren) {
