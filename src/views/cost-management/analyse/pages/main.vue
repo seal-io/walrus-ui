@@ -118,8 +118,8 @@
     //     page: data?.label
     //   }
     // });
+    viewId.value = val;
     setTimeout(() => {
-      viewId.value = val;
       viewComponent.value = toLower(data?.label || 'all');
     }, 50);
   };
