@@ -8,7 +8,10 @@
 
     <div class="content">
       <div class="content-inner">
-        <LoginForm @loginSuccess="handleLoginSuccess" />
+        <LoginForm
+          :first-login-status="firstLoginStatus"
+          @loginSuccess="handleLoginSuccess"
+        />
         <div
           v-if="isFirstLogin"
           style="background: var(--color-fill-2)"
@@ -52,6 +55,7 @@
   const { enterUserPage } = useEnterPage();
   const userStore = useUserStore();
   const isFirstLogin = ref(false);
+  const firstLoginStatus = ref({});
   const handleLoginSuccess = () => {
     isFirstLogin.value = true;
   };
@@ -60,13 +64,7 @@
       const { data } = await getFirstLoginStatus();
       const value = data?.value;
       isFirstLogin.value = value === 'true';
-      const userSetting = _.get(userStore, 'userInfo.userSetting');
-      userStore.setInfo({
-        userSetting: {
-          ...userSetting,
-          FirstLogin: { ...data }
-        }
-      });
+      firstLoginStatus.value = data;
     } catch (error) {
       console.log(error);
     }
@@ -84,7 +82,7 @@
     //   console.log(error);
     // }
     // ========= end ===============
-    userStore.resetInfo();
+    // userStore.resetInfo();
     getUserLoginStatus();
   });
 </script>
