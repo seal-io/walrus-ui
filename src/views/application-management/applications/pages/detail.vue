@@ -8,15 +8,20 @@
     >
     </GroupTitle>
     <div class="instance-box">
-      <div
+      <instanceThumb
         v-if="pageAction === 'view'"
         class="app"
         :class="{ active: activeInstanceTab === 'app' }"
+        :active="activeInstanceTab === 'app'"
+        :actions="appActions"
+        @rollback="handleRollbackRevision('app')"
         @click="handleClickApp"
       >
-        <span>{{ $t('applications.applications.detail.info') }}</span>
+        <template #description>
+          <span>{{ $t('applications.applications.detail.info') }}</span>
+        </template>
         <icon-right />
-      </div>
+      </instanceThumb>
       <div v-if="pageAction === 'view'" class="instance">
         <div class="content">
           <instanceThumb
@@ -32,6 +37,7 @@
                 item.status
               )
             "
+            @rollback="handleRollbackRevision('instance')"
             @clone="handleCloneInstance(item)"
             @upgrade="handleUpgradeInstance(item)"
             @delete="handleDeleteInstance(item)"
@@ -41,18 +47,34 @@
               <span>{{ get(item, 'environment.name') }}</span>
             </template>
             <template #default>
-              <span style="font-weight: 700">{{ get(item, 'name') }}</span>
+              <span style="font-weight: 700">
+                <!-- <a-tooltip content="实例配置与应用配置不一致">
+                  <icon-check-circle-fill
+                    v-if="_.get(item, 'configStatus') === 'Latest'"
+                    class="size-14"
+                    style="color: var(--seal-color-success)"
+                  />
+                  <icon-font
+                    type="icon-warning-filling"
+                    v-if="_.get(item, 'configStatus') === 'Outdateted'"
+                    class="size-14"
+                    style="color: var(--seal-color-warning)"
+                  />
+                </a-tooltip> -->
+                {{ get(item, 'name') }}</span
+              >
             </template>
             <template #status>
               <StatusLabel
-                :size="16"
+                :size="14"
                 :status="{
                   status: get(item, 'status.summaryStatus'),
                   message: '',
                   transitioning: get(item, 'status.transitioning'),
                   error: get(item, 'status.error')
                 }"
-              ></StatusLabel>
+              >
+              </StatusLabel>
             </template>
           </instanceThumb>
           <a-tooltip :content="$t('applications.applications.instance.add')">
@@ -98,6 +120,10 @@
       "
       @save="cloneHandler"
     ></cloneInstanceModal>
+    <rollbackModal
+      v-model:show="showRollbackModal"
+      :title="rollbackTitle"
+    ></rollbackModal>
   </ComCard>
 </template>
 
@@ -135,6 +161,7 @@
   import { InstanceData, AppFormData } from '../config/interface';
   import {
     instanceActions,
+    appActions,
     instanceStatus,
     AppInstanceStatus,
     websocketEventType
@@ -144,6 +171,7 @@
   import createInstance from '../components/create-instance.vue';
   import deleteInstanceModal from '../components/delete-instance-modal.vue';
   import cloneInstanceModal from '../components/clone-instance-modal.vue';
+  import rollbackModal from '../components/rollback-modal.vue';
   import {
     queryApplicationInstances,
     deleteApplicationInstance,
@@ -154,12 +182,14 @@
     listenerUpdateAppAction,
     removeUpdateAppActionListener
   } from '../hooks/update-application-listener';
+  import useRollbackRevision from '../hooks/use-rollback-revision';
 
+  const { showRollbackModal, rollbackTitle, handleRollbackRevision } =
+    useRollbackRevision();
   const { setChunkRequest } = useSetChunkRequest();
   const { router, route, t } = useCallCommon();
   const id = route.query.id as string;
   const pageAction = ref(route.params.action || 'edit');
-  const pageEditable = ref(false);
   const cloneId = route.query.cloneId as string;
   const activeInstanceTab = ref('app'); //
   const currentInstance = ref('');

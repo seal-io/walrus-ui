@@ -126,7 +126,7 @@ export const diffRevisionSpec = (params: {
   id: string;
   instanceID: string;
 }) => {
-  return axios.get(`/application-revisions/${params.id}/revision-diff`, {
+  return axios.get(`/application-revisions/${params.id}/diff-latest`, {
     params,
     paramsSerializer: (obj) => {
       return qs.stringify(obj);

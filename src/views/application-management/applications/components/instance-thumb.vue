@@ -29,7 +29,7 @@
           :key="item.value"
           :value="item.value"
           :style="{
-            'line-height': '32px',
+            'line-height': '28px',
             'color':
               item.value === 'delete'
                 ? 'rgb(var(--danger-6))'
@@ -38,26 +38,16 @@
           ><component
             :is="item.icon"
             v-bind="item.props"
-            style="margin-right: 5px"
+            style="margin-right: 8px"
           ></component
           >{{ $t(item.label) }}</a-doption
         >
       </template>
     </a-dropdown>
-    <!-- <div
-      v-if="actions.length === 1"
-      style="position: absolute; top: 2px; right: 0"
-    >
-      <a-link>
-        <template #icon>
-          <component :is="get(actions, '0.icon')"></component>
-        </template>
-      </a-link>
-    </div> -->
     <div class="status">
       <slot name="status"></slot>
     </div>
-    <div class="name"
+    <div :class="{ name: !!dataInfo.name }"
       ><slot>{{ dataInfo.name }}</slot></div
     >
     <div class="description"
@@ -108,7 +98,7 @@
       }
     }
   });
-  const emits = defineEmits(['change', 'edit', 'upgrade', 'clone']);
+  const emits = defineEmits(['change', 'edit', 'upgrade', 'clone', 'rollback']);
   const handleCheckedChange = (val) => {
     console.log('val:', val);
     emits('change', val, props.dataInfo.id);
@@ -151,8 +141,9 @@
 
     .status {
       position: absolute;
-      top: 0;
+      top: 5px;
       left: 4px;
+      font-size: 0;
       transform: scale(0.8);
     }
 

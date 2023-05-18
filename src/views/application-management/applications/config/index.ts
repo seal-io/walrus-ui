@@ -35,6 +35,17 @@ export const reserveFields = [
   'depends_on',
   'locals'
 ];
+
+export const appActions = [
+  // {
+  //   label: 'common.button.rollback',
+  //   value: 'rollback',
+  //   icon: 'icon-font',
+  //   props: {
+  //     type: 'icon-rollback-copy'
+  //   }
+  // }
+];
 export const instanceActions = [
   {
     label: 'applications.applications.button.upgrade',
@@ -49,12 +60,15 @@ export const instanceActions = [
       type: 'icon-Clone-Cloud'
     }
   },
-  { label: 'common.button.delete', value: 'delete', icon: 'icon-delete' }
   // {
-  //   label: 'applications.applications.history.rollback',
-  //   value: 'delete',
-  //   icon: 'icon-undo'
-  // }
+  //   label: 'common.button.rollback',
+  //   value: 'rollback',
+  //   icon: 'icon-font',
+  //   props: {
+  //     type: 'icon-rollback-copy'
+  //   }
+  // },
+  { label: 'common.button.delete', value: 'delete', icon: 'icon-delete' }
 ];
 export const moduleActions = [
   { label: 'common.button.edit', value: 'edit', icon: 'icon-edit' },

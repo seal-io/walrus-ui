@@ -426,6 +426,7 @@
   const handleUndoCall = () => {
     deleteModal({
       title: 'operation.templates.detail.cancelFix.tips',
+      okText: 'common.button.confirm',
       onOk: handleUndo
     });
   };
@@ -451,6 +452,7 @@
   const handleFixCall = () => {
     deleteModal({
       title: 'operation.templates.detail.receiveFix.tips',
+      okText: 'common.button.confirm',
       onOk: handleFixAll
     });
   };
