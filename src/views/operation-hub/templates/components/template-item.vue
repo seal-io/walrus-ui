@@ -52,13 +52,13 @@
                   :key="index"
                   :value="item.value"
                   :style="{
-                    lineHeight: '32px',
+                    lineHeight: '28px',
                     color: 'var(--color-text-2)'
                   }"
                 >
                   <component
                     :is="item.icon"
-                    style="margin-right: 5px"
+                    style="margin-right: 8px"
                   ></component
                   >{{ $t(item.label) }}
                 </a-doption>

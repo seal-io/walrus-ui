@@ -1,6 +1,6 @@
 <template>
-  <span class="status-label">
-    <span v-if="status.status">
+  <div class="status-label">
+    <div v-if="status.status">
       <a-tag
         :color="color"
         :style="{ height: `${size}px`, minWidth: `${size}px` }"
@@ -13,8 +13,16 @@
         ></span>
         <span>{{ status.text }}</span>
       </a-tag>
-    </span>
-  </span>
+      <!-- <a-progress
+        class="arco-icon-loading"
+        size="mini"
+        status="warning"
+        color="var(--seal-color-warning)"
+        :width="18"
+        :percent="0.2"
+      /> -->
+    </div>
+  </div>
 </template>
 
 <script lang="ts" setup>
@@ -66,7 +74,13 @@
 
 <style lang="less" scoped>
   .status-label {
+    display: inline-flex;
+    align-items: center;
     font-size: 0;
+
+    .extra {
+      font-size: 0;
+    }
 
     :deep(.arco-tag) {
       box-sizing: border-box;

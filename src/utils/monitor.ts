@@ -1,6 +1,6 @@
 import { App, ComponentPublicInstance, h, compile } from 'vue';
 import axios from 'axios';
-import { Modal, Message } from '@arco-design/web-vue';
+import { Modal, Message, Button } from '@arco-design/web-vue';
 import i18n from '@/locale/index';
 
 export default function handleError(Vue: App, baseUrl: string) {
@@ -33,14 +33,14 @@ export const deleteModal = async ({
   onOk,
   content,
   title = 'common.delete.tips',
-  okText = 'common.button.confirm'
+  okText = 'common.button.delete'
 }: {
   onOk: () => void;
   content?: string;
   title?: string;
   okText?: string;
 }) => {
-  Modal.warning({
+  const modalInstance = Modal.warning({
     alignCenter: false,
     top: '20%',
     hideCancel: false,
@@ -57,6 +57,31 @@ export const deleteModal = async ({
         },
         i18n.global.t(content || '')
       );
+    },
+    footer: () => {
+      return h('div', {}, [
+        h(
+          Button,
+          {
+            type: 'primary',
+            onClick: () => {
+              onOk();
+              modalInstance?.close?.();
+            }
+          },
+          i18n.global.t(okText)
+        ),
+        h(
+          Button,
+          {
+            type: 'outline',
+            onClick: () => {
+              modalInstance?.close?.();
+            }
+          },
+          i18n.global.t('common.button.cancel')
+        )
+      ]);
     },
     okText: i18n.global.t(okText),
     cancelText: i18n.global.t('common.button.cancel'),
