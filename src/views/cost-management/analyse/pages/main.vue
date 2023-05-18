@@ -56,7 +56,7 @@
         >
           <template #select>
             <a-select
-              v-model="viewId"
+              :model-value="viewId"
               style="width: 180px"
               class="border-less"
               :placeholder="$t('cost.analyse.view.holder')"
@@ -111,22 +111,23 @@
       hotProjectId: val,
       page: toLower(data?.label || 'all')
     });
-    // viewId.value = val;
-    // router.replace({
-    //   query: {
-    //     id: val,
-    //     page: data?.label
-    //   }
-    // });
-    viewId.value = val;
+    router.replace({
+      query: {
+        id: val,
+        page: data?.label
+      }
+    });
     setTimeout(() => {
+      viewId.value = val;
       viewComponent.value = toLower(data?.label || 'all');
     }, 50);
   };
 
   const getViewList = async () => {
     if (viewList.value.length) return;
-    const { hotProjectId } = await localStore.getValue(HOT_PERSPECTIVE_ID);
+    const { hotProjectId, page } = await localStore.getValue(
+      HOT_PERSPECTIVE_ID
+    );
     try {
       loading.value = true;
       const params = {
@@ -134,21 +135,29 @@
       };
       const { data } = await queryPerspectives(params);
       const list = data?.items || [];
+
       viewList.value = map(list, (item) => {
         item.label = item?.builtin ? toLower(item.name) : 'custom';
         item.value = item.id;
         return item;
       }) as Array<{ value: string; label: string }>;
+
       const hotItem = find(
         viewList.value,
         (sItem) => sItem.value === hotProjectId
       );
+
+      // history state
       if (hotItem) {
         viewId.value = hotItem?.value || '';
+        viewComponent.value = page;
       } else {
+        // default state
         const allView = find(viewList.value, (sItem) => sItem.label === 'all');
         viewId.value = allView?.value || '';
+        viewComponent.value = 'all';
       }
+
       loading.value = false;
     } catch (error) {
       loading.value = false;
@@ -158,27 +167,34 @@
     }
   };
   const setPageComponent = async () => {
-    const { hotProjectId, page } = await localStore.getValue(
-      HOT_PERSPECTIVE_ID
-    );
-    console.log('hotProjectId===', { hotProjectId, page });
-    viewComponent.value = page || 'all';
-    viewId.value = hotProjectId || '';
+    if (route.query.id) {
+      viewComponent.value = route.query.page as string;
+      localStore.setValue(HOT_PERSPECTIVE_ID, {
+        hotProjectId: route.query.id,
+        page: route.query.page
+      });
+    } else {
+      const { page } = await localStore.getValue(HOT_PERSPECTIVE_ID);
+      viewComponent.value = page || 'all';
+    }
   };
+  // update the current state in the store
   const setView = () => {
     localStore.setValue(HOT_PERSPECTIVE_ID, {
       hotProjectId: viewId.value,
       page: viewComponent.value
     });
   };
+  // set the viewId  at last !!!
+  // 1. set component
+  // 2. set active option
+  // 3. store the state locally
   const init = async () => {
-    setPageComponent();
+    await setPageComponent();
     await getViewList();
     setView();
   };
-  // onMounted(() => {
-  //   init();
-  // });
+
   init();
 </script>
 

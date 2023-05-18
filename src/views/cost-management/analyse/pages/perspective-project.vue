@@ -318,7 +318,6 @@
     timeMode,
     collectedTimeRange
   } = usePerspectiveProject(props);
-  const componentName = inject('componentName', ref('project'));
   const { t, route } = useCallCommon();
   const loadeend = ref(false);
   const clusterOptions = [

@@ -425,7 +425,6 @@
   const markCellStyle = {
     border: '1px solid rgb(var(--arcoblue-6))'
   };
-  const componentName = inject('componentName', ref('cluster'));
   const { t, route } = useCallCommon();
   const loadeend = ref(false);
   const namespaceFilterKey = ref('totalCost');
