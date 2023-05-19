@@ -19,6 +19,8 @@ if (import.meta.env.VITE_API_BASE_URL) {
 }
 console.log('import.meta:', import.meta);
 
+const LoginRouteName = 'Login';
+
 const localeMap = {
   'en-US': 'en;q=0.9,zh;q=0.8',
   'zh-CN': 'zh;q=0.9,en;q=0.8'
@@ -86,7 +88,7 @@ axios.interceptors.response.use(
       const userStore = useUserStore();
       const currentRoute = router.currentRoute.value.name;
       userStore.permissionCheckFailed();
-      if (currentRoute !== 'login') {
+      if (currentRoute !== LoginRouteName) {
         window.location.reload();
       }
       // clearTimeout(responseModalTimer);

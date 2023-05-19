@@ -82,7 +82,8 @@
     //   console.log(error);
     // }
     // ========= end ===============
-    // userStore.resetInfo();
+    userStore.resetInfo();
+    userStore.info();
     getUserLoginStatus();
   });
 </script>

@@ -152,7 +152,7 @@
         password: newpassword
       });
     }
-    // await userStore.getUserSetting();
+    await userStore.info();
     enterUserPage();
   };
   const handleSubmit = async ({ errors, values }) => {
@@ -168,8 +168,10 @@
           removeLocalLoginInfo();
         }
         await userStore.login(values);
+        if (props.firstLoginStatus.value === 'false') {
+          await userStore.info();
+        }
         // help to get serverURL id
-        // await userStore.getUserSetting();
         const userSetting = _.get(userStore, 'userInfo.userSetting');
         userStore.setInfo({
           userSetting: {
@@ -186,6 +188,7 @@
         enterUserPage();
       } catch (err) {
         errorMessage.value = (err as Error).message;
+        console.log('error======', errorMessage.value);
       } finally {
         setLoading(false);
       }

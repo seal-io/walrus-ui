@@ -3,20 +3,23 @@ import { computed, ref } from 'vue';
 export default function useRollbackRevision() {
   const showRollbackModal = ref(false);
   const rollbackType = ref('');
+  const selectedInstance = ref('');
 
-  const handleRollbackRevision = (type) => {
+  const handleRollbackRevision = (type, instanceInfo?) => {
     showRollbackModal.value = true;
     rollbackType.value = type;
+    selectedInstance.value = instanceInfo?.id || '';
   };
   const rollbackTitle = computed(() => {
     if (rollbackType.value === 'instance') {
-      return '实例回滚';
+      return 'applications.applications.history.rollbackinstance';
     }
-    return '应用回滚';
+    return 'applications.applications.history.rollbackapp';
   });
   return {
     showRollbackModal,
     rollbackTitle,
+    selectedInstance,
     handleRollbackRevision
   };
 }

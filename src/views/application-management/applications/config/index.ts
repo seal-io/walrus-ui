@@ -37,14 +37,14 @@ export const reserveFields = [
 ];
 
 export const appActions = [
-  // {
-  //   label: 'common.button.rollback',
-  //   value: 'rollback',
-  //   icon: 'icon-font',
-  //   props: {
-  //     type: 'icon-rollback-copy'
-  //   }
-  // }
+  {
+    label: 'common.button.rollback',
+    value: 'rollback',
+    icon: 'icon-font',
+    props: {
+      type: 'icon-rollback-copy'
+    }
+  }
 ];
 export const instanceActions = [
   {
@@ -60,14 +60,14 @@ export const instanceActions = [
       type: 'icon-Clone-Cloud'
     }
   },
-  // {
-  //   label: 'common.button.rollback',
-  //   value: 'rollback',
-  //   icon: 'icon-font',
-  //   props: {
-  //     type: 'icon-rollback-copy'
-  //   }
-  // },
+  {
+    label: 'common.button.rollback',
+    value: 'rollback',
+    icon: 'icon-font',
+    props: {
+      type: 'icon-rollback-copy'
+    }
+  },
   { label: 'common.button.delete', value: 'delete', icon: 'icon-delete' }
 ];
 export const moduleActions = [

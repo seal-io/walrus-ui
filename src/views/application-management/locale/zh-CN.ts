@@ -60,6 +60,7 @@ export default {
   'applications.applications.instance.value': '值',
   'applications.applications.instance.cloneName': '请输入新实例名称',
   'applications.applications.instance.clonetitle': '克隆实例({from})',
+  'applications.applications.instance.configstatus': '实例配置与应用配置不一致',
   'applications.applications.logs.live': '运行日志',
   'applications.instance.rule.env': '部署环境必选',
   'applications.instance.env.tips': '未添加连接器的环境不可用',
