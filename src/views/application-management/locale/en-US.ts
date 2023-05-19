@@ -63,6 +63,8 @@ export default {
   'applications.applications.instance.cloneName':
     'please enter a new instance name',
   'applications.applications.instance.clonetitle': 'Clone Instance ({from})',
+  'applications.applications.instance.configstatus':
+    'The instance configuration is inconsistent with the application configuration',
   'applications.applications.logs.live': 'Running Logs',
   'applications.instance.rule.env': 'the deployment environment is required',
   'applications.instance.env.tips':

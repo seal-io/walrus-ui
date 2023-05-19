@@ -4,7 +4,7 @@
       <a-grid-item
         v-for="(item, index) in list"
         :key="index"
-        :span="{ lg: 8, md: 12, sm: 24, xs: 24 }"
+        :span="{ lg: 6, md: 12, sm: 24, xs: 24 }"
       >
         <templateItem
           :data-info="item"

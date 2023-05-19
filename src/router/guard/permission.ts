@@ -8,6 +8,8 @@ import { useUserStore } from '@/store';
 import { isLogin } from '@/utils/auth';
 import appRoutes from '../routes';
 
+const LoginRouteName = 'Login';
+
 export default function setupPermissionGuard(router: Router) {
   router.beforeEach(async (to, from, next) => {
     NProgress.start();
@@ -46,8 +48,12 @@ export default function setupPermissionGuard(router: Router) {
       NProgress.done();
     }
 
-    if (userStore?.userSetting?.FirstLogin?.value === 'false') {
-      if (to.name === 'Login') {
+    if (
+      (userStore.name &&
+        userStore?.userSetting?.FirstLogin?.value === 'false') ||
+      userStore.name
+    ) {
+      if (to.name === LoginRouteName) {
         const Permission = usePermission();
         const destination = Permission.getFirstRouteName(appRoutes) || {
           name: 'notFound'
@@ -74,7 +80,10 @@ export default function setupPermissionGuard(router: Router) {
       //   }
       // }
     } else {
-      if (userStore?.userSetting?.FirstLogin?.value === 'true') {
+      if (
+        userStore?.userSetting?.FirstLogin?.value === 'true' &&
+        userStore.name
+      ) {
         Modal.warning({
           alignCenter: false,
           top: '20%',
@@ -88,13 +97,13 @@ export default function setupPermissionGuard(router: Router) {
             )
         });
       }
-      if (to.name === 'Login') {
+      if (to.name === LoginRouteName) {
         next();
         NProgress.done();
         return;
       }
       next({
-        name: 'Login'
+        name: LoginRouteName
       });
       NProgress.done();
     }

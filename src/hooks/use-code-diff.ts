@@ -62,6 +62,14 @@ export default function useCodeDiff() {
       }
     });
   };
+  const getDiffCodeResult = (content) => {
+    if (!content?.old && !content?.new) {
+      return;
+    }
+    setDiffResult(content.old, content.new);
+    getCodeResult();
+    getDiffResultLines();
+  };
   return {
     removeLines,
     addLines,
@@ -70,6 +78,7 @@ export default function useCodeDiff() {
     setDiffResult,
     getCodeResult,
     getDiffResultLines,
-    clearDiffLines
+    clearDiffLines,
+    getDiffCodeResult
   };
 }

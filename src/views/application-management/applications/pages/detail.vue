@@ -37,7 +37,7 @@
                 item.status
               )
             "
-            @rollback="handleRollbackRevision('instance')"
+            @rollback="handleRollbackRevision('instance', item)"
             @clone="handleCloneInstance(item)"
             @upgrade="handleUpgradeInstance(item)"
             @delete="handleDeleteInstance(item)"
@@ -48,21 +48,28 @@
             </template>
             <template #default>
               <span style="font-weight: 700">
-                <!-- <a-tooltip content="实例配置与应用配置不一致">
-                  <icon-check-circle-fill
-                    v-if="_.get(item, 'configStatus') === 'Latest'"
-                    class="size-14"
-                    style="color: var(--seal-color-success)"
-                  />
+                <!-- <a-tooltip
+                  :content="
+                    $t('applications.applications.instance.configstatus')
+                  "
+                >
                   <icon-font
                     type="icon-warning-filling"
-                    v-if="_.get(item, 'configStatus') === 'Outdateted'"
+                    v-if="_.get(item, 'configStatus') !== 'Outdateted'"
                     class="size-14"
                     style="color: var(--seal-color-warning)"
                   />
                 </a-tooltip> -->
-                {{ get(item, 'name') }}</span
-              >
+                <a-tooltip
+                  v-if="_.get(item, 'configStatus') !== 'Outdateted'"
+                  :content="
+                    $t('applications.applications.instance.configstatus')
+                  "
+                >
+                  <span class="ins-name"> {{ get(item, 'name') }}</span>
+                </a-tooltip>
+                <span v-else> {{ get(item, 'name') }}</span>
+              </span>
             </template>
             <template #status>
               <StatusLabel
@@ -122,7 +129,9 @@
     ></cloneInstanceModal>
     <rollbackModal
       v-model:show="showRollbackModal"
+      :instance-id="selectedInstance"
       :title="rollbackTitle"
+      :instance-list="instanseList"
     ></rollbackModal>
   </ComCard>
 </template>
@@ -162,7 +171,6 @@
   import {
     instanceActions,
     appActions,
-    instanceStatus,
     AppInstanceStatus,
     websocketEventType
   } from '../config/index';
@@ -184,8 +192,12 @@
   } from '../hooks/update-application-listener';
   import useRollbackRevision from '../hooks/use-rollback-revision';
 
-  const { showRollbackModal, rollbackTitle, handleRollbackRevision } =
-    useRollbackRevision();
+  const {
+    showRollbackModal,
+    rollbackTitle,
+    selectedInstance,
+    handleRollbackRevision
+  } = useRollbackRevision();
   const { setChunkRequest } = useSetChunkRequest();
   const { router, route, t } = useCallCommon();
   const id = route.query.id as string;
@@ -240,6 +252,7 @@
   const appInfoVariables = computed(() => {
     return cloneDeep(get(appInfo, 'variables') || []);
   });
+
   const handleAddInstance = () => {
     showInstanceModal.value = true;
     status.value = 'create';
@@ -460,6 +473,7 @@
       instanseList.value,
       (item) => item.id === currentInstance.value
     );
+    // TODO
     if (current) {
       handleClickInstance(current);
     }
@@ -550,6 +564,22 @@
           flex-wrap: wrap;
           align-items: center;
           min-height: 100px;
+
+          .ins-name {
+            position: relative;
+            color: var(--seal-color-warning);
+            // &:after {
+            //   content: '';
+            //   position: absolute;
+            //   top: 0;
+            //   right: 0;
+            //   display: inline-block;
+            //   width: 8px;
+            //   height: 8px;
+            //   border-radius: 50%;
+            //   background-color: var(--seal-color-warning);
+            // }
+          }
 
           .thumb-item {
             margin-right: 12px;
