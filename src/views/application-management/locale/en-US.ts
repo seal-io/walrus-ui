@@ -94,6 +94,7 @@ export default {
     'Comparison between the current version and the previous version configuration',
   'applications.applications.history.diff.remove':
     'marker as the latest version configuration',
+  'applications.applications.history.diff.same': 'Consistent configuration',
   'applications.applications.history.diff.add':
     'marker as current version configuration',
   'applications.applications.logs.holder': 'please select an object',

@@ -84,6 +84,9 @@ export function useSetChunkRequest() {
           ...params,
           watch: true
         },
+        headers: {
+          ApiType: 'chunked'
+        },
         cancelToken: axiosToken.value.token,
         paramsSerializer: (obj) => {
           return qs.stringify(obj);
@@ -118,8 +121,6 @@ export function useSetChunkRequest() {
         if (retryCount.value > 0) {
           retryCount.value -= 1;
         }
-      } else {
-        requestReadyState.value = 3;
       }
     }
 
@@ -137,11 +138,6 @@ export function useSetChunkRequest() {
     (val) => {
       if (val === 4 && retryCount.value > 0) {
         requestConfig.value.beforeReconnect?.();
-        console.log(
-          'requestReadyState=======',
-          requestReadyState.value,
-          retryCount.value
-        );
         clearTimeout(timer);
         timer = setTimeout(() => {
           axiosChunkRequest(requestConfig.value);

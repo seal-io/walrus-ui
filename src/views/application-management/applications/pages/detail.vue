@@ -32,7 +32,7 @@
             :data-info="item"
             :actions="instanceActions"
             :action-loading="
-              includes(
+              _.includes(
                 [AppInstanceStatus.Deleting, AppInstanceStatus.Deploying],
                 item.status
               )
@@ -44,7 +44,7 @@
             @click="handleClickInstance(item)"
           >
             <template #description>
-              <span>{{ get(item, 'environment.name') }}</span>
+              <span>{{ _.get(item, 'environment.name') }}</span>
             </template>
             <template #default>
               <span style="font-weight: 700">
@@ -61,24 +61,25 @@
                   />
                 </a-tooltip> -->
                 <a-tooltip
-                  v-if="_.get(item, 'configStatus') !== 'Outdateted'"
+                  v-if="_.get(item, 'configStatus') === 'Outdateted'"
                   :content="
                     $t('applications.applications.instance.configstatus')
                   "
                 >
-                  <span class="ins-name"> {{ get(item, 'name') }}</span>
+                  <span class="ins-name"> {{ _.get(item, 'name') }}</span>
                 </a-tooltip>
-                <span v-else> {{ get(item, 'name') }}</span>
+                <span v-else> {{ _.get(item, 'name') }}</span>
               </span>
             </template>
             <template #status>
               <StatusLabel
-                :size="14"
+                show-loading
+                :size="12"
                 :status="{
-                  status: get(item, 'status.summaryStatus'),
+                  status: _.get(item, 'status.summaryStatus'),
                   message: '',
-                  transitioning: get(item, 'status.transitioning'),
-                  error: get(item, 'status.error')
+                  transitioning: _.get(item, 'status.transitioning'),
+                  error: _.get(item, 'status.error')
                 }"
               >
               </StatusLabel>
@@ -122,7 +123,7 @@
       v-model:show="showCloneModal"
       :title="
         $t('applications.applications.instance.clonetitle', {
-          from: get(cloneInstance, 'name')
+          from: _.get(cloneInstance, 'name')
         })
       "
       @save="cloneHandler"
@@ -148,17 +149,7 @@
     nextTick,
     onBeforeUnmount
   } from 'vue';
-  import _, {
-    get,
-    map,
-    assignIn,
-    cloneDeep,
-    find,
-    each,
-    findIndex,
-    remove,
-    includes
-  } from 'lodash';
+  import _ from 'lodash';
   import { useSetChunkRequest } from '@/api/axios-chunk-request';
   import { execSucceed } from '@/utils/monitor';
   import useCallCommon from '@/hooks/use-call-common';
@@ -250,7 +241,7 @@
     return t('applications.applications.create');
   });
   const appInfoVariables = computed(() => {
-    return cloneDeep(get(appInfo, 'variables') || []);
+    return _.cloneDeep(_.get(appInfo, 'variables') || []);
   });
 
   const handleAddInstance = () => {
@@ -268,7 +259,7 @@
   const cloneHandler = async (name) => {
     try {
       const { data } = await cloneApplicationInstance({
-        id: get(cloneInstance.value, 'id'),
+        id: _.get(cloneInstance.value, 'id'),
         name
       });
       // TODO
@@ -315,7 +306,7 @@
   const handleSaveInstanceInfo = (data, action) => {
     console.log('data===', data);
     if (action === 'create') {
-      const newInstance = cloneDeep(data);
+      const newInstance = _.cloneDeep(data);
       // TODO
       instanseList.value.push(newInstance);
       setTimeout(() => {
@@ -325,7 +316,8 @@
     }
   };
   const handleInstanceUpgradeSucceed = (deleteId) => {
-    const data = find(instanseList.value, (item) => item.id === deleteId) || {};
+    const data =
+      _.find(instanseList.value, (item) => item.id === deleteId) || {};
     _.set(data, 'status', {
       summaryStatus: AppInstanceStatus.Deploying,
       summaryStatusMessage: 'Upgrading',
@@ -339,7 +331,7 @@
       };
       const { data } = await queryEnvironments(params);
       const list = data?.items || [];
-      environmentList.value = map(list, (item) => {
+      environmentList.value = _.map(list, (item) => {
         return {
           label: item.name,
           value: item.id,
@@ -359,7 +351,7 @@
         id: queryId
       };
       const { data } = await queryItemApplication(params);
-      assignIn(appInfo, data);
+      _.assignIn(appInfo, data);
       appInfo.labels = data.labels || {};
       appInfo.modules = data.modules || [];
       appInfo.variables = data.variables || [];
@@ -372,7 +364,8 @@
     try {
       await deleteApplicationInstance({ id: instanceId.value, force });
       const data =
-        find(instanseList.value, (item) => item.id === instanceId.value) || {};
+        _.find(instanseList.value, (item) => item.id === instanceId.value) ||
+        {};
       _.set(data, 'status', {
         summaryStatus: AppInstanceStatus.Deleting,
         transitioning: true
@@ -417,7 +410,10 @@
   const handleActiveInstance = () => {
     const instance_id = route.query.instanceId || '';
     if (instance_id) {
-      const data = find(instanseList.value, (item) => item.id === instance_id);
+      const data = _.find(
+        instanseList.value,
+        (item) => item.id === instance_id
+      );
       handleClickInstance(data);
     }
   };
@@ -434,26 +430,26 @@
     // delete
     if (data?.type === websocketEventType.delete) {
       const ids = data?.ids || [];
-      remove(instanseList.value, (item) => includes(ids, item.id));
+      _.remove(instanseList.value, (item) => _.includes(ids, item.id));
       if (!instanseList.value.length) {
         handleClickApp();
         return;
       }
       // active instance deleted
-      if (includes(ids, activeInstanceTab.value)) {
-        handleClickInstance(get(instanseList.value, '0'));
+      if (_.includes(ids, activeInstanceTab.value)) {
+        handleClickInstance(_.get(instanseList.value, '0'));
       }
       return;
     }
 
-    each(collections, (item) => {
-      const updateIndex = findIndex(
+    _.each(collections, (item) => {
+      const updateIndex = _.findIndex(
         instanseList.value,
         (sItem) => sItem.id === item.id
       );
 
       if (updateIndex > -1) {
-        const updateItem = cloneDeep(item);
+        const updateItem = _.cloneDeep(item);
         instanseList.value[updateIndex] = updateItem;
         if (currentInstance.value === updateItem.id) {
           instanceInfo.value = updateItem;

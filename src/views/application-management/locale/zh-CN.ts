@@ -87,6 +87,7 @@ export default {
   'applications.applications.history.change.title':
     '当前版本与上一版本配置对比',
   'applications.applications.history.diff.remove': '标记为最新版本配置',
+  'applications.applications.history.diff.same': '配置一致',
   'applications.applications.history.diff.add': '标记为当前版本配置',
   'applications.applications.logs.holder': '请选择对象',
   'applications.applications.modules.title': '模块',

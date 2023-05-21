@@ -1,18 +1,6 @@
 <template>
   <div>
     <ModuleCard :title="$t('applications.instance.basic.title')">
-      <template #title>
-        <div
-          style="
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            width: 100%;
-          "
-        >
-          <span>{{ $t('applications.instance.basic.title') }}</span>
-        </div>
-      </template>
       <BasicInfo></BasicInfo>
     </ModuleCard>
     <ModuleCard :title="$t('applications.applications.instance.history')">
@@ -63,14 +51,6 @@
           >{{ $t('common.button.back') }}</a-button
         >
       </template>
-      <!-- <template #cancel>
-        <a-button
-          type="outline"
-          class="cap-title cancel-btn"
-          @click="handleCancel"
-          >{{ $t('common.button.cancel') }}</a-button
-        >
-      </template> -->
     </EditPageFooter>
   </div>
 </template>

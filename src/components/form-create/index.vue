@@ -189,11 +189,11 @@
   import { useI18n } from 'vue-i18n';
   import editPageFooter from '@/components/edit-page-footer/index.vue';
   import thumbButton from '@/components/buttons/thumb-button.vue';
+  import i18n from '@/locale/index';
   import {
     ComponentSchema,
     parseComponentSchema,
-    schemaType,
-    LabelListItem
+    schemaType
   } from './config/interface';
   import { json2Yaml, yaml2Json } from './config/yaml-parse';
   import formComponents from './components';
@@ -366,7 +366,9 @@
       item.options = parseOptions(item);
       item.props = get(content, 'props') || {};
       item.rules = map(content.rules, (sItem) => {
-        sItem.message = t(sItem?.message, { name: item.label || item.name });
+        sItem.message = i18n.global.t(sItem?.message, {
+          name: item.label || item.name
+        });
         return sItem;
       });
 

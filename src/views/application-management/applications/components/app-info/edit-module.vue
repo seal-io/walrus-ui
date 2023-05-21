@@ -12,7 +12,8 @@
     :body-style="{
       'max-height': '500px',
       'min-height': '400px',
-      'overflow': 'auto'
+      'overflow': 'auto',
+      'line-height': 1
     }"
     modal-class="app-module-modal"
     :title="
@@ -128,6 +129,7 @@
           "
         >
           <GroupTitle
+            iconed
             :bordered="false"
             style="margin-bottom: 0"
             :title="$t('applications.applications.detail.configuration')"

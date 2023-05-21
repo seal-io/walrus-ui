@@ -161,6 +161,7 @@
             $t('applications.applications.history.diff.upgrade')
           }}</div>
           <AceEditor
+            v-if="removeLines.length || addLines.length"
             ref="editor"
             read-only
             style="width: 100%"
@@ -171,6 +172,9 @@
             lang="json"
             :height="460"
           ></AceEditor>
+          <div v-else style="color: var(--color-text-3); text-align: left">{{
+            $t('applications.applications.history.diff.same')
+          }}</div>
         </div>
       </a-form>
     </a-spin>

@@ -2,6 +2,7 @@
   <div class="detail-info">
     <a-spin :loading="loading" style="width: 100%">
       <GroupTitle
+        iconed
         :title="$t('applications.applications.detail.basic')"
         style="margin-top: 20px"
       >
@@ -18,6 +19,7 @@
         :default-value="defaultBasicInfo"
       ></BasicInfo>
       <GroupTitle
+        iconed
         :title="$t('applications.applications.detail.configuration')"
         style="margin-top: 20px"
       ></GroupTitle>

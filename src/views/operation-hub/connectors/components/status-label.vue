@@ -1,7 +1,33 @@
 <template>
   <div class="status-label">
     <div v-if="status.status">
+      <span v-if="showLoading" class="loading">
+        <span v-if="status.transitioning">
+          <a-progress
+            class="arco-icon-loading progress"
+            size="mini"
+            status="warning"
+            color="var(--seal-color-warning)"
+            :width="14"
+            :stroke-width="3"
+            :percent="0.2"
+          />
+          <span class="text">{{ status.status }}</span>
+        </span>
+        <span v-else-if="status.error">
+          <icon-font
+            type="icon-warning-filling-copy"
+            class="size-16"
+          ></icon-font>
+        </span>
+        <span v-else>
+          <icon-check-circle-fill
+            class="size-16"
+            style="color: var(--seal-color-success)"
+        /></span>
+      </span>
       <a-tag
+        v-else
         :color="color"
         :style="{ height: `${size}px`, minWidth: `${size}px` }"
       >
@@ -13,14 +39,6 @@
         ></span>
         <span>{{ status.text }}</span>
       </a-tag>
-      <!-- <a-progress
-        class="arco-icon-loading"
-        size="mini"
-        status="warning"
-        color="var(--seal-color-warning)"
-        :width="18"
-        :percent="0.2"
-      /> -->
     </div>
   </div>
 </template>
@@ -36,6 +54,12 @@
     transitioning?: boolean;
   }
   const props = defineProps({
+    showLoading: {
+      type: Boolean,
+      default() {
+        return false;
+      }
+    },
     status: {
       type: Object as PropType<StatusType>,
       default() {
@@ -73,6 +97,20 @@
 </script>
 
 <style lang="less" scoped>
+  @keyframes lighting {
+    0% {
+      opacity: 1;
+    }
+
+    50% {
+      opacity: 0.5;
+    }
+
+    100% {
+      opacity: 1;
+    }
+  }
+
   .status-label {
     display: inline-flex;
     align-items: center;
@@ -80,6 +118,24 @@
 
     .extra {
       font-size: 0;
+    }
+
+    .loading {
+      display: flex;
+      font-size: 12px;
+
+      .text {
+        margin-left: 4px;
+        color: var(--seal-color-warning);
+        font-size: 12px;
+        transform: scale(0.9);
+        // opacity: 0.7;
+        animation: lighting 1.5s infinite cubic-bezier(0, 0, 1, 1);
+      }
+    }
+
+    .arco-icon-loading.progress {
+      animation: arco-loading-circle 1.5s infinite cubic-bezier(0, 0, 1, 1);
     }
 
     :deep(.arco-tag) {

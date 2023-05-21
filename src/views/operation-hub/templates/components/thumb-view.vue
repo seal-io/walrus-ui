@@ -65,6 +65,7 @@
 
 <style lang="less" scoped>
   .thumb-view-wrap {
+    margin-bottom: 6px;
     padding: 2px;
   }
 </style>
