@@ -47,6 +47,7 @@ axios.interceptors.request.use(
     const { locale } = i18n.global;
     console.log('local===', locale);
     config.headers = {
+      ...config.headers,
       'Accept-Language': localeMap[locale] || 'en'
     };
     if (authApiList.includes(url)) {
@@ -67,7 +68,8 @@ axios.interceptors.response.use(
   },
   (error) => {
     // const isCancel = axios.isCancel(error)
-    console.log('error:', error.response, axios.isCancel(error));
+    console.log('error:', error.response);
+    const ApiType = get(error.response, 'config.headers.ApiType') || '';
     const reqUrl = get(error.response, 'config.url');
     const response = get(error, 'response') || {};
     const data = get(response, 'data') || {};
@@ -77,7 +79,11 @@ axios.interceptors.response.use(
       data: data?.data,
       api: reqUrl
     };
-    if (!noToastAPI.includes(reqUrl) && !axios.isCancel(error)) {
+    if (
+      !noToastAPI.includes(reqUrl) &&
+      !axios.isCancel(error) &&
+      ApiType !== 'chunked'
+    ) {
       Message.error({
         // id: 'request_error_01',
         content: result?.data?.msg || result.msg || 'Request Error',
@@ -91,28 +97,6 @@ axios.interceptors.response.use(
       if (currentRoute !== LoginRouteName) {
         window.location.reload();
       }
-      // clearTimeout(responseModalTimer);
-      // responseModalTimer = setTimeout(() => {
-      //   Modal.error({
-      //     title: i18n.global.t('user.login.validate'),
-      //     content: () =>
-      //       h(
-      //         'div',
-      //         { style: { 'text-align': 'center' } },
-      //         i18n.global.t('user.login.info')
-      //       ),
-      //     okText: i18n.global.t('user.login.relogin'),
-      //     async onOk() {
-      //       const userStore = useUserStore();
-      //       const currentRoute = router.currentRoute.value.name;
-      //       await userStore.logout();
-      //       // TODO
-      //       if (currentRoute !== 'login') {
-      //         window.location.reload();
-      //       }
-      //     },
-      //   });
-      // }, 50);
     }
     if (axios.isCancel(error)) {
       return Promise.reject(error);

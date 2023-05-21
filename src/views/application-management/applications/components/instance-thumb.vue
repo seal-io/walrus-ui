@@ -126,7 +126,7 @@
 
     .name {
       width: 100%;
-      margin-bottom: 10px;
+      margin-bottom: 5px;
       overflow: hidden;
       text-align: center;
       text-overflow: ellipsis;
@@ -144,7 +144,7 @@
       top: 5px;
       left: 4px;
       font-size: 0;
-      transform: scale(0.8);
+      // transform: scale(0.8);
     }
 
     :deep(.arco-link-icon) {

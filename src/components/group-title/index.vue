@@ -1,7 +1,7 @@
 <template>
   <div
     class="group-title"
-    :class="{ 'bordered': bordered, 'is-detail': isDetail }"
+    :class="{ 'bordered': bordered, 'is-detail': isDetail, 'iconed': iconed }"
   >
     <div class="label">
       <a-link v-if="showBack" @click="handleBack"
@@ -49,6 +49,12 @@
       default() {
         return false;
       }
+    },
+    iconed: {
+      type: Boolean,
+      default() {
+        return false;
+      }
     }
   });
   const emits = defineEmits(['edit']);
@@ -63,11 +69,28 @@
 
 <style lang="less" scoped>
   .group-title {
+    position: relative;
     display: flex;
     justify-content: space-between;
     margin-bottom: 25px;
     padding-bottom: 10px;
     font-weight: 400;
+
+    &.iconed {
+      padding-left: 10px;
+    }
+
+    &.iconed::before {
+      position: absolute;
+      top: -2px;
+      bottom: 8px;
+      left: 0;
+      display: inline-block;
+      width: 4px;
+      background-color: rgba(var(--arcoblue-6), 0.8);
+      border-radius: 0 4px 4px 0;
+      content: '';
+    }
 
     &.bordered {
       font-weight: 400;

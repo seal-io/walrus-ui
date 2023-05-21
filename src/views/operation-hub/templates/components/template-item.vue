@@ -15,6 +15,7 @@
         <div class="title-wrap">
           <div class="title">
             <StatusLabel
+              show-loading
               :size="12"
               :status="{
                 status: get(dataInfo, 'status'),
@@ -166,9 +167,7 @@
     height: 140px;
     padding: 10px 25px 10px 10px;
     background-color: #fff;
-    box-shadow: 0 0 2px var(--color-border-3);
     .thumbCard();
-    .border();
 
     &:hover {
       .thumbCardHover();

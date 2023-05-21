@@ -56,6 +56,7 @@
   const userStore = useUserStore();
   const isFirstLogin = ref(false);
   const firstLoginStatus = ref({});
+  // TODO delete
   const handleLoginSuccess = () => {
     isFirstLogin.value = true;
   };
@@ -71,17 +72,6 @@
   };
 
   onMounted(async () => {
-    // ====== remove under line when always verify permission ======
-    // try {
-    //   const enableAuth = await userStore.checkEnableAuth();
-    //   if (enableAuth.value === 'false') {
-    //     enterUserPage();
-    //     return;
-    //   }
-    // } catch (error) {
-    //   console.log(error);
-    // }
-    // ========= end ===============
     userStore.resetInfo();
     userStore.info();
     getUserLoginStatus();
