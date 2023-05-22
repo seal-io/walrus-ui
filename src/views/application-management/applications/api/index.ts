@@ -1,7 +1,14 @@
 import axios from 'axios';
 import qs from 'query-string';
 import { Pagination } from '@/types/global';
+import router from '@/router';
 import { AppRowData, EndPointRow } from '../config/interface';
+
+// some params for permission
+const getPermissionRouteParams = () => {
+  const { params } = router.currentRoute.value;
+  return { projectID: params?.projectId };
+};
 
 // interface ParamsType extends Pagination {}
 export interface ResultType {
@@ -21,22 +28,37 @@ export const queryApplications = (params: QueryType) => {
 };
 
 export const createApplication = (data) => {
-  return axios.post(`/applications`, data);
+  return axios.post(
+    `/applications?${qs.stringify(getPermissionRouteParams())}`,
+    data
+  );
 };
 export const deleteApplication = (data) => {
-  return axios.delete(`/applications`, { data });
+  return axios.delete(
+    `/applications?${qs.stringify(getPermissionRouteParams())}`,
+    { data }
+  );
 };
 export const deployApplication = (data) => {
-  return axios.post(`/application-instances`, data);
+  return axios.post(
+    `/application-instances?${qs.stringify(getPermissionRouteParams())}`,
+    data
+  );
 };
 
 export const updateApplication = (data) => {
-  return axios.put(`/applications/${data.id}`, data);
+  return axios.put(
+    `/applications/${data.id}?${qs.stringify(getPermissionRouteParams())}`,
+    data
+  );
 };
 
 export const queryItemApplication = (params) => {
   return axios.get(`/applications/${params.id}`, {
-    params,
+    params: {
+      ...params,
+      ...getPermissionRouteParams()
+    },
     paramsSerializer: (obj) => {
       return qs.stringify(obj);
     }
@@ -45,7 +67,10 @@ export const queryItemApplication = (params) => {
 // ========instance======
 export const queryApplicationInstances = (params) => {
   return axios.get(`/application-instances`, {
-    params,
+    params: {
+      ...params,
+      ...getPermissionRouteParams()
+    },
     paramsSerializer: (obj) => {
       return qs.stringify(obj);
     }
@@ -53,7 +78,10 @@ export const queryApplicationInstances = (params) => {
 };
 export const queryItemApplicationInstances = (params) => {
   return axios.get(`/application-instances/${params.id}`, {
-    params,
+    params: {
+      ...params,
+      ...getPermissionRouteParams()
+    },
     paramsSerializer: (obj) => {
       return qs.stringify(obj);
     }
@@ -61,30 +89,51 @@ export const queryItemApplicationInstances = (params) => {
 };
 export const queryInstanceOutputs = (params) => {
   return axios.get(`/application-instances/${params.id}/outputs`, {
-    params,
+    params: {
+      ...params,
+      ...getPermissionRouteParams()
+    },
     paramsSerializer: (obj) => {
       return qs.stringify(obj);
     }
   });
 };
 export const deleteApplicationInstance = (data) => {
-  return axios.delete(`/application-instances/${data.id}?force=${data.force}`);
+  return axios.delete(
+    `/application-instances/${data.id}?${qs.stringify({
+      force: data.force,
+      ...getPermissionRouteParams()
+    })}`
+  );
 };
 
 export const upgradeApplicationInstance = (data) => {
-  return axios.put(`/application-instances/${data.id}/upgrade`, data);
+  return axios.put(
+    `/application-instances/${data.id}/upgrade?${qs.stringify(
+      getPermissionRouteParams()
+    )}`,
+    data
+  );
 };
 
 export const cloneApplicationInstance = (data: {
   id: string;
   name: string;
 }) => {
-  return axios.post(`/application-instances/${data.id}/clone`, data);
+  return axios.post(
+    `/application-instances/${data.id}/clone?${qs.stringify(
+      getPermissionRouteParams()
+    )}`,
+    data
+  );
 };
 
 export const diffInstanceSpec = (params: { instanceID: string }) => {
   return axios.get(`/application-instances/${params.instanceID}/diff-latest`, {
-    params,
+    params: {
+      ...params,
+      ...getPermissionRouteParams()
+    },
     paramsSerializer: (obj) => {
       return qs.stringify(obj);
     }
@@ -102,7 +151,10 @@ export const queryApplicationRevisions = (
   token?
 ) => {
   return axios.get(`/application-revisions`, {
-    params,
+    params: {
+      ...params,
+      ...getPermissionRouteParams()
+    },
     cancelToken: token,
     paramsSerializer: (obj) => {
       return qs.stringify(obj);
@@ -111,7 +163,10 @@ export const queryApplicationRevisions = (
 };
 export const queryApplicationRevisionsDetail = (params: { id: string }) => {
   return axios.get(`/application-revisions/${params.id}`, {
-    params,
+    params: {
+      ...params,
+      ...getPermissionRouteParams()
+    },
     paramsSerializer: (obj) => {
       return qs.stringify(obj);
     }
@@ -119,7 +174,10 @@ export const queryApplicationRevisionsDetail = (params: { id: string }) => {
 };
 
 export const deleteApplicationRevisions = (data: { id: string }[]) => {
-  return axios.delete(`/application-revisions`, { data });
+  return axios.delete(
+    `/application-revisions?${qs.stringify(getPermissionRouteParams())}`,
+    { data }
+  );
 };
 
 export const diffRevisionSpec = (params: {
@@ -127,7 +185,10 @@ export const diffRevisionSpec = (params: {
   instanceID: string;
 }) => {
   return axios.get(`/application-revisions/${params.id}/diff-latest`, {
-    params,
+    params: {
+      ...params,
+      ...getPermissionRouteParams()
+    },
     paramsSerializer: (obj) => {
       return qs.stringify(obj);
     }
@@ -138,7 +199,10 @@ export const queryRevisionChange = (params: {
   instanceID: string;
 }) => {
   return axios.get(`/application-revisions/${params.id}/diff-previous`, {
-    params,
+    params: {
+      ...params,
+      ...getPermissionRouteParams()
+    },
     paramsSerializer: (obj) => {
       return qs.stringify(obj);
     }
@@ -146,11 +210,19 @@ export const queryRevisionChange = (params: {
 };
 
 export const rollbackInstance = (data: { id: string }) => {
-  return axios.post(`/application-revisions/${data.id}/rollback-instances`);
+  return axios.post(
+    `/application-revisions/${data.id}/rollback-instances?${qs.stringify(
+      getPermissionRouteParams()
+    )}`
+  );
 };
 
 export const rollbackApplication = (data: { id: string }) => {
-  return axios.post(`/application-revisions/${data.id}/rollback-applications`);
+  return axios.post(
+    `/application-revisions/${data.id}/rollback-applications?${qs.stringify(
+      getPermissionRouteParams()
+    )}`
+  );
 };
 // ===========resource==========
 export const queryApplicationResource = (
@@ -158,7 +230,10 @@ export const queryApplicationResource = (
   token?
 ) => {
   return axios.get(`/application-resources`, {
-    params,
+    params: {
+      ...params,
+      ...getPermissionRouteParams()
+    },
     cancelToken: token,
     paramsSerializer: (obj) => {
       return qs.stringify(obj);
@@ -168,7 +243,10 @@ export const queryApplicationResource = (
 
 export const queryApplicationResourceKeys = (params: { id: string }) => {
   return axios.get(`/application-resources/${params.id}/keys`, {
-    params,
+    params: {
+      ...params,
+      ...getPermissionRouteParams()
+    },
     paramsSerializer: (obj) => {
       return qs.stringify(obj);
     }
@@ -177,7 +255,10 @@ export const queryApplicationResourceKeys = (params: { id: string }) => {
 
 export const queryApplicationResourceLogs = (params: { id: string }) => {
   return axios.get(`/application-resources/${params.id}/log`, {
-    params,
+    params: {
+      ...params,
+      ...getPermissionRouteParams()
+    },
     paramsSerializer: (obj) => {
       return qs.stringify(obj);
     }
@@ -185,7 +266,10 @@ export const queryApplicationResourceLogs = (params: { id: string }) => {
 };
 export const queryApplicationResourceExec = (params: { id: string }) => {
   return axios.get(`/application-resources/${params.id}/exec`, {
-    params,
+    params: {
+      ...params,
+      ...getPermissionRouteParams()
+    },
     paramsSerializer: (obj) => {
       return qs.stringify(obj);
     }
@@ -199,7 +283,10 @@ export const queryInstanceEndpoints = (
   return axios.get<EndPointResult>(
     `/application-instances/${params.instanceID}/access-endpoints`,
     {
-      params,
+      params: {
+        ...params,
+        ...getPermissionRouteParams()
+      },
       cancelToken: token,
       paramsSerializer: (obj) => {
         return qs.stringify(obj);
@@ -210,7 +297,10 @@ export const queryInstanceEndpoints = (
 
 export const queryProjectSecrets = (params) => {
   return axios.get(`/projects/${params.projectID}/secrets`, {
-    params,
+    params: {
+      ...params,
+      ...getPermissionRouteParams()
+    },
     paramsSerializer: (obj) => {
       return qs.stringify(obj);
     }
