@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { SILENCEAPI } from '@/api/config';
 import { UserState } from '@/store/modules/user/types';
 
 interface ResList {
@@ -33,7 +34,7 @@ export function getUserInfo(params?) {
   return axios.get('/account/info', {
     params,
     headers: {
-      ApiType: 'chunked'
+      _action: SILENCEAPI
     }
   });
 }

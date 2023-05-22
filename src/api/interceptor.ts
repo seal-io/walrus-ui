@@ -4,7 +4,14 @@ import { useUserStore } from '@/store';
 import router from '@/router';
 import { get } from 'lodash';
 import i18n from '@/locale/index';
-// import { SILENCEAPI, AUTH_CODE } from './config';
+import {
+  SILENCEAPI,
+  AUTH_CODE,
+  LoginRouteName,
+  localeMap,
+  authApiList,
+  noToastAPI
+} from './config';
 // import { getToken } from '@/utils/auth';
 // import { h } from 'vue';
 
@@ -20,23 +27,6 @@ if (import.meta.env.VITE_API_BASE_URL) {
 }
 console.log('import.meta:', import.meta);
 
-const LoginRouteName = 'Login';
-
-const localeMap = {
-  'en-US': 'en;q=0.9,zh;q=0.8',
-  'zh-CN': 'zh;q=0.9,en;q=0.8'
-};
-const authApiList: string[] = [
-  '/account/login',
-  '/account/info',
-  '/account/logout',
-  '/openapi',
-  '/debug/version'
-];
-
-const SILENCEAPI = 'silence';
-
-const noToastAPI: string[] = [];
 /**
  * 200: success
  * 440: login Timeout
@@ -71,9 +61,8 @@ axios.interceptors.response.use(
     return res;
   },
   (error) => {
-    // const isCancel = axios.isCancel(error)
     console.log('error:', error.response);
-    const ApiType = get(error.response, 'config.headers.ApiType') || '';
+    const requestAction = get(error.response, 'config.headers._action') || '';
     const reqUrl = get(error.response, 'config.url');
     const response = get(error, 'response') || {};
     const data = get(response, 'data') || {};
@@ -86,7 +75,7 @@ axios.interceptors.response.use(
     if (
       !noToastAPI.includes(reqUrl) &&
       !axios.isCancel(error) &&
-      ApiType !== 'chunked'
+      requestAction !== SILENCEAPI
     ) {
       Message.error({
         // id: 'request_error_01',
@@ -94,7 +83,7 @@ axios.interceptors.response.use(
         duration: 3 * 1000
       });
     }
-    if ([401].includes(result.code)) {
+    if (AUTH_CODE.includes(result.code)) {
       const userStore = useUserStore();
       const currentRoute = router.currentRoute.value.name;
       userStore.permissionCheckFailed();

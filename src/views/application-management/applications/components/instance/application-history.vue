@@ -85,13 +85,12 @@
         >
           <template #cell="{ record }">
             <StatusLabel
-              :zoom="10"
               :status="{
                 status: record.status,
                 text: record.status,
                 message: '',
-                transitioning: record.status === 'Running',
-                error: record.status === 'Failed'
+                transitioning: record.status === RevisionStatus.Running,
+                error: record.status === RevisionStatus.Failed
               }"
             ></StatusLabel>
           </template>
@@ -119,7 +118,7 @@
                   <icon-clock-circle class="size-16" />
                 </a-link>
               </a-tooltip>
-              <a-tooltip :content="rollbackTips">
+              <!-- <a-tooltip :content="rollbackTips">
                 <a-dropdown @select="(value) => handleRollback(value, record)">
                   <a-link
                     :disabled="
@@ -148,7 +147,7 @@
                     </div>
                   </template>
                 </a-dropdown>
-              </a-tooltip>
+              </a-tooltip> -->
               <a-tooltip :content="$t('common.button.delete')">
                 <a-link type="text" size="small" @click="handleDelete(record)">
                   <template #icon
@@ -198,7 +197,6 @@
     cloneDeep,
     concat,
     filter,
-    includes,
     pick
   } from 'lodash';
   import {
@@ -225,7 +223,8 @@
   import {
     setDurationValue,
     websocketEventType,
-    AppInstanceStatus
+    AppInstanceStatus,
+    RevisionStatus
   } from '../../config';
   import {
     queryApplicationRevisions,
