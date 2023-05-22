@@ -67,7 +67,8 @@
         </a-grid>
         <a-form-item label="配置对比">
           <AceEditor
-            ref="editor"
+            v-show="removeLines.length || addLines.length"
+            ref="rollback_editor"
             read-only
             style="width: 100%"
             :remove-lines="removeLines"
@@ -76,6 +77,9 @@
             lang="json"
             :height="320"
           ></AceEditor>
+          <span v-show="!removeLines.length && !addLines.length">{{
+            $t('applications.applications.history.diff.same')
+          }}</span>
         </a-form-item>
       </a-form>
     </div>
