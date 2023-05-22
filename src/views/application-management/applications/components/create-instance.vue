@@ -161,8 +161,8 @@
             $t('applications.applications.history.diff.upgrade')
           }}</div>
           <AceEditor
-            v-if="removeLines.length || addLines.length"
-            ref="editor"
+            v-show="removeLines.length || addLines.length"
+            ref="editor_create"
             read-only
             style="width: 100%"
             :remove-lines="removeLines"
@@ -172,9 +172,11 @@
             lang="json"
             :height="460"
           ></AceEditor>
-          <div v-else style="color: var(--color-text-3); text-align: left">{{
-            $t('applications.applications.history.diff.same')
-          }}</div>
+          <div
+            v-show="!removeLines.length && !addLines.length"
+            style="color: var(--color-text-3); text-align: left"
+            >{{ $t('applications.applications.history.diff.same') }}</div
+          >
         </div>
       </a-form>
     </a-spin>
@@ -436,6 +438,7 @@
     formData.remarkTags = [];
     // formData.description = '';
     // formData.labels = {};
+    codeResult.value = '';
     clearDiffLines();
   };
   const setDeployVariables = () => {
