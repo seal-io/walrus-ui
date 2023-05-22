@@ -26,9 +26,9 @@
           >{{ $t('applications.applications.history.diff.add') }}</span
         >
       </a-space> -->
-      <div v-if="!!removeLines.length || !!addLines.length">
+      <div v-show="removeLines.length || addLines.length">
         <AceEditor
-          ref="editor"
+          ref="editor_instance"
           read-only
           :remove-lines="removeLines"
           :add-lines="addLines"
@@ -38,9 +38,11 @@
           :height="460"
         ></AceEditor>
       </div>
-      <div style="color: var(--color-text-3); text-align: left">{{
-        $t('applications.applications.history.diff.same')
-      }}</div>
+      <div
+        v-show="!removeLines.length && !addLines.length"
+        style="color: var(--color-text-3); text-align: left"
+        >{{ $t('applications.applications.history.diff.same') }}</div
+      >
     </div>
     <template #footer>
       <EditPageFooter style="margin-top: 0">
