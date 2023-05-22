@@ -71,10 +71,17 @@
     }
   };
 
-  onMounted(async () => {
+  // enter page password-free
+  const enterPageForFree = async () => {
     userStore.resetInfo();
-    userStore.info();
+    await userStore.info();
+    if (userStore.name) {
+      enterUserPage();
+    }
+  };
+  onMounted(async () => {
     getUserLoginStatus();
+    enterPageForFree();
   });
 </script>
 

@@ -15,10 +15,6 @@ const LOGIN_HISTORY = 'LOGIN_HISTORY';
 
 const localStore = localForage.createInstance({ name: 'SEAL' });
 
-const isLogin = () => {
-  return !!JSCookies.get(TOKEN_KEY);
-};
-
 // const createLocalStore = () => {
 //   if (localStore) return
 //   localStore = localForage.createInstance({ name: 'SEAL' })
@@ -86,7 +82,7 @@ export {
   removeLocalLoginInfo,
   setUserLoginHistory,
   getUserLoginHistory,
-  removeUserLoginHistory,
+  removeUserLoginHistory
 };
 
 export default localStore;

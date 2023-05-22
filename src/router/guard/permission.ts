@@ -5,10 +5,8 @@ import { Modal } from '@arco-design/web-vue';
 import { h } from 'vue';
 import usePermission from '@/hooks/permission';
 import { useUserStore } from '@/store';
-import { isLogin } from '@/utils/auth';
+import { LoginRouteName } from '@/api/config';
 import appRoutes from '../routes';
-
-const LoginRouteName = 'Login';
 
 export default function setupPermissionGuard(router: Router) {
   router.beforeEach(async (to, from, next) => {

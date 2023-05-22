@@ -1,6 +1,7 @@
 import axios from 'axios';
 import qs from 'query-string';
 import _ from 'lodash';
+import { SILENCEAPI } from '@/api/config';
 import { ref, watch, onBeforeUnmount, onMounted } from 'vue';
 
 interface RequestConfig {
@@ -85,7 +86,7 @@ export function useSetChunkRequest() {
           watch: true
         },
         headers: {
-          ApiType: 'chunked'
+          _action: SILENCEAPI
         },
         cancelToken: axiosToken.value.token,
         paramsSerializer: (obj) => {
