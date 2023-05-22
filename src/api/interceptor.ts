@@ -4,6 +4,7 @@ import { useUserStore } from '@/store';
 import router from '@/router';
 import { get } from 'lodash';
 import i18n from '@/locale/index';
+// import { SILENCEAPI, AUTH_CODE } from './config';
 // import { getToken } from '@/utils/auth';
 // import { h } from 'vue';
 
@@ -32,6 +33,9 @@ const authApiList: string[] = [
   '/openapi',
   '/debug/version'
 ];
+
+const SILENCEAPI = 'silence';
+
 const noToastAPI: string[] = [];
 /**
  * 200: success
@@ -90,7 +94,7 @@ axios.interceptors.response.use(
         duration: 3 * 1000
       });
     }
-    if ([401, 403, 440].includes(result.code)) {
+    if ([401].includes(result.code)) {
       const userStore = useUserStore();
       const currentRoute = router.currentRoute.value.name;
       userStore.permissionCheckFailed();

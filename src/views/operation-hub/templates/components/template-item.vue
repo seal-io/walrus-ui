@@ -165,7 +165,7 @@
     display: flex;
     width: inherit;
     height: 140px;
-    padding: 10px 25px 10px 10px;
+    // padding: 10px 25px 10px 10px;
     background-color: #fff;
     .thumbCard();
 
@@ -184,6 +184,7 @@
 
     .img-box {
       flex-basis: 50px;
+      padding: 10px;
 
       .img {
         display: inline-block;
@@ -208,6 +209,7 @@
       justify-content: space-between;
       width: calc(100% - 80px);
       margin-left: 10px;
+      padding: 10px 25px 10px 10px;
 
       .title-wrap {
         display: flex;

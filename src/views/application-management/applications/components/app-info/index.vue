@@ -753,6 +753,7 @@
 
       &.var-item-title {
         display: flex;
+        margin-bottom: 10px;
 
         .label {
           font-weight: 500;

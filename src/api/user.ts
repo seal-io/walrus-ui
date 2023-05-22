@@ -30,7 +30,12 @@ export function modifyPassword(data: SetPassword) {
 }
 
 export function getUserInfo(params?) {
-  return axios.get('/account/info', { params });
+  return axios.get('/account/info', {
+    params,
+    headers: {
+      ApiType: 'chunked'
+    }
+  });
 }
 
 export function updateUserSetting(data: { id: string; value: string }) {

@@ -32,6 +32,7 @@
         </template>
       </a-form-item>
       <GroupTitle
+        iconed
         :title="$t('cost.optimize.form.title.group1')"
         style="margin-top: 10px"
         :bordered="true"
@@ -136,6 +137,7 @@
         }}</span>
       </a-form-item>
       <GroupTitle
+        iconed
         :title="$t('cost.optimize.form.title.group2')"
         style="margin-top: 10px"
         :bordered="true"
