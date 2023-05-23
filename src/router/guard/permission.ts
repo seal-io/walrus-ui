@@ -15,7 +15,6 @@ export default function setupPermissionGuard(router: Router) {
     // =======no permission check in frontend=====
     if (to.meta.noLogin) {
       next();
-      NProgress.done();
       return;
     }
     // =======no permission check in frontend=====
@@ -35,7 +34,6 @@ export default function setupPermissionGuard(router: Router) {
         };
         next(destination);
       }
-      NProgress.done();
     }
     // when forbidden to use password-free login from ui only need userStore.name && userStore?.userSetting?.FirstLogin?.value
     if (
@@ -51,7 +49,6 @@ export default function setupPermissionGuard(router: Router) {
         next({
           name: destination
         });
-        NProgress.done();
         return;
       }
       next();
@@ -66,7 +63,6 @@ export default function setupPermissionGuard(router: Router) {
       //       name: 'Login',
       //       query: {} as LocationQueryRaw
       //     });
-      //     NProgress.done();
       //   }
       // }
     } else {
@@ -89,13 +85,14 @@ export default function setupPermissionGuard(router: Router) {
       }
       if (to.name === LoginRouteName) {
         next();
-        NProgress.done();
         return;
       }
       next({
         name: LoginRouteName
       });
-      NProgress.done();
     }
+  });
+  router.afterEach(() => {
+    NProgress.done();
   });
 }

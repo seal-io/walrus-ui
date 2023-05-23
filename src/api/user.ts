@@ -49,7 +49,3 @@ export function getUserSetting() {
 export function getFirstLoginStatus() {
   return axios.get<{ id: string; value: string }>(`/settings/FirstLogin`);
 }
-export function checkEnableAuth() {
-  // return axios.get('/settings/EnableAuth');
-  return {};
-}

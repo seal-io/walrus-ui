@@ -232,7 +232,8 @@
     diffRevisionSpec,
     rollbackApplication,
     rollbackInstance,
-    queryRevisionChange
+    queryRevisionChange,
+    getPermissionRouteParams
   } from '../../api';
   import { updateApplicationEmitter } from '../../hooks/update-application-listener';
 
@@ -448,7 +449,8 @@
       setChunkRequest({
         url: `/application-revisions`,
         params: {
-          instanceID: instanceId.value
+          instanceID: instanceId.value,
+          ...getPermissionRouteParams()
         },
         handler: updateHandler
       });

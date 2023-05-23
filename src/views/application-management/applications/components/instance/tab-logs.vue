@@ -22,19 +22,13 @@
   import { get, split } from 'lodash';
   // import stripAnsi from 'strip-ansi';
   import hasAnsi from 'has-ansi';
-  import {
-    onMounted,
-    ref,
-    inject,
-    computed,
-    onBeforeUnmount,
-    watch,
-    nextTick,
-    PropType
-  } from 'vue';
+  import { ref, inject, watch, PropType } from 'vue';
   import { InstanceResource, Cascader } from '../../config/interface';
   import { generateResourcesKeys, getDefaultValue } from '../../config/utils';
-  import { queryApplicationResource } from '../../api';
+  import {
+    queryApplicationResource,
+    getPermissionRouteParams
+  } from '../../api';
   import testData from '../../config/data';
 
   const props = defineProps({
@@ -55,7 +49,6 @@
   const instanceId = inject('instanceId', ref(''));
   const resourceId = ref('');
   const logKey = ref('');
-  const wssInstance: any = ref('');
   const content = ref('');
   const loading = ref(false);
   let timer: any = null;
@@ -78,7 +71,8 @@
       url,
       params: {
         key: logKey.value,
-        watch: true
+        watch: true,
+        ...getPermissionRouteParams()
       },
       contentType: 'text',
       handler: updateContent
@@ -147,18 +141,6 @@
       deep: true
     }
   );
-  // watch(
-  //   () => instanceId.value,
-  //   () => {
-  //     wssInstance.value?.close?.();
-  //     nextTick(() => {
-  //       init();
-  //     });
-  //   },
-  //   {
-  //     immediate: true
-  //   }
-  // );
 </script>
 
 <style lang="less" scoped>

@@ -1,14 +1,17 @@
 <template>
   <div class="template-item" @click="handleView">
     <div class="img-box">
-      <span
-        v-if="provider"
-        class="img"
-        :style="{
-          'background-image': `url(${provider})`
-        }"
-      ></span>
-      <IconFont v-else type="icon-template-1"></IconFont>
+      <span v-if="provider" class="icon-wrap">
+        <span
+          class="img"
+          :style="{
+            'background-image': `url(${provider})`
+          }"
+        ></span>
+      </span>
+      <span v-else class="icon-wrap">
+        <IconFont type="icon-template-1"></IconFont>
+      </span>
     </div>
     <div class="content">
       <div>
@@ -165,6 +168,7 @@
     display: flex;
     width: inherit;
     height: 140px;
+    overflow: hidden;
     // padding: 10px 25px 10px 10px;
     background-color: #fff;
     .thumbCard();
@@ -184,7 +188,8 @@
 
     .img-box {
       flex-basis: 50px;
-      padding: 10px;
+      padding: 10px 8px;
+      background-color: var(--color-primary-light-1);
 
       .img {
         display: inline-block;
@@ -193,6 +198,14 @@
         background-repeat: no-repeat;
         background-position: center center;
         background-size: contain;
+      }
+
+      .icon-wrap {
+        display: flex;
+        padding: 0;
+        overflow: hidden;
+        background-color: #fff;
+        border-radius: 50%;
       }
 
       :deep(.arco-icon) {
@@ -208,7 +221,7 @@
       flex-direction: column;
       justify-content: space-between;
       width: calc(100% - 80px);
-      margin-left: 10px;
+      // margin-left: 10px;
       padding: 10px 25px 10px 10px;
 
       .title-wrap {

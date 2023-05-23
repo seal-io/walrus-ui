@@ -77,9 +77,9 @@
             lang="json"
             :height="320"
           ></AceEditor>
-          <span v-show="!removeLines.length && !addLines.length">{{
+          <a-alert v-show="!removeLines.length && !addLines.length">{{
             $t('applications.applications.history.diff.same')
-          }}</span>
+          }}</a-alert>
         </a-form-item>
       </a-form>
     </div>
