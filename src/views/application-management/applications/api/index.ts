@@ -5,7 +5,7 @@ import router from '@/router';
 import { AppRowData, EndPointRow } from '../config/interface';
 
 // some params for permission
-const getPermissionRouteParams = () => {
+export const getPermissionRouteParams = () => {
   const { params } = router.currentRoute.value;
   return { projectID: params?.projectId };
 };

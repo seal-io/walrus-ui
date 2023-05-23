@@ -1,5 +1,5 @@
 import axios, { AxiosRequestConfig, AxiosResponse } from 'axios';
-import { Message, Modal } from '@arco-design/web-vue';
+import { Message } from '@arco-design/web-vue';
 import { useUserStore } from '@/store';
 import router from '@/router';
 import { get } from 'lodash';
@@ -25,7 +25,6 @@ export interface HttpResponse<T = unknown> {
 if (import.meta.env.VITE_API_BASE_URL) {
   axios.defaults.baseURL = import.meta.env.VITE_API_BASE_URL;
 }
-console.log('import.meta:', import.meta);
 
 /**
  * 200: success
@@ -39,7 +38,6 @@ axios.interceptors.request.use(
   (config: AxiosRequestConfig) => {
     const url = config.url || '';
     const { locale } = i18n.global;
-    console.log('local===', locale);
     config.headers = {
       ...config.headers,
       'Accept-Language': localeMap[locale] || 'en'

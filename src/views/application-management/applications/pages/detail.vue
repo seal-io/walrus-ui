@@ -175,7 +175,8 @@
     queryApplicationInstances,
     deleteApplicationInstance,
     queryItemApplication,
-    cloneApplicationInstance
+    cloneApplicationInstance,
+    getPermissionRouteParams
   } from '../api';
   import {
     listenerUpdateAppAction,
@@ -482,7 +483,8 @@
       setChunkRequest({
         url: `/application-instances`,
         params: {
-          applicationID: appId
+          applicationID: appId,
+          ...getPermissionRouteParams()
         },
         beforeReconnect: beforeReconnectHandler,
         handler: updateHandler

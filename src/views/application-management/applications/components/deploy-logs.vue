@@ -9,16 +9,9 @@
 
 <script lang="ts" setup>
   import { useSetChunkRequest } from '@/api/axios-chunk-request';
-  import {
-    onMounted,
-    ref,
-    inject,
-    computed,
-    onBeforeUnmount,
-    watch,
-    onUnmounted
-  } from 'vue';
+  import { ref, inject, watch } from 'vue';
   import { AppInstanceStatus } from '../config';
+  import { getPermissionRouteParams } from '../api';
   // import AceEditor from '@/components/ace-editor/index.vue';
 
   const props = defineProps({
@@ -48,7 +41,6 @@
     })
   );
   const emits = defineEmits(['close']);
-  const wssInstance: any = ref('');
   const content = ref('');
   const scroller = ref();
   const { setChunkRequest } = useSetChunkRequest();
@@ -77,7 +69,11 @@
         ? 'destroy'
         : 'apply';
     setChunkRequest({
-      url: `/application-revisions/${props.revisionId}/log?jobType=${jobType}`,
+      url: `/application-revisions/${props.revisionId}/log`,
+      params: {
+        jobType,
+        ...getPermissionRouteParams()
+      },
       contentType: 'text',
       handler: updateContent
     });
@@ -103,9 +99,6 @@
       immediate: true
     }
   );
-  onBeforeUnmount(() => {
-    // wssInstance.value?.close?.();
-  });
 </script>
 
 <style lang="less" scoped>

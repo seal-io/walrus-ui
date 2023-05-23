@@ -64,7 +64,10 @@
     DateShortCuts,
     chartStatusColorMap
   } from '../config';
-  import { queryApplicationRevisionsChart } from '../api/dashboard';
+  import {
+    queryApplicationRevisionsChart,
+    queryLatestDeployments
+  } from '../api/dashboard';
 
   const pieStyleConfig = {
     label: {
@@ -189,7 +192,7 @@
         perPage: 10,
         sort: ['-createTime']
       };
-      const { data } = await queryApplicationRevisions(params);
+      const { data } = await queryLatestDeployments(params);
 
       appList.value = data.items || [];
     } catch (error) {

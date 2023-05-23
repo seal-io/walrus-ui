@@ -126,7 +126,7 @@
     position: fixed;
     top: 0;
     left: 0;
-    z-index: 2000;
+    z-index: 999;
     width: 100%;
     height: @nav-size-height;
     background-color: var(--seal-color-bg-1);

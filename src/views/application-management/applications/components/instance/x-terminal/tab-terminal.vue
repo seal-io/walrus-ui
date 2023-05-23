@@ -13,6 +13,7 @@
 </template>
 
 <script lang="ts" setup>
+  import qs from 'query-string';
   import {
     inject,
     ref,
@@ -23,6 +24,7 @@
     PropType
   } from 'vue';
   import xTerminal from '@/components/x-terminal/index.vue';
+  import { useRoute } from 'vue-router';
   import { queryApplicationResource } from '../../../api';
   import { Cascader, InstanceResource } from '../../../config/interface';
   import {
@@ -45,11 +47,13 @@
       }
     }
   });
+  const route = useRoute();
   const { host, protocol } = window.location;
   const proto = protocol === 'https:' ? 'wss' : 'ws';
   const instanceId = inject('instanceId', ref(''));
   const resourceId = ref('');
   const resourceKey = ref('');
+  const projectID = route.params.projectId;
   let timer: any = null;
   const containerList = ref<Cascader[]>([]);
   const loading = ref(false);
@@ -58,7 +62,12 @@
     if (!resourceId.value || !resourceKey.value) {
       return '';
     }
-    return `${proto}://${host}/v1/application-resources/${resourceId.value}/exec?key=${resourceKey.value}`;
+    return `${proto}://${host}/v1/application-resources/${
+      resourceId.value
+    }/exec?${qs.stringify({
+      key: resourceKey.value,
+      projectID
+    })}`;
   });
   const handleObjectChange = (val) => {
     const result = getResourceId(val);

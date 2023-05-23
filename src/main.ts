@@ -10,6 +10,7 @@ import directive from './directive';
 import App from './App.vue';
 import '@arco-design/web-vue/dist/arco.css';
 import '@/assets/style/global.less';
+import '@/assets/style/arco-reset/index.less';
 import '@/api/interceptor';
 import '@/hooks/dayjslocale';
 

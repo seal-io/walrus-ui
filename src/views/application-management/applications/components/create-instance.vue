@@ -7,7 +7,11 @@
     :ok-text="$t('common.button.save')"
     :visible="show"
     :mask-closable="false"
-    :body-style="{ 'max-height': '500px', 'overflow': 'auto' }"
+    :body-style="{
+      'max-height': '500px',
+      'overflow': 'auto',
+      'line-height': 1
+    }"
     modal-class="oci-modal"
     unmount-on-close
     :title="$t('applications.applications.detail.createInstance')"
@@ -27,7 +31,11 @@
           v-if="status === 'edit'"
           :data="dataList"
           class="margin-b10"
-        />
+        >
+          <template #label="{ label }">
+            <span style="font-size: 13px">{{ label }}</span>
+          </template>
+        </a-descriptions>
         <a-form-item
           v-if="status === 'create'"
           :label="$t('common.table.name')"
@@ -75,62 +83,18 @@
         <a-form-item :label="$t('applications.applications.tags.title')">
           <createTags v-model:tags="formData.remarkTags"></createTags>
         </a-form-item>
-        <!-- <a-form-item
-          :label="$t('common.table.description')"
-          field="description"
-        >
-          <a-textarea
-            v-model="formData.description"
-            :max-length="200"
-            show-word-limit
-            style="width: 100%"
-            :auto-size="{ minRows: 4, maxRows: 6 }"
-          >
-          </a-textarea>
-        </a-form-item> -->
-        <!-- <a-form-item label="标签">
-          <div
-            v-for="(sItem, sIndex) in labelList"
-            :key="sIndex"
-            style="margin-bottom: 10px"
-          >
-            <xInputGroup
-              v-model:dataKey="sItem.key"
-              v-model:value="formData.labels"
-              always-delete
-              :trigger-validate="triggerValidate"
-              width="100%"
-              separator=""
-              class="group-item"
-              :label-list="labelList"
-              :position="sIndex"
-              @add="(obj) => handleAddLabel(obj, labelList)"
-              @delete="handleDeleteLabel(labelList, sIndex)"
-            >
-              <template #value>
-                <a-input
-                  v-model="sItem.value"
-                  :placeholder="$t('common.input.value')"
-                  :error="!sItem.value && triggerValidate"
-                ></a-input>
-              </template>
-            </xInputGroup>
-          </div>
-          <div v-if="!labelList.length">
-            <a-tooltip :content="$t('applications.applications.labels.title')">
-              <thumbButton
-                :size="30"
-                font-size="16px"
-                @click="handleAdd"
-              ></thumbButton>
-            </a-tooltip>
-          </div>
-        </a-form-item> -->
-        <div
+        <!-- <div
           v-if="variablesList?.length"
           style="margin-bottom: 10px; text-align: left"
           >{{ $t('applications.applications.variables.title') }}</div
-        >
+        > -->
+        <GroupTitle
+          v-if="variablesList?.length"
+          :bordered="false"
+          iconed
+          style="margin-bottom: 10px"
+          :title="$t('applications.applications.variables.title')"
+        ></GroupTitle>
         <a-form-item
           v-for="(item, index) in variablesList"
           :key="index"
@@ -157,9 +121,15 @@
           ></component>
         </a-form-item>
         <div v-if="status === 'edit'">
-          <div class="margin-b10" style="text-align: left">{{
+          <!-- <div class="margin-b10" style="text-align: left">{{
             $t('applications.applications.history.diff.upgrade')
-          }}</div>
+          }}</div> -->
+          <GroupTitle
+            :bordered="false"
+            iconed
+            style="margin-bottom: 10px"
+            :title="$t('applications.applications.history.diff.upgrade')"
+          ></GroupTitle>
           <AceEditor
             v-show="removeLines.length || addLines.length"
             ref="editor_create"
@@ -172,11 +142,9 @@
             lang="json"
             :height="460"
           ></AceEditor>
-          <div
-            v-show="!removeLines.length && !addLines.length"
-            style="color: var(--color-text-3); text-align: left"
-            >{{ $t('applications.applications.history.diff.same') }}</div
-          >
+          <a-alert v-show="!removeLines.length && !addLines.length">{{
+            $t('applications.applications.history.diff.same')
+          }}</a-alert>
         </div>
       </a-form>
     </a-spin>
@@ -221,6 +189,7 @@
   import AceEditor from '@/components/ace-editor/index.vue';
   import thumbButton from '@/components/buttons/thumb-button.vue';
   import { getListLabel } from '@/utils/func';
+  import GroupTitle from '@/components/group-title/index.vue';
   import useCodeDiff from '@/hooks/use-code-diff';
   import { Variables } from '../config/interface';
   import { componentsMap, instanceUpgradeView } from '../config';
@@ -290,7 +259,6 @@
   const submitLoading = ref(false);
   const variablesList = ref<Variables[]>([]);
   const labelList = ref<{ key: string; value: string }[]>([]);
-  const triggerValidate = ref(false);
   const formData = reactive({
     name: '',
     variables: {},
@@ -319,16 +287,6 @@
     });
     return list;
   });
-
-  const handleAddLabel = (obj, list) => {
-    list.push({ ...obj });
-  };
-  const handleDeleteLabel = (list, index) => {
-    list.splice(index, 1);
-  };
-  const handleAdd = () => {
-    labelList.value.push({ key: '', value: '' });
-  };
 
   const validateVariable = (val, callback, type) => {
     if (type !== unknowType.dynamic) {

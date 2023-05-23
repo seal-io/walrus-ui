@@ -6,7 +6,7 @@ import {
 } from '@/api/axios-chunk-request';
 import { InstanceResource } from '../../config/interface';
 import { websocketEventType } from '../../config';
-import { queryApplicationResource } from '../../api';
+import { queryApplicationResource, getPermissionRouteParams } from '../../api';
 import { updateResourceEmitter } from '../../hooks/update-resource-listener';
 
 export default function useFetchResource() {
@@ -219,7 +219,8 @@ export default function useFetchResource() {
       setChunkRequest({
         url: `/application-resources`,
         params: {
-          instanceID: instanceId.value
+          instanceID: instanceId.value,
+          ...getPermissionRouteParams()
         },
         handler: updateCallback
       });

@@ -2,13 +2,8 @@ import axios from 'axios';
 import qs from 'query-string';
 import _ from 'lodash';
 import { SILENCEAPI } from '@/api/config';
-import router from '@/router';
 import { ref, watch, onBeforeUnmount, onMounted } from 'vue';
 
-const getPermissionRouteParams = () => {
-  const { params } = router.currentRoute.value;
-  return { projectID: params?.projectId };
-};
 interface RequestConfig {
   url: string;
   handler: (data: any) => any;
@@ -88,7 +83,6 @@ export function useSetChunkRequest() {
       const { request } = await axios.get(url, {
         params: {
           ...params,
-          ...getPermissionRouteParams(),
           watch: true
         },
         headers: {

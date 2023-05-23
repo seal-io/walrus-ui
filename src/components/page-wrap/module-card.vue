@@ -42,16 +42,16 @@
       &.iconed {
         margin-top: 25px;
         padding-bottom: 10px;
-        padding-left: 10px;
+        padding-left: 8px;
       }
 
       &.iconed::before {
         position: absolute;
-        top: -2px;
-        bottom: 8px;
+        top: 0;
+        bottom: 10px;
         left: 0;
         display: inline-block;
-        width: 4px;
+        width: 3px;
         background-color: rgba(var(--arcoblue-6), 0.8);
         border-radius: 0 4px 4px 0;
         content: '';

@@ -6,7 +6,6 @@ import {
   logout as userLogout,
   getUserInfo,
   LoginData,
-  checkEnableAuth,
   getUserSetting as userSettings,
   updateUserSetting as updateSettings
 } from '@/api/user';
@@ -101,11 +100,6 @@ const useUserStore = defineStore('user', {
       return updateSettings(data);
     },
 
-    // async checkEnableAuth() {
-    //   const { data } = await checkEnableAuth();
-    //   this.$patch({ userSetting: { [data.name]: data.value } });
-    //   return data;
-    // },
     // Logout
     async logout() {
       await userLogout();
