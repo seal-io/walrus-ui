@@ -1,8 +1,6 @@
 import localeMessageBox from '@/components/message-box/locale/en-US';
 import localeLogin from '@/views/login/locale/en-US';
 
-import localeBasicProfile from '@/views/profile/basic/locale/en-US';
-
 import localeSuccess from '@/views/result/success/locale/en-US';
 import localeError from '@/views/result/error/locale/en-US';
 
@@ -20,6 +18,8 @@ import localeDashboard from '@/views/dashboard/locale/en-US';
 import localeApplications from '@/views/application-management/locale/en-US';
 import localeCost from '@/views/cost-management/locale/en-US';
 import localeOperation from '@/views/operation-hub/locale/en-US';
+
+import localeProfile from '@/views/profile/locale/en-US';
 
 import localeCommon from './en-US/common';
 import localeSettings from './en-US/settings';
@@ -53,8 +53,6 @@ export default {
   ...localeSettings,
   ...localeMessageBox,
   ...localeLogin,
-
-  ...localeBasicProfile,
   ...localeSuccess,
   ...localeError,
   ...locale403,
@@ -67,5 +65,6 @@ export default {
   ...localeDashboard,
   ...localeApplications,
   ...localeCost,
-  ...localeOperation
+  ...localeOperation,
+  ...localeProfile
 };

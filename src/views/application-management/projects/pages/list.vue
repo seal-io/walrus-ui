@@ -112,6 +112,21 @@
                     <template #icon><icon-edit class="size-16" /></template>
                   </a-link>
                 </a-tooltip>
+                <a-tooltip :content="$t('common.button.authorize')">
+                  <a-link
+                    type="text"
+                    size="small"
+                    @click="handleAuthorize(record)"
+                  >
+                    <template #icon>
+                      <i
+                        style="color: rgb(var(--arcoblue-6))"
+                        type="icon-jiaoseshouquan"
+                        class="size-16 iconfont icon-jiaoseshouquan"
+                      ></i>
+                    </template>
+                  </a-link>
+                </a-tooltip>
               </a-space>
             </template>
           </a-table-column>
@@ -136,6 +151,10 @@
       :info="projectInfo"
       @save="handleSaveProject"
     ></CreateProjectModal>
+    <AssignRoles
+      v-model:show="showModal"
+      :project-i-d="projectID"
+    ></AssignRoles>
   </SpinCard>
 </template>
 
@@ -149,8 +168,9 @@
   import { UseSortDirection } from '@/utils/common';
   import useRowSelect from '@/hooks/use-row-select';
   import CreateProjectModal from '../components/create-project.vue';
+  import AssignRoles from '../components/assign-roles.vue';
   import { ProjectRowData } from '../config/interface';
-  import { queryProjects, deleteProjects } from '../api';
+  import { queryProjects, deleteProjects, querySubjectRoles } from '../api';
 
   let timer: any = null;
   const { t, router } = useCallCommon();
@@ -162,20 +182,17 @@
   const loading = ref(false);
   const modalTitle = ref('');
   const showProjectModal = ref(false);
-  const currentView = ref('thumb'); // thumb, list
   const dataList = ref<ProjectRowData[]>([]);
   const total = ref(0);
   const projectInfo = ref<any>({});
+  const projectID = ref('');
   const action = ref<'create' | 'edit'>('create');
+  const showModal = ref(false);
   const queryParams = reactive({
     query: '',
     page: 1,
     perPage: 10
   });
-  const handleToggle = (val) => {
-    currentView.value = val;
-  };
-
   const handleCreateProject = () => {
     action.value = 'create';
     projectInfo.value = {};
@@ -197,6 +214,12 @@
       name: 'ApplicationsList',
       query: { id: row.id }
     });
+  };
+  const handleAuthorize = (row) => {
+    projectID.value = row.id;
+    setTimeout(() => {
+      showModal.value = true;
+    }, 100);
   };
   const fetchData = async () => {
     try {

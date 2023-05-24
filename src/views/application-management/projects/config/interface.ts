@@ -21,3 +21,10 @@ export interface ProjectFormData {
   labels: object;
   labelList?: Array<{ key: string; value: string }>;
 }
+
+export interface ProjectRolesRowData {
+  id: string;
+  project: { id: string };
+  role: { id: string };
+  subject: any;
+}

@@ -1,7 +1,11 @@
 import axios from 'axios';
 import qs from 'query-string';
-import { Pagination } from '@/types/global';
-import { ProjectRowData, ProjectFormData } from '../config/interface';
+import { Pagination, ListResult } from '@/types/global';
+import {
+  ProjectRowData,
+  ProjectFormData,
+  ProjectRolesRowData
+} from '../config/interface';
 
 export interface QueryType extends Pagination {
   sort?: string[];
@@ -48,4 +52,19 @@ export const queryApplicationsInProject = (params) => {
       return qs.stringify(obj);
     }
   });
+};
+export const querySubjectRoles = (params: { projectID: string }) => {
+  return axios.get<ListResult<ProjectRolesRowData>>(`/subject-roles`, {
+    params,
+    paramsSerializer: (obj) => {
+      return qs.stringify(obj);
+    }
+  });
+};
+export const addSubjectRoles = (data) => {
+  return axios.post(`/subject-roles?projectID=${data.project.id}`, data);
+};
+
+export const deleteSubjectRoles = (data) => {
+  return axios.delete(`/subject-roles/${data.id}`);
 };

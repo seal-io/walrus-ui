@@ -158,7 +158,7 @@
               <a-space @click="handleModifyPassword">
                 <icon-lock />
                 <span>
-                  {{ $t('account.settings.title') }}
+                  {{ $t('propfile.account.settings') }}
                 </span>
               </a-space>
             </a-doption>
@@ -332,7 +332,7 @@
   };
   const handleModifyPassword = () => {
     router.push({
-      name: 'ModifyPassword'
+      name: 'AccountSettings'
     });
   };
   const handleToHome = () => {

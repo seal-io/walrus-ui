@@ -306,3 +306,15 @@ export const queryProjectSecrets = (params) => {
     }
   });
 };
+
+export const querySecrets = (params) => {
+  return axios.get(`/secrets`, {
+    params: {
+      ...params,
+      ...getPermissionRouteParams()
+    },
+    paramsSerializer: (obj) => {
+      return qs.stringify(obj);
+    }
+  });
+};

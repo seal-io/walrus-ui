@@ -23,6 +23,7 @@ export default {
   'common.button.upgrade': 'Upgrade',
   'common.input.holder': 'Please enter',
   'common.button.edit': 'Edit',
+  'common.button.authorize': 'Role Authorization',
   'common.button.confirm': 'Confirm',
   'common.table.operation': 'Operation',
   'common.table.createTime': 'Create Time',
