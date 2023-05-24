@@ -1,8 +1,6 @@
 import localeMessageBox from '@/components/message-box/locale/zh-CN';
 import localeLogin from '@/views/login/locale/zh-CN';
 
-import localeBasicProfile from '@/views/profile/basic/locale/zh-CN';
-
 import localeSuccess from '@/views/result/success/locale/zh-CN';
 import localeError from '@/views/result/error/locale/zh-CN';
 
@@ -21,6 +19,8 @@ import localeDashboard from '@/views/dashboard/locale/zh-CN';
 import localeApplications from '@/views/application-management/locale/zh-CN';
 import localeCost from '@/views/cost-management/locale/zh-CN';
 import localeOperation from '@/views/operation-hub/locale/zh-CN';
+
+import localeProfile from '@/views/profile/locale/zh-CN';
 
 import localeCommon from './zh-CN/common';
 
@@ -56,7 +56,6 @@ export default {
   ...localeMessageBox,
   ...localeLogin,
 
-  ...localeBasicProfile,
   ...localeSuccess,
   ...localeError,
   ...locale403,
@@ -69,5 +68,6 @@ export default {
   ...localeDashboard,
   ...localeApplications,
   ...localeCost,
-  ...localeOperation
+  ...localeOperation,
+  ...localeProfile
 };

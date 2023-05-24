@@ -5,12 +5,25 @@ export default {
   meta: {
     // isRemove: true,
     hideInMenu: true,
-    locale: 'account.settings.title',
+    locale: 'propfile.account.settings',
     requiresAuth: true,
     icon: 'icon-settings',
     order: 8
   },
   children: [
+    {
+      path: 'settings',
+      name: 'AccountSettings',
+      component: () => import('@/views/profile/pages/main.vue'),
+      meta: {
+        hideInMenu: true,
+        ignoreCache: true,
+        clearMenuStatus: true,
+        locale: '账户管理',
+        requiresAuth: true,
+        roles: ['*']
+      }
+    },
     {
       path: 'modify-password',
       name: 'ModifyPassword',

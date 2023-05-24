@@ -139,4 +139,10 @@ export enum PageAction {
   EDIT = 'edit',
   VIEW = 'view'
 }
+
+export enum ModalAction {
+  EDIT = 'edit',
+  CREATE = 'create',
+  VIEW = 'view'
+}
 export default {};

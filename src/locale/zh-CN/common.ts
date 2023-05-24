@@ -22,6 +22,7 @@ export default {
   'common.input.holder': '请输入',
   'common.holder.search': '搜索',
   'common.button.edit': '编辑',
+  'common.button.authorize': '角色授权',
   'common.button.confirm': '确定',
   'common.table.operation': '操作',
   'common.table.createTime': '创建时间',

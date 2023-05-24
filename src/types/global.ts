@@ -31,6 +31,11 @@ export interface Pagination {
   totalPage?: number;
 }
 
+export interface ListResult<T> {
+  items: T[];
+  pagination: Pagination;
+}
+
 export type TimeRanger = [string, string];
 
 export type BaseType = string | number;

@@ -239,6 +239,7 @@
     TemplateRowData,
     ModuleVersionData
   } from '@/views/operation-hub/templates/config/interface';
+  import { querySecrets } from '@/views/application-management/secret/api';
   import instanceThumb from '../instance-thumb.vue';
   import editModule from './edit-module.vue';
   import viewModule from './view-module.vue';
@@ -397,10 +398,11 @@
     try {
       const params = {
         page: -1,
-        projectID: route.params.projectId as string
+        projectID: route.params.projectId as string,
+        withGlobal: true
       };
-      const { data } = await queryProjectSecrets(params);
-      projectSecretList.value = _.uniqBy(data, (item) => item.name);
+      const { data } = await querySecrets(params);
+      projectSecretList.value = data.items || [];
     } catch (error) {
       projectSecretList.value = [];
       console.log(error);
