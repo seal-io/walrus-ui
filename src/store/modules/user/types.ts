@@ -1,11 +1,33 @@
 import { AnyObject } from '@/types/global';
 
-export type permissionItem = 'get' | 'post' | 'put' | 'delete';
+export type permissionItem = 'GET' | 'POST' | 'PUT' | 'DELETE';
 export type RoleType = '' | '*' | 'admin' | 'user';
-export interface UserRouterPermission {
-  path: string;
-  name?: string;
-  permission: permissionItem[]; // GET、POST、PUT、DELETE4  equal to array<permissionItem> 泛型写法
+
+// cache the role policy
+export const ROLES = '_roles';
+export interface RolesItem {
+  id: string;
+  policies: Array<{
+    actions: string[];
+    resources: string[];
+    paths: string[];
+  }>;
+}
+
+export interface ProjectRolesItem {
+  project: object;
+  roles: RolesItem[];
+}
+export interface ProjectPolicy {
+  projectName: string;
+  projectID: string;
+  policies: Record<string, permissionItem[]>;
+  [ROLES]: Record<string, object>;
+}
+
+export interface RolePolicy {
+  role: string;
+  policies: Record<string, permissionItem[]>;
 }
 
 export interface UserState {
@@ -24,10 +46,11 @@ export interface UserState {
   registrationDate?: string;
   accountId?: string;
   certification?: number;
-  permissionsList?: UserRouterPermission[];
-  permissions?: AnyObject;
+  permissions: AnyObject; // {role: RolePolicy;project: ProjectPolicy;}
   hasNavList?: boolean;
   role: RoleType;
+  roles: RolesItem[];
+  projectRoles: ProjectRolesItem[];
   userSetting: {
     [key: string]: {
       id: string;

@@ -1,8 +1,8 @@
-import { AnyObject } from '@/types/global';
-import { UserRouterPermission } from '@/store/modules/user/types';
+import { ProjectRolesItem, RolesItem, ROLES } from '@/store/modules/user/types';
 // import localForage from 'localforage';
 import JSCookies from 'js-cookie';
 import localForage from '@/utils/localStore';
+import _ from 'lodash';
 
 interface LoginInfo {
   username: string;
@@ -60,23 +60,96 @@ const clearToken = () => {
   JSCookies.remove(TOKEN_KEY);
 };
 
-const getUserPermission = (list: UserRouterPermission[]) => {
-  const permissionMap = list.reduce(
-    (obj: AnyObject, item: UserRouterPermission) => {
-      obj[item.path] = item.permission || [];
+const getResourcePolicies = (role: RolesItem) => {
+  const policies = _.get(role, 'policies') || [];
+  const rolePolicies = _.reduce(
+    policies,
+    (rolePolicyMap, item) => {
+      const resourcePolicy = _.reduce(
+        _.get(item, 'resources') || [],
+        (resourceActionsMap, resourceName) => {
+          resourceActionsMap[resourceName] = [...(item.actions || [])];
+          return resourceActionsMap;
+        },
+        {}
+      );
+      rolePolicyMap = {
+        ...rolePolicyMap,
+        ...resourcePolicy
+      };
+      return rolePolicyMap;
+    },
+    {}
+  );
+  console.log('rolePolicies===', rolePolicies);
+  return rolePolicies;
+};
+
+const getRolesPolicies = (rolesList: RolesItem[]) => {
+  if (!rolesList.length) return {};
+  const result = _.reduce(
+    rolesList,
+    (rolesPolicyMap, item) => {
+      // single role policy
+      const resourcePolicy = getResourcePolicies(item);
+      _.set(rolesPolicyMap, `${ROLES}.${item.id}`, _.cloneDeep(resourcePolicy));
+      rolesPolicyMap = _.assignInWith(
+        rolesPolicyMap,
+        resourcePolicy,
+        (obj, src) => {
+          if (obj) {
+            return _.concat(obj, src);
+          }
+          return src;
+        }
+      );
+      return rolesPolicyMap;
+    },
+    {}
+  );
+  return result;
+};
+
+const getProjectRolesPolicies = (projectRoles: ProjectRolesItem[]) => {
+  if (!projectRoles.length) return {};
+  const result = _.reduce(
+    projectRoles,
+    (obj, project) => {
+      const projectID = _.get(project, 'project.id');
+      const projectName = _.get(project, 'project.name');
+      obj[projectID] = {
+        projectID,
+        projectName,
+        policies: {
+          ...getRolesPolicies(project.roles)
+        }
+      };
       return obj;
     },
     {}
   );
-  return permissionMap;
+  return result;
+};
+const getUserResourcePermission = (data) => {
+  // role policies
+  const roles = getRolesPolicies(_.get(data, 'roles') || []);
+
+  // project policies
+  const projectRoles = getProjectRolesPolicies(
+    _.get(data, 'projectRoles') || []
+  );
+
+  return {
+    roles,
+    projectRoles
+  };
 };
 
 export {
-  isLogin,
   getToken,
   setToken,
   clearToken,
-  getUserPermission,
+  getUserResourcePermission,
   rememberPasswordFn,
   readLocalLoginInfo,
   removeLocalLoginInfo,

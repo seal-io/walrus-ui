@@ -1,5 +1,4 @@
 import { defineStore } from 'pinia';
-import get from 'lodash/get';
 import { AnyObject } from '@/types/global';
 import {
   login as userLogin,
@@ -9,9 +8,10 @@ import {
   getUserSetting as userSettings,
   updateUserSetting as updateSettings
 } from '@/api/user';
-import { setToken, clearToken, getUserPermission } from '@/utils/auth';
+import { clearToken, getUserResourcePermission } from '@/utils/auth';
 import { removeRouteListener } from '@/utils/route-listener';
 import { UserState } from './types';
+import testData from './test';
 
 const useUserStore = defineStore('user', {
   persist: {
@@ -36,8 +36,9 @@ const useUserStore = defineStore('user', {
     permissions: {},
     userSetting: {},
     hasNavList: true,
-    permissionsList: [],
     policies: [],
+    projectRoles: [],
+    roles: [],
     role: '*'
   }),
 
@@ -69,12 +70,9 @@ const useUserStore = defineStore('user', {
 
     // Get user's information
     async info() {
-      const res = await getUserInfo();
-      const permissions: AnyObject = getUserPermission(
-        get(res, 'data.permissionsList') || []
-      );
-      const user = get(res, 'data');
-      this.setInfo({ ...user, permissions });
+      const { data } = await getUserInfo();
+      const permissions: AnyObject = getUserResourcePermission(data);
+      this.setInfo({ ...data, permissions });
     },
 
     // Login
