@@ -1,5 +1,7 @@
 export default {
   'menu.system.setting': 'System Settings',
+  'menu.system.user': 'Users Management',
+  'menu.system.config': 'Configuration Management',
   'system.rules.value': 'value is required',
   'system.rules.url': 'URL format invalid',
   'user.password.modify': 'Modify Password',
@@ -118,5 +120,8 @@ export default {
     'The default is to execute every 2 minutes',
   'system.setting.CostCollectCronExpr': 'Collect usage costs',
   'system.setting.CostCollectCronExpr.desc':
-    'The default is to execute every hour'
+    'The default is to execute every hour',
+  'system.user.visitor': 'Visitor',
+  'system.user.admin': 'Administrator',
+  'system.user.engineer': 'Platform Engineer'
 };

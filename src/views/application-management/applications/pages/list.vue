@@ -235,6 +235,7 @@
     }
   };
   const fetchData = async () => {
+    if (!queryParams.projectID) return;
     try {
       loading.value = true;
       const params: any = {
@@ -425,6 +426,7 @@
   };
   const loopUpdateList = () => {
     clearInterval(loopTimer);
+    if (!queryParams.projectID) return;
     loopTimer = setInterval(() => {
       loopUpdateCall();
     }, 15 * 1000);

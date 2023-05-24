@@ -1,6 +1,6 @@
 <template>
-  <div>
-    <!-- <GroupTitle :title="$t('user.password.modify')" show-back></GroupTitle> -->
+  <ComCard class="container">
+    <GroupTitle :title="$t('user.password.modify')" show-back></GroupTitle>
     <a-form :model="formData" auto-label-width @submit="handleSubmit">
       <a-form-item
         field="oldPassword"
@@ -50,7 +50,7 @@
         </EditPageFooter>
       </a-form-item>
     </a-form>
-  </div>
+  </ComCard>
 </template>
 
 <script lang="ts" setup>

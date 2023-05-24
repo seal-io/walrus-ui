@@ -1,5 +1,7 @@
 export default {
   'menu.system.setting': '系统设置',
+  'menu.system.user': '用户管理',
+  'menu.system.config': '配置管理',
   'system.rules.value': '值不能为空',
   'system.rules.url': 'URL格式不正确',
   'user.password.modify': '修改密码',
@@ -102,5 +104,8 @@ export default {
   'system.setting.ResourceLabelApplyCronExpr': '标记应用资源',
   'system.setting.ResourceLabelApplyCronExpr.desc': '默认是每2分钟执行一次',
   'system.setting.CostCollectCronExpr': '收集使用成本',
-  'system.setting.CostCollectCronExpr.desc': '默认是每小时执行一次'
+  'system.setting.CostCollectCronExpr.desc': '默认是每小时执行一次',
+  'system.user.visitor': '普通用户',
+  'system.user.admin': '管理员',
+  'system.user.engineer': '平台工程师'
 };

@@ -25,7 +25,7 @@
     @before-close="handleBeforeClose"
   >
     <a-form ref="formref" :model="formData" auto-label-width>
-      <a-form-item
+      <!-- <a-form-item
         :label="$t('profile.account.kind')"
         field="kind"
         validate-trigger="change"
@@ -44,10 +44,10 @@
             :value="item.value"
           ></a-option>
         </a-select>
-      </a-form-item>
-      <a-form-item :label="$t('profile.account.domain')" field="domain">
+      </a-form-item> -->
+      <!-- <a-form-item :label="$t('profile.account.domain')" field="domain">
         <a-input v-model="formData.domain" disabled></a-input>
-      </a-form-item>
+      </a-form-item> -->
       <a-form-item
         :label="$t('profile.account.name')"
         field="name"
@@ -83,18 +83,32 @@
         validate-trigger="change"
         :rules="[
           {
-            required: true,
+            required: false,
             message: $t('propfile.account.settings.rules.role')
           }
         ]"
       >
         <a-select v-model="formData.roleId" @change="handleRoleChange">
+          <template #prefix>
+            <i
+              style="color: var(--sealblue-6)"
+              class="iconfont size-14"
+              :class="[
+                _.get(
+                  _.find(roleList, (item) => item.value === formData.roleId),
+                  'icon'
+                ) || 'icon-user'
+              ]"
+            ></i>
+          </template>
           <a-option
             v-for="(item, index) in roleList"
             :key="index"
-            :label="item.label"
             :value="item.value"
-          ></a-option>
+          >
+            <i class="iconfont mright-5 size-14" :class="[item.icon]"></i>
+            <span>{{ $t(item.label) }}</span>
+          </a-option>
         </a-select>
       </a-form-item>
     </a-form>
@@ -126,9 +140,9 @@
   import _ from 'lodash';
   import { ref, reactive, PropType } from 'vue';
   import EditPageFooter from '@/components/edit-page-footer/index.vue';
-  import { accountTypeList } from '../config';
+  import { accountTypeList, roleTypeList } from '../config/users';
   import { RoleItem } from '../config/interface';
-  import { createSubject, updateSubject } from '../api';
+  import { createSubject, updateSubject } from '../api/users';
 
   const props = defineProps({
     action: {
@@ -161,7 +175,7 @@
   const submitLoading = ref(false);
   const formref = ref();
   const formData = reactive({
-    kind: '',
+    kind: 'user',
     domain: 'builtin',
     name: '',
     password: '',
@@ -181,13 +195,15 @@
       if (!res) {
         submitLoading.value = true;
         const data: any = _.pickBy(formData, (val) => val);
-        data.roles = [
-          {
-            role: {
-              id: formData.roleId
+        if (formData.roleId) {
+          data.roles = [
+            {
+              role: {
+                id: formData.roleId
+              }
             }
-          }
-        ];
+          ];
+        }
         if (props.action === 'create') {
           await createSubject(data);
         } else {

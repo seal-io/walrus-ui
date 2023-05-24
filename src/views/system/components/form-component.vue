@@ -66,7 +66,7 @@
   import { replace } from 'lodash';
   import { useI18n } from 'vue-i18n';
   import { defineComponent, PropType } from 'vue';
-  import { SettingsItem, ValueType, ChildrenItem } from '../configs';
+  import { SettingsItem, ValueType, ChildrenItem } from '../config';
 
   export default defineComponent({
     inheritAttrs: false,

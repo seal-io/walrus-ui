@@ -22,6 +22,11 @@ export const authApiList: string[] = [
   '/debug/version'
 ];
 
+export const responseStatusMap = {
+  401: 'common.permission.401',
+  403: 'common.permission.403'
+};
+
 export const noToastAPI: string[] = [];
 
 export default {};

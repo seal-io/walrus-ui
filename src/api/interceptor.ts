@@ -10,6 +10,7 @@ import {
   LoginRouteName,
   localeMap,
   authApiList,
+  responseStatusMap,
   noToastAPI
 } from './config';
 // import { getToken } from '@/utils/auth';
@@ -66,7 +67,9 @@ axios.interceptors.response.use(
     const data = get(response, 'data') || {};
     const result = {
       code: data?.status,
-      msg: data?.message || response.statusText,
+      msg: get(responseStatusMap, data?.status)
+        ? i18n.global.t(get(responseStatusMap, data?.status))
+        : data?.message || response.statusText,
       data: data?.data,
       api: reqUrl
     };

@@ -8,9 +8,7 @@ import locale403 from '@/views/exception/403/locale/zh-CN';
 import locale404 from '@/views/exception/404/locale/zh-CN';
 import locale500 from '@/views/exception/500/locale/zh-CN';
 
-import localeUserInfo from '@/views/user/info/locale/zh-CN';
-import localeUserSetting from '@/views/user/setting/locale/zh-CN';
-import localeUserSystem from '@/views/user/system/locale/zh-CN';
+import localeUserSystem from '@/views/system/locale/zh-CN';
 
 import localeGraph from '@/components/graph/locale/zh-CN';
 
@@ -61,8 +59,6 @@ export default {
   ...locale403,
   ...locale404,
   ...locale500,
-  ...localeUserInfo,
-  ...localeUserSetting,
   ...localeUserSystem,
   ...localeGraph,
   ...localeDashboard,

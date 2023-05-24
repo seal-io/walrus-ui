@@ -1,21 +1,22 @@
 <template>
   <ComCard class="container">
-    <GroupTitle :title="$t('menu.system.setting')" show-back></GroupTitle>
-    <a-space direction="vertical" fill>
-      <a-tabs v-model="activeKey" :default-active-key="activeKey">
-        <a-tab-pane
-          v-for="(item, index) in sourceList"
-          :key="`${index}`"
-          :title="$t(item.label)"
-        >
-          <settings-form
-            :editable="item.editable"
-            :data-info="item"
-            @settingSave="handleSave"
-          ></settings-form>
-        </a-tab-pane>
-      </a-tabs>
-    </a-space>
+    <a-tabs
+      v-model="activeKey"
+      :default-active-key="activeKey"
+      class="page-line-tabs"
+    >
+      <a-tab-pane
+        v-for="(item, index) in sourceList"
+        :key="`${index}`"
+        :title="$t(item.label)"
+      >
+        <settings-form
+          :editable="item.editable"
+          :data-info="item"
+          @settingSave="handleSave"
+        ></settings-form>
+      </a-tab-pane>
+    </a-tabs>
   </ComCard>
 </template>
 
@@ -24,11 +25,10 @@
   import { onMounted, ref, computed, reactive } from 'vue';
   import { useUserStore } from '@/store';
   import { useRoute } from 'vue-router';
-  import GroupTitle from '@/components/group-title/index.vue';
-  import { SettingsItem, valueTypeMap, ValueType } from './configs';
-  import settingsForm from './components/settings-form.vue';
-  import dataInfo from './components/data';
-  import { settingList } from './configs/settings-model';
+  import { SettingsItem, valueTypeMap, ValueType } from '../config';
+  import settingsForm from '../components/settings-form.vue';
+  import dataInfo from '../components/data';
+  import { settingList } from '../config/settings-model';
 
   interface formDataType {
     [key: string]: any;

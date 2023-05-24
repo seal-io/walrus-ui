@@ -8,9 +8,7 @@ import locale403 from '@/views/exception/403/locale/en-US';
 import locale404 from '@/views/exception/404/locale/en-US';
 import locale500 from '@/views/exception/500/locale/en-US';
 
-import localeUserInfo from '@/views/user/info/locale/en-US';
-import localeUserSetting from '@/views/user/setting/locale/en-US';
-import localeUserSystem from '@/views/user/system/locale/en-US';
+import localeUserSystem from '@/views/system/locale/en-US';
 
 import localeGraph from '@/components/graph/locale/en-US';
 import localeDashboard from '@/views/dashboard/locale/en-US';
@@ -58,8 +56,6 @@ export default {
   ...locale403,
   ...locale404,
   ...locale500,
-  ...localeUserInfo,
-  ...localeUserSetting,
   ...localeUserSystem,
   ...localeGraph,
   ...localeDashboard,

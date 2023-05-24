@@ -5,7 +5,7 @@ export default {
   'profile.account.name': 'Name',
   'profile.account.password': 'Password',
   'profile.account.creatrandom': 'Generated',
-  'profile.account.create': 'New Account',
+  'profile.account.create': 'New User',
   'profile.account.edit': 'Edit Account',
   'profile.account.type.user': 'User',
   'profile.account.type.group': 'Group',

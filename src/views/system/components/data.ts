@@ -7,7 +7,7 @@ export default {
       value: 'true',
       hidden: true,
       editable: false,
-      private: false,
+      private: false
     },
     {
       id: 'ProxyPort',
@@ -16,7 +16,7 @@ export default {
       value: '10000',
       hidden: false,
       editable: true,
-      private: false,
+      private: false
     },
     {
       id: 'ProxyWildcardDomainName',
@@ -25,7 +25,7 @@ export default {
       value: '',
       hidden: false,
       editable: true,
-      private: false,
+      private: false
     },
     {
       id: 'ServerURL',
@@ -34,7 +34,7 @@ export default {
       value: '',
       hidden: false,
       editable: true,
-      private: false,
+      private: false
     },
     {
       id: 'ProxyTLS',
@@ -43,7 +43,7 @@ export default {
       value: 'ProxyTLSAcmeGen',
       hidden: false,
       editable: true,
-      private: false,
+      private: false
     },
     {
       id: 'ProxyTLSUploadCrt',
@@ -52,7 +52,7 @@ export default {
       value: '',
       hidden: false,
       editable: true,
-      private: false,
+      private: false
     },
     {
       id: 'ProxyTLSUploadKey',
@@ -61,7 +61,7 @@ export default {
       value: '',
       hidden: false,
       editable: true,
-      private: false,
+      private: false
     },
     {
       id: 'ProxyTLSSelfGenCA',
@@ -70,8 +70,8 @@ export default {
       value: '',
       hidden: false,
       editable: false,
-      private: false,
-    },
+      private: false
+    }
   ],
-  pagination: { total: 0, totalPage: 0, partial: false },
+  pagination: { total: 0, totalPage: 0, partial: false }
 };
