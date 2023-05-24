@@ -5,7 +5,7 @@ export default {
   'profile.account.name': '名称',
   'profile.account.password': '密码',
   'profile.account.creatrandom': '随机生成',
-  'profile.account.create': '新建账户',
+  'profile.account.create': '新建用户',
   'profile.account.edit': '编辑账户',
   'profile.account.type.user': '用户',
   'profile.account.type.group': '组',

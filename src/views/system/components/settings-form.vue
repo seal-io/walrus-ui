@@ -1,5 +1,5 @@
 <template>
-  <a-card class="setting-params" :bordered="false" hoverable>
+  <div class="setting-params">
     <!-- <template #title>
       <div>{{ $t(title) }}</div>
     </template>
@@ -209,7 +209,7 @@
         }}</a-button>
       </template>
     </EditPageFooter> -->
-  </a-card>
+  </div>
 </template>
 
 <script lang="ts" setup>
@@ -229,8 +229,8 @@
   import { Message } from '@arco-design/web-vue';
   import { useI18n } from 'vue-i18n';
   import validate from '@/utils/validate';
-  import { SettingsItem, ValueType } from '../configs';
-  import { updateUserSettingBatch, BatchItem } from '../../api/system';
+  import { SettingsItem, ValueType } from '../config';
+  import { updateUserSettingBatch, BatchItem } from '../api/setting';
   import formComponent from './form-component.vue';
 
   interface formDataType {

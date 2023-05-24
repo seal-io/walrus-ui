@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <ComCard class="container">
     <FilterBox style="margin-bottom: 10px">
       <template #params>
         <a-input
@@ -56,28 +56,39 @@
           data-index="name"
           :title="$t('profile.account.name')"
         >
-          <!-- <template #cell="{ record }">
-            <a-link @click.stop="handleClickView(record)">{{
-              record.name
-            }}</a-link>
-          </template> -->
         </a-table-column>
         <a-table-column
+          ellipsis
+          tooltip
+          :cell-style="{ minWidth: '40px' }"
+          data-index="createTime"
+          :title="$t('common.table.createTime')"
+        >
+          <template #cell="{ record }">
+            <span>{{
+              dayjs(record.createTime).format('YYYY-MM-DD HH:mm:ss')
+            }}</span>
+          </template>
+        </a-table-column>
+        <!-- <a-table-column
           ellipsis
           tooltip
           :cell-style="{ minWidth: '40px' }"
           data-index="kind"
           :title="$t('profile.account.kind')"
         >
-        </a-table-column>
-        <a-table-column
+          <template #cell="{ record }">
+            <span>{{ $t(getListLabel(record.kind, accountTypeList)) }}</span>
+          </template>
+        </a-table-column> -->
+        <!-- <a-table-column
           ellipsis
           tooltip
           :cell-style="{ minWidth: '40px' }"
           data-index="domain"
           :title="$t('profile.account.domain')"
         >
-        </a-table-column>
+        </a-table-column> -->
         <a-table-column
           ellipsis
           tooltip
@@ -86,8 +97,26 @@
           :title="$t('profile.account.role')"
         >
           <template #cell="{ record }">
-            <span v-for="item in record.roles" :key="item.id">{{
-              _.get(item, 'role.id') || '-'
+            <i
+              style="color: var(--sealblue-6)"
+              class="iconfont mright-5 size-14"
+              :class="[
+                _.get(
+                  _.find(
+                    roleTypeList,
+                    (item) => item.value === _.get(record, 'roles.0.role.id')
+                  ),
+                  'icon'
+                ) || 'icon-user'
+              ]"
+            ></i>
+            <span>{{
+              $t(
+                getListLabel(
+                  _.get(record, 'roles.0.role.id') || null,
+                  roleTypeList
+                )
+              )
             }}</span>
           </template>
         </a-table-column>
@@ -127,18 +156,20 @@
       @save="handleSave"
     >
     </CreateAccountModal>
-  </div>
+  </ComCard>
 </template>
 
 <script lang="ts" setup>
   import _ from 'lodash';
+  import dayjs from 'dayjs';
   import { ref, reactive, onMounted } from 'vue';
   import FilterBox from '@/components/filter-box/index.vue';
   import useRowSelect from '@/hooks/use-row-select';
   import { deleteModal, execSucceed } from '@/utils/monitor';
   import { getListLabel } from '@/utils/func';
   import { RowData, RoleItem } from '../config/interface';
-  import { querySubjects, deleteSubjects, queryRoles } from '../api';
+  import { accountTypeList, roleTypeList } from '../config/users';
+  import { querySubjects, deleteSubjects, queryRoles } from '../api/users';
   import CreateAccountModal from '../components/create-account-modal.vue';
 
   const { rowSelection, selectedKeys, handleSelectChange } = useRowSelect();
@@ -148,7 +179,7 @@
   const dataInfo = ref({});
   const showModal = ref(false);
   const action = ref('create');
-  const roleList = ref<RoleItem[]>([]);
+  const roleList = ref<RoleItem[]>(_.cloneDeep(roleTypeList));
   const queryParams = reactive({
     page: 1,
     perPage: 10,
@@ -251,7 +282,7 @@
   };
   onMounted(() => {
     fetchData();
-    getRolesList();
+    // getRolesList();
   });
 </script>
 

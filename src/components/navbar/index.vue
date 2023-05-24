@@ -111,23 +111,6 @@
           </template>
         </a-popover>
       </li> -->
-      <li v-show="hasNavList" :class="{ active: defaultActive === 'user' }">
-        <a-tooltip
-          :content="$t('settings.system')"
-          style="top: 56px; z-index: 3000"
-        >
-          <a-button
-            class="nav-btn"
-            type="outline"
-            :shape="'circle'"
-            @click="setVisible"
-          >
-            <template #icon>
-              <icon-settings />
-            </template>
-          </a-button>
-        </a-tooltip>
-      </li>
       <li v-show="hasNavList">
         <a-dropdown
           trigger="click"
@@ -332,7 +315,7 @@
   };
   const handleModifyPassword = () => {
     router.push({
-      name: 'AccountSettings'
+      name: 'ModifyPassword'
     });
   };
   const handleToHome = () => {

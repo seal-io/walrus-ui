@@ -1,11 +1,11 @@
 import { useI18n } from 'vue-i18n';
-import { includes, map } from 'lodash';
+import _, { includes, map } from 'lodash';
 
 export const getListLabel = (value, list, obj?) => {
   const l = obj?.label || 'label';
   const v = obj?.value || 'value';
-  const data = list.find((item) => item[v] === value);
-  return data ? data[l] : '';
+  const data = _.find(list, (item) => _.get(item, v) === value);
+  return data ? _.get(data, l) : '';
 };
 export const getLabelList = (values, list, obj?) => {
   const l = obj?.label || 'label';

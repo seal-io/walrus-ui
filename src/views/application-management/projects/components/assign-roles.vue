@@ -31,34 +31,56 @@
             :placeholder="$t('applications.projects.authorize.account')"
           >
             <a-optgroup
+              v-if="userSubjectList.length"
               :label="$t(getListLabel(AccountKind.USER, accountTypeList))"
             >
+              <template #label>
+                <a-divider orientation="left" :margin="10">{{
+                  $t(getListLabel(AccountKind.USER, accountTypeList))
+                }}</a-divider>
+              </template>
               <a-option
                 v-for="item in userSubjectList"
                 :key="item.id"
                 :value="item.id"
                 :disabled="
-                  getListLabel(item.id, projectRoles, {
-                    label: 'name',
-                    value: 'id'
-                  })
+                  _.some(
+                    projectVisitors,
+                    (sItem) => _.get(sItem, 'subject.id') === item.id
+                  )
                 "
               >
+                <i
+                  v-if="
+                    _.some(
+                      projectVisitors,
+                      (sItem) => _.get(sItem, 'subject.id') === item.id
+                    )
+                  "
+                  class="iconfont icon-tianjiahaoyouchenggong_huaban1 mright-5"
+                  style="color: var(--seal-color-success)"
+                ></i>
                 <span>{{ item.name }}</span>
               </a-option>
             </a-optgroup>
             <a-optgroup
+              v-if="groupSubjectList.length"
               :label="$t(getListLabel(AccountKind.GROUP, accountTypeList))"
             >
+              <template #label>
+                <a-divider orientation="left" :margin="10">{{
+                  $t(getListLabel(AccountKind.GROUP, accountTypeList))
+                }}</a-divider>
+              </template>
               <a-option
                 v-for="item in groupSubjectList"
                 :key="item.id"
                 :value="item.id"
                 :disabled="
-                  getListLabel(item.id, projectRoles, {
-                    label: 'name',
-                    value: 'id'
-                  })
+                  _.some(
+                    projectVisitors,
+                    (sItem) => _.get(sItem, 'subject.id') === item.id
+                  )
                 "
               >
                 <span>{{ item.name }}</span>
@@ -68,9 +90,16 @@
           <a-select
             v-model="formData.role.id"
             allow-search
-            :options="roleList"
+            style="width: 220px"
             :placeholder="$t('applications.projects.authorize.role')"
           >
+            <a-option
+              v-for="item in roleList"
+              :key="item.value"
+              :value="item.value"
+            >
+              <span>{{ $t(item.label) }}</span>
+            </a-option>
           </a-select>
           <a-space style="margin-left: 10px">
             <a-button
@@ -87,7 +116,7 @@
         style="margin-bottom: 20px"
         :loading="loading"
         :bordered="false"
-        :data="projectRoles"
+        :data="projectVisitors"
         :pagination="false"
         row-key="id"
         @selection-change="handleSelectChange"
@@ -101,22 +130,22 @@
             :title="$t('profile.account.name')"
           >
           </a-table-column>
-          <a-table-column
+          <!-- <a-table-column
             ellipsis
             tooltip
             :cell-style="{ minWidth: '40px' }"
             data-index="subject.kind"
             :title="$t('profile.account.kind')"
           >
-          </a-table-column>
-          <a-table-column
+          </a-table-column> -->
+          <!-- <a-table-column
             ellipsis
             tooltip
             :cell-style="{ minWidth: '40px' }"
             data-index="subject.domain"
             :title="$t('profile.account.domain')"
           >
-          </a-table-column>
+          </a-table-column> -->
           <a-table-column
             ellipsis
             tooltip
@@ -125,7 +154,9 @@
             :title="$t('profile.account.role')"
           >
             <template #cell="{ record }">
-              <span>{{ _.get(record, 'role.id') }}</span>
+              <span>{{
+                $t(getListLabel(_.get(record, 'role.id'), projectRoles))
+              }}</span>
             </template>
           </a-table-column>
           <a-table-column
@@ -177,15 +208,16 @@
   import EditPageFooter from '@/components/edit-page-footer/index.vue';
   import { deleteModal, execSucceed } from '@/utils/monitor';
   import useRowSelect from '@/hooks/use-row-select';
-  import { accountTypeList, AccountKind } from '@/views/profile/config';
+  import { accountTypeList, AccountKind } from '@/views/system/config/users';
   import { getListLabel } from '@/utils/func';
-  import { RoleItem, RowData } from '@/views/profile/config/interface';
-  import { queryRoles, querySubjects } from '@/views/profile/api';
+  import { RoleItem, RowData } from '@/views/system/config/interface';
+  import { queryRoles, querySubjects } from '@/views/system/api/users';
   import {
     querySubjectRoles,
     addSubjectRoles,
     deleteSubjectRoles
   } from '../api';
+  import { projectRoles } from '../config';
   import { ProjectRolesRowData } from '../config/interface';
 
   const props = defineProps({
@@ -212,8 +244,10 @@
   const emits = defineEmits(['update:show', 'update:action', 'save']);
   const submitLoading = ref(false);
   const loading = ref(false);
-  const projectRoles = ref<ProjectRolesRowData[]>([]);
-  const roleList = ref<{ label: string; value: string }[]>([]);
+  const projectVisitors = ref<ProjectRolesRowData[]>([]);
+  const roleList = ref<{ label: string; value: string }[]>(
+    _.cloneDeep(projectRoles)
+  );
   const userSubjectList = ref<RowData[]>([]);
   const groupSubjectList = ref<RowData[]>([]);
   const formData = reactive({
@@ -234,7 +268,7 @@
         projectID: props.projectID
       };
       const { data } = await querySubjectRoles(params);
-      projectRoles.value = data.items || [];
+      projectVisitors.value = data.items || [];
 
       loading.value = false;
     } catch (error) {
@@ -245,7 +279,8 @@
   const getSubjectList = async () => {
     try {
       const params = {
-        page: -1
+        page: -1,
+        projectID: props.projectID
       };
       const { data } = await querySubjects(params);
       userSubjectList.value = _.filter(data.items, (item) => {
@@ -317,11 +352,7 @@
     });
   };
   const init = async () => {
-    await Promise.all([
-      getProjectSubjectRoles(),
-      getSubjectList(),
-      getRoleList()
-    ]);
+    await Promise.all([getProjectSubjectRoles(), getSubjectList()]);
   };
   const handleCancel = () => {
     emits('update:show', false);
