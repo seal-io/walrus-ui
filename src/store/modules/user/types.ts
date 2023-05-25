@@ -1,4 +1,5 @@
 import { AnyObject } from '@/types/global';
+import { RouteRecordRaw } from 'vue-router';
 
 export type permissionItem = 'GET' | 'POST' | 'PUT' | 'DELETE';
 export type RoleType = '' | '*' | 'admin' | 'user';
@@ -51,6 +52,7 @@ export interface UserState {
   role: RoleType;
   roles: RolesItem[];
   projectRoles: ProjectRolesItem[];
+  permissionRoutes: RouteRecordRaw[];
   userSetting: {
     [key: string]: {
       id: string;

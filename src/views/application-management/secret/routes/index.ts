@@ -1,3 +1,5 @@
+import { Resources } from '@/permissions/resources';
+
 export default [
   {
     path: 'secrets/list',
@@ -9,6 +11,10 @@ export default [
       ignoreCache: true,
       locale: 'applications.applications.secret',
       requiresAuth: true,
+      permission: {
+        resource: Resources.Secrets,
+        actions: ['GET']
+      },
       icon: 'icon-apps'
     }
   },
@@ -22,6 +28,10 @@ export default [
       ignoreCache: true,
       locale: 'applications.applications.secret',
       requiresAuth: true,
+      permission: {
+        resource: Resources.Secrets,
+        actions: ['GET']
+      },
       icon: 'icon-apps'
     }
   }

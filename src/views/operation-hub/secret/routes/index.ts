@@ -1,3 +1,5 @@
+import { Resources } from '@/permissions/resources';
+
 export default [
   {
     path: 'global-secrets/list',
@@ -8,6 +10,10 @@ export default [
       ignoreCache: true,
       locale: 'operation.secret.menu',
       requiresAuth: true,
+      permission: {
+        resource: Resources.Secrets,
+        actions: ['GET']
+      },
       icon: 'icon-apps'
     }
   }

@@ -1,3 +1,5 @@
+import { Resources } from '@/permissions/resources';
+
 export default [
   {
     path: 'templates/list',
@@ -8,6 +10,10 @@ export default [
       ignoreCache: false,
       locale: 'operation.templates.menu',
       requiresAuth: true,
+      permission: {
+        resource: Resources.Modules,
+        actions: ['GET']
+      },
       icon: 'icon-apps',
       cachePages: ['templateGPT', 'TemplateDetail']
     }
@@ -21,6 +27,10 @@ export default [
       ignoreCache: true,
       locale: 'operation.templates.menu',
       requiresAuth: true,
+      permission: {
+        resource: Resources.Modules,
+        actions: ['GET']
+      },
       icon: 'icon-apps'
     }
   },
@@ -33,6 +43,10 @@ export default [
       ignoreCache: true,
       locale: 'operation.templates.menu',
       requiresAuth: true,
+      permission: {
+        resource: Resources.ModuleCompletions,
+        actions: ['POST']
+      },
       icon: 'icon-apps'
     }
   }

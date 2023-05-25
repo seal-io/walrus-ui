@@ -1,3 +1,5 @@
+import { Resources } from '@/permissions/resources';
+
 export default [
   {
     path: 'cost/perspective',
@@ -8,6 +10,10 @@ export default [
       ignoreCache: true,
       locale: 'cost.analyse.menu',
       requiresAuth: true,
+      permission: {
+        resource: Resources.Costs,
+        actions: ['POST']
+      },
       icon: 'icon-apps'
     }
   },
@@ -20,6 +26,10 @@ export default [
       ignoreCache: false,
       locale: 'cost.analyse.table.manage',
       requiresAuth: true,
+      permission: {
+        resource: Resources.Costs,
+        actions: ['GET']
+      },
       icon: 'icon-apps',
       cachePages: ['CostPerspectiveEdit']
     }
@@ -34,6 +44,10 @@ export default [
       ignoreCache: true,
       locale: 'cost.analyse.menu',
       requiresAuth: true,
+      permission: {
+        resource: Resources.Costs,
+        actions: ['POST']
+      },
       icon: 'icon-apps'
     }
   }

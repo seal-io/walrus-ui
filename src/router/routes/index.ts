@@ -1,6 +1,7 @@
 import type { RouteRecordRaw } from 'vue-router';
 import { get } from 'lodash';
 import cloneDeep from 'lodash/cloneDeep';
+import { LoginRouteName } from '@/api/config';
 
 const modules = import.meta.globEager('./modules/*.ts');
 const appRoutes: RouteRecordRaw[] = [];
@@ -9,7 +10,7 @@ Object.keys(modules).forEach((key) => {
   const defaultModule = modules[key].default;
   // filter routes
   if (!defaultModule || defaultModule?.meta?.isRemove) return;
-  if (defaultModule.name === 'Login') return;
+  if (defaultModule.name === LoginRouteName) return;
   const moduleList = Array.isArray(defaultModule)
     ? [...defaultModule]
     : [defaultModule];

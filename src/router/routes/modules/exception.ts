@@ -5,9 +5,10 @@ export default {
   meta: {
     hideInMenu: true,
     locale: 'menu.exception',
-    requiresAuth: true,
+    requiresAuth: false,
+    isRouteView: true,
     icon: 'icon-exclamation-circle',
-    order: 6,
+    order: 6
   },
   children: [
     {
@@ -17,9 +18,9 @@ export default {
       meta: {
         hideInMenu: true,
         locale: 'menu.exception.403',
-        requiresAuth: true,
-        roles: ['*'],
-      },
+        requiresAuth: false,
+        roles: ['*']
+      }
     },
     {
       path: '404',
@@ -28,9 +29,9 @@ export default {
       meta: {
         hideInMenu: true,
         locale: 'menu.exception.404',
-        requiresAuth: true,
-        roles: ['*'],
-      },
+        requiresAuth: false,
+        roles: ['*']
+      }
     },
     {
       path: '500',
@@ -39,9 +40,9 @@ export default {
       meta: {
         hideInMenu: true,
         locale: 'menu.exception.500',
-        requiresAuth: true,
-        roles: ['*'],
-      },
-    },
-  ],
+        requiresAuth: false,
+        roles: ['*']
+      }
+    }
+  ]
 };

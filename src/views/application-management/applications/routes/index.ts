@@ -1,3 +1,5 @@
+import { Resources } from '@/permissions/resources';
+
 export default [
   {
     path: 'project/applications/list',
@@ -9,6 +11,10 @@ export default [
       ignoreCache: false,
       locale: 'applications.applications.menu',
       requiresAuth: true,
+      permission: {
+        resource: Resources.Projects,
+        actions: ['GET']
+      },
       icon: 'icon-apps',
       cachePages: ['ApplicationsDetail']
     }
@@ -23,6 +29,10 @@ export default [
       ignoreCache: true,
       locale: 'applications.applications.menu',
       requiresAuth: true,
+      permission: {
+        resource: Resources.ApplicationInstances,
+        actions: ['GET']
+      },
       icon: 'icon-apps'
     }
   }

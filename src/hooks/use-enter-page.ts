@@ -1,11 +1,14 @@
 import appRoutes from '@/router/routes';
-import { useRouter } from 'vue-router';
+import { useRouter, RouteRecordRaw } from 'vue-router';
 import { Message } from '@arco-design/web-vue';
 import { useI18n } from 'vue-i18n';
 import { get } from 'lodash';
+import { useUserStore } from '@/store';
+import { routesPermissionHandler } from '@/permissions';
 
 export default function useEnterPage() {
   const router = useRouter();
+  const userStore = useUserStore();
   const { t } = useI18n();
   const getFirstRouteName = () => {
     const firstChildren = get(appRoutes, '0.children');
@@ -19,21 +22,22 @@ export default function useEnterPage() {
   };
 
   const enterUserPage = async () => {
+    routesPermissionHandler();
     const firstRouteName = getFirstRouteName();
     console.log('firstRouteName:', firstRouteName);
     const { redirect, ...othersQuery } = router.currentRoute.value.query;
     router.push({
-      name: firstRouteName,
+      name: firstRouteName
       // query: {
       //   ...othersQuery,
       // },
     });
     Message.success({
       content: t('login.form.login.success'),
-      duration: 3000,
+      duration: 3000
     });
   };
   return {
-    enterUserPage,
+    enterUserPage
   };
 }

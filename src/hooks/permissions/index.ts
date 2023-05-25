@@ -1,6 +1,17 @@
 import { RouteLocationNormalized, RouteRecordRaw } from 'vue-router';
 import { useUserStore } from '@/store';
-import get from 'lodash/get';
+import _, { get } from 'lodash';
+
+export const checkResourcePermission = (permission) => {
+  const userStore = useUserStore();
+  const { resource, actions } = permission || {};
+  const permissionActions =
+    _.get(userStore, `permissions.roles.${resource}`) || [];
+  if (_.includes(permissionActions, '*')) {
+    return true;
+  }
+  return _.every(actions, (ac) => _.includes(permissionActions, ac));
+};
 
 export default function usePermission() {
   const userStore = useUserStore();
@@ -9,9 +20,7 @@ export default function usePermission() {
     accessRouter(route: RouteLocationNormalized | RouteRecordRaw) {
       return (
         !route.meta?.requiresAuth ||
-        !route.meta?.roles ||
-        route.meta?.roles?.includes('*') ||
-        route.meta?.roles?.includes(userStore.role)
+        checkResourcePermission(route.meta?.permission || {})
       );
     },
     // setPermissionRoutes(routes:RouteLocationNormalized) {
@@ -37,12 +46,12 @@ export default function usePermission() {
       const firstChildren = get(appRoutes, '0.children');
       const firstName = get(appRoutes, '0.name');
       if ((!firstChildren || !firstChildren.length) && !firstName)
-        return 'notFound';
+        return 'forbidden';
       if (firstChildren && firstChildren.length) {
         return get(firstChildren, '0.name');
       }
       return firstName;
-    },
+    }
     // You can add any rules you want
   };
 }

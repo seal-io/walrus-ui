@@ -5,7 +5,7 @@
   // import type { RouteLocationNormalized } from 'vue-router';
 
   import { useAppStore } from '@/store';
-  import usePermission from '@/hooks/permission';
+  import usePermission from '@/hooks/permissions';
   import { listenerRouteChange } from '@/utils/route-listener';
 
   export default defineComponent({
