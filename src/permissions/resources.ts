@@ -19,7 +19,12 @@ export enum Resources {
   Subjects = 'subjects',
   Tokens = 'tokens'
 }
-
+export enum Actions {
+  PUT = 'PUT',
+  POST = 'POST',
+  GET = 'GET',
+  DELETE = 'DELETE'
+}
 export default [
   {
     resource: 'applicationInstances',

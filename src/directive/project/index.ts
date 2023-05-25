@@ -6,15 +6,17 @@ function checkPermission(el: HTMLElement, binding: DirectiveBinding) {
   // {resource: '*', actions: []}
   const { value } = binding;
   const userStore = useUserStore();
-  const { permissions } = userStore;
-  const { resource, actions = [] } = value;
+  const { isSystemAdmin, hasActionsPermission, getProjectUserActions } =
+    userStore;
+  const { projectID, resource, actions = [] } = value;
 
-  if (resource) {
-    const permissionActions = (_.get(permissions, resource) ||
-      []) as Array<string>;
+  if (projectID) {
     const hasPermission =
-      _.includes(permissionActions, '*') ||
-      _.every(actions, (ac) => _.includes(permissionActions, ac));
+      isSystemAdmin() ||
+      hasActionsPermission({
+        resource: getProjectUserActions(projectID, resource),
+        actions
+      });
     if (!hasPermission && el.parentNode) {
       el.parentNode.removeChild(el);
     }

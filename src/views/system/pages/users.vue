@@ -25,10 +25,20 @@
         </a-space>
       </template>
       <template #button-group>
-        <a-button type="primary" @click="handleCreate">{{
-          $t('profile.account.create')
-        }}</a-button>
         <a-button
+          v-permission="{
+            resource: `roles.${Resources.Subjects}`,
+            actions: [Actions.POST]
+          }"
+          type="primary"
+          @click="handleCreate"
+          >{{ $t('profile.account.create') }}</a-button
+        >
+        <a-button
+          v-permission="{
+            resource: `roles.${Resources.Subjects}`,
+            actions: [Actions.DELETE]
+          }"
           type="primary"
           status="warning"
           :disabled="!selectedKeys.length"
@@ -126,7 +136,13 @@
           :title="$t('common.table.operation')"
         >
           <template #cell="{ record }">
-            <a-tooltip :content="$t('common.button.edit')">
+            <a-tooltip
+              v-permission="{
+                resource: `roles.${Resources.Subjects}`,
+                actions: [Actions.PUT]
+              }"
+              :content="$t('common.button.edit')"
+            >
               <a-link @click="handleClickEdit(record)">
                 <template #icon>
                   <icon-edit></icon-edit>
@@ -160,6 +176,7 @@
 </template>
 
 <script lang="ts" setup>
+  import { Resources, Actions } from '@/permissions/resources';
   import _ from 'lodash';
   import dayjs from 'dayjs';
   import { ref, reactive, onMounted } from 'vue';

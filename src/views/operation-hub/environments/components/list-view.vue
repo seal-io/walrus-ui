@@ -61,10 +61,17 @@
           :title="$t('common.table.operation')"
         >
           <template #cell="{ record }">
-            <a-tooltip :content="$t('common.button.edit')">
+            <a-tooltip
+              v-if="
+                userStore.hasRolesActionsPermission({
+                  resource: Resources.Environments,
+                  actions: ['PUT']
+                })
+              "
+              :content="$t('common.button.edit')"
+            >
               <a-link type="text" size="small" @click="handleEdit(record)">
                 <template #icon><icon-edit class="size-14" /></template>
-                <!-- {{ $t('common.button.edit') }} -->
               </a-link>
             </a-tooltip>
           </template>
@@ -75,6 +82,8 @@
 </template>
 
 <script lang="ts" setup>
+  import { Resources } from '@/permissions/resources';
+  import { useUserStore } from '@/store';
   import { PropType, watchEffect } from 'vue';
   import dayjs from 'dayjs';
   import useRowSelect from '@/hooks/use-row-select';
@@ -102,6 +111,7 @@
       }
     }
   });
+  const userStore = useUserStore();
   type BaseType = string | number;
   let timer: any = null;
   const emits = defineEmits(['update:selectedList', 'sort', 'update:sort']);

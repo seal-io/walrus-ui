@@ -38,10 +38,20 @@
           </a-space>
         </template>
         <template #button-group>
-          <a-button type="primary" @click="handleCreateProject">{{
-            $t('operation.environments.create')
-          }}</a-button>
           <a-button
+            v-permission="{
+              resource: `roles.${Resources.Environments}`,
+              actions: ['POST']
+            }"
+            type="primary"
+            @click="handleCreateProject"
+            >{{ $t('operation.environments.create') }}</a-button
+          >
+          <a-button
+            v-permission="{
+              resource: `roles.${Resources.Environments}`,
+              actions: ['DELETE']
+            }"
             type="primary"
             status="warning"
             :disabled="!selectedKeys.length"
@@ -93,6 +103,7 @@
 </template>
 
 <script lang="ts" setup>
+  import { Resources } from '@/permissions/resources';
   import { map, pickBy, remove } from 'lodash';
   import { ref, reactive } from 'vue';
   import useCallCommon from '@/hooks/use-call-common';

@@ -3,7 +3,15 @@
     <GroupTitle
       show-back
       :title="title"
-      :show-edit="pageAction === 'view' && activeInstanceTab === 'app'"
+      :show-edit="
+        pageAction === 'view' &&
+        activeInstanceTab === 'app' &&
+        userStore.hasProjectResourceActions({
+          projectID,
+          resource: Resources.Applications,
+          actions: ['PUT']
+        })
+      "
       @edit="handleEdit"
     >
     </GroupTitle>
@@ -30,7 +38,7 @@
             :size="[160, 100]"
             :active="item.id === activeInstanceTab"
             :data-info="item"
-            :actions="instanceActions"
+            :actions="instanceActionList"
             :action-loading="
               _.includes(
                 [AppInstanceStatus.Deleting, AppInstanceStatus.Deploying],
@@ -85,7 +93,16 @@
               </StatusLabel>
             </template>
           </instanceThumb>
-          <a-tooltip :content="$t('applications.applications.instance.add')">
+          <a-tooltip
+            v-if="
+              userStore.hasProjectResourceActions({
+                projectID,
+                resource: Resources.ApplicationInstances,
+                actions: ['POST']
+              })
+            "
+            :content="$t('applications.applications.instance.add')"
+          >
             <thumbButton :size="60" @click="handleAddInstance"></thumbButton>
           </a-tooltip>
         </div>
@@ -138,6 +155,8 @@
 </template>
 
 <script lang="ts" setup>
+  import { Resources } from '@/permissions/resources';
+  import { useUserStore } from '@/store';
   import {
     reactive,
     ref,
@@ -190,9 +209,11 @@
     selectedInstance,
     handleRollbackRevision
   } = useRollbackRevision();
+  const userStore = useUserStore();
   const { setChunkRequest } = useSetChunkRequest();
   const { router, route, t } = useCallCommon();
   const id = route.query.id as string;
+  const projectID = route.params.projectId || '';
   const pageAction = ref(route.params.action || 'edit');
   const cloneId = route.query.cloneId as string;
   const activeInstanceTab = ref('app'); //
@@ -204,6 +225,7 @@
   const showInstanceModal = ref(false);
   const instanceInfo = ref({});
   const cloneInstance = ref({});
+  const instanceActionList = ref<any[]>([]);
   const activeInstanceInfo = ref({});
   const appInfo = reactive({
     name: '',
@@ -245,6 +267,15 @@
     return _.cloneDeep(_.get(appInfo, 'variables') || []);
   });
 
+  const setInstanceActions = () => {
+    instanceActionList.value = _.filter(instanceActions, (item) => {
+      return userStore.hasProjectResourceActions({
+        projectID,
+        resource: Resources.ApplicationInstances,
+        actions: item.permission
+      });
+    });
+  };
   const handleAddInstance = () => {
     showInstanceModal.value = true;
     status.value = 'create';
@@ -495,6 +526,7 @@
   };
 
   const init = async () => {
+    setInstanceActions();
     await getApplicationInstances();
     getEnvironmentList();
     // provide app info to instances

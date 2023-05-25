@@ -25,10 +25,20 @@
         </a-space>
       </template>
       <template #button-group>
-        <a-button type="primary" @click="handleCreate">{{
-          $t('cost.analyse.table.create')
-        }}</a-button>
         <a-button
+          v-permission="{
+            resource: `roles.${Resources.Perspectives}`,
+            actions: ['POST']
+          }"
+          type="primary"
+          @click="handleCreate"
+          >{{ $t('cost.analyse.table.create') }}</a-button
+        >
+        <a-button
+          v-permission="{
+            resource: `roles.${Resources.Perspectives}`,
+            actions: ['DELETE']
+          }"
           type="primary"
           status="warning"
           :disabled="!selectedKeys.length"
@@ -59,11 +69,26 @@
           :title="$t('cost.analyse.table.manage')"
         >
           <template #cell="{ record }">
-            <a-link size="small" @click="handleView(record)">{{
+            <a-link
+              v-if="
+                userStore.hasRolesActionsPermission({
+                  resource: Resources.Costs,
+                  actions: ['POST']
+                })
+              "
+              size="small"
+              @click="handleView(record)"
+              >{{
+                record.builtin
+                  ? $t(builtinViewMap[toLower(record.name)])
+                  : record.name
+              }}</a-link
+            >
+            <span v-else>{{
               record.builtin
                 ? $t(builtinViewMap[toLower(record.name)])
                 : record.name
-            }}</a-link>
+            }}</span>
           </template>
         </a-table-column>
         <a-table-column
@@ -155,6 +180,8 @@
 </template>
 
 <script lang="ts" setup>
+  import { Resources } from '@/permissions/resources';
+  import { useUserStore } from '@/store';
   import { map, find, toLower, pickBy, includes } from 'lodash';
   import dayjs from 'dayjs';
   import { reactive, ref, onMounted } from 'vue';
@@ -168,6 +195,7 @@
   import { queryPerspectives, deletePerspectives } from '../api';
   import { DateShortCuts, builtinViewMap } from '../config';
 
+  const userStore = useUserStore();
   const { rowSelection, selectedKeys, handleSelectChange } = useRowSelect();
   const { router, t } = useCallCommon();
   const { sort, sortOrder, setSortDirection } = UseSortDirection({

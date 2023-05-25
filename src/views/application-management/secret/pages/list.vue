@@ -34,10 +34,26 @@
           </a-space>
         </template>
         <template #button-group>
-          <a-button type="primary" @click="handleCreate">{{
-            $t('applications.secret.create')
-          }}</a-button>
           <a-button
+            v-if="
+              userStore.hasProjectResourceActions({
+                projectID: queryParams.projectID,
+                resource: Resources.Secrets,
+                actions: ['POST']
+              })
+            "
+            type="primary"
+            @click="handleCreate"
+            >{{ $t('applications.secret.create') }}</a-button
+          >
+          <a-button
+            v-if="
+              userStore.hasProjectResourceActions({
+                projectID: queryParams.projectID,
+                resource: Resources.Secrets,
+                actions: ['DELETE']
+              })
+            "
             type="primary"
             status="warning"
             :disabled="!selectedKeys.length"
@@ -147,6 +163,8 @@
 </template>
 
 <script lang="ts" setup>
+  import { Resources } from '@/permissions/resources';
+  import { useUserStore } from '@/store';
   import dayjs from 'dayjs';
   import { cloneDeep, find, get, map, pickBy } from 'lodash';
   import { reactive, ref, onMounted, computed } from 'vue';
@@ -163,6 +181,7 @@
   import createSecret from '../components/create-secret.vue';
 
   const HOT_SECRET_ID = 'HOT_SECRET_ID';
+  const userStore = useUserStore();
   const { rowSelection, selectedKeys, handleSelectChange } = useRowSelect();
   const { router, t, route } = useCallCommon();
   const { sort, sortOrder, setSortDirection } = UseSortDirection({

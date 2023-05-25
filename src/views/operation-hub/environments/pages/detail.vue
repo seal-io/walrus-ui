@@ -2,7 +2,13 @@
   <ComCard top-gap>
     <GroupTitle
       show-back
-      :show-edit="pageAction === 'view'"
+      :show-edit="
+        pageAction === 'view' &&
+        userStore.hasRolesActionsPermission({
+          resource: Resources.Environments,
+          actions: ['POST']
+        })
+      "
       :title="title"
       @edit="handleEdit"
     ></GroupTitle>
@@ -88,7 +94,7 @@
           class="cap-title cancel-btn"
           :loading="submitLoading"
           @click="handleSubmit"
-          >{{ $t('common.button.confirm') }}</a-button
+          >{{ $t('common.button.save') }}</a-button
         >
       </template>
       <a-button
@@ -102,6 +108,8 @@
 </template>
 
 <script lang="ts" setup>
+  import { Resources } from '@/permissions/resources';
+  import { useUserStore, useTabBarStore } from '@/store';
   import { ref, computed } from 'vue';
   import {
     concat,
@@ -118,7 +126,6 @@
   import useCallCommon from '@/hooks/use-call-common';
   import { beforeLeaveCallback } from '@/hooks/save-before-leave';
   import { onBeforeRouteLeave } from 'vue-router';
-  import { useTabBarStore } from '@/store';
   import { queryConnectors } from '@/views/operation-hub/connectors/api';
   import usePageAction from '@/hooks/use-page-action';
   import { EnvironFormData } from '../config/interface';
@@ -130,6 +137,7 @@
     queryItemEnvironments
   } from '../api';
 
+  const userStore = useUserStore();
   const tabBarStore = useTabBarStore();
   const { router, route, t } = useCallCommon();
   const { pageAction, handleEdit } = usePageAction();

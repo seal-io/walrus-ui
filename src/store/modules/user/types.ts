@@ -6,6 +6,7 @@ export type RoleType = '' | '*' | 'admin' | 'user';
 
 // cache the role policy
 export const ROLES = '_roles';
+
 export interface RolesItem {
   id: string;
   policies: Array<{
@@ -66,4 +67,8 @@ export interface UserState {
     resources: string[];
     scope: string;
   }>;
+  permissionsKey: {
+    projectRoles: string;
+    roles: string;
+  };
 }

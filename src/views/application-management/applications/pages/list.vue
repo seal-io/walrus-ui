@@ -35,10 +35,26 @@
         </a-space>
       </template>
       <template #button-group>
-        <a-button type="primary" @click="handleCreate">{{
-          $t('applications.applications.create')
-        }}</a-button>
         <a-button
+          v-if="
+            userStore.hasProjectResourceActions({
+              projectID: queryParams.projectID,
+              resource: Resources.Applications,
+              actions: ['POST']
+            })
+          "
+          type="primary"
+          @click="handleCreate"
+          >{{ $t('applications.applications.create') }}</a-button
+        >
+        <a-button
+          v-if="
+            userStore.hasProjectResourceActions({
+              projectID: queryParams.projectID,
+              resource: Resources.Applications,
+              actions: ['DELETE']
+            })
+          "
           type="primary"
           status="warning"
           :disabled="!selectedKeys.length"
@@ -68,9 +84,18 @@
           :title="$t('applications.applications.table.name')"
         >
           <template #cell="{ record }">
-            <a-link @click.stop="handleClickView(record)">{{
-              record.name
-            }}</a-link>
+            <a-link
+              v-if="
+                userStore.hasProjectResourceActions({
+                  projectID: queryParams.projectID,
+                  resource: Resources.Applications,
+                  actions: ['GET']
+                })
+              "
+              @click.stop="handleClickView(record)"
+              >{{ record.name }}</a-link
+            >
+            <span v-else>{{ record.name }}</span>
           </template>
         </a-table-column>
         <a-table-column
@@ -122,7 +147,16 @@
           <template #cell="{ record }">
             <a-space>
               <a-tooltip :content="$t('common.button.edit')">
-                <a-link @click="handleClickEdit(record)">
+                <a-link
+                  v-if="
+                    userStore.hasProjectResourceActions({
+                      projectID: queryParams.projectID,
+                      resource: Resources.Applications,
+                      actions: ['GET', 'POST']
+                    })
+                  "
+                  @click="handleClickEdit(record)"
+                >
                   <template #icon>
                     <icon-edit></icon-edit>
                   </template>
@@ -131,7 +165,18 @@
               <a-tooltip
                 :content="$t('applications.applications.history.clone')"
               >
-                <a-link type="text" size="small" @click="handleClone(record)">
+                <a-link
+                  v-if="
+                    userStore.hasProjectResourceActions({
+                      projectID: queryParams.projectID,
+                      resource: Resources.Applications,
+                      actions: ['GET', 'POST']
+                    })
+                  "
+                  type="text"
+                  size="small"
+                  @click="handleClone(record)"
+                >
                   <template #icon
                     ><icon-font type="icon-Clone-Cloud" class="size-16"
                   /></template>
@@ -157,16 +202,10 @@
 </template>
 
 <script lang="ts" setup>
+  import { Resources } from '@/permissions/resources';
   import _, { map, get, pickBy, find, filter } from 'lodash';
   import dayjs from 'dayjs';
-  import {
-    reactive,
-    ref,
-    onMounted,
-    watch,
-    nextTick,
-    onBeforeUnmount
-  } from 'vue';
+  import { reactive, ref, watch, onBeforeUnmount } from 'vue';
   import { useSetChunkRequest } from '@/api/axios-chunk-request';
   import useCallCommon from '@/hooks/use-call-common';
   import { deleteModal, execSucceed } from '@/utils/monitor';
@@ -174,6 +213,7 @@
   import useRowSelect from '@/hooks/use-row-select';
   import FilterBox from '@/components/filter-box/index.vue';
   import localStore from '@/utils/localStore';
+  import { useUserStore } from '@/store';
   import { queryProjects } from '../../projects/api';
   import { AppRowData } from '../config/interface';
   import { statusMap, websocketEventType, setInstanceStatus } from '../config';
@@ -181,6 +221,7 @@
   import InstanceStatus from '../components/instance-status.vue';
 
   const HOT_PROJECT_ID = 'HOT_PROJECT_ID';
+  const userStore = useUserStore();
   const { setChunkRequest } = useSetChunkRequest();
   const { rowSelection, selectedKeys, handleSelectChange } = useRowSelect();
   const { router, locale, route } = useCallCommon();
