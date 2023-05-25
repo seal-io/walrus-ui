@@ -175,6 +175,18 @@
     <EditPageFooter v-if="pageAction === 'edit'">
       <template #save>
         <a-button
+          v-if="
+            userStore.hasProjectResourceActions({
+              projectID,
+              resource: Resources.Applications,
+              actions: ['PUT']
+            }) ||
+            userStore.hasProjectResourceActions({
+              projectID,
+              resource: Resources.Applications,
+              actions: ['POST']
+            })
+          "
           type="primary"
           class="cap-title cancel-btn"
           :loading="submitLoading"
@@ -212,6 +224,8 @@
 </template>
 
 <script lang="ts" setup>
+  import { Resources } from '@/permissions/resources';
+  import { useUserStore, useTabBarStore } from '@/store';
   import { reactive, ref, computed, provide, inject, toRaw } from 'vue';
   import { onBeforeRouteLeave } from 'vue-router';
   import GroupTitle from '@/components/group-title/index.vue';
@@ -219,7 +233,6 @@
   import useCallCommon from '@/hooks/use-call-common';
   import thumbButton from '@/components/buttons/thumb-button.vue';
   import { execSucceed, deleteModal } from '@/utils/monitor';
-  import { useTabBarStore } from '@/store';
   import { beforeLeaveCallback } from '@/hooks/save-before-leave';
   import {
     queryModules,
@@ -272,10 +285,12 @@
     },
     modules: []
   }) as AppFormData;
+  const userStore = useUserStore();
   const pageAction = inject('pageAction', ref('edit'));
   const emits = defineEmits(['save', 'cancelEdit']);
   const submitLoading = ref(false);
   const id = route.query.id as string;
+  const projectID = route.params.projectId;
   const cloneId = route.query.cloneId as string;
   const moduleTemplates = ref<TemplateRowData[]>([]);
   const active = ref('');

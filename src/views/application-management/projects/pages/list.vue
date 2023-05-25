@@ -26,10 +26,20 @@
           </a-space>
         </template>
         <template #button-group>
-          <a-button type="primary" @click="handleCreateProject">{{
-            $t('applications.projects.create')
-          }}</a-button>
           <a-button
+            v-permission="{
+              resource: `roles.${Resources.Projects}`,
+              actions: ['POST']
+            }"
+            type="primary"
+            @click="handleCreateProject"
+            >{{ $t('applications.projects.create') }}</a-button
+          >
+          <a-button
+            v-permission="{
+              resource: `roles.${Resources.Projects}`,
+              actions: ['DELETE']
+            }"
             type="primary"
             status="warning"
             :disabled="!selectedKeys.length"
@@ -59,9 +69,22 @@
             :title="$t('applications.projects.table.name')"
           >
             <template #cell="{ record }">
-              <a-link size="small" @click="handleViewProject(record)">{{
-                record.name
-              }}</a-link>
+              <a-link
+                v-if="
+                  userStore.isSystemAdmin() ||
+                  userStore.hasActionsPermission({
+                    resource: userStore.getProjectUserActions(
+                      record.id,
+                      Resources.Applications
+                    ),
+                    actions: ['GET']
+                  })
+                "
+                size="small"
+                @click="handleViewProject(record)"
+                >{{ record.name }}</a-link
+              >
+              <span v-else>{{ record.name }}</span>
             </template>
           </a-table-column>
           <a-table-column
@@ -105,6 +128,16 @@
               <a-space :size="20">
                 <a-tooltip :content="$t('common.button.edit')">
                   <a-link
+                    v-if="
+                      userStore.isSystemAdmin() ||
+                      userStore.hasActionsPermission({
+                        resource: userStore.getProjectUserActions(
+                          record.id,
+                          Resources.Projects
+                        ),
+                        actions: ['PUT']
+                      })
+                    "
                     type="text"
                     size="small"
                     @click="handleEditProject(record)"
@@ -114,6 +147,13 @@
                 </a-tooltip>
                 <a-tooltip :content="$t('common.button.authorize')">
                   <a-link
+                    v-if="
+                      userStore.hasProjectResourceActions({
+                        projectID: record.id,
+                        resource: Resources.SubjectRoles,
+                        actions: ['POST']
+                      })
+                    "
                     type="text"
                     size="small"
                     @click="handleAuthorize(record)"
@@ -159,9 +199,11 @@
 </template>
 
 <script lang="ts" setup>
+  import { Resources } from '@/permissions/resources';
   import { cloneDeep, map, pickBy, remove } from 'lodash';
   import { ref, reactive } from 'vue';
   import dayjs from 'dayjs';
+  import { useUserStore } from '@/store';
   import useCallCommon from '@/hooks/use-call-common';
   import FilterBox from '@/components/filter-box/index.vue';
   import { deleteModal, execSucceed } from '@/utils/monitor';
@@ -173,6 +215,7 @@
   import { queryProjects, deleteProjects, querySubjectRoles } from '../api';
 
   let timer: any = null;
+  const userStore = useUserStore();
   const { t, router } = useCallCommon();
   const { rowSelection, selectedKeys, handleSelectChange } = useRowSelect();
   const { sort, sortOrder, setSortDirection } = UseSortDirection({

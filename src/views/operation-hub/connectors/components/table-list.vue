@@ -25,10 +25,20 @@
         </a-space>
       </template>
       <template #button-group>
-        <a-button type="primary" @click="handleCreate">{{
-          $t('operation.connectors.create')
-        }}</a-button>
         <a-button
+          v-permission="{
+            resource: `roles.${Resources.Connectors}`,
+            actions: ['POST']
+          }"
+          type="primary"
+          @click="handleCreate"
+          >{{ $t('operation.connectors.create') }}</a-button
+        >
+        <a-button
+          v-permission="{
+            resource: `roles.${Resources.Connectors}`,
+            actions: ['DELETE']
+          }"
           type="primary"
           status="warning"
           :disabled="!selectedKeys.length"
@@ -167,7 +177,16 @@
         >
           <template #cell="{ record }">
             <a-space :size="10">
-              <a-dropdown-button v-if="category === 'Kubernetes'" size="small">
+              <a-dropdown-button
+                v-if="
+                  category === 'Kubernetes' &&
+                  userStore.hasRolesActionsPermission({
+                    resource: Resources.Connectors,
+                    actions: ['PUT']
+                  })
+                "
+                size="small"
+              >
                 <a-tooltip :content="$t('common.button.edit')">
                   <a-link
                     class="mright-0"
@@ -254,6 +273,8 @@
 </template>
 
 <script lang="ts" setup>
+  import { Resources } from '@/permissions/resources';
+  import { useUserStore } from '@/store';
   import { useSetChunkRequest } from '@/api/axios-chunk-request';
   import { useUpdateChunkedList } from '@/views/commons/hooks/use-update-chunked-list';
   import ADropdownButton from '@arco-design/web-vue/es/dropdown/dropdown-button';
@@ -261,15 +282,7 @@
   import { UseSortDirection } from '@/utils/common';
   import ProviderIcon from '@/components/provider-icon/index.vue';
   import dayjs from 'dayjs';
-  import _, {
-    get,
-    filter,
-    map,
-    pickBy,
-    find,
-    toLower,
-    cloneDeep
-  } from 'lodash';
+  import _, { get, map, pickBy, find, toLower, cloneDeep } from 'lodash';
   import {
     reactive,
     ref,
@@ -277,8 +290,7 @@
     onActivated,
     watch,
     nextTick,
-    inject,
-    onBeforeUnmount
+    inject
   } from 'vue';
   import useCallCommon from '@/hooks/use-call-common';
   import { Message } from '@arco-design/web-vue';
@@ -309,6 +321,7 @@
       }
     }
   });
+  const userStore = useUserStore();
   const { setChunkRequest } = useSetChunkRequest();
   const axiosSource = useAxiosSource();
   let axiosToken: any = null;

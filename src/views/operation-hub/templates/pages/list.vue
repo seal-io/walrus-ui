@@ -46,17 +46,34 @@
           </a-space>
         </template>
         <template #button-group>
-          <a-button type="primary" @click="handleDraftModule">
+          <a-button
+            v-permission="{
+              resource: `roles.${Resources.ModuleCompletions}`,
+              actions: ['POST']
+            }"
+            type="primary"
+            @click="handleDraftModule"
+          >
             <template #icon>
               <icon-font type="icon-ChatGPT"></icon-font>
             </template>
             <span>{{ $t('operation.templates.button.gpt') }}</span>
           </a-button>
-          <a-button type="primary" @click="handleCreateProject">{{
-            $t('operation.templates.detail.add')
-          }}</a-button>
+          <a-button
+            v-permission="{
+              resource: `roles.${Resources.Modules}`,
+              actions: ['POST']
+            }"
+            type="primary"
+            @click="handleCreateProject"
+            >{{ $t('operation.templates.detail.add') }}</a-button
+          >
 
           <a-button
+            v-permission="{
+              resource: `roles.${Resources.Modules}`,
+              actions: ['DELETE']
+            }"
             type="primary"
             status="warning"
             :disabled="!selectedKeys.length"
@@ -106,6 +123,7 @@
 </template>
 
 <script lang="ts" setup>
+  import { Resources } from '@/permissions/resources';
   import _, { map, pickBy, remove } from 'lodash';
   import { ref, reactive, onMounted, nextTick } from 'vue';
   import useCallCommon from '@/hooks/use-call-common';

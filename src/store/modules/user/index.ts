@@ -41,7 +41,11 @@ const useUserStore = defineStore('user', {
     projectRoles: [],
     permissionRoutes: [],
     roles: [],
-    role: '*'
+    role: '*',
+    permissionsKey: {
+      projectRoles: 'projectRoles',
+      roles: 'roles'
+    }
   }),
 
   getters: {
@@ -76,9 +80,40 @@ const useUserStore = defineStore('user', {
       const permissions: AnyObject = getUserResourcePermission(data);
       this.setInfo({ ...data, permissions });
     },
-
+    getProjectUserActions(id, resource) {
+      const path = `${this.permissionsKey.projectRoles}.${id}.policies.${resource}`;
+      return path;
+    },
     isSystemAdmin() {
       return _.some(this.roles, (item) => item.id === 'system/admin');
+    },
+
+    hasActionsPermission(config: { resource: string; actions: string[] }) {
+      const { resource, actions } = config;
+      const permissionActions = (_.get(this.permissions, resource) ||
+        []) as Array<string>;
+      const hasPermission =
+        _.includes(permissionActions, '*') ||
+        _.every(actions, (ac) => _.includes(permissionActions, ac));
+      return hasPermission;
+    },
+    hasRolesActionsPermission(config: { resource: string; actions: string[] }) {
+      const { resource, actions } = config;
+      const permissionActions = (_.get(
+        this.permissions,
+        `${this.permissionsKey.roles}.${resource}`
+      ) || []) as Array<string>;
+      const hasPermission =
+        _.includes(permissionActions, '*') ||
+        _.every(actions, (ac) => _.includes(permissionActions, ac));
+      return hasPermission;
+    },
+    hasProjectResourceActions({ projectID, resource, actions }) {
+      const path = this.getProjectUserActions(projectID, resource);
+      return (
+        this.isSystemAdmin() ||
+        this.hasActionsPermission({ resource: path, actions })
+      );
     },
     // Login
     async login(loginForm: LoginData) {

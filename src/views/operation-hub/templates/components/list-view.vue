@@ -82,12 +82,24 @@
         >
           <template #cell="{ record }">
             <a-space :size="20">
-              <a-tooltip :content="$t('common.button.edit')">
+              <a-tooltip
+                v-permission="{
+                  resource: `roles.${Resources.Modules}`,
+                  actions: [Actions.PUT]
+                }"
+                :content="$t('common.button.edit')"
+              >
                 <a-link type="text" size="small" @click="handleEdit(record)">
                   <template #icon><icon-edit class="size-14" /></template>
                 </a-link>
               </a-tooltip>
-              <a-tooltip :content="$t('common.button.refresh')">
+              <a-tooltip
+                v-permission="{
+                  resource: `roles.${Resources.Modules}`,
+                  actions: [Actions.PUT]
+                }"
+                :content="$t('common.button.refresh')"
+              >
                 <a-link type="text" size="small" @click="handlRefresh(record)">
                   <template #icon><icon-refresh /></template>
                 </a-link>
@@ -112,6 +124,7 @@
 </template>
 
 <script lang="ts" setup>
+  import { Resources, Actions } from '@/permissions/resources';
   import { map, get } from 'lodash';
   import dayjs from 'dayjs';
   import { reactive, ref, onMounted, PropType } from 'vue';

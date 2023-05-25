@@ -2,7 +2,13 @@
   <ComCard top-gap>
     <GroupTitle
       show-back
-      :show-edit="pageAction === 'view'"
+      :show-edit="
+        pageAction === 'view' &&
+        userStore.hasRolesActionsPermission({
+          resource: Resources.Modules,
+          actions: [Actions.PUT]
+        })
+      "
       :title="title"
       @edit="handleEdit"
     ></GroupTitle>
@@ -120,7 +126,14 @@
       </a-form-item>
     </a-form>
     <a-tabs
-      v-if="id && pageAction === 'view'"
+      v-if="
+        id &&
+        pageAction === 'view' &&
+        userStore.hasRolesActionsPermission({
+          resource: Resources.ModuleVersions,
+          actions: [Actions.GET]
+        })
+      "
       :active-key="activeKey"
       lazy-load
       class="page-line-tabs"
@@ -155,7 +168,7 @@
           class="cap-title cancel-btn"
           :loading="submitLoading"
           @click="handleSubmit"
-          >{{ $t('common.button.confirm') }}</a-button
+          >{{ $t('common.button.save') }}</a-button
         >
       </template>
       <template #cancel>
@@ -171,6 +184,8 @@
 </template>
 
 <script lang="ts" setup>
+  import { Resources, Actions } from '@/permissions/resources';
+  import { useUserStore, useTabBarStore } from '@/store';
   import { assignIn, find, get, map, isEqual, cloneDeep } from 'lodash';
   import { urlReg } from '@/utils/validate';
   import { ref, reactive, onMounted, computed } from 'vue';
@@ -180,7 +195,6 @@
   import EditPageFooter from '@/components/edit-page-footer/index.vue';
   import useCallCommon from '@/hooks/use-call-common';
   import usePageAction from '@/hooks/use-page-action';
-  import { useTabBarStore } from '@/store';
   import { validateAppNameRegx } from '@/views/config';
   import StatusLabel from '../../connectors/components/status-label.vue';
   import { templateTypeList, tabList } from '../config';
@@ -203,6 +217,7 @@
     tabConnector
   };
 
+  const userStore = useUserStore();
   const versionList = ref<{ label: string; value: string; schema: object }[]>(
     []
   );

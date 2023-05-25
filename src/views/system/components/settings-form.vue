@@ -89,7 +89,13 @@
                 <span>{{ $t(item.label) }}</span>
                 <span style="margin-left: 5px">
                   <a-tooltip
-                    v-if="!item.isEditable"
+                    v-if="
+                      !item.isEditable &&
+                      userStore.hasRolesActionsPermission({
+                        resource: Resources.Settings,
+                        actions: [Actions.POST]
+                      })
+                    "
                     :content="$t('common.button.edit')"
                   >
                     <a-link @click="handleEditSubGroup(item)"
@@ -213,6 +219,8 @@
 </template>
 
 <script lang="ts" setup>
+  import { Resources, Actions } from '@/permissions/resources';
+  import { useUserStore } from '@/store';
   import EditPageFooter from '@/components/edit-page-footer/index.vue';
   import { isArray, map, each, isObject, keys } from 'lodash';
   import {
@@ -257,6 +265,7 @@
     }
   });
 
+  const userStore = useUserStore();
   const { t } = useI18n();
   const emits = defineEmits(['settingSave']);
   const router = useRouter();

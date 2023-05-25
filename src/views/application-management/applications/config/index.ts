@@ -6,22 +6,33 @@ export const instanceTabs = [
   {
     label: 'applications.instance.tab.resource',
     value: 'resource',
-    com: 'tabResource'
+    com: 'tabResource',
+    requiredAuth: true,
+    permission: ['GET']
   },
   // { label: '入口', value: 'endpoint', com: 'tabEndpoint' },
-  { label: 'applications.instance.tab.log', value: 'logs', com: 'tabLogs' },
+  {
+    label: 'applications.instance.tab.log',
+    value: 'logs',
+    com: 'tabLogs',
+    requiredAuth: true,
+    permission: ['GET']
+  },
   {
     label: 'applications.instance.tab.output',
     value: 'outputs',
+    requiredAuth: false,
     com: 'tabOutput'
   },
   // { label: '优化建议', value: 'optimization', com: 'tabOptimization' },
-  { label: '关联图', value: 'graph', com: 'tabGraph' },
+  { label: '关联图', value: 'graph', com: 'tabGraph', requiredAuth: false },
   // { label: '历史记录', value: 'history', com: 'tabHistory' },
   {
     label: 'applications.instance.tab.term',
     value: 'terminal',
-    com: 'tabTerminal'
+    com: 'tabTerminal',
+    requiredAuth: true,
+    permission: ['GET']
   }
 ];
 
@@ -50,7 +61,8 @@ export const instanceActions = [
   {
     label: 'applications.applications.button.upgrade',
     value: 'upgrade',
-    icon: 'icon-sync'
+    icon: 'icon-sync',
+    permission: ['POST']
   },
   {
     label: 'common.button.clone',
@@ -58,7 +70,8 @@ export const instanceActions = [
     icon: 'icon-font',
     props: {
       type: 'icon-Clone-Cloud'
-    }
+    },
+    permission: ['POST']
   },
   {
     label: 'common.button.rollback',
@@ -66,9 +79,15 @@ export const instanceActions = [
     icon: 'icon-font',
     props: {
       type: 'icon-rollback-copy'
-    }
+    },
+    permission: ['PUT']
   },
-  { label: 'common.button.delete', value: 'delete', icon: 'icon-delete' }
+  {
+    label: 'common.button.delete',
+    value: 'delete',
+    icon: 'icon-delete',
+    permission: ['DELETE']
+  }
 ];
 export const moduleActions = [
   { label: 'common.button.edit', value: 'edit', icon: 'icon-edit' },

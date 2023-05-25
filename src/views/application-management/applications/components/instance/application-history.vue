@@ -148,7 +148,16 @@
                   </template>
                 </a-dropdown>
               </a-tooltip> -->
-              <a-tooltip :content="$t('common.button.delete')">
+              <a-tooltip
+                v-if="
+                  userStore.hasProjectResourceActions({
+                    projectID,
+                    resource: Resources.ApplicationRevisions,
+                    actions: ['DELETE']
+                  })
+                "
+                :content="$t('common.button.delete')"
+              >
                 <a-link type="text" size="small" @click="handleDelete(record)">
                   <template #icon
                     ><icon-delete style="font-size: 16px"
@@ -187,6 +196,8 @@
 </template>
 
 <script lang="ts" setup>
+  import { Resources } from '@/permissions/resources';
+  import { useUserStore } from '@/store';
   import dayjs from 'dayjs';
   import _, {
     map,
@@ -238,12 +249,14 @@
   import { updateApplicationEmitter } from '../../hooks/update-application-listener';
 
   let axiosListInstance = createAxiosToken();
-  const { t } = useCallCommon();
+  const userStore = useUserStore();
+  const { t, route } = useCallCommon();
   const { setChunkRequest } = useSetChunkRequest();
   const { sort, sortOrder, setSortDirection } = UseSortDirection({
     defaultSortField: '-createTime',
     defaultOrder: 'descend'
   });
+  const projectID = route.params.projectId || '';
   const title = ref('');
   const instanceId = inject('instanceId', ref(''));
   const instanceInfo = inject('instanceInfo', ref<any>({}));

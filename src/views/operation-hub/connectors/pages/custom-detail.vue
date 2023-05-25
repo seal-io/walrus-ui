@@ -3,7 +3,13 @@
     <GroupTitle
       :title="title"
       show-back
-      :show-edit="pageAction === 'view'"
+      :show-edit="
+        pageAction === 'view' &&
+        userStore.hasRolesActionsPermission({
+          resource: Resources.Connectors,
+          actions: ['PUT']
+        })
+      "
       @edit="handleEdit"
     ></GroupTitle>
     <div>
@@ -190,6 +196,8 @@
 </template>
 
 <script lang="ts" setup>
+  import { Resources } from '@/permissions/resources';
+  import { useUserStore } from '@/store';
   import {
     assignIn,
     toLower,
@@ -219,6 +227,7 @@
   import { ConnectorFormData, CustomAttrbute } from '../config/interface';
   import { createConnector, updateConnector, queryItemConnector } from '../api';
 
+  const userStore = useUserStore();
   const setPropertyStyle = (style) => {
     return {
       'display': 'flex',

@@ -12,7 +12,7 @@ export default [
       locale: 'applications.applications.secret',
       requiresAuth: true,
       permission: {
-        resource: Resources.Secrets,
+        resource: Resources.Projects,
         actions: ['GET']
       },
       icon: 'icon-apps'
@@ -29,7 +29,7 @@ export default [
       locale: 'applications.applications.secret',
       requiresAuth: true,
       permission: {
-        resource: Resources.Secrets,
+        resource: Resources.Projects,
         actions: ['GET']
       },
       icon: 'icon-apps'

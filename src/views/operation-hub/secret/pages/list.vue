@@ -3,14 +3,6 @@
     <div class="connectors-list">
       <FilterBox style="margin-bottom: 10px">
         <template #params>
-          <!-- <a-select
-            v-model="queryParams.projectID"
-            style="width: 200px"
-            allow-clear
-            :options="projectList"
-            placeholder="请选择项目"
-            @change="handleSearch"
-          ></a-select> -->
           <a-input
             v-model="queryParams.query"
             allow-clear
@@ -34,10 +26,20 @@
           </a-space>
         </template>
         <template #button-group>
-          <a-button type="primary" @click="handleCreate">{{
-            $t('applications.secret.create')
-          }}</a-button>
           <a-button
+            v-permission="{
+              resource: `roles.${Resources.Secrets}`,
+              actions: [Actions.POST]
+            }"
+            type="primary"
+            @click="handleCreate"
+            >{{ $t('applications.secret.create') }}</a-button
+          >
+          <a-button
+            v-permission="{
+              resource: `roles.${Resources.Secrets}`,
+              actions: [Actions.DELETE]
+            }"
             type="primary"
             status="warning"
             :disabled="!selectedKeys.length"
@@ -112,7 +114,13 @@
           >
             <template #cell="{ record }">
               <a-space :size="10">
-                <a-tooltip :content="$t('common.button.edit')">
+                <a-tooltip
+                  v-permission="{
+                    resource: `roles.${Resources.Secrets}`,
+                    actions: [Actions.PUT]
+                  }"
+                  :content="$t('common.button.edit')"
+                >
                   <a-link
                     type="text"
                     size="small"
@@ -150,6 +158,7 @@
 </template>
 
 <script lang="ts" setup>
+  import { Resources, Actions } from '@/permissions/resources';
   import dayjs from 'dayjs';
   import { cloneDeep, find, get, map, pickBy } from 'lodash';
   import { reactive, ref, onMounted, computed } from 'vue';

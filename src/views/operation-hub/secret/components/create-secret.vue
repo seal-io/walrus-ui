@@ -198,7 +198,9 @@
       };
     } else {
       formData.value = props.info;
-      formData.value.project.id = formData.value.project.id || 0;
+      formData.value.project = {
+        id: 0
+      };
     }
   };
   const handleBeforeClose = () => {

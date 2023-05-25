@@ -30,7 +30,7 @@
         @change="handleTabChange"
       >
         <a-tab-pane
-          v-for="item in instanceTabs"
+          v-for="item in instanceTabList"
           :key="item.value"
           :title="$t(item.label)"
         >
@@ -56,16 +56,10 @@
 </template>
 
 <script lang="ts" setup>
+  import { Resources } from '@/permissions/resources';
+  import { useUserStore } from '@/store';
   import _ from 'lodash';
-  import {
-    markRaw,
-    ref,
-    reactive,
-    watch,
-    inject,
-    computed,
-    nextTick
-  } from 'vue';
+  import { markRaw, ref, watch, onMounted } from 'vue';
   import useCallCommon from '@/hooks/use-call-common';
   import EditPageFooter from '@/components/edit-page-footer/index.vue';
   import tabTerminal from './x-terminal/tab-terminal.vue';
@@ -89,9 +83,12 @@
     }
   });
   // 1: create 2: update 3: delete
+
+  const userStore = useUserStore();
   const { router, route } = useCallCommon();
   const { loading, fetchData, createResourceChunkConnection, dataList } =
     useFetchResource();
+  const projectID = route.params.projectId || '';
   const activeKey = ref('resource');
   const tabEndpointCom = ref();
   const instanceTabMap = {
@@ -103,6 +100,18 @@
     tabHistory: markRaw(applicationHistory),
     tabTerminal: markRaw(tabTerminal)
     // tabEndpoint: markRaw(tabEndpoint)
+  };
+  const instanceTabList = ref<any[]>([]);
+
+  const setInstanceTabList = () => {
+    instanceTabList.value = _.filter(instanceTabs, (item) => {
+      if (!item.requiredAuth) return true;
+      return userStore.hasProjectResourceActions({
+        projectID,
+        resource: Resources.ApplicationResources,
+        actions: ['GET']
+      });
+    });
   };
   const handleTabChange = (val) => {
     activeKey.value = val;
@@ -128,6 +137,9 @@
   const handleCancel = () => {
     router.back();
   };
+  onMounted(() => {
+    setInstanceTabList();
+  });
 </script>
 
 <style lang="less" scoped>

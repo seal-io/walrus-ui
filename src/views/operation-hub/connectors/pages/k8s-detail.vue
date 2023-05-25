@@ -3,7 +3,13 @@
     <GroupTitle
       :title="title"
       show-back
-      :show-edit="pageAction === 'view'"
+      :show-edit="
+        pageAction === 'view' &&
+        userStore.hasRolesActionsPermission({
+          resource: Resources.Connectors,
+          actions: ['PUT']
+        })
+      "
       @edit="handleEdit"
     ></GroupTitle>
     <div>
@@ -143,6 +149,8 @@
 </template>
 
 <script lang="ts" setup>
+  import { Resources } from '@/permissions/resources';
+  import { useUserStore } from '@/store';
   import { assignIn, get, find, isEqual, cloneDeep } from 'lodash';
   import { ref, reactive, onMounted, computed } from 'vue';
   import GroupTitle from '@/components/group-title/index.vue';
@@ -156,6 +164,7 @@
   import StatusLabel from '../components/status-label.vue';
   import { createConnector, updateConnector, queryItemConnector } from '../api';
 
+  const userStore = useUserStore();
   const { t, router, route } = useCallCommon();
   const { pageAction, handleEdit } = usePageAction();
   const id = route.query.id as string;
