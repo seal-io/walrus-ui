@@ -1,22 +1,28 @@
 import { DirectiveBinding } from 'vue';
 import { useUserStore } from '@/store';
+import _ from 'lodash';
 
 function checkPermission(el: HTMLElement, binding: DirectiveBinding) {
+  // {resource: '*', actions: []}
   const { value } = binding;
   const userStore = useUserStore();
-  const { role } = userStore;
+  const { permissions } = userStore;
+  const { resource, actions = [] } = value;
 
-  if (Array.isArray(value)) {
-    if (value.length > 0) {
-      const permissionValues = value;
-
-      const hasPermission = permissionValues.includes(role);
+  if (resource) {
+    if (!actions.includes('*')) {
+      const permissionActions = _.get(permissions, resource) || [];
+      const hasPermission = _.every(actions, (ac) =>
+        _.includes(permissionActions, ac)
+      );
       if (!hasPermission && el.parentNode) {
         el.parentNode.removeChild(el);
       }
     }
   } else {
-    throw new Error(`need roles! Like v-permission="['admin','user']"`);
+    throw new Error(
+      `need path! Like v-permission="{resource: 'applications', actions: ['GET']}"`
+    );
   }
 }
 
@@ -26,5 +32,5 @@ export default {
   },
   updated(el: HTMLElement, binding: DirectiveBinding) {
     checkPermission(el, binding);
-  },
+  }
 };

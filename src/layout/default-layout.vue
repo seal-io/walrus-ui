@@ -59,7 +59,7 @@
   import Menu from '@/components/menu/index.vue';
   import Footer from '@/components/footer/index.vue';
   import TabBar from '@/components/tab-bar/index.vue';
-  import usePermission from '@/hooks/permission';
+  import usePermission from '@/hooks/permissions';
   import useResponsive from '@/hooks/responsive';
   import PageLayout from './page-layout.vue';
 

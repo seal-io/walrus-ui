@@ -7,8 +7,8 @@ export default {
     hideInMenu: true,
     ignoreCache: true,
     locale: '',
-    requiresAuth: true,
+    requiresAuth: false,
     icon: '',
-    order: 3,
-  },
+    order: 3
+  }
 };

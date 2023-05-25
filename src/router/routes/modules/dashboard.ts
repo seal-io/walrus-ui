@@ -1,3 +1,5 @@
+import { Resources } from '@/permissions/resources';
+
 export default {
   path: 'dashboard',
   name: 'Dashboard',
@@ -5,6 +7,11 @@ export default {
   meta: {
     locale: 'navbar.totalView',
     requiresAuth: true,
+    isRouteView: true,
+    permission: {
+      resource: Resources.Dashboards,
+      actions: ['GET']
+    },
     icon: 'icon-dashboard',
     onlyRenderChildren: true,
     order: 0
@@ -19,6 +26,10 @@ export default {
         ignoreCache: true,
         locale: 'navbar.totalView',
         requiresAuth: true,
+        permission: {
+          resource: Resources.Dashboards,
+          actions: ['GET']
+        },
         icon: 'icon-dashboard',
         order: 0
       }

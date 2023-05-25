@@ -9,7 +9,8 @@ export default {
   component: () => import('@/views/application-management/index.vue'),
   meta: {
     locale: 'navbar.appmanagement',
-    requiresAuth: true,
+    requiresAuth: false,
+    isRouteView: true,
     order: 1,
     icon: 'icon-apps'
   },

@@ -3,7 +3,7 @@ import i18n from '@/locale/index';
 import NProgress from 'nprogress'; // progress bar
 import { Modal } from '@arco-design/web-vue';
 import { h } from 'vue';
-import usePermission from '@/hooks/permission';
+import usePermission from '@/hooks/permissions';
 import { useUserStore } from '@/store';
 import { LoginRouteName } from '@/api/config';
 import appRoutes from '../routes';
@@ -20,10 +20,9 @@ export default function setupPermissionGuard(router: Router) {
     // =======no permission check in frontend=====
 
     const userStore = useUserStore();
-
+    const Permission = usePermission();
     // const settings = await userStore.getUserSetting()
     async function crossroads() {
-      const Permission = usePermission();
       if (Permission.accessRouter(to)) next();
       else {
         const destination = Permission.findFirstPermissionRoute(
@@ -42,9 +41,8 @@ export default function setupPermissionGuard(router: Router) {
       userStore.name
     ) {
       if (to.name === LoginRouteName) {
-        const Permission = usePermission();
         const destination = Permission.getFirstRouteName(appRoutes) || {
-          name: 'notFound'
+          name: 'forbidden'
         };
         next({
           name: destination
@@ -52,19 +50,6 @@ export default function setupPermissionGuard(router: Router) {
         return;
       }
       next();
-      // if (userStore.role) {
-      //   crossroads();
-      // } else {
-      //   try {
-      //     await userStore.info();
-      //     crossroads();
-      //   } catch (error) {
-      //     next({
-      //       name: 'Login',
-      //       query: {} as LocationQueryRaw
-      //     });
-      //   }
-      // }
     } else {
       if (
         userStore?.userSetting?.FirstLogin?.value === 'true' &&

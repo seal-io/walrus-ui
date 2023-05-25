@@ -6,7 +6,8 @@ export default {
     // isRemove: true,
     hideInMenu: true,
     locale: 'propfile.account.settings',
-    requiresAuth: true,
+    requiresAuth: false,
+    isRouteView: true,
     icon: 'icon-settings',
     order: 8
   },
@@ -20,7 +21,7 @@ export default {
         ignoreCache: true,
         clearMenuStatus: true,
         locale: 'user.password.modify',
-        requiresAuth: true,
+        requiresAuth: false,
         roles: ['*']
       }
     }

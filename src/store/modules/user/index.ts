@@ -8,6 +8,7 @@ import {
   getUserSetting as userSettings,
   updateUserSetting as updateSettings
 } from '@/api/user';
+import _ from 'lodash';
 import { clearToken, getUserResourcePermission } from '@/utils/auth';
 import { removeRouteListener } from '@/utils/route-listener';
 import { UserState } from './types';
@@ -38,6 +39,7 @@ const useUserStore = defineStore('user', {
     hasNavList: true,
     policies: [],
     projectRoles: [],
+    permissionRoutes: [],
     roles: [],
     role: '*'
   }),
@@ -75,6 +77,9 @@ const useUserStore = defineStore('user', {
       this.setInfo({ ...data, permissions });
     },
 
+    isSystemAdmin() {
+      return _.some(this.roles, (item) => item.id === 'system/admin');
+    },
     // Login
     async login(loginForm: LoginData) {
       await userLogin(loginForm);

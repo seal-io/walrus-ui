@@ -7,7 +7,8 @@ export default {
   component: () => import('@/views/cost-management/index.vue'),
   meta: {
     locale: 'navbar.costmanagement',
-    requiresAuth: true,
+    requiresAuth: false,
+    isRouteView: true,
     order: 2,
     icon: 'icon-bar-chart'
   },

@@ -33,6 +33,11 @@ const router = createRouter({
       path: '/:pathMatch(.*)*',
       name: 'notFound',
       component: () => import('@/views/not-found/index.vue')
+    },
+    {
+      path: '/:pathMatch(.*)*',
+      name: 'forbidden',
+      component: () => import('@/views/exception/403/index.vue')
     }
   ],
   scrollBehavior() {

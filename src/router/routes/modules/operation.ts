@@ -9,7 +9,8 @@ export default {
   component: () => import('@/views/operation-hub/index.vue'),
   meta: {
     locale: 'navbar.operatorhub',
-    requiresAuth: true,
+    requiresAuth: false,
+    isRouteView: true,
     order: 3,
     icon: 'icon-relation'
   },

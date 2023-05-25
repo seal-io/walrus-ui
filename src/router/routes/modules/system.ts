@@ -1,3 +1,5 @@
+import { Resources } from '@/permissions/resources';
+
 export default {
   path: 'system',
   name: 'System',
@@ -7,7 +9,8 @@ export default {
     ignoreCache: true,
     locale: 'menu.system.setting',
     icon: 'icon-settings',
-    requiresAuth: true,
+    requiresAuth: false,
+    isRouteView: true,
     order: 6
   },
   children: [
@@ -21,6 +24,10 @@ export default {
         clearMenuStatus: false,
         locale: 'menu.system.user',
         requiresAuth: true,
+        permission: {
+          resource: Resources.Subjects,
+          actions: ['GET']
+        },
         roles: ['*']
       }
     },
@@ -34,6 +41,10 @@ export default {
         clearMenuStatus: false,
         locale: 'menu.system.config',
         requiresAuth: true,
+        permission: {
+          resource: Resources.Settings,
+          actions: ['GET']
+        },
         roles: ['*']
       }
     }

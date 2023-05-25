@@ -1,3 +1,5 @@
+import { Resources } from '@/permissions/resources';
+
 export default [
   {
     path: 'connector/list',
@@ -8,6 +10,10 @@ export default [
       ignoreCache: false,
       locale: 'operation.connectors.menu',
       requiresAuth: true,
+      permission: {
+        resource: Resources.Connectors,
+        actions: ['GET']
+      },
       icon: 'icon-apps',
       cachePages: [
         'ConnectorK8sDetail',
@@ -26,6 +32,10 @@ export default [
       ignoreCache: true,
       locale: 'operation.connectors.menu',
       requiresAuth: true,
+      permission: {
+        resource: Resources.Connectors,
+        actions: ['GET']
+      },
       icon: 'icon-apps'
     }
   },
@@ -39,6 +49,10 @@ export default [
       ignoreCache: true,
       locale: 'operation.connectors.menu',
       requiresAuth: true,
+      permission: {
+        resource: Resources.Connectors,
+        actions: ['GET']
+      },
       icon: 'icon-apps'
     }
   },
@@ -52,6 +66,10 @@ export default [
       ignoreCache: true,
       locale: 'operation.connectors.menu',
       requiresAuth: true,
+      permission: {
+        resource: Resources.Connectors,
+        actions: ['GET']
+      },
       icon: 'icon-apps'
     }
   }
