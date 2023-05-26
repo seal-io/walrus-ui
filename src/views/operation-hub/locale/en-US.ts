@@ -31,6 +31,7 @@ export default {
   'operation.connectors.reinstall.button': 'Sure to reinstall',
   'operation.connectors.table.versioncontrol': 'Version Control',
   'operation.connectors.reinstall.custom': 'Custom',
+  'operation.connectors.reinstall.cloudProvider': 'Cloud Provider',
   'operation.connectors.status.ready':
     'the cluster cost analysis tool is available',
   'operation.connectors.status.error':

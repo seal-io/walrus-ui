@@ -182,7 +182,7 @@
           class="cap-title cancel-btn"
           :loading="submitLoading"
           @click="handleSubmit"
-          >{{ $t('common.button.confirm') }}</a-button
+          >{{ $t('common.button.save') }}</a-button
         >
       </template>
       <a-button

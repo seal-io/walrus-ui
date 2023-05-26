@@ -71,13 +71,10 @@
             <template #cell="{ record }">
               <a-link
                 v-if="
-                  userStore.isSystemAdmin() ||
-                  userStore.hasActionsPermission({
-                    resource: userStore.getProjectUserActions(
-                      record.id,
-                      Resources.Applications
-                    ),
-                    actions: ['GET']
+                  userStore.hasProjectResourceActions({
+                    projectID: record.id,
+                    resource: Resources.Applications,
+                    actions: [Actions.GET]
                   })
                 "
                 size="small"
@@ -129,13 +126,10 @@
                 <a-tooltip :content="$t('common.button.edit')">
                   <a-link
                     v-if="
-                      userStore.isSystemAdmin() ||
-                      userStore.hasActionsPermission({
-                        resource: userStore.getProjectUserActions(
-                          record.id,
-                          Resources.Projects
-                        ),
-                        actions: ['PUT']
+                      userStore.hasProjectResourceActions({
+                        projectID: record.id,
+                        resource: Resources.Projects,
+                        actions: [Actions.PUT]
                       })
                     "
                     type="text"
@@ -199,7 +193,7 @@
 </template>
 
 <script lang="ts" setup>
-  import { Resources } from '@/permissions/resources';
+  import { Resources, Actions } from '@/permissions/resources';
   import { cloneDeep, map, pickBy, remove } from 'lodash';
   import { ref, reactive } from 'vue';
   import dayjs from 'dayjs';

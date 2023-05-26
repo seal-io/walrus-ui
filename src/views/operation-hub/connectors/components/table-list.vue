@@ -176,17 +176,16 @@
           :cell-style="{ minWidth: '40px' }"
         >
           <template #cell="{ record }">
-            <a-space :size="10">
-              <a-dropdown-button
-                v-if="
-                  category === 'Kubernetes' &&
-                  userStore.hasRolesActionsPermission({
-                    resource: Resources.Connectors,
-                    actions: ['PUT']
-                  })
-                "
-                size="small"
-              >
+            <a-space
+              v-if="
+                userStore.hasRolesActionsPermission({
+                  resource: Resources.Connectors,
+                  actions: ['PUT']
+                })
+              "
+              :size="10"
+            >
+              <a-dropdown-button v-if="category === 'Kubernetes'" size="small">
                 <a-tooltip :content="$t('common.button.edit')">
                   <a-link
                     class="mright-0"

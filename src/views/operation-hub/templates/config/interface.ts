@@ -12,7 +12,13 @@ export interface Schema {
     version_constraints: string[];
   }>;
 }
-
+export interface ModuleAction {
+  label: string;
+  value: string;
+  icon: string;
+  requiredAuth: boolean;
+  permission?: string[];
+}
 export interface TemplateRowData {
   id: string;
   source: string;
