@@ -13,5 +13,7 @@ export default {
   'propfile.account.settings.holder': '请输入用户名',
   'propfile.account.settings.rules.type': '类型不能为空',
   'propfile.account.settings.rules.role': '角色不能为空',
-  'propfile.account.settings.rules.name': '名称不能为空'
+  'propfile.account.settings.rules.name': '名称不能为空',
+  'propfile.account.user.title': '个人中心',
+  'propfile.account.user.info': '用户信息'
 };

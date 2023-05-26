@@ -280,7 +280,7 @@
     try {
       loading.value = true;
       const params: any = {
-        ...pickBy(queryParams, (val) => !!val),
+        // ...pickBy(queryParams, (val) => !!val),
         sort: [sort.value]
       };
       const { data } = await queryApplications(params);

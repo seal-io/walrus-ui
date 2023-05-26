@@ -13,14 +13,14 @@ export default {
   },
   children: [
     {
-      path: 'modify-password',
-      name: 'ModifyPassword',
-      component: () => import('@/views/profile/pages/modify-password.vue'),
+      path: 'info',
+      name: 'UserCenter',
+      component: () => import('@/views/profile/pages/main.vue'),
       meta: {
         hideInMenu: true,
         ignoreCache: true,
         clearMenuStatus: true,
-        locale: 'user.password.modify',
+        locale: 'propfile.account.user.title',
         requiresAuth: false,
         roles: ['*']
       }

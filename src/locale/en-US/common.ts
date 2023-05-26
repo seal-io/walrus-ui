@@ -82,5 +82,5 @@ export default {
   'common.chart.filter.holder': 'filter data items',
   'common.chart.filter.tips': 'View more by filter',
   'common.permission.401': 'Not logged in',
-  'common.permission.403': 'Forbidden'
+  'common.permission.403': 'Permission Denied'
 };
