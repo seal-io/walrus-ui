@@ -346,7 +346,7 @@
   const handleDelete = async (row) => {
     deleteModal({
       onOk: async () => {
-        await deleteSubjectRoles(row);
+        await deleteSubjectRoles({ ...row, projectID: props.projectID });
         execSucceed();
         getProjectSubjectRoles();
       }
