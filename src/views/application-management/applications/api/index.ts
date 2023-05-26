@@ -140,6 +140,21 @@ export const diffInstanceSpec = (params: { instanceID: string }) => {
   });
 };
 
+export const queryInstanceResourceGraph = (params: { instanceID: string }) => {
+  return axios.get(
+    `/application-instances/${params.instanceID}/resource-graph`,
+    {
+      params: {
+        ...params,
+        ...getPermissionRouteParams()
+      },
+      paramsSerializer: (obj) => {
+        return qs.stringify(obj);
+      }
+    }
+  );
+};
+
 // =========history================
 interface ApplicationRevisionParams extends Pagination {
   instanceID?: string;

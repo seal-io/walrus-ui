@@ -4,7 +4,8 @@ import { MarkerType } from '@vue-flow/core';
  * You can pass elements together as a v-model value
  * or split them up into nodes and edges and pass them to the `nodes` and `edges` props of Vue Flow (or useVueFlow composable)
  */
-export const initialElements = [
+
+export const NodeList = [
   {
     id: '1',
     type: 'input',
@@ -65,8 +66,11 @@ export const initialElements = [
     label: 'Node 5',
     position: { x: 300, y: 300 },
     class: 'light'
-  },
-  { id: 'e1-2', source: '1', target: '2', animated: false },
+  }
+];
+
+export const EdgeList = [
+  { id: '', source: '1', target: '2', animated: false },
   {
     id: 'e1-3',
     label: 'edge with arrowhead',

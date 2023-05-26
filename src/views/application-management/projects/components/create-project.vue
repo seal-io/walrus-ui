@@ -97,6 +97,7 @@
 </template>
 
 <script lang="ts" setup>
+  import { useUserStore } from '@/store';
   import { ref, reactive, PropType } from 'vue';
   import { reduce, omit, keys, get } from 'lodash';
   import EditPageFooter from '@/components/edit-page-footer/index.vue';
@@ -131,6 +132,7 @@
       }
     }
   });
+  const userStore = useUserStore();
   const emit = defineEmits(['save', 'update:show', 'reset']);
   const formref = ref();
   const loading = ref(false);
@@ -181,6 +183,7 @@
         // TODO
         if (props.action === 'create') {
           await createProject(data);
+          await userStore.info();
         } else {
           await updateProject(data);
         }

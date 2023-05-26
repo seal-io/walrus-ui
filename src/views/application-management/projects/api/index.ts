@@ -66,5 +66,5 @@ export const addSubjectRoles = (data) => {
 };
 
 export const deleteSubjectRoles = (data) => {
-  return axios.delete(`/subject-roles/${data.id}`);
+  return axios.delete(`/subject-roles/${data.id}?projectID=${data.projectID}`);
 };
