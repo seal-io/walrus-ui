@@ -74,7 +74,7 @@
           <div
             v-for="key in providerKeys"
             :key="key"
-            style="display: flex; justify-content: flex-start"
+            style="display: inline-flex; justify-content: flex-start"
           >
             <a-form-item
               :label="key"
@@ -87,36 +87,46 @@
                 }
               ]"
             >
-              <a-input
-                v-if="!formData.configData[key].visible"
-                v-model="formData.configData[key].value"
-              />
-              <a-input-password
-                v-else
-                v-model="formData.configData[key].value"
-              ></a-input-password>
+              <a-input-group>
+                <div>
+                  <a-input
+                    v-if="!formData.configData[key].visible"
+                    v-model="formData.configData[key].value"
+                  />
+                  <a-input-password
+                    v-else
+                    v-model="formData.configData[key].value"
+                  ></a-input-password>
+                </div>
+                <div
+                  style="
+                    display: flex;
+                    flex-basis: content;
+                    align-items: center;
+                  "
+                >
+                  <a-checkbox
+                    v-model="formData.configData[key].visible"
+                    style="margin-left: 10px"
+                    >{{
+                      $t('operation.connectors.attribute.sensitive')
+                    }}</a-checkbox
+                  >
+                  <a-tooltip
+                    :content="
+                      $t('operation.connectors.attribute.sensitive.tips')
+                    "
+                  >
+                    <template #content>
+                      <div style="white-space: pre-wrap">{{
+                        $t('operation.connectors.attribute.sensitive.tips')
+                      }}</div>
+                    </template>
+                    <icon-info-circle class="mleft-5" />
+                  </a-tooltip>
+                </div>
+              </a-input-group>
             </a-form-item>
-            <div
-              style="display: flex; flex-basis: content; align-items: center"
-            >
-              <a-checkbox
-                v-model="formData.configData[key].visible"
-                style="margin-left: 10px"
-                >{{
-                  $t('operation.connectors.attribute.sensitive')
-                }}</a-checkbox
-              >
-              <a-tooltip
-                :content="$t('operation.connectors.attribute.sensitive.tips')"
-              >
-                <template #content>
-                  <div style="white-space: pre-wrap">{{
-                    $t('operation.connectors.attribute.sensitive.tips')
-                  }}</div>
-                </template>
-                <icon-info-circle class="mleft-5" />
-              </a-tooltip>
-            </div>
           </div>
         </template>
         <!-- <a-form-item

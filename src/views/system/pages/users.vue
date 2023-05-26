@@ -123,7 +123,7 @@
             <span>{{
               $t(
                 getListLabel(
-                  _.get(record, 'roles.0.role.id') || null,
+                  _.get(record, 'roles.0.role.id') || '0',
                   roleTypeList
                 )
               )

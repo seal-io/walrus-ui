@@ -14,7 +14,7 @@ export const roleTypeList = [
     value: 'system/admin',
     icon: 'icon-star-Admin-01'
   },
-  { label: 'system.user.visitor', value: null, icon: 'icon-user' }
+  { label: 'system.user.visitor', value: '0', icon: 'icon-user' }
 ];
 export const accountTypeList = [
   { label: 'profile.account.type.user', value: AccountKind.USER },

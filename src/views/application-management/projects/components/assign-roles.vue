@@ -204,6 +204,7 @@
 <script lang="ts" setup>
   import _ from 'lodash';
   import { ref, reactive, PropType } from 'vue';
+  import AOptgroup from '@arco-design/web-vue/es/select/optgroup';
   import FilterBox from '@/components/filter-box/index.vue';
   import EditPageFooter from '@/components/edit-page-footer/index.vue';
   import { deleteModal, execSucceed } from '@/utils/monitor';

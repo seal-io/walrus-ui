@@ -4,6 +4,7 @@
 
 declare module 'vue' {
   export interface GlobalComponents {
+    AAffix: typeof import('@arco-design/web-vue')['Affix'];
     AAlert: typeof import('@arco-design/web-vue')['Alert'];
     AAvatar: typeof import('@arco-design/web-vue')['Avatar'];
     ABreadcrumb: typeof import('@arco-design/web-vue')['Breadcrumb'];
@@ -12,8 +13,11 @@ declare module 'vue' {
     ACard: typeof import('@arco-design/web-vue')['Card'];
     ACarousel: typeof import('@arco-design/web-vue')['Carousel'];
     ACarouselItem: typeof import('@arco-design/web-vue')['CarouselItem'];
+    ACascader: typeof import('@arco-design/web-vue')['Cascader'];
     ACheckbox: typeof import('@arco-design/web-vue')['Checkbox'];
+    ACol: typeof import('@arco-design/web-vue')['Col'];
     AConfigProvider: typeof import('@arco-design/web-vue')['ConfigProvider'];
+    ADescriptions: typeof import('@arco-design/web-vue')['Descriptions'];
     ADivider: typeof import('@arco-design/web-vue')['Divider'];
     ADoption: typeof import('@arco-design/web-vue')['Doption'];
     ADrawer: typeof import('@arco-design/web-vue')['Drawer'];
@@ -30,6 +34,7 @@ declare module 'vue' {
     ALayout: typeof import('@arco-design/web-vue')['Layout'];
     ALayoutContent: typeof import('@arco-design/web-vue')['LayoutContent'];
     ALayoutFooter: typeof import('@arco-design/web-vue')['LayoutFooter'];
+    ALayoutSider: typeof import('@arco-design/web-vue')['LayoutSider'];
     ALink: typeof import('@arco-design/web-vue')['Link'];
     AList: typeof import('@arco-design/web-vue')['List'];
     AListItem: typeof import('@arco-design/web-vue')['ListItem'];
@@ -39,10 +44,12 @@ declare module 'vue' {
     AModal: typeof import('@arco-design/web-vue')['Modal'];
     AOption: typeof import('@arco-design/web-vue')['Option'];
     APagination: typeof import('@arco-design/web-vue')['Pagination'];
+    AProgress: typeof import('@arco-design/web-vue')['Progress'];
     ARadio: typeof import('@arco-design/web-vue')['Radio'];
     ARadioGroup: typeof import('@arco-design/web-vue')['RadioGroup'];
     ARangePicker: typeof import('@arco-design/web-vue')['RangePicker'];
     AResult: typeof import('@arco-design/web-vue')['Result'];
+    ARow: typeof import('@arco-design/web-vue')['Row'];
     ASelect: typeof import('@arco-design/web-vue')['Select'];
     ASpace: typeof import('@arco-design/web-vue')['Space'];
     ASpin: typeof import('@arco-design/web-vue')['Spin'];
