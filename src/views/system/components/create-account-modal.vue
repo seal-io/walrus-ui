@@ -195,7 +195,7 @@
       if (!res) {
         submitLoading.value = true;
         const data: any = _.pickBy(formData, (val) => val);
-        if (formData.roleId) {
+        if (formData.roleId !== '0') {
           data.roles = [
             {
               role: {
@@ -227,7 +227,7 @@
         formData,
         _.pick(props.dataInfo, ['kind', 'name', 'id', 'domain'])
       );
-      formData.roleId = _.get(props.dataInfo, 'roles.0.role.id');
+      formData.roleId = _.get(props.dataInfo, 'roles.0.role.id') || '0';
     }
   };
   const handleBeforeClose = () => {
