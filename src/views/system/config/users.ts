@@ -6,12 +6,12 @@ export enum AccountKind {
 export const roleTypeList = [
   {
     label: 'system.user.admin',
-    value: 'system/platform-engineer',
+    value: 'system/admin',
     icon: 'icon-administrator'
   },
   {
     label: 'system.user.engineer',
-    value: 'system/admin',
+    value: 'system/platform-engineer',
     icon: 'icon-star-Admin-01'
   },
   { label: 'system.user.visitor', value: '0', icon: 'icon-user' }

@@ -72,30 +72,30 @@
         </a-form-item>
         <template v-if="pageAction === 'edit'">
           <div
-            v-for="key in providerKeys"
-            :key="key"
+            v-for="item in providerKeys"
+            :key="item.key"
             style="display: inline-flex; justify-content: flex-start"
           >
             <a-form-item
-              :label="key"
-              :field="`configData.${key}.value`"
+              :label="item.key"
+              :field="`configData.${item.key}.value`"
               validate-trigger="change"
               :rules="[
                 {
-                  required: true,
-                  message: $t('common.form.rule.input', { name: key })
+                  required: pageAction === 'edit',
+                  message: $t('common.form.rule.input', { name: item.key })
                 }
               ]"
             >
               <a-input-group>
                 <div>
                   <a-input
-                    v-if="!formData.configData[key].visible"
-                    v-model="formData.configData[key].value"
+                    v-if="!formData.configData[item.key].visible"
+                    v-model="formData.configData[item.key].value"
                   />
                   <a-input-password
                     v-else
-                    v-model="formData.configData[key].value"
+                    v-model="formData.configData[item.key].value"
                   ></a-input-password>
                 </div>
                 <div
@@ -106,7 +106,7 @@
                   "
                 >
                   <a-checkbox
-                    v-model="formData.configData[key].visible"
+                    v-model="formData.configData[item.key].visible"
                     style="margin-left: 10px"
                     >{{
                       $t('operation.connectors.attribute.sensitive')
@@ -129,37 +129,29 @@
             </a-form-item>
           </div>
         </template>
-        <!-- <a-form-item
-          v-if="pageAction === 'edit'"
-          label="Access Token"
-          field="configData.token.value"
-          :rules="[
-            {
-              required: pageAction === 'edit',
-              message: $t('operation.connectors.accesstoken.rule')
-            }
-          ]"
-        >
-          <a-input-password
-            v-model="formData.configData.token.value"
-            style="width: 500px"
-          ></a-input-password>
-        </a-form-item> -->
         <a-form-item
           v-if="pageAction === 'view'"
-          :label="$t('operation.connectors.table.status')"
+          :label="$t('operation.connectors.form.attribute')"
         >
-          <span class="readonly-view-label">
-            <StatusLabel
-              :status="{
-                status: get(formData, 'status.summaryStatus'),
-                text: get(formData, 'status.summaryStatus'),
-                message: get(formData, 'status.summaryStatusMessage'),
-                transitioning: get(formData, 'status.transitioning'),
-                error: get(formData, 'status.error')
-              }"
-            ></StatusLabel>
-          </span>
+          <DescriptionTable
+            style="width: 600px; margin-left: 12px"
+            :data-list="providerKeys"
+          >
+            <template #value="{ row }">
+              <AutoTip
+                style="width: 350px"
+                :tooltip-props="{
+                  content: get(formData, `configData.${row.key}.value`)
+                }"
+              >
+                <span>{{
+                  get(formData, `configData.${row.key}.visible`)
+                    ? '******'
+                    : get(formData, `configData.${row.key}.value`)
+                }}</span>
+              </AutoTip>
+            </template>
+          </DescriptionTable>
         </a-form-item>
       </a-form>
     </div>
@@ -196,11 +188,16 @@
   import useCallCommon from '@/hooks/use-call-common';
   import usePageAction from '@/hooks/use-page-action';
   import ProviderIcon from '@/components/provider-icon/index.vue';
+  import DescriptionTable from '@/components/description-table/index.vue';
   import StatusLabel from '../components/status-label.vue';
   import { ConnectorFormData } from '../config/interface';
   import { createConnector, updateConnector, queryItemConnector } from '../api';
 
-  const providerKeys = ['access_key', 'secret_key', 'region'];
+  const providerKeys = [
+    { label: 'access_key', value: '', key: 'access_key' },
+    { label: 'secret_key', value: '', key: 'secret_key' },
+    { label: 'region', value: '', key: 'region' }
+  ];
   const userStore = useUserStore();
   const { t, router, route } = useCallCommon();
   const { pageAction, handleEdit } = usePageAction();
@@ -261,16 +258,27 @@
   const handleBeforeUpload = async (file) => {
     return true;
   };
+  const setFormDataVisible = () => {
+    const data = cloneDeep(formData);
+    const accessKeyVisible = get(data, 'configData.access_key.visible');
+    const secretkeyVisible = get(data, 'configData.secret_key.visible');
+    const regionVisible = get(data, 'configData.region.visible');
+    data.configData.access_key.visible = !accessKeyVisible;
+    data.configData.secret_key.visible = !secretkeyVisible;
+    data.configData.region.visible = !regionVisible;
+    return data;
+  };
   const handleSubmit = async () => {
     const res = await formref.value?.validate();
     if (!res) {
       try {
         submitLoading.value = true;
         copyFormData = cloneDeep(formData);
+        const data = setFormDataVisible();
         if (id) {
-          await updateConnector(formData);
+          await updateConnector(data);
         } else {
-          await createConnector(formData);
+          await createConnector(data);
         }
         router.back();
         submitLoading.value = false;
@@ -285,6 +293,8 @@
     try {
       const { data } = await queryItemConnector({ id });
       assignIn(formData, data);
+      const newData = setFormDataVisible();
+      assignIn(formData, newData);
       copyFormData = cloneDeep(formData);
     } catch (error) {
       console.log(error);
