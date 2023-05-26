@@ -34,17 +34,6 @@
           @click="handleCreate"
           >{{ $t('profile.account.create') }}</a-button
         >
-        <a-button
-          v-permission="{
-            resource: `roles.${Resources.Subjects}`,
-            actions: [Actions.DELETE]
-          }"
-          type="primary"
-          status="warning"
-          :disabled="!selectedKeys.length"
-          @click="handleDelete"
-          >{{ $t('common.button.delete') }}</a-button
-        >
       </template>
     </FilterBox>
     <a-table

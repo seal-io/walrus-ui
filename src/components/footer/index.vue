@@ -55,7 +55,7 @@
   onMounted(() => {
     getAppVersion();
   });
-  // getUserInfo();
+  getUserInfo();
 </script>
 
 <style lang="less" scoped>
