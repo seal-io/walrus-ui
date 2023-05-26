@@ -19,7 +19,7 @@ export function querySubjects(params: queryParams) {
 }
 
 export const deleteSubjects = (data) => {
-  return axios.delete(`/subjects`, { data });
+  return axios.delete(`/subjects/${data.id}`);
 };
 export const createSubject = (data) => {
   return axios.post(`/subjects`, data);

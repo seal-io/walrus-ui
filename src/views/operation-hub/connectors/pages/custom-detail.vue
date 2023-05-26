@@ -152,10 +152,6 @@
             </xInputGroup>
           </a-space>
           <template v-if="pageAction === 'view' && attributeList?.length">
-            <!-- <labelsList
-              style="margin-left: 12px"
-              :labels="formData.configData"
-            ></labelsList> -->
             <DescriptionTable
               style="width: 600px; margin-left: 12px"
               :data-list="attributeList"

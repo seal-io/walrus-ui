@@ -221,6 +221,11 @@
   const handleCancel = () => {
     emits('update:show', false);
   };
+  const reset = () => {
+    formData.roleId = '';
+    formData.name = '';
+    formData.password = '';
+  };
   const handleBeforeOpen = () => {
     if (props.action === 'edit') {
       _.assignIn(
@@ -231,7 +236,7 @@
     }
   };
   const handleBeforeClose = () => {
-    formref.value.resetFields();
+    reset();
     formref.value.clearValidate();
   };
 </script>

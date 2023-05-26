@@ -55,8 +55,6 @@
       :data="dataList"
       :pagination="false"
       row-key="id"
-      :row-selection="rowSelection"
-      @selection-change="handleSelectChange"
     >
       <template #columns>
         <a-table-column
@@ -136,19 +134,34 @@
           :title="$t('common.table.operation')"
         >
           <template #cell="{ record }">
-            <a-tooltip :content="$t('common.button.edit')">
-              <a-link
-                v-permission="{
-                  resource: `roles.${Resources.Subjects}`,
-                  actions: [Actions.PUT]
-                }"
-                @click="handleClickEdit(record)"
-              >
-                <template #icon>
-                  <icon-edit></icon-edit>
-                </template>
-              </a-link>
-            </a-tooltip>
+            <a-space>
+              <a-tooltip :content="$t('common.button.edit')">
+                <a-link
+                  v-permission="{
+                    resource: `roles.${Resources.Subjects}`,
+                    actions: [Actions.PUT]
+                  }"
+                  @click="handleClickEdit(record)"
+                >
+                  <template #icon>
+                    <icon-edit></icon-edit>
+                  </template>
+                </a-link>
+              </a-tooltip>
+              <a-tooltip :content="$t('common.button.delete')">
+                <a-link
+                  v-permission="{
+                    resource: `roles.${Resources.Subjects}`,
+                    actions: [Actions.DELETE]
+                  }"
+                  @click="handleDelete(record)"
+                >
+                  <template #icon>
+                    <icon-delete></icon-delete>
+                  </template>
+                </a-link>
+              </a-tooltip>
+            </a-space>
           </template>
         </a-table-column>
       </template>
@@ -251,15 +264,15 @@
     });
   };
   const handleClickView = (row) => {};
-  const handleDeleteConfirm = async () => {
+  const handleDeleteConfirm = async (row) => {
     try {
       loading.value = true;
-      const ids = _.map(selectedKeys.value, (val) => {
-        return {
-          id: val
-        };
-      });
-      await deleteSubjects(ids);
+      // const ids = _.map(selectedKeys.value, (val) => {
+      //   return {
+      //     id: val
+      //   };
+      // });
+      await deleteSubjects({ id: row.id });
       loading.value = false;
       execSucceed();
       queryParams.page = 1;
@@ -275,8 +288,12 @@
     queryParams.page = 1;
     fetchData();
   };
-  const handleDelete = async () => {
-    deleteModal({ onOk: handleDeleteConfirm });
+  const handleDelete = async (row) => {
+    deleteModal({
+      onOk: () => {
+        handleDeleteConfirm(row);
+      }
+    });
   };
   const getRolesList = async () => {
     try {
