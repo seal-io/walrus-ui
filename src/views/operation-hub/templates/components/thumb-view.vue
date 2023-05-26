@@ -7,6 +7,7 @@
         :span="{ lg: 6, md: 12, sm: 24, xs: 24 }"
       >
         <templateItem
+          :action-list="moduleActions"
           :data-info="item"
           :provider="item.icon"
           :checked="includes(checkedList, item.id)"
@@ -19,12 +20,15 @@
 </template>
 
 <script lang="ts" setup>
-  import { includes } from 'lodash';
-  import { onMounted, PropType, defineEmits } from 'vue';
+  import { Resources, Actions } from '@/permissions/resources';
+  import { useUserStore } from '@/store';
+  import { includes, filter } from 'lodash';
+  import { ref, onMounted, PropType, defineEmits } from 'vue';
   import useCallCommon from '@/hooks/use-call-common';
   import thumbButton from '@/components/buttons/thumb-button.vue';
   import templateItem from './template-item.vue';
-  import { TemplateRowData } from '../config/interface';
+  import { TemplateRowData, ModuleAction } from '../config/interface';
+  import { actionList } from '../config';
 
   const props = defineProps({
     list: {
@@ -40,15 +44,25 @@
       }
     }
   });
+  const userStore = useUserStore();
   const emits = defineEmits(['create', 'change']);
   const { router } = useCallCommon();
+  const moduleActions = ref<ModuleAction[]>([]);
   const handleCreateProject = () => {
     emits('create');
   };
   const handleCheckChange = (checked, id) => {
     emits('change', checked, id);
   };
-
+  const setModuleActions = () => {
+    moduleActions.value = filter(actionList, (item) => {
+      if (!item.requiredAuth) return true;
+      return userStore.hasRolesActionsPermission({
+        resource: Resources.Modules,
+        actions: [Actions.PUT]
+      });
+    });
+  };
   const handleClickItem = (project) => {
     console.log('project:', project);
     router.push({
@@ -60,6 +74,7 @@
   };
   onMounted(() => {
     console.log('onmounted');
+    setModuleActions();
   });
 </script>
 

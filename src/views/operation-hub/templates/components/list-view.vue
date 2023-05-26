@@ -82,25 +82,29 @@
         >
           <template #cell="{ record }">
             <a-space :size="20">
-              <a-tooltip
-                v-permission="{
-                  resource: `roles.${Resources.Modules}`,
-                  actions: [Actions.PUT]
-                }"
-                :content="$t('common.button.edit')"
-              >
-                <a-link type="text" size="small" @click="handleEdit(record)">
+              <a-tooltip :content="$t('common.button.edit')">
+                <a-link
+                  v-permission="{
+                    resource: `roles.${Resources.Modules}`,
+                    actions: [Actions.PUT]
+                  }"
+                  type="text"
+                  size="small"
+                  @click="handleEdit(record)"
+                >
                   <template #icon><icon-edit class="size-14" /></template>
                 </a-link>
               </a-tooltip>
-              <a-tooltip
-                v-permission="{
-                  resource: `roles.${Resources.Modules}`,
-                  actions: [Actions.PUT]
-                }"
-                :content="$t('common.button.refresh')"
-              >
-                <a-link type="text" size="small" @click="handlRefresh(record)">
+              <a-tooltip :content="$t('common.button.refresh')">
+                <a-link
+                  v-permission="{
+                    resource: `roles.${Resources.Modules}`,
+                    actions: [Actions.PUT]
+                  }"
+                  type="text"
+                  size="small"
+                  @click="handlRefresh(record)"
+                >
                   <template #icon><icon-refresh /></template>
                 </a-link>
               </a-tooltip>

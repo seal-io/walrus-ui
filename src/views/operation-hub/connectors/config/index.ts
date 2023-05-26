@@ -11,6 +11,12 @@ export const connectorTypeList = [
     enable: true,
     value: 'Custom',
     com: 'custom'
+  },
+  {
+    label: 'operation.connectors.reinstall.cloudProvider',
+    enable: true,
+    value: 'CloudProvider',
+    com: 'cloud'
   }
   // { label: 'Cloud Provider', value: 'cloud', com: 'cloud' }
 ];

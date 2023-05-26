@@ -27,7 +27,7 @@
           <a-input
             v-if="pageAction === 'edit'"
             v-model="formData.name"
-            style="width: 500px"
+            style="width: 470px"
             :max-length="30"
             show-word-limit
           ></a-input>
@@ -35,19 +35,6 @@
             formData.name || '-'
           }}</span>
         </a-form-item>
-        <!-- <a-form-item
-          field="description"
-          :hide-asterisk="false"
-          label="描述"
-          :validate-trigger="['change']"
-        >
-          <a-textarea
-            v-model="formData.description"
-            style="width: 500px"
-            :spellcheck="false"
-            :auto-size="{ minRows: 4, maxRows: 6 }"
-          />
-        </a-form-item> -->
         <a-form-item
           :label="$t('operation.connectors.form.type')"
           field="type"
@@ -61,7 +48,7 @@
           <a-select
             v-if="pageAction === 'edit'"
             v-model="formData.type"
-            style="width: 500px"
+            style="width: 470px"
           >
             <a-option
               v-for="(item, index) in typeOptions"
@@ -83,7 +70,56 @@
             <span>{{ formData.type }}</span>
           </span>
         </a-form-item>
-        <a-form-item
+        <template v-if="pageAction === 'edit'">
+          <div
+            v-for="key in providerKeys"
+            :key="key"
+            style="display: flex; justify-content: flex-start"
+          >
+            <a-form-item
+              :label="key"
+              :field="`configData.${key}.value`"
+              validate-trigger="change"
+              :rules="[
+                {
+                  required: true,
+                  message: $t('common.form.rule.input', { name: key })
+                }
+              ]"
+            >
+              <a-input
+                v-if="!formData.configData[key].visible"
+                v-model="formData.configData[key].value"
+              />
+              <a-input-password
+                v-else
+                v-model="formData.configData[key].value"
+              ></a-input-password>
+            </a-form-item>
+            <div
+              style="display: flex; flex-basis: content; align-items: center"
+            >
+              <a-checkbox
+                v-model="formData.configData[key].visible"
+                style="margin-left: 10px"
+                >{{
+                  $t('operation.connectors.attribute.sensitive')
+                }}</a-checkbox
+              >
+              <a-tooltip
+                :content="$t('operation.connectors.attribute.sensitive.tips')"
+              >
+                <template #content>
+                  <div style="white-space: pre-wrap">{{
+                    $t('operation.connectors.attribute.sensitive.tips')
+                  }}</div>
+                </template>
+                <icon-info-circle class="mleft-5" />
+              </a-tooltip>
+            </div>
+          </div>
+        </template>
+        <!-- <a-form-item
           v-if="pageAction === 'edit'"
           label="Access Token"
           field="configData.token.value"
@@ -98,7 +134,7 @@
             v-model="formData.configData.token.value"
             style="width: 500px"
           ></a-input-password>
-        </a-form-item>
+        </a-form-item> -->
         <a-form-item
           v-if="pageAction === 'view'"
           :label="$t('operation.connectors.table.status')"
@@ -154,6 +190,7 @@
   import { ConnectorFormData } from '../config/interface';
   import { createConnector, updateConnector, queryItemConnector } from '../api';
 
+  const providerKeys = ['access_key', 'secret_key', 'region'];
   const userStore = useUserStore();
   const { t, router, route } = useCallCommon();
   const { pageAction, handleEdit } = usePageAction();
@@ -164,41 +201,51 @@
   const formData: ConnectorFormData = reactive({
     name: '',
     configData: {
-      token: {
+      access_key: {
         value: '',
-        visiable: false,
+        visible: true,
+        type: 'string'
+      },
+      secret_key: {
+        value: '',
+        visible: true,
+        type: 'string'
+      },
+      region: {
+        value: '',
+        visible: true,
         type: 'string'
       }
     },
     description: '',
     configVersion: 'v1',
-    type: 'Github',
-    category: 'VersionControl',
+    type: 'Alibaba',
+    category: 'CloudProvider',
     enableFinOps: false
   });
 
   const typeOptions = [
-    { label: 'GitHub', value: 'Github' }
-    // { label: 'GitLab', value: 'Gitlab' }
+    { label: 'Alibaba', value: 'Alibaba' },
+    { label: 'AWS', value: 'AWS' }
   ];
   const title = computed(() => {
     if (!id) {
       return t('operation.connectors.title.new', {
-        type: t('operation.connectors.table.versioncontrol')
+        type: t('operation.connectors.reinstall.cloudProvider')
       });
     }
     if (id && pageAction.value === 'edit') {
       return t('operation.connectors.title.edit', {
-        type: t('operation.connectors.table.versioncontrol')
+        type: t('operation.connectors.reinstall.cloudProvider')
       });
     }
     if (id && pageAction.value === 'view') {
       return t('operation.connectors.title.view', {
-        type: t('operation.connectors.table.versioncontrol')
+        type: t('operation.connectors.reinstall.cloudProvider')
       });
     }
     return t('operation.connectors.title.edit', {
-      type: t('operation.connectors.table.versioncontrol')
+      type: t('operation.connectors.reinstall.cloudProvider')
     });
   });
   const handleBeforeUpload = async (file) => {

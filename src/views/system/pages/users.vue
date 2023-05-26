@@ -136,14 +136,14 @@
           :title="$t('common.table.operation')"
         >
           <template #cell="{ record }">
-            <a-tooltip
-              v-permission="{
-                resource: `roles.${Resources.Subjects}`,
-                actions: [Actions.PUT]
-              }"
-              :content="$t('common.button.edit')"
-            >
-              <a-link @click="handleClickEdit(record)">
+            <a-tooltip :content="$t('common.button.edit')">
+              <a-link
+                v-permission="{
+                  resource: `roles.${Resources.Subjects}`,
+                  actions: [Actions.PUT]
+                }"
+                @click="handleClickEdit(record)"
+              >
                 <template #icon>
                   <icon-edit></icon-edit>
                 </template>

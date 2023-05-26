@@ -72,5 +72,22 @@ export default [
       },
       icon: 'icon-apps'
     }
+  },
+  {
+    path: 'connector/cloud-provider/:action',
+    name: 'ConnectorProviderDetail',
+    component: () =>
+      import('@/views/operation-hub/connectors/pages/cloud-provider.vue'),
+    meta: {
+      hideInMenu: true,
+      ignoreCache: true,
+      locale: 'operation.connectors.menu',
+      requiresAuth: true,
+      permission: {
+        resource: Resources.Connectors,
+        actions: ['GET']
+      },
+      icon: 'icon-apps'
+    }
   }
 ];

@@ -17,7 +17,19 @@ export const tabList = [
 ];
 
 export const actionList = [
-  { label: 'common.button.edit', value: 'edit', icon: 'icon-edit' },
-  { label: 'common.button.refresh', value: 'refresh', icon: 'icon-refresh' }
+  {
+    label: 'common.button.edit',
+    value: 'edit',
+    icon: 'icon-edit',
+    requiredAuth: true,
+    permission: ['PUT']
+  },
+  {
+    label: 'common.button.refresh',
+    value: 'refresh',
+    icon: 'icon-refresh',
+    requiredAuth: true,
+    permission: ['PUT']
+  }
 ];
 export default {};

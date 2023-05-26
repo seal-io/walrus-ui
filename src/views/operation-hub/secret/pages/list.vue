@@ -114,14 +114,12 @@
           >
             <template #cell="{ record }">
               <a-space :size="10">
-                <a-tooltip
-                  v-permission="{
-                    resource: `roles.${Resources.Secrets}`,
-                    actions: [Actions.PUT]
-                  }"
-                  :content="$t('common.button.edit')"
-                >
+                <a-tooltip :content="$t('common.button.edit')">
                   <a-link
+                    v-permission="{
+                      resource: `roles.${Resources.Secrets}`,
+                      actions: [Actions.PUT]
+                    }"
                     type="text"
                     size="small"
                     @click="handleClickEdit(record)"

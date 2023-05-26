@@ -40,6 +40,7 @@ import nodejs from '../images/nodejs.png';
 import redis from '../images/redis.png';
 import springboot from '../images/spring-boot.png';
 import webservice from '../images/web-service.jpg';
+import aws from '../images/aws.png';
 
 interface repoInconItem {
   [key: string]: any;
@@ -80,13 +81,15 @@ export const repoIcon: repoInconItem = {
   policy,
   license,
   alicloud,
+  alibaba: alicloud,
   java,
   golang,
   mysql,
   nodejs,
   redis,
   springboot,
-  webservice
+  webservice,
+  aws
 };
 
 export default {};

@@ -39,6 +39,7 @@
           </div>
           <div class="btn-wrap">
             <a-dropdown
+              v-if="actionList.length"
               size="small"
               style="line-height: 30px"
               position="bl"
@@ -92,7 +93,7 @@
   import { execSucceed } from '@/utils/monitor';
   import StatusLabel from '../../connectors/components/status-label.vue';
   import { TemplateRowData } from '../config/interface';
-  import { actionList } from '../config';
+
   import { refreshModules } from '../api';
 
   const props = defineProps({
@@ -100,6 +101,12 @@
       type: String,
       default() {
         return '';
+      }
+    },
+    actionList: {
+      type: Array as PropType<{ label: string; value: string; icon: string }[]>,
+      default() {
+        return [];
       }
     },
     dataInfo: {

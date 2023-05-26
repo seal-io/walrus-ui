@@ -28,6 +28,7 @@ export default {
   'operation.connectors.reinstall.button': '确定重装',
   'operation.connectors.table.versioncontrol': '版本控制',
   'operation.connectors.reinstall.custom': '自定义',
+  'operation.connectors.reinstall.cloudProvider': '云厂商',
   'operation.connectors.status.ready': '集群成本分析工具为可用状态',
   'operation.connectors.status.error': '集群成本分析工具不可用，尝试重装',
   'operation.connectors.form.finopsenable': '成本分析器(可选)',
