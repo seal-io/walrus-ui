@@ -77,55 +77,28 @@
             style="display: inline-flex; justify-content: flex-start"
           >
             <a-form-item
-              :label="item.key"
+              :label="item.label"
               :field="`configData.${item.key}.value`"
               validate-trigger="change"
               :rules="[
                 {
                   required: pageAction === 'edit',
-                  message: $t('common.form.rule.input', { name: item.key })
+                  message: $t('common.form.rule.input', { name: item.label })
                 }
               ]"
             >
-              <a-input-group>
-                <div>
-                  <a-input
-                    v-if="!formData.configData[item.key].visible"
-                    v-model="formData.configData[item.key].value"
-                  />
-                  <a-input-password
-                    v-else
-                    v-model="formData.configData[item.key].value"
-                  ></a-input-password>
-                </div>
-                <div
-                  style="
-                    display: flex;
-                    flex-basis: content;
-                    align-items: center;
-                  "
-                >
-                  <a-checkbox
-                    v-model="formData.configData[item.key].visible"
-                    style="margin-left: 10px"
-                    >{{
-                      $t('operation.connectors.attribute.sensitive')
-                    }}</a-checkbox
-                  >
-                  <a-tooltip
-                    :content="
-                      $t('operation.connectors.attribute.sensitive.tips')
-                    "
-                  >
-                    <template #content>
-                      <div style="white-space: pre-wrap">{{
-                        $t('operation.connectors.attribute.sensitive.tips')
-                      }}</div>
-                    </template>
-                    <icon-info-circle class="mleft-5" />
-                  </a-tooltip>
-                </div>
-              </a-input-group>
+              <div>
+                <a-input
+                  v-if="item.visible"
+                  v-model="formData.configData[item.key].value"
+                  style="width: 470px"
+                />
+                <a-input-password
+                  v-else
+                  v-model="formData.configData[item.key].value"
+                  style="width: 470px"
+                ></a-input-password>
+              </div>
             </a-form-item>
           </div>
         </template>
@@ -145,7 +118,7 @@
                 }"
               >
                 <span>{{
-                  get(formData, `configData.${row.key}.visible`)
+                  !row.visible
                     ? '******'
                     : get(formData, `configData.${row.key}.value`)
                 }}</span>
@@ -194,9 +167,9 @@
   import { createConnector, updateConnector, queryItemConnector } from '../api';
 
   const providerKeys = [
-    { label: 'access_key', value: '', key: 'access_key' },
-    { label: 'secret_key', value: '', key: 'secret_key' },
-    { label: 'region', value: '', key: 'region' }
+    { label: 'AccessKey', value: '', key: 'access_key', visible: true },
+    { label: 'SecretKey', value: '', key: 'secret_key', visible: false },
+    { label: 'Region', value: '', key: 'region', visible: true }
   ];
   const userStore = useUserStore();
   const { t, router, route } = useCallCommon();
@@ -215,7 +188,7 @@
       },
       secret_key: {
         value: '',
-        visible: true,
+        visible: false,
         type: 'string'
       },
       region: {
@@ -255,30 +228,17 @@
       type: t('operation.connectors.reinstall.cloudProvider')
     });
   });
-  const handleBeforeUpload = async (file) => {
-    return true;
-  };
-  const setFormDataVisible = () => {
-    const data = cloneDeep(formData);
-    const accessKeyVisible = get(data, 'configData.access_key.visible');
-    const secretkeyVisible = get(data, 'configData.secret_key.visible');
-    const regionVisible = get(data, 'configData.region.visible');
-    data.configData.access_key.visible = !accessKeyVisible;
-    data.configData.secret_key.visible = !secretkeyVisible;
-    data.configData.region.visible = !regionVisible;
-    return data;
-  };
+
   const handleSubmit = async () => {
     const res = await formref.value?.validate();
     if (!res) {
       try {
         submitLoading.value = true;
         copyFormData = cloneDeep(formData);
-        const data = setFormDataVisible();
         if (id) {
-          await updateConnector(data);
+          await updateConnector(formData);
         } else {
-          await createConnector(data);
+          await createConnector(formData);
         }
         router.back();
         submitLoading.value = false;
@@ -293,8 +253,6 @@
     try {
       const { data } = await queryItemConnector({ id });
       assignIn(formData, data);
-      const newData = setFormDataVisible();
-      assignIn(formData, newData);
       copyFormData = cloneDeep(formData);
     } catch (error) {
       console.log(error);

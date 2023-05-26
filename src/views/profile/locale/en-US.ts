@@ -13,5 +13,7 @@ export default {
   'propfile.account.settings.holder': 'please enter user name',
   'propfile.account.settings.rules.type': 'type is required',
   'propfile.account.settings.rules.role': 'role is required',
-  'propfile.account.settings.rules.name': 'name is required'
+  'propfile.account.settings.rules.name': 'name is required',
+  'propfile.account.user.title': 'User Center',
+  'propfile.account.user.info': 'User Information'
 };

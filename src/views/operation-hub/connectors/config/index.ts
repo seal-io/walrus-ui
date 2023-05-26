@@ -20,7 +20,12 @@ export const connectorTypeList = [
   }
   // { label: 'Cloud Provider', value: 'cloud', com: 'cloud' }
 ];
-
+export enum ConnectorCategory {
+  VersionControl = 'VersionControl',
+  Custom = 'Custom',
+  CloudProvider = 'CloudProvider',
+  Kubernetes = 'Kubernetes'
+}
 export const finOpsStatus = [
   { label: 'operation.connectors.status.ready', value: 'ready' },
   { label: 'operation.connectors.status.error', value: 'error' }

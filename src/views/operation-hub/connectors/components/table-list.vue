@@ -83,23 +83,23 @@
         >
           <template #cell="{ record }">
             <span
-              v-if="_.includes(['Kubernetes', 'VersionControl'], category)"
+              v-if="_.includes([ConnectorCategory.Custom], category)"
               class="mright-5"
             >
-              <ProviderIcon :provider="toLower(record.type)"></ProviderIcon>
-            </span>
-            <span v-else class="mright-5">
               <icon-font
                 type="icon-custom"
                 class="size-16"
                 style="color: rgb(var(--arcoblue-5))"
               ></icon-font>
             </span>
+            <span v-else class="mright-5">
+              <ProviderIcon :provider="toLower(record.type)"></ProviderIcon>
+            </span>
             <span>{{ record.type }}</span>
           </template>
         </a-table-column>
         <a-table-column
-          v-if="category !== 'Custom'"
+          v-if="category !== ConnectorCategory.Custom"
           ellipsis
           tooltip
           :cell-style="{ minWidth: '40px' }"
@@ -120,7 +120,7 @@
           </template>
         </a-table-column>
         <a-table-column
-          v-if="category === 'Kubernetes'"
+          v-if="category === ConnectorCategory.Kubernetes"
           ellipsis
           tooltip
           :cell-style="{ minWidth: '40px' }"
@@ -185,7 +185,10 @@
               "
               :size="10"
             >
-              <a-dropdown-button v-if="category === 'Kubernetes'" size="small">
+              <a-dropdown-button
+                v-if="category === ConnectorCategory.Kubernetes"
+                size="small"
+              >
                 <a-tooltip :content="$t('common.button.edit')">
                   <a-link
                     class="mright-0"
@@ -231,7 +234,7 @@
                       </a-link>
                     </a-tooltip>
                   </a-doption>
-                  <a-doption v-if="category === 'Kubernetes'">
+                  <a-doption v-if="category === ConnectorCategory.Kubernetes">
                     <a-tooltip
                       :content="$t('operation.connectors.table.enableFin')"
                     >
@@ -297,6 +300,7 @@
   import useRowSelect from '@/hooks/use-row-select';
   import FilterBox from '@/components/filter-box/index.vue';
   import { ConnectorRowData } from '../config/interface';
+  import { ConnectorCategory } from '../config';
   import StatusLabel from './status-label.vue';
   import {
     queryConnectors,
