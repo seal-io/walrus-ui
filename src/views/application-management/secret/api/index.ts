@@ -27,13 +27,13 @@ export const queryItemSecret = (params: { id: string }) => {
     }
   });
 };
-export const createSecret = (data: SecretFormData) => {
-  return axios.post('/secrets', data);
+export const createSecret = ({ data, query }) => {
+  return axios.post(`/secrets?${qs.stringify(query)}`, data);
 };
-export const updateSecret = (data: SecretFormData) => {
-  return axios.put(`/secrets/${data.id}`, data);
+export const updateSecret = ({ data, query }) => {
+  return axios.put(`/secrets/${data.id}?${qs.stringify(query)}`, data);
 };
 
-export const deleteSecret = (data) => {
-  return axios.delete('/secrets', { data });
+export const deleteSecret = ({ data, query }) => {
+  return axios.delete(`/secrets?${qs.stringify(query)}`, { data });
 };

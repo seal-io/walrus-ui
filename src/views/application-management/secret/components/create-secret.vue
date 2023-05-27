@@ -140,8 +140,6 @@
     }
   });
   const emit = defineEmits(['save', 'update:show']);
-  const { router, route } = useCallCommon();
-  const projectID = route.query.projectId as string;
   const formref = ref();
   const loading = ref(false);
   const submitLoading = ref(false);
@@ -169,9 +167,15 @@
           })
         };
         if (props.action === 'create') {
-          await createSecret(params);
+          await createSecret({
+            data: params,
+            query: { projectID: props.projectID }
+          });
         } else {
-          await updateSecret(params);
+          await updateSecret({
+            data: params,
+            query: { projectID: props.projectID }
+          });
         }
         setTimeout(() => {
           emit('save');
