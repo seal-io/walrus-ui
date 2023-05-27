@@ -71,7 +71,7 @@
   import { onMounted, ref, inject, watch, nextTick } from 'vue';
   import { useSetChunkRequest } from '@/api/axios-chunk-request';
   import { websocketEventType } from '@/views/config';
-  import { queryInstanceOutputs } from '../../api';
+  import { queryInstanceOutputs, getPermissionRouteParams } from '../../api';
   import { OutputsRow } from '../../config/interface';
 
   const { setChunkRequest } = useSetChunkRequest();
@@ -134,6 +134,9 @@
       nextTick(() => {
         chunkRequesSource = setChunkRequest({
           url: `/application-instances/${instanceId.value}/output`,
+          params: {
+            ...getPermissionRouteParams()
+          },
           handler: updateHandler
         });
       });

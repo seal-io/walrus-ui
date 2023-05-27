@@ -308,7 +308,12 @@
           id: val
         };
       });
-      await deleteSecret(ids);
+      await deleteSecret({
+        data: ids,
+        query: {
+          projectID: queryParams.projectID
+        }
+      });
       loading.value = false;
       execSucceed();
       queryParams.page = 1;

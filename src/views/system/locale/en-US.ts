@@ -121,7 +121,7 @@ export default {
   'system.setting.CostCollectCronExpr': 'Collect usage costs',
   'system.setting.CostCollectCronExpr.desc':
     'The default is to execute every hour',
-  'system.user.visitor': 'Visitor',
+  'system.user.visitor': 'General User',
   'system.user.admin': 'Administrator',
   'system.user.engineer': 'Platform Engineer'
 };

@@ -48,7 +48,7 @@
       node.nodeType = node.type;
       node.type = 'input';
       node.label = node.name;
-      node.position = { x: 0, y: 0 };
+      node.position = { x: Math.random() * 400, y: Math.random() * 400 };
       return node;
     });
   };
