@@ -2,6 +2,17 @@ export enum AccountKind {
   USER = 'user',
   GROUP = 'group'
 }
+export enum RoleType {
+  Admin = 'system/admin',
+  Engineer = 'system/platform-engineer',
+  User = '0'
+}
+
+export const RolesTypeMap = {
+  [RoleType.Admin]: 'system.user.admin',
+  [RoleType.Engineer]: 'system.user.engineer',
+  [RoleType.User]: 'system.user.visitor'
+};
 
 export const roleTypeList = [
   {
