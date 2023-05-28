@@ -11,6 +11,8 @@ import {
 import _ from 'lodash';
 import { clearToken, getUserResourcePermission } from '@/utils/auth';
 import { removeRouteListener } from '@/utils/route-listener';
+import { Actions } from '@/permissions/resources';
+import { RoleType } from '@/views/system/config/users';
 import { UserState } from './types';
 import testData from './test';
 
@@ -85,7 +87,7 @@ const useUserStore = defineStore('user', {
       return path;
     },
     isSystemAdmin() {
-      return _.some(this.roles, (item) => item.id === 'system/admin');
+      return _.some(this.roles, (item) => item.id === RoleType.Admin);
     },
 
     hasActionsPermission(config: { resource: string; actions: string[] }) {
@@ -93,7 +95,7 @@ const useUserStore = defineStore('user', {
       const permissionActions = (_.get(this.permissions, resource) ||
         []) as Array<string>;
       const hasPermission =
-        _.includes(permissionActions, '*') ||
+        _.includes(permissionActions, Actions.All) ||
         _.every(actions, (ac) => _.includes(permissionActions, ac));
       return hasPermission;
     },
@@ -104,7 +106,7 @@ const useUserStore = defineStore('user', {
         `${this.permissionsKey.roles}.${resource}`
       ) || []) as Array<string>;
       const hasPermission =
-        _.includes(permissionActions, '*') ||
+        _.includes(permissionActions, Actions.All) ||
         _.every(actions, (ac) => _.includes(permissionActions, ac));
       return hasPermission;
     },

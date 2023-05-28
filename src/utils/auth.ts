@@ -121,7 +121,10 @@ const getProjectRolesPolicies = (projectRoles: ProjectRolesItem[]) => {
         projectID,
         projectName,
         policies: {
-          ...getRolesPolicies(project.roles)
+          ..._.omit(getRolesPolicies(project.roles), ROLES)
+        },
+        roles: {
+          ..._.get(getRolesPolicies(project.roles), ROLES)
         }
       };
       return obj;
