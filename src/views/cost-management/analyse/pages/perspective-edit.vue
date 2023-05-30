@@ -22,7 +22,7 @@
       >
         <a-input
           v-if="!viewable"
-          v-model="formData.name"
+          v-model.trim="formData.name"
           :max-length="50"
           :show-word-limit="!viewable"
         ></a-input>

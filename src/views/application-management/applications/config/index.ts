@@ -117,11 +117,17 @@ export const statusMap = {
   DeployFailed: 'error',
   DeleteFailed: 'error'
 };
+export enum Status {
+  Warning = 'warning',
+  Error = 'error',
+  Running = 'running'
+}
 export const setInstanceStatus = (status) => {
-  if (get(status, 'transitioning')) return 'warning';
-  if (get(status, 'error')) return 'error';
-  return 'running';
+  if (get(status, 'transitioning')) return Status.Warning;
+  if (get(status, 'error')) return Status.Error;
+  return Status.Running;
 };
+
 export const websocketEventType = {
   create: 1,
   update: 2,

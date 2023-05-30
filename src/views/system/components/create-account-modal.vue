@@ -60,7 +60,7 @@
         ]"
       >
         <a-input
-          v-model="formData.name"
+          v-model.trim="formData.name"
           :max-length="20"
           show-word-limit
           :disabled="action === 'edit'"
