@@ -209,9 +209,13 @@
   import EditPageFooter from '@/components/edit-page-footer/index.vue';
   import { deleteModal, execSucceed } from '@/utils/monitor';
   import useRowSelect from '@/hooks/use-row-select';
-  import { accountTypeList, AccountKind } from '@/views/system/config/users';
+  import {
+    accountTypeList,
+    AccountKind,
+    RoleType
+  } from '@/views/system/config/users';
   import { getListLabel } from '@/utils/func';
-  import { RoleItem, RowData } from '@/views/system/config/interface';
+  import { RowData } from '@/views/system/config/interface';
   import { queryRoles, querySubjects } from '@/views/system/api/users';
   import {
     querySubjectRoles,

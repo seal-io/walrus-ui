@@ -30,21 +30,17 @@
       </li> -->
 
       <li id="langWrap" style="position: relative">
-        <a-tooltip
-          :content="$t('settings.language')"
-          popup-container="#langWrap"
+        <a-button
+          size="small"
+          class="nav-btn"
+          type="text"
+          :shape="'circle'"
+          @click="setDropDownVisible"
         >
-          <a-button
-            class="nav-btn"
-            type="outline"
-            :shape="'circle'"
-            @click="setDropDownVisible"
-          >
-            <template #icon>
-              <icon-language />
-            </template>
-          </a-button>
-        </a-tooltip>
+          <template #icon>
+            <icon-language />
+          </template>
+        </a-button>
         <a-dropdown
           trigger="click"
           style="top: 36px; z-index: 3000; width: 70px"
@@ -52,6 +48,7 @@
           @select="changeLocale"
         >
           <div ref="triggerBtn" class="trigger-btn"></div>
+          <!-- <icon-language class="size-16" style="cursor: pointer" /> -->
           <template #content>
             <a-doption
               v-for="item in locales"
@@ -63,6 +60,16 @@
           </template>
         </a-dropdown>
       </li>
+      <!-- <li
+        ><a-divider
+          direction="vertical"
+          style="
+            margin: 0;
+            height: 12px;
+            border-color: rgba(255, 255, 255, 0.5);
+          "
+        ></a-divider
+      ></li> -->
       <!-- <li>
         <a-tooltip
           :content="
@@ -111,14 +118,28 @@
           </template>
         </a-popover>
       </li> -->
-      <li v-show="hasNavList">
+      <li v-show="hasNavList" id="userWrap" style="position: relative">
         <a-dropdown
           trigger="click"
-          style="top: 56px"
+          style="top: 36px"
+          popup-container="#userWrap"
           content-class="count-list-wrap"
         >
-          <div>
-            <a-avatar
+          <div style="cursor: pointer" class="user-wrap">
+            <span class="user">
+              <!-- <span class="name">{{ userStore.name }}</span> -->
+              <span class="role">
+                <span class="avatar">
+                  <img
+                    alt="avatar"
+                    class="img"
+                    src="../../assets/images/avatar-02.png"
+                  />
+                </span>
+                {{ userStore.name }}</span
+              >
+            </span>
+            <!-- <a-avatar
               :size="32"
               :style="{
                 cursor: 'pointer',
@@ -126,7 +147,7 @@
               }"
             >
               <img alt="avatar" src="../../assets/images/avatar-02.png" />
-            </a-avatar>
+            </a-avatar> -->
           </div>
           <template #content>
             <!-- <a-doption>
@@ -139,7 +160,7 @@
             </a-doption> -->
             <a-doption>
               <a-space @click="handleModifyPassword">
-                <icon-user />
+                <icon-user style="color: inherit" />
                 <span>
                   {{ $t('propfile.account.user.title') }}
                 </span>
@@ -163,7 +184,7 @@
             </a-doption> -->
             <a-doption>
               <a-space style="width: 100%" @click="handleLogout">
-                <icon-export />
+                <icon-export style="color: inherit" />
                 <span>
                   {{ $t('messageBox.logout') }}
                 </span>
@@ -177,8 +198,7 @@
 </template>
 
 <script lang="ts" setup>
-  import { get, hasIn, includes } from 'lodash';
-  import { isLogin } from '@/utils/auth';
+  import _, { get, hasIn, includes } from 'lodash';
   import { useRouter } from 'vue-router';
   import { computed, ref, inject, toRaw, nextTick } from 'vue';
   import { Message } from '@arco-design/web-vue';
@@ -188,6 +208,7 @@
   import { listenerRouteChange } from '@/utils/route-listener';
   import useLocale from '@/hooks/locale';
   import useUser from '@/hooks/user';
+  import { RoleType, RolesTypeMap } from '@/views/system/config/users';
   import MessageBox from '../message-box/index.vue';
   import navList from './components/nav-list.vue';
   import { NO_LOGIN_CHECK_PATH, navDataList } from './configs';
@@ -217,6 +238,18 @@
   const defaultActive = ref<string>('TotalView');
   const theme = computed(() => {
     return appStore.theme;
+  });
+  const getUserRole = computed(() => {
+    const { roles } = userStore;
+    const admin = _.find(roles, (item) => item.id === RoleType.Admin);
+    if (admin) {
+      return _.get(RolesTypeMap, admin.id);
+    }
+    const engnieer = _.find(roles, (item) => item.id === RoleType.Engineer);
+    if (engnieer) {
+      return _.get(RolesTypeMap, engnieer.id);
+    }
+    return _.get(RolesTypeMap, RoleType.User);
   });
   const isDark = useDark({
     selector: '.navbar',
@@ -356,6 +389,38 @@
 
   .navbar {
     padding: 0 20px;
+  }
+
+  .user-wrap {
+    display: flex;
+
+    .user {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin-right: 5px;
+      color: #fff;
+      font-size: 14px;
+
+      .name {
+        margin-bottom: 3px;
+      }
+
+      .role {
+        display: flex;
+        align-items: center;
+      }
+
+      .avatar {
+        margin-right: 2px;
+        font-size: 0;
+
+        .img {
+          width: 24px;
+          height: 24px;
+        }
+      }
+    }
   }
   @media screen and (min-width: 1512px) {
     .navbar {

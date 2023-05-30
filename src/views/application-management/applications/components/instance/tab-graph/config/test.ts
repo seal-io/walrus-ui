@@ -3,7 +3,7 @@ export default {
     {
       id: 'module/mysql/db',
       name: 'db',
-      type: 'module',
+      type: 'resource',
       operations: null,
       data: {
         name: 'db',
@@ -372,7 +372,7 @@ export default {
       }
     }
   ],
-  links: [
+  edges: [
     { source: 'module/db', target: 'instance/web' },
     {
       source: 'resource/462295217995854459',
