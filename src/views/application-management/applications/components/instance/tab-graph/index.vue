@@ -1,10 +1,16 @@
 <template>
   <div ref="flowWrapper" class="flow-wrapper">
     <div class="g6-box">
-      <GraphG6
-        @nodeClick="handleNodeClick"
-        @canvasClick="handleCanvasClick"
-      ></GraphG6>
+      <a-spin
+        :loading="loading"
+        style="width: 100%; backgroundcolor: var(--color-fill-2)"
+      >
+        <GraphG6
+          :source-data="resultData"
+          @nodeClick="handleNodeClick"
+          @canvasClick="handleCanvasClick"
+        ></GraphG6>
+      </a-spin>
     </div>
     <!-- <div class="node-info" :class="{ 'node-active': nodeActive }">
       <div class="title">{{ nodeInfo.name }}</div>
@@ -19,11 +25,18 @@
   import { onClickOutside } from '@vueuse/core';
   import GraphG6 from './components/graph-g6.vue';
   import { queryInstanceResourceGraph } from '../../../api';
+  import { INode, IEdge } from './config/interface';
+  import testData from './config/test';
 
   const instanceId = inject('instanceId', ref(''));
   const nodeActive = ref(false);
+  const loading = ref(false);
   const flowWrapper = ref();
   const nodeInfo = ref<any>({});
+  const resultData = ref<{ links: IEdge[]; nodes: any[] }>({
+    links: [],
+    nodes: []
+  });
 
   onClickOutside(flowWrapper, () => {
     nodeActive.value = false;
@@ -36,10 +49,29 @@
   const handleCanvasClick = () => {
     nodeActive.value = false;
   };
+  const getInstanceResourceGraph = async () => {
+    try {
+      loading.value = true;
+      const params = {
+        instanceID: instanceId.value
+      };
+      const { data } = await queryInstanceResourceGraph(params);
+      resultData.value.links = testData.edges || [];
+      resultData.value.nodes = testData.nodes || [];
+      loading.value = false;
+    } catch (error) {
+      resultData.value.links = [];
+      resultData.value.nodes = [];
+      resultData.value.links = testData.edges || [];
+      resultData.value.nodes = testData.nodes || [];
+      console.log(error);
+      loading.value = false;
+    }
+  };
   watch(
     () => instanceId.value,
     () => {
-      // getInstanceResourceGraph();
+      getInstanceResourceGraph();
     },
     {
       immediate: true
@@ -49,7 +81,7 @@
 
 <style lang="less" scoped>
   @boxWidth: 300px;
-  @boxHeight: 500px;
+  @boxHeight: 400px;
 
   .flow-wrapper {
     position: relative;

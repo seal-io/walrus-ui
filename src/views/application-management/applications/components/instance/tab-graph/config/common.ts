@@ -1,4 +1,5 @@
-import G6 from '@antv/g6';
+import G6, { ModelConfig } from '@antv/g6';
+import { IGroup, IShape } from '@antv/g-base';
 import insertCss from 'insert-css';
 
 insertCss(`
@@ -34,44 +35,61 @@ export const defineCustomNode = () => {
   G6.registerNode(
     'resource',
     {
-      draw(cfg, group) {
-        const rect = group?.addShape('rect', {
+      afterDraw(cfg, group) {
+        const size = cfg?.size || [];
+        const width = size[0] - 14;
+        const height = size[1] - 14;
+        const label = group?.addShape('text', {
           attrs: {
-            x: -75,
-            y: -30,
-            width: 150,
-            height: 60,
-            radius: 4,
-            stroke: '',
-            fill: '#fff',
-            lineWidth: 2
+            x: width,
+            y: height,
+            text: 'aaa'
           },
-          labelCfg: {
-            style: {
-              fill: 'red',
-              fontSize: 14
-            }
-          },
-          name: 'rect-shape'
+          className: 'text-shape',
+          name: 'text-shape',
+          draggable: true,
+          labelRelated: true
         });
-        if (cfg?.name) {
-          group?.addShape('text', {
-            attrs: {
-              text: cfg.name,
-              x: 0,
-              y: 0,
-              fill: '#4e5969',
-              fontSize: 14,
-              textAlign: 'center',
-              textBaseline: 'middle',
-              fontWeight: 'bold'
-            }
-          });
-        }
-        return rect;
+        group['shapeMap']['text-shape'] = label;
       }
     },
     'modelRect'
+  );
+};
+
+const handClick = () => {
+  console.log('custom node');
+};
+export const defineDomNode = () => {
+  G6.registerNode(
+    'resource',
+    {
+      draw: (cfg: ModelConfig, group: IGroup) => {
+        const size = cfg.size || [120, 60];
+        return group.addShape('dom', {
+          attrs: {
+            width: size[0],
+            height: size[1],
+            // 传入 DOM 的 html
+            html: `
+          <div style="background-color: #fff; border: 2px solid #5B8FF9; border-radius: 5px; width: ${
+            size[0] - 5
+          }px; height: ${size[1] - 5}px; display: flex;">
+            <div style="height: 100%; width: 33%; background-color: #CDDDFD" on-click="handClick">
+              <img alt="img" style="line-height: 100%; padding-top: 6px; padding-left: 8px;" src="https://gw.alipayobjects.com/mdn/rms_f8c6a0/afts/img/A*Q_FQT6nwEC8AAAAAAAAAAABkARQnAQ" width="20" height="20" />  
+            </div>
+            <span style="margin:auto; padding:auto; color: #5B8FF9">${
+              cfg.label
+            }</span>
+          </div>
+            `
+          },
+          name: 'dom-node-keyShape', // 在 G6 3.3 及之后的版本中，必须指定 name，可以是任意字符串，但需要在同一个自定义元素类型中保持唯一性
+          draggable: true
+        });
+      }
+    },
+    'single-node'
   );
 };
 
@@ -79,7 +97,8 @@ export const defaultNode = {
   shape: 'modelRect',
   size: [185, 60],
   style: {
-    lineWidth: 0,
+    lineWidth: 1,
+    stroke: 'transparent',
     cursor: 'grabbing'
   },
   labelCfg: {
@@ -108,6 +127,24 @@ export const defaultNode = {
     height: 32,
     offset: -25,
     img: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ0mS6x_Ro4JPjX5tNDpZGDA0_kAcfYLgm7Sg&usqp=CAU'
+  }
+};
+export const defaultCombo = {
+  type: 'rect',
+  size: [40, 10],
+  padding: [15, 10, 10, 15],
+  style: {
+    lineWidth: 1,
+    fill: 'transparent'
+  },
+  labelCfg: {
+    refY: -20,
+    refX: 0,
+    position: 'top',
+    style: {
+      fontWeight: 700,
+      fontSize: 12
+    }
   }
 };
 
