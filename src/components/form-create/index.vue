@@ -100,7 +100,7 @@
                   </template>
                 </div>
                 <template v-else>
-                  <div :id="fm.name" style="width: 100%">
+                  <div :id="fm.name" style="position: relative; width: 100%">
                     <component
                       :is="formComponents[fm.parentCom]"
                       :key="`${formId}_editorId_${index}`"
