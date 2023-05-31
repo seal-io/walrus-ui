@@ -1,5 +1,5 @@
 <template>
-  <div class="wrap">
+  <div ref="wrapper" class="wrap">
     <div v-if="(conReadyState === 0 || loading) && url" class="status-text"
       ><span>{{ statusText }}</span
       ><icon-loading class="size-12"
@@ -13,14 +13,20 @@
   import hasAnsi from 'has-ansi';
   import stripAnsi from 'strip-ansi';
   import {
+    onClickOutside,
+    useThrottleFn,
+    useResizeObserver
+  } from '@vueuse/core';
+  import {
     ref,
     onMounted,
     onBeforeUnmount,
     watch,
     computed,
-    nextTick
+    nextTick,
+    defineExpose
   } from 'vue';
-  import _, { debounce, trim, get } from 'lodash';
+  import _, { debounce, trim, get, throttle } from 'lodash';
   import { Terminal } from 'xterm';
   import { FitAddon } from 'xterm-addon-fit';
   import 'xterm/css/xterm.css';
@@ -37,6 +43,7 @@
       }
     }
   });
+  const wrapper = ref();
   const platform = platformCall();
   const terminalEnvList = ['bash', 'sh', 'powershell', 'pwsh', 'cmd', 'bash'];
   const fitAddon = new FitAddon();
@@ -245,8 +252,10 @@
     fitAddon.fit();
     resizeRemoteTerminal();
   };
-  const onResize = debounce(() => fitTerm(), 500);
-
+  const onResize = throttle(() => fitTerm(), 200);
+  useResizeObserver(wrapper, () => {
+    onResize();
+  });
   const registerTermHandler = () => {
     term.value.onData((data) => {
       console.log('wss: data', data, isWsOpen());
@@ -307,6 +316,7 @@
   };
 
   const init = () => {
+    setWssUrl();
     initWS();
     initTerm();
     registerTermHandler();
@@ -326,6 +336,12 @@
     setWssUrl(true);
     initWS();
   }, 100);
+  const destoryedTerm = () => {
+    removeResizeListener();
+    console.log('wss: dispose');
+    actived.value = false;
+    if (terminalSocket.value) terminalSocket.value?.close?.();
+  };
   watch(
     () => props.url,
     () => {
@@ -356,18 +372,16 @@
       immediate: true
     }
   );
-
+  defineExpose({
+    destoryedTerm
+  });
   onMounted(() => {
     nextTick(() => {
       init();
     });
   });
   onBeforeUnmount(() => {
-    removeResizeListener();
-    console.log('wss: dispose');
-    actived.value = false;
-    // term.value?.dispose?.();
-    if (terminalSocket.value) terminalSocket.value?.close?.();
+    destoryedTerm();
   });
 </script>
 
@@ -387,6 +401,7 @@
 
   .wrap {
     position: relative;
+    text-align: left;
 
     .terminal {
       padding: 5px;

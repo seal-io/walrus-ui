@@ -598,17 +598,6 @@
           .ins-name {
             position: relative;
             color: var(--seal-color-warning);
-            // &:after {
-            //   content: '';
-            //   position: absolute;
-            //   top: 0;
-            //   right: 0;
-            //   display: inline-block;
-            //   width: 8px;
-            //   height: 8px;
-            //   border-radius: 50%;
-            //   background-color: var(--seal-color-warning);
-            // }
           }
 
           .thumb-item {

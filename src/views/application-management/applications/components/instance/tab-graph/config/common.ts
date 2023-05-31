@@ -1,4 +1,4 @@
-import G6, { ModelConfig } from '@antv/g6';
+import G6, { ModelConfig, NodeConfig, ShapeOptions } from '@antv/g6';
 import { IGroup, IShape } from '@antv/g-base';
 import insertCss from 'insert-css';
 
@@ -35,22 +35,22 @@ export const defineCustomNode = () => {
   G6.registerNode(
     'resource',
     {
-      afterDraw(cfg, group) {
-        const size = cfg?.size || [];
-        const width = size[0] - 14;
-        const height = size[1] - 14;
-        const label = group?.addShape('text', {
-          attrs: {
-            x: width,
-            y: height,
-            text: 'aaa'
-          },
-          className: 'text-shape',
-          name: 'text-shape',
-          draggable: true,
-          labelRelated: true
-        });
-        group['shapeMap']['text-shape'] = label;
+      afterDraw(cfg: Node & NodeConfig, group: IGroup) {
+        const { stateIcon = {} } = cfg;
+        const image = group['shapeMap']['rect-state-icon'];
+        if (stateIcon.animate) {
+          image.animate(
+            {
+              // Magnifying and disappearing
+              opacity: 0.2
+            },
+            {
+              duration: 2000,
+              easing: 'easeCubic',
+              repeat: true // repeat
+            }
+          );
+        }
       }
     },
     'modelRect'
@@ -134,8 +134,10 @@ export const defaultCombo = {
   size: [40, 10],
   padding: [15, 10, 10, 15],
   style: {
-    lineWidth: 1,
-    fill: 'transparent'
+    lineWidth: 1.2,
+    fill: 'transparent',
+    lineDash: [6, 6],
+    shadowColor: '#fff'
   },
   labelCfg: {
     refY: -20,

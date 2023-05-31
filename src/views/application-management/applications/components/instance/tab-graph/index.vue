@@ -6,10 +6,21 @@
         style="width: 100%; backgroundcolor: var(--color-fill-2)"
       >
         <GraphG6
+          ref="graph"
           :source-data="resultData"
           @nodeClick="handleNodeClick"
           @canvasClick="handleCanvasClick"
-        ></GraphG6>
+        >
+          <template #toolbar>
+            <a-space class="toolbar" :size="12"
+              ><span
+                class="iconfont icon-fit_screen-o icon"
+                @click="handleFitView"
+              ></span>
+              <span @click="handleRefresh"> <icon-sync class="icon" /> </span
+            ></a-space>
+          </template>
+        </GraphG6>
       </a-spin>
     </div>
     <!-- <div class="node-info" :class="{ 'node-active': nodeActive }">
@@ -33,6 +44,7 @@
   const loading = ref(false);
   const flowWrapper = ref();
   const nodeInfo = ref<any>({});
+  const graph = ref();
   const resultData = ref<{ links: IEdge[]; nodes: any[] }>({
     links: [],
     nodes: []
@@ -49,6 +61,7 @@
   const handleCanvasClick = () => {
     nodeActive.value = false;
   };
+
   const getInstanceResourceGraph = async () => {
     try {
       loading.value = true;
@@ -56,17 +69,23 @@
         instanceID: instanceId.value
       };
       const { data } = await queryInstanceResourceGraph(params);
-      resultData.value.links = testData.edges || [];
-      resultData.value.nodes = testData.nodes || [];
+      resultData.value.links = data.links || [];
+      resultData.value.nodes = data.nodes || [];
       loading.value = false;
     } catch (error) {
       resultData.value.links = [];
       resultData.value.nodes = [];
-      resultData.value.links = testData.edges || [];
-      resultData.value.nodes = testData.nodes || [];
+      // resultData.value.links = testData.edges || [];
+      // resultData.value.nodes = testData.nodes || [];
       console.log(error);
       loading.value = false;
     }
+  };
+  const handleRefresh = () => {
+    getInstanceResourceGraph();
+  };
+  const handleFitView = () => {
+    graph.value?.fitView();
   };
   watch(
     () => instanceId.value,
@@ -91,6 +110,22 @@
 
     .g6-box {
       flex: 1;
+    }
+
+    .toolbar {
+      padding: 5px 6px;
+
+      .icon {
+        font-size: 18px;
+        cursor: pointer;
+        transition: all 0.3s var(--seal-transition-func);
+
+        &:hover {
+          color: rgb(var(--arcoblue-5));
+          transform: scale(1.1);
+          transition: all 0.3s var(--seal-transition-func);
+        }
+      }
     }
 
     .node-info {

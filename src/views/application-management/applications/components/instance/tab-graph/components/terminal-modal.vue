@@ -7,17 +7,21 @@
     :ok-text="$t('common.button.save')"
     :visible="show"
     :mask-closable="false"
-    unmount-on-close
+    :unmount-on-close="true"
     :body-style="{
+      'max-height': '400px',
       'overflow': 'auto',
       'text-align': 'center'
     }"
-    title="终端"
-    @before-open="handleBeforeOpen"
+    :title="`${$t('applications.instance.tab.term')}-${nodeInfo.name}/${
+      nodeInfo.description
+    }`"
+    :render-to-body="false"
+    @open="handleBeforeOpen"
     @before-close="handleBeforeClose"
   >
     <div>
-      <xTerminal :url="wssURL"></xTerminal>
+      <xTerminal ref="terminal" :url="wssURL"></xTerminal>
     </div>
     <template #footer>
       <EditPageFooter style="margin-top: 0">
@@ -52,6 +56,12 @@
   import router from '@/router';
 
   const props = defineProps({
+    nodeInfo: {
+      type: Object,
+      default() {
+        return {};
+      }
+    },
     info: {
       type: Object as PropType<{ id: string; key: string }>,
       default() {
@@ -75,6 +85,7 @@
     }
   });
   const emits = defineEmits(['update:show']);
+  const terminal = ref();
   const { params } = router.currentRoute.value;
   const { host, protocol } = window.location;
   const proto = protocol === 'https:' ? 'wss' : 'ws';
@@ -100,7 +111,9 @@
   const handleBeforeOpen = () => {
     setWssuRL();
   };
-  const handleBeforeClose = () => {};
+  const handleBeforeClose = () => {
+    terminal.value?.destoryedTerm?.();
+  };
 </script>
 
 <style lang="less" scoped></style>
