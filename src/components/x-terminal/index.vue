@@ -358,7 +358,9 @@
   );
 
   onMounted(() => {
-    init();
+    nextTick(() => {
+      init();
+    });
   });
   onBeforeUnmount(() => {
     removeResizeListener();

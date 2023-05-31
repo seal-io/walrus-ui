@@ -133,6 +133,7 @@ export function useSetChunkRequest() {
     retryCount.value = totalCount;
     clearTimeout(timer);
     axiosChunkRequest(requestConfig.value);
+    return axiosToken.value;
   };
   watch(
     () => requestReadyState.value,
