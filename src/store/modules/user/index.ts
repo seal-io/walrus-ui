@@ -80,6 +80,7 @@ const useUserStore = defineStore('user', {
     async info() {
       const { data } = await getUserInfo();
       const permissions: AnyObject = getUserResourcePermission(data);
+      this.permissions = {};
       this.setInfo({ ...data, permissions });
     },
     getProjectUserActions(id, resource) {

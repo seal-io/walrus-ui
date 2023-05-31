@@ -100,33 +100,36 @@
                   </template>
                 </div>
                 <template v-else>
-                  <component
-                    :is="formComponents[fm.parentCom]"
-                    :key="`${formId}_editorId_${index}`"
-                    v-bind="{ ...fm.props }"
-                    v-model="formData[fm.name]"
-                    :editor-default-value="fm.default || ''"
-                    style="width: 100%"
-                    width="100%"
-                    :editor-id="`${fm.name}_editorId_${index}`"
-                    @input="(e) => handleSelectInputChange(e, fm.type)"
-                  >
-                    <template v-if="fm.childCom">
-                      <component
-                        :is="formComponents[fm.childCom]"
-                        :key="`${formId}_child_editorId_${index}`"
-                        :editor-id="`${fm.name}_child_editorId_${index}`"
-                        style="display: none"
-                      ></component>
-                      <component
-                        :is="formComponents[fm.childCom]"
-                        v-for="com in fm.options"
-                        :key="com.label"
-                        :value="com.value"
-                        >{{ com.value }}</component
-                      >
-                    </template>
-                  </component>
+                  <div :id="fm.name" style="width: 100%">
+                    <component
+                      :is="formComponents[fm.parentCom]"
+                      :key="`${formId}_editorId_${index}`"
+                      v-bind="{ ...fm.props }"
+                      v-model="formData[fm.name]"
+                      :popup-container="`#${fm.name}`"
+                      :editor-default-value="fm.default || ''"
+                      style="position: relative; width: 100%"
+                      width="100%"
+                      :editor-id="`${fm.name}_editorId_${index}`"
+                      @input="(e) => handleSelectInputChange(e, fm.type)"
+                    >
+                      <template v-if="fm.childCom">
+                        <component
+                          :is="formComponents[fm.childCom]"
+                          :key="`${formId}_child_editorId_${index}`"
+                          :editor-id="`${fm.name}_child_editorId_${index}`"
+                          style="display: none"
+                        ></component>
+                        <component
+                          :is="formComponents[fm.childCom]"
+                          v-for="com in fm.options"
+                          :key="com.label"
+                          :value="com.value"
+                          >{{ com.value }}</component
+                        >
+                      </template>
+                    </component>
+                  </div>
                 </template>
               </a-form-item>
             </a-grid-item>

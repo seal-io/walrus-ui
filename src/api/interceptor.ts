@@ -60,24 +60,27 @@ axios.interceptors.response.use(
     return res;
   },
   (error) => {
-    console.log('error:', error.response);
     const requestAction = get(error.response, 'config.headers._action') || '';
     const reqUrl = get(error.response, 'config.url');
     const response = get(error, 'response') || {};
     const data = get(response, 'data') || {};
+    const msg =
+      data?.message ||
+      (get(responseStatusMap, data?.status)
+        ? i18n.global.t(get(responseStatusMap, data?.status))
+        : response.statusText);
+    console.log('error:', error.response);
+
     const result = {
       code: data?.status,
-      msg:
-        data?.message ||
-        (get(responseStatusMap, data?.status)
-          ? i18n.global.t(get(responseStatusMap, data?.status))
-          : response.statusText),
+      msg,
       data: data?.data,
       api: reqUrl
     };
     if (
       !noToastAPI.includes(reqUrl) &&
       !axios.isCancel(error) &&
+      error.response &&
       requestAction !== SILENCEAPI
     ) {
       Message.error({
