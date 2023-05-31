@@ -69,6 +69,7 @@
           </a-grid-item>
           <a-grid-item :span="12">
             <a-form-item
+              id="moduleId"
               :label="$t('applications.applications.table.module')"
               field="module.id"
               :disabled="action === 'edit'"
@@ -79,18 +80,23 @@
                 }
               ]"
             >
-              <a-select
-                v-model="formData.module.id"
-                allow-search
-                @change="handleModuleChange"
-              >
-                <a-option
-                  v-for="item in templates"
-                  :key="item.id"
-                  :value="item.id"
-                  >{{ item.id }}</a-option
+              <div>
+                <a-select
+                  id="moduleIdWrapper"
+                  v-model="formData.module.id"
+                  style="position: relative"
+                  popup-container="#moduleIdWrapper"
+                  allow-search
+                  @change="handleModuleChange"
                 >
-              </a-select>
+                  <a-option
+                    v-for="item in templates"
+                    :key="item.id"
+                    :value="item.id"
+                    >{{ item.id }}</a-option
+                  >
+                </a-select>
+              </div>
             </a-form-item>
           </a-grid-item>
           <a-grid-item :span="12">
@@ -104,17 +110,20 @@
                 }
               ]"
             >
-              <a-select
-                v-model="formData.version"
-                @change="handleVersionChange"
-              >
-                <a-option
-                  v-for="item in moduleVersionList"
-                  :key="item.id"
-                  :value="item.value"
-                  >{{ item.label }}</a-option
+              <div id="moduleVerionWrapper" style="position: relative">
+                <a-select
+                  v-model="formData.version"
+                  popup-container="#moduleVerionWrapper"
+                  @change="handleVersionChange"
                 >
-              </a-select>
+                  <a-option
+                    v-for="item in moduleVersionList"
+                    :key="item.id"
+                    :value="item.value"
+                    >{{ item.label }}</a-option
+                  >
+                </a-select>
+              </div>
             </a-form-item>
           </a-grid-item>
         </a-grid>

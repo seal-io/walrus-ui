@@ -48,7 +48,10 @@
             }}</span>
           </template>
         </a-form-item>
-        <a-form-item :label="$t('applications.applications.tags.title')">
+        <a-form-item
+          :label="$t('applications.applications.tags.title')"
+          :label-col-style="{ lineHeight: 1.8 }"
+        >
           <createTags v-model:tags="formData.remarkTags"></createTags>
         </a-form-item>
       </a-form>

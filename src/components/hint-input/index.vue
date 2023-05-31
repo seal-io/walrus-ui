@@ -40,24 +40,16 @@
 <script lang="ts" setup>
   import {
     get,
-    debounce,
     split,
     join,
     filter,
     map,
     cloneDeep,
     keys,
-    trim,
     last,
     initial,
     toLower,
-    isArray,
-    remove,
-    includes,
-    head,
-    clone,
-    isBoolean,
-    pick
+    isArray
   } from 'lodash';
   import { onClickOutside } from '@vueuse/core';
   import {
@@ -68,7 +60,8 @@
     watch,
     useAttrs,
     PropType,
-    inject
+    inject,
+    onBeforeUnmount
   } from 'vue';
   import { Textcomplete, TextcompleteOption } from '@textcomplete/core';
   import { TextareaEditor } from '@textcomplete/textarea';
@@ -272,7 +265,7 @@
     const regx = /(\w+|\s+|.+)$/;
     if (!regx.test(expression.value)) {
       isMatchWork.value = false;
-      textcomplete.hide();
+      textcomplete?.hide?.();
     } else {
       isMatchWork.value = true;
     }
@@ -281,6 +274,7 @@
     const textarea = document.getElementById(
       `${props.editorId}`
     ) as HTMLTextAreaElement;
+    if (!textarea) return;
     const editor = new TextareaEditor(textarea);
     textcomplete = new Textcomplete(editor, Strategy, options);
     console.log('area:', textarea, textcomplete);
@@ -303,7 +297,7 @@
     inputFlag.value = false;
   };
   const handleBlur = () => {
-    textcomplete.hide();
+    textcomplete?.hide?.();
     // setTimeout(() => {
     //   runChange()
     // },200)
@@ -318,7 +312,7 @@
     // }
   };
   const handleExpressionChange = (e) => {
-    textcomplete.hide();
+    textcomplete?.hide?.();
     emits('update:modelValue', expression.value);
     setTimeout(() => {
       runChange();
@@ -328,7 +322,7 @@
     // const regx = /\.$/;
     // if (!regx.test(expression.value)) {
     //   isMatchWork.value = false;
-    //   textcomplete.hide();
+    //   textcomplete?.hide?.();
     // } else {
     //   isMatchWork.value = true;
     // }
@@ -377,8 +371,8 @@
       initEditor();
     });
   });
-  onUnmounted(() => {
-    textcomplete.destroy();
+  onBeforeUnmount(() => {
+    textcomplete?.destroy?.();
   });
 </script>
 
