@@ -33,11 +33,8 @@ export const createApplication = (data) => {
     data
   );
 };
-export const deleteApplication = (data) => {
-  return axios.delete(
-    `/applications?${qs.stringify(getPermissionRouteParams())}`,
-    { data }
-  );
+export const deleteApplication = ({ data, projectID }) => {
+  return axios.delete(`/applications?${qs.stringify({ projectID })}`, { data });
 };
 export const deployApplication = (data) => {
   return axios.post(

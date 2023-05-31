@@ -343,7 +343,7 @@
           id: val
         };
       });
-      await deleteApplication(ids);
+      await deleteApplication({ data: ids, projectID: queryParams.projectID });
       loading.value = false;
       execSucceed();
       queryParams.page = 1;
