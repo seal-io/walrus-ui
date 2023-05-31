@@ -26,7 +26,7 @@ export const instanceTabs = [
   },
   // { label: '优化建议', value: 'optimization', com: 'tabOptimization' },
   {
-    label: '关联图',
+    label: 'applications.instance.tab.graph',
     value: 'graph',
     com: 'tabGraph',
     requiredAuth: true,

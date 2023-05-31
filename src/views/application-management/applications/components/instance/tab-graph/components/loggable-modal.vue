@@ -13,7 +13,9 @@
       'text-align': 'center'
     }"
     modal-class="res-loggable-modal"
-    title="日志"
+    :title="`${$t('applications.instance.tab.log')}-${nodeInfo.name}/${
+      nodeInfo.description
+    }`"
     @before-open="handleBeforeOpen"
     @before-close="handleBeforeClose"
   >
@@ -60,6 +62,12 @@
       type: Boolean,
       default() {
         return false;
+      }
+    },
+    nodeInfo: {
+      type: Object,
+      default() {
+        return '';
       }
     },
     info: {

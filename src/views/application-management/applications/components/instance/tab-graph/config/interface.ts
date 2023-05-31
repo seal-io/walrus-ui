@@ -2,6 +2,7 @@ import { Edge, Node, Combo } from '@antv/g6';
 import { InstanceResource } from '@/views/application-management/applications/config/interface';
 
 export interface INode extends Node {
+  order?: number;
   id: string;
   name: string;
   resourceType: string;
@@ -25,10 +26,13 @@ export interface INode extends Node {
 export interface IEdge {
   source: string;
   target: string;
+  style?: object;
 }
 export interface ICombo {
+  order?: number;
   id: string;
   label: string;
+
   nodeType: string;
 }
 

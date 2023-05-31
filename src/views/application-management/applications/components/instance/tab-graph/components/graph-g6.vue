@@ -1,9 +1,20 @@
 <template>
   <div ref="graphWrapper" class="graph-wrapper">
     <div id="graph-mount" ref="graphMount" class="graph-mount"></div>
-    <span class="iconfont icon-fit_screen-o" @click="fitview"></span>
-    <loggableModal v-model:show="showLogModal" :info="logInfo"> </loggableModal>
-    <terminalModal v-model:show="showTermModal" :info="termInfo">
+    <div class="toolbar">
+      <slot name="toolbar"></slot>
+    </div>
+    <loggableModal
+      v-model:show="showLogModal"
+      v-model:nodeInfo="resourceNodeInfo"
+      :info="logInfo"
+    >
+    </loggableModal>
+    <terminalModal
+      v-model:show="showTermModal"
+      v-model:nodeInfo="resourceNodeInfo"
+      :info="termInfo"
+    >
     </terminalModal>
   </div>
 </template>
@@ -17,7 +28,8 @@
     nextTick,
     PropType,
     watch,
-    onBeforeUnmount
+    onBeforeUnmount,
+    defineExpose
   } from 'vue';
   import G6 from '@antv/g6';
   import {
@@ -35,7 +47,7 @@
   import { fittingString } from '../config/utils';
   import { statusMap } from '../config';
   import { ICombo, IEdge, INode } from '../config/interface';
-  import { setInstanceStatus } from '../../../../config';
+  import { setInstanceStatus, Status } from '../../../../config';
   import {
     generateResourcesKeys,
     getDefaultValue,
@@ -62,6 +74,7 @@
   const showTermModal = ref(false);
   const logInfo = ref<{ key: string; id: string }>({ key: '', id: '' });
   const termInfo = ref<{ key: string; id: string }>({ key: '', id: '' });
+  const resourceNodeInfo = ref({});
   const graphMount = ref();
   const graphWrapper = ref();
   const loading = ref(false);
@@ -118,6 +131,7 @@
     handleMenuClick: (target, item) => {
       const code = target.getAttribute('code');
       const model = item.getModel();
+      resourceNodeInfo.value = model;
       if (code === 'log') {
         logInfo.value = model?.loggableInfo?.data;
         setTimeout(() => {
@@ -174,12 +188,12 @@
     const result = _.filter(data.nodes, (node) => {
       return _.includes(parentNodeList, node.id);
     });
-    combosList = _.map(result, (node) => {
+    combosList = _.map(result, (node, index) => {
       return {
         id: node.id,
         label: `${node.name}(${node.type})`,
         nodeType: 'combo',
-        collapsed: false
+        order: index
       };
     });
   };
@@ -194,6 +208,8 @@
       const loggableList = generateResourcesKeys([node.data || {}], 'loggable');
       const execList = generateResourcesKeys([node.data || {}], 'executable');
       const { name } = node;
+      const animate =
+        setInstanceStatus(_.get(node, 'data.status')) === Status.Warning;
       node.resourceType = node.type;
       node.subType = _.get(node, 'data.type');
       node.type = 'resource';
@@ -209,6 +225,9 @@
       node.comboId = node.parentNode || '';
       node.description = node.subType ? `${node.subType}` : node.resourceType;
       node.stateIcon = {
+        animate,
+        width: animate ? 20 : 14,
+        height: animate ? 20 : 14,
         show: true,
         img: _.get(statusMap, setInstanceStatus(_.get(node, 'data.status')))
       };
@@ -222,6 +241,20 @@
     const { sourceData: data } = props;
     edgeList = _.map(data.links || [], (o) => {
       const link = _.cloneDeep(o);
+      let style = {};
+      if (
+        _.find(
+          combosList,
+          (item) =>
+            item.id === o.source &&
+            _.find(combosList, (item) => item.id === o.target)
+        )
+      ) {
+        style = {
+          lineDash: [5, 5]
+        };
+      }
+      link.style = { ...style };
       return link;
     });
   };
@@ -232,6 +265,11 @@
     setCombosList();
     setNodeList();
     setLinks();
+    console.log('graph data===', {
+      nodes: nodeList,
+      edges: edgeList,
+      combos: combosList
+    });
   };
   const renderGraph = () => {
     if (!graph) return;
@@ -299,7 +337,7 @@
     console.log('width==height==', width, height);
     graph = new G6.Graph({
       groupByTypes: false,
-      // renderer: 'svg',
+      renderer: 'svg',
       container: 'graph-mount',
       plugins: [contextMenu, createToolTip()],
       width: width.value || 1400,
@@ -314,7 +352,8 @@
         onLayoutEnd() {
           loading.value = false;
           console.log('onLayoutEnd');
-        }
+        },
+        sortByCombo: true
       },
       pixelRatio: 2,
       defaultCombo,
@@ -325,7 +364,7 @@
           radius: 0,
           offset: 0,
           endArrow: {
-            path: G6.Arrow.triangle(5, 5, 0),
+            path: G6.Arrow.triangle(5, -5, 0),
             fill: 'rgba(102, 139, 220,.8)'
           },
           lineWidth: 1.2,
@@ -370,6 +409,9 @@
     renderGraph();
     initNodeEvent();
   };
+  defineExpose({
+    fitView
+  });
   watch(
     () => props.sourceData?.nodes,
     () => {
@@ -398,21 +440,12 @@
     width: 100%;
     background-color: var(--color-fill-2);
 
-    .icon-fit_screen-o {
+    .toolbar {
       position: absolute;
       top: 10px;
       left: 10px;
       color: var(--color-text-2);
-      font-size: 22px;
       background-color: rgba(255, 255, 255, 0.8);
-      cursor: pointer;
-      transition: all 0.3s var(--seal-transition-func);
-
-      &:hover {
-        color: rgb(var(--arcoblue-5));
-        transform: scale(1.1);
-        transition: all 0.3s var(--seal-transition-func);
-      }
     }
 
     .graph-mount {
