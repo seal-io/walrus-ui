@@ -68,7 +68,7 @@
       </a-form-item>
       <a-form-item :label="$t('profile.account.password')" field="password">
         <a-input-group>
-          <a-input v-model="formData.password" style="width: 270px" />
+          <a-input-password v-model="formData.password" style="width: 270px" />
           <a-button
             type="primary"
             style="width: 90px"

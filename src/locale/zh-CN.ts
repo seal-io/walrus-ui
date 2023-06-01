@@ -23,6 +23,7 @@ import localeProfile from '@/views/profile/locale/zh-CN';
 import localeCommon from './zh-CN/common';
 
 import localeSettings from './zh-CN/settings';
+import localeMenu from './zh-CN/menu';
 
 export default {
   'menu.dashboard': '仪表盘',
@@ -65,5 +66,6 @@ export default {
   ...localeApplications,
   ...localeCost,
   ...localeOperation,
-  ...localeProfile
+  ...localeProfile,
+  ...localeMenu
 };

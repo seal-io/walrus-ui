@@ -21,7 +21,6 @@
       :bordered="true"
       :data="permissionList"
       :pagination="false"
-      :hide-expand-button-on-empty="true"
       :row-class="setRowClass"
       @expanded-change="handleExpanded"
     >
@@ -32,7 +31,11 @@
           :body-cell-class="setRowClass"
           :cell-style="{ minWidth: '40px' }"
           data-index="projectName"
-          :title="$t('propfile.permission.table.project')"
+          :title="
+            type === 'project'
+              ? $t('propfile.permission.table.project')
+              : $t('propfile.permission.table.group')
+          "
         >
         </a-table-column>
 

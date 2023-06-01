@@ -21,6 +21,7 @@ import localeProfile from '@/views/profile/locale/en-US';
 
 import localeCommon from './en-US/common';
 import localeSettings from './en-US/settings';
+import localeMenu from './en-US/menu';
 
 export default {
   'menu.dashboard': 'Dashboard',
@@ -62,5 +63,6 @@ export default {
   ...localeApplications,
   ...localeCost,
   ...localeOperation,
-  ...localeProfile
+  ...localeProfile,
+  ...localeMenu
 };
