@@ -119,7 +119,7 @@ export default {
   'applications.workflows.menu': 'Workflows',
   'applications.workflows.create': 'New Pipeline',
   'applications.projects.menu': 'Projects',
-  'applications.projects.authorize.title': 'Project Authorization',
+  'applications.projects.authorize.title': 'Role Authorization',
   'applications.projects.authorize.account': 'please select an user',
   'applications.projects.authorize.role': 'please assign a role',
   'applications.projects.create': 'New Project',

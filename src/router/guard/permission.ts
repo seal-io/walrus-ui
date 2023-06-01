@@ -49,7 +49,11 @@ export default function setupPermissionGuard(router: Router) {
         });
         return;
       }
-      next();
+      if (Permission.accessRouter(to)) {
+        next();
+        return;
+      }
+      next({ name: 'forbidden', replace: true });
     } else {
       if (
         userStore?.userSetting?.FirstLogin?.value === 'true' &&

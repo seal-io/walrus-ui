@@ -1,3 +1,4 @@
+// resource that same with the api data
 export enum Resources {
   ApplicationInstances = 'applicationInstances',
   ApplicationResources = 'applicationResources',

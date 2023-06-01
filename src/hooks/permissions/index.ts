@@ -45,6 +45,7 @@ export default function usePermission() {
     getFirstRouteName(appRoutes: routeRaw[]) {
       const firstChildren = get(appRoutes, '0.children');
       const firstName = get(appRoutes, '0.name');
+      // all routes permission denied
       if ((!firstChildren || !firstChildren.length) && !firstName)
         return 'forbidden';
       if (firstChildren && firstChildren.length) {
