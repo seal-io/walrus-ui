@@ -202,7 +202,7 @@
 </template>
 
 <script lang="ts" setup>
-  import { Resources } from '@/permissions/resources';
+  import { Resources } from '@/permissions/config';
   import _, { map, get, pickBy, find, filter } from 'lodash';
   import dayjs from 'dayjs';
   import { reactive, ref, watch, onBeforeUnmount } from 'vue';

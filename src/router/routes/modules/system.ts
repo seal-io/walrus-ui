@@ -1,4 +1,4 @@
-import { Resources } from '@/permissions/resources';
+import { Resources } from '@/permissions/config';
 
 export default {
   path: 'system',

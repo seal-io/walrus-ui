@@ -24,9 +24,9 @@ import localeCommon from './zh-CN/common';
 
 import localeSettings from './zh-CN/settings';
 import localeMenu from './zh-CN/menu';
+import localePermissionResource from './zh-CN/permission-resource';
 
 export default {
-  'menu.dashboard': '仪表盘',
   'menu.list': '列表页',
   'menu.result': '结果页',
   'menu.exception': '异常页',
@@ -67,5 +67,6 @@ export default {
   ...localeCost,
   ...localeOperation,
   ...localeProfile,
-  ...localeMenu
+  ...localeMenu,
+  ...localePermissionResource
 };

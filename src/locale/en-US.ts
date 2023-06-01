@@ -22,9 +22,9 @@ import localeProfile from '@/views/profile/locale/en-US';
 import localeCommon from './en-US/common';
 import localeSettings from './en-US/settings';
 import localeMenu from './en-US/menu';
+import localePermissionResource from './en-US/permission-resource';
 
 export default {
-  'menu.dashboard': 'Dashboard',
   'menu.list': 'List',
   'menu.result': 'Result',
   'menu.exception': 'Exception',
@@ -64,5 +64,6 @@ export default {
   ...localeCost,
   ...localeOperation,
   ...localeProfile,
-  ...localeMenu
+  ...localeMenu,
+  ...localePermissionResource
 };

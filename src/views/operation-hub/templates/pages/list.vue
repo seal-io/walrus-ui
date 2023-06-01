@@ -123,7 +123,7 @@
 </template>
 
 <script lang="ts" setup>
-  import { Resources } from '@/permissions/resources';
+  import { Resources } from '@/permissions/config';
   import _, { map, pickBy, remove } from 'lodash';
   import { ref, reactive, onMounted, nextTick } from 'vue';
   import useCallCommon from '@/hooks/use-call-common';

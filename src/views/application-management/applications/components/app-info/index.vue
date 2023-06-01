@@ -224,7 +224,7 @@
 </template>
 
 <script lang="ts" setup>
-  import { Resources } from '@/permissions/resources';
+  import { Resources } from '@/permissions/config';
   import { useUserStore, useTabBarStore } from '@/store';
   import { reactive, ref, computed, provide, inject, toRaw } from 'vue';
   import { onBeforeRouteLeave } from 'vue-router';
@@ -281,7 +281,7 @@
       id: route.params.projectId
     },
     environment: {
-      id: 'test'
+      id: ''
     },
     modules: []
   }) as AppFormData;

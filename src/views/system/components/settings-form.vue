@@ -219,7 +219,7 @@
 </template>
 
 <script lang="ts" setup>
-  import { Resources, Actions } from '@/permissions/resources';
+  import { Resources, Actions } from '@/permissions/config';
   import { useUserStore } from '@/store';
   import EditPageFooter from '@/components/edit-page-footer/index.vue';
   import { isArray, map, each, isObject, keys } from 'lodash';

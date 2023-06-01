@@ -20,7 +20,7 @@
 </template>
 
 <script lang="ts" setup>
-  import { Resources, Actions } from '@/permissions/resources';
+  import { Resources, Actions } from '@/permissions/config';
   import { useUserStore } from '@/store';
   import { includes, filter } from 'lodash';
   import { ref, onMounted, PropType, defineEmits } from 'vue';

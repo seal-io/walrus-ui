@@ -23,16 +23,15 @@
 </template>
 
 <script lang="ts" setup>
-  import _ from 'lodash';
+  import _, { reduce } from 'lodash';
   import { ref, toRef, computed } from 'vue';
   import { useUserStore } from '@/store';
   import useCallCommon from '@/hooks/use-call-common';
   import { ROLES } from '@/store/modules/user/types';
   import { RoleType, RolesTypeMap } from '@/views/system/config/users';
+  import { Actions, GroupMap, ResourcesActionsDic } from '@/permissions/config';
   import resources, {
-    Actions,
-    GroupMap,
-    ResourcesActionsDic
+    ProjectPermissionResource
   } from '@/permissions/resources';
   import { getListLabel } from '@/utils/func';
   import PermissionTable from '../components/perssmion-table.vue';
@@ -53,6 +52,7 @@
     }
     return _.get(RolesTypeMap, RoleType.User);
   });
+
   const calcPermissionCount = (list: any[], action) => {
     return _.reduce(
       list,
@@ -65,6 +65,17 @@
       0
     );
   };
+  const getResourceActions = (actions: string[], resource) => {
+    let result = actions;
+    if (_.includes(result, '*')) {
+      result = ['*'];
+    } else if (_.get(ResourcesActionsDic, resource)) {
+      result = _.map(result, (ac) =>
+        _.get(ResourcesActionsDic, `${resource}.${ac}`)
+      );
+    }
+    return result;
+  };
   const projectPermissions = computed(() => {
     const projectRoles = _.get(userStore, 'permissions.projectRoles') || {};
     const resultList: object[] = [];
@@ -73,16 +84,36 @@
       // project
       const project = _.get(projectRoles, `${projectID}`);
       // resources
-      const policies = _.get(project, 'policies') || [];
+      let policies: Record<string, string[]> = {};
+      // admin has all of project resource actions
+      if (userStore.isSystemAdmin()) {
+        policies = _.reduce(
+          ProjectPermissionResource,
+          (obj, item) => {
+            obj[item.resource] = item.actions;
+            return obj;
+          },
+          {}
+        );
+      } else {
+        policies =
+          _.pickBy(_.get(project, 'policies'), (v, k) => {
+            return _.some(
+              ProjectPermissionResource,
+              (item) => item.resource === k
+            );
+          }) || {};
+      }
+
       _.each(_.keys(policies), (resource, index) => {
+        const resourceConf = _.find(
+          ProjectPermissionResource,
+          (item) => item.resource === resource
+        );
         projectChildren.push({
-          resource: getListLabel(resource, resources, {
-            value: 'resource',
-            label: 'title'
-          }),
-          actions: _.includes(policies[resource], '*')
-            ? ['*']
-            : policies[resource]
+          resource: resourceConf?.title,
+          actionsScope: resourceConf?.actions,
+          actions: getResourceActions(policies[resource] || [], resource)
         });
       });
 
@@ -105,7 +136,9 @@
 
   const systemPermissions = computed(() => {
     const systemRoles =
-      _.omit(_.get(userStore, 'permissions.roles'), [ROLES, 'tokens']) || [];
+      _.pickBy(_.get(userStore, 'permissions.roles'), (v, k) => {
+        return _.some(resources, (item) => item.resource === k);
+      }) || {};
 
     const result = _.reduce(
       _.keys(systemRoles),
@@ -114,21 +147,21 @@
           resources,
           (item) => item.resource === resource
         );
+
         if (!resourceConf) return dataMap;
+
         const group = resourceConf.group as string;
         // some page post request is a search action.
-        let actions = _.get(systemRoles, resource);
-        if (_.includes(_.get(systemRoles, resource), '*')) {
-          actions = ['*'];
-        } else if (_.get(ResourcesActionsDic, resource)) {
-          actions = _.map(actions, (ac) =>
-            _.get(ResourcesActionsDic, `${resource}.${ac}`)
-          );
-        }
+        const actions = getResourceActions(
+          _.get(systemRoles, resource),
+          resource
+        );
+        const actionsScope = getResourceActions(resourceConf.actions, resource);
         if (dataMap.has(group)) {
           // const groupData
           dataMap.get(group)?.children?.push({
             resource: resourceConf?.title,
+            actionsScope,
             actions
           });
         } else {
@@ -141,6 +174,7 @@
             children: [
               {
                 resource: resourceConf?.title,
+                actionsScope,
                 actions
               }
             ]
