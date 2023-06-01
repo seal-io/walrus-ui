@@ -54,7 +54,7 @@ export default function usePerspectiveCost(props) {
 
   const overData = ref({});
   const pageId = computed(() => {
-    return query.id;
+    return query.id || props.viewId;
   });
   const summaryData = computed(() => {
     const arr = cloneDeep(projectCostOverview);
@@ -164,7 +164,7 @@ export default function usePerspectiveCost(props) {
     if (!pageId.value) return;
     try {
       loading.value = true;
-      const id = pageId.value;
+      const id = pageId.value as string;
       const { data } = await queryItemPerspective({ id });
       const allocationQueries = get(data, 'allocationQueries') || [];
       const startTime = get(data, 'startTime');

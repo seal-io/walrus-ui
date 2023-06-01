@@ -1,42 +1,55 @@
 <template>
-  <div class="container">
+  <div>
+    <NavBar></NavBar>
     <!-- <Breadcrumb :items="['menu.exception', 'menu.exception.403']" /> -->
-    <div class="content">
-      <a-result
-        class="result"
-        status="403"
-        :subtitle="$t('exception.result.403.description')"
-      />
-      <a-button key="back" type="primary">
-        {{ $t('exception.result.403.back') }}
-      </a-button>
-    </div>
+    <ComCard>
+      <div class="content">
+        <a-result
+          class="result"
+          status="403"
+          :subtitle="$t('exception.result.403.description')"
+        />
+        <div class="operation-row">
+          <a-button key="back" type="primary" @click="back">
+            {{ $t('exception.result.403.back') }}
+          </a-button>
+        </div>
+      </div>
+    </ComCard>
   </div>
 </template>
 
-<script lang="ts" setup></script>
+<script lang="ts" setup>
+  import NavBar from '@/components/navbar/index.vue';
+  import { useRouter } from 'vue-router';
+
+  const router = useRouter();
+  const back = () => {
+    // warning： Go to the node that has the permission
+    router.back();
+  };
+</script>
 
 <script lang="ts">
   export default {
-    name: '403',
+    name: '403'
   };
 </script>
 
 <style scoped lang="less">
-  .container {
-    height: calc(100vh - 160px);
-    padding: 0 20px 20px 20px;
+  .content {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    text-align: center;
+    background-color: var(--color-bg-1);
+    border-radius: 4px;
 
-    :deep(.content) {
-      position: relative;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      height: 100%;
+    .operation-row {
       text-align: center;
-      background-color: var(--color-bg-1);
-      border-radius: 4px;
     }
   }
 </style>
