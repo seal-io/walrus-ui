@@ -5,6 +5,8 @@ export default {
   'profile.account.name': '名称',
   'profile.account.password': '密码',
   'profile.account.creatrandom': '随机生成',
+  'profile.account.form.uername': '用户名',
+  'profile.account.form.role': '系统角色',
   'profile.account.create': '新建用户',
   'profile.account.edit': '编辑账户',
   'profile.account.type.user': '用户',
@@ -15,5 +17,12 @@ export default {
   'propfile.account.settings.rules.role': '角色不能为空',
   'propfile.account.settings.rules.name': '名称不能为空',
   'propfile.account.user.title': '个人中心',
-  'propfile.account.user.info': '用户信息'
+  'propfile.account.user.info': '用户信息',
+  'propfile.permission.table.project': '项目',
+  'propfile.permission.table.resource': '资源',
+  'propfile.permission.table.role': '角色',
+  'propfile.permission.table.permission': '权限',
+  'propfile.permission.table.group': '分组',
+  'propfile.permission.type.project': '项目权限',
+  'propfile.permission.type.system': '系统权限'
 };

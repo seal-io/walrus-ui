@@ -5,6 +5,8 @@ export default {
   'profile.account.name': 'Name',
   'profile.account.password': 'Password',
   'profile.account.creatrandom': 'Generated',
+  'profile.account.form.uername': 'User Name',
+  'profile.account.form.role': 'System Role',
   'profile.account.create': 'New User',
   'profile.account.edit': 'Edit Account',
   'profile.account.type.user': 'User',
@@ -15,5 +17,12 @@ export default {
   'propfile.account.settings.rules.role': 'role is required',
   'propfile.account.settings.rules.name': 'name is required',
   'propfile.account.user.title': 'User Center',
-  'propfile.account.user.info': 'User Information'
+  'propfile.account.user.info': 'User Information',
+  'propfile.permission.table.project': 'Project',
+  'propfile.permission.table.resource': 'Resource',
+  'propfile.permission.table.role': 'Role',
+  'propfile.permission.table.permission': 'Permissions',
+  'propfile.permission.table.group': 'Group',
+  'propfile.permission.type.project': 'Project Permissions',
+  'propfile.permission.type.system': 'System Permissions'
 };
