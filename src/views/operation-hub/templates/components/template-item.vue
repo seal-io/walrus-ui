@@ -196,8 +196,7 @@
     .img-box {
       flex-basis: 50px;
       padding: 10px 8px;
-      background-color: var(--color-primary-light-1);
-
+      // background-color: var(--color-primary-light-1);
       .img {
         display: inline-block;
         width: 50px;
@@ -213,6 +212,7 @@
         overflow: hidden;
         background-color: #fff;
         border-radius: 50%;
+        box-shadow: 0 0 16px 4px var(--color-border-2);
       }
 
       :deep(.arco-icon) {

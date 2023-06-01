@@ -63,132 +63,155 @@ export const permissionScope = {
   [Actions.GET]: '查询',
   [Actions.PUT]: '修改'
 };
+export enum Group {
+  Dashboard = 'Dashboard',
+  AppManagement = 'AppManagement',
+  CostManagement = 'CostManagement',
+  OperatorHub = 'OperatorHub',
+  SystemSettings = 'SystemSettings'
+}
+export const GroupMap = {
+  Dashboard: 'menu.dashboard',
+  AppManagement: 'menu.applicationManagement',
+  CostManagement: 'menu.costManagement',
+  OperatorHub: 'menu.operatorHub',
+  SystemSettings: 'menu.systemsettings'
+};
 
+export const ResourcesActionsDic = {
+  [Resources.Dashboards]: {
+    POST: 'GET',
+    GET: 'GET'
+  },
+  [Resources.Costs]: {
+    POST: 'GET'
+  }
+};
 // resource actions
 export default [
   {
     resource: Resources.ApplicationInstances,
     title: '应用实例',
-    group: '应用管理',
+    group: Group.AppManagement,
     order: ResourcesOrder.ApplicationInstances,
     actions: ['GET', 'POST', 'DELETE', 'PUT']
   },
   {
     resource: Resources.ApplicationResources,
     title: '应用资源',
-    group: '应用管理',
+    group: Group.AppManagement,
     order: ResourcesOrder.ApplicationResources,
     actions: ['GET']
   },
   {
     resource: Resources.ApplicationRevisions,
     title: '应用实例历史记录',
-    group: '应用管理',
+    group: Group.AppManagement,
     order: ResourcesOrder.ApplicationRevisions,
     actions: ['GET', 'POST', 'DELETE', 'PUT']
   },
   {
     resource: Resources.Applications,
     title: '应用',
-    group: '应用管理',
+    group: Group.AppManagement,
     order: ResourcesOrder.Applications,
     actions: ['GET', 'POST', 'DELETE', 'PUT']
   },
   {
     resource: Resources.Connectors,
     title: '连接器',
-    group: '运维中心',
+    group: Group.OperatorHub,
     order: ResourcesOrder.Connectors,
     actions: ['GET', 'POST', 'DELETE', 'PUT']
   },
   {
     resource: Resources.Costs,
     title: '成本分析',
-    group: '成本管理',
+    group: Group.CostManagement,
     order: ResourcesOrder.Costs,
     actions: ['POST']
   },
   {
     resource: Resources.Dashboards,
     title: '首页',
-    group: '概览',
+    group: Group.Dashboard,
     order: ResourcesOrder.Dashboards,
     actions: ['POST', 'GET']
   },
   {
     resource: Resources.Environments,
     title: '环境',
-    group: '运维中心',
+    group: Group.OperatorHub,
     order: ResourcesOrder.Environments,
     actions: ['GET', 'POST', 'DELETE', 'PUT']
   },
   {
     resource: Resources.ModuleCompletions,
     title: 'AI编写模块',
-    group: '运维中心',
+    group: Group.OperatorHub,
     order: ResourcesOrder.ModuleCompletions,
     actions: ['GET', 'POST']
   },
   {
     resource: Resources.ModuleVersions,
     title: '模块版本',
-    group: '运维中心',
+    group: Group.OperatorHub,
     order: ResourcesOrder.ModuleVersions,
     actions: ['GET']
   },
   {
     resource: Resources.Modules,
     title: '模块',
-    group: '运维中心',
+    group: Group.OperatorHub,
     order: ResourcesOrder.Modules,
     actions: ['GET', 'POST', 'DELETE', 'PUT']
   },
   {
     resource: Resources.Perspectives,
     title: '视图',
-    group: '成本管理',
+    group: Group.CostManagement,
     order: ResourcesOrder.Perspectives,
     actions: ['GET', 'POST', 'DELETE', 'PUT']
   },
   {
     resource: Resources.Projects,
     title: '项目',
-    group: '应用管理',
+    group: Group.AppManagement,
     order: ResourcesOrder.Projects,
     actions: ['GET', 'POST', 'DELETE', 'PUT']
   },
   {
     resource: Resources.Roles,
     title: '角色',
-    group: '系统设置',
+    group: Group.SystemSettings,
     order: ResourcesOrder.Roles,
     actions: ['GET']
   },
   {
     resource: Resources.Secrets,
     title: '密钥',
-    group: '运维中心',
+    group: Group.OperatorHub,
     order: ResourcesOrder.Secrets,
     actions: ['GET', 'POST', 'DELETE', 'PUT']
   },
   {
     resource: Resources.Settings,
     title: '配置管理',
-    group: '系统设置',
+    group: Group.SystemSettings,
     order: ResourcesOrder.Settings,
     actions: ['GET', 'PUT']
   },
   {
     resource: Resources.SubjectRoles,
     title: '用户角色',
-    group: '系统设置',
+    group: Group.SystemSettings,
     order: ResourcesOrder.SubjectRoles,
     actions: ['GET', 'POST', 'DELETE']
   },
   {
     resource: Resources.Subjects,
     title: '用户管理',
-    group: '系统设置',
+    group: Group.SystemSettings,
     order: ResourcesOrder.Subjects,
     actions: ['GET', 'POST', 'DELETE']
   },

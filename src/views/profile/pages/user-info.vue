@@ -26,12 +26,18 @@
   import _ from 'lodash';
   import { ref, toRef, computed } from 'vue';
   import { useUserStore } from '@/store';
+  import useCallCommon from '@/hooks/use-call-common';
   import { ROLES } from '@/store/modules/user/types';
   import { RoleType, RolesTypeMap } from '@/views/system/config/users';
-  import resources, { Actions } from '@/permissions/resources';
+  import resources, {
+    Actions,
+    GroupMap,
+    ResourcesActionsDic
+  } from '@/permissions/resources';
   import { getListLabel } from '@/utils/func';
   import PermissionTable from '../components/perssmion-table.vue';
 
+  const { t } = useCallCommon();
   const userStore = useUserStore();
   const formData = {};
 
@@ -94,7 +100,6 @@
         put: calcPermissionCount(projectChildren, Actions.PUT)
       });
     });
-    console.log('resultList===', resultList);
     return resultList;
   });
 
@@ -111,28 +116,32 @@
         );
         if (!resourceConf) return dataMap;
         const group = resourceConf.group as string;
+        // some page post request is a search action.
+        let actions = _.get(systemRoles, resource);
+        if (_.includes(_.get(systemRoles, resource), '*')) {
+          actions = ['*'];
+        } else if (_.get(ResourcesActionsDic, resource)) {
+          actions = _.map(actions, (ac) =>
+            _.get(ResourcesActionsDic, `${resource}.${ac}`)
+          );
+        }
         if (dataMap.has(group)) {
           // const groupData
-          const groupData = dataMap.get[group];
           dataMap.get(group)?.children?.push({
             resource: resourceConf?.title,
-            actions: _.includes(_.get(systemRoles, resource), '*')
-              ? ['*']
-              : _.get(systemRoles, resource)
+            actions
           });
         } else {
           dataMap.set(group, {
             group,
             order: resourceConf?.order,
             key: group,
-            projectName: group,
+            projectName: t(_.get(GroupMap, group)),
             isParent: true,
             children: [
               {
                 resource: resourceConf?.title,
-                actions: _.includes(_.get(systemRoles, resource), '*')
-                  ? ['*']
-                  : _.get(systemRoles, resource)
+                actions
               }
             ]
           });
@@ -154,56 +163,6 @@
     });
     return resultList;
   });
-  const projectPermissionSpan = ({ record, rowIndex, columnIndex }) => {
-    if (columnIndex === 0 || columnIndex === 2) {
-      if (rowIndex === 0) {
-        return {
-          rowspan: record.resourceCount,
-          colspan: 0
-        };
-      }
-      if (
-        _.get(projectPermissions.value, `${rowIndex - 1}.projectName`) !==
-        record.projectName
-      ) {
-        return {
-          rowspan: record.resourceCount,
-          colspan: 0
-        };
-      }
-    }
-    return {
-      rowspan: 0,
-      colspan: 0
-    };
-  };
-  const systemPermissionSpan = ({ record, rowIndex, columnIndex }) => {
-    if (columnIndex === 0 && rowIndex === 0) {
-      return {
-        rowspan: _.filter(
-          systemPermissions.value,
-          (item) => item.group === record.group
-        ).length,
-        colspan: 0
-      };
-    }
-    if (
-      columnIndex === 0 &&
-      _.get(systemPermissions.value, `${rowIndex - 1}.group`) !== record.group
-    ) {
-      return {
-        rowspan: _.filter(
-          systemPermissions.value,
-          (item) => item.group === record.group
-        ).length,
-        colspan: 0
-      };
-    }
-    return {
-      rowspan: 0,
-      colspan: 0
-    };
-  };
 </script>
 
 <style lang="less" scoped>
