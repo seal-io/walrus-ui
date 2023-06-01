@@ -16,6 +16,20 @@ declare module '@vue-flow/controls' {
 declare module 'xterm-addon-fit' {
   export { FitAddon } from 'xterm-addon-fit';
 }
+declare module '@vueuse/core' {
+  export {
+    createReusableTemplate,
+    onClickOutside,
+    useElementSize,
+    useThrottleFn,
+    useResizeObserver,
+    useClipboard,
+    useDebounceFn,
+    useElementHover,
+    useDark,
+    useToggle
+  } from '@vueuse/core';
+}
 interface ImportMetaEnv {
   readonly VITE_API_BASE_URL: string;
 }

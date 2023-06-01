@@ -1537,7 +1537,17 @@
   resolved "https://registry.npmmirror.com/@vue/shared/-/shared-3.2.37.tgz#8e6adc3f2759af52f0e85863dfb0b711ecc5c702"
   integrity sha512-4rSJemR2NQIo9Klm1vabqWjD8rs/ZaJSzMxkMNeJS6lHiUjjUeYFbooN19NgFjztubEKh3WlZUeOLVdbbUWHsw==
 
-"@vueuse/core@^9.11.0", "@vueuse/core@^9.13.0":
+"@vueuse/core@10.1.0":
+  version "10.1.0"
+  resolved "https://registry.npmmirror.com/@vueuse/core/-/core-10.1.0.tgz#7c3246bea35b24298040b2576de06ce87f38f4c6"
+  integrity sha512-3Znoa5m5RO+z4/C9w6DRaKTR3wCVJvD5rav8HTDGsr+7rOZRHtcgFJ8NcCs0ZvIpmev2kExTa311ns5j2RbzDQ==
+  dependencies:
+    "@types/web-bluetooth" "^0.0.16"
+    "@vueuse/metadata" "10.1.0"
+    "@vueuse/shared" "10.1.0"
+    vue-demi ">=0.14.0"
+
+"@vueuse/core@^9.11.0":
   version "9.13.0"
   resolved "https://registry.npmmirror.com/@vueuse/core/-/core-9.13.0.tgz#2f69e66d1905c1e4eebc249a01759cf88ea00cf4"
   integrity sha512-pujnclbeHWxxPRqXWmdkKV5OX4Wk4YeK7wusHqRwU0Q7EFusHoqNA/aPhB6KCh9hEqJkLAJo7bb0Lh9b+OIVzw==
@@ -1547,10 +1557,22 @@
     "@vueuse/shared" "9.13.0"
     vue-demi "*"
 
+"@vueuse/metadata@10.1.0":
+  version "10.1.0"
+  resolved "https://registry.npmmirror.com/@vueuse/metadata/-/metadata-10.1.0.tgz#041ab49abb17e760170606199c612c8937d2968f"
+  integrity sha512-cM28HjDEw5FIrPE9rgSPFZvQ0ZYnOLAOr8hl1XM6tFl80U3WAR5ROdnAqiYybniwP5gt9MKKAJAqd/ab2aHkqg==
+
 "@vueuse/metadata@9.13.0":
   version "9.13.0"
   resolved "https://registry.npmmirror.com/@vueuse/metadata/-/metadata-9.13.0.tgz#bc25a6cdad1b1a93c36ce30191124da6520539ff"
   integrity sha512-gdU7TKNAUVlXXLbaF+ZCfte8BjRJQWPCa2J55+7/h+yDtzw3vOoGQDRXzI6pyKyo6bXFT5/QoPE4hAknExjRLQ==
+
+"@vueuse/shared@10.1.0":
+  version "10.1.0"
+  resolved "https://registry.npmmirror.com/@vueuse/shared/-/shared-10.1.0.tgz#1158713a69d33b84c473dbd078c0e8c587e6ab5f"
+  integrity sha512-2X52ogu12i9DkKOQ01yeb/BKg9UO87RNnpm5sXkQvyORlbq8ONS5l39MYkjkeVWWjdT0teJru7a2S41dmHmqjQ==
+  dependencies:
+    vue-demi ">=0.14.0"
 
 "@vueuse/shared@9.13.0":
   version "9.13.0"
@@ -9699,6 +9721,11 @@ vue-demi@*, vue-demi@^0.13.2:
   version "0.13.8"
   resolved "https://registry.npmmirror.com/vue-demi/-/vue-demi-0.13.8.tgz#5c568fb3b4d8f848acc658dfccd3d875035b5653"
   integrity sha512-Vy1zbZhCOdsmvGR6tJhAvO5vhP7eiS8xkbYQSoVa7o6KlIy3W8Rc53ED4qI4qpeRDjv3mLfXSEpYU6Yq4pgXRg==
+
+vue-demi@>=0.14.0:
+  version "0.14.5"
+  resolved "https://registry.npmmirror.com/vue-demi/-/vue-demi-0.14.5.tgz#676d0463d1a1266d5ab5cba932e043d8f5f2fbd9"
+  integrity sha512-o9NUVpl/YlsGJ7t+xuqJKx8EBGf1quRhCiT6D/J0pfwmk9zUwYkC7yrF4SZCe6fETvSM3UNL2edcbYrSyc4QHA==
 
 vue-echarts@^6.0.0:
   version "6.2.3"

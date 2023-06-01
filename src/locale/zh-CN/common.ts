@@ -79,5 +79,9 @@ export default {
   'common.chart.filter.holder': '过滤数据项',
   'common.chart.filter.tips': '过滤查看更多数据项',
   'common.permission.401': '未登录',
-  'common.permission.403': '权限不足'
+  'common.permission.403': '权限不足',
+  'common.permission.action.post': '新增',
+  'common.permission.action.get': '查询',
+  'common.permission.action.delete': '删除',
+  'common.permission.action.put': '更新'
 };
