@@ -184,7 +184,7 @@
 </template>
 
 <script lang="ts" setup>
-  import { Resources, Actions } from '@/permissions/resources';
+  import { Resources, Actions } from '@/permissions/config';
   import { useUserStore, useTabBarStore } from '@/store';
   import { assignIn, find, get, map, isEqual, cloneDeep } from 'lodash';
   import { urlReg } from '@/utils/validate';

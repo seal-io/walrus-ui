@@ -192,7 +192,7 @@
 </template>
 
 <script lang="ts" setup>
-  import { Resources } from '@/permissions/resources';
+  import { Resources } from '@/permissions/config';
   import { useUserStore } from '@/store';
   import {
     assignIn,

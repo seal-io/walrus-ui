@@ -16,7 +16,7 @@
 </template>
 
 <script lang="ts" setup>
-  import { Resources, Actions } from '@/permissions/resources';
+  import { Resources, Actions } from '@/permissions/config';
   import { useUserStore } from '@/store';
   import overview from '../components/overview.vue';
   import DeploymentSummary from '../components/deployment-summary.vue';

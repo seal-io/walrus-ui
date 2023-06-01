@@ -108,7 +108,7 @@
 </template>
 
 <script lang="ts" setup>
-  import { Resources } from '@/permissions/resources';
+  import { Resources } from '@/permissions/config';
   import { useUserStore, useTabBarStore } from '@/store';
   import { ref, computed } from 'vue';
   import {

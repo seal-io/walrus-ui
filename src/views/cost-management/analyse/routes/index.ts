@@ -1,4 +1,4 @@
-import { Resources } from '@/permissions/resources';
+import { Resources } from '@/permissions/config';
 
 export default [
   {
@@ -8,7 +8,7 @@ export default [
     meta: {
       hideInMenu: false,
       ignoreCache: true,
-      locale: 'cost.analyse.menu',
+      locale: 'menu.costManagement.analyse',
       requiresAuth: true,
       permission: {
         resource: Resources.Costs,
@@ -24,7 +24,7 @@ export default [
     meta: {
       hideInMenu: false,
       ignoreCache: false,
-      locale: 'cost.analyse.table.manage',
+      locale: 'menu.costManagement.perspective',
       requiresAuth: true,
       permission: {
         resource: Resources.Costs,

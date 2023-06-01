@@ -6,7 +6,7 @@ export default {
   'menu.applicationManagement.secret': 'Secrets',
   'menu.costManagement': 'Cost Management',
   'menu.costManagement.analyse': 'Cost Analysis',
-  'menu.costManagement.perspective': 'Perspective',
+  'menu.costManagement.perspective': 'Perspectives',
   'menu.operatorHub': 'Operation Hub',
   'menu.operatorHub.connector': 'Connectors',
   'menu.operatorHub.evniroment': 'Environments',

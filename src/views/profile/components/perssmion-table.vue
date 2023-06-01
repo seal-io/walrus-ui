@@ -2,6 +2,7 @@
   <div class="permission-table">
     <DefinePermissionState v-slot="{ action, record }">
       <span v-if="record.isParent">{{ _.get(record, _.toLower(action)) }}</span>
+      <span v-else-if="!_.includes(record.actionsScope, action)">-</span>
       <span
         v-else-if="
           _.includes(record.actions, Actions[action]) ||
@@ -47,6 +48,10 @@
           data-index="resource"
           :title="$t('propfile.permission.table.resource')"
         >
+          <template #cell="{ record }">
+            <span v-if="record.isParent">{{ record.resource }}</span>
+            <span v-else>{{ $t(record.resource) || '' }}</span>
+          </template>
         </a-table-column>
         <a-table-column
           v-if="type === 'project'"
@@ -137,7 +142,7 @@
   import GroupTitle from '@/components/group-title/index.vue';
   import { projectRoles } from '@/views/application-management/projects/config';
   import { getListLabel } from '@/utils/func';
-  import { Actions } from '@/permissions/resources';
+  import { Actions } from '@/permissions/config';
 
   defineProps({
     permissionList: {

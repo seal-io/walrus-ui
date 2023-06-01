@@ -138,7 +138,7 @@
 </template>
 
 <script lang="ts" setup>
-  import { Resources } from '@/permissions/resources';
+  import { Resources } from '@/permissions/config';
   import { useUserStore } from '@/store';
   import { assignIn, toLower, get, isEqual, cloneDeep } from 'lodash';
   import { ref, reactive, onMounted, computed } from 'vue';

@@ -178,7 +178,7 @@
 </template>
 
 <script lang="ts" setup>
-  import { Resources, Actions } from '@/permissions/resources';
+  import { Resources, Actions } from '@/permissions/config';
   import _ from 'lodash';
   import dayjs from 'dayjs';
   import { ref, reactive, onMounted } from 'vue';

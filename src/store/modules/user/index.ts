@@ -11,7 +11,7 @@ import {
 import _ from 'lodash';
 import { clearToken, getUserResourcePermission } from '@/utils/auth';
 import { removeRouteListener } from '@/utils/route-listener';
-import { Actions } from '@/permissions/resources';
+import { Actions } from '@/permissions/config';
 import { RoleType } from '@/views/system/config/users';
 import { UserState } from './types';
 import testData from './test';
