@@ -43,7 +43,7 @@
         </a-button>
         <a-dropdown
           trigger="click"
-          style="top: 36px; z-index: 3000; width: 70px"
+          style="top: 40px; z-index: 3000; width: 70px"
           popup-container="#langWrap"
           @select="changeLocale"
         >
@@ -121,7 +121,7 @@
       <li v-show="hasNavList" id="userWrap" style="position: relative">
         <a-dropdown
           trigger="click"
-          style="top: 36px"
+          style="top: 40px"
           popup-container="#userWrap"
           content-class="count-list-wrap"
         >

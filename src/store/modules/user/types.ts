@@ -61,6 +61,7 @@ export interface UserState {
       value?: string;
     };
   };
+  currentProject: string;
   policies: Array<{
     actions: string[];
     objectIDs: string[];
