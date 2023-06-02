@@ -68,13 +68,14 @@
       </a-form-item>
       <a-form-item :label="$t('profile.account.password')" field="password">
         <a-input-group>
-          <a-input-password v-model="formData.password" style="width: 270px" />
-          <a-button
-            type="primary"
-            style="width: 90px"
-            @click="handleGeneratePassword"
-            >{{ $t('profile.account.creatrandom') }}</a-button
-          >
+          <a-input-password v-model="formData.password" style="width: 328px" />
+          <a-button type="primary" @click="handleGeneratePassword">
+            <template #icon>
+              <a-tooltip :content="$t('profile.account.creatrandom')">
+                <i class="iconfont icon-random size-20"></i>
+              </a-tooltip>
+            </template>
+          </a-button>
         </a-input-group>
       </a-form-item>
       <a-form-item
