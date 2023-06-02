@@ -1,17 +1,35 @@
 <template>
   <span class="label-wrapper">
-    <a-link style="display: inline" @click="handleViewInstance">
+    <a-link
+      v-if="
+        userStore.hasProjectResourceActions({
+          projectID: projectId,
+          resource: Resources.ApplicationInstances,
+          actions: ['GET']
+        })
+      "
+      style="display: inline"
+      @click="handleViewInstance"
+    >
       <span class="dot" :class="[get(statusMap, status) || status]"></span>
       <slot name="label"
         ><span>{{ label }}</span></slot
       >
     </a-link>
+    <span v-else style="padding: 1px 4px">
+      <span class="dot" :class="[get(statusMap, status) || status]"></span>
+      <slot name="label"
+        ><span>{{ label }}</span></slot
+      >
+    </span>
   </span>
 </template>
 
 <script lang="ts" setup>
   import { get } from 'lodash';
   import { useRouter } from 'vue-router';
+  import { useUserStore } from '@/store';
+  import { Resources } from '@/permissions/config';
 
   const props = defineProps({
     status: {
@@ -51,6 +69,7 @@
       }
     }
   });
+  const userStore = useUserStore();
   const router = useRouter();
   const handleViewInstance = () => {
     router.push({
