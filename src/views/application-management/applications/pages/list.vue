@@ -310,6 +310,7 @@
   };
   const handleProjectChange = (val) => {
     localStore.setValue(HOT_PROJECT_ID, val);
+    userStore.setInfo({ currentProject: val });
     handleSearch();
   };
   const handleReset = () => {
@@ -395,6 +396,7 @@
   };
   const init = async () => {
     await getProjectList();
+    userStore.setInfo({ currentProject: queryParams.projectID });
     fetchData();
   };
 

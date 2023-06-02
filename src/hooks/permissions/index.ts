@@ -4,9 +4,15 @@ import _, { get } from 'lodash';
 
 export const checkResourcePermission = (permission) => {
   const userStore = useUserStore();
-  const { resource, actions } = permission || {};
+  // type always set in the detail page that projects relate to
+  const { resource, actions, type } = permission || {};
+  let resourcePath = 'roles';
+  if (type === 'projectRoles' && userStore.isSystemAdmin()) return true;
+  if (type === 'projectRoles') {
+    resourcePath = `projectRoles.${userStore.currentProject}.policies`;
+  }
   const permissionActions =
-    _.get(userStore, `permissions.roles.${resource}`) || [];
+    _.get(userStore, `permissions.${resourcePath}.${resource}`) || [];
   if (_.includes(permissionActions, '*')) {
     return true;
   }

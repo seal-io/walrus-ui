@@ -42,6 +42,7 @@ const useUserStore = defineStore('user', {
     policies: [],
     projectRoles: [],
     permissionRoutes: [],
+    currentProject: '',
     roles: [],
     role: '*',
     permissionsKey: {

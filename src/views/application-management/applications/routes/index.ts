@@ -30,7 +30,8 @@ export default [
       locale: 'applications.applications.menu',
       requiresAuth: true,
       permission: {
-        resource: Resources.ApplicationInstances,
+        resource: Resources.Applications,
+        type: 'projectRoles',
         actions: ['GET']
       },
       icon: 'icon-apps'

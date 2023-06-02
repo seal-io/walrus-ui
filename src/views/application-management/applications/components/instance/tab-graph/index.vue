@@ -90,7 +90,7 @@
   watch(
     () => instanceId.value,
     () => {
-      getInstanceResourceGraph();
+      // getInstanceResourceGraph();
     },
     {
       immediate: true
