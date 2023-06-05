@@ -1,16 +1,16 @@
 <template>
-  <comCard borderless top-gap>
+  <comCard borderless padding="0">
     <div class="connectors-list">
       <FilterBox style="margin-bottom: 10px">
         <template #params>
-          <a-select
+          <!-- <a-select
             v-model="queryParams.projectID"
             style="width: 200px"
             allow-clear
             :options="projectList"
             :placeholder="$t('applications.applications.project.holder')"
             @change="handleProjectChange"
-          ></a-select>
+          ></a-select> -->
           <a-input
             v-model="queryParams.query"
             allow-clear
@@ -197,7 +197,7 @@
   const total = ref(0);
   const queryParams = reactive({
     query: '',
-    projectID: '',
+    projectID: route.params.projectId as string,
     page: 1,
     perPage: 10
   });

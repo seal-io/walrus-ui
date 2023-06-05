@@ -1,195 +1,200 @@
 <template>
-  <SpinCard borderless top-gap class="projects">
-    <div class="content">
-      <FilterBox style="margin-bottom: 10px">
-        <template #params>
-          <a-input
-            v-model="queryParams.query"
-            allow-clear
-            style="width: 240px"
-            :placeholder="$t('applications.projects.search.holder')"
-            @clear="handleSearch"
-            @change="handleSearch"
-            @press-enter="handleSearch"
-          >
-            <template #prefix>
-              <icon-search />
-            </template>
-          </a-input>
-          <a-space style="margin-left: 10px">
-            <a-button type="primary" @click="handleSearch">{{
-              $t('common.button.search')
-            }}</a-button>
-            <a-button type="outline" @click="handleReset">{{
-              $t('common.button.clear')
-            }}</a-button>
-          </a-space>
-        </template>
-        <template #button-group>
-          <a-button
-            v-permission="{
-              resource: `roles.${Resources.Projects}`,
-              actions: ['POST']
-            }"
-            type="primary"
-            @click="handleCreateProject"
-            >{{ $t('applications.projects.create') }}</a-button
-          >
-          <a-button
-            v-permission="{
-              resource: `roles.${Resources.Projects}`,
-              actions: ['DELETE']
-            }"
-            type="primary"
-            status="warning"
-            :disabled="!selectedKeys.length"
-            @click="handleDelete"
-            >{{ $t('common.button.delete') }}</a-button
-          >
-        </template>
-      </FilterBox>
-      <a-table
-        column-resizable
-        style="margin-bottom: 20px"
-        :bordered="false"
-        :loading="loading"
-        :data="dataList"
-        :pagination="false"
-        row-key="id"
-        :row-selection="rowSelection"
-        @sorter-change="handleSortChange"
-        @selection-change="handleSelectChange"
-      >
-        <template #columns>
-          <a-table-column
-            ellipsis
-            tooltip
-            :cell-style="{ minWidth: '40px' }"
-            data-index="name"
-            :title="$t('applications.projects.table.name')"
-          >
-            <template #cell="{ record }">
-              <a-link
-                v-if="
-                  userStore.hasProjectResourceActions({
-                    projectID: record.id,
-                    resource: Resources.Applications,
-                    actions: [Actions.GET]
-                  })
-                "
-                size="small"
-                @click="handleViewProject(record)"
-                >{{ record.name }}</a-link
-              >
-              <span v-else>{{ record.name }}</span>
-            </template>
-          </a-table-column>
-          <a-table-column
-            ellipsis
-            tooltip
-            :cell-style="{ minWidth: '40px' }"
-            align="center"
-            data-index="description"
-            :title="$t('common.table.description')"
-          >
-          </a-table-column>
-          <a-table-column
-            ellipsis
-            tooltip
-            :cell-style="{ minWidth: '40px' }"
-            align="center"
-            data-index="createTime"
-            :sortable="{
-              sortDirections: ['ascend', 'descend'],
-              defaultSortOrder: 'descend',
-              sorter: true,
-              sortOrder: sortOrder
-            }"
-            :title="$t('common.table.createTime')"
-          >
-            <template #cell="{ record }">
-              <span>{{
-                dayjs(record.createTime).format('YYYY-MM-DD HH:mm:ss')
-              }}</span>
-            </template>
-          </a-table-column>
+  <div>
+    <BreadWrapper>
+      <Breadcrumb :menu="{ icon: 'icon-apps', label: '项目列表' }"></Breadcrumb>
+    </BreadWrapper>
+    <SpinCard borderless top-gap class="projects">
+      <div class="content">
+        <FilterBox style="margin-bottom: 10px">
+          <template #params>
+            <a-input
+              v-model="queryParams.query"
+              allow-clear
+              style="width: 240px"
+              :placeholder="$t('applications.projects.search.holder')"
+              @clear="handleSearch"
+              @change="handleSearch"
+              @press-enter="handleSearch"
+            >
+              <template #prefix>
+                <icon-search />
+              </template>
+            </a-input>
+            <a-space style="margin-left: 10px">
+              <a-button type="primary" @click="handleSearch">{{
+                $t('common.button.search')
+              }}</a-button>
+              <a-button type="outline" @click="handleReset">{{
+                $t('common.button.clear')
+              }}</a-button>
+            </a-space>
+          </template>
+          <template #button-group>
+            <a-button
+              v-permission="{
+                resource: `roles.${Resources.Projects}`,
+                actions: ['POST']
+              }"
+              type="primary"
+              @click="handleCreateProject"
+              >{{ $t('applications.projects.create') }}</a-button
+            >
+            <a-button
+              v-permission="{
+                resource: `roles.${Resources.Projects}`,
+                actions: ['DELETE']
+              }"
+              type="primary"
+              status="warning"
+              :disabled="!selectedKeys.length"
+              @click="handleDelete"
+              >{{ $t('common.button.delete') }}</a-button
+            >
+          </template>
+        </FilterBox>
+        <a-table
+          column-resizable
+          style="margin-bottom: 20px"
+          :bordered="false"
+          :loading="loading"
+          :data="dataList"
+          :pagination="false"
+          row-key="id"
+          :row-selection="rowSelection"
+          @sorter-change="handleSortChange"
+          @selection-change="handleSelectChange"
+        >
+          <template #columns>
+            <a-table-column
+              ellipsis
+              tooltip
+              :cell-style="{ minWidth: '40px' }"
+              data-index="name"
+              :title="$t('applications.projects.table.name')"
+            >
+              <template #cell="{ record }">
+                <a-link
+                  v-if="
+                    userStore.hasProjectResourceActions({
+                      projectID: record.id,
+                      resource: Resources.Applications,
+                      actions: [Actions.GET]
+                    })
+                  "
+                  size="small"
+                  @click="handleViewProject(record)"
+                  >{{ record.name }}</a-link
+                >
+                <span v-else>{{ record.name }}</span>
+              </template>
+            </a-table-column>
+            <a-table-column
+              ellipsis
+              tooltip
+              :cell-style="{ minWidth: '40px' }"
+              align="center"
+              data-index="description"
+              :title="$t('common.table.description')"
+            >
+            </a-table-column>
+            <a-table-column
+              ellipsis
+              tooltip
+              :cell-style="{ minWidth: '40px' }"
+              align="center"
+              data-index="createTime"
+              :sortable="{
+                sortDirections: ['ascend', 'descend'],
+                defaultSortOrder: 'descend',
+                sorter: true,
+                sortOrder: sortOrder
+              }"
+              :title="$t('common.table.createTime')"
+            >
+              <template #cell="{ record }">
+                <span>{{
+                  dayjs(record.createTime).format('YYYY-MM-DD HH:mm:ss')
+                }}</span>
+              </template>
+            </a-table-column>
 
-          <a-table-column
-            align="center"
-            :title="$t('common.table.operation')"
-            ellipsis
-            tooltip
-            :cell-style="{ minWidth: '40px' }"
-          >
-            <template #cell="{ record }">
-              <a-space :size="20">
-                <a-tooltip :content="$t('common.button.edit')">
-                  <a-link
-                    v-if="
-                      userStore.hasProjectResourceActions({
-                        projectID: record.id,
-                        resource: Resources.Projects,
-                        actions: [Actions.PUT]
-                      })
-                    "
-                    type="text"
-                    size="small"
-                    @click="handleEditProject(record)"
-                  >
-                    <template #icon><icon-edit class="size-16" /></template>
-                  </a-link>
-                </a-tooltip>
-                <a-tooltip :content="$t('common.button.authorize')">
-                  <a-link
-                    v-if="
-                      userStore.hasProjectResourceActions({
-                        projectID: record.id,
-                        resource: Resources.SubjectRoles,
-                        actions: ['POST']
-                      })
-                    "
-                    type="text"
-                    size="small"
-                    @click="handleAuthorize(record)"
-                  >
-                    <template #icon>
-                      <i
-                        style="color: rgb(var(--arcoblue-6))"
-                        type="icon-jiaoseshouquan"
-                        class="size-16 iconfont icon-jiaoseshouquan"
-                      ></i>
-                    </template>
-                  </a-link>
-                </a-tooltip>
-              </a-space>
-            </template>
-          </a-table-column>
-        </template>
-      </a-table>
-      <a-pagination
-        size="small"
-        :total="total"
-        :page-size="queryParams.perPage"
-        :current="queryParams.page"
-        show-total
-        show-page-size
-        :hide-on-single-page="queryParams.perPage === 10"
-        @change="handlePageChange"
-        @page-size-change="handlePageSizeChange"
-      />
-    </div>
-    <CreateProjectModal
-      v-model:show="showProjectModal"
-      :title="modalTitle"
-      :action="action"
-      :info="projectInfo"
-      @save="handleSaveProject"
-    ></CreateProjectModal>
-    <AssignRoles
-      v-model:show="showModal"
-      :project-i-d="projectID"
-    ></AssignRoles>
-  </SpinCard>
+            <a-table-column
+              align="center"
+              :title="$t('common.table.operation')"
+              ellipsis
+              tooltip
+              :cell-style="{ minWidth: '40px' }"
+            >
+              <template #cell="{ record }">
+                <a-space :size="20">
+                  <a-tooltip :content="$t('common.button.edit')">
+                    <a-link
+                      v-if="
+                        userStore.hasProjectResourceActions({
+                          projectID: record.id,
+                          resource: Resources.Projects,
+                          actions: [Actions.PUT]
+                        })
+                      "
+                      type="text"
+                      size="small"
+                      @click="handleEditProject(record)"
+                    >
+                      <template #icon><icon-edit class="size-16" /></template>
+                    </a-link>
+                  </a-tooltip>
+                  <a-tooltip :content="$t('common.button.authorize')">
+                    <a-link
+                      v-if="
+                        userStore.hasProjectResourceActions({
+                          projectID: record.id,
+                          resource: Resources.SubjectRoles,
+                          actions: ['POST']
+                        })
+                      "
+                      type="text"
+                      size="small"
+                      @click="handleAuthorize(record)"
+                    >
+                      <template #icon>
+                        <i
+                          style="color: rgb(var(--arcoblue-6))"
+                          type="icon-jiaoseshouquan"
+                          class="size-16 iconfont icon-jiaoseshouquan"
+                        ></i>
+                      </template>
+                    </a-link>
+                  </a-tooltip>
+                </a-space>
+              </template>
+            </a-table-column>
+          </template>
+        </a-table>
+        <a-pagination
+          size="small"
+          :total="total"
+          :page-size="queryParams.perPage"
+          :current="queryParams.page"
+          show-total
+          show-page-size
+          :hide-on-single-page="queryParams.perPage === 10"
+          @change="handlePageChange"
+          @page-size-change="handlePageSizeChange"
+        />
+      </div>
+      <CreateProjectModal
+        v-model:show="showProjectModal"
+        :title="modalTitle"
+        :action="action"
+        :info="projectInfo"
+        @save="handleSaveProject"
+      ></CreateProjectModal>
+      <AssignRoles
+        v-model:show="showModal"
+        :project-i-d="projectID"
+      ></AssignRoles>
+    </SpinCard>
+  </div>
 </template>
 
 <script lang="ts" setup>
@@ -247,9 +252,13 @@
     }, 100);
   };
   const handleViewProject = (row) => {
+    // router.push({
+    //   name: 'ApplicationsList',
+    //   query: { id: row.id }
+    // });
     router.push({
-      name: 'ApplicationsList',
-      query: { id: row.id }
+      name: 'ProjectDetail',
+      params: { projectId: row.id }
     });
   };
   const handleAuthorize = (row) => {
