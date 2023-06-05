@@ -1,8 +1,8 @@
 <template>
   <a-layout class="layout" :class="{ mobile: appStore.hideMenu }">
-    <div v-if="navbar" class="layout-navbar">
+    <!-- <div v-if="navbar" class="layout-navbar">
       <NavBar />
-    </div>
+    </div> -->
     <a-layout
       class="main-layout"
       :class="{ 'full-screen': appStore.fullScreen }"
@@ -16,10 +16,24 @@
           :collapsed="collapsed"
           :collapsible="true"
           :width="menuWidth"
-          :style="{ paddingTop: navbar ? '56px' : '' }"
+          :style="{
+            paddingTop: navbar ? `${appStore.navbarHeight + 2}px` : ''
+          }"
           :hide-trigger="true"
           @collapse="setCollapsed"
         >
+          <div
+            class="logo-wrapper"
+            :class="{ menuCollapse: appStore.menuCollapse }"
+          >
+            <div>
+              <img
+                alt="logo"
+                class="logo"
+                src="../assets/images/seal-logo.png"
+              />
+            </div>
+          </div>
           <div class="menu-wrapper">
             <Menu />
           </div>
@@ -109,8 +123,8 @@
 </script>
 
 <style scoped lang="less">
-  @nav-size-height: 56px;
-  @nav-size-gap: 76px;
+  @nav-size-height: 48px;
+  @nav-size-gap: 68px;
   @layout-max-width: 1100px;
 
   .layout {
@@ -191,6 +205,33 @@
     background-color: #fff;
     transition: all 0.2s cubic-bezier(0.34, 0.69, 0.1, 1);
 
+    .logo-wrapper {
+      position: absolute;
+      top: 0;
+      right: 0;
+      left: 0;
+      display: flex;
+      align-items: center;
+      width: 220px;
+      height: 48px;
+      padding-left: 7px;
+      font-size: 0;
+      background-color: var(--seal-color-bg-1);
+      transition: all 0.2s cubic-bezier(0.34, 0.69, 0.1, 1);
+
+      &.menuCollapse {
+        width: 48px;
+        overflow: hidden;
+        overflow: hidden;
+        border-radius: 0 4px 4px 0;
+        transition: all 0.2s cubic-bezier(0.34, 0.69, 0.1, 1);
+      }
+
+      .logo {
+        width: 120px;
+        height: auto;
+      }
+    }
     // &::after {
     //   position: absolute;
     //   top: 0;

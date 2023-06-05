@@ -1,62 +1,75 @@
 <template>
-  <ComCard top-gap class="application-detail-wrap">
-    <GroupTitle
-      show-back
-      :title="title"
-      :show-edit="
-        pageAction === 'view' &&
-        activeInstanceTab === 'app' &&
-        userStore.hasProjectResourceActions({
-          projectID,
-          resource: Resources.Applications,
-          actions: ['PUT']
-        })
+  <div>
+    <div
+      class="bread-wrapper"
+      style="
+        position: fixed;
+        top: 0;
+        rigth: 0;
+        left: 0;
+        width: 100%;
+        height: 48px;
+        background-color: var(--seal-color-bg-1);
       "
-      @edit="handleEdit"
-    >
-    </GroupTitle>
-    <div class="instance-box">
-      <instanceThumb
-        v-if="pageAction === 'view'"
-        class="app"
-        :class="{ active: activeInstanceTab === 'app' }"
-        :active="activeInstanceTab === 'app'"
-        :actions="appActions"
-        @rollback="handleRollbackRevision('app')"
-        @click="handleClickApp"
+    ></div>
+    <ComCard top-gap class="application-detail-wrap">
+      <GroupTitle
+        show-back
+        :title="title"
+        :show-edit="
+          pageAction === 'view' &&
+          activeInstanceTab === 'app' &&
+          userStore.hasProjectResourceActions({
+            projectID,
+            resource: Resources.Applications,
+            actions: ['PUT']
+          })
+        "
+        @edit="handleEdit"
       >
-        <template #description>
-          <span>{{ $t('applications.applications.detail.info') }}</span>
-        </template>
-        <icon-right />
-      </instanceThumb>
-      <div v-if="pageAction === 'view'" class="instance">
-        <div class="content">
-          <instanceThumb
-            v-for="item in instanseList"
-            :key="item.id"
-            :size="[160, 100]"
-            :active="item.id === activeInstanceTab"
-            :data-info="item"
-            :actions="instanceActionList"
-            :action-loading="
-              _.includes(
-                [AppInstanceStatus.Deleting, AppInstanceStatus.Deploying],
-                item.status
-              )
-            "
-            @rollback="handleRollbackRevision('instance', item)"
-            @clone="handleCloneInstance(item)"
-            @upgrade="handleUpgradeInstance(item)"
-            @delete="handleDeleteInstance(item)"
-            @click="handleClickInstance(item)"
-          >
-            <template #description>
-              <span>{{ _.get(item, 'environment.name') }}</span>
-            </template>
-            <template #default>
-              <span style="font-weight: 700">
-                <!-- <a-tooltip
+      </GroupTitle>
+      <div class="instance-box">
+        <instanceThumb
+          v-if="pageAction === 'view'"
+          class="app"
+          :class="{ active: activeInstanceTab === 'app' }"
+          :active="activeInstanceTab === 'app'"
+          :actions="appActions"
+          @rollback="handleRollbackRevision('app')"
+          @click="handleClickApp"
+        >
+          <template #description>
+            <span>{{ $t('applications.applications.detail.info') }}</span>
+          </template>
+          <icon-right />
+        </instanceThumb>
+        <div v-if="pageAction === 'view'" class="instance">
+          <div class="content">
+            <instanceThumb
+              v-for="item in instanseList"
+              :key="item.id"
+              :size="[160, 100]"
+              :active="item.id === activeInstanceTab"
+              :data-info="item"
+              :actions="instanceActionList"
+              :action-loading="
+                _.includes(
+                  [AppInstanceStatus.Deleting, AppInstanceStatus.Deploying],
+                  item.status
+                )
+              "
+              @rollback="handleRollbackRevision('instance', item)"
+              @clone="handleCloneInstance(item)"
+              @upgrade="handleUpgradeInstance(item)"
+              @delete="handleDeleteInstance(item)"
+              @click="handleClickInstance(item)"
+            >
+              <template #description>
+                <span>{{ _.get(item, 'environment.name') }}</span>
+              </template>
+              <template #default>
+                <span style="font-weight: 700">
+                  <!-- <a-tooltip
                   :content="
                     $t('applications.applications.instance.configstatus')
                   "
@@ -68,90 +81,91 @@
                     style="color: var(--seal-color-warning)"
                   />
                 </a-tooltip> -->
-                <a-tooltip
-                  v-if="_.get(item, 'configStatus') === 'Outdateted'"
-                  :content="
-                    $t('applications.applications.instance.configstatus')
-                  "
+                  <a-tooltip
+                    v-if="_.get(item, 'configStatus') === 'Outdateted'"
+                    :content="
+                      $t('applications.applications.instance.configstatus')
+                    "
+                  >
+                    <span class="ins-name"> {{ _.get(item, 'name') }}</span>
+                  </a-tooltip>
+                  <span v-else> {{ _.get(item, 'name') }}</span>
+                </span>
+              </template>
+              <template #status>
+                <StatusLabel
+                  show-loading
+                  :size="12"
+                  :status="{
+                    status: _.get(item, 'status.summaryStatus'),
+                    message: '',
+                    transitioning: _.get(item, 'status.transitioning'),
+                    error: _.get(item, 'status.error')
+                  }"
                 >
-                  <span class="ins-name"> {{ _.get(item, 'name') }}</span>
-                </a-tooltip>
-                <span v-else> {{ _.get(item, 'name') }}</span>
-              </span>
-            </template>
-            <template #status>
-              <StatusLabel
-                show-loading
-                :size="12"
-                :status="{
-                  status: _.get(item, 'status.summaryStatus'),
-                  message: '',
-                  transitioning: _.get(item, 'status.transitioning'),
-                  error: _.get(item, 'status.error')
-                }"
-              >
-              </StatusLabel>
-            </template>
-          </instanceThumb>
-          <a-tooltip
-            v-if="
-              userStore.hasProjectResourceActions({
-                projectID,
-                resource: Resources.ApplicationInstances,
-                actions: ['POST']
-              })
-            "
-            :content="$t('applications.applications.instance.add')"
-          >
-            <thumbButton :size="60" @click="handleAddInstance"></thumbButton>
-          </a-tooltip>
+                </StatusLabel>
+              </template>
+            </instanceThumb>
+            <a-tooltip
+              v-if="
+                userStore.hasProjectResourceActions({
+                  projectID,
+                  resource: Resources.ApplicationInstances,
+                  actions: ['POST']
+                })
+              "
+              :content="$t('applications.applications.instance.add')"
+            >
+              <thumbButton :size="60" @click="handleAddInstance"></thumbButton>
+            </a-tooltip>
+          </div>
         </div>
       </div>
-    </div>
-    <div>
-      <component
-        :is="pageComMap[pgCom]"
-        :instance-id="currentInstance"
-        @save="handleSaveApp"
-        @cancelEdit="handleCancelEdit"
-      ></component>
-    </div>
-    <createInstance
-      v-model:show="showInstanceModal"
-      v-model:status="status"
-      v-model:active-instance-info="activeInstanceInfo"
-      :variables="appInfoVariables"
-      :environment-list="environmentList"
-      :title="
-        status === 'create'
-          ? $t('applications.applications.instance.add')
-          : $t('applications.applications.instance.upgrade')
-      "
-      @save="handleSaveInstanceInfo"
-      @upgrade="handleInstanceUpgradeSucceed"
-    ></createInstance>
-    <deleteInstanceModal
-      v-model:show="showDeleteModal"
-      :callback="handleDeleteConfirm"
-      :title="$t('common.delete.tips')"
-    >
-    </deleteInstanceModal>
-    <cloneInstanceModal
-      v-model:show="showCloneModal"
-      :title="
-        $t('applications.applications.instance.clonetitle', {
-          from: _.get(cloneInstance, 'name')
-        })
-      "
-      @save="cloneHandler"
-    ></cloneInstanceModal>
-    <rollbackModal
-      v-model:show="showRollbackModal"
-      :instance-id="selectedInstance"
-      :title="rollbackTitle"
-      :instance-list="instanseList"
-    ></rollbackModal>
-  </ComCard>
+      <div>
+        <component
+          :is="pageComMap[pgCom]"
+          :instance-id="currentInstance"
+          @save="handleSaveApp"
+          @cancelEdit="handleCancelEdit"
+        ></component>
+      </div>
+      <createInstance
+        v-model:show="showInstanceModal"
+        v-model:status="status"
+        v-model:active-instance-info="activeInstanceInfo"
+        :variables="appInfoVariables"
+        :environment-list="environmentList"
+        :title="
+          status === 'create'
+            ? $t('applications.applications.instance.add')
+            : $t('applications.applications.instance.upgrade')
+        "
+        @save="handleSaveInstanceInfo"
+        @upgrade="handleInstanceUpgradeSucceed"
+      ></createInstance>
+      <deleteInstanceModal
+        v-model:show="showDeleteModal"
+        :callback="handleDeleteConfirm"
+        :title="$t('common.delete.tips')"
+      >
+      </deleteInstanceModal>
+      <cloneInstanceModal
+        v-model:show="showCloneModal"
+        :title="
+          $t('applications.applications.instance.clonetitle', {
+            from: _.get(cloneInstance, 'name')
+          })
+        "
+        @save="cloneHandler"
+      ></cloneInstanceModal>
+      <rollbackModal
+        v-model:show="showRollbackModal"
+        :instance-id="selectedInstance"
+        :title="rollbackTitle"
+        :instance-list="instanseList"
+      ></rollbackModal>
+    </ComCard>
+  </div>
 </template>
 
 <script lang="ts" setup>

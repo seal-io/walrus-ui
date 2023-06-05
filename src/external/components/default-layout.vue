@@ -18,8 +18,8 @@
 </script>
 
 <style scoped lang="less">
-  @nav-size-height: 56px;
-  @nav-size-gap: 76px;
+  @nav-size-height: 48px;
+  @nav-size-gap: 68px;
   @layout-max-width: 1100px;
 
   .layout {
