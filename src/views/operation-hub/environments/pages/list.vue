@@ -1,5 +1,5 @@
 <template>
-  <SpinCard borderless top-gap class="projects">
+  <ComCard borderless class="projects" padding="0">
     <!-- <template #title>
       <div class="title">
         <icon-apps
@@ -99,7 +99,7 @@
         @page-size-change="handlePageSizeChange"
       />
     </div>
-  </SpinCard>
+  </ComCard>
 </template>
 
 <script lang="ts" setup>

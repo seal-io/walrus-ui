@@ -96,12 +96,12 @@
   const paddingStyle = computed(() => {
     const paddingLeft =
       renderMenu.value && !hideMenu.value
-        ? { paddingLeft: `${menuWidth.value + 20}px` }
+        ? { paddingLeft: `${menuWidth.value + 10}px` }
         : {};
     const paddingTop = navbar.value
       ? { paddingTop: `${appStore.navbarHeight}px` }
       : {};
-    return { ...paddingLeft, ...paddingTop, paddingRight: '20px' };
+    return { ...paddingLeft, ...paddingTop, paddingRight: '10px' };
   });
   const setCollapsed = (val: boolean) => {
     appStore.updateSettings({ menuCollapse: val });
@@ -217,13 +217,13 @@
       padding-left: 7px;
       font-size: 0;
       background-color: var(--seal-color-bg-1);
+      border-right: 1px solid rgba(255, 255, 255, 0.4);
       transition: all 0.2s cubic-bezier(0.34, 0.69, 0.1, 1);
 
       &.menuCollapse {
         width: 48px;
         overflow: hidden;
         overflow: hidden;
-        border-radius: 0 4px 4px 0;
         transition: all 0.2s cubic-bezier(0.34, 0.69, 0.1, 1);
       }
 

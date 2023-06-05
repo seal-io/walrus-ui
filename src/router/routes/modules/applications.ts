@@ -12,7 +12,8 @@ export default {
     requiresAuth: false,
     isRouteView: true,
     order: 1,
-    icon: 'icon-apps'
+    icon: 'icon-apps',
+    onlyRenderChildren: false
   },
   children: [
     ...projectsRoutes,

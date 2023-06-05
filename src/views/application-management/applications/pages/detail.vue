@@ -1,17 +1,5 @@
 <template>
   <div>
-    <div
-      class="bread-wrapper"
-      style="
-        position: fixed;
-        top: 0;
-        rigth: 0;
-        left: 0;
-        width: 100%;
-        height: 48px;
-        background-color: var(--seal-color-bg-1);
-      "
-    ></div>
     <ComCard top-gap class="application-detail-wrap">
       <GroupTitle
         show-back
@@ -252,6 +240,7 @@
     modules: []
   }) as AppFormData;
   const execReload = inject('execReload', () => {});
+
   provide('instanceId', currentInstance);
   provide('environmentList', environmentList);
   provide('appInfo', appInfo);

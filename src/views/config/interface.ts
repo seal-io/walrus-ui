@@ -10,4 +10,14 @@ export interface BasicDescription {
   formatter?: (t: string) => string;
 }
 
+export interface BreadcrumbOptions {
+  label: string;
+  value: string;
+  icon: string;
+  type?: string;
+  options?: Array<{
+    label: string;
+    value: string;
+  }>;
+}
 export default {};

@@ -27,7 +27,7 @@
     padding: {
       type: String,
       default() {
-        return '20px 20px 20px 20px';
+        return '16px';
       }
     },
     title: {
@@ -71,8 +71,10 @@
 </script>
 
 <style lang="less" scoped>
+  @paddingSize: 16px;
+
   .top-gap {
-    margin-top: 20px;
+    margin-top: 10px;
   }
 
   .spin-card-content {
@@ -87,7 +89,7 @@
   .header-border-less {
     :deep(.arco-card-header) {
       height: auto;
-      padding: 20px 20px 0;
+      padding: @paddingSize @paddingSize 0;
       overflow: visible;
       border: none;
 
