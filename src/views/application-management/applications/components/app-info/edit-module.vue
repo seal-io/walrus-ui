@@ -80,9 +80,8 @@
                 }
               ]"
             >
-              <div>
+              <div id="moduleIdWrapper" style="position: relative">
                 <a-select
-                  id="moduleIdWrapper"
                   v-model="formData.module.id"
                   style="position: relative"
                   popup-container="#moduleIdWrapper"
