@@ -107,7 +107,7 @@
                       :key="`${formId}_editorId_${index}`"
                       v-bind="{ ...fm.props }"
                       v-model="formData[fm.name]"
-                      :popup-container="`#${fm.name}`"
+                      :popup-container="getContainer(fm.name)"
                       :editor-default-value="fm.default || ''"
                       style="position: relative; width: 100%"
                       width="100%"
@@ -274,6 +274,9 @@
     });
     return list;
   });
+  const getContainer = (fmName) => {
+    return document.getElementById(fmName);
+  };
   const doSubmit = async () => {
     return axios[props.action](props.api, formData.value);
   };
@@ -347,6 +350,7 @@
     activeMenu.value = '';
     subGroupCache.value = {};
     subGroupListCache.value = {};
+    triggerValidate.value = false;
     thirdGroupCache.value = {};
 
     let list = map(props.formSchema, (o, i) => {
