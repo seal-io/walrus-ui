@@ -1,19 +1,14 @@
 <template>
   <div class="navbar" :class="{ 'full-screen': fullScreen }">
     <div class="left-side">
-      <a-space>
+      <div>
         <img
           alt="logo"
           class="logo"
           src="../../assets/images/seal-logo.png"
           @click="handleToHome"
         />
-        <!-- <icon-menu-fold
-          v-if="appStore.device === 'mobile'"
-          style="font-size: 22px; cursor: pointer"
-          @click="toggleDrawerMenu"
-        /> -->
-      </a-space>
+      </div>
     </div>
     <div v-if="hasNavList" class="nav-list">
       <nav-list :list="navDataList" :default-active="defaultActive"></nav-list>

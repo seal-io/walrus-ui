@@ -59,7 +59,7 @@
 </script>
 
 <style lang="less" scoped>
-  @footer-height: 56px;
+  @footer-height: 48px;
 
   .footer {
     height: @footer-height;

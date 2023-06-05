@@ -1,5 +1,5 @@
 <template>
-  <router-view v-if="isReload"></router-view>
+  <router-view v-if="isReload"> </router-view>
 </template>
 
 <script lang="ts" setup>
