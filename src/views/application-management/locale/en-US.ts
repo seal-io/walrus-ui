@@ -1,9 +1,9 @@
 export default {
   'applications.applications.menu': 'Applications',
-  'applications.applications.create': 'New Application',
+  'applications.applications.create': 'New Service',
   'applications.applications.edit': 'Edit Application',
-  'applications.applications.secret': 'Secrets',
-  'applications.applications.secret.holder': 'please enter a secret',
+  'applications.applications.secret': 'Variable',
+  'applications.applications.secret.holder': 'please enter a variable',
   'applications.applications.configuration.create': 'Add Module',
   'applications.applications.table.name': 'Application',
   'applications.applications.table.module': 'Module',

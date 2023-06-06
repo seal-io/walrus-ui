@@ -1,8 +1,8 @@
 <template>
-  <ComCard top-gap class="applications-list">
+  <ComCard padding="0" class="applications-list">
     <FilterBox style="margin-bottom: 10px">
       <template #params>
-        <a-select
+        <!-- <a-select
           v-model="queryParams.projectID"
           allow-search
           :options="projectList"
@@ -11,7 +11,7 @@
           @clear="handleSearch"
           @change="handleProjectChange"
         >
-        </a-select>
+        </a-select> -->
         <a-input
           v-model="queryParams.query"
           allow-clear
@@ -81,7 +81,7 @@
           tooltip
           :cell-style="{ minWidth: '40px' }"
           data-index="name"
-          :title="$t('applications.applications.table.name')"
+          title="服务"
         >
           <template #cell="{ record }">
             <a-link
@@ -235,7 +235,7 @@
   const loading = ref(false);
   const total = ref(0);
   const queryParams = reactive({
-    projectID: '',
+    projectID: route.params.projectId as string,
     query: '',
     page: 1,
     perPage: 10
@@ -369,11 +369,20 @@
     });
   };
   const handleClickView = (row) => {
+    // router.push({
+    //   name: 'ApplicationsDetail',
+    //   params: {
+    //     projectId: row.project?.id || queryParams.projectID,
+    //     action: 'view'
+    //   },
+    //   query: {
+    //     id: row.id
+    //   }
+    // });
     router.push({
-      name: 'ApplicationsDetail',
+      name: 'ProjectServiceDetail',
       params: {
-        projectId: row.project?.id || queryParams.projectID,
-        action: 'view'
+        ...route.params
       },
       query: {
         id: row.id
@@ -395,7 +404,7 @@
     deleteModal({ onOk: handleDeleteConfirm });
   };
   const init = async () => {
-    await getProjectList();
+    // await getProjectList();
     userStore.setInfo({ currentProject: queryParams.projectID });
     fetchData();
   };

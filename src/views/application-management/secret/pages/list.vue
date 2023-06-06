@@ -83,7 +83,7 @@
             :title="$t('applications.applications.secret')"
           >
           </a-table-column>
-          <a-table-column
+          <!-- <a-table-column
             ellipsis
             tooltip
             align="center"
@@ -94,7 +94,7 @@
             <template #cell="{ record }">
               <span>{{ setSecretScope(get(record, 'project.id')) }}</span>
             </template>
-          </a-table-column>
+          </a-table-column> -->
           <a-table-column
             ellipsis
             tooltip

@@ -115,7 +115,7 @@
   import { queryEnvironments, deleteEnvironment } from '../api';
 
   let timer: any = null;
-  const { router } = useCallCommon();
+  const { router, route } = useCallCommon();
   const loading = ref(false);
   const currentView = ref('thumb'); // thumb, list
   const selectedKeys = ref<string[]>([]);
@@ -125,7 +125,8 @@
   const queryParams = reactive({
     query: '',
     page: 1,
-    perPage: 10
+    perPage: 10,
+    projectID: route.params.projectId
   });
   const handleToggle = (val) => {
     currentView.value = val;

@@ -5,7 +5,9 @@ const useProjectStore = defineStore('project', {
     key: 'project'
   },
   state: (): any => ({
-    projectList: []
+    projectList: [],
+    environmentList: [],
+    serviceList: []
   }),
   getters: {
     filterInfo(state: any): any {

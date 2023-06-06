@@ -27,7 +27,8 @@
 
 <script lang="ts" setup>
   import { get } from 'lodash';
-  import { useRouter } from 'vue-router';
+  import useCallCommon from '@/hooks/use-call-common';
+  import { useRouter, use } from 'vue-router';
   import { useUserStore } from '@/store';
   import { Resources } from '@/permissions/config';
 
@@ -69,18 +70,27 @@
       }
     }
   });
+  const { router, route } = useCallCommon();
   const userStore = useUserStore();
-  const router = useRouter();
   const handleViewInstance = () => {
+    // router.push({
+    //   name: 'ApplicationsDetail',
+    //   params: {
+    //     projectId: props.projectId,
+    //     action: 'view'
+    //   },
+    //   query: {
+    //     id: props.applicationId,
+    //     instanceId: props.instanceId
+    //   }
+    // });
     router.push({
-      name: 'ApplicationsDetail',
+      name: 'ProjectServiceDetail',
       params: {
-        projectId: props.projectId,
-        action: 'view'
+        ...route.params
       },
       query: {
-        id: props.applicationId,
-        instanceId: props.instanceId
+        id: props.instanceId
       }
     });
   };

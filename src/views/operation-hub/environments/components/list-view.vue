@@ -115,7 +115,7 @@
   type BaseType = string | number;
   let timer: any = null;
   const emits = defineEmits(['update:selectedList', 'sort', 'update:sort']);
-  const { router } = useCallCommon();
+  const { router, route } = useCallCommon();
   const { sort, sortOrder, setSortDirection } = UseSortDirection({
     defaultSortField: '-createTime',
     defaultOrder: 'descend'
@@ -145,12 +145,20 @@
     });
   };
   const handleView = (row) => {
+    // router.push({
+    //   name: 'EnvironmentDetail',
+    //   params: {
+    //     action: 'view'
+    //   },
+    //   query: { id: row.id }
+    // });
     router.push({
-      name: 'EnvironmentDetail',
+      name: 'ProjectEnvDetail',
       params: {
-        action: 'view'
-      },
-      query: { id: row.id }
+        action: 'view',
+        ...route.params,
+        environmentId: row.id
+      }
     });
   };
   watchEffect(() => {

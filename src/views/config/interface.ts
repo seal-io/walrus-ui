@@ -15,6 +15,7 @@ export interface BreadcrumbOptions {
   value: string;
   icon: string;
   type?: string;
+  wrapperId: string;
   options?: Array<{
     label: string;
     value: string;
