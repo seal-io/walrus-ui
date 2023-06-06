@@ -27,6 +27,41 @@ export default [
     meta: {
       hideInMenu: true,
       hideMenu: false,
+      ignoreCache: false,
+      locale: 'applications.projects.menu',
+      requiresAuth: true,
+      permission: {
+        resource: Resources.Projects,
+        actions: ['GET']
+      },
+      icon: 'icon-apps'
+    }
+  },
+  {
+    path: 'project/:projectId/environment/:environmentId/detail',
+    name: 'ProjectEnvDetail',
+    component: () =>
+      import('@/views/operation-hub/environments/pages/environment-detail.vue'),
+    meta: {
+      hideInMenu: true,
+      hideMenu: false,
+      ignoreCache: true,
+      locale: 'applications.projects.menu',
+      requiresAuth: true,
+      permission: {
+        resource: Resources.Projects,
+        actions: ['GET']
+      },
+      icon: 'icon-apps'
+    }
+  },
+  {
+    path: 'project/:projectId/environment/:environmentId/service/detail',
+    name: 'ProjectServiceDetail',
+    component: () => import('../pages/service.vue'),
+    meta: {
+      hideInMenu: true,
+      hideMenu: false,
       ignoreCache: true,
       locale: 'applications.projects.menu',
       requiresAuth: true,

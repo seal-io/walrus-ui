@@ -47,21 +47,6 @@
             @change="handleCodeChange"
           ></AceEditor>
         </a-grid-item>
-        <!-- <a-grid-item :span="showExplainModal ? 8 : 0">
-          <div
-            v-show="showExplainModal"
-            id="modal-container"
-            class="modal-container"
-          >
-            <AceEditor
-              editor-id="infoEditor"
-              :editor-default-value="explainContent"
-              :show-gutter="false"
-              read-only
-              :height="500"
-            ></AceEditor>
-          </div>
-        </a-grid-item> -->
       </a-grid>
     </a-spin>
     <div class="tools-wrap">

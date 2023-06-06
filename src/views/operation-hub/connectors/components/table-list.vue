@@ -329,7 +329,7 @@
   const axiosSource = useAxiosSource();
   let axiosToken: any = null;
   const { rowSelection, selectedKeys, handleSelectChange } = useRowSelect();
-  const { router, t } = useCallCommon();
+  const { router, route, t } = useCallCommon();
   const { sort, sortOrder, setSortDirection } = UseSortDirection({
     defaultSortField: '-createTime',
     defaultOrder: 'descend'
@@ -342,7 +342,8 @@
     query: '',
     page: 1,
     perPage: 10,
-    category: props.category
+    category: props.category,
+    projectID: route.params.projectId
   });
   const dataList = ref<ConnectorRowData[]>([]);
 

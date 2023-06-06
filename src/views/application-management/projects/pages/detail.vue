@@ -23,8 +23,20 @@
           <a-tab-pane key="enviroment" title="环境">
             <EnviromentList ref="enviromentRef"></EnviromentList>
           </a-tab-pane>
-          <a-tab-pane key="secret" title="密钥">
-            <SecretList ref="secretRef"></SecretList>
+          <a-tab-pane key="variables" title="变量">
+            <SecretList ref="variablesRef"></SecretList>
+          </a-tab-pane>
+          <a-tab-pane key="connector" title="连接器">
+            <ConnectorList
+              ref="connectorRef"
+              show-type="component"
+              direction="vertical"
+              :top-gap="false"
+              padding="0"
+            ></ConnectorList>
+          </a-tab-pane>
+          <a-tab-pane key="settings" title="配置">
+            <div>配置</div>
           </a-tab-pane>
         </a-tabs>
       </ComCard>
@@ -41,12 +53,13 @@
   import EnviromentList from '@/views/operation-hub/environments/pages/list.vue';
   import SecretList from '@/views/application-management/secret/pages/list.vue';
   import { BreadcrumbOptions } from '@/views/config/interface';
+  import ConnectorList from '@/views/operation-hub/connectors/pages/list.vue';
   import { queryProjects } from '../api';
 
   const { router, route } = useCallCommon();
   const projectStore = useProjectStore();
   const activeKey = ref('enviroment');
-  const secretRef = ref();
+  const variablesRef = ref();
   const enviromentRef = ref();
   const currentInfo = ref<any>({});
   const breadCrumbList = ref<BreadcrumbOptions[]>([]);
@@ -74,6 +87,7 @@
         label: defaultName,
         icon: 'icon-apps',
         type: 'Project',
+        wrapperId: 'project',
         options: list
       });
       projectStore.setInfo({
@@ -97,4 +111,10 @@
     getProjectList();
   };
   init();
+</script>
+
+<script lang="ts">
+  export default {
+    name: 'ProjectDetail'
+  };
 </script>

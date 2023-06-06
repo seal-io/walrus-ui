@@ -11,3 +11,10 @@ export interface SecretFormData {
     id: string | number;
   };
 }
+
+export interface Variable {
+  name: string;
+  type: string;
+  default: any;
+  visible: boolean;
+}

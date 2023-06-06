@@ -1,5 +1,8 @@
 <template>
   <a-breadcrumb class="container-breadcrumb">
+    <template #separator>
+      <icon-oblique-line class="size-16" style="stroke-width: 4" />
+    </template>
     <a-breadcrumb-item v-if="menu.label">
       <span class="box">
         <span v-if="menu.type" class="type">Application</span>
@@ -16,12 +19,17 @@
     <a-breadcrumb-item v-for="(item, index) in items" :key="index">
       <span class="box">
         <span class="type">{{ item.type }}</span>
-        <span class="item-content">
+        <span
+          :id="item.wrapperId"
+          class="item-content"
+          style="position: relative"
+        >
           <span v-if="item.options?.length" class="label single">
             <a-select
               :model-value="item.value"
               style="width: 120px"
               :options="item.options"
+              :popup-container="getContainer(item.wrapperId)"
               size="mini"
               class="border-less"
               @change="(val) => handleSelectChange(val, item)"
@@ -58,6 +66,9 @@
   const handleSelectChange = (val, item) => {
     emits('change', val, item);
   };
+  const getContainer = (name) => {
+    return document.getElementById(name);
+  };
 </script>
 
 <style scoped lang="less">
@@ -89,6 +100,7 @@
 
         .arco-select-view-value {
           color: #fff;
+          font-size: 14px;
         }
       }
     }
@@ -98,7 +110,7 @@
       flex-direction: column;
       color: rgba(255, 255, 255, 0.5);
       font-size: 12px;
-      line-height: 1.4;
+      line-height: 1;
 
       .item-content {
         display: flex;
