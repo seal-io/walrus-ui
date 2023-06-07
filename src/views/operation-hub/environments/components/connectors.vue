@@ -47,7 +47,7 @@
             ></StatusLabel>
           </template>
         </a-table-column>
-        <a-table-column
+        <!-- <a-table-column
           ellipsis
           tooltip
           :cell-style="{ minWidth: '40px' }"
@@ -58,7 +58,7 @@
           <template #cell="{ record }">
             <span>{{ dayjs(record.createTime).format('YYYY-MM-DD') }}</span>
           </template>
-        </a-table-column>
+        </a-table-column> -->
         <a-table-column
           v-if="action === 'edit'"
           align="center"

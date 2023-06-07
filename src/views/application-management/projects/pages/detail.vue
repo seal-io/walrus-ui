@@ -35,9 +35,6 @@
               padding="0"
             ></ConnectorList>
           </a-tab-pane>
-          <a-tab-pane key="settings" title="配置">
-            <div>配置</div>
-          </a-tab-pane>
         </a-tabs>
       </ComCard>
     </ComCard>
@@ -53,7 +50,7 @@
   import EnviromentList from '@/views/operation-hub/environments/pages/list.vue';
   import SecretList from '@/views/application-management/secret/pages/list.vue';
   import { BreadcrumbOptions } from '@/views/config/interface';
-  import ConnectorList from '@/views/operation-hub/connectors/pages/list.vue';
+  import ConnectorList from '@/views/operation-hub/connectors/components/table-list.vue';
   import { queryProjects } from '../api';
 
   const { router, route } = useCallCommon();

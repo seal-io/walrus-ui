@@ -1,6 +1,6 @@
 <template>
-  <comCard top-gap class="kuber-detail-wrap">
-    <GroupTitle
+  <cdiv top-gap class="kuber-detail-wrap">
+    <!-- <GroupTitle
       :title="title"
       show-back
       :show-edit="
@@ -11,7 +11,7 @@
         })
       "
       @edit="handleEdit"
-    ></GroupTitle>
+    ></GroupTitle> -->
     <div>
       <a-form ref="formref" :model="formData" auto-label-width>
         <a-form-item
@@ -128,7 +128,7 @@
         </a-form-item>
       </a-form>
     </div>
-    <EditPageFooter v-if="pageAction === 'edit'">
+    <!-- <EditPageFooter v-if="pageAction === 'edit'">
       <template #save>
         <a-button
           type="primary"
@@ -144,15 +144,15 @@
         @click="handleCancel"
         >{{ $t('common.button.cancel') }}</a-button
       >
-    </EditPageFooter>
-  </comCard>
+    </EditPageFooter> -->
+  </cdiv>
 </template>
 
 <script lang="ts" setup>
   import { Resources } from '@/permissions/config';
   import { useUserStore } from '@/store';
   import { assignIn, get, find, isEqual, cloneDeep } from 'lodash';
-  import { ref, reactive, onMounted, computed } from 'vue';
+  import { ref, reactive, onMounted, computed, defineExpose } from 'vue';
   import GroupTitle from '@/components/group-title/index.vue';
   import readBlob from '@/utils/readBlob';
   import { beforeLeaveCallback } from '@/hooks/save-before-leave';
@@ -164,10 +164,19 @@
   import StatusLabel from '../components/status-label.vue';
   import { createConnector, updateConnector, queryItemConnector } from '../api';
 
+  const props = defineProps({
+    id: {
+      type: String,
+      default() {
+        return '';
+      }
+    }
+  });
   const userStore = useUserStore();
+  const pageAction = ref('edit');
   const { t, router, route } = useCallCommon();
-  const { pageAction, handleEdit } = usePageAction();
-  const id = route.query.id as string;
+  // const { pageAction, handleEdit } = usePageAction();
+  const id = props.id || '';
   const formref = ref();
   const submitLoading = ref(false);
   let copyFormData: any = {};
@@ -227,12 +236,14 @@
         } else {
           await createConnector(formData);
         }
-        router.back();
+        // router.back();
         submitLoading.value = false;
       } catch (error) {
         submitLoading.value = false;
       }
+      return true;
     }
+    return false;
   };
   const getConnectorInfo = async () => {
     copyFormData = cloneDeep(formData);
@@ -283,7 +294,11 @@
     }
     return true;
   });
-  getConnectorInfo();
+  defineExpose({
+    getConnectorInfo,
+    handleSubmit
+  });
+  // getConnectorInfo();
 </script>
 
 <style lang="less" scoped>

@@ -1,6 +1,6 @@
 <template>
-  <comCard top-gap class="kuber-detail-wrap">
-    <GroupTitle
+  <div top-gap class="kuber-detail-wrap">
+    <!-- <GroupTitle
       :title="title"
       show-back
       :show-edit="
@@ -11,7 +11,7 @@
         })
       "
       @edit="handleEdit"
-    ></GroupTitle>
+    ></GroupTitle> -->
     <div>
       <a-form ref="formref" :model="formData" auto-label-width>
         <a-form-item
@@ -171,7 +171,7 @@
         </a-form-item>
       </a-form>
     </div>
-    <EditPageFooter v-if="pageAction === 'edit'">
+    <!-- <EditPageFooter v-if="pageAction === 'edit'">
       <template #save>
         <a-button
           type="primary"
@@ -187,8 +187,8 @@
         @click="handleCancel"
         >{{ $t('common.button.cancel') }}</a-button
       >
-    </EditPageFooter>
-  </comCard>
+    </EditPageFooter> -->
+  </div>
 </template>
 
 <script lang="ts" setup>
@@ -207,7 +207,7 @@
     pick,
     each
   } from 'lodash';
-  import { ref, reactive, onMounted, computed } from 'vue';
+  import { ref, reactive, onMounted, computed, defineExpose } from 'vue';
   import GroupTitle from '@/components/group-title/index.vue';
   import readBlob from '@/utils/readBlob';
   import { beforeLeaveCallback } from '@/hooks/save-before-leave';
@@ -223,6 +223,14 @@
   import { ConnectorFormData, CustomAttrbute } from '../config/interface';
   import { createConnector, updateConnector, queryItemConnector } from '../api';
 
+  const props = defineProps({
+    id: {
+      type: String,
+      default() {
+        return '';
+      }
+    }
+  });
   const userStore = useUserStore();
   const setPropertyStyle = (style) => {
     return {
@@ -235,12 +243,13 @@
     style: {
       key: setPropertyStyle({ 'flex-basis': '180px' }),
       description: setPropertyStyle({ 'flex-basis': '110px' }),
-      value: setPropertyStyle({ 'flex-basis': '320px' })
+      value: setPropertyStyle({ 'flex-basis': '330px' })
     }
   };
   const { t, router, route } = useCallCommon();
-  const { pageAction, handleEdit } = usePageAction();
-  const id = route.query.id as string;
+  const pageAction = ref('edit');
+  // const { pageAction, handleEdit } = usePageAction();
+  const id = props.id || '';
   const formref = ref();
   const submitLoading = ref(false);
   const triggerValidate = ref(false);
@@ -366,12 +375,14 @@
         } else {
           await createConnector(formData);
         }
-        router.back();
+        // router.back();
         submitLoading.value = false;
       } catch (error) {
         submitLoading.value = false;
       }
+      return true;
     }
+    return false;
   };
   const initConfigDataValue = () => {
     const configData = formData.configData || {};
@@ -436,7 +447,11 @@
   const init = async () => {
     await getConnectorInfo();
   };
-  init();
+  defineExpose({
+    init,
+    handleSubmit
+  });
+  // init();
 </script>
 
 <style lang="less" scoped>

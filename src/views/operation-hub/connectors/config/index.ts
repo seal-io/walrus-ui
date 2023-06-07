@@ -1,22 +1,31 @@
 export const connectorTypeList = [
-  { label: 'Kubernetes', enable: true, value: 'Kubernetes', com: 'kubernetes' },
+  {
+    label: 'Kubernetes',
+    enable: true,
+    value: 'Kubernetes',
+    com: 'kubernetes',
+    icon: 'icon-bxl-kubernetes'
+  },
   {
     label: 'operation.connectors.table.versioncontrol',
     enable: true,
     value: 'VersionControl',
-    com: 'versionControl'
+    com: 'versionControl',
+    icon: 'icon-git'
   },
   {
     label: 'operation.connectors.reinstall.custom',
     enable: true,
     value: 'Custom',
-    com: 'custom'
+    com: 'custom',
+    icon: 'icon-custom'
   },
   {
     label: 'operation.connectors.reinstall.cloudProvider',
     enable: true,
     value: 'CloudProvider',
-    com: 'cloud'
+    com: 'cloud',
+    icon: 'icon-Cloud'
   }
   // { label: 'Cloud Provider', value: 'cloud', com: 'cloud' }
 ];

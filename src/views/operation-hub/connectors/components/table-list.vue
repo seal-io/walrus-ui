@@ -2,6 +2,28 @@
   <div class="connectors-list">
     <FilterBox style="margin-bottom: 10px">
       <template #params>
+        <a-select
+          v-model="queryParams.category"
+          allow-clear
+          style="width: 200px"
+          :placeholder="$t('operation.connectors.category.holder')"
+          @clear="handleSearch"
+          @change="handleSearch"
+        >
+          <a-option
+            v-for="item in connectorTypeList"
+            :key="item.value"
+            :value="item.value"
+            :label="$t(item.label)"
+          >
+            <i
+              class="iconfont size-14 mright-5"
+              :class="item.icon"
+              style="color: var(--sealblue-6)"
+            ></i>
+            {{ $t(item.label) }}
+          </a-option>
+        </a-select>
         <a-input
           v-model="queryParams.query"
           allow-clear
@@ -25,15 +47,33 @@
         </a-space>
       </template>
       <template #button-group>
-        <a-button
-          v-permission="{
-            resource: `roles.${Resources.Connectors}`,
-            actions: ['POST']
-          }"
-          type="primary"
-          @click="handleCreate"
-          >{{ $t('operation.connectors.create') }}</a-button
-        >
+        <a-dropdown @select="handleCreate">
+          <a-button
+            v-permission="{
+              resource: `roles.${Resources.Connectors}`,
+              actions: ['POST']
+            }"
+            type="primary"
+            >{{ $t('operation.connectors.create') }}<icon-down class="mleft-5"
+          /></a-button>
+          <template #content>
+            <a-doption
+              v-for="item in connectorTypeList"
+              :key="item.value"
+              :value="item.value"
+              :label="$t(item.label)"
+            >
+              <template #icon>
+                <i
+                  class="iconfont"
+                  :class="item.icon"
+                  style="color: var(--sealblue-6)"
+                ></i>
+              </template>
+              {{ $t(item.label) }}</a-doption
+            >
+          </template>
+        </a-dropdown>
         <a-button
           v-permission="{
             resource: `roles.${Resources.Connectors}`,
@@ -83,7 +123,7 @@
         >
           <template #cell="{ record }">
             <span
-              v-if="_.includes([ConnectorCategory.Custom], category)"
+              v-if="_.includes([ConnectorCategory.Custom], record.category)"
               class="mright-5"
             >
               <icon-font
@@ -99,7 +139,6 @@
           </template>
         </a-table-column>
         <a-table-column
-          v-if="category !== ConnectorCategory.Custom"
           ellipsis
           tooltip
           :cell-style="{ minWidth: '40px' }"
@@ -109,6 +148,7 @@
         >
           <template #cell="{ record }">
             <StatusLabel
+              v-if="record.category !== ConnectorCategory.Custom"
               :status="{
                 status: get(record, 'status.summaryStatus'),
                 text: get(record, 'status.summaryStatus'),
@@ -117,10 +157,10 @@
                 error: get(record, 'status.error')
               }"
             ></StatusLabel>
+            <span v-else>-</span>
           </template>
         </a-table-column>
         <a-table-column
-          v-if="category === ConnectorCategory.Kubernetes"
           ellipsis
           tooltip
           :cell-style="{ minWidth: '40px' }"
@@ -129,7 +169,10 @@
           :title="$t('operation.connectors.table.coststatus')"
         >
           <template #cell="{ record }">
-            <span>{{ getCostStatus(record.status?.conditions || []) }}</span>
+            <span v-if="record.category === ConnectorCategory.Kubernetes">{{
+              getCostStatus(record.status?.conditions || [])
+            }}</span>
+            <span v-else>-</span>
           </template>
         </a-table-column>
         <a-table-column
@@ -152,22 +195,6 @@
             }}</span>
           </template>
         </a-table-column>
-        <!-- <a-table-column
-          ellipsis
-          tooltip
-          :cell-style="{ minWidth: '40px' }"
-          align="center"
-          data-index="enableFinOps"
-          :title="$t('operation.connectors.table.enableFin')"
-        >
-          <template #cell="{ record }">
-            <a-switch
-              v-model="record.enableFinOps"
-              size="small"
-              @change="(val) => handleEnableFinOps(val, record)"
-            ></a-switch>
-          </template>
-        </a-table-column> -->
         <a-table-column
           align="center"
           :title="$t('common.table.operation')"
@@ -186,7 +213,7 @@
               :size="10"
             >
               <a-dropdown-button
-                v-if="category === ConnectorCategory.Kubernetes"
+                v-if="record.category === ConnectorCategory.Kubernetes"
                 size="small"
               >
                 <a-tooltip :content="$t('common.button.edit')">
@@ -234,7 +261,9 @@
                       </a-link>
                     </a-tooltip>
                   </a-doption>
-                  <a-doption v-if="category === ConnectorCategory.Kubernetes">
+                  <a-doption
+                    v-if="record.category === ConnectorCategory.Kubernetes"
+                  >
                     <a-tooltip
                       :content="$t('operation.connectors.table.enableFin')"
                     >
@@ -271,10 +300,43 @@
       @change="handlePageChange"
       @page-size-change="handlePageSizeChange"
     />
+    <CreateKubernetes
+      v-model:showValue="showValue"
+      v-model:info="currentInfo"
+      :show="showValue === ConnectorCategory.Kubernetes"
+      :action="action"
+      @save="handleSearch"
+    >
+    </CreateKubernetes>
+    <CreateVersionControl
+      v-model:showValue="showValue"
+      v-model:info="currentInfo"
+      :show="showValue === ConnectorCategory.VersionControl"
+      :action="action"
+      @save="handleSearch"
+    >
+    </CreateVersionControl>
+    <CreateCustom
+      v-model:showValue="showValue"
+      v-model:info="currentInfo"
+      :show="showValue === ConnectorCategory.Custom"
+      :action="action"
+      @save="handleSearch"
+    >
+    </CreateCustom>
+    <CreateCloud
+      v-model:showValue="showValue"
+      v-model:info="currentInfo"
+      :show="showValue === ConnectorCategory.CloudProvider"
+      :action="action"
+      @save="handleSearch"
+    >
+    </CreateCloud>
   </div>
 </template>
 
 <script lang="ts" setup>
+  import { ModalAction } from '@/views/config';
   import { Resources } from '@/permissions/config';
   import { useUserStore } from '@/store';
   import { useSetChunkRequest } from '@/api/axios-chunk-request';
@@ -300,8 +362,12 @@
   import useRowSelect from '@/hooks/use-row-select';
   import FilterBox from '@/components/filter-box/index.vue';
   import { ConnectorRowData } from '../config/interface';
-  import { ConnectorCategory } from '../config';
+  import { ConnectorCategory, connectorTypeList } from '../config';
   import StatusLabel from './status-label.vue';
+  import CreateKubernetes from './create-kubernetes.vue';
+  import CreateVersionControl from './create-versionControl.vue';
+  import CreateCustom from './create-custom.vue';
+  import CreateCloud from './create-cloud.vue';
   import {
     queryConnectors,
     updateConnector,
@@ -338,11 +404,14 @@
   const loading = ref(false);
   const total = ref(0);
   const activeKey = inject('activeKey', ref(''));
+  const showValue = ref('');
+  const action = ref('create');
+  const currentInfo = ref({});
   const queryParams = reactive({
     query: '',
     page: 1,
     perPage: 10,
-    category: props.category,
+    category: '',
     projectID: route.params.projectId
   });
   const dataList = ref<ConnectorRowData[]>([]);
@@ -405,24 +474,25 @@
     queryParams.perPage = pageSize;
     handleFilter();
   };
-  const handleCreate = () => {
-    router.push({
-      name: props.editPage,
-      params: {
-        action: 'edit'
-      }
-    });
+  const handleCreate = (val) => {
+    action.value = ModalAction.CREATE;
+    showValue.value = val;
   };
   const handleView = (row) => {
-    router.push({
-      name: props.editPage,
-      params: {
-        action: 'view'
-      },
-      query: {
-        id: row.id
-      }
-    });
+    currentInfo.value = row;
+    action.value = ModalAction.EDIT;
+    setTimeout(() => {
+      showValue.value = row.category;
+    }, 100);
+    // router.push({
+    //   name: props.editPage,
+    //   params: {
+    //     action: 'view'
+    //   },
+    //   query: {
+    //     id: row.id
+    //   }
+    // });
   };
   const handleDeleteConfirm = async () => {
     try {

@@ -2,6 +2,7 @@ export default {
   'operation.connectors.menu': '连接器',
   'operation.connectors.create': '新建连接器',
   'operation.connectors.table.holder': '请输入连接器',
+  'operation.connectors.category.holder': '请选择类型',
   'operation.connectors.table.name': '名称',
   'operation.connectors.table.type': '类型',
   'operation.connectors.table.connector': '连接器',

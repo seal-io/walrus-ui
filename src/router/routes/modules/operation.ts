@@ -1,5 +1,4 @@
 import connectorRoutes from '@/views/operation-hub/connectors/routes';
-import environmentRoutes from '@/views/operation-hub/environments/routes';
 import templateRoutes from '@/views/operation-hub/templates/routes';
 import secretRoutes from '@/views/operation-hub/secret/routes';
 
@@ -14,10 +13,5 @@ export default {
     order: 3,
     icon: 'icon-relation'
   },
-  children: [
-    ...connectorRoutes,
-    ...environmentRoutes,
-    ...templateRoutes,
-    ...secretRoutes
-  ]
+  children: [...connectorRoutes, ...templateRoutes, ...secretRoutes]
 };

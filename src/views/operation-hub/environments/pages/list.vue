@@ -60,33 +60,91 @@
           >
         </template>
       </FilterBox>
-      <!-- <a-divider :margin="8"></a-divider> -->
-      <!-- <a-tabs
-        default-active-key="currentView"
-        :active-key="currentView"
-        @change="handleToggle"
-      >
-        <a-tab-pane key="thumb">
-          <ThumbView
-            :list="dataList"
-            :checked-list="selectedKeys"
-            @change="handleCheckChange"
-          ></ThumbView>
-        </a-tab-pane>
-        <a-tab-pane key="list">
-          <ListView
-            v-model:selectedList="selectedKeys"
-            :list="dataList"
-          ></ListView>
-        </a-tab-pane>
-      </a-tabs> -->
-      <ListView
+      <!-- <ListView
         v-model:selectedList="selectedKeys"
         v-model:sort="sort"
         :list="dataList"
         :loading="loading"
         @sort="handleSort"
-      ></ListView>
+      ></ListView> -->
+      <a-table
+        column-resizable
+        style="margin-bottom: 20px"
+        :bordered="false"
+        :loading="loading"
+        :data="dataList"
+        :pagination="false"
+        row-key="id"
+        :row-selection="rowSelection"
+        @sorter-change="handleSortChange"
+        @selection-change="handleSelectChange"
+      >
+        <template #columns>
+          <a-table-column
+            ellipsis
+            tooltip
+            :cell-style="{ minWidth: '40px' }"
+            data-index="name"
+            :title="$t('operation.environments.table.env')"
+          >
+            <template #cell="{ record }">
+              <a-link type="text" size="small" @click="handleView(record)">
+                {{ record.name }}
+              </a-link>
+            </template>
+          </a-table-column>
+          <a-table-column
+            ellipsis
+            tooltip
+            :cell-style="{ minWidth: '40px' }"
+            align="center"
+            data-index="description"
+            :title="$t('common.table.description')"
+          >
+          </a-table-column>
+          <a-table-column
+            ellipsis
+            tooltip
+            :cell-style="{ minWidth: '40px' }"
+            align="center"
+            data-index="createTime"
+            :sortable="{
+              sortDirections: ['ascend', 'descend'],
+              defaultSortOrder: 'descend',
+              sorter: true,
+              sortOrder: sortOrder
+            }"
+            :title="$t('common.table.createTime')"
+          >
+            <template #cell="{ record }">
+              <span>{{
+                dayjs(record.createTime).format('YYYY-MM-DD HH:mm:ss')
+              }}</span>
+            </template>
+          </a-table-column>
+          <a-table-column
+            align="center"
+            :width="210"
+            :title="$t('common.table.operation')"
+          >
+            <template #cell="{ record }">
+              <a-tooltip
+                v-if="
+                  userStore.hasRolesActionsPermission({
+                    resource: Resources.Environments,
+                    actions: ['PUT']
+                  })
+                "
+                :content="$t('common.button.edit')"
+              >
+                <a-link type="text" size="small" @click="handleEdit(record)">
+                  <template #icon><icon-edit class="size-14" /></template>
+                </a-link>
+              </a-tooltip>
+            </template>
+          </a-table-column>
+        </template>
+      </a-table>
       <a-pagination
         size="small"
         :total="total"
@@ -99,45 +157,60 @@
         @page-size-change="handlePageSizeChange"
       />
     </div>
+    <CreateEnvironment
+      v-model:show="showModal"
+      v-model:info="currentInfo"
+      :action="action"
+      @save="handleSearch"
+    ></CreateEnvironment>
   </ComCard>
 </template>
 
 <script lang="ts" setup>
+  import dayjs from 'dayjs';
+  import { useUserStore } from '@/store';
   import { Resources } from '@/permissions/config';
   import { map, pickBy, remove } from 'lodash';
   import { ref, reactive } from 'vue';
   import useCallCommon from '@/hooks/use-call-common';
   import FilterBox from '@/components/filter-box/index.vue';
   import { deleteModal, execSucceed } from '@/utils/monitor';
-  import ThumbView from '../components/thumb-view.vue';
-  import ListView from '../components/list-view.vue';
+  import { UseSortDirection } from '@/utils/common';
+  import useRowSelect from '@/hooks/use-row-select';
   import { EnvironmentRow } from '../config/interface';
   import { queryEnvironments, deleteEnvironment } from '../api';
+  import CreateEnvironment from '../components/create-environment.vue';
 
   let timer: any = null;
+  const { rowSelection, selectedKeys, handleSelectChange } = useRowSelect();
+  const { sort, sortOrder, setSortDirection } = UseSortDirection({
+    defaultSortField: '-createTime',
+    defaultOrder: 'descend'
+  });
+  const userStore = useUserStore();
   const { router, route } = useCallCommon();
   const loading = ref(false);
-  const currentView = ref('thumb'); // thumb, list
-  const selectedKeys = ref<string[]>([]);
   const dataList = ref<EnvironmentRow[]>([]);
   const total = ref(0);
-  const sort = ref<string[]>(['-createTime']);
+  const showModal = ref(false);
+  const currentInfo = ref({});
+  const action = ref('edit');
   const queryParams = reactive({
     query: '',
     page: 1,
     perPage: 10,
     projectID: route.params.projectId
   });
-  const handleToggle = (val) => {
-    currentView.value = val;
-  };
+
   const handleCreateProject = () => {
-    router.push({
-      name: 'EnvironmentDetail',
-      params: {
-        action: 'edit'
-      }
-    });
+    action.value = 'create';
+    showModal.value = true;
+    // router.push({
+    //   name: 'EnvironmentDetail',
+    //   params: {
+    //     action: 'edit'
+    //   }
+    // });
   };
   const fetchData = async () => {
     try {
@@ -157,16 +230,7 @@
   const handleFilter = () => {
     fetchData();
   };
-  const handleSort = () => {
-    fetchData();
-  };
-  const handleCheckChange = (checked, id) => {
-    if (checked) {
-      selectedKeys.value.push(id);
-    } else {
-      remove(selectedKeys.value, (val) => val === id);
-    }
-  };
+
   const handleSearch = () => {
     clearTimeout(timer);
     timer = setTimeout(() => {
@@ -188,6 +252,25 @@
     queryParams.perPage = pageSize;
     handleFilter();
   };
+  const handleSortChange = (dataIndex: string, direction: string) => {
+    setSortDirection(dataIndex, direction);
+    console.log('dataIndex===', dataIndex, direction);
+    fetchData();
+  };
+  const handleView = (row) => {
+    currentInfo.value = row;
+    action.value = 'edit';
+    setTimeout(() => {
+      showModal.value = true;
+    }, 100);
+  };
+  const handleEdit = (row) => {
+    currentInfo.value = row;
+    action.value = 'edit';
+    setTimeout(() => {
+      showModal.value = true;
+    }, 100);
+  };
   const handleDeleteConfirm = async () => {
     try {
       loading.value = true;
@@ -201,6 +284,7 @@
       execSucceed();
       queryParams.page = 1;
       selectedKeys.value = [];
+      rowSelection.selectedRowKeys = [];
       handleFilter();
     } catch (error) {
       console.log(error);
