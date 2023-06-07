@@ -1,57 +1,70 @@
 <template>
   <div>
-    <ModuleCard :title="$t('applications.instance.basic.title')">
-      <BasicInfo></BasicInfo>
-    </ModuleCard>
-    <ModuleCard :title="$t('applications.applications.instance.history')">
-      <applicationHistory></applicationHistory>
-    </ModuleCard>
-    <ModuleCard :title="$t('applications.applications.instance.accessUrl')">
-      <tabEndpoint ref="tabEndpointCom"></tabEndpoint>
-    </ModuleCard>
+    <ComCard padding="0" top-gap>
+      <HeaderInfo :info="currentInfo">
+        <template #icon>
+          <i class="iconfont icon-apps-fill"></i>
+        </template>
+        <template #title>
+          <span>{{ currentInfo.label }}</span>
+        </template>
+      </HeaderInfo>
+      <a-divider style="margin: 0; border-radius: 1px" :size="4"></a-divider>
+      <ComCard>
+        <ModuleCard
+          :title="$t('applications.applications.instance.history')"
+          :title-style="{ 'margin-top': 0 }"
+        >
+          <applicationHistory></applicationHistory>
+        </ModuleCard>
+        <ModuleCard :title="$t('applications.applications.instance.accessUrl')">
+          <tabEndpoint ref="tabEndpointCom"></tabEndpoint>
+        </ModuleCard>
 
-    <ModuleCard
-      :title="$t('applications.applications.instance.resource')"
-      style="margin-top: 20px"
-    >
-      <template #title>
-        <span>{{ $t('applications.applications.instance.resource') }}</span>
-        <a-tooltip
-          :content="$t('applications.applications.instance.resource.tips')"
+        <ModuleCard
+          :title="$t('applications.applications.instance.resource')"
+          style="margin-top: 20px"
         >
-          <icon-info-circle class="mleft-5" />
-        </a-tooltip>
-      </template>
-      <a-tabs
-        lazy-load
-        type="rounded"
-        :active-key="activeKey"
-        class="module-tabs"
-        @change="handleTabChange"
-      >
-        <a-tab-pane
-          v-for="item in instanceTabList"
-          :key="item.value"
-          :title="$t(item.label)"
-        >
-          <Component
-            :is="instanceTabMap[item.com]"
-            :resource-list="dataList"
-            :is-loading="loading"
-          ></Component>
-        </a-tab-pane>
-      </a-tabs>
-    </ModuleCard>
-    <EditPageFooter>
-      <template #save>
-        <a-button
-          type="primary"
-          class="cap-title cancel-btn"
-          @click="handleOk"
-          >{{ $t('common.button.back') }}</a-button
-        >
-      </template>
-    </EditPageFooter>
+          <template #title>
+            <span>{{ $t('applications.applications.instance.resource') }}</span>
+            <a-tooltip
+              :content="$t('applications.applications.instance.resource.tips')"
+            >
+              <icon-info-circle class="mleft-5" />
+            </a-tooltip>
+          </template>
+          <a-tabs
+            lazy-load
+            type="rounded"
+            :active-key="activeKey"
+            class="module-tabs"
+            @change="handleTabChange"
+          >
+            <a-tab-pane
+              v-for="item in instanceTabList"
+              :key="item.value"
+              :title="$t(item.label)"
+            >
+              <Component
+                :is="instanceTabMap[item.com]"
+                :resource-list="dataList"
+                :is-loading="loading"
+              ></Component>
+            </a-tab-pane>
+          </a-tabs>
+        </ModuleCard>
+        <EditPageFooter>
+          <template #save>
+            <a-button
+              type="primary"
+              class="cap-title cancel-btn"
+              @click="handleOk"
+              >{{ $t('common.button.back') }}</a-button
+            >
+          </template>
+        </EditPageFooter>
+      </ComCard>
+    </ComCard>
   </div>
 </template>
 
@@ -60,6 +73,7 @@
   import { useUserStore } from '@/store';
   import _ from 'lodash';
   import { markRaw, ref, watch, onMounted } from 'vue';
+  import HeaderInfo from '@/components/header-info/index.vue';
   import useCallCommon from '@/hooks/use-call-common';
   import EditPageFooter from '@/components/edit-page-footer/index.vue';
   import tabTerminal from './x-terminal/tab-terminal.vue';
@@ -91,6 +105,7 @@
   const projectID = route.params.projectId || '';
   const activeKey = ref('resource');
   const tabEndpointCom = ref();
+  const currentInfo = ref({});
   const instanceTabMap = {
     tabResource: markRaw(tabResource),
     tabLogs: markRaw(tabLogs),

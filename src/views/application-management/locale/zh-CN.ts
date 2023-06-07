@@ -1,7 +1,7 @@
 export default {
   'applications.applications.menu': '应用',
   'applications.applications.create': '新建服务',
-  'applications.applications.edit': '编辑应用',
+  'applications.applications.edit': '编辑服务',
   'applications.applications.secret': '变量',
   'applications.applications.secret.holder': '请输入变量',
   'applications.applications.configuration.create': '添加模块',
@@ -15,7 +15,7 @@ export default {
   'applications.applications.table.instance': '实例',
   'applications.applications.table.template': '生成模板',
   'applications.applications.table.currentval': '当前值',
-  'applications.applications.table.holder': '请输入应用',
+  'applications.applications.table.holder': '请输入服务',
   'applications.applications.form.name': '名称',
   'applications.applications.form.label': '标签',
   'applications.applications.form.key': '键',

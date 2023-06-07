@@ -8,6 +8,9 @@
     </BreadWrapper>
     <ComCard padding="0" top-gap>
       <HeaderInfo :info="currentInfo">
+        <template #icon>
+          <i class="iconfont icon-project"></i>
+        </template>
         <template #title>
           <span>{{ currentInfo.label }}</span>
         </template>
@@ -45,7 +48,7 @@
   import { ref } from 'vue';
   import _ from 'lodash';
   import useCallCommon from '@/hooks/use-call-common';
-  import { useProjectStore } from '@/store';
+  import { useProjectStore, useUserStore } from '@/store';
   import HeaderInfo from '@/components/header-info/index.vue';
   import EnviromentList from '@/views/operation-hub/environments/pages/list.vue';
   import SecretList from '@/views/application-management/secret/pages/list.vue';
@@ -55,6 +58,7 @@
 
   const { router, route } = useCallCommon();
   const projectStore = useProjectStore();
+  const userStore = useUserStore();
   const activeKey = ref('enviroment');
   const variablesRef = ref();
   const enviromentRef = ref();
@@ -97,6 +101,7 @@
   const handleProjectChange = (val, item) => {
     item.value = val;
     currentInfo.value = item;
+    userStore.setInfo({ currentProject: val });
     router.replace({
       name: 'ProjectDetail',
       params: {
@@ -105,6 +110,7 @@
     });
   };
   const init = async () => {
+    userStore.setInfo({ currentProject: route.params.projectId });
     getProjectList();
   };
   init();

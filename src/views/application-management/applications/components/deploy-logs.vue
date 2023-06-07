@@ -69,7 +69,7 @@
         ? 'destroy'
         : 'apply';
     setChunkRequest({
-      url: `/application-revisions/${props.revisionId}/log`,
+      url: `/service-revisions/${props.revisionId}/log`,
       params: {
         jobType,
         ...getPermissionRouteParams()

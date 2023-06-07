@@ -251,7 +251,7 @@
   const createInstanceListWebsocket = () => {
     try {
       setChunkRequest({
-        url: `/modules`,
+        url: `/templates`,
         handler: updateHandler
       });
     } catch (error) {

@@ -23,7 +23,7 @@ export interface FormDataPR {
   content: string;
 }
 export function queryModules(params: QueryType) {
-  return axios.get<ResultType>('/modules', {
+  return axios.get<ResultType>('/templates', {
     params,
     paramsSerializer: (obj) => {
       return qs.stringify(obj);
@@ -31,7 +31,7 @@ export function queryModules(params: QueryType) {
   });
 }
 export function queryItemModules(params: { id: string }) {
-  return axios.get(`/modules/${params.id}`, {
+  return axios.get(`/templates/${params.id}`, {
     params,
     paramsSerializer: (obj) => {
       return qs.stringify(obj);
@@ -39,19 +39,19 @@ export function queryItemModules(params: { id: string }) {
   });
 }
 export function createModules(data: TemplateFormData) {
-  return axios.post('/modules', data);
+  return axios.post('/templates', data);
 }
 export function deleteModules(data) {
-  return axios.delete('/modules', { data });
+  return axios.delete('/templates', { data });
 }
 export function updateModules(data: TemplateFormData) {
-  return axios.put(`/modules/${data.id}`, data);
+  return axios.put(`/templates/${data.id}`, data);
 }
 export function refreshModules(data: { id: string }) {
-  return axios.post(`/modules/${data.id}/refresh`);
+  return axios.post(`/templates/${data.id}/refresh`);
 }
 export function queryModulesVersions(params: { moduleID: string }) {
-  return axios.get(`/module-versions`, {
+  return axios.get(`/template-versions`, {
     params,
     paramsSerializer: (obj) => {
       return qs.stringify(obj);
@@ -59,7 +59,7 @@ export function queryModulesVersions(params: { moduleID: string }) {
   });
 }
 export function queryModulesAllVersions(params: { moduleID: string[] }) {
-  return axios.get(`/module-versions`, {
+  return axios.get(`/template-versions`, {
     params,
     paramsSerializer: (obj) => {
       return qs.stringify(obj);

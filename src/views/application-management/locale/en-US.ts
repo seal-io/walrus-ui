@@ -1,7 +1,7 @@
 export default {
   'applications.applications.menu': 'Applications',
   'applications.applications.create': 'New Service',
-  'applications.applications.edit': 'Edit Application',
+  'applications.applications.edit': 'Edit Service',
   'applications.applications.secret': 'Variable',
   'applications.applications.secret.holder': 'please enter a variable',
   'applications.applications.configuration.create': 'Add Module',
@@ -13,7 +13,7 @@ export default {
   'applications.applications.table.content': 'Content',
   'applications.applications.table.target': 'Target',
   'applications.applications.table.instance': 'Instances',
-  'applications.applications.table.holder': 'please enter an application',
+  'applications.applications.table.holder': 'please enter an servicesservices',
   'applications.applications.project.holder': 'please select a project',
   'applications.applications.form.name': 'Name',
   'applications.applications.form.label': 'Labels',

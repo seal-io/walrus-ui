@@ -133,7 +133,7 @@
       chunkRequesSource?.cancel?.();
       nextTick(() => {
         chunkRequesSource = setChunkRequest({
-          url: `/application-instances/${instanceId.value}/output`,
+          url: `/service/${instanceId.value}/output`,
           params: {
             ...getPermissionRouteParams()
           },

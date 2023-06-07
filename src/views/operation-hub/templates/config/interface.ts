@@ -32,7 +32,7 @@ export interface TemplateRowData {
   icon?: string;
 }
 export interface ModuleVersionData extends TemplateRowData {
-  module: { id: string };
+  template: { id: string };
 }
 export interface TemplateFormData {
   id: string;

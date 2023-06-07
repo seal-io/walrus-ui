@@ -63,7 +63,7 @@
   const getInstanceResourceGraph = async () => {
     try {
       const params = {
-        instanceID: instanceId.value
+        serviceID: instanceId.value
       };
       const { data } = await queryInstanceResourceGraph(params);
       setNodeList(data);

@@ -27,6 +27,7 @@ export interface CustomAttrbute {
 }
 
 export interface ConnectorFormData {
+  projectID: string;
   id?: string;
   name: string;
   description?: string;

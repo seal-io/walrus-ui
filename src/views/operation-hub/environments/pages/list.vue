@@ -39,19 +39,25 @@
         </template>
         <template #button-group>
           <a-button
-            v-permission="{
-              resource: `roles.${Resources.Environments}`,
-              actions: ['POST']
-            }"
+            v-if="
+              userStore.hasProjectResourceActions({
+                projectID: queryParams.projectID,
+                resource: Resources.Environments,
+                actions: ['POST']
+              })
+            "
             type="primary"
             @click="handleCreateProject"
             >{{ $t('operation.environments.create') }}</a-button
           >
           <a-button
-            v-permission="{
-              resource: `roles.${Resources.Environments}`,
-              actions: ['DELETE']
-            }"
+            v-if="
+              userStore.hasProjectResourceActions({
+                projectID: queryParams.projectID,
+                resource: Resources.Environments,
+                actions: ['DELETE']
+              })
+            "
             type="primary"
             status="warning"
             :disabled="!selectedKeys.length"
@@ -130,7 +136,8 @@
             <template #cell="{ record }">
               <a-tooltip
                 v-if="
-                  userStore.hasRolesActionsPermission({
+                  userStore.hasProjectResourceActions({
+                    projectID: queryParams.projectID,
                     resource: Resources.Environments,
                     actions: ['PUT']
                   })
@@ -258,11 +265,13 @@
     fetchData();
   };
   const handleView = (row) => {
-    currentInfo.value = row;
-    action.value = 'edit';
-    setTimeout(() => {
-      showModal.value = true;
-    }, 100);
+    router.push({
+      name: 'ProjectEnvDetail',
+      params: {
+        ...route.params,
+        environmentId: row.id
+      }
+    });
   };
   const handleEdit = (row) => {
     currentInfo.value = row;

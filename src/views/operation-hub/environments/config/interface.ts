@@ -19,6 +19,7 @@ export interface EnvironmentRow {
 }
 
 export interface EnvironFormData {
+  projectID: string;
   id?: string;
   name: string;
   description: string;

@@ -1,8 +1,13 @@
 import axios from 'axios';
 import qs from 'query-string';
 import { Pagination } from '@/types/global';
+import router from '@/router';
 import { EnvironmentRow, EnvironFormData } from '../config/interface';
 
+export const getPermissionRouteParams = () => {
+  const { params } = router.currentRoute.value;
+  return { projectID: params?.projectId };
+};
 export interface QueryType extends Pagination {
   extract?: string[];
   sort?: string[];
@@ -31,12 +36,21 @@ export function queryItemEnvironments(params: { id: string }) {
 }
 
 export function createEnvironment(data: EnvironFormData) {
-  return axios.post('/environments', data);
+  return axios.post(
+    `/environments?${qs.stringify(getPermissionRouteParams())}`,
+    data
+  );
 }
 export function deleteEnvironment(data) {
-  return axios.delete('/environments', { data });
+  return axios.delete(
+    `/environments?${qs.stringify(getPermissionRouteParams())}`,
+    { data }
+  );
 }
 
 export function updateEnvironment(data: EnvironFormData) {
-  return axios.put(`/environments/${data.id}`, data);
+  return axios.put(
+    `/environments/${data.id}?${qs.stringify(getPermissionRouteParams())}`,
+    data
+  );
 }

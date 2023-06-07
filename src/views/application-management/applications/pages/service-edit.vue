@@ -1,32 +1,5 @@
 <template>
-  <a-modal
-    top="10%"
-    :closable="false"
-    :align-center="false"
-    :width="1000"
-    :ok-text="$t('common.button.save')"
-    :visible="show"
-    :mask-closable="false"
-    :esc-to-close="false"
-    unmount-on-close
-    :body-style="{
-      'max-height': '500px',
-      'min-height': '400px',
-      'overflow': 'auto',
-      'line-height': 1
-    }"
-    modal-class="app-module-modal"
-    :title="
-      action === 'edit'
-        ? $t('applications.applications.edit')
-        : $t('applications.applications.create')
-    "
-    @cancel="handleCancel"
-    @ok="handleOk"
-    @before-open="handleBeforeOpen"
-    @open="handleOpened"
-    @before-close="handleBeforeClose"
-  >
+  <ComCard top-gap>
     <div>
       <a-form
         ref="formref"
@@ -71,7 +44,7 @@
             <a-form-item
               id="moduleId"
               :label="$t('applications.applications.table.module')"
-              field="template.id"
+              field="module.id"
               :disabled="action === 'edit'"
               :rules="[
                 {
@@ -80,10 +53,10 @@
                 }
               ]"
             >
-              <div id="moduleIdWrapper" style="position: relative">
+              <div>
                 <a-select
                   id="moduleIdWrapper"
-                  v-model="formData.template.id"
+                  v-model="formData.module.id"
                   style="position: relative"
                   popup-container="#moduleIdWrapper"
                   allow-search
@@ -102,7 +75,7 @@
           <a-grid-item :span="12">
             <a-form-item
               :label="$t('applications.applications.history.version')"
-              field="templateVersion"
+              field="version"
               :rules="[
                 {
                   required: true,
@@ -112,7 +85,7 @@
             >
               <div id="moduleVerionWrapper" style="position: relative">
                 <a-select
-                  v-model="formData.templateVersion"
+                  v-model="formData.version"
                   popup-container="#moduleVerionWrapper"
                   @change="handleVersionChange"
                 >
@@ -205,28 +178,26 @@
         </formCreate>
       </div>
     </div>
-    <template #footer>
-      <EditPageFooter style="margin-top: 0">
-        <template #save>
-          <a-button
-            :loading="submitLoading"
-            type="primary"
-            class="cap-title cancel-btn"
-            @click="handleOk"
-            >{{ $t('common.button.confirm') }}</a-button
-          >
-        </template>
-        <template #cancel>
-          <a-button
-            :type="'outline'"
-            class="cap-title cancel-btn"
-            @click="handleCancel"
-            >{{ $t('common.button.cancel') }}</a-button
-          >
-        </template>
-      </EditPageFooter>
-    </template>
-  </a-modal>
+    <EditPageFooter style="margin-top: 0">
+      <template #save>
+        <a-button
+          :loading="submitLoading"
+          type="primary"
+          class="cap-title cancel-btn"
+          @click="handleOk"
+          >{{ $t('common.button.confirm') }}</a-button
+        >
+      </template>
+      <template #cancel>
+        <a-button
+          :type="'outline'"
+          class="cap-title cancel-btn"
+          @click="handleCancel"
+          >{{ $t('common.button.cancel') }}</a-button
+        >
+      </template>
+    </EditPageFooter>
+  </ComCard>
 </template>
 
 <script lang="ts" setup>
@@ -268,7 +239,8 @@
     ModuleVersionData
   } from '@/views/operation-hub/templates/config/interface';
   import { validateAppNameRegx } from '@/views/config';
-  import { createApplication, updateApplication } from '../../api';
+  import usePageAction from '@/hooks/use-page-action';
+  import useTemplatesData from '../hooks/use-templates-data';
 
   interface Group {
     variables: object[];
@@ -312,14 +284,30 @@
       }
     }
   });
-
+  const {
+    completeData,
+    initCompleteData,
+    completeDataSetter,
+    serviceDataList: modules,
+    moduleTemplates,
+    allModuleVersions
+  } = useTemplatesData();
+  const { pageAction } = usePageAction();
   type refItem = Element | ComponentPublicInstance | null;
   interface ModuleVersion extends ModuleVersionData {
     label: string;
     value: string;
   }
   provide('showHintInput', true);
+  provide('completeData', completeData);
+  const systemHiddenFields = [
+    'seal_metadata_application_instance_name',
+    'seal_metadata_application_name',
+    'seal_metadata_module_name',
+    'seal_metadata_project_name'
+  ];
   const defaultGroupKey = '_default_default_';
+  const hiddenGroup = '__hidden_hidden__s_l_';
   const emit = defineEmits(['save', 'update:show', 'reset', 'update:action']);
   const { route, t } = useCallCommon();
   const formref = ref();
@@ -335,13 +323,9 @@
   let refMap: Record<string, refItem> = {};
   const versionMap = ref({ nv: '', ov: '' });
   const formData = reactive({
-    projectID: route.params.projectId,
-    environment: {
-      id: route.params.environmentId
-    },
     name: '',
-    template: { id: '' },
-    templateVersion: '',
+    module: { id: '' },
+    version: '',
     application: {
       id: route.query.id || ''
     },
@@ -362,8 +346,8 @@
   const resetForm = () => {
     refMap = {};
     formData.name = '';
-    formData.template = { id: '' };
-    formData.templateVersion = '';
+    formData.module = { id: '' };
+    formData.version = '';
     formData.application = { id: '' };
     formData.attributes = {};
     moduleVersionFormCache.value = {};
@@ -393,7 +377,7 @@
   const getInitialValue = (item, sourceData, action) => {
     let initialValue = item.default;
     if (
-      get(moduleVersionFormCache.value, formData.templateVersion) ||
+      get(moduleVersionFormCache.value, formData.version) ||
       action === 'edit'
     ) {
       initialValue = get(sourceData, `attributes.${item.name}`);
@@ -408,7 +392,7 @@
     const sourceData = {
       attributes: {
         ...cloneDeep(get(props.dataInfo, 'attributes')),
-        ...get(moduleVersionFormCache.value, formData.templateVersion)
+        ...get(moduleVersionFormCache.value, formData.version)
       }
     };
     console.log('sourceData===', sourceData);
@@ -468,7 +452,7 @@
   const getModuleSchemaById = () => {
     const moduleTemplate = find(
       moduleVersionList.value,
-      (item) => item.template.id === formData.template.id
+      (item) => item.module.id === formData.module.id
     );
     return moduleTemplate;
   };
@@ -476,16 +460,15 @@
   const getModuleSchemaByVersion = () => {
     const moduleTemplate = find(
       moduleVersionList.value,
-      (item) => item.value === formData.templateVersion
+      (item) => item.value === formData.version
     );
     return moduleTemplate;
   };
   const getModuleVersionList = async () => {
-    console.log('moduleVersionList===', props.allModuleVersions);
     try {
       const list = filter(
         props.allModuleVersions,
-        (item) => item.template.id === formData.template.id
+        (item) => item.module.id === formData.module.id
       );
       moduleVersionList.value = map(list, (item) => {
         return {
@@ -518,6 +501,26 @@
         });
       })
     );
+    // const hiddenList = filter(
+    //   get(moduleInfo.value, 'variables'),
+    //   (item) => item.hidden
+    // );
+    // if (hiddenList.length) {
+    //   const hiddenForm = {
+    //     tab: hiddenGroup,
+    //     formData: reduce(
+    //       hiddenList,
+    //       (obj, s) => {
+    //         if (!includes(systemHiddenFields, s.name)) {
+    //           obj[s.name] = s.default;
+    //         }
+    //         return obj;
+    //       },
+    //       {}
+    //     )
+    //   };
+    //   resultList.push(hiddenForm);
+    // }
     return resultList;
   };
   // cache the user inputs when change the module version
@@ -560,7 +563,7 @@
   // module change: exec version change
   const handleModuleChange = async (val) => {
     await getModuleVersionList();
-    formData.templateVersion = get(moduleVersionList.value, '0.version');
+    formData.version = get(moduleVersionList.value, '0.version');
     moduleVersionFormCache.value = {};
     versionMap.value = { ov: '', nv: '' };
     handleVersionChange();
@@ -599,12 +602,7 @@
             {}
           )
         };
-        if (props.action === 'create') {
-          await createApplication(formData);
-        } else {
-          await updateApplication(formData);
-        }
-        emit('save');
+        emit('save', cloneDeep(formData));
         setTimeout(() => {
           emit('update:show', false);
         }, 100);
@@ -615,19 +613,19 @@
     }
   };
 
-  const handleBeforeOpen = async () => {
+  const init = async () => {
     if (props.action === 'create') {
       // webservice
       const webservice = find(
         props.templates,
         (item) => item.id === 'webservice'
       );
-      formData.template.id = webservice
+      formData.module.id = webservice
         ? webservice.id
         : get(props.templates, '0.id') || '';
       await getModuleVersionList();
       const moduleTemplate = getModuleSchemaById();
-      formData.templateVersion = get(moduleTemplate, 'version') || '';
+      formData.version = get(moduleTemplate, 'version') || '';
       moduleInfo.value = cloneDeep(get(moduleTemplate, 'schema')) || {};
       // setFormData(moduleInfo.value);
     } else {
@@ -646,7 +644,6 @@
     }
 
     generateVariablesGroup(props.action);
-    console.log('moduleVersionList===', moduleVersionList.value);
   };
   const handleOpened = () => {};
   const handleBeforeClose = () => {
@@ -656,7 +653,7 @@
     emit('reset');
   };
   watch(
-    () => formData.templateVersion,
+    () => formData.version,
     (nv, ov) => {
       versionMap.value = {
         nv,

@@ -100,7 +100,7 @@
   };
   const createChunkConnection = async () => {
     if (!props.info.key || !props.info.id) return;
-    const url = `/application-resources/${props.info.id}/log`;
+    const url = `/service-resources/${props.info.id}/log`;
     chunRequestIns = setChunkRequest({
       url,
       params: {
