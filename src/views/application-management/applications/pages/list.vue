@@ -2,16 +2,6 @@
   <ComCard padding="0" class="applications-list">
     <FilterBox style="margin-bottom: 10px">
       <template #params>
-        <!-- <a-select
-          v-model="queryParams.projectID"
-          allow-search
-          :options="projectList"
-          style="width: 220px"
-          :placeholder="$t('applications.applications.project.holder')"
-          @clear="handleSearch"
-          @change="handleProjectChange"
-        >
-        </a-select> -->
         <a-input
           v-model="queryParams.query"
           allow-clear
@@ -102,21 +92,16 @@
           ellipsis
           tooltip
           :cell-style="{ minWidth: '40px' }"
-          data-index="instances"
-          :title="$t('applications.applications.table.instance')"
+          data-index="status"
+          :title="$t('applications.applications.table.status')"
         >
           <template #cell="{ record }">
-            <a-space v-if="record?.instances?.length" :size="4" wrap>
-              <InstanceStatus
-                v-for="(item, index) in record?.instances"
-                :key="index"
-                :status="setInstanceStatus(item.status)"
-                :instance-id="item.id"
-                :application-id="record.id"
-                :project-id="queryParams.projectID"
-                :label="`${item.name}(Env: ${item?.environment?.name})`"
-              ></InstanceStatus>
-            </a-space>
+            <InstanceStatus
+              :status="setInstanceStatus(record.status)"
+              :application-id="record.id"
+              :project-id="queryParams.projectID"
+              :label="`${record.name}(Env: ${record?.environment?.name})`"
+            ></InstanceStatus>
           </template>
         </a-table-column>
         <a-table-column
@@ -198,6 +183,16 @@
       @change="handlePageChange"
       @page-size-change="handlePageSizeChange"
     />
+    <CreateService
+      v-model:show="showEditModal"
+      v-model:action="moduleAction"
+      :data-info="serviceInfo"
+      :templates="moduleTemplates"
+      :modules="serviceDataList"
+      :all-module-versions="allModuleVersions"
+      @reset="handleResetServiceInfo"
+      @save="handleSaveService"
+    ></CreateService>
   </ComCard>
 </template>
 
@@ -205,7 +200,7 @@
   import { Resources } from '@/permissions/config';
   import _, { map, get, pickBy, find, filter } from 'lodash';
   import dayjs from 'dayjs';
-  import { reactive, ref, watch, onBeforeUnmount } from 'vue';
+  import { reactive, ref, watch, onBeforeUnmount, provide } from 'vue';
   import { useSetChunkRequest } from '@/api/axios-chunk-request';
   import useCallCommon from '@/hooks/use-call-common';
   import { deleteModal, execSucceed } from '@/utils/monitor';
@@ -219,9 +214,19 @@
   import { statusMap, websocketEventType, setInstanceStatus } from '../config';
   import { queryApplications, deleteApplication } from '../api';
   import InstanceStatus from '../components/instance-status.vue';
+  import CreateService from '../components/app-info/edit-module.vue';
+  import useTemplatesData from '../hooks/use-templates-data';
 
   const HOT_PROJECT_ID = 'HOT_PROJECT_ID';
   const userStore = useUserStore();
+  const {
+    completeData,
+    initCompleteData,
+    completeDataSetter,
+    serviceDataList,
+    moduleTemplates,
+    allModuleVersions
+  } = useTemplatesData();
   const { setChunkRequest } = useSetChunkRequest();
   const { rowSelection, selectedKeys, handleSelectChange } = useRowSelect();
   const { router, locale, route } = useCallCommon();
@@ -229,6 +234,9 @@
     defaultSortField: '-createTime',
     defaultOrder: 'descend'
   });
+  const showEditModal = ref(false);
+  const moduleAction = ref('create');
+  const serviceInfo = ref<any>({});
   const id = route.query.id || '';
   let timer: any = null;
   let loopTimer: any = null;
@@ -236,45 +244,20 @@
   const total = ref(0);
   const queryParams = reactive({
     projectID: route.params.projectId as string,
+    environmentID: route.params.environmentId as string,
     query: '',
     page: 1,
     perPage: 10
   });
   const axiosInstance: any = null;
   const dataList = ref<AppRowData[]>([]);
-  const projectList = ref<{ label: string; value: string }[]>([]);
 
-  const setDefaultProject = async () => {
-    const val = await localStore.getValue(HOT_PROJECT_ID);
-    queryParams.projectID = val || '';
+  provide('completeData', completeData);
+
+  const handleResetServiceInfo = () => {
+    serviceInfo.value = {};
   };
-  const getProjectList = async () => {
-    const hotProjectId = id || (await localStore.getValue(HOT_PROJECT_ID));
-    try {
-      const params = {
-        page: -1
-      };
-      const { data } = await queryProjects(params);
-      projectList.value = map(data?.items || [], (item) => {
-        item.label = item.name;
-        item.value = item.id;
-        return item;
-      }) as Array<{ label: string; value: string }>;
-      const hotItem = find(
-        projectList.value,
-        (item) => item.value === hotProjectId
-      );
-      if (hotItem) {
-        queryParams.projectID = hotProjectId;
-        localStore.setValue(HOT_PROJECT_ID, hotProjectId);
-      } else {
-        queryParams.projectID = get(projectList.value, '0.value') || '';
-      }
-    } catch (error) {
-      projectList.value = [];
-      console.log(error);
-    }
-  };
+
   const fetchData = async () => {
     if (!queryParams.projectID) return;
     try {
@@ -296,6 +279,10 @@
   const handleFilter = () => {
     fetchData();
   };
+  const handleSaveService = () => {
+    queryParams.page = 1;
+    handleFilter();
+  };
   const handleSortChange = (dataIndex: string, direction: string) => {
     setSortDirection(dataIndex, direction);
     console.log('dataIndex===', dataIndex, direction);
@@ -308,11 +295,7 @@
       handleFilter();
     }, 100);
   };
-  const handleProjectChange = (val) => {
-    localStore.setValue(HOT_PROJECT_ID, val);
-    userStore.setInfo({ currentProject: val });
-    handleSearch();
-  };
+
   const handleReset = () => {
     queryParams.query = '';
     queryParams.page = 1;
@@ -327,14 +310,18 @@
     queryParams.perPage = pageSize;
     handleFilter();
   };
-  const handleCreate = (type) => {
-    router.push({
-      name: 'ApplicationsDetail',
-      params: {
-        projectId: queryParams.projectID,
-        action: 'edit'
-      }
-    });
+  const handleCreate = () => {
+    // router.push({
+    //   name: 'ApplicationsDetail',
+    //   params: {
+    //     projectId: queryParams.projectID,
+    //     action: 'edit'
+    //   }
+    // });
+    moduleAction.value = 'create';
+    setTimeout(() => {
+      showEditModal.value = true;
+    }, 150);
   };
   const handleDeleteConfirm = async () => {
     try {
@@ -369,16 +356,6 @@
     });
   };
   const handleClickView = (row) => {
-    // router.push({
-    //   name: 'ApplicationsDetail',
-    //   params: {
-    //     projectId: row.project?.id || queryParams.projectID,
-    //     action: 'view'
-    //   },
-    //   query: {
-    //     id: row.id
-    //   }
-    // });
     router.push({
       name: 'ProjectServiceDetail',
       params: {
@@ -404,7 +381,7 @@
     deleteModal({ onOk: handleDeleteConfirm });
   };
   const init = async () => {
-    // await getProjectList();
+    initCompleteData();
     userStore.setInfo({ currentProject: queryParams.projectID });
     fetchData();
   };
@@ -452,7 +429,7 @@
       // if (axiosInstance || !queryParams.projectID) return;
       if (!queryParams.projectID) return;
       setChunkRequest({
-        url: `/applications`,
+        url: `/services`,
         params: {
           projectID: queryParams.projectID
         },
@@ -486,7 +463,7 @@
   watch(
     () => queryParams,
     () => {
-      loopUpdateList();
+      // loopUpdateList();
     },
     {
       immediate: true,
@@ -494,17 +471,6 @@
     }
   );
 
-  // watch(
-  //   () => queryParams.projectID,
-  //   () => {
-  //     nextTick(() => {
-  //       createInstanceListWebsocket();
-  //     });
-  //   },
-  //   {
-  //     immediate: true
-  //   }
-  // );
   onBeforeUnmount(() => {
     axiosInstance?.cancel?.();
     clearInterval(loopTimer);

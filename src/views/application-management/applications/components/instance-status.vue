@@ -1,22 +1,6 @@
 <template>
   <span class="label-wrapper">
-    <a-link
-      v-if="
-        userStore.hasProjectResourceActions({
-          projectID: projectId,
-          resource: Resources.ApplicationInstances,
-          actions: ['GET']
-        })
-      "
-      style="display: inline"
-      @click="handleViewInstance"
-    >
-      <span class="dot" :class="[get(statusMap, status) || status]"></span>
-      <slot name="label"
-        ><span>{{ label }}</span></slot
-      >
-    </a-link>
-    <span v-else style="padding: 1px 4px">
+    <span class="status">
       <span class="dot" :class="[get(statusMap, status) || status]"></span>
       <slot name="label"
         ><span>{{ label }}</span></slot
@@ -28,9 +12,7 @@
 <script lang="ts" setup>
   import { get } from 'lodash';
   import useCallCommon from '@/hooks/use-call-common';
-  import { useRouter, use } from 'vue-router';
   import { useUserStore } from '@/store';
-  import { Resources } from '@/permissions/config';
 
   const props = defineProps({
     status: {
@@ -73,17 +55,6 @@
   const { router, route } = useCallCommon();
   const userStore = useUserStore();
   const handleViewInstance = () => {
-    // router.push({
-    //   name: 'ApplicationsDetail',
-    //   params: {
-    //     projectId: props.projectId,
-    //     action: 'view'
-    //   },
-    //   query: {
-    //     id: props.applicationId,
-    //     instanceId: props.instanceId
-    //   }
-    // });
     router.push({
       name: 'ProjectServiceDetail',
       params: {
@@ -98,9 +69,14 @@
 
 <style lang="less" scoped>
   .label-wrapper {
+    display: flex;
     padding: 2px;
-    background-color: var(--seal-color-bg);
-    border-radius: 2px;
+
+    .status {
+      display: flex;
+      align-items: center;
+      justify-content: flex-start;
+    }
 
     .dot {
       display: inline-block;

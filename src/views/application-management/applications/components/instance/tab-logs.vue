@@ -66,7 +66,7 @@
   };
   const createChunkConnection = async () => {
     if (!logKey.value || !resourceId.value) return;
-    const url = `/application-resources/${resourceId.value}/log`;
+    const url = `/service-resources/${resourceId.value}/log`;
     setChunkRequest({
       url,
       params: {
@@ -105,7 +105,7 @@
     try {
       loading.value = true;
       const params = {
-        instanceID: instanceId.value,
+        serviceID: instanceId.value,
         page: -1
       };
       const { data } = await queryApplicationResource(params);

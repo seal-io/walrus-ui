@@ -1,7 +1,9 @@
 <template>
   <div class="header-info" :class="{ 'top-gap': topGap }">
     <div class="left">
-      <img src="" class="img" alt="" />
+      <div class="img">
+        <slot name="icon"></slot>
+      </div>
     </div>
     <div class="right">
       <slot title>
@@ -35,6 +37,7 @@
   .header-info {
     display: flex;
     align-items: center;
+    height: 112px;
     padding: 16px;
     background-color: #fff;
     border-radius: var(--border-radius-small);
@@ -47,8 +50,20 @@
       width: 80px;
 
       .img {
+        display: flex;
+        align-items: center;
+        justify-content: center;
         width: 100%;
         height: 80px;
+        background-color: transparent;
+
+        :deep(.iconfont) {
+          color: rgb(var(--arcoblue-5));
+          font-size: 56px;
+          background-color: transparent;
+          // box-shadow: 0 0 16px 2px rgb(var(--arcoblue-4));
+          border-radius: 50%;
+        }
       }
     }
 

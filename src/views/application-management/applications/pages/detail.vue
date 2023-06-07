@@ -515,7 +515,7 @@
       const appId = route.query.id || '';
       if (!id) return;
       setChunkRequest({
-        url: `/application-instances`,
+        url: `/service`,
         params: {
           applicationID: appId,
           ...getPermissionRouteParams()

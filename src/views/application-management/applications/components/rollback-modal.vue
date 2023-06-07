@@ -26,11 +26,11 @@
           <a-grid-item v-if="!instanceId" :span="12">
             <a-form-item
               label="选择实例"
-              field="instanceID"
+              field="serviceID"
               :rules="[{ required: true, message: '请选择实例' }]"
             >
               <a-select
-                v-model="formData.instanceID"
+                v-model="formData.serviceID"
                 style="width: 100%"
                 @change="handleInstanceChange"
               >
@@ -162,7 +162,7 @@
   const loading = ref(false);
   const formref = ref();
   const formData = reactive({
-    instanceID: '',
+    serviceID: '',
     id: ''
   });
 
@@ -184,12 +184,12 @@
     }
   };
   const getRevisionList = async () => {
-    if (!formData.instanceID) return;
+    if (!formData.serviceID) return;
     try {
       loading.value = true;
       const params = {
         page: -1,
-        instanceID: formData.instanceID
+        serviceID: formData.serviceID
       };
       const { data } = await queryApplicationRevisions(params);
       revisionList.value = data?.items || [];
@@ -204,7 +204,7 @@
   const getRevisionDiff = async () => {
     try {
       const params = {
-        instanceID: formData.instanceID,
+        serviceID: formData.serviceID,
         id: formData.id
       };
       const { data } = await diffRevisionSpec(params);
@@ -248,7 +248,7 @@
     emit('update:show', false);
   };
   const handleBeforeOpen = () => {
-    formData.instanceID = props.instanceId;
+    formData.serviceID = props.instanceId;
     getRevisionList();
   };
   const handleBeforeClose = () => {

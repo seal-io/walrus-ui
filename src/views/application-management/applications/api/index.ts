@@ -19,7 +19,7 @@ export interface QueryType extends Pagination {
   projectID: string;
 }
 export const queryApplications = (params: QueryType) => {
-  return axios.get<ResultType>(`/applications`, {
+  return axios.get<ResultType>(`/services`, {
     params,
     paramsSerializer: (obj) => {
       return qs.stringify(obj);
@@ -29,29 +29,29 @@ export const queryApplications = (params: QueryType) => {
 
 export const createApplication = (data) => {
   return axios.post(
-    `/applications?${qs.stringify(getPermissionRouteParams())}`,
+    `/services?${qs.stringify({ projectID: data.projectID })}`,
     data
   );
 };
 export const deleteApplication = ({ data, projectID }) => {
-  return axios.delete(`/applications?${qs.stringify({ projectID })}`, { data });
+  return axios.delete(`/services?${qs.stringify({ projectID })}`, { data });
 };
 export const deployApplication = (data) => {
   return axios.post(
-    `/application-instances?${qs.stringify(getPermissionRouteParams())}`,
+    `/service?${qs.stringify(getPermissionRouteParams())}`,
     data
   );
 };
 
 export const updateApplication = (data) => {
   return axios.put(
-    `/applications/${data.id}?${qs.stringify(getPermissionRouteParams())}`,
+    `/services/${data.id}?${qs.stringify(getPermissionRouteParams())}`,
     data
   );
 };
 
 export const queryItemApplication = (params) => {
-  return axios.get(`/applications/${params.id}`, {
+  return axios.get(`/services/${params.id}`, {
     params: {
       ...params,
       ...getPermissionRouteParams()
@@ -63,7 +63,7 @@ export const queryItemApplication = (params) => {
 };
 // ========instance======
 export const queryApplicationInstances = (params) => {
-  return axios.get(`/application-instances`, {
+  return axios.get(`/service`, {
     params: {
       ...params,
       ...getPermissionRouteParams()
@@ -74,7 +74,7 @@ export const queryApplicationInstances = (params) => {
   });
 };
 export const queryItemApplicationInstances = (params) => {
-  return axios.get(`/application-instances/${params.id}`, {
+  return axios.get(`/service/${params.id}`, {
     params: {
       ...params,
       ...getPermissionRouteParams()
@@ -85,7 +85,7 @@ export const queryItemApplicationInstances = (params) => {
   });
 };
 export const queryInstanceOutputs = (params) => {
-  return axios.get(`/application-instances/${params.id}/outputs`, {
+  return axios.get(`/service/${params.id}/outputs`, {
     params: {
       ...params,
       ...getPermissionRouteParams()
@@ -97,7 +97,7 @@ export const queryInstanceOutputs = (params) => {
 };
 export const deleteApplicationInstance = (data) => {
   return axios.delete(
-    `/application-instances/${data.id}?${qs.stringify({
+    `/service/${data.id}?${qs.stringify({
       force: data.force,
       ...getPermissionRouteParams()
     })}`
@@ -106,9 +106,7 @@ export const deleteApplicationInstance = (data) => {
 
 export const upgradeApplicationInstance = (data) => {
   return axios.put(
-    `/application-instances/${data.id}/upgrade?${qs.stringify(
-      getPermissionRouteParams()
-    )}`,
+    `/service/${data.id}/upgrade?${qs.stringify(getPermissionRouteParams())}`,
     data
   );
 };
@@ -118,15 +116,13 @@ export const cloneApplicationInstance = (data: {
   name: string;
 }) => {
   return axios.post(
-    `/application-instances/${data.id}/clone?${qs.stringify(
-      getPermissionRouteParams()
-    )}`,
+    `/service/${data.id}/clone?${qs.stringify(getPermissionRouteParams())}`,
     data
   );
 };
 
-export const diffInstanceSpec = (params: { instanceID: string }) => {
-  return axios.get(`/application-instances/${params.instanceID}/diff-latest`, {
+export const diffInstanceSpec = (params: { serviceID: string }) => {
+  return axios.get(`/service/${params.serviceID}/diff-latest`, {
     params: {
       ...params,
       ...getPermissionRouteParams()
@@ -137,8 +133,8 @@ export const diffInstanceSpec = (params: { instanceID: string }) => {
   });
 };
 
-export const queryInstanceResourceGraph = (params: { instanceID: string }) => {
-  return axios.get(`/application-instances/${params.instanceID}/graph`, {
+export const queryInstanceResourceGraph = (params: { serviceID: string }) => {
+  return axios.get(`/service/${params.serviceID}/graph`, {
     params: {
       ...params,
       ...getPermissionRouteParams()
@@ -151,7 +147,7 @@ export const queryInstanceResourceGraph = (params: { instanceID: string }) => {
 
 // =========history================
 interface ApplicationRevisionParams extends Pagination {
-  instanceID?: string;
+  serviceID?: string;
   sort?: string[];
 }
 
@@ -159,7 +155,7 @@ export const queryApplicationRevisions = (
   params: ApplicationRevisionParams,
   token?
 ) => {
-  return axios.get(`/application-revisions`, {
+  return axios.get(`/service-revisions`, {
     params: {
       ...params,
       ...getPermissionRouteParams()
@@ -171,7 +167,7 @@ export const queryApplicationRevisions = (
   });
 };
 export const queryApplicationRevisionsDetail = (params: { id: string }) => {
-  return axios.get(`/application-revisions/${params.id}`, {
+  return axios.get(`/service-revisions/${params.id}`, {
     params: {
       ...params,
       ...getPermissionRouteParams()
@@ -184,16 +180,13 @@ export const queryApplicationRevisionsDetail = (params: { id: string }) => {
 
 export const deleteApplicationRevisions = (data: { id: string }[]) => {
   return axios.delete(
-    `/application-revisions?${qs.stringify(getPermissionRouteParams())}`,
+    `/service-revisions?${qs.stringify(getPermissionRouteParams())}`,
     { data }
   );
 };
 
-export const diffRevisionSpec = (params: {
-  id: string;
-  instanceID: string;
-}) => {
-  return axios.get(`/application-revisions/${params.id}/diff-latest`, {
+export const diffRevisionSpec = (params: { id: string; serviceID: string }) => {
+  return axios.get(`/service-revisions/${params.id}/diff-latest`, {
     params: {
       ...params,
       ...getPermissionRouteParams()
@@ -205,9 +198,9 @@ export const diffRevisionSpec = (params: {
 };
 export const queryRevisionChange = (params: {
   id: string;
-  instanceID: string;
+  serviceID: string;
 }) => {
-  return axios.get(`/application-revisions/${params.id}/diff-previous`, {
+  return axios.get(`/service-revisions/${params.id}/diff-previous`, {
     params: {
       ...params,
       ...getPermissionRouteParams()
@@ -220,7 +213,7 @@ export const queryRevisionChange = (params: {
 
 export const rollbackInstance = (data: { id: string }) => {
   return axios.post(
-    `/application-revisions/${data.id}/rollback-instances?${qs.stringify(
+    `/service-revisions/${data.id}/rollback-service?${qs.stringify(
       getPermissionRouteParams()
     )}`
   );
@@ -228,7 +221,7 @@ export const rollbackInstance = (data: { id: string }) => {
 
 export const rollbackApplication = (data: { id: string }) => {
   return axios.post(
-    `/application-revisions/${data.id}/rollback-applications?${qs.stringify(
+    `/service-revisions/${data.id}/rollback-applications?${qs.stringify(
       getPermissionRouteParams()
     )}`
   );
@@ -238,7 +231,7 @@ export const queryApplicationResource = (
   params: ApplicationRevisionParams,
   token?
 ) => {
-  return axios.get(`/application-resources`, {
+  return axios.get(`/service-resources`, {
     params: {
       ...params,
       ...getPermissionRouteParams()
@@ -251,7 +244,7 @@ export const queryApplicationResource = (
 };
 
 export const queryApplicationResourceKeys = (params: { id: string }) => {
-  return axios.get(`/application-resources/${params.id}/keys`, {
+  return axios.get(`/service-resources/${params.id}/keys`, {
     params: {
       ...params,
       ...getPermissionRouteParams()
@@ -263,7 +256,7 @@ export const queryApplicationResourceKeys = (params: { id: string }) => {
 };
 
 export const queryApplicationResourceLogs = (params: { id: string }) => {
-  return axios.get(`/application-resources/${params.id}/log`, {
+  return axios.get(`/service-resources/${params.id}/log`, {
     params: {
       ...params,
       ...getPermissionRouteParams()
@@ -274,7 +267,7 @@ export const queryApplicationResourceLogs = (params: { id: string }) => {
   });
 };
 export const queryApplicationResourceExec = (params: { id: string }) => {
-  return axios.get(`/application-resources/${params.id}/exec`, {
+  return axios.get(`/service-resources/${params.id}/exec`, {
     params: {
       ...params,
       ...getPermissionRouteParams()
@@ -286,11 +279,11 @@ export const queryApplicationResourceExec = (params: { id: string }) => {
 };
 type EndPointResult = EndPointRow[];
 export const queryInstanceEndpoints = (
-  params: { instanceID: string },
+  params: { serviceID: string },
   token
 ) => {
   return axios.get<EndPointResult>(
-    `/application-instances/${params.instanceID}/access-endpoints`,
+    `/services/${params.serviceID}/access-endpoints`,
     {
       params: {
         ...params,

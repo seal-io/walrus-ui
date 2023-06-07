@@ -1,5 +1,10 @@
 <template>
   <div class="dashboard-wrapper">
+    <BreadWrapper>
+      <Breadcrumb
+        :menu="{ icon: 'icon-dashboard', label: 'menu.dashboard' }"
+      ></Breadcrumb>
+    </BreadWrapper>
     <a-space :size="8" direction="vertical" fill>
       <overview></overview>
       <DeploymentSummary></DeploymentSummary>
@@ -18,6 +23,7 @@
 <script lang="ts" setup>
   import { Resources, Actions } from '@/permissions/config';
   import { useUserStore } from '@/store';
+  import BreadWrapper from '@/components/bread-wrapper/index.vue';
   import overview from '../components/overview.vue';
   import DeploymentSummary from '../components/deployment-summary.vue';
   import CostSummary from '../components/cost-summary.vue';
@@ -27,6 +33,6 @@
 
 <style lang="less" scoped>
   .dashboard-wrapper {
-    margin-top: 20px;
+    margin-top: 10px;
   }
 </style>

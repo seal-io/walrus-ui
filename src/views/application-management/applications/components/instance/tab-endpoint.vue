@@ -103,7 +103,7 @@
       requestCacheList.value.push(1);
       const params = {
         ...queryParams,
-        instanceID: instanceId.value
+        serviceID: instanceId.value
       };
       const { data } = await queryInstanceEndpoints(
         params,
@@ -168,7 +168,7 @@
       chunkRequesSource?.cancel?.();
       nextTick(() => {
         chunkRequesSource = setChunkRequest({
-          url: `/application-instances/${instanceId.value}/access-endpoint`,
+          url: `/services/${instanceId.value}/access-endpoint`,
           params: {
             ...getPermissionRouteParams()
           },

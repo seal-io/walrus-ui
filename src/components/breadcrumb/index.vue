@@ -12,7 +12,7 @@
             v-if="menu.icon"
             style="color: rgba(255, 255, 255, 1)"
           ></component>
-          <span class="label">{{ menu.label }}</span>
+          <span class="label">{{ $t(menu.label) }}</span>
         </span>
       </span>
     </a-breadcrumb-item>

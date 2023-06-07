@@ -413,7 +413,7 @@
     if (!props.activeInstanceInfo.id) return;
     try {
       const params = {
-        instanceID: props.activeInstanceInfo.id
+        serviceID: props.activeInstanceInfo.id
       };
       const { data } = await diffInstanceSpec(params);
       const diffContent = {

@@ -157,6 +157,7 @@
   const submitLoading = ref(false);
   let copyFormData: any = {};
   const formData = ref<EnvironFormData>({
+    projectID: route.params.projectId as string,
     name: '',
     description: '',
     connectorIDs: [],

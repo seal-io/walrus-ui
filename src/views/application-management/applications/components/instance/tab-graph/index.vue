@@ -66,7 +66,7 @@
     try {
       loading.value = true;
       const params = {
-        instanceID: instanceId.value
+        serviceID: instanceId.value
       };
       const { data } = await queryInstanceResourceGraph(params);
       resultData.value.links = data.links || [];

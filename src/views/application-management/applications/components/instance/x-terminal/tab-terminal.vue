@@ -84,7 +84,7 @@
     try {
       loading.value = true;
       const params = {
-        instanceID: instanceId.value,
+        serviceID: instanceId.value,
         page: -1
       };
       const { data } = await queryApplicationResource(params);

@@ -293,7 +293,7 @@
     try {
       const params = {
         id: row.id,
-        instanceID: instanceId.value
+        serviceID: instanceId.value
       };
       const { data } = await diffRevisionSpec(params);
       const variables =
@@ -346,7 +346,7 @@
   const handleViewHistoryChange = async (row) => {
     try {
       const params = {
-        instanceID: instanceId.value,
+        serviceID: instanceId.value,
         id: row.id
       };
       const { data } = await queryRevisionChange(params);
@@ -369,7 +369,7 @@
       const { data } = await queryApplicationRevisions(
         {
           ...queryParams,
-          instanceID: instanceId.value,
+          serviceID: instanceId.value,
           sort: [sort.value]
         },
         axiosListInstance.token
@@ -460,9 +460,9 @@
   const createInstanceListWebsocket = () => {
     try {
       setChunkRequest({
-        url: `/application-revisions`,
+        url: `/service-revisions`,
         params: {
-          instanceID: instanceId.value,
+          serviceID: instanceId.value,
           ...getPermissionRouteParams()
         },
         handler: updateHandler

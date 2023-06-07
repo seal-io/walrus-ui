@@ -1,6 +1,6 @@
 <template>
   <div class="module-card-wrap">
-    <div class="title" :class="{ iconed: showIcon }">
+    <div class="title" :class="{ iconed: showIcon }" :style="{ ...titleStyle }">
       <!-- <icon-tag v-if="showIcon" /> -->
       <slot name="title"
         ><span>{{ title }}</span></slot
@@ -22,6 +22,12 @@
       type: Boolean,
       default() {
         return true;
+      }
+    },
+    titleStyle: {
+      type: Object,
+      default() {
+        return {};
       }
     }
   });

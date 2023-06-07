@@ -3,9 +3,9 @@
     <BreadWrapper>
       <Breadcrumb :items="breadCrumbList" @change="handleChange"></Breadcrumb>
     </BreadWrapper>
-    <ComCard top-gap>
+    <div>
       <ServiceDetail :instance-id="serviceId"></ServiceDetail>
-    </ComCard>
+    </div>
   </div>
 </template>
 

@@ -181,6 +181,7 @@
   const submitLoading = ref(false);
   let copyFormData: any = {};
   const formData: ConnectorFormData = reactive({
+    projectID: route.params.projectId,
     name: '',
     configData: {
       kubeconfig: {

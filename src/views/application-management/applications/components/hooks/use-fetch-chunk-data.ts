@@ -44,11 +44,18 @@ export default function useFetchResource() {
     });
   };
   const updateDataList = (data) => {
-    const collections = _.filter(
+    let collections = _.filter(
       data.collection || [],
-      (sItem) => sItem?.instance?.id === instanceId.value
+      (sItem) => sItem?.service?.id === instanceId.value
     );
-    // const collections = data?.collection || [];
+    collections = _.map(collections, (item) => {
+      return {
+        ...item.Resource,
+        keys: {
+          ...item.keys
+        }
+      };
+    });
     const childResources = _.filter(collections, (item) =>
       _.get(item, 'composition.id')
     );
@@ -158,12 +165,20 @@ export default function useFetchResource() {
       requestCacheList.value.push(1);
       const params = {
         page: -1,
-        instanceID: instanceId.value
+        serviceID: instanceId.value
       };
       const { data } = await queryApplicationResource(params, fetchToken.token);
-      let list: any = _.filter(
-        data?.items || [],
-        (item) => item?.instance?.id === instanceId.value
+      let list: any = _.map(data.items, (item) => {
+        return {
+          ...item.Resource,
+          keys: {
+            ...item.keys
+          }
+        };
+      });
+      list = _.filter(
+        list || [],
+        (item) => item?.service?.id === instanceId.value
       );
       list = setDataList(list);
       dataList.value = [].concat(list);
@@ -188,7 +203,7 @@ export default function useFetchResource() {
         fetchToken = createAxiosToken();
         const params = {
           page: -1,
-          instanceID: instanceId.value
+          serviceID: instanceId.value
         };
         const { data } = await queryApplicationResource(
           params,
@@ -217,9 +232,9 @@ export default function useFetchResource() {
     requestCacheList.value = [];
     try {
       setChunkRequest({
-        url: `/application-resources`,
+        url: `/service-resources`,
         params: {
-          instanceID: instanceId.value,
+          serviceID: instanceId.value,
           ...getPermissionRouteParams()
         },
         handler: updateCallback
