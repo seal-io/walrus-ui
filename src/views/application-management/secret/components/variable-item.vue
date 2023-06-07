@@ -63,6 +63,7 @@
       <AceEditor
         v-if="variable.type === 'dynamic'"
         lang="yaml"
+        :show-gutter="true"
         :editor-default-value="variable.default"
         :model-value="variable.default"
         @input="(val) => handleInput(val, 'default')"

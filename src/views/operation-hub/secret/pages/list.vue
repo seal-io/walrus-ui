@@ -161,7 +161,6 @@
   import { cloneDeep, find, get, map, pickBy } from 'lodash';
   import { reactive, ref, onMounted, computed } from 'vue';
   import useCallCommon from '@/hooks/use-call-common';
-
   import { Message } from '@arco-design/web-vue';
   import { deleteModal, execSucceed } from '@/utils/monitor';
   import useRowSelect from '@/hooks/use-row-select';

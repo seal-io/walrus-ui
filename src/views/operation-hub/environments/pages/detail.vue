@@ -1,6 +1,6 @@
 <template>
-  <ComCard top-gap>
-    <GroupTitle
+  <div>
+    <!-- <GroupTitle
       show-back
       :show-edit="
         pageAction === 'view' &&
@@ -11,7 +11,7 @@
       "
       :title="title"
       @edit="handleEdit"
-    ></GroupTitle>
+    ></GroupTitle> -->
     <a-form ref="formref" :model="formData" auto-label-width>
       <a-form-item
         :label="$t('operation.environments.table.name')"
@@ -56,14 +56,8 @@
         field="connectorIDs"
         :validate-trigger="['change']"
       >
-        <connectorsTable
-          :style="{ marginLeft: pageAction === 'view' ? '12px' : 0 }"
-          :action="pageAction"
-          :list="formData?.edges || []"
-          @delete="handleDeleteConnector"
-        ></connectorsTable>
-        <template #extra>
-          <div style="display: flex">
+        <div>
+          <div style="display: flex; margin-bottom: 10px">
             <a-button
               v-if="pageAction === 'edit'"
               type="primary"
@@ -84,10 +78,16 @@
               @confirm="handleConnectorChange"
             ></ConnectorSelector>
           </div>
-        </template>
+          <connectorsTable
+            :style="{ marginLeft: pageAction === 'view' ? '12px' : 0 }"
+            :action="pageAction"
+            :list="formData?.edges || []"
+            @delete="handleDeleteConnector"
+          ></connectorsTable>
+        </div>
       </a-form-item>
     </a-form>
-    <EditPageFooter v-if="pageAction === 'edit'">
+    <!-- <EditPageFooter v-if="pageAction === 'edit'">
       <template #save>
         <a-button
           type="primary"
@@ -103,14 +103,14 @@
         @click="handleCancel"
         >{{ $t('common.button.cancel') }}</a-button
       >
-    </EditPageFooter>
-  </ComCard>
+    </EditPageFooter> -->
+  </div>
 </template>
 
 <script lang="ts" setup>
   import { Resources } from '@/permissions/config';
   import { useUserStore, useTabBarStore } from '@/store';
-  import { ref, computed } from 'vue';
+  import { ref, computed, defineExpose } from 'vue';
   import {
     concat,
     each,
@@ -137,11 +137,20 @@
     queryItemEnvironments
   } from '../api';
 
+  const props = defineProps({
+    id: {
+      type: String,
+      default() {
+        return '';
+      }
+    }
+  });
   const userStore = useUserStore();
   const tabBarStore = useTabBarStore();
   const { router, route, t } = useCallCommon();
-  const { pageAction, handleEdit } = usePageAction();
-  const id = route.query.id as string;
+  const pageAction = ref('edit');
+  // const { pageAction, handleEdit } = usePageAction();
+  const id = props.id || '';
   const formref = ref();
   const connectorList = ref<{ label: string; value: string }[]>([]);
   const showModal = ref(false);
@@ -249,12 +258,14 @@
           name: 'EnvironmentList',
           fullPath: ''
         });
-        router.back();
+        // router.back();
         submitLoading.value = false;
       } catch (error) {
         submitLoading.value = false;
       }
+      return true;
     }
+    return false;
   };
   const cancelCallback = () => {
     if (pageAction.value === 'edit' && route.params.action === 'view') {
@@ -295,9 +306,12 @@
   });
   const init = async () => {
     await getConnectors();
-    getItemEnvironmentInfo();
+    await getItemEnvironmentInfo();
   };
-  init();
+  defineExpose({
+    handleSubmit,
+    init
+  });
 </script>
 
 <style></style>

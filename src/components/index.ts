@@ -27,7 +27,7 @@ import Chart from './chart/index.vue';
 import Breadcrumb from './breadcrumb/index.vue';
 
 const IconFont = Icon.addFromIconFontCn({
-  src: 'https://at.alicdn.com/t/c/font_3892962_zu1q0dxiv6j.js'
+  src: 'https://at.alicdn.com/t/c/font_3892962_jcbsot2x9t.js'
 });
 // Manually introduce ECharts modules to reduce packing size
 
