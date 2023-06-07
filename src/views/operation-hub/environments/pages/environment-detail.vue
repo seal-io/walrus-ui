@@ -12,7 +12,7 @@
           <i class="iconfont icon-rongqiyunfuwu"></i>
         </template>
         <template #title>
-          <span>{{ currentInfo.label }}</span>
+          <BasicInfo :data-info="basicDataList"></BasicInfo>
         </template>
       </HeaderInfo>
       <a-divider style="margin: 0; border-radius: 1px" :size="4"></a-divider>
@@ -24,14 +24,17 @@
 </template>
 
 <script lang="ts" setup>
-  import { ref, provide } from 'vue';
+  import { ref } from 'vue';
   import _ from 'lodash';
   import useCallCommon from '@/hooks/use-call-common';
-  import { useProjectStore } from '@/store';
   import HeaderInfo from '@/components/header-info/index.vue';
   import { BreadcrumbOptions } from '@/views/config/interface';
+  import BasicInfo from '@/views/application-management/applications/components/basic-info.vue';
   import ServiceList from '@/views/application-management/applications/pages/list.vue';
   import useProjectData from '@/views/application-management/projects/hooks/use-project-breadcrumb-data';
+  import useBasicInfoData from '@/views/application-management/projects/hooks/use-basicInfo-data';
+  import { basicInfoConfig } from '../config';
+  import { queryItemEnvironments } from '../api';
 
   const {
     getEnvironmentList,
@@ -39,27 +42,48 @@
     setProjectList,
     setEnvironmentList
   } = useProjectData();
-  const { router, route } = useCallCommon();
-  const projectStore = useProjectStore();
-  const activeKey = ref('environment');
+  const { router, route, t } = useCallCommon();
   const currentInfo = ref<any>({});
-  const serviceInfo = ref<any>({});
   const breadCrumbList = ref<BreadcrumbOptions[]>([]);
   const serviceRef = ref();
-  // let projectList: any[] = [];
-  // let environmentList: any[] = [];
+  const basicDataList = useBasicInfoData(basicInfoConfig, currentInfo);
 
   const handleSelectChange = (val, item) => {
     item.value = val;
     currentInfo.value = item;
-    router.replace({
-      name: 'ProjectDetail',
-      params: {
+    let params = {};
+    if (item.type === 'Environment') {
+      params = {
+        ...route.params,
+        environmentId: val
+      };
+    }
+    if (item.type === 'Project') {
+      params = {
         projectId: val
+      };
+    }
+    router.replace({
+      name: item.route,
+      params: {
+        ...params
       }
     });
   };
+  const getItemEnvironmentInfo = async () => {
+    try {
+      const params = {
+        id: route.params.environmentId as string
+      };
+      const { data } = await queryItemEnvironments(params);
+      currentInfo.value = data;
+    } catch (error) {
+      currentInfo.value = {};
+      console.log(error);
+    }
+  };
   const init = async () => {
+    getItemEnvironmentInfo();
     const [projectList, enviromentList] = await Promise.all([
       getProjectList(),
       getEnvironmentList()

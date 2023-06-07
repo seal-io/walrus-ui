@@ -38,7 +38,7 @@ export const deleteApplication = ({ data, projectID }) => {
 };
 export const deployApplication = (data) => {
   return axios.post(
-    `/service?${qs.stringify(getPermissionRouteParams())}`,
+    `/services?${qs.stringify(getPermissionRouteParams())}`,
     data
   );
 };
@@ -63,7 +63,7 @@ export const queryItemApplication = (params) => {
 };
 // ========instance======
 export const queryApplicationInstances = (params) => {
-  return axios.get(`/service`, {
+  return axios.get(`/services`, {
     params: {
       ...params,
       ...getPermissionRouteParams()
@@ -74,7 +74,7 @@ export const queryApplicationInstances = (params) => {
   });
 };
 export const queryItemApplicationInstances = (params) => {
-  return axios.get(`/service/${params.id}`, {
+  return axios.get(`/services/${params.id}`, {
     params: {
       ...params,
       ...getPermissionRouteParams()
@@ -85,7 +85,7 @@ export const queryItemApplicationInstances = (params) => {
   });
 };
 export const queryInstanceOutputs = (params) => {
-  return axios.get(`/service/${params.id}/outputs`, {
+  return axios.get(`/services/${params.id}/outputs`, {
     params: {
       ...params,
       ...getPermissionRouteParams()
@@ -97,7 +97,7 @@ export const queryInstanceOutputs = (params) => {
 };
 export const deleteApplicationInstance = (data) => {
   return axios.delete(
-    `/service/${data.id}?${qs.stringify({
+    `/services/${data.id}?${qs.stringify({
       force: data.force,
       ...getPermissionRouteParams()
     })}`
@@ -106,7 +106,7 @@ export const deleteApplicationInstance = (data) => {
 
 export const upgradeApplicationInstance = (data) => {
   return axios.put(
-    `/service/${data.id}/upgrade?${qs.stringify(getPermissionRouteParams())}`,
+    `/services/${data.id}/upgrade?${qs.stringify(getPermissionRouteParams())}`,
     data
   );
 };
@@ -116,13 +116,13 @@ export const cloneApplicationInstance = (data: {
   name: string;
 }) => {
   return axios.post(
-    `/service/${data.id}/clone?${qs.stringify(getPermissionRouteParams())}`,
+    `/services/${data.id}/clone?${qs.stringify(getPermissionRouteParams())}`,
     data
   );
 };
 
 export const diffInstanceSpec = (params: { serviceID: string }) => {
-  return axios.get(`/service/${params.serviceID}/diff-latest`, {
+  return axios.get(`/services/${params.serviceID}/diff-latest`, {
     params: {
       ...params,
       ...getPermissionRouteParams()
@@ -134,7 +134,7 @@ export const diffInstanceSpec = (params: { serviceID: string }) => {
 };
 
 export const queryInstanceResourceGraph = (params: { serviceID: string }) => {
-  return axios.get(`/service/${params.serviceID}/graph`, {
+  return axios.get(`/services/${params.serviceID}/graph`, {
     params: {
       ...params,
       ...getPermissionRouteParams()

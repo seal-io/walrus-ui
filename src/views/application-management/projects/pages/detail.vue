@@ -12,7 +12,7 @@
           <i class="iconfont icon-project"></i>
         </template>
         <template #title>
-          <span>{{ currentInfo.label }}</span>
+          <basicInfo :data-info="basicDataList"></basicInfo>
         </template>
       </HeaderInfo>
       <a-divider style="margin: 0; border-radius: 1px" :size="4"></a-divider>
@@ -54,7 +54,10 @@
   import SecretList from '@/views/application-management/secret/pages/list.vue';
   import { BreadcrumbOptions } from '@/views/config/interface';
   import ConnectorList from '@/views/operation-hub/connectors/components/table-list.vue';
+  import basicInfo from '@/views/application-management/applications/components/basic-info.vue';
+  import useBasicInfoData from '../hooks/use-basicInfo-data';
   import { queryProjects } from '../api';
+  import { basicInfoConfig } from '../config';
 
   const { router, route } = useCallCommon();
   const projectStore = useProjectStore();
@@ -64,7 +67,7 @@
   const enviromentRef = ref();
   const currentInfo = ref<any>({});
   const breadCrumbList = ref<BreadcrumbOptions[]>([]);
-
+  const basicDataList = useBasicInfoData(basicInfoConfig, currentInfo);
   const handleTabChange = (val) => {
     activeKey.value = val;
   };

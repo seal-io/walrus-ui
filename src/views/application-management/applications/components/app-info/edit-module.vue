@@ -82,10 +82,8 @@
             >
               <div id="moduleIdWrapper" style="position: relative">
                 <a-select
-                  id="moduleIdWrapper"
                   v-model="formData.template.id"
-                  style="position: relative"
-                  popup-container="#moduleIdWrapper"
+                  :popup-container="getContainer('moduleIdWrapper')"
                   allow-search
                   @change="handleModuleChange"
                 >
@@ -113,7 +111,7 @@
               <div id="moduleVerionWrapper" style="position: relative">
                 <a-select
                   v-model="formData.templateVersion"
-                  popup-container="#moduleVerionWrapper"
+                  :popup-container="getContainer('moduleVerionWrapper')"
                   @change="handleVersionChange"
                 >
                   <a-option
@@ -356,6 +354,9 @@
     }
     return list;
   });
+  const getContainer = (id) => {
+    return document.getElementById(id);
+  };
   const handleCancel = () => {
     emit('update:show', false);
   };

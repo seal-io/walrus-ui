@@ -6,12 +6,10 @@
       </div>
     </div>
     <div class="right">
-      <slot title>
+      <slot name="title">
         <div class="title">{{ info?.name }}</div>
       </slot>
-      <slot name="description">
-        <div class="desc">{{ info.description }}</div>
-      </slot>
+      <slot name="description"> </slot>
     </div>
   </div>
 </template>
