@@ -6,7 +6,7 @@
           <i class="iconfont icon-apps-fill"></i>
         </template>
         <template #title>
-          <span>{{ currentInfo.label }}</span>
+          <BasicInfo :data-info="basicDataList"></BasicInfo>
         </template>
       </HeaderInfo>
       <a-divider style="margin: 0; border-radius: 1px" :size="4"></a-divider>
@@ -69,13 +69,15 @@
 </template>
 
 <script lang="ts" setup>
+  import dayjs from 'dayjs';
   import { Resources } from '@/permissions/config';
   import { useUserStore } from '@/store';
   import _ from 'lodash';
-  import { markRaw, ref, watch, onMounted } from 'vue';
+  import { markRaw, ref, watch, onMounted, computed } from 'vue';
   import HeaderInfo from '@/components/header-info/index.vue';
   import useCallCommon from '@/hooks/use-call-common';
   import EditPageFooter from '@/components/edit-page-footer/index.vue';
+  import useBasicInfoData from '@/views/application-management/projects/hooks/use-basicInfo-data';
   import tabTerminal from './x-terminal/tab-terminal.vue';
   import tabResource from './tab-resource.vue';
   import tabLogs from './tab-logs.vue';
@@ -84,9 +86,10 @@
   import tabGraph from './tab-graph/index.vue';
   import tabEndpoint from './tab-endpoint.vue';
   import applicationHistory from './application-history.vue';
-  import BasicInfo from './basic-info.vue';
-  import { instanceTabs } from '../../config';
+  import BasicInfo from '../basic-info.vue';
+  import { instanceTabs, instanceBasicInfo } from '../../config';
   import useFetchResource from '../hooks/use-fetch-chunk-data';
+  import { queryItemApplicationInstances } from '../../api';
 
   const props = defineProps({
     instanceId: {
@@ -99,7 +102,7 @@
   // 1: create 2: update 3: delete
 
   const userStore = useUserStore();
-  const { router, route } = useCallCommon();
+  const { router, route, t } = useCallCommon();
   const { loading, fetchData, createResourceChunkConnection, dataList } =
     useFetchResource();
   const projectID = route.params.projectId || '';
@@ -117,6 +120,7 @@
     // tabEndpoint: markRaw(tabEndpoint)
   };
   const instanceTabList = ref<any[]>([]);
+  const basicDataList = useBasicInfoData(instanceBasicInfo, currentInfo);
 
   const setInstanceTabList = () => {
     instanceTabList.value = _.filter(instanceTabs, (item) => {
@@ -127,6 +131,17 @@
         actions: ['GET']
       });
     });
+  };
+  const getServiceItemInfo = async () => {
+    try {
+      const params = {
+        id: route.query.id
+      };
+      const { data } = await queryItemApplicationInstances(params);
+      currentInfo.value = data;
+    } catch (error) {
+      console.log(error);
+    }
   };
   const handleTabChange = (val) => {
     activeKey.value = val;
@@ -141,6 +156,7 @@
     () => props.instanceId,
     () => {
       debunceFun();
+      getServiceItemInfo();
     },
     {
       immediate: true

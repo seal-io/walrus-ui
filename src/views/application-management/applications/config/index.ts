@@ -160,9 +160,9 @@ export const instanceBasicInfo = [
     key: 'status'
   },
   {
-    label: 'applications.applications.instance.application',
+    label: 'applications.projects.table.name',
     value: '',
-    key: 'application.name',
+    key: 'project.name',
     span: 3
   }
 ];
