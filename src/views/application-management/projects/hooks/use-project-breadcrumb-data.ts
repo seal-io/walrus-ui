@@ -6,10 +6,12 @@ import { queryProjects } from '@/views/application-management/projects/api';
 import { queryEnvironments } from '@/views/operation-hub/environments/api';
 import { queryApplications } from '@/views/application-management/applications/api';
 import { BreadcrumbOptions } from '@/views/config/interface';
+import localStore from '@/utils/localStore';
+import { USER_DEFAULT_PROJECT } from '@/views/config';
 
 export default function useProjectData() {
   const breadCrumbList = ref<BreadcrumbOptions[]>([]);
-  const { route } = useCallCommon();
+  const { route, router } = useCallCommon();
   const projectStore = useProjectStore();
   const getProjectList = async () => {
     let projectList: any[] = [];
@@ -57,27 +59,31 @@ export default function useProjectData() {
     }
     return serviceList;
   };
-  const setProjectList = (projectList) => {
+  const setProjectList = async (projectList) => {
     const list = _.map(projectList, (item) => {
       return {
-        label: item.name,
-        value: item.id
+        label: item.name || item.label,
+        value: item.id || item.value
       };
     });
-    const defaultValue = route.params.projectId || _.get(list, '0.id');
+    const defaultValue = route.params.projectId || _.get(list, '0.value');
     const defaultName = _.get(list, '0.label');
+    const { id, name } = await localStore.getValue(USER_DEFAULT_PROJECT);
 
-    projectStore.setInfo({
-      projectList: _.cloneDeep(list)
-    });
     return {
-      value: defaultValue,
-      label: defaultName,
+      value: id || defaultValue,
+      label: name || defaultName,
       icon: 'icon-apps',
       type: 'Project',
       wrapperId: 'projectWrapper',
       route: 'ProjectDetail',
-      options: _.cloneDeep(list)
+      visible: false,
+      options: _.cloneDeep(list),
+      onSetting() {
+        router.replace({
+          name: 'ProjectsList'
+        });
+      }
     };
   };
   const setEnvironmentList = (environmentList) => {
@@ -100,7 +106,13 @@ export default function useProjectData() {
       type: 'Environment',
       wrapperId: 'envWrapper',
       route: 'ProjectEnvDetail',
-      options: _.cloneDeep(list)
+      visible: false,
+      options: _.cloneDeep(list),
+      onSetting() {
+        router.replace({
+          name: 'ProjectDetail'
+        });
+      }
     };
   };
   const setServiceList = (serviceList) => {
@@ -123,7 +135,13 @@ export default function useProjectData() {
       type: 'Service',
       wrapperId: 'serviceWrapper',
       route: 'ProjectServiceDetail',
+      visible: false,
       options: _.cloneDeep(list)
+      // onSetting() {
+      //   router.replace({
+      //     name: 'ProjectEnvDetail'
+      //   });
+      // }
     };
   };
   const setBreabCrumbData = async () => {
@@ -132,7 +150,7 @@ export default function useProjectData() {
       getEnvironmentList(),
       getServiceList()
     ]);
-    const projectRes = setProjectList(projectList);
+    const projectRes = await setProjectList(projectList);
     const environmentRes = setEnvironmentList(environmentList);
     const serviceRes = setServiceList(serviceList);
     breadCrumbList.value = [projectRes, environmentRes, serviceRes];

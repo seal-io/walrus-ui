@@ -27,11 +27,7 @@
             :class="{ menuCollapse: appStore.menuCollapse }"
           >
             <div>
-              <img
-                alt="logo"
-                class="logo"
-                src="../assets/images/seal-logo.png"
-              />
+              <img alt="logo" class="logo" src="../assets/images/logo.png" />
             </div>
           </div>
           <div class="menu-wrapper">
@@ -216,8 +212,8 @@
       height: 48px;
       padding-left: 7px;
       font-size: 0;
-      background-color: var(--seal-color-bg-1);
-      border-right: 1px solid rgba(255, 255, 255, 0.4);
+      border-right: 1px solid var(--color-border-2);
+      border-bottom: 1px solid var(--color-border-2);
       transition: all 0.2s cubic-bezier(0.34, 0.69, 0.1, 1);
 
       &.menuCollapse {
@@ -228,7 +224,7 @@
       }
 
       .logo {
-        width: 120px;
+        width: 34px;
         height: auto;
       }
     }

@@ -20,8 +20,8 @@
     align-items: center;
     width: 100%;
     height: 48px;
-    padding-left: 4px;
-    background-color: var(--seal-color-bg-1);
+    padding-left: 10px;
+    background-color: #fff;
     transition: left 0.2s cubic-bezier(0.34, 0.69, 0.1, 1);
 
     &.menuCollapse {

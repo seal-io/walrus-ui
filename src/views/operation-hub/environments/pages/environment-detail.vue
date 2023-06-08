@@ -88,7 +88,7 @@
       getProjectList(),
       getEnvironmentList()
     ]);
-    const projectRes = setProjectList(projectList);
+    const projectRes = await setProjectList(projectList);
     const environmentRes = setEnvironmentList(enviromentList);
     breadCrumbList.value = [projectRes, environmentRes];
   };

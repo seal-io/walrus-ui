@@ -87,13 +87,13 @@ export const instanceActions = [
       type: 'icon-rollback-copy'
     },
     permission: ['PUT']
-  },
-  {
-    label: 'common.button.delete',
-    value: 'delete',
-    icon: 'icon-delete',
-    permission: ['DELETE']
   }
+  // {
+  //   label: 'common.button.delete',
+  //   value: 'delete',
+  //   icon: 'icon-delete',
+  //   permission: ['DELETE']
+  // }
 ];
 export const moduleActions = [
   { label: 'common.button.edit', value: 'edit', icon: 'icon-edit' },

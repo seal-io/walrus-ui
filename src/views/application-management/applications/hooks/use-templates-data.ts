@@ -8,10 +8,13 @@ import {
   queryModules,
   queryModulesAllVersions
 } from '@/views/operation-hub/templates/api';
+import useCallCommon from '@/hooks/use-call-common';
+import { queryApplications } from '@/views/application-management/applications/api';
 
 export default function useTemplatesData() {
-  const moduleTemplates = ref<TemplateRowData[]>([]);
-  const allModuleVersions = ref<ModuleVersionData[]>([]);
+  const { route } = useCallCommon();
+  const templateList = ref<TemplateRowData[]>([]);
+  const allTemplateVersions = ref<ModuleVersionData[]>([]);
   const completeData = ref<Record<string, any>>({});
   const variableList = ref<any[]>([]);
   const serviceDataList = ref<any[]>([]);
@@ -24,19 +27,19 @@ export default function useTemplatesData() {
         page: -1
       };
       const { data } = await queryModules(params);
-      moduleTemplates.value = data?.items || [];
+      templateList.value = data?.items || [];
     } catch (error) {
-      moduleTemplates.value = [];
+      templateList.value = [];
       console.log(error);
     }
   };
 
-  // apply for edit module config
-  const getModulesVersions = async () => {
+  // apply for edit service config
+  const getTemplatesVersions = async () => {
     try {
       const params = {
         moduleID: _.uniq(
-          _.map(moduleTemplates.value, (item) => {
+          _.map(templateList.value, (item) => {
             return item.id;
           })
         )
@@ -45,14 +48,37 @@ export default function useTemplatesData() {
         return;
       }
       const { data } = await queryModulesAllVersions(params);
-      allModuleVersions.value = data?.items || [];
-      console.log('allModuleVersions======', allModuleVersions.value);
+      allTemplateVersions.value = data?.items || [];
     } catch (error) {
-      allModuleVersions.value = [];
+      allTemplateVersions.value = [];
       console.log(error);
     }
   };
-  const getServiceList = async () => {};
+  const getServiceTemplateVersionMap = () => {
+    const list = _.map(serviceDataList.value, (item) => {
+      return {
+        name: item.name,
+        type: item.template.id,
+        templateVersion: item.templateVersion
+      };
+    });
+    return list;
+  };
+
+  const getServiceList = async () => {
+    try {
+      const params = {
+        page: -1,
+        projectID: route.params.projectId as string,
+        environmentID: route.params.environmentId
+      };
+      const { data } = await queryApplications(params);
+      serviceDataList.value = data.items || [];
+    } catch (error) {
+      console.log(error);
+      serviceDataList.value = [];
+    }
+  };
   const setVariablesCompleteData = () => {
     const vars = _.reduce(
       variableList.value,
@@ -65,10 +91,28 @@ export default function useTemplatesData() {
     return vars;
   };
   const setServiceCompleteData = () => {
+    const list = getServiceTemplateVersionMap();
     const services = _.reduce(
-      serviceDataList.value,
+      list,
       (obj, item) => {
-        obj[item.name] = '';
+        // The version corresponding to the module that has been added
+        const addedServiceTemplate = _.find(
+          allTemplateVersions.value || [],
+          (s) => {
+            return (
+              item.type === s.template.id && s.version === item.templateVersion
+            );
+          }
+        );
+        const k = item.name;
+        obj[k] = [
+          ..._.map(_.get(addedServiceTemplate, 'schema.outputs') || [], (o) => {
+            return {
+              label: o.description,
+              value: o.name
+            };
+          })
+        ];
         return obj;
       },
       {}
@@ -91,14 +135,14 @@ export default function useTemplatesData() {
   };
   const initCompleteData = async () => {
     await Promise.all([getModules(), getServiceList()]);
-    await getModulesVersions();
+    await getTemplatesVersions();
     setCompleteData();
   };
   return {
     initCompleteData,
     completeData,
-    moduleTemplates,
-    allModuleVersions,
+    templateList,
+    allTemplateVersions,
     serviceDataList,
     completeDataSetter
   };

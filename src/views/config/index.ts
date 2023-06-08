@@ -145,4 +145,7 @@ export enum ModalAction {
   CREATE = 'create',
   VIEW = 'view'
 }
+
+export const USER_DEFAULT_PROJECT = 'USER_DEFAULT_PROJECT';
+
 export default {};
