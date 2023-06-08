@@ -1,6 +1,14 @@
 <template>
   <div>
-    <FilterBox style="margin-bottom: 10px">
+    <FilterBox
+      style="
+        position: absolute;
+        top: 0;
+        right: 0;
+        width: fit-content;
+        margin-bottom: 10px;
+      "
+    >
       <template #params>
         <div v-if="isPage"><slot name="select"></slot></div>
         <a-select
@@ -9,7 +17,6 @@
           :format-label="formatLabel"
           allow-search
           :placeholder="$t('cost.analyse.cluster.holder')"
-          class="border-less"
           style="width: 200px"
           :options="clusterList"
           @change="handleClusterChange"
@@ -37,7 +44,6 @@
           :show-extra="true"
           timezone
           today-in
-          border-less
           @change="handleDateChange"
         >
           <template #tips>
@@ -93,7 +99,6 @@
           v-if="!isPage"
           v-model="queryParams.connectorID"
           :placeholder="$t('cost.analyse.cluster.holder')"
-          class="border-less"
           style="width: 200px"
           :options="clusterList"
           @change="handleClusterChange"

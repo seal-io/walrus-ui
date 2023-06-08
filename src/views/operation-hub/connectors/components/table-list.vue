@@ -47,7 +47,7 @@
         </a-space>
       </template>
       <template #button-group>
-        <a-dropdown v-if="!editPage" @select="handlCreateProjectConnector">
+        <a-dropdown @select="handleCreate">
           <a-button
             v-permission="{
               resource: `roles.${Resources.Connectors}`,
@@ -74,16 +74,7 @@
             >
           </template>
         </a-dropdown>
-        <a-button
-          v-if="editPage"
-          v-permission="{
-            resource: `roles.${Resources.Connectors}`,
-            actions: ['POST']
-          }"
-          type="primary"
-          @click="handleCreateGlobalConnector"
-          >{{ $t('operation.connectors.create') }}</a-button
-        >
+
         <a-button
           v-permission="{
             resource: `roles.${Resources.Connectors}`,
@@ -364,15 +355,19 @@
     onActivated,
     watch,
     nextTick,
-    inject
+    inject,
+    PropType
   } from 'vue';
   import useCallCommon from '@/hooks/use-call-common';
   import { Message } from '@arco-design/web-vue';
   import { deleteModal, execSucceed } from '@/utils/monitor';
   import useRowSelect from '@/hooks/use-row-select';
   import FilterBox from '@/components/filter-box/index.vue';
-  import { ConnectorRowData } from '../config/interface';
-  import { ConnectorCategory, connectorTypeList } from '../config';
+  import { ConnectorRowData, ConnectorTypeData } from '../config/interface';
+  import {
+    ConnectorCategory,
+    connectorTypeList as categoryList
+  } from '../config';
   import StatusLabel from './status-label.vue';
   import CreateKubernetes from './create-kubernetes.vue';
   import CreateVersionControl from './create-versionControl.vue';
@@ -397,6 +392,18 @@
       type: String,
       default() {
         return '';
+      }
+    },
+    connectorTypeList: {
+      type: Array as PropType<ConnectorTypeData[]>,
+      default() {
+        return categoryList;
+      }
+    },
+    scope: {
+      type: String,
+      default() {
+        return 'global';
       }
     }
   });
@@ -497,11 +504,19 @@
     // action.value = ModalAction.CREATE;
     // showValue.value = val;
     router.push({
-      name: props.editPage,
+      name: item.globalRoute,
       params: {
         action: 'edit'
       }
     });
+  };
+  const handleCreate = (item) => {
+    console.log('item.>>>>>.', item);
+    if (props.scope === 'project') {
+      handlCreateProjectConnector(item);
+    } else {
+      handleCreateGlobalConnector(item);
+    }
   };
   const handleView = (row) => {
     // currentInfo.value = row;
@@ -509,9 +524,13 @@
     // setTimeout(() => {
     //   showValue.value = row.category;
     // }, 100);
-    if (props.editPage) {
+    const data = _.find(
+      props.connectorTypeList,
+      (item) => item.value === row.category
+    );
+    if (props.scope === 'global') {
       router.push({
-        name: props.editPage,
+        name: data?.globalRoute,
         params: {
           action: 'view'
         },
@@ -520,10 +539,6 @@
         }
       });
     } else {
-      const data = _.find(
-        connectorTypeList,
-        (item) => item.value === row.category
-      );
       router.push({
         name: data?.route,
         params: {
@@ -558,8 +573,12 @@
   };
 
   const handleClickEdit = (row) => {
+    const data = _.find(
+      props.connectorTypeList,
+      (item) => item.value === row.category
+    );
     router.push({
-      name: props.editPage,
+      name: data?.globalRoute,
       params: {
         action: 'edit'
       },

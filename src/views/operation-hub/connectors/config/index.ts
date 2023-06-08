@@ -5,6 +5,7 @@ export const connectorTypeList = [
     value: 'Kubernetes',
     com: 'kubernetes',
     route: 'ProjectConnectorK8sDetail',
+    globalRoute: 'ConnectorK8sDetail',
     icon: 'icon-bxl-kubernetes'
   },
   {
@@ -13,6 +14,7 @@ export const connectorTypeList = [
     value: 'CloudProvider',
     com: 'cloud',
     route: 'ProjectConnectorProviderDetail',
+    globalRoute: 'ConnectorProviderDetail',
     icon: 'icon-fill-cloud'
   },
   {
@@ -21,6 +23,7 @@ export const connectorTypeList = [
     value: 'VersionControl',
     com: 'versionControl',
     route: 'ProjectConnectorScmDetail',
+    globalRoute: 'ConnectorScmDetail',
     icon: 'icon-git'
   },
   {
@@ -29,6 +32,7 @@ export const connectorTypeList = [
     value: 'Custom',
     com: 'custom',
     route: 'ProjectConnectorCustomDetail',
+    globalRoute: 'ConnectorCustomDetail',
     icon: 'icon-custom'
   }
 

@@ -6,7 +6,7 @@ export default [
     name: 'ConnectorsList',
     component: () => import('@/views/operation-hub/connectors/pages/list.vue'),
     meta: {
-      hideInMenu: false,
+      hideInMenu: true,
       ignoreCache: false,
       locale: 'operation.connectors.menu',
       requiresAuth: true,

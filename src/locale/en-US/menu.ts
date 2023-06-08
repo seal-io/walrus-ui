@@ -13,6 +13,7 @@ export default {
   'menu.operatorHub.module': 'Modules',
   'menu.operatorHub.secret': 'Global Secrets',
   'menu.systemsettings': 'System Settings',
+  'menu.operatorHub.variables': 'Variables',
   'menu.systemsettings.user': 'User Management',
   'menu.systemsettings.config': 'Configuration Management'
 };

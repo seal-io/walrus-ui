@@ -9,7 +9,6 @@
           <BasicInfo :data-info="basicDataList"></BasicInfo>
         </template>
       </HeaderInfo>
-      <a-divider style="margin: 0; border-radius: 1px" :size="4"></a-divider>
       <ComCard>
         <ModuleCard
           :title="$t('applications.applications.instance.history')"

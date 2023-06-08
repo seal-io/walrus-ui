@@ -1,5 +1,5 @@
 <template>
-  <ComCard class="container">
+  <div class="container">
     <a-tabs
       v-model="activeKey"
       :default-active-key="activeKey"
@@ -17,7 +17,7 @@
         ></settings-form>
       </a-tab-pane>
     </a-tabs>
-  </ComCard>
+  </div>
 </template>
 
 <script lang="ts" setup>

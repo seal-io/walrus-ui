@@ -12,7 +12,6 @@
           :show-extra="true"
           timezone
           today-in
-          border-less
           @change="handleDateChange"
         >
           <template #tips>

@@ -12,7 +12,7 @@ export default [
       hideInMenu: false,
       hideMenu: false,
       ignoreCache: true,
-      locale: 'applications.projects.menu',
+      locale: 'navbar.appmanagement',
       requiresAuth: true,
       permission: {
         resource: Resources.Projects,

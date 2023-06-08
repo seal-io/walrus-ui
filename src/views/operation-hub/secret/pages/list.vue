@@ -1,5 +1,5 @@
 <template>
-  <comCard borderless top-gap>
+  <div borderless top-gap>
     <div class="connectors-list">
       <FilterBox style="margin-bottom: 10px">
         <template #params>
@@ -152,7 +152,7 @@
       :project-list="projectList"
       @save="handleSaveItem"
     ></createSecret>
-  </comCard>
+  </div>
 </template>
 
 <script lang="ts" setup>

@@ -1,25 +1,15 @@
 <template>
-  <SpinCard
-    borderless
-    top-gap
-    :loading="loading"
-    class="projects"
-    :title="$t('operation.templates.table.title')"
-  >
-    <template #title>
-      <div class="title">
-        <!-- <span>{{ $t('operation.templates.table.title') }}</span> -->
-        <!-- <a-divider direction="vertical" :margin="10"></a-divider> -->
-        <icon-apps
-          :class="{ active: currentView === 'thumb' }"
-          @click="handleToggle('thumb')"
-        />
-        <icon-nav
-          :class="{ active: currentView === 'list' }"
-          @click="handleToggle('list')"
-        />
-      </div>
-    </template>
+  <ComCard borderless padding="0" :loading="loading" class="projects">
+    <a-space class="title">
+      <icon-apps
+        :class="{ active: currentView === 'thumb' }"
+        @click="handleToggle('thumb')"
+      />
+      <icon-nav
+        :class="{ active: currentView === 'list' }"
+        @click="handleToggle('list')"
+      />
+    </a-space>
     <div class="content">
       <FilterBox>
         <template #params>
@@ -119,7 +109,7 @@
         @page-size-change="handlePageSizeChange"
       />
     </div>
-  </SpinCard>
+  </ComCard>
 </template>
 
 <script lang="ts" setup>
@@ -287,6 +277,7 @@
     .title {
       display: flex;
       align-items: center;
+      padding: 2px 0 15px 2px;
 
       :deep(.arco-icon) {
         margin-right: 6px;
