@@ -22,6 +22,7 @@
     height: 48px;
     padding-left: 10px;
     background-color: #fff;
+    box-shadow: 0 1px 1px var(--color-fill-2);
     transition: left 0.2s cubic-bezier(0.34, 0.69, 0.1, 1);
 
     &.menuCollapse {

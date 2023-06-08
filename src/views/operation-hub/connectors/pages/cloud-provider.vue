@@ -1,6 +1,6 @@
 <template>
-  <div top-gap class="kuber-detail-wrap">
-    <!-- <GroupTitle
+  <ComCrad top-gap class="kuber-detail-wrap">
+    <GroupTitle
       :title="title"
       show-back
       :show-edit="
@@ -11,7 +11,7 @@
         })
       "
       @edit="handleEdit"
-    ></GroupTitle> -->
+    ></GroupTitle>
     <div>
       <a-form ref="formref" :model="formData" auto-label-width>
         <a-form-item
@@ -145,7 +145,7 @@
         >{{ $t('common.button.cancel') }}</a-button
       >
     </EditPageFooter> -->
-  </div>
+  </ComCrad>
 </template>
 
 <script lang="ts" setup>

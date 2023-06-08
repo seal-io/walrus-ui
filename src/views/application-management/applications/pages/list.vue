@@ -389,9 +389,8 @@
   };
   const handleClickEdit = (row) => {
     router.push({
-      name: 'ApplicationsDetail',
+      name: 'ProjectServiceEdit',
       params: {
-        projectId: row.project?.id || queryParams.projectID,
         action: 'edit'
       },
       query: {

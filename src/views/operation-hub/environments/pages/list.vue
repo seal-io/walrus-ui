@@ -138,20 +138,42 @@
             :title="$t('common.table.operation')"
           >
             <template #cell="{ record }">
-              <a-tooltip
-                v-if="
-                  userStore.hasProjectResourceActions({
-                    projectID: queryParams.projectID,
-                    resource: Resources.Environments,
-                    actions: ['PUT']
-                  })
-                "
-                :content="$t('common.button.edit')"
-              >
-                <a-link type="text" size="small" @click="handleEdit(record)">
-                  <template #icon><icon-edit class="size-14" /></template>
-                </a-link>
-              </a-tooltip>
+              <a-space>
+                <a-tooltip
+                  v-if="
+                    userStore.hasProjectResourceActions({
+                      projectID: queryParams.projectID,
+                      resource: Resources.Environments,
+                      actions: ['PUT']
+                    })
+                  "
+                  :content="$t('common.button.edit')"
+                >
+                  <a-link type="text" size="small" @click="handleEdit(record)">
+                    <template #icon><icon-edit class="size-14" /></template>
+                  </a-link>
+                </a-tooltip>
+                <a-tooltip
+                  v-if="
+                    userStore.hasProjectResourceActions({
+                      projectID: queryParams.projectID,
+                      resource: Resources.Environments,
+                      actions: ['GET']
+                    })
+                  "
+                  :content="$t('common.button.detail')"
+                >
+                  <a-link
+                    type="text"
+                    size="small"
+                    @click="handleViewDetail(record)"
+                  >
+                    <template #icon
+                      ><i class="size-14 icon-xiangqing iconfont"
+                    /></template>
+                  </a-link>
+                </a-tooltip>
+              </a-space>
             </template>
           </a-table-column>
         </template>
@@ -214,14 +236,14 @@
   });
 
   const handleCreateProject = () => {
-    action.value = 'create';
-    showModal.value = true;
-    // router.push({
-    //   name: 'EnvironmentDetail',
-    //   params: {
-    //     action: 'edit'
-    //   }
-    // });
+    // action.value = 'create';
+    // showModal.value = true;
+    router.push({
+      name: 'ProjectEnvEdit',
+      params: {
+        action: 'edit'
+      }
+    });
   };
   const fetchData = async () => {
     try {
@@ -278,11 +300,27 @@
     });
   };
   const handleEdit = (row) => {
-    currentInfo.value = row;
-    action.value = 'edit';
-    setTimeout(() => {
-      showModal.value = true;
-    }, 100);
+    // currentInfo.value = row;
+    // action.value = 'edit';
+    // setTimeout(() => {
+    //   showModal.value = true;
+    // }, 100);
+    router.push({
+      name: 'ProjectEnvEdit',
+      params: {
+        action: 'edit'
+      },
+      query: { id: row.id }
+    });
+  };
+  const handleViewDetail = (row) => {
+    router.push({
+      name: 'ProjectEnvEdit',
+      params: {
+        action: 'view'
+      },
+      query: { id: row.id }
+    });
   };
   const handleDeleteConfirm = async () => {
     try {

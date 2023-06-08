@@ -172,10 +172,6 @@
       @change="handlePageChange"
       @page-size-change="handlePageSizeChange"
     />
-    <CreatePerspective
-      v-model:show="showDrawer"
-      :title="$t('cost.analyse.table.create')"
-    ></CreatePerspective>
   </ComCard>
 </template>
 
@@ -191,7 +187,6 @@
   import { UseSortDirection } from '@/utils/common';
   import FilterBox from '@/components/filter-box/index.vue';
   import { PerspectiveRowData } from '../config/interface';
-  import CreatePerspective from '../components/create-perspectiv.vue';
   import { queryPerspectives, deletePerspectives } from '../api';
   import { DateShortCuts, builtinViewMap } from '../config';
 

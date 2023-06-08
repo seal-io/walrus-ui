@@ -2,7 +2,7 @@
   <div>
     <BreadWrapper>
       <Breadcrumb
-        :menu="{ icon: 'icon-apps-fill', iconfont: true, label: '新建服务' }"
+        :menu="{ icon: 'icon-apps-fill', iconfont: true, label: title }"
       ></Breadcrumb>
     </BreadWrapper>
     <ComCard top-gap>
@@ -164,7 +164,7 @@
         >
         </formCreate>
       </div>
-      <EditPageFooter>
+      <EditPageFooter v-if="pageAction === 'edit'">
         <template #save>
           <a-button
             :loading="submitLoading"
@@ -188,7 +188,7 @@
 </template>
 
 <script lang="ts" setup>
-  import {
+  import _, {
     get,
     find,
     cloneDeep,
@@ -217,6 +217,7 @@
     watch,
     nextTick
   } from 'vue';
+  import { onBeforeRouteLeave } from 'vue-router';
   import useCallCommon from '@/hooks/use-call-common';
   import EditPageFooter from '@/components/edit-page-footer/index.vue';
   import formCreate from '@/components/form-create/index.vue';
@@ -227,6 +228,7 @@
   } from '@/views/operation-hub/templates/config/interface';
   import { validateAppNameRegx } from '@/views/config';
   import usePageAction from '@/hooks/use-page-action';
+  import { beforeLeaveCallback } from '@/hooks/save-before-leave';
   import { createApplication, updateApplication } from '../api';
   import useTemplatesData from '../hooks/use-templates-data';
 
@@ -247,7 +249,7 @@
     templateList,
     allTemplateVersions
   } = useTemplatesData();
-  const { pageAction } = usePageAction();
+  const { pageAction, handleEdit } = usePageAction();
   const defaultGroupKey = '_default_default_';
   const { route, router, t } = useCallCommon();
   const formref = ref();
@@ -263,6 +265,7 @@
   const moduleVersionFormCache = ref({});
   const id = route.query.id as string;
   let refMap: Record<string, refItem> = {};
+  let copyFormData: any = {};
   const versionMap = ref({ nv: '', ov: '' });
   const formData = reactive({
     projectID: route.params.projectId,
@@ -289,10 +292,39 @@
     }
     return list;
   });
+  const title = computed(() => {
+    if (!id) {
+      return t('applications.applications.create');
+    }
+    if (id && pageAction.value === 'edit') {
+      return t('applications.applications.edit');
+    }
+    return t('applications.applications.detail');
+  });
   const getContainer = (id) => {
     return document.getElementById(id);
   };
-  const handleCancel = () => {};
+  const cancelCallback = () => {
+    if (pageAction.value === 'edit' && route.params.action === 'view') {
+      pageAction.value = 'view';
+      // get detail
+      return;
+    }
+    router.back();
+  };
+  const handleCancel = () => {
+    if (!_.isEqual(copyFormData, formData)) {
+      beforeLeaveCallback({
+        isCancel: true,
+        onOk: () => {
+          copyFormData = cloneDeep(formData);
+          cancelCallback();
+        }
+      });
+    } else {
+      cancelCallback();
+    }
+  };
   const resetForm = () => {
     refMap = {};
     formData.name = '';
@@ -582,7 +614,22 @@
     generateVariablesGroup(pageAction.value);
     console.log('moduleVersionList===', templateVersionList.value);
   };
-
+  onBeforeRouteLeave(async (to, from) => {
+    if (!_.isEqual(copyFormData, formData)) {
+      beforeLeaveCallback({
+        to,
+        from,
+        onOk: () => {
+          copyFormData = cloneDeep(formData);
+          router.push({
+            name: to.name as string
+          });
+        }
+      });
+      return false;
+    }
+    return true;
+  });
   const init = async () => {
     await initCompleteData();
     handleBeforeOpen();

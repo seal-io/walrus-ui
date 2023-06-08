@@ -1,151 +1,159 @@
 <template>
-  <cdiv top-gap class="kuber-detail-wrap">
-    <!-- <GroupTitle
-      :title="title"
-      show-back
-      :show-edit="
-        pageAction === 'view' &&
-        userStore.hasRolesActionsPermission({
-          resource: Resources.Connectors,
-          actions: ['PUT']
-        })
-      "
-      @edit="handleEdit"
-    ></GroupTitle> -->
-    <div>
-      <a-form ref="formref" :model="formData" auto-label-width>
-        <a-form-item
-          :label="$t('operation.connectors.detail.clusterName')"
-          field="name"
-          :rules="[
-            {
-              required: true,
-              message: $t('operation.connectors.rules.name')
-            }
-          ]"
-        >
-          <a-input
-            v-if="pageAction === 'edit'"
-            v-model="formData.name"
-            style="width: 500px"
-            :max-length="30"
-            show-word-limit
-          ></a-input>
-          <span v-else class="readonly-view-label">{{
-            formData.name || '-'
-          }}</span>
-        </a-form-item>
-        <a-form-item
-          v-if="pageAction === 'edit'"
-          field="configData.kubeconfig.value"
-          :hide-asterisk="false"
-          label="KubeConfig"
-          :validate-trigger="['change']"
-          :rules="[
-            {
-              required: pageAction === 'edit',
-              message: $t('operation.connectors.rules.kubeconfig')
-            }
-          ]"
-        >
-          <span>
-            <a-textarea
-              v-model="formData.configData.kubeconfig.value"
+  <div>
+    <BreadWrapper>
+      <Breadcrumb :items="breadCrumbList"></Breadcrumb>
+    </BreadWrapper>
+    <ComCard top-gap class="kuber-detail-wrap">
+      <GroupTitle
+        :bordered="false"
+        style="margin-bottom: 0"
+        :show-edit="
+          pageAction === 'view' &&
+          userStore.hasProjectResourceActions({
+            resource: Resources.Connectors,
+            projectID: route.params.projectId,
+            actions: ['PUT']
+          })
+        "
+        @edit="handleEdit"
+      ></GroupTitle>
+      <div>
+        <a-form ref="formref" :model="formData" auto-label-width>
+          <a-form-item
+            :label="$t('operation.connectors.detail.clusterName')"
+            field="name"
+            :rules="[
+              {
+                required: true,
+                message: $t('operation.connectors.rules.name')
+              }
+            ]"
+          >
+            <a-input
+              v-if="pageAction === 'edit'"
+              v-model="formData.name"
               style="width: 500px"
-              :spellcheck="false"
-              :placeholder="$t('operation.connectors.rules.kubeconfigTips')"
-              :auto-size="{ minRows: 6, maxRows: 10 }"
-            />
-          </span>
-          <template v-if="pageAction === 'edit'" #extra>
-            <div>
-              <a-upload
-                action="/"
-                :auto-upload="false"
-                :show-file-list="false"
-                :on-before-upload="handleBeforeUpload"
-                @change="handleUploadSuccess"
-              >
-                <template #upload-button>
-                  <div>
-                    <a-button type="primary" size="small">
-                      <template #icon><icon-file /></template>
-                      {{ $t('operation.connectors.detail.readfile') }}</a-button
-                    >
-                    <span style="margin-left: 5px">{{
-                      $t('operation.connectors.detail.fileformat')
-                    }}</span>
-                  </div>
-                </template>
-              </a-upload>
-            </div>
-          </template>
-        </a-form-item>
-        <a-form-item label="">
-          <template #label>
-            <div class="label-wrap">
-              <span class="text">{{
-                $t('operation.connectors.form.finopsenable')
+              :max-length="30"
+              show-word-limit
+            ></a-input>
+            <span v-else class="readonly-view-label">{{
+              formData.name || '-'
+            }}</span>
+          </a-form-item>
+          <a-form-item
+            v-if="pageAction === 'edit'"
+            field="configData.kubeconfig.value"
+            :hide-asterisk="false"
+            label="KubeConfig"
+            :validate-trigger="['change']"
+            :rules="[
+              {
+                required: pageAction === 'edit',
+                message: $t('operation.connectors.rules.kubeconfig')
+              }
+            ]"
+          >
+            <span>
+              <a-textarea
+                v-model="formData.configData.kubeconfig.value"
+                style="width: 500px"
+                :spellcheck="false"
+                :placeholder="$t('operation.connectors.rules.kubeconfigTips')"
+                :auto-size="{ minRows: 6, maxRows: 10 }"
+              />
+            </span>
+            <template v-if="pageAction === 'edit'" #extra>
+              <div>
+                <a-upload
+                  action="/"
+                  :auto-upload="false"
+                  :show-file-list="false"
+                  :on-before-upload="handleBeforeUpload"
+                  @change="handleUploadSuccess"
+                >
+                  <template #upload-button>
+                    <div>
+                      <a-button type="primary" size="small">
+                        <template #icon><icon-file /></template>
+                        {{
+                          $t('operation.connectors.detail.readfile')
+                        }}</a-button
+                      >
+                      <span style="margin-left: 5px">{{
+                        $t('operation.connectors.detail.fileformat')
+                      }}</span>
+                    </div>
+                  </template>
+                </a-upload>
+              </div>
+            </template>
+          </a-form-item>
+          <a-form-item label="">
+            <template #label>
+              <div class="label-wrap">
+                <span class="text">{{
+                  $t('operation.connectors.form.finopsenable')
+                }}</span>
+              </div>
+            </template>
+            <a-checkbox
+              v-if="pageAction == 'edit'"
+              v-model="formData.enableFinOps"
+              >{{ $t('operation.connectors.rules.enable') }}</a-checkbox
+            >
+            <span v-else class="readonly-view-label">{{
+              formData.enableFinOps
+                ? $t('operation.connectors.finops.enable')
+                : $t('operation.connectors.finops.disable')
+            }}</span>
+          </a-form-item>
+          <a-form-item
+            v-if="pageAction === 'view'"
+            :label="$t('operation.connectors.table.status')"
+          >
+            <span class="readonly-view-label">
+              <StatusLabel
+                :status="{
+                  status: get(formData, 'status.summaryStatus'),
+                  text: get(formData, 'status.summaryStatus'),
+                  message: get(formData, 'status.summaryStatusMessage'),
+                  transitioning: get(formData, 'status.transitioning'),
+                  error: get(formData, 'status.error')
+                }"
+              ></StatusLabel>
+            </span>
+          </a-form-item>
+          <a-form-item
+            v-if="pageAction === 'view'"
+            :label="$t('operation.connectors.table.coststatus')"
+          >
+            <div class="readonly-view-label description-content">
+              <span>{{
+                getCostStatus(get(formData, 'status.conditions') || [])
               }}</span>
             </div>
-          </template>
-          <a-checkbox
-            v-if="pageAction == 'edit'"
-            v-model="formData.enableFinOps"
-            >{{ $t('operation.connectors.rules.enable') }}</a-checkbox
+          </a-form-item>
+        </a-form>
+      </div>
+      <EditPageFooter v-if="pageAction === 'edit'">
+        <template #save>
+          <a-button
+            type="primary"
+            class="cap-title cancel-btn"
+            :loading="submitLoading"
+            @click="handleSubmit"
+            >{{ $t('common.button.save') }}</a-button
           >
-          <span v-else class="readonly-view-label">{{
-            formData.enableFinOps
-              ? $t('operation.connectors.finops.enable')
-              : $t('operation.connectors.finops.disable')
-          }}</span>
-        </a-form-item>
-        <a-form-item
-          v-if="pageAction === 'view'"
-          :label="$t('operation.connectors.table.status')"
-        >
-          <span class="readonly-view-label">
-            <StatusLabel
-              :status="{
-                status: get(formData, 'status.summaryStatus'),
-                text: get(formData, 'status.summaryStatus'),
-                message: get(formData, 'status.summaryStatusMessage'),
-                transitioning: get(formData, 'status.transitioning'),
-                error: get(formData, 'status.error')
-              }"
-            ></StatusLabel>
-          </span>
-        </a-form-item>
-        <a-form-item
-          v-if="pageAction === 'view'"
-          :label="$t('operation.connectors.table.coststatus')"
-        >
-          <div class="readonly-view-label description-content">
-            <span>{{
-              getCostStatus(get(formData, 'status.conditions') || [])
-            }}</span>
-          </div>
-        </a-form-item>
-      </a-form>
-    </div>
-    <!-- <EditPageFooter v-if="pageAction === 'edit'">
-      <template #save>
+        </template>
         <a-button
-          type="primary"
+          type="outline"
           class="cap-title cancel-btn"
-          :loading="submitLoading"
-          @click="handleSubmit"
-          >{{ $t('common.button.save') }}</a-button
+          @click="handleCancel"
+          >{{ $t('common.button.cancel') }}</a-button
         >
-      </template>
-      <a-button
-        type="outline"
-        class="cap-title cancel-btn"
-        @click="handleCancel"
-        >{{ $t('common.button.cancel') }}</a-button
-      >
-    </EditPageFooter> -->
-  </cdiv>
+      </EditPageFooter>
+    </ComCard>
+  </div>
 </template>
 
 <script lang="ts" setup>
@@ -160,28 +168,29 @@
   import EditPageFooter from '@/components/edit-page-footer/index.vue';
   import useCallCommon from '@/hooks/use-call-common';
   import usePageAction from '@/hooks/use-page-action';
+  import useGetBreadState from '@/views/application-management/projects/hooks/use-get-breadstate';
   import { ConnectorFormData } from '../config/interface';
   import StatusLabel from '../components/status-label.vue';
   import { createConnector, updateConnector, queryItemConnector } from '../api';
 
-  const props = defineProps({
-    id: {
-      type: String,
-      default() {
-        return '';
-      }
-    }
-  });
+  // const props = defineProps({
+  //   id: {
+  //     type: String,
+  //     default() {
+  //       return '';
+  //     }
+  //   }
+  // });
+  const { getProjectState } = useGetBreadState();
   const userStore = useUserStore();
-  const pageAction = ref('edit');
   const { t, router, route } = useCallCommon();
-  // const { pageAction, handleEdit } = usePageAction();
-  const id = props.id || '';
+  const { pageAction, handleEdit } = usePageAction();
+  const id = route.query.id || '';
   const formref = ref();
   const submitLoading = ref(false);
   let copyFormData: any = {};
   const formData: ConnectorFormData = reactive({
-    projectID: route.params.projectId,
+    projectID: route.params.projectId as string,
     name: '',
     configData: {
       kubeconfig: {
@@ -207,6 +216,19 @@
       return t('operation.connectors.title.view', { type: 'Kubernetes' });
     }
     return t('operation.connectors.title.edit', { type: 'Kubernetes' });
+  });
+  const breadCrumbList = computed(() => {
+    return [
+      {
+        ...getProjectState({
+          id: route.params.projectId,
+          name: ''
+        })
+      },
+      {
+        label: title.value
+      }
+    ];
   });
   const getCostStatus = (conditions) => {
     const d = find(conditions, (item) => {
@@ -237,7 +259,7 @@
         } else {
           await createConnector(formData);
         }
-        // router.back();
+        router.back();
         submitLoading.value = false;
       } catch (error) {
         submitLoading.value = false;
@@ -299,7 +321,7 @@
     getConnectorInfo,
     handleSubmit
   });
-  // getConnectorInfo();
+  getConnectorInfo();
 </script>
 
 <style lang="less" scoped>

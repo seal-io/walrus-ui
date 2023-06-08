@@ -1,4 +1,5 @@
 <script lang="tsx">
+  import _ from 'lodash';
   import { defineComponent, ref, h, compile, computed } from 'vue';
   import { useI18n } from 'vue-i18n';
   import { useRouter, RouteRecordRaw, RouteRecordNormalized } from 'vue-router';
@@ -137,11 +138,13 @@
       };
       listenerRouteChange(({ to }) => {
         const newRoute = to;
-        console.log('route_change');
+        console.log('route_change', to);
         currentRoute.value = newRoute.matched[1]?.name as string;
-        if (newRoute.meta.requiresAuth && !newRoute.meta.hideInMenu) {
+        if (newRoute.meta.requiresAuth) {
           const { matched } = newRoute;
-          const key = newRoute.matched[matched.length - 1]?.name as string;
+          const currentRoute = newRoute.matched[matched.length - 1];
+          const key =
+            currentRoute?.meta?.selectedMenu || (currentRoute?.name as string);
           appStore.updateSettings({ selectedKey: [key] });
         }
         if (newRoute.meta.clearMenuStatus) {

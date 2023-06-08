@@ -1,41 +1,44 @@
 <template>
-  <div top-gap class="kuber-detail-wrap">
-    <!-- <GroupTitle
-      :title="title"
-      show-back
-      :show-edit="
-        pageAction === 'view' &&
-        userStore.hasRolesActionsPermission({
-          resource: Resources.Connectors,
-          actions: ['PUT']
-        })
-      "
-      @edit="handleEdit"
-    ></GroupTitle> -->
-    <div>
-      <a-form ref="formref" :model="formData" auto-label-width>
-        <a-form-item
-          :label="$t('operation.connectors.form.name')"
-          field="name"
-          :rules="[
-            {
-              required: pageAction === 'edit',
-              message: $t('operation.connectors.rule.name')
-            }
-          ]"
-        >
-          <a-input
-            v-if="pageAction === 'edit'"
-            v-model="formData.name"
-            style="width: 500px"
-            :max-length="30"
-            show-word-limit
-          ></a-input>
-          <span v-else class="readonly-view-label">{{
-            formData.name || '-'
-          }}</span>
-        </a-form-item>
-        <!-- <a-form-item
+  <div>
+    <BreadWrapper>
+      <Breadcrumb :items="breadCrumbList"></Breadcrumb>
+    </BreadWrapper>
+    <ComCard top-gap class="kuber-detail-wrap">
+      <GroupTitle
+        :bordered="false"
+        :show-edit="
+          pageAction === 'view' &&
+          userStore.hasRolesActionsPermission({
+            resource: Resources.Connectors,
+            actions: ['PUT']
+          })
+        "
+        @edit="handleEdit"
+      ></GroupTitle>
+      <div>
+        <a-form ref="formref" :model="formData" auto-label-width>
+          <a-form-item
+            :label="$t('operation.connectors.form.name')"
+            field="name"
+            :rules="[
+              {
+                required: pageAction === 'edit',
+                message: $t('operation.connectors.rule.name')
+              }
+            ]"
+          >
+            <a-input
+              v-if="pageAction === 'edit'"
+              v-model="formData.name"
+              style="width: 500px"
+              :max-length="30"
+              show-word-limit
+            ></a-input>
+            <span v-else class="readonly-view-label">{{
+              formData.name || '-'
+            }}</span>
+          </a-form-item>
+          <!-- <a-form-item
           field="description"
           :hide-asterisk="false"
           label="描述"
@@ -48,92 +51,93 @@
             :auto-size="{ minRows: 4, maxRows: 6 }"
           />
         </a-form-item> -->
-        <a-form-item
-          :label="$t('operation.connectors.form.type')"
-          field="type"
-          :rules="[
-            {
-              required: pageAction === 'edit',
-              message: $t('operation.connectors.type.rule')
-            }
-          ]"
-        >
-          <a-select
-            v-if="pageAction === 'edit'"
-            v-model="formData.type"
-            style="width: 500px"
+          <a-form-item
+            :label="$t('operation.connectors.form.type')"
+            field="type"
+            :rules="[
+              {
+                required: pageAction === 'edit',
+                message: $t('operation.connectors.type.rule')
+              }
+            ]"
           >
-            <a-option
-              v-for="(item, index) in typeOptions"
-              :key="index"
-              :value="item.value"
+            <a-select
+              v-if="pageAction === 'edit'"
+              v-model="formData.type"
+              style="width: 500px"
             >
-              <ProviderIcon :provider="toLower(item.value)"></ProviderIcon>
-              <span style="margin-left: 5px">{{ item.label }}</span>
-            </a-option>
-            <template #prefix>
-              <ProviderIcon :provider="toLower(formData.type)"></ProviderIcon>
-            </template>
-          </a-select>
-          <span v-else class="readonly-view-label"
-            ><ProviderIcon
-              :provider="toLower(formData.type)"
-              class="mright-5"
-            ></ProviderIcon>
-            <span>{{ formData.type }}</span>
-          </span>
-        </a-form-item>
-        <a-form-item
-          v-if="pageAction === 'edit'"
-          label="Access Token"
-          field="configData.token.value"
-          :rules="[
-            {
-              required: pageAction === 'edit',
-              message: $t('operation.connectors.accesstoken.rule')
-            }
-          ]"
-        >
-          <a-input-password
-            v-model="formData.configData.token.value"
-            style="width: 500px"
-          ></a-input-password>
-        </a-form-item>
-        <a-form-item
-          v-if="pageAction === 'view'"
-          :label="$t('operation.connectors.table.status')"
-        >
-          <span class="readonly-view-label">
-            <StatusLabel
-              :status="{
-                status: get(formData, 'status.summaryStatus'),
-                text: get(formData, 'status.summaryStatus'),
-                message: get(formData, 'status.summaryStatusMessage'),
-                transitioning: get(formData, 'status.transitioning'),
-                error: get(formData, 'status.error')
-              }"
-            ></StatusLabel>
-          </span>
-        </a-form-item>
-      </a-form>
-    </div>
-    <!-- <EditPageFooter v-if="pageAction === 'edit'">
-      <template #save>
+              <a-option
+                v-for="(item, index) in typeOptions"
+                :key="index"
+                :value="item.value"
+              >
+                <ProviderIcon :provider="toLower(item.value)"></ProviderIcon>
+                <span style="margin-left: 5px">{{ item.label }}</span>
+              </a-option>
+              <template #prefix>
+                <ProviderIcon :provider="toLower(formData.type)"></ProviderIcon>
+              </template>
+            </a-select>
+            <span v-else class="readonly-view-label"
+              ><ProviderIcon
+                :provider="toLower(formData.type)"
+                class="mright-5"
+              ></ProviderIcon>
+              <span>{{ formData.type }}</span>
+            </span>
+          </a-form-item>
+          <a-form-item
+            v-if="pageAction === 'edit'"
+            label="Access Token"
+            field="configData.token.value"
+            :rules="[
+              {
+                required: pageAction === 'edit',
+                message: $t('operation.connectors.accesstoken.rule')
+              }
+            ]"
+          >
+            <a-input-password
+              v-model="formData.configData.token.value"
+              style="width: 500px"
+            ></a-input-password>
+          </a-form-item>
+          <a-form-item
+            v-if="pageAction === 'view'"
+            :label="$t('operation.connectors.table.status')"
+          >
+            <span class="readonly-view-label">
+              <StatusLabel
+                :status="{
+                  status: get(formData, 'status.summaryStatus'),
+                  text: get(formData, 'status.summaryStatus'),
+                  message: get(formData, 'status.summaryStatusMessage'),
+                  transitioning: get(formData, 'status.transitioning'),
+                  error: get(formData, 'status.error')
+                }"
+              ></StatusLabel>
+            </span>
+          </a-form-item>
+        </a-form>
+      </div>
+      <EditPageFooter v-if="pageAction === 'edit'">
+        <template #save>
+          <a-button
+            type="primary"
+            class="cap-title cancel-btn"
+            :loading="submitLoading"
+            @click="handleSubmit"
+            >{{ $t('common.button.save') }}</a-button
+          >
+        </template>
         <a-button
-          type="primary"
+          type="outline"
           class="cap-title cancel-btn"
-          :loading="submitLoading"
-          @click="handleSubmit"
-          >{{ $t('common.button.save') }}</a-button
+          @click="handleCancel"
+          >{{ $t('common.button.cancel') }}</a-button
         >
-      </template>
-      <a-button
-        type="outline"
-        class="cap-title cancel-btn"
-        @click="handleCancel"
-        >{{ $t('common.button.cancel') }}</a-button
-      >
-    </EditPageFooter> -->
+      </EditPageFooter>
+    </ComCard>
   </div>
 </template>
 
@@ -150,27 +154,29 @@
   import useCallCommon from '@/hooks/use-call-common';
   import usePageAction from '@/hooks/use-page-action';
   import ProviderIcon from '@/components/provider-icon/index.vue';
+  import useGetBreadState from '@/views/application-management/projects/hooks/use-get-breadstate';
   import StatusLabel from '../components/status-label.vue';
   import { ConnectorFormData } from '../config/interface';
   import { createConnector, updateConnector, queryItemConnector } from '../api';
 
-  const props = defineProps({
-    id: {
-      type: String,
-      default() {
-        return '';
-      }
-    }
-  });
+  // const props = defineProps({
+  //   id: {
+  //     type: String,
+  //     default() {
+  //       return '';
+  //     }
+  //   }
+  // });
+  const { getProjectState } = useGetBreadState();
   const userStore = useUserStore();
   const { t, router, route } = useCallCommon();
-  const pageAction = ref('edit');
-  // const { pageAction, handleEdit } = usePageAction();
-  const id = props.id || '';
+  const { pageAction, handleEdit } = usePageAction();
+  const id = route.query.id || '';
   const formref = ref();
   const submitLoading = ref(false);
   let copyFormData: any = {};
   const formData: ConnectorFormData = reactive({
+    projectID: route.params.projectId as string,
     name: '',
     configData: {
       token: {
@@ -210,6 +216,19 @@
       type: t('operation.connectors.table.versioncontrol')
     });
   });
+  const breadCrumbList = computed(() => {
+    return [
+      {
+        ...getProjectState({
+          id: route.params.projectId,
+          name: ''
+        })
+      },
+      {
+        label: title.value
+      }
+    ];
+  });
   const handleBeforeUpload = async (file) => {
     return true;
   };
@@ -224,7 +243,7 @@
         } else {
           await createConnector(formData);
         }
-        // router.back();
+        router.back();
         submitLoading.value = false;
       } catch (error) {
         submitLoading.value = false;
@@ -285,7 +304,7 @@
     getConnectorInfo,
     handleSubmit
   });
-  // getConnectorInfo();
+  getConnectorInfo();
 </script>
 
 <style lang="less" scoped>

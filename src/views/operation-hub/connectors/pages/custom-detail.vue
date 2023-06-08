@@ -1,45 +1,48 @@
 <template>
-  <div top-gap class="kuber-detail-wrap">
-    <!-- <GroupTitle
-      :title="title"
-      show-back
-      :show-edit="
-        pageAction === 'view' &&
-        userStore.hasRolesActionsPermission({
-          resource: Resources.Connectors,
-          actions: ['PUT']
-        })
-      "
-      @edit="handleEdit"
-    ></GroupTitle> -->
-    <div>
-      <a-form ref="formref" :model="formData" auto-label-width>
-        <a-form-item
-          :label="$t('operation.connectors.form.name')"
-          field="name"
-          :rules="[
-            {
-              required: pageAction === 'edit',
-              message: t('operation.connectors.rule.name')
-            },
-            {
-              match: /^[A-Za-z0-9]([A-Za-z0-9-_]*[A-Za-z0-9])?$/,
-              message: $t('operation.environments.name.tips')
-            }
-          ]"
-        >
-          <a-input
-            v-if="pageAction === 'edit'"
-            v-model="formData.name"
-            style="width: 500px"
-            :max-length="30"
-            show-word-limit
-          ></a-input>
-          <span v-else class="readonly-view-label">{{
-            formData.name || '-'
-          }}</span>
-        </a-form-item>
-        <!-- <a-form-item
+  <div>
+    <BreadWrapper>
+      <Breadcrumb :items="breadCrumbList"></Breadcrumb>
+    </BreadWrapper>
+    <ComCard top-gap class="kuber-detail-wrap">
+      <GroupTitle
+        :bordered="false"
+        :show-edit="
+          pageAction === 'view' &&
+          userStore.hasRolesActionsPermission({
+            resource: Resources.Connectors,
+            actions: ['PUT']
+          })
+        "
+        @edit="handleEdit"
+      ></GroupTitle>
+      <div>
+        <a-form ref="formref" :model="formData" auto-label-width>
+          <a-form-item
+            :label="$t('operation.connectors.form.name')"
+            field="name"
+            :rules="[
+              {
+                required: pageAction === 'edit',
+                message: t('operation.connectors.rule.name')
+              },
+              {
+                match: /^[A-Za-z0-9]([A-Za-z0-9-_]*[A-Za-z0-9])?$/,
+                message: $t('operation.environments.name.tips')
+              }
+            ]"
+          >
+            <a-input
+              v-if="pageAction === 'edit'"
+              v-model="formData.name"
+              style="width: 500px"
+              :max-length="30"
+              show-word-limit
+            ></a-input>
+            <span v-else class="readonly-view-label">{{
+              formData.name || '-'
+            }}</span>
+          </a-form-item>
+          <!-- <a-form-item
           field="description"
           :hide-asterisk="false"
           label="描述"
@@ -52,142 +55,145 @@
             :auto-size="{ minRows: 4, maxRows: 6 }"
           />
         </a-form-item> -->
-        <a-form-item
-          :label="$t('operation.connectors.form.type')"
-          field="type"
-          :rules="[
-            {
-              required: pageAction === 'edit',
-              message: $t('operation.connectors.type.rule')
-            }
-          ]"
-        >
-          <a-input
-            v-if="pageAction === 'edit'"
-            v-model="formData.type"
-            style="width: 500px"
-          ></a-input>
-          <span v-else class="readonly-view-label">{{
-            formData.type || '-'
-          }}</span>
-        </a-form-item>
-        <a-form-item
-          :label="$t('operation.connectors.form.attribute')"
-          field="configData"
-          :rules="[
-            {
-              required: pageAction === 'edit',
-              message: $t('operation.connectors.attribute.rule')
-            }
-          ]"
-        >
-          <a-space
-            v-if="attributeList?.length && pageAction === 'edit'"
-            fill
-            style="display: flex; flex-direction: column; width: 680px"
-            direction="vertical"
+          <a-form-item
+            :label="$t('operation.connectors.form.type')"
+            field="type"
+            :rules="[
+              {
+                required: pageAction === 'edit',
+                message: $t('operation.connectors.type.rule')
+              }
+            ]"
           >
-            <xInputGroup
-              v-for="(sItem, sIndex) in attributeList"
-              :key="sIndex"
-              v-model:dataKey="sItem.key"
-              v-model:dataValue="sItem.value"
-              v-model:dataDesc="sItem.type"
-              :data-default="sItem.default"
-              :data-item="sItem"
-              show-description
-              separator=""
-              :trigger-validate="triggerValidate"
-              width="500px"
-              class="group-item"
-              :wrap-align="sItem.type === 'dynamic' ? 'flex-start' : 'center'"
-              :placeholder="{
-                value: $t('common.input.value'),
-                description: $t('common.input.value'),
-                key: $t('common.input.key')
-              }"
-              :components="{
-                string: 'Input',
-                number: 'InputNumber',
-                bool: 'Checkbox',
-                dynamic: 'AceEditor'
-              }"
-              :max-length="null"
-              :label-list="attributeList"
-              :position="sIndex"
-              @add="(obj) => handleAddLabel(obj)"
-              @delete="handleDeleteLabel(attributeList, sIndex)"
+            <a-input
+              v-if="pageAction === 'edit'"
+              v-model="formData.type"
+              style="width: 500px"
+            ></a-input>
+            <span v-else class="readonly-view-label">{{
+              formData.type || '-'
+            }}</span>
+          </a-form-item>
+          <a-form-item
+            :label="$t('operation.connectors.form.attribute')"
+            field="configData"
+            :rules="[
+              {
+                required: pageAction === 'edit',
+                message: $t('operation.connectors.attribute.rule')
+              }
+            ]"
+          >
+            <a-space
+              v-if="attributeList?.length && pageAction === 'edit'"
+              fill
+              style="display: flex; flex-direction: column; width: 680px"
+              direction="vertical"
             >
-              <template #value>
-                <a-input
-                  v-if="!sItem.visible"
-                  v-model="sItem.value"
-                  style="width: 100%"
-                  :error="!sItem.value && triggerValidate"
-                  :placeholder="$t('common.input.value')"
-                ></a-input>
-                <a-input-password
-                  v-else
-                  v-model="sItem.value"
-                  style="width: 100%"
-                  :error="!sItem.value && triggerValidate"
-                  :placeholder="$t('common.input.value')"
-                ></a-input-password>
-              </template>
-              <template #description>
-                <a-checkbox v-model="sItem.visible">{{
-                  $t('operation.connectors.attribute.sensitive')
-                }}</a-checkbox>
-                <a-tooltip
-                  :content="$t('operation.connectors.attribute.sensitive.tips')"
-                >
-                  <template #content>
-                    <div style="white-space: pre-wrap">{{
+              <xInputGroup
+                v-for="(sItem, sIndex) in attributeList"
+                :key="sIndex"
+                v-model:dataKey="sItem.key"
+                v-model:dataValue="sItem.value"
+                v-model:dataDesc="sItem.type"
+                :data-default="sItem.default"
+                :data-item="sItem"
+                show-description
+                separator=""
+                :trigger-validate="triggerValidate"
+                width="500px"
+                class="group-item"
+                :wrap-align="sItem.type === 'dynamic' ? 'flex-start' : 'center'"
+                :placeholder="{
+                  value: $t('common.input.value'),
+                  description: $t('common.input.value'),
+                  key: $t('common.input.key')
+                }"
+                :components="{
+                  string: 'Input',
+                  number: 'InputNumber',
+                  bool: 'Checkbox',
+                  dynamic: 'AceEditor'
+                }"
+                :max-length="null"
+                :label-list="attributeList"
+                :position="sIndex"
+                @add="(obj) => handleAddLabel(obj)"
+                @delete="handleDeleteLabel(attributeList, sIndex)"
+              >
+                <template #value>
+                  <a-input
+                    v-if="!sItem.visible"
+                    v-model="sItem.value"
+                    style="width: 100%"
+                    :error="!sItem.value && triggerValidate"
+                    :placeholder="$t('common.input.value')"
+                  ></a-input>
+                  <a-input-password
+                    v-else
+                    v-model="sItem.value"
+                    style="width: 100%"
+                    :error="!sItem.value && triggerValidate"
+                    :placeholder="$t('common.input.value')"
+                  ></a-input-password>
+                </template>
+                <template #description>
+                  <a-checkbox v-model="sItem.visible">{{
+                    $t('operation.connectors.attribute.sensitive')
+                  }}</a-checkbox>
+                  <a-tooltip
+                    :content="
                       $t('operation.connectors.attribute.sensitive.tips')
-                    }}</div>
-                  </template>
-                  <icon-info-circle class="mleft-5" />
-                </a-tooltip>
-              </template>
-            </xInputGroup>
-          </a-space>
-          <template v-if="pageAction === 'view' && attributeList?.length">
-            <DescriptionTable
-              style="width: 600px; margin-left: 12px"
-              :data-list="attributeList"
-            >
-              <template #value="{ row }">
-                <AutoTip
-                  style="width: 350px"
-                  :tooltip-props="{
-                    content: row.value
-                  }"
-                >
-                  <span>{{ row.sensitive ? '******' : row.value }}</span>
-                </AutoTip>
-              </template>
-            </DescriptionTable>
-          </template>
-        </a-form-item>
-      </a-form>
-    </div>
-    <!-- <EditPageFooter v-if="pageAction === 'edit'">
-      <template #save>
+                    "
+                  >
+                    <template #content>
+                      <div style="white-space: pre-wrap">{{
+                        $t('operation.connectors.attribute.sensitive.tips')
+                      }}</div>
+                    </template>
+                    <icon-info-circle class="mleft-5" />
+                  </a-tooltip>
+                </template>
+              </xInputGroup>
+            </a-space>
+            <template v-if="pageAction === 'view' && attributeList?.length">
+              <DescriptionTable
+                style="width: 600px; margin-left: 12px"
+                :data-list="attributeList"
+              >
+                <template #value="{ row }">
+                  <AutoTip
+                    style="width: 350px"
+                    :tooltip-props="{
+                      content: row.value
+                    }"
+                  >
+                    <span>{{ row.sensitive ? '******' : row.value }}</span>
+                  </AutoTip>
+                </template>
+              </DescriptionTable>
+            </template>
+          </a-form-item>
+        </a-form>
+      </div>
+      <EditPageFooter v-if="pageAction === 'edit'">
+        <template #save>
+          <a-button
+            type="primary"
+            class="cap-title cancel-btn"
+            :loading="submitLoading"
+            @click="handleSubmit"
+            >{{ $t('common.button.save') }}</a-button
+          >
+        </template>
         <a-button
-          type="primary"
+          type="outline"
           class="cap-title cancel-btn"
-          :loading="submitLoading"
-          @click="handleSubmit"
-          >{{ $t('common.button.save') }}</a-button
+          @click="handleCancel"
+          >{{ $t('common.button.cancel') }}</a-button
         >
-      </template>
-      <a-button
-        type="outline"
-        class="cap-title cancel-btn"
-        @click="handleCancel"
-        >{{ $t('common.button.cancel') }}</a-button
-      >
-    </EditPageFooter> -->
+      </EditPageFooter>
+    </ComCard>
   </div>
 </template>
 
@@ -220,17 +226,19 @@
   import ProviderIcon from '@/components/provider-icon/index.vue';
   import { variableTypeList } from '@/views/application-management/applications/config';
   import labelsList from '@/views/application-management/applications/components/app-info/labels-list.vue';
+  import useGetBreadState from '@/views/application-management/projects/hooks/use-get-breadstate';
   import { ConnectorFormData, CustomAttrbute } from '../config/interface';
   import { createConnector, updateConnector, queryItemConnector } from '../api';
 
-  const props = defineProps({
-    id: {
-      type: String,
-      default() {
-        return '';
-      }
-    }
-  });
+  // const props = defineProps({
+  //   id: {
+  //     type: String,
+  //     default() {
+  //       return '';
+  //     }
+  //   }
+  // });
+  const { getProjectState } = useGetBreadState();
   const userStore = useUserStore();
   const setPropertyStyle = (style) => {
     return {
@@ -247,14 +255,14 @@
     }
   };
   const { t, router, route } = useCallCommon();
-  const pageAction = ref('edit');
-  // const { pageAction, handleEdit } = usePageAction();
-  const id = props.id || '';
+  const { pageAction, handleEdit } = usePageAction();
+  const id = route.query.id as string;
   const formref = ref();
   const submitLoading = ref(false);
   const triggerValidate = ref(false);
   let copyFormData: any = {};
   const formData: ConnectorFormData = reactive({
+    projectID: route.params.projectId as string,
     name: '',
     configData: {},
     description: '',
@@ -296,7 +304,19 @@
       type: t('operation.connectors.reinstall.custom')
     });
   });
-
+  const breadCrumbList = computed(() => {
+    return [
+      {
+        ...getProjectState({
+          id: route.params.projectId,
+          name: ''
+        })
+      },
+      {
+        label: title.value
+      }
+    ];
+  });
   const handleAddLabel = (obj) => {
     attributeList.value.push({
       key: '',
@@ -375,7 +395,7 @@
         } else {
           await createConnector(formData);
         }
-        // router.back();
+        router.back();
         submitLoading.value = false;
       } catch (error) {
         submitLoading.value = false;
@@ -451,7 +471,7 @@
     init,
     handleSubmit
   });
-  // init();
+  init();
 </script>
 
 <style lang="less" scoped>

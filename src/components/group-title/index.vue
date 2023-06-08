@@ -72,7 +72,7 @@
     position: relative;
     display: flex;
     justify-content: space-between;
-    margin-bottom: 25px;
+    margin-bottom: 0;
     padding-bottom: 10px;
     font-weight: 400;
 
@@ -114,7 +114,7 @@
         display: flex;
         flex: 1;
         align-items: center;
-        justify-content: space-between;
+        justify-content: flex-end;
       }
     }
   }

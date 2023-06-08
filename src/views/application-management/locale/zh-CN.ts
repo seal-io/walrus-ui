@@ -2,6 +2,7 @@ export default {
   'applications.applications.menu': '应用',
   'applications.applications.create': '新建服务',
   'applications.applications.edit': '编辑服务',
+  'applications.applications.detail': '服务详情',
   'applications.applications.secret': '变量',
   'applications.applications.secret.holder': '请输入变量',
   'applications.applications.configuration.create': '添加模块',

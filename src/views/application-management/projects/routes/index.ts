@@ -1,6 +1,8 @@
 import { Resources } from '@/permissions/config';
+import connectorRoutes from './connectors';
 
 export default [
+  ...connectorRoutes,
   {
     path: 'project/list',
     name: 'ProjectsList',
@@ -16,7 +18,12 @@ export default [
         resource: Resources.Projects,
         actions: ['GET']
       },
-
+      cachePages: [
+        'ProjectConnectorK8sDetail',
+        'ProjectConnectorScmDetail',
+        'ProjectConnectorCustomDetail',
+        'ProjectConnectorProviderDetail'
+      ],
       icon: 'icon-apps'
     }
   },
@@ -31,6 +38,7 @@ export default [
       ignoreCache: false,
       locale: 'applications.projects.menu',
       requiresAuth: true,
+      selectedMenu: 'ProjectsList',
       permission: {
         resource: Resources.Projects,
         actions: ['GET']
@@ -47,6 +55,26 @@ export default [
       hideInMenu: true,
       hideMenu: false,
       ignoreCache: true,
+      selectedMenu: 'ProjectsList',
+      locale: 'applications.projects.menu',
+      requiresAuth: true,
+      permission: {
+        resource: Resources.Projects,
+        actions: ['GET']
+      },
+      icon: 'icon-apps'
+    }
+  },
+  {
+    path: 'project/:projectId/environment/:action',
+    name: 'ProjectEnvEdit',
+    component: () =>
+      import('@/views/operation-hub/environments/pages/detail.vue'),
+    meta: {
+      hideInMenu: true,
+      hideMenu: false,
+      ignoreCache: true,
+      selectedMenu: 'ProjectsList',
       locale: 'applications.projects.menu',
       requiresAuth: true,
       permission: {
@@ -64,6 +92,7 @@ export default [
       hideInMenu: true,
       hideMenu: false,
       ignoreCache: true,
+      selectedMenu: 'ProjectsList',
       locale: 'applications.projects.menu',
       requiresAuth: true,
       permission: {
@@ -81,6 +110,7 @@ export default [
       hideInMenu: true,
       hideMenu: false,
       ignoreCache: true,
+      selectedMenu: 'ProjectsList',
       locale: 'applications.projects.menu',
       requiresAuth: true,
       permission: {
