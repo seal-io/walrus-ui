@@ -47,7 +47,7 @@
         </a-space>
       </template>
       <template #button-group>
-        <a-dropdown @select="handleCreate">
+        <a-dropdown v-if="!editPage" @select="handlCreateProjectConnector">
           <a-button
             v-permission="{
               resource: `roles.${Resources.Connectors}`,
@@ -60,7 +60,7 @@
             <a-doption
               v-for="item in connectorTypeList"
               :key="item.value"
-              :value="item.value"
+              :value="item"
               :label="$t(item.label)"
             >
               <template #icon>
@@ -74,6 +74,16 @@
             >
           </template>
         </a-dropdown>
+        <a-button
+          v-if="editPage"
+          v-permission="{
+            resource: `roles.${Resources.Connectors}`,
+            actions: ['POST']
+          }"
+          type="primary"
+          @click="handleCreateGlobalConnector"
+          >{{ $t('operation.connectors.create') }}</a-button
+        >
         <a-button
           v-permission="{
             resource: `roles.${Resources.Connectors}`,
@@ -474,25 +484,57 @@
     queryParams.perPage = pageSize;
     handleFilter();
   };
-  const handleCreate = (val) => {
-    action.value = ModalAction.CREATE;
-    showValue.value = val;
+  const handlCreateProjectConnector = (item) => {
+    router.push({
+      name: item.route,
+      params: {
+        action: 'edit',
+        projectId: route.params.projectId
+      }
+    });
+  };
+  const handleCreateGlobalConnector = (item) => {
+    // action.value = ModalAction.CREATE;
+    // showValue.value = val;
+    router.push({
+      name: props.editPage,
+      params: {
+        action: 'edit'
+      }
+    });
   };
   const handleView = (row) => {
-    currentInfo.value = row;
-    action.value = ModalAction.EDIT;
-    setTimeout(() => {
-      showValue.value = row.category;
-    }, 100);
-    // router.push({
-    //   name: props.editPage,
-    //   params: {
-    //     action: 'view'
-    //   },
-    //   query: {
-    //     id: row.id
-    //   }
-    // });
+    // currentInfo.value = row;
+    // action.value = ModalAction.EDIT;
+    // setTimeout(() => {
+    //   showValue.value = row.category;
+    // }, 100);
+    if (props.editPage) {
+      router.push({
+        name: props.editPage,
+        params: {
+          action: 'view'
+        },
+        query: {
+          id: row.id
+        }
+      });
+    } else {
+      const data = _.find(
+        connectorTypeList,
+        (item) => item.value === row.category
+      );
+      router.push({
+        name: data?.route,
+        params: {
+          projectId: route.params.projectId,
+          action: 'view'
+        },
+        query: {
+          id: row.id
+        }
+      });
+    }
   };
   const handleDeleteConfirm = async () => {
     try {

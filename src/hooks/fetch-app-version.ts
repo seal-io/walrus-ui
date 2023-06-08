@@ -33,7 +33,7 @@ export function showVersionModal(data: versionData) {
     footer: () => h('span'),
     // title: () => h('div', {}, i18n.global.t('common.footer.version.title')),
     simple: true,
-    alignCenter: true,
+    alignCenter: false,
     content: () =>
       h('div', { style: 'text-align: center' }, [
         h('div', { style: 'margin-bottom: 5px' }, [

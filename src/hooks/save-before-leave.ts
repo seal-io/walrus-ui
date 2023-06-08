@@ -19,6 +19,7 @@ export const beforeLeaveCallback = async ({
   GLOBAL_BEFORE_LEAVE_MODAL?.close?.();
   GLOBAL_BEFORE_LEAVE_MODAL = await Modal.warning({
     top: '20%',
+    alignCenter: false,
     hideCancel: false,
     okText: i18n.global.t('common.button.confirm'),
     cancelText: i18n.global.t('common.button.cancel'),

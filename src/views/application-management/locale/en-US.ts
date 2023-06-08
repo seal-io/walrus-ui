@@ -2,6 +2,7 @@ export default {
   'applications.applications.menu': 'Applications',
   'applications.applications.create': 'New Service',
   'applications.applications.edit': 'Edit Service',
+  'applications.applications.detail': 'Service Details',
   'applications.applications.secret': 'Variable',
   'applications.applications.secret.holder': 'please enter a variable',
   'applications.applications.configuration.create': 'Add Module',

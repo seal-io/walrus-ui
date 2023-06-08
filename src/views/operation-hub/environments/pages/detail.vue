@@ -1,109 +1,115 @@
 <template>
   <div>
-    <!-- <GroupTitle
-      show-back
-      :show-edit="
-        pageAction === 'view' &&
-        userStore.hasRolesActionsPermission({
-          resource: Resources.Environments,
-          actions: ['POST']
-        })
-      "
-      :title="title"
-      @edit="handleEdit"
-    ></GroupTitle> -->
-    <a-form ref="formref" :model="formData" auto-label-width>
-      <a-form-item
-        :label="$t('operation.environments.table.name')"
-        field="name"
-        :validate-trigger="['change']"
-        :rules="[
-          {
-            required: pageAction === 'edit',
-            message: $t('operation.environments.rule.name')
-          }
-        ]"
-      >
-        <a-input
-          v-if="pageAction === 'edit'"
-          v-model="formData.name"
-          style="width: 500px"
-          :max-length="30"
-          show-word-limit
-        ></a-input>
-        <span v-else class="readonly-view-label">{{
-          formData.name || '-'
-        }}</span>
-      </a-form-item>
-      <a-form-item
-        :label="$t('operation.environments.table.description')"
-        field="description"
-      >
-        <a-textarea
-          v-if="pageAction === 'edit'"
-          v-model="formData.description"
-          style="width: 500px"
-          :max-length="200"
-          show-word-limit
-          :auto-size="{ minRows: 6, maxRows: 10 }"
-        ></a-textarea>
-        <div v-else class="description-content readonly-view-label">{{
-          formData.description || '-'
-        }}</div>
-      </a-form-item>
-      <a-form-item
-        :label="$t('operation.connectors.menu')"
-        field="connectorIDs"
-        :validate-trigger="['change']"
-      >
-        <div>
-          <div style="display: flex; margin-bottom: 10px">
-            <a-button
-              v-if="pageAction === 'edit'"
-              type="primary"
-              size="small"
-              style="margin-right: 8px; padding: 0 6px"
-              @click.stop="handleAddConnector"
-            >
-              <template #icon>
-                <icon-plus />
-              </template>
-              {{ $t('operation.environments.detail.addConnector') }}</a-button
-            >
-            <ConnectorSelector
-              v-if="showModal"
-              v-model:show="showModal"
-              :selected="formData.connectorIDs"
-              :list="connectorList"
-              @confirm="handleConnectorChange"
-            ></ConnectorSelector>
-          </div>
-          <connectorsTable
-            :style="{ marginLeft: pageAction === 'view' ? '12px' : 0 }"
-            :action="pageAction"
-            :list="formData?.edges || []"
-            @delete="handleDeleteConnector"
-          ></connectorsTable>
-        </div>
-      </a-form-item>
-    </a-form>
-    <!-- <EditPageFooter v-if="pageAction === 'edit'">
-      <template #save>
-        <a-button
-          type="primary"
-          class="cap-title cancel-btn"
-          :loading="submitLoading"
-          @click="handleSubmit"
-          >{{ $t('common.button.save') }}</a-button
+    <BreadWrapper>
+      <Breadcrumb :items="breadCrumbList"></Breadcrumb>
+    </BreadWrapper>
+    <ComCard top-gap>
+      <GroupTitle
+        :bordered="false"
+        style="margin-bottom: 0"
+        :show-edit="
+          pageAction === 'view' &&
+          userStore.hasProjectResourceActions({
+            resource: Resources.Environments,
+            projectID: route.params.projectId,
+            actions: ['POST']
+          })
+        "
+        @edit="handleEdit"
+      ></GroupTitle>
+      <a-form ref="formref" :model="formData" auto-label-width>
+        <a-form-item
+          :label="$t('operation.environments.table.name')"
+          field="name"
+          :validate-trigger="['change']"
+          :rules="[
+            {
+              required: pageAction === 'edit',
+              message: $t('operation.environments.rule.name')
+            }
+          ]"
         >
-      </template>
-      <a-button
-        type="outline"
-        class="cap-title cancel-btn"
-        @click="handleCancel"
-        >{{ $t('common.button.cancel') }}</a-button
-      >
-    </EditPageFooter> -->
+          <a-input
+            v-if="pageAction === 'edit'"
+            v-model="formData.name"
+            style="width: 500px"
+            :max-length="30"
+            show-word-limit
+          ></a-input>
+          <span v-else class="readonly-view-label">{{
+            formData.name || '-'
+          }}</span>
+        </a-form-item>
+        <a-form-item
+          :label="$t('operation.environments.table.description')"
+          field="description"
+        >
+          <a-textarea
+            v-if="pageAction === 'edit'"
+            v-model="formData.description"
+            style="width: 500px"
+            :max-length="200"
+            show-word-limit
+            :auto-size="{ minRows: 6, maxRows: 10 }"
+          ></a-textarea>
+          <div v-else class="description-content readonly-view-label">{{
+            formData.description || '-'
+          }}</div>
+        </a-form-item>
+        <a-form-item
+          :label="$t('operation.connectors.menu')"
+          field="connectorIDs"
+          :validate-trigger="['change']"
+        >
+          <div>
+            <div style="display: flex; margin-bottom: 10px">
+              <a-button
+                v-if="pageAction === 'edit'"
+                type="primary"
+                size="small"
+                style="margin-right: 8px; padding: 0 6px"
+                @click.stop="handleAddConnector"
+              >
+                <template #icon>
+                  <icon-plus />
+                </template>
+                {{ $t('operation.environments.detail.addConnector') }}</a-button
+              >
+              <ConnectorSelector
+                v-if="showModal"
+                v-model:show="showModal"
+                :selected="formData.connectorIDs"
+                :list="connectorList"
+                @confirm="handleConnectorChange"
+              ></ConnectorSelector>
+            </div>
+            <connectorsTable
+              :style="{ marginLeft: pageAction === 'view' ? '12px' : 0 }"
+              :action="pageAction"
+              :list="formData?.edges || []"
+              @delete="handleDeleteConnector"
+            ></connectorsTable>
+          </div>
+        </a-form-item>
+      </a-form>
+      <EditPageFooter v-if="pageAction === 'edit'">
+        <template #save>
+          <a-button
+            type="primary"
+            class="cap-title cancel-btn"
+            :loading="submitLoading"
+            @click="handleSubmit"
+            >{{ $t('common.button.save') }}</a-button
+          >
+        </template>
+        <a-button
+          type="outline"
+          class="cap-title cancel-btn"
+          @click="handleCancel"
+          >{{ $t('common.button.cancel') }}</a-button
+        >
+      </EditPageFooter>
+    </ComCard>
   </div>
 </template>
 
@@ -128,6 +134,7 @@
   import { onBeforeRouteLeave } from 'vue-router';
   import { queryConnectors } from '@/views/operation-hub/connectors/api';
   import usePageAction from '@/hooks/use-page-action';
+  import useGetBreadState from '@/views/application-management/projects/hooks/use-get-breadstate';
   import { EnvironFormData } from '../config/interface';
   import connectorsTable from '../components/connectors.vue';
   import ConnectorSelector from '../components/connector-selector.vue';
@@ -137,20 +144,20 @@
     queryItemEnvironments
   } from '../api';
 
-  const props = defineProps({
-    id: {
-      type: String,
-      default() {
-        return '';
-      }
-    }
-  });
+  // const props = defineProps({
+  //   id: {
+  //     type: String,
+  //     default() {
+  //       return '';
+  //     }
+  //   }
+  // });
+  const { getProjectState } = useGetBreadState();
   const userStore = useUserStore();
   const tabBarStore = useTabBarStore();
   const { router, route, t } = useCallCommon();
-  const pageAction = ref('edit');
-  // const { pageAction, handleEdit } = usePageAction();
-  const id = props.id || '';
+  const { pageAction, handleEdit } = usePageAction();
+  const id = route.query.id as string;
   const formref = ref();
   const connectorList = ref<{ label: string; value: string }[]>([]);
   const showModal = ref(false);
@@ -173,6 +180,19 @@
       return t('operation.environments.edit');
     }
     return t('operation.environments.view');
+  });
+  const breadCrumbList = computed(() => {
+    return [
+      {
+        ...getProjectState({
+          id: route.params.projectId,
+          name: ''
+        })
+      },
+      {
+        label: title.value
+      }
+    ];
   });
   const setFormDataConnectors = (connectors) => {
     each(connectorList.value, (item) => {
@@ -202,6 +222,7 @@
       copyFormData = cloneDeep(formData.value);
     } catch (error) {
       formData.value = {
+        projectID: route.params.projectId as string,
         name: '',
         description: '',
         connectorIDs: [],
@@ -259,7 +280,7 @@
           name: 'EnvironmentList',
           fullPath: ''
         });
-        // router.back();
+        router.back();
         submitLoading.value = false;
       } catch (error) {
         submitLoading.value = false;
@@ -313,6 +334,7 @@
     handleSubmit,
     init
   });
+  init();
 </script>
 
 <style></style>

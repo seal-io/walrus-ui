@@ -75,7 +75,6 @@
   import useCallCommon from '@/hooks/use-call-common';
   import { vOnClickOutside, OnClickOutside } from '@vueuse/components';
   import { BreadcrumbOptions } from '@/views/config/interface';
-  import { getItem } from 'localforage';
 
   const props = defineProps({
     items: {
