@@ -465,7 +465,7 @@
       (obj, item) => {
         // The version corresponding to the module that has been added
         const addedModule = _.find(allModuleVersions.value || [], (s) => {
-          return item.type === s.module.id && s.version === item.version;
+          return item.type === s.template.id && s.version === item.version;
         });
         const k = item.name;
         obj[k] = [

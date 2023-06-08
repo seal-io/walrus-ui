@@ -12,12 +12,12 @@
           ellipsis
           tooltip
           :cell-style="{ minWidth: '40px' }"
-          data-index="instance.name"
-          :title="$t('dashboard.table.instance')"
+          data-index="service.name"
+          title="服务"
         >
           <template #cell="{ record }">
             <a-link @click="handleToDetail(record)">{{
-              record?.instance?.name || ''
+              record?.service?.name || ''
             }}</a-link>
           </template>
         </a-table-column>
@@ -33,8 +33,9 @@
           ellipsis
           tooltip
           :cell-style="{ minWidth: '40px' }"
-          data-index="instance.application.name"
-          :title="$t('dashboard.table.name')"
+          align="center"
+          data-index="environment.name"
+          :title="$t('dashboard.table.envrionment')"
         >
         </a-table-column>
         <a-table-column
@@ -77,15 +78,6 @@
               :status="record.status"
             ></StatusLabel>
           </template>
-        </a-table-column>
-        <a-table-column
-          ellipsis
-          tooltip
-          :cell-style="{ minWidth: '40px' }"
-          align="center"
-          data-index="environment.name"
-          :title="$t('dashboard.table.envrionment')"
-        >
         </a-table-column>
       </template>
     </a-table>

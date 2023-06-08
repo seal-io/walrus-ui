@@ -7,6 +7,13 @@ export const connectorTypeList = [
     icon: 'icon-bxl-kubernetes'
   },
   {
+    label: 'operation.connectors.reinstall.cloudProvider',
+    enable: true,
+    value: 'CloudProvider',
+    com: 'cloud',
+    icon: 'icon-fill-cloud'
+  },
+  {
     label: 'operation.connectors.table.versioncontrol',
     enable: true,
     value: 'VersionControl',
@@ -19,14 +26,8 @@ export const connectorTypeList = [
     value: 'Custom',
     com: 'custom',
     icon: 'icon-custom'
-  },
-  {
-    label: 'operation.connectors.reinstall.cloudProvider',
-    enable: true,
-    value: 'CloudProvider',
-    com: 'cloud',
-    icon: 'icon-Cloud'
   }
+
   // { label: 'Cloud Provider', value: 'cloud', com: 'cloud' }
 ];
 export enum ConnectorCategory {

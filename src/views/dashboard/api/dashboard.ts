@@ -17,11 +17,11 @@ export const getDashBoardOverview = () => {
 };
 
 export const queryApplicationRevisionsChart = (data: RevisionParams) => {
-  return axios.post('/dashboards/_/application-revision-statistics', data);
+  return axios.post('/dashboards/_/service-revision-statistics', data);
 };
 
 export const queryLatestDeployments = () => {
-  return axios.get(`/dashboards/_/latest-application-revisions`);
+  return axios.get(`/dashboards/_/latest-service-revisions`);
 };
 export function queryCostManagemantData(data: any) {
   return axios.post('/costs/_/allocation-costs', data);

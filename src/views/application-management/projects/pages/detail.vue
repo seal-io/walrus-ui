@@ -45,7 +45,7 @@
 </template>
 
 <script lang="ts" setup>
-  import { ref } from 'vue';
+  import { ref, onMounted } from 'vue';
   import _ from 'lodash';
   import useCallCommon from '@/hooks/use-call-common';
   import { useProjectStore, useUserStore } from '@/store';
@@ -56,9 +56,11 @@
   import ConnectorList from '@/views/operation-hub/connectors/components/table-list.vue';
   import basicInfo from '@/views/application-management/applications/components/basic-info.vue';
   import useBasicInfoData from '../hooks/use-basicInfo-data';
-  import { queryProjects } from '../api';
+  import { queryProjects, queryItemProject } from '../api';
   import { basicInfoConfig } from '../config';
+  import userProjectBreadcrumbData from '../hooks/use-project-breadcrumb-data';
 
+  const { setProjectList } = userProjectBreadcrumbData();
   const { router, route } = useCallCommon();
   const projectStore = useProjectStore();
   const userStore = useUserStore();
@@ -84,7 +86,7 @@
           value: item.id
         };
       });
-      const defaultValue = route.params.projectId || _.get(list, '0.id');
+      const defaultValue = route.params.projectId || _.get(list, '0.value');
       const defaultName = _.get(list, '0.label');
       breadCrumbList.value.push({
         value: defaultValue,
@@ -92,13 +94,28 @@
         icon: 'icon-apps',
         type: 'Project',
         wrapperId: 'project',
-        options: list
+        options: list,
+        visible: false
       });
       projectStore.setInfo({
         projectList: list
       });
     } catch (error) {
       console.log(error);
+    }
+  };
+
+  const getItemProjectInfo = async () => {
+    if (!route.params.projectId) return;
+    try {
+      const params = {
+        id: route.params.projectId as string
+      };
+      const { data } = await queryItemProject(params);
+      currentInfo.value = data;
+    } catch (error) {
+      console.log(error);
+      currentInfo.value = {};
     }
   };
   const handleProjectChange = (val, item) => {
@@ -113,8 +130,10 @@
     });
   };
   const init = async () => {
+    getItemProjectInfo();
     userStore.setInfo({ currentProject: route.params.projectId });
-    getProjectList();
+    const projectRes = await setProjectList(projectStore.projectList);
+    breadCrumbList.value = [projectRes];
   };
   init();
 </script>

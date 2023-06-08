@@ -1,17 +1,14 @@
 <template>
   <a-breadcrumb class="container-breadcrumb">
     <template #separator>
-      <icon-oblique-line class="size-16" style="stroke-width: 4" />
+      <span></span>
     </template>
     <a-breadcrumb-item v-if="menu.label">
       <span class="box">
-        <span v-if="menu.type" class="type">Application</span>
+        <span v-if="menu.type" class="type">{{ menu.type }}</span>
         <span class="item-content">
-          <component
-            :is="menu.icon"
-            v-if="menu.icon"
-            style="color: rgba(255, 255, 255, 1)"
-          ></component>
+          <i v-if="menu.iconfont" class="iconfont" :class="[menu.icon]"></i>
+          <component :is="menu.icon" v-else-if="menu.icon"></component>
           <span class="label">{{ $t(menu.label) }}</span>
         </span>
       </span>
@@ -26,16 +23,46 @@
         >
           <span v-if="item.options?.length" class="label single">
             <a-select
+              :popup-visible="item.visible"
+              :bordered="false"
               :model-value="item.value"
-              style="width: 120px"
+              :class="{ 'active-bread': index === items.length - 1 }"
+              style="width: 100px"
               :options="item.options"
               :popup-container="getContainer(item.wrapperId)"
               size="mini"
               class="border-less"
+              @click="handleClick(item, index)"
               @change="(val) => handleSelectChange(val, item)"
-            ></a-select>
+            >
+              <template #arrow-icon>
+                <OnClickOutside @trigger="handleClickOutSide(item)">
+                  <icon-down-circle @click.stop="handleTogglePopup(item)" />
+                </OnClickOutside>
+              </template>
+              <template #footer>
+                <div
+                  v-if="item.onSetting"
+                  style="
+                    display: flex;
+                    align-items: center;
+                    height: 30px;
+                    padding: 0 10px;
+                  "
+                >
+                  <a-link @click="handleOnSettings(item)">
+                    <icon-settings class="mright-5" />Settings
+                  </a-link>
+                </div>
+              </template>
+            </a-select>
           </span>
           <span v-else class="label single">{{ item.label }}</span>
+          <icon-oblique-line
+            v-if="index < items.length - 1"
+            class="size-14 separator-line"
+            style="stroke-width: 3; margin-left: 12px"
+          />
         </span>
       </span>
     </a-breadcrumb-item>
@@ -45,9 +72,12 @@
 <script lang="ts" setup>
   import _ from 'lodash';
   import { PropType } from 'vue';
+  import useCallCommon from '@/hooks/use-call-common';
+  import { vOnClickOutside, OnClickOutside } from '@vueuse/components';
   import { BreadcrumbOptions } from '@/views/config/interface';
+  import { getItem } from 'localforage';
 
-  defineProps({
+  const props = defineProps({
     items: {
       type: Array as PropType<BreadcrumbOptions[]>,
       default() {
@@ -61,7 +91,7 @@
       }
     }
   });
-
+  const { router } = useCallCommon();
   const emits = defineEmits(['change']);
   const handleSelectChange = (val, item) => {
     emits('change', val, item);
@@ -69,16 +99,34 @@
   const getContainer = (name) => {
     return document.getElementById(name);
   };
+  const handleClick = (item, index) => {
+    item.visible = false;
+    if (index === props.items.length - 1) {
+      return;
+    }
+    router.replace({
+      name: item.route
+    });
+  };
+  const handleTogglePopup = (item) => {
+    item.visible = !item.visible;
+  };
+  const handleClickOutSide = (item) => {
+    item.visible = false;
+  };
+  const handleOnSettings = (item) => {
+    item.onSetting?.(item);
+  };
 </script>
 
 <style scoped lang="less">
   .container-breadcrumb {
     margin: 16px 0;
-    color: rgba(255, 255, 255, 1);
+    color: var(--color-text-2);
 
     .label {
       margin-left: 5px;
-      color: rgba(255, 255, 255, 1);
+      color: var(--color-text-2);
       font-size: 14px;
 
       &.single {
@@ -93,14 +141,36 @@
           border: none;
           border-radius: 0;
 
+          &:hover {
+            cursor: default;
+          }
+
           .arco-select-view-icon {
-            color: #fff;
+            color: var(--sealblue-6);
+            transition: transform 0.2s cubic-bezier(0, 0, 1, 1);
+
+            &:hover {
+              transform: scale(1.2);
+              cursor: pointer;
+              transition: transform 0.2s cubic-bezier(0, 0, 1, 1);
+            }
           }
         }
 
         .arco-select-view-value {
-          color: #fff;
+          flex-basis: fit-content;
+          margin-right: 15px;
+          padding-right: 5px;
+          color: var(--color-text-2);
           font-size: 14px;
+          transition: transform 0.2s cubic-bezier(0, 0, 1, 1);
+
+          &:hover {
+            color: var(--sealblue-6);
+            transform: scale(1.1);
+            cursor: pointer;
+            transition: transform 0.2s cubic-bezier(0, 0, 1, 1);
+          }
         }
       }
     }
@@ -108,9 +178,17 @@
     .box {
       display: flex;
       flex-direction: column;
-      color: rgba(255, 255, 255, 0.5);
+      color: var(--color-text-2);
       font-size: 12px;
       line-height: 1;
+
+      .type {
+        color: rgba(78, 89, 105, 0.5);
+      }
+
+      .separator-line {
+        color: var(--color-text-2);
+      }
 
       .item-content {
         display: flex;
@@ -123,7 +201,15 @@
       color: rgba(255, 255, 255, 1);
 
       &:last-child {
-        color: rgba(255, 255, 255, 1);
+        .arco-select-view-single {
+          .arco-select-view-value {
+            &:hover {
+              color: var(--color-text-2);
+              transform: scale(1);
+              cursor: default;
+            }
+          }
+        }
       }
     }
   }

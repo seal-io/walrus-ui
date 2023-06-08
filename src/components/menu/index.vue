@@ -4,9 +4,11 @@
   import { useRouter, RouteRecordRaw, RouteRecordNormalized } from 'vue-router';
   // import type { RouteLocationNormalized } from 'vue-router';
 
-  import { useAppStore } from '@/store';
+  import { useAppStore, useProjectStore } from '@/store';
   import usePermission from '@/hooks/permissions';
   import { listenerRouteChange } from '@/utils/route-listener';
+  import localStore from '@/utils/localStore';
+  import { USER_DEFAULT_PROJECT } from '@/views/config';
 
   export default defineComponent({
     emit: ['collapse'],
@@ -14,8 +16,10 @@
       const { t } = useI18n();
       const currentRoute = ref<string>('');
       const appStore = useAppStore();
+      const projectStore = useProjectStore();
       const permission = usePermission();
       const router = useRouter();
+
       const collapsed = computed({
         get() {
           if (appStore.device === 'desktop') return appStore.menuCollapse;
@@ -89,13 +93,31 @@
         }
         return travel(copyRouter, 0);
       });
-
+      const goToProject = async (item: RouteRecordRaw) => {
+        const defaultProject = await localStore.getValue(USER_DEFAULT_PROJECT);
+        if (!projectStore.projectList.length) {
+          router.push({
+            name: item.name
+          });
+          return;
+        }
+        router.push({
+          name: 'ProjectDetail',
+          params: {
+            projectId: defaultProject.id
+          }
+        });
+      };
       // In this case only two levels of menus are available
       // You can expand as needed
 
       const goto = (item: RouteRecordRaw) => {
         const query: any = item.meta?.query;
         const isReplace: any = item.meta?.replace;
+        if (item.name === 'ProjectsList') {
+          goToProject(item);
+          return;
+        }
         if (!isReplace) {
           router.push({
             name: item.name,

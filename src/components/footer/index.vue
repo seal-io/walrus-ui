@@ -25,7 +25,7 @@
 </template>
 
 <script lang="ts" setup>
-  import { get } from 'lodash';
+  import _, { get } from 'lodash';
   import { ref, onMounted } from 'vue';
   import {
     useAppVersion,
@@ -33,9 +33,15 @@
     versionData,
     getVersion
   } from '@/hooks/fetch-app-version';
-  import { useUserStore } from '@/store';
+  import useCallCommon from '@/hooks/use-call-common';
+  import { useUserStore, useProjectStore } from '@/store';
+  import { queryProjects } from '@/views/application-management/projects/api';
+  import { USER_DEFAULT_PROJECT } from '@/views/config';
+  import localStore from '@/utils/localStore';
 
+  const { route } = useCallCommon();
   const userStore = useUserStore();
+  const projectStore = useProjectStore();
   const versionInfo = ref({});
   const footerLinks = [
     { label: 'settings.help', value: 'https://seal-io.github.io/docs/' }
@@ -52,10 +58,45 @@
   const getUserInfo = () => {
     userStore.info();
   };
+  const getProjectList = async () => {
+    try {
+      const params = {
+        page: -1
+      };
+      const { data } = await queryProjects(params);
+      const list = _.map(data.items, (item) => {
+        return {
+          label: item.name,
+          value: item.id
+        };
+      });
+      const { id, name } = await localStore.getValue(USER_DEFAULT_PROJECT);
+      if (!id && list.length) {
+        const defaultValue = route.params.projectId || _.get(list, '0.value');
+        const defaultName = _.get(list, '0.label');
+        localStore.setValue(USER_DEFAULT_PROJECT, {
+          id: defaultValue,
+          name: defaultName
+        });
+      }
+      projectStore.setInfo({
+        projectList: _.cloneDeep(list)
+      });
+    } catch (error) {
+      projectStore.setInfo({
+        projectList: []
+      });
+      console.log(error);
+    }
+  };
+  const init = () => {
+    getUserInfo();
+    getProjectList();
+  };
   onMounted(() => {
     getAppVersion();
   });
-  getUserInfo();
+  init();
 </script>
 
 <style lang="less" scoped>

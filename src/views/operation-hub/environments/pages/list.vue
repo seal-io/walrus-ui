@@ -66,13 +66,6 @@
           >
         </template>
       </FilterBox>
-      <!-- <ListView
-        v-model:selectedList="selectedKeys"
-        v-model:sort="sort"
-        :list="dataList"
-        :loading="loading"
-        @sort="handleSort"
-      ></ListView> -->
       <a-table
         column-resizable
         style="margin-bottom: 20px"
@@ -94,9 +87,20 @@
             :title="$t('operation.environments.table.env')"
           >
             <template #cell="{ record }">
-              <a-link type="text" size="small" @click="handleView(record)">
+              <a-link
+                v-if="record.connectors?.length"
+                type="text"
+                size="small"
+                @click="handleView(record)"
+              >
                 {{ record.name }}
               </a-link>
+              <span v-else style="display: flex; align-items: center">
+                <span>{{ record.name }}</span>
+                <a-tooltip :content="$t('applications.instance.env.tips')">
+                  <icon-exclamation-circle-fill class="mleft-5" />
+                </a-tooltip>
+              </span>
             </template>
           </a-table-column>
           <a-table-column

@@ -92,16 +92,27 @@
           ellipsis
           tooltip
           :cell-style="{ minWidth: '40px' }"
+          data-index="environment.name"
+          title="环境"
+        >
+        </a-table-column>
+        <a-table-column
+          ellipsis
+          :cell-style="{ minWidth: '40px' }"
           data-index="status"
           :title="$t('applications.applications.table.status')"
         >
           <template #cell="{ record }">
-            <InstanceStatus
-              :status="setInstanceStatus(record.status)"
-              :application-id="record.id"
-              :project-id="queryParams.projectID"
-              :label="`${record.name}(Env: ${record?.environment?.name})`"
-            ></InstanceStatus>
+            <StatusLabel
+              :zoom="0.9"
+              :status="{
+                status: get(record, 'status.summaryStatus'),
+                text: get(record, 'status.summaryStatus'),
+                message: '',
+                transitioning: get(record, 'status.transitioning'),
+                error: get(record, 'status.error')
+              }"
+            ></StatusLabel>
           </template>
         </a-table-column>
         <a-table-column
@@ -131,23 +142,48 @@
         >
           <template #cell="{ record }">
             <a-space>
-              <a-tooltip :content="$t('common.button.edit')">
-                <a-link
-                  v-if="
-                    userStore.hasProjectResourceActions({
-                      projectID: queryParams.projectID,
-                      resource: Resources.Applications,
-                      actions: ['GET', 'POST']
-                    })
-                  "
-                  @click="handleClickEdit(record)"
-                >
-                  <template #icon>
+              <a-dropdown-button
+                size="small"
+                style="line-height: 30px"
+                position="bl"
+                @select="handleSelect"
+              >
+                <a-tooltip :content="$t('common.button.edit')">
+                  <a-link
+                    v-if="
+                      userStore.hasProjectResourceActions({
+                        projectID: queryParams.projectID,
+                        resource: Resources.Applications,
+                        actions: ['GET', 'POST']
+                      })
+                    "
+                    @click="handleClickEdit(record)"
+                  >
                     <icon-edit></icon-edit>
-                  </template>
-                </a-link>
-              </a-tooltip>
-              <a-tooltip
+                  </a-link>
+                </a-tooltip>
+                <template #icon
+                  ><icon-more style="font-size: 18px; stroke-width: 5"
+                /></template>
+                <template #content>
+                  <a-doption
+                    v-for="item in instanceActions"
+                    :key="item.value"
+                    :value="item.value"
+                  >
+                    <a-tooltip :content="$t(item.label)">
+                      <a-link>
+                        <component
+                          :is="item.icon"
+                          v-bind="item.props"
+                          style="margin-right: 8px"
+                        ></component>
+                      </a-link>
+                    </a-tooltip>
+                  </a-doption>
+                </template>
+              </a-dropdown-button>
+              <!-- <a-tooltip
                 :content="$t('applications.applications.history.clone')"
               >
                 <a-link
@@ -166,7 +202,7 @@
                     ><icon-font type="icon-Clone-Cloud" class="size-16"
                   /></template>
                 </a-link>
-              </a-tooltip>
+              </a-tooltip> -->
             </a-space>
           </template>
         </a-table-column>
@@ -187,9 +223,9 @@
       v-model:show="showEditModal"
       v-model:action="moduleAction"
       :data-info="serviceInfo"
-      :templates="moduleTemplates"
+      :templates="templateList"
       :modules="serviceDataList"
-      :all-module-versions="allModuleVersions"
+      :all-module-versions="allTemplateVersions"
       @reset="handleResetServiceInfo"
       @save="handleSaveService"
     ></CreateService>
@@ -201,17 +237,24 @@
   import _, { map, get, pickBy, find, filter } from 'lodash';
   import dayjs from 'dayjs';
   import { reactive, ref, watch, onBeforeUnmount, provide } from 'vue';
+  import ADropdownButton from '@arco-design/web-vue/es/dropdown/dropdown-button';
   import { useSetChunkRequest } from '@/api/axios-chunk-request';
   import useCallCommon from '@/hooks/use-call-common';
   import { deleteModal, execSucceed } from '@/utils/monitor';
   import { UseSortDirection } from '@/utils/common';
   import useRowSelect from '@/hooks/use-row-select';
   import FilterBox from '@/components/filter-box/index.vue';
+  import StatusLabel from '@/views/operation-hub/connectors/components/status-label.vue';
   import localStore from '@/utils/localStore';
   import { useUserStore } from '@/store';
   import { queryProjects } from '../../projects/api';
   import { AppRowData } from '../config/interface';
-  import { statusMap, websocketEventType, setInstanceStatus } from '../config';
+  import {
+    statusMap,
+    websocketEventType,
+    setInstanceStatus,
+    instanceActions
+  } from '../config';
   import { queryApplications, deleteApplication } from '../api';
   import InstanceStatus from '../components/instance-status.vue';
   import CreateService from '../components/app-info/edit-module.vue';
@@ -224,8 +267,8 @@
     initCompleteData,
     completeDataSetter,
     serviceDataList,
-    moduleTemplates,
-    allModuleVersions
+    templateList,
+    allTemplateVersions
   } = useTemplatesData();
   const { setChunkRequest } = useSetChunkRequest();
   const { rowSelection, selectedKeys, handleSelectChange } = useRowSelect();
@@ -257,7 +300,7 @@
   const handleResetServiceInfo = () => {
     serviceInfo.value = {};
   };
-
+  const handleSelect = () => {};
   const fetchData = async () => {
     if (!queryParams.projectID) return;
     try {
@@ -311,17 +354,18 @@
     handleFilter();
   };
   const handleCreate = () => {
-    // router.push({
-    //   name: 'ApplicationsDetail',
-    //   params: {
-    //     projectId: queryParams.projectID,
-    //     action: 'edit'
-    //   }
-    // });
-    moduleAction.value = 'create';
-    setTimeout(() => {
-      showEditModal.value = true;
-    }, 150);
+    router.push({
+      name: 'ProjectServiceEdit',
+      params: {
+        projectId: queryParams.projectID,
+        environmentId: queryParams.environmentID,
+        action: 'edit'
+      }
+    });
+    // moduleAction.value = 'create';
+    // setTimeout(() => {
+    //   showEditModal.value = true;
+    // }, 150);
   };
   const handleDeleteConfirm = async () => {
     try {

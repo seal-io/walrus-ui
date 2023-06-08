@@ -16,6 +16,7 @@ export default [
         resource: Resources.Projects,
         actions: ['GET']
       },
+
       icon: 'icon-apps'
     }
   },
@@ -59,6 +60,23 @@ export default [
     path: 'project/:projectId/environment/:environmentId/service/detail',
     name: 'ProjectServiceDetail',
     component: () => import('../pages/service.vue'),
+    meta: {
+      hideInMenu: true,
+      hideMenu: false,
+      ignoreCache: true,
+      locale: 'applications.projects.menu',
+      requiresAuth: true,
+      permission: {
+        resource: Resources.Projects,
+        actions: ['GET']
+      },
+      icon: 'icon-apps'
+    }
+  },
+  {
+    path: 'project/:projectId/environment/:environmentId/service/:action',
+    name: 'ProjectServiceEdit',
+    component: () => import('../../applications/pages/service-edit.vue'),
     meta: {
       hideInMenu: true,
       hideMenu: false,
