@@ -1,5 +1,5 @@
 <template>
-  <ComCard class="container">
+  <div class="container">
     <FilterBox style="margin-bottom: 10px">
       <template #params>
         <a-input
@@ -174,7 +174,7 @@
       @save="handleSave"
     >
     </CreateAccountModal>
-  </ComCard>
+  </div>
 </template>
 
 <script lang="ts" setup>

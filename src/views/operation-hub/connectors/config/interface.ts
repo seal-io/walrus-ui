@@ -52,3 +52,13 @@ export interface ConnectorFormData {
   configVersion: string;
   enableFinOps: boolean;
 }
+
+export interface ConnectorTypeData {
+  label: string;
+  enable: boolean;
+  value: string;
+  com: string;
+  route: string;
+  globalRoute: string;
+  icon: string;
+}

@@ -6,7 +6,7 @@ export default [
     name: 'GlobalSecretsList',
     component: () => import('../pages/list.vue'),
     meta: {
-      hideInMenu: false,
+      hideInMenu: true,
       ignoreCache: true,
       locale: 'operation.secret.menu',
       requiresAuth: true,

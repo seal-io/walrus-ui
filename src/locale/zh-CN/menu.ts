@@ -12,6 +12,7 @@ export default {
   'menu.operatorHub.evniroment': '环境',
   'menu.operatorHub.module': '模块',
   'menu.operatorHub.secret': '全局密钥',
+  'menu.operatorHub.variables': '变量',
   'menu.systemsettings': '系统设置',
   'menu.systemsettings.user': '用户管理',
   'menu.systemsettings.config': '配置管理'

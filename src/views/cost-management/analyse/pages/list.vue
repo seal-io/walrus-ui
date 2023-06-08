@@ -1,5 +1,5 @@
 <template>
-  <ComCard top-gap class="workflows-list">
+  <div top-gap class="workflows-list">
     <FilterBox style="margin-bottom: 10px">
       <template #params>
         <a-input
@@ -172,7 +172,7 @@
       @change="handlePageChange"
       @page-size-change="handlePageSizeChange"
     />
-  </ComCard>
+  </div>
 </template>
 
 <script lang="ts" setup>

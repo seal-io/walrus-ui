@@ -9,7 +9,6 @@
             allow-search
             :format-label="formatLabel"
             :placeholder="$t('cost.analyse.project.holder')"
-            class="border-less"
             style="width: 200px"
             :options="projectList"
             @change="handleProjectChange"
@@ -38,7 +37,6 @@
           :show-extra="true"
           timezone
           today-in
-          border-less
           @change="handleDateChange"
         >
           <template #tips>
@@ -94,7 +92,6 @@
           v-if="!isPage"
           v-model="queryParams.project"
           :placeholder="$t('cost.analyse.project.holder')"
-          class="border-less"
           style="width: 200px"
           :options="projectList"
           @change="handleProjectChange"

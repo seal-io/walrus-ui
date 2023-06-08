@@ -2,6 +2,7 @@
   <div>
     <BreadWrapper>
       <Breadcrumb
+        :menu="{ icon: 'icon-apps', label: '' }"
         :items="breadCrumbList"
         @change="handleProjectChange"
       ></Breadcrumb>
@@ -15,7 +16,6 @@
           <basicInfo :data-info="basicDataList"></basicInfo>
         </template>
       </HeaderInfo>
-      <a-divider style="margin: 0; border-radius: 1px" :size="4"></a-divider>
       <ComCard>
         <a-tabs
           v-model:active-key="activeKey"
@@ -23,20 +23,17 @@
           :default-active-key="activeKey"
           @change="handleTabChange"
         >
-          <a-tab-pane key="enviroment" title="环境">
+          <a-tab-pane
+            key="enviroment"
+            :title="$t('menu.operatorHub.evniroment')"
+          >
             <EnviromentList ref="enviromentRef"></EnviromentList>
           </a-tab-pane>
-          <a-tab-pane key="variables" title="变量">
+          <a-tab-pane key="variables" :title="$t('menu.operatorHub.variables')">
             <SecretList ref="variablesRef"></SecretList>
           </a-tab-pane>
-          <a-tab-pane key="connector" title="连接器">
-            <ConnectorList
-              ref="connectorRef"
-              show-type="component"
-              direction="vertical"
-              :top-gap="false"
-              padding="0"
-            ></ConnectorList>
+          <a-tab-pane key="connector" :title="$t('menu.operatorHub.connector')">
+            <ConnectorList scope="project"></ConnectorList>
           </a-tab-pane>
         </a-tabs>
       </ComCard>

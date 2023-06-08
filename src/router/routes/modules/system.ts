@@ -11,18 +11,19 @@ export default {
     icon: 'icon-settings',
     requiresAuth: false,
     isRouteView: true,
-    order: 6
+    order: 6,
+    onlyRenderChildren: true
   },
   children: [
     {
-      path: 'users',
-      name: 'SystemUsers',
-      component: () => import('@/views/system/pages/users.vue'),
+      path: 'settings',
+      name: 'SystemSettings',
+      component: () => import('@/views/system/pages/main.vue'),
       meta: {
         hideInMenu: false,
         ignoreCache: true,
         clearMenuStatus: false,
-        locale: 'menu.system.user',
+        locale: 'menu.system.setting',
         requiresAuth: true,
         permission: {
           resource: Resources.Subjects,
@@ -30,23 +31,40 @@ export default {
         },
         roles: ['*']
       }
-    },
-    {
-      path: 'settings',
-      name: 'SystemSetting',
-      component: () => import('@/views/system/pages/setting.vue'),
-      meta: {
-        hideInMenu: false,
-        ignoreCache: true,
-        clearMenuStatus: false,
-        locale: 'menu.system.config',
-        requiresAuth: true,
-        permission: {
-          resource: Resources.Settings,
-          actions: ['GET']
-        },
-        roles: ['*']
-      }
     }
+    // {
+    //   path: 'users',
+    //   name: 'SystemUsers',
+    //   component: () => import('@/views/system/pages/users.vue'),
+    //   meta: {
+    //     hideInMenu: false,
+    //     ignoreCache: true,
+    //     clearMenuStatus: false,
+    //     locale: 'menu.system.user',
+    //     requiresAuth: true,
+    //     permission: {
+    //       resource: Resources.Subjects,
+    //       actions: ['GET']
+    //     },
+    //     roles: ['*']
+    //   }
+    // },
+    // {
+    //   path: 'settings',
+    //   name: 'SystemSetting',
+    //   component: () => import('@/views/system/pages/setting.vue'),
+    //   meta: {
+    //     hideInMenu: false,
+    //     ignoreCache: true,
+    //     clearMenuStatus: false,
+    //     locale: 'menu.system.config',
+    //     requiresAuth: true,
+    //     permission: {
+    //       resource: Resources.Settings,
+    //       actions: ['GET']
+    //     },
+    //     roles: ['*']
+    //   }
+    // }
   ]
 };

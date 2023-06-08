@@ -12,7 +12,6 @@
           timezone
           :short-cuts="DateShortCuts"
           today-in
-          border-less
           @change="handleDateChange"
         >
           <template #tips>

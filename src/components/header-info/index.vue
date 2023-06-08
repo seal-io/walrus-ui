@@ -1,16 +1,19 @@
 <template>
-  <div class="header-info" :class="{ 'top-gap': topGap }">
-    <div class="left">
-      <div class="img">
-        <slot name="icon"></slot>
+  <div>
+    <div class="header-info" :class="{ 'top-gap': topGap }">
+      <div class="left">
+        <div class="img">
+          <slot name="icon"></slot>
+        </div>
+      </div>
+      <div class="right">
+        <slot name="title">
+          <div class="title">{{ info?.name }}</div>
+        </slot>
+        <slot name="description"> </slot>
       </div>
     </div>
-    <div class="right">
-      <slot name="title">
-        <div class="title">{{ info?.name }}</div>
-      </slot>
-      <slot name="description"> </slot>
-    </div>
+    <a-divider style="margin: 0; border-radius: 1px" :size="4"></a-divider>
   </div>
 </template>
 

@@ -1,6 +1,7 @@
 import connectorRoutes from '@/views/operation-hub/connectors/routes';
 import templateRoutes from '@/views/operation-hub/templates/routes';
 import secretRoutes from '@/views/operation-hub/secret/routes';
+import operationRoutes from '@/views/operation-hub/routes';
 
 export default {
   path: 'operation',
@@ -11,7 +12,13 @@ export default {
     requiresAuth: false,
     isRouteView: true,
     order: 3,
-    icon: 'icon-relation'
+    icon: 'icon-relation',
+    onlyRenderChildren: true
   },
-  children: [...connectorRoutes, ...templateRoutes, ...secretRoutes]
+  children: [
+    ...operationRoutes,
+    ...connectorRoutes,
+    ...templateRoutes,
+    ...secretRoutes
+  ]
 };

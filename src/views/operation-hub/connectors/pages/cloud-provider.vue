@@ -1,151 +1,170 @@
 <template>
-  <ComCrad top-gap class="kuber-detail-wrap">
-    <GroupTitle
-      :title="title"
-      show-back
-      :show-edit="
-        pageAction === 'view' &&
-        userStore.hasRolesActionsPermission({
-          resource: Resources.Connectors,
-          actions: ['PUT']
-        })
-      "
-      @edit="handleEdit"
-    ></GroupTitle>
-    <div>
-      <a-form ref="formref" :model="formData" auto-label-width>
-        <a-form-item
-          :label="$t('operation.connectors.form.name')"
-          field="name"
-          :rules="[
-            {
-              required: pageAction === 'edit',
-              message: $t('operation.connectors.rule.name')
-            }
-          ]"
-        >
-          <a-input
-            v-if="pageAction === 'edit'"
-            v-model="formData.name"
-            style="width: 470px"
-            :max-length="30"
-            show-word-limit
-          ></a-input>
-          <span v-else class="readonly-view-label">{{
-            formData.name || '-'
-          }}</span>
-        </a-form-item>
-        <a-form-item
-          :label="$t('operation.connectors.form.type')"
-          field="type"
-          :rules="[
-            {
-              required: pageAction === 'edit',
-              message: $t('operation.connectors.type.rule')
-            }
-          ]"
-        >
-          <a-select
-            v-if="pageAction === 'edit'"
-            v-model="formData.type"
-            style="width: 470px"
-          >
-            <a-option
-              v-for="(item, index) in typeOptions"
-              :key="index"
-              :value="item.value"
-            >
-              <ProviderIcon :provider="toLower(item.value)"></ProviderIcon>
-              <span style="margin-left: 5px">{{ item.label }}</span>
-            </a-option>
-            <template #prefix>
-              <ProviderIcon :provider="toLower(formData.type)"></ProviderIcon>
-            </template>
-          </a-select>
-          <span v-else class="readonly-view-label"
-            ><ProviderIcon
-              :provider="toLower(formData.type)"
-              class="mright-5"
-            ></ProviderIcon>
-            <span>{{ formData.type }}</span>
-          </span>
-        </a-form-item>
-        <template v-if="pageAction === 'edit'">
-          <div
-            v-for="item in providerKeys"
-            :key="item.key"
-            style="display: inline-flex; justify-content: flex-start"
-          >
-            <a-form-item
-              :label="item.label"
-              :field="`configData.${item.key}.value`"
-              validate-trigger="change"
-              :rules="[
+  <div>
+    <BreadWrapper>
+      <Breadcrumb
+        :items="
+          route.params.projectId
+            ? breadCrumbList
+            : [
                 {
-                  required: pageAction === 'edit',
-                  message: $t('common.form.rule.input', { name: item.label })
+                  label: $t('menu.operatorHub'),
+                  icon: 'icon-relation',
+                  route: 'OperationMain'
+                },
+                {
+                  label: title
                 }
-              ]"
-            >
-              <div>
-                <a-input
-                  v-if="item.visible"
-                  v-model="formData.configData[item.key].value"
-                  style="width: 470px"
-                />
-                <a-input-password
-                  v-else
-                  v-model="formData.configData[item.key].value"
-                  style="width: 470px"
-                ></a-input-password>
-              </div>
-            </a-form-item>
-          </div>
-        </template>
-        <a-form-item
-          v-if="pageAction === 'view'"
-          :label="$t('operation.connectors.form.attribute')"
-        >
-          <DescriptionTable
-            style="width: 600px; margin-left: 12px"
-            :data-list="providerKeys"
+              ]
+        "
+      ></Breadcrumb>
+    </BreadWrapper>
+    <ComCard top-gap class="kuber-detail-wrap">
+      <GroupTitle
+        :bordered="false"
+        :show-edit="
+          pageAction === 'view' &&
+          userStore.hasRolesActionsPermission({
+            resource: Resources.Connectors,
+            actions: ['PUT']
+          })
+        "
+        @edit="handleEdit"
+      ></GroupTitle>
+      <div>
+        <a-form ref="formref" :model="formData" auto-label-width>
+          <a-form-item
+            :label="$t('operation.connectors.form.name')"
+            field="name"
+            :rules="[
+              {
+                required: pageAction === 'edit',
+                message: $t('operation.connectors.rule.name')
+              }
+            ]"
           >
-            <template #value="{ row }">
-              <AutoTip
-                style="width: 350px"
-                :tooltip-props="{
-                  content: get(formData, `configData.${row.key}.value`)
-                }"
+            <a-input
+              v-if="pageAction === 'edit'"
+              v-model="formData.name"
+              style="width: 470px"
+              :max-length="30"
+              show-word-limit
+            ></a-input>
+            <span v-else class="readonly-view-label">{{
+              formData.name || '-'
+            }}</span>
+          </a-form-item>
+          <a-form-item
+            :label="$t('operation.connectors.form.type')"
+            field="type"
+            :rules="[
+              {
+                required: pageAction === 'edit',
+                message: $t('operation.connectors.type.rule')
+              }
+            ]"
+          >
+            <a-select
+              v-if="pageAction === 'edit'"
+              v-model="formData.type"
+              style="width: 470px"
+            >
+              <a-option
+                v-for="(item, index) in typeOptions"
+                :key="index"
+                :value="item.value"
               >
-                <span>{{
-                  !row.visible
-                    ? '******'
-                    : get(formData, `configData.${row.key}.value`)
-                }}</span>
-              </AutoTip>
-            </template>
-          </DescriptionTable>
-        </a-form-item>
-      </a-form>
-    </div>
-    <!-- <EditPageFooter v-if="pageAction === 'edit'">
-      <template #save>
+                <ProviderIcon :provider="toLower(item.value)"></ProviderIcon>
+                <span style="margin-left: 5px">{{ item.label }}</span>
+              </a-option>
+              <template #prefix>
+                <ProviderIcon :provider="toLower(formData.type)"></ProviderIcon>
+              </template>
+            </a-select>
+            <span v-else class="readonly-view-label"
+              ><ProviderIcon
+                :provider="toLower(formData.type)"
+                class="mright-5"
+              ></ProviderIcon>
+              <span>{{ formData.type }}</span>
+            </span>
+          </a-form-item>
+          <template v-if="pageAction === 'edit'">
+            <div
+              v-for="item in providerKeys"
+              :key="item.key"
+              style="display: inline-flex; justify-content: flex-start"
+            >
+              <a-form-item
+                :label="item.label"
+                :field="`configData.${item.key}.value`"
+                validate-trigger="change"
+                :rules="[
+                  {
+                    required: pageAction === 'edit',
+                    message: $t('common.form.rule.input', { name: item.label })
+                  }
+                ]"
+              >
+                <div>
+                  <a-input
+                    v-if="item.visible"
+                    v-model="formData.configData[item.key].value"
+                    style="width: 470px"
+                  />
+                  <a-input-password
+                    v-else
+                    v-model="formData.configData[item.key].value"
+                    style="width: 470px"
+                  ></a-input-password>
+                </div>
+              </a-form-item>
+            </div>
+          </template>
+          <a-form-item
+            v-if="pageAction === 'view'"
+            :label="$t('operation.connectors.form.attribute')"
+          >
+            <DescriptionTable
+              style="width: 600px; margin-left: 12px"
+              :data-list="providerKeys"
+            >
+              <template #value="{ row }">
+                <AutoTip
+                  style="width: 350px"
+                  :tooltip-props="{
+                    content: get(formData, `configData.${row.key}.value`)
+                  }"
+                >
+                  <span>{{
+                    !row.visible
+                      ? '******'
+                      : get(formData, `configData.${row.key}.value`)
+                  }}</span>
+                </AutoTip>
+              </template>
+            </DescriptionTable>
+          </a-form-item>
+        </a-form>
+      </div>
+      <EditPageFooter v-if="pageAction === 'edit'">
+        <template #save>
+          <a-button
+            type="primary"
+            class="cap-title cancel-btn"
+            :loading="submitLoading"
+            @click="handleSubmit"
+            >{{ $t('common.button.save') }}</a-button
+          >
+        </template>
         <a-button
-          type="primary"
+          type="outline"
           class="cap-title cancel-btn"
-          :loading="submitLoading"
-          @click="handleSubmit"
-          >{{ $t('common.button.save') }}</a-button
+          @click="handleCancel"
+          >{{ $t('common.button.cancel') }}</a-button
         >
-      </template>
-      <a-button
-        type="outline"
-        class="cap-title cancel-btn"
-        @click="handleCancel"
-        >{{ $t('common.button.cancel') }}</a-button
-      >
-    </EditPageFooter> -->
-  </ComCrad>
+      </EditPageFooter>
+    </ComCard>
+  </div>
 </template>
 
 <script lang="ts" setup>
@@ -162,32 +181,34 @@
   import usePageAction from '@/hooks/use-page-action';
   import ProviderIcon from '@/components/provider-icon/index.vue';
   import DescriptionTable from '@/components/description-table/index.vue';
+  import useGetBreadState from '@/views/application-management/projects/hooks/use-get-breadstate';
   import StatusLabel from '../components/status-label.vue';
   import { ConnectorFormData } from '../config/interface';
   import { createConnector, updateConnector, queryItemConnector } from '../api';
 
-  const props = defineProps({
-    id: {
-      type: String,
-      default() {
-        return '';
-      }
-    }
-  });
+  // const props = defineProps({
+  //   id: {
+  //     type: String,
+  //     default() {
+  //       return '';
+  //     }
+  //   }
+  // });
   const providerKeys = [
     { label: 'AccessKey', value: '', key: 'access_key', visible: true },
     { label: 'SecretKey', value: '', key: 'secret_key', visible: false },
     { label: 'Region', value: '', key: 'region', visible: true }
   ];
+  const { getProjectState } = useGetBreadState();
   const userStore = useUserStore();
   const { t, router, route } = useCallCommon();
-  const pageAction = ref('edit');
-  // const { pageAction, handleEdit } = usePageAction();
-  const id = props.id || '';
+  const { pageAction, handleEdit } = usePageAction();
+  const id = route.query.id as string;
   const formref = ref();
   const submitLoading = ref(false);
   let copyFormData: any = {};
   const formData: ConnectorFormData = reactive({
+    projectID: route.params.projectId as string,
     name: '',
     configData: {
       access_key: {
@@ -237,7 +258,19 @@
       type: t('operation.connectors.reinstall.cloudProvider')
     });
   });
-
+  const breadCrumbList = computed(() => {
+    return [
+      {
+        ...getProjectState({
+          id: route.params.projectId,
+          name: ''
+        })
+      },
+      {
+        label: title.value
+      }
+    ];
+  });
   const handleSubmit = async () => {
     const res = await formref.value?.validate();
     if (!res) {
@@ -249,7 +282,7 @@
         } else {
           await createConnector(formData);
         }
-        // router.back();
+        router.back();
         submitLoading.value = false;
       } catch (error) {
         submitLoading.value = false;
@@ -310,7 +343,7 @@
     getConnectorInfo,
     handleSubmit
   });
-  // getConnectorInfo();
+  getConnectorInfo();
 </script>
 
 <style lang="less" scoped>

@@ -1,7 +1,22 @@
 <template>
   <div>
     <BreadWrapper>
-      <Breadcrumb :items="breadCrumbList"></Breadcrumb>
+      <Breadcrumb
+        :items="
+          route.params.projectId
+            ? breadCrumbList
+            : [
+                {
+                  label: $t('menu.operatorHub'),
+                  icon: 'icon-relation',
+                  route: 'OperationMain'
+                },
+                {
+                  label: title
+                }
+              ]
+        "
+      ></Breadcrumb>
     </BreadWrapper>
     <ComCard top-gap class="kuber-detail-wrap">
       <GroupTitle

@@ -3,7 +3,7 @@
     <template #separator>
       <span></span>
     </template>
-    <a-breadcrumb-item v-if="menu.label">
+    <a-breadcrumb-item v-if="menu">
       <span class="box">
         <span v-if="menu.type" class="type">{{ menu.type }}</span>
         <span class="item-content">
@@ -27,14 +27,23 @@
               :bordered="false"
               :model-value="item.value"
               :class="{ 'active-bread': index === items.length - 1 }"
-              style="width: 100px"
+              style="width: 120px"
+              :trigger-props="{ contentClass: 'component-select-drop' }"
               :options="item.options"
-              :popup-container="getContainer(item.wrapperId)"
+              :popup-container="getContainer(item.wrapperId) || ''"
               size="mini"
               class="border-less"
               @click="handleClick(item, index)"
               @change="(val) => handleSelectChange(val, item)"
             >
+              <template #option="{ data }">
+                <AutoTip
+                  :tooltip-props="{
+                    content: data.label
+                  }"
+                  >{{ data.label }}
+                </AutoTip>
+              </template>
               <template #arrow-icon>
                 <OnClickOutside @trigger="handleClickOutSide(item)">
                   <icon-down-circle @click.stop="handleTogglePopup(item)" />
@@ -48,16 +57,30 @@
                     align-items: center;
                     height: 30px;
                     padding: 0 10px;
+                    font-weight: 400;
                   "
                 >
-                  <a-link @click="handleOnSettings(item)">
+                  <a-link
+                    style="color: var(--sealblue-6)"
+                    @click="handleOnSettings(item)"
+                  >
                     <icon-settings class="mright-5" />Settings
                   </a-link>
                 </div>
               </template>
             </a-select>
           </span>
-          <span v-else class="label single">{{ item.label }}</span>
+          <span v-else class="label single">
+            <a-link
+              v-if="index !== items.length - 1"
+              style="color: var(--sealblue-6)"
+              @click="handleClickItem(item)"
+            >
+              <component :is="item.icon" v-if="item.icon"></component>
+              {{ item.label }}
+            </a-link>
+            <span v-else>{{ item.label }}</span>
+          </span>
           <icon-oblique-line
             v-if="index < items.length - 1"
             class="size-14 separator-line"
@@ -107,11 +130,17 @@
       name: item.route
     });
   };
+  const handleClickItem = (item) => {
+    router.replace({
+      name: item.route
+    });
+  };
   const handleTogglePopup = (item) => {
     item.visible = !item.visible;
   };
   const handleClickOutSide = (item) => {
     item.visible = false;
+    console.log('clickoutside');
   };
   const handleOnSettings = (item) => {
     item.onSetting?.(item);
@@ -149,17 +178,18 @@
             transition: transform 0.2s cubic-bezier(0, 0, 1, 1);
 
             &:hover {
-              transform: scale(1.2);
+              background-color: transparent;
+              border-radius: 50%;
+              box-shadow: 0 0 6px var(--sealblue-6);
               cursor: pointer;
-              transition: transform 0.2s cubic-bezier(0, 0, 1, 1);
             }
           }
         }
 
         .arco-select-view-value {
-          flex-basis: fit-content;
+          // flex-basis: fit-content;
           margin-right: 15px;
-          padding-right: 5px;
+          // padding-right: 5px;
           color: var(--color-text-2);
           font-size: 14px;
           transition: transform 0.2s cubic-bezier(0, 0, 1, 1);
@@ -199,7 +229,15 @@
     :deep(.arco-breadcrumb-item) {
       color: rgba(255, 255, 255, 1);
 
+      .arco-trigger-content {
+        .arco-select-option {
+          line-height: 32px;
+        }
+      }
+
       &:last-child {
+        font-weight: 400;
+
         .arco-select-view-single {
           .arco-select-view-value {
             &:hover {

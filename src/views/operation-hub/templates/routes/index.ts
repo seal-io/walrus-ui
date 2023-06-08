@@ -6,7 +6,7 @@ export default [
     name: 'TemplateList',
     component: () => import('@/views/operation-hub/templates/pages/list.vue'),
     meta: {
-      hideInMenu: false,
+      hideInMenu: true,
       ignoreCache: false,
       locale: 'operation.templates.menu',
       requiresAuth: true,

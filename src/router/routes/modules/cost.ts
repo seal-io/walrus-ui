@@ -10,7 +10,8 @@ export default {
     requiresAuth: false,
     isRouteView: true,
     order: 2,
-    icon: 'icon-bar-chart'
+    icon: 'icon-bar-chart',
+    onlyRenderChildren: true
   },
   children: [...analyseRoutes]
 };

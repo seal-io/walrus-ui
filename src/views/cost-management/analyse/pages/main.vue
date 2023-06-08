@@ -4,6 +4,7 @@
       :is="perspectiveMap[viewComponent]"
       :source="viewComponent"
       :is-page="true"
+      :view-id="viewId"
       :pageloading="loading"
     >
       <template #select>
@@ -24,8 +25,8 @@
           <template #empty><span></span></template>
         </a-select>
       </template>
-    </component> -->
-    <!-- <a-select
+    </component>
+    <a-select
       v-model="viewId"
       style="width: 180px"
       class="border-less"
@@ -58,7 +59,6 @@
             <a-select
               :model-value="viewId"
               style="width: 180px"
-              class="border-less"
               :placeholder="$t('cost.analyse.view.holder')"
               allow-search
               @change="handleViewChange"
@@ -111,12 +111,12 @@
       hotProjectId: val,
       page: toLower(data?.label || 'all')
     });
-    router.replace({
-      query: {
-        id: val,
-        page: data?.label
-      }
-    });
+    // router.replace({
+    //   query: {
+    //     id: val,
+    //     page: data?.label
+    //   }
+    // });
     setTimeout(() => {
       viewId.value = val;
       viewComponent.value = toLower(data?.label || 'all');
@@ -200,7 +200,7 @@
 
 <style lang="less" scoped>
   .main-wrapper {
-    margin-top: 20px;
+    background-color: var(--color-fill-2);
 
     :deep(.arco-tabs-content) {
       padding-top: 0;
