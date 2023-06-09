@@ -1,7 +1,11 @@
 <template>
   <div>
     <BreadWrapper>
-      <Breadcrumb :items="breadCrumbList" @change="handleChange"></Breadcrumb>
+      <Breadcrumb
+        :items="breadCrumbList"
+        :menu="{ icon: 'icon-apps' }"
+        @change="handleChange"
+      ></Breadcrumb>
     </BreadWrapper>
     <div>
       <ServiceDetail :instance-id="serviceId"></ServiceDetail>

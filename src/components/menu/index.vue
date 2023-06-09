@@ -1,8 +1,8 @@
 <script lang="tsx">
-  import _, { divide } from 'lodash';
+  import _ from 'lodash';
   import { defineComponent, ref, h, compile, computed } from 'vue';
-  import { useI18n } from 'vue-i18n';
-  import { useRouter, RouteRecordRaw, RouteRecordNormalized } from 'vue-router';
+  import useCallCommon from '@/hooks/use-call-common';
+  import { RouteRecordRaw, RouteRecordNormalized } from 'vue-router';
   // import type { RouteLocationNormalized } from 'vue-router';
 
   import { useAppStore, useProjectStore } from '@/store';
@@ -12,19 +12,19 @@
   import localStore from '@/utils/localStore';
   import { USER_DEFAULT_PROJECT } from '@/views/config';
   import useLocale from '@/hooks/locale';
+  import { queryProjects } from '@/views/application-management/projects/api';
   import { profileMenu } from './config';
 
   export default defineComponent({
     emit: ['collapse'],
     setup() {
-      const { t } = useI18n();
+      const { t, router, route } = useCallCommon();
       const currentRoute = ref<string>('');
       const appStore = useAppStore();
       const { changeLocale } = useLocale();
       const { logout } = useUser();
       const projectStore = useProjectStore();
       const permission = usePermission();
-      const router = useRouter();
 
       const collapsed = computed({
         get() {
@@ -298,6 +298,46 @@
         }
         return travel();
       };
+      const getProjectList = async () => {
+        try {
+          const params = {
+            page: -1
+          };
+          const { data } = await queryProjects(params);
+          const list = _.map(data.items, (item) => {
+            return {
+              label: item.name,
+              value: item.id
+            };
+          });
+          const { id, name } = await localStore.getValue(USER_DEFAULT_PROJECT);
+          const defaultValue = route.params.projectId || _.get(list, '0.value');
+          const defaultName = _.get(list, '0.label');
+          if (!id && list.length) {
+            localStore.setValue(USER_DEFAULT_PROJECT, {
+              id: defaultValue,
+              name: defaultName
+            });
+          } else if (!list.length) {
+            localStore.setValue(USER_DEFAULT_PROJECT, { id: '', name: '' });
+          } else {
+            const data = _.find(list, (item) => item.value === id);
+            localStore.setValue(USER_DEFAULT_PROJECT, {
+              id: data?.value || defaultValue,
+              name: data?.label || defaultName
+            });
+          }
+          projectStore.setInfo({
+            projectList: _.cloneDeep(list)
+          });
+        } catch (error) {
+          projectStore.setInfo({
+            projectList: []
+          });
+          console.log(error);
+        }
+      };
+      getProjectList();
       // appStore.device !== 'mobile'
       return () => (
         <div class="menu-container">

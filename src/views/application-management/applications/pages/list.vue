@@ -82,7 +82,7 @@
                   actions: ['GET']
                 })
               "
-              @click.stop="handleClickView(record)"
+              @click.stop="handleClickViewDetail(record)"
               >{{ record.name }}</a-link
             >
             <span v-else>{{ record.name }}</span>
@@ -142,7 +142,22 @@
         >
           <template #cell="{ record }">
             <a-space>
-              <a-dropdown-button
+              <span
+                v-for="item in instanceActions"
+                :key="item.value"
+                :value="item.value"
+              >
+                <a-tooltip :content="$t(item.label)">
+                  <a-link @click="handleClickAction(item, record)">
+                    <component
+                      :is="item.icon"
+                      v-bind="item.props"
+                      style="margin-right: 8px"
+                    ></component>
+                  </a-link>
+                </a-tooltip>
+              </span>
+              <!-- <a-dropdown-button
                 size="small"
                 style="line-height: 30px"
                 position="bl"
@@ -182,27 +197,7 @@
                     </a-tooltip>
                   </a-doption>
                 </template>
-              </a-dropdown-button>
-              <!-- <a-tooltip
-                :content="$t('applications.applications.history.clone')"
-              >
-                <a-link
-                  v-if="
-                    userStore.hasProjectResourceActions({
-                      projectID: queryParams.projectID,
-                      resource: Resources.Applications,
-                      actions: ['GET', 'POST']
-                    })
-                  "
-                  type="text"
-                  size="small"
-                  @click="handleClone(record)"
-                >
-                  <template #icon
-                    ><icon-font type="icon-Clone-Cloud" class="size-16"
-                  /></template>
-                </a-link>
-              </a-tooltip> -->
+              </a-dropdown-button> -->
             </a-space>
           </template>
         </a-table-column>
@@ -229,6 +224,22 @@
       @reset="handleResetServiceInfo"
       @save="handleSaveService"
     ></CreateService>
+    <cloneInstanceModal
+      v-model:show="showCloneModal"
+      :service-i-d="_.get(cloneInstance, 'id')"
+      :title="
+        $t('applications.applications.instance.clonetitle', {
+          from: _.get(cloneInstance, 'name')
+        })
+      "
+      @save="cloneHandler"
+    ></cloneInstanceModal>
+    <rollbackModal
+      v-model:show="showRollbackModal"
+      :instance-id="selectedInstance"
+      :project-i-d="queryParams.projectID"
+      :title="rollbackTitle"
+    ></rollbackModal>
   </ComCard>
 </template>
 
@@ -236,7 +247,15 @@
   import { Resources } from '@/permissions/config';
   import _, { map, get, pickBy, find, filter } from 'lodash';
   import dayjs from 'dayjs';
-  import { reactive, ref, watch, onBeforeUnmount, provide } from 'vue';
+  import {
+    reactive,
+    ref,
+    watch,
+    onBeforeUnmount,
+    provide,
+    getCurrentInstance,
+    onMounted
+  } from 'vue';
   import ADropdownButton from '@arco-design/web-vue/es/dropdown/dropdown-button';
   import { useSetChunkRequest } from '@/api/axios-chunk-request';
   import useCallCommon from '@/hooks/use-call-common';
@@ -255,12 +274,20 @@
     setInstanceStatus,
     instanceActions
   } from '../config';
-  import { queryApplications, deleteApplication } from '../api';
+  import {
+    queryApplications,
+    deleteApplication,
+    cloneApplicationInstance
+  } from '../api';
   import InstanceStatus from '../components/instance-status.vue';
   import CreateService from '../components/app-info/edit-module.vue';
   import useTemplatesData from '../hooks/use-templates-data';
+  import useRollbackRevision from '../hooks/use-rollback-revision';
+  import cloneInstanceModal from '../components/clone-instance-modal.vue';
+  import rollbackModal from '../components/rollback-modal.vue';
 
   const HOT_PROJECT_ID = 'HOT_PROJECT_ID';
+  const { proxy } = getCurrentInstance();
   const userStore = useUserStore();
   const {
     completeData,
@@ -270,6 +297,12 @@
     templateList,
     allTemplateVersions
   } = useTemplatesData();
+  const {
+    showRollbackModal,
+    rollbackTitle,
+    selectedInstance,
+    handleRollbackRevision
+  } = useRollbackRevision();
   const { setChunkRequest } = useSetChunkRequest();
   const { rowSelection, selectedKeys, handleSelectChange } = useRowSelect();
   const { router, locale, route } = useCallCommon();
@@ -277,6 +310,9 @@
     defaultSortField: '-createTime',
     defaultOrder: 'descend'
   });
+
+  const showCloneModal = ref(false);
+  const cloneInstance = ref({});
   const showEditModal = ref(false);
   const moduleAction = ref('create');
   const serviceInfo = ref<any>({});
@@ -292,6 +328,7 @@
     page: 1,
     perPage: 10
   });
+  const actionHandlerMap = new Map();
   const axiosInstance: any = null;
   const dataList = ref<AppRowData[]>([]);
 
@@ -337,6 +374,38 @@
       queryParams.page = 1;
       handleFilter();
     }, 100);
+  };
+  const handleClickRollback = (row) => {
+    handleRollbackRevision('instance', row);
+  };
+  const handleClickUpgrade = (row) => {
+    router.push({
+      name: 'ProjectServiceEdit',
+      params: {
+        action: 'edit'
+      },
+      query: {
+        id: row.id
+      }
+    });
+  };
+  const handleClickClone = async (item) => {
+    cloneInstance.value = item;
+    setTimeout(() => {
+      showCloneModal.value = true;
+    }, 100);
+  };
+  const cloneHandler = async () => {
+    try {
+      cloneInstance.value = {};
+      handleSearch();
+      execSucceed();
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  const handleClickAction = (item, row) => {
+    actionHandlerMap.get(item.value)(row);
   };
 
   const handleReset = () => {
@@ -387,18 +456,8 @@
       loading.value = false;
     }
   };
-  const handleClickEdit = (row) => {
-    router.push({
-      name: 'ProjectServiceEdit',
-      params: {
-        action: 'edit'
-      },
-      query: {
-        id: row.id
-      }
-    });
-  };
-  const handleClickView = (row) => {
+
+  const handleClickViewDetail = (row) => {
     router.push({
       name: 'ProjectServiceDetail',
       params: {
@@ -409,19 +468,14 @@
       }
     });
   };
-  const handleClone = async (row) => {
-    router.push({
-      name: 'ApplicationsDetail',
-      params: {
-        projectId: row.project?.id || queryParams.projectID,
-        action: 'edit'
-      },
-      query: { cloneId: row.id }
-    });
-  };
 
   const handleDelete = async () => {
     deleteModal({ onOk: handleDeleteConfirm });
+  };
+  const setActionHandler = () => {
+    _.each(instanceActions, (item) => {
+      actionHandlerMap.set(item.value, _.get(proxy, item.handler));
+    });
   };
   const init = async () => {
     initCompleteData();
@@ -517,6 +571,9 @@
   onBeforeUnmount(() => {
     axiosInstance?.cancel?.();
     clearInterval(loopTimer);
+  });
+  onMounted(() => {
+    setActionHandler();
   });
   // const res = dayjs('2020-02-01').diff('2021-02-01', 'day');
   // console.log('res===', res);

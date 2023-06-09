@@ -88,7 +88,7 @@
     position: absolute;
     top: 0;
     left: 0;
-    z-index: 99;
+    z-index: 1001;
     height: 100%;
     transition: all 0.2s cubic-bezier(0.34, 0.69, 0.1, 1);
 

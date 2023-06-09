@@ -62,8 +62,8 @@ export default {
   'applications.applications.instance.log': 'Logs',
   'applications.applications.instance.value': 'Value',
   'applications.applications.instance.cloneName':
-    'please enter a new instance name',
-  'applications.applications.instance.clonetitle': 'Clone Instance ({from})',
+    'please enter a new service name',
+  'applications.applications.instance.clonetitle': 'Clone Service ({from})',
   'applications.applications.instance.configstatus':
     'The instance configuration is inconsistent with the application configuration',
   'applications.applications.logs.live': 'Running Logs',
@@ -82,7 +82,7 @@ export default {
   'applications.applications.history.operator': 'Operator',
   'applications.applications.history.clone': 'Clone',
   'applications.applications.history.rollbackapp': 'Application Rollback',
-  'applications.applications.history.rollbackinstance': 'Instance Rollback',
+  'applications.applications.history.rollbackinstance': 'Service Rollback',
   'applications.applications.history.deploymentTime': 'Deployment Time',
   'applications.applications.history.rollback': 'Rollback',
   'applications.applications.history.detail': 'Revision Details',
@@ -108,10 +108,10 @@ export default {
   'applications.applications.rules.versions': 'version is required',
   'applications.applications.modules.tips': 'Required for new applications',
   'applications.applications.modules.params.title':
-    "To use secrets, variables, or related attributes in the same application module, here's how:",
+    'To use variables, output properties in related services, the method is as follows:',
   'applications.applications.modules.params.tips1': `1. Use the secret: you can enter {'$'}{'{'}secret.secretName{'}'} in the input box`,
-  'applications.applications.modules.params.tips2': `2. Use variables: you can enter {'$'}{'{'}var.variableKey{'}'} in the input box`,
-  'applications.applications.modules.params.tips3': `3. Use the attributes in the module: you can enter {'$'}{'{'}module.moduleName.attributeName{'}'} in the input box`,
+  'applications.applications.modules.params.tips2': `2. Use variables: you can enter {'$'}{'{'}var.variableName{'}'} in the input box`,
+  'applications.applications.modules.params.tips3': `3. Use the attributes in the module: you can enter {'$'}{'{'}service.serviceName.attributeName{'}'} in the input box`,
   'applications.applications.rule.modules.name': 'exists with the same name',
   'applications.applications.variables.title': 'Variables',
   'applications.applications.variables.button': 'Add a variable',

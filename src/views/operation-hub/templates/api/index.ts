@@ -58,7 +58,7 @@ export function queryModulesVersions(params: { moduleID: string }) {
     }
   });
 }
-export function queryModulesAllVersions(params: { moduleID: string[] }) {
+export function queryModulesAllVersions(params: { templateID: string[] }) {
   return axios.get(`/template-versions`, {
     params,
     paramsSerializer: (obj) => {

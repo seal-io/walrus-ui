@@ -3,6 +3,7 @@
     <BreadWrapper>
       <Breadcrumb
         :items="breadCrumbList"
+        :menu="{ icon: 'icon-apps' }"
         @change="handleSelectChange"
       ></Breadcrumb>
     </BreadWrapper>

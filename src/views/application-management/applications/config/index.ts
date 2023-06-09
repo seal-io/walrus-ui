@@ -67,13 +67,18 @@ export const instanceActions = [
   {
     label: 'applications.applications.button.upgrade',
     value: 'upgrade',
-    icon: 'icon-sync',
+    icon: 'icon-font',
+    handler: 'handleClickUpgrade',
+    props: {
+      type: 'icon-upgrade'
+    },
     permission: ['POST']
   },
   {
     label: 'common.button.clone',
     value: 'clone',
     icon: 'icon-font',
+    handler: 'handleClickClone',
     props: {
       type: 'icon-Clone-Cloud'
     },
@@ -83,6 +88,7 @@ export const instanceActions = [
     label: 'common.button.rollback',
     value: 'rollback',
     icon: 'icon-font',
+    handler: 'handleClickRollback',
     props: {
       type: 'icon-rollback-copy'
     },

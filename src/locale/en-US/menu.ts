@@ -3,6 +3,7 @@ export default {
   'menu.applicationManagement': 'App Management',
   'menu.applicationManagement.project': 'Projects',
   'menu.applicationManagement.application': 'Applications',
+  'menu.applicationManagement.serivce': 'Services',
   'menu.applicationManagement.secret': 'Secrets',
   'menu.costManagement': 'Cost Management',
   'menu.costManagement.analyse': 'Cost Analysis',
