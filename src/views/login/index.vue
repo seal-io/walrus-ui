@@ -43,7 +43,7 @@
   import _ from 'lodash';
   import { onMounted, ref } from 'vue';
   import { getFirstLoginStatus } from '@/api/user';
-  import { useUserStore } from '@/store';
+  import { useUserStore, useAppStore } from '@/store';
   import useEnterPage from '@/hooks/use-enter-page';
   import Footer from '@/components/footer/index.vue';
   import highlightBlock from '@/components/highlight-block/index.vue';
@@ -54,6 +54,7 @@
 
   const { enterUserPage } = useEnterPage();
   const userStore = useUserStore();
+  const appStore = useAppStore();
   const isFirstLogin = ref(false);
   const firstLoginStatus = ref({});
   // TODO delete
@@ -74,6 +75,7 @@
   // enter page password-free
   const enterPageForFree = async () => {
     userStore.resetInfo();
+    appStore.resetInfo();
     await userStore.info();
     if (userStore.name) {
       enterUserPage();

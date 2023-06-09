@@ -9,7 +9,7 @@
         <span class="item-content">
           <i v-if="menu.iconfont" class="iconfont" :class="[menu.icon]"></i>
           <component :is="menu.icon" v-else-if="menu.icon"></component>
-          <span class="label">{{ $t(menu.label) }}</span>
+          <span class="label">{{ $t(menu.label || '') }}</span>
         </span>
       </span>
     </a-breadcrumb-item>

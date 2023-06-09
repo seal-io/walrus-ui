@@ -181,5 +181,11 @@
         }
       }
     }
+
+    :deep(.group-title) {
+      .label .title-wrap {
+        justify-content: flex-start;
+      }
+    }
   }
 </style>

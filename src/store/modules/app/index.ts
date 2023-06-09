@@ -12,7 +12,7 @@ const useAppStore = defineStore('app', {
     },
     appDevice(state: AppState) {
       return state.device;
-    },
+    }
   },
 
   actions: {
@@ -39,7 +39,10 @@ const useAppStore = defineStore('app', {
     toggleMenu(value: boolean) {
       this.hideMenu = value;
     },
-  },
+    resetInfo() {
+      this.$reset();
+    }
+  }
 });
 
 export default useAppStore;
