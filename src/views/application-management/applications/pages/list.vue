@@ -37,7 +37,7 @@
           @click="handleCreate"
           >{{ $t('applications.applications.create') }}</a-button
         >
-        <a-button
+        <!-- <a-button
           v-if="
             userStore.hasProjectResourceActions({
               projectID: queryParams.projectID,
@@ -50,7 +50,7 @@
           :disabled="!selectedKeys.length"
           @click="handleDelete"
           >{{ $t('common.button.delete') }}</a-button
-        >
+        > -->
       </template>
     </FilterBox>
     <a-table
@@ -61,7 +61,6 @@
       :data="dataList"
       :pagination="false"
       row-key="id"
-      :row-selection="rowSelection"
       @sorter-change="handleSortChange"
       @selection-change="handleSelectChange"
     >
@@ -157,6 +156,14 @@
                   </a-link>
                 </a-tooltip>
               </span>
+              <a-tooltip :content="$t('common.button.delete')">
+                <a-link
+                  style="color: var(--seal-color-error)"
+                  @click="handleDelete(record)"
+                >
+                  <icon-delete></icon-delete>
+                </a-link>
+              </a-tooltip>
               <!-- <a-dropdown-button
                 size="small"
                 style="line-height: 30px"
@@ -240,6 +247,12 @@
       :project-i-d="queryParams.projectID"
       :title="rollbackTitle"
     ></rollbackModal>
+    <deleteInstanceModal
+      v-model:show="showDeleteModal"
+      :callback="handleDeleteConfirm"
+      :title="$t('common.delete.tips')"
+    >
+    </deleteInstanceModal>
   </ComCard>
 </template>
 
@@ -277,7 +290,7 @@
   import {
     queryApplications,
     deleteApplication,
-    cloneApplicationInstance
+    deleteApplicationInstance
   } from '../api';
   import InstanceStatus from '../components/instance-status.vue';
   import CreateService from '../components/app-info/edit-module.vue';
@@ -285,6 +298,7 @@
   import useRollbackRevision from '../hooks/use-rollback-revision';
   import cloneInstanceModal from '../components/clone-instance-modal.vue';
   import rollbackModal from '../components/rollback-modal.vue';
+  import deleteInstanceModal from '../components/delete-instance-modal.vue';
 
   const HOT_PROJECT_ID = 'HOT_PROJECT_ID';
   const { proxy } = getCurrentInstance();
@@ -315,7 +329,9 @@
   const cloneInstance = ref({});
   const showEditModal = ref(false);
   const moduleAction = ref('create');
+  const showDeleteModal = ref(false);
   const serviceInfo = ref<any>({});
+  const serviceDel = ref<any>({});
   const id = route.query.id || '';
   let timer: any = null;
   let loopTimer: any = null;
@@ -436,26 +452,26 @@
     //   showEditModal.value = true;
     // }, 150);
   };
-  const handleDeleteConfirm = async () => {
-    try {
-      loading.value = true;
-      const ids = map(selectedKeys.value, (val) => {
-        return {
-          id: val
-        };
-      });
-      await deleteApplication({ data: ids, projectID: queryParams.projectID });
-      loading.value = false;
-      execSucceed();
-      queryParams.page = 1;
-      selectedKeys.value = [];
-      rowSelection.selectedRowKeys = [];
-      handleFilter();
-    } catch (error) {
-      console.log(error);
-      loading.value = false;
-    }
-  };
+  // const handleDeleteConfirm = async () => {
+  //   try {
+  //     loading.value = true;
+  //     const ids = map(selectedKeys.value, (val) => {
+  //       return {
+  //         id: val
+  //       };
+  //     });
+  //     await deleteApplication({ data: ids, projectID: queryParams.projectID });
+  //     loading.value = false;
+  //     execSucceed();
+  //     queryParams.page = 1;
+  //     selectedKeys.value = [];
+  //     rowSelection.selectedRowKeys = [];
+  //     handleFilter();
+  //   } catch (error) {
+  //     console.log(error);
+  //     loading.value = false;
+  //   }
+  // };
 
   const handleClickViewDetail = (row) => {
     router.push({
@@ -468,9 +484,18 @@
       }
     });
   };
-
-  const handleDelete = async () => {
-    deleteModal({ onOk: handleDeleteConfirm });
+  const handleDeleteConfirm = async (force) => {
+    try {
+      await deleteApplicationInstance({ id: serviceDel.value, force });
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  const handleDelete = async (row) => {
+    serviceDel.value = row.id;
+    setTimeout(() => {
+      showDeleteModal.value = true;
+    }, 100);
   };
   const setActionHandler = () => {
     _.each(instanceActions, (item) => {
@@ -574,6 +599,7 @@
   });
   onMounted(() => {
     setActionHandler();
+    createInstanceListWebsocket();
   });
   // const res = dayjs('2020-02-01').diff('2021-02-01', 'day');
   // console.log('res===', res);

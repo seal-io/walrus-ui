@@ -10,14 +10,6 @@
       @sorter-change="handleSortChange"
     >
       <template #columns>
-        <!-- <a-table-column
-          ellipsis
-          tooltip
-          :cell-style="{ minWidth: '40px' }"
-          data-index="instance.id"
-          :title="$t('applications.applications.history.version')"
-        >
-        </a-table-column> -->
         <a-table-column
           ellipsis
           tooltip
@@ -429,7 +421,7 @@
     if (data?.type !== websocketEventType.update) return;
     const collections = filter(
       data.collection || [],
-      (sItem) => sItem?.instance?.id === instanceId.value
+      (sItem) => sItem?.service?.id === instanceId.value
     );
     // const collections = data?.collection || [];
     const openRevisionData = find(

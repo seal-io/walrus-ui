@@ -138,7 +138,7 @@
 
   .layout-content {
     position: relative;
-    min-height: calc(100vh - 76px);
+    min-height: calc(100vh - 68px);
     margin-bottom: 20px;
     padding-top: @nav-size-height;
     overflow-y: hidden;

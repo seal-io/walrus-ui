@@ -73,6 +73,7 @@
   import { useUserStore } from '@/store';
   import _ from 'lodash';
   import { markRaw, ref, watch, onMounted, computed } from 'vue';
+  import { useSetChunkRequest } from '@/api/axios-chunk-request';
   import HeaderInfo from '@/components/header-info/index.vue';
   import useCallCommon from '@/hooks/use-call-common';
   import EditPageFooter from '@/components/edit-page-footer/index.vue';
@@ -100,6 +101,7 @@
   });
   // 1: create 2: update 3: delete
 
+  const { setChunkRequest } = useSetChunkRequest();
   const userStore = useUserStore();
   const { router, route, t } = useCallCommon();
   const { loading, fetchData, createResourceChunkConnection, dataList } =
@@ -145,7 +147,37 @@
   const handleTabChange = (val) => {
     activeKey.value = val;
   };
-
+  const updateServiceState = (data) => {
+    const updateData = _.find(
+      data.collection || [],
+      (sItem) =>
+        _.get(sItem, 'project.id') === _.get(currentInfo.value, 'project.id') &&
+        _.get(sItem, 'environment.id') ===
+          _.get(currentInfo.value, 'environment.id') &&
+        _.get(sItem, 'id') === _.get(currentInfo.value, 'id')
+    );
+    if (updateData) {
+      currentInfo.value = _.cloneDeep(updateData);
+    }
+  };
+  const updateHandler = (list) => {
+    _.each(list, (data) => {
+      updateServiceState(data);
+    });
+  };
+  const createServiceChunkRequest = () => {
+    try {
+      setChunkRequest({
+        url: `/services`,
+        params: {
+          projectID: route.params.projectId
+        },
+        handler: updateHandler
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  };
   const debunceFun = () => {
     if (!props.instanceId) return;
     fetchData();
@@ -169,6 +201,7 @@
   };
   onMounted(() => {
     setInstanceTabList();
+    createServiceChunkRequest();
   });
 </script>
 
