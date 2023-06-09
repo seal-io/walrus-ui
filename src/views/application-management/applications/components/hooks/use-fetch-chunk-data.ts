@@ -46,10 +46,11 @@ export default function useFetchResource() {
   const updateDataList = (data) => {
     let collections = _.filter(
       data.collection || [],
-      (sItem) => sItem?.service?.id === instanceId.value
+      (sItem) => sItem?.Resource?.service?.id === instanceId.value
     );
     collections = _.map(collections, (item) => {
       return {
+        // TODO
         ...item.Resource,
         keys: {
           ...item.keys
@@ -170,6 +171,7 @@ export default function useFetchResource() {
       const { data } = await queryApplicationResource(params, fetchToken.token);
       let list: any = _.map(data.items, (item) => {
         return {
+          // TODO
           ...item.Resource,
           keys: {
             ...item.keys

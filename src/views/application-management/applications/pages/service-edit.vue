@@ -194,13 +194,11 @@
     pull,
     set,
     keys,
-    every,
     reduce,
     map,
     includes,
     pickBy,
     toString,
-    clone,
     filter,
     split
   } from 'lodash';
@@ -228,7 +226,6 @@
   import { beforeLeaveCallback } from '@/hooks/save-before-leave';
   import {
     createApplication,
-    updateApplication,
     upgradeApplicationInstance,
     queryItemApplicationInstances
   } from '../api';

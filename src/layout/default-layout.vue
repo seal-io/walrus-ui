@@ -273,7 +273,7 @@
 
   .layout-content {
     position: relative;
-    min-height: calc(100vh - 76px);
+    min-height: calc(100vh - 68px);
     margin-bottom: 20px;
     overflow-y: hidden;
     background-color: var(--color-fill-2);

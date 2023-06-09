@@ -97,35 +97,7 @@
     containerList.value = [];
     content.value = '';
   };
-  const getApplicationResource = async () => {
-    resetData();
-    if (!instanceId.value) {
-      return;
-    }
-    try {
-      loading.value = true;
-      const params = {
-        serviceID: instanceId.value,
-        page: -1
-      };
-      const { data } = await queryApplicationResource(params);
-      const list = data?.items || [];
-      // const list = testData;
-      containerList.value = generateResourcesKeys(list, 'loggable');
-      const defaultValue = getDefaultValue(containerList.value);
-      console.log('defaultValue===', defaultValue);
-      handleObjectChange(defaultValue);
-      loading.value = false;
-    } catch (error) {
-      loading.value = false;
-      console.log(error);
-      containerList.value = [];
-    }
-  };
 
-  const init = async () => {
-    await getApplicationResource();
-  };
   watch(
     () => props.resourceList,
     (list) => {
@@ -134,6 +106,7 @@
         containerList.value = generateResourcesKeys(list, 'loggable');
         const defaultValue = getDefaultValue(containerList.value);
         handleObjectChange(defaultValue);
+        console.log('containerList===', containerList.value);
       }, 100);
     },
     {
