@@ -1,15 +1,18 @@
 <script lang="tsx">
-  import _ from 'lodash';
+  import _, { divide } from 'lodash';
   import { defineComponent, ref, h, compile, computed } from 'vue';
   import { useI18n } from 'vue-i18n';
   import { useRouter, RouteRecordRaw, RouteRecordNormalized } from 'vue-router';
   // import type { RouteLocationNormalized } from 'vue-router';
 
   import { useAppStore, useProjectStore } from '@/store';
+  import useUser from '@/hooks/user';
   import usePermission from '@/hooks/permissions';
   import { listenerRouteChange } from '@/utils/route-listener';
   import localStore from '@/utils/localStore';
   import { USER_DEFAULT_PROJECT } from '@/views/config';
+  import useLocale from '@/hooks/locale';
+  import { profileMenu } from './config';
 
   export default defineComponent({
     emit: ['collapse'],
@@ -17,6 +20,8 @@
       const { t } = useI18n();
       const currentRoute = ref<string>('');
       const appStore = useAppStore();
+      const { changeLocale } = useLocale();
+      const { logout } = useUser();
       const projectStore = useProjectStore();
       const permission = usePermission();
       const router = useRouter();
@@ -27,7 +32,7 @@
           return false;
         },
         set(value: boolean) {
-          appStore.updateSettings({ menuCollapse: value });
+          appStore.updateSettings({ menuCollapse: true });
         }
       });
       const appRoute = computed(() => {
@@ -140,11 +145,12 @@
         const newRoute = to;
         console.log('route_change', to);
         currentRoute.value = newRoute.matched[1]?.name as string;
-        if (newRoute.meta.requiresAuth) {
+        if (newRoute.meta.requiresAuth || newRoute.meta.profileView) {
           const { matched } = newRoute;
-          const currentRoute = newRoute.matched[matched.length - 1];
+          const activeRoute = newRoute.matched[matched.length - 1];
           const key =
-            currentRoute?.meta?.selectedMenu || (currentRoute?.name as string);
+            activeRoute?.meta?.selectedMenu || (activeRoute?.name as string);
+          console.log('key====', key);
           appStore.updateSettings({ selectedKey: [key] });
         }
         if (newRoute.meta.clearMenuStatus) {
@@ -153,7 +159,7 @@
       }, true);
       const setCollapse = (val: boolean) => {
         if (appStore.device === 'desktop')
-          appStore.updateSettings({ menuCollapse: val });
+          appStore.updateSettings({ menuCollapse: true });
       };
 
       const renderSubMenu = () => {
@@ -226,20 +232,96 @@
         }
         return travel(menuTree.value);
       };
+      const handleClickUserMenu = (item) => {
+        if (item.key === 'UserCenter') {
+          router.push({
+            name: item.route
+          });
+          return;
+        }
+        if (item.key === 'logout') {
+          logout();
+          return;
+        }
+        if (item.key === 'chinese' || item.key === 'english') {
+          changeLocale(item.value);
+        }
+      };
+      const renderUserMenu = () => {
+        function travel() {
+          const nodes: any[] = [];
+          profileMenu.forEach((item) => {
+            let rt: any = null;
+            rt = (
+              <a-sub-menu
+                key={item.key}
+                v-slots={{
+                  icon: () =>
+                    h(compile(item.icon), {
+                      style: {}
+                    })
+                }}
+              >
+                {item.children.map((cItem) => {
+                  return (
+                    <a-menu-item
+                      key={cItem.key}
+                      v-slots={{
+                        icon: () =>
+                          h(compile(cItem.icon), {
+                            style: {
+                              color: 'var(--color-text-3)',
+                              fontSize: '16px'
+                            }
+                          })
+                      }}
+                      onClick={() => {
+                        handleClickUserMenu(cItem);
+                      }}
+                    >
+                      <span
+                        style={{
+                          color: 'var(--color-text-2)',
+                          fontSize: '14px'
+                        }}
+                      >
+                        {t(cItem.name)}
+                      </span>
+                    </a-menu-item>
+                  );
+                })}
+              </a-sub-menu>
+            );
+            nodes.push(rt);
+          });
+          return nodes;
+        }
+        return travel();
+      };
       // appStore.device !== 'mobile'
       return () => (
-        <a-menu
-          v-model:collapsed={collapsed.value}
-          show-collapse-button={true}
-          auto-open={false}
-          selected-keys={appStore.selectedKey}
-          auto-open-selected={true}
-          level-indent={20}
-          style="height: 100%"
-          onCollapse={setCollapse}
-        >
-          {renderSubMenu()}
-        </a-menu>
+        <div class="menu-container">
+          <a-menu
+            v-model:collapsed={collapsed.value}
+            show-collapse-button={false}
+            auto-open={false}
+            selected-keys={appStore.selectedKey}
+            auto-open-selected={true}
+            level-indent={20}
+            style="height: 100%"
+            onCollapse={setCollapse}
+          >
+            {renderSubMenu()}
+          </a-menu>
+          <a-menu
+            class="user-group"
+            auto-open={false}
+            selected-keys={appStore.selectedKey}
+            auto-open-selected={true}
+          >
+            {renderUserMenu()}
+          </a-menu>
+        </div>
       );
     }
   });
@@ -266,6 +348,23 @@
     .arco-icon {
       &:not(.arco-icon-down) {
         font-size: 18px;
+      }
+    }
+  }
+
+  .menu-container {
+    position: relative;
+    height: 100%;
+
+    .user-group {
+      position: absolute;
+      bottom: 100px;
+      color: var(--color-text-2);
+      background-color: #fff;
+      border-top: 1px solid var(--color-border-2);
+
+      .iconfont.icon-language {
+        margin-left: 1px;
       }
     }
   }

@@ -9,6 +9,7 @@ export default {
     requiresAuth: false,
     isRouteView: true,
     icon: 'icon-settings',
+    profileView: true,
     order: 8
   },
   children: [
@@ -19,9 +20,10 @@ export default {
       meta: {
         hideInMenu: true,
         ignoreCache: true,
-        clearMenuStatus: true,
+        clearMenuStatus: false,
         locale: 'propfile.account.user.title',
         requiresAuth: false,
+        profileView: true,
         roles: ['*']
       }
     }

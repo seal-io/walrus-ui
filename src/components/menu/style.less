@@ -2,6 +2,28 @@
   :deep(.arco-menu-inner) {
     padding: 0 0 4px 0;
 
+    .arco-menu-pop-header {
+      position: relative;
+      height: 40px;
+      overflow: hidden;
+      border-radius: 0 4px 4px 0;
+
+      &.arco-menu-selected {
+        background-color: var(--color-fill-2);
+
+        &::after {
+          position: absolute;
+          top: 0;
+          right: 0;
+          bottom: 0;
+          display: inline-block;
+          width: 4px;
+          background-color: rgb(var(--arcoblue-5));
+          content: '';
+        }
+      }
+    }
+
     .arco-menu-item {
       position: relative;
       overflow: hidden;
