@@ -1,7 +1,10 @@
 <template>
   <div>
     <BreadWrapper>
-      <Breadcrumb :items="breadCrumbList"></Breadcrumb>
+      <Breadcrumb
+        :items="breadCrumbList"
+        :menu="{ icon: 'icon-apps' }"
+      ></Breadcrumb>
     </BreadWrapper>
     <ComCard top-gap>
       <GroupTitle

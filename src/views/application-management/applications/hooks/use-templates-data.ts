@@ -38,13 +38,13 @@ export default function useTemplatesData() {
   const getTemplatesVersions = async () => {
     try {
       const params = {
-        moduleID: _.uniq(
+        templateID: _.uniq(
           _.map(templateList.value, (item) => {
             return item.id;
           })
         )
       };
-      if (!params.moduleID.length) {
+      if (!params.templateID.length) {
         return;
       }
       const { data } = await queryModulesAllVersions(params);

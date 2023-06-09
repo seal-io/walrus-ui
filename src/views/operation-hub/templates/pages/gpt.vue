@@ -1,173 +1,187 @@
 <template>
-  <ComCard top-gap class="gpt-box">
-    <GroupTitle
-      show-back
-      :title="$t('operation.templates.button.gpt')"
-    ></GroupTitle>
-    <div class="opration-wrap">
-      <div class="sel">
-        <a-select
-          v-model="type"
-          :disabled="loading"
-          :options="optionList"
-          style="width: 300px"
-          :placeholder="$t('operation.templates.detail.example')"
-          @change="handleTyeChange"
-        >
-        </a-select>
+  <div>
+    <BreadWrapper>
+      <Breadcrumb
+        :items="[
+          {
+            label: $t('menu.operatorHub'),
+            icon: 'icon-relation',
+            route: 'OperationMain'
+          },
+          {
+            label: $t('operation.templates.button.gpt')
+          }
+        ]"
+      ></Breadcrumb>
+    </BreadWrapper>
+    <ComCard top-gap class="gpt-box">
+      <div class="opration-wrap">
+        <div class="sel">
+          <a-select
+            v-model="type"
+            :disabled="loading"
+            :options="optionList"
+            style="width: 300px"
+            :placeholder="$t('operation.templates.detail.example')"
+            @change="handleTyeChange"
+          >
+          </a-select>
+        </div>
+        <a-space v-if="showFix">
+          <a-link class="link-btn" @click="handleFixCall">
+            <template #icon>
+              <icon-font type="icon-icontypropertyrepair"></icon-font>
+            </template>
+            <span>{{ $t('operation.templates.detail.receiveFix') }}</span>
+          </a-link>
+          <a-link class="link-btn" @click="handleUndoCall">
+            <template #icon>
+              <icon-font type="icon-quxiao"></icon-font>
+            </template>
+            <span>{{ $t('operation.templates.detail.cancelFix') }}</span>
+          </a-link>
+        </a-space>
       </div>
-      <a-space v-if="showFix">
-        <a-link class="link-btn" @click="handleFixCall">
-          <template #icon>
-            <icon-font type="icon-icontypropertyrepair"></icon-font>
-          </template>
-          <span>{{ $t('operation.templates.detail.receiveFix') }}</span>
-        </a-link>
-        <a-link class="link-btn" @click="handleUndoCall">
-          <template #icon>
-            <icon-font type="icon-quxiao"></icon-font>
-          </template>
-          <span>{{ $t('operation.templates.detail.cancelFix') }}</span>
-        </a-link>
-      </a-space>
-    </div>
-    <!-- <a-divider :margin="5"></a-divider> -->
-    <a-spin :loading="loading" style="width: 100%">
-      <a-grid :cols="24" :col-gap="10">
-        <a-grid-item :span="24">
-          <AceEditor
-            ref="editor"
-            v-model="code"
-            :remove-lines="removeLines"
-            :add-lines="addLines"
-            editor-id="firstEditor"
-            :editor-default-value="defaultValue"
-            lang="terraform"
-            :height="500"
-            @change="handleCodeChange"
-          ></AceEditor>
-        </a-grid-item>
-      </a-grid>
-    </a-spin>
-    <div class="tools-wrap">
-      <a-space style="margin-top: 10px">
-        <a-button
-          type="primary"
-          :disabled="loading"
-          @click="handleCompletionGenerate"
-        >
-          <template #icon><icon-common /></template>
-          <span>{{ $t('operation.templates.detail.gptcreate') }}</span>
-        </a-button>
-        <a-button
-          type="primary"
-          :disabled="loading"
-          @click="handleCompletionExplain"
-        >
-          <template #icon>
-            <icon-font type="icon-shengchenglujing-01"></icon-font>
-          </template>
-          <span>{{ $t('operation.templates.detail.explain') }}</span>
-        </a-button>
-        <a-button
-          type="primary"
-          :disabled="loading"
-          @click="handleCompletionCorrect"
-        >
-          <template #icon>
-            <icon-find-replace />
-          </template>
-          <span>{{ $t('operation.templates.detail.correction') }}</span>
-        </a-button>
-        <a-button type="outline" :disabled="loading" @click="handleClear">
-          <template #icon><icon-delete /></template>
-          <span>{{ $t('common.button.clear') }}</span>
-        </a-button>
-        <!-- <a-button type="outline" status="success">
+      <!-- <a-divider :margin="5"></a-divider> -->
+      <a-spin :loading="loading" style="width: 100%">
+        <a-grid :cols="24" :col-gap="10">
+          <a-grid-item :span="24">
+            <AceEditor
+              ref="editor"
+              v-model="code"
+              :remove-lines="removeLines"
+              :add-lines="addLines"
+              editor-id="firstEditor"
+              :editor-default-value="defaultValue"
+              lang="terraform"
+              :height="500"
+              @change="handleCodeChange"
+            ></AceEditor>
+          </a-grid-item>
+        </a-grid>
+      </a-spin>
+      <div class="tools-wrap">
+        <a-space style="margin-top: 10px">
+          <a-button
+            type="primary"
+            :disabled="loading"
+            @click="handleCompletionGenerate"
+          >
+            <template #icon><icon-common /></template>
+            <span>{{ $t('operation.templates.detail.gptcreate') }}</span>
+          </a-button>
+          <a-button
+            type="primary"
+            :disabled="loading"
+            @click="handleCompletionExplain"
+          >
+            <template #icon>
+              <icon-font type="icon-shengchenglujing-01"></icon-font>
+            </template>
+            <span>{{ $t('operation.templates.detail.explain') }}</span>
+          </a-button>
+          <a-button
+            type="primary"
+            :disabled="loading"
+            @click="handleCompletionCorrect"
+          >
+            <template #icon>
+              <icon-find-replace />
+            </template>
+            <span>{{ $t('operation.templates.detail.correction') }}</span>
+          </a-button>
+          <a-button type="outline" :disabled="loading" @click="handleClear">
+            <template #icon><icon-delete /></template>
+            <span>{{ $t('common.button.clear') }}</span>
+          </a-button>
+          <!-- <a-button type="outline" status="success">
           <template #icon
             ><icon-font type="icon-magic" style="color: green"></icon-font
           ></template>
           <span>Prettify</span>
         </a-button> -->
-      </a-space>
-      <a-space>
-        <a-tooltip
-          trigger="click"
-          position="tr"
-          :disabled="loading"
-          :content-style="{ maxHeight: '300px' }"
-          background-color="#e8f2ff"
-          :popup-visible="showExplainModal"
-        >
-          <template #content>
-            <div style="color: #4e5969; font-size: 14px; white-space: pre-wrap">
-              {{
-                correctionExplain ||
-                $t('operation.templates.detail.nocorrection')
-              }}
-            </div>
-          </template>
-          <a-button
-            ref="correctionButton"
+        </a-space>
+        <a-space>
+          <a-tooltip
+            trigger="click"
+            position="tr"
             :disabled="loading"
-            type="outline"
-            shape="circle"
-            class="correction-btn"
-            @click="handleViewCorrection"
+            :content-style="{ maxHeight: '300px' }"
+            background-color="#e8f2ff"
+            :popup-visible="showExplainModal"
           >
-            <a-tooltip
-              :content="$t('operation.templates.detail.correctionview')"
+            <template #content>
+              <div
+                style="color: #4e5969; font-size: 14px; white-space: pre-wrap"
+              >
+                {{
+                  correctionExplain ||
+                  $t('operation.templates.detail.nocorrection')
+                }}
+              </div>
+            </template>
+            <a-button
+              ref="correctionButton"
+              :disabled="loading"
+              type="outline"
+              shape="circle"
+              class="correction-btn"
+              @click="handleViewCorrection"
             >
-              <template #content>
-                <div style="width: max-content">{{
-                  $t('operation.templates.detail.correctionview')
-                }}</div>
-              </template>
-              <span>
-                <icon-font
-                  type="icon-shoudongxiaoyan"
-                  class="size-16"
-                ></icon-font>
-              </span>
-            </a-tooltip>
-          </a-button>
-        </a-tooltip>
-      </a-space>
-    </div>
-    <EditPageFooter>
-      <template #save>
-        <a-button
-          type="primary"
-          class="cap-title cancel-btn"
-          :disabled="loading"
-          :loading="submitLoading"
-          @click="handleCreatePR"
-          >{{ $t('operation.templates.gpt.create') }}</a-button
-        >
-      </template>
-      <template #cancel>
-        <a-button
-          type="outline"
-          class="cap-title cancel-btn"
-          @click="handleCancel"
-          >{{ $t('common.button.cancel') }}</a-button
-        >
-      </template>
-    </EditPageFooter>
-    <CreatePR
-      v-model:show="showModal"
-      :title="$t('operation.templates.create.title')"
-      :status="status"
-      :content="code"
-      @save="handleShowPRLink"
-    >
-    </CreatePR>
-    <CodeExplainModal
-      v-model:show="showExplain"
-      :content="explainValue"
-      :title="$t('operation.templates.detail.explainInfo')"
-    ></CodeExplainModal>
-  </ComCard>
+              <a-tooltip
+                :content="$t('operation.templates.detail.correctionview')"
+              >
+                <template #content>
+                  <div style="width: max-content">{{
+                    $t('operation.templates.detail.correctionview')
+                  }}</div>
+                </template>
+                <span>
+                  <icon-font
+                    type="icon-shoudongxiaoyan"
+                    class="size-16"
+                  ></icon-font>
+                </span>
+              </a-tooltip>
+            </a-button>
+          </a-tooltip>
+        </a-space>
+      </div>
+      <EditPageFooter>
+        <template #save>
+          <a-button
+            type="primary"
+            class="cap-title cancel-btn"
+            :disabled="loading"
+            :loading="submitLoading"
+            @click="handleCreatePR"
+            >{{ $t('operation.templates.gpt.create') }}</a-button
+          >
+        </template>
+        <template #cancel>
+          <a-button
+            type="outline"
+            class="cap-title cancel-btn"
+            @click="handleCancel"
+            >{{ $t('common.button.cancel') }}</a-button
+          >
+        </template>
+      </EditPageFooter>
+      <CreatePR
+        v-model:show="showModal"
+        :title="$t('operation.templates.create.title')"
+        :status="status"
+        :content="code"
+        @save="handleShowPRLink"
+      >
+      </CreatePR>
+      <CodeExplainModal
+        v-model:show="showExplain"
+        :content="explainValue"
+        :title="$t('operation.templates.detail.explainInfo')"
+      ></CodeExplainModal>
+    </ComCard>
+  </div>
 </template>
 
 <script lang="ts" setup>

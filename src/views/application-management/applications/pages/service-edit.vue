@@ -110,9 +110,6 @@
                   $t('applications.applications.modules.params.title')
                 }}</div>
                 <div>{{
-                  $t('applications.applications.modules.params.tips1')
-                }}</div>
-                <div>{{
                   $t('applications.applications.modules.params.tips2')
                 }}</div>
                 <div>{{
@@ -229,7 +226,12 @@
   import { validateAppNameRegx } from '@/views/config';
   import usePageAction from '@/hooks/use-page-action';
   import { beforeLeaveCallback } from '@/hooks/save-before-leave';
-  import { createApplication, updateApplication } from '../api';
+  import {
+    createApplication,
+    updateApplication,
+    upgradeApplicationInstance,
+    queryItemApplicationInstances
+  } from '../api';
   import useTemplatesData from '../hooks/use-templates-data';
 
   interface Group {
@@ -263,6 +265,7 @@
   const variablesGroupForm = ref<any>({});
   const templateVersionList = ref<ModuleVersion[]>([]);
   const moduleVersionFormCache = ref({});
+
   const id = route.query.id as string;
   let refMap: Record<string, refItem> = {};
   let copyFormData: any = {};
@@ -325,17 +328,7 @@
       cancelCallback();
     }
   };
-  const resetForm = () => {
-    refMap = {};
-    formData.name = '';
-    formData.template = { id: '' };
-    formData.templateVersion = '';
-    formData.application = { id: '' };
-    formData.attributes = {};
-    moduleVersionFormCache.value = {};
-    activeKey.value = 'schemaForm0';
-    formref.value?.clearValidate?.();
-  };
+
   const validateNameuniq = (val, callback) => {
     if (pageAction.value === 'edit') {
       callback();
@@ -354,6 +347,20 @@
   const setRefMap = (el: refItem, name) => {
     if (el) {
       refMap[`${name}`] = el;
+    }
+  };
+  const getServiceItemInfo = async () => {
+    if (!route.query.id) return;
+    try {
+      const params = {
+        id: route.query.id,
+        projectID: route.params.projectId
+      };
+      const { data } = await queryItemApplicationInstances(params);
+      serviceInfo.value = data;
+    } catch (error) {
+      serviceInfo.value = {};
+      console.log(error);
     }
   };
   const handleTabChange = (val) => {
@@ -450,7 +457,6 @@
     return moduleTemplate;
   };
   const getModuleVersionList = async () => {
-    console.log('moduleVersionList===', allTemplateVersions.value);
     try {
       const list = filter(
         allTemplateVersions.value,
@@ -458,7 +464,7 @@
       );
       templateVersionList.value = map(list, (item) => {
         return {
-          ...item,
+          ...cloneDeep(item),
           label: item.version,
           value: item.version
         };
@@ -517,7 +523,7 @@
     formData.application = { id: '' };
     formData.attributes = {};
     console.log('version args...', moduleVersionFormCache.value);
-    // setFormData(moduleInfo.value);
+
     clearFormValidStatus();
     generateVariablesGroup(pageAction.value);
   };
@@ -568,11 +574,12 @@
             {}
           )
         };
-        if (pageAction.value === 'edit') {
-          await createApplication(formData);
+        if (id) {
+          await upgradeApplicationInstance(formData);
         } else {
-          await updateApplication(formData);
+          await createApplication(formData);
         }
+        copyFormData = _.cloneDeep(formData);
         router.back();
         submitLoading.value = false;
       } catch (error) {
@@ -581,8 +588,8 @@
     }
   };
 
-  const handleBeforeOpen = async () => {
-    if (pageAction.value === 'edit') {
+  const initFormData = async () => {
+    if (!id) {
       // webservice
       const webservice = find(
         templateList.value,
@@ -612,7 +619,8 @@
     }
 
     generateVariablesGroup(pageAction.value);
-    console.log('moduleVersionList===', templateVersionList.value);
+    copyFormData = _.cloneDeep(formData);
+    console.log('moduleVersionList===', allTemplateVersions.value);
   };
   onBeforeRouteLeave(async (to, from) => {
     if (!_.isEqual(copyFormData, formData)) {
@@ -631,8 +639,8 @@
     return true;
   });
   const init = async () => {
-    await initCompleteData();
-    handleBeforeOpen();
+    await Promise.all([getServiceItemInfo(), initCompleteData()]);
+    initFormData();
   };
   init();
 </script>

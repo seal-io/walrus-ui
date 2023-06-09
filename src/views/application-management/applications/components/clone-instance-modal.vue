@@ -85,12 +85,19 @@
   import EditPageFooter from '@/components/edit-page-footer/index.vue';
   import { validateAppNameRegx } from '@/views/config';
   import createTags from './create-tags.vue';
+  import { cloneApplicationInstance } from '../api';
 
   const props = defineProps({
     show: {
       type: Boolean,
       default() {
         return false;
+      }
+    },
+    serviceID: {
+      type: String,
+      default() {
+        return '';
       }
     },
     title: {
@@ -102,6 +109,7 @@
   });
 
   const emit = defineEmits(['save', 'update:show']);
+  const formref = ref();
   const formData = reactive({
     name: '',
     remarkTags: []
@@ -112,13 +120,20 @@
     emit('update:show', false);
   };
   const handleOk = async () => {
-    try {
-      submitLoading.value = true;
-      emit('update:show', false);
-      emit('save', formData.name);
-      submitLoading.value = false;
-    } catch (error) {
-      submitLoading.value = false;
+    const res = await formref.value.validate();
+    if (!res) {
+      try {
+        submitLoading.value = true;
+        await cloneApplicationInstance({
+          id: props.serviceID,
+          name: formData.name
+        });
+        emit('update:show', false);
+        emit('save', formData.name);
+        submitLoading.value = false;
+      } catch (error) {
+        submitLoading.value = false;
+      }
     }
   };
 

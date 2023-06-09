@@ -196,7 +196,7 @@
     position: fixed;
     top: 0;
     left: 0;
-    z-index: 99;
+    z-index: 1001;
     height: 100%;
     background-color: #fff;
     transition: all 0.2s cubic-bezier(0.34, 0.69, 0.1, 1);
@@ -212,8 +212,8 @@
       height: 48px;
       padding-left: 7px;
       font-size: 0;
-      border-right: 1px solid var(--color-border-2);
-      border-bottom: 1px solid var(--color-border-2);
+      border-bottom: 1px solid var(--color-border-1);
+      box-shadow: 1px 0 0 var(--color-border-1);
       transition: all 0.2s cubic-bezier(0.34, 0.69, 0.1, 1);
 
       &.menuCollapse {

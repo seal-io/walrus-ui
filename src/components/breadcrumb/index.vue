@@ -15,7 +15,7 @@
     </a-breadcrumb-item>
     <a-breadcrumb-item v-for="(item, index) in items" :key="index">
       <span class="box">
-        <span class="type">{{ item.type }}</span>
+        <span class="type">{{ $t(item.type || '') }}</span>
         <span
           :id="item.wrapperId"
           class="item-content"
@@ -109,7 +109,7 @@
     menu: {
       type: Object as PropType<BreadcrumbOptions>,
       default() {
-        return {};
+        return null;
       }
     }
   });

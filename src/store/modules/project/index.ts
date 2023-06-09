@@ -18,7 +18,7 @@ const useProjectStore = defineStore('project', {
     setInfo(partial: any) {
       this.$patch(partial);
     },
-    reset() {
+    resetInfo() {
       this.$reset();
     }
   }

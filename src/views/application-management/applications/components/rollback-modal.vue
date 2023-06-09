@@ -22,49 +22,25 @@
   >
     <div>
       <a-form ref="formref" :model="formData" layout="vertical">
-        <a-grid :col-gap="10">
-          <a-grid-item v-if="!instanceId" :span="12">
-            <a-form-item
-              label="选择实例"
-              field="serviceID"
-              :rules="[{ required: true, message: '请选择实例' }]"
-            >
-              <a-select
-                v-model="formData.serviceID"
-                style="width: 100%"
-                @change="handleInstanceChange"
-              >
-                <a-option
-                  v-for="item in instanceList"
-                  :key="item.id"
-                  :value="item.id"
-                  :label="item.name"
-                ></a-option>
-              </a-select>
-            </a-form-item>
-          </a-grid-item>
-          <a-grid-item :span="12">
-            <a-form-item
-              label="选择版本"
-              field="id"
-              :rules="[{ required: true, message: '请选择版本' }]"
-            >
-              <a-select
-                v-model="formData.id"
-                style="width: 100%"
-                :loading="loading"
-                @change="handleRevisionChange"
-              >
-                <a-option
-                  v-for="item in revisionList"
-                  :key="item.id"
-                  :value="item.id"
-                  :label="item.createTime"
-                ></a-option>
-              </a-select>
-            </a-form-item>
-          </a-grid-item>
-        </a-grid>
+        <a-form-item
+          label="选择版本"
+          field="id"
+          :rules="[{ required: true, message: '请选择版本' }]"
+        >
+          <a-select
+            v-model="formData.id"
+            style="width: 100%"
+            :loading="loading"
+            @change="handleRevisionChange"
+          >
+            <a-option
+              v-for="item in revisionList"
+              :key="item.id"
+              :value="item.id"
+              :label="item.createTime"
+            ></a-option>
+          </a-select>
+        </a-form-item>
         <a-form-item label="配置对比">
           <AceEditor
             v-show="removeLines.length || addLines.length"
@@ -142,6 +118,12 @@
         return '';
       }
     },
+    projectID: {
+      type: String,
+      default() {
+        return '';
+      }
+    },
     instanceList: {
       type: Array as PropType<InstanceData[]>,
       default() {
@@ -162,6 +144,7 @@
   const loading = ref(false);
   const formref = ref();
   const formData = reactive({
+    projectID: props.projectID,
     serviceID: '',
     id: ''
   });
@@ -189,7 +172,8 @@
       loading.value = true;
       const params = {
         page: -1,
-        serviceID: formData.serviceID
+        serviceID: formData.serviceID,
+        projectID: props.projectID
       };
       const { data } = await queryApplicationRevisions(params);
       revisionList.value = data?.items || [];
