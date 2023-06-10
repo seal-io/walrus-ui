@@ -168,8 +168,12 @@ export const instanceBasicInfo = [
   {
     label: 'applications.projects.table.name',
     value: '',
-    key: 'project.name',
-    span: 3
+    key: 'project.name'
+  },
+  {
+    label: 'common.table.operation',
+    value: '',
+    key: 'operation'
   }
 ];
 export const applicationBasicInfo = [

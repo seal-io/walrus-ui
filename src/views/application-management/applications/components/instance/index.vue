@@ -6,79 +6,105 @@
           <i class="iconfont icon-apps-fill"></i>
         </template>
         <template #title>
-          <BasicInfo :data-info="basicDataList"></BasicInfo>
-        </template>
-      </HeaderInfo>
-      <ComCard>
-        <ModuleCard
-          :title="$t('applications.applications.detail.configuration')"
-          :title-style="{ 'margin-bottom': '10px', 'margin-top': 0 }"
-        >
-          <serviceInfo> </serviceInfo>
-        </ModuleCard>
-      </ComCard>
-      <div>
-        <ComCard>
-          <ModuleCard
-            :title="$t('applications.applications.instance.history')"
-            :title-style="{ 'margin-top': 0 }"
-          >
-            <applicationHistory></applicationHistory>
-          </ModuleCard>
-          <ModuleCard
-            :title="$t('applications.applications.instance.accessUrl')"
-          >
-            <tabEndpoint ref="tabEndpointCom"></tabEndpoint>
-          </ModuleCard>
-
-          <ModuleCard
-            :title="$t('applications.applications.instance.resource')"
-            style="margin-top: 20px"
-          >
-            <template #title>
-              <span>{{
-                $t('applications.applications.instance.resource')
-              }}</span>
-              <a-tooltip
-                :content="
-                  $t('applications.applications.instance.resource.tips')
+          <BasicInfo :data-info="basicDataList">
+            <template #value="{ data }">
+              <template
+                v-if="
+                  data.key === 'operation' &&
+                  !_.get(currentInfo, 'status.transitioning')
                 "
               >
-                <icon-info-circle class="mleft-5" />
-              </a-tooltip>
+                <a-button type="primary" size="small" @click="handleUpgrade">
+                  <i class="iconfont icon-upgrade"></i
+                  >{{ $t('common.button.upgrade') }}</a-button
+                >
+              </template>
             </template>
-            <a-tabs
-              lazy-load
-              type="rounded"
-              :active-key="activeKey"
-              class="module-tabs"
-              @change="handleTabChange"
+          </BasicInfo>
+        </template>
+        <template #description></template>
+      </HeaderInfo>
+      <slTransition>
+        <div v-if="pageAction === 'edit'">
+          <serviceEdit
+            pg-type="com"
+            @save="handleEditSucceed"
+            @cancel="handleEditCancel"
+          ></serviceEdit>
+        </div>
+      </slTransition>
+      <slTransition>
+        <div v-if="pageAction === 'view'">
+          <ComCard>
+            <ModuleCard
+              :title="$t('applications.applications.detail.configuration')"
+              :title-style="{ 'margin-bottom': '10px', 'margin-top': 0 }"
             >
-              <a-tab-pane
-                v-for="item in instanceTabList"
-                :key="item.value"
-                :title="$t(item.label)"
+              <serviceInfo> </serviceInfo>
+            </ModuleCard>
+          </ComCard>
+          <ComCard>
+            <ModuleCard
+              :title="$t('applications.applications.instance.history')"
+              :title-style="{ 'margin-top': 0 }"
+            >
+              <applicationHistory></applicationHistory>
+            </ModuleCard>
+            <ModuleCard
+              :title="$t('applications.applications.instance.accessUrl')"
+            >
+              <tabEndpoint ref="tabEndpointCom"></tabEndpoint>
+            </ModuleCard>
+
+            <ModuleCard
+              :title="$t('applications.applications.instance.resource')"
+              style="margin-top: 20px"
+            >
+              <template #title>
+                <span>{{
+                  $t('applications.applications.instance.resource')
+                }}</span>
+                <a-tooltip
+                  :content="
+                    $t('applications.applications.instance.resource.tips')
+                  "
+                >
+                  <icon-info-circle class="mleft-5" />
+                </a-tooltip>
+              </template>
+              <a-tabs
+                lazy-load
+                type="rounded"
+                :active-key="activeKey"
+                class="module-tabs"
+                @change="handleTabChange"
               >
-                <Component
-                  :is="instanceTabMap[item.com]"
-                  :resource-list="dataList"
-                  :is-loading="loading"
-                ></Component>
-              </a-tab-pane>
-            </a-tabs>
-          </ModuleCard>
-          <EditPageFooter>
-            <template #save>
-              <a-button
-                type="primary"
-                class="cap-title cancel-btn"
-                @click="handleOk"
-                >{{ $t('common.button.back') }}</a-button
-              >
-            </template>
-          </EditPageFooter>
-        </ComCard>
-      </div>
+                <a-tab-pane
+                  v-for="item in instanceTabList"
+                  :key="item.value"
+                  :title="$t(item.label)"
+                >
+                  <Component
+                    :is="instanceTabMap[item.com]"
+                    :resource-list="dataList"
+                    :is-loading="loading"
+                  ></Component>
+                </a-tab-pane>
+              </a-tabs>
+            </ModuleCard>
+            <EditPageFooter>
+              <template #save>
+                <a-button
+                  type="primary"
+                  class="cap-title cancel-btn"
+                  @click="handleOk"
+                  >{{ $t('common.button.back') }}</a-button
+                >
+              </template>
+            </EditPageFooter>
+          </ComCard>
+        </div>
+      </slTransition>
     </ComCard>
   </div>
 </template>
@@ -88,7 +114,7 @@
   import { Resources } from '@/permissions/config';
   import { useUserStore } from '@/store';
   import _ from 'lodash';
-  import { markRaw, ref, watch, onMounted, computed } from 'vue';
+  import { markRaw, ref, watch, onMounted, computed, inject } from 'vue';
   import slTransition from '@/components/sl-transition/index.vue';
   import { useSetChunkRequest } from '@/api/axios-chunk-request';
   import HeaderInfo from '@/components/header-info/index.vue';
@@ -108,7 +134,9 @@
   import useFetchResource from '../hooks/use-fetch-chunk-data';
   import { queryItemApplicationInstances } from '../../api';
   import serviceInfo from '../service-info.vue';
+  import serviceEdit from '../../pages/service-edit.vue';
 
+  type Reload = () => void;
   const props = defineProps({
     instanceId: {
       type: String,
@@ -118,7 +146,8 @@
     }
   });
   // 1: create 2: update 3: delete
-
+  const execReload: Reload | undefined = inject('execReload');
+  const pageAction = ref('view');
   const { setChunkRequest } = useSetChunkRequest();
   const userStore = useUserStore();
   const { router, route, t } = useCallCommon();
@@ -126,7 +155,6 @@
     useFetchResource();
   const projectID = route.params.projectId || '';
   const activeKey = ref('resource');
-  const tabEndpointCom = ref();
   const currentInfo = ref({});
   const instanceTabMap = {
     tabResource: markRaw(tabResource),
@@ -140,6 +168,24 @@
   const instanceTabList = ref<any[]>([]);
   const basicDataList = useBasicInfoData(instanceBasicInfo, currentInfo);
 
+  const handleUpgrade = () => {
+    pageAction.value = 'edit';
+  };
+  const handleEditSucceed = () => {
+    // router.replace({
+    //   params: {
+    //     ...route.params
+    //   },
+    //   query: {
+    //     ...route.query
+    //   }
+    // });
+    execReload?.();
+    pageAction.value = 'view';
+  };
+  const handleEditCancel = () => {
+    pageAction.value = 'view';
+  };
   const setInstanceTabList = () => {
     instanceTabList.value = _.filter(instanceTabs, (item) => {
       if (!item.requiredAuth) return true;
