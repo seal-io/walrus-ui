@@ -119,6 +119,7 @@
     emits('change', val, item);
   };
   const getContainer = (name) => {
+    if (!name) return null;
     return document.getElementById(name);
   };
   const handleClick = (item, index) => {
@@ -187,18 +188,13 @@
         }
 
         .arco-select-view-value {
-          // flex-basis: fit-content;
           margin-right: 15px;
-          // padding-right: 5px;
-          color: var(--color-text-2);
+          color: var(--sealblue-6);
           font-size: 14px;
-          transition: transform 0.2s cubic-bezier(0, 0, 1, 1);
 
           &:hover {
-            color: var(--sealblue-6);
-            transform: scale(1.1);
+            font-weight: 500;
             cursor: pointer;
-            transition: transform 0.2s cubic-bezier(0, 0, 1, 1);
           }
         }
       }
@@ -240,11 +236,9 @@
 
         .arco-select-view-single {
           .arco-select-view-value {
-            &:hover {
-              color: var(--color-text-2);
-              transform: scale(1);
-              cursor: default;
-            }
+            color: var(--color-text-2);
+            font-weight: 400;
+            cursor: default;
           }
         }
       }

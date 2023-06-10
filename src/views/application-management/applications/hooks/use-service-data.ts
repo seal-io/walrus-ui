@@ -1,0 +1,250 @@
+import _ from 'lodash';
+import {
+  ref,
+  reactive,
+  ComponentPublicInstance,
+  computed,
+  provide,
+  nextTick
+} from 'vue';
+import useCallCommon from '@/hooks/use-call-common';
+import {
+  TemplateRowData,
+  ModuleVersionData
+} from '@/views/operation-hub/templates/config/interface';
+import usePageAction from '@/hooks/use-page-action';
+import useProjectBreadcrumbData from '../../projects/hooks/use-project-breadcrumb-data';
+
+import { queryItemApplicationInstances } from '../api';
+import useTemplatesData from './use-templates-data';
+
+export default function useServiceData() {
+  type refItem = Element | ComponentPublicInstance | null;
+  interface ModuleVersion extends ModuleVersionData {
+    label: string;
+    value: string;
+  }
+  const {
+    completeData,
+    initCompleteData,
+    completeDataSetter,
+    serviceDataList,
+    templateList,
+    allTemplateVersions
+  } = useTemplatesData();
+  const { breadCrumbList, setBreabCrumbData } = useProjectBreadcrumbData();
+  const { pageAction, handleEdit } = usePageAction();
+  const defaultGroupKey = '_default_default_';
+  const { route, router, t } = useCallCommon();
+  let refMap: Record<string, refItem> = {};
+  const moduleInfo = ref<any>({});
+  const serviceInfo = ref<any>({});
+  const variablesGroup = ref<any>({});
+  const variablesGroupForm = ref<any>({});
+  const templateVersionList = ref<ModuleVersion[]>([]);
+  const moduleVersionFormCache = ref({});
+
+  const id = route.query.id as string;
+  const formData = reactive({
+    projectID: route.params.projectId,
+    environment: {
+      id: route.params.environmentId
+    },
+    name: '',
+    template: { id: '' },
+    templateVersion: '',
+    application: {
+      id: route.query.id || ''
+    },
+    attributes: {}
+  });
+
+  const title = computed(() => {
+    if (!id) {
+      return t('applications.applications.create');
+    }
+    if (id && pageAction.value === 'edit') {
+      return t('applications.applications.edit');
+    }
+    return t('applications.applications.detail');
+  });
+
+  const getServiceItemInfo = async () => {
+    if (!route.query.id) return;
+    try {
+      const params = {
+        id: route.query.id,
+        projectID: route.params.projectId
+      };
+      const { data } = await queryItemApplicationInstances(params);
+      serviceInfo.value = data;
+    } catch (error) {
+      serviceInfo.value = {};
+      console.log(error);
+    }
+  };
+
+  const getInitialValue = (item, sourceData, action) => {
+    let initialValue = item.default;
+    if (
+      _.get(moduleVersionFormCache.value, formData.templateVersion) ||
+      action === 'edit'
+    ) {
+      initialValue = _.get(sourceData, `attributes.${item.name}`);
+    }
+    return initialValue;
+  };
+  // get set: edit create
+  const generateVariablesGroup = (type) => {
+    refMap = {};
+    variablesGroup.value = {};
+    variablesGroupForm.value = {};
+    const sourceData = {
+      attributes: {
+        ..._.cloneDeep(_.get(serviceInfo.value, 'attributes')),
+        ..._.get(moduleVersionFormCache.value, formData.templateVersion)
+      }
+    };
+    console.log('sourceData===', sourceData);
+    const variablesList = _.filter(
+      _.get(moduleInfo.value, 'variables'),
+      (v) => !v.hidden
+    );
+    _.each(variablesList, (item) => {
+      const initialValue = getInitialValue(item, sourceData, type);
+      const group = _.get(_.split(item.group, '/'), '0');
+      if (group) {
+        if (!variablesGroup.value[group]) {
+          variablesGroup.value[group] = {
+            variables: [],
+            label: group
+          };
+          variablesGroup.value[group].variables.push(item);
+        } else {
+          variablesGroup.value[group].variables.push(item);
+        }
+
+        _.set(
+          variablesGroupForm.value,
+          `${group}.attributes.${item.name}`,
+          initialValue
+        );
+      } else {
+        if (!variablesGroup.value[defaultGroupKey]) {
+          variablesGroup.value[defaultGroupKey] = {
+            variables: [],
+            label: 'Basic'
+          };
+        }
+        variablesGroup.value[defaultGroupKey].variables.push(item);
+        _.set(
+          variablesGroupForm.value,
+          `${defaultGroupKey}.attributes.${item.name}`,
+          initialValue
+        );
+      }
+    });
+    console.log(
+      'variablesGroupForm===',
+      variablesGroup.value,
+      variablesGroupForm.value
+    );
+  };
+
+  //  change module ...
+  const getModuleSchemaById = () => {
+    const moduleTemplate = _.find(
+      templateVersionList.value,
+      (item) => item.template.id === formData.template.id
+    );
+    return moduleTemplate;
+  };
+  // change version ...
+  const getModuleSchemaByVersion = () => {
+    const moduleTemplate = _.find(
+      templateVersionList.value,
+      (item) => item.value === formData.templateVersion
+    );
+    return moduleTemplate;
+  };
+  const getModuleVersionList = async () => {
+    try {
+      const list = _.filter(
+        allTemplateVersions.value,
+        (item) => item.template.id === formData.template.id
+      );
+      templateVersionList.value = _.map(list, (item) => {
+        return {
+          ..._.cloneDeep(item),
+          label: item.version,
+          value: item.version
+        };
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const initFormData = async () => {
+    if (!id) {
+      // webservice
+      const webservice = _.find(
+        templateList.value,
+        (item) => item.id === 'webservice'
+      );
+      formData.template.id = webservice
+        ? webservice.id
+        : _.get(templateList.value, '0.id') || '';
+      await getModuleVersionList();
+      const moduleTemplate = getModuleSchemaById();
+      formData.templateVersion = _.get(moduleTemplate, 'version') || '';
+      moduleInfo.value = _.cloneDeep(_.get(moduleTemplate, 'schema')) || {};
+    } else {
+      _.assignIn(formData, serviceInfo.value);
+      // 1. get the template meta data 2.set the default value
+      await getModuleVersionList();
+      const moduleTemplate = getModuleSchemaByVersion();
+      moduleInfo.value = _.cloneDeep(_.get(moduleTemplate, 'schema'));
+      const variablesList = _.filter(
+        _.get(moduleInfo.value, 'variables'),
+        (v) => !v.hidden
+      );
+      _.each(variablesList || [], (item) => {
+        item.default = _.get(serviceInfo.value, `attributes.${item.name}`);
+      });
+    }
+
+    generateVariablesGroup(pageAction.value);
+    console.log('moduleVersionList===', allTemplateVersions.value);
+  };
+
+  const init = async () => {
+    await Promise.all([getServiceItemInfo(), initCompleteData()]);
+    initFormData();
+    setBreabCrumbData();
+  };
+  return {
+    id,
+    init,
+    generateVariablesGroup,
+    getModuleSchemaById,
+    getModuleSchemaByVersion,
+    getModuleVersionList,
+    formData,
+    refMap,
+    pageAction,
+    handleEdit,
+    defaultGroupKey,
+    moduleInfo,
+    serviceInfo,
+    variablesGroup,
+    variablesGroupForm,
+    templateVersionList,
+    moduleVersionFormCache,
+    serviceDataList,
+    templateList,
+    completeData,
+    title,
+    breadCrumbList
+  };
+}
