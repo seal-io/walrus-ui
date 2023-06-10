@@ -75,6 +75,7 @@ export default function useProjectData() {
       label: name || defaultName,
       icon: 'icon-apps',
       type: 'menu.applicationManagement.project',
+      level: 'Project',
       wrapperId: 'projectWrapper',
       route: 'ProjectDetail',
       visible: false,
@@ -104,6 +105,7 @@ export default function useProjectData() {
       label: defaultName,
       icon: 'icon-apps',
       type: 'menu.operatorHub.evniroment',
+      level: 'Environment',
       wrapperId: 'envWrapper',
       route: 'ProjectEnvDetail',
       visible: false,
@@ -133,6 +135,7 @@ export default function useProjectData() {
       label: defaultName,
       icon: 'icon-apps',
       type: 'menu.applicationManagement.serivce',
+      level: 'Service',
       wrapperId: 'serviceWrapper',
       route: 'ProjectServiceDetail',
       visible: false,
@@ -155,6 +158,36 @@ export default function useProjectData() {
     const serviceRes = setServiceList(serviceList);
     breadCrumbList.value = [projectRes, environmentRes, serviceRes];
   };
+  const handleBreadChange = (val, item) => {
+    let params = {};
+    let query = {};
+    item.value = val;
+    if (item.level === 'Environment') {
+      params = {
+        ...route.params,
+        environmentId: val
+      };
+    }
+    if (item.level === 'Project') {
+      params = {
+        ...route.params,
+        projectId: val
+      };
+    }
+    if (item.level === 'Service') {
+      params = {
+        ...route.params
+      };
+      query = {
+        id: val
+      };
+    }
+    router.replace({
+      name: item.route,
+      params,
+      query
+    });
+  };
   return {
     getProjectList,
     getEnvironmentList,
@@ -163,6 +196,7 @@ export default function useProjectData() {
     setEnvironmentList,
     setServiceList,
     setBreabCrumbData,
-    breadCrumbList
+    breadCrumbList,
+    handleBreadChange
   };
 }

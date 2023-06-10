@@ -6,9 +6,9 @@
       auto-label-width
       style="flex-direction: row; width: 600px"
     >
-      <a-form-item :label="$t('common.table.name')">
+      <!-- <a-form-item :label="$t('common.table.name')">
         <span class="readonly-view-label">{{ formData.name }}</span>
-      </a-form-item>
+      </a-form-item> -->
       <a-form-item :label="$t('applications.applications.table.module')">
         <span class="readonly-view-label">{{
           getListValue(formData.template.id, templateList, 'id')
@@ -20,7 +20,7 @@
         }}</span>
       </a-form-item>
     </a-form>
-    <div class="variables">
+    <div class="variables" style="max-width: 1000px">
       <a-tabs
         v-if="formTabs.length > 1"
         lazy-load
@@ -147,7 +147,7 @@
 
 <script lang="ts" setup>
   import _ from 'lodash';
-  import { ref, computed, nextTick } from 'vue';
+  import { ref, computed, nextTick, watch } from 'vue';
   import { schemaType } from '@/components/form-create/config/interface';
   import { json2Yaml } from '@/components/form-create/config/yaml-parse';
   import LabelsList from './app-info/labels-list.vue';
@@ -204,6 +204,7 @@
     activeKey.value = val;
     setSubGroupList();
   };
+
   const initData = async () => {
     await init();
     setFormTabs();
@@ -236,11 +237,16 @@
 
   .service {
     :deep(.arco-form-item) {
-      margin-bottom: 5px;
+      margin-bottom: 10px;
 
       .arco-form-item-label {
         font-size: 14px;
       }
+    }
+
+    :deep(.arco-tabs-content) {
+      padding: 16px 10px 0 10px;
+      border: 1px solid var(--color-border-2);
     }
   }
 </style>

@@ -238,7 +238,22 @@
     label: string;
     value: string;
   }
+  const props = defineProps({
+    action: {
+      type: String,
+      default() {
+        return 'edit';
+      }
+    },
+    pgType: {
+      type: String,
+      default() {
+        return 'page';
+      }
+    }
+  });
 
+  const emits = defineEmits(['cancel', 'save']);
   const {
     id,
     init,
@@ -259,7 +274,7 @@
     refMap,
     title,
     breadCrumbList: CurrentBreadList
-  } = useServiceData();
+  } = useServiceData(props);
   let copyFormData: any = null;
 
   const { route, router, t } = useCallCommon();
@@ -297,16 +312,15 @@
     return document.getElementById(id);
   };
   const cancelCallback = () => {
-    if (pageAction.value === 'edit' && route.params.action === 'view') {
-      pageAction.value = 'view';
-      // get detail
-      return;
-    }
+    // if (pageAction.value === 'edit' && route.params.action === 'view') {
+    //   pageAction.value = 'view';
+    //   return;
+    // }
     router.back();
   };
 
   const validateNameuniq = (val, callback) => {
-    if (pageAction.value === 'view') {
+    if (id) {
       callback();
       return;
     }
@@ -386,14 +400,14 @@
     await setModuleVersionFormCache();
     const moduleData = getModuleSchemaByVersion();
     moduleInfo.value = cloneDeep(get(moduleData, 'schema')) || {};
-    formData.application = { id: '' };
     formData.attributes = {};
-    console.log('version args...', moduleVersionFormCache.value);
+    console.log('version args...', moduleData, moduleVersionFormCache.value);
 
     clearFormValidStatus();
     generateVariablesGroup(pageAction.value);
   };
   const handleVersionChange = () => {
+    console.log('formData===', formData);
     setTimeout(() => {
       execVersionChangeCallback();
     }, 100);
@@ -452,15 +466,25 @@
       beforeLeaveCallback({
         isCancel: true,
         onOk: () => {
-          copyFormData = cloneDeep(formData);
-          cancelCallback();
+          if (props.pgType !== 'page') {
+            emits('cancel');
+          } else {
+            copyFormData = cloneDeep(formData);
+            cancelCallback();
+          }
         }
       });
+    } else if (props.pgType !== 'page') {
+      emits('cancel');
     } else {
       cancelCallback();
     }
   };
   const handleOk = async () => {
+    // if (props.pgType !== 'page') {
+    //   emits('save');
+    //   return;
+    // }
     const res = await formref.value?.validate();
     const { validFailedForm, moduleFormList } = await validateFormData();
     if (!res && !validFailedForm) {
@@ -484,15 +508,31 @@
         } else {
           await createApplication(formData);
         }
-        copyFormData = _.cloneDeep(formData);
-        router.back();
+        if (props.pgType !== 'page') {
+          emits('save');
+        } else {
+          copyFormData = _.cloneDeep(formData);
+          router.back();
+        }
         submitLoading.value = false;
       } catch (error) {
         submitLoading.value = false;
       }
     }
   };
-
+  watch(
+    () => formData.templateVersion,
+    (nv, ov) => {
+      versionMap.value = {
+        nv,
+        ov: ov || ''
+      };
+      console.log('versionMap===', versionMap.value);
+    },
+    {
+      immediate: true
+    }
+  );
   onBeforeRouteLeave(async (to, from) => {
     if (!_.isEqual(copyFormData, formData)) {
       beforeLeaveCallback({

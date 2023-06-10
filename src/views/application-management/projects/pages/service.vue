@@ -4,7 +4,7 @@
       <Breadcrumb
         :items="breadCrumbList"
         :menu="{ icon: 'icon-apps' }"
-        @change="handleChange"
+        @change="handleBreadChange"
       ></Breadcrumb>
     </BreadWrapper>
     <div>
@@ -21,42 +21,13 @@
   import useProjectBreadcrumbData from '../hooks/use-project-breadcrumb-data';
 
   const { route, router } = useCallCommon();
-  const { breadCrumbList, setBreabCrumbData } = useProjectBreadcrumbData();
+  const { breadCrumbList, setBreabCrumbData, handleBreadChange } =
+    useProjectBreadcrumbData();
   const id = route.query.id || '';
   const serviceId = ref(id as string);
 
   provide('instanceId', serviceId);
 
-  const handleChange = (val, item) => {
-    let params = {};
-    let query = {};
-    item.value = val;
-    if (item.type === 'Environment') {
-      params = {
-        ...route.params,
-        environmentId: val
-      };
-    }
-    if (item.type === 'Project') {
-      params = {
-        ...route.params,
-        projectId: val
-      };
-    }
-    if (item.type === 'Service') {
-      params = {
-        ...route.params
-      };
-      query = {
-        id: val
-      };
-    }
-    router.replace({
-      name: item.route,
-      params,
-      query
-    });
-  };
   const init = () => {
     setBreabCrumbData();
   };

@@ -18,7 +18,7 @@ import useProjectBreadcrumbData from '../../projects/hooks/use-project-breadcrum
 import { queryItemApplicationInstances } from '../api';
 import useTemplatesData from './use-templates-data';
 
-export default function useServiceData() {
+export default function useServiceData(props?) {
   type refItem = Element | ComponentPublicInstance | null;
   interface ModuleVersion extends ModuleVersionData {
     label: string;

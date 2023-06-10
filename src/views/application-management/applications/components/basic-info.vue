@@ -7,18 +7,20 @@
         :label="item.label"
         :span="item.span"
       >
-        <StatusLabel
-          v-if="item.key === 'status'"
-          :zoom="0.9"
-          :status="{
-            status: get(item, 'value.summaryStatus'),
-            text: get(item, 'value.summaryStatus'),
-            message: '',
-            transitioning: get(item, 'value.transitioning'),
-            error: get(item, 'value.error')
-          }"
-        ></StatusLabel>
-        <div v-else>{{ get(item, 'value') }}</div>
+        <slot name="value" :data="item">
+          <StatusLabel
+            v-if="item.key === 'status'"
+            :zoom="0.9"
+            :status="{
+              status: get(item, 'value.summaryStatus'),
+              text: get(item, 'value.summaryStatus'),
+              message: '',
+              transitioning: get(item, 'value.transitioning'),
+              error: get(item, 'value.error')
+            }"
+          ></StatusLabel>
+          <div v-else>{{ get(item, 'value') }}</div>
+        </slot>
       </a-descriptions-item>
     </a-descriptions>
   </div>
