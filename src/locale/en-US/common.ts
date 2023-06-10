@@ -86,5 +86,6 @@ export default {
   'common.permission.action.post': 'Create',
   'common.permission.action.get': 'Search',
   'common.permission.action.delete': 'Delete',
-  'common.permission.action.put': 'Update'
+  'common.permission.action.put': 'Update',
+  'common.button.settings': 'Settings'
 };

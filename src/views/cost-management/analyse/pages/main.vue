@@ -206,6 +206,16 @@
       padding-top: 0;
     }
 
+    :deep(.arco-tabs-nav) {
+      display: none;
+    }
+
+    :deep(.filter-box-wrap) {
+      padding-bottom: 10px;
+      padding-left: 16px;
+      background-color: #fff;
+    }
+
     :deep(.arco-tabs-nav-tab) {
       display: none;
     }

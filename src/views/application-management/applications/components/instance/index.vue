@@ -172,15 +172,15 @@
     pageAction.value = 'edit';
   };
   const handleEditSucceed = () => {
-    // router.replace({
-    //   params: {
-    //     ...route.params
-    //   },
-    //   query: {
-    //     ...route.query
-    //   }
-    // });
-    execReload?.();
+    router.replace({
+      params: {
+        ...route.params
+      },
+      query: {
+        ...route.query
+      }
+    });
+    // execReload?.();
     pageAction.value = 'view';
   };
   const handleEditCancel = () => {

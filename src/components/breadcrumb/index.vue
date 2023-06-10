@@ -19,7 +19,7 @@
         <span
           :id="item.wrapperId"
           class="item-content"
-          style="position: relative"
+          style="position: relative; height: 25px"
         >
           <span v-if="item.options?.length" class="label single">
             <a-select
@@ -38,10 +38,12 @@
             >
               <template #option="{ data }">
                 <AutoTip
+                  :key="data.value"
                   :tooltip-props="{
-                    content: data.label
+                    content: data
                   }"
-                  >{{ data.label }}
+                >
+                  <span>{{ data.label }}</span>
                 </AutoTip>
               </template>
               <template #arrow-icon>
@@ -64,7 +66,9 @@
                     style="color: var(--sealblue-6)"
                     @click="handleOnSettings(item)"
                   >
-                    <icon-settings class="mright-5" />Settings
+                    <icon-settings class="mright-5" />{{
+                      $t('common.button.settings')
+                    }}
                   </a-link>
                 </div>
               </template>
@@ -98,6 +102,7 @@
   import useCallCommon from '@/hooks/use-call-common';
   import { vOnClickOutside, OnClickOutside } from '@vueuse/components';
   import { BreadcrumbOptions } from '@/views/config/interface';
+  import { getListLabel } from '@/utils/func';
 
   const props = defineProps({
     items: {
@@ -115,8 +120,12 @@
   });
   const { router } = useCallCommon();
   const emits = defineEmits(['change']);
-  const handleSelectChange = (val, item) => {
-    emits('change', val, item);
+  const handleSelectChange = (value, item) => {
+    console.log('handleSelectChange===', getListLabel(value, item.options), {
+      value,
+      item
+    });
+    emits('change', { value, item });
   };
   const getContainer = (name) => {
     if (!name) return null;
@@ -223,6 +232,8 @@
     }
 
     :deep(.arco-breadcrumb-item) {
+      display: flex;
+      align-items: center;
       color: rgba(255, 255, 255, 1);
 
       .arco-trigger-content {

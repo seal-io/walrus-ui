@@ -1,6 +1,6 @@
 <template>
   <div class="table-list-wrap">
-    <FilterBox style="margin-bottom: 6px">
+    <FilterBox style="margin-bottom: 6px; padding-left: 0">
       <template #params>
         <a-input
           v-model="queryParams.query"

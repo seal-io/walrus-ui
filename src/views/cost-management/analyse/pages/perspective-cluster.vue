@@ -1,14 +1,6 @@
 <template>
   <div>
-    <FilterBox
-      style="
-        position: absolute;
-        top: 0;
-        right: 0;
-        width: fit-content;
-        margin-bottom: 10px;
-      "
-    >
+    <FilterBox style="margin-bottom: 10px">
       <template #params>
         <div v-if="isPage"><slot name="select"></slot></div>
         <a-select
