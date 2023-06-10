@@ -2,7 +2,8 @@
   <div>
     <BreadWrapper>
       <Breadcrumb
-        :menu="{ icon: 'icon-apps-fill', iconfont: true, label: title }"
+        :items="breadCrumbList"
+        :menu="{ icon: 'icon-apps' }"
       ></Breadcrumb>
     </BreadWrapper>
     <ComCard top-gap>
@@ -210,7 +211,8 @@
     computed,
     provide,
     watch,
-    nextTick
+    nextTick,
+    toRefs
   } from 'vue';
   import { onBeforeRouteLeave } from 'vue-router';
   import useCallCommon from '@/hooks/use-call-common';
@@ -224,12 +226,8 @@
   import { validateAppNameRegx } from '@/views/config';
   import usePageAction from '@/hooks/use-page-action';
   import { beforeLeaveCallback } from '@/hooks/save-before-leave';
-  import {
-    createApplication,
-    upgradeApplicationInstance,
-    queryItemApplicationInstances
-  } from '../api';
-  import useTemplatesData from '../hooks/use-templates-data';
+  import { createApplication, upgradeApplicationInstance } from '../api';
+  import useServiceData from '../hooks/use-service-data';
 
   interface Group {
     variables: object[];
@@ -240,50 +238,52 @@
     label: string;
     value: string;
   }
+
   const {
-    completeData,
-    initCompleteData,
-    completeDataSetter,
+    id,
+    init,
+    generateVariablesGroup,
+    getModuleSchemaByVersion,
+    getModuleVersionList,
+    formData,
+    pageAction,
+    defaultGroupKey,
+    moduleInfo,
+    variablesGroup,
+    variablesGroupForm,
+    templateVersionList,
+    moduleVersionFormCache,
     serviceDataList,
     templateList,
-    allTemplateVersions
-  } = useTemplatesData();
-  const { pageAction, handleEdit } = usePageAction();
-  const defaultGroupKey = '_default_default_';
+    completeData,
+    refMap,
+    title,
+    breadCrumbList: CurrentBreadList
+  } = useServiceData();
+  let copyFormData: any = null;
+
   const { route, router, t } = useCallCommon();
   const formref = ref();
   const loading = ref(false);
   const activeKey = ref('schemaForm0');
   const schemaForm = ref();
   const submitLoading = ref(false);
-  const moduleInfo = ref<any>({});
-  const serviceInfo = ref<any>({});
-  const variablesGroup = ref<any>({});
-  const variablesGroupForm = ref<any>({});
-  const templateVersionList = ref<ModuleVersion[]>([]);
-  const moduleVersionFormCache = ref({});
 
-  const id = route.query.id as string;
-  let refMap: Record<string, refItem> = {};
-  let copyFormData: any = {};
   const versionMap = ref({ nv: '', ov: '' });
-  const formData = reactive({
-    projectID: route.params.projectId,
-    environment: {
-      id: route.params.environmentId
-    },
-    name: '',
-    template: { id: '' },
-    templateVersion: '',
-    application: {
-      id: route.query.id || ''
-    },
-    attributes: {}
-  });
 
   provide('showHintInput', true);
   provide('completeData', completeData);
 
+  const breadCrumbList = computed(() => {
+    if (!CurrentBreadList.value.length) return [];
+    return [
+      CurrentBreadList.value[0],
+      CurrentBreadList.value[1],
+      {
+        label: title.value
+      }
+    ];
+  });
   const formTabs = computed(() => {
     const list = keys(variablesGroup.value);
     if (includes(list, defaultGroupKey)) {
@@ -292,15 +292,7 @@
     }
     return list;
   });
-  const title = computed(() => {
-    if (!id) {
-      return t('applications.applications.create');
-    }
-    if (id && pageAction.value === 'edit') {
-      return t('applications.applications.edit');
-    }
-    return t('applications.applications.detail');
-  });
+
   const getContainer = (id) => {
     return document.getElementById(id);
   };
@@ -312,22 +304,9 @@
     }
     router.back();
   };
-  const handleCancel = () => {
-    if (!_.isEqual(copyFormData, formData)) {
-      beforeLeaveCallback({
-        isCancel: true,
-        onOk: () => {
-          copyFormData = cloneDeep(formData);
-          cancelCallback();
-        }
-      });
-    } else {
-      cancelCallback();
-    }
-  };
 
   const validateNameuniq = (val, callback) => {
-    if (pageAction.value === 'edit') {
+    if (pageAction.value === 'view') {
       callback();
       return;
     }
@@ -346,89 +325,11 @@
       refMap[`${name}`] = el;
     }
   };
-  const getServiceItemInfo = async () => {
-    if (!route.query.id) return;
-    try {
-      const params = {
-        id: route.query.id,
-        projectID: route.params.projectId
-      };
-      const { data } = await queryItemApplicationInstances(params);
-      serviceInfo.value = data;
-    } catch (error) {
-      serviceInfo.value = {};
-      console.log(error);
-    }
-  };
+
   const handleTabChange = (val) => {
     activeKey.value = val;
   };
-  const getInitialValue = (item, sourceData, action) => {
-    let initialValue = item.default;
-    if (
-      get(moduleVersionFormCache.value, formData.templateVersion) ||
-      action === 'edit'
-    ) {
-      initialValue = get(sourceData, `attributes.${item.name}`);
-    }
-    return initialValue;
-  };
-  // get set: edit create
-  const generateVariablesGroup = (type) => {
-    refMap = {};
-    variablesGroup.value = {};
-    variablesGroupForm.value = {};
-    const sourceData = {
-      attributes: {
-        ...cloneDeep(get(serviceInfo.value, 'attributes')),
-        ...get(moduleVersionFormCache.value, formData.templateVersion)
-      }
-    };
-    console.log('sourceData===', sourceData);
-    const variablesList = filter(
-      get(moduleInfo.value, 'variables'),
-      (v) => !v.hidden
-    );
-    each(variablesList, (item) => {
-      const initialValue = getInitialValue(item, sourceData, type);
-      const group = get(split(item.group, '/'), '0');
-      if (group) {
-        if (!variablesGroup.value[group]) {
-          variablesGroup.value[group] = {
-            variables: [],
-            label: group
-          };
-          variablesGroup.value[group].variables.push(item);
-        } else {
-          variablesGroup.value[group].variables.push(item);
-        }
 
-        set(
-          variablesGroupForm.value,
-          `${group}.attributes.${item.name}`,
-          initialValue
-        );
-      } else {
-        if (!variablesGroup.value[defaultGroupKey]) {
-          variablesGroup.value[defaultGroupKey] = {
-            variables: [],
-            label: 'Basic'
-          };
-        }
-        variablesGroup.value[defaultGroupKey].variables.push(item);
-        set(
-          variablesGroupForm.value,
-          `${defaultGroupKey}.attributes.${item.name}`,
-          initialValue
-        );
-      }
-    });
-    console.log(
-      'variablesGroupForm===',
-      variablesGroup.value,
-      variablesGroupForm.value
-    );
-  };
   const setFormData = (schemas) => {
     const variablesList = filter(get(schemas, 'variables'), (v) => {
       return !v.hidden;
@@ -437,39 +338,7 @@
       formData.attributes[item.name] = item.default;
     });
   };
-  //  change module ...
-  const getModuleSchemaById = () => {
-    const moduleTemplate = find(
-      templateVersionList.value,
-      (item) => item.template.id === formData.template.id
-    );
-    return moduleTemplate;
-  };
-  // change version ...
-  const getModuleSchemaByVersion = () => {
-    const moduleTemplate = find(
-      templateVersionList.value,
-      (item) => item.value === formData.templateVersion
-    );
-    return moduleTemplate;
-  };
-  const getModuleVersionList = async () => {
-    try {
-      const list = filter(
-        allTemplateVersions.value,
-        (item) => item.template.id === formData.template.id
-      );
-      templateVersionList.value = map(list, (item) => {
-        return {
-          ...cloneDeep(item),
-          label: item.version,
-          value: item.version
-        };
-      });
-    } catch (error) {
-      console.log(error);
-    }
-  };
+
   const clearFormValidStatus = () => {
     keys(refMap).map(async (key) => {
       const refEL = refMap[key];
@@ -477,13 +346,13 @@
     });
   };
   // get group form data
-  const getRefFormData = async () => {
+  const getRefFormData = async (noValidate?: boolean) => {
     const resultList: any[] = [];
     console.log('refMap==1212====', keys(refMap));
     await Promise.all(
       keys(refMap).map(async (key) => {
         const refEL = refMap[key];
-        const moduleForm = await refEL?.getFormData?.();
+        const moduleForm = await refEL?.getFormData?.(noValidate);
         resultList.push({
           tab: key,
           formData: moduleForm
@@ -540,21 +409,60 @@
       handleTabChange('schemaForm0');
     });
   };
-
-  const handleOk = async () => {
-    const res = await formref.value?.validate();
+  const getFormData = async (noValidate?: boolean) => {
     let moduleFormList: any[] = [];
     if (keys(variablesGroup.value).length > 1) {
-      moduleFormList = await getRefFormData();
+      moduleFormList = await getRefFormData(noValidate);
     } else {
-      const result = await schemaForm.value?.getFormData();
+      const result = await schemaForm.value?.getFormData(noValidate);
       moduleFormList = [{ formData: result }];
     }
+    return moduleFormList;
+  };
+
+  const validateFormData = async () => {
+    const moduleFormList = await getFormData();
     console.log('moduleFormList===', refMap, moduleFormList, variablesGroup);
     const validFailedForm = find(moduleFormList, (item) => !item.formData);
     if (validFailedForm && validFailedForm.tab) {
       activeKey.value = validFailedForm.tab;
     }
+
+    return { validFailedForm, moduleFormList };
+  };
+  const handleCancel = async () => {
+    const noValidate = true;
+    const moduleFormList = await getFormData(noValidate);
+    const latestFormData = _.cloneDeep(formData);
+    latestFormData.attributes = {
+      ...reduce(
+        moduleFormList,
+        (obj, s) => {
+          obj = {
+            ...obj,
+            ...s.formData
+          };
+          return obj;
+        },
+        {}
+      )
+    };
+    console.log('cancel=====', { copyFormData, latestFormData });
+    if (!_.isEqual(copyFormData, latestFormData)) {
+      beforeLeaveCallback({
+        isCancel: true,
+        onOk: () => {
+          copyFormData = cloneDeep(formData);
+          cancelCallback();
+        }
+      });
+    } else {
+      cancelCallback();
+    }
+  };
+  const handleOk = async () => {
+    const res = await formref.value?.validate();
+    const { validFailedForm, moduleFormList } = await validateFormData();
     if (!res && !validFailedForm) {
       try {
         submitLoading.value = true;
@@ -585,40 +493,6 @@
     }
   };
 
-  const initFormData = async () => {
-    if (!id) {
-      // webservice
-      const webservice = find(
-        templateList.value,
-        (item) => item.id === 'webservice'
-      );
-      formData.template.id = webservice
-        ? webservice.id
-        : get(templateList.value, '0.id') || '';
-      await getModuleVersionList();
-      const moduleTemplate = getModuleSchemaById();
-      formData.templateVersion = get(moduleTemplate, 'version') || '';
-      moduleInfo.value = cloneDeep(get(moduleTemplate, 'schema')) || {};
-      // setFormData(moduleInfo.value);
-    } else {
-      assignIn(formData, serviceInfo.value);
-      // 1. get the template meta data 2.set the default value
-      await getModuleVersionList();
-      const moduleTemplate = getModuleSchemaByVersion();
-      moduleInfo.value = cloneDeep(get(moduleTemplate, 'schema'));
-      const variablesList = filter(
-        get(moduleInfo.value, 'variables'),
-        (v) => !v.hidden
-      );
-      each(variablesList || [], (item) => {
-        item.default = get(serviceInfo.value, `attributes.${item.name}`);
-      });
-    }
-
-    generateVariablesGroup(pageAction.value);
-    copyFormData = _.cloneDeep(formData);
-    console.log('moduleVersionList===', allTemplateVersions.value);
-  };
   onBeforeRouteLeave(async (to, from) => {
     if (!_.isEqual(copyFormData, formData)) {
       beforeLeaveCallback({
@@ -635,18 +509,11 @@
     }
     return true;
   });
-  const init = async () => {
-    await Promise.all([getServiceItemInfo(), initCompleteData()]);
-    initFormData();
+  const initData = async () => {
+    await init();
+    copyFormData = _.cloneDeep(formData);
   };
-  init();
+  initData();
 </script>
 
-<style lang="less">
-  .app-module-modal.arco-modal {
-    .arco-tabs-tab {
-      margin-right: 30px;
-      margin-left: 0;
-    }
-  }
-</style>
+<style lang="less"></style>

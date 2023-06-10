@@ -157,10 +157,7 @@
                 </a-tooltip>
               </span>
               <a-tooltip :content="$t('common.button.delete')">
-                <a-link
-                  style="color: var(--seal-color-error)"
-                  @click="handleDelete(record)"
-                >
+                <a-link status="danger" @click="handleDelete(record)">
                   <icon-delete></icon-delete>
                 </a-link>
               </a-tooltip>

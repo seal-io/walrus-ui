@@ -150,7 +150,12 @@
                 "
                 :content="$t('common.button.delete')"
               >
-                <a-link type="text" size="small" @click="handleDelete(record)">
+                <a-link
+                  type="text"
+                  size="small"
+                  status="danger"
+                  @click="handleDelete(record)"
+                >
                   <template #icon
                     ><icon-delete style="font-size: 16px"
                   /></template>

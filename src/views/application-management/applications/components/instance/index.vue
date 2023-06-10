@@ -11,58 +11,74 @@
       </HeaderInfo>
       <ComCard>
         <ModuleCard
-          :title="$t('applications.applications.instance.history')"
-          :title-style="{ 'margin-top': 0 }"
+          :title="$t('applications.applications.detail.configuration')"
+          :title-style="{ 'margin-bottom': '10px', 'margin-top': 0 }"
         >
-          <applicationHistory></applicationHistory>
+          <serviceInfo> </serviceInfo>
         </ModuleCard>
-        <ModuleCard :title="$t('applications.applications.instance.accessUrl')">
-          <tabEndpoint ref="tabEndpointCom"></tabEndpoint>
-        </ModuleCard>
-
-        <ModuleCard
-          :title="$t('applications.applications.instance.resource')"
-          style="margin-top: 20px"
-        >
-          <template #title>
-            <span>{{ $t('applications.applications.instance.resource') }}</span>
-            <a-tooltip
-              :content="$t('applications.applications.instance.resource.tips')"
-            >
-              <icon-info-circle class="mleft-5" />
-            </a-tooltip>
-          </template>
-          <a-tabs
-            lazy-load
-            type="rounded"
-            :active-key="activeKey"
-            class="module-tabs"
-            @change="handleTabChange"
-          >
-            <a-tab-pane
-              v-for="item in instanceTabList"
-              :key="item.value"
-              :title="$t(item.label)"
-            >
-              <Component
-                :is="instanceTabMap[item.com]"
-                :resource-list="dataList"
-                :is-loading="loading"
-              ></Component>
-            </a-tab-pane>
-          </a-tabs>
-        </ModuleCard>
-        <EditPageFooter>
-          <template #save>
-            <a-button
-              type="primary"
-              class="cap-title cancel-btn"
-              @click="handleOk"
-              >{{ $t('common.button.back') }}</a-button
-            >
-          </template>
-        </EditPageFooter>
       </ComCard>
+      <div>
+        <ComCard>
+          <ModuleCard
+            :title="$t('applications.applications.instance.history')"
+            :title-style="{ 'margin-top': 0 }"
+          >
+            <applicationHistory></applicationHistory>
+          </ModuleCard>
+          <ModuleCard
+            :title="$t('applications.applications.instance.accessUrl')"
+          >
+            <tabEndpoint ref="tabEndpointCom"></tabEndpoint>
+          </ModuleCard>
+
+          <ModuleCard
+            :title="$t('applications.applications.instance.resource')"
+            style="margin-top: 20px"
+          >
+            <template #title>
+              <span>{{
+                $t('applications.applications.instance.resource')
+              }}</span>
+              <a-tooltip
+                :content="
+                  $t('applications.applications.instance.resource.tips')
+                "
+              >
+                <icon-info-circle class="mleft-5" />
+              </a-tooltip>
+            </template>
+            <a-tabs
+              lazy-load
+              type="rounded"
+              :active-key="activeKey"
+              class="module-tabs"
+              @change="handleTabChange"
+            >
+              <a-tab-pane
+                v-for="item in instanceTabList"
+                :key="item.value"
+                :title="$t(item.label)"
+              >
+                <Component
+                  :is="instanceTabMap[item.com]"
+                  :resource-list="dataList"
+                  :is-loading="loading"
+                ></Component>
+              </a-tab-pane>
+            </a-tabs>
+          </ModuleCard>
+          <EditPageFooter>
+            <template #save>
+              <a-button
+                type="primary"
+                class="cap-title cancel-btn"
+                @click="handleOk"
+                >{{ $t('common.button.back') }}</a-button
+              >
+            </template>
+          </EditPageFooter>
+        </ComCard>
+      </div>
     </ComCard>
   </div>
 </template>
@@ -73,6 +89,7 @@
   import { useUserStore } from '@/store';
   import _ from 'lodash';
   import { markRaw, ref, watch, onMounted, computed } from 'vue';
+  import slTransition from '@/components/sl-transition/index.vue';
   import { useSetChunkRequest } from '@/api/axios-chunk-request';
   import HeaderInfo from '@/components/header-info/index.vue';
   import useCallCommon from '@/hooks/use-call-common';
@@ -82,7 +99,7 @@
   import tabResource from './tab-resource.vue';
   import tabLogs from './tab-logs.vue';
   import tabOutput from './tab-output.vue';
-  import tabOptimization from './tab-optimization.vue';
+  // import tabOptimization from './tab-optimization.vue';
   import tabGraph from './tab-graph/index.vue';
   import tabEndpoint from './tab-endpoint.vue';
   import applicationHistory from './application-history.vue';
@@ -90,6 +107,7 @@
   import { instanceTabs, instanceBasicInfo } from '../../config';
   import useFetchResource from '../hooks/use-fetch-chunk-data';
   import { queryItemApplicationInstances } from '../../api';
+  import serviceInfo from '../service-info.vue';
 
   const props = defineProps({
     instanceId: {
@@ -118,7 +136,6 @@
     tabGraph: markRaw(tabGraph),
     tabHistory: markRaw(applicationHistory),
     tabTerminal: markRaw(tabTerminal)
-    // tabEndpoint: markRaw(tabEndpoint)
   };
   const instanceTabList = ref<any[]>([]);
   const basicDataList = useBasicInfoData(instanceBasicInfo, currentInfo);

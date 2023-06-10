@@ -470,7 +470,15 @@
   const clearFormValidStatus = () => {
     formref.value?.clearValidate?.();
   };
-  const getFormData = async () => {
+  const getFormData = async (noValidate?: boolean) => {
+    // no need validate
+    if (noValidate) {
+      resetFieldsDefaultValue();
+      const resultFormData = transformDataByType();
+      console.log('formData.value=====', formData.value);
+      return resultFormData;
+    }
+    // validate before submit form
     clearFormValidStatus();
     triggerValidate.value = true;
     const result = await formref.value?.validate();

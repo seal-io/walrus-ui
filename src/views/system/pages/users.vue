@@ -143,6 +143,7 @@
                     resource: `roles.${Resources.Subjects}`,
                     actions: [Actions.DELETE]
                   }"
+                  status="danger"
                   @click="handleDelete(record)"
                 >
                   <template #icon>

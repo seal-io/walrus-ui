@@ -401,7 +401,7 @@
       bottom: 100px;
       color: var(--color-text-2);
       background-color: #fff;
-      border-top: 1px solid var(--color-border-2);
+      border-top: 1px solid var(--color-border-1);
 
       .iconfont.icon-language {
         margin-left: 1px;
