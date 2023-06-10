@@ -19,6 +19,7 @@
       <ComCard>
         <a-tabs
           v-model:active-key="activeKey"
+          lazy-load
           class="page-line-tabs"
           :default-active-key="activeKey"
           @change="handleTabChange"
@@ -57,7 +58,8 @@
   import { basicInfoConfig } from '../config';
   import userProjectBreadcrumbData from '../hooks/use-project-breadcrumb-data';
 
-  const { setProjectList } = userProjectBreadcrumbData();
+  const { getProjectList, setProjectList, breadCrumbList, handleBreadChange } =
+    userProjectBreadcrumbData();
   const { router, route } = useCallCommon();
   const projectStore = useProjectStore();
   const userStore = useUserStore();
@@ -65,41 +67,9 @@
   const variablesRef = ref();
   const enviromentRef = ref();
   const currentInfo = ref<any>({});
-  const breadCrumbList = ref<BreadcrumbOptions[]>([]);
   const basicDataList = useBasicInfoData(basicInfoConfig, currentInfo);
   const handleTabChange = (val) => {
     activeKey.value = val;
-  };
-
-  const getProjectList = async () => {
-    try {
-      const params = {
-        page: -1
-      };
-      const { data } = await queryProjects(params);
-      const list = _.map(data.items, (item) => {
-        return {
-          label: item.name,
-          value: item.id
-        };
-      });
-      const defaultValue = route.params.projectId || _.get(list, '0.value');
-      const defaultName = _.get(list, '0.label');
-      breadCrumbList.value.push({
-        value: defaultValue,
-        label: defaultName,
-        icon: 'icon-apps',
-        type: 'Project',
-        wrapperId: 'project',
-        options: list,
-        visible: false
-      });
-      projectStore.setInfo({
-        projectList: list
-      });
-    } catch (error) {
-      console.log(error);
-    }
   };
 
   const getItemProjectInfo = async () => {
@@ -115,22 +85,18 @@
       currentInfo.value = {};
     }
   };
-  const handleProjectChange = (val, item) => {
-    item.value = val;
-    currentInfo.value = item;
-    userStore.setInfo({ currentProject: val });
-    router.replace({
-      name: 'ProjectDetail',
-      params: {
-        projectId: val
-      }
-    });
+  const handleProjectChange = ({ value, item }) => {
+    const data = _.find(item.options, (s) => s.value === value);
+    item.value = value;
+    currentInfo.value = data;
+    handleBreadChange(value, item);
   };
   const init = async () => {
     getItemProjectInfo();
+    const projectList = await getProjectList();
     userStore.setInfo({ currentProject: route.params.projectId });
-    const projectRes = await setProjectList(projectStore.projectList);
-    breadCrumbList.value = [projectRes];
+    const projectRes = await setProjectList(projectList);
+    breadCrumbList.value = [{ ...projectRes }];
   };
   init();
 </script>

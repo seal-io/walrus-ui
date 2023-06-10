@@ -40,7 +40,9 @@
     getEnvironmentList,
     getProjectList,
     setProjectList,
-    setEnvironmentList
+    setEnvironmentList,
+    handleBreadChange,
+    pageLevelMap
   } = useProjectData();
   const { router, route, t } = useCallCommon();
   const currentInfo = ref<any>({});
@@ -48,29 +50,18 @@
   const serviceRef = ref();
   const basicDataList = useBasicInfoData(basicInfoConfig, currentInfo);
 
-  const handleSelectChange = (val, item) => {
-    item.value = val;
-    currentInfo.value = item;
-    let params = {};
-    if (item.type === 'Environment') {
-      params = {
-        ...route.params,
-        environmentId: val
-      };
+  const handleSelectChange = ({ value, item }) => {
+    item.value = value;
+    if (item.level !== pageLevelMap.Environment) {
+      currentInfo.value = {};
+    } else {
+      currentInfo.value = _.find(item.options, (s) => s.value === value);
     }
-    if (item.type === 'Project') {
-      params = {
-        projectId: val
-      };
-    }
-    router.replace({
-      name: item.route,
-      params: {
-        ...params
-      }
-    });
+    console.log('currentInfo===', currentInfo.value);
+    handleBreadChange(value, item);
   };
   const getItemEnvironmentInfo = async () => {
+    if (!route.params.environmentId) return;
     try {
       const params = {
         id: route.params.environmentId as string

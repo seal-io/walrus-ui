@@ -346,7 +346,6 @@
     handleFilter();
   };
   onMounted(async () => {
-    await getProjectList();
     fetchData();
     console.log('application list');
   });

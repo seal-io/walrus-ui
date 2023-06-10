@@ -151,7 +151,9 @@
       formData.value.labels = reduce(
         formData.value.labelList,
         (obj, item) => {
-          obj[item.key] = item.value;
+          if (item.key) {
+            obj[item.key] = item.value;
+          }
           return obj;
         },
         {}

@@ -4,7 +4,7 @@
       <Breadcrumb
         :items="breadCrumbList"
         :menu="{ icon: 'icon-apps' }"
-        @change="handleBreadChange"
+        @change="handleServiceChange"
       ></Breadcrumb>
     </BreadWrapper>
     <div>
@@ -28,6 +28,9 @@
 
   provide('instanceId', serviceId);
 
+  const handleServiceChange = ({ value, item }) => {
+    handleBreadChange(value, item);
+  };
   const init = () => {
     setBreabCrumbData();
   };

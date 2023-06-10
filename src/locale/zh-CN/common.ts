@@ -83,5 +83,6 @@ export default {
   'common.permission.action.post': '新增',
   'common.permission.action.get': '查询',
   'common.permission.action.delete': '删除',
-  'common.permission.action.put': '更新'
+  'common.permission.action.put': '更新',
+  'common.button.settings': '设置'
 };
