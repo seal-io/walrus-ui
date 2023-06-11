@@ -70,7 +70,7 @@
           tooltip
           :cell-style="{ minWidth: '40px' }"
           data-index="name"
-          title="服务"
+          :title="$t('applications.applications.table.service')"
         >
           <template #cell="{ record }">
             <a-link
@@ -92,7 +92,7 @@
           tooltip
           :cell-style="{ minWidth: '40px' }"
           data-index="environment.name"
-          title="环境"
+          :title="$t('applications.applications.detail.env')"
         >
         </a-table-column>
         <a-table-column
