@@ -8,7 +8,7 @@ export default {
   'applications.applications.configuration.create': 'Add Template',
   'applications.applications.table.name': 'Application',
   'applications.applications.table.module': 'Template',
-  'applications.applications.table.service': 'Services',
+  'applications.applications.table.service': 'Service',
   'applications.applications.table.status': 'Status',
   'applications.applications.table.type': 'Type',
   'applications.applications.table.content': 'Content',
