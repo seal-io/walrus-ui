@@ -18,6 +18,8 @@
   export default defineComponent({
     emit: ['collapse'],
     setup() {
+      const PROJECT_LIST = 'ProjectsList';
+      const PROJECT_DETAIL = 'ProjectDetail';
       const { t, router, route } = useCallCommon();
       const currentRoute = ref<string>('');
       const appStore = useAppStore();
@@ -101,27 +103,34 @@
       });
       const goToProject = async (item: RouteRecordRaw) => {
         const defaultProject = await localStore.getValue(USER_DEFAULT_PROJECT);
+
         if (!projectStore.projectList.length) {
           router.push({
             name: item.name
           });
           return;
         }
+        const pro = _.find(
+          projectStore.projectList,
+          (item) => item.value === defaultProject.id
+        );
         router.push({
-          name: 'ProjectDetail',
+          name: PROJECT_DETAIL,
           params: {
-            projectId: defaultProject.id
+            projectId: pro
+              ? defaultProject.id
+              : _.get(projectStore.projectList, '0.value')
           }
         });
       };
       // In this case only two levels of menus are available
       // You can expand as needed
 
-      const goto = (item: RouteRecordRaw) => {
+      const goto = async (item: RouteRecordRaw) => {
         const query: any = item.meta?.query;
         const isReplace: any = item.meta?.replace;
-        if (item.name === 'ProjectsList') {
-          goToProject(item);
+        if (item.name === PROJECT_LIST) {
+          await goToProject(item);
           return;
         }
         if (!isReplace) {
