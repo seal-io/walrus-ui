@@ -5,6 +5,11 @@
         :menu="{ icon: 'icon-dashboard', label: 'menu.dashboard' }"
       ></Breadcrumb>
     </BreadWrapper>
+    <HeaderInfo :info="{ name: $t('menu.dashboard') }">
+      <template #icon>
+        <i class="iconfont icon-dashboard-Fill"></i>
+      </template>
+    </HeaderInfo>
     <a-space :size="8" direction="vertical" fill>
       <overview></overview>
       <DeploymentSummary></DeploymentSummary>
@@ -23,7 +28,7 @@
 <script lang="ts" setup>
   import { Resources, Actions } from '@/permissions/config';
   import { useUserStore } from '@/store';
-  import BreadWrapper from '@/components/bread-wrapper/index.vue';
+  import HeaderInfo from '@/components/header-info/index.vue';
   import overview from '../components/overview.vue';
   import DeploymentSummary from '../components/deployment-summary.vue';
   import CostSummary from '../components/cost-summary.vue';

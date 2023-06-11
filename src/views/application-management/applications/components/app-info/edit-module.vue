@@ -354,8 +354,8 @@
     }
     return list;
   });
-  const getContainer = (id) => {
-    return document.getElementById(id);
+  const getContainer = (id): HTMLElement => {
+    return document.getElementById(id) as HTMLElement;
   };
   const handleCancel = () => {
     emit('update:show', false);

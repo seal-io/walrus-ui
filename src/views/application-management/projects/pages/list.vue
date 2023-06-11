@@ -1,9 +1,23 @@
 <template>
   <div>
     <BreadWrapper>
-      <Breadcrumb :menu="{ icon: 'icon-apps', label: '项目列表' }"></Breadcrumb>
+      <Breadcrumb
+        :menu="{
+          icon: 'icon-apps',
+          label: $t('menu.applicationManagement.projectList')
+        }"
+      ></Breadcrumb>
     </BreadWrapper>
-    <SpinCard borderless top-gap class="projects">
+    <ComCard padding="0" top-gap>
+      <HeaderInfo
+        :info="{ name: $t('menu.applicationManagement.projectList') }"
+      >
+        <template #icon>
+          <i class="iconfont icon-app-fill"></i>
+        </template>
+      </HeaderInfo>
+    </ComCard>
+    <SpinCard borderless class="projects">
       <div class="content">
         <FilterBox style="margin-bottom: 10px">
           <template #params>
@@ -203,6 +217,7 @@
   import { ref, reactive } from 'vue';
   import dayjs from 'dayjs';
   import { useUserStore } from '@/store';
+  import HeaderInfo from '@/components/header-info/index.vue';
   import useCallCommon from '@/hooks/use-call-common';
   import FilterBox from '@/components/filter-box/index.vue';
   import { deleteModal, execSucceed } from '@/utils/monitor';
