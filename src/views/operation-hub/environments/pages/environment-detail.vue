@@ -24,7 +24,7 @@
 </template>
 
 <script lang="ts" setup>
-  import { ref, onMounted } from 'vue';
+  import { ref, onMounted, nextTick } from 'vue';
   import _ from 'lodash';
   import useCallCommon from '@/hooks/use-call-common';
   import HeaderInfo from '@/components/header-info/index.vue';
@@ -42,11 +42,16 @@
     setProjectList,
     setEnvironmentList,
     handleBreadChange,
-    pageLevelMap
+    pageLevelMap,
+    projectTemplate,
+    environmentTemplate
   } = useProjectData();
   const { router, route, t } = useCallCommon();
   const currentInfo = ref<any>({});
-  const breadCrumbList = ref<BreadcrumbOptions[]>([]);
+  const breadCrumbList = ref<BreadcrumbOptions[]>([
+    projectTemplate,
+    environmentTemplate
+  ]);
   const serviceRef = ref();
   const basicDataList = useBasicInfoData(basicInfoConfig, currentInfo);
 
@@ -86,7 +91,9 @@
     getItemEnvironmentInfo();
   };
   onMounted(() => {
-    initBread();
+    nextTick(() => {
+      initBread();
+    });
   });
   init();
 </script>

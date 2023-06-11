@@ -44,7 +44,7 @@
 </template>
 
 <script lang="ts" setup>
-  import { ref, onMounted } from 'vue';
+  import { ref, onMounted, nextTick } from 'vue';
   import _ from 'lodash';
   import useCallCommon from '@/hooks/use-call-common';
   import { useUserStore } from '@/store';
@@ -58,8 +58,13 @@
   import { basicInfoConfig } from '../config';
   import userProjectBreadcrumbData from '../hooks/use-project-breadcrumb-data';
 
-  const { getProjectList, setProjectList, breadCrumbList, handleBreadChange } =
-    userProjectBreadcrumbData();
+  const {
+    getProjectList,
+    setProjectList,
+    breadCrumbList,
+    projectTemplate,
+    handleBreadChange
+  } = userProjectBreadcrumbData();
   const { router, route } = useCallCommon();
   const userStore = useUserStore();
   const activeKey = ref('enviroment');
@@ -67,6 +72,9 @@
   const enviromentRef = ref();
   const currentInfo = ref<any>({});
   const basicDataList = useBasicInfoData(basicInfoConfig, currentInfo);
+
+  breadCrumbList.value = [projectTemplate];
+
   const handleTabChange = (val) => {
     activeKey.value = val;
   };
@@ -100,7 +108,9 @@
     getItemProjectInfo();
   };
   onMounted(() => {
-    initBread();
+    nextTick(() => {
+      initBread();
+    });
   });
   init();
 </script>

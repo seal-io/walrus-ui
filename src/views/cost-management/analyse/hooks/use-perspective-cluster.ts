@@ -77,7 +77,7 @@ export default function usePerspectiveCost(props) {
 
   const overData = ref({});
   const pageId = computed(() => {
-    return query.id || props.viewId;
+    return props.viewId;
   });
   const summaryData = computed(() => {
     const arr = cloneDeep(clusterCostOverview);

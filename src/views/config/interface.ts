@@ -17,6 +17,7 @@ export interface BreadcrumbOptions {
   iconfont?: boolean;
   type?: string;
   backAction?: boolean;
+  hasOptions?: boolean;
   wrapperId: string;
   visible: boolean;
   onSetting?: (args: any) => void;

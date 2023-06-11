@@ -3,7 +3,7 @@
     <!-- <div v-if="navbar" class="layout-navbar">
       <NavBar />
     </div> -->
-    <BreadWrapper style="z-index: 900"></BreadWrapper>
+    <BreadWrapper style="z-index: 900"> </BreadWrapper>
     <a-layout
       class="main-layout"
       :class="{ 'full-screen': appStore.fullScreen }"
@@ -209,7 +209,7 @@
       left: 0;
       display: flex;
       align-items: center;
-      width: 220px;
+      width: 48px;
       height: 48px;
       padding-left: 7px;
       font-size: 0;
