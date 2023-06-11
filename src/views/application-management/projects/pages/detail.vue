@@ -33,6 +33,7 @@
           <a-tab-pane key="variables" :title="$t('menu.operatorHub.variables')">
             <SecretList ref="variablesRef"></SecretList>
           </a-tab-pane>
+
           <a-tab-pane key="connector" :title="$t('menu.operatorHub.connector')">
             <ConnectorList scope="project"></ConnectorList>
           </a-tab-pane>
@@ -46,22 +47,20 @@
   import { ref, onMounted } from 'vue';
   import _ from 'lodash';
   import useCallCommon from '@/hooks/use-call-common';
-  import { useProjectStore, useUserStore } from '@/store';
+  import { useUserStore } from '@/store';
   import HeaderInfo from '@/components/header-info/index.vue';
   import EnviromentList from '@/views/operation-hub/environments/pages/list.vue';
   import SecretList from '@/views/application-management/secret/pages/list.vue';
-  import { BreadcrumbOptions } from '@/views/config/interface';
   import ConnectorList from '@/views/operation-hub/connectors/components/table-list.vue';
   import basicInfo from '@/views/application-management/applications/components/basic-info.vue';
   import useBasicInfoData from '../hooks/use-basicInfo-data';
-  import { queryProjects, queryItemProject } from '../api';
+  import { queryItemProject } from '../api';
   import { basicInfoConfig } from '../config';
   import userProjectBreadcrumbData from '../hooks/use-project-breadcrumb-data';
 
   const { getProjectList, setProjectList, breadCrumbList, handleBreadChange } =
     userProjectBreadcrumbData();
   const { router, route } = useCallCommon();
-  const projectStore = useProjectStore();
   const userStore = useUserStore();
   const activeKey = ref('enviroment');
   const variablesRef = ref();
@@ -91,13 +90,18 @@
     currentInfo.value = data;
     handleBreadChange(value, item);
   };
-  const init = async () => {
-    getItemProjectInfo();
+  const initBread = async () => {
     const projectList = await getProjectList();
     userStore.setInfo({ currentProject: route.params.projectId });
     const projectRes = await setProjectList(projectList);
     breadCrumbList.value = [{ ...projectRes }];
   };
+  const init = async () => {
+    getItemProjectInfo();
+  };
+  onMounted(() => {
+    initBread();
+  });
   init();
 </script>
 

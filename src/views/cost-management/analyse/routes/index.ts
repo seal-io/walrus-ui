@@ -8,7 +8,7 @@ export default [
     meta: {
       hideInMenu: false,
       ignoreCache: true,
-      locale: 'menu.costManagement.analyse',
+      locale: 'menu.costManagement',
       requiresAuth: true,
       permission: {
         resource: Resources.Costs,

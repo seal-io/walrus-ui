@@ -6,11 +6,7 @@
           route.params.projectId
             ? breadCrumbList
             : [
-                {
-                  label: $t('menu.operatorHub'),
-                  icon: 'icon-relation',
-                  route: 'OperationMain'
-                },
+                { ...operationRootBread, label: $t(operationRootBread.label) },
                 {
                   label: title
                 }
@@ -185,6 +181,7 @@
   import usePageAction from '@/hooks/use-page-action';
   import useGetBreadState from '@/views/application-management/projects/hooks/use-get-breadstate';
   import { ConnectorFormData } from '../config/interface';
+  import { operationRootBread } from '../config';
   import StatusLabel from '../components/status-label.vue';
   import { createConnector, updateConnector, queryItemConnector } from '../api';
 
@@ -200,7 +197,7 @@
   const userStore = useUserStore();
   const { t, router, route } = useCallCommon();
   const { pageAction, handleEdit } = usePageAction();
-  const id = route.query.id || '';
+  const id = route.query.id as string;
   const formref = ref();
   const submitLoading = ref(false);
   let copyFormData: any = {};

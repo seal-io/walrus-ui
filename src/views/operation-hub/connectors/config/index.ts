@@ -38,6 +38,13 @@ export const connectorTypeList = [
 
   // { label: 'Cloud Provider', value: 'cloud', com: 'cloud' }
 ];
+
+export const operationRootBread = {
+  label: 'menu.operatorHub',
+  icon: 'icon-relation',
+  backAction: true,
+  route: 'OperationMain'
+};
 export enum ConnectorCategory {
   VersionControl = 'VersionControl',
   Custom = 'Custom',

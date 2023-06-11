@@ -3,11 +3,16 @@
     top="10%"
     :closable="false"
     :align-center="false"
-    :width="600"
+    :width="700"
     :ok-text="$t('common.button.save')"
     :visible="show"
+    unmount-on-close
     :mask-closable="false"
-    :body-style="{ 'max-height': '400px', 'overflow': 'auto' }"
+    :body-style="{
+      'max-height': '500px',
+      'min-height': '400px',
+      'overflow': 'auto'
+    }"
     modal-class="project-modal"
     :title="title"
     @cancel="handleCancel"
@@ -15,60 +20,25 @@
     @before-open="handleBeforeOpen"
     @before-close="handleBeforeClose"
   >
-    <a-spin :loading="loading" style="width: 100%; text-align: center">
-      <a-form ref="formref" :model="formData" auto-label-width>
-        <a-form-item
-          :disabled="!!formData.id && action === 'edit'"
-          :label="$t('applications.applications.form.name')"
-          field="name"
-          validate-trigger="change"
-          :rules="[
-            { required: true, message: $t('applications.projects.rule.name') },
-            {
-              match: validateSecretNameRegx,
-              message: $t('applications.secret.name.tips')
-            }
-          ]"
-        >
-          <a-input
-            v-model="formData.name"
-            style="width: 100%"
-            :max-length="30"
-            show-word-limit
-          ></a-input>
-          <template #extra>
-            <span class="tips">{{ $t('applications.secret.name.tips') }}</span>
-          </template>
-        </a-form-item>
-        <a-form-item
-          :label="$t('applications.secret.form.name')"
-          field="value"
-          validate-trigger="change"
-          :rules="[
-            { required: true, message: $t('applications.secret.rules.value') }
-          ]"
-        >
-          <a-textarea
-            v-model="formData.value"
-            style="width: 100%"
-            :auto-size="{ minRows: 4, maxRows: 6 }"
-          ></a-textarea>
-        </a-form-item>
-        <!-- <a-form-item>
-          <dl class="tips-wrap">
-            <dt style="float: left">
-              <icon-info-circle-fill style="color: rgb(var(--arcoblue-6))" />
-            </dt>
-            <dd
-              class="content"
-              v-html="$t('applications.secret.form.tips')"
-            ></dd>
-          </dl>
-        </a-form-item> -->
-      </a-form>
-    </a-spin>
+    <div>
+      <div v-for="(item, index) in variableList" :key="index" class="variable">
+        <variableItem v-model:variable="variableList[index]"></variableItem>
+        <div class="btn-wrapper">
+          <icon-minus-circle
+            v-if="variableList.length > 1"
+            class="size-20"
+            @click="handleDeleteVariable(index)"
+          ></icon-minus-circle>
+          <icon-plus-circle-fill
+            v-if="index === variableList.length - 1"
+            class="size-20"
+            @click="handleAddVariable"
+          ></icon-plus-circle-fill>
+        </div>
+      </div>
+    </div>
     <template #footer>
-      <EditPageFooter>
+      <EditPageFooter style="margin-top: 0">
         <template #save>
           <a-button
             :loading="submitLoading"
@@ -92,14 +62,21 @@
 </template>
 
 <script lang="ts" setup>
+  import {
+    yaml2Json,
+    json2Yaml,
+    unknowType,
+    validateYaml
+  } from '@/components/form-create/config/yaml-parse';
   import { ref, reactive, PropType } from 'vue';
-  import { reduce, omit, keys, get, pickBy, omitBy } from 'lodash';
+  import _, { get, omitBy } from 'lodash';
   import useCallCommon from '@/hooks/use-call-common';
   import EditPageFooter from '@/components/edit-page-footer/index.vue';
   import { validateSecretNameRegx } from '@/views/config';
   import xInputGroup from '@/components/form-create/custom-components/x-input-group.vue';
   import { createSecret, updateSecret } from '../api';
-  import { SecretFormData } from '../config/interface';
+  import { SecretFormData, Variable } from '../config/interface';
+  import variableItem from './variable-item.vue';
 
   const props = defineProps({
     show: {
@@ -143,6 +120,14 @@
   const formref = ref();
   const loading = ref(false);
   const submitLoading = ref(false);
+  const variableList = ref<Variable[]>([
+    {
+      name: '',
+      type: 'string',
+      default: '',
+      visible: true
+    }
+  ]);
   const formData = ref<SecretFormData>({
     name: '',
     value: '',
@@ -153,7 +138,38 @@
   const handleCancel = () => {
     emit('update:show', false);
   };
-
+  const handleAddVariable = () => {
+    variableList.value.push({
+      name: '',
+      type: 'string',
+      default: '',
+      visible: true
+    });
+  };
+  const handleDeleteVariable = (index) => {
+    variableList.value.splice(index, 1);
+  };
+  const setAppInfoVariables = () => {
+    const result = _.map(variableList.value, (o) => {
+      const item = _.cloneDeep(o);
+      let val = item.default;
+      if (item.type === 'dynamic') {
+        val = yaml2Json(val);
+      }
+      if (item.type === 'bool') {
+        val = !!val;
+      }
+      if (item.type === 'number') {
+        val = _.isNumber(val) ? val : '';
+      }
+      return {
+        name: item.name,
+        type: item.type,
+        default: val
+      };
+    });
+    return result;
+  };
   const handleOk = async () => {
     const res = await formref.value?.validate();
     if (!res) {
@@ -203,13 +219,16 @@
     }
   };
   const handleBeforeClose = () => {
-    formref.value.resetFields();
+    formref.value?.resetFields?.();
   };
 </script>
 
 <style lang="less">
   .arco-modal.project-modal {
     .btn-wrapper {
+      display: flex;
+      justify-content: space-between;
+      width: 70px;
       margin-left: 12px;
 
       .arco-icon {
@@ -219,6 +238,19 @@
         &:hover {
           color: rgb(var(--arcoblue-5));
         }
+      }
+    }
+
+    .variable {
+      display: flex;
+      margin-bottom: 10px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid var(--color-border-2);
+
+      &:last-child {
+        margin-bottom: 0;
+        padding-bottom: 0;
+        border: none;
       }
     }
   }

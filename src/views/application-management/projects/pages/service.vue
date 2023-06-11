@@ -14,7 +14,7 @@
 </template>
 
 <script lang="ts" setup>
-  import { ref, provide } from 'vue';
+  import { ref, provide, onMounted } from 'vue';
   import BreadWrapper from '@/components/bread-wrapper/index.vue';
   import useCallCommon from '@/hooks/use-call-common';
   import ServiceDetail from '@/views/application-management/applications/components/instance/index.vue';
@@ -34,7 +34,9 @@
   const init = () => {
     setBreabCrumbData();
   };
-  init();
+  onMounted(() => {
+    init();
+  });
 </script>
 
 <style lang="less" scoped></style>

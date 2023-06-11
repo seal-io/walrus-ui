@@ -4,8 +4,7 @@ export default [
   {
     path: 'project/:projectId/connector/k8s-detail/:action',
     name: 'ProjectConnectorK8sDetail',
-    component: () =>
-      import('@/views/operation-hub/connectors/pages/k8s-detail.vue'),
+    component: () => import('../../pages/connector/kubernetes.vue'),
     meta: {
       hideInMenu: true,
       ignoreCache: true,

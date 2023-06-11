@@ -1,268 +1,314 @@
 <template>
-  <SpinCard top-gap :loading="loading" style="width: 100%">
-    <GroupTitle
-      :title="title"
-      show-back
-      :show-edit="pageAction === 'view' && !builtin"
-      @edit="handleEdit"
-    ></GroupTitle>
-    <a-form
-      ref="formref"
-      :model="formData"
-      auto-label-width
-      label-align="right"
-    >
-      <a-form-item
-        :label="$t('cost.analyse.table.name')"
-        field="name"
-        validate-trigger="change"
-        :rules="[
-          { required: !viewable, message: $t('cost.optimize.form.rule.name') }
-        ]"
-      >
-        <a-input
-          v-if="!viewable"
-          v-model.trim="formData.name"
-          :max-length="50"
-          :show-word-limit="!viewable"
-        ></a-input>
-        <span v-else class="readonly-view-label">{{ formData.name }}</span>
-        <template #extra>
-          <span>{{ $t('cost.optimize.form.name.tips') }}</span>
-        </template>
-      </a-form-item>
-      <GroupTitle
-        iconed
-        :title="$t('cost.optimize.form.title.group1')"
-        style="margin-top: 10px"
-        :bordered="true"
-      ></GroupTitle>
-      <a-form-item
-        :label="$t('cost.analyse.table.time')"
-        field="timeRange"
-        :validate-trigger="['change']"
-        :rules="[
-          { required: !viewable, message: $t('cost.optimize.form.rule.time') }
-        ]"
-      >
-        <a-select
-          v-if="!viewable"
-          v-model="formData.timeRange"
-          @change="handleTimeChange"
-        >
-          <a-option
-            v-for="item in timeRangeOptions"
-            :key="item.value"
-            :value="item.value"
-            :label="$t(item.label)"
-          ></a-option>
-        </a-select>
-        <span v-else class="readonly-view-label">{{
-          $t(getListLabel(formData.timeRange, timeRangeOptions) || '-')
-        }}</span>
-        <template v-if="!viewable" #extra>
-          <span class="tips">{{
-            $t('cost.optimize.form.timeRange.tips')
-          }}</span>
-        </template>
-      </a-form-item>
-      <a-form-item
-        :label="$t('cost.optimize.form.groupby')"
-        field="allocationQueries.0.groupBy"
-        :rules="[
+  <div class="perspective-box">
+    <BreadWrapper>
+      <Breadcrumb
+        :items="[
           {
-            required: !viewable,
-            message: $t('cost.optimize.form.rule.groupby')
+            label: $t('navbar.costmanagement'),
+            icon: 'icon-bar-chart',
+            backAction: true,
+            route: 'CostManangement'
+          },
+          {
+            label: title
           }
         ]"
-      >
-        <a-cascader
-          v-if="!viewable"
-          v-model="formData.allocationQueries[0].groupBy"
-          allow-search
-          :options="groupList"
-          style="width: 360px"
-          @change="handleGroupByChange"
-        >
-        </a-cascader>
-        <span v-else class="readonly-view-label">{{
-          $t(
-            getListLabel(formData.allocationQueries[0].groupBy, groupList) ||
-              '-'
-          )
-        }}</span>
-      </a-form-item>
-      <a-form-item
-        v-if="!groupByDate.includes(formData.allocationQueries[0].groupBy)"
-        :label="$t('cost.optimize.form.step')"
-        :validate-trigger="['change']"
-        field="allocationQueries.0.step"
-        :rules="[
-          { required: !viewable, message: $t('cost.optimize.form.rule.step') }
-        ]"
-      >
-        <a-cascader
-          v-if="!viewable"
-          v-model="formData.allocationQueries[0].step"
-          allow-search
-          :options="stepList"
-          style="width: 360px"
-          @change="handleStepChange"
-        >
-        </a-cascader>
-        <span v-else class="readonly-view-label">{{
-          $t(getListLabel(formData.allocationQueries[0].step, stepList) || '-')
-        }}</span>
-      </a-form-item>
-      <a-form-item
-        :label="$t('cost.optimize.form.costFilter')"
-        field="allocationQueries.0.filters"
-        :rules="[
-          { required: !viewable, message: $t('cost.optimize.form.rule.cost') }
-        ]"
-      >
-        <ConditionFilter
-          v-if="
-            (!viewable || formData.allocationQueries[0].filters.length) &&
-            perspectiveInfo.name !== 'All'
-          "
-          ref="allfilter"
-          v-model:conditions="formData.allocationQueries[0].filters"
-          :viewable="viewable"
-          :perspective-fields="perspectiveFields"
-          :time-range="formData.timeRange"
-        ></ConditionFilter>
-        <span v-else class="readonly-view-label">{{
-          perspectiveInfo.name === 'All' ? 'All' : '-'
-        }}</span>
-      </a-form-item>
+      ></Breadcrumb>
+    </BreadWrapper>
+    <SpinCard top-gap padding="0" :loading="loading" style="width: 100%">
       <GroupTitle
-        iconed
-        :title="$t('cost.optimize.form.title.group2')"
-        style="margin-top: 10px"
-        :bordered="true"
+        :bordered="false"
+        :show-edit="pageAction === 'view' && !builtin"
+        @edit="handleEdit"
       ></GroupTitle>
-      <a-form-item
-        :label="$t('cost.optimize.form.commonCost')"
-        field="allocationQueries.shareCosts.0.filters"
+      <a-form
+        ref="formref"
+        :model="formData"
+        auto-label-width
+        label-align="right"
       >
-        <ConditionFilter
-          v-if="
-            !viewable ||
-            formData.allocationQueries[0].shareCosts[0].filters.length
-          "
-          ref="costfilter"
-          v-model:conditions="
-            formData.allocationQueries[0].shareCosts[0].filters
-          "
-          :viewable="viewable"
-          :time-range="formData.timeRange"
-          :perspective-fields="perspectiveFields"
-        ></ConditionFilter>
-        <span v-else class="readonly-view-label"> - </span>
-      </a-form-item>
-
-      <a-form-item
-        :label="$t('cost.optimize.form.shareCost')"
-        field="allocationQueries.0.shareCosts.0.idleCostFilters"
-      >
-        <a-select
-          v-if="!viewable"
-          v-model="formData.allocationQueries[0].shareCosts[0].idleCostFilters"
-          allow-search
-          multiple
-          :max-tag-count="1"
-          :options="idleCostFieldList"
-          style="width: 360px"
-          @change="handleCostFilterChange"
-        >
-        </a-select>
-        <span v-else class="readonly-view-label">{{
-          $t(
-            getListLabel(
-              formData.allocationQueries[0].shareCosts[0].idleCostFilters,
-              idleCostFieldList
-            ) || '-'
-          )
-        }}</span>
-      </a-form-item>
-      <a-form-item
-        :label="$t('cost.optimize.form.sharemngCost')"
-        field="managementCostFilters"
-      >
-        <a-select
-          v-if="!viewable"
-          v-model="
-            formData.allocationQueries[0].shareCosts[0].managementCostFilters
-          "
-          allow-search
-          multiple
-          :max-tag-count="1"
-          :options="idleCostFieldList"
-          style="width: 360px"
-          @change="handleCostFilterChange"
-        >
-        </a-select>
-        <span v-else class="readonly-view-label">{{
-          $t(
-            getListLabel(
-              formData.allocationQueries[0].shareCosts[0].managementCostFilters,
-              idleCostFieldList
-            ) || '-'
-          )
-        }}</span>
-      </a-form-item>
-      <a-form-item
-        :label="$t('cost.optimize.form.shareType')"
-        field="allocationQueries.0.shareCosts.0.sharingStrategy"
-        :rules="[
-          {
-            required: sharingStrategyRequired && !viewable,
-            message: $t('cost.optimize.form.rule.shareType')
-          }
-        ]"
-      >
-        <a-radio-group
-          v-if="!viewable"
-          v-model="formData.allocationQueries[0].shareCosts[0].sharingStrategy"
-        >
-          <a-radio
-            v-for="item in costShareMode"
-            :key="item.value"
-            :value="item.value"
-            >{{ $t(item.label) }}</a-radio
+        <ComCard>
+          <a-form-item
+            :label="$t('cost.analyse.table.name')"
+            field="name"
+            validate-trigger="change"
+            :rules="[
+              {
+                required: !viewable,
+                message: $t('cost.optimize.form.rule.name')
+              }
+            ]"
           >
-        </a-radio-group>
-        <span v-else class="readonly-view-label">{{
-          $t(
-            getListLabel(
-              formData.allocationQueries[0].shareCosts[0].sharingStrategy,
-              costShareMode
-            ) || '-'
-          )
-        }}</span>
-      </a-form-item>
-    </a-form>
-    <EditPageFooter v-if="!viewable && !builtin">
-      <template #save>
-        <a-button
-          :loading="submitLoading"
-          type="primary"
-          class="cap-title cancel-btn"
-          @click="handleOk"
-          >{{ $t('common.button.save') }}</a-button
-        >
-      </template>
-      <template #cancel>
-        <a-button
-          :type="'outline'"
-          class="cap-title cancel-btn"
-          @click="handleCancel"
-          >{{ $t('common.button.cancel') }}</a-button
-        >
-      </template>
-    </EditPageFooter>
-  </SpinCard>
+            <a-input
+              v-if="!viewable"
+              v-model.trim="formData.name"
+              :max-length="50"
+              :show-word-limit="!viewable"
+            ></a-input>
+            <span v-else class="readonly-view-label">{{ formData.name }}</span>
+            <template #extra>
+              <span>{{ $t('cost.optimize.form.name.tips') }}</span>
+            </template>
+          </a-form-item>
+        </ComCard>
+        <a-divider style="margin: 0; border-radius: 1px" :size="4"></a-divider>
+        <ComCard>
+          <GroupTitle
+            iconed
+            :title="$t('cost.optimize.form.title.group1')"
+            style="margin-top: 10px"
+            :bordered="true"
+          ></GroupTitle>
+          <a-form-item
+            :label="$t('cost.analyse.table.time')"
+            field="timeRange"
+            :validate-trigger="['change']"
+            :rules="[
+              {
+                required: !viewable,
+                message: $t('cost.optimize.form.rule.time')
+              }
+            ]"
+          >
+            <a-select
+              v-if="!viewable"
+              v-model="formData.timeRange"
+              @change="handleTimeChange"
+            >
+              <a-option
+                v-for="item in timeRangeOptions"
+                :key="item.value"
+                :value="item.value"
+                :label="$t(item.label)"
+              ></a-option>
+            </a-select>
+            <span v-else class="readonly-view-label">{{
+              $t(getListLabel(formData.timeRange, timeRangeOptions) || '-')
+            }}</span>
+            <template v-if="!viewable" #extra>
+              <span class="tips">{{
+                $t('cost.optimize.form.timeRange.tips')
+              }}</span>
+            </template>
+          </a-form-item>
+          <a-form-item
+            :label="$t('cost.optimize.form.groupby')"
+            field="allocationQueries.0.groupBy"
+            :rules="[
+              {
+                required: !viewable,
+                message: $t('cost.optimize.form.rule.groupby')
+              }
+            ]"
+          >
+            <a-cascader
+              v-if="!viewable"
+              v-model="formData.allocationQueries[0].groupBy"
+              allow-search
+              :options="groupList"
+              style="width: 360px"
+              @change="handleGroupByChange"
+            >
+            </a-cascader>
+            <span v-else class="readonly-view-label">{{
+              $t(
+                getListLabel(
+                  formData.allocationQueries[0].groupBy,
+                  groupList
+                ) || '-'
+              )
+            }}</span>
+          </a-form-item>
+          <a-form-item
+            v-if="!groupByDate.includes(formData.allocationQueries[0].groupBy)"
+            :label="$t('cost.optimize.form.step')"
+            :validate-trigger="['change']"
+            field="allocationQueries.0.step"
+            :rules="[
+              {
+                required: !viewable,
+                message: $t('cost.optimize.form.rule.step')
+              }
+            ]"
+          >
+            <a-cascader
+              v-if="!viewable"
+              v-model="formData.allocationQueries[0].step"
+              allow-search
+              :options="stepList"
+              style="width: 360px"
+              @change="handleStepChange"
+            >
+            </a-cascader>
+            <span v-else class="readonly-view-label">{{
+              $t(
+                getListLabel(formData.allocationQueries[0].step, stepList) ||
+                  '-'
+              )
+            }}</span>
+          </a-form-item>
+          <a-form-item
+            :label="$t('cost.optimize.form.costFilter')"
+            field="allocationQueries.0.filters"
+            :rules="[
+              {
+                required: !viewable,
+                message: $t('cost.optimize.form.rule.cost')
+              }
+            ]"
+          >
+            <ConditionFilter
+              v-if="
+                (!viewable || formData.allocationQueries[0].filters.length) &&
+                perspectiveInfo.name !== AllPerspectiveName
+              "
+              ref="allfilter"
+              v-model:conditions="formData.allocationQueries[0].filters"
+              :viewable="viewable"
+              :perspective-fields="perspectiveFields"
+              :time-range="formData.timeRange"
+            ></ConditionFilter>
+            <span v-else class="readonly-view-label">{{
+              perspectiveInfo.name === AllPerspectiveName
+                ? AllPerspectiveName
+                : '-'
+            }}</span>
+          </a-form-item>
+          <GroupTitle
+            iconed
+            :title="$t('cost.optimize.form.title.group2')"
+            style="margin-top: 10px"
+            :bordered="true"
+          ></GroupTitle>
+          <a-form-item
+            :label="$t('cost.optimize.form.commonCost')"
+            field="allocationQueries.shareCosts.0.filters"
+          >
+            <ConditionFilter
+              v-if="
+                !viewable ||
+                formData.allocationQueries[0].shareCosts[0].filters.length
+              "
+              ref="costfilter"
+              v-model:conditions="
+                formData.allocationQueries[0].shareCosts[0].filters
+              "
+              :viewable="viewable"
+              :time-range="formData.timeRange"
+              :perspective-fields="perspectiveFields"
+            ></ConditionFilter>
+            <span v-else class="readonly-view-label"> - </span>
+          </a-form-item>
+
+          <a-form-item
+            :label="$t('cost.optimize.form.shareCost')"
+            field="allocationQueries.0.shareCosts.0.idleCostFilters"
+          >
+            <a-select
+              v-if="!viewable"
+              v-model="
+                formData.allocationQueries[0].shareCosts[0].idleCostFilters
+              "
+              allow-search
+              multiple
+              :max-tag-count="1"
+              :options="idleCostFieldList"
+              style="width: 360px"
+              @change="handleCostFilterChange"
+            >
+            </a-select>
+            <span v-else class="readonly-view-label">{{
+              $t(
+                getListLabel(
+                  formData.allocationQueries[0].shareCosts[0].idleCostFilters,
+                  idleCostFieldList
+                ) || '-'
+              )
+            }}</span>
+          </a-form-item>
+          <a-form-item
+            :label="$t('cost.optimize.form.sharemngCost')"
+            field="managementCostFilters"
+          >
+            <a-select
+              v-if="!viewable"
+              v-model="
+                formData.allocationQueries[0].shareCosts[0]
+                  .managementCostFilters
+              "
+              allow-search
+              multiple
+              :max-tag-count="1"
+              :options="idleCostFieldList"
+              style="width: 360px"
+              @change="handleCostFilterChange"
+            >
+            </a-select>
+            <span v-else class="readonly-view-label">{{
+              $t(
+                getListLabel(
+                  formData.allocationQueries[0].shareCosts[0]
+                    .managementCostFilters,
+                  idleCostFieldList
+                ) || '-'
+              )
+            }}</span>
+          </a-form-item>
+          <a-form-item
+            :label="$t('cost.optimize.form.shareType')"
+            field="allocationQueries.0.shareCosts.0.sharingStrategy"
+            :rules="[
+              {
+                required: sharingStrategyRequired && !viewable,
+                message: $t('cost.optimize.form.rule.shareType')
+              }
+            ]"
+          >
+            <a-radio-group
+              v-if="!viewable"
+              v-model="
+                formData.allocationQueries[0].shareCosts[0].sharingStrategy
+              "
+            >
+              <a-radio
+                v-for="item in costShareMode"
+                :key="item.value"
+                :value="item.value"
+                >{{ $t(item.label) }}</a-radio
+              >
+            </a-radio-group>
+            <span v-else class="readonly-view-label">{{
+              $t(
+                getListLabel(
+                  formData.allocationQueries[0].shareCosts[0].sharingStrategy,
+                  costShareMode
+                ) || '-'
+              )
+            }}</span>
+          </a-form-item>
+        </ComCard>
+      </a-form>
+      <EditPageFooter v-if="!viewable && !builtin">
+        <template #save>
+          <a-button
+            :loading="submitLoading"
+            type="primary"
+            class="cap-title cancel-btn"
+            @click="handleOk"
+            >{{ $t('common.button.save') }}</a-button
+          >
+        </template>
+        <template #cancel>
+          <a-button
+            :type="'outline'"
+            class="cap-title cancel-btn"
+            @click="handleCancel"
+            >{{ $t('common.button.cancel') }}</a-button
+          >
+        </template>
+      </EditPageFooter>
+    </SpinCard>
+  </div>
 </template>
 
 <script lang="ts" setup>
@@ -304,6 +350,7 @@
     queryPerspectiveFieldValues
   } from '../api';
 
+  const AllPerspectiveName = 'All';
   const tabBarStore = useTabBarStore();
   const { pageAction, handleEdit } = usePageAction();
   const { t, router, route } = useCallCommon();
@@ -718,11 +765,23 @@
 </script>
 
 <style lang="less" scoped>
-  .arco-form-item-content {
-    .label {
-      display: inline-block;
-      width: 180px;
-      padding-right: 10px;
+  .perspective-box {
+    :deep(.arco-form) {
+      .group-title {
+        margin-bottom: 25px;
+
+        .title-wrap {
+          justify-content: flex-start;
+        }
+      }
+    }
+
+    .arco-form-item-content {
+      .label {
+        display: inline-block;
+        width: 180px;
+        padding-right: 10px;
+      }
     }
   }
 </style>

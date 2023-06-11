@@ -24,7 +24,7 @@
 </template>
 
 <script lang="ts" setup>
-  import { ref } from 'vue';
+  import { ref, onMounted } from 'vue';
   import _ from 'lodash';
   import useCallCommon from '@/hooks/use-call-common';
   import HeaderInfo from '@/components/header-info/index.vue';
@@ -73,8 +73,7 @@
       console.log(error);
     }
   };
-  const init = async () => {
-    getItemEnvironmentInfo();
+  const initBread = async () => {
     const [projectList, enviromentList] = await Promise.all([
       getProjectList(),
       getEnvironmentList()
@@ -83,5 +82,11 @@
     const environmentRes = setEnvironmentList(enviromentList);
     breadCrumbList.value = [projectRes, environmentRes];
   };
+  const init = async () => {
+    getItemEnvironmentInfo();
+  };
+  onMounted(() => {
+    initBread();
+  });
   init();
 </script>
