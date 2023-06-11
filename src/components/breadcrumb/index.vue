@@ -13,7 +13,11 @@
         </span>
       </span>
     </a-breadcrumb-item>
-    <a-breadcrumb-item v-for="(item, index) in items" :key="index">
+    <a-breadcrumb-item
+      v-for="(item, index) in items"
+      :key="index"
+      :style="{ width: item.hasOptions ? '155px' : 'fit-content' }"
+    >
       <span class="box">
         <span class="type">{{ $t(item.type || '') }}</span>
         <span
@@ -163,7 +167,8 @@
 
 <style scoped lang="less">
   .container-breadcrumb {
-    margin: 16px 0;
+    // margin: 16px 0;
+    margin: 0;
     color: var(--color-text-2);
 
     .label {

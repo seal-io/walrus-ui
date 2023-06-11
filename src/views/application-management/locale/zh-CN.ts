@@ -21,7 +21,7 @@ export default {
   'applications.applications.form.label': '标签',
   'applications.applications.form.key': '键',
   'applications.applications.form.value': '值',
-  'applications.applications.detail.configuration': '配置',
+  'applications.applications.detail.configuration': '模板配置',
   'applications.applications.form.description': '描述',
   'applications.applications.rule.name': '名称必填',
   'applications.applications.rule.allName':

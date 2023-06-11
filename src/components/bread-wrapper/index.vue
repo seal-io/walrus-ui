@@ -1,20 +1,50 @@
 <template>
   <div class="bread-wrapper" :class="{ menuCollapse: appStore.menuCollapse }">
-    <slot></slot>
+    <div
+      v-show="show"
+      :class="{ show: show }"
+      :style="{
+        'display': 'flex',
+        'align-items': 'center',
+        'height': `${appStore.menuWidth}px`
+      }"
+    >
+      <slot></slot>
+    </div>
   </div>
 </template>
 
 <script lang="ts" setup>
+  import { ref, onMounted } from 'vue';
   import { useAppStore } from '@/store';
 
   const appStore = useAppStore();
+  const show = ref(false);
+  onMounted(() => {
+    show.value = true;
+  });
 </script>
 
 <style lang="less" scoped>
+  @keyframes fadeIn {
+    0% {
+      opacity: 0;
+    }
+
+    50% {
+      opacity: 0.5;
+    }
+
+    100% {
+      opacity: 1;
+    }
+  }
+
   .bread-wrapper {
     position: fixed;
     top: 0;
-    left: 220px;
+    right: 0;
+    left: 48px;
     z-index: 1000;
     display: flex;
     align-items: center;
@@ -23,11 +53,14 @@
     padding-left: 10px;
     background-color: #fff;
     border-bottom: 1px solid var(--color-border-1);
-    transition: left 0.2s cubic-bezier(0.34, 0.69, 0.1, 1);
-
+    // transition: left 0.2s cubic-bezier(0.34, 0.69, 0.1, 1);
     &.menuCollapse {
       left: 48px;
-      transition: left 0.2s cubic-bezier(0.34, 0.69, 0.1, 1);
+      // transition: left 0.2s cubic-bezier(0.34, 0.69, 0.1, 1);
+    }
+
+    .show {
+      animation: fadeIn 0.6s var(--seal-transition-func);
     }
   }
 </style>

@@ -19,6 +19,43 @@ export default function useProjectData() {
     Environment: 'Environment',
     Service: 'Service'
   };
+  const projectTemplate = {
+    value: '',
+    label: '',
+    hasOptions: true,
+    icon: '',
+    type: 'menu.applicationManagement.project',
+    level: pageLevelMap.Project,
+    wrapperId: 'projectWrapper',
+    route: 'ProjectDetail',
+    visible: false,
+    options: []
+  };
+  const environmentTemplate = {
+    value: '',
+    label: '',
+    hasOptions: true,
+    icon: '',
+    type: 'menu.operatorHub.evniroment',
+    level: pageLevelMap.Environment,
+    wrapperId: 'envWrapper',
+    route: 'ProjectEnvDetail',
+    visible: false,
+    options: []
+  };
+  const serviceTemplate = {
+    value: '',
+    label: '',
+    hasOptions: true,
+    icon: '',
+    type: 'menu.applicationManagement.serivce',
+    level: pageLevelMap.Service,
+    wrapperId: 'serviceWrapper',
+    route: 'ProjectServiceDetail',
+    visible: false,
+    options: []
+  };
+
   const getProjectList = async () => {
     let projectList: any[] = [];
     try {
@@ -79,14 +116,9 @@ export default function useProjectData() {
     const { id, name } = await localStore.getValue(USER_DEFAULT_PROJECT);
 
     return {
+      ...projectTemplate,
       value: id || defaultValue,
       label: name || defaultName,
-      icon: 'icon-apps',
-      type: 'menu.applicationManagement.project',
-      level: pageLevelMap.Project,
-      wrapperId: 'projectWrapper',
-      route: 'ProjectDetail',
-      visible: false,
       options: _.cloneDeep(list),
       onSetting() {
         router.replace({
@@ -110,14 +142,9 @@ export default function useProjectData() {
       environmentList: _.cloneDeep(list)
     });
     return {
+      ...environmentTemplate,
       value: defaultValue,
       label: defaultName,
-      icon: 'icon-apps',
-      type: 'menu.operatorHub.evniroment',
-      level: pageLevelMap.Environment,
-      wrapperId: 'envWrapper',
-      route: 'ProjectEnvDetail',
-      visible: false,
       options: _.cloneDeep(list),
       onSetting() {
         router.replace({
@@ -141,6 +168,7 @@ export default function useProjectData() {
       serviceList: _.cloneDeep(list)
     });
     return {
+      ...serviceTemplate,
       value: defaultValue,
       label: defaultName,
       icon: 'icon-apps',
@@ -214,6 +242,9 @@ export default function useProjectData() {
     setBreabCrumbData,
     handleBreadChange,
     breadCrumbList,
-    pageLevelMap
+    pageLevelMap,
+    projectTemplate,
+    environmentTemplate,
+    serviceTemplate
   };
 }

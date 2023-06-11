@@ -1,5 +1,19 @@
 <template>
-  <div class="main-wrapper">
+  <div class="main-wrapper" :class="{ ispage: route.query.id }">
+    <BreadWrapper v-if="route.query.id">
+      <Breadcrumb
+        :items="[
+          {
+            icon: 'icon-bar-chart',
+            backAction: true,
+            label: $t('navbar.costmanagement')
+          },
+          {
+            label: $t('menu.costManagement.analyse')
+          }
+        ]"
+      ></Breadcrumb>
+    </BreadWrapper>
     <!-- <component
       :is="perspectiveMap[viewComponent]"
       :source="viewComponent"
@@ -218,6 +232,13 @@
 
     :deep(.arco-tabs-nav-tab) {
       display: none;
+    }
+
+    &.ispage {
+      :deep(.filter-box-wrap) {
+        padding-top: 10px;
+        padding-bottom: 10px;
+      }
     }
   }
 </style>
