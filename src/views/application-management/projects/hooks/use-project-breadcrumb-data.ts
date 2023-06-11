@@ -14,6 +14,7 @@ export default function useProjectData() {
   const breadCrumbList = ref<BreadcrumbOptions[]>([]);
   const { route, router } = useCallCommon();
   const projectStore = useProjectStore();
+  const DEFAULT_PROJECT = { id: '', name: '' };
   const pageLevelMap = {
     Project: 'Project',
     Environment: 'Environment',
@@ -113,7 +114,8 @@ export default function useProjectData() {
     });
     const defaultValue = route.params.projectId || _.get(list, '0.value');
     const defaultName = _.get(list, '0.label');
-    const { id, name } = await localStore.getValue(USER_DEFAULT_PROJECT);
+    const { id, name } =
+      (await localStore.getValue(USER_DEFAULT_PROJECT)) || DEFAULT_PROJECT;
 
     return {
       ...projectTemplate,
