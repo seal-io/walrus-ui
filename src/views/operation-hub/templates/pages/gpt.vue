@@ -3,11 +3,7 @@
     <BreadWrapper>
       <Breadcrumb
         :items="[
-          {
-            label: $t('menu.operatorHub'),
-            icon: 'icon-relation',
-            route: 'OperationMain'
-          },
+          { ...operationRootBread, label: $t(operationRootBread.label) },
           {
             label: $t('operation.templates.button.gpt')
           }
@@ -197,6 +193,7 @@
   import AceEditor from '@/components/ace-editor/index.vue';
   import CreatePR from '../components/create-pr.vue';
   import CodeExplainModal from '../components/code-explain-modal.vue';
+  import { operationRootBread } from '../../connectors/config';
   import {
     postCompletionsCorrect,
     postCompletionsExplain,

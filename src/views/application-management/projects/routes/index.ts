@@ -18,12 +18,7 @@ export default [
         resource: Resources.Projects,
         actions: ['GET']
       },
-      cachePages: [
-        'ProjectConnectorK8sDetail',
-        'ProjectConnectorScmDetail',
-        'ProjectConnectorCustomDetail',
-        'ProjectConnectorProviderDetail'
-      ],
+      cachePages: ['ProjectDetail'],
       icon: 'icon-apps'
     }
   },
@@ -43,6 +38,13 @@ export default [
         resource: Resources.Projects,
         actions: ['GET']
       },
+      cachePages: [
+        'ProjectConnectorK8sDetail',
+        'ProjectConnectorScmDetail',
+        'ProjectConnectorCustomDetail',
+        'ProjectConnectorProviderDetail',
+        'ProjectEnvDetail'
+      ],
       icon: 'icon-apps'
     }
   },

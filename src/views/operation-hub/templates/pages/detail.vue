@@ -3,11 +3,7 @@
     <BreadWrapper>
       <Breadcrumb
         :items="[
-          {
-            label: $t('menu.operatorHub'),
-            icon: 'icon-relation',
-            route: 'OperationMain'
-          },
+          { ...operationRootBread, label: $t(operationRootBread.label) },
           {
             label: title
           }
@@ -219,6 +215,7 @@
   import StatusLabel from '../../connectors/components/status-label.vue';
   import { templateTypeList, tabList } from '../config';
   import { Schema } from '../config/interface';
+  import { operationRootBread } from '../../connectors/config';
   import tabReadme from '../components/tab-readme.vue';
   import tabInput from '../components/tab-input.vue';
   import tabOutput from '../components/tab-output.vue';

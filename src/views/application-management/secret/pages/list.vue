@@ -159,6 +159,15 @@
       :project-i-d="queryParams.projectID"
       @save="handleSaveItem"
     ></createSecret>
+    <!-- <createVariable
+      v-model:show="showModal"
+      :title="modalTitle"
+      :action="action"
+      :info="itemInfo"
+      :project-list="projectList"
+      :project-i-d="queryParams.projectID"
+      @save="handleSaveItem"
+    ></createVariable> -->
   </comCard>
 </template>
 
@@ -178,6 +187,7 @@
   import { queryProjects } from '../../projects/api';
   import { SecretRow } from '../config/interface';
   import { querySecrets, deleteSecret } from '../api';
+  import createVariable from '../components/create-variable.vue';
   import createSecret from '../components/create-secret.vue';
 
   const HOT_SECRET_ID = 'HOT_SECRET_ID';

@@ -6,11 +6,7 @@
           route.params.projectId
             ? breadCrumbList
             : [
-                {
-                  label: $t('menu.operatorHub'),
-                  icon: 'icon-relation',
-                  route: 'OperationMain'
-                },
+                { ...operationRootBread, label: $t(operationRootBread.label) },
                 {
                   label: title
                 }
@@ -243,6 +239,7 @@
   import labelsList from '@/views/application-management/applications/components/app-info/labels-list.vue';
   import useGetBreadState from '@/views/application-management/projects/hooks/use-get-breadstate';
   import { ConnectorFormData, CustomAttrbute } from '../config/interface';
+  import { operationRootBread } from '../config';
   import { createConnector, updateConnector, queryItemConnector } from '../api';
 
   // const props = defineProps({

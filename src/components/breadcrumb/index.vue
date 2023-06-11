@@ -141,9 +141,13 @@
     });
   };
   const handleClickItem = (item) => {
-    router.replace({
-      name: item.route
-    });
+    if (item.backAction) {
+      router.back();
+    } else {
+      router.replace({
+        name: item.route
+      });
+    }
   };
   const handleTogglePopup = (item) => {
     item.visible = !item.visible;

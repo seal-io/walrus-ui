@@ -2,7 +2,7 @@
   <div>
     <BreadWrapper>
       <Breadcrumb
-        :menu="{ icon: 'icon-bar-chart', label: $t('menu.operatorHub') }"
+        :menu="{ icon: 'icon-bar-chart', label: $t('navbar.costmanagement') }"
       ></Breadcrumb>
     </BreadWrapper>
     <ComCard padding="0" top-gap>
@@ -18,15 +18,12 @@
           :default-active-key="activeKey"
           @change="handleTabChange"
         >
-          <a-tab-pane key="list" :title="$t('menu.costManagement.analyse')">
+          <a-tab-pane key="list" :title="$t('menu.costManagement.perspective')">
             <ComCard padding="0 16px 16px 16px">
               <CostList></CostList>
             </ComCard>
           </a-tab-pane>
-          <a-tab-pane
-            key="detail"
-            :title="$t('menu.costManagement.perspective')"
-          >
+          <a-tab-pane key="detail" :title="$t('menu.costManagement.analyse')">
             <CostDetail></CostDetail>
           </a-tab-pane>
         </a-tabs>
