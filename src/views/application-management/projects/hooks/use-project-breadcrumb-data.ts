@@ -199,7 +199,7 @@ export default function useProjectData() {
       };
     }
     router.replace({
-      // name: item.route,
+      name: item.route,
       params,
       query
     });

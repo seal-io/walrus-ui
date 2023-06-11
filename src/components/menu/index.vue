@@ -258,7 +258,9 @@
                 v-slots={{
                   icon: () =>
                     h(compile(item.icon), {
-                      style: {}
+                      style: {
+                        color: 'var(--color-text-3)'
+                      }
                     })
                 }}
               >

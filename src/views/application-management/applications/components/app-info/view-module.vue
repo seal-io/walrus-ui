@@ -481,7 +481,7 @@
   const getModuleSchemaById = () => {
     const moduleTemplate = find(
       moduleVersionList.value,
-      (item) => item.module.id === formData.module.id
+      (item) => item.template.id === formData.module.id
     );
     return moduleTemplate;
   };
@@ -500,7 +500,7 @@
       // });
       const list = filter(
         props.allModuleVersions,
-        (item) => item.module.id === formData.module.id
+        (item) => item.template.id === formData.module.id
       );
       moduleVersionList.value = map(list, (item) => {
         return {
