@@ -139,9 +139,8 @@
 
   const getViewList = async () => {
     if (viewList.value.length) return;
-    const { hotProjectId, page } = await localStore.getValue(
-      HOT_PERSPECTIVE_ID
-    );
+    const { hotProjectId, page } =
+      (await localStore.getValue(HOT_PERSPECTIVE_ID)) || {};
     try {
       loading.value = true;
       const params = {
@@ -188,7 +187,7 @@
         page: route.query.page
       });
     } else {
-      const { page } = await localStore.getValue(HOT_PERSPECTIVE_ID);
+      const { page } = (await localStore.getValue(HOT_PERSPECTIVE_ID)) || {};
       viewComponent.value = page || 'all';
     }
   };

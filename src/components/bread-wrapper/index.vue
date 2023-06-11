@@ -1,5 +1,8 @@
 <template>
-  <div class="bread-wrapper" :class="{ menuCollapse: appStore.menuCollapse }">
+  <div
+    class="bread-wrapper"
+    :class="{ menuCollapse: appStore.menuCollapse, islazy: isLazy }"
+  >
     <div
       v-show="show"
       :class="{ show: show }"
@@ -18,6 +21,14 @@
   import { ref, onMounted } from 'vue';
   import { useAppStore } from '@/store';
 
+  defineProps({
+    isLazy: {
+      type: Boolean,
+      default() {
+        return false;
+      }
+    }
+  });
   const appStore = useAppStore();
   const show = ref(false);
   onMounted(() => {
@@ -54,6 +65,10 @@
     background-color: #fff;
     border-bottom: 1px solid var(--color-border-1);
     // transition: left 0.2s cubic-bezier(0.34, 0.69, 0.1, 1);
+    &.islazy {
+      z-index: 900;
+    }
+
     &.menuCollapse {
       left: 48px;
       // transition: left 0.2s cubic-bezier(0.34, 0.69, 0.1, 1);
