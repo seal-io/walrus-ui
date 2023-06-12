@@ -1,6 +1,8 @@
+import PROFILE from '../../config/profile';
+
 export default {
   path: 'profile',
-  name: 'Profile',
+  name: PROFILE.Index,
   component: () => import('@/views/profile/index.vue'),
   meta: {
     // isRemove: true,
@@ -15,7 +17,7 @@ export default {
   children: [
     {
       path: 'info',
-      name: 'UserCenter',
+      name: PROFILE.UserCenter,
       component: () => import('@/views/profile/pages/main.vue'),
       meta: {
         hideInMenu: true,

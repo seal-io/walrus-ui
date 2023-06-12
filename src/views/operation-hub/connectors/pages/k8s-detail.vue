@@ -168,6 +168,7 @@
 </template>
 
 <script lang="ts" setup>
+  import { OPERATIONHUB } from '@/router/config';
   import { Resources } from '@/permissions/config';
   import { useUserStore } from '@/store';
   import { assignIn, get, find, isEqual, cloneDeep } from 'lodash';
@@ -334,6 +335,12 @@
     handleSubmit
   });
   getConnectorInfo();
+</script>
+
+<script lang="ts">
+  export default {
+    name: OPERATIONHUB.ConnectorK8sDetail
+  };
 </script>
 
 <style lang="less" scoped>

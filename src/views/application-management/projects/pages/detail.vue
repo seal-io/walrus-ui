@@ -44,6 +44,7 @@
 </template>
 
 <script lang="ts" setup>
+  import { PROJECT } from '@/router/config';
   import { ref, onMounted, nextTick } from 'vue';
   import _ from 'lodash';
   import useCallCommon from '@/hooks/use-call-common';
@@ -51,8 +52,8 @@
   import HeaderInfo from '@/components/header-info/index.vue';
   import EnviromentList from '@/views/operation-hub/environments/pages/list.vue';
   import SecretList from '@/views/application-management/secret/pages/list.vue';
-  import ConnectorList from '@/views/operation-hub/connectors/components/table-list.vue';
   import basicInfo from '@/views/application-management/applications/components/basic-info.vue';
+  import ConnectorList from '@/views/operation-hub/connectors/components/table-list.vue';
   import useBasicInfoData from '../hooks/use-basicInfo-data';
   import { queryItemProject } from '../api';
   import { basicInfoConfig } from '../config';
@@ -115,6 +116,6 @@
 
 <script lang="ts">
   export default {
-    name: 'ProjectDetail'
+    name: PROJECT.Detail
   };
 </script>

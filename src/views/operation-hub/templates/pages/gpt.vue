@@ -181,6 +181,7 @@
 </template>
 
 <script lang="ts" setup>
+  import { OPERATIONHUB } from '@/router/config';
   import { ref, computed, watch, nextTick, h, inject } from 'vue';
   import { get, map, each, reduce, add } from 'lodash';
   import * as Diff from 'diff';
@@ -502,6 +503,12 @@
     }
   );
   getCompletionExample();
+</script>
+
+<script lang="ts">
+  export default {
+    name: OPERATIONHUB.TemplateGPT
+  };
 </script>
 
 <style lang="less" scoped>

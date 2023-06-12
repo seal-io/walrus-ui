@@ -9,7 +9,10 @@ import {
   queryModulesAllVersions
 } from '@/views/operation-hub/templates/api';
 import useCallCommon from '@/hooks/use-call-common';
-import { queryApplications } from '@/views/application-management/applications/api';
+import {
+  queryApplications,
+  querySecrets
+} from '@/views/application-management/applications/api';
 
 export default function useTemplatesData() {
   const { route } = useCallCommon();
@@ -54,12 +57,26 @@ export default function useTemplatesData() {
       console.log(error);
     }
   };
+  const getProjectSecrets = async () => {
+    try {
+      const params = {
+        page: -1,
+        projectID: route.params.projectId as string,
+        withGlobal: true
+      };
+      const { data } = await querySecrets(params);
+      variableList.value = data.items || [];
+    } catch (error) {
+      variableList.value = [];
+      console.log(error);
+    }
+  };
   const getServiceTemplateVersionMap = () => {
     const list = _.map(serviceDataList.value, (item) => {
       return {
         name: item.name,
         type: item.template.id,
-        templateVersion: item.templateVersion
+        version: item.version
       };
     });
     return list;
@@ -99,9 +116,7 @@ export default function useTemplatesData() {
         const addedServiceTemplate = _.find(
           allTemplateVersions.value || [],
           (s) => {
-            return (
-              item.type === s.template.id && s.version === item.templateVersion
-            );
+            return item.type === s.template.id && s.version === item.version;
           }
         );
         const k = item.name;
@@ -127,14 +142,14 @@ export default function useTemplatesData() {
       },
       updateVariablesCompleteData() {
         const variables = setVariablesCompleteData();
-        completeData.value.var = { ...variables };
+        completeData.value.secret = { ...variables };
       }
     };
     completeDataSetter?.updateServiceCompleteData?.();
     completeDataSetter?.updateVariablesCompleteData?.();
   };
   const initCompleteData = async () => {
-    await Promise.all([getModules(), getServiceList()]);
+    await Promise.all([getModules(), getServiceList(), getProjectSecrets()]);
     await getTemplatesVersions();
     setCompleteData();
   };

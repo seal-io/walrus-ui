@@ -312,7 +312,6 @@
   };
   listenerRouteChange(async ({ to: newRoute, from }) => {
     defaultActive.value = newRoute.matched[1]?.name as string;
-    const permissions = get(userStore, `permissions.${newRoute.fullPath}`);
     handleControlNavShow(newRoute);
     updateCacheList(newRoute, from);
     setPageFullScreen(newRoute);
@@ -323,8 +322,7 @@
     });
     console.log('listenerRouteChange=======', {
       to: newRoute,
-      from,
-      permissions: toRaw(permissions)
+      from
     });
   }, true);
 
@@ -372,9 +370,6 @@
       // },
     });
   };
-  // if (isLogin()) {
-  //   userStore.getUserSetting();
-  // }
 </script>
 
 <style scoped lang="less">

@@ -433,11 +433,7 @@
   });
   const dataList = ref<ConnectorRowData[]>([]);
 
-  const { updateChunkedList } = useUpdateChunkedList(dataList, {
-    filterFun(item) {
-      return item?.category === props.category;
-    }
-  });
+  const { updateChunkedList } = useUpdateChunkedList(dataList);
   const getCostStatus = (conditions) => {
     const d = find(conditions, (item) => {
       return item.type === 'CostSynced';
@@ -652,11 +648,7 @@
       console.log(error);
     }
   };
-  onActivated(() => {
-    if (activeKey.value === props.category) {
-      fetchData();
-    }
-  });
+
   onMounted(() => {
     fetchData();
     nextTick(() => {

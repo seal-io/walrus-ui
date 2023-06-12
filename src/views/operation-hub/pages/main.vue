@@ -37,6 +37,7 @@
 </template>
 
 <script lang="ts" setup>
+  import { OPERATIONHUB } from '@/router/config';
   import { ref } from 'vue';
   import HeaderInfo from '@/components/header-info/index.vue';
   import Connectors from '../connectors/components/table-list.vue';
@@ -45,4 +46,10 @@
 
   const activeKey = ref('connectors');
   const handleTabChange = () => {};
+</script>
+
+<script lang="ts">
+  export default {
+    name: OPERATIONHUB.Main
+  };
 </script>

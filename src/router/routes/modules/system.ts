@@ -1,8 +1,9 @@
 import { Resources } from '@/permissions/config';
+import SYSTEMSETTINGS from '../../config/system-settings';
 
 export default {
   path: 'system',
-  name: 'System',
+  name: SYSTEMSETTINGS.Index,
   component: () => import('@/views/system/index.vue'),
   meta: {
     hideInMenu: false,
@@ -17,7 +18,7 @@ export default {
   children: [
     {
       path: 'settings',
-      name: 'SystemSettings',
+      name: SYSTEMSETTINGS.Settings,
       component: () => import('@/views/system/pages/main.vue'),
       meta: {
         hideInMenu: false,

@@ -14,6 +14,7 @@
 </template>
 
 <script lang="ts" setup>
+  import { PROJECT } from '@/router/config';
   import { ref, provide, onMounted, nextTick } from 'vue';
   import BreadWrapper from '@/components/bread-wrapper/index.vue';
   import useCallCommon from '@/hooks/use-call-common';
@@ -48,6 +49,12 @@
   onMounted(() => {
     init();
   });
+</script>
+
+<script lang="ts">
+  export default {
+    name: PROJECT.ServiceDetail
+  };
 </script>
 
 <style lang="less" scoped></style>

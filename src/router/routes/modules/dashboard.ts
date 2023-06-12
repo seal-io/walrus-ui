@@ -1,8 +1,9 @@
 import { Resources } from '@/permissions/config';
+import DASHBOARD from '../../config/dashboard';
 
 export default {
   path: 'dashboard',
-  name: 'Dashboard',
+  name: DASHBOARD.Index,
   component: () => import('@/views/dashboard/index.vue'),
   meta: {
     locale: 'navbar.totalView',
@@ -19,7 +20,7 @@ export default {
   children: [
     {
       path: 'main',
-      name: 'DashboardMain',
+      name: DASHBOARD.Main,
       component: () => import('@/views/dashboard/pages/main.vue'),
       meta: {
         hideInMenu: false,

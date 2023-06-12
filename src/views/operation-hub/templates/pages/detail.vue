@@ -3,7 +3,10 @@
     <BreadWrapper>
       <Breadcrumb
         :items="[
-          { ...operationRootBread, label: $t(operationRootBread.label) },
+          {
+            ...operationRootBread,
+            label: $t(operationRootBread.label)
+          },
           {
             label: title
           }
@@ -200,6 +203,7 @@
 </template>
 
 <script lang="ts" setup>
+  import { OPERATIONHUB } from '@/router/config';
   import { Resources, Actions } from '@/permissions/config';
   import { useUserStore, useTabBarStore } from '@/store';
   import { assignIn, find, get, map, isEqual, cloneDeep } from 'lodash';
@@ -269,7 +273,7 @@
     if (!id) return;
     try {
       const params = {
-        moduleID: id
+        templateID: id
       };
       const { data } = await queryModulesVersions(params);
       const list = data.items || [];
@@ -374,6 +378,12 @@
     getItemModules();
     getModuleVersions();
   });
+</script>
+
+<script lang="ts">
+  export default {
+    name: OPERATIONHUB.TemplateDetail
+  };
 </script>
 
 <style></style>

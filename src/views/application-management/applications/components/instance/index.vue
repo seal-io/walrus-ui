@@ -37,7 +37,7 @@
           ></serviceEdit>
         </div>
       </slTransition>
-      <slTransition>
+      <div>
         <div v-if="pageAction === 'view'">
           <ComCard>
             <ModuleCard
@@ -108,7 +108,7 @@
             </EditPageFooter>
           </ComCard>
         </div>
-      </slTransition>
+      </div>
     </ComCard>
   </div>
 </template>

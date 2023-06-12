@@ -204,7 +204,7 @@
   import { useUserStore } from '@/store';
   import { Resources } from '@/permissions/config';
   import { map, pickBy, remove } from 'lodash';
-  import { ref, reactive } from 'vue';
+  import { ref, reactive, onActivated } from 'vue';
   import useCallCommon from '@/hooks/use-call-common';
   import FilterBox from '@/components/filter-box/index.vue';
   import { deleteModal, execSucceed } from '@/utils/monitor';
@@ -290,6 +290,9 @@
     console.log('dataIndex===', dataIndex, direction);
     fetchData();
   };
+  onActivated(() => {
+    fetchData();
+  });
   const handleView = (row) => {
     router.push({
       name: 'ProjectEnvDetail',

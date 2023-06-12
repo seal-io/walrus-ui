@@ -1,11 +1,12 @@
 import { Resources } from '@/permissions/config';
+import { PROJECT } from '@/router/config';
 import connectorRoutes from './connectors';
 
 export default [
   ...connectorRoutes,
   {
     path: 'project/list',
-    name: 'ProjectsList',
+    name: PROJECT.List,
     component: () =>
       import('@/views/application-management/projects/pages/list.vue'),
     meta: {
@@ -18,13 +19,13 @@ export default [
         resource: Resources.Projects,
         actions: ['GET']
       },
-      cachePages: ['ProjectDetail'],
+      cachePages: [PROJECT.Detail],
       icon: 'icon-apps'
     }
   },
   {
     path: 'project/:projectId/detail',
-    name: 'ProjectDetail',
+    name: PROJECT.Detail,
     component: () =>
       import('@/views/application-management/projects/pages/detail.vue'),
     meta: {
@@ -33,50 +34,52 @@ export default [
       ignoreCache: false,
       locale: 'applications.projects.menu',
       requiresAuth: true,
-      selectedMenu: 'ProjectsList',
+      selectedMenu: PROJECT.List,
       permission: {
         resource: Resources.Projects,
         actions: ['GET']
       },
       cachePages: [
-        'ProjectConnectorK8sDetail',
-        'ProjectConnectorScmDetail',
-        'ProjectConnectorCustomDetail',
-        'ProjectConnectorProviderDetail',
-        'ProjectEnvDetail'
+        PROJECT.ConnectorK8sDetail,
+        PROJECT.ConnectorScmDetail,
+        PROJECT.ConnectorProviderDetail,
+        PROJECT.ConnectorCustomDetail,
+        PROJECT.EnvDetail,
+        PROJECT.EnvEdit
       ],
       icon: 'icon-apps'
     }
   },
   {
     path: 'project/:projectId/environment/:environmentId/detail',
-    name: 'ProjectEnvDetail',
+    name: PROJECT.EnvDetail,
     component: () =>
-      import('@/views/operation-hub/environments/pages/environment-detail.vue'),
+      import('@/views/operation-hub/environments/pages/detail.vue'),
     meta: {
       hideInMenu: true,
       hideMenu: false,
-      ignoreCache: true,
-      selectedMenu: 'ProjectsList',
+      ignoreCache: false,
+      selectedMenu: PROJECT.List,
       locale: 'applications.projects.menu',
       requiresAuth: true,
       permission: {
         resource: Resources.Projects,
         actions: ['GET']
       },
+      cachePages: [PROJECT.ServiceEdit, PROJECT.ServiceDetail],
       icon: 'icon-apps'
     }
   },
   {
     path: 'project/:projectId/environment/:action',
-    name: 'ProjectEnvEdit',
+    name: PROJECT.EnvEdit,
     component: () =>
-      import('@/views/operation-hub/environments/pages/detail.vue'),
+      import('@/views/operation-hub/environments/pages/edit.vue'),
     meta: {
       hideInMenu: true,
       hideMenu: false,
       ignoreCache: true,
-      selectedMenu: 'ProjectsList',
+      selectedMenu: PROJECT.List,
       locale: 'applications.projects.menu',
       requiresAuth: true,
       permission: {
@@ -88,13 +91,13 @@ export default [
   },
   {
     path: 'project/:projectId/environment/:environmentId/service/detail',
-    name: 'ProjectServiceDetail',
+    name: PROJECT.ServiceDetail,
     component: () => import('../pages/service.vue'),
     meta: {
       hideInMenu: true,
       hideMenu: false,
       ignoreCache: true,
-      selectedMenu: 'ProjectsList',
+      selectedMenu: PROJECT.List,
       locale: 'applications.projects.menu',
       requiresAuth: true,
       permission: {
@@ -106,13 +109,13 @@ export default [
   },
   {
     path: 'project/:projectId/environment/:environmentId/service/:action',
-    name: 'ProjectServiceEdit',
+    name: PROJECT.ServiceEdit,
     component: () => import('../../applications/pages/service-edit.vue'),
     meta: {
       hideInMenu: true,
       hideMenu: false,
       ignoreCache: true,
-      selectedMenu: 'ProjectsList',
+      selectedMenu: PROJECT.List,
       locale: 'applications.projects.menu',
       requiresAuth: true,
       permission: {

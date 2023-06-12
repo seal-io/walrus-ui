@@ -20,8 +20,7 @@ export default [
   {
     path: 'project/:projectId/connector/scm-detail/:action',
     name: 'ProjectConnectorScmDetail',
-    component: () =>
-      import('@/views/operation-hub/connectors/pages/scm-detail.vue'),
+    component: () => import('../../pages/connector/version-control.vue'),
     meta: {
       hideInMenu: true,
       ignoreCache: true,
@@ -37,8 +36,7 @@ export default [
   {
     path: 'project/:projectId/connector/custom-detail/:action',
     name: 'ProjectConnectorCustomDetail',
-    component: () =>
-      import('@/views/operation-hub/connectors/pages/custom-detail.vue'),
+    component: () => import('../../pages/connector/custom.vue'),
     meta: {
       hideInMenu: true,
       ignoreCache: true,
@@ -54,8 +52,7 @@ export default [
   {
     path: 'project/:projectId/connector/cloud-provider/:action',
     name: 'ProjectConnectorProviderDetail',
-    component: () =>
-      import('@/views/operation-hub/connectors/pages/cloud-provider.vue'),
+    component: () => import('../../pages/connector/cloud-provider.vue'),
     meta: {
       hideInMenu: true,
       ignoreCache: true,

@@ -113,6 +113,7 @@
 </template>
 
 <script lang="ts" setup>
+  import { OPERATIONHUB } from '@/router/config';
   import { Resources } from '@/permissions/config';
   import _, { map, pickBy, remove } from 'lodash';
   import { ref, reactive, onMounted, nextTick } from 'vue';
@@ -258,7 +259,7 @@
 
 <script lang="ts">
   export default {
-    name: 'TemplateList'
+    name: OPERATIONHUB.TemplateList
   };
 </script>
 

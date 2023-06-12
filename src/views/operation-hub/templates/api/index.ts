@@ -50,7 +50,7 @@ export function updateModules(data: TemplateFormData) {
 export function refreshModules(data: { id: string }) {
   return axios.post(`/templates/${data.id}/refresh`);
 }
-export function queryModulesVersions(params: { moduleID: string }) {
+export function queryModulesVersions(params: { templateID: string }) {
   return axios.get(`/template-versions`, {
     params,
     paramsSerializer: (obj) => {
@@ -68,21 +68,21 @@ export function queryModulesAllVersions(params: { templateID: string[] }) {
 }
 
 export function postCompletionsCorrect(data) {
-  return axios.post(`/module-completions/_/correct`, data);
+  return axios.post(`/template-completions/_/correct`, data);
 }
 
 export function postCompletionsExplain(data) {
-  return axios.post(`/module-completions/_/explain`, data);
+  return axios.post(`/template-completions/_/explain`, data);
 }
 export function postCompletionsGenerate(data) {
-  return axios.post(`/module-completions/_/generate`, data);
+  return axios.post(`/template-completions/_/generate`, data);
 }
 export function postCompletionsPR(data: FormDataPR) {
-  return axios.post(`/module-completions/_/create-pr`, data);
+  return axios.post(`/template-completions/_/create-pr`, data);
 }
 
 export function queryCompletionExamples() {
-  return axios.get(`/module-completions/_/examples`);
+  return axios.get(`/template-completions/_/examples`);
 }
 
 export function queryConnectorRepositories(params: { id: string }) {
