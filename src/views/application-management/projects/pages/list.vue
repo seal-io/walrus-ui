@@ -212,6 +212,7 @@
 </template>
 
 <script lang="ts" setup>
+  import { PROJECT } from '@/router/config';
   import { Resources, Actions } from '@/permissions/config';
   import { cloneDeep, map, pickBy, remove } from 'lodash';
   import { ref, reactive } from 'vue';
@@ -356,6 +357,12 @@
     deleteModal({ onOk: handleDeleteConfirm });
   };
   fetchData();
+</script>
+
+<script lang="ts">
+  export default {
+    name: PROJECT.List
+  };
 </script>
 
 <style lang="less" scoped>

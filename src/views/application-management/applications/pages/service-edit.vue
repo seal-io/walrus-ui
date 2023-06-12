@@ -67,7 +67,7 @@
         </a-form-item>
         <a-form-item
           :label="$t('applications.applications.history.version')"
-          field="templateVersion"
+          field="template.version"
           :rules="[
             {
               required: true,
@@ -77,7 +77,7 @@
         >
           <div>
             <a-select
-              v-model="formData.templateVersion"
+              v-model="formData.template.version"
               @change="handleVersionChange"
             >
               <a-option
@@ -186,6 +186,7 @@
 </template>
 
 <script lang="ts" setup>
+  import { PROJECT } from '@/router/config';
   import _, {
     get,
     find,
@@ -415,7 +416,7 @@
   // module change: exec version change
   const handleModuleChange = async (val) => {
     await getModuleVersionList();
-    formData.templateVersion = get(templateVersionList.value, '0.version');
+    formData.template.version = get(templateVersionList.value, '0.version');
     moduleVersionFormCache.value = {};
     versionMap.value = { ov: '', nv: '' };
     handleVersionChange();
@@ -521,7 +522,7 @@
     }
   };
   watch(
-    () => formData.templateVersion,
+    () => formData.template.version,
     (nv, ov) => {
       versionMap.value = {
         nv,
@@ -554,6 +555,12 @@
     copyFormData = _.cloneDeep(formData);
   };
   initData();
+</script>
+
+<script lang="ts">
+  export default {
+    name: PROJECT.ServiceEdit
+  };
 </script>
 
 <style lang="less"></style>

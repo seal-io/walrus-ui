@@ -1,4 +1,5 @@
 import { Resources } from '@/permissions/config';
+import { PROJECT } from '@/router/config';
 
 export default [
   {

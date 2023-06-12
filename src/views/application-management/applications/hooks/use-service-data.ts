@@ -51,8 +51,7 @@ export default function useServiceData(props?) {
       id: route.params.environmentId
     },
     name: '',
-    template: { id: '' },
-    templateVersion: '',
+    template: { id: '', version: '' },
     application: {
       id: route.query.id || ''
     },
@@ -87,7 +86,7 @@ export default function useServiceData(props?) {
   const getInitialValue = (item, sourceData, action) => {
     let initialValue = item.default;
     if (
-      _.get(moduleVersionFormCache.value, formData.templateVersion) ||
+      _.get(moduleVersionFormCache.value, formData.template.version) ||
       action === 'edit'
     ) {
       initialValue = _.get(sourceData, `attributes.${item.name}`);
@@ -102,7 +101,7 @@ export default function useServiceData(props?) {
     const sourceData = {
       attributes: {
         ..._.cloneDeep(_.get(serviceInfo.value, 'attributes')),
-        ..._.get(moduleVersionFormCache.value, formData.templateVersion)
+        ..._.get(moduleVersionFormCache.value, formData.template.version)
       }
     };
     console.log('sourceData===', sourceData);
@@ -163,7 +162,7 @@ export default function useServiceData(props?) {
   const getModuleSchemaByVersion = () => {
     const moduleTemplate = _.find(
       templateVersionList.value,
-      (item) => item.value === formData.templateVersion
+      (item) => item.value === formData.template.version
     );
     return moduleTemplate;
   };
@@ -197,7 +196,7 @@ export default function useServiceData(props?) {
         : _.get(templateList.value, '0.id') || '';
       await getModuleVersionList();
       const moduleTemplate = getModuleSchemaById();
-      formData.templateVersion = _.get(moduleTemplate, 'version') || '';
+      formData.template.version = _.get(moduleTemplate, 'version') || '';
       moduleInfo.value = _.cloneDeep(_.get(moduleTemplate, 'schema')) || {};
     } else {
       _.assignIn(formData, serviceInfo.value);

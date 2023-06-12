@@ -8,6 +8,7 @@
   import { useAppStore, useProjectStore } from '@/store';
   import useUser from '@/hooks/user';
   import usePermission from '@/hooks/permissions';
+  import useListenerRouteChange from '@/hooks/use-listener-route-change';
   import { listenerRouteChange } from '@/utils/route-listener';
   import localStore from '@/utils/localStore';
   import { USER_DEFAULT_PROJECT } from '@/views/config';
@@ -27,6 +28,10 @@
       const { logout } = useUser();
       const projectStore = useProjectStore();
       const permission = usePermission();
+      const execListenerRouteChange = useListenerRouteChange();
+
+      // listener to  route change
+      execListenerRouteChange();
 
       const collapsed = computed({
         get() {

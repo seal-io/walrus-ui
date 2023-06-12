@@ -1,9 +1,10 @@
 import { Resources } from '@/permissions/config';
+import { OPERATIONHUB } from '@/router/config';
 
 export default [
   {
     path: 'main',
-    name: 'OperationMain',
+    name: OPERATIONHUB.Main,
     component: () => import('@/views/operation-hub/pages/main.vue'),
     meta: {
       hideInMenu: false,
@@ -15,7 +16,14 @@ export default [
         actions: ['GET']
       },
       icon: 'icon-apps',
-      cachePages: ['EnvironmentDetail']
+      cachePages: [
+        OPERATIONHUB.ConnectorCustomDetail,
+        OPERATIONHUB.ConnectorK8sDetail,
+        OPERATIONHUB.ConnectorProviderDetail,
+        OPERATIONHUB.ConnectorScmDetail,
+        OPERATIONHUB.TemplateDetail,
+        OPERATIONHUB.TemplateGPT
+      ]
     }
   }
 ];

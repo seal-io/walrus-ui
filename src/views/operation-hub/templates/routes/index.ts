@@ -1,9 +1,10 @@
 import { Resources } from '@/permissions/config';
+import { OPERATIONHUB } from '@/router/config';
 
 export default [
   {
     path: 'templates/list',
-    name: 'TemplateList',
+    name: OPERATIONHUB.TemplateList,
     component: () => import('@/views/operation-hub/templates/pages/list.vue'),
     meta: {
       hideInMenu: true,
@@ -20,7 +21,7 @@ export default [
   },
   {
     path: 'templates/detail/:action',
-    name: 'TemplateDetail',
+    name: OPERATIONHUB.TemplateDetail,
     component: () => import('@/views/operation-hub/templates/pages/detail.vue'),
     meta: {
       hideInMenu: true,
@@ -36,7 +37,7 @@ export default [
   },
   {
     path: 'templates/gpt',
-    name: 'TemplateGPT',
+    name: OPERATIONHUB.TemplateGPT,
     component: () => import('@/views/operation-hub/templates/pages/gpt.vue'),
     meta: {
       hideInMenu: true,

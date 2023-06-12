@@ -1,9 +1,10 @@
 import projectsRoutes from '@/views/application-management/projects/routes';
 // import workflowsRoutes from '@/views/application-management/workflows/routes';
+import PROJECT from '../../config/application-management';
 
 export default {
   path: 'app-management',
-  name: 'AppManagement',
+  name: PROJECT.Index,
   component: () => import('@/views/application-management/index.vue'),
   meta: {
     locale: 'navbar.appmanagement',

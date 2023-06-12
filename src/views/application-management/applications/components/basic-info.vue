@@ -32,7 +32,7 @@
     >
       <a-button
         size="mini"
-        style="position: absolute; top: 0; right: -10px; padding: 0 4px"
+        style="position: absolute; top: 5px; right: -10px; padding: 0 4px"
         @click.stop="() => {}"
       >
         <icon-more style="font-size: 18px; stroke-width: 5" />

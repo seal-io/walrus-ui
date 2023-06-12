@@ -4,340 +4,101 @@
       <Breadcrumb
         :items="breadCrumbList"
         :menu="{ icon: 'icon-apps' }"
+        @change="handleSelectChange"
       ></Breadcrumb>
     </BreadWrapper>
-    <ComCard top-gap>
-      <GroupTitle
-        :bordered="false"
-        style="margin-bottom: 0"
-        :show-edit="
-          pageAction === 'view' &&
-          userStore.hasProjectResourceActions({
-            resource: Resources.Environments,
-            projectID: route.params.projectId,
-            actions: ['POST']
-          })
-        "
-        @edit="handleEdit"
-      ></GroupTitle>
-      <a-form ref="formref" :model="formData" auto-label-width>
-        <a-form-item
-          :label="$t('operation.environments.table.name')"
-          field="name"
-          :validate-trigger="['change']"
-          :rules="[
-            {
-              required: pageAction === 'edit',
-              message: $t('operation.environments.rule.name')
-            }
-          ]"
-        >
-          <a-input
-            v-if="pageAction === 'edit'"
-            v-model="formData.name"
-            style="width: 500px"
-            :max-length="30"
-            show-word-limit
-          ></a-input>
-          <span v-else class="readonly-view-label">{{
-            formData.name || '-'
-          }}</span>
-        </a-form-item>
-        <a-form-item
-          :label="$t('operation.environments.table.description')"
-          field="description"
-        >
-          <a-textarea
-            v-if="pageAction === 'edit'"
-            v-model="formData.description"
-            style="width: 500px"
-            :max-length="200"
-            show-word-limit
-            :auto-size="{ minRows: 6, maxRows: 10 }"
-          ></a-textarea>
-          <div v-else class="description-content readonly-view-label">{{
-            formData.description || '-'
-          }}</div>
-        </a-form-item>
-        <a-form-item
-          :label="$t('operation.connectors.menu')"
-          field="connectorIDs"
-          :validate-trigger="['change']"
-        >
-          <div>
-            <div style="display: flex; margin-bottom: 10px">
-              <a-button
-                v-if="pageAction === 'edit'"
-                type="primary"
-                size="small"
-                style="margin-right: 8px; padding: 0 6px"
-                @click.stop="handleAddConnector"
-              >
-                <template #icon>
-                  <icon-plus />
-                </template>
-                {{ $t('operation.environments.detail.addConnector') }}</a-button
-              >
-              <ConnectorSelector
-                v-if="showModal"
-                v-model:show="showModal"
-                :selected="formData.connectorIDs"
-                :list="connectorList"
-                @confirm="handleConnectorChange"
-              ></ConnectorSelector>
-            </div>
-            <connectorsTable
-              :style="{ marginLeft: pageAction === 'view' ? '12px' : 0 }"
-              :action="pageAction"
-              :list="formData?.edges || []"
-              @delete="handleDeleteConnector"
-            ></connectorsTable>
-          </div>
-        </a-form-item>
-      </a-form>
-      <EditPageFooter v-if="pageAction === 'edit'">
-        <template #save>
-          <a-button
-            type="primary"
-            class="cap-title cancel-btn"
-            :loading="submitLoading"
-            @click="handleSubmit"
-            >{{ $t('common.button.save') }}</a-button
-          >
+    <ComCard padding="0" top-gap>
+      <HeaderInfo :info="currentInfo">
+        <template #icon>
+          <i class="iconfont icon-rongqiyunfuwu"></i>
         </template>
-        <a-button
-          type="outline"
-          class="cap-title cancel-btn"
-          @click="handleCancel"
-          >{{ $t('common.button.cancel') }}</a-button
-        >
-      </EditPageFooter>
+        <template #title>
+          <BasicInfo :data-info="basicDataList"></BasicInfo>
+        </template>
+      </HeaderInfo>
+      <ComCard>
+        <ServiceList ref="serviceRef"></ServiceList>
+      </ComCard>
     </ComCard>
   </div>
 </template>
 
 <script lang="ts" setup>
-  import { Resources } from '@/permissions/config';
-  import { useUserStore, useTabBarStore } from '@/store';
-  import { ref, computed, defineExpose } from 'vue';
-  import {
-    concat,
-    each,
-    includes,
-    map,
-    remove,
-    get,
-    isEqual,
-    cloneDeep
-  } from 'lodash';
-  import GroupTitle from '@/components/group-title/index.vue';
-  import EditPageFooter from '@/components/edit-page-footer/index.vue';
+  import { PROJECT } from '@/router/config';
+  import { ref, onMounted, nextTick } from 'vue';
+  import _ from 'lodash';
   import useCallCommon from '@/hooks/use-call-common';
-  import { beforeLeaveCallback } from '@/hooks/save-before-leave';
-  import { onBeforeRouteLeave } from 'vue-router';
-  import { queryConnectors } from '@/views/operation-hub/connectors/api';
-  import usePageAction from '@/hooks/use-page-action';
-  import useGetBreadState from '@/views/application-management/projects/hooks/use-get-breadstate';
-  import { EnvironFormData } from '../config/interface';
-  import connectorsTable from '../components/connectors.vue';
-  import ConnectorSelector from '../components/connector-selector.vue';
-  import {
-    createEnvironment,
-    updateEnvironment,
-    queryItemEnvironments
-  } from '../api';
+  import HeaderInfo from '@/components/header-info/index.vue';
+  import { BreadcrumbOptions } from '@/views/config/interface';
+  import BasicInfo from '@/views/application-management/applications/components/basic-info.vue';
+  import ServiceList from '@/views/application-management/applications/pages/list.vue';
+  import useProjectData from '@/views/application-management/projects/hooks/use-project-breadcrumb-data';
+  import useBasicInfoData from '@/views/application-management/projects/hooks/use-basicInfo-data';
+  import { basicInfoConfig } from '../config';
+  import { queryItemEnvironments } from '../api';
 
-  // const props = defineProps({
-  //   id: {
-  //     type: String,
-  //     default() {
-  //       return '';
-  //     }
-  //   }
-  // });
-  const { getProjectState } = useGetBreadState();
-  const userStore = useUserStore();
-  const tabBarStore = useTabBarStore();
+  const {
+    getEnvironmentList,
+    getProjectList,
+    setProjectList,
+    setEnvironmentList,
+    handleBreadChange,
+    pageLevelMap,
+    projectTemplate,
+    environmentTemplate
+  } = useProjectData();
   const { router, route, t } = useCallCommon();
-  const { pageAction, handleEdit } = usePageAction();
-  const id = route.query.id as string;
-  const formref = ref();
-  const connectorList = ref<{ label: string; value: string }[]>([]);
-  const showModal = ref(false);
-  const submitLoading = ref(false);
-  let copyFormData: any = {};
-  const formData = ref<EnvironFormData>({
-    projectID: route.params.projectId as string,
-    name: '',
-    description: '',
-    connectorIDs: [],
-    connectors: [],
-    edges: []
-  });
+  const currentInfo = ref<any>({});
+  const breadCrumbList = ref<BreadcrumbOptions[]>([
+    projectTemplate,
+    environmentTemplate
+  ]);
+  const serviceRef = ref();
+  const basicDataList = useBasicInfoData(basicInfoConfig, currentInfo);
 
-  const title = computed(() => {
-    if (!id) {
-      return t('operation.environments.create');
+  const handleSelectChange = ({ value, item }) => {
+    item.value = value;
+    if (item.level !== pageLevelMap.Environment) {
+      currentInfo.value = {};
+    } else {
+      currentInfo.value = _.find(item.options, (s) => s.value === value);
     }
-    if (id && pageAction.value === 'edit') {
-      return t('operation.environments.edit');
-    }
-    return t('operation.environments.view');
-  });
-  const breadCrumbList = computed(() => {
-    return [
-      {
-        ...getProjectState({
-          id: route.params.projectId,
-          name: ''
-        })
-      },
-      {
-        label: title.value
-      }
-    ];
-  });
-  const setFormDataConnectors = (connectors) => {
-    each(connectorList.value, (item) => {
-      if (includes(connectors, item.value)) {
-        formData.value?.edges?.push(item);
-      }
-    });
-    formData.value.connectors = map(formData.value.connectorIDs, (val) => {
-      return {
-        connector: {
-          id: val
-        }
-      };
-    });
+    console.log('currentInfo===', currentInfo.value);
+    handleBreadChange(value, item);
   };
   const getItemEnvironmentInfo = async () => {
-    copyFormData = cloneDeep(formData.value);
-    if (!id) return;
-    try {
-      const { data } = await queryItemEnvironments({ id });
-      formData.value = data;
-      formData.value.edges = [];
-      formData.value.connectorIDs = map(get(data, 'connectors') || [], (s) => {
-        return s?.connector?.id;
-      });
-      setFormDataConnectors(formData.value.connectorIDs);
-      copyFormData = cloneDeep(formData.value);
-    } catch (error) {
-      formData.value = {
-        projectID: route.params.projectId as string,
-        name: '',
-        description: '',
-        connectorIDs: [],
-        connectors: [],
-        edges: []
-      };
-      console.log(error);
-    }
-  };
-  const getConnectors = async () => {
+    if (!route.params.environmentId) return;
     try {
       const params = {
-        page: -1
+        id: route.params.environmentId as string
       };
-      const { data } = await queryConnectors(params);
-      const list = data?.items || [];
-      connectorList.value = map(list, (item) => {
-        item.value = item.id;
-        item.label = item.name;
-        return item;
-      }) as Array<{ label: string; value: string }>;
+      const { data } = await queryItemEnvironments(params);
+      currentInfo.value = data;
     } catch (error) {
-      connectorList.value = [];
+      currentInfo.value = {};
       console.log(error);
     }
   };
-  const handleAddConnector = () => {
-    showModal.value = true;
+  const initBread = async () => {
+    const [projectList, enviromentList] = await Promise.all([
+      getProjectList(),
+      getEnvironmentList()
+    ]);
+    const projectRes = await setProjectList(projectList);
+    const environmentRes = setEnvironmentList(enviromentList);
+    breadCrumbList.value = [projectRes, environmentRes];
   };
-
-  const handleConnectorChange = (values) => {
-    formData.value.connectorIDs = concat(formData.value.connectorIDs, values);
-    setFormDataConnectors(values);
-    formref.value.validateField('connectorIDs');
-  };
-  const handleDeleteConnector = (record, index) => {
-    formData.value.edges?.splice(index, 1);
-    remove(formData.value.connectorIDs, (val) => record.id === val);
-    remove(formData.value.connectors, (o) => o.connector.id === record.id);
-    formref.value.validateField('connectorIDs');
-  };
-  const handleSubmit = async () => {
-    const res = await formref.value?.validate();
-    if (!res) {
-      try {
-        submitLoading.value = true;
-        copyFormData = cloneDeep(formData.value);
-        if (id) {
-          await updateEnvironment(formData.value);
-        } else {
-          await createEnvironment(formData.value);
-        }
-        tabBarStore.deleteTag(0, {
-          title: '',
-          name: 'EnvironmentList',
-          fullPath: ''
-        });
-        router.back();
-        submitLoading.value = false;
-      } catch (error) {
-        submitLoading.value = false;
-      }
-      return true;
-    }
-    return false;
-  };
-  const cancelCallback = () => {
-    if (pageAction.value === 'edit' && route.params.action === 'view') {
-      pageAction.value = 'view';
-      getItemEnvironmentInfo();
-      return;
-    }
-    router.back();
-  };
-  const handleCancel = () => {
-    if (!isEqual(copyFormData, formData.value)) {
-      beforeLeaveCallback({
-        isCancel: true,
-        onOk: () => {
-          copyFormData = cloneDeep(formData.value);
-          cancelCallback();
-        }
-      });
-    } else {
-      cancelCallback();
-    }
-  };
-  onBeforeRouteLeave(async (to, from) => {
-    if (!isEqual(copyFormData, formData.value)) {
-      beforeLeaveCallback({
-        to,
-        from,
-        onOk: () => {
-          copyFormData = cloneDeep(formData.value);
-          router.push({
-            name: to.name as string
-          });
-        }
-      });
-      return false;
-    }
-    return true;
-  });
   const init = async () => {
-    await getConnectors();
-    await getItemEnvironmentInfo();
+    getItemEnvironmentInfo();
   };
-  defineExpose({
-    handleSubmit,
-    init
+  onMounted(() => {
+    initBread();
   });
   init();
 </script>
 
-<style></style>
+<script lang="ts">
+  export default {
+    name: PROJECT.EnvDetail
+  };
+</script>

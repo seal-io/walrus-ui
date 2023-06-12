@@ -1,9 +1,10 @@
 import analyseRoutes from '@/views/cost-management/analyse/routes';
 // import optimizeRoutes from '@/views/cost-management/optimize/routes';
+import COST from '../../config/cost-management';
 
 export default {
   path: 'cost-management',
-  name: 'CostManagement',
+  name: COST.Index,
   component: () => import('@/views/cost-management/index.vue'),
   meta: {
     locale: 'navbar.costmanagement',

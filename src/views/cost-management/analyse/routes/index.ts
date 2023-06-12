@@ -1,9 +1,10 @@
 import { Resources } from '@/permissions/config';
+import { COSTMANAGEMENT } from '@/router/config';
 
 export default [
   {
     path: 'cost/management',
-    name: 'CostManangement',
+    name: COSTMANAGEMENT.PageIndex,
     component: () => import('@/views/cost-management/analyse/pages/index.vue'),
     meta: {
       hideInMenu: false,
@@ -19,7 +20,7 @@ export default [
   },
   {
     path: 'cost/perspective',
-    name: 'CostPerspective',
+    name: COSTMANAGEMENT.Main,
     component: () => import('@/views/cost-management/analyse/pages/main.vue'),
     meta: {
       hideInMenu: true,
@@ -35,7 +36,7 @@ export default [
   },
   {
     path: 'cost/list',
-    name: 'CostAnalyseList',
+    name: COSTMANAGEMENT.List,
     component: () => import('@/views/cost-management/analyse/pages/list.vue'),
     meta: {
       hideInMenu: true,
@@ -52,7 +53,7 @@ export default [
   },
   {
     path: 'cost/perspective-edit/:action',
-    name: 'CostPerspectiveEdit',
+    name: COSTMANAGEMENT.Edit,
     component: () =>
       import('@/views/cost-management/analyse/pages/perspective-edit.vue'),
     meta: {

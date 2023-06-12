@@ -100,7 +100,7 @@
           <a-grid-item :span="12">
             <a-form-item
               :label="$t('applications.applications.history.version')"
-              field="templateVersion"
+              field="version"
               :rules="[
                 {
                   required: true,
@@ -110,7 +110,7 @@
             >
               <div id="moduleVerionWrapper" style="position: relative">
                 <a-select
-                  v-model="formData.templateVersion"
+                  v-model="formData.version"
                   :popup-container="getContainer('moduleVerionWrapper')"
                   @change="handleVersionChange"
                 >
@@ -339,7 +339,7 @@
     },
     name: '',
     template: { id: '' },
-    templateVersion: '',
+    version: '',
     application: {
       id: route.query.id || ''
     },
@@ -364,7 +364,7 @@
     refMap = {};
     formData.name = '';
     formData.template = { id: '' };
-    formData.templateVersion = '';
+    formData.version = '';
     formData.application = { id: '' };
     formData.attributes = {};
     moduleVersionFormCache.value = {};
@@ -394,7 +394,7 @@
   const getInitialValue = (item, sourceData, action) => {
     let initialValue = item.default;
     if (
-      get(moduleVersionFormCache.value, formData.templateVersion) ||
+      get(moduleVersionFormCache.value, formData.version) ||
       action === 'edit'
     ) {
       initialValue = get(sourceData, `attributes.${item.name}`);
@@ -409,7 +409,7 @@
     const sourceData = {
       attributes: {
         ...cloneDeep(get(props.dataInfo, 'attributes')),
-        ...get(moduleVersionFormCache.value, formData.templateVersion)
+        ...get(moduleVersionFormCache.value, formData.version)
       }
     };
     console.log('sourceData===', sourceData);
@@ -477,7 +477,7 @@
   const getModuleSchemaByVersion = () => {
     const moduleTemplate = find(
       moduleVersionList.value,
-      (item) => item.value === formData.templateVersion
+      (item) => item.value === formData.version
     );
     return moduleTemplate;
   };
@@ -561,7 +561,7 @@
   // module change: exec version change
   const handleModuleChange = async (val) => {
     await getModuleVersionList();
-    formData.templateVersion = get(moduleVersionList.value, '0.version');
+    formData.version = get(moduleVersionList.value, '0.version');
     moduleVersionFormCache.value = {};
     versionMap.value = { ov: '', nv: '' };
     handleVersionChange();
@@ -628,7 +628,7 @@
         : get(props.templates, '0.id') || '';
       await getModuleVersionList();
       const moduleTemplate = getModuleSchemaById();
-      formData.templateVersion = get(moduleTemplate, 'version') || '';
+      formData.version = get(moduleTemplate, 'version') || '';
       moduleInfo.value = cloneDeep(get(moduleTemplate, 'schema')) || {};
       // setFormData(moduleInfo.value);
     } else {
@@ -657,7 +657,7 @@
     emit('reset');
   };
   watch(
-    () => formData.templateVersion,
+    () => formData.version,
     (nv, ov) => {
       versionMap.value = {
         nv,

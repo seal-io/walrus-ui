@@ -16,7 +16,7 @@
       </a-form-item>
       <a-form-item :label="$t('applications.applications.history.version')">
         <span class="readonly-view-label">{{
-          getListValue(formData.templateVersion, templateVersionList, 'value')
+          getListValue(formData.template.version, templateVersionList, 'value')
         }}</span>
       </a-form-item>
     </a-form>
