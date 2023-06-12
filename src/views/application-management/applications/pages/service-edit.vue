@@ -104,7 +104,7 @@
         >
         </GroupTitle>
         <div>
-          <a-tooltip style="width: 500px">
+          <a-tooltip position="tl">
             <template #content>
               <div>
                 <div>{{

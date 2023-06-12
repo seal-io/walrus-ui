@@ -68,7 +68,7 @@
                 >
                   <a-link
                     class="flex-1"
-                    style="color: var(--sealblue-6)"
+                    style="color: var(--sealblue-6); font-size: 13px"
                     @click="handleOnSettings(item)"
                   >
                     <icon-settings class="mright-5" />{{

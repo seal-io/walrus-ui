@@ -23,9 +23,14 @@
     <div>
       <a-form ref="formref" :model="formData" layout="vertical">
         <a-form-item
-          label="选择版本"
+          :label="$t('applications.service.rollback.version.label')"
           field="id"
-          :rules="[{ required: true, message: '请选择版本' }]"
+          :rules="[
+            {
+              required: true,
+              message: $t('applications.service.rollback.version.holder')
+            }
+          ]"
         >
           <a-select
             v-model="formData.id"
@@ -41,21 +46,25 @@
             ></a-option>
           </a-select>
         </a-form-item>
-        <a-form-item label="配置对比">
-          <AceEditor
-            v-show="removeLines.length || addLines.length"
-            ref="rollback_editor"
-            read-only
-            style="width: 100%"
-            :remove-lines="removeLines"
-            :add-lines="addLines"
-            :editor-default-value="codeResult"
-            lang="json"
-            :height="320"
-          ></AceEditor>
-          <a-alert v-show="!removeLines.length && !addLines.length">{{
-            $t('applications.applications.history.diff.same')
-          }}</a-alert>
+        <a-form-item
+          :label="$t('applications.service.rollback.config.compare')"
+        >
+          <a-spin style="width: 100%" :loading="compareloading">
+            <AceEditor
+              v-show="removeLines.length || addLines.length"
+              ref="rollback_editor"
+              read-only
+              style="width: 100%"
+              :remove-lines="removeLines"
+              :add-lines="addLines"
+              :editor-default-value="codeResult"
+              lang="json"
+              :height="320"
+            ></AceEditor>
+            <a-alert v-show="!removeLines.length && !addLines.length">{{
+              $t('applications.applications.history.diff.same')
+            }}</a-alert>
+          </a-spin>
         </a-form-item>
       </a-form>
     </div>
@@ -142,6 +151,7 @@
   const revisionList = ref<HistoryData[]>([]);
   const submitLoading = ref(false);
   const loading = ref(false);
+  const compareloading = ref(false);
   const formref = ref();
   const formData = reactive({
     projectID: props.projectID,
@@ -187,18 +197,20 @@
 
   const getRevisionDiff = async () => {
     try {
+      compareloading.value = true;
       const params = {
         serviceID: formData.serviceID,
         id: formData.id
       };
       const { data } = await diffRevisionSpec(params);
-      const variables = !props.instanceId ? 'variables' : 'inputVariables';
       const diffContent = {
-        old: JSON.stringify(_.pick(data.old, [variables, 'modules']), null, 2),
-        new: JSON.stringify(_.pick(data.new, [variables, 'modules']), null, 2)
+        old: JSON.stringify(data.old, null, 2),
+        new: JSON.stringify(data.new, null, 2)
       };
       getDiffCodeResult(diffContent);
+      compareloading.value = false;
     } catch (error) {
+      compareloading.value = false;
       console.log(error);
     }
   };

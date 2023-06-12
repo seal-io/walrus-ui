@@ -139,5 +139,8 @@ export default {
     'consists of letters, numbers, underscores, cannot start with a number',
   'applications.secret.form.name': 'Content',
   'applications.secret.form.tips': `The function of the secret is to use it when configuring the relevant parameters in the template when creating the application. Project secret are used only in apps for the specified project. Useage: Enter {'$'}<span></span>{'{'}secret.secretName{'}'} in the input box`,
-  'applications.endpoint.access': 'Access Points'
+  'applications.endpoint.access': 'Access Points',
+  'applications.service.rollback.version.label': 'Select Version',
+  'applications.service.rollback.version.holder': 'please select a version',
+  'applications.service.rollback.config.compare': 'Configuration Comparison'
 };

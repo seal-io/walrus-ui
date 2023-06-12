@@ -293,11 +293,9 @@
         serviceID: instanceId.value
       };
       const { data } = await diffRevisionSpec(params);
-      const variables =
-        rollbackType.value === 'app' ? 'variables' : 'inputVariables';
       diffContent.value = {
-        old: JSON.stringify(pick(data.old, [variables, 'modules']), null, 2),
-        new: JSON.stringify(pick(data.new, [variables, 'modules']), null, 2)
+        old: JSON.stringify(data.old, null, 2),
+        new: JSON.stringify(data.new, null, 2)
       };
       showDiffModal.value = true;
       title.value = t('applications.applications.history.diff.title');
@@ -348,8 +346,8 @@
       };
       const { data } = await queryRevisionChange(params);
       diffContent.value = {
-        old: JSON.stringify(pick(data.old, ['variables', 'modules']), null, 2),
-        new: JSON.stringify(pick(data.new, ['variables', 'modules']), null, 2)
+        old: JSON.stringify(data.old, null, 2),
+        new: JSON.stringify(data.new, null, 2)
       };
       showDiffModal.value = true;
       title.value = t('applications.applications.history.change.title');
