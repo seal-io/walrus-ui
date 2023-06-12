@@ -1,5 +1,6 @@
 import { get } from 'lodash';
 import dayjs from 'dayjs';
+import { MoreAction } from '@/views/config/interface';
 
 export const instanceTabs = [
   // { label: '配置定义', value: 'configuration', com: 'tabConfiguration' },
@@ -169,12 +170,12 @@ export const instanceBasicInfo = [
     label: 'applications.projects.table.name',
     value: '',
     key: 'project.name'
-  },
-  {
-    label: 'common.table.operation',
-    value: '',
-    key: 'operation'
   }
+  // {
+  //   label: 'common.table.operation',
+  //   value: '',
+  //   key: 'operation'
+  // }
 ];
 export const applicationBasicInfo = [
   {
@@ -280,6 +281,19 @@ export const instanceUpgradeView = [
     label: 'applications.applications.detail.env',
     value: '',
     key: 'environment.id'
+  }
+];
+
+export const serviceActions: MoreAction[] = [
+  {
+    label: 'common.button.upgrade',
+    value: 'upgrade',
+    icon: 'iconFont',
+    handler: '',
+    status: 'normal',
+    props: {
+      type: 'icon-upgrade'
+    }
   }
 ];
 export default {};

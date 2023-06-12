@@ -16,7 +16,6 @@ export const dateFormatMap = {
   year: 'YYYY'
 };
 export const costShareMode = [
-  // { label: '展示', name: 'Show', value: 'show' },
   {
     label: 'cost.optimize.form.share.avg',
     name: 'Equally split',
@@ -448,5 +447,12 @@ export const builtinViewMap = {
   all: 'cost.optimize.table.all',
   project: 'cost.optimize.table.project',
   cluster: 'cost.optimize.table.cluster'
+};
+
+export const builtinViewList = ['ALL', 'Cluster', 'Project'];
+
+export const VIEW_MAP = {
+  all: 'all',
+  custom: 'custom'
 };
 export default {};

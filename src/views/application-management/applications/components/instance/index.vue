@@ -6,8 +6,12 @@
           <i class="iconfont icon-apps-fill"></i>
         </template>
         <template #title>
-          <BasicInfo :data-info="basicDataList">
-            <template #value="{ data }">
+          <BasicInfo
+            :data-info="basicDataList"
+            :actions="serviceActions"
+            @select="handleSelect"
+          >
+            <!-- <template #value="{ data }">
               <template
                 v-if="
                   data.key === 'operation' &&
@@ -19,7 +23,7 @@
                   >{{ $t('common.button.upgrade') }}</a-button
                 >
               </template>
-            </template>
+            </template> -->
           </BasicInfo>
         </template>
         <template #description></template>
@@ -130,7 +134,11 @@
   import tabEndpoint from './tab-endpoint.vue';
   import applicationHistory from './application-history.vue';
   import BasicInfo from '../basic-info.vue';
-  import { instanceTabs, instanceBasicInfo } from '../../config';
+  import {
+    instanceTabs,
+    instanceBasicInfo,
+    serviceActions
+  } from '../../config';
   import useFetchResource from '../hooks/use-fetch-chunk-data';
   import { queryItemApplicationInstances } from '../../api';
   import serviceInfo from '../service-info.vue';
@@ -170,6 +178,9 @@
 
   const handleUpgrade = () => {
     pageAction.value = 'edit';
+  };
+  const handleSelect = (value) => {
+    handleUpgrade();
   };
   const handleEditSucceed = () => {
     router.replace({

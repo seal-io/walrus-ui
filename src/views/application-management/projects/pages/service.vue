@@ -46,9 +46,7 @@
     setBreabCrumbData();
   };
   onMounted(() => {
-    nextTick(() => {
-      init();
-    });
+    init();
   });
 </script>
 

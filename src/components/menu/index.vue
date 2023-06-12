@@ -20,7 +20,6 @@
     setup() {
       const PROJECT_LIST = 'ProjectsList';
       const PROJECT_DETAIL = 'ProjectDetail';
-      const DEFAULT_PROJECT = { id: '', name: '' };
       const { t, router, route } = useCallCommon();
       const currentRoute = ref<string>('');
       const appStore = useAppStore();
@@ -322,12 +321,12 @@
               value: item.id
             };
           });
-          const { id, name } =
-            (await localStore.getValue(USER_DEFAULT_PROJECT)) ||
-            DEFAULT_PROJECT;
+          const defaultProject = await localStore.getValue(
+            USER_DEFAULT_PROJECT
+          );
           const defaultValue = route.params.projectId || _.get(list, '0.value');
           const defaultName = _.get(list, '0.label');
-          if (!id && list.length) {
+          if (!defaultProject?.id && list.length) {
             localStore.setValue(USER_DEFAULT_PROJECT, {
               id: defaultValue,
               name: defaultName
@@ -335,7 +334,10 @@
           } else if (!list.length) {
             localStore.setValue(USER_DEFAULT_PROJECT, { id: '', name: '' });
           } else {
-            const data = _.find(list, (item) => item.value === id);
+            const data = _.find(
+              list,
+              (item) => item.value === defaultProject?.id
+            );
             localStore.setValue(USER_DEFAULT_PROJECT, {
               id: data?.value || defaultValue,
               name: data?.label || defaultName

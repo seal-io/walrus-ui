@@ -102,6 +102,7 @@
   import perspectiveProject from './perspective-project.vue';
   import perspectiveCustom from './perspective-custom.vue';
   import { queryPerspectives, queryPerspectiveFields } from '../api';
+  import { VIEW_MAP } from '../config';
 
   const HOT_PERSPECTIVE_ID = 'HOT_PERSPECTIVE_ID';
   const perspectiveMap = {
@@ -111,7 +112,8 @@
     custom: markRaw(perspectiveCustom)
   };
   const { router, route } = useCallCommon();
-  const page = (route.query.page || 'all') as string;
+
+  const page = (route.query.page || VIEW_MAP.all) as string;
   const loading = ref(false);
   const loadend = ref(false);
   const viewList = ref<{ value: string; label: string; name?: string }[]>([]);
@@ -123,7 +125,7 @@
     const data = find(viewList.value, (item) => item.value === val);
     localStore.setValue(HOT_PERSPECTIVE_ID, {
       hotProjectId: val,
-      page: toLower(data?.label || 'all')
+      page: toLower(data?.label || VIEW_MAP.all)
     });
     // router.replace({
     //   query: {
@@ -133,14 +135,15 @@
     // });
     setTimeout(() => {
       viewId.value = val;
-      viewComponent.value = toLower(data?.label || 'all');
+      viewComponent.value = toLower(data?.label || VIEW_MAP.all);
     }, 50);
   };
 
   const getViewList = async () => {
     if (viewList.value.length) return;
-    const { hotProjectId, page } =
-      (await localStore.getValue(HOT_PERSPECTIVE_ID)) || {};
+    const hotProject = await localStore.getValue(HOT_PERSPECTIVE_ID);
+    const hotProjectId = hotProject?.hotProjectId;
+    const page = hotProject?.page;
     try {
       loading.value = true;
       const params = {
@@ -150,7 +153,7 @@
       const list = data?.items || [];
 
       viewList.value = map(list, (item) => {
-        item.label = item?.builtin ? toLower(item.name) : 'custom';
+        item.label = item?.builtin ? toLower(item.name) : VIEW_MAP.custom;
         item.value = item.id;
         return item;
       }) as Array<{ value: string; label: string }>;
@@ -166,9 +169,12 @@
         viewComponent.value = page;
       } else {
         // default state
-        const allView = find(viewList.value, (sItem) => sItem.label === 'all');
+        const allView = find(
+          viewList.value,
+          (sItem) => sItem.label === VIEW_MAP.all
+        );
         viewId.value = allView?.value || '';
-        viewComponent.value = 'all';
+        viewComponent.value = VIEW_MAP.all;
       }
 
       loading.value = false;
@@ -188,7 +194,7 @@
       });
     } else {
       const { page } = (await localStore.getValue(HOT_PERSPECTIVE_ID)) || {};
-      viewComponent.value = page || 'all';
+      viewComponent.value = page || VIEW_MAP.all;
     }
   };
   // update the current state in the store
