@@ -67,11 +67,12 @@
                   "
                 >
                   <a-link
+                    class="flex-1"
                     style="color: var(--sealblue-6)"
                     @click="handleOnSettings(item)"
                   >
                     <icon-settings class="mright-5" />{{
-                      $t('common.button.settings')
+                      $t('common.button.management')
                     }}
                   </a-link>
                 </div>

@@ -91,9 +91,7 @@
     getItemEnvironmentInfo();
   };
   onMounted(() => {
-    nextTick(() => {
-      initBread();
-    });
+    initBread();
   });
   init();
 </script>

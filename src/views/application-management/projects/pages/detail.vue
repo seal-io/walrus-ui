@@ -108,9 +108,7 @@
     getItemProjectInfo();
   };
   onMounted(() => {
-    nextTick(() => {
-      initBread();
-    });
+    initBread();
   });
   init();
 </script>

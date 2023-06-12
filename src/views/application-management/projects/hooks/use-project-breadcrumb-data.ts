@@ -14,7 +14,6 @@ export default function useProjectData() {
   const breadCrumbList = ref<BreadcrumbOptions[]>([]);
   const { route, router } = useCallCommon();
   const projectStore = useProjectStore();
-  const DEFAULT_PROJECT = { id: '', name: '' };
   const pageLevelMap = {
     Project: 'Project',
     Environment: 'Environment',
@@ -114,13 +113,12 @@ export default function useProjectData() {
     });
     const defaultValue = route.params.projectId || _.get(list, '0.value');
     const defaultName = _.get(list, '0.label');
-    const { id, name } =
-      (await localStore.getValue(USER_DEFAULT_PROJECT)) || DEFAULT_PROJECT;
+    const defaultProject = await localStore.getValue(USER_DEFAULT_PROJECT);
 
     return {
       ...projectTemplate,
-      value: id || defaultValue,
-      label: name || defaultName,
+      value: defaultProject?.id || defaultValue,
+      label: defaultProject?.name || defaultName,
       options: _.cloneDeep(list),
       onSetting() {
         router.replace({
@@ -147,12 +145,7 @@ export default function useProjectData() {
       ...environmentTemplate,
       value: defaultValue,
       label: defaultName,
-      options: _.cloneDeep(list),
-      onSetting() {
-        router.replace({
-          name: 'ProjectDetail'
-        });
-      }
+      options: _.cloneDeep(list)
     };
   };
   const setServiceList = (serviceList) => {
@@ -180,11 +173,6 @@ export default function useProjectData() {
       route: 'ProjectServiceDetail',
       visible: false,
       options: _.cloneDeep(list)
-      // onSetting() {
-      //   router.replace({
-      //     name: 'ProjectEnvDetail'
-      //   });
-      // }
     };
   };
   const setBreabCrumbData = async () => {

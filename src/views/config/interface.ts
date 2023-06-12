@@ -26,4 +26,15 @@ export interface BreadcrumbOptions {
     value: string;
   }>;
 }
+
+export interface MoreAction {
+  label: string;
+  value: string;
+  icon: string;
+  handler?: string;
+  status: 'normal' | 'warning' | 'success' | 'danger';
+  props: {
+    type: string;
+  };
+}
 export default {};

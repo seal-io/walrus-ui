@@ -188,7 +188,12 @@
   import FilterBox from '@/components/filter-box/index.vue';
   import { PerspectiveRowData } from '../config/interface';
   import { queryPerspectives, deletePerspectives } from '../api';
-  import { DateShortCuts, builtinViewMap } from '../config';
+  import {
+    DateShortCuts,
+    builtinViewMap,
+    VIEW_MAP,
+    builtinViewList
+  } from '../config';
 
   const userStore = useUserStore();
   const { rowSelection, selectedKeys, handleSelectChange } = useRowSelect();
@@ -222,9 +227,9 @@
       const list = data?.items || [];
       dataList.value = map(list, (item) => {
         item.disabled = item.builtin;
-        item.labelFlag = includes(['ALL', 'Cluster', 'Project'], item.name)
+        item.labelFlag = includes(builtinViewList, item.name)
           ? toLower(item.name)
-          : 'custom';
+          : VIEW_MAP.custom;
         return item;
       });
       total.value = data?.pagination.total || 0;
@@ -329,7 +334,10 @@
     // }
     router.push({
       name: 'CostPerspective',
-      query: { id: row.id, page: row.builtin ? toLower(row.name) : 'custom' }
+      query: {
+        id: row.id,
+        page: row.builtin ? toLower(row.name) : VIEW_MAP.custom
+      }
     });
   };
   const handleDelete = async () => {
