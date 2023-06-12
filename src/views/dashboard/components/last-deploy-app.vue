@@ -13,7 +13,7 @@
           tooltip
           :cell-style="{ minWidth: '40px' }"
           data-index="service.name"
-          title="服务"
+          :title="$t('applications.applications.table.service')"
         >
           <template #cell="{ record }">
             <a-link @click="handleToDetail(record)">{{

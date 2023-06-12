@@ -62,7 +62,7 @@
     if (!resourceId.value || !resourceKey.value) {
       return '';
     }
-    return `${proto}://${host}/v1/application-resources/${
+    return `${proto}://${host}/v1/service-resources/${
       resourceId.value
     }/exec?${qs.stringify({
       key: resourceKey.value,
@@ -78,32 +78,7 @@
   const resetData = () => {
     containerList.value = [];
   };
-  const getApplicationResource = async () => {
-    resetData();
-    if (!instanceId.value) return;
-    try {
-      loading.value = true;
-      const params = {
-        serviceID: instanceId.value,
-        page: -1
-      };
-      const { data } = await queryApplicationResource(params);
-      const list = data?.items || [];
-      // const list = testData;
-      containerList.value = generateResourcesKeys(list, 'executable');
-      const defaultValue = getDefaultValue(containerList.value);
-      handleObjectChange(defaultValue);
-      loading.value = false;
-      console.log('containerList===', defaultValue);
-    } catch (error) {
-      loading.value = false;
-      console.log(error);
-      containerList.value = [];
-    }
-  };
-  onMounted(() => {
-    // getApplicationResource();
-  });
+
   watch(
     () => props.resourceList,
     (list) => {
