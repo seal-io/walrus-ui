@@ -144,7 +144,7 @@
                 v-if="
                   userStore.hasProjectResourceActions({
                     projectID,
-                    resource: Resources.ApplicationRevisions,
+                    resource: Resources.ServiceRevisions,
                     actions: ['DELETE']
                   })
                 "

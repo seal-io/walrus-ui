@@ -25,16 +25,43 @@
           @change="handleTabChange"
         >
           <a-tab-pane
+            v-if="
+              userStore.hasProjectResourceActions({
+                resource: Resources.Environments,
+                projectID: route.params.projectId,
+                actions: [Actions.GET]
+              })
+            "
             key="enviroment"
             :title="$t('menu.operatorHub.evniroment')"
           >
             <EnviromentList ref="enviromentRef"></EnviromentList>
           </a-tab-pane>
-          <a-tab-pane key="variables" :title="$t('menu.operatorHub.variables')">
+          <a-tab-pane
+            v-if="
+              userStore.hasProjectResourceActions({
+                resource: Resources.Secrets,
+                projectID: route.params.projectId,
+                actions: [Actions.GET]
+              })
+            "
+            key="variables"
+            :title="$t('menu.operatorHub.variables')"
+          >
             <SecretList ref="variablesRef"></SecretList>
           </a-tab-pane>
 
-          <a-tab-pane key="connector" :title="$t('menu.operatorHub.connector')">
+          <a-tab-pane
+            v-if="
+              userStore.hasProjectResourceActions({
+                resource: Resources.Connectors,
+                projectID: route.params.projectId,
+                actions: [Actions.GET]
+              })
+            "
+            key="connector"
+            :title="$t('menu.operatorHub.connector')"
+          >
             <ConnectorList scope="project"></ConnectorList>
           </a-tab-pane>
         </a-tabs>
@@ -44,8 +71,9 @@
 </template>
 
 <script lang="ts" setup>
+  import { Resources, Actions } from '@/permissions/config';
   import { PROJECT } from '@/router/config';
-  import { ref, onMounted, nextTick } from 'vue';
+  import { ref, onMounted, computed, nextTick } from 'vue';
   import _ from 'lodash';
   import useCallCommon from '@/hooks/use-call-common';
   import { useUserStore } from '@/store';
@@ -56,7 +84,7 @@
   import ConnectorList from '@/views/operation-hub/connectors/components/table-list.vue';
   import useBasicInfoData from '../hooks/use-basicInfo-data';
   import { queryItemProject } from '../api';
-  import { basicInfoConfig } from '../config';
+  import { basicInfoConfig, projectDetailTabs } from '../config';
   import userProjectBreadcrumbData from '../hooks/use-project-breadcrumb-data';
 
   const {
@@ -69,13 +97,21 @@
   const { router, route } = useCallCommon();
   const userStore = useUserStore();
   const activeKey = ref('enviroment');
-  const variablesRef = ref();
-  const enviromentRef = ref();
   const currentInfo = ref<any>({});
   const basicDataList = useBasicInfoData(basicInfoConfig, currentInfo);
 
   breadCrumbList.value = [projectTemplate];
 
+  const initActiveTab = () => {
+    const list = _.filter(projectDetailTabs, (item) => {
+      return userStore.hasProjectResourceActions({
+        resource: _.get(Resources, item.resource),
+        projectID: route.params.projectId,
+        actions: [Actions.GET]
+      });
+    });
+    activeKey.value = _.get(list, '0.value');
+  };
   const handleTabChange = (val) => {
     activeKey.value = val;
   };
@@ -98,6 +134,7 @@
     item.value = value;
     currentInfo.value = data;
     handleBreadChange(value, item);
+    initActiveTab();
   };
   const initBread = async () => {
     const projectList = await getProjectList();
@@ -107,6 +144,7 @@
   };
   const init = async () => {
     getItemProjectInfo();
+    initActiveTab();
   };
   onMounted(() => {
     initBread();

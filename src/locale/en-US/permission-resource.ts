@@ -1,10 +1,10 @@
 export default {
   'permission.resource.project.appInstance': 'Application Instances',
-  'permission.resource.project.appResource': 'Application Resources',
-  'permission.resource.project.appRevision': 'Application Revisions',
+  'permission.resource.project.appResource': 'Service Resources',
+  'permission.resource.project.appRevision': 'Service Revisions',
   'permission.resource.project.roleAuth': 'Role Authorization',
   'permission.resource.project.secret': 'Secrets',
-  'permission.resource.project.appList': 'Application List',
+  'permission.resource.project.appList': 'Service List',
   'permission.resource.project.project': 'Project',
   'permission.resource.system.dashboard': 'Dashboard',
   'permission.resource.system.appManagement.project': 'Projects',

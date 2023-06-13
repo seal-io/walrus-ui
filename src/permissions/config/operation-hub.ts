@@ -9,31 +9,24 @@ export default [
     actions: ['GET', 'POST', 'DELETE', 'PUT']
   },
   {
-    resource: Resources.Environments,
-    title: 'permission.resource.system.operation.enviroment',
-    group: Group.OperatorHub,
-    order: ResourcesOrder.Environments,
-    actions: ['GET', 'POST', 'DELETE', 'PUT']
-  },
-  {
-    resource: Resources.ModuleCompletions,
+    resource: Resources.TemplateCompletions,
     title: 'permission.resource.system.operation.aiCode',
     group: Group.OperatorHub,
-    order: ResourcesOrder.ModuleCompletions,
+    order: ResourcesOrder.TemplateCompletions,
     actions: ['GET', 'POST']
   },
   {
-    resource: Resources.ModuleVersions,
+    resource: Resources.TemplateVersions,
     title: 'permission.resource.system.operation.moduleVersion',
     group: Group.OperatorHub,
-    order: ResourcesOrder.ModuleVersions,
+    order: ResourcesOrder.TemplateVersions,
     actions: ['GET']
   },
   {
-    resource: Resources.Modules,
+    resource: Resources.Templates,
     title: 'permission.resource.system.operation.module',
     group: Group.OperatorHub,
-    order: ResourcesOrder.Modules,
+    order: ResourcesOrder.Templates,
     actions: ['GET', 'POST', 'DELETE', 'PUT']
   },
   {

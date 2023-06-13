@@ -22,7 +22,6 @@ export default function useEnterPage() {
   };
 
   const enterUserPage = async () => {
-    routesPermissionHandler();
     const firstRouteName = getFirstRouteName();
     console.log('firstRouteName:', firstRouteName);
     const { redirect, ...othersQuery } = router.currentRoute.value.query;

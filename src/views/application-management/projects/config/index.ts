@@ -30,4 +30,25 @@ export const basicInfoConfig = [
   }
 ];
 
+export const projectDetailTabs = [
+  {
+    label: 'menu.operatorHub.evniroment',
+    value: 'enviroment',
+    resource: 'Environments',
+    component: 'EnviromentList'
+  },
+  {
+    label: 'menu.operatorHub.variables',
+    value: 'variables',
+    resource: 'Secrets',
+    component: 'SecretList'
+  },
+  {
+    label: 'menu.operatorHub.connector',
+    value: 'connector',
+    resource: 'Connectors',
+    component: 'ConnectorList',
+    props: { scope: 'project' }
+  }
+];
 export default {};

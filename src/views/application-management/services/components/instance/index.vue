@@ -132,7 +132,7 @@
   // import tabOptimization from './tab-optimization.vue';
   import tabGraph from './tab-graph/index.vue';
   import tabEndpoint from './tab-endpoint.vue';
-  import applicationHistory from './application-history.vue';
+  import serviceHistory from './service-history.vue';
   import BasicInfo from '../basic-info.vue';
   import {
     instanceTabs,
@@ -170,7 +170,7 @@
     tabOutput: markRaw(tabOutput),
     // tabOptimization: markRaw(tabOptimization),
     tabGraph: markRaw(tabGraph),
-    tabHistory: markRaw(applicationHistory),
+    tabHistory: markRaw(serviceHistory),
     tabTerminal: markRaw(tabTerminal)
   };
   const instanceTabList = ref<any[]>([]);
@@ -207,7 +207,7 @@
       if (!item.requiredAuth) return true;
       return userStore.hasProjectResourceActions({
         projectID,
-        resource: Resources.ApplicationResources,
+        resource: Resources.ServiceResources,
         actions: ['GET']
       });
     });

@@ -19,10 +19,16 @@
         :bordered="false"
         :show-edit="
           pageAction === 'view' &&
-          userStore.hasRolesActionsPermission({
-            resource: Resources.Connectors,
-            actions: ['PUT']
-          })
+          (route.params.projectId
+            ? userStore.hasProjectResourceActions({
+                resource: Resources.Connectors,
+                projectID: route.params.projectId,
+                actions: [Actions.PUT]
+              })
+            : userStore.hasRolesActionsPermission({
+                resource: Resources.Connectors,
+                actions: [Actions.PUT]
+              }))
         "
         @edit="handleEdit"
       ></GroupTitle>
@@ -49,19 +55,6 @@
               formData.name || '-'
             }}</span>
           </a-form-item>
-          <!-- <a-form-item
-          field="description"
-          :hide-asterisk="false"
-          label="描述"
-          :validate-trigger="['change']"
-        >
-          <a-textarea
-            v-model="formData.description"
-            style="width: 500px"
-            :spellcheck="false"
-            :auto-size="{ minRows: 4, maxRows: 6 }"
-          />
-        </a-form-item> -->
           <a-form-item
             :label="$t('operation.connectors.form.type')"
             field="type"
@@ -154,7 +147,7 @@
 
 <script lang="ts" setup>
   import { OPERATIONHUB } from '@/router/config';
-  import { Resources } from '@/permissions/config';
+  import { Resources, Actions } from '@/permissions/config';
   import { useUserStore } from '@/store';
   import { assignIn, toLower, get, isEqual, cloneDeep } from 'lodash';
   import { ref, reactive, onMounted, computed, defineExpose } from 'vue';

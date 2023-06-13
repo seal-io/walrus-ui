@@ -38,7 +38,7 @@
         <template #button-group>
           <a-button
             v-permission="{
-              resource: `roles.${Resources.ModuleCompletions}`,
+              resource: `roles.${Resources.TemplateCompletions}`,
               actions: ['POST']
             }"
             type="primary"
@@ -51,17 +51,17 @@
           </a-button>
           <a-button
             v-permission="{
-              resource: `roles.${Resources.Modules}`,
+              resource: `roles.${Resources.Templates}`,
               actions: ['POST']
             }"
             type="primary"
-            @click="handleCreateProject"
+            @click="handleCreate"
             >{{ $t('operation.templates.detail.add') }}</a-button
           >
 
           <a-button
             v-permission="{
-              resource: `roles.${Resources.Modules}`,
+              resource: `roles.${Resources.Templates}`,
               actions: ['DELETE']
             }"
             type="primary"
@@ -126,7 +126,7 @@
   import ThumbView from '../components/thumb-view.vue';
   import ListView from '../components/list-view.vue';
   import { TemplateRowData } from '../config/interface';
-  import { queryTemplates, deleteTemplates } from '../api';
+  import { queryTemplates, deleteTemplates, TemplateAPI } from '../api';
 
   let timer: any = null;
   const { setChunkRequest } = useSetChunkRequest();
@@ -147,7 +147,7 @@
   const handleToggle = (val) => {
     currentView.value = val;
   };
-  const handleCreateProject = () => {
+  const handleCreate = () => {
     router.push({
       name: OPERATIONHUB.TemplateDetail,
       params: {
@@ -242,7 +242,7 @@
   const createInstanceListWebsocket = () => {
     try {
       setChunkRequest({
-        url: `/templates`,
+        url: TemplateAPI,
         handler: updateHandler
       });
     } catch (error) {

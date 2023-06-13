@@ -19,10 +19,16 @@
         :bordered="false"
         :show-edit="
           pageAction === 'view' &&
-          userStore.hasRolesActionsPermission({
-            resource: Resources.Connectors,
-            actions: ['PUT']
-          })
+          (route.params.projectId
+            ? userStore.hasProjectResourceActions({
+                resource: Resources.Connectors,
+                projectID: route.params.projectId,
+                actions: [Actions.PUT]
+              })
+            : userStore.hasRolesActionsPermission({
+                resource: Resources.Connectors,
+                actions: [Actions.PUT]
+              }))
         "
         @edit="handleEdit"
       ></GroupTitle>
@@ -165,7 +171,7 @@
 
 <script lang="ts" setup>
   import { OPERATIONHUB } from '@/router/config';
-  import { Resources } from '@/permissions/config';
+  import { Resources, Actions } from '@/permissions/config';
   import { useUserStore } from '@/store';
   import { assignIn, toLower, get, isEqual, cloneDeep } from 'lodash';
   import { ref, reactive, onMounted, computed, defineExpose } from 'vue';

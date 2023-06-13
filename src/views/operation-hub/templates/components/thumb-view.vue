@@ -15,7 +15,7 @@
         ></templateItem>
       </a-grid-item>
     </a-grid>
-    <!-- <thumbButton @click="handleCreateProject"></thumbButton> -->
+    <!-- <thumbButton @click="handleCreate"></thumbButton> -->
   </div>
 </template>
 
@@ -49,7 +49,7 @@
   const emits = defineEmits(['create', 'change']);
   const { router } = useCallCommon();
   const moduleActions = ref<ModuleAction[]>([]);
-  const handleCreateProject = () => {
+  const handleCreate = () => {
     emits('create');
   };
   const handleCheckChange = (checked, id) => {
@@ -59,7 +59,7 @@
     moduleActions.value = filter(actionList, (item) => {
       if (!item.requiredAuth) return true;
       return userStore.hasRolesActionsPermission({
-        resource: Resources.Modules,
+        resource: Resources.Templates,
         actions: [Actions.PUT]
       });
     });

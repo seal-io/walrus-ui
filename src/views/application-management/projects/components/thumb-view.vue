@@ -8,7 +8,7 @@
       @click="handleClickProject(item)"
       @change="handleCheckChange"
     ></thumbItem>
-    <!-- <thumbButton @click="handleCreateProject"></thumbButton> -->
+    <!-- <thumbButton @click="handleCreate"></thumbButton> -->
   </a-space>
 </template>
 
@@ -37,7 +37,7 @@
   });
   const emits = defineEmits(['create', 'change']);
   const { router } = useCallCommon();
-  const handleCreateProject = () => {
+  const handleCreate = () => {
     emits('create');
   };
   const handleCheckChange = (checked, id) => {

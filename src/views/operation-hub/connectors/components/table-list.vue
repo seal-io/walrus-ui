@@ -49,10 +49,18 @@
       <template #button-group>
         <a-dropdown @select="handleCreate">
           <a-button
-            v-permission="{
-              resource: `roles.${Resources.Connectors}`,
-              actions: ['POST']
-            }"
+            v-if="
+              route.params.projectId
+                ? userStore.hasProjectResourceActions({
+                    resource: Resources.Connectors,
+                    projectID: route.params.projectId,
+                    actions: [Actions.POST]
+                  })
+                : userStore.hasRolesActionsPermission({
+                    resource: Resources.Connectors,
+                    actions: [Actions.POST]
+                  })
+            "
             type="primary"
             >{{ $t('operation.connectors.create') }}<icon-down class="mleft-5"
           /></a-button>
@@ -76,10 +84,18 @@
         </a-dropdown>
 
         <a-button
-          v-permission="{
-            resource: `roles.${Resources.Connectors}`,
-            actions: ['DELETE']
-          }"
+          v-if="
+            route.params.projectId
+              ? userStore.hasProjectResourceActions({
+                  resource: Resources.Connectors,
+                  projectID: route.params.projectId,
+                  actions: [Actions.DELETE]
+                })
+              : userStore.hasRolesActionsPermission({
+                  resource: Resources.Connectors,
+                  actions: [Actions.DELETE]
+                })
+          "
           type="primary"
           status="warning"
           :disabled="!selectedKeys.length"
@@ -206,10 +222,16 @@
           <template #cell="{ record }">
             <a-space
               v-if="
-                userStore.hasRolesActionsPermission({
-                  resource: Resources.Connectors,
-                  actions: ['PUT']
-                })
+                route.params.projectId
+                  ? userStore.hasProjectResourceActions({
+                      resource: Resources.Connectors,
+                      projectID: route.params.projectId,
+                      actions: [Actions.PUT]
+                    })
+                  : userStore.hasRolesActionsPermission({
+                      resource: Resources.Connectors,
+                      actions: [Actions.PUT]
+                    })
               "
               :size="10"
             >
@@ -338,7 +360,7 @@
 
 <script lang="ts" setup>
   import { ModalAction } from '@/views/config';
-  import { Resources } from '@/permissions/config';
+  import { Resources, Actions } from '@/permissions/config';
   import { useUserStore } from '@/store';
   import { useSetChunkRequest } from '@/api/axios-chunk-request';
   import { useUpdateChunkedList } from '@/views/commons/hooks/use-update-chunked-list';
@@ -646,9 +668,6 @@
     try {
       setChunkRequest({
         url: `/connectors`,
-        params: {
-          category: props.category
-        },
         handler: updateHandler
       });
     } catch (error) {

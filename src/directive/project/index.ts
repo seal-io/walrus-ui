@@ -22,7 +22,7 @@ function checkPermission(el: HTMLElement, binding: DirectiveBinding) {
     }
   } else {
     throw new Error(
-      `need path! Like v-permission="{resource: 'applications', actions: ['GET']}"`
+      `need path! Like v-permission-app="{resource: 'applications', actions: ['GET'],projectID: xxx}"`
     );
   }
 }

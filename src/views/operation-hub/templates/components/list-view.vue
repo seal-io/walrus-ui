@@ -85,7 +85,7 @@
               <a-tooltip :content="$t('common.button.edit')">
                 <a-link
                   v-permission="{
-                    resource: `roles.${Resources.Modules}`,
+                    resource: `roles.${Resources.Templates}`,
                     actions: [Actions.PUT]
                   }"
                   type="text"
@@ -98,7 +98,7 @@
               <a-tooltip :content="$t('common.button.refresh')">
                 <a-link
                   v-permission="{
-                    resource: `roles.${Resources.Modules}`,
+                    resource: `roles.${Resources.Templates}`,
                     actions: [Actions.PUT]
                   }"
                   type="text"

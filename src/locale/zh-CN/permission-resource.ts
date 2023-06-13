@@ -1,10 +1,10 @@
 export default {
   'permission.resource.project.appInstance': '应用实例',
-  'permission.resource.project.appResource': '应用资源',
-  'permission.resource.project.appRevision': '应用实例历史记录',
+  'permission.resource.project.appResource': '服务资源',
+  'permission.resource.project.appRevision': '服务历史记录',
   'permission.resource.project.roleAuth': '角色授权',
   'permission.resource.project.secret': '密钥',
-  'permission.resource.project.appList': '应用列表',
+  'permission.resource.project.appList': '服务列表',
   'permission.resource.project.project': '项目',
   'permission.resource.system.dashboard': '概览',
   'permission.resource.system.appManagement.project': '项目',

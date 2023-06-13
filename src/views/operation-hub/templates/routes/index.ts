@@ -12,7 +12,7 @@ export default [
       locale: 'operation.templates.menu',
       requiresAuth: true,
       permission: {
-        resource: Resources.Modules,
+        resource: Resources.Templates,
         actions: ['GET']
       },
       icon: 'icon-apps',
@@ -29,7 +29,7 @@ export default [
       locale: 'operation.templates.menu',
       requiresAuth: true,
       permission: {
-        resource: Resources.Modules,
+        resource: Resources.Templates,
         actions: ['GET']
       },
       icon: 'icon-apps'
@@ -45,7 +45,7 @@ export default [
       locale: 'operation.templates.menu',
       requiresAuth: true,
       permission: {
-        resource: Resources.ModuleCompletions,
+        resource: Resources.TemplateCompletions,
         actions: ['POST']
       },
       icon: 'icon-apps'
