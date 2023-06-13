@@ -74,7 +74,7 @@
 
 <script lang="ts" setup>
   import { PropType } from 'vue';
-  import { variableTypeList } from '@/views/application-management/applications/config';
+  import { variableTypeList } from '@/views/application-management/services/config';
   import AceEditor from '@/components/ace-editor/index.vue';
   import { Variable } from '../config/interface';
 

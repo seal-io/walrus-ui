@@ -217,12 +217,14 @@
   import { cloneDeep, map, pickBy, remove } from 'lodash';
   import { ref, reactive } from 'vue';
   import dayjs from 'dayjs';
+  import localStore from '@/utils/localStore';
   import { useUserStore } from '@/store';
   import HeaderInfo from '@/components/header-info/index.vue';
   import useCallCommon from '@/hooks/use-call-common';
   import FilterBox from '@/components/filter-box/index.vue';
   import { deleteModal, execSucceed } from '@/utils/monitor';
   import { UseSortDirection } from '@/utils/common';
+  import { USER_DEFAULT_PROJECT } from '@/views/config';
   import useRowSelect from '@/hooks/use-row-select';
   import CreateProjectModal from '../components/create-project.vue';
   import AssignRoles from '../components/assign-roles.vue';
@@ -267,13 +269,13 @@
       modalTitle.value = t('applications.projects.edit');
     }, 100);
   };
-  const handleViewProject = (row) => {
-    // router.push({
-    //   name: 'ApplicationsList',
-    //   query: { id: row.id }
-    // });
+  const handleViewProject = async (row) => {
+    await localStore.setValue(USER_DEFAULT_PROJECT, {
+      id: row.id,
+      name: row.name
+    });
     router.push({
-      name: 'ProjectDetail',
+      name: PROJECT.Detail,
       params: { projectId: row.id }
     });
   };

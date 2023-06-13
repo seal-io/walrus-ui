@@ -32,6 +32,7 @@ export interface MoreAction {
   value: string;
   icon: string;
   handler?: string;
+  filterFun?: (any) => boolean;
   status: 'normal' | 'warning' | 'success' | 'danger';
   props: {
     type: string;

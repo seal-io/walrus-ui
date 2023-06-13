@@ -52,7 +52,7 @@
   import HeaderInfo from '@/components/header-info/index.vue';
   import EnviromentList from '@/views/operation-hub/environments/pages/list.vue';
   import SecretList from '@/views/application-management/secret/pages/list.vue';
-  import basicInfo from '@/views/application-management/applications/components/basic-info.vue';
+  import basicInfo from '@/views/application-management/services/components/basic-info.vue';
   import ConnectorList from '@/views/operation-hub/connectors/components/table-list.vue';
   import useBasicInfoData from '../hooks/use-basicInfo-data';
   import { queryItemProject } from '../api';

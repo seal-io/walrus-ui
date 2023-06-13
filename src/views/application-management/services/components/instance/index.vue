@@ -8,7 +8,7 @@
         <template #title>
           <BasicInfo
             :data-info="basicDataList"
-            :actions="serviceActions"
+            :actions="actionList"
             @select="handleSelect"
           >
             <!-- <template #value="{ data }">
@@ -176,6 +176,11 @@
   const instanceTabList = ref<any[]>([]);
   const basicDataList = useBasicInfoData(instanceBasicInfo, currentInfo);
 
+  const actionList = computed(() => {
+    return _.filter(serviceActions, (item) => {
+      return item.filterFun ? item.filterFun(currentInfo.value) : true;
+    });
+  });
   const handleUpgrade = () => {
     pageAction.value = 'edit';
   };

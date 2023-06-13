@@ -4,7 +4,7 @@ import useCallCommon from '@/hooks/use-call-common';
 import { useProjectStore } from '@/store';
 import { queryProjects } from '@/views/application-management/projects/api';
 import { queryEnvironments } from '@/views/operation-hub/environments/api';
-import { queryApplications } from '@/views/application-management/applications/api';
+import { queryApplications } from '@/views/application-management/services/api';
 import { BreadcrumbOptions } from '@/views/config/interface';
 import localStore from '@/utils/localStore';
 import { USER_DEFAULT_PROJECT } from '@/views/config';

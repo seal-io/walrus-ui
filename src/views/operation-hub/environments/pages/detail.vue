@@ -30,8 +30,8 @@
   import useCallCommon from '@/hooks/use-call-common';
   import HeaderInfo from '@/components/header-info/index.vue';
   import { BreadcrumbOptions } from '@/views/config/interface';
-  import BasicInfo from '@/views/application-management/applications/components/basic-info.vue';
-  import ServiceList from '@/views/application-management/applications/pages/list.vue';
+  import BasicInfo from '@/views/application-management/services/components/basic-info.vue';
+  import ServiceList from '@/views/application-management/services/pages/list.vue';
   import useProjectData from '@/views/application-management/projects/hooks/use-project-breadcrumb-data';
   import useBasicInfoData from '@/views/application-management/projects/hooks/use-basicInfo-data';
   import { basicInfoConfig } from '../config';

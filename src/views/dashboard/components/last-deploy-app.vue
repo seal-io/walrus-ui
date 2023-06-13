@@ -85,6 +85,7 @@
 </template>
 
 <script lang="ts" setup>
+  import { PROJECT } from '@/router/config';
   import _, { toLower, get } from 'lodash';
   import dayjs from 'dayjs';
   import { PropType } from 'vue';
@@ -123,14 +124,13 @@
   };
   const handleToDetail = (row) => {
     router.push({
-      name: 'ApplicationsDetail',
+      name: PROJECT.ServiceDetail,
       params: {
-        projectId: _.get(row, 'instance.application.project.id'),
-        action: 'view'
+        projectId: _.get(row, 'project.id'),
+        environmentId: _.get(row, 'environment.id')
       },
       query: {
-        id: _.get(row, 'instance.application.id'),
-        instanceId: _.get(row, 'instance.id')
+        id: _.get(row, 'id')
       }
     });
   };
