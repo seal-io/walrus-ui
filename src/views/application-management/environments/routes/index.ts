@@ -5,8 +5,7 @@ export default [
   {
     path: 'environment/list',
     name: 'EnvironmentList',
-    component: () =>
-      import('@/views/operation-hub/environments/pages/list.vue'),
+    component: () => import('../pages/list.vue'),
     meta: {
       hideInMenu: false,
       ignoreCache: false,
@@ -23,8 +22,7 @@ export default [
   {
     path: 'environment/detail/:action',
     name: 'EnvironmentDetail',
-    component: () =>
-      import('@/views/operation-hub/environments/pages/detail.vue'),
+    component: () => import('../pages/detail.vue'),
     meta: {
       hideInMenu: true,
       ignoreCache: true,

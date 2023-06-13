@@ -33,7 +33,7 @@
         return {};
       }
     },
-    instanceId: {
+    serviceId: {
       type: String,
       default() {
         return '';
@@ -61,7 +61,7 @@
         ...route.params
       },
       query: {
-        id: props.instanceId
+        id: props.serviceId
       }
     });
   };

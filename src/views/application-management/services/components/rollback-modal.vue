@@ -121,7 +121,7 @@
         return '';
       }
     },
-    instanceId: {
+    serviceId: {
       type: String,
       default() {
         return '';
@@ -223,7 +223,7 @@
     getRevisionList();
   };
   const handleExecRollback = async () => {
-    if (!props.instanceId) {
+    if (!props.serviceId) {
       await handleRollbackApplication();
     } else {
       await handleRollbackInstance();
@@ -244,7 +244,7 @@
     emit('update:show', false);
   };
   const handleBeforeOpen = () => {
-    formData.serviceID = props.instanceId;
+    formData.serviceID = props.serviceId;
     getRevisionList();
   };
   const handleBeforeClose = () => {

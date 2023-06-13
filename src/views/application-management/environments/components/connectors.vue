@@ -88,8 +88,8 @@
   import { reactive, ref, onMounted, PropType, watchEffect } from 'vue';
   import useCallCommon from '@/hooks/use-call-common';
   import { deleteModal, execSucceed } from '@/utils/monitor';
-  import { ConnectorRowData } from '../../connectors/config/interface';
-  import StatusLabel from '../../connectors/components/status-label.vue';
+  import { ConnectorRowData } from '@/views/operation-hub/connectors/config/interface';
+  import StatusLabel from '@/views/operation-hub/connectors/components/status-label.vue';
 
   const props = defineProps({
     list: {

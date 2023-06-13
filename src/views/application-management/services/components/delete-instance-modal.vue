@@ -72,7 +72,7 @@
         return '';
       }
     },
-    instanceId: {
+    serviceId: {
       type: String,
       default() {
         return '';

@@ -13,7 +13,7 @@ export default function useFetchResource() {
   const { setChunkRequest } = useSetChunkRequest();
   const dataList = ref<InstanceResource[]>([]);
   const loading = ref(false);
-  const instanceId = inject('instanceId', ref(''));
+  const serviceId = inject('serviceId', ref(''));
   const requestCacheList = ref<number[]>([]);
   const helmResourceNeedUpdate = new Set();
   let fetchToken = createAxiosToken();
@@ -46,7 +46,7 @@ export default function useFetchResource() {
   const updateDataList = (data) => {
     let collections = _.filter(
       data.collection || [],
-      (sItem) => sItem?.Resource?.service?.id === instanceId.value
+      (sItem) => sItem?.Resource?.service?.id === serviceId.value
     );
     collections = _.map(collections, (item) => {
       return {
@@ -158,7 +158,7 @@ export default function useFetchResource() {
     dataList.value = setDataList(dataList.value);
   };
   const fetchData = async () => {
-    if (!instanceId.value) return;
+    if (!serviceId.value) return;
     fetchToken?.cancel?.();
     fetchToken = createAxiosToken();
     try {
@@ -166,7 +166,7 @@ export default function useFetchResource() {
       requestCacheList.value.push(1);
       const params = {
         page: -1,
-        serviceID: instanceId.value
+        serviceID: serviceId.value
       };
       const { data } = await queryApplicationResource(params, fetchToken.token);
       let list: any = _.map(data.items, (item) => {
@@ -180,7 +180,7 @@ export default function useFetchResource() {
       });
       list = _.filter(
         list || [],
-        (item) => item?.service?.id === instanceId.value
+        (item) => item?.service?.id === serviceId.value
       );
       list = setDataList(list);
       dataList.value = [].concat(list);
@@ -205,7 +205,7 @@ export default function useFetchResource() {
         fetchToken = createAxiosToken();
         const params = {
           page: -1,
-          serviceID: instanceId.value
+          serviceID: serviceId.value
         };
         const { data } = await queryApplicationResource(
           params,
@@ -213,7 +213,7 @@ export default function useFetchResource() {
         );
         let list: any = _.filter(
           data?.items || [],
-          (item) => item?.instance?.id === instanceId.value
+          (item) => item?.instance?.id === serviceId.value
         );
         list = setDataList(list);
         dataList.value = [].concat(list);
@@ -236,7 +236,7 @@ export default function useFetchResource() {
       setChunkRequest({
         url: `/service-resources`,
         params: {
-          serviceID: instanceId.value,
+          serviceID: serviceId.value,
           ...getPermissionRouteParams()
         },
         handler: updateCallback

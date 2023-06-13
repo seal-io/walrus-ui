@@ -61,8 +61,8 @@ export const queryItemApplication = (params) => {
     }
   });
 };
-// ========instance======
-export const queryApplicationInstances = (params) => {
+// ========service======
+export const queryApplicationServices = (params) => {
   return axios.get(`/services`, {
     params: {
       ...params,
@@ -73,7 +73,7 @@ export const queryApplicationInstances = (params) => {
     }
   });
 };
-export const queryItemApplicationInstances = (params) => {
+export const queryItemApplicationService = (params) => {
   return axios.get(`/services/${params.id}`, {
     params: {
       ...params,
@@ -121,7 +121,7 @@ export const cloneApplicationInstance = (data: {
   );
 };
 
-export const diffInstanceSpec = (params: { serviceID: string }) => {
+export const diffServiceSpec = (params: { serviceID: string }) => {
   return axios.get(`/services/${params.serviceID}/diff-latest`, {
     params: {
       ...params,
@@ -133,7 +133,7 @@ export const diffInstanceSpec = (params: { serviceID: string }) => {
   });
 };
 
-export const queryInstanceResourceGraph = (params: { serviceID: string }) => {
+export const queryServiceResourceGraph = (params: { serviceID: string }) => {
   return axios.get(`/services/${params.serviceID}/graph`, {
     params: {
       ...params,

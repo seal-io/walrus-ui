@@ -140,13 +140,13 @@
     serviceActions
   } from '../../config';
   import useFetchResource from '../hooks/use-fetch-chunk-data';
-  import { queryItemApplicationInstances } from '../../api';
+  import { queryItemApplicationService } from '../../api';
   import serviceInfo from '../service-info.vue';
-  import serviceEdit from '../../pages/service-edit.vue';
+  import serviceEdit from '../../pages/edit.vue';
 
   type Reload = () => void;
   const props = defineProps({
-    instanceId: {
+    serviceId: {
       type: String,
       default() {
         return '';
@@ -217,7 +217,7 @@
       const params = {
         id: route.query.id
       };
-      const { data } = await queryItemApplicationInstances(params);
+      const { data } = await queryItemApplicationService(params);
       currentInfo.value = data;
     } catch (error) {
       console.log(error);
@@ -258,12 +258,12 @@
     }
   };
   const debunceFun = () => {
-    if (!props.instanceId) return;
+    if (!props.serviceId) return;
     fetchData();
     createResourceChunkConnection();
   };
   watch(
-    () => props.instanceId,
+    () => props.serviceId,
     () => {
       debunceFun();
       getServiceItemInfo();

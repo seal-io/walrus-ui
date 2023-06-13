@@ -87,7 +87,7 @@
   const { setChunkRequest } = useSetChunkRequest();
   let axiosInstance = createAxiosToken();
   let chunkRequesSource: any = null;
-  const instanceId = inject('instanceId', ref(''));
+  const serviceId = inject('serviceId', ref(''));
   const loading = ref(false);
   const requestCacheList = ref<number[]>([]);
   const queryParams = reactive({
@@ -103,7 +103,7 @@
       requestCacheList.value.push(1);
       const params = {
         ...queryParams,
-        serviceID: instanceId.value
+        serviceID: serviceId.value
       };
       const { data } = await queryInstanceEndpoints(
         params,
@@ -161,14 +161,14 @@
     });
   };
   watch(
-    () => instanceId.value,
+    () => serviceId.value,
     () => {
       queryParams.page = 1;
       fetchData();
       chunkRequesSource?.cancel?.();
       nextTick(() => {
         chunkRequesSource = setChunkRequest({
-          url: `/services/${instanceId.value}/access-endpoint`,
+          url: `/services/${serviceId.value}/access-endpoint`,
           params: {
             ...getPermissionRouteParams()
           },

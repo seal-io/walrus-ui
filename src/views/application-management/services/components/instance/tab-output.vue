@@ -75,12 +75,12 @@
   import { OutputsRow } from '../../config/interface';
 
   const { setChunkRequest } = useSetChunkRequest();
-  const instanceId = inject('instanceId', ref(''));
+  const serviceId = inject('serviceId', ref(''));
   const dataList = ref<OutputsRow[]>([]);
   let chunkRequesSource: any = null;
   const fetchData = async () => {
     try {
-      const { data } = await queryInstanceOutputs({ id: instanceId.value });
+      const { data } = await queryInstanceOutputs({ id: serviceId.value });
       dataList.value = _.map(data || [], (item) => {
         item.id = `${item.moduleName}/${item.name}`;
         return item;
@@ -127,13 +127,13 @@
     });
   };
   watch(
-    () => instanceId.value,
+    () => serviceId.value,
     () => {
       fetchData();
       chunkRequesSource?.cancel?.();
       nextTick(() => {
         chunkRequesSource = setChunkRequest({
-          url: `/services/${instanceId.value}/output`,
+          url: `/services/${serviceId.value}/output`,
           params: {
             ...getPermissionRouteParams()
           },

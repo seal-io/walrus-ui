@@ -46,7 +46,7 @@
     }
   });
   const { setChunkRequest } = useSetChunkRequest();
-  const instanceId = inject('instanceId', ref(''));
+  const serviceId = inject('serviceId', ref(''));
   const resourceId = ref('');
   const logKey = ref('');
   const content = ref('');
