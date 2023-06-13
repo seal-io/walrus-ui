@@ -1,5 +1,5 @@
 import { Edge, Node, Combo } from '@antv/g6';
-import { InstanceResource } from '@/views/application-management/applications/config/interface';
+import { InstanceResource } from '@/views/application-management/services/config/interface';
 
 export interface INode extends Node {
   order?: number;

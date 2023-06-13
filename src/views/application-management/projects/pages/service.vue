@@ -18,7 +18,7 @@
   import { ref, provide, onMounted, nextTick } from 'vue';
   import BreadWrapper from '@/components/bread-wrapper/index.vue';
   import useCallCommon from '@/hooks/use-call-common';
-  import ServiceDetail from '@/views/application-management/applications/components/instance/index.vue';
+  import ServiceDetail from '@/views/application-management/services/components/instance/index.vue';
   import useProjectBreadcrumbData from '../hooks/use-project-breadcrumb-data';
 
   const { route, router } = useCallCommon();
@@ -35,8 +35,8 @@
     environmentTemplate,
     serviceTemplate
   ];
-  const id = route.query.id || '';
-  const serviceId = ref(id as string);
+  const id = route.query.id as string;
+  const serviceId = ref(id);
 
   provide('instanceId', serviceId);
 

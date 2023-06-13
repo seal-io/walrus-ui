@@ -13,7 +13,7 @@ export const localeMap = {
   'zh-CN': 'zh;q=0.9,en;q=0.8'
 };
 
-// those apis has not version prefix. e.g. /v1/applications/
+// those apis has not version prefix. /v1
 export const authApiList: string[] = [
   '/account/login',
   '/account/info',

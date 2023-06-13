@@ -12,7 +12,7 @@ import useCallCommon from '@/hooks/use-call-common';
 import {
   queryApplications,
   querySecrets
-} from '@/views/application-management/applications/api';
+} from '@/views/application-management/services/api';
 
 export default function useTemplatesData() {
   const { route } = useCallCommon();

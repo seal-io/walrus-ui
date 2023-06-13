@@ -401,7 +401,7 @@
       }
     },
     scope: {
-      type: String,
+      type: String as PropType<'global' | 'project'>,
       default() {
         return 'global';
       }
@@ -433,7 +433,14 @@
   });
   const dataList = ref<ConnectorRowData[]>([]);
 
-  const { updateChunkedList } = useUpdateChunkedList(dataList);
+  const { updateChunkedList } = useUpdateChunkedList(dataList, {
+    filterFun(item) {
+      if (props.scope === 'global') {
+        return !item.project;
+      }
+      return get(item, 'project.id') === route.params?.projectId;
+    }
+  });
   const getCostStatus = (conditions) => {
     const d = find(conditions, (item) => {
       return item.type === 'CostSynced';
@@ -648,7 +655,9 @@
       console.log(error);
     }
   };
-
+  onActivated(() => {
+    // fetchData();
+  });
   onMounted(() => {
     fetchData();
     nextTick(() => {

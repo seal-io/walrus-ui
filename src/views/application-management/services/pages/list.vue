@@ -218,16 +218,6 @@
       @change="handlePageChange"
       @page-size-change="handlePageSizeChange"
     />
-    <CreateService
-      v-model:show="showEditModal"
-      v-model:action="moduleAction"
-      :data-info="serviceInfo"
-      :templates="templateList"
-      :modules="serviceDataList"
-      :all-module-versions="allTemplateVersions"
-      @reset="handleResetServiceInfo"
-      @save="handleSaveService"
-    ></CreateService>
     <cloneInstanceModal
       v-model:show="showCloneModal"
       :service-i-d="_.get(cloneInstance, 'id')"
@@ -274,30 +264,20 @@
   import useRowSelect from '@/hooks/use-row-select';
   import FilterBox from '@/components/filter-box/index.vue';
   import StatusLabel from '@/views/operation-hub/connectors/components/status-label.vue';
-  import localStore from '@/utils/localStore';
   import { useUserStore } from '@/store';
-  import { queryProjects } from '../../projects/api';
   import { AppRowData } from '../config/interface';
-  import {
-    statusMap,
-    websocketEventType,
-    setInstanceStatus,
-    instanceActions
-  } from '../config';
+  import { websocketEventType, instanceActions } from '../config';
   import {
     queryApplications,
     deleteApplication,
     deleteApplicationInstance
   } from '../api';
-  import InstanceStatus from '../components/instance-status.vue';
-  import CreateService from '../components/app-info/edit-module.vue';
   import useTemplatesData from '../hooks/use-templates-data';
   import useRollbackRevision from '../hooks/use-rollback-revision';
   import cloneInstanceModal from '../components/clone-instance-modal.vue';
   import rollbackModal from '../components/rollback-modal.vue';
   import deleteInstanceModal from '../components/delete-instance-modal.vue';
 
-  const HOT_PROJECT_ID = 'HOT_PROJECT_ID';
   const { proxy } = getCurrentInstance();
   const userStore = useUserStore();
   const {

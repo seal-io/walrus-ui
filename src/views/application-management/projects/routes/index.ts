@@ -110,7 +110,7 @@ export default [
   {
     path: 'project/:projectId/environment/:environmentId/service/:action',
     name: PROJECT.ServiceEdit,
-    component: () => import('../../applications/pages/service-edit.vue'),
+    component: () => import('../../services/pages/service-edit.vue'),
     meta: {
       hideInMenu: true,
       hideMenu: false,

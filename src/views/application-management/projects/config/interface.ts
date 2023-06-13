@@ -1,4 +1,4 @@
-import { AppRowData } from '@/views/application-management/applications/config/interface';
+import { AppRowData } from '@/views/application-management/services/config/interface';
 
 export interface ProjectRowData {
   name: string;

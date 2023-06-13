@@ -150,7 +150,7 @@
   import { ref, computed, nextTick, watch } from 'vue';
   import { schemaType } from '@/components/form-create/config/interface';
   import { json2Yaml } from '@/components/form-create/config/yaml-parse';
-  import LabelsList from './app-info/labels-list.vue';
+  import LabelsList from './labels-list.vue';
   import useServiceData from '../hooks/use-service-data';
 
   const {

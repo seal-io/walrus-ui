@@ -283,7 +283,7 @@
         }
         tabBarStore.deleteTag(0, {
           title: '',
-          name: 'EnvironmentList',
+          name: PROJECT.Detail,
           fullPath: ''
         });
         router.back();

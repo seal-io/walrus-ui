@@ -338,7 +338,6 @@
   import { useTabBarStore } from '@/store';
   import { getListLabel } from '@/utils/func';
   import usePageAction from '@/hooks/use-page-action';
-  import moduleWrapper from '@/views/application-management/applications/components/module-wrapper.vue';
   import ConditionFilter from '../components/condition-filter.vue';
   import { costShareMode, timeRangeOptions, DateShortCuts } from '../config';
   import { PerspectiveRowData, FieldsOptions } from '../config/interface';

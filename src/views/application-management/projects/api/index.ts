@@ -45,14 +45,6 @@ export const queryItemProject = (params) => {
   });
 };
 
-export const queryApplicationsInProject = (params) => {
-  return axios.get(`/projects/${params.id}/applications`, {
-    params,
-    paramsSerializer: (obj) => {
-      return qs.stringify(obj);
-    }
-  });
-};
 export const querySubjectRoles = (params: { projectID: string }) => {
   return axios.get<ListResult<ProjectRolesRowData>>(`/subject-roles`, {
     params,

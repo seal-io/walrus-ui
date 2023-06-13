@@ -227,7 +227,6 @@
   } from 'lodash';
   import { ref, reactive, onMounted, computed, defineExpose } from 'vue';
   import GroupTitle from '@/components/group-title/index.vue';
-  import readBlob from '@/utils/readBlob';
   import { beforeLeaveCallback } from '@/hooks/save-before-leave';
   import { onBeforeRouteLeave } from 'vue-router';
   import usePageAction from '@/hooks/use-page-action';
@@ -236,8 +235,7 @@
   import useCallCommon from '@/hooks/use-call-common';
   import DescriptionTable from '@/components/description-table/index.vue';
   import ProviderIcon from '@/components/provider-icon/index.vue';
-  import { variableTypeList } from '@/views/application-management/applications/config';
-  import labelsList from '@/views/application-management/applications/components/app-info/labels-list.vue';
+  import { variableTypeList } from '@/views/application-management/services/config';
   import useGetBreadState from '@/views/application-management/projects/hooks/use-get-breadstate';
   import { ConnectorFormData, CustomAttrbute } from '../config/interface';
   import { operationRootBread } from '../config';

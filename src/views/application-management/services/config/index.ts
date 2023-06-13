@@ -291,6 +291,9 @@ export const serviceActions: MoreAction[] = [
     icon: 'iconFont',
     handler: '',
     status: 'normal',
+    filterFun(currentInfo) {
+      return !get(currentInfo, 'status.transitioning');
+    },
     props: {
       type: 'icon-upgrade'
     }
