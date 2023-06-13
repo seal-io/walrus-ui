@@ -50,7 +50,7 @@
                 actions: ['POST']
               }"
               type="primary"
-              @click="handleCreateProject"
+              @click="handleCreate"
               >{{ $t('applications.projects.create') }}</a-button
             >
             <a-button
@@ -91,7 +91,7 @@
                   v-if="
                     userStore.hasProjectResourceActions({
                       projectID: record.id,
-                      resource: Resources.Applications,
+                      resource: Resources.Projects,
                       actions: [Actions.GET]
                     })
                   "
@@ -143,13 +143,11 @@
                 <a-space :size="20">
                   <a-tooltip :content="$t('common.button.edit')">
                     <a-link
-                      v-if="
-                        userStore.hasProjectResourceActions({
-                          projectID: record.id,
-                          resource: Resources.Projects,
-                          actions: [Actions.PUT]
-                        })
-                      "
+                      v-permission-app="{
+                        projectID: record.id,
+                        resource: Resources.Projects,
+                        actions: [Actions.PUT]
+                      }"
                       type="text"
                       size="small"
                       @click="handleEditProject(record)"
@@ -159,13 +157,11 @@
                   </a-tooltip>
                   <a-tooltip :content="$t('common.button.authorize')">
                     <a-link
-                      v-if="
-                        userStore.hasProjectResourceActions({
-                          projectID: record.id,
-                          resource: Resources.SubjectRoles,
-                          actions: ['POST']
-                        })
-                      "
+                      v-permission-app="{
+                        projectID: record.id,
+                        resource: Resources.SubjectRoles,
+                        actions: [Actions.POST]
+                      }"
                       type="text"
                       size="small"
                       @click="handleAuthorize(record)"
@@ -253,7 +249,7 @@
     page: 1,
     perPage: 10
   });
-  const handleCreateProject = () => {
+  const handleCreate = () => {
     action.value = 'create';
     projectInfo.value = {};
     setTimeout(() => {
@@ -311,7 +307,6 @@
   };
   const handleSortChange = (dataIndex: string, direction: string) => {
     setSortDirection(dataIndex, direction);
-    console.log('dataIndex===', dataIndex, direction);
     fetchData();
   };
   const handleSearch = () => {

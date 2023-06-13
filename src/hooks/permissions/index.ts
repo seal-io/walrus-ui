@@ -2,14 +2,21 @@ import { RouteLocationNormalized, RouteRecordRaw } from 'vue-router';
 import { useUserStore } from '@/store';
 import _, { get } from 'lodash';
 
-export const checkResourcePermission = (permission) => {
+export const checkResourcePermission = (permission, to?) => {
   const userStore = useUserStore();
+
+  const currentVisitProject = to?.params?.projectId || userStore.currentProject;
+
   // type always set in the detail page that projects relate to
   const { resource, actions, type } = permission || {};
   let resourcePath = 'roles';
-  if (type === 'projectRoles' && userStore.isSystemAdmin()) return true;
-  if (type === 'projectRoles') {
-    resourcePath = `projectRoles.${userStore.currentProject}.policies`;
+  if (
+    type === userStore.permissionsKey.projectRoles &&
+    userStore.isSystemAdmin()
+  )
+    return true;
+  if (type === userStore.permissionsKey.projectRoles) {
+    resourcePath = `${userStore.permissionsKey.projectRoles}.${currentVisitProject}.policies`;
   }
   const permissionActions =
     _.get(userStore, `permissions.${resourcePath}.${resource}`) || [];
@@ -19,35 +26,20 @@ export const checkResourcePermission = (permission) => {
   return _.every(actions, (ac) => _.includes(permissionActions, ac));
 };
 
-export default function usePermission() {
-  const userStore = useUserStore();
+export default function usePermission(to?) {
+  // const userStore = useUserStore();
   type routeRaw = RouteLocationNormalized | RouteRecordRaw;
   return {
     accessRouter(route: RouteLocationNormalized | RouteRecordRaw) {
       return (
         !route.meta?.requiresAuth ||
-        checkResourcePermission(route.meta?.permission || {})
+        checkResourcePermission(route.meta?.permission || {}, to)
       );
     },
     // setPermissionRoutes(routes:RouteLocationNormalized) {
     //   const permissions = userStore.permissions
     // },
-    findFirstPermissionRoute(_routers: any, role = 'admin') {
-      const cloneRouters = [..._routers];
-      while (cloneRouters.length) {
-        const firstElement = cloneRouters.shift();
-        if (
-          firstElement?.meta?.roles?.find((el: string[]) => {
-            return el.includes('*') || el.includes(role);
-          })
-        )
-          return { name: firstElement.name };
-        if (firstElement?.children) {
-          cloneRouters.push(...firstElement.children);
-        }
-      }
-      return null;
-    },
+
     getFirstRouteName(appRoutes: routeRaw[]) {
       const firstChildren = get(appRoutes, '0.children');
       const firstName = get(appRoutes, '0.name');

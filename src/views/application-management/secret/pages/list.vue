@@ -39,7 +39,7 @@
               userStore.hasProjectResourceActions({
                 projectID: queryParams.projectID,
                 resource: Resources.Secrets,
-                actions: ['POST']
+                actions: [Actions.POST]
               })
             "
             type="primary"
@@ -51,7 +51,7 @@
               userStore.hasProjectResourceActions({
                 projectID: queryParams.projectID,
                 resource: Resources.Secrets,
-                actions: ['DELETE']
+                actions: [Actions.DELETE]
               })
             "
             type="primary"
@@ -83,18 +83,6 @@
             :title="$t('applications.applications.secret')"
           >
           </a-table-column>
-          <!-- <a-table-column
-            ellipsis
-            tooltip
-            align="center"
-            :cell-style="{ minWidth: '40px' }"
-            data-index="scope"
-            :title="$t('applications.projects.table.name')"
-          >
-            <template #cell="{ record }">
-              <span>{{ setSecretScope(get(record, 'project.id')) }}</span>
-            </template>
-          </a-table-column> -->
           <a-table-column
             ellipsis
             tooltip
@@ -124,7 +112,16 @@
           >
             <template #cell="{ record }">
               <a-space :size="10">
-                <a-tooltip :content="$t('common.button.edit')">
+                <a-tooltip
+                  v-if="
+                    userStore.hasProjectResourceActions({
+                      projectID: queryParams.projectID,
+                      resource: Resources.Secrets,
+                      actions: [Actions.PUT]
+                    })
+                  "
+                  :content="$t('common.button.edit')"
+                >
                   <a-link
                     type="text"
                     size="small"
@@ -172,7 +169,7 @@
 </template>
 
 <script lang="ts" setup>
-  import { Resources } from '@/permissions/config';
+  import { Resources, Actions } from '@/permissions/config';
   import { useUserStore } from '@/store';
   import dayjs from 'dayjs';
   import { cloneDeep, find, get, map, pickBy } from 'lodash';
@@ -219,37 +216,6 @@
     }
     return t('applications.secret.edit');
   });
-  const setSecretScope = (val) => {
-    const itemData = find(projectList.value, (item) => item.value === val);
-    return itemData?.label || '';
-  };
-  const getProjectList = async () => {
-    const hotSecretId = await localStore.getValue(HOT_SECRET_ID);
-    try {
-      const params = {
-        page: -1
-      };
-      const { data } = await queryProjects(params);
-      projectList.value = map(data.items || [], (item) => {
-        return {
-          label: item.name,
-          value: item.id
-        };
-      });
-      const hotItem = find(
-        projectList.value,
-        (item) => item.value === hotSecretId
-      );
-      if (hotItem) {
-        queryParams.projectID = hotSecretId;
-      } else {
-        queryParams.projectID = get(projectList.value, '0.value') || '';
-      }
-    } catch (error) {
-      projectList.value = [];
-      console.log(error);
-    }
-  };
   const fetchData = async () => {
     if (!queryParams.projectID) return;
     try {
@@ -306,9 +272,6 @@
     setTimeout(() => {
       showModal.value = true;
     }, 100);
-    // router.push({
-    //   name: 'SecretDetail'
-    // });
   };
   const handleDeleteConfirm = async () => {
     try {
@@ -342,10 +305,6 @@
     setTimeout(() => {
       showModal.value = true;
     }, 100);
-    // router.push({
-    //   name: 'SecretDetail',
-    //   query: { id: row.id }
-    // });
   };
 
   const handleDelete = async () => {

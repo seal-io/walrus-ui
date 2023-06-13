@@ -19,7 +19,7 @@
         :show-edit="
           pageAction === 'view' &&
           userStore.hasRolesActionsPermission({
-            resource: Resources.Modules,
+            resource: Resources.Templates,
             actions: [Actions.PUT]
           })
         "
@@ -145,7 +145,7 @@
           id &&
           pageAction === 'view' &&
           userStore.hasRolesActionsPermission({
-            resource: Resources.ModuleVersions,
+            resource: Resources.TemplateVersions,
             actions: [Actions.GET]
           })
         "

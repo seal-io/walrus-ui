@@ -12,7 +12,7 @@ export default [
       locale: 'menu.operatorHub',
       requiresAuth: true,
       permission: {
-        resource: Resources.Modules,
+        resource: Resources.Templates,
         actions: ['GET']
       },
       icon: 'icon-apps',

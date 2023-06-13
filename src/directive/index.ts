@@ -5,6 +5,6 @@ import project from './project';
 export default {
   install(Vue: App) {
     Vue.directive('permission', permission);
-    Vue.directive('permissionProject', project);
+    Vue.directive('permissionApp', project);
   }
 };

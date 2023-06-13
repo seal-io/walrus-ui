@@ -2,24 +2,17 @@ import { Resources, Group, ResourcesOrder } from './index';
 
 export default [
   {
-    resource: Resources.ApplicationInstances,
-    title: 'permission.resource.project.appInstance',
-    group: Group.AppManagement,
-    order: ResourcesOrder.ApplicationInstances,
-    actions: ['GET', 'POST', 'DELETE', 'PUT']
-  },
-  {
-    resource: Resources.ApplicationResources,
+    resource: Resources.ServiceResources,
     title: 'permission.resource.project.appResource',
     group: Group.AppManagement,
-    order: ResourcesOrder.ApplicationResources,
+    order: ResourcesOrder.ServiceResources,
     actions: ['GET']
   },
   {
-    resource: Resources.ApplicationRevisions,
+    resource: Resources.ServiceRevisions,
     title: 'permission.resource.project.appRevision',
     group: Group.AppManagement,
-    order: ResourcesOrder.ApplicationRevisions,
+    order: ResourcesOrder.ServiceRevisions,
     actions: ['GET', 'POST', 'DELETE', 'PUT']
   },
   {
@@ -37,10 +30,10 @@ export default [
     actions: ['GET', 'POST', 'DELETE', 'PUT']
   },
   {
-    resource: Resources.Applications,
+    resource: Resources.Services,
     title: 'permission.resource.project.appList',
     group: Group.AppManagement,
-    order: ResourcesOrder.Applications,
+    order: ResourcesOrder.Services,
     actions: ['GET', 'POST', 'DELETE', 'PUT']
   },
   {

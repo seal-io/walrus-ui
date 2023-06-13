@@ -1,7 +1,10 @@
 import { get } from 'lodash';
 import dayjs from 'dayjs';
 import { MoreAction } from '@/views/config/interface';
+import { useUserStore } from '@/store';
+import { Resources, Actions } from '@/permissions/config';
 
+const userStore = useUserStore();
 export const instanceTabs = [
   // { label: '配置定义', value: 'configuration', com: 'tabConfiguration' },
   {
@@ -292,7 +295,14 @@ export const serviceActions: MoreAction[] = [
     handler: '',
     status: 'normal',
     filterFun(currentInfo) {
-      return !get(currentInfo, 'status.transitioning');
+      return (
+        !get(currentInfo, 'status.transitioning') &&
+        userStore.hasProjectResourceActions({
+          resource: Resources.Services,
+          projectID: get(currentInfo, 'project.id'),
+          actions: [Actions.PUT]
+        })
+      );
     },
     props: {
       type: 'icon-upgrade'

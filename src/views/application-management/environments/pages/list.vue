@@ -43,11 +43,11 @@
               userStore.hasProjectResourceActions({
                 projectID: queryParams.projectID,
                 resource: Resources.Environments,
-                actions: ['POST']
+                actions: [Actions.POST]
               })
             "
             type="primary"
-            @click="handleCreateProject"
+            @click="handleCreate"
             >{{ $t('operation.environments.create') }}</a-button
           >
           <a-button
@@ -55,7 +55,7 @@
               userStore.hasProjectResourceActions({
                 projectID: queryParams.projectID,
                 resource: Resources.Environments,
-                actions: ['DELETE']
+                actions: [Actions.DELETE]
               })
             "
             type="primary"
@@ -144,7 +144,7 @@
                     userStore.hasProjectResourceActions({
                       projectID: queryParams.projectID,
                       resource: Resources.Environments,
-                      actions: ['PUT']
+                      actions: [Actions.PUT]
                     })
                   "
                   :content="$t('common.button.edit')"
@@ -153,16 +153,7 @@
                     <template #icon><icon-edit class="size-14" /></template>
                   </a-link>
                 </a-tooltip>
-                <a-tooltip
-                  v-if="
-                    userStore.hasProjectResourceActions({
-                      projectID: queryParams.projectID,
-                      resource: Resources.Environments,
-                      actions: ['GET']
-                    })
-                  "
-                  :content="$t('common.button.detail')"
-                >
+                <a-tooltip :content="$t('common.button.detail')">
                   <a-link
                     type="text"
                     size="small"
@@ -203,7 +194,7 @@
   import dayjs from 'dayjs';
   import { PROJECT } from '@/router/config';
   import { useUserStore } from '@/store';
-  import { Resources } from '@/permissions/config';
+  import { Resources, Actions } from '@/permissions/config';
   import { map, pickBy, remove } from 'lodash';
   import { ref, reactive, onActivated } from 'vue';
   import useCallCommon from '@/hooks/use-call-common';
@@ -236,12 +227,13 @@
     projectID: route.params.projectId
   });
 
-  const handleCreateProject = () => {
+  const handleCreate = () => {
     // action.value = 'create';
     // showModal.value = true;
     router.push({
-      name: PROJECT.EnvDetail,
+      name: PROJECT.EnvEdit,
       params: {
+        projectId: route.params.projectId,
         action: 'edit'
       }
     });

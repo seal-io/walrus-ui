@@ -64,10 +64,7 @@ const useUserStore = defineStore('user', {
         resolve(this.role);
       });
     },
-    // Set user's information
-    // setInfo(partial: Partial<UserState>) {
-    //   this.$patch(partial);
-    // },
+
     setInfo(partial: any) {
       this.$patch(partial);
     },

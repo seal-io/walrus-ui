@@ -29,8 +29,8 @@
           v-if="
             userStore.hasProjectResourceActions({
               projectID: queryParams.projectID,
-              resource: Resources.Applications,
-              actions: ['POST']
+              resource: Resources.Services,
+              actions: [Actions.POST]
             })
           "
           type="primary"
@@ -41,8 +41,8 @@
           v-if="
             userStore.hasProjectResourceActions({
               projectID: queryParams.projectID,
-              resource: Resources.Applications,
-              actions: ['DELETE']
+              resource: Resources.Services,
+              actions: [Actions.DELETE]
             })
           "
           type="primary"
@@ -77,8 +77,8 @@
               v-if="
                 userStore.hasProjectResourceActions({
                   projectID: queryParams.projectID,
-                  resource: Resources.Applications,
-                  actions: ['GET']
+                  resource: Resources.Services,
+                  actions: [Actions.GET]
                 })
               "
               @click.stop="handleClickViewDetail(record)"
@@ -141,22 +141,42 @@
         >
           <template #cell="{ record }">
             <a-space>
-              <span
-                v-for="item in instanceActions"
-                :key="item.value"
-                :value="item.value"
+              <template
+                v-if="
+                  userStore.hasProjectResourceActions({
+                    projectID: queryParams.projectID,
+                    resource: Resources.Services,
+                    actions: [Actions.PUT]
+                  })
+                "
               >
-                <a-tooltip :content="$t(item.label)">
-                  <a-link @click="handleClickAction(item, record)">
-                    <component
-                      :is="item.icon"
-                      v-bind="item.props"
-                      style="margin-right: 8px"
-                    ></component>
-                  </a-link>
-                </a-tooltip>
-              </span>
-              <a-tooltip :content="$t('common.button.delete')">
+                <span
+                  v-for="item in instanceActions"
+                  :key="item.value"
+                  :value="item.value"
+                >
+                  <a-tooltip :content="$t(item.label)">
+                    <a-link @click="handleClickAction(item, record)">
+                      <component
+                        :is="item.icon"
+                        v-bind="item.props"
+                        style="margin-right: 8px"
+                      ></component>
+                    </a-link>
+                  </a-tooltip>
+                </span>
+              </template>
+
+              <a-tooltip
+                v-if="
+                  userStore.hasProjectResourceActions({
+                    projectID: queryParams.projectID,
+                    resource: Resources.Services,
+                    actions: [Actions.PUT]
+                  })
+                "
+                :content="$t('common.button.delete')"
+              >
                 <a-link status="danger" @click="handleDelete(record)">
                   <icon-delete></icon-delete>
                 </a-link>
@@ -172,7 +192,7 @@
                     v-if="
                       userStore.hasProjectResourceActions({
                         projectID: queryParams.projectID,
-                        resource: Resources.Applications,
+                        resource: Resources.Services,
                         actions: ['GET', 'POST']
                       })
                     "
@@ -245,7 +265,7 @@
 
 <script lang="ts" setup>
   import { PROJECT } from '@/router/config';
-  import { Resources } from '@/permissions/config';
+  import { Resources, Actions } from '@/permissions/config';
   import _, { get, pickBy, filter } from 'lodash';
   import dayjs from 'dayjs';
   import {
@@ -504,7 +524,7 @@
       });
       return;
     }
-    // const collections = data?.collection || [];
+
     // UPDATE
     _.each(collections, (item) => {
       const updateIndex = _.findIndex(
@@ -531,7 +551,8 @@
       setChunkRequest({
         url: `/services`,
         params: {
-          projectID: queryParams.projectID
+          projectID: queryParams.projectID,
+          environmentID: queryParams.environmentID
         },
         handler: updateHandler
       });

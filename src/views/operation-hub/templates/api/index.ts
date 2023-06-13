@@ -8,7 +8,7 @@ export interface QueryType extends Pagination {
   sort?: string[];
   _group?: string[];
 }
-
+export const TemplateAPI = '/templates';
 export interface ResultType {
   filters: unknown;
   items: TemplateRowData[];

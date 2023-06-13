@@ -20,20 +20,8 @@ export default function setupPermissionGuard(router: Router) {
     // =======no permission check in frontend=====
 
     const userStore = useUserStore();
-    const Permission = usePermission();
-    // const settings = await userStore.getUserSetting()
-    async function crossroads() {
-      if (Permission.accessRouter(to)) next();
-      else {
-        const destination = Permission.findFirstPermissionRoute(
-          appRoutes,
-          userStore.role
-        ) || {
-          name: 'notFound'
-        };
-        next(destination);
-      }
-    }
+    const Permission = usePermission(to);
+
     // when forbidden to use password-free login from ui only need userStore.name && userStore?.userSetting?.FirstLogin?.value
     if (
       (userStore.name &&
