@@ -87,6 +87,7 @@
 </template>
 
 <script lang="ts" setup>
+  import { OPERATIONHUB } from '@/router/config';
   import { PropType } from 'vue';
   import { toLower, get } from 'lodash';
   import { useRouter } from 'vue-router';
@@ -94,7 +95,7 @@
   import StatusLabel from '../../connectors/components/status-label.vue';
   import { TemplateRowData } from '../config/interface';
 
-  import { refreshModules } from '../api';
+  import { refreshTemplate } from '../api';
 
   const props = defineProps({
     provider: {
@@ -127,7 +128,7 @@
   const router = useRouter();
   const handleEditTemplate = () => {
     router.push({
-      name: 'TemplateDetail',
+      name: OPERATIONHUB.TemplateDetail,
       params: { action: 'edit' },
       query: {
         id: props.dataInfo.id
@@ -136,7 +137,7 @@
   };
   const handleView = () => {
     router.push({
-      name: 'TemplateDetail',
+      name: OPERATIONHUB.TemplateDetail,
       params: { action: 'view' },
       query: {
         id: props.dataInfo.id
@@ -145,7 +146,7 @@
   };
   const handleRefresh = async () => {
     try {
-      await refreshModules({ id: props.dataInfo.id });
+      await refreshTemplate({ id: props.dataInfo.id });
       execSucceed();
     } catch (error) {
       console.log(error);

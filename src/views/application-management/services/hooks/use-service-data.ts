@@ -10,7 +10,7 @@ import {
 import useCallCommon from '@/hooks/use-call-common';
 import {
   TemplateRowData,
-  ModuleVersionData
+  TemplateVersionData
 } from '@/views/operation-hub/templates/config/interface';
 import usePageAction from '@/hooks/use-page-action';
 import useProjectBreadcrumbData from '../../projects/hooks/use-project-breadcrumb-data';
@@ -20,7 +20,7 @@ import useTemplatesData from './use-templates-data';
 
 export default function useServiceData(props?) {
   type refItem = Element | ComponentPublicInstance | null;
-  interface ModuleVersion extends ModuleVersionData {
+  interface TemplateVersion extends TemplateVersionData {
     label: string;
     value: string;
   }
@@ -37,12 +37,12 @@ export default function useServiceData(props?) {
   const defaultGroupKey = '_default_default_';
   const { route, router, t } = useCallCommon();
   let refMap: Record<string, refItem> = {};
-  const moduleInfo = ref<any>({});
+  const templateInfo = ref<any>({});
   const serviceInfo = ref<any>({});
   const variablesGroup = ref<any>({});
   const variablesGroupForm = ref<any>({});
-  const templateVersionList = ref<ModuleVersion[]>([]);
-  const moduleVersionFormCache = ref({});
+  const templateVersionList = ref<TemplateVersion[]>([]);
+  const templateVersionFormCache = ref({});
 
   const id = route.query.id as string;
   const formData = reactive({
@@ -86,7 +86,7 @@ export default function useServiceData(props?) {
   const getInitialValue = (item, sourceData, action) => {
     let initialValue = item.default;
     if (
-      _.get(moduleVersionFormCache.value, formData.template.version) ||
+      _.get(templateVersionFormCache.value, formData.template.version) ||
       action === 'edit'
     ) {
       initialValue = _.get(sourceData, `attributes.${item.name}`);
@@ -101,12 +101,12 @@ export default function useServiceData(props?) {
     const sourceData = {
       attributes: {
         ..._.cloneDeep(_.get(serviceInfo.value, 'attributes')),
-        ..._.get(moduleVersionFormCache.value, formData.template.version)
+        ..._.get(templateVersionFormCache.value, formData.template.version)
       }
     };
     console.log('sourceData===', sourceData);
     const variablesList = _.filter(
-      _.get(moduleInfo.value, 'variables'),
+      _.get(templateInfo.value, 'variables'),
       (v) => !v.hidden
     );
     _.each(variablesList, (item) => {
@@ -151,7 +151,7 @@ export default function useServiceData(props?) {
   };
 
   //  change module ...
-  const getModuleSchemaById = () => {
+  const getTemplateSchemaById = () => {
     const moduleTemplate = _.find(
       templateVersionList.value,
       (item) => item.template.id === formData.template.id
@@ -159,14 +159,14 @@ export default function useServiceData(props?) {
     return moduleTemplate;
   };
   // change version ...
-  const getModuleSchemaByVersion = () => {
+  const getTemplateSchemaByVersion = () => {
     const moduleTemplate = _.find(
       templateVersionList.value,
       (item) => item.value === formData.template.version
     );
     return moduleTemplate;
   };
-  const getModuleVersionList = async () => {
+  const getTemplateVersionList = async () => {
     try {
       const list = _.filter(
         allTemplateVersions.value,
@@ -194,18 +194,18 @@ export default function useServiceData(props?) {
       formData.template.id = webservice
         ? webservice.id
         : _.get(templateList.value, '0.id') || '';
-      await getModuleVersionList();
-      const moduleTemplate = getModuleSchemaById();
+      await getTemplateVersionList();
+      const moduleTemplate = getTemplateSchemaById();
       formData.template.version = _.get(moduleTemplate, 'version') || '';
-      moduleInfo.value = _.cloneDeep(_.get(moduleTemplate, 'schema')) || {};
+      templateInfo.value = _.cloneDeep(_.get(moduleTemplate, 'schema')) || {};
     } else {
       _.assignIn(formData, serviceInfo.value);
       // 1. get the template meta data 2.set the default value
-      await getModuleVersionList();
-      const moduleTemplate = getModuleSchemaByVersion();
-      moduleInfo.value = _.cloneDeep(_.get(moduleTemplate, 'schema'));
+      await getTemplateVersionList();
+      const moduleTemplate = getTemplateSchemaByVersion();
+      templateInfo.value = _.cloneDeep(_.get(moduleTemplate, 'schema'));
       const variablesList = _.filter(
-        _.get(moduleInfo.value, 'variables'),
+        _.get(templateInfo.value, 'variables'),
         (v) => !v.hidden
       );
       _.each(variablesList || [], (item) => {
@@ -226,20 +226,20 @@ export default function useServiceData(props?) {
     id,
     init,
     generateVariablesGroup,
-    getModuleSchemaById,
-    getModuleSchemaByVersion,
-    getModuleVersionList,
+    getTemplateSchemaById,
+    getTemplateSchemaByVersion,
+    getTemplateVersionList,
     formData,
     refMap,
     pageAction,
     handleEdit,
     defaultGroupKey,
-    moduleInfo,
+    templateInfo,
     serviceInfo,
     variablesGroup,
     variablesGroupForm,
     templateVersionList,
-    moduleVersionFormCache,
+    templateVersionFormCache,
     serviceDataList,
     templateList,
     completeData,

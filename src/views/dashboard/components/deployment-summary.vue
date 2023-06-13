@@ -192,7 +192,7 @@
         perPage: 10,
         sort: ['-createTime']
       };
-      const { data } = await queryLatestDeployments(params);
+      const { data } = await queryLatestDeployments();
 
       appList.value = data.items || [];
     } catch (error) {

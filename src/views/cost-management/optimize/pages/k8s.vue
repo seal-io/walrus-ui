@@ -206,12 +206,7 @@
     queryParams.perPage = pageSize;
     handleFilter();
   };
-  const handleView = (row) => {
-    router.push({
-      name: 'CostOptimizeClusterDetail',
-      query: row.id
-    });
-  };
+  const handleView = (row) => {};
   onMounted(() => {
     fetchData();
   });

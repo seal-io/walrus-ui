@@ -176,6 +176,7 @@
 </template>
 
 <script lang="ts" setup>
+  import { COSTMANAGEMENT } from '@/router/config';
   import { Resources } from '@/permissions/config';
   import { useUserStore } from '@/store';
   import { map, find, toLower, pickBy, includes } from 'lodash';
@@ -272,7 +273,7 @@
   const handleCreate = () => {
     // showDrawer.value = true;
     router.push({
-      name: 'CostPerspectiveEdit',
+      name: COSTMANAGEMENT.Edit,
       params: {
         action: 'edit'
       }
@@ -300,7 +301,7 @@
   };
   const handleEdit = (row) => {
     router.push({
-      name: 'CostPerspectiveEdit',
+      name: COSTMANAGEMENT.Edit,
       params: {
         action: 'edit'
       },
@@ -311,7 +312,7 @@
   };
   const handleViewPerspective = (row) => {
     router.push({
-      name: 'CostPerspectiveEdit',
+      name: COSTMANAGEMENT.Edit,
       params: {
         action: 'view'
       },
@@ -333,7 +334,7 @@
     //   routeName = 'costAnalyseCustom';
     // }
     router.push({
-      name: 'CostPerspective',
+      name: COSTMANAGEMENT.Main,
       query: {
         id: row.id,
         page: row.builtin ? toLower(row.name) : VIEW_MAP.custom

@@ -1,10 +1,11 @@
 import _ from 'lodash';
 import { ref } from 'vue';
+import { PROJECT } from '@/router/config';
 import useCallCommon from '@/hooks/use-call-common';
 import { useProjectStore } from '@/store';
 import { queryProjects } from '@/views/application-management/projects/api';
 import { queryEnvironments } from '@/views/application-management/environments/api';
-import { queryApplications } from '@/views/application-management/services/api';
+import { queryServices } from '@/views/application-management/services/api';
 import { BreadcrumbOptions } from '@/views/config/interface';
 import localStore from '@/utils/localStore';
 import { USER_DEFAULT_PROJECT } from '@/views/config';
@@ -27,7 +28,7 @@ export default function useProjectData() {
     type: 'menu.applicationManagement.project',
     level: pageLevelMap.Project,
     wrapperId: 'projectWrapper',
-    route: 'ProjectDetail',
+    route: PROJECT.Detail,
     visible: false,
     options: []
   };
@@ -39,7 +40,7 @@ export default function useProjectData() {
     type: 'menu.operatorHub.evniroment',
     level: pageLevelMap.Environment,
     wrapperId: 'envWrapper',
-    route: 'ProjectEnvDetail',
+    route: PROJECT.EnvDetail,
     visible: false,
     options: []
   };
@@ -51,7 +52,7 @@ export default function useProjectData() {
     type: 'menu.applicationManagement.serivce',
     level: pageLevelMap.Service,
     wrapperId: 'serviceWrapper',
-    route: 'ProjectServiceDetail',
+    route: PROJECT.ServiceDetail,
     visible: false,
     options: []
   };
@@ -95,7 +96,7 @@ export default function useProjectData() {
         projectID: route.params.projectId as string,
         environmentID: route.params.environmentId as string
       };
-      const { data } = await queryApplications(params);
+      const { data } = await queryServices(params);
       serviceList = data.items || [];
     } catch (error) {
       serviceList = [];
@@ -122,7 +123,7 @@ export default function useProjectData() {
       options: _.cloneDeep(list),
       onSetting() {
         router.replace({
-          name: 'ProjectsList'
+          name: PROJECT.List
         });
       }
     };
@@ -170,7 +171,7 @@ export default function useProjectData() {
       type: 'menu.applicationManagement.serivce',
       level: pageLevelMap.Service,
       wrapperId: 'serviceWrapper',
-      route: 'ProjectServiceDetail',
+      route: PROJECT.ServiceDetail,
       visible: false,
       options: _.cloneDeep(list)
     };

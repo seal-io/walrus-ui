@@ -1,4 +1,5 @@
 import { useProjectStore } from '@/store';
+import { PROJECT } from '@/router/config';
 import localStore from '@/utils/localStore';
 import { USER_DEFAULT_PROJECT } from '@/views/config';
 import useCallCommon from '@/hooks/use-call-common';
@@ -15,12 +16,12 @@ export default function useGetBreadState() {
       icon: 'icon-apps',
       type: 'Project',
       wrapperId: 'projectWrapper',
-      route: 'ProjectDetail',
+      route: PROJECT.Detail,
       visible: false,
       options: _.cloneDeep(projectStore.projectList),
       onSetting() {
         router.replace({
-          name: 'ProjectsList'
+          name: PROJECT.List
         });
       }
     };
@@ -33,12 +34,12 @@ export default function useGetBreadState() {
       icon: 'icon-apps',
       type: 'Environment',
       wrapperId: 'envWrapper',
-      route: 'ProjectEnvDetail',
+      route: PROJECT.EnvDetail,
       visible: false,
       options: _.cloneDeep(projectStore.environmentList),
       onSetting() {
         router.replace({
-          name: 'ProjectDetail'
+          name: PROJECT.Detail
         });
       }
     };

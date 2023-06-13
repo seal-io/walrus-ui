@@ -31,7 +31,7 @@ export interface TemplateRowData {
   edges: object;
   icon?: string;
 }
-export interface ModuleVersionData extends TemplateRowData {
+export interface TemplateVersionData extends TemplateRowData {
   template: { id: string };
 }
 export interface TemplateFormData {

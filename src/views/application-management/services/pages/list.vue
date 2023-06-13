@@ -244,6 +244,7 @@
 </template>
 
 <script lang="ts" setup>
+  import { PROJECT } from '@/router/config';
   import { Resources } from '@/permissions/config';
   import _, { get, pickBy, filter } from 'lodash';
   import dayjs from 'dayjs';
@@ -268,8 +269,8 @@
   import { AppRowData } from '../config/interface';
   import { websocketEventType, instanceActions } from '../config';
   import {
-    queryApplications,
-    deleteApplication,
+    queryServices,
+    deleteService,
     deleteApplicationInstance
   } from '../api';
   import useTemplatesData from '../hooks/use-templates-data';
@@ -339,7 +340,7 @@
         ...pickBy(queryParams, (val) => !!val),
         sort: [sort.value]
       };
-      const { data } = await queryApplications(params);
+      const { data } = await queryServices(params);
       dataList.value = data?.items || [];
       total.value = data?.pagination?.total || 0;
       loading.value = false;
@@ -373,7 +374,7 @@
   };
   const handleClickUpgrade = (row) => {
     router.push({
-      name: 'ProjectServiceEdit',
+      name: PROJECT.ServiceEdit,
       params: {
         action: 'edit'
       },
@@ -417,7 +418,7 @@
   };
   const handleCreate = () => {
     router.push({
-      name: 'ProjectServiceEdit',
+      name: PROJECT.ServiceEdit,
       params: {
         projectId: queryParams.projectID,
         environmentId: queryParams.environmentID,
@@ -452,7 +453,7 @@
 
   const handleClickViewDetail = (row) => {
     router.push({
-      name: 'ProjectServiceDetail',
+      name: PROJECT.ServiceDetail,
       params: {
         ...route.params
       },
@@ -544,7 +545,7 @@
         ...pickBy(queryParams, (val) => !!val),
         sort: [sort.value]
       };
-      const { data } = await queryApplications(params);
+      const { data } = await queryServices(params);
       dataList.value = data?.items || [];
       total.value = data?.pagination?.total || 0;
     } catch (error) {

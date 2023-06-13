@@ -50,7 +50,7 @@
   import useCallCommon from '@/hooks/use-call-common';
   import { useUserStore } from '@/store';
   import HeaderInfo from '@/components/header-info/index.vue';
-  import EnviromentList from '@/views/operation-hub/environments/pages/list.vue';
+  import EnviromentList from '@/views/application-management/environments/pages/list.vue';
   import SecretList from '@/views/application-management/secret/pages/list.vue';
   import basicInfo from '@/views/application-management/services/components/basic-info.vue';
   import ConnectorList from '@/views/operation-hub/connectors/components/table-list.vue';

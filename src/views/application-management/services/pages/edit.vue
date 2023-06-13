@@ -111,7 +111,7 @@
                   $t('applications.applications.modules.params.title')
                 }}</div>
                 <div>{{
-                  $t('applications.applications.modules.params.tips2')
+                  $t('applications.applications.modules.params.tips1')
                 }}</div>
                 <div>{{
                   $t('applications.applications.modules.params.tips3')
@@ -222,12 +222,12 @@
   import GroupTitle from '@/components/group-title/index.vue';
   import {
     TemplateRowData,
-    ModuleVersionData
+    TemplateVersionData
   } from '@/views/operation-hub/templates/config/interface';
   import { validateAppNameRegx } from '@/views/config';
   import usePageAction from '@/hooks/use-page-action';
   import { beforeLeaveCallback } from '@/hooks/save-before-leave';
-  import { createApplication, upgradeApplicationInstance } from '../api';
+  import { createService, upgradeApplicationInstance } from '../api';
   import useServiceData from '../hooks/use-service-data';
 
   interface Group {
@@ -235,7 +235,7 @@
     label: string;
   }
   type refItem = Element | ComponentPublicInstance | null;
-  interface ModuleVersion extends ModuleVersionData {
+  interface TemplateVersion extends TemplateVersionData {
     label: string;
     value: string;
   }
@@ -259,16 +259,16 @@
     id,
     init,
     generateVariablesGroup,
-    getModuleSchemaByVersion,
-    getModuleVersionList,
+    getTemplateSchemaByVersion,
+    getTemplateVersionList,
     formData,
     pageAction,
     defaultGroupKey,
-    moduleInfo,
+    templateInfo,
     variablesGroup,
     variablesGroupForm,
     templateVersionList,
-    moduleVersionFormCache,
+    templateVersionFormCache,
     serviceDataList,
     templateList,
     completeData,
@@ -392,17 +392,17 @@
       },
       {}
     );
-    moduleVersionFormCache.value[versionMap.value.ov] = {
+    templateVersionFormCache.value[versionMap.value.ov] = {
       ...pickBy(inputs, (val) => toString(val))
     };
-    console.log('moduleVersionFormCache===', moduleVersionFormCache.value);
+    console.log('templateVersionFormCache===', templateVersionFormCache.value);
   };
   const execVersionChangeCallback = async () => {
     await setModuleVersionFormCache();
-    const moduleData = getModuleSchemaByVersion();
-    moduleInfo.value = cloneDeep(get(moduleData, 'schema')) || {};
+    const moduleData = getTemplateSchemaByVersion();
+    templateInfo.value = cloneDeep(get(moduleData, 'schema')) || {};
     formData.attributes = {};
-    console.log('version args...', moduleData, moduleVersionFormCache.value);
+    console.log('version args...', moduleData, templateVersionFormCache.value);
 
     clearFormValidStatus();
     generateVariablesGroup(pageAction.value);
@@ -415,9 +415,9 @@
   };
   // module change: exec version change
   const handleModuleChange = async (val) => {
-    await getModuleVersionList();
+    await getTemplateVersionList();
     formData.template.version = get(templateVersionList.value, '0.version');
-    moduleVersionFormCache.value = {};
+    templateVersionFormCache.value = {};
     versionMap.value = { ov: '', nv: '' };
     handleVersionChange();
     nextTick(() => {
@@ -507,7 +507,7 @@
         if (id) {
           await upgradeApplicationInstance(formData);
         } else {
-          await createApplication(formData);
+          await createService(formData);
         }
         if (props.pgType !== 'page') {
           emits('save');
