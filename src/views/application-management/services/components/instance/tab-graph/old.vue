@@ -27,9 +27,9 @@
   import { NodeList, EdgeList } from './config';
   import CustomNode from './components/custom-node.vue';
   import GraphG6 from './components/graph-g6.vue';
-  import { queryInstanceResourceGraph } from '../../../api';
+  import { queryServiceResourceGraph } from '../../../api';
 
-  const instanceId = inject('instanceId', ref(''));
+  const serviceId = inject('serviceId', ref(''));
   const elements = ref([]);
   const nodeList = ref<Node[]>([]);
   const edgeList = ref<Edge[]>([]);
@@ -63,9 +63,9 @@
   const getInstanceResourceGraph = async () => {
     try {
       const params = {
-        serviceID: instanceId.value
+        serviceID: serviceId.value
       };
-      const { data } = await queryInstanceResourceGraph(params);
+      const { data } = await queryServiceResourceGraph(params);
       setNodeList(data);
       setLinks(data);
     } catch (error) {
@@ -73,7 +73,7 @@
     }
   };
   watch(
-    () => instanceId.value,
+    () => serviceId.value,
     () => {
       // getInstanceResourceGraph();
     },

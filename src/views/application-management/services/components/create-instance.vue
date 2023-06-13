@@ -197,7 +197,7 @@
   import {
     deployApplication,
     upgradeApplicationInstance,
-    diffInstanceSpec
+    diffServiceSpec
   } from '../api';
 
   const props = defineProps({
@@ -409,13 +409,13 @@
       {}
     );
   };
-  const getInstanceSpecDiff = async () => {
+  const getServiceSpecDiff = async () => {
     if (!props.activeInstanceInfo.id) return;
     try {
       const params = {
         serviceID: props.activeInstanceInfo.id
       };
-      const { data } = await diffInstanceSpec(params);
+      const { data } = await diffServiceSpec(params);
       const diffContent = {
         old: JSON.stringify(
           _.pick(data.old, ['variables', 'modules']),
@@ -450,7 +450,7 @@
     // setLabelList();
     setVariablesList();
     setDeployVariables();
-    getInstanceSpecDiff();
+    getServiceSpecDiff();
   };
   const handleBeforeClose = () => {
     emit('update:status', 'create');

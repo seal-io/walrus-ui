@@ -255,8 +255,7 @@
   });
   const projectID = route.params.projectId || '';
   const title = ref('');
-  const instanceId = inject('instanceId', ref(''));
-  const instanceInfo = inject('instanceInfo', ref<any>({}));
+  const serviceId = inject('serviceId', ref(''));
   const revisionDetailId = ref('');
   const revisionData = ref({});
   const total = ref(0);
@@ -290,7 +289,7 @@
     try {
       const params = {
         id: row.id,
-        serviceID: instanceId.value
+        serviceID: serviceId.value
       };
       const { data } = await diffRevisionSpec(params);
       diffContent.value = {
@@ -341,7 +340,7 @@
   const handleViewHistoryChange = async (row) => {
     try {
       const params = {
-        serviceID: instanceId.value,
+        serviceID: serviceId.value,
         id: row.id
       };
       const { data } = await queryRevisionChange(params);
@@ -356,7 +355,7 @@
     }
   };
   const fetchData = async () => {
-    if (!instanceId.value) return;
+    if (!serviceId.value) return;
     axiosListInstance.cancel?.();
     axiosListInstance = createAxiosToken();
     try {
@@ -364,7 +363,7 @@
       const { data } = await queryApplicationRevisions(
         {
           ...queryParams,
-          serviceID: instanceId.value,
+          serviceID: serviceId.value,
           sort: [sort.value]
         },
         axiosListInstance.token
@@ -424,7 +423,7 @@
     if (data?.type !== websocketEventType.update) return;
     const collections = filter(
       data.collection || [],
-      (sItem) => sItem?.service?.id === instanceId.value
+      (sItem) => sItem?.service?.id === serviceId.value
     );
     // const collections = data?.collection || [];
     const openRevisionData = find(
@@ -457,7 +456,7 @@
       setChunkRequest({
         url: `/service-revisions`,
         params: {
-          serviceID: instanceId.value,
+          serviceID: serviceId.value,
           ...getPermissionRouteParams()
         },
         handler: updateHandler
@@ -467,7 +466,7 @@
     }
   };
   watch(
-    () => instanceId.value,
+    () => serviceId.value,
     () => {
       queryParams.page = 1;
       fetchData();

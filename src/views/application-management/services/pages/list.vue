@@ -230,7 +230,7 @@
     ></cloneInstanceModal>
     <rollbackModal
       v-model:show="showRollbackModal"
-      :instance-id="selectedInstance"
+      :service-id="selectedVersion"
       :project-i-d="queryParams.projectID"
       :title="rollbackTitle"
     ></rollbackModal>
@@ -291,7 +291,7 @@
   const {
     showRollbackModal,
     rollbackTitle,
-    selectedInstance,
+    selectedVersion,
     handleRollbackRevision
   } = useRollbackRevision();
   const { setChunkRequest } = useSetChunkRequest();

@@ -54,7 +54,7 @@ export default [
     path: 'project/:projectId/environment/:environmentId/detail',
     name: PROJECT.EnvDetail,
     component: () =>
-      import('@/views/operation-hub/environments/pages/detail.vue'),
+      import('@/views/application-management/environments/pages/detail.vue'),
     meta: {
       hideInMenu: true,
       hideMenu: false,
@@ -74,7 +74,7 @@ export default [
     path: 'project/:projectId/environment/:action',
     name: PROJECT.EnvEdit,
     component: () =>
-      import('@/views/operation-hub/environments/pages/edit.vue'),
+      import('@/views/application-management/environments/pages/edit.vue'),
     meta: {
       hideInMenu: true,
       hideMenu: false,
@@ -92,7 +92,8 @@ export default [
   {
     path: 'project/:projectId/environment/:environmentId/service/detail',
     name: PROJECT.ServiceDetail,
-    component: () => import('../pages/service.vue'),
+    component: () =>
+      import('@/views/application-management/services/pages/detail.vue'),
     meta: {
       hideInMenu: true,
       hideMenu: false,
@@ -110,7 +111,7 @@ export default [
   {
     path: 'project/:projectId/environment/:environmentId/service/:action',
     name: PROJECT.ServiceEdit,
-    component: () => import('../../services/pages/service-edit.vue'),
+    component: () => import('../../services/pages/edit.vue'),
     meta: {
       hideInMenu: true,
       hideMenu: false,

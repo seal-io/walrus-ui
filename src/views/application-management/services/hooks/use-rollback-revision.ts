@@ -3,12 +3,12 @@ import { computed, ref } from 'vue';
 export default function useRollbackRevision() {
   const showRollbackModal = ref(false);
   const rollbackType = ref('');
-  const selectedInstance = ref('');
+  const selectedVersion = ref('');
 
-  const handleRollbackRevision = (type, instanceInfo?) => {
+  const handleRollbackRevision = (type, serviceInfo?) => {
     showRollbackModal.value = true;
     rollbackType.value = type;
-    selectedInstance.value = instanceInfo?.id || '';
+    selectedVersion.value = serviceInfo?.id || '';
   };
   const rollbackTitle = computed(() => {
     if (rollbackType.value === 'instance') {
@@ -19,7 +19,7 @@ export default function useRollbackRevision() {
   return {
     showRollbackModal,
     rollbackTitle,
-    selectedInstance,
+    selectedVersion,
     handleRollbackRevision
   };
 }

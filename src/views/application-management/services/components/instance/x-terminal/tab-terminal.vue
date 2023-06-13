@@ -50,7 +50,7 @@
   const route = useRoute();
   const { host, protocol } = window.location;
   const proto = protocol === 'https:' ? 'wss' : 'ws';
-  const instanceId = inject('instanceId', ref(''));
+  const serviceId = inject('serviceId', ref(''));
   const resourceId = ref('');
   const resourceKey = ref('');
   const projectID = route.params.projectId;

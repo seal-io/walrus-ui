@@ -35,11 +35,11 @@
   import { ref, inject, watch } from 'vue';
   import { onClickOutside } from '@vueuse/core';
   import GraphG6 from './components/graph-g6.vue';
-  import { queryInstanceResourceGraph } from '../../../api';
+  import { queryServiceResourceGraph } from '../../../api';
   import { INode, IEdge } from './config/interface';
   import testData from './config/test';
 
-  const instanceId = inject('instanceId', ref(''));
+  const serviceId = inject('serviceId', ref(''));
   const nodeActive = ref(false);
   const loading = ref(false);
   const flowWrapper = ref();
@@ -66,9 +66,9 @@
     try {
       loading.value = true;
       const params = {
-        serviceID: instanceId.value
+        serviceID: serviceId.value
       };
-      const { data } = await queryInstanceResourceGraph(params);
+      const { data } = await queryServiceResourceGraph(params);
       resultData.value.links = data.links || [];
       resultData.value.nodes = data.nodes || [];
       loading.value = false;
@@ -88,7 +88,7 @@
     graph.value?.fitView();
   };
   watch(
-    () => instanceId.value,
+    () => serviceId.value,
     () => {
       // getInstanceResourceGraph();
     },

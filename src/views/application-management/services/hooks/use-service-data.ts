@@ -15,7 +15,7 @@ import {
 import usePageAction from '@/hooks/use-page-action';
 import useProjectBreadcrumbData from '../../projects/hooks/use-project-breadcrumb-data';
 
-import { queryItemApplicationInstances } from '../api';
+import { queryItemApplicationService } from '../api';
 import useTemplatesData from './use-templates-data';
 
 export default function useServiceData(props?) {
@@ -75,7 +75,7 @@ export default function useServiceData(props?) {
         id: route.query.id,
         projectID: route.params.projectId
       };
-      const { data } = await queryItemApplicationInstances(params);
+      const { data } = await queryItemApplicationService(params);
       serviceInfo.value = data;
     } catch (error) {
       serviceInfo.value = {};

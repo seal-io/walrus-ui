@@ -8,7 +8,7 @@
       ></Breadcrumb>
     </BreadWrapper>
     <div>
-      <ServiceDetail :instance-id="serviceId"></ServiceDetail>
+      <ServiceDetail :service-id="serviceId"></ServiceDetail>
     </div>
   </div>
 </template>
@@ -18,8 +18,8 @@
   import { ref, provide, onMounted, nextTick } from 'vue';
   import BreadWrapper from '@/components/bread-wrapper/index.vue';
   import useCallCommon from '@/hooks/use-call-common';
-  import ServiceDetail from '@/views/application-management/services/components/instance/index.vue';
-  import useProjectBreadcrumbData from '../hooks/use-project-breadcrumb-data';
+  import useProjectBreadcrumbData from '@/views/application-management/projects/hooks/use-project-breadcrumb-data';
+  import ServiceDetail from '../components/instance/index.vue';
 
   const { route, router } = useCallCommon();
   const {
@@ -38,7 +38,7 @@
   const id = route.query.id as string;
   const serviceId = ref(id);
 
-  provide('instanceId', serviceId);
+  provide('serviceId', serviceId);
 
   const handleServiceChange = ({ value, item }) => {
     handleBreadChange(value, item);
