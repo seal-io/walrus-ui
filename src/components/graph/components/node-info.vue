@@ -95,7 +95,6 @@
   import { toLower, capitalize, get } from 'lodash';
   import { severityColorValueMap } from '@/config/global';
   import copy from '@/components/copy/index.vue';
-  import severityBar from '@/components/severity-bar/index.vue';
   import { PropType, computed } from 'vue';
   import ProviderIcon from '@/components/provider-icon/index.vue';
   import { useI18n } from 'vue-i18n';
@@ -115,38 +114,38 @@
       type: Array as PropType<Option[]>,
       default() {
         return [];
-      },
+      }
     },
     currentNodeInfo: {
       type: Object,
       default() {
         return {};
-      },
+      }
     },
     nodeLicense: {
       type: Array as PropType<Option[]>,
       default() {
         return [];
-      },
+      }
     },
     nodeVulnList: {
       type: Array as PropType<Option[]>,
       default() {
         return [];
-      },
+      }
     },
     nodeIssueList: {
       type: Array as PropType<Option[]>,
       default() {
         return [];
-      },
+      }
     },
     vulnList: {
       type: Array as PropType<any[]>,
       default() {
         return [];
-      },
-    },
+      }
+    }
   });
   const { locale } = useI18n();
   const router = useRouter();
@@ -157,7 +156,7 @@
   const resolvePath = (id) => {
     const path = router.resolve({
       name: 'vulnerDetail',
-      query: { id },
+      query: { id }
     });
     return path.href;
   };

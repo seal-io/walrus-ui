@@ -313,6 +313,7 @@
 
 <script lang="ts" setup>
   import dayjs from 'dayjs';
+  import { COSTMANAGEMENT } from '@/router/config';
   import { ref, reactive, computed } from 'vue';
   import {
     map,
@@ -511,7 +512,7 @@
           await createPerspective(data);
           tabBarStore.deleteTag(0, {
             title: '',
-            name: 'CostAnalyseList',
+            name: COSTMANAGEMENT.List,
             fullPath: ''
           });
         }

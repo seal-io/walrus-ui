@@ -269,7 +269,6 @@
     }
   );
   onMounted(async () => {
-    console.log('area:');
     expression.value = props.modelValue;
     nextTick(() => {
       initEditor();
