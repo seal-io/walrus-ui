@@ -139,7 +139,7 @@
     yaml: '# yaml format'
   };
   const emits = defineEmits(['change', 'update:modelValue', 'input']);
-  console.log('terraform');
+
   // let timer:any = null
   let aceEditor: any = null;
   const isAce = ref(true);
@@ -302,7 +302,6 @@
     });
   };
   const handleInput = (val) => {
-    console.log('input===', val);
     emits('change', val);
     emits('input', val);
     emits('update:modelValue', val);

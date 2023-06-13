@@ -52,7 +52,12 @@
               </template>
               <template #arrow-icon>
                 <OnClickOutside @trigger="handleClickOutSide(item)">
-                  <icon-down-circle @click.stop="handleTogglePopup(item)" />
+                  <span
+                    class="bread-icon-btn"
+                    @click.stop="handleTogglePopup(item)"
+                  >
+                    <icon-down-circle />
+                  </span>
                 </OnClickOutside>
               </template>
               <template #footer>
@@ -126,10 +131,6 @@
   const { router } = useCallCommon();
   const emits = defineEmits(['change']);
   const handleSelectChange = (value, item) => {
-    console.log('handleSelectChange===', getListLabel(value, item.options), {
-      value,
-      item
-    });
     emits('change', { value, item });
   };
   const getContainer = (name) => {
@@ -159,7 +160,6 @@
   };
   const handleClickOutSide = (item) => {
     item.visible = false;
-    console.log('clickoutside');
   };
   const handleOnSettings = (item) => {
     item.onSetting?.(item);
@@ -238,6 +238,22 @@
         display: flex;
         align-items: center;
         font-size: 0;
+      }
+
+      :deep(.arco-select-view-icon) {
+        .bread-icon-btn {
+          position: relative;
+
+          &::after {
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            bottom: -8px;
+            left: -8px;
+            display: inline-block;
+            content: '';
+          }
+        }
       }
     }
 
