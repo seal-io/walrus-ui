@@ -1,5 +1,6 @@
 <script lang="tsx">
   import _ from 'lodash';
+  import { PROJECT } from '@/router/config';
   import { defineComponent, ref, h, compile, computed } from 'vue';
   import useCallCommon from '@/hooks/use-call-common';
   import { RouteRecordRaw, RouteRecordNormalized } from 'vue-router';
@@ -19,8 +20,6 @@
   export default defineComponent({
     emit: ['collapse'],
     setup() {
-      const PROJECT_LIST = 'ProjectsList';
-      const PROJECT_DETAIL = 'ProjectDetail';
       const { t, router, route } = useCallCommon();
       const currentRoute = ref<string>('');
       const appStore = useAppStore();
@@ -120,7 +119,7 @@
           (item) => item.value === defaultProject?.id
         );
         router.push({
-          name: PROJECT_DETAIL,
+          name: PROJECT.Detail,
           params: {
             projectId: pro
               ? defaultProject?.id
@@ -134,7 +133,7 @@
       const goto = async (item: RouteRecordRaw) => {
         const query: any = item.meta?.query;
         const isReplace: any = item.meta?.replace;
-        if (item.name === PROJECT_LIST) {
+        if (item.name === PROJECT.List) {
           await goToProject(item);
           return;
         }

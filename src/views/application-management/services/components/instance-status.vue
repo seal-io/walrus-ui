@@ -11,8 +11,6 @@
 
 <script lang="ts" setup>
   import { get } from 'lodash';
-  import useCallCommon from '@/hooks/use-call-common';
-  import { useUserStore } from '@/store';
 
   const props = defineProps({
     status: {
@@ -52,19 +50,6 @@
       }
     }
   });
-  const { router, route } = useCallCommon();
-  const userStore = useUserStore();
-  const handleViewInstance = () => {
-    router.push({
-      name: 'ProjectServiceDetail',
-      params: {
-        ...route.params
-      },
-      query: {
-        id: props.serviceId
-      }
-    });
-  };
 </script>
 
 <style lang="less" scoped>

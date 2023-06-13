@@ -126,7 +126,7 @@
   import ThumbView from '../components/thumb-view.vue';
   import ListView from '../components/list-view.vue';
   import { TemplateRowData } from '../config/interface';
-  import { queryModules, deleteModules } from '../api';
+  import { queryTemplates, deleteTemplates } from '../api';
 
   let timer: any = null;
   const { setChunkRequest } = useSetChunkRequest();
@@ -149,7 +149,7 @@
   };
   const handleCreateProject = () => {
     router.push({
-      name: 'TemplateDetail',
+      name: OPERATIONHUB.TemplateDetail,
       params: {
         action: 'edit'
       }
@@ -157,7 +157,7 @@
   };
   const handleDraftModule = () => {
     router.push({
-      name: 'TemplateGPT'
+      name: OPERATIONHUB.TemplateGPT
     });
   };
   const fetchData = async () => {
@@ -167,7 +167,7 @@
         ...pickBy(queryParams, (val) => !!val),
         sort: [sort.value]
       };
-      const { data } = await queryModules(params);
+      const { data } = await queryTemplates(params);
       dataList.value = data?.items || [];
       total.value = data?.pagination?.total || 0;
     } catch (error) {
@@ -218,7 +218,7 @@
           id: val
         };
       });
-      await deleteModules(ids);
+      await deleteTemplates(ids);
       loading.value = false;
       execSucceed();
       queryParams.page = 1;

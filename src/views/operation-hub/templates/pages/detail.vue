@@ -225,10 +225,10 @@
   import tabOutput from '../components/tab-output.vue';
   import tabConnector from '../components/tab-connector.vue';
   import {
-    queryItemModules,
-    createModules,
-    updateModules,
-    queryModulesVersions
+    queryItemTemplate,
+    createTemplate,
+    updateTemplate,
+    queryTemplatesVersions
   } from '../api';
 
   const tabMap = {
@@ -269,13 +269,13 @@
     }
     return t('operation.templates.detail.edit');
   });
-  const getModuleVersions = async () => {
+  const getTemplateVersions = async () => {
     if (!id) return;
     try {
       const params = {
         templateID: id
       };
-      const { data } = await queryModulesVersions(params);
+      const { data } = await queryTemplatesVersions(params);
       const list = data.items || [];
       versionList.value = map(list, (item) => {
         return {
@@ -291,14 +291,14 @@
       console.log(error);
     }
   };
-  const getItemModules = async () => {
+  const getItemTemplate = async () => {
     copyFormData = cloneDeep(formData);
     if (!id) return;
     try {
       const params = {
         id
       };
-      const { data } = await queryItemModules(params);
+      const { data } = await queryItemTemplate(params);
       assignIn(formData, data);
       copyFormData = cloneDeep(formData);
     } catch (error) {
@@ -318,13 +318,13 @@
         submitLoading.value = true;
         copyFormData = cloneDeep(formData);
         if (id) {
-          await updateModules(formData);
+          await updateTemplate(formData);
         } else {
-          await createModules(formData);
+          await createTemplate(formData);
         }
         tabBarStore.deleteTag(0, {
           title: '',
-          name: 'TemplateList',
+          name: OPERATIONHUB.TemplateList,
           fullPath: ''
         });
         router.back();
@@ -337,7 +337,7 @@
   const cancelCallback = () => {
     if (pageAction.value === 'edit' && route.params.action === 'view') {
       pageAction.value = 'view';
-      getItemModules();
+      getItemTemplate();
       return;
     }
     router.back();
@@ -375,8 +375,8 @@
     return true;
   });
   onMounted(() => {
-    getItemModules();
-    getModuleVersions();
+    getItemTemplate();
+    getTemplateVersions();
   });
 </script>
 

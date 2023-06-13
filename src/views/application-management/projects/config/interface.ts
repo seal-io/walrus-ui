@@ -1,5 +1,3 @@
-import { AppRowData } from '@/views/application-management/services/config/interface';
-
 export interface ProjectRowData {
   name: string;
   id: string;
@@ -9,9 +7,6 @@ export interface ProjectRowData {
   upateTime: string;
   label?: string;
   value?: string;
-  edges: {
-    applications: AppRowData[];
-  };
 }
 
 export interface ProjectFormData {

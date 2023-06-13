@@ -201,6 +201,7 @@
 
 <script lang="ts" setup>
   import dayjs from 'dayjs';
+  import { PROJECT } from '@/router/config';
   import { useUserStore } from '@/store';
   import { Resources } from '@/permissions/config';
   import { map, pickBy, remove } from 'lodash';
@@ -239,7 +240,7 @@
     // action.value = 'create';
     // showModal.value = true;
     router.push({
-      name: 'ProjectEnvEdit',
+      name: PROJECT.EnvDetail,
       params: {
         action: 'edit'
       }
@@ -295,7 +296,7 @@
   });
   const handleView = (row) => {
     router.push({
-      name: 'ProjectEnvDetail',
+      name: PROJECT.EnvDetail,
       params: {
         ...route.params,
         environmentId: row.id
@@ -309,7 +310,7 @@
     //   showModal.value = true;
     // }, 100);
     router.push({
-      name: 'ProjectEnvEdit',
+      name: PROJECT.EnvEdit,
       params: {
         action: 'edit'
       },
@@ -318,7 +319,7 @@
   };
   const handleViewDetail = (row) => {
     router.push({
-      name: 'ProjectEnvEdit',
+      name: PROJECT.EnvEdit,
       params: {
         action: 'view'
       },

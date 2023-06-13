@@ -109,13 +109,6 @@
   });
   const { router } = useCallCommon();
 
-  const handleEdit = (row) => {
-    router.push({
-      name: 'ApplicationsDetail',
-      query: { id: row.id }
-    });
-  };
-
   const setDurationValue = (val) => {
     if (!val) return '-';
     const seconds = val % 60;

@@ -3,6 +3,7 @@
 </template>
 
 <script lang="ts" setup>
+  import { DASHBOARD } from '@/router/config';
   import { onMounted } from 'vue';
   import useCallCommon from '@/hooks/use-call-common';
 
@@ -11,7 +12,7 @@
     const { page, ...othersQuery } = router.currentRoute.value.query;
     console.log({ page });
     router.replace({
-      name: (page as string) || 'DashboardMain',
+      name: (page as string) || DASHBOARD.Main,
       query: {
         ...othersQuery
       }

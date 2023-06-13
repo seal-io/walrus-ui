@@ -1,3 +1,5 @@
+import { PROFILE } from '@/router/config';
+
 export const profileMenu = [
   {
     name: 'settings.language',
@@ -7,7 +9,7 @@ export const profileMenu = [
       {
         name: '中文',
         key: 'chinese',
-        route: 'UserCenter',
+        route: PROFILE.UserCenter,
         value: 'zh-CN',
         icon: '<i class="iconfont icon-fuhao-zhongwen" />'
       },
@@ -27,7 +29,7 @@ export const profileMenu = [
       {
         name: 'propfile.account.user.info',
         key: 'UserCenter',
-        route: 'UserCenter',
+        route: PROFILE.UserCenter,
         icon: '<icon-user />'
       },
       { name: 'messageBox.logout', key: 'logout', icon: '<icon-export/>' }

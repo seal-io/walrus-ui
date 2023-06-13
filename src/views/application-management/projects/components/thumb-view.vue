@@ -13,6 +13,7 @@
 </template>
 
 <script lang="ts" setup>
+  import { PROJECT } from '@/router/config';
   import { includes } from 'lodash';
   import { onMounted, PropType, defineEmits } from 'vue';
   import useCallCommon from '@/hooks/use-call-common';
@@ -45,9 +46,9 @@
   const handleClickProject = (project) => {
     console.log('project:', project);
     router.push({
-      name: 'ApplicationsDetail',
-      query: {
-        id: project.id
+      name: PROJECT.Detail,
+      params: {
+        projectId: project.id
       }
     });
   };

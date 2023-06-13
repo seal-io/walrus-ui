@@ -18,7 +18,7 @@ export interface ResultType {
 export interface QueryType extends Pagination {
   projectID: string;
 }
-export const queryApplications = (params: QueryType) => {
+export const queryServices = (params: QueryType) => {
   return axios.get<ResultType>(`/services`, {
     params,
     paramsSerializer: (obj) => {
@@ -27,13 +27,13 @@ export const queryApplications = (params: QueryType) => {
   });
 };
 
-export const createApplication = (data) => {
+export const createService = (data) => {
   return axios.post(
     `/services?${qs.stringify({ projectID: data.projectID })}`,
     data
   );
 };
-export const deleteApplication = ({ data, projectID }) => {
+export const deleteService = ({ data, projectID }) => {
   return axios.delete(`/services?${qs.stringify({ projectID })}`, { data });
 };
 export const deployApplication = (data) => {
@@ -43,14 +43,14 @@ export const deployApplication = (data) => {
   );
 };
 
-export const updateApplication = (data) => {
+export const updateService = (data) => {
   return axios.put(
     `/services/${data.id}?${qs.stringify(getPermissionRouteParams())}`,
     data
   );
 };
 
-export const queryItemApplication = (params) => {
+export const queryItemService = (params) => {
   return axios.get(`/services/${params.id}`, {
     params: {
       ...params,

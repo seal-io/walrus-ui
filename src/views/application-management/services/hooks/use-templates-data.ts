@@ -2,22 +2,22 @@ import _ from 'lodash';
 import { ref } from 'vue';
 import {
   TemplateRowData,
-  ModuleVersionData
+  TemplateVersionData
 } from '@/views/operation-hub/templates/config/interface';
 import {
-  queryModules,
-  queryModulesAllVersions
+  queryTemplates,
+  queryTemplatesAllVersions
 } from '@/views/operation-hub/templates/api';
 import useCallCommon from '@/hooks/use-call-common';
 import {
-  queryApplications,
+  queryServices,
   querySecrets
 } from '@/views/application-management/services/api';
 
 export default function useTemplatesData() {
   const { route } = useCallCommon();
   const templateList = ref<TemplateRowData[]>([]);
-  const allTemplateVersions = ref<ModuleVersionData[]>([]);
+  const allTemplateVersions = ref<TemplateVersionData[]>([]);
   const completeData = ref<Record<string, any>>({});
   const variableList = ref<any[]>([]);
   const serviceDataList = ref<any[]>([]);
@@ -29,7 +29,7 @@ export default function useTemplatesData() {
       const params = {
         page: -1
       };
-      const { data } = await queryModules(params);
+      const { data } = await queryTemplates(params);
       templateList.value = data?.items || [];
     } catch (error) {
       templateList.value = [];
@@ -50,7 +50,7 @@ export default function useTemplatesData() {
       if (!params.templateID.length) {
         return;
       }
-      const { data } = await queryModulesAllVersions(params);
+      const { data } = await queryTemplatesAllVersions(params);
       allTemplateVersions.value = data?.items || [];
     } catch (error) {
       allTemplateVersions.value = [];
@@ -89,7 +89,7 @@ export default function useTemplatesData() {
         projectID: route.params.projectId as string,
         environmentID: route.params.environmentId
       };
-      const { data } = await queryApplications(params);
+      const { data } = await queryServices(params);
       serviceDataList.value = data.items || [];
     } catch (error) {
       console.log(error);

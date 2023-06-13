@@ -128,6 +128,7 @@
 </template>
 
 <script lang="ts" setup>
+  import { OPERATIONHUB } from '@/router/config';
   import { Resources, Actions } from '@/permissions/config';
   import { map, get } from 'lodash';
   import dayjs from 'dayjs';
@@ -139,7 +140,7 @@
   import FilterBox from '@/components/filter-box/index.vue';
   import { TemplateRowData } from '../config/interface';
   import StatusLabel from '../../connectors/components/status-label.vue';
-  import { queryModules, refreshModules, deleteModules } from '../api';
+  import { queryTemplates, refreshTemplate, deleteTemplates } from '../api';
 
   const props = defineProps({
     list: {
@@ -177,7 +178,7 @@
   const fetchData = async () => {
     try {
       loading.value = true;
-      const { data } = await queryModules({
+      const { data } = await queryTemplates({
         ...queryParams,
         sort: [sort.value]
       });
@@ -228,9 +229,7 @@
     queryParams.perPage = pageSize;
     handleFilter();
   };
-  const handleCreate = () => {
-    router.push({ name: 'TemplateDetail' });
-  };
+
   const handleDeleteConfirm = async () => {
     try {
       loading.value = true;
@@ -239,7 +238,7 @@
           id: val
         };
       });
-      await deleteModules(ids);
+      await deleteTemplates(ids);
       loading.value = false;
       execSucceed();
       queryParams.page = 1;
@@ -253,21 +252,21 @@
   };
   const handleEdit = (row) => {
     router.push({
-      name: 'TemplateDetail',
+      name: OPERATIONHUB.TemplateDetail,
       params: { action: 'edit' },
       query: { id: row.id }
     });
   };
   const handleView = (row) => {
     router.push({
-      name: 'TemplateDetail',
+      name: OPERATIONHUB.TemplateDetail,
       params: { action: 'view' },
       query: { id: row.id }
     });
   };
   const handlRefresh = async (row) => {
     try {
-      await refreshModules({ id: row.id });
+      await refreshTemplate({ id: row.id });
       execSucceed();
     } catch (error) {
       console.log('error');

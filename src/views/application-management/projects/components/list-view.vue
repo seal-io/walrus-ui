@@ -73,6 +73,7 @@
 </template>
 
 <script lang="ts" setup>
+  import { PROJECT } from '@/router/config';
   import { PropType, watchEffect } from 'vue';
   import useRowSelect from '@/hooks/use-row-select';
   import useCallCommon from '@/hooks/use-call-common';
@@ -110,8 +111,8 @@
   };
   const handleEdit = (row) => {
     const path = router.push({
-      name: 'ApplicationsDetail',
-      query: { id: row.id }
+      name: PROJECT.Detail,
+      params: { projectId: row.id }
     });
   };
   const handleEditProject = (row) => {

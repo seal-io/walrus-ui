@@ -193,6 +193,7 @@
 </template>
 
 <script lang="ts" setup>
+  import { SYSTEMSETTINGS, PROFILE, DASHBOARD } from '@/router/config';
   import _, { get, hasIn, includes } from 'lodash';
   import { useRouter } from 'vue-router';
   import { computed, ref, inject, toRaw, nextTick } from 'vue';
@@ -260,7 +261,7 @@
   const toggleTheme = useToggle(isDark);
   const setVisible = () => {
     router.push({
-      name: 'SystemSetting'
+      name: SYSTEMSETTINGS.Settings
     });
     // appStore.updateSettings({ globalSettings: true });
   };
@@ -341,12 +342,12 @@
   };
   const handleModifyPassword = () => {
     router.push({
-      name: 'UserCenter'
+      name: PROFILE.UserCenter
     });
   };
   const handleToHome = () => {
     router.push({
-      name: 'DashboardMain'
+      name: DASHBOARD.Main
     });
   };
   const setDropDownVisible = () => {
@@ -364,7 +365,7 @@
   const toggleDrawerMenu = inject('toggleDrawerMenu');
   const handleToSetting = () => {
     router.push({
-      name: 'Setting'
+      name: SYSTEMSETTINGS.Settings
       // query: {
       //   redirectPath: router.currentRoute.value.fullPath,
       // },

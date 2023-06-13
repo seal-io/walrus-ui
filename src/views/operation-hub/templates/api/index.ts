@@ -22,7 +22,7 @@ export interface FormDataPR {
   path: string;
   content: string;
 }
-export function queryModules(params: QueryType) {
+export function queryTemplates(params: QueryType) {
   return axios.get<ResultType>('/templates', {
     params,
     paramsSerializer: (obj) => {
@@ -30,7 +30,7 @@ export function queryModules(params: QueryType) {
     }
   });
 }
-export function queryItemModules(params: { id: string }) {
+export function queryItemTemplate(params: { id: string }) {
   return axios.get(`/templates/${params.id}`, {
     params,
     paramsSerializer: (obj) => {
@@ -38,19 +38,19 @@ export function queryItemModules(params: { id: string }) {
     }
   });
 }
-export function createModules(data: TemplateFormData) {
+export function createTemplate(data: TemplateFormData) {
   return axios.post('/templates', data);
 }
-export function deleteModules(data) {
+export function deleteTemplates(data) {
   return axios.delete('/templates', { data });
 }
-export function updateModules(data: TemplateFormData) {
+export function updateTemplate(data: TemplateFormData) {
   return axios.put(`/templates/${data.id}`, data);
 }
-export function refreshModules(data: { id: string }) {
+export function refreshTemplate(data: { id: string }) {
   return axios.post(`/templates/${data.id}/refresh`);
 }
-export function queryModulesVersions(params: { templateID: string }) {
+export function queryTemplatesVersions(params: { templateID: string }) {
   return axios.get(`/template-versions`, {
     params,
     paramsSerializer: (obj) => {
@@ -58,7 +58,7 @@ export function queryModulesVersions(params: { templateID: string }) {
     }
   });
 }
-export function queryModulesAllVersions(params: { templateID: string[] }) {
+export function queryTemplatesAllVersions(params: { templateID: string[] }) {
   return axios.get(`/template-versions`, {
     params,
     paramsSerializer: (obj) => {

@@ -20,6 +20,7 @@
 </template>
 
 <script lang="ts" setup>
+  import { OPERATIONHUB } from '@/router/config';
   import { Resources, Actions } from '@/permissions/config';
   import { useUserStore } from '@/store';
   import { includes, filter } from 'lodash';
@@ -66,7 +67,7 @@
   const handleClickItem = (project) => {
     console.log('project:', project);
     router.push({
-      name: 'TemplateDetail',
+      name: OPERATIONHUB.TemplateDetail,
       query: {
         id: project.id
       }
