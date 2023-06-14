@@ -33,8 +33,10 @@ export const createService = (data) => {
     data
   );
 };
-export const deleteService = ({ data, projectID }) => {
-  return axios.delete(`/services?${qs.stringify({ projectID })}`, { data });
+export const deleteService = ({ data, projectID, force }) => {
+  return axios.delete(`/services?${qs.stringify({ projectID, force })}`, {
+    data
+  });
 };
 export const deployApplication = (data) => {
   return axios.post(

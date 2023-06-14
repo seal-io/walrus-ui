@@ -14,7 +14,7 @@ export default function useGetBreadState() {
       value: id,
       label: name || '',
       icon: 'icon-apps',
-      type: 'Project',
+      type: 'menu.applicationManagement.project',
       wrapperId: 'projectWrapper',
       route: PROJECT.Detail,
       visible: false,

@@ -37,7 +37,7 @@
           @click="handleCreate"
           >{{ $t('applications.applications.create') }}</a-button
         >
-        <!-- <a-button
+        <a-button
           v-if="
             userStore.hasProjectResourceActions({
               projectID: queryParams.projectID,
@@ -50,7 +50,7 @@
           :disabled="!selectedKeys.length"
           @click="handleDelete"
           >{{ $t('common.button.delete') }}</a-button
-        > -->
+        >
       </template>
     </FilterBox>
     <a-table
@@ -61,6 +61,7 @@
       :data="dataList"
       :pagination="false"
       row-key="id"
+      :row-selection="rowSelection"
       @sorter-change="handleSortChange"
       @selection-change="handleSelectChange"
     >
@@ -177,9 +178,9 @@
                 "
                 :content="$t('common.button.delete')"
               >
-                <a-link status="danger" @click="handleDelete(record)">
+                <!-- <a-link status="danger" @click="handleDelete(record)">
                   <icon-delete></icon-delete>
-                </a-link>
+                </a-link> -->
               </a-tooltip>
               <!-- <a-dropdown-button
                 size="small"
@@ -274,7 +275,6 @@
     watch,
     onBeforeUnmount,
     provide,
-    getCurrentInstance,
     onMounted
   } from 'vue';
   import ADropdownButton from '@arco-design/web-vue/es/dropdown/dropdown-button';
@@ -331,7 +331,6 @@
   const serviceDel = ref<any>({});
   const id = route.query.id || '';
   let timer: any = null;
-  let loopTimer: any = null;
   const loading = ref(false);
   const total = ref(0);
   const queryParams = reactive({
@@ -449,26 +448,30 @@
     //   showEditModal.value = true;
     // }, 150);
   };
-  // const handleDeleteConfirm = async () => {
-  //   try {
-  //     loading.value = true;
-  //     const ids = map(selectedKeys.value, (val) => {
-  //       return {
-  //         id: val
-  //       };
-  //     });
-  //     await deleteApplication({ data: ids, projectID: queryParams.projectID });
-  //     loading.value = false;
-  //     execSucceed();
-  //     queryParams.page = 1;
-  //     selectedKeys.value = [];
-  //     rowSelection.selectedRowKeys = [];
-  //     handleFilter();
-  //   } catch (error) {
-  //     console.log(error);
-  //     loading.value = false;
-  //   }
-  // };
+  const handleDeleteConfirm = async (force) => {
+    try {
+      loading.value = true;
+      const ids = _.map(selectedKeys.value, (val) => {
+        return {
+          id: val
+        };
+      });
+      await deleteService({
+        data: ids,
+        projectID: queryParams.projectID,
+        force
+      });
+      loading.value = false;
+      execSucceed();
+      queryParams.page = 1;
+      selectedKeys.value = [];
+      rowSelection.selectedRowKeys = [];
+      handleFilter();
+    } catch (error) {
+      console.log(error);
+      loading.value = false;
+    }
+  };
 
   const handleClickViewDetail = (row) => {
     router.push({
@@ -481,13 +484,13 @@
       }
     });
   };
-  const handleDeleteConfirm = async (force) => {
-    try {
-      await deleteApplicationInstance({ id: serviceDel.value, force });
-    } catch (error) {
-      console.log(error);
-    }
-  };
+  // const handleDeleteConfirm = async (force) => {
+  //   try {
+  //     await deleteApplicationInstance({ id: serviceDel.value, force });
+  //   } catch (error) {
+  //     console.log(error);
+  //   }
+  // };
   const handleDelete = async (row) => {
     serviceDel.value = row.id;
     setTimeout(() => {
@@ -495,10 +498,6 @@
     }, 100);
   };
   const setActionHandler = () => {
-    // const proxy = getCurrentInstance()?.proxy;
-    // _.each(instanceActions, (item) => {
-    //   actionHandlerMap.set(item.value, _.get(proxy, item.handler));
-    // });
     actionHandlerMap.set('upgrade', handleClickUpgrade);
     actionHandlerMap.set('clone', handleClickClone);
     actionHandlerMap.set('rollback', handleClickRollback);
@@ -549,7 +548,6 @@
   };
   const createInstanceListWebsocket = () => {
     try {
-      // if (axiosInstance || !queryParams.projectID) return;
       if (!queryParams.projectID) return;
       setChunkRequest({
         url: `/services`,
@@ -563,41 +561,9 @@
       console.log(error);
     }
   };
-  const loopUpdateCall = async () => {
-    try {
-      const params: any = {
-        ...pickBy(queryParams, (val) => !!val),
-        sort: [sort.value]
-      };
-      const { data } = await queryServices(params);
-      dataList.value = data?.items || [];
-      total.value = data?.pagination?.total || 0;
-    } catch (error) {
-      dataList.value = [];
-      console.log(error);
-    }
-  };
-  const loopUpdateList = () => {
-    clearInterval(loopTimer);
-    if (!queryParams.projectID) return;
-    loopTimer = setInterval(() => {
-      loopUpdateCall();
-    }, 15 * 1000);
-  };
-  watch(
-    () => queryParams,
-    () => {
-      // loopUpdateList();
-    },
-    {
-      immediate: true,
-      deep: true
-    }
-  );
 
   onBeforeUnmount(() => {
     axiosInstance?.cancel?.();
-    clearInterval(loopTimer);
   });
   onMounted(() => {
     setActionHandler();
@@ -612,7 +578,4 @@
   };
 </script>
 
-<style lang="less" scoped>
-  .applications-list {
-  }
-</style>
+<style lang="less" scoped></style>

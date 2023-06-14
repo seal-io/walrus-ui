@@ -3,8 +3,8 @@ import en from './en-US';
 import cn from './zh-CN';
 
 export const LOCALE_OPTIONS = [
-  { label: '中文', value: 'zh-CN' },
-  { label: 'English', value: 'en-US' },
+  { label: '中文', value: 'zh-CN', icon: 'icon-fuhao-zhongwen' },
+  { label: 'English', value: 'en-US', icon: 'icon-english' }
 ];
 const defaultLocale = localStorage.getItem('arco-locale') || 'zh-CN';
 
@@ -14,7 +14,7 @@ const i18n = createI18n({
   allowComposition: true,
   messages: {
     'en-US': en,
-    'zh-CN': cn,
-  },
+    'zh-CN': cn
+  }
 });
 export default i18n;

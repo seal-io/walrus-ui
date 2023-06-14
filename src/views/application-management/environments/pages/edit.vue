@@ -195,6 +195,7 @@
         })
       },
       {
+        type: 'menu.operatorHub.evniroment',
         label: title.value
       }
     ];

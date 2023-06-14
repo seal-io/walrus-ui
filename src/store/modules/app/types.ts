@@ -8,6 +8,7 @@ export interface AppState {
   footer: boolean;
   themeColor: string;
   menuWidth: number;
+  smallWidth: number;
   navbarHeight: number;
   globalSettings: boolean;
   device: string;
