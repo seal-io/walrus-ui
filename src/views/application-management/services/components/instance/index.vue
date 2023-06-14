@@ -11,19 +11,6 @@
             :actions="actionList"
             @select="handleSelect"
           >
-            <!-- <template #value="{ data }">
-              <template
-                v-if="
-                  data.key === 'operation' &&
-                  !_.get(currentInfo, 'status.transitioning')
-                "
-              >
-                <a-button type="primary" size="small" @click="handleUpgrade">
-                  <i class="iconfont icon-upgrade"></i
-                  >{{ $t('common.button.upgrade') }}</a-button
-                >
-              </template>
-            </template> -->
           </BasicInfo>
         </template>
         <template #description></template>
@@ -37,77 +24,75 @@
           ></serviceEdit>
         </div>
       </slTransition>
-      <div>
-        <div v-if="pageAction === 'view'">
-          <ComCard>
-            <ModuleCard
-              :title="$t('applications.applications.detail.configuration')"
-              :title-style="{ 'margin-bottom': '10px', 'margin-top': 0 }"
-            >
-              <serviceInfo> </serviceInfo>
-            </ModuleCard>
-          </ComCard>
-          <ComCard>
-            <ModuleCard
-              :title="$t('applications.applications.instance.history')"
-              :title-style="{ 'margin-top': 0 }"
-            >
-              <serviceHistory></serviceHistory>
-            </ModuleCard>
-            <ModuleCard
-              :title="$t('applications.applications.instance.accessUrl')"
-            >
-              <tabEndpoint ref="tabEndpointCom"></tabEndpoint>
-            </ModuleCard>
+      <div v-if="pageAction === 'view'">
+        <ComCard>
+          <ModuleCard
+            :title="$t('applications.applications.detail.configuration')"
+            :title-style="{ 'margin-bottom': '10px', 'margin-top': 0 }"
+          >
+            <serviceInfo> </serviceInfo>
+          </ModuleCard>
+        </ComCard>
+        <ComCard>
+          <ModuleCard
+            :title="$t('applications.applications.instance.history')"
+            :title-style="{ 'margin-top': 0 }"
+          >
+            <serviceHistory></serviceHistory>
+          </ModuleCard>
+          <ModuleCard
+            :title="$t('applications.applications.instance.accessUrl')"
+          >
+            <tabEndpoint ref="tabEndpointCom"></tabEndpoint>
+          </ModuleCard>
 
-            <ModuleCard
-              :title="$t('applications.applications.instance.resource')"
-              style="margin-top: 20px"
-            >
-              <template #title>
-                <span>{{
-                  $t('applications.applications.instance.resource')
-                }}</span>
-                <a-tooltip
-                  :content="
-                    $t('applications.applications.instance.resource.tips')
-                  "
-                >
-                  <icon-info-circle class="mleft-5" />
-                </a-tooltip>
-              </template>
-              <a-tabs
-                lazy-load
-                type="rounded"
-                :active-key="activeKey"
-                class="module-tabs"
-                @change="handleTabChange"
+          <ModuleCard
+            :title="$t('applications.applications.instance.resource')"
+            style="margin-top: 20px"
+          >
+            <template #title>
+              <span>{{
+                $t('applications.applications.instance.resource')
+              }}</span>
+              <a-tooltip
+                :content="
+                  $t('applications.applications.instance.resource.tips')
+                "
               >
-                <a-tab-pane
-                  v-for="item in instanceTabList"
-                  :key="item.value"
-                  :title="$t(item.label)"
-                >
-                  <Component
-                    :is="instanceTabMap[item.com]"
-                    :resource-list="dataList"
-                    :is-loading="loading"
-                  ></Component>
-                </a-tab-pane>
-              </a-tabs>
-            </ModuleCard>
-            <EditPageFooter>
-              <template #save>
-                <a-button
-                  type="primary"
-                  class="cap-title cancel-btn"
-                  @click="handleOk"
-                  >{{ $t('common.button.back') }}</a-button
-                >
-              </template>
-            </EditPageFooter>
-          </ComCard>
-        </div>
+                <icon-info-circle class="mleft-5" />
+              </a-tooltip>
+            </template>
+            <a-tabs
+              lazy-load
+              type="rounded"
+              :active-key="activeKey"
+              class="module-tabs"
+              @change="handleTabChange"
+            >
+              <a-tab-pane
+                v-for="item in instanceTabList"
+                :key="item.value"
+                :title="$t(item.label)"
+              >
+                <Component
+                  :is="instanceTabMap[item.com]"
+                  :resource-list="dataList"
+                  :is-loading="loading"
+                ></Component>
+              </a-tab-pane>
+            </a-tabs>
+          </ModuleCard>
+          <EditPageFooter>
+            <template #save>
+              <a-button
+                type="primary"
+                class="cap-title cancel-btn"
+                @click="handleOk"
+                >{{ $t('common.button.back') }}</a-button
+              >
+            </template>
+          </EditPageFooter>
+        </ComCard>
       </div>
     </ComCard>
   </div>
@@ -215,11 +200,13 @@
   const getServiceItemInfo = async () => {
     try {
       const params = {
-        id: route.query.id
+        id: route.query.id,
+        projectID: route.params.projectId
       };
       const { data } = await queryItemApplicationService(params);
       currentInfo.value = data;
     } catch (error) {
+      currentInfo.value = {};
       console.log(error);
     }
   };

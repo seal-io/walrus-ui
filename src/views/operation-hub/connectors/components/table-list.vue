@@ -543,7 +543,7 @@
       handleCreateGlobalConnector(item);
     }
   };
-  const handleView = (row) => {
+  const handleView = (row, action?) => {
     // currentInfo.value = row;
     // action.value = ModalAction.EDIT;
     // setTimeout(() => {
@@ -557,7 +557,7 @@
       router.push({
         name: data?.globalRoute,
         params: {
-          action: 'view'
+          action: action || 'view'
         },
         query: {
           id: row.id
@@ -568,7 +568,7 @@
         name: data?.route,
         params: {
           projectId: route.params.projectId,
-          action: 'view'
+          action: action || 'view'
         },
         query: {
           id: row.id
@@ -598,17 +598,7 @@
   };
 
   const handleClickEdit = (row) => {
-    const data = _.find(
-      props.connectorTypeList,
-      (item) => item.value === row.category
-    );
-    router.push({
-      name: data?.globalRoute,
-      params: {
-        action: 'edit'
-      },
-      query: { id: row.id }
-    });
+    handleView(row, 'edit');
   };
   const handleReinstallConfirm = async (row) => {
     try {

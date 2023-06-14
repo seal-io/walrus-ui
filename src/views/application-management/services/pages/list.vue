@@ -495,13 +495,13 @@
     }, 100);
   };
   const setActionHandler = () => {
-    const proxy = getCurrentInstance()?.proxy;
-    _.each(instanceActions, (item) => {
-      actionHandlerMap.set(item.value, _.get(proxy, item.handler));
-    });
-    // actionHandlerMap.set('upgrade', handleClickUpgrade);
-    // actionHandlerMap.set('clone', handleClickClone);
-    // actionHandlerMap.set('rollback', handleClickRollback);
+    // const proxy = getCurrentInstance()?.proxy;
+    // _.each(instanceActions, (item) => {
+    //   actionHandlerMap.set(item.value, _.get(proxy, item.handler));
+    // });
+    actionHandlerMap.set('upgrade', handleClickUpgrade);
+    actionHandlerMap.set('clone', handleClickClone);
+    actionHandlerMap.set('rollback', handleClickRollback);
   };
   const init = async () => {
     initCompleteData();
