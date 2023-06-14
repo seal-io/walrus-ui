@@ -166,7 +166,7 @@
           >
             <template #cell="{ record }">
               <a-tooltip :content="$t('common.button.delete')">
-                <a-link @click="handleDelete(record)">
+                <a-link status="danger" @click="handleDelete(record)">
                   <template #icon>
                     <icon-delete></icon-delete>
                   </template>

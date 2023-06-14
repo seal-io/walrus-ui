@@ -1,9 +1,13 @@
 import { AnyObject } from '@/types/global';
 import { RouteRecordRaw } from 'vue-router';
 
-export type permissionItem = 'GET' | 'POST' | 'PUT' | 'DELETE';
+export type permissionItem = 'GET' | 'POST' | 'PUT' | 'DELETE' | '*';
 export type RoleType = '' | '*' | 'admin' | 'user';
 
+export const permissionKey = {
+  projectRoles: 'projectRoles',
+  roles: 'roles'
+};
 // cache the role policy
 export const ROLES = '_roles';
 

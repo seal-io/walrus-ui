@@ -139,6 +139,7 @@
   import { queryConnectors } from '@/views/operation-hub/connectors/api';
   import usePageAction from '@/hooks/use-page-action';
   import useGetBreadState from '@/views/application-management/projects/hooks/use-get-breadstate';
+  import BreadcrumbOptions from '@/views/application-management/projects/hooks/use-project-breadcrumb-data';
   import { EnvironFormData } from '../config/interface';
   import connectorsTable from '../components/connectors.vue';
   import ConnectorSelector from '../components/connector-selector.vue';

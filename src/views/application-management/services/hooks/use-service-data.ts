@@ -36,7 +36,7 @@ export default function useServiceData(props?) {
   const { pageAction, handleEdit } = usePageAction();
   const defaultGroupKey = '_default_default_';
   const { route, router, t } = useCallCommon();
-  let refMap: Record<string, refItem> = {};
+  const refMap = ref<Record<string, refItem>>({});
   const templateInfo = ref<any>({});
   const serviceInfo = ref<any>({});
   const variablesGroup = ref<any>({});
@@ -95,7 +95,7 @@ export default function useServiceData(props?) {
   };
   // get set: edit create
   const generateVariablesGroup = (type) => {
-    refMap = {};
+    refMap.value = {};
     variablesGroup.value = {};
     variablesGroupForm.value = {};
     const sourceData = {

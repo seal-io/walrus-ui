@@ -272,12 +272,11 @@
     serviceDataList,
     templateList,
     completeData,
-    refMap,
     title,
+    refMap,
     breadCrumbList: CurrentBreadList
   } = useServiceData(props);
   let copyFormData: any = null;
-
   const { route, router, t } = useCallCommon();
   const formref = ref();
   const loading = ref(false);
@@ -337,7 +336,7 @@
   };
   const setRefMap = (el: refItem, name) => {
     if (el) {
-      refMap[`${name}`] = el;
+      refMap.value[`${name}`] = el;
     }
   };
 
@@ -355,18 +354,17 @@
   };
 
   const clearFormValidStatus = () => {
-    keys(refMap).map(async (key) => {
-      const refEL = refMap[key];
+    keys(refMap.value).map(async (key) => {
+      const refEL = refMap.value[key];
       refEL?.clearFormValidStatus?.();
     });
   };
   // get group form data
   const getRefFormData = async (noValidate?: boolean) => {
     const resultList: any[] = [];
-    console.log('refMap==1212====', keys(refMap));
     await Promise.all(
-      keys(refMap).map(async (key) => {
-        const refEL = refMap[key];
+      keys(refMap.value).map(async (key) => {
+        const refEL = refMap.value[key];
         const moduleForm = await refEL?.getFormData?.(noValidate);
         resultList.push({
           tab: key,
@@ -437,7 +435,12 @@
 
   const validateFormData = async () => {
     const moduleFormList = await getFormData();
-    console.log('moduleFormList===', refMap, moduleFormList, variablesGroup);
+    console.log(
+      'moduleFormList===',
+      refMap.value,
+      moduleFormList,
+      variablesGroup
+    );
     const validFailedForm = find(moduleFormList, (item) => !item.formData);
     if (validFailedForm && validFailedForm.tab) {
       activeKey.value = validFailedForm.tab;

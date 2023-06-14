@@ -1,5 +1,6 @@
 import { Resources } from '@/permissions/config';
 import { PROJECT } from '@/router/config';
+import { permissionKey } from '@/store/modules/user/types';
 import connectorRoutes from './connectors';
 
 export default [
@@ -37,6 +38,7 @@ export default [
       selectedMenu: PROJECT.List,
       permission: {
         resource: Resources.Projects,
+        type: permissionKey.projectRoles,
         actions: ['GET']
       },
       cachePages: [
@@ -63,7 +65,8 @@ export default [
       locale: 'applications.projects.menu',
       requiresAuth: true,
       permission: {
-        resource: Resources.Projects,
+        resource: Resources.Environments,
+        type: permissionKey.projectRoles,
         actions: ['GET']
       },
       cachePages: [PROJECT.ServiceEdit, PROJECT.ServiceDetail],
@@ -83,8 +86,9 @@ export default [
       locale: 'applications.projects.menu',
       requiresAuth: true,
       permission: {
-        resource: Resources.Projects,
-        actions: ['GET']
+        resource: Resources.Environments,
+        type: permissionKey.projectRoles,
+        actions: ['POST']
       },
       icon: 'icon-apps'
     }
@@ -102,7 +106,8 @@ export default [
       locale: 'applications.projects.menu',
       requiresAuth: true,
       permission: {
-        resource: Resources.Projects,
+        resource: Resources.Services,
+        type: permissionKey.projectRoles,
         actions: ['GET']
       },
       icon: 'icon-apps'
@@ -120,8 +125,9 @@ export default [
       locale: 'applications.projects.menu',
       requiresAuth: true,
       permission: {
-        resource: Resources.Projects,
-        actions: ['GET']
+        resource: Resources.Services,
+        type: permissionKey.projectRoles,
+        actions: ['POST']
       },
       icon: 'icon-apps'
     }
