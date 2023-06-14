@@ -299,7 +299,6 @@
   import rollbackModal from '../components/rollback-modal.vue';
   import deleteInstanceModal from '../components/delete-instance-modal.vue';
 
-  const { proxy } = getCurrentInstance();
   const userStore = useUserStore();
   const {
     completeData,
@@ -496,9 +495,9 @@
     }, 100);
   };
   const setActionHandler = () => {
-    _.each(instanceActions, (item) => {
-      actionHandlerMap.set(item.value, _.get(proxy, item.handler));
-    });
+    actionHandlerMap.set('upgrade', handleClickUpgrade);
+    actionHandlerMap.set('clone', handleClickClone);
+    actionHandlerMap.set('rollback', handleClickRollback);
   };
   const init = async () => {
     initCompleteData();

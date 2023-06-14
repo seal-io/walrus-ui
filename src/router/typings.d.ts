@@ -1,11 +1,14 @@
 import 'vue-router';
 
+type permissionItem = 'GET' | 'POST' | 'PUT' | 'DELETE' | '*';
+type ac = 'edit' | 'view';
 declare module 'vue-router' {
   interface RouteMeta {
     isRouteView?: boolean;
     permission?: {
       resource: string;
       actions: string[];
+      pageAction?: Record<ac, Array<permissionItem>>; // pageAction's value should keep a order with the actions's value, e.g. pageAction:['edit', 'view'] actions: ['POST','GET']
       type?: 'projectRoles' | 'roles';
     };
     clearMenuStatus?: boolean; // clear menu selected status when no-menu page active

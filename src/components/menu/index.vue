@@ -1,12 +1,13 @@
 <script lang="tsx">
   import _ from 'lodash';
+  import { Resources, Actions } from '@/permissions/config';
   import { PROJECT } from '@/router/config';
   import { defineComponent, ref, h, compile, computed } from 'vue';
   import useCallCommon from '@/hooks/use-call-common';
   import { RouteRecordRaw, RouteRecordNormalized } from 'vue-router';
   // import type { RouteLocationNormalized } from 'vue-router';
 
-  import { useAppStore, useProjectStore } from '@/store';
+  import { useAppStore, useProjectStore, useUserStore } from '@/store';
   import useUser from '@/hooks/user';
   import usePermission from '@/hooks/permissions';
   import useListenerRouteChange from '@/hooks/use-listener-route-change';
@@ -23,6 +24,7 @@
       const { t, router, route } = useCallCommon();
       const currentRoute = ref<string>('');
       const appStore = useAppStore();
+      const userStore = useUserStore();
       const { changeLocale } = useLocale();
       const { logout } = useUser();
       const projectStore = useProjectStore();
@@ -108,6 +110,7 @@
       const goToProject = async (item: RouteRecordRaw) => {
         const defaultProject = await localStore.getValue(USER_DEFAULT_PROJECT);
 
+        // need create new project
         if (!projectStore.projectList.length) {
           router.push({
             name: item.name
@@ -118,12 +121,28 @@
           projectStore.projectList,
           (item) => item.value === defaultProject?.id
         );
+        const projectID = pro
+          ? defaultProject?.id
+          : _.get(projectStore.projectList, '0.value');
+
+        // no permission access to default project
+        if (
+          !userStore.hasProjectResourceActions({
+            resource: Resources.Projects,
+            actions: [Actions.GET],
+            projectID
+          })
+        ) {
+          router.push({
+            name: item.name
+          });
+          return;
+        }
+        // has access permission to default project
         router.push({
           name: PROJECT.Detail,
           params: {
-            projectId: pro
-              ? defaultProject?.id
-              : _.get(projectStore.projectList, '0.value')
+            projectId: projectID
           }
         });
       };

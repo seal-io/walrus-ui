@@ -1,4 +1,6 @@
 import { Resources } from '@/permissions/config';
+import { permissionKey } from '@/store/modules/user/types';
+import { PageAction } from '@/views/config';
 
 export default [
   {
@@ -12,6 +14,11 @@ export default [
       requiresAuth: true,
       permission: {
         resource: Resources.Connectors,
+        type: permissionKey.projectRoles,
+        pageAction: {
+          [PageAction.VIEW]: ['GET'],
+          [PageAction.EDIT]: ['POST']
+        },
         actions: ['GET']
       },
       icon: 'icon-apps'
@@ -28,6 +35,11 @@ export default [
       requiresAuth: true,
       permission: {
         resource: Resources.Connectors,
+        type: permissionKey.projectRoles,
+        pageAction: {
+          [PageAction.VIEW]: ['GET'],
+          [PageAction.EDIT]: ['POST']
+        },
         actions: ['GET']
       },
       icon: 'icon-apps'
@@ -44,6 +56,11 @@ export default [
       requiresAuth: true,
       permission: {
         resource: Resources.Connectors,
+        type: permissionKey.projectRoles,
+        pageAction: {
+          [PageAction.VIEW]: ['GET'],
+          [PageAction.EDIT]: ['POST']
+        },
         actions: ['GET']
       },
       icon: 'icon-apps'
@@ -60,6 +77,11 @@ export default [
       requiresAuth: true,
       permission: {
         resource: Resources.Connectors,
+        type: permissionKey.projectRoles,
+        pageAction: {
+          [PageAction.VIEW]: ['GET'],
+          [PageAction.EDIT]: ['POST']
+        },
         actions: ['GET']
       },
       icon: 'icon-apps'
