@@ -169,7 +169,11 @@
             type="primary"
             class="cap-title cancel-btn"
             @click="handleOk"
-            >{{ $t('common.button.save') }}</a-button
+            >{{
+              route.query.id
+                ? $t('common.button.upgrade')
+                : $t('common.button.save')
+            }}</a-button
           >
         </template>
         <template #cancel>
@@ -206,14 +210,12 @@
   } from 'lodash';
   import {
     ref,
-    reactive,
-    PropType,
     ComponentPublicInstance,
     computed,
     provide,
     watch,
     nextTick,
-    toRefs
+    onMounted
   } from 'vue';
   import { onBeforeRouteLeave } from 'vue-router';
   import useCallCommon from '@/hooks/use-call-common';
@@ -448,7 +450,7 @@
 
     return { validFailedForm, moduleFormList };
   };
-  const handleCancel = async () => {
+  const getCurrentFormData = async () => {
     const noValidate = true;
     const moduleFormList = await getFormData(noValidate);
     const latestFormData = _.cloneDeep(formData);
@@ -465,7 +467,11 @@
         {}
       )
     };
-    console.log('cancel=====', { copyFormData, latestFormData });
+    console.log('copyFormData====', { copyFormData, latestFormData });
+    return latestFormData;
+  };
+  const handleCancel = async () => {
+    const latestFormData = await getCurrentFormData();
     if (!_.isEqual(copyFormData, latestFormData)) {
       beforeLeaveCallback({
         isCancel: true,
@@ -485,10 +491,6 @@
     }
   };
   const handleOk = async () => {
-    // if (props.pgType !== 'page') {
-    //   emits('save');
-    //   return;
-    // }
     const res = await formref.value?.validate();
     const { validFailedForm, moduleFormList } = await validateFormData();
     if (!res && !validFailedForm) {
@@ -531,7 +533,6 @@
         nv,
         ov: ov || ''
       };
-      console.log('versionMap===', versionMap.value);
     },
     {
       immediate: true
@@ -554,9 +555,15 @@
     return true;
   });
   const initData = async () => {
-    await init();
-    copyFormData = _.cloneDeep(formData);
+    init();
   };
+  onMounted(async () => {
+    nextTick(async () => {
+      const latestFormData = await getCurrentFormData();
+      copyFormData = _.cloneDeep(latestFormData);
+      console.log('formData==1=', latestFormData);
+    });
+  });
   initData();
 </script>
 
