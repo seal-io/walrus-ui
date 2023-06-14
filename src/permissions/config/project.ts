@@ -38,7 +38,7 @@ export default [
   },
   {
     resource: Resources.Projects,
-    title: 'permission.resource.project.project',
+    title: 'permission.button.action',
     group: Group.AppManagement,
     order: ResourcesOrder.Projects,
     actions: ['GET', 'POST', 'DELETE', 'PUT']

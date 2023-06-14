@@ -69,7 +69,7 @@ export interface UserState {
     scope: string;
   }>;
   permissionsKey: {
-    projectRoles: string;
-    roles: string;
+    projectRoles: 'projectRoles';
+    roles: 'roles';
   };
 }
