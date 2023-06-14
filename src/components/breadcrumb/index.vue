@@ -53,6 +53,7 @@
               <template #arrow-icon>
                 <OnClickOutside @trigger="handleClickOutSide(item)">
                   <span
+                    v-if="!item.hideDropDown"
                     class="bread-icon-btn"
                     @click.stop="handleTogglePopup(item)"
                   >
@@ -142,9 +143,13 @@
     if (index === props.items.length - 1) {
       return;
     }
-    router.replace({
-      name: item.route
-    });
+    if (item.backAction) {
+      router.back();
+    } else {
+      router.replace({
+        name: item.route
+      });
+    }
   };
   const handleClickItem = (item) => {
     if (item.backAction) {

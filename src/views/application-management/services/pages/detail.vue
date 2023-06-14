@@ -24,8 +24,13 @@
   const { route, router } = useCallCommon();
   const {
     breadCrumbList,
-    setBreabCrumbData,
     handleBreadChange,
+    getProjectList,
+    getEnvironmentList,
+    getServiceList,
+    setProjectList,
+    setEnvironmentList,
+    setServiceList,
     projectTemplate,
     environmentTemplate,
     serviceTemplate
@@ -42,6 +47,21 @@
 
   const handleServiceChange = ({ value, item }) => {
     handleBreadChange(value, item);
+  };
+  const setBreabCrumbData = async () => {
+    const [projectList, environmentList, serviceList] = await Promise.all([
+      getProjectList(),
+      getEnvironmentList(),
+      getServiceList()
+    ]);
+    const projectRes = await setProjectList(projectList);
+    const environmentRes = setEnvironmentList(environmentList);
+    const serviceRes = setServiceList(serviceList);
+    breadCrumbList.value = [
+      projectRes,
+      { ...environmentRes, backAction: true },
+      serviceRes
+    ];
   };
   const init = () => {
     setBreabCrumbData();
