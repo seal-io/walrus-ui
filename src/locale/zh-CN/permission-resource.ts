@@ -19,5 +19,6 @@ export default {
   'permission.resource.system.operation.role': '角色',
   'permission.resource.system.operation.config': '配置管理',
   'permission.resource.system.operation.userRole': '用户角色',
-  'permission.resource.system.operation.userManagement': '用户管理'
+  'permission.resource.system.operation.userManagement': '用户管理',
+  'permission.button.action': '操作'
 };

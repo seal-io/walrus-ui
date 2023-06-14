@@ -1,6 +1,11 @@
 <template>
   <div class="wrapper">
-    <a-form :model="formData" auto-label-width>
+    <a-form
+      :model="formData"
+      auto-label-width
+      layout="inline"
+      style="margin-bottom: 20px"
+    >
       <a-form-item :label="$t('profile.account.form.uername')">
         <span class="readonly-view-label">{{ userStore.name }}</span>
       </a-form-item>
@@ -65,6 +70,7 @@
       0
     );
   };
+  // some api send a POST request for get data.
   const getResourceActions = (actions: string[], resource) => {
     let result = actions;
     if (_.includes(result, '*')) {

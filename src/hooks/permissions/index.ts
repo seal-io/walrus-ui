@@ -9,7 +9,7 @@ export const checkResourcePermission = (permission, to?) => {
 
   // type always set in the detail page that projects relate to
   const { resource, actions, type } = permission || {};
-  let resourcePath = 'roles';
+  let resourcePath: string = userStore.permissionsKey.roles; // roles
   if (
     type === userStore.permissionsKey.projectRoles &&
     userStore.isSystemAdmin()
