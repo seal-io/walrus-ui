@@ -52,7 +52,7 @@
               :title="$t('applications.applications.instance.history')"
               :title-style="{ 'margin-top': 0 }"
             >
-              <applicationHistory></applicationHistory>
+              <serviceHistory></serviceHistory>
             </ModuleCard>
             <ModuleCard
               :title="$t('applications.applications.instance.accessUrl')"

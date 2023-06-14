@@ -495,9 +495,13 @@
     }, 100);
   };
   const setActionHandler = () => {
-    actionHandlerMap.set('upgrade', handleClickUpgrade);
-    actionHandlerMap.set('clone', handleClickClone);
-    actionHandlerMap.set('rollback', handleClickRollback);
+    const proxy = getCurrentInstance()?.proxy;
+    _.each(instanceActions, (item) => {
+      actionHandlerMap.set(item.value, _.get(proxy, item.handler));
+    });
+    // actionHandlerMap.set('upgrade', handleClickUpgrade);
+    // actionHandlerMap.set('clone', handleClickClone);
+    // actionHandlerMap.set('rollback', handleClickRollback);
   };
   const init = async () => {
     initCompleteData();
@@ -599,8 +603,6 @@
     setActionHandler();
     createInstanceListWebsocket();
   });
-  // const res = dayjs('2020-02-01').diff('2021-02-01', 'day');
-  // console.log('res===', res);
   init();
 </script>
 

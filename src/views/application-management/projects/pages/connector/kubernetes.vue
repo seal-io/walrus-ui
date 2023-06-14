@@ -1,5 +1,5 @@
 <template>
-  <KubernetesDetail></KubernetesDetail>
+  <KubernetesDetail> </KubernetesDetail>
 </template>
 
 <script lang="ts" setup>

@@ -2,6 +2,7 @@
   <div>
     <BreadWrapper>
       <Breadcrumb
+        :menu="route.params.projectId ? { icon: 'icon-apps' } : null"
         :items="
           route.params.projectId
             ? breadCrumbList

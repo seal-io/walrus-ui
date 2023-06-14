@@ -1,6 +1,7 @@
 import { Resources } from '@/permissions/config';
 import { PROJECT } from '@/router/config';
 import { permissionKey } from '@/store/modules/user/types';
+import { PageAction } from '@/views/config';
 import connectorRoutes from './connectors';
 
 export default [

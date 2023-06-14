@@ -18,6 +18,8 @@ export default function useGetBreadState() {
       wrapperId: 'projectWrapper',
       route: PROJECT.Detail,
       visible: false,
+      backAction: true,
+      hideDropDown: true,
       options: _.cloneDeep(projectStore.projectList),
       onSetting() {
         router.replace({
