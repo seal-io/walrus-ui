@@ -331,6 +331,7 @@
         })
       },
       {
+        type: 'menu.operatorHub.connector',
         label: title.value
       }
     ];

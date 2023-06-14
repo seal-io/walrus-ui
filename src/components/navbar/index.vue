@@ -5,7 +5,7 @@
         <img
           alt="logo"
           class="logo"
-          src="../../assets/images/seal-logo.png"
+          src="../../assets/images/seal-logo.svg"
           @click="handleToHome"
         />
       </div>
@@ -14,16 +14,6 @@
       <nav-list :list="navDataList" :default-active="defaultActive"></nav-list>
     </div>
     <ul class="right-side">
-      <!-- <li>
-        <a-tooltip :content="$t('settings.search')">
-          <a-button class="nav-btn" type="outline" :shape="'circle'">
-            <template #icon>
-              <icon-search />
-            </template>
-          </a-button>
-        </a-tooltip>
-      </li> -->
-
       <li id="langWrap" style="position: relative">
         <a-button
           size="small"
@@ -33,17 +23,19 @@
           @click="setDropDownVisible"
         >
           <template #icon>
-            <icon-language />
+            <i
+              class="iconfont icon-language size-20"
+              style="color: var(--color-text-2)"
+            ></i>
           </template>
         </a-button>
         <a-dropdown
           trigger="click"
-          style="top: 40px; z-index: 3000; width: 70px"
+          style="top: 35px; z-index: 3000; width: 70px"
           popup-container="#langWrap"
           @select="changeLocale"
         >
           <div ref="triggerBtn" class="trigger-btn"></div>
-          <!-- <icon-language class="size-16" style="cursor: pointer" /> -->
           <template #content>
             <a-doption
               v-for="item in locales"
@@ -55,104 +47,34 @@
           </template>
         </a-dropdown>
       </li>
-      <!-- <li
-        ><a-divider
-          direction="vertical"
-          style="
-            margin: 0;
-            height: 12px;
-            border-color: rgba(255, 255, 255, 0.5);
-          "
-        ></a-divider
-      ></li> -->
-      <!-- <li>
-        <a-tooltip
-          :content="
-            theme === 'light'
-              ? $t('settings.navbar.theme.toDark')
-              : $t('settings.navbar.theme.toLight')
-          "
-        >
-          <a-button
-            class="nav-btn"
-            type="outline"
-            :shape="'circle'"
-            @click="toggleTheme"
-          >
-            <template #icon>
-              <icon-moon-fill v-if="theme === 'dark'" />
-              <icon-sun-fill v-else />
-            </template>
-          </a-button>
-        </a-tooltip>
-      </li> -->
-      <!-- <li v-show="hasNavList">
-        <a-tooltip :content="$t('settings.navbar.alerts')">
-          <div class="message-box-trigger">
-            <a-badge :count="9" dot>
-              <a-button
-                class="nav-btn"
-                type="outline"
-                :shape="'circle'"
-                @click="setPopoverVisible"
-              >
-                <icon-notification />
-              </a-button>
-            </a-badge>
-          </div>
-        </a-tooltip>
-        <a-popover
-          trigger="click"
-          :arrow-style="{ display: 'none' }"
-          :content-style="{ padding: 0, minWidth: '400px' }"
-          content-class="message-popover"
-        >
-          <div ref="refBtn" class="ref-btn"></div>
-          <template #content>
-            <message-box />
-          </template>
-        </a-popover>
-      </li> -->
       <li v-show="hasNavList" id="userWrap" style="position: relative">
         <a-dropdown
           trigger="click"
-          style="top: 40px"
+          style="top: 35px"
           popup-container="#userWrap"
           content-class="count-list-wrap"
         >
           <div style="cursor: pointer" class="user-wrap">
             <span class="user">
-              <!-- <span class="name">{{ userStore.name }}</span> -->
               <span class="role">
-                <span class="avatar">
+                <!-- <span class="avatar">
                   <img
                     alt="avatar"
                     class="img"
                     src="../../assets/images/avatar-02.png"
                   />
-                </span>
-                {{ userStore.name }}</span
+                </span> -->
+                <a-avatar
+                  class="mright-5"
+                  :style="{ backgroundColor: 'var(--sealblue-6)' }"
+                  :size="22"
+                >
+                  <IconUser class="size-16" /> </a-avatar
+                >{{ userStore.name }}</span
               >
             </span>
-            <!-- <a-avatar
-              :size="32"
-              :style="{
-                cursor: 'pointer',
-                backgroundColor: 'rgba(201, 205, 212, 30%)'
-              }"
-            >
-              <img alt="avatar" src="../../assets/images/avatar-02.png" />
-            </a-avatar> -->
           </div>
           <template #content>
-            <!-- <a-doption>
-              <a-space @click="switchRoles">
-                <icon-tag />
-                <span>
-                  {{ $t('messageBox.switchRoles') }}
-                </span>
-              </a-space>
-            </a-doption> -->
             <a-doption>
               <a-space @click="handleModifyPassword">
                 <icon-user style="color: inherit" />
@@ -161,22 +83,7 @@
                 </span>
               </a-space>
             </a-doption>
-            <!-- <a-doption>
-              <a-space @click="$router.push({ name: 'info' })">
-                <icon-user />
-                <span>
-                  {{ $t('messageBox.userCenter') }}
-                </span>
-              </a-space>
-            </a-doption> -->
-            <!-- <a-doption>
-              <a-space @click="handleToSetting">
-                <icon-settings />
-                <span>
-                  {{ $t('messageBox.userSettings') }}
-                </span>
-              </a-space>
-            </a-doption> -->
+
             <a-doption>
               <a-space style="width: 100%" @click="handleLogout">
                 <icon-export style="color: inherit" />
@@ -329,14 +236,7 @@
 
   const refBtn = ref();
   const triggerBtn = ref();
-  const setPopoverVisible = () => {
-    const event = new MouseEvent('click', {
-      view: window,
-      bubbles: true,
-      cancelable: true
-    });
-    refBtn.value.dispatchEvent(event);
-  };
+
   const handleLogout = () => {
     logout();
   };
@@ -347,7 +247,7 @@
   };
   const handleToHome = () => {
     router.push({
-      name: DASHBOARD.Main
+      path: '/'
     });
   };
   const setDropDownVisible = () => {
@@ -363,14 +263,6 @@
     Message.success(res as string);
   };
   const toggleDrawerMenu = inject('toggleDrawerMenu');
-  const handleToSetting = () => {
-    router.push({
-      name: SYSTEMSETTINGS.Settings
-      // query: {
-      //   redirectPath: router.currentRoute.value.fullPath,
-      // },
-    });
-  };
 </script>
 
 <style scoped lang="less">
@@ -379,7 +271,7 @@
   }
 
   .navbar {
-    padding: 0 20px;
+    padding: 0 10px;
   }
 
   .user-wrap {
@@ -400,6 +292,7 @@
       .role {
         display: flex;
         align-items: center;
+        color: var(--color-text-2);
       }
 
       .avatar {
@@ -442,10 +335,11 @@
   .navbar {
     display: flex;
     justify-content: space-between;
-    height: 100%;
+    height: 48px;
     margin: 0 auto;
-    background-color: var(--seal-color-bg-1);
-    // border-bottom: 1px solid var(--color-border);
+    background-color: #fff;
+    border-bottom: 1px solid var(--color-border-1);
+
     :deep(.arco-typography) {
       color: #fff;
     }

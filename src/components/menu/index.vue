@@ -40,7 +40,7 @@
           return false;
         },
         set(value: boolean) {
-          appStore.updateSettings({ menuCollapse: true });
+          appStore.updateSettings({ menuCollapse: value });
         }
       });
       const appRoute = computed(() => {
@@ -191,7 +191,7 @@
       }, true);
       const setCollapse = (val: boolean) => {
         if (appStore.device === 'desktop')
-          appStore.updateSettings({ menuCollapse: true });
+          appStore.updateSettings({ menuCollapse: val });
       };
 
       const renderSubMenu = () => {
@@ -288,12 +288,14 @@
               <a-sub-menu
                 key={item.key}
                 v-slots={{
-                  icon: () =>
+                  'icon': () =>
                     h(compile(item.icon), {
                       style: {
                         color: 'var(--color-text-3)'
                       }
-                    })
+                    }),
+                  'expand-icon-right': () => {},
+                  'title': () => h(compile(t(item.name || '')))
                 }}
               >
                 {item.children.map((cItem) => {
@@ -332,6 +334,7 @@
         }
         return travel();
       };
+
       const getProjectList = async () => {
         try {
           const params = {
@@ -377,12 +380,12 @@
         }
       };
       getProjectList();
-      // appStore.device !== 'mobile'
       return () => (
         <div class="menu-container">
           <a-menu
+            mode="pop"
             v-model:collapsed={collapsed.value}
-            show-collapse-button={false}
+            show-collapse-button={true}
             auto-open={false}
             selected-keys={appStore.selectedKey}
             auto-open-selected={true}
@@ -390,15 +393,10 @@
             style="height: 100%"
             onCollapse={setCollapse}
           >
-            {renderSubMenu()}
-          </a-menu>
-          <a-menu
-            class="user-group"
-            auto-open={false}
-            selected-keys={appStore.selectedKey}
-            auto-open-selected={true}
-          >
-            {renderUserMenu()}
+            <div class="box">
+              <div class="sys">{renderSubMenu()}</div>
+              <div class="account">{renderUserMenu()}</div>
+            </div>
           </a-menu>
         </div>
       );
@@ -432,18 +430,22 @@
   }
 
   .menu-container {
-    position: relative;
     height: 100%;
 
-    .user-group {
-      position: absolute;
-      bottom: 100px;
-      color: var(--color-text-2);
-      background-color: #fff;
-      border-top: 1px solid var(--color-border-1);
+    .box {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      height: 100%;
+      padding-bottom: 56px;
 
-      .iconfont.icon-language {
-        margin-left: 1px;
+      .account {
+        padding-top: 2px;
+        border-top: 1px solid var(--color-border-1);
+
+        .iconfont.icon-language {
+          margin-left: 1px;
+        }
       }
     }
   }

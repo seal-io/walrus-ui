@@ -28,7 +28,11 @@
             :class="{ menuCollapse: appStore.menuCollapse }"
           >
             <div>
-              <img alt="logo" class="logo" src="../assets/images/logo.png" />
+              <img
+                alt="logo"
+                class="logo"
+                src="../assets/images/seal-logo.svg"
+              />
             </div>
           </div>
           <div class="menu-wrapper">
@@ -85,7 +89,7 @@
   const hideMenu = computed(() => appStore.hideMenu);
   const footer = computed(() => appStore.footer);
   const menuWidth = computed(() => {
-    return appStore.menuCollapse ? 48 : appStore.menuWidth;
+    return appStore.menuCollapse ? appStore.smallWidth : appStore.menuWidth;
   });
   const collapsed = computed(() => {
     return appStore.menuCollapse;
@@ -101,7 +105,7 @@
     return { ...paddingLeft, ...paddingTop, paddingRight: '10px' };
   });
   const setCollapsed = (val: boolean) => {
-    appStore.updateSettings({ menuCollapse: true });
+    appStore.updateSettings({ menuCollapse: val });
   };
   watch(
     () => userStore.role,
@@ -209,7 +213,6 @@
       left: 0;
       display: flex;
       align-items: center;
-      width: 48px;
       height: 48px;
       padding-left: 7px;
       font-size: 0;
@@ -218,15 +221,14 @@
       transition: all 0.2s cubic-bezier(0.34, 0.69, 0.1, 1);
 
       &.menuCollapse {
-        width: 48px;
+        // width: 48px;
         overflow: hidden;
         overflow: hidden;
         transition: all 0.2s cubic-bezier(0.34, 0.69, 0.1, 1);
       }
 
       .logo {
-        width: 34px;
-        height: auto;
+        height: 34px;
       }
     }
     // &::after {

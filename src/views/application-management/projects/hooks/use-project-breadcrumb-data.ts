@@ -15,6 +15,7 @@ export default function useProjectData() {
   const breadCrumbList = ref<BreadcrumbOptions[]>([]);
   const { route, router } = useCallCommon();
   const projectStore = useProjectStore();
+
   const pageLevelMap = {
     Project: 'Project',
     Environment: 'Environment',

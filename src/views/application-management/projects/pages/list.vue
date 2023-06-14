@@ -75,8 +75,8 @@
           :pagination="false"
           row-key="id"
           :row-selection="rowSelection"
-          @sorter-change="handleSortChange"
           @selection-change="handleSelectChange"
+          @sorter-change="handleSortChange"
         >
           <template #columns>
             <a-table-column

@@ -229,6 +229,7 @@
   import { validateAppNameRegx } from '@/views/config';
   import usePageAction from '@/hooks/use-page-action';
   import { beforeLeaveCallback } from '@/hooks/save-before-leave';
+  import { pageLevelMap } from '../../projects/hooks/use-project-breadcrumb-data';
   import { createService, upgradeApplicationInstance } from '../api';
   import useServiceData from '../hooks/use-service-data';
 
@@ -297,6 +298,7 @@
       CurrentBreadList.value[0],
       CurrentBreadList.value[1],
       {
+        type: 'menu.applicationManagement.serivce',
         label: title.value
       }
     ];
