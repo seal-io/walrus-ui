@@ -5,7 +5,13 @@
         :menu="route.params.projectId ? { icon: 'icon-apps' } : null"
         :items="
           route.params.projectId
-            ? breadCrumbList
+            ? [
+                ...breadCrumbList,
+                {
+                  type: 'menu.operatorHub.connector',
+                  label: title
+                }
+              ]
             : [
                 {
                   ...operationRootBread,
@@ -16,6 +22,7 @@
                 }
               ]
         "
+        @change="handleSelectChange"
       ></Breadcrumb>
     </BreadWrapper>
     <ComCard top-gap class="kuber-detail-wrap">
@@ -189,11 +196,13 @@
   import EditPageFooter from '@/components/edit-page-footer/index.vue';
   import useCallCommon from '@/hooks/use-call-common';
   import usePageAction from '@/hooks/use-page-action';
-  import useGetBreadState from '@/views/application-management/projects/hooks/use-get-breadstate';
+  import useProjectData from '@/views/application-management/projects/hooks/use-project-breadcrumb-data';
+  import { BreadcrumbOptions } from '@/views/config/interface';
   import { ConnectorFormData } from '../config/interface';
   import { operationRootBread } from '../config';
   import StatusLabel from '../components/status-label.vue';
   import { createConnector, updateConnector, queryItemConnector } from '../api';
+  import useConnectorBread from '../hooks/use-connector-bread';
 
   // const props = defineProps({
   //   id: {
@@ -203,7 +212,8 @@
   //     }
   //   }
   // });
-  const { getProjectState } = useGetBreadState();
+  const { breadCrumbList, handleSelectChange, setBreadCrumbList } =
+    useConnectorBread();
   const userStore = useUserStore();
   const { t, router, route } = useCallCommon();
   const { pageAction, handleEdit } = usePageAction();
@@ -239,20 +249,7 @@
     }
     return t('operation.connectors.title.edit', { type: 'Kubernetes' });
   });
-  const breadCrumbList = computed(() => {
-    return [
-      {
-        ...getProjectState({
-          id: route.params.projectId,
-          name: ''
-        })
-      },
-      {
-        type: 'menu.operatorHub.connector',
-        label: title.value
-      }
-    ];
-  });
+
   const getCostStatus = (conditions) => {
     const d = find(conditions, (item) => {
       return item.type === 'CostSynced';
@@ -344,7 +341,11 @@
     getConnectorInfo,
     handleSubmit
   });
-  getConnectorInfo();
+  const init = () => {
+    getConnectorInfo();
+    setBreadCrumbList();
+  };
+  init();
 </script>
 
 <script lang="ts">

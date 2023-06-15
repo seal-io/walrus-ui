@@ -92,7 +92,8 @@
     setProjectList,
     breadCrumbList,
     projectTemplate,
-    handleBreadChange
+    handleBreadChange,
+    initBreadValues
   } = userProjectBreadcrumbData();
   const { router, route } = useCallCommon();
   const userStore = useUserStore();
@@ -145,6 +146,7 @@
   const init = async () => {
     getItemProjectInfo();
     initActiveTab();
+    breadCrumbList.value = await initBreadValues([]);
   };
   onMounted(() => {
     initBread();

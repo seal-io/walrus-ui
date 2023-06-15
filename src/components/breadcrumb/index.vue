@@ -13,11 +13,7 @@
         </span>
       </span>
     </a-breadcrumb-item>
-    <a-breadcrumb-item
-      v-for="(item, index) in items"
-      :key="index"
-      :style="{ width: item.hasOptions ? '155px' : 'fit-content' }"
-    >
+    <a-breadcrumb-item v-for="(item, index) in items" :key="index">
       <span class="box">
         <span class="type">{{ $t(item.type || '') }}</span>
         <span
@@ -31,8 +27,10 @@
               :bordered="false"
               :model-value="item.value"
               :class="{ 'active-bread': index === items.length - 1 }"
-              style="width: 120px"
-              :trigger-props="{ contentClass: 'component-select-drop' }"
+              :trigger-props="{
+                contentClass: 'component-select-drop',
+                contentStyle: { width: '120px' }
+              }"
               :options="item.options"
               :popup-container="getContainer(item.wrapperId) || ''"
               size="mini"
@@ -99,7 +97,7 @@
           <icon-oblique-line
             v-if="index < items.length - 1"
             class="size-14 separator-line"
-            style="stroke-width: 3; margin-left: 12px"
+            style="stroke-width: 3; margin-left: 14px"
           />
         </span>
       </span>
@@ -126,6 +124,12 @@
       type: Object as PropType<BreadcrumbOptions>,
       default() {
         return null;
+      }
+    },
+    loading: {
+      type: Boolean,
+      default() {
+        return false;
       }
     }
   });
@@ -217,7 +221,7 @@
           font-size: 14px;
 
           &:hover {
-            font-weight: 500;
+            transform: scale(1.05);
             cursor: pointer;
           }
         }
@@ -251,10 +255,10 @@
 
           &::after {
             position: absolute;
-            top: -8px;
-            right: -8px;
-            bottom: -8px;
-            left: -8px;
+            top: -6px;
+            right: -6px;
+            bottom: -6px;
+            left: -6px;
             display: inline-block;
             content: '';
           }

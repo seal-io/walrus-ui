@@ -223,6 +223,26 @@ export default function useProjectData() {
       query
     });
   };
+  const initBreadValues = async (values?: Array<'env' | 'service'>) => {
+    const projectRes = await setProjectList(projectStore.projectList);
+    let environmentRes: any[] = [];
+    let serviceRes: any[] = [];
+    if (_.includes(values, 'env')) {
+      const env =
+        setEnvironmentList(projectStore.environmentList) || environmentTemplate;
+      environmentRes = [{ ...env }];
+    }
+    if (_.includes(values, 'service')) {
+      const service =
+        setServiceList(projectStore.serviceList) || serviceTemplate;
+      serviceRes = [{ ...service }];
+    }
+    return _.concat(
+      projectRes,
+      environmentRes,
+      serviceRes
+    ) as BreadcrumbOptions[];
+  };
   return {
     getProjectList,
     getEnvironmentList,
@@ -232,6 +252,7 @@ export default function useProjectData() {
     setServiceList,
     setBreabCrumbData,
     handleBreadChange,
+    initBreadValues,
     breadCrumbList,
     pageLevelMap,
     projectTemplate,

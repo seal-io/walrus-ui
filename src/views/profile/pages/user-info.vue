@@ -15,6 +15,7 @@
     </a-form>
     <div>
       <PermissionTable
+        pagination
         type="project"
         :permission-list="projectPermissions"
         :title="$t('propfile.permission.type.project')"

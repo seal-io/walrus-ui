@@ -47,15 +47,8 @@
   import Convert from 'ansi-to-html';
   import { get, split } from 'lodash';
   import hasAnsi from 'has-ansi';
-  import {
-    ref,
-    PropType,
-    onBeforeUnmount,
-    onMounted,
-    defineExpose,
-    watch
-  } from 'vue';
-  import { getPermissionRouteParams } from '../../../../api';
+  import { ref, PropType } from 'vue';
+  import usePermissionParams from '@/views/application-management/hooks/use-permission-params';
 
   const props = defineProps({
     isLoading: {
@@ -84,6 +77,7 @@
     }
   });
   const emits = defineEmits(['update:show']);
+  const perissionParams = usePermissionParams();
   const { setChunkRequest } = useSetChunkRequest();
   const content = ref('');
   const convert = new Convert();
@@ -106,7 +100,7 @@
       params: {
         key: props.info.key,
         watch: true,
-        ...getPermissionRouteParams()
+        ...perissionParams
       },
       contentType: 'text',
       handler: updateContent

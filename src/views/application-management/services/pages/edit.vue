@@ -55,7 +55,7 @@
             <a-select
               v-model="formData.template.id"
               allow-search
-              @change="handleModuleChange"
+              @change="handleTemplateChange"
             >
               <a-option
                 v-for="item in templateList"
@@ -219,6 +219,7 @@
     onMounted
   } from 'vue';
   import { onBeforeRouteLeave } from 'vue-router';
+  import { useProjectStore } from '@/store';
   import useCallCommon from '@/hooks/use-call-common';
   import EditPageFooter from '@/components/edit-page-footer/index.vue';
   import formCreate from '@/components/form-create/index.vue';
@@ -229,8 +230,8 @@
   } from '@/views/operation-hub/templates/config/interface';
   import { validateAppNameRegx } from '@/views/config';
   import { BreadcrumbOptions } from '@/views/config/interface';
-  import usePageAction from '@/hooks/use-page-action';
   import { beforeLeaveCallback } from '@/hooks/save-before-leave';
+  import useProjectBreadcrumbData from '../../projects/hooks/use-project-breadcrumb-data';
   import { createService, upgradeApplicationInstance } from '../api';
   import useServiceData from '../hooks/use-service-data';
 
@@ -260,12 +261,16 @@
 
   const emits = defineEmits(['cancel', 'save']);
   const {
+    breadCrumbList: CurrentBreadList,
+    handleBreadChange,
+    initBreadValues
+  } = useProjectBreadcrumbData();
+  const {
     id,
     init,
     generateVariablesGroup,
     getTemplateSchemaByVersion,
     getTemplateVersionList,
-    handleBreadChange,
     formData,
     pageAction,
     defaultGroupKey,
@@ -278,9 +283,9 @@
     templateList,
     completeData,
     title,
-    refMap,
-    breadCrumbList: CurrentBreadList
+    refMap
   } = useServiceData(props);
+
   let copyFormData: any = null;
   const { route, router, t } = useCallCommon();
   const formref = ref();
@@ -308,7 +313,6 @@
     return document.getElementById(id);
   };
   const setBreadCrumbList = () => {
-    console.log('CurrentBreadList===', CurrentBreadList.value);
     if (!CurrentBreadList.value.length) {
       breadCrumbList.value = [];
       return;
@@ -427,7 +431,7 @@
     }, 100);
   };
   // module change: exec version change
-  const handleModuleChange = async (val) => {
+  const handleTemplateChange = async (val) => {
     await getTemplateVersionList();
     formData.template.version = get(templateVersionList.value, '0.version');
     templateVersionFormCache.value = {};
@@ -568,6 +572,7 @@
     return true;
   });
   const initData = async () => {
+    breadCrumbList.value = await initBreadValues(['env', 'service']);
     await init();
     setBreadCrumbList();
   };

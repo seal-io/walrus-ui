@@ -4,13 +4,15 @@ import {
   createAxiosToken,
   useSetChunkRequest
 } from '@/api/axios-chunk-request';
+import usePermissionParams from '@/views/application-management/hooks/use-permission-params';
 import { InstanceResource } from '../../config/interface';
 import { websocketEventType } from '../../config';
-import { queryApplicationResource, getPermissionRouteParams } from '../../api';
+import { queryApplicationResource } from '../../api';
 import { updateResourceEmitter } from '../../hooks/update-resource-listener';
 
 export default function useFetchResource() {
   const { setChunkRequest } = useSetChunkRequest();
+  const permissionParams = usePermissionParams();
   const dataList = ref<InstanceResource[]>([]);
   const loading = ref(false);
   const serviceId = inject('serviceId', ref(''));
@@ -237,7 +239,7 @@ export default function useFetchResource() {
         url: `/service-resources`,
         params: {
           serviceID: serviceId.value,
-          ...getPermissionRouteParams()
+          ...permissionParams
         },
         handler: updateCallback
       });

@@ -43,6 +43,7 @@
     setProjectList,
     setEnvironmentList,
     handleBreadChange,
+    initBreadValues,
     pageLevelMap,
     projectTemplate,
     environmentTemplate
@@ -90,6 +91,7 @@
   };
   const init = async () => {
     getItemEnvironmentInfo();
+    breadCrumbList.value = await initBreadValues(['env']);
   };
   onMounted(() => {
     initBread();

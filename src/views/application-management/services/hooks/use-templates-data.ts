@@ -45,7 +45,8 @@ export default function useTemplatesData() {
           _.map(templateList.value, (item) => {
             return item.id;
           })
-        )
+        ),
+        page: -1
       };
       if (!params.templateID.length) {
         return;
