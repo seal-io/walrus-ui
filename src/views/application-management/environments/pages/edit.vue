@@ -4,6 +4,7 @@
       <Breadcrumb
         :items="breadCrumbList"
         :menu="{ icon: 'icon-apps' }"
+        @change="handleSelectChange"
       ></Breadcrumb>
     </BreadWrapper>
     <ComCard top-gap>
@@ -139,7 +140,8 @@
   import { queryConnectors } from '@/views/operation-hub/connectors/api';
   import usePageAction from '@/hooks/use-page-action';
   import useGetBreadState from '@/views/application-management/projects/hooks/use-get-breadstate';
-  import BreadcrumbOptions from '@/views/application-management/projects/hooks/use-project-breadcrumb-data';
+  import useProjectBreadcrumbData from '@/views/application-management/projects/hooks/use-project-breadcrumb-data';
+  import { BreadcrumbOptions } from '@/views/config/interface';
   import { EnvironFormData } from '../config/interface';
   import connectorsTable from '../components/connectors.vue';
   import ConnectorSelector from '../components/connector-selector.vue';
@@ -157,7 +159,9 @@
   //     }
   //   }
   // });
-  const { getProjectState } = useGetBreadState();
+
+  const { getProjectList, setProjectList, initBreadValues, handleBreadChange } =
+    useProjectBreadcrumbData();
   const userStore = useUserStore();
   const tabBarStore = useTabBarStore();
   const { router, route, t } = useCallCommon();
@@ -167,6 +171,7 @@
   const connectorList = ref<{ label: string; value: string }[]>([]);
   const showModal = ref(false);
   const submitLoading = ref(false);
+  const breadCrumbList = ref<BreadcrumbOptions[]>([]);
   let copyFormData: any = {};
   const formData = ref<EnvironFormData>({
     projectID: route.params.projectId as string,
@@ -186,20 +191,32 @@
     }
     return t('operation.environments.view');
   });
-  const breadCrumbList = computed(() => {
-    return [
+  const handleSelectChange = ({ value, item }) => {
+    handleBreadChange(value, item);
+  };
+  const setBreadCrumbList = async () => {
+    const list = await initBreadValues();
+
+    breadCrumbList.value = [
+      ...list,
       {
-        ...getProjectState({
-          id: route.params.projectId,
-          name: ''
-        })
+        type: 'menu.operatorHub.evniroment',
+        label: title.value
+      }
+    ] as BreadcrumbOptions[];
+
+    const projectList = await getProjectList();
+    const projectRes = await setProjectList(projectList);
+    breadCrumbList.value = [
+      {
+        ...projectRes
       },
       {
         type: 'menu.operatorHub.evniroment',
         label: title.value
       }
-    ];
-  });
+    ] as BreadcrumbOptions[];
+  };
   const setFormDataConnectors = (connectors) => {
     each(connectorList.value, (item) => {
       if (includes(connectors, item.value)) {
@@ -335,6 +352,7 @@
     return true;
   });
   const init = async () => {
+    setBreadCrumbList();
     await getConnectors();
     await getItemEnvironmentInfo();
   };

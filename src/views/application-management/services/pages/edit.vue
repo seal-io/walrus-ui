@@ -262,6 +262,10 @@
   const emits = defineEmits(['cancel', 'save']);
   const {
     breadCrumbList: CurrentBreadList,
+    getProjectList,
+    getEnvironmentList,
+    setProjectList,
+    setEnvironmentList,
     handleBreadChange,
     initBreadValues
   } = useProjectBreadcrumbData();
@@ -312,14 +316,16 @@
   const getContainer = (id) => {
     return document.getElementById(id);
   };
-  const setBreadCrumbList = () => {
-    if (!CurrentBreadList.value.length) {
-      breadCrumbList.value = [];
-      return;
-    }
+  const setBreadCrumbList = async () => {
+    const [projectList, environmentList] = await Promise.all([
+      getProjectList(),
+      getEnvironmentList()
+    ]);
+    const projectRes = await setProjectList(projectList);
+    const environmentRes = setEnvironmentList(environmentList);
     breadCrumbList.value = [
-      { ..._.cloneDeep(CurrentBreadList.value[0]) },
-      { ..._.cloneDeep(CurrentBreadList.value[1]) },
+      { ...projectRes },
+      { ...environmentRes },
       {
         type: 'menu.applicationManagement.serivce',
         label: title.value
@@ -327,7 +333,6 @@
     ] as BreadcrumbOptions[];
   };
   const handleSelectChange = ({ value, item }) => {
-    console.log('breadchange==', { value, item });
     handleBreadChange(value, item);
   };
   const cancelCallback = () => {
@@ -572,17 +577,20 @@
     return true;
   });
   const initData = async () => {
-    breadCrumbList.value = await initBreadValues(['env', 'service']);
+    const list = await initBreadValues(['env']);
+    breadCrumbList.value = [
+      ...list,
+      {
+        type: 'menu.applicationManagement.serivce',
+        label: title.value
+      }
+    ] as BreadcrumbOptions[];
+
     await init();
     setBreadCrumbList();
+    copyFormData = _.cloneDeep(formData);
   };
-  onMounted(async () => {
-    nextTick(async () => {
-      const latestFormData = await getCurrentFormData();
-      copyFormData = _.cloneDeep(latestFormData);
-      console.log('formData==1=', latestFormData);
-    });
-  });
+
   initData();
 </script>
 

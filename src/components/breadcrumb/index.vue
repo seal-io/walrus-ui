@@ -216,7 +216,7 @@
         }
 
         .arco-select-view-value {
-          margin-right: 15px;
+          margin-right: 12px;
           color: var(--sealblue-6);
           font-size: 14px;
 
@@ -285,6 +285,10 @@
             color: var(--color-text-2);
             font-weight: 400;
             cursor: default;
+
+            &:hover {
+              transform: scale(1);
+            }
           }
         }
       }
