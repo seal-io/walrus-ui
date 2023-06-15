@@ -18,7 +18,7 @@
       :style="{
         'display': 'flex',
         'align-items': 'center',
-        'height': `${appStore.menuWidth}px`
+        'height': `48px`
       }"
     >
       <slot></slot>

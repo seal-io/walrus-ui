@@ -48,7 +48,7 @@
           type="primary"
           status="warning"
           :disabled="!selectedKeys.length"
-          @click="handleDelete"
+          @click="handleDelete({}, 'button')"
           >{{ $t('common.button.delete') }}</a-button
         >
       </template>
@@ -178,9 +178,9 @@
                 "
                 :content="$t('common.button.delete')"
               >
-                <!-- <a-link status="danger" @click="handleDelete(record)">
+                <a-link status="danger" @click="handleDelete(record, 'row')">
                   <icon-delete></icon-delete>
-                </a-link> -->
+                </a-link>
               </a-tooltip>
               <!-- <a-dropdown-button
                 size="small"
@@ -257,7 +257,7 @@
     ></rollbackModal>
     <deleteInstanceModal
       v-model:show="showDeleteModal"
-      :callback="handleDeleteConfirm"
+      :callback="handleDeleteConfirmModal"
       :title="$t('common.delete.tips')"
     >
     </deleteInstanceModal>
@@ -329,7 +329,8 @@
   const showDeleteModal = ref(false);
   const serviceInfo = ref<any>({});
   const serviceDel = ref<any>({});
-  const id = route.query.id || '';
+  const id = route.query.id as string;
+  const delType = ref('');
   let timer: any = null;
   const loading = ref(false);
   const total = ref(0);
@@ -484,14 +485,22 @@
       }
     });
   };
-  // const handleDeleteConfirm = async (force) => {
-  //   try {
-  //     await deleteApplicationInstance({ id: serviceDel.value, force });
-  //   } catch (error) {
-  //     console.log(error);
-  //   }
-  // };
-  const handleDelete = async (row) => {
+  const handleDeleteConfirmRow = async (force) => {
+    try {
+      await deleteApplicationInstance({ id: serviceDel.value, force });
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  const handleDeleteConfirmModal = (force) => {
+    if (delType.value === 'row') {
+      handleDeleteConfirmRow(force);
+    } else {
+      handleDeleteConfirm(force);
+    }
+  };
+  const handleDelete = async (row, type) => {
+    delType.value = type;
     serviceDel.value = row.id;
     setTimeout(() => {
       showDeleteModal.value = true;

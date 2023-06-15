@@ -62,8 +62,7 @@ export default function useProjectData() {
     let projectList: any[] = [];
     try {
       const params = {
-        page: -1,
-        t: 1
+        page: -1
       };
       const { data } = await queryProjects(params);
       projectList = data.items || [];

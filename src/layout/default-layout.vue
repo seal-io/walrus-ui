@@ -28,11 +28,7 @@
             :class="{ menuCollapse: appStore.menuCollapse }"
           >
             <div>
-              <img
-                alt="logo"
-                class="logo"
-                src="../assets/images/seal-logo.svg"
-              />
+              <img alt="logo" class="logo" src="../assets/images/logo2.png" />
             </div>
           </div>
           <div class="menu-wrapper">

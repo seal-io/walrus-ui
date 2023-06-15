@@ -4,6 +4,7 @@
       <Breadcrumb
         :items="breadCrumbList"
         :menu="{ icon: 'icon-apps' }"
+        @change="handleSelectChange"
       ></Breadcrumb>
     </BreadWrapper>
     <ComCard top-gap>
@@ -227,9 +228,9 @@
     TemplateVersionData
   } from '@/views/operation-hub/templates/config/interface';
   import { validateAppNameRegx } from '@/views/config';
+  import { BreadcrumbOptions } from '@/views/config/interface';
   import usePageAction from '@/hooks/use-page-action';
   import { beforeLeaveCallback } from '@/hooks/save-before-leave';
-  import { pageLevelMap } from '../../projects/hooks/use-project-breadcrumb-data';
   import { createService, upgradeApplicationInstance } from '../api';
   import useServiceData from '../hooks/use-service-data';
 
@@ -264,6 +265,7 @@
     generateVariablesGroup,
     getTemplateSchemaByVersion,
     getTemplateVersionList,
+    handleBreadChange,
     formData,
     pageAction,
     defaultGroupKey,
@@ -286,23 +288,13 @@
   const activeKey = ref('schemaForm0');
   const schemaForm = ref();
   const submitLoading = ref(false);
+  const breadCrumbList = ref<BreadcrumbOptions[]>([]);
 
   const versionMap = ref({ nv: '', ov: '' });
 
   provide('showHintInput', true);
   provide('completeData', completeData);
 
-  const breadCrumbList = computed(() => {
-    if (!CurrentBreadList.value.length) return [];
-    return [
-      CurrentBreadList.value[0],
-      CurrentBreadList.value[1],
-      {
-        type: 'menu.applicationManagement.serivce',
-        label: title.value
-      }
-    ];
-  });
   const formTabs = computed(() => {
     const list = keys(variablesGroup.value);
     if (includes(list, defaultGroupKey)) {
@@ -314,6 +306,25 @@
 
   const getContainer = (id) => {
     return document.getElementById(id);
+  };
+  const setBreadCrumbList = () => {
+    console.log('CurrentBreadList===', CurrentBreadList.value);
+    if (!CurrentBreadList.value.length) {
+      breadCrumbList.value = [];
+      return;
+    }
+    breadCrumbList.value = [
+      { ..._.cloneDeep(CurrentBreadList.value[0]) },
+      { ..._.cloneDeep(CurrentBreadList.value[1]) },
+      {
+        type: 'menu.applicationManagement.serivce',
+        label: title.value
+      }
+    ] as BreadcrumbOptions[];
+  };
+  const handleSelectChange = ({ value, item }) => {
+    console.log('breadchange==', { value, item });
+    handleBreadChange(value, item);
   };
   const cancelCallback = () => {
     // if (pageAction.value === 'edit' && route.params.action === 'view') {
@@ -557,7 +568,8 @@
     return true;
   });
   const initData = async () => {
-    init();
+    await init();
+    setBreadCrumbList();
   };
   onMounted(async () => {
     nextTick(async () => {
