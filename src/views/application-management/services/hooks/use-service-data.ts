@@ -32,7 +32,8 @@ export default function useServiceData(props?) {
     templateList,
     allTemplateVersions
   } = useTemplatesData();
-  const { breadCrumbList, setBreabCrumbData } = useProjectBreadcrumbData();
+  const { breadCrumbList, setBreabCrumbData, handleBreadChange } =
+    useProjectBreadcrumbData();
   const { pageAction, handleEdit } = usePageAction();
   const defaultGroupKey = '_default_default_';
   const { route, router, t } = useCallCommon();
@@ -220,7 +221,7 @@ export default function useServiceData(props?) {
   const init = async () => {
     await Promise.all([getServiceItemInfo(), initCompleteData()]);
     initFormData();
-    setBreabCrumbData();
+    await setBreabCrumbData();
   };
   return {
     id,
@@ -229,6 +230,7 @@ export default function useServiceData(props?) {
     getTemplateSchemaById,
     getTemplateSchemaByVersion,
     getTemplateVersionList,
+    handleBreadChange,
     formData,
     refMap,
     pageAction,
