@@ -5,7 +5,13 @@
         :menu="route.params.projectId ? { icon: 'icon-apps' } : null"
         :items="
           route.params.projectId
-            ? breadCrumbList
+            ? [
+                ...breadCrumbList,
+                {
+                  type: 'menu.operatorHub.connector',
+                  label: title
+                }
+              ]
             : [
                 { ...operationRootBread, label: $t(operationRootBread.label) },
                 {
@@ -13,6 +19,7 @@
                 }
               ]
         "
+        @change="handleSelectChange"
       ></Breadcrumb>
     </BreadWrapper>
     <ComCard top-gap class="kuber-detail-wrap">
@@ -165,6 +172,7 @@
   import { ConnectorFormData } from '../config/interface';
   import { operationRootBread } from '../config';
   import { createConnector, updateConnector, queryItemConnector } from '../api';
+  import useConnectorBread from '../hooks/use-connector-bread';
 
   // const props = defineProps({
   //   id: {
@@ -175,6 +183,8 @@
   //   }
   // });
   const { getProjectState } = useGetBreadState();
+  const { breadCrumbList, handleSelectChange, setBreadCrumbList } =
+    useConnectorBread();
   const userStore = useUserStore();
   const { t, router, route } = useCallCommon();
   const { pageAction, handleEdit } = usePageAction();
@@ -222,20 +232,6 @@
     return t('operation.connectors.title.edit', {
       type: t('operation.connectors.table.versioncontrol')
     });
-  });
-  const breadCrumbList = computed(() => {
-    return [
-      {
-        ...getProjectState({
-          id: route.params.projectId,
-          name: ''
-        })
-      },
-      {
-        type: 'menu.operatorHub.connector',
-        label: title.value
-      }
-    ];
   });
   const handleBeforeUpload = async (file) => {
     return true;
@@ -312,7 +308,11 @@
     getConnectorInfo,
     handleSubmit
   });
-  getConnectorInfo();
+  const init = () => {
+    getConnectorInfo();
+    setBreadCrumbList();
+  };
+  init();
 </script>
 
 <script lang="ts">

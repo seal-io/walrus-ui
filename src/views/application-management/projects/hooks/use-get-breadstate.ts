@@ -19,7 +19,7 @@ export default function useGetBreadState() {
       route: PROJECT.Detail,
       visible: false,
       backAction: true,
-      hideDropDown: true,
+      hideDropDown: false,
       options: _.cloneDeep(projectStore.projectList),
       onSetting() {
         router.replace({

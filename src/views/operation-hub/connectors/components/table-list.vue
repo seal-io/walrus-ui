@@ -503,6 +503,7 @@
     }, 100);
   };
   const handleReset = () => {
+    queryParams.category = '';
     queryParams.query = '';
     queryParams.page = 1;
     handleFilter();

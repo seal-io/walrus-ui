@@ -13,7 +13,6 @@ import {
   TemplateVersionData
 } from '@/views/operation-hub/templates/config/interface';
 import usePageAction from '@/hooks/use-page-action';
-import useProjectBreadcrumbData from '../../projects/hooks/use-project-breadcrumb-data';
 
 import { queryItemApplicationService } from '../api';
 import useTemplatesData from './use-templates-data';
@@ -32,8 +31,6 @@ export default function useServiceData(props?) {
     templateList,
     allTemplateVersions
   } = useTemplatesData();
-  const { breadCrumbList, setBreabCrumbData, handleBreadChange } =
-    useProjectBreadcrumbData();
   const { pageAction, handleEdit } = usePageAction();
   const defaultGroupKey = '_default_default_';
   const { route, router, t } = useCallCommon();
@@ -221,7 +218,6 @@ export default function useServiceData(props?) {
   const init = async () => {
     await Promise.all([getServiceItemInfo(), initCompleteData()]);
     initFormData();
-    await setBreabCrumbData();
   };
   return {
     id,
@@ -230,7 +226,6 @@ export default function useServiceData(props?) {
     getTemplateSchemaById,
     getTemplateSchemaByVersion,
     getTemplateVersionList,
-    handleBreadChange,
     formData,
     refMap,
     pageAction,
@@ -245,7 +240,6 @@ export default function useServiceData(props?) {
     serviceDataList,
     templateList,
     completeData,
-    title,
-    breadCrumbList
+    title
   };
 }

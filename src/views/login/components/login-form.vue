@@ -89,9 +89,6 @@
             >
               {{ $t('login.form.login') }}
             </a-button>
-            <!-- <a-button type="text" long class="login-form-register-btn">
-            {{ $t('login.form.register') }}
-          </a-button> -->
           </a-space>
         </a-form>
       </div>
@@ -114,6 +111,7 @@
   import { useUserStore } from '@/store';
   import useLoading from '@/hooks/loading';
   import useEnterPage from '@/hooks/use-enter-page';
+  import CryptoJS from 'crypto-js';
   import {
     rememberPasswordFn,
     readLocalLoginInfo,
@@ -129,6 +127,7 @@
       }
     }
   });
+  const CRYPT_TEXT = 'web';
   const emits = defineEmits(['loginSuccess']);
   const { enterUserPage } = useEnterPage();
   const { changeLocale } = useLocale();
@@ -143,13 +142,23 @@
     password: ''
   });
 
+  const encryptPassword = (password) => {
+    const psw = CryptoJS.AES?.encrypt?.(password, CRYPT_TEXT).toString();
+    return psw;
+  };
+  const decryptPassword = (password) => {
+    const bytes = CryptoJS.AES?.decrypt?.(password, CRYPT_TEXT);
+    const res = bytes.toString(CryptoJS.enc.Utf8);
+    return res;
+  };
   const handleModifyDefaultPassword = async (newpassword) => {
     showModify.value = false;
     if (rememberPassword.value) {
+      const hash = encryptPassword(newpassword);
       rememberPasswordFn({
         rememberPswd: rememberPassword.value,
         username: userInfo.username,
-        password: newpassword
+        password: hash
       });
     }
     await userStore.info();
@@ -160,9 +169,12 @@
       setLoading(true);
       try {
         if (rememberPassword.value) {
+          const hash = encryptPassword(userInfo.password);
+
           rememberPasswordFn({
             rememberPswd: rememberPassword.value,
-            ...userInfo
+            username: userInfo.username,
+            password: hash
           });
         } else {
           removeLocalLoginInfo();
@@ -188,7 +200,6 @@
         enterUserPage();
       } catch (err) {
         errorMessage.value = (err as Error).message;
-        console.log('error======', errorMessage.value);
       } finally {
         setLoading(false);
       }
@@ -201,9 +212,8 @@
 
   const getLocalSetting = async () => {
     const res = await readLocalLoginInfo();
-    console.log('res:', res);
     userInfo.username = res?.username || '';
-    userInfo.password = res?.password || '';
+    userInfo.password = res?.password ? decryptPassword(res?.password) : '';
     rememberPassword.value = res?.rememberPswd || false;
   };
   onMounted(async () => {

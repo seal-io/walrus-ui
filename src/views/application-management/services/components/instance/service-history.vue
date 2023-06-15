@@ -223,6 +223,7 @@
   } from '@/api/axios-chunk-request';
   import useCallCommon from '@/hooks/use-call-common';
   import StatusLabel from '@/views/operation-hub/connectors/components/status-label.vue';
+  import usePermissionParams from '@/views/application-management/hooks/use-permission-params';
   import { deleteModal, execSucceed } from '@/utils/monitor';
   import { UseSortDirection } from '@/utils/common';
   import { HistoryData } from '../../config/interface';
@@ -240,12 +241,12 @@
     diffRevisionSpec,
     rollbackApplication,
     rollbackInstance,
-    queryRevisionChange,
-    getPermissionRouteParams
+    queryRevisionChange
   } from '../../api';
   import { updateApplicationEmitter } from '../../hooks/update-application-listener';
 
   let axiosListInstance = createAxiosToken();
+  const permissionParams = usePermissionParams();
   const userStore = useUserStore();
   const { t, route } = useCallCommon();
   const { setChunkRequest } = useSetChunkRequest();
@@ -457,7 +458,7 @@
         url: `/service-revisions`,
         params: {
           serviceID: serviceId.value,
-          ...getPermissionRouteParams()
+          ...permissionParams
         },
         handler: updateHandler
       });

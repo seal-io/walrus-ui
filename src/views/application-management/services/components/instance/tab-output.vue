@@ -71,10 +71,12 @@
   import { onMounted, ref, inject, watch, nextTick } from 'vue';
   import { useSetChunkRequest } from '@/api/axios-chunk-request';
   import { websocketEventType } from '@/views/config';
-  import { queryInstanceOutputs, getPermissionRouteParams } from '../../api';
+  import usePermissionParams from '@/views/application-management/hooks/use-permission-params';
+  import { queryInstanceOutputs } from '../../api';
   import { OutputsRow } from '../../config/interface';
 
   const { setChunkRequest } = useSetChunkRequest();
+  const permissionParams = usePermissionParams();
   const serviceId = inject('serviceId', ref(''));
   const dataList = ref<OutputsRow[]>([]);
   let chunkRequesSource: any = null;
@@ -135,7 +137,7 @@
         chunkRequesSource = setChunkRequest({
           url: `/services/${serviceId.value}/output`,
           params: {
-            ...getPermissionRouteParams()
+            ...permissionParams
           },
           handler: updateHandler
         });

@@ -23,12 +23,10 @@
   // import stripAnsi from 'strip-ansi';
   import hasAnsi from 'has-ansi';
   import { ref, inject, watch, PropType } from 'vue';
+  import usePermissionParams from '@/views/application-management/hooks/use-permission-params';
   import { InstanceResource, Cascader } from '../../config/interface';
   import { generateResourcesKeys, getDefaultValue } from '../../config/utils';
-  import {
-    queryApplicationResource,
-    getPermissionRouteParams
-  } from '../../api';
+  import { queryApplicationResource } from '../../api';
   import testData from '../../config/data';
 
   const props = defineProps({
@@ -45,6 +43,7 @@
       }
     }
   });
+  const permissionParams = usePermissionParams();
   const { setChunkRequest } = useSetChunkRequest();
   const serviceId = inject('serviceId', ref(''));
   const resourceId = ref('');
@@ -72,7 +71,7 @@
       params: {
         key: logKey.value,
         watch: true,
-        ...getPermissionRouteParams()
+        ...permissionParams
       },
       contentType: 'text',
       handler: updateContent

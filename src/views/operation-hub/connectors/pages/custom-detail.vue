@@ -5,7 +5,13 @@
         :menu="route.params.projectId ? { icon: 'icon-apps' } : null"
         :items="
           route.params.projectId
-            ? breadCrumbList
+            ? [
+                ...breadCrumbList,
+                {
+                  type: 'menu.operatorHub.connector',
+                  label: title
+                }
+              ]
             : [
                 { ...operationRootBread, label: $t(operationRootBread.label) },
                 {
@@ -13,6 +19,7 @@
                 }
               ]
         "
+        @change="handleSelectChange"
       ></Breadcrumb>
     </BreadWrapper>
     <ComCard top-gap class="kuber-detail-wrap">
@@ -243,10 +250,10 @@
   import DescriptionTable from '@/components/description-table/index.vue';
   import ProviderIcon from '@/components/provider-icon/index.vue';
   import { variableTypeList } from '@/views/application-management/services/config';
-  import useGetBreadState from '@/views/application-management/projects/hooks/use-get-breadstate';
   import { ConnectorFormData, CustomAttrbute } from '../config/interface';
   import { operationRootBread } from '../config';
   import { createConnector, updateConnector, queryItemConnector } from '../api';
+  import useConnectorBread from '../hooks/use-connector-bread';
 
   // const props = defineProps({
   //   id: {
@@ -256,7 +263,8 @@
   //     }
   //   }
   // });
-  const { getProjectState } = useGetBreadState();
+  const { breadCrumbList, handleSelectChange, setBreadCrumbList } =
+    useConnectorBread();
   const userStore = useUserStore();
   const setPropertyStyle = (style) => {
     return {
@@ -321,20 +329,6 @@
     return t('operation.connectors.title.new', {
       type: t('operation.connectors.reinstall.custom')
     });
-  });
-  const breadCrumbList = computed(() => {
-    return [
-      {
-        ...getProjectState({
-          id: route.params.projectId,
-          name: ''
-        })
-      },
-      {
-        type: 'menu.operatorHub.connector',
-        label: title.value
-      }
-    ];
   });
   const handleAddLabel = (obj) => {
     attributeList.value.push({
@@ -484,7 +478,8 @@
     return true;
   });
   const init = async () => {
-    await getConnectorInfo();
+    getConnectorInfo();
+    setBreadCrumbList();
   };
   defineExpose({
     init,

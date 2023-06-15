@@ -10,8 +10,8 @@
 <script lang="ts" setup>
   import { useSetChunkRequest } from '@/api/axios-chunk-request';
   import { ref, inject, watch } from 'vue';
+  import usePermissionParams from '../../hooks/use-permission-params';
   import { AppInstanceStatus } from '../config';
-  import { getPermissionRouteParams } from '../api';
   // import AceEditor from '@/components/ace-editor/index.vue';
 
   const props = defineProps({
@@ -43,6 +43,7 @@
   const emits = defineEmits(['close']);
   const content = ref('');
   const scroller = ref();
+  const permissionParams = usePermissionParams();
   const { setChunkRequest } = useSetChunkRequest();
 
   const updateScrollerPosition = () => {
@@ -72,7 +73,7 @@
       url: `/service-revisions/${props.revisionId}/log`,
       params: {
         jobType,
-        ...getPermissionRouteParams()
+        ...permissionParams
       },
       contentType: 'text',
       handler: updateContent

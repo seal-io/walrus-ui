@@ -15,12 +15,28 @@
         <icon-close-circle-fill style="color: var(--seal-color-error)" />
       </span>
     </DefinePermissionState>
-    <GroupTitle :title="title" iconed :bordered="false"></GroupTitle>
+    <div class="search-box">
+      <GroupTitle :title="title" iconed :bordered="false"></GroupTitle>
+      <a-space v-if="pagination && permissionList.length > 10" class="page">
+        <a-input-search
+          v-model="query"
+          allow-clear
+          style="width: 220px; margin-left: 10px"
+        ></a-input-search>
+        <a-pagination
+          v-model:current="pageInfo.page"
+          :total="dataList.length"
+          simple
+          size="small"
+          :page-size="pageInfo.pageSize"
+        />
+      </a-space>
+    </div>
     <a-table
       column-resizable
       style="margin-bottom: 40px"
       :bordered="true"
-      :data="permissionList"
+      :data="resultList"
       :pagination="false"
       :row-class="setRowClass"
       @expanded-change="handleExpanded"
@@ -137,18 +153,24 @@
 
 <script lang="ts" setup>
   import _ from 'lodash';
-  import { ref, PropType } from 'vue';
+  import { ref, PropType, reactive, computed } from 'vue';
   import { createReusableTemplate } from '@vueuse/core';
   import GroupTitle from '@/components/group-title/index.vue';
   import { projectRoles } from '@/views/application-management/projects/config';
   import { getListLabel } from '@/utils/func';
   import { Actions } from '@/permissions/config';
 
-  defineProps({
+  const props = defineProps({
     permissionList: {
       type: Array as PropType<any[]>,
       default() {
         return [];
+      }
+    },
+    pagination: {
+      type: Boolean,
+      default() {
+        return false;
       }
     },
     type: String,
@@ -159,8 +181,24 @@
     action: string;
     record: any;
   }>();
-
+  const pageInfo = reactive({
+    page: 1,
+    pageSize: 10
+  });
+  const query = ref('');
   const expandedKeys = ref<string[]>([]);
+
+  const dataList = computed(() => {
+    if (!query.value) {
+      return props.permissionList;
+    }
+    return _.filter(props.permissionList, (item) =>
+      _.includes(item.projectName, query.value)
+    );
+  });
+  const resultList = computed(() => {
+    return _.get(_.chunk(dataList.value, pageInfo.pageSize), pageInfo.page - 1);
+  });
   const setRowClass = (record) => {
     if (_.includes(expandedKeys.value, record.key) && record.isParent) {
       return 'row-expanded';
@@ -174,6 +212,17 @@
 
 <style lang="less" scoped>
   .permission-table {
+    .search-box {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+
+      .page {
+        position: relative;
+        bottom: 5px;
+      }
+    }
+
     :deep(.arco-table-element) {
       .arco-table-tr {
         .arco-table-td.row-expanded {

@@ -5,7 +5,13 @@
         :menu="route.params.projectId ? { icon: 'icon-apps' } : null"
         :items="
           route.params.projectId
-            ? breadCrumbList
+            ? [
+                ...breadCrumbList,
+                {
+                  type: 'menu.operatorHub.connector',
+                  label: title
+                }
+              ]
             : [
                 { ...operationRootBread, label: $t(operationRootBread.label) },
                 {
@@ -13,6 +19,7 @@
                 }
               ]
         "
+        @change="handleSelectChange"
       ></Breadcrumb>
     </BreadWrapper>
     <ComCard top-gap class="kuber-detail-wrap">
@@ -177,7 +184,6 @@
   import { assignIn, toLower, get, isEqual, cloneDeep } from 'lodash';
   import { ref, reactive, onMounted, computed, defineExpose } from 'vue';
   import GroupTitle from '@/components/group-title/index.vue';
-  import readBlob from '@/utils/readBlob';
   import { beforeLeaveCallback } from '@/hooks/save-before-leave';
   import { onBeforeRouteLeave } from 'vue-router';
   import EditPageFooter from '@/components/edit-page-footer/index.vue';
@@ -185,11 +191,10 @@
   import usePageAction from '@/hooks/use-page-action';
   import ProviderIcon from '@/components/provider-icon/index.vue';
   import DescriptionTable from '@/components/description-table/index.vue';
-  import useGetBreadState from '@/views/application-management/projects/hooks/use-get-breadstate';
-  import StatusLabel from '../components/status-label.vue';
   import { ConnectorFormData } from '../config/interface';
   import { operationRootBread } from '../config';
   import { createConnector, updateConnector, queryItemConnector } from '../api';
+  import useConnectorBread from '../hooks/use-connector-bread';
 
   // const props = defineProps({
   //   id: {
@@ -204,7 +209,8 @@
     { label: 'SecretKey', value: '', key: 'secret_key', visible: false },
     { label: 'Region', value: '', key: 'region', visible: true }
   ];
-  const { getProjectState } = useGetBreadState();
+  const { breadCrumbList, handleSelectChange, setBreadCrumbList } =
+    useConnectorBread();
   const userStore = useUserStore();
   const { t, router, route } = useCallCommon();
   const { pageAction, handleEdit } = usePageAction();
@@ -263,20 +269,7 @@
       type: t('operation.connectors.reinstall.cloudProvider')
     });
   });
-  const breadCrumbList = computed(() => {
-    return [
-      {
-        ...getProjectState({
-          id: route.params.projectId,
-          name: ''
-        })
-      },
-      {
-        type: 'menu.operatorHub.connector',
-        label: title.value
-      }
-    ];
-  });
+
   const handleSubmit = async () => {
     const res = await formref.value?.validate();
     if (!res) {
@@ -349,7 +342,14 @@
     getConnectorInfo,
     handleSubmit
   });
-  getConnectorInfo();
+  const init = () => {
+    getConnectorInfo();
+    setBreadCrumbList();
+  };
+  onMounted(() => {
+    setBreadCrumbList();
+  });
+  init();
 </script>
 
 <script lang="ts">

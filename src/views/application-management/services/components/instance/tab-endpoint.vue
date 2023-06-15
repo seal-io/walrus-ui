@@ -80,11 +80,13 @@
     useSetChunkRequest,
     createAxiosToken
   } from '@/api/axios-chunk-request';
+  import usePermissionParams from '@/views/application-management/hooks/use-permission-params';
   import { websocketEventType } from '@/views/config/index';
   import { EndPointRow } from '../../config/interface';
-  import { queryInstanceEndpoints, getPermissionRouteParams } from '../../api';
+  import { queryInstanceEndpoints } from '../../api';
 
   const { setChunkRequest } = useSetChunkRequest();
+  const permissionParams = usePermissionParams();
   let axiosInstance = createAxiosToken();
   let chunkRequesSource: any = null;
   const serviceId = inject('serviceId', ref(''));
@@ -170,7 +172,7 @@
         chunkRequesSource = setChunkRequest({
           url: `/services/${serviceId.value}/access-endpoint`,
           params: {
-            ...getPermissionRouteParams()
+            ...permissionParams
           },
           handler: updateHandler
         });

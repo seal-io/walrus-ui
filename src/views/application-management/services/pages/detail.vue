@@ -23,23 +23,15 @@
 
   const { route, router } = useCallCommon();
   const {
-    breadCrumbList,
-    handleBreadChange,
     getProjectList,
     getEnvironmentList,
     getServiceList,
     setProjectList,
     setEnvironmentList,
-    setServiceList,
-    projectTemplate,
-    environmentTemplate,
-    serviceTemplate
+    setServiceList
   } = useProjectBreadcrumbData();
-  breadCrumbList.value = [
-    projectTemplate,
-    environmentTemplate,
-    serviceTemplate
-  ];
+  const { breadCrumbList, handleBreadChange, initBreadValues } =
+    useProjectBreadcrumbData();
   const id = route.query.id as string;
   const serviceId = ref(id);
 
@@ -63,7 +55,8 @@
       serviceRes
     ];
   };
-  const init = () => {
+  const init = async () => {
+    breadCrumbList.value = await initBreadValues(['env', 'service']);
     setBreabCrumbData();
   };
   onMounted(() => {
