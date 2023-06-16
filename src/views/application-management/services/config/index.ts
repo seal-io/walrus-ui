@@ -67,42 +67,7 @@ export const appActions = [
     }
   }
 ];
-export const instanceActions = [
-  {
-    label: 'applications.applications.button.upgrade',
-    value: 'upgrade',
-    icon: 'icon-font',
-    handler: 'handleClickUpgrade',
-    props: {
-      type: 'icon-upgrade'
-    }
-  },
-  {
-    label: 'common.button.clone',
-    value: 'clone',
-    icon: 'icon-font',
-    handler: 'handleClickClone',
-    props: {
-      type: 'icon-Clone-Cloud'
-    }
-  },
-  {
-    label: 'common.button.rollback',
-    value: 'rollback',
-    icon: 'icon-font',
-    handler: 'handleClickRollback',
-    props: {
-      type: 'icon-rollback-copy'
-    },
-    permission: ['PUT']
-  }
-  // {
-  //   label: 'common.button.delete',
-  //   value: 'delete',
-  //   icon: 'icon-delete',
-  //   permission: ['DELETE']
-  // }
-];
+
 export const moduleActions = [
   { label: 'common.button.edit', value: 'edit', icon: 'icon-edit' },
   { label: 'common.button.delete', value: 'delete', icon: 'icon-delete' }
@@ -341,6 +306,11 @@ export const serviceActions: MoreAction[] = [
     icon: 'icon-delete',
     handler: '',
     status: 'danger',
+    disabled(currentInfo) {
+      return (
+        get(currentInfo, 'status.summaryStatus') === AppInstanceStatus.Deleting
+      );
+    },
     filterFun(currentInfo) {
       return userStore.hasProjectResourceActions({
         resource: Resources.Services,

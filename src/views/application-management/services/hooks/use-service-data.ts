@@ -72,7 +72,7 @@ export default function useServiceData(props?) {
     try {
       const params = {
         id: route.query.id,
-        environmentID: route.params.evnitonmentId,
+        environmentID: route.params.environmentId,
         projectID: route.params.projectId
       };
       const { data } = await queryItemApplicationService(params);

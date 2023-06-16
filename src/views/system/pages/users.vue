@@ -1,5 +1,5 @@
 <template>
-  <div class="container">
+  <div>
     <FilterBox style="margin-bottom: 10px">
       <template #params>
         <a-input
