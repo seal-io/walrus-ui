@@ -89,6 +89,7 @@
   const dataList = ref<EndPointRow[]>([]);
 
   const fetchData = async () => {
+    if (!serviceId.value) return;
     axiosInstance?.cancel?.();
     axiosInstance = createAxiosToken();
     try {

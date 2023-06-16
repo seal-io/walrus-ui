@@ -128,6 +128,7 @@
   import useCallCommon from '@/hooks/use-call-common';
   import EditPageFooter from '@/components/edit-page-footer/index.vue';
   import useBasicInfoData from '@/views/application-management/projects/hooks/use-basicInfo-data';
+  import { websocketEventType } from '@/views/config';
   import tabTerminal from './x-terminal/tab-terminal.vue';
   import tabResource from './tab-resource.vue';
   import tabLogs from './tab-logs.vue';
@@ -141,7 +142,8 @@
   import {
     instanceTabs,
     instanceBasicInfo,
-    serviceActions
+    serviceActions,
+    AppInstanceStatus
   } from '../../config';
   import { InstanceData } from '../../config/interface';
   import useFetchResource from '../hooks/use-fetch-chunk-data';
@@ -220,20 +222,6 @@
   const handleDeleteConfirm = async (force) => {
     try {
       await deleteApplicationInstance({ id: route.query.id, force });
-      const nextServiceId = _.get(props.serviceList, '0.id');
-      if (!nextServiceId) {
-        router.back();
-        return;
-      }
-      router.replace({
-        params: {
-          ...route.params
-        },
-        query: {
-          ...route.query,
-          id: nextServiceId
-        }
-      });
     } catch (error) {
       console.log(error);
     }
@@ -283,6 +271,7 @@
     try {
       const params = {
         id: route.query.id,
+        environmentID: route.params.environmentId,
         projectID: route.params.projectId
       };
       const { data } = await queryItemApplicationService(params);
@@ -296,6 +285,32 @@
     activeKey.value = val;
   };
   const updateServiceState = (data) => {
+    const ids = data.ids || [];
+    // delete
+    if (
+      data.type === websocketEventType.delete &&
+      _.includes(ids, _.get(currentInfo.value, 'id'))
+    ) {
+      const list = _.filter(
+        props.serviceList,
+        (item) => _.get(item, 'id') !== _.get(currentInfo.value, 'id')
+      );
+      const nextServiceId = _.get(list, '0.id');
+      if (!nextServiceId) {
+        router.back();
+        return;
+      }
+      router.replace({
+        params: {
+          ...route.params
+        },
+        query: {
+          ...route.query,
+          id: nextServiceId
+        }
+      });
+    }
+    // update
     const updateData = _.find(
       data.collection || [],
       (sItem) =>
@@ -318,7 +333,8 @@
       setChunkRequest({
         url: `/services`,
         params: {
-          projectID: route.params.projectId
+          projectID: route.params.projectId,
+          environmentID: route.params.environmentId
         },
         handler: updateHandler
       });

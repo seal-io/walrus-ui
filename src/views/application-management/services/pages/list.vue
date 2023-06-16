@@ -210,11 +210,7 @@
   import StatusLabel from '@/views/operation-hub/connectors/components/status-label.vue';
   import { useUserStore } from '@/store';
   import { AppRowData } from '../config/interface';
-  import {
-    websocketEventType,
-    instanceActions,
-    serviceActions
-  } from '../config';
+  import { websocketEventType, serviceActions } from '../config';
   import {
     queryServices,
     deleteService,

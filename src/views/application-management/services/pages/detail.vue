@@ -22,7 +22,7 @@
   import ServiceDetail from '../components/instance/index.vue';
   import { InstanceData } from '../config/interface';
 
-  const { route } = useCallCommon();
+  const { route, router } = useCallCommon();
   const {
     getProjectList,
     getEnvironmentList,
@@ -41,6 +41,11 @@
 
   const handleServiceChange = ({ value, item }) => {
     handleBreadChange(value, item);
+  };
+  const checkoutCurrentService = () => {
+    if (!serviceDataList.value.length) {
+      router.back();
+    }
   };
   const setBreabCrumbData = async () => {
     const [projectList, environmentList, serviceList] = await Promise.all([
@@ -61,6 +66,7 @@
   const init = async () => {
     breadCrumbList.value = await initBreadValues(['env', 'service']);
     setBreabCrumbData();
+    checkoutCurrentService();
   };
 
   onMounted(() => {

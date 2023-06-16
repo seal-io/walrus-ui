@@ -68,8 +68,20 @@ export default function useProjectData() {
       };
       const { data } = await queryProjects(params);
       projectList = data.items || [];
+      const list = _.map(data.items, (item) => {
+        return {
+          label: item.name,
+          value: item.id
+        };
+      });
+      projectStore.setInfo({
+        projectList: list
+      });
     } catch (error) {
       projectList = [];
+      projectStore.setInfo({
+        projectList: []
+      });
       console.log(error);
     }
     return projectList;

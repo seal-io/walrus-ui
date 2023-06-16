@@ -1,5 +1,5 @@
 <template>
-  <div class="container">
+  <div>
     <a-tabs
       v-model="activeKey"
       :default-active-key="activeKey"
