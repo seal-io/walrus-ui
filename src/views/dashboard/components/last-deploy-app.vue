@@ -16,9 +16,18 @@
           :title="$t('applications.applications.table.service')"
         >
           <template #cell="{ record }">
-            <a-link @click="handleToDetail(record)">{{
-              record?.service?.name || ''
-            }}</a-link>
+            <a-link
+              v-if="
+                userStore.hasProjectResourceActions({
+                  resource: Resources.Services,
+                  projectID: record.project?.id,
+                  actions: [Actions.GET]
+                })
+              "
+              @click="handleToDetail(record)"
+              >{{ record?.service?.name || '' }}</a-link
+            >
+            <span v-else>{{ record?.service?.name || '' }}</span>
           </template>
         </a-table-column>
         <a-table-column
@@ -85,10 +94,12 @@
 </template>
 
 <script lang="ts" setup>
+  import { Resources, Actions } from '@/permissions/config';
   import { PROJECT } from '@/router/config';
   import _, { toLower, get } from 'lodash';
   import dayjs from 'dayjs';
   import { PropType } from 'vue';
+  import { useUserStore } from '@/store';
   import useCallCommon from '@/hooks/use-call-common';
   import StatusLabel from './status-label.vue';
   import { statusColorMap } from '../config';
@@ -108,7 +119,7 @@
     }
   });
   const { router } = useCallCommon();
-
+  const userStore = useUserStore();
   const setDurationValue = (val) => {
     if (!val) return '-';
     const seconds = val % 60;
@@ -123,7 +134,8 @@
         environmentId: _.get(row, 'environment.id')
       },
       query: {
-        id: _.get(row, 'id')
+        id: _.get(row, 'service.id'),
+        from: 'dashboard'
       }
     });
   };

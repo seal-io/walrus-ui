@@ -21,7 +21,7 @@
   import useProjectBreadcrumbData from '@/views/application-management/projects/hooks/use-project-breadcrumb-data';
   import ServiceDetail from '../components/instance/index.vue';
 
-  const { route, router } = useCallCommon();
+  const { route } = useCallCommon();
   const {
     getProjectList,
     getEnvironmentList,
@@ -51,7 +51,7 @@
     const serviceRes = setServiceList(serviceList);
     breadCrumbList.value = [
       projectRes,
-      { ...environmentRes, backAction: true },
+      { ...environmentRes, backAction: !route.query.from },
       serviceRes
     ];
   };
@@ -59,6 +59,7 @@
     breadCrumbList.value = await initBreadValues(['env', 'service']);
     setBreabCrumbData();
   };
+
   onMounted(() => {
     init();
   });

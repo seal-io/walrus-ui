@@ -82,7 +82,8 @@
               <ConnectorSelector
                 v-if="showModal"
                 v-model:show="showModal"
-                :selected="formData.connectorIDs"
+                v-model:connectorIDs="formData.connectorIDs"
+                :selected="selectedList"
                 :list="connectorList"
                 @confirm="handleConnectorChange"
               ></ConnectorSelector>
@@ -173,6 +174,7 @@
   const submitLoading = ref(false);
   const breadCrumbList = ref<BreadcrumbOptions[]>([]);
   let copyFormData: any = {};
+  const selectedList = ref<string[]>([]);
   const formData = ref<EnvironFormData>({
     projectID: route.params.projectId as string,
     name: '',
@@ -218,6 +220,7 @@
     ] as BreadcrumbOptions[];
   };
   const setFormDataConnectors = (connectors) => {
+    formData.value.edges = [];
     each(connectorList.value, (item) => {
       if (includes(connectors, item.value)) {
         formData.value?.edges?.push(item);
@@ -241,6 +244,7 @@
       formData.value.connectorIDs = map(get(data, 'connectors') || [], (s) => {
         return s?.connector?.id;
       });
+      selectedList.value = [...formData.value.connectorIDs];
       setFormDataConnectors(formData.value.connectorIDs);
       copyFormData = cloneDeep(formData.value);
     } catch (error) {
@@ -279,14 +283,16 @@
   };
 
   const handleConnectorChange = (values) => {
-    formData.value.connectorIDs = concat(formData.value.connectorIDs, values);
-    setFormDataConnectors(values);
+    console.log('values===', values);
+    formData.value.connectorIDs = [...values];
+    setFormDataConnectors(formData.value.connectorIDs);
     formref.value.validateField('connectorIDs');
   };
   const handleDeleteConnector = (record, index) => {
     formData.value.edges?.splice(index, 1);
     remove(formData.value.connectorIDs, (val) => record.id === val);
     remove(formData.value.connectors, (o) => o.connector.id === record.id);
+    remove(selectedList.value, (id) => record.id === id);
     formref.value.validateField('connectorIDs');
   };
   const handleSubmit = async () => {

@@ -16,7 +16,6 @@ export default function useBasicInfoData(basicInfoConfig, currentInfo) {
           : _.get(currentInfo.value, item.key)
       };
     });
-    console.log('result===', result);
     return result;
   });
   return basicDataList;

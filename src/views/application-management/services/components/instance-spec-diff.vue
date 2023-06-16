@@ -16,16 +16,6 @@
     @before-close="handleBeforeClose"
   >
     <div>
-      <!-- <a-space class="tips" :size="20">
-        <span class="rm"
-          ><span>- </span
-          >{{ $t('applications.applications.history.diff.remove') }}</span
-        >
-        <span class="add"
-          ><span>+ </span
-          >{{ $t('applications.applications.history.diff.add') }}</span
-        >
-      </a-space> -->
       <div v-show="removeLines.length || addLines.length">
         <AceEditor
           ref="editor_instance"
