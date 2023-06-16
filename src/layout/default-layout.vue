@@ -101,7 +101,7 @@
     return { ...paddingLeft, ...paddingTop, paddingRight: '10px' };
   });
   const setCollapsed = (val: boolean) => {
-    appStore.updateSettings({ menuCollapse: val });
+    // appStore.updateSettings({ menuCollapse: val });
   };
   watch(
     () => userStore.role,
