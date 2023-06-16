@@ -6,9 +6,6 @@
       auto-label-width
       style="flex-direction: row; width: 600px"
     >
-      <!-- <a-form-item :label="$t('common.table.name')">
-        <span class="readonly-view-label">{{ formData.name }}</span>
-      </a-form-item> -->
       <a-form-item :label="$t('applications.applications.table.module')">
         <span class="readonly-view-label">{{
           getListValue(formData.template.id, templateList, 'id')
@@ -211,6 +208,7 @@
     nextTick(() => {
       handleTabChange(_.get(formTabs.value, '0'));
     });
+    console.log('init==1', formData);
   };
   initData();
 </script>

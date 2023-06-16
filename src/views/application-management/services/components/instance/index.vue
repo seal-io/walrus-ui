@@ -30,7 +30,7 @@
             :title="$t('applications.applications.detail.configuration')"
             :title-style="{ 'margin-bottom': '10px', 'margin-top': 0 }"
           >
-            <serviceInfo> </serviceInfo>
+            <serviceInfo :key="pageAction"> </serviceInfo>
           </ModuleCard>
         </ComCard>
         <ComCard>
@@ -114,7 +114,6 @@
   import tabResource from './tab-resource.vue';
   import tabLogs from './tab-logs.vue';
   import tabOutput from './tab-output.vue';
-  // import tabOptimization from './tab-optimization.vue';
   import tabGraph from './tab-graph/index.vue';
   import tabEndpoint from './tab-endpoint.vue';
   import serviceHistory from './service-history.vue';
@@ -129,7 +128,6 @@
   import serviceInfo from '../service-info.vue';
   import serviceEdit from '../../pages/edit.vue';
 
-  type Reload = () => void;
   const props = defineProps({
     serviceId: {
       type: String,
@@ -139,7 +137,6 @@
     }
   });
   // 1: create 2: update 3: delete
-  const execReload: Reload | undefined = inject('execReload');
   const pageAction = ref('view');
   const { setChunkRequest } = useSetChunkRequest();
   const userStore = useUserStore();
@@ -153,7 +150,6 @@
     tabResource: markRaw(tabResource),
     tabLogs: markRaw(tabLogs),
     tabOutput: markRaw(tabOutput),
-    // tabOptimization: markRaw(tabOptimization),
     tabGraph: markRaw(tabGraph),
     tabHistory: markRaw(serviceHistory),
     tabTerminal: markRaw(tabTerminal)

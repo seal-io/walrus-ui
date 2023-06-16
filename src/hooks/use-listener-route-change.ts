@@ -1,14 +1,13 @@
 import _ from 'lodash';
-import { ref, nextTick } from 'vue';
+import { ref } from 'vue';
 import { listenerRouteChange } from '@/utils/route-listener';
-import { useAppStore, useUserStore, useTabBarStore } from '@/store';
+import { useAppStore, useTabBarStore } from '@/store';
 import { NO_LOGIN_CHECK_PATH } from '@/components/navbar/configs';
 import useCallCommon from './use-call-common';
 
 export default function useListenerRouteChange() {
-  const { router } = useCallCommon();
+  const { router, route } = useCallCommon();
   const appStore = useAppStore();
-  const userStore = useUserStore();
   const tabBarStore = useTabBarStore();
   const defaultActive = ref<string>('TotalView');
 
@@ -39,7 +38,6 @@ export default function useListenerRouteChange() {
   };
 
   const handleControlNavShow = (newRoute) => {
-    console.log('newRoute========', newRoute);
     const needNavList =
       _.hasIn(newRoute.meta, 'hasNavList') &&
       !_.get(newRoute, 'meta.hasNavList');
@@ -65,10 +63,6 @@ export default function useListenerRouteChange() {
       //     handleControlMenuShow(newRoute);
       //   }, 100);
       // });
-      console.log('listenerRouteChange=======', {
-        to: newRoute,
-        from
-      });
     }, true);
   };
   return execListenerRouteChange;

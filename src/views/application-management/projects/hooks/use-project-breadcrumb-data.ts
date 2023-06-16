@@ -1,8 +1,9 @@
 import _ from 'lodash';
 import { ref } from 'vue';
+import { Resources, Actions } from '@/permissions/config';
 import { PROJECT } from '@/router/config';
 import useCallCommon from '@/hooks/use-call-common';
-import { useProjectStore } from '@/store';
+import { useProjectStore, useUserStore } from '@/store';
 import { queryProjects } from '@/views/application-management/projects/api';
 import { queryEnvironments } from '@/views/application-management/environments/api';
 import { queryServices } from '@/views/application-management/services/api';
@@ -15,6 +16,7 @@ export default function useProjectData() {
   const breadCrumbList = ref<BreadcrumbOptions[]>([]);
   const { route, router } = useCallCommon();
   const projectStore = useProjectStore();
+  const userStore = useUserStore();
 
   const pageLevelMap = {
     Project: 'Project',
@@ -105,7 +107,14 @@ export default function useProjectData() {
     return serviceList;
   };
   const setProjectList = async (projectList) => {
-    const list = _.map(projectList, (item) => {
+    const accessedList = _.filter(projectList, (item) => {
+      return userStore.hasProjectResourceActions({
+        resource: Resources.Projects,
+        projectID: item.id || item.value,
+        actions: [Actions.GET]
+      });
+    });
+    const list = _.map(accessedList, (item) => {
       return {
         ..._.cloneDeep(item),
         label: item.name || item.label,
@@ -129,6 +138,13 @@ export default function useProjectData() {
     };
   };
   const setEnvironmentList = (environmentList) => {
+    // const accessedList = _.filter(environmentList, (item) => {
+    //   return userStore.hasProjectResourceActions({
+    //     resource: Resources.Environments,
+    //     projectID: route.params.projectId,
+    //     actions: [Actions.GET]
+    //   });
+    // });
     const list = _.map(environmentList, (item) => {
       return {
         ..._.cloneDeep(item),
@@ -150,6 +166,13 @@ export default function useProjectData() {
     };
   };
   const setServiceList = (serviceList) => {
+    // const accessedList = _.filter(serviceList, (item) => {
+    //   return userStore.hasProjectResourceActions({
+    //     resource: Resources.Environments,
+    //     projectID: route.params.projectId,
+    //     actions: [Actions.GET]
+    //   });
+    // });
     const list = _.map(serviceList, (item) => {
       return {
         ..._.cloneDeep(item),

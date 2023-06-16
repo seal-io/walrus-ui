@@ -21,15 +21,6 @@
           ellipsis
           tooltip
           :cell-style="{ minWidth: '40px' }"
-          align="center"
-          data-index="moduleName"
-          :title="$t('applications.applications.table.module')"
-        >
-        </a-table-column>
-        <a-table-column
-          ellipsis
-          tooltip
-          :cell-style="{ minWidth: '40px' }"
           align="left"
           data-index="type"
           :title="$t('applications.applications.instance.endpoint')"
