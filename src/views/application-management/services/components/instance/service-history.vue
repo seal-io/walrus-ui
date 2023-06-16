@@ -339,6 +339,8 @@
     }
   };
   const handleViewHistoryChange = async (row) => {
+    rollbackType.value = 'instance';
+    rollbackData.value = row;
     try {
       const params = {
         serviceID: serviceId.value,

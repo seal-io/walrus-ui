@@ -5,7 +5,7 @@
         <img
           alt="logo"
           class="logo"
-          src="../../assets/images/seal-logo.svg"
+          src="../../assets/images/logo2.png"
           @click="handleToHome"
         />
       </div>

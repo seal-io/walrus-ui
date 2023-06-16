@@ -214,6 +214,7 @@ export default function useProjectData() {
         ...route.params
       };
       query = {
+        from: route.query.from, // if from has value click environment: router.replace
         id: val
       };
     }
