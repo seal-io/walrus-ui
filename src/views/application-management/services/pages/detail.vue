@@ -8,18 +8,19 @@
       ></Breadcrumb>
     </BreadWrapper>
     <div>
-      <ServiceDetail :service-id="serviceId"></ServiceDetail>
+      <ServiceDetail :service-list="serviceDataList"></ServiceDetail>
     </div>
   </div>
 </template>
 
 <script lang="ts" setup>
   import { PROJECT } from '@/router/config';
-  import { ref, provide, onMounted, nextTick } from 'vue';
+  import { ref, provide, onMounted } from 'vue';
   import BreadWrapper from '@/components/bread-wrapper/index.vue';
   import useCallCommon from '@/hooks/use-call-common';
   import useProjectBreadcrumbData from '@/views/application-management/projects/hooks/use-project-breadcrumb-data';
   import ServiceDetail from '../components/instance/index.vue';
+  import { InstanceData } from '../config/interface';
 
   const { route } = useCallCommon();
   const {
@@ -34,6 +35,7 @@
     useProjectBreadcrumbData();
   const id = route.query.id as string;
   const serviceId = ref(id);
+  const serviceDataList = ref<InstanceData[]>([]);
 
   provide('serviceId', serviceId);
 
@@ -54,6 +56,7 @@
       { ...environmentRes, backAction: !route.query.from },
       serviceRes
     ];
+    serviceDataList.value = serviceList;
   };
   const init = async () => {
     breadCrumbList.value = await initBreadValues(['env', 'service']);

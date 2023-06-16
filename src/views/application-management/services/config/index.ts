@@ -75,8 +75,7 @@ export const instanceActions = [
     handler: 'handleClickUpgrade',
     props: {
       type: 'icon-upgrade'
-    },
-    permission: ['POST']
+    }
   },
   {
     label: 'common.button.clone',
@@ -85,8 +84,7 @@ export const instanceActions = [
     handler: 'handleClickClone',
     props: {
       type: 'icon-Clone-Cloud'
-    },
-    permission: ['POST']
+    }
   },
   {
     label: 'common.button.rollback',
@@ -174,11 +172,6 @@ export const instanceBasicInfo = [
     value: '',
     key: 'project.name'
   }
-  // {
-  //   label: 'common.table.operation',
-  //   value: '',
-  //   key: 'operation'
-  // }
 ];
 export const applicationBasicInfo = [
   {
@@ -294,18 +287,66 @@ export const serviceActions: MoreAction[] = [
     icon: 'iconFont',
     handler: '',
     status: 'normal',
+    disabled(currentInfo) {
+      return get(currentInfo, 'status.transitioning');
+    },
     filterFun(currentInfo) {
-      return (
-        !get(currentInfo, 'status.transitioning') &&
-        userStore.hasProjectResourceActions({
-          resource: Resources.Services,
-          projectID: get(currentInfo, 'project.id'),
-          actions: [Actions.PUT]
-        })
-      );
+      return userStore.hasProjectResourceActions({
+        resource: Resources.Services,
+        projectID: get(currentInfo, 'project.id'),
+        actions: [Actions.PUT]
+      });
     },
     props: {
       type: 'icon-upgrade'
+    }
+  },
+  {
+    label: 'common.button.clone',
+    value: 'clone',
+    icon: 'iconFont',
+    handler: '',
+    status: 'normal',
+    filterFun(currentInfo) {
+      return userStore.hasProjectResourceActions({
+        resource: Resources.Services,
+        projectID: get(currentInfo, 'project.id'),
+        actions: [Actions.POST]
+      });
+    },
+    props: {
+      type: 'icon-Clone-Cloud'
+    }
+  },
+  {
+    label: 'common.button.rollback',
+    value: 'rollback',
+    icon: 'iconFont',
+    handler: '',
+    status: 'normal',
+    filterFun(currentInfo) {
+      return userStore.hasProjectResourceActions({
+        resource: Resources.Services,
+        projectID: get(currentInfo, 'project.id'),
+        actions: [Actions.PUT]
+      });
+    },
+    props: {
+      type: 'icon-rollback-copy'
+    }
+  },
+  {
+    label: 'common.button.delete',
+    value: 'delete',
+    icon: 'icon-delete',
+    handler: '',
+    status: 'danger',
+    filterFun(currentInfo) {
+      return userStore.hasProjectResourceActions({
+        resource: Resources.Services,
+        projectID: get(currentInfo, 'project.id'),
+        actions: [Actions.DELETE]
+      });
     }
   }
 ];

@@ -23,7 +23,14 @@
         </slot>
       </a-descriptions-item>
     </a-descriptions>
-    <a-dropdown
+    <div v-if="actions.length" class="dropdown">
+      <DropButtonGroup
+        :actions="actions"
+        @click="handleClick"
+        @select="handleSelect"
+      ></DropButtonGroup>
+    </div>
+    <!-- <a-dropdown
       v-if="actions.length"
       size="small"
       style="line-height: 30px"
@@ -56,12 +63,13 @@
           >
         </a-doption>
       </template>
-    </a-dropdown>
+    </a-dropdown> -->
   </div>
 </template>
 
 <script lang="ts" setup>
   import { PropType } from 'vue';
+  import DropButtonGroup from '@/components/drop-button-group/index.vue';
   import ADescriptionsItem from '@arco-design/web-vue/es/descriptions/descriptions-item';
   import StatusLabel from '@/views/operation-hub/connectors/components/status-label.vue';
   import { get } from 'lodash';
@@ -84,9 +92,12 @@
     }
   });
 
-  const emits = defineEmits(['select']);
+  const emits = defineEmits(['groupSelect', 'groupClick']);
   const handleSelect = (val) => {
-    emits('select', val);
+    emits('groupSelect', val);
+  };
+  const handleClick = (data) => {
+    emits('groupClick', data);
   };
 </script>
 
@@ -96,8 +107,8 @@
 
     .dropdown {
       position: absolute;
-      top: 0;
-      right: 0;
+      top: 5px;
+      right: -10px;
     }
 
     :deep(.arco-descriptions-row) {

@@ -87,7 +87,7 @@
     ]);
     const projectRes = await setProjectList(projectList);
     const environmentRes = setEnvironmentList(enviromentList);
-    breadCrumbList.value = [projectRes, environmentRes];
+    breadCrumbList.value = [{ ...projectRes }, { ...environmentRes }];
   };
   const init = async () => {
     getItemEnvironmentInfo();

@@ -9,7 +9,8 @@
           <BasicInfo
             :data-info="basicDataList"
             :actions="actionList"
-            @select="handleSelect"
+            @group-click="handleClick"
+            @group-select="handleSelect"
           >
           </BasicInfo>
         </template>
@@ -95,6 +96,22 @@
         </ComCard>
       </div>
     </ComCard>
+    <cloneInstanceModal
+      v-model:show="showCloneModal"
+      :service-i-d="_.get(currentInfo, 'id')"
+      :title="
+        $t('applications.applications.instance.clonetitle', {
+          from: _.get(currentInfo, 'name')
+        })
+      "
+      @save="cloneHandler"
+    ></cloneInstanceModal>
+    <deleteInstanceModal
+      v-model:show="showDeleteModal"
+      :callback="handleDeleteConfirm"
+      :title="$t('common.delete.tips')"
+    >
+    </deleteInstanceModal>
   </div>
 </template>
 
@@ -103,7 +120,8 @@
   import { Resources } from '@/permissions/config';
   import { useUserStore } from '@/store';
   import _ from 'lodash';
-  import { markRaw, ref, watch, onMounted, computed, inject } from 'vue';
+  import { markRaw, ref, PropType, onMounted, computed } from 'vue';
+  import { execSucceed } from '@/utils/monitor';
   import slTransition from '@/components/sl-transition/index.vue';
   import { useSetChunkRequest } from '@/api/axios-chunk-request';
   import HeaderInfo from '@/components/header-info/index.vue';
@@ -118,25 +136,34 @@
   import tabEndpoint from './tab-endpoint.vue';
   import serviceHistory from './service-history.vue';
   import BasicInfo from '../basic-info.vue';
+  import cloneInstanceModal from '../clone-instance-modal.vue';
+  import deleteInstanceModal from '../delete-instance-modal.vue';
   import {
     instanceTabs,
     instanceBasicInfo,
     serviceActions
   } from '../../config';
+  import { InstanceData } from '../../config/interface';
   import useFetchResource from '../hooks/use-fetch-chunk-data';
-  import { queryItemApplicationService } from '../../api';
+  import {
+    queryItemApplicationService,
+    deleteApplicationInstance
+  } from '../../api';
   import serviceInfo from '../service-info.vue';
   import serviceEdit from '../../pages/edit.vue';
 
   const props = defineProps({
-    serviceId: {
-      type: String,
+    serviceList: {
+      type: Array as PropType<InstanceData[]>,
       default() {
-        return '';
+        return [];
       }
     }
   });
   // 1: create 2: update 3: delete
+  const actionMap = new Map();
+  const showCloneModal = ref(false);
+  const showDeleteModal = ref(false);
   const pageAction = ref('view');
   const { setChunkRequest } = useSetChunkRequest();
   const userStore = useUserStore();
@@ -158,15 +185,70 @@
   const basicDataList = useBasicInfoData(instanceBasicInfo, currentInfo);
 
   const actionList = computed(() => {
-    return _.filter(serviceActions, (item) => {
+    const list = _.filter(serviceActions, (item) => {
+      if (item.value === 'rollback') {
+        return false;
+      }
       return item.filterFun ? item.filterFun(currentInfo.value) : true;
+    });
+    return _.map(list, (item) => {
+      item.disabled = _.isFunction(item.disabled)
+        ? item.disabled?.(currentInfo.value)
+        : item.disabled;
+      return item;
     });
   });
   const handleUpgrade = () => {
     pageAction.value = 'edit';
   };
-  const handleSelect = (value) => {
+  const cloneHandler = async (newService) => {
+    try {
+      router.replace({
+        params: {
+          ...route.params
+        },
+        query: {
+          ...route.query,
+          id: newService.id
+        }
+      });
+      execSucceed();
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  const handleDeleteConfirm = async (force) => {
+    try {
+      await deleteApplicationInstance({ id: route.query.id, force });
+      const nextServiceId = _.get(props.serviceList, '0.id');
+      if (!nextServiceId) {
+        router.back();
+        return;
+      }
+      router.replace({
+        params: {
+          ...route.params
+        },
+        query: {
+          ...route.query,
+          id: nextServiceId
+        }
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  const handleClick = () => {
     handleUpgrade();
+  };
+  const handleClickClone = () => {
+    showCloneModal.value = true;
+  };
+  const handleDelete = () => {
+    showDeleteModal.value = true;
+  };
+  const handleSelect = (value) => {
+    actionMap.get(value)?.();
   };
   const handleEditSucceed = () => {
     router.replace({
@@ -177,8 +259,11 @@
         ...route.query
       }
     });
-    // execReload?.();
     pageAction.value = 'view';
+  };
+  const setActionMap = () => {
+    actionMap.set('delete', handleDelete);
+    actionMap.set('clone', handleClickClone);
   };
   const handleEditCancel = () => {
     pageAction.value = 'view';
@@ -194,6 +279,7 @@
     });
   };
   const getServiceItemInfo = async () => {
+    if (!route.query.id) return;
     try {
       const params = {
         id: route.query.id,
@@ -240,31 +326,27 @@
       console.log(error);
     }
   };
-  const debunceFun = () => {
-    if (!props.serviceId) return;
-    fetchData();
-    createResourceChunkConnection();
-  };
-  watch(
-    () => props.serviceId,
-    () => {
-      debunceFun();
-      getServiceItemInfo();
-    },
-    {
-      immediate: true
-    }
-  );
+
   const handleOk = () => {
     router.back();
   };
   const handleCancel = () => {
     router.back();
   };
+
   onMounted(() => {
     setInstanceTabList();
+    setActionMap();
+
+    // chunk request
     createServiceChunkRequest();
+    createResourceChunkConnection();
   });
+  const init = () => {
+    getServiceItemInfo();
+    fetchData();
+  };
+  init();
 </script>
 
 <style lang="less" scoped>
