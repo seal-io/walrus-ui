@@ -50,7 +50,7 @@
     const environmentRes = setEnvironmentList(environmentList);
     const serviceRes = setServiceList(serviceList);
     breadCrumbList.value = [
-      projectRes,
+      { ...projectRes },
       { ...environmentRes, backAction: !route.query.from },
       serviceRes
     ];
