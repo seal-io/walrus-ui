@@ -53,7 +53,9 @@ export interface InstanceData {
   name: string;
   id: string;
   type: string;
-  status: string;
+  status: object;
+  projectId: { id: string };
+  attributes: Record<string, any>;
   environment: {
     id: string;
     name: string;

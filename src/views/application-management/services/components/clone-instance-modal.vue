@@ -124,12 +124,12 @@
     if (!res) {
       try {
         submitLoading.value = true;
-        await cloneApplicationInstance({
+        const { data } = await cloneApplicationInstance({
           id: props.serviceID,
           name: formData.name
         });
         emit('update:show', false);
-        emit('save', formData.name);
+        emit('save', data);
         submitLoading.value = false;
       } catch (error) {
         submitLoading.value = false;

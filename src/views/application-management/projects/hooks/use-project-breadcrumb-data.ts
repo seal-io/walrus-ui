@@ -106,6 +106,7 @@ export default function useProjectData() {
     }
     return serviceList;
   };
+
   const setProjectList = async (projectList) => {
     const accessedList = _.filter(projectList, (item) => {
       return userStore.hasProjectResourceActions({

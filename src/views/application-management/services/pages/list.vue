@@ -137,93 +137,15 @@
         </a-table-column>
         <a-table-column
           align="center"
-          :width="210"
+          :width="180"
           :title="$t('common.table.operation')"
         >
           <template #cell="{ record }">
-            <a-space>
-              <template
-                v-if="
-                  userStore.hasProjectResourceActions({
-                    projectID: queryParams.projectID,
-                    resource: Resources.Services,
-                    actions: [Actions.PUT]
-                  })
-                "
-              >
-                <span
-                  v-for="item in instanceActions"
-                  :key="item.value"
-                  :value="item.value"
-                >
-                  <a-tooltip :content="$t(item.label)">
-                    <a-link @click="handleClickAction(item, record)">
-                      <component
-                        :is="item.icon"
-                        v-bind="item.props"
-                        style="margin-right: 8px"
-                      ></component>
-                    </a-link>
-                  </a-tooltip>
-                </span>
-              </template>
-
-              <a-tooltip
-                v-if="
-                  userStore.hasProjectResourceActions({
-                    projectID: queryParams.projectID,
-                    resource: Resources.Services,
-                    actions: [Actions.PUT]
-                  })
-                "
-                :content="$t('common.button.delete')"
-              >
-                <a-link status="danger" @click="handleDelete(record, 'row')">
-                  <icon-delete></icon-delete>
-                </a-link>
-              </a-tooltip>
-              <!-- <a-dropdown-button
-                size="small"
-                style="line-height: 30px"
-                position="bl"
-                @select="handleSelect"
-              >
-                <a-tooltip :content="$t('common.button.edit')">
-                  <a-link
-                    v-if="
-                      userStore.hasProjectResourceActions({
-                        projectID: queryParams.projectID,
-                        resource: Resources.Services,
-                        actions: ['GET', 'POST']
-                      })
-                    "
-                    @click="handleClickEdit(record)"
-                  >
-                    <icon-edit></icon-edit>
-                  </a-link>
-                </a-tooltip>
-                <template #icon
-                  ><icon-more style="font-size: 18px; stroke-width: 5"
-                /></template>
-                <template #content>
-                  <a-doption
-                    v-for="item in instanceActions"
-                    :key="item.value"
-                    :value="item.value"
-                  >
-                    <a-tooltip :content="$t(item.label)">
-                      <a-link>
-                        <component
-                          :is="item.icon"
-                          v-bind="item.props"
-                          style="margin-right: 8px"
-                        ></component>
-                      </a-link>
-                    </a-tooltip>
-                  </a-doption>
-                </template>
-              </a-dropdown-button> -->
-            </a-space>
+            <DropButtonGroup
+              :actions="setActionList(record)"
+              @click="(val) => handleClickUpgrade(record)"
+              @select="(value) => handleClickAction(value, record)"
+            ></DropButtonGroup>
           </template>
         </a-table-column>
       </template>
@@ -280,14 +202,19 @@
   import ADropdownButton from '@arco-design/web-vue/es/dropdown/dropdown-button';
   import { useSetChunkRequest } from '@/api/axios-chunk-request';
   import useCallCommon from '@/hooks/use-call-common';
-  import { deleteModal, execSucceed } from '@/utils/monitor';
+  import { execSucceed } from '@/utils/monitor';
+  import DropButtonGroup from '@/components/drop-button-group/index.vue';
   import { UseSortDirection } from '@/utils/common';
   import useRowSelect from '@/hooks/use-row-select';
   import FilterBox from '@/components/filter-box/index.vue';
   import StatusLabel from '@/views/operation-hub/connectors/components/status-label.vue';
   import { useUserStore } from '@/store';
   import { AppRowData } from '../config/interface';
-  import { websocketEventType, instanceActions } from '../config';
+  import {
+    websocketEventType,
+    instanceActions,
+    serviceActions
+  } from '../config';
   import {
     queryServices,
     deleteService,
@@ -296,8 +223,8 @@
   import useTemplatesData from '../hooks/use-templates-data';
   import useRollbackRevision from '../hooks/use-rollback-revision';
   import cloneInstanceModal from '../components/clone-instance-modal.vue';
-  import rollbackModal from '../components/rollback-modal.vue';
   import deleteInstanceModal from '../components/delete-instance-modal.vue';
+  import rollbackModal from '../components/rollback-modal.vue';
 
   const userStore = useUserStore();
   const {
@@ -349,6 +276,17 @@
 
   const handleResetServiceInfo = () => {
     serviceInfo.value = {};
+  };
+  const setActionList = (row) => {
+    const list = _.filter(serviceActions, (item) => {
+      return item.filterFun ? item.filterFun(row) : true;
+    });
+    return _.map(list, (item) => {
+      item.disabled = _.isFunction(item.disabled)
+        ? item.disabled?.(row)
+        : item.disabled;
+      return item;
+    });
   };
   const handleSelect = () => {};
   const fetchData = async () => {
@@ -417,8 +355,12 @@
       console.log(error);
     }
   };
-  const handleClickAction = (item, row) => {
-    actionHandlerMap.get(item.value)(row);
+  const handleClickAction = (value, row) => {
+    if (value === 'delete') {
+      handleDelete(row, 'row');
+      return;
+    }
+    actionHandlerMap.get(value)(row);
   };
 
   const handleReset = () => {
