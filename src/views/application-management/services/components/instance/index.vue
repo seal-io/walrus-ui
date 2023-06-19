@@ -311,15 +311,10 @@
         }
       });
     }
-    console.log('collection===', data.collection);
     // update
     const updateData = _.find(
       data.collection || [],
-      (sItem) =>
-        _.get(sItem, 'project.id') === _.get(currentInfo.value, 'project.id') &&
-        _.get(sItem, 'environment.id') ===
-          _.get(currentInfo.value, 'environment.id') &&
-        _.get(sItem, 'id') === _.get(currentInfo.value, 'id')
+      (sItem) => _.get(sItem, 'id') === _.get(currentInfo.value, 'id')
     );
     if (updateData) {
       currentInfo.value = _.cloneDeep({

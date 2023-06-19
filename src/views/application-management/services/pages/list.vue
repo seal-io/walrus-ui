@@ -227,7 +227,6 @@
   const {
     completeData,
     initCompleteData,
-    completeDataSetter,
     serviceDataList,
     templateList,
     allTemplateVersions
@@ -268,8 +267,6 @@
   const actionHandlerMap = new Map();
   const axiosInstance: any = null;
   const dataList = ref<AppRowData[]>([]);
-
-  provide('completeData', completeData);
 
   const handleResetServiceInfo = () => {
     serviceInfo.value = {};
@@ -453,7 +450,6 @@
     actionHandlerMap.set('rollback', handleClickRollback);
   };
   const init = async () => {
-    initCompleteData();
     userStore.setInfo({ currentProject: queryParams.projectID });
     fetchData();
   };
