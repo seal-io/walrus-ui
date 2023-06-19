@@ -43,9 +43,8 @@
       assignIn(basicInfo, data);
     } catch (error) {
       assignIn(basicInfo, {
-        application: 0,
-        module: 0,
-        instance: 0,
+        project: 0,
+        template: 0,
         resource: 0,
         revision: 0,
         environment: 0,
