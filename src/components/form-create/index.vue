@@ -100,37 +100,33 @@
                   </template>
                 </div>
                 <template v-else>
-                  <!-- popup mount contaner id -->
-                  <div :id="fm.name" style="position: relative; width: 100%">
-                    <component
-                      :is="formComponents[fm.parentCom]"
-                      :key="`${formId}_editorId_${index}`"
-                      v-bind="{ ...fm.props }"
-                      v-model="formData[fm.name]"
-                      :popup-container="getContainer(fm.name)"
-                      :editor-default-value="fm.default || ''"
-                      style="position: relative; width: 100%"
-                      width="100%"
-                      :editor-id="`${fm.name}_editorId_${index}`"
-                      @input="(e) => handleSelectInputChange(e, fm.type)"
-                    >
-                      <template v-if="fm.childCom">
-                        <component
-                          :is="formComponents[fm.childCom]"
-                          :key="`${formId}_child_editorId_${index}`"
-                          :editor-id="`${fm.name}_child_editorId_${index}`"
-                          style="display: none"
-                        ></component>
-                        <component
-                          :is="formComponents[fm.childCom]"
-                          v-for="com in fm.options"
-                          :key="com.label"
-                          :value="com.value"
-                          >{{ com.value }}</component
-                        >
-                      </template>
-                    </component>
-                  </div>
+                  <component
+                    :is="formComponents[fm.parentCom]"
+                    :key="`${formId}_editorId_${index}`"
+                    v-bind="{ ...fm.props }"
+                    v-model="formData[fm.name]"
+                    :editor-default-value="fm.default || ''"
+                    style="position: relative; width: 100%"
+                    width="100%"
+                    :editor-id="`${fm.name}_editorId_${index}`"
+                    @input="(e) => handleSelectInputChange(e, fm.type)"
+                  >
+                    <template v-if="fm.childCom">
+                      <component
+                        :is="formComponents[fm.childCom]"
+                        :key="`${formId}_child_editorId_${index}`"
+                        :editor-id="`${fm.name}_child_editorId_${index}`"
+                        style="display: none"
+                      ></component>
+                      <component
+                        :is="formComponents[fm.childCom]"
+                        v-for="com in fm.options"
+                        :key="com.label"
+                        :value="com.value"
+                        >{{ com.value }}</component
+                      >
+                    </template>
+                  </component>
                 </template>
               </a-form-item>
             </a-grid-item>
@@ -274,9 +270,7 @@
     });
     return list;
   });
-  const getContainer = (fmName) => {
-    return document.getElementById(fmName);
-  };
+
   const doSubmit = async () => {
     return axios[props.action](props.api, formData.value);
   };

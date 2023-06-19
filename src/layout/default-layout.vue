@@ -220,7 +220,6 @@
       &.menuCollapse {
         // width: 48px;
         overflow: hidden;
-        overflow: hidden;
         transition: all 0.2s cubic-bezier(0.34, 0.69, 0.1, 1);
       }
 
