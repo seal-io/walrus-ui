@@ -39,12 +39,15 @@ export default function useTemplatesData() {
   // apply for edit service config
   const getTemplatesVersions = async (templateID) => {
     // templateID is a array only on create  life cycle
+    const templateIDs = _.uniq(_.concat(templateID));
     if (
-      _.find(
-        allTemplateVersions.value,
-        (item) => item.template.id === templateID
-      ) ||
-      !_.isString(templateID)
+      !templateIDs.length ||
+      _.every(templateIDs, (templateID) =>
+        _.find(
+          allTemplateVersions.value,
+          (item) => item.template.id === templateID
+        )
+      )
     )
       return;
 
@@ -55,14 +58,12 @@ export default function useTemplatesData() {
         //     return item.id;
         //   })
         // ),
-        templateID: _.uniq(_.concat(templateID)),
+        templateID: templateIDs,
         page: -1
       };
-      if (!params.templateID.length) {
-        return;
-      }
       const { data } = await queryTemplatesAllVersions(params);
-      allTemplateVersions.value = allTemplateVersions.value.concat(
+      allTemplateVersions.value = _.concat(
+        allTemplateVersions.value,
         data?.items || []
       );
     } catch (error) {

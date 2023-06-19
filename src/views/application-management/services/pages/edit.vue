@@ -55,7 +55,6 @@
             <a-select
               v-model="formData.template.id"
               allow-search
-              :loading="asyncLoading"
               @change="handleTemplateChange"
             >
               <a-option
@@ -80,6 +79,7 @@
           <div>
             <a-select
               v-model="formData.template.version"
+              :loading="asyncLoading"
               @change="handleVersionChange"
             >
               <a-option
