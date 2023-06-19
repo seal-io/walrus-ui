@@ -185,6 +185,7 @@
       list = [defaultGroupKey, ..._.pull(list, defaultGroupKey)];
     }
     formTabs.value = list;
+    console.log('formTabs====', formTabs.value, variablesGroup.value);
   };
   const getListValue = (value, list, k) => {
     const d = _.find(list, (item) => {
@@ -208,7 +209,6 @@
     nextTick(() => {
       handleTabChange(_.get(formTabs.value, '0'));
     });
-    console.log('init==1', formData);
   };
   initData();
 </script>

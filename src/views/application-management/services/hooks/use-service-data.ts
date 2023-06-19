@@ -40,14 +40,14 @@ export default function useServiceData(props?) {
   const id = route.query.id as string;
   const formData = reactive({
     projectID: route.params.projectId,
+    project: {
+      id: route.params.projectId
+    },
     environment: {
       id: route.params.environmentId
     },
     name: '',
     template: { id: '', version: '' },
-    application: {
-      id: route.query.id || ''
-    },
     attributes: {}
   });
 
@@ -137,11 +137,6 @@ export default function useServiceData(props?) {
         );
       }
     });
-    console.log(
-      'variablesGroupForm===',
-      variablesGroup.value,
-      variablesGroupForm.value
-    );
   };
 
   //  change module ...
@@ -154,6 +149,7 @@ export default function useServiceData(props?) {
   };
   // change version ...
   const getTemplateSchemaByVersion = () => {
+    console.log('templateVersionList===', formData, templateVersionList.value);
     const moduleTemplate = _.find(
       templateVersionList.value,
       (item) => item.value === formData.template.version
@@ -215,7 +211,7 @@ export default function useServiceData(props?) {
   const init = async () => {
     asyncLoading.value = true;
     await Promise.all([getServiceItemInfo(), initCompleteData()]);
-    initFormData();
+    await initFormData();
     asyncLoading.value = false;
   };
   return {
