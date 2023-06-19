@@ -26,7 +26,7 @@
       <GroupTitle
         :bordered="false"
         :show-edit="
-          pageAction === 'view' &&
+          pageAction === PageAction.VIEW &&
           (route.params.projectId
             ? userStore.hasProjectResourceActions({
                 resource: Resources.Connectors,
@@ -47,7 +47,7 @@
             field="name"
             :rules="[
               {
-                required: pageAction === 'edit',
+                required: pageAction === PageAction.EDIT,
                 message: t('operation.connectors.rule.name')
               },
               {
@@ -57,7 +57,7 @@
             ]"
           >
             <a-input
-              v-if="pageAction === 'edit'"
+              v-if="pageAction === PageAction.EDIT"
               v-model="formData.name"
               style="width: 500px"
               :max-length="30"
@@ -85,13 +85,13 @@
             field="type"
             :rules="[
               {
-                required: pageAction === 'edit',
+                required: pageAction === PageAction.EDIT,
                 message: $t('operation.connectors.type.rule')
               }
             ]"
           >
             <a-input
-              v-if="pageAction === 'edit'"
+              v-if="pageAction === PageAction.EDIT"
               v-model="formData.type"
               style="width: 500px"
             ></a-input>
@@ -104,13 +104,13 @@
             field="configData"
             :rules="[
               {
-                required: pageAction === 'edit',
+                required: pageAction === PageAction.EDIT,
                 message: $t('operation.connectors.attribute.rule')
               }
             ]"
           >
             <a-space
-              v-if="attributeList?.length && pageAction === 'edit'"
+              v-if="attributeList?.length && pageAction === PageAction.EDIT"
               fill
               style="display: flex; flex-direction: column; width: 680px"
               direction="vertical"
@@ -181,7 +181,9 @@
                 </template>
               </xInputGroup>
             </a-space>
-            <template v-if="pageAction === 'view' && attributeList?.length">
+            <template
+              v-if="pageAction === PageAction.VIEW && attributeList?.length"
+            >
               <DescriptionTable
                 style="width: 600px; margin-left: 12px"
                 :data-list="attributeList"
@@ -201,7 +203,7 @@
           </a-form-item>
         </a-form>
       </div>
-      <EditPageFooter v-if="pageAction === 'edit'">
+      <EditPageFooter v-if="pageAction === PageAction.EDIT">
         <template #save>
           <a-button
             type="primary"
@@ -223,6 +225,7 @@
 </template>
 
 <script lang="ts" setup>
+  import { PageAction } from '@/views/config';
   import { OPERATIONHUB } from '@/router/config';
   import { Resources, Actions } from '@/permissions/config';
   import { useUserStore } from '@/store';
@@ -438,8 +441,11 @@
     }
   };
   const cancelCallback = () => {
-    if (pageAction.value === 'edit' && route.params.action === 'view') {
-      pageAction.value = 'view';
+    if (
+      pageAction.value === PageAction.EDIT &&
+      route.params.action === PageAction.VIEW
+    ) {
+      pageAction.value = PageAction.VIEW;
       getConnectorInfo();
       return;
     }
