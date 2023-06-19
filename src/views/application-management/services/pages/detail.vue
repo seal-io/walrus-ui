@@ -67,6 +67,7 @@
     breadCrumbList.value = await initBreadValues(['env', 'service']);
     await setBreabCrumbData();
     checkoutCurrentService();
+    console.log('breadCrumbList===', breadCrumbList.value);
   };
 
   onMounted(() => {
