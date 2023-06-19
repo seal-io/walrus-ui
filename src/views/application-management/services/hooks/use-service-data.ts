@@ -1,12 +1,6 @@
 import _ from 'lodash';
-import {
-  ref,
-  reactive,
-  ComponentPublicInstance,
-  computed,
-  provide,
-  nextTick
-} from 'vue';
+import { ref, reactive, ComponentPublicInstance, computed } from 'vue';
+import { PageAction } from '@/views/config';
 import useCallCommon from '@/hooks/use-call-common';
 import {
   TemplateRowData,
@@ -26,7 +20,6 @@ export default function useServiceData(props?) {
   const {
     completeData,
     initCompleteData,
-    completeDataSetter,
     serviceDataList,
     templateList,
     allTemplateVersions
@@ -41,6 +34,7 @@ export default function useServiceData(props?) {
   const variablesGroupForm = ref<any>({});
   const templateVersionList = ref<TemplateVersion[]>([]);
   const templateVersionFormCache = ref({});
+  const asyncLoading = ref(false);
 
   const id = route.query.id as string;
   const formData = reactive({
@@ -60,7 +54,7 @@ export default function useServiceData(props?) {
     if (!id) {
       return t('applications.applications.create');
     }
-    if (id && pageAction.value === 'edit') {
+    if (id && pageAction.value === PageAction.EDIT) {
       return t('applications.applications.edit');
     }
     return t('applications.applications.detail');
@@ -87,7 +81,7 @@ export default function useServiceData(props?) {
     let initialValue = item.default;
     if (
       _.get(templateVersionFormCache.value, formData.template.version) ||
-      action === 'edit'
+      action === PageAction.EDIT
     ) {
       initialValue = _.get(sourceData, `attributes.${item.name}`);
     }
@@ -104,7 +98,6 @@ export default function useServiceData(props?) {
         ..._.get(templateVersionFormCache.value, formData.template.version)
       }
     };
-    console.log('sourceData===', sourceData);
     const variablesList = _.filter(
       _.get(templateInfo.value, 'variables'),
       (v) => !v.hidden
@@ -214,12 +207,13 @@ export default function useServiceData(props?) {
     }
 
     generateVariablesGroup(pageAction.value);
-    console.log('moduleVersionList===', allTemplateVersions.value);
   };
 
   const init = async () => {
+    asyncLoading.value = true;
     await Promise.all([getServiceItemInfo(), initCompleteData()]);
     initFormData();
+    asyncLoading.value = false;
   };
   return {
     id,
@@ -228,6 +222,7 @@ export default function useServiceData(props?) {
     getTemplateSchemaById,
     getTemplateSchemaByVersion,
     getTemplateVersionList,
+    asyncLoading,
     formData,
     refMap,
     pageAction,

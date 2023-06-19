@@ -55,6 +55,7 @@
             <a-select
               v-model="formData.template.id"
               allow-search
+              :loading="asyncLoading"
               @change="handleTemplateChange"
             >
               <a-option
@@ -287,7 +288,8 @@
     templateList,
     completeData,
     title,
-    refMap
+    refMap,
+    asyncLoading
   } = useServiceData(props);
 
   let copyFormData: any = null;
@@ -336,10 +338,6 @@
     handleBreadChange(value, item);
   };
   const cancelCallback = () => {
-    // if (pageAction.value === 'edit' && route.params.action === 'view') {
-    //   pageAction.value = 'view';
-    //   return;
-    // }
     router.back();
   };
 
@@ -489,7 +487,6 @@
         {}
       )
     };
-    console.log('copyFormData====', { copyFormData, latestFormData });
     return latestFormData;
   };
   const handleCancel = async () => {
@@ -599,5 +596,3 @@
     name: PROJECT.ServiceEdit
   };
 </script>
-
-<style lang="less"></style>

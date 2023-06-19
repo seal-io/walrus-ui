@@ -31,7 +31,7 @@
             :title="$t('applications.applications.detail.configuration')"
             :title-style="{ 'margin-bottom': '10px', 'margin-top': 0 }"
           >
-            <serviceInfo :key="pageAction"> </serviceInfo>
+            <serviceInfo> </serviceInfo>
           </ModuleCard>
         </ComCard>
         <ComCard>
@@ -193,7 +193,8 @@
       }
       return item.filterFun ? item.filterFun(currentInfo.value) : true;
     });
-    return _.map(list, (item) => {
+    return _.map(list, (o) => {
+      const item = _.cloneDeep(o);
       item.disabled = _.isFunction(item.disabled)
         ? item.disabled?.(currentInfo.value)
         : item.disabled;
@@ -310,6 +311,7 @@
         }
       });
     }
+    console.log('collection===', data.collection);
     // update
     const updateData = _.find(
       data.collection || [],
@@ -320,7 +322,10 @@
         _.get(sItem, 'id') === _.get(currentInfo.value, 'id')
     );
     if (updateData) {
-      currentInfo.value = _.cloneDeep(updateData);
+      currentInfo.value = _.cloneDeep({
+        ...updateData,
+        project: _.get(currentInfo.value, 'project')
+      });
     }
   };
   const updateHandler = (list) => {

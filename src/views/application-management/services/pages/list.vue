@@ -138,11 +138,12 @@
         <a-table-column
           align="center"
           :width="180"
+          data-index="actions"
           :title="$t('common.table.operation')"
         >
-          <template #cell="{ record }">
+          <template #cell="{ record, rowIndex }">
             <DropButtonGroup
-              :actions="setActionList(record)"
+              :actions="setActionList(dataList[rowIndex])"
               @click="(val) => handleClickUpgrade(record)"
               @select="(value) => handleClickAction(value, record)"
             ></DropButtonGroup>
@@ -277,12 +278,14 @@
     const list = _.filter(serviceActions, (item) => {
       return item.filterFun ? item.filterFun(row) : true;
     });
-    return _.map(list, (item) => {
+    const res = _.map(list, (o) => {
+      const item = _.cloneDeep(o);
       item.disabled = _.isFunction(item.disabled)
         ? item.disabled?.(row)
         : item.disabled;
       return item;
     });
+    return res;
   };
   const handleSelect = () => {};
   const fetchData = async () => {

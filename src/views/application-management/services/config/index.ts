@@ -252,7 +252,12 @@ export const serviceActions: MoreAction[] = [
     icon: 'iconFont',
     handler: '',
     status: 'normal',
-    disabled(currentInfo) {
+    disabled(currentInfo: any): boolean {
+      console.log(
+        'disabled==99=',
+        get(currentInfo, 'status.transitioning'),
+        currentInfo
+      );
       return get(currentInfo, 'status.transitioning');
     },
     filterFun(currentInfo) {

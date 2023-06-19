@@ -21,10 +21,9 @@ export default function useTemplatesData() {
   const completeData = ref<Record<string, any>>({});
   const variableList = ref<any[]>([]);
   const serviceDataList = ref<any[]>([]);
-  let completeDataSetter: any = null;
 
   // modules options
-  const getModules = async () => {
+  const getTemplates = async () => {
     try {
       const params = {
         page: -1
@@ -135,22 +134,20 @@ export default function useTemplatesData() {
     );
     return services;
   };
+  const updateServiceCompleteData = () => {
+    const services = setServiceCompleteData();
+    completeData.value.service = { ...services };
+  };
+  const updateVariablesCompleteData = () => {
+    const variables = setVariablesCompleteData();
+    completeData.value.secret = { ...variables };
+  };
   const setCompleteData = () => {
-    completeDataSetter = {
-      updateServiceCompleteData() {
-        const services = setServiceCompleteData();
-        completeData.value.service = { ...services };
-      },
-      updateVariablesCompleteData() {
-        const variables = setVariablesCompleteData();
-        completeData.value.secret = { ...variables };
-      }
-    };
-    completeDataSetter?.updateServiceCompleteData?.();
-    completeDataSetter?.updateVariablesCompleteData?.();
+    updateServiceCompleteData();
+    updateVariablesCompleteData();
   };
   const initCompleteData = async () => {
-    await Promise.all([getModules(), getServiceList(), getProjectSecrets()]);
+    await Promise.all([getTemplates(), getServiceList(), getProjectSecrets()]);
     await getTemplatesVersions();
     setCompleteData();
   };
@@ -159,7 +156,6 @@ export default function useTemplatesData() {
     completeData,
     templateList,
     allTemplateVersions,
-    serviceDataList,
-    completeDataSetter
+    serviceDataList
   };
 }

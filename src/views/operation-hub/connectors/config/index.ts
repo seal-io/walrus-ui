@@ -42,7 +42,7 @@ export const connectorTypeList = [
 export const operationRootBread = {
   label: 'menu.operatorHub',
   icon: 'icon-relation',
-  backAction: false,
+  backAction: true,
   route: 'OperationMain'
 };
 export enum ConnectorCategory {
