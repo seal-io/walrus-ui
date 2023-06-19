@@ -65,7 +65,7 @@
   };
   const init = async () => {
     breadCrumbList.value = await initBreadValues(['env', 'service']);
-    setBreabCrumbData();
+    await setBreabCrumbData();
     checkoutCurrentService();
   };
 
