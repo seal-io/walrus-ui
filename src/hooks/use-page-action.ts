@@ -1,12 +1,13 @@
 import { ref } from 'vue';
 import { useRoute } from 'vue-router';
+import { PageAction } from '@/views/config';
 
 export default function usePageAction() {
   const route = useRoute();
   const action = route.params.action as string;
-  const pageAction = ref<string>(action || 'edit');
+  const pageAction = ref<string>(action || PageAction.EDIT);
   const handleEdit = () => {
-    pageAction.value = 'edit'; // edit, view
+    pageAction.value = PageAction.EDIT; // edit, view
   };
   return {
     pageAction,

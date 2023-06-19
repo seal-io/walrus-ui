@@ -112,7 +112,7 @@ export default {
   'applications.applications.modules.params.tips1': `1. Use the secret: you can enter {'$'}{'{'}secret.secretName{'}'} in the input box`,
   'applications.applications.modules.params.tips2': `2. Use variables: you can enter {'$'}{'{'}var.variableName{'}'} in the input box`,
   'applications.applications.modules.params.tips3': `3. Use the attributes in the template: you can enter {'$'}{'{'}service.serviceName.attributeName{'}'} in the input box`,
-  'applications.applications.rule.modules.name': 'exists with the same name',
+  'applications.applications.rule.modules.name': 'exists with the same service',
   'applications.applications.variables.title': 'Variables',
   'applications.applications.variables.button': 'Add a variable',
   'applications.applications.variables.label': 'Variable Name',

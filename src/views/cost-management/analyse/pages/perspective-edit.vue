@@ -18,7 +18,7 @@
     <SpinCard top-gap padding="0" :loading="loading" style="width: 100%">
       <GroupTitle
         :bordered="false"
-        :show-edit="pageAction === 'view' && !builtin"
+        :show-edit="pageAction === PageAction.VIEW && !builtin"
         @edit="handleEdit"
       ></GroupTitle>
       <a-form
@@ -331,6 +331,7 @@
     keys,
     isEqual
   } from 'lodash';
+  import { PageAction } from '@/views/config';
   import useCallCommon from '@/hooks/use-call-common';
   import { beforeLeaveCallback } from '@/hooks/save-before-leave';
   import { onBeforeRouteLeave } from 'vue-router';
@@ -395,13 +396,13 @@
     if (!id) {
       return t('cost.analyse.table.create');
     }
-    if (id && (pageAction.value === 'view' || builtin.value)) {
+    if (id && (pageAction.value === PageAction.VIEW || builtin.value)) {
       return t('cost.analyse.table.view');
     }
     return t('cost.analyse.table.edit');
   });
   const viewable = computed(() => {
-    return pageAction.value === 'view' || !!builtin.value;
+    return pageAction.value === PageAction.VIEW || !!builtin.value;
   });
   const groupList = computed(() => {
     const step = get(formData, 'allocationQueries.0.step');
@@ -710,11 +711,11 @@
   const handleCostFilterChange = (val) => {};
   const cancelCallback = () => {
     if (
-      pageAction.value === 'edit' &&
-      route.params.action === 'view' &&
+      pageAction.value === PageAction.EDIT &&
+      route.params.action === PageAction.VIEW &&
       !builtin.value
     ) {
-      pageAction.value = 'view';
+      pageAction.value = PageAction.VIEW;
       getPerspectiveInfo();
       return;
     }

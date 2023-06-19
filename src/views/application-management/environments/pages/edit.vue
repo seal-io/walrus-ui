@@ -12,7 +12,7 @@
         :bordered="false"
         style="margin-bottom: 0"
         :show-edit="
-          pageAction === 'view' &&
+          pageAction === PageAction.VIEW &&
           userStore.hasProjectResourceActions({
             resource: Resources.Environments,
             projectID: route.params.projectId,
@@ -28,13 +28,13 @@
           :validate-trigger="['change']"
           :rules="[
             {
-              required: pageAction === 'edit',
+              required: pageAction === PageAction.EDIT,
               message: $t('operation.environments.rule.name')
             }
           ]"
         >
           <a-input
-            v-if="pageAction === 'edit'"
+            v-if="pageAction === PageAction.EDIT"
             v-model="formData.name"
             style="width: 500px"
             :max-length="30"
@@ -49,7 +49,7 @@
           field="description"
         >
           <a-textarea
-            v-if="pageAction === 'edit'"
+            v-if="pageAction === PageAction.EDIT"
             v-model="formData.description"
             style="width: 500px"
             :max-length="200"
@@ -68,7 +68,7 @@
           <div>
             <div style="display: flex; margin-bottom: 10px">
               <a-button
-                v-if="pageAction === 'edit'"
+                v-if="pageAction === PageAction.EDIT"
                 type="primary"
                 size="small"
                 style="margin-right: 8px; padding: 0 6px"
@@ -89,7 +89,9 @@
               ></ConnectorSelector>
             </div>
             <connectorsTable
-              :style="{ marginLeft: pageAction === 'view' ? '12px' : 0 }"
+              :style="{
+                marginLeft: pageAction === PageAction.VIEW ? '12px' : 0
+              }"
               :action="pageAction"
               :list="formData?.edges || []"
               @delete="handleDeleteConnector"
@@ -97,7 +99,7 @@
           </div>
         </a-form-item>
       </a-form>
-      <EditPageFooter v-if="pageAction === 'edit'">
+      <EditPageFooter v-if="pageAction === PageAction.EDIT">
         <template #save>
           <a-button
             type="primary"
@@ -133,6 +135,7 @@
     isEqual,
     cloneDeep
   } from 'lodash';
+  import { PageAction } from '@/views/config';
   import GroupTitle from '@/components/group-title/index.vue';
   import EditPageFooter from '@/components/edit-page-footer/index.vue';
   import useCallCommon from '@/hooks/use-call-common';
@@ -188,7 +191,7 @@
     if (!id) {
       return t('operation.environments.create');
     }
-    if (id && pageAction.value === 'edit') {
+    if (id && pageAction.value === PageAction.EDIT) {
       return t('operation.environments.edit');
     }
     return t('operation.environments.view');
@@ -321,8 +324,11 @@
     return false;
   };
   const cancelCallback = () => {
-    if (pageAction.value === 'edit' && route.params.action === 'view') {
-      pageAction.value = 'view';
+    if (
+      pageAction.value === PageAction.EDIT &&
+      route.params.action === PageAction.VIEW
+    ) {
+      pageAction.value = PageAction.VIEW;
       getItemEnvironmentInfo();
       return;
     }

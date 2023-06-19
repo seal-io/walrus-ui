@@ -12,7 +12,7 @@
         <a-form-item
           :label="$t('common.table.name')"
           field="name"
-          :disabled="pageAction === 'edit' && !!id"
+          :disabled="pageAction === PageAction.EDIT && !!id"
           :rules="[
             {
               required: true,
@@ -43,7 +43,7 @@
           id="moduleId"
           :label="$t('applications.applications.table.module')"
           field="template.id"
-          :disabled="pageAction === 'edit' && !!id"
+          :disabled="pageAction === PageAction.EDIT && !!id"
           :rules="[
             {
               required: true,
@@ -163,7 +163,7 @@
         >
         </formCreate>
       </div>
-      <EditPageFooter v-if="pageAction === 'edit'">
+      <EditPageFooter v-if="pageAction === PageAction.EDIT">
         <template #save>
           <a-button
             :loading="submitLoading"
@@ -228,7 +228,7 @@
     TemplateRowData,
     TemplateVersionData
   } from '@/views/operation-hub/templates/config/interface';
-  import { validateAppNameRegx } from '@/views/config';
+  import { validateAppNameRegx, PageAction } from '@/views/config';
   import { BreadcrumbOptions } from '@/views/config/interface';
   import { beforeLeaveCallback } from '@/hooks/save-before-leave';
   import useProjectBreadcrumbData from '../../projects/hooks/use-project-breadcrumb-data';
