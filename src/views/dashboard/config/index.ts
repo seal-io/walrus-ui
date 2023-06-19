@@ -49,21 +49,11 @@ export const deployDataConfig = [
 
 export const overViewConfig = [
   {
-    label: 'dashboard.overview.applications',
+    label: 'menu.applicationManagement.project',
     value: 0,
-    key: 'application',
+    key: 'project',
     color:
       'linear-gradient(rgba(159, 232, 219, 0.3) 0%, rgba(159, 232, 219, 0.4) 100%)'
-  },
-
-  {
-    label: 'dashboard.overview.instance',
-    value: 0,
-    key: 'instance',
-    // color:
-    //   'linear-gradient(rgba(173, 209, 235, 0.3) 0%, rgba(173, 209, 235, 0.4) 100%)',
-    color:
-      'linear-gradient(rgba(184, 218, 243, 0.3) 0%, rgba(184, 218, 243, 0.4) 100%)'
   },
   {
     label: 'dashboard.overview.environment',
@@ -73,6 +63,15 @@ export const overViewConfig = [
     //   'linear-gradient(rgba(163, 216, 245, 0.3) 0%, rgba(163, 216, 245, 0.4) 100%)',
     color:
       'linear-gradient(rgba(255, 197, 192, 0.3) 0%, rgba(255, 197, 192, 0.4) 100%)'
+  },
+  {
+    label: 'menu.applicationManagement.serivce',
+    value: 0,
+    key: 'service',
+    // color:
+    //   'linear-gradient(rgba(173, 209, 235, 0.3) 0%, rgba(173, 209, 235, 0.4) 100%)',
+    color:
+      'linear-gradient(rgba(184, 218, 243, 0.3) 0%, rgba(184, 218, 243, 0.4) 100%)'
   },
   {
     label: 'dashboard.overview.connector',

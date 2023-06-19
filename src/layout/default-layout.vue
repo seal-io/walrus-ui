@@ -211,6 +211,7 @@
       align-items: center;
       height: 48px;
       padding-left: 7px;
+      overflow: hidden;
       font-size: 0;
       border-bottom: 1px solid var(--color-border-1);
       box-shadow: 1px 0 0 var(--color-border-1);
