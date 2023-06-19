@@ -30,7 +30,7 @@
         :bordered="false"
         style="margin-bottom: 0"
         :show-edit="
-          pageAction === 'view' &&
+          pageAction === PageAction.VIEW &&
           (route.params.projectId
             ? userStore.hasProjectResourceActions({
                 resource: Resources.Connectors,
@@ -57,7 +57,7 @@
             ]"
           >
             <a-input
-              v-if="pageAction === 'edit'"
+              v-if="pageAction === PageAction.EDIT"
               v-model="formData.name"
               style="width: 500px"
               :max-length="30"
@@ -68,14 +68,14 @@
             }}</span>
           </a-form-item>
           <a-form-item
-            v-if="pageAction === 'edit'"
+            v-if="pageAction === PageAction.EDIT"
             field="configData.kubeconfig.value"
             :hide-asterisk="false"
             label="KubeConfig"
             :validate-trigger="['change']"
             :rules="[
               {
-                required: pageAction === 'edit',
+                required: pageAction === PageAction.EDIT,
                 message: $t('operation.connectors.rules.kubeconfig')
               }
             ]"
@@ -89,7 +89,7 @@
                 :auto-size="{ minRows: 6, maxRows: 10 }"
               />
             </span>
-            <template v-if="pageAction === 'edit'" #extra>
+            <template v-if="pageAction === PageAction.EDIT" #extra>
               <div>
                 <a-upload
                   action="/"
@@ -124,7 +124,7 @@
               </div>
             </template>
             <a-checkbox
-              v-if="pageAction == 'edit'"
+              v-if="pageAction == PageAction.EDIT"
               v-model="formData.enableFinOps"
               >{{ $t('operation.connectors.rules.enable') }}</a-checkbox
             >
@@ -135,7 +135,7 @@
             }}</span>
           </a-form-item>
           <a-form-item
-            v-if="pageAction === 'view'"
+            v-if="pageAction === PageAction.VIEW"
             :label="$t('operation.connectors.table.status')"
           >
             <span class="readonly-view-label">
@@ -151,7 +151,7 @@
             </span>
           </a-form-item>
           <a-form-item
-            v-if="pageAction === 'view'"
+            v-if="pageAction === PageAction.VIEW"
             :label="$t('operation.connectors.table.coststatus')"
           >
             <div class="readonly-view-label description-content">
@@ -162,7 +162,7 @@
           </a-form-item>
         </a-form>
       </div>
-      <EditPageFooter v-if="pageAction === 'edit'">
+      <EditPageFooter v-if="pageAction === PageAction.EDIT">
         <template #save>
           <a-button
             type="primary"
@@ -184,6 +184,7 @@
 </template>
 
 <script lang="ts" setup>
+  import { PageAction } from '@/views/config';
   import { OPERATIONHUB } from '@/router/config';
   import { Resources, Actions } from '@/permissions/config';
   import { useUserStore } from '@/store';
@@ -241,10 +242,10 @@
     if (!id) {
       return t('operation.connectors.title.new', { type: 'Kubernetes' });
     }
-    if (id && pageAction.value === 'edit') {
+    if (id && pageAction.value === PageAction.EDIT) {
       return t('operation.connectors.title.edit', { type: 'Kubernetes' });
     }
-    if (id && pageAction.value === 'view') {
+    if (id && pageAction.value === PageAction.VIEW) {
       return t('operation.connectors.title.view', { type: 'Kubernetes' });
     }
     return t('operation.connectors.title.edit', { type: 'Kubernetes' });
@@ -301,8 +302,11 @@
     }
   };
   const cancelCallback = () => {
-    if (pageAction.value === 'edit' && route.params.action === 'view') {
-      pageAction.value = 'view';
+    if (
+      pageAction.value === PageAction.EDIT &&
+      route.params.action === PageAction.VIEW
+    ) {
+      pageAction.value = PageAction.VIEW;
       getConnectorInfo();
       return;
     }

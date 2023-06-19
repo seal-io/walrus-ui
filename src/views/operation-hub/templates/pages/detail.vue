@@ -17,7 +17,7 @@
       <GroupTitle
         :bordered="false"
         :show-edit="
-          pageAction === 'view' &&
+          pageAction === PageAction.VIEW &&
           userStore.hasRolesActionsPermission({
             resource: Resources.Templates,
             actions: [Actions.PUT]
@@ -33,7 +33,7 @@
           :validate-trigger="['change']"
           :rules="[
             {
-              required: pageAction === 'edit',
+              required: pageAction === PageAction.EDIT,
               message: $t('operation.templates.rules.name')
             },
             {
@@ -43,7 +43,7 @@
           ]"
         >
           <a-input
-            v-if="pageAction === 'edit'"
+            v-if="pageAction === PageAction.EDIT"
             v-model="formData.id"
             style="width: 500px"
             :max-length="50"
@@ -52,7 +52,7 @@
           <span v-else class="readonly-view-label">{{
             formData.id || '-'
           }}</span>
-          <template v-if="pageAction === 'edit'" #extra>
+          <template v-if="pageAction === PageAction.EDIT" #extra>
             <span class="tips">{{
               $t('applications.applications.rule.allName')
             }}</span>
@@ -63,7 +63,7 @@
           field="description"
         >
           <a-textarea
-            v-if="pageAction === 'edit'"
+            v-if="pageAction === PageAction.EDIT"
             v-model="formData.description"
             style="width: 500px"
             :auto-size="{ minRows: 6, maxRows: 10 }"
@@ -91,13 +91,13 @@
           :validate-trigger="['change']"
           :rules="[
             {
-              required: pageAction === 'edit',
+              required: pageAction === PageAction.EDIT,
               message: $t('operation.templates.rules.source')
             }
           ]"
         >
           <a-input
-            v-if="pageAction === 'edit'"
+            v-if="pageAction === PageAction.EDIT"
             v-model="formData.source"
             style="width: 500px"
           ></a-input>
@@ -116,7 +116,7 @@
           ]"
         >
           <a-input
-            v-if="pageAction === 'edit'"
+            v-if="pageAction === PageAction.EDIT"
             v-model="formData.icon"
             style="width: 500px"
           ></a-input>
@@ -125,7 +125,7 @@
           }}</span>
         </a-form-item>
         <a-form-item
-          v-if="id && pageAction === 'view'"
+          v-if="id && pageAction === PageAction.VIEW"
           :label="$t('operation.connectors.table.status')"
         >
           <StatusLabel
@@ -143,7 +143,7 @@
       <a-tabs
         v-if="
           id &&
-          pageAction === 'view' &&
+          pageAction === PageAction.VIEW &&
           userStore.hasRolesActionsPermission({
             resource: Resources.TemplateVersions,
             actions: [Actions.GET]
@@ -179,7 +179,7 @@
           </div>
         </template>
       </a-tabs>
-      <EditPageFooter v-if="pageAction === 'edit'">
+      <EditPageFooter v-if="pageAction === PageAction.EDIT">
         <template #save>
           <a-button
             type="primary"
@@ -203,6 +203,7 @@
 </template>
 
 <script lang="ts" setup>
+  import { PageAction, validateAppNameRegx } from '@/views/config';
   import { OPERATIONHUB } from '@/router/config';
   import { Resources, Actions } from '@/permissions/config';
   import { useUserStore, useTabBarStore } from '@/store';
@@ -215,7 +216,6 @@
   import EditPageFooter from '@/components/edit-page-footer/index.vue';
   import useCallCommon from '@/hooks/use-call-common';
   import usePageAction from '@/hooks/use-page-action';
-  import { validateAppNameRegx } from '@/views/config';
   import StatusLabel from '../../connectors/components/status-label.vue';
   import { templateTypeList, tabList } from '../config';
   import { Schema } from '../config/interface';
@@ -264,7 +264,7 @@
     if (!id) {
       return t('operation.templates.detail.add');
     }
-    if (id && pageAction.value === 'view') {
+    if (id && pageAction.value === PageAction.VIEW) {
       return t('operation.templates.detail.view');
     }
     return t('operation.templates.detail.edit');
@@ -335,8 +335,11 @@
     }
   };
   const cancelCallback = () => {
-    if (pageAction.value === 'edit' && route.params.action === 'view') {
-      pageAction.value = 'view';
+    if (
+      pageAction.value === PageAction.EDIT &&
+      route.params.action === PageAction.VIEW
+    ) {
+      pageAction.value = PageAction.VIEW;
       getItemTemplate();
       return;
     }

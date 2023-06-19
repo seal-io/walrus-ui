@@ -42,7 +42,7 @@
                 <AutoTip
                   :key="data.value"
                   :tooltip-props="{
-                    content: data
+                    content: data.label
                   }"
                 >
                   <span>{{ data.label }}</span>

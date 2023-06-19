@@ -26,7 +26,7 @@
       <GroupTitle
         :bordered="false"
         :show-edit="
-          pageAction === 'view' &&
+          pageAction === PageAction.VIEW &&
           (route.params.projectId
             ? userStore.hasProjectResourceActions({
                 resource: Resources.Connectors,
@@ -47,13 +47,13 @@
             field="name"
             :rules="[
               {
-                required: pageAction === 'edit',
+                required: pageAction === PageAction.EDIT,
                 message: $t('operation.connectors.rule.name')
               }
             ]"
           >
             <a-input
-              v-if="pageAction === 'edit'"
+              v-if="pageAction === PageAction.EDIT"
               v-model="formData.name"
               style="width: 500px"
               :max-length="30"
@@ -68,13 +68,13 @@
             field="type"
             :rules="[
               {
-                required: pageAction === 'edit',
+                required: pageAction === PageAction.EDIT,
                 message: $t('operation.connectors.type.rule')
               }
             ]"
           >
             <a-select
-              v-if="pageAction === 'edit'"
+              v-if="pageAction === PageAction.EDIT"
               v-model="formData.type"
               style="width: 500px"
             >
@@ -99,12 +99,12 @@
             </span>
           </a-form-item>
           <a-form-item
-            v-if="pageAction === 'edit'"
+            v-if="pageAction === PageAction.EDIT"
             label="Access Token"
             field="configData.token.value"
             :rules="[
               {
-                required: pageAction === 'edit',
+                required: pageAction === PageAction.EDIT,
                 message: $t('operation.connectors.accesstoken.rule')
               }
             ]"
@@ -115,7 +115,7 @@
             ></a-input-password>
           </a-form-item>
           <a-form-item
-            v-if="pageAction === 'view'"
+            v-if="pageAction === PageAction.VIEW"
             :label="$t('operation.connectors.table.status')"
           >
             <span class="readonly-view-label">
@@ -132,7 +132,7 @@
           </a-form-item>
         </a-form>
       </div>
-      <EditPageFooter v-if="pageAction === 'edit'">
+      <EditPageFooter v-if="pageAction === PageAction.EDIT">
         <template #save>
           <a-button
             type="primary"
@@ -154,6 +154,7 @@
 </template>
 
 <script lang="ts" setup>
+  import { PageAction } from '@/views/config';
   import { OPERATIONHUB } from '@/router/config';
   import { Resources, Actions } from '@/permissions/config';
   import { useUserStore } from '@/store';
@@ -219,12 +220,12 @@
         type: t('operation.connectors.table.versioncontrol')
       });
     }
-    if (id && pageAction.value === 'edit') {
+    if (id && pageAction.value === PageAction.EDIT) {
       return t('operation.connectors.title.edit', {
         type: t('operation.connectors.table.versioncontrol')
       });
     }
-    if (id && pageAction.value === 'view') {
+    if (id && pageAction.value === PageAction.EDIT) {
       return t('operation.connectors.title.view', {
         type: t('operation.connectors.table.versioncontrol')
       });
@@ -268,8 +269,11 @@
     }
   };
   const cancelCallback = () => {
-    if (pageAction.value === 'edit' && route.params.action === 'view') {
-      pageAction.value = 'view';
+    if (
+      pageAction.value === PageAction.EDIT &&
+      route.params.action === PageAction.VIEW
+    ) {
+      pageAction.value = PageAction.VIEW;
       getConnectorInfo();
       return;
     }
