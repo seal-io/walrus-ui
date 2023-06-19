@@ -17,7 +17,7 @@
         <template #description></template>
       </HeaderInfo>
       <slTransition>
-        <div v-if="pageAction === 'edit'">
+        <div v-if="pageAction === PageAction.EDIT">
           <serviceEdit
             pg-type="com"
             @save="handleEditSucceed"
@@ -25,7 +25,7 @@
           ></serviceEdit>
         </div>
       </slTransition>
-      <div v-if="pageAction === 'view'">
+      <div v-if="pageAction === PageAction.VIEW">
         <ComCard>
           <ModuleCard
             :title="$t('applications.applications.detail.configuration')"
@@ -120,6 +120,7 @@
   import { Resources } from '@/permissions/config';
   import { useUserStore } from '@/store';
   import _ from 'lodash';
+  import { PageAction, websocketEventType } from '@/views/config';
   import { markRaw, ref, PropType, onMounted, computed } from 'vue';
   import { execSucceed } from '@/utils/monitor';
   import slTransition from '@/components/sl-transition/index.vue';
@@ -128,7 +129,6 @@
   import useCallCommon from '@/hooks/use-call-common';
   import EditPageFooter from '@/components/edit-page-footer/index.vue';
   import useBasicInfoData from '@/views/application-management/projects/hooks/use-basicInfo-data';
-  import { websocketEventType } from '@/views/config';
   import tabTerminal from './x-terminal/tab-terminal.vue';
   import tabResource from './tab-resource.vue';
   import tabLogs from './tab-logs.vue';
@@ -166,7 +166,7 @@
   const actionMap = new Map();
   const showCloneModal = ref(false);
   const showDeleteModal = ref(false);
-  const pageAction = ref('view');
+  const pageAction = ref(PageAction.VIEW);
   const { setChunkRequest } = useSetChunkRequest();
   const userStore = useUserStore();
   const { router, route, t } = useCallCommon();
@@ -201,7 +201,7 @@
     });
   });
   const handleUpgrade = () => {
-    pageAction.value = 'edit';
+    pageAction.value = PageAction.EDIT;
   };
   const cloneHandler = async (newService) => {
     try {
@@ -247,14 +247,14 @@
         ...route.query
       }
     });
-    pageAction.value = 'view';
+    pageAction.value = PageAction.VIEW;
   };
   const setActionMap = () => {
     actionMap.set('delete', handleDelete);
     actionMap.set('clone', handleClickClone);
   };
   const handleEditCancel = () => {
-    pageAction.value = 'view';
+    pageAction.value = PageAction.VIEW;
   };
   const setInstanceTabList = () => {
     instanceTabList.value = _.filter(instanceTabs, (item) => {
