@@ -15,7 +15,7 @@
 
 <script lang="ts" setup>
   import { PROJECT } from '@/router/config';
-  import { ref, provide, onMounted } from 'vue';
+  import { ref, provide, onMounted, nextTick } from 'vue';
   import BreadWrapper from '@/components/bread-wrapper/index.vue';
   import useCallCommon from '@/hooks/use-call-common';
   import useProjectBreadcrumbData from '@/views/application-management/projects/hooks/use-project-breadcrumb-data';
@@ -43,9 +43,11 @@
     handleBreadChange(value, item);
   };
   const checkoutCurrentService = () => {
-    if (!serviceDataList.value.length) {
-      router.back();
-    }
+    nextTick(() => {
+      if (!serviceDataList.value.length) {
+        router.back();
+      }
+    });
   };
   const setBreabCrumbData = async () => {
     const [projectList, environmentList, serviceList] = await Promise.all([

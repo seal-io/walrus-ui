@@ -21,11 +21,11 @@
             paddingTop: navbar ? `${appStore.navbarHeight + 2}px` : ''
           }"
           :hide-trigger="true"
-          @collapse="setCollapsed"
         >
           <div
             class="logo-wrapper"
             :class="{ menuCollapse: appStore.menuCollapse }"
+            @click="handleBackHome"
           >
             <div>
               <img alt="logo" class="logo" src="../assets/images/logo2.png" />
@@ -63,6 +63,7 @@
 </template>
 
 <script lang="ts" setup>
+  import { DASHBOARD } from '@/router/config';
   import { ref, computed, watch, provide } from 'vue';
   import { useRouter, useRoute } from 'vue-router';
   import { useAppStore, useUserStore } from '@/store';
@@ -101,7 +102,12 @@
     return { ...paddingLeft, ...paddingTop, paddingRight: '10px' };
   });
   const setCollapsed = (val: boolean) => {
-    // appStore.updateSettings({ menuCollapse: val });
+    appStore.updateSettings({ menuCollapse: val });
+  };
+  const handleBackHome = () => {
+    router.push({
+      name: DASHBOARD.Main
+    });
   };
   watch(
     () => userStore.role,
@@ -142,26 +148,9 @@
     height: @nav-size-height;
     background-color: var(--seal-color-bg-1);
   }
-  @media screen and (min-width: 1512px) {
-    .main-layout.arco-layout {
-      box-sizing: border-box;
-      // width: 1440px;
-    }
-  }
-  // @media screen and (max-width: 1599px) and (min-width: 1200px) {
-  //   .main-layout.arco-layout {
-  //     width: 100%;
-  //   }
-  // }
-  @media screen and (max-width: 1511px) {
-    .main-layout.arco-layout {
-      box-sizing: border-box;
-      // width: 100%;
-      // padding: 0 20px;
-    }
-  }
 
   :deep(.main-layout.arco-layout) {
+    box-sizing: border-box;
     // position: relative;
     // margin: 0 auto;
   }
@@ -215,10 +204,10 @@
       font-size: 0;
       border-bottom: 1px solid var(--color-border-1);
       box-shadow: 1px 0 0 var(--color-border-1);
+      cursor: pointer;
       transition: all 0.2s cubic-bezier(0.34, 0.69, 0.1, 1);
 
       &.menuCollapse {
-        // width: 48px;
         overflow: hidden;
         transition: all 0.2s cubic-bezier(0.34, 0.69, 0.1, 1);
       }

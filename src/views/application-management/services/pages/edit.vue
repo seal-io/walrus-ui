@@ -276,6 +276,7 @@
     generateVariablesGroup,
     getTemplateSchemaByVersion,
     getTemplateVersionList,
+    getTemplatesVersions,
     formData,
     pageAction,
     defaultGroupKey,
@@ -435,6 +436,7 @@
   };
   // module change: exec version change
   const handleTemplateChange = async (val) => {
+    await getTemplatesVersions(val);
     await getTemplateVersionList();
     formData.template.version = get(templateVersionList.value, '0.version');
     templateVersionFormCache.value = {};
