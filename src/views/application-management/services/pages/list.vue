@@ -201,7 +201,10 @@
     onMounted
   } from 'vue';
   import ADropdownButton from '@arco-design/web-vue/es/dropdown/dropdown-button';
-  import { useSetChunkRequest } from '@/api/axios-chunk-request';
+  import {
+    useSetChunkRequest,
+    createAxiosToken
+  } from '@/api/axios-chunk-request';
   import useCallCommon from '@/hooks/use-call-common';
   import { execSucceed } from '@/utils/monitor';
   import DropButtonGroup from '@/components/drop-button-group/index.vue';
@@ -245,6 +248,7 @@
     defaultOrder: 'descend'
   });
 
+  let fetchToken: any = null;
   const showCloneModal = ref(false);
   const cloneInstance = ref({});
   const showEditModal = ref(false);
@@ -257,6 +261,7 @@
   let timer: any = null;
   const loading = ref(false);
   const total = ref(0);
+  const totalPage = ref(1);
   const queryParams = reactive({
     projectID: route.params.projectId as string,
     environmentID: route.params.environmentId as string,
@@ -284,18 +289,20 @@
     });
     return res;
   };
-  const handleSelect = () => {};
   const fetchData = async () => {
     if (!queryParams.projectID) return;
+    fetchToken?.cancel?.();
+    fetchToken = createAxiosToken();
     try {
       loading.value = true;
       const params: any = {
         ...pickBy(queryParams, (val) => !!val),
         sort: [sort.value]
       };
-      const { data } = await queryServices(params);
+      const { data } = await queryServices(params, fetchToken?.token);
       dataList.value = data?.items || [];
       total.value = data?.pagination?.total || 0;
+      totalPage.value = data?.pagination.totalPage || 1;
       loading.value = false;
     } catch (error) {
       loading.value = false;
@@ -312,7 +319,6 @@
   };
   const handleSortChange = (dataIndex: string, direction: string) => {
     setSortDirection(dataIndex, direction);
-    console.log('dataIndex===', dataIndex, direction);
     fetchData();
   };
   const handleSearch = () => {
@@ -463,6 +469,7 @@
     // CREATE
     if (data?.type === websocketEventType.create) {
       dataList.value = _.concat(collections, dataList.value);
+      dataList.value = _.slice(dataList.value, 0, 10);
       return;
     }
     // DELETE
@@ -470,6 +477,12 @@
       dataList.value = _.filter(dataList.value, (item) => {
         return !_.find(ids, (id) => id === item.id);
       });
+      if (queryParams.page > totalPage.value) {
+        queryParams.page = 1;
+        fetchData();
+      } else {
+        fetchData();
+      }
       return;
     }
 
@@ -483,7 +496,8 @@
         const updateItem = _.cloneDeep(item);
         dataList.value[updateIndex] = updateItem;
       } else {
-        dataList.value = _.concat(_.cloneDeep(item), dataList.value);
+        // only update the data that in current page
+        // dataList.value = _.concat(_.cloneDeep(item), dataList.value);
       }
     });
   };

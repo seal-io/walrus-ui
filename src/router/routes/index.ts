@@ -35,5 +35,4 @@ const copyAppRoutes = appRoutes.map((o: RouteRecordRaw) => {
 copyAppRoutes.sort((a: RouteRecordRaw, b: RouteRecordRaw) => {
   return (get(a, 'meta.order') || 0) - (get(b, 'meta.order') || 0);
 });
-console.log('modules:', copyAppRoutes);
 export default copyAppRoutes;

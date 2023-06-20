@@ -18,12 +18,13 @@ export interface ResultType {
 export interface QueryType extends Pagination {
   projectID: string;
 }
-export const queryServices = (params: QueryType) => {
+export const queryServices = (params: QueryType, token?) => {
   return axios.get<ResultType>(`/services`, {
     params,
     paramsSerializer: (obj) => {
       return qs.stringify(obj);
-    }
+    },
+    cancelToken: token
   });
 };
 

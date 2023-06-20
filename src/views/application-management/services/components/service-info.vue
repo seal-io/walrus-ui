@@ -170,7 +170,6 @@
   const variablesDataList = computed(() => {
     const list =
       _.get(variablesGroup.value, `${activeKey.value}.variables`) || [];
-    console.log('list===', list);
     return _.filter(list, (item) => {
       return !item.subGroup || item.subGroup === activeSubGroup.value;
     });
@@ -185,7 +184,6 @@
       list = [defaultGroupKey, ..._.pull(list, defaultGroupKey)];
     }
     formTabs.value = list;
-    console.log('formTabs====', formTabs.value, variablesGroup.value);
   };
   const getListValue = (value, list, k) => {
     const d = _.find(list, (item) => {
