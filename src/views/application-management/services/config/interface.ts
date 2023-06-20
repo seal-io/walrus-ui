@@ -7,19 +7,16 @@ export interface Variables {
   required?: boolean;
 }
 
-export interface AppRowData {
+export interface ServiceRowData {
   name: string;
   id: string;
   labels: object;
   status: string;
   description: string;
-  environmentID: { id: string; name: string };
-  instances: Array<AppRowData>;
-  modules: Array<{
-    moduleID: string;
-    name: string;
-    variables: object;
-  }>;
+  environment: { id: string; name: string };
+  project: { id: string };
+  template: { id: string; version: string };
+  attributes: object;
 }
 export interface AppModule {
   name: string;

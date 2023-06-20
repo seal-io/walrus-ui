@@ -142,6 +142,7 @@
     .status {
       position: absolute;
       top: 5px;
+      right: 5px;
       left: 4px;
       font-size: 0;
       // transform: scale(0.8);

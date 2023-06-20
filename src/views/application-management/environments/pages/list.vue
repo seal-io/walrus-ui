@@ -141,6 +141,22 @@
                     <template #icon><icon-edit class="size-14" /></template>
                   </a-link>
                 </a-tooltip>
+                <a-tooltip
+                  v-if="
+                    userStore.hasProjectResourceActions({
+                      projectID: queryParams.projectID,
+                      resource: Resources.Environments,
+                      actions: [Actions.POST]
+                    })
+                  "
+                  :content="$t('applications.environment.clone')"
+                >
+                  <a-link type="text" size="small" @click="handleClone(record)">
+                    <template #icon
+                      ><i class="size-14 icon-Clone-Cloud iconfont"
+                    /></template>
+                  </a-link>
+                </a-tooltip>
                 <a-tooltip :content="$t('common.button.detail')">
                   <a-link
                     type="text"
@@ -180,6 +196,7 @@
 
 <script lang="ts" setup>
   import dayjs from 'dayjs';
+  import { PageAction } from '@/views/config';
   import { PROJECT } from '@/router/config';
   import { useUserStore } from '@/store';
   import { Resources, Actions } from '@/permissions/config';
@@ -268,7 +285,6 @@
   };
   const handleSortChange = (dataIndex: string, direction: string) => {
     setSortDirection(dataIndex, direction);
-    console.log('dataIndex===', dataIndex, direction);
     fetchData();
   };
   onActivated(() => {
@@ -292,7 +308,7 @@
     router.push({
       name: PROJECT.EnvEdit,
       params: {
-        action: 'edit'
+        action: PageAction.EDIT
       },
       query: { id: row.id }
     });
@@ -301,9 +317,20 @@
     router.push({
       name: PROJECT.EnvEdit,
       params: {
-        action: 'view'
+        action: PageAction.VIEW
       },
       query: { id: row.id }
+    });
+  };
+  const handleClone = (row) => {
+    router.push({
+      name: PROJECT.EnvClone,
+      params: {
+        environmentId: row.id
+      },
+      query: {
+        id: row.id
+      }
     });
   };
   const handleDeleteConfirm = async () => {

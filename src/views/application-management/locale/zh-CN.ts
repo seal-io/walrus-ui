@@ -135,5 +135,7 @@ export default {
   'applications.endpoint.access': '访问',
   'applications.service.rollback.version.label': '选择版本',
   'applications.service.rollback.version.holder': '请选择版本',
-  'applications.service.rollback.config.compare': '配置对比'
+  'applications.service.rollback.config.compare': '配置对比',
+  'applications.service.clone': '克隆服务',
+  'applications.environment.clone': '克隆环境'
 };

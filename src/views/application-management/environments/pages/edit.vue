@@ -61,6 +61,28 @@
           }}</div>
         </a-form-item>
         <a-form-item
+          v-if="environmentId"
+          :label="$t(`applications.projects.form.label`)"
+        >
+          <a-space
+            v-if="labelList?.length"
+            style="display: flex; flex-direction: column"
+            direction="vertical"
+          >
+            <xInputGroup
+              v-for="(sItem, sIndex) in labelList"
+              :key="sIndex"
+              v-model:dataKey="sItem.key"
+              v-model:dataValue="sItem.value"
+              v-model:value="formData.labels"
+              :label-list="labelList"
+              :position="sIndex"
+              @add="(obj) => handleAddLabel(obj, labelList)"
+              @delete="handleDeleteLabel(labelList, sIndex)"
+            ></xInputGroup>
+          </a-space>
+        </a-form-item>
+        <a-form-item
           :label="$t('operation.connectors.menu')"
           field="connectorIDs"
           :validate-trigger="['change']"
@@ -90,6 +112,7 @@
             </div>
             <connectorsTable
               :style="{
+                width: '800px',
                 marginLeft: pageAction === PageAction.VIEW ? '12px' : 0
               }"
               :action="pageAction"
@@ -97,6 +120,9 @@
               @delete="handleDeleteConnector"
             ></connectorsTable>
           </div>
+        </a-form-item>
+        <a-form-item :label="$t('applications.applications.table.service')">
+          <CloneService :service-list="serviceList"></CloneService>
         </a-form-item>
       </a-form>
       <EditPageFooter v-if="pageAction === PageAction.EDIT">
@@ -143,9 +169,13 @@
   import { onBeforeRouteLeave } from 'vue-router';
   import { queryConnectors } from '@/views/operation-hub/connectors/api';
   import usePageAction from '@/hooks/use-page-action';
-  import useGetBreadState from '@/views/application-management/projects/hooks/use-get-breadstate';
+  import xInputGroup from '@/components/form-create/custom-components/x-input-group.vue';
+  import useLabelsActions from '@/components/form-create/hooks/use-labels-action';
   import useProjectBreadcrumbData from '@/views/application-management/projects/hooks/use-project-breadcrumb-data';
+  import { queryServices } from '@/views/application-management/services/api';
+  import { ServiceRowData } from '@/views/application-management/services/config/interface';
   import { BreadcrumbOptions } from '@/views/config/interface';
+  import CloneService from '../components/clone-service.vue';
   import { EnvironFormData } from '../config/interface';
   import connectorsTable from '../components/connectors.vue';
   import ConnectorSelector from '../components/connector-selector.vue';
@@ -171,6 +201,8 @@
   const { router, route, t } = useCallCommon();
   const { pageAction, handleEdit } = usePageAction();
   const id = route.query.id as string;
+  const environmentId = route.params.environmentId as string; // only in clone
+  const serviceList = ref<ServiceRowData[]>([]);
   const formref = ref();
   const connectorList = ref<{ label: string; value: string }[]>([]);
   const showModal = ref(false);
@@ -186,8 +218,13 @@
     connectors: [],
     edges: []
   });
-
+  const { labelList, handleAddLabel, handleDeleteLabel } =
+    useLabelsActions(formData);
   const title = computed(() => {
+    // only in clone
+    if (environmentId) {
+      return t('applications.environment.clone');
+    }
     if (!id) {
       return t('operation.environments.create');
     }
@@ -247,6 +284,10 @@
       formData.value.connectorIDs = map(get(data, 'connectors') || [], (s) => {
         return s?.connector?.id;
       });
+      // only in clone
+      formData.value.name = environmentId
+        ? `${formData.value.name}-clone`
+        : formData.value.name;
       selectedList.value = [...formData.value.connectorIDs];
       setFormDataConnectors(formData.value.connectorIDs);
       copyFormData = cloneDeep(formData.value);
@@ -259,6 +300,21 @@
         connectors: [],
         edges: []
       };
+      console.log(error);
+    }
+  };
+  const getEnvironmentServices = async () => {
+    if (!route.params.environmentId) return;
+    try {
+      const params = {
+        projectID: route.params.projectId as string,
+        environmentID: route.params.environmentId as string,
+        page: -1
+      };
+      const { data } = await queryServices(params);
+      serviceList.value = data.items || [];
+    } catch (error) {
+      serviceList.value = [];
       console.log(error);
     }
   };
@@ -365,6 +421,7 @@
   });
   const init = async () => {
     setBreadCrumbList();
+    getEnvironmentServices();
     await getConnectors();
     await getItemEnvironmentInfo();
   };
