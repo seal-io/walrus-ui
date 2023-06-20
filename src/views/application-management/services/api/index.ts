@@ -2,7 +2,7 @@ import axios from 'axios';
 import qs from 'query-string';
 import { Pagination } from '@/types/global';
 import router from '@/router';
-import { AppRowData, EndPointRow } from '../config/interface';
+import { ServiceRowData, EndPointRow } from '../config/interface';
 
 // some params for permission
 export const getPermissionRouteParams = () => {
@@ -12,7 +12,7 @@ export const getPermissionRouteParams = () => {
 
 // interface ParamsType extends Pagination {}
 export interface ResultType {
-  items: AppRowData[];
+  items: ServiceRowData[];
   pagination: Pagination;
 }
 export interface QueryType extends Pagination {

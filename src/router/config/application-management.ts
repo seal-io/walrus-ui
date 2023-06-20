@@ -5,6 +5,7 @@ export const Project = {
   EnvList: 'EnvironmentList',
   EnvDetail: 'ProjectEnvDetail',
   EnvEdit: 'ProjectEnvEdit',
+  EnvClone: 'ProjectEnvClone',
   ServiceDetail: 'ProjectServiceDetail',
   ServiceEdit: 'ProjectServiceEdit',
   ConnectorK8sDetail: 'ProjectConnectorK8sDetail',

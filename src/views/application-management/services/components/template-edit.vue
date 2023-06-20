@@ -1,12 +1,5 @@
 <template>
   <div>
-    <BreadWrapper>
-      <Breadcrumb
-        :items="breadCrumbList"
-        :menu="{ icon: 'icon-apps' }"
-        @change="handleSelectChange"
-      ></Breadcrumb>
-    </BreadWrapper>
     <ComCard top-gap>
       <a-form ref="formref" :model="formData" auto-label-width>
         <a-form-item
@@ -232,7 +225,6 @@
   import { validateAppNameRegx, PageAction } from '@/views/config';
   import { BreadcrumbOptions } from '@/views/config/interface';
   import { beforeLeaveCallback } from '@/hooks/save-before-leave';
-  import useProjectBreadcrumbData from '../../projects/hooks/use-project-breadcrumb-data';
   import { createService, upgradeApplicationInstance } from '../api';
   import useServiceData from '../hooks/use-service-data';
 
@@ -246,12 +238,6 @@
     value: string;
   }
   const props = defineProps({
-    action: {
-      type: String,
-      default() {
-        return 'edit';
-      }
-    },
     pgType: {
       type: String,
       default() {
@@ -261,15 +247,7 @@
   });
 
   const emits = defineEmits(['cancel', 'save']);
-  const {
-    breadCrumbList: CurrentBreadList,
-    getProjectList,
-    getEnvironmentList,
-    setProjectList,
-    setEnvironmentList,
-    handleBreadChange,
-    initBreadValues
-  } = useProjectBreadcrumbData();
+
   const {
     id,
     init,
@@ -290,8 +268,7 @@
     completeData,
     title,
     refMap,
-    asyncLoading,
-    setRefMap
+    asyncLoading
   } = useServiceData(props);
 
   let copyFormData: any = null;
@@ -301,7 +278,6 @@
   const activeKey = ref('schemaForm0');
   const schemaForm = ref();
   const submitLoading = ref(false);
-  const breadCrumbList = ref<BreadcrumbOptions[]>([]);
 
   const versionMap = ref({ nv: '', ov: '' });
 
@@ -317,28 +293,6 @@
     return list;
   });
 
-  const getContainer = (id) => {
-    return document.getElementById(id);
-  };
-  const setBreadCrumbList = async () => {
-    const [projectList, environmentList] = await Promise.all([
-      getProjectList(),
-      getEnvironmentList()
-    ]);
-    const projectRes = await setProjectList(projectList);
-    const environmentRes = setEnvironmentList(environmentList);
-    breadCrumbList.value = [
-      { ...projectRes },
-      { ...environmentRes },
-      {
-        type: 'menu.applicationManagement.serivce',
-        label: title.value
-      }
-    ] as BreadcrumbOptions[];
-  };
-  const handleSelectChange = ({ value, item }) => {
-    handleBreadChange(value, item);
-  };
   const cancelCallback = () => {
     router.back();
   };
@@ -357,6 +311,11 @@
       return;
     }
     callback();
+  };
+  const setRefMap = (el: refItem, name) => {
+    if (el) {
+      refMap.value[`${name}`] = el;
+    }
   };
 
   const handleTabChange = (val) => {
@@ -455,10 +414,17 @@
 
   const validateFormData = async () => {
     const moduleFormList = await getFormData();
+    console.log(
+      'moduleFormList===',
+      refMap.value,
+      moduleFormList,
+      variablesGroup
+    );
     const validFailedForm = find(moduleFormList, (item) => !item.formData);
     if (validFailedForm && validFailedForm.tab) {
       activeKey.value = validFailedForm.tab;
     }
+
     return { validFailedForm, moduleFormList };
   };
   const getCurrentFormData = async () => {
@@ -565,17 +531,7 @@
     return true;
   });
   const initData = async () => {
-    const list = await initBreadValues(['env']);
-    breadCrumbList.value = [
-      ...list,
-      {
-        type: 'menu.applicationManagement.serivce',
-        label: title.value
-      }
-    ] as BreadcrumbOptions[];
-
     await init();
-    setBreadCrumbList();
     copyFormData = _.cloneDeep(formData);
   };
 

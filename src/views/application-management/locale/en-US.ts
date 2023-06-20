@@ -142,5 +142,7 @@ export default {
   'applications.endpoint.access': 'Access Points',
   'applications.service.rollback.version.label': 'Select Version',
   'applications.service.rollback.version.holder': 'please select a version',
-  'applications.service.rollback.config.compare': 'Configuration Comparison'
+  'applications.service.rollback.config.compare': 'Configuration Comparison',
+  'applications.service.clone': 'Clone Services',
+  'applications.environment.clone': 'Clone Environment'
 };

@@ -95,6 +95,26 @@ export default [
     }
   },
   {
+    path: 'project/:projectId/environment:environmentId/clone',
+    name: PROJECT.EnvClone,
+    component: () =>
+      import('@/views/application-management/environments/pages/edit.vue'),
+    meta: {
+      hideInMenu: true,
+      hideMenu: false,
+      ignoreCache: true,
+      selectedMenu: PROJECT.List,
+      locale: 'applications.projects.menu',
+      requiresAuth: true,
+      permission: {
+        resource: Resources.Environments,
+        type: permissionKey.projectRoles,
+        actions: ['POST']
+      },
+      icon: 'icon-apps'
+    }
+  },
+  {
     path: 'project/:projectId/environment/:environmentId/service/detail',
     name: PROJECT.ServiceDetail,
     component: () =>

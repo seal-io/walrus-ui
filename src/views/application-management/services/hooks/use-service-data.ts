@@ -77,7 +77,11 @@ export default function useServiceData(props?) {
       console.log(error);
     }
   };
-
+  const setRefMap = (el: refItem, name) => {
+    if (el) {
+      refMap.value[`${name}`] = el;
+    }
+  };
   const getInitialValue = (item, sourceData, action) => {
     let initialValue = item.default;
     if (
@@ -172,7 +176,21 @@ export default function useServiceData(props?) {
       console.log(error);
     }
   };
-
+  const setFormAttributes = async () => {
+    _.assignIn(formData, serviceInfo.value);
+    // 1. get the template meta data 2.set the default value
+    await getTemplatesVersions(formData.template.id);
+    await getTemplateVersionList();
+    const moduleTemplate = getTemplateSchemaByVersion();
+    templateInfo.value = _.cloneDeep(_.get(moduleTemplate, 'schema'));
+    const variablesList = _.filter(
+      _.get(templateInfo.value, 'variables'),
+      (v) => !v.hidden
+    );
+    _.each(variablesList || [], (item) => {
+      item.default = _.get(serviceInfo.value, `attributes.${item.name}`);
+    });
+  };
   const initFormData = async () => {
     if (!id) {
       // webservice
@@ -189,21 +207,8 @@ export default function useServiceData(props?) {
       formData.template.version = _.get(moduleTemplate, 'version') || '';
       templateInfo.value = _.cloneDeep(_.get(moduleTemplate, 'schema')) || {};
     } else {
-      _.assignIn(formData, serviceInfo.value);
-      // 1. get the template meta data 2.set the default value
-      await getTemplatesVersions(formData.template.id);
-      await getTemplateVersionList();
-      const moduleTemplate = getTemplateSchemaByVersion();
-      templateInfo.value = _.cloneDeep(_.get(moduleTemplate, 'schema'));
-      const variablesList = _.filter(
-        _.get(templateInfo.value, 'variables'),
-        (v) => !v.hidden
-      );
-      _.each(variablesList || [], (item) => {
-        item.default = _.get(serviceInfo.value, `attributes.${item.name}`);
-      });
+      await setFormAttributes();
     }
-
     generateVariablesGroup(pageAction.value);
   };
 
@@ -217,10 +222,12 @@ export default function useServiceData(props?) {
     id,
     init,
     generateVariablesGroup,
+    setFormAttributes,
     getTemplateSchemaById,
     getTemplateSchemaByVersion,
     getTemplateVersionList,
     getTemplatesVersions,
+    initCompleteData,
     asyncLoading,
     formData,
     refMap,
@@ -236,6 +243,7 @@ export default function useServiceData(props?) {
     serviceDataList,
     templateList,
     completeData,
-    title
+    title,
+    setRefMap
   };
 }

@@ -213,7 +213,7 @@
   import FilterBox from '@/components/filter-box/index.vue';
   import StatusLabel from '@/views/operation-hub/connectors/components/status-label.vue';
   import { useUserStore } from '@/store';
-  import { AppRowData } from '../config/interface';
+  import { ServiceRowData } from '../config/interface';
   import { websocketEventType, serviceActions } from '../config';
   import {
     queryServices,
@@ -271,7 +271,7 @@
   });
   const actionHandlerMap = new Map();
   const axiosInstance: any = null;
-  const dataList = ref<AppRowData[]>([]);
+  const dataList = ref<ServiceRowData[]>([]);
 
   const handleResetServiceInfo = () => {
     serviceInfo.value = {};

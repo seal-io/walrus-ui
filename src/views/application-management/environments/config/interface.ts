@@ -1,4 +1,4 @@
-import { AppRowData } from '@/views/application-management/services/config/interface';
+import { ServiceRowData } from '@/views/application-management/services/config/interface';
 import { ConnectorRowData } from '@/views/operation-hub/connectors/config/interface';
 
 export interface EnvironmentRow {
@@ -10,7 +10,7 @@ export interface EnvironmentRow {
   variables: object;
   edges: {
     connectors: ConnectorRowData[];
-    applications: AppRowData[];
+    applications: ServiceRowData[];
     revisions: any[];
     environmentConnectorRelationships: any[];
   };
@@ -26,4 +26,5 @@ export interface EnvironFormData {
   connectorIDs: string[];
   connectors: any[];
   edges: any[];
+  labels?: object;
 }
