@@ -19,10 +19,5 @@ export function getBranchInfo() {
     .execSync(`git tag --contains ${latestCommit}`)
     .toString()
     .trim();
-  // const tags = child_process
-  //   .execSync('git describe --abbrev=0 --tags')
-  //   .toString()
-  //   .trim();
-  // const versions = tags ? tags.split('\n') : [];
   return { version: versionTag, commitId: latestCommit };
 }

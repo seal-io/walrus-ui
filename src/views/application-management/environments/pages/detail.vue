@@ -64,7 +64,6 @@
     } else {
       currentInfo.value = _.find(item.options, (s) => s.value === value);
     }
-    console.log('currentInfo===', currentInfo.value);
     handleBreadChange(value, item);
   };
   const getItemEnvironmentInfo = async () => {
