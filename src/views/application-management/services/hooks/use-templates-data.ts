@@ -39,7 +39,7 @@ export default function useTemplatesData() {
   // apply for edit service config
   const getTemplatesVersions = async (templateID) => {
     // templateID is a array only on create  life cycle
-    const templateIDs = _.uniq(_.concat(templateID));
+    const templateIDs = _.uniq(_.concat(templateID || []));
     if (
       !templateIDs.length ||
       _.every(templateIDs, (templateID) =>
@@ -162,7 +162,7 @@ export default function useTemplatesData() {
   const getServiceTemplateVersions = () => {
     const list = _.map(serviceDataList.value, (item) => {
       return item.template.id;
-    });
+    }).filter((templateID) => !!templateID);
     return list;
   };
 
