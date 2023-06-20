@@ -60,6 +60,7 @@
   const wssUrl = ref('');
   const bufferLength = ref(0);
   const toRetry = ref(false);
+  const RECONNECT_MSG = '--- press Y to reconnect! ---';
 
   const conReadyState = ref(0);
   const runRealTerminal = () => {
@@ -83,7 +84,6 @@
   };
   const resizeRemoteTerminal = () => {
     const { cols, rows } = term.value;
-    console.log('wss: resize', cols, rows);
     if (isWsOpen()) {
       terminalSocket.value.send(`#{"width":${cols},"height":${rows}}#`);
     }
@@ -97,7 +97,6 @@
   const closeRealTerminal = (data) => {
     statusCode.value = get(data, 'code');
     conReadyState.value = terminalSocket.value.readyState;
-    const message = '--- press Y to reconnect! ---';
     clearCommand();
     if ([1011, 1006, 1000].includes(statusCode.value)) {
       toRetry.value = true;
@@ -106,7 +105,7 @@
       }
       if (!loading.value) {
         term.value.write(setData(`${data.reason}\r\n`));
-        term.value.write(setErrorData(`\r${message}`));
+        term.value.write(setErrorData(`\r${RECONNECT_MSG}`));
       }
       first.value = true;
     }
@@ -141,11 +140,6 @@
     term.value.write(setData(output));
     setTimeout(() => {
       bufferLength.value = term.value._core.buffer.x;
-      console.log('wss: receive', term.value._core.buffer.x, {
-        bufferLength: bufferLength.value,
-        output,
-        inputCommand
-      });
     }, 100);
   };
   const createWS = () => {
