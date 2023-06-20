@@ -149,7 +149,6 @@ export default function useServiceData(props?) {
   };
   // change version ...
   const getTemplateSchemaByVersion = () => {
-    console.log('templateVersionList===', formData, templateVersionList.value);
     const moduleTemplate = _.find(
       templateVersionList.value,
       (item) => item.value === formData.template.version

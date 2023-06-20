@@ -89,7 +89,7 @@ export default function useTemplatesData() {
       return {
         name: item.name,
         type: item.template.id,
-        version: item.version
+        version: item.template.version
       };
     });
     return list;
