@@ -42,6 +42,20 @@
             userStore.hasProjectResourceActions({
               projectID: queryParams.projectID,
               resource: Resources.Services,
+              actions: [Actions.POST]
+            })
+          "
+          status="success"
+          type="primary"
+          :disabled="!selectedKeys.length"
+          @click="handleCloneService"
+          >{{ $t('applications.service.clone') }}</a-button
+        >
+        <a-button
+          v-if="
+            userStore.hasProjectResourceActions({
+              projectID: queryParams.projectID,
+              resource: Resources.Services,
               actions: [Actions.DELETE]
             })
           "
@@ -392,6 +406,14 @@
     // setTimeout(() => {
     //   showEditModal.value = true;
     // }, 150);
+  };
+  const handleCloneService = () => {
+    router.push({
+      name: PROJECT.ServiceClone,
+      query: {
+        source: selectedKeys.value
+      }
+    });
   };
   const handleDeleteConfirm = async (force) => {
     try {

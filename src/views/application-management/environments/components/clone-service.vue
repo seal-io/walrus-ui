@@ -7,12 +7,6 @@
         :size="[150, 80]"
         :active="item.id === active"
         :data-info="item"
-        :action-loading="
-          _.includes(
-            [AppInstanceStatus.Deleting, AppInstanceStatus.Deploying],
-            item.status
-          )
-        "
         @click="handleClickInstance(item)"
       >
         <template #description>
@@ -26,18 +20,7 @@
           }}</span>
         </template>
         <template #status>
-          <div style="display: flex; justify-content: space-between">
-            <StatusLabel
-              show-loading
-              :zoom="0.9"
-              :size="14"
-              :status="{
-                status: _.get(item, 'status.summaryStatus'),
-                message: '',
-                transitioning: _.get(item, 'status.transitioning'),
-                error: _.get(item, 'status.error')
-              }"
-            ></StatusLabel>
+          <div v-if="showCheck">
             <a-checkbox
               :model-value="selectedList.has(item.id)"
               @click.stop="() => {}"
@@ -47,10 +30,29 @@
         </template>
       </instanceThumb>
     </a-space>
-
     <div v-if="active" class="bordered">
       <slTransition>
         <div class="variables">
+          <a-form :model="formData" auto-label-width layout="vertical">
+            <a-form-item
+              :label="$t('operation.environments.table.name')"
+              field="name"
+              :validate-trigger="['change']"
+              :rules="[
+                {
+                  required: pageAction === PageAction.EDIT,
+                  message: $t('operation.environments.rule.name')
+                }
+              ]"
+            >
+              <a-input
+                v-model="formData.name"
+                style="width: 500px"
+                :max-length="30"
+                show-word-limit
+              ></a-input>
+            </a-form-item>
+          </a-form>
           <a-tabs
             v-if="formTabs.length > 1"
             class="page-line-tabs"
@@ -97,7 +99,7 @@
             type="primary"
             class="cap-title cancel-btn"
             @click="handleOk"
-            >{{ $t('common.button.save') }}</a-button
+            >{{ $t('common.button.confirm') }}</a-button
           >
         </template>
         <template #cancel>
@@ -121,12 +123,12 @@
     PropType,
     computed,
     ComponentPublicInstance,
-    provide
+    provide,
+    watch
   } from 'vue';
   import EditPageFooter from '@/components/edit-page-footer/index.vue';
   import slTransition from '@/components/sl-transition/index.vue';
   import formCreate from '@/components/form-create/index.vue';
-  import StatusLabel from '@/views/operation-hub/connectors/components/status-label.vue';
   import instanceThumb from '../../services/components/instance-thumb.vue';
   import { ServiceRowData } from '../../services/config/interface';
   import { AppInstanceStatus } from '../../services/config';
@@ -134,11 +136,17 @@
 
   type refItem = Element | ComponentPublicInstance | null;
 
-  defineProps({
+  const props = defineProps({
     serviceList: {
       type: Array as PropType<ServiceRowData[]>,
       default() {
         return [];
+      }
+    },
+    showCheck: {
+      type: Boolean,
+      default() {
+        return true;
       }
     }
   });
@@ -193,6 +201,7 @@
 
   const handleClickInstance = async (data) => {
     active.value = data.id;
+    activeKey.value = 'schemaForm0';
     activeServiceInfo.value = data;
     serviceInfo.value = _.cloneDeep(data);
     await setFormAttributes();
@@ -257,6 +266,18 @@
     }
   };
   const handleCancel = () => {};
+  watch(
+    () => props.serviceList,
+    () => {
+      selectedList.value.clear();
+      _.each(props.serviceList, (item) => {
+        selectedList.value.add(item.id);
+      });
+    },
+    {
+      immediate: true
+    }
+  );
   initCompleteData();
 </script>
 

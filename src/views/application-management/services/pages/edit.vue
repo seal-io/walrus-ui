@@ -164,7 +164,7 @@
         >
         </formCreate>
       </div>
-      <EditPageFooter v-if="pageAction === PageAction.EDIT">
+      <EditPageFooter>
         <template #save>
           <a-button
             :loading="submitLoading"
@@ -262,7 +262,6 @@
 
   const emits = defineEmits(['cancel', 'save']);
   const {
-    breadCrumbList: CurrentBreadList,
     getProjectList,
     getEnvironmentList,
     setProjectList,

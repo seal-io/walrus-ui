@@ -121,7 +121,10 @@
             ></connectorsTable>
           </div>
         </a-form-item>
-        <a-form-item :label="$t('applications.applications.table.service')">
+        <a-form-item
+          v-if="environmentId"
+          :label="$t('applications.applications.table.service')"
+        >
           <CloneService :service-list="serviceList"></CloneService>
         </a-form-item>
       </a-form>
