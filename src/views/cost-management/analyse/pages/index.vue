@@ -14,6 +14,7 @@
       <div>
         <a-tabs
           v-model:active-key="activeKey"
+          lazy-load
           class="page-line-tabs"
           :default-active-key="activeKey"
           @change="handleTabChange"
