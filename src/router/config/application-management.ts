@@ -8,6 +8,7 @@ export const Project = {
   EnvClone: 'ProjectEnvClone',
   ServiceDetail: 'ProjectServiceDetail',
   ServiceEdit: 'ProjectServiceEdit',
+  ServiceClone: 'ProjectServiceClone',
   ConnectorK8sDetail: 'ProjectConnectorK8sDetail',
   ConnectorScmDetail: 'ProjectConnectorScmDetail',
   ConnectorCustomDetail: 'ProjectConnectorCustomDetail',

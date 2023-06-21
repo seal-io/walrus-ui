@@ -152,5 +152,24 @@ export default [
       },
       icon: 'icon-apps'
     }
+  },
+  {
+    path: 'project/:projectId/environment/:environmentId/service/clone',
+    name: PROJECT.ServiceClone,
+    component: () => import('../../services/pages/clone.vue'),
+    meta: {
+      hideInMenu: true,
+      hideMenu: false,
+      ignoreCache: true,
+      selectedMenu: PROJECT.List,
+      locale: 'applications.projects.menu',
+      requiresAuth: true,
+      permission: {
+        resource: Resources.Services,
+        type: permissionKey.projectRoles,
+        actions: ['POST']
+      },
+      icon: 'icon-apps'
+    }
   }
 ];
