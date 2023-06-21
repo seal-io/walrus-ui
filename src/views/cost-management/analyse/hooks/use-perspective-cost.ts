@@ -221,7 +221,7 @@ export default function usePerspectiveCost(props) {
       );
       const projectFilter = find(
         allocationQueries,
-        (item) => item.groupBy === 'label:seal.io/project'
+        (item) => item.groupBy === 'label:seal.io/project-name'
       );
       const clusterFilter = find(
         allocationQueries,

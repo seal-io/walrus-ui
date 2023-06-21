@@ -20,14 +20,6 @@
           ellipsis
           tooltip
           :cell-style="{ minWidth: '40px' }"
-          data-index="moduleName"
-          :title="$t('applications.applications.table.module')"
-        >
-        </a-table-column>
-        <a-table-column
-          ellipsis
-          tooltip
-          :cell-style="{ minWidth: '40px' }"
           data-index="type"
           :title="capitalize($t('common.input.type'))"
         >

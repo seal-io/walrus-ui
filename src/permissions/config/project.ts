@@ -13,7 +13,7 @@ export default [
     title: 'permission.resource.project.appRevision',
     group: Group.AppManagement,
     order: ResourcesOrder.ServiceRevisions,
-    actions: ['GET', 'POST', 'DELETE', 'PUT']
+    actions: ['GET', 'DELETE']
   },
   {
     resource: Resources.SubjectRoles,
