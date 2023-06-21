@@ -288,7 +288,7 @@
     fetchData();
   };
   onActivated(() => {
-    fetchData();
+    // fetchData();
   });
   const handleView = (row) => {
     router.push({

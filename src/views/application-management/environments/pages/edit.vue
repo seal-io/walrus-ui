@@ -75,6 +75,7 @@
               v-model:dataKey="sItem.key"
               v-model:dataValue="sItem.value"
               v-model:value="formData.labels"
+              :trigger-validate="validateTrigger"
               :label-list="labelList"
               :position="sIndex"
               @add="(obj) => handleAddLabel(obj, labelList)"
@@ -125,7 +126,11 @@
           v-if="environmentId"
           :label="$t('applications.applications.table.service')"
         >
-          <CloneService :service-list="serviceList"></CloneService>
+          <CloneService
+            ref="serviceRef"
+            :service-list="serviceList"
+            style="width: 800px"
+          ></CloneService>
         </a-form-item>
       </a-form>
       <EditPageFooter v-if="pageAction === PageAction.EDIT">
@@ -154,8 +159,7 @@
   import { Resources } from '@/permissions/config';
   import { useUserStore, useTabBarStore } from '@/store';
   import { ref, computed, defineExpose } from 'vue';
-  import {
-    concat,
+  import _, {
     each,
     includes,
     map,
@@ -185,7 +189,8 @@
   import {
     createEnvironment,
     updateEnvironment,
-    queryItemEnvironments
+    queryItemEnvironments,
+    cloneEnvironment
   } from '../api';
 
   // const props = defineProps({
@@ -207,9 +212,11 @@
   const environmentId = route.params.environmentId as string; // only in clone
   const serviceList = ref<ServiceRowData[]>([]);
   const formref = ref();
+  const serviceRef = ref(); // only in clone
   const connectorList = ref<{ label: string; value: string }[]>([]);
   const showModal = ref(false);
   const submitLoading = ref(false);
+  const validateTrigger = ref(false);
   const breadCrumbList = ref<BreadcrumbOptions[]>([]);
   let copyFormData: any = {};
   const selectedList = ref<string[]>([]);
@@ -219,7 +226,9 @@
     description: '',
     connectorIDs: [],
     connectors: [],
-    edges: []
+    edges: [],
+    labels: {},
+    services: []
   });
   const { labelList, handleAddLabel, handleDeleteLabel } =
     useLabelsActions(formData);
@@ -357,17 +366,30 @@
     remove(selectedList.value, (id) => record.id === id);
     formref.value.validateField('connectorIDs');
   };
+  const handleCloneEnvironment = async () => {
+    const services = serviceRef.value.getSelectServiceData();
+    formData.value.services = _.cloneDeep(services);
+    await cloneEnvironment(formData.value);
+  };
+  const validateLabel = () => {
+    if (!environmentId) return false;
+    const valid = _.some(labelList.value, (item) => !item.value && item.key);
+    return valid;
+  };
   const handleSubmit = async () => {
     const res = await formref.value?.validate();
-    if (!res) {
+    validateTrigger.value = validateLabel();
+    if (!res && !validateTrigger.value) {
       try {
         submitLoading.value = true;
-        copyFormData = cloneDeep(formData.value);
-        if (id) {
+        if (environmentId) {
+          await handleCloneEnvironment();
+        } else if (id) {
           await updateEnvironment(formData.value);
         } else {
           await createEnvironment(formData.value);
         }
+        copyFormData = cloneDeep(formData.value);
         tabBarStore.deleteTag(0, {
           title: '',
           name: PROJECT.Detail,

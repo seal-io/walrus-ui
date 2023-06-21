@@ -95,7 +95,7 @@ export default [
     }
   },
   {
-    path: 'project/:projectId/environment:environmentId/clone',
+    path: 'project/:projectId/environment/:environmentId/clone',
     name: PROJECT.EnvClone,
     component: () =>
       import('@/views/application-management/environments/pages/edit.vue'),

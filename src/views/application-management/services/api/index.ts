@@ -34,6 +34,12 @@ export const createService = (data) => {
     data
   );
 };
+export const cloneServices = (data) => {
+  return axios.post(
+    `/services/_/clone?${qs.stringify({ projectID: data.projectID })}`,
+    data
+  );
+};
 export const deleteService = ({ data, projectID, force }) => {
   return axios.delete(`/services?${qs.stringify({ projectID, force })}`, {
     data

@@ -145,5 +145,6 @@ export default {
   'applications.service.rollback.config.compare': 'Configuration Comparison',
   'applications.service.clone': 'Clone Services',
   'applications.environment.clone': 'Clone Environment',
-  'applications.environment.clone.target': 'Target Environments'
+  'applications.environment.clone.target': 'Target Environments',
+  'applications.environment.clone.env.rules': 'Target Environments is required'
 };
