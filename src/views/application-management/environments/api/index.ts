@@ -41,6 +41,12 @@ export function createEnvironment(data: EnvironFormData) {
     data
   );
 }
+export function cloneEnvironment(data: EnvironFormData) {
+  return axios.post(
+    `/environments/_/clone?${qs.stringify(getPermissionRouteParams())}`,
+    data
+  );
+}
 export function deleteEnvironment(data) {
   return axios.delete(
     `/environments?${qs.stringify(getPermissionRouteParams())}`,

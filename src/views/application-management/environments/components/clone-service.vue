@@ -2,7 +2,7 @@
   <div>
     <a-space wrap>
       <instanceThumb
-        v-for="item in serviceList"
+        v-for="item in editServiceList"
         :key="item.id"
         :size="[150, 80]"
         :active="item.id === active"
@@ -30,69 +30,68 @@
         </template>
       </instanceThumb>
     </a-space>
-    <div v-if="active" class="bordered">
-      <slTransition>
-        <div class="variables">
-          <a-form :model="formData" auto-label-width layout="vertical">
-            <a-form-item
-              :label="$t('operation.environments.table.name')"
-              field="name"
-              :validate-trigger="['change']"
-              :rules="[
-                {
-                  required: pageAction === PageAction.EDIT,
-                  message: $t('operation.environments.rule.name')
-                }
-              ]"
-            >
-              <a-input
-                v-model="formData.name"
-                style="width: 500px"
-                :max-length="30"
-                show-word-limit
-              ></a-input>
-            </a-form-item>
-          </a-form>
-          <a-tabs
-            v-if="formTabs.length > 1"
-            class="page-line-tabs"
-            :active-key="activeKey"
-            @change="handleTabChange"
+    <div v-if="active" v-show="show" class="bordered">
+      <div class="variables">
+        <a-form :model="formData" auto-label-width layout="vertical">
+          <a-form-item
+            :label="$t('operation.environments.table.name')"
+            field="name"
+            :validate-trigger="['change']"
+            :rules="[
+              {
+                required: pageAction === PageAction.EDIT,
+                message: $t('operation.environments.rule.name')
+              }
+            ]"
           >
-            <a-tab-pane
-              v-for="(group, index) in formTabs"
-              :key="`schemaForm${index}`"
-              :title="variablesGroup[group]?.label"
-            >
-              <formCreate
-                :ref="(el: refItem) => setRefMap(el, `schemaForm${index}`)"
-                :form-id="`schemaForm${index}`"
-                layout="vertical"
-                action="post"
-                api=""
-                :show-footer="false"
-                :submit="() => {}"
-                :model="variablesGroupForm[group]?.attributes"
-                :form-schema="variablesGroup[group]?.variables"
-              >
-              </formCreate>
-            </a-tab-pane>
-          </a-tabs>
-          <formCreate
-            v-if="formTabs.length < 2"
-            ref="schemaForm"
-            form-id="schemaForm"
-            layout="vertical"
-            action="post"
-            api=""
-            :show-footer="false"
-            :submit="() => {}"
-            :model="variablesGroupForm[defaultGroupKey]?.attributes"
-            :form-schema="variablesGroup[defaultGroupKey]?.variables"
+            <a-input
+              v-model="formData.name"
+              style="width: 500px"
+              :max-length="30"
+              show-word-limit
+            ></a-input>
+          </a-form-item>
+        </a-form>
+        <a-tabs
+          v-if="formTabs.length > 1"
+          class="page-line-tabs"
+          :active-key="activeKey"
+          @change="handleTabChange"
+        >
+          <a-tab-pane
+            v-for="(group, index) in formTabs"
+            :key="`schemaForm${index}`"
+            :title="variablesGroup[group]?.label"
           >
-          </formCreate>
-        </div>
-      </slTransition>
+            <formCreate
+              :ref="(el: refItem) => setRefMap(el, `schemaForm${index}`)"
+              :form-id="`schemaForm${index}`"
+              layout="vertical"
+              action="post"
+              api=""
+              :show-footer="false"
+              :submit="() => {}"
+              :model="variablesGroupForm[group]?.attributes"
+              :form-schema="variablesGroup[group]?.variables"
+            >
+            </formCreate>
+          </a-tab-pane>
+        </a-tabs>
+        <formCreate
+          v-if="formTabs.length < 2"
+          ref="schemaForm"
+          form-id="schemaForm"
+          layout="vertical"
+          action="post"
+          api=""
+          :show-footer="false"
+          :submit="() => {}"
+          :model="variablesGroupForm[defaultGroupKey]?.attributes"
+          :form-schema="variablesGroup[defaultGroupKey]?.variables"
+        >
+        </formCreate>
+      </div>
+
       <EditPageFooter>
         <template #save>
           <a-button
@@ -124,7 +123,8 @@
     computed,
     ComponentPublicInstance,
     provide,
-    watch
+    watch,
+    defineExpose
   } from 'vue';
   import EditPageFooter from '@/components/edit-page-footer/index.vue';
   import slTransition from '@/components/sl-transition/index.vue';
@@ -182,8 +182,10 @@
 
   const active = ref('');
   const selectedList = ref(new Set());
+  const editServiceList = ref<any[]>([]);
   const activeKey = ref('schemaForm0');
   const schemaForm = ref();
+  const show = ref(true);
   const activeServiceInfo = ref<any>({});
 
   const formTabs = computed(() => {
@@ -201,6 +203,7 @@
 
   const handleClickInstance = async (data) => {
     active.value = data.id;
+    show.value = true;
     activeKey.value = 'schemaForm0';
     activeServiceInfo.value = data;
     serviceInfo.value = _.cloneDeep(data);
@@ -213,6 +216,7 @@
     } else {
       selectedList.value.delete(item.id);
     }
+    console.log('selectedList.value===', selectedList.value);
   };
   // get group form data
   const getRefFormData = async (noValidate?: boolean) => {
@@ -247,6 +251,24 @@
     }
     return { validFailedForm, moduleFormList };
   };
+  const updateActiveServiceData = () => {
+    const index = _.findIndex(
+      editServiceList.value,
+      (item) => item.id === active.value
+    );
+    if (index > -1) {
+      editServiceList.value[index].attributes = _.cloneDeep(
+        formData.attributes
+      );
+      editServiceList.value[index].name = formData.name;
+    }
+  };
+  const getSelectServiceData = () => {
+    const result = _.filter(editServiceList.value, (item) =>
+      selectedList.value.has(item.id)
+    );
+    return result;
+  };
   const handleOk = async () => {
     const { validFailedForm, moduleFormList } = await validateFormData();
     if (!validFailedForm) {
@@ -263,9 +285,19 @@
           {}
         )
       };
+      show.value = false;
+      updateActiveServiceData();
     }
   };
-  const handleCancel = () => {};
+  const handleCancel = () => {
+    serviceInfo.value = _.cloneDeep(activeServiceInfo.value);
+    setFormAttributes();
+    generateVariablesGroup(PageAction.EDIT);
+    show.value = false;
+  };
+  defineExpose({
+    getSelectServiceData
+  });
   watch(
     () => props.serviceList,
     () => {
@@ -273,6 +305,7 @@
       _.each(props.serviceList, (item) => {
         selectedList.value.add(item.id);
       });
+      editServiceList.value = _.cloneDeep(props.serviceList);
     },
     {
       immediate: true
