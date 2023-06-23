@@ -1,5 +1,6 @@
 import _, { get, map, keys, split, toString } from 'lodash';
 import { LabelListItem, schemaType } from './interface';
+import { isOrCondition } from './experssion-parser';
 
 interface OptionsItem {
   label: string;
@@ -49,6 +50,27 @@ export const conditionFuncMap = () => {
   funcMap.set(operatorMap.gte, _.gte);
   return funcMap;
 };
+const funcMap = conditionFuncMap();
+
+export const getConditionValue = (fm, formData) => {
+  const conditionList = fm.conditions;
+
+  if (isOrCondition(fm.showIf)) {
+    return _.some(conditionList, (item) => {
+      return funcMap.get(item.operator)(
+        _.toString(_.get(formData, item.variable)),
+        item.value
+      );
+    });
+  }
+
+  return _.every(conditionList, (item) => {
+    return funcMap.get(item.operator)(
+      _.toString(_.get(formData, item.variable)),
+      item.value
+    );
+  });
+};
 
 export const parseMapstring = (comSchema) => {
   let labelList: LabelListItem[] = [];
@@ -83,20 +105,7 @@ export const parseQuery = (query) => {
 export const parseOptions = (comSchema) => {
   const type = get(comSchema, 'type');
   let options: OptionsItem[] = [];
-  // if (schemaType.isListNumber(type) || schemaType.isListString(type)) {
-  //   const defaultValue =
-  //     get(comSchema, 'options') || get(comSchema, 'default') || [];
-  //   if (defaultValue.length) {
-  //     options = map(defaultValue, (val) => {
-  //       return {
-  //         label: val,
-  //         value: val
-  //       };
-  //     });
-  //   } else {
-  //     options = [];
-  //   }
-  // }
+
   const defaultValue =
     get(comSchema, 'options') || get(comSchema, 'default') || [];
   if (defaultValue.length) {

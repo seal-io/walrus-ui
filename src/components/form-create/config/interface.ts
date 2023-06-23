@@ -14,6 +14,11 @@ export interface ComponentSchema {
   type: string;
   default: any;
   showCondition: { key: string; value: string };
+  conditions: Array<{
+    variable: string;
+    operator: string;
+    value: string;
+  }>;
   parentCom: string;
   childCom: string;
   required: boolean;
