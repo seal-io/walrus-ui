@@ -4,8 +4,8 @@
       <a-link
         class="mright-0"
         :hoverable="false"
-        :disabled="_.get(_.head(actions), 'disabled')"
         size="small"
+        :disabled="_.get(_.head(actions), 'disabled')"
         @click="handleClick(_.head(actions))"
       >
         <template #icon>

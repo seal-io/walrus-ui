@@ -241,6 +241,7 @@
               >
                 <a-tooltip :content="$t('common.button.edit')">
                   <a-link
+                    :hoverable="false"
                     class="mright-0"
                     type="text"
                     size="small"

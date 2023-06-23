@@ -22,7 +22,7 @@
         >
           <a-select
             v-model="formData.environmentIDs"
-            style="width: 400px"
+            style="width: 460px"
             multiple
             :max-tag-count="2"
             allow-search
@@ -30,6 +30,7 @@
             <a-option
               v-for="item in environments"
               :key="item.id"
+              :value="item.id"
               :label="item.name"
             ></a-option>
           </a-select>
@@ -88,6 +89,7 @@
 
 <script lang="ts" setup>
   import _ from 'lodash';
+  import xInputGroup from '@/components/form-create/custom-components/x-input-group.vue';
   import EditPageFooter from '@/components/edit-page-footer/index.vue';
   import { PROJECT } from '@/router/config';
   import { ref, computed, reactive } from 'vue';
@@ -142,6 +144,7 @@
       }
     ] as BreadcrumbOptions[];
     environments.value = environmentList;
+    console.log('environmentList===', environmentList);
   };
   const handleSelectChange = ({ value, item }) => {
     handleBreadChange(value, item);
