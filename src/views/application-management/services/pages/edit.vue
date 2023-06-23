@@ -518,15 +518,25 @@
             {}
           )
         };
+        copyFormData = _.cloneDeep(formData);
         if (id) {
           await upgradeApplicationInstance(formData);
         } else {
-          await createService(formData);
+          const { data } = await createService(formData);
+          router.replace({
+            name: PROJECT.ServiceDetail,
+            params: {
+              ...route.params
+            },
+            query: {
+              id: data.id
+            }
+          });
+          return;
         }
         if (props.pgType !== 'page') {
           emits('save');
         } else {
-          copyFormData = _.cloneDeep(formData);
           router.back();
         }
         submitLoading.value = false;

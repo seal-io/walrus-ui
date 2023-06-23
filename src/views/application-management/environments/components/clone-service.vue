@@ -4,7 +4,7 @@
       <instanceThumb
         v-for="item in editServiceList"
         :key="item.id"
-        :size="[150, 80]"
+        :size="[158, 80]"
         :active="item.id === active"
         :data-info="item"
         @click="handleClickInstance(item)"
@@ -216,7 +216,6 @@
     } else {
       selectedList.value.delete(item.id);
     }
-    console.log('selectedList.value===', selectedList.value);
   };
   // get group form data
   const getRefFormData = async (noValidate?: boolean) => {

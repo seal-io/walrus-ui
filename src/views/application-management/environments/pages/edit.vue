@@ -66,7 +66,7 @@
         >
           <a-space
             v-if="labelList?.length"
-            style="display: flex; flex-direction: column"
+            style="display: flex; flex-direction: column; width: 565px"
             direction="vertical"
           >
             <xInputGroup
