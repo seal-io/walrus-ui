@@ -29,12 +29,7 @@
               >
             </a-grid-item>
             <a-grid-item
-              v-if="
-                fm.showIf
-                  ? toString(get(formData, `${fm.showCondition.key}`)) ===
-                    toString(fm?.showCondition?.value)
-                  : true
-              "
+              v-if="fm.showIf ? getConditionValue(fm, formData) : true"
               :class="{
                 'hidden-field': activeMenu && activeMenu !== fm.subGroup
               }"
@@ -198,7 +193,13 @@
   import { json2Yaml, yaml2Json } from './config/yaml-parse';
   import formComponents from './components';
   import testData from './config/test';
-  import { parseMapstring, parseOptions, parseQuery } from './config/utils';
+  import {
+    parseMapstring,
+    parseOptions,
+    parseQuery,
+    getConditionValue
+  } from './config/utils';
+  import { parseExpression } from './config/experssion-parser';
 
   const props = defineProps({
     formSchema: {
@@ -356,6 +357,7 @@
       const thirdGroup = get(groupConfig, '2') || '';
 
       item.showCondition = parseQuery(item.showIf);
+      item.conditions = parseExpression(item.showIf);
       item.order = item.required ? 0 : 10 * (i + 1);
       item.parentCom = get(content, 'component.0');
       item.childCom = get(content, 'component.1');
@@ -394,7 +396,10 @@
     });
     list = map(list, (sItem) => {
       if (sItem.showIf) {
-        sItem.order = add(get(showIfMap, `${sItem?.showCondition?.key}`), 0.1);
+        const relativeOrders = _.map(sItem.conditions, (v) => {
+          return get(showIfMap, v.variable);
+        });
+        sItem.order = add(_.max(relativeOrders), 0.1);
       }
       if (
         sItem.mainGroup &&
@@ -428,11 +433,7 @@
   // reset field default value when showIf is negative
   const resetFieldsDefaultValue = () => {
     each(schemaList.value, (item) => {
-      if (
-        item.showIf &&
-        toString(get(formData.value, `${item.showCondition.key}`)) !==
-          item?.showCondition?.value
-      ) {
+      if (item.showIf && !getConditionValue(item, formData)) {
         formData.value[item.name] = item.default;
       }
     });
