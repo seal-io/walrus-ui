@@ -1,13 +1,5 @@
 <template>
   <div class="setting-params">
-    <!-- <template #title>
-      <div>{{ $t(title) }}</div>
-    </template>
-    <template #extra>
-      <a-space>
-        <a-link v-show="editable" @click="handleEdit"><icon-edit /></a-link>
-      </a-space>
-    </template> -->
     <div>
       <a-form ref="formref" :model="formData" layout="vertical">
         <!-- top node -->
@@ -203,36 +195,14 @@
         </template>
       </a-form>
     </div>
-    <!-- <EditPageFooter v-show="!isDisabled">
-      <template #save>
-        <a-button type="primary" class="save-btn" @click="handleUpdate">{{
-          $t('common.button.save')
-        }}</a-button>
-      </template>
-      <template #cancel>
-        <a-button type="outline" class="cancel-btn" @click="handleCancel">{{
-          $t('common.button.cancel')
-        }}</a-button>
-      </template>
-    </EditPageFooter> -->
   </div>
 </template>
 
 <script lang="ts" setup>
   import { Resources, Actions } from '@/permissions/config';
   import { useUserStore } from '@/store';
-  import EditPageFooter from '@/components/edit-page-footer/index.vue';
   import { isArray, map, each, isObject, keys } from 'lodash';
-  import {
-    reactive,
-    ref,
-    computed,
-    onMounted,
-    PropType,
-    watch,
-    toRef,
-    toRefs
-  } from 'vue';
+  import { ref, PropType, watch } from 'vue';
   import { useRouter } from 'vue-router';
   import { Message } from '@arco-design/web-vue';
   import { useI18n } from 'vue-i18n';
