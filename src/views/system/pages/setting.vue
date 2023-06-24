@@ -28,7 +28,7 @@
   import { SettingsItem, valueTypeMap, ValueType } from '../config';
   import settingsForm from '../components/settings-form.vue';
   import dataInfo from '../components/data';
-  import { settingList } from '../config/settings-model';
+  import settingList from '../config/settings';
 
   interface formDataType {
     [key: string]: any;

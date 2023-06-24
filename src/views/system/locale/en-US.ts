@@ -106,8 +106,11 @@ export default {
   'system.setting.task.basicmng': 'Basic Management',
   'system.setting.task.finops': 'FinOps Task',
   'system.setting.task.enhance': 'Enhanced Management',
+  'system.setting.deployment': 'Deployment Management',
+  'system.setting.deployment.basic': 'Basic Settings',
+  'system.setting.deployment.proxy': 'Proxy Settings',
   'system.setting.openAiApiToken': 'OpenAI API Token',
-  'system.setting.TerraformDeployerImage': 'Terraform Deployer Image',
+  'system.setting.TerraformDeployerImage': 'Deployer Image',
   'system.setting.ConnectorCheckCronExpr': 'Check Connector Status',
   'system.setting.ConnectorCheckCronExpr.desc':
     'The default is to execute every 10 minutes',

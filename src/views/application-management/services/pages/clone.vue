@@ -22,7 +22,7 @@
         >
           <a-select
             v-model="formData.environmentIDs"
-            style="width: 460px"
+            style="width: 456px"
             multiple
             :max-tag-count="2"
             allow-search

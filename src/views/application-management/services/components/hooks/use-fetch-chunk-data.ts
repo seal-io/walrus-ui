@@ -46,19 +46,11 @@ export default function useFetchResource() {
     });
   };
   const updateDataList = (data) => {
-    let collections = _.filter(
+    const collections = _.filter(
       data.collection || [],
-      (sItem) => sItem?.Resource?.service?.id === serviceId.value
+      (sItem) => sItem?.service?.id === serviceId.value
     );
-    collections = _.map(collections, (item) => {
-      return {
-        // TODO
-        ...item.Resource,
-        keys: {
-          ...item.keys
-        }
-      };
-    });
+
     const childResources = _.filter(collections, (item) =>
       _.get(item, 'composition.id')
     );
@@ -171,17 +163,9 @@ export default function useFetchResource() {
         serviceID: serviceId.value
       };
       const { data } = await queryApplicationResource(params, fetchToken.token);
-      let list: any = _.map(data.items, (item) => {
-        return {
-          // TODO
-          ...item.Resource,
-          keys: {
-            ...item.keys
-          }
-        };
-      });
-      list = _.filter(
-        list || [],
+
+      let list: any = _.filter(
+        data.items || [],
         (item) => item?.service?.id === serviceId.value
       );
       list = setDataList(list);
