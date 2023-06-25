@@ -30,40 +30,6 @@
         @select="handleSelect"
       ></DropButtonGroup>
     </div>
-    <!-- <a-dropdown
-      v-if="actions.length"
-      size="small"
-      style="line-height: 30px"
-      position="br"
-      @select="handleSelect"
-    >
-      <a-button
-        size="mini"
-        style="position: absolute; top: 5px; right: -10px; padding: 0 4px"
-        @click.stop="() => {}"
-      >
-        <icon-more style="font-size: 18px; stroke-width: 5" />
-      </a-button>
-      <template #content>
-        <a-doption
-          v-for="item in actions"
-          :key="item.value"
-          :value="item.value"
-          :style="{
-            'line-height': '28px'
-          }"
-        >
-          <a-link :status="item.status" class="inline"
-            ><component
-              :is="item.icon"
-              v-bind="item.props"
-              style="margin-right: 8px"
-            ></component
-            >{{ $t(item.label) }}</a-link
-          >
-        </a-doption>
-      </template>
-    </a-dropdown> -->
   </div>
 </template>
 

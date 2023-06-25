@@ -18,17 +18,17 @@
           :default-active-key="activeKey"
           @change="handleTabChange"
         >
+          <a-tab-pane key="templates" :title="$t('menu.operatorHub.module')">
+            <Templates></Templates>
+          </a-tab-pane>
+          <a-tab-pane key="secrets" :title="$t('menu.operatorHub.secret')">
+            <GlobalSecrets></GlobalSecrets>
+          </a-tab-pane>
           <a-tab-pane
             key="connectors"
             :title="$t('menu.operatorHub.connector')"
           >
             <Connectors></Connectors>
-          </a-tab-pane>
-          <a-tab-pane key="templates" :title="$t('menu.operatorHub.secret')">
-            <GlobalSecrets></GlobalSecrets>
-          </a-tab-pane>
-          <a-tab-pane key="secrets" :title="$t('menu.operatorHub.module')">
-            <Templates></Templates>
           </a-tab-pane>
         </a-tabs>
       </ComCard>
@@ -44,7 +44,7 @@
   import Templates from '../templates/pages/list.vue';
   import GlobalSecrets from '../secret/pages/list.vue';
 
-  const activeKey = ref('connectors');
+  const activeKey = ref('templates');
   const handleTabChange = () => {};
 </script>
 

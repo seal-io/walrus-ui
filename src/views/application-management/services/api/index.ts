@@ -36,7 +36,7 @@ export const createService = (data) => {
 };
 export const cloneServices = (data) => {
   return axios.post(
-    `/services/_/clone?${qs.stringify({ projectID: data.projectID })}`,
+    `/services/_/batch?${qs.stringify({ projectID: data.projectID })}`,
     data
   );
 };
