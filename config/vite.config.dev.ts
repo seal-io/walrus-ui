@@ -18,7 +18,7 @@ export default mergeConfig(
       },
       https: true,
       port: 4000,
-      proxy: createProxyTable('https://192.168.50.123')
+      proxy: createProxyTable('https://192.168.50.92')
     },
     plugins: [
       eslint({
