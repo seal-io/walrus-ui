@@ -62,6 +62,26 @@ export default {
           },
           value: '',
           type: 'string'
+        },
+        {
+          id: 'ServiceDependencyCheckCronExpr',
+          label: 'system.setting.ServiceDependencyCheckCronExpr',
+          desc: 'system.setting.ServiceDependencyCheckCronExpr.desc',
+          parentId: '',
+          component: {
+            type: 'input',
+            required: true,
+            validator(val, callback) {
+              if (validateCron(val)) {
+                callback();
+              } else {
+                callback(i18n.global.t('system.setting.rules.cron'));
+              }
+            },
+            extra: 'system.setting.cron.extra'
+          },
+          value: '',
+          type: 'string'
         }
       ]
     },

@@ -22,6 +22,20 @@ export const profileMenu = [
     ]
   },
   {
+    name: 'common.cli.download',
+    key: 'clidownload',
+    route: 'CliDownload',
+    icon: '<icon-download class="size-18"/>',
+    children: [
+      {
+        name: 'common.cli.download',
+        key: 'clidownload',
+        route: 'CliDownload',
+        icon: '<icon-download />'
+      }
+    ]
+  },
+  {
     name: 'propfile.account.user.title',
     key: 'Profile',
     icon: '<i class="iconfont icon-user1 size-20"/>',

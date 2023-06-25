@@ -14,7 +14,7 @@
             :status="{
               status: get(item, 'value.summaryStatus'),
               text: get(item, 'value.summaryStatus'),
-              message: '',
+              message: get(item, 'value.summaryStatusMessage'),
               transitioning: get(item, 'value.transitioning'),
               error: get(item, 'value.error')
             }"

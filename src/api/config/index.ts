@@ -19,7 +19,8 @@ export const authApiList: string[] = [
   '/account/info',
   '/account/logout',
   '/openapi',
-  '/debug/version'
+  '/debug/version',
+  '/cli'
 ];
 
 export const responseStatusMap = {

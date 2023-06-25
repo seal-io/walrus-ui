@@ -271,6 +271,13 @@
           });
           return;
         }
+        if (item.key === 'clidownload') {
+          router.push({
+            name: item.route
+          });
+          console.log('item====', item);
+          return;
+        }
         if (item.key === 'logout') {
           logout();
           return;
@@ -298,7 +305,7 @@
                   'title': () => h(compile(t(item.name || '')))
                 }}
               >
-                {item.children.map((cItem) => {
+                {item.children?.map((cItem) => {
                   return (
                     <a-menu-item
                       key={cItem.key}

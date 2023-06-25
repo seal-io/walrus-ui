@@ -122,7 +122,7 @@
               :status="{
                 status: get(record, 'status.summaryStatus'),
                 text: get(record, 'status.summaryStatus'),
-                message: '',
+                message: get(record, 'status.summaryStatusMessage'),
                 transitioning: get(record, 'status.transitioning'),
                 error: get(record, 'status.error')
               }"
