@@ -250,7 +250,7 @@
     try {
       const params = {
         ...queryParams.value,
-        groupBy: 'label:seal.io/project',
+        groupBy: 'label:seal.io/project-name',
         startTime: dayjs().subtract(1, 'month').format('YYYY-MM-01T00:00:00Z'),
         endTime: dayjs().format('YYYY-MM-DDTHH:mm:ssZ'),
         step: 'day'
@@ -276,7 +276,7 @@
           page: 1,
           perPage: 15
         },
-        groupBy: 'label:seal.io/app',
+        groupBy: 'label:seal.io/service-path',
         // startTime: dayjs().subtract(1, 'month').format('YYYY-MM-01T00:00:00Z'),
         // endTime: dayjs().format('YYYY-MM-DDTHH:mm:ssZ'),
         step: ''

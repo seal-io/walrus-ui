@@ -210,7 +210,7 @@
       const { name } = node;
       const animate =
         setInstanceStatus(_.get(node, 'status')) === Status.Warning;
-      node.resourceType = node.kind;
+      node.resourceType = _.get(node, 'extensions.type') || _.get(node, 'kind');
       node.subType = _.get(node, 'data.type');
       node.type = 'resource';
       node.loggableInfo = {
@@ -223,7 +223,7 @@
       };
       node.label = fittingString(name, 120);
       // node.comboId = node.parentNode || '';
-      node.description = node.subType ? `${node.subType}` : node.resourceType;
+      node.description = node.resourceType;
       node.stateIcon = {
         animate,
         width: animate ? 20 : 14,
@@ -241,11 +241,16 @@
     const { sourceData: data } = props;
     edgeList = _.map(data.links || [], (o) => {
       const link = _.cloneDeep(o);
-      let style = {};
+      const style: any = {};
 
-      if (o.type === 'Dependency') {
-        style = {
-          lineDash: [5, 5]
+      if (o.edgeType === 'Dependency') {
+        style.lineDash = [5, 5];
+      }
+      if (o.edgeType === 'Composition') {
+        style.endArrow = false;
+        style.startArrow = {
+          path: G6.Arrow.diamond(8, 10, -5),
+          fill: 'blue'
         };
       }
       // if (
@@ -294,10 +299,10 @@
       // node.update(model);
       graph.setItemState(e.item, 'hover', false);
     });
-    graph?.on('combo:click', (e) => {
-      const node = e.item;
-      const model = node.getModel();
-    });
+    // graph?.on('combo:click', (e) => {
+    //   const node = e.item;
+    //   const model = node.getModel();
+    // });
     graph?.on('node:click', (e) => {
       const node = e.item;
       const model = node.getModel();
@@ -336,7 +341,7 @@
 
   const createGraph = () => {
     graph = new G6.Graph({
-      groupByTypes: false,
+      // groupByTypes: true,
       renderer: 'svg',
       container: 'graph-mount',
       plugins: [contextMenu, createToolTip()],
