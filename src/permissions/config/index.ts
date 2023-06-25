@@ -25,7 +25,8 @@ const enum MenuOrder {
   ApplicationManagement,
   CostManagement,
   OperationHub,
-  SystemSettings
+  SystemSettings,
+  SystemTokens
 }
 
 export enum ResourcesOrder {
@@ -46,7 +47,7 @@ export enum ResourcesOrder {
   Settings = MenuOrder.SystemSettings,
   SubjectRoles = MenuOrder.SystemSettings,
   Subjects = MenuOrder.SystemSettings,
-  Tokens = 999
+  Tokens = MenuOrder.SystemTokens
 }
 
 export enum Actions {

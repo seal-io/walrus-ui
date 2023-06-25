@@ -29,3 +29,5 @@ export function createTokens(data: FormDataType) {
 export function deleteTokens(id) {
   return axios.delete(`/tokens/${id}`);
 }
+
+export default {};

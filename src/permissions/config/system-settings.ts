@@ -21,6 +21,13 @@ export default [
     group: Group.SystemSettings,
     order: ResourcesOrder.Subjects,
     actions: ['GET', 'POST', 'DELETE', 'PUT']
+  },
+  {
+    resource: Resources.Tokens,
+    title: 'permission.resource.system.operation.token',
+    group: Group.SystemSettings,
+    order: ResourcesOrder.Tokens,
+    actions: ['GET', 'POST', 'DELETE']
   }
   // {
   //   resource: Resources.Roles,

@@ -62,7 +62,7 @@
     nodeActive.value = false;
   };
 
-  const getInstanceResourceGraph = async () => {
+  const getServiceResourceGraph = async () => {
     try {
       loading.value = true;
       const params = {
@@ -75,14 +75,12 @@
     } catch (error) {
       resultData.value.links = [];
       resultData.value.nodes = [];
-      // resultData.value.links = testData.edges || [];
-      // resultData.value.nodes = testData.nodes || [];
       console.log(error);
       loading.value = false;
     }
   };
   const handleRefresh = () => {
-    getInstanceResourceGraph();
+    getServiceResourceGraph();
   };
   const handleFitView = () => {
     graph.value?.fitView();
@@ -90,7 +88,7 @@
   watch(
     () => serviceId.value,
     () => {
-      // getInstanceResourceGraph();
+      // getServiceResourceGraph();
     },
     {
       immediate: true

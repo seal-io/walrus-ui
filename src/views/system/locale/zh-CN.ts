@@ -17,6 +17,7 @@ export default {
   'user.login.validate': '验证失败',
   'user.login.relogin': '重新登录',
   'system.setting.serverManage': '服务管理',
+  'system.setting.apiToken': 'API Tokens',
   'system.setting.serverurl': '服务器地址',
   'system.setting.interceptor': '分析管理',
   'system.setting.pulldependce': '是否联网检索',
@@ -110,5 +111,24 @@ export default {
   'system.setting.CostCollectCronExpr.desc': '默认是每小时执行一次',
   'system.user.visitor': '普通用户',
   'system.user.admin': '管理员',
-  'system.user.engineer': '平台工程师'
+  'system.user.engineer': '平台工程师',
+  'account.settings.apikeys': 'API密钥',
+  'account.settings.title': '账户设置',
+  'account.settings.tokens.new': '添加API密钥',
+  'account.settings.tokens.name': '名称',
+  'account.settings.tokens.expiration': '过期时间',
+  'account.settings.tokens.button': '添加密钥',
+  'account.settings.expire.week': '1周',
+  'account.settings.expire.month': '1个月',
+  'account.settings.expire.six': '6个月',
+  'account.settings.expire.year': '1年',
+  'account.settings.expire.never': '从不',
+  'account.settings.expired': '已过期',
+  'account.settings.expireSoon': '即将过期',
+  'account.settings.token.rules.name': '密钥名称必填',
+  'account.settings.token.rules.expire': '过期时间必填',
+  'account.settings.token.expireDate': '到期时间',
+  'account.settings.token.desc': '密钥可用于访问 Seal API.',
+  'account.settings.token.tips':
+    '确保立即复制您的个人访问密钥。您将无法再次看到它！'
 };

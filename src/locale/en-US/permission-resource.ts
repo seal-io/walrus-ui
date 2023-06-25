@@ -20,5 +20,6 @@ export default {
   'permission.resource.system.operation.config': 'Configuration Management',
   'permission.resource.system.operation.userRole': 'User Roles',
   'permission.resource.system.operation.userManagement': 'User Management',
+  'permission.resource.system.operation.token': 'API Tokens',
   'permission.button.action': 'Actions'
 };

@@ -24,6 +24,9 @@
           <a-tab-pane key="settings" :title="$t('menu.systemsettings.config')">
             <Settings></Settings>
           </a-tab-pane>
+          <a-tab-pane key="tokens" :title="$t('account.settings.apikeys')">
+            <Tokens></Tokens>
+          </a-tab-pane>
         </a-tabs>
       </ComCard>
     </ComCard>
@@ -35,6 +38,7 @@
   import HeaderInfo from '@/components/header-info/index.vue';
   import Settings from './setting.vue';
   import Users from './users.vue';
+  import Tokens from './tokens.vue';
 
   const activeKey = ref('users');
   const handleTabChange = () => {};

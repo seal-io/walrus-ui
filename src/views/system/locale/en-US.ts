@@ -18,6 +18,7 @@ export default {
   'user.login.validate': 'Verification Failed',
   'user.login.relogin': 'Re-Login',
   'system.setting.serverManage': 'Server Management',
+  'system.setting.apiToken': 'API Tokens',
   'system.setting.serverurl': 'Server Address',
   'system.setting.interceptor': 'Analysis Management',
   'system.setting.mavenRepo': 'Repository URL',
@@ -126,5 +127,24 @@ export default {
     'The default is to execute every hour',
   'system.user.visitor': 'General User',
   'system.user.admin': 'Administrator',
-  'system.user.engineer': 'Platform Engineer'
+  'system.user.engineer': 'Platform Engineer',
+  'account.settings.apikeys': 'API Keys',
+  'account.settings.title': 'Account Settings',
+  'account.settings.tokens.new': 'Add API Keys',
+  'account.settings.tokens.name': 'Name',
+  'account.settings.tokens.expiration': 'Expiration',
+  'account.settings.tokens.button': 'Add new key',
+  'account.settings.expire.week': '1 week',
+  'account.settings.expire.month': '1 month',
+  'account.settings.expire.six': 'six months',
+  'account.settings.expire.year': '1 year',
+  'account.settings.expire.never': 'never',
+  'account.settings.expired': 'Expired',
+  'account.settings.expireSoon': 'Expiring soon',
+  'account.settings.token.rules.name': 'API key is required',
+  'account.settings.token.rules.expire': 'Expiration time is required',
+  'account.settings.token.expireDate': 'Expire date',
+  'account.settings.token.desc': 'API keys can be used to access the Seal API.',
+  'account.settings.token.tips':
+    'Make sure to copy your personal access key now. You won’t be able to see it again!'
 };
