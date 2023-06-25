@@ -183,7 +183,7 @@ export const createToolTip = () => {
           </div>
           <div>
           <span style="display: inline-block;width: 40px;font-weight:700">Type: </span>
-          ${_.get(model, 'description')}
+          ${_.get(model, 'description') || ''}
           </div>
           <div style="font-weight:500;margin-top:10px">${
             model?.loggableInfo?.loggable || model?.executableInfo?.executable

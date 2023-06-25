@@ -75,15 +75,9 @@
       const { data } = await queryServiceGraph(params);
       resultData.value.links = _.map(data.edges, (item) => {
         return {
-          type: item.type,
-          source: `${_.get(item, 'points.0.kind')}-${_.get(
-            item,
-            'points.0.id'
-          )}`,
-          target: `${_.get(item, 'points.1.kind')}-${_.get(
-            item,
-            'points.1.id'
-          )}`
+          edgeType: item.type,
+          source: `${_.get(item, 'start.kind')}-${_.get(item, 'start.id')}`,
+          target: `${_.get(item, 'end.kind')}-${_.get(item, 'end.id')}`
         };
       });
       resultData.value.nodes = _.map(data.vertices, (item) => {

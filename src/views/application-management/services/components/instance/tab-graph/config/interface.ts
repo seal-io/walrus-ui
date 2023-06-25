@@ -28,7 +28,7 @@ export interface IEdge {
   source: string;
   target: string;
   style?: object;
-  type: string;
+  edgeType: string;
 }
 export interface ICombo {
   order?: number;

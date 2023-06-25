@@ -70,7 +70,7 @@ export default {
   'applications.instance.tab.resourceName': '资源名称',
   'applications.instance.tab.log': '日志',
   'applications.instance.tab.term': '终端',
-  'applications.instance.tab.graph': '关系图',
+  'applications.instance.tab.graph': '架构图',
   'applications.instance.tab.output': '输出',
   'applications.instance.basic.title': '实例信息',
   'applications.applications.history.version': '版本',
