@@ -11,7 +11,7 @@ let ModalIns: any = null;
 
 const ShowLogModal = (data) => {
   ModalIns = Modal.open({
-    title: '日志',
+    title: 'Logs',
     top: 0,
     width: 1000,
     alignCenter: false,

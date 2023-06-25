@@ -32,14 +32,17 @@
 
 <script lang="ts" setup>
   import _ from 'lodash';
-  import { ref, inject, watch } from 'vue';
+  import { ref, onMounted } from 'vue';
   import { onClickOutside } from '@vueuse/core';
-  import GraphG6 from './components/graph-g6.vue';
-  import { queryServiceResourceGraph } from '../../../api';
-  import { INode, IEdge } from './config/interface';
-  import testData from './config/test';
+  import useCallCommon from '@/hooks/use-call-common';
+  import GraphG6 from '../../services/components/instance/tab-graph/components/graph-g6.vue';
+  import {
+    INode,
+    IEdge
+  } from '../../services/components/instance/tab-graph/config/interface';
+  import { queryServiceGraph } from '../../services/api';
 
-  const serviceId = inject('serviceId', ref(''));
+  const { route } = useCallCommon();
   const nodeActive = ref(false);
   const loading = ref(false);
   const flowWrapper = ref();
@@ -62,13 +65,14 @@
     nodeActive.value = false;
   };
 
-  const getServiceResourceGraph = async () => {
+  const getServiceGraph = async () => {
     try {
       loading.value = true;
       const params = {
-        serviceID: serviceId.value
+        environmentID: route.params.environmentId as string,
+        projectID: route.params.projectId as string
       };
-      const { data } = await queryServiceResourceGraph(params);
+      const { data } = await queryServiceGraph(params);
       resultData.value.links = _.map(data.edges, (item) => {
         return {
           type: item.type,
@@ -97,20 +101,14 @@
     }
   };
   const handleRefresh = () => {
-    getServiceResourceGraph();
+    getServiceGraph();
   };
   const handleFitView = () => {
     graph.value?.fitView();
   };
-  watch(
-    () => serviceId.value,
-    () => {
-      getServiceResourceGraph();
-    },
-    {
-      immediate: true
-    }
-  );
+  onMounted(() => {
+    getServiceGraph();
+  });
 </script>
 
 <style lang="less" scoped>

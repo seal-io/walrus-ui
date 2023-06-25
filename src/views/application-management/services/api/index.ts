@@ -143,7 +143,19 @@ export const diffServiceSpec = (params: { serviceID: string }) => {
 };
 
 export const queryServiceResourceGraph = (params: { serviceID: string }) => {
-  return axios.get(`/services/${params.serviceID}/graph`, {
+  return axios.get(`/service-resources/_/graph`, {
+    params: {
+      ...params,
+      ...getPermissionRouteParams()
+    },
+    paramsSerializer: (obj) => {
+      return qs.stringify(obj);
+    }
+  });
+};
+
+export const queryServiceGraph = (params: { environmentID: string }) => {
+  return axios.get(`/services/_/graph`, {
     params: {
       ...params,
       ...getPermissionRouteParams()
