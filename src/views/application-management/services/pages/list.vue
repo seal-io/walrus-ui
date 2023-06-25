@@ -51,7 +51,7 @@
           @click="handleCloneService"
           >{{ $t('applications.service.clone') }}</a-button
         >
-        <a-button
+        <!-- <a-button
           v-if="
             userStore.hasProjectResourceActions({
               projectID: queryParams.projectID,
@@ -64,7 +64,7 @@
           :disabled="!selectedKeys.length"
           @click="handleDelete({}, 'button')"
           >{{ $t('common.button.delete') }}</a-button
-        >
+        > -->
       </template>
     </FilterBox>
     <a-table
@@ -192,12 +192,12 @@
       :project-i-d="queryParams.projectID"
       :title="rollbackTitle"
     ></rollbackModal>
-    <deleteInstanceModal
+    <deleteServiceModal
       v-model:show="showDeleteModal"
       :callback="handleDeleteConfirmModal"
       :title="$t('common.delete.tips')"
     >
-    </deleteInstanceModal>
+    </deleteServiceModal>
   </ComCard>
 </template>
 
@@ -237,7 +237,7 @@
   import useTemplatesData from '../hooks/use-templates-data';
   import useRollbackRevision from '../hooks/use-rollback-revision';
   import cloneInstanceModal from '../components/clone-instance-modal.vue';
-  import deleteInstanceModal from '../components/delete-instance-modal.vue';
+  import deleteServiceModal from '../components/delete-service-modal.vue';
   import rollbackModal from '../components/rollback-modal.vue';
 
   const userStore = useUserStore();

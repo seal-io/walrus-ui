@@ -183,15 +183,12 @@
     roleId: ''
   });
 
-  const handleRoleChange = (value) => {
-    console.log('role===', value);
-  };
+  const handleRoleChange = (value) => {};
   const handleGeneratePassword = () => {
     formData.password = _.get(Math.random().toString(32).split('.'), '1');
   };
   const handleOk = async () => {
     const res = await formref.value.validate();
-    console.log('res===', res);
     try {
       if (!res) {
         submitLoading.value = true;

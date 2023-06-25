@@ -1,38 +1,45 @@
 <template>
   <div>
-    <a-space wrap>
-      <instanceThumb
-        v-for="item in editServiceList"
-        :key="item.id"
-        :size="[158, 80]"
-        :active="item.id === active"
-        :data-info="item"
-        @click="handleClickInstance(item)"
-      >
-        <template #description>
-          <span style="font-size: 13px">{{
-            _.get(item, 'environment.name')
-          }}</span>
-        </template>
-        <template #default>
-          <span style="font-weight: 700; font-size: 13px">{{
-            _.get(item, 'name')
-          }}</span>
-        </template>
-        <template #status>
-          <div v-if="showCheck">
-            <a-checkbox
-              :model-value="selectedList.has(item.id)"
-              @click.stop="() => {}"
-              @change="(val) => handleCheckChange(val, item)"
-            ></a-checkbox>
-          </div>
-        </template>
-      </instanceThumb>
-    </a-space>
+    <div class="svc-wrapper">
+      <a-grid :cols="24" :row-gap="8" :col-gap="8">
+        <a-grid-item v-for="item in editServiceList" :key="item.id" :span="6">
+          <instanceThumb
+            style="width: 100%; height: 90px"
+            :active="item.id === active"
+            :data-info="item"
+            @click="handleClickInstance(item)"
+          >
+            <template #description>
+              <span style="font-size: 13px">{{
+                _.get(item, 'environment.name')
+              }}</span>
+            </template>
+            <template #default>
+              <span style="font-weight: 700; font-size: 13px">{{
+                _.get(item, 'name')
+              }}</span>
+            </template>
+            <template #status>
+              <div v-if="showCheck">
+                <a-checkbox
+                  :model-value="selectedList.has(item.id)"
+                  @click.stop="() => {}"
+                  @change="(val) => handleCheckChange(val, item)"
+                ></a-checkbox>
+              </div>
+            </template>
+          </instanceThumb>
+        </a-grid-item>
+      </a-grid>
+    </div>
     <div v-if="active" v-show="show" class="bordered">
       <div class="variables">
-        <a-form :model="formData" auto-label-width layout="vertical">
+        <a-form
+          ref="formref"
+          :model="formData"
+          auto-label-width
+          layout="vertical"
+        >
           <a-form-item
             :label="$t('operation.environments.table.name')"
             field="name"
@@ -41,6 +48,10 @@
               {
                 required: pageAction === PageAction.EDIT,
                 message: $t('operation.environments.rule.name')
+              },
+              {
+                match: validateAppNameRegx,
+                message: $t('applications.module.rule.name.tips')
               }
             ]"
           >
@@ -116,7 +127,7 @@
 
 <script lang="ts" setup>
   import _ from 'lodash';
-  import { PageAction } from '@/views/config';
+  import { PageAction, validateAppNameRegx } from '@/views/config';
   import {
     ref,
     PropType,
@@ -127,11 +138,9 @@
     defineExpose
   } from 'vue';
   import EditPageFooter from '@/components/edit-page-footer/index.vue';
-  import slTransition from '@/components/sl-transition/index.vue';
   import formCreate from '@/components/form-create/index.vue';
   import instanceThumb from '../../services/components/instance-thumb.vue';
   import { ServiceRowData } from '../../services/config/interface';
-  import { AppInstanceStatus } from '../../services/config';
   import useServiceData from '../../services/hooks/use-service-data';
 
   type refItem = Element | ComponentPublicInstance | null;
@@ -185,6 +194,7 @@
   const editServiceList = ref<any[]>([]);
   const activeKey = ref('schemaForm0');
   const schemaForm = ref();
+  const formref = ref();
   const show = ref(true);
   const activeServiceInfo = ref<any>({});
 
@@ -269,8 +279,9 @@
     return result;
   };
   const handleOk = async () => {
+    const res = await formref.value?.validate();
     const { validFailedForm, moduleFormList } = await validateFormData();
-    if (!validFailedForm) {
+    if (!validFailedForm && !res) {
       formData.attributes = {
         ..._.reduce(
           moduleFormList,
@@ -319,5 +330,11 @@
     padding: 10px;
     border: 1px solid var(--color-border-2);
     border-radius: var(--border-radius-small);
+  }
+
+  .svc-wrapper {
+    max-height: 240px;
+    padding-bottom: 10px;
+    overflow: auto;
   }
 </style>

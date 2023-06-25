@@ -113,8 +113,9 @@
             </div>
             <connectorsTable
               :style="{
-                width: '800px',
-                marginLeft: pageAction === PageAction.VIEW ? '12px' : 0
+                'max-width': '800px',
+                'min-width': '400px',
+                'marginLeft': pageAction === PageAction.VIEW ? '12px' : 0
               }"
               :action="pageAction"
               :list="formData?.edges || []"
@@ -129,7 +130,7 @@
           <CloneService
             ref="serviceRef"
             :service-list="serviceList"
-            style="width: 800px"
+            style="width: 800px; overflow: auto"
           ></CloneService>
         </a-form-item>
       </a-form>
@@ -369,7 +370,7 @@
   const handleCloneEnvironment = async () => {
     const services = serviceRef.value.getSelectServiceData();
     formData.value.services = _.cloneDeep(services);
-    await cloneEnvironment(formData.value);
+    // await cloneEnvironment(formData.value);
   };
   const validateLabel = () => {
     if (!environmentId) return false;
@@ -383,8 +384,9 @@
       try {
         submitLoading.value = true;
         if (environmentId) {
-          await handleCloneEnvironment();
-        } else if (id) {
+          handleCloneEnvironment();
+        }
+        if (id && !environmentId) {
           await updateEnvironment(formData.value);
         } else {
           await createEnvironment(formData.value);

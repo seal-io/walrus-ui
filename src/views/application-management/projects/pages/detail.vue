@@ -46,7 +46,7 @@
               })
             "
             key="variables"
-            :title="$t('menu.operatorHub.variables')"
+            :title="$t('menu.applicationManagement.secret')"
           >
             <SecretList ref="variablesRef"></SecretList>
           </a-tab-pane>
