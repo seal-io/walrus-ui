@@ -27,6 +27,9 @@
           <a-tab-pane key="password" :title="$t('user.password.modify')">
             <ModifyPassword></ModifyPassword>
           </a-tab-pane>
+          <a-tab-pane key="tokens" :title="$t('account.settings.apikeys')">
+            <Tokens></Tokens>
+          </a-tab-pane>
         </a-tabs>
       </ComCard>
     </ComCard>
@@ -39,6 +42,7 @@
   import GroupTitle from '@/components/group-title/index.vue';
   import UserInfo from './user-info.vue';
   import ModifyPassword from './modify-password.vue';
+  import Tokens from './tokens.vue';
 
   const activeKey = ref('userInfo');
 </script>

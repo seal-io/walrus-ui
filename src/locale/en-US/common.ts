@@ -88,5 +88,6 @@ export default {
   'common.permission.action.delete': 'Delete',
   'common.permission.action.put': 'Update',
   'common.button.settings': 'Settings',
-  'common.button.management': 'Management'
+  'common.button.management': 'Management',
+  'common.cli.download': 'Cli Download'
 };

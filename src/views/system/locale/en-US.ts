@@ -115,11 +115,14 @@ export default {
   'system.setting.ConnectorCheckCronExpr': 'Check Connector Status',
   'system.setting.ConnectorCheckCronExpr.desc':
     'The default is to execute every 10 minutes',
-  'system.setting.ResourceStatusCheckCronExpr':
-    'Check application resource status',
+  'system.setting.ResourceStatusCheckCronExpr': 'Check service resource status',
+  'system.setting.ServiceDependencyCheckCronExpr':
+    'Check service dependency status',
+  'system.setting.ServiceDependencyCheckCronExpr.desc':
+    'The default is to execute every 30 seconds',
   'system.setting.ResourceStatusCheckCronExpr.desc':
     'The default is to execute every 1 minute',
-  'system.setting.ResourceLabelApplyCronExpr': 'Tag application resources',
+  'system.setting.ResourceLabelApplyCronExpr': 'Tag service resources',
   'system.setting.ResourceLabelApplyCronExpr.desc':
     'The default is to execute every 2 minutes',
   'system.setting.CostCollectCronExpr': 'Collect usage costs',
