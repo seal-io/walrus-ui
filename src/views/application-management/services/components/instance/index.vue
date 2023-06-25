@@ -106,12 +106,12 @@
       "
       @save="cloneHandler"
     ></cloneInstanceModal>
-    <deleteInstanceModal
+    <deleteServiceModal
       v-model:show="showDeleteModal"
       :callback="handleDeleteConfirm"
       :title="$t('common.delete.tips')"
     >
-    </deleteInstanceModal>
+    </deleteServiceModal>
   </div>
 </template>
 
@@ -138,7 +138,7 @@
   import serviceHistory from './service-history.vue';
   import BasicInfo from '../basic-info.vue';
   import cloneInstanceModal from '../clone-instance-modal.vue';
-  import deleteInstanceModal from '../delete-instance-modal.vue';
+  import deleteServiceModal from '../delete-service-modal.vue';
   import {
     instanceTabs,
     instanceBasicInfo,

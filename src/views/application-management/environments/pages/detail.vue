@@ -17,16 +17,50 @@
         </template>
       </HeaderInfo>
       <ComCard>
-        <ServiceList ref="serviceRef"></ServiceList>
+        <a-tabs
+          v-model:active-key="activeKey"
+          lazy-load
+          class="page-line-tabs"
+          :default-active-key="activeKey"
+        >
+          <a-tab-pane
+            v-if="
+              userStore.hasProjectResourceActions({
+                resource: Resources.Services,
+                projectID: route.params.projectId,
+                actions: [Actions.GET]
+              })
+            "
+            key="service"
+            :title="$t('applications.applications.table.service')"
+          >
+            <ServiceList></ServiceList>
+          </a-tab-pane>
+          <a-tab-pane
+            v-if="
+              userStore.hasProjectResourceActions({
+                resource: Resources.Services,
+                projectID: route.params.projectId,
+                actions: [Actions.GET]
+              })
+            "
+            key="graph"
+            :title="$t('applications.instance.tab.graph')"
+          >
+            <environmentGraph></environmentGraph>
+          </a-tab-pane>
+        </a-tabs>
       </ComCard>
     </ComCard>
   </div>
 </template>
 
 <script lang="ts" setup>
+  import { Resources, Actions } from '@/permissions/config';
   import { PROJECT } from '@/router/config';
   import { ref, onMounted, nextTick } from 'vue';
   import _ from 'lodash';
+  import { useUserStore } from '@/store';
   import useCallCommon from '@/hooks/use-call-common';
   import HeaderInfo from '@/components/header-info/index.vue';
   import { BreadcrumbOptions } from '@/views/config/interface';
@@ -36,6 +70,7 @@
   import useBasicInfoData from '@/views/application-management/projects/hooks/use-basicInfo-data';
   import { basicInfoConfig } from '../config';
   import { queryItemEnvironments } from '../api';
+  import environmentGraph from '../components/environment-graph.vue';
 
   const {
     getEnvironmentList,
@@ -48,13 +83,14 @@
     projectTemplate,
     environmentTemplate
   } = useProjectData();
+  const userStore = useUserStore();
   const { router, route, t } = useCallCommon();
   const currentInfo = ref<any>({});
+  const activeKey = ref('service');
   const breadCrumbList = ref<BreadcrumbOptions[]>([
     projectTemplate,
     environmentTemplate
   ]);
-  const serviceRef = ref();
   const basicDataList = useBasicInfoData(basicInfoConfig, currentInfo);
 
   const handleSelectChange = ({ value, item }) => {

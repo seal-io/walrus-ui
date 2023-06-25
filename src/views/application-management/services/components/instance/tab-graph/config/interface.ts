@@ -8,6 +8,7 @@ export interface INode extends Node {
   resourceType: string;
   subType: string;
   data: InstanceResource;
+  kind: string;
   type: string;
   parentNode: string;
   label: string;
@@ -27,6 +28,7 @@ export interface IEdge {
   source: string;
   target: string;
   style?: object;
+  type: string;
 }
 export interface ICombo {
   order?: number;

@@ -209,8 +209,8 @@
       const execList = generateResourcesKeys([node.data || {}], 'executable');
       const { name } = node;
       const animate =
-        setInstanceStatus(_.get(node, 'data.status')) === Status.Warning;
-      node.resourceType = node.type;
+        setInstanceStatus(_.get(node, 'status')) === Status.Warning;
+      node.resourceType = node.kind;
       node.subType = _.get(node, 'data.type');
       node.type = 'resource';
       node.loggableInfo = {
@@ -222,38 +222,44 @@
         data: getLoggableExcutableInfo(execList)
       };
       node.label = fittingString(name, 120);
-      node.comboId = node.parentNode || '';
+      // node.comboId = node.parentNode || '';
       node.description = node.subType ? `${node.subType}` : node.resourceType;
       node.stateIcon = {
         animate,
         width: animate ? 20 : 14,
         height: animate ? 20 : 14,
         show: true,
-        img: _.get(statusMap, setInstanceStatus(_.get(node, 'data.status')))
+        img: _.get(statusMap, setInstanceStatus(_.get(node, 'status')))
       };
       return node;
     });
-    nodeList = _.filter(nodeList, (node) => {
-      return !_.find(combosList, (item) => item.id === node.id);
-    });
+    // nodeList = _.filter(nodeList, (node) => {
+    //   return !_.find(combosList, (item) => item.id === node.id);
+    // });
   };
   const setLinks = () => {
     const { sourceData: data } = props;
     edgeList = _.map(data.links || [], (o) => {
       const link = _.cloneDeep(o);
       let style = {};
-      if (
-        _.find(
-          combosList,
-          (item) =>
-            item.id === o.source &&
-            _.find(combosList, (item) => item.id === o.target)
-        )
-      ) {
+
+      if (o.type === 'Dependency') {
         style = {
           lineDash: [5, 5]
         };
       }
+      // if (
+      //   _.find(
+      //     combosList,
+      //     (item) =>
+      //       item.id === o.source &&
+      //       _.find(combosList, (item) => item.id === o.target)
+      //   )
+      // ) {
+      //   style = {
+      //     lineDash: [5, 5]
+      //   };
+      // }
       link.style = { ...style };
       return link;
     });
@@ -262,22 +268,18 @@
     graph?.fitView();
   };
   const initData = () => {
-    setCombosList();
+    // setCombosList();
     setNodeList();
     setLinks();
-    console.log('graph data===', {
-      nodes: nodeList,
-      edges: edgeList,
-      combos: combosList
-    });
   };
   const renderGraph = () => {
     if (!graph) return;
     graph.data({
       nodes: nodeList,
-      edges: edgeList,
-      combos: combosList
+      edges: edgeList
+      // combos: combosList
     });
+    console.log('data config===', { nodeList, edgeList });
     graph.render();
   };
   const initNodeEvent = () => {
@@ -295,7 +297,6 @@
     graph?.on('combo:click', (e) => {
       const node = e.item;
       const model = node.getModel();
-      console.log('combo:click===', model);
     });
     graph?.on('node:click', (e) => {
       const node = e.item;
@@ -334,7 +335,6 @@
   };
 
   const createGraph = () => {
-    console.log('width==height==', width, height);
     graph = new G6.Graph({
       groupByTypes: false,
       renderer: 'svg',
@@ -351,12 +351,11 @@
         ranksep: 40,
         onLayoutEnd() {
           loading.value = false;
-          console.log('onLayoutEnd');
-        },
-        sortByCombo: true
+        }
+        // sortByCombo: false
       },
       pixelRatio: 2,
-      defaultCombo,
+      // defaultCombo,
       defaultNode,
       defaultEdge: {
         type: 'cubic-horizontal',
@@ -397,7 +396,7 @@
     loading.value = true;
     graph?.clear();
     initData();
-    graph.read({ nodes: nodeList, edges: edgeList, combos: combosList });
+    graph.read({ nodes: nodeList, edges: edgeList });
   };
   const init = () => {
     loading.value = true;
