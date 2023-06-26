@@ -271,23 +271,23 @@ export const serviceActions: MoreAction[] = [
       type: 'icon-upgrade'
     }
   },
-  {
-    label: 'common.button.clone',
-    value: 'clone',
-    icon: 'iconFont',
-    handler: '',
-    status: 'normal',
-    filterFun(currentInfo) {
-      return userStore.hasProjectResourceActions({
-        resource: Resources.Services,
-        projectID: get(currentInfo, 'project.id'),
-        actions: [Actions.POST]
-      });
-    },
-    props: {
-      type: 'icon-Clone-Cloud'
-    }
-  },
+  // {
+  //   label: 'common.button.clone',
+  //   value: 'clone',
+  //   icon: 'iconFont',
+  //   handler: '',
+  //   status: 'normal',
+  //   filterFun(currentInfo) {
+  //     return userStore.hasProjectResourceActions({
+  //       resource: Resources.Services,
+  //       projectID: get(currentInfo, 'project.id'),
+  //       actions: [Actions.POST]
+  //     });
+  //   },
+  //   props: {
+  //     type: 'icon-Clone-Cloud'
+  //   }
+  // },
   {
     label: 'common.button.rollback',
     value: 'rollback',

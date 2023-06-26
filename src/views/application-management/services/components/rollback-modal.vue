@@ -170,7 +170,10 @@
   };
   const handleRollbackInstance = async () => {
     try {
-      await rollbackInstance({ revisionID: formData.id });
+      await rollbackInstance({
+        revisionID: formData.id,
+        serviceID: formData.serviceID
+      });
       execSucceed();
     } catch (error) {
       console.log(error);
