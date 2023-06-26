@@ -229,7 +229,7 @@
       };
       node.label = fittingString(name, 120);
       // node.comboId = node.parentNode || '';
-      node.description = node.resourceType;
+      node.description = _.get(node, 'extensions.type') || _.get(node, 'kind');
       node.stateIcon = {
         animate,
         width: animate ? 20 : 14,
