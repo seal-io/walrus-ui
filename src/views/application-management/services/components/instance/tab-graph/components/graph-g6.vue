@@ -23,7 +23,7 @@
   import _ from 'lodash';
   import i18n from '@/locale';
   import resourceImages from '@/views/application-management/resource-images';
-  // import serviceImg from '@/assets/images/se'
+  import serviceImg from '@/assets/images/service.png';
   import {
     ref,
     onMounted,
@@ -213,6 +213,8 @@
       const animate =
         setInstanceStatus(_.get(node, 'status')) === Status.Warning;
       node.resourceType = _.get(node, 'extensions.type') || _.get(node, 'kind');
+      // node.providerType =
+      // node.resourceImage = resourceImages.get()
       node.subType = _.get(node, 'data.type');
       node.type = 'resource';
       node.loggableInfo = {
