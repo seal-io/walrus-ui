@@ -6,6 +6,7 @@ export default {
   'menu.applicationManagement.application': 'Applications',
   'menu.applicationManagement.serivce': 'Services',
   'menu.applicationManagement.secret': 'Secrets',
+  'menu.applicationManagement.members': 'Members',
   'menu.costManagement': 'Cost Management',
   'menu.costManagement.analyse': 'Cost Analysis',
   'menu.costManagement.perspective': 'Perspectives',

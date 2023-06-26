@@ -1,6 +1,7 @@
 export default {
   'applications.applications.menu': '应用',
   'applications.applications.create': '新建服务',
+  'applications.applications.add.member': '添加成员',
   'applications.applications.edit': '编辑服务',
   'applications.applications.detail': '服务详情',
   'applications.applications.secret': '密钥',
@@ -124,6 +125,7 @@ export default {
   'applications.projects.rule.name': '名称必填',
   'applications.projects.role.owner': '所有者',
   'applications.projects.role.member': '成员',
+  'applications.projects.role.holder': '请输入成员名称',
   'applications.projects.role.viewer': '只读',
   'applications.secret.create': '新建密钥',
   'applications.secret.edit': '更新密钥',

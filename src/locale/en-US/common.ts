@@ -89,5 +89,5 @@ export default {
   'common.permission.action.put': 'Update',
   'common.button.settings': 'Settings',
   'common.button.management': 'Management',
-  'common.cli.download': 'Cli Download'
+  'common.cli.download': 'CLI Download'
 };

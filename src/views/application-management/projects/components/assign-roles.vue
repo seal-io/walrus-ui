@@ -15,7 +15,7 @@
     }"
     modal-class="oci-modal"
     unmount-on-close
-    :title="$t('applications.projects.authorize.title')"
+    :title="$t('applications.applications.add.member')"
     @cancel="handleCancel"
     @ok="handleOk"
     @before-open="handleBeforeOpen"
@@ -130,22 +130,6 @@
             :title="$t('profile.account.name')"
           >
           </a-table-column>
-          <!-- <a-table-column
-            ellipsis
-            tooltip
-            :cell-style="{ minWidth: '40px' }"
-            data-index="subject.kind"
-            :title="$t('profile.account.kind')"
-          >
-          </a-table-column> -->
-          <!-- <a-table-column
-            ellipsis
-            tooltip
-            :cell-style="{ minWidth: '40px' }"
-            data-index="subject.domain"
-            :title="$t('profile.account.domain')"
-          >
-          </a-table-column> -->
           <a-table-column
             ellipsis
             tooltip
@@ -184,7 +168,7 @@
             :loading="submitLoading"
             type="primary"
             class="cap-title cancel-btn"
-            @click="handleCancel"
+            @click="handleClose"
             >{{ $t('common.button.close') }}</a-button
           >
         </template>
@@ -327,6 +311,10 @@
     } catch (error) {
       console.log(error);
     }
+  };
+  const handleClose = () => {
+    emits('save');
+    emits('update:show', false);
   };
   const handleDeleteConfirm = async () => {
     try {

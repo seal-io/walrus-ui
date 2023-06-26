@@ -210,10 +210,10 @@
       .icon-wrap {
         display: flex;
         padding: 0;
-        overflow: hidden;
+        // overflow: hidden;
         background-color: #fff;
-        border-radius: 50%;
-        box-shadow: 0 0 16px 4px var(--color-border-2);
+        // border-radius: 50%;
+        // box-shadow: 0 0 16px 4px var(--color-border-2);
       }
 
       :deep(.arco-icon) {

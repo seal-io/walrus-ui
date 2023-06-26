@@ -69,8 +69,6 @@
   import loggableModal from './loggable-modal.vue';
   import terminalModal from './terminal-modal.vue';
 
-  import testData from '../config/test';
-
   console.log('resourceImages===', resourceImages);
   const props = defineProps({
     sourceData: {
@@ -282,8 +280,8 @@
       if (o.edgeType === 'Composition') {
         style.endArrow = false;
         style.startArrow = {
-          path: G6.Arrow.diamond(8, 10, -5),
-          fill: 'blue'
+          path: G6.Arrow.diamond(8, 10, 0),
+          fill: 'rgba(102, 139, 220,1)'
         };
       }
       // if (
@@ -299,8 +297,10 @@
       //   };
       // }
       link.style = { ...style };
+
       return link;
     });
+    console.log('links====', edgeList);
   };
 
   const initData = () => {
@@ -373,7 +373,7 @@
   const createGraph = () => {
     graph = new G6.Graph({
       // groupByTypes: true,
-      renderer: 'svg',
+      // renderer: 'svg',
       container: 'graph-mount',
       plugins: [contextMenu, createToolTip()],
       width: width.value || 1400,
@@ -401,9 +401,11 @@
         style: {
           radius: 0,
           offset: 0,
+          shadowBlur: 0,
           endArrow: {
-            path: G6.Arrow.triangle(5, -5, 0),
-            fill: 'rgba(102, 139, 220,.8)'
+            path: G6.Arrow.vee(5, 5, 0),
+            fill: 'rgba(102, 139, 220,1)',
+            lineDash: [0, 0]
           },
           lineWidth: 1.2,
           stroke: 'rgba(66, 106, 208,.8)'

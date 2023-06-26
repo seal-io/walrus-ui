@@ -155,7 +155,7 @@
                       <template #icon><icon-edit class="size-16" /></template>
                     </a-link>
                   </a-tooltip>
-                  <a-tooltip :content="$t('common.button.authorize')">
+                  <!-- <a-tooltip :content="$t('common.button.authorize')">
                     <a-link
                       v-permission-app="{
                         projectID: record.id,
@@ -174,7 +174,7 @@
                         ></i>
                       </template>
                     </a-link>
-                  </a-tooltip>
+                  </a-tooltip> -->
                 </a-space>
               </template>
             </a-table-column>
