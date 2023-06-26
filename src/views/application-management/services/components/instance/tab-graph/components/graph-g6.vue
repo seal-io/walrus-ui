@@ -1,9 +1,20 @@
 <template>
-  <div ref="graphWrapper" class="graph-wrapper">
-    <div id="graph-mount" ref="graphMount" class="graph-mount"></div>
-    <div class="toolbar">
-      <slot name="toolbar"></slot>
-    </div>
+  <div>
+    <a-grid :cols="24">
+      <a-grid-item :span="24">
+        <div ref="graphWrapper" class="graph-wrapper">
+          <div
+            id="graph-mount"
+            ref="graphMount"
+            class="graph-mount"
+            :class="{ isFullscreen: isFullscreen }"
+          ></div>
+          <div class="toolbar">
+            <slot name="toolbar"></slot>
+          </div>
+        </div>
+      </a-grid-item>
+    </a-grid>
     <loggableModal
       v-model:show="showLogModal"
       v-model:nodeInfo="resourceNodeInfo"
@@ -69,6 +80,12 @@
           links: [],
           nodes: []
         };
+      }
+    },
+    isFullscreen: {
+      type: Boolean,
+      default() {
+        return false;
       }
     }
   });
@@ -158,16 +175,16 @@
     // 在哪些类型的元素上响应
     itemTypes: ['node']
   });
-
+  const fitView = () => {
+    graph.fitView();
+  };
   const handleWindowResize = () => {
     if (!graph || graph.get('destroyed')) return;
     if (!width.value || !height.value) return;
     graph.changeSize(width.value, height.value);
-    graph.fitView();
+    fitView();
   };
-  const fitview = () => {
-    graph.fitView();
-  };
+
   const throttleFn = useThrottleFn(() => {
     handleWindowResize();
   }, 200);
@@ -199,6 +216,9 @@
       };
     });
   };
+  const removeVersions = (inputString) => {
+    return _.replace(inputString, /_v[\d]/g, '');
+  };
   const getLoggableExcutableInfo = (list): { key: string; id: string } => {
     const result = getDefaultValue(list);
     return getResourceId(result);
@@ -213,8 +233,7 @@
       const animate =
         setInstanceStatus(_.get(node, 'status')) === Status.Warning;
       node.resourceType =
-        _.replace(_.get(node, 'extensions.type'), /_v[\d]/g, '') ||
-        _.get(node, 'kind');
+        removeVersions(_.get(node, 'extensions.type')) || _.get(node, 'kind');
 
       node.providerType = _.get(_.split(node.resourceType, '_'), '0') || '';
       node.subType = _.get(node, 'data.type');
@@ -283,9 +302,7 @@
       return link;
     });
   };
-  const fitView = () => {
-    graph?.fitView();
-  };
+
   const initData = () => {
     // setCombosList();
     setNodeList();
@@ -370,6 +387,9 @@
         ranksep: 40,
         onLayoutEnd() {
           loading.value = false;
+          nextTick(() => {
+            graph?.fitCenter?.(false);
+          });
         }
         // sortByCombo: false
       },
@@ -408,7 +428,7 @@
       modes: {
         default: ['drag-canvas', 'zoom-canvas', 'click-select']
       },
-      fitView: true
+      fitView: false
     });
   };
   const updateGraph = () => {
@@ -451,7 +471,7 @@
 
 <style lang="less" scoped>
   @import url('../style/modelRect-keyShape.less');
-  @height: 400px;
+  @height: 610px;
 
   .graph-wrapper {
     position: relative;
@@ -469,6 +489,10 @@
     .graph-mount {
       position: relative;
       height: @height;
+
+      &.isFullscreen {
+        height: 100vh;
+      }
     }
   }
 </style>
