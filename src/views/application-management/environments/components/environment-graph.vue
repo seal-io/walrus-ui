@@ -7,6 +7,7 @@
       >
         <GraphG6
           ref="graph"
+          :is-fullscreen="isFullscreen"
           :source-data="resultData"
           @nodeClick="handleNodeClick"
           @canvasClick="handleCanvasClick"
@@ -17,8 +18,16 @@
                 class="iconfont icon-fit_screen-o icon"
                 @click="handleFitView"
               ></span>
-              <span @click="handleRefresh"> <icon-sync class="icon" /> </span
-            ></a-space>
+              <span @click="handleRefresh"> <icon-sync class="icon" /> </span>
+              <span
+                class="icon icon-fullscreen iconfont"
+                :class="{
+                  'icon-fullscreen': !isFullscreen,
+                  'icon-fullscreen-exit': isFullscreen
+                }"
+                @click="handleToggleFullScreen"
+              ></span>
+            </a-space>
           </template>
         </GraphG6>
       </a-spin>
@@ -33,7 +42,7 @@
 <script lang="ts" setup>
   import _ from 'lodash';
   import { ref, onMounted } from 'vue';
-  import { onClickOutside } from '@vueuse/core';
+  import { onClickOutside, useFullscreen } from '@vueuse/core';
   import useCallCommon from '@/hooks/use-call-common';
   import GraphG6 from '../../services/components/instance/tab-graph/components/graph-g6.vue';
   import {
@@ -43,6 +52,7 @@
   import { queryServiceGraph } from '../../services/api';
 
   const { route } = useCallCommon();
+
   const nodeActive = ref(false);
   const loading = ref(false);
   const flowWrapper = ref();
@@ -52,7 +62,7 @@
     links: [],
     nodes: []
   });
-
+  const { isFullscreen, enter, exit, toggle } = useFullscreen(flowWrapper);
   onClickOutside(flowWrapper, () => {
     nodeActive.value = false;
   });
@@ -100,6 +110,9 @@
   const handleFitView = () => {
     graph.value?.fitView();
   };
+  const handleToggleFullScreen = () => {
+    toggle();
+  };
   onMounted(() => {
     getServiceGraph();
   });
@@ -113,8 +126,7 @@
     position: relative;
     display: flex;
     width: 100%;
-    height: @boxHeight;
-
+    // height: @boxHeight;
     .g6-box {
       flex: 1;
     }

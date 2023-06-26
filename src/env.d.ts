@@ -27,7 +27,8 @@ declare module '@vueuse/core' {
     useDebounceFn,
     useElementHover,
     useDark,
-    useToggle
+    useToggle,
+    useFullscreen
   } from '@vueuse/core';
 }
 interface ImportMetaEnv {

@@ -7,6 +7,7 @@
       >
         <GraphG6
           ref="graph"
+          :is-fullscreen="isFullscreen"
           :source-data="resultData"
           @nodeClick="handleNodeClick"
           @canvasClick="handleCanvasClick"
@@ -17,8 +18,16 @@
                 class="iconfont icon-fit_screen-o icon"
                 @click="handleFitView"
               ></span>
-              <span @click="handleRefresh"> <icon-sync class="icon" /> </span
-            ></a-space>
+              <span @click="handleRefresh"> <icon-sync class="icon" /> </span>
+              <span
+                class="icon icon-fullscreen iconfont"
+                :class="{
+                  'icon-fullscreen': !isFullscreen,
+                  'icon-fullscreen-exit': isFullscreen
+                }"
+                @click="handleToggleFullScreen"
+              ></span>
+            </a-space>
           </template>
         </GraphG6>
       </a-spin>
@@ -33,7 +42,7 @@
 <script lang="ts" setup>
   import _ from 'lodash';
   import { ref, inject, watch } from 'vue';
-  import { onClickOutside } from '@vueuse/core';
+  import { onClickOutside, useFullscreen } from '@vueuse/core';
   import GraphG6 from './components/graph-g6.vue';
   import { queryServiceResourceGraph } from '../../../api';
   import { INode, IEdge } from './config/interface';
@@ -49,7 +58,7 @@
     links: [],
     nodes: []
   });
-
+  const { isFullscreen, enter, exit, toggle } = useFullscreen(flowWrapper);
   onClickOutside(flowWrapper, () => {
     nodeActive.value = false;
   });
@@ -96,6 +105,9 @@
   const handleFitView = () => {
     graph.value?.fitView();
   };
+  const handleToggleFullScreen = () => {
+    toggle();
+  };
   watch(
     () => serviceId.value,
     () => {
@@ -115,8 +127,7 @@
     position: relative;
     display: flex;
     width: 100%;
-    height: @boxHeight;
-
+    // height: @boxHeight;
     .g6-box {
       flex: 1;
     }
