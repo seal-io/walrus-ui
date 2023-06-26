@@ -6,6 +6,7 @@ export default {
   'menu.applicationManagement.application': '应用',
   'menu.applicationManagement.serivce': '服务',
   'menu.applicationManagement.secret': '密钥',
+  'menu.applicationManagement.members': '成员',
   'menu.costManagement': '成本管理',
   'menu.costManagement.analyse': '成本分析',
   'menu.costManagement.perspective': '视图',

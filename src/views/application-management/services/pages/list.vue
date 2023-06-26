@@ -106,8 +106,8 @@
           ellipsis
           tooltip
           :cell-style="{ minWidth: '40px' }"
-          data-index="environment.name"
-          :title="$t('applications.applications.detail.env')"
+          data-index="template.id"
+          :title="$t('applications.applications.table.module')"
         >
         </a-table-column>
         <a-table-column

@@ -64,6 +64,19 @@
           >
             <ConnectorList scope="project"></ConnectorList>
           </a-tab-pane>
+          <a-tab-pane
+            v-if="
+              userStore.hasProjectResourceActions({
+                projectID: route.params.projectId,
+                resource: Resources.SubjectRoles,
+                actions: [Actions.GET]
+              })
+            "
+            key="members"
+            :title="$t('menu.applicationManagement.members')"
+          >
+            <members></members>
+          </a-tab-pane>
         </a-tabs>
       </ComCard>
     </ComCard>
@@ -86,6 +99,7 @@
   import { queryItemProject } from '../api';
   import { basicInfoConfig, projectDetailTabs } from '../config';
   import userProjectBreadcrumbData from '../hooks/use-project-breadcrumb-data';
+  import members from './members.vue';
 
   const {
     getProjectList,

@@ -1,6 +1,7 @@
 export default {
   'applications.applications.menu': 'Applications',
   'applications.applications.create': 'New Service',
+  'applications.applications.add.member': 'Add Members',
   'applications.applications.edit': 'Edit Service',
   'applications.applications.detail': 'Service Details',
   'applications.applications.secret': 'Secrets',
@@ -132,6 +133,7 @@ export default {
   'applications.projects.rule.name': 'Name is required',
   'applications.projects.role.owner': 'Owner',
   'applications.projects.role.member': 'Member',
+  'applications.projects.role.holder': 'please enter a member name',
   'applications.projects.role.viewer': 'Viewer',
   'applications.secret.create': 'New Secret',
   'applications.secret.rules.value': 'content is required',

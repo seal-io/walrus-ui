@@ -86,5 +86,5 @@ export default {
   'common.permission.action.put': '更新',
   'common.button.settings': '设置',
   'common.button.management': '管理',
-  'common.cli.download': 'Cli下载'
+  'common.cli.download': 'CLI下载'
 };
