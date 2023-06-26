@@ -17,7 +17,9 @@ export interface INode extends Node {
     executable: boolean;
     data: object;
   };
+  logoIcon: Record<string, any>;
   comboId: string;
+  providerType: string;
   stateIcon: object;
   loggableInfo: {
     loggable: boolean;
