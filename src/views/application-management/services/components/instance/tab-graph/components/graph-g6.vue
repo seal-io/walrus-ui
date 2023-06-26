@@ -22,6 +22,8 @@
 <script lang="ts" setup>
   import _ from 'lodash';
   import i18n from '@/locale';
+  import resourceImages from '@/views/application-management/resource-images';
+  // import serviceImg from '@/assets/images/se'
   import {
     ref,
     onMounted,
@@ -58,6 +60,7 @@
 
   import testData from '../config/test';
 
+  console.log('resourceImages===', resourceImages);
   const props = defineProps({
     sourceData: {
       type: Object as PropType<{ links: IEdge[]; nodes: INode[] }>,
@@ -173,7 +176,6 @@
     const { width: boxWidth, height: boxHeight } = entry.contentRect;
     width.value = boxWidth;
     height.value = boxHeight;
-    console.log('resize===', width.value, height.value);
     throttleFn();
   });
 

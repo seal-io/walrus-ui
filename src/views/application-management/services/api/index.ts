@@ -232,11 +232,12 @@ export const queryRevisionChange = (params: {
   });
 };
 
-export const rollbackInstance = (data: { id: string }) => {
+export const rollbackInstance = (data: { revisionID: string }) => {
   return axios.post(
-    `/service-revisions/${data.id}/rollback-service?${qs.stringify(
-      getPermissionRouteParams()
-    )}`
+    `/services/${data.revisionID}/rollback?${qs.stringify({
+      ...getPermissionRouteParams(),
+      revisionID: data.revisionID
+    })}`
   );
 };
 
