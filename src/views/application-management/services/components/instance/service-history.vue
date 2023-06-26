@@ -314,7 +314,7 @@
   };
   const handleRollbackInstance = async () => {
     try {
-      await rollbackInstance({ id: rollbackData.value.id });
+      await rollbackInstance({ revisionID: rollbackData.value.id });
       execSucceed();
     } catch (error) {
       console.log(error);
