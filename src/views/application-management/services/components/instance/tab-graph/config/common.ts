@@ -1,6 +1,7 @@
 import G6, { ModelConfig, NodeConfig, ShapeOptions } from '@antv/g6';
 import { IGroup, IShape } from '@antv/g-base';
 import insertCss from 'insert-css';
+import serviceImg from '@/assets/images/service.png';
 
 insertCss(`
   #contextMenu {
@@ -66,6 +67,7 @@ export const defineDomNode = () => {
     {
       draw: (cfg: ModelConfig, group: IGroup) => {
         const size = cfg.size || [120, 60];
+        console.log('cfg===99=', cfg);
         return group.addShape('dom', {
           attrs: {
             width: size[0],
@@ -126,7 +128,7 @@ export const defaultNode = {
     width: 32,
     height: 32,
     offset: -25,
-    img: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ0mS6x_Ro4JPjX5tNDpZGDA0_kAcfYLgm7Sg&usqp=CAU'
+    img: serviceImg
   }
 };
 export const defaultCombo = {

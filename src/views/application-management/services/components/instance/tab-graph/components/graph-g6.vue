@@ -212,9 +212,11 @@
       const { name } = node;
       const animate =
         setInstanceStatus(_.get(node, 'status')) === Status.Warning;
-      node.resourceType = _.get(node, 'extensions.type') || _.get(node, 'kind');
-      // node.providerType =
-      // node.resourceImage = resourceImages.get()
+      node.resourceType =
+        _.replace(_.get(node, 'extensions.type'), /_v[\d]/g, '') ||
+        _.get(node, 'kind');
+
+      node.providerType = _.get(_.split(node.resourceType, '_'), '0') || '';
       node.subType = _.get(node, 'data.type');
       node.type = 'resource';
       node.loggableInfo = {
@@ -234,6 +236,14 @@
         height: animate ? 20 : 14,
         show: true,
         img: _.get(statusMap, setInstanceStatus(_.get(node, 'status')))
+      };
+      node.logoIcon = {
+        width: 32,
+        height: 32,
+        offset: -25,
+        img:
+          resourceImages.get(node.providerType)?.get(node.resourceType) ||
+          serviceImg
       };
       return node;
     });
