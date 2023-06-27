@@ -12,7 +12,6 @@ export const tabList = [
   { label: 'operation.templates.detail.reademe', value: '', com: 'tabReadme' },
   { label: 'operation.templates.detail.inputs', value: '', com: 'tabInput' },
   { label: 'operation.templates.detail.outputs', value: '', com: 'tabOutput' },
-  // { label: 'Resources', value: '', com: 'tabResource' },
   { label: 'Providers', value: '', com: 'tabConnector' }
 ];
 

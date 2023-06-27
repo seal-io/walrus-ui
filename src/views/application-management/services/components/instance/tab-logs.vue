@@ -24,14 +24,14 @@
   import hasAnsi from 'has-ansi';
   import { ref, inject, watch, PropType } from 'vue';
   import usePermissionParams from '@/views/application-management/hooks/use-permission-params';
-  import { InstanceResource, Cascader } from '../../config/interface';
+  import { ServiceResource, Cascader } from '../../config/interface';
   import { generateResourcesKeys, getDefaultValue } from '../../config/utils';
   import { queryApplicationResource } from '../../api';
   import testData from '../../config/data';
 
   const props = defineProps({
     resourceList: {
-      type: Array as PropType<InstanceResource[]>,
+      type: Array as PropType<ServiceResource[]>,
       default() {
         return [];
       }

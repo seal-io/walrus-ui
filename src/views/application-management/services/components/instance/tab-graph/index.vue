@@ -46,7 +46,6 @@
   import GraphG6 from './components/graph-g6.vue';
   import { queryServiceResourceGraph } from '../../../api';
   import { INode, IEdge } from './config/interface';
-  import testData from './config/test';
 
   const serviceId = inject('serviceId', ref(''));
   const nodeActive = ref(false);
@@ -65,7 +64,6 @@
   const handleNodeClick = (node) => {
     nodeActive.value = true;
     nodeInfo.value = node;
-    console.log('node===', node);
   };
   const handleCanvasClick = () => {
     nodeActive.value = false;

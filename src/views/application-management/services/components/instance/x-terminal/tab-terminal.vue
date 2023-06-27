@@ -26,7 +26,7 @@
   import xTerminal from '@/components/x-terminal/index.vue';
   import { useRoute } from 'vue-router';
   import { queryApplicationResource } from '../../../api';
-  import { Cascader, InstanceResource } from '../../../config/interface';
+  import { Cascader, ServiceResource } from '../../../config/interface';
   import {
     generateResourcesKeys,
     getResourceId,
@@ -35,7 +35,7 @@
 
   const props = defineProps({
     resourceList: {
-      type: Array as PropType<InstanceResource[]>,
+      type: Array as PropType<ServiceResource[]>,
       default() {
         return [];
       }
