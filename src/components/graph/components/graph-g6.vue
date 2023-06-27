@@ -205,7 +205,9 @@
     const data = {
       nodes: nodeList.map((s) => {
         const nodesizeInfo = setNodeSize(s);
-        const img = NodeType.isFile(s.resourceType) ? repoIcon['file'] : null;
+        const img = NodeType.isFile(s.resourceType)
+          ? repoIcon.get('file')
+          : null;
         s.size = nodesizeInfo.size;
         s.primaryColor = nodesizeInfo.fill;
         s.inactiveColor = nodesizeInfo.inactive;
@@ -217,7 +219,7 @@
           height: 12,
           width: 12,
           img: NodeType.isResource(s.resourceType)
-            ? repoIcon[get(s, 'properties.provider')]
+            ? repoIcon.get(get(s, 'properties.provider'))
             : img
         };
         s.style = {

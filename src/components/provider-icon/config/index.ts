@@ -1,95 +1,25 @@
-import github from '../images/github.png';
-import bitbucket from '../images/Bitbucket.png';
-import coding from '../images/Coding.png';
-import conan from '../images/Conan.png';
-import deb from '../images/Deb.png';
-import dingding from '../images/dingding.png';
-import docker from '../images/docker.png';
-import email from '../images/email.png';
-import feishu from '../images/feishu.png';
-import gitee from '../images/Gitee.png';
-import gitlab from '../images/gitlab.png';
-import npm from '../images/NPM.png';
-import nuget from '../images/NuGet.png';
-import pypi from '../images/PyPI.png';
-import rpm from '../images/Rpm.png';
-import webhook from '../images/Webhook.png';
-import wechat from '../images/wechat.png';
-import maven from '../images/Maven.png';
-import jira from '../images/Jira.png';
-import zentao from '../images/zentao.png';
-import servicenow from '../images/servicenow.png';
-import standard from '../images/standar.png';
-import harbor from '../images/harbor.png';
-import nexus from '../images/nexus.png';
-import artifactory from '../images/artifactory.png';
-import kubernetes from '../images/kuber.png';
-import sbom from '../images/sbom.png';
-import file from '../images/file.png';
-import repo from '../images/repo.png';
-import version from '../images/version.png';
-import component from '../images/component.png';
-import deps from '../images/deps.png';
-import policy from '../images/policy.png';
-import license from '../images/license.png';
-import alicloud from '../images/alicloud.png';
-import golang from '../images/golang.png';
-import java from '../images/java.png';
-import mysql from '../images/mysql.png';
-import nodejs from '../images/nodejs.png';
-import redis from '../images/redis.png';
-import springboot from '../images/spring-boot.png';
-import webservice from '../images/web-service.jpg';
-import aws from '../images/aws.png';
+import _ from 'lodash';
 
-interface repoInconItem {
-  [key: string]: any;
-}
+const images = import.meta.globEager('../images/*.png');
 
-export const repoIcon: repoInconItem = {
-  github,
-  bitbucket,
-  coding,
-  conan,
-  deb,
-  dingding,
-  docker,
-  email,
-  feishu,
-  gitee,
-  gitlab,
-  npm,
-  nuget,
-  pypi,
-  rpm,
-  webhook,
-  wechat,
-  maven,
-  jira,
-  harbor,
-  nexus,
-  artifactory,
-  kubernetes,
-  oci: standard,
-  dockerhub: docker,
-  uploaded: sbom,
-  file,
-  repo,
-  version,
-  component,
-  deps,
-  policy,
-  license,
-  alicloud,
-  alibaba: alicloud,
-  java,
-  golang,
-  mysql,
-  nodejs,
-  redis,
-  springboot,
-  webservice,
-  aws
+const parseString = (inputString) => {
+  const regex = /\/([^/]+)\/([^/.]+)/;
+  const match = inputString.match(regex);
+
+  if (match) {
+    const aws = match[1];
+    const aws_ami = match[2];
+    return [aws, aws_ami];
+  }
+  return [];
 };
 
+export const repoIcon = new Map();
+
+_.each(_.keys(images), (key) => {
+  const defaultModule = images[key].default;
+  const list = parseString(key);
+  const name = _.get(list, '1');
+  repoIcon.set(_.toLower(name), defaultModule);
+});
 export default {};
