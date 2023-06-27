@@ -65,9 +65,9 @@
             </template>
             <a-tabs
               lazy-load
-              type="rounded"
+              type="line"
               :active-key="activeKey"
-              class="module-tabs"
+              class="page-line-tabs"
               @change="handleTabChange"
             >
               <a-tab-pane
@@ -96,16 +96,6 @@
         </ComCard>
       </div>
     </ComCard>
-    <cloneInstanceModal
-      v-model:show="showCloneModal"
-      :service-i-d="_.get(currentInfo, 'id')"
-      :title="
-        $t('applications.applications.instance.clonetitle', {
-          from: _.get(currentInfo, 'name')
-        })
-      "
-      @save="cloneHandler"
-    ></cloneInstanceModal>
     <deleteServiceModal
       v-model:show="showDeleteModal"
       :callback="handleDeleteConfirm"
@@ -130,20 +120,17 @@
   import EditPageFooter from '@/components/edit-page-footer/index.vue';
   import useBasicInfoData from '@/views/application-management/projects/hooks/use-basicInfo-data';
   import tabTerminal from './x-terminal/tab-terminal.vue';
-  import tabResource from './tab-resource.vue';
   import tabLogs from './tab-logs.vue';
   import tabOutput from './tab-output.vue';
-  import tabGraph from './tab-graph/index.vue';
   import tabEndpoint from './tab-endpoint.vue';
+  import tabResource from './tab-resource.vue';
   import serviceHistory from './service-history.vue';
   import BasicInfo from '../basic-info.vue';
-  import cloneInstanceModal from '../clone-instance-modal.vue';
   import deleteServiceModal from '../delete-service-modal.vue';
   import {
     instanceTabs,
     instanceBasicInfo,
-    serviceActions,
-    AppInstanceStatus
+    serviceActions
   } from '../../config';
   import { InstanceData } from '../../config/interface';
   import useFetchResource from '../hooks/use-fetch-chunk-data';
@@ -179,8 +166,6 @@
     tabResource: markRaw(tabResource),
     tabLogs: markRaw(tabLogs),
     tabOutput: markRaw(tabOutput),
-    tabGraph: markRaw(tabGraph),
-    tabHistory: markRaw(serviceHistory),
     tabTerminal: markRaw(tabTerminal)
   };
   const instanceTabList = ref<any[]>([]);
@@ -204,22 +189,7 @@
   const handleUpgrade = () => {
     pageAction.value = PageAction.EDIT;
   };
-  const cloneHandler = async (newService) => {
-    try {
-      router.replace({
-        params: {
-          ...route.params
-        },
-        query: {
-          ...route.query,
-          id: newService.id
-        }
-      });
-      execSucceed();
-    } catch (error) {
-      console.log(error);
-    }
-  };
+
   const handleDeleteConfirm = async (force) => {
     try {
       await deleteApplicationInstance({ id: route.query.id, force });

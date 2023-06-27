@@ -1,7 +1,8 @@
 <template>
   <div class="tab-content-wrap">
     <a-space class="icon-btn-group margin-b10">
-      <icon-list
+      <icon-font
+        type="icon-table"
         class="size-14"
         :class="{ active: currentView === 'list' }"
         @click="handleToggle('list')"

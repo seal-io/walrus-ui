@@ -176,16 +176,6 @@
       @change="handlePageChange"
       @page-size-change="handlePageSizeChange"
     />
-    <cloneInstanceModal
-      v-model:show="showCloneModal"
-      :service-i-d="_.get(cloneInstance, 'id')"
-      :title="
-        $t('applications.applications.instance.clonetitle', {
-          from: _.get(cloneInstance, 'name')
-        })
-      "
-      @save="cloneHandler"
-    ></cloneInstanceModal>
     <rollbackModal
       v-model:show="showRollbackModal"
       :service-id="selectedVersion"
@@ -214,7 +204,6 @@
     provide,
     onMounted
   } from 'vue';
-  import ADropdownButton from '@arco-design/web-vue/es/dropdown/dropdown-button';
   import {
     useSetChunkRequest,
     createAxiosToken
@@ -234,20 +223,11 @@
     deleteService,
     deleteApplicationInstance
   } from '../api';
-  import useTemplatesData from '../hooks/use-templates-data';
   import useRollbackRevision from '../hooks/use-rollback-revision';
-  import cloneInstanceModal from '../components/clone-instance-modal.vue';
   import deleteServiceModal from '../components/delete-service-modal.vue';
   import rollbackModal from '../components/rollback-modal.vue';
 
   const userStore = useUserStore();
-  const {
-    completeData,
-    initCompleteData,
-    serviceDataList,
-    templateList,
-    allTemplateVersions
-  } = useTemplatesData();
   const {
     showRollbackModal,
     rollbackTitle,
@@ -263,12 +243,7 @@
   });
 
   let fetchToken: any = null;
-  const showCloneModal = ref(false);
-  const cloneInstance = ref({});
-  const showEditModal = ref(false);
-  const moduleAction = ref('create');
   const showDeleteModal = ref(false);
-  const serviceInfo = ref<any>({});
   const serviceDel = ref<any>({});
   const id = route.query.id as string;
   const delType = ref('');
@@ -287,9 +262,6 @@
   const axiosInstance: any = null;
   const dataList = ref<ServiceRowData[]>([]);
 
-  const handleResetServiceInfo = () => {
-    serviceInfo.value = {};
-  };
   const setActionList = (row) => {
     const list = _.filter(serviceActions, (item) => {
       return item.filterFun ? item.filterFun(row) : true;
@@ -327,10 +299,7 @@
   const handleFilter = () => {
     fetchData();
   };
-  const handleSaveService = () => {
-    queryParams.page = 1;
-    handleFilter();
-  };
+
   const handleSortChange = (dataIndex: string, direction: string) => {
     setSortDirection(dataIndex, direction);
     fetchData();
@@ -356,21 +325,7 @@
       }
     });
   };
-  const handleClickClone = async (item) => {
-    cloneInstance.value = item;
-    setTimeout(() => {
-      showCloneModal.value = true;
-    }, 100);
-  };
-  const cloneHandler = async () => {
-    try {
-      cloneInstance.value = {};
-      handleSearch();
-      execSucceed();
-    } catch (error) {
-      console.log(error);
-    }
-  };
+
   const handleClickAction = (value, row) => {
     if (value === 'delete') {
       handleDelete(row, 'row');
@@ -402,10 +357,6 @@
         action: 'edit'
       }
     });
-    // moduleAction.value = 'create';
-    // setTimeout(() => {
-    //   showEditModal.value = true;
-    // }, 150);
   };
   const handleCloneService = () => {
     router.push({
@@ -474,7 +425,6 @@
   };
   const setActionHandler = () => {
     actionHandlerMap.set('upgrade', handleClickUpgrade);
-    actionHandlerMap.set('clone', handleClickClone);
     actionHandlerMap.set('rollback', handleClickRollback);
   };
   const init = async () => {
@@ -517,9 +467,6 @@
       if (updateIndex > -1) {
         const updateItem = _.cloneDeep(item);
         dataList.value[updateIndex] = updateItem;
-      } else {
-        // only update the data that in current page
-        // dataList.value = _.concat(_.cloneDeep(item), dataList.value);
       }
     });
   };

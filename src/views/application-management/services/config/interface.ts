@@ -76,7 +76,7 @@ export interface ResourceKeysItem {
   labels?: string[];
   keys: KeysItem[];
 }
-export interface InstanceResource {
+export interface ServiceResource {
   id: string;
   name: string;
   type: string;
@@ -84,9 +84,9 @@ export interface InstanceResource {
   createTime: string;
   key: string;
   keys: ResourceKeysItem;
-  children?: InstanceResource[];
+  children?: ServiceResource[];
   composition: { id?: string; status: object };
-  components: InstanceResource[];
+  components: ServiceResource[];
 }
 export interface HistoryData {
   id: string;

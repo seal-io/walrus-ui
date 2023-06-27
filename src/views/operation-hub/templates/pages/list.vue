@@ -5,7 +5,8 @@
         :class="{ active: currentView === 'thumb' }"
         @click="handleToggle('thumb')"
       />
-      <icon-nav
+      <icon-font
+        type="icon-table"
         :class="{ active: currentView === 'list' }"
         @click="handleToggle('list')"
       />

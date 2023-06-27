@@ -76,7 +76,7 @@ export default {
   'applications.instance.tab.resourceName': 'Resource Name',
   'applications.instance.tab.log': 'Logs',
   'applications.instance.tab.term': 'Terminal',
-  'applications.instance.tab.graph': 'Diagram',
+  'applications.instance.tab.graph': 'Dependency Graph',
   'applications.instance.tab.output': 'Outputs',
   'applications.instance.basic.title': 'Instance Information',
   'applications.applications.history.version': 'Version',

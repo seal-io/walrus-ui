@@ -6,7 +6,6 @@ import { Resources, Actions } from '@/permissions/config';
 
 const userStore = useUserStore();
 export const instanceTabs = [
-  // { label: '配置定义', value: 'configuration', com: 'tabConfiguration' },
   {
     label: 'applications.instance.tab.resource',
     value: 'resource',
@@ -14,7 +13,6 @@ export const instanceTabs = [
     requiredAuth: true,
     permission: ['GET']
   },
-  // { label: '入口', value: 'endpoint', com: 'tabEndpoint' },
   {
     label: 'applications.instance.tab.log',
     value: 'logs',
@@ -28,43 +26,19 @@ export const instanceTabs = [
     requiredAuth: false,
     com: 'tabOutput'
   },
-  // { label: '优化建议', value: 'optimization', com: 'tabOptimization' },
-  {
-    label: 'applications.instance.tab.graph',
-    value: 'graph',
-    com: 'tabGraph',
-    requiredAuth: true,
-    permission: ['GET']
-  },
-  // { label: '历史记录', value: 'history', com: 'tabHistory' },
+  // {
+  //   label: 'applications.instance.tab.graph',
+  //   value: 'graph',
+  //   com: 'tabGraph',
+  //   requiredAuth: true,
+  //   permission: ['GET']
+  // },
   {
     label: 'applications.instance.tab.term',
     value: 'terminal',
     com: 'tabTerminal',
     requiredAuth: true,
     permission: ['GET']
-  }
-];
-
-export const reserveFields = [
-  'source',
-  'version',
-  'providers',
-  'count',
-  'for_each',
-  'lifecycle',
-  'depends_on',
-  'locals'
-];
-
-export const appActions = [
-  {
-    label: 'common.button.rollback',
-    value: 'rollback',
-    icon: 'icon-font',
-    props: {
-      type: 'icon-rollback-copy'
-    }
   }
 ];
 
@@ -253,11 +227,6 @@ export const serviceActions: MoreAction[] = [
     handler: '',
     status: 'normal',
     disabled(currentInfo: any): boolean {
-      console.log(
-        'disabled==99=',
-        get(currentInfo, 'status.transitioning'),
-        currentInfo
-      );
       return get(currentInfo, 'status.transitioning');
     },
     filterFun(currentInfo) {
