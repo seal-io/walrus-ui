@@ -27,6 +27,14 @@
                 }"
                 @click="handleToggleFullScreen"
               ></span>
+              <span
+                class="icon iconfont"
+                :class="{
+                  'icon-node_multiple_outlined': !showAll,
+                  'icon-node_outlined': showAll
+                }"
+                @click="handleToggleShow"
+              ></span>
             </a-space>
           </template>
         </GraphG6>
@@ -55,6 +63,7 @@
 
   const nodeActive = ref(false);
   const loading = ref(false);
+  const showAll = ref(false);
   const flowWrapper = ref();
   const nodeInfo = ref<any>({});
   const graph = ref();
@@ -112,6 +121,10 @@
   };
   const handleToggleFullScreen = () => {
     toggle();
+  };
+  const handleToggleShow = () => {
+    showAll.value = !showAll.value;
+    graph.value?.toggleAllNodeShow(showAll.value);
   };
   onMounted(() => {
     getServiceGraph();

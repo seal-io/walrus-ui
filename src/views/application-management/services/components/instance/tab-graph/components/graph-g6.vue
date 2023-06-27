@@ -58,7 +58,7 @@
   } from '../config/common';
   import { toolbar, createToolTip } from '../config/plugins';
   import { fittingString } from '../config/utils';
-  import { statusMap } from '../config';
+  import { statusMap, edgeType, nodeKindType } from '../config';
   import { ICombo, IEdge, INode } from '../config/interface';
   import { setInstanceStatus, Status } from '../../../../config';
   import {
@@ -96,6 +96,7 @@
   const graphMount = ref();
   const graphWrapper = ref();
   const loading = ref(false);
+  const animateFlag = ref(false);
   let nodeList: INode[] = [];
   let edgeList: IEdge[] = [];
   let combosList: ICombo[] = [];
@@ -227,15 +228,21 @@
       const node = _.cloneDeep(o);
       const loggableList = generateResourcesKeys([node.data || {}], 'loggable');
       const execList = generateResourcesKeys([node.data || {}], 'executable');
-      const { name } = node;
+
+      if (node.kind === nodeKindType.ServiceResource) {
+        node.visible = false;
+      }
       const animate =
         setInstanceStatus(_.get(node, 'status')) === Status.Warning;
       node.resourceType =
         removeVersions(_.get(node, 'extensions.type')) || _.get(node, 'kind');
 
+      node.isCollapsed = false;
+
       node.providerType = _.get(_.split(node.resourceType, '_'), '0') || '';
       node.subType = _.get(node, 'data.type');
       node.type = 'resource';
+
       node.loggableInfo = {
         loggable: !!loggableList.length,
         data: getLoggableExcutableInfo(loggableList)
@@ -244,8 +251,8 @@
         executable: !!execList.length,
         data: getLoggableExcutableInfo(execList)
       };
-      node.label = fittingString(name, 120);
-      // node.comboId = node.parentNode || '';
+
+      node.label = fittingString(node.name, 120);
       node.description = _.get(node, 'extensions.type') || _.get(node, 'kind');
       node.stateIcon = {
         animate,
@@ -273,11 +280,11 @@
     edgeList = _.map(data.links || [], (o) => {
       const link = _.cloneDeep(o);
       const style: any = {};
-
-      if (o.edgeType === 'Dependency') {
+      if (o.edgeType === edgeType.Dependency) {
         style.lineDash = [5, 5];
       }
-      if (o.edgeType === 'Composition') {
+      if (o.edgeType === edgeType.Composition) {
+        link.visible = false;
         style.endArrow = false;
         style.startArrow = {
           path: G6.Arrow.diamond(8, 10, 0),
@@ -296,6 +303,7 @@
       //     lineDash: [5, 5]
       //   };
       // }
+
       link.style = { ...style };
 
       return link;
@@ -308,6 +316,19 @@
     setNodeList();
     setLinks();
   };
+  const toggleAllNodeShow = (show) => {
+    _.each(graph.getNodes(), (node) => {
+      const model = node.getModel();
+      if (show) {
+        graph.showItem(node);
+      } else if (model.kind === nodeKindType.ServiceResource) {
+        graph.hideItem(node);
+      }
+    });
+    animateFlag.value = true;
+    graph?.layout();
+    graph?.set('animate', true);
+  };
   const renderGraph = () => {
     if (!graph) return;
     graph.data({
@@ -315,8 +336,48 @@
       edges: edgeList
       // combos: combosList
     });
-    console.log('data config===', { nodeList, edgeList });
     graph.render();
+  };
+  // click select node
+  const getRelateNodesAndEdges = (node: INode, type) => {
+    const result: INode[] = [];
+    const stack: INode[] = [];
+    stack.push(node);
+    while (stack.length) {
+      const currentNode: INode = stack.pop() as INode;
+      result.push(currentNode);
+      const neighbors: INode[] = currentNode?.getNeighbors(type) as INode[];
+      const filterNeighbors = _.filter(neighbors, (item) => {
+        const model = item.getModel();
+        return model.kind === nodeKindType.ServiceResource;
+      });
+      if (filterNeighbors.length) {
+        _.each(filterNeighbors, (item) => {
+          stack.push(item);
+        });
+      }
+    }
+    return _.tail(result);
+  };
+  const toggleNodeCollapse = (node) => {
+    const result: INode[] = getRelateNodesAndEdges(node, 'target');
+    if (!result.length) return;
+    const model = node.getModel();
+
+    _.each(result, (n) => {
+      if (model.isCollapsed) {
+        graph.hideItem(n);
+      } else {
+        graph.showItem(n);
+      }
+    });
+    node.update({
+      ...model,
+      isCollapsed: !model.isCollapsed
+    });
+    animateFlag.value = true;
+    graph.layout();
+    graph.set('animate', true);
   };
   const initNodeEvent = () => {
     graph?.on('node:mouseenter', (e) => {
@@ -337,7 +398,7 @@
     graph?.on('node:click', (e) => {
       const node = e.item;
       const model = node.getModel();
-
+      toggleNodeCollapse(node);
       // graph.getNodes().forEach((n) => {
       //   graph.clearItemStates(n);
       // });
@@ -387,8 +448,10 @@
         ranksep: 40,
         onLayoutEnd() {
           loading.value = false;
+
           nextTick(() => {
-            graph?.fitCenter?.(false);
+            graph?.fitCenter?.(animateFlag.value);
+            animateFlag.value = false;
           });
         }
         // sortByCombo: false
@@ -450,7 +513,8 @@
     initNodeEvent();
   };
   defineExpose({
-    fitView
+    fitView,
+    toggleAllNodeShow
   });
   watch(
     () => props.sourceData?.nodes,

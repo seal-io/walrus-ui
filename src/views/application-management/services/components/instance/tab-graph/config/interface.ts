@@ -17,6 +17,8 @@ export interface INode extends Node {
     executable: boolean;
     data: object;
   };
+  visible?: boolean;
+  isCollapsed: boolean;
   logoIcon: Record<string, any>;
   comboId: string;
   providerType: string;
@@ -30,6 +32,7 @@ export interface IEdge {
   source: string;
   target: string;
   style?: object;
+  visible?: boolean;
   edgeType: string;
 }
 export interface ICombo {
