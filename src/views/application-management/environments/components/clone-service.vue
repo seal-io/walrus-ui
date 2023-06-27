@@ -188,7 +188,6 @@
 
   provide('showHintInput', true);
   provide('completeData', completeData);
-
   const active = ref('');
   const selectedList = ref(new Set());
   const editServiceList = ref<any[]>([]);
@@ -260,6 +259,15 @@
     }
     return { validFailedForm, moduleFormList };
   };
+  const updateCompleteData = (oldName, newName) => {
+    if (completeData.value.service[newName]) {
+      return;
+    }
+    completeData.value.service[newName] = _.cloneDeep(
+      completeData.value.service[oldName]
+    );
+    delete completeData.value.service[oldName];
+  };
   const updateActiveServiceData = () => {
     const index = _.findIndex(
       editServiceList.value,
@@ -269,6 +277,7 @@
       editServiceList.value[index].attributes = _.cloneDeep(
         formData.attributes
       );
+      updateCompleteData(editServiceList.value[index].name, formData.name);
       editServiceList.value[index].name = formData.name;
     }
   };

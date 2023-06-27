@@ -127,11 +127,8 @@
   let textcomplete: any = null;
   const handleSearch = (term: string, ctx): Array<resultItem> => {
     const sourceData = completeData.value || props.source;
-    console.log('completeData...999', sourceData, completeData.value);
     const regx = /([A-Za-z0-9_-]+)?\.?([A-Za-z0-9_-]*)\.?$/;
-    console.log('array==3=', regx.test(ctx), ctx);
     if (!ctx || !regx.test(ctx)) return [];
-    console.log('term===1', term, ctx, textcomplete, props.source);
     const dataSource = cloneDeep(sourceData);
     const path = split(ctx, '.');
 

@@ -15,10 +15,17 @@ import {
 } from '@/views/application-management/services/api';
 
 export default function useTemplatesData() {
+  interface HintKey {
+    service: any;
+    secret: any;
+  }
   const { route } = useCallCommon();
   const templateList = ref<TemplateRowData[]>([]);
   const allTemplateVersions = ref<TemplateVersionData[]>([]);
-  const completeData = ref<Record<string, any>>({});
+  const completeData = ref<Partial<HintKey>>({
+    service: null,
+    secret: null
+  });
   const variableList = ref<any[]>([]);
   const serviceDataList = ref<any[]>([]);
 
