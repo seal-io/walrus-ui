@@ -20,12 +20,20 @@
               ></span>
               <span @click="handleRefresh"> <icon-sync class="icon" /> </span>
               <span
-                class="icon icon-fullscreen iconfont"
+                class="icon iconfont"
                 :class="{
                   'icon-fullscreen': !isFullscreen,
                   'icon-fullscreen-exit': isFullscreen
                 }"
                 @click="handleToggleFullScreen"
+              ></span>
+              <span
+                class="icon iconfont"
+                :class="{
+                  'icon-node_multiple_outlined': !showAll,
+                  'icon-node_outlined': showAll
+                }"
+                @click="handleToggleShow"
               ></span>
             </a-space>
           </template>
@@ -50,6 +58,7 @@
   const serviceId = inject('serviceId', ref(''));
   const nodeActive = ref(false);
   const loading = ref(false);
+  const showAll = ref(false);
   const flowWrapper = ref();
   const nodeInfo = ref<any>({});
   const graph = ref();
@@ -105,6 +114,10 @@
   };
   const handleToggleFullScreen = () => {
     toggle();
+  };
+  const handleToggleShow = () => {
+    showAll.value = !showAll.value;
+    graph.value?.toggleAllNodeShow(showAll.value);
   };
   watch(
     () => serviceId.value,

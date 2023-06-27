@@ -55,7 +55,7 @@
                     class="bread-icon-btn"
                     @click.stop="handleTogglePopup(item)"
                   >
-                    <icon-down-circle />
+                    <icon-down />
                   </span>
                 </OnClickOutside>
               </template>
@@ -219,9 +219,9 @@
           margin-right: 12px;
           color: var(--sealblue-6);
           font-size: 14px;
+          transform: scale(1.05);
 
           &:hover {
-            transform: scale(1.05);
             cursor: pointer;
           }
         }
@@ -233,14 +233,14 @@
       flex-direction: column;
       color: var(--color-text-2);
       font-size: 12px;
-      line-height: 1;
+      line-height: 1.4;
 
       .type {
         color: rgba(78, 89, 105, 0.5);
       }
 
       .separator-line {
-        color: var(--color-text-2);
+        color: var(--color-text-3);
       }
 
       .item-content {
@@ -286,9 +286,9 @@
             font-weight: 400;
             cursor: default;
 
-            &:hover {
-              transform: scale(1);
-            }
+            // &:hover {
+            //   transform: scale(1);
+            // }
           }
         }
       }

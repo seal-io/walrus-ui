@@ -13,4 +13,13 @@ export const statusMap = {
   [Status.Error]: errorStatus,
   [Status.Running]: successStatus
 };
+
+export const edgeType = {
+  Composition: 'Composition',
+  Dependency: 'Dependency'
+};
+export const nodeKindType = {
+  Service: 'Service',
+  ServiceResource: 'ServiceResource'
+};
 export default {};

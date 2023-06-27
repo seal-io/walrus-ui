@@ -111,6 +111,9 @@ export const defaultNode = {
     },
     offset: 15
   },
+  linkPoints: {
+    top: false
+  },
   descriptionCfg: {
     style: {
       fill: GlobalColor.text3,
