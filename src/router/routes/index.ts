@@ -5,7 +5,7 @@ import { LoginRouteName } from '@/api/config';
 
 const modules = import.meta.globEager('./modules/*.ts');
 const appRoutes: RouteRecordRaw[] = [];
-console.log('modules=======', modules);
+
 Object.keys(modules).forEach((key) => {
   const defaultModule = modules[key].default;
   // filter routes

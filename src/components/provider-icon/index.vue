@@ -5,7 +5,7 @@
       :style="{
         'width': `${size}px`,
         'height': `${size}px`,
-        'background-image': `url(${repoIcon[toLower(provider)]})`,
+        'background-image': `url(${repoIcon.get(toLower(provider))})`
       }"
     ></span>
   </span>
@@ -20,14 +20,14 @@
       type: String,
       default() {
         return 'github';
-      },
+      }
     },
     size: {
       type: Number,
       default() {
         return 16;
-      },
-    },
+      }
+    }
   });
 </script>
 
