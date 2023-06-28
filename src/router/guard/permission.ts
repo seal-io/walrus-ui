@@ -23,11 +23,7 @@ export default function setupPermissionGuard(router: Router) {
     const Permission = usePermission(to);
 
     // when forbidden to use password-free login from ui only need userStore.name && userStore?.userSetting?.FirstLogin?.value
-    if (
-      (userStore.name &&
-        userStore?.userSetting?.FirstLogin?.value === 'false') ||
-      userStore.name
-    ) {
+    if ((userStore.name && !userStore.isFirstLogin()) || userStore.name) {
       if (to.name === LoginRouteName) {
         const destination = Permission.getFirstRouteName(appRoutes) || {
           name: 'forbidden'
@@ -43,10 +39,7 @@ export default function setupPermissionGuard(router: Router) {
       }
       next({ name: 'forbidden', replace: true });
     } else {
-      if (
-        userStore?.userSetting?.FirstLogin?.value === 'true' &&
-        userStore.name
-      ) {
+      if (userStore.isFirstLogin() && userStore.name) {
         Modal.warning({
           alignCenter: false,
           top: '20%',

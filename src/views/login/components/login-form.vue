@@ -164,6 +164,9 @@
     await userStore.info();
     enterUserPage();
   };
+  const isNotFirstLogin = () => {
+    return props.firstLoginStatus.value === 'Invalid';
+  };
   const handleSubmit = async ({ errors, values }) => {
     if (!errors) {
       setLoading(true);
@@ -180,7 +183,8 @@
           removeLocalLoginInfo();
         }
         await userStore.login(values);
-        if (props.firstLoginStatus.value === 'false') {
+
+        if (isNotFirstLogin()) {
           await userStore.info();
         }
         // help to get serverURL id
@@ -191,7 +195,7 @@
             FirstLogin: { ...props.firstLoginStatus }
           }
         });
-        if (userStore?.userSetting?.FirstLogin?.value === 'true') {
+        if (userStore?.isFirstLogin()) {
           showModify.value = true;
           emits('loginSuccess');
           return;

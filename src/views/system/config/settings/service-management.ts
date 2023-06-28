@@ -52,7 +52,7 @@ export default {
       },
       subGroup: [
         {
-          id: 'openAiApiToken',
+          id: 'OpenAiApiToken',
           label: 'system.setting.openAiApiToken',
           parentId: '',
           component: {

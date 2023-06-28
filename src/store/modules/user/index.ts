@@ -151,8 +151,10 @@ const useUserStore = defineStore('user', {
       this.resetInfo();
       clearToken();
       removeRouteListener();
+    },
+    isFirstLogin() {
+      return this.userSetting?.FirstLogin?.value !== 'Invalid';
     }
-
     // init permission
   }
 });

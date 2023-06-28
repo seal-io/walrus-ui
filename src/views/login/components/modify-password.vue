@@ -161,7 +161,7 @@
           userSetting: {
             ...userSetting,
             serverUrl: { id: serverUrlID, value: formData.serverUrl },
-            FirstLogin: { value: 'false' }
+            FirstLogin: { value: 'Invalid' }
           }
         });
         emits('updatePassword', formData.newPassword);

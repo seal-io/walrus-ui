@@ -17,15 +17,25 @@
           style="background: var(--color-fill-2)"
           class="first-login-tips"
         >
-          <div class="text"
-            ><icon-info-circle-fill />{{ $t('login.config.getPswd') }}</div
+          <div v-if="specifiedPSWD()" class="text" style="margin-bottom: 0"
+            ><icon-info-circle-fill />{{
+              $t('login.config.pswd.specified')
+            }}</div
+          >
+          <div v-else class="text"
+            ><icon-info-circle-fill />{{ $t('login.config.pswd.exec') }}</div
           >
           <highlightBlock
-            :code="GET_ADMIN_PASSWORD"
+            v-if="!specifiedPSWD()"
+            :code="
+              $t(_.get(FirstLoginGetPassword, firstLoginStatus?.value) || '')
+            "
             style="position: relative; background: #fff"
           >
             <copy
-              :content="GET_ADMIN_PASSWORD"
+              :content="
+                $t(_.get(FirstLoginGetPassword, firstLoginStatus?.value) || '')
+              "
               style="position: absolute; top: 0; right: 0"
             ></copy>
           </highlightBlock>
@@ -50,13 +60,13 @@
   import copy from '@/components/copy/index.vue';
   import LoginBanner from './components/banner.vue';
   import LoginForm from './components/login-form.vue';
-  import { GET_ADMIN_PASSWORD } from './config';
+  import { GET_ADMIN_PASSWORD, FirstLoginGetPassword } from './config';
 
   const { enterUserPage } = useEnterPage();
   const userStore = useUserStore();
   const appStore = useAppStore();
   const isFirstLogin = ref(false);
-  const firstLoginStatus = ref({});
+  const firstLoginStatus = ref<any>({});
   // TODO delete
   const handleLoginSuccess = () => {
     isFirstLogin.value = true;
@@ -65,11 +75,14 @@
     try {
       const { data } = await getFirstLoginStatus();
       const value = data?.value;
-      isFirstLogin.value = value === 'true';
+      isFirstLogin.value = value !== 'Invalid';
       firstLoginStatus.value = data;
     } catch (error) {
       console.log(error);
     }
+  };
+  const specifiedPSWD = () => {
+    return _.get(firstLoginStatus.value, 'value') === 'Specified';
   };
 
   // enter page password-free
