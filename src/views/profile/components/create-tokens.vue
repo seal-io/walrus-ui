@@ -1,90 +1,88 @@
 <template>
-  <div class="container">
-    <a-modal
-      top="10%"
-      :align-center="false"
-      :visible="show"
-      :mask-closable="false"
-      :ok-text="$t('common.button.save')"
-      :title="$t('account.settings.tokens.new')"
-      @cancel="handleCancel"
-      @ok="handleOk"
-      @before-open="handleBeforeOpen"
-      @before-close="handleBeforeClose"
-    >
-      <a-form ref="formref" :model="formData">
-        <a-form-item
-          field="name"
-          :label="$t('account.settings.tokens.name')"
-          validate-trigger="change"
-          :rules="[
-            {
-              required: true,
-              message: $t('account.settings.token.rules.name')
-            }
-          ]"
-        >
-          <a-input v-model="formData.name" />
-        </a-form-item>
-        <a-form-item
-          field="expiration"
-          :label="$t('account.settings.tokens.expiration')"
-          validate-trigger="change"
-          :rules="[
-            {
-              required: true,
-              message: $t('account.settings.token.rules.expire')
-            }
-          ]"
-        >
-          <a-select v-model="formData.expiration" class="expire-select">
-            <a-option
-              v-for="(item, index) in expireList"
-              :key="index"
-              :value="item.label"
+  <a-modal
+    top="10%"
+    :align-center="false"
+    :visible="show"
+    :mask-closable="false"
+    :ok-text="$t('common.button.save')"
+    :title="$t('account.settings.tokens.new')"
+    @cancel="handleCancel"
+    @ok="handleOk"
+    @before-open="handleBeforeOpen"
+    @before-close="handleBeforeClose"
+  >
+    <a-form ref="formref" :model="formData" auto-label-width>
+      <a-form-item
+        field="name"
+        :label="$t('account.settings.tokens.name')"
+        validate-trigger="change"
+        :rules="[
+          {
+            required: true,
+            message: $t('account.settings.token.rules.name')
+          }
+        ]"
+      >
+        <a-input v-model="formData.name" />
+      </a-form-item>
+      <a-form-item
+        field="expiration"
+        :label="$t('account.settings.tokens.expiration')"
+        validate-trigger="change"
+        :rules="[
+          {
+            required: true,
+            message: $t('account.settings.token.rules.expire')
+          }
+        ]"
+      >
+        <a-select v-model="formData.expiration" class="expire-select">
+          <a-option
+            v-for="(item, index) in expireList"
+            :key="index"
+            :value="item.label"
+          >
+            <span
+              class="opts-item"
+              style="position: relative; padding-left: 25px"
             >
-              <span
-                class="opts-item"
-                style="position: relative; padding-left: 25px"
-              >
-                <icon-check-circle-fill
-                  v-show="formData.expiration === item.label"
-                  style="
-                    position: absolute;
-                    top: 1px;
-                    left: 0;
-                    color: #4cd263;
-                    font-size: 16px;
-                  "
-                />
-                <span class="label">{{ $t(item.label) }}</span>
-              </span>
-            </a-option>
-          </a-select>
-        </a-form-item>
-      </a-form>
-      <template #footer>
-        <EditPageFooter :style="{ 'margin-top': 0 }">
-          <template #save>
-            <a-button
-              type="primary"
-              class="cap-title cancel-btn"
-              @click="handleOk"
-              >{{ $t('common.button.save') }}</a-button
-            >
-          </template>
-          <template #cancel>
-            <a-button
-              type="outline"
-              class="cap-title cancel-btn"
-              @click="handleCancel"
-              >{{ $t('common.button.cancel') }}</a-button
-            >
-          </template>
-        </EditPageFooter>
-      </template>
-    </a-modal>
-  </div>
+              <icon-check-circle-fill
+                v-show="formData.expiration === item.label"
+                style="
+                  position: absolute;
+                  top: 1px;
+                  left: 0;
+                  color: #4cd263;
+                  font-size: 16px;
+                "
+              />
+              <span class="label">{{ $t(item.label) }}</span>
+            </span>
+          </a-option>
+        </a-select>
+      </a-form-item>
+    </a-form>
+    <template #footer>
+      <EditPageFooter :style="{ 'margin-top': 0 }">
+        <template #save>
+          <a-button
+            type="primary"
+            class="cap-title cancel-btn"
+            @click="handleOk"
+            >{{ $t('common.button.save') }}</a-button
+          >
+        </template>
+        <template #cancel>
+          <a-button
+            type="outline"
+            class="cap-title cancel-btn"
+            @click="handleCancel"
+            >{{ $t('common.button.cancel') }}</a-button
+          >
+        </template>
+      </EditPageFooter>
+    </template>
+  </a-modal>
 </template>
 
 <script lang="ts" setup>
