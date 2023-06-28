@@ -68,7 +68,6 @@
   import loggableModal from './loggable-modal.vue';
   import terminalModal from './terminal-modal.vue';
 
-  console.log('resourceImages===', resourceImages);
   const props = defineProps({
     sourceData: {
       type: Object as PropType<{ links: IEdge[]; nodes: INode[] }>,
@@ -136,7 +135,6 @@
       </i>
       </li>`;
       }
-      console.log('menu===', model);
       return `
     <div id="contextMenu-wrapper">
     <div class="res-name">${model?.name}</div>
@@ -174,7 +172,7 @@
     itemTypes: ['node']
   });
   const fitView = () => {
-    graph.fitView();
+    graph.fitCenter();
   };
   const handleWindowResize = () => {
     if (!graph || graph.get('destroyed')) return;
@@ -229,6 +227,11 @@
       );
     });
   };
+  const hasParentNode = (node) => {
+    return _.some(props.sourceData.links, (item) => {
+      return _.get(item, 'target') === node.id;
+    });
+  };
   const setNodeList = () => {
     const { sourceData: data } = props;
     nodeList = _.map(data.nodes || [], (o) => {
@@ -236,9 +239,9 @@
       const loggableList = generateResourcesKeys([node.data || {}], 'loggable');
       const execList = generateResourcesKeys([node.data || {}], 'executable');
 
-      if (node.kind === nodeKindType.ServiceResource) {
-        node.visible = false;
-      }
+      // if (node.kind === nodeKindType.ServiceResource && hasParentNode(node)) {
+      //   node.visible = false;
+      // }
       const animate =
         setInstanceStatus(_.get(node, 'status')) === Status.Warning;
       node.resourceType =
@@ -278,9 +281,6 @@
       };
       return node;
     });
-    // nodeList = _.filter(nodeList, (node) => {
-    //   return !_.find(combosList, (item) => item.id === node.id);
-    // });
   };
   const setLinks = () => {
     const { sourceData: data } = props;
@@ -291,7 +291,7 @@
         style.lineDash = [5, 5];
       }
       if (o.edgeType === edgeType.Composition) {
-        link.visible = false;
+        // link.visible = false;
         style.endArrow = false;
         style.startArrow = {
           path: G6.Arrow.diamond(8, 10, 0),
@@ -397,10 +397,6 @@
     });
     graph?.on('node:mouseleave', (e) => {
       const node = e.item;
-      // node.stateIcon.show = true;
-      // const model = node.getModel();
-      // model.stateIcon.show = true;
-      // node.update(model);
       graph.setItemState(e.item, 'hover', false);
     });
     // graph?.on('combo:click', (e) => {

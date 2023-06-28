@@ -293,8 +293,9 @@
         serviceID: serviceId.value
       };
       const { data } = await diffRevisionSpec(params);
+
       diffContent.value = {
-        old: JSON.stringify(data.old, null, 2),
+        old: data.old?.attributes ? JSON.stringify(data.old, null, 2) : '',
         new: JSON.stringify(data.new, null, 2)
       };
       showDiffModal.value = true;
@@ -351,7 +352,7 @@
       };
       const { data } = await queryRevisionChange(params);
       diffContent.value = {
-        old: JSON.stringify(data.old, null, 2),
+        old: data.old?.attributes ? JSON.stringify(data.old, null, 2) : '',
         new: JSON.stringify(data.new, null, 2)
       };
       showDiffModal.value = true;

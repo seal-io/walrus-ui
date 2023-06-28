@@ -13,28 +13,50 @@
           @canvasClick="handleCanvasClick"
         >
           <template #toolbar>
-            <a-space class="toolbar" :size="12"
-              ><span
-                class="iconfont icon-fit_screen-o icon"
-                @click="handleFitView"
-              ></span>
-              <span @click="handleRefresh"> <icon-sync class="icon" /> </span>
-              <span
-                class="icon iconfont"
-                :class="{
-                  'icon-fullscreen': !isFullscreen,
-                  'icon-fullscreen-exit': isFullscreen
-                }"
-                @click="handleToggleFullScreen"
-              ></span>
-              <span
-                class="icon iconfont"
-                :class="{
-                  'icon-node_multiple_outlined': !showAll,
-                  'icon-node_outlined': showAll
-                }"
-                @click="handleToggleShow"
-              ></span>
+            <a-space class="toolbar" :size="12">
+              <a-tooltip
+                :content="$t('applications.environment.graph.fitview')"
+              >
+                <span
+                  class="iconfont icon-fit_screen-o icon"
+                  @click="handleFitView"
+                ></span>
+              </a-tooltip>
+              <a-tooltip :content="$t('common.button.refresh')">
+                <span @click="handleRefresh"> <icon-sync class="icon" /> </span>
+              </a-tooltip>
+              <a-tooltip
+                :content="
+                  isFullscreen
+                    ? $t('applications.environment.graph.cancelfullscreen')
+                    : $t('applications.environment.graph.fullscreen')
+                "
+              >
+                <span
+                  class="icon iconfont"
+                  :class="{
+                    'icon-fullscreen': !isFullscreen,
+                    'icon-fullscreen-exit': isFullscreen
+                  }"
+                  @click="handleToggleFullScreen"
+                ></span>
+              </a-tooltip>
+              <!-- <a-tooltip
+                :content="
+                  showAll
+                    ? $t('applications.environment.graph.hide')
+                    : $t('applications.environment.graph.show')
+                "
+              >
+                <span
+                  class="icon iconfont"
+                  :class="{
+                    'icon-node_multiple_outlined': !showAll,
+                    'icon-node_outlined': showAll
+                  }"
+                  @click="handleToggleShow"
+                ></span>
+              </a-tooltip> -->
             </a-space>
           </template>
         </GraphG6>
