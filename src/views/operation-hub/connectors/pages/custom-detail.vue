@@ -280,7 +280,7 @@
     style: {
       key: setPropertyStyle({ 'flex-basis': '180px' }),
       description: setPropertyStyle({ 'flex-basis': '110px' }),
-      value: setPropertyStyle({ 'flex-basis': '330px' })
+      value: setPropertyStyle({ 'flex-basis': '320px' })
     }
   };
   const { t, router, route } = useCallCommon();
