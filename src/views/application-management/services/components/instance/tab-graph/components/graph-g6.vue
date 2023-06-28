@@ -52,7 +52,6 @@
   } from '@vueuse/core';
   import {
     defineCustomNode,
-    defineDomNode,
     defaultNode,
     defaultCombo
   } from '../config/common';
@@ -222,6 +221,14 @@
     const result = getDefaultValue(list);
     return getResourceId(result);
   };
+  const hasCompositionNodes = (node) => {
+    return _.some(props.sourceData.links, (item) => {
+      return (
+        _.get(item, 'source') === node.id &&
+        _.get(item, 'edgeType') === edgeType.Composition
+      );
+    });
+  };
   const setNodeList = () => {
     const { sourceData: data } = props;
     nodeList = _.map(data.nodes || [], (o) => {
@@ -238,7 +245,7 @@
         removeVersions(_.get(node, 'extensions.type')) || _.get(node, 'kind');
 
       node.isCollapsed = false;
-
+      node.hasComposition = hasCompositionNodes(node);
       node.providerType = _.get(_.split(node.resourceType, '_'), '0') || '';
       node.subType = _.get(node, 'data.type');
       node.type = 'resource';
@@ -308,7 +315,6 @@
 
       return link;
     });
-    console.log('links====', edgeList);
   };
 
   const initData = () => {
@@ -324,10 +330,16 @@
       } else if (model.kind === nodeKindType.ServiceResource) {
         graph.hideItem(node);
       }
+      if (model.hasComposition) {
+        node.update({
+          ...model,
+          isCollapsed: show
+        });
+      }
     });
     animateFlag.value = true;
     graph?.layout();
-    graph?.set('animate', true);
+    graph?.set('animate', false);
   };
   const renderGraph = () => {
     if (!graph) return;
@@ -505,7 +517,6 @@
   const init = () => {
     loading.value = true;
     graph?.clear();
-    // defineDomNode();
     defineCustomNode();
     initData();
     createGraph();

@@ -17,6 +17,7 @@ export interface INode extends Node {
     executable: boolean;
     data: object;
   };
+  hasComposition: boolean;
   visible?: boolean;
   isCollapsed: boolean;
   logoIcon: Record<string, any>;

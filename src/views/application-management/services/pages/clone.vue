@@ -35,7 +35,7 @@
             ></a-option>
           </a-select>
         </a-form-item>
-        <a-form-item :label="$t(`applications.projects.form.label`)">
+        <!-- <a-form-item :label="$t(`applications.projects.form.label`)">
           <a-space
             v-if="labelList?.length"
             style="display: flex; flex-direction: column"
@@ -54,7 +54,7 @@
               @delete="handleDeleteLabel(labelList, sIndex)"
             ></xInputGroup>
           </a-space>
-        </a-form-item>
+        </a-form-item> -->
         <a-form-item :label="$t('applications.applications.table.service')">
           <cloneService
             ref="servicesRef"
@@ -123,8 +123,7 @@
   let copyFormData: any = {};
   const formData = reactive({
     environmentIDs: [],
-    services: [],
-    labels: {}
+    services: []
   });
   const { labelList, handleAddLabel, handleDeleteLabel } =
     useLabelsActions(formData);
@@ -159,7 +158,10 @@
   const handleCloneServices = async () => {
     const services = servicesRef.value.getSelectServiceData();
     formData.services = _.cloneDeep(services);
-    await cloneServices(formData);
+    await cloneServices({
+      projectID: route.params.projectId as string,
+      formData
+    });
   };
   const validateLabel = () => {
     const valid = _.some(labelList.value, (item) => !item.value && item.key);

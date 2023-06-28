@@ -62,7 +62,37 @@
               show-word-limit
             ></a-input>
           </a-form-item>
+          <a-form-item :label="$t(`applications.projects.form.label`)">
+            <a-space
+              v-if="labelList?.length"
+              style="display: flex; flex-direction: column; width: 565px"
+              direction="vertical"
+            >
+              <xInputGroup
+                v-for="(sItem, sIndex) in labelList"
+                :key="sIndex"
+                v-model:dataKey="sItem.key"
+                v-model:dataValue="sItem.value"
+                v-model:value="formData.labels"
+                :trigger-validate="validateTrigger"
+                :label-list="labelList"
+                :position="sIndex"
+                @add="(obj) => handleAddLabel(obj, labelList)"
+                @delete="handleDeleteLabel(labelList, sIndex)"
+              ></xInputGroup>
+            </a-space>
+          </a-form-item>
+          <a-form-item :label="$t('common.table.description')">
+            <a-textarea
+              v-model="formData.description"
+              :max-length="200"
+              show-word-limit
+              style="width: 500px"
+              :auto-size="{ minRows: 4, maxRows: 6 }"
+            ></a-textarea>
+          </a-form-item>
         </a-form>
+        <a-divider style="margin: 0; border-radius: 1px" :size="4"></a-divider>
         <a-tabs
           v-if="formTabs.length > 1"
           class="page-line-tabs"
@@ -137,7 +167,9 @@
     watch,
     defineExpose
   } from 'vue';
+  import xInputGroup from '@/components/form-create/custom-components/x-input-group.vue';
   import EditPageFooter from '@/components/edit-page-footer/index.vue';
+  import useLabelsActions from '@/components/form-create/hooks/use-labels-action';
   import formCreate from '@/components/form-create/index.vue';
   import instanceThumb from '../../services/components/instance-thumb.vue';
   import { ServiceRowData } from '../../services/config/interface';
@@ -185,7 +217,14 @@
     asyncLoading,
     setRefMap
   } = useServiceData();
-
+  const {
+    labelList,
+    handleAddLabel,
+    handleDeleteLabel,
+    validateLabel,
+    getLabelList,
+    validateTrigger
+  } = useLabelsActions(formData);
   provide('showHintInput', true);
   provide('completeData', completeData);
   const active = ref('');
@@ -218,6 +257,7 @@
     serviceInfo.value = _.cloneDeep(data);
     await setFormAttributes();
     generateVariablesGroup(PageAction.EDIT);
+    getLabelList();
   };
   const handleCheckChange = (checked, item) => {
     if (checked) {
@@ -279,6 +319,8 @@
       );
       updateCompleteData(editServiceList.value[index].name, formData.name);
       editServiceList.value[index].name = formData.name;
+      editServiceList.value[index].description = formData.description;
+      editServiceList.value[index].labels = formData.labels;
     }
   };
   const getSelectServiceData = () => {
@@ -290,6 +332,7 @@
   const handleOk = async () => {
     const res = await formref.value?.validate();
     const { validFailedForm, moduleFormList } = await validateFormData();
+    console.log('moduleFormList===', moduleFormList);
     if (!validFailedForm && !res) {
       formData.attributes = {
         ..._.reduce(

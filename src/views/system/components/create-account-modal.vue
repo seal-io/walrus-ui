@@ -180,7 +180,7 @@
     domain: 'builtin',
     name: '',
     password: '',
-    roleId: ''
+    roleId: '0'
   });
 
   const handleRoleChange = (value) => {};
@@ -220,7 +220,7 @@
     emits('update:show', false);
   };
   const reset = () => {
-    formData.roleId = '';
+    formData.roleId = '0';
     formData.name = '';
     formData.password = '';
   };

@@ -1,7 +1,9 @@
 import G6, { ModelConfig, NodeConfig, ShapeOptions } from '@antv/g6';
+import _ from 'lodash';
 import { IGroup, IShape } from '@antv/g-base';
 import insertCss from 'insert-css';
 import serviceImg from '@/assets/images/service.png';
+import compositionImg from '@/assets/images/graph_nodes.png';
 
 insertCss(`
   #contextMenu {
@@ -52,6 +54,26 @@ export const defineCustomNode = () => {
             }
           );
         }
+        (this as any).drawCompositionIcon(cfg, group);
+      },
+      drawCompositionIcon(cfg: Node & NodeConfig, group: IGroup) {
+        if (!cfg.hasComposition) return;
+        const { compositionIcon, size } = cfg;
+        const w: number = _.get(size, '0');
+        const h: number = _.get(size, '1');
+        const { width, height, img } = compositionIcon as any;
+        group['shapeMap']['composition-icon'] = group.addShape('image', {
+          attrs: {
+            img,
+            x: -w / 2 + 18,
+            y: h / 2 - 16,
+            width,
+            height
+          },
+          className: 'composition-icon',
+          name: 'composition-icon',
+          draggable: true
+        });
       }
     },
     'modelRect'
@@ -132,6 +154,12 @@ export const defaultNode = {
     height: 32,
     offset: -25,
     img: serviceImg
+  },
+  compositionIcon: {
+    width: 10,
+    height: 10,
+    offset: -10,
+    img: compositionImg
   }
 };
 export const defaultCombo = {

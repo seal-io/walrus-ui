@@ -34,10 +34,13 @@ export const createService = (data) => {
     data
   );
 };
-export const cloneServices = (data) => {
+export const cloneServices = (data: {
+  projectID: string;
+  formData: object;
+}) => {
   return axios.post(
     `/services/_/batch?${qs.stringify({ projectID: data.projectID })}`,
-    data
+    data.formData
   );
 };
 export const deleteService = ({ data, projectID, force }) => {
