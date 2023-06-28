@@ -12,7 +12,7 @@
       <div
         :span="8"
         :style="
-          get(props.dataItem, `style.key}`)
+          get(dataItem, `style.key`)
             ? getItemStyle('key')
             : { flexBasis: '120px' }
         "

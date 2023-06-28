@@ -74,6 +74,15 @@
                 v-model:dataKey="sItem.key"
                 v-model:dataValue="sItem.value"
                 v-model:value="formData.labels"
+                :data-item="{
+                  style: {
+                    key: {
+                      'display': 'flex',
+                      'flex': 1,
+                      'align-items': 'center'
+                    }
+                  }
+                }"
                 :trigger-validate="validateTrigger"
                 :label-list="labelList"
                 :position="sIndex"
