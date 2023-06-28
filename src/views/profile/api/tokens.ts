@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { ListResult } from '@/types/global';
 import qs from 'query-string';
 
 export interface FormDataType {
@@ -14,7 +15,7 @@ export interface queryParams {
 }
 
 export function queryTokens(params: queryParams) {
-  return axios.get<FormDataType[]>('/tokens', {
+  return axios.get<ListResult<FormDataType>>('/tokens', {
     params,
     paramsSerializer: (obj) => {
       return qs.stringify(obj);

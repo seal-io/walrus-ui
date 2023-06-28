@@ -54,7 +54,6 @@ const funcMap = conditionFuncMap();
 
 export const getConditionValue = (fm, formData) => {
   const conditionList = fm.conditions;
-
   if (isOrCondition(fm.showIf)) {
     return _.some(conditionList, (item) => {
       return funcMap.get(item.operator)(

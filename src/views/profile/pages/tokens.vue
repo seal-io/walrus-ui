@@ -61,6 +61,18 @@
       <div v-if="!dataList.length && isLoad" class="create-desc">{{
         $t('account.settings.token.desc')
       }}</div>
+      <a-pagination
+        style="padding: 10px 0"
+        size="small"
+        :total="total"
+        :page-size="queryParams.perPage"
+        :current="queryParams.page"
+        show-total
+        show-page-size
+        :hide-on-single-page="queryParams.perPage === 10"
+        @change="handlePageChange"
+        @page-size-change="handlePageSizeChange"
+      />
     </div>
     <CreateTokens v-model:show="show" @tokenSave="handleSave"></CreateTokens>
   </div>
@@ -72,6 +84,7 @@
   import dayjs from 'dayjs';
   import { useI18n } from 'vue-i18n';
   import FilterBox from '@/components/filter-box/index.vue';
+  import { deleteModal, execSucceed } from '@/utils/monitor';
   import copy from '@/components/copy/index.vue';
   import GroupTitle from '@/components/group-title/index.vue';
   import CreateTokens from '../components/create-tokens.vue';
@@ -80,10 +93,11 @@
   const show = ref(false);
   const { t } = useI18n();
   const isLoad = ref(false);
+  const total = ref(0);
   const dataList = ref<FormDataType[]>([]);
-  const query = {
+  const queryParams = {
     page: 1,
-    perPage: 100
+    perPage: 10
   };
   const handleCreate = () => {
     show.value = true;
@@ -111,10 +125,11 @@
     try {
       isLoad.value = false;
       const params = {
-        ...query
+        ...queryParams
       };
       const { data } = await queryTokens(params);
       dataList.value = get(data, 'items') || [];
+      total.value = data?.pagination?.total || 0;
       isLoad.value = true;
     } catch (error) {
       console.log(error);
@@ -122,14 +137,36 @@
       isLoad.value = true;
     }
   };
+  const handlePageChange = (page: number) => {
+    queryParams.page = page;
+    getTokenList();
+  };
+  const handlePageSizeChange = (pageSize: number) => {
+    queryParams.page = 1;
+    queryParams.perPage = pageSize;
+    getTokenList();
+  };
   const handleSave = (data) => {
     if (data) {
       dataList.value.unshift(data);
     }
   };
-  const handleDelete = async (item) => {
-    await deleteTokens(item.id);
-    getTokenList();
+  const handleDeleteConfirm = async (row) => {
+    try {
+      await deleteTokens(row.id);
+      execSucceed();
+      getTokenList();
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const handleDelete = async (row) => {
+    deleteModal({
+      onOk: () => {
+        handleDeleteConfirm(row);
+      }
+    });
   };
   getTokenList();
 </script>
@@ -190,13 +227,14 @@
         font-size: 12px;
 
         .date {
-          font-weight: 500;
+          font-weight: 700;
         }
       }
 
       .arco-list-item-meta-title {
         width: 100%;
         color: var(--sealblue-6);
+        font-weight: 700;
 
         .token {
           display: inline-block;
