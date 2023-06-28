@@ -7,7 +7,7 @@
         @change="handleSelectChange"
       ></Breadcrumb>
     </BreadWrapper>
-    <ComCard top-gap>
+    <ComCard top-gap padding="16px 16px 0 16px">
       <a-form ref="formref" :model="formData" auto-label-width>
         <a-form-item
           :label="$t('common.table.name')"
@@ -30,6 +30,7 @@
         >
           <a-input
             v-model="formData.name"
+            style="width: 380px"
             :max-length="30"
             show-word-limit
           ></a-input>
@@ -54,6 +55,7 @@
           <div>
             <a-select
               v-model="formData.template.id"
+              style="width: 380px"
               allow-search
               @change="handleTemplateChange"
             >
@@ -79,6 +81,7 @@
           <div>
             <a-select
               v-model="formData.template.version"
+              style="width: 380px"
               :loading="asyncLoading"
               @change="handleVersionChange"
             >
@@ -90,6 +93,35 @@
               >
             </a-select>
           </div>
+        </a-form-item>
+        <a-form-item :label="$t(`applications.projects.form.label`)">
+          <a-space
+            v-if="labelList?.length"
+            style="display: flex; flex-direction: column"
+            direction="vertical"
+          >
+            <xInputGroup
+              v-for="(sItem, sIndex) in labelList"
+              :key="sIndex"
+              v-model:dataKey="sItem.key"
+              v-model:dataValue="sItem.value"
+              v-model:value="formData.labels"
+              :trigger-validate="validateTrigger"
+              :label-list="labelList"
+              :position="sIndex"
+              @add="(obj) => handleAddLabel(obj, labelList)"
+              @delete="handleDeleteLabel(labelList, sIndex)"
+            ></xInputGroup>
+          </a-space>
+        </a-form-item>
+        <a-form-item :label="$t('common.table.description')">
+          <a-textarea
+            v-model="formData.description"
+            :max-length="200"
+            show-word-limit
+            style="width: 380px"
+            :auto-size="{ minRows: 4, maxRows: 6 }"
+          ></a-textarea>
         </a-form-item>
       </a-form>
     </ComCard>
@@ -223,6 +255,7 @@
   import { useProjectStore } from '@/store';
   import useCallCommon from '@/hooks/use-call-common';
   import EditPageFooter from '@/components/edit-page-footer/index.vue';
+  import xInputGroup from '@/components/form-create/custom-components/x-input-group.vue';
   import formCreate from '@/components/form-create/index.vue';
   import GroupTitle from '@/components/group-title/index.vue';
   import {
@@ -232,6 +265,7 @@
   import { validateAppNameRegx, PageAction } from '@/views/config';
   import { BreadcrumbOptions } from '@/views/config/interface';
   import { beforeLeaveCallback } from '@/hooks/save-before-leave';
+  import useLabelsActions from '@/components/form-create/hooks/use-labels-action';
   import useProjectBreadcrumbData from '../../projects/hooks/use-project-breadcrumb-data';
   import { createService, upgradeApplicationInstance } from '../api';
   import useServiceData from '../hooks/use-service-data';
@@ -292,7 +326,14 @@
     asyncLoading,
     setRefMap
   } = useServiceData(props);
-
+  const {
+    labelList,
+    handleAddLabel,
+    handleDeleteLabel,
+    validateLabel,
+    getLabelList,
+    validateTrigger
+  } = useLabelsActions(formData);
   let copyFormData: any = null;
   const { route, router, t } = useCallCommon();
   const formref = ref();
@@ -500,6 +541,7 @@
     }
   };
   const handleOk = async () => {
+    // validateLabel();
     const res = await formref.value?.validate();
     const { validFailedForm, moduleFormList } = await validateFormData();
     if (!res && !validFailedForm) {
@@ -586,6 +628,7 @@
     await init();
     setBreadCrumbList();
     copyFormData = _.cloneDeep(formData);
+    getLabelList();
   };
 
   initData();

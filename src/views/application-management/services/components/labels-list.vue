@@ -77,7 +77,7 @@
       margin-right: 10px;
       padding: 2px 10px;
       overflow: hidden;
-      line-height: 20px;
+      line-height: 18px;
       white-space: nowrap;
       text-overflow: ellipsis;
       background-color: rgba(var(--arcoblue-1), 1);

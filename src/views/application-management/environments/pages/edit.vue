@@ -60,12 +60,9 @@
             formData.description || '-'
           }}</div>
         </a-form-item>
-        <a-form-item
-          v-if="environmentId"
-          :label="$t(`applications.projects.form.label`)"
-        >
+        <a-form-item :label="$t(`applications.projects.form.label`)">
           <a-space
-            v-if="labelList?.length"
+            v-if="labelList?.length && pageAction === PageAction.EDIT"
             style="display: flex; flex-direction: column; width: 565px"
             direction="vertical"
           >
@@ -82,6 +79,9 @@
               @delete="handleDeleteLabel(labelList, sIndex)"
             ></xInputGroup>
           </a-space>
+          <div v-else class="readonly-view-label">
+            <LabelsList :labels="formData.labels"></LabelsList>
+          </div>
         </a-form-item>
         <a-form-item
           :label="$t('operation.connectors.menu')"
@@ -187,6 +187,7 @@
   import { EnvironFormData } from '../config/interface';
   import connectorsTable from '../components/connectors.vue';
   import ConnectorSelector from '../components/connector-selector.vue';
+  import LabelsList from '../../services/components/labels-list.vue';
   import {
     createEnvironment,
     updateEnvironment,
@@ -231,7 +232,7 @@
     labels: {},
     services: []
   });
-  const { labelList, handleAddLabel, handleDeleteLabel } =
+  const { labelList, handleAddLabel, handleDeleteLabel, getLabelList } =
     useLabelsActions(formData);
   const title = computed(() => {
     // only in clone
@@ -451,6 +452,8 @@
     getEnvironmentServices();
     await getConnectors();
     await getItemEnvironmentInfo();
+    getLabelList();
+    console.log('labelList>>>>>>>', labelList.value, formData.value.labels);
   };
   defineExpose({
     handleSubmit,

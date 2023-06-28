@@ -46,6 +46,8 @@ export default function useServiceData(props?) {
     environment: {
       id: route.params.environmentId
     },
+    description: '',
+    labels: {},
     name: '',
     template: { id: '', version: '' },
     attributes: {}

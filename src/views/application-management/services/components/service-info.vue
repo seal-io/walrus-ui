@@ -2,22 +2,47 @@
   <div class="service">
     <a-form
       ref="formref"
+      class="basic-form"
       :model="formData"
       auto-label-width
-      style="flex-direction: row; width: 600px"
+      style="width: 600px"
     >
-      <a-form-item :label="$t('applications.applications.table.module')">
-        <span class="readonly-view-label">{{
-          getListValue(formData.template.id, templateList, 'id')
-        }}</span>
-      </a-form-item>
-      <a-form-item :label="$t('applications.applications.history.version')">
-        <span class="readonly-view-label">{{
-          getListValue(formData.template.version, templateVersionList, 'value')
-        }}</span>
-      </a-form-item>
+      <a-row :cols="24">
+        <a-col :span="12">
+          <a-form-item :label="$t('applications.applications.table.module')">
+            <span class="readonly-view-label">{{
+              getListValue(formData.template.id, templateList, 'id')
+            }}</span>
+          </a-form-item>
+        </a-col>
+        <a-col :span="12">
+          <a-form-item :label="$t('applications.applications.history.version')">
+            <span class="readonly-view-label">{{
+              getListValue(
+                formData.template.version,
+                templateVersionList,
+                'value'
+              )
+            }}</span>
+          </a-form-item>
+        </a-col>
+      </a-row>
+      <a-row>
+        <a-col>
+          <a-form-item :label="$t(`applications.projects.form.label`)">
+            <LabelsList :labels="formData.labels"></LabelsList>
+          </a-form-item>
+        </a-col>
+      </a-row>
+      <a-row>
+        <a-col>
+          <a-form-item :label="$t('common.table.description')">
+            <span class="readonly-view-label">{{ formData.description }}</span>
+          </a-form-item>
+        </a-col>
+      </a-row>
     </a-form>
-    <div class="variables" style="max-width: 1000px">
+    <div class="variables">
       <a-tabs
         v-if="formTabs.length > 1"
         lazy-load
@@ -233,7 +258,7 @@
 
   .service {
     :deep(.arco-form-item) {
-      margin-bottom: 10px;
+      margin-bottom: 0;
 
       .arco-form-item-label {
         font-size: 14px;
@@ -242,7 +267,10 @@
 
     :deep(.arco-tabs-content) {
       padding: 16px 10px 0 10px;
-      border: 1px solid var(--color-border-2);
+    }
+
+    .content-wrap {
+      max-width: 1000px;
     }
   }
 </style>
