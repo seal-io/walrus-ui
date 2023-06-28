@@ -92,7 +92,7 @@
             ></a-textarea>
           </a-form-item>
         </a-form>
-        <a-divider style="margin: 0; border-radius: 1px" :size="4"></a-divider>
+        <a-divider style="margin: 5; border-radius: 1px" :size="4"></a-divider>
         <a-tabs
           v-if="formTabs.length > 1"
           class="page-line-tabs"

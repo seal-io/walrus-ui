@@ -141,5 +141,10 @@ export default {
   'applications.service.clone': '克隆服务',
   'applications.environment.clone': '克隆环境',
   'applications.environment.clone.target': '目标环境',
-  'applications.environment.clone.env.rules': '目标环必选'
+  'applications.environment.clone.env.rules': '目标环必选',
+  'applications.environment.graph.fitview': '视图适中',
+  'applications.environment.graph.fullscreen': '全屏',
+  'applications.environment.graph.cancelfullscreen': '退出全屏',
+  'applications.environment.graph.show': '显示子资源',
+  'applications.environment.graph.hide': '隐藏子资源'
 };

@@ -148,5 +148,10 @@ export default {
   'applications.service.clone': 'Clone Services',
   'applications.environment.clone': 'Clone Environment',
   'applications.environment.clone.target': 'Target Environments',
-  'applications.environment.clone.env.rules': 'Target Environments is required'
+  'applications.environment.clone.env.rules': 'Target Environments is required',
+  'applications.environment.graph.fitview': 'fit view',
+  'applications.environment.graph.cancelfullscreen': 'exit Full Screen',
+  'applications.environment.graph.fullscreen': 'full screen',
+  'applications.environment.graph.show': 'show subresources',
+  'applications.environment.graph.hide': 'hide subresources'
 };
