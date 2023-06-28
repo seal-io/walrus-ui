@@ -24,5 +24,7 @@ export default {
   'login.banner.slogan3': '接入可视化增强工具AUX',
   'login.banner.subSlogan3': '实现灵活的区块式开发',
   'login.config.serverUrl': '服务器地址必填',
-  'login.config.getPswd': '首次登录通过以下方式，获取初始admin密码'
+  'login.config.pswd.exec': '首次登录通过以下方式，获取初始admin密码',
+  'login.config.pswd.specified': '启动时已设置初始密码',
+  'login.config.pswd.log': '从seal进程日志中搜索"Bootstrap Admin Password"'
 };

@@ -29,32 +29,7 @@
             }}</span>
           </template>
         </a-table-column>
-        <a-table-column
-          ellipsis
-          tooltip
-          :cell-style="{ minWidth: '40px' }"
-          data-index="tags"
-          align="center"
-          :title="$t('applications.applications.tags.title')"
-        >
-          <template #cell="{ record }">
-            <Autotip
-              :tooltip-props="{
-                content: _.join(record.tags, ',')
-              }"
-            >
-              <a-space :margin="8">
-                <a-tag
-                  v-for="tag in record.tags"
-                  :key="tag"
-                  color="rgb(232, 242, 255)"
-                  style="color: inherit"
-                  >{{ tag }}</a-tag
-                >
-              </a-space>
-            </Autotip>
-          </template>
-        </a-table-column>
+
         <a-table-column
           ellipsis
           tooltip

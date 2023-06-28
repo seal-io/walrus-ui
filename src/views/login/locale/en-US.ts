@@ -27,6 +27,9 @@ export default {
   'login.banner.slogan3': 'Access visualization enhancement tool AUX',
   'login.banner.subSlogan3': 'Realize flexible block development',
   'login.config.serverUrl': 'serverUrl is required',
-  'login.config.getPswd':
-    'For the first login, use the following way to get the initial admin password'
+  'login.config.pswd.exec':
+    'For the first login, use the following way to get the initial admin password',
+  'login.config.pswd.specified': 'The initial password is set at startup',
+  'login.config.pswd.log':
+    'search "Bootstrap Admin Password" from the logs of seal process'
 };

@@ -47,5 +47,7 @@ export function getUserSetting() {
   return axios.get<ResList>(`/settings`);
 }
 export function getFirstLoginStatus() {
-  return axios.get<{ id: string; value: string }>(`/settings/FirstLogin`);
+  return axios.get<{ id: string; value: string }>(
+    `/settings/BootPwdGainSource`
+  );
 }

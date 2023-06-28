@@ -16,22 +16,22 @@
   // import 'highlight.js/styles/github.css';
   export default {
     components: {
-      highlightjs: hljsVuePlugin.component,
+      highlightjs: hljsVuePlugin.component
     },
     props: {
       code: {
         type: String,
         default() {
           return '';
-        },
+        }
       },
       langType: {
         type: String,
         default() {
           return 'xml';
-        },
-      },
-    },
+        }
+      }
+    }
   };
 </script>
 
@@ -40,5 +40,8 @@
     // padding: 10px;
     // white-space: pre;
     // border: 1px solid var(--seal-border-gray-2);
+    :deep(.hljs) {
+      background-color: #fff;
+    }
   }
 </style>
