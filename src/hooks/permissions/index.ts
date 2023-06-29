@@ -2,9 +2,7 @@ import { RouteLocationNormalized, RouteRecordRaw } from 'vue-router';
 import { useUserStore } from '@/store';
 import _, { get } from 'lodash';
 
-export const checkResourcePermission = (permission, to?) => {
-  const userStore = useUserStore();
-
+const checkPermission = (permission, userStore, to?) => {
   const currentVisitProject = to?.params?.projectId || userStore.currentProject;
   const routePageAction = to?.params?.action;
   // type always set in the detail page that projects relate to
@@ -36,6 +34,16 @@ export const checkResourcePermission = (permission, to?) => {
   }
   // 4.
   return _.every(actions, (ac) => _.includes(permissionActions, ac));
+};
+
+export const checkResourcePermission = (permission, to?) => {
+  const userStore = useUserStore();
+  if (_.isArray(permission)) {
+    return _.some(permission, (item) => {
+      return checkPermission(item, userStore, to);
+    });
+  }
+  return checkPermission(permission, userStore, to);
 };
 
 export default function usePermission(to?) {
