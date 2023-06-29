@@ -80,7 +80,7 @@
   const serviceId = inject('serviceId', ref(''));
   const nodeActive = ref(false);
   const loading = ref(false);
-  const showAll = ref(false);
+  const showAll = ref(true);
   const flowWrapper = ref();
   const nodeInfo = ref<any>({});
   const graph = ref();

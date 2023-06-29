@@ -26,10 +26,16 @@ export default {
         clearMenuStatus: false,
         locale: 'menu.system.setting',
         requiresAuth: true,
-        permission: {
-          resource: Resources.Settings,
-          actions: ['GET']
-        },
+        permission: [
+          {
+            resource: Resources.Settings,
+            actions: ['GET']
+          },
+          {
+            resource: Resources.Subjects,
+            actions: ['GET']
+          }
+        ],
         roles: ['*']
       }
     }
