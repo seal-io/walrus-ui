@@ -1,4 +1,5 @@
 export const OperationHub = {
+  Index: 'OperationIndex',
   Main: 'OperationHub',
   ConnectorList: 'ConnectorsList',
   ConnectorK8sDetail: 'ConnectorK8sDetail',

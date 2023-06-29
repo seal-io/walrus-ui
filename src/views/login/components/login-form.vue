@@ -235,9 +235,8 @@
   .login-form {
     &-wrapper {
       width: 100%;
-      // width: 360px;
-      min-width: 320px;
-
+      width: 360px;
+      // min-width: 320px;
       .language {
         position: fixed;
         top: 20px;
