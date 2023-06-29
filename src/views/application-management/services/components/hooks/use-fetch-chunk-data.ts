@@ -225,7 +225,8 @@ export default function useFetchResource() {
           serviceID: serviceId.value,
           ...permissionParams
         },
-        handler: updateCallback
+        handler: updateCallback,
+        beforeReconnect: fetchData
       });
     } catch (error) {
       console.log('error', error);

@@ -61,9 +61,10 @@
               lang="json"
               :height="320"
             ></AceEditor>
-            <a-alert v-show="!removeLines.length && !addLines.length">{{
-              $t('applications.applications.history.diff.same')
-            }}</a-alert>
+            <a-alert
+              v-show="!removeLines.length && !addLines.length && formData.id"
+              >{{ $t('applications.applications.history.diff.same') }}</a-alert
+            >
           </a-spin>
         </a-form-item>
       </a-form>

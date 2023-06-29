@@ -131,7 +131,8 @@
           params: {
             ...permissionParams
           },
-          handler: updateHandler
+          handler: updateHandler,
+          beforeReconnect: fetchData
         });
       });
     },

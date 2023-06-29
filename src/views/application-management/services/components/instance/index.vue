@@ -306,7 +306,8 @@
           projectID: route.params.projectId,
           environmentID: route.params.environmentId
         },
-        handler: updateHandler
+        handler: updateHandler,
+        beforeReconnect: getServiceItemInfo
       });
     } catch (error) {
       console.log(error);
