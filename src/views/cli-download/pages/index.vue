@@ -23,13 +23,22 @@
           </a-space>
         </template>
         <template #label="{ data, label }">
-          <span v-if="data.os === 'darwin'">
-            <i class="iconfont icon-macos mright-5"></i>
+          <span style="display: flex; align-items: center">
+            <span v-if="data.os === 'darwin'">
+              <i
+                class="iconfont icon-macos mright-5 size-16"
+                style="color: #2d2d2d"
+              ></i>
+            </span>
+            <span v-if="data.os === 'linux'" class="ft-size0">
+              <img
+                src="~/assets/images/linux.png"
+                alt=""
+                style="width: 18px; height: 18px; margin-right: 4px"
+              />
+            </span>
+            <span>{{ label }}</span>
           </span>
-          <span v-if="data.os === 'linux'">
-            <i class="iconfont icon-linux mright-5"></i>
-          </span>
-          <span>{{ label }}</span>
         </template>
       </a-descriptions>
     </ComCard>

@@ -4,9 +4,9 @@ export const GET_ADMIN_PASSWORD =
 export const FirstLoginGetPassword = {
   Specified: 'login.config.defaultpswd',
   Docker:
-    'docker logs <id_of_seal_container> 2>&1 | grep "Bootstrap Admin Password',
+    'docker logs <id_of_seal_container> 2>&1 | grep "Bootstrap Admin Password"',
   Kubernetes:
-    'kubectl -n <namespace_of_seal_deploy> logs <name_of_seal_pod> | grep "Bootstrap Admin Password',
+    'kubectl -n <namespace_of_seal_deploy> logs <name_of_seal_pod> | grep "Bootstrap Admin Password"',
   // Process: 'search "Bootstrap Admin Password" from the logs of seal process',
   Process: 'login.config.pswd.log',
   Invalid: 'Invalid'

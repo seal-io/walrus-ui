@@ -19,7 +19,7 @@
               error: get(item, 'value.error')
             }"
           ></StatusLabel>
-          <div v-else>{{ get(item, 'value') }}</div>
+          <div v-else class="val-content">{{ get(item, 'value') }}</div>
         </slot>
       </a-descriptions-item>
     </a-descriptions>
@@ -86,6 +86,13 @@
       .arco-descriptions-item-label,
       .arco-descriptions-item-value {
         line-height: 1.5;
+      }
+
+      .val-content {
+        width: max-content;
+        max-width: 500px;
+        max-height: 60px;
+        overflow-y: auto;
       }
     }
   }

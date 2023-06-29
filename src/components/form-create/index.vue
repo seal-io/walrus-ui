@@ -128,7 +128,7 @@
           </template>
         </a-grid>
       </div>
-      <a-form-item v-if="showFooter">
+      <!-- <a-form-item v-if="showFooter">
         <editPageFooter style="display: flex; margin-top: 0; padding-bottom: 0">
           <template #save>
             <a-button
@@ -150,7 +150,7 @@
             >
           </template>
         </editPageFooter>
-      </a-form-item>
+      </a-form-item> -->
     </a-form>
   </div>
 </template>
@@ -433,7 +433,7 @@
   // reset field default value when showIf is negative
   const resetFieldsDefaultValue = () => {
     each(schemaList.value, (item) => {
-      if (item.showIf && !getConditionValue(item, formData)) {
+      if (item.showIf && !getConditionValue(item, formData.value)) {
         formData.value[item.name] = item.default;
       }
     });
@@ -470,7 +470,6 @@
     if (noValidate) {
       resetFieldsDefaultValue();
       const resultFormData = transformDataByType();
-      console.log('formData.value=====', formData.value);
       return resultFormData;
     }
     // validate before submit form
@@ -478,7 +477,6 @@
     triggerValidate.value = true;
     const result = await formref.value?.validate();
     const validLabels = validateLabels();
-    console.log('result===', result, validLabels);
 
     if (result) {
       const errorField = get(keys(result), '0');
@@ -491,7 +489,6 @@
     if (!result && !validLabels) {
       resetFieldsDefaultValue();
       const resultFormData = transformDataByType();
-      console.log('formData.value=====', formData.value);
       return resultFormData;
     }
     return false;

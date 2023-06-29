@@ -111,6 +111,10 @@
       background-color: #fff;
     }
 
+    :deep(.hljs) {
+      white-space: break-spaces;
+    }
+
     :deep(.arco-space-item) {
       .arco-space-vertical.get-pwd {
         padding: 20px;
@@ -125,6 +129,7 @@
     }
 
     .first-login-tips {
+      width: 360px;
       margin-top: 40px;
       padding: 10px;
       font-size: 12px;

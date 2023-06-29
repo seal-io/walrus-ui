@@ -291,50 +291,73 @@
           const nodes: any[] = [];
           profileMenu.forEach((item) => {
             let rt: any = null;
-            rt = (
-              <a-sub-menu
-                key={item.key}
-                v-slots={{
-                  'icon': () =>
-                    h(compile(item.icon), {
-                      style: {
-                        color: 'var(--color-text-3)'
-                      }
-                    }),
-                  'expand-icon-right': () => {},
-                  'title': () => h(compile(t(item.name || '')))
-                }}
-              >
-                {item.children?.map((cItem) => {
-                  return (
-                    <a-menu-item
-                      key={cItem.key}
-                      v-slots={{
-                        icon: () =>
-                          h(compile(cItem.icon), {
-                            style: {
-                              color: 'var(--color-text-3)',
-                              fontSize: '16px'
-                            }
-                          })
-                      }}
-                      onClick={() => {
-                        handleClickUserMenu(cItem);
-                      }}
-                    >
-                      <span
-                        style={{
-                          color: 'var(--color-text-2)',
-                          fontSize: '14px'
+            if (item.children && item.children.length) {
+              rt = (
+                <a-sub-menu
+                  key={item.key}
+                  v-slots={{
+                    'icon': () =>
+                      h(compile(item.icon), {
+                        style: {
+                          color: 'var(--color-text-3)'
+                        }
+                      }),
+                    'expand-icon-right': () => {},
+                    'title': () => h(compile(t(item.name || '')))
+                  }}
+                >
+                  {item.children?.map((cItem) => {
+                    return (
+                      <a-menu-item
+                        key={cItem.key}
+                        v-slots={{
+                          icon: () =>
+                            h(compile(cItem.icon), {
+                              style: {
+                                color: 'var(--color-text-3)',
+                                fontSize: '16px'
+                              }
+                            })
+                        }}
+                        onClick={() => {
+                          handleClickUserMenu(cItem);
                         }}
                       >
-                        {t(cItem.name)}
-                      </span>
-                    </a-menu-item>
-                  );
-                })}
-              </a-sub-menu>
-            );
+                        <span
+                          style={{
+                            color: 'var(--color-text-2)',
+                            fontSize: '14px'
+                          }}
+                        >
+                          {t(cItem.name)}
+                        </span>
+                      </a-menu-item>
+                    );
+                  })}
+                </a-sub-menu>
+              );
+            } else {
+              rt = (
+                <a-menu-item
+                  key={item.key}
+                  v-slots={{
+                    icon: () =>
+                      h(compile(item.icon), {
+                        style: {
+                          color: 'var(--color-text-3)',
+                          fontSize: '18px'
+                        }
+                      })
+                  }}
+                  onClick={() => {
+                    handleClickUserMenu(item);
+                  }}
+                >
+                  {t(item.name)}
+                </a-menu-item>
+              );
+            }
+
             nodes.push(rt);
           });
           return nodes;

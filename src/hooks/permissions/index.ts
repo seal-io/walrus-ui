@@ -39,8 +39,8 @@ const checkPermission = (permission, userStore, to?) => {
 export const checkResourcePermission = (permission, to?) => {
   const userStore = useUserStore();
   if (_.isArray(permission)) {
-    return _.some(permission, (item) => {
-      return checkPermission(item, userStore, to);
+    return _.some(permission, (_permission) => {
+      return checkPermission(_permission, userStore, to);
     });
   }
   return checkPermission(permission, userStore, to);
