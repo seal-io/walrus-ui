@@ -433,7 +433,7 @@
       updateRevisions(data);
     });
   };
-  const createInstanceListWebsocket = () => {
+  const createServiceRevisionChunkRequest = () => {
     try {
       setChunkRequest({
         url: `/service-revisions`,
@@ -441,7 +441,8 @@
           serviceID: serviceId.value,
           ...permissionParams
         },
-        handler: updateHandler
+        handler: updateHandler,
+        beforeReconnect: fetchData
       });
     } catch (error) {
       console.log(error);
@@ -453,7 +454,7 @@
       queryParams.page = 1;
       fetchData();
       nextTick(() => {
-        createInstanceListWebsocket();
+        createServiceRevisionChunkRequest();
       });
     },
     {

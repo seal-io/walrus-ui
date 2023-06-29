@@ -27,7 +27,7 @@ export default {
         locale: 'menu.system.setting',
         requiresAuth: true,
         permission: {
-          resource: Resources.Subjects,
+          resource: Resources.Settings,
           actions: ['GET']
         },
         roles: ['*']

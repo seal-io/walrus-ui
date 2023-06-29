@@ -475,7 +475,7 @@
       updateApplicationList(data);
     });
   };
-  const createInstanceListWebsocket = () => {
+  const createServiceChunkRequest = () => {
     try {
       if (!queryParams.projectID) return;
       setChunkRequest({
@@ -484,7 +484,8 @@
           projectID: queryParams.projectID,
           environmentID: queryParams.environmentID
         },
-        handler: updateHandler
+        handler: updateHandler,
+        beforeReconnect: fetchData
       });
     } catch (error) {
       console.log(error);
@@ -496,7 +497,7 @@
   });
   onMounted(() => {
     setActionHandler();
-    createInstanceListWebsocket();
+    createServiceChunkRequest();
   });
   init();
 </script>
