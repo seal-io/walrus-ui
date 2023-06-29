@@ -14,7 +14,7 @@
           >
         </div>
         <a-grid :cols="24" :col-gap="10" style="flex: 1">
-          <template v-for="(fm, index) in schemaList" :key="fm.Name">
+          <template v-for="(fm, index) in activeSchemaList" :key="fm.Name">
             <!-- three level title -->
             <a-grid-item
               v-if="
@@ -265,10 +265,26 @@
   const triggerValidate = ref(false);
 
   const activeSchemaList = computed(() => {
-    if (!activeMenu.value) return schemaList.value;
+    console.log('activeSchemaList===', schemaList.value);
+    if (!activeMenu.value) {
+      const list = filter(schemaList.value, (sItem) => {
+        if (sItem.showIf) {
+          return getConditionValue(sItem, formData.value);
+        }
+        return true;
+      });
+      return list;
+    }
     const list = filter(schemaList.value, (sItem) => {
+      if (sItem.showIf) {
+        return (
+          sItem.subGroup === activeMenu.value &&
+          getConditionValue(sItem, formData.value)
+        );
+      }
       return sItem.subGroup === activeMenu.value;
     });
+
     return list;
   });
 
