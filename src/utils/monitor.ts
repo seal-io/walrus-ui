@@ -43,7 +43,9 @@ export const deleteModal = async ({
   const modalInstance = Modal.warning({
     alignCenter: false,
     top: '20%',
+    width: 450,
     hideCancel: false,
+    maskClosable: false,
     title: i18n.global.t(title),
     content: () => {
       return h(

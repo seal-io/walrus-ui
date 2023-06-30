@@ -13,6 +13,7 @@
       <a-input-password
         :model-value="modelValue"
         :disabled="attrs.isDisabled || !attrs.editable"
+        :invisible-button="attrs.editable"
         @change="handleInputChange"
         @blur="handleBlur"
         @input="(val) => handleInput(val)"
