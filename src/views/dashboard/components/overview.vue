@@ -39,7 +39,11 @@
   });
   const fetchData = async () => {
     try {
-      const { data } = await getDashBoardOverview();
+      const params = {
+        withServiceResource: false,
+        withServiceRevision: false
+      };
+      const { data } = await getDashBoardOverview(params);
       assignIn(basicInfo, data);
     } catch (error) {
       assignIn(basicInfo, {
