@@ -205,7 +205,7 @@
             @click="handleOk"
             >{{
               route.query.id
-                ? $t('common.button.upgrade')
+                ? $t('common.button.deploy')
                 : $t('common.button.save')
             }}</a-button
           >
