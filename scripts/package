@@ -1,11 +1,11 @@
 #!/bin/bash
-set -e
+set -ex
 
 source scripts/version
 
-yarn install && yarn build
+seal::version::get_version_vars
 
-TARBALL=${VERSION}.tar.gz
+TARBALL=${GIT_VERSION}.tar.gz
 echo "Compressing to ${TARBALL}..."
 tar -czf ${TARBALL} dist
 mv ${TARBALL} dist
