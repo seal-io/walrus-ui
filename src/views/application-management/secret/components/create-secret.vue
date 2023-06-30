@@ -77,7 +77,7 @@
       </a-form>
     </a-spin>
     <template #footer>
-      <EditPageFooter>
+      <EditPageFooter style="margin-top: 0">
         <template #save>
           <a-button
             :loading="submitLoading"
