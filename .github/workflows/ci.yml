@@ -90,6 +90,8 @@ jobs:
     strategy:
       matrix:
         version: [ "latest", "${{ github.ref_name  }}" ]
+        exclude:
+          - version: "main"
     steps:
       - name: Checkout
         uses: actions/checkout@v3
