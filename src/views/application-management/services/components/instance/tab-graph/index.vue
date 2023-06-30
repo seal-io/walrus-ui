@@ -71,7 +71,7 @@
 
 <script lang="ts" setup>
   import _ from 'lodash';
-  import { ref, inject, watch } from 'vue';
+  import { ref, inject, watch, defineExpose } from 'vue';
   import { onClickOutside, useFullscreen } from '@vueuse/core';
   import GraphG6 from './components/graph-g6.vue';
   import { queryServiceResourceGraph } from '../../../api';
@@ -141,6 +141,9 @@
     showAll.value = !showAll.value;
     graph.value?.toggleAllNodeShow(showAll.value);
   };
+  defineExpose({
+    handleRefresh
+  });
   watch(
     () => serviceId.value,
     () => {

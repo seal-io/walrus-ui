@@ -20,7 +20,7 @@
         ></ServiceResources>
       </a-tab-pane>
       <a-tab-pane key="graph">
-        <TabGraph></TabGraph>
+        <TabGraph ref="graph"></TabGraph>
       </a-tab-pane>
     </a-tabs>
   </div>
@@ -47,9 +47,13 @@
     }
   });
   const activeKey = ref('list');
+  const graph = ref();
 
   const handleToggle = (val) => {
     activeKey.value = val;
+    if (val === 'graph') {
+      graph.value?.handleRefresh();
+    }
   };
 </script>
 
