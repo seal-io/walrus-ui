@@ -4,8 +4,10 @@ export default {
   'applications.applications.add.member': 'Add Members',
   'applications.applications.edit': 'Edit Service',
   'applications.applications.detail': 'Service Details',
-  'applications.applications.secret': 'Secrets',
+  'applications.applications.secret': 'Variable',
+  'applications.applications.secret.value': 'Value',
   'applications.applications.secret.holder': 'please enter a variable',
+  'applications.applications.secret.scope': 'Scope',
   'applications.applications.configuration.create': 'Add Template',
   'applications.applications.table.name': 'Application',
   'applications.applications.table.module': 'Template',
@@ -135,8 +137,8 @@ export default {
   'applications.projects.role.member': 'Member',
   'applications.projects.role.holder': 'please enter a member name',
   'applications.projects.role.viewer': 'Viewer',
-  'applications.secret.create': 'New Secret',
-  'applications.secret.rules.value': 'content is required',
+  'applications.secret.create': 'New Variable',
+  'applications.secret.rules.value': 'variable value is required',
   'applications.secret.name.tips':
     'consists of letters, numbers, underscores, cannot start with a number',
   'applications.secret.form.name': 'Content',
@@ -153,5 +155,8 @@ export default {
   'applications.environment.graph.cancelfullscreen': 'exit Full Screen',
   'applications.environment.graph.fullscreen': 'full screen',
   'applications.environment.graph.show': 'show subresources',
-  'applications.environment.graph.hide': 'hide subresources'
+  'applications.environment.graph.hide': 'hide subresources',
+  'applications.variable.scope.project': 'Project',
+  'applications.variable.scope.envrionment': 'Environment',
+  'applications.variable.scope.global': 'Global'
 };
