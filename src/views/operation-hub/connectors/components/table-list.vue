@@ -459,7 +459,9 @@
   const { updateChunkedList } = useUpdateChunkedList(dataList, {
     filterFun(item) {
       if (props.scope === 'global') {
-        return !item.project;
+        return queryParams.category
+          ? item.category === queryParams.category && !item.project
+          : !item.project;
       }
       return get(item, 'project.id') === route.params?.projectId;
     }
@@ -493,7 +495,6 @@
   };
   const handleSortChange = (dataIndex: string, direction: string) => {
     setSortDirection(dataIndex, direction);
-    console.log('dataIndex===', dataIndex, direction);
     fetchData();
   };
   const handleSearch = () => {
@@ -660,6 +661,10 @@
     try {
       setChunkRequest({
         url: `/connectors`,
+        params: {
+          category: queryParams.category,
+          query: queryParams.query
+        },
         handler: updateHandler
       });
     } catch (error) {
