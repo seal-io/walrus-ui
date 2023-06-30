@@ -2,12 +2,14 @@
   <div>
     <a-tabs
       v-model="activeKey"
+      direction="vertical"
       :default-active-key="activeKey"
       class="page-line-tabs"
     >
       <a-tab-pane
         v-for="(item, index) in sourceList"
         :key="`${index}`"
+        class="tb-pane"
         :title="$t(item.label)"
       >
         <settings-form
@@ -132,4 +134,22 @@
   });
 </script>
 
-<style></style>
+<style lang="less" scoped>
+  :deep(.arco-tabs) {
+    &.arco-tabs-vertical {
+      .arco-tabs-nav-vertical {
+        &::before {
+          width: 0;
+        }
+      }
+
+      .arco-tabs-content {
+        border-left: 1px solid var(--color-border-2);
+      }
+
+      .arco-tabs-tab {
+        margin-right: 16px;
+      }
+    }
+  }
+</style>
