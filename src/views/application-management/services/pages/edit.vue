@@ -97,7 +97,7 @@
         <a-form-item :label="$t(`applications.projects.form.label`)">
           <a-space
             v-if="labelList?.length"
-            style="display: flex; flex-direction: column"
+            style="display: flex; flex-direction: column; width: 443px"
             direction="vertical"
           >
             <xInputGroup

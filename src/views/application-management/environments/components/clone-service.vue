@@ -33,6 +33,31 @@
       </a-grid>
     </div>
     <div v-if="active" v-show="show" class="bordered">
+      <a-alert :show-icon="true" style="margin-bottom: 10px">
+        <span>{{ $t('applications.applications.edit') }}</span>
+        <template #action>
+          <EditPageFooter style="margin-top: 0; padding: 0">
+            <template #save>
+              <a-button
+                type="primary"
+                size="small"
+                class="cap-title"
+                @click="handleOk"
+                >{{ $t('common.button.confirm') }}</a-button
+              >
+            </template>
+            <template #cancel>
+              <a-button
+                size="small"
+                :type="'outline'"
+                class="cap-title"
+                @click="handleCancel"
+                >{{ $t('common.button.cancel') }}</a-button
+              >
+            </template>
+          </EditPageFooter>
+        </template>
+      </a-alert>
       <div class="variables">
         <a-form
           ref="formref"
@@ -101,7 +126,6 @@
             ></a-textarea>
           </a-form-item>
         </a-form>
-        <a-divider style="margin: 5; border-radius: 1px" :size="4"></a-divider>
         <a-tabs
           v-if="formTabs.length > 1"
           class="page-line-tabs"
@@ -141,25 +165,6 @@
         >
         </formCreate>
       </div>
-
-      <EditPageFooter>
-        <template #save>
-          <a-button
-            type="primary"
-            class="cap-title cancel-btn"
-            @click="handleOk"
-            >{{ $t('common.button.confirm') }}</a-button
-          >
-        </template>
-        <template #cancel>
-          <a-button
-            :type="'outline'"
-            class="cap-title cancel-btn"
-            @click="handleCancel"
-            >{{ $t('common.button.cancel') }}</a-button
-          >
-        </template>
-      </EditPageFooter>
     </div>
   </div>
 </template>

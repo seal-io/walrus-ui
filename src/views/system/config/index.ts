@@ -30,6 +30,7 @@ export interface ChildrenItem {
 export interface DataListItem {
   parentId: string;
   parentValue?: ValueType;
+  name?: string;
   id: string;
   wrapId?: string;
   show?: (args: any) => boolean;
@@ -52,6 +53,7 @@ export interface SettingsItem {
   parentValue?: ValueType;
   id: string;
   value: ValueType;
+  name?: string;
   hidden?: boolean;
   label: string;
   desc?: string;
