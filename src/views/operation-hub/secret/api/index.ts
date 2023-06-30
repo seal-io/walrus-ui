@@ -12,7 +12,7 @@ export interface ResultType {
 }
 
 export const querySecrets = (params: QueryType) => {
-  return axios.get<ResultType>('/secrets', {
+  return axios.get<ResultType>('/variables', {
     params,
     paramsSerializer: (obj) => {
       return qs.stringify(obj);
@@ -20,7 +20,7 @@ export const querySecrets = (params: QueryType) => {
   });
 };
 export const queryItemSecret = (params: { id: string }) => {
-  return axios.get(`/secrets/${params.id}`, {
+  return axios.get(`/variables/${params.id}`, {
     params,
     paramsSerializer: (obj) => {
       return qs.stringify(obj);
@@ -28,12 +28,12 @@ export const queryItemSecret = (params: { id: string }) => {
   });
 };
 export const createSecret = (data: SecretFormData) => {
-  return axios.post('/secrets', data);
+  return axios.post('/variables', data);
 };
 export const updateSecret = (data: SecretFormData) => {
-  return axios.put(`/secrets/${data.id}`, data);
+  return axios.put(`/variables/${data.id}`, data);
 };
 
 export const deleteSecret = (data) => {
-  return axios.delete('/secrets', { data });
+  return axios.delete('/variables', { data });
 };

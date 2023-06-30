@@ -221,7 +221,7 @@ export const instanceUpgradeView = [
 
 export const serviceActions: MoreAction[] = [
   {
-    label: 'common.button.upgrade',
+    label: 'common.button.deploy',
     value: 'upgrade',
     icon: 'iconFont',
     handler: '',
