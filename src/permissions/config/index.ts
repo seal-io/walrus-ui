@@ -13,7 +13,7 @@ export enum Resources {
   Perspectives = 'perspectives',
   Projects = 'projects',
   Roles = 'roles',
-  Secrets = 'secrets',
+  Secrets = 'variables',
   Settings = 'settings',
   SubjectRoles = 'subjectRoles',
   Subjects = 'subjects',

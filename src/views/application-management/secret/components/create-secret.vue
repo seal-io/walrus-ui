@@ -7,7 +7,7 @@
     :ok-text="$t('common.button.save')"
     :visible="show"
     :mask-closable="false"
-    :body-style="{ 'max-height': '400px', 'overflow': 'auto' }"
+    :body-style="{ 'max-height': '450px', 'overflow': 'auto' }"
     modal-class="project-modal"
     :title="title"
     @cancel="handleCancel"
@@ -41,7 +41,7 @@
           </template>
         </a-form-item>
         <a-form-item
-          :label="$t('applications.secret.form.name')"
+          :label="$t('applications.applications.secret.value')"
           field="value"
           validate-trigger="change"
           :rules="[
@@ -54,17 +54,26 @@
             :auto-size="{ minRows: 4, maxRows: 6 }"
           ></a-textarea>
         </a-form-item>
-        <!-- <a-form-item>
-          <dl class="tips-wrap">
-            <dt style="float: left">
-              <icon-info-circle-fill style="color: rgb(var(--arcoblue-6))" />
-            </dt>
-            <dd
-              class="content"
-              v-html="$t('applications.secret.form.tips')"
-            ></dd>
-          </dl>
-        </a-form-item> -->
+        <a-form-item
+          :label="$t('common.table.description')"
+          field="description"
+          validate-trigger="change"
+        >
+          <a-textarea
+            v-model="formData.description"
+            :max-length="100"
+            show-word-limit
+            style="width: 100%"
+            :auto-size="{ minRows: 4, maxRows: 6 }"
+          ></a-textarea>
+        </a-form-item>
+        <a-form-item
+          :label="$t('common.table.sensitive')"
+          field="sensitive"
+          validate-trigger="change"
+        >
+          <a-checkbox v-model="formData.sensitive"></a-checkbox>
+        </a-form-item>
       </a-form>
     </a-spin>
     <template #footer>
@@ -93,7 +102,7 @@
 
 <script lang="ts" setup>
   import { ref, reactive, PropType } from 'vue';
-  import { reduce, omit, keys, get, pickBy, omitBy } from 'lodash';
+  import _ from 'lodash';
   import useCallCommon from '@/hooks/use-call-common';
   import EditPageFooter from '@/components/edit-page-footer/index.vue';
   import { validateSecretNameRegx } from '@/views/config';
@@ -106,12 +115,6 @@
       type: Boolean,
       default() {
         return false;
-      }
-    },
-    projectList: {
-      type: Array as PropType<{ label: string; value: string }[]>,
-      default() {
-        return [];
       }
     },
     title: {
@@ -132,7 +135,13 @@
         return 'create';
       }
     },
-    projectID: {
+    project: {
+      type: String,
+      default() {
+        return '';
+      }
+    },
+    environment: {
       type: String,
       default() {
         return '';
@@ -146,6 +155,9 @@
   const formData = ref<SecretFormData>({
     name: '',
     value: '',
+    description: '',
+    environment: { id: '' },
+    sensitive: false,
     project: {
       id: ''
     }
@@ -159,22 +171,18 @@
     if (!res) {
       try {
         submitLoading.value = true;
-        // TODO
-        formData.value.project.id = props.projectID;
-        const params: any = {
-          ...omitBy(formData.value, (val, key) => {
-            return key === 'project' && !get(formData.value, `${key}.id`);
-          })
+        const params = {
+          ..._.pickBy(formData.value, (v) => !!v)
         };
         if (props.action === 'create') {
           await createSecret({
             data: params,
-            query: { projectID: props.projectID }
+            query: { projectID: formData.value.project?.id }
           });
         } else {
           await updateSecret({
             data: params,
-            query: { projectID: props.projectID }
+            query: { projectID: formData.value.project?.id }
           });
         }
         setTimeout(() => {
@@ -193,13 +201,13 @@
       formData.value = {
         name: '',
         value: '',
-        project: {
-          id: ''
-        }
+        description: '',
+        sensitive: false,
+        project: props.project ? { id: props.project } : null,
+        environment: props.environment ? { id: props.environment } : null
       };
     } else {
       formData.value = props.info;
-      formData.value.project.id = formData.value.project.id || 0;
     }
   };
   const handleBeforeClose = () => {

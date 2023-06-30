@@ -5,11 +5,12 @@ export interface SecretRow {
 }
 export interface SecretFormData {
   name: string;
+  description: string;
   value: string;
+  environment: any;
+  project: any;
+  sensitive: boolean;
   id?: string;
-  project: {
-    id: string | number;
-  };
 }
 
 export interface Variable {

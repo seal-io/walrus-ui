@@ -338,7 +338,7 @@ export const queryProjectSecrets = (params) => {
 };
 
 export const querySecrets = (params) => {
-  return axios.get(`/secrets`, {
+  return axios.get(`/variables`, {
     params: {
       ...params,
       ...getPermissionRouteParams()

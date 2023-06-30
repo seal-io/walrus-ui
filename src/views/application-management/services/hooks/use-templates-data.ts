@@ -17,14 +17,14 @@ import {
 export default function useTemplatesData() {
   interface HintKey {
     service: any;
-    secret: any;
+    var: any;
   }
   const { route } = useCallCommon();
   const templateList = ref<TemplateRowData[]>([]);
   const allTemplateVersions = ref<TemplateVersionData[]>([]);
   const completeData = ref<Partial<HintKey>>({
     service: null,
-    secret: null
+    var: null
   });
   const variableList = ref<any[]>([]);
   const serviceDataList = ref<any[]>([]);
@@ -82,7 +82,9 @@ export default function useTemplatesData() {
       const params = {
         page: -1,
         projectID: route.params.projectId as string,
-        withGlobal: true
+        environmentID: route.params.environmentId as string,
+        withGlobal: true,
+        withProject: true
       };
       const { data } = await querySecrets(params);
       variableList.value = data.items || [];
@@ -125,6 +127,11 @@ export default function useTemplatesData() {
       },
       {}
     );
+    // const vars = _.map(variableList.value, (item) => {
+    //   return {
+    //     label: item
+    //   };
+    // });
     return vars;
   };
   const setServiceCompleteData = () => {
@@ -160,7 +167,7 @@ export default function useTemplatesData() {
   };
   const updateVariablesCompleteData = () => {
     const variables = setVariablesCompleteData();
-    completeData.value.secret = { ...variables };
+    completeData.value.var = { ...variables };
   };
   const setCompleteData = () => {
     updateServiceCompleteData();
