@@ -201,8 +201,8 @@
 <script lang="ts" setup>
   import { Resources, Actions } from '@/permissions/config';
   import { useUserStore } from '@/store';
-  import { isArray, map, each, isObject, keys } from 'lodash';
-  import { ref, PropType, watch } from 'vue';
+  import _, { isArray, map, each, isObject, keys } from 'lodash';
+  import { ref, PropType, watch, nextTick } from 'vue';
   import { useRouter } from 'vue-router';
   import { Message } from '@arco-design/web-vue';
   import { useI18n } from 'vue-i18n';
@@ -295,7 +295,6 @@
         }
       });
     }
-    console.log('formData11==', formData.value);
   };
   // check those fields that must has Id attribute
   const showId = (item) => {
@@ -370,13 +369,25 @@
   };
   const handleEditSubGroup = (item) => {
     item.isEditable = true;
-    console.log('group:', item);
+    const subGroup = item.subGroup ?? [];
+    nextTick(() => {
+      _.each(subGroup, (subItem) => {
+        if (subItem?.sensitive && subItem?.configured) {
+          formData.value[subItem.id] = '';
+        }
+      });
+    });
   };
   const handleEditCancel = (item) => {
     item.isEditable = false;
+    const subGroup = item.subGroup ?? [];
+    _.each(subGroup, (subItem) => {
+      if (subItem.sensitive && subItem.configured) {
+        formData.value[subItem.id] = '********';
+      }
+    });
   };
   const handleSaveSubGroup = async (item) => {
-    console.log('formData:', item, formData.value, rawDataList);
     handleUpdate(item);
   };
   watch(

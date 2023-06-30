@@ -21,7 +21,7 @@
 </template>
 
 <script lang="ts" setup>
-  import { cloneDeep, isArray, each, isObject, map } from 'lodash';
+  import _, { cloneDeep, each, map } from 'lodash';
   import { onMounted, ref, computed, reactive } from 'vue';
   import { useUserStore } from '@/store';
   import { useRoute } from 'vue-router';
@@ -41,7 +41,6 @@
   activeKey.value = (route.query?.tab || '0') as string;
 
   const setSourceList = () => {
-    console.log('settingFormData===', settingFormData.value);
     // set value and property
     sourceList.value = sourceList.value.map((item) => {
       if (item.type !== 'layout') {
@@ -57,7 +56,6 @@
       if (item.dataList && item.dataList.length) {
         item.dataList = item.dataList.map((sItem) => {
           let value: any = null;
-          const subGroupValue = {};
           if (sItem?.childProperties?.length) {
             value = {};
             each(sItem.childProperties, (child) => {
@@ -72,7 +70,12 @@
               // value[child.id] = settingFormData.value[child.id]['value'];
               return {
                 ...child,
-                ...settingFormData.value[child.id]
+                ...settingFormData.value[child.id],
+                value:
+                  _.get(settingFormData.value, `${child.id}.sensitive`) &&
+                  _.get(settingFormData.value, `${child.id}.configured`)
+                    ? '********'
+                    : _.get(settingFormData.value, `${child.id}.value`)
               };
             });
           } else {
@@ -82,14 +85,16 @@
           }
           sItem = {
             ...sItem,
-            ...(settingFormData.value[sItem.id] || {}),
+            ..._.get(settingFormData.value, sItem.id),
             value
           };
           return sItem;
         });
+
         const list = cloneDeep(item.dataList);
         item.dataList = list.filter((o) => !o.hidden);
       }
+
       return {
         ...item
       };
@@ -100,13 +105,12 @@
     sourceList.value = sList.filter((item) => {
       return !item.hidden;
     });
-    console.log('sourceList:', settingFormData.value, sourceList.value);
   };
   const fetchData = async () => {
     try {
       const data = await userStore.getUserSetting();
-      console.log('data:', data);
       const items = data.items || [];
+      // overwrite the id value with name
       settingFormData.value = items.reduce((obj, item) => {
         obj[item.name] = {
           ...item,
@@ -121,7 +125,6 @@
     }
   };
   const handleSave = async () => {
-    console.log('save');
     await fetchData();
   };
   onMounted(() => {

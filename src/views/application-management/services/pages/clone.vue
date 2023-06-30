@@ -7,8 +7,14 @@
         @change="handleSelectChange"
       ></Breadcrumb>
     </BreadWrapper>
+
     <ComCard top-gap>
-      <a-form ref="formref" :model="formData" auto-label-width>
+      <a-form
+        ref="formref"
+        :model="formData"
+        auto-label-width
+        layout="vertical"
+      >
         <a-form-item
           :label="$t('applications.environment.clone.target')"
           field="environmentIDs"
@@ -22,7 +28,7 @@
         >
           <a-select
             v-model="formData.environmentIDs"
-            style="width: 456px"
+            style="width: 396px"
             multiple
             :max-tag-count="2"
             allow-search
