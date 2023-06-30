@@ -202,6 +202,7 @@
   import { Resources, Actions } from '@/permissions/config';
   import { useUserStore } from '@/store';
   import _, { isArray, map, each, isObject, keys } from 'lodash';
+  import { deleteModal } from '@/utils/monitor';
   import { ref, PropType, watch, nextTick } from 'vue';
   import { useRouter } from 'vue-router';
   import { Message } from '@arco-design/web-vue';
@@ -388,7 +389,24 @@
     });
   };
   const handleSaveSubGroup = async (item) => {
-    handleUpdate(item);
+    const clearList = _.filter(item.subGroup, (subItem) => {
+      return _.get(subItem, 'configured') && !_.get(formData.value, subItem.id);
+    });
+    if (clearList.length) {
+      const tips = _.map(clearList, (o) => {
+        return `${t(o.label)}\n`;
+      });
+      deleteModal({
+        title: 'account.settings.clear.tips',
+        okText: 'common.button.save',
+        content: _.join(tips, ''),
+        onOk: () => {
+          handleUpdate(item);
+        }
+      });
+    } else {
+      handleUpdate(item);
+    }
   };
   watch(
     () => props.dataInfo,

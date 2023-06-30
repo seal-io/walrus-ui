@@ -57,14 +57,14 @@ export default {
           parentId: '',
           component: {
             type: 'password',
-            required: true,
-            validator(val, callback) {
-              if (val) {
-                callback();
-              } else {
-                callback(i18n.global.t('system.setting.rule.openai'));
-              }
-            }
+            required: false
+            // validator(val, callback) {
+            //   if (val) {
+            //     callback();
+            //   } else {
+            //     callback(i18n.global.t('system.setting.rule.openai'));
+            //   }
+            // }
           },
           value: '',
           type: 'string'
