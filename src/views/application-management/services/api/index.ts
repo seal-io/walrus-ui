@@ -325,18 +325,6 @@ export const queryInstanceEndpoints = (
   );
 };
 
-export const queryProjectSecrets = (params) => {
-  return axios.get(`/projects/${params.projectID}/secrets`, {
-    params: {
-      ...params,
-      ...getPermissionRouteParams()
-    },
-    paramsSerializer: (obj) => {
-      return qs.stringify(obj);
-    }
-  });
-};
-
 export const querySecrets = (params) => {
   return axios.get(`/variables`, {
     params: {
