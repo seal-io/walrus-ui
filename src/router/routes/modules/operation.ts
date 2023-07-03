@@ -1,6 +1,6 @@
 import connectorRoutes from '@/views/operation-hub/connectors/routes';
 import templateRoutes from '@/views/operation-hub/templates/routes';
-import secretRoutes from '@/views/operation-hub/secret/routes';
+import secretRoutes from '@/views/operation-hub/variables/routes';
 import operationRoutes from '@/views/operation-hub/routes';
 import OPERATIONHUB from '../../config/operation-hub';
 

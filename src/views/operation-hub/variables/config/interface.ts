@@ -1,9 +1,9 @@
-export interface SecretRow {
+export interface VariableRow {
   id: string;
   name: string;
   createTime: string;
 }
-export interface SecretFormData {
+export interface VariableFormData {
   name: string;
   value: string;
   id?: string;

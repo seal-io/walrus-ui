@@ -11,7 +11,7 @@ import {
 import useCallCommon from '@/hooks/use-call-common';
 import {
   queryServices,
-  querySecrets
+  queryVariables
 } from '@/views/application-management/services/api';
 
 export default function useTemplatesData() {
@@ -44,9 +44,9 @@ export default function useTemplatesData() {
   };
 
   // apply for edit service config
-  const getTemplatesVersions = async (templateID) => {
-    // templateID is a array only on create  life cycle
-    const templateIDs = _.uniq(_.concat(templateID || []));
+  const getTemplatesVersions = async (templateIDList) => {
+    // templateIDList is a array only on create  life cycle
+    const templateIDs = _.uniq(_.concat(templateIDList || []));
     if (
       !templateIDs.length ||
       _.every(templateIDs, (templateID) =>
@@ -60,11 +60,6 @@ export default function useTemplatesData() {
 
     try {
       const params = {
-        // templateID: _.uniq(
-        //   _.map(templateList.value, (item) => {
-        //     return item.id;
-        //   })
-        // ),
         templateID: templateIDs,
         page: -1
       };
@@ -86,7 +81,7 @@ export default function useTemplatesData() {
         withGlobal: true,
         withProject: true
       };
-      const { data } = await querySecrets(params);
+      const { data } = await queryVariables(params);
       variableList.value = data.items || [];
     } catch (error) {
       variableList.value = [];
@@ -127,11 +122,6 @@ export default function useTemplatesData() {
       },
       {}
     );
-    // const vars = _.map(variableList.value, (item) => {
-    //   return {
-    //     label: item
-    //   };
-    // });
     return vars;
   };
   const setServiceCompleteData = () => {

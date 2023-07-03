@@ -81,7 +81,7 @@
   import ServiceList from '@/views/application-management/services/pages/list.vue';
   import useProjectData from '@/views/application-management/projects/hooks/use-project-breadcrumb-data';
   import useBasicInfoData from '@/views/application-management/projects/hooks/use-basicInfo-data';
-  import VariableList from '@/views/application-management/secret/components/table-list.vue';
+  import VariableList from '@/views/application-management/variables/components/table-list.vue';
   import { basicInfoConfig } from '../config';
   import { queryItemEnvironments } from '../api';
   import environmentGraph from '../components/environment-graph.vue';

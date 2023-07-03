@@ -325,7 +325,7 @@ export const queryInstanceEndpoints = (
   );
 };
 
-export const querySecrets = (params) => {
+export const queryVariables = (params) => {
   return axios.get(`/variables`, {
     params: {
       ...params,
