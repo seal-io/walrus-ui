@@ -76,9 +76,9 @@ export const setInstanceStatus = (status) => {
 };
 
 export const websocketEventType = {
-  create: 1,
-  update: 2,
-  delete: 3
+  CREATE: 1,
+  UPDATE: 2,
+  DELETE: 3
 };
 export const setDurationValue = (val) => {
   if (!val) return '-';
@@ -273,25 +273,25 @@ export const serviceActions: MoreAction[] = [
     props: {
       type: 'icon-rollback-copy'
     }
-  },
-  {
-    label: 'common.button.delete',
-    value: 'delete',
-    icon: 'icon-delete',
-    handler: '',
-    status: 'danger',
-    disabled(currentInfo) {
-      return (
-        get(currentInfo, 'status.summaryStatus') === AppInstanceStatus.Deleting
-      );
-    },
-    filterFun(currentInfo) {
-      return userStore.hasProjectResourceActions({
-        resource: Resources.Services,
-        projectID: get(currentInfo, 'project.id'),
-        actions: [Actions.DELETE]
-      });
-    }
   }
+  // {
+  //   label: 'common.button.delete',
+  //   value: 'delete',
+  //   icon: 'icon-delete',
+  //   handler: '',
+  //   status: 'danger',
+  //   disabled(currentInfo) {
+  //     return (
+  //       get(currentInfo, 'status.summaryStatus') === AppInstanceStatus.Deleting
+  //     );
+  //   },
+  //   filterFun(currentInfo) {
+  //     return userStore.hasProjectResourceActions({
+  //       resource: Resources.Services,
+  //       projectID: get(currentInfo, 'project.id'),
+  //       actions: [Actions.DELETE]
+  //     });
+  //   }
+  // }
 ];
 export default {};

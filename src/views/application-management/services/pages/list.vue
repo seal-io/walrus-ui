@@ -51,7 +51,7 @@
           @click="handleCloneService"
           >{{ $t('applications.service.clone') }}</a-button
         >
-        <!-- <a-button
+        <a-button
           v-if="
             userStore.hasProjectResourceActions({
               projectID: queryParams.projectID,
@@ -64,7 +64,7 @@
           :disabled="!selectedKeys.length"
           @click="handleDelete({}, 'button')"
           >{{ $t('common.button.delete') }}</a-button
-        > -->
+        >
       </template>
     </FilterBox>
     <a-table
@@ -370,9 +370,7 @@
     try {
       loading.value = true;
       const ids = _.map(selectedKeys.value, (val) => {
-        return {
-          id: val
-        };
+        return val;
       });
       await deleteService({
         data: ids,
@@ -439,13 +437,13 @@
     );
     const ids = data?.ids || [];
     // CREATE
-    if (data?.type === websocketEventType.create) {
+    if (data?.type === websocketEventType.CREATE) {
       dataList.value = _.concat(collections, dataList.value);
       dataList.value = _.slice(dataList.value, 0, 10);
       return;
     }
     // DELETE
-    if (data?.type === websocketEventType.delete) {
+    if (data?.type === websocketEventType.DELETE) {
       dataList.value = _.filter(dataList.value, (item) => {
         return !_.find(ids, (id) => id === item.id);
       });

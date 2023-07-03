@@ -172,7 +172,8 @@
     itemTypes: ['node']
   });
   const fitView = () => {
-    graph.fitCenter();
+    // graph.zoomTo(1);
+    graph.fitView();
   };
   const handleWindowResize = () => {
     if (!graph || graph.get('destroyed')) return;
@@ -456,7 +457,6 @@
         ranksep: 40,
         onLayoutEnd() {
           loading.value = false;
-
           nextTick(() => {
             graph?.fitCenter?.(animateFlag.value);
             animateFlag.value = false;

@@ -26,8 +26,6 @@
   import usePermissionParams from '@/views/application-management/hooks/use-permission-params';
   import { ServiceResource, Cascader } from '../../config/interface';
   import { generateResourcesKeys, getDefaultValue } from '../../config/utils';
-  import { queryApplicationResource } from '../../api';
-  import testData from '../../config/data';
 
   const props = defineProps({
     resourceList: {

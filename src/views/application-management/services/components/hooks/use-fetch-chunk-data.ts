@@ -7,7 +7,7 @@ import {
 import usePermissionParams from '@/views/application-management/hooks/use-permission-params';
 import { ServiceResource } from '../../config/interface';
 import { websocketEventType } from '../../config';
-import { queryApplicationResource } from '../../api';
+import { queryServiceResource } from '../../api';
 import { updateResourceEmitter } from '../../hooks/update-resource-listener';
 
 export default function useFetchResource() {
@@ -28,21 +28,69 @@ export default function useFetchResource() {
   const setChildDataProperties = (parent) => {
     setParentDataProperties(parent);
     const children = parent.components || [];
+    if (!children.length) return;
     if (children.length) {
       _.each(children, (data) => {
         data.isLeaf = true;
         data.isChilren = true;
         data.parentId = parent.id;
         data.key = parent.id;
+        setChildDataProperties(data);
       });
     }
     parent.children = children;
   };
 
   const setDataList = (list) => {
-    return _.map(list, (s) => {
+    return _.each(list, (s) => {
       setChildDataProperties(s);
-      return s;
+      // return s;
+    });
+  };
+
+  const deleteChildResource = (childId, list: ServiceResource[]) => {
+    if (!list || !list.length) return;
+    _.each(list, (sItem) => {
+      const deleteIndex = _.findIndex(
+        sItem.components || [],
+        (item) => item.id === childId
+      );
+      if (deleteIndex > -1) {
+        sItem.components.splice(deleteIndex, 1);
+      } else {
+        deleteChildResource(childId, sItem.components || []);
+      }
+    });
+  };
+
+  const createChildResource = (child, list: ServiceResource[]) => {
+    if (!list || !list.length) return;
+    _.each(list, (pItem) => {
+      if (child?.composition?.id === pItem.id) {
+        pItem.components = _.concat(_.cloneDeep(child), pItem.components || []);
+      } else {
+        createChildResource(child, pItem.components || []);
+      }
+    });
+  };
+
+  const updateResource = (child, list: ServiceResource[]) => {
+    if (!list || !list.length) return;
+    _.each(list, (pItem) => {
+      if (child.composition.id === pItem.id) {
+        const updateIndex = _.findIndex(
+          pItem.components,
+          (cItem) => cItem.id === child.id
+        );
+        if (updateIndex > -1) {
+          const updateItem = _.cloneDeep(child);
+          pItem.components[updateIndex] = updateItem;
+        } else {
+          pItem.components = _.concat(_.cloneDeep(child), pItem.components);
+        }
+      } else {
+        updateResource(child, pItem.components || []);
+      }
     });
   };
   const updateDataList = (data) => {
@@ -70,7 +118,7 @@ export default function useFetchResource() {
     let ids = data?.ids || [];
 
     // DELETE
-    if (data?.type === websocketEventType.delete) {
+    if (data?.type === websocketEventType.DELETE) {
       // delete parent resource
       ids = _.filter(ids, (childId) => {
         const updateIndex = _.findIndex(
@@ -85,35 +133,20 @@ export default function useFetchResource() {
 
       //  delete sub resource
       _.each(ids, (childId) => {
-        _.each(dataList.value, (sItem) => {
-          const deleteIndex = _.findIndex(
-            sItem.components || [],
-            (item) => item.id === childId
-          );
-          if (deleteIndex > -1) {
-            sItem.components.splice(deleteIndex, 1);
-          }
-        });
+        deleteChildResource(childId, dataList.value);
       });
       dataList.value = setDataList(dataList.value);
       return;
     }
 
     // CREATE
-    if (data?.type === websocketEventType.create) {
+    if (data?.type === websocketEventType.CREATE) {
       // parent resource
       dataList.value = _.concat(_.cloneDeep(parentResources), dataList.value);
       dataList.value = _.uniqBy(dataList.value, 'id');
       // sub resource
       _.each(childResources, (item) => {
-        _.each(dataList.value, (pItem) => {
-          if (item?.composition?.id === pItem.id) {
-            pItem.components = _.concat(
-              _.cloneDeep(item),
-              pItem.components || []
-            );
-          }
-        });
+        createChildResource(item, dataList.value);
       });
       dataList.value = setDataList(dataList.value);
       return;
@@ -134,20 +167,7 @@ export default function useFetchResource() {
     });
 
     _.each(childResources, (item) => {
-      _.each(dataList.value, (pItem) => {
-        if (item.composition.id === pItem.id) {
-          const updateIndex = _.findIndex(
-            pItem.components,
-            (cItem) => cItem.id === item.id
-          );
-          if (updateIndex > -1) {
-            const updateItem = _.cloneDeep(item);
-            pItem.components[updateIndex] = updateItem;
-          } else {
-            pItem.components = _.concat(_.cloneDeep(item), pItem.components);
-          }
-        }
-      });
+      updateResource(item, dataList.value);
     });
     dataList.value = setDataList(dataList.value);
   };
@@ -162,7 +182,7 @@ export default function useFetchResource() {
         page: -1,
         serviceID: serviceId.value
       };
-      const { data } = await queryApplicationResource(params, fetchToken.token);
+      const { data } = await queryServiceResource(params, fetchToken.token);
 
       let list: any = _.filter(
         data.items || [],
@@ -193,10 +213,7 @@ export default function useFetchResource() {
           page: -1,
           serviceID: serviceId.value
         };
-        const { data } = await queryApplicationResource(
-          params,
-          fetchToken.token
-        );
+        const { data } = await queryServiceResource(params, fetchToken.token);
         let list: any = _.filter(
           data?.items || [],
           (item) => item?.instance?.id === serviceId.value

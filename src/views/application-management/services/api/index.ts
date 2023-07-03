@@ -45,7 +45,9 @@ export const cloneServices = (data: {
 };
 export const deleteService = ({ data, projectID, force }) => {
   return axios.delete(`/services?${qs.stringify({ projectID, force })}`, {
-    data
+    data: {
+      ids: data
+    }
   });
 };
 export const deployApplication = (data) => {
@@ -255,7 +257,7 @@ export const rollbackApplication = (data: { id: string }) => {
   );
 };
 // ===========resource==========
-export const queryApplicationResource = (
+export const queryServiceResource = (
   params: ApplicationRevisionParams,
   token?
 ) => {
@@ -271,7 +273,7 @@ export const queryApplicationResource = (
   });
 };
 
-export const queryApplicationResourceKeys = (params: { id: string }) => {
+export const queryServiceResourceKeys = (params: { id: string }) => {
   return axios.get(`/service-resources/${params.id}/keys`, {
     params: {
       ...params,
@@ -283,7 +285,7 @@ export const queryApplicationResourceKeys = (params: { id: string }) => {
   });
 };
 
-export const queryApplicationResourceLogs = (params: { id: string }) => {
+export const queryServiceResourceLogs = (params: { id: string }) => {
   return axios.get(`/service-resources/${params.id}/log`, {
     params: {
       ...params,
@@ -294,7 +296,7 @@ export const queryApplicationResourceLogs = (params: { id: string }) => {
     }
   });
 };
-export const queryApplicationResourceExec = (params: { id: string }) => {
+export const queryServiceResourceExec = (params: { id: string }) => {
   return axios.get(`/service-resources/${params.id}/exec`, {
     params: {
       ...params,

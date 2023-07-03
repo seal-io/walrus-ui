@@ -213,8 +213,8 @@
       },
       template(data: resultItem) {
         return data.description
-          ? `<span>${data.label}<span class="desc">(${data.description})</span></span>`
-          : `<span>${data.label}</span>`;
+          ? `<span class="box"><span>${data.label}<span class="desc">(${data.description})</span></span></span>`
+          : `<span class="box"><span>${data.label}</span></span>`;
       },
       // replace the text match result
       replace(result: resultItem) {
@@ -281,7 +281,6 @@
     emits('input', expression.value);
   };
   const handleInput = (e) => {
-    // console.log('input==', expression.value, e)
     inputFlag.value = true;
     isNeedHide();
     clearTimeout(timer);
@@ -336,9 +335,6 @@
     editorCtx.value = '';
     emits('update:modelValue', expression.value);
     input.value.dispatchEvent(new CustomEvent('change'));
-    // setTimeout(() => {
-    //   runChange()
-    // },200)
   };
   watch(
     () => props.modelValue,
@@ -349,18 +345,7 @@
       immediate: true
     }
   );
-  // watch(
-  //   () => props.editorId,
-  //   () => {
-  //     expression.value = props.modelValue;
-  //     nextTick(() => {
-  //       initEditor();
-  //     });
-  //   },
-  //   {
-  //     immediate: true
-  //   }
-  // );
+
   onMounted(async () => {
     expression.value = props.modelValue;
     nextTick(() => {
@@ -449,6 +434,10 @@
 
     .textcomplete-footer {
       display: none;
+    }
+
+    .box {
+      position: relative;
     }
 
     .complete-item-active {

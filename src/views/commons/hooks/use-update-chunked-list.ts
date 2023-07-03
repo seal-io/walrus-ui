@@ -28,12 +28,12 @@ export function useUpdateChunkedList(
     }
     const ids = data?.ids || [];
     // CREATE
-    if (data?.type === websocketEventType.create) {
+    if (data?.type === websocketEventType.CREATE) {
       dataList.value = _.concat(collections, dataList.value);
       return;
     }
     // DELETE
-    if (data?.type === websocketEventType.delete) {
+    if (data?.type === websocketEventType.DELETE) {
       dataList.value = _.filter(dataList.value, (item) => {
         return !_.find(ids, (id) => id === item.id);
       });

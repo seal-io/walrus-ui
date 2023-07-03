@@ -402,7 +402,7 @@
     }, 100);
   };
   const updateRevisions = (data) => {
-    if (data?.type !== websocketEventType.update) return;
+    if (data?.type !== websocketEventType.UPDATE) return;
     const collections = filter(
       data.collection || [],
       (sItem) => sItem?.service?.id === serviceId.value
