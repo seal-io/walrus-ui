@@ -25,7 +25,6 @@
   } from 'vue';
   import xTerminal from '@/components/x-terminal/index.vue';
   import { useRoute } from 'vue-router';
-  import { queryApplicationResource } from '../../../api';
   import { Cascader, ServiceResource } from '../../../config/interface';
   import {
     generateResourcesKeys,

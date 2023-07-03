@@ -259,7 +259,7 @@
     const ids = data.ids || [];
     // delete
     if (
-      data.type === websocketEventType.delete &&
+      data.type === websocketEventType.DELETE &&
       _.includes(ids, _.get(currentInfo.value, 'id'))
     ) {
       const list = _.filter(

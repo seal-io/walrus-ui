@@ -121,9 +121,9 @@ export const getStackLineData = ({
 };
 
 export const websocketEventType = {
-  create: 1,
-  update: 2,
-  delete: 3
+  CREATE: 1,
+  UPDATE: 2,
+  DELETE: 3
 };
 // project, appliation, instance, module
 export const validateAppNameRegx = /^[a-z]([a-z0-9-]*[a-z0-9])?$/;
