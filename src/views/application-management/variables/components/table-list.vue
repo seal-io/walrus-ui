@@ -224,7 +224,7 @@
         @page-size-change="handlePageSizeChange"
       />
     </div>
-    <createSecret
+    <createVariable
       v-model:show="showModal"
       :title="modalTitle"
       :action="action"
@@ -232,7 +232,7 @@
       :project="projectId"
       :environment="environmentId"
       @save="handleSaveItem"
-    ></createSecret>
+    ></createVariable>
   </comCard>
 </template>
 
@@ -248,9 +248,9 @@
   import useRowSelect from '@/hooks/use-row-select';
   import FilterBox from '@/components/filter-box/index.vue';
   import { UseSortDirection } from '@/utils/common';
-  import { SecretRow } from '../config/interface';
-  import { querySecrets, deleteSecret } from '../api';
-  import createSecret from './create-secret.vue';
+  import { VariableRow } from '../config/interface';
+  import { queryVariables, deleteVariable } from '../api';
+  import createVariable from './create-variable.vue';
 
   const scopeMap = {
     PROJECT: 'project',
@@ -309,7 +309,7 @@
     page: 1,
     perPage: 10
   });
-  const dataList = ref<SecretRow[]>([]);
+  const dataList = ref<VariableRow[]>([]);
 
   const modalTitle = computed(() => {
     if (action.value === 'create') {
@@ -347,7 +347,7 @@
         ..._.get(scopeParams, props.scope),
         sort: [sort.value]
       };
-      const { data } = await querySecrets(params);
+      const { data } = await queryVariables(params);
       dataList.value = _.map(data?.items || [], (item) => {
         return {
           ...item,
@@ -404,7 +404,7 @@
           id: val
         };
       });
-      await deleteSecret({
+      await deleteVariable({
         data: ids,
         query: {
           projectID: route.params.projectId as string

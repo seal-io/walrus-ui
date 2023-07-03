@@ -21,8 +21,8 @@
           <a-tab-pane key="templates" :title="$t('menu.operatorHub.module')">
             <Templates></Templates>
           </a-tab-pane>
-          <a-tab-pane key="secrets" :title="$t('menu.operatorHub.secret')">
-            <GlobalSecrets></GlobalSecrets>
+          <a-tab-pane key="variables" :title="$t('menu.operatorHub.secret')">
+            <GlobalVariables></GlobalVariables>
           </a-tab-pane>
           <a-tab-pane
             key="connectors"
@@ -42,7 +42,7 @@
   import HeaderInfo from '@/components/header-info/index.vue';
   import Connectors from '../connectors/components/table-list.vue';
   import Templates from '../templates/pages/list.vue';
-  import GlobalSecrets from '../secret/pages/list.vue';
+  import GlobalVariables from '../variables/pages/list.vue';
 
   const activeKey = ref('templates');
   const handleTabChange = () => {};

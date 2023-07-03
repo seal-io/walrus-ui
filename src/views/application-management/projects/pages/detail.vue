@@ -92,7 +92,7 @@
   import { useUserStore } from '@/store';
   import HeaderInfo from '@/components/header-info/index.vue';
   import EnviromentList from '@/views/application-management/environments/pages/list.vue';
-  import SecretList from '@/views/application-management/secret/pages/list.vue';
+  import SecretList from '@/views/application-management/variables/pages/list.vue';
   import basicInfo from '@/views/application-management/services/components/basic-info.vue';
   import ConnectorList from '@/views/operation-hub/connectors/components/table-list.vue';
   import useBasicInfoData from '../hooks/use-basicInfo-data';

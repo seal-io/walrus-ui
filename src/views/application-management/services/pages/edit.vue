@@ -262,7 +262,7 @@
     TemplateRowData,
     TemplateVersionData
   } from '@/views/operation-hub/templates/config/interface';
-  import VariableLit from '@/views/application-management/secret/components/table-list.vue';
+  import VariableLit from '@/views/application-management/variables/components/table-list.vue';
   import { validateAppNameRegx, PageAction } from '@/views/config';
   import { BreadcrumbOptions } from '@/views/config/interface';
   import { beforeLeaveCallback } from '@/hooks/save-before-leave';
