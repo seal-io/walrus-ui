@@ -25,7 +25,7 @@ export interface INode extends Node {
   comboId: string;
   providerType: string;
   stateIcon: object;
-  extensions: any;
+  extensions: object;
   loggableInfo: {
     loggable: boolean;
     data: object;

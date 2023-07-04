@@ -15,7 +15,7 @@
         </div>
       </a-grid-item>
     </a-grid>
-    <loggableModal
+    <!-- <loggableModal
       v-model:show="showLogModal"
       v-model:nodeInfo="resourceNodeInfo"
       :data-list="logDataList"
@@ -26,7 +26,15 @@
       v-model:nodeInfo="resourceNodeInfo"
       :data-list="termDataList"
     >
-    </terminalModal>
+    </terminalModal> -->
+
+    <resourceControl
+      v-model:visible="terminalShow"
+      v-model:tabs="drawerTabs"
+      :type="modalType"
+      @delete="handleTerminalDelete"
+    >
+    </resourceControl>
   </div>
 </template>
 
@@ -55,13 +63,12 @@
     defaultNode,
     defaultCombo
   } from '../config/common';
-  import { toolbar, createToolTip } from '../config/plugins';
+  import { createToolTip } from '../config/plugins';
   import { fittingString } from '../config/utils';
   import { statusMap, edgeType, nodeKindType } from '../config';
   import { ICombo, IEdge, INode } from '../config/interface';
   import { setInstanceStatus, Status } from '../../../../config';
   import {
-    generateResourcesKeys,
     getDefaultValue,
     getResourceId,
     getResourceKeyList
@@ -69,6 +76,8 @@
   import { ResourceKey } from '../../../../config/interface';
   import loggableModal from './loggable-modal.vue';
   import terminalModal from './terminal-modal.vue';
+  import resourceControl from '../../resource-control.vue';
+  import useResourceControl from '../../../hooks/use-resource-control';
 
   const props = defineProps({
     sourceData: {
@@ -87,6 +96,15 @@
       }
     }
   });
+
+  const {
+    modalType,
+    drawerTabs,
+    terminalShow,
+    handleViewLogs,
+    handleConnectTerminal,
+    handleTerminalDelete
+  } = useResourceControl();
   const emits = defineEmits(['nodeClick', 'canvasClick']);
   const showLogModal = ref(false);
   const showTermModal = ref(false);
@@ -103,18 +121,17 @@
   let graph: any = null;
   const width = ref(0);
   const height = ref(0);
+  const toolTipRef = ref<any>({});
 
   const contextMenu = new G6.Menu({
-    // trigger: 'click',
+    trigger: 'click',
     shouldBegin(e) {
-      const node = e?.item;
-      const model: INode = node?.getModel();
-      const logabble = model?.loggableInfo?.loggable;
-      const executable = model?.executableInfo?.executable;
-      if (!logabble && !executable) {
-        return false;
+      console.log('shouldBegin====', e);
+
+      if (_.get(e?.target, 'cfg.name') === 'more-button-icon') {
+        return true;
       }
-      return true;
+      return false;
     },
     getContent(evt) {
       const node = evt?.item;
@@ -134,12 +151,11 @@
       if (executable) {
         execHtml = `<li code="exec" class="iconfont icon-code">
       ${i18n.global.t('applications.instance.tab.term')}
-   
+
       </li>`;
       }
       return `
     <div id="contextMenu-wrapper">
-    <div class="res-name">${model?.name}</div>
     <ul >
       ${logHtml}${execHtml}
     </ul>
@@ -151,17 +167,27 @@
       const model = item.getModel();
       resourceNodeInfo.value = model;
       if (code === 'log') {
-        logDataList.value = model?.loggableInfo?.data;
-        setTimeout(() => {
-          showLogModal.value = true;
-        }, 100);
+        // logDataList.value = model?.loggableInfo?.data;
+        // setTimeout(() => {
+        //   showLogModal.value = true;
+        // }, 100);
+        handleViewLogs({
+          ...(_.get(model, 'extensions') || {}),
+          id: model.nodeId,
+          name: model.name
+        });
         return;
       }
       if (code === 'exec') {
-        termDataList.value = model?.executableInfo?.data;
-        setTimeout(() => {
-          showTermModal.value = true;
-        }, 100);
+        // termDataList.value = model?.executableInfo?.data;
+        // setTimeout(() => {
+        //   showTermModal.value = true;
+        // }, 100);
+        handleConnectTerminal({
+          ...(_.get(model, 'extensions') || {}),
+          id: model.nodeId,
+          name: model.name
+        });
       }
     },
     // offsetX and offsetY include the padding of the parent container
@@ -248,15 +274,12 @@
         'executable'
       );
 
-      // if (node.kind === nodeKindType.ServiceResource && hasParentNode(node)) {
-      //   node.visible = false;
-      // }
       const animate =
         setInstanceStatus(_.get(node, 'status')) === Status.Warning;
       node.resourceType =
         removeVersions(_.get(node, 'extensions.type')) || _.get(node, 'kind');
 
-      node.isCollapsed = false;
+      node.isCollapsed = true;
       node.hasComposition = hasCompositionNodes(node);
       node.providerType = _.get(_.split(node.resourceType, '_'), '0') || '';
       node.subType = _.get(node, 'data.type');
@@ -300,7 +323,6 @@
         style.lineDash = [5, 5];
       }
       if (o.edgeType === edgeType.Composition) {
-        // link.visible = false;
         style.endArrow = false;
         style.startArrow = {
           path: G6.Arrow.diamond(8, 10, 0),
@@ -330,7 +352,6 @@
     // setCombosList();
     setNodeList();
     setLinks();
-    console.log('nodeList====', nodeList);
   };
   const toggleAllNodeShow = (show) => {
     _.each(graph.getNodes(), (node) => {
@@ -404,6 +425,17 @@
   const initNodeEvent = () => {
     graph?.on('node:mouseenter', (e) => {
       graph.setItemState(e.item, 'hover', true);
+      if (e.target.cfg.name === 'more-button-icon') {
+        toolTipRef.value.hideTooltip();
+      }
+    });
+    graph?.on('node:mouseover', (e) => {
+      console.log('node:mouseover====', e);
+      if (e.target.cfg.name === 'more-button-icon') {
+        setTimeout(() => {
+          toolTipRef.value.hideTooltip();
+        });
+      }
     });
     graph?.on('node:mouseleave', (e) => {
       const node = e.item;
@@ -414,6 +446,11 @@
     //   const model = node.getModel();
     // });
     graph?.on('node:click', (e) => {
+      if (e.target.cfg.name === 'more-button-icon') {
+        toolTipRef.value.hideTooltip();
+        return;
+      }
+
       const node = e.item;
       const model = node.getModel();
       toggleNodeCollapse(node);
@@ -428,33 +465,14 @@
     graph.on('canvas:click', (ev) => {
       emits('canvasClick', ev);
     });
-    // graph.on('wheelzoom', (e) => {
-    //   e.stopPropagation();
-    //   const contextmenu = Array.from(
-    //     document.getElementsByClassName('g6-component-contextmenu')
-    //   );
-    //   contextmenu.forEach((menu) => {
-    //     if (menu && menu.style) {
-    //       menu.style.transform = `scale(${graph.getZoom()})`;
-    //     }
-    //   });
-    //   const tooltips = Array.from(
-    //     document.getElementsByClassName('g6-component-tooltip')
-    //   );
-    //   tooltips.forEach((item) => {
-    //     if (item && item.style) {
-    //       item.style.transform = `scale(${graph.getZoom()})`;
-    //     }
-    //   });
-    // });
   };
 
   const createGraph = () => {
     graph = new G6.Graph({
       // groupByTypes: true,
-      // renderer: 'svg',
+      // renderer: 'svg', // arrow style will be change
       container: 'graph-mount',
-      plugins: [contextMenu, createToolTip()],
+      plugins: [contextMenu, (toolTipRef.value = createToolTip())],
       width: width.value || 1400,
       height: height.value || 400,
       layout: {

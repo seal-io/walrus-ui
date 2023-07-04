@@ -4,6 +4,7 @@ import { IGroup, IShape } from '@antv/g-base';
 import insertCss from 'insert-css';
 import serviceImg from '@/assets/images/service.png';
 import compositionImg from '@/assets/images/graph_nodes.png';
+import moreButtonIcon from '@/assets/images/more.png';
 
 insertCss(`
   #contextMenu {
@@ -55,6 +56,7 @@ export const defineCustomNode = () => {
           );
         }
         (this as any).drawCompositionIcon(cfg, group);
+        (this as any).drawActionButton(cfg, group);
       },
       drawCompositionIcon(cfg: Node & NodeConfig, group: IGroup) {
         if (!cfg.hasComposition) return;
@@ -72,6 +74,29 @@ export const defineCustomNode = () => {
           },
           className: 'composition-icon',
           name: 'composition-icon',
+          draggable: true
+        });
+      },
+      drawActionButton(cfg: Node & NodeConfig, group: IGroup) {
+        if (
+          !_.get(cfg, 'loggableInfo.loggable') &&
+          !_.get(cfg, 'executableInfo?.executable')
+        )
+          return;
+        const { size, moreButtonIcon } = cfg;
+        const w: number = _.get(size, '0');
+        const h: number = _.get(size, '1');
+        const { width, height, img } = moreButtonIcon as any;
+        group['shapeMap']['more-button-icon'] = group.addShape('image', {
+          attrs: {
+            img,
+            x: w / 2 - 20,
+            y: -h / 2,
+            width,
+            height
+          },
+          className: 'more-button-icon',
+          name: 'more-button-icon',
           draggable: true
         });
       }
@@ -160,6 +185,11 @@ export const defaultNode = {
     height: 10,
     offset: -10,
     img: compositionImg
+  },
+  moreButtonIcon: {
+    width: 16,
+    height: 16,
+    img: moreButtonIcon
   }
 };
 export const defaultCombo = {

@@ -2,7 +2,7 @@
   <div class="tab-logs-wrap">
     <a-select
       v-model="logKey"
-      style="width: 300px"
+      style="width: 240px; margin-bottom: 10px"
       :options="dataList"
       @change="handleKeyChange"
     ></a-select>
