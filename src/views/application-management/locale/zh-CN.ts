@@ -141,6 +141,7 @@ export default {
   'applications.service.rollback.version.holder': '请选择版本',
   'applications.service.rollback.config.compare': '配置对比',
   'applications.service.clone': '克隆服务',
+  'applications.service.graph.menu': '右键菜单可执行',
   'applications.environment.clone': '克隆环境',
   'applications.environment.clone.target': '目标环境',
   'applications.environment.clone.env.rules': '目标环必选',

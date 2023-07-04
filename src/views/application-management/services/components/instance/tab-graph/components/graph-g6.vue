@@ -18,13 +18,13 @@
     <loggableModal
       v-model:show="showLogModal"
       v-model:nodeInfo="resourceNodeInfo"
-      :info="logInfo"
+      :data-list="logDataList"
     >
     </loggableModal>
     <terminalModal
       v-model:show="showTermModal"
       v-model:nodeInfo="resourceNodeInfo"
-      :info="termInfo"
+      :data-list="termDataList"
     >
     </terminalModal>
   </div>
@@ -63,8 +63,10 @@
   import {
     generateResourcesKeys,
     getDefaultValue,
-    getResourceId
+    getResourceId,
+    getResourceKeyList
   } from '../../../../config/utils';
+  import { ResourceKey } from '../../../../config/interface';
   import loggableModal from './loggable-modal.vue';
   import terminalModal from './terminal-modal.vue';
 
@@ -88,8 +90,8 @@
   const emits = defineEmits(['nodeClick', 'canvasClick']);
   const showLogModal = ref(false);
   const showTermModal = ref(false);
-  const logInfo = ref<{ key: string; id: string }>({ key: '', id: '' });
-  const termInfo = ref<{ key: string; id: string }>({ key: '', id: '' });
+  const logDataList = ref<ResourceKey[]>([]);
+  const termDataList = ref<ResourceKey[]>([]);
   const resourceNodeInfo = ref({});
   const graphMount = ref();
   const graphWrapper = ref();
@@ -132,7 +134,7 @@
       if (executable) {
         execHtml = `<li code="exec" class="iconfont icon-code">
       ${i18n.global.t('applications.instance.tab.term')}
-      </i>
+   
       </li>`;
       }
       return `
@@ -149,14 +151,14 @@
       const model = item.getModel();
       resourceNodeInfo.value = model;
       if (code === 'log') {
-        logInfo.value = model?.loggableInfo?.data;
+        logDataList.value = model?.loggableInfo?.data;
         setTimeout(() => {
           showLogModal.value = true;
         }, 100);
         return;
       }
       if (code === 'exec') {
-        termInfo.value = model?.executableInfo?.data;
+        termDataList.value = model?.executableInfo?.data;
         setTimeout(() => {
           showTermModal.value = true;
         }, 100);
@@ -173,7 +175,7 @@
   });
   const fitView = () => {
     // graph.zoomTo(1);
-    graph.fitView();
+    graph?.fitView();
   };
   const handleWindowResize = () => {
     if (!graph || graph.get('destroyed')) return;
@@ -237,8 +239,14 @@
     const { sourceData: data } = props;
     nodeList = _.map(data.nodes || [], (o) => {
       const node = _.cloneDeep(o);
-      const loggableList = generateResourcesKeys([node.data || {}], 'loggable');
-      const execList = generateResourcesKeys([node.data || {}], 'executable');
+      const loggableList = getResourceKeyList(
+        { ...node.extensions, id: node.nodeId },
+        'loggable'
+      );
+      const execList = getResourceKeyList(
+        { ...node.extensions, id: node.nodeId },
+        'executable'
+      );
 
       // if (node.kind === nodeKindType.ServiceResource && hasParentNode(node)) {
       //   node.visible = false;
@@ -256,11 +264,11 @@
 
       node.loggableInfo = {
         loggable: !!loggableList.length,
-        data: getLoggableExcutableInfo(loggableList)
+        data: loggableList
       };
       node.executableInfo = {
         executable: !!execList.length,
-        data: getLoggableExcutableInfo(execList)
+        data: loggableList
       };
 
       node.label = fittingString(node.name, 120);
@@ -322,6 +330,7 @@
     // setCombosList();
     setNodeList();
     setLinks();
+    console.log('nodeList====', nodeList);
   };
   const toggleAllNodeShow = (show) => {
     _.each(graph.getNodes(), (node) => {

@@ -4,6 +4,7 @@ import { ServiceResource } from '@/views/application-management/services/config/
 export interface INode extends Node {
   order?: number;
   id: string;
+  nodeId: string;
   name: string;
   resourceType: string;
   subType: string;
@@ -24,6 +25,7 @@ export interface INode extends Node {
   comboId: string;
   providerType: string;
   stateIcon: object;
+  extensions: any;
   loggableInfo: {
     loggable: boolean;
     data: object;

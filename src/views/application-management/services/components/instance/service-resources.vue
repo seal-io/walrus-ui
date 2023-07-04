@@ -90,6 +90,37 @@
             ></StatusLabel>
           </template>
         </a-table-column>
+        <a-table-column align="center" :title="$t('common.table.operation')">
+          <template #cell="{ record }">
+            <a-space :size="20">
+              <a-tooltip
+                v-if="resourceLoggable(record)"
+                :content="$t('common.button.logs')"
+              >
+                <a-link
+                  type="text"
+                  size="small"
+                  @click="handleViewLogs(record)"
+                >
+                  <icon-font type="icon-rizhi" style="font-size: 16px" />
+                </a-link>
+              </a-tooltip>
+              <a-tooltip
+                v-if="resourceExecutable(record)"
+                :content="$t('applications.instance.tab.term')"
+              >
+                <a-link
+                  type="text"
+                  size="small"
+                  @click="handleConnectTerminal(record)"
+                >
+                  <!-- <i class="size-16 iconfont icon-code"></i> -->
+                  <icon-code-square class="size-16" />
+                </a-link>
+              </a-tooltip>
+            </a-space>
+          </template>
+        </a-table-column>
       </template>
     </a-table>
   </div>
@@ -102,6 +133,11 @@
   import StatusLabel from '@/views/operation-hub/connectors/components/status-label.vue';
   import FilterBox from '@/components/filter-box/index.vue';
   import { ServiceResource } from '../../config/interface';
+  import {
+    generateResourcesKeys,
+    getDefaultValue,
+    getResourceId
+  } from '../../config/utils';
 
   const props = defineProps({
     resourceList: {
@@ -134,6 +170,7 @@
     const result = _.filter(list, (cItem) => {
       return _.includes(cItem.name, query.value) || cItem?.children?.length;
     });
+
     return result as ServiceResource[];
   });
   const setExpandedKeys = () => {
@@ -156,6 +193,18 @@
   const handleExpandedChange = (keys) => {
     expandedKeys.value = keys;
   };
+
+  const resourceLoggable = (row) => {
+    const loggableList = generateResourcesKeys([{ ...row }], 'loggable');
+
+    return !!loggableList.length;
+  };
+  const resourceExecutable = (row) => {
+    const execList = generateResourcesKeys([{ ...row }], 'executable');
+    return !!execList.length;
+  };
+  const handleConnectTerminal = (row) => {};
+  const handleViewLogs = (row) => {};
   watchEffect(() => {
     setExpandedKeys();
   });

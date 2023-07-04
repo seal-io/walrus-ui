@@ -1,5 +1,5 @@
-import { filter, map, get, split, pickBy, toString, includes } from 'lodash';
-import { KeysItem, ServiceResource, Cascader } from './interface';
+import { filter, map, get, split } from 'lodash';
+import { KeysItem, ServiceResource, Cascader, ResourceKey } from './interface';
 
 export const generateResourcesKeys = (
   reourcesList: ServiceResource[],
@@ -44,7 +44,7 @@ export const generateResourcesKeys = (
           loggable: s.loggable,
           executable: s.executable,
           label: s.name,
-          value: `${s.type || s.name}?id=${o.id}`,
+          value: `${s.value}?id=${o.id}`,
           children: loop(s, o.id)
         };
       })
@@ -78,4 +78,18 @@ export const getDefaultValue = (list: Cascader[]) => {
     return '';
   };
   return loop(data);
+};
+
+export const getResourceKeyList = (resource, type): ResourceKey[] => {
+  const keys = get(resource, 'keys.keys') || [];
+  return map(keys, (item) => {
+    return {
+      ...item,
+      label: item.name,
+      id: resource.id,
+      value: item.value
+    };
+  }).filter((sItem) => {
+    return get(sItem, type);
+  });
 };

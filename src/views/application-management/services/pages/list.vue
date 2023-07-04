@@ -264,6 +264,7 @@
 
   const setActionList = (row) => {
     const list = _.filter(serviceActions, (item) => {
+      if (item.value === 'delete') return false;
       return item.filterFun ? item.filterFun(row) : true;
     });
     const res = _.map(list, (o) => {
@@ -293,7 +294,6 @@
     } catch (error) {
       loading.value = false;
       dataList.value = [];
-      console.log(error);
     }
   };
   const handleFilter = () => {

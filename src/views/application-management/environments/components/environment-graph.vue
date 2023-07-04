@@ -123,6 +123,7 @@
       resultData.value.nodes = _.map(data.vertices, (item) => {
         return {
           ...item,
+          nodeId: _.get(item, 'id'),
           id: `${_.get(item, 'kind')}-${_.get(item, 'id')}`
         };
       });

@@ -163,11 +163,13 @@ export const createToolTip = () => {
       const model: INode = e?.item?.getModel();
       const box = document.createElement('div');
       box.style.width = 'max-content';
-      let tips = '<span>右键菜单可执行：</span>';
+      let tips = `<span>${i18n.global.t(
+        'applications.service.graph.menu'
+      )}：</span>`;
       if (_.get(model, 'loggableInfo.loggable')) {
         tips += `<span> ${i18n.global.t(
           'applications.instance.tab.log'
-        )}</span>`;
+        )}</span><span style="padding: 0 3px"></span>`;
       }
       if (_.get(model, 'executableInfo.executable')) {
         tips += `<span> ${i18n.global.t(
@@ -185,7 +187,7 @@ export const createToolTip = () => {
           <span style="display: inline-block;width: 40px;font-weight:700">Type: </span>
           ${_.get(model, 'description') || ''}
           </div>
-          <div style="font-weight:500;margin-top:10px">${
+          <div style="font-weight:700;margin-top:10px">${
             model?.loggableInfo?.loggable || model?.executableInfo?.executable
               ? tips
               : ''

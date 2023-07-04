@@ -120,3 +120,9 @@ export interface OutputsRow {
   value: any;
   id?: string;
 }
+
+export interface ResourceKey {
+  label: string;
+  id: string;
+  value: string;
+}
