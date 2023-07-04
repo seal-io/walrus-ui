@@ -20,6 +20,11 @@
     @open="handleBeforeOpen"
     @before-close="handleBeforeClose"
   >
+    <a-select
+      v-model="info.key"
+      :options="dataList"
+      @change="handleKeyChange"
+    ></a-select>
     <div>
       <xTerminal ref="terminal" :url="wssURL"></xTerminal>
     </div>
@@ -39,21 +44,13 @@
 </template>
 
 <script lang="ts" setup>
+  import _ from 'lodash';
   import EditPageFooter from '@/components/edit-page-footer/index.vue';
   import qs from 'query-string';
-  import {
-    inject,
-    ref,
-    computed,
-    onMounted,
-    watch,
-    nextTick,
-    defineExpose,
-    PropType,
-    onBeforeUnmount
-  } from 'vue';
+  import { ref, PropType, onBeforeUnmount, reactive } from 'vue';
   import xTerminal from '@/components/x-terminal/index.vue';
   import router from '@/router';
+  import { ResourceKey } from '../../../../config/interface';
 
   const props = defineProps({
     nodeInfo: {
@@ -62,22 +59,13 @@
         return {};
       }
     },
-    info: {
-      type: Object as PropType<{ id: string; key: string }>,
+    dataList: {
+      type: Object as PropType<ResourceKey[]>,
       default() {
-        return {
-          key: '',
-          id: ''
-        };
+        return [];
       }
     },
     show: {
-      type: Boolean,
-      default() {
-        return false;
-      }
-    },
-    isLoading: {
       type: Boolean,
       default() {
         return false;
@@ -90,25 +78,37 @@
   const { host, protocol } = window.location;
   const proto = protocol === 'https:' ? 'wss' : 'ws';
   const projectID = params.projectId;
+  const info = reactive({
+    key: '',
+    id: ''
+  });
   const wssURL = ref('');
 
   const setWssuRL = () => {
-    console.log('info:', props.info);
-    if (!props.info.key || !props.info.id) {
+    if (!info.key || !info.id) {
       wssURL.value = '';
       return;
     }
-    wssURL.value = `${proto}://${host}/v1/application-resources/${
-      props.info.id
+    wssURL.value = `${proto}://${host}/v1/service-resources/${
+      info.id
     }/exec?${qs.stringify({
-      key: props.info.key,
+      key: info.key,
       projectID
     })}`;
+  };
+  const handleKeyChange = (value) => {
+    const data = _.find(props.dataList, (item) => item.value === value);
+    info.key = data?.value || '';
+    info.id = data?.id || '';
+    setWssuRL();
   };
   const handleCancel = () => {
     emits('update:show', false);
   };
   const handleBeforeOpen = () => {
+    const data = _.get(props.dataList, '0') || {};
+    info.key = data?.value || '';
+    info.id = data?.id || '';
     setWssuRL();
   };
   const handleBeforeClose = () => {

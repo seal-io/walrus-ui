@@ -103,7 +103,11 @@
         containerList.value = generateResourcesKeys(list, 'loggable');
         const defaultValue = getDefaultValue(containerList.value);
         handleObjectChange(defaultValue);
-        console.log('containerList===', containerList.value);
+        console.log(
+          'containerList===',
+          containerList.value,
+          props.resourceList
+        );
       }, 100);
     },
     {

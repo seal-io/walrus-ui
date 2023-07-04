@@ -85,36 +85,6 @@
                   <icon-clock-circle class="size-16" />
                 </a-link>
               </a-tooltip>
-              <!-- <a-tooltip :content="rollbackTips">
-                <a-dropdown @select="(value) => handleRollback(value, record)">
-                  <a-link
-                    :disabled="
-                      includes(
-                        [
-                          AppInstanceStatus.Deleting,
-                          AppInstanceStatus.Deploying
-                        ],
-                        instanceInfo.status
-                      )
-                    "
-                    @mouseover="handlehoverButton('button')"
-                  >
-                    <icon-font type="icon-rollback" style="font-size: 16px" />
-                  </a-link>
-                  <template #content>
-                    <div>
-                      <a-doption value="app"
-                        ><a-link @mouseover="handlehoverButton('app')"
-                          ><icon-apps></icon-apps></a-link
-                      ></a-doption>
-                      <a-doption value="instance"
-                        ><a-link @mouseover="handlehoverButton('instance')"
-                          ><icon-cloud /></a-link
-                      ></a-doption>
-                    </div>
-                  </template>
-                </a-dropdown>
-              </a-tooltip> -->
               <a-tooltip
                 v-if="
                   userStore.hasProjectResourceActions({
@@ -207,18 +177,15 @@
   import {
     setDurationValue,
     websocketEventType,
-    AppInstanceStatus,
     RevisionStatus
   } from '../../config';
   import {
     queryApplicationRevisions,
     deleteApplicationRevisions,
     diffRevisionSpec,
-    rollbackApplication,
     rollbackInstance,
     queryRevisionChange
   } from '../../api';
-  import { updateApplicationEmitter } from '../../hooks/update-application-listener';
 
   let axiosListInstance = createAxiosToken();
   const permissionParams = usePermissionParams();
@@ -249,18 +216,6 @@
     perPage: 10
   });
 
-  const rollbackTips = computed(() => {
-    if (rollbackType.value === 'app') {
-      return t('applications.applications.history.rollbackapp');
-    }
-    if (rollbackType.value === 'instance') {
-      return t('applications.applications.history.rollbackinstance');
-    }
-    return t('applications.applications.history.rollback');
-  });
-  const handleClone = (row) => {
-    console.log(row);
-  };
   const handleDiffRevisionSpec = async (row) => {
     try {
       const params = {
@@ -279,15 +234,7 @@
       console.log(error);
     }
   };
-  const handleRollbackApplication = async () => {
-    try {
-      await rollbackApplication({ id: rollbackData.value.id });
-      execSucceed();
-      updateApplicationEmitter();
-    } catch (error) {
-      console.log(error);
-    }
-  };
+
   const handleRollbackInstance = async () => {
     try {
       await rollbackInstance({
@@ -300,22 +247,8 @@
     }
   };
 
-  const handleRollback = async (value, row) => {
-    rollbackType.value = value;
-    rollbackData.value = row;
-    handleDiffRevisionSpec(row);
-  };
-
-  const handlehoverButton = (type) => {
-    rollbackType.value = type;
-  };
   const handleConfirmDiff = async () => {
-    if (rollbackType.value === 'app') {
-      handleRollbackApplication();
-    }
-    if (rollbackType.value === 'instance') {
-      handleRollbackInstance();
-    }
+    handleRollbackInstance();
   };
   const handleViewHistoryChange = async (row) => {
     rollbackType.value = 'instance';

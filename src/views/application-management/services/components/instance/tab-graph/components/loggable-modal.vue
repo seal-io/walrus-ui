@@ -9,6 +9,7 @@
     :mask-closable="false"
     unmount-on-close
     :body-style="{
+      'padding': '20px',
       'overflow': 'auto',
       'text-align': 'center'
     }"
@@ -19,6 +20,14 @@
     @before-open="handleBeforeOpen"
     @before-close="handleBeforeClose"
   >
+    <div class="flex" style="margin-bottom: 10px">
+      <a-select
+        v-model="info.key"
+        style="width: 300px"
+        :options="dataList"
+        @change="handleKeyChange"
+      ></a-select>
+    </div>
     <div class="tab-logs-wrap">
       <div class="wrap">
         <div class="content">
@@ -42,31 +51,26 @@
 </template>
 
 <script lang="ts" setup>
+  import _ from 'lodash';
   import EditPageFooter from '@/components/edit-page-footer/index.vue';
   import { useSetChunkRequest } from '@/api/axios-chunk-request';
   import Convert from 'ansi-to-html';
-  import { get, split } from 'lodash';
   import hasAnsi from 'has-ansi';
-  import { ref, PropType } from 'vue';
+  import { ref, PropType, reactive } from 'vue';
   import usePermissionParams from '@/views/application-management/hooks/use-permission-params';
+  import { ResourceKey } from '../../../../config/interface';
 
   const props = defineProps({
-    isLoading: {
-      type: Boolean,
-      default() {
-        return false;
-      }
-    },
     nodeInfo: {
       type: Object,
       default() {
         return '';
       }
     },
-    info: {
-      type: Object as PropType<{ id: string; key: string }>,
+    dataList: {
+      type: Object as PropType<ResourceKey[]>,
       default() {
-        return {};
+        return [];
       }
     },
     show: {
@@ -81,6 +85,7 @@
   const { setChunkRequest } = useSetChunkRequest();
   const content = ref('');
   const convert = new Convert();
+  const info = reactive({ key: '', id: '' });
   let chunRequestIns: any = null;
 
   const updateContent = (newVal) => {
@@ -93,12 +98,12 @@
     }
   };
   const createChunkConnection = async () => {
-    if (!props.info.key || !props.info.id) return;
-    const url = `/service-resources/${props.info.id}/log`;
+    if (!info.key || !info.id) return;
+    const url = `/service-resources/${info.id}/log`;
     chunRequestIns = setChunkRequest({
       url,
       params: {
-        key: props.info.key,
+        key: info.key,
         watch: true,
         ...perissionParams
       },
@@ -112,6 +117,12 @@
     chunRequestIns?.cancel?.();
     createChunkConnection();
   };
+  const handleKeyChange = (value) => {
+    const data = _.find(props.dataList, (item) => item.value === value);
+    info.key = data?.value || '';
+    info.id = data?.id || '';
+    init();
+  };
   const resetData = () => {
     console.log('reset');
     content.value = '';
@@ -121,6 +132,9 @@
     emits('update:show', false);
   };
   const handleBeforeOpen = () => {
+    const data = _.get(props.dataList, '0') || {};
+    info.key = data?.value || '';
+    info.id = data?.id || '';
     init();
   };
   const handleBeforeClose = () => {

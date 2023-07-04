@@ -349,6 +349,18 @@
       };
       const { data } = await queryVariables(params);
       dataList.value = _.map(data?.items || [], (item) => {
+        const hasPermission =
+          props.scope === scopeMap.GLOBAL
+            ? userStore.hasRolesActionsPermission({
+                resource: Resources.Secrets,
+                actions: [Actions.DELETE]
+              })
+            : userStore.hasProjectResourceActions({
+                projectID: route.params.projectId,
+                resource: Resources.Secrets,
+                actions: [Actions.DELETE]
+              });
+
         return {
           ...item,
           visible: false
