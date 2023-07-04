@@ -93,8 +93,10 @@ export const defineCustomNode = () => {
             x: w / 2 - 20,
             y: -h / 2,
             width,
-            height
+            height,
+            cursor: 'pointer'
           },
+
           className: 'more-button-icon',
           name: 'more-button-icon',
           draggable: true

@@ -430,7 +430,6 @@
       }
     });
     graph?.on('node:mouseover', (e) => {
-      console.log('node:mouseover====', e);
       if (e.target.cfg.name === 'more-button-icon') {
         setTimeout(() => {
           toolTipRef.value.hideTooltip();

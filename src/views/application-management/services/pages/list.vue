@@ -277,7 +277,7 @@
     return res;
   };
   const fetchData = async () => {
-    if (!queryParams.projectID) return;
+    if (!queryParams.projectID || !queryParams.environmentID) return;
     fetchToken?.cancel?.();
     fetchToken = createAxiosToken();
     try {
