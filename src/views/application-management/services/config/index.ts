@@ -13,19 +13,19 @@ export const instanceTabs = [
     requiredAuth: true,
     permission: ['GET']
   },
-  {
-    label: 'applications.instance.tab.log',
-    value: 'logs',
-    com: 'tabLogs',
-    requiredAuth: true,
-    permission: ['GET']
-  },
+  // {
+  //   label: 'applications.instance.tab.log',
+  //   value: 'logs',
+  //   com: 'tabLogs',
+  //   requiredAuth: true,
+  //   permission: ['GET']
+  // },
   {
     label: 'applications.instance.tab.output',
     value: 'outputs',
     requiredAuth: false,
     com: 'tabOutput'
-  },
+  }
   // {
   //   label: 'applications.instance.tab.graph',
   //   value: 'graph',
@@ -33,13 +33,13 @@ export const instanceTabs = [
   //   requiredAuth: true,
   //   permission: ['GET']
   // },
-  {
-    label: 'applications.instance.tab.term',
-    value: 'terminal',
-    com: 'tabTerminal',
-    requiredAuth: true,
-    permission: ['GET']
-  }
+  // {
+  //   label: 'applications.instance.tab.term',
+  //   value: 'terminal',
+  //   com: 'tabTerminal',
+  //   requiredAuth: true,
+  //   permission: ['GET']
+  // }
 ];
 
 export const moduleActions = [

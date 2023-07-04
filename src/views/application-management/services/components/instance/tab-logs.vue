@@ -1,13 +1,11 @@
 <template>
   <div class="tab-logs-wrap">
-    <a-cascader
-      :loading="isLoading"
-      style="width: 240px; margin-bottom: 8px"
-      :options="containerList"
-      :model-value="logKey"
-      :placeholder="$t('applications.applications.logs.holder')"
-      @change="handleObjectChange"
-    ></a-cascader>
+    <a-select
+      v-model="logKey"
+      style="width: 300px"
+      :options="dataList"
+      @change="handleKeyChange"
+    ></a-select>
     <div class="wrap">
       <div class="content">
         <div v-html="content"></div>
@@ -19,35 +17,25 @@
 <script lang="ts" setup>
   import { useSetChunkRequest } from '@/api/axios-chunk-request';
   import Convert from 'ansi-to-html';
-  import { get, split } from 'lodash';
-  // import stripAnsi from 'strip-ansi';
+  import { get, split, find } from 'lodash';
   import hasAnsi from 'has-ansi';
   import { ref, inject, watch, PropType } from 'vue';
   import usePermissionParams from '@/views/application-management/hooks/use-permission-params';
-  import { ServiceResource, Cascader } from '../../config/interface';
-  import { generateResourcesKeys, getDefaultValue } from '../../config/utils';
+  import { Cascader, ResourceKey } from '../../config/interface';
 
   const props = defineProps({
-    resourceList: {
-      type: Array as PropType<ServiceResource[]>,
+    dataList: {
+      type: Array as PropType<ResourceKey[]>,
       default() {
         return [];
-      }
-    },
-    isLoading: {
-      type: Boolean,
-      default() {
-        return false;
       }
     }
   });
   const permissionParams = usePermissionParams();
   const { setChunkRequest } = useSetChunkRequest();
-  const serviceId = inject('serviceId', ref(''));
   const resourceId = ref('');
   const logKey = ref('');
   const content = ref('');
-  const loading = ref(false);
   let timer: any = null;
   const containerList = ref<Cascader[]>([]);
   const convert = new Convert();
@@ -75,18 +63,11 @@
       handler: updateContent
     });
   };
-  const getResourceId = (val) => {
-    const res = split(val, '?');
-    const d = get(res, 1);
-    return {
-      key: get(res, 0),
-      id: get(split(d, '='), 1)
-    };
-  };
-  const handleObjectChange = (val) => {
-    const result = getResourceId(val);
-    logKey.value = result.key;
-    resourceId.value = result.id;
+
+  const handleKeyChange = (val) => {
+    const result = find(props.dataList, (item) => item.value === val);
+    logKey.value = result?.value || '';
+    resourceId.value = result?.id || '';
     content.value = '';
     createChunkConnection();
   };
@@ -96,18 +77,11 @@
   };
 
   watch(
-    () => props.resourceList,
+    () => props.dataList,
     (list) => {
       clearTimeout(timer);
       timer = setTimeout(() => {
-        containerList.value = generateResourcesKeys(list, 'loggable');
-        const defaultValue = getDefaultValue(containerList.value);
-        handleObjectChange(defaultValue);
-        console.log(
-          'containerList===',
-          containerList.value,
-          props.resourceList
-        );
+        handleKeyChange(get(list, '0.value'));
       }, 100);
     },
     {
@@ -120,14 +94,14 @@
 <style lang="less" scoped>
   .tab-logs-wrap {
     .wrap {
-      height: 460px;
+      height: 270px;
       padding: 5px 0 5px 10px;
-      overflow: hidden;
+      overflow: auto;
       background-color: var(--color-fill-2);
       border-radius: var(--border-radius-small);
 
       .content {
-        height: 450px;
+        height: max-content;
         overflow: auto;
         font-size: 14px;
         line-height: 22px;
