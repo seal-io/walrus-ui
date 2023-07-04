@@ -152,6 +152,7 @@ export function useSetChunkRequest() {
   );
   onBeforeUnmount(() => {
     reset();
+    requestConfig.value.beforeReconnect = null;
     axiosToken.value?.cancel?.();
     clearTimeout(timer);
     window.removeEventListener('unbeforeunload', () => {
