@@ -64,7 +64,7 @@ export default {
           type: 'string'
         },
         {
-          id: 'ServiceDependencyCheckCronExpr',
+          id: 'ServiceRelationshipCheckCronExpr',
           label: 'system.setting.ServiceDependencyCheckCronExpr',
           desc: 'system.setting.ServiceDependencyCheckCronExpr.desc',
           parentId: '',

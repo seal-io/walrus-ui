@@ -123,13 +123,13 @@
         </a-table-column>
       </template>
     </a-table>
-    <terminalControl
+    <resourceControl
       v-model:visible="terminalShow"
       v-model:tabs="drawerTabs"
       :type="modalType"
       @delete="handleTerminalDelete"
     >
-    </terminalControl>
+    </resourceControl>
   </div>
 </template>
 
@@ -139,14 +139,11 @@
   import { PropType, ref, computed, watchEffect } from 'vue';
   import StatusLabel from '@/views/operation-hub/connectors/components/status-label.vue';
   import FilterBox from '@/components/filter-box/index.vue';
-  import { ServiceResource, ResourceKey } from '../../config/interface';
+  import { ServiceResource } from '../../config/interface';
   import { getResourceKeyList } from '../../config/utils';
-  import terminalControl from './terminal-control.vue';
+  import resourceControl from './resource-control.vue';
+  import useResourceControl from '../hooks/use-resource-control';
 
-  const drawerType = {
-    TERMINAL: 'terminal',
-    LOGS: 'logs'
-  };
   const props = defineProps({
     resourceList: {
       type: Array as PropType<ServiceResource[]>,
@@ -161,13 +158,16 @@
       }
     }
   });
+  const {
+    modalType,
+    drawerTabs,
+    terminalShow,
+    handleViewLogs,
+    handleConnectTerminal,
+    handleTerminalDelete
+  } = useResourceControl();
   const query = ref('');
-  const modalType = ref('terminal');
-  const terminalShow = ref(false);
   const expandedKeys = ref<string[]>([]);
-  const drawerTabs = ref<
-    { dataList: ResourceKey[]; name: string; id: string }[]
-  >([]);
 
   const dataList = computed(() => {
     if (!query.value) {
@@ -216,45 +216,7 @@
     const execList = getResourceKeyList({ ...row }, 'executable');
     return !!execList.length;
   };
-  const handleConnectTerminal = (row) => {
-    if (modalType.value === drawerType.LOGS) {
-      modalType.value = drawerType.TERMINAL;
-      drawerTabs.value = [];
-      terminalShow.value = false;
-    }
-    drawerTabs.value.push({
-      dataList: getResourceKeyList({ ...row }, 'executable'),
-      name: row.name,
-      id: row.id
-    });
-    drawerTabs.value = _.uniqBy(drawerTabs.value, 'id');
-    setTimeout(() => {
-      terminalShow.value = true;
-    }, 100);
-  };
-  const handleViewLogs = (row) => {
-    if (modalType.value === drawerType.TERMINAL) {
-      modalType.value = drawerType.LOGS;
-      drawerTabs.value = [];
-      terminalShow.value = false;
-    }
-    drawerTabs.value.push({
-      dataList: getResourceKeyList({ ...row }, 'executable'),
-      name: row.name,
-      id: row.id
-    });
-    drawerTabs.value = _.uniqBy(drawerTabs.value, 'id');
-    setTimeout(() => {
-      terminalShow.value = true;
-    }, 100);
-  };
-  const handleTerminalDelete = (key) => {
-    const index = _.findIndex(drawerTabs.value, (item) => item.name === key);
-    drawerTabs.value.splice(index, 1);
-    if (!drawerTabs.value.length) {
-      terminalShow.value = false;
-    }
-  };
+
   watchEffect(() => {
     setExpandedKeys();
   });
