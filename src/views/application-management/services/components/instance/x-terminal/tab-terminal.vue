@@ -1,18 +1,17 @@
 <template>
   <div>
-    <a-cascader
-      :loading="isLoading"
-      :model-value="resourceKey"
-      style="width: 240px; margin-bottom: 8px"
-      :options="containerList"
-      :placeholder="$t('applications.applications.logs.holder')"
-      @change="handleObjectChange"
-    ></a-cascader>
-    <xTerminal :url="wssURL"></xTerminal>
+    <a-select
+      v-model="resourceKey"
+      style="width: 240px; margin-bottom: 10px"
+      :options="dataList"
+      @change="handleKeyChange"
+    ></a-select>
+    <xTerminal ref="terminal" :url="wssURL" style="height: 270px"></xTerminal>
   </div>
 </template>
 
 <script lang="ts" setup>
+  import _ from 'lodash';
   import qs from 'query-string';
   import {
     inject,
@@ -21,41 +20,29 @@
     onMounted,
     watch,
     nextTick,
-    PropType
+    PropType,
+    onBeforeUnmount
   } from 'vue';
   import xTerminal from '@/components/x-terminal/index.vue';
   import { useRoute } from 'vue-router';
-  import { Cascader, ServiceResource } from '../../../config/interface';
-  import {
-    generateResourcesKeys,
-    getResourceId,
-    getDefaultValue
-  } from '../../../config/utils';
+  import { ResourceKey } from '../../../config/interface';
 
   const props = defineProps({
-    resourceList: {
-      type: Array as PropType<ServiceResource[]>,
+    dataList: {
+      type: Array as PropType<ResourceKey[]>,
       default() {
         return [];
-      }
-    },
-    isLoading: {
-      type: Boolean,
-      default() {
-        return false;
       }
     }
   });
   const route = useRoute();
   const { host, protocol } = window.location;
   const proto = protocol === 'https:' ? 'wss' : 'ws';
-  const serviceId = inject('serviceId', ref(''));
   const resourceId = ref('');
   const resourceKey = ref('');
+  const terminal = ref();
   const projectID = route.params.projectId;
   let timer: any = null;
-  const containerList = ref<Cascader[]>([]);
-  const loading = ref(false);
 
   const wssURL = computed(() => {
     if (!resourceId.value || !resourceKey.value) {
@@ -68,29 +55,19 @@
       projectID
     })}`;
   });
-  const handleObjectChange = (val) => {
-    const result = getResourceId(val);
-    console.log('handleObjectChange:', result);
-    resourceKey.value = result.key;
-    resourceId.value = result.id;
-  };
-  const resetData = () => {
-    containerList.value = [];
+  const handleKeyChange = (val) => {
+    const result = _.find(props.dataList, (item) => item.value === val);
+
+    resourceKey.value = result?.value || '';
+    resourceId.value = result?.id || '';
   };
 
   watch(
-    () => props.resourceList,
+    () => props.dataList,
     (list) => {
       clearTimeout(timer);
       timer = setTimeout(() => {
-        containerList.value = generateResourcesKeys(list, 'executable');
-        const defaultValue = getDefaultValue(containerList.value);
-        handleObjectChange(defaultValue);
-        console.log(
-          'containerList====',
-          containerList.value,
-          props.resourceList
-        );
+        handleKeyChange(_.get(list, '0.value'));
       }, 100);
     },
     {
@@ -98,6 +75,9 @@
       deep: true
     }
   );
+  onBeforeUnmount(() => {
+    terminal.value?.destoryedTerm?.();
+  });
 </script>
 
 <style lang="less" scoped></style>

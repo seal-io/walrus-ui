@@ -9,7 +9,7 @@
     :mask-closable="false"
     :unmount-on-close="true"
     :body-style="{
-      'max-height': '400px',
+      'padding': '0',
       'overflow': 'auto',
       'text-align': 'center'
     }"
@@ -20,11 +20,26 @@
     @open="handleBeforeOpen"
     @before-close="handleBeforeClose"
   >
-    <a-select
-      v-model="info.key"
-      :options="dataList"
-      @change="handleKeyChange"
-    ></a-select>
+    <template #title>
+      <div
+        style="
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          width: 100%;
+        "
+      >
+        <div>{{
+          `${$t('applications.instance.tab.term')}-${nodeInfo.name}`
+        }}</div>
+        <a-select
+          v-model="info.key"
+          style="width: 300px"
+          :options="dataList"
+          @change="handleKeyChange"
+        ></a-select>
+      </div>
+    </template>
     <div>
       <xTerminal ref="terminal" :url="wssURL"></xTerminal>
     </div>

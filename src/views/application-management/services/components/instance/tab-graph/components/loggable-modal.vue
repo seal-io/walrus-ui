@@ -9,7 +9,7 @@
     :mask-closable="false"
     unmount-on-close
     :body-style="{
-      'padding': '20px',
+      'padding': '0px',
       'overflow': 'auto',
       'text-align': 'center'
     }"
@@ -20,14 +20,26 @@
     @before-open="handleBeforeOpen"
     @before-close="handleBeforeClose"
   >
-    <div class="flex" style="margin-bottom: 10px">
-      <a-select
-        v-model="info.key"
-        style="width: 300px"
-        :options="dataList"
-        @change="handleKeyChange"
-      ></a-select>
-    </div>
+    <template #title>
+      <div
+        style="
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          width: 100%;
+        "
+      >
+        <div>{{
+          `${$t('applications.instance.tab.log')}-${nodeInfo.name}`
+        }}</div>
+        <a-select
+          v-model="info.key"
+          style="width: 300px"
+          :options="dataList"
+          @change="handleKeyChange"
+        ></a-select>
+      </div>
+    </template>
     <div class="tab-logs-wrap">
       <div class="wrap">
         <div class="content">

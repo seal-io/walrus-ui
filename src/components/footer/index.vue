@@ -1,5 +1,5 @@
 <template>
-  <a-layout-footer class="footer">
+  <a-layout-footer id="footer" class="footer">
     <div class="content-wrap">
       <a-space direction="vertical" :size="4">
         <a-space class="box">
