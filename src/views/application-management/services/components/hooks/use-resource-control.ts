@@ -37,7 +37,7 @@ export default function useResourceControl() {
       terminalShow.value = false;
     }
     drawerTabs.value.push({
-      dataList: getResourceKeyList({ ...row }, 'executable'),
+      dataList: getResourceKeyList({ ...row }, 'loggable'),
       name: row.name,
       id: row.id
     });
