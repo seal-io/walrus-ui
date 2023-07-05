@@ -288,19 +288,17 @@
   const scopeParams = reactive({
     project: {
       projectID: projectId,
-      withGlobal: true
+      includeInherited: true
     },
     environment: {
       projectID: projectId,
       environmentID: environmentId,
-      withGlobal: true,
-      withProject: true
+      includeInherited: true
     },
     service: {
       projectID: projectId,
       environmentID: environmentId,
-      withGlobal: true,
-      withProject: true
+      includeInherited: true
     },
     global: {}
   });
@@ -415,7 +413,7 @@
         };
       });
       await deleteVariable({
-        data: ids,
+        data: { items: ids },
         query: {
           projectID: route.params.projectId as string
         }

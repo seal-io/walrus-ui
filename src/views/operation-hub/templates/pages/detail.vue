@@ -37,8 +37,8 @@
               message: $t('operation.templates.rules.name')
             },
             {
-              match: validateAppNameRegx,
-              message: $t('applications.applications.rule.allName')
+              match: validateLabelNameRegs,
+              message: $t('common.validate.labelName')
             }
           ]"
         >
@@ -53,9 +53,7 @@
             formData.id || '-'
           }}</span>
           <template v-if="pageAction === PageAction.EDIT" #extra>
-            <span class="tips">{{
-              $t('applications.applications.rule.allName')
-            }}</span>
+            <span class="tips">{{ $t('common.validate.labelName') }}</span>
           </template>
         </a-form-item>
         <a-form-item
@@ -203,7 +201,7 @@
 </template>
 
 <script lang="ts" setup>
-  import { PageAction, validateAppNameRegx } from '@/views/config';
+  import { PageAction, validateLabelNameRegs } from '@/views/config';
   import { OPERATIONHUB } from '@/router/config';
   import { Resources, Actions } from '@/permissions/config';
   import { useUserStore, useTabBarStore } from '@/store';

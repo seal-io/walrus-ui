@@ -75,17 +75,22 @@
                 message: $t('operation.environments.rule.name')
               },
               {
-                match: validateAppNameRegx,
-                message: $t('applications.module.rule.name.tips')
+                match: validateLabelNameRegs,
+                message: $t('common.validate.labelName')
               }
             ]"
           >
             <a-input
               v-model="formData.name"
               style="width: 500px"
-              :max-length="30"
+              :max-length="63"
               show-word-limit
             ></a-input>
+            <template #extra>
+              <div style="max-width: 500px">{{
+                $t('common.validate.labelName')
+              }}</div>
+            </template>
           </a-form-item>
           <a-form-item :label="$t(`applications.projects.form.label`)">
             <a-space
@@ -171,7 +176,7 @@
 
 <script lang="ts" setup>
   import _ from 'lodash';
-  import { PageAction, validateAppNameRegx } from '@/views/config';
+  import { PageAction, validateLabelNameRegs } from '@/views/config';
   import {
     ref,
     PropType,

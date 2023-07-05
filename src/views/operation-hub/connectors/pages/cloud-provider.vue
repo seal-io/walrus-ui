@@ -49,19 +49,28 @@
               {
                 required: pageAction === PageAction.EDIT,
                 message: $t('operation.connectors.rule.name')
+              },
+              {
+                match: validateLabelNameRegs,
+                message: $t('common.validate.labelName')
               }
             ]"
           >
             <a-input
               v-if="pageAction === PageAction.EDIT"
               v-model="formData.name"
-              style="width: 470px"
-              :max-length="30"
+              style="width: 500px"
+              :max-length="63"
               show-word-limit
             ></a-input>
             <span v-else class="readonly-view-label">{{
               formData.name || '-'
             }}</span>
+            <template v-if="pageAction === PageAction.EDIT" #extra>
+              <div style="max-width: 500px">{{
+                $t('common.validate.labelName')
+              }}</div>
+            </template>
           </a-form-item>
           <a-form-item
             :label="$t('operation.connectors.form.type')"
@@ -76,7 +85,7 @@
             <a-select
               v-if="pageAction === PageAction.EDIT"
               v-model="formData.type"
-              style="width: 470px"
+              style="width: 500px"
             >
               <a-option
                 v-for="(item, index) in typeOptions"
@@ -119,12 +128,12 @@
                   <a-input
                     v-if="item.visible"
                     v-model="formData.configData[item.key].value"
-                    style="width: 470px"
+                    style="width: 500px"
                   />
                   <a-input-password
                     v-else
                     v-model="formData.configData[item.key].value"
-                    style="width: 470px"
+                    style="width: 500px"
                   ></a-input-password>
                 </div>
               </a-form-item>
@@ -178,7 +187,7 @@
 </template>
 
 <script lang="ts" setup>
-  import { PageAction } from '@/views/config';
+  import { PageAction, validateLabelNameRegs } from '@/views/config';
   import { OPERATIONHUB } from '@/router/config';
   import { Resources, Actions } from '@/permissions/config';
   import { useUserStore } from '@/store';

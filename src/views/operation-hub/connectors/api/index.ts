@@ -49,7 +49,9 @@ export function updateConnector(data: ConnectorFormData) {
     data
   );
 }
-export function deleteConnector(data: Array<{ id: string | number }>) {
+export function deleteConnector(data: {
+  items: Array<{ id: string | number }>;
+}) {
   return axios.delete(
     `/connectors?${qs.stringify(getPermissionRouteParams())}`,
     { data }

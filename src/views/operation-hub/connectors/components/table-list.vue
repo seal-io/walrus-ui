@@ -587,7 +587,7 @@
           id: val
         };
       });
-      await deleteConnector(ids);
+      await deleteConnector({ items: ids });
       loading.value = false;
       execSucceed();
       queryParams.page = 1;

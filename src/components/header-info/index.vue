@@ -13,7 +13,10 @@
         <slot name="description"> </slot>
       </div>
     </div>
-    <a-divider style="margin: 0; border-radius: 1px" :size="4"></a-divider>
+    <a-divider
+      style="margin: 0; border-color: var(--color-fill-2); border-radius: 1px"
+      :size="4"
+    ></a-divider>
   </div>
 </template>
 

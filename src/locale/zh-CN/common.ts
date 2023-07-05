@@ -89,5 +89,7 @@ export default {
   'common.cli.download': '客户端下载',
   'common.table.sensitive': '是否敏感',
   'common.table.yes': '是',
-  'common.table.no': '否'
+  'common.table.no': '否',
+  'common.validate.labelName':
+    '最多包含 63 个字符,仅包含小写字母数字字符或"-",以字母数字字符开头,以字母数字字符结尾'
 };

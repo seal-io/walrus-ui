@@ -51,8 +51,8 @@
                 message: t('operation.connectors.rule.name')
               },
               {
-                match: /^[A-Za-z0-9]([A-Za-z0-9-_]*[A-Za-z0-9])?$/,
-                message: $t('operation.environments.name.tips')
+                match: validateLabelNameRegs,
+                message: $t('common.validate.labelName')
               }
             ]"
           >
@@ -60,26 +60,18 @@
               v-if="pageAction === PageAction.EDIT"
               v-model="formData.name"
               style="width: 500px"
-              :max-length="30"
+              :max-length="63"
               show-word-limit
             ></a-input>
             <span v-else class="readonly-view-label">{{
               formData.name || '-'
             }}</span>
+            <template v-if="pageAction === PageAction.EDIT" #extra>
+              <div style="max-wdith: 500px">{{
+                $t('common.validate.labelName')
+              }}</div>
+            </template>
           </a-form-item>
-          <!-- <a-form-item
-          field="description"
-          :hide-asterisk="false"
-          label="描述"
-          :validate-trigger="['change']"
-        >
-          <a-textarea
-            v-model="formData.description"
-            style="width: 500px"
-            :spellcheck="false"
-            :auto-size="{ minRows: 4, maxRows: 6 }"
-          />
-        </a-form-item> -->
           <a-form-item
             :label="$t('operation.connectors.form.type')"
             field="type"
@@ -225,7 +217,7 @@
 </template>
 
 <script lang="ts" setup>
-  import { PageAction } from '@/views/config';
+  import { PageAction, validateLabelNameRegs } from '@/views/config';
   import { OPERATIONHUB } from '@/router/config';
   import { Resources, Actions } from '@/permissions/config';
   import { useUserStore } from '@/store';

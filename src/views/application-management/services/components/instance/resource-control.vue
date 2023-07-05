@@ -30,7 +30,7 @@
     >
       <a-tab-pane v-for="item in tabs" :key="item.name" :title="item.name">
         <template #title>
-          <div style="width: auto"
+          <div style="width: 150px"
             ><AutoTip :tooltip-props="{ content: item.name }">
               <span>{{ item.name }}</span>
             </AutoTip></div
@@ -75,6 +75,12 @@
       type: Boolean,
       default() {
         return false;
+      }
+    },
+    updateActive: {
+      type: String,
+      default() {
+        return '';
       }
     },
     tabs: {
@@ -122,6 +128,14 @@
       });
     }
   );
+  watch(
+    () => props.updateActive,
+    (val) => {
+      if (val) {
+        activeKey.value = val;
+      }
+    }
+  );
 </script>
 
 <style lang="less">
@@ -138,12 +152,17 @@
   .arco-drawer-container {
     &.terminal-control {
       .arco-tabs {
+        .arco-tabs-nav {
+          background-color: var(--color-fill-1);
+        }
+
         .arco-tabs-tab {
           border-top: 0 solid transparent;
         }
-        // .arco-tabs-tab-active {
-        //   border-top: 2px solid var(--sealblue-6);
-        // }
+
+        .arco-tabs-tab-active {
+          background-color: #fff;
+        }
       }
     }
   }
