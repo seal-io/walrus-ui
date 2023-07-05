@@ -42,7 +42,7 @@ export const defineCustomNode = () => {
       afterDraw(cfg: Node & NodeConfig, group: IGroup) {
         (this as any).drawCompositionIcon(cfg, group);
         (this as any).drawActionButton(cfg, group);
-        (this as any).drawStateIconAnimate(cfg, group);
+        // (this as any).drawStateIconAnimate(cfg, group);
       },
       drawStateIconAnimate(cfg: Node & NodeConfig, group: IGroup) {
         const { stateIcon = {} } = cfg;
