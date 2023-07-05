@@ -76,6 +76,7 @@
     "rollup-plugin-commonjs": "^10.1.0",
     "rollup-plugin-node-resolve": "^5.2.0",
     "strip-ansi": "^7.0.1",
+    "tippy.js": "^6.3.7",
     "url-regex-safe": "^3.0.0",
     "vue": "^3.2.31",
     "vue-echarts": "^6.0.0",
