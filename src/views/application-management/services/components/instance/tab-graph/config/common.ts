@@ -1,6 +1,6 @@
 import G6, { ModelConfig, NodeConfig, ShapeOptions } from '@antv/g6';
 import _ from 'lodash';
-import { IGroup, IShape } from '@antv/g-base';
+import { IGroup, IShape, GroupCfg } from '@antv/g-base';
 import insertCss from 'insert-css';
 import serviceImg from '@/assets/images/service.png';
 import compositionImg from '@/assets/images/graph_nodes.png';
@@ -40,23 +40,25 @@ export const defineCustomNode = () => {
     'resource',
     {
       afterDraw(cfg: Node & NodeConfig, group: IGroup) {
-        const { stateIcon = {} } = cfg;
-        const image = group['shapeMap']['rect-state-icon'];
-        if (stateIcon.animate) {
-          image.animate(
-            {
-              // Magnifying and disappearing
-              opacity: 0.2
-            },
-            {
-              duration: 2000,
-              easing: 'easeCubic',
-              repeat: true // repeat
-            }
-          );
-        }
         (this as any).drawCompositionIcon(cfg, group);
         (this as any).drawActionButton(cfg, group);
+        (this as any).drawStateIconAnimate(cfg, group);
+      },
+      drawStateIconAnimate(cfg: Node & NodeConfig, group: IGroup) {
+        const { stateIcon = {} } = cfg;
+        if (!stateIcon.animate) return;
+        const image = group['shapeMap']['rect-state-icon'];
+        image.animate(
+          {
+            // Magnifying and disappearing
+            opacity: 0.2
+          },
+          {
+            duration: 2000,
+            easing: 'easeCubic',
+            repeat: true // repeat
+          }
+        );
       },
       drawCompositionIcon(cfg: Node & NodeConfig, group: IGroup) {
         if (!cfg.hasComposition) return;

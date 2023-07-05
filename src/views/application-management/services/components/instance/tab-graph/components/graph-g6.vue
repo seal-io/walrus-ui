@@ -126,8 +126,6 @@
   const contextMenu = new G6.Menu({
     trigger: 'click',
     shouldBegin(e) {
-      console.log('shouldBegin====', e);
-
       if (_.get(e?.target, 'cfg.name') === 'more-button-icon') {
         return true;
       }
@@ -419,6 +417,7 @@
       isCollapsed: !model.isCollapsed
     });
     animateFlag.value = true;
+
     graph.layout();
     graph.set('animate', true);
   };
@@ -429,11 +428,9 @@
         toolTipRef.value.hideTooltip();
       }
     });
-    graph?.on('node:mouseover', (e) => {
+    graph?.on('node:mousemove', (e) => {
       if (e.target.cfg.name === 'more-button-icon') {
-        setTimeout(() => {
-          toolTipRef.value.hideTooltip();
-        });
+        toolTipRef.value.hideTooltip();
       }
     });
     graph?.on('node:mouseleave', (e) => {
