@@ -7,7 +7,12 @@
   import { RouteRecordRaw, RouteRecordNormalized } from 'vue-router';
   // import type { RouteLocationNormalized } from 'vue-router';
 
-  import { useAppStore, useProjectStore, useUserStore } from '@/store';
+  import {
+    useAppStore,
+    useProjectStore,
+    useUserStore,
+    useTabBarStore
+  } from '@/store';
   import useUser from '@/hooks/user';
   import usePermission from '@/hooks/permissions';
   import useListenerRouteChange from '@/hooks/use-listener-route-change';
@@ -28,6 +33,7 @@
       const { changeLocale } = useLocale();
       const { logout } = useUser();
       const projectStore = useProjectStore();
+      const tabBarStore = useTabBarStore();
       const permission = usePermission();
       const execListenerRouteChange = useListenerRouteChange();
 
@@ -152,6 +158,7 @@
       const goto = async (item: RouteRecordRaw) => {
         const query: any = item.meta?.query;
         const isReplace: any = item.meta?.replace;
+        tabBarStore.clearTags();
         if (item.name === PROJECT.List) {
           await goToProject(item);
           return;
@@ -175,14 +182,13 @@
       };
       listenerRouteChange(({ to }) => {
         const newRoute = to;
-        console.log('route_change', to);
         currentRoute.value = newRoute.matched[1]?.name as string;
         if (newRoute.meta.requiresAuth || newRoute.meta.profileView) {
           const { matched } = newRoute;
           const activeRoute = newRoute.matched[matched.length - 1];
           const key =
             activeRoute?.meta?.selectedMenu || (activeRoute?.name as string);
-          console.log('key====', key);
+
           appStore.updateSettings({ selectedKey: [key] });
         }
         if (newRoute.meta.clearMenuStatus) {

@@ -390,7 +390,11 @@
   };
   const handleSaveSubGroup = async (item) => {
     const clearList = _.filter(item.subGroup, (subItem) => {
-      return _.get(subItem, 'configured') && !_.get(formData.value, subItem.id);
+      return (
+        _.get(subItem, 'configured') &&
+        !_.get(formData.value, subItem.id) &&
+        !_.get(subItem, 'component.required')
+      );
     });
     if (clearList.length) {
       const tips = _.map(clearList, (o) => {

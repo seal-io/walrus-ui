@@ -8,7 +8,7 @@ const formatTag = (route: RouteLocationNormalized): TagProps => {
     title: meta.locale || '',
     name: String(name),
     fullPath,
-    query,
+    query
   };
 };
 
@@ -22,7 +22,7 @@ const useAppStore = defineStore('tabBar', {
       //   name: 'workplace',
       //   fullPath: '/dashboard/workplace',
       // },
-    ],
+    ]
   }),
 
   getters: {
@@ -31,7 +31,7 @@ const useAppStore = defineStore('tabBar', {
     },
     getCacheList(): string[] {
       return Array.from(this.cacheTabList);
-    },
+    }
   },
 
   actions: {
@@ -43,7 +43,10 @@ const useAppStore = defineStore('tabBar', {
       // this.tagList.splice(idx, 1);
       this.cacheTabList.delete(tag.name);
     },
-  },
+    clearTags() {
+      this.cacheTabList.clear();
+    }
+  }
 });
 
 export default useAppStore;
