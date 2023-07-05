@@ -114,14 +114,23 @@ export default function useTemplatesData() {
     }
   };
   const setVariablesCompleteData = () => {
-    const vars = _.reduce(
-      variableList.value,
-      (obj, item) => {
-        obj[item.name] = '';
-        return obj;
-      },
-      {}
-    );
+    // const vars = _.reduce(
+    //   variableList.value,
+    //   (obj, item) => {
+    //     obj[item.name] = '';
+    //     return obj;
+    //   },
+    //   {}
+    // );
+    const vars = _.map(variableList.value, (item) => {
+      return {
+        value: item.name,
+        label: item.name,
+        tips: item.value,
+        showTips: true,
+        sensitive: item.sensitive
+      };
+    });
     return vars;
   };
   const setServiceCompleteData = () => {
@@ -140,8 +149,9 @@ export default function useTemplatesData() {
         obj[k] = [
           ..._.map(_.get(addedServiceTemplate, 'schema.outputs') || [], (o) => {
             return {
-              label: o.description,
-              value: o.name
+              value: o.name,
+              label: o.name,
+              description: o.description
             };
           })
         ];
@@ -157,7 +167,7 @@ export default function useTemplatesData() {
   };
   const updateVariablesCompleteData = () => {
     const variables = setVariablesCompleteData();
-    completeData.value.var = { ...variables };
+    completeData.value.var = [...variables];
   };
   const setCompleteData = () => {
     updateServiceCompleteData();

@@ -65,12 +65,17 @@
   } from 'vue';
   import { Textcomplete, TextcompleteOption } from '@textcomplete/core';
   import { TextareaEditor } from '@textcomplete/textarea';
+  import tippy from 'tippy.js';
+  import 'tippy.js/dist/tippy.css';
 
   type SearchCallback<T> = (results: T[]) => void;
   type resultItem = {
     label: string;
     value: string;
     type?: string;
+    tips?: string;
+    sensitive?: boolean;
+    showTips?: boolean;
     description?: string;
   };
 
@@ -122,9 +127,21 @@
   const isFocus = ref(false);
   const inputFlag = ref(false);
   const isMatchWork = ref(true);
+  const tooltipConfig = {
+    ignoreAttributes: true,
+    placement: 'top-end',
+    maxWidth: 240,
+    maxHeight: 150,
+    arrow: true,
+    interactive: false,
+    showOnCreate: true
+  };
   let timer: any = null;
   // const textarea = ref()
   let textcomplete: any = null;
+  let textEditor: any = null;
+  let tippyInstance: any = null;
+
   const handleSearch = (term: string, ctx): Array<resultItem> => {
     const sourceData = completeData.value || props.source;
     const regx = /([A-Za-z0-9_-]+)?\.?([A-Za-z0-9_-]*)\.?$/;
@@ -156,9 +173,9 @@
     if (isArray(data)) {
       resultList = map(data || [], (s) => {
         return {
+          ...s,
           label: s.value,
-          value: s.value,
-          description: s.label
+          value: s.value
         };
       });
     } else {
@@ -250,8 +267,8 @@
   ];
   const options: TextcompleteOption = {
     dropdown: {
-      className: 'autocomplete-dropdown-list',
-      maxCount: 20,
+      className: `autocomplete-dropdown-list ${props.editorId}`,
+      maxCount: 10,
       item: {
         className: 'complete-item',
         activeClassName: 'complete-item-active'
@@ -267,14 +284,41 @@
       isMatchWork.value = true;
     }
   };
+  const tippyInstanceHide = () => {
+    get(tippyInstance, '0')?.destroy?.();
+  };
+  const getTextcompleteDownItem = () => {
+    tippyInstanceHide();
+    const activeIndex = textcomplete.dropdown.activeIndex || 0;
+    const items = textcomplete.dropdown.items || [];
+    const data = get(items, `${activeIndex}.searchResult.data`);
+    if (data?.showTips) {
+      const content = data.sensitive ? '******' : data.tips;
+      tippyInstance = tippy(`.${props.editorId} .complete-item-active`, {
+        ...tooltipConfig,
+        content
+      });
+    }
+  };
+  const initEvent = () => {
+    textcomplete?.on('select', (e) => {
+      tippyInstanceHide();
+    });
+    textcomplete?.on('hide', (e) => {
+      tippyInstanceHide();
+    });
+    textEditor.on('move', (e) => {
+      getTextcompleteDownItem();
+    });
+  };
   const initEditor = () => {
     const textarea = document.getElementById(
       `${props.editorId}`
     ) as HTMLTextAreaElement;
     if (!textarea) return;
-    const editor = new TextareaEditor(textarea);
-    textcomplete = new Textcomplete(editor, Strategy, options);
-    console.log('area:', textarea, textcomplete);
+    textEditor = new TextareaEditor(textarea);
+    textcomplete = new Textcomplete(textEditor, Strategy, options);
+    initEvent();
   };
   const dispatchInput = () => {
     emits('update:modelValue', expression.value);
@@ -415,6 +459,16 @@
 </style>
 
 <style lang="less">
+  .tippy-box {
+    pointer-events: all;
+
+    .tippy-content {
+      max-height: 60px;
+      overflow: auto;
+      word-wrap: break-word;
+    }
+  }
+
   .autocomplete-dropdown-list {
     z-index: 9999 !important;
     box-sizing: border-box;

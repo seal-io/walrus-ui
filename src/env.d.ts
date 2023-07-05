@@ -16,6 +16,12 @@ declare module '@vue-flow/controls' {
 declare module 'xterm-addon-fit' {
   export { FitAddon } from 'xterm-addon-fit';
 }
+declare module 'tippy.js' {
+  import tippy from 'tippy.js';
+
+  export { followCursor } from 'tippy.js';
+  export default tippy;
+}
 declare module '@vueuse/core' {
   export {
     createReusableTemplate,

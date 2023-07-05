@@ -8,6 +8,10 @@ export default function useResourceControl() {
     TERMINAL: 'terminal',
     LOGS: 'logs'
   };
+  const resourceAction = {
+    Executable: 'executable',
+    Loggable: 'loggable'
+  };
   const modalType = ref('terminal');
   const terminalShow = ref(false);
   const drawerTabs = ref<
@@ -21,7 +25,7 @@ export default function useResourceControl() {
       terminalShow.value = false;
     }
     drawerTabs.value.push({
-      dataList: getResourceKeyList({ ...row }, 'executable'),
+      dataList: getResourceKeyList({ ...row }, resourceAction.Executable),
       name: row.name,
       id: row.id
     });
@@ -37,7 +41,7 @@ export default function useResourceControl() {
       terminalShow.value = false;
     }
     drawerTabs.value.push({
-      dataList: getResourceKeyList({ ...row }, 'loggable'),
+      dataList: getResourceKeyList({ ...row }, resourceAction.Loggable),
       name: row.name,
       id: row.id
     });
