@@ -14,6 +14,7 @@ export default function useResourceControl() {
   };
   const modalType = ref('terminal');
   const terminalShow = ref(false);
+  const updateActive = ref('');
   const drawerTabs = ref<
     { dataList: ResourceKey[]; name: string; id: string }[]
   >([]);
@@ -29,6 +30,7 @@ export default function useResourceControl() {
       name: row.name,
       id: row.id
     });
+    updateActive.value = row.name;
     drawerTabs.value = _.uniqBy(drawerTabs.value, 'id');
     setTimeout(() => {
       terminalShow.value = true;
@@ -45,6 +47,7 @@ export default function useResourceControl() {
       name: row.name,
       id: row.id
     });
+    updateActive.value = row.name;
     drawerTabs.value = _.uniqBy(drawerTabs.value, 'id');
     setTimeout(() => {
       terminalShow.value = true;
@@ -61,6 +64,7 @@ export default function useResourceControl() {
     modalType,
     terminalShow,
     drawerTabs,
+    updateActive,
     handleConnectTerminal,
     handleViewLogs,
     handleTerminalDelete

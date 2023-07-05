@@ -36,22 +36,33 @@
               {
                 required: !viewable,
                 message: $t('cost.optimize.form.rule.name')
+              },
+              {
+                match: validateLabelNameRegs,
+                message: $t('common.validate.labelName')
               }
             ]"
           >
             <a-input
               v-if="!viewable"
               v-model.trim="formData.name"
-              :max-length="50"
+              :max-length="63"
               :show-word-limit="!viewable"
             ></a-input>
             <span v-else class="readonly-view-label">{{ formData.name }}</span>
             <template #extra>
-              <span>{{ $t('cost.optimize.form.name.tips') }}</span>
+              <div>{{ $t('common.validate.labelName') }}</div>
             </template>
           </a-form-item>
         </ComCard>
-        <a-divider style="margin: 0; border-radius: 1px" :size="4"></a-divider>
+        <a-divider
+          style="
+            margin: 0;
+            border-color: var(--color-fill-2);
+            border-radius: 1px;
+          "
+          :size="4"
+        ></a-divider>
         <ComCard>
           <GroupTitle
             iconed
@@ -331,7 +342,7 @@
     keys,
     isEqual
   } from 'lodash';
-  import { PageAction } from '@/views/config';
+  import { PageAction, validateLabelNameRegs } from '@/views/config';
   import useCallCommon from '@/hooks/use-call-common';
   import { beforeLeaveCallback } from '@/hooks/save-before-leave';
   import { onBeforeRouteLeave } from 'vue-router';

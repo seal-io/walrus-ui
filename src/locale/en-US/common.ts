@@ -92,5 +92,7 @@ export default {
   'common.cli.download': 'Clients Download',
   'common.table.sensitive': 'Sensitive',
   'common.table.yes': 'Yes',
-  'common.table.no': 'No'
+  'common.table.no': 'No',
+  'common.validate.labelName':
+    'contain at most 63 characters,only lowercase alphanumeric characters or "-",start with an alphanumeric character,end with an alphanumeric character'
 };

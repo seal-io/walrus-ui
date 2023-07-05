@@ -25,19 +25,19 @@
           :rules="[
             { required: true, message: $t('applications.projects.rule.name') },
             {
-              match: validateSecretNameRegx,
-              message: $t('applications.secret.name.tips')
+              match: validateLabelNameRegs,
+              message: $t('common.validate.labelName')
             }
           ]"
         >
           <a-input
             v-model="formData.name"
             style="width: 100%"
-            :max-length="30"
+            :max-length="63"
             show-word-limit
           ></a-input>
           <template #extra>
-            <span class="tips">{{ $t('applications.secret.name.tips') }}</span>
+            <span class="tips">{{ $t('common.validate.labelName') }}</span>
           </template>
         </a-form-item>
         <a-form-item
@@ -104,7 +104,7 @@
   import { ref, reactive, PropType } from 'vue';
   import _ from 'lodash';
   import EditPageFooter from '@/components/edit-page-footer/index.vue';
-  import { validateSecretNameRegx } from '@/views/config';
+  import { validateLabelNameRegs } from '@/views/config';
   import { createVariable, updateVariable } from '../api';
   import { VariableFormData } from '../config/interface';
 

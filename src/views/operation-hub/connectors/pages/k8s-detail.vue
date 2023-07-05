@@ -53,6 +53,10 @@
               {
                 required: true,
                 message: $t('operation.connectors.rules.name')
+              },
+              {
+                match: validateLabelNameRegs,
+                message: $t('common.validate.labelName')
               }
             ]"
           >
@@ -60,12 +64,17 @@
               v-if="pageAction === PageAction.EDIT"
               v-model="formData.name"
               style="width: 500px"
-              :max-length="30"
+              :max-length="63"
               show-word-limit
             ></a-input>
             <span v-else class="readonly-view-label">{{
               formData.name || '-'
             }}</span>
+            <template v-if="pageAction === PageAction.EDIT" #extra>
+              <div style="max-width: 500px">{{
+                $t('common.validate.labelName')
+              }}</div>
+            </template>
           </a-form-item>
           <a-form-item
             v-if="pageAction === PageAction.EDIT"
@@ -184,7 +193,7 @@
 </template>
 
 <script lang="ts" setup>
-  import { PageAction } from '@/views/config';
+  import { PageAction, validateLabelNameRegs } from '@/views/config';
   import { OPERATIONHUB } from '@/router/config';
   import { Resources, Actions } from '@/permissions/config';
   import { useUserStore } from '@/store';

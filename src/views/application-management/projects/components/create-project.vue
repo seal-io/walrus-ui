@@ -24,8 +24,8 @@
           :rules="[
             { required: true, message: $t('applications.projects.rule.name') },
             {
-              match: validateAppNameRegx,
-              message: $t('applications.applications.rule.allName')
+              match: validateLabelNameRegs,
+              message: $t('common.validate.labelName')
             }
           ]"
         >
@@ -36,9 +36,7 @@
             show-word-limit
           ></a-input>
           <template #extra>
-            <span class="tips">{{
-              $t('applications.applications.rule.allName')
-            }}</span>
+            <span class="tips">{{ $t('common.validate.labelName') }}</span>
           </template>
         </a-form-item>
         <a-form-item :label="$t('common.table.description')">
@@ -102,7 +100,7 @@
   import { reduce, omit, keys, get } from 'lodash';
   import EditPageFooter from '@/components/edit-page-footer/index.vue';
   import xInputGroup from '@/components/form-create/custom-components/x-input-group.vue';
-  import { validateAppNameRegx } from '@/views/config';
+  import { validateLabelNameRegs } from '@/views/config';
   import { createProject, updateProject } from '../api';
   import { ProjectFormData } from '../config/interface';
 

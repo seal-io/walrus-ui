@@ -128,6 +128,7 @@
       v-model:visible="terminalShow"
       v-model:tabs="drawerTabs"
       :type="modalType"
+      :update-active="updateActive"
       @delete="handleTerminalDelete"
     >
     </resourceControl>
@@ -163,6 +164,7 @@
     modalType,
     drawerTabs,
     terminalShow,
+    updateActive,
     handleViewLogs,
     handleConnectTerminal,
     handleTerminalDelete

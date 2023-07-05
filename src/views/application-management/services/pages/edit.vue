@@ -19,8 +19,8 @@
               message: $t('applications.module.rule.name.tips')
             },
             {
-              match: validateAppNameRegx,
-              message: $t('applications.module.rule.name.tips')
+              match: validateLabelNameRegs,
+              message: $t('common.validate.labelName')
             },
             {
               validator: validateNameuniq,
@@ -31,13 +31,13 @@
           <a-input
             v-model="formData.name"
             style="width: 380px"
-            :max-length="30"
+            :max-length="63"
             show-word-limit
           ></a-input>
           <template #extra>
-            <span class="tips">{{
-              $t('applications.module.rule.name.tips')
-            }}</span>
+            <div class="tips" style="max-width: 380px">{{
+              $t('common.validate.labelName')
+            }}</div>
           </template>
         </a-form-item>
         <a-form-item
@@ -263,7 +263,7 @@
     TemplateVersionData
   } from '@/views/operation-hub/templates/config/interface';
   import VariableLit from '@/views/application-management/variables/components/table-list.vue';
-  import { validateAppNameRegx, PageAction } from '@/views/config';
+  import { validateLabelNameRegs, PageAction } from '@/views/config';
   import { BreadcrumbOptions } from '@/views/config/interface';
   import { beforeLeaveCallback } from '@/hooks/save-before-leave';
   import useLabelsActions from '@/components/form-create/hooks/use-labels-action';

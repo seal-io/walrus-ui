@@ -31,6 +31,7 @@
     <resourceControl
       v-model:visible="terminalShow"
       v-model:tabs="drawerTabs"
+      :update-active="updateActive"
       :type="modalType"
       @delete="handleTerminalDelete"
     >
@@ -101,6 +102,7 @@
     modalType,
     drawerTabs,
     terminalShow,
+    updateActive,
     handleViewLogs,
     handleConnectTerminal,
     handleTerminalDelete
@@ -595,6 +597,7 @@
 
 <style lang="less">
   .g6-component-contextmenu {
+    padding: 6px 8px;
     border: none;
   }
 
@@ -609,7 +612,7 @@
     }
 
     ul {
-      margin: 5px 0 0 0;
+      margin: 0;
       padding: 0;
 
       .iconfont {
