@@ -22,6 +22,7 @@
           lazy-load
           class="page-line-tabs"
           :default-active-key="activeKey"
+          @change="handleTabChange"
         >
           <a-tab-pane
             v-if="
@@ -47,7 +48,7 @@
             key="graph"
             :title="$t('applications.instance.tab.graph')"
           >
-            <environmentGraph></environmentGraph>
+            <environmentGraph ref="graph"></environmentGraph>
           </a-tab-pane>
           <a-tab-pane
             v-if="
@@ -101,12 +102,18 @@
   const { router, route, t } = useCallCommon();
   const currentInfo = ref<any>({});
   const activeKey = ref('service');
+  const graph = ref();
   const breadCrumbList = ref<BreadcrumbOptions[]>([
     projectTemplate,
     environmentTemplate
   ]);
   const basicDataList = useBasicInfoData(basicInfoConfig, currentInfo);
 
+  const handleTabChange = (val) => {
+    if (val === 'graph') {
+      graph.value?.handleRefresh();
+    }
+  };
   const handleSelectChange = ({ value, item }) => {
     item.value = value;
     if (item.level !== pageLevelMap.Environment) {

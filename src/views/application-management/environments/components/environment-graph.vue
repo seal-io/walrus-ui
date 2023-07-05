@@ -71,7 +71,7 @@
 
 <script lang="ts" setup>
   import _ from 'lodash';
-  import { ref, onMounted } from 'vue';
+  import { ref, onMounted, defineExpose } from 'vue';
   import { onClickOutside, useFullscreen } from '@vueuse/core';
   import useCallCommon from '@/hooks/use-call-common';
   import GraphG6 from '../../services/components/instance/tab-graph/components/graph-g6.vue';
@@ -148,6 +148,9 @@
     showAll.value = !showAll.value;
     graph.value?.toggleAllNodeShow(showAll.value);
   };
+  defineExpose({
+    handleRefresh
+  });
   onMounted(() => {
     getServiceGraph();
   });
