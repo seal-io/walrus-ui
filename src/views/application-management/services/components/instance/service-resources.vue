@@ -34,6 +34,7 @@
           ellipsis
           tooltip
           :cell-style="{ minWidth: '40px' }"
+          :width="240"
           data-index="name"
           :title="$t('common.table.name')"
         >
