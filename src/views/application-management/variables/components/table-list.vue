@@ -177,6 +177,7 @@
               ].includes(scope)
             "
             align="center"
+            :width="210"
             :title="$t('common.table.operation')"
             ellipsis
             tooltip

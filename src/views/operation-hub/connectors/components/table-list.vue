@@ -217,6 +217,7 @@
           :title="$t('common.table.operation')"
           ellipsis
           tooltip
+          :width="210"
           :cell-style="{ minWidth: '40px' }"
         >
           <template #cell="{ record }">
@@ -324,7 +325,7 @@
       @change="handlePageChange"
       @page-size-change="handlePageSizeChange"
     />
-    <CreateKubernetes
+    <!-- <CreateKubernetes
       v-model:showValue="showValue"
       v-model:info="currentInfo"
       :show="showValue === ConnectorCategory.Kubernetes"
@@ -355,7 +356,7 @@
       :action="action"
       @save="handleSearch"
     >
-    </CreateCloud>
+    </CreateCloud> -->
   </div>
 </template>
 

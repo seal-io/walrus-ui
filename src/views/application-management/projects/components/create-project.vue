@@ -24,7 +24,7 @@
           :rules="[
             { required: true, message: $t('applications.projects.rule.name') },
             {
-              match: validateLabelNameRegs,
+              match: validateLabelNameRegx,
               message: $t('common.validate.labelName')
             }
           ]"
@@ -100,7 +100,7 @@
   import { reduce, omit, keys, get } from 'lodash';
   import EditPageFooter from '@/components/edit-page-footer/index.vue';
   import xInputGroup from '@/components/form-create/custom-components/x-input-group.vue';
-  import { validateLabelNameRegs } from '@/views/config';
+  import { validateLabelNameRegx } from '@/views/config';
   import { createProject, updateProject } from '../api';
   import { ProjectFormData } from '../config/interface';
 

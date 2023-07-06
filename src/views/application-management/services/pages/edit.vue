@@ -19,7 +19,7 @@
               message: $t('applications.module.rule.name.tips')
             },
             {
-              match: validateLabelNameRegs,
+              match: validateLabelNameRegx,
               message: $t('common.validate.labelName')
             },
             {
@@ -125,7 +125,10 @@
         </a-form-item>
       </a-form>
     </ComCard>
-    <a-divider style="margin: 0; border-radius: 1px" :size="4"></a-divider>
+    <a-divider
+      style="margin: 0; border-color: var(--color-fill-2); border-radius: 1px"
+      :size="4"
+    ></a-divider>
     <ComCard>
       <div
         style="display: flex; justify-content: flex-start; margin-bottom: 10px"
@@ -263,7 +266,7 @@
     TemplateVersionData
   } from '@/views/operation-hub/templates/config/interface';
   import VariableLit from '@/views/application-management/variables/components/table-list.vue';
-  import { validateLabelNameRegs, PageAction } from '@/views/config';
+  import { validateLabelNameRegx, PageAction } from '@/views/config';
   import { BreadcrumbOptions } from '@/views/config/interface';
   import { beforeLeaveCallback } from '@/hooks/save-before-leave';
   import useLabelsActions from '@/components/form-create/hooks/use-labels-action';

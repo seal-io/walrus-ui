@@ -38,7 +38,7 @@
                 message: $t('cost.optimize.form.rule.name')
               },
               {
-                match: validateLabelNameRegs,
+                match: validateLabelNameRegx,
                 message: $t('common.validate.labelName')
               }
             ]"
@@ -50,8 +50,10 @@
               :show-word-limit="!viewable"
             ></a-input>
             <span v-else class="readonly-view-label">{{ formData.name }}</span>
-            <template #extra>
-              <div>{{ $t('common.validate.labelName') }}</div>
+            <template v-if="!viewable" #extra>
+              <div style="max-width: 360px">{{
+                $t('common.validate.labelName')
+              }}</div>
             </template>
           </a-form-item>
         </ComCard>
@@ -342,7 +344,7 @@
     keys,
     isEqual
   } from 'lodash';
-  import { PageAction, validateLabelNameRegs } from '@/views/config';
+  import { PageAction, validateLabelNameRegx } from '@/views/config';
   import useCallCommon from '@/hooks/use-call-common';
   import { beforeLeaveCallback } from '@/hooks/save-before-leave';
   import { onBeforeRouteLeave } from 'vue-router';
