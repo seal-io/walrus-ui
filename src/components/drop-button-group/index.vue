@@ -79,7 +79,7 @@
     .mright-0 {
       position: relative;
 
-      .arco-link-icon {
+      :deep(.arco-link-icon) {
         margin-right: 0;
       }
 

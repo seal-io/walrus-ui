@@ -58,7 +58,7 @@ export default {
   'applications.applications.instance.accessUrl': '访问URL',
   'applications.applications.instance.resource': '资源信息',
   'applications.applications.instance.resource.tips':
-    '环境的连接器为自定义时，实例的资源和输出为静态数据，当实例升级时将会更新',
+    '环境的连接器为自定义时，服务的资源和输出为静态数据，当服务升级时将会更新',
   'applications.applications.instance.endpoint': '入口',
   'applications.applications.instance.log': '日志',
   'applications.applications.instance.value': '值',

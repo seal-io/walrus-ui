@@ -1,26 +1,44 @@
 <template>
   <div>
-    <a-space class="title">
-      <icon-font
-        type="icon-table"
-        :class="{ active: activeKey === 'list' }"
-        @click="handleToggle('list')"
-      />
-      <icon-font
-        type="icon-a-relation3-line"
-        :class="{ active: activeKey === 'graph' }"
-        @click="handleToggle('graph')"
-      />
-    </a-space>
     <a-tabs v-model:active-key="activeKey" :default-active-key="activeKey">
       <a-tab-pane key="list">
-        <ServiceResources
-          :resource-list="resourceList"
-          :is-loading="isLoading"
-        ></ServiceResources>
+        <ServiceResources :resource-list="resourceList" :is-loading="isLoading">
+          <template #right>
+            <a-space class="title">
+              <icon-font
+                type="icon-table"
+                :class="{ active: activeKey === 'list' }"
+                @click="handleToggle('list')"
+              />
+              <icon-font
+                type="icon-a-relation3-line"
+                :class="{ active: activeKey === 'graph' }"
+                @click="handleToggle('graph')"
+              />
+            </a-space>
+          </template>
+        </ServiceResources>
       </a-tab-pane>
       <a-tab-pane key="graph">
-        <TabGraph ref="graph"></TabGraph>
+        <div>
+          <a-space
+            v-if="activeKey === 'graph'"
+            class="title"
+            style="
+              justify-content: flex-end;
+              margin-bottom: 10px;
+              padding: 6px 0;
+            "
+          >
+            <icon-font type="icon-table" @click="handleToggle('list')" />
+            <icon-font
+              type="icon-a-relation3-line"
+              :class="{ active: activeKey === 'graph' }"
+              @click="handleToggle('graph')"
+            />
+          </a-space>
+          <TabGraph ref="graph"></TabGraph>
+        </div>
       </a-tab-pane>
     </a-tabs>
   </div>
@@ -61,7 +79,6 @@
   .title {
     display: flex;
     align-items: center;
-    padding: 2px 0 15px 2px;
 
     :deep(.arco-icon) {
       margin-right: 6px;

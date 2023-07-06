@@ -16,6 +16,9 @@
           </template>
         </a-input>
       </template>
+      <template #button-group>
+        <slot name="right"></slot>
+      </template>
     </FilterBox>
     <a-table
       :loading="isLoading"
