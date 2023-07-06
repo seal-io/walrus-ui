@@ -1,36 +1,38 @@
 <template>
   <div>
     <div class="svc-wrapper">
-      <a-grid :cols="24" :row-gap="8" :col-gap="8">
-        <a-grid-item v-for="item in editServiceList" :key="item.id" :span="6">
-          <instanceThumb
-            style="width: 100%; height: 90px"
-            :active="item.id === active"
-            :data-info="item"
-            @click="handleClickInstance(item)"
-          >
-            <template #description>
-              <span style="font-size: 13px">{{
-                _.get(item, 'environment.name')
-              }}</span>
-            </template>
-            <template #default>
-              <span style="font-weight: 700; font-size: 13px">{{
-                _.get(item, 'name')
-              }}</span>
-            </template>
-            <template #status>
-              <div v-if="showCheck">
-                <a-checkbox
-                  :model-value="selectedList.has(item.id)"
-                  @click.stop="() => {}"
-                  @change="(val) => handleCheckChange(val, item)"
-                ></a-checkbox>
-              </div>
-            </template>
-          </instanceThumb>
-        </a-grid-item>
-      </a-grid>
+      <a-spin :loading="asyncLoading" style="width: 100%">
+        <a-grid :cols="24" :row-gap="8" :col-gap="8">
+          <a-grid-item v-for="item in editServiceList" :key="item.id" :span="6">
+            <instanceThumb
+              style="width: 100%; height: 90px"
+              :active="item.id === active"
+              :data-info="item"
+              @click="handleClickInstance(item)"
+            >
+              <template #description>
+                <span style="font-size: 13px">{{
+                  _.get(item, 'environment.name')
+                }}</span>
+              </template>
+              <template #default>
+                <span style="font-weight: 700; font-size: 13px">{{
+                  _.get(item, 'name')
+                }}</span>
+              </template>
+              <template #status>
+                <div v-if="showCheck">
+                  <a-checkbox
+                    :model-value="selectedList.has(item.id)"
+                    @click.stop="() => {}"
+                    @change="(val) => handleCheckChange(val, item)"
+                  ></a-checkbox>
+                </div>
+              </template>
+            </instanceThumb>
+          </a-grid-item>
+        </a-grid>
+      </a-spin>
     </div>
     <div v-if="active" v-show="show" class="bordered">
       <a-alert :show-icon="true" style="margin-bottom: 10px">
@@ -207,6 +209,12 @@
       type: Boolean,
       default() {
         return true;
+      }
+    },
+    asyncLoading: {
+      type: Boolean,
+      default() {
+        return false;
       }
     }
   });

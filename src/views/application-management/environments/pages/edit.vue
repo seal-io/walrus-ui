@@ -139,6 +139,7 @@
           <CloneService
             ref="serviceRef"
             :service-list="serviceList"
+            :async-loading="asyncLoading"
             style="width: 800px; overflow: auto"
           ></CloneService>
         </a-form-item>
@@ -227,6 +228,7 @@
   const connectorList = ref<{ label: string; value: string }[]>([]);
   const showModal = ref(false);
   const submitLoading = ref(false);
+  const asyncLoading = ref(false);
   const validateTrigger = ref(false);
   const breadCrumbList = ref<BreadcrumbOptions[]>([]);
   let copyFormData: any = {};
@@ -328,6 +330,7 @@
   };
   const getEnvironmentServices = async () => {
     if (!route.params.environmentId) return;
+    asyncLoading.value = true;
     try {
       const params = {
         projectID: route.params.projectId as string,
@@ -339,6 +342,8 @@
     } catch (error) {
       serviceList.value = [];
       console.log(error);
+    } finally {
+      asyncLoading.value = false;
     }
   };
   const getConnectors = async () => {

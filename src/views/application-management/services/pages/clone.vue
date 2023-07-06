@@ -66,6 +66,7 @@
             ref="servicesRef"
             :show-check="false"
             :service-list="selectServices"
+            :async-loading="asyncLoading"
             style="width: 800px"
           ></cloneService>
         </a-form-item>
@@ -124,6 +125,7 @@
   const environments = ref<any[]>([]);
   const validateTrigger = ref(false);
   const submitLoading = ref(false);
+  const asyncLoading = ref(false);
   const formref = ref();
   const servicesRef = ref();
   let copyFormData: any = {};
@@ -155,11 +157,17 @@
     handleBreadChange(value, item);
   };
   const getSelectServices = async () => {
-    const list = await getServiceList();
-    const cloneIds = _.concat(ids);
-    selectServices.value = _.filter(list, (item) => {
-      return _.includes(cloneIds, item.id);
-    });
+    try {
+      asyncLoading.value = true;
+      const list = await getServiceList();
+      const cloneIds = _.concat(ids);
+      selectServices.value = _.filter(list, (item) => {
+        return _.includes(cloneIds, item.id);
+      });
+      asyncLoading.value = false;
+    } catch (error) {
+      asyncLoading.value = false;
+    }
   };
   const handleCloneServices = async () => {
     const services = servicesRef.value.getSelectServiceData();
