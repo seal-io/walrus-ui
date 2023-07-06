@@ -38,7 +38,7 @@
 </template>
 
 <script lang="ts" setup>
-  import {
+  import _, {
     get,
     split,
     join,
@@ -127,6 +127,7 @@
   const isFocus = ref(false);
   const inputFlag = ref(false);
   const isMatchWork = ref(true);
+  const moveLastPosition = ref(false);
   const tooltipConfig = {
     ignoreAttributes: true,
     placement: 'top-end',
@@ -287,11 +288,22 @@
   const tippyInstanceHide = () => {
     get(tippyInstance, '0')?.destroy?.();
   };
+  const debounceFunc = _.debounce(() => {
+    input.value.selectionEnd -= 1;
+  }, 0);
+  const resetCursorPos = () => {
+    if (moveLastPosition.value) {
+      debounceFunc();
+    }
+  };
   const getTextcompleteDownItem = () => {
     tippyInstanceHide();
+    resetCursorPos();
     const activeIndex = textcomplete.dropdown.activeIndex || 0;
     const items = textcomplete.dropdown.items || [];
     const data = get(items, `${activeIndex}.searchResult.data`);
+    moveLastPosition.value = activeIndex === items.length - 1;
+
     if (data?.showTips) {
       const content = data.sensitive ? '******' : data.tips;
       tippyInstance = tippy(`.${props.editorId} .complete-item-active`, {
@@ -305,9 +317,13 @@
       tippyInstanceHide();
     });
     textcomplete?.on('hide', (e) => {
+      moveLastPosition.value = false;
       tippyInstanceHide();
     });
     textEditor.on('move', (e) => {
+      if (e.detail.code === 'UP') {
+        moveLastPosition.value = false;
+      }
       getTextcompleteDownItem();
     });
   };
@@ -393,7 +409,6 @@
   onMounted(async () => {
     expression.value = props.modelValue;
     nextTick(() => {
-      console.log('area:');
       initEditor();
     });
   });

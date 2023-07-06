@@ -329,18 +329,6 @@
           fill: 'rgba(102, 139, 220,1)'
         };
       }
-      // if (
-      //   _.find(
-      //     combosList,
-      //     (item) =>
-      //       item.id === o.source &&
-      //       _.find(combosList, (item) => item.id === o.target)
-      //   )
-      // ) {
-      //   style = {
-      //     lineDash: [5, 5]
-      //   };
-      // }
 
       link.style = { ...style };
 
