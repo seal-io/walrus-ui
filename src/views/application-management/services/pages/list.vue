@@ -151,7 +151,7 @@
         </a-table-column>
         <a-table-column
           align="center"
-          :width="180"
+          :width="210"
           data-index="actions"
           :title="$t('common.table.operation')"
         >

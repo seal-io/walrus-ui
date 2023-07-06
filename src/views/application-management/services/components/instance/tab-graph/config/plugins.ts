@@ -180,11 +180,15 @@ export const createToolTip = () => {
       box.innerHTML = `
         <div style="line-height:20px">
           <div>
-          <span style="display: inline-block;width: 40px;font-weight:700">Name: </span>
+          <span style="display: inline-block;width: 40px;font-weight:700">${i18n.global.t(
+            'common.table.name'
+          )}:</span>
           ${_.get(model, 'name')}
           </div>
           <div>
-          <span style="display: inline-block;width: 40px;font-weight:700">Type: </span>
+          <span style="display: inline-block;width: 40px;font-weight:700">${i18n.global.t(
+            'common.table.type'
+          )}:</span>
           ${_.get(model, 'description') || ''}
           </div>
           <div style="font-weight:700;margin-top:10px">${

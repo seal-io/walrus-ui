@@ -137,6 +137,7 @@
               :title="$t('common.table.operation')"
               ellipsis
               tooltip
+              :width="210"
               :cell-style="{ minWidth: '40px' }"
             >
               <template #cell="{ record }">

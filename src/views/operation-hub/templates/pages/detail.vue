@@ -37,7 +37,7 @@
               message: $t('operation.templates.rules.name')
             },
             {
-              match: validateLabelNameRegs,
+              match: validateLabelNameRegx,
               message: $t('common.validate.labelName')
             }
           ]"
@@ -201,7 +201,7 @@
 </template>
 
 <script lang="ts" setup>
-  import { PageAction, validateLabelNameRegs } from '@/views/config';
+  import { PageAction, validateLabelNameRegx } from '@/views/config';
   import { OPERATIONHUB } from '@/router/config';
   import { Resources, Actions } from '@/permissions/config';
   import { useUserStore, useTabBarStore } from '@/store';

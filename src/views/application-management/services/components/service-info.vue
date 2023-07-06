@@ -266,7 +266,7 @@
     }
 
     :deep(.arco-tabs-content) {
-      padding: 16px 10px 0 10px;
+      padding: 16px 0 0 0;
     }
 
     .content-wrap {

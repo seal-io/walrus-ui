@@ -1,5 +1,9 @@
 <template>
-  <a-dropdown-button size="small" @select="handleSelect">
+  <a-dropdown-button
+    size="small"
+    class="action-dropdown"
+    @select="handleSelect"
+  >
     <a-tooltip :content="$t(_.get(_.head(actions), 'label') || '')">
       <a-link
         class="mright-0"
@@ -70,4 +74,24 @@
   };
 </script>
 
-<style lang="less" scoped></style>
+<style lang="less" scoped>
+  .action-dropdown {
+    .mright-0 {
+      position: relative;
+
+      .arco-link-icon {
+        margin-right: 0;
+      }
+
+      &::after {
+        position: absolute;
+        top: -2px;
+        right: -5px;
+        bottom: -2px;
+        left: -5px;
+        display: inline-block;
+        content: '';
+      }
+    }
+  }
+</style>

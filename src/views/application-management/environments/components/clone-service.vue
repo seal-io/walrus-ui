@@ -75,7 +75,7 @@
                 message: $t('operation.environments.rule.name')
               },
               {
-                match: validateLabelNameRegs,
+                match: validateLabelNameRegx,
                 message: $t('common.validate.labelName')
               }
             ]"
@@ -176,7 +176,7 @@
 
 <script lang="ts" setup>
   import _ from 'lodash';
-  import { PageAction, validateLabelNameRegs } from '@/views/config';
+  import { PageAction, validateLabelNameRegx } from '@/views/config';
   import {
     ref,
     PropType,

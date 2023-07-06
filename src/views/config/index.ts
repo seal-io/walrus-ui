@@ -130,7 +130,7 @@ export const websocketEventType = {
 // 以字母数字字符开头
 // 以字母数字字符结尾
 
-export const validateLabelNameRegs = /^[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?$/;
+export const validateLabelNameRegx = /^[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?$/;
 
 // page state
 export enum PageAction {

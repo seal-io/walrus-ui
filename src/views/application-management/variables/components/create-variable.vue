@@ -25,7 +25,7 @@
           :rules="[
             { required: true, message: $t('applications.projects.rule.name') },
             {
-              match: validateLabelNameRegs,
+              match: validateLabelNameRegx,
               message: $t('common.validate.labelName')
             }
           ]"
@@ -104,7 +104,7 @@
   import { ref, reactive, PropType } from 'vue';
   import _ from 'lodash';
   import EditPageFooter from '@/components/edit-page-footer/index.vue';
-  import { validateLabelNameRegs } from '@/views/config';
+  import { validateLabelNameRegx } from '@/views/config';
   import { createVariable, updateVariable } from '../api';
   import { VariableFormData } from '../config/interface';
 

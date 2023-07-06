@@ -32,7 +32,7 @@
               message: $t('operation.environments.rule.name')
             },
             {
-              match: validateLabelNameRegs,
+              match: validateLabelNameRegx,
               message: $t('common.validate.labelName')
             }
           ]"
@@ -178,7 +178,7 @@
     isEqual,
     cloneDeep
   } from 'lodash';
-  import { PageAction, validateLabelNameRegs } from '@/views/config';
+  import { PageAction, validateLabelNameRegx } from '@/views/config';
   import GroupTitle from '@/components/group-title/index.vue';
   import EditPageFooter from '@/components/edit-page-footer/index.vue';
   import useCallCommon from '@/hooks/use-call-common';
