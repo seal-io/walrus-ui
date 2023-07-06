@@ -159,7 +159,7 @@
           </a-tooltip>
         </div>
       </div>
-      <div class="variables">
+      <a-spin class="variables" style="width: 100%" :loading="asyncLoading">
         <a-tabs
           v-if="formTabs.length > 1"
           class="page-line-tabs"
@@ -198,7 +198,7 @@
           :form-schema="variablesGroup[defaultGroupKey]?.variables"
         >
         </formCreate>
-      </div>
+      </a-spin>
       <EditPageFooter>
         <template #save>
           <a-button
@@ -208,7 +208,7 @@
             @click="handleOk"
             >{{
               route.query.id
-                ? $t('common.button.deploy')
+                ? $t('common.button.upgrade')
                 : $t('common.button.save')
             }}</a-button
           >

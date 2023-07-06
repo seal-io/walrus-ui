@@ -374,7 +374,7 @@
 
       item.showCondition = parseQuery(item.showIf);
       item.conditions = parseExpression(item.showIf);
-      item.order = item.required ? 0 : 10 * (i + 1);
+      item.order = item.required ? 0 : 100 * (i + 1);
       item.parentCom = get(content, 'component.0');
       item.childCom = get(content, 'component.1');
       item.labelList = parseMapstring(item);
