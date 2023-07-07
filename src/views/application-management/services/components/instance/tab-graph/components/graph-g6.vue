@@ -140,7 +140,11 @@
   const contextMenu = new G6.Menu({
     trigger: 'click',
     shouldBegin(e) {
-      if (_.get(e?.target, 'cfg.name') === 'more-button-icon') {
+      const isFull = e?.target
+        .getParent?.()
+        .cfg?.item?.getModel?.()?.isFullscreen;
+
+      if (_.get(e?.target, 'cfg.name') === 'more-button-icon' && !isFull) {
         return true;
       }
       return false;
@@ -178,6 +182,7 @@
       const code = target.getAttribute('code');
       const model = item.getModel();
       resourceNodeInfo.value = model;
+
       if (code === 'log') {
         // logDataList.value = model?.loggableInfo?.data;
         // setTimeout(() => {
@@ -289,6 +294,7 @@
       node.resourceType =
         removeVersions(_.get(node, 'extensions.type')) || _.get(node, 'kind');
 
+      node.isFullscreen = props.isFullscreen;
       node.isCollapsed = props.showAll;
       node.hasComposition = hasCompositionNodes(node);
       node.providerType = _.get(_.split(node.resourceType, '_'), '0') || '';
@@ -468,6 +474,9 @@
     return _.tail(result);
   };
   const toggleNodeCollapse = (node) => {
+    // if (node.getModel().kind !== nodeKindType.ServiceResourceGroup) {
+    //   return;
+    // }
     const result: INode[] = getRelateNodesAndEdges(node, 'target');
     if (!result.length) return;
     const model = node.getModel();
@@ -657,6 +666,13 @@
       fitView: false
     });
   };
+  const updateNodeFullscreen = () => {
+    if (!graph) return;
+    graph?.clear();
+    initData();
+    graph.read({ nodes: nodeList, edges: edgeList });
+    toggleAllNodeShow(props.showAll);
+  };
   const updateGraph = () => {
     loading.value = true;
     graph?.clear();
@@ -689,6 +705,15 @@
     },
     {
       immediate: true
+    }
+  );
+  watch(
+    () => props.isFullscreen,
+    () => {
+      updateNodeFullscreen();
+    },
+    {
+      immediate: false
     }
   );
   onBeforeUnmount(() => {
