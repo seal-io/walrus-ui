@@ -1,6 +1,6 @@
 import _, { get, map, keys, split, toString } from 'lodash';
 import { LabelListItem, schemaType } from './interface';
-import { isOrCondition } from './experssion-parser';
+import { isOrCondition, parseExpression } from './experssion-parser';
 
 interface OptionsItem {
   label: string;
@@ -54,6 +54,25 @@ const funcMap = conditionFuncMap();
 
 export const getConditionValue = (fm, formData) => {
   const conditionList = fm.conditions;
+  if (isOrCondition(fm.showIf)) {
+    return _.some(conditionList, (item) => {
+      return funcMap.get(item.operator)(
+        _.toString(_.get(formData, item.variable)),
+        item.value
+      );
+    });
+  }
+
+  return _.every(conditionList, (item) => {
+    return funcMap.get(item.operator)(
+      _.toString(_.get(formData, item.variable)),
+      item.value
+    );
+  });
+};
+
+export const getObjectConditionValue = (fm, formData) => {
+  const conditionList = parseExpression(fm.showIf);
   if (isOrCondition(fm.showIf)) {
     return _.some(conditionList, (item) => {
       return funcMap.get(item.operator)(

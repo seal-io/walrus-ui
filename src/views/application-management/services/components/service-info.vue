@@ -172,6 +172,7 @@
   import { ref, computed, nextTick, watch } from 'vue';
   import { schemaType } from '@/components/form-create/config/interface';
   import { json2Yaml } from '@/components/form-create/config/yaml-parse';
+  import { getObjectConditionValue } from '@/components/form-create/config/utils';
   import LabelsList from './labels-list.vue';
   import useServiceData from '../hooks/use-service-data';
 
@@ -225,9 +226,25 @@
     activeKey.value = val;
     setSubGroupList();
   };
-
+  const filterGroupVariables = () => {
+    _.each(_.keys(variablesGroup.value), (group) => {
+      let variables = _.get(variablesGroup.value, `${group}.variables`) || [];
+      variables = _.filter(variables, (item) => {
+        if (item.showIf) {
+          const attributes = _.get(
+            variablesGroupForm.value,
+            `${group}.attributes`
+          );
+          return getObjectConditionValue(item, attributes);
+        }
+        return true;
+      });
+      _.set(variablesGroup.value, `${group}.variables`, variables);
+    });
+  };
   const initData = async () => {
     await init();
+    filterGroupVariables();
     setFormTabs();
     nextTick(() => {
       handleTabChange(_.get(formTabs.value, '0'));
