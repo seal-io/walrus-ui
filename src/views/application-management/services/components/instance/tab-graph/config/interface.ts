@@ -22,6 +22,7 @@ export interface INode extends Node {
   hasComposition: boolean;
   visible?: boolean;
   isCollapsed: boolean;
+  isFullscreen?: boolean;
   logoIcon: Record<string, any>;
   comboId: string;
   providerType: string;
