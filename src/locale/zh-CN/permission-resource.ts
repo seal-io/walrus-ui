@@ -1,5 +1,4 @@
 export default {
-  'permission.resource.project.appInstance': '应用实例',
   'permission.resource.project.appResource': '服务资源',
   'permission.resource.project.appRevision': '服务历史记录',
   'permission.resource.project.roleAuth': '角色授权',

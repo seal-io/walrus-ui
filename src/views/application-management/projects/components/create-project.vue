@@ -32,7 +32,7 @@
           <a-input
             v-model="formData.name"
             style="width: 100%"
-            :max-length="30"
+            :max-length="63"
             show-word-limit
           ></a-input>
           <template #extra>

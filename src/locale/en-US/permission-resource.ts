@@ -1,5 +1,4 @@
 export default {
-  'permission.resource.project.appInstance': 'Application Instances',
   'permission.resource.project.appResource': 'Service Resources',
   'permission.resource.project.appRevision': 'Service Revisions',
   'permission.resource.project.roleAuth': 'Role Authorization',

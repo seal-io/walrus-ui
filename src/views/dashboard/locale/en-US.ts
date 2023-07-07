@@ -2,7 +2,6 @@ export default {
   'dashboard.overview.title': 'Overview',
   'dashboard.overview.applications': 'Applications',
   'dashboard.overview.environment': 'Environments',
-  'dashboard.overview.instance': 'Instances',
   'dashboard.overview.connector': 'Connectors',
   'dashboard.deployment.title': 'Deployment',
   'dashboard.deployment.history': 'History',

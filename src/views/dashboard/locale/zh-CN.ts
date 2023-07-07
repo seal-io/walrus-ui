@@ -2,7 +2,6 @@ export default {
   'dashboard.overview.title': '概况',
   'dashboard.overview.applications': '应用',
   'dashboard.overview.environment': '环境',
-  'dashboard.overview.instance': '实例',
   'dashboard.overview.connector': '连接器',
   'dashboard.deployment.title': '应用部署',
   'dashboard.deployment.history': '历史记录',
