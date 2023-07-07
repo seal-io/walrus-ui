@@ -73,21 +73,13 @@
     useThrottleFn,
     useResizeObserver
   } from '@vueuse/core';
-  import {
-    defineCustomNode,
-    defaultNode,
-    defaultCombo
-  } from '../config/common';
+  import { defineCustomNode, defaultNode } from '../config/common';
   import { createToolTip } from '../config/plugins';
   import { fittingString } from '../config/utils';
   import { statusMap, edgeType, nodeKindType, customeLegend } from '../config';
   import { ICombo, IEdge, INode } from '../config/interface';
   import { setInstanceStatus, Status } from '../../../../config';
-  import {
-    getDefaultValue,
-    getResourceId,
-    getResourceKeyList
-  } from '../../../../config/utils';
+  import { getResourceKeyList } from '../../../../config/utils';
   import { ResourceKey } from '../../../../config/interface';
   import loggableModal from './loggable-modal.vue';
   import terminalModal from './terminal-modal.vue';
@@ -264,10 +256,7 @@
   const removeVersions = (inputString) => {
     return _.replace(inputString, /_v[\d]/g, '');
   };
-  const getLoggableExcutableInfo = (list): { key: string; id: string } => {
-    const result = getDefaultValue(list);
-    return getResourceId(result);
-  };
+
   const hasCompositionNodes = (node) => {
     return _.some(props.sourceData.links, (item) => {
       return (
@@ -276,11 +265,7 @@
       );
     });
   };
-  const hasParentNode = (node) => {
-    return _.some(props.sourceData.links, (item) => {
-      return _.get(item, 'target') === node.id;
-    });
-  };
+
   const setNodeList = () => {
     const { sourceData: data } = props;
     const style = {
@@ -430,7 +415,6 @@
   };
 
   const initData = () => {
-    // setCombosList();
     setNodeList();
     setLinks();
   };
@@ -459,7 +443,6 @@
     graph.data({
       nodes: nodeList,
       edges: edgeList
-      // combos: combosList
     });
     graph.render();
   };
@@ -565,13 +548,9 @@
       const node = e.item;
       const model = node.getModel();
       toggleNodeCollapse(node);
-      // graph.getNodes().forEach((n) => {
-      //   graph.clearItemStates(n);
-      // });
+
       graph.setItemState(node, 'selected', true);
       emits('nodeClick', model);
-
-      // node.stateIcon.show = true;
     });
     graph?.on('edge:mouseenter', (e) => {
       const edge = e.item;
