@@ -124,7 +124,9 @@
                 </div>
               </template>
               <template #label="{ data }">
-                <span style="font-weight: 400">{{ data.label }}</span>
+                <span style="font-weight: 400">{{
+                  data.label || data.name
+                }}</span>
               </template>
             </a-descriptions>
           </div>
