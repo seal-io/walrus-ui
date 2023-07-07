@@ -1,159 +1,50 @@
-import G6 from '@antv/g6';
+import G6, { GraphData } from '@antv/g6';
 import _ from 'lodash';
 import i18n from '@/locale';
-import { h } from 'vue';
-import { Modal, Button, Link } from '@arco-design/web-vue';
 import { INode } from './interface';
-import LoggableModal from '../components/loggable-modal.vue';
-import TerminalModal from '../components/terminal-modal.vue';
+import { edgeType } from './index';
 
-let ModalIns: any = null;
-
-const ShowLogModal = (data) => {
-  ModalIns = Modal.open({
-    title: 'Logs',
-    top: 0,
-    width: 1000,
-    alignCenter: false,
-    closable: false,
-    maskClosable: true,
-    footer: () => {
-      return h(
-        'div',
-        {
-          style: {
-            textAlign: 'center'
-          }
-        },
-        [
-          h(
-            Button,
-            {
-              type: 'primary',
-              onClick: () => {
-                ModalIns?.close?.();
-              }
-            },
-            i18n.global.t('common.button.close')
-          )
-        ]
-      );
-    },
-    content: () => {
-      return h(LoggableModal, {
-        info: { key: data.key, id: data.id }
-      });
-    }
-  });
-};
-const ShowTermModal = (data) => {
-  ModalIns = Modal.open({
-    title: '终端',
-    top: 0,
-    width: 1000,
-    maskClosable: true,
-    alignCenter: false,
-    closable: false,
-    modalStyle: {
-      height: '1000px;'
-    },
-    // footer: () => {
-    //   return h(
-    //     'div',
-    //     {
-    //       style: {
-    //         textAlign: 'center'
-    //       }
-    //     },
-    //     [
-    //       h(
-    //         Button,
-    //         {
-    //           type: 'primary',
-    //           onClick: () => {
-    //             ModalIns?.close?.();
-    //             ModalIns?.update?.();
-    //           }
-    //         },
-    //         i18n.global.t('common.button.close')
-    //       )
-    //     ]
-    //   );
-    // },
-    content: () => {
-      return h(TerminalModal, {
-        show: true,
-        info: { key: data.key, id: data.id }
-      });
-    }
-  });
-};
-export const contextMenu = new G6.Menu({
-  // trigger: 'click',
-  shouldBegin(e) {
-    const node = e?.item;
-    const model: INode = node?.getModel();
-    const logabble = model?.loggableInfo?.loggable;
-    const executable = model?.executableInfo?.executable;
-    if (!logabble && !executable) {
-      return false;
-    }
-    return true;
+export const legend = new G6.Legend({
+  data: {
+    edges: [
+      {
+        id: edgeType.Composition,
+        label: edgeType.Composition
+      },
+      {
+        id: edgeType.Dependency,
+        label: edgeType.Dependency
+      },
+      {
+        id: edgeType.Realization,
+        label: edgeType.Realization
+      }
+    ]
   },
-  getContent(evt) {
-    const node = evt?.item;
-    const model: INode = node?.getModel();
-    const logabble = model?.loggableInfo?.loggable;
-    const executable = model?.executableInfo?.executable;
-    let logHtml = '';
-    let execHtml = '';
-    if (!logabble && !executable) {
-      return '';
-    }
-    if (logabble) {
-      logHtml = `<li code="log" class="iconfont icon-xiangqing-">
-      ${i18n.global.t('applications.instance.tab.log')}
-    </li>`;
-    }
-    if (executable) {
-      execHtml = `<li code="exec" class="iconfont icon-code">
-      ${i18n.global.t('applications.instance.tab.term')}
-      </i>
-      </li>`;
-    }
-    console.log('menu===', model);
-    return `
-    <div id="contextMenu-wrapper">
-    <div class="res-name">${model?.name}</div>
-    <ul >
-      ${logHtml}${execHtml}
-    </ul>
-    </div>
-    `;
+  filter: {
+    enable: false
   },
-  handleMenuClick: (target, item) => {
-    const code = target.getAttribute('code');
-    const model = item.getModel();
-    console.log(code, model);
-    ModalIns?.close();
-    if (code === 'log') {
-      ShowLogModal(model?.loggableInfo?.data);
-      return;
-    }
-    if (code === 'exec') {
-      ShowTermModal(model?.executableInfo?.data);
-    }
+  containerStyle: {
+    fill: '#fff',
+    color: 'red',
+    radius: 2,
+    lineWidth: 0
   },
-  // offsetX and offsetY include the padding of the parent container
-  // 需要加上父级容器的 padding-left 16 与自身偏移量 10
-  offsetX: 16 + 10,
-  // 需要加上父级容器的 padding-top 24 、画布兄弟元素高度、与自身偏移量 10
+  padding: [0, 4, 0, 10],
+  title: '',
+  titleConfig: {
+    position: 'center',
+    offsetX: 0,
+    offsetY: 120
+  },
+  vertiSep: 12,
+  horiSep: 24,
   offsetY: 0,
-  // the types of items that allow the menu show up
-  // 在哪些类型的元素上响应
-  itemTypes: ['node']
+  // padding: [8, 4],
+  align: 'center',
+  layout: 'horizontal', // vertical
+  position: 'top-right'
 });
-
 export const createToolTip = () => {
   const toolTip = new G6.Tooltip({
     offsetX: 5,
@@ -189,7 +80,7 @@ export const createToolTip = () => {
           <span style="display: inline-block;width: 40px;font-weight:700">${i18n.global.t(
             'common.table.type'
           )}:</span>
-          ${_.get(model, 'description') || ''}
+          ${_.get(model, 'descTips') || ''}
           </div>
           <div style="font-weight:700;margin-top:10px">${
             model?.loggableInfo?.loggable || model?.executableInfo?.executable

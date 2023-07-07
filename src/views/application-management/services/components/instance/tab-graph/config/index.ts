@@ -1,12 +1,10 @@
-import { MarkerType } from '@vue-flow/core';
+import realizationImg from '@/assets/images/realization.png';
+import depsImg from '@/assets/images/dependency.png';
+import compImg from '@/assets/images/composition.png';
 import warningStatus from '../img/warning.png';
 import errorStatus from '../img/error.png';
 import successStatus from '../img/success.png';
 import { Status } from '../../../../config';
-/**
- * You can pass elements together as a v-model value
- * or split them up into nodes and edges and pass them to the `nodes` and `edges` props of Vue Flow (or useVueFlow composable)
- */
 
 export const statusMap = {
   [Status.Warning]: warningStatus,
@@ -16,10 +14,24 @@ export const statusMap = {
 
 export const edgeType = {
   Composition: 'Composition',
-  Dependency: 'Dependency'
+  Dependency: 'Dependency',
+  Realization: 'Realization'
 };
+
+export const customeLegend = [
+  { label: edgeType.Composition, type: edgeType.Composition, icon: compImg },
+  { label: edgeType.Dependency, type: edgeType.Dependency, icon: depsImg },
+  {
+    label: edgeType.Realization,
+    type: edgeType.Realization,
+    icon: realizationImg
+  }
+];
 export const nodeKindType = {
   Service: 'Service',
-  ServiceResource: 'ServiceResource'
+  ServiceResource: 'ServiceResource',
+  ServiceResourceGroup: 'ServiceResourceGroup'
 };
+
+export const strokeStyle = {};
 export default {};

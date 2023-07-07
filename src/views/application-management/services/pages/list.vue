@@ -326,14 +326,6 @@
     });
   };
 
-  const handleClickAction = (value, row) => {
-    if (value === 'delete') {
-      handleDelete(row, 'row');
-      return;
-    }
-    actionHandlerMap.get(value)(row);
-  };
-
   const handleReset = () => {
     queryParams.query = '';
     queryParams.page = 1;
@@ -421,6 +413,13 @@
       showDeleteModal.value = true;
     }, 100);
   };
+  const handleClickAction = (value, row) => {
+    if (value === 'delete') {
+      handleDelete(row, 'row');
+      return;
+    }
+    actionHandlerMap.get(value)(row);
+  };
   const setActionHandler = () => {
     actionHandlerMap.set('upgrade', handleClickUpgrade);
     actionHandlerMap.set('rollback', handleClickRollback);
@@ -498,12 +497,6 @@
     createServiceChunkRequest();
   });
   init();
-</script>
-
-<script lang="ts">
-  export default {
-    name: 'ApplicationsList'
-  };
 </script>
 
 <style lang="less" scoped></style>

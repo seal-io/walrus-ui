@@ -206,11 +206,7 @@
             type="primary"
             class="cap-title cancel-btn"
             @click="handleOk"
-            >{{
-              route.query.id
-                ? $t('common.button.upgrade')
-                : $t('common.button.save')
-            }}</a-button
+            >{{ $t('common.button.save') }}</a-button
           >
         </template>
         <template #cancel>

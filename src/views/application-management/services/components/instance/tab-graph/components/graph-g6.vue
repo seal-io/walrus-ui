@@ -9,6 +9,20 @@
             class="graph-mount"
             :class="{ isFullscreen: isFullscreen }"
           ></div>
+          <div class="legend">
+            <a-space :size="20">
+              <span
+                v-for="item in customeLegend"
+                :key="item.label"
+                class="legend-item"
+                @mouseenter="handleLegengHover(item)"
+                @mouseleave="handleLegengLeave(item)"
+              >
+                <img :src="item.icon" alt="" class="img" />
+                {{ item.label }}
+              </span>
+            </a-space>
+          </div>
           <div class="toolbar">
             <slot name="toolbar"></slot>
           </div>
@@ -66,7 +80,7 @@
   } from '../config/common';
   import { createToolTip } from '../config/plugins';
   import { fittingString } from '../config/utils';
-  import { statusMap, edgeType, nodeKindType } from '../config';
+  import { statusMap, edgeType, nodeKindType, customeLegend } from '../config';
   import { ICombo, IEdge, INode } from '../config/interface';
   import { setInstanceStatus, Status } from '../../../../config';
   import {
@@ -91,6 +105,12 @@
       }
     },
     isFullscreen: {
+      type: Boolean,
+      default() {
+        return false;
+      }
+    },
+    showAll: {
       type: Boolean,
       default() {
         return false;
@@ -252,7 +272,7 @@
     return _.some(props.sourceData.links, (item) => {
       return (
         _.get(item, 'source') === node.id &&
-        _.get(item, 'edgeType') === edgeType.Composition
+        _.get(item, 'edgeType') === edgeType.Realization
       );
     });
   };
@@ -263,6 +283,11 @@
   };
   const setNodeList = () => {
     const { sourceData: data } = props;
+    const style = {
+      lineWidth: 1,
+      stroke: 'transparent',
+      cursor: 'grabbing'
+    };
     nodeList = _.map(data.nodes || [], (o) => {
       const node = _.cloneDeep(o);
       const loggableList = getResourceKeyList(
@@ -279,7 +304,7 @@
       node.resourceType =
         removeVersions(_.get(node, 'extensions.type')) || _.get(node, 'kind');
 
-      node.isCollapsed = true;
+      node.isCollapsed = props.showAll;
       node.hasComposition = hasCompositionNodes(node);
       node.providerType = _.get(_.split(node.resourceType, '_'), '0') || '';
       node.subType = _.get(node, 'data.type');
@@ -294,8 +319,15 @@
         data: loggableList
       };
 
-      node.label = fittingString(node.name, 120);
-      node.description = _.get(node, 'extensions.type') || _.get(node, 'kind');
+      node.descTips = _.get(node, 'extensions.type') || _.get(node, 'kind');
+
+      if (_.get(node, 'kind') !== nodeKindType.ServiceResource) {
+        node.description = fittingString(node.descTips, 120);
+        node.label = fittingString(node.name, 120);
+      } else {
+        node.label = fittingString(node.name, 112);
+      }
+
       node.stateIcon = {
         animate,
         width: animate ? 20 : 14,
@@ -311,6 +343,47 @@
           resourceImages.get(node.providerType)?.get(node.resourceType) ||
           serviceImg
       };
+      if (_.get(node, 'kind') === nodeKindType.ServiceResourceGroup) {
+        node.style = {
+          ...style,
+          fill: '#e8f2ff',
+          radius: 30
+        };
+        node.stateStyles = {
+          inactive: {
+            fill: 'rgba(232,242,255,.5)'
+          },
+          highlight: {
+            fill: 'rgba(142, 173, 231,.7)'
+          },
+          selected: {
+            stroke: 'rgb(33, 74, 196)',
+            lineWidth: 1
+          },
+          hover: {
+            stroke: 'rgb(33, 74, 196)',
+            lineWidth: 1
+          }
+        };
+      } else {
+        node.style = {
+          ...style
+        };
+        node.stateStyles = {
+          inactive: {
+            fill: 'rgba(255,255,255,.5)'
+          },
+          selected: {
+            stroke: 'rgb(33, 74, 196)',
+            lineWidth: 1
+          },
+          hover: {
+            stroke: 'rgb(33, 74, 196)',
+            lineWidth: 1
+          }
+        };
+      }
+
       return node;
     });
   };
@@ -320,16 +393,36 @@
       const link = _.cloneDeep(o);
       const style: any = {};
       if (o.edgeType === edgeType.Dependency) {
+        style.lineWidth = 1.5;
         style.lineDash = [5, 5];
       }
+
       if (o.edgeType === edgeType.Composition) {
         style.endArrow = false;
         style.startArrow = {
-          path: G6.Arrow.diamond(8, 10, 0),
+          path: G6.Arrow.diamond(12, 14, 0),
           fill: 'rgba(102, 139, 220,1)'
         };
       }
 
+      if (o.edgeType === edgeType.Realization) {
+        style.endArrow = {
+          path: G6.Arrow.triangle(8, 8, 0),
+          fill: '#86909c'
+        };
+        style.stroke = '#86909c';
+        style.lineDash = [8, 3, 3];
+      }
+
+      link.labelCfg = {
+        refY: 15,
+        autoRotate: true,
+        show: false,
+        style: {
+          fontSize: 16,
+          fontWeight: 500
+        }
+      };
       link.style = { ...style };
 
       return link;
@@ -344,6 +437,7 @@
   const toggleAllNodeShow = (show) => {
     _.each(graph.getNodes(), (node) => {
       const model = node.getModel();
+      console.log('nodeKindType:', model.kind);
       if (show) {
         graph.showItem(node);
       } else if (model.kind === nodeKindType.ServiceResource) {
@@ -411,6 +505,40 @@
     graph.layout();
     graph.set('animate', true);
   };
+  const handleLegengHover = (item) => {
+    _.each(graph?.getEdges(), (edge) => {
+      const model = edge.getModel();
+      if (item.type === model.edgeType) {
+        edge.toFront();
+        graph.setItemState(edge, 'hover', true);
+      } else {
+        edge.toBack();
+        graph.setItemState(edge, 'inactive', true);
+      }
+    });
+    _.each(graph?.getNodes(), (node) => {
+      const edges = node.getEdges();
+      const res = _.some(edges, (edge) => {
+        const model = edge.getModel();
+        return model.edgeType === item.type;
+      });
+      if (!res) {
+        node.toBack();
+        graph.setItemState(node, 'inactive', true);
+      } else {
+        node.toFront();
+        graph.setItemState(node, 'highlight', true);
+      }
+    });
+  };
+  const handleLegengLeave = (item) => {
+    _.each(graph?.getEdges(), (edge) => {
+      graph.clearItemStates(edge);
+    });
+    _.each(graph?.getNodes(), (node) => {
+      graph.clearItemStates(node);
+    });
+  };
   const initNodeEvent = () => {
     graph?.on('node:mouseenter', (e) => {
       graph.setItemState(e.item, 'hover', true);
@@ -418,15 +546,12 @@
         toolTipRef.value.hideTooltip();
       }
     });
-    graph?.on('node:mousemove', (e) => {
-      if (e.target.cfg.name === 'more-button-icon') {
-        toolTipRef.value.hideTooltip();
-      }
-    });
+
     graph?.on('node:mouseleave', (e) => {
       const node = e.item;
       graph.setItemState(e.item, 'hover', false);
     });
+
     // graph?.on('combo:click', (e) => {
     //   const node = e.item;
     //   const model = node.getModel();
@@ -447,6 +572,27 @@
       emits('nodeClick', model);
 
       // node.stateIcon.show = true;
+    });
+    graph?.on('edge:mouseenter', (e) => {
+      const edge = e.item;
+      const model = edge.getModel();
+      edge.update({
+        ...model,
+        label: model.edgeType
+      });
+      edge.toFront();
+
+      graph.setItemState(edge, 'hover', true);
+    });
+    graph?.on('edge:mouseleave', (e) => {
+      const edge = e.item;
+      const model = edge.getModel();
+      edge.update({
+        ...model,
+        label: ''
+      });
+      edge.toBack();
+      graph.setItemState(edge, 'hover', false);
     });
     graph.on('canvas:click', (ev) => {
       emits('canvasClick', ev);
@@ -478,16 +624,16 @@
         // sortByCombo: false
       },
       pixelRatio: 2,
-      // defaultCombo,
       defaultNode,
       defaultEdge: {
         type: 'cubic-horizontal',
         style: {
+          cursor: 'pointer',
           radius: 0,
           offset: 0,
           shadowBlur: 0,
           endArrow: {
-            path: G6.Arrow.vee(5, 5, 0),
+            path: G6.Arrow.vee(8, 8, 0),
             fill: 'rgba(102, 139, 220,1)',
             lineDash: [0, 0]
           },
@@ -495,6 +641,18 @@
           stroke: 'rgba(66, 106, 208,.8)'
         }
       },
+      edgeStateStyles: {
+        hover: {
+          lineWidth: 4,
+          opacity: 0.8,
+          animate: true,
+          shadowBlur: 10
+        },
+        inactived: {
+          opacity: 0.5
+        }
+      },
+
       nodeStateStyles: {
         selected: {
           stroke: 'rgb(33, 74, 196)',
@@ -503,6 +661,9 @@
         hover: {
           stroke: 'rgb(33, 74, 196)',
           lineWidth: 1
+        },
+        inactived: {
+          fill: 'rgba(255,255,255,0)'
         }
       },
       comboStateStyles: {
@@ -522,6 +683,7 @@
     graph?.clear();
     initData();
     graph.read({ nodes: nodeList, edges: edgeList });
+    toggleAllNodeShow(props.showAll);
   };
   const init = () => {
     loading.value = true;
@@ -531,6 +693,7 @@
     createGraph();
     renderGraph();
     initNodeEvent();
+    toggleAllNodeShow(props.showAll);
   };
   defineExpose({
     fitView,
@@ -563,6 +726,32 @@
     position: relative;
     width: 100%;
     background-color: var(--color-fill-2);
+
+    .legend {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      padding: 6px 4px;
+      font-size: 14px;
+      background-color: rgba(255, 255, 255, 0.8);
+      border-radius: 2px;
+
+      .legend-item {
+        color: rgb(var(--arcoblue-5));
+        cursor: pointer;
+        transition: color var(--seal-transition-func) 0.2s;
+
+        &:hover {
+          color: rgb(var(--arcoblue-6));
+          transition: color var(--seal-transition-func) 0.2s;
+        }
+      }
+
+      .img {
+        width: 24px;
+        margin-right: 5px;
+      }
+    }
 
     .toolbar {
       position: absolute;

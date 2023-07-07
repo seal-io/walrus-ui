@@ -14,6 +14,7 @@ export interface INode extends Node {
   parentNode: string;
   label: string;
   description: string;
+  descTips: string;
   executableInfo: {
     executable: boolean;
     data: object;
@@ -30,12 +31,17 @@ export interface INode extends Node {
     loggable: boolean;
     data: object;
   };
+  stateStyles?: object;
+  style: object;
 }
 export interface IEdge {
   source: string;
   target: string;
   style?: object;
   visible?: boolean;
+  labelCfg?: object;
+  legendType?: string;
+  label?: string;
   edgeType: string;
 }
 export interface ICombo {

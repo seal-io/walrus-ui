@@ -116,27 +116,11 @@
                 <icon-lock />
               </span>
               <span v-else>
-                <a-link
-                  style="padding-left: 0; line-height: 1"
-                  @click="handleToggleVal(record)"
-                >
-                  <span>
+                <!-- <span>
                     <icon-eye v-if="!record.visible" class="size-16" />
                     <icon-eye-invisible v-if="record.visible" class="size-16" />
-                  </span>
-                  <span
-                    :class="{
-                      visible: record.visible,
-                      invisible: !record.visible
-                    }"
-                    style="
-                      margin-left: 6px;
-                      color: var(--color-text-1);
-                      line-height: 1.2;
-                    "
-                    >{{ record.visible ? record.value : '*******' }}</span
-                  >
-                </a-link>
+                  </span> -->
+                {{ !record.sensitive ? record.value : '*******' }}
               </span>
             </template>
           </a-table-column>

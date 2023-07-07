@@ -9,6 +9,7 @@
           ref="graph"
           :is-fullscreen="isFullscreen"
           :source-data="resultData"
+          :show-all="showAll"
           @nodeClick="handleNodeClick"
           @canvasClick="handleCanvasClick"
         >
@@ -85,7 +86,7 @@
 
   const nodeActive = ref(false);
   const loading = ref(false);
-  const showAll = ref(true);
+  const showAll = ref(false);
   const flowWrapper = ref();
   const nodeInfo = ref<any>({});
   const graph = ref();
