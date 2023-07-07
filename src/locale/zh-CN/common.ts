@@ -91,5 +91,5 @@ export default {
   'common.table.yes': '是',
   'common.table.no': '否',
   'common.validate.labelName':
-    '最多包含 63 个字符,仅包含小写字母数字字符或"-",以字母数字字符开头,以字母数字字符结尾'
+    '仅包含小写字母数字或"-",以字母数字开头,以字母数字结尾'
 };

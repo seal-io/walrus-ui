@@ -221,9 +221,9 @@ export const instanceUpgradeView = [
 
 export const serviceActions: MoreAction[] = [
   {
-    label: 'common.button.upgrade',
+    label: 'common.button.edit',
     value: 'upgrade',
-    icon: 'iconFont',
+    icon: 'icon-edit',
     handler: '',
     status: 'normal',
     disabled(currentInfo: any): boolean {
@@ -235,9 +235,6 @@ export const serviceActions: MoreAction[] = [
         projectID: get(currentInfo, 'project.id'),
         actions: [Actions.PUT]
       });
-    },
-    props: {
-      type: 'icon-upgrade'
     }
   },
   // {

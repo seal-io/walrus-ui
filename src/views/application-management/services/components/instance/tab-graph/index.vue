@@ -8,6 +8,7 @@
         <GraphG6
           ref="graph"
           :is-fullscreen="isFullscreen"
+          :show-all="showAll"
           :source-data="resultData"
           @nodeClick="handleNodeClick"
           @canvasClick="handleCanvasClick"
@@ -41,7 +42,7 @@
                   @click="handleToggleFullScreen"
                 ></span>
               </a-tooltip>
-              <!-- <a-tooltip
+              <a-tooltip
                 :content="
                   showAll
                     ? $t('applications.environment.graph.hide')
@@ -56,7 +57,7 @@
                   }"
                   @click="handleToggleShow"
                 ></span>
-              </a-tooltip> -->
+              </a-tooltip>
             </a-space>
           </template>
         </GraphG6>
@@ -80,7 +81,7 @@
   const serviceId = inject('serviceId', ref(''));
   const nodeActive = ref(false);
   const loading = ref(false);
-  const showAll = ref(true);
+  const showAll = ref(false);
   const flowWrapper = ref();
   const nodeInfo = ref<any>({});
   const graph = ref();

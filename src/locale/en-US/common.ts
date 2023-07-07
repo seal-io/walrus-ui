@@ -94,5 +94,5 @@ export default {
   'common.table.yes': 'Yes',
   'common.table.no': 'No',
   'common.validate.labelName':
-    'contain at most 63 characters,only lowercase alphanumeric characters or "-",start with an alphanumeric character,end with an alphanumeric character'
+    'contains only lowercase alphanumeric or "-", starts with an alphanumeric and ends with an alphanumeric'
 };

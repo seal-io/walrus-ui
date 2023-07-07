@@ -435,7 +435,6 @@
     });
     list = sortBy(list, (pItem) => pItem.order);
     schemaList.value = list;
-    console.log('schemaList===', schemaList.value);
   };
   const handleAddLabel = (obj, list) => {
     list.push({ ...obj });
