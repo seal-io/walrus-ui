@@ -16,7 +16,6 @@ export default {
   'applications.applications.table.type': 'Type',
   'applications.applications.table.content': 'Content',
   'applications.applications.table.target': 'Target',
-  'applications.applications.table.instance': 'Instances',
   'applications.applications.table.holder': 'please enter an servicesservices',
   'applications.applications.project.holder': 'please select a project',
   'applications.applications.form.name': 'Name',
@@ -40,20 +39,13 @@ export default {
   'applications.applications.table.currentval': 'Current Value',
   'applications.applications.table.recommendation': 'Recommendation',
   'applications.applications.container.holder': 'please select a container',
-  'applications.applications.detail.createInstance':
-    'Create Application Instance',
   'applications.applications.detail.env': 'Environment',
   'applications.applications.detail.basic': 'Basic Information',
   'applications.applications.title.edit': 'Edit Application',
   'applications.applications.title.view': 'Application Details',
   'applications.applications.title.clone': 'Clone Application',
   'applications.applications.detail.info': 'Application Information',
-  'applications.applications.module.delete': `1. May affect the upgrade of deployed instances
-    2. May affect resource cleanup when the deployed instance is deleted`,
-  'applications.applications.instance.add': 'Add Application Instance',
-  'applications.applications.instance.create': 'Add Instance',
   'applications.applications.instance.deleteTips': 'Clean up all resources',
-  'applications.applications.instance.upgrade': 'Upgrade Instance',
   'applications.applications.instance.application': 'Application',
   'applications.applications.instance.status': 'Status',
   'applications.applications.instance.history': 'History Revisions',
@@ -67,8 +59,6 @@ export default {
   'applications.applications.instance.cloneName':
     'please enter a new service name',
   'applications.applications.instance.clonetitle': 'Clone Service ({from})',
-  'applications.applications.instance.configstatus':
-    'The instance configuration is inconsistent with the application configuration',
   'applications.applications.logs.live': 'Running Logs',
   'applications.instance.rule.env': 'the deployment environment is required',
   'applications.instance.env.tips':
@@ -80,7 +70,6 @@ export default {
   'applications.instance.tab.term': 'Terminal',
   'applications.instance.tab.graph': 'Dependency Graph',
   'applications.instance.tab.output': 'Outputs',
-  'applications.instance.basic.title': 'Instance Information',
   'applications.applications.history.version': 'Version',
   'applications.applications.history.operator': 'Operator',
   'applications.applications.history.clone': 'Clone',
