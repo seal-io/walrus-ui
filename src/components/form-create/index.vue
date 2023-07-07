@@ -265,7 +265,6 @@
   const triggerValidate = ref(false);
 
   const activeSchemaList = computed(() => {
-    console.log('activeSchemaList===', schemaList.value);
     if (!activeMenu.value) {
       const list = filter(schemaList.value, (sItem) => {
         if (sItem.showIf) {
@@ -449,7 +448,7 @@
   const resetFieldsDefaultValue = () => {
     each(schemaList.value, (item) => {
       if (item.showIf && !getConditionValue(item, formData.value)) {
-        formData.value[item.name] = item.default;
+        Reflect.deleteProperty(formData.value, item.name);
       }
     });
   };
