@@ -23,8 +23,6 @@
             <template #label>
               <span
                 ><span>{{ $t(dataInfo.label) }}</span>
-                <!-- <span v-if="dataInfo.desc" class="label-desc"
-                  >({{ $t(dataInfo.desc) }})</span> -->
                 <a-tooltip v-if="dataInfo.desc" :content="dataInfo.desc">
                   <icon-question-circle />
                 </a-tooltip>
@@ -34,7 +32,7 @@
         </template>
 
         <template v-if="dataInfo.dataList && dataInfo.dataList.length">
-          <div v-for="item in dataInfo.dataList" :key="item.id">
+          <div v-for="(item, index) in dataInfo.dataList" :key="item.id">
             <template v-if="item?.childProperties?.length">
               <template v-for="child in item.childProperties" :key="child.id">
                 <a-form-item
@@ -76,6 +74,7 @@
             <template v-else-if="item?.subGroup?.length">
               <div
                 class="sub-group-title"
+                :class="[`sub-group-title-${index}`]"
                 :style="{ ...item.style, display: 'flex', alignItems: 'cener' }"
               >
                 <span>{{ $t(item.label) }}</span>
@@ -467,6 +466,10 @@
     .sub-group-title {
       padding-bottom: 8px;
       border-bottom: 1px solid var(--color-border-2);
+
+      &.sub-group-title-0 {
+        margin-top: 0 !important;
+      }
     }
   }
 </style>

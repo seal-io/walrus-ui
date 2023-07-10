@@ -152,6 +152,7 @@
               api=""
               :show-footer="false"
               :submit="() => {}"
+              :attributes="variableAttributes"
               :model="variablesGroupForm[group]?.attributes"
               :form-schema="variablesGroup[group]?.variables"
             >
@@ -263,6 +264,21 @@
   const show = ref(true);
   const activeServiceInfo = ref<any>({});
 
+  const variableAttributes = computed(() => {
+    // return  variablesGroupForm.value's all attributes
+    const result = _.reduce(
+      variablesGroupForm.value,
+      (obj, s) => {
+        obj = {
+          ...obj,
+          ...s.attributes
+        };
+        return obj;
+      },
+      {}
+    );
+    return result;
+  });
   const formTabs = computed(() => {
     const list = _.keys(variablesGroup.value);
     if (_.includes(list, defaultGroupKey)) {

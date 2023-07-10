@@ -29,7 +29,11 @@
               >
             </a-grid-item>
             <a-grid-item
-              v-if="fm.showIf ? getConditionValue(fm, formData) : true"
+              v-if="
+                fm.showIf
+                  ? getConditionValue(fm, { ...attributes, ...formData })
+                  : true
+              "
               :class="{
                 'hidden-field': activeMenu && activeMenu !== fm.subGroup
               }"
@@ -202,6 +206,12 @@
   import { parseExpression } from './config/experssion-parser';
 
   const props = defineProps({
+    attributes: {
+      type: Object,
+      default() {
+        return {};
+      }
+    },
     formSchema: {
       type: Array as PropType<ComponentSchema[]>,
       default() {
@@ -268,7 +278,10 @@
     if (!activeMenu.value) {
       const list = filter(schemaList.value, (sItem) => {
         if (sItem.showIf) {
-          return getConditionValue(sItem, formData.value);
+          return getConditionValue(sItem, {
+            ...props.attributes,
+            ...formData.value
+          });
         }
         return true;
       });
@@ -278,7 +291,7 @@
       if (sItem.showIf) {
         return (
           sItem.subGroup === activeMenu.value &&
-          getConditionValue(sItem, formData.value)
+          getConditionValue(sItem, { ...props.attributes, ...formData.value })
         );
       }
       return sItem.subGroup === activeMenu.value;
@@ -447,7 +460,10 @@
   // reset field default value when showIf is negative
   const resetFieldsDefaultValue = () => {
     each(schemaList.value, (item) => {
-      if (item.showIf && !getConditionValue(item, formData.value)) {
+      if (
+        item.showIf &&
+        !getConditionValue(item, { ...props.attributes, ...formData.value })
+      ) {
         Reflect.deleteProperty(formData.value, item.name);
       }
     });

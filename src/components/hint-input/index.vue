@@ -137,7 +137,7 @@
     interactive: false,
     showOnCreate: true
   };
-  let timer: any = null;
+
   // const textarea = ref()
   let textcomplete: any = null;
   let textEditor: any = null;
@@ -291,6 +291,7 @@
   const debounceFunc = _.debounce(() => {
     input.value.selectionEnd -= 1;
   }, 0);
+
   const resetCursorPos = () => {
     if (moveLastPosition.value) {
       debounceFunc();
@@ -303,7 +304,6 @@
     const items = textcomplete.dropdown.items || [];
     const data = get(items, `${activeIndex}.searchResult.data`);
     moveLastPosition.value = activeIndex === items.length - 1;
-
     if (data?.showTips) {
       const content = data.sensitive ? '******' : data.tips;
       tippyInstance = tippy(`.${props.editorId} .complete-item-active`, {
@@ -312,7 +312,13 @@
       });
     }
   };
+  const debounceGetTextcompleteDownItem = _.debounce(() => {
+    getTextcompleteDownItem();
+  }, 0);
   const initEvent = () => {
+    textcomplete?.on('shown', (e) => {
+      debounceGetTextcompleteDownItem();
+    });
     textcomplete?.on('select', (e) => {
       tippyInstanceHide();
     });
@@ -336,17 +342,19 @@
     textcomplete = new Textcomplete(textEditor, Strategy, options);
     initEvent();
   };
+
   const dispatchInput = () => {
     emits('update:modelValue', expression.value);
     emits('input', expression.value);
   };
+  const debounceDispatchInput = _.debounce(() => {
+    dispatchInput();
+  }, 100);
   const handleInput = (e) => {
     inputFlag.value = true;
     isNeedHide();
-    clearTimeout(timer);
-    timer = setTimeout(() => {
-      dispatchInput();
-    }, 100);
+    debounceDispatchInput();
+    debounceGetTextcompleteDownItem();
   };
   const runChange = () => {
     emits('change', expression.value);
