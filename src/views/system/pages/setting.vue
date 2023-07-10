@@ -149,6 +149,7 @@
 
       .arco-tabs-tab {
         margin-right: 16px;
+        padding-left: 0;
       }
     }
   }

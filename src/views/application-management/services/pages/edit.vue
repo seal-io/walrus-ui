@@ -179,6 +179,7 @@
               api=""
               :show-footer="false"
               :submit="() => {}"
+              :attributes="variableAttributes"
               :model="variablesGroupForm[group]?.attributes"
               :form-schema="variablesGroup[group]?.variables"
             >
@@ -348,6 +349,21 @@
   provide('showHintInput', true);
   provide('completeData', completeData);
 
+  const variableAttributes = computed(() => {
+    // return  variablesGroupForm.value's all attributes
+    const result = reduce(
+      variablesGroupForm.value,
+      (obj, s) => {
+        obj = {
+          ...obj,
+          ...s.attributes
+        };
+        return obj;
+      },
+      {}
+    );
+    return result;
+  });
   const formTabs = computed(() => {
     const list = keys(variablesGroup.value);
     if (includes(list, defaultGroupKey)) {

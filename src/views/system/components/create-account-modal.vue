@@ -107,7 +107,11 @@
             :key="index"
             :value="item.value"
           >
-            <i class="iconfont mright-5 size-14" :class="[item.icon]"></i>
+            <i
+              class="iconfont mright-5 size-14"
+              :class="[item.icon]"
+              style="color: var(--sealblue-6)"
+            ></i>
             <span>{{ $t(item.label) }}</span>
           </a-option>
         </a-select>
