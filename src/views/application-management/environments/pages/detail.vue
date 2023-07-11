@@ -33,7 +33,7 @@
               })
             "
             key="service"
-            :title="$t('applications.applications.table.service')"
+            :title="$t('menu.applicationManagement.serivce')"
           >
             <ServiceList></ServiceList>
           </a-tab-pane>

@@ -65,8 +65,7 @@
     PropType,
     watch,
     onBeforeUnmount,
-    defineExpose,
-    watchEffect
+    defineExpose
   } from 'vue';
   import G6 from '@antv/g6';
   import {
@@ -535,7 +534,7 @@
       graph.clearItemStates(node);
     });
   };
-  const resetContextMenu = () => {
+  const resetContextMenuNode = () => {
     const contextVisibility = contextMenu.value?.get('menu')?.style?.visibility;
     if (contextVisibility === 'hidden') {
       contextMenuNode.value = null;
@@ -544,7 +543,7 @@
   const initNodeEvent = () => {
     graph?.on('node:mouseenter', (e) => {
       graph.setItemState(e.item, 'hover', true);
-      resetContextMenu();
+      resetContextMenuNode();
     });
 
     graph?.on('node:mouseleave', (e) => {

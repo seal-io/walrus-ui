@@ -1,5 +1,6 @@
 import { ref } from 'vue';
 import _ from 'lodash';
+import { listenerCloseControlPanel } from '../../hooks/use-close-control-panel';
 import { ResourceKey } from '../../config/interface';
 import { getResourceKeyList } from '../../config/utils';
 
@@ -19,6 +20,10 @@ export default function useResourceControl() {
     { dataList: ResourceKey[]; name: string; id: string }[]
   >([]);
 
+  listenerCloseControlPanel(() => {
+    terminalShow.value = false;
+    drawerTabs.value = [];
+  });
   const handleConnectTerminal = (row) => {
     if (modalType.value === drawerType.LOGS) {
       modalType.value = drawerType.TERMINAL;

@@ -161,41 +161,12 @@
       }
 
       .arco-tabs-tab {
+        margin-right: 5px;
         border-top: 0 solid transparent;
       }
 
       .arco-tabs-tab-active {
         background-color: #fff;
-      }
-    }
-  }
-</style>
-
-<style lang="less">
-  .operation-control.arco-drawer-container {
-    .arco-drawer-container {
-      top: 100% !important;
-    }
-
-    .arco-drawer-body {
-      padding: 0;
-    }
-  }
-
-  .arco-drawer-container {
-    &.operation-control {
-      .arco-tabs {
-        .arco-tabs-nav {
-          background-color: var(--color-fill-1);
-        }
-
-        .arco-tabs-tab {
-          border-top: 0 solid transparent;
-        }
-
-        .arco-tabs-tab-active {
-          background-color: #fff;
-        }
       }
     }
   }
