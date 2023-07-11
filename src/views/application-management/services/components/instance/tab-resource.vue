@@ -1,6 +1,10 @@
 <template>
   <div>
-    <a-tabs v-model:active-key="activeKey" :default-active-key="activeKey">
+    <a-tabs
+      v-model:active-key="activeKey"
+      :default-active-key="activeKey"
+      class="tab-resource"
+    >
       <a-tab-pane key="list">
         <ServiceResources :resource-list="resourceList" :is-loading="isLoading">
           <template #right>
@@ -46,6 +50,7 @@
 
 <script lang="ts" setup>
   import { ref, PropType } from 'vue';
+  import { emitCloseControlPanel } from '@/views/application-management/services/hooks/use-close-control-panel';
   import ServiceResources from './service-resources.vue';
   import TabGraph from './tab-graph/index.vue';
   import { ServiceResource } from '../../config/interface';
@@ -72,6 +77,7 @@
     if (val === 'graph') {
       graph.value?.handleRefresh();
     }
+    emitCloseControlPanel();
   };
 </script>
 
@@ -100,8 +106,12 @@
     }
   }
 
-  :deep(.arco-tabs-nav-tab) {
-    display: none;
+  :deep(.arco-tabs) {
+    &.tab-resource {
+      > .arco-tabs-nav > .arco-tabs-nav-tab {
+        display: none;
+      }
+    }
   }
 
   :deep(.arco-tabs-content) {
