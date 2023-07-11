@@ -65,7 +65,8 @@
     PropType,
     watch,
     onBeforeUnmount,
-    defineExpose
+    defineExpose,
+    watchEffect
   } from 'vue';
   import G6 from '@antv/g6';
   import {
@@ -136,8 +137,10 @@
   const width = ref(0);
   const height = ref(0);
   const toolTipRef = ref<any>({});
+  const contextMenu = ref<any>({});
+  const contextMenuNode: any = { value: null };
 
-  const contextMenu = new G6.Menu({
+  contextMenu.value = new G6.Menu({
     trigger: 'click',
     shouldBegin(e) {
       // const isFull = e?.target
@@ -145,6 +148,7 @@
       //   .cfg?.item?.getModel?.()?.isFullscreen;
 
       if (_.get(e?.target, 'cfg.name') === 'more-button-icon') {
+        contextMenuNode.value = e?.item;
         return true;
       }
       return false;
@@ -207,6 +211,7 @@
         });
       }
     },
+
     // offsetX and offsetY include the padding of the parent container
     // 需要加上父级容器的 padding-left 16 与自身偏移量 10
     offsetX: 16 + 10,
@@ -427,7 +432,6 @@
   const toggleAllNodeShow = (show) => {
     _.each(graph.getNodes(), (node) => {
       const model = node.getModel();
-      console.log('nodeKindType:', model.kind);
       if (show) {
         graph.showItem(node);
       } else if (model.kind === nodeKindType.ServiceResource) {
@@ -531,12 +535,16 @@
       graph.clearItemStates(node);
     });
   };
+  const resetContextMenu = () => {
+    const contextVisibility = contextMenu.value?.get('menu')?.style?.visibility;
+    if (contextVisibility === 'hidden') {
+      contextMenuNode.value = null;
+    }
+  };
   const initNodeEvent = () => {
     graph?.on('node:mouseenter', (e) => {
       graph.setItemState(e.item, 'hover', true);
-      if (e.target.cfg.name === 'more-button-icon') {
-        toolTipRef.value.hideTooltip();
-      }
+      resetContextMenu();
     });
 
     graph?.on('node:mouseleave', (e) => {
@@ -549,11 +557,6 @@
     //   const model = node.getModel();
     // });
     graph?.on('node:click', (e) => {
-      if (e.target.cfg.name === 'more-button-icon') {
-        toolTipRef.value.hideTooltip();
-        return;
-      }
-
       const node = e.item;
       const model = node.getModel();
       toggleNodeCollapse(node);
@@ -592,7 +595,10 @@
       // groupByTypes: true,
       // renderer: 'svg', // arrow style will be change
       container: 'graph-mount',
-      plugins: [contextMenu, (toolTipRef.value = createToolTip())],
+      plugins: [
+        contextMenu.value,
+        (toolTipRef.value = createToolTip(contextMenuNode))
+      ],
       width: width.value || 1400,
       height: height.value || 400,
       layout: {

@@ -45,11 +45,20 @@ export const legend = new G6.Legend({
   layout: 'horizontal', // vertical
   position: 'top-right'
 });
-export const createToolTip = () => {
+export const createToolTip = (contextMenuNode) => {
   const toolTip = new G6.Tooltip({
     offsetX: 5,
     offsetY: 5,
     itemTypes: ['node'],
+    shouldBegin(e) {
+      if (
+        e?.target.cfg.name === 'more-button-icon' ||
+        e?.item === contextMenuNode?.value
+      ) {
+        return false;
+      }
+      return true;
+    },
     getContent(e) {
       const model: INode = e?.item?.getModel();
       const box = document.createElement('div');

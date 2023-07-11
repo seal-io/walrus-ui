@@ -91,7 +91,6 @@
 
   const handleHeightChange = ({ height }) => {
     containerHeight.value = height - 100;
-    console.log('height:::', height);
   };
   const getContainer = () => {
     return document.getElementById('footer');
@@ -117,13 +116,16 @@
       nextTick(() => {
         if (val) {
           document.body.style.overflow = 'auto';
-          document.body.style.paddingBottom = '380px';
+          document.body.style.paddingBottom = '360px';
           document.body.style.height = 'max-content';
         } else {
           document.body.style.overflow = 'auto';
           document.body.style.paddingBottom = '0px';
         }
       });
+    },
+    {
+      immediate: true
     }
   );
   watch(
