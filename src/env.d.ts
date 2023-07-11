@@ -22,6 +22,7 @@ declare module 'tippy.js' {
   export { followCursor } from 'tippy.js';
   export default tippy;
 }
+
 declare module '@vueuse/core' {
   export {
     createReusableTemplate,

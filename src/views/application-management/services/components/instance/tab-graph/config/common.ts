@@ -96,7 +96,7 @@ export const defineCustomNode = () => {
             y: -h / 2,
             width,
             height,
-            cursor: cfg.isFullscreen ? 'not-allowed' : 'pointer'
+            cursor: 'pointer'
           },
 
           className: 'more-button-icon',

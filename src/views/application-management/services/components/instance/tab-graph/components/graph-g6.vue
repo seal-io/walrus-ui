@@ -140,11 +140,11 @@
   const contextMenu = new G6.Menu({
     trigger: 'click',
     shouldBegin(e) {
-      const isFull = e?.target
-        .getParent?.()
-        .cfg?.item?.getModel?.()?.isFullscreen;
+      // const isFull = e?.target
+      //   .getParent?.()
+      //   .cfg?.item?.getModel?.()?.isFullscreen;
 
-      if (_.get(e?.target, 'cfg.name') === 'more-button-icon' && !isFull) {
+      if (_.get(e?.target, 'cfg.name') === 'more-button-icon') {
         return true;
       }
       return false;

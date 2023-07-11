@@ -1,59 +1,52 @@
 <template>
-  <a-drawer
-    :height="380"
-    :drawer-style="{
-      border: '1px solid var(--color-border-2)'
-    }"
-    class="terminal-control"
-    style="top: 100%"
-    :bordered="true"
-    placement="bottom"
-    :mask-closable="false"
-    :visible="visible"
-    :closable="false"
-    :header="false"
-    :footer="false"
-    :hide-cancel="true"
-    :render-to-body="true"
-    :mask="false"
-    draggable
-    unmount-on-close
-    @ok="handleClose"
-    @open="handleOpened"
-  >
-    <a-tabs
-      v-model:active-key="activeKey"
-      type="card-gutter"
-      lazy-load
-      :editable="true"
-      @delete="handleDelete"
+  <slTransition>
+    <resizeContainer
+      v-if="visible"
+      v-show="visible"
+      class="operation-control"
+      @change="handleHeightChange"
     >
-      <a-tab-pane v-for="item in tabs" :key="item.name" :title="item.name">
-        <template #title>
-          <div style="width: 150px"
-            ><AutoTip :tooltip-props="{ content: item.name }">
-              <span>{{ item.name }}</span>
-            </AutoTip></div
-          >
+      <a-tabs
+        v-model:active-key="activeKey"
+        type="card-gutter"
+        lazy-load
+        :editable="true"
+        @delete="handleDelete"
+      >
+        <a-tab-pane v-for="item in tabs" :key="item.name" :title="item.name">
+          <template #title>
+            <div style="width: 150px"
+              ><AutoTip :tooltip-props="{ content: item.name }">
+                <span>{{ item.name }}</span>
+              </AutoTip></div
+            >
+          </template>
+          <tabTerminal
+            v-if="type === 'terminal'"
+            :height="containerHeight"
+            :data-list="item.dataList"
+          ></tabTerminal>
+          <tabLogs
+            v-if="type === 'logs'"
+            :data-list="item.dataList"
+            :height="containerHeight"
+          ></tabLogs>
+        </a-tab-pane>
+        <template #extra>
+          <a-button size="mini" type="text" @click="handleClose"
+            ><icon-close
+          /></a-button>
         </template>
-        <tabTerminal
-          v-if="type === 'terminal'"
-          :data-list="item.dataList"
-        ></tabTerminal>
-        <tabLogs v-if="type === 'logs'" :data-list="item.dataList"></tabLogs>
-      </a-tab-pane>
-      <template #extra>
-        <a-button size="mini" type="text" @click="handleClose"
-          ><icon-close
-        /></a-button>
-      </template>
-    </a-tabs>
-  </a-drawer>
+      </a-tabs>
+    </resizeContainer>
+  </slTransition>
 </template>
 
 <script lang="ts" setup>
-  import _ from 'lodash';
-  import { PropType, ref, watch, nextTick } from 'vue';
+  import _, { min } from 'lodash';
+  import { PropType, ref, watch, nextTick, onMounted } from 'vue';
+  import resizeContainer from '@/components/resizeable-container/index.vue';
+  import slTransition from '@/components/sl-transition/index.vue';
   import tabTerminal from './x-terminal/tab-terminal.vue';
   import tabLogs from './tab-logs.vue';
   import { ResourceKey } from '../../config/interface';
@@ -93,8 +86,13 @@
     }
   });
   const activeKey = ref('terminnal');
+  const containerHeight = ref(270);
   const emits = defineEmits(['update:visible', 'update:tabs', 'delete']);
 
+  const handleHeightChange = ({ height }) => {
+    containerHeight.value = height - 100;
+    console.log('height:::', height);
+  };
   const getContainer = () => {
     return document.getElementById('footer');
   };
@@ -136,10 +134,43 @@
       }
     }
   );
+  onMounted(() => {
+    handleOpened();
+  });
 </script>
 
+<style lang="less" scoped>
+  .operation-control {
+    position: fixed;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 9999;
+    background-color: #fff;
+    border: 1px solid var(--color-border-2);
+
+    :deep(.arco-tabs) {
+      .arco-tabs-nav {
+        background-color: var(--color-fill-1);
+      }
+
+      .arco-tabs-content {
+        background-color: #fff;
+      }
+
+      .arco-tabs-tab {
+        border-top: 0 solid transparent;
+      }
+
+      .arco-tabs-tab-active {
+        background-color: #fff;
+      }
+    }
+  }
+</style>
+
 <style lang="less">
-  .terminal-control.arco-drawer-container {
+  .operation-control.arco-drawer-container {
     .arco-drawer-container {
       top: 100% !important;
     }
@@ -150,7 +181,7 @@
   }
 
   .arco-drawer-container {
-    &.terminal-control {
+    &.operation-control {
       .arco-tabs {
         .arco-tabs-nav {
           background-color: var(--color-fill-1);

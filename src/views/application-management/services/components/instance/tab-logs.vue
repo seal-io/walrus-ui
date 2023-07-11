@@ -6,9 +6,9 @@
       :options="dataList"
       @change="handleKeyChange"
     ></a-select>
-    <div class="wrap">
+    <div class="wrap" :style="{ height: `${height}px` }">
       <div class="content">
-        <div v-html="content"></div>
+        <div class="text" v-html="content"></div>
       </div>
     </div>
   </div>
@@ -24,6 +24,10 @@
   import { Cascader, ResourceKey } from '../../config/interface';
 
   const props = defineProps({
+    height: {
+      type: Number,
+      default: 270
+    },
     dataList: {
       type: Array as PropType<ResourceKey[]>,
       default() {
@@ -94,14 +98,12 @@
 <style lang="less" scoped>
   .tab-logs-wrap {
     .wrap {
-      height: 270px;
       padding: 5px 0 5px 10px;
       overflow: auto;
       background-color: var(--color-fill-2);
       border-radius: var(--border-radius-small);
 
       .content {
-        height: max-content;
         overflow: auto;
         font-size: 14px;
         line-height: 22px;

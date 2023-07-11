@@ -192,6 +192,7 @@
 
     return result as ServiceResource[];
   });
+
   const setExpandedKeys = () => {
     if (!query.value) {
       expandedKeys.value = [];
