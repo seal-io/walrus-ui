@@ -1,17 +1,15 @@
 <template>
-  <div ref="wrapper" class="wrap">
+  <div ref="wrapper" class="wrap" :style="{ height: `${height}px` }">
     <div v-if="(conReadyState === 0 || loading) && url" class="status-text"
       ><span>{{ statusText }}</span
       ><icon-loading class="size-12"
     /></div>
-    <div ref="terminal" class="terminal"></div>
+    <div ref="terminal" class="terminal" style="height: 100%"></div>
   </div>
 </template>
 
 <script lang="ts" setup>
   import qs from 'query-string';
-  import hasAnsi from 'has-ansi';
-  import stripAnsi from 'strip-ansi';
   import {
     onClickOutside,
     useThrottleFn,
@@ -34,8 +32,12 @@
   import platformCall from '@/utils/platform';
 
   const props = defineProps({
-    terminalDetail: Object,
-    type: String,
+    height: {
+      type: Number,
+      default() {
+        return 270;
+      }
+    },
     url: {
       type: String,
       default() {
@@ -248,6 +250,7 @@
   };
   const onResize = throttle(() => fitTerm(), 200);
   useResizeObserver(wrapper, () => {
+    console.log('wss: resize', wrapper.value.clientHeight);
     onResize();
   });
   const registerTermHandler = () => {
@@ -381,6 +384,8 @@
 
 <style lang="less">
   .xterm {
+    height: 100%;
+
     .xterm-viewport {
       overflow-y: auto;
     }
@@ -390,7 +395,6 @@
 <style lang="less" scoped>
   #terminal {
     width: 100%;
-    height: 100%;
   }
 
   .wrap {
@@ -398,6 +402,7 @@
     text-align: left;
 
     .terminal {
+      height: 100%;
       padding: 5px;
       background-color: #181d28;
     }

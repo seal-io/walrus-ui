@@ -6,7 +6,12 @@
       :options="dataList"
       @change="handleKeyChange"
     ></a-select>
-    <xTerminal ref="terminal" :url="wssURL" style="height: 270px"></xTerminal>
+    <xTerminal
+      ref="terminal"
+      :url="wssURL"
+      :height="height"
+      style="min-height: 270px"
+    ></xTerminal>
   </div>
 </template>
 
@@ -28,6 +33,10 @@
   import { ResourceKey } from '../../../config/interface';
 
   const props = defineProps({
+    height: {
+      type: Number,
+      default: 270
+    },
     dataList: {
       type: Array as PropType<ResourceKey[]>,
       default() {
