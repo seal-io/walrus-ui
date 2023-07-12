@@ -111,10 +111,10 @@
       > .arco-tabs-nav > .arco-tabs-nav-tab {
         display: none;
       }
-    }
-  }
 
-  :deep(.arco-tabs-content) {
-    padding-top: 0;
+      > .arco-tabs-content {
+        padding-top: 0;
+      }
+    }
   }
 </style>

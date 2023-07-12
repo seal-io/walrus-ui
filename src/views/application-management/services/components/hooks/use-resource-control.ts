@@ -1,6 +1,9 @@
-import { ref } from 'vue';
+import { onBeforeUnmount, ref } from 'vue';
 import _ from 'lodash';
-import { listenerCloseControlPanel } from '../../hooks/use-close-control-panel';
+import {
+  listenerCloseControlPanel,
+  emitCloseControlPanel
+} from '../../hooks/use-close-control-panel';
 import { ResourceKey } from '../../config/interface';
 import { getResourceKeyList } from '../../config/utils';
 
@@ -65,6 +68,9 @@ export default function useResourceControl() {
       terminalShow.value = false;
     }
   };
+  onBeforeUnmount(() => {
+    emitCloseControlPanel();
+  });
   return {
     modalType,
     terminalShow,

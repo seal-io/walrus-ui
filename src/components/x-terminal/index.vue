@@ -248,7 +248,7 @@
     fitAddon.fit();
     resizeRemoteTerminal();
   };
-  const onResize = throttle(() => fitTerm(), 200);
+  const onResize = throttle(() => fitTerm(), 100);
   useResizeObserver(wrapper, () => {
     console.log('wss: resize', wrapper.value.clientHeight);
     onResize();

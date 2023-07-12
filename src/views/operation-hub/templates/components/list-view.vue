@@ -130,6 +130,7 @@
 <script lang="ts" setup>
   import { OPERATIONHUB } from '@/router/config';
   import { Resources, Actions } from '@/permissions/config';
+  import { PageAction } from '@/views/config';
   import { map, get } from 'lodash';
   import dayjs from 'dayjs';
   import { reactive, ref, onMounted, PropType } from 'vue';
@@ -253,14 +254,14 @@
   const handleEdit = (row) => {
     router.push({
       name: OPERATIONHUB.TemplateDetail,
-      params: { action: 'edit' },
+      params: { action: PageAction.EDIT },
       query: { id: row.id }
     });
   };
   const handleView = (row) => {
     router.push({
       name: OPERATIONHUB.TemplateDetail,
-      params: { action: 'view' },
+      params: { action: PageAction.VIEW },
       query: { id: row.id }
     });
   };
