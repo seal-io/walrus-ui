@@ -343,27 +343,26 @@
   const schemaForm = ref();
   const submitLoading = ref(false);
   const breadCrumbList = ref<BreadcrumbOptions[]>([]);
-
+  const variableAttributes = ref<any>({});
   const versionMap = ref({ nv: '', ov: '' });
 
   provide('showHintInput', true);
   provide('completeData', completeData);
 
-  const variableAttributes = computed(() => {
-    // return  variablesGroupForm.value's all attributes
-    const result = reduce(
-      variablesGroupForm.value,
+  const setVariableAttributes = async () => {
+    const moduleFormList = await getFormData(true);
+    variableAttributes.value = reduce(
+      moduleFormList,
       (obj, s) => {
         obj = {
           ...obj,
-          ...s.attributes
+          ...s.formData
         };
         return obj;
       },
       {}
     );
-    return result;
-  });
+  };
   const formTabs = computed(() => {
     const list = keys(variablesGroup.value);
     if (includes(list, defaultGroupKey)) {
@@ -417,6 +416,8 @@
 
   const handleTabChange = (val) => {
     activeKey.value = val;
+    setVariableAttributes();
+    console.log('variableAttributes:', variableAttributes.value);
   };
 
   const setFormData = (schemas) => {
@@ -451,7 +452,6 @@
   };
   // cache the user inputs when change the module version
   const setModuleVersionFormCache = async () => {
-    console.log('versionMap==3=', versionMap.value);
     if (!versionMap.value.ov) return;
     const moduleFormList = await getRefFormData();
     const inputs = reduce(
@@ -468,20 +468,17 @@
     templateVersionFormCache.value[versionMap.value.ov] = {
       ...pickBy(inputs, (val) => toString(val))
     };
-    console.log('templateVersionFormCache===', templateVersionFormCache.value);
   };
   const execVersionChangeCallback = async () => {
     await setModuleVersionFormCache();
     const moduleData = getTemplateSchemaByVersion();
     templateInfo.value = cloneDeep(get(moduleData, 'schema')) || {};
     formData.attributes = {};
-    console.log('version args...', moduleData, templateVersionFormCache.value);
 
     clearFormValidStatus();
     generateVariablesGroup(pageAction.value);
   };
   const handleVersionChange = () => {
-    console.log('formData===', formData);
     setTimeout(() => {
       execVersionChangeCallback();
     }, 100);
