@@ -122,7 +122,7 @@
   import FilterBox from '@/components/filter-box/index.vue';
   import { useSetChunkRequest } from '@/api/axios-chunk-request';
   import { deleteModal, execSucceed } from '@/utils/monitor';
-  import { websocketEventType } from '@/views/config';
+  import { PageAction } from '@/views/config';
   import { useUpdateChunkedList } from '@/views/commons/hooks/use-update-chunked-list';
   import ThumbView from '../components/thumb-view.vue';
   import ListView from '../components/list-view.vue';
@@ -152,7 +152,7 @@
     router.push({
       name: OPERATIONHUB.TemplateDetail,
       params: {
-        action: 'edit'
+        action: PageAction.EDIT
       }
     });
   };

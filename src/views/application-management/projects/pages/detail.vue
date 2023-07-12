@@ -48,7 +48,7 @@
             key="variables"
             :title="$t('menu.applicationManagement.secret')"
           >
-            <SecretList ref="variablesRef"></SecretList>
+            <variableList></variableList>
           </a-tab-pane>
 
           <a-tab-pane
@@ -63,6 +63,19 @@
             :title="$t('menu.operatorHub.connector')"
           >
             <ConnectorList scope="project"></ConnectorList>
+          </a-tab-pane>
+          <a-tab-pane
+            v-if="
+              userStore.hasProjectResourceActions({
+                resource: Resources.Connectors,
+                projectID: route.params.projectId,
+                actions: [Actions.GET]
+              })
+            "
+            key="templates"
+            :title="$t('menu.operatorHub.module')"
+          >
+            <templateList scope="project"></templateList>
           </a-tab-pane>
           <a-tab-pane
             v-if="
@@ -92,9 +105,10 @@
   import { useUserStore } from '@/store';
   import HeaderInfo from '@/components/header-info/index.vue';
   import EnviromentList from '@/views/application-management/environments/pages/list.vue';
-  import SecretList from '@/views/application-management/variables/pages/list.vue';
+  import variableList from '@/views/application-management/variables/pages/list.vue';
   import basicInfo from '@/views/application-management/services/components/basic-info.vue';
   import ConnectorList from '@/views/operation-hub/connectors/components/table-list.vue';
+  import templateList from '../../templates/pages/list.vue';
   import useBasicInfoData from '../hooks/use-basicInfo-data';
   import { queryItemProject } from '../api';
   import { basicInfoConfig, projectDetailTabs } from '../config';

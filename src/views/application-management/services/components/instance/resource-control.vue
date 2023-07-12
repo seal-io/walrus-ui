@@ -47,6 +47,7 @@
   import { PropType, ref, watch, nextTick, onMounted } from 'vue';
   import resizeContainer from '@/components/resizeable-container/index.vue';
   import slTransition from '@/components/sl-transition/index.vue';
+  import { listenerCloseControlPanel } from '../../hooks/use-close-control-panel';
   import tabTerminal from './x-terminal/tab-terminal.vue';
   import tabLogs from './tab-logs.vue';
   import { ResourceKey } from '../../config/interface';
@@ -110,6 +111,7 @@
       }
     });
   };
+
   watch(
     () => props.visible,
     (val) => {
@@ -136,6 +138,12 @@
       }
     }
   );
+  listenerCloseControlPanel(() => {
+    setTimeout(() => {
+      document.body.style.overflow = 'auto';
+      document.body.style.paddingBottom = '0px';
+    }, 100);
+  });
   onMounted(() => {
     handleOpened();
   });
