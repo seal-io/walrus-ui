@@ -121,7 +121,7 @@
     containerHeight: {
       type: String,
       default() {
-        return '400px';
+        return '600px';
       }
     }
   });
@@ -632,7 +632,7 @@
         (toolTipRef.value = createToolTip(contextMenuNode))
       ],
       width: width.value || 1400,
-      height: height.value || 400,
+      height: height.value || 600,
       layout: {
         type: 'dagre',
         rankdir: 'LR',
@@ -767,7 +767,7 @@
   .graph-wrapper {
     position: relative;
     width: 100%;
-    min-height: 400px;
+    min-height: 50vh;
     background-color: var(--color-fill-2);
 
     .legend {
