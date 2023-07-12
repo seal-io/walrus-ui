@@ -46,7 +46,7 @@
             v-if="pageAction === PageAction.EDIT"
             v-model="formData.id"
             style="width: 500px"
-            :max-length="50"
+            :max-length="63"
             show-word-limit
           ></a-input>
           <span v-else class="readonly-view-label">{{

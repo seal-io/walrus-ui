@@ -142,7 +142,7 @@
     setTimeout(() => {
       document.body.style.overflow = 'auto';
       document.body.style.paddingBottom = '0px';
-    }, 100);
+    }, 50);
   });
   onMounted(() => {
     handleOpened();

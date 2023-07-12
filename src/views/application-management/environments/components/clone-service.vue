@@ -263,22 +263,8 @@
   const formref = ref();
   const show = ref(true);
   const activeServiceInfo = ref<any>({});
+  const variableAttributes = ref<any>({});
 
-  const variableAttributes = computed(() => {
-    // return  variablesGroupForm.value's all attributes
-    const result = _.reduce(
-      variablesGroupForm.value,
-      (obj, s) => {
-        obj = {
-          ...obj,
-          ...s.attributes
-        };
-        return obj;
-      },
-      {}
-    );
-    return result;
-  });
   const formTabs = computed(() => {
     const list = _.keys(variablesGroup.value);
     if (_.includes(list, defaultGroupKey)) {
@@ -287,10 +273,6 @@
     }
     return list;
   });
-
-  const handleTabChange = (val) => {
-    activeKey.value = val;
-  };
 
   const handleClickInstance = async (data) => {
     active.value = data.id;
@@ -334,6 +316,27 @@
     }
     return moduleFormList;
   };
+
+  const setVariableAttributes = async () => {
+    const moduleFormList = await getFormData(true);
+    variableAttributes.value = _.reduce(
+      moduleFormList,
+      (obj, s) => {
+        obj = {
+          ...obj,
+          ...s.formData
+        };
+        return obj;
+      },
+      {}
+    );
+  };
+
+  const handleTabChange = (val) => {
+    activeKey.value = val;
+    setVariableAttributes();
+  };
+
   const validateFormData = async () => {
     const moduleFormList = await getFormData();
     const validFailedForm = _.find(moduleFormList, (item) => !item.formData);
