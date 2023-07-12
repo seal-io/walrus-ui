@@ -5,7 +5,7 @@
         :menu="{ icon: 'icon-settings', label: $t('menu.systemsettings') }"
       ></Breadcrumb>
     </BreadWrapper>
-    <ComCard padding="0" top-gap>
+    <ComCard padding="0">
       <HeaderInfo :info="{ name: $t('menu.systemsettings') }">
         <template #icon>
           <i class="iconfont icon-custom"></i>

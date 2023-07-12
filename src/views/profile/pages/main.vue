@@ -9,7 +9,7 @@
         }"
       ></Breadcrumb>
     </BreadWrapper>
-    <ComCard padding="0" top-gap>
+    <ComCard padding="0">
       <HeaderInfo :info="{ name: $t('propfile.account.user.title') }">
         <template #icon>
           <i class="iconfont icon-user-circle"></i>

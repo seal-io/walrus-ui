@@ -5,7 +5,7 @@
         :menu="{ icon: 'icon-relation', label: $t('menu.operatorHub') }"
       ></Breadcrumb>
     </BreadWrapper>
-    <ComCard padding="0" top-gap>
+    <ComCard padding="0">
       <HeaderInfo :info="{ name: $t('menu.operatorHub') }">
         <template #icon>
           <i class="iconfont icon-yunwei"></i>

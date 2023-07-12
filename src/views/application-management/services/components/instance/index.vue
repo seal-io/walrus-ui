@@ -1,6 +1,6 @@
 <template>
   <div id="service-page">
-    <ComCard padding="0" top-gap>
+    <ComCard padding="0">
       <HeaderInfo :info="currentInfo">
         <template #icon>
           <i class="iconfont icon-apps-fill"></i>

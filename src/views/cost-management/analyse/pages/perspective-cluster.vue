@@ -1,6 +1,6 @@
 <template>
   <div>
-    <FilterBox style="margin-bottom: 10px">
+    <FilterBox style="margin-bottom: 8px">
       <template #params>
         <div v-if="isPage"><slot name="select"></slot></div>
         <a-select
@@ -112,7 +112,7 @@
         <div><slot name="view-btn"></slot></div>
       </template>
     </FilterBox>
-    <!-- <FilterBox style="margin-bottom: 10px">
+    <!-- <FilterBox style="margin-bottom: 8px">
       <template #params>
         <dateRange
           v-model:start="queryParams.start"
@@ -155,7 +155,7 @@
       :loading="overviewloading || preloading"
       :title="`${$t('cost.analyse.detail.cluster')}: ${clusterName}`"
       borderless
-      style="margin-bottom: 10px"
+      style="margin-bottom: 8px"
     >
       <a-grid :cols="15" :col-gap="20">
         <a-grid-item
@@ -194,7 +194,7 @@
     <SpinCard
       :title="$t('cost.analyse.detail.costtrend')"
       borderless
-      style="margin-bottom: 10px"
+      style="margin-bottom: 8px"
     >
       <template #title>
         <div style="display: flex; justify-content: space-between">
@@ -225,7 +225,7 @@
     <SpinCard
       :title="$t('cost.analyse.table.namespaceCost')"
       borderless
-      style="margin-bottom: 10px"
+      style="margin-bottom: 8px"
     >
       <template #title>
         <div style="display: flex; justify-content: space-between">

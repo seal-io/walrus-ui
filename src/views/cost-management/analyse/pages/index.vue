@@ -5,7 +5,7 @@
         :menu="{ icon: 'icon-bar-chart', label: $t('navbar.costmanagement') }"
       ></Breadcrumb>
     </BreadWrapper>
-    <ComCard padding="0" top-gap>
+    <ComCard padding="0">
       <HeaderInfo :info="{ name: $t('navbar.costmanagement') }">
         <template #icon>
           <i class="iconfont icon-zhuzhuangtu"></i>

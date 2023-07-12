@@ -38,6 +38,6 @@
 
 <style lang="less" scoped>
   .dashboard-wrapper {
-    margin-top: 10px;
+    background-color: var(--color-fill-2);
   }
 </style>

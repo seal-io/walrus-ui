@@ -51,14 +51,14 @@
           <!-- <div v-if="!hideMenu" class="layout-menu">
             <Menu />
           </div> -->
-          <a-layout-content>
+          <a-layout-content class="page-content-wrap">
             <PageLayout />
           </a-layout-content>
           <!-- <Footer v-if="footer" /> -->
         </a-layout>
       </a-layout>
     </a-layout>
-    <Footer v-if="footer" />
+    <!-- <Footer v-if="footer" /> -->
   </a-layout>
 </template>
 
@@ -97,7 +97,7 @@
         ? { paddingLeft: `${menuWidth.value + 10}px` }
         : {};
     const paddingTop = navbar.value
-      ? { paddingTop: `${appStore.navbarHeight}px` }
+      ? { paddingTop: `${appStore.navbarHeight + 10}px` }
       : {};
     return { ...paddingLeft, ...paddingTop, paddingRight: '10px' };
   });
@@ -261,11 +261,16 @@
 
   .layout-content {
     position: relative;
-    min-height: calc(100vh - 68px);
-    margin-bottom: 20px;
+    min-height: 100vh;
+    // min-height: calc(100vh - 20px);
+    // margin-bottom: 20px;
     overflow-y: hidden;
     background-color: var(--color-fill-2);
-    // background-color: #fff;
     transition: padding 0.2s cubic-bezier(0.34, 0.69, 0.1, 1);
+
+    .page-content-wrap {
+      background-color: #fff;
+      border-radius: var(--border-radius-small);
+    }
   }
 </style>

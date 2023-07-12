@@ -5,6 +5,12 @@
   import { defineComponent, ref, h, compile, computed } from 'vue';
   import useCallCommon from '@/hooks/use-call-common';
   import { RouteRecordRaw, RouteRecordNormalized } from 'vue-router';
+  import {
+    useAppVersion,
+    showVersionModal,
+    versionData,
+    getVersion
+  } from '@/hooks/fetch-app-version';
   // import type { RouteLocationNormalized } from 'vue-router';
 
   import {
@@ -36,6 +42,7 @@
       const tabBarStore = useTabBarStore();
       const permission = usePermission();
       const execListenerRouteChange = useListenerRouteChange();
+      const versionInfo = ref({});
 
       // listener to  route change
       execListenerRouteChange();
@@ -60,7 +67,6 @@
         copyRouter = copyRouter.filter(
           (r: RouteRecordNormalized) => !r?.meta || !r?.meta?.hideInMenu
         );
-        console.log('routes====2===', copyRouter);
         copyRouter.sort(
           (a: RouteRecordNormalized, b: RouteRecordNormalized) => {
             return (a.meta.order || 0) - (b.meta.order || 0);
@@ -113,6 +119,12 @@
         }
         return travel(copyRouter, 0);
       });
+      const getAppVersion = async () => {
+        versionInfo.value = await useAppVersion();
+      };
+      const handleShowVersion = () => {
+        showVersionModal(versionInfo.value as versionData);
+      };
       const goToProject = async (item: RouteRecordRaw) => {
         const defaultProject = await localStore.getValue(USER_DEFAULT_PROJECT);
 
@@ -281,11 +293,18 @@
           router.push({
             name: item.route
           });
-          console.log('item====', item);
           return;
         }
         if (item.key === 'logout') {
           logout();
+          return;
+        }
+        if (['docs', 'home'].includes(item.key)) {
+          window.open(item.value, '_blank');
+          return;
+        }
+        if (item.key === 'version') {
+          handleShowVersion();
           return;
         }
         if (item.key === 'chinese' || item.key === 'english') {
@@ -415,7 +434,12 @@
           console.log(error);
         }
       };
-      getProjectList();
+      const init = () => {
+        userStore.info();
+        getProjectList();
+        getAppVersion();
+      };
+      init();
       return () => (
         <div class="menu-container">
           <a-menu

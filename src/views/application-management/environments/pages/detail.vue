@@ -7,7 +7,7 @@
         @change="handleSelectChange"
       ></Breadcrumb>
     </BreadWrapper>
-    <ComCard padding="0" top-gap>
+    <ComCard padding="0">
       <HeaderInfo :info="currentInfo">
         <template #icon>
           <i class="iconfont icon-rongqiyunfuwu"></i>

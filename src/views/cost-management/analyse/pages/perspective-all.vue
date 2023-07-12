@@ -1,6 +1,6 @@
 <template>
   <div>
-    <FilterBox style="margin-bottom: 10px">
+    <FilterBox style="margin-bottom: 8px">
       <template #params>
         <div v-if="isPage"><slot name="select"></slot></div>
         <DateRange
@@ -69,7 +69,7 @@
     <SpinCard
       :title="$t('cost.optimize.table.all')"
       borderless
-      style="margin-bottom: 10px"
+      style="margin-bottom: 8px"
       :loading="overviewloading || preloading"
     >
       <a-grid :cols="24" :col-gap="20">
@@ -93,7 +93,7 @@
     <SpinCard
       :title="$t('cost.analyse.detail.costtrend')"
       borderless
-      style="margin-bottom: 10px"
+      style="margin-bottom: 8px"
     >
       <template #title>
         <div style="display: flex; justify-content: space-between">
@@ -125,7 +125,7 @@
     <SpinCard
       :title="$t('cost.analyse.detail.projectCost')"
       borderless
-      style="margin-bottom: 10px"
+      style="margin-bottom: 8px"
     >
       <!-- <template #title>
         <div style="display: flex; justify-content: space-between">

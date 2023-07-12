@@ -2,6 +2,31 @@ import { PROFILE } from '@/router/config';
 
 export const profileMenu = [
   {
+    name: 'settings.help',
+    key: 'help',
+    icon: '<i class="iconfont icon-bangzhuyushuoming size-18" />',
+    children: [
+      {
+        name: 'settings.document',
+        key: 'docs',
+        value: 'https://seal-io.github.io/docs/',
+        icon: '<icon-book  class="size-18" />'
+      },
+      {
+        name: 'common.footer.version',
+        key: 'version',
+        value: '',
+        icon: '<i class="iconfont icon-version size-18" />'
+      },
+      {
+        name: 'seal.io',
+        key: 'home',
+        value: 'https://www.seal.io/',
+        icon: '<icon-home  class="size-18"/>'
+      }
+    ]
+  },
+  {
     name: 'settings.language',
     key: 'userCenter',
     icon: '<i class="iconfont icon-language size-18"></i>',

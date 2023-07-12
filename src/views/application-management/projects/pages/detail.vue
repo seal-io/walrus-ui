@@ -7,7 +7,7 @@
         @change="handleProjectChange"
       ></Breadcrumb>
     </BreadWrapper>
-    <ComCard padding="0" top-gap>
+    <ComCard padding="0">
       <HeaderInfo :info="currentInfo">
         <template #icon>
           <i class="iconfont icon-project"></i>
@@ -64,7 +64,7 @@
           >
             <ConnectorList scope="project"></ConnectorList>
           </a-tab-pane>
-          <a-tab-pane
+          <!-- <a-tab-pane
             v-if="
               userStore.hasProjectResourceActions({
                 resource: Resources.Connectors,
@@ -76,7 +76,7 @@
             :title="$t('menu.operatorHub.module')"
           >
             <templateList scope="project"></templateList>
-          </a-tab-pane>
+          </a-tab-pane> -->
           <a-tab-pane
             v-if="
               userStore.hasProjectResourceActions({

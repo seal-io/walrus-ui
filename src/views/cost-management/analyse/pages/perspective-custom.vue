@@ -1,6 +1,6 @@
 <template>
   <div>
-    <FilterBox style="margin-bottom: 10px">
+    <FilterBox style="margin-bottom: 8px">
       <template #params>
         <div v-if="isPage"><slot name="select"></slot></div>
         <DateRange
@@ -72,7 +72,7 @@
       :loading="overviewloading || preloading"
       :title="`${$t('cost.analyse.detail.custom')}: ${projectName}`"
       borderless
-      style="margin-bottom: 10px"
+      style="margin-bottom: 8px"
     >
       <a-grid :cols="24" :col-gap="20">
         <a-grid-item
@@ -94,7 +94,7 @@
     <SpinCard
       :title="$t('cost.analyse.detail.costtrend')"
       borderless
-      style="margin-bottom: 10px"
+      style="margin-bottom: 8px"
     >
       <LineBarChart
         :loading="apploading || preloading"
