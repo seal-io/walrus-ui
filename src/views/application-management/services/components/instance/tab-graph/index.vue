@@ -10,6 +10,7 @@
           :is-fullscreen="isFullscreen"
           :show-all="showAll"
           :source-data="resultData"
+          page-type="service"
           @nodeClick="handleNodeClick"
           @canvasClick="handleCanvasClick"
         >

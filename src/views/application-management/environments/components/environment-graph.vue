@@ -10,6 +10,8 @@
           :is-fullscreen="isFullscreen"
           :source-data="resultData"
           :show-all="showAll"
+          page-type="environment"
+          :container-height="containerHeight"
           @nodeClick="handleNodeClick"
           @canvasClick="handleCanvasClick"
         >
@@ -84,6 +86,7 @@
 
   const { route } = useCallCommon();
 
+  const containerHeight = 'calc(100vh - 266px)';
   const nodeActive = ref(false);
   const loading = ref(false);
   const showAll = ref(false);

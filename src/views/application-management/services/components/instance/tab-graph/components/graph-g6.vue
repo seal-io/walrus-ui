@@ -2,7 +2,11 @@
   <div>
     <a-grid :cols="24">
       <a-grid-item :span="24">
-        <div ref="graphWrapper" class="graph-wrapper">
+        <div
+          ref="graphWrapper"
+          class="graph-wrapper"
+          :style="{ height: containerHeight }"
+        >
           <div
             id="graph-mount"
             ref="graphMount"
@@ -107,6 +111,18 @@
       default() {
         return false;
       }
+    },
+    pageType: {
+      type: String as PropType<'environment' | 'service'>,
+      default() {
+        return 'environment';
+      }
+    },
+    containerHeight: {
+      type: String,
+      default() {
+        return '400px';
+      }
     }
   });
 
@@ -119,6 +135,10 @@
     handleConnectTerminal,
     handleTerminalDelete
   } = useResourceControl();
+  const pageTypeScope = {
+    ENVIRONMENT: 'environment',
+    SERVICE: 'service'
+  };
   const emits = defineEmits(['nodeClick', 'canvasClick']);
   const showLogModal = ref(false);
   const showTermModal = ref(false);
@@ -265,12 +285,17 @@
   const removeVersions = (inputString) => {
     return _.replace(inputString, /_v[\d]/g, '');
   };
-
+  const hasCompositionNodeEdgeFilter = (edge) => {
+    // service page
+    if (props.pageType === pageTypeScope.SERVICE)
+      return edge.edgeType === edgeType.Realization;
+    // environment page
+    return [edgeType.Composition, edgeType.Realization].includes(edge.edgeType);
+  };
   const hasCompositionNodes = (node) => {
     return _.some(props.sourceData.links, (item) => {
       return (
-        _.get(item, 'source') === node.id &&
-        _.get(item, 'edgeType') === edgeType.Realization
+        _.get(item, 'source') === node.id && hasCompositionNodeEdgeFilter(item)
       );
     });
   };
@@ -428,12 +453,22 @@
     setNodeList();
     setLinks();
   };
+  const nodeFilter = (model) => {
+    // service page
+    if (props.pageType === pageTypeScope.SERVICE)
+      return model.kind === nodeKindType.ServiceResource;
+    // environment page
+    return (
+      model.kind === nodeKindType.ServiceResource ||
+      model.kind === nodeKindType.ServiceResourceGroup
+    );
+  };
   const toggleAllNodeShow = (show) => {
     _.each(graph.getNodes(), (node) => {
       const model = node.getModel();
       if (show) {
         graph.showItem(node);
-      } else if (model.kind === nodeKindType.ServiceResource) {
+      } else if (nodeFilter(model)) {
         graph.hideItem(node);
       }
       if (model.hasComposition) {
@@ -455,6 +490,7 @@
     });
     graph.render();
   };
+
   // click select node
   const getRelateNodesAndEdges = (node: INode, type) => {
     const result: INode[] = [];
@@ -466,7 +502,7 @@
       const neighbors: INode[] = currentNode?.getNeighbors(type) as INode[];
       const filterNeighbors = _.filter(neighbors, (item) => {
         const model = item.getModel();
-        return model.kind === nodeKindType.ServiceResource;
+        return nodeFilter(model);
       });
       if (filterNeighbors.length) {
         _.each(filterNeighbors, (item) => {
@@ -477,9 +513,6 @@
     return _.tail(result);
   };
   const toggleNodeCollapse = (node) => {
-    // if (node.getModel().kind !== nodeKindType.ServiceResourceGroup) {
-    //   return;
-    // }
     const result: INode[] = getRelateNodesAndEdges(node, 'target');
     if (!result.length) return;
     const model = node.getModel();
@@ -734,6 +767,7 @@
   .graph-wrapper {
     position: relative;
     width: 100%;
+    min-height: 400px;
     background-color: var(--color-fill-2);
 
     .legend {
@@ -772,8 +806,7 @@
 
     .graph-mount {
       position: relative;
-      height: @height;
-
+      // height: @height;
       &.isFullscreen {
         height: 100vh;
       }
