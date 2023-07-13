@@ -74,7 +74,7 @@
 
 <script lang="ts" setup>
   import _ from 'lodash';
-  import { ref, onMounted, defineExpose } from 'vue';
+  import { ref, onMounted, defineExpose, nextTick } from 'vue';
   import { onClickOutside, useFullscreen } from '@vueuse/core';
   import useCallCommon from '@/hooks/use-call-common';
   import GraphG6 from '../../services/components/instance/tab-graph/components/graph-g6.vue';
@@ -84,9 +84,9 @@
   } from '../../services/components/instance/tab-graph/config/interface';
   import { queryServiceGraph } from '../../services/api';
 
+  const minHeight = 'calc(100vh - 266px)';
   const { route } = useCallCommon();
-
-  const containerHeight = 'calc(100vh - 266px)';
+  const containerHeight = ref(minHeight);
   const nodeActive = ref(false);
   const loading = ref(false);
   const showAll = ref(false);
