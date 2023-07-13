@@ -29,7 +29,7 @@
               :class="{ 'active-bread': index === items.length - 1 }"
               :trigger-props="{
                 contentClass: 'component-select-drop',
-                contentStyle: { width: '120px' }
+                contentStyle: { width: '160px' }
               }"
               :options="item.options"
               :popup-container="getContainer(item.wrapperId) || ''"
@@ -65,14 +65,20 @@
                   style="
                     display: flex;
                     align-items: center;
-                    height: 30px;
-                    padding: 0 10px;
+                    height: 32px;
+                    overflow: hidden;
                     font-weight: 400;
                   "
                 >
                   <a-link
                     class="flex-1"
-                    style="color: var(--sealblue-6); font-size: 13px"
+                    style="
+                      height: 30px;
+                      padding: 0 10px;
+                      color: var(--sealblue-6);
+                      font-size: 13px;
+                      line-height: 30px;
+                    "
                     @click="handleOnSettings(item)"
                   >
                     <icon-settings class="mright-5" />{{

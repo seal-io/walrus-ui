@@ -86,7 +86,10 @@
               <span v-else style="display: flex; align-items: center">
                 <span>{{ record.name }}</span>
                 <a-tooltip :content="$t('applications.instance.env.tips')">
-                  <icon-exclamation-circle-fill class="mleft-5" />
+                  <icon-exclamation-circle-fill
+                    class="mleft-5"
+                    style="color: var(--color-text-2)"
+                  />
                 </a-tooltip>
               </span>
             </template>
@@ -252,6 +255,7 @@
       };
       const { data } = await queryEnvironments(params);
       dataList.value = data?.items || [];
+      total.value = data?.pagination?.total || 0;
       loading.value = false;
     } catch (error) {
       loading.value = false;
