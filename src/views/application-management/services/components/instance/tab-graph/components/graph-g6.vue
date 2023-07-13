@@ -258,7 +258,10 @@
     const entry = entries[0];
     const { width: boxWidth, height: boxHeight } = entry.contentRect;
     width.value = boxWidth;
-    height.value = boxHeight;
+    height.value = boxHeight < 600 ? 600 : boxHeight;
+    if (boxHeight < 600) {
+      graphWrapper.value.style.height = '600px';
+    }
     throttleFn();
   });
 
