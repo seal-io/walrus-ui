@@ -84,7 +84,9 @@ axios.interceptors.response.use(
       requestAction !== SILENCEAPI
     ) {
       Message.error({
-        id: `request_error_${data?.status}}`,
+        id: get(responseStatusMap, data?.status)
+          ? `request_error_${data?.status}}`
+          : '',
         content: result?.data?.msg || result.msg || 'Request Error',
         duration: 3 * 1000
       });

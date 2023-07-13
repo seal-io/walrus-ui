@@ -5,7 +5,7 @@
         <div
           ref="graphWrapper"
           class="graph-wrapper"
-          :style="{ height: containerHeight }"
+          :style="{ height: wrapHeight, width: '100%' }"
         >
           <div
             id="graph-mount"
@@ -69,7 +69,9 @@
     PropType,
     watch,
     onBeforeUnmount,
-    defineExpose
+    defineExpose,
+    computed,
+    watchEffect
   } from 'vue';
   import G6 from '@antv/g6';
   import {
@@ -158,6 +160,7 @@
   const toolTipRef = ref<any>({});
   const contextMenu = ref<any>({});
   const contextMenuNode: any = { value: null };
+  // const wrapHeight = ref('600px');
 
   contextMenu.value = new G6.Menu({
     trigger: 'click',
@@ -230,15 +233,13 @@
         });
       }
     },
-
-    // offsetX and offsetY include the padding of the parent container
-    // 需要加上父级容器的 padding-left 16 与自身偏移量 10
     offsetX: 16 + 10,
-    // 需要加上父级容器的 padding-top 24 、画布兄弟元素高度、与自身偏移量 10
     offsetY: 0,
-    // the types of items that allow the menu show up
-    // 在哪些类型的元素上响应
     itemTypes: ['node']
+  });
+
+  const wrapHeight = computed(() => {
+    return props.isFullscreen ? '100vh' : props.containerHeight;
   });
   const fitView = () => {
     // graph.zoomTo(1);
@@ -253,7 +254,7 @@
 
   const throttleFn = useThrottleFn(() => {
     handleWindowResize();
-  }, 200);
+  }, 100);
   useResizeObserver(graphWrapper, (entries) => {
     const entry = entries[0];
     const { width: boxWidth, height: boxHeight } = entry.contentRect;
@@ -262,7 +263,7 @@
     if (boxHeight < 600) {
       graphWrapper.value.style.height = '600px';
     }
-    throttleFn();
+    handleWindowResize();
   });
 
   const setCombosList = () => {
