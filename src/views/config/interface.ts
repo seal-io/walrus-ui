@@ -21,6 +21,7 @@ export interface BreadcrumbOptions {
   wrapperId: string;
   visible: boolean;
   hideDropDown?: boolean;
+  inputValue?: string;
   onSetting?: (args: any) => void;
   options?: Array<{
     label: string;
