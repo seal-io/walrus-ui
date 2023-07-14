@@ -6,8 +6,7 @@
       multiple
       :max-tag-count="1"
       allow-search
-      size="small"
-      style="width: 300px"
+      style="width: 386px"
       @change="handleChange"
     >
       <a-option style="display: none"></a-option>

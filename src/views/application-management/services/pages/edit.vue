@@ -14,11 +14,12 @@
           field="name"
           :disabled="pageAction === PageAction.EDIT && !!id"
           :rules="[
+            // {
+            //   required: true,
+            //   message: $t('applications.module.rule.name.tips')
+            // },
             {
               required: true,
-              message: $t('applications.module.rule.name.tips')
-            },
-            {
               match: validateLabelNameRegx,
               message: $t('common.validate.labelName')
             },
@@ -254,6 +255,7 @@
   import { onBeforeRouteLeave } from 'vue-router';
   import { useProjectStore } from '@/store';
   import useCallCommon from '@/hooks/use-call-common';
+  import useScrollToView from '@/hooks/use-scroll-to-view';
   import EditPageFooter from '@/components/edit-page-footer/index.vue';
   import xInputGroup from '@/components/form-create/custom-components/x-input-group.vue';
   import formCreate from '@/components/form-create/index.vue';
@@ -296,6 +298,7 @@
   });
 
   const emits = defineEmits(['cancel', 'save']);
+  const { scrollToView } = useScrollToView();
   const {
     getProjectList,
     getEnvironmentList,
@@ -598,6 +601,8 @@
       } catch (error) {
         submitLoading.value = false;
       }
+    } else {
+      scrollToView();
     }
   };
   watch(

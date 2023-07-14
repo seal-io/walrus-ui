@@ -7,7 +7,7 @@
         @change="handleSelectChange"
       ></Breadcrumb>
     </BreadWrapper>
-    <ComCard top-gap>
+    <ComCard>
       <GroupTitle
         :bordered="false"
         style="margin-bottom: 0"
@@ -29,9 +29,6 @@
           :rules="[
             {
               required: pageAction === PageAction.EDIT,
-              message: $t('operation.environments.rule.name')
-            },
-            {
               match: validateLabelNameRegx,
               message: $t('common.validate.labelName')
             }
@@ -102,7 +99,6 @@
               <a-button
                 v-if="pageAction === PageAction.EDIT"
                 type="primary"
-                size="small"
                 style="margin-right: 8px; padding: 0 6px"
                 @click.stop="handleAddConnector"
               >
@@ -169,7 +165,7 @@
   import { PROJECT } from '@/router/config';
   import { Resources } from '@/permissions/config';
   import { useUserStore, useTabBarStore } from '@/store';
-  import { ref, computed, defineExpose } from 'vue';
+  import { ref, computed, defineExpose, nextTick } from 'vue';
   import _, {
     each,
     includes,
@@ -184,6 +180,7 @@
   import EditPageFooter from '@/components/edit-page-footer/index.vue';
   import useCallCommon from '@/hooks/use-call-common';
   import { beforeLeaveCallback } from '@/hooks/save-before-leave';
+  import useScrollToView from '@/hooks/use-scroll-to-view';
   import { onBeforeRouteLeave } from 'vue-router';
   import { queryConnectors } from '@/views/operation-hub/connectors/api';
   import usePageAction from '@/hooks/use-page-action';
@@ -204,7 +201,6 @@
     queryItemEnvironments,
     cloneEnvironment
   } from '../api';
-
   // const props = defineProps({
   //   id: {
   //     type: String,
@@ -216,6 +212,7 @@
 
   const { getProjectList, setProjectList, initBreadValues, handleBreadChange } =
     useProjectBreadcrumbData();
+  const { scrollToView } = useScrollToView();
   const userStore = useUserStore();
   const tabBarStore = useTabBarStore();
   const { router, route, t } = useCallCommon();
@@ -370,7 +367,6 @@
   };
 
   const handleConnectorChange = (values) => {
-    console.log('values===', values);
     formData.value.connectorIDs = [...values];
     setFormDataConnectors(formData.value.connectorIDs);
     formref.value.validateField('connectorIDs');
@@ -385,16 +381,17 @@
   const handleCloneEnvironment = async () => {
     const services = serviceRef.value.getSelectServiceData();
     formData.value.services = _.cloneDeep(services);
-    // await cloneEnvironment(formData.value);
   };
   const validateLabel = () => {
     if (!environmentId) return false;
     const valid = _.some(labelList.value, (item) => !item.value && item.key);
     return valid;
   };
+
   const handleSubmit = async () => {
     const res = await formref.value?.validate();
     validateTrigger.value = validateLabel();
+    scrollToView();
     if (!res && !validateTrigger.value) {
       try {
         submitLoading.value = true;
@@ -467,7 +464,6 @@
     await getConnectors();
     await getItemEnvironmentInfo();
     getLabelList();
-    console.log('labelList>>>>>>>', labelList.value, formData.value.labels);
   };
   defineExpose({
     handleSubmit,

@@ -46,11 +46,12 @@
             :label="$t('operation.connectors.form.name')"
             field="name"
             :rules="[
+              // {
+              //   required: pageAction === PageAction.EDIT,
+              //   message: t('operation.connectors.rule.name')
+              // },
               {
                 required: pageAction === PageAction.EDIT,
-                message: t('operation.connectors.rule.name')
-              },
-              {
                 match: validateLabelNameRegx,
                 message: $t('common.validate.labelName')
               }
@@ -237,6 +238,7 @@
   import { ref, reactive, onMounted, computed, defineExpose } from 'vue';
   import GroupTitle from '@/components/group-title/index.vue';
   import { beforeLeaveCallback } from '@/hooks/save-before-leave';
+  import useScrollToView from '@/hooks/use-scroll-to-view';
   import { onBeforeRouteLeave } from 'vue-router';
   import usePageAction from '@/hooks/use-page-action';
   import EditPageFooter from '@/components/edit-page-footer/index.vue';
@@ -260,6 +262,7 @@
   // });
   const { breadCrumbList, handleSelectChange, setBreadCrumbList } =
     useConnectorBread();
+  const { scrollToView } = useScrollToView();
   const userStore = useUserStore();
   const setPropertyStyle = (style) => {
     return {
@@ -410,6 +413,8 @@
       }
       return true;
     }
+    scrollToView();
+
     return false;
   };
   const initConfigDataValue = () => {

@@ -33,11 +33,12 @@
             field="name"
             validate-trigger="change"
             :rules="[
+              // {
+              //   required: !viewable,
+              //   message: $t('cost.optimize.form.rule.name')
+              // },
               {
                 required: !viewable,
-                message: $t('cost.optimize.form.rule.name')
-              },
-              {
                 match: validateLabelNameRegx,
                 message: $t('common.validate.labelName')
               }
@@ -346,6 +347,7 @@
   } from 'lodash';
   import { PageAction, validateLabelNameRegx } from '@/views/config';
   import useCallCommon from '@/hooks/use-call-common';
+  import useScrollToView from '@/hooks/use-scroll-to-view';
   import { beforeLeaveCallback } from '@/hooks/save-before-leave';
   import { onBeforeRouteLeave } from 'vue-router';
   import GroupTitle from '@/components/group-title/index.vue';
@@ -365,6 +367,7 @@
   } from '../api';
 
   const AllPerspectiveName = 'All';
+  const { scrollToView } = useScrollToView();
   const tabBarStore = useTabBarStore();
   const { pageAction, handleEdit } = usePageAction();
   const { t, router, route } = useCallCommon();
@@ -535,6 +538,8 @@
       } catch (error) {
         submitLoading.value = false;
       }
+    } else {
+      scrollToView();
     }
   };
 

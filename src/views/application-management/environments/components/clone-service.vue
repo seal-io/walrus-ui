@@ -72,11 +72,12 @@
             field="name"
             :validate-trigger="['change']"
             :rules="[
+              // {
+              //   required: pageAction === PageAction.EDIT,
+              //   message: $t('operation.environments.rule.name')
+              // },
               {
                 required: pageAction === PageAction.EDIT,
-                message: $t('operation.environments.rule.name')
-              },
-              {
                 match: validateLabelNameRegx,
                 message: $t('common.validate.labelName')
               }
@@ -192,6 +193,7 @@
   import xInputGroup from '@/components/form-create/custom-components/x-input-group.vue';
   import EditPageFooter from '@/components/edit-page-footer/index.vue';
   import useLabelsActions from '@/components/form-create/hooks/use-labels-action';
+  import useScrollToView from '@/hooks/use-scroll-to-view';
   import formCreate from '@/components/form-create/index.vue';
   import instanceThumb from '../../services/components/instance-thumb.vue';
   import { ServiceRowData } from '../../services/config/interface';
@@ -253,6 +255,7 @@
     getLabelList,
     validateTrigger
   } = useLabelsActions(formData);
+  const { scrollToView } = useScrollToView();
   provide('showHintInput', true);
   provide('completeData', completeData);
   const active = ref('');
@@ -395,6 +398,8 @@
       };
       show.value = false;
       updateActiveServiceData();
+    } else {
+      scrollToView();
     }
   };
   const handleCancel = () => {
