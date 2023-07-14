@@ -57,7 +57,7 @@
   import useEnterPage from '@/hooks/use-enter-page';
   import Footer from '@/components/footer/index.vue';
   import highlightBlock from '@/components/highlight-block/index.vue';
-  import copy from '@/components/copy/index.vue';
+  import copy from '@/components/copy/copy-command.vue';
   import LoginBanner from './components/banner.vue';
   import LoginForm from './components/login-form.vue';
   import { GET_ADMIN_PASSWORD, FirstLoginGetPassword } from './config';
