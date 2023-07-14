@@ -46,11 +46,12 @@
             :label="$t('operation.connectors.form.name')"
             field="name"
             :rules="[
+              // {
+              //   required: pageAction === PageAction.EDIT,
+              //   message: $t('operation.connectors.rule.name')
+              // },
               {
                 required: pageAction === PageAction.EDIT,
-                message: $t('operation.connectors.rule.name')
-              },
-              {
                 match: validateLabelNameRegx,
                 message: $t('common.validate.labelName')
               }
@@ -172,6 +173,7 @@
   import GroupTitle from '@/components/group-title/index.vue';
   import readBlob from '@/utils/readBlob';
   import { beforeLeaveCallback } from '@/hooks/save-before-leave';
+  import useScrollToView from '@/hooks/use-scroll-to-view';
   import { onBeforeRouteLeave } from 'vue-router';
   import EditPageFooter from '@/components/edit-page-footer/index.vue';
   import useCallCommon from '@/hooks/use-call-common';
@@ -192,6 +194,7 @@
   //     }
   //   }
   // });
+  const { scrollToView } = useScrollToView();
   const { getProjectState } = useGetBreadState();
   const { breadCrumbList, handleSelectChange, setBreadCrumbList } =
     useConnectorBread();
@@ -264,6 +267,8 @@
       }
       return true;
     }
+    scrollToView();
+
     return false;
   };
   const getConnectorInfo = async () => {

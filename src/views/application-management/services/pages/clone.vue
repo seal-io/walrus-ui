@@ -102,6 +102,7 @@
   import { ref, computed, reactive } from 'vue';
   import { onBeforeRouteLeave } from 'vue-router';
   import { beforeLeaveCallback } from '@/hooks/save-before-leave';
+  import useScrollToView from '@/hooks/use-scroll-to-view';
   import useCallCommon from '@/hooks/use-call-common';
   import { BreadcrumbOptions } from '@/views/config/interface';
   import useLabelsActions from '@/components/form-create/hooks/use-labels-action';
@@ -118,6 +119,7 @@
     handleBreadChange,
     initBreadValues
   } = useProjectBreadcrumbData();
+  const { scrollToView } = useScrollToView();
   const { t, route, router } = useCallCommon();
   const ids = route.query.source as string;
   const breadCrumbList = ref<BreadcrumbOptions[]>([]);
@@ -195,6 +197,8 @@
       } catch (error) {
         submitLoading.value = false;
       }
+    } else {
+      scrollToView();
     }
   };
 

@@ -50,11 +50,12 @@
             :label="$t('operation.connectors.detail.clusterName')"
             field="name"
             :rules="[
+              // {
+              //   required: true,
+              //   message: $t('operation.connectors.rules.name')
+              // },
               {
                 required: true,
-                message: $t('operation.connectors.rules.name')
-              },
-              {
                 match: validateLabelNameRegx,
                 message: $t('common.validate.labelName')
               }
@@ -202,6 +203,7 @@
   import GroupTitle from '@/components/group-title/index.vue';
   import readBlob from '@/utils/readBlob';
   import { beforeLeaveCallback } from '@/hooks/save-before-leave';
+  import useScrollToView from '@/hooks/use-scroll-to-view';
   import { onBeforeRouteLeave } from 'vue-router';
   import EditPageFooter from '@/components/edit-page-footer/index.vue';
   import useCallCommon from '@/hooks/use-call-common';
@@ -224,6 +226,7 @@
   // });
   const { breadCrumbList, handleSelectChange, setBreadCrumbList } =
     useConnectorBread();
+  const { scrollToView } = useScrollToView();
   const userStore = useUserStore();
   const { t, router, route } = useCallCommon();
   const { pageAction, handleEdit } = usePageAction();
@@ -296,6 +299,8 @@
       }
       return true;
     }
+    scrollToView();
+
     return false;
   };
   const getConnectorInfo = async () => {

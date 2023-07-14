@@ -32,11 +32,12 @@
           :disabled="!!id"
           :validate-trigger="['change']"
           :rules="[
+            // {
+            //   required: pageAction === PageAction.EDIT,
+            //   message: $t('operation.templates.rules.name')
+            // },
             {
               required: pageAction === PageAction.EDIT,
-              message: $t('operation.templates.rules.name')
-            },
-            {
               match: validateLabelNameRegx,
               message: $t('common.validate.labelName')
             }
@@ -209,6 +210,7 @@
   import { urlReg } from '@/utils/validate';
   import { ref, reactive, onMounted, computed } from 'vue';
   import { beforeLeaveCallback } from '@/hooks/save-before-leave';
+  import useScrollToView from '@/hooks/use-scroll-to-view';
   import { onBeforeRouteLeave } from 'vue-router';
   import GroupTitle from '@/components/group-title/index.vue';
   import EditPageFooter from '@/components/edit-page-footer/index.vue';
@@ -236,6 +238,7 @@
     tabConnector
   };
 
+  const { scrollToView } = useScrollToView();
   const userStore = useUserStore();
   const versionList = ref<{ label: string; value: string; schema: object }[]>(
     []
@@ -306,7 +309,6 @@
   };
   const handleVersonChange = (value) => {
     const data = find(versionList.value, (item) => item.value === value);
-    console.log('data======', data);
     templateSchema.value = data?.schema || {};
   };
   const handleSubmit = async () => {
@@ -330,6 +332,8 @@
       } catch (error) {
         submitLoading.value = false;
       }
+    } else {
+      scrollToView();
     }
   };
   const cancelCallback = () => {
