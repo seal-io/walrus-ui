@@ -27,6 +27,7 @@
               :bordered="false"
               :model-value="item.value"
               :input-value="item.inputValue"
+              show-footer-on-empty
               :class="{ 'active-bread': index === items.length - 1 }"
               :trigger-props="{
                 contentClass: 'component-select-drop',
@@ -37,10 +38,14 @@
               size="mini"
               :options="item.options"
               class="border-less"
-              show-footer-on-empty
               @click="handleClick(item, index)"
               @change="(val) => handleSelectChange(val, item)"
             >
+              <template #empty>
+                <span>{{
+                  item.inputValue ? $t('common.search.nodata') : ''
+                }}</span>
+              </template>
               <template #option="{ data }">
                 <AutoTip
                   :key="data.value"
@@ -331,6 +336,14 @@
         top: 5px;
         left: 0;
         padding: 0 8px;
+      }
+
+      .arco-select-dropdown-empty {
+        display: block;
+        padding: 10px 0;
+        color: var(--color-text-3);
+        font-size: 12px;
+        text-align: center;
       }
     }
   }
