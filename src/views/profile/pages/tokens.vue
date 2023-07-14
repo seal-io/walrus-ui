@@ -9,7 +9,7 @@
         >
       </FilterBox>
       <a-list v-for="(item, index) in dataList" :key="index">
-        <s-list-item>
+        <div>
           <a-list-item-meta>
             <template #title>
               <a-space fill>
@@ -56,7 +56,7 @@
               </div>
             </template>
           </a-list-item-meta>
-        </s-list-item>
+        </div>
       </a-list>
       <div v-if="!dataList.length && isLoad" class="create-desc">{{
         $t('account.settings.token.desc')
@@ -85,7 +85,7 @@
   import { useI18n } from 'vue-i18n';
   import FilterBox from '@/components/filter-box/index.vue';
   import { deleteModal, execSucceed } from '@/utils/monitor';
-  import copy from '@/components/copy/index.vue';
+  import copy from '@/components/copy/copy-command.vue';
   import GroupTitle from '@/components/group-title/index.vue';
   import CreateTokens from '../components/create-tokens.vue';
   import { queryTokens, deleteTokens, FormDataType } from '../api/tokens';
@@ -210,6 +210,12 @@
 
     .arco-list-wrapper {
       margin-bottom: 12px;
+      transition: all 0.3s var(--seal-transition-func);
+
+      &:hover {
+        background-color: var(--color-fill-2);
+        transition: all 0.2s var(--seal-transition-func);
+      }
     }
 
     :deep(.arco-list-item-meta) {

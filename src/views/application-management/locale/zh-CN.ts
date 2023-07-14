@@ -135,7 +135,7 @@ export default {
   'applications.service.graph.menu': '资源可执行',
   'applications.environment.clone': '克隆环境',
   'applications.environment.clone.target': '目标环境',
-  'applications.environment.clone.env.rules': '目标环必选',
+  'applications.environment.clone.env.rules': '目标环境必选',
   'applications.environment.graph.fitview': '视图适中',
   'applications.environment.graph.fullscreen': '全屏',
   'applications.environment.graph.cancelfullscreen': '退出全屏',
