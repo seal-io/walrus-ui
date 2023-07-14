@@ -26,15 +26,18 @@
               :popup-visible="item.visible"
               :bordered="false"
               :model-value="item.value"
+              :input-value="item.inputValue"
               :class="{ 'active-bread': index === items.length - 1 }"
               :trigger-props="{
                 contentClass: 'component-select-drop',
-                contentStyle: { width: '160px' }
+                contentStyle: { width: '200px' },
+                preventFocus: false
               }"
-              :options="item.options"
               :popup-container="getContainer(item.wrapperId) || ''"
               size="mini"
+              :options="item.options"
               class="border-less"
+              show-footer-on-empty
               @click="handleClick(item, index)"
               @change="(val) => handleSelectChange(val, item)"
             >
@@ -49,7 +52,12 @@
                 </AutoTip>
               </template>
               <template #arrow-icon>
-                <OnClickOutside @trigger="handleClickOutSide(item)">
+                <OnClickOutside
+                  :options="{
+                    ignore: ['.bread-option-search-wrapper']
+                  }"
+                  @trigger="handleClickOutSide(item)"
+                >
                   <span
                     v-if="!item.hideDropDown"
                     class="bread-icon-btn"
@@ -60,12 +68,19 @@
                 </OnClickOutside>
               </template>
               <template #footer>
+                <div class="search-box bread-option-search-wrapper">
+                  <a-input v-model="item.inputValue" allow-clear>
+                    <template #prefix>
+                      <icon-search />
+                    </template>
+                  </a-input>
+                </div>
                 <div
                   v-if="item.onSetting"
                   style="
                     display: flex;
                     align-items: center;
-                    height: 32px;
+                    height: 36px;
                     overflow: hidden;
                     font-weight: 400;
                   "
@@ -73,11 +88,11 @@
                   <a-link
                     class="flex-1"
                     style="
-                      height: 30px;
+                      height: 34px;
                       padding: 0 10px;
                       color: var(--sealblue-6);
                       font-size: 13px;
-                      line-height: 30px;
+                      line-height: 34px;
                     "
                     @click="handleOnSettings(item)"
                   >
@@ -112,8 +127,8 @@
 </template>
 
 <script lang="ts" setup>
-  import _ from 'lodash';
-  import { PropType } from 'vue';
+  import _, { filter } from 'lodash';
+  import { PropType, ref } from 'vue';
   import useCallCommon from '@/hooks/use-call-common';
   import { vOnClickOutside, OnClickOutside } from '@vueuse/components';
   import { BreadcrumbOptions } from '@/views/config/interface';
@@ -141,6 +156,7 @@
   });
   const { router } = useCallCommon();
   const emits = defineEmits(['change']);
+
   const handleSelectChange = (value, item) => {
     emits('change', { value, item });
   };
@@ -170,6 +186,7 @@
       });
     }
   };
+
   const handleTogglePopup = (item) => {
     item.visible = !item.visible;
   };
@@ -224,6 +241,7 @@
         .arco-select-view-value {
           margin-right: 12px;
           color: var(--sealblue-6);
+          font-weight: 500;
           font-size: 14px;
           transform: scale(1.05);
 
@@ -289,7 +307,7 @@
         .arco-select-view-single {
           .arco-select-view-value {
             color: var(--color-text-2);
-            font-weight: 400;
+            font-weight: 500;
             cursor: default;
 
             // &:hover {
@@ -297,6 +315,22 @@
             // }
           }
         }
+      }
+    }
+  }
+</style>
+
+<style lang="less">
+  .component-select-drop {
+    .arco-select-dropdown-has-footer {
+      position: relative;
+      padding-top: 42px;
+
+      .search-box {
+        position: absolute;
+        top: 5px;
+        left: 0;
+        padding: 0 8px;
       }
     }
   }

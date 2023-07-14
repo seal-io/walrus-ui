@@ -33,6 +33,7 @@ export default function useProjectData() {
     wrapperId: 'projectWrapper',
     route: PROJECT.Detail,
     visible: false,
+    inputValue: '',
     options: []
   };
   const environmentTemplate = {
@@ -45,6 +46,7 @@ export default function useProjectData() {
     wrapperId: 'envWrapper',
     route: PROJECT.EnvDetail,
     visible: false,
+    inputValue: '',
     options: []
   };
   const serviceTemplate = {
@@ -57,6 +59,7 @@ export default function useProjectData() {
     wrapperId: 'serviceWrapper',
     route: PROJECT.ServiceDetail,
     visible: false,
+    inputValue: '',
     options: []
   };
 
