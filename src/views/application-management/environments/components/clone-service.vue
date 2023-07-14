@@ -36,7 +36,12 @@
     </div>
     <div v-if="active" v-show="show" class="bordered">
       <a-alert :show-icon="true" style="margin-bottom: 10px">
-        <span>{{ $t('applications.applications.edit') }}</span>
+        <span>
+          <span>{{ $t('applications.applications.edit') }}</span>
+          <span v-show="hasChange" class="change-tips">{{
+            `(${$t('common.tips.change')})`
+          }}</span>
+        </span>
         <template #action>
           <EditPageFooter style="margin-top: 0; padding: 0">
             <template #save>
@@ -267,6 +272,8 @@
   const show = ref(true);
   const activeServiceInfo = ref<any>({});
   const variableAttributes = ref<any>({});
+  const hasChange = ref(false);
+  let copyFormData: any = null;
 
   const formTabs = computed(() => {
     const list = _.keys(variablesGroup.value);
@@ -277,23 +284,6 @@
     return list;
   });
 
-  const handleClickInstance = async (data) => {
-    active.value = data.id;
-    show.value = true;
-    activeKey.value = 'schemaForm0';
-    activeServiceInfo.value = data;
-    serviceInfo.value = _.cloneDeep(data);
-    await setFormAttributes();
-    generateVariablesGroup(PageAction.EDIT);
-    getLabelList();
-  };
-  const handleCheckChange = (checked, item) => {
-    if (checked) {
-      selectedList.value.add(item.id);
-    } else {
-      selectedList.value.delete(item.id);
-    }
-  };
   // get group form data
   const getRefFormData = async (noValidate?: boolean) => {
     const resultList: any[] = [];
@@ -309,6 +299,7 @@
     );
     return resultList;
   };
+
   const getFormData = async (noValidate?: boolean) => {
     let moduleFormList: any[] = [];
     if (_.keys(variablesGroup.value).length > 1) {
@@ -318,6 +309,52 @@
       moduleFormList = [{ formData: result }];
     }
     return moduleFormList;
+  };
+
+  const checkFormDataHasChange = async () => {
+    const moduleFormList = await getFormData(true);
+    copyFormData.attributes = {
+      ..._.reduce(
+        moduleFormList,
+        (obj, s) => {
+          obj = {
+            ...obj,
+            ...s.formData
+          };
+          return obj;
+        },
+        {}
+      )
+    };
+    return !_.isEqual(copyFormData, formData);
+  };
+  const handleClickInstance = async (data) => {
+    if (active.value === data.id && show.value) {
+      return;
+    }
+    if (show.value && active.value) {
+      hasChange.value = await checkFormDataHasChange();
+    }
+    if (hasChange.value) {
+      return;
+    }
+
+    active.value = data.id;
+    show.value = true;
+    activeKey.value = 'schemaForm0';
+    activeServiceInfo.value = data;
+    serviceInfo.value = _.cloneDeep(data);
+    await setFormAttributes();
+    generateVariablesGroup(PageAction.EDIT);
+    getLabelList();
+    copyFormData = _.cloneDeep(formData);
+  };
+  const handleCheckChange = (checked, item) => {
+    if (checked) {
+      selectedList.value.add(item.id);
+    } else {
+      selectedList.value.delete(item.id);
+    }
   };
 
   const setVariableAttributes = async () => {
@@ -381,7 +418,6 @@
   const handleOk = async () => {
     const res = await formref.value?.validate();
     const { validFailedForm, moduleFormList } = await validateFormData();
-    console.log('moduleFormList===', moduleFormList);
     if (!validFailedForm && !res) {
       formData.attributes = {
         ..._.reduce(
@@ -398,6 +434,7 @@
       };
       show.value = false;
       updateActiveServiceData();
+      hasChange.value = false;
     } else {
       scrollToView();
     }
@@ -433,6 +470,12 @@
     padding: 10px;
     border: 1px solid var(--color-border-2);
     border-radius: var(--border-radius-small);
+  }
+
+  .change-tips {
+    margin-left: 5px;
+    color: rgb(var(--danger-6));
+    font-size: 12px;
   }
 
   .svc-wrapper {
