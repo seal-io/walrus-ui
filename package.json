@@ -30,7 +30,7 @@
   },
   "dependencies": {
     "@antv/g6": "^4.8.10",
-    "@arco-design/web-vue": "2.37.4",
+    "@arco-design/web-vue": "2.47.1",
     "@highlightjs/vue-plugin": "^2.1.0",
     "@interactjs/actions": "^1.10.17",
     "@interactjs/auto-start": "^1.10.17",

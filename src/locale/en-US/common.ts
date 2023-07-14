@@ -94,5 +94,6 @@ export default {
   'common.table.yes': 'Yes',
   'common.table.no': 'No',
   'common.validate.labelName':
-    'contains only lowercase alphanumeric or "-", starts with an alphanumeric and ends with an alphanumeric'
+    'contains only lowercase alphanumeric or "-", starts with an alphanumeric and ends with an alphanumeric',
+  'common.search.nodata': 'no matching data'
 };
