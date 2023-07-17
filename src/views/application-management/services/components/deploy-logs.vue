@@ -11,7 +11,7 @@
   import { useSetChunkRequest } from '@/api/axios-chunk-request';
   import { ref, inject, watch } from 'vue';
   import usePermissionParams from '../../hooks/use-permission-params';
-  import { AppInstanceStatus } from '../config';
+  import { ServiceStatus } from '../config';
   // import AceEditor from '@/components/ace-editor/index.vue';
 
   const props = defineProps({
@@ -66,7 +66,7 @@
   const createWebSockerConnection = () => {
     if (!props.revisionId) return;
     const jobType =
-      instanceInfo.value.status === AppInstanceStatus.Deleting
+      instanceInfo.value.status === ServiceStatus.Deleting
         ? 'destroy'
         : 'apply';
     setChunkRequest({

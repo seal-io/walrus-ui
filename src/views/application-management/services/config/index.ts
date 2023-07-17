@@ -49,7 +49,7 @@ export const moduleActions = [
 
 export const variablesTypeList = [{ label: 'string', value: 'string' }];
 
-export const instanceStatus = [
+export const serviceStatus = [
   { label: 'Deploying', value: 'Deploying' },
   { label: 'Deployed', value: 'Deployed' },
   { label: 'DeployFailed', value: 'DeployFailed' },
@@ -69,7 +69,7 @@ export enum Status {
   Error = 'error',
   Running = 'running'
 }
-export const setInstanceStatus = (status) => {
+export const setServiceStatus = (status) => {
   if (get(status, 'transitioning')) return Status.Warning;
   if (get(status, 'error')) return Status.Error;
   return Status.Running;
@@ -195,10 +195,11 @@ export const RevisionStatus = {
   Failed: 'Failed'
 };
 
-export const AppInstanceStatus = {
+export const ServiceStatus = {
   Deployed: 'Deployed',
   Deleting: 'Deleting',
   Deploying: 'Deploying',
+  Preparing: 'Preparing',
   DeployFailed: 'DeployFailed',
   DeleteFailed: 'DeleteFailed'
 };
@@ -227,7 +228,10 @@ export const serviceActions: MoreAction[] = [
     handler: '',
     status: 'normal',
     disabled(currentInfo: any): boolean {
-      return get(currentInfo, 'status.transitioning');
+      return (
+        get(currentInfo, 'status.transitioning') &&
+        get(currentInfo, 'status.summaryStatus') !== ServiceStatus.Preparing
+      );
     },
     filterFun(currentInfo) {
       return userStore.hasProjectResourceActions({
@@ -279,7 +283,7 @@ export const serviceActions: MoreAction[] = [
     status: 'danger',
     disabled(currentInfo) {
       return (
-        get(currentInfo, 'status.summaryStatus') === AppInstanceStatus.Deleting
+        get(currentInfo, 'status.summaryStatus') === ServiceStatus.Deleting
       );
     },
     filterFun(currentInfo) {

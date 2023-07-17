@@ -4,7 +4,7 @@
       <a-spin :loading="asyncLoading" style="width: 100%">
         <a-grid :cols="24" :row-gap="8" :col-gap="8">
           <a-grid-item v-for="item in editServiceList" :key="item.id" :span="6">
-            <instanceThumb
+            <serviceThumb
               style="width: 100%; height: 90px"
               :active="item.id === active"
               :data-info="item"
@@ -29,7 +29,7 @@
                   ></a-checkbox>
                 </div>
               </template>
-            </instanceThumb>
+            </serviceThumb>
           </a-grid-item>
         </a-grid>
       </a-spin>
@@ -200,7 +200,7 @@
   import useLabelsActions from '@/components/form-create/hooks/use-labels-action';
   import useScrollToView from '@/hooks/use-scroll-to-view';
   import formCreate from '@/components/form-create/index.vue';
-  import instanceThumb from '../../services/components/instance-thumb.vue';
+  import serviceThumb from '../../services/components/service-thumb.vue';
   import { ServiceRowData } from '../../services/config/interface';
   import useServiceData from '../../services/hooks/use-service-data';
 

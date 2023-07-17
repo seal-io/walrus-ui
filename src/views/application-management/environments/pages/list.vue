@@ -152,9 +152,15 @@
                       actions: [Actions.POST]
                     })
                   "
+                  :disabled="!record.connectors?.length"
                   :content="$t('applications.environment.clone')"
                 >
-                  <a-link type="text" size="small" @click="handleClone(record)">
+                  <a-link
+                    :disabled="!record.connectors?.length"
+                    type="text"
+                    size="small"
+                    @click="handleClone(record)"
+                  >
                     <template #icon
                       ><i class="size-14 icon-Clone-Cloud iconfont"
                     /></template>

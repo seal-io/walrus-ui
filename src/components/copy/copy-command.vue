@@ -1,5 +1,5 @@
 <template>
-  <span v-if="isSupported">
+  <span v-if="isSupported" class="copy-btn">
     <span @click="handleCopy">
       <a-link v-if="!copied"><icon-copy class="size-14" /></a-link>
       <span v-else
@@ -39,3 +39,19 @@
     copy(props.content);
   };
 </script>
+
+<style lang="less" scoped>
+  .copy-btn {
+    .arco-link {
+      padding: 1px;
+      border: 1px solid var(--color-border-2);
+      border-radius: 4px;
+      transition: all 0.2s var(--seal-transition-func);
+
+      &:hover {
+        border-color: var(--color-border-3);
+        transition: all 0.2s var(--seal-transition-func);
+      }
+    }
+  }
+</style>

@@ -84,7 +84,7 @@
   import { fittingString } from '../config/utils';
   import { statusMap, edgeType, nodeKindType, customeLegend } from '../config';
   import { ICombo, IEdge, INode } from '../config/interface';
-  import { setInstanceStatus, Status } from '../../../../config';
+  import { setServiceStatus, Status } from '../../../../config';
   import { getResourceKeyList } from '../../../../config/utils';
   import { ResourceKey } from '../../../../config/interface';
   import loggableModal from './loggable-modal.vue';
@@ -323,7 +323,7 @@
       );
 
       const animate =
-        setInstanceStatus(_.get(node, 'status')) === Status.Warning;
+        setServiceStatus(_.get(node, 'status')) === Status.Warning;
       node.resourceType =
         removeVersions(_.get(node, 'extensions.type')) || _.get(node, 'kind');
 
@@ -357,7 +357,7 @@
         width: animate ? 20 : 14,
         height: animate ? 20 : 14,
         show: true,
-        img: _.get(statusMap, setInstanceStatus(_.get(node, 'status')))
+        img: _.get(statusMap, setServiceStatus(_.get(node, 'status')))
       };
       node.logoIcon = {
         width: 32,

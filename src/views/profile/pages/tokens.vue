@@ -173,10 +173,6 @@
 
 <style lang="less" scoped>
   .box {
-    :deep(.arco-icon-copy) {
-      font-size: 16px;
-    }
-
     .create-desc {
       text-align: center;
     }
