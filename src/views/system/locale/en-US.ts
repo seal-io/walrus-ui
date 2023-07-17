@@ -150,5 +150,7 @@ export default {
   'account.settings.token.desc': 'API keys can be used to access the Seal API.',
   'account.settings.token.tips':
     'Make sure to copy your personal access key now. You won’t be able to see it again!',
-  'account.settings.clear.tips': 'Save, the following settings will be cleared'
+  'account.settings.clear.tips': 'Save, the following settings will be cleared',
+  'account.create.rules.username':
+    'Can only contain alphanumeric, _, -, cannot have consecutive -, _, and cannot start or end with - or _'
 };

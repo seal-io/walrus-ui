@@ -132,6 +132,12 @@ export const websocketEventType = {
 
 export const validateLabelNameRegx = /^[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?$/;
 
+// 最多包含39个字符
+// 只能包含字母数字、_、-
+// 不能有连续的-、_
+// 并且不能以-或_开头或结尾
+export const validateUserNameRegx =
+  /^[a-zA-Z0-9]([a-zA-Z0-9_-]{0,37}[a-zA-Z0-9])?$/;
 // page state
 export enum PageAction {
   EDIT = 'edit',
