@@ -1,9 +1,14 @@
 <template>
-  <div class="tab-logs-wrap">
+  <div
+    :id="containerId"
+    class="tab-logs-wrap"
+    style="position: relative; z-index: 3001"
+  >
     <a-select
       v-model="logKey"
       style="width: 240px; margin-bottom: 10px"
       :options="dataList"
+      :popup-container="getContainer()"
       @change="handleKeyChange"
     ></a-select>
     <div class="wrap" :style="{ height: `${height}px` }">
@@ -24,6 +29,12 @@
   import { Cascader, ResourceKey } from '../../config/interface';
 
   const props = defineProps({
+    containerId: {
+      type: String,
+      default() {
+        return '';
+      }
+    },
     height: {
       type: Number,
       default: 270
@@ -79,7 +90,9 @@
     containerList.value = [];
     content.value = '';
   };
-
+  const getContainer = () => {
+    return document.getElementById(props.containerId) || document.body;
+  };
   watch(
     () => props.dataList,
     (list) => {

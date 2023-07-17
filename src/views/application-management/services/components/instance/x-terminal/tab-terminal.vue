@@ -1,9 +1,14 @@
 <template>
-  <div>
+  <div
+    :id="containerId"
+    class="service-terminal"
+    style="position: relative; z-index: 3001"
+  >
     <a-select
       v-model="resourceKey"
       style="width: 240px; margin-bottom: 10px"
       :options="dataList"
+      :popup-container="getContainer()"
       @change="handleKeyChange"
     ></a-select>
     <xTerminal
@@ -33,6 +38,12 @@
   import { ResourceKey } from '../../../config/interface';
 
   const props = defineProps({
+    containerId: {
+      type: String,
+      default() {
+        return '';
+      }
+    },
     height: {
       type: Number,
       default: 270
@@ -70,7 +81,9 @@
     resourceKey.value = result?.value || '';
     resourceId.value = result?.id || '';
   };
-
+  const getContainer = () => {
+    return document.getElementById(props.containerId) || document.body;
+  };
   watch(
     () => props.dataList,
     (list) => {
