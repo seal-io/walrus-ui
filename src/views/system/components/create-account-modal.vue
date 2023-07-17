@@ -55,7 +55,8 @@
         :rules="[
           {
             required: true,
-            message: $t('propfile.account.settings.rules.name')
+            match: validateUserNameRegx,
+            message: $t('account.create.rules.username')
           }
         ]"
       >
@@ -63,12 +64,16 @@
           v-model.trim="formData.name"
           :max-length="39"
           show-word-limit
+          style="width: 400px"
           :disabled="action === 'edit'"
         ></a-input>
+        <template #extra>
+          <div>{{ $t('account.create.rules.username') }}</div>
+        </template>
       </a-form-item>
       <a-form-item :label="$t('profile.account.password')" field="password">
-        <a-input-group>
-          <a-input-password v-model="formData.password" style="width: 328px" />
+        <a-input-group style="width: 400px">
+          <a-input-password v-model="formData.password" style="width: 370px" />
           <a-button type="primary" @click="handleGeneratePassword">
             <template #icon>
               <a-tooltip :content="$t('profile.account.creatrandom')">
@@ -89,7 +94,11 @@
           }
         ]"
       >
-        <a-select v-model="formData.roleId" @change="handleRoleChange">
+        <a-select
+          v-model="formData.roleId"
+          style="width: 400px"
+          @change="handleRoleChange"
+        >
           <template #prefix>
             <i
               style="color: var(--sealblue-6)"
@@ -144,6 +153,7 @@
 <script lang="ts" setup>
   import _ from 'lodash';
   import { ref, reactive, PropType } from 'vue';
+  import { validateUserNameRegx } from '@/views/config';
   import EditPageFooter from '@/components/edit-page-footer/index.vue';
   import { accountTypeList, roleTypeList } from '../config/users';
   import { RoleItem } from '../config/interface';
