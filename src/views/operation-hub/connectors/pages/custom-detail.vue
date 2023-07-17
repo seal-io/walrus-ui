@@ -79,7 +79,7 @@
             :rules="[
               {
                 required: pageAction === PageAction.EDIT,
-                message: $t('operation.connectors.type.rule')
+                message: $t('operation.connectors.rule.type')
               }
             ]"
           >
@@ -97,7 +97,7 @@
             field="configData"
             :rules="[
               {
-                required: pageAction === PageAction.EDIT,
+                required: false,
                 message: $t('operation.connectors.attribute.rule')
               }
             ]"
@@ -144,14 +144,14 @@
                     v-if="!sItem.visible"
                     v-model="sItem.value"
                     style="width: 100%"
-                    :error="!sItem.value && triggerValidate"
+                    :error="!sItem.value && triggerValidate && !!sItem.key"
                     :placeholder="$t('common.input.value')"
                   ></a-input>
                   <a-input-password
                     v-else
                     v-model="sItem.value"
                     style="width: 100%"
-                    :error="!sItem.value && triggerValidate"
+                    :error="!sItem.value && triggerValidate && !!sItem.key"
                     :placeholder="$t('common.input.value')"
                   ></a-input-password>
                 </template>
@@ -222,7 +222,7 @@
   import { OPERATIONHUB } from '@/router/config';
   import { Resources, Actions } from '@/permissions/config';
   import { useUserStore } from '@/store';
-  import {
+  import _, {
     assignIn,
     toLower,
     keys,
@@ -336,7 +336,6 @@
       visible: true,
       ...labelOption
     });
-    console.log('attributeList===', attributeList.value);
   };
   const handleDeleteLabel = (list, index) => {
     const len = list.length || 0;
@@ -347,7 +346,7 @@
   const checkAttributeValid = () => {
     triggerValidate.value = some(
       attributeList.value,
-      (item) => !item.key || !item.value
+      (item) => item.key && !item.value
     );
   };
   const setAttributeList = () => {
@@ -374,12 +373,15 @@
         }
       ];
     }
-    console.log('attributeList===', attributeList.value);
   };
 
   const setConfigData = () => {
-    const data = reduce(
+    const list = _.filter(
       attributeList.value,
+      (item) => item.key
+    ) as CustomAttrbute[];
+    const data = reduce(
+      list,
       (obj, item) => {
         if (item.key) {
           obj[item.key] = {

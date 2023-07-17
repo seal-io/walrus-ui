@@ -38,6 +38,7 @@ export default {
   'operation.connectors.form.attribute': '属性',
   'operation.connectors.rule.name': '名称必填',
   'operation.connectors.type.rule': '类型必选',
+  'operation.connectors.rule.type': '类型必填',
   'operation.connectors.accesstoken.rule': 'access token 必填',
   'operation.connectors.attribute.rule': '属性必填',
   'operation.connectors.attribute.visible': '可见',

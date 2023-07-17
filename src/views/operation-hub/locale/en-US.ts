@@ -43,6 +43,7 @@ export default {
   'operation.connectors.form.attribute': 'Attributes',
   'operation.connectors.rule.name': 'name is required',
   'operation.connectors.type.rule': 'type is required',
+  'operation.connectors.rule.type': 'type is required',
   'operation.connectors.accesstoken.rule': 'access token is required',
   'operation.connectors.attribute.rule': 'attributes is required',
   'operation.connectors.attribute.visible': 'visible',

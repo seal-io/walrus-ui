@@ -23,7 +23,7 @@
         >
           <a-input
             v-if="!showHintInput"
-            :error="!dataKey && triggerValidate"
+            :error="!dataKey && triggerValidate && shouldKey"
             :model-value="dataKey"
             :max-length="30"
             v-bind="$attrs"
@@ -38,7 +38,7 @@
           <hintInput
             v-else
             :model-value="dataKey"
-            :error="!dataKey && triggerValidate"
+            :error="!dataKey && triggerValidate && shouldKey"
             :placeholder="
               get($attrs?.placeholder, 'key') || $t('common.input.key')
             "
@@ -240,12 +240,7 @@
         return 'comText';
       }
     },
-    // showHintInput: {
-    //   type: Boolean,
-    //   default() {
-    //     return false;
-    //   }
-    // },
+
     width: {
       type: String,
       default() {
@@ -268,6 +263,12 @@
       type: Number,
       default() {
         return 0;
+      }
+    },
+    shouldKey: {
+      type: Boolean,
+      default() {
+        return false;
       }
     },
     token: {

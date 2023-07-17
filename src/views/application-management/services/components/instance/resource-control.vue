@@ -23,11 +23,13 @@
           </template>
           <tabTerminal
             v-if="type === 'terminal'"
+            :container-id="item.name"
             :height="containerHeight"
             :data-list="item.dataList"
           ></tabTerminal>
           <tabLogs
             v-if="type === 'logs'"
+            :container-id="item.name"
             :data-list="item.dataList"
             :height="containerHeight"
           ></tabLogs>
@@ -155,7 +157,7 @@
     right: 0;
     bottom: 0;
     left: 0;
-    z-index: 9999;
+    z-index: 3000;
     background-color: #fff;
     border: 1px solid var(--color-border-2);
 
