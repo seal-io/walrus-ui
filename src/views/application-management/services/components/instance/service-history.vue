@@ -128,12 +128,13 @@
       :revision-id="revisionDetailId"
       :initial-status="initialStatus"
     ></revisionDetail>
-    <instanceSpecDiff
+    <serviceSpecDiff
       v-model:show="showDiffModal"
       :title="title"
       :content="diffContent"
+      :service-info="rollbackData"
       @confirm="handleConfirmDiff"
-    ></instanceSpecDiff>
+    ></serviceSpecDiff>
   </div>
 </template>
 
@@ -173,7 +174,7 @@
   import { UseSortDirection } from '@/utils/common';
   import { HistoryData } from '../../config/interface';
   import revisionDetail from '../revision-detail.vue';
-  import instanceSpecDiff from '../instance-spec-diff.vue';
+  import serviceSpecDiff from '../service-spec-diff.vue';
   import {
     setDurationValue,
     websocketEventType,

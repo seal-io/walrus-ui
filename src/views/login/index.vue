@@ -30,6 +30,7 @@
             :code="
               $t(_.get(FirstLoginGetPassword, firstLoginStatus?.value) || '')
             "
+            class="hl-code"
             style="position: relative; background: #fff"
           >
             <copy
@@ -113,6 +114,20 @@
 
     :deep(.hljs) {
       white-space: break-spaces;
+    }
+
+    .hl-code {
+      &:hover {
+        .copy-btn {
+          opacity: 1;
+          transition: opacity 0.2s var(--seal-transition-func);
+        }
+      }
+    }
+
+    .copy-btn {
+      opacity: 0;
+      transition: opacity 0.2s var(--seal-transition-func);
     }
 
     :deep(.arco-space-item) {

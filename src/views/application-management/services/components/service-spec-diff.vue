@@ -38,6 +38,7 @@
       <EditPageFooter style="margin-top: 0">
         <template #save>
           <a-button
+            :disabled="_.get(serviceInfo, 'status') === RevisionStatus.Running"
             type="primary"
             class="cap-title cancel-btn"
             @click="handleOk"
@@ -58,12 +59,20 @@
 </template>
 
 <script lang="ts" setup>
+  import _ from 'lodash';
   import useCodeDiff from '@/hooks/use-code-diff';
   import EditPageFooter from '@/components/edit-page-footer/index.vue';
   import AceEditor from '@/components/ace-editor/index.vue';
+  import { RevisionStatus } from '@/views/application-management/services/config';
 
   const props = defineProps({
     title: String,
+    serviceInfo: {
+      type: Object,
+      default() {
+        return {};
+      }
+    },
     show: {
       type: Boolean,
       default() {
