@@ -3,9 +3,28 @@
     <span
       class="arco-input-wrapper"
       style="width: 100%"
-      :class="{ 'arco-input-focus': isFocus, 'arco-input-error': $attrs.error }"
+      :class="{
+        'arco-input-focus': isFocus,
+        'arco-input-error': $attrs.error,
+        'is-focused': isFocus || modelValue
+      }"
       @click="handleClick"
     >
+      <span class="label">
+        <span
+          >{{ $attrs.label || placeholder
+          }}{{
+            showRequiredMark
+              ? $attrs.required
+                ? `(${$t('common.form.field.input.required')})`
+                : `(${$t('common.form.field.optional')})`
+              : ''
+          }}</span
+        >
+        <a-tooltip v-if="popupInfo" :content="popupInfo">
+          <icon-info-circle style="stroke-linecap: initial; cursor: default" />
+        </a-tooltip>
+      </span>
       <input
         :id="editorId"
         ref="input"
@@ -14,7 +33,6 @@
         :spellcheck="false"
         :readonly="disabled"
         autocomplete="off"
-        :placeholder="placeholder"
         v-bind="$attrs"
         @focus="handleFocus"
         @input="handleInput"
@@ -86,7 +104,19 @@
         return '';
       }
     },
+    showRequiredMark: {
+      type: Boolean,
+      default() {
+        return true;
+      }
+    },
     placeholder: {
+      type: String,
+      default() {
+        return '';
+      }
+    },
+    popupInfo: {
       type: String,
       default() {
         return '';
@@ -397,6 +427,7 @@
   const handleClick = () => {
     console.log('click');
     isFocus.value = true;
+    input.value?.focus?.();
   };
   const handleClear = () => {
     expression.value = '';
@@ -564,4 +595,8 @@
       }
     }
   }
+</style>
+
+<style lang="less" scoped>
+  @import url('./style/input.less');
 </style>

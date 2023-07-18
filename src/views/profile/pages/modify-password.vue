@@ -2,28 +2,36 @@
   <div>
     <a-form :model="formData" auto-label-width @submit="handleSubmit">
       <a-form-item
+        hide-asterisk
         field="oldPassword"
-        :label="$t('user.password.oldPassword')"
         :trigger="['change', 'blur']"
         :rules="[
           { required: true, message: $t('user.password.rules.oldpassword') }
         ]"
       >
-        <a-input-password v-model="formData.oldPassword" allow-clear />
+        <seal-input-password
+          v-model="formData.oldPassword"
+          allow-clear
+          :placeholder="$t('user.password.oldPassword')"
+        />
       </a-form-item>
       <a-form-item
+        hide-asterisk
         field="newPassword"
-        :label="$t('user.password.newPassword')"
         :trigger="['change', 'blur']"
         :rules="[
           { required: true, message: $t('user.password.rules.newpassword') }
         ]"
       >
-        <a-input-password v-model="formData.newPassword" allow-clear />
+        <seal-input-password
+          v-model="formData.newPassword"
+          allow-clear
+          :placeholder="$t('user.password.newPassword')"
+        />
       </a-form-item>
       <a-form-item
+        hide-asterisk
         field="confirmPassword"
-        :label="$t('user.password.confirmPassword')"
         :trigger="['change', 'blur']"
         :rules="[
           {
@@ -32,7 +40,11 @@
           }
         ]"
       >
-        <a-input-password v-model="formData.confirmPassword" allow-clear />
+        <seal-input-password
+          v-model="formData.confirmPassword"
+          allow-clear
+          :placeholder="$t('user.password.confirmPassword')"
+        />
       </a-form-item>
       <a-form-item class="edit-footer-wrap">
         <EditPageFooter>
@@ -49,6 +61,18 @@
         </EditPageFooter>
       </a-form-item>
     </a-form>
+    <!-- <EditPageFooter :size="100">
+      <template #save>
+        <a-button type="primary" class="save-btn" html-type="submit">{{
+          $t('common.button.save')
+        }}</a-button>
+      </template>
+      <template #cancel>
+        <a-button type="outline" class="cancel-btn" @click="handleCancel">{{
+          $t('common.button.cancel')
+        }}</a-button>
+      </template>
+    </EditPageFooter> -->
   </div>
 </template>
 

@@ -30,6 +30,7 @@ export interface ComponentSchema {
   max?: number;
   maxLength?: number;
   minLength?: number;
+  isRequired?: string;
   options?: { label: string; value: string }[];
   label?: string;
   group?: string;

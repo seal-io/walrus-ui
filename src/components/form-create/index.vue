@@ -42,6 +42,7 @@
               <a-form-item
                 :field="fm.name"
                 :rules="fm.rules"
+                hide-label
                 :label="fm.label || fm.name"
                 :validate-trigger="['change']"
               >
@@ -59,35 +60,44 @@
                 >
                   <!-- XInputGroup component -->
                   <template v-if="fm?.labelList?.length">
-                    <component
-                      :is="formComponents[fm.parentCom]"
-                      v-for="(sItem, sIndex) in fm.labelList"
-                      :key="sIndex"
-                      v-model:dataKey="sItem.key"
-                      v-model:dataValue="sItem.value"
-                      v-model:value="formData[fm.name]"
-                      class="group-item"
-                      style="width: 100%"
-                      width="100%"
-                      :trigger-validate="triggerValidate"
-                      :form-id="fm.name"
-                      :label-list="fm.labelList"
-                      :position="sIndex"
-                      v-bind="{ ...fm.props }"
-                      @add="(obj) => handleAddLabel(obj, fm.labelList)"
-                      @delete="handleDeleteLabel(fm.labelList, sIndex)"
+                    <SealFormItemWrap
+                      :label="`${fm.label || fm.name} (${
+                        fm.required
+                          ? $t('common.form.field.input.required')
+                          : $t('common.form.field.optional')
+                      })`"
+                      :popup-info="fm.description"
                     >
-                      <template v-if="fm.childCom">
-                        <component
-                          :is="formComponents[fm.childCom]"
-                          v-for="com in fm.options"
-                          :key="com"
-                          :form-id="formId"
-                          :value="com"
-                          >{{ com }}</component
-                        >
-                      </template>
-                    </component>
+                      <component
+                        :is="formComponents[fm.parentCom]"
+                        v-for="(sItem, sIndex) in fm.labelList"
+                        :key="sIndex"
+                        v-model:dataKey="sItem.key"
+                        v-model:dataValue="sItem.value"
+                        v-model:value="formData[fm.name]"
+                        class="group-item"
+                        style="width: 100%"
+                        width="100%"
+                        :trigger-validate="triggerValidate"
+                        :form-id="fm.name"
+                        :label-list="fm.labelList"
+                        :position="sIndex"
+                        v-bind="{ ...fm.props }"
+                        @add="(obj) => handleAddLabel(obj, fm.labelList)"
+                        @delete="handleDeleteLabel(fm.labelList, sIndex)"
+                      >
+                        <template v-if="fm.childCom">
+                          <component
+                            :is="formComponents[fm.childCom]"
+                            v-for="com in fm.options"
+                            :key="com"
+                            :form-id="formId"
+                            :value="com"
+                            >{{ com }}</component
+                          >
+                        </template>
+                      </component>
+                    </SealFormItemWrap>
                   </template>
                   <template v-else>
                     <thumbButton
@@ -104,8 +114,11 @@
                     :key="`${formId}_editorId_${index}`"
                     v-bind="{ ...fm.props }"
                     v-model="formData[fm.name]"
+                    :label="`${fm.label || fm.name}`"
+                    :required="fm.required"
+                    :popup-info="fm.description"
                     :editor-default-value="fm.default || ''"
-                    style="position: relative; width: 100%"
+                    style="width: 100%"
                     width="100%"
                     :editor-id="`${fm.name}_editorId_${index}`"
                     @input="(e) => handleSelectInputChange(e, fm.type)"
@@ -384,6 +397,7 @@
       const mainGroup = get(groupConfig, '0') || '';
       const thirdGroup = get(groupConfig, '2') || '';
 
+      item.isRequired = item.required ? '(required)' : '(optional)';
       item.showCondition = parseQuery(item.showIf);
       item.conditions = parseExpression(item.showIf);
       item.order = item.required ? 0 : 100 * (i + 1);

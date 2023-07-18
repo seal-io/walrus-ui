@@ -6,8 +6,8 @@
         <span v-show="showModify">{{ $t('login.form.login.update') }}</span>
         <div class="language">
           <a-dropdown @select="changeLocale">
-            <a-button shape="circle" type="outline" size="mini"
-              ><icon-language
+            <a-button shape="circle" type="text" size="mini"
+              ><i class="iconfont icon-language size-18"
             /></a-button>
             <template #content>
               <a-doption
@@ -42,15 +42,16 @@
             :validate-trigger="['change', 'blur']"
             hide-label
           >
-            <a-input
+            <seal-input
               v-model="userInfo.username"
               size="large"
+              allow-clear
               :placeholder="$t('login.form.userName.placeholder')"
             >
               <template #prefix>
                 <icon-user />
               </template>
-            </a-input>
+            </seal-input>
           </a-form-item>
           <a-form-item
             field="password"
@@ -60,7 +61,7 @@
             :validate-trigger="['change', 'blur']"
             hide-label
           >
-            <a-input-password
+            <seal-input-password
               v-model="userInfo.password"
               size="large"
               :placeholder="$t('login.form.password.placeholder')"
@@ -69,7 +70,7 @@
               <template #prefix>
                 <icon-lock />
               </template>
-            </a-input-password>
+            </seal-input-password>
           </a-form-item>
           <a-space :size="16" direction="vertical">
             <div class="login-form-password-actions">

@@ -1,0 +1,66 @@
+@paddingLeft: 12px;
+@defaultTop: 6px;
+@paddingPrefix: 40px;
+@innerPaddingRight: 24px;
+
+.relative {
+  position: relative;
+  display: flex;
+}
+
+#wrapper {
+  // height:48px;
+  width: 100%;
+
+  :deep(.arco-input-wrapper) {
+    padding-top: 20px;
+
+    .arco-input-prefix > svg {
+      font-size: 16px;
+    }
+  }
+
+  :deep(.arco-select) {
+    padding-top: 20px;
+
+    .arco-select-view-input {
+      padding-right: @innerPaddingRight;
+    }
+
+    .arco-select-view-suffix {
+      position: absolute;
+      top: 50%;
+      right: @paddingLeft;
+      transform: translateY(calc(-50%));
+    }
+  }
+
+  .label {
+    position: absolute;
+    top: 50%;
+    left: @paddingLeft;
+    z-index: 5;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    color: var(--color-text-3);
+    font-size: 12px;
+    transform: translateY(calc(-50% + 1px));
+    transition: all 0.3s;
+  }
+
+  &.is-focused {
+    .label {
+      top: @defaultTop;
+      font-size: 12px;
+      transform: translateY(0);
+      transition: all 0.3s;
+    }
+  }
+
+  &.prefix-icon {
+    .label {
+      left: @paddingPrefix;
+    }
+  }
+}

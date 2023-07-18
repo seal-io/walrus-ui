@@ -21,7 +21,7 @@
           :popup-visible="popupvisible"
           :content="$t('common.form.key')"
         >
-          <a-input
+          <seal-input
             v-if="!showHintInput"
             :error="!dataKey && triggerValidate && shouldKey"
             :model-value="dataKey"
@@ -34,7 +34,7 @@
             style="width: 100%"
             @input="(val) => handleDataChange(val, 'key', 'input')"
             @change="(val) => handleDataChange(val, 'key', 'change')"
-          ></a-input>
+          ></seal-input>
           <hintInput
             v-else
             :model-value="dataKey"
@@ -47,6 +47,7 @@
             style="width: 100%"
             :editor-id="`${formId}_keyEditor${position}`"
             :source="completeData"
+            :show-required-mark="false"
             show-word-limit
             @input="(val) => handleDataChange(val, 'key', 'input')"
             @change="(val) => handleDataChange(val, 'key', 'change')"
@@ -70,7 +71,7 @@
             @change="(val) => handleDataChange(val, 'value', 'change')"
           >
           </a-select>
-          <a-input-password
+          <seal-input-password
             v-else-if="showPassword"
             style="width: 100%"
             :model-value="dataValue"
@@ -81,8 +82,8 @@
             show-word-limit
             @input="(val) => handleDataChange(val, 'value', 'input')"
             @change="(val) => handleDataChange(val, 'value', 'change')"
-          ></a-input-password>
-          <a-input
+          ></seal-input-password>
+          <seal-input
             v-else-if="!showHintInput"
             style="width: 100%"
             :max-length="50"
@@ -94,7 +95,7 @@
             show-word-limit
             @input="(val) => handleDataChange(val, 'value', 'input')"
             @change="(val) => handleDataChange(val, 'value', 'change')"
-          ></a-input>
+          ></seal-input>
           <hintInput
             v-else
             :model-value="dataValue"
@@ -103,6 +104,7 @@
             :placeholder="
               get($attrs?.placeholder, 'value') || $t('common.input.value')
             "
+            :show-required-mark="false"
             style="width: 100%"
             :editor-id="`${formId}_valueEditor${position}`"
             :source="completeData"
@@ -124,7 +126,7 @@
         <span style="padding: 0 4px">{{ separator }}</span>
         <slot name="description">
           <template v-if="!valueOptions.length">
-            <a-input
+            <seal-input
               :max-length="100"
               v-bind="$attrs"
               style="width: 100%"
@@ -136,7 +138,7 @@
               show-word-limit
               @input="(val) => handleDataChange(val, 'description', 'input')"
               @change="(val) => handleDataChange(val, 'description', 'change')"
-            ></a-input>
+            ></seal-input>
           </template>
           <template v-else>
             <template v-if="get($attrs?.components, dataValue) === 'Checkbox'">

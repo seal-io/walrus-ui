@@ -150,6 +150,12 @@ export enum ModalAction {
   VIEW = 'view'
 }
 
+export const InputWidth = {
+  DEFAULT: 360,
+  MIDDLE: 474,
+  LARGE: 500
+};
+
 export const USER_DEFAULT_PROJECT = 'USER_DEFAULT_PROJECT';
 
 export default {};
