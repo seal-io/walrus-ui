@@ -7,17 +7,19 @@
         @change="handleSelectChange"
       ></Breadcrumb>
     </BreadWrapper>
-    <ComCard top-gap padding="16px 16px 0 16px">
-      <a-form ref="formref" :model="formData" auto-label-width>
+    <ComCard padding="16px 16px 0 16px">
+      <a-form
+        ref="formref"
+        :model="formData"
+        auto-label-width
+        layout="vertical"
+      >
         <a-form-item
-          :label="$t('common.table.name')"
           field="name"
+          hide-label
+          :label="$t('common.table.name')"
           :disabled="pageAction === PageAction.EDIT && !!id"
           :rules="[
-            // {
-            //   required: true,
-            //   message: $t('applications.module.rule.name.tips')
-            // },
             {
               required: true,
               match: validateLabelNameRegx,
@@ -29,22 +31,28 @@
             }
           ]"
         >
-          <a-input
+          <seal-input
             v-model="formData.name"
-            style="width: 380px"
+            allow-clear
+            :required="true"
+            :placeholder="$t('common.table.name')"
+            :style="{ width: `${InputWidth.LARGE}px` }"
             :max-length="63"
             show-word-limit
-          ></a-input>
+          ></seal-input>
           <template #extra>
-            <div class="tips" style="max-width: 380px">{{
-              $t('common.validate.labelName')
-            }}</div>
+            <div
+              class="tips"
+              :style="{ 'max-width': `${InputWidth.LARGE}px` }"
+              >{{ $t('common.validate.labelName') }}</div
+            >
           </template>
         </a-form-item>
         <a-form-item
           id="moduleId"
-          :label="$t('applications.applications.table.module')"
+          hide-label
           field="template.id"
+          :label="$t('applications.applications.table.module')"
           :disabled="pageAction === PageAction.EDIT && !!id"
           :rules="[
             {
@@ -54,9 +62,10 @@
           ]"
         >
           <div>
-            <a-select
+            <seal-select
               v-model="formData.template.id"
-              style="width: 380px"
+              :placeholder="$t('applications.applications.table.module')"
+              :style="{ width: `${InputWidth.LARGE}px` }"
               allow-search
               @change="handleTemplateChange"
             >
@@ -66,12 +75,13 @@
                 :value="item.id"
                 >{{ item.id }}</a-option
               >
-            </a-select>
+            </seal-select>
           </div>
         </a-form-item>
         <a-form-item
-          :label="$t('applications.applications.history.version')"
+          hide-label
           field="template.version"
+          :label="$t('applications.applications.history.version')"
           :rules="[
             {
               required: true,
@@ -80,9 +90,10 @@
           ]"
         >
           <div>
-            <a-select
+            <seal-select
               v-model="formData.template.version"
-              style="width: 380px"
+              :placeholder="$t('applications.applications.history.version')"
+              :style="{ width: `${InputWidth.LARGE}px` }"
               :loading="asyncLoading"
               @change="handleVersionChange"
             >
@@ -92,37 +103,48 @@
                 :value="item.value"
                 >{{ item.label }}</a-option
               >
-            </a-select>
+            </seal-select>
           </div>
         </a-form-item>
-        <a-form-item :label="$t(`applications.projects.form.label`)">
-          <a-space
-            v-if="labelList?.length"
-            style="display: flex; flex-direction: column; width: 443px"
-            direction="vertical"
+        <a-form-item :label="$t(`applications.projects.form.label`)" hide-label>
+          <SealFormItemWrap
+            :label="`${$t('applications.projects.form.label')}(${$t(
+              'common.form.field.optional'
+            )})`"
           >
-            <xInputGroup
-              v-for="(sItem, sIndex) in labelList"
-              :key="sIndex"
-              v-model:dataKey="sItem.key"
-              v-model:dataValue="sItem.value"
-              v-model:value="formData.labels"
-              :trigger-validate="validateTrigger"
-              :label-list="labelList"
-              :position="sIndex"
-              @add="(obj) => handleAddLabel(obj, labelList)"
-              @delete="handleDeleteLabel(labelList, sIndex)"
-            ></xInputGroup>
-          </a-space>
+            <a-space
+              v-if="labelList?.length"
+              :style="{
+                'display': 'flex',
+                'flex-direction': 'column',
+                'width': `${InputWidth.MIDDLE}px`
+              }"
+              direction="vertical"
+            >
+              <xInputGroup
+                v-for="(sItem, sIndex) in labelList"
+                :key="sIndex"
+                v-model:dataKey="sItem.key"
+                v-model:dataValue="sItem.value"
+                v-model:value="formData.labels"
+                :trigger-validate="validateTrigger"
+                :label-list="labelList"
+                :position="sIndex"
+                @add="(obj) => handleAddLabel(obj, labelList)"
+                @delete="handleDeleteLabel(labelList, sIndex)"
+              ></xInputGroup>
+            </a-space>
+          </SealFormItemWrap>
         </a-form-item>
-        <a-form-item :label="$t('common.table.description')">
-          <a-textarea
+        <a-form-item :label="$t('common.table.description')" hide-label>
+          <seal-textarea
             v-model="formData.description"
+            :placeholder="$t('common.table.description')"
             :max-length="200"
             show-word-limit
-            style="width: 380px"
+            :style="{ width: `${InputWidth.LARGE}px` }"
             :auto-size="{ minRows: 4, maxRows: 6 }"
-          ></a-textarea>
+          ></seal-textarea>
         </a-form-item>
       </a-form>
     </ComCard>
@@ -250,10 +272,10 @@
     provide,
     watch,
     nextTick,
+    PropType,
     onMounted
   } from 'vue';
   import { onBeforeRouteLeave } from 'vue-router';
-  import { useProjectStore } from '@/store';
   import useCallCommon from '@/hooks/use-call-common';
   import useScrollToView from '@/hooks/use-scroll-to-view';
   import EditPageFooter from '@/components/edit-page-footer/index.vue';
@@ -264,8 +286,11 @@
     TemplateRowData,
     TemplateVersionData
   } from '@/views/operation-hub/templates/config/interface';
-  import VariableLit from '@/views/application-management/variables/components/table-list.vue';
-  import { validateLabelNameRegx, PageAction } from '@/views/config';
+  import {
+    validateLabelNameRegx,
+    PageAction,
+    InputWidth
+  } from '@/views/config';
   import { BreadcrumbOptions } from '@/views/config/interface';
   import { beforeLeaveCallback } from '@/hooks/save-before-leave';
   import useLabelsActions from '@/components/form-create/hooks/use-labels-action';
@@ -290,7 +315,7 @@
       }
     },
     pgType: {
-      type: String,
+      type: String as PropType<'page' | 'com'>,
       default() {
         return 'page';
       }
@@ -420,7 +445,6 @@
   const handleTabChange = (val) => {
     activeKey.value = val;
     setVariableAttributes();
-    console.log('variableAttributes:', variableAttributes.value);
   };
 
   const setFormData = (schemas) => {

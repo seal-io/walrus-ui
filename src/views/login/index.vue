@@ -2,7 +2,6 @@
   <div class="container">
     <div class="logo">
       <img alt="logo" src="../../assets/images/seal-logo.png" />
-      <!-- <div class="logo-text">SEAL</div> -->
     </div>
     <LoginBanner />
 

@@ -58,6 +58,8 @@ export default {
   'common.footer.version.web': 'UI',
   'common.footer.version.server': 'Server',
   'common.form.field.optional': 'optional',
+  'common.form.field.input.required': 'required',
+  'common.form.field.select.required': 'required',
   'common.select.option': 'All',
   'common.data.unkonwn': 'Unknown',
   'common.data.none': 'No Data',

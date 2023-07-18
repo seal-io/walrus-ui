@@ -10,8 +10,8 @@ export default {
   'login.form.login.update.tips':
     'Please set the basic user configuration before use',
   'login.form.login.success': 'welcome to use',
-  'login.form.userName.placeholder': 'Username: ',
-  'login.form.password.placeholder': 'Password: ',
+  'login.form.userName.placeholder': 'Username',
+  'login.form.password.placeholder': 'Password ',
   'login.form.rememberPassword': 'Remember password',
   'login.form.forgetPassword': 'Forgot password',
   'login.form.modifyPassword': 'Modify Password',

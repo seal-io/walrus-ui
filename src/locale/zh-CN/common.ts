@@ -55,6 +55,8 @@ export default {
   'common.footer.version.web': 'UI',
   'common.footer.version.server': '服务端',
   'common.form.field.optional': '可选',
+  'common.form.field.input.required': '必填',
+  'common.form.field.select.required': '必选',
   'common.select.option': '全部',
   'common.data.unkonwn': '未知',
   'common.data.none': '暂无',

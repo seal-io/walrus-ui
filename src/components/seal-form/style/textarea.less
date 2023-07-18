@@ -1,0 +1,30 @@
+@textareaHeight: 30px;
+@defaultTop: 6px;
+
+#wrapper.textarea {
+  height: auto;
+
+  :deep(.arco-textarea-wrapper) {
+    padding-top: 16px;
+  }
+
+  .label {
+    position: absolute;
+    top: 25px;
+    left: @paddingLeft;
+    z-index: 5;
+    color: var(--color-text-3);
+    font-size: 12px;
+    transform: translateY(calc(-50% + 1px));
+    transition: all 0.3s;
+  }
+
+  &.is-focused {
+    .label {
+      top: @defaultTop;
+      font-size: 12px;
+      transform: translateY(0);
+      transition: all 0.3s;
+    }
+  }
+}

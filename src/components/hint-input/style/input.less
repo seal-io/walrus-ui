@@ -1,0 +1,31 @@
+@paddingLeft: 12px;
+@paddingRight: 12px;
+
+.arco-input-wrapper {
+  position: relative;
+  padding-top: 20px;
+
+  .label {
+    position: absolute;
+    top: 50%;
+    right: @paddingRight;
+    left: @paddingLeft;
+    z-index: 5;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    color: var(--color-text-3);
+    font-size: 12px;
+    transform: translateY(calc(-50% + 1px));
+    transition: all 0.3s;
+  }
+
+  &.is-focused {
+    .label {
+      top: 6px;
+      font-size: 12px;
+      transform: translateY(0);
+      transition: all 0.3s;
+    }
+  }
+}
