@@ -1,6 +1,5 @@
 <template>
   <span
-    id="wrapper"
     class="relative wrapper"
     :class="{
       'is-focused': isFocus || modelValue,
@@ -27,11 +26,7 @@
       v-bind="$attrs"
       ref="input"
       :model-value="modelValue"
-      :input-value="inputValue"
       @clear="handleClear"
-      @focus="handleFocus"
-      @input="handleInput"
-      @blur="handleBlur"
       @change="handleChange"
       @input-value-change="handleInputValueChange"
     >
@@ -77,10 +72,9 @@
   const isFocus = ref(false);
   const $attrs = useAttrs();
   const slots = useSlots();
-  const handleInput = (value, e) => {
-    emits('update:modelValue', value);
-    emits('input', value, e);
-    console.log('handleInput===', value, e);
+  const handleInput = (e) => {
+    emits('input', e);
+    console.log('handleInput===', e);
   };
   const handleChange = (value) => {
     emits('update:modelValue', value);
@@ -89,7 +83,6 @@
   const handleInputValueChange = (value) => {
     emits('update:inputValue', value);
     emits('inputValueChange', value);
-    console.log('handleInput==ddd=', value);
   };
   const handleFocus = (e) => {
     emits('focus', e);
@@ -104,7 +97,6 @@
     emits('change', '');
   };
   const handleClick = () => {
-    input.value?.focus?.();
     isFocus.value = true;
   };
 </script>

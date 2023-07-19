@@ -1,12 +1,10 @@
 <template>
   <span
-    id="wrapper"
     class="relative wrapper textarea"
     :class="{
       'is-focused': isFocus || modelValue,
       'prefix-icon': slots.prefix
     }"
-    @click="handleClick"
   >
     <span class="label">
       <span
