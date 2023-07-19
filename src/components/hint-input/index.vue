@@ -35,6 +35,7 @@
         autocomplete="off"
         v-bind="$attrs"
         @focus="handleFocus"
+        @blur="handleBlur"
         @input="handleInput"
         @keydown.enter="handleEnter"
         @keyup.delete="handleDelete"
@@ -391,6 +392,7 @@
     inputFlag.value = false;
   };
   const handleBlur = () => {
+    isFocus.value = false;
     textcomplete?.hide?.();
     // setTimeout(() => {
     //   runChange()
@@ -422,6 +424,7 @@
     // }
   };
   const handleFocus = () => {
+    isFocus.value = true;
     console.log('focus');
   };
   const handleClick = () => {
