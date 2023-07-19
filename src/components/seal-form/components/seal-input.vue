@@ -1,6 +1,5 @@
 <template>
   <span
-    id="wrapper"
     class="relative wrapper"
     :class="{
       'is-focused': isFocus || modelValue,
@@ -67,6 +66,11 @@
   const $attrs = useAttrs();
   const slots = useSlots();
   const handleInput = (value, e) => {
+    // check the value length, when the length  is great than the $attrs.maxlength, the value will be cut
+    const maxLength = $attrs.maxLength || $attrs['max-length'];
+    if (maxLength && value.length > maxLength) {
+      value = value.slice(0, maxLength);
+    }
     emits('update:modelValue', value);
     emits('input', value, e);
   };

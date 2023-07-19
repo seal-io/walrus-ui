@@ -28,6 +28,7 @@
       :model-value="modelValue"
       @clear="handleClear"
       @change="handleChange"
+      @input="handleInput"
       @input-value-change="handleInputValueChange"
     >
       <template v-for="slot in Object.keys(slots)" #[slot] :key="slot">
@@ -74,7 +75,6 @@
   const slots = useSlots();
   const handleInput = (e) => {
     emits('input', e);
-    console.log('handleInput===', e);
   };
   const handleChange = (value) => {
     emits('update:modelValue', value);
