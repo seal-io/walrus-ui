@@ -66,6 +66,10 @@
   const $attrs = useAttrs();
   const slots = useSlots();
   const handleInput = (value, e) => {
+    const maxLength = $attrs.maxLength || $attrs['max-length'];
+    if (maxLength && value.length > maxLength) {
+      value = value.slice(0, maxLength);
+    }
     emits('update:modelValue', value);
     emits('input', value, e);
   };

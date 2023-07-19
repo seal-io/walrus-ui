@@ -17,6 +17,9 @@ import sealInputPassword from '@/components/seal-form/components/seal-input-pass
 import sealInput from '@/components/seal-form/components/seal-input.vue';
 import sealSelect from '@/components/seal-form/components/seal-select.vue';
 import sealInputNumber from '@/components/seal-form/components/seal-input-number.vue';
+import sealCheckbox from '@/components/seal-form/components/seal-checkbox.vue';
+import sealSwitch from '@/components/seal-form/components/seal-switch.vue';
+import sealTextarea from '@/components/seal-form/components/seal-textarea.vue';
 
 export default {
   Input: sealInput,
@@ -26,10 +29,10 @@ export default {
   Option,
   Radio,
   RadioGroup,
-  Checkbox,
+  Checkbox: sealCheckbox,
   CheckboxGroup,
-  Switch,
+  Switch: sealSwitch,
   hintInput,
-  Textarea,
+  Textarea: sealTextarea,
   AceEditor
 };

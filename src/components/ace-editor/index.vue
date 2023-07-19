@@ -1,6 +1,22 @@
 <template>
   <div class="ace-wrapper">
-    <div v-show="isAce" class="ace-box" :style="{ height: `${height + 2}px` }">
+    <div v-if="$attrs.label" class="label">
+      <span
+        >{{ $attrs.label
+        }}{{
+          $attrs.required
+            ? `(${$t('common.form.field.input.required')})`
+            : `(${$t('common.form.field.optional')})`
+        }}</span
+      >
+      <a-tooltip v-if="popupInfo" :content="popupInfo">
+        <icon-info-circle
+          style="stroke-linecap: initial; cursor: default"
+          class="mleft-5"
+        />
+      </a-tooltip>
+    </div>
+    <div v-show="isAce" class="ace-box" :style="{ height: `${height}px` }">
       <div :id="editorId" :style="{ minHeight: `${height}px` }"></div>
     </div>
     <a-input
@@ -28,6 +44,7 @@
     PropType,
     ref,
     defineExpose,
+    useAttrs,
     ComponentPublicInstance
   } from 'vue';
   import ace, { Range } from 'ace-builds';
@@ -51,6 +68,12 @@
   // const { Split } = ace.require('ace/ext/split');
   const props = defineProps({
     modelValue: {
+      type: String,
+      default() {
+        return '';
+      }
+    },
+    popupInfo: {
       type: String,
       default() {
         return '';
@@ -138,6 +161,7 @@
   const defaultHolder = {
     yaml: '# yaml format'
   };
+  const $attrs = useAttrs();
   const emits = defineEmits(['change', 'update:modelValue', 'input']);
 
   // let timer:any = null
@@ -401,8 +425,6 @@
     width: 100%;
     overflow: auto;
     // height: 300px;
-    border: 1px solid var(--color-border-2);
-    border-radius: var(--border-radius-small);
   }
 
   #ace-editor {
@@ -416,6 +438,16 @@
 
   .ace-wrapper {
     position: relative;
+    border: 1px solid var(--color-border-2);
+    border-radius: var(--border-radius-small);
+
+    .label {
+      display: flex;
+      align-items: center;
+      padding: 10px;
+      color: var(--color-text-3);
+      border-bottom: 1px solid var(--color-border-2);
+    }
 
     &:hover {
       .icon-btn {
