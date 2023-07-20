@@ -812,15 +812,6 @@
 
 <style lang="less" scoped>
   .perspective-box {
-    // :deep(.arco-form) {
-    //   .group-title {
-    //     margin-bottom: 25px;
-
-    //     .title-wrap {
-    //       justify-content: flex-start;
-    //     }
-    //   }
-    // }
     .arco-form-item-content {
       .label {
         display: inline-block;

@@ -13,9 +13,11 @@
         ]"
       ></Breadcrumb>
     </BreadWrapper>
-    <ComCard top-gap>
+    <ComCard>
       <GroupTitle
         :bordered="false"
+        :title="$t('common.title.basicInfo')"
+        flex-start
         :show-edit="
           pageAction === PageAction.VIEW &&
           userStore.hasRolesActionsPermission({
@@ -25,31 +27,36 @@
         "
         @edit="handleEdit"
       ></GroupTitle>
-      <a-form ref="formref" :model="formData" auto-label-width>
+      <a-form
+        ref="formref"
+        :model="formData"
+        auto-label-width
+        label-align="left"
+      >
         <a-form-item
           :label="$t('operation.connectors.table.name')"
           field="id"
+          hide-asterisk
+          :hide-label="pageAction === PageAction.EDIT"
           :disabled="!!id"
           :validate-trigger="['change']"
           :rules="[
-            // {
-            //   required: pageAction === PageAction.EDIT,
-            //   message: $t('operation.templates.rules.name')
-            // },
             {
-              required: pageAction === PageAction.EDIT,
+              required: true,
               match: validateLabelNameRegx,
               message: $t('common.validate.labelName')
             }
           ]"
         >
-          <a-input
+          <seal-input
             v-if="pageAction === PageAction.EDIT"
             v-model="formData.id"
-            style="width: 500px"
+            :label="$t('operation.connectors.table.name')"
+            :required="true"
+            :style="{ width: `${InputWidth.LARGE}px` }"
             :max-length="63"
             show-word-limit
-          ></a-input>
+          ></seal-input>
           <span v-else class="readonly-view-label">{{
             formData.id || '-'
           }}</span>
@@ -59,16 +66,19 @@
         </a-form-item>
         <a-form-item
           :label="$t('operation.environments.table.description')"
+          hide-asterisk
+          :hide-label="pageAction === PageAction.EDIT"
           field="description"
         >
-          <a-textarea
+          <seal-textarea
             v-if="pageAction === PageAction.EDIT"
             v-model="formData.description"
-            style="width: 500px"
+            :label="$t('operation.environments.table.description')"
+            :style="{ width: `${InputWidth.LARGE}px` }"
             :auto-size="{ minRows: 6, maxRows: 10 }"
             :max-length="200"
             show-word-limit
-          ></a-textarea>
+          ></seal-textarea>
           <div v-else class="description-content readonly-view-label">{{
             formData.description || '-'
           }}</div>
@@ -87,19 +97,23 @@
         <a-form-item
           field="source"
           :label="$t('operation.templates.detail.source')"
+          hide-asterisk
+          :hide-label="pageAction === PageAction.EDIT"
           :validate-trigger="['change']"
           :rules="[
             {
-              required: pageAction === PageAction.EDIT,
+              required: true,
               message: $t('operation.templates.rules.source')
             }
           ]"
         >
-          <a-input
+          <seal-input
             v-if="pageAction === PageAction.EDIT"
             v-model="formData.source"
-            style="width: 500px"
-          ></a-input>
+            :label="$t('operation.templates.detail.source')"
+            :required="true"
+            :style="{ width: `${InputWidth.LARGE}px` }"
+          ></seal-input>
           <span v-else class="readonly-view-label">{{
             formData.source || '-'
           }}</span>
@@ -107,6 +121,8 @@
         <a-form-item
           field="icon"
           :label="$t('operation.templates.detail.icon')"
+          hide-asterisk
+          :hide-label="pageAction === PageAction.EDIT"
           :rules="[
             {
               match: urlReg,
@@ -114,11 +130,12 @@
             }
           ]"
         >
-          <a-input
+          <seal-input
             v-if="pageAction === PageAction.EDIT"
             v-model="formData.icon"
-            style="width: 500px"
-          ></a-input>
+            :label="$t('operation.templates.detail.icon')"
+            :style="{ width: `${InputWidth.LARGE}px` }"
+          ></seal-input>
           <span v-else class="readonly-view-label">{{
             formData.icon || '-'
           }}</span>
@@ -202,7 +219,11 @@
 </template>
 
 <script lang="ts" setup>
-  import { PageAction, validateLabelNameRegx } from '@/views/config';
+  import {
+    PageAction,
+    validateLabelNameRegx,
+    InputWidth
+  } from '@/views/config';
   import { OPERATIONHUB } from '@/router/config';
   import { Resources, Actions } from '@/permissions/config';
   import { useUserStore, useTabBarStore } from '@/store';
