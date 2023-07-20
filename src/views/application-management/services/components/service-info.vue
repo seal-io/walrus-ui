@@ -6,6 +6,7 @@
       :model="formData"
       auto-label-width
       style="width: 600px"
+      label-align="left"
     >
       <a-row :cols="24">
         <a-col :span="12">
@@ -42,7 +43,7 @@
         </a-col>
       </a-row>
     </a-form>
-    <div class="variables">
+    <div class="variables m-t-10">
       <a-tabs
         v-if="formTabs.length > 1"
         lazy-load

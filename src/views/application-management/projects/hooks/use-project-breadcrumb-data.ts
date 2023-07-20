@@ -1,5 +1,5 @@
 import _ from 'lodash';
-import { ref } from 'vue';
+import { reactive, ref } from 'vue';
 import { Resources, Actions } from '@/permissions/config';
 import { PROJECT } from '@/router/config';
 import useCallCommon from '@/hooks/use-call-common';
@@ -17,12 +17,17 @@ export default function useProjectData() {
   const { route, router } = useCallCommon();
   const projectStore = useProjectStore();
   const userStore = useUserStore();
-
+  const RequestLoadingMap = reactive({
+    project: false,
+    environment: false,
+    service: false
+  });
   const pageLevelMap = {
     Project: 'Project',
     Environment: 'Environment',
     Service: 'Service'
   };
+
   const projectTemplate = {
     value: '',
     label: '',
@@ -69,6 +74,7 @@ export default function useProjectData() {
       const params = {
         page: -1
       };
+      RequestLoadingMap.project = true;
       const { data } = await queryProjects(params);
       projectList = data.items || [];
       const list = _.map(data.items, (item) => {
@@ -86,6 +92,8 @@ export default function useProjectData() {
         projectList: []
       });
       console.log(error);
+    } finally {
+      RequestLoadingMap.project = false;
     }
     return projectList;
   };
@@ -96,11 +104,14 @@ export default function useProjectData() {
         page: -1,
         projectID: route.params.projectId || ''
       };
+      RequestLoadingMap.environment = true;
       const { data } = await queryEnvironments(params);
       environmentList = data.items || [];
     } catch (error) {
       environmentList = [];
       console.log(error);
+    } finally {
+      RequestLoadingMap.environment = false;
     }
     return environmentList;
   };
@@ -113,11 +124,14 @@ export default function useProjectData() {
         projectID: route.params.projectId as string,
         environmentID: route.params.environmentId as string
       };
+      RequestLoadingMap.service = true;
       const { data } = await queryServices(params);
       serviceList = data.items || [];
     } catch (error) {
       serviceList = [];
       console.log(error);
+    } finally {
+      RequestLoadingMap.service = false;
     }
     return serviceList;
   };
@@ -295,6 +309,7 @@ export default function useProjectData() {
     initBreadValues,
     breadCrumbList,
     pageLevelMap,
+    RequestLoadingMap,
     projectTemplate,
     environmentTemplate,
     serviceTemplate
