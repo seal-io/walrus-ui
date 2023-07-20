@@ -88,7 +88,7 @@
 
     .arco-card-header-title {
       overflow: visible;
-      font-weight: 400;
+      // font-weight: 400;
       line-height: 1;
     }
   }

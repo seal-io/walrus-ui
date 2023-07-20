@@ -2,6 +2,8 @@
   <div>
     <BreadWrapper>
       <Breadcrumb
+        :level="pageLevelMap.Project"
+        :loading="RequestLoadingMap.project"
         :menu="{ icon: 'icon-apps', label: '' }"
         :items="breadCrumbList"
         @change="handleProjectChange"
@@ -116,6 +118,8 @@
   import members from './members.vue';
 
   const {
+    pageLevelMap,
+    RequestLoadingMap,
     getProjectList,
     setProjectList,
     breadCrumbList,

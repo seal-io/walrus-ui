@@ -2,6 +2,8 @@
   <div>
     <BreadWrapper>
       <Breadcrumb
+        :level="pageLevelMap.Service"
+        :loading="RequestLoadingMap.service"
         :items="breadCrumbList"
         :menu="{ icon: 'icon-apps' }"
         @change="handleServiceChange"
@@ -24,6 +26,8 @@
 
   const { route, router } = useCallCommon();
   const {
+    pageLevelMap,
+    RequestLoadingMap,
     getProjectList,
     getEnvironmentList,
     getServiceList,
@@ -69,7 +73,6 @@
     breadCrumbList.value = await initBreadValues(['env', 'service']);
     await setBreabCrumbData();
     checkoutCurrentService();
-    console.log('breadCrumbList===', breadCrumbList.value);
   };
 
   onMounted(() => {

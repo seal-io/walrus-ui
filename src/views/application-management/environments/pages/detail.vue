@@ -2,6 +2,8 @@
   <div>
     <BreadWrapper>
       <Breadcrumb
+        :level="pageLevelMap.Environment"
+        :loading="RequestLoadingMap.environment"
         :items="breadCrumbList"
         :menu="{ icon: 'icon-apps' }"
         @change="handleSelectChange"
@@ -94,6 +96,7 @@
     setEnvironmentList,
     handleBreadChange,
     initBreadValues,
+    RequestLoadingMap,
     pageLevelMap,
     projectTemplate,
     environmentTemplate

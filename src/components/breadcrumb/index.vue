@@ -29,11 +29,13 @@
               :input-value="item.inputValue"
               show-footer-on-empty
               :class="{ 'active-bread': index === items.length - 1 }"
+              :virtual-list-props="getVirtualListProps(item)"
               :trigger-props="{
                 contentClass: 'component-select-drop',
                 contentStyle: { width: '200px' },
                 preventFocus: false
               }"
+              :loading="loading && level === item.level"
               :popup-container="getContainer(item.wrapperId) || ''"
               size="mini"
               :options="item.options"
@@ -157,11 +159,23 @@
       default() {
         return false;
       }
+    },
+    level: {
+      type: String,
+      default: ''
     }
   });
   const { router } = useCallCommon();
   const emits = defineEmits(['change']);
 
+  const getVirtualListProps = (item) => {
+    if (item?.options?.length > 100) {
+      return {
+        height: 200
+      };
+    }
+    return undefined;
+  };
   const handleSelectChange = (value, item) => {
     emits('change', { value, item });
   };
