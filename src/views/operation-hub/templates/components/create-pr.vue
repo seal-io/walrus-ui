@@ -19,6 +19,7 @@
       <a-form ref="formref" :model="formData" auto-label-width>
         <a-form-item
           :label="$t('operation.templates.detail.form.connector')"
+          hide-label
           field="connectorID"
           :rules="[
             {
@@ -27,8 +28,10 @@
             }
           ]"
         >
-          <a-select
+          <seal-select
             v-model="formData.connectorID"
+            :label="$t('operation.templates.detail.form.connector')"
+            :required="true"
             style="width: 100%"
             @change="handleConnectorChange"
           >
@@ -43,10 +46,11 @@
             <template #prefix>
               <ProviderIcon :provider="toLower(iconType)"></ProviderIcon>
             </template>
-          </a-select>
+          </seal-select>
         </a-form-item>
         <a-form-item
           :label="$t('operation.templates.detail.form.repo')"
+          hide-label
           field="repository"
           :rules="[
             {
@@ -55,8 +59,10 @@
             }
           ]"
         >
-          <a-select
+          <seal-select
             v-model="formData.repository"
+            :label="$t('operation.templates.detail.form.repo')"
+            :required="true"
             :loading="repoloading"
             style="width: 100%"
             :options="repositories"
@@ -64,10 +70,11 @@
             @search="getRepositories"
             @change="handleRepoChange"
           >
-          </a-select>
+          </seal-select>
         </a-form-item>
         <a-form-item
           :label="$t('operation.templates.detail.form.branch')"
+          hide-label
           field="branch"
           :rules="[
             {
@@ -76,17 +83,20 @@
             }
           ]"
         >
-          <a-select
+          <seal-select
             v-model="formData.branch"
+            :label="$t('operation.templates.detail.form.branch')"
+            :required="true"
             style="width: 100%"
             :options="branchList"
             allow-search
             @change="handleBranchChange"
           >
-          </a-select>
+          </seal-select>
         </a-form-item>
         <a-form-item
           :label="$t('operation.templates.detail.form.locationfile')"
+          hide-label
           field="path"
           validate-trigger="change"
           :rules="[
@@ -96,12 +106,17 @@
             }
           ]"
         >
-          <a-input v-model="formData.path" style="width: 100%"></a-input>
+          <seal-input
+            v-model="formData.path"
+            style="width: 100%"
+            :label="$t('operation.templates.detail.form.locationfile')"
+            :required="true"
+          ></seal-input>
         </a-form-item>
       </a-form>
     </a-spin>
     <template #footer>
-      <EditPageFooter>
+      <EditPageFooter style="margin-top: 0">
         <template #save>
           <a-button
             :loading="submitLoading"

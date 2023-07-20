@@ -24,6 +24,7 @@
       <a-form ref="formref" :model="formData" layout="vertical">
         <a-form-item
           :label="$t('applications.service.rollback.version.label')"
+          hide-label
           field="id"
           :rules="[
             {
@@ -32,8 +33,10 @@
             }
           ]"
         >
-          <a-select
+          <seal-select
             v-model="formData.id"
+            :label="$t('applications.service.rollback.version.label')"
+            :required="true"
             style="width: 100%"
             :loading="loading"
             @change="handleRevisionChange"
@@ -44,7 +47,7 @@
               :value="item.id"
               :label="item.createTime"
             ></a-option>
-          </a-select>
+          </seal-select>
         </a-form-item>
         <a-form-item
           :label="$t('applications.service.rollback.config.compare')"

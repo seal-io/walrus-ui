@@ -50,6 +50,7 @@
       </a-form-item> -->
       <a-form-item
         :label="$t('profile.account.name')"
+        hide-label
         field="name"
         validate-trigger="change"
         :rules="[
@@ -60,24 +61,39 @@
           }
         ]"
       >
-        <a-input
+        <seal-input
           v-model.trim="formData.name"
+          :label="$t('profile.account.name')"
+          :required="true"
           :max-length="39"
           show-word-limit
-          style="width: 400px"
+          style="width: 100%"
           :disabled="action === 'edit'"
-        ></a-input>
+        ></seal-input>
         <template #extra>
           <div>{{ $t('account.create.rules.username') }}</div>
         </template>
       </a-form-item>
-      <a-form-item :label="$t('profile.account.password')" field="password">
-        <a-input-group style="width: 400px">
-          <a-input-password v-model="formData.password" style="width: 370px" />
-          <a-button type="primary" @click="handleGeneratePassword">
+      <a-form-item
+        :label="$t('profile.account.password')"
+        field="password"
+        hide-label
+      >
+        <a-input-group style="width: 100%">
+          <seal-input-password
+            v-model="formData.password"
+            style="width: 100%; border-radius: 4px 0 0 4px"
+            :label="$t('profile.account.password')"
+            :required="true"
+          />
+          <a-button
+            type="primary"
+            style="width: 60px; height: 52px"
+            @click="handleGeneratePassword"
+          >
             <template #icon>
               <a-tooltip :content="$t('profile.account.creatrandom')">
-                <i class="iconfont icon-random size-20"></i>
+                <i class="iconfont icon-random size-24"></i>
               </a-tooltip>
             </template>
           </a-button>
@@ -86,6 +102,7 @@
       <a-form-item
         :label="$t('profile.account.role')"
         field="roleId"
+        hide-label
         validate-trigger="change"
         :rules="[
           {
@@ -94,9 +111,10 @@
           }
         ]"
       >
-        <a-select
+        <seal-select
           v-model="formData.roleId"
-          style="width: 400px"
+          :label="$t('profile.account.role')"
+          style="width: 100%"
           @change="handleRoleChange"
         >
           <template #prefix>
@@ -123,7 +141,7 @@
             ></i>
             <span>{{ $t(item.label) }}</span>
           </a-option>
-        </a-select>
+        </seal-select>
       </a-form-item>
     </a-form>
     <template #footer>

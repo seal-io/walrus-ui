@@ -43,10 +43,10 @@
       margin-bottom: @title-bottom-gap;
       color: var(--color-text-2);
       font-weight: 500;
-      font-size: 14px;
+      font-size: 16px;
 
       &.iconed {
-        margin-top: 25px;
+        margin-top: 30px;
         padding-bottom: 10px;
         padding-left: 8px;
       }

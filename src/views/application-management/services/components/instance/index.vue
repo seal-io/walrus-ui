@@ -29,7 +29,7 @@
         <ComCard>
           <ModuleCard
             :title="$t('applications.applications.detail.configuration')"
-            :title-style="{ 'margin-bottom': '10px', 'margin-top': 0 }"
+            :title-style="{ 'margin-bottom': '15px', 'margin-top': 0 }"
           >
             <serviceInfo> </serviceInfo>
           </ModuleCard>
@@ -49,7 +49,7 @@
 
           <ModuleCard
             :title="$t('applications.applications.instance.resource')"
-            style="margin-top: 20px"
+            :title-style="{ 'margin-bottom': '10px' }"
           >
             <template #title>
               <span>{{
