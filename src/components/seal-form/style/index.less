@@ -1,11 +1,12 @@
 @import './variables.less';
 
-.relative {
+.seal-relative {
   position: relative;
-  display: flex;
+  display: inline-flex;
+  width: 100%;
 }
 
-.wrapper.relative {
+.wrapper.seal-relative {
   :deep(.arco-input-wrapper) {
     padding-top: 20px;
 
@@ -18,7 +19,7 @@
     }
   }
 
-  :deep(.arco-select) {
+  :deep(.arco-select-view) {
     padding-top: 20px;
 
     .arco-select-view-suffix {

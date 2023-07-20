@@ -1,13 +1,15 @@
 <template>
   <span
-    class="seal-relative wrapper textarea"
+    v-on-click-outside="handleBlur"
+    class="seal-relative wrapper select"
     :class="{
       'is-focused': isFocus || modelValue,
       'prefix-icon': slots.prefix
     }"
     :style="{ width: $attrs.style?.width || 'max-content' }"
+    @click="handleClick"
   >
-    <span class="label" :class="{ disabled: $attrs.disabled }">
+    <div class="label" :class="{ disabled: $attrs.disabled }">
       <span
         >{{ $attrs.label || placeholder
         }}{{
@@ -17,31 +19,37 @@
         }}</span
       >
       <a-tooltip v-if="popupInfo" :content="popupInfo">
-        <icon-info-circle style="stroke-linecap: initial; cursor: default" />
+        <icon-info-circle
+          style="margin-left: 2px; stroke-linecap: initial; cursor: default"
+        />
       </a-tooltip>
-    </span>
-    <a-textarea
+    </div>
+    <a-cascader
       v-bind="$attrs"
       ref="input"
       :model-value="modelValue"
       @clear="handleClear"
-      @focus="handleFocus"
-      @input="handleInput"
-      @blur="handleBlur"
       @change="handleChange"
+      @input="handleInput"
+      @input-value-change="handleInputValueChange"
     >
       <template v-for="slot in Object.keys(slots)" #[slot] :key="slot">
         <slot :name="slot"></slot>
       </template>
-    </a-textarea>
+    </a-cascader>
   </span>
 </template>
 
 <script lang="ts" setup>
   import { useAttrs, useSlots, ref } from 'vue';
+  import { vOnClickOutside } from '@vueuse/components';
 
   const props = defineProps({
     modelValue: {
+      type: String,
+      default: ''
+    },
+    inputValue: {
       type: String,
       default: ''
     },
@@ -54,36 +62,36 @@
       default: ''
     }
   });
-  const input = ref(null);
-  const isFocus = ref(false);
   const emits = defineEmits([
     'update:modelValue',
+    'update:inputValue',
+    'inputValueChange',
     'input',
     'change',
     'focus',
     'blur',
     'clear'
   ]);
+  const input = ref(null);
+  const isFocus = ref(false);
   const $attrs = useAttrs();
   const slots = useSlots();
-  const handleInput = (value, e) => {
-    const maxLength = $attrs.maxLength || $attrs['max-length'];
-    if (maxLength && value.length > maxLength) {
-      value = value.slice(0, maxLength);
-    }
-    emits('update:modelValue', value);
-    emits('input', value, e);
+  const handleInput = (e) => {
+    emits('input', e);
   };
-  const handleChange = (value, e) => {
+  const handleChange = (value) => {
     emits('update:modelValue', value);
-    emits('change', value, e);
+    emits('change', value);
+  };
+  const handleInputValueChange = (value) => {
+    emits('update:inputValue', value);
+    emits('inputValueChange', value);
   };
   const handleFocus = (e) => {
     emits('focus', e);
     isFocus.value = true;
   };
   const handleBlur = (e) => {
-    emits('blur', e);
     isFocus.value = false;
   };
   const handleClear = () => {
@@ -91,19 +99,17 @@
     emits('change', '');
   };
   const handleClick = () => {
-    input.value?.focus?.();
     isFocus.value = true;
   };
 </script>
 
 <script lang="ts">
   export default {
-    name: 'SealTextarea',
+    name: 'SealCascader',
     inheritAttrs: false
   };
 </script>
 
 <style lang="less" scoped>
   @import url('../style/index.less');
-  @import url('../style/textarea.less');
 </style>

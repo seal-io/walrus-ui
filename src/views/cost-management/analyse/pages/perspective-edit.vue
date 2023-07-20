@@ -15,9 +15,11 @@
         ]"
       ></Breadcrumb>
     </BreadWrapper>
-    <SpinCard top-gap padding="0" :loading="loading" style="width: 100%">
+    <SpinCard :loading="loading" style="width: 100%">
       <GroupTitle
         :bordered="false"
+        :title="$t('common.title.basicInfo')"
+        flex-start
         :show-edit="pageAction === PageAction.VIEW && !builtin"
         @edit="handleEdit"
       ></GroupTitle>
@@ -25,184 +27,195 @@
         ref="formref"
         :model="formData"
         auto-label-width
-        label-align="right"
+        label-align="left"
       >
-        <ComCard>
+        <ComCard padding="0">
           <a-form-item
             :label="$t('cost.analyse.table.name')"
             field="name"
             validate-trigger="change"
+            hide-label
             :rules="[
-              // {
-              //   required: !viewable,
-              //   message: $t('cost.optimize.form.rule.name')
-              // },
               {
-                required: !viewable,
+                required: true,
                 match: validateLabelNameRegx,
                 message: $t('common.validate.labelName')
               }
             ]"
           >
-            <a-input
+            <seal-input
               v-if="!viewable"
               v-model.trim="formData.name"
+              :label="$t('cost.analyse.table.name')"
+              :required="true"
               :max-length="63"
+              :style="{ width: `${InputWidth.LARGE}px` }"
               :show-word-limit="!viewable"
-            ></a-input>
+            ></seal-input>
             <span v-else class="readonly-view-label">{{ formData.name }}</span>
             <template v-if="!viewable" #extra>
-              <div style="max-width: 360px">{{
+              <div :style="{ maxWidth: `${InputWidth.LARGE}px` }">{{
                 $t('common.validate.labelName')
               }}</div>
             </template>
           </a-form-item>
         </ComCard>
-        <a-divider
-          style="
-            margin: 0;
-            border-color: var(--color-fill-2);
-            border-radius: 1px;
-          "
-          :size="4"
-        ></a-divider>
-        <ComCard>
-          <GroupTitle
-            iconed
-            :title="$t('cost.optimize.form.title.group1')"
-            style="margin-top: 10px"
-            :bordered="true"
-          ></GroupTitle>
-          <a-form-item
+
+        <GroupTitle
+          :title="$t('cost.optimize.form.title.group1')"
+          flex-start
+          class="m-t-20"
+          :bordered="false"
+        ></GroupTitle>
+        <a-form-item
+          :label="$t('cost.analyse.table.time')"
+          field="timeRange"
+          hide-label
+          :validate-trigger="['change']"
+          :rules="[
+            {
+              required: true,
+              message: $t('cost.optimize.form.rule.time')
+            }
+          ]"
+        >
+          <seal-select
+            v-if="!viewable"
+            v-model="formData.timeRange"
             :label="$t('cost.analyse.table.time')"
-            field="timeRange"
-            :validate-trigger="['change']"
-            :rules="[
-              {
-                required: !viewable,
-                message: $t('cost.optimize.form.rule.time')
-              }
-            ]"
+            :required="true"
+            :style="{ width: `${InputWidth.LARGE}px` }"
+            @change="handleTimeChange"
           >
-            <a-select
-              v-if="!viewable"
-              v-model="formData.timeRange"
-              @change="handleTimeChange"
-            >
-              <a-option
-                v-for="item in timeRangeOptions"
-                :key="item.value"
-                :value="item.value"
-                :label="$t(item.label)"
-              ></a-option>
-            </a-select>
-            <span v-else class="readonly-view-label">{{
-              $t(getListLabel(formData.timeRange, timeRangeOptions) || '-')
+            <a-option
+              v-for="item in timeRangeOptions"
+              :key="item.value"
+              :value="item.value"
+              :label="$t(item.label)"
+            ></a-option>
+          </seal-select>
+          <span v-else class="readonly-view-label">{{
+            $t(getListLabel(formData.timeRange, timeRangeOptions) || '-')
+          }}</span>
+          <template v-if="!viewable" #extra>
+            <span class="tips">{{
+              $t('cost.optimize.form.timeRange.tips')
             }}</span>
-            <template v-if="!viewable" #extra>
-              <span class="tips">{{
-                $t('cost.optimize.form.timeRange.tips')
-              }}</span>
-            </template>
-          </a-form-item>
-          <a-form-item
+          </template>
+        </a-form-item>
+        <a-form-item
+          :label="$t('cost.optimize.form.groupby')"
+          field="allocationQueries.0.groupBy"
+          hide-label
+          :rules="[
+            {
+              required: true,
+              message: $t('cost.optimize.form.rule.groupby')
+            }
+          ]"
+        >
+          <seal-cascader
+            v-if="!viewable"
+            v-model="formData.allocationQueries[0].groupBy"
             :label="$t('cost.optimize.form.groupby')"
-            field="allocationQueries.0.groupBy"
-            :rules="[
-              {
-                required: !viewable,
-                message: $t('cost.optimize.form.rule.groupby')
-              }
-            ]"
+            :required="true"
+            allow-search
+            :options="groupList"
+            :style="{ width: `${InputWidth.LARGE}px` }"
+            @change="handleGroupByChange"
           >
-            <a-cascader
-              v-if="!viewable"
-              v-model="formData.allocationQueries[0].groupBy"
-              allow-search
-              :options="groupList"
-              style="width: 360px"
-              @change="handleGroupByChange"
-            >
-            </a-cascader>
-            <span v-else class="readonly-view-label">{{
-              $t(
-                getListLabel(
-                  formData.allocationQueries[0].groupBy,
-                  groupList
-                ) || '-'
-              )
-            }}</span>
-          </a-form-item>
-          <a-form-item
-            v-if="!groupByDate.includes(formData.allocationQueries[0].groupBy)"
+          </seal-cascader>
+          <span v-else class="readonly-view-label">{{
+            $t(
+              getListLabel(formData.allocationQueries[0].groupBy, groupList) ||
+                '-'
+            )
+          }}</span>
+        </a-form-item>
+        <a-form-item
+          v-if="!groupByDate.includes(formData.allocationQueries[0].groupBy)"
+          :label="$t('cost.optimize.form.step')"
+          :validate-trigger="['change']"
+          hide-label
+          field="allocationQueries.0.step"
+          :rules="[
+            {
+              required: true,
+              message: $t('cost.optimize.form.rule.step')
+            }
+          ]"
+        >
+          <seal-cascader
+            v-if="!viewable"
+            v-model="formData.allocationQueries[0].step"
             :label="$t('cost.optimize.form.step')"
-            :validate-trigger="['change']"
-            field="allocationQueries.0.step"
-            :rules="[
-              {
-                required: !viewable,
-                message: $t('cost.optimize.form.rule.step')
-              }
-            ]"
+            :required="true"
+            allow-search
+            :options="stepList"
+            :style="{ width: `${InputWidth.LARGE}px` }"
+            @change="handleStepChange"
           >
-            <a-cascader
-              v-if="!viewable"
-              v-model="formData.allocationQueries[0].step"
-              allow-search
-              :options="stepList"
-              style="width: 360px"
-              @change="handleStepChange"
-            >
-            </a-cascader>
-            <span v-else class="readonly-view-label">{{
-              $t(
-                getListLabel(formData.allocationQueries[0].step, stepList) ||
-                  '-'
-              )
-            }}</span>
-          </a-form-item>
-          <a-form-item
+          </seal-cascader>
+          <span v-else class="readonly-view-label">{{
+            $t(
+              getListLabel(formData.allocationQueries[0].step, stepList) || '-'
+            )
+          }}</span>
+        </a-form-item>
+        <a-form-item
+          :label="$t('cost.optimize.form.costFilter')"
+          field="allocationQueries.0.filters"
+          hide-label
+          :rules="[
+            {
+              required: true,
+              message: $t('cost.optimize.form.rule.cost')
+            }
+          ]"
+        >
+          <SealFormItemWrap
+            v-if="
+              (!viewable || formData.allocationQueries[0].filters.length) &&
+              perspectiveInfo.name !== AllPerspectiveName
+            "
             :label="$t('cost.optimize.form.costFilter')"
-            field="allocationQueries.0.filters"
-            :rules="[
-              {
-                required: !viewable,
-                message: $t('cost.optimize.form.rule.cost')
-              }
-            ]"
+            :required="true"
+            :style="{ minWidth: `${InputWidth.LARGE}px` }"
           >
             <ConditionFilter
-              v-if="
-                (!viewable || formData.allocationQueries[0].filters.length) &&
-                perspectiveInfo.name !== AllPerspectiveName
-              "
               ref="allfilter"
               v-model:conditions="formData.allocationQueries[0].filters"
               :viewable="viewable"
               :perspective-fields="perspectiveFields"
               :time-range="formData.timeRange"
             ></ConditionFilter>
-            <span v-else class="readonly-view-label">{{
-              perspectiveInfo.name === AllPerspectiveName
-                ? AllPerspectiveName
-                : '-'
-            }}</span>
-          </a-form-item>
-          <GroupTitle
-            iconed
-            :title="$t('cost.optimize.form.title.group2')"
-            style="margin-top: 10px"
-            :bordered="true"
-          ></GroupTitle>
-          <a-form-item
+          </SealFormItemWrap>
+          <span v-else class="readonly-view-label">{{
+            perspectiveInfo.name === AllPerspectiveName
+              ? AllPerspectiveName
+              : '-'
+          }}</span>
+        </a-form-item>
+        <GroupTitle
+          :title="$t('cost.optimize.form.title.group2')"
+          flex-start
+          class="m-t-20"
+          :bordered="false"
+        ></GroupTitle>
+        <a-form-item
+          :label="$t('cost.optimize.form.commonCost')"
+          field="allocationQueries.shareCosts.0.filters"
+          hide-label
+        >
+          <SealFormItemWrap
+            v-if="
+              !viewable ||
+              formData.allocationQueries[0].shareCosts[0].filters.length
+            "
             :label="$t('cost.optimize.form.commonCost')"
-            field="allocationQueries.shareCosts.0.filters"
+            :style="{ minWidth: `${InputWidth.LARGE}px` }"
           >
             <ConditionFilter
-              v-if="
-                !viewable ||
-                formData.allocationQueries[0].shareCosts[0].filters.length
-              "
               ref="costfilter"
               v-model:conditions="
                 formData.allocationQueries[0].shareCosts[0].filters
@@ -211,75 +224,85 @@
               :time-range="formData.timeRange"
               :perspective-fields="perspectiveFields"
             ></ConditionFilter>
-            <span v-else class="readonly-view-label"> - </span>
-          </a-form-item>
+          </SealFormItemWrap>
 
-          <a-form-item
+          <span v-else class="readonly-view-label"> - </span>
+        </a-form-item>
+
+        <a-form-item
+          :label="$t('cost.optimize.form.shareCost')"
+          hide-label
+          field="allocationQueries.0.shareCosts.0.idleCostFilters"
+        >
+          <seal-select
+            v-if="!viewable"
+            v-model="
+              formData.allocationQueries[0].shareCosts[0].idleCostFilters
+            "
             :label="$t('cost.optimize.form.shareCost')"
-            field="allocationQueries.0.shareCosts.0.idleCostFilters"
+            allow-search
+            multiple
+            :max-tag-count="1"
+            :options="idleCostFieldList"
+            :style="{ width: `${InputWidth.LARGE}px` }"
+            @change="handleCostFilterChange"
           >
-            <a-select
-              v-if="!viewable"
-              v-model="
-                formData.allocationQueries[0].shareCosts[0].idleCostFilters
-              "
-              allow-search
-              multiple
-              :max-tag-count="1"
-              :options="idleCostFieldList"
-              style="width: 360px"
-              @change="handleCostFilterChange"
-            >
-            </a-select>
-            <span v-else class="readonly-view-label">{{
-              $t(
-                getListLabel(
-                  formData.allocationQueries[0].shareCosts[0].idleCostFilters,
-                  idleCostFieldList
-                ) || '-'
-              )
-            }}</span>
-          </a-form-item>
-          <a-form-item
+          </seal-select>
+          <span v-else class="readonly-view-label">{{
+            $t(
+              getListLabel(
+                formData.allocationQueries[0].shareCosts[0].idleCostFilters,
+                idleCostFieldList
+              ) || '-'
+            )
+          }}</span>
+        </a-form-item>
+        <a-form-item
+          :label="$t('cost.optimize.form.sharemngCost')"
+          hide-label
+          field="managementCostFilters"
+        >
+          <seal-select
+            v-if="!viewable"
+            v-model="
+              formData.allocationQueries[0].shareCosts[0].managementCostFilters
+            "
             :label="$t('cost.optimize.form.sharemngCost')"
-            field="managementCostFilters"
+            allow-search
+            multiple
+            :max-tag-count="1"
+            :options="idleCostFieldList"
+            :style="{ width: `${InputWidth.LARGE}px` }"
+            @change="handleCostFilterChange"
           >
-            <a-select
-              v-if="!viewable"
-              v-model="
+          </seal-select>
+          <span v-else class="readonly-view-label">{{
+            $t(
+              getListLabel(
                 formData.allocationQueries[0].shareCosts[0]
-                  .managementCostFilters
-              "
-              allow-search
-              multiple
-              :max-tag-count="1"
-              :options="idleCostFieldList"
-              style="width: 360px"
-              @change="handleCostFilterChange"
-            >
-            </a-select>
-            <span v-else class="readonly-view-label">{{
-              $t(
-                getListLabel(
-                  formData.allocationQueries[0].shareCosts[0]
-                    .managementCostFilters,
-                  idleCostFieldList
-                ) || '-'
-              )
-            }}</span>
-          </a-form-item>
-          <a-form-item
+                  .managementCostFilters,
+                idleCostFieldList
+              ) || '-'
+            )
+          }}</span>
+        </a-form-item>
+        <a-form-item
+          :label="$t('cost.optimize.form.shareType')"
+          hide-label
+          field="allocationQueries.0.shareCosts.0.sharingStrategy"
+          :rules="[
+            {
+              required: sharingStrategyRequired && !viewable,
+              message: $t('cost.optimize.form.rule.shareType')
+            }
+          ]"
+        >
+          <SealFormItemWrap
+            v-if="!viewable"
+            :style="{ width: `${InputWidth.LARGE}px` }"
             :label="$t('cost.optimize.form.shareType')"
-            field="allocationQueries.0.shareCosts.0.sharingStrategy"
-            :rules="[
-              {
-                required: sharingStrategyRequired && !viewable,
-                message: $t('cost.optimize.form.rule.shareType')
-              }
-            ]"
           >
             <a-radio-group
-              v-if="!viewable"
               v-model="
                 formData.allocationQueries[0].shareCosts[0].sharingStrategy
               "
@@ -291,16 +314,16 @@
                 >{{ $t(item.label) }}</a-radio
               >
             </a-radio-group>
-            <span v-else class="readonly-view-label">{{
-              $t(
-                getListLabel(
-                  formData.allocationQueries[0].shareCosts[0].sharingStrategy,
-                  costShareMode
-                ) || '-'
-              )
-            }}</span>
-          </a-form-item>
-        </ComCard>
+          </SealFormItemWrap>
+          <span v-else class="readonly-view-label">{{
+            $t(
+              getListLabel(
+                formData.allocationQueries[0].shareCosts[0].sharingStrategy,
+                costShareMode
+              ) || '-'
+            )
+          }}</span>
+        </a-form-item>
       </a-form>
       <EditPageFooter v-if="!viewable && !builtin">
         <template #save>
@@ -345,7 +368,11 @@
     keys,
     isEqual
   } from 'lodash';
-  import { PageAction, validateLabelNameRegx } from '@/views/config';
+  import {
+    PageAction,
+    validateLabelNameRegx,
+    InputWidth
+  } from '@/views/config';
   import useCallCommon from '@/hooks/use-call-common';
   import useScrollToView from '@/hooks/use-scroll-to-view';
   import { beforeLeaveCallback } from '@/hooks/save-before-leave';
@@ -785,16 +812,15 @@
 
 <style lang="less" scoped>
   .perspective-box {
-    :deep(.arco-form) {
-      .group-title {
-        margin-bottom: 25px;
+    // :deep(.arco-form) {
+    //   .group-title {
+    //     margin-bottom: 25px;
 
-        .title-wrap {
-          justify-content: flex-start;
-        }
-      }
-    }
-
+    //     .title-wrap {
+    //       justify-content: flex-start;
+    //     }
+    //   }
+    // }
     .arco-form-item-content {
       .label {
         display: inline-block;

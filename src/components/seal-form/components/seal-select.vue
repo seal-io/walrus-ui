@@ -1,7 +1,7 @@
 <template>
   <span
     v-on-click-outside="handleBlur"
-    class="relative wrapper select"
+    class="seal-relative wrapper select"
     :class="{
       'is-focused': isFocus || modelValue,
       'prefix-icon': slots.prefix
