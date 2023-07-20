@@ -1,10 +1,11 @@
 <template>
   <span
-    class="relative wrapper"
+    class="seal-relative wrapper"
     :class="{
       'is-focused': isFocus || modelValue,
       'prefix-icon': slots.prefix
     }"
+    :style="{ width: $attrs.style?.width || 'max-content' }"
   >
     <span class="label" :class="{ disabled: $attrs.disabled }">
       <span

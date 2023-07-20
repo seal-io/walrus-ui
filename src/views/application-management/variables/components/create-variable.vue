@@ -7,7 +7,7 @@
     :ok-text="$t('common.button.save')"
     :visible="show"
     :mask-closable="false"
-    :body-style="{ 'max-height': '450px', 'overflow': 'auto' }"
+    :body-style="{ 'max-height': '500px', 'overflow': 'auto' }"
     modal-class="project-modal"
     :title="title"
     @cancel="handleCancel"
@@ -20,6 +20,7 @@
         <a-form-item
           :disabled="!!formData.id && action === 'edit'"
           :label="$t('applications.applications.form.name')"
+          hide-label
           field="name"
           validate-trigger="change"
           :rules="[
@@ -31,12 +32,14 @@
             }
           ]"
         >
-          <a-input
+          <seal-input
             v-model="formData.name"
+            :label="$t('applications.applications.form.name')"
+            :required="true"
             style="width: 100%"
             :max-length="63"
             show-word-limit
-          ></a-input>
+          ></seal-input>
           <template #extra>
             <span class="tips">{{ $t('common.validate.labelName') }}</span>
           </template>
@@ -44,36 +47,46 @@
         <a-form-item
           :label="$t('applications.applications.secret.value')"
           field="value"
+          hide-label
           validate-trigger="change"
           :rules="[
             { required: true, message: $t('applications.secret.rules.value') }
           ]"
         >
-          <a-textarea
+          <seal-textarea
             v-model="formData.value"
+            :label="$t('applications.applications.secret.value')"
+            :required="true"
             style="width: 100%"
-            :auto-size="{ minRows: 4, maxRows: 6 }"
-          ></a-textarea>
+            :auto-size="{ minRows: 4, maxRows: 5 }"
+          ></seal-textarea>
         </a-form-item>
         <a-form-item
           :label="$t('common.table.description')"
           field="description"
+          hide-label
           validate-trigger="change"
         >
-          <a-textarea
+          <seal-textarea
             v-model="formData.description"
+            :label="$t('common.table.description')"
             :max-length="100"
             show-word-limit
             style="width: 100%"
-            :auto-size="{ minRows: 4, maxRows: 6 }"
-          ></a-textarea>
+            :auto-size="{ minRows: 4, maxRows: 5 }"
+          ></seal-textarea>
         </a-form-item>
         <a-form-item
           :label="$t('common.table.sensitive')"
           field="sensitive"
+          hide-label
           validate-trigger="change"
         >
-          <a-checkbox v-model="formData.sensitive"></a-checkbox>
+          <seal-checkbox
+            v-model="formData.sensitive"
+            :label="$t('common.table.sensitive')"
+            :required="false"
+          ></seal-checkbox>
         </a-form-item>
       </a-form>
     </a-spin>

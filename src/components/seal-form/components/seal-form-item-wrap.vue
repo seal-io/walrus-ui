@@ -5,7 +5,7 @@
         >{{ label
         }}{{
           showRequiredMark
-            ? $attrs.required
+            ? required
               ? `(${$t('common.form.field.input.required')})`
               : `(${$t('common.form.field.optional')})`
             : ''
