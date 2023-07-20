@@ -27,7 +27,7 @@ export default {
   'operation.connectors.rules.kubeconfig': 'kubeconfig is required',
   'operation.connectors.rules.kubeconfigTips':
     'can be read from a file or entered directly',
-  'operation.connectors.rules.enable': 'Enable cost analysis (optional)',
+  'operation.connectors.rules.enable': 'Enable cost analysis',
   'operation.connectors.reinstall.tips': 'Reload history data will be deleted',
   'operation.connectors.reinstall.button': 'Sure to reinstall',
   'operation.connectors.table.versioncontrol': 'Version Control',
@@ -37,7 +37,7 @@ export default {
     'the cluster cost analysis tool is available',
   'operation.connectors.status.error':
     'the cluster cost analysis tool is unavailable, try reinstalling',
-  'operation.connectors.form.finopsenable': 'Enable Cost Analysis(optional)',
+  'operation.connectors.form.finopsenable': 'Enable Cost Analysis',
   'operation.connectors.form.name': 'Name',
   'operation.connectors.form.type': 'Type',
   'operation.connectors.form.attribute': 'Attributes',

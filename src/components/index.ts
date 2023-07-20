@@ -25,6 +25,7 @@ import {
 } from 'echarts/components';
 import Chart from './chart/index.vue';
 import Breadcrumb from './breadcrumb/index.vue';
+import GroupTitle from './group-title/index.vue';
 
 const IconFont = Icon.addFromIconFontCn({
   src: '//at.alicdn.com/t/c/font_3892962_hfbtla8yky.js'
@@ -57,5 +58,6 @@ export default {
     Vue.component('SpinCard', SpinCard);
     Vue.component('ModuleCard', ModuleCard);
     Vue.component('BreadWrapper', BreadWrapper);
+    Vue.component('GroupTitle', GroupTitle);
   }
 };

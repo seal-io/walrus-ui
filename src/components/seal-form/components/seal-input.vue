@@ -1,18 +1,25 @@
 <template>
   <span
-    class="relative wrapper"
+    ref="wrapper"
+    class="relative wrapper input"
     :class="{
       'is-focused': isFocus || modelValue,
       'prefix-icon': slots.prefix
     }"
   >
-    <span class="label">
+    <span
+      class="label"
+      :class="{ disabled: $attrs.disabled }"
+      @click="handleClick"
+    >
       <span
         >{{ $attrs.label || placeholder
         }}{{
-          $attrs.required
-            ? `(${$t('common.form.field.input.required')})`
-            : `(${$t('common.form.field.optional')})`
+          showRequiredMark
+            ? $attrs.required
+              ? `(${$t('common.form.field.input.required')})`
+              : `(${$t('common.form.field.optional')})`
+            : ''
         }}</span
       >
       <a-tooltip v-if="popupInfo" :content="popupInfo">
@@ -48,12 +55,17 @@
       type: String,
       default: ''
     },
+    showRequiredMark: {
+      type: Boolean,
+      default: true
+    },
     popupInfo: {
       type: String,
       default: ''
     }
   });
-  const input = ref(null);
+  const wrapper = ref();
+  const input = ref();
   const isFocus = ref(false);
   const emits = defineEmits([
     'update:modelValue',
@@ -65,6 +77,7 @@
   ]);
   const $attrs = useAttrs();
   const slots = useSlots();
+
   const handleInput = (value, e) => {
     // check the value length, when the length  is great than the $attrs.maxlength, the value will be cut
     const maxLength = $attrs.maxLength || $attrs['max-length'];

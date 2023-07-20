@@ -66,6 +66,7 @@
                           ? $t('common.form.field.input.required')
                           : $t('common.form.field.optional')
                       })`"
+                      :show-required-mark="false"
                       :popup-info="fm.description"
                     >
                       <component

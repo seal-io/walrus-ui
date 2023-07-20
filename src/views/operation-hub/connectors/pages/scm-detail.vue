@@ -22,9 +22,11 @@
         @change="handleSelectChange"
       ></Breadcrumb>
     </BreadWrapper>
-    <ComCard top-gap class="kuber-detail-wrap">
+    <ComCard class="kuber-detail-wrap">
       <GroupTitle
         :bordered="false"
+        :title="$t('common.title.basicInfo')"
+        flex-start
         :show-edit="
           pageAction === PageAction.VIEW &&
           (route.params.projectId
@@ -41,52 +43,61 @@
         @edit="handleEdit"
       ></GroupTitle>
       <div>
-        <a-form ref="formref" :model="formData" auto-label-width>
+        <a-form
+          ref="formref"
+          :model="formData"
+          auto-label-width
+          label-align="left"
+        >
           <a-form-item
             :label="$t('operation.connectors.form.name')"
+            hide-asterisk
+            :hide-label="pageAction === PageAction.EDIT"
             field="name"
             :rules="[
-              // {
-              //   required: pageAction === PageAction.EDIT,
-              //   message: $t('operation.connectors.rule.name')
-              // },
               {
-                required: pageAction === PageAction.EDIT,
+                required: true,
                 match: validateLabelNameRegx,
                 message: $t('common.validate.labelName')
               }
             ]"
           >
-            <a-input
+            <seal-input
               v-if="pageAction === PageAction.EDIT"
               v-model="formData.name"
-              style="width: 500px"
+              :label="$t('operation.connectors.form.name')"
+              :required="true"
+              :style="{ width: `${InputWidth.LARGE}px` }"
               :max-length="63"
               show-word-limit
-            ></a-input>
+            ></seal-input>
             <span v-else class="readonly-view-label">{{
               formData.name || '-'
             }}</span>
             <template v-if="pageAction === PageAction.EDIT" #extra>
-              <div style="max-width: 500px">{{
-                $t('operation.connectors.rule.name')
+              <div :style="{ maxWidth: `${InputWidth.LARGE}px` }">{{
+                $t('common.validate.labelName')
               }}</div>
             </template>
           </a-form-item>
           <a-form-item
             :label="$t('operation.connectors.form.type')"
+            hide-asterisk
+            :hide-label="pageAction === PageAction.EDIT"
             field="type"
             :rules="[
               {
-                required: pageAction === PageAction.EDIT,
+                required: true,
                 message: $t('operation.connectors.type.rule')
               }
             ]"
           >
-            <a-select
+            <seal-select
               v-if="pageAction === PageAction.EDIT"
               v-model="formData.type"
-              style="width: 500px"
+              :required="true"
+              :label="$t('operation.connectors.form.type')"
+              :style="{ width: `${InputWidth.LARGE}px` }"
             >
               <a-option
                 v-for="(item, index) in typeOptions"
@@ -99,7 +110,7 @@
               <template #prefix>
                 <ProviderIcon :provider="toLower(formData.type)"></ProviderIcon>
               </template>
-            </a-select>
+            </seal-select>
             <span v-else class="readonly-view-label"
               ><ProviderIcon
                 :provider="toLower(formData.type)"
@@ -110,22 +121,28 @@
           </a-form-item>
           <a-form-item
             v-if="pageAction === PageAction.EDIT"
+            hide-asterisk
+            hide-label
             label="Access Token"
             field="configData.token.value"
             :rules="[
               {
-                required: pageAction === PageAction.EDIT,
+                required: true,
                 message: $t('operation.connectors.accesstoken.rule')
               }
             ]"
           >
-            <a-input-password
+            <seal-input-password
               v-model="formData.configData.token.value"
+              label="Access Token"
+              :required="true"
+              :style="{ width: `${InputWidth.LARGE}px` }"
               style="width: 500px"
-            ></a-input-password>
+            ></seal-input-password>
           </a-form-item>
           <a-form-item
             v-if="pageAction === PageAction.VIEW"
+            hide-asterisk
             :label="$t('operation.connectors.table.status')"
           >
             <span class="readonly-view-label">
@@ -164,7 +181,11 @@
 </template>
 
 <script lang="ts" setup>
-  import { PageAction, validateLabelNameRegx } from '@/views/config';
+  import {
+    PageAction,
+    validateLabelNameRegx,
+    InputWidth
+  } from '@/views/config';
   import { OPERATIONHUB } from '@/router/config';
   import { Resources, Actions } from '@/permissions/config';
   import { useUserStore } from '@/store';

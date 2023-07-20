@@ -65,6 +65,12 @@
           </EditPageFooter>
         </template>
       </a-alert>
+      <GroupTitle
+        :title="$t('applications.applications.detail.basic')"
+        :bordered="false"
+        flex-start
+        style="margin: 30px 0 10px 0"
+      ></GroupTitle>
       <div class="variables">
         <a-form
           ref="formref"
@@ -75,12 +81,9 @@
           <a-form-item
             :label="$t('operation.environments.table.name')"
             field="name"
+            hide-label
             :validate-trigger="['change']"
             :rules="[
-              // {
-              //   required: pageAction === PageAction.EDIT,
-              //   message: $t('operation.environments.rule.name')
-              // },
               {
                 required: pageAction === PageAction.EDIT,
                 match: validateLabelNameRegx,
@@ -88,57 +91,74 @@
               }
             ]"
           >
-            <a-input
+            <seal-input
               v-model="formData.name"
-              style="width: 500px"
+              style="width: 100%"
               :max-length="63"
+              :required="pageAction === PageAction.EDIT"
+              :label="$t('operation.environments.table.name')"
               show-word-limit
-            ></a-input>
+            ></seal-input>
             <template #extra>
               <div style="max-width: 500px">{{
                 $t('common.validate.labelName')
               }}</div>
             </template>
           </a-form-item>
-          <a-form-item :label="$t(`applications.projects.form.label`)">
-            <a-space
-              v-if="labelList?.length"
-              style="display: flex; flex-direction: column; width: 565px"
-              direction="vertical"
+          <a-form-item
+            :label="$t(`applications.projects.form.label`)"
+            hide-label
+          >
+            <SealFormItemWrap
+              :label="$t(`applications.projects.form.label`)"
+              style="width: 100%"
             >
-              <xInputGroup
-                v-for="(sItem, sIndex) in labelList"
-                :key="sIndex"
-                v-model:dataKey="sItem.key"
-                v-model:dataValue="sItem.value"
-                v-model:value="formData.labels"
-                :data-item="{
-                  style: {
-                    key: {
-                      'display': 'flex',
-                      'flex': 1,
-                      'align-items': 'center'
+              <a-space
+                v-if="labelList?.length"
+                style="display: flex; flex-direction: column"
+                direction="vertical"
+              >
+                <xInputGroup
+                  v-for="(sItem, sIndex) in labelList"
+                  :key="sIndex"
+                  v-model:dataKey="sItem.key"
+                  v-model:dataValue="sItem.value"
+                  v-model:value="formData.labels"
+                  :data-item="{
+                    style: {
+                      key: {
+                        'display': 'flex',
+                        'flex': 1,
+                        'align-items': 'center'
+                      }
                     }
-                  }
-                }"
-                :trigger-validate="validateTrigger"
-                :label-list="labelList"
-                :position="sIndex"
-                @add="(obj) => handleAddLabel(obj, labelList)"
-                @delete="handleDeleteLabel(labelList, sIndex)"
-              ></xInputGroup>
-            </a-space>
+                  }"
+                  :trigger-validate="validateTrigger"
+                  :label-list="labelList"
+                  :position="sIndex"
+                  @add="(obj) => handleAddLabel(obj, labelList)"
+                  @delete="handleDeleteLabel(labelList, sIndex)"
+                ></xInputGroup>
+              </a-space>
+            </SealFormItemWrap>
           </a-form-item>
-          <a-form-item :label="$t('common.table.description')">
-            <a-textarea
+          <a-form-item :label="$t('common.table.description')" hide-label>
+            <seal-textarea
               v-model="formData.description"
+              :label="$t('common.table.description')"
               :max-length="200"
               show-word-limit
-              style="width: 500px"
+              style="width: 100%"
               :auto-size="{ minRows: 4, maxRows: 6 }"
-            ></a-textarea>
+            ></seal-textarea>
           </a-form-item>
         </a-form>
+        <GroupTitle
+          :title="$t('applications.applications.detail.configuration')"
+          :bordered="false"
+          flex-start
+          style="margin: 10px 0 0 0"
+        ></GroupTitle>
         <a-tabs
           v-if="formTabs.length > 1"
           class="page-line-tabs"
@@ -199,6 +219,7 @@
   import EditPageFooter from '@/components/edit-page-footer/index.vue';
   import useLabelsActions from '@/components/form-create/hooks/use-labels-action';
   import useScrollToView from '@/hooks/use-scroll-to-view';
+  import GroupTitle from '@/components/group-title/index.vue';
   import formCreate from '@/components/form-create/index.vue';
   import serviceThumb from '../../services/components/service-thumb.vue';
   import { ServiceRowData } from '../../services/config/interface';

@@ -1,7 +1,16 @@
 <template>
   <div class="seal-form-item-wrap">
     <div class="label">
-      <span>{{ label }}</span>
+      <span
+        >{{ label
+        }}{{
+          showRequiredMark
+            ? $attrs.required
+              ? `(${$t('common.form.field.input.required')})`
+              : `(${$t('common.form.field.optional')})`
+            : ''
+        }}</span
+      >
       <a-tooltip v-if="popupInfo" :content="popupInfo">
         <icon-info-circle style="stroke-linecap: initial; cursor: default" />
       </a-tooltip>
@@ -15,6 +24,14 @@
     label: {
       type: String,
       default: ''
+    },
+    showRequiredMark: {
+      type: Boolean,
+      default: true
+    },
+    required: {
+      type: Boolean,
+      default: false
     },
     popupInfo: {
       type: String,

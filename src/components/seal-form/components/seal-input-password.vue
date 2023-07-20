@@ -6,13 +6,19 @@
       'prefix-icon': slots.prefix
     }"
   >
-    <span class="label">
+    <span
+      class="label"
+      :class="{ disabled: $attrs.disabled }"
+      @click="handleClick"
+    >
       <span
         >{{ $attrs.label || placeholder
         }}{{
-          $attrs.required
-            ? `(${$t('common.form.field.input.required')})`
-            : `(${$t('common.form.field.optional')})`
+          showRequiredMark
+            ? $attrs.required
+              ? `(${$t('common.form.field.input.required')})`
+              : `(${$t('common.form.field.optional')})`
+            : ''
         }}</span
       >
       <a-tooltip v-if="popupInfo" :content="popupInfo">
@@ -52,6 +58,10 @@
     popupInfo: {
       type: String,
       default: ''
+    },
+    showRequiredMark: {
+      type: Boolean,
+      default: true
     }
   });
   const input = ref(null);

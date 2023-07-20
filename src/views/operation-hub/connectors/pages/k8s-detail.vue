@@ -25,10 +25,11 @@
         @change="handleSelectChange"
       ></Breadcrumb>
     </BreadWrapper>
-    <ComCard top-gap class="kuber-detail-wrap">
+    <ComCard class="kuber-detail-wrap">
       <GroupTitle
         :bordered="false"
-        style="margin-bottom: 0"
+        :title="$t('common.title.basicInfo')"
+        flex-start
         :show-edit="
           pageAction === PageAction.VIEW &&
           (route.params.projectId
@@ -45,15 +46,18 @@
         @edit="handleEdit"
       ></GroupTitle>
       <div>
-        <a-form ref="formref" :model="formData" auto-label-width>
+        <a-form
+          ref="formref"
+          :model="formData"
+          auto-label-width
+          label-align="left"
+        >
           <a-form-item
             :label="$t('operation.connectors.detail.clusterName')"
+            :hide-label="pageAction === PageAction.EDIT"
+            hide-asterisk
             field="name"
             :rules="[
-              // {
-              //   required: true,
-              //   message: $t('operation.connectors.rules.name')
-              // },
               {
                 required: true,
                 match: validateLabelNameRegx,
@@ -61,18 +65,20 @@
               }
             ]"
           >
-            <a-input
+            <seal-input
               v-if="pageAction === PageAction.EDIT"
               v-model="formData.name"
-              style="width: 500px"
+              :label="$t('operation.connectors.detail.clusterName')"
+              :required="true"
+              :style="{ width: `${InputWidth.LARGE}px` }"
               :max-length="63"
               show-word-limit
-            ></a-input>
+            ></seal-input>
             <span v-else class="readonly-view-label">{{
               formData.name || '-'
             }}</span>
             <template v-if="pageAction === PageAction.EDIT" #extra>
-              <div style="max-width: 500px">{{
+              <div :style="{ maxWidth: `${InputWidth.LARGE}px` }">{{
                 $t('common.validate.labelName')
               }}</div>
             </template>
@@ -80,25 +86,25 @@
           <a-form-item
             v-if="pageAction === PageAction.EDIT"
             field="configData.kubeconfig.value"
-            :hide-asterisk="false"
+            hide-label
             label="KubeConfig"
             :validate-trigger="['change']"
             :rules="[
               {
-                required: pageAction === PageAction.EDIT,
+                required: true,
                 message: $t('operation.connectors.rules.kubeconfig')
               }
             ]"
           >
-            <span>
-              <a-textarea
-                v-model="formData.configData.kubeconfig.value"
-                style="width: 500px"
-                :spellcheck="false"
-                :placeholder="$t('operation.connectors.rules.kubeconfigTips')"
-                :auto-size="{ minRows: 6, maxRows: 10 }"
-              />
-            </span>
+            <seal-textarea
+              v-model="formData.configData.kubeconfig.value"
+              label="KubeConfig"
+              :required="true"
+              :style="{ width: `${InputWidth.LARGE}px` }"
+              :spellcheck="false"
+              :placeholder="$t('operation.connectors.rules.kubeconfigTips')"
+              :auto-size="{ minRows: 6, maxRows: 10 }"
+            />
             <template v-if="pageAction === PageAction.EDIT" #extra>
               <div>
                 <a-upload
@@ -125,7 +131,7 @@
               </div>
             </template>
           </a-form-item>
-          <a-form-item label="">
+          <a-form-item label="" :hide-label="pageAction === PageAction.EDIT">
             <template #label>
               <div class="label-wrap">
                 <span class="text">{{
@@ -133,11 +139,12 @@
                 }}</span>
               </div>
             </template>
-            <a-checkbox
+            <seal-checkbox
               v-if="pageAction == PageAction.EDIT"
               v-model="formData.enableFinOps"
-              >{{ $t('operation.connectors.rules.enable') }}</a-checkbox
-            >
+              :style="{ width: `${InputWidth.LARGE - 20}px` }"
+              :label="$t('operation.connectors.rules.enable')"
+            ></seal-checkbox>
             <span v-else class="readonly-view-label">{{
               formData.enableFinOps
                 ? $t('operation.connectors.finops.enable')
@@ -194,7 +201,11 @@
 </template>
 
 <script lang="ts" setup>
-  import { PageAction, validateLabelNameRegx } from '@/views/config';
+  import {
+    PageAction,
+    validateLabelNameRegx,
+    InputWidth
+  } from '@/views/config';
   import { OPERATIONHUB } from '@/router/config';
   import { Resources, Actions } from '@/permissions/config';
   import { useUserStore } from '@/store';

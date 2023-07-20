@@ -73,7 +73,7 @@
       display: inline-block;
       max-width: 160px;
       height: 24px;
-      margin-top: 4px;
+      margin-top: 1px;
       margin-right: 10px;
       padding: 2px 10px;
       overflow: hidden;

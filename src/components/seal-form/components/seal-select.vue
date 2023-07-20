@@ -1,13 +1,15 @@
 <template>
   <span
-    class="relative wrapper"
+    v-on-click-outside="handleBlur"
+    class="relative wrapper select"
     :class="{
       'is-focused': isFocus || modelValue,
       'prefix-icon': slots.prefix
     }"
+    :style="{ width: $attrs.style?.width || 'max-content' }"
     @click="handleClick"
   >
-    <div class="label">
+    <div class="label" :class="{ disabled: $attrs.disabled }">
       <span
         >{{ $attrs.label || placeholder
         }}{{
@@ -40,6 +42,7 @@
 
 <script lang="ts" setup>
   import { useAttrs, useSlots, ref } from 'vue';
+  import { vOnClickOutside } from '@vueuse/components';
 
   const props = defineProps({
     modelValue: {
@@ -89,7 +92,6 @@
     isFocus.value = true;
   };
   const handleBlur = (e) => {
-    emits('blur', e);
     isFocus.value = false;
   };
   const handleClear = () => {

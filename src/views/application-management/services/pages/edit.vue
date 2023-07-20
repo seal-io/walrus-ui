@@ -8,6 +8,11 @@
       ></Breadcrumb>
     </BreadWrapper>
     <ComCard padding="16px 16px 0 16px">
+      <GroupTitle
+        :title="$t('common.title.basicInfo')"
+        :bordered="false"
+        flex-start
+      ></GroupTitle>
       <a-form
         ref="formref"
         :model="formData"
@@ -107,11 +112,7 @@
           </div>
         </a-form-item>
         <a-form-item :label="$t(`applications.projects.form.label`)" hide-label>
-          <SealFormItemWrap
-            :label="`${$t('applications.projects.form.label')}(${$t(
-              'common.form.field.optional'
-            )})`"
-          >
+          <SealFormItemWrap :label="$t('applications.projects.form.label')">
             <a-space
               v-if="labelList?.length"
               :style="{
@@ -157,7 +158,6 @@
         style="display: flex; justify-content: flex-start; margin-bottom: 10px"
       >
         <GroupTitle
-          iconed
           :bordered="false"
           style="margin-bottom: 0"
           :title="$t('applications.applications.detail.configuration')"

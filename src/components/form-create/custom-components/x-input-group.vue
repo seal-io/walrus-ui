@@ -26,11 +26,11 @@
             :error="!dataKey && triggerValidate && shouldKey"
             :model-value="dataKey"
             :max-length="30"
+            show-word-limit
             v-bind="$attrs"
             :placeholder="
               get($attrs?.placeholder, 'key') || $t('common.input.key')
             "
-            show-word-limit
             style="width: 100%"
             @input="(val) => handleDataChange(val, 'key', 'input')"
             @change="(val) => handleDataChange(val, 'key', 'change')"
@@ -43,12 +43,12 @@
               get($attrs?.placeholder, 'key') || $t('common.input.key')
             "
             :max-length="100"
+            show-word-limit
             v-bind="$attrs"
             style="width: 100%"
             :editor-id="`${formId}_keyEditor${position}`"
             :source="completeData"
             :show-required-mark="false"
-            show-word-limit
             @input="(val) => handleDataChange(val, 'key', 'input')"
             @change="(val) => handleDataChange(val, 'key', 'change')"
           ></hintInput>
@@ -58,7 +58,7 @@
       <div :span="8" :style="getItemStyle('value')">
         <span style="padding: 0 4px">{{ separator }}</span>
         <slot name="value">
-          <a-select
+          <seal-select
             v-if="valueOptions.length"
             v-bind="$attrs"
             :error="!dataValue && triggerValidate"
@@ -70,7 +70,7 @@
             "
             @change="(val) => handleDataChange(val, 'value', 'change')"
           >
-          </a-select>
+          </seal-select>
           <seal-input-password
             v-else-if="showPassword"
             style="width: 100%"
@@ -78,27 +78,28 @@
             :placeholder="
               get($attrs?.placeholder, 'value') || $t('common.input.value')
             "
-            v-bind="$attrs"
             show-word-limit
+            v-bind="$attrs"
             @input="(val) => handleDataChange(val, 'value', 'input')"
             @change="(val) => handleDataChange(val, 'value', 'change')"
           ></seal-input-password>
           <seal-input
             v-else-if="!showHintInput"
             style="width: 100%"
+            show-word-limit
             :max-length="50"
             v-bind="$attrs"
             :model-value="dataValue"
             :placeholder="
               get($attrs?.placeholder, 'value') || $t('common.input.value')
             "
-            show-word-limit
             @input="(val) => handleDataChange(val, 'value', 'input')"
             @change="(val) => handleDataChange(val, 'value', 'change')"
           ></seal-input>
           <hintInput
             v-else
             :model-value="dataValue"
+            show-word-limit
             :max-length="100"
             v-bind="$attrs"
             :placeholder="
@@ -108,7 +109,6 @@
             style="width: 100%"
             :editor-id="`${formId}_valueEditor${position}`"
             :source="completeData"
-            show-word-limit
             @input="(val) => handleDataChange(val, 'value', 'input')"
             @change="(val) => handleDataChange(val, 'value', 'change')"
           ></hintInput>
@@ -128,6 +128,7 @@
           <template v-if="!valueOptions.length">
             <seal-input
               :max-length="100"
+              show-word-limit
               v-bind="$attrs"
               style="width: 100%"
               :model-value="dataDesc"
@@ -135,7 +136,6 @@
                 get($attrs?.placeholder, 'description') ||
                 $t('common.input.description')
               "
-              show-word-limit
               @input="(val) => handleDataChange(val, 'description', 'input')"
               @change="(val) => handleDataChange(val, 'description', 'change')"
             ></seal-input>
@@ -177,7 +177,10 @@
         <slot name="descExtra"> </slot>
       </div>
     </div>
-    <div class="btn-wrapper">
+    <div
+      class="btn-wrapper"
+      :class="{ 'two-btn': labelList?.length > 1 || alwaysDelete }"
+    >
       <icon-minus-circle
         v-if="(labelList?.length || 0) > 1 || alwaysDelete"
         class="size-20"
@@ -315,6 +318,7 @@
         return false;
       }
     },
+
     alwaysDelete: {
       type: Boolean,
       default() {
@@ -424,7 +428,11 @@
     display: flex;
     justify-content: space-between;
     width: 60px;
-    margin-left: 12px;
+    margin-left: 0;
+
+    &.two-btn {
+      margin-left: 12px;
+    }
 
     .arco-icon {
       color: rgb(var(--arcoblue-6));

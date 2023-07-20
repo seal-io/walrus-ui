@@ -1,7 +1,12 @@
 <template>
   <div
     class="group-title"
-    :class="{ 'bordered': bordered, 'is-detail': isDetail, 'iconed': iconed }"
+    :class="{
+      'bordered': bordered,
+      'is-detail': isDetail,
+      'iconed': iconed,
+      'flex-start': flexStart
+    }"
   >
     <div class="label">
       <a-link v-if="showBack" @click="handleBack"
@@ -11,7 +16,7 @@
       <div class="title-wrap">
         <slot name="title">{{ title }}</slot>
         <slot name="extra"></slot>
-        <a-link v-if="showEdit" @click="handleEdit">
+        <a-link v-if="showEdit" class="m-l-10" @click="handleEdit">
           <icon-edit></icon-edit>
           <span class="mleft-5">{{ $t('common.button.edit') }}</span>
         </a-link>
@@ -30,6 +35,12 @@
       type: Boolean,
       default() {
         return true;
+      }
+    },
+    flexStart: {
+      type: Boolean,
+      default() {
+        return false;
       }
     },
     isDetail: {
@@ -72,7 +83,7 @@
     position: relative;
     display: flex;
     justify-content: space-between;
-    margin-bottom: 0;
+    margin-bottom: 10px;
     padding-bottom: 10px;
     font-weight: 400;
 
@@ -102,13 +113,21 @@
       border-bottom: 1px solid #fff;
     }
 
+    &.flex-start {
+      .label {
+        .title-wrap {
+          justify-content: flex-start;
+        }
+      }
+    }
+
     .label {
       display: flex;
       align-items: center;
       width: 100%;
       color: var(--color-text-2);
       font-weight: 500;
-      font-size: 14px;
+      font-size: 16px;
 
       .title-wrap {
         display: flex;
