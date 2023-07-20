@@ -44,7 +44,7 @@
           >
             <seal-input
               v-model="userInfo.username"
-              size="large"
+              :show-required-mark="false"
               allow-clear
               :placeholder="$t('login.form.userName.placeholder')"
             >
@@ -63,7 +63,7 @@
           >
             <seal-input-password
               v-model="userInfo.password"
-              size="large"
+              :show-required-mark="false"
               :placeholder="$t('login.form.password.placeholder')"
               allow-clear
             >

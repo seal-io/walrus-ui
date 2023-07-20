@@ -99,5 +99,6 @@ export default {
     'contains only lowercase alphanumeric or "-", starts with an alphanumeric and ends with an alphanumeric',
   'common.search.nodata': 'no matching data',
   'common.tips.change': 'there are unsaved changes!',
-  'common.copy.notSupport': 'Your browser does not support Clipboard API'
+  'common.copy.notSupport': 'Your browser does not support Clipboard API',
+  'common.title.basicInfo': 'Basic Information'
 };

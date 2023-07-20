@@ -1,35 +1,47 @@
 <template>
   <div class="form-comp-wrap">
     <template v-if="comType === 'input'">
-      <a-input
+      <seal-input
         :model-value="modelValue"
         :disabled="attrs.isDisabled || !attrs.editable"
+        :label="attrs.label"
+        :required="attrs.required"
+        :popup-info="attrs.popupInfo"
+        :style="{ width: attrs.width }"
         @change="handleInputChange"
         @blur="handleBlur"
         @input="(val) => handleInput(val)"
-      ></a-input>
+      ></seal-input>
     </template>
     <template v-if="comType === 'password'">
-      <a-input-password
+      <seal-input-password
         :model-value="modelValue"
         :disabled="attrs.isDisabled || !attrs.editable"
+        :label="attrs.label"
+        :required="attrs.required"
+        :popup-info="attrs.popupInfo"
         :invisible-button="attrs.editable"
+        :style="{ width: attrs.width }"
         @change="handleInputChange"
         @blur="handleBlur"
         @input="(val) => handleInput(val)"
-      ></a-input-password>
+      ></seal-input-password>
     </template>
     <template v-if="comType === 'number'">
-      <a-input-number
+      <seal-input-number
         v-bind="attrs.binds"
+        :style="{ width: attrs.width }"
         :model-value="Number(modelValue)"
         :disabled="attrs.isDisabled || !attrs.editable"
         @change="(val) => $emit('update:modelValue', String(val))"
-      ></a-input-number>
+      ></seal-input-number>
     </template>
     <template v-if="comType === 'switch'">
-      <a-switch
+      <seal-switch
         :disabled="attrs.isDisabled || !attrs.editable"
+        :label="attrs.label"
+        :required="attrs.required"
+        :popup-info="attrs.popupInfo"
         :model-value="modelValue"
         checked-value="true"
         unchecked-value="false"
@@ -37,23 +49,30 @@
       />
     </template>
     <template v-if="comType === 'textarea'">
-      <a-textarea
+      <seal-textarea
         :model-value="modelValue"
+        :style="{ width: attrs.width }"
         :disabled="attrs.isDisabled || !attrs.editable"
+        :label="attrs.label"
+        :required="attrs.required"
+        :popup-info="attrs.popupInfo"
         @input="(val) => $emit('update:modelValue', val)"
-      ></a-textarea>
+      ></seal-textarea>
     </template>
     <template v-if="comType === 'select'">
-      <a-select
+      <seal-select
         :disabled="attrs.isDisabled || !attrs.editable"
-        :style="{ width: '360px' }"
+        :label="attrs.label"
+        :required="attrs.required"
+        :popup-info="attrs.popupInfo"
+        :style="{ width: attrs.width }"
         :model-value="modelValue"
         @change="(val) => $emit('update:modelValue', val)"
       >
         <a-option v-for="item in options" :key="item.id" :value="item.id"
           >{{ $t(item.label) }}
         </a-option>
-      </a-select>
+      </seal-select>
       <div class="options-desc">{{ optionDesc }}</div>
     </template>
     <!-- <template v-if="comType === 'upload'">

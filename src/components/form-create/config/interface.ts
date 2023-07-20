@@ -123,7 +123,7 @@ export const parseComponentSchema = (schema: ComponentSchema) => {
   const props = {
     min: schema?.min || -Infinity,
     max: schema?.max || Infinity,
-    maxLength: schema?.maxLength || 200,
+    maxLength: schema?.maxLength || 300,
     showWordLimit: schema?.maxLength,
     minLength: schema?.minLength || null
   };

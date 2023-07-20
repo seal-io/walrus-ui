@@ -6,14 +6,15 @@
 }
 
 .wrapper.relative {
-  // height:48px;
-  width: 100%;
-
   :deep(.arco-input-wrapper) {
     padding-top: 20px;
 
-    .arco-input-prefix > svg {
-      font-size: 16px;
+    .arco-input-prefix {
+      height: min-content;
+
+      > svg {
+        font-size: 16px;
+      }
     }
   }
 
@@ -26,13 +27,17 @@
       right: @paddingLeft;
       transform: translateY(calc(-50%));
     }
+
+    .arco-select-view-prefix {
+      height: max-content;
+      padding-right: @paddingLeft;
+    }
   }
 
   .label {
     position: absolute;
     top: 50%;
     left: @paddingLeft;
-    z-index: 5;
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -40,6 +45,26 @@
     font-size: 12px;
     transform: translateY(calc(-50% + 1px));
     transition: all 0.3s;
+
+    &.disabled:hover {
+      cursor: not-allowed;
+    }
+
+    &:hover {
+      cursor: text;
+    }
+  }
+
+  &.select {
+    .label:hover {
+      cursor: pointer;
+    }
+  }
+
+  &.input {
+    .label {
+      right: @paddingLeft;
+    }
   }
 
   &.is-focused {

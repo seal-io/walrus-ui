@@ -7,10 +7,16 @@
         @change="handleSelectChange"
       ></Breadcrumb>
     </BreadWrapper>
-    <ComCard>
+    <ComCard
+      :style="{
+        maxWidth:
+          pageAction === PageAction.VIEW ? `${InputWidth.XLARGE}px` : '100%'
+      }"
+    >
       <GroupTitle
         :bordered="false"
-        style="margin-bottom: 0"
+        :title="$t('common.title.basicInfo')"
+        flex-start
         :show-edit="
           pageAction === PageAction.VIEW &&
           userStore.hasProjectResourceActions({
@@ -26,6 +32,7 @@
           :label="$t('operation.environments.table.name')"
           field="name"
           :validate-trigger="['change']"
+          :hide-label="pageAction === PageAction.EDIT"
           :rules="[
             {
               required: pageAction === PageAction.EDIT,
@@ -34,18 +41,20 @@
             }
           ]"
         >
-          <a-input
+          <seal-input
             v-if="pageAction === PageAction.EDIT"
             v-model="formData.name"
-            style="width: 500px"
+            :label="$t('operation.environments.table.name')"
+            :required="true"
+            :style="{ width: `${InputWidth.LARGE}px` }"
             :max-length="63"
             show-word-limit
-          ></a-input>
+          ></seal-input>
           <span v-else class="readonly-view-label">{{
             formData.name || '-'
           }}</span>
           <template v-if="pageAction === PageAction.EDIT" #extra>
-            <div style="max-width: 500px">{{
+            <div :style="{ maxWidth: `${InputWidth.LARGE}px` }">{{
               $t('common.validate.labelName')
             }}</div>
           </template>
@@ -53,48 +62,78 @@
         <a-form-item
           :label="$t('operation.environments.table.description')"
           field="description"
+          :hide-label="pageAction === PageAction.EDIT"
         >
-          <a-textarea
+          <seal-textarea
             v-if="pageAction === PageAction.EDIT"
             v-model="formData.description"
-            style="width: 500px"
+            :label="$t('operation.environments.table.description')"
+            :style="{ width: `${InputWidth.LARGE}px` }"
             :max-length="200"
             show-word-limit
             :auto-size="{ minRows: 6, maxRows: 10 }"
-          ></a-textarea>
+          ></seal-textarea>
           <div v-else class="description-content readonly-view-label">{{
             formData.description || '-'
           }}</div>
         </a-form-item>
-        <a-form-item :label="$t(`applications.projects.form.label`)">
-          <a-space
+
+        <a-form-item
+          :label="$t(`applications.projects.form.label`)"
+          :hide-label="pageAction === PageAction.EDIT"
+        >
+          <SealFormItemWrap
             v-if="labelList?.length && pageAction === PageAction.EDIT"
-            style="display: flex; flex-direction: column; width: 565px"
-            direction="vertical"
+            :label="$t(`applications.projects.form.label`)"
+            :style="{ width: `${InputWidth.LARGE}px` }"
           >
-            <xInputGroup
-              v-for="(sItem, sIndex) in labelList"
-              :key="sIndex"
-              v-model:dataKey="sItem.key"
-              v-model:dataValue="sItem.value"
-              v-model:value="formData.labels"
-              :trigger-validate="validateTrigger"
-              :label-list="labelList"
-              :position="sIndex"
-              @add="(obj) => handleAddLabel(obj, labelList)"
-              @delete="handleDeleteLabel(labelList, sIndex)"
-            ></xInputGroup>
-          </a-space>
+            <a-space
+              style="display: flex; flex-direction: column; width: 100%"
+              direction="vertical"
+            >
+              <xInputGroup
+                v-for="(sItem, sIndex) in labelList"
+                :key="sIndex"
+                v-model:dataKey="sItem.key"
+                v-model:dataValue="sItem.value"
+                v-model:value="formData.labels"
+                :trigger-validate="validateTrigger"
+                :max-length="Infinity"
+                :show-word-limit="false"
+                :show-required-mark="false"
+                :label-list="labelList"
+                :data-item="{
+                  style: {
+                    key: {
+                      'display': 'flex',
+                      'flex': 1,
+                      'align-items': 'center'
+                    }
+                  }
+                }"
+                :position="sIndex"
+                @add="(obj) => handleAddLabel(obj, labelList)"
+                @delete="handleDeleteLabel(labelList, sIndex)"
+              ></xInputGroup>
+            </a-space>
+          </SealFormItemWrap>
           <div v-else class="readonly-view-label">
             <LabelsList :labels="formData.labels"></LabelsList>
           </div>
         </a-form-item>
+        <GroupTitle
+          class="m-t-20"
+          :bordered="false"
+          :title="$t('operation.connectors.table.connector')"
+          flex-start
+        ></GroupTitle>
         <a-form-item
           :label="$t('operation.connectors.menu')"
           field="connectorIDs"
+          :hide-label="true"
           :validate-trigger="['change']"
         >
-          <div>
+          <div :label="$t('operation.connectors.menu')">
             <div style="display: flex; margin-bottom: 10px">
               <a-button
                 v-if="pageAction === PageAction.EDIT"
@@ -119,8 +158,7 @@
             <connectorsTable
               :style="{
                 'max-width': '800px',
-                'min-width': '400px',
-                'marginLeft': pageAction === PageAction.VIEW ? '12px' : 0
+                'min-width': '400px'
               }"
               :action="pageAction"
               :list="formData?.edges || []"
@@ -128,15 +166,23 @@
             ></connectorsTable>
           </div>
         </a-form-item>
+        <GroupTitle
+          v-if="environmentId"
+          class="m-t-20"
+          :bordered="false"
+          :title="$t('applications.applications.table.service')"
+          flex-start
+        ></GroupTitle>
         <a-form-item
           v-if="environmentId"
+          :hide-label="pageAction === PageAction.EDIT"
           :label="$t('applications.applications.table.service')"
         >
           <CloneService
             ref="serviceRef"
             :service-list="serviceList"
             :async-loading="asyncLoading"
-            style="width: 800px; overflow: auto"
+            :style="{ width: `${InputWidth.XLARGE}px`, overflow: 'auto' }"
           ></CloneService>
         </a-form-item>
       </a-form>
@@ -175,7 +221,11 @@
     isEqual,
     cloneDeep
   } from 'lodash';
-  import { PageAction, validateLabelNameRegx } from '@/views/config';
+  import {
+    PageAction,
+    validateLabelNameRegx,
+    InputWidth
+  } from '@/views/config';
   import GroupTitle from '@/components/group-title/index.vue';
   import EditPageFooter from '@/components/edit-page-footer/index.vue';
   import useCallCommon from '@/hooks/use-call-common';

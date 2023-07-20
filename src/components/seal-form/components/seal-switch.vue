@@ -8,7 +8,7 @@
     >
     </a-switch>
     <span class="label-wrap">
-      <span class="label">
+      <span class="label" :class="{ disabled: $attrs.disabled }">
         <span
           >{{ $attrs.label || placeholder
           }}{{

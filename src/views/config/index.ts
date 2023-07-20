@@ -153,7 +153,8 @@ export enum ModalAction {
 export const InputWidth = {
   DEFAULT: 360,
   MIDDLE: 474,
-  LARGE: 500
+  LARGE: 500,
+  XLARGE: 800
 };
 
 export const USER_DEFAULT_PROJECT = 'USER_DEFAULT_PROJECT';

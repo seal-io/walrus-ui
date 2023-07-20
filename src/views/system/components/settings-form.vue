@@ -13,6 +13,10 @@
           >
             <form-component
               v-model="formData[dataInfo.id]"
+              :width="`${InputWidth.LARGE}px`"
+              :label="$t(dataInfo.label)"
+              :popup-info="dataInfo.desc"
+              :required="dataInfo.component.required"
               :editable="dataInfo.editable"
               :options="dataInfo.children"
               :match-type="dataInfo.component.match"
@@ -39,7 +43,7 @@
                   v-if="showId(child) && formData[item.id]"
                   :class="{ 's-item': child.component.type === 'switch' }"
                   :label="$t(child.label)"
-                  :hide-label="false"
+                  :hide-label="true"
                   :hide-asterisk="false"
                   :field="`${item.id}.${child.id}`"
                   :validate-trigger="['blur', 'change']"
@@ -48,6 +52,10 @@
                   <form-component
                     :key="child.id"
                     v-model="formData[item.id][child.id]"
+                    :width="`${InputWidth.LARGE}px`"
+                    :label="$t(child.label)"
+                    :popup-info="$t(child.desc || '')"
+                    :required="child.component.required"
                     :editable="child.editable"
                     :options="child.children || []"
                     :com-type="child.component.type"
@@ -123,7 +131,7 @@
                     's-item': subGroupItem.component.type === 'switch'
                   }"
                   :label="$t(subGroupItem.label)"
-                  :hide-label="false"
+                  :hide-label="true"
                   :hide-asterisk="false"
                   :field="`${subGroupItem.id}`"
                   :validate-trigger="['blur', 'change']"
@@ -132,6 +140,10 @@
                   <form-component
                     :key="subGroupItem.id"
                     v-model="formData[subGroupItem.id]"
+                    :width="`${InputWidth.LARGE}px`"
+                    :label="$t(subGroupItem.label)"
+                    :popup-info="$t(subGroupItem.desc || '')"
+                    :required="subGroupItem.component.required"
                     :editable="item.isEditable && subGroupItem.editable"
                     :options="subGroupItem.children || []"
                     :com-type="subGroupItem.component.type"
@@ -162,7 +174,7 @@
               v-else-if="showId(item)"
               :class="{ 's-item': item.component.type === 'switch' }"
               :label="$t(item.label)"
-              :hide-label="false"
+              :hide-label="true"
               :hide-asterisk="false"
               :field="item.id"
               :validate-trigger="['blur', 'change']"
@@ -170,6 +182,10 @@
             >
               <form-component
                 v-model="formData[item.id]"
+                :width="`${InputWidth.LARGE}px`"
+                :label="$t(item.label)"
+                :popup-info="$t(item.desc || '')"
+                :required="item.component.required"
                 :editable="item.editable"
                 :options="item.children || []"
                 :com-type="item.component.type"
@@ -199,6 +215,7 @@
 
 <script lang="ts" setup>
   import { Resources, Actions } from '@/permissions/config';
+  import { InputWidth } from '@/views/config';
   import { useUserStore } from '@/store';
   import _, { isArray, map, each, isObject, keys } from 'lodash';
   import { deleteModal } from '@/utils/monitor';

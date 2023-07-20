@@ -22,9 +22,11 @@
         @change="handleSelectChange"
       ></Breadcrumb>
     </BreadWrapper>
-    <ComCard top-gap class="kuber-detail-wrap">
+    <ComCard class="kuber-detail-wrap">
       <GroupTitle
         :bordered="false"
+        :title="$t('common.title.basicInfo')"
+        flex-start
         :show-edit="
           pageAction === PageAction.VIEW &&
           (route.params.projectId
@@ -41,9 +43,16 @@
         @edit="handleEdit"
       ></GroupTitle>
       <div>
-        <a-form ref="formref" :model="formData" auto-label-width>
+        <a-form
+          ref="formref"
+          :model="formData"
+          auto-label-width
+          label-align="left"
+        >
           <a-form-item
             :label="$t('operation.connectors.form.name')"
+            hide-asterisk
+            :hide-label="pageAction === PageAction.EDIT"
             field="name"
             :rules="[
               // {
@@ -51,49 +60,57 @@
               //   message: t('operation.connectors.rule.name')
               // },
               {
-                required: pageAction === PageAction.EDIT,
+                required: true,
                 match: validateLabelNameRegx,
                 message: $t('common.validate.labelName')
               }
             ]"
           >
-            <a-input
+            <seal-input
               v-if="pageAction === PageAction.EDIT"
               v-model="formData.name"
-              style="width: 500px"
+              :label="$t('operation.connectors.form.name')"
+              :required="true"
+              :style="{ width: `${InputWidth.LARGE}px` }"
               :max-length="63"
               show-word-limit
-            ></a-input>
+            ></seal-input>
             <span v-else class="readonly-view-label">{{
               formData.name || '-'
             }}</span>
             <template v-if="pageAction === PageAction.EDIT" #extra>
-              <div style="max-wdith: 500px">{{
+              <div :style="{ maxWidth: `${InputWidth.LARGE}px` }">{{
                 $t('common.validate.labelName')
               }}</div>
             </template>
           </a-form-item>
           <a-form-item
             :label="$t('operation.connectors.form.type')"
+            hide-asterisk
+            :hide-label="pageAction === PageAction.EDIT"
             field="type"
             :rules="[
               {
-                required: pageAction === PageAction.EDIT,
+                required: true,
                 message: $t('operation.connectors.rule.type')
               }
             ]"
           >
-            <a-input
+            <seal-input
               v-if="pageAction === PageAction.EDIT"
               v-model="formData.type"
-              style="width: 500px"
-            ></a-input>
+              :label="$t('operation.connectors.form.type')"
+              :required="true"
+              :style="{ width: `${InputWidth.LARGE}px` }"
+            ></seal-input>
             <span v-else class="readonly-view-label">{{
               formData.type || '-'
             }}</span>
           </a-form-item>
           <a-form-item
             :label="$t('operation.connectors.form.attribute')"
+            hide-asterisk
+            :hide-label="pageAction === PageAction.EDIT"
             field="configData"
             :rules="[
               {
@@ -118,8 +135,9 @@
                 :data-item="sItem"
                 show-description
                 separator=""
+                :show-required-mark="false"
                 :trigger-validate="triggerValidate"
-                width="500px"
+                :width="`${InputWidth.LARGE}px`"
                 class="group-item"
                 :wrap-align="sItem.type === 'dynamic' ? 'flex-start' : 'center'"
                 :placeholder="{
@@ -140,20 +158,22 @@
                 @delete="handleDeleteLabel(attributeList, sIndex)"
               >
                 <template #value>
-                  <a-input
+                  <seal-input
                     v-if="!sItem.visible"
                     v-model="sItem.value"
+                    :show-required-mark="false"
                     style="width: 100%"
                     :error="!sItem.value && triggerValidate && !!sItem.key"
                     :placeholder="$t('common.input.value')"
-                  ></a-input>
-                  <a-input-password
+                  ></seal-input>
+                  <seal-input-password
                     v-else
                     v-model="sItem.value"
                     style="width: 100%"
+                    :show-required-mark="false"
                     :error="!sItem.value && triggerValidate && !!sItem.key"
                     :placeholder="$t('common.input.value')"
-                  ></a-input-password>
+                  ></seal-input-password>
                 </template>
                 <template #description>
                   <a-checkbox v-model="sItem.visible">{{
@@ -218,7 +238,11 @@
 </template>
 
 <script lang="ts" setup>
-  import { PageAction, validateLabelNameRegx } from '@/views/config';
+  import {
+    PageAction,
+    validateLabelNameRegx,
+    InputWidth
+  } from '@/views/config';
   import { OPERATIONHUB } from '@/router/config';
   import { Resources, Actions } from '@/permissions/config';
   import { useUserStore } from '@/store';
