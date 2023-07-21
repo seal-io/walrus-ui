@@ -58,7 +58,7 @@
             :label="$t('applications.applications.secret.value')"
             :required="true"
             style="width: 100%"
-            :auto-size="{ minRows: 4, maxRows: 5 }"
+            :auto-size="{ minRows: 4, maxRows: 4 }"
           ></seal-textarea>
         </a-form-item>
         <a-form-item

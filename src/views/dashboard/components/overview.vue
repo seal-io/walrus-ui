@@ -28,6 +28,8 @@
   import { overViewConfig } from '../config';
   import { getDashBoardOverview } from '../api/dashboard';
 
+  const emits = defineEmits(['update:loadend']);
+
   const basicInfo = reactive({});
   const overviewData = computed(() => {
     const list = map(overViewConfig, (o) => {
@@ -55,6 +57,8 @@
         connector: 0
       });
       console.log(error);
+    } finally {
+      emits('update:loadend', true);
     }
   };
   fetchData();

@@ -83,7 +83,15 @@
           :title="$t('applications.applications.table.status')"
         >
           <template #cell="{ record }">
+            <span
+              v-if="
+                _.get(record, 'connector.category') ===
+                ConnectorCategory.CloudProvider
+              "
+              >-</span
+            >
             <StatusLabel
+              v-else
               :status="{
                 status: _.get(record, 'status.summaryStatus'),
                 text: _.get(record, 'status.summaryStatus'),
@@ -143,6 +151,7 @@
   import _ from 'lodash';
   import { PropType, ref, computed, watchEffect } from 'vue';
   import StatusLabel from '@/views/operation-hub/connectors/components/status-label.vue';
+  import { ConnectorCategory } from '@/views/operation-hub/connectors/config';
   import FilterBox from '@/components/filter-box/index.vue';
   import { ServiceResource } from '../../config/interface';
   import { getResourceKeyList } from '../../config/utils';

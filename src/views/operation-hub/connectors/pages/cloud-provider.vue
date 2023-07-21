@@ -98,9 +98,10 @@
               :label="$t('operation.connectors.form.type')"
               :required="true"
               :style="{ width: `${InputWidth.LARGE}px` }"
+              @change="handleTypeChange"
             >
               <a-option
-                v-for="(item, index) in typeOptions"
+                v-for="(item, index) in cutomeTypeOptions"
                 :key="index"
                 :value="item.value"
               >
@@ -139,8 +140,38 @@
                 ]"
               >
                 <div>
+                  <seal-select
+                    v-if="item.key === 'region'"
+                    v-model="formData.configData[item.key].value"
+                    :label="item.label"
+                    :required="true"
+                    :style="{ width: `${InputWidth.LARGE}px` }"
+                    :format-label="formatRegionLabel"
+                  >
+                    <a-option
+                      v-for="(sItem, sIndex) in regionOptions"
+                      :key="sIndex"
+                      :value="sItem.value"
+                    >
+                      <span>
+                        <span class="mright-5">{{ sItem.icon }}</span>
+                        {{ `${sItem.label}` }}</span
+                      >
+                    </a-option>
+                    <template #prefix>
+                      <span>
+                        {{
+                          getListLabel(
+                            formData.configData[item.key].value,
+                            regionOptions,
+                            { label: 'icon' }
+                          )
+                        }}
+                      </span>
+                    </template>
+                  </seal-select>
                   <seal-input
-                    v-if="item.visible"
+                    v-else-if="item.visible"
                     v-model="formData.configData[item.key].value"
                     :label="item.label"
                     :required="true"
@@ -215,7 +246,15 @@
   import { Resources, Actions } from '@/permissions/config';
   import { useUserStore } from '@/store';
   import { assignIn, toLower, get, isEqual, cloneDeep } from 'lodash';
-  import { ref, reactive, onMounted, computed, defineExpose } from 'vue';
+  import {
+    ref,
+    reactive,
+    onMounted,
+    computed,
+    h,
+    defineExpose,
+    compile
+  } from 'vue';
   import GroupTitle from '@/components/group-title/index.vue';
   import { beforeLeaveCallback } from '@/hooks/save-before-leave';
   import useScrollToView from '@/hooks/use-scroll-to-view';
@@ -223,10 +262,17 @@
   import EditPageFooter from '@/components/edit-page-footer/index.vue';
   import useCallCommon from '@/hooks/use-call-common';
   import usePageAction from '@/hooks/use-page-action';
+  import { getListLabel } from '@/utils/func';
   import ProviderIcon from '@/components/provider-icon/index.vue';
   import DescriptionTable from '@/components/description-table/index.vue';
   import { ConnectorFormData } from '../config/interface';
-  import { operationRootBread } from '../config';
+  import {
+    operationRootBread,
+    CloudProviderType,
+    cutomeTypeOptions,
+    ConnectorCategory
+  } from '../config';
+  import { awsRegions, alibabaCloudRegions } from '../config/region';
   import { createConnector, updateConnector, queryItemConnector } from '../api';
   import useConnectorBread from '../hooks/use-connector-bread';
 
@@ -238,6 +284,7 @@
   //     }
   //   }
   // });
+
   const providerKeys = [
     { label: 'AccessKey', value: '', key: 'access_key', visible: true },
     { label: 'SecretKey', value: '', key: 'secret_key', visible: false },
@@ -247,7 +294,7 @@
     useConnectorBread();
   const { scrollToView } = useScrollToView();
   const userStore = useUserStore();
-  const { t, router, route } = useCallCommon();
+  const { t, locale, router, route } = useCallCommon();
   const { pageAction, handleEdit } = usePageAction();
   const id = route.query.id as string;
   const formref = ref();
@@ -275,15 +322,28 @@
     },
     description: '',
     configVersion: 'v1',
-    type: 'Alibaba',
-    category: 'CloudProvider',
+    type: CloudProviderType.Alibaba,
+    category: ConnectorCategory.CloudProvider,
     enableFinOps: false
   });
 
-  const typeOptions = [
-    { label: 'Alibaba', value: 'Alibaba' },
-    { label: 'AWS', value: 'AWS' }
-  ];
+  const regionOptions = computed(() => {
+    const list =
+      formData.type === CloudProviderType.AWS
+        ? awsRegions
+        : alibabaCloudRegions;
+    return list.map((item) => {
+      const label =
+        locale.value === 'zh-CN'
+          ? `${item.cnName}(${item.code})`
+          : `${item.enName}(${item.code})`;
+      return {
+        label,
+        value: item.code,
+        icon: item.emoji
+      };
+    });
+  });
   const title = computed(() => {
     if (!id) {
       return t('operation.connectors.title.new', {
@@ -304,7 +364,14 @@
       type: t('operation.connectors.reinstall.cloudProvider')
     });
   });
-
+  const handleTypeChange = () => {
+    // reset region
+    formData.configData.region.value = '';
+  };
+  const formatRegionLabel = ({ value }) => {
+    const item = regionOptions.value.find((item) => item.value === value);
+    return item?.label;
+  };
   const handleSubmit = async () => {
     const res = await formref.value?.validate();
     if (!res) {
@@ -386,9 +453,6 @@
     getConnectorInfo();
     setBreadCrumbList();
   };
-  onMounted(() => {
-    setBreadCrumbList();
-  });
   init();
 </script>
 
