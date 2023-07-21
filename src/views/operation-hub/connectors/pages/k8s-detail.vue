@@ -96,15 +96,35 @@
               }
             ]"
           >
-            <seal-textarea
-              v-model="formData.configData.kubeconfig.value"
-              label="KubeConfig"
-              :required="true"
-              :style="{ width: `${InputWidth.LARGE}px` }"
-              :spellcheck="false"
-              :placeholder="$t('operation.connectors.rules.kubeconfigTips')"
-              :auto-size="{ minRows: 6, maxRows: 10 }"
-            />
+            <ResizeableContainer
+              :min-height="140"
+              :min-width="InputWidth.LARGE"
+              wrapper="parentNode"
+              :act-edges="{ right: true, bottom: true }"
+              @change="handleResize"
+            >
+              <div
+                class="textarea-wrap"
+                :style="{
+                  width: `${textareaWidth}px`,
+                  height: `${textareaHeight}px`
+                }"
+              >
+                <seal-textarea
+                  v-model="formData.configData.kubeconfig.value"
+                  label="KubeConfig"
+                  :required="true"
+                  :spellcheck="false"
+                  :style="{
+                    border: 'none',
+                    width: `100%`,
+                    height: `${textareaHeight}px`
+                  }"
+                  :placeholder="$t('operation.connectors.rules.kubeconfigTips')"
+                  :auto-size="{ minRows: 6 }"
+                />
+              </div>
+            </ResizeableContainer>
             <template v-if="pageAction === PageAction.EDIT" #extra>
               <div>
                 <a-upload
@@ -221,6 +241,7 @@
   import usePageAction from '@/hooks/use-page-action';
   import useProjectData from '@/views/application-management/projects/hooks/use-project-breadcrumb-data';
   import { BreadcrumbOptions } from '@/views/config/interface';
+  import ResizeableContainer from '@/components/resizeable-container/index.vue';
   import { ConnectorFormData } from '../config/interface';
   import { operationRootBread } from '../config';
   import StatusLabel from '../components/status-label.vue';
@@ -235,6 +256,7 @@
   //     }
   //   }
   // });
+
   const { breadCrumbList, handleSelectChange, setBreadCrumbList } =
     useConnectorBread();
   const { scrollToView } = useScrollToView();
@@ -244,6 +266,8 @@
   const id = route.query.id as string;
   const formref = ref();
   const submitLoading = ref(false);
+  const textareaWidth = ref(InputWidth.LARGE);
+  const textareaHeight = ref(180);
   let copyFormData: any = {};
   const formData: ConnectorFormData = reactive({
     projectID: route.params.projectId as string,
@@ -274,6 +298,10 @@
     return t('operation.connectors.title.edit', { type: 'Kubernetes' });
   });
 
+  const handleResize = ({ width, height }) => {
+    textareaHeight.value = height;
+    textareaWidth.value = width;
+  };
   const getCostStatus = (conditions) => {
     const d = find(conditions, (item) => {
       return item.type === 'CostSynced';
@@ -391,6 +419,46 @@
 
       .text {
         margin-right: 8px;
+      }
+    }
+
+    .textarea-wrap {
+      position: relative;
+      overflow: hidden;
+      border: 1px solid var(--color-border-2);
+      border-radius: var(--border-radius-small);
+      transition: border box-shadow 0.2s;
+
+      :deep(.arco-textarea-wrapper) {
+        overflow-y: auto;
+      }
+
+      :deep(.seal-relative.wrapper) {
+        &.is-focused {
+          .label {
+            top: 0;
+            right: 16px;
+            padding: 4px 0;
+            background-color: #fff;
+          }
+        }
+      }
+
+      &:hover {
+        border: 1px solid var(--color-primary-light-2);
+        box-shadow: 0 0 2px 0 var(--color-primary-light-2);
+        transition: border box-shadow 0.2s;
+      }
+
+      &::after {
+        position: absolute;
+        right: -1px;
+        bottom: -5px;
+        display: inline-block;
+        color: var(--color-text-3);
+        transform: rotate(45deg);
+        opacity: 0.6;
+        content: '||';
       }
     }
   }

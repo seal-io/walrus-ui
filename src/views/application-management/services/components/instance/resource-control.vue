@@ -45,8 +45,15 @@
 </template>
 
 <script lang="ts" setup>
-  import _, { min } from 'lodash';
-  import { PropType, ref, watch, nextTick, onMounted } from 'vue';
+  import _, { min, wrap } from 'lodash';
+  import {
+    PropType,
+    ref,
+    watch,
+    nextTick,
+    onMounted,
+    onBeforeUnmount
+  } from 'vue';
   import resizeContainer from '@/components/resizeable-container/index.vue';
   import slTransition from '@/components/sl-transition/index.vue';
   import { listenerCloseControlPanel } from '../../hooks/use-close-control-panel';
@@ -95,9 +102,7 @@
   const handleHeightChange = ({ height }) => {
     containerHeight.value = height - 100;
   };
-  const getContainer = () => {
-    return document.getElementById('footer');
-  };
+
   const handleClose = () => {
     emits('update:visible', false);
     emits('update:tabs', []);
@@ -148,6 +153,23 @@
   });
   onMounted(() => {
     handleOpened();
+    window.addEventListener('resize', () => {
+      const wrapper: HTMLElement | null =
+        document.querySelector('.operation-control');
+      if (wrapper) {
+        wrapper.style.width = '100%';
+      }
+    });
+  });
+  // remove event listener
+  onBeforeUnmount(() => {
+    window.removeEventListener('resize', () => {
+      const wrapper: HTMLElement | null =
+        document.querySelector('.operation-control');
+      if (wrapper) {
+        wrapper.style.width = '100%';
+      }
+    });
   });
 </script>
 

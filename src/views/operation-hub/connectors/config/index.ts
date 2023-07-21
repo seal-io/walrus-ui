@@ -51,6 +51,16 @@ export enum ConnectorCategory {
   CloudProvider = 'CloudProvider',
   Kubernetes = 'Kubernetes'
 }
+export const CloudProviderType = {
+  AWS: 'AWS',
+  Alibaba: 'Alibaba'
+};
+
+export const cutomeTypeOptions = [
+  { label: 'Alibaba', value: CloudProviderType.Alibaba },
+  { label: 'AWS', value: CloudProviderType.AWS }
+];
+
 export const finOpsStatus = [
   { label: 'operation.connectors.status.ready', value: 'ready' },
   { label: 'operation.connectors.status.error', value: 'error' }

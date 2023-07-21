@@ -5,9 +5,15 @@
       'is-focused': isFocus || modelValue,
       'prefix-icon': slots.prefix
     }"
-    :style="{ width: $attrs.style?.width || 'max-content' }"
+    :style="{
+      width: $attrs.style?.width || 'max-content'
+    }"
   >
-    <span class="label" :class="{ disabled: $attrs.disabled }">
+    <span
+      class="label"
+      :class="{ disabled: $attrs.disabled }"
+      @click="handleClick"
+    >
       <span
         >{{ $attrs.label || placeholder
         }}{{
