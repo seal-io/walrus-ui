@@ -8,11 +8,11 @@
         @submit="handleSubmit"
       >
         <div class="password-info-wrap">
-          <span class="settings-tip"
-            ><icon-info-circle />{{ $t('login.form.update.password') }}</span
+          <div class="settings-tip m-b-8"
+            ><icon-info-circle />{{ $t('login.form.update.password') }}</div
           >
           <a-form-item
-            hide-asterisk
+            hide-label
             field="newPassword"
             :trigger="['change', 'blur']"
             :rules="[
@@ -22,19 +22,20 @@
               }
             ]"
           >
-            <a-input-password
+            <seal-input-password
               v-model.trim="formData.newPassword"
               size="large"
+              :required="true"
               :placeholder="$t('user.password.newPassword')"
               allow-clear
             >
               <template #prefix>
                 <icon-lock />
               </template>
-            </a-input-password>
+            </seal-input-password>
           </a-form-item>
           <a-form-item
-            hide-asterisk
+            hide-label
             field="confirmPassword"
             :trigger="['change', 'blur']"
             :rules="[
@@ -44,24 +45,26 @@
               }
             ]"
           >
-            <a-input-password
+            <seal-input-password
               v-model.trim="formData.confirmPassword"
               size="large"
+              :required="true"
               :placeholder="$t('user.password.confirmPassword')"
               allow-clear
             >
               <template #prefix>
                 <icon-lock />
               </template>
-            </a-input-password>
+            </seal-input-password>
           </a-form-item>
           <a-divider />
-          <span class="settings-tip"
-            ><icon-info-circle />{{ $t('login.form.update.serverurl') }}</span
+          <div class="settings-tip m-b-8"
+            ><icon-info-circle />{{ $t('login.form.update.serverurl') }}</div
           >
           <a-form-item
             hide-asterisk
             field="serverUrl"
+            hide-label
             :validate-trigger="['change', 'input']"
             :rules="[
               { required: true, message: $t('login.config.serverUrl') },
@@ -72,7 +75,7 @@
               }
             ]"
           >
-            <a-input
+            <seal-input
               v-model.trim="formData.serverUrl"
               size="large"
               placeholder="serverURL"
@@ -80,11 +83,22 @@
               <template #prefix>
                 <icon-home />
               </template>
-            </a-input>
+            </seal-input>
+          </a-form-item>
+          <a-divider />
+          <div class="settings-tip m-b-8"
+            ><icon-info-circle />{{ $t('login.config.join.improvement') }}</div
+          >
+          <a-form-item hide-label>
+            <a-checkbox v-model="formData.enableTelemetry">
+              <span
+                v-html="$t('login.config.user.action', { link: cllectionLink })"
+              ></span>
+            </a-checkbox>
           </a-form-item>
         </div>
         <div style="margin-top: 50px">
-          <a-button type="primary" html-type="submit" long>{{
+          <a-button type="primary" html-type="submit" long size="large">{{
             $t('common.button.submit')
           }}</a-button>
         </div>
@@ -100,8 +114,10 @@
   import { useRouter } from 'vue-router';
   import { modifyPassword } from '@/api/user';
   import { useUserStore } from '@/store';
+  import { updateUserSettingBatch } from '@/views/system/api/setting';
   import { urlReg } from '@/utils/validate';
 
+  const cllectionLink = 'https://seal-io.github.io/docs/quickstart';
   const { t } = useI18n();
   const userStore = useUserStore();
   const router = useRouter();
@@ -121,11 +137,13 @@
     }
   });
   const serverUrlID = 'ServeUrl';
+  const enableTelemetry = 'EnableTelemetry';
   const formData = reactive({
     oldPassword: props.oldPassword,
     newPassword: '',
     confirmPassword: '',
-    serverUrl: window.location.origin
+    serverUrl: window.location.origin,
+    enableTelemetry: true
   });
   const handleCancel = () => {
     router.back();
@@ -148,14 +166,21 @@
       };
       const userSetting = get(userStore, 'userInfo.userSetting');
       // const serverUrl = get(userStore, 'userInfo.userSetting.ServeUrl');
-      const serverUrlData = {
-        id: serverUrlID,
-        value: formData.serverUrl
-      };
+      const settings = [
+        {
+          id: serverUrlID,
+          value: formData.serverUrl
+        },
+        {
+          id: enableTelemetry,
+          value: formData.enableTelemetry.toString()
+        }
+      ];
+
       try {
         await Promise.all([
           modifyPassword(data),
-          userStore.updateUserSetting(serverUrlData)
+          updateUserSettingBatch(settings)
         ]);
         userStore.setInfo({
           userSetting: {
