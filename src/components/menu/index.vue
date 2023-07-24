@@ -27,7 +27,7 @@
   import { USER_DEFAULT_PROJECT } from '@/views/config';
   import useLocale from '@/hooks/locale';
   import { queryProjects } from '@/views/application-management/projects/api';
-  import { profileMenu } from './config';
+  import { profileMenu, avatarMenu } from './config';
 
   export default defineComponent({
     emit: ['collapse'],
@@ -311,20 +311,24 @@
           changeLocale(item.value);
         }
       };
-      const renderUserMenu = () => {
+      const renderUserMenu = (menuConfig) => {
         function travel() {
           const nodes: any[] = [];
-          profileMenu.forEach((item) => {
+          menuConfig.forEach((item) => {
             let rt: any = null;
             if (item.children && item.children.length) {
               rt = (
                 <a-sub-menu
                   key={item.key}
+                  style={{
+                    ...item.itemStyle
+                  }}
                   v-slots={{
                     'icon': () =>
                       h(compile(item.icon), {
                         style: {
-                          color: 'var(--color-text-3)'
+                          color: 'var(--color-text-3)',
+                          ...item.iconStyle
                         }
                       }),
                     'expand-icon-right': () => {},
@@ -455,7 +459,10 @@
           >
             <div class="box">
               <div class="sys">{renderSubMenu()}</div>
-              <div class="account">{renderUserMenu()}</div>
+              <div>
+                <div class="tools">{renderUserMenu(profileMenu)}</div>
+                <div class="account">{renderUserMenu(avatarMenu)}</div>
+              </div>
             </div>
           </a-menu>
         </div>
@@ -500,6 +507,7 @@
       padding-bottom: 60px;
 
       .account {
+        margin-top: 10px;
         padding-top: 2px;
         border-top: 1px solid var(--color-border-1);
 

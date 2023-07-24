@@ -10,6 +10,9 @@
         <template #icon>
           <i class="iconfont icon-custom"></i>
         </template>
+        <template #extra>
+          <QuestionPopup :link="QAlinkMap.Settings"></QuestionPopup>
+        </template>
       </HeaderInfo>
       <ComCard>
         <a-tabs
@@ -51,6 +54,8 @@
 
 <script lang="ts" setup>
   import { ref } from 'vue';
+  import { QAlinkMap } from '@/views/config';
+  import QuestionPopup from '@/components/question-popup/index.vue';
   import { Resources, Actions } from '@/permissions/config';
   import { useUserStore } from '@/store';
   import HeaderInfo from '@/components/header-info/index.vue';

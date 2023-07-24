@@ -28,5 +28,6 @@ export default {
   'dashboard.datepicker.12months': 'Last 12 months',
   'dashboard.datepicker.day': 'Day',
   'dashboard.datepicker.month': 'Month',
-  'dashboard.datepicker.year': 'Year'
+  'dashboard.datepicker.year': 'Year',
+  'dashboard.createProject.tips': "You don't have a project yet, go create one!"
 };

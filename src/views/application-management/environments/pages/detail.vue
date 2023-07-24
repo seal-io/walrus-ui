@@ -17,6 +17,9 @@
         <template #title>
           <BasicInfo :data-info="basicDataList"></BasicInfo>
         </template>
+        <template #extra>
+          <QuestionPopup :link="QAlinkMap.Environment"></QuestionPopup>
+        </template>
       </HeaderInfo>
       <ComCard>
         <a-tabs
@@ -75,6 +78,8 @@
   import { Resources, Actions } from '@/permissions/config';
   import { PROJECT } from '@/router/config';
   import { ref, onMounted, nextTick } from 'vue';
+  import { QAlinkMap } from '@/views/config';
+  import QuestionPopup from '@/components/question-popup/index.vue';
   import _ from 'lodash';
   import { useUserStore } from '@/store';
   import useCallCommon from '@/hooks/use-call-common';

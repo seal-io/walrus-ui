@@ -157,6 +157,49 @@ export const InputWidth = {
   XLARGE: 800
 };
 
+export const QAlinkMap = {
+  Project: 'https://seal-io.github.io/docs/application/project',
+  ProjectDetail: [
+    {
+      label: 'menu.operatorHub.evniroment',
+      url: 'https://seal-io.github.io/docs/application/environment'
+    },
+    {
+      label: 'menu.applicationManagement.secret',
+      url: 'https://seal-io.github.io/docs/operation/variable'
+    },
+    {
+      label: 'menu.operatorHub.connector',
+      url: 'https://seal-io.github.io/docs/application/connector'
+    },
+    {
+      label: 'menu.applicationManagement.members',
+      url: 'https://seal-io.github.io/docs/application/project#%E6%88%90%E5%91%98%E7%AE%A1%E7%90%86'
+    }
+  ],
+  Environment: [
+    {
+      label: 'menu.applicationManagement.serivce',
+      url: 'https://seal-io.github.io/docs/application/service'
+    },
+    {
+      label: 'applications.instance.tab.graph',
+      url: 'https://seal-io.github.io/docs/application/graph'
+    }
+  ],
+  Cost: 'https://seal-io.github.io/docs/category/%E6%88%90%E6%9C%AC%E4%B8%AD%E5%BF%83',
+  Template: 'https://seal-io.github.io/docs/operation/template',
+  Settings: [
+    {
+      label: 'menu.systemsettings.user',
+      url: 'https://seal-io.github.io/docs/setting/user'
+    },
+    {
+      label: 'menu.systemsettings.config',
+      url: 'https://seal-io.github.io/docs/setting/configuration'
+    }
+  ]
+};
 export const USER_DEFAULT_PROJECT = 'USER_DEFAULT_PROJECT';
 
 export default {};

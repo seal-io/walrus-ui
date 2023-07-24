@@ -8,6 +8,7 @@ export default {
   'common.button.search': '查询',
   'common.button.clear': '清除',
   'common.button.reset': '重置',
+  'common.button.create.now': '立即创建',
   'common.button.refresh': '刷新',
   'common.button.enabled': '启用',
   'common.button.disabled': '禁用',
@@ -97,5 +98,6 @@ export default {
   'common.search.nodata': '无匹配数据',
   'common.tips.change': '有未保存的更改!',
   'common.copy.notSupport': '您的浏览器不支持剪贴板 API',
-  'common.title.basicInfo': '基本信息'
+  'common.title.basicInfo': '基本信息',
+  'common.help.need': '需要帮助？'
 };

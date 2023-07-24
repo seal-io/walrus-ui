@@ -10,6 +10,9 @@
         <template #icon>
           <i class="iconfont icon-zhuzhuangtu"></i>
         </template>
+        <template #extra>
+          <QuestionPopup :link="QAlinkMap.Cost"></QuestionPopup>
+        </template>
       </HeaderInfo>
       <div>
         <a-tabs
@@ -35,6 +38,8 @@
 
 <script lang="ts" setup>
   import { ref } from 'vue';
+  import { QAlinkMap } from '@/views/config';
+  import QuestionPopup from '@/components/question-popup/index.vue';
   import HeaderInfo from '@/components/header-info/index.vue';
   import CostList from './list.vue';
   import CostDetail from './main.vue';

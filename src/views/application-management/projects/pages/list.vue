@@ -15,6 +15,9 @@
         <template #icon>
           <i class="iconfont icon-app-fill"></i>
         </template>
+        <template #extra>
+          <QuestionPopup :link="QAlinkMap.Project"></QuestionPopup>
+        </template>
       </HeaderInfo>
     </ComCard>
     <SpinCard borderless class="projects">
@@ -211,6 +214,7 @@
 <script lang="ts" setup>
   import { PROJECT } from '@/router/config';
   import { Resources, Actions } from '@/permissions/config';
+  import { QAlinkMap, USER_DEFAULT_PROJECT } from '@/views/config';
   import { cloneDeep, map, pickBy, remove } from 'lodash';
   import { ref, reactive } from 'vue';
   import dayjs from 'dayjs';
@@ -221,8 +225,8 @@
   import FilterBox from '@/components/filter-box/index.vue';
   import { deleteModal, execSucceed } from '@/utils/monitor';
   import { UseSortDirection } from '@/utils/common';
-  import { USER_DEFAULT_PROJECT } from '@/views/config';
   import useRowSelect from '@/hooks/use-row-select';
+  import QuestionPopup from '@/components/question-popup/index.vue';
   import CreateProjectModal from '../components/create-project.vue';
   import AssignRoles from '../components/assign-roles.vue';
   import { ProjectRowData } from '../config/interface';

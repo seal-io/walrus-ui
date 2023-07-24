@@ -12,6 +12,7 @@ export default {
   'common.button.view': 'View details',
   'common.button.detail': 'View details',
   'common.button.reset': 'Reset',
+  'common.button.create.now': 'Create now',
   'common.button.refresh': 'Refresh',
   'common.button.delete': 'Delete',
   'common.button.create': 'Create',
@@ -100,5 +101,6 @@ export default {
   'common.search.nodata': 'no matching data',
   'common.tips.change': 'there are unsaved changes!',
   'common.copy.notSupport': 'Your browser does not support Clipboard API',
-  'common.title.basicInfo': 'Basic Information'
+  'common.title.basicInfo': 'Basic Information',
+  'common.help.need': 'Need help?'
 };

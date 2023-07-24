@@ -10,6 +10,9 @@
         <template #icon>
           <i class="iconfont icon-yunwei"></i>
         </template>
+        <template #extra>
+          <QuestionPopup :link="QAlinkMap.Template"></QuestionPopup>
+        </template>
       </HeaderInfo>
       <ComCard>
         <a-tabs
@@ -39,6 +42,8 @@
 <script lang="ts" setup>
   import { OPERATIONHUB } from '@/router/config';
   import { ref } from 'vue';
+  import { QAlinkMap } from '@/views/config';
+  import QuestionPopup from '@/components/question-popup/index.vue';
   import HeaderInfo from '@/components/header-info/index.vue';
   import Connectors from '../connectors/components/table-list.vue';
   import Templates from '../templates/pages/list.vue';

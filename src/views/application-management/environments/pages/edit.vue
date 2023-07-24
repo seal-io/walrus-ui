@@ -8,11 +8,16 @@
       ></Breadcrumb>
     </BreadWrapper>
     <ComCard
+      class="relative"
       :style="{
         maxWidth:
           pageAction === PageAction.VIEW ? `${InputWidth.XLARGE}px` : '100%'
       }"
     >
+      <QuestionPopup
+        :link="QAlinkMap.Project"
+        class="absolute right-16 zindex-5"
+      ></QuestionPopup>
       <GroupTitle
         :bordered="false"
         :title="$t('common.title.basicInfo')"
@@ -211,6 +216,13 @@
   import { PROJECT } from '@/router/config';
   import { Resources } from '@/permissions/config';
   import { useUserStore, useTabBarStore } from '@/store';
+  import {
+    QAlinkMap,
+    PageAction,
+    validateLabelNameRegx,
+    InputWidth
+  } from '@/views/config';
+  import QuestionPopup from '@/components/question-popup/index.vue';
   import { ref, computed, defineExpose, nextTick } from 'vue';
   import _, {
     each,
@@ -221,11 +233,6 @@
     isEqual,
     cloneDeep
   } from 'lodash';
-  import {
-    PageAction,
-    validateLabelNameRegx,
-    InputWidth
-  } from '@/views/config';
   import GroupTitle from '@/components/group-title/index.vue';
   import EditPageFooter from '@/components/edit-page-footer/index.vue';
   import useCallCommon from '@/hooks/use-call-common';
