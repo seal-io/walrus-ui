@@ -44,6 +44,7 @@
           >
             <seal-input
               v-model="userInfo.username"
+              style="width: 380px"
               :show-required-mark="false"
               allow-clear
               :placeholder="$t('login.form.userName.placeholder')"
@@ -63,6 +64,7 @@
           >
             <seal-input-password
               v-model="userInfo.password"
+              style="width: 380px"
               :show-required-mark="false"
               :placeholder="$t('login.form.password.placeholder')"
               allow-clear
@@ -106,6 +108,7 @@
 
 <script lang="ts" setup>
   import _ from 'lodash';
+  import { InputWidth } from '@/views/config';
   import { ref, reactive, onMounted } from 'vue';
   import { LOCALE_OPTIONS } from '@/locale';
   import useLocale from '@/hooks/locale';
@@ -129,7 +132,7 @@
     }
   });
   const CRYPT_TEXT = 'web';
-  const emits = defineEmits(['loginSuccess']);
+  const emits = defineEmits(['loginSuccess', 'update:hideTips']);
   const { enterUserPage } = useEnterPage();
   const { changeLocale } = useLocale();
   const locales = [...LOCALE_OPTIONS];
@@ -198,6 +201,7 @@
         });
         if (userStore?.isFirstLogin()) {
           showModify.value = true;
+          emits('update:hideTips', true);
           emits('loginSuccess');
           return;
         }
@@ -236,7 +240,7 @@
   .login-form {
     &-wrapper {
       width: 100%;
-      width: 360px;
+      width: 380px;
       // min-width: 320px;
       .language {
         position: fixed;

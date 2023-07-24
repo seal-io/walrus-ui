@@ -52,7 +52,7 @@
 
 <script lang="ts">
   export default {
-    name: 'SealSwtich',
+    name: 'SealSwitch',
     inheritAttrs: false
   };
 </script>
