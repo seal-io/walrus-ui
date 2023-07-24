@@ -60,7 +60,7 @@
       default: ''
     }
   });
-  const input = ref(null);
+  const input = ref();
   const isFocus = ref(false);
   const emits = defineEmits([
     'update:modelValue',

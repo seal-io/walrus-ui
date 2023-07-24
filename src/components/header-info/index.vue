@@ -10,7 +10,7 @@
         <slot name="title">
           <div class="title">{{ info?.name }}</div>
         </slot>
-        <slot name="description"> </slot>
+        <slot name="description"></slot>
       </div>
     </div>
     <a-divider

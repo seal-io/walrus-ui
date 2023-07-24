@@ -272,7 +272,7 @@
   import ProviderIcon from '@/components/provider-icon/index.vue';
   import { variableTypeList } from '@/views/application-management/services/config';
   import { ConnectorFormData, CustomAttrbute } from '../config/interface';
-  import { operationRootBread } from '../config';
+  import { operationRootBread, ConnectorCategory } from '../config';
   import { createConnector, updateConnector, queryItemConnector } from '../api';
   import useConnectorBread from '../hooks/use-connector-bread';
 
@@ -316,7 +316,7 @@
     description: '',
     configVersion: 'v1',
     type: '',
-    category: 'Custom',
+    category: ConnectorCategory.Custom,
     enableFinOps: false
   });
 
@@ -490,7 +490,6 @@
   };
   onBeforeRouteLeave(async (to, from) => {
     setConfigData();
-    console.log('formData====', formData, copyFormData);
     if (!isEqual(copyFormData, formData)) {
       beforeLeaveCallback({
         to,

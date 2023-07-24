@@ -63,39 +63,37 @@
               ? window.innerWidth
               : event.target.parentNode.clientWidth;
           // get the height of the container
-          const containerHeight = event.rect.height;
+          let containerHeight = event.rect.height;
+          // get the width of the container
+          let containerWidth = event.rect.width;
+
           if (containerHeight >= clientHeight) {
             // if the height of the container is greater than the height of the window, set the height of the container to the height of the window
             event.target.style.height = `${clientHeight}px`;
-            emits('change', { height: clientHeight });
-            return;
+            containerHeight = clientHeight;
           }
-          // get the width of the container
-          const containerWidth = event.rect.width;
           if (containerWidth >= clientWidth) {
             // if the width of the container is greater than the width of the window, set the width of the container to the width of the window
             event.target.style.width = `${clientWidth}px`;
-            emits('change', { width: clientWidth });
-            emits('update:width', clientWidth);
-            return;
+            containerWidth = clientWidth;
           }
           let { x, y } = event.target.dataset;
           x = (parseFloat(x) || 0) + event.deltaRect.left;
           y = (parseFloat(y) || 0) + event.deltaRect.top;
 
           Object.assign(event.target.style, {
-            width: `${event.rect.width}px`,
-            height: `${event.rect.height}px`
+            width: `${containerWidth}px`,
+            height: `${containerHeight}px`
           });
 
           Object.assign(event.target.dataset, { x, y });
 
           emits('change', {
-            height: event.rect.height,
-            width: event.rect.width
+            height: containerHeight,
+            width: containerWidth
           });
-          emits('update:width', event.rect.width);
-          emits('update:height', event.rect.height);
+          emits('update:width', containerWidth);
+          emits('update:height', containerHeight);
         }
       },
       modifiers: [
