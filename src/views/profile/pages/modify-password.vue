@@ -3,6 +3,7 @@
     <a-form :model="formData" auto-label-width @submit="handleSubmit">
       <a-form-item
         hide-asterisk
+        hide-label
         field="oldPassword"
         :trigger="['change', 'blur']"
         :rules="[
@@ -11,12 +12,14 @@
       >
         <seal-input-password
           v-model="formData.oldPassword"
+          :required="true"
           allow-clear
           :placeholder="$t('user.password.oldPassword')"
         />
       </a-form-item>
       <a-form-item
         hide-asterisk
+        hide-label
         field="newPassword"
         :trigger="['change', 'blur']"
         :rules="[
@@ -25,11 +28,13 @@
       >
         <seal-input-password
           v-model="formData.newPassword"
+          :required="true"
           allow-clear
           :placeholder="$t('user.password.newPassword')"
         />
       </a-form-item>
       <a-form-item
+        hide-label
         hide-asterisk
         field="confirmPassword"
         :trigger="['change', 'blur']"
@@ -42,6 +47,7 @@
       >
         <seal-input-password
           v-model="formData.confirmPassword"
+          :required="true"
           allow-clear
           :placeholder="$t('user.password.confirmPassword')"
         />

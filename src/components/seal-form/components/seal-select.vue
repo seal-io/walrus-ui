@@ -31,6 +31,7 @@
       @clear="handleClear"
       @change="handleChange"
       @input="handleInput"
+      @focus="handleFocus"
       @input-value-change="handleInputValueChange"
     >
       <template v-for="slot in Object.keys(slots)" #[slot] :key="slot">
@@ -41,7 +42,7 @@
 </template>
 
 <script lang="ts" setup>
-  import { useAttrs, useSlots, ref } from 'vue';
+  import { useAttrs, useSlots, ref, defineExpose } from 'vue';
   import { vOnClickOutside } from '@vueuse/components';
 
   const props = defineProps({
@@ -72,7 +73,7 @@
     'blur',
     'clear'
   ]);
-  const input = ref(null);
+  const input = ref();
   const isFocus = ref(false);
   const $attrs = useAttrs();
   const slots = useSlots();
@@ -94,6 +95,12 @@
   const handleBlur = (e) => {
     isFocus.value = false;
   };
+  const focus = () => {
+    input.value?.focus?.();
+  };
+  const blur = () => {
+    input.value?.blur?.();
+  };
   const handleClear = () => {
     emits('update:modelValue', '');
     emits('change', '');
@@ -101,6 +108,10 @@
   const handleClick = () => {
     isFocus.value = true;
   };
+  defineExpose({
+    focus,
+    blur
+  });
 </script>
 
 <script lang="ts">

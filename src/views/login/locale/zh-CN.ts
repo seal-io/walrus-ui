@@ -26,5 +26,8 @@ export default {
   'login.config.serverUrl': '服务器地址必填',
   'login.config.pswd.exec': '首次登录通过以下方式，获取初始admin密码',
   'login.config.pswd.specified': '启动时已设置初始密码',
-  'login.config.pswd.log': '从seal进程日志中搜索"Bootstrap Admin Password"'
+  'login.config.pswd.log': '从seal进程日志中搜索"Bootstrap Admin Password"',
+  'login.config.user.action':
+    '允许收集<a href={link} target="_blank" class="a-link">匿名统计数据</a>，以帮助我们改进seal',
+  'login.config.join.improvement': '参与改进计划'
 };

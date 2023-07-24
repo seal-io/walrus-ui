@@ -31,5 +31,8 @@ export default {
     'For the first login, use the following way to get the initial admin password',
   'login.config.pswd.specified': 'The initial password is set at startup',
   'login.config.pswd.log':
-    'search "Bootstrap Admin Password" from the logs of seal process'
+    'search "Bootstrap Admin Password" from the logs of seal process',
+  'login.config.user.action':
+    'Allows collection of <a href={link} target="_blank" class="a-link">anonymous statistics</a>, to help us improve seal',
+  'login.config.join.improvement': 'Participate in improvement plans'
 };

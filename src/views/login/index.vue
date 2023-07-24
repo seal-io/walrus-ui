@@ -8,11 +8,12 @@
     <div class="content">
       <div class="content-inner">
         <LoginForm
+          v-model:hideTips="hideTips"
           :first-login-status="firstLoginStatus"
           @loginSuccess="handleLoginSuccess"
         />
         <div
-          v-if="isFirstLogin"
+          v-if="isFirstLogin && !hideTips"
           style="background: var(--color-fill-2)"
           class="first-login-tips"
         >
@@ -66,6 +67,7 @@
   const userStore = useUserStore();
   const appStore = useAppStore();
   const isFirstLogin = ref(false);
+  const hideTips = ref(false);
   const firstLoginStatus = ref<any>({});
   // TODO delete
   const handleLoginSuccess = () => {
@@ -143,7 +145,7 @@
     }
 
     .first-login-tips {
-      width: 360px;
+      width: 380px;
       margin-top: 40px;
       padding: 10px;
       font-size: 12px;

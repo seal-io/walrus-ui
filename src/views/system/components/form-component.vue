@@ -37,16 +37,18 @@
       ></seal-input-number>
     </template>
     <template v-if="comType === 'switch'">
-      <seal-switch
-        :disabled="attrs.isDisabled || !attrs.editable"
-        :label="attrs.label"
-        :required="attrs.required"
-        :popup-info="attrs.popupInfo"
-        :model-value="modelValue"
-        checked-value="true"
-        unchecked-value="false"
-        @change="(val) => $emit('update:modelValue', String(val))"
-      />
+      <div :style="{ width: attrs.width }">
+        <seal-switch
+          :disabled="attrs.isDisabled || !attrs.editable"
+          :label="attrs.label"
+          :required="attrs.required"
+          :popup-info="attrs.popupInfo"
+          :model-value="modelValue"
+          checked-value="true"
+          unchecked-value="false"
+          @change="(val) => $emit('update:modelValue', String(val))"
+        />
+      </div>
     </template>
     <template v-if="comType === 'textarea'">
       <seal-textarea

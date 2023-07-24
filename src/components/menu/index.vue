@@ -507,7 +507,7 @@
       padding-bottom: 60px;
 
       .account {
-        margin-top: 10px;
+        margin-top: 6px;
         padding-top: 2px;
         border-top: 1px solid var(--color-border-1);
 

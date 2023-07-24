@@ -34,6 +34,19 @@ export default {
           },
           value: '',
           type: 'string'
+        },
+        {
+          id: 'EnableTelemetry',
+          label: 'login.config.join.improvement',
+          parentId: '',
+          component: {
+            type: 'switch',
+            required: false,
+            match: '',
+            message: ''
+          },
+          value: '',
+          type: 'boolean'
         }
       ]
     },
