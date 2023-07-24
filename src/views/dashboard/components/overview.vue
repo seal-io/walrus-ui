@@ -28,8 +28,7 @@
   import { overViewConfig } from '../config';
   import { getDashBoardOverview } from '../api/dashboard';
 
-  const emits = defineEmits(['update:loadend']);
-
+  const emits = defineEmits(['update:isEmpty', 'update:loading']);
   const basicInfo = reactive({});
   const overviewData = computed(() => {
     const list = map(overViewConfig, (o) => {
@@ -45,8 +44,10 @@
         withServiceResource: false,
         withServiceRevision: false
       };
+      emits('update:loading', true);
       const { data } = await getDashBoardOverview(params);
       assignIn(basicInfo, data);
+      emits('update:isEmpty', data?.project === 0);
     } catch (error) {
       assignIn(basicInfo, {
         project: 0,
@@ -58,7 +59,7 @@
       });
       console.log(error);
     } finally {
-      emits('update:loadend', true);
+      emits('update:loading', false);
     }
   };
   fetchData();

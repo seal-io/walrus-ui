@@ -112,7 +112,7 @@
               >
                 <seal-textarea
                   v-model="formData.configData.kubeconfig.value"
-                  label="KubeConfig"
+                  placeholder="KubeConfig"
                   :required="true"
                   :spellcheck="false"
                   :style="{
@@ -120,7 +120,6 @@
                     width: `100%`,
                     height: `${textareaHeight}px`
                   }"
-                  :placeholder="$t('operation.connectors.rules.kubeconfigTips')"
                   :auto-size="{ minRows: 6 }"
                 />
               </div>
@@ -243,7 +242,7 @@
   import { BreadcrumbOptions } from '@/views/config/interface';
   import ResizeableContainer from '@/components/resizeable-container/index.vue';
   import { ConnectorFormData } from '../config/interface';
-  import { operationRootBread } from '../config';
+  import { operationRootBread, ConnectorCategory } from '../config';
   import StatusLabel from '../components/status-label.vue';
   import { createConnector, updateConnector, queryItemConnector } from '../api';
   import useConnectorBread from '../hooks/use-connector-bread';
@@ -281,7 +280,7 @@
     },
     configVersion: 'v1',
     type: 'Kubernetes',
-    category: 'Kubernetes',
+    category: ConnectorCategory.Kubernetes,
     enableFinOps: true
   });
 
@@ -427,7 +426,7 @@
       overflow: hidden;
       border: 1px solid var(--color-border-2);
       border-radius: var(--border-radius-small);
-      transition: border box-shadow 0.2s;
+      transition: border 0.2s, box-shadow 0.2s;
 
       :deep(.arco-textarea-wrapper) {
         overflow-y: auto;
@@ -447,7 +446,7 @@
       &:hover {
         border: 1px solid var(--color-primary-light-2);
         box-shadow: 0 0 2px 0 var(--color-primary-light-2);
-        transition: border box-shadow 0.2s;
+        transition: border 0.2s, box-shadow 0.2s;
       }
 
       &::after {

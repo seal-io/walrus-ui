@@ -203,7 +203,7 @@
   import useGetBreadState from '@/views/application-management/projects/hooks/use-get-breadstate';
   import StatusLabel from '../components/status-label.vue';
   import { ConnectorFormData } from '../config/interface';
-  import { operationRootBread } from '../config';
+  import { operationRootBread, ConnectorCategory } from '../config';
   import { createConnector, updateConnector, queryItemConnector } from '../api';
   import useConnectorBread from '../hooks/use-connector-bread';
 
@@ -222,7 +222,7 @@
   const userStore = useUserStore();
   const { t, router, route } = useCallCommon();
   const { pageAction, handleEdit } = usePageAction();
-  const id = route.query.id || '';
+  const id = route.query.id as string;
   const formref = ref();
   const submitLoading = ref(false);
   let copyFormData: any = {};
@@ -239,7 +239,7 @@
     description: '',
     configVersion: 'v1',
     type: 'Github',
-    category: 'VersionControl',
+    category: ConnectorCategory.VersionControl,
     enableFinOps: false
   });
 
