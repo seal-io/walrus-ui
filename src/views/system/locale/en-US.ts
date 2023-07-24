@@ -152,5 +152,5 @@ export default {
     'Make sure to copy your personal access key now. You won’t be able to see it again!',
   'account.settings.clear.tips': 'Save, the following settings will be cleared',
   'account.create.rules.username':
-    'Can only contain alphanumeric, _, -, cannot have consecutive -, _, and cannot start or end with - or _'
+    'Can only contain alphanumeric, _, -, cannot have consecutive _, -, start or end with alphanumeric'
 };

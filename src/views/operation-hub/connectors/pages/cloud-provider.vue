@@ -142,11 +142,13 @@
                 <div>
                   <seal-select
                     v-if="item.key === 'region'"
+                    ref="regionSelect"
                     v-model="formData.configData[item.key].value"
+                    allow-create
+                    allow-search
                     :label="item.label"
                     :required="true"
                     :style="{ width: `${InputWidth.LARGE}px` }"
-                    :format-label="formatRegionLabel"
                   >
                     <a-option
                       v-for="(sItem, sIndex) in regionOptions"
@@ -158,17 +160,6 @@
                         {{ `${sItem.label}` }}</span
                       >
                     </a-option>
-                    <template #prefix>
-                      <span>
-                        {{
-                          getListLabel(
-                            formData.configData[item.key].value,
-                            regionOptions,
-                            { label: 'icon' }
-                          )
-                        }}
-                      </span>
-                    </template>
                   </seal-select>
                   <seal-input
                     v-else-if="item.visible"
@@ -299,6 +290,8 @@
   const id = route.query.id as string;
   const formref = ref();
   const submitLoading = ref(false);
+  const allowCreate = ref(false);
+  const regionSelect = ref();
   let copyFormData: any = {};
   const formData: ConnectorFormData = reactive({
     projectID: route.params.projectId as string,
@@ -364,6 +357,12 @@
       type: t('operation.connectors.reinstall.cloudProvider')
     });
   });
+  const handleAllowCreate = () => {
+    allowCreate.value = !allowCreate.value;
+    setTimeout(() => {
+      regionSelect.value?.focus();
+    }, 50);
+  };
   const handleTypeChange = () => {
     // reset region
     formData.configData.region.value = '';

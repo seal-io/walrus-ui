@@ -45,7 +45,7 @@
 </template>
 
 <script lang="ts" setup>
-  import { useAttrs, useSlots, ref } from 'vue';
+  import { useAttrs, useSlots, ref, defineExpose } from 'vue';
 
   const props = defineProps({
     modelValue: {
@@ -96,6 +96,12 @@
     emits('focus', e);
     isFocus.value = true;
   };
+  const focus = () => {
+    input.value?.focus?.();
+  };
+  const blur = () => {
+    input.value?.blur?.();
+  };
   const handleBlur = (e) => {
     emits('blur', e);
     isFocus.value = false;
@@ -108,6 +114,10 @@
     input.value?.focus?.();
     isFocus.value = true;
   };
+  defineExpose({
+    focus,
+    blur
+  });
 </script>
 
 <script lang="ts">
