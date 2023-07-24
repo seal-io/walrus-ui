@@ -28,5 +28,6 @@ export default {
   'dashboard.datepicker.12months': '最近12个月',
   'dashboard.datepicker.day': '日',
   'dashboard.datepicker.month': '月',
-  'dashboard.datepicker.year': '年'
+  'dashboard.datepicker.year': '年',
+  'dashboard.createProject.tips': '您还没有项目，快去创建一个吧！'
 };

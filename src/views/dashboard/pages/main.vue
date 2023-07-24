@@ -35,19 +35,12 @@
             ></i>
           </template>
           <div>
-            <span class="font-16">您还没有创建项目，</span>
-            <a-link class="font-16 m-t-20" @click="handleCreateProject"
-              >立即创建</a-link
-            >
-            <div style="position: absolute; top: 16px; right: 0; margin-top: 0">
-              <a-tag color="#c9cdd4"><icon-bulb class="stroke-w-4" /></a-tag>
-              <a-link
-                class="mleft-5"
-                href="https://seal-io.github.io/docs/application/project"
-                target="_blank"
-                >需要帮助？</a-link
-              >
-            </div>
+            <span class="font-16">{{
+              $t('dashboard.createProject.tips')
+            }}</span>
+            <a-link class="font-16 m-t-20" @click="handleCreateProject">{{
+              $t('common.button.create.now')
+            }}</a-link>
           </div>
         </a-empty>
       </ComCard>

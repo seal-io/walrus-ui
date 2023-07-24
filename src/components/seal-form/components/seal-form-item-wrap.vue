@@ -54,7 +54,6 @@
 
     .label {
       display: flex;
-      justify-content: space-between;
       margin-bottom: 10px;
       color: var(--color-text-3);
       font-weight: 400;

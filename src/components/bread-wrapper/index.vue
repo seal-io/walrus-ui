@@ -23,6 +23,9 @@
     >
       <slot></slot>
     </div>
+    <div>
+      <slot name="right"></slot>
+    </div>
   </div>
 </template>
 
@@ -68,6 +71,7 @@
     z-index: 1000;
     display: flex;
     align-items: center;
+    justify-content: space-between;
     width: 100%;
     height: 48px;
     padding-left: 10px;

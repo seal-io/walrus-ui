@@ -12,6 +12,9 @@
         </slot>
         <slot name="description"></slot>
       </div>
+      <div class="extra">
+        <slot name="extra"></slot>
+      </div>
     </div>
     <a-divider
       style="margin: 0; border-color: var(--color-fill-2); border-radius: 1px"
@@ -39,6 +42,7 @@
 
 <style lang="less" scoped>
   .header-info {
+    position: relative;
     display: flex;
     align-items: center;
     height: 112px;
@@ -83,6 +87,12 @@
         font-weight: 500;
         font-size: 16px;
       }
+    }
+
+    .extra {
+      position: absolute;
+      right: 16px;
+      bottom: 16px;
     }
   }
 </style>

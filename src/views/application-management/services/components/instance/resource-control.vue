@@ -3,6 +3,7 @@
     <resizeContainer
       v-if="visible"
       v-show="visible"
+      :act-edges="{ top: true }"
       class="operation-control"
       @change="handleHeightChange"
     >

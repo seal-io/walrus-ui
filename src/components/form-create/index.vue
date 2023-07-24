@@ -59,16 +59,16 @@
                   style="display: flex; flex: 1; flex-direction: column"
                 >
                   <!-- XInputGroup component -->
-                  <template v-if="fm?.labelList?.length">
-                    <SealFormItemWrap
-                      :label="`${fm.label || fm.name} (${
-                        fm.required
-                          ? $t('common.form.field.input.required')
-                          : $t('common.form.field.optional')
-                      })`"
-                      :show-required-mark="false"
-                      :popup-info="fm.description"
-                    >
+                  <SealFormItemWrap
+                    :label="`${fm.label || fm.name} (${
+                      fm.required
+                        ? $t('common.form.field.input.required')
+                        : $t('common.form.field.optional')
+                    })`"
+                    :show-required-mark="false"
+                    :popup-info="fm.description"
+                  >
+                    <template v-if="fm?.labelList?.length">
                       <component
                         :is="formComponents[fm.parentCom]"
                         v-for="(sItem, sIndex) in fm.labelList"
@@ -98,16 +98,16 @@
                           >
                         </template>
                       </component>
-                    </SealFormItemWrap>
-                  </template>
-                  <template v-else>
-                    <thumbButton
-                      :size="24"
-                      class="mleft-5"
-                      font-size="14px"
-                      @click="handleAddOne(fm.labelList)"
-                    ></thumbButton>
-                  </template>
+                    </template>
+                    <template v-else>
+                      <thumbButton
+                        :size="24"
+                        class="mleft-5"
+                        font-size="14px"
+                        @click="handleAddOne(fm.labelList)"
+                      ></thumbButton>
+                    </template>
+                  </SealFormItemWrap>
                 </div>
                 <template v-else>
                   <component
