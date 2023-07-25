@@ -10,7 +10,6 @@ import locale500 from '@/views/exception/500/locale/en-US';
 
 import localeUserSystem from '@/views/system/locale/en-US';
 
-import localeGraph from '@/components/graph/locale/en-US';
 import localeDashboard from '@/views/dashboard/locale/en-US';
 
 import localeApplications from '@/views/application-management/locale/en-US';
@@ -58,7 +57,6 @@ export default {
   ...locale404,
   ...locale500,
   ...localeUserSystem,
-  ...localeGraph,
   ...localeDashboard,
   ...localeApplications,
   ...localeCost,
