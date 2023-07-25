@@ -195,7 +195,10 @@
               </xInputGroup>
             </a-space>
             <template
-              v-if="pageAction === PageAction.VIEW && attributeList?.length"
+              v-if="
+                pageAction === PageAction.VIEW &&
+                _.filter(attributeList, (item) => item.key).length
+              "
             >
               <DescriptionTable
                 style="width: 600px; margin-left: 12px"
