@@ -5,7 +5,7 @@
         :menu="{ icon: 'icon-download', label: 'common.cli.download' }"
       ></Breadcrumb>
     </BreadWrapper>
-    <ComCard top-gap>
+    <ComCard>
       <a-descriptions
         :data="downloadConfig"
         :title="$t('common.cli.download')"

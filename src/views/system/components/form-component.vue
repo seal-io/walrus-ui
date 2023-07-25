@@ -42,6 +42,7 @@
           :disabled="attrs.isDisabled || !attrs.editable"
           :label="attrs.label"
           :required="attrs.required"
+          :show-required-mark="false"
           :popup-info="attrs.popupInfo"
           :model-value="modelValue"
           checked-value="true"

@@ -9,14 +9,7 @@
     </a-switch>
     <span class="label-wrap">
       <span class="label" :class="{ disabled: $attrs.disabled }">
-        <span
-          >{{ $attrs.label || placeholder
-          }}{{
-            $attrs.required
-              ? `(${$t('common.form.field.input.required')})`
-              : `(${$t('common.form.field.optional')})`
-          }}</span
-        >
+        <span>{{ $attrs.label || placeholder }}</span>
         <a-tooltip v-if="popupInfo" :content="popupInfo">
           <icon-info-circle style="stroke-linecap: initial; cursor: default" />
         </a-tooltip>
