@@ -10,8 +10,6 @@ import locale500 from '@/views/exception/500/locale/zh-CN';
 
 import localeUserSystem from '@/views/system/locale/zh-CN';
 
-import localeGraph from '@/components/graph/locale/zh-CN';
-
 import localeDashboard from '@/views/dashboard/locale/zh-CN';
 
 import localeApplications from '@/views/application-management/locale/zh-CN';
@@ -61,7 +59,6 @@ export default {
   ...locale404,
   ...locale500,
   ...localeUserSystem,
-  ...localeGraph,
   ...localeDashboard,
   ...localeApplications,
   ...localeCost,
