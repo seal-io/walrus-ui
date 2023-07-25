@@ -1,16 +1,5 @@
 <template>
   <ComCard borderless padding="0" :loading="loading" class="projects">
-    <a-space class="title">
-      <icon-apps
-        :class="{ active: currentView === 'thumb' }"
-        @click="handleToggle('thumb')"
-      />
-      <icon-font
-        type="icon-table"
-        :class="{ active: currentView === 'list' }"
-        @click="handleToggle('list')"
-      />
-    </a-space>
     <div class="content">
       <FilterBox>
         <template #params>
@@ -78,7 +67,6 @@
         lazy-load
         default-active-key="currentView"
         :active-key="currentView"
-        @change="handleToggle"
       >
         <a-tab-pane key="thumb">
           <ThumbView
@@ -129,11 +117,17 @@
   import { TemplateRowData } from '../config/interface';
   import { queryTemplates, deleteTemplates, TemplateAPI } from '../api';
 
+  defineProps({
+    currentView: {
+      type: String,
+      default: 'thumb'
+    }
+  });
   let timer: any = null;
   const { setChunkRequest } = useSetChunkRequest();
   const { router } = useCallCommon();
   const loading = ref(false);
-  const currentView = ref('thumb'); // thumb, list
+  // const currentView = ref('thumb'); // thumb, list
   const selectedKeys = ref<string[]>([]);
   const sort = ref<string[]>(['-createTime']);
   const dataList = ref<TemplateRowData[]>([]);
@@ -145,9 +139,9 @@
     perPage: 10
   });
   const { updateChunkedList } = useUpdateChunkedList(dataList);
-  const handleToggle = (val) => {
-    currentView.value = val;
-  };
+  // const handleToggle = (val) => {
+  //   currentView.value = val;
+  // };
   const handleCreate = () => {
     router.push({
       name: OPERATIONHUB.TemplateDetail,
