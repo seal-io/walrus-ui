@@ -11,12 +11,13 @@
   >
     <div class="label" :class="{ disabled: $attrs.disabled }">
       <span
-        >{{ $attrs.label || placeholder
-        }}{{
-          $attrs.required
-            ? `(${$t('common.form.field.input.required')})`
-            : `(${$t('common.form.field.optional')})`
-        }}</span
+        ><span>{{ $attrs.label || placeholder }}</span>
+        <span
+          v-if="$attrs.required"
+          class="bold-500 m-l-2 star"
+          style="color: rgb(var(--danger-6))"
+          >*</span
+        ></span
       >
       <a-tooltip v-if="popupInfo" :content="popupInfo">
         <icon-info-circle

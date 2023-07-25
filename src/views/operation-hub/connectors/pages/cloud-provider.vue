@@ -146,8 +146,9 @@
                     v-model="formData.configData[item.key].value"
                     allow-create
                     allow-search
-                    :label="item.label"
+                    :label="$t('operation.connectors.table.region')"
                     :required="true"
+                    :popup-info="$t('operation.connectors.form.region.tips')"
                     :style="{ width: `${InputWidth.LARGE}px` }"
                   >
                     <a-option

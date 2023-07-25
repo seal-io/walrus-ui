@@ -36,9 +36,9 @@ export const awsRegions = [
   },
   {
     enName: 'Hong Kong(China)',
-    cnName: '香港(中国)',
+    cnName: '中国香港',
     code: 'ap-east-1',
-    emoji: '🇨🇳', // 中国,
+    emoji: '🇭🇰', // 中国,
     country: '中国'
   },
   {
@@ -284,7 +284,7 @@ export const alibabaCloudRegions = [
     emoji: '🇨🇳'
   },
   {
-    cnName: '香港（中国）',
+    cnName: '中国香港',
     code: 'cn-hongkong',
     country: 'China',
     enName: 'Hong Kong(China)',

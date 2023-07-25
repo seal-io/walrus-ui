@@ -7,6 +7,7 @@ export default {
   'operation.connectors.table.type': 'Type',
   'operation.connectors.table.connector': 'Connector',
   'operation.connectors.table.status': 'Status',
+  'operation.connectors.table.region': 'Region',
   'operation.connectors.finops.enable': 'Enable',
   'operation.connectors.finops.disable': 'Disable',
   'operation.connectors.table.coststatus': 'Cost Data Information',
@@ -40,6 +41,8 @@ export default {
   'operation.connectors.form.finopsenable': 'Enable Cost Analysis',
   'operation.connectors.form.name': 'Name',
   'operation.connectors.form.type': 'Type',
+  'operation.connectors.form.region.tips':
+    'Custom: Enter your region code and press Enter to confirm',
   'operation.connectors.form.attribute': 'Attributes',
   'operation.connectors.rule.name': 'name is required',
   'operation.connectors.type.rule': 'type is required',
