@@ -13,16 +13,15 @@
       :class="{ disabled: $attrs.disabled }"
       @click="handleClick"
     >
-      <span
-        >{{ $attrs.label || placeholder
-        }}{{
-          showRequiredMark
-            ? $attrs.required
-              ? `(${$t('common.form.field.input.required')})`
-              : `(${$t('common.form.field.optional')})`
-            : ''
-        }}</span
-      >
+      <span>
+        <span>{{ $attrs.label || placeholder }}</span>
+        <span
+          v-if="$attrs.required"
+          class="bold-500 m-l-2 star"
+          style="color: rgb(var(--danger-6))"
+          >*</span
+        >
+      </span>
       <a-tooltip v-if="popupInfo" :content="popupInfo">
         <icon-info-circle style="stroke-linecap: initial; cursor: default" />
       </a-tooltip>

@@ -60,11 +60,8 @@
                 >
                   <!-- XInputGroup component -->
                   <SealFormItemWrap
-                    :label="`${fm.label || fm.name} (${
-                      fm.required
-                        ? $t('common.form.field.input.required')
-                        : $t('common.form.field.optional')
-                    })`"
+                    :label="`${fm.label || fm.name}`"
+                    :required="fm.required"
                     :show-required-mark="false"
                     :popup-info="fm.description"
                   >

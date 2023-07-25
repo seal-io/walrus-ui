@@ -2,14 +2,13 @@
   <div class="seal-form-item-wrap">
     <div class="label">
       <span
-        >{{ label
-        }}{{
-          showRequiredMark
-            ? required
-              ? `(${$t('common.form.field.input.required')})`
-              : `(${$t('common.form.field.optional')})`
-            : ''
-        }}</span
+        ><span>{{ label }}</span>
+        <span
+          v-if="$attrs.required"
+          class="bold-500 m-l-2 star"
+          style="color: rgb(var(--danger-6))"
+          >*</span
+        ></span
       >
       <a-tooltip v-if="popupInfo" :content="popupInfo">
         <icon-info-circle style="stroke-linecap: initial; cursor: default" />

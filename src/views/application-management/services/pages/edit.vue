@@ -70,6 +70,7 @@
             <seal-select
               v-model="formData.template.id"
               :placeholder="$t('applications.applications.table.module')"
+              :required="true"
               :style="{ width: `${InputWidth.LARGE}px` }"
               allow-search
               @change="handleTemplateChange"
@@ -97,6 +98,7 @@
           <div>
             <seal-select
               v-model="formData.template.version"
+              :required="true"
               :placeholder="$t('applications.applications.history.version')"
               :style="{ width: `${InputWidth.LARGE}px` }"
               :loading="asyncLoading"
