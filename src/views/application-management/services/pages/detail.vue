@@ -6,6 +6,7 @@
         :loading="RequestLoadingMap.service"
         :items="breadCrumbList"
         :menu="{ icon: 'icon-apps' }"
+        @search="handleSearch"
         @change="handleServiceChange"
       ></Breadcrumb>
     </BreadWrapper>
@@ -16,7 +17,9 @@
 </template>
 
 <script lang="ts" setup>
+  import _, { cloneDeep } from 'lodash';
   import { PROJECT } from '@/router/config';
+  import { useServiceStore } from '@/store';
   import { ref, provide, onMounted, nextTick } from 'vue';
   import BreadWrapper from '@/components/bread-wrapper/index.vue';
   import useCallCommon from '@/hooks/use-call-common';
@@ -37,14 +40,38 @@
   } = useProjectBreadcrumbData();
   const { breadCrumbList, handleBreadChange, initBreadValues } =
     useProjectBreadcrumbData();
+  const serviceStore = useServiceStore();
   const id = route.query.id as string;
   const serviceId = ref(id);
+  // when chunk request data update will be used to match the current service
   const serviceDataList = ref<InstanceData[]>([]);
 
   provide('serviceId', serviceId);
 
   const handleServiceChange = ({ value, item }) => {
     handleBreadChange(value, item);
+  };
+  const handleSearch = async (item) => {
+    if (item.level !== pageLevelMap.Service || !item.inputValue) return;
+    const list = await getServiceList({
+      page: 1,
+      perPage: 10,
+      query: item.inputValue
+    });
+    //
+    if (!_.find(list, (o) => o.id === item.value)) {
+      list.push({ ...cloneDeep(serviceStore.currentService) });
+    }
+    const serviceRes = setServiceList([...list]);
+    breadCrumbList.value = [
+      { ...breadCrumbList.value[0] },
+      { ...breadCrumbList.value[1] },
+      { ...serviceRes, ..._.omit(item, ['options']) }
+    ];
+    serviceDataList.value = [
+      { ...cloneDeep(serviceStore.currentService) },
+      ...list
+    ];
   };
   const checkoutCurrentService = () => {
     nextTick(() => {
@@ -57,11 +84,14 @@
     const [projectList, environmentList, serviceList] = await Promise.all([
       getProjectList(),
       getEnvironmentList(),
-      getServiceList()
+      getServiceList({ page: 1, pageSize: 10 })
     ]);
     const projectRes = await setProjectList(projectList);
     const environmentRes = setEnvironmentList(environmentList);
-    const serviceRes = setServiceList(serviceList);
+    const serviceRes = setServiceList([
+      ..._.uniqBy([...serviceList, { ...serviceStore.currentService }], 'id')
+    ]);
+    // when from dashboard there is no from query
     breadCrumbList.value = [
       { ...projectRes },
       { ...environmentRes, backAction: !route.query.from },

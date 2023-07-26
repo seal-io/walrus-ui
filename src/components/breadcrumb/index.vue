@@ -76,7 +76,11 @@
               </template>
               <template #footer>
                 <div class="search-box bread-option-search-wrapper">
-                  <a-input v-model="item.inputValue" allow-clear>
+                  <a-input
+                    v-model="item.inputValue"
+                    allow-clear
+                    @input="(val) => handleSearch(item)"
+                  >
                     <template #prefix>
                       <icon-search />
                     </template>
@@ -166,8 +170,20 @@
     }
   });
   const { router } = useCallCommon();
-  const emits = defineEmits(['change']);
+  const emits = defineEmits(['change', 'search']);
+  let timer: any = null;
 
+  const handleSearch = (item) => {
+    clearTimeout(timer);
+    timer = setTimeout(() => {
+      const data = _.find(item.options, (option) => {
+        return _.includes(option.label, item.inputValue);
+      });
+      if (!data) {
+        emits('search', item);
+      }
+    }, 500);
+  };
   const getVirtualListProps = (item) => {
     if (item?.options?.length > 100) {
       return {

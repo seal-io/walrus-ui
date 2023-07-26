@@ -14,7 +14,7 @@ import {
   queryVariables
 } from '@/views/application-management/services/api';
 
-export default function useTemplatesData() {
+export default function useCompleteData() {
   interface HintKey {
     service: any;
     var: any;
@@ -72,6 +72,7 @@ export default function useTemplatesData() {
       console.log(error);
     }
   };
+
   const getProjectVariables = async () => {
     try {
       const params = {
@@ -104,7 +105,7 @@ export default function useTemplatesData() {
         page: -1,
         projectID: route.params.projectId as string,
         environmentID: route.params.environmentId,
-        extract: []
+        extract: ['-attributes', '-projectId', '-status', '-environmentId']
       };
       const { data } = await queryServices(params);
       serviceDataList.value = data.items || [];
@@ -114,14 +115,6 @@ export default function useTemplatesData() {
     }
   };
   const setVariablesCompleteData = () => {
-    // const vars = _.reduce(
-    //   variableList.value,
-    //   (obj, item) => {
-    //     obj[item.name] = '';
-    //     return obj;
-    //   },
-    //   {}
-    // );
     const vars = _.map(variableList.value, (item) => {
       return {
         value: item.name,

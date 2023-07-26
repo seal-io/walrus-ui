@@ -172,7 +172,7 @@
 
 <script lang="ts" setup>
   import _ from 'lodash';
-  import { ref, computed, nextTick, watch } from 'vue';
+  import { ref, computed, nextTick, watch, onMounted } from 'vue';
   import { schemaType } from '@/components/form-create/config/interface';
   import { json2Yaml } from '@/components/form-create/config/yaml-parse';
   import { getObjectConditionValue } from '@/components/form-create/config/utils';
@@ -180,7 +180,6 @@
   import useServiceData from '../hooks/use-service-data';
 
   const {
-    init,
     initInfo,
     formData,
     defaultGroupKey,
@@ -246,6 +245,7 @@
       _.set(variablesGroup.value, `${group}.variables`, variables);
     });
   };
+
   const initData = async () => {
     await initInfo();
     filterGroupVariables();
@@ -254,7 +254,9 @@
       handleTabChange(_.get(formTabs.value, '0'));
     });
   };
-  initData();
+  onMounted(() => {
+    initData();
+  });
 </script>
 
 <style lang="less">

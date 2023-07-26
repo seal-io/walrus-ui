@@ -500,7 +500,7 @@
   }
 
   .svc-wrapper {
-    max-height: 240px;
+    max-height: 320px;
     padding-bottom: 10px;
     overflow: auto;
   }

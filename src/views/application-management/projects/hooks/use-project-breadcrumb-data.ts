@@ -116,11 +116,12 @@ export default function useProjectData() {
     return environmentList;
   };
 
-  const getServiceList = async () => {
+  const getServiceList = async (queryparams?: object) => {
     let serviceList: any[] = [];
     try {
       const params = {
-        page: -1,
+        page: 1,
+        perPage: 10,
         projectID: route.params.projectId as string,
         environmentID: route.params.environmentId as string,
         extract: [
@@ -129,7 +130,8 @@ export default function useProjectData() {
           '-projectId',
           '-status',
           '-template'
-        ]
+        ],
+        ...queryparams
       };
       RequestLoadingMap.service = true;
       const { data } = await queryServices(params);
