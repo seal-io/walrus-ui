@@ -99,7 +99,6 @@
                     <template v-else>
                       <thumbButton
                         :size="24"
-                        class="mleft-5"
                         font-size="14px"
                         @click="handleAddOne(fm.labelList)"
                       ></thumbButton>

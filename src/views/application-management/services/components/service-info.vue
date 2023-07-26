@@ -181,6 +181,7 @@
 
   const {
     init,
+    initInfo,
     formData,
     defaultGroupKey,
     variablesGroup,
@@ -246,7 +247,7 @@
     });
   };
   const initData = async () => {
-    await init();
+    await initInfo();
     filterGroupVariables();
     setFormTabs();
     nextTick(() => {

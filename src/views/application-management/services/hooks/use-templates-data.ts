@@ -103,7 +103,8 @@ export default function useTemplatesData() {
       const params = {
         page: -1,
         projectID: route.params.projectId as string,
-        environmentID: route.params.environmentId
+        environmentID: route.params.environmentId,
+        extract: []
       };
       const { data } = await queryServices(params);
       serviceDataList.value = data.items || [];
@@ -192,6 +193,7 @@ export default function useTemplatesData() {
   return {
     initCompleteData,
     getTemplatesVersions,
+    getTemplates,
     completeData,
     templateList,
     allTemplateVersions,

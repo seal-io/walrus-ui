@@ -175,7 +175,7 @@
 
   const handleSearch = (term: string, ctx): Array<resultItem> => {
     const sourceData = completeData.value || props.source;
-    const regx = /([A-Za-z0-9_-]+)?\.?([A-Za-z0-9_-]*)\.?$/;
+    const regx = /([\w-]+)?\.?([\w-]*)\.?$/;
     if (!ctx || !regx.test(ctx)) return [];
     const dataSource = cloneDeep(sourceData);
     const path = split(ctx, '.');
@@ -227,10 +227,21 @@
   const getResultOptions = () => {
     return [
       {
-        label: '{}',
+        label: '${}',
         value: '{}'
       }
     ];
+  };
+  const getReplaceResult = (result, reg) => {
+    const matches = editorCtx.value.matchAll(reg);
+    const list = Array.from(matches);
+    const mactchStartIndex = get(list, '0.index');
+    const mactchEndIndex = get(list, '1.index') || editorCtx.value.length;
+    const res =
+      editorCtx.value.slice(0, mactchStartIndex) +
+      result.label +
+      editorCtx.value.slice(mactchEndIndex);
+    return res;
   };
   const setCursorPos = () => {
     const selection = window.getSelection();
@@ -244,15 +255,15 @@
   const Strategy: any = [
     {
       id: props.editorId,
-      // match: /(\w+)\.(\w*)$/,
-      match: /(?<=\$\{.*)([A-Za-z0-9_-]+)?\.?([A-Za-z0-9_-]*)$/,
+      // match: /(?<=\$\{.*)([\w-]+)?\.?([\w-]*)$/,
+      match: /(?:\$\{.*)([\w-]+)\.?([\w-]*)$/,
       index: 1,
       search(term: string, callback: SearchCallback<resultItem>, match: any) {
-        const regx = /([A-Za-z0-9_-]+\.)*([A-Za-z0-9_-]*)$/g;
-        console.log('term===2=', term, editorCtx.value);
+        const regx = /([\w-]+\.)*([\w-]*)$/g;
         const allResult = editorCtx.value.matchAll(regx);
         const list = Array.from(allResult);
         const ctx = get(list, '0.0');
+        console.log('term===2=', term, editorCtx.value, ctx);
         callback(handleSearch(term, ctx));
       },
       context(beforeCursor: string) {
@@ -266,21 +277,16 @@
       },
       // replace the text match result
       replace(result: resultItem) {
-        const reg = /([A-Za-z0-9_-]+)\.([A-Za-z0-9_-]*)$/g;
-        const matches = editorCtx.value.matchAll(reg);
-        const list = Array.from(matches);
-        // console.log('matches===', list, matches)
+        const reg = /([\w-]*)$/g;
+        const res = getReplaceResult(result, reg);
         editorCtx.value = '';
-        if (!list.length) {
-          return `${result.label}`;
-        }
-        return `${get(list, '0.1')}.${result.label}`;
+        return res;
       }
     },
     {
       id: props.editorId,
       // match: /(\w+)\.(\w*)$/,
-      match: /(?<=\$\{?).*(?=.*)/,
+      match: /(?:\$\{?).*(?=.*)/,
       index: 2,
       search(term: string, callback: SearchCallback<resultItem>, match: any) {
         callback(getResultOptions());
@@ -289,10 +295,13 @@
         return `<span>${data.label}</span>`;
       },
       replace: (result: resultItem): string => {
+        const reg = /(?:\$)(\{?\}?)$/g;
+        const res = getReplaceResult(result, reg);
+        editorCtx.value = '';
         setTimeout(() => {
           input.value.selectionEnd -= 1;
         }, 100);
-        return `${result.label}`;
+        return res;
       }
     }
   ];
@@ -333,7 +342,9 @@
     const activeIndex = textcomplete.dropdown.activeIndex || 0;
     const items = textcomplete.dropdown.items || [];
     const data = get(items, `${activeIndex}.searchResult.data`);
-    moveLastPosition.value = activeIndex === items.length - 1;
+    moveLastPosition.value =
+      activeIndex === items.length - 1 && activeIndex > 0;
+
     if (data?.showTips) {
       const content = data.sensitive ? '******' : data.tips;
       tippyInstance = tippy(`.${props.editorId} .complete-item-active`, {

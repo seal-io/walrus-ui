@@ -122,7 +122,14 @@ export default function useProjectData() {
       const params = {
         page: -1,
         projectID: route.params.projectId as string,
-        environmentID: route.params.environmentId as string
+        environmentID: route.params.environmentId as string,
+        extract: [
+          '-environmentId',
+          '-attributes',
+          '-projectId',
+          '-status',
+          '-template'
+        ]
       };
       RequestLoadingMap.service = true;
       const { data } = await queryServices(params);

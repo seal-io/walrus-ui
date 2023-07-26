@@ -21,6 +21,7 @@ export default function useServiceData(props?) {
     completeData,
     initCompleteData,
     getTemplatesVersions,
+    getTemplates,
     serviceDataList,
     templateList,
     allTemplateVersions
@@ -220,6 +221,12 @@ export default function useServiceData(props?) {
     await initFormData();
     asyncLoading.value = false;
   };
+  const initInfo = async () => {
+    asyncLoading.value = true;
+    await Promise.all([getServiceItemInfo(), getTemplates()]);
+    await initFormData();
+    asyncLoading.value = false;
+  };
   return {
     id,
     init,
@@ -230,6 +237,7 @@ export default function useServiceData(props?) {
     getTemplateVersionList,
     getTemplatesVersions,
     initCompleteData,
+    initInfo,
     asyncLoading,
     formData,
     refMap,
