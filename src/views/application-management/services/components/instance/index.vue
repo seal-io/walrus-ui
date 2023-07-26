@@ -108,7 +108,7 @@
 <script lang="ts" setup>
   import dayjs from 'dayjs';
   import { Resources } from '@/permissions/config';
-  import { useUserStore } from '@/store';
+  import { useUserStore, useServiceStore } from '@/store';
   import _ from 'lodash';
   import { PageAction, websocketEventType } from '@/views/config';
   import { markRaw, ref, PropType, onMounted, computed } from 'vue';
@@ -156,6 +156,7 @@
   const pageAction = ref(PageAction.VIEW);
   const { setChunkRequest } = useSetChunkRequest();
   const userStore = useUserStore();
+  const serviceStore = useServiceStore();
   const { router, route, t } = useCallCommon();
   const { loading, fetchData, createResourceChunkConnection, dataList } =
     useFetchResource();
@@ -247,8 +248,10 @@
       };
       const { data } = await queryItemApplicationService(params);
       currentInfo.value = data;
+      serviceStore.setInfo({ currentService: data });
     } catch (error) {
       currentInfo.value = {};
+      serviceStore.setInfo({ currentService: {} });
       console.log(error);
     }
   };

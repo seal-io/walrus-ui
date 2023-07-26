@@ -5,6 +5,7 @@ import useUserStore from './modules/user';
 import useTabBarStore from './modules/tab-bar';
 import useCostManageStore from './modules/cost-managment';
 import useProjectStore from './modules/project';
+import useServiceStore from './modules/service';
 
 const pinia = createPinia();
 pinia.use(
@@ -18,6 +19,7 @@ export {
   useUserStore,
   useProjectStore,
   useTabBarStore,
-  useCostManageStore
+  useCostManageStore,
+  useServiceStore
 };
 export default pinia;

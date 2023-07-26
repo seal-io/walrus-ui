@@ -8,14 +8,14 @@ export const awsRegions = [
   },
   {
     enName: 'N. Virginia',
-    cnName: '弗吉尼亚州',
+    cnName: '弗吉尼亚州北部',
     code: 'us-east-1',
     emoji: '🇺🇸', // 美国,
     country: '美国'
   },
   {
     enName: 'N. California',
-    cnName: '加利福尼亚州',
+    cnName: '加利福尼亚州北部',
     code: 'us-west-1',
     emoji: '🇺🇸', // 美国,
     country: '美国'
@@ -104,8 +104,8 @@ export const awsRegions = [
     emoji: '🇯🇵' // 日本
   },
   {
-    enName: 'Central',
-    cnName: '中部',
+    enName: 'Central(Canada)',
+    cnName: '加拿大中部',
     code: 'ca-central-1',
     emoji: '🇨🇦', // 加拿大,
     country: '加拿大'

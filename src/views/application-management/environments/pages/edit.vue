@@ -14,10 +14,10 @@
           pageAction === PageAction.VIEW ? `${InputWidth.XLARGE}px` : '100%'
       }"
     >
-      <QuestionPopup
-        :link="QAlinkMap.Project"
+      <!-- <QuestionPopup
+        :link="QAlinkMap.Environment"
         class="absolute right-16 zindex-5"
-      ></QuestionPopup>
+      ></QuestionPopup> -->
       <GroupTitle
         :bordered="false"
         :title="$t('common.title.basicInfo')"

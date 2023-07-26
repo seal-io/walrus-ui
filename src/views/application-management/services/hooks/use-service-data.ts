@@ -7,9 +7,10 @@ import {
   TemplateVersionData
 } from '@/views/operation-hub/templates/config/interface';
 import usePageAction from '@/hooks/use-page-action';
+import { useServiceStore } from '@/store';
 
 import { queryItemApplicationService } from '../api';
-import useTemplatesData from './use-templates-data';
+import useCompleteData from './use-complete-data';
 
 export default function useServiceData(props?) {
   type refItem = Element | ComponentPublicInstance | null;
@@ -25,7 +26,8 @@ export default function useServiceData(props?) {
     serviceDataList,
     templateList,
     allTemplateVersions
-  } = useTemplatesData();
+  } = useCompleteData();
+  const serviceStore = useServiceStore();
   const { pageAction, handleEdit } = usePageAction();
   const defaultGroupKey = '_default_default_';
   const { route, router, t } = useCallCommon();
@@ -214,16 +216,19 @@ export default function useServiceData(props?) {
     }
     generateVariablesGroup(pageAction.value);
   };
-
+  // for service edit page
   const init = async () => {
     asyncLoading.value = true;
     await Promise.all([getServiceItemInfo(), initCompleteData()]);
     await initFormData();
     asyncLoading.value = false;
   };
+  // for service detail
   const initInfo = async () => {
     asyncLoading.value = true;
-    await Promise.all([getServiceItemInfo(), getTemplates()]);
+    // await Promise.all([getServiceItemInfo(), getTemplates()]);
+    serviceInfo.value = serviceStore.currentService;
+    await getTemplates();
     await initFormData();
     asyncLoading.value = false;
   };

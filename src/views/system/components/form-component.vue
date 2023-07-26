@@ -47,6 +47,7 @@
           :model-value="modelValue"
           checked-value="true"
           unchecked-value="false"
+          size="small"
           @change="(val) => $emit('update:modelValue', String(val))"
         />
       </div>
