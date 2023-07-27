@@ -4,6 +4,8 @@ import { Pagination } from '@/types/global';
 import router from '@/router';
 import { EnvironmentRow, EnvironFormData } from '../config/interface';
 
+export const ENVIRONMENT_API = '/environments';
+
 export const getPermissionRouteParams = () => {
   const { params } = router.currentRoute.value;
   return { projectID: params?.projectId };

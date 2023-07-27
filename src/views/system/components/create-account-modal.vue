@@ -78,13 +78,19 @@
         :label="$t('profile.account.password')"
         field="password"
         hide-label
+        :rules="[
+          {
+            required: action === 'create',
+            message: $t('account.create.rules.password')
+          }
+        ]"
       >
         <a-input-group style="width: 100%">
           <seal-input-password
             v-model="formData.password"
             style="width: 100%; border-radius: 4px 0 0 4px"
             :label="$t('profile.account.password')"
-            :required="true"
+            :required="action === 'create'"
           />
           <a-button
             type="primary"

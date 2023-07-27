@@ -18,6 +18,7 @@
         <a-form-item
           :label="$t('applications.environment.clone.target')"
           field="environmentIDs"
+          hide-label
           :validate-trigger="['change']"
           :rules="[
             {
@@ -26,10 +27,12 @@
             }
           ]"
         >
-          <a-select
+          <seal-select
             v-model="formData.environmentIDs"
-            style="width: 396px"
+            :style="{ width: `${InputWidth.LARGE}px` }"
             multiple
+            :required="true"
+            :label="$t('applications.environment.clone.target')"
             :max-tag-count="2"
             allow-search
           >
@@ -39,7 +42,7 @@
               :value="item.id"
               :label="item.name"
             ></a-option>
-          </a-select>
+          </seal-select>
         </a-form-item>
         <!-- <a-form-item :label="$t(`applications.projects.form.label`)">
           <a-space
@@ -99,6 +102,7 @@
   import xInputGroup from '@/components/form-create/custom-components/x-input-group.vue';
   import EditPageFooter from '@/components/edit-page-footer/index.vue';
   import { PROJECT } from '@/router/config';
+  import { InputWidth } from '@/views/config';
   import { ref, computed, reactive } from 'vue';
   import { onBeforeRouteLeave } from 'vue-router';
   import { beforeLeaveCallback } from '@/hooks/save-before-leave';

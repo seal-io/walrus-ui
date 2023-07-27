@@ -234,7 +234,7 @@
                       actions: [Actions.PUT]
                     })
               "
-              :size="10"
+              :size="16"
             >
               <a-dropdown-button
                 v-if="record.category === ConnectorCategory.Kubernetes"

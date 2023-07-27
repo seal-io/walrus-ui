@@ -3,6 +3,8 @@ import qs from 'query-string';
 import { Pagination } from '@/types/global';
 import { TemplateRowData, TemplateFormData } from '../config/interface';
 
+export const TEMPLATE_API = '/templates';
+
 export interface QueryType extends Pagination {
   extract?: string[];
   sort?: string[];

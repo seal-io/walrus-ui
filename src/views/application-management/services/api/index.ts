@@ -4,6 +4,7 @@ import { Pagination } from '@/types/global';
 import router from '@/router';
 import { ServiceRowData, EndPointRow } from '../config/interface';
 
+export const SERVICE_API = '/services';
 // some params for permission
 export const getPermissionRouteParams = () => {
   const { params } = router.currentRoute.value;

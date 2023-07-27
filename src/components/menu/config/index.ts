@@ -76,7 +76,7 @@ export const avatarMenu = [
         route: PROFILE.UserCenter,
         icon: '<icon-user />'
       },
-      { name: 'messageBox.logout', key: 'logout', icon: '<icon-export/>' }
+      { name: 'common.button.logout', key: 'logout', icon: '<icon-export/>' }
     ]
   }
 ];
