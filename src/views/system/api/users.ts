@@ -8,6 +8,8 @@ export interface queryParams {
   perPage?: number;
 }
 
+export const SUBJECT_API = '/subjects';
+
 // ============= subjects ===========
 export function querySubjects(params: queryParams) {
   return axios.get<ListResult<RowData>>('/subjects', {

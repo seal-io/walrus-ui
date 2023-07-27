@@ -65,6 +65,7 @@ export default {
   'common.checbox.all': '全选',
   'common.button.addfile': '添加文件',
   'common.logout.msg': '登出成功',
+  'common.button.logout': '登出',
   'common.form.rule.select': '请选择{name}',
   'common.form.rule.input': '{name}必填',
   'common.form.key': '存在相同的key',

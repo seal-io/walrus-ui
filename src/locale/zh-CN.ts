@@ -1,4 +1,3 @@
-import localeMessageBox from '@/components/message-box/locale/zh-CN';
 import localeLogin from '@/views/login/locale/zh-CN';
 
 import localeSuccess from '@/views/result/success/locale/zh-CN';
@@ -36,7 +35,6 @@ export default {
   'navbar.totalView': '概览',
   ...localeCommon,
   ...localeSettings,
-  ...localeMessageBox,
   ...localeLogin,
 
   ...localeSuccess,

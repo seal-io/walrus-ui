@@ -68,6 +68,7 @@ export default {
   'common.action.none': 'Not Available',
   'common.button.addfile': 'Add File',
   'common.logout.msg': 'Logout succeeded',
+  'common.button.logout': 'Logout',
   'common.form.rule.select': 'please select {name}',
   'common.form.rule.input': '{name} is required',
   'common.form.key': 'the same key exists',

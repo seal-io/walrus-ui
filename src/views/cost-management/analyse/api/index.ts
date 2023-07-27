@@ -3,6 +3,7 @@ import qs from 'query-string';
 import { Pagination } from '@/types/global';
 import { PerspectiveRowData } from '../config/interface';
 
+export const PERSPECTIVE_API = '/perspectives';
 export interface FieldValueType {
   fieldName: string;
   fieldType: string;

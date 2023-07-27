@@ -1,4 +1,3 @@
-import localeMessageBox from '@/components/message-box/locale/en-US';
 import localeLogin from '@/views/login/locale/en-US';
 
 import localeSuccess from '@/views/result/success/locale/en-US';
@@ -35,7 +34,6 @@ export default {
   'navbar.totalView': 'Dashboard',
   ...localeCommon,
   ...localeSettings,
-  ...localeMessageBox,
   ...localeLogin,
   ...localeSuccess,
   ...localeError,

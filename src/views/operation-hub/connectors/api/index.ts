@@ -4,6 +4,8 @@ import { Pagination } from '@/types/global';
 import router from '@/router';
 import { ConnectorRowData, ConnectorFormData } from '../config/interface';
 
+export const CONNECTOR_API = '/connectors';
+
 export const getPermissionRouteParams = () => {
   const { params } = router.currentRoute.value;
   return { projectID: params?.projectId };

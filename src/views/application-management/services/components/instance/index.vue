@@ -106,13 +106,18 @@
 </template>
 
 <script lang="ts" setup>
-  import dayjs from 'dayjs';
   import { Resources } from '@/permissions/config';
   import { useUserStore, useServiceStore } from '@/store';
   import _ from 'lodash';
   import { PageAction, websocketEventType } from '@/views/config';
-  import { markRaw, ref, PropType, onMounted, computed } from 'vue';
-  import { execSucceed } from '@/utils/monitor';
+  import {
+    markRaw,
+    ref,
+    PropType,
+    onMounted,
+    computed,
+    onBeforeUnmount
+  } from 'vue';
   import slTransition from '@/components/sl-transition/index.vue';
   import { useSetChunkRequest } from '@/api/axios-chunk-request';
   import HeaderInfo from '@/components/header-info/index.vue';
@@ -331,6 +336,9 @@
     // chunk request
     createServiceChunkRequest();
     createResourceChunkConnection();
+  });
+  onBeforeUnmount(() => {
+    serviceStore.setInfo({ currentService: {} });
   });
   const init = () => {
     getServiceItemInfo();

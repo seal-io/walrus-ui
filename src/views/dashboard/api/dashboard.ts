@@ -7,6 +7,7 @@ interface ParamsType {
   end?: string;
   timeUnit?: string; // day week month quarter year
 }
+export const DASHBOARDS_API = '/dashboards';
 export interface RevisionParams {
   step: string;
   startTime: string;

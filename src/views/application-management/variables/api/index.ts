@@ -3,6 +3,7 @@ import qs from 'query-string';
 import { Pagination } from '@/types/global';
 import { VariableRow, VariableFormData } from '../config/interface';
 
+export const VARIABLE_API = '/variables';
 export interface QueryType extends Pagination {
   projectID?: string;
 }

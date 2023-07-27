@@ -135,5 +135,6 @@ export default {
     '确保立即复制您的个人访问密钥。您将无法再次看到它！',
   'account.settings.clear.tips': '若保存，以下设置将被清除',
   'account.create.rules.username':
-    '只能包含字母数字、_、-，不能有连续的_、-，以字母数字开头或结尾'
+    '只能包含字母数字、_、-，不能有连续的_、-，以字母数字开头或结尾',
+  'account.create.rules.password': '密码不能为空'
 };

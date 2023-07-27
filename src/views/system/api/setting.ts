@@ -1,6 +1,8 @@
 import axios from 'axios';
 
 type ValueType = string | number | boolean;
+
+export const SETTINGS_API = '/settings';
 export interface SettingsItem {
   id: string;
   value: ValueType;

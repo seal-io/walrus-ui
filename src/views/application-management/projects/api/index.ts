@@ -7,6 +7,7 @@ import {
   ProjectRolesRowData
 } from '../config/interface';
 
+export const PROJECT_API = '/projects';
 export interface QueryType extends Pagination {
   sort?: string[];
 }
