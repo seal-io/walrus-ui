@@ -105,7 +105,7 @@ export default function useCompleteData() {
         page: -1,
         projectID: route.params.projectId as string,
         environmentID: route.params.environmentId,
-        extract: ['-attributes', '-projectId', '-status', '-environmentId']
+        extract: ['-attributes', '-projectId', '-status']
       };
       const { data } = await queryServices(params);
       serviceDataList.value = data.items || [];

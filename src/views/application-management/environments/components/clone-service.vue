@@ -1,5 +1,27 @@
 <template>
   <div>
+    <GroupTitle
+      v-if="showCheck"
+      class="m-t-20"
+      :bordered="false"
+      :title="$t('applications.applications.table.service')"
+      flex-start
+    >
+      <template #right>
+        <a-checkbox
+          class="m-l-10 check-box"
+          :indeterminate="
+            selectedList.size > 0 && selectedList.size < editServiceList.length
+          "
+          :model-value="
+            selectedList.size === editServiceList.length &&
+            editServiceList.length > 0
+          "
+          @change="handleCheckboxChange"
+          >{{ $t('common.checbox.all') }}</a-checkbox
+        >
+      </template>
+    </GroupTitle>
     <div class="svc-wrapper">
       <a-spin :loading="asyncLoading" style="width: 100%">
         <a-grid :cols="24" :row-gap="8" :col-gap="8">
@@ -252,9 +274,6 @@
     init,
     generateVariablesGroup,
     setFormAttributes,
-    getTemplateSchemaByVersion,
-    getTemplateVersionList,
-    getTemplatesVersions,
     initCompleteData,
     serviceInfo,
     formData,
@@ -270,7 +289,6 @@
     completeData,
     title,
     refMap,
-    asyncLoading,
     setRefMap
   } = useServiceData();
   const {
@@ -305,6 +323,13 @@
     return list;
   });
 
+  const handleCheckboxChange = (checked) => {
+    if (checked) {
+      selectedList.value = new Set(_.map(editServiceList.value, 'id'));
+    } else {
+      selectedList.value = new Set();
+    }
+  };
   // get group form data
   const getRefFormData = async (noValidate?: boolean) => {
     const resultList: any[] = [];
@@ -359,7 +384,7 @@
     if (hasChange.value) {
       return;
     }
-
+    data.attributes = data.attributes || {};
     active.value = data.id;
     show.value = true;
     activeKey.value = 'schemaForm0';
@@ -491,6 +516,10 @@
     padding: 10px;
     border: 1px solid var(--color-border-2);
     border-radius: var(--border-radius-small);
+  }
+
+  .m-l-10.check-box {
+    width: max-content;
   }
 
   .change-tips {

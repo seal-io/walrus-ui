@@ -22,7 +22,7 @@
         </a-link>
       </div>
     </div>
-    <div><slot name="right"></slot></div>
+    <div><slot name="right" class="right"></slot></div>
   </div>
 </template>
 

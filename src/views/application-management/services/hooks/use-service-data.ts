@@ -226,7 +226,6 @@ export default function useServiceData(props?) {
   // for service detail
   const initInfo = async () => {
     asyncLoading.value = true;
-    // await Promise.all([getServiceItemInfo(), getTemplates()]);
     serviceInfo.value = serviceStore.currentService;
     await getTemplates();
     await initFormData();

@@ -171,13 +171,6 @@
             ></connectorsTable>
           </div>
         </a-form-item>
-        <GroupTitle
-          v-if="environmentId"
-          class="m-t-20"
-          :bordered="false"
-          :title="$t('applications.applications.table.service')"
-          flex-start
-        ></GroupTitle>
         <a-form-item
           v-if="environmentId"
           :hide-label="pageAction === PageAction.EDIT"

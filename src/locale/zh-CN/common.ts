@@ -62,6 +62,7 @@ export default {
   'common.data.unkonwn': '未知',
   'common.data.none': '暂无',
   'common.action.none': '无',
+  'common.checbox.all': '全选',
   'common.button.addfile': '添加文件',
   'common.logout.msg': '登出成功',
   'common.form.rule.select': '请选择{name}',
