@@ -17,6 +17,7 @@ export default function useProjectData() {
   const { route, router } = useCallCommon();
   const projectStore = useProjectStore();
   const userStore = useUserStore();
+  // breadCrumbList dropdown loading
   const RequestLoadingMap = reactive({
     project: false,
     environment: false,
@@ -27,45 +28,36 @@ export default function useProjectData() {
     Environment: 'Environment',
     Service: 'Service'
   };
-
-  const projectTemplate = {
+  const templateCommonConfig = {
     value: '',
     label: '',
     hasOptions: true,
     icon: '',
+    visible: false,
+    inputValue: '',
+    options: []
+  };
+
+  const projectTemplate = {
+    ...templateCommonConfig,
     type: 'menu.applicationManagement.project',
     level: pageLevelMap.Project,
     wrapperId: 'projectWrapper',
-    route: PROJECT.Detail,
-    visible: false,
-    inputValue: '',
-    options: []
+    route: PROJECT.Detail
   };
   const environmentTemplate = {
-    value: '',
-    label: '',
-    hasOptions: true,
-    icon: '',
+    ...templateCommonConfig,
     type: 'menu.operatorHub.evniroment',
     level: pageLevelMap.Environment,
     wrapperId: 'envWrapper',
-    route: PROJECT.EnvDetail,
-    visible: false,
-    inputValue: '',
-    options: []
+    route: PROJECT.EnvDetail
   };
   const serviceTemplate = {
-    value: '',
-    label: '',
-    hasOptions: true,
-    icon: '',
+    ...templateCommonConfig,
     type: 'menu.applicationManagement.serivce',
     level: pageLevelMap.Service,
     wrapperId: 'serviceWrapper',
-    route: PROJECT.ServiceDetail,
-    visible: false,
-    inputValue: '',
-    options: []
+    route: PROJECT.ServiceDetail
   };
 
   const getProjectList = async () => {
@@ -124,13 +116,7 @@ export default function useProjectData() {
         perPage: 10,
         projectID: route.params.projectId as string,
         environmentID: route.params.environmentId as string,
-        extract: [
-          '-environmentId',
-          '-attributes',
-          '-projectId',
-          '-status',
-          '-template'
-        ],
+        extract: ['-attributes', '-projectId', '-status', '-template'],
         ...queryparams
       };
       RequestLoadingMap.service = true;

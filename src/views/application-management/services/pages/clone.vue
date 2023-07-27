@@ -108,7 +108,7 @@
   import useLabelsActions from '@/components/form-create/hooks/use-labels-action';
   import cloneService from '../../environments/components/clone-service.vue';
   import useProjectBreadcrumbData from '../../projects/hooks/use-project-breadcrumb-data';
-  import { cloneServices } from '../api';
+  import { cloneServices, queryServices } from '../api';
 
   const {
     getProjectList,
@@ -160,8 +160,14 @@
   };
   const getSelectServices = async () => {
     try {
+      const params = {
+        projectID: route.params.projectId as string,
+        environmentID: route.params.environmentId as string,
+        page: -1
+      };
       asyncLoading.value = true;
-      const list = await getServiceList();
+      const { data } = await queryServices(params);
+      const list = data.items || [];
       const cloneIds = _.concat(ids);
       selectServices.value = _.filter(list, (item) => {
         return _.includes(cloneIds, item.id);
