@@ -31,7 +31,7 @@
             :title="$t('applications.applications.detail.configuration')"
             :title-style="{ 'margin-bottom': '10px', 'margin-top': 0 }"
           >
-            <serviceInfo> </serviceInfo>
+            <serviceInfo ref="serviceInfoRef"> </serviceInfo>
           </ModuleCard>
         </ComCard>
         <ComCard>
@@ -168,6 +168,7 @@
   const projectID = route.params.projectId || '';
   const activeKey = ref('resource');
   const currentInfo = ref({});
+  const serviceInfoRef = ref();
   const instanceTabMap = {
     tabResource: markRaw(tabResource),
     tabLogs: markRaw(tabLogs),
@@ -246,6 +247,7 @@
   const getServiceItemInfo = async () => {
     if (!route.query.id) return;
     try {
+      serviceStore.resetInfo();
       const params = {
         id: route.query.id,
         environmentID: route.params.environmentId,
@@ -256,8 +258,10 @@
       serviceStore.setInfo({ currentService: data });
     } catch (error) {
       currentInfo.value = {};
-      serviceStore.setInfo({ currentService: {} });
       console.log(error);
+    } finally {
+      // template confg info
+      serviceInfoRef.value?.initData();
     }
   };
   const handleTabChange = (val) => {
@@ -338,7 +342,7 @@
     createResourceChunkConnection();
   });
   onBeforeUnmount(() => {
-    serviceStore.setInfo({ currentService: {} });
+    serviceStore.resetInfo();
   });
   const init = () => {
     getServiceItemInfo();

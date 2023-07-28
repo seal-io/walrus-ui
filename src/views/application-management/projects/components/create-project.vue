@@ -3,7 +3,7 @@
     top="10%"
     :closable="false"
     :align-center="false"
-    :width="700"
+    :width="600"
     :ok-text="$t('common.button.save')"
     :visible="show"
     :mask-closable="false"
@@ -15,11 +15,12 @@
     @before-open="handleBeforeOpen"
     @before-close="handleBeforeClose"
   >
-    <a-spin :loading="loading" style="width: 100%; text-align: center">
+    <div :loading="loading" style="width: 100%; text-align: center">
       <a-form ref="formref" :model="formData" auto-label-width>
         <a-form-item
           :label="$t('common.table.name')"
           field="name"
+          hide-label
           validate-trigger="change"
           :rules="[
             // { required: true, message: $t('applications.projects.rule.name') },
@@ -30,47 +31,65 @@
             }
           ]"
         >
-          <a-input
+          <seal-input
             v-model="formData.name"
+            :label="$t('common.table.name')"
+            :required="true"
             style="width: 100%"
             :max-length="63"
             show-word-limit
-          ></a-input>
+          ></seal-input>
           <template #extra>
             <span class="tips">{{ $t('common.validate.labelName') }}</span>
           </template>
         </a-form-item>
-        <a-form-item :label="$t('common.table.description')">
-          <a-textarea
+        <a-form-item :label="$t('common.table.description')" hide-label>
+          <seal-textarea
             v-model="formData.description"
+            :label="$t('common.table.description')"
             :max-length="200"
             show-word-limit
             style="width: 100%"
             :auto-size="{ minRows: 4, maxRows: 6 }"
-          ></a-textarea>
+          ></seal-textarea>
         </a-form-item>
-        <a-form-item :label="$t(`applications.projects.form.label`)">
-          <a-space
-            v-if="formData?.labelList?.length"
-            style="display: flex; flex-direction: column; width: 100%"
-            direction="vertical"
+        <a-form-item :label="$t(`applications.projects.form.label`)" hide-label>
+          <SealFormItemWrap
+            :label="$t(`applications.projects.form.label`)"
+            style="width: 100%"
           >
-            <xInputGroup
-              v-for="(sItem, sIndex) in formData.labelList"
-              :key="sIndex"
-              v-model:dataKey="sItem.key"
-              v-model:dataValue="sItem.value"
-              v-model:value="formData.labels"
-              class="group-item"
-              :label-list="formData.labelList"
-              :position="sIndex"
-              @add="(obj) => handleAddLabel(obj, formData.labelList)"
-              @delete="handleDeleteLabel(formData.labelList, sIndex)"
-            ></xInputGroup>
-          </a-space>
+            <a-space
+              v-if="labelList.length"
+              style="display: flex; flex-direction: column; width: 100%"
+              direction="vertical"
+            >
+              <xInputGroup
+                v-for="(sItem, sIndex) in labelList"
+                :key="sIndex"
+                v-model:dataKey="sItem.key"
+                v-model:dataValue="sItem.value"
+                v-model:value="formData.labels"
+                class="group-item"
+                :label-list="labelList"
+                :position="sIndex"
+                :trigger-validate="validateTrigger"
+                always-delete
+                should-key
+                @add="(obj) => handleAddLabel(obj, labelList)"
+                @delete="handleDeleteLabel(labelList, sIndex)"
+              ></xInputGroup>
+            </a-space>
+            <template v-else>
+              <thumbButton
+                :size="24"
+                font-size="14px"
+                @click="handleAddLabel(labelItem, labelList)"
+              ></thumbButton>
+            </template>
+          </SealFormItemWrap>
         </a-form-item>
       </a-form>
-    </a-spin>
+    </div>
     <template #footer>
       <EditPageFooter>
         <template #save>
@@ -101,6 +120,8 @@
   import { reduce, omit, keys, get } from 'lodash';
   import EditPageFooter from '@/components/edit-page-footer/index.vue';
   import xInputGroup from '@/components/form-create/custom-components/x-input-group.vue';
+  import useLabelsActions from '@/components/form-create/hooks/use-labels-action';
+  import thumbButton from '@/components/buttons/thumb-button.vue';
   import { validateLabelNameRegx } from '@/views/config';
   import { createProject, updateProject } from '../api';
   import { ProjectFormData } from '../config/interface';
@@ -131,6 +152,7 @@
       }
     }
   });
+  const labelItem = { key: '', value: '' };
   const userStore = useUserStore();
   const emit = defineEmits(['save', 'update:show', 'reset']);
   const formref = ref();
@@ -139,54 +161,34 @@
   const formData = ref<ProjectFormData>({
     name: '',
     description: '',
-    labelList: [{ key: '', value: '' }],
     labels: {}
   });
+
+  const {
+    labelList,
+    handleAddLabel,
+    handleDeleteLabel,
+    getLabelList,
+    validateLabel,
+    resetStatus,
+    validateTrigger
+  } = useLabelsActions(formData);
   const handleCancel = () => {
     emit('update:show', false);
   };
-  const setLabels = () => {
-    if (formData.value?.labelList?.length) {
-      formData.value.labels = reduce(
-        formData.value.labelList,
-        (obj, item) => {
-          if (item.key) {
-            obj[item.key] = item.value;
-          }
-          return obj;
-        },
-        {}
-      );
-    } else {
-      formData.value.labels = {};
-    }
-  };
-  const transformlabels = () => {
-    const labelKeys = keys(formData.value.labels);
-    if (labelKeys.length) {
-      formData.value.labelList = labelKeys.map((k) => {
-        return {
-          key: k,
-          value: get(formData.value, `labels.${k}`)
-        };
-      });
-    } else {
-      formData.value.labelList = [{ key: '', value: '' }];
-    }
-  };
+
   const handleOk = async () => {
     const res = await formref.value?.validate();
-    if (!res) {
+    validateLabel();
+    if (!res && !validateTrigger.value) {
       try {
-        setLabels();
-        const data = omit(formData.value, ['labelList']);
         submitLoading.value = true;
         // TODO
         if (props.action === 'create') {
-          await createProject(data);
+          await createProject(formData.value);
           await userStore.info();
         } else {
-          await updateProject(data);
+          await updateProject(formData.value);
         }
         setTimeout(() => {
           emit('save');
@@ -198,29 +200,23 @@
       }
     }
   };
-  const handleAddLabel = (obj, list) => {
-    list?.push(obj);
-  };
-  const handleDeleteLabel = (list, index) => {
-    const len = list.length || 0;
-    if (len < 2) return;
-    list?.splice(index, 1);
-  };
+
   const handleBeforeOpen = () => {
     if (props.action === 'create') {
+      labelList.value = [];
       formData.value = {
         name: '',
         description: '',
-        labelList: [{ key: '', value: '' }],
         labels: {}
       };
     } else {
       formData.value = props.info;
-      transformlabels();
+      getLabelList();
     }
   };
   const handleBeforeClose = () => {
     formref.value.resetFields();
+    resetStatus();
   };
 </script>
 

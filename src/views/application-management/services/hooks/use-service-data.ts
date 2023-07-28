@@ -230,6 +230,7 @@ export default function useServiceData(props?) {
     await getTemplates();
     await initFormData();
     asyncLoading.value = false;
+    console.log('serviceInfo===99', serviceInfo.value);
   };
   return {
     id,
