@@ -172,7 +172,7 @@
 
 <script lang="ts" setup>
   import _ from 'lodash';
-  import { ref, computed, nextTick, watch, onMounted } from 'vue';
+  import { ref, computed, nextTick, watch, onMounted, defineExpose } from 'vue';
   import { schemaType } from '@/components/form-create/config/interface';
   import { json2Yaml } from '@/components/form-create/config/yaml-parse';
   import { getObjectConditionValue } from '@/components/form-create/config/utils';
@@ -254,8 +254,8 @@
       handleTabChange(_.get(formTabs.value, '0'));
     });
   };
-  onMounted(() => {
-    initData();
+  defineExpose({
+    initData
   });
 </script>
 

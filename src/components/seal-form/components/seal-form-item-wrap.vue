@@ -11,7 +11,10 @@
         ></span
       >
       <a-tooltip v-if="popupInfo" :content="popupInfo">
-        <icon-info-circle style="stroke-linecap: initial; cursor: default" />
+        <icon-info-circle
+          style="stroke-linecap: initial; cursor: default"
+          class="m-l-2"
+        />
       </a-tooltip>
     </div>
     <slot></slot>

@@ -88,11 +88,12 @@
           :hide-label="pageAction === PageAction.EDIT"
         >
           <SealFormItemWrap
-            v-if="labelList?.length && pageAction === PageAction.EDIT"
+            v-if="pageAction === PageAction.EDIT"
             :label="$t(`applications.projects.form.label`)"
             :style="{ width: `${InputWidth.LARGE}px` }"
           >
             <a-space
+              v-if="labelList.length"
               style="display: flex; flex-direction: column; width: 100%"
               direction="vertical"
             >
@@ -117,10 +118,19 @@
                   }
                 }"
                 :position="sIndex"
+                always-delete
+                should-key
                 @add="(obj) => handleAddLabel(obj, labelList)"
                 @delete="handleDeleteLabel(labelList, sIndex)"
               ></xInputGroup>
             </a-space>
+            <template v-else>
+              <thumbButton
+                :size="24"
+                font-size="14px"
+                @click="handleAddLabel(labelItem, labelList)"
+              ></thumbButton>
+            </template>
           </SealFormItemWrap>
           <div v-else class="readonly-view-label">
             <LabelsList :labels="formData.labels"></LabelsList>
@@ -234,6 +244,7 @@
   import { onBeforeRouteLeave } from 'vue-router';
   import { queryConnectors } from '@/views/operation-hub/connectors/api';
   import usePageAction from '@/hooks/use-page-action';
+  import thumbButton from '@/components/buttons/thumb-button.vue';
   import xInputGroup from '@/components/form-create/custom-components/x-input-group.vue';
   import useLabelsActions from '@/components/form-create/hooks/use-labels-action';
   import useProjectBreadcrumbData from '@/views/application-management/projects/hooks/use-project-breadcrumb-data';
@@ -276,7 +287,6 @@
   const showModal = ref(false);
   const submitLoading = ref(false);
   const asyncLoading = ref(false);
-  const validateTrigger = ref(false);
   const breadCrumbList = ref<BreadcrumbOptions[]>([]);
   let copyFormData: any = {};
   const selectedList = ref<string[]>([]);
@@ -290,8 +300,15 @@
     labels: {},
     services: []
   });
-  const { labelList, handleAddLabel, handleDeleteLabel, getLabelList } =
-    useLabelsActions(formData);
+  const {
+    labelList,
+    labelItem,
+    validateLabel,
+    validateTrigger,
+    handleAddLabel,
+    handleDeleteLabel,
+    getLabelList
+  } = useLabelsActions(formData);
   const title = computed(() => {
     // only in clone
     if (environmentId) {
@@ -432,15 +449,10 @@
     const services = serviceRef.value.getSelectServiceData();
     formData.value.services = _.cloneDeep(services);
   };
-  const validateLabel = () => {
-    if (!environmentId) return false;
-    const valid = _.some(labelList.value, (item) => !item.value && item.key);
-    return valid;
-  };
 
   const handleSubmit = async () => {
     const res = await formref.value?.validate();
-    validateTrigger.value = validateLabel();
+    validateLabel();
     scrollToView();
     if (!res && !validateTrigger.value) {
       try {

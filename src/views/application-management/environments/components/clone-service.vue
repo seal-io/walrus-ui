@@ -56,172 +56,211 @@
         </a-grid>
       </a-spin>
     </div>
-    <div v-if="active" v-show="show" class="bordered">
-      <a-alert :show-icon="true" style="margin-bottom: 10px">
-        <span>
-          <span>{{ $t('applications.applications.edit') }}</span>
-          <span v-show="hasChange" class="change-tips">{{
-            `${$t('common.tips.change')}`
-          }}</span>
-        </span>
-        <template #action>
-          <EditPageFooter style="margin-top: 0; padding: 0">
-            <template #save>
-              <a-button
-                type="primary"
-                size="small"
-                class="cap-title"
-                @click="handleOk"
-                >{{ $t('common.button.confirm') }}</a-button
-              >
-            </template>
-            <template #cancel>
-              <a-button
-                size="small"
-                :type="'outline'"
-                class="cap-title"
-                @click="handleCancel"
-                >{{ $t('common.button.cancel') }}</a-button
-              >
-            </template>
-          </EditPageFooter>
-        </template>
-      </a-alert>
-      <GroupTitle
-        :title="$t('applications.applications.detail.basic')"
-        :bordered="false"
-        flex-start
-        style="margin: 30px 0 10px 0"
-      ></GroupTitle>
-      <div class="variables">
-        <a-form
-          ref="formref"
-          :model="formData"
-          auto-label-width
-          layout="vertical"
-        >
-          <a-form-item
-            :label="$t('operation.environments.table.name')"
-            field="name"
-            hide-label
-            :validate-trigger="['change']"
-            :rules="[
-              {
-                required: pageAction === PageAction.EDIT,
-                match: validateLabelNameRegx,
-                message: $t('common.validate.labelName')
-              }
-            ]"
-          >
-            <seal-input
-              v-model="formData.name"
-              style="width: 100%"
-              :max-length="63"
-              :required="pageAction === PageAction.EDIT"
-              :label="$t('operation.environments.table.name')"
-              show-word-limit
-            ></seal-input>
-            <template #extra>
-              <div style="max-width: 500px">{{
-                $t('common.validate.labelName')
-              }}</div>
-            </template>
-          </a-form-item>
-          <a-form-item
-            :label="$t(`applications.projects.form.label`)"
-            hide-label
-          >
-            <SealFormItemWrap
-              :label="$t(`applications.projects.form.label`)"
-              style="width: 100%"
-            >
-              <a-space
-                v-if="labelList?.length"
-                style="display: flex; flex-direction: column"
-                direction="vertical"
-              >
-                <xInputGroup
-                  v-for="(sItem, sIndex) in labelList"
-                  :key="sIndex"
-                  v-model:dataKey="sItem.key"
-                  v-model:dataValue="sItem.value"
-                  v-model:value="formData.labels"
-                  :data-item="{
-                    style: {
-                      key: {
-                        'display': 'flex',
-                        'flex': 1,
-                        'align-items': 'center'
-                      }
-                    }
-                  }"
-                  :trigger-validate="validateTrigger"
-                  :label-list="labelList"
-                  :position="sIndex"
-                  @add="(obj) => handleAddLabel(obj, labelList)"
-                  @delete="handleDeleteLabel(labelList, sIndex)"
-                ></xInputGroup>
-              </a-space>
-            </SealFormItemWrap>
-          </a-form-item>
-          <a-form-item :label="$t('common.table.description')" hide-label>
-            <seal-textarea
-              v-model="formData.description"
-              :label="$t('common.table.description')"
-              :max-length="200"
-              show-word-limit
-              style="width: 100%"
-              :auto-size="{ minRows: 4, maxRows: 6 }"
-            ></seal-textarea>
-          </a-form-item>
-        </a-form>
+    <a-modal
+      top="10%"
+      :closable="false"
+      :align-center="false"
+      :width="840"
+      :ok-text="$t('common.button.save')"
+      :visible="!!active && show"
+      :mask-closable="false"
+      :body-style="{ 'max-height': '500px', 'overflow': 'auto' }"
+      modal-class="project-modal"
+      :title="$t('applications.applications.edit')"
+    >
+      <div v-if="active" v-show="show">
+        <!-- <a-alert :show-icon="true" style="margin-bottom: 10px">
+          <span>
+            <span>{{ $t('applications.applications.edit') }}</span>
+            <span v-show="hasChange" class="change-tips">{{
+              `${$t('common.tips.change')}`
+            }}</span>
+          </span>
+          <template #action>
+            <EditPageFooter style="margin-top: 0; padding: 0">
+              <template #save>
+                <a-button
+                  type="primary"
+                  size="small"
+                  class="cap-title"
+                  @click="handleOk"
+                  >{{ $t('common.button.confirm') }}</a-button
+                >
+              </template>
+              <template #cancel>
+                <a-button
+                  size="small"
+                  :type="'outline'"
+                  class="cap-title"
+                  @click="handleCancel"
+                  >{{ $t('common.button.cancel') }}</a-button
+                >
+              </template>
+            </EditPageFooter>
+          </template>
+        </a-alert> -->
         <GroupTitle
-          :title="$t('applications.applications.detail.configuration')"
+          :title="$t('applications.applications.detail.basic')"
           :bordered="false"
           flex-start
-          style="margin: 10px 0 0 0"
+          style="margin: 0 0 10px 0"
         ></GroupTitle>
-        <a-tabs
-          v-if="formTabs.length > 1"
-          class="page-line-tabs"
-          :active-key="activeKey"
-          @change="handleTabChange"
-        >
-          <a-tab-pane
-            v-for="(group, index) in formTabs"
-            :key="`schemaForm${index}`"
-            :title="variablesGroup[group]?.label"
+        <div class="variables">
+          <a-form
+            ref="formref"
+            :model="formData"
+            auto-label-width
+            layout="vertical"
           >
-            <formCreate
-              :ref="(el: refItem) => setRefMap(el, `schemaForm${index}`)"
-              :form-id="`schemaForm${index}`"
-              layout="vertical"
-              action="post"
-              api=""
-              :show-footer="false"
-              :submit="() => {}"
-              :attributes="variableAttributes"
-              :model="variablesGroupForm[group]?.attributes"
-              :form-schema="variablesGroup[group]?.variables"
+            <a-form-item
+              :label="$t('operation.environments.table.name')"
+              field="name"
+              hide-label
+              :validate-trigger="['change']"
+              :rules="[
+                {
+                  required: pageAction === PageAction.EDIT,
+                  match: validateLabelNameRegx,
+                  message: $t('common.validate.labelName')
+                }
+              ]"
             >
-            </formCreate>
-          </a-tab-pane>
-        </a-tabs>
-        <formCreate
-          v-if="formTabs.length < 2"
-          ref="schemaForm"
-          form-id="schemaForm"
-          layout="vertical"
-          action="post"
-          api=""
-          :show-footer="false"
-          :submit="() => {}"
-          :model="variablesGroupForm[defaultGroupKey]?.attributes"
-          :form-schema="variablesGroup[defaultGroupKey]?.variables"
-        >
-        </formCreate>
+              <seal-input
+                v-model="formData.name"
+                style="width: 100%"
+                :max-length="63"
+                :required="pageAction === PageAction.EDIT"
+                :label="$t('operation.environments.table.name')"
+                show-word-limit
+              ></seal-input>
+              <template #extra>
+                <div style="max-width: 500px">{{
+                  $t('common.validate.labelName')
+                }}</div>
+              </template>
+            </a-form-item>
+            <a-form-item
+              :label="$t(`applications.projects.form.label`)"
+              hide-label
+            >
+              <SealFormItemWrap
+                :label="$t(`applications.projects.form.label`)"
+                style="width: 100%"
+              >
+                <a-space
+                  v-if="labelList?.length"
+                  style="display: flex; flex-direction: column"
+                  direction="vertical"
+                >
+                  <xInputGroup
+                    v-for="(sItem, sIndex) in labelList"
+                    :key="sIndex"
+                    v-model:dataKey="sItem.key"
+                    v-model:dataValue="sItem.value"
+                    v-model:value="formData.labels"
+                    :data-item="{
+                      style: {
+                        key: {
+                          'display': 'flex',
+                          'flex': 1,
+                          'align-items': 'center'
+                        }
+                      }
+                    }"
+                    :trigger-validate="validateTrigger"
+                    :label-list="labelList"
+                    :position="sIndex"
+                    always-delete
+                    should-key
+                    @add="(obj) => handleAddLabel(obj, labelList)"
+                    @delete="handleDeleteLabel(labelList, sIndex)"
+                  ></xInputGroup>
+                </a-space>
+                <template v-else>
+                  <thumbButton
+                    :size="24"
+                    font-size="14px"
+                    @click="handleAddLabel(labelItem, labelList)"
+                  ></thumbButton>
+                </template>
+              </SealFormItemWrap>
+            </a-form-item>
+            <a-form-item :label="$t('common.table.description')" hide-label>
+              <seal-textarea
+                v-model="formData.description"
+                :label="$t('common.table.description')"
+                :max-length="200"
+                show-word-limit
+                style="width: 100%"
+                :auto-size="{ minRows: 4, maxRows: 6 }"
+              ></seal-textarea>
+            </a-form-item>
+          </a-form>
+          <GroupTitle
+            :title="$t('applications.applications.detail.configuration')"
+            :bordered="false"
+            flex-start
+            style="margin: 10px 0 0 0"
+          ></GroupTitle>
+          <a-tabs
+            v-if="formTabs.length > 1"
+            class="page-line-tabs"
+            :active-key="activeKey"
+            @change="handleTabChange"
+          >
+            <a-tab-pane
+              v-for="(group, index) in formTabs"
+              :key="`schemaForm${index}`"
+              :title="variablesGroup[group]?.label"
+            >
+              <formCreate
+                :ref="(el: refItem) => setRefMap(el, `schemaForm${index}`)"
+                :form-id="`schemaForm${index}`"
+                layout="vertical"
+                action="post"
+                api=""
+                :show-footer="false"
+                :submit="() => {}"
+                :attributes="variableAttributes"
+                :model="variablesGroupForm[group]?.attributes"
+                :form-schema="variablesGroup[group]?.variables"
+              >
+              </formCreate>
+            </a-tab-pane>
+          </a-tabs>
+          <formCreate
+            v-if="formTabs.length < 2"
+            ref="schemaForm"
+            form-id="schemaForm"
+            layout="vertical"
+            action="post"
+            api=""
+            :show-footer="false"
+            :submit="() => {}"
+            :model="variablesGroupForm[defaultGroupKey]?.attributes"
+            :form-schema="variablesGroup[defaultGroupKey]?.variables"
+          >
+          </formCreate>
+        </div>
       </div>
-    </div>
+      <template #footer>
+        <EditPageFooter style="margin-top: 0">
+          <template #save>
+            <a-button type="primary" class="cap-title" @click="handleOk">{{
+              $t('common.button.confirm')
+            }}</a-button>
+          </template>
+          <template #cancel>
+            <a-button
+              :type="'outline'"
+              class="cap-title"
+              @click="handleCancel"
+              >{{ $t('common.button.cancel') }}</a-button
+            >
+          </template>
+        </EditPageFooter>
+      </template>
+    </a-modal>
   </div>
 </template>
 
@@ -240,6 +279,7 @@
   import xInputGroup from '@/components/form-create/custom-components/x-input-group.vue';
   import EditPageFooter from '@/components/edit-page-footer/index.vue';
   import useLabelsActions from '@/components/form-create/hooks/use-labels-action';
+  import thumbButton from '@/components/buttons/thumb-button.vue';
   import useScrollToView from '@/hooks/use-scroll-to-view';
   import GroupTitle from '@/components/group-title/index.vue';
   import formCreate from '@/components/form-create/index.vue';
@@ -293,6 +333,7 @@
   } = useServiceData();
   const {
     labelList,
+    labelItem,
     handleAddLabel,
     handleDeleteLabel,
     validateLabel,
@@ -462,9 +503,10 @@
     return result;
   };
   const handleOk = async () => {
+    validateLabel();
     const res = await formref.value?.validate();
     const { validFailedForm, moduleFormList } = await validateFormData();
-    if (!validFailedForm && !res) {
+    if (!validFailedForm && !res && !validateTrigger.value) {
       formData.attributes = {
         ..._.reduce(
           moduleFormList,

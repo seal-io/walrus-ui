@@ -1,4 +1,4 @@
-import { ref, isRef } from 'vue';
+import { ref, isRef, onBeforeUnmount } from 'vue';
 import _, { keys, map } from 'lodash';
 
 export default function useLabelsActions(formData) {
@@ -7,6 +7,8 @@ export default function useLabelsActions(formData) {
   };
   const validateTrigger = ref(false);
   const labelList = ref<{ key: string; value: string }[]>([]);
+  const labelItem = { key: '', value: '' };
+
   const handleAddLabel = (obj, list) => {
     list.push({ ...obj });
   };
@@ -22,20 +24,27 @@ export default function useLabelsActions(formData) {
         value: get(formData, `labels.${k}`)
       };
     });
-    if (!labelList.value.length) {
-      labelList.value = [{ key: '', value: '' }];
-    }
+    // if (!labelList.value.length) {
+    //   labelList.value = [{ key: '', value: '' }];
+    // }
   };
   const validateLabel = () => {
-    validateTrigger.value = _.some(
-      labelList.value,
-      (item) => !item.value && item.key
-    );
+    if (!labelList.value.length) {
+      validateTrigger.value = false;
+      return;
+    }
+    validateTrigger.value = _.some(labelList.value, (item) => !item.key);
+  };
+  const resetStatus = () => {
+    validateTrigger.value = false;
   };
   getLabelList();
+
   return {
     labelList,
     validateTrigger,
+    labelItem,
+    resetStatus,
     handleAddLabel,
     handleDeleteLabel,
     validateLabel,

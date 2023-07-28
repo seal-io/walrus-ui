@@ -114,7 +114,10 @@
           </div>
         </a-form-item>
         <a-form-item :label="$t(`applications.projects.form.label`)" hide-label>
-          <SealFormItemWrap :label="$t('applications.projects.form.label')">
+          <SealFormItemWrap
+            :label="$t('applications.projects.form.label')"
+            :style="{ width: `${InputWidth.LARGE}px` }"
+          >
             <a-space
               v-if="labelList?.length"
               :style="{
@@ -133,10 +136,19 @@
                 :trigger-validate="validateTrigger"
                 :label-list="labelList"
                 :position="sIndex"
+                always-delete
+                should-key
                 @add="(obj) => handleAddLabel(obj, labelList)"
                 @delete="handleDeleteLabel(labelList, sIndex)"
               ></xInputGroup>
             </a-space>
+            <template v-else>
+              <thumbButton
+                :size="24"
+                font-size="14px"
+                @click="handleAddLabel(labelItem, labelList)"
+              ></thumbButton>
+            </template>
           </SealFormItemWrap>
         </a-form-item>
         <a-form-item :label="$t('common.table.description')" hide-label>
@@ -282,6 +294,7 @@
   } from 'vue';
   import { onBeforeRouteLeave } from 'vue-router';
   import useCallCommon from '@/hooks/use-call-common';
+  import thumbButton from '@/components/buttons/thumb-button.vue';
   import useScrollToView from '@/hooks/use-scroll-to-view';
   import EditPageFooter from '@/components/edit-page-footer/index.vue';
   import xInputGroup from '@/components/form-create/custom-components/x-input-group.vue';
@@ -362,6 +375,7 @@
   } = useServiceData(props);
   const {
     labelList,
+    labelItem,
     handleAddLabel,
     handleDeleteLabel,
     validateLabel,
@@ -586,10 +600,10 @@
     }
   };
   const handleOk = async () => {
-    // validateLabel();
+    validateLabel();
     const res = await formref.value?.validate();
     const { validFailedForm, moduleFormList } = await validateFormData();
-    if (!res && !validFailedForm) {
+    if (!res && !validFailedForm && !validateTrigger.value) {
       try {
         submitLoading.value = true;
         formData.attributes = {
