@@ -139,10 +139,7 @@
   } from '../../config';
   import { InstanceData } from '../../config/interface';
   import useFetchResource from '../hooks/use-fetch-chunk-data';
-  import {
-    queryItemApplicationService,
-    deleteApplicationInstance
-  } from '../../api';
+  import { queryItemApplicationService, deleteServiceItem } from '../../api';
   import serviceInfo from '../service-info.vue';
   import serviceEdit from '../../pages/edit.vue';
 
@@ -199,7 +196,7 @@
 
   const handleDeleteConfirm = async (force) => {
     try {
-      await deleteApplicationInstance({ id: route.query.id, force });
+      await deleteServiceItem({ id: route.query.id, force });
     } catch (error) {
       console.log(error);
     }

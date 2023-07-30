@@ -44,7 +44,7 @@ export const cloneServices = (data: {
     data.formData
   );
 };
-export const deleteService = ({ data, projectID, force }) => {
+export const deleteServices = ({ data, projectID, force }) => {
   return axios.delete(`/services?${qs.stringify({ projectID, force })}`, {
     data: {
       ids: data
@@ -110,7 +110,7 @@ export const queryInstanceOutputs = (params) => {
     }
   });
 };
-export const deleteApplicationInstance = (data) => {
+export const deleteServiceItem = (data) => {
   return axios.delete(
     `/services/${data.id}?${qs.stringify({
       force: data.force,
@@ -172,6 +172,13 @@ export const queryServiceGraph = (params: { environmentID: string }) => {
   });
 };
 
+export const refreshServiceConfig = (params: { serviceID: string }) => {
+  return axios.post(
+    `/services/${params.serviceID}/refresh?${qs.stringify(
+      getPermissionRouteParams()
+    )}`
+  );
+};
 // =========history================
 interface ApplicationRevisionParams extends Pagination {
   serviceID?: string;

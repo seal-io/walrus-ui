@@ -29,7 +29,7 @@ insertCss(`
   }
 `);
 export const globalFontSize = 12;
-
+export const DefaultNodeSize = [185, 60];
 export const GlobalColor = {
   text3: 'rgb(134,144,156)',
   text2: 'rgb(78,89,105)'
@@ -48,29 +48,28 @@ export const defineCustomNode = () => {
         const { stateIcon = {} } = cfg;
         if (!stateIcon.animate) return;
         const image = group['shapeMap']['rect-state-icon'];
-        image.animate(
-          {
-            // Magnifying and disappearing
-            opacity: 0.2
-          },
-          {
-            duration: 2000,
-            easing: 'easeCubic',
-            repeat: true // repeat
-          }
-        );
+        // image.animate(
+        //   {
+        //     opacity: 0.2
+        //   },
+        //   {
+        //     duration: 2000,
+        //     easing: 'easeCubic',
+        //     repeat: true // repeat
+        //   }
+        // );
       },
       drawCompositionIcon(cfg: Node & NodeConfig, group: IGroup) {
         if (!cfg.hasComposition) return;
         const { compositionIcon, size } = cfg;
-        const w: number = _.get(size, '0');
-        const h: number = _.get(size, '1');
+        const w: number = _.get(size, '0') || DefaultNodeSize[0];
+        const h: number = _.get(size, '1') || DefaultNodeSize[1];
         const { width, height, img } = compositionIcon as any;
         group['shapeMap']['composition-icon'] = group.addShape('image', {
           attrs: {
             img,
             x: -w / 2 + 18,
-            y: h / 2 - 16,
+            y: h / 2 - 15,
             width,
             height
           },
@@ -81,74 +80,38 @@ export const defineCustomNode = () => {
       },
       drawActionButton(cfg: Node & NodeConfig, group: IGroup) {
         if (
-          !_.get(cfg, 'loggableInfo.loggable') &&
-          !_.get(cfg, 'executableInfo?.executable')
-        )
-          return;
-        const { size, moreButtonIcon } = cfg;
-        const w: number = _.get(size, '0');
-        const h: number = _.get(size, '1');
-        const { width, height, img } = moreButtonIcon as any;
-        group['shapeMap']['more-button-icon'] = group.addShape('image', {
-          attrs: {
-            img,
-            x: w / 2 - 20,
-            y: -h / 2,
-            width,
-            height,
-            cursor: 'pointer'
-          },
+          _.get(cfg, 'loggableInfo.loggable') ||
+          _.get(cfg, 'executableInfo?.executable') ||
+          _.get(cfg, 'drifted')
+        ) {
+          const { size, moreButtonIcon } = cfg;
+          const w: number = _.get(size, '0');
+          const h: number = _.get(size, '1');
+          const { width, height, img } = moreButtonIcon as any;
+          group['shapeMap']['more-button-icon'] = group.addShape('image', {
+            attrs: {
+              img,
+              x: _.get(cfg, 'drifted') ? w / 2 - 30 : w / 2 - 20,
+              y: -h / 2,
+              width,
+              height,
+              cursor: 'pointer'
+            },
 
-          className: 'more-button-icon',
-          name: 'more-button-icon',
-          draggable: true
-        });
+            className: 'more-button-icon',
+            name: 'more-button-icon',
+            draggable: true
+          });
+        }
       }
     },
     'modelRect'
   );
 };
 
-const handClick = () => {
-  console.log('custom node');
-};
-export const defineDomNode = () => {
-  G6.registerNode(
-    'resource',
-    {
-      draw: (cfg: ModelConfig, group: IGroup) => {
-        const size = cfg.size || [120, 60];
-        console.log('cfg===99=', cfg);
-        return group.addShape('dom', {
-          attrs: {
-            width: size[0],
-            height: size[1],
-            // 传入 DOM 的 html
-            html: `
-          <div style="background-color: #fff; border: 2px solid #5B8FF9; border-radius: 5px; width: ${
-            size[0] - 5
-          }px; height: ${size[1] - 5}px; display: flex;">
-            <div style="height: 100%; width: 33%; background-color: #CDDDFD" on-click="handClick">
-              <img alt="img" style="line-height: 100%; padding-top: 6px; padding-left: 8px;" src="https://gw.alipayobjects.com/mdn/rms_f8c6a0/afts/img/A*Q_FQT6nwEC8AAAAAAAAAAABkARQnAQ" width="20" height="20" />  
-            </div>
-            <span style="margin:auto; padding:auto; color: #5B8FF9">${
-              cfg.label
-            }</span>
-          </div>
-            `
-          },
-          name: 'dom-node-keyShape', // 在 G6 3.3 及之后的版本中，必须指定 name，可以是任意字符串，但需要在同一个自定义元素类型中保持唯一性
-          draggable: true
-        });
-      }
-    },
-    'single-node'
-  );
-};
-
 export const defaultNode = {
   shape: 'modelRect',
-  size: [185, 60],
+  size: DefaultNodeSize,
   style: {
     lineWidth: 1,
     stroke: 'transparent',

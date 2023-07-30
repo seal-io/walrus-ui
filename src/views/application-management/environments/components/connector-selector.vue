@@ -17,16 +17,6 @@
         :disabled="includes(selected, item.value)"
         >{{ item.label }}</a-option
       >
-      <!-- <template #footer>
-        <div style="display: flex; justify-content: space-around; padding: 6px">
-          <a-button type="primary" size="mini" @click="handleConfirm">{{
-            $t('common.button.confirm')
-          }}</a-button>
-          <a-button type="outline" size="mini" @click="handleCancel">{{
-            $t('common.button.cancel')
-          }}</a-button>
-        </div>
-      </template> -->
     </a-select>
   </div>
 </template>

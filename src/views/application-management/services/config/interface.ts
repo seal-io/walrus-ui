@@ -18,34 +18,24 @@ export interface ServiceRowData {
   template: { id: string; version: string };
   attributes: object;
 }
-export interface AppModule {
-  name: string;
-  variables: object;
-  module: {
-    id: string;
+
+export interface DriftDataItem {
+  address: string;
+  change: {
+    actions: string[];
+    after: object;
+    afterSensitive: object;
+    afterUnknown: object;
+    before: object;
+    beforeSensitive: object;
   };
-  version: string;
-}
-export interface AppFormData {
+  mode: string;
+  moduleAddress: string;
   name: string;
-  description: string;
-  labels: object;
-  project: { id: string };
-  variables: Array<{
-    name: string;
-    default: any;
-    type: string;
-    description?: string;
-  }>;
-  modules: Array<{
-    name: string;
-    variables: object;
-    version: string;
-    module: {
-      id: string;
-    };
-  }>;
+  providerName: string;
+  type: string;
 }
+
 export interface InstanceData {
   name: string;
   id: string;

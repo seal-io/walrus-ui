@@ -64,10 +64,6 @@
         </GraphG6>
       </a-spin>
     </div>
-    <!-- <div class="node-info" :class="{ 'node-active': nodeActive }">
-      <div class="title">{{ nodeInfo.name }}</div>
-      <div class="content"></div>
-    </div> -->
   </div>
 </template>
 

@@ -1,30 +1,51 @@
-1. install dependencies
+## Installation
+
+1. [Nodejs](https://nodejs.org/en) 14.0+(with NPM)
+
+If you're on Mac
 
 ```
-// with npm
-npm install
+brew install node
+```
 
-// with yarn 
+2. [Yarn](https://classic.yarnpkg.com/en/docs/install)
+
+```
+npm install yarn -g
+```
+
+3. Setup
+
+```
+git clone https://github.com/seal-io/ui/
+```
+
+4. Install dependencies
+
+```
+cd ui
 yarn install
 ```
 
-2. build  release dist
+## Usage
+
+1. Run development server (at https://localhost:4000)
 
 ```
-// with npm 
-npm run build
-
-// with yarn
-yarn build
-```
-
-3. development server
-
-```
-// with npm 
-npm run dev --host
-
-// with yarn
 yarn dev --host
 ```
 
+2. build release
+
+```
+yarn build
+```
+
+## Bugs & Issues
+
+Please submit [bugs and issues](https://github.com/seal-io/seal/issues) with a label `ui`
+
+## Links
+
+- Official website: https://www.seal.io/
+- Documents: https://seal-io.github.io/docs/

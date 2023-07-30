@@ -17,6 +17,7 @@
             v-bind="_.get(_.head(actions), 'props') || ''"
             :is="_.get(_.head(actions), 'icon') || ''"
             class="size-14"
+            style="color: var(--sealblue-6)"
           ></component>
         </template>
       </a-link>

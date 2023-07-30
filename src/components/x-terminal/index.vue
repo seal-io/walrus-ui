@@ -10,25 +10,19 @@
 
 <script lang="ts" setup>
   import qs from 'query-string';
-  import {
-    onClickOutside,
-    useThrottleFn,
-    useResizeObserver
-  } from '@vueuse/core';
+  import { useResizeObserver } from '@vueuse/core';
   import {
     ref,
     onMounted,
     onBeforeUnmount,
     watch,
-    computed,
     nextTick,
     defineExpose
   } from 'vue';
-  import _, { debounce, trim, get, throttle } from 'lodash';
+  import _, { trim, get, throttle } from 'lodash';
   import { Terminal } from 'xterm';
   import { FitAddon } from 'xterm-addon-fit';
   import 'xterm/css/xterm.css';
-  import { deleteModal } from '@/utils/monitor';
   import platformCall from '@/utils/platform';
 
   const props = defineProps({
@@ -259,50 +253,11 @@
       if (isWsOpen()) {
         terminalSocket.value.send(data);
       }
-      // onDataCallback(data);
     });
     term.value.onKey((e) => {
-      // console.log('key>>ee>>=code==', e);
       if (toRetry.value && e.domEvent.code === 'KeyY') {
         retry();
       }
-      // up
-      // if (e.key === '\x1B[A') {
-      //   terminalSocket.value.send(`\x1B[A`);
-      // }
-      // // down
-      // if (e.key === '\x1B[B') {
-      //   terminalSocket.value.send(`\x1B[B`);
-      // }
-      // // left
-      // if (e.key === '\x1B[D') {
-      //   terminalSocket.value.send(`\x1B[D`);
-      // }
-      // // right
-      // if (e.key === '\x1B[C') {
-      //   terminalSocket.value.send(`\x1B[C`);
-      // }
-      // // backspace
-      // if (e.key === '\x7F') {
-      //   terminalSocket.value.send(`\x7F`);
-      // }
-      // // tab
-      // if (e.key === '\t') {
-      //   terminalSocket.value.send(`${command.value}\t`);
-      //   clearCommand();
-      // }
-    });
-    term.value.attachCustomKeyEventHandler(async (e) => {
-      // console.log('key>>ee>>=1==', e);
-      // if (platform.isMac && e.metaKey && e.code === 'KeyV') {
-      //   const val = await navigator.clipboard.readText();
-      //   command.value = `${command.value}${val}`;
-      //   term.value.write(val);
-      // } else if (e.ctrlKey && e.code === 'KeyV') {
-      //   const val = await navigator.clipboard.readText();
-      //   command.value = `${command.value}${val}`;
-      //   term.value.write(val);
-      // }
     });
   };
   const onTerminalResize = () => {
@@ -320,13 +275,6 @@
     onTerminalResize();
   };
 
-  const handleTryConnect = () => {
-    deleteModal({
-      title: 'common.ws.close',
-      onOk: retry,
-      okText: 'common.ws.reconnect'
-    });
-  };
   const debounceCall = _.debounce(() => {
     first.value = true;
     loading.value = true;

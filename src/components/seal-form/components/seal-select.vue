@@ -3,7 +3,8 @@
     v-on-click-outside="handleBlur"
     class="seal-relative wrapper select"
     :class="{
-      'is-focused': isFocus || modelValue,
+      'is-focused':
+        isFocus || (Array.isArray(modelValue) ? modelValue.length : modelValue),
       'prefix-icon': slots.prefix
     }"
     :style="{ width: $attrs.style?.width || 'max-content' }"

@@ -39,14 +39,7 @@
               @change="(val) => handleCascaderChange(val, sItem)"
             >
             </a-cascader>
-            <!-- <a-input
-              v-else
-              :class="{ readonly: viewable }"
-              :readonly="viewable"
-              :model-value="sItem.fieldName"
-              :max-length="50"
-              :show-word-limit="!viewable"
-            ></a-input> -->
+
             <div
               v-else
               class="readonly-view-label bg"
