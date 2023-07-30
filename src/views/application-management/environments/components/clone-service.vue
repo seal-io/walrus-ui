@@ -69,36 +69,6 @@
       :title="$t('applications.applications.edit')"
     >
       <div v-if="active" v-show="show">
-        <!-- <a-alert :show-icon="true" style="margin-bottom: 10px">
-          <span>
-            <span>{{ $t('applications.applications.edit') }}</span>
-            <span v-show="hasChange" class="change-tips">{{
-              `${$t('common.tips.change')}`
-            }}</span>
-          </span>
-          <template #action>
-            <EditPageFooter style="margin-top: 0; padding: 0">
-              <template #save>
-                <a-button
-                  type="primary"
-                  size="small"
-                  class="cap-title"
-                  @click="handleOk"
-                  >{{ $t('common.button.confirm') }}</a-button
-                >
-              </template>
-              <template #cancel>
-                <a-button
-                  size="small"
-                  :type="'outline'"
-                  class="cap-title"
-                  @click="handleCancel"
-                  >{{ $t('common.button.cancel') }}</a-button
-                >
-              </template>
-            </EditPageFooter>
-          </template>
-        </a-alert> -->
         <GroupTitle
           :title="$t('applications.applications.detail.basic')"
           :bordered="false"
@@ -310,8 +280,6 @@
     }
   });
   const {
-    id,
-    init,
     generateVariablesGroup,
     setFormAttributes,
     initCompleteData,
@@ -319,15 +287,9 @@
     formData,
     pageAction,
     defaultGroupKey,
-    templateInfo,
     variablesGroup,
     variablesGroupForm,
-    templateVersionList,
-    templateVersionFormCache,
-    serviceDataList,
-    templateList,
     completeData,
-    title,
     refMap,
     setRefMap
   } = useServiceData();

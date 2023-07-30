@@ -44,26 +44,6 @@
             ></a-option>
           </seal-select>
         </a-form-item>
-        <!-- <a-form-item :label="$t(`applications.projects.form.label`)">
-          <a-space
-            v-if="labelList?.length"
-            style="display: flex; flex-direction: column"
-            direction="vertical"
-          >
-            <xInputGroup
-              v-for="(sItem, sIndex) in labelList"
-              :key="sIndex"
-              v-model:dataKey="sItem.key"
-              v-model:dataValue="sItem.value"
-              v-model:value="formData.labels"
-              :trigger-validate="validateTrigger"
-              :label-list="labelList"
-              :position="sIndex"
-              @add="(obj) => handleAddLabel(obj, labelList)"
-              @delete="handleDeleteLabel(labelList, sIndex)"
-            ></xInputGroup>
-          </a-space>
-        </a-form-item> -->
         <a-form-item :label="$t('applications.applications.table.service')">
           <cloneService
             ref="servicesRef"

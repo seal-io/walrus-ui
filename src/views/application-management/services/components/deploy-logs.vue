@@ -3,7 +3,6 @@
     <div ref="scroller" class="log-text">
       {{ content }}
     </div>
-    <!-- <AceEditor :model-value="content" read-only></AceEditor> -->
   </div>
 </template>
 
@@ -12,7 +11,6 @@
   import { ref, inject, watch } from 'vue';
   import usePermissionParams from '../../hooks/use-permission-params';
   import { ServiceStatus } from '../config';
-  // import AceEditor from '@/components/ace-editor/index.vue';
 
   const props = defineProps({
     revisionId: {

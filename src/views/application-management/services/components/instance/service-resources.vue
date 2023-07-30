@@ -126,7 +126,6 @@
                   size="small"
                   @click="handleConnectTerminal(record)"
                 >
-                  <!-- <i class="size-16 iconfont icon-code"></i> -->
                   <icon-code-square class="size-16" />
                 </a-link>
               </a-tooltip>

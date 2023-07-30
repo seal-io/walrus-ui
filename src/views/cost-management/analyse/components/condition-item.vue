@@ -5,23 +5,12 @@
         <icon-plus style="margin-right: 4px" />
         <span>{{ $t('cost.analyse.view.strategy') }}</span>
       </a-button>
-      <!-- <a-button type="outline" size="small" @click.stop="handleAddPolicyGroup">
-        <icon-layers style="margin-right: 4px" />
-        <span>{{ $t('cost.analyse.view.strategyGroup') }}</span>
-      </a-button> -->
     </a-space>
     <div
       class="condition-box wrapper"
       :class="{ only: conditionCount.length < 2 }"
     >
-      <div v-if="conditionCount.length > 1" class="operator">
-        <!-- <a-select
-        :options="relationOptions"
-        style="width: 80px"
-        size="small"
-      ></a-select> -->
-        OR
-      </div>
+      <div v-if="conditionCount.length > 1" class="operator"> OR </div>
       <a-space class="condition" :size="10" direction="vertical">
         <template v-if="policyDataList.length">
           <div
@@ -112,8 +101,6 @@
                   :options="perspectiveDataList"
                   style="flex: 1"
                 ></a-select>
-                <!-- <a-input style="flex: 1"></a-input> -->
-                <!-- <a-input style="flex: 1" v-model="pItem.values"></a-input> -->
 
                 <a-button
                   type="outline"

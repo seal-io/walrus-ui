@@ -47,18 +47,6 @@
             ></StatusLabel>
           </template>
         </a-table-column>
-        <!-- <a-table-column
-          ellipsis
-          tooltip
-          :cell-style="{ minWidth: '40px' }"
-          align="center"
-          data-index="createTime"
-          :title="$t('common.table.createTime')"
-        >
-          <template #cell="{ record }">
-            <span>{{ dayjs(record.createTime).format('YYYY-MM-DD') }}</span>
-          </template>
-        </a-table-column> -->
         <a-table-column
           v-if="action === 'edit'"
           align="center"

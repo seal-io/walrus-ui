@@ -131,6 +131,21 @@
         </a-table-column>
         <a-table-column
           ellipsis
+          :cell-style="{ minWidth: '40px' }"
+          data-index="driftResult.drifted"
+          :title="$t('applications.service.resource.drift')"
+        >
+          <template #cell="{ record }">
+            <a-link
+              v-if="record?.driftResult?.drifted"
+              @click="handleClickDriftResource(record)"
+              >{{ $t('common.button.view') }}</a-link
+            >
+            <span v-else>-</span>
+          </template>
+        </a-table-column>
+        <a-table-column
+          ellipsis
           tooltip
           :cell-style="{ minWidth: '40px' }"
           align="center"
@@ -184,10 +199,17 @@
     ></rollbackModal>
     <deleteServiceModal
       v-model:show="showDeleteModal"
-      :callback="handleDeleteConfirmModal"
+      :callback="handleDeleteConfirm"
       :title="$t('common.delete.tips')"
     >
     </deleteServiceModal>
+    <driftResource
+      v-model:show="showDriftModal"
+      :title="$t('applications.service.resource.drift')"
+      :data-list="driftResourceList"
+      :active="activeDriftResource"
+    >
+    </driftResource>
   </ComCard>
 </template>
 
@@ -216,16 +238,13 @@
   import FilterBox from '@/components/filter-box/index.vue';
   import StatusLabel from '@/views/operation-hub/connectors/components/status-label.vue';
   import { useUserStore } from '@/store';
-  import { ServiceRowData } from '../config/interface';
+  import { ServiceRowData, DriftDataItem } from '../config/interface';
   import { websocketEventType, serviceActions } from '../config';
-  import {
-    queryServices,
-    deleteService,
-    deleteApplicationInstance
-  } from '../api';
+  import { queryServices, deleteServices, refreshServiceConfig } from '../api';
   import useRollbackRevision from '../hooks/use-rollback-revision';
   import deleteServiceModal from '../components/delete-service-modal.vue';
   import rollbackModal from '../components/rollback-modal.vue';
+  import driftResource from '../components/drift-resource.vue';
 
   const userStore = useUserStore();
   const {
@@ -244,9 +263,10 @@
 
   let fetchToken: any = null;
   const showDeleteModal = ref(false);
-  const serviceDel = ref<any>({});
+  const showDriftModal = ref(false);
+  const driftResourceList = ref<DriftDataItem[]>([]);
+  const activeDriftResource = ref('');
   const id = route.query.id as string;
-  const delType = ref('');
   let timer: any = null;
   const loading = ref(false);
   const total = ref(0);
@@ -275,6 +295,15 @@
       return item;
     });
     return res;
+  };
+  const handleClickDriftResource = (row) => {
+    driftResourceList.value =
+      _.get(row, 'driftResult.drift.resource_drift') || [];
+    const item = _.head(driftResourceList.value) || {};
+    activeDriftResource.value = `${item.type}/${item.name}`;
+    setTimeout(() => {
+      showDriftModal.value = true;
+    }, 100);
   };
   const fetchData = async () => {
     if (!queryParams.projectID || !queryParams.environmentID) return;
@@ -364,7 +393,7 @@
       const ids = _.map(selectedKeys.value, (val) => {
         return val;
       });
-      await deleteService({
+      await deleteServices({
         data: ids,
         projectID: queryParams.projectID,
         force
@@ -392,37 +421,29 @@
       }
     });
   };
-  const handleDeleteConfirmRow = async (force) => {
-    try {
-      await deleteApplicationInstance({ id: serviceDel.value, force });
-    } catch (error) {
-      console.log(error);
-    }
-  };
-  const handleDeleteConfirmModal = (force) => {
-    if (delType.value === 'row') {
-      handleDeleteConfirmRow(force);
-    } else {
-      handleDeleteConfirm(force);
-    }
-  };
+
   const handleDelete = async (row, type) => {
-    delType.value = type;
-    serviceDel.value = row.id;
-    setTimeout(() => {
-      showDeleteModal.value = true;
-    }, 100);
+    showDeleteModal.value = true;
+  };
+  const handleRefreshServiceConfig = async (row) => {
+    try {
+      loading.value = true;
+      await refreshServiceConfig({
+        serviceID: row.id
+      });
+      loading.value = false;
+      execSucceed();
+    } catch (error) {
+      loading.value = false;
+    }
   };
   const handleClickAction = (value, row) => {
-    if (value === 'delete') {
-      handleDelete(row, 'row');
-      return;
-    }
     actionHandlerMap.get(value)(row);
   };
   const setActionHandler = () => {
     actionHandlerMap.set('upgrade', handleClickUpgrade);
     actionHandlerMap.set('rollback', handleClickRollback);
+    actionHandlerMap.set('sync', handleRefreshServiceConfig);
   };
   const init = async () => {
     userStore.setInfo({ currentProject: queryParams.projectID });

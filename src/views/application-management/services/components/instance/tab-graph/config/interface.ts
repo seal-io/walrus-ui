@@ -28,6 +28,7 @@ export interface INode extends Node {
   providerType: string;
   stateIcon: object;
   extensions: object;
+  drifted: boolean;
   loggableInfo: {
     loggable: boolean;
     data: object;

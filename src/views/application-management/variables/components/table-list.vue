@@ -116,10 +116,6 @@
                 <icon-lock />
               </span>
               <span v-else>
-                <!-- <span>
-                    <icon-eye v-if="!record.visible" class="size-16" />
-                    <icon-eye-invisible v-if="record.visible" class="size-16" />
-                  </span> -->
                 {{ !record.sensitive ? record.value : '*******' }}
               </span>
             </template>

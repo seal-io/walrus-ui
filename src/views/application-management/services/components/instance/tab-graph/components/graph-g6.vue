@@ -54,6 +54,13 @@
       @delete="handleTerminalDelete"
     >
     </resourceControl>
+    <driftResource
+      v-model:show="showDriftModal"
+      :title="$t('applications.service.resource.drift')"
+      :change-data="driftChangeData"
+      single
+    >
+    </driftResource>
   </div>
 </template>
 
@@ -74,11 +81,7 @@
     watchEffect
   } from 'vue';
   import G6 from '@antv/g6';
-  import {
-    onClickOutside,
-    useThrottleFn,
-    useResizeObserver
-  } from '@vueuse/core';
+  import { useResizeObserver } from '@vueuse/core';
   import { defineCustomNode, defaultNode } from '../config/common';
   import { createToolTip } from '../config/plugins';
   import { fittingString } from '../config/utils';
@@ -91,6 +94,7 @@
   import terminalModal from './terminal-modal.vue';
   import resourceControl from '../../resource-control.vue';
   import useResourceControl from '../../../hooks/use-resource-control';
+  import driftResource from '../../../drift-resource.vue';
 
   const props = defineProps({
     sourceData: {
@@ -144,6 +148,8 @@
   const emits = defineEmits(['nodeClick', 'canvasClick']);
   const showLogModal = ref(false);
   const showTermModal = ref(false);
+  const showDriftModal = ref(false);
+  const driftChangeData = ref({});
   const logDataList = ref<ResourceKey[]>([]);
   const termDataList = ref<ResourceKey[]>([]);
   const resourceNodeInfo = ref({});
@@ -165,10 +171,6 @@
   contextMenu.value = new G6.Menu({
     trigger: 'click',
     shouldBegin(e) {
-      // const isFull = e?.target
-      //   .getParent?.()
-      //   .cfg?.item?.getModel?.()?.isFullscreen;
-
       if (_.get(e?.target, 'cfg.name') === 'more-button-icon') {
         contextMenuNode.value = e?.item;
         return true;
@@ -180,26 +182,35 @@
       const model: INode = node?.getModel();
       const logabble = model?.loggableInfo?.loggable;
       const executable = model?.executableInfo?.executable;
+      const drifted = model?.drifted;
       let logHtml = '';
       let execHtml = '';
-      if (!logabble && !executable) {
+      let driftHtml = '';
+      if (!logabble && !executable && !drifted) {
         return '';
+      }
+
+      if (drifted) {
+        driftHtml = `<li code="drift" class="iconfont icon-xiangqing-">
+          ${i18n.global.t('applications.service.resource.driftInfo')}
+          </li>`;
       }
       if (logabble) {
         logHtml = `<li code="log" class="iconfont icon-xiangqing-">
       ${i18n.global.t('applications.instance.tab.log')}
     </li>`;
       }
+
       if (executable) {
         execHtml = `<li code="exec" class="iconfont icon-code">
       ${i18n.global.t('applications.instance.tab.term')}
-
       </li>`;
       }
+
       return `
     <div id="contextMenu-wrapper">
     <ul >
-      ${logHtml}${execHtml}
+      ${logHtml}${execHtml}${driftHtml}
     </ul>
     </div>
     `;
@@ -210,10 +221,6 @@
       resourceNodeInfo.value = model;
 
       if (code === 'log') {
-        // logDataList.value = model?.loggableInfo?.data;
-        // setTimeout(() => {
-        //   showLogModal.value = true;
-        // }, 100);
         handleViewLogs({
           ...(_.get(model, 'extensions') || {}),
           id: model.nodeId,
@@ -222,15 +229,16 @@
         return;
       }
       if (code === 'exec') {
-        // termDataList.value = model?.executableInfo?.data;
-        // setTimeout(() => {
-        //   showTermModal.value = true;
-        // }, 100);
         handleConnectTerminal({
           ...(_.get(model, 'extensions') || {}),
           id: model.nodeId,
           name: model.name
         });
+      }
+      if (code === 'drift') {
+        driftChangeData.value =
+          _.get(model, 'extensions.drift.drift.change') || {};
+        showDriftModal.value = true;
       }
     },
     offsetX: 16 + 10,
@@ -242,7 +250,6 @@
     return props.isFullscreen ? '100vh' : props.containerHeight;
   });
   const fitView = () => {
-    // graph.zoomTo(1);
     graph?.fitView();
   };
   const handleWindowResize = () => {
@@ -252,9 +259,6 @@
     fitView();
   };
 
-  const throttleFn = useThrottleFn(() => {
-    handleWindowResize();
-  }, 100);
   useResizeObserver(graphWrapper, (entries) => {
     const entry = entries[0];
     const { width: boxWidth, height: boxHeight } = entry.contentRect;
@@ -344,6 +348,7 @@
       };
 
       node.descTips = _.get(node, 'extensions.type') || _.get(node, 'kind');
+      node.drifted = _.get(node, 'extensions.drift.drifted');
 
       if (_.get(node, 'kind') !== nodeKindType.ServiceResource) {
         node.description = fittingString(node.descTips, 120);
@@ -370,22 +375,27 @@
       if (_.get(node, 'kind') === nodeKindType.ServiceResourceGroup) {
         node.style = {
           ...style,
-          fill: '#e8f2ff',
+          fill: node.drifted ? 'rgba(247, 186, 30,.5)' : '#e8f2ff',
           radius: 30
         };
+
         node.stateStyles = {
           inactive: {
-            fill: 'rgba(232,242,255,.5)'
+            fill: node.drifted
+              ? 'rgba(247, 186, 30,.2)'
+              : 'rgba(232,242,255,.5)'
           },
           highlight: {
-            fill: 'rgba(142, 173, 231,.7)'
+            fill: node.drifted
+              ? 'rgba(247, 186, 30,.7)'
+              : 'rgba(142, 173, 231,.7)'
           },
           selected: {
-            stroke: 'rgb(33, 74, 196)',
+            stroke: node.drifted ? 'rgba(247, 186, 30,.8)' : 'rgb(33, 74, 196)',
             lineWidth: 1
           },
           hover: {
-            stroke: 'rgb(33, 74, 196)',
+            stroke: node.drifted ? 'rgba(247, 186, 30,.8)' : 'rgb(33, 74, 196)',
             lineWidth: 1
           }
         };
@@ -577,6 +587,9 @@
       contextMenuNode.value = null;
     }
   };
+  const isClickMoreButton = (e) => {
+    return _.get(e?.target, 'cfg.name') === 'more-button-icon';
+  };
   const initNodeEvent = () => {
     graph?.on('node:mouseenter', (e) => {
       graph.setItemState(e.item, 'hover', true);
@@ -588,11 +601,8 @@
       graph.setItemState(e.item, 'hover', false);
     });
 
-    // graph?.on('combo:click', (e) => {
-    //   const node = e.item;
-    //   const model = node.getModel();
-    // });
     graph?.on('node:click', (e) => {
+      if (isClickMoreButton(e)) return;
       const node = e.item;
       const model = node.getModel();
       toggleNodeCollapse(node);
@@ -628,7 +638,6 @@
 
   const createGraph = () => {
     graph = new G6.Graph({
-      // groupByTypes: true,
       // renderer: 'svg', // arrow style will be change
       container: 'graph-mount',
       plugins: [
@@ -651,7 +660,6 @@
             animateFlag.value = false;
           });
         }
-        // sortByCombo: false
       },
       pixelRatio: 2,
       defaultNode,
@@ -766,6 +774,7 @@
 
 <style lang="less" scoped>
   @import url('../style/modelRect-keyShape.less');
+
   @height: 610px;
 
   .graph-wrapper {
@@ -819,12 +828,10 @@
 </style>
 
 <style lang="less">
+  @import url('../style/g6-component-tooltip.less');
+
   .g6-component-contextmenu {
     padding: 6px 8px;
-    border: none;
-  }
-
-  .g6-component-tooltip {
     border: none;
   }
 

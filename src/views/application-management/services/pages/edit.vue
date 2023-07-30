@@ -300,10 +300,7 @@
   import xInputGroup from '@/components/form-create/custom-components/x-input-group.vue';
   import formCreate from '@/components/form-create/index.vue';
   import GroupTitle from '@/components/group-title/index.vue';
-  import {
-    TemplateRowData,
-    TemplateVersionData
-  } from '@/views/operation-hub/templates/config/interface';
+  import { TemplateVersionData } from '@/views/operation-hub/templates/config/interface';
   import {
     validateLabelNameRegx,
     PageAction,
@@ -321,10 +318,7 @@
     label: string;
   }
   type refItem = Element | ComponentPublicInstance | null;
-  interface TemplateVersion extends TemplateVersionData {
-    label: string;
-    value: string;
-  }
+
   const props = defineProps({
     action: {
       type: String,

@@ -8,7 +8,6 @@
       @click="handleClickItem(item)"
       @change="handleCheckChange"
     ></thumbItem>
-    <!-- <thumbButton @click="handleCreate"></thumbButton> -->
   </a-space>
 </template>
 
@@ -16,7 +15,6 @@
   import { includes } from 'lodash';
   import { onMounted, PropType, defineEmits } from 'vue';
   import useCallCommon from '@/hooks/use-call-common';
-  import thumbButton from '@/components/buttons/thumb-button.vue';
   import thumbItem from './thumb-item.vue';
   import { EnvironmentRow } from '../config/interface';
 
@@ -36,9 +34,7 @@
   });
   const emits = defineEmits(['create', 'change']);
   const { router } = useCallCommon();
-  const handleCreate = () => {
-    emits('create');
-  };
+
   const handleCheckChange = (checked, id) => {
     emits('change', checked, id);
   };

@@ -63,39 +63,45 @@ export const createToolTip = (contextMenuNode) => {
       const model: INode = e?.item?.getModel();
       const box = document.createElement('div');
       box.style.width = 'max-content';
+
       let tips = `<span>${i18n.global.t(
         'applications.service.graph.menu'
-      )}：</span>`;
+      )}: </span>`;
       if (_.get(model, 'loggableInfo.loggable')) {
         tips += `<span> ${i18n.global.t(
           'applications.instance.tab.log'
-        )}</span><span style="padding: 0 3px"></span>`;
+        )}</span><span class="loggable-text"></span>`;
       }
       if (_.get(model, 'executableInfo.executable')) {
         tips += `<span> ${i18n.global.t(
           'applications.instance.tab.term'
         )}</span>`;
       }
-
+      let runDiv = '';
+      if (model?.loggableInfo?.loggable || model?.executableInfo?.executable) {
+        runDiv = `<div class="t-run">${tips}</div>`;
+      }
+      // drift node
+      let driftDiv = '';
+      if (_.get(model, 'drifted')) {
+        driftDiv = `<div class="t-info">
+        <span  class="t-label">${i18n.global.t(
+          'applications.service.resource.hasDrift'
+        )}:</span> ${i18n.global.t('applications.service.resource.isDrifted')}
+      </div>`;
+      }
       box.innerHTML = `
-        <div style="line-height:20px">
-          <div>
-          <span style="display: inline-block;width: 40px;font-weight:700">${i18n.global.t(
-            'common.table.name'
-          )}:</span>
+        <div  class="inner-wrapper">
+          <div class="t-info">
+          <span  class="t-label">${i18n.global.t('common.table.name')}:</span>
           ${_.get(model, 'name')}
           </div>
-          <div>
-          <span style="display: inline-block;width: 40px;font-weight:700">${i18n.global.t(
-            'common.table.type'
-          )}:</span>
+          <div class="t-info">
+          <span  class="t-label">${i18n.global.t('common.table.type')}:</span>
           ${_.get(model, 'descTips') || ''}
           </div>
-          <div style="font-weight:700;margin-top:10px">${
-            model?.loggableInfo?.loggable || model?.executableInfo?.executable
-              ? tips
-              : ''
-          }</div>
+          ${driftDiv}
+          ${runDiv}
           </div>
       `;
       return box;

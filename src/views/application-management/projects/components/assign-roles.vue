@@ -172,14 +172,6 @@
             >{{ $t('common.button.close') }}</a-button
           >
         </template>
-        <!-- <template #cancel>
-          <a-button
-            :type="'outline'"
-            class="cap-title cancel-btn"
-            @click="handleCancel"
-            >{{ $t('common.button.cancel') }}</a-button
-          >
-        </template> -->
       </EditPageFooter>
     </template>
   </a-modal>
