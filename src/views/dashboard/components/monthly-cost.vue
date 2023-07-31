@@ -1,12 +1,5 @@
 <template>
   <div class="wrapper">
-    <!-- <div class="content" direction="vertical" align="end">
-      <span class="title">This Month Cost: </span>
-      <span class="value">$ 150.56</span>
-      <span class="rate">
-        <icon-arrow-fall class="icon-fall" />20% vs pervious month</span
-      >
-    </div> -->
     <LineBarChart
       class="chart-wrapper"
       height="260px"
@@ -75,9 +68,6 @@
       }
     };
   });
-  // const xAxis = ref([]);
-
-  // const dataList = ref([]);
 </script>
 
 <style lang="less" scoped>

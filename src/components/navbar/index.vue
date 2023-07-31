@@ -112,7 +112,6 @@
   import useLocale from '@/hooks/locale';
   import useUser from '@/hooks/user';
   import { RoleType, RolesTypeMap } from '@/views/system/config/users';
-  import MessageBox from '../message-box/index.vue';
   import navList from './components/nav-list.vue';
   import { NO_LOGIN_CHECK_PATH, navDataList } from './configs';
 

@@ -1,9 +1,5 @@
 import { resolve } from 'path';
 import { defineConfig } from 'vite';
-import htmlTemplate from 'vite-plugin-html-template';
-import { createHtmlPlugin } from 'vite-plugin-html';
-import Rollupresolve from 'rollup-plugin-node-resolve';
-import commonjs from 'rollup-plugin-commonjs';
 import vue from '@vitejs/plugin-vue';
 import vueJsx from '@vitejs/plugin-vue-jsx';
 import svgLoader from 'vite-svg-loader';

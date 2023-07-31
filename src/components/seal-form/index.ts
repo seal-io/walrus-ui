@@ -1,6 +1,9 @@
 import { App } from 'vue';
 
-const components = import.meta.globEager('./components/*.vue');
+const components: Record<string, any> = import.meta.glob('./components/*.vue', {
+  eager: true
+});
+
 export default {
   install(Vue: App) {
     Object.keys(components).forEach((key) => {

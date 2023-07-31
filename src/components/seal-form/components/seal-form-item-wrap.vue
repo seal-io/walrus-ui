@@ -56,6 +56,7 @@
 
     .label {
       display: flex;
+      align-items: center;
       margin-bottom: 10px;
       color: var(--color-text-3);
       font-weight: 400;

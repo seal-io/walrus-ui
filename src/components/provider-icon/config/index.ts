@@ -1,6 +1,8 @@
 import _ from 'lodash';
 
-const images = import.meta.globEager('../images/*.png');
+const images: Record<string, any> = import.meta.glob('../images/*.png', {
+  eager: true
+});
 
 const parseString = (inputString) => {
   const regex = /\/([^/]+)\/([^/.]+)/;
