@@ -4,6 +4,9 @@
       <div class="left">
         <div class="img">
           <slot name="icon"></slot>
+          <span v-if="showImgIcon" class="custom-icon">
+            <slot name="img"></slot>
+          </span>
         </div>
       </div>
       <div class="right">
@@ -35,6 +38,12 @@
       type: Object,
       default() {
         return {};
+      }
+    },
+    showImgIcon: {
+      type: Boolean,
+      default() {
+        return false;
       }
     }
   });
@@ -71,6 +80,21 @@
           background-color: transparent;
           // box-shadow: 0 0 16px 2px rgb(var(--arcoblue-4));
           border-radius: 50%;
+        }
+
+        .custom-icon {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          width: 56px;
+          height: 56px;
+          color: #fff;
+          background-color: rgb(var(--arcoblue-5));
+          border-radius: 50%;
+
+          :deep(.arco-icon) {
+            font-size: 32px;
+          }
         }
       }
     }

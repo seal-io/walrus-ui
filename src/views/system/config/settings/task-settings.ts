@@ -87,6 +87,53 @@ export default {
     },
     {
       id: '',
+      label: 'system.setting.drift.title',
+      type: 'groupTitle',
+      isEditable: false,
+      style: {
+        fontWeight: 500,
+        marginTop: '10px',
+        marginBottom: '15px'
+      },
+      subGroup: [
+        {
+          id: 'EnableDriftDetection',
+          label: 'system.setting.drift.check',
+          desc: 'system.setting.drift.check.desc',
+          parentId: '',
+          component: {
+            type: 'switch',
+            required: false,
+            match: '',
+            message: ''
+          },
+          value: '',
+          type: 'string'
+        },
+        {
+          id: 'ServiceDriftDetectCronExpr',
+          label: 'system.setting.drift.cronExpr',
+          desc: 'system.setting.CostCollectCronExpr.desc',
+          parentId: '',
+          component: {
+            type: 'input',
+            required: true,
+            validator(val, callback) {
+              if (validateCron(val)) {
+                callback();
+              } else {
+                callback(i18n.global.t('system.setting.rules.cron'));
+              }
+            },
+            extra: 'system.setting.cron.extra'
+          },
+          value: '',
+          type: 'string'
+        }
+      ]
+    },
+    {
+      id: '',
       label: 'system.setting.task.finops',
       value: '',
       type: 'groupTitle',

@@ -128,6 +128,11 @@ export default {
   'system.setting.CostCollectCronExpr': 'Collect usage costs',
   'system.setting.CostCollectCronExpr.desc':
     'The default is to execute every hour',
+  'system.setting.drift.title': 'Drift detection',
+  'system.setting.drift.check': 'Whether drift detection',
+  'system.setting.drift.cronExpr': 'Detection drift task settings',
+  'system.setting.drift.check.desc':
+    'Monitor whether the remote configuration of the service has changed',
   'system.user.visitor': 'General User',
   'system.user.admin': 'Administrator',
   'system.user.engineer': 'Platform Engineer',

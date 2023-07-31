@@ -83,7 +83,11 @@
               >
                 {{ record.name }}
               </a-link>
-              <span v-else style="display: flex; align-items: center">
+              <span
+                v-else
+                style="display: flex; align-items: center"
+                class="mleft-5"
+              >
                 <span>{{ record.name }}</span>
                 <a-tooltip :content="$t('applications.instance.env.tips')">
                   <icon-exclamation-circle-fill

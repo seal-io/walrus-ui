@@ -6,9 +6,9 @@
       ></Breadcrumb>
     </BreadWrapper>
     <ComCard padding="0">
-      <HeaderInfo :info="{ name: $t('menu.operatorHub') }">
-        <template #icon>
-          <i class="iconfont icon-yunwei"></i>
+      <HeaderInfo :info="{ name: $t('menu.operatorHub') }" show-img-icon>
+        <template #img>
+          <icon-relation />
         </template>
         <template #extra>
           <QuestionPopup :link="QAlinkMap.Template"></QuestionPopup>

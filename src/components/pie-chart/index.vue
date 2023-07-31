@@ -5,13 +5,13 @@
       :option="chartOption"
       :style="{ width: '100%', height }"
     />
-    <div
-      v-if="!dataList.length"
-      class="title"
-      :style="{ marginTop: `${get(configOptions, 'title.top')}px` }"
-      >{{ get(configOptions, 'title.text') }}</div
-    >
+
     <div v-if="!dataList.length" :style="{ height: height }" class="empty-data">
+      <div
+        class="title"
+        :style="{ marginTop: `${get(configOptions, 'title.top')}px` }"
+        >{{ get(configOptions, 'title.text') }}</div
+      >
       <a-empty :style="{ marginTop: `${height}px` }"></a-empty>
     </div>
   </div>
@@ -113,6 +113,7 @@
 <style lang="less" scoped>
   .pie-box {
     .empty-data {
+      position: relative;
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -121,13 +122,16 @@
       :deep(.arco-empty-description) {
         font-size: 12px;
       }
-    }
 
-    .title {
-      color: rgb(78, 89, 105);
-      font-weight: 500;
-      font-size: 12px;
-      text-align: center;
+      .title {
+        position: absolute;
+        top: 0;
+        left: 10px;
+        color: rgb(78, 89, 105);
+        font-weight: 500;
+        font-size: 12px;
+        text-align: center;
+      }
     }
   }
 </style>
