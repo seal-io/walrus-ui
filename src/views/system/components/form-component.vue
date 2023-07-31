@@ -6,7 +6,7 @@
         :disabled="attrs.isDisabled || !attrs.editable"
         :label="attrs.label"
         :required="attrs.required"
-        :popup-info="attrs.popupInfo"
+        :popup-info="attrs['popup-info']"
         :style="{ width: attrs.width }"
         @change="handleInputChange"
         @blur="handleBlur"
@@ -19,7 +19,7 @@
         :disabled="attrs.isDisabled || !attrs.editable"
         :label="attrs.label"
         :required="attrs.required"
-        :popup-info="attrs.popupInfo"
+        :popup-info="attrs['popup-info']"
         :invisible-button="attrs.editable"
         :style="{ width: attrs.width }"
         @change="handleInputChange"
@@ -43,7 +43,7 @@
           :label="attrs.label"
           :required="attrs.required"
           :show-required-mark="false"
-          :popup-info="attrs.popupInfo"
+          :popup-info="attrs['popup-info']"
           :model-value="modelValue"
           checked-value="true"
           unchecked-value="false"
@@ -59,7 +59,7 @@
         :disabled="attrs.isDisabled || !attrs.editable"
         :label="attrs.label"
         :required="attrs.required"
-        :popup-info="attrs.popupInfo"
+        :popup-info="attrs['popup-info']"
         @input="(val) => $emit('update:modelValue', val)"
       ></seal-textarea>
     </template>
@@ -68,7 +68,7 @@
         :disabled="attrs.isDisabled || !attrs.editable"
         :label="attrs.label"
         :required="attrs.required"
-        :popup-info="attrs.popupInfo"
+        :popup-info="attrs['popup-info']"
         :style="{ width: attrs.width }"
         :model-value="modelValue"
         @change="(val) => $emit('update:modelValue', val)"
@@ -136,18 +136,12 @@
         return '';
       },
       attrs() {
+        console.log('attrs===', this.$attrs);
+
         return this.$attrs as any;
       }
     },
-    watch: {
-      modelValue: {
-        handler(nv) {
-          console.log('modelValue===', this.modelValue);
-        },
-        deep: true,
-        immediate: true
-      }
-    },
+
     methods: {
       handleInputChange(value) {
         if (this.matchType === 'url' && value) {

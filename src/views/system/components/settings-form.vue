@@ -15,7 +15,7 @@
               v-model="formData[dataInfo.id]"
               :width="`${InputWidth.LARGE}px`"
               :label="$t(dataInfo.label)"
-              :popup-info="dataInfo.desc"
+              :popup-info="$t(dataInfo.desc || '')"
               :required="dataInfo.component.required"
               :editable="dataInfo.editable"
               :options="dataInfo.children"
