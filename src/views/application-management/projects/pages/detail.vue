@@ -69,19 +69,6 @@
           >
             <ConnectorList scope="project"></ConnectorList>
           </a-tab-pane>
-          <!-- <a-tab-pane
-            v-if="
-              userStore.hasProjectResourceActions({
-                resource: Resources.Connectors,
-                projectID: route.params.projectId,
-                actions: [Actions.GET]
-              })
-            "
-            key="templates"
-            :title="$t('menu.operatorHub.module')"
-          >
-            <templateList scope="project"></templateList>
-          </a-tab-pane> -->
           <a-tab-pane
             v-if="
               userStore.hasProjectResourceActions({

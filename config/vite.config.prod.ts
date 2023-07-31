@@ -1,12 +1,12 @@
 import { mergeConfig } from 'vite';
 import path from 'path';
 import { createHtmlPlugin } from 'vite-plugin-html';
+import viteImageMin from './plugin/image-min';
 import baseConig from './vite.config.base';
 import configCompressPlugin from './plugin/compress';
 import configVisualizerPlugin from './plugin/visualizer';
 import configArcoResolverPlugin from './plugin/arcoResolver';
 import configStyleImportPlugin from './plugin/styleImport';
-import configImageminPlugin from './plugin/imagemin';
 import { getBranchInfo } from './utils';
 
 const versions = getBranchInfo();
@@ -19,7 +19,7 @@ export default mergeConfig(
       configVisualizerPlugin(),
       configArcoResolverPlugin(),
       configStyleImportPlugin(),
-      configImageminPlugin(),
+      viteImageMin(),
       createHtmlPlugin({
         template: 'index.html',
         inject: {
@@ -45,6 +45,7 @@ export default mergeConfig(
           manualChunks: {
             arco: ['@arco-design/web-vue'],
             chart: ['echarts', 'vue-echarts'],
+            g6: ['@antv/g6'],
             vue: ['vue', 'vue-router', 'pinia', '@vueuse/core', 'vue-i18n']
           }
         }

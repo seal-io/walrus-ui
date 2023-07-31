@@ -3,7 +3,10 @@ import { get } from 'lodash';
 import cloneDeep from 'lodash/cloneDeep';
 import { LoginRouteName } from '@/api/config';
 
-const modules = import.meta.globEager('./modules/*.ts');
+const modules: Record<string, any> = import.meta.glob('./modules/*.ts', {
+  eager: true
+});
+
 const appRoutes: RouteRecordRaw[] = [];
 
 Object.keys(modules).forEach((key) => {

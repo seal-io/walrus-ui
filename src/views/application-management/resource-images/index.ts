@@ -12,7 +12,9 @@ const parseString = (inputString) => {
   return [];
 };
 
-const images = import.meta.globEager('./*/*.png');
+const images: Record<string, any> = import.meta.glob('./*/*.png', {
+  eager: true
+});
 
 const imageMap = new Map();
 _.each(_.keys(images), (key) => {

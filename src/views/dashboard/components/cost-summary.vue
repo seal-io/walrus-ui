@@ -24,15 +24,6 @@
           <dailyyCost :data="projectCostData"></dailyyCost>
         </a-grid-item>
         <a-grid-item :span="{ xl: 8, lg: 8, md: 8, sm: 24 }">
-          <!-- <pieChart
-            class="pie"
-            style="flex: 1"
-            :data-list="appCostRankList"
-            height="292px"
-            :center="center"
-            :radius="radius"
-            :config-options="pieOptions"
-          ></pieChart> -->
           <DataCard
             :precision="3"
             :title="$t('dashboard.cost.currentMonth')"
@@ -65,7 +56,7 @@
                   class="icon-fall"
                 />
                 <span
-                  >{{ monthCostGrowRate }} vs
+                  >{{ monthCostGrowRate }}
                   {{ $t('dashboard.cost.pervisious') }}</span
                 >
               </span>
@@ -101,7 +92,6 @@
   import { useI18n } from 'vue-i18n';
   import { getStackLineDataList, getStackLineData } from '@/views/config';
   import spinCard from '@/components/page-wrap/spin-card.vue';
-  import pieChart from '@/components/pie-chart/index.vue';
   import DataCard from '@/components/data-card/index.vue';
   import monthlyCost from './monthly-cost.vue';
   import dailyyCost from './daily-trend.vue';
@@ -109,21 +99,6 @@
   import applicationRank from './application-rank.vue';
   import { colorList, DateShortCuts } from '../config';
 
-  const pieStyleConfig = {
-    label: {
-      show: true,
-      fontWeight: '500',
-      formatter: ['{a|{b}}', '{a|({c}, {d}%)}'].join(''),
-      rich: {
-        a: {
-          lineHeight: 16,
-          fontSize: 11
-        }
-      }
-    }
-  };
-  const center = ['50%', '55%'];
-  const radius = ['0', '80%'];
   const grid = {
     left: 0,
     right: 0,
@@ -169,7 +144,7 @@
     list: [],
     dataConfig: []
   });
-  const appList = ref<{ name: string; value: number }[]>([]);
+
   const appCostRankList = ref<{ name: string; value: number }[]>([]);
 
   const monthCostGrowRate = computed(() => {
@@ -178,25 +153,6 @@
       monthlyCostData.lastMonth
     );
     return isNaN(rate) ? '0%' : `${round(rate * 100, 2)}%`;
-  });
-  const pieOptions = computed(() => {
-    return {
-      title: {
-        ...title,
-        text: 'Cost By Application'
-      },
-      grid: {
-        ...grid
-      },
-      legend: {
-        show: false,
-        orient: 'vertical',
-        top: 'middle',
-        left: '60%',
-        itemWidth: 20,
-        itemHeight: 8
-      }
-    };
   });
 
   const getMonthlyCost = async () => {
