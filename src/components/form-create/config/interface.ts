@@ -65,8 +65,7 @@ export const validateYaml = (str) => {
         error: null
       };
     }
-  } catch (error) {
-    console.log('error=======', error);
+  } catch (error: any) {
     result = {
       empty: false,
       error: {
@@ -147,7 +146,7 @@ export const parseComponentSchema = (schema: ComponentSchema) => {
     //  ===========InputPassword============
     if (sensitive && schemaType.isStringType(type)) {
       return {
-        component: ['hintInput'],
+        component: ['InputPassword'],
         props: {
           ...props
         },
