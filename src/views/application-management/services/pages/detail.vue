@@ -60,7 +60,9 @@
     });
     //
     if (!_.find(list, (o) => o.id === item.value)) {
-      list.push({ ...cloneDeep(serviceStore.currentService) });
+      list.push({
+        ...cloneDeep(serviceStore.getServiceInfo(item.value))
+      });
     }
     const serviceRes = setServiceList([...list]);
     breadCrumbList.value = [
@@ -69,7 +71,7 @@
       { ...serviceRes, ..._.omit(item, ['options']) }
     ];
     serviceDataList.value = [
-      { ...cloneDeep(serviceStore.currentService) },
+      { ...cloneDeep(serviceStore.getServiceInfo(id)) },
       ...list
     ];
   };
@@ -89,7 +91,10 @@
     const projectRes = await setProjectList(projectList);
     const environmentRes = setEnvironmentList(environmentList);
     const serviceRes = setServiceList([
-      ..._.uniqBy([...serviceList, { ...serviceStore.currentService }], 'id')
+      ..._.uniqBy(
+        [...serviceList, { ...serviceStore.getServiceInfo(id) }],
+        'id'
+      )
     ]);
     // when from dashboard there is no from query
     breadCrumbList.value = [

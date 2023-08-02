@@ -215,11 +215,11 @@
   import { PROJECT } from '@/router/config';
   import { Resources, Actions } from '@/permissions/config';
   import { QAlinkMap, USER_DEFAULT_PROJECT } from '@/views/config';
-  import { cloneDeep, map, pickBy, remove } from 'lodash';
+  import _, { cloneDeep, map, pickBy, remove } from 'lodash';
   import { ref, reactive } from 'vue';
   import dayjs from 'dayjs';
   import localStore from '@/utils/localStore';
-  import { useUserStore } from '@/store';
+  import { useUserStore, useProjectStore } from '@/store';
   import HeaderInfo from '@/components/header-info/index.vue';
   import useCallCommon from '@/hooks/use-call-common';
   import FilterBox from '@/components/filter-box/index.vue';
@@ -234,6 +234,7 @@
 
   let timer: any = null;
   const userStore = useUserStore();
+  const projectStore = useProjectStore();
   const { t, router } = useCallCommon();
   const { rowSelection, selectedKeys, handleSelectChange } = useRowSelect();
   const { sort, sortOrder, setSortDirection } = UseSortDirection({
@@ -271,9 +272,15 @@
     }, 100);
   };
   const handleViewProject = async (row) => {
-    await localStore.setValue(USER_DEFAULT_PROJECT, {
-      id: row.id,
-      name: row.name
+    // await localStore.setValue(USER_DEFAULT_PROJECT, {
+    //   id: row.id,
+    //   name: row.name
+    // });
+    projectStore.setInfo({
+      defaultActiveProject: {
+        id: row.id,
+        name: row.name
+      }
     });
     router.push({
       name: PROJECT.Detail,
@@ -335,6 +342,18 @@
     queryParams.perPage = pageSize;
     handleFilter();
   };
+  const updateProjectStore = async (list) => {
+    const ids = map(list, (item) => item.id);
+    projectStore.removeProjects(ids);
+    // const defaultProject: any = await localStore.getValue(USER_DEFAULT_PROJECT);
+    const defaultProject = projectStore.defaultActiveProject;
+    if (ids.includes(defaultProject?.id)) {
+      // localStore.removeValue(USER_DEFAULT_PROJECT);
+      projectStore.setInfo({
+        defaultActiveProject: {}
+      });
+    }
+  };
   const handleDeleteConfirm = async () => {
     try {
       loading.value = true;
@@ -350,6 +369,7 @@
       selectedKeys.value = [];
       rowSelection.selectedRowKeys = [];
       handleFilter();
+      await updateProjectStore(ids);
     } catch (error) {
       console.log(error);
       loading.value = false;

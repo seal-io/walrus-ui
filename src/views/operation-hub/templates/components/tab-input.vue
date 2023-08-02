@@ -110,11 +110,7 @@
       },
       {}
     );
-    // const data = map(get(props.schema, 'variables') || [], (item) => {
-    //   return {
-    //     ...pick(item, ['name', 'type', 'default', 'description', 'required'])
-    //   };
-    // });
+
     return JSON.stringify(data, null, 2);
   });
   const handleToggle = (type) => {

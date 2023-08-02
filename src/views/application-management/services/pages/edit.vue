@@ -428,7 +428,7 @@
       { ...environmentRes },
       {
         type: 'menu.applicationManagement.serivce',
-        label: title.value
+        label: title()
       }
     ] as BreadcrumbOptions[];
   };

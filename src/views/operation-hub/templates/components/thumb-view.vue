@@ -24,7 +24,7 @@
   import { Resources, Actions } from '@/permissions/config';
   import { useUserStore } from '@/store';
   import { includes, filter } from 'lodash';
-  import { ref, onMounted, PropType, defineEmits } from 'vue';
+  import { ref, onMounted, PropType } from 'vue';
   import useCallCommon from '@/hooks/use-call-common';
   import thumbButton from '@/components/buttons/thumb-button.vue';
   import templateItem from './template-item.vue';

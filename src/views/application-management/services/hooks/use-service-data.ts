@@ -56,15 +56,15 @@ export default function useServiceData(props?) {
     attributes: {}
   });
 
-  const title = computed(() => {
+  const title = () => {
     if (!id) {
-      return t('applications.applications.create');
+      return 'applications.applications.create';
     }
     if (id && pageAction.value === PageAction.EDIT) {
-      return t('applications.applications.edit');
+      return 'applications.applications.edit';
     }
-    return t('applications.applications.detail');
-  });
+    return 'applications.applications.detail';
+  };
 
   const getServiceItemInfo = async () => {
     // create
@@ -226,11 +226,11 @@ export default function useServiceData(props?) {
   // for service detail
   const initInfo = async () => {
     asyncLoading.value = true;
-    serviceInfo.value = serviceStore.currentService;
+    serviceInfo.value = serviceStore.getServiceInfo(id);
+    console.log('serviceInfo.value', serviceInfo.value);
     await getTemplates();
     await initFormData();
     asyncLoading.value = false;
-    console.log('serviceInfo===99', serviceInfo.value);
   };
   return {
     id,

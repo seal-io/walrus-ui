@@ -163,6 +163,7 @@
   const { loading, fetchData, createResourceChunkConnection, dataList } =
     useFetchResource();
   const projectID = route.params.projectId || '';
+  const serviceID = route.query.id || '';
   const activeKey = ref('resource');
   const currentInfo = ref({});
   const serviceInfoRef = ref();
@@ -244,7 +245,7 @@
   const getServiceItemInfo = async () => {
     if (!route.query.id) return;
     try {
-      serviceStore.resetInfo();
+      serviceStore.deleteService(route.query.id);
       const params = {
         id: route.query.id,
         environmentID: route.params.environmentId,
@@ -252,9 +253,9 @@
       };
       const { data } = await queryItemApplicationService(params);
       currentInfo.value = data;
-      serviceStore.setInfo({ currentService: data });
+      serviceStore.setServiceInfo(route.query.id, data);
     } catch (error) {
-      currentInfo.value = {};
+      serviceStore.deleteService(route.query.id);
       console.log(error);
     } finally {
       // template confg info
@@ -266,7 +267,7 @@
   };
   const updateServiceState = (data) => {
     const ids = data.ids || [];
-    // delete
+    // delete: if current service is deleted, jump to the next service
     if (
       data.type === websocketEventType.DELETE &&
       _.includes(ids, _.get(currentInfo.value, 'id'))
@@ -290,7 +291,7 @@
         }
       });
     }
-    // update
+    // update: if current service is updated, update the current service info
     const updateData = _.find(
       data.collection || [],
       (sItem) => _.get(sItem, 'id') === _.get(currentInfo.value, 'id')
@@ -331,6 +332,7 @@
   };
 
   onMounted(() => {
+    console.log('service page mounted');
     setInstanceTabList();
     setActionMap();
 
@@ -339,7 +341,7 @@
     createResourceChunkConnection();
   });
   onBeforeUnmount(() => {
-    serviceStore.resetInfo();
+    serviceStore.deleteService(serviceID);
   });
   const init = () => {
     getServiceItemInfo();

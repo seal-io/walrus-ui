@@ -14,48 +14,6 @@
         ]"
       ></Breadcrumb>
     </BreadWrapper>
-    <!-- <component
-      :is="perspectiveMap[viewComponent]"
-      :source="viewComponent"
-      :is-page="true"
-      :view-id="viewId"
-      :pageloading="loading"
-    >
-      <template #select>
-        <a-select
-          v-model="viewId"
-          style="width: 180px"
-          class="border-less"
-          :placeholder="$t('cost.analyse.view.holder')"
-          allow-search
-          @change="handleViewChange"
-        >
-          <a-option
-            v-for="item in viewList"
-            :key="item.value"
-            :value="item.value"
-            >{{ $t(item.name || '') }}</a-option
-          >
-          <template #empty><span></span></template>
-        </a-select>
-      </template>
-    </component>
-    <a-select
-      v-model="viewId"
-      style="width: 180px"
-      class="border-less"
-      :placeholder="$t('cost.analyse.view.holder')"
-      allow-search
-      @change="handleViewChange"
-    >
-      <a-option
-        v-for="item in viewList"
-        :key="item.value"
-        :value="item.value"
-        >{{ $t(item.name || '') }}</a-option
-      >
-      <template #empty><span></span></template>
-    </a-select> -->
     <a-tabs
       :default-active-key="page"
       :active-key="viewComponent"
@@ -96,6 +54,7 @@
   import { markRaw, ref, onMounted, provide, nextTick } from 'vue';
   import { keys, find, map, toLower } from 'lodash';
   import localStore from '@/utils/localStore';
+  import { useCostManageStore } from '@/store';
   import useCallCommon from '@/hooks/use-call-common';
   import perspectiveAll from './perspective-all.vue';
   import perspectiveCluster from './perspective-cluster.vue';
@@ -105,6 +64,7 @@
   import { VIEW_MAP } from '../config';
 
   const HOT_PERSPECTIVE_ID = 'HOT_PERSPECTIVE_ID';
+  const costManageStore = useCostManageStore();
   const perspectiveMap = {
     all: markRaw(perspectiveAll),
     cluster: markRaw(perspectiveCluster),
@@ -123,16 +83,16 @@
   provide('perspectiveList', viewList);
   const handleViewChange = (val) => {
     const data = find(viewList.value, (item) => item.value === val);
-    localStore.setValue(HOT_PERSPECTIVE_ID, {
-      hotProjectId: val,
-      page: toLower(data?.label || VIEW_MAP.all)
-    });
-    // router.replace({
-    //   query: {
-    //     id: val,
-    //     page: data?.label
-    //   }
+    // localStore.setValue(HOT_PERSPECTIVE_ID, {
+    //   hotProjectId: val,
+    //   page: toLower(data?.label || VIEW_MAP.all)
     // });
+    costManageStore.setInfo({
+      defaultActivePerspective: {
+        hotProjectId: val,
+        page: toLower(data?.label || VIEW_MAP.all)
+      }
+    });
     setTimeout(() => {
       viewId.value = val;
       viewComponent.value = toLower(data?.label || VIEW_MAP.all);
@@ -141,7 +101,8 @@
 
   const getViewList = async () => {
     if (viewList.value.length) return;
-    const hotProject = await localStore.getValue(HOT_PERSPECTIVE_ID);
+    // const hotProject: any = await localStore.getValue(HOT_PERSPECTIVE_ID);
+    const hotProject = costManageStore.defaultActivePerspective;
     const hotProjectId = hotProject?.hotProjectId;
     const page = hotProject?.page;
     try {
@@ -188,20 +149,34 @@
   const setPageComponent = async () => {
     if (route.query.id) {
       viewComponent.value = route.query.page as string;
-      localStore.setValue(HOT_PERSPECTIVE_ID, {
-        hotProjectId: route.query.id,
-        page: route.query.page
+      // localStore.setValue(HOT_PERSPECTIVE_ID, {
+      //   hotProjectId: route.query.id,
+      //   page: route.query.page
+      // });
+      costManageStore.setInfo({
+        defaultActivePerspective: {
+          hotProjectId: route.query.id,
+          page: route.query.page
+        }
       });
     } else {
-      const { page } = (await localStore.getValue(HOT_PERSPECTIVE_ID)) || {};
+      // const localValue: any = await localStore.getValue(HOT_PERSPECTIVE_ID);
+      const defaultPerspective = costManageStore.defaultActivePerspective;
+      const page = defaultPerspective?.page;
       viewComponent.value = page || VIEW_MAP.all;
     }
   };
   // update the current state in the store
   const setView = () => {
-    localStore.setValue(HOT_PERSPECTIVE_ID, {
-      hotProjectId: viewId.value,
-      page: viewComponent.value
+    // localStore.setValue(HOT_PERSPECTIVE_ID, {
+    //   hotProjectId: viewId.value,
+    //   page: viewComponent.value
+    // });
+    costManageStore.setInfo({
+      defaultActivePerspective: {
+        hotProjectId: viewId.value,
+        page: viewComponent.value
+      }
     });
   };
   // set the viewId  at last !!!

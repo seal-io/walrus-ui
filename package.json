@@ -72,7 +72,7 @@
     "localforage": "^1.10.0",
     "lodash": "^4.17.21",
     "markdown-it": "^13.0.1",
-    "marked": "^4.3.0",
+    "marked": "^6.0.0",
     "mitt": "^3.0.0",
     "nprogress": "^0.2.0",
     "packageurl-js": "^0.0.7",
