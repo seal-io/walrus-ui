@@ -4,6 +4,7 @@
   import { PROJECT } from '@/router/config';
   import { defineComponent, ref, h, compile, computed } from 'vue';
   import useCallCommon from '@/hooks/use-call-common';
+  import BC from '@/hooks/broadcast-channel';
   import { RouteRecordRaw, RouteRecordNormalized } from 'vue-router';
   import {
     useAppVersion,
@@ -46,6 +47,15 @@
       // listener to  route change
       execListenerRouteChange();
 
+      // sync the project data between tabs
+      BC.onmessage((message) => {
+        if (message.type === 'project') {
+          const { projectList } = message.data;
+          projectStore.setInfo({
+            projectList
+          });
+        }
+      });
       const collapsed = computed({
         get() {
           if (appStore.device === 'desktop') return appStore.menuCollapse;
@@ -237,7 +247,6 @@
         const isReplace: any = item.meta?.replace;
         tabBarStore.clearTags();
         if (item.name === PROJECT.List) {
-          await getProjectList();
           goToProject(item);
           return;
         }

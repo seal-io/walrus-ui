@@ -1,5 +1,6 @@
 import { clone, cloneDeep } from 'lodash';
 import { defineStore } from 'pinia';
+import BC from '@/hooks/broadcast-channel';
 
 const useProjectStore = defineStore('project', {
   persist: {
@@ -29,6 +30,12 @@ const useProjectStore = defineStore('project', {
       );
       this.setInfo({
         projectList
+      });
+      BC.postMessage({
+        type: 'project',
+        data: {
+          projectList
+        }
       });
     }
   }
