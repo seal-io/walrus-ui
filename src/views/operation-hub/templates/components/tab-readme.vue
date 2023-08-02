@@ -1,11 +1,6 @@
 <template>
   <div class="tab-content-wrap markdown-body">
     <div v-html="content"></div>
-    <!-- <a-textarea
-      readonly
-      :auto-size="{ minRows: 10 }"
-      :model-value="get(schema, 'Readme')"
-    ></a-textarea> -->
   </div>
 </template>
 

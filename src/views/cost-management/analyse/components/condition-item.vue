@@ -65,14 +65,7 @@
             :key="sIndex"
             class="condition-box and"
           >
-            <div class="operator">
-              <!-- <a-select
-            :options="relationOptions"
-            style="width: 80px"
-            size="small"
-          ></a-select> -->
-              AND
-            </div>
+            <div class="operator"> AND </div>
             <a-space
               v-if="sItem.length"
               class="condition"

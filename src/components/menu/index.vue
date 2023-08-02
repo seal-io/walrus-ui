@@ -11,7 +11,6 @@
     versionData,
     getVersion
   } from '@/hooks/fetch-app-version';
-  // import type { RouteLocationNormalized } from 'vue-router';
 
   import {
     useAppStore,
@@ -125,9 +124,9 @@
       const handleShowVersion = () => {
         showVersionModal(versionInfo.value as versionData);
       };
-      const goToProject = async (item: RouteRecordRaw) => {
-        const defaultProject = await localStore.getValue(USER_DEFAULT_PROJECT);
-
+      const goToProject = (item: RouteRecordRaw) => {
+        // const localValue: any = await localStore.getValue(USER_DEFAULT_PROJECT);
+        const defaultProject = projectStore.defaultActiveProject;
         // need create new project
         if (!projectStore.projectList.length) {
           router.push({
@@ -135,10 +134,12 @@
           });
           return;
         }
+
         const pro = _.find(
           projectStore.projectList,
           (item) => item.value === defaultProject?.id
         );
+
         const projectID = pro
           ? defaultProject?.id
           : _.get(projectStore.projectList, '0.value');
@@ -156,6 +157,7 @@
           });
           return;
         }
+
         // has access permission to default project
         router.push({
           name: PROJECT.Detail,
@@ -163,6 +165,69 @@
             projectId: projectID
           }
         });
+      };
+      const getProjectList = async () => {
+        try {
+          const params = {
+            page: -1
+          };
+          const { data } = await queryProjects(params);
+          const list = _.map(data.items, (item) => {
+            return {
+              label: item.name,
+              value: item.id
+            };
+          });
+          // const localValue: any = await localStore.getValue(
+          //   USER_DEFAULT_PROJECT
+          // );
+          const defaultProject = projectStore.defaultActiveProject;
+          const defaultValue = route.params.projectId || _.get(list, '0.value');
+          const defaultName = _.find(
+            list,
+            (item) => item.value === defaultValue
+          )?.label as string;
+
+          if (!defaultProject?.id && list.length) {
+            // localStore.setValue(USER_DEFAULT_PROJECT, {
+            //   id: defaultValue,
+            //   name: defaultName
+            // });
+            projectStore.setInfo({
+              defaultActiveProject: {
+                id: defaultValue,
+                name: defaultName
+              }
+            });
+          } else if (!list.length) {
+            // localStore.setValue(USER_DEFAULT_PROJECT, { id: '', name: '' });
+            projectStore.setInfo({
+              defaultActiveProject: {}
+            });
+          } else {
+            const data = _.find(
+              list,
+              (item) => item.value === defaultProject?.id
+            );
+            // localStore.setValue(USER_DEFAULT_PROJECT, {
+            //   id: data?.value || defaultValue,
+            //   name: data?.label || defaultName
+            // });
+            projectStore.setInfo({
+              defaultActiveProject: {
+                id: data?.value || defaultValue,
+                name: data?.label || defaultName
+              }
+            });
+          }
+          projectStore.setInfo({
+            projectList: _.cloneDeep(list)
+          });
+        } catch (error) {
+          projectStore.setInfo({
+            projectList: []
+          });
+        }
       };
       // In this case only two levels of menus are available
       // You can expand as needed
@@ -172,7 +237,8 @@
         const isReplace: any = item.meta?.replace;
         tabBarStore.clearTags();
         if (item.name === PROJECT.List) {
-          await goToProject(item);
+          await getProjectList();
+          goToProject(item);
           return;
         }
         if (!isReplace) {
@@ -394,50 +460,6 @@
         return travel();
       };
 
-      const getProjectList = async () => {
-        try {
-          const params = {
-            page: -1
-          };
-          const { data } = await queryProjects(params);
-          const list = _.map(data.items, (item) => {
-            return {
-              label: item.name,
-              value: item.id
-            };
-          });
-          const defaultProject = await localStore.getValue(
-            USER_DEFAULT_PROJECT
-          );
-          const defaultValue = route.params.projectId || _.get(list, '0.value');
-          const defaultName = _.get(list, '0.label');
-          if (!defaultProject?.id && list.length) {
-            localStore.setValue(USER_DEFAULT_PROJECT, {
-              id: defaultValue,
-              name: defaultName
-            });
-          } else if (!list.length) {
-            localStore.setValue(USER_DEFAULT_PROJECT, { id: '', name: '' });
-          } else {
-            const data = _.find(
-              list,
-              (item) => item.value === defaultProject?.id
-            );
-            localStore.setValue(USER_DEFAULT_PROJECT, {
-              id: data?.value || defaultValue,
-              name: data?.label || defaultName
-            });
-          }
-          projectStore.setInfo({
-            projectList: _.cloneDeep(list)
-          });
-        } catch (error) {
-          projectStore.setInfo({
-            projectList: []
-          });
-          console.log(error);
-        }
-      };
       const init = () => {
         userStore.info();
         getProjectList();

@@ -101,7 +101,7 @@
   import _, { toLower, get } from 'lodash';
   import dayjs from 'dayjs';
   import { PropType } from 'vue';
-  import { useUserStore } from '@/store';
+  import { useUserStore, useProjectStore } from '@/store';
   import useCallCommon from '@/hooks/use-call-common';
   import StatusLabel from './status-label.vue';
   import { statusColorMap } from '../config';
@@ -122,6 +122,7 @@
   });
   const { router } = useCallCommon();
   const userStore = useUserStore();
+  const projectStore = useProjectStore();
   const setDurationValue = (val) => {
     if (!val) return '-';
     const seconds = val % 60;
@@ -129,9 +130,15 @@
     return `${min}'${seconds}"`;
   };
   const handleToDetail = async (row) => {
-    await localStore.setValue(USER_DEFAULT_PROJECT, {
-      id: _.get(row, 'project.id'),
-      name: _.get(row, 'project.name')
+    // await localStore.setValue(USER_DEFAULT_PROJECT, {
+    //   id: _.get(row, 'project.id'),
+    //   name: _.get(row, 'project.name')
+    // });
+    projectStore.setInfo({
+      defaultActiveProject: {
+        id: _.get(row, 'project.id'),
+        name: _.get(row, 'project.name')
+      }
     });
     router.push({
       name: PROJECT.ServiceDetail,

@@ -121,7 +121,7 @@
   } = userProjectBreadcrumbData();
   const { router, route } = useCallCommon();
   const userStore = useUserStore();
-  const activeKey = ref('enviroment');
+  const activeKey = ref<string>('enviroment');
   const currentInfo = ref<any>({});
   const basicDataList = useBasicInfoData(basicInfoConfig, currentInfo);
 
@@ -135,7 +135,7 @@
         actions: [Actions.GET]
       });
     });
-    activeKey.value = _.get(list, '0.value');
+    activeKey.value = _.get(list, '0.value') || '';
   };
   const handleTabChange = (val) => {
     activeKey.value = val;

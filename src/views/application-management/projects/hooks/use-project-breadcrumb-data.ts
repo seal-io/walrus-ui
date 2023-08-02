@@ -147,12 +147,11 @@ export default function useProjectData() {
       };
     });
     const defaultValue = route.params.projectId || _.get(list, '0.value');
-    const defaultName = _.get(list, '0.label');
-    // const defaultProject = await localStore.getValue(USER_DEFAULT_PROJECT);
+    const defaultName = _.find(list, { value: defaultValue })?.label as string;
 
     return {
       ...projectTemplate,
-      value: defaultValue,
+      value: defaultValue as string,
       label: defaultName,
       options: _.cloneDeep(list),
       onSetting() {
@@ -163,13 +162,6 @@ export default function useProjectData() {
     };
   };
   const setEnvironmentList = (environmentList) => {
-    // const accessedList = _.filter(environmentList, (item) => {
-    //   return userStore.hasProjectResourceActions({
-    //     resource: Resources.Environments,
-    //     projectID: route.params.projectId,
-    //     actions: [Actions.GET]
-    //   });
-    // });
     const list = _.map(environmentList, (item) => {
       return {
         ..._.cloneDeep(item),
@@ -178,42 +170,35 @@ export default function useProjectData() {
       };
     });
     const defaultValue = route.params.environmentId || _.get(list, '0.id');
-    const defaultName = _.get(list, '0.label');
+    const defaultName = _.find(list, { value: defaultValue })?.label as string;
 
     projectStore.setInfo({
       environmentList: _.cloneDeep(list)
     });
     return {
       ...environmentTemplate,
-      value: defaultValue,
+      value: defaultValue as string,
       label: defaultName,
       options: _.cloneDeep(list)
     };
   };
   const setServiceList = (serviceList) => {
-    // const accessedList = _.filter(serviceList, (item) => {
-    //   return userStore.hasProjectResourceActions({
-    //     resource: Resources.Environments,
-    //     projectID: route.params.projectId,
-    //     actions: [Actions.GET]
-    //   });
-    // });
     const list = _.map(serviceList, (item) => {
       return {
         ..._.cloneDeep(item),
-        label: item.name,
+        label: item.name as string,
         value: item.id
       };
     });
     const defaultValue = route.query.id || _.get(list, '0.id');
-    const defaultName = _.get(list, '0.label');
+    const defaultName = _.find(list, { value: defaultValue })?.label as string;
 
     projectStore.setInfo({
       serviceList: _.cloneDeep(list)
     });
     return {
       ...serviceTemplate,
-      value: defaultValue,
+      value: defaultValue as string,
       label: defaultName,
       icon: 'icon-apps',
       type: 'menu.applicationManagement.serivce',
@@ -254,7 +239,13 @@ export default function useProjectData() {
         projectId: val
       };
 
-      localStore.setValue(USER_DEFAULT_PROJECT, { id: val, name: item.label });
+      // localStore.setValue(USER_DEFAULT_PROJECT, { id: val, name: item.label });
+      projectStore.setInfo({
+        defaultActiveProject: {
+          id: val,
+          name: item.label
+        }
+      });
     }
     // service
     if (item.level === pageLevelMap.Service) {
@@ -272,6 +263,7 @@ export default function useProjectData() {
       query
     });
   };
+  // init breadCrumbList data from cache
   const initBreadValues = async (values?: Array<'env' | 'service'>) => {
     const projectRes = await setProjectList(projectStore.projectList);
     let environmentRes: any[] = [];

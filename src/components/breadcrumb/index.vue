@@ -122,9 +122,9 @@
               @click="handleClickItem(item)"
             >
               <component :is="item.icon" v-if="item.icon"></component>
-              {{ item.label }}
+              {{ $t(item.label || '') }}
             </a-link>
-            <span v-else>{{ item.label }}</span>
+            <span v-else>{{ $t(item.label || '') }}</span>
           </span>
           <icon-oblique-line
             v-if="index < items.length - 1"

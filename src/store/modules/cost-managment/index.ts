@@ -6,7 +6,8 @@ const useCostManageStore = defineStore('costManage', {
   },
   state: (): any => ({
     perspectiveList: [],
-    fieldNameList: []
+    fieldNameList: [],
+    defaultActivePerspective: {} // {hotProjectId: '', page: ''}
   }),
   getters: {
     filterInfo(state: any): any {
@@ -14,7 +15,7 @@ const useCostManageStore = defineStore('costManage', {
     }
   },
   actions: {
-    setFilterInfo(partial: any) {
+    setInfo(partial: any) {
       this.$patch(partial);
     },
     reset() {

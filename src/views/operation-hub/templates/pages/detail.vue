@@ -83,17 +83,6 @@
             formData.description || '-'
           }}</div>
         </a-form-item>
-        <!-- <a-form-item :label="$t('operation.connectors.table.type')" field="type">
-        <a-select v-model="formData.description">
-          <a-option
-            v-for="item in templateTypeList"
-            :key="item.value"
-            :value="item.value"
-            :label="item.label"
-          >
-          </a-option>
-        </a-select>
-      </a-form-item> -->
         <a-form-item
           field="source"
           :label="$t('operation.templates.detail.source')"
@@ -147,9 +136,9 @@
           <StatusLabel
             style="margin-left: 12px"
             :status="{
-              status: get(formData, 'status'),
+              status: get(formData, 'status') || '',
               text: get(formData, 'status'),
-              message: get(formData, 'statusMessage'),
+              message: get(formData, 'statusMessage') || '',
               transitioning: get(formData, 'status') === 'Initializing',
               error: get(formData, 'status') === 'Error'
             }"
@@ -229,7 +218,7 @@
   import { useUserStore, useTabBarStore } from '@/store';
   import { assignIn, find, get, map, isEqual, cloneDeep } from 'lodash';
   import { urlReg } from '@/utils/validate';
-  import { ref, reactive, onMounted, computed } from 'vue';
+  import { ref, reactive, onMounted, computed, markRaw } from 'vue';
   import { beforeLeaveCallback } from '@/hooks/save-before-leave';
   import useScrollToView from '@/hooks/use-scroll-to-view';
   import { onBeforeRouteLeave } from 'vue-router';
@@ -253,10 +242,10 @@
   } from '../api';
 
   const tabMap = {
-    tabReadme,
-    tabInput,
-    tabOutput,
-    tabConnector
+    tabReadme: markRaw(tabReadme),
+    tabInput: markRaw(tabInput),
+    tabOutput: markRaw(tabOutput),
+    tabConnector: markRaw(tabConnector)
   };
 
   const { scrollToView } = useScrollToView();
@@ -284,12 +273,12 @@
 
   const title = computed(() => {
     if (!id) {
-      return t('operation.templates.detail.add');
+      return 'operation.templates.detail.add';
     }
     if (id && pageAction.value === PageAction.VIEW) {
-      return t('operation.templates.detail.view');
+      return 'operation.templates.detail.view';
     }
-    return t('operation.templates.detail.edit');
+    return 'operation.templates.detail.edit';
   });
   const getTemplateVersions = async () => {
     if (!id) return;

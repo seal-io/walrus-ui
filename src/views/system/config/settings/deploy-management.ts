@@ -1,5 +1,10 @@
 import i18n from '@/locale/index';
-import { wildDomainReg, ipReg, domainReg } from '@/utils/validate';
+import {
+  wildDomainReg,
+  ipReg,
+  domainReg,
+  domainFuzzyReg
+} from '@/utils/validate';
 import _ from 'lodash';
 
 export default {
@@ -64,7 +69,8 @@ export default {
             type: 'input',
             required: false,
             match: 'urlHttp',
-            message: 'system.setting.rules.mavenRepo'
+            message: 'system.setting.rules.mavenRepo',
+            extra: 'system.setting.rules.mavenRepo'
           },
           type: 'string'
         },
@@ -79,7 +85,8 @@ export default {
             type: 'input',
             required: false,
             match: 'urlHttp',
-            message: 'system.setting.rules.mavenRepo'
+            message: 'system.setting.rules.mavenRepo',
+            extra: 'system.setting.rules.mavenRepo'
           },
           type: 'string'
         },
@@ -109,19 +116,19 @@ export default {
           component: {
             type: 'input',
             required: false,
-            validator: (val, callback) => {
-              const ip = ipReg;
-              const domain = domainReg;
-              const valList = _.split(val, ',') || [];
-              if (
-                !val ||
-                valList.every((item) => ip.test(item) || domain.test(item))
-              ) {
-                callback();
-              } else {
-                callback(i18n.global.t('system.setting.rules.noProxy'));
-              }
-            },
+            // validator: (val, callback) => {
+            //   const valList = _.split(val, ',') || [];
+            //   if (
+            //     !val ||
+            //     valList.every((item) => ipReg.test(item) || ipDomain.test(item))
+            //   ) {
+            //     callback();
+            //   } else {
+            //     callback(
+            //       i18n.global.t('system.setting.offlineManage.noProxy.extra')
+            //     );
+            //   }
+            // },
             extra: 'system.setting.offlineManage.noProxy.extra'
           },
           type: 'string'

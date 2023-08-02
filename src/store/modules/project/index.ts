@@ -1,3 +1,4 @@
+import { clone, cloneDeep } from 'lodash';
 import { defineStore } from 'pinia';
 
 const useProjectStore = defineStore('project', {
@@ -7,7 +8,8 @@ const useProjectStore = defineStore('project', {
   state: (): any => ({
     projectList: [],
     environmentList: [],
-    serviceList: []
+    serviceList: [],
+    defaultActiveProject: {} // {id: '', name: ''}
   }),
   getters: {
     filterInfo(state: any): any {
@@ -20,6 +22,14 @@ const useProjectStore = defineStore('project', {
     },
     resetInfo() {
       this.$reset();
+    },
+    removeProjects(ids) {
+      const projectList = cloneDeep(this.projectList).filter(
+        (item) => !ids.includes(item.value)
+      );
+      this.setInfo({
+        projectList
+      });
     }
   }
 });

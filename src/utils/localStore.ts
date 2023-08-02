@@ -23,8 +23,8 @@ class Localestore extends Object.getPrototypeOf(localForage).constructor {
         expire: {
           expire,
           createTime: dayjs().valueOf(),
-          expiration: dayjs().add(expire, 'day').valueOf(),
-        },
+          expiration: dayjs().add(expire, 'day').valueOf()
+        }
       },
       callback
     );
@@ -32,13 +32,13 @@ class Localestore extends Object.getPrototypeOf(localForage).constructor {
 
   public async getValue(key, callback?) {
     const storeValue = await localForage.getItem(key, callback);
-    console.log('storeValue:', storeValue);
+
     const expire = get(storeValue, 'expire');
-    if (!expire) return get(storeValue, 'value');
+    if (!expire) return storeValue;
     const expiration = get(expire, 'expiration');
     return {
       value: get(storeValue, 'value'),
-      isExpiration: dayjs().isAfter(expiration),
+      isExpiration: dayjs().isAfter(expiration)
     };
   }
 }
