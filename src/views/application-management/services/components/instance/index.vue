@@ -231,6 +231,9 @@
   };
   const handleEditCancel = () => {
     pageAction.value = PageAction.VIEW;
+    setTimeout(() => {
+      serviceInfoRef.value?.initData();
+    }, 100);
   };
   const setInstanceTabList = () => {
     instanceTabList.value = _.filter(instanceTabs, (item) => {
