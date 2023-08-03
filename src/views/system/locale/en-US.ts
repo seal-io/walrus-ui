@@ -79,20 +79,11 @@ export default {
   'system.setting.ScanCheckCronExpr.desc':
     'Periodically check whether to perform a scan on the project, by default every 1 hour',
   'system.setting.MetaSyncCronExpr': 'Data synchronization period',
-  'system.setting.MetaSyncCronExpr.desc':
-    'Periodically sync data, including but not limited to licenses and vulnerabilities, every 24 hours by default',
+
   'system.setting.cron.desc': 'The format is a cron expression',
   'system.setting.rules.cron': 'The expression is not in the correct format',
   'system.setting.cron.extra':
     'Cron expression: seconds  minute  hour  day(month)  month  day(week)',
-  'system.setting.analyze.ApplyVulnerabilityPrioritization':
-    'whether to apply vulnerability prioritization (experimental)',
-  'system.setting.analyze.VulnPrioritization.desc':
-    "When disabled, the retrieved vulnerability results will be sorted based on the vulnerability's CVSS basic score; changing the setting may affect the newly retrieved vulnerability results and violations that have ignored",
-  'system.setting.analyze.fixAdvice':
-    'Maximum number of versions analyzed per package per fix',
-  'system.setting.analyze.fixAdvice.desc':
-    'Increasing the number will take more time to generate fix advice.',
   'system.setting.analyze.goproxy.desc':
     'The repository(GOPROXY) is used for resolving Go modules and fetching module information',
   'system.setting.analyze.goprivate.desc':
@@ -100,7 +91,6 @@ export default {
   'system.setting.analyze.gonoproxy.desc':
     'List of glob patterns of module path prefixes that should always be fetched directly or that should not be compared against the checksum database.',
   'system.setting.analyze.repoconfig': 'Repository Configuration',
-  'system.setting.analyze.enableFixAdvice': 'whether to enable fix advice',
   'system.setting.rule.openai': 'openai api token is required',
   'system.setting.task': 'Task Settings',
   'system.setting.task.basic': 'Basic Task',

@@ -74,8 +74,20 @@
             >
               <template #value="{ data }">
                 <div>
+                  <!-- sensitive -->
+                  <span v-if="data.sensitive">
+                    {{
+                      _.get(
+                        variablesGroupForm,
+                        `${group}.attributes.${data.name}`
+                      )
+                        ? '******'
+                        : ''
+                    }}
+                  </span>
+                  <!-- list -->
                   <span
-                    v-if="
+                    v-else-if="
                       schemaType.isListNumber(data.type) ||
                       schemaType.isListString(data.type)
                     "
@@ -89,6 +101,7 @@
                       )
                     }}</span
                   >
+                  <!-- map -->
                   <span v-else-if="schemaType.isMapString(data.type)">
                     <LabelsList
                       :labels="
@@ -99,6 +112,7 @@
                       "
                     ></LabelsList>
                   </span>
+                  <!-- yaml -->
                   <a-textarea
                     v-else-if="
                       schemaType.isCollectionType(data.type) ||
@@ -116,6 +130,7 @@
                       )
                     "
                   ></a-textarea>
+                  <!-- default -->
                   <span v-else>{{
                     _.get(
                       variablesGroupForm,
@@ -172,7 +187,7 @@
 
 <script lang="ts" setup>
   import _ from 'lodash';
-  import { ref, computed, nextTick, watch, onMounted, defineExpose } from 'vue';
+  import { ref, computed, nextTick, watch, onMounted } from 'vue';
   import { schemaType } from '@/components/form-create/config/interface';
   import { json2Yaml } from '@/components/form-create/config/yaml-parse';
   import { getObjectConditionValue } from '@/components/form-create/config/utils';
@@ -197,6 +212,7 @@
   const formTabs = ref<string[]>([]);
 
   const variablesDataList = computed(() => {
+    console.log('variablesGroup.value', variablesGroup.value);
     const list =
       _.get(variablesGroup.value, `${activeKey.value}.variables`) || [];
     return _.filter(list, (item) => {

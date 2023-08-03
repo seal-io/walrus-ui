@@ -1,14 +1,15 @@
 <template>
   <div class="ace-wrapper">
     <div v-if="$attrs.label" class="label">
-      <span
-        >{{ $attrs.label
-        }}{{
-          $attrs.required
-            ? `(${$t('common.form.field.input.required')})`
-            : `(${$t('common.form.field.optional')})`
-        }}</span
-      >
+      <span>
+        <span>{{ $attrs.label }}</span>
+        <span
+          v-if="$attrs.required"
+          class="bold-500 m-l-2 star"
+          style="color: rgb(var(--danger-6))"
+          >*</span
+        >
+      </span>
       <a-tooltip v-if="popupInfo" :content="popupInfo">
         <icon-info-circle
           style="stroke-linecap: initial; cursor: default"
@@ -39,11 +40,9 @@
     onMounted,
     nextTick,
     onBeforeMount,
-    defineEmits,
     watch,
     PropType,
     ref,
-    defineExpose,
     useAttrs,
     ComponentPublicInstance
   } from 'vue';
@@ -247,7 +246,6 @@
     const ctx = wordRange?.replace(/\n/g, '');
     const result = ctx?.matchAll(regx);
     const valList = Array.from(result);
-    console.log('prefix===3===', ctx);
     return _.get(valList, '0.0');
   };
   const getCompletionList = (path: string): Array<Completer> => {
@@ -256,12 +254,7 @@
     const initialPath = _.initial(pathList);
     const lastItem = _.last(pathList);
     let list: Completer[] = [];
-    console.log('source===:', {
-      path,
-      source: props.source,
-      initialPath,
-      lastItem
-    });
+
     if (!initialPath.length) {
       list = _.map(_.keys(props.source), (key) => {
         return {
@@ -447,6 +440,11 @@
       padding: 10px;
       color: var(--color-text-3);
       border-bottom: 1px solid var(--color-border-2);
+    }
+
+    .star {
+      position: relative;
+      top: 2px;
     }
 
     &:hover {

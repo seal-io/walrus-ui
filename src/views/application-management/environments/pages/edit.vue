@@ -226,7 +226,7 @@
     InputWidth
   } from '@/views/config';
   import QuestionPopup from '@/components/question-popup/index.vue';
-  import { ref, computed, defineExpose, nextTick } from 'vue';
+  import { ref, computed, nextTick } from 'vue';
   import _, {
     each,
     includes,

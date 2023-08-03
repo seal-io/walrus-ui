@@ -70,7 +70,7 @@
 
 <script lang="ts" setup>
   import _ from 'lodash';
-  import { ref, onMounted, defineExpose, nextTick } from 'vue';
+  import { ref, onMounted, nextTick } from 'vue';
   import { onClickOutside, useFullscreen } from '@vueuse/core';
   import useCallCommon from '@/hooks/use-call-common';
   import GraphG6 from '../../services/components/instance/tab-graph/components/graph-g6.vue';

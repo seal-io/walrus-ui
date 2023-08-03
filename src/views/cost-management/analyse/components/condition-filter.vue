@@ -126,7 +126,7 @@
 </template>
 
 <script lang="ts" setup>
-  import { ref, onMounted, computed, PropType, watch, defineExpose } from 'vue';
+  import { ref, onMounted, computed, PropType, watch } from 'vue';
   import {
     cloneDeep,
     filter,

@@ -44,7 +44,7 @@
 </template>
 
 <script lang="ts" setup>
-  import { useAttrs, useSlots, ref, defineExpose } from 'vue';
+  import { useAttrs, useSlots, ref } from 'vue';
 
   const props = defineProps({
     modelValue: {
