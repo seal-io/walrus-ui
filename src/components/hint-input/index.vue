@@ -10,7 +10,7 @@
       }"
       @click="handleClick"
     >
-      <span class="label">
+      <span class="label" :class="{ pswd: $attrs.sensitive }">
         <span
           ><span>{{ $attrs.label || placeholder }}</span>
           <span
@@ -33,6 +33,7 @@
         :readonly="disabled"
         autocomplete="off"
         v-bind="$attrs"
+        :type="inputType"
         @focus="handleFocus"
         @blur="handleBlur"
         @input="handleInput"
@@ -40,10 +41,18 @@
         @keyup.delete="handleDelete"
         @change="handleExpressionChange"
       />
-      <span v-if="$attrs.showWordLimit" class="arco-input-suffix">
-        <span class="arco-input-word-limit"
+      <span class="arco-input-suffix">
+        <span v-if="$attrs.showWordLimit" class="arco-input-word-limit"
           >{{ expression.length }}/{{ $attrs.maxLength }}</span
         >
+        <span
+          v-if="$attrs.sensitive"
+          class="arco-icon-hover"
+          @click="handleVisibleToggle"
+        >
+          <icon-eye-invisible v-if="invisible" />
+          <icon-eye v-else />
+        </span>
       </span>
     </span>
     <!-- <span
@@ -79,7 +88,8 @@
     useAttrs,
     PropType,
     inject,
-    onBeforeUnmount
+    onBeforeUnmount,
+    computed
   } from 'vue';
   import { Textcomplete, TextcompleteOption } from '@textcomplete/core';
   import { TextareaEditor } from '@textcomplete/textarea';
@@ -157,6 +167,7 @@
   const isFocus = ref(false);
   const inputFlag = ref(false);
   const isMatchWork = ref(true);
+  const invisible = ref(true);
   const moveLastPosition = ref(false);
   const tooltipConfig = {
     ignoreAttributes: true,
@@ -173,6 +184,14 @@
   let textEditor: any = null;
   let tippyInstance: any = null;
 
+  const inputType = computed(() => {
+    return $attrs.sensitive && invisible.value ? 'password' : 'text';
+  });
+
+  const handleVisibleToggle = () => {
+    invisible.value = !invisible.value;
+    isFocus.value = true;
+  };
   const handleSearch = (term: string, ctx): Array<resultItem> => {
     const sourceData = completeData.value || props.source;
     const regx = /([\w-]+)?\.?([\w-]*)\.?$/;
@@ -404,19 +423,12 @@
   const handleBlur = () => {
     isFocus.value = false;
     textcomplete?.hide?.();
-    // setTimeout(() => {
-    //   runChange()
-    // },200)
   };
   onClickOutside(editorWrap, (ev) => {
     handleBlur();
     isFocus.value = false;
   });
-  const handleEnter = () => {
-    // if (!textcomplete?.dropdown?.shown) {
-    //   runChange()
-    // }
-  };
+  const handleEnter = () => {};
   const handleExpressionChange = (e) => {
     textcomplete?.hide?.();
     emits('update:modelValue', expression.value);

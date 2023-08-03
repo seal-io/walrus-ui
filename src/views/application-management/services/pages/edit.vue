@@ -19,6 +19,7 @@
         auto-label-width
         layout="vertical"
       >
+        <a-input-password :max-length="20" show-word-limit></a-input-password>
         <a-form-item
           field="name"
           hide-label

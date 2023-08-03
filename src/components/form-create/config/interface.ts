@@ -123,6 +123,7 @@ export const parseComponentSchema = (schema: ComponentSchema) => {
     min: schema?.min || -Infinity,
     max: schema?.max || Infinity,
     maxLength: schema?.maxLength || 300,
+    sensitive: schema?.sensitive,
     showWordLimit: schema?.maxLength,
     minLength: schema?.minLength || null
   };
@@ -146,7 +147,7 @@ export const parseComponentSchema = (schema: ComponentSchema) => {
     //  ===========InputPassword============
     if (sensitive && schemaType.isStringType(type)) {
       return {
-        component: ['InputPassword'],
+        component: ['hintInput'],
         props: {
           ...props
         },
