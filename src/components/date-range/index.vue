@@ -167,7 +167,8 @@
 
   const selectShortcut = computed(() => {
     if (props.shortCuts?.length) {
-      return map(props.shortCuts, (item) => {
+      return map(props.shortCuts, (o) => {
+        const item = { ...o };
         item.label = t(item.label);
         return item;
       });

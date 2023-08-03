@@ -76,7 +76,6 @@
     PropType,
     watch,
     onBeforeUnmount,
-    defineExpose,
     computed,
     watchEffect
   } from 'vue';

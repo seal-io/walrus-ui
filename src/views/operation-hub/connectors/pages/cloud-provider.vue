@@ -238,15 +238,7 @@
   import { Resources, Actions } from '@/permissions/config';
   import { useUserStore } from '@/store';
   import { assignIn, toLower, get, isEqual, cloneDeep } from 'lodash';
-  import {
-    ref,
-    reactive,
-    onMounted,
-    computed,
-    h,
-    defineExpose,
-    compile
-  } from 'vue';
+  import { ref, reactive, onMounted, computed, h, compile } from 'vue';
   import GroupTitle from '@/components/group-title/index.vue';
   import { beforeLeaveCallback } from '@/hooks/save-before-leave';
   import useScrollToView from '@/hooks/use-scroll-to-view';

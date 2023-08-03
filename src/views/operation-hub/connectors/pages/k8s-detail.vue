@@ -229,7 +229,7 @@
   import { Resources, Actions } from '@/permissions/config';
   import { useUserStore } from '@/store';
   import { assignIn, get, find, isEqual, cloneDeep } from 'lodash';
-  import { ref, reactive, onMounted, computed, defineExpose } from 'vue';
+  import { ref, reactive, onMounted, computed } from 'vue';
   import GroupTitle from '@/components/group-title/index.vue';
   import readBlob from '@/utils/readBlob';
   import { beforeLeaveCallback } from '@/hooks/save-before-leave';

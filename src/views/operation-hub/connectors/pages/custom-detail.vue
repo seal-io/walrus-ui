@@ -262,7 +262,7 @@
     pick,
     each
   } from 'lodash';
-  import { ref, reactive, onMounted, computed, defineExpose } from 'vue';
+  import { ref, reactive, onMounted, computed } from 'vue';
   import GroupTitle from '@/components/group-title/index.vue';
   import { beforeLeaveCallback } from '@/hooks/save-before-leave';
   import useScrollToView from '@/hooks/use-scroll-to-view';

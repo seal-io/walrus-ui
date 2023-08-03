@@ -37,18 +37,3 @@ export default {
     }
   ]
 };
-
-// export default {
-//   path: 'dashboard',
-//   name: 'DashboardMain',
-//   component: () => import('@/views/dashboard/pages/main.vue'),
-//   meta: {
-//     hideInMenu: false,
-//     ignoreCache: true,
-//     locale: 'navbar.totalView',
-//     requiresAuth: true,
-//     icon: 'icon-dashboard',
-//     order: 0,
-//     children: []
-//   }
-// };

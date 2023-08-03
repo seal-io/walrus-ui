@@ -5,7 +5,6 @@ export default {
   name: PROFILE.Index,
   component: () => import('@/views/profile/index.vue'),
   meta: {
-    // isRemove: true,
     hideInMenu: true,
     locale: 'propfile.account.settings',
     requiresAuth: false,
