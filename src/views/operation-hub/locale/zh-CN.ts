@@ -97,7 +97,7 @@ export default {
     '复合类型及嵌套类型，数组中第一个为主类型，第二个为子类型',
   'operation.templates.table.type': '类型',
   'operation.templates.rules.name': '名称必填',
-  'operation.templates.rules.sourece': '来源必填',
+  'operation.templates.rules.source': '来源必填',
   'operation.templates.gpt.create': '创建PR',
   'operation.templates.create.title': '创建PR',
   'operation.templates.edit.title': '编辑PR',

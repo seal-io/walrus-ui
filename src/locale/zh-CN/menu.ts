@@ -14,6 +14,7 @@ export default {
   'menu.operatorHub.connector': '连接器',
   'menu.operatorHub.evniroment': '环境',
   'menu.operatorHub.module': '模板',
+  'menu.operatorHub.catalog': '模板库',
   'menu.operatorHub.secret': '全局变量',
   'menu.operatorHub.variables': '变量',
   'menu.systemsettings': '系统设置',

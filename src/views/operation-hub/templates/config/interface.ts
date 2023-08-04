@@ -23,6 +23,7 @@ export interface TemplateRowData {
   id: string;
   source: string;
   schema: Schema;
+  name: string;
   description: string;
   status: string;
   createTime: string;

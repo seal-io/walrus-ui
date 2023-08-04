@@ -16,6 +16,7 @@ import localeCost from '@/views/cost-management/locale/en-US';
 import localeOperation from '@/views/operation-hub/locale/en-US';
 
 import localeProfile from '@/views/profile/locale/en-US';
+import localeCatalogs from '@/views/operation-hub/catalogs/locale/en-US';
 
 import localeCommon from './en-US/common';
 import localeSettings from './en-US/settings';
@@ -47,5 +48,6 @@ export default {
   ...localeOperation,
   ...localeProfile,
   ...localeMenu,
-  ...localePermissionResource
+  ...localePermissionResource,
+  ...localeCatalogs
 };

@@ -1,13 +1,13 @@
 <template>
   <ComCard borderless padding="0" :loading="loading" class="projects">
     <div class="content">
-      <FilterBox>
+      <FilterBox class="m-b-10">
         <template #params>
           <a-input
             v-model="queryParams.query"
             allow-clear
             style="width: 240px"
-            :placeholder="$t('operation.templates.table.holder')"
+            :placeholder="$t('catalogs.list.query.holder')"
             @clear="handleSearch"
             @change="handleSearch"
             @press-enter="handleSearch"
@@ -28,25 +28,12 @@
         <template #button-group>
           <a-button
             v-permission="{
-              resource: `roles.${Resources.TemplateCompletions}`,
-              actions: ['POST']
-            }"
-            type="primary"
-            @click="handleDraftModule"
-          >
-            <template #icon>
-              <icon-font type="icon-ChatGPT"></icon-font>
-            </template>
-            <span>{{ $t('operation.templates.button.gpt') }}</span>
-          </a-button>
-          <a-button
-            v-permission="{
               resource: `roles.${Resources.Templates}`,
               actions: ['POST']
             }"
             type="primary"
             @click="handleCreate"
-            >{{ $t('operation.templates.detail.add') }}</a-button
+            >{{ $t('catalogs.list.button.add') }}</a-button
           >
 
           <a-button
@@ -62,25 +49,26 @@
           >
         </template>
       </FilterBox>
-      <a-divider :margin="8"></a-divider>
       <a-tabs
         lazy-load
         default-active-key="currentView"
         :active-key="currentView"
       >
-        <a-tab-pane key="thumb">
+        <!-- <a-tab-pane key="thumb">
           <ThumbView
             :list="dataList"
             :checked-list="selectedKeys"
+            @edit="handleEditItem"
             @change="handleCheckChange"
           ></ThumbView>
-        </a-tab-pane>
+        </a-tab-pane> -->
         <a-tab-pane key="list">
           <ListView
             ref="listViewRef"
             v-model:sort="sort"
             v-model:selectedList="selectedKeys"
             :list="dataList"
+            @edit="handleEditItem"
             @sort="handleSort"
           ></ListView>
         </a-tab-pane>
@@ -98,6 +86,13 @@
         @page-size-change="handlePageSizeChange"
       />
     </div>
+    <addCatalog
+      v-model:show="showModal"
+      :action="action"
+      :title="modalTitle"
+      :data-info="dataInfo"
+      @save="handleSave"
+    ></addCatalog>
   </ComCard>
 </template>
 
@@ -105,55 +100,57 @@
   import { OPERATIONHUB } from '@/router/config';
   import { Resources } from '@/permissions/config';
   import _, { map, pickBy, remove } from 'lodash';
-  import { ref, reactive, onMounted, nextTick } from 'vue';
+  import { ref, reactive, onMounted, nextTick, computed } from 'vue';
   import useCallCommon from '@/hooks/use-call-common';
   import FilterBox from '@/components/filter-box/index.vue';
   import { useSetChunkRequest } from '@/api/axios-chunk-request';
   import { deleteModal, execSucceed } from '@/utils/monitor';
-  import { PageAction } from '@/views/config';
+  import { PageAction, ModalAction } from '@/views/config';
   import { useUpdateChunkedList } from '@/views/commons/hooks/use-update-chunked-list';
   import ThumbView from '../components/thumb-view.vue';
   import ListView from '../components/list-view.vue';
-  import { TemplateRowData } from '../config/interface';
-  import { queryTemplates, deleteTemplates, TemplateAPI } from '../api';
+  import { CatalogRowData } from '../config/interface';
+  import { queryCatalogs, deleteCatalogs, CatalogAPI } from '../api';
+  import addCatalog from '../components/add-catalog.vue';
 
   defineProps({
     currentView: {
       type: String,
-      default: 'thumb'
+      default: 'list'
     }
   });
   let timer: any = null;
   const { setChunkRequest } = useSetChunkRequest();
-  const { router } = useCallCommon();
+  const { router, t } = useCallCommon();
   const loading = ref(false);
-  // const currentView = ref('thumb'); // thumb, list
   const selectedKeys = ref<string[]>([]);
   const sort = ref<string[]>(['-createTime']);
-  const dataList = ref<TemplateRowData[]>([]);
+  const dataList = ref<CatalogRowData[]>([]);
   const listViewRef = ref();
   const total = ref(0);
+  const showModal = ref(false);
+  const action = ref(ModalAction.CREATE);
+  const dataInfo = ref<any>({});
   const queryParams = reactive({
     query: '',
     page: 1,
     perPage: 10
   });
   const { updateChunkedList } = useUpdateChunkedList(dataList);
-  // const handleToggle = (val) => {
-  //   currentView.value = val;
-  // };
+
+  const modalTitle = computed(() => {
+    return action.value === ModalAction.CREATE
+      ? t('catalogs.list.button.add')
+      : t('catalogs.list.button.edit');
+  });
   const handleCreate = () => {
-    router.push({
-      name: OPERATIONHUB.TemplateDetail,
-      params: {
-        action: PageAction.EDIT
-      }
-    });
+    showModal.value = true;
+    action.value = ModalAction.CREATE;
   };
-  const handleDraftModule = () => {
-    router.push({
-      name: OPERATIONHUB.TemplateGPT
-    });
+  const handleEditItem = (item) => {
+    showModal.value = true;
+    action.value = ModalAction.EDIT;
+    dataInfo.value = item;
   };
   const fetchData = async () => {
     try {
@@ -162,7 +159,7 @@
         ...pickBy(queryParams, (val) => !!val),
         sort: [sort.value]
       };
-      const { data } = await queryTemplates(params);
+      const { data } = await queryCatalogs(params);
       dataList.value = data?.items || [];
       total.value = data?.pagination?.total || 0;
     } catch (error) {
@@ -175,6 +172,9 @@
     fetchData();
   };
   const handleSort = () => {
+    fetchData();
+  };
+  const handleSave = () => {
     fetchData();
   };
   const handleCheckChange = (checked, id) => {
@@ -213,7 +213,7 @@
           id: val
         };
       });
-      await deleteTemplates(ids);
+      await deleteCatalogs(ids);
       loading.value = false;
       execSucceed();
       queryParams.page = 1;
@@ -234,10 +234,10 @@
       updateChunkedList(data);
     });
   };
-  const createTemplateChunkRequest = () => {
+  const createInstanceListWebsocket = () => {
     try {
       setChunkRequest({
-        url: TemplateAPI,
+        url: CatalogAPI,
         handler: updateHandler
       });
     } catch (error) {
@@ -247,14 +247,14 @@
   onMounted(() => {
     fetchData();
     nextTick(() => {
-      createTemplateChunkRequest();
+      // createInstanceListWebsocket();
     });
   });
 </script>
 
 <script lang="ts">
   export default {
-    name: OPERATIONHUB.TemplateList
+    name: OPERATIONHUB.CatalogList
   };
 </script>
 

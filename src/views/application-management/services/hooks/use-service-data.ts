@@ -201,7 +201,7 @@ export default function useServiceData(props?) {
       // webservice
       const webservice = _.find(
         templateList.value,
-        (item) => item.id === 'webservice'
+        (item) => item.name === 'webservice'
       );
       formData.template.id = webservice
         ? webservice.id

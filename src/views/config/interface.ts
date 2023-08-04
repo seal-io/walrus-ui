@@ -43,4 +43,6 @@ export interface MoreAction {
     class?: string;
   };
 }
+
+export type ModalActionType = 'edit' | 'create' | 'view';
 export default {};

@@ -28,7 +28,7 @@ import Breadcrumb from './breadcrumb/index.vue';
 import GroupTitle from './group-title/index.vue';
 
 const IconFont = Icon.addFromIconFontCn({
-  src: '//at.alicdn.com/t/c/font_3892962_xywlcrh9lpm.js'
+  src: '//at.alicdn.com/t/c/font_3892962_750925r0ftt.js'
 });
 // Manually introduce ECharts modules to reduce packing size
 

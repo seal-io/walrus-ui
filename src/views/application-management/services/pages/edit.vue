@@ -79,7 +79,7 @@
                 v-for="item in templateList"
                 :key="item.id"
                 :value="item.id"
-                >{{ item.id }}</a-option
+                >{{ item.name }}</a-option
               >
             </seal-select>
           </div>
@@ -98,6 +98,7 @@
           <div>
             <seal-select
               v-model="formData.template.version"
+              :options="[]"
               :required="true"
               :placeholder="$t('applications.applications.history.version')"
               :style="{ width: `${InputWidth.LARGE}px` }"
@@ -527,7 +528,8 @@
   const handleTemplateChange = async (val) => {
     await getTemplatesVersions(val);
     await getTemplateVersionList();
-    formData.template.version = get(templateVersionList.value, '0.version');
+    formData.template.version =
+      get(templateVersionList.value, '0.version') || '';
     templateVersionFormCache.value = {};
     versionMap.value = { ov: '', nv: '' };
     handleVersionChange();
