@@ -654,10 +654,10 @@
         ranksep: 40,
         onLayoutEnd() {
           loading.value = false;
-          nextTick(() => {
-            graph?.fitCenter?.(animateFlag.value);
-            animateFlag.value = false;
-          });
+          // nextTick(() => {
+          //   graph?.fitCenter?.(animateFlag.value);
+          //   animateFlag.value = false;
+          // });
         }
       },
       pixelRatio: 2,

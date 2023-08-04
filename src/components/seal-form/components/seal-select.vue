@@ -39,6 +39,13 @@
       <template v-for="slot in Object.keys(slots)" #[slot] :key="slot">
         <slot :name="slot"></slot>
       </template>
+      <template #empty>
+        <a-empty
+          :description="
+            searchValue ? $t('common.search.nodata') : $t('common.data.empty')
+          "
+        ></a-empty>
+      </template>
     </a-select>
   </span>
 </template>
@@ -77,6 +84,7 @@
   ]);
   const input = ref();
   const isFocus = ref(false);
+  const searchValue = ref('');
   const $attrs = useAttrs();
   const slots = useSlots();
   const handleInput = (e) => {
@@ -87,6 +95,7 @@
     emits('change', value);
   };
   const handleInputValueChange = (value) => {
+    searchValue.value = value;
     emits('update:inputValue', value);
     emits('inputValueChange', value);
   };

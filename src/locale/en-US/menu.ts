@@ -14,6 +14,7 @@ export default {
   'menu.operatorHub.connector': 'Connectors',
   'menu.operatorHub.evniroment': 'Environments',
   'menu.operatorHub.module': 'Templates',
+  'menu.operatorHub.catalog': 'Catalogs',
   'menu.operatorHub.secret': 'Global Variables',
   'menu.systemsettings': 'System Settings',
   'menu.operatorHub.variables': 'Variables',

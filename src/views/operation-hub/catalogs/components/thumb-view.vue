@@ -11,6 +11,7 @@
           :data-info="item"
           :provider="item.icon"
           :checked="includes(checkedList, item.id)"
+          @select="(val) => handleSelectAction(val, item)"
           @change="handleCheckChange"
         ></templateItem>
       </a-grid-item>
@@ -22,17 +23,19 @@
   import { OPERATIONHUB } from '@/router/config';
   import { Resources, Actions } from '@/permissions/config';
   import { useUserStore } from '@/store';
+  import { MoreAction } from '@/views/config/interface';
+  import { execSucceed } from '@/utils/monitor';
   import { includes, filter } from 'lodash';
   import { ref, onMounted, PropType } from 'vue';
   import useCallCommon from '@/hooks/use-call-common';
-  import thumbButton from '@/components/buttons/thumb-button.vue';
   import templateItem from './template-item.vue';
-  import { TemplateRowData, ModuleAction } from '../config/interface';
+  import { CatalogRowData } from '../config/interface';
   import { actionList } from '../config';
+  import { refreshCatalog } from '../api';
 
   const props = defineProps({
     list: {
-      type: Array as PropType<TemplateRowData[]>,
+      type: Array as PropType<CatalogRowData[]>,
       default() {
         return [];
       }
@@ -45,11 +48,32 @@
     }
   });
   const userStore = useUserStore();
-  const emits = defineEmits(['create', 'change']);
+  const emits = defineEmits(['create', 'change', 'edit']);
   const { router } = useCallCommon();
-  const moduleActions = ref<ModuleAction[]>([]);
-  const handleCreate = () => {
-    emits('create');
+  const moduleActions = ref<MoreAction[]>([]);
+
+  const handleRefresh = async (item) => {
+    try {
+      await refreshCatalog({ id: item.id });
+      execSucceed();
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  const handleEditItem = (item) => {
+    emits('edit', item);
+  };
+  const handleSelectAction = (val, item) => {
+    switch (val) {
+      case 'refresh':
+        handleRefresh(item);
+        break;
+      case 'edit':
+        handleEditItem(item);
+        break;
+      default:
+        break;
+    }
   };
   const handleCheckChange = (checked, id) => {
     emits('change', checked, id);
@@ -73,7 +97,6 @@
     });
   };
   onMounted(() => {
-    console.log('onmounted');
     setModuleActions();
   });
 </script>

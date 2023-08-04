@@ -16,6 +16,7 @@ import localeCost from '@/views/cost-management/locale/zh-CN';
 import localeOperation from '@/views/operation-hub/locale/zh-CN';
 
 import localeProfile from '@/views/profile/locale/zh-CN';
+import localeCatalogs from '@/views/operation-hub/catalogs/locale/zh-CN';
 
 import localeCommon from './zh-CN/common';
 
@@ -49,5 +50,6 @@ export default {
   ...localeOperation,
   ...localeProfile,
   ...localeMenu,
-  ...localePermissionResource
+  ...localePermissionResource,
+  ...localeCatalogs
 };

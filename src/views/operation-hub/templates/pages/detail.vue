@@ -35,7 +35,7 @@
       >
         <a-form-item
           :label="$t('operation.connectors.table.name')"
-          field="id"
+          field="name"
           hide-asterisk
           :hide-label="pageAction === PageAction.EDIT"
           :disabled="!!id"
@@ -50,7 +50,7 @@
         >
           <seal-input
             v-if="pageAction === PageAction.EDIT"
-            v-model="formData.id"
+            v-model="formData.name"
             :label="$t('operation.connectors.table.name')"
             :required="true"
             :style="{ width: `${InputWidth.LARGE}px` }"
@@ -58,7 +58,7 @@
             show-word-limit
           ></seal-input>
           <span v-else class="readonly-view-label">{{
-            formData.id || '-'
+            formData.name || '-'
           }}</span>
           <template v-if="pageAction === PageAction.EDIT" #extra>
             <span class="tips">{{ $t('common.validate.labelName') }}</span>
@@ -107,7 +107,7 @@
             formData.source || '-'
           }}</span>
         </a-form-item>
-        <a-form-item
+        <!-- <a-form-item
           field="icon"
           :label="$t('operation.templates.detail.icon')"
           hide-asterisk
@@ -128,7 +128,7 @@
           <span v-else class="readonly-view-label">{{
             formData.icon || '-'
           }}</span>
-        </a-form-item>
+        </a-form-item> -->
         <a-form-item
           v-if="id && pageAction === PageAction.VIEW"
           :label="$t('operation.connectors.table.status')"
@@ -264,7 +264,7 @@
   const templateSchema = ref({});
   let copyFormData: any = {};
   const formData = reactive({
-    id: '',
+    name: '',
     description: '',
     source: '',
     // version: '',

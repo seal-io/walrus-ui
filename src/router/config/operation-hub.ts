@@ -8,7 +8,9 @@ export const OperationHub = {
   ConnectorProviderDetail: 'ConnectorProviderDetail',
   TemplateList: 'TemplateList',
   TemplateDetail: 'TemplateDetail',
-  TemplateGPT: 'TemplateGPT'
+  TemplateGPT: 'TemplateGPT',
+  CatalogList: 'CatalogList',
+  CatalogDetail: 'CatalogDetail'
 };
 
 export default OperationHub;

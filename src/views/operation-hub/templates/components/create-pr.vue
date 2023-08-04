@@ -179,6 +179,7 @@
       }
     }
   });
+  const connectorTypes = ['Github', 'Gitlab'];
   const emit = defineEmits(['save', 'update:show']);
   const formref = ref();
   const loading = ref(false);
@@ -212,7 +213,7 @@
     try {
       const { data } = await queryConnectors({ page: -1 });
       const list = filter(data.items || [], (item) => {
-        return includes(['Github', 'Gitlab'], item.type);
+        return includes(connectorTypes, item.type);
       });
       connectorList.value = map(list, (sItem) => {
         return {

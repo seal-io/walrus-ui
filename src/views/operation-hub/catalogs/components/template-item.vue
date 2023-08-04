@@ -50,6 +50,24 @@
         </div>
       </div>
     </div>
+    <div class="info">
+      <a-space :size="15">
+        <span class="val"
+          ><icon-clock-circle />
+          <span class="val-item">{{
+            dayjs(dataInfo.sync?.time || '').format('YYYY-MM-DD HH:mm:ss')
+          }}</span>
+        </span>
+        <span class="val"
+          ><i class="iconfont icon-database1"></i>
+          <span class="val-item">{{ dataInfo.sync?.total }}</span></span
+        >
+        <span class="val"
+          ><i class="iconfont icon-cloud-sync"></i>
+          <span class="val-item">{{ dataInfo.sync.succeeded }}</span></span
+        >
+      </a-space>
+    </div>
     <a-checkbox
       class="check-box"
       :value="dataInfo.id"
@@ -61,16 +79,15 @@
 </template>
 
 <script lang="ts" setup>
+  import dayjs from 'dayjs';
   import { OPERATIONHUB } from '@/router/config';
-  import { PropType, ref, watch } from 'vue';
+  import { PropType } from 'vue';
   import { toLower, get } from 'lodash';
   import { useRouter } from 'vue-router';
-  import { execSucceed } from '@/utils/monitor';
+  import { MoreAction } from '@/views/config/interface';
   import moreButtonActions from '@/components/drop-button-group/more-button-actions.vue';
   import StatusLabel from '../../connectors/components/status-label.vue';
-  import { TemplateRowData } from '../config/interface';
-
-  import { refreshTemplate } from '../api';
+  import { CatalogRowData } from '../config/interface';
 
   const props = defineProps({
     provider: {
@@ -80,13 +97,13 @@
       }
     },
     actionList: {
-      type: Array as PropType<{ label: string; value: string; icon: string }[]>,
+      type: Array as PropType<MoreAction[]>,
       default() {
         return [];
       }
     },
     dataInfo: {
-      type: Object as PropType<TemplateRowData>,
+      type: Object as PropType<CatalogRowData>,
       default() {
         return {};
       }
@@ -99,17 +116,9 @@
     }
   });
 
-  const emits = defineEmits(['change', 'refresh']);
+  const emits = defineEmits(['change', 'select']);
   const router = useRouter();
-  const handleEditTemplate = () => {
-    router.push({
-      name: OPERATIONHUB.TemplateDetail,
-      params: { action: 'edit' },
-      query: {
-        id: props.dataInfo.id
-      }
-    });
-  };
+
   const handleView = () => {
     router.push({
       name: OPERATIONHUB.TemplateDetail,
@@ -119,24 +128,11 @@
       }
     });
   };
-  const handleRefresh = async () => {
-    try {
-      await refreshTemplate({ id: props.dataInfo.id });
-      execSucceed();
-    } catch (error) {
-      console.log(error);
-    }
-  };
+
   const handleSelectAction = (val) => {
-    if (val === 'edit') {
-      handleEditTemplate();
-    }
-    if (val === 'refresh') {
-      handleRefresh();
-    }
+    emits('select', val);
   };
   const handleCheckedChange = (val) => {
-    console.log('val:', val);
     emits('change', val, props.dataInfo.id);
   };
 </script>
@@ -149,10 +145,11 @@
   .template-item {
     position: relative;
     display: flex;
+    flex-direction: column;
     width: inherit;
-    height: 140px;
+    height: 220px;
+    padding: 10px;
     overflow: hidden;
-    // padding: 10px 25px 10px 10px;
     background-color: #fff;
     .thumbCard();
 
@@ -163,16 +160,16 @@
     }
 
     .btn-wrap {
-      position: relative;
-      top: -4px;
+      position: absolute;
+      top: 8px;
+      right: 30px;
       display: flex;
       justify-content: flex-end;
     }
 
     .img-box {
       flex-basis: 50px;
-      padding: 10px;
-      // background-color: var(--color-primary-light-1);
+
       .img {
         display: inline-block;
         width: 50px;
@@ -185,10 +182,7 @@
       .icon-wrap {
         display: flex;
         padding: 0;
-        // overflow: hidden;
         background-color: #fff;
-        // border-radius: 50%;
-        // box-shadow: 0 0 16px 4px var(--color-border-2);
       }
 
       :deep(.arco-icon) {
@@ -198,13 +192,28 @@
       }
     }
 
+    .info {
+      display: flex;
+      align-items: center;
+      margin-top: 10px;
+
+      .val {
+        color: var(--color-text-3);
+        opacity: 0.9;
+      }
+
+      .val-item {
+        margin-left: 4px;
+        color: var(--color-text-2);
+      }
+    }
+
     .content {
       display: flex;
       flex: 1;
       flex-direction: column;
       justify-content: space-between;
-      width: calc(100% - 80px);
-      padding: 10px 25px 10px 6px;
+      margin-top: 16px;
 
       .title-wrap {
         display: flex;
@@ -218,6 +227,7 @@
         text-overflow: ellipsis;
         -webkit-box-orient: vertical;
         -webkit-line-clamp: 3;
+        word-break: break-all;
       }
 
       .title {
@@ -234,6 +244,8 @@
           display: inline;
           height: 21px;
           margin-left: 5px;
+          font-size: 16px;
+          line-height: 32px;
         }
       }
     }
