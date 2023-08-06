@@ -170,13 +170,14 @@ export default function useServiceData(props?) {
         allTemplateVersions.value,
         (item) => item.template.id === formData.template.id
       );
-      templateVersionList.value = _.map(list, (item) => {
+      const versions = _.map(list, (item) => {
         return {
           ..._.cloneDeep(item),
           label: item.version,
           value: item.version
         };
       });
+      templateVersionList.value = _.sortBy(versions, ['value']).reverse();
     } catch (error) {
       console.log(error);
     }

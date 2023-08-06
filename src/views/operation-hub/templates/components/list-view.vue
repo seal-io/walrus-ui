@@ -25,7 +25,6 @@
             }}</a-link>
           </template>
         </a-table-column>
-
         <a-table-column
           ellipsis
           tooltip

@@ -7,7 +7,7 @@
         :span="{ lg: 6, md: 12, sm: 24, xs: 24 }"
       >
         <templateItem
-          :action-list="moduleActions"
+          :action-list="setModuleActions(item)"
           :data-info="item"
           :provider="item.icon"
           :checked="includes(checkedList, item.id)"
@@ -21,6 +21,7 @@
 <script lang="ts" setup>
   import { OPERATIONHUB } from '@/router/config';
   import { Resources, Actions } from '@/permissions/config';
+  import { MoreAction } from '@/views/config/interface';
   import { useUserStore } from '@/store';
   import { includes, filter } from 'lodash';
   import { ref, onMounted, PropType } from 'vue';
@@ -47,21 +48,18 @@
   const userStore = useUserStore();
   const emits = defineEmits(['create', 'change']);
   const { router } = useCallCommon();
-  const moduleActions = ref<ModuleAction[]>([]);
+  const moduleActions = ref<MoreAction[]>([]);
   const handleCreate = () => {
     emits('create');
   };
   const handleCheckChange = (checked, id) => {
     emits('change', checked, id);
   };
-  const setModuleActions = () => {
-    moduleActions.value = filter(actionList, (item) => {
-      if (!item.requiredAuth) return true;
-      return userStore.hasRolesActionsPermission({
-        resource: Resources.Templates,
-        actions: [Actions.PUT]
-      });
+  const setModuleActions = (info) => {
+    const result = filter(actionList, (item) => {
+      return item.filterFunc ? item.filterFunc(info) : true;
     });
+    return result;
   };
   const handleClickItem = (project) => {
     console.log('project:', project);
@@ -74,7 +72,6 @@
   };
   onMounted(() => {
     console.log('onmounted');
-    setModuleActions();
   });
 </script>
 

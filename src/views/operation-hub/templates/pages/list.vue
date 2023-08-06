@@ -16,6 +16,19 @@
               <icon-search />
             </template>
           </a-input>
+          <a-input
+            v-model="queryParams.catalogId"
+            allow-clear
+            style="width: 240px"
+            :placeholder="$t('operation.templates.catalogId.holder')"
+            @clear="handleSearch"
+            @change="handleSearch"
+            @press-enter="handleSearch"
+          >
+            <template #prefix>
+              <icon-search />
+            </template>
+          </a-input>
           <a-space style="margin-left: 10px">
             <a-button type="primary" @click="handleSearch">{{
               $t('common.button.search')
@@ -135,6 +148,7 @@
   const total = ref(0);
   const queryParams = reactive({
     query: '',
+    catalogId: '',
     page: 1,
     perPage: 10
   });

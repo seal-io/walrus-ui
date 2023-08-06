@@ -224,6 +224,9 @@
       }
     });
     pageAction.value = PageAction.VIEW;
+    setTimeout(() => {
+      serviceInfoRef.value?.initData();
+    }, 100);
   };
   const setActionMap = () => {
     actionMap.set('delete', handleDelete);

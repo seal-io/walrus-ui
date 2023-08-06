@@ -73,6 +73,8 @@ export default {
   'operation.templates.table.title': '模板列表',
   'operation.templates.table.name': '模板',
   'operation.templates.table.holder': '请输入模板',
+  'operation.templates.catalogId.holder': '请输入模板库ID',
+  'operation.templates.table.catalogId': 'ID',
   'operation.templates.type.holder': '请选择模板类型',
   'operation.templates.detail.edit': '编辑模板',
   'operation.templates.detail.add': '新建模板',

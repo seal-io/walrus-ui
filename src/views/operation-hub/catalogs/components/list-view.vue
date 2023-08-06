@@ -38,6 +38,20 @@
           ellipsis
           tooltip
           :cell-style="{ minWidth: '40px' }"
+          data-index="id"
+          :title="$t('operation.templates.table.catalogId')"
+        >
+          <template #cell="{ record }">
+            <span
+              ><copy :content="record.id" class="m-r-5"></copy
+              >{{ record.id }}</span
+            >
+          </template>
+        </a-table-column>
+        <a-table-column
+          ellipsis
+          tooltip
+          :cell-style="{ minWidth: '40px' }"
           align="center"
           data-index="sync.total"
           :title="$t('catalogs.list.total')"
@@ -114,19 +128,6 @@
         >
           <template #cell="{ record }">
             <a-space :size="16">
-              <a-tooltip :content="$t('common.button.edit')">
-                <a-link
-                  v-permission="{
-                    resource: `roles.${Resources.Templates}`,
-                    actions: [Actions.PUT]
-                  }"
-                  type="text"
-                  size="small"
-                  @click="handleEdit(record)"
-                >
-                  <template #icon><icon-edit class="size-14" /></template>
-                </a-link>
-              </a-tooltip>
               <a-tooltip :content="$t('common.button.refresh')">
                 <a-link
                   v-permission="{
@@ -172,6 +173,7 @@
   import useRowSelect from '@/hooks/use-row-select';
   import { UseSortDirection } from '@/utils/common';
   import FilterBox from '@/components/filter-box/index.vue';
+  import copy from '@/components/copy/copy-command.vue';
   import { CatalogRowData } from '../config/interface';
   import StatusLabel from '../../connectors/components/status-label.vue';
   import { queryCatalogs, refreshCatalog, deleteCatalogs } from '../api';
