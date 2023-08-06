@@ -109,6 +109,14 @@
           data-index="template.id"
           :title="$t('applications.applications.table.module')"
         >
+          <template #cell="{ record }">
+            <span>{{
+              getListLabel(record.template?.id, templateList, {
+                label: 'name',
+                value: 'id'
+              })
+            }}</span>
+          </template>
         </a-table-column>
         <a-table-column
           ellipsis
@@ -232,6 +240,7 @@
   } from '@/api/axios-chunk-request';
   import useCallCommon from '@/hooks/use-call-common';
   import { execSucceed } from '@/utils/monitor';
+  import { getListLabel } from '@/utils/func';
   import DropButtonGroup from '@/components/drop-button-group/index.vue';
   import { UseSortDirection } from '@/utils/common';
   import useRowSelect from '@/hooks/use-row-select';
@@ -242,11 +251,13 @@
   import { websocketEventType, serviceActions } from '../config';
   import { queryServices, deleteServices, refreshServiceConfig } from '../api';
   import useRollbackRevision from '../hooks/use-rollback-revision';
+  import useCompleteData from '../hooks/use-complete-data';
   import deleteServiceModal from '../components/delete-service-modal.vue';
   import rollbackModal from '../components/rollback-modal.vue';
   import driftResource from '../components/drift-resource.vue';
 
   const userStore = useUserStore();
+  const { templateList, getTemplates } = useCompleteData();
   const {
     showRollbackModal,
     rollbackTitle,
@@ -448,6 +459,7 @@
   const init = async () => {
     userStore.setInfo({ currentProject: queryParams.projectID });
     fetchData();
+    getTemplates();
   };
 
   const updateApplicationList = (data) => {

@@ -234,7 +234,7 @@
     const d = _.find(list, (item) => {
       return item[k] === value;
     });
-    return d?.label || d?.id;
+    return d?.label || d?.name;
   };
   const setSubGroupList = () => {
     const groupData = _.get(variablesGroup.value, activeKey.value);

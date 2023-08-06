@@ -63,6 +63,7 @@
 <script lang="ts" setup>
   import { OPERATIONHUB } from '@/router/config';
   import { PropType, ref, watch } from 'vue';
+  import { MoreAction } from '@/views/config/interface';
   import { toLower, get } from 'lodash';
   import { useRouter } from 'vue-router';
   import { execSucceed } from '@/utils/monitor';
@@ -80,7 +81,7 @@
       }
     },
     actionList: {
-      type: Array as PropType<{ label: string; value: string; icon: string }[]>,
+      type: Array as PropType<MoreAction[]>,
       default() {
         return [];
       }

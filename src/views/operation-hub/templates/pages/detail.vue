@@ -20,6 +20,7 @@
         flex-start
         :show-edit="
           pageAction === PageAction.VIEW &&
+          !_.get(formData, 'catalog.id') &&
           userStore.hasRolesActionsPermission({
             resource: Resources.Templates,
             actions: [Actions.PUT]
@@ -136,11 +137,12 @@
           <StatusLabel
             style="margin-left: 12px"
             :status="{
-              status: get(formData, 'status') || '',
-              text: get(formData, 'status'),
-              message: get(formData, 'statusMessage') || '',
-              transitioning: get(formData, 'status') === 'Initializing',
-              error: get(formData, 'status') === 'Error'
+              status: get(formData, 'status.summaryStatus') || '',
+              text: get(formData, 'status.summaryStatus'),
+              message: get(formData, 'status.summaryStatusMessage') || '',
+              transitioning:
+                get(formData, 'status.transitioning') === 'Initializing',
+              error: get(formData, 'status.error') === 'Error'
             }"
           ></StatusLabel>
         </a-form-item>
@@ -216,7 +218,7 @@
   import { OPERATIONHUB } from '@/router/config';
   import { Resources, Actions } from '@/permissions/config';
   import { useUserStore, useTabBarStore } from '@/store';
-  import { assignIn, find, get, map, isEqual, cloneDeep } from 'lodash';
+  import _, { assignIn, find, get, map, isEqual, cloneDeep } from 'lodash';
   import { urlReg } from '@/utils/validate';
   import { ref, reactive, onMounted, computed, markRaw } from 'vue';
   import { beforeLeaveCallback } from '@/hooks/save-before-leave';

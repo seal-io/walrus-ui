@@ -79,6 +79,8 @@ export default {
   'operation.templates.table.title': 'Template List',
   'operation.templates.table.name': 'Template',
   'operation.templates.table.holder': 'please enter a template',
+  'operation.templates.catalogId.holder': 'please enter catalog ID',
+  'operation.templates.table.catalogId': 'ID',
   'operation.templates.type.holder': 'please select a template type',
   'operation.templates.detail.edit': 'Edit Template',
   'operation.templates.detail.add': 'New Template',
