@@ -21,11 +21,11 @@
               show-loading
               :size="12"
               :status="{
-                status: get(dataInfo, 'status'),
+                status: get(dataInfo, 'status.summaryStatus') || '',
                 text: '',
                 message: '',
-                transitioning: get(dataInfo, 'status') === 'Initializing',
-                error: get(dataInfo, 'status') === 'Error'
+                transitioning: get(dataInfo, 'status.transitioning'),
+                error: get(dataInfo, 'status.error')
               }"
             ></StatusLabel>
             <AutoTip :tooltip-props="{ content: dataInfo.name }">

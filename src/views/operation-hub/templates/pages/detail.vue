@@ -108,28 +108,7 @@
             formData.source || '-'
           }}</span>
         </a-form-item>
-        <!-- <a-form-item
-          field="icon"
-          :label="$t('operation.templates.detail.icon')"
-          hide-asterisk
-          :hide-label="pageAction === PageAction.EDIT"
-          :rules="[
-            {
-              match: urlReg,
-              message: $t('system.rules.url')
-            }
-          ]"
-        >
-          <seal-input
-            v-if="pageAction === PageAction.EDIT"
-            v-model="formData.icon"
-            :label="$t('operation.templates.detail.icon')"
-            :style="{ width: `${InputWidth.LARGE}px` }"
-          ></seal-input>
-          <span v-else class="readonly-view-label">{{
-            formData.icon || '-'
-          }}</span>
-        </a-form-item> -->
+
         <a-form-item
           v-if="id && pageAction === PageAction.VIEW"
           :label="$t('operation.connectors.table.status')"
@@ -140,9 +119,8 @@
               status: get(formData, 'status.summaryStatus') || '',
               text: get(formData, 'status.summaryStatus'),
               message: get(formData, 'status.summaryStatusMessage') || '',
-              transitioning:
-                get(formData, 'status.transitioning') === 'Initializing',
-              error: get(formData, 'status.error') === 'Error'
+              transitioning: get(formData, 'status.transitioning'),
+              error: get(formData, 'status.error')
             }"
           ></StatusLabel>
         </a-form-item>

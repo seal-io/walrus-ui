@@ -17,7 +17,7 @@
             </template>
           </a-input>
           <a-select
-            v-model="queryParams.catalogId"
+            v-model="queryParams.catalogID"
             allow-clear
             allow-search
             style="width: 240px"
@@ -149,7 +149,7 @@
   const total = ref(0);
   const queryParams = reactive({
     query: '',
-    catalogId: '',
+    catalogID: '',
     page: 1,
     perPage: 10
   });
