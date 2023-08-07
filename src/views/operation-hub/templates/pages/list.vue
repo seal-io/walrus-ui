@@ -16,19 +16,18 @@
               <icon-search />
             </template>
           </a-input>
-          <a-input
+          <a-select
             v-model="queryParams.catalogId"
             allow-clear
+            allow-search
             style="width: 240px"
+            :options="catalogList"
             :placeholder="$t('operation.templates.catalogId.holder')"
             @clear="handleSearch"
             @change="handleSearch"
             @press-enter="handleSearch"
           >
-            <template #prefix>
-              <icon-search />
-            </template>
-          </a-input>
+          </a-select>
           <a-space style="margin-left: 10px">
             <a-button type="primary" @click="handleSearch">{{
               $t('common.button.search')
@@ -125,6 +124,7 @@
   import { deleteModal, execSucceed } from '@/utils/monitor';
   import { PageAction } from '@/views/config';
   import { useUpdateChunkedList } from '@/views/commons/hooks/use-update-chunked-list';
+  import { queryCatalogs } from '../../catalogs/api';
   import ThumbView from '../components/thumb-view.vue';
   import ListView from '../components/list-view.vue';
   import { TemplateRowData } from '../config/interface';
@@ -144,6 +144,7 @@
   const selectedKeys = ref<string[]>([]);
   const sort = ref<string[]>(['-createTime']);
   const dataList = ref<TemplateRowData[]>([]);
+  const catalogList = ref<{ label: string; value: string }[]>([]);
   const listViewRef = ref();
   const total = ref(0);
   const queryParams = reactive({
@@ -258,8 +259,26 @@
       console.log(error);
     }
   };
+  const getCatalogList = async () => {
+    try {
+      const params = {
+        page: -1,
+        extract: ['-status', '-sync']
+      };
+      const { data } = await queryCatalogs(params);
+      catalogList.value = _.map(data?.items || [], (item) => {
+        return {
+          label: item.name,
+          value: item.id
+        };
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  };
   onMounted(() => {
     fetchData();
+    getCatalogList();
     nextTick(() => {
       createTemplateChunkRequest();
     });

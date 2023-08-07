@@ -44,12 +44,13 @@
         >
           <template #cell="{ record }">
             <StatusLabel
+              :zoom="0.9"
               :status="{
-                status: get(record, 'status'),
-                text: get(record, 'status'),
-                message: get(record, 'statusMessage'),
-                transitioning: get(record, 'status') === 'Initializing',
-                error: get(record, 'status') === 'Error'
+                status: get(record, 'status.summaryStatus'),
+                text: get(record, 'status.summaryStatus'),
+                message: get(record, 'status.summaryStatusMessage'),
+                transitioning: get(record, 'status.transitioning'),
+                error: get(record, 'status.error')
               }"
             ></StatusLabel>
           </template>
