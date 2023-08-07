@@ -91,7 +91,6 @@ export const json2Str = (obj) => {
 
 export const str2Json = (str, type) => {
   str = trim(str);
-  console.log('yaml2json===', str, type, str);
   if (!str) {
     let res: any = [];
     if (schemaType.isListPrimaryType(type)) {

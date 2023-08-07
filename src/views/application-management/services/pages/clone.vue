@@ -137,7 +137,6 @@
       }
     ] as BreadcrumbOptions[];
     environments.value = environmentList;
-    console.log('environmentList===', environmentList);
   };
   const handleSelectChange = ({ value, item }) => {
     handleBreadChange(value, item);

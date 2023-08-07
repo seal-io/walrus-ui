@@ -169,7 +169,7 @@
       execSucceed();
       updateApplicationEmitter();
     } catch (error) {
-      console.log(error);
+      //
     }
   };
   const handleRollbackInstance = async () => {
@@ -180,7 +180,7 @@
       });
       execSucceed();
     } catch (error) {
-      console.log(error);
+      //
     }
   };
   const getRevisionList = async () => {
@@ -198,7 +198,6 @@
     } catch (error) {
       revisionList.value = [];
       loading.value = false;
-      console.log(error);
     }
   };
 
@@ -218,7 +217,6 @@
       compareloading.value = false;
     } catch (error) {
       compareloading.value = false;
-      console.log(error);
     }
   };
   const handleRevisionChange = () => {
@@ -243,7 +241,7 @@
       try {
         handleExecRollback();
       } catch (error) {
-        console.log(error);
+        //
       }
     }
   };

@@ -59,10 +59,9 @@
     const result = filter(actionList, (item) => {
       return item.filterFunc ? item.filterFunc(info) : true;
     });
-    return result;
+    return result as MoreAction[];
   };
   const handleClickItem = (project) => {
-    console.log('project:', project);
     router.push({
       name: OPERATIONHUB.TemplateDetail,
       query: {
@@ -70,9 +69,6 @@
       }
     });
   };
-  onMounted(() => {
-    console.log('onmounted');
-  });
 </script>
 
 <style lang="less" scoped>

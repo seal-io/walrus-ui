@@ -19,40 +19,31 @@ export function createWebsocketInstance({ url, onmessage }) {
   const TRY_FREQ = 1000;
 
   // listen the connect status: readyState
-  wss.onopen = () => {
-    console.log('wss connected successfully...');
-  };
+  wss.onopen = () => {};
   const reConnect = () => {
     tryCount = 3;
     connectTimer = setInterval(() => {
       if (wss.readyState === 3 && tryCount > 0) {
         tryCount -= 1;
-        console.log('wss re-connecting...', tryCount);
         wss = new WebSocket(url);
       } else {
-        console.log('wss stop re-connecting...', tryCount);
         clearInterval(connectTimer);
       }
     }, TRY_FREQ);
   };
   // error
-  wss.onerror = (error) => {
-    console.log('wss error...', error);
-    // wss = new WebSocket(url);
-  };
+  wss.onerror = (error) => {};
 
   // receive message from server
   wss.onmessage = (res) => {
     try {
-      console.log('wss message:', { [url]: res });
       const data = JSON.parse(res.data);
       onmessage(data);
     } catch (error) {
-      console.log('wss message error...', error);
+      //
     }
   };
   wss.onclose = () => {
-    console.log('wss closed...');
     wss?.close?.();
     if (isneedReconnect) {
       // reConnect();
@@ -68,17 +59,7 @@ export function createWebsocketInstance({ url, onmessage }) {
   window.addEventListener('offline', () => {
     // reConnect();
   });
-  // onBeforeUnmount(() => {
-  //   isneedReconnect = false;
-  //   close();
-  //   console.log('wss onBeforeUnmount');
-  // });
-  // onUnmounted(() => {
-  //   close();
-  //   window.removeEventListener('offline', () => {
-  //     // reConnect();
-  //   });
-  // });
+
   return {
     wss,
     close,

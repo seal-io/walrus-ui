@@ -254,7 +254,6 @@
       loading.value = false;
     } catch (error) {
       loading.value = false;
-      console.log(error);
     }
   };
   const getSubjectList = async () => {
@@ -273,7 +272,6 @@
     } catch (error) {
       userSubjectList.value = [];
       groupSubjectList.value = [];
-      console.log(error);
     }
   };
   const getRoleList = async () => {
@@ -290,7 +288,6 @@
       });
     } catch (error) {
       roleList.value = [];
-      console.log(error);
     }
   };
   const handleOk = async () => {
@@ -301,32 +298,14 @@
         getProjectSubjectRoles();
       }
     } catch (error) {
-      console.log(error);
+      //
     }
   };
   const handleClose = () => {
     emits('save');
     emits('update:show', false);
   };
-  const handleDeleteConfirm = async () => {
-    try {
-      const ids = _.map(selectedKeys.value, (val) => {
-        return {
-          id: val
-        };
-      });
-      await deleteSubjectRoles(ids);
-      execSucceed();
-      selectedKeys.value = [];
-      rowSelection.selectedRowKeys = [];
-      getProjectSubjectRoles();
-    } catch (error) {
-      console.log(error);
-    }
-  };
-  // const handleDelete = async () => {
-  //   deleteModal({ onOk: handleDeleteConfirm });
-  // };
+
   const handleDelete = async (row) => {
     deleteModal({
       onOk: async () => {

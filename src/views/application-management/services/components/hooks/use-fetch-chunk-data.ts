@@ -221,7 +221,7 @@ export default function useFetchResource() {
         list = setDataList(list);
         dataList.value = [].concat(list);
       } catch (error) {
-        console.log(error);
+        //
       }
     }
   };
@@ -246,11 +246,10 @@ export default function useFetchResource() {
         beforeReconnect: fetchData
       });
     } catch (error) {
-      console.log('error', error);
+      //
     }
   };
   onBeforeUnmount(() => {
-    console.log('wss unmounted 11');
     fetchToken?.cancel?.();
   });
   return {

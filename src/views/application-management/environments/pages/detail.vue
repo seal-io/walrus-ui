@@ -141,7 +141,6 @@
       currentInfo.value = data;
     } catch (error) {
       currentInfo.value = {};
-      console.log(error);
     }
   };
   const initBread = async () => {

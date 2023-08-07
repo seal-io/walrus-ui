@@ -80,7 +80,7 @@
       isFirstLogin.value = value !== 'Invalid';
       firstLoginStatus.value = data;
     } catch (error) {
-      console.log(error);
+      // ignore
     }
   };
   const specifiedPSWD = () => {

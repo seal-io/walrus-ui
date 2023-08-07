@@ -68,7 +68,7 @@
       });
       FileSaver.saveAs(url, 'seal-cli');
     } catch (error) {
-      console.log(error);
+      //
     }
   };
 </script>

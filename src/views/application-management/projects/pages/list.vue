@@ -272,10 +272,6 @@
     }, 100);
   };
   const handleViewProject = async (row) => {
-    // await localStore.setValue(USER_DEFAULT_PROJECT, {
-    //   id: row.id,
-    //   name: row.name
-    // });
     projectStore.setInfo({
       defaultActiveProject: {
         id: row.id,
@@ -306,7 +302,6 @@
       loading.value = false;
     } catch (error) {
       loading.value = false;
-      console.log(error);
     }
   };
   const handleFilter = () => {
@@ -371,7 +366,6 @@
       handleFilter();
       await updateProjectStore(ids);
     } catch (error) {
-      console.log(error);
       loading.value = false;
     }
   };

@@ -79,7 +79,6 @@ export default function useServiceData(props?) {
       serviceInfo.value = data;
     } catch (error) {
       serviceInfo.value = {};
-      console.log(error);
     }
   };
   const setRefMap = (el: refItem, name) => {
@@ -179,7 +178,7 @@ export default function useServiceData(props?) {
       });
       templateVersionList.value = _.sortBy(versions, ['value']).reverse();
     } catch (error) {
-      console.log(error);
+      //
     }
   };
   const setFormAttributes = async () => {
@@ -228,7 +227,7 @@ export default function useServiceData(props?) {
   const initInfo = async () => {
     asyncLoading.value = true;
     serviceInfo.value = serviceStore.getServiceInfo(id);
-    console.log('serviceInfo.value', serviceInfo.value);
+
     await getTemplates();
     await initFormData();
     asyncLoading.value = false;

@@ -136,7 +136,6 @@
   const hasNavList = computed(() => {
     return appStore.hasNavList;
   });
-  console.log('useUserStore===', userStore);
   const defaultActive = ref<string>('TotalView');
   const theme = computed(() => {
     return appStore.theme;
@@ -184,7 +183,6 @@
     return includes(NO_LOGIN_CHECK_PATH, name);
   };
   const handleControlNavShow = (newRoute) => {
-    console.log('newRoute========', newRoute);
     const needNavList =
       hasIn(newRoute.meta, 'hasNavList') && !get(newRoute, 'meta.hasNavList');
     if (needNavList || noLoginCheckRoute(newRoute.name)) {
@@ -226,10 +224,6 @@
       setTimeout(() => {
         handleControlMenuShow(newRoute);
       }, 100);
-    });
-    console.log('listenerRouteChange=======', {
-      to: newRoute,
-      from
     });
   }, true);
 

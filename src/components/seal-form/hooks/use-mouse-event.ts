@@ -6,7 +6,6 @@ export default function useMouseEvent(refEL) {
     cancelable: true
   });
   const handleMouseEnter = () => {
-    console.log('handleMouseEnter', refEL);
     refEL.value.current.dispatchEvent(enterEvent);
   };
   return {

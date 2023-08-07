@@ -13,7 +13,7 @@ export default {
     requiresAuth: false,
     isRouteView: true,
     order: 3,
-    icon: 'icon-relation',
+    icon: 'i class="icon-a-relation10-line iconfont size-18"',
     onlyRenderChildren: true
   },
   children: [

@@ -275,7 +275,6 @@
       rowSelection.selectedRowKeys = [];
       handleFilter();
     } catch (error) {
-      console.log(error);
       loading.value = false;
     }
   };
@@ -294,7 +293,7 @@
       await refreshCatalog({ id: row.id });
       execSucceed();
     } catch (error) {
-      console.log('error');
+      // ignore
     }
   };
   const handleDelete = async () => {

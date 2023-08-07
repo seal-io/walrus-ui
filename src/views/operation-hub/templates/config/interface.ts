@@ -36,7 +36,7 @@ export interface TemplateVersionData extends TemplateRowData {
   template: { id: string };
 }
 export interface TemplateFormData {
-  id: string;
+  id?: string;
   description: string;
   source: string;
   version?: string;

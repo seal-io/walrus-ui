@@ -416,7 +416,6 @@
       rowSelection.selectedRowKeys = [];
       handleFilter();
     } catch (error) {
-      console.log(error);
       loading.value = false;
     }
   };
@@ -518,7 +517,7 @@
         beforeReconnect: fetchData
       });
     } catch (error) {
-      console.log(error);
+      //
     }
   };
 

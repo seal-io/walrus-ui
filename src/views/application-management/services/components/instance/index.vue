@@ -199,7 +199,7 @@
     try {
       await deleteServiceItem({ id: route.query.id, force });
     } catch (error) {
-      console.log(error);
+      //
     }
   };
   const handleClick = () => {
@@ -262,7 +262,6 @@
       serviceStore.setServiceInfo(route.query.id, data);
     } catch (error) {
       serviceStore.deleteService(route.query.id);
-      console.log(error);
     } finally {
       // template confg info
       serviceInfoRef.value?.initData();
@@ -326,7 +325,7 @@
         beforeReconnect: getServiceItemInfo
       });
     } catch (error) {
-      console.log(error);
+      //
     }
   };
 
@@ -338,7 +337,6 @@
   };
 
   onMounted(() => {
-    console.log('service page mounted');
     setInstanceTabList();
     setActionMap();
 

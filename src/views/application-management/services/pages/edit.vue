@@ -71,6 +71,7 @@
               v-model="formData.template.id"
               :placeholder="$t('applications.applications.table.module')"
               :required="true"
+              :virtual-list-props="getVirtualListProps()"
               :style="{ width: `${InputWidth.LARGE}px` }"
               allow-search
               @change="handleTemplateChange"
@@ -414,8 +415,13 @@
     return list;
   });
 
-  const getContainer = (id) => {
-    return document.getElementById(id);
+  const getVirtualListProps = () => {
+    if (templateList.value.length > 50) {
+      return {
+        height: 200
+      };
+    }
+    return undefined;
   };
   const setBreadCrumbList = async () => {
     const [projectList, environmentList] = await Promise.all([

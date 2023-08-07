@@ -156,9 +156,9 @@
   const graphWrapper = ref();
   const loading = ref(false);
   const animateFlag = ref(false);
+  const allNodeToggle = ref(false);
   let nodeList: INode[] = [];
   let edgeList: IEdge[] = [];
-  let combosList: ICombo[] = [];
   let graph: any = null;
   const width = ref(0);
   const height = ref(0);
@@ -170,6 +170,7 @@
   contextMenu.value = new G6.Menu({
     trigger: 'click',
     shouldBegin(e) {
+      // click more button
       if (_.get(e?.target, 'cfg.name') === 'more-button-icon') {
         contextMenuNode.value = e?.item;
         return true;
@@ -269,26 +270,6 @@
     handleWindowResize();
   });
 
-  const setCombosList = () => {
-    const { sourceData: data } = props;
-    const parentNodeList: string[] = [];
-    _.each(data.nodes, (node) => {
-      if (node.parentNode) {
-        parentNodeList.push(node.parentNode);
-      }
-    });
-    const result = _.filter(data.nodes, (node) => {
-      return _.includes(parentNodeList, node.id);
-    });
-    combosList = _.map(result, (node, index) => {
-      return {
-        id: node.id,
-        label: `${node.name}(${node.type})`,
-        nodeType: 'combo',
-        order: index
-      };
-    });
-  };
   const removeVersions = (inputString) => {
     return _.replace(inputString, /_v[\d]/g, '');
   };
@@ -347,7 +328,7 @@
       };
 
       node.descTips = _.get(node, 'extensions.type') || _.get(node, 'kind');
-      node.drifted = _.get(node, 'extensions.drift.drifted');
+      node.drifted = _.get(node, 'extensions.drift.drifted') || false;
 
       if (_.get(node, 'kind') !== nodeKindType.ServiceResource) {
         node.description = fittingString(node.descTips, 120);
@@ -492,6 +473,10 @@
       }
     });
     animateFlag.value = true;
+    allNodeToggle.value = true;
+    if (graph.getZoom() !== 1) {
+      graph.zoomTo(1);
+    }
     graph?.layout();
     graph?.set('animate', false);
   };
@@ -654,10 +639,13 @@
         ranksep: 40,
         onLayoutEnd() {
           loading.value = false;
-          // nextTick(() => {
-          //   graph?.fitCenter?.(animateFlag.value);
-          //   animateFlag.value = false;
-          // });
+          nextTick(() => {
+            if (allNodeToggle.value) {
+              graph?.fitCenter?.(animateFlag.value);
+              animateFlag.value = false;
+              allNodeToggle.value = false;
+            }
+          });
         }
       },
       pixelRatio: 2,

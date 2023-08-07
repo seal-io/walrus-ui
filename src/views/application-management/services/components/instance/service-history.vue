@@ -232,7 +232,7 @@
       showDiffModal.value = true;
       title.value = t('applications.applications.history.diff.title');
     } catch (error) {
-      console.log(error);
+      //
     }
   };
 
@@ -244,7 +244,7 @@
       });
       execSucceed();
     } catch (error) {
-      console.log(error);
+      //
     }
   };
 
@@ -267,7 +267,7 @@
       showDiffModal.value = true;
       title.value = t('applications.applications.history.change.title');
     } catch (error) {
-      console.log(error);
+      //
     }
   };
   const fetchData = async () => {
@@ -290,7 +290,6 @@
     } catch (error) {
       dataList.value = [];
       loading.value = false;
-      console.log(error);
     }
   };
   const handleFilter = () => {
@@ -320,7 +319,7 @@
       queryParams.page = 1;
       handleFilter();
     } catch (error) {
-      console.log(error);
+      //
     }
   };
   const handleDelete = async (row) => {
@@ -379,7 +378,7 @@
         beforeReconnect: fetchData
       });
     } catch (error) {
-      console.log(error);
+      //
     }
   };
   watch(
@@ -396,11 +395,7 @@
     }
   );
   onBeforeUnmount(() => {
-    console.log('wss unmounted');
     axiosListInstance.cancel?.();
-  });
-  onMounted(() => {
-    console.log('resource');
   });
 </script>
 

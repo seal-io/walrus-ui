@@ -125,7 +125,7 @@
       await refreshTemplate({ id: props.dataInfo.id });
       execSucceed();
     } catch (error) {
-      console.log(error);
+      // ignore
     }
   };
   const handleSelectAction = (val) => {
@@ -137,7 +137,6 @@
     }
   };
   const handleCheckedChange = (val) => {
-    console.log('val:', val);
     emits('change', val, props.dataInfo.id);
   };
 </script>

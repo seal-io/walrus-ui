@@ -236,7 +236,6 @@
       handleFilter();
       listViewRef.value.clearSelection?.();
     } catch (error) {
-      console.log(error);
       loading.value = false;
     }
   };
@@ -256,7 +255,7 @@
         handler: updateHandler
       });
     } catch (error) {
-      console.log(error);
+      // ignore
     }
   };
   const getCatalogList = async () => {
@@ -273,7 +272,7 @@
         };
       });
     } catch (error) {
-      console.log(error);
+      // ignore
     }
   };
   onMounted(() => {

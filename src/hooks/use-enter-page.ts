@@ -10,7 +10,7 @@ export default function useEnterPage() {
   const userStore = useUserStore();
   const { t } = useI18n();
   const getFirstRouteName = () => {
-    const firstChildren = get(appRoutes, '0.children');
+    const firstChildren = get(appRoutes, '0.children') || [];
     const firstName = get(appRoutes, '0.name');
     if ((!firstChildren || !firstChildren.length) && !firstName)
       return 'notFound';
@@ -22,13 +22,8 @@ export default function useEnterPage() {
 
   const enterUserPage = async () => {
     const firstRouteName = getFirstRouteName();
-    console.log('firstRouteName:', firstRouteName);
-    const { redirect, ...othersQuery } = router.currentRoute.value.query;
     router.push({
       name: firstRouteName
-      // query: {
-      //   ...othersQuery,
-      // },
     });
     Message.success({
       content: t('login.form.login.success'),

@@ -301,7 +301,6 @@
       templateSchema.value = get(list, '0.schema') || {};
     } catch (error) {
       versionList.value = [];
-      console.log(error);
     }
   };
   const getItemTemplate = async () => {
@@ -315,7 +314,6 @@
       assignIn(formData, data);
       copyFormData = cloneDeep(formData);
     } catch (error) {
-      console.log('error');
       formref.value.resetFields();
     }
   };

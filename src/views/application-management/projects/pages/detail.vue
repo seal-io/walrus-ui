@@ -150,7 +150,6 @@
       const { data } = await queryItemProject(params);
       currentInfo.value = data;
     } catch (error) {
-      console.log(error);
       currentInfo.value = {};
     }
   };

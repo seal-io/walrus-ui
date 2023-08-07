@@ -329,7 +329,6 @@
       : {};
   };
   const handleDateChange = (val) => {
-    console.log('dateChange=1==', val, queryParams);
     dailyCostFilters.value = {
       ...dailyCostFilters.value,
       ...queryParams,

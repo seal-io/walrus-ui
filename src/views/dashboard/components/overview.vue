@@ -57,7 +57,6 @@
         environment: 0,
         connector: 0
       });
-      console.log(error);
     } finally {
       emits('update:loading', false);
     }

@@ -177,9 +177,9 @@
             <span class="readonly-view-label">
               <StatusLabel
                 :status="{
-                  status: get(formData, 'status.summaryStatus'),
+                  status: get(formData, 'status.summaryStatus') || '',
                   text: get(formData, 'status.summaryStatus'),
-                  message: get(formData, 'status.summaryStatusMessage'),
+                  message: get(formData, 'status.summaryStatusMessage') || '',
                   transitioning: get(formData, 'status.transitioning'),
                   error: get(formData, 'status.error')
                 }"
@@ -246,15 +246,6 @@
   import StatusLabel from '../components/status-label.vue';
   import { createConnector, updateConnector, queryItemConnector } from '../api';
   import useConnectorBread from '../hooks/use-connector-bread';
-
-  // const props = defineProps({
-  //   id: {
-  //     type: String,
-  //     default() {
-  //       return '';
-  //     }
-  //   }
-  // });
 
   const { breadCrumbList, handleSelectChange, setBreadCrumbList } =
     useConnectorBread();
@@ -350,7 +341,7 @@
       formData.enableFinOps = data.enableFinOps || false;
       copyFormData = cloneDeep(formData);
     } catch (error) {
-      console.log(error);
+      // ignore
     }
   };
   const cancelCallback = () => {

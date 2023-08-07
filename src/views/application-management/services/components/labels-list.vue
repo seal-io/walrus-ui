@@ -58,7 +58,6 @@
         value: get(props.labels, k)
       };
     });
-    console.log('keysList=====', keysList);
     return keysList;
   });
 </script>

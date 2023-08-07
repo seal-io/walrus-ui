@@ -380,7 +380,7 @@
         emits('settingSave');
         group.isEditable = false;
       } catch (error) {
-        console.log(error);
+        // ignore
       }
     }
   };
@@ -439,9 +439,6 @@
       immediate: false
     }
   );
-  // watch(formData, (val)=> {
-  //   console.log('watch-formData:', formData)
-  // },{deep: true})
 </script>
 
 <style lang="less" scoped>

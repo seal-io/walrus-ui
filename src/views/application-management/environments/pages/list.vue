@@ -269,7 +269,6 @@
       loading.value = false;
     } catch (error) {
       loading.value = false;
-      console.log(error);
     }
   };
   const handleFilter = () => {
@@ -363,7 +362,6 @@
       rowSelection.selectedRowKeys = [];
       handleFilter();
     } catch (error) {
-      console.log(error);
       loading.value = false;
     }
   };

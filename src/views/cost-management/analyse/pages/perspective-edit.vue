@@ -455,18 +455,13 @@
     });
   });
   const sharingStrategyRequired = computed(() => {
-    const shareCostFilter = get(
-      formData,
-      'allocationQueries.0.shareCosts.0.filters'
-    );
-    const shareCostIdleCostFilters = get(
-      formData,
-      'allocationQueries.0.shareCosts.0.idleCostFilters'
-    );
-    const shareCostmanagementCostFilters = get(
-      formData,
-      'allocationQueries.0.shareCosts.0.managementCostFilters'
-    );
+    const shareCostFilter =
+      get(formData, 'allocationQueries.0.shareCosts.0.filters') || [];
+    const shareCostIdleCostFilters =
+      get(formData, 'allocationQueries.0.shareCosts.0.idleCostFilters') || [];
+    const shareCostmanagementCostFilters =
+      get(formData, 'allocationQueries.0.shareCosts.0.managementCostFilters') ||
+      [];
     if (
       shareCostFilter?.length ||
       shareCostIdleCostFilters?.length ||
@@ -544,7 +539,6 @@
             connectorID: val
           };
         });
-        console.log('formData:', formData);
         const shareCost = setShareCostFilter(
           get(data, 'allocationQueries.0.shareCosts') || []
         );
@@ -593,7 +587,6 @@
       data.allocationQueries[0].shareCosts = [{ ...shareCost }];
       assignIn(formData, data);
       formData.timeRange = formData.startTime;
-      console.log('perspectiveInfo===', formData);
       setPerspectiveCostFilter(formData, (item) => {
         return item.connectorID;
       });
@@ -606,7 +599,6 @@
         loading.value = false;
       }, 100);
       perspectiveInfo.value = {};
-      console.log(error);
     }
   };
 
@@ -658,7 +650,6 @@
       idleCostFieldList.value = list;
     } catch (error) {
       idleCostFieldList.value = [];
-      console.log(error);
     }
   };
   const getPerspectiveGroupBy = async () => {
@@ -671,10 +662,8 @@
       const list = data?.items || [];
       const resultList = generatePerspectiveFields(list);
       groupByList.value = resultList.filter((sItem) => sItem.value !== 'year');
-      // console.log('groupByList===', JSON.stringify(list));
     } catch (error) {
       groupByList.value = [];
-      console.log(error);
     }
   };
   const getPerspectiveStep = async () => {
@@ -694,7 +683,6 @@
       });
     } catch (error) {
       stepList.value = [];
-      console.log(error);
     }
   };
   const getPerspectiveFields = async () => {
@@ -709,7 +697,6 @@
       perspectiveFields.value = resultList;
     } catch (error) {
       perspectiveFields.value = [];
-      console.log(error);
     }
   };
   const setDateRange = () => {
@@ -723,11 +710,8 @@
       get(data, 'value.1') || dayjs().format('YYYY-MM-DDTHH:mm:ss+00:00');
   };
   const resetFilterFieldValue = () => {
-    // formData.allocationQueries[0].filters
-    // formData.allocationQueries[0].shareCosts[0].filters
     each(formData.allocationQueries[0].filters, (item) => {
       each(item || [], (sItem: any) => {
-        console.log('sItem=======', sItem);
         sItem.values = [];
       });
     });
@@ -750,9 +734,7 @@
       formData.allocationQueries[0].step = '';
     }
   };
-  const handleStepChange = (val) => {
-    console.log('step:', val);
-  };
+  const handleStepChange = (val) => {};
   const handleCostFilterChange = (val) => {};
   const cancelCallback = () => {
     if (

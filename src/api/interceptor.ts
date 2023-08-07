@@ -69,7 +69,6 @@ axios.interceptors.response.use(
       (get(responseStatusMap, data?.status)
         ? i18n.global.t(get(responseStatusMap, data?.status))
         : response.statusText);
-    console.log('error:', error.response);
 
     const result = {
       code: data?.status,

@@ -13,14 +13,11 @@ import { ChartData } from '../config/interface';
 import {
   queryItemPerspective,
   queryPerspectiveData,
-  queryCustomPerspectiveSummary,
-  queryPerspectiveFieldValues
+  queryCustomPerspectiveSummary
 } from '../api';
-import testData, { dailyCostData, namespaceData } from '../config/testData';
 
 export default function usePerspectiveCost(props) {
   const { route, t } = useCallCommon();
-  const { query } = route;
   const projectCostFilters = ref<any>({});
   const projectCostChart = ref<ChartData>({
     xAxis: [],
@@ -63,8 +60,6 @@ export default function usePerspectiveCost(props) {
         ...omit(projectCostFilters.value, 'paging'),
         ...omit(queryParams, 'endTime'),
         endTime: setEndTimeAddDay(queryParams.endTime, timeMode.value)
-        // startTime: dayjs(queryParams.startTime).format('YYYY-MM-DDTHH:mm:ssZ'),
-        // endTime: dayjs(queryParams.endTime).format('YYYY-MM-DDT23:59:59Z')
       };
       const { data } = await queryCustomPerspectiveSummary(params);
       overData.value = data || {};
@@ -84,7 +79,6 @@ export default function usePerspectiveCost(props) {
     } catch (error) {
       overviewloading.value = false;
       overData.value = {};
-      console.log(error);
     }
   };
   const setProjectCostChartData = ({ list, key = 'totalCost' }) => {
@@ -133,13 +127,11 @@ export default function usePerspectiveCost(props) {
         });
         projectCostChart.value = result;
       }
-      console.log('projectCostChart===', projectCostChart.value);
       apploading.value = false;
     } catch (error) {
       projectChartDataList.value = [];
       apploading.value = false;
       projectCostChart.value = { xAxis: [], line: [], bar: [], dataConfig: [] };
-      console.log(error);
     }
   };
 
@@ -165,7 +157,6 @@ export default function usePerspectiveCost(props) {
       loading.value = false;
     } catch (error) {
       loading.value = false;
-      console.log(error);
     }
   };
   return {

@@ -136,7 +136,6 @@
     init();
   };
   const resetData = () => {
-    console.log('reset');
     content.value = '';
     chunRequestIns?.cancel();
   };

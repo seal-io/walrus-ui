@@ -29,7 +29,6 @@
   import { useRoute } from 'vue-router';
   import { SettingsItem, valueTypeMap, ValueType } from '../config';
   import settingsForm from '../components/settings-form.vue';
-  import dataInfo from '../components/data';
   import settingList from '../config/settings';
 
   interface formDataType {
@@ -122,7 +121,6 @@
       }, {});
       setSourceList();
     } catch (error) {
-      console.log(error);
       sourceList.value = [];
     }
   };

@@ -115,7 +115,6 @@
     setDiffResult(props.content.old, props.content.new);
     getCodeResult();
     getDiffResultLines();
-    console.log('addLine===', addLines.value, removeLines.value);
   };
   const handleBeforeOpen = () => {
     init();

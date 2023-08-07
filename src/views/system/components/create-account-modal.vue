@@ -251,7 +251,6 @@
       }
     } catch (error) {
       submitLoading.value = false;
-      console.log(error);
     }
   };
   const handleCancel = () => {

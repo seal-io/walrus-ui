@@ -94,8 +94,6 @@
 </template>
 
 <script lang="ts" setup>
-  import { USER_DEFAULT_PROJECT } from '@/views/config';
-  import localStore from '@/utils/localStore';
   import { Resources, Actions } from '@/permissions/config';
   import { PROJECT } from '@/router/config';
   import _, { toLower, get } from 'lodash';
@@ -130,10 +128,6 @@
     return `${min}'${seconds}"`;
   };
   const handleToDetail = async (row) => {
-    // await localStore.setValue(USER_DEFAULT_PROJECT, {
-    //   id: _.get(row, 'project.id'),
-    //   name: _.get(row, 'project.name')
-    // });
     projectStore.setInfo({
       defaultActiveProject: {
         id: _.get(row, 'project.id'),

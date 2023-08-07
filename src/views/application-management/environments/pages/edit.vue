@@ -389,7 +389,6 @@
         connectors: [],
         edges: []
       };
-      console.log(error);
     }
   };
   const getEnvironmentServices = async () => {
@@ -405,7 +404,6 @@
       serviceList.value = data.items || [];
     } catch (error) {
       serviceList.value = [];
-      console.log(error);
     } finally {
       asyncLoading.value = false;
     }
@@ -426,7 +424,6 @@
       }) as Array<{ label: string; value: string }>;
     } catch (error) {
       connectorList.value = [];
-      console.log(error);
     }
   };
   const handleAddConnector = () => {

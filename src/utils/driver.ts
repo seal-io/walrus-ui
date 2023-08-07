@@ -11,7 +11,7 @@ const options = {
   nextBtnText: i18n.global.t('common.button.next'), // Next button text for this step
   prevBtnText: i18n.global.t('common.button.pre'),
   opacity: 0.3,
-  stageBackground: 'rgba(0, 0, 0, .3)',
+  stageBackground: 'rgba(0, 0, 0, .3)'
 };
 export interface DriverOptions {
   element: string;
@@ -25,8 +25,6 @@ export interface DriverOptions {
   onPrevious?: () => void;
 }
 export const initDriver = (steps, { onReset, ...args }) => {
-  // const { onReset } = { ...args }
-  console.log('onReset==', args, onReset);
   const driver = new Driver({ ...options, onReset });
   const list = isFunction(steps) ? steps(driver, { ...args }) : steps;
   driver.defineSteps(list);

@@ -174,9 +174,7 @@
       areaStyle
     };
   };
-  const handleSelectedChange = () => {
-    console.log('selectedList===', selectedList.value);
-  };
+  const handleSelectedChange = () => {};
   const handlePopVisibleChange = (visible) => {
     if (!visible) {
       inputValue.value = '';
@@ -327,7 +325,6 @@
         formatter(result) {
           const params = sortBy(result, (item) => item.value);
           params.reverse();
-          // console.log('params======', result);
           const [firstElement] = params as ToolTipFormatterParams[];
           const colCount = Math.ceil(divide(params.length, 10));
           return `<div class="chart-tooltip-wrap">

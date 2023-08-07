@@ -31,7 +31,6 @@
   });
   const emits = defineEmits(['change']);
   const handleCheckedChange = (val) => {
-    console.log('val:', val);
     emits('change', val, props.dataInfo.id);
   };
 </script>

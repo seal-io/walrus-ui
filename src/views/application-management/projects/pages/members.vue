@@ -155,7 +155,6 @@
       loading.value = false;
     } catch (error) {
       loading.value = false;
-      console.log(error);
     }
   };
   const handleFilter = () => {
@@ -193,7 +192,7 @@
         fetchData();
       }
     } catch (error) {
-      console.log(error);
+      //
     }
   };
   const handleDeleteConfirm = async () => {
@@ -209,7 +208,7 @@
       rowSelection.selectedRowKeys = [];
       fetchData();
     } catch (error) {
-      console.log(error);
+      //
     }
   };
 

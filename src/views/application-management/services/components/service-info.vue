@@ -212,7 +212,6 @@
   const formTabs = ref<string[]>([]);
 
   const variablesDataList = computed(() => {
-    console.log('variablesGroup.value', variablesGroup.value);
     const list =
       _.get(variablesGroup.value, `${activeKey.value}.variables`) || [];
     return _.filter(list, (item) => {

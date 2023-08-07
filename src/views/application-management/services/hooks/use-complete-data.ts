@@ -39,7 +39,6 @@ export default function useCompleteData() {
       templateList.value = data?.items || [];
     } catch (error) {
       templateList.value = [];
-      console.log(error);
     }
   };
 
@@ -69,7 +68,7 @@ export default function useCompleteData() {
         data?.items || []
       );
     } catch (error) {
-      console.log(error);
+      //
     }
   };
 
@@ -85,7 +84,6 @@ export default function useCompleteData() {
       variableList.value = data.items || [];
     } catch (error) {
       variableList.value = [];
-      console.log(error);
     }
   };
   const getServiceTemplateVersionMap = () => {
@@ -110,7 +108,6 @@ export default function useCompleteData() {
       const { data } = await queryServices(params);
       serviceDataList.value = data.items || [];
     } catch (error) {
-      console.log(error);
       serviceDataList.value = [];
     }
   };

@@ -71,11 +71,9 @@
 </template>
 
 <script lang="ts" setup>
-  import { map, get } from 'lodash';
-  import dayjs from 'dayjs';
-  import { reactive, ref, onMounted, PropType, watchEffect } from 'vue';
-  import useCallCommon from '@/hooks/use-call-common';
-  import { deleteModal, execSucceed } from '@/utils/monitor';
+  import { get } from 'lodash';
+  import { ref, PropType } from 'vue';
+  import { deleteModal } from '@/utils/monitor';
   import { ConnectorRowData } from '@/views/operation-hub/connectors/config/interface';
   import StatusLabel from '@/views/operation-hub/connectors/components/status-label.vue';
 
@@ -104,9 +102,7 @@
       loading.value = true;
       emits('delete', record.value, rowIndex.value);
       loading.value = false;
-      // execSucceed();
     } catch (error) {
-      console.log(error);
       loading.value = false;
     }
   };
@@ -116,9 +112,6 @@
     rowIndex.value = index;
     deleteModal({ onOk: handleDeleteConfirm });
   };
-  onMounted(() => {
-    console.log('application list');
-  });
 </script>
 
 <style lang="less" scoped>

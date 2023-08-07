@@ -83,10 +83,7 @@
   provide('perspectiveList', viewList);
   const handleViewChange = (val) => {
     const data = find(viewList.value, (item) => item.value === val);
-    // localStore.setValue(HOT_PERSPECTIVE_ID, {
-    //   hotProjectId: val,
-    //   page: toLower(data?.label || VIEW_MAP.all)
-    // });
+
     costManageStore.setInfo({
       defaultActivePerspective: {
         hotProjectId: val,
@@ -143,16 +140,12 @@
       loading.value = false;
       viewList.value = [];
       viewId.value = '';
-      console.log(error);
     }
   };
   const setPageComponent = async () => {
     if (route.query.id) {
       viewComponent.value = route.query.page as string;
-      // localStore.setValue(HOT_PERSPECTIVE_ID, {
-      //   hotProjectId: route.query.id,
-      //   page: route.query.page
-      // });
+
       costManageStore.setInfo({
         defaultActivePerspective: {
           hotProjectId: route.query.id,
@@ -160,7 +153,6 @@
         }
       });
     } else {
-      // const localValue: any = await localStore.getValue(HOT_PERSPECTIVE_ID);
       const defaultPerspective = costManageStore.defaultActivePerspective;
       const page = defaultPerspective?.page;
       viewComponent.value = page || VIEW_MAP.all;
@@ -168,10 +160,6 @@
   };
   // update the current state in the store
   const setView = () => {
-    // localStore.setValue(HOT_PERSPECTIVE_ID, {
-    //   hotProjectId: viewId.value,
-    //   page: viewComponent.value
-    // });
     costManageStore.setInfo({
       defaultActivePerspective: {
         hotProjectId: viewId.value,

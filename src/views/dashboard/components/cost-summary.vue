@@ -176,7 +176,6 @@
     } catch (error) {
       monthlyCostData.currentMonth = 0;
       monthlyCostData.lastMonth = 0;
-      console.log(error);
     }
   };
   const getDailyCost = async () => {
@@ -195,11 +194,9 @@
       });
       dailyCostData.list = result.data as never[];
       dailyCostData.xAxis = result.xAxis as never[];
-      console.log('dailyCostData==', dailyCostData);
     } catch (error) {
       dailyCostData.list = [];
       dailyCostData.xAxis = [];
-      console.log(error);
     }
   };
   const getProjectCost = async () => {
@@ -221,7 +218,6 @@
       projectCostData.list = [];
       projectCostData.xAxis = [];
       projectCostData.dataConfig = [];
-      console.log(error);
     }
   };
   const getAppCostRank = async () => {
@@ -246,7 +242,6 @@
       });
     } catch (error) {
       appCostRankList.value = [];
-      console.log(error);
     }
   };
   const handleDateChange = () => {};
