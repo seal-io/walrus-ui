@@ -55,10 +55,6 @@
             :hide-label="pageAction === PageAction.EDIT"
             field="name"
             :rules="[
-              // {
-              //   required: pageAction === PageAction.EDIT,
-              //   message: t('operation.connectors.rule.name')
-              // },
               {
                 required: true,
                 match: validateLabelNameRegx,
@@ -272,21 +268,11 @@
   import xInputGroup from '@/components/form-create/custom-components/x-input-group.vue';
   import useCallCommon from '@/hooks/use-call-common';
   import DescriptionTable from '@/components/description-table/index.vue';
-  import ProviderIcon from '@/components/provider-icon/index.vue';
-  import { variableTypeList } from '@/views/application-management/services/config';
   import { ConnectorFormData, CustomAttrbute } from '../config/interface';
   import { operationRootBread, ConnectorCategory } from '../config';
   import { createConnector, updateConnector, queryItemConnector } from '../api';
   import useConnectorBread from '../hooks/use-connector-bread';
 
-  // const props = defineProps({
-  //   id: {
-  //     type: String,
-  //     default() {
-  //       return '';
-  //     }
-  //   }
-  // });
   const { breadCrumbList, handleSelectChange, setBreadCrumbList } =
     useConnectorBread();
   const { scrollToView } = useScrollToView();

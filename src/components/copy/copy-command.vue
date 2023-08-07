@@ -10,17 +10,19 @@
     </span>
   </span>
   <span v-else>
-    <a-tooltip :content="$t('common.copy.notSupport')">
+    <!-- <a-tooltip :content="$t('common.copy.notSupport')">
       <i
         class="iconfont icon-warning-filling"
         style="color: var(--seal-color-warning)"
       ></i>
-    </a-tooltip>
+    </a-tooltip> -->
+    <clipboard :content="content"></clipboard>
   </span>
 </template>
 
 <script lang="ts" setup>
   import { useClipboard } from '@vueuse/core';
+  import clipboard from './index.vue';
 
   const props = defineProps({
     content: {
