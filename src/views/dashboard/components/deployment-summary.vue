@@ -178,11 +178,9 @@
       });
       dataList.value = result.data;
       xAxis.value = result.xAxis;
-      console.log('result==', result);
     } catch (error) {
       dataList.value = [];
       xAxis.value = [];
-      console.log(error);
     }
   };
   const getApplicationRevisionsList = async () => {
@@ -197,7 +195,6 @@
       appList.value = data.items || [];
     } catch (error) {
       appList.value = [];
-      console.log(error);
     }
   };
   const init = () => {
@@ -205,7 +202,6 @@
     getApplicationRevisionsList();
   };
   const handleDateChange = (val) => {
-    console.log('handleDateChange:', val);
     init();
   };
   init();

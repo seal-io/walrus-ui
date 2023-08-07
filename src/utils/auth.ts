@@ -81,7 +81,6 @@ const getResourcePolicies = (role: RolesItem) => {
     },
     {}
   );
-  console.log('rolePolicies===', rolePolicies);
   return rolePolicies;
 };
 

@@ -223,19 +223,9 @@
     return [dayjs(start).format(), dayjs(get(value, 1)).format()];
   };
   const handleSelect = (val) => {
-    console.log(
-      'valueString:',
-      val,
-      mode.value,
-      dateRangePicker?.value?.rangePanelProps.startHeaderMode
-    );
-    // const value = generateTimezoneFormat(val);
-    // endDate.value = get(value, '1') || props.end;
-    // startDate.value = get(value, '0') || props.start;
     pointDate.value = get(val, '1') || get(val, '0');
   };
   const disabledDate = (current) => {
-    console.log('pointDate=======', pointDate.value);
     if (props.step === 'month') {
       return dayjs(current).isAfter(dayjs().format('YYYY-MM-DD'), 'day');
     }
@@ -316,7 +306,6 @@
     }, 100);
   };
   const handlePopupChange = (visible, ...args) => {
-    console.log('popupchange===', args);
     if (visible) {
       startDate.value = props.start;
       endDate.value = props.end;
@@ -325,16 +314,14 @@
   const handleSelectShortcut = (val) => {
     const metaValue = get(val, 'value') || [];
     const values = setRangeValue(metaValue);
-    // console.log('value====', value);
     emits('update:timeUnit', val.unit);
   };
   const handleDateChange = (val, ...args) => {
-    console.log('change:', val, args);
     const value = setRangeValue(val);
     emits('change', value);
   };
   const handlePickValueChange = (...args) => {
-    console.log('pick value change:', args);
+    // TODO
   };
   watch(
     () => endDate.value,
@@ -361,11 +348,6 @@
   watch(
     () => dateRangePicker?.value?.rangePanelProps.startHeaderMode,
     (val) => {
-      console.log(
-        'dateRangePicker?.value==start=',
-        val,
-        dateRangePicker?.value?.rangePanelProps
-      );
       mode.value = val ?? 'date';
     },
     {
@@ -375,20 +357,12 @@
   watch(
     () => dateRangePicker?.value?.rangePanelProps.endHeaderMode,
     (val) => {
-      console.log(
-        'dateRangePicker?.value==end=',
-        val,
-        dateRangePicker?.value?.rangePanelProps
-      );
       mode.value = val ?? 'date';
     },
     {
       immediate: true
     }
   );
-  onMounted(() => {
-    console.log('dateRangePicker?.value===', dateRangePicker?.value);
-  });
 </script>
 
 <style lang="less">

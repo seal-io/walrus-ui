@@ -224,7 +224,6 @@
       });
     } catch (error) {
       connectorList.value = [];
-      console.log(error);
     }
   };
   const getRepositories = async (query?: string) => {
@@ -247,7 +246,6 @@
       repoloading.value = false;
     } catch (error) {
       repoloading.value = false;
-      console.log(error);
     }
   };
 
@@ -266,7 +264,7 @@
         };
       });
     } catch (error) {
-      console.log(error);
+      // ignore
     }
   };
   const handleConnectorChange = async () => {
@@ -276,7 +274,7 @@
       branchList.value = [];
       getRepositories();
     } catch (error) {
-      console.log(error);
+      // ignore
     }
   };
   const handleRepoChange = () => {
@@ -284,7 +282,7 @@
       formData.branch = '';
       getRepositoriesBranch();
     } catch (error) {
-      console.log(error);
+      // ignore
     }
   };
   const handleBranchChange = () => {};
@@ -300,7 +298,6 @@
           emit('save', data?.link);
         }, 100);
         emit('update:show', false);
-        // execSucceed();
         submitLoading.value = false;
       } catch (error) {
         submitLoading.value = false;

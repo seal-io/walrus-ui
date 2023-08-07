@@ -7,7 +7,7 @@
         :span="{ lg: 6, md: 12, sm: 24, xs: 24 }"
       >
         <templateItem
-          :action-list="moduleActions"
+          :action-list="setModuleActions()"
           :data-info="item"
           :provider="item.icon"
           :checked="includes(checkedList, item.id)"
@@ -57,7 +57,7 @@
       await refreshCatalog({ id: item.id });
       execSucceed();
     } catch (error) {
-      console.log(error);
+      // ignore
     }
   };
   const handleEditItem = (item) => {
@@ -79,16 +79,16 @@
     emits('change', checked, id);
   };
   const setModuleActions = () => {
-    moduleActions.value = filter(actionList, (item) => {
+    const result = filter(actionList, (item) => {
       if (!item.requiredAuth) return true;
       return userStore.hasRolesActionsPermission({
         resource: Resources.Templates,
         actions: [Actions.PUT]
       });
     });
+    return result as MoreAction[];
   };
   const handleClickItem = (project) => {
-    console.log('project:', project);
     router.push({
       name: OPERATIONHUB.TemplateDetail,
       query: {
@@ -96,9 +96,7 @@
       }
     });
   };
-  onMounted(() => {
-    setModuleActions();
-  });
+  onMounted(() => {});
 </script>
 
 <style lang="less" scoped>

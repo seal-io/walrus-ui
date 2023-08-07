@@ -10,7 +10,6 @@
   const { router } = useCallCommon();
   const redirectPage = () => {
     const { page, ...othersQuery } = router.currentRoute.value.query;
-    console.log({ page });
     router.replace({
       name: (page as string) || DASHBOARD.Main,
       query: {

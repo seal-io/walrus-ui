@@ -161,14 +161,9 @@
       const { data } = await queryApplicationRevisionsDetail(params);
       revisionData.value = data;
       loading.value = false;
-      console.log(
-        'stopped==2===',
-        get(revisionData.value, 'status') === RevisionStatus.Succeeded
-      );
     } catch (error) {
       loading.value = false;
       revisionData.value = {};
-      console.log(error);
     }
   };
 

@@ -282,7 +282,6 @@
         const allResult = editorCtx.value.matchAll(regx);
         const list = Array.from(allResult);
         const ctx = get(list, '0.0');
-        console.log('term===2=', term, editorCtx.value, ctx);
         callback(handleSearch(term, ctx));
       },
       context(beforeCursor: string) {
@@ -447,10 +446,8 @@
   };
   const handleFocus = () => {
     isFocus.value = true;
-    console.log('focus');
   };
   const handleClick = () => {
-    console.log('click');
     isFocus.value = true;
     input.value?.focus?.();
   };

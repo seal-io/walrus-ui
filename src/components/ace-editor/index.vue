@@ -201,7 +201,6 @@
       'fullLine'
     );
     markerIdList.value.push(markerId);
-    console.log('markerId===', markerIdList, markerId);
   };
   const removeMarkers = () => {
     // clear highlight lines
@@ -306,11 +305,8 @@
           start: { row: 0, column: 0 },
           end: pos
         });
-        console.log('wordRange===', wordRange);
-        const valuePath = getValuePath(wordRange);
+        const valuePath = getValuePath(wordRange) || '';
         const list = getCompletionList(valuePath);
-        console.log('prefix====', { pos, prefix, session, value: valuePath });
-        console.log('completions:', prefix, list, props.source);
         callback(null, list);
         // if (list.length) {
         //   editor.execCommand('startAutocomplete',{matches: list,})
@@ -333,12 +329,6 @@
     () => props.editorDefaultValue,
     () => {
       // aceEditor?.setValue(props.editorDefaultValue, -1);
-      console.log(
-        'editorDefaultValue==',
-        props.editorId,
-        props.editorDefaultValue,
-        props.modelValue
-      );
       setDefaultValue();
       nextTick(() => {
         setDiffRowDecoration();
@@ -370,10 +360,9 @@
 
       aceEditor = ace.edit(`${props.editorId}`);
       // aceEditor.setValue(props.modelValue);
-      console.log('aceEditor==', aceEditor);
 
       aceEditor.session.on('change', (args) => {
-        console.log('session change:', args);
+        // TODO
       });
       aceEditor.on('change', function (args: any) {
         const val = aceEditor.getValue();

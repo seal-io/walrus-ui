@@ -80,7 +80,7 @@
         return item;
       });
     } catch (error) {
-      console.log(error);
+      //
     }
   };
   const updateChunkedList = (data) => {

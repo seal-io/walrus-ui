@@ -347,7 +347,6 @@
     return d ? d.label : projectName.value;
   };
   const handleDateChange = async () => {
-    console.log('date Change');
     projectCostFilters.value = {
       ...projectCostFilters.value,
       ...queryParams,

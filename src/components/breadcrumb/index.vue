@@ -185,7 +185,7 @@
     }, 500);
   };
   const getVirtualListProps = (item) => {
-    if (item?.options?.length > 100) {
+    if (item?.options?.length > 50) {
       return {
         height: 200
       };

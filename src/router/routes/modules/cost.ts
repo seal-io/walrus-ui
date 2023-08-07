@@ -1,5 +1,4 @@
 import analyseRoutes from '@/views/cost-management/analyse/routes';
-// import optimizeRoutes from '@/views/cost-management/optimize/routes';
 import COST from '../../config/cost-management';
 
 export default {

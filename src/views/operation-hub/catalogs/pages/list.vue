@@ -221,7 +221,6 @@
       handleFilter();
       listViewRef.value.clearSelection?.();
     } catch (error) {
-      console.log(error);
       loading.value = false;
     }
   };
@@ -234,20 +233,20 @@
       updateChunkedList(data);
     });
   };
-  const createInstanceListWebsocket = () => {
+  const createCatalogChunkRequest = () => {
     try {
       setChunkRequest({
         url: CatalogAPI,
         handler: updateHandler
       });
     } catch (error) {
-      console.log(error);
+      // ignore
     }
   };
   onMounted(() => {
     fetchData();
     nextTick(() => {
-      // createInstanceListWebsocket();
+      // createCatalogChunkRequest();
     });
   });
 </script>

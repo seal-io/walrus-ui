@@ -487,7 +487,6 @@
       total.value = data?.pagination?.total || 0;
       loading.value = false;
     } catch (error) {
-      console.log(error);
       loading.value = false;
     }
   };
@@ -540,7 +539,6 @@
     });
   };
   const handleCreate = (item) => {
-    console.log('item.>>>>>.', item);
     if (props.scope === 'project') {
       handlCreateProjectConnector(item);
     } else {
@@ -596,7 +594,6 @@
       rowSelection.selectedRowKeys = [];
       handleFilter();
     } catch (error) {
-      console.log(error);
       loading.value = false;
     }
   };
@@ -612,7 +609,6 @@
       loading.value = false;
     } catch (error) {
       loading.value = false;
-      console.log(error);
     }
   };
   const handleReinstall = async (row) => {
@@ -632,7 +628,6 @@
       row.loading = false;
     } catch (error) {
       row.loading = false;
-      console.log(error);
     }
   };
   const handleEnableFinOps = async (enable, data) => {
@@ -646,7 +641,6 @@
       Message.success(t('common.message.success'));
     } catch (error) {
       loading.value = false;
-      console.log(error);
     }
   };
   const handleDelete = async () => {
@@ -669,27 +663,16 @@
         handler: updateHandler
       });
     } catch (error) {
-      console.log(error);
+      // ignore
     }
   };
-  onActivated(() => {
-    // fetchData();
-  });
+
   onMounted(() => {
     fetchData();
     nextTick(() => {
       createInstanceListWebsocket();
     });
   });
-  watch(
-    () => props.category,
-    () => {
-      // fetchData();
-    },
-    {
-      immediate: true
-    }
-  );
 </script>
 
 <style lang="less" scoped>

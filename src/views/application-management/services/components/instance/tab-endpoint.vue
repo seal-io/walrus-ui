@@ -113,7 +113,6 @@
       requestCacheList.value.pop();
       dataList.value = [];
       loading.value = !!requestCacheList.value.length;
-      console.log(error);
     }
   };
 

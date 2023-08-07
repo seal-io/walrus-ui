@@ -100,7 +100,6 @@
   });
   const emits = defineEmits(['change', 'edit', 'upgrade', 'clone', 'rollback']);
   const handleCheckedChange = (val) => {
-    console.log('val:', val);
     emits('change', val, props.dataInfo.id);
   };
   const handleClick = (val) => {

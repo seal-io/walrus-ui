@@ -39,7 +39,6 @@
     emits('change', checked, id);
   };
   const handleClickItem = (project) => {
-    console.log('project:', project);
     router.push({
       name: 'EnvironmentDetail',
       query: {
@@ -47,9 +46,6 @@
       }
     });
   };
-  onMounted(() => {
-    console.log('onmounted');
-  });
 </script>
 
 <style lang="less" scoped>

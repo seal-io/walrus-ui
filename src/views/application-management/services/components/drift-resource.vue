@@ -134,7 +134,6 @@
     const data = _.find(props.dataList, (item) => {
       return `${item.type}/${item.name}` === formData.id;
     });
-    console.log(data);
     const diffContent = {
       old: JSON.stringify(data?.change?.before, null, 2),
       new: JSON.stringify(data?.change.after, null, 2)

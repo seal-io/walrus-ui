@@ -48,7 +48,6 @@
   import FilterBox from '@/components/filter-box/index.vue';
   import { CostAnalyRow, FilterParamsType } from '../config/interface';
   import { queryPerspectiveData } from '../api';
-  import testData from '../config/testData';
 
   const props = defineProps({
     columns: {
@@ -128,7 +127,6 @@
     try {
       loading.value = true;
       // props.timeRange === 'single'
-      console.log('filterParams===', props.filterParams);
       const params = {
         source: props.source,
         ...omit(props.filterParams, 'step'),
@@ -143,14 +141,10 @@
       };
       const { data } = await queryPerspectiveData(params);
       dataList.value = data?.items || [];
-      console.log('tableList===', props.source, dataList.value);
-      // dataList.value = testData;
       total.value = data?.pagination?.total || 0;
       loading.value = false;
     } catch (error) {
       dataList.value = [];
-      // dataList.value = testData;
-      console.log(error);
       loading.value = false;
     }
   };

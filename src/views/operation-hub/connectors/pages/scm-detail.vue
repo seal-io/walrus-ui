@@ -148,9 +148,9 @@
             <span class="readonly-view-label">
               <StatusLabel
                 :status="{
-                  status: get(formData, 'status.summaryStatus'),
+                  status: get(formData, 'status.summaryStatus') || '',
                   text: get(formData, 'status.summaryStatus'),
-                  message: get(formData, 'status.summaryStatusMessage'),
+                  message: get(formData, 'status.summaryStatusMessage') || '',
                   transitioning: get(formData, 'status.transitioning'),
                   error: get(formData, 'status.error')
                 }"
@@ -207,14 +207,6 @@
   import { createConnector, updateConnector, queryItemConnector } from '../api';
   import useConnectorBread from '../hooks/use-connector-bread';
 
-  // const props = defineProps({
-  //   id: {
-  //     type: String,
-  //     default() {
-  //       return '';
-  //     }
-  //   }
-  // });
   const { scrollToView } = useScrollToView();
   const { getProjectState } = useGetBreadState();
   const { breadCrumbList, handleSelectChange, setBreadCrumbList } =
@@ -300,7 +292,7 @@
       assignIn(formData, data);
       copyFormData = cloneDeep(formData);
     } catch (error) {
-      console.log(error);
+      // ignore
     }
   };
   const cancelCallback = () => {

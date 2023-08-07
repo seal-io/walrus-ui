@@ -136,8 +136,6 @@
         return '';
       },
       attrs() {
-        console.log('attrs===', this.$attrs);
-
         return this.$attrs as any;
       }
     },
@@ -152,7 +150,6 @@
       },
       handleInput(val) {
         this.$emit('update:modelValue', val);
-        console.log('val===333', val);
       },
       handleBlur(ev) {
         const value = replace(ev.target.value, /\s+/g, ' ');

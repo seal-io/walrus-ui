@@ -23,8 +23,6 @@
   import usePermission from '@/hooks/permissions';
   import useListenerRouteChange from '@/hooks/use-listener-route-change';
   import { listenerRouteChange } from '@/utils/route-listener';
-  import localStore from '@/utils/localStore';
-  import { USER_DEFAULT_PROJECT } from '@/views/config';
   import useLocale from '@/hooks/locale';
   import { queryProjects } from '@/views/application-management/projects/api';
   import { profileMenu, avatarMenu } from './config';
@@ -81,7 +79,6 @@
             return (a.meta.order || 0) - (b.meta.order || 0);
           }
         );
-        console.log({ copyRouter, appRoute });
         function travel(_routes: RouteRecordRaw[], layer: number) {
           if (!_routes || !_routes.length) {
             // hide menu
@@ -135,7 +132,6 @@
         showVersionModal(versionInfo.value as versionData);
       };
       const goToProject = (item: RouteRecordRaw) => {
-        // const localValue: any = await localStore.getValue(USER_DEFAULT_PROJECT);
         const defaultProject = projectStore.defaultActiveProject;
         // need create new project
         if (!projectStore.projectList.length) {
@@ -188,9 +184,7 @@
               value: item.id
             };
           });
-          // const localValue: any = await localStore.getValue(
-          //   USER_DEFAULT_PROJECT
-          // );
+
           const defaultProject = projectStore.defaultActiveProject;
           const defaultValue = route.params.projectId || _.get(list, '0.value');
           const defaultName = _.find(
@@ -199,10 +193,6 @@
           )?.label as string;
 
           if (!defaultProject?.id && list.length) {
-            // localStore.setValue(USER_DEFAULT_PROJECT, {
-            //   id: defaultValue,
-            //   name: defaultName
-            // });
             projectStore.setInfo({
               defaultActiveProject: {
                 id: defaultValue,
@@ -210,7 +200,6 @@
               }
             });
           } else if (!list.length) {
-            // localStore.setValue(USER_DEFAULT_PROJECT, { id: '', name: '' });
             projectStore.setInfo({
               defaultActiveProject: {}
             });
@@ -219,10 +208,6 @@
               list,
               (item) => item.value === defaultProject?.id
             );
-            // localStore.setValue(USER_DEFAULT_PROJECT, {
-            //   id: data?.value || defaultValue,
-            //   name: data?.label || defaultName
-            // });
             projectStore.setInfo({
               defaultActiveProject: {
                 id: data?.value || defaultValue,

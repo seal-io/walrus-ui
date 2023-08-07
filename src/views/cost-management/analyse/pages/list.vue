@@ -237,7 +237,6 @@
       loading.value = false;
     } catch (error) {
       loading.value = false;
-      console.log(error);
     }
   };
   const handleFilter = () => {
@@ -245,7 +244,6 @@
   };
   const handleSortChange = (dataIndex: string, direction: string) => {
     setSortDirection(dataIndex, direction);
-    console.log('dataIndex===', dataIndex, direction);
     fetchData();
   };
   const handleSearch = () => {
@@ -295,7 +293,6 @@
       rowSelection.selectedRowKeys = [];
       handleFilter();
     } catch (error) {
-      console.log(error);
       loading.value = false;
     }
   };

@@ -192,7 +192,7 @@
         emits('updatePassword', formData.newPassword);
         // Message.success(t('common.message.success'));
       } catch (error) {
-        console.log(error);
+        // ignore
       }
     }
   };

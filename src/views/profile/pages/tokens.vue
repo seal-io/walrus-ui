@@ -132,7 +132,6 @@
       total.value = data?.pagination?.total || 0;
       isLoad.value = true;
     } catch (error) {
-      console.log(error);
       dataList.value = [];
       isLoad.value = true;
     }
@@ -157,7 +156,7 @@
       execSucceed();
       getTokenList();
     } catch (error) {
-      console.log(error);
+      // ignore
     }
   };
 

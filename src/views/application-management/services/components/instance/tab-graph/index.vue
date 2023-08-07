@@ -123,7 +123,6 @@
     } catch (error) {
       resultData.value.links = [];
       resultData.value.nodes = [];
-      console.log(error);
       loading.value = false;
     }
   };

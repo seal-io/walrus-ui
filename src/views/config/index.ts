@@ -115,7 +115,6 @@ export const getStackLineData = ({
   each(diffFieldName, (sItem) => {
     result.line.push(get(dataObj, sItem[fieldName]));
   });
-  console.log('result=====', result, xAxisList);
   result.xAxis = uniq(result.xAxis);
   return result;
 };
@@ -125,17 +124,18 @@ export const websocketEventType = {
   UPDATE: 2,
   DELETE: 3
 };
-// 最多包含 63 个字符
-// 仅包含小写字母数字字符或“-”
-// 以字母数字字符开头
-// 以字母数字字符结尾
+// can contain up to 63 characters
+// Contains only lowercase alphanumeric characters or "-"
+// starts with an alphanumeric character
+// end with an alphanumeric character
 
 export const validateLabelNameRegx = /^[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?$/;
 
-// 最多包含39个字符
-// 只能包含字母数字、_、-
-// 不能有连续的-、_
-// 并且不能以-或_开头或结尾
+// up to 39 characters
+// Can only contain alphanumeric, _, -
+// cannot have consecutive -, _
+// and cannot start or end with - or _
+
 export const validateUserNameRegx =
   /^[a-zA-Z0-9]([a-zA-Z0-9_-]{0,37}[a-zA-Z0-9])?$/;
 // page state

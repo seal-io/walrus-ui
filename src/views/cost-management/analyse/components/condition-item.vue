@@ -187,7 +187,6 @@
   const handleDeleteFilter = (type, index, group?) => {
     if (type === 'or') {
       policyDataList.value.splice(index, 1);
-      console.log('policyDataList:', policyDataList.value);
     }
     if (type === 'and') {
       group?.splice(index, 1);
@@ -205,7 +204,6 @@
       { filterName: '', operator: '', values: [] },
       { filterName: '', operator: '', values: [] }
     ]);
-    console.log('policyDataList===', policyDataList.value);
   };
   onMounted(() => {
     setPolicyData();

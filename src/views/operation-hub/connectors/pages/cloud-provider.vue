@@ -394,7 +394,7 @@
       assignIn(formData, data);
       copyFormData = cloneDeep(formData);
     } catch (error) {
-      console.log(error);
+      // ignore
     }
   };
   const cancelCallback = () => {

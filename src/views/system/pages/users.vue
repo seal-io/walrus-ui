@@ -67,25 +67,6 @@
             }}</span>
           </template>
         </a-table-column>
-        <!-- <a-table-column
-          ellipsis
-          tooltip
-          :cell-style="{ minWidth: '40px' }"
-          data-index="kind"
-          :title="$t('profile.account.kind')"
-        >
-          <template #cell="{ record }">
-            <span>{{ $t(getListLabel(record.kind, accountTypeList)) }}</span>
-          </template>
-        </a-table-column> -->
-        <!-- <a-table-column
-          ellipsis
-          tooltip
-          :cell-style="{ minWidth: '40px' }"
-          data-index="domain"
-          :title="$t('profile.account.domain')"
-        >
-        </a-table-column> -->
         <a-table-column
           ellipsis
           tooltip
@@ -219,7 +200,6 @@
     } catch (error) {
       loading.value = false;
       dataList.value = [];
-      console.log(error);
     }
   };
   const handleFilter = () => {
@@ -257,11 +237,6 @@
   const handleDeleteConfirm = async (row) => {
     try {
       loading.value = true;
-      // const ids = _.map(selectedKeys.value, (val) => {
-      //   return {
-      //     id: val
-      //   };
-      // });
       await deleteSubjects({ id: row.id });
       loading.value = false;
       execSucceed();
@@ -270,7 +245,6 @@
       rowSelection.selectedRowKeys = [];
       handleFilter();
     } catch (error) {
-      console.log(error);
       loading.value = false;
     }
   };
@@ -301,12 +275,10 @@
       });
     } catch (error) {
       roleList.value = [];
-      console.log(error);
     }
   };
   onMounted(() => {
     fetchData();
-    // getRolesList();
   });
 </script>
 

@@ -106,7 +106,6 @@
       first.value = true;
     }
     loading.value = false;
-    console.log('wss: close:', statusCode.value, data);
   };
   const errorRealTerminal = (ex) => {
     let { message } = ex;
@@ -119,7 +118,6 @@
     clearCommand();
     conReadyState.value = terminalSocket.value.readyState;
     term.value.write(setErrorData(`\r${message}`));
-    console.log('wss: err', message);
   };
   const onWSReceive = (message) => {
     if (first.value === true) {
@@ -166,7 +164,6 @@
       terminalSocket.value.send(`${command.value}\r`);
       clearCommand();
     }
-    console.log('wss: commond', command.value);
   };
   const runCancel = () => {
     if (isWsOpen()) {
@@ -175,7 +172,6 @@
     }
   };
   const onDataCallback = (e) => {
-    console.log('data code===', e);
     switch (e) {
       case '\u0003': // Ctrl+C
         runCancel();
@@ -213,7 +209,6 @@
       shell: terminalEnvList[terminalEnvIndex.value]
     });
     wssUrl.value = `${props.url}&${params}`;
-    console.log('wssUrl===', params);
   };
 
   const initTerm = () => {
@@ -244,12 +239,10 @@
   };
   const onResize = throttle(() => fitTerm(), 100);
   useResizeObserver(wrapper, () => {
-    console.log('wss: resize', wrapper.value.clientHeight);
     onResize();
   });
   const registerTermHandler = () => {
     term.value.onData((data) => {
-      console.log('wss: data', data, isWsOpen());
       if (isWsOpen()) {
         terminalSocket.value.send(data);
       }
@@ -283,7 +276,6 @@
   }, 100);
   const destoryedTerm = () => {
     removeResizeListener();
-    console.log('wss: dispose');
     actived.value = false;
     if (terminalSocket.value) terminalSocket.value?.close?.();
   };

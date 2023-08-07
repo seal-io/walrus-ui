@@ -250,7 +250,6 @@
     } catch (error) {
       sItem.loading = false;
       sItem.fieldValues = [];
-      console.log(error);
     }
   };
   watch(

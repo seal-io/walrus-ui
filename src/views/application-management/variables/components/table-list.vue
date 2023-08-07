@@ -406,7 +406,6 @@
       rowSelection.selectedRowKeys = [];
       handleFilter();
     } catch (error) {
-      console.log(error);
       loading.value = false;
     }
   };
@@ -428,7 +427,6 @@
   };
   onMounted(async () => {
     fetchData();
-    console.log('application list');
   });
 </script>
 

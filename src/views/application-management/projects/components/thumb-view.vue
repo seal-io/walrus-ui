@@ -44,7 +44,6 @@
     emits('change', checked, id);
   };
   const handleClickProject = (project) => {
-    console.log('project:', project);
     router.push({
       name: PROJECT.Detail,
       params: {
@@ -52,9 +51,6 @@
       }
     });
   };
-  onMounted(() => {
-    console.log('onmounted');
-  });
 </script>
 
 <style lang="less" scoped>

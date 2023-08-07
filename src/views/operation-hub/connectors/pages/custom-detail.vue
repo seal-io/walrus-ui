@@ -460,10 +460,9 @@
       assignIn(formData, data);
       setAttributeList();
       initConfigDataValue();
-      // setConfigData();
       copyFormData = cloneDeep(formData);
     } catch (error) {
-      console.log(error);
+      // ignore
     }
   };
   const cancelCallback = () => {

@@ -236,9 +236,7 @@
   onClickOutside(correctionButton, (ev) => {
     showExplainModal.value = false;
   });
-  const handleCodeChange = (val) => {
-    console.log('code===', val);
-  };
+  const handleCodeChange = (val) => {};
   const handleCreatePR = async () => {
     showModal.value = true;
   };
@@ -302,7 +300,6 @@
       });
     } catch (error) {
       optionList.value = [];
-      console.log(error);
     }
   };
   const handleCompletionCorrect = async () => {
@@ -317,7 +314,6 @@
       diffResult.value = Diff.diffLines(code.value, data.corrected);
       defaultValue.value = getCorrectDiffValue(diffResult.value);
       showFix.value = true;
-      console.log('diffResult==', defaultValue.value, diffResult.value);
       getDiffResultLines();
       setTimeout(() => {
         handleViewCorrection();
@@ -327,7 +323,6 @@
       showFix.value = false;
       diffValue.value = '';
       diffResult.value = [];
-      console.log(error);
     }
   };
   const handleCompletionExplain = async () => {
@@ -342,7 +337,6 @@
       loading.value = true;
       const { data } = await postCompletionsExplain(params);
       loading.value = false;
-      // diffValue.value = data.text;
       explainValue.value = data.text;
       setTimeout(() => {
         showExplain.value = !!explainValue.value;
@@ -350,7 +344,6 @@
     } catch (error) {
       loading.value = false;
       diffValue.value = '';
-      console.log(error);
     }
   };
   const handleCompletionGenerate = async () => {
@@ -371,7 +364,6 @@
       code.value = data.text;
     } catch (error) {
       loading.value = false;
-      console.log(error);
     }
   };
   const handleShowExample = () => {
@@ -460,9 +452,6 @@
       top: '20%',
       width: 500,
       maskClosable: false,
-      // okText: '前往处理PR',
-      // hideCancel: false,
-      // cancelText: '关闭',
       footer: () => {
         return h('div', {}, [
           h(
@@ -494,8 +483,6 @@
   watch(
     () => locale.value,
     () => {
-      console.log('locale===', locale.value);
-
       getCompletionExample();
     },
     {

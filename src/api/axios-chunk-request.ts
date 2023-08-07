@@ -104,12 +104,6 @@ export function useSetChunkRequest() {
             result = parseData(currentRes);
           }
           handler(result);
-
-          console.log(`response==chunk====${qs.stringify(params)}`, e, {
-            loadedSize: loadedSize.value,
-            url,
-            result
-          });
         }
       });
       requestReadyState.value = request?.readyState;

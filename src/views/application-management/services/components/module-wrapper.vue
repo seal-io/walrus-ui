@@ -60,7 +60,6 @@
     isCollapse.value = !isCollapse.value;
   };
   const handleDeleteConfirm = () => {
-    console.log('delete');
     emits('delete');
   };
   const handleDelete = () => {

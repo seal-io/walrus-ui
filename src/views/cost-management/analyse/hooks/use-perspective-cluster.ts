@@ -28,7 +28,6 @@ import {
   queryClusterPerspectiveSummary,
   queryPerspectiveFieldValues
 } from '../api';
-import testData, { statckLineData, overviewData } from '../config/testData';
 
 export default function usePerspectiveCost(props) {
   const { route, t } = useCallCommon();
@@ -137,18 +136,10 @@ export default function usePerspectiveCost(props) {
           queryParams.connectorID
         );
       }
-      console.log('dailyCostFilters====', dailyCostFilters.value);
-      // each(get(dailyCostFilters.value, 'filters') || [], (fItem) => {
-      //   each(fItem, (sItem) => {
-      //     sItem.values = [queryParams.connectorID];
-      //     sItem.fieldName = 'connector_id';
-      //   });
-      // });
 
       clusterloading.value = false;
     } catch (error) {
       clusterloading.value = false;
-      console.log(error);
     }
   };
   const getSummaryData = async () => {
@@ -179,11 +170,9 @@ export default function usePerspectiveCost(props) {
           dayjs(get(data, `collectedTimeRange.lastTime`)).format('YYYY-MM-DD')
         );
       }
-      console.log('collectedTimeRange===', collectedTimeRange.value);
     } catch (error) {
       overviewloading.value = false;
       overData.value = {};
-      console.log(error);
     }
   };
   const getDailyCostChart = async () => {
@@ -203,7 +192,6 @@ export default function usePerspectiveCost(props) {
       const { data } = await queryPerspectiveData(params);
       let list = data?.items || [];
       list = sortBy(list, (s) => s.itemName);
-      // const list = testData;
       dailyCostChart.value = { xAxis: [], line: [], bar: [], dataConfig: [] };
       const values: number[] = [];
       each(list, (item, index) => {
@@ -223,7 +211,6 @@ export default function usePerspectiveCost(props) {
     } catch (error) {
       dailyloading.value = false;
       dailyCostChart.value = { xAxis: [], line: [], bar: [], dataConfig: [] };
-      console.log(error);
     }
   };
 
@@ -248,7 +235,6 @@ export default function usePerspectiveCost(props) {
       const { data } = await queryPerspectiveData(params);
       const list = data?.items || [];
       namespaceDataList.value = list;
-      // const list = testData;
       const values: number[] = [];
       nameSpaceCostChart.value = {
         xAxis: [],
@@ -278,7 +264,6 @@ export default function usePerspectiveCost(props) {
         bar: [],
         dataConfig: []
       };
-      console.log(error);
     }
   };
   const getWorkloadCostChart = async () => {
@@ -296,15 +281,11 @@ export default function usePerspectiveCost(props) {
       const params = {
         ...omit(workloadCostFilters.value, 'paging'),
         ...omit(queryParams, 'endTime')
-        // startTime: dayjs(queryParams.startTime).format('YYYY-MM-DDTHH:mm:ssZ'),
-        // endTime: dayjs(queryParams.endTime).format('YYYY-MM-DDT23:59:59Z')
       };
       const { data } = await queryPerspectiveData(params);
       let list = data?.items || [];
       list = sortBy(list, (s) => s.itemName);
       workloadDataList.value = list;
-      console.log('workload==1=2', list);
-      // let list = statckLineData;
       workloadCostChart.value = {
         xAxis: [],
         line: [],
@@ -317,7 +298,6 @@ export default function usePerspectiveCost(props) {
       });
       workloadCostChart.value = result;
       workloading.value = false;
-      console.log('workloadCostChart======', workloadCostChart.value);
     } catch (error) {
       workloading.value = false;
       workloadCostChart.value = {
@@ -327,7 +307,6 @@ export default function usePerspectiveCost(props) {
         dataConfig: []
       };
       workloadDataList.value = [];
-      console.log(error);
     }
   };
   const getPerspectiveItemInfo = async () => {
@@ -375,7 +354,6 @@ export default function usePerspectiveCost(props) {
       loading.value = false;
     } catch (error) {
       loading.value = false;
-      console.log(error);
     }
   };
   return {

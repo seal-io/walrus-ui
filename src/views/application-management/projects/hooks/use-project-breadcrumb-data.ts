@@ -83,7 +83,6 @@ export default function useProjectData() {
       projectStore.setInfo({
         projectList: []
       });
-      console.log(error);
     } finally {
       RequestLoadingMap.project = false;
     }
@@ -101,7 +100,6 @@ export default function useProjectData() {
       environmentList = data.items || [];
     } catch (error) {
       environmentList = [];
-      console.log(error);
     } finally {
       RequestLoadingMap.environment = false;
     }
@@ -124,7 +122,6 @@ export default function useProjectData() {
       serviceList = data.items || [];
     } catch (error) {
       serviceList = [];
-      console.log(error);
     } finally {
       RequestLoadingMap.service = false;
     }
@@ -239,7 +236,6 @@ export default function useProjectData() {
         projectId: val
       };
 
-      // localStore.setValue(USER_DEFAULT_PROJECT, { id: val, name: item.label });
       projectStore.setInfo({
         defaultActiveProject: {
           id: val,

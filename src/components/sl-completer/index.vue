@@ -30,7 +30,7 @@
     trim,
     last,
     initial,
-    toLower,
+    toLower
   } from 'lodash';
   import { nextTick, onMounted, ref, onUnmounted } from 'vue';
   import { Textcomplete, TextcompleteOption } from '@textcomplete/core';
@@ -47,20 +47,20 @@
       type: String,
       default() {
         return '';
-      },
+      }
     },
     disabled: {
       type: Boolean,
       default() {
         return false;
-      },
+      }
     },
     source: {
       type: Object,
       default() {
         return {};
-      },
-    },
+      }
+    }
   });
   const emits = defineEmits(['update:modelValue', 'input']);
   const expression = ref('');
@@ -70,7 +70,6 @@
   // const textarea = ref()
   let textcomplete: any = null;
   const handleSearch = (term: string, ctx): Array<resultItem> => {
-    console.log('term===1', term, ctx);
     const regx = /^(\w+)?\.?(\w*)$/;
     if (!ctx || !regx.test(ctx)) return [];
     const dataSource = cloneDeep(props.source);
@@ -81,24 +80,22 @@
       const arr = map(keys(props.source), (key) => {
         return {
           label: key,
-          value: key,
+          value: key
         };
       }).filter((s) => toLower(s.label).startsWith(toLower(ctx)));
       return arr;
     }
     const data = get(dataSource, `${join(initialPath, '.')}`);
-    console.log('data:', dataSource, ctx, data, initialPath);
     if (!data) return [];
     const list = map(keys(data), (key) => {
       return {
         label: key,
-        value: key,
+        value: key
       };
     });
     if (!lastItem) {
       return list;
     }
-    console.log('completeList===', list, term, data);
     return list.filter((o) => toLower(o.label).startsWith(toLower(lastItem)));
   };
   const Strategy: any = [
@@ -109,7 +106,6 @@
       index: 1,
       search(term: string, callback: SearchCallback<resultItem>, match: any) {
         const regx = /'?(\w+\.)*(\w*)$/g;
-        console.log('term===2=', term, editorCtx.value);
         const allResult = editorCtx.value.matchAll(regx);
         const list = Array.from(allResult);
         const ctx = get(list, '0.0');
@@ -127,14 +123,13 @@
         const reg = /(\w+)\.(\w*)$/g;
         const matches = editorCtx.value.matchAll(reg);
         const list = Array.from(matches);
-        // console.log('matches===', list, matches)
         editorCtx.value = '';
         if (!list.length) {
           return `${result.label}`;
         }
         return `${get(list, '0.1')}.${result.label}`;
-      },
-    },
+      }
+    }
   ];
   const options: TextcompleteOption = {
     dropdown: {
@@ -142,9 +137,9 @@
       maxCount: 20,
       item: {
         className: 'complete-item',
-        activeClassName: 'complete-item-active',
-      },
-    },
+        activeClassName: 'complete-item-active'
+      }
+    }
   };
   const isNeedHide = () => {
     const regx = /(\w+|\s+|\.+)$/;
@@ -157,7 +152,6 @@
   };
   const initEditor = () => {
     const textarea = document.getElementById('textarea') as HTMLTextAreaElement;
-    console.log('area:', textarea);
     const editor = new TextareaEditor(textarea);
     textcomplete = new Textcomplete(editor, Strategy, options);
   };
@@ -166,7 +160,6 @@
     emits('input', expression.value);
   };
   const handleInput = (e) => {
-    // console.log('input==', expression.value, e)
     isNeedHide();
     clearTimeout(timer);
     timer = setTimeout(() => {
@@ -176,9 +169,7 @@
   const handleBlur = () => {
     textcomplete.hide();
   };
-  const handleExpressionChange = () => {
-    // console.log('expression====', expression.value);
-  };
+  const handleExpressionChange = () => {};
   const handleDelete = (val) => {
     const regx = /\.$/;
     if (!regx.test(expression.value)) {
@@ -188,14 +179,9 @@
       isMatchWork.value = true;
     }
   };
-  const handleFocus = () => {
-    console.log('focus');
-  };
-  const handleClick = () => {
-    console.log('click');
-  };
+  const handleFocus = () => {};
+  const handleClick = () => {};
   onMounted(async () => {
-    console.log('area:');
     expression.value = props.modelValue;
     nextTick(() => {
       initEditor();

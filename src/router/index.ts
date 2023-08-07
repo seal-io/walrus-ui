@@ -45,6 +45,5 @@ const router = createRouter({
   }
 });
 
-console.log('route>>>>', router.getRoutes());
 createRouteGuard(router);
 export default router;

@@ -167,7 +167,6 @@
     }, 100);
   };
   const handleDateChange = (value) => {
-    console.log('change:', value);
     emits('update:start', get(value, '0'));
     emits('update:end', get(value, '1'));
     startDate.value = get(value, '0');

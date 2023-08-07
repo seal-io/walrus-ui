@@ -529,8 +529,6 @@
     return d ? d.label : clusterName.value;
   };
   const handleDateChange = async (val) => {
-    console.log('date===', val);
-
     workloadCostFilters.value = {
       ...workloadCostFilters.value,
       ...queryParams,
@@ -583,7 +581,6 @@
   const initData = async () => {
     await getPerspectiveItemInfo();
     await getClusterList();
-    console.log('connenctID:', queryParams.connectorID);
     setFilterModelValue(dailyCostFilters.value, queryParams.connectorID);
     setFilterModelValue(workloadCostFilters.value, queryParams.connectorID);
     setFilterModelValue(nameSpaceCostFilters.value, queryParams.connectorID);

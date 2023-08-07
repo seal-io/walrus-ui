@@ -1,29 +1,16 @@
 import { ref, reactive, computed } from 'vue';
 import dayjs from 'dayjs';
 import useCallCommon from '@/hooks/use-call-common';
-import {
-  find,
-  get,
-  omit,
-  map,
-  each,
-  sortBy,
-  reduce,
-  cloneDeep,
-  keys,
-  concat,
-  assignIn
-} from 'lodash';
+import { find, get, omit, map, each, sortBy, cloneDeep } from 'lodash';
 import { getStackLineData } from '@/views/config';
 import { getTimeRange, projectCostOverview, setEndTimeAddDay } from '../config';
-import { CostAnalyRow, ChartData } from '../config/interface';
+import { ChartData } from '../config/interface';
 import {
   queryItemPerspective,
   queryPerspectiveData,
   queryProjectPerspectiveSummary,
   queryPerspectiveFieldValues
 } from '../api';
-import testData, { statckLineData } from '../config/testData';
 
 export default function usePerspectiveCost(props) {
   const { route, t } = useCallCommon();
@@ -92,7 +79,6 @@ export default function usePerspectiveCost(props) {
     } catch (error) {
       projectloading.value = false;
       projectList.value = [];
-      console.log(error);
     }
   };
   const getSummaryData = async () => {
@@ -106,8 +92,6 @@ export default function usePerspectiveCost(props) {
         ...omit(projectCostFilters.value, 'paging'),
         project: queryParams.project,
         endTime: setEndTimeAddDay(queryParams.endTime, timeMode.value)
-        // startTime: dayjs(queryParams.startTime).format('YYYY-MM-DDTHH:mm:ssZ'),
-        // endTime: dayjs(queryParams.endTime).format('YYYY-MM-DDT23:59:59Z')
       };
       const { data } = await queryProjectPerspectiveSummary(params);
       overData.value = data || {};
@@ -127,7 +111,6 @@ export default function usePerspectiveCost(props) {
     } catch (error) {
       overviewloading.value = false;
       overData.value = {};
-      console.log(error);
     }
   };
   const getProjectCostChart = async () => {
@@ -156,7 +139,6 @@ export default function usePerspectiveCost(props) {
     } catch (error) {
       apploading.value = false;
       projectCostChart.value = { xAxis: [], line: [], bar: [], dataConfig: [] };
-      console.log(error);
     }
   };
 
@@ -184,7 +166,6 @@ export default function usePerspectiveCost(props) {
       loading.value = false;
     } catch (error) {
       loading.value = false;
-      console.log(error);
     }
   };
   return {

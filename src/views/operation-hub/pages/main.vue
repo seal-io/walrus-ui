@@ -2,13 +2,17 @@
   <div>
     <BreadWrapper>
       <Breadcrumb
-        :menu="{ icon: 'icon-relation', label: $t('menu.operatorHub') }"
+        :menu="{
+          icon: 'icon-a-relation10-line',
+          iconfont: true,
+          label: $t('menu.operatorHub')
+        }"
       ></Breadcrumb>
     </BreadWrapper>
     <ComCard padding="0">
-      <HeaderInfo :info="{ name: $t('menu.operatorHub') }" show-img-icon>
-        <template #img>
-          <icon-relation />
+      <HeaderInfo :info="{ name: $t('menu.operatorHub') }">
+        <template #icon>
+          <i class="iconfont icon-a-relation10-fill"></i>
         </template>
         <template #extra>
           <QuestionPopup :link="QAlinkMap.Template"></QuestionPopup>
