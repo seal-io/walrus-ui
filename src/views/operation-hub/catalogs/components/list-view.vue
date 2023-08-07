@@ -34,20 +34,7 @@
             <span v-else>{{ record.name }}</span>
           </template>
         </a-table-column>
-        <a-table-column
-          ellipsis
-          tooltip
-          :cell-style="{ minWidth: '40px' }"
-          data-index="id"
-          :title="$t('operation.templates.table.catalogId')"
-        >
-          <template #cell="{ record }">
-            <span
-              ><copy :content="record.id" class="m-r-5"></copy
-              >{{ record.id }}</span
-            >
-          </template>
-        </a-table-column>
+
         <a-table-column
           ellipsis
           tooltip
