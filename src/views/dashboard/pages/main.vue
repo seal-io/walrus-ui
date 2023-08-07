@@ -5,6 +5,7 @@
         :menu="{ icon: 'icon-dashboard', label: 'menu.dashboard' }"
       ></Breadcrumb>
     </BreadWrapper>
+
     <HeaderInfo :info="{ name: $t('menu.dashboard') }">
       <template #icon>
         <i class="iconfont icon-dashboard-Fill"></i>
