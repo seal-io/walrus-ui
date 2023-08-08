@@ -52,7 +52,7 @@ export default function useServiceData(props?) {
     description: '',
     labels: {},
     name: '',
-    template: { id: '', version: '' },
+    template: { name: '', version: '' },
     attributes: {}
   });
 
@@ -66,6 +66,9 @@ export default function useServiceData(props?) {
     return 'applications.applications.detail';
   };
 
+  const setDefaultTemplate = (template) => {
+    return template.name === 'webservice';
+  };
   const getServiceItemInfo = async () => {
     // create
     if (!route.query.id) return;
@@ -148,10 +151,10 @@ export default function useServiceData(props?) {
   };
 
   //  change module ...
-  const getTemplateSchemaById = () => {
+  const getTemplateSchemaByName = () => {
     const moduleTemplate = _.find(
       templateVersionList.value,
-      (item) => item.template.id === formData.template.id
+      (item) => item.template.name === formData.template.name
     );
     return moduleTemplate;
   };
@@ -167,7 +170,7 @@ export default function useServiceData(props?) {
     try {
       const list = _.filter(
         allTemplateVersions.value,
-        (item) => item.template.id === formData.template.id
+        (item) => item.template.name === formData.template.name
       );
       const versions = _.map(list, (item) => {
         return {
@@ -184,7 +187,7 @@ export default function useServiceData(props?) {
   const setFormAttributes = async () => {
     _.assignIn(formData, serviceInfo.value);
     // 1. get the template meta data 2.set the default value
-    await getTemplatesVersions(formData.template.id);
+    await getTemplatesVersions(formData.template.name);
     await getTemplateVersionList();
     const moduleTemplate = getTemplateSchemaByVersion();
     templateInfo.value = _.cloneDeep(_.get(moduleTemplate, 'schema'));
@@ -199,16 +202,15 @@ export default function useServiceData(props?) {
   const initFormData = async () => {
     if (!id) {
       // webservice
-      const webservice = _.find(
-        templateList.value,
-        (item) => item.name === 'webservice'
+      const webservice = _.find(templateList.value, (item) =>
+        setDefaultTemplate(item)
       );
-      formData.template.id = webservice
-        ? webservice.id
-        : _.get(templateList.value, '0.id') || '';
-      await getTemplatesVersions(formData.template.id);
+      formData.template.name = webservice
+        ? webservice.name
+        : _.get(templateList.value, '0.name') || '';
+      await getTemplatesVersions(formData.template.name);
       await getTemplateVersionList();
-      const moduleTemplate = getTemplateSchemaById();
+      const moduleTemplate = getTemplateSchemaByName();
       formData.template.version = _.get(moduleTemplate, 'version') || '';
       templateInfo.value = _.cloneDeep(_.get(moduleTemplate, 'schema')) || {};
     } else {
@@ -237,7 +239,7 @@ export default function useServiceData(props?) {
     init,
     generateVariablesGroup,
     setFormAttributes,
-    getTemplateSchemaById,
+    getTemplateSchemaByName,
     getTemplateSchemaByVersion,
     getTemplateVersionList,
     getTemplatesVersions,

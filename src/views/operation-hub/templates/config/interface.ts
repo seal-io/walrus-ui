@@ -24,6 +24,7 @@ export interface TemplateRowData {
   source: string;
   schema: Schema;
   name: string;
+  templateName: string;
   description: string;
   status: string;
   createTime: string;
@@ -33,7 +34,7 @@ export interface TemplateRowData {
   icon?: string;
 }
 export interface TemplateVersionData extends TemplateRowData {
-  template: { id: string };
+  template: { id: string; name: string };
 }
 export interface TemplateFormData {
   id?: string;

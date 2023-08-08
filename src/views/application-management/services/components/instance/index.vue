@@ -214,20 +214,7 @@
   const handleSelect = (value) => {
     actionMap.get(value)?.();
   };
-  const handleEditSucceed = () => {
-    router.replace({
-      params: {
-        ...route.params
-      },
-      query: {
-        ...route.query
-      }
-    });
-    pageAction.value = PageAction.VIEW;
-    setTimeout(() => {
-      serviceInfoRef.value?.initData();
-    }, 100);
-  };
+
   const setActionMap = () => {
     actionMap.set('delete', handleDelete);
     actionMap.set('clone', handleClickClone);
@@ -266,6 +253,20 @@
       // template confg info
       serviceInfoRef.value?.initData();
     }
+  };
+  const handleEditSucceed = () => {
+    router.replace({
+      params: {
+        ...route.params
+      },
+      query: {
+        ...route.query
+      }
+    });
+    pageAction.value = PageAction.VIEW;
+    setTimeout(() => {
+      getServiceItemInfo();
+    }, 100);
   };
   const handleTabChange = (val) => {
     activeKey.value = val;

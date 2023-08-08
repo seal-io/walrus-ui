@@ -107,7 +107,8 @@
       name: OPERATIONHUB.TemplateDetail,
       params: { action: 'edit' },
       query: {
-        id: props.dataInfo.id
+        id: props.dataInfo.id,
+        name: props.dataInfo.name
       }
     });
   };
@@ -116,7 +117,8 @@
       name: OPERATIONHUB.TemplateDetail,
       params: { action: 'view' },
       query: {
-        id: props.dataInfo.id
+        id: props.dataInfo.id,
+        name: props.dataInfo.name
       }
     });
   };

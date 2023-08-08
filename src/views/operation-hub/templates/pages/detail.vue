@@ -240,6 +240,7 @@
   const { router, route, t } = useCallCommon();
   const formref = ref();
   const id = route.query.id as string;
+  const templateName = route.query.name as string;
   const submitLoading = ref(false);
   const templateSchema = ref({});
   let copyFormData: any = {};
@@ -261,10 +262,10 @@
     return 'operation.templates.detail.edit';
   });
   const getTemplateVersions = async () => {
-    if (!id) return;
+    if (!templateName) return;
     try {
       const params = {
-        templateID: id
+        templateNames: [templateName]
       };
       const { data } = await queryTemplatesVersions(params);
       const list = data.items || [];

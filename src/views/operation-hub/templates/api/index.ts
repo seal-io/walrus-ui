@@ -52,7 +52,7 @@ export function updateTemplate(data: TemplateFormData) {
 export function refreshTemplate(data: { id: string }) {
   return axios.post(`/templates/${data.id}/refresh`);
 }
-export function queryTemplatesVersions(params: { templateID: string }) {
+export function queryTemplatesVersions(params: { templateNames: string[] }) {
   return axios.get(`/template-versions`, {
     params,
     paramsSerializer: (obj) => {
@@ -60,7 +60,7 @@ export function queryTemplatesVersions(params: { templateID: string }) {
     }
   });
 }
-export function queryTemplatesAllVersions(params: { templateID: string[] }) {
+export function queryTemplatesAllVersions(params: { templateNames: string[] }) {
   return axios.get(`/template-versions`, {
     params,
     paramsSerializer: (obj) => {

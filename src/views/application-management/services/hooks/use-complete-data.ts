@@ -43,15 +43,15 @@ export default function useCompleteData() {
   };
 
   // apply for edit service config
-  const getTemplatesVersions = async (templateIDList) => {
+  const getTemplatesVersions = async (templateNameList) => {
     // templateIDList is a array only on create  life cycle
-    const templateIDs = _.uniq(_.concat(templateIDList || []));
+    const templateNames = _.uniq(_.concat(templateNameList || []));
     if (
-      !templateIDs.length ||
-      _.every(templateIDs, (templateID) =>
+      !templateNames.length ||
+      _.every(templateNames, (templateName) =>
         _.find(
           allTemplateVersions.value,
-          (item) => item.template.id === templateID
+          (item) => item.template.name === templateName
         )
       )
     )
@@ -59,7 +59,7 @@ export default function useCompleteData() {
 
     try {
       const params = {
-        templateID: templateIDs,
+        templateNames,
         page: -1
       };
       const { data } = await queryTemplatesAllVersions(params);
@@ -90,7 +90,7 @@ export default function useCompleteData() {
     const list = _.map(serviceDataList.value, (item) => {
       return {
         name: item.name,
-        type: item.template.id,
+        type: item.template.name,
         version: item.template.version
       };
     });
@@ -132,7 +132,7 @@ export default function useCompleteData() {
         const addedServiceTemplate = _.find(
           allTemplateVersions.value || [],
           (s) => {
-            return item.type === s.template.id && s.version === item.version;
+            return item.type === s.template.name && s.version === item.version;
           }
         );
         const k = item.name;
@@ -165,8 +165,8 @@ export default function useCompleteData() {
   };
   const getServiceTemplateVersions = () => {
     const list = _.map(serviceDataList.value, (item) => {
-      return item.template.id;
-    }).filter((templateID) => !!templateID);
+      return item.template.name;
+    }).filter((templateName) => !!templateName);
     return list;
   };
 

@@ -124,7 +124,8 @@
       name: OPERATIONHUB.TemplateDetail,
       params: { action: 'view' },
       query: {
-        id: props.dataInfo.id
+        id: props.dataInfo.id,
+        name: props.dataInfo.name
       }
     });
   };
