@@ -285,7 +285,7 @@
     router.push({
       name: OPERATIONHUB.TemplateDetail,
       params: { action: PageAction.VIEW },
-      query: { id: row.id }
+      query: { id: row.id, name: row.name }
     });
   };
   const handlRefresh = async (row) => {

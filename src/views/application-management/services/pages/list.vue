@@ -106,17 +106,9 @@
           ellipsis
           tooltip
           :cell-style="{ minWidth: '40px' }"
-          data-index="template.id"
+          data-index="template.name"
           :title="$t('applications.applications.table.module')"
         >
-          <template #cell="{ record }">
-            <span>{{
-              getListLabel(record.template?.id, templateList, {
-                label: 'name',
-                value: 'id'
-              })
-            }}</span>
-          </template>
         </a-table-column>
         <a-table-column
           ellipsis
@@ -257,7 +249,6 @@
   import driftResource from '../components/drift-resource.vue';
 
   const userStore = useUserStore();
-  const { templateList, getTemplates } = useCompleteData();
   const {
     showRollbackModal,
     rollbackTitle,
@@ -458,7 +449,6 @@
   const init = async () => {
     userStore.setInfo({ currentProject: queryParams.projectID });
     fetchData();
-    getTemplates();
   };
 
   const updateApplicationList = (data) => {

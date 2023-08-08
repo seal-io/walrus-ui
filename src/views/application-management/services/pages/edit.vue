@@ -56,7 +56,7 @@
         <a-form-item
           id="moduleId"
           hide-label
-          field="template.id"
+          field="template.name"
           :label="$t('applications.applications.table.module')"
           :disabled="pageAction === PageAction.EDIT && !!id"
           :rules="[
@@ -68,7 +68,7 @@
         >
           <div>
             <seal-select
-              v-model="formData.template.id"
+              v-model="formData.template.name"
               :placeholder="$t('applications.applications.table.module')"
               :required="true"
               :virtual-list-props="getVirtualListProps()"
@@ -78,8 +78,8 @@
             >
               <a-option
                 v-for="item in templateList"
-                :key="item.id"
-                :value="item.id"
+                :key="item.name"
+                :value="item.name"
                 >{{ item.name }}</a-option
               >
             </seal-select>

@@ -84,6 +84,7 @@
             <a-space :size="16">
               <a-tooltip :content="$t('common.button.edit')">
                 <a-link
+                  v-if="!_.get(record, 'catalog.id')"
                   v-permission="{
                     resource: `roles.${Resources.Templates}`,
                     actions: [Actions.PUT]
@@ -131,7 +132,7 @@
   import { OPERATIONHUB } from '@/router/config';
   import { Resources, Actions } from '@/permissions/config';
   import { PageAction } from '@/views/config';
-  import { map, get } from 'lodash';
+  import _, { map, get } from 'lodash';
   import dayjs from 'dayjs';
   import { reactive, ref, onMounted, PropType } from 'vue';
   import useCallCommon from '@/hooks/use-call-common';
@@ -254,14 +255,14 @@
     router.push({
       name: OPERATIONHUB.TemplateDetail,
       params: { action: PageAction.EDIT },
-      query: { id: row.id }
+      query: { id: row.id, name: row.name }
     });
   };
   const handleView = (row) => {
     router.push({
       name: OPERATIONHUB.TemplateDetail,
       params: { action: PageAction.VIEW },
-      query: { id: row.id }
+      query: { id: row.id, name: row.name }
     });
   };
   const handlRefresh = async (row) => {

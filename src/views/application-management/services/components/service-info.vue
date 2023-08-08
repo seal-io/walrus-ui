@@ -12,7 +12,7 @@
         <a-col :span="12">
           <a-form-item :label="$t('applications.applications.table.module')">
             <span class="readonly-view-label">{{
-              getListValue(formData.template.id, templateList, 'id')
+              formData.template.name
             }}</span>
           </a-form-item>
         </a-col>
