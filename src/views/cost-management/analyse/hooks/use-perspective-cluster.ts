@@ -96,18 +96,11 @@ export default function usePerspectiveCost(props) {
   });
 
   const setFilterModelValue = (costFilter, connectorID) => {
+    console.log('costFilter===', costFilter);
     each(get(costFilter, 'filters') || [], (fItem) => {
       each(fItem, (sItem) => {
         sItem.values = [connectorID];
         sItem.fieldName = 'connector_id';
-      });
-    });
-    each(get(costFilter, 'shareCosts') || [], (fItem) => {
-      each(get(fItem, 'idleCostFilters') || [], (pItem) => {
-        pItem.connectorID = connectorID;
-      });
-      each(get(fItem, 'managementCostFilters') || [], (oItem) => {
-        oItem.connectorID = connectorID;
       });
     });
   };
@@ -152,8 +145,6 @@ export default function usePerspectiveCost(props) {
       const params = {
         ...queryParams,
         endTime: setEndTimeAddDay(queryParams.endTime, timeMode.value)
-        // startTime: dayjs(queryParams.startTime).format('YYYY-MM-DDTHH:mm:ssZ'),
-        // endTime: dayjs(queryParams.endTime).format('YYYY-MM-DDT23:59:59Z')
       };
       const { data } = await queryClusterPerspectiveSummary(params);
       overData.value = data || {};
@@ -185,8 +176,6 @@ export default function usePerspectiveCost(props) {
       const params = {
         ...omit(dailyCostFilters.value, 'paging'),
         ...omit(queryParams, 'endTime'),
-        // startTime: dayjs(queryParams.startTime).format('YYYY-MM-DDTHH:mm:ssZ'),
-        // endTime: dayjs(queryParams.endTime).format('YYYY-MM-DDT23:59:59Z'),
         source: 'daily chart'
       };
       const { data } = await queryPerspectiveData(params);
@@ -229,8 +218,6 @@ export default function usePerspectiveCost(props) {
       const params = {
         ...omit(nameSpaceCostFilters.value, 'paging'),
         ...omit(queryParams, 'endTime')
-        // startTime: dayjs(queryParams.startTime).format('YYYY-MM-DDTHH:mm:ssZ'),
-        // endTime: dayjs(queryParams.endTime).format('YYYY-MM-DDT23:59:59Z')
       };
       const { data } = await queryPerspectiveData(params);
       const list = data?.items || [];
@@ -315,7 +302,7 @@ export default function usePerspectiveCost(props) {
       loading.value = true;
       const id = pageId.value;
       const { data } = await queryItemPerspective({ id });
-      const allocationQueries = get(data, 'allocationQueries') || [];
+      const allocationQueries = get(data, 'costQueries') || [];
 
       const startTime = get(data, 'startTime');
       const timeRange = getTimeRange(startTime) || [];

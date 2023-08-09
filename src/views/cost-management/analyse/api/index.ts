@@ -77,7 +77,7 @@ export function deletePerspective(data: { id: string }) {
 }
 
 export function queryPerspectiveData(data: any) {
-  return axios.post('/costs/_/allocation-costs', data);
+  return axios.post('/costs/_/cost-reports', data);
 }
 export function queryAllPerspectiveSummary(data: any) {
   return axios.post('/costs/_/summary-costs', data);

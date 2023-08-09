@@ -127,12 +127,6 @@
       borderless
       style="margin-bottom: 8px"
     >
-      <!-- <template #title>
-        <div style="display: flex; justify-content: space-between">
-          <div>Cost Per Project</div>
-          <ChartBtn v-model:active="activeProject"></ChartBtn>
-        </div>
-      </template> -->
       <LineBarChart
         height="220px"
         show-type="bar"
@@ -159,12 +153,6 @@
       borderless
       style="margin-bottom: 10px"
     >
-      <!-- <template #title>
-        <div style="display: flex; justify-content: space-between">
-          <div>Cost Per Cluster</div>
-          <ChartBtn v-model:active="activeCluster"></ChartBtn>
-        </div>
-      </template> -->
       <LineBarChart
         height="220px"
         show-type="bar"

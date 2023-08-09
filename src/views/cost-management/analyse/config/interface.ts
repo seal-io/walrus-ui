@@ -28,10 +28,12 @@ export interface ManagementCostFilters {
   includeAll: boolean;
 }
 export interface ShareCostItem {
-  filters: FilterItem[];
-  idleCostFilters: IdleCostFiltersItem[];
-  managementCostFilters: ManagementCostFilters[];
-  sharingStrategy: string;
+  item: Array<{
+    filters: FilterItem[];
+    sharingStrategy: string;
+  }>;
+  idle: { sharingStrategy: string };
+  management: { sharingStrategy: string };
 }
 export interface AllocationQueriesItem {
   filters: Array<FilterItem[]>;
@@ -41,7 +43,7 @@ export interface AllocationQueriesItem {
     page: number;
     perPage: number;
   };
-  shareCosts: ShareCostItem[];
+  sharedOptions: ShareCostItem[];
 }
 export interface PerspectiveRowData {
   id: string;
@@ -55,7 +57,7 @@ export interface PerspectiveRowData {
   builtin: boolean;
   disabled?: boolean;
   labelFlag?: string;
-  allocationQueries: AllocationQueriesItem[];
+  costQueries: AllocationQueriesItem[];
 }
 export interface FieldsOptions {
   label: string;

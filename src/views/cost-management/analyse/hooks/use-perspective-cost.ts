@@ -191,7 +191,7 @@ export default function usePerspectiveCost(props) {
       loading.value = true;
       const id = pageId.value;
       const { data } = await queryItemPerspective({ id });
-      const allocationQueries = get(data, 'allocationQueries') || [];
+      const allocationQueries = get(data, 'costQueries') || [];
 
       const startTime = get(data, 'startTime');
       const timeRange = getTimeRange(startTime) || [];

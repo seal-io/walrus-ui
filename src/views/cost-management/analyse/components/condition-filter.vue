@@ -244,7 +244,6 @@
             get(date, 'value.1') || dayjs().format('YYYY-MM-DDT23:59:59Z')
         });
         sItem.fieldValues = data?.items || [];
-        // sItem.fieldValues = [{ label: 'label-1', value: '1' }];
         sItem.loading = false;
       }
     } catch (error) {
@@ -256,6 +255,7 @@
     () => props.conditions,
     () => {
       filterDataList.value = cloneDeep(props.conditions);
+      console.log('props.conditions', filterDataList.value, props.viewable);
     },
     {
       immediate: true,

@@ -79,6 +79,7 @@ export default {
   'cost.optimize.form.shareCost': 'Allocate Cluster Idle Costs',
   'cost.optimize.form.sharemngCost': 'Allocate Cluster Management Costs',
   'cost.optimize.form.shareType': 'Allocate Mode',
+  'cost.optimize.form.sharingStrategy': 'Share Strategy',
   'cost.optimize.form.share.avg': 'Average',
   'cost.optimize.form.share.ratio': 'Prorated',
   'cost.optimize.form.rule.name': 'name is required',
