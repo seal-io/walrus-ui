@@ -14,7 +14,7 @@ import {
   assignIn,
   concat
 } from 'lodash';
-import { getStackLineData } from '@/views/config';
+import { getStackLineData } from '@/views/config/utils';
 import {
   clusterCostOverview,
   resourceCostOverview,

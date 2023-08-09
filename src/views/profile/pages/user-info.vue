@@ -10,7 +10,7 @@
         <span class="readonly-view-label">{{ userStore.name }}</span>
       </a-form-item>
       <a-form-item :label="$t('profile.account.form.role')" auto-label-width>
-        <span class="readonly-view-label">{{ $t(getUserRole) }}</span>
+        <span class="readonly-view-label">{{ $t(userRole) }}</span>
       </a-form-item>
     </a-form>
     <div>
@@ -46,7 +46,7 @@
   const userStore = useUserStore();
   const formData = {};
 
-  const getUserRole = computed(() => {
+  const userRole = computed(() => {
     const { roles } = userStore;
     const admin = _.find(roles, (item) => item.id === RoleType.Admin);
     if (admin) {

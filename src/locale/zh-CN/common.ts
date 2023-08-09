@@ -102,5 +102,6 @@ export default {
   'common.tips.change': '有未保存的更改!',
   'common.copy.notSupport': '您的浏览器不支持剪贴板 API',
   'common.title.basicInfo': '基本信息',
-  'common.help.need': '需要帮助？'
+  'common.help.need': '需要帮助？',
+  'common.help.eg': '例:'
 };

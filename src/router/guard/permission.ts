@@ -29,7 +29,7 @@ export default function setupPermissionGuard(router: Router) {
           name: 'forbidden'
         };
         next({
-          name: destination
+          name: destination as string
         });
         return;
       }

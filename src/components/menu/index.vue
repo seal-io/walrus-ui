@@ -65,7 +65,6 @@
       });
       const appRoute = computed(() => {
         return router.getRoutes().find((el) => {
-          // return el.name === currentRoute.value;
           return el.name === 'root';
         }) as RouteRecordNormalized;
       });

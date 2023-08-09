@@ -284,7 +284,7 @@
   import ChartBtn from '@/components/chart-btn/index.vue';
   import FilterBox from '@/components/filter-box/index.vue';
   import horizontalBar from '@/components/bar-chart/horizontal-bar.vue';
-  import { getStackLineData } from '@/views/config';
+  import { getStackLineData } from '@/views/config/utils';
   import TableList from '../components/table-list.vue';
   import {
     clusterCostOverview,

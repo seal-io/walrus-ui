@@ -1,3 +1,4 @@
+import { Resources } from '@/permissions/config';
 import connectorRoutes from '@/views/operation-hub/connectors/routes';
 import templateRoutes from '@/views/operation-hub/templates/routes';
 import secretRoutes from '@/views/operation-hub/variables/routes';
@@ -10,11 +11,25 @@ export default {
   component: () => import('@/views/operation-hub/index.vue'),
   meta: {
     locale: 'navbar.operatorhub',
-    requiresAuth: false,
+    requiresAuth: true,
     isRouteView: true,
     order: 3,
     icon: 'i class="icon-a-relation10-line iconfont size-18"',
-    onlyRenderChildren: true
+    onlyRenderChildren: true,
+    permission: [
+      {
+        resource: Resources.Templates,
+        actions: ['GET']
+      },
+      {
+        resource: Resources.Connectors,
+        actions: ['GET']
+      },
+      {
+        resource: Resources.Secrets,
+        actions: ['GET']
+      }
+    ]
   },
   children: [
     ...operationRoutes,

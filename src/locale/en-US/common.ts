@@ -105,5 +105,6 @@ export default {
   'common.tips.change': 'there are unsaved changes!',
   'common.copy.notSupport': 'Your browser does not support Clipboard API',
   'common.title.basicInfo': 'Basic Information',
-  'common.help.need': 'Need help?'
+  'common.help.need': 'Need help?',
+  'common.help.eg': 'e.g.:'
 };
