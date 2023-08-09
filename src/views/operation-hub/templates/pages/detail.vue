@@ -107,6 +107,14 @@
           <span v-else class="readonly-view-label">{{
             formData.source || '-'
           }}</span>
+          <template #extra>
+            <span
+              >{{
+                $t('common.help.eg')
+              }}
+              https://github.com/terraform-seal-modules/rds-seeder</span
+            >
+          </template>
         </a-form-item>
 
         <a-form-item

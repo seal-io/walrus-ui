@@ -166,7 +166,7 @@
   import useCallCommon from '@/hooks/use-call-common';
   import DateRange from '@/components/date-range/index.vue';
   import DataCard from '@/components/data-card/index.vue';
-  import { getStackLineData } from '@/views/config';
+  import { getStackLineData } from '@/views/config/utils';
   import LineBarChart from '@/components/line-bar-chart/index.vue';
   import FilterBox from '@/components/filter-box/index.vue';
   import TableList from '../components/table-list.vue';

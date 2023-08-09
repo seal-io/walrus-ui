@@ -2,7 +2,7 @@
   <div>
     <NavBar></NavBar>
     <!-- <Breadcrumb :items="['menu.exception', 'menu.exception.403']" /> -->
-    <ComCard>
+    <ComCard class="content-wrap">
       <div class="content">
         <a-result
           class="result"
@@ -37,6 +37,11 @@
 </script>
 
 <style scoped lang="less">
+  .content-wrap {
+    height: calc(100vh - 48px);
+    background-color: #fff;
+  }
+
   .content {
     position: relative;
     display: flex;

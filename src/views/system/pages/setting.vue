@@ -2,7 +2,6 @@
   <div>
     <a-tabs
       v-model="activeKey"
-      direction="vertical"
       :default-active-key="activeKey"
       class="page-line-tabs"
     >

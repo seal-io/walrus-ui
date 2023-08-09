@@ -2,7 +2,7 @@ import { ref, reactive, computed } from 'vue';
 import dayjs from 'dayjs';
 import useCallCommon from '@/hooks/use-call-common';
 import { find, get, omit, map, each, sortBy, cloneDeep } from 'lodash';
-import { getStackLineData } from '@/views/config';
+import { getStackLineData } from '@/views/config/utils';
 import {
   getTimeRange,
   projectCostOverview,

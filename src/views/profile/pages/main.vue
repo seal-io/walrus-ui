@@ -10,9 +10,12 @@
       ></Breadcrumb>
     </BreadWrapper>
     <ComCard padding="0">
-      <HeaderInfo :info="{ name: $t('propfile.account.user.title') }">
+      <HeaderInfo :info="{ name: userStore.name }">
         <template #icon>
           <i class="iconfont icon-user-circle"></i>
+        </template>
+        <template #description>
+          <span>{{ $t(userRole) }}</span>
         </template>
       </HeaderInfo>
       <ComCard>
@@ -37,14 +40,31 @@
 </template>
 
 <script lang="ts" setup>
-  import { ref } from 'vue';
+  import _ from 'lodash';
+  import { ref, computed } from 'vue';
+  import { useUserStore } from '@/store';
+  import { RoleType, RolesTypeMap } from '@/views/system/config/users';
   import HeaderInfo from '@/components/header-info/index.vue';
   import GroupTitle from '@/components/group-title/index.vue';
   import UserInfo from './user-info.vue';
   import ModifyPassword from './modify-password.vue';
   import Tokens from './tokens.vue';
 
+  const userStore = useUserStore();
   const activeKey = ref('userInfo');
+
+  const userRole = computed(() => {
+    const { roles } = userStore;
+    const admin = _.find(roles, (item) => item.id === RoleType.Admin);
+    if (admin) {
+      return _.get(RolesTypeMap, admin.id);
+    }
+    const engnieer = _.find(roles, (item) => item.id === RoleType.Engineer);
+    if (engnieer) {
+      return _.get(RolesTypeMap, engnieer.id);
+    }
+    return _.get(RolesTypeMap, RoleType.User);
+  });
 </script>
 
 <style lang="less" scoped></style>

@@ -4,5 +4,6 @@ export { default as DASHBOARD } from './dashboard';
 export { default as OPERATIONHUB } from './operation-hub';
 export { default as PROFILE } from './profile';
 export { default as SYSTEMSETTINGS } from './system-settings';
+export { default as USERS } from './users';
 
 export default {};
