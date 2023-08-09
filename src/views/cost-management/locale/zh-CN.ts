@@ -77,6 +77,7 @@ export default {
   'cost.optimize.form.shareCost': '分摊集群空闲费用',
   'cost.optimize.form.sharemngCost': '分摊集群管理费用',
   'cost.optimize.form.shareType': '分摊方式',
+  'cost.optimize.form.sharingStrategy': '分摊策略',
   'cost.optimize.form.share.avg': '平均分摊',
   'cost.optimize.form.share.ratio': '按比例分摊',
   'cost.optimize.form.rule.name': '名称必填',

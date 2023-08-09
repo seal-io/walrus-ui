@@ -105,7 +105,7 @@
         </a-form-item>
         <a-form-item
           :label="$t('cost.optimize.form.groupby')"
-          field="allocationQueries.0.groupBy"
+          field="costQueries.0.groupBy"
           hide-label
           :rules="[
             {
@@ -116,7 +116,7 @@
         >
           <seal-cascader
             v-if="!viewable"
-            v-model="formData.allocationQueries[0].groupBy"
+            v-model="formData.costQueries[0].groupBy"
             :label="$t('cost.optimize.form.groupby')"
             :required="true"
             allow-search
@@ -126,18 +126,15 @@
           >
           </seal-cascader>
           <span v-else class="readonly-view-label">{{
-            $t(
-              getListLabel(formData.allocationQueries[0].groupBy, groupList) ||
-                '-'
-            )
+            $t(getListLabel(formData.costQueries[0].groupBy, groupList) || '-')
           }}</span>
         </a-form-item>
         <a-form-item
-          v-if="!groupByDate.includes(formData.allocationQueries[0].groupBy)"
+          v-if="!groupByDate.includes(formData.costQueries[0].groupBy)"
           :label="$t('cost.optimize.form.step')"
           :validate-trigger="['change']"
           hide-label
-          field="allocationQueries.0.step"
+          field="costQueries.0.step"
           :rules="[
             {
               required: true,
@@ -147,7 +144,7 @@
         >
           <seal-cascader
             v-if="!viewable"
-            v-model="formData.allocationQueries[0].step"
+            v-model="formData.costQueries[0].step"
             :label="$t('cost.optimize.form.step')"
             :required="true"
             allow-search
@@ -157,14 +154,12 @@
           >
           </seal-cascader>
           <span v-else class="readonly-view-label">{{
-            $t(
-              getListLabel(formData.allocationQueries[0].step, stepList) || '-'
-            )
+            $t(getListLabel(formData.costQueries[0].step, stepList) || '-')
           }}</span>
         </a-form-item>
         <a-form-item
           :label="$t('cost.optimize.form.costFilter')"
-          field="allocationQueries.0.filters"
+          field="costQueries.0.filters"
           hide-label
           :rules="[
             {
@@ -175,7 +170,7 @@
         >
           <SealFormItemWrap
             v-if="
-              (!viewable || formData.allocationQueries[0].filters.length) &&
+              (!viewable || formData.costQueries[0].filters.length) &&
               perspectiveInfo.name !== AllPerspectiveName
             "
             :label="$t('cost.optimize.form.costFilter')"
@@ -184,7 +179,7 @@
           >
             <ConditionFilter
               ref="allfilter"
-              v-model:conditions="formData.allocationQueries[0].filters"
+              v-model:conditions="formData.costQueries[0].filters"
               :viewable="viewable"
               :perspective-fields="perspectiveFields"
               :time-range="formData.timeRange"
@@ -203,56 +198,31 @@
           :bordered="false"
         ></GroupTitle>
         <a-form-item
-          :label="$t('cost.optimize.form.commonCost')"
-          field="allocationQueries.shareCosts.0.filters"
-          hide-label
-        >
-          <SealFormItemWrap
-            v-if="
-              !viewable ||
-              formData.allocationQueries[0].shareCosts[0].filters.length
-            "
-            :label="$t('cost.optimize.form.commonCost')"
-            :style="{ minWidth: `${InputWidth.LARGE}px` }"
-          >
-            <ConditionFilter
-              ref="costfilter"
-              v-model:conditions="
-                formData.allocationQueries[0].shareCosts[0].filters
-              "
-              :viewable="viewable"
-              :time-range="formData.timeRange"
-              :perspective-fields="perspectiveFields"
-            ></ConditionFilter>
-          </SealFormItemWrap>
-
-          <span v-else class="readonly-view-label"> - </span>
-        </a-form-item>
-
-        <a-form-item
           :label="$t('cost.optimize.form.shareCost')"
           hide-label
-          field="allocationQueries.0.shareCosts.0.idleCostFilters"
+          field="costQueries.0.sharedOptions.idle.sharingStrategy"
         >
           <seal-select
             v-if="!viewable"
-            v-model="
-              formData.allocationQueries[0].shareCosts[0].idleCostFilters
-            "
+            v-model="formData.costQueries[0].sharedOptions.idle.sharingStrategy"
+            allow-clear
             :label="$t('cost.optimize.form.shareCost')"
-            allow-search
-            multiple
-            :max-tag-count="1"
-            :options="idleCostFieldList"
             :style="{ width: `${InputWidth.LARGE}px` }"
             @change="handleCostFilterChange"
           >
+            <a-option
+              v-for="item in costShareMode"
+              :key="item.value"
+              :value="item.value"
+            >
+              {{ $t(item.label) }}
+            </a-option>
           </seal-select>
           <span v-else class="readonly-view-label">{{
             $t(
               getListLabel(
-                formData.allocationQueries[0].shareCosts[0].idleCostFilters,
-                idleCostFieldList
+                formData.costQueries[0].sharedOptions.idle.sharingStrategy,
+                costShareMode
               ) || '-'
             )
           }}</span>
@@ -260,69 +230,105 @@
         <a-form-item
           :label="$t('cost.optimize.form.sharemngCost')"
           hide-label
-          field="managementCostFilters"
+          field="costQueries.0.sharedOptions.management.sharingStrategy"
         >
           <seal-select
             v-if="!viewable"
             v-model="
-              formData.allocationQueries[0].shareCosts[0].managementCostFilters
+              formData.costQueries[0].sharedOptions.management.sharingStrategy
             "
+            allow-clear
             :label="$t('cost.optimize.form.sharemngCost')"
-            allow-search
-            multiple
-            :max-tag-count="1"
-            :options="idleCostFieldList"
             :style="{ width: `${InputWidth.LARGE}px` }"
             @change="handleCostFilterChange"
           >
+            <a-option
+              v-for="item in costShareMode"
+              :key="item.value"
+              :value="item.value"
+            >
+              {{ $t(item.label) }}
+            </a-option>
           </seal-select>
           <span v-else class="readonly-view-label">{{
             $t(
               getListLabel(
-                formData.allocationQueries[0].shareCosts[0]
-                  .managementCostFilters,
-                idleCostFieldList
+                formData.costQueries[0].sharedOptions.management
+                  .sharingStrategy,
+                costShareMode
               ) || '-'
             )
           }}</span>
         </a-form-item>
         <a-form-item
-          :label="$t('cost.optimize.form.shareType')"
+          :label="$t('cost.optimize.form.commonCost')"
+          field="costQueries.sharedOptions.item"
           hide-label
-          field="allocationQueries.0.shareCosts.0.sharingStrategy"
-          :rules="[
-            {
-              required: sharingStrategyRequired && !viewable,
-              message: $t('cost.optimize.form.rule.shareType')
-            }
-          ]"
         >
-          <SealFormItemWrap
-            v-if="!viewable"
-            :style="{ width: `${InputWidth.LARGE}px` }"
-            :label="$t('cost.optimize.form.shareType')"
-          >
-            <a-radio-group
-              v-model="
-                formData.allocationQueries[0].shareCosts[0].sharingStrategy
-              "
+          <div v-if="!viewable" class="flex flex-column">
+            <div
+              v-for="(item, index) in formData.costQueries[0].sharedOptions
+                .item"
+              :key="index"
+              class="flex flex-align-center flex-justify-between m-b-10"
             >
-              <a-radio
-                v-for="item in costShareMode"
-                :key="item.value"
-                :value="item.value"
-                >{{ $t(item.label) }}</a-radio
+              <SealFormItemWrap
+                :label="$t('cost.optimize.form.commonCost')"
+                :style="{ minWidth: `${InputWidth.LARGE}px` }"
               >
-            </a-radio-group>
-          </SealFormItemWrap>
-          <span v-else class="readonly-view-label">{{
-            $t(
-              getListLabel(
-                formData.allocationQueries[0].shareCosts[0].sharingStrategy,
-                costShareMode
-              ) || '-'
-            )
-          }}</span>
+                <div>
+                  <ConditionFilter
+                    :ref="(el) => setRefMap(el, `costfilter${index}`)"
+                    v-model:conditions="item.filters"
+                    :viewable="viewable"
+                    :time-range="formData.timeRange"
+                    :perspective-fields="perspectiveFields"
+                  ></ConditionFilter>
+                  <div class="m-t-10">
+                    <seal-select
+                      v-model="item.sharingStrategy"
+                      allow-clear
+                      :style="{ minWidth: `${InputWidth.MIDDLE}px` }"
+                      :label="$t('cost.optimize.form.sharingStrategy')"
+                    >
+                      <a-option
+                        v-for="item in costShareMode"
+                        :key="item.value"
+                        :value="item.value"
+                        >{{ $t(item.label) }}</a-option
+                      >
+                    </seal-select>
+                  </div>
+                </div>
+              </SealFormItemWrap>
+              <div class="btn-group m-l-10 flex flex-start" style="width: 66px">
+                <a-button
+                  type="text"
+                  size="small"
+                  class="m-r-10"
+                  @click="handleDeleteShareOptionItem(index)"
+                >
+                  <template #icon>
+                    <icon-minus-circle class="size-20"
+                  /></template>
+                </a-button>
+                <a-button
+                  v-if="
+                    index ===
+                    formData.costQueries[0].sharedOptions.item.length - 1
+                  "
+                  type="text"
+                  size="small"
+                  @click="handleAddShareOptionItem"
+                >
+                  <template #icon
+                    ><icon-plus-circle-fill class="size-20"
+                  /></template>
+                </a-button>
+              </div>
+            </div>
+          </div>
+          <span v-else class="readonly-view-label"> - </span>
         </a-form-item>
       </a-form>
       <EditPageFooter v-if="!viewable && !builtin">
@@ -352,7 +358,7 @@
   import dayjs from 'dayjs';
   import { COSTMANAGEMENT } from '@/router/config';
   import { ref, reactive, computed } from 'vue';
-  import {
+  import _, {
     map,
     each,
     startsWith,
@@ -361,7 +367,6 @@
     pick,
     cloneDeep,
     assignIn,
-    some,
     filter,
     includes,
     pickBy,
@@ -382,6 +387,7 @@
   import { useTabBarStore } from '@/store';
   import { getListLabel } from '@/utils/func';
   import usePageAction from '@/hooks/use-page-action';
+  import useDynamicRef from '@/hooks/use-dynamic-ref';
   import ConditionFilter from '../components/condition-filter.vue';
   import { costShareMode, timeRangeOptions, DateShortCuts } from '../config';
   import { PerspectiveRowData, FieldsOptions } from '../config/interface';
@@ -394,6 +400,7 @@
   } from '../api';
 
   const AllPerspectiveName = 'All';
+  const { refMap, setRefMap } = useDynamicRef();
   const { scrollToView } = useScrollToView();
   const tabBarStore = useTabBarStore();
   const { pageAction, handleEdit } = usePageAction();
@@ -418,19 +425,20 @@
     endTime: dayjs().subtract(0, 'day').format('YYYY-MM-DDT23:59:59Z'),
     builtin: false,
     timeRange: 'now-7d',
-    allocationQueries: [
+    costQueries: [
       {
         groupBy: '',
         step: '',
         filters: [],
-        shareCosts: [
-          {
-            filters: [],
-            idleCostFilters: [],
-            managementCostFilters: [],
+        sharedOptions: {
+          item: [{ filters: [], sharingStrategy: '' }],
+          idle: {
+            sharingStrategy: ''
+          },
+          management: {
             sharingStrategy: ''
           }
-        ]
+        }
       }
     ]
   });
@@ -448,7 +456,7 @@
     return pageAction.value === PageAction.VIEW || !!builtin.value;
   });
   const groupList = computed(() => {
-    const step = get(formData, 'allocationQueries.0.step');
+    const step = get(formData, 'costQueries.0.step');
     if (step === 'null' || !step) return cloneDeep(groupByList.value);
     return filter(groupByList.value, (item) => {
       return !groupByDate.includes(item.value);
@@ -456,12 +464,11 @@
   });
   const sharingStrategyRequired = computed(() => {
     const shareCostFilter =
-      get(formData, 'allocationQueries.0.shareCosts.0.filters') || [];
+      get(formData, 'costQueries.0.sharedOptions.item') || [];
     const shareCostIdleCostFilters =
-      get(formData, 'allocationQueries.0.shareCosts.0.idleCostFilters') || [];
+      get(formData, 'costQueries.0.sharedOptions.idle') || [];
     const shareCostmanagementCostFilters =
-      get(formData, 'allocationQueries.0.shareCosts.0.managementCostFilters') ||
-      [];
+      get(formData, 'costQueries.0.sharedOptions.management') || [];
     if (
       shareCostFilter?.length ||
       shareCostIdleCostFilters?.length ||
@@ -472,24 +479,36 @@
     return false;
   });
 
-  const setPerspectiveCostFilter = (data, callback) => {
-    const idleCostFilters =
-      get(data, 'allocationQueries.0.shareCosts.0.idleCostFilters') || [];
-    const managementCostFilters =
-      get(data, 'allocationQueries.0.shareCosts.0.managementCostFilters') || [];
-    data.allocationQueries[0].shareCosts[0].idleCostFilters = map(
-      idleCostFilters,
-      callback
-    ) as never[];
-    data.allocationQueries[0].shareCosts[0].managementCostFilters = map(
-      managementCostFilters,
-      callback
-    ) as never[];
+  const handleDeleteShareOptionItem = (index) => {
+    formData.costQueries[0].sharedOptions.item.splice(index, 1);
+  };
+  const handleAddShareOptionItem = () => {
+    formData.costQueries[0].sharedOptions.item.push({
+      filters: [],
+      sharingStrategy: ''
+    });
+  };
+  const setPerspectiveCostFilter = (data, isInit?: boolean) => {
+    const idleCostFilters = get(data, 'costQueries.0.sharedOptions.idle') || {
+      sharingStrategy: ''
+    };
+    const managementCostFilters = get(
+      data,
+      'costQueries.0.sharedOptions.management'
+    ) || {
+      sharingStrategy: ''
+    };
+    let sharedItem = get(data, 'costQueries.0.sharedOptions.item') || [];
+    if (isInit && !sharedItem.length) {
+      sharedItem = [{ filters: [], sharingStrategy: '' }];
+    }
+    data.costQueries[0].sharedOptions.item = sharedItem;
+    data.costQueries[0].sharedOptions.idle = idleCostFilters;
+    data.costQueries[0].sharedOptions.management = managementCostFilters;
   };
   const setConditionFilterFieldValues = (data) => {
-    const filtersList = get(data, 'allocationQueries.0.filters') || [];
-    const shareCostsFiltersList =
-      get(data, 'allocationQueries.0.shareCosts.0.filters') || [];
+    const filtersList = get(data, 'costQueries.0.filters') || [];
+    const shareItems = get(data, 'costQueries.0.sharedOptions.item') || [];
     each(filtersList, (item) => {
       each(item, (s) => {
         s.fieldValues = filter(idleCostFieldList.value, (p) => {
@@ -497,18 +516,30 @@
         });
       });
     });
-    each(shareCostsFiltersList, (item) => {
-      each(item, (s) => {
-        s.fieldValues = filter(idleCostFieldList.value, (p) => {
-          return includes(s?.values, p.value);
+    each(shareItems, (item) => {
+      each(item.filters, (o) => {
+        each(o, (s) => {
+          s.fieldValues = filter(idleCostFieldList.value, (p) => {
+            return includes(s?.values, p.value);
+          });
         });
       });
     });
   };
+  const validateCostFilter = () => {
+    if (keys(refMap.value).length) {
+      const res = _.every(_.keys(refMap.value), (key) => {
+        const refEl = refMap.value[key];
+        return refEl?.fieldVaildator?.();
+      });
+      return res;
+    }
+    return true;
+  };
   const validateForm = async () => {
     const res = await formref.value?.validate();
     const allres = allfilter.value.fieldVaildator();
-    const costres = costfilter.value.fieldVaildator();
+    const costres = validateCostFilter();
     return !res && allres && costres;
   };
   const setShareCostFilter = (list) => {
@@ -529,20 +560,12 @@
       try {
         submitLoading.value = true;
         const data = cloneDeep(formData);
-        if (get(data, 'allocationQueries.0.step') === 'null') {
-          data.allocationQueries[0].step = '';
+        if (get(data, 'costQueries.0.step') === 'null') {
+          data.costQueries[0].step = '';
         }
         data.endTime = 'now';
         data.startTime = data.timeRange;
-        setPerspectiveCostFilter(data, (val) => {
-          return {
-            connectorID: val
-          };
-        });
-        const shareCost = setShareCostFilter(
-          get(data, 'allocationQueries.0.shareCosts') || []
-        );
-        data.allocationQueries[0].shareCosts = shareCost as never[];
+        setPerspectiveCostFilter(data);
         copyFormData = cloneDeep(formData);
         if (id) {
           await updatePerspective({ ...data, id });
@@ -570,26 +593,13 @@
       loading.value = true;
       const { data } = await queryItemPerspective({ id });
       builtin.value = data?.builtin || false;
-      if (!get(data, 'allocationQueries.0.step')) {
-        data.allocationQueries[0].step = 'null';
+      if (!get(data, 'costQueries.0.step')) {
+        data.costQueries[0].step = 'null';
       }
       perspectiveInfo.value = data;
-      const shareCost = {
-        filters: get(data, 'allocationQueries.0.shareCosts.0.filters') || [],
-        idleCostFilters:
-          get(data, 'allocationQueries.0.shareCosts.0.idleCostFilters') || [],
-        managementCostFilters:
-          get(data, 'allocationQueries.0.shareCosts.0.managementCostFilters') ||
-          [],
-        sharingStrategy:
-          get(data, 'allocationQueries.0.shareCosts.0.sharingStrategy') || ''
-      };
-      data.allocationQueries[0].shareCosts = [{ ...shareCost }];
       assignIn(formData, data);
       formData.timeRange = formData.startTime;
-      setPerspectiveCostFilter(formData, (item) => {
-        return item.connectorID;
-      });
+      setPerspectiveCostFilter(formData, true);
       setConditionFilterFieldValues(formData);
       setTimeout(() => {
         loading.value = false;
@@ -710,12 +720,12 @@
       get(data, 'value.1') || dayjs().format('YYYY-MM-DDTHH:mm:ss+00:00');
   };
   const resetFilterFieldValue = () => {
-    each(formData.allocationQueries[0].filters, (item) => {
+    each(formData.costQueries[0].filters, (item) => {
       each(item || [], (sItem: any) => {
         sItem.values = [];
       });
     });
-    each(formData.allocationQueries[0].shareCosts[0].filters, (item) => {
+    each(formData.costQueries[0].sharedOptions.item, (item) => {
       each(item || [], (sItem: any) => {
         sItem.values = [];
       });
@@ -731,7 +741,7 @@
   };
   const handleGroupByChange = (val) => {
     if (!groupByDate.includes(val)) {
-      formData.allocationQueries[0].step = '';
+      formData.costQueries[0].step = '';
     }
   };
   const handleStepChange = (val) => {};

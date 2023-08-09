@@ -16,6 +16,7 @@ export default function usePerspectiveCost(props) {
   const { route, t } = useCallCommon();
   const { query } = route;
   const projectCostFilters = ref<any>({});
+  const projectDailyCostFilters = ref<any>({});
   const projectList = ref<{ label: string; value: string }[]>([]);
   const projectCostChart = ref<ChartData>({
     xAxis: [],
@@ -29,6 +30,12 @@ export default function usePerspectiveCost(props) {
   const apploading = ref(false);
   const overviewloading = ref(false);
   const collectedTimeRange = ref<string[]>([]);
+  const dailyCostChart = ref<ChartData>({
+    xAxis: [],
+    line: [],
+    bar: [],
+    dataConfig: []
+  });
 
   const timeMode = ref('utc');
 
@@ -63,18 +70,6 @@ export default function usePerspectiveCost(props) {
       };
       const { data } = await queryPerspectiveFieldValues(params);
       projectList.value = data?.items || [];
-      if (!flag) {
-        queryParams.project = get(data, 'items.0.value') || '';
-        projectName.value = get(data, 'items.0.label') || 'Project';
-        // set filter value
-        const projectData = get(data, 'items.0') || {};
-        projectName.value = projectData?.label || 'Project';
-        each(get(projectCostFilters.value, 'filters') || [], (fItem) => {
-          each(fItem, (sItem) => {
-            sItem.values = [queryParams.project];
-          });
-        });
-      }
       projectloading.value = false;
     } catch (error) {
       projectloading.value = false;
@@ -113,6 +108,42 @@ export default function usePerspectiveCost(props) {
       overData.value = {};
     }
   };
+  const getProjectDailyCostChart = async () => {
+    if (!queryParams.project) {
+      dailyCostChart.value = { xAxis: [], line: [], bar: [], dataConfig: [] };
+      return;
+    }
+    try {
+      apploading.value = true;
+      const params = {
+        ...omit(projectDailyCostFilters.value, 'paging'),
+        ...omit(queryParams, 'endTime'),
+        source: 'daily chart'
+      };
+      const { data } = await queryPerspectiveData(params);
+      let list = data?.items || [];
+      list = sortBy(list, (s) => s.itemName);
+      dailyCostChart.value = { xAxis: [], line: [], bar: [], dataConfig: [] };
+      const values: number[] = [];
+      each(list, (item, index) => {
+        const arr: any[] = [];
+        arr[index] = item.totalCost;
+        const d = dayjs(item.itemName).format('YYYY-MM-DD');
+        dailyCostChart.value.xAxis.push(d);
+        dailyCostChart.value.bar.push({
+          name: d,
+          value: [item.totalCost]
+        });
+        values.push(item.totalCost);
+      });
+      dailyCostChart.value.line = [{ name: 'cost', value: values }];
+      dailyCostChart.value.dataConfig = [{ name: 'cost', label: 'dailycost' }];
+      apploading.value = false;
+    } catch (error) {
+      apploading.value = false;
+      dailyCostChart.value = { xAxis: [], line: [], bar: [], dataConfig: [] };
+    }
+  };
   const getProjectCostChart = async () => {
     if (!queryParams.project) {
       projectCostChart.value = { xAxis: [], line: [], bar: [], dataConfig: [] };
@@ -148,15 +179,27 @@ export default function usePerspectiveCost(props) {
       loading.value = true;
       const id = pageId.value as string;
       const { data } = await queryItemPerspective({ id });
-      const allocationQueries = get(data, 'allocationQueries') || [];
+      const allocationQueries = get(data, 'costQueries') || [];
       const startTime = get(data, 'startTime');
       const timeRange = getTimeRange(startTime) || [];
       queryParams.startTime = get(timeRange, '0');
       queryParams.endTime = get(timeRange, '1');
+
+      const dailyFilter = find(
+        allocationQueries,
+        (item) => item.groupBy === 'day'
+      );
+
       const projectFilter = find(
         allocationQueries,
         (item) => item.groupBy === 'label:seal.io/service-path'
       );
+
+      projectDailyCostFilters.value = {
+        ...cloneDeep({ ...dailyFilter, step: '' }),
+        ...queryParams,
+        endTime: setEndTimeAddDay(queryParams.endTime, timeMode.value)
+      };
 
       projectCostFilters.value = {
         ...projectFilter,
@@ -173,8 +216,11 @@ export default function usePerspectiveCost(props) {
     getProjectCostChart,
     getSummaryData,
     getProjectList,
+    getProjectDailyCostChart,
+    dailyCostChart,
     projectList,
     projectCostFilters,
+    projectDailyCostFilters,
     projectCostChart,
     summaryData,
     projectName,

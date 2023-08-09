@@ -30,6 +30,6 @@ export const queryLatestDeployments = () => {
   return axios.get(`/dashboards/_/latest-service-revisions`);
 };
 export function queryCostManagemantData(data: any) {
-  return axios.post('/costs/_/allocation-costs', data);
+  return axios.post('/costs/_/cost-reports', data);
 }
 export default {};

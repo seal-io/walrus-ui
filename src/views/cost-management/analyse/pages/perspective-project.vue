@@ -113,45 +113,7 @@
         <div><slot name="view-btn"></slot></div>
       </template>
     </FilterBox>
-    <!-- <FilterBox style="margin-bottom: 8px">
-      <template #params>
-        <dateRange
-          v-model:start="queryParams.start"
-          v-model:end="queryParams.end"
-          :show-extra="false"
-          today-in
-          border-less
-          @change="handleSearch"
-        ></dateRange>
-        <a-select
-          :placeholder="$t('cost.analyse.cluster.holder')"
-          v-model="queryParams.cluster"
-          class="border-less"
-          style="width: 200px"
-          :options="clusterOptions"
-          @change="handleSearch"
-        >
-          <template #option="{ data }">
-            <a-tooltip :content="data.label" position="top">
-              <span
-                ><ProviderIcon :provider="data.provider" /><span
-                  style="margin-left: 5px"
-                  >{{ data.label }}</span
-                ></span
-              >
-            </a-tooltip>
-          </template>
-        </a-select>
-        <a-space style="margin-left: 10px">
-          <a-button type="primary" @click="handleSearch">{{
-            $t('common.button.search')
-          }}</a-button>
-          <a-button type="outline" @click="handleReset">{{
-            $t('common.button.clear')
-          }}</a-button>
-        </a-space>
-      </template>
-    </FilterBox> -->
+
     <SpinCard
       :loading="overviewloading || preloading"
       :title="`${$t('cost.analyse.detail.project')}: ${projectName}`"
@@ -174,23 +136,50 @@
           </DataCard>
         </a-grid-item>
       </a-grid>
-      <!-- <a-grid :cols="24" :col-gap="20" style="margin-top: 10px">
-        <a-grid-item
-          v-for="(item, index) in resourceCostOverview"
-          :key="index"
-          :span="{ lg: 6, md: 6, sm: 12, xs: 24 }"
-        >
-          <DataCard
-            :title="item.label"
-            :value="item.value"
-            bg-color="linear-gradient(rgba(255, 197, 192,.3) 0%,rgba(255, 197, 192,.4) 100%)"
-          >
-            <template #title>
-              <span style="font-weight: 500">{{ item.label }}</span>
-            </template>
-          </DataCard>
-        </a-grid-item>
-      </a-grid> -->
+    </SpinCard>
+    <SpinCard
+      :title="$t('cost.analyse.detail.costtrend')"
+      borderless
+      style="margin-bottom: 8px"
+    >
+      <template #title>
+        <div style="display: flex; justify-content: space-between">
+          <div>{{ $t('cost.analyse.detail.costtrend') }}</div>
+          <ChartBtn v-model:active="active"></ChartBtn>
+        </div>
+      </template>
+      <LineBarChart
+        :loading="overviewloading || preloading"
+        height="220px"
+        :show-type="active"
+        :line-list="dailyCostChart.line"
+        :bar-list="dailyCostChart.bar"
+        :data-config="dailyCostChart.dataConfig"
+        :x-axis="dailyCostChart.xAxis"
+        :config-options="{
+          title: {
+            ...title
+          },
+          legend: {
+            show: false,
+            right: 'center',
+            top: 0
+          },
+          grid: {
+            ...grid,
+            top: 40
+          }
+        }"
+      ></LineBarChart>
+      <TableList
+        :time-mode="timeMode"
+        :request-work="requestWork"
+        :filter-params="projectDailyCostFilters"
+        :loadeend="loadeend"
+        :columns="dailyColumns"
+        source="daily table"
+        style="margin-top: 20px"
+      ></TableList>
     </SpinCard>
     <SpinCard
       :title="$t('cost.analyse.detail.appCost')"
@@ -248,13 +237,13 @@
   import { reactive, ref, computed, onMounted, watch, inject } from 'vue';
   import useCallCommon from '@/hooks/use-call-common';
   import DateRange from '@/components/date-range/index.vue';
+  import ChartBtn from '@/components/chart-btn/index.vue';
   import DataCard from '@/components/data-card/index.vue';
   import LineBarChart from '@/components/line-bar-chart/index.vue';
   import FilterBox from '@/components/filter-box/index.vue';
   import TableList from '../components/table-list.vue';
   import {
-    clusterCostOverview,
-    resourceCostOverview,
+    dailyCostCols,
     projectCostCols,
     DateShortCuts,
     setEndTimeAddDay
@@ -302,8 +291,11 @@
     getProjectCostChart,
     getSummaryData,
     getProjectList,
+    getProjectDailyCostChart,
+    dailyCostChart,
     projectList,
     projectCostFilters,
+    projectDailyCostFilters,
     projectCostChart,
     summaryData,
     projectName,
@@ -316,14 +308,21 @@
     collectedTimeRange
   } = usePerspectiveProject(props);
   const { t, route } = useCallCommon();
+  const active = ref<'bar' | 'line'>('bar');
   const loadeend = ref(false);
-  const clusterOptions = [
-    { label: 'project-1', value: 'project1' },
-    { label: 'project-2', value: 'project' }
-  ];
+
   const markCellStyle = {
     border: '1px solid rgb(var(--arcoblue-6))'
   };
+
+  const dailyColumns = computed(() => {
+    const list = cloneDeep(dailyCostCols);
+    return map(list, (item) => {
+      item.title = t(item.title);
+      return item;
+    });
+  });
+
   const preloading = computed(() => {
     return projectloading.value || loading.value;
   });
@@ -346,20 +345,20 @@
     const d = find(projectList.value, (item) => item.value === val);
     return d ? d.label : projectName.value;
   };
-  const handleDateChange = async () => {
-    projectCostFilters.value = {
-      ...projectCostFilters.value,
-      ...queryParams,
-      endTime: setEndTimeAddDay(queryParams.endTime, timeMode.value)
-    };
-    await getProjectList(true);
-    getProjectCostChart();
-    getSummaryData();
-  };
+
   const handleProjectChange = (val) => {
+    queryParams.project = val;
     const projectData = find(projectList.value, (item) => item.value === val);
     projectName.value = projectData?.label || 'Project';
+    // group by service
     each(get(projectCostFilters.value, 'filters') || [], (fItem) => {
+      each(fItem, (sItem) => {
+        sItem.values = [val];
+      });
+    });
+
+    // group by day
+    each(get(projectDailyCostFilters.value, 'filters') || [], (fItem) => {
       each(fItem, (sItem) => {
         sItem.values = [val];
       });
@@ -369,14 +368,30 @@
       ...queryParams,
       endTime: setEndTimeAddDay(queryParams.endTime, timeMode.value)
     };
+    projectDailyCostFilters.value = {
+      ...projectDailyCostFilters.value,
+      ...queryParams,
+      endTime: setEndTimeAddDay(queryParams.endTime, timeMode.value)
+    };
     getProjectCostChart();
+    getProjectDailyCostChart();
     getSummaryData();
   };
+
+  const handleDateChange = async () => {
+    projectCostFilters.value = {
+      ...projectCostFilters.value,
+      ...queryParams,
+      endTime: setEndTimeAddDay(queryParams.endTime, timeMode.value)
+    };
+    await getProjectList(true);
+    handleProjectChange(get(projectList.value, '0.value'));
+  };
+
   const initData = async () => {
     await getPerspectiveItemInfo();
     await getProjectList();
-    getSummaryData();
-    getProjectCostChart();
+    handleProjectChange(get(projectList.value, '0.value'));
     setTimeout(() => {
       loadeend.value = true;
     }, 50);
