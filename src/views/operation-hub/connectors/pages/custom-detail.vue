@@ -93,15 +93,26 @@
             ]"
           >
             <seal-input
-              v-if="pageAction === PageAction.EDIT"
+              v-if="pageAction === PageAction.EDIT && !formData.id"
               v-model="formData.type"
               :label="$t('operation.connectors.form.type')"
               :required="true"
               :style="{ width: `${InputWidth.LARGE}px` }"
             ></seal-input>
-            <span v-else class="readonly-view-label">{{
-              formData.type || '-'
-            }}</span>
+            <span
+              v-else-if="pageAction === PageAction.VIEW"
+              class="readonly-view-label"
+              >{{ formData.type || '-' }}</span
+            >
+            <sealFormItemWrap
+              v-else
+              :style="{ width: `${InputWidth.LARGE}px` }"
+              :label="$t('operation.connectors.form.type')"
+            >
+              <span class="readonly-view-label p-l-0">{{
+                formData.type || '-'
+              }}</span>
+            </sealFormItemWrap>
           </a-form-item>
           <a-form-item
             :label="$t('operation.connectors.form.attribute')"
@@ -525,6 +536,10 @@
       .arco-select-view-prefix {
         padding-right: 5px;
       }
+    }
+
+    .readonly-view-label.p-l-0 {
+      padding-left: 0;
     }
   }
 </style>
