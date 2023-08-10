@@ -90,8 +90,7 @@
     isNaN
   } from 'lodash';
   import { useI18n } from 'vue-i18n';
-  import { getStackLineDataList } from '@/views/config';
-  import { getStackLineData } from '@/views/config/utils';
+  import { getStackLineDataList, getStackLineData } from '@/views/config/utils';
   import spinCard from '@/components/page-wrap/spin-card.vue';
   import DataCard from '@/components/data-card/index.vue';
   import monthlyCost from './monthly-cost.vue';
