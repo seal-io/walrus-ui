@@ -22,6 +22,7 @@ export default function useServiceData(props?) {
     completeData,
     initCompleteData,
     getTemplatesVersions,
+    getTemplateVersionByItem,
     getTemplates,
     serviceDataList,
     templateList,
@@ -172,13 +173,14 @@ export default function useServiceData(props?) {
         allTemplateVersions.value,
         (item) => item.template.name === formData.template.name
       );
-      const versions = _.map(list, (item) => {
+      let versions = _.map(list, (item) => {
         return {
           ..._.cloneDeep(item),
           label: item.version,
           value: item.version
         };
       });
+      versions = _.uniqBy(versions, 'value');
       templateVersionList.value = _.sortBy(versions, ['value']).reverse();
     } catch (error) {
       //
@@ -187,7 +189,7 @@ export default function useServiceData(props?) {
   const setFormAttributes = async () => {
     _.assignIn(formData, serviceInfo.value);
     // 1. get the template meta data 2.set the default value
-    await getTemplatesVersions(formData.template.name);
+    await getTemplateVersionByItem(formData.template.name);
     await getTemplateVersionList();
     const moduleTemplate = getTemplateSchemaByVersion();
     templateInfo.value = _.cloneDeep(_.get(moduleTemplate, 'schema'));
@@ -208,7 +210,7 @@ export default function useServiceData(props?) {
       formData.template.name = webservice
         ? webservice.name
         : _.get(templateList.value, '0.name') || '';
-      await getTemplatesVersions(formData.template.name);
+      await getTemplateVersionByItem(formData.template.name);
       await getTemplateVersionList();
       const moduleTemplate = getTemplateSchemaByName();
       formData.template.version = _.get(moduleTemplate, 'version') || '';
@@ -243,6 +245,7 @@ export default function useServiceData(props?) {
     getTemplateSchemaByVersion,
     getTemplateVersionList,
     getTemplatesVersions,
+    getTemplateVersionByItem,
     initCompleteData,
     initInfo,
     asyncLoading,

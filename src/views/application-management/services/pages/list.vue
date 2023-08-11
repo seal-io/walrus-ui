@@ -241,7 +241,13 @@
   import { useUserStore } from '@/store';
   import { ServiceRowData, DriftDataItem } from '../config/interface';
   import { websocketEventType, serviceActions } from '../config';
-  import { queryServices, deleteServices, refreshServiceConfig } from '../api';
+  import {
+    queryServices,
+    deleteServices,
+    refreshServiceConfig,
+    SERVICE_API,
+    SERVICE_API_PREFIX
+  } from '../api';
   import useRollbackRevision from '../hooks/use-rollback-revision';
   import useCompleteData from '../hooks/use-complete-data';
   import deleteServiceModal from '../components/delete-service-modal.vue';
@@ -301,8 +307,8 @@
   const handleClickDriftResource = (row) => {
     driftResourceList.value =
       _.get(row, 'driftResult.drift.resource_drift') || [];
-    const item = _.head(driftResourceList.value) || {};
-    activeDriftResource.value = `${item.type}/${item.name}`;
+    const item = _.head(driftResourceList.value);
+    activeDriftResource.value = `${item?.type}/${item?.name}`;
     setTimeout(() => {
       showDriftModal.value = true;
     }, 100);
@@ -389,16 +395,15 @@
       }
     });
   };
-  const handleDeleteConfirm = async (force) => {
+  const handleDeleteConfirm = async (withoutCleanup) => {
     try {
       loading.value = true;
       const ids = _.map(selectedKeys.value, (val) => {
-        return val;
+        return { id: val as string };
       });
       await deleteServices({
-        data: ids,
-        projectID: queryParams.projectID,
-        force
+        data: { items: ids },
+        withoutCleanup
       });
       loading.value = false;
       execSucceed();
@@ -498,11 +503,7 @@
     try {
       if (!queryParams.projectID) return;
       setChunkRequest({
-        url: `/services`,
-        params: {
-          projectID: queryParams.projectID,
-          environmentID: queryParams.environmentID
-        },
+        url: `${SERVICE_API_PREFIX()}${SERVICE_API}`,
         handler: updateHandler,
         beforeReconnect: fetchData
       });

@@ -262,14 +262,6 @@
     queryItemEnvironments,
     cloneEnvironment
   } from '../api';
-  // const props = defineProps({
-  //   id: {
-  //     type: String,
-  //     default() {
-  //       return '';
-  //     }
-  //   }
-  // });
 
   const { getProjectList, setProjectList, initBreadValues, handleBreadChange } =
     useProjectBreadcrumbData();
@@ -283,7 +275,9 @@
   const serviceList = ref<ServiceRowData[]>([]);
   const formref = ref();
   const serviceRef = ref(); // only in clone
-  const connectorList = ref<{ label: string; value: string }[]>([]);
+  const connectorList = ref<
+    { label: string; value: string; project?: object }[]
+  >([]);
   const showModal = ref(false);
   const submitLoading = ref(false);
   const asyncLoading = ref(false);
@@ -356,6 +350,17 @@
       }
     });
     formData.value.connectors = map(formData.value.connectorIDs, (val) => {
+      const connector = connectorList.value.find((item) => {
+        return item.value === val;
+      });
+      if (connector && connector.project) {
+        return {
+          connector: {
+            id: val,
+            project: connector.project
+          }
+        };
+      }
       return {
         connector: {
           id: val

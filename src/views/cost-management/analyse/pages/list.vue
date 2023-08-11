@@ -285,7 +285,7 @@
           id: val
         };
       });
-      await deletePerspectives(ids);
+      await deletePerspectives({ items: ids });
       loading.value = false;
       execSucceed();
       queryParams.page = 1;

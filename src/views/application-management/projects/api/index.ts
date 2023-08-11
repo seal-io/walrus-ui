@@ -1,5 +1,6 @@
 import axios from 'axios';
 import qs from 'query-string';
+import router from '@/router';
 import { Pagination, ListResult } from '@/types/global';
 import {
   ProjectRowData,
@@ -8,6 +9,11 @@ import {
 } from '../config/interface';
 
 export const PROJECT_API = '/projects';
+
+export const PROJECT_API_PREFIX = () => {
+  const { projectId } = router.currentRoute.value.params;
+  return `/projects/${projectId}`;
+};
 export interface QueryType extends Pagination {
   sort?: string[];
 }
@@ -29,7 +35,7 @@ export const queryProjects = (params: QueryType) => {
 export const createProject = (data: ProjectFormData) => {
   return axios.post(`/projects`, data);
 };
-export const deleteProjects = (data) => {
+export const deleteProjects = (data: { items: Record<string, any>[] }) => {
   return axios.delete(`/projects`, { data });
 };
 
@@ -47,17 +53,21 @@ export const queryItemProject = (params) => {
 };
 
 export const querySubjectRoles = (params: { projectID: string }) => {
-  return axios.get<ListResult<ProjectRolesRowData>>(`/subject-roles`, {
-    params,
-    paramsSerializer: (obj) => {
-      return qs.stringify(obj);
+  return axios.get<ListResult<ProjectRolesRowData>>(
+    `${PROJECT_API_PREFIX()}/subject-roles`,
+    {
+      params,
+      paramsSerializer: (obj) => {
+        return qs.stringify(obj);
+      }
     }
-  });
+  );
 };
+
 export const addSubjectRoles = (data) => {
-  return axios.post(`/subject-roles?projectID=${data.project.id}`, data);
+  return axios.post(`${PROJECT_API_PREFIX()}/subject-roles`, data);
 };
 
 export const deleteSubjectRoles = (data) => {
-  return axios.delete(`/subject-roles/${data.id}?projectID=${data.projectID}`);
+  return axios.delete(`${PROJECT_API_PREFIX()}/subject-roles/${data.id}`);
 };

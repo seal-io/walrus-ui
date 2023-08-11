@@ -185,7 +185,8 @@
     deleteApplicationRevisions,
     diffRevisionSpec,
     rollbackInstance,
-    queryRevisionChange
+    queryRevisionChange,
+    SERVICE_RESOURCE_API_PREFIX
   } from '../../api';
 
   let axiosListInstance = createAxiosToken();
@@ -369,11 +370,7 @@
   const createServiceRevisionChunkRequest = () => {
     try {
       setChunkRequest({
-        url: `/service-revisions`,
-        params: {
-          serviceID: serviceId.value,
-          ...permissionParams
-        },
+        url: `${SERVICE_RESOURCE_API_PREFIX()}/service-revisions`,
         handler: updateHandler,
         beforeReconnect: fetchData
       });

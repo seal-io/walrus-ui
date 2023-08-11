@@ -27,7 +27,7 @@
       <span>{{ title }}</span>
     </template>
     <div style="display: center">
-      <a-checkbox v-model="force">{{
+      <a-checkbox v-model="withoutCleanup">{{
         $t('applications.applications.instance.deleteTips')
       }}</a-checkbox>
     </div>
@@ -82,7 +82,7 @@
   });
 
   const emit = defineEmits(['save', 'update:show']);
-  const force = ref(true);
+  const withoutCleanup = ref(false);
   const submitLoading = ref(false);
 
   const handleCancel = () => {
@@ -91,7 +91,7 @@
   const handleOk = async () => {
     try {
       submitLoading.value = true;
-      await props.callback?.(force.value);
+      await props.callback?.(withoutCleanup.value);
       emit('update:show', false);
       submitLoading.value = false;
     } catch (error) {
@@ -100,7 +100,7 @@
   };
 
   const handleBeforeOpen = () => {
-    force.value = true;
+    withoutCleanup.value = false;
   };
   const handleBeforeClose = () => {};
 </script>

@@ -78,7 +78,7 @@
     INode,
     IEdge
   } from '../../services/components/instance/tab-graph/config/interface';
-  import { queryServiceGraph } from '../../services/api';
+  import { queryEnvironmentServiceGraph } from '../../services/api';
 
   const minHeight = 'calc(100vh - 266px)';
   const { route } = useCallCommon();
@@ -112,7 +112,7 @@
         environmentID: route.params.environmentId as string,
         projectID: route.params.projectId as string
       };
-      const { data } = await queryServiceGraph(params);
+      const { data } = await queryEnvironmentServiceGraph(params);
       resultData.value.links = _.map(data.edges, (item) => {
         return {
           edgeType: item.type,

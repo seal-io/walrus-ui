@@ -9,6 +9,7 @@
 <script lang="ts" setup>
   import { useSetChunkRequest } from '@/api/axios-chunk-request';
   import { ref, inject, watch } from 'vue';
+  import { SERVICE_RESOURCE_API_PREFIX } from '@/views/application-management/services/api';
   import usePermissionParams from '../../hooks/use-permission-params';
   import { ServiceStatus } from '../config';
 
@@ -67,7 +68,9 @@
         ? 'destroy'
         : 'apply';
     setChunkRequest({
-      url: `/service-revisions/${props.revisionId}/log`,
+      url: `${SERVICE_RESOURCE_API_PREFIX()}/service-revisions/${
+        props.revisionId
+      }/log`,
       params: {
         jobType,
         ...permissionParams

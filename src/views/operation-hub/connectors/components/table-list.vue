@@ -325,38 +325,6 @@
       @change="handlePageChange"
       @page-size-change="handlePageSizeChange"
     />
-    <!-- <CreateKubernetes
-      v-model:showValue="showValue"
-      v-model:info="currentInfo"
-      :show="showValue === ConnectorCategory.Kubernetes"
-      :action="action"
-      @save="handleSearch"
-    >
-    </CreateKubernetes>
-    <CreateVersionControl
-      v-model:showValue="showValue"
-      v-model:info="currentInfo"
-      :show="showValue === ConnectorCategory.VersionControl"
-      :action="action"
-      @save="handleSearch"
-    >
-    </CreateVersionControl>
-    <CreateCustom
-      v-model:showValue="showValue"
-      v-model:info="currentInfo"
-      :show="showValue === ConnectorCategory.Custom"
-      :action="action"
-      @save="handleSearch"
-    >
-    </CreateCustom>
-    <CreateCloud
-      v-model:showValue="showValue"
-      v-model:info="currentInfo"
-      :show="showValue === ConnectorCategory.CloudProvider"
-      :action="action"
-      @save="handleSearch"
-    >
-    </CreateCloud> -->
   </div>
 </template>
 
@@ -393,16 +361,15 @@
     connectorTypeList as categoryList
   } from '../config';
   import StatusLabel from './status-label.vue';
-  import CreateKubernetes from './create-kubernetes.vue';
-  import CreateVersionControl from './create-versionControl.vue';
-  import CreateCustom from './create-custom.vue';
-  import CreateCloud from './create-cloud.vue';
   import {
     queryConnectors,
     updateConnector,
     reinstallFinOpsTools,
     syncFinOpsData,
-    deleteConnector
+    deleteConnector,
+    isProjectContext,
+    CONNECTOR_API,
+    PROJECT_API_PREFIX
   } from '../api';
 
   const props = defineProps({
@@ -529,8 +496,6 @@
     });
   };
   const handleCreateGlobalConnector = (item) => {
-    // action.value = ModalAction.CREATE;
-    // showValue.value = val;
     router.push({
       name: item.globalRoute,
       params: {
@@ -546,11 +511,6 @@
     }
   };
   const handleView = (row, action?) => {
-    // currentInfo.value = row;
-    // action.value = ModalAction.EDIT;
-    // setTimeout(() => {
-    //   showValue.value = row.category;
-    // }, 100);
     const data = _.find(
       props.connectorTypeList,
       (item) => item.value === row.category
@@ -653,9 +613,13 @@
     });
   };
   const createInstanceListWebsocket = () => {
+    let url = CONNECTOR_API;
+    if (isProjectContext()) {
+      url = `${PROJECT_API_PREFIX()}${CONNECTOR_API}`;
+    }
     try {
       setChunkRequest({
-        url: `/connectors`,
+        url: `${url}`,
         params: {
           category: queryParams.category,
           query: queryParams.query

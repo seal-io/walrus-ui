@@ -26,6 +26,7 @@
   import hasAnsi from 'has-ansi';
   import { ref, inject, watch, PropType } from 'vue';
   import usePermissionParams from '@/views/application-management/hooks/use-permission-params';
+  import { SERVICE_RESOURCE_API_PREFIX } from '../../api';
   import { Cascader, ResourceKey } from '../../config/interface';
 
   const props = defineProps({
@@ -66,7 +67,9 @@
   };
   const createChunkConnection = async () => {
     if (!logKey.value || !resourceId.value) return;
-    const url = `/service-resources/${resourceId.value}/log`;
+    const url = `${SERVICE_RESOURCE_API_PREFIX()}/service-resources/${
+      resourceId.value
+    }/log`;
     setChunkRequest({
       url,
       params: {

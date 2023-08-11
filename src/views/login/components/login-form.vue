@@ -100,6 +100,7 @@
         v-show="showModify"
         :old-password="userInfo.password"
         :user-name="userInfo.username"
+        :settings-info="settingsInfo"
         @updatePassword="handleModifyDefaultPassword"
       />
     </div>
@@ -115,6 +116,7 @@
   import { useUserStore } from '@/store';
   import useLoading from '@/hooks/loading';
   import useEnterPage from '@/hooks/use-enter-page';
+  import { queryUserPartialSetting } from '@/views/system/api/setting';
   import CryptoJS from 'crypto-js';
   import {
     rememberPasswordFn,
@@ -140,6 +142,7 @@
   const { loading, setLoading } = useLoading();
   const userStore = useUserStore();
   const rememberPassword = ref<boolean>(false);
+  const settingsInfo = ref({});
   const showModify = ref<boolean>(false);
   const userInfo = reactive({
     username: '',
@@ -171,6 +174,27 @@
   const isNotFirstLogin = () => {
     return props.firstLoginStatus.value === 'Invalid';
   };
+  const getUserPartialSetting = async () => {
+    try {
+      const params = {
+        name: ['ServeUrl', 'EnableTelemetry']
+      };
+      const { data } = await queryUserPartialSetting(params);
+      settingsInfo.value = _.reduce(
+        data.items || [],
+        (result, item) => {
+          if (item.name) {
+            result[item.name] = item.value;
+          }
+          return result;
+        },
+        {}
+      );
+    } catch (error) {
+      settingsInfo.value = {};
+      // ingore
+    }
+  };
   const handleSubmit = async ({ errors, values }) => {
     if (!errors) {
       setLoading(true);
@@ -199,10 +223,11 @@
             FirstLogin: { ...props.firstLoginStatus }
           }
         });
-        if (userStore?.isFirstLogin()) {
+        if (userStore?.isFirstLogin() && userStore.isSystemAdmin()) {
           showModify.value = true;
           emits('update:hideTips', true);
           emits('loginSuccess');
+          getUserPartialSetting();
           return;
         }
         // locate  to first menu has permission

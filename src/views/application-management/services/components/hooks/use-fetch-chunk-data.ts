@@ -7,7 +7,11 @@ import {
 import usePermissionParams from '@/views/application-management/hooks/use-permission-params';
 import { ServiceResource } from '../../config/interface';
 import { websocketEventType } from '../../config';
-import { queryServiceResource } from '../../api';
+import {
+  queryServiceResource,
+  SERVICE_API_PREFIX,
+  SERVICE_API
+} from '../../api';
 import { updateResourceEmitter } from '../../hooks/update-resource-listener';
 
 export default function useFetchResource() {
@@ -237,11 +241,9 @@ export default function useFetchResource() {
     requestCacheList.value = [];
     try {
       setChunkRequest({
-        url: `/service-resources`,
-        params: {
-          serviceID: serviceId.value,
-          ...permissionParams
-        },
+        url: `${SERVICE_API_PREFIX()}${SERVICE_API}/${
+          serviceId.value
+        }/service-resources`,
         handler: updateCallback,
         beforeReconnect: fetchData
       });

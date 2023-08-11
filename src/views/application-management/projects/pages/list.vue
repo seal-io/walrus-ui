@@ -354,10 +354,10 @@
       loading.value = true;
       const ids = map(selectedKeys.value, (val) => {
         return {
-          id: val
+          id: val as string
         };
       });
-      await deleteProjects(ids);
+      await deleteProjects({ items: ids });
       loading.value = false;
       execSucceed();
       queryParams.page = 1;

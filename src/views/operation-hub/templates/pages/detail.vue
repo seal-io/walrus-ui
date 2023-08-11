@@ -273,7 +273,7 @@
     if (!templateName) return;
     try {
       const params = {
-        templateNames: [templateName]
+        templateID: id
       };
       const { data } = await queryTemplatesVersions(params);
       const list = data.items || [];

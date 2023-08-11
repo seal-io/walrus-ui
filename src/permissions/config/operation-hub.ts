@@ -30,6 +30,13 @@ export default [
     actions: ['GET', 'POST', 'DELETE', 'PUT']
   },
   {
+    resource: Resources.Catalogs,
+    title: 'permission.resource.system.operation.module',
+    group: Group.OperatorHub,
+    order: ResourcesOrder.Catalogs,
+    actions: ['GET', 'POST', 'DELETE', 'PUT']
+  },
+  {
     resource: Resources.Secrets,
     title: 'permission.resource.system.operation.secret',
     group: Group.OperatorHub,

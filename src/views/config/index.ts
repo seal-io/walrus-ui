@@ -16,9 +16,9 @@ export const setEndTimeAddDay = (time, mode) => {
 };
 
 export const websocketEventType = {
-  CREATE: 1,
-  UPDATE: 2,
-  DELETE: 3
+  CREATE: 'create',
+  UPDATE: 'update',
+  DELETE: 'delete'
 };
 // can contain up to 63 characters
 // Contains only lowercase alphanumeric characters or "-"

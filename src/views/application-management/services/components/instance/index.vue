@@ -139,7 +139,12 @@
   } from '../../config';
   import { InstanceData } from '../../config/interface';
   import useFetchResource from '../hooks/use-fetch-chunk-data';
-  import { queryItemApplicationService, deleteServiceItem } from '../../api';
+  import {
+    queryItemApplicationService,
+    deleteServiceItem,
+    SERVICE_API,
+    SERVICE_API_PREFIX
+  } from '../../api';
   import serviceInfo from '../service-info.vue';
   import serviceEdit from '../../pages/edit.vue';
 
@@ -195,9 +200,9 @@
     pageAction.value = PageAction.EDIT;
   };
 
-  const handleDeleteConfirm = async (force) => {
+  const handleDeleteConfirm = async (withoutCleanup) => {
     try {
-      await deleteServiceItem({ id: route.query.id, force });
+      await deleteServiceItem({ id: route.query.id, withoutCleanup });
     } catch (error) {
       //
     }
@@ -317,11 +322,7 @@
   const createServiceChunkRequest = () => {
     try {
       setChunkRequest({
-        url: `/services`,
-        params: {
-          projectID: route.params.projectId,
-          environmentID: route.params.environmentId
-        },
+        url: `${SERVICE_API_PREFIX()}${SERVICE_API}`,
         handler: updateHandler,
         beforeReconnect: getServiceItemInfo
       });
