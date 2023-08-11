@@ -118,6 +118,7 @@ export default {
   'applications.projects.rule.name': '名称必填',
   'applications.projects.role.owner': '所有者',
   'applications.projects.role.member': '成员',
+  'applications.projects.role.select': '请选择成员',
   'applications.projects.role.holder': '请输入成员名称',
   'applications.projects.role.viewer': '只读',
   'applications.secret.create': '新建变量',

@@ -29,6 +29,7 @@
             allow-search
             style="width: 220px"
             :placeholder="$t('applications.projects.authorize.account')"
+            @change="handleSubjectChange"
           >
             <a-optgroup
               v-if="userSubjectList.length"
@@ -116,11 +117,15 @@
         style="margin-bottom: 20px"
         :loading="loading"
         :bordered="false"
-        :data="projectVisitors"
+        :data="selectedList"
         :pagination="false"
         row-key="id"
-        @selection-change="handleSelectChange"
       >
+        <template #empty>
+          <a-empty
+            :description="$t('applications.projects.role.select')"
+          ></a-empty>
+        </template>
         <template #columns>
           <a-table-column
             ellipsis
@@ -165,11 +170,17 @@
       <EditPageFooter style="margin-top: 0">
         <template #save>
           <a-button
-            :loading="submitLoading"
+            :disabled="!selectedList.length"
             type="primary"
             class="cap-title cancel-btn"
-            @click="handleClose"
-            >{{ $t('common.button.close') }}</a-button
+            @click="handleSubmit"
+            >{{ $t('common.button.save') }}</a-button
+          >
+          <a-button
+            type="outline"
+            class="cap-title cancel-btn"
+            @click="handleCancel"
+            >{{ $t('common.button.cancel') }}</a-button
           >
         </template>
       </EditPageFooter>
@@ -183,21 +194,16 @@
   import AOptgroup from '@arco-design/web-vue/es/select/optgroup';
   import FilterBox from '@/components/filter-box/index.vue';
   import EditPageFooter from '@/components/edit-page-footer/index.vue';
-  import { deleteModal, execSucceed } from '@/utils/monitor';
-  import useRowSelect from '@/hooks/use-row-select';
   import {
     accountTypeList,
     AccountKind,
     RoleType
   } from '@/views/system/config/users';
+  import { useUserStore } from '@/store';
   import { getListLabel } from '@/utils/func';
   import { RowData } from '@/views/system/config/interface';
   import { queryRoles, querySubjects } from '@/views/system/api/users';
-  import {
-    querySubjectRoles,
-    addSubjectRoles,
-    deleteSubjectRoles
-  } from '../api';
+  import { querySubjectRoles, addSubjectRoles } from '../api';
   import { projectRoles } from '../config';
   import { ProjectRolesRowData } from '../config/interface';
 
@@ -221,9 +227,13 @@
       }
     }
   });
-  const { rowSelection, selectedKeys, handleSelectChange } = useRowSelect();
+  interface SelectedMember {
+    project: { id: string };
+    subject: { id: string; name: string };
+    role: { id: string };
+  }
   const emits = defineEmits(['update:show', 'update:action', 'save']);
-  const submitLoading = ref(false);
+  const userStore = useUserStore();
   const loading = ref(false);
   const projectVisitors = ref<ProjectRolesRowData[]>([]);
   const roleList = ref<{ label: string; value: string }[]>(
@@ -231,16 +241,19 @@
   );
   const userSubjectList = ref<RowData[]>([]);
   const groupSubjectList = ref<RowData[]>([]);
+  const selectedList = ref<SelectedMember[]>([]);
   const formData = reactive({
     project: { id: '' },
-    subject: { id: '' },
+    subject: { id: '', name: '' },
     role: { id: '' }
   });
-  const queryParams = reactive({
-    page: 1,
-    perPage: 10
-  });
 
+  const handleSubjectChange = (val) => {
+    const data = _.find(userSubjectList.value, (item) => {
+      return item.id === val;
+    });
+    formData.subject.name = data?.name || '';
+  };
   const getProjectSubjectRoles = async () => {
     try {
       loading.value = true;
@@ -264,7 +277,7 @@
       };
       const { data } = await querySubjects(params);
       userSubjectList.value = _.filter(data.items, (item) => {
-        return item.kind === AccountKind.USER;
+        return item.kind === AccountKind.USER && item.name !== userStore.name;
       });
       groupSubjectList.value = _.filter(data.items, (item) => {
         return item.kind === AccountKind.GROUP;
@@ -274,46 +287,42 @@
       groupSubjectList.value = [];
     }
   };
-  const getRoleList = async () => {
-    try {
-      const params = {
-        kind: 'project'
-      };
-      const { data } = await queryRoles(params);
-      roleList.value = _.map(data?.items || [], (item) => {
-        return {
-          label: item.id,
-          value: item.id
-        };
-      });
-    } catch (error) {
-      roleList.value = [];
-    }
+
+  const resetForm = () => {
+    formData.project.id = '';
+    formData.subject.id = '';
+    formData.subject.name = '';
+    formData.role.id = '';
   };
   const handleOk = async () => {
     try {
       if (formData.subject.id && formData.role.id) {
         formData.project.id = props.projectID;
-        await addSubjectRoles(formData);
-        getProjectSubjectRoles();
+        selectedList.value.push(_.cloneDeep(formData));
+        // reset form
+        resetForm();
       }
     } catch (error) {
       //
     }
   };
-  const handleClose = () => {
-    emits('save');
-    emits('update:show', false);
+  const handleSubmit = async () => {
+    try {
+      await addSubjectRoles({ items: selectedList.value });
+      getProjectSubjectRoles();
+      emits('save');
+      emits('update:show', false);
+    } catch (error) {
+      // ignore
+    }
   };
 
   const handleDelete = async (row) => {
-    deleteModal({
-      onOk: async () => {
-        await deleteSubjectRoles({ ...row, projectID: props.projectID });
-        execSucceed();
-        getProjectSubjectRoles();
-      }
+    console.log(row);
+    const index = _.findIndex(selectedList.value, (item) => {
+      return item.subject.id === row.subject.id;
     });
+    selectedList.value.splice(index, 1);
   };
   const init = async () => {
     await Promise.all([getProjectSubjectRoles(), getSubjectList()]);
@@ -325,7 +334,7 @@
     init();
   };
   const handleBeforeClose = () => {
-    formData.subject.id = '';
-    formData.role.id = '';
+    resetForm();
+    selectedList.value = [];
   };
 </script>

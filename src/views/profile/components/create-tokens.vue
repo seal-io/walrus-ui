@@ -26,7 +26,7 @@
         <a-input v-model="formData.name" />
       </a-form-item>
       <a-form-item
-        field="expiration"
+        field="expirationSeconds"
         :label="$t('account.settings.tokens.expiration')"
         validate-trigger="change"
         :rules="[
@@ -36,7 +36,7 @@
           }
         ]"
       >
-        <a-select v-model="formData.expiration" class="expire-select">
+        <a-select v-model="formData.expirationSeconds" class="expire-select">
           <a-option
             v-for="(item, index) in expireList"
             :key="index"
@@ -47,7 +47,7 @@
               style="position: relative; padding-left: 25px"
             >
               <icon-check-circle-fill
-                v-show="formData.expiration === item.label"
+                v-show="formData.expirationSeconds === item.label"
                 style="
                   position: absolute;
                   top: 1px;
@@ -105,7 +105,7 @@
   const formref = ref();
   const formData: FormDataType = reactive({
     name: '',
-    expiration: 'account.settings.expire.never'
+    expirationSeconds: 'account.settings.expire.never'
   });
 
   const handleCancel = () => {
@@ -113,9 +113,11 @@
   };
   const getExpireValue = () => {
     const data = cloneDeep(formData);
-    const selected = expireList.find((item) => data.expiration === item.label);
+    const selected = expireList.find(
+      (item) => data.expirationSeconds === item.label
+    );
     if (selected?.type === 'never') {
-      data.expiration = null;
+      data.expirationSeconds = null;
       return data;
     }
     const d1 = dayjs().add(
@@ -123,7 +125,7 @@
       `${selected?.type}` as never
     );
     const d2 = dayjs();
-    data.expiration = d1.diff(d2, 'second');
+    data.expirationSeconds = d1.diff(d2, 'second');
     return data;
   };
   const submitFormData = async () => {
@@ -143,7 +145,7 @@
   const handleBeforeClose = () => {
     Object.assign(formData, {
       name: '',
-      expiration: 'account.settings.expire.never'
+      expirationSeconds: 'account.settings.expire.never'
     });
     emit('tokenSave');
   };

@@ -77,13 +77,6 @@ export const serviceManagement: SettingsItem = {
           component: {
             type: 'password',
             required: false
-            // validator(val, callback) {
-            //   if (val) {
-            //     callback();
-            //   } else {
-            //     callback(i18n.global.t('system.setting.rule.openai'));
-            //   }
-            // }
           },
           value: '',
           type: 'string'

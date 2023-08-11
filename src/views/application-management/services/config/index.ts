@@ -270,23 +270,23 @@ export const serviceActions: MoreAction[] = [
       type: 'icon-rollback-copy'
     }
   },
-  {
-    label: 'applications.service.resource.sync',
-    value: 'sync',
-    icon: 'i',
-    handler: '',
-    status: 'normal',
-    filterFun(currentInfo) {
-      return userStore.hasProjectResourceActions({
-        resource: Resources.Services,
-        projectID: get(currentInfo, 'project.id'),
-        actions: [Actions.PUT]
-      });
-    },
-    props: {
-      class: 'iconfont icon-synchronization'
-    }
-  },
+  // {
+  //   label: 'applications.service.resource.sync',
+  //   value: 'sync',
+  //   icon: 'i',
+  //   handler: '',
+  //   status: 'normal',
+  //   filterFun(currentInfo) {
+  //     return userStore.hasProjectResourceActions({
+  //       resource: Resources.Services,
+  //       projectID: get(currentInfo, 'project.id'),
+  //       actions: [Actions.PUT]
+  //     });
+  //   },
+  //   props: {
+  //     class: 'iconfont icon-synchronization'
+  //   }
+  // },
   {
     label: 'common.button.delete',
     value: 'delete',

@@ -125,6 +125,7 @@ export default {
   'applications.projects.rule.name': 'Name is required',
   'applications.projects.role.owner': 'Owner',
   'applications.projects.role.member': 'Member',
+  'applications.projects.role.select': 'please select members',
   'applications.projects.role.holder': 'please enter a member name',
   'applications.projects.role.viewer': 'Viewer',
   'applications.secret.create': 'New Variable',

@@ -15,6 +15,7 @@
     </a-form>
     <div>
       <PermissionTable
+        v-if="projectPermissions.length"
         pagination
         type="project"
         :permission-list="projectPermissions"
