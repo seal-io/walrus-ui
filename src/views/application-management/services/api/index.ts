@@ -44,17 +44,18 @@ export const queryServices = (params: QueryType, token?) => {
 export const createService = (data) => {
   return axios.post(`${SERVICE_API_PREFIX()}${SERVICE_API}`, data);
 };
+
 export const cloneServices = (data: {
   projectID: string;
-  formData: object;
+  environmentID: string;
+  items: Record<string, any>[];
 }) => {
   return axios.post(
-    `${SERVICE_API_PREFIX()}${SERVICE_API}/_/batch?${qs.stringify({
-      projectID: data.projectID
-    })}`,
-    data.formData
+    `/projects/${data.projectID}/environments/${data.environmentID}${SERVICE_API}/_/batch`,
+    { items: data.items }
   );
 };
+
 export const deleteServices = ({ data, withoutCleanup }) => {
   return axios.delete(
     `${SERVICE_API_PREFIX()}${SERVICE_API}?${qs.stringify({
@@ -84,6 +85,7 @@ export const queryItemService = (params) => {
     }
   });
 };
+
 // ========service======
 export const queryApplicationServices = (params) => {
   return axios.get(`${SERVICE_API_PREFIX()}${SERVICE_API}`, {
@@ -95,6 +97,7 @@ export const queryApplicationServices = (params) => {
     }
   });
 };
+
 export const queryItemApplicationService = (params) => {
   return axios.get(`${SERVICE_API_PREFIX()}${SERVICE_API}/${params.id}`, {
     params: {
@@ -106,6 +109,7 @@ export const queryItemApplicationService = (params) => {
     }
   });
 };
+
 export const queryInstanceOutputs = (params) => {
   return axios.get(
     `${SERVICE_API_PREFIX()}${SERVICE_API}/${params.id}/outputs`,

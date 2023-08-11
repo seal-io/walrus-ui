@@ -104,20 +104,15 @@
   };
   const getExpireDate = (item) => {
     if (!get(item, 'expiration')) return t('account.settings.expire.never');
-    return dayjs(item.createTime)
-      .add(item.expiration, 'second')
-      .format('YYYY-MM-DD');
+    return dayjs(item.expiration).format('YYYY-MM-DD');
   };
   const getExpireStatus = (item) => {
     if (!get(item, 'expiration')) return 0;
-    const expireTime = dayjs(item.createTime).add(item.expiration, 'second');
-    const fiveDays = dayjs(item.createTime)
-      .add(item.expiration, 'second')
-      .subtract(5, 'days');
+    const fiveDays = dayjs(item.expiration).subtract(5, 'day');
     // expired
-    if (dayjs().isAfter(dayjs(expireTime), 'second')) return 1;
+    if (dayjs().isAfter(dayjs(item.expiration), 'day')) return 1;
     // expired soon
-    if (dayjs().isBetween(dayjs(fiveDays), dayjs(expireTime), 'second'))
+    if (dayjs().isBetween(dayjs(fiveDays), dayjs(item.expiration), 'day'))
       return 2;
     return -1;
   };
