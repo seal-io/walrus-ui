@@ -65,9 +65,9 @@ export const querySubjectRoles = (params: { projectID: string }) => {
 };
 
 export const addSubjectRoles = (data) => {
-  return axios.post(`${PROJECT_API_PREFIX()}/subject-roles`, data);
+  return axios.post(`${PROJECT_API_PREFIX()}/subject-roles/_/batch`, data);
 };
 
-export const deleteSubjectRoles = (data) => {
-  return axios.delete(`${PROJECT_API_PREFIX()}/subject-roles/${data.id}`);
+export const deleteSubjectRoles = (data: { items: Record<string, any>[] }) => {
+  return axios.delete(`${PROJECT_API_PREFIX()}/subject-roles`, { data });
 };

@@ -134,7 +134,7 @@
             ></StatusLabel>
           </template>
         </a-table-column>
-        <a-table-column
+        <!-- <a-table-column
           ellipsis
           :cell-style="{ minWidth: '40px' }"
           data-index="driftResult.drifted"
@@ -148,7 +148,7 @@
             >
             <span v-else>-</span>
           </template>
-        </a-table-column>
+        </a-table-column> -->
         <a-table-column
           ellipsis
           tooltip

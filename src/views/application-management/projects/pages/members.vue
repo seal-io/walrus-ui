@@ -35,6 +35,13 @@
           @click="handleAdd"
           >{{ $t('applications.applications.add.member') }}</a-button
         >
+        <a-button
+          type="primary"
+          status="warning"
+          :disabled="!selectedKeys.length"
+          @click="handleDelete"
+          >{{ $t('common.button.delete') }}</a-button
+        >
       </template>
     </FilterBox>
     <a-table
@@ -45,6 +52,7 @@
       :data="projectVisitors"
       :pagination="false"
       row-key="id"
+      :row-selection="rowSelection"
       @selection-change="handleSelectChange"
     >
       <template #columns>
@@ -69,7 +77,7 @@
             }}</span>
           </template>
         </a-table-column>
-        <a-table-column
+        <!-- <a-table-column
           align="center"
           :width="210"
           :title="$t('common.table.operation')"
@@ -83,7 +91,7 @@
               </a-link>
             </a-tooltip>
           </template>
-        </a-table-column>
+        </a-table-column> -->
       </template>
     </a-table>
     <a-pagination
@@ -202,7 +210,7 @@
           id: val
         };
       });
-      await deleteSubjectRoles(ids);
+      await deleteSubjectRoles({ items: ids });
       execSucceed();
       selectedKeys.value = [];
       rowSelection.selectedRowKeys = [];
@@ -213,13 +221,7 @@
   };
 
   const handleDelete = async (row) => {
-    deleteModal({
-      onOk: async () => {
-        await deleteSubjectRoles({ ...row, projectID: route.params.projectId });
-        execSucceed();
-        fetchData();
-      }
-    });
+    deleteModal({ onOk: handleDeleteConfirm });
   };
   fetchData();
 </script>

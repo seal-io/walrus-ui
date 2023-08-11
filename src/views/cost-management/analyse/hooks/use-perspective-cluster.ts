@@ -98,8 +98,9 @@ export default function usePerspectiveCost(props) {
   const setFilterModelValue = (costFilter, connectorID) => {
     each(get(costFilter, 'filters') || [], (fItem) => {
       each(fItem, (sItem) => {
-        sItem.values = [connectorID];
-        sItem.fieldName = 'connector_id';
+        if (sItem.fieldName === 'connector_id') {
+          sItem.values = [connectorID];
+        }
       });
     });
   };

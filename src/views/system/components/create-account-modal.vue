@@ -25,29 +25,6 @@
     @before-close="handleBeforeClose"
   >
     <a-form ref="formref" :model="formData" auto-label-width>
-      <!-- <a-form-item
-        :label="$t('profile.account.kind')"
-        field="kind"
-        validate-trigger="change"
-        :rules="[
-          {
-            required: true,
-            message: $t('propfile.account.settings.rules.type')
-          }
-        ]"
-      >
-        <a-select v-model="formData.kind">
-          <a-option
-            v-for="item in accountTypeList"
-            :key="item.value"
-            :label="$t(item.label)"
-            :value="item.value"
-          ></a-option>
-        </a-select>
-      </a-form-item> -->
-      <!-- <a-form-item :label="$t('profile.account.domain')" field="domain">
-        <a-input v-model="formData.domain" disabled></a-input>
-      </a-form-item> -->
       <a-form-item
         :label="$t('profile.account.name')"
         hide-label
