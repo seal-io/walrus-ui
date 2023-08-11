@@ -64,7 +64,7 @@
   import { useSetChunkRequest } from '@/api/axios-chunk-request';
   import { websocketEventType } from '@/views/config';
   import usePermissionParams from '@/views/application-management/hooks/use-permission-params';
-  import { queryInstanceOutputs } from '../../api';
+  import { queryInstanceOutputs, SERVICE_RESOURCE_API_PREFIX } from '../../api';
   import { OutputsRow } from '../../config/interface';
 
   const { setChunkRequest } = useSetChunkRequest();
@@ -127,7 +127,7 @@
       chunkRequesSource?.cancel?.();
       nextTick(() => {
         chunkRequesSource = setChunkRequest({
-          url: `/services/${serviceId.value}/output`,
+          url: `${SERVICE_RESOURCE_API_PREFIX()}/outputs`,
           params: {
             ...permissionParams
           },

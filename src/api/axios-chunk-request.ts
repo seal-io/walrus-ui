@@ -3,6 +3,7 @@ import qs from 'query-string';
 import _ from 'lodash';
 import { SILENCEAPI } from '@/api/config';
 import { ref, watch, onBeforeUnmount, onMounted } from 'vue';
+import { websocketEventType } from '@/views/config';
 
 interface RequestConfig {
   url: string;
@@ -68,6 +69,21 @@ export function useSetChunkRequest() {
     requestReadyState.value = 3;
   };
 
+  const resetResultSchema = (result) => {
+    return _.map(result, (data) => {
+      if (data.type === websocketEventType.DELETE) {
+        data.ids = _.map(data.items, (item) => item.id);
+      }
+      data.collection = data.items || [];
+      return data;
+    });
+  };
+
+  /**
+   *
+   * @param param0
+   *  result:{type: 1 | 2 | 3, items:object[]}
+   */
   const axiosChunkRequest = async ({
     url,
     handler,
@@ -103,7 +119,14 @@ export function useSetChunkRequest() {
             const currentRes = sliceData(response, e.loaded, loadedSize);
             result = parseData(currentRes);
           }
+
+          result = resetResultSchema(result);
           handler(result);
+
+          console.log('chunckrequest======', {
+            result,
+            url
+          });
         }
       });
       requestReadyState.value = request?.readyState;

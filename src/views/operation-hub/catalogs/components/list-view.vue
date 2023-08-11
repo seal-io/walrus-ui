@@ -23,7 +23,7 @@
             <a-link
               v-if="
                 userStore.hasRolesActionsPermission({
-                  resource: Resources.Templates,
+                  resource: Resources.Catalogs,
                   actions: [Actions.PUT]
                 })
               "
@@ -118,7 +118,7 @@
               <a-tooltip :content="$t('common.button.refresh')">
                 <a-link
                   v-permission="{
-                    resource: `roles.${Resources.Templates}`,
+                    resource: `roles.${Resources.Catalogs}`,
                     actions: [Actions.PUT]
                   }"
                   type="text"
@@ -267,7 +267,7 @@
           id: val
         };
       });
-      await deleteCatalogs(ids);
+      await deleteCatalogs({ items: ids });
       loading.value = false;
       execSucceed();
       queryParams.page = 1;

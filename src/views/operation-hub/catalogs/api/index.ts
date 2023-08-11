@@ -43,7 +43,7 @@ export function queryItemCatalog(params: { id: string }) {
 export function createCatalog(data: CatalogFormData) {
   return axios.post('/catalogs', data);
 }
-export function deleteCatalogs(data) {
+export function deleteCatalogs(data: { items: Record<string, any>[] }) {
   return axios.delete('/catalogs', { data });
 }
 export function updateCatalog(data: CatalogFormData) {

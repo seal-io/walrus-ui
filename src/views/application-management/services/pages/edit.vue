@@ -352,7 +352,7 @@
     generateVariablesGroup,
     getTemplateSchemaByVersion,
     getTemplateVersionList,
-    getTemplatesVersions,
+    getTemplateVersionByItem,
     formData,
     pageAction,
     defaultGroupKey,
@@ -532,7 +532,7 @@
   };
   // module change: exec version change
   const handleTemplateChange = async (val) => {
-    await getTemplatesVersions(val);
+    await getTemplateVersionByItem(val, true);
     await getTemplateVersionList();
     formData.template.version =
       get(templateVersionList.value, '0.version') || '';
@@ -684,7 +684,7 @@
       ...list,
       {
         type: 'menu.applicationManagement.serivce',
-        label: title.value
+        label: title()
       }
     ] as BreadcrumbOptions[];
 

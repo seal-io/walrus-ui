@@ -354,7 +354,7 @@
           id: val
         };
       });
-      await deleteEnvironment(ids);
+      await deleteEnvironment({ items: ids });
       loading.value = false;
       execSucceed();
       queryParams.page = 1;

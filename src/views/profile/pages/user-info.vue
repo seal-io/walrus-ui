@@ -29,8 +29,8 @@
 </template>
 
 <script lang="ts" setup>
-  import _, { reduce } from 'lodash';
-  import { ref, toRef, computed } from 'vue';
+  import _ from 'lodash';
+  import { computed } from 'vue';
   import { useUserStore } from '@/store';
   import useCallCommon from '@/hooks/use-call-common';
   import { ROLES } from '@/store/modules/user/types';

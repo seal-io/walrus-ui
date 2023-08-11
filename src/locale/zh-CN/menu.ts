@@ -18,6 +18,7 @@ export default {
   'menu.operatorHub.secret': '全局变量',
   'menu.operatorHub.variables': '变量',
   'menu.systemsettings': '系统设置',
+  'menu.subjects': '用户管理',
   'menu.systemsettings.user': '用户管理',
   'menu.systemsettings.config': '配置管理'
 };

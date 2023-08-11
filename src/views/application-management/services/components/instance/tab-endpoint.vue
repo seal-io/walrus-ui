@@ -63,7 +63,6 @@
     reactive,
     inject,
     watch,
-    defineExpose,
     onBeforeUnmount,
     nextTick
   } from 'vue';
@@ -74,7 +73,10 @@
   import usePermissionParams from '@/views/application-management/hooks/use-permission-params';
   import { websocketEventType } from '@/views/config/index';
   import { EndPointRow } from '../../config/interface';
-  import { queryInstanceEndpoints } from '../../api';
+  import {
+    queryInstanceEndpoints,
+    SERVICE_RESOURCE_API_PREFIX
+  } from '../../api';
 
   const { setChunkRequest } = useSetChunkRequest();
   const permissionParams = usePermissionParams();
@@ -161,10 +163,7 @@
       chunkRequesSource?.cancel?.();
       nextTick(() => {
         chunkRequesSource = setChunkRequest({
-          url: `/services/${serviceId.value}/access-endpoint`,
-          params: {
-            ...permissionParams
-          },
+          url: `${SERVICE_RESOURCE_API_PREFIX()}/access-endpoints`,
           handler: updateHandler,
           beforeReconnect: fetchData
         });

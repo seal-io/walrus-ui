@@ -1,13 +1,9 @@
 import i18n from '@/locale/index';
-import {
-  wildDomainReg,
-  ipReg,
-  domainReg,
-  domainFuzzyReg
-} from '@/utils/validate';
+import { wildDomainReg, ipReg, domainReg } from '@/utils/validate';
 import _ from 'lodash';
+import { SettingsItem } from '../index';
 
-export default {
+export const deployManagement: SettingsItem = {
   id: 'Deploymanagement',
   label: 'system.setting.deployment',
   parentId: '',
@@ -17,6 +13,7 @@ export default {
   dataList: [
     {
       id: '',
+      key: '',
       label: 'system.setting.deployment.basic',
       value: '',
       type: 'groupTitle',
@@ -31,6 +28,7 @@ export default {
       subGroup: [
         {
           id: 'DeployerImage',
+          key: 'DeployerImage',
           label: 'system.setting.TerraformDeployerImage',
           parentId: '',
           component: {
@@ -46,6 +44,7 @@ export default {
     },
     {
       id: '',
+      key: '',
       label: 'system.setting.deployment.proxy',
       value: '',
       type: 'groupTitle',
@@ -60,6 +59,7 @@ export default {
       subGroup: [
         {
           id: 'DeployerHttpProxy',
+          key: 'DeployerHttpProxy',
           // label: 'system.setting.offlineManage.httpProxy',
           label: 'HTTP_PROXY',
           desc: 'system.setting.offlineManage.httpProxy.desc',
@@ -76,6 +76,7 @@ export default {
         },
         {
           id: 'DeployerHttpsProxy',
+          key: 'DeployerHttpsProxy',
           // label: 'system.setting.offlineManage.httpsProxy',
           label: 'HTTPS_PROXY',
           desc: 'system.setting.offlineManage.httpsProxy.desc',
@@ -92,6 +93,7 @@ export default {
         },
         {
           id: 'DeployerAllProxy',
+          key: 'DeployerAllProxy',
           // label: 'system.setting.offlineManage.allProxy',
           label: 'ALL_PROXY',
           desc: 'system.setting.offlineManage.allProxy.desc',
@@ -108,6 +110,7 @@ export default {
         },
         {
           id: 'DeployerNoProxy',
+          key: 'DeployerNoProxy',
           // label: 'system.setting.offlineManage.noProxy',
           label: 'NO_PROXY',
           desc: 'system.setting.offlineManage.noProxy.desc',
@@ -137,3 +140,5 @@ export default {
     }
   ]
 };
+
+export default deployManagement;

@@ -6,6 +6,14 @@ import { ConnectorRowData, ConnectorFormData } from '../config/interface';
 
 export const CONNECTOR_API = '/connectors';
 
+export const PROJECT_API_PREFIX = () => {
+  return `/projects/${router.currentRoute.value.params.projectId}`;
+};
+
+export const isProjectContext = () => {
+  return !!router.currentRoute.value.params.projectId;
+};
+
 export const getPermissionRouteParams = () => {
   const { params } = router.currentRoute.value;
   return { projectID: params?.projectId };
@@ -22,7 +30,11 @@ export interface ResultType {
   pagination: Pagination;
 }
 export function queryConnectors(params: QueryType, cancelToken?) {
-  return axios.get<ResultType>('/connectors', {
+  let url = CONNECTOR_API;
+  if (isProjectContext()) {
+    url = `${PROJECT_API_PREFIX()}${CONNECTOR_API}`;
+  }
+  return axios.get<ResultType>(`${url}`, {
     params,
     cancelToken,
     paramsSerializer: (obj) => {
@@ -31,7 +43,11 @@ export function queryConnectors(params: QueryType, cancelToken?) {
   });
 }
 export function queryItemConnector(params: { id: string }) {
-  return axios.get(`/connectors/${params.id}`, {
+  let url = `${CONNECTOR_API}/${params.id}`;
+  if (isProjectContext()) {
+    url = `${PROJECT_API_PREFIX()}${CONNECTOR_API}/${params.id}`;
+  }
+  return axios.get(`${url}`, {
     params,
     paramsSerializer: (obj) => {
       return qs.stringify(obj);
@@ -39,39 +55,50 @@ export function queryItemConnector(params: { id: string }) {
   });
 }
 export function createConnector(data: ConnectorFormData) {
-  return axios.post(
-    `/connectors?${qs.stringify(getPermissionRouteParams())}`,
-    data
-  );
+  let url = CONNECTOR_API;
+  if (isProjectContext()) {
+    url = `${PROJECT_API_PREFIX()}${CONNECTOR_API}`;
+  }
+  return axios.post(`${url}`, data);
 }
 
 export function updateConnector(data: ConnectorFormData) {
-  return axios.put(
-    `/connectors/${data.id}?${qs.stringify(getPermissionRouteParams())}`,
-    data
+  let url = `${CONNECTOR_API}/${data.id}`;
+  console.log(
+    'projectid==',
+    router.currentRoute.value.params.projectId,
+    isProjectContext()
   );
+  if (isProjectContext()) {
+    url = `${PROJECT_API_PREFIX()}${CONNECTOR_API}/${data.id}`;
+  }
+  return axios.put(`${url}`, data);
 }
+
 export function deleteConnector(data: {
   items: Array<{ id: string | number }>;
 }) {
-  return axios.delete(
-    `/connectors?${qs.stringify(getPermissionRouteParams())}`,
-    { data }
-  );
+  let url = CONNECTOR_API;
+  if (isProjectContext()) {
+    url = `${PROJECT_API_PREFIX()}${CONNECTOR_API}`;
+  }
+  return axios.delete(`${url}`, { data });
 }
+
 export function reinstallFinOpsTools(data: ConnectorFormData) {
-  return axios.post(
-    `/connectors/${data.id}/apply-cost-tools?${qs.stringify(
-      getPermissionRouteParams()
-    )}`,
-    data
-  );
+  let url = `${CONNECTOR_API}/${data.id}/reinstall-cost-tools`;
+  if (isProjectContext()) {
+    url = `${PROJECT_API_PREFIX()}${CONNECTOR_API}/${
+      data.id
+    }/reinstall-cost-tools`;
+  }
+  return axios.post(`${url}`, data);
 }
+
 export function syncFinOpsData(data: ConnectorFormData) {
-  return axios.post(
-    `/connectors/${data.id}/sync-cost-data?${qs.stringify(
-      getPermissionRouteParams()
-    )}`,
-    data
-  );
+  let url = `${CONNECTOR_API}/${data.id}/sync-cost-data`;
+  if (isProjectContext()) {
+    url = `${PROJECT_API_PREFIX()}${CONNECTOR_API}/${data.id}/sync-cost-data`;
+  }
+  return axios.post(`${url}`, data);
 }

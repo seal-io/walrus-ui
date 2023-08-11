@@ -1,6 +1,7 @@
 import i18n from '@/locale/index';
+import { SettingsItem } from '../index';
 
-export default {
+export const serviceManagement: SettingsItem = {
   id: 'ServerManage',
   label: 'system.setting.serverManage',
   parentId: '',
@@ -10,6 +11,7 @@ export default {
   dataList: [
     {
       id: '',
+      key: '',
       label: 'system.setting.task.basicmng',
       value: '',
       type: 'groupTitle',
@@ -24,6 +26,7 @@ export default {
       subGroup: [
         {
           id: 'ServeUrl',
+          key: 'ServeUrl',
           label: 'system.setting.serverurl',
           parentId: '',
           component: {
@@ -37,6 +40,7 @@ export default {
         },
         {
           id: 'EnableTelemetry',
+          key: 'EnableTelemetry',
           label: 'login.config.join.improvement',
           parentId: '',
           component: {
@@ -52,6 +56,7 @@ export default {
     },
     {
       id: '',
+      key: '',
       label: 'system.setting.task.enhance',
       value: '',
       type: 'groupTitle',
@@ -66,6 +71,7 @@ export default {
       subGroup: [
         {
           id: 'OpenAiApiToken',
+          key: 'OpenAiApiToken',
           label: 'system.setting.openAiApiToken',
           parentId: '',
           component: {
@@ -86,3 +92,5 @@ export default {
     }
   ]
 };
+
+export default serviceManagement;

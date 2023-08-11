@@ -28,7 +28,7 @@
         <template #button-group>
           <a-button
             v-permission="{
-              resource: `roles.${Resources.Templates}`,
+              resource: `roles.${Resources.Catalogs}`,
               actions: ['POST']
             }"
             type="primary"
@@ -38,7 +38,7 @@
 
           <a-button
             v-permission="{
-              resource: `roles.${Resources.Templates}`,
+              resource: `roles.${Resources.Catalogs}`,
               actions: ['DELETE']
             }"
             type="primary"
@@ -213,7 +213,7 @@
           id: val
         };
       });
-      await deleteCatalogs(ids);
+      await deleteCatalogs({ items: ids });
       loading.value = false;
       execSucceed();
       queryParams.page = 1;

@@ -7,12 +7,12 @@
           <a-form-item
             :hide-label="true"
             :hide-asterisk="false"
-            :field="dataInfo.id"
+            :field="dataInfo.key"
             :validate-trigger="['blur', 'change']"
             :rules="getRules(dataInfo)"
           >
             <form-component
-              v-model="formData[dataInfo.id]"
+              v-model="formData[dataInfo.key]"
               :width="`${InputWidth.LARGE}px`"
               :label="$t(dataInfo.label)"
               :popup-info="$t(dataInfo.desc || '')"
@@ -36,22 +36,22 @@
         </template>
 
         <template v-if="dataInfo.dataList && dataInfo.dataList.length">
-          <div v-for="(item, index) in dataInfo.dataList" :key="item.id">
+          <div v-for="(item, index) in dataInfo.dataList" :key="item.key">
             <template v-if="item?.childProperties?.length">
-              <template v-for="child in item.childProperties" :key="child.id">
+              <template v-for="child in item.childProperties" :key="child.key">
                 <a-form-item
-                  v-if="showId(child) && formData[item.id]"
+                  v-if="showId(child) && formData[item.key]"
                   :class="{ 's-item': child.component.type === 'switch' }"
                   :label="$t(child.label)"
                   :hide-label="true"
                   :hide-asterisk="false"
-                  :field="`${item.id}.${child.id}`"
+                  :field="`${item.key}.${child.key}`"
                   :validate-trigger="['blur', 'change']"
                   :rules="getRules(child)"
                 >
                   <form-component
-                    :key="child.id"
-                    v-model="formData[item.id][child.id]"
+                    :key="child.key"
+                    v-model="formData[item.key][child.key]"
                     :width="`${InputWidth.LARGE}px`"
                     :label="$t(child.label)"
                     :popup-info="$t(child.desc || '')"
@@ -123,7 +123,7 @@
               </div>
               <template
                 v-for="subGroupItem in item.subGroup"
-                :key="subGroupItem.id"
+                :key="subGroupItem.key"
               >
                 <a-form-item
                   v-if="showId(subGroupItem)"
@@ -133,13 +133,13 @@
                   :label="$t(subGroupItem.label)"
                   :hide-label="true"
                   :hide-asterisk="false"
-                  :field="`${subGroupItem.id}`"
+                  :field="`${subGroupItem.key}`"
                   :validate-trigger="['blur', 'change']"
                   :rules="getRules(subGroupItem)"
                 >
                   <form-component
-                    :key="subGroupItem.id"
-                    v-model="formData[subGroupItem.id]"
+                    :key="subGroupItem.key"
+                    v-model="formData[subGroupItem.key]"
                     :width="`${InputWidth.LARGE}px`"
                     :label="$t(subGroupItem.label)"
                     :popup-info="$t(subGroupItem.desc || '')"
@@ -176,12 +176,12 @@
               :label="$t(item.label)"
               :hide-label="true"
               :hide-asterisk="false"
-              :field="item.id"
+              :field="item.key"
               :validate-trigger="['blur', 'change']"
               :rules="getRules(item)"
             >
               <form-component
-                v-model="formData[item.id]"
+                v-model="formData[item.key]"
                 :width="`${InputWidth.LARGE}px`"
                 :label="$t(item.label)"
                 :popup-info="$t(item.desc || '')"
@@ -294,21 +294,22 @@
   const setFormData = () => {
     formref.value?.resetFields();
     if (!props.dataInfo.dataList || !props.dataInfo.dataList.length) {
-      formData.value[props.dataInfo.id] = props.dataInfo.value;
+      formData.value[props.dataInfo.key] = props.dataInfo.value;
     } else {
       props.dataInfo.dataList.forEach((item) => {
         if (item?.childProperties?.length) {
-          formData.value[item.id] = {};
+          formData.value[item.key] = {};
           each(item.childProperties, (child) => {
-            formData.value[item.id][child.id] = item.value[child.id];
+            formData.value[item.key][child.key] = item.value[child.key];
           });
         } else if (item?.subGroup?.length) {
+          // current schema
           const subList = item?.subGroup;
           each(subList, (child) => {
-            formData.value[child.id] = child.value;
+            formData.value[child.key] = child.value;
           });
         } else {
-          formData.value[item.id] = item.value;
+          formData.value[item.key] = item.value;
         }
       });
     }
@@ -356,10 +357,10 @@
     fieldList.forEach((item) => {
       if (item.editable) {
         list.push({
-          id: item.id,
-          value: isObject(formData.value[item.id])
-            ? JSON.stringify(formData.value[item.id])
-            : formData.value[item.id]
+          name: item.key,
+          value: isObject(formData.value[item.key])
+            ? JSON.stringify(formData.value[item.key])
+            : formData.value[item.key]
         });
       }
     });
@@ -368,13 +369,13 @@
   const handleUpdate = async (group) => {
     const fieldList = group.subGroup || [];
     const fields = map(fieldList, (item) => {
-      return item.id;
+      return item.key;
     });
     const res = await formref.value.validateField([...fields]);
     if (!res) {
       try {
         const valueList = getValueList(fieldList);
-        await updateUserSettingBatch(valueList);
+        await updateUserSettingBatch({ items: valueList });
         Message.success(t('common.message.success'));
         // isDisabled.value = true;
         emits('settingSave');
@@ -390,7 +391,7 @@
     nextTick(() => {
       _.each(subGroup, (subItem) => {
         if (subItem?.sensitive && subItem?.configured) {
-          formData.value[subItem.id] = '';
+          formData.value[subItem.key] = '';
         }
       });
     });
@@ -400,7 +401,7 @@
     const subGroup = item.subGroup ?? [];
     _.each(subGroup, (subItem) => {
       if (subItem.sensitive && subItem.configured) {
-        formData.value[subItem.id] = '********';
+        formData.value[subItem.key] = '********';
       }
     });
   };
@@ -408,7 +409,7 @@
     const clearList = _.filter(item.subGroup, (subItem) => {
       return (
         _.get(subItem, 'configured') &&
-        !_.get(formData.value, subItem.id) &&
+        !_.get(formData.value, subItem.key) &&
         !_.get(subItem, 'component.required')
       );
     });

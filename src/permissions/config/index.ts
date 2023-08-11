@@ -17,7 +17,8 @@ export enum Resources {
   Settings = 'settings',
   SubjectRoles = 'subjectRoles',
   Subjects = 'subjects',
-  Tokens = 'tokens'
+  Tokens = 'tokens',
+  Catalogs = 'catalogs'
 }
 
 const enum MenuOrder {
@@ -26,7 +27,8 @@ const enum MenuOrder {
   CostManagement,
   OperationHub,
   SystemSettings,
-  SystemTokens
+  SystemTokens,
+  Subjects
 }
 
 export enum ResourcesOrder {
@@ -40,13 +42,14 @@ export enum ResourcesOrder {
   TemplateCompletions = MenuOrder.OperationHub,
   TemplateVersions = MenuOrder.OperationHub,
   Templates = MenuOrder.OperationHub,
+  Catalogs = MenuOrder.OperationHub,
   Perspectives = MenuOrder.CostManagement,
   Projects = MenuOrder.ApplicationManagement,
   Roles = MenuOrder.SystemSettings,
   Secrets = MenuOrder.OperationHub,
   Settings = MenuOrder.SystemSettings,
   SubjectRoles = MenuOrder.SystemSettings,
-  Subjects = MenuOrder.SystemSettings,
+  Subjects = MenuOrder.Subjects,
   Tokens = MenuOrder.SystemTokens
 }
 
@@ -70,14 +73,16 @@ export enum Group {
   AppManagement = 'AppManagement',
   CostManagement = 'CostManagement',
   OperatorHub = 'OperatorHub',
-  SystemSettings = 'SystemSettings'
+  SystemSettings = 'SystemSettings',
+  Subjects = 'Subjects'
 }
 export const GroupMap = {
   Dashboard: 'menu.dashboard',
   AppManagement: 'menu.applicationManagement',
   CostManagement: 'menu.costManagement',
   OperatorHub: 'menu.operatorHub',
-  SystemSettings: 'menu.systemsettings'
+  SystemSettings: 'menu.systemsettings',
+  Subjects: 'menu.subjects'
 };
 
 export const ResourcesActionsDic = {

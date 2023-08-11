@@ -1,7 +1,8 @@
 import { validateCron } from '@/utils/validate';
 import i18n from '@/locale/index';
+import { SettingsItem } from '../index';
 
-export default {
+export const taskSettings: SettingsItem = {
   id: 'TaskSettings',
   label: 'system.setting.task',
   parentId: '',
@@ -11,6 +12,7 @@ export default {
   dataList: [
     {
       id: '',
+      key: '',
       label: 'system.setting.task.basic',
       value: '',
       type: 'groupTitle',
@@ -25,6 +27,7 @@ export default {
       subGroup: [
         {
           id: 'ConnectorStatusSyncCronExpr',
+          key: 'ConnectorStatusSyncCronExpr',
           label: 'system.setting.ConnectorCheckCronExpr',
           desc: 'system.setting.ConnectorCheckCronExpr.desc',
           parentId: '',
@@ -45,6 +48,7 @@ export default {
         },
         {
           id: 'ResourceStatusSyncCronExpr',
+          key: 'ResourceStatusSyncCronExpr',
           label: 'system.setting.ResourceStatusCheckCronExpr',
           desc: 'system.setting.ResourceStatusCheckCronExpr.desc',
           parentId: '',
@@ -65,6 +69,7 @@ export default {
         },
         {
           id: 'ServiceRelationshipCheckCronExpr',
+          key: 'ServiceRelationshipCheckCronExpr',
           label: 'system.setting.ServiceDependencyCheckCronExpr',
           desc: 'system.setting.ServiceDependencyCheckCronExpr.desc',
           parentId: '',
@@ -87,6 +92,11 @@ export default {
     },
     {
       id: '',
+      key: '',
+      desc: '',
+      parentId: '',
+      value: '',
+      component: {},
       label: 'system.setting.drift.title',
       type: 'groupTitle',
       isEditable: false,
@@ -98,6 +108,7 @@ export default {
       subGroup: [
         {
           id: 'EnableDriftDetection',
+          key: 'EnableDriftDetection',
           label: 'system.setting.drift.check',
           desc: 'system.setting.drift.check.desc',
           parentId: '',
@@ -112,6 +123,7 @@ export default {
         },
         {
           id: 'ServiceDriftDetectCronExpr',
+          key: 'ServiceDriftDetectCronExpr',
           label: 'system.setting.drift.cronExpr',
           desc: 'system.setting.CostCollectCronExpr.desc',
           parentId: '',
@@ -134,6 +146,7 @@ export default {
     },
     {
       id: '',
+      key: '',
       label: 'system.setting.task.finops',
       value: '',
       type: 'groupTitle',
@@ -148,6 +161,7 @@ export default {
       subGroup: [
         {
           id: 'ResourceLabelApplyCronExpr',
+          key: 'ResourceLabelApplyCronExpr',
           label: 'system.setting.ResourceLabelApplyCronExpr',
           desc: 'system.setting.ResourceLabelApplyCronExpr.desc',
           parentId: '',
@@ -168,6 +182,7 @@ export default {
         },
         {
           id: 'ConnectorCostCollectCronExpr',
+          key: 'ConnectorCostCollectCronExpr',
           label: 'system.setting.CostCollectCronExpr',
           desc: 'system.setting.CostCollectCronExpr.desc',
           parentId: '',
@@ -190,3 +205,5 @@ export default {
     }
   ]
 };
+
+export default taskSettings;

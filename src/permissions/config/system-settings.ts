@@ -18,7 +18,7 @@ export default [
   {
     resource: Resources.Subjects,
     title: 'permission.resource.system.operation.userManagement',
-    group: Group.SystemSettings,
+    group: Group.Subjects,
     order: ResourcesOrder.Subjects,
     actions: ['GET', 'POST', 'DELETE', 'PUT']
   }

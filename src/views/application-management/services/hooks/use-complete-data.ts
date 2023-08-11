@@ -6,13 +6,12 @@ import {
 } from '@/views/operation-hub/templates/config/interface';
 import {
   queryTemplates,
+  queryItemTemplatesVersions,
   queryTemplatesAllVersions
 } from '@/views/operation-hub/templates/api';
 import useCallCommon from '@/hooks/use-call-common';
-import {
-  queryServices,
-  queryVariables
-} from '@/views/application-management/services/api';
+import { queryServices } from '@/views/application-management/services/api';
+import { queryVariables } from '../../variables/api';
 
 export default function useCompleteData() {
   interface HintKey {
@@ -39,6 +38,31 @@ export default function useCompleteData() {
       templateList.value = data?.items || [];
     } catch (error) {
       templateList.value = [];
+    }
+  };
+  // get item template version, isOnSelect is a flag for select event
+  const getTemplateVersionByItem = async (
+    templateName,
+    isOnSelect?: boolean
+  ) => {
+    const isVisited = _.find(
+      allTemplateVersions.value,
+      (item) => item.template.name === templateName
+    );
+    if (isVisited && isOnSelect) {
+      return;
+    }
+    try {
+      const params = {
+        templateName
+      };
+      const { data } = await queryItemTemplatesVersions(params);
+      allTemplateVersions.value = _.concat(
+        allTemplateVersions.value,
+        data?.items || []
+      );
+    } catch (error) {
+      //
     }
   };
 
@@ -184,6 +208,7 @@ export default function useCompleteData() {
     initCompleteData,
     getTemplatesVersions,
     getTemplates,
+    getTemplateVersionByItem,
     completeData,
     templateList,
     allTemplateVersions,

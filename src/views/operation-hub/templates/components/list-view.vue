@@ -240,7 +240,7 @@
           id: val
         };
       });
-      await deleteTemplates(ids);
+      await deleteTemplates({ items: ids });
       loading.value = false;
       execSucceed();
       queryParams.page = 1;

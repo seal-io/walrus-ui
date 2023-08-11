@@ -42,13 +42,14 @@
 
   const setSourceList = () => {
     // set value and property
-    sourceList.value = sourceList.value.map((item) => {
+    sourceList.value = sourceList.value.map((o) => {
+      let item = cloneDeep(o);
       if (item.type !== 'layout') {
         item = {
           ...item,
-          ...(settingFormData.value[item.id] || {}),
-          value: settingFormData.value[item.id]
-            ? settingFormData.value[item.id].value
+          ...(settingFormData.value[item.key] || {}),
+          value: settingFormData.value[item.key]
+            ? settingFormData.value[item.key].value
             : ''
         };
       }
@@ -59,33 +60,33 @@
           if (sItem?.childProperties?.length) {
             value = {};
             each(sItem.childProperties, (child) => {
-              if (sItem.id && settingFormData.value[sItem.id]) {
+              if (sItem.key && settingFormData.value[sItem.key]) {
                 const obj =
                   JSON.parse(settingFormData.value[sItem.id]['value']) || {};
-                value[child.id] = obj[child.id] || child.value;
+                value[child.key] = obj[child.key] || child.value;
               }
             });
           } else if (sItem?.subGroup?.length) {
+            // current schema
             sItem.subGroup = map(sItem.subGroup, (child) => {
-              // value[child.id] = settingFormData.value[child.id]['value'];
               return {
                 ...child,
-                ...settingFormData.value[child.id],
+                ...settingFormData.value[child.key],
                 value:
-                  _.get(settingFormData.value, `${child.id}.sensitive`) &&
-                  _.get(settingFormData.value, `${child.id}.configured`)
+                  _.get(settingFormData.value, `${child.key}.sensitive`) &&
+                  _.get(settingFormData.value, `${child.key}.configured`)
                     ? '********'
-                    : _.get(settingFormData.value, `${child.id}.value`)
+                    : _.get(settingFormData.value, `${child.key}.value`)
               };
             });
           } else {
-            value = settingFormData.value[sItem.id]
-              ? settingFormData.value[sItem.id].value
+            value = settingFormData.value[sItem.key]
+              ? settingFormData.value[sItem.key].value
               : '';
           }
           sItem = {
             ...sItem,
-            ..._.get(settingFormData.value, sItem.id),
+            ..._.get(settingFormData.value, sItem.key),
             value
           };
           return sItem;
@@ -106,28 +107,31 @@
       return !item.hidden;
     });
   };
+
   const fetchData = async () => {
     try {
       const data = await userStore.getUserSetting();
       const items = data.items || [];
-      // overwrite the id value with name
       settingFormData.value = items.reduce((obj, item) => {
         obj[item.name] = {
-          ...item,
-          id: item.name
+          ...item
         };
         return obj;
       }, {});
-      setSourceList();
     } catch (error) {
       sourceList.value = [];
     }
   };
-  const handleSave = async () => {
+
+  const init = async () => {
     await fetchData();
+    setSourceList();
+  };
+  const handleSave = async () => {
+    init();
   };
   onMounted(() => {
-    fetchData();
+    init();
   });
 </script>
 

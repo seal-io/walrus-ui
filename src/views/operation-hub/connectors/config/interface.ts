@@ -8,6 +8,7 @@ export interface ConnectorRowData {
   finOpsStatus: string;
   finOpsStatusMessage: string;
   createTime: string;
+  project?: object;
   edges: object;
   id: string;
   label?: string;
