@@ -612,7 +612,7 @@
       updateChunkedList(data);
     });
   };
-  const createInstanceListWebsocket = () => {
+  const createConnectChunkRequest = () => {
     let url = CONNECTOR_API;
     if (isProjectContext()) {
       url = `${PROJECT_API_PREFIX()}${CONNECTOR_API}`;
@@ -634,7 +634,7 @@
   onMounted(() => {
     fetchData();
     nextTick(() => {
-      createInstanceListWebsocket();
+      createConnectChunkRequest();
     });
   });
 </script>

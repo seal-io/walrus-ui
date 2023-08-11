@@ -29,7 +29,7 @@ export interface ResultType {
   pagination: Pagination;
 }
 export interface QueryType extends Pagination {
-  projectID: string;
+  projectID?: string;
 }
 export const queryServices = (params: QueryType, token?) => {
   return axios.get<ResultType>(`${SERVICE_API_PREFIX()}${SERVICE_API}`, {
