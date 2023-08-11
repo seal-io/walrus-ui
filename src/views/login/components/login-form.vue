@@ -117,6 +117,7 @@
   import useLoading from '@/hooks/loading';
   import useEnterPage from '@/hooks/use-enter-page';
   import { queryUserPartialSetting } from '@/views/system/api/setting';
+  import { RoleType } from '@/views/system/config/users';
   import CryptoJS from 'crypto-js';
   import {
     rememberPasswordFn,
@@ -195,6 +196,7 @@
       // ingore
     }
   };
+
   const handleSubmit = async ({ errors, values }) => {
     if (!errors) {
       setLoading(true);
@@ -211,7 +213,6 @@
           removeLocalLoginInfo();
         }
         await userStore.login(values);
-
         if (isNotFirstLogin()) {
           await userStore.info();
         }

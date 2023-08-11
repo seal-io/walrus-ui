@@ -88,7 +88,7 @@
               <a-space style="width: 100%" @click="handleLogout">
                 <icon-export style="color: inherit" />
                 <span>
-                  {{ $t('messageBox.logout') }}
+                  {{ $t('common.button.logout') }}
                 </span>
               </a-space>
             </a-doption>

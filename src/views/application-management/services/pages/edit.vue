@@ -71,17 +71,12 @@
               v-model="formData.template.name"
               :placeholder="$t('applications.applications.table.module')"
               :required="true"
-              :virtual-list-props="getVirtualListProps()"
+              :virtual-list-props="virtualListProps"
+              :options="templateList"
               :style="{ width: `${InputWidth.LARGE}px` }"
               allow-search
               @change="handleTemplateChange"
             >
-              <a-option
-                v-for="item in templateList"
-                :key="item.name"
-                :value="item.name"
-                >{{ item.name }}</a-option
-              >
             </seal-select>
           </div>
         </a-form-item>
@@ -302,7 +297,6 @@
   import xInputGroup from '@/components/form-create/custom-components/x-input-group.vue';
   import formCreate from '@/components/form-create/index.vue';
   import GroupTitle from '@/components/group-title/index.vue';
-  import { TemplateVersionData } from '@/views/operation-hub/templates/config/interface';
   import {
     validateLabelNameRegx,
     PageAction,
@@ -415,14 +409,15 @@
     return list;
   });
 
-  const getVirtualListProps = () => {
-    if (templateList.value.length > 50) {
+  const virtualListProps = computed(() => {
+    if (templateList.value.length > 20) {
       return {
         height: 200
       };
     }
     return undefined;
-  };
+  });
+
   const setBreadCrumbList = async () => {
     const [projectList, environmentList] = await Promise.all([
       getProjectList(),

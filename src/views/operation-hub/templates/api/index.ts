@@ -60,16 +60,7 @@ export function queryTemplatesVersions(params: { templateID: string }) {
     }
   });
 }
-export function queryTemplatesAllVersions(params: { templateNames: string[] }) {
-  return axios.get(`/template-versions`, {
-    params: {
-      name: params.templateNames
-    },
-    paramsSerializer: (obj) => {
-      return qs.stringify(obj);
-    }
-  });
-}
+
 export function queryItemTemplatesVersions(params: { templateName: string }) {
   return axios.get(`/templates/${params.templateName}/versions`);
 }

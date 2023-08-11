@@ -23,7 +23,7 @@ export default function setupPermissionGuard(router: Router) {
     const Permission = usePermission(to);
 
     // when forbidden to use password-free login from ui only need userStore.name && userStore?.userSetting?.FirstLogin?.value
-    if ((userStore.name && !userStore.isFirstLogin()) || userStore.name) {
+    if (userStore.name && !userStore.isFirstLogin()) {
       if (to.name === LoginRouteName) {
         const destination = Permission.getFirstRouteName(appRoutes) || {
           name: 'forbidden'
@@ -39,20 +39,20 @@ export default function setupPermissionGuard(router: Router) {
       }
       next({ name: 'forbidden', replace: true });
     } else {
-      if (userStore.isFirstLogin() && userStore.name) {
-        Modal.warning({
-          alignCenter: false,
-          top: '20%',
-          title: i18n.global.t('login.form.login.update'),
-          okText: i18n.global.t('common.button.confirm'),
-          content: () =>
-            h(
-              'div',
-              { style: { 'text-align': 'center' } },
-              i18n.global.t('login.form.login.complete')
-            )
-        });
-      }
+      // if (userStore.isFirstLogin() && userStore.name) {
+      //   Modal.warning({
+      //     alignCenter: false,
+      //     top: '20%',
+      //     title: i18n.global.t('login.form.login.update'),
+      //     okText: i18n.global.t('common.button.confirm'),
+      //     content: () =>
+      //       h(
+      //         'div',
+      //         { style: { 'text-align': 'center' } },
+      //         i18n.global.t('login.form.login.complete')
+      //       )
+      //   });
+      // }
       if (to.name === LoginRouteName) {
         next();
         return;

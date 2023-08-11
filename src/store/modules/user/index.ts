@@ -88,7 +88,9 @@ const useUserStore = defineStore('user', {
     isSystemAdmin() {
       return _.some(this.roles, (item) => item.id === RoleType.Admin);
     },
-
+    checkUserRole(roles, role) {
+      return _.some(roles, (item) => item.id === role);
+    },
     hasActionsPermission(config: { resource: string; actions: string[] }) {
       const { resource, actions } = config;
       const permissionActions = (_.get(this.permissions, resource) ||
@@ -118,8 +120,10 @@ const useUserStore = defineStore('user', {
     },
     // Login
     async login(loginForm: LoginData) {
-      await userLogin(loginForm);
-      // await this.info();
+      const { data } = await userLogin(loginForm);
+      const permissions: AnyObject = getUserResourcePermission(data);
+      this.permissions = {};
+      this.setInfo({ ...data, permissions });
     },
 
     async getUserSetting() {
@@ -152,8 +156,12 @@ const useUserStore = defineStore('user', {
       clearToken();
       removeRouteListener();
     },
+    // check first login and is admin user must change password, general user no need to  change password when first login
     isFirstLogin() {
-      return this.userSetting?.FirstLogin?.value !== 'Invalid';
+      return (
+        this.userSetting?.FirstLogin?.value !== 'Invalid' &&
+        this.isSystemAdmin()
+      );
     }
     // init permission
   }

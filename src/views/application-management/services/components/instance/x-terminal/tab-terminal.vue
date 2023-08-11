@@ -35,6 +35,7 @@
   } from 'vue';
   import xTerminal from '@/components/x-terminal/index.vue';
   import { useRoute } from 'vue-router';
+  import { SERVICE_RESOURCE_API_PREFIX } from '@/views/application-management/services/api';
   import { ResourceKey } from '../../../config/interface';
 
   const props = defineProps({
@@ -68,7 +69,7 @@
     if (!resourceId.value || !resourceKey.value) {
       return '';
     }
-    return `${proto}://${host}/v1/service-resources/${
+    return `${proto}://${host}/v1/${SERVICE_RESOURCE_API_PREFIX()}/service-resources/${
       resourceId.value
     }/exec?${qs.stringify({
       key: resourceKey.value,

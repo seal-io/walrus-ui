@@ -64,6 +64,7 @@
   import qs from 'query-string';
   import { ref, PropType, onBeforeUnmount, reactive } from 'vue';
   import xTerminal from '@/components/x-terminal/index.vue';
+  import { SERVICE_RESOURCE_API_PREFIX } from '@/views/application-management/services/api';
   import router from '@/router';
   import { ResourceKey } from '../../../../config/interface';
 
@@ -104,7 +105,7 @@
       wssURL.value = '';
       return;
     }
-    wssURL.value = `${proto}://${host}/v1/service-resources/${
+    wssURL.value = `${proto}://${host}/v1/${SERVICE_RESOURCE_API_PREFIX()}/service-resources/${
       info.id
     }/exec?${qs.stringify({
       key: info.key,

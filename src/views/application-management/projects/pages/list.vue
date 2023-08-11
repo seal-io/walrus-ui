@@ -159,26 +159,6 @@
                       <template #icon><icon-edit class="size-16" /></template>
                     </a-link>
                   </a-tooltip>
-                  <!-- <a-tooltip :content="$t('common.button.authorize')">
-                    <a-link
-                      v-permission-app="{
-                        projectID: record.id,
-                        resource: Resources.SubjectRoles,
-                        actions: [Actions.POST]
-                      }"
-                      type="text"
-                      size="small"
-                      @click="handleAuthorize(record)"
-                    >
-                      <template #icon>
-                        <i
-                          style="color: rgb(var(--arcoblue-6))"
-                          type="icon-jiaoseshouquan"
-                          class="size-16 iconfont icon-jiaoseshouquan"
-                        ></i>
-                      </template>
-                    </a-link>
-                  </a-tooltip> -->
                 </a-space>
               </template>
             </a-table-column>
