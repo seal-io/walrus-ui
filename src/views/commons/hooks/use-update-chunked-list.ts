@@ -5,7 +5,7 @@ import { websocketEventType } from '../../config';
 interface ChunkedCollection {
   ids: string[];
   collection: any[];
-  type: number;
+  type: string;
 }
 // Only used to update lists without nested state
 export function useUpdateChunkedList(
@@ -48,8 +48,6 @@ export function useUpdateChunkedList(
       if (updateIndex > -1) {
         const updateItem = _.cloneDeep(item);
         dataList.value[updateIndex] = updateItem;
-      } else {
-        dataList.value = _.concat(_.cloneDeep(item), dataList.value);
       }
     });
   };

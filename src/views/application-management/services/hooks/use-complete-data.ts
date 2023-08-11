@@ -67,30 +67,36 @@ export default function useCompleteData() {
   };
 
   // apply for edit service config
-  const getTemplatesVersions = async (templateNameList) => {
+  const getTemplatesVersions = async () => {
     // templateIDList is a array only on create  life cycle
-    const templateNames = _.uniq(_.concat(templateNameList || []));
-    if (
-      !templateNames.length ||
-      _.every(templateNames, (templateName) =>
-        _.find(
-          allTemplateVersions.value,
-          (item) => item.template.name === templateName
-        )
-      )
-    )
-      return;
+    // const templateNames = _.uniq(_.concat(templateNameList || []));
+    // if (
+    //   !templateNames.length ||
+    //   _.every(templateNames, (templateName) =>
+    //     _.find(
+    //       allTemplateVersions.value,
+    //       (item) => item.template.name === templateName
+    //     )
+    //   )
+    // )
+    //   return;
 
     try {
       const params = {
-        templateNames,
+        withSchema: true,
         page: -1
       };
-      const { data } = await queryTemplatesAllVersions(params);
-      allTemplateVersions.value = _.concat(
-        allTemplateVersions.value,
-        data?.items || []
-      );
+      const { data } = await queryServices(params);
+      allTemplateVersions.value = _.map(data?.items || [], (item) => {
+        const { template } = item;
+        return {
+          ...template,
+          template: {
+            id: template.id,
+            name: template.name
+          }
+        };
+      }) as TemplateVersionData[];
     } catch (error) {
       //
     }
@@ -200,8 +206,7 @@ export default function useCompleteData() {
       getServiceList(),
       getProjectVariables()
     ]);
-    const serviceTemplates = getServiceTemplateVersions();
-    await getTemplatesVersions(serviceTemplates);
+    await getTemplatesVersions();
     setCompleteData();
   };
   return {

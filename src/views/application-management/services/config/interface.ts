@@ -15,7 +15,7 @@ export interface ServiceRowData {
   description: string;
   environment: { id: string; name: string };
   project: { id: string };
-  template: { id: string; version: string };
+  template: { id: string; version: string; name: string };
   attributes: object;
 }
 

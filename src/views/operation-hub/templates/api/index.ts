@@ -53,7 +53,7 @@ export function refreshTemplate(data: { id: string }) {
   return axios.post(`/templates/${data.id}/refresh`);
 }
 export function queryTemplatesVersions(params: { templateID: string }) {
-  return axios.get(`/templates/${params.templateID}/template-versions`, {
+  return axios.get(`/templates/${params.templateID}/versions`, {
     params,
     paramsSerializer: (obj) => {
       return qs.stringify(obj);
@@ -61,9 +61,9 @@ export function queryTemplatesVersions(params: { templateID: string }) {
   });
 }
 export function queryTemplatesAllVersions(params: { templateNames: string[] }) {
-  return axios.get(`/templates/_/template-versions`, {
+  return axios.get(`/template-versions`, {
     params: {
-      templateName: params.templateNames
+      name: params.templateNames
     },
     paramsSerializer: (obj) => {
       return qs.stringify(obj);
@@ -71,7 +71,7 @@ export function queryTemplatesAllVersions(params: { templateNames: string[] }) {
   });
 }
 export function queryItemTemplatesVersions(params: { templateName: string }) {
-  return axios.get(`/templates/${params.templateName}/template-versions`);
+  return axios.get(`/templates/${params.templateName}/versions`);
 }
 
 export function postCompletionsCorrect(data) {

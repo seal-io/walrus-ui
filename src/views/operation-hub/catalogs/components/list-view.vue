@@ -20,18 +20,7 @@
           :title="$t('catalogs.list.name')"
         >
           <template #cell="{ record }">
-            <a-link
-              v-if="
-                userStore.hasRolesActionsPermission({
-                  resource: Resources.Catalogs,
-                  actions: [Actions.PUT]
-                })
-              "
-              size="small"
-              @click="handleEdit(record)"
-              >{{ record.name }}</a-link
-            >
-            <span v-else>{{ record.name }}</span>
+            <span>{{ record.name }}</span>
           </template>
         </a-table-column>
 
@@ -115,6 +104,19 @@
         >
           <template #cell="{ record }">
             <a-space :size="16">
+              <a-tooltip :content="$t('common.button.edit')">
+                <a-link
+                  v-permission="{
+                    resource: `roles.${Resources.Catalogs}`,
+                    actions: [Actions.PUT]
+                  }"
+                  type="text"
+                  size="small"
+                  @click="handleEdit(record)"
+                >
+                  <template #icon><icon-edit /></template>
+                </a-link>
+              </a-tooltip>
               <a-tooltip :content="$t('common.button.refresh')">
                 <a-link
                   v-permission="{
