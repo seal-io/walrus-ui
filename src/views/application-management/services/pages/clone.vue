@@ -17,7 +17,7 @@
       >
         <a-form-item
           :label="$t('applications.environment.clone.target')"
-          field="environmentIDs"
+          field="environmentID"
           hide-label
           :validate-trigger="['change']"
           :rules="[
@@ -28,9 +28,8 @@
           ]"
         >
           <seal-select
-            v-model="formData.environmentIDs"
+            v-model="formData.environmentID"
             :style="{ width: `${InputWidth.LARGE}px` }"
-            multiple
             :required="true"
             :label="$t('applications.environment.clone.target')"
             :max-tag-count="2"
@@ -116,8 +115,8 @@
   const servicesRef = ref();
   let copyFormData: any = {};
   const formData = reactive({
-    environmentIDs: [],
-    services: []
+    environmentID: '',
+    items: []
   });
   const { labelList, handleAddLabel, handleDeleteLabel } =
     useLabelsActions(formData);
@@ -162,10 +161,10 @@
   };
   const handleCloneServices = async () => {
     const services = servicesRef.value.getSelectServiceData();
-    formData.services = _.cloneDeep(services);
+    formData.items = _.cloneDeep(services);
     await cloneServices({
       projectID: route.params.projectId as string,
-      formData
+      ...formData
     });
   };
   const validateLabel = () => {
