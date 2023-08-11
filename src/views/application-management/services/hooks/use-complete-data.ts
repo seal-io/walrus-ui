@@ -6,8 +6,7 @@ import {
 } from '@/views/operation-hub/templates/config/interface';
 import {
   queryTemplates,
-  queryItemTemplatesVersions,
-  queryTemplatesAllVersions
+  queryItemTemplatesVersions
 } from '@/views/operation-hub/templates/api';
 import useCallCommon from '@/hooks/use-call-common';
 import { queryServices } from '@/views/application-management/services/api';
@@ -32,10 +31,17 @@ export default function useCompleteData() {
   const getTemplates = async () => {
     try {
       const params = {
-        page: -1
+        page: -1,
+        extract: ['-status']
       };
       const { data } = await queryTemplates(params);
-      templateList.value = data?.items || [];
+      templateList.value = _.map(data?.items || [], (item) => {
+        return {
+          ...item,
+          label: item.name,
+          value: item.name
+        };
+      });
     } catch (error) {
       templateList.value = [];
     }
@@ -68,19 +74,6 @@ export default function useCompleteData() {
 
   // apply for edit service config
   const getTemplatesVersions = async () => {
-    // templateIDList is a array only on create  life cycle
-    // const templateNames = _.uniq(_.concat(templateNameList || []));
-    // if (
-    //   !templateNames.length ||
-    //   _.every(templateNames, (templateName) =>
-    //     _.find(
-    //       allTemplateVersions.value,
-    //       (item) => item.template.name === templateName
-    //     )
-    //   )
-    // )
-    //   return;
-
     try {
       const params = {
         withSchema: true,

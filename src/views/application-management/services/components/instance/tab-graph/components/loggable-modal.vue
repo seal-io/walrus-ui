@@ -68,6 +68,7 @@
   import { useSetChunkRequest } from '@/api/axios-chunk-request';
   import Convert from 'ansi-to-html';
   import hasAnsi from 'has-ansi';
+  import { SERVICE_RESOURCE_API_PREFIX } from '@/views/application-management/services/api';
   import { ref, PropType, reactive } from 'vue';
   import usePermissionParams from '@/views/application-management/hooks/use-permission-params';
   import { ResourceKey } from '../../../../config/interface';
@@ -111,7 +112,9 @@
   };
   const createChunkConnection = async () => {
     if (!info.key || !info.id) return;
-    const url = `/service-resources/${info.id}/log`;
+    const url = `${SERVICE_RESOURCE_API_PREFIX()}/service-resources/${
+      info.id
+    }/log`;
     chunRequestIns = setChunkRequest({
       url,
       params: {

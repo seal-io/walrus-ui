@@ -75,11 +75,6 @@ export const setServiceStatus = (status) => {
   return Status.Running;
 };
 
-export const websocketEventType = {
-  CREATE: 1,
-  UPDATE: 2,
-  DELETE: 3
-};
 export const setDurationValue = (val) => {
   if (!val) return '-';
   const seconds = val % 60;

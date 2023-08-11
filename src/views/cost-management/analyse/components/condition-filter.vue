@@ -255,7 +255,6 @@
     () => props.conditions,
     () => {
       filterDataList.value = cloneDeep(props.conditions);
-      console.log('props.conditions', filterDataList.value, props.viewable);
     },
     {
       immediate: true,

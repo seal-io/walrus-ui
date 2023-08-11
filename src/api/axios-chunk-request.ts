@@ -118,15 +118,15 @@ export function useSetChunkRequest() {
           if (contentType === 'json') {
             const currentRes = sliceData(response, e.loaded, loadedSize);
             result = parseData(currentRes);
+            result = resetResultSchema(result);
           }
 
-          result = resetResultSchema(result);
           handler(result);
 
-          console.log('chunckrequest======', {
-            result,
-            url
-          });
+          // console.log('chunckrequest======', {
+          //   result,
+          //   url
+          // });
         }
       });
       requestReadyState.value = request?.readyState;

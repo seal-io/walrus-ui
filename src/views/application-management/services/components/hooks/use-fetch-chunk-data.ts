@@ -4,9 +4,9 @@ import {
   createAxiosToken,
   useSetChunkRequest
 } from '@/api/axios-chunk-request';
+import { websocketEventType } from '@/views/config';
 import usePermissionParams from '@/views/application-management/hooks/use-permission-params';
 import { ServiceResource } from '../../config/interface';
-import { websocketEventType } from '../../config';
 import {
   queryServiceResource,
   SERVICE_API_PREFIX,

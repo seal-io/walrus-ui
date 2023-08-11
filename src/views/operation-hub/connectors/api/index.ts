@@ -64,11 +64,7 @@ export function createConnector(data: ConnectorFormData) {
 
 export function updateConnector(data: ConnectorFormData) {
   let url = `${CONNECTOR_API}/${data.id}`;
-  console.log(
-    'projectid==',
-    router.currentRoute.value.params.projectId,
-    isProjectContext()
-  );
+
   if (isProjectContext()) {
     url = `${PROJECT_API_PREFIX()}${CONNECTOR_API}/${data.id}`;
   }

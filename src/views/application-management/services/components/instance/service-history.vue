@@ -172,14 +172,11 @@
   import usePermissionParams from '@/views/application-management/hooks/use-permission-params';
   import { deleteModal, execSucceed } from '@/utils/monitor';
   import { UseSortDirection } from '@/utils/common';
+  import { websocketEventType } from '@/views/config';
   import { HistoryData } from '../../config/interface';
   import revisionDetail from '../revision-detail.vue';
   import serviceSpecDiff from '../service-spec-diff.vue';
-  import {
-    setDurationValue,
-    websocketEventType,
-    RevisionStatus
-  } from '../../config';
+  import { setDurationValue, RevisionStatus } from '../../config';
   import {
     queryApplicationRevisions,
     deleteApplicationRevisions,

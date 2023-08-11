@@ -12,9 +12,9 @@
             v-if="item.key === 'status'"
             :zoom="0.9"
             :status="{
-              status: get(item, 'value.summaryStatus'),
+              status: get(item, 'value.summaryStatus') || '',
               text: get(item, 'value.summaryStatus'),
-              message: get(item, 'value.summaryStatusMessage'),
+              message: get(item, 'value.summaryStatusMessage') || '',
               transitioning: get(item, 'value.transitioning'),
               error: get(item, 'value.error')
             }"

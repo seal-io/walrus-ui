@@ -109,6 +109,11 @@
           data-index="template.name"
           :title="$t('applications.applications.table.module')"
         >
+          <template #cell="{ record }">
+            <span>{{
+              `${record.template?.name}@${record.template?.version || ''}`
+            }}</span>
+          </template>
         </a-table-column>
         <a-table-column
           ellipsis
@@ -230,6 +235,7 @@
     useSetChunkRequest,
     createAxiosToken
   } from '@/api/axios-chunk-request';
+  import { websocketEventType } from '@/views/config';
   import useCallCommon from '@/hooks/use-call-common';
   import { execSucceed } from '@/utils/monitor';
   import { getListLabel } from '@/utils/func';
@@ -240,7 +246,7 @@
   import StatusLabel from '@/views/operation-hub/connectors/components/status-label.vue';
   import { useUserStore } from '@/store';
   import { ServiceRowData, DriftDataItem } from '../config/interface';
-  import { websocketEventType, serviceActions } from '../config';
+  import { serviceActions } from '../config';
   import {
     queryServices,
     deleteServices,
