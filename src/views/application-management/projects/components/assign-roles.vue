@@ -194,16 +194,12 @@
   import AOptgroup from '@arco-design/web-vue/es/select/optgroup';
   import FilterBox from '@/components/filter-box/index.vue';
   import EditPageFooter from '@/components/edit-page-footer/index.vue';
-  import {
-    accountTypeList,
-    AccountKind,
-    RoleType
-  } from '@/views/system/config/users';
+  import { accountTypeList, AccountKind } from '@/views/system/config/users';
   import { useUserStore } from '@/store';
   import { getListLabel } from '@/utils/func';
   import { RowData } from '@/views/system/config/interface';
-  import { queryRoles, querySubjects } from '@/views/system/api/users';
-  import { querySubjectRoles, addSubjectRoles } from '../api';
+  import { querySubjects } from '@/views/system/api/users';
+  import { queryProjectSubjects, addProjectSubjects } from '../api';
   import { projectRoles } from '../config';
   import { ProjectRolesRowData } from '../config/interface';
 
@@ -254,14 +250,14 @@
     });
     formData.subject.name = data?.name || '';
   };
-  const getProjectSubjectRoles = async () => {
+  const getProjectSubjects = async () => {
     try {
       loading.value = true;
       const params = {
         page: -1,
         projectID: props.projectID
       };
-      const { data } = await querySubjectRoles(params);
+      const { data } = await queryProjectSubjects(params);
       projectVisitors.value = data.items || [];
 
       loading.value = false;
@@ -308,8 +304,8 @@
   };
   const handleSubmit = async () => {
     try {
-      await addSubjectRoles({ items: selectedList.value });
-      getProjectSubjectRoles();
+      await addProjectSubjects({ items: selectedList.value });
+      getProjectSubjects();
       emits('save');
       emits('update:show', false);
     } catch (error) {
@@ -325,7 +321,7 @@
     selectedList.value.splice(index, 1);
   };
   const init = async () => {
-    await Promise.all([getProjectSubjectRoles(), getSubjectList()]);
+    await Promise.all([getProjectSubjects(), getSubjectList()]);
   };
   const handleCancel = () => {
     emits('update:show', false);

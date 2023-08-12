@@ -52,9 +52,9 @@ export const queryItemProject = (params) => {
   });
 };
 
-export const querySubjectRoles = (params: { projectID: string }) => {
+export const queryProjectSubjects = (params: { projectID: string }) => {
   return axios.get<ListResult<ProjectRolesRowData>>(
-    `${PROJECT_API_PREFIX()}/subject-roles`,
+    `${PROJECT_API_PREFIX()}/subjects`,
     {
       params,
       paramsSerializer: (obj) => {
@@ -64,10 +64,12 @@ export const querySubjectRoles = (params: { projectID: string }) => {
   );
 };
 
-export const addSubjectRoles = (data) => {
-  return axios.post(`${PROJECT_API_PREFIX()}/subject-roles/_/batch`, data);
+export const addProjectSubjects = (data) => {
+  return axios.post(`${PROJECT_API_PREFIX()}/subjects/_/batch`, data);
 };
 
-export const deleteSubjectRoles = (data: { items: Record<string, any>[] }) => {
-  return axios.delete(`${PROJECT_API_PREFIX()}/subject-roles`, { data });
+export const deleteProjectSubjects = (data: {
+  items: Record<string, any>[];
+}) => {
+  return axios.delete(`${PROJECT_API_PREFIX()}/subjects`, { data });
 };

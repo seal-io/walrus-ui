@@ -82,7 +82,7 @@ export function useSetChunkRequest() {
   /**
    *
    * @param param0
-   *  result:{type: 1 | 2 | 3, items:object[]}
+   *  result:{type: create | update | delete, items:object[]}
    */
   const axiosChunkRequest = async ({
     url,
@@ -123,10 +123,10 @@ export function useSetChunkRequest() {
 
           handler(result);
 
-          // console.log('chunckrequest======', {
-          //   result,
-          //   url
-          // });
+          console.log('chunckrequest======', {
+            result,
+            url
+          });
         }
       });
       requestReadyState.value = request?.readyState;

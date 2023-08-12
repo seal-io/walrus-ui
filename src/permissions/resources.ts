@@ -10,19 +10,7 @@ export const ProjectPermissionResource = [...project];
 // resource actions
 export default [
   ...dashboard,
-  ...project.filter((item) => {
-    return (
-      item.resource !== Resources.SubjectRoles &&
-      item.resource !== Resources.Secrets
-    );
-  }),
-  {
-    resource: Resources.Secrets,
-    title: 'permission.resource.system.operation.secret',
-    group: Group.OperatorHub,
-    order: ResourcesOrder.Secrets,
-    actions: ['GET', 'POST', 'DELETE', 'PUT']
-  },
+  ...project,
   ...costManagement,
   ...operationHub,
   ...systemSettings

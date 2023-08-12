@@ -105,7 +105,7 @@
       wssURL.value = '';
       return;
     }
-    wssURL.value = `${proto}://${host}/v1/${SERVICE_RESOURCE_API_PREFIX()}/service-resources/${
+    wssURL.value = `${proto}://${host}/v1/${SERVICE_RESOURCE_API_PREFIX()}/resources/${
       info.id
     }/exec?${qs.stringify({
       key: info.key,

@@ -37,10 +37,10 @@ export default [
     actions: ['GET', 'POST', 'DELETE', 'PUT']
   },
   {
-    resource: Resources.Secrets,
+    resource: Resources.Variables,
     title: 'permission.resource.system.operation.secret',
     group: Group.OperatorHub,
-    order: ResourcesOrder.Secrets,
+    order: ResourcesOrder.Variables,
     actions: ['GET', 'POST', 'DELETE', 'PUT']
   }
 ];

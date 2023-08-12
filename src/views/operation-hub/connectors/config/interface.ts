@@ -28,22 +28,12 @@ export interface CustomAttrbute {
 }
 
 export interface ConnectorFormData {
-  projectID: string;
+  project?: { id: string };
   id?: string;
   name: string;
   description?: string;
   type: string;
   configData: {
-    // kubeconfig?: {
-    //   visible?: boolean;
-    //   value: string;
-    //   type?: string;
-    // };
-    // token?: {
-    //   visible?: boolean;
-    //   value: string;
-    //   type?: string;
-    // };
     [k: string]: {
       visible?: boolean;
       value: string;

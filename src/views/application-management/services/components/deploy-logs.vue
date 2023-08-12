@@ -68,9 +68,7 @@
         ? 'destroy'
         : 'apply';
     setChunkRequest({
-      url: `${SERVICE_RESOURCE_API_PREFIX()}/service-revisions/${
-        props.revisionId
-      }/log`,
+      url: `${SERVICE_RESOURCE_API_PREFIX()}/revisions/${props.revisionId}/log`,
       params: {
         jobType,
         ...permissionParams

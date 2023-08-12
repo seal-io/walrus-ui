@@ -169,7 +169,7 @@
         password: hash
       });
     }
-    await userStore.info();
+    // await userStore.info();
     enterUserPage();
   };
   const isNotFirstLogin = () => {
@@ -213,9 +213,9 @@
           removeLocalLoginInfo();
         }
         await userStore.login(values);
-        if (isNotFirstLogin()) {
-          await userStore.info();
-        }
+        // if (isNotFirstLogin()) {
+        //   await userStore.info();
+        // }
         // help to get serverURL id
         const userSetting = _.get(userStore, 'userInfo.userSetting');
         userStore.setInfo({

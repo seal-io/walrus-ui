@@ -28,7 +28,7 @@
         <a-button
           v-permission-app="{
             projectID: route.params.projectId,
-            resource: Resources.SubjectRoles,
+            resource: Resources.ProjectSubjects,
             actions: [Actions.POST]
           }"
           type="primary"
@@ -77,21 +77,6 @@
             }}</span>
           </template>
         </a-table-column>
-        <!-- <a-table-column
-          align="center"
-          :width="210"
-          :title="$t('common.table.operation')"
-        >
-          <template #cell="{ record }">
-            <a-tooltip :content="$t('common.button.delete')">
-              <a-link status="danger" @click="handleDelete(record)">
-                <template #icon>
-                  <icon-delete></icon-delete>
-                </template>
-              </a-link>
-            </a-tooltip>
-          </template>
-        </a-table-column> -->
       </template>
     </a-table>
     <a-pagination
@@ -122,11 +107,7 @@
   import { deleteModal, execSucceed } from '@/utils/monitor';
   import useRowSelect from '@/hooks/use-row-select';
   import { getListLabel } from '@/utils/func';
-  import {
-    querySubjectRoles,
-    addSubjectRoles,
-    deleteSubjectRoles
-  } from '../api';
+  import { queryProjectSubjects, deleteProjectSubjects } from '../api';
   import { projectRoles } from '../config';
   import { ProjectRolesRowData } from '../config/interface';
   import AssignRoles from '../components/assign-roles.vue';
@@ -157,7 +138,7 @@
       const params: any = {
         ..._.pickBy(queryParams, (val) => !!val)
       };
-      const { data } = await querySubjectRoles(params);
+      const { data } = await queryProjectSubjects(params);
       projectVisitors.value = data.items || [];
       total.value = data?.pagination?.total || 0;
       loading.value = false;
@@ -193,16 +174,7 @@
   const handleAdd = () => {
     showModal.value = true;
   };
-  const handleOk = async () => {
-    try {
-      if (formData.subject.id && formData.role.id) {
-        await addSubjectRoles(formData);
-        fetchData();
-      }
-    } catch (error) {
-      //
-    }
-  };
+
   const handleDeleteConfirm = async () => {
     try {
       const ids = _.map(selectedKeys.value, (val) => {
@@ -210,7 +182,7 @@
           id: val
         };
       });
-      await deleteSubjectRoles({ items: ids });
+      await deleteProjectSubjects({ items: ids });
       execSucceed();
       selectedKeys.value = [];
       rowSelection.selectedRowKeys = [];

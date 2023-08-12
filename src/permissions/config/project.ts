@@ -16,17 +16,17 @@ export default [
     actions: ['GET', 'DELETE']
   },
   {
-    resource: Resources.SubjectRoles,
+    resource: Resources.ProjectSubjects,
     title: 'permission.resource.project.roleAuth',
-    group: Group.SystemSettings,
-    order: ResourcesOrder.SubjectRoles,
+    group: Group.AppManagement,
+    order: ResourcesOrder.ProjectSubjects,
     actions: ['GET', 'POST', 'DELETE', 'PUT']
   },
   {
-    resource: Resources.Secrets,
+    resource: Resources.Variables,
     title: 'permission.resource.project.secret',
     group: Group.OperatorHub,
-    order: ResourcesOrder.Secrets,
+    order: ResourcesOrder.Variables,
     actions: ['GET', 'POST', 'DELETE', 'PUT']
   },
   {
