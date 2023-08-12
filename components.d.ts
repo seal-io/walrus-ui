@@ -46,8 +46,6 @@ declare module 'vue' {
     AOption: typeof import('@arco-design/web-vue')['Option'];
     APagination: typeof import('@arco-design/web-vue')['Pagination'];
     AProgress: typeof import('@arco-design/web-vue')['Progress'];
-    ARadio: typeof import('@arco-design/web-vue')['Radio'];
-    ARadioGroup: typeof import('@arco-design/web-vue')['RadioGroup'];
     ARangePicker: typeof import('@arco-design/web-vue')['RangePicker'];
     AResult: typeof import('@arco-design/web-vue')['Result'];
     ARow: typeof import('@arco-design/web-vue')['Row'];

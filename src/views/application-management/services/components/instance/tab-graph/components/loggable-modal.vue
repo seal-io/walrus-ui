@@ -112,9 +112,7 @@
   };
   const createChunkConnection = async () => {
     if (!info.key || !info.id) return;
-    const url = `${SERVICE_RESOURCE_API_PREFIX()}/service-resources/${
-      info.id
-    }/log`;
+    const url = `${SERVICE_RESOURCE_API_PREFIX()}/resources/${info.id}/log`;
     chunRequestIns = setChunkRequest({
       url,
       params: {

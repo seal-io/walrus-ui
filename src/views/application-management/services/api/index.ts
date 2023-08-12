@@ -213,9 +213,7 @@ export const queryApplicationRevisions = (
   token?
 ) => {
   return axios.get(
-    `${SERVICE_API_PREFIX()}${SERVICE_API}/${
-      params.serviceID
-    }/service-revisions`,
+    `${SERVICE_API_PREFIX()}${SERVICE_API}/${params.serviceID}/revisions`,
     {
       params: {
         ...params,
@@ -229,31 +227,28 @@ export const queryApplicationRevisions = (
   );
 };
 export const queryApplicationRevisionsDetail = (params: { id: string }) => {
-  return axios.get(
-    `${SERVICE_RESOURCE_API_PREFIX()}/service-revisions/${params.id}`,
-    {
-      params: {
-        ...params,
-        ...getPermissionRouteParams()
-      },
-      paramsSerializer: (obj) => {
-        return qs.stringify(obj);
-      }
+  return axios.get(`${SERVICE_RESOURCE_API_PREFIX()}/revisions/${params.id}`, {
+    params: {
+      ...params,
+      ...getPermissionRouteParams()
+    },
+    paramsSerializer: (obj) => {
+      return qs.stringify(obj);
     }
-  );
+  });
 };
 
 export const deleteApplicationRevisions = (data: { id: string }[]) => {
-  return axios.delete(`${SERVICE_RESOURCE_API_PREFIX()}/service-revisions`, {
+  return axios.delete(`${SERVICE_RESOURCE_API_PREFIX()}/revisions`, {
     data
   });
 };
 
 export const diffRevisionSpec = (params: { id: string; serviceID: string }) => {
   return axios.get(
-    `${SERVICE_API_PREFIX()}${SERVICE_API}/${
-      params.serviceID
-    }/service-revisions/${params.id}/diff-latest`,
+    `${SERVICE_API_PREFIX()}${SERVICE_API}/${params.serviceID}/revisions/${
+      params.id
+    }/diff-latest`,
     {
       params: {
         ...params,
@@ -270,9 +265,9 @@ export const queryRevisionChange = (params: {
   serviceID: string;
 }) => {
   return axios.get(
-    `${SERVICE_API_PREFIX()}${SERVICE_API}/${
-      params.serviceID
-    }/service-revisions/${params.id}/diff-previous`,
+    `${SERVICE_API_PREFIX()}${SERVICE_API}/${params.serviceID}/revisions/${
+      params.id
+    }/diff-previous`,
     {
       params: {
         ...params,
@@ -301,7 +296,7 @@ export const rollbackInstance = (data: {
 
 export const rollbackApplication = (data: { id: string }) => {
   return axios.post(
-    `${SERVICE_RESOURCE_API_PREFIX()}/service-revisions/${
+    `${SERVICE_RESOURCE_API_PREFIX()}/revisions/${
       data.id
     }/rollback-applications?${qs.stringify(getPermissionRouteParams())}`
   );
@@ -312,9 +307,7 @@ export const queryServiceResource = (
   token?
 ) => {
   return axios.get(
-    `${SERVICE_API_PREFIX()}${SERVICE_API}/${
-      params.serviceID
-    }/service-resources`,
+    `${SERVICE_API_PREFIX()}${SERVICE_API}/${params.serviceID}/resources`,
     {
       params: {
         ...params,
@@ -330,7 +323,7 @@ export const queryServiceResource = (
 
 export const queryServiceResourceKeys = (params: { id: string }) => {
   return axios.get(
-    `${SERVICE_RESOURCE_API_PREFIX()}/service-resources/${params.id}/keys`,
+    `${SERVICE_RESOURCE_API_PREFIX()}/resources/${params.id}/keys`,
     {
       params: {
         ...params,
@@ -345,7 +338,7 @@ export const queryServiceResourceKeys = (params: { id: string }) => {
 
 export const queryServiceResourceLogs = (params: { id: string }) => {
   return axios.get(
-    `${SERVICE_RESOURCE_API_PREFIX()}/service-resources/${params.id}/log`,
+    `${SERVICE_RESOURCE_API_PREFIX()}/resources/${params.id}/log`,
     {
       params: {
         ...params,
@@ -359,7 +352,7 @@ export const queryServiceResourceLogs = (params: { id: string }) => {
 };
 export const queryServiceResourceExec = (params: { id: string }) => {
   return axios.get(
-    `${SERVICE_RESOURCE_API_PREFIX()}/service-resources/${params.id}/exec`,
+    `${SERVICE_RESOURCE_API_PREFIX()}/resources/${params.id}/exec`,
     {
       params: {
         ...params,

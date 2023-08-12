@@ -411,10 +411,6 @@
   let timer: any = null;
   const loading = ref(false);
   const total = ref(0);
-  const activeKey = inject('activeKey', ref(''));
-  const showValue = ref('');
-  const action = ref('create');
-  const currentInfo = ref({});
   const queryParams = reactive({
     query: '',
     page: 1,

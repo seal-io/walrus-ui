@@ -37,12 +37,12 @@
             v-if="
               scope === scopeMap.GLOBAL
                 ? userStore.hasRolesActionsPermission({
-                    resource: Resources.Secrets,
+                    resource: Resources.Variables,
                     actions: [Actions.POST]
                   })
                 : userStore.hasProjectResourceActions({
                     projectID: route.params.projectId,
-                    resource: Resources.Secrets,
+                    resource: Resources.Variables,
                     actions: [Actions.POST]
                   })
             "
@@ -54,12 +54,12 @@
             v-if="
               scope === scopeMap.GLOBAL
                 ? userStore.hasRolesActionsPermission({
-                    resource: Resources.Secrets,
+                    resource: Resources.Variables,
                     actions: [Actions.DELETE]
                   })
                 : userStore.hasProjectResourceActions({
                     projectID: route.params.projectId,
-                    resource: Resources.Secrets,
+                    resource: Resources.Variables,
                     actions: [Actions.DELETE]
                   })
             "
@@ -169,12 +169,12 @@
                   v-if="
                     scope === scopeMap.GLOBAL
                       ? userStore.hasRolesActionsPermission({
-                          resource: Resources.Secrets,
+                          resource: Resources.Variables,
                           actions: [Actions.PUT]
                         })
                       : userStore.hasProjectResourceActions({
                           projectID: route.params.projectId,
-                          resource: Resources.Secrets,
+                          resource: Resources.Variables,
                           actions: [Actions.PUT]
                         }) && visibleInScope(record)
                   "

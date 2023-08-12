@@ -11,7 +11,7 @@ export default [
       locale: 'operation.secret.menu',
       requiresAuth: true,
       permission: {
-        resource: Resources.Secrets,
+        resource: Resources.Variables,
         actions: ['GET']
       },
       icon: 'icon-apps'

@@ -210,7 +210,7 @@
   import CreateProjectModal from '../components/create-project.vue';
   import AssignRoles from '../components/assign-roles.vue';
   import { ProjectRowData } from '../config/interface';
-  import { queryProjects, deleteProjects, querySubjectRoles } from '../api';
+  import { queryProjects, deleteProjects } from '../api';
 
   let timer: any = null;
   const userStore = useUserStore();

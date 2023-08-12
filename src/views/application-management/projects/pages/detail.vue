@@ -45,7 +45,7 @@
           <a-tab-pane
             v-if="
               userStore.hasProjectResourceActions({
-                resource: Resources.Secrets,
+                resource: Resources.Variables,
                 projectID: route.params.projectId,
                 actions: [Actions.GET]
               })
@@ -73,7 +73,7 @@
             v-if="
               userStore.hasProjectResourceActions({
                 projectID: route.params.projectId,
-                resource: Resources.SubjectRoles,
+                resource: Resources.ProjectSubjects,
                 actions: [Actions.GET]
               })
             "
@@ -102,7 +102,6 @@
   import variableList from '@/views/application-management/variables/pages/list.vue';
   import basicInfo from '@/views/application-management/services/components/basic-info.vue';
   import ConnectorList from '@/views/operation-hub/connectors/components/table-list.vue';
-  import templateList from '../../templates/pages/list.vue';
   import useBasicInfoData from '../hooks/use-basicInfo-data';
   import { queryItemProject } from '../api';
   import { basicInfoConfig, projectDetailTabs } from '../config';

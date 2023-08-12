@@ -367,7 +367,7 @@
   const createServiceRevisionChunkRequest = () => {
     try {
       setChunkRequest({
-        url: `${SERVICE_RESOURCE_API_PREFIX()}/service-revisions`,
+        url: `${SERVICE_RESOURCE_API_PREFIX()}/revisions`,
         handler: updateHandler,
         beforeReconnect: fetchData
       });

@@ -310,7 +310,6 @@
   const triggerValidate = ref(false);
   let copyFormData: any = {};
   const formData: ConnectorFormData = reactive({
-    projectID: route.params.projectId as string,
     name: '',
     configData: {},
     description: '',

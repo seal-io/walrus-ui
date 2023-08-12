@@ -287,7 +287,6 @@
   const regionSelect = ref();
   let copyFormData: any = {};
   const formData: ConnectorFormData = reactive({
-    projectID: route.params.projectId as string,
     name: '',
     configData: {
       access_key: {

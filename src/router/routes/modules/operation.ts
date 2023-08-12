@@ -26,7 +26,7 @@ export default {
         actions: ['GET']
       },
       {
-        resource: Resources.Secrets,
+        resource: Resources.Variables,
         actions: ['GET']
       }
     ]

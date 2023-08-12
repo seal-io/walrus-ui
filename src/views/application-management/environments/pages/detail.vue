@@ -58,7 +58,7 @@
           <a-tab-pane
             v-if="
               userStore.hasProjectResourceActions({
-                resource: Resources.Secrets,
+                resource: Resources.Variables,
                 projectID: route.params.projectId,
                 actions: [Actions.GET]
               })

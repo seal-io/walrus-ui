@@ -260,7 +260,6 @@
   const textareaHeight = ref(180);
   let copyFormData: any = {};
   const formData: ConnectorFormData = reactive({
-    projectID: route.params.projectId as string,
     name: '',
     configData: {
       kubeconfig: {
