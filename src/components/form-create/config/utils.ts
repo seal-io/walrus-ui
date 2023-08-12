@@ -107,11 +107,6 @@ export const parseMapstring = (comSchema) => {
   return labelList;
 };
 
-export const parseCondition = (query) => {
-  // if (query.indexOf(operatorMap.or) > -1) {
-  // }
-};
-
 export const parseQuery = (query) => {
   const parsestr = split(query, '=');
   return {

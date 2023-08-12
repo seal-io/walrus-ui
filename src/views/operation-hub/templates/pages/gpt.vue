@@ -90,12 +90,6 @@
             <template #icon><icon-delete /></template>
             <span>{{ $t('common.button.clear') }}</span>
           </a-button>
-          <!-- <a-button type="outline" status="success">
-          <template #icon
-            ><icon-font type="icon-magic" style="color: green"></icon-font
-          ></template>
-          <span>Prettify</span>
-        </a-button> -->
         </a-space>
         <a-space>
           <a-tooltip
@@ -182,14 +176,13 @@
 
 <script lang="ts" setup>
   import { OPERATIONHUB } from '@/router/config';
-  import { ref, computed, watch, nextTick, h, inject } from 'vue';
+  import { ref, watch, h } from 'vue';
   import { get, map, each, reduce, add } from 'lodash';
   import * as Diff from 'diff';
   import { Modal, Button, Link } from '@arco-design/web-vue';
   import { onClickOutside } from '@vueuse/core';
   import { deleteModal } from '@/utils/monitor';
   import useCallCommon from '@/hooks/use-call-common';
-  import GroupTitle from '@/components/group-title/index.vue';
   import EditPageFooter from '@/components/edit-page-footer/index.vue';
   import AceEditor from '@/components/ace-editor/index.vue';
   import CreatePR from '../components/create-pr.vue';
@@ -226,7 +219,6 @@
   const diffResult = ref<DiffItem[]>([]);
   const removeLines = ref<number[]>([]);
   const addLines = ref<number[]>([]);
-  // const explainContent = ref('');
   const correctionExplain = ref('');
   const showExplainModal = ref(false);
   const showExplain = ref(false);
@@ -366,9 +358,6 @@
       loading.value = false;
     }
   };
-  const handleShowExample = () => {
-    show.value = !show.value;
-  };
 
   const handleClear = () => {
     clearDiffLines();
@@ -505,24 +494,6 @@
       justify-content: space-between;
     }
 
-    .correction-btn {
-      // position: fixed;
-      // right: 40px;
-      // bottom: 180px;
-    }
-    // .modal-container {
-    //   padding: 10px;
-    //   background-color: #fff;
-    //   height: 100%;
-    //   overflow: auto;
-    //   border: 1px solid var(--color-border-2);
-    //   border-radius: var(--border-radius-small);
-
-    //   .info-content {
-    //     background-color: var(--color-fill-2);
-    //     height: 100%;
-    //   }
-    // }
     .opration-wrap {
       display: flex;
       flex-direction: row-reverse;

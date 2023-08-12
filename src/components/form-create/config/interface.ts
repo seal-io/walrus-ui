@@ -93,7 +93,7 @@ export const schemaType = {
     return _.includes(BASIC_TYPE, type);
   },
   isUnknownType(type) {
-    return _.includes(UNKNOWN_TYPE, type);
+    return _.includes(UNKNOWN_TYPE, type) || !type;
   },
   isCollectionType(type) {
     return _.get(type, '1') && !_.isString(_.get(type, '1'));
@@ -236,6 +236,7 @@ export const parseComponentSchema = (schema: ComponentSchema) => {
       ]
     };
   }
+  // ============ default input ============
   return {
     component: ['hintInput'],
     props: { ...props },
