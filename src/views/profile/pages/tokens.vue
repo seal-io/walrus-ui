@@ -86,7 +86,6 @@
   import FilterBox from '@/components/filter-box/index.vue';
   import { deleteModal, execSucceed } from '@/utils/monitor';
   import copy from '@/components/copy/copy-command.vue';
-  import GroupTitle from '@/components/group-title/index.vue';
   import CreateTokens from '../components/create-tokens.vue';
   import { queryTokens, deleteTokens, FormDataType } from '../api/tokens';
 

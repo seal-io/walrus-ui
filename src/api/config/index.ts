@@ -15,9 +15,7 @@ export const localeMap = {
 
 // those apis has not version prefix. /v1
 export const authApiList: string[] = [
-  '/account/login',
-  '/account/info',
-  '/account/logout',
+  '/account',
   '/openapi',
   '/debug/version',
   '/cli'
