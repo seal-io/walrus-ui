@@ -2,7 +2,7 @@ import axios, { AxiosRequestConfig, AxiosResponse } from 'axios';
 import { Message } from '@arco-design/web-vue';
 import { useUserStore } from '@/store';
 import router from '@/router';
-import { get } from 'lodash';
+import { some, get } from 'lodash';
 import i18n from '@/locale/index';
 import {
   SILENCEAPI,
@@ -43,7 +43,7 @@ axios.interceptors.request.use(
       ...config.headers,
       'Accept-Language': localeMap[locale] || 'en'
     };
-    if (authApiList.includes(url)) {
+    if (some(authApiList, (api) => url.startsWith(api))) {
       config.baseURL = '';
     }
     return config;
