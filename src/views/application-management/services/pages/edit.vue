@@ -224,7 +224,7 @@
           </a-tab-pane>
         </a-tabs>
         <formCreate
-          v-if="formTabs.length < 2"
+          v-if="formTabs.length === 1"
           ref="schemaForm"
           form-id="schemaForm"
           layout="vertical"
@@ -232,8 +232,8 @@
           api=""
           :show-footer="false"
           :submit="() => {}"
-          :model="variablesGroupForm[defaultGroupKey]?.attributes"
-          :form-schema="variablesGroup[defaultGroupKey]?.variables"
+          :model="variablesGroupForm[formTabs[0]]?.attributes"
+          :form-schema="variablesGroup[formTabs[0]]?.variables"
         >
         </formCreate>
       </a-spin>
@@ -402,6 +402,12 @@
   };
   const formTabs = computed(() => {
     const list = keys(variablesGroup.value);
+    console.log(
+      'variablesGroupForm===',
+      list,
+      variablesGroupForm.value,
+      variablesGroup.value
+    );
     if (includes(list, defaultGroupKey)) {
       const res = [defaultGroupKey, ...pull(list, defaultGroupKey)];
       return res;

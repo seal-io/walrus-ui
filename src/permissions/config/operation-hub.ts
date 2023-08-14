@@ -15,13 +15,13 @@ export default [
     order: ResourcesOrder.TemplateCompletions,
     actions: ['GET', 'POST']
   },
-  {
-    resource: Resources.TemplateVersions,
-    title: 'permission.resource.system.operation.moduleVersion',
-    group: Group.OperatorHub,
-    order: ResourcesOrder.TemplateVersions,
-    actions: ['GET']
-  },
+  // {
+  //   resource: Resources.TemplateVersions,
+  //   title: 'permission.resource.system.operation.moduleVersion',
+  //   group: Group.OperatorHub,
+  //   order: ResourcesOrder.TemplateVersions,
+  //   actions: ['GET']
+  // },
   {
     resource: Resources.Templates,
     title: 'permission.resource.system.operation.module',

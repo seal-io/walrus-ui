@@ -89,16 +89,19 @@
 
   // enter page password-free
   const enterPageForFree = async () => {
-    userStore.resetInfo();
-    appStore.resetInfo();
-    await userStore.info();
-    if (userStore.name) {
-      enterUserPage();
+    try {
+      await userStore.info();
+      if (userStore.name) {
+        enterUserPage();
+      }
+    } catch (error) {
+      // ingore
     }
   };
   onMounted(async () => {
+    userStore.resetInfo();
+    appStore.resetInfo();
     getUserLoginStatus();
-    enterPageForFree();
   });
 </script>
 

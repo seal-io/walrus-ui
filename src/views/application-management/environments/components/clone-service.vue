@@ -243,8 +243,7 @@
     computed,
     ComponentPublicInstance,
     provide,
-    watch,
-    defineExpose
+    watch
   } from 'vue';
   import xInputGroup from '@/components/form-create/custom-components/x-input-group.vue';
   import EditPageFooter from '@/components/edit-page-footer/index.vue';

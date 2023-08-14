@@ -9,14 +9,7 @@
       }"
     >
       <!-- key -->
-      <div
-        :span="8"
-        :style="
-          get(dataItem, `style.key`)
-            ? getItemStyle('key')
-            : { flexBasis: '120px' }
-        "
-      >
+      <div :span="8" :style="getItemStyle('key')">
         <a-tooltip
           :popup-visible="popupvisible"
           :content="$t('common.form.key')"
