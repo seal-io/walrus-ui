@@ -107,7 +107,7 @@
           <span v-else class="readonly-view-label">{{
             formData.source || '-'
           }}</span>
-          <template #extra>
+          <template v-if="pageAction === PageAction.EDIT" #extra>
             <span
               >{{
                 $t('common.help.eg')

@@ -63,7 +63,10 @@ axios.interceptors.response.use(
     const requestAction = get(error.response, 'config.headers._action') || '';
     const reqUrl = get(error.response, 'config.url');
     const response = get(error, 'response') || {};
-    const data = get(response, 'data') || {};
+    const data = get(response, 'data') || {
+      status: response?.status,
+      statusText: response?.statusText
+    };
     const msg =
       data?.message ||
       (get(responseStatusMap, data?.status)

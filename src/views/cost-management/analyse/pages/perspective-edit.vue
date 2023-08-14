@@ -390,7 +390,7 @@
   import useDynamicRef from '@/hooks/use-dynamic-ref';
   import ConditionFilter from '../components/condition-filter.vue';
   import { costShareMode, timeRangeOptions, DateShortCuts } from '../config';
-  import { PerspectiveRowData, FieldsOptions } from '../config/interface';
+  import { FieldsOptions } from '../config/interface';
   import {
     queryItemPerspective,
     createPerspective,

@@ -313,7 +313,7 @@
           id: val.id
         };
       });
-      await deleteApplicationRevisions(params);
+      await deleteApplicationRevisions({ items: params });
       queryParams.page = 1;
       handleFilter();
     } catch (error) {

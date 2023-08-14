@@ -88,9 +88,9 @@
     </div>
     <addCatalog
       v-model:show="showModal"
+      v-model:data-info="dataInfo"
       :action="action"
       :title="modalTitle"
-      :data-info="dataInfo"
       @save="handleSave"
     ></addCatalog>
   </ComCard>

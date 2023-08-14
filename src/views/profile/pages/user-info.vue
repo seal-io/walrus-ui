@@ -144,7 +144,7 @@
 
   const systemPermissions = computed(() => {
     const systemRoles =
-      _.pickBy(_.get(userStore, 'permissions.roles'), (v, k) => {
+      _.pickBy(_.get(userStore, 'permissions.roles') || {}, (v, k) => {
         return _.some(resources, (item) => item.resource === k);
       }) || {};
 

@@ -2,7 +2,7 @@ import { Resources } from '@/permissions/config';
 import USERS from '../../config/users';
 
 export default {
-  path: 'system',
+  path: 'users',
   name: USERS.Index,
   component: () => import('@/views/system/index.vue'),
   meta: {
@@ -24,7 +24,7 @@ export default {
   },
   children: [
     {
-      path: 'settings',
+      path: 'list',
       name: USERS.List,
       component: () => import('@/views/users/pages/list.vue'),
       meta: {

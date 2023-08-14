@@ -1,4 +1,9 @@
-import { ProjectRolesItem, RolesItem, ROLES } from '@/store/modules/user/types';
+import {
+  ProjectRolesItem,
+  RolesItem,
+  ROLES,
+  permissionKey
+} from '@/store/modules/user/types';
 // import localForage from 'localforage';
 import JSCookies from 'js-cookie';
 import localForage from '@/utils/localStore';
@@ -114,7 +119,7 @@ const getProjectRolesPolicies = (projectRoles: ProjectRolesItem[]) => {
   const result = _.reduce(
     projectRoles,
     (obj, project) => {
-      const projectID = _.get(project, 'project.id');
+      const projectID = _.get(project, 'project.id') || '';
       const projectName = _.get(project, 'project.name');
       obj[projectID] = {
         projectID,
@@ -123,7 +128,7 @@ const getProjectRolesPolicies = (projectRoles: ProjectRolesItem[]) => {
           ..._.omit(getRolesPolicies(project.roles), ROLES)
         },
         roles: {
-          ..._.get(getRolesPolicies(project.roles), ROLES)
+          ...(_.get(getRolesPolicies(project.roles), ROLES) || {})
         }
       };
       return obj;
@@ -134,11 +139,11 @@ const getProjectRolesPolicies = (projectRoles: ProjectRolesItem[]) => {
 };
 const getUserResourcePermission = (data) => {
   // role policies
-  const roles = getRolesPolicies(_.get(data, 'roles') || []);
+  const roles = getRolesPolicies(_.get(data, permissionKey.roles) || []);
 
   // project policies
   const projectRoles = getProjectRolesPolicies(
-    _.get(data, 'projectRoles') || []
+    _.get(data, permissionKey.projectRoles) || []
   );
 
   return {

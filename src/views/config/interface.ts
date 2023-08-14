@@ -45,4 +45,9 @@ export interface MoreAction {
 }
 
 export type ModalActionType = 'edit' | 'create' | 'view';
+
+export interface DeletePayload {
+  items: { id: string }[];
+}
+
 export default {};

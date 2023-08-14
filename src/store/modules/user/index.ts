@@ -9,12 +9,11 @@ import {
   updateUserSetting as updateSettings
 } from '@/api/user';
 import _ from 'lodash';
-import { clearToken, getUserResourcePermission } from '@/utils/auth';
+import { getUserResourcePermission } from '@/utils/auth';
 import { removeRouteListener } from '@/utils/route-listener';
 import { Actions } from '@/permissions/config';
 import { RoleType } from '@/views/system/config/users';
 import { UserState } from './types';
-import testData from './test';
 
 const useUserStore = defineStore('user', {
   persist: {
@@ -148,12 +147,10 @@ const useUserStore = defineStore('user', {
       await userLogout();
 
       this.resetInfo();
-      clearToken();
       removeRouteListener();
     },
     permissionCheckFailed() {
       this.resetInfo();
-      clearToken();
       removeRouteListener();
     },
     // check first login and is admin user must change password, general user no need to  change password when first login
@@ -163,7 +160,6 @@ const useUserStore = defineStore('user', {
         this.isSystemAdmin()
       );
     }
-    // init permission
   }
 });
 
