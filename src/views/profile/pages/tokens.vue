@@ -58,9 +58,16 @@
           </a-list-item-meta>
         </div>
       </a-list>
-      <div v-if="!dataList.length && isLoad" class="create-desc">{{
-        $t('account.settings.token.desc')
-      }}</div>
+      <div v-if="!dataList.length && isLoad" class="create-desc">
+        <a-empty :description="$t('account.settings.token.desc')">
+          <template #image>
+            <i
+              class="iconfont icon-shouquan size-20"
+              style="font-size: 32px"
+            ></i>
+          </template>
+        </a-empty>
+      </div>
       <a-pagination
         style="padding: 10px 0"
         size="small"
@@ -168,6 +175,11 @@
   .box {
     .create-desc {
       text-align: center;
+
+      :deep(.arco-empty-description) {
+        margin-top: 16px;
+        font-size: 14px;
+      }
     }
 
     .expire-wrap {

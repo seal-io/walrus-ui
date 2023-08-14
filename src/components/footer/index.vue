@@ -34,17 +34,13 @@
     getVersion
   } from '@/hooks/fetch-app-version';
   import useCallCommon from '@/hooks/use-call-common';
-  import { useUserStore, useProjectStore } from '@/store';
+  import { useUserStore } from '@/store';
 
   const { route } = useCallCommon();
   const userStore = useUserStore();
-  const projectStore = useProjectStore();
   const versionInfo = ref({});
   const footerLinks = [
     { label: 'settings.help', value: 'https://seal-io.github.io/docs/' }
-    // { label: 'settings.document', value: 'https://seal-io.github.io/docs/' },
-    // { label: 'settings.privacy', value: 'provite' },
-    // { label: 'settings.policies', value: 'policy' },
   ];
   const getAppVersion = async () => {
     versionInfo.value = await useAppVersion();
@@ -62,7 +58,6 @@
   onMounted(() => {
     getAppVersion();
   });
-  init();
 </script>
 
 <style lang="less" scoped>

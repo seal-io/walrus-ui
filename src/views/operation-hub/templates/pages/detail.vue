@@ -138,7 +138,7 @@
           id &&
           pageAction === PageAction.VIEW &&
           userStore.hasRolesActionsPermission({
-            resource: Resources.TemplateVersions,
+            resource: Resources.Templates,
             actions: [Actions.GET]
           })
         "
@@ -255,9 +255,9 @@
   const formData = reactive({
     name: '',
     description: '',
-    source: '',
+    source: ''
     // version: '',
-    icon: ''
+    // icon: ''
   });
 
   const title = computed(() => {
