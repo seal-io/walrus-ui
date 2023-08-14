@@ -23,11 +23,11 @@ export function login(data: LoginData) {
 }
 
 export function logout() {
-  return axios.post<LoginRes>('/account/logout');
+  return axios.delete<LoginRes>('/account/logout');
 }
 
 export function modifyPassword(data: SetPassword) {
-  return axios.post(`/account/info`, data);
+  return axios.put(`/account/info`, data);
 }
 
 export function getUserInfo(params?) {

@@ -183,7 +183,7 @@
                       $t('applications.applications.modules.params.title')
                     }}</div>
                     <div>{{
-                      $t('applications.applications.modules.params.tips1')
+                      $t('applications.applications.modules.params.tips2')
                     }}</div>
                     <div>{{
                       $t('applications.applications.modules.params.tips3')
@@ -402,12 +402,6 @@
   };
   const formTabs = computed(() => {
     const list = keys(variablesGroup.value);
-    console.log(
-      'variablesGroupForm===',
-      list,
-      variablesGroupForm.value,
-      variablesGroup.value
-    );
     if (includes(list, defaultGroupKey)) {
       const res = [defaultGroupKey, ...pull(list, defaultGroupKey)];
       return res;

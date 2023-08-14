@@ -314,7 +314,6 @@
   };
 
   const handleDelete = async (row) => {
-    console.log(row);
     const index = _.findIndex(selectedList.value, (item) => {
       return item.subject.id === row.subject.id;
     });

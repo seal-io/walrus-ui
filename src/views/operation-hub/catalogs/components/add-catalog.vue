@@ -123,24 +123,6 @@
             show-word-limit
           ></seal-textarea>
         </a-form-item>
-        <!-- <a-form-item
-          field="icon"
-          :label="$t('operation.templates.detail.icon')"
-          hide-asterisk
-          :hide-label="true"
-          :rules="[
-            {
-              match: urlReg,
-              message: $t('system.rules.url')
-            }
-          ]"
-        >
-          <seal-input
-            v-model="formData.icon"
-            :label="$t('operation.templates.detail.icon')"
-            :style="{ width: `${InputWidth.LARGE}px` }"
-          ></seal-input>
-        </a-form-item> -->
       </a-form>
     </a-spin>
     <template #footer>
@@ -219,7 +201,7 @@
       value: 'Gitlab'
     }
   ];
-  const emit = defineEmits(['save', 'update:show']);
+  const emit = defineEmits(['save', 'update:show', 'update:dataInfo']);
   const formref = ref();
   const loading = ref(false);
   const submitLoading = ref(false);
@@ -240,7 +222,6 @@
     if (!res) {
       try {
         submitLoading.value = true;
-        // TODO
         if (props.action === ModalAction.EDIT) {
           await updateCatalog(formData);
         } else {
@@ -250,12 +231,18 @@
           emit('save');
         }, 100);
         emit('update:show', false);
-        // execSucceed();
         submitLoading.value = false;
       } catch (error) {
         submitLoading.value = false;
       }
     }
+  };
+  const resetForm = () => {
+    formData.description = '';
+    formData.name = '';
+    formData.source = '';
+    formData.type = 'Github';
+    emit('update:dataInfo', {});
   };
   const init = async () => {
     _.assignIn(formData, props.dataInfo);
@@ -265,6 +252,7 @@
   };
   const handleBeforeClose = () => {
     formref.value.resetFields();
+    resetForm();
   };
 </script>
 

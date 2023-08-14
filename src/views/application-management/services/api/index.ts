@@ -2,6 +2,7 @@ import axios from 'axios';
 import qs from 'query-string';
 import { Pagination } from '@/types/global';
 import router from '@/router';
+import { DeletePayload } from '@/views/config/interface';
 import { ServiceRowData, EndPointRow } from '../config/interface';
 
 export const SERVICE_API = '/services';
@@ -238,7 +239,7 @@ export const queryApplicationRevisionsDetail = (params: { id: string }) => {
   });
 };
 
-export const deleteApplicationRevisions = (data: { id: string }[]) => {
+export const deleteApplicationRevisions = (data: DeletePayload) => {
   return axios.delete(`${SERVICE_RESOURCE_API_PREFIX()}/revisions`, {
     data
   });

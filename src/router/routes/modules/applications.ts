@@ -1,5 +1,4 @@
 import projectsRoutes from '@/views/application-management/projects/routes';
-// import workflowsRoutes from '@/views/application-management/workflows/routes';
 import PROJECT from '../../config/application-management';
 
 export default {

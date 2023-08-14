@@ -82,11 +82,9 @@ export function deleteConnector(data: {
 }
 
 export function reinstallFinOpsTools(data: ConnectorFormData) {
-  let url = `${CONNECTOR_API}/${data.id}/reinstall-cost-tools`;
+  let url = `${CONNECTOR_API}/${data.id}/apply-cost-tools`;
   if (isProjectContext()) {
-    url = `${PROJECT_API_PREFIX()}${CONNECTOR_API}/${
-      data.id
-    }/reinstall-cost-tools`;
+    url = `${PROJECT_API_PREFIX()}${CONNECTOR_API}/${data.id}/apply-cost-tools`;
   }
   return axios.post(`${url}`, data);
 }

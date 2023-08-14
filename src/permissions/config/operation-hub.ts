@@ -15,13 +15,6 @@ export default [
     order: ResourcesOrder.TemplateCompletions,
     actions: ['GET', 'POST']
   },
-  // {
-  //   resource: Resources.TemplateVersions,
-  //   title: 'permission.resource.system.operation.moduleVersion',
-  //   group: Group.OperatorHub,
-  //   order: ResourcesOrder.TemplateVersions,
-  //   actions: ['GET']
-  // },
   {
     resource: Resources.Templates,
     title: 'permission.resource.system.operation.module',
@@ -31,7 +24,7 @@ export default [
   },
   {
     resource: Resources.Catalogs,
-    title: 'permission.resource.system.operation.module',
+    title: 'menu.operatorHub.catalog',
     group: Group.OperatorHub,
     order: ResourcesOrder.Catalogs,
     actions: ['GET', 'POST', 'DELETE', 'PUT']
