@@ -334,9 +334,6 @@
   const handleOk = () => {
     router.back();
   };
-  const handleCancel = () => {
-    router.back();
-  };
 
   onMounted(() => {
     setInstanceTabList();

@@ -82,6 +82,7 @@
 </template>
 
 <script lang="ts" setup>
+  import { PageAction } from '@/views/config';
   import { Resources } from '@/permissions/config';
   import { useUserStore } from '@/store';
   import { PropType, watchEffect } from 'vue';
@@ -139,23 +140,16 @@
     router.push({
       name: 'EnvironmentDetail',
       params: {
-        action: 'edit'
+        action: PageAction.EDIT
       },
       query: { id: row.id }
     });
   };
   const handleView = (row) => {
-    // router.push({
-    //   name: 'EnvironmentDetail',
-    //   params: {
-    //     action: 'view'
-    //   },
-    //   query: { id: row.id }
-    // });
     router.push({
       name: 'ProjectEnvDetail',
       params: {
-        action: 'view',
+        action: PageAction.VIEW,
         ...route.params,
         environmentId: row.id
       }

@@ -178,16 +178,15 @@
   import serviceSpecDiff from '../service-spec-diff.vue';
   import { setDurationValue, RevisionStatus } from '../../config';
   import {
-    queryApplicationRevisions,
+    queryServiceRevisions,
     deleteApplicationRevisions,
     diffRevisionSpec,
-    rollbackInstance,
+    rollbackService,
     queryRevisionChange,
     SERVICE_RESOURCE_API_PREFIX
   } from '../../api';
 
   let axiosListInstance = createAxiosToken();
-  const permissionParams = usePermissionParams();
   const userStore = useUserStore();
   const { t, route } = useCallCommon();
   const { setChunkRequest } = useSetChunkRequest();
@@ -205,7 +204,6 @@
   const showDetailModal = ref(false);
   const showDiffModal = ref(false);
   const initialStatus = ref('');
-  const rollbackType = ref('');
   const diffContent = ref({});
   const rollbackData = ref<any>({});
   const ids = ref<{ id: string }[]>([]);
@@ -234,9 +232,9 @@
     }
   };
 
-  const handleRollbackInstance = async () => {
+  const handleRollbackService = async () => {
     try {
-      await rollbackInstance({
+      await rollbackService({
         revisionID: rollbackData.value.id,
         serviceID: serviceId.value
       });
@@ -247,10 +245,9 @@
   };
 
   const handleConfirmDiff = async () => {
-    handleRollbackInstance();
+    handleRollbackService();
   };
   const handleViewHistoryChange = async (row) => {
-    rollbackType.value = 'instance';
     rollbackData.value = row;
     try {
       const params = {
@@ -274,7 +271,7 @@
     axiosListInstance = createAxiosToken();
     try {
       loading.value = true;
-      const { data } = await queryApplicationRevisions(
+      const { data } = await queryServiceRevisions(
         {
           ...queryParams,
           serviceID: serviceId.value,

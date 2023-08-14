@@ -212,8 +212,6 @@
               :ref="(el: refItem) => setRefMap(el, `schemaForm${index}`)"
               :form-id="`schemaForm${index}`"
               layout="vertical"
-              action="post"
-              api=""
               :show-footer="false"
               :submit="() => {}"
               :attributes="variableAttributes"
@@ -228,8 +226,6 @@
           ref="schemaForm"
           form-id="schemaForm"
           layout="vertical"
-          action="post"
-          api=""
           :show-footer="false"
           :submit="() => {}"
           :model="variablesGroupForm[formTabs[0]]?.attributes"
@@ -316,12 +312,7 @@
   type refItem = Element | ComponentPublicInstance | null;
 
   const props = defineProps({
-    action: {
-      type: String,
-      default() {
-        return 'edit';
-      }
-    },
+    // when in detail page
     pgType: {
       type: String as PropType<'page' | 'com'>,
       default() {

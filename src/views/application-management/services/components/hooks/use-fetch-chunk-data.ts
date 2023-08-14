@@ -220,7 +220,7 @@ export default function useFetchResource() {
         const { data } = await queryServiceResource(params, fetchToken.token);
         let list: any = _.filter(
           data?.items || [],
-          (item) => item?.instance?.id === serviceId.value
+          (item) => item?.service?.id === serviceId.value
         );
         list = setDataList(list);
         dataList.value = [].concat(list);

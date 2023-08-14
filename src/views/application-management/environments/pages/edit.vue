@@ -259,8 +259,7 @@
   import {
     createEnvironment,
     updateEnvironment,
-    queryItemEnvironments,
-    cloneEnvironment
+    queryItemEnvironments
   } from '../api';
 
   const { getProjectList, setProjectList, initBreadValues, handleBreadChange } =

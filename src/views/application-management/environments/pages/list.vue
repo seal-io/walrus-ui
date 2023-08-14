@@ -237,7 +237,7 @@
   const total = ref(0);
   const showModal = ref(false);
   const currentInfo = ref({});
-  const action = ref('edit');
+  const action = ref(PageAction.EDIT);
   const queryParams = reactive({
     query: '',
     page: 1,
@@ -246,13 +246,11 @@
   });
 
   const handleCreate = () => {
-    // action.value = 'create';
-    // showModal.value = true;
     router.push({
       name: PROJECT.EnvEdit,
       params: {
         projectId: route.params.projectId,
-        action: 'edit'
+        action: PageAction.EDIT
       }
     });
   };
@@ -313,11 +311,6 @@
     });
   };
   const handleEdit = (row) => {
-    // currentInfo.value = row;
-    // action.value = 'edit';
-    // setTimeout(() => {
-    //   showModal.value = true;
-    // }, 100);
     router.push({
       name: PROJECT.EnvEdit,
       params: {
