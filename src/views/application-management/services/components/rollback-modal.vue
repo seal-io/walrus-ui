@@ -105,12 +105,10 @@
   import EditPageFooter from '@/components/edit-page-footer/index.vue';
   import { InstanceData, HistoryData } from '../config/interface';
   import {
-    queryApplicationRevisions,
+    queryServiceRevisions,
     diffRevisionSpec,
-    rollbackApplication,
-    rollbackInstance
+    rollbackService
   } from '../api';
-  import { updateApplicationEmitter } from '../hooks/update-application-listener';
 
   const props = defineProps({
     show: {
@@ -163,18 +161,9 @@
     id: ''
   });
 
-  const handleRollbackApplication = async () => {
+  const handleRollbackService = async () => {
     try {
-      await rollbackApplication({ id: formData.id });
-      execSucceed();
-      updateApplicationEmitter();
-    } catch (error) {
-      //
-    }
-  };
-  const handleRollbackInstance = async () => {
-    try {
-      await rollbackInstance({
+      await rollbackService({
         revisionID: formData.id,
         serviceID: formData.serviceID
       });
@@ -192,7 +181,7 @@
         serviceID: formData.serviceID,
         projectID: props.projectID
       };
-      const { data } = await queryApplicationRevisions(params);
+      const { data } = await queryServiceRevisions(params);
       revisionList.value = data?.items || [];
       loading.value = false;
     } catch (error) {
@@ -223,16 +212,9 @@
     clearDiffLines();
     getRevisionDiff();
   };
-  const handleInstanceChange = () => {
-    clearDiffLines();
-    getRevisionList();
-  };
+
   const handleExecRollback = async () => {
-    if (!props.serviceId) {
-      await handleRollbackApplication();
-    } else {
-      await handleRollbackInstance();
-    }
+    await handleRollbackService();
     emit('update:show', false);
   };
   const handleOk = async () => {

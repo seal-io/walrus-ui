@@ -206,7 +206,6 @@
   } from './config/interface';
   import { json2Yaml, yaml2Json } from './config/yaml-parse';
   import formComponents from './components';
-  import testData from './config/test';
   import {
     parseMapstring,
     parseOptions,

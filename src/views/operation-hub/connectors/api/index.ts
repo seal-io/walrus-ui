@@ -86,7 +86,7 @@ export function reinstallFinOpsTools(data: ConnectorFormData) {
   if (isProjectContext()) {
     url = `${PROJECT_API_PREFIX()}${CONNECTOR_API}/${data.id}/apply-cost-tools`;
   }
-  return axios.post(`${url}`, data);
+  return axios.post(`${url}`);
 }
 
 export function syncFinOpsData(data: ConnectorFormData) {
@@ -94,5 +94,5 @@ export function syncFinOpsData(data: ConnectorFormData) {
   if (isProjectContext()) {
     url = `${PROJECT_API_PREFIX()}${CONNECTOR_API}/${data.id}/sync-cost-data`;
   }
-  return axios.post(`${url}`, data);
+  return axios.post(`${url}`);
 }

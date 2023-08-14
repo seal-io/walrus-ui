@@ -140,7 +140,6 @@
   const { setChunkRequest } = useSetChunkRequest();
   const { router } = useCallCommon();
   const loading = ref(false);
-  // const currentView = ref('thumb'); // thumb, list
   const selectedKeys = ref<string[]>([]);
   const sort = ref<string[]>(['-createTime']);
   const dataList = ref<TemplateRowData[]>([]);
@@ -153,10 +152,14 @@
     page: 1,
     perPage: 10
   });
-  const { updateChunkedList } = useUpdateChunkedList(dataList);
-  // const handleToggle = (val) => {
-  //   currentView.value = val;
-  // };
+  const { updateChunkedList } = useUpdateChunkedList(dataList, {
+    filterFun(item) {
+      if (queryParams.catalogID) {
+        return item.catalog?.id === queryParams.catalogID;
+      }
+      return true;
+    }
+  });
   const handleCreate = () => {
     router.push({
       name: OPERATIONHUB.TemplateDetail,

@@ -223,22 +223,14 @@
   import { Resources, Actions } from '@/permissions/config';
   import _, { get, pickBy, filter } from 'lodash';
   import dayjs from 'dayjs';
-  import {
-    reactive,
-    ref,
-    watch,
-    onBeforeUnmount,
-    provide,
-    onMounted
-  } from 'vue';
+  import { reactive, ref, onBeforeUnmount, onMounted } from 'vue';
   import {
     useSetChunkRequest,
     createAxiosToken
   } from '@/api/axios-chunk-request';
-  import { websocketEventType } from '@/views/config';
+  import { websocketEventType, PageAction } from '@/views/config';
   import useCallCommon from '@/hooks/use-call-common';
   import { execSucceed } from '@/utils/monitor';
-  import { getListLabel } from '@/utils/func';
   import DropButtonGroup from '@/components/drop-button-group/index.vue';
   import { UseSortDirection } from '@/utils/common';
   import useRowSelect from '@/hooks/use-row-select';
@@ -255,7 +247,6 @@
     SERVICE_API_PREFIX
   } from '../api';
   import useRollbackRevision from '../hooks/use-rollback-revision';
-  import useCompleteData from '../hooks/use-complete-data';
   import deleteServiceModal from '../components/delete-service-modal.vue';
   import rollbackModal from '../components/rollback-modal.vue';
   import driftResource from '../components/drift-resource.vue';
@@ -355,13 +346,13 @@
     }, 100);
   };
   const handleClickRollback = (row) => {
-    handleRollbackRevision('instance', row);
+    handleRollbackRevision(row);
   };
   const handleClickUpgrade = (row) => {
     router.push({
       name: PROJECT.ServiceEdit,
       params: {
-        action: 'edit'
+        action: PageAction.EDIT
       },
       query: {
         id: row.id
@@ -389,7 +380,7 @@
       params: {
         projectId: queryParams.projectID,
         environmentId: queryParams.environmentID,
-        action: 'edit'
+        action: PageAction.EDIT
       }
     });
   };

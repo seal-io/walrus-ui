@@ -209,7 +209,7 @@ interface ApplicationRevisionParams extends Pagination {
   sort?: string[];
 }
 
-export const queryApplicationRevisions = (
+export const queryServiceRevisions = (
   params: ApplicationRevisionParams,
   token?
 ) => {
@@ -281,7 +281,7 @@ export const queryRevisionChange = (params: {
   );
 };
 
-export const rollbackInstance = (data: {
+export const rollbackService = (data: {
   revisionID: string;
   serviceID: string;
 }) => {
@@ -295,13 +295,6 @@ export const rollbackInstance = (data: {
   );
 };
 
-export const rollbackApplication = (data: { id: string }) => {
-  return axios.post(
-    `${SERVICE_RESOURCE_API_PREFIX()}/revisions/${
-      data.id
-    }/rollback-applications?${qs.stringify(getPermissionRouteParams())}`
-  );
-};
 // ===========resource==========
 export const queryServiceResource = (
   params: ApplicationRevisionParams,
