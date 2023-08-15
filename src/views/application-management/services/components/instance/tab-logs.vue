@@ -58,10 +58,8 @@
 
   const updateContent = (newVal) => {
     if (hasAnsi(newVal)) {
-      // content.value = `${content.value}${convert.toHtml(newVal)}`;
       content.value = `${convert.toHtml(newVal)}`;
     } else {
-      // content.value = `${content.value}${newVal}`;
       content.value = `${newVal}`;
     }
   };
