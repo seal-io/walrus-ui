@@ -47,7 +47,6 @@
 
 <script lang="ts" setup>
   import { computed } from 'vue';
-  import FileSaver from 'file-saver';
   import { downloadConfig } from '../config';
   import { downloadCli } from '../api';
 
@@ -59,21 +58,33 @@
       }
     }
   });
-  const fileUrl = (value, data) => {
-    return downloadCli({
-      os: data.os,
-      arch: value
+  const click = (node) => {
+    const mouseEvent = new MouseEvent('click', {
+      bubbles: true,
+      cancelable: true,
+      view: window
     });
+    node.dispatchEvent(mouseEvent);
+  };
+  const createDom = (url) => {
+    const a = document.createElement('a');
+    a.href = url;
+    return a;
   };
   const handledownload = (value, data) => {
+    const url = downloadCli({
+      os: data.os,
+      arch: value,
+      t: Date.now()
+    });
     try {
-      const url = downloadCli({
-        os: data.os,
-        arch: value
-      });
-      FileSaver.saveAs(url);
+      const node = createDom(url);
+      click(node);
+      setTimeout(() => {
+        node.remove();
+      }, 100);
     } catch (error) {
-      //
+      // ingore
     }
   };
 </script>

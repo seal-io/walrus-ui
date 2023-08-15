@@ -404,10 +404,8 @@
       });
       loading.value = false;
       execSucceed();
-      queryParams.page = 1;
       selectedKeys.value = [];
       rowSelection.selectedRowKeys = [];
-      handleFilter();
     } catch (error) {
       loading.value = false;
     }
@@ -453,7 +451,7 @@
     fetchData();
   };
 
-  const updateApplicationList = (data) => {
+  const updateServiceList = (data) => {
     const collections = filter(
       data.collection || [],
       (sItem) => sItem?.project?.id === queryParams.projectID
@@ -493,7 +491,7 @@
   };
   const updateHandler = (list) => {
     _.each(list, (data) => {
-      updateApplicationList(data);
+      updateServiceList(data);
     });
   };
   const createServiceChunkRequest = () => {
