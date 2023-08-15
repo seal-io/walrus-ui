@@ -142,29 +142,6 @@
           </template>
         </a-grid>
       </div>
-      <!-- <a-form-item v-if="showFooter">
-        <editPageFooter style="display: flex; margin-top: 0; padding-bottom: 0">
-          <template #save>
-            <a-button
-              type="primary"
-              size="small"
-              class="cap-title"
-              :loading="submitLoading"
-              @click="handleSubmit"
-              >{{ $t('common.button.save') }}</a-button
-            >
-          </template>
-          <template #cancel>
-            <a-button
-              type="outline"
-              size="small"
-              class="cap-title"
-              @click="handleCancel"
-              >{{ $t('common.button.cancel') }}</a-button
-            >
-          </template>
-        </editPageFooter>
-      </a-form-item> -->
     </a-form>
   </div>
 </template>
@@ -184,19 +161,9 @@
     find,
     filter
   } from 'lodash';
-  import {
-    PropType,
-    reactive,
-    ref,
-    computed,
-    onMounted,
-    watchEffect,
-    watch,
-    inject
-  } from 'vue';
-  import axios, { CancelToken } from 'axios';
+  import { PropType, ref, computed, onMounted, watch, inject } from 'vue';
+  import axios from 'axios';
   import { useI18n } from 'vue-i18n';
-  import editPageFooter from '@/components/edit-page-footer/index.vue';
   import thumbButton from '@/components/buttons/thumb-button.vue';
   import i18n from '@/locale/index';
   import {

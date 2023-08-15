@@ -9,7 +9,7 @@
             style="width: 240px"
             :placeholder="$t('catalogs.list.query.holder')"
             @clear="handleSearch"
-            @change="handleSearch"
+            @change="handleQueryChange"
             @press-enter="handleSearch"
           >
             <template #prefix>
@@ -54,14 +54,6 @@
         default-active-key="currentView"
         :active-key="currentView"
       >
-        <!-- <a-tab-pane key="thumb">
-          <ThumbView
-            :list="dataList"
-            :checked-list="selectedKeys"
-            @edit="handleEditItem"
-            @change="handleCheckChange"
-          ></ThumbView>
-        </a-tab-pane> -->
         <a-tab-pane key="list">
           <ListView
             ref="listViewRef"
@@ -107,7 +99,6 @@
   import { deleteModal, execSucceed } from '@/utils/monitor';
   import { PageAction, ModalAction } from '@/views/config';
   import { useUpdateChunkedList } from '@/views/commons/hooks/use-update-chunked-list';
-  import ThumbView from '../components/thumb-view.vue';
   import ListView from '../components/list-view.vue';
   import { CatalogRowData } from '../config/interface';
   import { queryCatalogs, deleteCatalogs, CatalogAPI } from '../api';
@@ -237,16 +228,25 @@
     try {
       setChunkRequest({
         url: CatalogAPI,
+        params: {
+          ..._.pickBy(queryParams, (val) => !!val)
+        },
         handler: updateHandler
       });
     } catch (error) {
       // ignore
     }
   };
+  const handleQueryChange = () => {
+    handleSearch();
+    nextTick(() => {
+      createCatalogChunkRequest();
+    });
+  };
   onMounted(() => {
     fetchData();
     nextTick(() => {
-      // createCatalogChunkRequest();
+      createCatalogChunkRequest();
     });
   });
 </script>

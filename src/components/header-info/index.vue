@@ -10,9 +10,10 @@
         </div>
       </div>
       <div class="right">
-        <slot name="title">
+        <slot name="title" class="title">
           <div class="title">{{ info?.name }}</div>
         </slot>
+        <slot name="status"></slot>
         <slot name="description"></slot>
       </div>
       <div class="extra">
@@ -107,9 +108,25 @@
       padding: 8px 16px;
       line-height: 32px;
 
-      .title {
+      :deep(.title) {
+        display: flex;
+        justify-content: space-between;
+        min-width: 400px;
+        max-width: max-content;
         font-weight: 500;
-        font-size: 16px;
+        font-size: 20px;
+
+        .normal {
+          margin-left: 40px;
+          font-weight: 400;
+          font-size: 14px;
+        }
+      }
+
+      :deep(.description) {
+        display: flex;
+        max-width: 800px;
+        line-height: 28px;
       }
     }
 

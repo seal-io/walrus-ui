@@ -15,7 +15,13 @@
           <i class="iconfont icon-rongqiyunfuwu"></i>
         </template>
         <template #title>
-          <BasicInfo :data-info="basicDataList"></BasicInfo>
+          <!-- <basicInfo :data-info="basicDataList"></basicInfo> -->
+          <div class="title">
+            {{ currentInfo.name }}
+          </div>
+        </template>
+        <template #description>
+          <div class="description">{{ currentInfo.description }}</div>
         </template>
         <template #extra>
           <QuestionPopup :link="QAlinkMap.Environment"></QuestionPopup>

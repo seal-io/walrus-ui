@@ -15,7 +15,13 @@
           <i class="iconfont icon-project"></i>
         </template>
         <template #title>
-          <basicInfo :data-info="basicDataList"></basicInfo>
+          <!-- <basicInfo :data-info="basicDataList"></basicInfo> -->
+          <div class="title">
+            {{ currentInfo.name }}
+          </div>
+        </template>
+        <template #description>
+          <div class="description">{{ currentInfo.description }}</div>
         </template>
         <template #extra>
           <QuestionPopup :link="QAlinkMap.ProjectDetail"></QuestionPopup>
@@ -89,6 +95,7 @@
 </template>
 
 <script lang="ts" setup>
+  import dayjs from 'dayjs';
   import { Resources, Actions } from '@/permissions/config';
   import { PROJECT } from '@/router/config';
   import { ref, onMounted } from 'vue';
