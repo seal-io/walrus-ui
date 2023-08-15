@@ -96,7 +96,7 @@ export const schemaType = {
     return _.includes(UNKNOWN_TYPE, type) || !type;
   },
   isCollectionType(type) {
-    return _.get(type, '1') && !_.isString(_.get(type, '1'));
+    return _.get(type, '1') && _.includes(COLLECTION_TYPE, _.get(type, '1'));
   },
   isStringType(type) {
     return type === 'string';

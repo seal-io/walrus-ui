@@ -1,6 +1,6 @@
 <template>
   <div class="thumb-view-wrap" wrap :size="16">
-    <a-grid :cols="24" :col-gap="20" :row-gap="20" wrap>
+    <a-grid v-if="list.length" :cols="24" :col-gap="20" :row-gap="20" wrap>
       <a-grid-item
         v-for="(item, index) in list"
         :key="index"
@@ -15,6 +15,7 @@
         ></templateItem>
       </a-grid-item>
     </a-grid>
+    <a-empty v-else class="m-t-20"></a-empty>
   </div>
 </template>
 
