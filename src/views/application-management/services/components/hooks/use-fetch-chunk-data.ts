@@ -202,7 +202,7 @@ export default function useFetchResource() {
       loading.value = !!requestCacheList.value.length;
     }
   };
-  // TODO get helm resource ids
+  // get helm resource ids
   const getHelmResourceIDs = async () => {
     if (!helmResourceNeedUpdate.size) return;
     const ids = [...helmResourceNeedUpdate];
@@ -234,7 +234,6 @@ export default function useFetchResource() {
     _.each(list, (data) => {
       updateDataList(data);
     });
-    // TODO
     getHelmResourceIDs();
   };
   const createResourceChunkConnection = () => {

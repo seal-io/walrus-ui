@@ -152,14 +152,7 @@
     page: 1,
     perPage: 10
   });
-  const { updateChunkedList } = useUpdateChunkedList(dataList, {
-    filterFun(item) {
-      if (queryParams.catalogID) {
-        return item.catalog?.id === queryParams.catalogID;
-      }
-      return true;
-    }
-  });
+  const { updateChunkedList } = useUpdateChunkedList(dataList);
   const handleCreate = () => {
     router.push({
       name: OPERATIONHUB.TemplateDetail,
@@ -202,18 +195,7 @@
       remove(selectedKeys.value, (val) => val === id);
     }
   };
-  const handleSearch = () => {
-    clearTimeout(timer);
-    timer = setTimeout(() => {
-      queryParams.page = 1;
-      handleFilter();
-    }, 100);
-  };
-  const handleReset = () => {
-    queryParams.query = '';
-    queryParams.page = 1;
-    handleFilter();
-  };
+
   const handlePageChange = (page: number) => {
     queryParams.page = page;
     handleFilter();
@@ -255,11 +237,32 @@
     try {
       setChunkRequest({
         url: TemplateAPI,
+        params: {
+          ..._.pickBy(_.omit(queryParams, ['page', 'perPage']), (val) => !!val)
+        },
         handler: updateHandler
       });
     } catch (error) {
       // ignore
     }
+  };
+  const handleReset = () => {
+    queryParams.query = '';
+    queryParams.page = 1;
+    handleFilter();
+    nextTick(() => {
+      createTemplateChunkRequest();
+    });
+  };
+  const handleSearch = () => {
+    clearTimeout(timer);
+    timer = setTimeout(() => {
+      queryParams.page = 1;
+      handleFilter();
+    }, 100);
+    nextTick(() => {
+      createTemplateChunkRequest();
+    });
   };
   const getCatalogList = async () => {
     try {

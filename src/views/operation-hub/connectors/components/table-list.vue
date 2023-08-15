@@ -460,19 +460,7 @@
     setSortDirection(dataIndex, direction);
     fetchData();
   };
-  const handleSearch = () => {
-    clearTimeout(timer);
-    timer = setTimeout(() => {
-      queryParams.page = 1;
-      handleFilter();
-    }, 100);
-  };
-  const handleReset = () => {
-    queryParams.category = '';
-    queryParams.query = '';
-    queryParams.page = 1;
-    handleFilter();
-  };
+
   const handlePageChange = (page: number) => {
     queryParams.page = page;
     handleFilter();
@@ -617,8 +605,7 @@
       setChunkRequest({
         url: `${url}`,
         params: {
-          category: queryParams.category,
-          query: queryParams.query
+          ..._.pickBy(_.omit(queryParams, ['page', 'perPage']), (val) => !!val)
         },
         handler: updateHandler
       });
@@ -627,6 +614,25 @@
     }
   };
 
+  const handleSearch = () => {
+    clearTimeout(timer);
+    timer = setTimeout(() => {
+      queryParams.page = 1;
+      handleFilter();
+    }, 100);
+    nextTick(() => {
+      createConnectChunkRequest();
+    });
+  };
+  const handleReset = () => {
+    queryParams.category = '';
+    queryParams.query = '';
+    queryParams.page = 1;
+    handleFilter();
+    nextTick(() => {
+      createConnectChunkRequest();
+    });
+  };
   onMounted(() => {
     fetchData();
     nextTick(() => {

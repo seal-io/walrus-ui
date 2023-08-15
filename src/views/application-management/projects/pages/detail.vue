@@ -91,7 +91,7 @@
 <script lang="ts" setup>
   import { Resources, Actions } from '@/permissions/config';
   import { PROJECT } from '@/router/config';
-  import { ref, onMounted, computed, nextTick } from 'vue';
+  import { ref, onMounted } from 'vue';
   import _ from 'lodash';
   import { QAlinkMap } from '@/views/config';
   import QuestionPopup from '@/components/question-popup/index.vue';

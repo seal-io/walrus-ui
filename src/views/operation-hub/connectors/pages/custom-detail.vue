@@ -93,8 +93,9 @@
             ]"
           >
             <seal-input
-              v-if="pageAction === PageAction.EDIT && !formData.id"
+              v-if="pageAction === PageAction.EDIT"
               v-model="formData.type"
+              :disabled="formData.id"
               :label="$t('operation.connectors.form.type')"
               :required="true"
               :style="{ width: `${InputWidth.LARGE}px` }"
@@ -104,15 +105,6 @@
               class="readonly-view-label"
               >{{ formData.type || '-' }}</span
             >
-            <sealFormItemWrap
-              v-else
-              :style="{ width: `${InputWidth.LARGE}px` }"
-              :label="$t('operation.connectors.form.type')"
-            >
-              <span class="readonly-view-label p-l-0">{{
-                formData.type || '-'
-              }}</span>
-            </sealFormItemWrap>
           </a-form-item>
           <a-form-item
             :label="$t('operation.connectors.form.attribute')"

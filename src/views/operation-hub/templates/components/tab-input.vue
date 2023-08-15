@@ -68,7 +68,7 @@
     <AceEditor
       v-if="currentView === 'json'"
       lang="json"
-      :height="400"
+      :height="height"
       read-only
       :show-gutter="false"
       :editor-default-value="jsonData"
@@ -89,9 +89,18 @@
       default() {
         return {};
       }
+    },
+    wrapSize: {
+      type: Number,
+      default() {
+        return 200;
+      }
     }
   });
   const currentView = ref('list');
+  const height = computed(() => {
+    return `calc(100vh - ${props.wrapSize + 180}px)`;
+  });
   const dataList = computed(() => {
     const list = filter(get(props.schema, 'variables'), (item) => {
       return !item.hidden;

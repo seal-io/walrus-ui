@@ -14,125 +14,127 @@
       ></Breadcrumb>
     </BreadWrapper>
     <ComCard>
-      <GroupTitle
-        :bordered="false"
-        :title="$t('common.title.basicInfo')"
-        flex-start
-        :show-edit="
-          pageAction === PageAction.VIEW &&
-          !_.get(formData, 'catalog.id') &&
-          userStore.hasRolesActionsPermission({
-            resource: Resources.Templates,
-            actions: [Actions.PUT]
-          })
-        "
-        @edit="handleEdit"
-      ></GroupTitle>
-      <a-form
-        ref="formref"
-        :model="formData"
-        auto-label-width
-        label-align="left"
-      >
-        <a-form-item
-          :label="$t('operation.connectors.table.name')"
-          field="name"
-          hide-asterisk
-          :hide-label="pageAction === PageAction.EDIT"
-          :disabled="!!id"
-          :validate-trigger="['change']"
-          :rules="[
-            {
-              required: true,
-              match: validateLabelNameRegx,
-              message: $t('common.validate.labelName')
-            }
-          ]"
+      <div ref="extraWrapper">
+        <GroupTitle
+          :bordered="false"
+          :title="$t('common.title.basicInfo')"
+          flex-start
+          :show-edit="
+            pageAction === PageAction.VIEW &&
+            !_.get(formData, 'catalog.id') &&
+            userStore.hasRolesActionsPermission({
+              resource: Resources.Templates,
+              actions: [Actions.PUT]
+            })
+          "
+          @edit="handleEdit"
+        ></GroupTitle>
+        <a-form
+          ref="formref"
+          :model="formData"
+          auto-label-width
+          label-align="left"
         >
-          <seal-input
-            v-if="pageAction === PageAction.EDIT"
-            v-model="formData.name"
+          <a-form-item
             :label="$t('operation.connectors.table.name')"
-            :required="true"
-            :style="{ width: `${InputWidth.LARGE}px` }"
-            :max-length="63"
-            show-word-limit
-          ></seal-input>
-          <span v-else class="readonly-view-label">{{
-            formData.name || '-'
-          }}</span>
-          <template v-if="pageAction === PageAction.EDIT" #extra>
-            <span class="tips">{{ $t('common.validate.labelName') }}</span>
-          </template>
-        </a-form-item>
-        <a-form-item
-          :label="$t('operation.environments.table.description')"
-          hide-asterisk
-          :hide-label="pageAction === PageAction.EDIT"
-          field="description"
-        >
-          <seal-textarea
-            v-if="pageAction === PageAction.EDIT"
-            v-model="formData.description"
+            field="name"
+            hide-asterisk
+            :hide-label="pageAction === PageAction.EDIT"
+            :disabled="!!id"
+            :validate-trigger="['change']"
+            :rules="[
+              {
+                required: true,
+                match: validateLabelNameRegx,
+                message: $t('common.validate.labelName')
+              }
+            ]"
+          >
+            <seal-input
+              v-if="pageAction === PageAction.EDIT"
+              v-model="formData.name"
+              :label="$t('operation.connectors.table.name')"
+              :required="true"
+              :style="{ width: `${InputWidth.LARGE}px` }"
+              :max-length="63"
+              show-word-limit
+            ></seal-input>
+            <span v-else class="readonly-view-label">{{
+              formData.name || '-'
+            }}</span>
+            <template v-if="pageAction === PageAction.EDIT" #extra>
+              <span class="tips">{{ $t('common.validate.labelName') }}</span>
+            </template>
+          </a-form-item>
+          <a-form-item
             :label="$t('operation.environments.table.description')"
-            :style="{ width: `${InputWidth.LARGE}px` }"
-            :auto-size="{ minRows: 6, maxRows: 10 }"
-            :max-length="200"
-            show-word-limit
-          ></seal-textarea>
-          <div v-else class="description-content readonly-view-label">{{
-            formData.description || '-'
-          }}</div>
-        </a-form-item>
-        <a-form-item
-          field="source"
-          :label="$t('operation.templates.detail.source')"
-          hide-asterisk
-          :hide-label="pageAction === PageAction.EDIT"
-          :validate-trigger="['change']"
-          :rules="[
-            {
-              required: true,
-              message: $t('operation.templates.rules.source')
-            }
-          ]"
-        >
-          <seal-input
-            v-if="pageAction === PageAction.EDIT"
-            v-model="formData.source"
+            hide-asterisk
+            :hide-label="pageAction === PageAction.EDIT"
+            field="description"
+          >
+            <seal-textarea
+              v-if="pageAction === PageAction.EDIT"
+              v-model="formData.description"
+              :label="$t('operation.environments.table.description')"
+              :style="{ width: `${InputWidth.LARGE}px` }"
+              :auto-size="{ minRows: 6, maxRows: 10 }"
+              :max-length="200"
+              show-word-limit
+            ></seal-textarea>
+            <div v-else class="description-content readonly-view-label">{{
+              formData.description || '-'
+            }}</div>
+          </a-form-item>
+          <a-form-item
+            field="source"
             :label="$t('operation.templates.detail.source')"
-            :required="true"
-            :style="{ width: `${InputWidth.LARGE}px` }"
-          ></seal-input>
-          <span v-else class="readonly-view-label">{{
-            formData.source || '-'
-          }}</span>
-          <template v-if="pageAction === PageAction.EDIT" #extra>
-            <span
-              >{{
-                $t('common.help.eg')
-              }}
-              https://github.com/terraform-seal-modules/rds-seeder</span
-            >
-          </template>
-        </a-form-item>
+            hide-asterisk
+            :hide-label="pageAction === PageAction.EDIT"
+            :validate-trigger="['change']"
+            :rules="[
+              {
+                required: true,
+                message: $t('operation.templates.rules.source')
+              }
+            ]"
+          >
+            <seal-input
+              v-if="pageAction === PageAction.EDIT"
+              v-model="formData.source"
+              :label="$t('operation.templates.detail.source')"
+              :required="true"
+              :style="{ width: `${InputWidth.LARGE}px` }"
+            ></seal-input>
+            <span v-else class="readonly-view-label">{{
+              formData.source || '-'
+            }}</span>
+            <template v-if="pageAction === PageAction.EDIT" #extra>
+              <span
+                >{{
+                  $t('common.help.eg')
+                }}
+                https://github.com/terraform-seal-modules/rds-seeder</span
+              >
+            </template>
+          </a-form-item>
 
-        <a-form-item
-          v-if="id && pageAction === PageAction.VIEW"
-          :label="$t('operation.connectors.table.status')"
-        >
-          <StatusLabel
-            style="margin-left: 12px"
-            :status="{
-              status: get(formData, 'status.summaryStatus') || '',
-              text: get(formData, 'status.summaryStatus'),
-              message: get(formData, 'status.summaryStatusMessage') || '',
-              transitioning: get(formData, 'status.transitioning'),
-              error: get(formData, 'status.error')
-            }"
-          ></StatusLabel>
-        </a-form-item>
-      </a-form>
+          <a-form-item
+            v-if="id && pageAction === PageAction.VIEW"
+            :label="$t('operation.connectors.table.status')"
+          >
+            <StatusLabel
+              style="margin-left: 12px"
+              :status="{
+                status: get(formData, 'status.summaryStatus') || '',
+                text: get(formData, 'status.summaryStatus'),
+                message: get(formData, 'status.summaryStatusMessage') || '',
+                transitioning: get(formData, 'status.transitioning'),
+                error: get(formData, 'status.error')
+              }"
+            ></StatusLabel>
+          </a-form-item>
+        </a-form>
+      </div>
       <a-tabs
         v-if="
           id &&
@@ -154,6 +156,8 @@
         >
           <component
             :is="tabMap[item.com]"
+            :height="tabContentHeight"
+            :wrap-size="height"
             :schema="templateSchema"
           ></component>
         </a-tab-pane>
@@ -214,14 +218,14 @@
   import EditPageFooter from '@/components/edit-page-footer/index.vue';
   import useCallCommon from '@/hooks/use-call-common';
   import usePageAction from '@/hooks/use-page-action';
+  import { useElementSize } from '@vueuse/core';
   import StatusLabel from '../../connectors/components/status-label.vue';
-  import { templateTypeList, tabList } from '../config';
-  import { Schema } from '../config/interface';
+  import { tabList } from '../config';
   import { operationRootBread } from '../../connectors/config';
   import tabReadme from '../components/tab-readme.vue';
   import tabInput from '../components/tab-input.vue';
   import tabOutput from '../components/tab-output.vue';
-  import tabConnector from '../components/tab-connector.vue';
+  import tabProvider from '../components/tab-provider.vue';
   import {
     queryItemTemplate,
     createTemplate,
@@ -233,7 +237,7 @@
     tabReadme: markRaw(tabReadme),
     tabInput: markRaw(tabInput),
     tabOutput: markRaw(tabOutput),
-    tabConnector: markRaw(tabConnector)
+    tabConnector: markRaw(tabProvider)
   };
 
   const { scrollToView } = useScrollToView();
@@ -244,6 +248,7 @@
   const tabBarStore = useTabBarStore();
   const { pageAction, handleEdit } = usePageAction();
   const version = ref('');
+  const extraWrapper = ref();
   const activeKey = ref('tabReadme');
   const { router, route, t } = useCallCommon();
   const formref = ref();
@@ -260,6 +265,11 @@
     // icon: ''
   });
 
+  const { height } = useElementSize(extraWrapper);
+
+  const tabContentHeight = computed(() => {
+    return `calc(100vh - ${height.value + 150}px)`;
+  });
   const title = computed(() => {
     if (!id) {
       return 'operation.templates.detail.add';
