@@ -25,7 +25,7 @@
   import useCallCommon from '@/hooks/use-call-common';
   import useProjectBreadcrumbData from '@/views/application-management/projects/hooks/use-project-breadcrumb-data';
   import ServiceDetail from '../components/instance/index.vue';
-  import { InstanceData } from '../config/interface';
+  import { ServiceRowData } from '../config/interface';
 
   const { route, router } = useCallCommon();
   const {
@@ -44,7 +44,7 @@
   const id = route.query.id as string;
   const serviceId = ref(id);
   // when chunk request data update will be used to match the current service
-  const serviceDataList = ref<InstanceData[]>([]);
+  const serviceDataList = ref<ServiceRowData[]>([]);
 
   provide('serviceId', serviceId);
 

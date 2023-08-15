@@ -2,7 +2,13 @@
   <div>
     <BreadWrapper>
       <Breadcrumb
-        :items="breadCrumbList"
+        :items="[
+          ...breadCrumbList,
+          {
+            type: 'menu.operatorHub.evniroment',
+            label: title
+          }
+        ]"
         :menu="{ icon: 'icon-apps' }"
         @change="handleSelectChange"
       ></Breadcrumb>
@@ -14,10 +20,6 @@
           pageAction === PageAction.VIEW ? `${InputWidth.XLARGE}px` : '100%'
       }"
     >
-      <!-- <QuestionPopup
-        :link="QAlinkMap.Environment"
-        class="absolute right-16 zindex-5"
-      ></QuestionPopup> -->
       <GroupTitle
         :bordered="false"
         :title="$t('common.title.basicInfo')"
@@ -321,25 +323,15 @@
   const setBreadCrumbList = async () => {
     const list = await initBreadValues();
 
-    breadCrumbList.value = [
-      ...list,
-      {
-        type: 'menu.operatorHub.evniroment',
-        label: title.value
-      }
-    ] as BreadcrumbOptions[];
+    breadCrumbList.value = [...list];
 
     const projectList = await getProjectList();
     const projectRes = await setProjectList(projectList);
     breadCrumbList.value = [
       {
         ...projectRes
-      },
-      {
-        type: 'menu.operatorHub.evniroment',
-        label: title.value
       }
-    ] as BreadcrumbOptions[];
+    ];
   };
   const setFormDataConnectors = (connectors) => {
     formData.value.edges = [];

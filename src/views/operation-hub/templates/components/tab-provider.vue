@@ -1,17 +1,33 @@
 <template>
-  <div class="tab-content-wrap" :style="{ height }">
-    <ul>
-      <li
-        v-for="(item, index) in dataList"
-        :key="index"
-        style="line-height: 22px"
-      >
-        <span>{{ item.name }}</span>
-        <span style="margin-left: 20px">{{
-          join(item.version_constraints, ', ')
-        }}</span>
-      </li>
-    </ul>
+  <div class="tab-content-wrap">
+    <a-table
+      column-resizable
+      :bordered="false"
+      :data="dataList"
+      :pagination="false"
+    >
+      <template #columns>
+        <a-table-column
+          ellipsis
+          tooltip
+          :cell-style="{ minWidth: '40px' }"
+          data-index="name"
+          :title="$t('common.table.name')"
+        >
+        </a-table-column>
+        <a-table-column
+          ellipsis
+          tooltip
+          :cell-style="{ minWidth: '40px' }"
+          data-index="version_constraints"
+          :title="$t('operation.templates.detail.version')"
+        >
+          <template #cell="{ record }">
+            <span>{{ join(record.version_constraints, ', ') }}</span>
+          </template>
+        </a-table-column>
+      </template>
+    </a-table>
   </div>
 </template>
 
@@ -49,9 +65,6 @@
 
   .tab-content-wrap {
     min-height: 200px;
-    overflow: auto;
-    background-color: var(--color-fill-2);
-    border-radius: var(--border-radius-small);
 
     ul {
       padding-left: 30px;

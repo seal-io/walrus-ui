@@ -103,7 +103,7 @@
   import AceEditor from '@/components/ace-editor/index.vue';
   import { execSucceed } from '@/utils/monitor';
   import EditPageFooter from '@/components/edit-page-footer/index.vue';
-  import { InstanceData, HistoryData } from '../config/interface';
+  import { HistoryData } from '../config/interface';
   import {
     queryServiceRevisions,
     diffRevisionSpec,
@@ -133,12 +133,6 @@
       type: String,
       default() {
         return '';
-      }
-    },
-    instanceList: {
-      type: Array as PropType<InstanceData[]>,
-      default() {
-        return [];
       }
     }
   });

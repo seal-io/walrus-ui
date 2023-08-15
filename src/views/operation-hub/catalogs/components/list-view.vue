@@ -93,7 +93,9 @@
         >
           <template #cell="{ record }">
             <span>{{
-              dayjs(record.sync?.time).format('YYYY-MM-DD HH:mm:ss')
+              record.sync?.time
+                ? dayjs(record.sync?.time).format('YYYY-MM-DD HH:mm:ss')
+                : '-'
             }}</span>
           </template>
         </a-table-column>

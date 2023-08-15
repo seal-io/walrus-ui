@@ -36,18 +36,6 @@ export interface DriftDataItem {
   type: string;
 }
 
-export interface InstanceData {
-  name: string;
-  id: string;
-  type: string;
-  status: object;
-  projectId: { id: string };
-  attributes: Record<string, any>;
-  environment: {
-    id: string;
-    name: string;
-  };
-}
 export interface KeysItem {
   executable?: boolean;
   loggable?: boolean;

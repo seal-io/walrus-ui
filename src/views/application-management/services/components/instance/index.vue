@@ -1,11 +1,11 @@
 <template>
-  <div id="service-page">
+  <div id="service-page" class="service-page">
     <ComCard padding="0">
       <HeaderInfo :info="currentInfo">
         <template #icon>
           <i class="iconfont icon-apps-fill"></i>
         </template>
-        <template #title>
+        <!-- <template #title>
           <BasicInfo
             :data-info="basicDataList"
             :actions="actionList"
@@ -13,8 +13,34 @@
             @group-select="handleSelect"
           >
           </BasicInfo>
+        </template> -->
+        <template #title>
+          <!-- <basicInfo :data-info="basicDataList"></basicInfo> -->
+          <div class="title">
+            <span> {{ currentInfo.name }}</span>
+            <StatusLabel
+              :zoom="0.9"
+              :status="{
+                status: _.get(currentInfo, 'status.summaryStatus') || '',
+                text: _.get(currentInfo, 'status.summaryStatus'),
+                message:
+                  _.get(currentInfo, 'status.summaryStatusMessage') || '',
+                transitioning: _.get(currentInfo, 'status.transitioning'),
+                error: _.get(currentInfo, 'status.error')
+              }"
+            ></StatusLabel>
+          </div>
+          <div v-if="actionList.length" class="dropdown">
+            <DropButtonGroup
+              :actions="actionList"
+              @click="handleClick"
+              @select="handleSelect"
+            ></DropButtonGroup>
+          </div>
         </template>
-        <template #description></template>
+        <template #description>
+          <div class="description">{{ currentInfo.description }}</div>
+        </template>
       </HeaderInfo>
       <slTransition>
         <div v-if="pageAction === PageAction.EDIT">
@@ -118,12 +144,14 @@
     computed,
     onBeforeUnmount
   } from 'vue';
+  import DropButtonGroup from '@/components/drop-button-group/index.vue';
   import slTransition from '@/components/sl-transition/index.vue';
   import { useSetChunkRequest } from '@/api/axios-chunk-request';
   import HeaderInfo from '@/components/header-info/index.vue';
   import useCallCommon from '@/hooks/use-call-common';
   import EditPageFooter from '@/components/edit-page-footer/index.vue';
   import useBasicInfoData from '@/views/application-management/projects/hooks/use-basicInfo-data';
+  import StatusLabel from '@/views/operation-hub/connectors/components/status-label.vue';
   import tabTerminal from './x-terminal/tab-terminal.vue';
   import tabLogs from './tab-logs.vue';
   import tabOutput from './tab-output.vue';
@@ -137,7 +165,7 @@
     instanceBasicInfo,
     serviceActions
   } from '../../config';
-  import { InstanceData } from '../../config/interface';
+  import { ServiceRowData } from '../../config/interface';
   import useFetchResource from '../hooks/use-fetch-chunk-data';
   import {
     queryItemApplicationService,
@@ -150,7 +178,7 @@
 
   const props = defineProps({
     serviceList: {
-      type: Array as PropType<InstanceData[]>,
+      type: Array as PropType<ServiceRowData[]>,
       default() {
         return [];
       }
@@ -170,7 +198,7 @@
   const projectID = route.params.projectId || '';
   const serviceID = route.query.id || '';
   const activeKey = ref('resource');
-  const currentInfo = ref({});
+  const currentInfo = ref<ServiceRowData>({} as ServiceRowData);
   const serviceInfoRef = ref();
   const instanceTabMap = {
     tabResource: markRaw(tabResource),
@@ -354,6 +382,14 @@
 </script>
 
 <style lang="less" scoped>
+  .service-page {
+    .dropdown {
+      position: absolute;
+      top: 16px;
+      right: 16px;
+    }
+  }
+
   .url-wrap {
     display: inline-flex;
     margin-bottom: 10px;
