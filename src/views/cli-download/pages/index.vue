@@ -59,14 +59,19 @@
       }
     }
   });
-
+  const fileUrl = (value, data) => {
+    return downloadCli({
+      os: data.os,
+      arch: value
+    });
+  };
   const handledownload = (value, data) => {
     try {
       const url = downloadCli({
         os: data.os,
         arch: value
       });
-      FileSaver.saveAs(url, 'seal-cli');
+      FileSaver.saveAs(url);
     } catch (error) {
       //
     }

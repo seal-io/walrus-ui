@@ -188,6 +188,12 @@
         return {};
       }
     },
+    formSize: {
+      type: String as PropType<'small' | 'default'>,
+      default() {
+        return 'default';
+      }
+    },
     formSchema: {
       type: Array as PropType<ComponentSchema[]>,
       default() {
@@ -297,12 +303,25 @@
     const isEvenPosition = (index + 1) % 2 === 0;
     const fmSchemaIsCollectionType =
       schemaType.isCollectionType(fm.type) || schemaType.isUnknownType(fm.type);
-    let bilingSchema: any = {};
+    let bilingSchema: any = null;
     if (isEvenPosition) {
       bilingSchema = activeSchemaList.value[index - 1];
     } else {
-      bilingSchema = activeSchemaList.value[index + 1] || {};
+      bilingSchema = activeSchemaList.value[index + 1];
     }
+
+    // it's the last item and fm is collection type
+    if (
+      !bilingSchema &&
+      (fmSchemaIsCollectionType || props.formSize === 'small')
+    ) {
+      return 24;
+    }
+    // it's the last item and fm is not collection type
+    if (!bilingSchema && !fmSchemaIsCollectionType) {
+      return 12;
+    }
+
     const bilingSchemaIsCollectionType =
       schemaType.isCollectionType(bilingSchema.type) ||
       schemaType.isUnknownType(bilingSchema.type);

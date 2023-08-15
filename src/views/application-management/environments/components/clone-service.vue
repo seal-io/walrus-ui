@@ -187,6 +187,7 @@
                 :ref="(el: refItem) => setRefMap(el, `schemaForm${index}`)"
                 :form-id="`schemaForm${index}`"
                 layout="vertical"
+                form-size="small"
                 :show-footer="false"
                 :submit="() => {}"
                 :attributes="variableAttributes"
@@ -199,6 +200,7 @@
           <formCreate
             v-if="formTabs.length < 2"
             ref="schemaForm"
+            form-size="small"
             form-id="schemaForm"
             layout="vertical"
             :show-footer="false"
