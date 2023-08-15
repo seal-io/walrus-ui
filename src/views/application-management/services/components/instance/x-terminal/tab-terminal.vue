@@ -69,7 +69,7 @@
     if (!resourceId.value || !resourceKey.value) {
       return '';
     }
-    return `${proto}://${host}/v1/${SERVICE_RESOURCE_API_PREFIX()}/resources/${
+    return `${proto}://${host}/v1${SERVICE_RESOURCE_API_PREFIX()}/resources/${
       resourceId.value
     }/exec?${qs.stringify({
       key: resourceKey.value,

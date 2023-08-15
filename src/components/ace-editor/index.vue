@@ -17,8 +17,15 @@
         />
       </a-tooltip>
     </div>
-    <div v-show="isAce" class="ace-box" :style="{ height: `${height}px` }">
-      <div :id="editorId" :style="{ minHeight: `${height}px` }"></div>
+    <div
+      v-show="isAce"
+      class="ace-box"
+      :style="{ height: _.isNumber(height) ? `${height}px` : height }"
+    >
+      <div
+        :id="editorId"
+        :style="{ minHeight: _.isNumber(height) ? `${height}px` : height }"
+      ></div>
     </div>
     <a-input
       v-show="!isAce"
@@ -109,7 +116,7 @@
       }
     },
     height: {
-      type: Number,
+      type: [Number, String],
       default() {
         return 200;
       }

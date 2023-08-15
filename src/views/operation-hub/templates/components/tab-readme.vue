@@ -1,5 +1,5 @@
 <template>
-  <div class="tab-content-wrap markdown-body">
+  <div class="tab-content-wrap markdown-body" :style="{ height }">
     <div v-html="content"></div>
   </div>
 </template>
@@ -16,6 +16,12 @@
       type: Object as PropType<Schema>,
       default() {
         return {};
+      }
+    },
+    height: {
+      type: String,
+      default() {
+        return '100%';
       }
     }
   });
@@ -43,7 +49,6 @@
 
   .tab-content-wrap {
     min-height: 200px;
-    max-height: 500px;
     padding: 10px;
     overflow: auto;
     background-color: var(--color-fill-2);

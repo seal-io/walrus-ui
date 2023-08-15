@@ -1,5 +1,5 @@
 <template>
-  <div class="tab-content-wrap">
+  <div class="tab-content-wrap" :style="{ height }">
     <ul>
       <li
         v-for="(item, index) in dataList"
@@ -26,6 +26,12 @@
       default() {
         return {};
       }
+    },
+    height: {
+      type: String,
+      default() {
+        return '100%';
+      }
     }
   });
   const dataList = computed(() => {
@@ -43,7 +49,6 @@
 
   .tab-content-wrap {
     min-height: 200px;
-    max-height: 300px;
     overflow: auto;
     background-color: var(--color-fill-2);
     border-radius: var(--border-radius-small);
