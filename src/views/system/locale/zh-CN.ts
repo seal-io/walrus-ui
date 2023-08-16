@@ -124,7 +124,7 @@ export default {
   'account.settings.token.rules.name': '密钥名称必填',
   'account.settings.token.rules.expire': '过期时间必填',
   'account.settings.token.expireDate': '到期时间',
-  'account.settings.token.desc': '密钥可用于访问 Seal API.',
+  'account.settings.token.desc': '密钥可用于访问 Walrus API.',
   'account.settings.token.tips':
     '确保立即复制您的个人访问密钥。您将无法再次看到它！',
   'account.settings.clear.tips': '若保存，以下设置将被清除',

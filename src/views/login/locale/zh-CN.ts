@@ -1,12 +1,12 @@
 export default {
-  'login.form.title': '登录 SEAL',
+  'login.form.title': '登录 Walrus',
   'login.form.userName.errMsg': '用户名不能为空',
   'login.form.password.errMsg': '密码不能为空',
   'login.form.login.errMsg': '登录出错，轻刷新重试',
   'login.form.login.success': '欢迎使用',
   'login.form.login.update': '设置用户配置',
   'login.form.login.complete': '请完善用户配置',
-  'login.form.update.serverurl': '配置Seal的访问地址',
+  'login.form.update.serverurl': '配置walrus的访问地址',
   'login.form.update.password': '为默认用户设置一个强密码',
   'login.form.login.update.tips': '使用前请设置基本用户配置',
   'login.form.userName.placeholder': '用户名',
@@ -28,6 +28,6 @@ export default {
   'login.config.pswd.specified': '启动时已设置初始密码',
   'login.config.pswd.log': '从seal进程日志中搜索"Bootstrap Admin Password"',
   'login.config.user.action':
-    '允许收集<a href={link} target="_blank" class="a-link">匿名统计数据</a>，以帮助我们改进seal',
+    '允许收集<a href={link} target="_blank" class="a-link">匿名统计数据</a>，以帮助我们改进walrus',
   'login.config.join.improvement': '参与改进计划'
 };

@@ -18,12 +18,8 @@ const TOKEN_KEY = 'authed';
 const LOGIN_INFO = 'LOGIN_INFO';
 const LOGIN_HISTORY = 'LOGIN_HISTORY';
 
-const localStore = localForage.createInstance({ name: 'SEAL' });
+const localStore = localForage.createInstance({ name: 'walrus' });
 
-// const createLocalStore = () => {
-//   if (localStore) return
-//   localStore = localForage.createInstance({ name: 'SEAL' })
-// }
 const rememberPasswordFn = (data: LoginInfo) => {
   if (localStore) {
     localStore.setItem(LOGIN_INFO, data);
