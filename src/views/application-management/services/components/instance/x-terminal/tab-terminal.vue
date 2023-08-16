@@ -36,7 +36,6 @@
   import xTerminal from '@/components/x-terminal/index.vue';
   import { useRoute } from 'vue-router';
   import {
-    SERVICE_RESOURCE_API_PREFIX,
     SERVICE_API_PREFIX,
     SERVICE_API
   } from '@/views/application-management/services/api';
@@ -79,9 +78,9 @@
     if (!resourceId.value || !resourceKey.value) {
       return '';
     }
-    return `${proto}://${host}/v1${SERVICE_RESOURCE_API_PREFIX()}/resources/${
-      resourceId.value
-    }/exec?${qs.stringify({
+    return `${proto}://${host}/v1${SERVICE_API_PREFIX()}${SERVICE_API}/${
+      props.nodeInfo.serviceID
+    }/resources/${resourceId.value}/exec?${qs.stringify({
       key: resourceKey.value,
       projectID
     })}`;

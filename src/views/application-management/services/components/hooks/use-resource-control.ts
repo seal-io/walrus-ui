@@ -37,7 +37,7 @@ export default function useResourceControl() {
       dataList: getResourceKeyList({ ...row }, resourceAction.Executable),
       name: row.name,
       id: row.id,
-      nodeInfo: {}
+      nodeInfo: { ...row }
     });
     updateActive.value = row.name;
     drawerTabs.value = _.uniqBy(drawerTabs.value, 'id');
@@ -55,7 +55,7 @@ export default function useResourceControl() {
       dataList: getResourceKeyList({ ...row }, resourceAction.Loggable),
       name: row.name,
       id: row.id,
-      nodeInfo: {}
+      nodeInfo: { ...row }
     });
     updateActive.value = row.name;
     drawerTabs.value = _.uniqBy(drawerTabs.value, 'id');

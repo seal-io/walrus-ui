@@ -46,9 +46,9 @@
         <a-form-item :label="$t('applications.applications.table.service')">
           <cloneService
             ref="servicesRef"
+            clone-type="service"
             :show-check="false"
-            :service-list="selectServices"
-            :async-loading="asyncLoading"
+            :service-ids="selectServices"
             style="width: 800px"
           ></cloneService>
         </a-form-item>
@@ -91,7 +91,7 @@
   import useLabelsActions from '@/components/form-create/hooks/use-labels-action';
   import cloneService from '../../environments/components/clone-service.vue';
   import useProjectBreadcrumbData from '../../projects/hooks/use-project-breadcrumb-data';
-  import { cloneServices, queryServices } from '../api';
+  import { cloneServices } from '../api';
 
   const {
     getProjectList,
@@ -106,11 +106,10 @@
   const { t, route, router } = useCallCommon();
   const ids = route.query.source as string;
   const breadCrumbList = ref<BreadcrumbOptions[]>([]);
-  const selectServices = ref<any[]>([]);
+  const selectServices = ref<any[]>(_.concat(ids));
   const environments = ref<any[]>([]);
   const validateTrigger = ref(false);
   const submitLoading = ref(false);
-  const asyncLoading = ref(false);
   const formref = ref();
   const servicesRef = ref();
   let copyFormData: any = {};
@@ -139,25 +138,6 @@
   };
   const handleSelectChange = ({ value, item }) => {
     handleBreadChange(value, item);
-  };
-  const getSelectServices = async () => {
-    try {
-      const params = {
-        projectID: route.params.projectId as string,
-        environmentID: route.params.environmentId as string,
-        page: -1
-      };
-      asyncLoading.value = true;
-      const { data } = await queryServices(params);
-      const list = data.items || [];
-      const cloneIds = _.concat(ids);
-      selectServices.value = _.filter(list, (item) => {
-        return _.includes(cloneIds, item.id);
-      });
-      asyncLoading.value = false;
-    } catch (error) {
-      asyncLoading.value = false;
-    }
   };
   const handleCloneServices = async () => {
     const services = servicesRef.value.getSelectServiceData();
@@ -229,7 +209,6 @@
       }
     ] as BreadcrumbOptions[];
     setBreadCrumbList();
-    getSelectServices();
   };
   initData();
 </script>

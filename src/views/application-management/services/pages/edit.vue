@@ -334,6 +334,7 @@
   const {
     id,
     init,
+    initInfo,
     generateVariablesGroup,
     getTemplateSchemaByVersion,
     getTemplateVersionList,

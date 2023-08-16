@@ -18,14 +18,17 @@ export default function useServiceData(props?) {
     label: string;
     value: string;
   }
+  /**
+   * Service configuration can refer to output of other services,
+   * so it is necessary to obtain the schema of existing services
+   */
   const {
     completeData,
     initCompleteData,
-    getTemplatesVersions,
     getTemplateVersionByItem,
-    getTemplates,
     serviceDataList,
     templateList,
+    completeDataLoading,
     allTemplateVersions
   } = useCompleteData();
   const serviceStore = useServiceStore();
@@ -34,7 +37,7 @@ export default function useServiceData(props?) {
   const { route, router, t } = useCallCommon();
   const refMap = ref<Record<string, refItem>>({});
   const templateInfo = ref<any>({});
-  const serviceInfo = ref<any>({});
+  const serviceInfo = ref<any>({}); // Store information about the active service, also be used when cloning
   const variablesGroup = ref<any>({});
   const variablesGroupForm = ref<any>({});
   const templateVersionList = ref<TemplateVersion[]>([]);
@@ -75,9 +78,7 @@ export default function useServiceData(props?) {
     if (!route.query.id) return;
     try {
       const params = {
-        id: route.query.id,
-        environmentID: route.params.environmentId,
-        projectID: route.params.projectId
+        id: route.query.id
       };
       const { data } = await queryItemApplicationService(params);
       serviceInfo.value = data;
@@ -201,41 +202,46 @@ export default function useServiceData(props?) {
       item.default = _.get(serviceInfo.value, `attributes.${item.name}`);
     });
   };
+  // for service create page
   const initFormData = async () => {
-    if (!id) {
-      // webservice
+    if (id) {
+      await setFormAttributes();
+    } else {
+      // webservice bydefault
       const webservice = _.find(templateList.value, (item) =>
         setDefaultTemplate(item)
       );
       formData.template.name = webservice
         ? webservice.name
         : _.get(templateList.value, '0.name') || '';
+
       await getTemplateVersionByItem(formData.template.name);
       await getTemplateVersionList();
+
       const moduleTemplate = getTemplateSchemaByName();
       formData.template.version = _.get(moduleTemplate, 'version') || '';
       templateInfo.value = _.cloneDeep(_.get(moduleTemplate, 'schema')) || {};
-    } else {
-      await setFormAttributes();
     }
     generateVariablesGroup(pageAction.value);
-  };
-  // for service edit page
-  const init = async () => {
-    asyncLoading.value = true;
-    await Promise.all([getServiceItemInfo(), initCompleteData()]);
-    await initFormData();
-    asyncLoading.value = false;
   };
   // for service detail
   const initInfo = async () => {
     asyncLoading.value = true;
     serviceInfo.value = serviceStore.getServiceInfo(id);
+    await setFormAttributes();
+    generateVariablesGroup(pageAction.value);
+    asyncLoading.value = false;
+  };
 
-    await getTemplates();
+  // for service edit page
+  const init = async () => {
+    asyncLoading.value = true;
+    // getServiceItemInfo would be called in create page
+    await Promise.all([getServiceItemInfo(), initCompleteData()]);
     await initFormData();
     asyncLoading.value = false;
   };
+
   return {
     id,
     init,
@@ -244,11 +250,11 @@ export default function useServiceData(props?) {
     getTemplateSchemaByName,
     getTemplateSchemaByVersion,
     getTemplateVersionList,
-    getTemplatesVersions,
     getTemplateVersionByItem,
     initCompleteData,
     initInfo,
     asyncLoading,
+    completeDataLoading,
     formData,
     refMap,
     pageAction,

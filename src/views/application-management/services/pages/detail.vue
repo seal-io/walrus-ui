@@ -86,7 +86,7 @@
     const [projectList, environmentList, serviceList] = await Promise.all([
       getProjectList(),
       getEnvironmentList(),
-      getServiceList({ page: 1, pageSize: 10 })
+      getServiceList({ page: 1, perPage: 10 })
     ]);
     const projectRes = await setProjectList(projectList);
     const environmentRes = setEnvironmentList(environmentList);

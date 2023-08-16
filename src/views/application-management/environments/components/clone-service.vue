@@ -23,7 +23,7 @@
       </template>
     </GroupTitle>
     <div class="svc-wrapper">
-      <a-spin :loading="asyncLoading" style="width: 100%">
+      <a-spin :loading="completeDataLoading" style="width: 100%">
         <a-grid :cols="24" :row-gap="8" :col-gap="8">
           <a-grid-item v-for="item in editServiceList" :key="item.id" :span="6">
             <serviceThumb
@@ -251,16 +251,24 @@
   import GroupTitle from '@/components/group-title/index.vue';
   import formCreate from '@/components/form-create/index.vue';
   import serviceThumb from '../../services/components/service-thumb.vue';
-  import { ServiceRowData } from '../../services/config/interface';
   import useServiceData from '../../services/hooks/use-service-data';
 
   type refItem = Element | ComponentPublicInstance | null;
-
+  const CloneType = {
+    SERVICE: 'service',
+    ENVIRONMENT: 'environment'
+  };
   const props = defineProps({
-    serviceList: {
-      type: Array as PropType<ServiceRowData[]>,
+    serviceIds: {
+      type: Array as PropType<string[]>,
       default() {
         return [];
+      }
+    },
+    cloneType: {
+      type: String as PropType<'service' | 'environment'>,
+      default() {
+        return 'environment';
       }
     },
     showCheck: {
@@ -280,6 +288,8 @@
     generateVariablesGroup,
     setFormAttributes,
     initCompleteData,
+    completeDataLoading,
+    serviceDataList,
     serviceInfo,
     formData,
     pageAction,
@@ -492,23 +502,30 @@
     generateVariablesGroup(PageAction.EDIT);
     show.value = false;
   };
+  const setSelectServiceList = () => {
+    selectedList.value.clear();
+    if (props.cloneType === CloneType.ENVIRONMENT) {
+      _.each(serviceDataList.value, (item) => {
+        selectedList.value.add(item.id);
+      });
+      editServiceList.value = _.cloneDeep(serviceDataList.value);
+      return;
+    }
+    if (props.cloneType === CloneType.SERVICE) {
+      selectedList.value = new Set(props.serviceIds);
+      editServiceList.value = _.filter(serviceDataList.value, (item) =>
+        selectedList.value.has(item.id)
+      );
+    }
+  };
+  const init = async () => {
+    await initCompleteData();
+    setSelectServiceList();
+  };
   defineExpose({
     getSelectServiceData
   });
-  watch(
-    () => props.serviceList,
-    () => {
-      selectedList.value.clear();
-      _.each(props.serviceList, (item) => {
-        selectedList.value.add(item.id);
-      });
-      editServiceList.value = _.cloneDeep(props.serviceList);
-    },
-    {
-      immediate: true
-    }
-  );
-  initCompleteData();
+  init();
 </script>
 
 <style lang="less" scoped>

@@ -35,6 +35,7 @@
             v-model="formData.name"
             :label="$t('common.table.name')"
             :required="true"
+            :disabled="action === 'edit'"
             style="width: 100%"
             :max-length="63"
             show-word-limit
