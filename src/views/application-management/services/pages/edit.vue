@@ -512,6 +512,11 @@
     generateVariablesGroup(pageAction.value);
   };
   const handleVersionChange = () => {
+    formData.template.id =
+      _.find(
+        templateVersionList.value,
+        (item) => item.value === formData.template.version
+      )?.id || '';
     setTimeout(() => {
       execVersionChangeCallback();
     }, 100);

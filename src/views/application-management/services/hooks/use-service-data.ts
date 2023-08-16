@@ -53,7 +53,7 @@ export default function useServiceData(props?) {
     description: '',
     labels: {},
     name: '',
-    template: { name: '', version: '' },
+    template: { name: '', version: '', id: '' },
     attributes: {}
   });
 

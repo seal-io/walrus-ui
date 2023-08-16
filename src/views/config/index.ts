@@ -54,39 +54,72 @@ export const InputWidth = {
 };
 
 export const QAlinkMap = {
-  Project: 'https://seal-io.github.io/docs/application/project',
+  Project: [
+    {
+      'zh-CN': 'https://seal-io.github.io/docs/zh/application/project',
+      'en-US': 'https://seal-io.github.io/docs/application/project'
+    }
+  ],
   ProjectDetail: [
     {
-      label: 'menu.operatorHub.evniroment',
-      url: 'https://seal-io.github.io/docs/application/environment'
+      'label': 'menu.operatorHub.evniroment',
+      'zh-CN': 'https://seal-io.github.io/docs/zh/application/environment',
+      'en-US': 'https://seal-io.github.io/docs/application/environment'
     },
     {
-      label: 'menu.applicationManagement.secret',
-      url: 'https://seal-io.github.io/docs/operation/variable'
+      'label': 'menu.applicationManagement.secret',
+      'zh-CN': 'https://seal-io.github.io/docs/zh/operation/variable',
+      'en-US': 'https://seal-io.github.io/docs/operation/variable'
     },
     {
-      label: 'menu.operatorHub.connector',
-      url: 'https://seal-io.github.io/docs/application/connector'
+      'label': 'menu.operatorHub.connector',
+      'zh-CN': 'https://seal-io.github.io/docs/zh/application/connector',
+      'en-US': 'https://seal-io.github.io/docs/application/connector'
     },
     {
-      label: 'menu.applicationManagement.members',
-      url: 'https://seal-io.github.io/docs/application/project#%E6%88%90%E5%91%98%E7%AE%A1%E7%90%86'
+      'label': 'menu.applicationManagement.members',
+      'zh-CN':
+        'https://seal-io.github.io/docs/zh/application/project#%E6%88%90%E5%91%98%E7%AE%A1%E7%90%86',
+      'en-US':
+        'https://seal-io.github.io/docs/application/project#member-management'
     }
   ],
   Environment: [
     {
-      label: 'menu.applicationManagement.serivce',
-      url: 'https://seal-io.github.io/docs/application/service'
+      'label': 'menu.applicationManagement.serivce',
+      'zh-CN': 'https://seal-io.github.io/docs/zh/application/service',
+      'en-US': 'https://seal-io.github.io/docs/application/service'
     },
     {
-      label: 'applications.instance.tab.graph',
-      url: 'https://seal-io.github.io/docs/application/graph'
+      'label': 'applications.instance.tab.graph',
+      'zh-CN': 'https://seal-io.github.io/docs/zh/application/graph',
+      'en-US': 'https://seal-io.github.io/docs/application/graph'
     }
   ],
-  Cost: 'https://seal-io.github.io/docs/category/%E6%88%90%E6%9C%AC%E4%B8%AD%E5%BF%83',
-  Template: 'https://seal-io.github.io/docs/operation/template',
-  Settings: 'https://seal-io.github.io/docs/setting/configuration',
-  Users: 'https://seal-io.github.io/docs/setting/user'
+  Cost: [
+    {
+      'zh-CN': 'https://seal-io.github.io/docs/zh/application/cost',
+      'en-US': 'https://seal-io.github.io/docs/application/cost'
+    }
+  ],
+  Template: [
+    {
+      'zh-CN': 'https://seal-io.github.io/docs/zh/operation/template',
+      'en-US': 'https://seal-io.github.io/docs/operation/template'
+    }
+  ],
+  Settings: [
+    {
+      'zh-CN': 'https://seal-io.github.io/docs/zh/setting',
+      'en-US': 'https://seal-io.github.io/docs/setting'
+    }
+  ],
+  Users: [
+    {
+      'zh-CN': 'https://seal-io.github.io/docs/zh/setting/user',
+      'en-US': 'https://seal-io.github.io/docs/setting/user'
+    }
+  ]
 };
 export const USER_DEFAULT_PROJECT = 'USER_DEFAULT_PROJECT';
 

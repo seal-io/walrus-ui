@@ -65,7 +65,7 @@
             :title="$t('applications.applications.instance.history')"
             :title-style="{ 'margin-top': 0 }"
           >
-            <serviceHistory></serviceHistory>
+            <serviceRevisions></serviceRevisions>
           </ModuleCard>
           <ModuleCard
             :title="$t('applications.applications.instance.accessUrl')"
@@ -157,7 +157,7 @@
   import tabOutput from './tab-output.vue';
   import tabEndpoint from './tab-endpoint.vue';
   import tabResource from './tab-resource.vue';
-  import serviceHistory from './service-history.vue';
+  import serviceRevisions from './service-revisions.vue';
   import BasicInfo from '../basic-info.vue';
   import deleteServiceModal from '../delete-service-modal.vue';
   import {

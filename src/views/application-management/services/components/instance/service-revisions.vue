@@ -169,7 +169,6 @@
   } from '@/api/axios-chunk-request';
   import useCallCommon from '@/hooks/use-call-common';
   import StatusLabel from '@/views/operation-hub/connectors/components/status-label.vue';
-  import usePermissionParams from '@/views/application-management/hooks/use-permission-params';
   import { deleteModal, execSucceed } from '@/utils/monitor';
   import { UseSortDirection } from '@/utils/common';
   import { websocketEventType } from '@/views/config';

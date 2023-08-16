@@ -55,11 +55,11 @@
             ? $t('applications.applications.logs.live')
             : $t('applications.applications.instance.log')
         }}</div>
-        <deployLogs
+        <revisionLogs
           v-if="initialStatus === RevisionStatus.Running"
           :show="show"
           :revision-id="get(revisionData, 'id')"
-        ></deployLogs>
+        ></revisionLogs>
         <div v-else class="content-wrap">
           {{ get(revisionData, 'statusMessage') || '' }}
         </div>
@@ -89,7 +89,7 @@
   import EditPageFooter from '@/components/edit-page-footer/index.vue';
   import StatusLabel from '@/views/operation-hub/connectors/components/status-label.vue';
   import ClockTimer from '@/components/clock-timer/index.vue';
-  import deployLogs from './deploy-logs.vue';
+  import revisionLogs from './revision-logs.vue';
   import { revisionDetailConfig, RevisionStatus } from '../config';
   import { queryApplicationRevisionsDetail } from '../api';
 

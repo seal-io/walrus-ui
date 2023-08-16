@@ -20,7 +20,7 @@ export default function useResourceControl() {
   const terminalShow = ref(false);
   const updateActive = ref('');
   const drawerTabs = ref<
-    { dataList: ResourceKey[]; name: string; id: string }[]
+    { dataList: ResourceKey[]; name: string; id: string; nodeInfo: object }[]
   >([]);
 
   listenerCloseControlPanel(() => {
@@ -36,7 +36,8 @@ export default function useResourceControl() {
     drawerTabs.value.push({
       dataList: getResourceKeyList({ ...row }, resourceAction.Executable),
       name: row.name,
-      id: row.id
+      id: row.id,
+      nodeInfo: {}
     });
     updateActive.value = row.name;
     drawerTabs.value = _.uniqBy(drawerTabs.value, 'id');
@@ -53,7 +54,8 @@ export default function useResourceControl() {
     drawerTabs.value.push({
       dataList: getResourceKeyList({ ...row }, resourceAction.Loggable),
       name: row.name,
-      id: row.id
+      id: row.id,
+      nodeInfo: {}
     });
     updateActive.value = row.name;
     drawerTabs.value = _.uniqBy(drawerTabs.value, 'id');

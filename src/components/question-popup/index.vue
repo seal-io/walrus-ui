@@ -4,15 +4,15 @@
       <icon-bulb class="stroke-w-4" style="color: var(--color-text-3)" />
     </a-tag>
     <a-link
-      v-if="!Array.isArray(link)"
+      v-if="link.length === 1"
       class="mleft-5 font-12"
-      :href="link"
+      :href="get(link[0], currentLocale)"
       :hoverable="true"
       target="_blank"
       >{{ $t('common.help.need') }}</a-link
     >
     <a-tooltip
-      v-if="Array.isArray(link)"
+      v-if="link.length > 1"
       background-color="#fff"
       position="bottom"
       :content-style="{
@@ -25,13 +25,17 @@
       }}</a-link>
       <template #content>
         <div>
-          <div v-for="item in link" :key="item.url" style="line-height: 22px">
+          <div
+            v-for="(item, index) in link"
+            :key="index"
+            style="line-height: 22px"
+          >
             <a-link
-              :href="item.url"
+              :href="item[currentLocale]"
               class="font-12"
               :hoverable="true"
               target="_blank"
-              >{{ $t(item.label) }}</a-link
+              >{{ $t(item.label || '') }}</a-link
             >
           </div>
         </div>
@@ -41,18 +45,25 @@
 </template>
 
 <script lang="ts" setup>
+  import { get } from 'lodash';
+  import useLocale from '@/hooks/locale';
   import { PropType } from 'vue';
 
   interface Link {
-    label: string;
-    url: string;
+    'label'?: string;
+    'zh-CN': string;
+    'en-US': string;
   }
   defineProps({
     link: {
-      type: [String, Array] as PropType<string | Link[]>,
-      default: ''
+      type: Array as PropType<Link[]>,
+      default() {
+        return [];
+      }
     }
   });
+
+  const { currentLocale } = useLocale();
 </script>
 
 <style lang="less" scoped>

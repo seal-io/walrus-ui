@@ -33,18 +33,6 @@
         </div>
       </a-grid-item>
     </a-grid>
-    <!-- <loggableModal
-      v-model:show="showLogModal"
-      v-model:nodeInfo="resourceNodeInfo"
-      :data-list="logDataList"
-    >
-    </loggableModal>
-    <terminalModal
-      v-model:show="showTermModal"
-      v-model:nodeInfo="resourceNodeInfo"
-      :data-list="termDataList"
-    >
-    </terminalModal> -->
 
     <resourceControl
       v-model:visible="terminalShow"
@@ -71,13 +59,11 @@
   import serviceImg from '@/assets/images/service.png';
   import {
     ref,
-    onMounted,
     nextTick,
     PropType,
     watch,
     onBeforeUnmount,
-    computed,
-    watchEffect
+    computed
   } from 'vue';
   import G6 from '@antv/g6';
   import { useResizeObserver } from '@vueuse/core';
@@ -89,8 +75,6 @@
   import { setServiceStatus, Status } from '../../../../config';
   import { getResourceKeyList } from '../../../../config/utils';
   import { ResourceKey } from '../../../../config/interface';
-  import loggableModal from './loggable-modal.vue';
-  import terminalModal from './terminal-modal.vue';
   import resourceControl from '../../resource-control.vue';
   import useResourceControl from '../../../hooks/use-resource-control';
   import driftResource from '../../../drift-resource.vue';
@@ -145,12 +129,8 @@
     SERVICE: 'service'
   };
   const emits = defineEmits(['nodeClick', 'canvasClick']);
-  const showLogModal = ref(false);
-  const showTermModal = ref(false);
   const showDriftModal = ref(false);
   const driftChangeData = ref({});
-  const logDataList = ref<ResourceKey[]>([]);
-  const termDataList = ref<ResourceKey[]>([]);
   const resourceNodeInfo = ref({});
   const graphMount = ref();
   const graphWrapper = ref();
