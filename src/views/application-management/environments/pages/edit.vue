@@ -51,6 +51,7 @@
           <seal-input
             v-if="pageAction === PageAction.EDIT"
             v-model="formData.name"
+            :disabled="!!id"
             :label="$t('operation.environments.table.name')"
             :required="true"
             :style="{ width: `${InputWidth.LARGE}px` }"
