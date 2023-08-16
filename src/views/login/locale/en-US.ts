@@ -1,11 +1,12 @@
 export default {
-  'login.form.title': 'Login to SEAL',
+  'login.form.title': 'Login to Walrus',
   'login.form.userName.errMsg': 'Username cannot be empty',
   'login.form.password.errMsg': 'Password cannot be empty',
   'login.form.login.errMsg': 'Login error, refresh and try again',
   'login.form.login.update': 'Set user settings',
   'login.form.login.complete': 'Please complete the user settings',
-  'login.form.update.serverurl': 'What URL should be used for the Seal server?',
+  'login.form.update.serverurl':
+    'What URL should be used for the Walrus server?',
   'login.form.update.password': 'Set a strong password for the default user',
   'login.form.login.update.tips':
     'Please set the basic user configuration before use',
@@ -31,8 +32,8 @@ export default {
     'For the first login, use the following way to get the initial admin password',
   'login.config.pswd.specified': 'The initial password is set at startup',
   'login.config.pswd.log':
-    'search "Bootstrap Admin Password" from the logs of seal process',
+    'search "Bootstrap Admin Password" from the logs of walrus process',
   'login.config.user.action':
-    'Allows collection of <a href={link} target="_blank" class="a-link">anonymous statistics</a>, to help us improve seal',
+    'Allows collection of <a href={link} target="_blank" class="a-link">anonymous statistics</a>, to help us improve walrus',
   'login.config.join.improvement': 'Participate in improvement plans'
 };

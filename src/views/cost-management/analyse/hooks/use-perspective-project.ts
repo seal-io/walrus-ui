@@ -64,7 +64,7 @@ export default function usePerspectiveCost(props) {
       projectloading.value = true;
       const params = {
         ...omit(queryParams, ['project']),
-        fieldName: 'label:seal.io/project-name',
+        fieldName: 'label:walrus.seal.io/project-name',
         fieldType: 'filter',
         endTime: setEndTimeAddDay(queryParams.endTime, timeMode.value)
       };
@@ -192,7 +192,7 @@ export default function usePerspectiveCost(props) {
 
       const projectFilter = find(
         allocationQueries,
-        (item) => item.groupBy === 'label:seal.io/service-path'
+        (item) => item.groupBy === 'label:walrus.seal.io/service-path'
       );
 
       projectDailyCostFilters.value = {

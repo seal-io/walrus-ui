@@ -183,20 +183,6 @@
   const identifer2 =
     /([a-zA-Z_0-9$\-\u00A2-\u2000\u2070-\uFFFF]+\.)*([a-zA-Z_0-9$\-\u00A2-\u2000\u2070-\uFFFF]*)$/;
 
-  const hintList = [
-    {
-      name: 'vulnerability',
-      value: 'vulnerability',
-      type: 'seal',
-      score: 6,
-      meta: 'custom'
-    },
-    { name: 'cvss3', value: 'cvss3', score: 6, meta: 'custom' },
-    { name: 'serverity', value: 'serverity', score: 6, meta: 'custom' },
-    { name: 'license', value: 'license', score: 6, meta: 'custom' },
-    { name: 'file', value: 'file', score: 6, meta: 'custom' },
-    { name: 'myObj', value: 'file', score: 6, meta: 'custom' }
-  ];
   const resetGutterDiffDecoration = (row) => {
     aceEditor?.session?.removeGutterDecoration(row, 'row-add-icon');
     aceEditor?.session?.removeGutterDecoration(row, 'row-delete-icon');

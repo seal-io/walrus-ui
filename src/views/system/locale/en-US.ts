@@ -142,7 +142,8 @@ export default {
   'account.settings.token.rules.name': 'API key is required',
   'account.settings.token.rules.expire': 'Expiration time is required',
   'account.settings.token.expireDate': 'Expire date',
-  'account.settings.token.desc': 'API keys can be used to access the Seal API.',
+  'account.settings.token.desc':
+    'API keys can be used to access the Walrus API.',
   'account.settings.token.tips':
     'Make sure to copy your personal access key now. You won’t be able to see it again!',
   'account.settings.clear.tips': 'Save, the following settings will be cleared',

@@ -6,17 +6,17 @@ export default [
   },
   {
     label: 'Project',
-    fieldName: 'label:seal.io/project',
+    fieldName: 'label:walrus.seal.io/project',
     title: 'cost.analyse.table.application'
   },
   {
     label: 'Environment',
-    fieldName: 'label:seal.io/environment',
+    fieldName: 'label:walrus.seal.io/environment',
     title: 'cost.analyse.table.env'
   },
   {
     label: 'Application',
-    fieldName: 'label:seal.io/app',
+    fieldName: 'label:walrus.seal.io/app',
     title: 'cost.analyse.table.application'
   },
   {
