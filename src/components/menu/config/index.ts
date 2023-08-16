@@ -9,7 +9,9 @@ export const profileMenu = [
       {
         name: 'settings.document',
         key: 'docs',
-        value: 'https://seal-io.github.io/docs/',
+        value(lang: string) {
+          return `https://seal-io.github.io/docs/${lang}`;
+        },
         icon: '<icon-book  class="size-18" />'
       },
       {

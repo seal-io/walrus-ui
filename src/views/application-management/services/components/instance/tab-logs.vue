@@ -36,6 +36,12 @@
         return '';
       }
     },
+    nodeInfo: {
+      type: Object as PropType<any>,
+      default() {
+        return {};
+      }
+    },
     height: {
       type: Number,
       default: 270

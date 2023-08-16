@@ -26,12 +26,14 @@
             v-if="type === 'terminal'"
             :container-id="item.name"
             :height="containerHeight"
+            :node-info="item.nodeInfo"
             :data-list="item.dataList"
           ></tabTerminal>
           <tabLogs
             v-if="type === 'logs'"
             :container-id="item.name"
             :data-list="item.dataList"
+            :node-info="item.nodeInfo"
             :height="containerHeight"
           ></tabLogs>
         </a-tab-pane>
@@ -89,14 +91,19 @@
     },
     tabs: {
       type: Array as PropType<
-        { dataList: ResourceKey[]; name: string; id: string }[]
+        {
+          dataList: ResourceKey[];
+          name: string;
+          id: string;
+          nodeInfo: object;
+        }[]
       >,
       default() {
         return [];
       }
     }
   });
-  const activeKey = ref('terminnal');
+  const activeKey = ref<string>('terminnal');
   const containerHeight = ref(270);
   const emits = defineEmits(['update:visible', 'update:tabs', 'delete']);
 
@@ -109,13 +116,13 @@
     emits('update:tabs', []);
   };
   const handleOpened = () => {
-    activeKey.value = _.get(props.tabs, '0.name');
+    activeKey.value = _.get(props.tabs, '0.name') || `${Date.now()}`;
   };
   const handleDelete = (key) => {
     emits('delete', key);
     nextTick(() => {
       if (activeKey.value === key) {
-        activeKey.value = _.get(props.tabs, '0.name');
+        activeKey.value = _.get(props.tabs, '0.name') || `${Date.now()}`;
       }
     });
   };

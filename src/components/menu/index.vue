@@ -34,7 +34,7 @@
       const currentRoute = ref<string>('');
       const appStore = useAppStore();
       const userStore = useUserStore();
-      const { changeLocale } = useLocale();
+      const { changeLocale, currentLocale } = useLocale();
       const { logout } = useUser();
       const projectStore = useProjectStore();
       const tabBarStore = useTabBarStore();
@@ -358,8 +358,12 @@
           logout();
           return;
         }
-        if (['docs', 'home'].includes(item.key)) {
+        if (item.key === 'home') {
           window.open(item.value, '_blank');
+        }
+        if (item.key === 'docs') {
+          const lang = currentLocale.value === 'zh-CN' ? 'zh' : '';
+          window.open(item.value(lang), '_blank');
           return;
         }
         if (item.key === 'version') {

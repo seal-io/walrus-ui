@@ -35,7 +35,11 @@
   } from 'vue';
   import xTerminal from '@/components/x-terminal/index.vue';
   import { useRoute } from 'vue-router';
-  import { SERVICE_RESOURCE_API_PREFIX } from '@/views/application-management/services/api';
+  import {
+    SERVICE_RESOURCE_API_PREFIX,
+    SERVICE_API_PREFIX,
+    SERVICE_API
+  } from '@/views/application-management/services/api';
   import { ResourceKey } from '../../../config/interface';
 
   const props = defineProps({
@@ -43,6 +47,12 @@
       type: String,
       default() {
         return '';
+      }
+    },
+    nodeInfo: {
+      type: Object as PropType<any>,
+      default() {
+        return {};
       }
     },
     height: {
