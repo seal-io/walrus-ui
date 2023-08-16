@@ -78,8 +78,7 @@ export const updateService = (data) => {
 export const queryItemService = (params) => {
   return axios.get(`${SERVICE_API_PREFIX()}${SERVICE_API}/${params.id}`, {
     params: {
-      ...params,
-      ...getPermissionRouteParams()
+      ...params
     },
     paramsSerializer: (obj) => {
       return qs.stringify(obj);
@@ -102,8 +101,7 @@ export const queryApplicationServices = (params) => {
 export const queryItemApplicationService = (params) => {
   return axios.get(`${SERVICE_API_PREFIX()}${SERVICE_API}/${params.id}`, {
     params: {
-      ...params,
-      ...getPermissionRouteParams()
+      ...params
     },
     paramsSerializer: (obj) => {
       return qs.stringify(obj);
@@ -116,8 +114,7 @@ export const queryInstanceOutputs = (params) => {
     `${SERVICE_API_PREFIX()}${SERVICE_API}/${params.id}/outputs`,
     {
       params: {
-        ...params,
-        ...getPermissionRouteParams()
+        ...params
       },
       paramsSerializer: (obj) => {
         return qs.stringify(obj);
@@ -135,9 +132,7 @@ export const deleteServiceItem = (data) => {
 
 export const upgradeApplicationInstance = (data) => {
   return axios.put(
-    `${SERVICE_API_PREFIX()}${SERVICE_API}/${data.id}/upgrade?${qs.stringify(
-      getPermissionRouteParams()
-    )}`,
+    `${SERVICE_API_PREFIX()}${SERVICE_API}/${data.id}/upgrade`,
     data
   );
 };
@@ -147,9 +142,7 @@ export const cloneApplicationInstance = (data: {
   name: string;
 }) => {
   return axios.post(
-    `${SERVICE_API_PREFIX()}${SERVICE_API}/${data.id}/clone?${qs.stringify(
-      getPermissionRouteParams()
-    )}`,
+    `${SERVICE_API_PREFIX()}${SERVICE_API}/${data.id}/clone`,
     data
   );
 };
@@ -159,8 +152,7 @@ export const diffServiceSpec = (params: { serviceID: string }) => {
     `${SERVICE_API_PREFIX()}${SERVICE_API}/${params.serviceID}/diff-latest`,
     {
       params: {
-        ...params,
-        ...getPermissionRouteParams()
+        ...params
       },
       paramsSerializer: (obj) => {
         return qs.stringify(obj);
@@ -174,8 +166,7 @@ export const queryServiceResourceGraph = (params: { serviceID: string }) => {
     `${SERVICE_API_PREFIX()}${SERVICE_API}/${params.serviceID}/graph`,
     {
       params: {
-        ...params,
-        ...getPermissionRouteParams()
+        ...params
       },
       paramsSerializer: (obj) => {
         return qs.stringify(obj);
@@ -189,8 +180,7 @@ export const queryEnvironmentServiceGraph = (params: {
 }) => {
   return axios.get(`${SERVICE_API_PREFIX()}/graph`, {
     params: {
-      ...params,
-      ...getPermissionRouteParams()
+      ...params
     },
     paramsSerializer: (obj) => {
       return qs.stringify(obj);
@@ -217,8 +207,7 @@ export const queryServiceRevisions = (
     `${SERVICE_API_PREFIX()}${SERVICE_API}/${params.serviceID}/revisions`,
     {
       params: {
-        ...params,
-        ...getPermissionRouteParams()
+        ...params
       },
       cancelToken: token,
       paramsSerializer: (obj) => {
@@ -230,8 +219,7 @@ export const queryServiceRevisions = (
 export const queryApplicationRevisionsDetail = (params: { id: string }) => {
   return axios.get(`${SERVICE_RESOURCE_API_PREFIX()}/revisions/${params.id}`, {
     params: {
-      ...params,
-      ...getPermissionRouteParams()
+      ...params
     },
     paramsSerializer: (obj) => {
       return qs.stringify(obj);
@@ -252,8 +240,7 @@ export const diffRevisionSpec = (params: { id: string; serviceID: string }) => {
     }/diff-latest`,
     {
       params: {
-        ...params,
-        ...getPermissionRouteParams()
+        ...params
       },
       paramsSerializer: (obj) => {
         return qs.stringify(obj);
@@ -271,8 +258,7 @@ export const queryRevisionChange = (params: {
     }/diff-previous`,
     {
       params: {
-        ...params,
-        ...getPermissionRouteParams()
+        ...params
       },
       paramsSerializer: (obj) => {
         return qs.stringify(obj);
@@ -289,7 +275,6 @@ export const rollbackService = (data: {
     `${SERVICE_API_PREFIX()}${SERVICE_API}/${
       data.serviceID
     }/rollback?${qs.stringify({
-      ...getPermissionRouteParams(),
       revisionID: data.revisionID
     })}`
   );
@@ -304,8 +289,7 @@ export const queryServiceResource = (
     `${SERVICE_API_PREFIX()}${SERVICE_API}/${params.serviceID}/resources`,
     {
       params: {
-        ...params,
-        ...getPermissionRouteParams()
+        ...params
       },
       cancelToken: token,
       paramsSerializer: (obj) => {
@@ -320,8 +304,7 @@ export const queryServiceResourceKeys = (params: { id: string }) => {
     `${SERVICE_RESOURCE_API_PREFIX()}/resources/${params.id}/keys`,
     {
       params: {
-        ...params,
-        ...getPermissionRouteParams()
+        ...params
       },
       paramsSerializer: (obj) => {
         return qs.stringify(obj);
@@ -335,8 +318,7 @@ export const queryServiceResourceLogs = (params: { id: string }) => {
     `${SERVICE_RESOURCE_API_PREFIX()}/resources/${params.id}/log`,
     {
       params: {
-        ...params,
-        ...getPermissionRouteParams()
+        ...params
       },
       paramsSerializer: (obj) => {
         return qs.stringify(obj);
@@ -349,8 +331,7 @@ export const queryServiceResourceExec = (params: { id: string }) => {
     `${SERVICE_RESOURCE_API_PREFIX()}/resources/${params.id}/exec`,
     {
       params: {
-        ...params,
-        ...getPermissionRouteParams()
+        ...params
       },
       paramsSerializer: (obj) => {
         return qs.stringify(obj);
@@ -369,8 +350,7 @@ export const queryInstanceEndpoints = (
     }/access-endpoints`,
     {
       params: {
-        ...params,
-        ...getPermissionRouteParams()
+        ...params
       },
       cancelToken: token,
       paramsSerializer: (obj) => {

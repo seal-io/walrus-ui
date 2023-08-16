@@ -1,4 +1,4 @@
-import _ from 'lodash';
+import _, { cloneDeep } from 'lodash';
 import { ref } from 'vue';
 import {
   TemplateRowData,
@@ -18,6 +18,7 @@ export default function useCompleteData() {
     var: any;
   }
   const { route } = useCallCommon();
+  const loading = ref(false);
   const templateList = ref<TemplateRowData[]>([]);
   const allTemplateVersions = ref<TemplateVersionData[]>([]);
   const completeData = ref<Partial<HintKey>>({
@@ -72,29 +73,6 @@ export default function useCompleteData() {
     }
   };
 
-  // apply for edit service config
-  const getTemplatesVersions = async () => {
-    try {
-      const params = {
-        withSchema: true,
-        page: -1
-      };
-      const { data } = await queryServices(params);
-      allTemplateVersions.value = _.map(data?.items || [], (item) => {
-        const { template } = item;
-        return {
-          ...template,
-          template: {
-            id: template.id,
-            name: template.name
-          }
-        };
-      }) as TemplateVersionData[];
-    } catch (error) {
-      //
-    }
-  };
-
   const getProjectVariables = async () => {
     try {
       const params = {
@@ -124,12 +102,18 @@ export default function useCompleteData() {
     try {
       const params = {
         page: -1,
-        projectID: route.params.projectId as string,
-        environmentID: route.params.environmentId,
-        extract: ['-attributes', '-projectId', '-status']
+        withSchema: true,
+        extract: ['-projectId', '-status']
       };
       const { data } = await queryServices(params);
       serviceDataList.value = data.items || [];
+      allTemplateVersions.value = _.map(data?.items || [], (item) => {
+        const { template } = cloneDeep(item);
+        return {
+          ...template,
+          template
+        };
+      }) as TemplateVersionData[];
     } catch (error) {
       serviceDataList.value = [];
     }
@@ -194,22 +178,23 @@ export default function useCompleteData() {
   };
 
   const initCompleteData = async () => {
+    loading.value = true;
     await Promise.all([
       getTemplates(),
       getServiceList(),
       getProjectVariables()
     ]);
-    await getTemplatesVersions();
     setCompleteData();
+    loading.value = false;
   };
   return {
     initCompleteData,
-    getTemplatesVersions,
     getTemplates,
     getTemplateVersionByItem,
     completeData,
     templateList,
     allTemplateVersions,
-    serviceDataList
+    serviceDataList,
+    completeDataLoading: loading
   };
 }

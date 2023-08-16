@@ -112,7 +112,9 @@
                 <a-link
                   type="text"
                   size="small"
-                  @click="handleViewLogs(record)"
+                  @click="
+                    handleViewLogs({ ...record, serviceID: record.service?.id })
+                  "
                 >
                   <icon-font type="icon-rizhi" style="font-size: 16px" />
                 </a-link>
@@ -124,7 +126,12 @@
                 <a-link
                   type="text"
                   size="small"
-                  @click="handleConnectTerminal(record)"
+                  @click="
+                    handleConnectTerminal({
+                      ...record,
+                      serviceID: record.service?.id
+                    })
+                  "
                 >
                   <icon-code-square class="size-16" />
                 </a-link>

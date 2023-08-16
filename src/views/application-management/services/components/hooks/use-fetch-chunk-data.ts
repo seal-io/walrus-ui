@@ -236,7 +236,7 @@ export default function useFetchResource() {
     });
     getHelmResourceIDs();
   };
-  const createResourceChunkConnection = () => {
+  const createResourceChunkRequest = () => {
     requestCacheList.value = [];
     try {
       setChunkRequest({
@@ -255,7 +255,7 @@ export default function useFetchResource() {
   });
   return {
     fetchData,
-    createResourceChunkConnection,
+    createResourceChunkRequest,
     loading,
     dataList
   };

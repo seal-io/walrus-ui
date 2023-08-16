@@ -32,9 +32,10 @@ export interface TemplateRowData {
   updateTime: string;
   edges: object;
   icon?: string;
+  template?: { id: string; name: string; version: string };
 }
 export interface TemplateVersionData extends TemplateRowData {
-  template: { id: string; name: string };
+  template: { id: string; name: string; version: string };
 }
 export interface TemplateFormData {
   id?: string;

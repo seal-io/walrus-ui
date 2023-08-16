@@ -142,6 +142,7 @@
     PropType,
     onMounted,
     computed,
+    nextTick,
     onBeforeUnmount
   } from 'vue';
   import DropButtonGroup from '@/components/drop-button-group/index.vue';
@@ -193,7 +194,7 @@
   const userStore = useUserStore();
   const serviceStore = useServiceStore();
   const { router, route, t } = useCallCommon();
-  const { loading, fetchData, createResourceChunkConnection, dataList } =
+  const { loading, fetchData, createResourceChunkRequest, dataList } =
     useFetchResource();
   const projectID = route.params.projectId || '';
   const serviceID = route.query.id || '';
@@ -273,9 +274,7 @@
     try {
       serviceStore.deleteService(route.query.id);
       const params = {
-        id: route.query.id,
-        environmentID: route.params.environmentId,
-        projectID: route.params.projectId
+        id: route.query.id
       };
       const { data } = await queryItemApplicationService(params);
       currentInfo.value = data;
@@ -368,8 +367,10 @@
     setActionMap();
 
     // chunk request
-    createServiceChunkRequest();
-    createResourceChunkConnection();
+    nextTick(() => {
+      createServiceChunkRequest();
+      createResourceChunkRequest();
+    });
   });
   onBeforeUnmount(() => {
     serviceStore.deleteService(serviceID);

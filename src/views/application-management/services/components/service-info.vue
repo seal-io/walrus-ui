@@ -19,11 +19,7 @@
         <a-col :span="12">
           <a-form-item :label="$t('applications.applications.history.version')">
             <span class="readonly-view-label">{{
-              getListValue(
-                formData.template.version,
-                templateVersionList,
-                'value'
-              )
+              formData.template.version
             }}</span>
           </a-form-item>
         </a-col>
@@ -199,9 +195,7 @@
     formData,
     defaultGroupKey,
     variablesGroup,
-    variablesGroupForm,
-    templateVersionList,
-    templateList
+    variablesGroupForm
   } = useServiceData();
 
   const formref = ref();
@@ -229,12 +223,7 @@
     }
     formTabs.value = list;
   };
-  const getListValue = (value, list, k) => {
-    const d = _.find(list, (item) => {
-      return item[k] === value;
-    });
-    return d?.label || d?.name;
-  };
+
   const setSubGroupList = () => {
     const groupData = _.get(variablesGroup.value, activeKey.value);
     subGroupList.value = [...(groupData?.subGroup || [])];

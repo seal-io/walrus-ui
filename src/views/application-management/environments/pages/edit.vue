@@ -190,8 +190,7 @@
         >
           <CloneService
             ref="serviceRef"
-            :service-list="serviceList"
-            :async-loading="asyncLoading"
+            clone-type="environment"
             :style="{ width: `${InputWidth.XLARGE}px`, overflow: 'auto' }"
           ></CloneService>
         </a-form-item>
@@ -387,23 +386,7 @@
       };
     }
   };
-  const getEnvironmentServices = async () => {
-    if (!route.params.environmentId) return;
-    asyncLoading.value = true;
-    try {
-      const params = {
-        projectID: route.params.projectId as string,
-        environmentID: route.params.environmentId as string,
-        page: -1
-      };
-      const { data } = await queryServices(params);
-      serviceList.value = data.items || [];
-    } catch (error) {
-      serviceList.value = [];
-    } finally {
-      asyncLoading.value = false;
-    }
-  };
+
   const getConnectors = async () => {
     try {
       const params = {
@@ -438,9 +421,10 @@
     remove(selectedList.value, (id) => record.id === id);
     formref.value.validateField('connectorIDs');
   };
-  const handleCloneEnvironment = async () => {
+  const handleCloneEnvironment = async (data) => {
     const services = serviceRef.value.getSelectServiceData();
-    formData.value.services = _.cloneDeep(services);
+    data.services = _.cloneDeep(services);
+    return data;
   };
 
   const handleSubmit = async () => {
@@ -450,13 +434,15 @@
     if (!res && !validateTrigger.value) {
       try {
         submitLoading.value = true;
+        const data = _.omit(formData.value, ['edges']);
+
         if (environmentId) {
-          handleCloneEnvironment();
+          handleCloneEnvironment(data);
         }
         if (id && !environmentId) {
-          await updateEnvironment(formData.value);
+          await updateEnvironment(data);
         } else {
-          await createEnvironment(formData.value);
+          await createEnvironment(data);
         }
         copyFormData = cloneDeep(formData.value);
         tabBarStore.deleteTag(0, {
@@ -515,7 +501,6 @@
   });
   const init = async () => {
     setBreadCrumbList();
-    getEnvironmentServices();
     await getConnectors();
     await getItemEnvironmentInfo();
     getLabelList();

@@ -25,7 +25,7 @@ export interface EnvironFormData {
   description: string;
   connectorIDs: string[];
   connectors: any[];
-  edges: any[];
+  edges?: any[];
   labels?: Record<string, any>;
   services?: any[];
 }

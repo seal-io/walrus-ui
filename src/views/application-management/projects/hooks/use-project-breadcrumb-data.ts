@@ -112,8 +112,6 @@ export default function useProjectData() {
       const params = {
         page: 1,
         perPage: 10,
-        projectID: route.params.projectId as string,
-        environmentID: route.params.environmentId as string,
         extract: ['-attributes', '-projectId', '-status', '-template'],
         ...queryparams
       };
