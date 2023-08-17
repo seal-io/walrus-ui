@@ -40,6 +40,7 @@
               :span="setGridItemSpan(fm, index)"
             >
               <a-form-item
+                :key="fm.name"
                 :field="fm.name"
                 :rules="fm.rules"
                 hide-label
@@ -118,6 +119,7 @@
                     style="width: 100%"
                     width="100%"
                     :editor-id="`${fm.name}_editorId_${index}`"
+                    :event-handler="() => eventHandler(fm.name)"
                     @input="(e) => handleSelectInputChange(e, fm.type)"
                   >
                     <template v-if="fm.childCom">
@@ -255,6 +257,7 @@
   const activeMenu = ref('');
   const OTHER_SUB_GROUP = 'Other';
   const triggerValidate = ref(false);
+  const validateState = ref(false); // if has executed validate
 
   const activeSchemaList = computed(() => {
     if (!activeMenu.value) {
@@ -295,6 +298,11 @@
         schemaType.isUnknownType(item.type)
       ) {
         val = json2Yaml(val);
+      } else if (
+        schemaType.isListNumber(item.type) ||
+        schemaType.isListString(item.type)
+      ) {
+        val = val || [];
       }
       formData.value[item.name] = val;
     });
@@ -362,6 +370,14 @@
   };
   const handleClickSubGroup = (k) => {
     activeMenu.value = k;
+    if (validateState.value) {
+      setTimeout(() => {
+        formref.value?.validate?.();
+      });
+    }
+  };
+  const eventHandler = (filedName) => {
+    formref.value?.validateField?.(filedName);
   };
   const setSchemaList = () => {
     const showIfMap = {};
@@ -369,6 +385,7 @@
     subGroupCache.value = {};
     subGroupListCache.value = {};
     triggerValidate.value = false;
+    validateState.value = false;
     thirdGroupCache.value = {};
 
     let list = map(props.formSchema, (o, i) => {
@@ -503,6 +520,7 @@
     triggerValidate.value = true;
     const result = await formref.value?.validate();
     const validLabels = validateLabels();
+    validateState.value = true;
 
     if (result) {
       const errorField = get(keys(result), '0');

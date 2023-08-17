@@ -155,7 +155,8 @@
       default() {
         return {};
       }
-    }
+    },
+    eventHandler: Function
   });
   const completeData = inject('completeData', ref(null));
   const $attrs = useAttrs();
@@ -418,6 +419,7 @@
   const runChange = () => {
     emits('change', expression.value);
     inputFlag.value = false;
+    props.eventHandler?.();
   };
   const handleBlur = () => {
     isFocus.value = false;
