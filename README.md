@@ -17,7 +17,7 @@ npm install yarn -g
 3. Setup
 
 ```
-git clone https://github.com/seal-io/ui/
+git clone https://github.com/seal-io/walrus-ui/
 ```
 
 4. Install dependencies
@@ -43,7 +43,7 @@ yarn build
 
 ## Bugs & Issues
 
-Please submit [bugs and issues](https://github.com/seal-io/seal/issues) with a label `ui`
+Please submit [bugs and issues](https://github.com/seal-io/walrus/issues) with a label `ui`
 
 ## Links
 

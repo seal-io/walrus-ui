@@ -214,7 +214,6 @@ export default function useServiceData(props?) {
       formData.template.name = webservice
         ? webservice.name
         : _.get(templateList.value, '0.name') || '';
-
       await getTemplateVersionByItem(formData.template.name);
       await getTemplateVersionList();
 

@@ -9,7 +9,7 @@ export default function useLocale() {
   });
   const changeLocale = (value) => {
     i18.locale.value = value;
-    localStorage.setItem('seal-locale', value);
+    localStorage.setItem('walrus-locale', value);
     Message.success(i18.t('navbar.action.locale'));
   };
   return {

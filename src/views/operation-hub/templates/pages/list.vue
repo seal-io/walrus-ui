@@ -1,5 +1,5 @@
 <template>
-  <ComCard borderless padding="0" :loading="loading" class="projects">
+  <ComCard borderless padding="0" class="projects">
     <div class="content">
       <FilterBox>
         <template #params>
@@ -75,28 +75,30 @@
         </template>
       </FilterBox>
       <a-divider :margin="8"></a-divider>
-      <a-tabs
-        lazy-load
-        default-active-key="currentView"
-        :active-key="currentView"
-      >
-        <a-tab-pane key="thumb">
-          <ThumbView
-            :list="dataList"
-            :checked-list="selectedKeys"
-            @change="handleCheckChange"
-          ></ThumbView>
-        </a-tab-pane>
-        <a-tab-pane key="list">
-          <ListView
-            ref="listViewRef"
-            v-model:sort="sort"
-            v-model:selectedList="selectedKeys"
-            :list="dataList"
-            @sort="handleSort"
-          ></ListView>
-        </a-tab-pane>
-      </a-tabs>
+      <a-spin :loading="loading" fill>
+        <a-tabs
+          lazy-load
+          default-active-key="currentView"
+          :active-key="currentView"
+        >
+          <a-tab-pane key="thumb">
+            <ThumbView
+              :list="dataList"
+              :checked-list="selectedKeys"
+              @change="handleCheckChange"
+            ></ThumbView>
+          </a-tab-pane>
+          <a-tab-pane key="list">
+            <ListView
+              ref="listViewRef"
+              v-model:sort="sort"
+              v-model:selectedList="selectedKeys"
+              :list="dataList"
+              @sort="handleSort"
+            ></ListView>
+          </a-tab-pane>
+        </a-tabs>
+      </a-spin>
       <a-pagination
         style="margin-top: 20px"
         size="small"
@@ -210,7 +212,7 @@
       loading.value = true;
       const ids = map(selectedKeys.value, (val) => {
         return {
-          id: val
+          id: val as string
         };
       });
       await deleteTemplates({ items: ids });
