@@ -10,9 +10,6 @@
         <template #icon>
           <i class="iconfont icon-custom"></i>
         </template>
-        <template #extra>
-          <QuestionPopup :link="QAlinkMap.Settings"></QuestionPopup>
-        </template>
       </HeaderInfo>
       <ComCard>
         <Settings></Settings>

@@ -23,9 +23,6 @@
         <template #description>
           <div class="description">{{ currentInfo.description }}</div>
         </template>
-        <template #extra>
-          <QuestionPopup :link="QAlinkMap.ProjectDetail"></QuestionPopup>
-        </template>
       </HeaderInfo>
       <ComCard>
         <a-tabs
