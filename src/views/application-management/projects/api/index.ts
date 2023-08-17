@@ -23,9 +23,10 @@ export interface ResultType {
   pagination: Pagination;
 }
 
-export const queryProjects = (params: QueryType) => {
+export const queryProjects = (params: QueryType, token?) => {
   return axios.get<ResultType>('/projects', {
     params,
+    cancelToken: token,
     paramsSerializer: (obj) => {
       return qs.stringify(obj);
     }

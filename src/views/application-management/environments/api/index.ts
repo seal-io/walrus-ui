@@ -24,9 +24,10 @@ export interface ResultType {
   items: EnvironmentRow[];
   pagination: Pagination;
 }
-export function queryEnvironments(params: QueryType) {
+export function queryEnvironments(params: QueryType, token?) {
   return axios.get<ResultType>(`${PROJECT_API_PREFIX()}${ENVIRONMENT_API}`, {
     params,
+    cancelToken: token,
     paramsSerializer: (obj) => {
       return qs.stringify(obj);
     }

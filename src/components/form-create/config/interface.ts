@@ -178,7 +178,7 @@ export const parseComponentSchema = (schema: ComponentSchema) => {
   if (schemaType.isMapString(type)) {
     return {
       component: ['XInputGroup'],
-      props: { ...props, alwaysDelete: true },
+      props: { ...props, alwaysDelete: true, shouldKey: true },
       rules: [{ ...rules, message: 'common.form.rule.input' }]
     };
   }
