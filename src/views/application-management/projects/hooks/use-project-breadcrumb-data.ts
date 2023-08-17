@@ -1,5 +1,6 @@
 import _ from 'lodash';
-import { reactive, ref } from 'vue';
+import { createAxiosToken } from '@/api/axios-chunk-request';
+import { reactive, ref, onBeforeUnmount } from 'vue';
 import { Resources, Actions } from '@/permissions/config';
 import { PROJECT } from '@/router/config';
 import useCallCommon from '@/hooks/use-call-common';
@@ -8,8 +9,6 @@ import { queryProjects } from '@/views/application-management/projects/api';
 import { queryEnvironments } from '@/views/application-management/environments/api';
 import { queryServices } from '@/views/application-management/services/api';
 import { BreadcrumbOptions } from '@/views/config/interface';
-import localStore from '@/utils/localStore';
-import { USER_DEFAULT_PROJECT } from '@/views/config';
 import { getListLabel } from '@/utils/func';
 
 export default function useProjectData() {
@@ -17,6 +16,10 @@ export default function useProjectData() {
   const { route, router } = useCallCommon();
   const projectStore = useProjectStore();
   const userStore = useUserStore();
+  let projectRequestToken: any = null;
+  let environmentRequestToken: any = null;
+  let serviceRequestToken: any = null;
+
   // breadCrumbList dropdown loading
   const RequestLoadingMap = reactive({
     project: false,
@@ -61,13 +64,16 @@ export default function useProjectData() {
   };
 
   const getProjectList = async () => {
+    if (!route.params.projectId) return [];
     let projectList: any[] = [];
+    projectRequestToken?.cancel();
+    projectRequestToken = createAxiosToken();
     try {
       const params = {
         page: -1
       };
       RequestLoadingMap.project = true;
-      const { data } = await queryProjects(params);
+      const { data } = await queryProjects(params, projectRequestToken?.token);
       projectList = data.items || [];
       const list = _.map(data.items, (item) => {
         return {
@@ -89,14 +95,19 @@ export default function useProjectData() {
     return projectList;
   };
   const getEnvironmentList = async () => {
+    if (!route.params.environmentId) return [];
     let environmentList: any[] = [];
+    environmentRequestToken?.cancel();
+    environmentRequestToken = createAxiosToken();
     try {
       const params = {
-        page: -1,
-        projectID: route.params.projectId || ''
+        page: -1
       };
       RequestLoadingMap.environment = true;
-      const { data } = await queryEnvironments(params);
+      const { data } = await queryEnvironments(
+        params,
+        environmentRequestToken?.token
+      );
       environmentList = data.items || [];
     } catch (error) {
       environmentList = [];
@@ -108,6 +119,8 @@ export default function useProjectData() {
 
   const getServiceList = async (queryparams?: object) => {
     let serviceList: any[] = [];
+    serviceRequestToken?.cancel();
+    serviceRequestToken = createAxiosToken();
     try {
       const params = {
         page: 1,
@@ -116,7 +129,7 @@ export default function useProjectData() {
         ...queryparams
       };
       RequestLoadingMap.service = true;
-      const { data } = await queryServices(params);
+      const { data } = await queryServices(params, serviceRequestToken?.token);
       serviceList = data.items || [];
     } catch (error) {
       serviceList = [];
@@ -278,6 +291,11 @@ export default function useProjectData() {
       serviceRes
     ) as BreadcrumbOptions[];
   };
+  onBeforeUnmount(() => {
+    projectRequestToken?.cancel();
+    environmentRequestToken?.cancel();
+    serviceRequestToken?.cancel();
+  });
   return {
     getProjectList,
     getEnvironmentList,
