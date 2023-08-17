@@ -10,9 +10,6 @@
         <template #icon>
           <i class="iconfont icon-zhuzhuangtu"></i>
         </template>
-        <template #extra>
-          <QuestionPopup :link="QAlinkMap.Cost"></QuestionPopup>
-        </template>
       </HeaderInfo>
       <div>
         <a-tabs

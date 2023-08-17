@@ -14,9 +14,6 @@
         <template #icon>
           <i class="iconfont icon-a-relation10-fill"></i>
         </template>
-        <template #extra>
-          <QuestionPopup :link="QAlinkMap.Template"></QuestionPopup>
-        </template>
       </HeaderInfo>
       <ComCard>
         <a-tabs

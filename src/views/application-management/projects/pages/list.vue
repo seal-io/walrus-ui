@@ -15,9 +15,6 @@
         <template #icon>
           <i class="iconfont icon-app-fill"></i>
         </template>
-        <template #extra>
-          <QuestionPopup :link="QAlinkMap.Project"></QuestionPopup>
-        </template>
       </HeaderInfo>
     </ComCard>
     <SpinCard borderless class="projects">
