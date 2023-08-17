@@ -1,7 +1,7 @@
 <template>
   <div class="container">
     <div class="logo">
-      <img alt="logo" src="../../assets/images/seal-logo.png" />
+      <img alt="logo" src="../../assets/images/walrus-logo.png" />
     </div>
     <LoginBanner />
 
