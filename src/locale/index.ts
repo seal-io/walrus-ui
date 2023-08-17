@@ -17,7 +17,7 @@ const browserLanguage = languages.value[0] || 'en-US';
 
 const defaultLanguage = browserLanguage.indexOf('zh') > -1 ? 'zh-CN' : 'en-US';
 
-const defaultLocale = localStorage.getItem('seal-locale') || defaultLanguage;
+const defaultLocale = localStorage.getItem('walrus-locale') || defaultLanguage;
 
 const i18n = createI18n({
   locale: defaultLocale,

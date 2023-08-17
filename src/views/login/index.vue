@@ -197,7 +197,7 @@
     align-items: center;
 
     img {
-      width: 90px;
+      width: 100px;
       height: auto;
     }
 

@@ -43,7 +43,7 @@ export function queryItemTemplate(params: { id: string }) {
 export function createTemplate(data: TemplateFormData) {
   return axios.post('/templates', data);
 }
-export function deleteTemplates(data: { items: string[] }) {
+export function deleteTemplates(data: { items: { id: string }[] }) {
   return axios.delete('/templates', { data });
 }
 export function updateTemplate(data: TemplateFormData) {

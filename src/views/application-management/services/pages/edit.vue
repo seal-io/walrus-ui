@@ -454,15 +454,6 @@
     setVariableAttributes();
   };
 
-  const setFormData = (schemas) => {
-    const variablesList = filter(get(schemas, 'variables'), (v) => {
-      return !v.hidden;
-    });
-    each(variablesList, (item) => {
-      formData.attributes[item.name] = item.default;
-    });
-  };
-
   const clearFormValidStatus = () => {
     keys(refMap.value).map(async (key) => {
       const refEL = refMap.value[key];
