@@ -51,6 +51,7 @@
       </div>
     </div>
     <a-checkbox
+      v-if="showCheckbox"
       class="check-box"
       :value="dataInfo.id"
       :model-value="checked"
@@ -90,6 +91,12 @@
       type: Object as PropType<TemplateRowData>,
       default() {
         return {};
+      }
+    },
+    showCheckbox: {
+      type: Boolean,
+      default() {
+        return true;
       }
     },
     checked: {

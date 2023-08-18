@@ -104,13 +104,13 @@
   import HeaderInfo from '@/components/header-info/index.vue';
   import EnviromentList from '@/views/application-management/environments/pages/list.vue';
   import variableList from '@/views/application-management/variables/pages/list.vue';
+  import members from '@/views/application-management/members/pages/list.vue';
   import basicInfo from '@/views/application-management/services/components/basic-info.vue';
   import ConnectorList from '@/views/operation-hub/connectors/components/table-list.vue';
   import useBasicInfoData from '../hooks/use-basicInfo-data';
   import { queryItemProject } from '../api';
   import { basicInfoConfig, projectDetailTabs } from '../config';
   import userProjectBreadcrumbData from '../hooks/use-project-breadcrumb-data';
-  import members from './members.vue';
 
   const {
     pageLevelMap,

@@ -7,7 +7,14 @@
       :data="list"
       :pagination="false"
       row-key="id"
-      :row-selection="rowSelection"
+      :row-selection="
+        userStore.hasRolesActionsPermission({
+          resource: Resources.Templates,
+          actions: [Actions.DELETE]
+        })
+          ? rowSelection
+          : null
+      "
       @sorter-change="handleSortChange"
       @selection-change="handleSelectChange"
     >
@@ -76,6 +83,12 @@
           </template>
         </a-table-column>
         <a-table-column
+          v-if="
+            userStore.hasRolesActionsPermission({
+              resource: Resources.Templates,
+              actions: [Actions.PUT]
+            })
+          "
           align="center"
           :width="210"
           :title="$t('common.table.operation')"
@@ -85,10 +98,6 @@
               <a-tooltip :content="$t('common.button.edit')">
                 <a-link
                   v-if="!_.get(record, 'catalog.id')"
-                  v-permission="{
-                    resource: `roles.${Resources.Templates}`,
-                    actions: [Actions.PUT]
-                  }"
                   type="text"
                   size="small"
                   @click="handleEdit(record)"
@@ -97,15 +106,7 @@
                 </a-link>
               </a-tooltip>
               <a-tooltip :content="$t('common.button.refresh')">
-                <a-link
-                  v-permission="{
-                    resource: `roles.${Resources.Templates}`,
-                    actions: [Actions.PUT]
-                  }"
-                  type="text"
-                  size="small"
-                  @click="handlRefresh(record)"
-                >
+                <a-link type="text" size="small" @click="handlRefresh(record)">
                   <template #icon><icon-refresh /></template>
                 </a-link>
               </a-tooltip>
@@ -114,17 +115,6 @@
         </a-table-column>
       </template>
     </a-table>
-    <!-- <a-pagination
-      size="small"
-      :total="total"
-      :page-size="queryParams.perPage"
-      :current="queryParams.page"
-      show-total
-      show-page-size
-      :hide-on-single-page="queryParams.perPage === 10"
-      @change="handlePageChange"
-      @page-size-change="handlePageSizeChange"
-    /> -->
   </div>
 </template>
 
@@ -132,6 +122,7 @@
   import { OPERATIONHUB } from '@/router/config';
   import { Resources, Actions } from '@/permissions/config';
   import { PageAction } from '@/views/config';
+  import { useUserStore } from '@/store';
   import _, { map, get } from 'lodash';
   import dayjs from 'dayjs';
   import { reactive, ref, onMounted, PropType } from 'vue';
@@ -139,7 +130,6 @@
   import { deleteModal, execSucceed } from '@/utils/monitor';
   import useRowSelect from '@/hooks/use-row-select';
   import { UseSortDirection } from '@/utils/common';
-  import FilterBox from '@/components/filter-box/index.vue';
   import { TemplateRowData } from '../config/interface';
   import StatusLabel from '../../connectors/components/status-label.vue';
   import { queryTemplates, refreshTemplate, deleteTemplates } from '../api';
@@ -159,6 +149,7 @@
     }
   });
   type BaseType = string | number;
+  const userStore = useUserStore();
   const emits = defineEmits(['update:selectedList', 'update:sort', 'sort']);
   const { rowSelection, selectedKeys } = useRowSelect();
   const { router } = useCallCommon();

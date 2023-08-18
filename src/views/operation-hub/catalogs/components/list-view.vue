@@ -7,7 +7,14 @@
       :data="list"
       :pagination="false"
       row-key="id"
-      :row-selection="rowSelection"
+      :row-selection="
+        userStore.hasRolesActionsPermission({
+          resource: Resources.Catalogs,
+          actions: [Actions.DELETE]
+        })
+          ? rowSelection
+          : null
+      "
       @sorter-change="handleSortChange"
       @selection-change="handleSelectChange"
     >
@@ -100,6 +107,12 @@
           </template>
         </a-table-column>
         <a-table-column
+          v-if="
+            userStore.hasRolesActionsPermission({
+              resource: Resources.Catalogs,
+              actions: [Actions.PUT]
+            })
+          "
           align="center"
           :width="210"
           :title="$t('common.table.operation')"
@@ -107,28 +120,12 @@
           <template #cell="{ record }">
             <a-space :size="16">
               <a-tooltip :content="$t('common.button.edit')">
-                <a-link
-                  v-permission="{
-                    resource: `roles.${Resources.Catalogs}`,
-                    actions: [Actions.PUT]
-                  }"
-                  type="text"
-                  size="small"
-                  @click="handleEdit(record)"
-                >
+                <a-link type="text" size="small" @click="handleEdit(record)">
                   <template #icon><icon-edit /></template>
                 </a-link>
               </a-tooltip>
               <a-tooltip :content="$t('common.button.refresh')">
-                <a-link
-                  v-permission="{
-                    resource: `roles.${Resources.Catalogs}`,
-                    actions: [Actions.PUT]
-                  }"
-                  type="text"
-                  size="small"
-                  @click="handlRefresh(record)"
-                >
+                <a-link type="text" size="small" @click="handlRefresh(record)">
                   <template #icon><icon-refresh /></template>
                 </a-link>
               </a-tooltip>
@@ -137,17 +134,6 @@
         </a-table-column>
       </template>
     </a-table>
-    <!-- <a-pagination
-      size="small"
-      :total="total"
-      :page-size="queryParams.perPage"
-      :current="queryParams.page"
-      show-total
-      show-page-size
-      :hide-on-single-page="queryParams.perPage === 10"
-      @change="handlePageChange"
-      @page-size-change="handlePageSizeChange"
-    /> -->
   </div>
 </template>
 

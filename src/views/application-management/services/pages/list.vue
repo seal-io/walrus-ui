@@ -134,21 +134,6 @@
             ></StatusLabel>
           </template>
         </a-table-column>
-        <!-- <a-table-column
-          ellipsis
-          :cell-style="{ minWidth: '40px' }"
-          data-index="driftResult.drifted"
-          :title="$t('applications.service.resource.drift')"
-        >
-          <template #cell="{ record }">
-            <a-link
-              v-if="record?.driftResult?.drifted"
-              @click="handleClickDriftResource(record)"
-              >{{ $t('common.button.view') }}</a-link
-            >
-            <span v-else>-</span>
-          </template>
-        </a-table-column> -->
         <a-table-column
           ellipsis
           tooltip

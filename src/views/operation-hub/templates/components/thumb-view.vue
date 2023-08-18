@@ -11,6 +11,7 @@
           :data-info="item"
           :provider="item.icon"
           :checked="includes(checkedList, item.id)"
+          :show-checkbox="showCheckbox"
           @change="handleCheckChange"
         ></templateItem>
       </a-grid-item>
@@ -21,13 +22,10 @@
 
 <script lang="ts" setup>
   import { OPERATIONHUB } from '@/router/config';
-  import { Resources, Actions } from '@/permissions/config';
   import { MoreAction } from '@/views/config/interface';
-  import { useUserStore } from '@/store';
   import { includes, filter } from 'lodash';
-  import { ref, onMounted, PropType } from 'vue';
+  import { ref, PropType } from 'vue';
   import useCallCommon from '@/hooks/use-call-common';
-  import thumbButton from '@/components/buttons/thumb-button.vue';
   import templateItem from './template-item.vue';
   import { TemplateRowData, ModuleAction } from '../config/interface';
   import { actionList } from '../config';
@@ -44,15 +42,19 @@
       default() {
         return [];
       }
+    },
+    showCheckbox: {
+      type: Boolean,
+      default: true
     }
   });
-  const userStore = useUserStore();
   const emits = defineEmits(['create', 'change']);
   const { router } = useCallCommon();
   const moduleActions = ref<MoreAction[]>([]);
   const handleCreate = () => {
     emits('create');
   };
+
   const handleCheckChange = (checked, id) => {
     emits('change', checked, id);
   };

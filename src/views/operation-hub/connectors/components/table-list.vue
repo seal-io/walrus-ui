@@ -112,7 +112,7 @@
       :data="dataList"
       :pagination="false"
       row-key="id"
-      :row-selection="rowSelection"
+      :row-selection="rowSelectionState"
       @sorter-change="handleSortChange"
       @selection-change="handleSelectChange"
     >
@@ -213,6 +213,18 @@
           </template>
         </a-table-column>
         <a-table-column
+          v-if="
+            route.params.projectId
+              ? userStore.hasProjectResourceActions({
+                  resource: Resources.Connectors,
+                  projectID: route.params.projectId,
+                  actions: [Actions.PUT]
+                })
+              : userStore.hasRolesActionsPermission({
+                  resource: Resources.Connectors,
+                  actions: [Actions.PUT]
+                })
+          "
           align="center"
           :title="$t('common.table.operation')"
           ellipsis
@@ -221,21 +233,7 @@
           :cell-style="{ minWidth: '40px' }"
         >
           <template #cell="{ record }">
-            <a-space
-              v-if="
-                route.params.projectId
-                  ? userStore.hasProjectResourceActions({
-                      resource: Resources.Connectors,
-                      projectID: route.params.projectId,
-                      actions: [Actions.PUT]
-                    })
-                  : userStore.hasRolesActionsPermission({
-                      resource: Resources.Connectors,
-                      actions: [Actions.PUT]
-                    })
-              "
-              :size="16"
-            >
+            <a-space :size="16">
               <a-dropdown-button
                 v-if="record.category === ConnectorCategory.Kubernetes"
                 size="small"
@@ -329,7 +327,6 @@
 </template>
 
 <script lang="ts" setup>
-  import { ModalAction } from '@/views/config';
   import { Resources, Actions } from '@/permissions/config';
   import { useUserStore } from '@/store';
   import { useSetChunkRequest } from '@/api/axios-chunk-request';
@@ -340,16 +337,7 @@
   import ProviderIcon from '@/components/provider-icon/index.vue';
   import dayjs from 'dayjs';
   import _, { get, map, pickBy, find, toLower, cloneDeep } from 'lodash';
-  import {
-    reactive,
-    ref,
-    onMounted,
-    onActivated,
-    watch,
-    nextTick,
-    inject,
-    PropType
-  } from 'vue';
+  import { reactive, ref, onMounted, nextTick, computed, PropType } from 'vue';
   import useCallCommon from '@/hooks/use-call-common';
   import { Message } from '@arco-design/web-vue';
   import { deleteModal, execSucceed } from '@/utils/monitor';
@@ -429,6 +417,25 @@
       }
       return get(item, 'project.id') === route.params?.projectId;
     }
+  });
+  const rowSelectionState = computed(() => {
+    // for project
+    if (route.params.projectId) {
+      return userStore.hasProjectResourceActions({
+        resource: Resources.Connectors,
+        projectID: route.params.projectId,
+        actions: [Actions.DELETE]
+      })
+        ? rowSelection
+        : null;
+    }
+    // for global
+    return userStore.hasRolesActionsPermission({
+      resource: Resources.Connectors,
+      actions: [Actions.DELETE]
+    })
+      ? rowSelection
+      : null;
   });
   const getCostStatus = (conditions) => {
     const d = find(conditions, (item) => {

@@ -184,9 +184,9 @@
   import { getListLabel } from '@/utils/func';
   import { RowData } from '@/views/system/config/interface';
   import { querySubjects } from '@/views/system/api/users';
-  import { queryProjectSubjects, addProjectSubjects } from '../api';
-  import { projectRoles } from '../config';
-  import { ProjectRolesRowData } from '../config/interface';
+  import { queryProjectSubjects, addProjectSubjects } from '../../projects/api';
+  import { projectRoles } from '../../projects/config';
+  import { ProjectRolesRowData } from '../../projects/config/interface';
 
   const props = defineProps({
     action: {
@@ -300,7 +300,6 @@
   const handleSubmit = async () => {
     try {
       await addProjectSubjects({ items: selectedList.value });
-      getProjectSubjects();
       emits('save');
       emits('update:show', false);
     } catch (error) {
