@@ -128,9 +128,6 @@
       nextTick(() => {
         chunkRequesSource = setChunkRequest({
           url: `${SERVICE_RESOURCE_API_PREFIX()}/outputs`,
-          params: {
-            ...permissionParams
-          },
           handler: updateHandler,
           beforeReconnect: fetchData
         });

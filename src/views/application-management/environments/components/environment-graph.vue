@@ -108,11 +108,7 @@
   const getServiceGraph = async () => {
     try {
       loading.value = true;
-      const params = {
-        environmentID: route.params.environmentId as string,
-        projectID: route.params.projectId as string
-      };
-      const { data } = await queryEnvironmentServiceGraph(params);
+      const { data } = await queryEnvironmentServiceGraph();
       resultData.value.links = _.map(data.edges, (item) => {
         return {
           edgeType: item.type,

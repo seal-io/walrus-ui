@@ -92,7 +92,7 @@
     />
     <AssignRoles
       v-model:show="showModal"
-      :project-i-d="queryParams.projectID"
+      :project-i-d="projectID"
       @save="fetchData"
     ></AssignRoles>
   </div>
@@ -118,6 +118,7 @@
   const showModal = ref(false);
   const total = ref(0);
   let timer: any = null;
+  const projectID = route.params.projectId as string;
   const projectVisitors = ref<ProjectRolesRowData[]>([]);
 
   const formData = reactive({
@@ -128,7 +129,6 @@
   const queryParams = reactive({
     page: 1,
     perPage: 10,
-    projectID: route.params.projectId as string,
     query: ''
   });
 

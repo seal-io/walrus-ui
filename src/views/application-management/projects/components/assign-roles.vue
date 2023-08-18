@@ -254,8 +254,7 @@
     try {
       loading.value = true;
       const params = {
-        page: -1,
-        projectID: props.projectID
+        page: -1
       };
       const { data } = await queryProjectSubjects(params);
       projectVisitors.value = data.items || [];
@@ -268,8 +267,7 @@
   const getSubjectList = async () => {
     try {
       const params = {
-        page: -1,
-        projectID: props.projectID
+        page: -1
       };
       const { data } = await querySubjects(params);
       userSubjectList.value = _.filter(data.items, (item) => {

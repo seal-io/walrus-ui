@@ -29,7 +29,7 @@
           <a-button
             v-if="
               userStore.hasProjectResourceActions({
-                projectID: queryParams.projectID,
+                projectID,
                 resource: Resources.Environments,
                 actions: [Actions.POST]
               })
@@ -41,7 +41,7 @@
           <a-button
             v-if="
               userStore.hasProjectResourceActions({
-                projectID: queryParams.projectID,
+                projectID,
                 resource: Resources.Environments,
                 actions: [Actions.DELETE]
               })
@@ -137,7 +137,7 @@
                 <a-tooltip
                   v-if="
                     userStore.hasProjectResourceActions({
-                      projectID: queryParams.projectID,
+                      projectID,
                       resource: Resources.Environments,
                       actions: [Actions.PUT]
                     })
@@ -151,7 +151,7 @@
                 <a-tooltip
                   v-if="
                     userStore.hasProjectResourceActions({
-                      projectID: queryParams.projectID,
+                      projectID,
                       resource: Resources.Environments,
                       actions: [Actions.POST]
                     })
@@ -238,11 +238,11 @@
   const showModal = ref(false);
   const currentInfo = ref({});
   const action = ref(PageAction.EDIT);
+  const projectID = route.params.projectId as string;
   const queryParams = reactive({
     query: '',
     page: 1,
-    perPage: 10,
-    projectID: route.params.projectId
+    perPage: 10
   });
 
   const handleCreate = () => {

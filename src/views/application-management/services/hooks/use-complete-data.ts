@@ -77,8 +77,6 @@ export default function useCompleteData() {
     try {
       const params = {
         page: -1,
-        projectID: route.params.projectId as string,
-        environmentID: route.params.environmentId as string,
         includeInherited: true
       };
       const { data } = await queryVariables(params);

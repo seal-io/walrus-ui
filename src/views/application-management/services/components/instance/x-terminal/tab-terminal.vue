@@ -34,7 +34,6 @@
     onBeforeUnmount
   } from 'vue';
   import xTerminal from '@/components/x-terminal/index.vue';
-  import { useRoute } from 'vue-router';
   import {
     SERVICE_API_PREFIX,
     SERVICE_API
@@ -65,13 +64,11 @@
       }
     }
   });
-  const route = useRoute();
   const { host, protocol } = window.location;
   const proto = protocol === 'https:' ? 'wss' : 'ws';
   const resourceId = ref('');
   const resourceKey = ref('');
   const terminal = ref();
-  const projectID = route.params.projectId;
   let timer: any = null;
 
   const wssURL = computed(() => {
@@ -81,8 +78,7 @@
     return `${proto}://${host}/v1${SERVICE_API_PREFIX()}${SERVICE_API}/${
       props.nodeInfo.serviceID
     }/resources/${resourceId.value}/exec?${qs.stringify({
-      key: resourceKey.value,
-      projectID
+      key: resourceKey.value
     })}`;
   });
   const handleKeyChange = (val) => {
