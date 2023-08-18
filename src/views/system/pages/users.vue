@@ -99,6 +99,12 @@
           </template>
         </a-table-column>
         <a-table-column
+          v-if="
+            userStore.hasRolesActionsPermission({
+              resource: Resources.Subjects,
+              actions: [Actions.PUT, Actions.DELETE]
+            })
+          "
           align="center"
           :width="210"
           :title="$t('common.table.operation')"
@@ -163,6 +169,7 @@
   import { Resources, Actions } from '@/permissions/config';
   import _ from 'lodash';
   import dayjs from 'dayjs';
+  import { useUserStore } from '@/store';
   import { ref, reactive, onMounted } from 'vue';
   import FilterBox from '@/components/filter-box/index.vue';
   import useRowSelect from '@/hooks/use-row-select';
@@ -173,6 +180,7 @@
   import { querySubjects, deleteSubjects, queryRoles } from '../api/users';
   import CreateAccountModal from '../components/create-account-modal.vue';
 
+  const userStore = useUserStore();
   const { rowSelection, selectedKeys, handleSelectChange } = useRowSelect();
   const dataList = ref<RowData[]>([]);
   const loading = ref(false);

@@ -79,7 +79,7 @@
         :data="dataList"
         :pagination="false"
         row-key="id"
-        :row-selection="rowSelection"
+        :row-selection="rowSelectionStatue"
         @sorter-change="handleSortChange"
         @selection-change="handleSelectChange"
       >
@@ -150,11 +150,16 @@
           </a-table-column>
           <a-table-column
             v-if="
-              [
-                scopeMap.ENVIRONMENT,
-                scopeMap.GLOBAL,
-                scopeMap.PROJECT
-              ].includes(scope)
+              scope === scopeMap.GLOBAL
+                ? userStore.hasRolesActionsPermission({
+                    resource: Resources.Variables,
+                    actions: [Actions.PUT]
+                  })
+                : userStore.hasProjectResourceActions({
+                    projectID: route.params.projectId,
+                    resource: Resources.Variables,
+                    actions: [Actions.PUT]
+                  })
             "
             align="center"
             :width="210"
@@ -166,18 +171,7 @@
             <template #cell="{ record }">
               <a-space :size="16">
                 <a-tooltip
-                  v-if="
-                    scope === scopeMap.GLOBAL
-                      ? userStore.hasRolesActionsPermission({
-                          resource: Resources.Variables,
-                          actions: [Actions.PUT]
-                        })
-                      : userStore.hasProjectResourceActions({
-                          projectID: route.params.projectId,
-                          resource: Resources.Variables,
-                          actions: [Actions.PUT]
-                        }) && visibleInScope(record)
-                  "
+                  v-if="visibleInScope(record)"
                   :content="$t('common.button.edit')"
                 >
                   <a-link
@@ -292,6 +286,17 @@
     return t('applications.secret.edit');
   });
 
+  const rowSelectionStatue = computed(() => {
+    if (props.scope === scopeMap.GLOBAL) {
+      return userStore.hasRolesActionsPermission({
+        resource: Resources.Variables,
+        actions: [Actions.PUT]
+      })
+        ? rowSelection
+        : null;
+    }
+    return rowSelection;
+  });
   const visibleInScope = (row) => {
     if (props.scope === scopeMap.PROJECT) {
       return _.get(row, 'project.id') && !_.get(row, 'environment.id');

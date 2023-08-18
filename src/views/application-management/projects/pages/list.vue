@@ -180,10 +180,6 @@
         :info="projectInfo"
         @save="handleSaveProject"
       ></CreateProjectModal>
-      <AssignRoles
-        v-model:show="showModal"
-        :project-i-d="projectID"
-      ></AssignRoles>
     </SpinCard>
   </div>
 </template>
@@ -191,11 +187,11 @@
 <script lang="ts" setup>
   import { PROJECT } from '@/router/config';
   import { Resources, Actions } from '@/permissions/config';
+  import QuestionPopup from '@/components/question-popup/index.vue';
   import { QAlinkMap, USER_DEFAULT_PROJECT } from '@/views/config';
   import _, { cloneDeep, map, pickBy, remove } from 'lodash';
   import { ref, reactive } from 'vue';
   import dayjs from 'dayjs';
-  import localStore from '@/utils/localStore';
   import { useUserStore, useProjectStore } from '@/store';
   import HeaderInfo from '@/components/header-info/index.vue';
   import useCallCommon from '@/hooks/use-call-common';
@@ -203,9 +199,7 @@
   import { deleteModal, execSucceed } from '@/utils/monitor';
   import { UseSortDirection } from '@/utils/common';
   import useRowSelect from '@/hooks/use-row-select';
-  import QuestionPopup from '@/components/question-popup/index.vue';
   import CreateProjectModal from '../components/create-project.vue';
-  import AssignRoles from '../components/assign-roles.vue';
   import { ProjectRowData } from '../config/interface';
   import { queryProjects, deleteProjects } from '../api';
 
@@ -226,7 +220,6 @@
   const projectInfo = ref<any>({});
   const projectID = ref('');
   const action = ref<'create' | 'edit'>('create');
-  const showModal = ref(false);
   const queryParams = reactive({
     query: '',
     page: 1,
@@ -260,12 +253,7 @@
       params: { projectId: row.id }
     });
   };
-  const handleAuthorize = (row) => {
-    projectID.value = row.id;
-    setTimeout(() => {
-      showModal.value = true;
-    }, 100);
-  };
+
   const fetchData = async () => {
     try {
       loading.value = true;

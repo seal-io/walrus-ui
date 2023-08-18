@@ -28,7 +28,7 @@
         <a-button
           v-permission="{
             resource: `roles.${Resources.Perspectives}`,
-            actions: ['POST']
+            actions: [Actions.POST]
           }"
           type="primary"
           @click="handleCreate"
@@ -37,7 +37,7 @@
         <a-button
           v-permission="{
             resource: `roles.${Resources.Perspectives}`,
-            actions: ['DELETE']
+            actions: [Actions.DELETE]
           }"
           type="primary"
           status="warning"
@@ -47,7 +47,6 @@
         >
       </template>
     </FilterBox>
-    <!-- <a-divider :margin="8"></a-divider> -->
     <a-table
       column-resizable
       style="margin-bottom: 20px"
@@ -56,7 +55,14 @@
       :data="dataList"
       :pagination="false"
       row-key="id"
-      :row-selection="rowSelection"
+      :row-selection="
+        userStore.hasRolesActionsPermission({
+          resource: Resources.Perspectives,
+          actions: [Actions.DELETE]
+        })
+          ? rowSelection
+          : null
+      "
       @sorter-change="handleSortChange"
       @selection-change="handleSelectChange"
     >
@@ -73,7 +79,7 @@
               v-if="
                 userStore.hasRolesActionsPermission({
                   resource: Resources.Costs,
-                  actions: ['POST']
+                  actions: [Actions.POST]
                 })
               "
               size="small"
@@ -140,6 +146,12 @@
           </template>
         </a-table-column>
         <a-table-column
+          v-if="
+            userStore.hasRolesActionsPermission({
+              resource: Resources.Perspectives,
+              actions: [Actions.PUT]
+            })
+          "
           ellipsis
           tooltip
           :cell-style="{ minWidth: '40px' }"
@@ -177,7 +189,7 @@
 
 <script lang="ts" setup>
   import { COSTMANAGEMENT } from '@/router/config';
-  import { Resources } from '@/permissions/config';
+  import { Actions, Resources } from '@/permissions/config';
   import { useUserStore } from '@/store';
   import { map, find, toLower, pickBy, includes } from 'lodash';
   import dayjs from 'dayjs';

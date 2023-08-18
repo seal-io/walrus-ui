@@ -41,7 +41,7 @@
           <a-button
             v-permission="{
               resource: `roles.${Resources.TemplateCompletions}`,
-              actions: ['POST']
+              actions: [Actions.POST]
             }"
             type="primary"
             @click="handleDraftModule"
@@ -54,7 +54,7 @@
           <a-button
             v-permission="{
               resource: `roles.${Resources.Templates}`,
-              actions: ['POST']
+              actions: [Actions.POST]
             }"
             type="primary"
             @click="handleCreate"
@@ -64,7 +64,7 @@
           <a-button
             v-permission="{
               resource: `roles.${Resources.Templates}`,
-              actions: ['DELETE']
+              actions: [Actions.DELETE]
             }"
             type="primary"
             status="warning"
@@ -75,7 +75,7 @@
         </template>
       </FilterBox>
       <a-divider :margin="8"></a-divider>
-      <a-spin :loading="loading" fill>
+      <a-spin :loading="loading" class="fill-width">
         <a-tabs
           lazy-load
           default-active-key="currentView"
@@ -85,6 +85,12 @@
             <ThumbView
               :list="dataList"
               :checked-list="selectedKeys"
+              :show-checkbox="
+                userStore.hasRolesActionsPermission({
+                  resource: Resources.Templates,
+                  actions: [Actions.DELETE]
+                })
+              "
               @change="handleCheckChange"
             ></ThumbView>
           </a-tab-pane>
@@ -117,7 +123,8 @@
 
 <script lang="ts" setup>
   import { OPERATIONHUB } from '@/router/config';
-  import { Resources } from '@/permissions/config';
+  import { Resources, Actions } from '@/permissions/config';
+  import { useUserStore } from '@/store';
   import _, { map, pickBy, remove } from 'lodash';
   import { ref, reactive, onMounted, nextTick } from 'vue';
   import useCallCommon from '@/hooks/use-call-common';
@@ -139,6 +146,7 @@
     }
   });
   let timer: any = null;
+  const userStore = useUserStore();
   const { setChunkRequest } = useSetChunkRequest();
   const { router } = useCallCommon();
   const loading = ref(false);
@@ -155,6 +163,7 @@
     perPage: 10
   });
   const { updateChunkedList } = useUpdateChunkedList(dataList);
+
   const handleCreate = () => {
     router.push({
       name: OPERATIONHUB.TemplateDetail,
