@@ -44,20 +44,10 @@
                 v-for="item in userSubjectList"
                 :key="item.id"
                 :value="item.id"
-                :disabled="
-                  _.some(
-                    projectVisitors,
-                    (sItem) => _.get(sItem, 'subject.id') === item.id
-                  )
-                "
+                :disabled="userAssignChecked(item)"
               >
                 <i
-                  v-if="
-                    _.some(
-                      projectVisitors,
-                      (sItem) => _.get(sItem, 'subject.id') === item.id
-                    )
-                  "
+                  v-if="userAssignChecked(item)"
                   class="iconfont icon-tianjiahaoyouchenggong_huaban1 mright-5"
                   style="color: var(--seal-color-success)"
                 ></i>
@@ -77,12 +67,7 @@
                 v-for="item in groupSubjectList"
                 :key="item.id"
                 :value="item.id"
-                :disabled="
-                  _.some(
-                    projectVisitors,
-                    (sItem) => _.get(sItem, 'subject.id') === item.id
-                  )
-                "
+                :disabled="userAssignChecked(item)"
               >
                 <span>{{ item.name }}</span>
               </a-option>
@@ -244,6 +229,18 @@
     role: { id: '' }
   });
 
+  const userAssignChecked = (subject) => {
+    return (
+      _.some(
+        projectVisitors.value,
+        (sItem) => _.get(sItem, 'subject.id') === subject.id
+      ) ||
+      _.some(
+        selectedList.value,
+        (sItem) => _.get(sItem, 'subject.id') === subject.id
+      )
+    );
+  };
   const handleSubjectChange = (val) => {
     const data = _.find(userSubjectList.value, (item) => {
       return item.id === val;
