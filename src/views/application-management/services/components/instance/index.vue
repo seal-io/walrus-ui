@@ -169,7 +169,7 @@
   import { ServiceRowData } from '../../config/interface';
   import useFetchResource from '../hooks/use-fetch-chunk-data';
   import {
-    queryItemApplicationService,
+    queryItemService,
     deleteServiceItem,
     SERVICE_API,
     SERVICE_API_PREFIX
@@ -276,7 +276,7 @@
       const params = {
         id: route.query.id
       };
-      const { data } = await queryItemApplicationService(params);
+      const { data } = await queryItemService(params);
       currentInfo.value = data;
       serviceStore.setServiceInfo(route.query.id, data);
     } catch (error) {

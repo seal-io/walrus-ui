@@ -9,7 +9,7 @@ import {
 import usePageAction from '@/hooks/use-page-action';
 import { useServiceStore } from '@/store';
 
-import { queryItemApplicationService } from '../api';
+import { queryItemService } from '../api';
 import useCompleteData from './use-complete-data';
 
 export default function useServiceData(props?) {
@@ -80,7 +80,7 @@ export default function useServiceData(props?) {
       const params = {
         id: route.query.id
       };
-      const { data } = await queryItemApplicationService(params);
+      const { data } = await queryItemService(params);
       serviceInfo.value = data;
     } catch (error) {
       serviceInfo.value = {};

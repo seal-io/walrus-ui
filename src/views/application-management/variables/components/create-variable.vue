@@ -188,13 +188,11 @@
         };
         if (props.action === 'create') {
           await createVariable({
-            data: params,
-            query: { projectID: formData.value.project?.id }
+            data: params
           });
         } else {
           await updateVariable({
-            data: params,
-            query: { projectID: formData.value.project?.id }
+            data: params
           });
         }
         setTimeout(() => {

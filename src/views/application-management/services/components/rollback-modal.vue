@@ -172,8 +172,7 @@
       loading.value = true;
       const params = {
         page: -1,
-        serviceID: formData.serviceID,
-        projectID: props.projectID
+        serviceID: formData.serviceID
       };
       const { data } = await queryServiceRevisions(params);
       revisionList.value = data?.items || [];

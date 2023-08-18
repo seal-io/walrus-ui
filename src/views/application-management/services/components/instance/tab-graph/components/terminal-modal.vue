@@ -90,10 +90,8 @@
   });
   const emits = defineEmits(['update:show']);
   const terminal = ref();
-  const { params } = router.currentRoute.value;
   const { host, protocol } = window.location;
   const proto = protocol === 'https:' ? 'wss' : 'ws';
-  const projectID = params.projectId;
   const info = reactive({
     key: '',
     id: ''
@@ -108,8 +106,7 @@
     wssURL.value = `${proto}://${host}/v1/${SERVICE_RESOURCE_API_PREFIX()}/resources/${
       info.id
     }/exec?${qs.stringify({
-      key: info.key,
-      projectID
+      key: info.key
     })}`;
   };
   const handleKeyChange = (value) => {

@@ -1,4 +1,5 @@
 import axios from 'axios';
+import _ from 'lodash';
 import qs from 'query-string';
 import { Pagination } from '@/types/global';
 import router from '@/router';
@@ -46,6 +47,7 @@ export const createService = (data) => {
   return axios.post(`${SERVICE_API_PREFIX()}${SERVICE_API}`, data);
 };
 
+// environmentID is the tartget environment, projectID is the target project
 export const cloneServices = (data: {
   projectID: string;
   environmentID: string;
@@ -76,14 +78,7 @@ export const updateService = (data) => {
 };
 
 export const queryItemService = (params) => {
-  return axios.get(`${SERVICE_API_PREFIX()}${SERVICE_API}/${params.id}`, {
-    params: {
-      ...params
-    },
-    paramsSerializer: (obj) => {
-      return qs.stringify(obj);
-    }
-  });
+  return axios.get(`${SERVICE_API_PREFIX()}${SERVICE_API}/${params.id}`);
 };
 
 // ========service======
@@ -98,28 +93,9 @@ export const queryApplicationServices = (params) => {
   });
 };
 
-export const queryItemApplicationService = (params) => {
-  return axios.get(`${SERVICE_API_PREFIX()}${SERVICE_API}/${params.id}`, {
-    params: {
-      ...params
-    },
-    paramsSerializer: (obj) => {
-      return qs.stringify(obj);
-    }
-  });
-};
-
 export const queryInstanceOutputs = (params) => {
   return axios.get(
-    `${SERVICE_API_PREFIX()}${SERVICE_API}/${params.id}/outputs`,
-    {
-      params: {
-        ...params
-      },
-      paramsSerializer: (obj) => {
-        return qs.stringify(obj);
-      }
-    }
+    `${SERVICE_API_PREFIX()}${SERVICE_API}/${params.id}/outputs`
   );
 };
 export const deleteServiceItem = (data) => {
@@ -163,29 +139,12 @@ export const diffServiceSpec = (params: { serviceID: string }) => {
 
 export const queryServiceResourceGraph = (params: { serviceID: string }) => {
   return axios.get(
-    `${SERVICE_API_PREFIX()}${SERVICE_API}/${params.serviceID}/graph`,
-    {
-      params: {
-        ...params
-      },
-      paramsSerializer: (obj) => {
-        return qs.stringify(obj);
-      }
-    }
+    `${SERVICE_API_PREFIX()}${SERVICE_API}/${params.serviceID}/graph`
   );
 };
 
-export const queryEnvironmentServiceGraph = (params: {
-  environmentID: string;
-}) => {
-  return axios.get(`${SERVICE_API_PREFIX()}/graph`, {
-    params: {
-      ...params
-    },
-    paramsSerializer: (obj) => {
-      return qs.stringify(obj);
-    }
-  });
+export const queryEnvironmentServiceGraph = () => {
+  return axios.get(`${SERVICE_API_PREFIX()}/graph`);
 };
 
 export const refreshServiceConfig = (params: { serviceID: string }) => {
@@ -194,20 +153,20 @@ export const refreshServiceConfig = (params: { serviceID: string }) => {
   );
 };
 // =========history================
-interface ApplicationRevisionParams extends Pagination {
+interface ServiceRevisionParams extends Pagination {
   serviceID?: string;
   sort?: string[];
 }
 
 export const queryServiceRevisions = (
-  params: ApplicationRevisionParams,
+  params: ServiceRevisionParams,
   token?
 ) => {
   return axios.get(
     `${SERVICE_API_PREFIX()}${SERVICE_API}/${params.serviceID}/revisions`,
     {
       params: {
-        ...params
+        ..._.omit(params, ['serviceID'])
       },
       cancelToken: token,
       paramsSerializer: (obj) => {
@@ -217,14 +176,7 @@ export const queryServiceRevisions = (
   );
 };
 export const queryApplicationRevisionsDetail = (params: { id: string }) => {
-  return axios.get(`${SERVICE_RESOURCE_API_PREFIX()}/revisions/${params.id}`, {
-    params: {
-      ...params
-    },
-    paramsSerializer: (obj) => {
-      return qs.stringify(obj);
-    }
-  });
+  return axios.get(`${SERVICE_RESOURCE_API_PREFIX()}/revisions/${params.id}`);
 };
 
 export const deleteApplicationRevisions = (data: DeletePayload) => {
@@ -237,15 +189,7 @@ export const diffRevisionSpec = (params: { id: string; serviceID: string }) => {
   return axios.get(
     `${SERVICE_API_PREFIX()}${SERVICE_API}/${params.serviceID}/revisions/${
       params.id
-    }/diff-latest`,
-    {
-      params: {
-        ...params
-      },
-      paramsSerializer: (obj) => {
-        return qs.stringify(obj);
-      }
-    }
+    }/diff-latest`
   );
 };
 export const queryRevisionChange = (params: {
@@ -255,15 +199,7 @@ export const queryRevisionChange = (params: {
   return axios.get(
     `${SERVICE_API_PREFIX()}${SERVICE_API}/${params.serviceID}/revisions/${
       params.id
-    }/diff-previous`,
-    {
-      params: {
-        ...params
-      },
-      paramsSerializer: (obj) => {
-        return qs.stringify(obj);
-      }
-    }
+    }/diff-previous`
   );
 };
 
@@ -281,15 +217,12 @@ export const rollbackService = (data: {
 };
 
 // ===========resource==========
-export const queryServiceResource = (
-  params: ApplicationRevisionParams,
-  token?
-) => {
+export const queryServiceResource = (params: ServiceRevisionParams, token?) => {
   return axios.get(
     `${SERVICE_API_PREFIX()}${SERVICE_API}/${params.serviceID}/resources`,
     {
       params: {
-        ...params
+        ..._.omit(params, ['serviceID'])
       },
       cancelToken: token,
       paramsSerializer: (obj) => {
@@ -350,7 +283,7 @@ export const queryInstanceEndpoints = (
     }/access-endpoints`,
     {
       params: {
-        ...params
+        ..._.omit(params, ['serviceID'])
       },
       cancelToken: token,
       paramsSerializer: (obj) => {

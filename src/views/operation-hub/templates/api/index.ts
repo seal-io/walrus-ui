@@ -33,12 +33,7 @@ export function queryTemplates(params: QueryType) {
   });
 }
 export function queryItemTemplate(params: { id: string }) {
-  return axios.get(`/templates/${params.id}`, {
-    params,
-    paramsSerializer: (obj) => {
-      return qs.stringify(obj);
-    }
-  });
+  return axios.get(`/templates/${params.id}`);
 }
 export function createTemplate(data: TemplateFormData) {
   return axios.post('/templates', data);
@@ -53,12 +48,7 @@ export function refreshTemplate(data: { id: string }) {
   return axios.post(`/templates/${data.id}/refresh`);
 }
 export function queryTemplatesVersions(params: { templateID: string }) {
-  return axios.get(`/templates/${params.templateID}/versions`, {
-    params,
-    paramsSerializer: (obj) => {
-      return qs.stringify(obj);
-    }
-  });
+  return axios.get(`/templates/${params.templateID}/versions`);
 }
 
 export function queryItemTemplatesVersions(params: { templateName: string }) {

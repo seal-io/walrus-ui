@@ -28,7 +28,7 @@
         <a-button
           v-if="
             userStore.hasProjectResourceActions({
-              projectID: queryParams.projectID,
+              projectID,
               resource: Resources.Services,
               actions: [Actions.POST]
             })
@@ -40,7 +40,7 @@
         <a-button
           v-if="
             userStore.hasProjectResourceActions({
-              projectID: queryParams.projectID,
+              projectID,
               resource: Resources.Services,
               actions: [Actions.POST]
             })
@@ -54,7 +54,7 @@
         <a-button
           v-if="
             userStore.hasProjectResourceActions({
-              projectID: queryParams.projectID,
+              projectID,
               resource: Resources.Services,
               actions: [Actions.DELETE]
             })
@@ -91,7 +91,7 @@
             <a-link
               v-if="
                 userStore.hasProjectResourceActions({
-                  projectID: queryParams.projectID,
+                  projectID,
                   resource: Resources.Services,
                   actions: [Actions.GET]
                 })
@@ -199,7 +199,7 @@
     <rollbackModal
       v-model:show="showRollbackModal"
       :service-id="selectedVersion"
-      :project-i-d="queryParams.projectID"
+      :project-i-d="projectID"
       :title="rollbackTitle"
     ></rollbackModal>
     <deleteServiceModal
@@ -276,9 +276,12 @@
   const loading = ref(false);
   const total = ref(0);
   const totalPage = ref(1);
+  const { environmentId: environmentID, projectId: projectID } =
+    route.params as {
+      environmentId: string;
+      projectId: string;
+    };
   const queryParams = reactive({
-    projectID: route.params.projectId as string,
-    environmentID: route.params.environmentId as string,
     query: '',
     page: 1,
     perPage: 10
@@ -311,7 +314,7 @@
     }, 100);
   };
   const fetchData = async () => {
-    if (!queryParams.projectID || !queryParams.environmentID) return;
+    if (!projectID || !environmentID) return;
     fetchToken?.cancel?.();
     fetchToken = createAxiosToken();
     try {
@@ -378,8 +381,8 @@
     router.push({
       name: PROJECT.ServiceEdit,
       params: {
-        projectId: queryParams.projectID,
-        environmentId: queryParams.environmentID,
+        projectId: projectID,
+        environmentId: environmentID,
         action: PageAction.EDIT
       }
     });
@@ -447,14 +450,14 @@
     actionHandlerMap.set('sync', handleRefreshServiceConfig);
   };
   const init = async () => {
-    userStore.setInfo({ currentProject: queryParams.projectID });
+    userStore.setInfo({ currentProject: projectID });
     fetchData();
   };
 
   const updateServiceList = (data) => {
     const collections = filter(
       data.collection || [],
-      (sItem) => sItem?.project?.id === queryParams.projectID
+      (sItem) => sItem?.project?.id === projectID
     );
     const ids = data?.ids || [];
     // CREATE
@@ -496,7 +499,7 @@
   };
   const createServiceChunkRequest = () => {
     try {
-      if (!queryParams.projectID) return;
+      if (!projectID) return;
       setChunkRequest({
         url: `${SERVICE_API_PREFIX()}${SERVICE_API}`,
         handler: updateHandler,

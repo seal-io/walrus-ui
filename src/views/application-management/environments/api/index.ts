@@ -35,12 +35,7 @@ export function queryEnvironments(params: QueryType, token?) {
 }
 
 export function queryItemEnvironments(params: { id: string }) {
-  return axios.get(`${PROJECT_API_PREFIX()}${ENVIRONMENT_API}/${params.id}`, {
-    params,
-    paramsSerializer: (obj) => {
-      return qs.stringify(obj);
-    }
-  });
+  return axios.get(`${PROJECT_API_PREFIX()}${ENVIRONMENT_API}/${params.id}`);
 }
 
 export function createEnvironment(data: EnvironFormData) {

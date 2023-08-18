@@ -238,8 +238,6 @@
   import EditPageFooter from '@/components/edit-page-footer/index.vue';
   import useCallCommon from '@/hooks/use-call-common';
   import usePageAction from '@/hooks/use-page-action';
-  import useProjectData from '@/views/application-management/projects/hooks/use-project-breadcrumb-data';
-  import { BreadcrumbOptions } from '@/views/config/interface';
   import ResizeableContainer from '@/components/resizeable-container/index.vue';
   import { ConnectorFormData } from '../config/interface';
   import { operationRootBread, ConnectorCategory } from '../config';

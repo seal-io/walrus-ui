@@ -45,15 +45,10 @@ export const updateProject = (data: ProjectFormData) => {
 };
 
 export const queryItemProject = (params) => {
-  return axios.get(`/projects/${params.id}`, {
-    params,
-    paramsSerializer: (obj) => {
-      return qs.stringify(obj);
-    }
-  });
+  return axios.get(`/projects/${params.id}`);
 };
 
-export const queryProjectSubjects = (params: { projectID: string }) => {
+export const queryProjectSubjects = (params) => {
   return axios.get<ListResult<ProjectRolesRowData>>(
     `${PROJECT_API_PREFIX()}/subjects`,
     {

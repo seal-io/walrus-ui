@@ -47,12 +47,7 @@ export function queryItemConnector(params: { id: string }) {
   if (isProjectContext()) {
     url = `${PROJECT_API_PREFIX()}${CONNECTOR_API}/${params.id}`;
   }
-  return axios.get(`${url}`, {
-    params,
-    paramsSerializer: (obj) => {
-      return qs.stringify(obj);
-    }
-  });
+  return axios.get(`${url}`);
 }
 export function createConnector(data: ConnectorFormData) {
   let url = CONNECTOR_API;

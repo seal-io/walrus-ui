@@ -268,17 +268,12 @@
   const environmentId = route.params.environmentId as string;
   const scopeParams = reactive({
     project: {
-      projectID: projectId,
       includeInherited: true
     },
     environment: {
-      projectID: projectId,
-      environmentID: environmentId,
       includeInherited: true
     },
     service: {
-      projectID: projectId,
-      environmentID: environmentId,
       includeInherited: true
     },
     global: {}
@@ -394,10 +389,7 @@
         };
       });
       await deleteVariable({
-        data: { items: ids },
-        query: {
-          projectID: route.params.projectId as string
-        }
+        data: { items: ids }
       });
       loading.value = false;
       execSucceed();

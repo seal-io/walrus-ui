@@ -215,23 +215,6 @@ export const serviceActions: MoreAction[] = [
       });
     }
   },
-  // {
-  //   label: 'common.button.clone',
-  //   value: 'clone',
-  //   icon: 'iconFont',
-  //   handler: '',
-  //   status: 'normal',
-  //   filterFun(currentInfo) {
-  //     return userStore.hasProjectResourceActions({
-  //       resource: Resources.Services,
-  //       projectID: get(currentInfo, 'project.id'),
-  //       actions: [Actions.POST]
-  //     });
-  //   },
-  //   props: {
-  //     type: 'icon-Clone-Cloud'
-  //   }
-  // },
   {
     label: 'common.button.rollback',
     value: 'rollback',
@@ -249,23 +232,6 @@ export const serviceActions: MoreAction[] = [
       type: 'icon-rollback-copy'
     }
   },
-  // {
-  //   label: 'applications.service.resource.sync',
-  //   value: 'sync',
-  //   icon: 'i',
-  //   handler: '',
-  //   status: 'normal',
-  //   filterFun(currentInfo) {
-  //     return userStore.hasProjectResourceActions({
-  //       resource: Resources.Services,
-  //       projectID: get(currentInfo, 'project.id'),
-  //       actions: [Actions.PUT]
-  //     });
-  //   },
-  //   props: {
-  //     class: 'iconfont icon-synchronization'
-  //   }
-  // },
   {
     label: 'common.button.delete',
     value: 'delete',

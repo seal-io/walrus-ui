@@ -82,8 +82,7 @@
       url,
       params: {
         key: logKey.value,
-        watch: true,
-        ...permissionParams
+        watch: true
       },
       contentType: 'text',
       handler: updateContent

@@ -65,39 +65,35 @@ export const queryItemVariable = (params: { id: string }) => {
     }
   });
 };
-export const createVariable = ({ data, query }) => {
-  let url = `${VARIABLE_API}?${qs.stringify(query)}`;
+export const createVariable = ({ data }) => {
+  let url = `${VARIABLE_API}`;
   if (isProjectContext()) {
-    url = `${PROJECT_API_PREFIX()}${VARIABLE_API}?${qs.stringify(query)}`;
+    url = `${PROJECT_API_PREFIX()}${VARIABLE_API}`;
   }
   if (isEnviromentContext()) {
-    url = `${ENVIRONMENT_API_PREFIX()}${VARIABLE_API}?${qs.stringify(query)}`;
+    url = `${ENVIRONMENT_API_PREFIX()}${VARIABLE_API}`;
   }
   return axios.post(`${url}`, data);
 };
 
-export const updateVariable = ({ data, query }) => {
-  let url = `${VARIABLE_API}/${data.id}?${qs.stringify(query)}`;
+export const updateVariable = ({ data }) => {
+  let url = `${VARIABLE_API}/${data.id}`;
   if (isProjectContext()) {
-    url = `${PROJECT_API_PREFIX()}${VARIABLE_API}/${data.id}?${qs.stringify(
-      query
-    )}`;
+    url = `${PROJECT_API_PREFIX()}${VARIABLE_API}/${data.id}`;
   }
   if (isEnviromentContext()) {
-    url = `${ENVIRONMENT_API_PREFIX()}${VARIABLE_API}/${data.id}?${qs.stringify(
-      query
-    )}`;
+    url = `${ENVIRONMENT_API_PREFIX()}${VARIABLE_API}/${data.id}`;
   }
   return axios.put(`${url}`, data);
 };
 
-export const deleteVariable = ({ data, query }) => {
-  let url = `${VARIABLE_API}?${qs.stringify(query)}`;
+export const deleteVariable = ({ data }) => {
+  let url = `${VARIABLE_API}`;
   if (isProjectContext()) {
-    url = `${PROJECT_API_PREFIX()}${VARIABLE_API}?${qs.stringify(query)}`;
+    url = `${PROJECT_API_PREFIX()}${VARIABLE_API}`;
   }
   if (isEnviromentContext()) {
-    url = `${ENVIRONMENT_API_PREFIX()}${VARIABLE_API}?${qs.stringify(query)}`;
+    url = `${ENVIRONMENT_API_PREFIX()}${VARIABLE_API}`;
   }
   return axios.delete(`${url}`, { data });
 };

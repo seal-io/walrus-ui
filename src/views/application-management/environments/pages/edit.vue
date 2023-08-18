@@ -51,7 +51,7 @@
           <seal-input
             v-if="pageAction === PageAction.EDIT"
             v-model="formData.name"
-            :disabled="!!id"
+            :disabled="!!id && !environmentId"
             :label="$t('operation.environments.table.name')"
             :required="true"
             :style="{ width: `${InputWidth.LARGE}px` }"
@@ -250,7 +250,6 @@
   import xInputGroup from '@/components/form-create/custom-components/x-input-group.vue';
   import useLabelsActions from '@/components/form-create/hooks/use-labels-action';
   import useProjectBreadcrumbData from '@/views/application-management/projects/hooks/use-project-breadcrumb-data';
-  import { queryServices } from '@/views/application-management/services/api';
   import { ServiceRowData } from '@/views/application-management/services/config/interface';
   import { BreadcrumbOptions } from '@/views/config/interface';
   import CloneService from '../components/clone-service.vue';
@@ -392,7 +391,6 @@
     try {
       const params = {
         page: -1,
-        projectID: route.params.projectId,
         withGlobal: true
       };
       const { data } = await queryConnectors(params);
