@@ -143,7 +143,10 @@
   const { loading, setLoading } = useLoading();
   const userStore = useUserStore();
   const rememberPassword = ref<boolean>(false);
-  const settingsInfo = ref({});
+  const settingsInfo = ref<any>({
+    ServeUrl: window.location.origin,
+    EnableTelemetry: 'true'
+  });
   const showModify = ref<boolean>(false);
   const userInfo = reactive({
     username: '',
@@ -213,9 +216,6 @@
           removeLocalLoginInfo();
         }
         await userStore.login(values);
-        // if (isNotFirstLogin()) {
-        //   await userStore.info();
-        // }
         // help to get serverURL id
         const userSetting = _.get(userStore, 'userInfo.userSetting');
         userStore.setInfo({
@@ -244,7 +244,13 @@
   const setRememberPassword = (val) => {
     rememberPassword.value = val;
   };
-
+  const checkShowModify = () => {
+    if (userStore?.isFirstLogin() && userStore.name) {
+      showModify.value = true;
+      emits('update:hideTips', true);
+      emits('loginSuccess');
+    }
+  };
   const getLocalSetting = async () => {
     const res = await readLocalLoginInfo();
     userInfo.username = res?.username || '';
@@ -253,6 +259,7 @@
   };
   onMounted(async () => {
     getLocalSetting();
+    checkShowModify();
   });
 </script>
 

@@ -208,7 +208,7 @@
   import { Resources, Actions } from '@/permissions/config';
   import _, { get, pickBy, filter } from 'lodash';
   import dayjs from 'dayjs';
-  import { reactive, ref, onBeforeUnmount, onMounted } from 'vue';
+  import { reactive, ref, onBeforeUnmount, onMounted, nextTick } from 'vue';
   import {
     useSetChunkRequest,
     createAxiosToken
@@ -500,7 +500,9 @@
   });
   onMounted(() => {
     setActionHandler();
-    createServiceChunkRequest();
+    nextTick(() => {
+      createServiceChunkRequest();
+    });
   });
   init();
 </script>
