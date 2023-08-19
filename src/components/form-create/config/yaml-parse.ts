@@ -37,10 +37,10 @@ export const validateYaml = (str) => {
     result = {
       empty: false,
       error: {
-        line: _.get(error, 'mark.line') + 1,
+        line: _.get(error, 'mark.line') || 0 + 1,
         reason: _.get(error, 'reason'),
         message: `${_.get(error, 'reason')} (line:${
-          _.get(error, 'mark.line') + 1
+          _.get(error, 'mark.line') || 0 + 1
         })`
       }
     };

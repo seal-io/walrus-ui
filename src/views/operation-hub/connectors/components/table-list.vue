@@ -403,8 +403,7 @@
     query: '',
     page: 1,
     perPage: 10,
-    category: '',
-    projectID: route.params.projectId
+    category: ''
   });
   const dataList = ref<ConnectorRowData[]>([]);
 
