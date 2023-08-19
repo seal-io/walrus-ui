@@ -27,6 +27,7 @@ export default [
       ignoreCache: true,
       locale: 'menu.costManagement.analyse',
       requiresAuth: true,
+      selectedMenu: COSTMANAGEMENT.PageIndex,
       permission: {
         resource: Resources.Costs,
         actions: ['POST']
@@ -61,6 +62,7 @@ export default [
       ignoreCache: true,
       locale: 'cost.analyse.menu',
       requiresAuth: true,
+      selectedMenu: COSTMANAGEMENT.PageIndex,
       permission: {
         resource: Resources.Costs,
         actions: ['POST']
