@@ -118,16 +118,14 @@
   import { get } from 'lodash';
   import { reactive, watch } from 'vue';
   import { useI18n } from 'vue-i18n';
-  import { useRouter } from 'vue-router';
   import { modifyPassword } from '@/api/user';
   import { useUserStore } from '@/store';
   import { updateUserSettingBatch } from '@/views/system/api/setting';
   import { urlReg } from '@/utils/validate';
 
-  const cllectionLink = 'https://seal-io.github.io/docs/telemetry';
+  const cllectionLink = 'https://seal-io.github.io/docs/improvement-plan';
   const { t } = useI18n();
   const userStore = useUserStore();
-  const router = useRouter();
   const emits = defineEmits(['updatePassword']);
   const props = defineProps({
     oldPassword: {

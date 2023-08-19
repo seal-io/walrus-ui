@@ -109,7 +109,6 @@
 
 <script lang="ts" setup>
   import _ from 'lodash';
-  import { InputWidth } from '@/views/config';
   import { ref, reactive, onMounted } from 'vue';
   import { LOCALE_OPTIONS } from '@/locale';
   import useLocale from '@/hooks/locale';
@@ -117,7 +116,6 @@
   import useLoading from '@/hooks/loading';
   import useEnterPage from '@/hooks/use-enter-page';
   import { queryUserPartialSetting } from '@/views/system/api/setting';
-  import { RoleType } from '@/views/system/config/users';
   import CryptoJS from 'crypto-js';
   import {
     rememberPasswordFn,
