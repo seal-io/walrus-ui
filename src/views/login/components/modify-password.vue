@@ -124,7 +124,7 @@
   import { updateUserSettingBatch } from '@/views/system/api/setting';
   import { urlReg } from '@/utils/validate';
 
-  const cllectionLink = 'https://seal-io.github.io/docs/quickstart';
+  const cllectionLink = 'https://seal-io.github.io/docs/telemetry';
   const { t } = useI18n();
   const userStore = useUserStore();
   const router = useRouter();
@@ -158,9 +158,7 @@
     serverUrl: window.location.origin,
     enableTelemetry: true
   });
-  const handleCancel = () => {
-    router.back();
-  };
+
   const validateConfirmPassword = (value, callback) => {
     if (!value) {
       callback(t('user.password.rules.confirmpassword'));

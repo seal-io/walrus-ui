@@ -48,7 +48,8 @@ export default [
         PROJECT.ConnectorProviderDetail,
         PROJECT.ConnectorCustomDetail,
         PROJECT.EnvDetail,
-        PROJECT.EnvEdit
+        PROJECT.EnvEdit,
+        PROJECT.EnvClone
       ],
       icon: 'icon-apps'
     }
@@ -70,7 +71,11 @@ export default [
         type: permissionKey.projectRoles,
         actions: ['GET']
       },
-      cachePages: [PROJECT.ServiceEdit, PROJECT.ServiceDetail],
+      cachePages: [
+        PROJECT.ServiceEdit,
+        PROJECT.ServiceDetail,
+        PROJECT.ServiceClone
+      ],
       icon: 'icon-apps'
     }
   },
