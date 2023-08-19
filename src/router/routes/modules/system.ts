@@ -17,7 +17,7 @@ export default {
     permission: [
       {
         resource: Resources.Settings,
-        actions: ['GET']
+        actions: ['POST']
       }
     ]
   },
@@ -35,7 +35,7 @@ export default {
         permission: [
           {
             resource: Resources.Settings,
-            actions: ['GET']
+            actions: ['POST']
           }
         ],
         roles: ['*']

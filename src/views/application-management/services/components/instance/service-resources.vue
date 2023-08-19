@@ -83,13 +83,7 @@
           :title="$t('applications.applications.table.status')"
         >
           <template #cell="{ record }">
-            <span
-              v-if="
-                _.get(record, 'connector.category') ===
-                ConnectorCategory.CloudProvider
-              "
-              >-</span
-            >
+            <span v-if="!_.get(record, 'status.summaryStatus')">-</span>
             <StatusLabel
               v-else
               :status="{

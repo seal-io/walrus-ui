@@ -95,7 +95,7 @@
           ]"
         >
           <seal-input
-            v-model="formData.source"
+            v-model.trim="formData.source"
             :label="$t('operation.templates.detail.source')"
             :required="true"
             :style="{ width: `${InputWidth.LARGE}px` }"
