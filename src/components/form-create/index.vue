@@ -391,9 +391,13 @@
     let list = map(props.formSchema, (o, i) => {
       const item = cloneDeep(o);
       const content = parseComponentSchema(item);
-      const groupConfig = split(item.group, '/') || [];
-      const subGroup = get(groupConfig, '1') || '';
+      // filter empty group
+      const groupConfig: string[] = filter(
+        split(item.group, /\/+/) || [],
+        (s) => !!s
+      );
       const mainGroup = get(groupConfig, '0') || '';
+      const subGroup = get(groupConfig, '1') || '';
       const thirdGroup = get(groupConfig, '2') || '';
 
       item.isRequired = item.required ? '(required)' : '(optional)';
