@@ -3,6 +3,7 @@
     <a-tabs
       v-model:active-key="activeKey"
       :default-active-key="activeKey"
+      lazy-load
       class="tab-resource"
     >
       <a-tab-pane key="list">

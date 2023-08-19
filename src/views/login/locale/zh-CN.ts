@@ -28,6 +28,6 @@ export default {
   'login.config.pswd.specified': '启动时已设置初始密码',
   'login.config.pswd.log': '从seal进程日志中搜索"Bootstrap Admin Password"',
   'login.config.user.action':
-    '允许收集<a href={link} target="_blank" class="a-link">匿名统计数据</a>，以帮助我们改进walrus',
+    '允许收集<a href={link} target="_blank" class="a-link">匿名统计数据</a>，以帮助我们改进 Walrus',
   'login.config.join.improvement': '参与改进计划'
 };

@@ -34,6 +34,6 @@ export default {
   'login.config.pswd.log':
     'search "Bootstrap Admin Password" from the logs of walrus process',
   'login.config.user.action':
-    'Allows collection of <a href={link} target="_blank" class="a-link">anonymous statistics</a>, to help us improve walrus',
-  'login.config.join.improvement': 'Participate in improvement plan'
+    'Allows collection of <a href={link} target="_blank" class="a-link">anonymous statistics</a>, to help us improve Walrus',
+  'login.config.join.improvement': 'Participate in Improvement Plan'
 };
