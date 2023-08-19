@@ -216,6 +216,8 @@
               }
             }
           ];
+        } else {
+          data.roles = [];
         }
         if (props.action === 'create') {
           await createSubject(data);
