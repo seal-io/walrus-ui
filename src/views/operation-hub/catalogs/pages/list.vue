@@ -165,9 +165,7 @@
   const handleSort = () => {
     fetchData();
   };
-  const handleSave = () => {
-    fetchData();
-  };
+  const handleSave = () => {};
   const handleCheckChange = (checked, id) => {
     if (checked) {
       selectedKeys.value.push(id);
