@@ -118,7 +118,12 @@ export default function useServiceData(props?) {
     );
     _.each(variablesList, (item) => {
       const initialValue = getInitialValue(item, sourceData, type);
-      const group = _.get(_.split(item.group, '/'), '0');
+      // filter empty group
+      const groups: string[] = _.filter(
+        _.split(item.group, /\/+/) || [],
+        (g) => !!g
+      );
+      const group = _.get(groups, '0');
       if (group) {
         if (!variablesGroup.value[group]) {
           variablesGroup.value[group] = {
