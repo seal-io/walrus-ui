@@ -1,9 +1,8 @@
 <template>
-  <div class="container">
+  <div class="container login">
     <div class="logo">
-      <img alt="logo" src="../../assets/images/walrus-logo.png" />
+      <img alt="logo" src="../../assets/images/logo2.png" />
     </div>
-    <LoginBanner />
 
     <div class="content">
       <div class="content-inner">
@@ -111,7 +110,10 @@
     display: flex;
     height: 100vh;
     margin-top: 0;
-    background-color: #fff;
+    background-image: url('../../assets/images/bg2.jpeg');
+    background-repeat: no-repeat;
+    background-position: center center;
+    background-size: cover;
 
     :deep(.hljs.bash) {
       background-color: #fff;
@@ -177,6 +179,12 @@
       align-items: center;
       justify-content: center;
       padding-bottom: 40px;
+
+      .content-inner {
+        padding: 20px;
+        background-color: rgba(255, 255, 255, 0.7);
+        border-radius: 8px;
+      }
     }
 
     .footer {

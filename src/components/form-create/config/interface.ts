@@ -47,7 +47,7 @@ const BASIC_TYPE = ['number', 'string', 'bool'];
 
 const UNKNOWN_TYPE = ['dynamic'];
 
-const COLLECTION_TYPE = ['map', 'object', 'list', 'tuple'];
+const COLLECTION_TYPE = ['map', 'object', 'list', 'tuple', 'dynamic'];
 
 export const validateYaml = (str) => {
   let result: any = {};
