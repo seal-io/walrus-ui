@@ -77,7 +77,7 @@
     "nprogress": "^0.2.0",
     "packageurl-js": "^0.0.7",
     "pinia": "^2.0.9",
-    "pinia-plugin-persistedstate": "^1.5.2",
+    "pinia-plugin-persistedstate": "3.1.0",
     "query-string": "^7.0.1",
     "rollup-plugin-commonjs": "^10.1.0",
     "rollup-plugin-node-resolve": "^5.2.0",

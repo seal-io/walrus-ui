@@ -1,50 +1,53 @@
 <template>
-  <div class="container login">
-    <div class="logo">
-      <img alt="logo" src="../../assets/images/logo2.png" />
-    </div>
+  <div>
+    <div class="container login">
+      <div class="logo">
+        <img alt="logo" src="../../assets/images/logo2.png" />
+      </div>
 
-    <div class="content">
-      <div class="content-inner">
-        <LoginForm
-          v-model:hideTips="hideTips"
-          :first-login-status="firstLoginStatus"
-          @loginSuccess="handleLoginSuccess"
-        />
-        <div
-          v-if="isFirstLogin && !hideTips"
-          style="background: var(--color-fill-2)"
-          class="first-login-tips"
-        >
-          <div v-if="specifiedPSWD()" class="text" style="margin-bottom: 0"
-            ><icon-info-circle-fill />{{
-              $t('login.config.pswd.specified')
-            }}</div
+      <div class="content">
+        <div class="content-inner">
+          <LoginForm
+            v-model:hideTips="hideTips"
+            :first-login-status="firstLoginStatus"
+            @loginSuccess="handleLoginSuccess"
+          />
+          <div
+            v-if="isFirstLogin && !hideTips"
+            style="background: var(--color-fill-2)"
+            class="first-login-tips"
           >
-          <div v-else class="text"
-            ><icon-info-circle-fill />{{ $t('login.config.pswd.exec') }}</div
-          >
-          <highlightBlock
-            v-if="!specifiedPSWD()"
-            :code="
-              $t(_.get(FirstLoginGetPassword, firstLoginStatus?.value) || '')
-            "
-            class="hl-code"
-            style="position: relative; background: #fff"
-          >
-            <copy
-              :content="
+            <div v-if="specifiedPSWD()" class="text" style="margin-bottom: 0"
+              ><icon-info-circle-fill />{{
+                $t('login.config.pswd.specified')
+              }}</div
+            >
+            <div v-else class="text"
+              ><icon-info-circle-fill />{{ $t('login.config.pswd.exec') }}</div
+            >
+            <highlightBlock
+              v-if="!specifiedPSWD()"
+              :code="
                 $t(_.get(FirstLoginGetPassword, firstLoginStatus?.value) || '')
               "
-              style="position: absolute; top: 0; right: 0"
-            ></copy>
-          </highlightBlock>
+              class="hl-code"
+              style="position: relative; background: #fff"
+            >
+              <copy
+                :content="
+                  $t(
+                    _.get(FirstLoginGetPassword, firstLoginStatus?.value) || ''
+                  )
+                "
+                style="position: absolute; top: 0; right: 0"
+              ></copy>
+            </highlightBlock>
+          </div>
         </div>
       </div>
-
-      <div class="footer">
-        <Footer />
-      </div>
+    </div>
+    <div class="footer">
+      <Footer />
     </div>
   </div>
 </template>
@@ -108,7 +111,7 @@
 <style lang="less" scoped>
   .container {
     display: flex;
-    height: 100vh;
+    height: calc(100vh - 48px);
     margin-top: 0;
     background-image: url('../../assets/images/bg2.jpeg');
     background-repeat: no-repeat;
@@ -182,7 +185,6 @@
 
       .content-inner {
         position: absolute;
-        top: 20%;
         padding: 20px;
         background-color: rgba(255, 255, 255, 0.7);
         border-radius: 8px;
@@ -190,9 +192,6 @@
     }
 
     .footer {
-      position: absolute;
-      right: 0;
-      bottom: 0;
       width: 100%;
       background-color: #fff;
     }

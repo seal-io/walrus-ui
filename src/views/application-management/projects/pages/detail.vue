@@ -40,7 +40,7 @@
                 actions: [Actions.GET]
               })
             "
-            key="enviroment"
+            :key="ProjectTabs.ENVIRONMENT"
             :title="$t('menu.operatorHub.evniroment')"
           >
             <EnviromentList ref="enviromentRef"></EnviromentList>
@@ -53,7 +53,7 @@
                 actions: [Actions.GET]
               })
             "
-            key="variables"
+            :key="ProjectTabs.VARIABLES"
             :title="$t('menu.applicationManagement.secret')"
           >
             <variableList></variableList>
@@ -67,7 +67,7 @@
                 actions: [Actions.GET]
               })
             "
-            key="connector"
+            :key="ProjectTabs.CONNECTOR"
             :title="$t('menu.operatorHub.connector')"
           >
             <ConnectorList scope="project"></ConnectorList>
@@ -80,7 +80,7 @@
                 actions: [Actions.GET]
               })
             "
-            key="members"
+            :key="ProjectTabs.MEMBER"
             :title="$t('menu.applicationManagement.members')"
           >
             <members></members>
@@ -97,10 +97,10 @@
   import { PROJECT } from '@/router/config';
   import { ref, onMounted } from 'vue';
   import _ from 'lodash';
-  import { QAlinkMap } from '@/views/config';
+  import { QAlinkMap, ProjectTabs } from '@/views/config';
   import QuestionPopup from '@/components/question-popup/index.vue';
   import useCallCommon from '@/hooks/use-call-common';
-  import { useUserStore } from '@/store';
+  import { useUserStore, useTabBarStore } from '@/store';
   import HeaderInfo from '@/components/header-info/index.vue';
   import EnviromentList from '@/views/application-management/environments/pages/list.vue';
   import variableList from '@/views/application-management/variables/pages/list.vue';
@@ -124,13 +124,23 @@
   } = userProjectBreadcrumbData();
   const { router, route } = useCallCommon();
   const userStore = useUserStore();
-  const activeKey = ref<string>('enviroment');
+  const tabBarStore = useTabBarStore();
+  const activeKey = ref<string>(
+    tabBarStore.getDefaultPageTabActive(
+      tabBarStore.tabPage.ProjectTab,
+      ProjectTabs.ENVIRONMENT
+    )
+  );
+  console.log('activeKey', tabBarStore, activeKey.value);
   const currentInfo = ref<any>({});
   const basicDataList = useBasicInfoData(basicInfoConfig, currentInfo);
 
   breadCrumbList.value = [projectTemplate];
 
   const initActiveTab = () => {
+    if (_.find(projectDetailTabs, { value: activeKey.value })) {
+      return;
+    }
     const list = _.filter(projectDetailTabs, (item) => {
       return userStore.hasProjectResourceActions({
         resource: _.get(Resources, item.resource),
@@ -142,6 +152,10 @@
   };
   const handleTabChange = (val) => {
     activeKey.value = val;
+    tabBarStore.setPageTabActive(
+      tabBarStore.tabPage.ProjectTab,
+      activeKey.value
+    );
   };
 
   const getItemProjectInfo = async () => {

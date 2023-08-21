@@ -1,4 +1,6 @@
 import dayjs from 'dayjs';
+import { ProjectTabs } from '@/views/config';
+import { Resources } from '@/permissions/config';
 
 export enum ProjectRoles {
   Owner = 'project/owner',
@@ -33,22 +35,28 @@ export const basicInfoConfig = [
 export const projectDetailTabs = [
   {
     label: 'menu.operatorHub.evniroment',
-    value: 'enviroment',
-    resource: 'Environments',
+    value: ProjectTabs.ENVIRONMENT,
+    resource: Resources.Environments,
     component: 'EnviromentList'
   },
   {
     label: 'menu.operatorHub.variables',
-    value: 'variables',
-    resource: 'Secrets',
+    value: ProjectTabs.VARIABLES,
+    resource: Resources.Variables,
     component: 'SecretList'
   },
   {
     label: 'menu.operatorHub.connector',
-    value: 'connector',
-    resource: 'Connectors',
+    value: ProjectTabs.CONNECTOR,
+    resource: Resources.Connectors,
     component: 'ConnectorList',
     props: { scope: 'project' }
+  },
+  {
+    label: 'menu.applicationManagement.members',
+    value: ProjectTabs.MEMBER,
+    resource: Resources.ProjectSubjects,
+    component: 'members'
   }
 ];
 export default {};
