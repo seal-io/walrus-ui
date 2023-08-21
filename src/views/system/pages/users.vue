@@ -172,16 +172,14 @@
   import { useUserStore } from '@/store';
   import { ref, reactive, onMounted } from 'vue';
   import FilterBox from '@/components/filter-box/index.vue';
-  import useRowSelect from '@/hooks/use-row-select';
   import { deleteModal, execSucceed } from '@/utils/monitor';
   import { getListLabel } from '@/utils/func';
   import { RowData, RoleItem } from '../config/interface';
-  import { accountTypeList, roleTypeList } from '../config/users';
+  import { roleTypeList } from '../config/users';
   import { querySubjects, deleteSubjects, queryRoles } from '../api/users';
   import CreateAccountModal from '../components/create-account-modal.vue';
 
   const userStore = useUserStore();
-  const { rowSelection, selectedKeys, handleSelectChange } = useRowSelect();
   const dataList = ref<RowData[]>([]);
   const loading = ref(false);
   const total = ref(0);
@@ -229,7 +227,10 @@
   const handleSearch = () => {
     debounceFunc();
   };
-  const handleReset = () => {};
+  const handleReset = () => {
+    queryParams.query = '';
+    handleSearch();
+  };
   const handleCreate = () => {
     showModal.value = true;
     action.value = 'create';
@@ -241,7 +242,6 @@
       action.value = 'edit';
     });
   };
-  const handleClickView = (row) => {};
   const handleDeleteConfirm = async (row) => {
     try {
       loading.value = true;
@@ -249,8 +249,6 @@
       loading.value = false;
       execSucceed();
       queryParams.page = 1;
-      selectedKeys.value = [];
-      rowSelection.selectedRowKeys = [];
       handleFilter();
     } catch (error) {
       loading.value = false;

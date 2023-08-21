@@ -24,32 +24,32 @@
           @change="handleTabChange"
         >
           <a-tab-pane
-            :key="TabKeys.Templates"
+            :key="OperatorHubTabs.TEMPLATES"
             :title="$t('menu.operatorHub.module')"
           >
             <Templates :current-view="dataView.templates"></Templates>
           </a-tab-pane>
           <a-tab-pane
-            :key="TabKeys.Catalogs"
+            :key="OperatorHubTabs.CATALOGS"
             :title="$t('menu.operatorHub.catalog')"
           >
             <Catalogs></Catalogs>
           </a-tab-pane>
           <a-tab-pane
-            :key="TabKeys.Variables"
+            :key="OperatorHubTabs.VARIABLES"
             :title="$t('menu.operatorHub.secret')"
           >
             <GlobalVariables></GlobalVariables>
           </a-tab-pane>
           <a-tab-pane
-            :key="TabKeys.Connectors"
+            :key="OperatorHubTabs.CONNECTOR"
             :title="$t('menu.operatorHub.connector')"
           >
             <Connectors></Connectors>
           </a-tab-pane>
           <template #extra>
             <IconBtnGroup
-              v-if="activeKey === TabKeys.Templates"
+              v-if="activeKey === OperatorHubTabs.TEMPLATES"
               v-model:active="dataView[activeKey]"
               :icon-list="iconList"
             ></IconBtnGroup>
@@ -63,7 +63,7 @@
 <script lang="ts" setup>
   import { OPERATIONHUB } from '@/router/config';
   import { ref, reactive } from 'vue';
-  import { QAlinkMap } from '@/views/config';
+  import { QAlinkMap, OperatorHubTabs } from '@/views/config';
   import QuestionPopup from '@/components/question-popup/index.vue';
   import HeaderInfo from '@/components/header-info/index.vue';
   import IconBtnGroup from '@/components/icon-btn-group/index.vue';
@@ -84,18 +84,13 @@
       iconfont: true
     }
   ];
-  const TabKeys = {
-    Templates: 'templates',
-    Variables: 'variables',
-    Connectors: 'connectors',
-    Catalogs: 'catalogs'
-  };
+
   // The catalog list does not need the thumbnail mode for now
   const dataView = reactive({
     templates: 'thumb',
     catalogs: 'thumb'
   });
-  const activeKey = ref(TabKeys.Templates);
+  const activeKey = ref(OperatorHubTabs.TEMPLATES);
   const handleTabChange = () => {};
 </script>
 

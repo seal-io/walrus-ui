@@ -1,5 +1,6 @@
 import dayjs from 'dayjs';
 import _, { each, get, sortBy, uniq } from 'lodash';
+import { VARIABLE_API } from '../application-management/variables/api';
 
 export const dateFormatMap = {
   day: 'YYYY.MM.DD',
@@ -51,6 +52,31 @@ export const InputWidth = {
   MIDDLE: 474,
   LARGE: 500,
   XLARGE: 800
+};
+
+export const ProjectTabs = {
+  ENVIRONMENT: 'environments',
+  CONNECTOR: 'connectors',
+  MEMBER: 'members',
+  VARIABLES: 'variables'
+};
+
+export const EnvironmentTabs = {
+  SERVICE: 'services',
+  GRAPH: 'graph',
+  VARIABLES: 'variables'
+};
+
+export const CostTabs = {
+  LIST: 'list',
+  DETAIL: 'detail'
+};
+
+export const OperatorHubTabs = {
+  TEMPLATES: 'templates',
+  VARIABLES: 'variables',
+  CONNECTOR: 'connectors',
+  CATALOGS: 'catalogs'
 };
 
 export const QAlinkMap = {

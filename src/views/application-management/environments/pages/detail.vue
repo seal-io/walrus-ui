@@ -40,7 +40,7 @@
                 actions: [Actions.GET]
               })
             "
-            key="service"
+            :key="EnvironmentTabs.SERVICE"
             :title="$t('menu.applicationManagement.serivce')"
           >
             <ServiceList></ServiceList>
@@ -53,7 +53,7 @@
                 actions: [Actions.GET]
               })
             "
-            key="graph"
+            :key="EnvironmentTabs.GRAPH"
             :title="$t('applications.instance.tab.graph')"
           >
             <environmentGraph ref="graph"></environmentGraph>
@@ -66,7 +66,7 @@
                 actions: [Actions.GET]
               })
             "
-            key="variable"
+            :key="EnvironmentTabs.VARIABLES"
             :title="$t('menu.applicationManagement.secret')"
           >
             <VariableList scope="environment"></VariableList>
@@ -81,7 +81,7 @@
   import { Resources, Actions } from '@/permissions/config';
   import { PROJECT } from '@/router/config';
   import { ref, onMounted, nextTick } from 'vue';
-  import { QAlinkMap } from '@/views/config';
+  import { QAlinkMap, EnvironmentTabs } from '@/views/config';
   import QuestionPopup from '@/components/question-popup/index.vue';
   import _ from 'lodash';
   import { useUserStore } from '@/store';
@@ -112,7 +112,7 @@
   const userStore = useUserStore();
   const { router, route, t } = useCallCommon();
   const currentInfo = ref<any>({});
-  const activeKey = ref('service');
+  const activeKey = ref(EnvironmentTabs.SERVICE);
   const graph = ref();
   const breadCrumbList = ref<BreadcrumbOptions[]>([
     projectTemplate,

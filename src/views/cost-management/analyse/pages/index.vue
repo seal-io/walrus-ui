@@ -19,12 +19,18 @@
           :default-active-key="activeKey"
           @change="handleTabChange"
         >
-          <a-tab-pane key="list" :title="$t('menu.costManagement.perspective')">
+          <a-tab-pane
+            :key="CostTabs.LIST"
+            :title="$t('menu.costManagement.perspective')"
+          >
             <ComCard padding="0 16px 16px 16px">
               <CostList></CostList>
             </ComCard>
           </a-tab-pane>
-          <a-tab-pane key="detail" :title="$t('menu.costManagement.analyse')">
+          <a-tab-pane
+            :key="CostTabs.DETAIL"
+            :title="$t('menu.costManagement.analyse')"
+          >
             <CostDetail></CostDetail>
           </a-tab-pane>
         </a-tabs>
@@ -35,13 +41,13 @@
 
 <script lang="ts" setup>
   import { ref } from 'vue';
-  import { QAlinkMap } from '@/views/config';
+  import { QAlinkMap, CostTabs } from '@/views/config';
   import QuestionPopup from '@/components/question-popup/index.vue';
   import HeaderInfo from '@/components/header-info/index.vue';
   import CostList from './list.vue';
   import CostDetail from './main.vue';
 
-  const activeKey = ref('list');
+  const activeKey = ref(CostTabs.LIST);
   const handleTabChange = () => {};
 </script>
 

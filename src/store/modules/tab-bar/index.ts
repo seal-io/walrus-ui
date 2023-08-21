@@ -12,10 +12,18 @@ const formatTag = (route: RouteLocationNormalized): TagProps => {
   };
 };
 
-const useAppStore = defineStore('tabBar', {
+const useTabBarStore = defineStore('tabBar', {
   state: (): TabBarState => ({
     cacheTabList: new Set(),
-    tagList: []
+    tagList: [],
+    tabPage: {
+      ProjectTab: 'ProjectTab',
+      EnvironmentTab: 'EnvironmentTab',
+      CostTab: 'CostTab',
+      OperatorHubTab: 'OperatorHubTab',
+      SettingsTab: 'SettingsTab'
+    },
+    pageTabActive: {}
   }),
 
   getters: {
@@ -28,18 +36,28 @@ const useAppStore = defineStore('tabBar', {
   },
 
   actions: {
+    resetInfo() {
+      this.$reset();
+    },
+    getPageTabActive(page: string) {
+      return this.pageTabActive[page];
+    },
+    setPageTabActive(page: string, tab: string) {
+      this.pageTabActive[page] = tab;
+    },
+    getDefaultPageTabActive(page: string, tab: string) {
+      return this.pageTabActive[page] || tab;
+    },
     updateTabList(route: RouteLocationNormalized) {
-      // this.tagList.push(formatTag(route));
-      this.cacheTabList.add(route.name as string);
+      this.cacheTabList.add?.(route.name as string);
     },
     deleteTag(idx: number, tag: TagProps) {
-      // this.tagList.splice(idx, 1);
-      this.cacheTabList.delete(tag.name);
+      this.cacheTabList.delete?.(tag.name);
     },
     clearTags() {
-      this.cacheTabList.clear();
+      this.cacheTabList.clear?.();
     }
   }
 });
 
-export default useAppStore;
+export default useTabBarStore;
