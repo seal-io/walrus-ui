@@ -15,7 +15,6 @@
           <i class="iconfont icon-project"></i>
         </template>
         <template #title>
-          <!-- <basicInfo :data-info="basicDataList"></basicInfo> -->
           <div class="title">
             {{ currentInfo.name }}
           </div>
@@ -92,24 +91,21 @@
 </template>
 
 <script lang="ts" setup>
-  import dayjs from 'dayjs';
   import { Resources, Actions } from '@/permissions/config';
   import { PROJECT } from '@/router/config';
+  import { ProjectTabs } from '@/views/config';
   import { ref, onMounted } from 'vue';
   import _ from 'lodash';
-  import { QAlinkMap, ProjectTabs } from '@/views/config';
-  import QuestionPopup from '@/components/question-popup/index.vue';
+  import useTabActive, { TabPage } from '@/hooks/use-tab-active';
   import useCallCommon from '@/hooks/use-call-common';
-  import { useUserStore, useTabBarStore } from '@/store';
+  import { useUserStore } from '@/store';
   import HeaderInfo from '@/components/header-info/index.vue';
   import EnviromentList from '@/views/application-management/environments/pages/list.vue';
   import variableList from '@/views/application-management/variables/pages/list.vue';
   import members from '@/views/application-management/members/pages/list.vue';
-  import basicInfo from '@/views/application-management/services/components/basic-info.vue';
   import ConnectorList from '@/views/operation-hub/connectors/components/table-list.vue';
-  import useBasicInfoData from '../hooks/use-basicInfo-data';
   import { queryItemProject } from '../api';
-  import { basicInfoConfig, projectDetailTabs } from '../config';
+  import { projectDetailTabs } from '../config';
   import userProjectBreadcrumbData from '../hooks/use-project-breadcrumb-data';
 
   const {
@@ -124,16 +120,13 @@
   } = userProjectBreadcrumbData();
   const { router, route } = useCallCommon();
   const userStore = useUserStore();
-  const tabBarStore = useTabBarStore();
-  const activeKey = ref<string>(
-    tabBarStore.getDefaultPageTabActive(
-      tabBarStore.tabPage.ProjectTab,
-      ProjectTabs.ENVIRONMENT
-    )
+
+  const { activeKey, setPageTabActive } = useTabActive(
+    TabPage.PROJECTTAB,
+    ProjectTabs.ENVIRONMENT
   );
-  console.log('activeKey', tabBarStore, activeKey.value);
+
   const currentInfo = ref<any>({});
-  const basicDataList = useBasicInfoData(basicInfoConfig, currentInfo);
 
   breadCrumbList.value = [projectTemplate];
 
@@ -151,11 +144,7 @@
     activeKey.value = _.get(list, '0.value') || '';
   };
   const handleTabChange = (val) => {
-    activeKey.value = val;
-    tabBarStore.setPageTabActive(
-      tabBarStore.tabPage.ProjectTab,
-      activeKey.value
-    );
+    setPageTabActive(val);
   };
 
   const getItemProjectInfo = async () => {

@@ -15,7 +15,6 @@
           <i class="iconfont icon-rongqiyunfuwu"></i>
         </template>
         <template #title>
-          <!-- <basicInfo :data-info="basicDataList"></basicInfo> -->
           <div class="title">
             {{ currentInfo.name }}
           </div>
@@ -81,8 +80,8 @@
   import { Resources, Actions } from '@/permissions/config';
   import { PROJECT } from '@/router/config';
   import { ref, onMounted, nextTick } from 'vue';
-  import { QAlinkMap, EnvironmentTabs } from '@/views/config';
-  import QuestionPopup from '@/components/question-popup/index.vue';
+  import useTabActive, { TabPage } from '@/hooks/use-tab-active';
+  import { EnvironmentTabs } from '@/views/config';
   import _ from 'lodash';
   import { useUserStore } from '@/store';
   import useCallCommon from '@/hooks/use-call-common';
@@ -112,7 +111,10 @@
   const userStore = useUserStore();
   const { router, route, t } = useCallCommon();
   const currentInfo = ref<any>({});
-  const activeKey = ref(EnvironmentTabs.SERVICE);
+  const { activeKey, setPageTabActive } = useTabActive(
+    TabPage.ENVIRONMENTTAB,
+    EnvironmentTabs.SERVICE
+  );
   const graph = ref();
   const breadCrumbList = ref<BreadcrumbOptions[]>([
     projectTemplate,
@@ -124,6 +126,7 @@
     if (val === 'graph') {
       graph.value?.handleRefresh();
     }
+    setPageTabActive(val);
   };
   const handleSelectChange = ({ value, item }) => {
     item.value = value;

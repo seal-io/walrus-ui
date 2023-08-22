@@ -63,6 +63,7 @@
 <script lang="ts" setup>
   import { OPERATIONHUB } from '@/router/config';
   import { ref, reactive } from 'vue';
+  import useTabActive, { TabPage } from '@/hooks/use-tab-active';
   import { QAlinkMap, OperatorHubTabs } from '@/views/config';
   import QuestionPopup from '@/components/question-popup/index.vue';
   import HeaderInfo from '@/components/header-info/index.vue';
@@ -90,8 +91,13 @@
     templates: 'thumb',
     catalogs: 'thumb'
   });
-  const activeKey = ref(OperatorHubTabs.TEMPLATES);
-  const handleTabChange = () => {};
+  const { activeKey, setPageTabActive } = useTabActive(
+    TabPage.OPERATORHUBTAB,
+    OperatorHubTabs.TEMPLATES
+  );
+  const handleTabChange = (val) => {
+    setPageTabActive(val);
+  };
 </script>
 
 <script lang="ts">

@@ -4,6 +4,7 @@
       v-model="activeKey"
       :default-active-key="activeKey"
       class="page-line-tabs"
+      @change="handleTabChange"
     >
       <a-tab-pane
         v-for="(item, index) in sourceList"
@@ -23,6 +24,7 @@
 
 <script lang="ts" setup>
   import _, { cloneDeep, each, map } from 'lodash';
+  import useTabActive, { TabPage } from '@/hooks/use-tab-active';
   import { onMounted, ref, computed, reactive } from 'vue';
   import { useUserStore } from '@/store';
   import { useRoute } from 'vue-router';
@@ -33,13 +35,18 @@
   interface formDataType {
     [key: string]: any;
   }
+  const { activeKey, setPageTabActive } = useTabActive(
+    TabPage.SETTINGSTAB,
+    '0'
+  );
   const userStore = useUserStore();
   const route = useRoute();
   const sourceList = ref<SettingsItem[]>([...cloneDeep(settingList)]);
   const settingFormData = ref<formDataType>({});
-  const activeKey = ref('1');
-  activeKey.value = (route.query?.tab || '0') as string;
 
+  const handleTabChange = (val) => {
+    setPageTabActive(val);
+  };
   const setSourceList = () => {
     // set value and property
     sourceList.value = sourceList.value.map((o) => {

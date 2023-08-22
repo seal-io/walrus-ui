@@ -4,7 +4,7 @@ import {
   useAppStore,
   useProjectStore,
   useServiceStore,
-  useTabBarStore
+  useActiveTabsStore
 } from '@/store';
 import useCallCommon from './use-call-common';
 
@@ -14,7 +14,7 @@ export default function useUser() {
   const appStore = useAppStore();
   const projectStore = useProjectStore();
   const serviceStore = useServiceStore();
-  const tabBarStore = useTabBarStore();
+  const activeTabsStore = useActiveTabsStore();
 
   const logout = async (logoutTo?: string) => {
     await userStore.logout();
@@ -23,7 +23,7 @@ export default function useUser() {
     appStore.resetInfo();
     projectStore.resetInfo();
     serviceStore.resetInfo();
-    tabBarStore.resetInfo();
+    activeTabsStore.resetInfo();
     router.push({
       name: logoutTo && typeof logoutTo === 'string' ? logoutTo : 'Login'
     });

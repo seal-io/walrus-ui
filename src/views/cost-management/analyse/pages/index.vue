@@ -41,14 +41,20 @@
 
 <script lang="ts" setup>
   import { ref } from 'vue';
+  import useTabActive, { TabPage } from '@/hooks/use-tab-active';
   import { QAlinkMap, CostTabs } from '@/views/config';
   import QuestionPopup from '@/components/question-popup/index.vue';
   import HeaderInfo from '@/components/header-info/index.vue';
   import CostList from './list.vue';
   import CostDetail from './main.vue';
 
-  const activeKey = ref(CostTabs.LIST);
-  const handleTabChange = () => {};
+  const { activeKey, setPageTabActive } = useTabActive(
+    TabPage.COSTTAB,
+    CostTabs.LIST
+  );
+  const handleTabChange = (val) => {
+    setPageTabActive(val);
+  };
 </script>
 
 <style lang="less" scoped>
