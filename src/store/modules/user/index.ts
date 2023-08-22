@@ -9,6 +9,7 @@ import {
   updateUserSetting as updateSettings
 } from '@/api/user';
 import _ from 'lodash';
+import { FirstGetPasswordCommand } from '@/views/login/config';
 import { getUserResourcePermission } from '@/utils/auth';
 import { removeRouteListener } from '@/utils/route-listener';
 import { Actions } from '@/permissions/config';
@@ -156,8 +157,8 @@ const useUserStore = defineStore('user', {
     // check first login and is admin user must change password, general user no need to  change password when first login
     isFirstLogin() {
       return (
-        this.userSetting?.FirstLogin?.value !== 'Invalid' &&
-        this.isSystemAdmin()
+        this.userSetting?.FirstLogin?.value !==
+          FirstGetPasswordCommand.Invalid && this.isSystemAdmin()
       );
     }
   }

@@ -61,9 +61,8 @@
   import Footer from '@/components/footer/index.vue';
   import highlightBlock from '@/components/highlight-block/index.vue';
   import copy from '@/components/copy/copy-command.vue';
-  import LoginBanner from './components/banner.vue';
   import LoginForm from './components/login-form.vue';
-  import { GET_ADMIN_PASSWORD, FirstLoginGetPassword } from './config';
+  import { FirstLoginGetPassword, FirstGetPasswordCommand } from './config';
 
   const { enterUserPage } = useEnterPage();
   const userStore = useUserStore();
@@ -79,14 +78,17 @@
     try {
       const { data } = await getFirstLoginStatus();
       const value = data?.value;
-      isFirstLogin.value = value !== 'Invalid';
+      isFirstLogin.value = value !== FirstGetPasswordCommand.Invalid;
       firstLoginStatus.value = data;
     } catch (error) {
       // ignore
     }
   };
   const specifiedPSWD = () => {
-    return _.get(firstLoginStatus.value, 'value') === 'Specified';
+    return (
+      _.get(firstLoginStatus.value, 'value') ===
+      FirstGetPasswordCommand.Specified
+    );
   };
 
   // enter page password-free
@@ -113,6 +115,7 @@
     display: flex;
     height: calc(100vh - 48px);
     margin-top: 0;
+    overflow: auto;
     background-image: url('../../assets/images/bg2.jpeg');
     background-repeat: no-repeat;
     background-position: center center;
@@ -184,7 +187,6 @@
       padding-bottom: 40px;
 
       .content-inner {
-        position: absolute;
         padding: 20px;
         background-color: rgba(255, 255, 255, 0.7);
         border-radius: 8px;

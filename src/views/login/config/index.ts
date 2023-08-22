@@ -1,6 +1,3 @@
-export const GET_ADMIN_PASSWORD =
-  'docker logs <id> 2>&1 | grep "Bootstrap Admin Password"';
-
 export const FirstLoginGetPassword = {
   Specified: 'login.config.defaultpswd',
   Docker:
@@ -12,6 +9,12 @@ export const FirstLoginGetPassword = {
   Invalid: 'Invalid'
 };
 
-export default {
-  GET_ADMIN_PASSWORD
+export const FirstGetPasswordCommand = {
+  Specified: 'Specified',
+  Docker: 'Docker',
+  Kubernetes: 'Kubernetes',
+  Process: 'Process',
+  Invalid: 'Invalid'
 };
+
+export default {};
