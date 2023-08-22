@@ -1,8 +1,5 @@
 <template>
   <a-layout class="layout" :class="{ mobile: appStore.hideMenu }">
-    <!-- <div v-if="navbar" class="layout-navbar">
-      <NavBar />
-    </div> -->
     <BreadWrapper is-lazy> </BreadWrapper>
     <a-layout
       class="main-layout"
@@ -35,22 +32,8 @@
             <Menu />
           </div>
         </a-layout-sider>
-        <a-drawer
-          v-if="hideMenu"
-          :visible="drawerVisible"
-          placement="left"
-          :footer="false"
-          mask-closable
-          :closable="false"
-          @cancel="drawerCancel"
-        >
-          <Menu />
-        </a-drawer>
         <a-layout class="layout-content" :style="paddingStyle">
           <TabBar v-if="appStore.tabBar" />
-          <!-- <div v-if="!hideMenu" class="layout-menu">
-            <Menu />
-          </div> -->
           <a-layout-content class="page-content-wrap">
             <PageLayout />
           </a-layout-content>
@@ -67,7 +50,6 @@
   import { ref, computed, watch, provide } from 'vue';
   import { useRouter, useRoute } from 'vue-router';
   import { useAppStore, useUserStore } from '@/store';
-  import NavBar from '@/components/navbar/index.vue';
   import Menu from '@/components/menu/index.vue';
   import Footer from '@/components/footer/index.vue';
   import TabBar from '@/components/tab-bar/index.vue';
@@ -217,16 +199,7 @@
         height: 34px;
       }
     }
-    // &::after {
-    //   position: absolute;
-    //   top: 0;
-    //   right: -1px;
-    //   display: block;
-    //   width: 1px;
-    //   height: 100%;
-    //   background-color: var(--color-border);
-    //   content: '';
-    // }
+
     > :deep(.arco-layout-sider-children) {
       overflow-y: hidden;
     }
@@ -263,8 +236,6 @@
   .layout-content {
     position: relative;
     min-height: 100vh;
-    // min-height: calc(100vh - 20px);
-    // margin-bottom: 20px;
     overflow-y: hidden;
     font-size: 0;
     background-color: var(--color-fill-2);

@@ -105,7 +105,7 @@
           <template #extra>
             <span>{{
               $t('catalogs.form.source.desc', {
-                url: 'https://github.com/terraform-seal-modules'
+                url: sealCatalog
               })
             }}</span>
           </template>
@@ -153,7 +153,6 @@
 
 <script lang="ts" setup>
   import { ref, reactive, PropType, computed } from 'vue';
-  import { urlReg } from '@/utils/validate';
   import _, { toLower, get } from 'lodash';
   import { ModalActionType } from '@/views/config/interface';
   import {
@@ -161,7 +160,6 @@
     InputWidth,
     validateLabelNameRegx
   } from '@/views/config';
-  import { execSucceed } from '@/utils/monitor';
   import EditPageFooter from '@/components/edit-page-footer/index.vue';
   import ProviderIcon from '@/components/provider-icon/index.vue';
   import { CatalogFormData } from '../config/interface';
@@ -203,6 +201,7 @@
       value: 'Gitlab'
     }
   ];
+  const sealCatalog = 'https://github.com/terraform-seal-modules';
   const emit = defineEmits(['save', 'update:show', 'update:dataInfo']);
   const formref = ref();
   const loading = ref(false);
