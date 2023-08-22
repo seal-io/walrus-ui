@@ -15,15 +15,7 @@ const formatTag = (route: RouteLocationNormalized): TagProps => {
 const useTabBarStore = defineStore('tabBar', {
   state: (): TabBarState => ({
     cacheTabList: new Set(),
-    tagList: [],
-    tabPage: {
-      ProjectTab: 'ProjectTab',
-      EnvironmentTab: 'EnvironmentTab',
-      CostTab: 'CostTab',
-      OperatorHubTab: 'OperatorHubTab',
-      SettingsTab: 'SettingsTab'
-    },
-    pageTabActive: {}
+    tagList: []
   }),
 
   getters: {
@@ -38,15 +30,6 @@ const useTabBarStore = defineStore('tabBar', {
   actions: {
     resetInfo() {
       this.$reset();
-    },
-    getPageTabActive(page: string) {
-      return this.pageTabActive[page];
-    },
-    setPageTabActive(page: string, tab: string) {
-      this.pageTabActive[page] = tab;
-    },
-    getDefaultPageTabActive(page: string, tab: string) {
-      return this.pageTabActive[page] || tab;
     },
     updateTabList(route: RouteLocationNormalized) {
       this.cacheTabList.add?.(route.name as string);

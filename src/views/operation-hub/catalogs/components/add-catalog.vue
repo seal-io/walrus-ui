@@ -53,6 +53,7 @@
         <a-form-item
           hide-label
           field="type"
+          :disabled="action === ModalAction.EDIT"
           :rules="[
             {
               required: true,
@@ -84,6 +85,7 @@
         <a-form-item
           field="source"
           :label="$t('operation.templates.detail.source')"
+          :disabled="action === ModalAction.EDIT"
           hide-asterisk
           :hide-label="true"
           :validate-trigger="['change']"

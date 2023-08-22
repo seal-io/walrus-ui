@@ -6,6 +6,7 @@ import useTabBarStore from './modules/tab-bar';
 import useCostManageStore from './modules/cost-managment';
 import useProjectStore from './modules/project';
 import useServiceStore from './modules/service';
+import useActiveTabsStore from './modules/active-tabs';
 
 const pinia = createPinia();
 pinia.use(
@@ -20,6 +21,7 @@ export {
   useProjectStore,
   useTabBarStore,
   useCostManageStore,
-  useServiceStore
+  useServiceStore,
+  useActiveTabsStore
 };
 export default pinia;

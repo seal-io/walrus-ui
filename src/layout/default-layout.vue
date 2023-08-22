@@ -75,12 +75,17 @@
   import useResponsive from '@/hooks/responsive';
   import PageLayout from './page-layout.vue';
 
+  const drawerVisible = ref(false);
   const appStore = useAppStore();
   const userStore = useUserStore();
   const router = useRouter();
   const route = useRoute();
   const permission = usePermission();
   useResponsive(true);
+  provide('toggleDrawerMenu', () => {
+    drawerVisible.value = !drawerVisible.value;
+  });
+
   const navbar = computed(() => appStore.navbar);
   const renderMenu = computed(() => appStore.menu);
   const hideMenu = computed(() => appStore.hideMenu);
@@ -109,6 +114,9 @@
       name: DASHBOARD.Main
     });
   };
+  const drawerCancel = () => {
+    drawerVisible.value = false;
+  };
   watch(
     () => userStore.role,
     (roleValue) => {
@@ -116,13 +124,6 @@
         router.push({ name: 'notFound' });
     }
   );
-  const drawerVisible = ref(false);
-  const drawerCancel = () => {
-    drawerVisible.value = false;
-  };
-  provide('toggleDrawerMenu', () => {
-    drawerVisible.value = !drawerVisible.value;
-  });
 </script>
 
 <style scoped lang="less">

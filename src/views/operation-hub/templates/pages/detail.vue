@@ -88,6 +88,7 @@
           <a-form-item
             field="source"
             :label="$t('operation.templates.detail.source')"
+            :disabled="!!id"
             hide-asterisk
             :hide-label="pageAction === PageAction.EDIT"
             :validate-trigger="['change']"

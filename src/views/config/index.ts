@@ -54,6 +54,14 @@ export const InputWidth = {
   XLARGE: 800
 };
 
+export const TabPage = {
+  PROJECTTAB: 'projectTab',
+  ENVIRONMENTTAB: 'environmentTab',
+  COSTTAB: 'costTab',
+  OPERATORHUBTAB: 'operatorHubTab',
+  SETTINGSTAB: 'settingsTab'
+};
+
 export const ProjectTabs = {
   ENVIRONMENT: 'environments',
   CONNECTOR: 'connectors',
