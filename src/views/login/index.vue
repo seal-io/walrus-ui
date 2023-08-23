@@ -113,9 +113,7 @@
 <style lang="less" scoped>
   .container {
     display: flex;
-    height: calc(100vh - 48px);
     margin-top: 0;
-    overflow: auto;
     background-image: url('../../assets/images/bg2.jpeg');
     background-repeat: no-repeat;
     background-position: center center;
@@ -184,6 +182,8 @@
       flex: 1;
       align-items: center;
       justify-content: center;
+      height: max-content;
+      min-height: calc(100vh - 48px);
       padding-bottom: 40px;
 
       .content-inner {

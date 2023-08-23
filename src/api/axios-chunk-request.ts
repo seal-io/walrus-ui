@@ -122,6 +122,7 @@ export function useSetChunkRequest() {
           }
 
           handler(result);
+          console.log('chunkrequest========', { result, url });
         }
       });
       requestReadyState.value = request?.readyState;

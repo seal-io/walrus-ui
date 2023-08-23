@@ -133,7 +133,7 @@
   import { deleteModal, execSucceed } from '@/utils/monitor';
   import { PageAction } from '@/views/config';
   import { useUpdateChunkedList } from '@/views/commons/hooks/use-update-chunked-list';
-  import { queryCatalogs } from '../../catalogs/api';
+  import { queryCatalogs, CatalogAPI } from '../../catalogs/api';
   import ThumbView from '../components/thumb-view.vue';
   import ListView from '../components/list-view.vue';
   import { TemplateRowData } from '../config/interface';
@@ -148,12 +148,15 @@
   let timer: any = null;
   const userStore = useUserStore();
   const { setChunkRequest } = useSetChunkRequest();
+  const { setChunkRequest: setCatalogChunkRequest } = useSetChunkRequest();
   const { router } = useCallCommon();
   const loading = ref(false);
   const selectedKeys = ref<string[]>([]);
   const sort = ref<string[]>(['-createTime']);
   const dataList = ref<TemplateRowData[]>([]);
-  const catalogList = ref<{ label: string; value: string }[]>([]);
+  const catalogList = ref<
+    { label: string; value: string; id: string; name: string }[]
+  >([]);
   const listViewRef = ref();
   const total = ref(0);
   const queryParams = reactive({
@@ -163,6 +166,22 @@
     perPage: 10
   });
   const { updateChunkedList } = useUpdateChunkedList(dataList);
+  const { updateChunkedList: updateCatalogList } = useUpdateChunkedList(
+    catalogList,
+    {
+      callback: (list) => {
+        catalogList.value = _.map(list, (o) => {
+          const item = _.cloneDeep(o);
+          return {
+            label: item.name,
+            value: item.id,
+            id: item.id,
+            name: item.name
+          };
+        });
+      }
+    }
+  );
 
   const handleCreate = () => {
     router.push({
@@ -243,6 +262,25 @@
     _.each(list, (data) => {
       updateChunkedList(data);
     });
+    if (!dataList.value.length) {
+      queryParams.page = 1;
+      handleFilter();
+    }
+  };
+  const updateCatalogHandler = (list) => {
+    _.each(list, (data) => {
+      updateCatalogList(data);
+    });
+
+    if (queryParams.catalogID) {
+      const catalog = _.find(catalogList.value, {
+        value: queryParams.catalogID
+      });
+      if (!catalog) {
+        queryParams.catalogID = '';
+        handleSearch();
+      }
+    }
   };
   const createTemplateChunkRequest = () => {
     try {
@@ -252,6 +290,17 @@
           ..._.pickBy(_.omit(queryParams, ['page', 'perPage']), (val) => !!val)
         },
         handler: updateHandler
+      });
+    } catch (error) {
+      // ignore
+    }
+  };
+
+  const createCatalogChunkRequest = () => {
+    try {
+      setCatalogChunkRequest({
+        url: CatalogAPI,
+        handler: updateCatalogHandler
       });
     } catch (error) {
       // ignore
@@ -285,7 +334,9 @@
       catalogList.value = _.map(data?.items || [], (item) => {
         return {
           label: item.name,
-          value: item.id
+          value: item.id,
+          id: item.id,
+          name: item.name
         };
       });
     } catch (error) {
@@ -297,6 +348,7 @@
     getCatalogList();
     nextTick(() => {
       createTemplateChunkRequest();
+      createCatalogChunkRequest();
     });
   });
 </script>

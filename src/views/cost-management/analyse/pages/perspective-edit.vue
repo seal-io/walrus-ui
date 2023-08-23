@@ -327,6 +327,24 @@
                 </a-button>
               </div>
             </div>
+            <SealFormItemWrap
+              v-if="!formData.costQueries[0].sharedOptions.item.length"
+              :label="$t('cost.optimize.form.commonCost')"
+              :style="{ minWidth: `${InputWidth.LARGE}px` }"
+            >
+              <div
+                class="fill-width seal-bordered border-radius-4 p-16 align-center"
+              >
+                <a-button
+                  type="text"
+                  size="small"
+                  @click="handleAddShareOptionItem"
+                >
+                  <template #icon><icon-plus /></template>
+                  {{ $t('cost.analyse.view.strategy') }}
+                </a-button>
+              </div>
+            </SealFormItemWrap>
           </div>
           <span v-else class="readonly-view-label"> - </span>
         </a-form-item>
@@ -462,22 +480,6 @@
       return !groupByDate.includes(item.value);
     });
   });
-  const sharingStrategyRequired = computed(() => {
-    const shareCostFilter =
-      get(formData, 'costQueries.0.sharedOptions.item') || [];
-    const shareCostIdleCostFilters =
-      get(formData, 'costQueries.0.sharedOptions.idle') || [];
-    const shareCostmanagementCostFilters =
-      get(formData, 'costQueries.0.sharedOptions.management') || [];
-    if (
-      shareCostFilter?.length ||
-      shareCostIdleCostFilters?.length ||
-      shareCostmanagementCostFilters?.length
-    ) {
-      return true;
-    }
-    return false;
-  });
 
   const handleDeleteShareOptionItem = (index) => {
     formData.costQueries[0].sharedOptions.item.splice(index, 1);
@@ -542,14 +544,7 @@
     const costres = validateCostFilter();
     return !res && allres && costres;
   };
-  const setShareCostFilter = (list) => {
-    const arr = map(list, (item) => {
-      return {
-        ...pickBy(item, (val) => val?.length)
-      };
-    });
-    return filter(arr, (o) => keys(o).length);
-  };
+
   const handleOk = async () => {
     if (isEqual(copyFormData, formData) && id) {
       router.back();
