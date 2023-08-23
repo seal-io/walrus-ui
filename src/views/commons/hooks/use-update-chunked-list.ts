@@ -31,26 +31,27 @@ export function useUpdateChunkedList(
     // CREATE
     if (data?.type === websocketEventType.CREATE) {
       dataList.value = _.concat(collections, dataList.value);
-      return;
     }
     // DELETE
     if (data?.type === websocketEventType.DELETE) {
       dataList.value = _.filter(dataList.value, (item) => {
         return !_.find(ids, (id) => id === item.id);
       });
-      return;
     }
     // UPDATE
-    _.each(collections, (item) => {
-      const updateIndex = _.findIndex(
-        dataList.value,
-        (sItem) => sItem.id === item.id
-      );
-      if (updateIndex > -1) {
-        const updateItem = _.cloneDeep(item);
-        dataList.value[updateIndex] = updateItem;
-      }
-    });
+    if (data?.type === websocketEventType.UPDATE) {
+      _.each(collections, (item) => {
+        const updateIndex = _.findIndex(
+          dataList.value,
+          (sItem) => sItem.id === item.id
+        );
+        if (updateIndex > -1) {
+          const updateItem = _.cloneDeep(item);
+          dataList.value[updateIndex] = updateItem;
+        }
+      });
+    }
+
     if (options?.callback) {
       options?.callback(dataList.value);
     }
