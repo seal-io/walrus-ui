@@ -11,6 +11,7 @@ interface ChunkedCollection {
 export function useUpdateChunkedList(
   dataList: Ref<{ id: string }[]>,
   options?: {
+    callback?: (args: any) => void;
     filterFun?: (args: any) => boolean;
     computedID?: (d: object) => string;
   }
@@ -50,6 +51,9 @@ export function useUpdateChunkedList(
         dataList.value[updateIndex] = updateItem;
       }
     });
+    if (options?.callback) {
+      options?.callback(dataList.value);
+    }
   };
   return {
     updateChunkedList
