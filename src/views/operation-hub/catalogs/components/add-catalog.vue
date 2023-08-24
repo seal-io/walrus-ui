@@ -201,7 +201,7 @@
       value: 'Gitlab'
     }
   ];
-  const sealCatalog = 'https://github.com/terraform-seal-modules';
+  const sealCatalog = 'https://github.com/walrus-catalog';
   const emit = defineEmits(['save', 'update:show', 'update:dataInfo']);
   const formref = ref();
   const loading = ref(false);

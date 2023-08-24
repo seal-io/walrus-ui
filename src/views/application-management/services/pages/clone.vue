@@ -60,13 +60,8 @@
                 :loading="formData.environmentID === item.id && submitLoading"
                 :status="setStatus(item.id)"
               >
-                <icon-check-circle-fill
-                  v-if="_.includes(succeedList, item.id)"
-                />
-                <icon-close-circle-fill
-                  v-if="_.includes(failedList, item.id)"
-                />
-                <span v-if="_.includes(failedList, item.id)">
+                <icon-check-circle-fill v-if="succeedList.has(item.id)" />
+                <span v-if="failedList.has(item.id) && !submitLoading">
                   <a-tooltip :content="errorMap.get(item.id)">
                     <i class="iconfont icon-warning-filling mleft-5"></i>
                   </a-tooltip>
@@ -168,6 +163,7 @@
   });
 
   const setStatus = (id) => {
+    if (submitLoading.value) return 'normal';
     if (succeedList.value.has(id)) {
       return 'success';
     }
@@ -265,12 +261,13 @@
     }
   };
   onBeforeRouteLeave(async (to, from) => {
-    if (!_.isEqual(copyFormData, formData)) {
+    if (!_.isEqual(copyFormData, formData) || failedList.value.size) {
       beforeLeaveCallback({
         to,
         from,
         onOk: () => {
           copyFormData = _.cloneDeep(formData);
+          failedList.value.clear();
           router.push({
             name: to.name as string
           });
