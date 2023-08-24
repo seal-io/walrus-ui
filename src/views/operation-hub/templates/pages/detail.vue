@@ -42,6 +42,7 @@
             :hide-label="pageAction === PageAction.EDIT"
             :disabled="!!id"
             :validate-trigger="['change']"
+            :style="{ width: `${InputWidth.LARGE}px` }"
             :rules="[
               {
                 required: true,
@@ -63,7 +64,7 @@
               formData.name || '-'
             }}</span>
             <template v-if="pageAction === PageAction.EDIT" #extra>
-              <span class="tips">{{ $t('common.validate.labelName') }}</span>
+              <div class="tips">{{ $t('common.validate.labelName') }}</div>
             </template>
           </a-form-item>
           <a-form-item
