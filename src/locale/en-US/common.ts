@@ -12,6 +12,7 @@ export default {
   'common.button.view': 'View details',
   'common.button.detail': 'View details',
   'common.button.reset': 'Reset',
+  'common.button.retry': 'Retry',
   'common.button.create.now': 'Create now',
   'common.button.refresh': 'Refresh',
   'common.button.delete': 'Delete',

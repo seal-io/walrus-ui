@@ -1,11 +1,14 @@
 <template>
   <div class="mo-wrap">
-    <div class="title">
+    <div class="title" :class="{ 'no-del-btn': !showDelete }">
       <span class="text">
-        <icon-double-right
-          class="collapse-icon"
-          style="margin-right: 6px; font-size: 16px"
-          :class="{ collapse: isCollapse }"
+        <i
+          class="collapse-icon iconfont"
+          :class="{
+            'collapse': isCollapse,
+            'icon-collapsedown': isCollapse,
+            'icon-collapseup': !isCollapse
+          }"
           @click="handleCollapse"
         />
         <span>{{ title }}</span>
@@ -85,6 +88,10 @@
       font-size: 14px;
       background-color: var(--color-fill-2);
 
+      &.no-del-btn {
+        justify-content: flex-end;
+      }
+
       :deep(.arco-icon) {
         color: rgb(var(--arcoblue-6));
         .hoverable();
@@ -103,11 +110,21 @@
     }
 
     .collapse-icon {
-      transition: transform 0.2s var(--seal-transition-func);
+      margin-right: 6px;
+      color: rgba(var(--arcoblue-6), 0.7);
+      font-size: 16px;
+      cursor: pointer;
+      transition: all 0.2s var(--seal-transition-func);
+      .hoverable();
+
+      &:hover {
+        .hoverableHover();
+
+        color: rgba(var(--arcoblue-6), 0.7);
+      }
 
       &.collapse {
-        transform: rotate(90deg);
-        transition: transform 0.2s var(--seal-transition-func);
+        transition: all 0.2s var(--seal-transition-func);
       }
     }
 
