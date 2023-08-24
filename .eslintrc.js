@@ -40,6 +40,7 @@ module.exports = {
     'prettier/prettier': 1,
     'no-nest-ternary': 0,
     'no-shadow': 'off',
+    'no-await-in-loop': 'off',
     '@typescript-eslint/no-shadow': 'warn',
     'class-methods-use-this': 'off',
     // Vue: Recommended rules to be closed or modify

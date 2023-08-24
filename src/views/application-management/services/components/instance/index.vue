@@ -57,7 +57,9 @@
             :title="$t('applications.applications.detail.configuration')"
             :title-style="{ 'margin-bottom': '10px', 'margin-top': 0 }"
           >
-            <serviceInfo ref="serviceInfoRef"> </serviceInfo>
+            <moduleWrapper :show-delete="false" :status="true">
+              <serviceInfo ref="serviceInfoRef"> </serviceInfo>
+            </moduleWrapper>
           </ModuleCard>
         </ComCard>
         <ComCard>
@@ -153,6 +155,7 @@
   import EditPageFooter from '@/components/edit-page-footer/index.vue';
   import useBasicInfoData from '@/views/application-management/projects/hooks/use-basicInfo-data';
   import StatusLabel from '@/views/operation-hub/connectors/components/status-label.vue';
+  import moduleWrapper from '../module-wrapper.vue';
   import tabTerminal from './x-terminal/tab-terminal.vue';
   import tabLogs from './tab-logs.vue';
   import tabOutput from './tab-output.vue';

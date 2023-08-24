@@ -16,7 +16,7 @@ export default {
   'applications.applications.table.type': 'Type',
   'applications.applications.table.content': 'Content',
   'applications.applications.table.target': 'Target',
-  'applications.applications.table.holder': 'please enter an servicesservices',
+  'applications.applications.table.holder': 'please enter an service',
   'applications.applications.project.holder': 'please select a project',
   'applications.applications.form.name': 'Name',
   'applications.applications.form.label': 'Labels',
