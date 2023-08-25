@@ -2,7 +2,7 @@
   <div class="service">
     <a-form
       ref="formref"
-      class="basic-form"
+      class="basic-form p-10"
       :model="formData"
       auto-label-width
       style="width: 600px"
@@ -64,14 +64,27 @@
               >
             </div>
             <a-descriptions
-              :column="2"
+              :column="{ lg: 2, md: 1 }"
               style="flex: 1"
+              bordered
+              layout="inline-vertical"
               :data="variablesDataList"
             >
               <template #value="{ data }">
                 <div>
+                  <!-- empty value -->
+                  <span
+                    v-if="
+                      _.isEmpty(
+                        _.get(
+                          variablesGroupForm,
+                          `${group}.attributes.${data.name}`
+                        )
+                      )
+                    "
+                  ></span>
                   <!-- sensitive -->
-                  <span v-if="data.sensitive">
+                  <span v-else-if="data.sensitive">
                     {{
                       _.get(
                         variablesGroupForm,
@@ -146,12 +159,24 @@
       </a-tabs>
       <a-descriptions
         v-if="formTabs.length < 2"
-        :column="2"
+        :column="{ lg: 2, md: 1 }"
+        bordered
+        layout="inline-vertical"
         :data="variablesGroup[defaultGroupKey]?.variables"
       >
         <template #value="{ data }">
-          <a-textarea
+          <span
             v-if="
+              _.isEmpty(
+                _.get(
+                  variablesGroupForm[defaultGroupKey]?.attributes,
+                  `${data.name}`
+                )
+              )
+            "
+          ></span>
+          <a-textarea
+            v-else-if="
               schemaType.isCollectionType(data.type) ||
               schemaType.isUnknownType(data.type)
             "
@@ -183,7 +208,7 @@
 
 <script lang="ts" setup>
   import _ from 'lodash';
-  import { ref, computed, nextTick, watch, onMounted } from 'vue';
+  import { ref, computed, nextTick } from 'vue';
   import { schemaType } from '@/components/form-create/config/interface';
   import { json2Yaml } from '@/components/form-create/config/yaml-parse';
   import { getObjectConditionValue } from '@/components/form-create/config/utils';
@@ -284,6 +309,10 @@
   @import url('@/components/form-create/style/side-menu.less');
 
   .service {
+    :deep(.arco-tabs-nav-tab-list) {
+      padding-left: 10px;
+    }
+
     :deep(.arco-form-item) {
       margin-bottom: 0;
 
@@ -296,8 +325,26 @@
       padding: 16px 0 0 0;
     }
 
-    .content-wrap {
-      max-width: 1000px;
+    :deep(.arco-descriptions-layout-inline-vertical) {
+      .arco-descriptions-body {
+        border: none;
+      }
+
+      .arco-descriptions-table {
+        border-collapse: separate;
+        border-spacing: 10px;
+
+        .arco-descriptions-item {
+          padding: 10px;
+          border: 1px solid var(--color-border-2);
+          border-radius: var(--border-radius-small);
+        }
+      }
+
+      .arco-textarea-wrapper {
+        background-color: var(--color-fill-2);
+        border: none;
+      }
     }
   }
 </style>

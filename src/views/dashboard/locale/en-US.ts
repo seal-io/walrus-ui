@@ -5,7 +5,7 @@ export default {
   'dashboard.overview.connector': 'Connectors',
   'dashboard.deployment.title': 'Deployment',
   'dashboard.deployment.history': 'History',
-  'dashboard.deployment.running': ' Running',
+  'dashboard.deployment.running': 'Running',
   'dashboard.deployment.failed': 'Failed',
   'dashboard.deployment.succeed': 'Succeed',
   'dashboard.deployment.lastest': 'Latest 10 Deployments',

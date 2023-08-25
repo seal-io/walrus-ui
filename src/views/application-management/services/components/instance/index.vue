@@ -5,17 +5,7 @@
         <template #icon>
           <i class="iconfont icon-apps-fill"></i>
         </template>
-        <!-- <template #title>
-          <BasicInfo
-            :data-info="basicDataList"
-            :actions="actionList"
-            @group-click="handleClick"
-            @group-select="handleSelect"
-          >
-          </BasicInfo>
-        </template> -->
         <template #title>
-          <!-- <basicInfo :data-info="basicDataList"></basicInfo> -->
           <div class="title">
             <span> {{ currentInfo.name }}</span>
             <StatusLabel
@@ -57,7 +47,7 @@
             :title="$t('applications.applications.detail.configuration')"
             :title-style="{ 'margin-bottom': '10px', 'margin-top': 0 }"
           >
-            <moduleWrapper :show-delete="false" :status="true">
+            <moduleWrapper :show-delete="false" :status="true" inner-wrap>
               <serviceInfo ref="serviceInfoRef"> </serviceInfo>
             </moduleWrapper>
           </ModuleCard>

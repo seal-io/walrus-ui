@@ -57,6 +57,8 @@
             :hide-label="pageAction === PageAction.EDIT"
             hide-asterisk
             field="name"
+            :disabled="!!id"
+            :style="{ maxWidth: `${InputWidth.LARGE}px` }"
             :rules="[
               {
                 required: true,

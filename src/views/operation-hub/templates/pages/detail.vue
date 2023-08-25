@@ -42,7 +42,7 @@
             :hide-label="pageAction === PageAction.EDIT"
             :disabled="!!id"
             :validate-trigger="['change']"
-            :style="{ width: `${InputWidth.LARGE}px` }"
+            :style="{ maxWidth: `${InputWidth.LARGE}px` }"
             :rules="[
               {
                 required: true,
