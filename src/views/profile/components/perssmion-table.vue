@@ -102,7 +102,7 @@
           >
             <template #cell="{ record }">
               <ReusePermissionState
-                v-bind="{ record, action: 'POST' }"
+                v-bind="{ record, action: Actions.POST }"
               ></ReusePermissionState>
             </template>
           </a-table-column>
@@ -115,7 +115,7 @@
           >
             <template #cell="{ record }">
               <ReusePermissionState
-                v-bind="{ record, action: 'GET' }"
+                v-bind="{ record, action: Actions.GET }"
               ></ReusePermissionState>
             </template>
           </a-table-column>
@@ -129,7 +129,7 @@
           >
             <template #cell="{ record }">
               <ReusePermissionState
-                v-bind="{ record, action: 'PUT' }"
+                v-bind="{ record, action: Actions.PUT }"
               ></ReusePermissionState>
             </template>
           </a-table-column>
@@ -142,7 +142,7 @@
           >
             <template #cell="{ record }">
               <ReusePermissionState
-                v-bind="{ record, action: 'DELETE' }"
+                v-bind="{ record, action: Actions.DELETE }"
               ></ReusePermissionState>
             </template>
           </a-table-column>

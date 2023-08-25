@@ -11,8 +11,10 @@
           }"
           @click="handleCollapse"
         />
-        <span>{{ title }}</span>
       </span>
+      <slot name="title"
+        ><span>{{ title }}</span></slot
+      >
       <icon-delete
         v-if="showDelete"
         class="btn"
@@ -93,7 +95,8 @@
       background-color: var(--color-fill-2);
 
       &.no-del-btn {
-        justify-content: flex-end;
+        flex-direction: row-reverse;
+        justify-content: space-between;
       }
 
       :deep(.arco-icon) {

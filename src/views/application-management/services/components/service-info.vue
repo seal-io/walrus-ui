@@ -8,7 +8,7 @@
       style="width: 600px"
       label-align="left"
     >
-      <a-row :cols="24">
+      <!-- <a-row :cols="24">
         <a-col :span="12">
           <a-form-item :label="$t('applications.applications.table.module')">
             <span class="readonly-view-label">{{
@@ -23,7 +23,7 @@
             }}</span>
           </a-form-item>
         </a-col>
-      </a-row>
+      </a-row> -->
       <a-row>
         <a-col>
           <a-form-item :label="$t(`applications.projects.form.label`)">

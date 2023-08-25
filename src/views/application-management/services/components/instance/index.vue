@@ -47,7 +47,20 @@
             :title="$t('applications.applications.detail.configuration')"
             :title-style="{ 'margin-bottom': '10px', 'margin-top': 0 }"
           >
-            <moduleWrapper :show-delete="false" :status="true" inner-wrap>
+            <moduleWrapper :show-delete="false" inner-wrap title="template">
+              <template #title>
+                <div class="bold-400">
+                  <span class="m-r-20"
+                    >{{ $t('applications.applications.modules.title') }}：
+                    {{ currentInfo.template?.name }}</span
+                  >
+                  <span
+                    >{{ $t('applications.applications.history.version') }}：{{
+                      currentInfo.template?.version
+                    }}</span
+                  >
+                </div>
+              </template>
               <serviceInfo ref="serviceInfoRef"> </serviceInfo>
             </moduleWrapper>
           </ModuleCard>

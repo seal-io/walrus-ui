@@ -24,5 +24,7 @@ export default {
   'propfile.permission.table.permission': 'UI Permissions',
   'propfile.permission.table.group': 'Group',
   'propfile.permission.type.project': 'Project Permissions',
-  'propfile.permission.type.system': 'System Permissions'
+  'propfile.permission.type.system': 'System Permissions',
+  'propfile.password.leastlength':
+    'password length cannot be less than 6 characters'
 };
