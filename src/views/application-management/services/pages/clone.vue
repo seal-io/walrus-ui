@@ -204,7 +204,11 @@
     stageEnvironmentIDs.value = _.filter(formData.environmentIDs, (item) => {
       return !succeedList.value.has(item);
     });
-
+    _.each([...failedList.value], (item) => {
+      if (!_.includes(formData.environmentIDs, item)) {
+        failedList.value.delete(item);
+      }
+    });
     for (let i = 0; i < stageEnvironmentIDs.value.length; i += 1) {
       const environmentID = stageEnvironmentIDs.value[i];
       formData.environmentID = environmentID;
@@ -235,7 +239,6 @@
         copyFormData = _.cloneDeep(formData);
 
         if (!failedList.value.size) {
-          await batchCloneQueue();
           router.back();
         }
         submitLoading.value = false;

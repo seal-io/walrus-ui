@@ -8,13 +8,7 @@ import ComCard from '@/components/page-wrap/com-card.vue';
 import SpinCard from '@/components/page-wrap/spin-card.vue';
 import ModuleCard from '@/components/page-wrap/module-card.vue';
 import BreadWrapper from '@/components/bread-wrapper/index.vue';
-import {
-  BarChart,
-  LineChart,
-  PieChart,
-  RadarChart,
-  GaugeChart
-} from 'echarts/charts';
+import { BarChart, LineChart, PieChart, GaugeChart } from 'echarts/charts';
 import {
   TitleComponent,
   GridComponent,
@@ -37,7 +31,6 @@ use([
   BarChart,
   LineChart,
   PieChart,
-  RadarChart,
   GaugeChart,
   TitleComponent,
   GridComponent,

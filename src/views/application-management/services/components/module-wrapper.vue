@@ -6,8 +6,8 @@
           class="collapse-icon iconfont"
           :class="{
             'collapse': isCollapse,
-            'icon-collapsedown': isCollapse,
-            'icon-collapseup': !isCollapse
+            'icon-collapsedown': !isCollapse,
+            'icon-collapseup': isCollapse
           }"
           @click="handleCollapse"
         />
@@ -22,7 +22,7 @@
     </div>
     <slTransition>
       <div v-show="isCollapse">
-        <div class="content">
+        <div class="content" :class="{ inner: innerWrap }">
           <slot></slot>
         </div>
       </div>
@@ -33,15 +33,19 @@
 <script lang="ts" setup>
   import { ref, watchEffect } from 'vue';
   import slTransition from '@/components/sl-transition/index.vue';
-  import { deleteModal, execSucceed } from '@/utils/monitor';
-  import { propsToAttrMap } from '@vue/shared';
-  import { watch } from 'fs';
+  import { deleteModal } from '@/utils/monitor';
 
   const props = defineProps({
     title: {
       type: String,
       default() {
         return '';
+      }
+    },
+    innerWrap: {
+      type: Boolean,
+      default() {
+        return false;
       }
     },
     status: {
@@ -130,6 +134,10 @@
 
     .content {
       padding: 10px;
+
+      &.inner {
+        padding: 0;
+      }
     }
   }
 </style>

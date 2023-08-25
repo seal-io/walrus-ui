@@ -86,6 +86,20 @@ body {
         box-shadow: 0 0 2px 0 var(--color-primary-light-2);
         transition: all 0.2s;
       }
+
+      .arco-textarea-wrapper:focus-within,
+      .arco-textarea-wrapper.arco-textarea-focus
+        .arco-input-wrapper:focus-within,
+      .date-range-wrapper.arco-textarea-focus .date-range-wrapper:focus-within,
+      .arco-input-wrapper.arco-input-focus,
+      .arco-select-view-single:focus-within,
+      .arco-select-view-single.arco-select-view-focus,
+      .arco-select-view-multiple:focus-within,
+      .arco-select-view-multiple.arco-select-view-focus {
+        background-color: var(--color-bg-2);
+        border-color: rgb(var(--primary-6));
+        box-shadow: 0 0 0 0 var(--color-primary-light-2);
+      }
     }
   }
 
@@ -113,5 +127,11 @@ body {
     background-color: var(--color-bg-2);
     border-color: rgb(var(--primary-6));
     box-shadow: 0 0 0 0 var(--color-primary-light-2);
+
+    &:hover {
+      background-color: var(--color-bg-2);
+      border-color: rgb(var(--primary-6));
+      box-shadow: 0 0 0 0 var(--color-primary-light-2);
+    }
   }
 }

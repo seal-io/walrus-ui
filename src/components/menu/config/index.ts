@@ -7,6 +7,12 @@ export const profileMenu = [
     icon: '<i class="iconfont icon-bangzhuyushuoming size-18" />',
     children: [
       {
+        name: 'walrus',
+        key: 'home',
+        value: 'https://github.com/seal-io/walrus',
+        icon: '<icon-github class="size-18"/>'
+      },
+      {
         name: 'settings.document',
         key: 'docs',
         value(lang: string) {

@@ -108,17 +108,18 @@
           </a-table-column>
           <a-table-column
             align="center"
-            data-index="delete"
+            data-index="get"
             :body-cell-class="setRowClass"
             :width="65"
-            :title="$t('common.permission.action.delete')"
+            :title="$t('common.permission.action.get')"
           >
             <template #cell="{ record }">
               <ReusePermissionState
-                v-bind="{ record, action: 'DELETE' }"
+                v-bind="{ record, action: 'GET' }"
               ></ReusePermissionState>
             </template>
           </a-table-column>
+
           <a-table-column
             align="center"
             data-index="put"
@@ -134,14 +135,14 @@
           </a-table-column>
           <a-table-column
             align="center"
-            data-index="get"
+            data-index="delete"
             :body-cell-class="setRowClass"
             :width="65"
-            :title="$t('common.permission.action.get')"
+            :title="$t('common.permission.action.delete')"
           >
             <template #cell="{ record }">
               <ReusePermissionState
-                v-bind="{ record, action: 'GET' }"
+                v-bind="{ record, action: 'DELETE' }"
               ></ReusePermissionState>
             </template>
           </a-table-column>

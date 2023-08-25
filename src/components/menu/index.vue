@@ -382,7 +382,7 @@
             if (item.children && item.children.length) {
               rt = (
                 <a-sub-menu
-                  key={item.key}
+                  key={item.name}
                   style={{
                     ...item.itemStyle
                   }}
@@ -401,12 +401,12 @@
                   {item.children?.map((cItem) => {
                     return (
                       <a-menu-item
-                        key={cItem.key}
+                        key={cItem.name}
                         v-slots={{
                           icon: () =>
                             h(compile(cItem.icon), {
                               style: {
-                                color: 'var(--color-text-3)',
+                                color: 'var(--color-text-2)',
                                 fontSize: '16px'
                               }
                             })

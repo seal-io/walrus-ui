@@ -230,6 +230,13 @@
     return props.isFullscreen ? '100vh' : props.containerHeight;
   });
   const fitView = () => {
+    const nodes = graph?.findAll('node', (node) => {
+      return node.isVisible();
+    });
+    if (nodes.length <= 5) {
+      graph?.fitCenter?.();
+      return;
+    }
     graph?.fitView();
   };
   const handleWindowResize = () => {

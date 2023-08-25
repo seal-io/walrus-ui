@@ -57,13 +57,6 @@
           <div style="cursor: pointer" class="user-wrap">
             <span class="user">
               <span class="role">
-                <!-- <span class="avatar">
-                  <img
-                    alt="avatar"
-                    class="img"
-                    src="../../assets/images/avatar-02.png"
-                  />
-                </span> -->
                 <a-avatar
                   class="mright-5"
                   :style="{ backgroundColor: 'var(--sealblue-6)' }"

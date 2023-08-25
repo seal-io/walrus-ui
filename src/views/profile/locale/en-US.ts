@@ -21,7 +21,7 @@ export default {
   'propfile.permission.table.project': 'Project',
   'propfile.permission.table.resource': 'Resource',
   'propfile.permission.table.role': 'Role',
-  'propfile.permission.table.permission': 'Permissions',
+  'propfile.permission.table.permission': 'UI Permissions',
   'propfile.permission.table.group': 'Group',
   'propfile.permission.type.project': 'Project Permissions',
   'propfile.permission.type.system': 'System Permissions'

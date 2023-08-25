@@ -308,6 +308,7 @@
   };
   const handleReset = () => {
     queryParams.query = '';
+    queryParams.catalogID = '';
     queryParams.page = 1;
     handleFilter();
     nextTick(() => {

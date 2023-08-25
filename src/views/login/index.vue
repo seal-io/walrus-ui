@@ -114,7 +114,7 @@
   .container {
     display: flex;
     margin-top: 0;
-    background-image: url('../../assets/images/bg2.jpeg');
+    background-image: url('../../assets/images/bg2.jpg');
     background-repeat: no-repeat;
     background-position: center center;
     background-size: cover;
