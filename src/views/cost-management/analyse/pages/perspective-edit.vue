@@ -282,12 +282,22 @@
                     v-model:conditions="item.filters"
                     :viewable="viewable"
                     :time-range="formData.timeRange"
+                    :error="
+                      !item.filters?.length &&
+                      !!item.sharingStrategy &&
+                      triggerValidate
+                    "
                     :perspective-fields="perspectiveFields"
                   ></ConditionFilter>
                   <div class="m-t-10">
                     <seal-select
                       v-model="item.sharingStrategy"
                       allow-clear
+                      :error="
+                        !item.sharingStrategy &&
+                        triggerValidate &&
+                        item.filters.length
+                      "
                       :style="{ minWidth: `${InputWidth.MIDDLE}px` }"
                       :label="$t('cost.optimize.form.sharingStrategy')"
                     >
@@ -389,7 +399,8 @@
     includes,
     pickBy,
     keys,
-    isEqual
+    isEqual,
+    omit
   } from 'lodash';
   import {
     PageAction,
@@ -430,6 +441,7 @@
   const costfilter = ref();
   const groupByDate = ['day', 'week', 'month', 'year'];
   const perspectiveInfo = ref<any>({});
+  const triggerValidate = ref(false);
   const loading = ref(false);
   const submitLoading = ref(false);
   const perspectiveFields = ref<FieldsOptions[]>([]);
@@ -508,6 +520,32 @@
     data.costQueries[0].sharedOptions.idle = idleCostFilters;
     data.costQueries[0].sharedOptions.management = managementCostFilters;
   };
+  const pickPerspectiveCostFilter = (data) => {
+    data.costQueries[0].sharedOptions.item = _.filter(
+      data.costQueries[0].sharedOptions.item,
+      (item) => {
+        return item.filters.length && item.sharingStrategy;
+      }
+    ).map((sItem) => {
+      return _.pickBy(sItem, (val) => val?.length);
+    });
+
+    data.costQueries[0].sharedOptions.idle = _.pickBy(
+      data.costQueries[0].sharedOptions.idle,
+      (val) => val
+    );
+    data.costQueries[0].sharedOptions.management = _.pickBy(
+      data.costQueries[0].sharedOptions.management,
+      (val) => val
+    );
+    data.costQueries[0].sharedOptions = _.pickBy(
+      data.costQueries[0].sharedOptions,
+      (val) => !_.isEmpty(val)
+    );
+    if (_.isEmpty(data.costQueries[0].sharedOptions)) {
+      data.costQueries[0] = omit(data.costQueries[0], 'sharedOptions');
+    }
+  };
   const setConditionFilterFieldValues = (data) => {
     const filtersList = get(data, 'costQueries.0.filters') || [];
     const shareItems = get(data, 'costQueries.0.sharedOptions.item') || [];
@@ -538,19 +576,28 @@
     }
     return true;
   };
+  const validateCostFilerStrategy = () => {
+    const res = _.every(formData.costQueries[0].sharedOptions.item, (item) => {
+      // optimize the validation
+      return (
+        (item.filters?.length && item.sharingStrategy) ||
+        (!item.filters?.length && !item.sharingStrategy)
+      );
+    });
+    return res;
+  };
   const validateForm = async () => {
     const res = await formref.value?.validate();
     const allres = allfilter.value.fieldVaildator();
     const costres = validateCostFilter();
-    return !res && allres && costres;
+    const strategyres = validateCostFilerStrategy();
+    return !res && allres && costres && strategyres;
   };
 
   const handleOk = async () => {
-    if (isEqual(copyFormData, formData) && id) {
-      router.back();
-      return;
-    }
     const res = await validateForm();
+    // trigger the validation not from the form
+    triggerValidate.value = true;
     if (res) {
       try {
         submitLoading.value = true;
@@ -561,6 +608,13 @@
         data.endTime = 'now';
         data.startTime = data.timeRange;
         setPerspectiveCostFilter(data);
+        pickPerspectiveCostFilter(data);
+        // when the data is not changed, do not submit
+        if (isEqual(copyFormData, data) && id) {
+          copyFormData = cloneDeep(formData);
+          router.back();
+          return;
+        }
         copyFormData = cloneDeep(formData);
         if (id) {
           await updatePerspective({ ...data, id });

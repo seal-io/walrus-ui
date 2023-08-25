@@ -7,7 +7,7 @@
     </div>
     <div
       class="condition-box wrapper"
-      :class="{ readonly: viewable && !filterDataList.length }"
+      :class="{ readonly: viewable && !filterDataList.length, error: error }"
     >
       <div v-if="!filterDataList.length && !viewable" class="no-data">
         <a-button type="text" size="small" @click="handleAddORFilter">
@@ -169,6 +169,12 @@
         return [];
       }
     },
+    error: {
+      type: Boolean,
+      default() {
+        return false;
+      }
+    },
     viewable: {
       type: Boolean,
       default() {
@@ -300,6 +306,10 @@
     padding: 16px;
     border: 1px solid var(--color-border-2);
     border-radius: var(--border-radius-small);
+
+    &.error {
+      background-color: var(--color-danger-light-1);
+    }
 
     &.readonly {
       border: none;
