@@ -132,11 +132,11 @@
         resourceCount: _.keys(policies).length,
         isParent: true,
         key: _.get(project, `projectName`),
-        role: _.keys(_.get(project, 'roles'))
-        // post: calcPermissionCount(projectChildren, Actions.POST),
-        // get: calcPermissionCount(projectChildren, Actions.GET),
-        // delete: calcPermissionCount(projectChildren, Actions.DELETE),
-        // put: calcPermissionCount(projectChildren, Actions.PUT)
+        role: _.keys(_.get(project, 'roles')),
+        post: calcPermissionCount(projectChildren, Actions.POST),
+        get: calcPermissionCount(projectChildren, Actions.GET),
+        delete: calcPermissionCount(projectChildren, Actions.DELETE),
+        put: calcPermissionCount(projectChildren, Actions.PUT)
       });
     });
     return resultList;
@@ -196,11 +196,11 @@
     resultList = _.map(resultList, (item) => {
       return {
         ...item,
-        resource: item.children.length
-        // post: calcPermissionCount(item.children, Actions.POST),
-        // get: calcPermissionCount(item.children, Actions.GET),
-        // delete: calcPermissionCount(item.children, Actions.DELETE),
-        // put: calcPermissionCount(item.children, Actions.PUT)
+        resource: item.children.length,
+        post: calcPermissionCount(item.children, Actions.POST),
+        get: calcPermissionCount(item.children, Actions.GET),
+        delete: calcPermissionCount(item.children, Actions.DELETE),
+        put: calcPermissionCount(item.children, Actions.PUT)
       };
     });
     return resultList;

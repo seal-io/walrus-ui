@@ -23,14 +23,24 @@
           v-model:active-key="activeKey"
           :default-active-key="activeKey"
           class="page-line-tabs"
+          @change="setPageTabActive"
         >
-          <a-tab-pane key="userInfo" :title="$t('propfile.account.user.info')">
+          <a-tab-pane
+            :key="UserTabs.USERS"
+            :title="$t('propfile.account.user.info')"
+          >
             <UserInfo></UserInfo>
           </a-tab-pane>
-          <a-tab-pane key="password" :title="$t('user.password.modify')">
+          <a-tab-pane
+            :key="UserTabs.PASSWORD"
+            :title="$t('user.password.modify')"
+          >
             <ModifyPassword></ModifyPassword>
           </a-tab-pane>
-          <a-tab-pane key="tokens" :title="$t('account.settings.apikeys')">
+          <a-tab-pane
+            :key="UserTabs.TOKENS"
+            :title="$t('account.settings.apikeys')"
+          >
             <Tokens></Tokens>
           </a-tab-pane>
         </a-tabs>
@@ -43,15 +53,19 @@
   import _ from 'lodash';
   import { ref, computed } from 'vue';
   import { useUserStore } from '@/store';
+  import { UserTabs } from '@/views/config';
+  import useTabActive, { TabPage } from '@/hooks/use-tab-active';
   import { RoleType, RolesTypeMap } from '@/views/system/config/users';
   import HeaderInfo from '@/components/header-info/index.vue';
-  import GroupTitle from '@/components/group-title/index.vue';
   import UserInfo from './user-info.vue';
   import ModifyPassword from './modify-password.vue';
   import Tokens from './tokens.vue';
 
   const userStore = useUserStore();
-  const activeKey = ref('userInfo');
+  const { activeKey, setPageTabActive } = useTabActive(
+    TabPage.USERTAB,
+    UserTabs.USERS
+  );
 
   const userRole = computed(() => {
     const { roles } = userStore;

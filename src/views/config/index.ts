@@ -59,7 +59,8 @@ export const TabPage = {
   ENVIRONMENTTAB: 'environmentTab',
   COSTTAB: 'costTab',
   OPERATORHUBTAB: 'operatorHubTab',
-  SETTINGSTAB: 'settingsTab'
+  SETTINGSTAB: 'settingsTab',
+  USERTAB: 'userTab'
 };
 
 export const ProjectTabs = {
@@ -85,6 +86,12 @@ export const OperatorHubTabs = {
   VARIABLES: 'variables',
   CONNECTOR: 'connectors',
   CATALOGS: 'catalogs'
+};
+
+export const UserTabs = {
+  USERS: 'info',
+  PASSWORD: 'password',
+  TOKENS: 'tokens'
 };
 
 export const QAlinkMap = {
