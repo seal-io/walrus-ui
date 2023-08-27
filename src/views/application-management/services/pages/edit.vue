@@ -262,18 +262,12 @@
     get,
     find,
     cloneDeep,
-    each,
-    assignIn,
     pull,
-    set,
     keys,
     reduce,
-    map,
     includes,
     pickBy,
-    toString,
-    filter,
-    split
+    toString
   } from 'lodash';
   import {
     ref,
@@ -334,7 +328,6 @@
   const {
     id,
     init,
-    initInfo,
     generateVariablesGroup,
     getTemplateSchemaByVersion,
     getTemplateVersionList,

@@ -74,7 +74,6 @@
   import { ICombo, IEdge, INode } from '../config/interface';
   import { setServiceStatus, Status } from '../../../../config';
   import { getResourceKeyList } from '../../../../config/utils';
-  import { ResourceKey } from '../../../../config/interface';
   import resourceControl from '../../resource-control.vue';
   import useResourceControl from '../../../hooks/use-resource-control';
   import driftResource from '../../../drift-resource.vue';
@@ -145,7 +144,6 @@
   const toolTipRef = ref<any>({});
   const contextMenu = ref<any>({});
   const contextMenuNode: any = { value: null };
-  // const wrapHeight = ref('600px');
 
   contextMenu.value = new G6.Menu({
     trigger: 'click',
@@ -229,12 +227,23 @@
   const wrapHeight = computed(() => {
     return props.isFullscreen ? '100vh' : props.containerHeight;
   });
+  const setGraphToCenter = () => {
+    // get the center of the canvas
+    const width = graph?.getWidth?.();
+    const height = graph?.getHeight?.();
+    const centerX = width / 2;
+    const centerY = height / 2;
+    graph.zoomTo(1, { x: centerX, y: centerY });
+  };
   const fitView = () => {
     const nodes = graph?.findAll('node', (node) => {
       return node.isVisible();
     });
     if (nodes.length <= 5) {
-      graph?.fitCenter?.();
+      graph?.fitView?.();
+      nextTick(() => {
+        setGraphToCenter();
+      });
       return;
     }
     graph?.fitView();
@@ -251,6 +260,7 @@
     const { width: boxWidth, height: boxHeight } = entry.contentRect;
     width.value = boxWidth;
     height.value = boxHeight < 600 ? 600 : boxHeight;
+
     if (boxHeight < 600) {
       graphWrapper.value.style.height = '600px';
     }

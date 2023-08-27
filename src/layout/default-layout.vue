@@ -37,11 +37,9 @@
           <a-layout-content class="page-content-wrap">
             <PageLayout />
           </a-layout-content>
-          <!-- <Footer v-if="footer" /> -->
         </a-layout>
       </a-layout>
     </a-layout>
-    <!-- <Footer v-if="footer" /> -->
   </a-layout>
 </template>
 
@@ -51,7 +49,6 @@
   import { useRouter, useRoute } from 'vue-router';
   import { useAppStore, useUserStore } from '@/store';
   import Menu from '@/components/menu/index.vue';
-  import Footer from '@/components/footer/index.vue';
   import TabBar from '@/components/tab-bar/index.vue';
   import usePermission from '@/hooks/permissions';
   import useResponsive from '@/hooks/responsive';
@@ -88,17 +85,13 @@
       : {};
     return { ...paddingLeft, ...paddingTop, paddingRight: '10px' };
   });
-  const setCollapsed = (val: boolean) => {
-    appStore.updateSettings({ menuCollapse: val });
-  };
+
   const handleBackHome = () => {
     router.push({
       name: DASHBOARD.Main
     });
   };
-  const drawerCancel = () => {
-    drawerVisible.value = false;
-  };
+
   watch(
     () => userStore.role,
     (roleValue) => {

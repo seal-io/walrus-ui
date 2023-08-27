@@ -11,7 +11,7 @@ export default {
   'cost.analyse.table.name': 'Name',
   'cost.analyse.table.type': 'Type',
   'cost.analyse.table.builtin': 'builtIn',
-  'cost.analyse.table.custom': 'Custom',
+  'cost.analyse.table.custom': 'custom',
   'cost.analyse.table.currentCost': 'Current Month Spend',
   'cost.analyse.table.time': 'Time Range',
   'cost.analyse.detail.holder': 'please enter a keywords',
