@@ -13,7 +13,7 @@
 </template>
 
 <script lang="ts" setup>
-  import { computed, watch } from 'vue';
+  import { computed } from 'vue';
   import { useTabBarStore } from '@/store';
 
   const tabBarStore = useTabBarStore();

@@ -70,7 +70,7 @@
 
 <script lang="ts" setup>
   import _ from 'lodash';
-  import { ref, onMounted, nextTick } from 'vue';
+  import { ref, onMounted, watch, nextTick, onBeforeUnmount } from 'vue';
   import { onClickOutside, useFullscreen } from '@vueuse/core';
   import useCallCommon from '@/hooks/use-call-common';
   import GraphG6 from '../../services/components/instance/tab-graph/components/graph-g6.vue';
@@ -86,14 +86,16 @@
   const nodeActive = ref(false);
   const loading = ref(false);
   const showAll = ref(false);
+  const windownFullScreen = ref(false);
   const flowWrapper = ref();
   const nodeInfo = ref<any>({});
   const graph = ref();
+  const { document } = window;
   const resultData = ref<{ links: IEdge[]; nodes: any[] }>({
     links: [],
     nodes: []
   });
-  const { isFullscreen, enter, exit, toggle } = useFullscreen(flowWrapper);
+  const { isFullscreen, toggle } = useFullscreen(flowWrapper);
   onClickOutside(flowWrapper, () => {
     nodeActive.value = false;
   });
@@ -143,11 +145,28 @@
     showAll.value = !showAll.value;
     graph.value?.toggleAllNodeShow(showAll.value);
   };
+  const isBrowserFullscreen = () => {
+    return (
+      document.body.scrollHeight === window.screen.height &&
+      document.body.scrollWidth === window.screen.width
+    );
+  };
+  const resizeThrrolte = _.throttle(() => {
+    windownFullScreen.value = isBrowserFullscreen();
+    containerHeight.value = minHeight;
+  }, 400);
   defineExpose({
     handleRefresh
   });
   onMounted(() => {
     getServiceGraph();
+
+    nextTick(() => {
+      window.addEventListener('resize', resizeThrrolte, false);
+    });
+  });
+  onBeforeUnmount(() => {
+    window.removeEventListener('resize', resizeThrrolte, false);
   });
 </script>
 

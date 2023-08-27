@@ -31,6 +31,7 @@ const enum MenuOrder {
   Subjects
 }
 
+// resource order according to the menu
 export enum ResourcesOrder {
   ServiceResources = MenuOrder.ApplicationManagement,
   ServiceRevisions = MenuOrder.ApplicationManagement,
@@ -68,6 +69,8 @@ export const permissionScope = {
   [Actions.GET]: '查询',
   [Actions.PUT]: '修改'
 };
+
+// group according to the menu
 export enum Group {
   Dashboard = 'Dashboard',
   AppManagement = 'AppManagement',
@@ -76,6 +79,8 @@ export enum Group {
   SystemSettings = 'SystemSettings',
   Subjects = 'Subjects'
 }
+
+// group title according to the menu
 export const GroupMap = {
   Dashboard: 'menu.dashboard',
   AppManagement: 'menu.applicationManagement',
@@ -85,6 +90,7 @@ export const GroupMap = {
   Subjects: 'menu.subjects'
 };
 
+// some resource need to use post to get data
 export const ResourcesActionsDic = {
   [Resources.Dashboards]: {
     POST: 'GET',

@@ -32,6 +32,7 @@ export const sliceJsonStr = (text: string) => {
 };
 export const parseJsonStr = (list: string[]) => {
   return _.map(list, (str) => {
+    console.log('str===', str);
     return JSON.parse(str);
   });
 };

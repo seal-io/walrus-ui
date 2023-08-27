@@ -2,12 +2,11 @@ import _ from 'lodash';
 import { ref, reactive, ComponentPublicInstance, computed } from 'vue';
 import { PageAction } from '@/views/config';
 import useCallCommon from '@/hooks/use-call-common';
-import {
-  TemplateRowData,
-  TemplateVersionData
-} from '@/views/operation-hub/templates/config/interface';
+import { TemplateVersionData } from '@/views/operation-hub/templates/config/interface';
 import usePageAction from '@/hooks/use-page-action';
 import { useServiceStore } from '@/store';
+import semverEq from 'semver/functions/eq';
+import semverGt from 'semver/functions/gt';
 
 import { queryItemService } from '../api';
 import useCompleteData from './use-complete-data';
@@ -187,7 +186,15 @@ export default function useServiceData(props?) {
         };
       });
       versions = _.uniqBy(versions, 'value');
-      templateVersionList.value = _.sortBy(versions, ['value']).reverse();
+      templateVersionList.value = versions.sort((v1, v2) => {
+        if (semverEq(v1.value, v2.value)) {
+          return 0;
+        }
+        if (semverGt(v1.value, v2.value)) {
+          return -1;
+        }
+        return 1;
+      });
     } catch (error) {
       //
     }
@@ -244,6 +251,11 @@ export default function useServiceData(props?) {
     await Promise.all([getServiceItemInfo(), initCompleteData()]);
     await initFormData();
     asyncLoading.value = false;
+
+    /* beacuse of the init versions data do not include the all template versions,
+     * but only the created service versions
+     */
+    allTemplateVersions.value = [];
   };
 
   return {

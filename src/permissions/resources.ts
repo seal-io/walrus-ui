@@ -1,4 +1,3 @@
-import { Resources, Group, ResourcesOrder } from './config';
 // resource config
 import costManagement from './config/cost-management';
 import dashboard from './config/dashboard';
