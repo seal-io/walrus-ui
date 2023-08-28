@@ -5,7 +5,7 @@
         <div
           ref="graphWrapper"
           class="graph-wrapper"
-          :style="{ height: wrapHeight, width: '100%' }"
+          :style="{ height: `max(${wrapHeight}, 600px)`, width: '100%' }"
         >
           <div
             id="graph-mount"
@@ -63,7 +63,9 @@
     PropType,
     watch,
     onBeforeUnmount,
-    computed
+    computed,
+    onMounted,
+    watchEffect
   } from 'vue';
   import G6 from '@antv/g6';
   import { useResizeObserver } from '@vueuse/core';
@@ -260,7 +262,6 @@
     const { width: boxWidth, height: boxHeight } = entry.contentRect;
     width.value = boxWidth;
     height.value = boxHeight < 600 ? 600 : boxHeight;
-
     if (boxHeight < 600) {
       graphWrapper.value.style.height = '600px';
     }

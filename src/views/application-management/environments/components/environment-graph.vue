@@ -7,7 +7,7 @@
       >
         <GraphG6
           ref="graph"
-          :is-fullscreen="isFullscreen"
+          :is-fullscreen="isFullscreen || windownFullScreen"
           :source-data="resultData"
           :show-all="showAll"
           page-type="environment"
@@ -151,9 +151,15 @@
       document.body.scrollWidth === window.screen.width
     );
   };
+  const resizeDebounce = _.debounce(() => {
+    windownFullScreen.value = false;
+  }, 50);
   const resizeThrrolte = _.throttle(() => {
     windownFullScreen.value = isBrowserFullscreen();
-    containerHeight.value = minHeight;
+    if (windownFullScreen.value) {
+      containerHeight.value = minHeight;
+    }
+    resizeDebounce();
   }, 400);
   defineExpose({
     handleRefresh
