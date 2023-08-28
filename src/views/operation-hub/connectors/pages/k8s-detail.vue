@@ -90,6 +90,7 @@
             field="configData.kubeconfig.value"
             hide-label
             label="KubeConfig"
+            class="kube"
             :validate-trigger="['change']"
             :rules="[
               {
@@ -127,7 +128,7 @@
               </div>
             </ResizeableContainer>
             <template v-if="pageAction === PageAction.EDIT" #extra>
-              <div>
+              <div class="m-t-5 btn">
                 <a-upload
                   action="/"
                   :auto-upload="false"
@@ -402,6 +403,14 @@
 
 <style lang="less" scoped>
   .kuber-detail-wrap {
+    :deep(.arco-form) {
+      .arco-form-item.kube {
+        &.arco-form-item-status-error .arco-form-item-extra {
+          display: block;
+        }
+      }
+    }
+
     .label-wrap {
       display: flex;
       align-items: center;
