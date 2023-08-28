@@ -51,7 +51,7 @@
               <template #title>
                 <div class="bold-400">
                   <span class="m-r-20"
-                    >{{ $t('applications.applications.modules.title') }}：
+                    >{{ $t('applications.applications.table.module') }}：
                     {{ currentInfo.template?.name }}</span
                   >
                   <span

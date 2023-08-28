@@ -63,7 +63,9 @@
     PropType,
     watch,
     onBeforeUnmount,
-    computed
+    computed,
+    onMounted,
+    watchEffect
   } from 'vue';
   import G6 from '@antv/g6';
   import { useResizeObserver } from '@vueuse/core';
@@ -257,10 +259,10 @@
 
   useResizeObserver(graphWrapper, (entries) => {
     const entry = entries[0];
+    graphWrapper.value.style.height = wrapHeight.value;
     const { width: boxWidth, height: boxHeight } = entry.contentRect;
     width.value = boxWidth;
     height.value = boxHeight < 600 ? 600 : boxHeight;
-
     if (boxHeight < 600) {
       graphWrapper.value.style.height = '600px';
     }
