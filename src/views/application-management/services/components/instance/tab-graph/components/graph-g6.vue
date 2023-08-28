@@ -5,7 +5,7 @@
         <div
           ref="graphWrapper"
           class="graph-wrapper"
-          :style="{ height: wrapHeight, width: '100%' }"
+          :style="{ height: `max(${wrapHeight}, 600px)`, width: '100%' }"
         >
           <div
             id="graph-mount"
