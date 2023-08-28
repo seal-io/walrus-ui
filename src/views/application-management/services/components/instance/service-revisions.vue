@@ -179,7 +179,6 @@
   import {
     queryServiceRevisions,
     deleteApplicationRevisions,
-    diffRevisionSpec,
     rollbackService,
     queryRevisionChange,
     SERVICE_RESOURCE_API_PREFIX
@@ -211,25 +210,6 @@
     page: 1,
     perPage: 10
   });
-
-  const handleDiffRevisionSpec = async (row) => {
-    try {
-      const params = {
-        id: row.id,
-        serviceID: serviceId.value
-      };
-      const { data } = await diffRevisionSpec(params);
-
-      diffContent.value = {
-        old: data.old?.attributes ? JSON.stringify(data.old, null, 2) : '',
-        new: JSON.stringify(data.new, null, 2)
-      };
-      showDiffModal.value = true;
-      title.value = t('applications.applications.history.diff.title');
-    } catch (error) {
-      //
-    }
-  };
 
   const handleRollbackService = async () => {
     try {

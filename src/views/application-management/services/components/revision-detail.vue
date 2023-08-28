@@ -1,13 +1,19 @@
 <template>
   <a-modal
-    top="10%"
+    :top="modalTop"
     :closable="false"
     :align-center="false"
     :width="700"
+    :fullscreen="fullscreen"
     :ok-text="$t('common.button.save')"
     :visible="show"
     :mask-closable="false"
-    :body-style="{ height: '500px', overflow: 'auto', paddingBottom: 0 }"
+    :body-style="{
+      height: fullscreen ? 'auto' : '500px',
+      overflow: 'hidden',
+      paddingBottom: 0
+    }"
+    :esc-to-close="false"
     modal-class="log-detail-modal"
     :title="
       initialStatus === RevisionStatus.Running
@@ -19,6 +25,23 @@
     @before-open="handleBeforeOpen"
     @before-close="handleBeforeClose"
   >
+    <template #title>
+      <div class="relative flex-1 align-center">
+        <a-link
+          class="icon iconfont full-btn size-16"
+          :class="{
+            'icon-fullscreen': !fullscreen,
+            'icon-fullscreen-exit': fullscreen
+          }"
+          @click="handleToggleFullScreen"
+        ></a-link>
+        <span>{{
+          initialStatus === RevisionStatus.Running
+            ? $t('applications.applications.history.running')
+            : $t('applications.applications.history.detail')
+        }}</span>
+      </div>
+    </template>
     <a-spin :loading="loading" style="width: 100%; text-align: center">
       <a-descriptions :data="dataList" :column="{ xs: 1, md: 2, lg: 2 }">
         <a-descriptions-item
@@ -81,7 +104,6 @@
 </template>
 
 <script lang="ts" setup>
-  import dayjs from 'dayjs';
   import { each, get, map, cloneDeep } from 'lodash';
   import ADescriptionsItem from '@arco-design/web-vue/es/descriptions/descriptions-item';
   import { ref, PropType, watch, computed } from 'vue';
@@ -123,10 +145,14 @@
   const { t } = useCallCommon();
   const loading = ref(false);
   const showTimer = ref(true);
+  const fullscreen = ref(false);
   const revisionData = ref({});
 
+  const modalTop = computed(() => {
+    return fullscreen.value ? 0 : '10%';
+  });
   const isStopped = computed(() => {
-    const status = get(revisionData.value, 'status');
+    const status = get(revisionData.value, 'status') || '';
     return [RevisionStatus.Succeeded, RevisionStatus.Failed].includes(status);
   });
   const dataList = computed(() => {
@@ -142,6 +168,11 @@
     });
     return res;
   });
+
+  const handleToggleFullScreen = () => {
+    fullscreen.value = !fullscreen.value;
+  };
+
   const handleCancel = () => {
     showTimer.value = false;
     emit('update:show', false);
@@ -193,10 +224,17 @@
 
 <style lang="less">
   .log-detail-modal {
+    .full-btn {
+      position: absolute;
+      top: 5px;
+      left: -8px;
+    }
+
     .logs-content {
       .content-wrap {
+        // max-height: 360px;
+        height: calc(100vh - 254px);
         min-height: 200px;
-        max-height: 360px;
         padding: 0 10px;
         overflow-y: auto;
         white-space: pre-wrap;
