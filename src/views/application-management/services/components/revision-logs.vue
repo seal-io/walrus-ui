@@ -1,6 +1,6 @@
 <template>
   <div class="logs-wrap">
-    <div ref="scroller" class="log-text">
+    <div ref="scroller" class="log-text" :class="{ fullscreen: fullscreen }">
       {{ content }}
     </div>
   </div>
@@ -31,6 +31,10 @@
       default() {
         return false;
       }
+    },
+    fullscreen: {
+      type: Boolean,
+      default: false
     }
   });
   const instanceInfo = inject(
@@ -49,14 +53,12 @@
     const scrollerContainer = scroller.value || {};
     const { scrollHeight, clientHeight, scrollTop } = scrollerContainer;
     if (scrollHeight > clientHeight + scrollTop) {
-      scroller.value.scrollTop += 1;
-      // scroller.value.scrollTop = scrollHeight - clientHeight;
+      scroller.value.scrollTop += 5;
       window.requestAnimationFrame(updateScrollerPosition);
     }
   };
 
   const updateContent = (newVal) => {
-    // content.value = `${content.value}${newVal}`;
     content.value = `${newVal}`;
     window.requestAnimationFrame(updateScrollerPosition);
   };
@@ -111,6 +113,10 @@
       background-color: var(--color-fill-2);
       border: 1px solid var(--color-border-2);
       border-radius: var(--border-radius-small);
+
+      &.fullscreen {
+        max-height: calc(100vh - 254px);
+      }
     }
   }
 </style>

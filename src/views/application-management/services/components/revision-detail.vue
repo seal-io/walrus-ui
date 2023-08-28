@@ -81,9 +81,10 @@
         <revisionLogs
           v-if="initialStatus === RevisionStatus.Running"
           :show="show"
+          :fullscreen="fullscreen"
           :revision-id="get(revisionData, 'id')"
         ></revisionLogs>
-        <div v-else class="content-wrap">
+        <div v-else class="content-wrap" :class="{ fullscreen: fullscreen }">
           {{ get(revisionData, 'statusMessage') || '' }}
         </div>
       </div>
@@ -217,8 +218,8 @@
   };
   const handleBeforeClose = () => {
     showTimer.value = false;
+    fullscreen.value = false;
     emit('update:show', false);
-    // revisionData.value = {};
   };
 </script>
 
@@ -232,15 +233,18 @@
 
     .logs-content {
       .content-wrap {
-        // max-height: 360px;
-        height: calc(100vh - 254px);
         min-height: 200px;
+        max-height: 360px;
         padding: 0 10px;
         overflow-y: auto;
         white-space: pre-wrap;
         background-color: var(--color-fill-2);
         border: 1px solid var(--color-border-2);
         border-radius: var(--border-radius-small);
+
+        &.fullscreen {
+          max-height: calc(100vh - 254px);
+        }
       }
 
       .label {
