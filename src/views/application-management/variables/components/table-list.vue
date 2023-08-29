@@ -9,7 +9,6 @@
             style="width: 200px"
             :placeholder="$t('applications.applications.secret.holder')"
             @clear="handleSearch"
-            @change="handleSearch"
             @press-enter="handleSearch"
           >
             <template #prefix>

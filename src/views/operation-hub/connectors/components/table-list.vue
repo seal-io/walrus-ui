@@ -5,7 +5,7 @@
         <a-select
           v-model="queryParams.category"
           allow-clear
-          style="width: 200px"
+          style="width: 220px"
           :placeholder="$t('operation.connectors.category.holder')"
           @clear="handleSearch"
           @change="handleSearch"
@@ -30,7 +30,6 @@
           style="width: 240px"
           :placeholder="$t('operation.connectors.table.holder')"
           @clear="handleSearch"
-          @change="handleSearch"
           @press-enter="handleSearch"
         >
           <template #prefix>

@@ -8,7 +8,6 @@
           style="width: 240px"
           :placeholder="$t('cost.analyse.table.holder')"
           @clear="handleSearch"
-          @change="handleSearch"
           @press-enter="handleSearch"
         >
           <template #prefix>

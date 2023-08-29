@@ -8,7 +8,6 @@
           allow-clear
           style="width: 240px"
           @clear="handleSearch"
-          @change="handleSearch"
           @press-enter="handleSearch"
         >
           <template #prefix>

@@ -8,7 +8,6 @@
           style="width: 220px"
           :placeholder="$t('propfile.account.settings.holder')"
           @clear="handleSearch"
-          @change="handleSearch"
           @press-enter="handleSearch"
         >
           <template #prefix>

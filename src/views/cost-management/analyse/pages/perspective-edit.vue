@@ -503,6 +503,10 @@
     });
   };
   const setPerspectiveCostFilter = (data, isInit?: boolean) => {
+    const sharedOptions = get(data, 'costQueries.0.sharedOptions');
+    if (!sharedOptions) {
+      data.costQueries[0].sharedOptions = {};
+    }
     const idleCostFilters = get(data, 'costQueries.0.sharedOptions.idle') || {
       sharingStrategy: ''
     };

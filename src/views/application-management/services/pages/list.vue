@@ -8,7 +8,6 @@
           style="width: 220px"
           :placeholder="$t('applications.applications.table.holder')"
           @clear="handleSearch"
-          @change="handleSearch"
           @press-enter="handleSearch"
         >
           <template #prefix>
