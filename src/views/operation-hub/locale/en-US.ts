@@ -1,8 +1,8 @@
 export default {
   'operation.connectors.menu': 'Connectors',
   'operation.connectors.create': 'New Connector',
-  'operation.connectors.table.holder': 'Please enter a connector',
-  'operation.connectors.category.holder': 'Please choose a category',
+  'operation.connectors.table.holder': 'please enter a connector',
+  'operation.connectors.category.holder': 'please choose a category',
   'operation.connectors.table.name': 'Name',
   'operation.connectors.table.type': 'Type',
   'operation.connectors.table.connector': 'Connector',

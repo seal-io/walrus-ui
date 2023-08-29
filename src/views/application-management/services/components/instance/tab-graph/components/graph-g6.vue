@@ -5,7 +5,10 @@
         <div
           ref="graphWrapper"
           class="graph-wrapper"
-          :style="{ height: `max(${wrapHeight}, 600px)`, width: '100%' }"
+          :style="{
+            height: `max(${wrapHeight}, 600px, ${containerHeight})`,
+            width: '100%'
+          }"
         >
           <div
             id="graph-mount"
@@ -259,7 +262,6 @@
 
   useResizeObserver(graphWrapper, (entries) => {
     const entry = entries[0];
-    graphWrapper.value.style.height = wrapHeight.value;
     const { width: boxWidth, height: boxHeight } = entry.contentRect;
     width.value = boxWidth;
     height.value = boxHeight < 600 ? 600 : boxHeight;
