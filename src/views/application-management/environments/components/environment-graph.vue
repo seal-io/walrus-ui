@@ -159,7 +159,9 @@
     if (windownFullScreen.value) {
       containerHeight.value = minHeight;
     }
-    resizeDebounce();
+    nextTick(() => {
+      windownFullScreen.value = false;
+    });
   }, 400);
   defineExpose({
     handleRefresh
