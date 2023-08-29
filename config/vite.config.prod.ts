@@ -45,6 +45,7 @@ export default mergeConfig(
           manualChunks: {
             arco: ['@arco-design/web-vue'],
             chart: ['echarts', 'vue-echarts'],
+            g6: ['@antv/g6'],
             vue: ['vue', 'vue-router', 'pinia', '@vueuse/core', 'vue-i18n']
           }
         }

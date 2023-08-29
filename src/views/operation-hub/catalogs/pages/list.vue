@@ -9,7 +9,6 @@
             style="width: 240px"
             :placeholder="$t('catalogs.list.query.holder')"
             @clear="handleSearch"
-            @change="handleQueryChange"
             @press-enter="handleSearch"
           >
             <template #prefix>
@@ -173,13 +172,7 @@
       remove(selectedKeys.value, (val) => val === id);
     }
   };
-  const handleSearch = () => {
-    clearTimeout(timer);
-    timer = setTimeout(() => {
-      queryParams.page = 1;
-      handleFilter();
-    }, 100);
-  };
+
   const handleReset = () => {
     queryParams.query = '';
     queryParams.page = 1;
@@ -237,6 +230,16 @@
   };
   const handleQueryChange = () => {
     handleSearch();
+    nextTick(() => {
+      createCatalogChunkRequest();
+    });
+  };
+  const handleSearch = () => {
+    clearTimeout(timer);
+    timer = setTimeout(() => {
+      queryParams.page = 1;
+      handleFilter();
+    }, 100);
     nextTick(() => {
       createCatalogChunkRequest();
     });

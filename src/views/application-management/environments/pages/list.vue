@@ -9,7 +9,6 @@
             style="width: 240px"
             :placeholder="$t('operation.environments.table.holder')"
             @clear="handleSearch"
-            @change="handleSearch"
             @press-enter="handleSearch"
           >
             <template #prefix>

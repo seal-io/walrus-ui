@@ -27,7 +27,6 @@
               style="width: 240px"
               :placeholder="$t('applications.projects.search.holder')"
               @clear="handleSearch"
-              @change="handleSearch"
               @press-enter="handleSearch"
             >
               <template #prefix>
