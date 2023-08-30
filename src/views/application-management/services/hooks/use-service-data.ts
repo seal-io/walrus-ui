@@ -33,7 +33,7 @@ export default function useServiceData(props?) {
   const serviceStore = useServiceStore();
   const { pageAction, handleEdit } = usePageAction();
   const defaultGroupKey = '_default_default_';
-  const { route, router, t } = useCallCommon();
+  const { route } = useCallCommon();
   const refMap = ref<Record<string, refItem>>({});
   const templateInfo = ref<any>({});
   const serviceInfo = ref<any>({}); // Store information about the active service, also be used when cloning
@@ -108,16 +108,26 @@ export default function useServiceData(props?) {
     const sourceData = {
       attributes: {
         ..._.cloneDeep(_.get(serviceInfo.value, 'attributes')),
-        ..._.get(templateVersionFormCache.value, formData.template.version)
+        ..._.cloneDeep(
+          _.get(templateVersionFormCache.value, formData.template.version)
+        )
       }
     };
+    console.log('sourceData', {
+      sourceData,
+      templateVersionFormCache: templateVersionFormCache.value,
+      formData,
+      variablesGroup: variablesGroup.value,
+      variablesGroupForm: variablesGroupForm.value
+    });
+
     const variablesList = _.filter(
       _.get(templateInfo.value, 'variables'),
       (v) => !v.hidden
     );
     _.each(variablesList, (item) => {
       const initialValue = getInitialValue(item, sourceData, type);
-      // filter empty group
+      // filter empty group name
       const groups: string[] = _.filter(
         _.split(item.group, /\/+/) || [],
         (g) => !!g
@@ -164,6 +174,7 @@ export default function useServiceData(props?) {
     );
     return moduleTemplate;
   };
+
   // change version ...
   const getTemplateSchemaByVersion = () => {
     const moduleTemplate = _.find(
@@ -172,6 +183,7 @@ export default function useServiceData(props?) {
     );
     return moduleTemplate;
   };
+
   const getTemplateVersionList = async () => {
     try {
       const list = _.filter(
@@ -199,6 +211,7 @@ export default function useServiceData(props?) {
       //
     }
   };
+
   const setFormAttributes = async () => {
     _.assignIn(formData, serviceInfo.value);
     // 1. get the template meta data 2.set the default value

@@ -68,6 +68,7 @@ export default function useResourceControl() {
     drawerTabs.value.splice(index, 1);
     if (!drawerTabs.value.length) {
       terminalShow.value = false;
+      updateActive.value = '';
     }
   };
   onBeforeUnmount(() => {

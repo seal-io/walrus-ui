@@ -238,6 +238,7 @@
   const handleDeleteConfirm = async (withoutCleanup) => {
     try {
       await deleteServiceItem({ id: route.query.id, withoutCleanup });
+      router.back();
     } catch (error) {
       //
     }

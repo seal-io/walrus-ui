@@ -3,6 +3,7 @@ import { SettingsItem } from '../index';
 
 export const serviceManagement: SettingsItem = {
   id: 'ServerManage',
+  key: '',
   label: 'system.setting.serverManage',
   parentId: '',
   component: {},
@@ -42,6 +43,52 @@ export const serviceManagement: SettingsItem = {
           id: 'EnableTelemetry',
           key: 'EnableTelemetry',
           label: 'login.config.join.improvement',
+          parentId: '',
+          component: {
+            type: 'switch',
+            required: false,
+            match: '',
+            message: ''
+          },
+          value: '',
+          type: 'boolean'
+        }
+      ]
+    },
+    {
+      id: '',
+      key: '',
+      label: 'system.setting.templateLib',
+      value: '',
+      type: 'groupTitle',
+      component: {},
+      parentId: '',
+      isEditable: false,
+      style: {
+        fontWeight: 500,
+        marginTop: '10px',
+        marginBottom: '15px'
+      },
+      subGroup: [
+        {
+          id: 'EnableBuiltinCatalog',
+          key: 'EnableBuiltinCatalog',
+          label: 'system.setting.enableBuiltinCatalog',
+          parentId: '',
+          component: {
+            type: 'switch',
+            required: false,
+            match: '',
+            message: ''
+          },
+          value: '',
+          type: 'boolean'
+        },
+        {
+          id: 'EnableSyncCatalog',
+          key: 'EnableSyncCatalog',
+          label: 'system.setting.enableSyncCatalog',
+          desc: 'system.setting.enableSyncCatalog.desc',
           parentId: '',
           component: {
             type: 'switch',

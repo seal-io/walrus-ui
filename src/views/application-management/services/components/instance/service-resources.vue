@@ -150,7 +150,6 @@
   import _ from 'lodash';
   import { PropType, ref, computed, watchEffect } from 'vue';
   import StatusLabel from '@/views/operation-hub/connectors/components/status-label.vue';
-  import { ConnectorCategory } from '@/views/operation-hub/connectors/config';
   import FilterBox from '@/components/filter-box/index.vue';
   import { ServiceResource } from '../../config/interface';
   import { getResourceKeyList } from '../../config/utils';
