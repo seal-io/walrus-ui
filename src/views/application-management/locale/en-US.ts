@@ -155,5 +155,8 @@ export default {
   'applications.environment.graph.hide': 'hide subresources',
   'applications.variable.scope.project': 'Project',
   'applications.variable.scope.envrionment': 'Environment',
-  'applications.variable.scope.global': 'Global'
+  'applications.variable.scope.global': 'Global',
+  'applications.resource.log.lastlines': 'Last Lines',
+  'applications.resource.log.showtime': 'Show Timestamp',
+  'applications.resource.log.lastlog': 'Last Run Log'
 };

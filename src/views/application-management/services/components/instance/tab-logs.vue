@@ -4,13 +4,37 @@
     class="tab-logs-wrap"
     style="position: relative; z-index: 3001"
   >
-    <a-select
-      v-model="logKey"
-      style="width: 240px; margin-bottom: 10px"
-      :options="dataList"
-      :popup-container="getContainer()"
-      @change="handleKeyChange"
-    ></a-select>
+    <FilterBox style="margin-bottom: 10px">
+      <template #params>
+        <a-select
+          v-model="logKey"
+          style="width: 240px"
+          :options="dataList"
+          :popup-container="getContainer()"
+          @change="handleKeyChange"
+        ></a-select>
+        <a-input-number
+          v-model="filterParams.tailLines"
+          :min="1"
+          style="width: 180px"
+          :placeholder="$t('applications.resource.log.lastlines')"
+          allow-clear
+        ></a-input-number>
+        <a-checkbox v-model="filterParams.timestamps">
+          <span class="color-text-3">{{
+            $t('applications.resource.log.showtime')
+          }}</span>
+        </a-checkbox>
+        <a-checkbox v-model="filterParams.previous">
+          <span class="color-text-3">{{
+            $t('applications.resource.log.lastlog')
+          }}</span>
+        </a-checkbox>
+        <a-button type="primary" class="m-l-10" @click="handleSearch">{{
+          $t('common.button.search')
+        }}</a-button>
+      </template>
+    </FilterBox>
     <div class="wrap" :style="{ height: `${height}px` }">
       <div class="content">
         <div class="text" v-html="content"></div>
@@ -20,18 +44,14 @@
 </template>
 
 <script lang="ts" setup>
+  import FilterBox from '@/components/filter-box/index.vue';
   import { useSetChunkRequest } from '@/api/axios-chunk-request';
   import Convert from 'ansi-to-html';
-  import { get, split, find } from 'lodash';
+  import { get, find, pickBy } from 'lodash';
   import hasAnsi from 'has-ansi';
-  import { ref, inject, watch, PropType } from 'vue';
-  import usePermissionParams from '@/views/application-management/hooks/use-permission-params';
-  import {
-    SERVICE_RESOURCE_API_PREFIX,
-    SERVICE_API,
-    SERVICE_API_PREFIX
-  } from '../../api';
-  import { Cascader, ResourceKey } from '../../config/interface';
+  import { ref, watch, PropType, reactive } from 'vue';
+  import { SERVICE_API, SERVICE_API_PREFIX } from '../../api';
+  import { ResourceKey } from '../../config/interface';
 
   const props = defineProps({
     containerId: {
@@ -57,14 +77,18 @@
       }
     }
   });
-  const permissionParams = usePermissionParams();
   const { setChunkRequest } = useSetChunkRequest();
   const resourceId = ref('');
   const logKey = ref('');
   const content = ref('');
   let timer: any = null;
-  const containerList = ref<Cascader[]>([]);
   const convert = new Convert();
+  const filterParams = reactive({
+    tailLines: undefined, //  last ? lines
+    // sinceSeconds: 0,
+    previous: false, // container logs last stop
+    timestamps: false // show time
+  });
 
   const updateContent = (newVal) => {
     if (hasAnsi(newVal)) {
@@ -82,6 +106,7 @@
       url,
       params: {
         key: logKey.value,
+        ...pickBy(filterParams, (val) => val),
         watch: true
       },
       contentType: 'text',
@@ -96,9 +121,9 @@
     content.value = '';
     createChunkConnection();
   };
-  const resetData = () => {
-    containerList.value = [];
+  const handleSearch = () => {
     content.value = '';
+    createChunkConnection();
   };
   const getContainer = () => {
     return document.getElementById(props.containerId) || document.body;
