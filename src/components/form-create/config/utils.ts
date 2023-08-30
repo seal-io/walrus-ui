@@ -90,16 +90,17 @@ export const getObjectConditionValue = (fm, formData) => {
   });
 };
 
-export const parseMapstring = (comSchema) => {
+export const parseMapstring = (comSchema, val?) => {
   let labelList: LabelListItem[] = [];
   const type = get(comSchema, 'type');
   if (schemaType.isMapString(type)) {
-    const defaultValue = keys(get(comSchema, 'default') || {});
+    const value = val || get(comSchema, 'default') || {};
+    const defaultValue = keys(value || {});
     if (defaultValue.length) {
       labelList = map(defaultValue, (k) => {
         return {
           key: k,
-          value: get(comSchema, `default.${k}`)
+          value: get(value, `${k}`)
         };
       });
     }

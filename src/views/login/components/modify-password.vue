@@ -82,7 +82,7 @@
               <seal-input
                 v-model.trim="formData.serverUrl"
                 size="large"
-                placeholder="serverURL"
+                :placeholder="$t('system.setting.serverurl')"
               >
                 <template #prefix>
                   <icon-home />

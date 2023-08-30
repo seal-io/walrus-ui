@@ -400,13 +400,12 @@
       const subGroup = get(groupConfig, '1') || '';
       const thirdGroup = get(groupConfig, '2') || '';
 
-      item.isRequired = item.required ? '(required)' : '(optional)';
       item.showCondition = parseQuery(item.showIf);
       item.conditions = parseExpression(item.showIf);
       item.order = item.required ? 0 : 100 * (i + 1);
       item.parentCom = get(content, 'component.0');
       item.childCom = get(content, 'component.1');
-      item.labelList = parseMapstring(item);
+      item.labelList = parseMapstring(item, get(formData.value, item.name));
       item.subGroup = subGroup;
       item.mainGroup = mainGroup;
       item.thirdGroup = thirdGroup;

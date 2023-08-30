@@ -371,20 +371,6 @@
   provide('showHintInput', true);
   provide('completeData', completeData);
 
-  const setVariableAttributes = async () => {
-    const moduleFormList = await getFormData(true);
-    variableAttributes.value = reduce(
-      moduleFormList,
-      (obj, s) => {
-        obj = {
-          ...obj,
-          ...s.formData
-        };
-        return obj;
-      },
-      {}
-    );
-  };
   const formTabs = computed(() => {
     const list = keys(variablesGroup.value);
     if (includes(list, defaultGroupKey)) {
@@ -442,17 +428,6 @@
     callback();
   };
 
-  const handleTabChange = (val) => {
-    activeKey.value = val;
-    setVariableAttributes();
-  };
-
-  const clearFormValidStatus = () => {
-    keys(refMap.value).map(async (key) => {
-      const refEL = refMap.value[key];
-      refEL?.clearFormValidStatus?.();
-    });
-  };
   // get group form data
   const getRefFormData = async (noValidate?: boolean) => {
     const resultList: any[] = [];
@@ -468,10 +443,50 @@
     );
     return resultList;
   };
+
+  const getFormData = async (noValidate?: boolean) => {
+    let moduleFormList: any[] = [];
+    if (keys(variablesGroup.value).length > 1) {
+      moduleFormList = await getRefFormData(noValidate);
+    } else {
+      const result = await schemaForm.value?.getFormData(noValidate);
+      moduleFormList = [{ formData: result }];
+    }
+    return moduleFormList;
+  };
+
+  // update all the form data
+  const setVariableAttributes = async () => {
+    const moduleFormList = await getFormData(true);
+    variableAttributes.value = reduce(
+      moduleFormList,
+      (obj, s) => {
+        obj = {
+          ...obj,
+          ...s.formData
+        };
+        return obj;
+      },
+      {}
+    );
+  };
+
+  const handleTabChange = (val) => {
+    activeKey.value = val;
+    setVariableAttributes();
+  };
+
+  const clearFormValidStatus = () => {
+    keys(refMap.value).map(async (key) => {
+      const refEL = refMap.value[key];
+      refEL?.clearFormValidStatus?.();
+    });
+  };
+
   // cache the user inputs when change the module version
   const setModuleVersionFormCache = async () => {
     if (!versionMap.value.ov) return;
-    const moduleFormList = await getRefFormData();
+    const moduleFormList = await getFormData(true);
     const inputs = reduce(
       moduleFormList,
       (obj, s) => {
@@ -487,6 +502,7 @@
       ...pickBy(inputs, (val) => toString(val))
     };
   };
+
   const execVersionChangeCallback = async () => {
     await setModuleVersionFormCache();
     const moduleData = getTemplateSchemaByVersion();
@@ -496,6 +512,7 @@
     clearFormValidStatus();
     generateVariablesGroup(pageAction.value);
   };
+
   const handleVersionChange = () => {
     formData.template.id =
       _.find(
@@ -506,7 +523,8 @@
       execVersionChangeCallback();
     }, 100);
   };
-  // module change: exec version change
+
+  // template change: exec version change
   const handleTemplateChange = async (val) => {
     await getTemplateVersionByItem(val, true);
     await getTemplateVersionList();
@@ -517,17 +535,8 @@
     handleVersionChange();
     nextTick(() => {
       handleTabChange('schemaForm0');
+      // in the execVersionChangeCallback would set cache, when change the template, should clear the cache
     });
-  };
-  const getFormData = async (noValidate?: boolean) => {
-    let moduleFormList: any[] = [];
-    if (keys(variablesGroup.value).length > 1) {
-      moduleFormList = await getRefFormData(noValidate);
-    } else {
-      const result = await schemaForm.value?.getFormData(noValidate);
-      moduleFormList = [{ formData: result }];
-    }
-    return moduleFormList;
   };
 
   const validateFormData = async () => {
@@ -538,6 +547,7 @@
     }
     return { validFailedForm, moduleFormList };
   };
+
   const getCurrentFormData = async () => {
     const noValidate = true;
     const moduleFormList = await getFormData(noValidate);
@@ -557,6 +567,7 @@
     };
     return latestFormData;
   };
+
   const handleCancel = async () => {
     const latestFormData = await getCurrentFormData();
     if (!_.isEqual(copyFormData, latestFormData)) {
@@ -577,6 +588,7 @@
       cancelCallback();
     }
   };
+
   const handleOk = async () => {
     validateLabel();
     const res = await formref.value?.validate();

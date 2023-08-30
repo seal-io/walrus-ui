@@ -5,18 +5,15 @@ import {
   useSetChunkRequest
 } from '@/api/axios-chunk-request';
 import { websocketEventType } from '@/views/config';
-import usePermissionParams from '@/views/application-management/hooks/use-permission-params';
 import { ServiceResource } from '../../config/interface';
 import {
   queryServiceResource,
   SERVICE_API_PREFIX,
   SERVICE_API
 } from '../../api';
-import { updateResourceEmitter } from '../../hooks/update-resource-listener';
 
 export default function useFetchResource() {
   const { setChunkRequest } = useSetChunkRequest();
-  const permissionParams = usePermissionParams();
   const dataList = ref<ServiceResource[]>([]);
   const loading = ref(false);
   const serviceId = inject('serviceId', ref(''));
