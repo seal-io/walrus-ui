@@ -149,5 +149,8 @@ export default {
   'applications.environment.graph.hide': '隐藏子资源',
   'applications.variable.scope.project': '项目',
   'applications.variable.scope.envrionment': '环境',
-  'applications.variable.scope.global': '全局'
+  'applications.variable.scope.global': '全局',
+  'applications.resource.log.lastlines': '最新几行',
+  'applications.resource.log.showtime': '显示时间',
+  'applications.resource.log.lastlog': '上次运行日志'
 };
