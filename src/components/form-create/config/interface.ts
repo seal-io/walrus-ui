@@ -96,10 +96,13 @@ export const schemaType = {
     return _.includes(UNKNOWN_TYPE, type) || !type;
   },
   isCollectionType(type) {
+    if (_.isArray(type) && type.length > 2) {
+      return true;
+    }
     return (
       _.get(type, '1') &&
       (_.includes(COLLECTION_TYPE, _.get(type, '1')) ||
-        _.isArray(_.get(type, '1')))
+        _.includes(COLLECTION_TYPE, typeof _.get(type, '1')))
     );
   },
   isStringType(type) {
@@ -207,46 +210,33 @@ export const parseComponentSchema = (schema: ComponentSchema) => {
       rules: [{ ...rules, message: 'common.form.rule.select' }]
     };
   }
-  // ============ editor ============
-  if (schemaType.isCollectionType(type) || schemaType.isUnknownType(type)) {
-    return {
-      component: ['AceEditor'],
-      props: {
-        ...props,
-        lang: 'yaml',
-        showGutter: true
-      },
-      rules: [
-        {
-          ...rules,
-          validator(val, callback) {
-            if (!required) {
-              callback();
-            } else {
-              const result = validateYaml(val);
-              if (result?.empty) {
-                callback(
-                  `${schema.name}${i18n.global.t('common.form.rule.input')}`
-                );
-              } else if (!result.empty && result.error) {
-                callback(`${result.error?.message}`);
-              } else {
-                callback();
-              }
-            }
-          },
-          message: 'common.form.rule.input'
-        }
-      ]
-    };
-  }
-  // ============ default input ============
+  // ============ default ============ schemaType.isCollectionType(type) || schemaType.isUnknownType(type)
   return {
-    component: ['hintInput'],
-    props: { ...props },
+    component: ['AceEditor'],
+    props: {
+      ...props,
+      lang: 'yaml',
+      showGutter: true
+    },
     rules: [
       {
         ...rules,
+        validator(val, callback) {
+          if (!required) {
+            callback();
+          } else {
+            const result = validateYaml(val);
+            if (result?.empty) {
+              callback(
+                `${schema.name}${i18n.global.t('common.form.rule.input')}`
+              );
+            } else if (!result.empty && result.error) {
+              callback(`${result.error?.message}`);
+            } else {
+              callback();
+            }
+          }
+        },
         message: 'common.form.rule.input'
       }
     ]

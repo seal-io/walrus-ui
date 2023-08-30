@@ -172,6 +172,12 @@
                   variablesGroupForm[defaultGroupKey]?.attributes,
                   `${data.name}`
                 )
+              ) &&
+              _.isObject(
+                _.get(
+                  variablesGroupForm[defaultGroupKey]?.attributes,
+                  `${data.name}`
+                )
               )
             "
           ></span>
@@ -191,7 +197,7 @@
               )
             "
           ></a-textarea>
-          <span v-else style="font-weight: 400">{{
+          <span v-else class="bold-400">{{
             _.get(
               variablesGroupForm[defaultGroupKey]?.attributes,
               `${data.name}`
@@ -199,7 +205,7 @@
           }}</span>
         </template>
         <template #label="{ data }">
-          <span style="font-weight: 400">{{ data.name }}</span>
+          <span class="bold-400">{{ data.name }}</span>
         </template>
       </a-descriptions>
     </div>
@@ -233,9 +239,10 @@
   const variablesDataList = computed(() => {
     const list =
       _.get(variablesGroup.value, `${activeKey.value}.variables`) || [];
-    return _.filter(list, (item) => {
+    const result = _.filter(list, (item) => {
       return !item.subGroup || item.subGroup === activeSubGroup.value;
     });
+    return result;
   });
 
   const handleClickSubGroup = (k) => {
