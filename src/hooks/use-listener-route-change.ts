@@ -56,13 +56,6 @@ export default function useListenerRouteChange() {
     listenerRouteChange(async ({ to: newRoute, from }) => {
       defaultActive.value = newRoute.matched[1]?.name as string;
       updateCacheList(newRoute, from);
-      // handleControlNavShow(newRoute);
-      // setPageFullScreen(newRoute);
-      // nextTick(() => {
-      //   setTimeout(() => {
-      //     handleControlMenuShow(newRoute);
-      //   }, 100);
-      // });
     }, true);
   };
   return execListenerRouteChange;

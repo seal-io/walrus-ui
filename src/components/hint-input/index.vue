@@ -278,7 +278,6 @@
   const Strategy: any = [
     {
       id: props.editorId,
-      // match: /(?<=\$\{.*)([\w-]+)?\.?([\w-]*)$/,
       match: /(?:\$\{.*)([\w-]+)\.?([\w-]*)$/,
       index: 1,
       search(term: string, callback: SearchCallback<resultItem>, match: any) {
@@ -307,7 +306,6 @@
     },
     {
       id: props.editorId,
-      // match: /(\w+)\.(\w*)$/,
       match: /(?:\$\{?).*(?=.*)/,
       index: 2,
       search(term: string, callback: SearchCallback<resultItem>, match: any) {
