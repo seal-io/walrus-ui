@@ -11,19 +11,11 @@
 <script lang="ts" setup>
   import qs from 'query-string';
   import { useResizeObserver } from '@vueuse/core';
-  import {
-    ref,
-    onMounted,
-    onBeforeUnmount,
-    watch,
-    nextTick,
-    defineExpose
-  } from 'vue';
+  import { ref, onMounted, onBeforeUnmount, watch, nextTick } from 'vue';
   import _, { trim, get, throttle } from 'lodash';
   import { Terminal } from 'xterm';
   import { FitAddon } from 'xterm-addon-fit';
   import 'xterm/css/xterm.css';
-  import platformCall from '@/utils/platform';
 
   const props = defineProps({
     height: {
@@ -40,7 +32,6 @@
     }
   });
   const wrapper = ref();
-  const platform = platformCall();
   const terminalEnvList = ['bash', 'sh', 'powershell', 'pwsh', 'cmd', 'bash'];
   const fitAddon = new FitAddon();
   const terminal = ref(null);
@@ -139,6 +130,7 @@
   const createWS = () => {
     if (!props.url) return;
     term.value?.write?.('');
+    statusCode.value = 0;
     terminalSocket.value = new WebSocket(wssUrl.value);
     terminalSocket.value.onopen = runRealTerminal;
     terminalSocket.value.onmessage = onWSReceive;
