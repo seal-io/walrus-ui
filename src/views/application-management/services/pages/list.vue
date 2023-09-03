@@ -61,7 +61,7 @@
           type="primary"
           status="warning"
           :disabled="!selectedKeys.length"
-          @click="handleDelete({}, 'button')"
+          @click="handleDelete"
           >{{ $t('common.button.delete') }}</a-button
         >
       </template>
@@ -161,6 +161,7 @@
         >
           <template #cell="{ record, rowIndex }">
             <DropButtonGroup
+              layout="horizontal"
               :actions="setActionList(dataList[rowIndex])"
               @click="(val) => handleClickUpgrade(record)"
               @select="(value) => handleClickAction(value, record)"
@@ -192,6 +193,12 @@
       :title="$t('common.delete.tips')"
     >
     </deleteServiceModal>
+    <revisionDetail
+      v-model:show="showDetailModal"
+      :data-info="revisionData"
+      :revision-id="revisionDetailId"
+      :initial-status="initialStatus"
+    ></revisionDetail>
     <driftResource
       v-model:show="showDriftModal"
       :title="$t('applications.service.resource.drift')"
@@ -207,7 +214,14 @@
   import { Resources, Actions } from '@/permissions/config';
   import _, { get, pickBy, filter } from 'lodash';
   import dayjs from 'dayjs';
-  import { reactive, ref, onBeforeUnmount, onMounted, nextTick } from 'vue';
+  import {
+    reactive,
+    ref,
+    onBeforeUnmount,
+    onMounted,
+    nextTick,
+    provide
+  } from 'vue';
   import {
     useSetChunkRequest,
     createAxiosToken
@@ -222,7 +236,7 @@
   import StatusLabel from '@/views/operation-hub/connectors/components/status-label.vue';
   import { useUserStore } from '@/store';
   import { ServiceRowData, DriftDataItem } from '../config/interface';
-  import { serviceActions } from '../config';
+  import { serviceActions, serviceActionMap } from '../config';
   import {
     queryServices,
     deleteServices,
@@ -230,9 +244,11 @@
     SERVICE_API,
     SERVICE_API_PREFIX
   } from '../api';
+  import useViewLatestLogs from '../hooks/use-view-latest-logs';
   import useRollbackRevision from '../hooks/use-rollback-revision';
   import deleteServiceModal from '../components/delete-service-modal.vue';
   import rollbackModal from '../components/rollback-modal.vue';
+  import revisionDetail from '../components/revision-detail.vue';
   import driftResource from '../components/drift-resource.vue';
 
   const userStore = useUserStore();
@@ -249,6 +265,17 @@
     defaultSortField: '-createTime',
     defaultOrder: 'descend'
   });
+  const {
+    revisionDetailId,
+    revisionData,
+    showDetailModal,
+    initialStatus,
+    currentServiceInfo,
+    handleViewServiceLatestLogs
+  } = useViewLatestLogs();
+
+  // logs
+  provide('currentServiceInfo', currentServiceInfo);
 
   let fetchToken: any = null;
   const showDeleteModal = ref(false);
@@ -410,7 +437,7 @@
     });
   };
 
-  const handleDelete = async (row, type) => {
+  const handleDelete = () => {
     showDeleteModal.value = true;
   };
   const handleRefreshServiceConfig = async (row) => {
@@ -425,13 +452,15 @@
       loading.value = false;
     }
   };
+
   const handleClickAction = (value, row) => {
     actionHandlerMap.get(value)(row);
   };
   const setActionHandler = () => {
-    actionHandlerMap.set('upgrade', handleClickUpgrade);
-    actionHandlerMap.set('rollback', handleClickRollback);
-    actionHandlerMap.set('sync', handleRefreshServiceConfig);
+    actionHandlerMap.set(serviceActionMap.upgrade, handleClickUpgrade);
+    actionHandlerMap.set(serviceActionMap.rollback, handleClickRollback);
+    actionHandlerMap.set(serviceActionMap.sync, handleRefreshServiceConfig);
+    actionHandlerMap.set(serviceActionMap.logs, handleViewServiceLatestLogs);
   };
   const init = async () => {
     userStore.setInfo({ currentProject: projectID });

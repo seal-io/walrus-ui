@@ -67,11 +67,9 @@ axios.interceptors.response.use(
       status: response?.status,
       statusText: response?.statusText
     };
-    const msg =
-      data?.message ||
-      (get(responseStatusMap, data?.status)
-        ? i18n.global.t(get(responseStatusMap, data?.status))
-        : response.statusText);
+    const msg = get(responseStatusMap, data?.status)
+      ? i18n.global.t(get(responseStatusMap, data?.status))
+      : data?.message || response.statusText;
 
     const result = {
       code: data?.status,

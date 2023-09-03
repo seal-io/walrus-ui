@@ -175,8 +175,15 @@ export const queryServiceRevisions = (
     }
   );
 };
-export const queryApplicationRevisionsDetail = (params: { id: string }) => {
-  return axios.get(`${SERVICE_RESOURCE_API_PREFIX()}/revisions/${params.id}`);
+export const queryServiceRevisionsDetail = (params: {
+  id: string;
+  serviceID: string;
+}) => {
+  return axios.get(
+    `${SERVICE_API_PREFIX()}/${SERVICE_API}/${params.serviceID}/revisions/${
+      params.id
+    }`
+  );
 };
 
 export const deleteApplicationRevisions = (data: DeletePayload) => {

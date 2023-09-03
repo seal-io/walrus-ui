@@ -194,10 +194,18 @@ export const instanceUpgradeView = [
   }
 ];
 
+export const serviceActionMap = {
+  upgrade: 'upgrade',
+  logs: 'logs',
+  rollback: 'rollback',
+  delete: 'delete',
+  sync: 'sync'
+};
+
 export const serviceActions: MoreAction[] = [
   {
     label: 'common.button.edit',
-    value: 'upgrade',
+    value: serviceActionMap.upgrade,
     icon: 'icon-edit',
     handler: '',
     status: 'normal',
@@ -216,8 +224,18 @@ export const serviceActions: MoreAction[] = [
     }
   },
   {
+    label: 'common.button.logs',
+    value: serviceActionMap.logs,
+    icon: 'iconFont',
+    handler: '',
+    status: 'normal',
+    props: {
+      type: 'icon-rizhi'
+    }
+  },
+  {
     label: 'common.button.rollback',
-    value: 'rollback',
+    value: serviceActionMap.rollback,
     icon: 'iconFont',
     handler: '',
     status: 'normal',
@@ -234,7 +252,7 @@ export const serviceActions: MoreAction[] = [
   },
   {
     label: 'common.button.delete',
-    value: 'delete',
+    value: serviceActionMap.delete,
     icon: 'icon-delete',
     handler: '',
     status: 'danger',
