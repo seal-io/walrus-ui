@@ -100,7 +100,7 @@ export default function useServiceData(props?) {
     }
     return initialValue;
   };
-  // get set: edit create
+  // get: set, edit: create
   const generateVariablesGroup = (type) => {
     refMap.value = {};
     variablesGroup.value = {};

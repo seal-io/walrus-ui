@@ -15,11 +15,7 @@
     }"
     :esc-to-close="false"
     modal-class="log-detail-modal"
-    :title="
-      initialStatus === RevisionStatus.Running
-        ? $t('applications.applications.history.running')
-        : $t('applications.applications.history.detail')
-    "
+    :title="$t('applications.applications.history.running')"
     @cancel="handleCancel"
     @ok="handleOk"
     @before-open="handleBeforeOpen"
@@ -35,11 +31,7 @@
           }"
           @click="handleToggleFullScreen"
         ></a-link>
-        <span>{{
-          initialStatus === RevisionStatus.Running
-            ? $t('applications.applications.history.running')
-            : $t('applications.applications.history.detail')
-        }}</span>
+        <span>{{ $t('applications.applications.history.running') }}</span>
       </div>
     </template>
     <a-spin :loading="loading" style="width: 100%; text-align: center">
@@ -114,7 +106,7 @@
   import ClockTimer from '@/components/clock-timer/index.vue';
   import revisionLogs from './revision-logs.vue';
   import { revisionDetailConfig, RevisionStatus } from '../config';
-  import { queryApplicationRevisionsDetail } from '../api';
+  import { queryServiceRevisionsDetail } from '../api';
 
   const props = defineProps({
     show: {
@@ -188,9 +180,10 @@
     try {
       loading.value = true;
       const params = {
-        id: props.revisionId
+        id: props.revisionId,
+        serviceID: get(props.dataInfo, 'service.id')
       };
-      const { data } = await queryApplicationRevisionsDetail(params);
+      const { data } = await queryServiceRevisionsDetail(params);
       revisionData.value = data;
       loading.value = false;
     } catch (error) {

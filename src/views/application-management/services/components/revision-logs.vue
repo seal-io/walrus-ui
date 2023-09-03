@@ -9,7 +9,10 @@
 <script lang="ts" setup>
   import { useSetChunkRequest } from '@/api/axios-chunk-request';
   import { ref, inject, watch } from 'vue';
-  import { SERVICE_RESOURCE_API_PREFIX } from '@/views/application-management/services/api';
+  import {
+    SERVICE_API_PREFIX,
+    SERVICE_API
+  } from '@/views/application-management/services/api';
   import usePermissionParams from '../../hooks/use-permission-params';
   import { ServiceStatus } from '../config';
 
@@ -37,12 +40,7 @@
       default: false
     }
   });
-  const instanceInfo = inject(
-    'instanceInfo',
-    ref({
-      status: ''
-    })
-  );
+  const currentServiceInfo = inject('currentServiceInfo', ref<any>({}));
   const emits = defineEmits(['close']);
   const content = ref('');
   const scroller = ref();
@@ -66,11 +64,13 @@
   const createWebSockerConnection = () => {
     if (!props.revisionId) return;
     const jobType =
-      instanceInfo.value.status === ServiceStatus.Deleting
+      currentServiceInfo.value.status?.summaryStatus === ServiceStatus.Deleting
         ? 'destroy'
         : 'apply';
     setChunkRequest({
-      url: `${SERVICE_RESOURCE_API_PREFIX()}/revisions/${props.revisionId}/log`,
+      url: `${SERVICE_API_PREFIX()}/${SERVICE_API}/${
+        currentServiceInfo.value.id
+      }/revisions/${props.revisionId}/log`,
       params: {
         jobType,
         ...permissionParams

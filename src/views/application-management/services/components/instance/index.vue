@@ -148,6 +148,7 @@
     onMounted,
     computed,
     nextTick,
+    provide,
     onBeforeUnmount
   } from 'vue';
   import DropButtonGroup from '@/components/drop-button-group/index.vue';
@@ -159,8 +160,6 @@
   import useBasicInfoData from '@/views/application-management/projects/hooks/use-basicInfo-data';
   import StatusLabel from '@/views/operation-hub/connectors/components/status-label.vue';
   import moduleWrapper from '../module-wrapper.vue';
-  import tabTerminal from './x-terminal/tab-terminal.vue';
-  import tabLogs from './tab-logs.vue';
   import tabOutput from './tab-output.vue';
   import tabEndpoint from './tab-endpoint.vue';
   import tabResource from './tab-resource.vue';
@@ -170,7 +169,8 @@
   import {
     instanceTabs,
     instanceBasicInfo,
-    serviceActions
+    serviceActions,
+    serviceActionMap
   } from '../../config';
   import { ServiceRowData } from '../../config/interface';
   import useFetchResource from '../hooks/use-fetch-chunk-data';
@@ -193,7 +193,6 @@
   });
   // 1: create 2: update 3: delete
   const actionMap = new Map();
-  const showCloneModal = ref(false);
   const showDeleteModal = ref(false);
   const pageAction = ref(PageAction.VIEW);
   const { setChunkRequest } = useSetChunkRequest();
@@ -209,16 +208,17 @@
   const serviceInfoRef = ref();
   const instanceTabMap = {
     tabResource: markRaw(tabResource),
-    tabLogs: markRaw(tabLogs),
-    tabOutput: markRaw(tabOutput),
-    tabTerminal: markRaw(tabTerminal)
+    tabOutput: markRaw(tabOutput)
   };
   const instanceTabList = ref<any[]>([]);
   const basicDataList = useBasicInfoData(instanceBasicInfo, currentInfo);
 
+  provide('currentServiceInfo', currentInfo);
   const actionList = computed(() => {
     const list = _.filter(serviceActions, (item) => {
-      if (item.value === 'rollback') {
+      if (
+        [serviceActionMap.rollback, serviceActionMap.logs].includes(item.value)
+      ) {
         return false;
       }
       return item.filterFun ? item.filterFun(currentInfo.value) : true;
@@ -246,9 +246,7 @@
   const handleClick = () => {
     handleUpgrade();
   };
-  const handleClickClone = () => {
-    showCloneModal.value = true;
-  };
+
   const handleDelete = () => {
     showDeleteModal.value = true;
   };
@@ -257,8 +255,7 @@
   };
 
   const setActionMap = () => {
-    actionMap.set('delete', handleDelete);
-    actionMap.set('clone', handleClickClone);
+    actionMap.set(serviceActionMap.delete, handleDelete);
   };
   const handleEditCancel = () => {
     pageAction.value = PageAction.VIEW;
