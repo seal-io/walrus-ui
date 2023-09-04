@@ -170,7 +170,7 @@
         password: hash
       });
     }
-    // await userStore.info();
+    userStore.getUserSetting();
     enterUserPage();
   };
   const isNotFirstLogin = () => {
@@ -229,6 +229,7 @@
           getUserPartialSetting();
           return;
         }
+        userStore.getUserSetting();
         // locate  to first menu has permission
         enterUserPage();
       } catch (err) {

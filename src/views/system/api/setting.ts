@@ -26,6 +26,7 @@ export function updateUserSetting(data: { id: string; value: string }) {
 export function updateUserSettingBatch(data: { items: BatchItem[] }) {
   return axios.put(`/settings`, data);
 }
+
 export function getUserSetting() {
   return axios.get<ResList>(`/settings`);
 }

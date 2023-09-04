@@ -91,6 +91,7 @@
   import { OPERATIONHUB } from '@/router/config';
   import { Resources } from '@/permissions/config';
   import _, { map, pickBy, remove } from 'lodash';
+  import { useUserStore } from '@/store';
   import { ref, reactive, onMounted, nextTick, computed } from 'vue';
   import useCallCommon from '@/hooks/use-call-common';
   import FilterBox from '@/components/filter-box/index.vue';
@@ -110,6 +111,8 @@
     }
   });
   let timer: any = null;
+  const builtinCatalog = 'https://github.com/walrus-catalog';
+  const userStore = useUserStore();
   const { setChunkRequest } = useSetChunkRequest();
   const { router, t } = useCallCommon();
   const loading = ref(false);
@@ -126,7 +129,14 @@
     page: 1,
     perPage: 10
   });
-  const { updateChunkedList } = useUpdateChunkedList(dataList);
+  const { updateChunkedList } = useUpdateChunkedList(dataList, {
+    mapFun(item) {
+      item.disabled =
+        userStore.userSetting?.EnableBuiltinCatalog?.value === 'true' &&
+        item.source === builtinCatalog;
+      return item;
+    }
+  });
 
   const modalTitle = computed(() => {
     return action.value === ModalAction.CREATE
@@ -150,7 +160,12 @@
         sort: [sort.value]
       };
       const { data } = await queryCatalogs(params);
-      dataList.value = data?.items || [];
+      dataList.value = _.map(data?.items || [], (sItem) => {
+        sItem.disabled =
+          userStore.userSetting?.EnableBuiltinCatalog?.value === 'true' &&
+          sItem.source === builtinCatalog;
+        return sItem;
+      });
       total.value = data?.pagination?.total || 0;
     } catch (error) {
       loading.value = false;

@@ -13,6 +13,7 @@ export function useUpdateChunkedList(
   options?: {
     callback?: (args: any) => void;
     filterFun?: (args: any) => boolean;
+    mapFun?: (args: any) => any;
     computedID?: (d: object) => string;
   }
 ) {
@@ -26,6 +27,9 @@ export function useUpdateChunkedList(
     }
     if (options?.filterFun) {
       collections = _.filter(data?.collection, options?.filterFun);
+    }
+    if (options?.mapFun) {
+      collections = _.map(data?.collection, options?.mapFun);
     }
     const ids = data?.ids || [];
     // CREATE
