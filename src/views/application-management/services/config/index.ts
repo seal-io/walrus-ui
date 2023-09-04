@@ -224,7 +224,7 @@ export const serviceActions: MoreAction[] = [
     }
   },
   {
-    label: 'common.button.logs',
+    label: 'applications.applications.history.running',
     value: serviceActionMap.logs,
     icon: 'iconFont',
     handler: '',

@@ -480,7 +480,7 @@
 
     .sub-group-title {
       padding-bottom: 8px;
-      // border-bottom: 1px solid var(--color-border-2);
+
       &.sub-group-title-0 {
         margin-top: 0 !important;
       }

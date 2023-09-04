@@ -111,7 +111,8 @@
     }
   });
   let timer: any = null;
-  const builtinCatalog = 'https://github.com/walrus-catalog';
+  const builtinCatalog = 'https://catalog.seal.io/walrus-catalog';
+  const builtinCatalogName = 'builtin';
   const userStore = useUserStore();
   const { setChunkRequest } = useSetChunkRequest();
   const { router, t } = useCallCommon();
@@ -133,7 +134,8 @@
     mapFun(item) {
       item.disabled =
         userStore.userSetting?.EnableBuiltinCatalog?.value === 'true' &&
-        item.source === builtinCatalog;
+        item.source === builtinCatalog &&
+        item.name === builtinCatalogName;
       return item;
     }
   });
@@ -163,7 +165,8 @@
       dataList.value = _.map(data?.items || [], (sItem) => {
         sItem.disabled =
           userStore.userSetting?.EnableBuiltinCatalog?.value === 'true' &&
-          sItem.source === builtinCatalog;
+          sItem.source === builtinCatalog &&
+          sItem.name === builtinCatalogName;
         return sItem;
       });
       total.value = data?.pagination?.total || 0;
