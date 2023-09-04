@@ -108,7 +108,7 @@ export default {
   'system.setting.templateLib': '模板库设置',
   'system.setting.enableBuiltinCatalog': '使用内置模板库',
   'system.setting.enableSyncCatalog': '是否同步模板库',
-  'system.setting.enableSyncCatalog.desc': '开启后，每天0点会同步模板库数据',
+  'system.setting.enableSyncCatalog.desc': '开启后，每天1点会同步模板库数据',
   'system.user.visitor': '普通用户',
   'system.user.admin': '管理员',
   'system.user.engineer': '平台工程师',

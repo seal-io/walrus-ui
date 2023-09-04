@@ -25,6 +25,7 @@ export default function useServiceData(props?) {
     completeData,
     initCompleteData,
     getTemplateVersionByItem,
+    getTemplates,
     serviceDataList,
     templateList,
     completeDataLoading,
@@ -265,13 +266,14 @@ export default function useServiceData(props?) {
   const init = async () => {
     asyncLoading.value = true;
     // getServiceItemInfo would be called in create page
-    await Promise.all([getServiceItemInfo(), initCompleteData()]);
+    await Promise.all([getServiceItemInfo(), getTemplates()]);
     await initFormData();
     asyncLoading.value = false;
 
     /* beacuse of the init versions data do not include the all template versions,
      * but only the created service versions
      */
+    await initCompleteData();
     allTemplateVersions.value = [];
   };
 
