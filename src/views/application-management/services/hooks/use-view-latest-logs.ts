@@ -36,7 +36,7 @@ export default function useViewLatestLogs() {
     axiosToken?.cancel?.();
     try {
       axiosToken = setChunkRequest({
-        url: `${SERVICE_API_PREFIX()}/${SERVICE_API}/${
+        url: `${SERVICE_API_PREFIX()}${SERVICE_API}/${
           currentServiceInfo.value.id
         }/revisions`,
         handler: updateHandler
