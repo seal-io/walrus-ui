@@ -19,7 +19,7 @@ export default mergeConfig(
       },
       https: true,
       port: 4000,
-      proxy: createProxyTable('https://seal.tsfxwx.com/')
+      proxy: createProxyTable()
     },
     plugins: [
       basicSsl(),
