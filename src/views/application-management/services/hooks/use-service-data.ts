@@ -105,21 +105,25 @@ export default function useServiceData(props?) {
     refMap.value = {};
     variablesGroup.value = {};
     variablesGroupForm.value = {};
-    const sourceData = {
-      attributes: {
-        ..._.cloneDeep(_.get(serviceInfo.value, 'attributes')),
-        ..._.cloneDeep(
-          _.get(templateVersionFormCache.value, formData.template.version)
-        )
-      }
+    let sourceData = {
+      attributes: {}
     };
-    console.log('sourceData', {
-      sourceData,
-      templateVersionFormCache: templateVersionFormCache.value,
-      formData,
-      variablesGroup: variablesGroup.value,
-      variablesGroupForm: variablesGroupForm.value
-    });
+
+    if (_.get(templateVersionFormCache.value, formData.template.version)) {
+      sourceData = {
+        attributes: {
+          ..._.cloneDeep(
+            _.get(templateVersionFormCache.value, formData.template.version)
+          )
+        }
+      };
+    } else if (type === PageAction.EDIT) {
+      sourceData = {
+        attributes: {
+          ..._.cloneDeep(_.get(serviceInfo.value, 'attributes'))
+        }
+      };
+    }
 
     const variablesList = _.filter(
       _.get(templateInfo.value, 'variables'),
@@ -208,7 +212,7 @@ export default function useServiceData(props?) {
         return 1;
       });
     } catch (error) {
-      //
+      // ignore
     }
   };
 

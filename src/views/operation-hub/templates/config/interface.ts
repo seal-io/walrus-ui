@@ -29,6 +29,7 @@ export interface TemplateRowData {
   status: string;
   createTime: string;
   version: string;
+  disabled?: boolean;
   updateTime: string;
   edges: object;
   icon?: string;
