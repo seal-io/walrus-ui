@@ -128,7 +128,7 @@ export default {
   'system.setting.enableSyncCatalog':
     'Whether to synchronize the template catalog data',
   'system.setting.enableSyncCatalog.desc':
-    'If enable, the template catalog data will be synchronized at 0:00 every day',
+    'If enable, the template catalog data will be synchronized at 1:00 every day',
   'system.user.visitor': 'General User',
   'system.user.admin': 'Administrator',
   'system.user.engineer': 'Platform Engineer',

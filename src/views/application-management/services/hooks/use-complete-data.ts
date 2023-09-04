@@ -177,11 +177,7 @@ export default function useCompleteData() {
 
   const initCompleteData = async () => {
     loading.value = true;
-    await Promise.all([
-      getTemplates(),
-      getServiceList(),
-      getProjectVariables()
-    ]);
+    await Promise.all([getServiceList(), getProjectVariables()]);
     setCompleteData();
     loading.value = false;
   };
