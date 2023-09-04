@@ -180,7 +180,7 @@ export const queryServiceRevisionsDetail = (params: {
   serviceID: string;
 }) => {
   return axios.get(
-    `${SERVICE_API_PREFIX()}/${SERVICE_API}/${params.serviceID}/revisions/${
+    `${SERVICE_API_PREFIX()}${SERVICE_API}/${params.serviceID}/revisions/${
       params.id
     }`
   );
