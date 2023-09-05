@@ -32,7 +32,6 @@ export const sliceJsonStr = (text: string) => {
 };
 export const parseJsonStr = (list: string[]) => {
   return _.map(list, (str) => {
-    console.log('str===', str);
     return JSON.parse(str);
   });
 };
@@ -123,7 +122,6 @@ export function useSetChunkRequest() {
           }
 
           handler(result);
-          console.log('chunkrequest========', { result, url });
         }
       });
       requestReadyState.value = request?.readyState;

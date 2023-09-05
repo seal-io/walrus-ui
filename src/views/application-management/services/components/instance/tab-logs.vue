@@ -148,15 +148,16 @@
     .wrap {
       padding: 5px 0 5px 10px;
       overflow: auto;
-      background-color: var(--color-fill-2);
+      background-color: #181d28;
       border-radius: var(--border-radius-small);
 
       .content {
         overflow: auto;
+        color: #ddd;
         font-size: 14px;
         line-height: 22px;
         white-space: pre-wrap;
-        background-color: var(--color-fill-2);
+        background-color: #181d28;
       }
     }
   }
