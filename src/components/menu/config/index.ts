@@ -74,9 +74,9 @@ export const avatarMenu = [
   {
     name: 'propfile.account.user.title',
     key: 'Profile',
-    icon: '<i class="iconfont icon-user-circle size-20" />',
+    icon: '<i class="iconfont icon-user-circle size-18" />',
     iconStyle: { color: 'rgb(var(--arcoblue-5))' },
-    itemStyle: { paddingLeft: '10px' },
+    itemStyle: { paddingLeft: '12px' },
     children: [
       {
         name: 'propfile.account.user.info',

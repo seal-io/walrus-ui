@@ -1,14 +1,14 @@
 import _, { cloneDeep } from 'lodash';
-import { ref } from 'vue';
+import { ref, onBeforeUnmount } from 'vue';
 import {
   TemplateRowData,
   TemplateVersionData
 } from '@/views/operation-hub/templates/config/interface';
+import { createAxiosToken } from '@/api/axios-chunk-request';
 import {
   queryTemplates,
   queryItemTemplatesVersions
 } from '@/views/operation-hub/templates/api';
-import useCallCommon from '@/hooks/use-call-common';
 import { queryServices } from '@/views/application-management/services/api';
 import { queryVariables } from '../../variables/api';
 
@@ -17,7 +17,6 @@ export default function useCompleteData() {
     service: any;
     var: any;
   }
-  const { route } = useCallCommon();
   const loading = ref(false);
   const templateList = ref<TemplateRowData[]>([]);
   const allTemplateVersions = ref<TemplateVersionData[]>([]);
@@ -27,15 +26,20 @@ export default function useCompleteData() {
   });
   const variableList = ref<any[]>([]);
   const serviceDataList = ref<any[]>([]);
+  let templateVersionToken: any = null;
+  let templateToken: any = null;
+  let serviceToken: any = null;
 
   // modules options
   const getTemplates = async () => {
+    templateToken?.cancel?.();
+    templateToken = createAxiosToken();
     try {
       const params = {
         page: -1,
         extract: ['-status']
       };
-      const { data } = await queryTemplates(params);
+      const { data } = await queryTemplates(params, templateToken.token);
       templateList.value = _.map(data?.items || [], (item) => {
         return {
           ...item,
@@ -59,11 +63,16 @@ export default function useCompleteData() {
     if (isVisited && isOnSelect) {
       return;
     }
+    templateVersionToken?.cancel?.();
+    templateVersionToken = createAxiosToken();
     try {
       const params = {
         templateName
       };
-      const { data } = await queryItemTemplatesVersions(params);
+      const { data } = await queryItemTemplatesVersions(
+        params,
+        templateVersionToken.token
+      );
       allTemplateVersions.value = _.concat(
         allTemplateVersions.value,
         data?.items || []
@@ -97,13 +106,15 @@ export default function useCompleteData() {
   };
 
   const getServiceList = async () => {
+    serviceToken?.cancel?.();
+    serviceToken = createAxiosToken();
     try {
       const params = {
         page: -1,
         withSchema: true,
         extract: ['-projectId', '-status']
       };
-      const { data } = await queryServices(params);
+      const { data } = await queryServices(params, serviceToken.token);
       serviceDataList.value = data.items || [];
       allTemplateVersions.value = _.map(data?.items || [], (item) => {
         const { template } = cloneDeep(item);
@@ -168,12 +179,6 @@ export default function useCompleteData() {
     updateServiceCompleteData();
     updateVariablesCompleteData();
   };
-  const getServiceTemplateVersions = () => {
-    const list = _.map(serviceDataList.value, (item) => {
-      return item.template.name;
-    }).filter((templateName) => !!templateName);
-    return list;
-  };
 
   const initCompleteData = async () => {
     loading.value = true;
@@ -181,6 +186,11 @@ export default function useCompleteData() {
     setCompleteData();
     loading.value = false;
   };
+  onBeforeUnmount(() => {
+    serviceToken?.cancel?.();
+    templateToken?.cancel?.();
+    templateVersionToken?.cancel?.();
+  });
   return {
     initCompleteData,
     getTemplates,
