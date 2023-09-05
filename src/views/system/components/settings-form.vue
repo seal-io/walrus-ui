@@ -377,9 +377,10 @@
         const valueList = getValueList(fieldList);
         await updateUserSettingBatch({ items: valueList });
         Message.success(t('common.message.success'));
-        // isDisabled.value = true;
         emits('settingSave');
-        group.isEditable = false;
+        nextTick(() => {
+          group.isEditable = false;
+        });
       } catch (error) {
         // ignore
       }
