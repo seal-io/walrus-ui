@@ -34,6 +34,7 @@ export default function useServiceData(props?) {
   const serviceStore = useServiceStore();
   const { pageAction, handleEdit } = usePageAction();
   const defaultGroupKey = '_default_default_';
+  const defaultGroupLabel = 'Basic';
   const { route } = useCallCommon();
   const refMap = ref<Record<string, refItem>>({});
   const templateInfo = ref<any>({});
@@ -158,7 +159,7 @@ export default function useServiceData(props?) {
         if (!variablesGroup.value[defaultGroupKey]) {
           variablesGroup.value[defaultGroupKey] = {
             variables: [],
-            label: 'Basic'
+            label: defaultGroupLabel
           };
         }
         variablesGroup.value[defaultGroupKey].variables.push(item);
