@@ -70,7 +70,6 @@
     useSetChunkRequest,
     createAxiosToken
   } from '@/api/axios-chunk-request';
-  import usePermissionParams from '@/views/application-management/hooks/use-permission-params';
   import { websocketEventType } from '@/views/config/index';
   import { EndPointRow } from '../../config/interface';
   import {
@@ -79,7 +78,6 @@
   } from '../../api';
 
   const { setChunkRequest } = useSetChunkRequest();
-  const permissionParams = usePermissionParams();
   let axiosInstance = createAxiosToken();
   let chunkRequesSource: any = null;
   const serviceId = inject('serviceId', ref(''));
