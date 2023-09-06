@@ -70,7 +70,6 @@
   import hasAnsi from 'has-ansi';
   import { SERVICE_RESOURCE_API_PREFIX } from '@/views/application-management/services/api';
   import { ref, PropType, reactive } from 'vue';
-  import usePermissionParams from '@/views/application-management/hooks/use-permission-params';
   import { ResourceKey } from '../../../../config/interface';
 
   const props = defineProps({
@@ -94,7 +93,6 @@
     }
   });
   const emits = defineEmits(['update:show']);
-  const perissionParams = usePermissionParams();
   const { setChunkRequest } = useSetChunkRequest();
   const content = ref('');
   const convert = new Convert();
@@ -117,8 +115,7 @@
       url,
       params: {
         key: info.key,
-        watch: true,
-        ...perissionParams
+        watch: true
       },
       contentType: 'text',
       handler: updateContent

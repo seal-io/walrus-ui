@@ -13,7 +13,6 @@
     SERVICE_API_PREFIX,
     SERVICE_API
   } from '@/views/application-management/services/api';
-  import usePermissionParams from '../../hooks/use-permission-params';
   import { ServiceStatus } from '../config';
 
   const props = defineProps({
@@ -44,7 +43,6 @@
   const emits = defineEmits(['close']);
   const content = ref('');
   const scroller = ref();
-  const permissionParams = usePermissionParams();
   const { setChunkRequest } = useSetChunkRequest();
 
   const updateScrollerPosition = () => {
@@ -72,8 +70,7 @@
         currentServiceInfo.value.id
       }/revisions/${props.revisionId}/log`,
       params: {
-        jobType,
-        ...permissionParams
+        jobType
       },
       contentType: 'text',
       handler: updateContent
