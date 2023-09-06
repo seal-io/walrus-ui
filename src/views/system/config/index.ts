@@ -1,5 +1,3 @@
-import { CSSProperties } from 'vue';
-
 export const valueTypeMap = {
   proxyWildcardDomainName: 'url',
   proxyPort: 'str',
