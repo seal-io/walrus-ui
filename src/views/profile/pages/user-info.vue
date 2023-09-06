@@ -34,13 +34,11 @@
   import { computed } from 'vue';
   import { useUserStore } from '@/store';
   import useCallCommon from '@/hooks/use-call-common';
-  import { ROLES } from '@/store/modules/user/types';
   import { RoleType, RolesTypeMap } from '@/views/system/config/users';
   import { Actions, GroupMap, ResourcesActionsDic } from '@/permissions/config';
   import resources, {
     ProjectPermissionResource
   } from '@/permissions/resources';
-  import { getListLabel } from '@/utils/func';
   import PermissionTable from '../components/perssmion-table.vue';
 
   const { t } = useCallCommon();
@@ -63,13 +61,22 @@
   const calcPermissionCount = (list: any[], action) => {
     return _.reduce(
       list,
-      (total, item) => {
-        if (_.includes(item.actions, action) || _.includes(item.actions, '*')) {
-          total += 1;
+      (total: any, item) => {
+        if (_.includes(item.actionsScope, action)) {
+          total.scope += 1;
+
+          if (
+            _.includes(item.actions, action) ||
+            _.includes(item.actions, '*')
+          ) {
+            total.value = total.value === '-' ? 1 : total.value + 1;
+          } else {
+            total.value = total.value === '-' ? 0 : total.value;
+          }
         }
         return total;
       },
-      0
+      { value: '-', scope: 0 }
     );
   };
   // some api send a POST request for get data.
@@ -133,10 +140,10 @@
         isParent: true,
         key: _.get(project, `projectName`),
         role: _.keys(_.get(project, 'roles')),
-        post: calcPermissionCount(projectChildren, Actions.POST),
-        get: calcPermissionCount(projectChildren, Actions.GET),
-        delete: calcPermissionCount(projectChildren, Actions.DELETE),
-        put: calcPermissionCount(projectChildren, Actions.PUT)
+        [Actions.POST]: calcPermissionCount(projectChildren, Actions.POST),
+        [Actions.GET]: calcPermissionCount(projectChildren, Actions.GET),
+        [Actions.DELETE]: calcPermissionCount(projectChildren, Actions.DELETE),
+        [Actions.PUT]: calcPermissionCount(projectChildren, Actions.PUT)
       });
     });
     return resultList;
@@ -197,10 +204,10 @@
       return {
         ...item,
         resource: item.children.length,
-        post: calcPermissionCount(item.children, Actions.POST),
-        get: calcPermissionCount(item.children, Actions.GET),
-        delete: calcPermissionCount(item.children, Actions.DELETE),
-        put: calcPermissionCount(item.children, Actions.PUT)
+        [Actions.POST]: calcPermissionCount(item.children, Actions.POST),
+        [Actions.GET]: calcPermissionCount(item.children, Actions.GET),
+        [Actions.DELETE]: calcPermissionCount(item.children, Actions.DELETE),
+        [Actions.PUT]: calcPermissionCount(item.children, Actions.PUT)
       };
     });
     return resultList;

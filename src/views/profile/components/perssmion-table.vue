@@ -1,7 +1,21 @@
 <template>
   <div class="permission-table">
     <DefinePermissionState v-slot="{ action, record }">
-      <span v-if="record.isParent">{{ _.get(record, _.toLower(action)) }}</span>
+      <span
+        v-if="record.isParent"
+        class="count"
+        :class="{
+          normal: _.get(record, `${action}.value`) === '-',
+          none: _.get(record, `${action}.value`) === 0,
+          partial:
+            _.get(record, `${action}.value`) <
+              _.get(record, `${action}.scope`) &&
+            _.get(record, `${action}.value`) > 0,
+          all:
+            _.get(record, `${action}.value`) >= _.get(record, `${action}.scope`)
+        }"
+        >{{ _.get(record, `${action}.value`) }}</span
+      >
       <span v-else-if="!_.includes(record.actionsScope, action)">-</span>
       <span
         v-else-if="
@@ -9,10 +23,10 @@
           _.includes(record.actions, '*')
         "
       >
-        <icon-check-circle-fill style="color: var(--seal-color-success)" />
+        <icon-check style="color: var(--seal-color-success); stroke-width: 5" />
       </span>
       <span v-else>
-        <icon-close-circle-fill style="color: var(--seal-color-error)" />
+        <icon-close style="color: var(--seal-color-error); stroke-width: 5" />
       </span>
     </DefinePermissionState>
     <div class="search-box">
@@ -39,6 +53,8 @@
       :data="resultList"
       :pagination="false"
       :row-class="setRowClass"
+      :expanded-keys="expandedKeys"
+      @row-click="handleRowClick"
       @expanded-change="handleExpanded"
     >
       <template #columns>
@@ -190,6 +206,7 @@
   const expandedKeys = ref<string[]>([]);
 
   const dataList = computed(() => {
+    console.log('permissionList', props.permissionList);
     if (!query.value) {
       return props.permissionList;
     }
@@ -201,18 +218,57 @@
     return _.get(_.chunk(dataList.value, pageInfo.pageSize), pageInfo.page - 1);
   });
   const setRowClass = (record) => {
-    if (_.includes(expandedKeys.value, record.key) && record.isParent) {
-      return 'row-expanded';
+    if (record.isParent) {
+      if (_.includes(expandedKeys.value, record.key)) {
+        return 'row-expanded';
+      }
+      return 'group-title';
     }
     return '';
   };
   const handleExpanded = (keys) => {
     expandedKeys.value = keys;
   };
+  const handleRowClick = (row) => {
+    if (_.includes(expandedKeys.value, row.key) && row.isParent) {
+      expandedKeys.value = _.filter(
+        expandedKeys.value,
+        (item) => item !== row.key
+      );
+    } else if (row.isParent) {
+      expandedKeys.value = _.concat(expandedKeys.value, row.key);
+    }
+  };
 </script>
 
 <style lang="less" scoped>
   .permission-table {
+    .count {
+      display: inline-block;
+      width: 18px;
+      height: 18px;
+      color: #fff;
+      line-height: 18px;
+      text-align: center;
+      border-radius: 50%;
+
+      &.none {
+        background-color: var(--seal-color-error);
+      }
+
+      &.partial {
+        background-color: var(--seal-color-warning);
+      }
+
+      &.all {
+        background-color: var(--seal-color-success);
+      }
+
+      &.normal {
+        color: var(--color-text-2);
+      }
+    }
+
     .search-box {
       display: flex;
       align-items: baseline;
@@ -226,8 +282,15 @@
 
     :deep(.arco-table-element) {
       .arco-table-tr {
-        .arco-table-td.row-expanded {
-          background-color: var(--color-fill-2);
+        .arco-table-td {
+          &.row-expanded {
+            background-color: var(--color-fill-2);
+            cursor: pointer;
+          }
+
+          &.group-title {
+            cursor: pointer;
+          }
         }
       }
     }
