@@ -72,6 +72,7 @@ export default {
   'operation.secret.rule.name': '名称必填',
   'operation.templates.table.title': '模板列表',
   'operation.templates.table.name': '模板',
+  'operation.templates.table.catalog': '模板库',
   'operation.templates.table.holder': '请输入模板',
   'operation.templates.catalogId.holder': '请选择模板库',
   'operation.templates.table.catalogId': 'ID',

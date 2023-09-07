@@ -83,6 +83,7 @@
           <a-tab-pane key="thumb">
             <ThumbView
               :list="dataList"
+              :catalog-list="catalogList"
               :checked-list="selectedKeys"
               :show-checkbox="
                 userStore.hasRolesActionsPermission({
@@ -99,6 +100,7 @@
               v-model:sort="sort"
               v-model:selectedList="selectedKeys"
               :list="dataList"
+              :catalog-list="catalogList"
               @sort="handleSort"
             ></ListView>
           </a-tab-pane>

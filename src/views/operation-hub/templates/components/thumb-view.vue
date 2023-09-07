@@ -12,6 +12,8 @@
           :provider="item.icon"
           :checked="includes(checkedList, item.id)"
           :show-checkbox="showCheckbox"
+          @view="handleView(item)"
+          @edit="handleEdit(item)"
           @change="handleCheckChange"
         ></templateItem>
       </a-grid-item>
@@ -22,12 +24,13 @@
 
 <script lang="ts" setup>
   import { OPERATIONHUB } from '@/router/config';
+  import { PageAction } from '@/views/config';
   import { MoreAction } from '@/views/config/interface';
-  import { includes, filter } from 'lodash';
+  import _, { includes, filter } from 'lodash';
   import { ref, PropType } from 'vue';
   import useCallCommon from '@/hooks/use-call-common';
   import templateItem from './template-item.vue';
-  import { TemplateRowData, ModuleAction } from '../config/interface';
+  import { TemplateRowData } from '../config/interface';
   import { actionList } from '../config';
 
   const props = defineProps({
@@ -46,11 +49,16 @@
     showCheckbox: {
       type: Boolean,
       default: true
+    },
+    catalogList: {
+      type: Array as PropType<{ label: string; value: string }[]>,
+      default() {
+        return [];
+      }
     }
   });
   const emits = defineEmits(['create', 'change']);
   const { router } = useCallCommon();
-  const moduleActions = ref<MoreAction[]>([]);
   const handleCreate = () => {
     emits('create');
   };
@@ -64,11 +72,29 @@
     });
     return result as MoreAction[];
   };
-  const handleClickItem = (project) => {
+  const getCatalogName = (id) => {
+    const catalog = _.find(props.catalogList, (item) => {
+      return item.value === id;
+    });
+    return catalog?.label;
+  };
+  const handleView = (item) => {
     router.push({
       name: OPERATIONHUB.TemplateDetail,
+      params: { action: PageAction.VIEW },
       query: {
-        id: project.id
+        id: item.id,
+        catalog: getCatalogName(item.catalog?.id)
+      }
+    });
+  };
+  const handleEdit = (item) => {
+    router.push({
+      name: OPERATIONHUB.TemplateDetail,
+      params: { action: PageAction.EDIT },
+      query: {
+        id: item.id,
+        catalog: getCatalogName(item.catalogId)
       }
     });
   };
