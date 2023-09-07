@@ -53,11 +53,11 @@
           <template #cell="{ record }">
             <StatusLabel
               :status="{
-                status: record.status,
-                text: record.status,
+                status: record.status?.summaryStatus,
+                text: record.status?.summaryStatus,
                 message: '',
-                transitioning: record.status === RevisionStatus.Running,
-                error: record.status === RevisionStatus.Failed
+                transitioning: record.status?.transitioning,
+                error: record.status?.error
               }"
             ></StatusLabel>
           </template>
@@ -201,7 +201,7 @@
   const loading = ref(false);
   const showDetailModal = ref(false);
   const showDiffModal = ref(false);
-  const initialStatus = ref('');
+  const initialStatus = ref({});
   const diffContent = ref({});
   const rollbackData = ref<any>({});
   const ids = ref<{ id: string }[]>([]);

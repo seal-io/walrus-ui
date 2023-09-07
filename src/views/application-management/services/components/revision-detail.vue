@@ -46,11 +46,11 @@
             style="display: flex; align-items: center"
             :zoom="0.9"
             :status="{
-              status: item.value,
-              text: item.value,
+              status: item.value?.summaryStatus || '',
+              text: item.value?.summaryStatus,
               message: '',
-              transitioning: get(item, 'value') === RevisionStatus.Running,
-              error: get(item, 'value') === RevisionStatus.Failed
+              transitioning: get(item, 'value.transitioning'),
+              error: get(item, 'value.error')
             }"
           ></StatusLabel>
           <span v-else-if="item.key === 'duration'">
@@ -66,18 +66,18 @@
       </a-descriptions>
       <div class="logs-content" style="text-align: left">
         <div class="label">{{
-          initialStatus === RevisionStatus.Running
+          initialStatus?.summaryStatus === RevisionStatus.Running
             ? $t('applications.applications.logs.live')
             : $t('applications.applications.instance.log')
         }}</div>
         <revisionLogs
-          v-if="initialStatus === RevisionStatus.Running"
+          v-if="initialStatus?.summaryStatus === RevisionStatus.Running"
           :show="show"
           :fullscreen="fullscreen"
           :revision-id="get(revisionData, 'id')"
         ></revisionLogs>
         <div v-else class="content-wrap" :class="{ fullscreen: fullscreen }">
-          {{ get(revisionData, 'statusMessage') || '' }}
+          {{ get(revisionData, 'record') || '' }}
         </div>
       </div>
     </a-spin>
@@ -128,9 +128,9 @@
       }
     },
     initialStatus: {
-      type: String,
+      type: Object,
       default() {
-        return '';
+        return {};
       }
     }
   });
@@ -195,7 +195,7 @@
   watch(
     () => props.dataInfo,
     () => {
-      if (props.initialStatus === RevisionStatus.Running) {
+      if (props.initialStatus?.summaryStatus === RevisionStatus.Running) {
         revisionData.value = cloneDeep(props.dataInfo);
       } else {
         fetchData();
