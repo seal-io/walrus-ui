@@ -9,7 +9,7 @@ export default function useViewLatestLogs() {
   const revisionDetailId = ref('');
   const revisionData = ref({});
   const showDetailModal = ref(false);
-  const initialStatus = ref('');
+  const initialStatus = ref({});
   const currentServiceInfo = ref<any>({});
   let axiosToken: any = null;
 
@@ -57,7 +57,7 @@ export default function useViewLatestLogs() {
       const { data } = await queryServiceRevisions(params);
       revisionData.value = _.get(data, 'items.0') || {};
       revisionDetailId.value = _.get(revisionData.value, 'id') || '';
-      initialStatus.value = _.get(revisionData.value, 'status') || '';
+      initialStatus.value = _.get(revisionData.value, 'status') || {};
       currentServiceInfo.value = row;
       showDetailModal.value = true;
       nextTick(() => {
