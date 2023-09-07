@@ -146,6 +146,12 @@
       default() {
         return [];
       }
+    },
+    catalogList: {
+      type: Array as PropType<{ label: string; value: string }[]>,
+      default() {
+        return [];
+      }
     }
   });
   type BaseType = string | number;
@@ -228,7 +234,7 @@
       loading.value = true;
       const ids = map(selectedKeys.value, (val) => {
         return {
-          id: val
+          id: val as string
         };
       });
       await deleteTemplates({ items: ids });
@@ -242,18 +248,33 @@
       loading.value = false;
     }
   };
+
+  const getCatalogName = (id) => {
+    const catalog = _.find(props.catalogList, (item) => {
+      return item.value === id;
+    });
+    return catalog?.label;
+  };
+
   const handleEdit = (row) => {
     router.push({
       name: OPERATIONHUB.TemplateDetail,
       params: { action: PageAction.EDIT },
-      query: { id: row.id, name: row.name }
+      query: {
+        id: row.id,
+        catalog: getCatalogName(row.catalog?.id)
+      }
     });
   };
+
   const handleView = (row) => {
     router.push({
       name: OPERATIONHUB.TemplateDetail,
       params: { action: PageAction.VIEW },
-      query: { id: row.id, name: row.name }
+      query: {
+        id: row.id,
+        catalog: getCatalogName(row.catalog?.id)
+      }
     });
   };
   const handlRefresh = async (row) => {
@@ -273,9 +294,6 @@
   };
   defineExpose({
     clearSelection
-  });
-  onMounted(() => {
-    // fetchData();
   });
 </script>
 

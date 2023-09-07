@@ -119,7 +119,18 @@
               >
             </template>
           </a-form-item>
-
+          <a-form-item
+            v-if="
+              id &&
+              pageAction === PageAction.VIEW &&
+              _.get(formData, 'catalog.id')
+            "
+            :label="$t('operation.templates.table.catalog')"
+          >
+            <span class="readonly-view-label">{{
+              route.query.catalog || ''
+            }}</span>
+          </a-form-item>
           <a-form-item
             v-if="id && pageAction === PageAction.VIEW"
             :label="$t('operation.connectors.table.status')"
@@ -255,7 +266,6 @@
   const { router, route, t } = useCallCommon();
   const formref = ref();
   const id = route.query.id as string;
-  const templateName = route.query.name as string;
   const submitLoading = ref(false);
   const templateSchema = ref({});
   let copyFormData: any = {};
@@ -282,7 +292,7 @@
     return 'operation.templates.detail.edit';
   });
   const getTemplateVersions = async () => {
-    if (!templateName) return;
+    if (!id) return;
     try {
       const params = {
         templateID: id

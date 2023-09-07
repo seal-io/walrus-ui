@@ -107,27 +107,13 @@
     }
   });
 
-  const emits = defineEmits(['change', 'refresh']);
+  const emits = defineEmits(['change', 'refresh', 'edit', 'view']);
   const router = useRouter();
   const handleEditTemplate = () => {
-    router.push({
-      name: OPERATIONHUB.TemplateDetail,
-      params: { action: 'edit' },
-      query: {
-        id: props.dataInfo.id,
-        name: props.dataInfo.name
-      }
-    });
+    emits('edit');
   };
   const handleView = () => {
-    router.push({
-      name: OPERATIONHUB.TemplateDetail,
-      params: { action: 'view' },
-      query: {
-        id: props.dataInfo.id,
-        name: props.dataInfo.name
-      }
-    });
+    emits('view');
   };
   const handleRefresh = async () => {
     try {
