@@ -43,6 +43,7 @@
   const emits = defineEmits(['close']);
   const content = ref('');
   const scroller = ref();
+  let axiosToken: any = null;
   const { setChunkRequest } = useSetChunkRequest();
 
   const updateScrollerPosition = () => {
@@ -61,11 +62,12 @@
 
   const createWebSockerConnection = () => {
     if (!props.revisionId) return;
+    axiosToken?.cancel?.();
     const jobType =
       currentServiceInfo.value.status?.summaryStatus === ServiceStatus.Deleting
         ? 'destroy'
         : 'apply';
-    setChunkRequest({
+    axiosToken = setChunkRequest({
       url: `${SERVICE_API_PREFIX()}${SERVICE_API}/${
         currentServiceInfo.value.id
       }/revisions/${props.revisionId}/log`,
@@ -91,6 +93,7 @@
         init();
       } else if (!val) {
         content.value = '';
+        axiosToken?.cancel?.();
       }
     },
     {
