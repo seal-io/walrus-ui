@@ -1,4 +1,4 @@
-import { nextTick, ref } from 'vue';
+import { watch, nextTick, ref } from 'vue';
 import _ from 'lodash';
 import { websocketEventType } from '@/views/config';
 import { useSetChunkRequest } from '@/api/axios-chunk-request';
@@ -68,7 +68,17 @@ export default function useViewLatestLogs() {
       revisionData.value = {};
     }
   };
-
+  watch(
+    () => showDetailModal.value,
+    (val) => {
+      if (!val) {
+        axiosToken?.cancel?.();
+      }
+    },
+    {
+      immediate: true
+    }
+  );
   return {
     revisionDetailId,
     revisionData,

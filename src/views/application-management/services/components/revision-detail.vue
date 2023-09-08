@@ -14,6 +14,7 @@
       paddingBottom: 0
     }"
     :esc-to-close="false"
+    unmount-on-close
     modal-class="log-detail-modal"
     :title="$t('applications.applications.history.running')"
     @cancel="handleCancel"
@@ -145,7 +146,7 @@
     return fullscreen.value ? 0 : '10%';
   });
   const isStopped = computed(() => {
-    const status = get(revisionData.value, 'status') || '';
+    const status = get(revisionData.value, 'status.summaryStatus') || '';
     return [RevisionStatus.Succeeded, RevisionStatus.Failed].includes(status);
   });
   const dataList = computed(() => {
