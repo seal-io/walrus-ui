@@ -120,7 +120,9 @@
     init();
   };
   const handleBeforeClose = () => {
-    reset();
+    setTimeout(() => {
+      reset();
+    }, 300);
   };
 </script>
 
