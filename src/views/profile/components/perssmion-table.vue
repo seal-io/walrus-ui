@@ -14,8 +14,7 @@
           all:
             _.get(record, `${action}.value`) >= _.get(record, `${action}.scope`)
         }"
-        >{{ _.get(record, `${action}.value`) }}</span
-      >
+      ></span>
       <span v-else-if="!_.includes(record.actionsScope, action)">-</span>
       <span
         v-else-if="
@@ -64,24 +63,17 @@
           :body-cell-class="setRowClass"
           :cell-style="{ minWidth: '40px' }"
           data-index="projectName"
+          align="left"
           :title="
             type === 'project'
               ? $t('propfile.permission.table.project')
               : $t('propfile.permission.table.group')
           "
         >
-        </a-table-column>
-
-        <a-table-column
-          ellipsis
-          tooltip
-          :body-cell-class="setRowClass"
-          :cell-style="{ minWidth: '40px' }"
-          data-index="resource"
-          :title="$t('propfile.permission.table.resource')"
-        >
           <template #cell="{ record }">
-            <span v-if="record.isParent">{{ record.resource }}</span>
+            <span v-if="record.isParent" class="bold-500">{{
+              record.projectName
+            }}</span>
             <span v-else>{{ $t(record.resource) || '' }}</span>
           </template>
         </a-table-column>
@@ -206,6 +198,7 @@
   const expandedKeys = ref<string[]>([]);
 
   const dataList = computed(() => {
+    console.log('props.permissionList===', props.permissionList);
     if (!query.value) {
       return props.permissionList;
     }
@@ -223,7 +216,7 @@
       }
       return 'group-title';
     }
-    return '';
+    return 'child-cell';
   };
   const handleExpanded = (keys) => {
     expandedKeys.value = keys;
@@ -244,10 +237,10 @@
   .permission-table {
     .count {
       display: inline-block;
-      width: 18px;
-      height: 18px;
+      width: 14px;
+      height: 14px;
       color: #fff;
-      line-height: 18px;
+      line-height: 14px;
       text-align: center;
       border-radius: 50%;
 

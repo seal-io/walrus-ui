@@ -67,9 +67,12 @@ axios.interceptors.response.use(
       status: response?.status,
       statusText: response?.statusText
     };
-    const msg = get(responseStatusMap, data?.status)
-      ? i18n.global.t(get(responseStatusMap, data?.status))
-      : data?.message || response.statusText;
+
+    const msg =
+      data?.message ||
+      (get(responseStatusMap, data?.status)
+        ? i18n.global.t(get(responseStatusMap, data?.status))
+        : data.statusText);
 
     const result = {
       code: data?.status,
@@ -87,7 +90,7 @@ axios.interceptors.response.use(
         id: get(responseStatusMap, data?.status)
           ? `request_error_${data?.status}}`
           : '',
-        content: result?.data?.msg || result.msg || 'Request Error',
+        content: result.msg || 'Request Error',
         duration: 3 * 1000
       });
     }
