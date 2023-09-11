@@ -104,7 +104,7 @@ export default {
   'system.setting.TerraformDeployerImage': 'Deployer Image',
   'system.setting.ConnectorCheckCronExpr': 'Check Connector Status',
   'system.setting.ConnectorCheckCronExpr.desc':
-    'The default is to execute every 10 minutes',
+    'The default is to execute every 5 minutes',
   'system.setting.ResourceStatusCheckCronExpr': 'Check service resource status',
   'system.setting.ServiceDependencyCheckCronExpr':
     'Check service dependency status',
