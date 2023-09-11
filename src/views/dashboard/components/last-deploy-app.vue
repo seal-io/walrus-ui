@@ -83,8 +83,8 @@
         >
           <template #cell="{ record }">
             <StatusLabel
-              :color="get(statusColorMap, toLower(record.status))"
-              :status="record.status"
+              :color="get(statusColorMap, toLower(record.status.summaryStatus))"
+              :status="record.status.summaryStatus"
             ></StatusLabel>
           </template>
         </a-table-column>
