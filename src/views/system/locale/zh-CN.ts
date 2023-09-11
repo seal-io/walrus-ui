@@ -92,7 +92,7 @@ export default {
   'system.setting.openAiApiToken': 'OpenAI API令牌',
   'system.setting.TerraformDeployerImage': '运行镜像',
   'system.setting.ConnectorCheckCronExpr': '检查连接器状态',
-  'system.setting.ConnectorCheckCronExpr.desc': '默认是每10分钟执行一次',
+  'system.setting.ConnectorCheckCronExpr.desc': '默认是每5分钟执行一次',
   'system.setting.ResourceStatusCheckCronExpr': '检查服务资源状态',
   'system.setting.ServiceDependencyCheckCronExpr': '检查服务依赖状态',
   'system.setting.ServiceDependencyCheckCronExpr.desc': '默认是每30秒执行一次',

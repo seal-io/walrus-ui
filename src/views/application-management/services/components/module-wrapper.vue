@@ -117,7 +117,6 @@
     }
 
     .collapse-icon {
-      margin-right: 6px;
       color: rgba(var(--arcoblue-6), 0.7);
       font-size: 16px;
       cursor: pointer;

@@ -122,6 +122,22 @@
               <span>{{ formData.type }}</span>
             </span>
           </a-form-item>
+          <a-form-item
+            v-if="pageAction === PageAction.VIEW"
+            :label="$t('operation.connectors.table.status')"
+          >
+            <span class="readonly-view-label">
+              <StatusLabel
+                :status="{
+                  status: get(formData, 'status.summaryStatus') || '',
+                  text: get(formData, 'status.summaryStatus'),
+                  message: get(formData, 'status.summaryStatusMessage') || '',
+                  transitioning: get(formData, 'status.transitioning'),
+                  error: get(formData, 'status.error')
+                }"
+              ></StatusLabel>
+            </span>
+          </a-form-item>
           <template v-if="pageAction === PageAction.EDIT">
             <div
               v-for="item in providerKeys"
@@ -248,10 +264,10 @@
   import EditPageFooter from '@/components/edit-page-footer/index.vue';
   import useCallCommon from '@/hooks/use-call-common';
   import usePageAction from '@/hooks/use-page-action';
-  import { getListLabel } from '@/utils/func';
   import ProviderIcon from '@/components/provider-icon/index.vue';
   import DescriptionTable from '@/components/description-table/index.vue';
   import { ConnectorFormData } from '../config/interface';
+  import StatusLabel from '../components/status-label.vue';
   import {
     operationRootBread,
     CloudProviderType,
@@ -261,15 +277,6 @@
   import { awsRegions, alibabaCloudRegions } from '../config/region';
   import { createConnector, updateConnector, queryItemConnector } from '../api';
   import useConnectorBread from '../hooks/use-connector-bread';
-
-  // const props = defineProps({
-  //   id: {
-  //     type: String,
-  //     default() {
-  //       return '';
-  //     }
-  //   }
-  // });
 
   const providerKeys = [
     { label: 'AccessKey', value: '', key: 'access_key', visible: true },
