@@ -38,7 +38,10 @@
       <EditPageFooter style="margin-top: 0">
         <template #save>
           <a-button
-            :disabled="_.get(serviceInfo, 'status') === RevisionStatus.Running"
+            :disabled="
+              _.get(serviceInfo, 'status.summaryStatus') ===
+              RevisionStatus.Running
+            "
             type="primary"
             class="cap-title cancel-btn"
             @click="handleOk"

@@ -267,13 +267,10 @@
   };
   // default value is empty str,or will throw error in console
   const setDefaultValue = () => {
-    if (!isInitialValue.value) return;
     setTimeout(() => {
-      const val =
-        props.editorDefaultValue || get(defaultHolder, props.lang) || '';
+      const val = props.editorDefaultValue || '';
       aceEditor?.setValue(val, 1);
       inputVal.value = val;
-      isInitialValue.value = false;
     }, 100);
   };
   const setLanguageTools = () => {
@@ -340,7 +337,6 @@
       setLanguageTools();
 
       aceEditor = ace.edit(`${props.editorId}`);
-      // aceEditor.setValue(props.modelValue);
 
       aceEditor.session.on('change', (args) => {
         // TODO
@@ -365,7 +361,8 @@
         showGutter: props.showGutter,
         autoScrollEditorIntoView: false,
         enableLiveAutocompletion: true,
-        enableBasicAutocompletion: true
+        enableBasicAutocompletion: true,
+        placeholder: get(defaultHolder, props.lang) || ''
       });
     });
   });
