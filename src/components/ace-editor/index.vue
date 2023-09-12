@@ -50,28 +50,22 @@
     watch,
     PropType,
     ref,
-    useAttrs,
-    ComponentPublicInstance
+    useAttrs
   } from 'vue';
   import ace, { Range } from 'ace-builds';
   import 'ace-builds/src-noconflict/ext-language_tools';
-  // import 'ace-builds/src-noconflict/ext-modelist';
-  // import 'ace-builds/src-noconflict/theme-monokai';
   import 'ace-builds/src-noconflict/theme-twilight';
   import 'ace-builds/src-noconflict/mode-javascript';
   import 'ace-builds/src-noconflict/mode-text';
   import 'ace-builds/src-noconflict/mode-json';
-  // import 'ace-builds/src-noconflict/mode-html';
   import 'ace-builds/src-noconflict/mode-terraform';
   import 'ace-builds/src-noconflict/mode-yaml';
   import 'ace-builds/src-noconflict/mode-sh';
   import 'ace-builds/src-noconflict/mode-xml';
-  // import 'ace-builds/src-noconflict/mode-markdown';
   import { Position, Completer } from './config/interface';
 
   const langTools = ace.require('ace/ext/language_tools');
 
-  // const { Split } = ace.require('ace/ext/split');
   const props = defineProps({
     modelValue: {
       type: String,
@@ -174,7 +168,7 @@
   let aceEditor: any = null;
   const isAce = ref(true);
   const inputVal = ref('');
-  const isInitialValue = ref(false);
+  const isInitialValue = ref(true);
   const markerIdList = ref<number[]>([]);
   const backupAddlines = ref<number[]>([]);
   const backupRemoveLines = ref<number[]>([]);
@@ -273,14 +267,13 @@
   };
   // default value is empty str,or will throw error in console
   const setDefaultValue = () => {
+    if (!isInitialValue.value) return;
     setTimeout(() => {
-      // const defaultvalue = isString(props.editorDefaultValue)
-      //   ? props.editorDefaultValue
-      //   : JSON.stringify(props.editorDefaultValue, null, 2);
       const val =
         props.editorDefaultValue || get(defaultHolder, props.lang) || '';
       aceEditor?.setValue(val, 1);
       inputVal.value = val;
+      isInitialValue.value = false;
     }, 100);
   };
   const setLanguageTools = () => {
@@ -301,9 +294,6 @@
         const valuePath = getValuePath(wordRange) || '';
         const list = getCompletionList(valuePath);
         callback(null, list);
-        // if (list.length) {
-        //   editor.execCommand('startAutocomplete',{matches: list,})
-        // }
       }
     });
   };
@@ -315,9 +305,7 @@
   const handleToggleInput = () => {
     isAce.value = !isAce.value;
   };
-  const execSplitEditor = () => {
-    // if (!props.split) return;
-  };
+
   watch(
     () => props.editorDefaultValue,
     () => {
