@@ -128,13 +128,14 @@
         projectChildren.push({
           resource: resourceConf?.title,
           actionsScope: resourceConf?.actions,
+          resourceOrder: resourceConf?.resourceOrder,
           actions: getResourceActions(policies[resource] || [], resource)
         });
       });
 
       resultList.push({
         projectName: _.get(project, `projectName`),
-        children: projectChildren,
+        children: _.sortBy(projectChildren, (item) => item.resourceOrder),
         resource: _.keys(policies).length,
         resourceCount: _.keys(policies).length,
         isParent: true,

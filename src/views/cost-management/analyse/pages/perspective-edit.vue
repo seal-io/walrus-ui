@@ -48,6 +48,7 @@
               v-model.trim="formData.name"
               :label="$t('cost.analyse.table.name')"
               :required="true"
+              :disabled="!!id"
               :max-length="63"
               :style="{ width: `${InputWidth.LARGE}px` }"
               :show-word-limit="!viewable"

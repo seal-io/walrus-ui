@@ -54,6 +54,18 @@ export enum ResourcesOrder {
   Tokens = MenuOrder.SystemTokens
 }
 
+// project resource order
+export enum ProjectResourcesOrder {
+  Projects,
+  Environments,
+  Variables,
+  Connectors,
+  ProjectSubjects,
+  Services,
+  ServiceRevisions,
+  ServiceResources
+}
+
 export enum Actions {
   PUT = 'PUT',
   POST = 'POST',
@@ -70,7 +82,7 @@ export const permissionScope = {
   [Actions.PUT]: '修改'
 };
 
-// group according to the menu
+// group according to the menu, not Resource
 export enum Group {
   Dashboard = 'Dashboard',
   AppManagement = 'AppManagement',
@@ -80,7 +92,7 @@ export enum Group {
   Subjects = 'Subjects'
 }
 
-// group title according to the menu
+// group title according to the menu, not Resource
 export const GroupMap = {
   Dashboard: 'menu.dashboard',
   AppManagement: 'menu.applicationManagement',
