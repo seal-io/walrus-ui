@@ -125,12 +125,6 @@ export const projectCostOverview = [
     value: 0,
     color: 'linear-gradient(rgba(255,197,192,.3) 0%,rgba(255,197,192,.4) 100%)'
   }
-  // {
-  //   label: '可优化费用',
-  //   key: 'currency',
-  //   value: 0,
-  //   color: 'linear-gradient(rgba(184,218,243,.3) 0%,rgba(184,218,243,.4) 100%)'
-  // }
 ];
 export const resourceCostOverview = [
   { label: '节点数', key: '', value: 9, color: '#0F8584' },
@@ -153,7 +147,7 @@ export const clusterCostOverview = [
   },
   {
     label: 'cost.analyse.detail.loadCost',
-    key: 'allocationCost',
+    key: 'itemCost',
     value: 0,
     color: 'linear-gradient(rgba(184,218,243,.3) 0%,rgba(184,218,243,.4) 100%)'
   },
@@ -169,7 +163,6 @@ export const clusterCostOverview = [
     value: 0,
     color: 'linear-gradient(rgba(184,218,243,.3) 0%,rgba(184,218,243,.4) 100%)'
   }
-  // { label: '可优化费用', key: '', value: 0, color: '#324B4B' }
 ];
 export const dailyCostCols = [
   {
@@ -201,13 +194,6 @@ export const costPerProjectCols = [
     dataIndex: 'itemName',
     title: 'cost.analyse.detail.project'
   },
-  // {
-  //   ellipsis: true,
-  //   tooltip: true,
-  //   cellStyle: { minWidth: '40px' },
-  //   dataIndex: 'count',
-  //   title: '应用数'
-  // },
   {
     ellipsis: true,
     tooltip: true,
@@ -227,20 +213,6 @@ export const costPerClusterCols = [
     dataIndex: 'itemName',
     title: 'cost.analyse.detail.cluster'
   },
-  // {
-  //   ellipsis: true,
-  //   tooltip: true,
-  //   cellStyle: { minWidth: '40px' },
-  //   dataIndex: 'region',
-  //   title: '区域'
-  // },
-  // {
-  //   ellipsis: true,
-  //   tooltip: true,
-  //   cellStyle: { minWidth: '40px' },
-  //   dataIndex: 'nodes',
-  //   title: '节点数'
-  // },
   {
     ellipsis: true,
     tooltip: true,
@@ -251,13 +223,6 @@ export const costPerClusterCols = [
     },
     title: 'cost.analyse.detail.totalCost'
   }
-  // {
-  //   ellipsis: true,
-  //   tooltip: true,
-  //   cellStyle: { minWidth: '40px' },
-  //   dataIndex: 'status',
-  //   title: '状态'
-  // }
 ];
 
 export const clusterNamespaceCostCols = [
@@ -268,21 +233,6 @@ export const clusterNamespaceCostCols = [
     dataIndex: 'itemName',
     title: 'cost.optimize.form.name'
   },
-  // {
-  //   ellipsis: true,
-  //   tooltip: true,
-  //   cellStyle: { minWidth: '40px' },
-  //   dataIndex: 'namespace',
-  //   title: 'Namespace'
-  // },
-  // {
-  //   ellipsis: true,
-  //   tooltip: true,
-  //   cellStyle: { minWidth: '40px' },
-  //   dataIndex: 'pods',
-  //   title: 'Pods',
-  //   showIn: 'workload'
-  // },
   {
     ellipsis: true,
     tooltip: true,
@@ -346,13 +296,6 @@ export const clusterNamespaceCostCols = [
 ];
 
 export const projectCostCols = [
-  // {
-  //   ellipsis: true,
-  //   tooltip: true,
-  //   cellStyle: { minWidth: '40px' },
-  //   dataIndex: 'itemName',
-  //   title: '名称'
-  // },
   {
     ellipsis: true,
     tooltip: true,
@@ -360,16 +303,6 @@ export const projectCostCols = [
     dataIndex: 'itemName',
     title: 'cost.analyse.table.application'
   },
-  // {
-  //   ellipsis: true,
-  //   tooltip: true,
-  //   cellStyle: { minWidth: '40px' },
-  //   dataIndex: 'startTime',
-  //   render({ record }) {
-  //     return dayjs(record.startTime).format('YYYY-MM-DD');
-  //   },
-  //   title: '日期'
-  // },
   {
     ellipsis: true,
     tooltip: true,
