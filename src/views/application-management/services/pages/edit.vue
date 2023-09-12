@@ -569,24 +569,17 @@
   };
 
   const handleCancel = async () => {
-    const latestFormData = await getCurrentFormData();
-    if (!_.isEqual(copyFormData, latestFormData)) {
-      beforeLeaveCallback({
-        isCancel: true,
-        onOk: () => {
-          if (props.pgType !== 'page') {
-            emits('cancel');
-          } else {
-            copyFormData = cloneDeep(formData);
-            cancelCallback();
-          }
+    beforeLeaveCallback({
+      isCancel: true,
+      onOk: () => {
+        if (props.pgType !== 'page') {
+          emits('cancel');
+        } else {
+          copyFormData = cloneDeep(formData);
+          cancelCallback();
         }
-      });
-    } else if (props.pgType !== 'page') {
-      emits('cancel');
-    } else {
-      cancelCallback();
-    }
+      }
+    });
   };
 
   const handleOk = async () => {

@@ -3,18 +3,6 @@
     <div class="content">
       <FilterBox>
         <template #params>
-          <a-input
-            v-model="queryParams.query"
-            allow-clear
-            style="width: 240px"
-            :placeholder="$t('operation.templates.table.holder')"
-            @clear="handleSearch"
-            @press-enter="handleSearch"
-          >
-            <template #prefix>
-              <icon-search />
-            </template>
-          </a-input>
           <a-select
             v-model="queryParams.catalogID"
             allow-clear
@@ -27,6 +15,18 @@
             @press-enter="handleSearch"
           >
           </a-select>
+          <a-input
+            v-model="queryParams.query"
+            allow-clear
+            style="width: 240px"
+            :placeholder="$t('operation.templates.table.holder')"
+            @clear="handleSearch"
+            @press-enter="handleSearch"
+          >
+            <template #prefix>
+              <icon-search />
+            </template>
+          </a-input>
           <a-space style="margin-left: 10px">
             <a-button type="primary" @click="handleSearch">{{
               $t('common.button.search')

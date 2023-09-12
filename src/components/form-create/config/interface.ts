@@ -222,22 +222,20 @@ export const parseComponentSchema = (schema: ComponentSchema) => {
       {
         ...rules,
         validator(val, callback) {
-          if (!required) {
+          const result = validateYaml(val);
+          if (result.error) {
+            callback(`${result.error?.message}`);
+          } else if (!required) {
             callback();
+          } else if (result?.empty) {
+            callback(
+              `${schema.name}${i18n.global.t('common.form.rule.input')}`
+            );
           } else {
-            const result = validateYaml(val);
-            if (result?.empty) {
-              callback(
-                `${schema.name}${i18n.global.t('common.form.rule.input')}`
-              );
-            } else if (!result.empty && result.error) {
-              callback(`${result.error?.message}`);
-            } else {
-              callback();
-            }
+            callback();
           }
         },
-        message: 'common.form.rule.input'
+        message: ''
       }
     ]
   };
