@@ -151,7 +151,7 @@
             <span v-else class="mright-5">
               <ProviderIcon :provider="toLower(record.type)"></ProviderIcon>
             </span>
-            <span>{{ record.type }}</span>
+            <span>{{ get(gitType, record.type) || record.type }}</span>
           </template>
         </a-table-column>
         <a-table-column
@@ -385,6 +385,10 @@
       }
     }
   });
+  const gitType = {
+    Github: 'GitHub',
+    Gitlab: 'GitLab'
+  };
   const userStore = useUserStore();
   const { setChunkRequest } = useSetChunkRequest();
   const axiosSource = useAxiosSource();

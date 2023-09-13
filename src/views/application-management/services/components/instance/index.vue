@@ -340,6 +340,7 @@
     );
     if (updateData) {
       currentInfo.value = _.cloneDeep({
+        ...currentInfo.value,
         ...updateData,
         project: _.get(currentInfo.value, 'project')
       });
@@ -354,6 +355,9 @@
     try {
       setChunkRequest({
         url: `${SERVICE_API_PREFIX()}${SERVICE_API}`,
+        params: {
+          extract: ['-attributes', '-description']
+        },
         handler: updateHandler,
         beforeReconnect: getServiceItemInfo
       });

@@ -15,7 +15,10 @@
         :key="item.value"
         :value="item.value"
         :disabled="includes(selected, item.value)"
-        >{{ item.label }}</a-option
+        >{{ item.label }}
+        <span style="color: var(--color-text-3)" class="font-12">{{
+          !item.project ? `(${$t('applications.variable.scope.global')})` : ''
+        }}</span></a-option
       >
     </a-select>
   </div>
@@ -27,7 +30,9 @@
 
   const props = defineProps({
     list: {
-      type: Array as PropType<{ label: string; value: string }[]>,
+      type: Array as PropType<
+        { label: string; value: string; project?: object }[]
+      >,
       default() {
         return [];
       }
