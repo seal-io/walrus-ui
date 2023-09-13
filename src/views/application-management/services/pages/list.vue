@@ -515,11 +515,14 @@
       if (!projectID) return;
       setChunkRequest({
         url: `${SERVICE_API_PREFIX()}${SERVICE_API}`,
+        params: {
+          extract: ['-attributes', '-description']
+        },
         handler: updateHandler,
         beforeReconnect: fetchData
       });
     } catch (error) {
-      //
+      // ignore
     }
   };
 

@@ -193,11 +193,11 @@
   });
   const providers = [
     {
-      label: 'Github',
+      label: 'GitHub',
       value: 'Github'
     },
     {
-      label: 'Gitlab',
+      label: 'GitLab',
       value: 'Gitlab'
     }
   ];
