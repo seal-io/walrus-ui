@@ -10,6 +10,7 @@ import {
   queryItemTemplatesVersions
 } from '@/views/operation-hub/templates/api';
 import { queryServices } from '@/views/application-management/services/api';
+import useCallCommon from '@/hooks/use-call-common';
 import { queryVariables } from '../../variables/api';
 
 export default function useCompleteData() {
@@ -17,6 +18,8 @@ export default function useCompleteData() {
     service: any;
     var: any;
   }
+  const { route } = useCallCommon();
+  const id = route.query.id || '';
   const loading = ref(false);
   const templateList = ref<TemplateRowData[]>([]);
   const allTemplateVersions = ref<TemplateVersionData[]>([]);
@@ -95,7 +98,13 @@ export default function useCompleteData() {
     }
   };
   const getServiceTemplateVersionMap = () => {
-    const list = _.map(serviceDataList.value, (item) => {
+    let services = serviceDataList.value;
+    if (id) {
+      services = _.filter(serviceDataList.value, (item) => {
+        return item.id !== id;
+      });
+    }
+    const list = _.map(services, (item) => {
       return {
         name: item.name,
         type: item.template.name,
