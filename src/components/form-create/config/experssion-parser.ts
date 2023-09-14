@@ -74,20 +74,18 @@ export const parseExpressionBySub = (expression) => {
 };
 
 export const isAndCondition = (expression) => {
-  // 使用正则表达式匹配条件表达式的模式
   // const pattern = /\s*\(.*?\)\s*&&\s*\(.*?\)\s*/;
+
   const pattern = /^.*&&.*$/;
 
-  // 返回是否匹配成功
   return pattern.test(expression);
 };
 
 export const isOrCondition = (expression) => {
-  // 使用正则表达式匹配条件表达式的模式
   // const pattern = /\s*\(.*?\)\s*\|\|\s*\(.*?\)\s*/;
+
   const pattern = /^.*\|\|.*$/;
 
-  // 返回是否匹配成功
   return pattern.test(expression);
 };
 

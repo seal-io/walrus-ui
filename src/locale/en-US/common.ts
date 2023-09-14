@@ -107,5 +107,13 @@ export default {
   'common.copy.notSupport': 'Your browser does not support Clipboard API',
   'common.title.basicInfo': 'Basic Information',
   'common.help.need': 'Need help?',
-  'common.help.eg': 'e.g.:'
+  'common.help.eg': 'e.g.:',
+  'common.filter.label': 'Filters',
+  'common.filter.isrequired.holder': 'Optional',
+  'common.filter.isrequired.true': 'Required',
+  'common.filter.isrequired.false': 'Not Required',
+  'common.filter.attrs': 'Attributes',
+  'common.filter.filled.holder': 'Fill in',
+  'common.filter.filled.true': 'Filled',
+  'common.filter.filled.false': 'Not Filled'
 };
