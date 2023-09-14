@@ -36,9 +36,60 @@ export const parseJsonStr = (list: string[]) => {
   });
 };
 
+const findMatchingClosingBracket = (inputStr, startIndex) => {
+  let count = 0;
+  for (let i = startIndex; i < inputStr.length; i += 1) {
+    if (inputStr[i] === '{') {
+      count += 1;
+    } else if (inputStr[i] === '}') {
+      count -= 1;
+    }
+
+    if (count === 0) {
+      return i;
+    }
+  }
+  return -1;
+};
+
+const findValidJSONStrings = (inputStr) => {
+  const validJSONStrings: any[] = [];
+  let startIndex = 0;
+
+  while (startIndex < inputStr.length) {
+    const openingBraceIndex = inputStr.indexOf('{', startIndex);
+    if (openingBraceIndex === -1) {
+      break; // 没有更多的开括号了
+    }
+
+    const closingBraceIndex = findMatchingClosingBracket(
+      inputStr,
+      openingBraceIndex
+    );
+    if (closingBraceIndex === -1) {
+      // 如果找不到匹配的闭括号，将 startIndex 设置为下一个字符的索引
+      startIndex = openingBraceIndex + 1;
+    } else {
+      const jsonString = inputStr.substring(
+        openingBraceIndex,
+        closingBraceIndex + 1
+      );
+      try {
+        const data = JSON.parse(jsonString);
+        validJSONStrings.push(data);
+      } catch (error) {
+        // 忽略无效的 JSON
+      }
+
+      startIndex = closingBraceIndex + 1;
+    }
+  }
+
+  return validJSONStrings;
+};
+
 const parseData = (data) => {
-  const list = sliceJsonStr(data);
-  const res = parseJsonStr(list);
+  const res = findValidJSONStrings(data);
   return res;
 };
 export const createAxiosToken = () => {
