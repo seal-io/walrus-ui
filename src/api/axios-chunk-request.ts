@@ -37,14 +37,8 @@ export const parseJsonStr = (list: string[]) => {
 };
 
 const parseData = (data) => {
-  console.log('data===1', data);
-  const res: any[] = [];
-  try {
-    const obj = JSON.parse(`${data}`);
-    res.push(obj);
-  } catch (error) {
-    // ingore
-  }
+  const list = sliceJsonStr(data);
+  const res = parseJsonStr(list);
   return res;
 };
 export const createAxiosToken = () => {
