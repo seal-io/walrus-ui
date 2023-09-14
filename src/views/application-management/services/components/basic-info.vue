@@ -19,6 +19,10 @@
               error: get(item, 'value.error')
             }"
           ></StatusLabel>
+          <labelsList
+            v-else-if="item.key === 'labels'"
+            :labels="item.value"
+          ></labelsList>
           <div v-else class="val-content">{{ get(item, 'value') }}</div>
         </slot>
       </a-descriptions-item>
@@ -40,11 +44,12 @@
   import StatusLabel from '@/views/operation-hub/connectors/components/status-label.vue';
   import { get } from 'lodash';
   import { MoreAction } from '@/views/config/interface';
+  import labelsList from './labels-list.vue';
 
   const props = defineProps({
     dataInfo: {
       type: Array as PropType<
-        { label: string; value: string; key: string; span?: number }[]
+        { label: string; value: any; key: string; span?: number }[]
       >,
       default() {
         return [];
@@ -90,8 +95,8 @@
 
       .val-content {
         width: max-content;
-        max-width: 500px;
-        max-height: 60px;
+        max-width: 600px;
+        max-height: 80px;
         overflow-y: auto;
       }
     }

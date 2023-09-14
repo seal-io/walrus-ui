@@ -104,5 +104,13 @@ export default {
   'common.copy.notSupport': '您的浏览器不支持剪贴板 API',
   'common.title.basicInfo': '基本信息',
   'common.help.need': '需要帮助？',
-  'common.help.eg': '例:'
+  'common.help.eg': '例:',
+  'common.filter.label': '筛选',
+  'common.filter.isrequired.holder': '是否必填',
+  'common.filter.isrequired.true': '必填',
+  'common.filter.isrequired.false': '非必填',
+  'common.filter.attrs': '属性名',
+  'common.filter.filled.holder': '是否填写',
+  'common.filter.filled.true': '已填写',
+  'common.filter.filled.false': '未填写'
 };

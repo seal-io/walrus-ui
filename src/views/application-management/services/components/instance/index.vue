@@ -28,9 +28,6 @@
             ></DropButtonGroup>
           </div>
         </template>
-        <template #description>
-          <div class="description">{{ currentInfo.description }}</div>
-        </template>
       </HeaderInfo>
       <slTransition>
         <div v-if="pageAction === PageAction.EDIT">
@@ -42,6 +39,17 @@
         </div>
       </slTransition>
       <div v-if="pageAction === PageAction.VIEW">
+        <ComCard>
+          <ModuleCard
+            :title="$t('common.title.basicInfo')"
+            :title-style="{ 'margin-bottom': '10px', 'margin-top': 0 }"
+          >
+            <BasicInfo
+              :data-info="basicDataList"
+              style="max-width: 800px"
+            ></BasicInfo>
+          </ModuleCard>
+        </ComCard>
         <ComCard>
           <ModuleCard
             :title="$t('applications.applications.detail.configuration')"
@@ -168,7 +176,7 @@
   import deleteServiceModal from '../delete-service-modal.vue';
   import {
     instanceTabs,
-    instanceBasicInfo,
+    serviceBasicInfo,
     serviceActions,
     serviceActionMap
   } from '../../config';
@@ -211,7 +219,7 @@
     tabOutput: markRaw(tabOutput)
   };
   const instanceTabList = ref<any[]>([]);
-  const basicDataList = useBasicInfoData(instanceBasicInfo, currentInfo);
+  const basicDataList = useBasicInfoData(serviceBasicInfo, currentInfo);
 
   provide('currentServiceInfo', currentInfo);
   const actionList = computed(() => {

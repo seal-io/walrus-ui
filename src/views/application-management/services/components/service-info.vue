@@ -1,6 +1,6 @@
 <template>
   <div class="service">
-    <a-form
+    <!-- <a-form
       ref="formref"
       class="basic-form p-10"
       :model="formData"
@@ -22,7 +22,7 @@
           </a-form-item>
         </a-col>
       </a-row>
-    </a-form>
+    </a-form> -->
     <div class="variables m-t-10">
       <a-tabs
         v-if="formTabs.length > 1"
@@ -47,11 +47,12 @@
                 >{{ k }}</div
               >
             </div>
-            <a-descriptions
+            <serviceInfoTable
               :column="{ lg: 2, md: 1 }"
               style="flex: 1"
               bordered
               layout="inline-vertical"
+              :form-data="_.get(variablesGroupForm, `${group}.attributes`)"
               :data="variablesDataList"
             >
               <template #value="{ data }">
@@ -59,7 +60,7 @@
                   <!-- empty value -->
                   <span
                     v-if="
-                      _.isEmpty(
+                      !checkHasValue(
                         _.get(
                           variablesGroupForm,
                           `${group}.attributes.${data.name}`
@@ -137,27 +138,22 @@
                   data.label || data.name
                 }}</span>
               </template>
-            </a-descriptions>
+            </serviceInfoTable>
           </div>
         </a-tab-pane>
       </a-tabs>
-      <a-descriptions
+      <serviceInfoTable
         v-if="formTabs.length < 2"
         :column="{ lg: 2, md: 1 }"
         bordered
         layout="inline-vertical"
+        :form-data="_.get(variablesGroupForm, `${defaultGroupKey}.attributes`)"
         :data="variablesGroup[defaultGroupKey]?.variables"
       >
         <template #value="{ data }">
           <span
             v-if="
-              _.isEmpty(
-                _.get(
-                  variablesGroupForm[defaultGroupKey]?.attributes,
-                  `${data.name}`
-                )
-              ) &&
-              _.isObject(
+              !checkHasValue(
                 _.get(
                   variablesGroupForm[defaultGroupKey]?.attributes,
                   `${data.name}`
@@ -191,7 +187,7 @@
         <template #label="{ data }">
           <span class="bold-400">{{ data.name }}</span>
         </template>
-      </a-descriptions>
+      </serviceInfoTable>
     </div>
   </div>
 </template>
@@ -201,9 +197,13 @@
   import { ref, computed, nextTick } from 'vue';
   import { schemaType } from '@/components/form-create/config/interface';
   import { json2Yaml } from '@/components/form-create/config/yaml-parse';
-  import { getObjectConditionValue } from '@/components/form-create/config/utils';
+  import {
+    getObjectConditionValue,
+    checkHasValue
+  } from '@/components/form-create/config/utils';
   import LabelsList from './labels-list.vue';
   import useServiceData from '../hooks/use-service-data';
+  import serviceInfoTable from './service-info-table.vue';
 
   const {
     initInfo,

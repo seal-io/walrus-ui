@@ -134,3 +134,22 @@ export const parseOptions = (comSchema) => {
   }
   return options;
 };
+
+export const checkHasValue = (property) => {
+  if (typeof property === 'undefined') {
+    return false;
+  }
+  if (typeof property === 'object' && !Array.isArray(property)) {
+    return Object.keys(property).length !== 0;
+  }
+  if (Array.isArray(property)) {
+    return property.length !== 0;
+  }
+  if (_.isBoolean(property)) {
+    return property;
+  }
+  if (_.isNumber(property)) {
+    return true;
+  }
+  return !!property;
+};

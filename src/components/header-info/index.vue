@@ -14,7 +14,7 @@
           <div class="title">{{ info?.name }}</div>
         </slot>
         <slot name="status"></slot>
-        <slot name="description"></slot>
+        <slot name="description" class="desc"></slot>
       </div>
       <div class="extra">
         <slot name="extra"></slot>
@@ -125,8 +125,13 @@
 
       :deep(.description) {
         display: flex;
+        display: -webkit-box;
         max-width: 800px;
-        line-height: 28px;
+        overflow: hidden;
+        line-height: 26px;
+        text-overflow: ellipsis;
+        -webkit-line-clamp: 3;
+        -webkit-box-orient: vertical;
       }
     }
 

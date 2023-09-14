@@ -1,5 +1,43 @@
 <template>
   <div class="form-create-wrap">
+    <a-space class="m-b-20 flex-end" fill>
+      <a-input-search
+        v-model="queryName"
+        :placeholder="$t('common.filter.attrs')"
+        style="width: 200px"
+        allow-clear
+        @change="handleQueryChange"
+      ></a-input-search>
+      <a-select
+        v-model="filterParams.required"
+        :placeholder="$t('common.filter.isrequired.holder')"
+        allow-clear
+        style="width: 140px"
+      >
+        <a-option
+          v-for="item in requiredOptions"
+          :key="item.value"
+          :value="item.value"
+          :label="$t(item.label)"
+        ></a-option>
+      </a-select>
+      <a-select
+        v-model="filterParams.hasValue"
+        :placeholder="$t('common.filter.filled.holder')"
+        allow-clear
+        style="width: 140px"
+      >
+        <a-option
+          v-for="item in hasValueOptions"
+          :key="item.value"
+          :value="item.value"
+          :label="$t(item.label)"
+        ></a-option>
+      </a-select>
+      <a-button type="outline" @click="handleClear">{{
+        $t('common.button.clear')
+      }}</a-button>
+    </a-space>
     <a-form ref="formref" :model="formData" auto-label-width :layout="layout">
       <slot></slot>
       <div class="content-wrap">
@@ -30,9 +68,9 @@
             </a-grid-item>
             <a-grid-item
               v-if="
-                fm.showIf
+                (fm.showIf
                   ? getConditionValue(fm, { ...attributes, ...formData })
-                  : true
+                  : true) && filterFields(fm)
               "
               :class="{
                 'hidden-field': activeMenu && activeMenu !== fm.subGroup
@@ -183,7 +221,9 @@
     parseQuery,
     getConditionValue
   } from './config/utils';
+  import { requiredOptions, hasValueOptions } from './config/index';
   import { parseExpression } from './config/experssion-parser';
+  import useFillterAttributes from './hooks/use-fillter-attributes';
 
   const props = defineProps({
     attributes: {
@@ -260,6 +300,14 @@
   const OTHER_SUB_GROUP = 'Other';
   const triggerValidate = ref(false);
   const validateState = ref(false); // if has executed validate
+
+  const {
+    queryName,
+    filterFields,
+    filterParams,
+    handleClear,
+    handleQueryChange
+  } = useFillterAttributes(formData);
 
   const activeSchemaList = computed(() => {
     if (!activeMenu.value) {

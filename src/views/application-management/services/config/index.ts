@@ -60,78 +60,23 @@ export const setDurationValue = (val) => {
   const min = Math.floor(val / 60);
   return `${min}'${seconds}"`;
 };
-export const instanceBasicInfo = [
-  { label: 'applications.applications.form.name', value: '', key: 'name' },
+export const serviceBasicInfo = [
+  { label: 'applications.projects.form.label', value: '', key: 'labels' },
   {
     label: 'common.table.createTime',
     value: '',
     key: 'createTime',
-    formatter(val) {
-      return dayjs(val).format('YYYY-MM-DD HH:mm:ss');
-    }
-  },
-  {
-    label: 'applications.applications.detail.env',
-    value: '',
-    key: 'environment.name'
-  },
-  {
-    label: 'applications.applications.instance.status',
-    value: '',
-    key: 'status'
-  },
-  {
-    label: 'applications.projects.table.name',
-    value: '',
-    key: 'project.name'
-  }
-];
-export const applicationBasicInfo = [
-  {
-    label: 'applications.applications.form.name',
-    key: 'name',
-    value: '',
-    editable: false,
-    required: true,
-    span: 1,
-    form: 'input'
-  },
-  {
-    label: 'common.table.createTime',
-    key: 'createTime',
-    value: '',
-    span: 1,
-    disabled: true,
     formatter(val) {
       return dayjs(val).format('YYYY-MM-DD HH:mm:ss');
     }
   },
   {
     label: 'common.table.description',
-    key: 'description',
     value: '',
-    span: 1,
-    editable: false,
-    form: 'textarea'
-  },
-  {
-    label: 'common.table.updateTime',
-    key: 'updateTime',
-    value: '',
-    span: 1,
-    disabled: true,
-    formatter(val) {
-      return dayjs(val).format('YYYY-MM-DD HH:mm:ss');
-    }
-  },
-  {
-    label: 'applications.applications.form.label',
-    key: 'labels',
-    value: '',
-    span: 1,
-    editable: false
+    key: 'description'
   }
 ];
+
 export const revisionDetailConfig = [
   {
     label: 'applications.applications.history.deploymentTime',
