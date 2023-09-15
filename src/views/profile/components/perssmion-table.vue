@@ -198,7 +198,6 @@
   const expandedKeys = ref<string[]>([]);
 
   const dataList = computed(() => {
-    console.log('props.permissionList===', props.permissionList);
     if (!query.value) {
       return props.permissionList;
     }

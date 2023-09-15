@@ -531,7 +531,9 @@
     formData.template.version =
       get(templateVersionList.value, '0.version') || '';
     templateVersionFormCache.value = {};
-    versionMap.value = { ov: '', nv: '' };
+    setTimeout(() => {
+      versionMap.value = { ov: '', nv: '' };
+    }, 20);
     handleVersionChange();
     nextTick(() => {
       handleTabChange('schemaForm0');
