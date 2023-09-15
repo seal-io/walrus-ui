@@ -92,15 +92,8 @@ export default function useServiceData(props?) {
       refMap.value[`${name}`] = el;
     }
   };
-  const getInitialValue = (item, sourceData, action) => {
-    let initialValue = item.default;
-    if (
-      _.get(templateVersionFormCache.value, formData.template.version) ||
-      action === PageAction.EDIT
-    ) {
-      initialValue = _.get(sourceData, `attributes.${item.name}`);
-    }
-    return initialValue;
+  const getInitialValue = (item, sourceData) => {
+    return _.get(sourceData, `attributes.${item.name}`) || item.default;
   };
   // get: set, edit: create
   const generateVariablesGroup = (type) => {
@@ -119,7 +112,7 @@ export default function useServiceData(props?) {
           )
         }
       };
-    } else if (type === PageAction.EDIT) {
+    } else if (type === PageAction.EDIT && id) {
       sourceData = {
         attributes: {
           ..._.cloneDeep(_.get(serviceInfo.value, 'attributes'))
@@ -132,7 +125,7 @@ export default function useServiceData(props?) {
       (v) => !v.hidden
     );
     _.each(variablesList, (item) => {
-      const initialValue = getInitialValue(item, sourceData, type);
+      const initialValue = getInitialValue(item, sourceData);
       item.default = initialValue;
       // filter empty group name
       const groups: string[] = _.filter(
