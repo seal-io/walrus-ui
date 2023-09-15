@@ -126,7 +126,7 @@
       :deep(.description) {
         display: flex;
         display: -webkit-box;
-        max-width: 800px;
+        max-width: 940px;
         overflow: hidden;
         line-height: 26px;
         text-overflow: ellipsis;
