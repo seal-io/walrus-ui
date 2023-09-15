@@ -153,7 +153,9 @@
                     :label="`${fm.label || fm.name}`"
                     :required="fm.required"
                     :popup-info="fm.description"
-                    :editor-default-value="fm.default || ''"
+                    :editor-default-value="
+                      formData[fm.name] || fm.default || ''
+                    "
                     style="width: 100%"
                     width="100%"
                     :editor-id="`${fm.name}_editorId_${index}`"
@@ -542,7 +544,6 @@
       ) {
         result[item.name] = yaml2Json(formData.value[item.name], item.type);
       }
-      item.default = result[item.name];
     });
     return result;
   };
@@ -642,9 +643,7 @@
   const handleCancel = () => {
     emits('cancel');
   };
-  onMounted(() => {
-    // setFormData();
-  });
+  onMounted(() => {});
 </script>
 
 <style lang="less" scoped>

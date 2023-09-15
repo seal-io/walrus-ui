@@ -1,28 +1,5 @@
 <template>
   <div class="service">
-    <!-- <a-form
-      ref="formref"
-      class="basic-form p-10"
-      :model="formData"
-      auto-label-width
-      style="width: 600px"
-      label-align="left"
-    >
-      <a-row>
-        <a-col>
-          <a-form-item :label="$t(`applications.projects.form.label`)">
-            <LabelsList :labels="formData.labels"></LabelsList>
-          </a-form-item>
-        </a-col>
-      </a-row>
-      <a-row>
-        <a-col>
-          <a-form-item :label="$t('common.table.description')">
-            <span class="readonly-view-label">{{ formData.description }}</span>
-          </a-form-item>
-        </a-col>
-      </a-row>
-    </a-form> -->
     <div class="variables m-t-10">
       <a-tabs
         v-if="formTabs.length > 1"

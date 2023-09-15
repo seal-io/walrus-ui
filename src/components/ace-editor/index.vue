@@ -305,8 +305,9 @@
 
   watch(
     () => props.editorDefaultValue,
-    () => {
-      // aceEditor?.setValue(props.editorDefaultValue, -1);
+    (nv) => {
+      const oldvalue = aceEditor?.getValue();
+      if (oldvalue === nv) return;
       setDefaultValue();
       nextTick(() => {
         setDiffRowDecoration();
