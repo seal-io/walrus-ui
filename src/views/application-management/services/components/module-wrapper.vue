@@ -1,6 +1,10 @@
 <template>
   <div class="mo-wrap">
-    <div class="title" :class="{ 'no-del-btn': !showDelete }">
+    <div
+      class="title"
+      :class="{ 'no-del-btn': !showDelete }"
+      @click="handleCollapse"
+    >
       <span class="text">
         <i
           class="collapse-icon iconfont"
@@ -93,6 +97,7 @@
       font-weight: 500;
       font-size: 14px;
       background-color: var(--color-fill-2);
+      cursor: pointer;
 
       &.no-del-btn {
         flex-direction: row-reverse;
