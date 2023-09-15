@@ -13,7 +13,6 @@
             'icon-collapsedown': !isCollapse,
             'icon-collapseup': isCollapse
           }"
-          @click="handleCollapse"
         />
       </span>
       <slot name="title"

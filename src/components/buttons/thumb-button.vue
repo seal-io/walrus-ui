@@ -1,5 +1,5 @@
 <template>
-  <div class="thumb-button" :style="{ ...sizeStyle }">
+  <div class="thumb-button" :style="{ ...sizeStyle }" @click="handleClick">
     <slot>
       <icon-plus :style="{ fontSize }" />
     </slot>
@@ -23,12 +23,17 @@
       }
     }
   });
+  const emits = defineEmits(['click']);
+
   const sizeStyle = computed(() => {
     return {
       height: `${props.size}px`,
       width: `${props.size}px`
     };
   });
+  const handleClick = () => {
+    emits('click');
+  };
 </script>
 
 <style lang="less" scoped>
