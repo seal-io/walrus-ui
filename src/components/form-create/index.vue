@@ -26,6 +26,7 @@
         :placeholder="$t('common.filter.filled.holder')"
         allow-clear
         style="width: 140px"
+        @change="handleCheckHasValueChange"
       >
         <a-option
           v-for="item in hasValueOptions"
@@ -306,7 +307,8 @@
     filterFields,
     filterParams,
     handleClear,
-    handleQueryChange
+    handleQueryChange,
+    handleCheckHasValueChange
   } = useFillterAttributes(formData);
 
   const activeSchemaList = computed(() => {

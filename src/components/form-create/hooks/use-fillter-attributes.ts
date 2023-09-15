@@ -5,6 +5,7 @@ import { checkHasValue } from '../config/utils';
 export default function useFillterAttributes(formData) {
   // const { formData } = toRefs(props);
   const queryName = ref('');
+  const checkHasValueCache = new Set();
   const filterParams = reactive({
     required: '',
     hasValue: '',
@@ -19,6 +20,10 @@ export default function useFillterAttributes(formData) {
     filterParams.hasValue = '';
     filterParams.name = '';
     queryName.value = '';
+  };
+
+  const handleCheckHasValueChange = () => {
+    checkHasValueCache.clear();
   };
 
   const filterFields = (sItem) => {
@@ -36,6 +41,10 @@ export default function useFillterAttributes(formData) {
       if (filterParams.hasValue === 'false') {
         hasValue = !hasValue;
       }
+      if (hasValue) {
+        checkHasValueCache.add(sItem.name);
+      }
+      hasValue = hasValue || checkHasValueCache.has(sItem.name);
     }
 
     if (filterParams.name) {
@@ -54,6 +63,7 @@ export default function useFillterAttributes(formData) {
     filterParams,
     handleQueryChange,
     handleClear,
-    filterFields
+    filterFields,
+    handleCheckHasValueChange
   };
 }
