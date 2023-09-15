@@ -36,7 +36,7 @@ export default function useServiceData(props?) {
   const defaultGroupKey = '_default_default_';
   const defaultGroupLabel = 'Basic';
   const { route } = useCallCommon();
-  const refMap = ref<Record<string, refItem>>({});
+  const refMap = ref<Record<string, any>>({});
   const templateInfo = ref<any>({});
   const serviceInfo = ref<any>({}); // Store information about the active service, also be used when cloning
   const variablesGroup = ref<any>({});
@@ -133,6 +133,7 @@ export default function useServiceData(props?) {
     );
     _.each(variablesList, (item) => {
       const initialValue = getInitialValue(item, sourceData, type);
+      item.default = initialValue;
       // filter empty group name
       const groups: string[] = _.filter(
         _.split(item.group, /\/+/) || [],
