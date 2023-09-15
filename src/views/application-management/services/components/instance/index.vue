@@ -59,14 +59,17 @@
               <template #title>
                 <div class="bold-400">
                   <span class="m-r-20"
-                    >{{ $t('applications.applications.table.module') }}：
-                    {{ currentInfo.template?.name }}</span
-                  >
+                    >{{ $t('applications.applications.table.module') }}:
+                    <span class="mleft-5">{{
+                      currentInfo.template?.name
+                    }}</span>
+                  </span>
                   <span
-                    >{{ $t('applications.applications.history.version') }}：{{
+                    >{{ $t('applications.applications.history.version') }}:
+                    <span class="mleft-5">{{
                       currentInfo.template?.version
-                    }}</span
-                  >
+                    }}</span>
+                  </span>
                 </div>
               </template>
               <serviceInfo ref="serviceInfoRef"> </serviceInfo>
