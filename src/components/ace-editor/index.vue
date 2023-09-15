@@ -266,12 +266,13 @@
     );
   };
   // default value is empty str,or will throw error in console
+  const setDefaultValueDebounce = _.debounce(() => {
+    const val = props.editorDefaultValue || '';
+    aceEditor?.setValue(val, 1);
+    inputVal.value = val;
+  }, 100);
   const setDefaultValue = () => {
-    setTimeout(() => {
-      const val = props.editorDefaultValue || '';
-      aceEditor?.setValue(val, 1);
-      inputVal.value = val;
-    }, 100);
+    setDefaultValueDebounce();
   };
   const setLanguageTools = () => {
     langTools.setCompleters();
