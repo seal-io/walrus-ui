@@ -232,6 +232,8 @@
   import useCallCommon from '@/hooks/use-call-common';
   import usePageAction from '@/hooks/use-page-action';
   import { useElementSize } from '@vueuse/core';
+  import semverEq from 'semver/functions/eq';
+  import semverGt from 'semver/functions/gt';
   import StatusLabel from '../../connectors/components/status-label.vue';
   import { tabList } from '../config';
   import { operationRootBread } from '../../connectors/config';
@@ -305,9 +307,17 @@
           label: item.version,
           value: item.id
         };
+      }).sort((v1, v2) => {
+        if (semverEq(v1.label, v2.label)) {
+          return 0;
+        }
+        if (semverGt(v1.label, v2.label)) {
+          return -1;
+        }
+        return 1;
       });
-      version.value = get(list, '0.id');
-      templateSchema.value = get(list, '0.schema') || {};
+      version.value = get(versionList.value, '0.value') || '';
+      templateSchema.value = get(versionList.value, '0.schema') || {};
     } catch (error) {
       versionList.value = [];
     }

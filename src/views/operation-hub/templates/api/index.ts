@@ -61,6 +61,18 @@ export function queryItemTemplatesVersions(
   });
 }
 
+export function queryTemplateSchemaByVersion(
+  params: { templateName: string; versionID: string },
+  token?: any
+) {
+  return axios.get(
+    `/templates/${params.templateName}/versions/${params.versionID}`,
+    {
+      cancelToken: token
+    }
+  );
+}
+
 export function postCompletionsCorrect(data) {
   return axios.post(`/template-completions/_/correct`, data);
 }
