@@ -95,7 +95,6 @@
   const loading = ref(false);
   const record = ref<any>({});
   const rowIndex = ref(undefined);
-  const selectedKeys = ref([]);
 
   const handleDeleteConfirm = async () => {
     try {

@@ -146,6 +146,7 @@ export default {
   'applications.service.resource.isDrifted': 'Drifted',
   'applications.service.resource.sync': 'Configuration Synchronization',
   'applications.environment.clone': 'Clone Environment',
+  'applications.environment.clone.variable': 'Select variables',
   'applications.environment.clone.target': 'Target Environments',
   'applications.environment.clone.env.rules': 'Target Environments is required',
   'applications.environment.graph.fitview': 'fit view',
