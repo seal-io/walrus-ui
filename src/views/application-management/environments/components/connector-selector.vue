@@ -2,7 +2,7 @@
   <div class="selector-wrap">
     <a-select
       v-model="values"
-      :placeholder="$t('operation.environments.detail.holder')"
+      :placeholder="placeholder"
       multiple
       :max-tag-count="1"
       allow-search
@@ -17,7 +17,7 @@
         :disabled="includes(selected, item.value)"
         >{{ item.label }}
         <span style="color: var(--color-text-3)" class="font-12">{{
-          !item.project ? `(${$t('applications.variable.scope.global')})` : ''
+          item.tips ? `(${$t(item.tips)})` : ''
         }}</span></a-option
       >
     </a-select>
@@ -31,10 +31,16 @@
   const props = defineProps({
     list: {
       type: Array as PropType<
-        { label: string; value: string; project?: object }[]
+        { label: string; value: string; project?: object; tips?: string }[]
       >,
       default() {
         return [];
+      }
+    },
+    placeholder: {
+      type: String,
+      default() {
+        return '';
       }
     },
     selected: {

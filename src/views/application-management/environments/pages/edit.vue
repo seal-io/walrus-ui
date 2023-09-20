@@ -151,7 +151,7 @@
           :hide-label="true"
           :validate-trigger="['change']"
         >
-          <div :label="$t('operation.connectors.menu')">
+          <div>
             <div style="display: flex; margin-bottom: 10px">
               <a-button
                 v-if="pageAction === PageAction.EDIT"
@@ -170,6 +170,7 @@
                 v-model:connectorIDs="formData.connectorIDs"
                 :selected="selectedList"
                 :list="connectorList"
+                :placeholder="$t('operation.environments.detail.holder')"
                 @confirm="handleConnectorChange"
               ></ConnectorSelector>
             </div>
@@ -183,6 +184,22 @@
               @delete="handleDeleteConnector"
             ></connectorsTable>
           </div>
+        </a-form-item>
+        <GroupTitle
+          class="m-t-20"
+          :bordered="false"
+          :title="$t('menu.operatorHub.variables')"
+          flex-start
+        ></GroupTitle>
+        <a-form-item
+          v-if="environmentId"
+          :hide-label="pageAction === PageAction.EDIT"
+          :label="$t('menu.operatorHub.variables')"
+        >
+          <dataSelector
+            v-model:table-data="formData.variables"
+            :style="{ width: `${InputWidth.XLARGE}px`, overflow: 'auto' }"
+          ></dataSelector>
         </a-form-item>
         <a-form-item
           v-if="environmentId"
@@ -222,12 +239,10 @@
   import { Resources } from '@/permissions/config';
   import { useUserStore, useTabBarStore } from '@/store';
   import {
-    QAlinkMap,
     PageAction,
     validateLabelNameRegx,
     InputWidth
   } from '@/views/config';
-  import QuestionPopup from '@/components/question-popup/index.vue';
   import { ref, computed, nextTick } from 'vue';
   import _, {
     each,
@@ -250,13 +265,13 @@
   import xInputGroup from '@/components/form-create/custom-components/x-input-group.vue';
   import useLabelsActions from '@/components/form-create/hooks/use-labels-action';
   import useProjectBreadcrumbData from '@/views/application-management/projects/hooks/use-project-breadcrumb-data';
-  import { ServiceRowData } from '@/views/application-management/services/config/interface';
   import { BreadcrumbOptions } from '@/views/config/interface';
   import CloneService from '../components/clone-service.vue';
   import { EnvironFormData } from '../config/interface';
   import connectorsTable from '../components/connectors.vue';
   import ConnectorSelector from '../components/connector-selector.vue';
   import LabelsList from '../../services/components/labels-list.vue';
+  import dataSelector from '../components/data-selector.vue';
   import {
     createEnvironment,
     updateEnvironment,
@@ -272,24 +287,24 @@
   const { pageAction, handleEdit } = usePageAction();
   const id = route.query.id as string;
   const environmentId = route.params.environmentId as string; // only in clone
-  const serviceList = ref<ServiceRowData[]>([]);
   const formref = ref();
   const serviceRef = ref(); // only in clone
   const connectorList = ref<
-    { label: string; value: string; project?: object }[]
+    { label: string; value: string; project?: object; tips?: string }[]
   >([]);
   const showModal = ref(false);
   const submitLoading = ref(false);
-  const asyncLoading = ref(false);
   const breadCrumbList = ref<BreadcrumbOptions[]>([]);
   let copyFormData: any = {};
   const selectedList = ref<string[]>([]);
+
   const formData = ref<EnvironFormData>({
     projectID: route.params.projectId as string,
     name: '',
     description: '',
     connectorIDs: [],
     connectors: [],
+    variables: [],
     edges: [],
     labels: {},
     services: []
@@ -332,6 +347,7 @@
       }
     ];
   };
+
   const setFormDataConnectors = (connectors) => {
     formData.value.edges = [];
     each(connectorList.value, (item) => {
@@ -375,6 +391,7 @@
       selectedList.value = [...formData.value.connectorIDs];
       setFormDataConnectors(formData.value.connectorIDs);
       copyFormData = cloneDeep(formData.value);
+      console.log('formData==22=', formData.value.edges);
     } catch (error) {
       formData.value = {
         projectID: route.params.projectId as string,
@@ -398,6 +415,7 @@
       connectorList.value = map(list, (item) => {
         item.value = item.id;
         item.label = item.name;
+        item.tips = !item.project ? 'applications.variable.scope.global' : '';
         return item;
       }) as Array<{ label: string; value: string }>;
     } catch (error) {

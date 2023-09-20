@@ -140,6 +140,7 @@ export default {
   'applications.service.resource.isDrifted': '是',
   'applications.service.resource.sync': '同步配置',
   'applications.environment.clone': '克隆环境',
+  'applications.environment.clone.variable': '选择变量',
   'applications.environment.clone.target': '目标环境',
   'applications.environment.clone.env.rules': '目标环境必选',
   'applications.environment.graph.fitview': '视图适中',
