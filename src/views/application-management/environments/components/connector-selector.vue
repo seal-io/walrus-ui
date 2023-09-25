@@ -11,11 +11,11 @@
     >
       <a-option style="display: none"></a-option>
       <a-option
-        v-for="item in list"
-        :key="item.value"
-        :value="item.value"
-        :disabled="includes(selected, item.value)"
-        >{{ item.label }}
+        v-for="(item, index) in list"
+        :key="index"
+        :value="item[keyMap.value]"
+        :disabled="includes(selected, item[keyMap.value])"
+        >{{ item[keyMap.label] }}
         <span style="color: var(--color-text-3)" class="font-12">{{
           item.tips ? `(${$t(item.tips)})` : ''
         }}</span></a-option
@@ -35,6 +35,15 @@
       >,
       default() {
         return [];
+      }
+    },
+    keyMap: {
+      type: Object as PropType<{ label: string; value: string }>,
+      default() {
+        return {
+          label: 'label',
+          value: 'value'
+        };
       }
     },
     placeholder: {
