@@ -186,6 +186,7 @@
           </div>
         </a-form-item>
         <GroupTitle
+          v-if="environmentId"
           class="m-t-20"
           :bordered="false"
           :title="$t('menu.operatorHub.variables')"
@@ -196,10 +197,10 @@
           :hide-label="pageAction === PageAction.EDIT"
           :label="$t('menu.operatorHub.variables')"
         >
-          <dataSelector
+          <VariablesSelector
             v-model:table-data="formData.variables"
             :style="{ width: `${InputWidth.XLARGE}px`, overflow: 'auto' }"
-          ></dataSelector>
+          ></VariablesSelector>
         </a-form-item>
         <a-form-item
           v-if="environmentId"
@@ -271,7 +272,7 @@
   import connectorsTable from '../components/connectors.vue';
   import ConnectorSelector from '../components/connector-selector.vue';
   import LabelsList from '../../services/components/labels-list.vue';
-  import dataSelector from '../components/data-selector.vue';
+  import VariablesSelector from '../components/variables-selector.vue';
   import {
     createEnvironment,
     updateEnvironment,

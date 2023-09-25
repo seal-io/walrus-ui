@@ -28,4 +28,5 @@ export interface EnvironFormData {
   edges?: any[];
   labels?: Record<string, any>;
   services?: any[];
+  variables?: any[];
 }
