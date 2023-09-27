@@ -21,6 +21,7 @@
           flex-start
           :show-edit="
             pageAction === PageAction.VIEW &&
+            loaded &&
             !_.get(formData, 'catalog.id') &&
             userStore.hasRolesActionsPermission({
               resource: Resources.Templates,
@@ -269,6 +270,7 @@
   const formref = ref();
   const id = route.query.id as string;
   const submitLoading = ref(false);
+  const loaded = ref(false);
   const templateSchema = ref({});
   let copyFormData: any = {};
   const formData = reactive({
@@ -326,6 +328,7 @@
     copyFormData = cloneDeep(formData);
     if (!id) return;
     try {
+      loaded.value = false;
       const params = {
         id
       };
@@ -334,6 +337,8 @@
       copyFormData = cloneDeep(formData);
     } catch (error) {
       formref.value.resetFields();
+    } finally {
+      loaded.value = true;
     }
   };
   const handleVersonChange = (value) => {
@@ -408,10 +413,11 @@
     }
     return true;
   });
-  onMounted(() => {
+  const initData = () => {
     getItemTemplate();
     getTemplateVersions();
-  });
+  };
+  initData();
 </script>
 
 <script lang="ts">

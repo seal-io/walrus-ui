@@ -275,6 +275,7 @@
   import VariablesSelector from '../components/variables-selector.vue';
   import {
     createEnvironment,
+    cloneEnvironment,
     updateEnvironment,
     queryItemEnvironments
   } from '../api';
@@ -459,7 +460,9 @@
         }
         if (id && !environmentId) {
           await updateEnvironment(data);
-        } else {
+        } else if (environmentId) {
+          await cloneEnvironment(data, environmentId);
+        } else if (!id && !environmentId) {
           await createEnvironment(data);
         }
         copyFormData = cloneDeep(formData.value);
