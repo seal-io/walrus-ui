@@ -69,6 +69,12 @@ export const projectDetailTabs = [
     value: ProjectTabs.CATALOGS,
     resource: Resources.Catalogs,
     component: 'catalogs'
+  },
+  {
+    label: 'menu.applicationManagement.workflow',
+    value: ProjectTabs.WORKFLOW,
+    resource: Resources.ProjectSubjects,
+    component: 'workflow'
   }
 ];
 export default {};

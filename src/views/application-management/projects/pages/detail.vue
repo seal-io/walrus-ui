@@ -117,6 +117,19 @@
               :icon-list="iconList"
             ></IconBtnGroup>
           </template>
+          <a-tab-pane
+            v-if="
+              userStore.hasProjectResourceActions({
+                projectID: route.params.projectId,
+                resource: Resources.ProjectSubjects,
+                actions: [Actions.GET]
+              })
+            "
+            :key="ProjectTabs.WORKFLOW"
+            :title="$t('menu.applicationManagement.workflow')"
+          >
+            <Workflow></Workflow>
+          </a-tab-pane>
         </a-tabs>
       </ComCard>
     </ComCard>
@@ -140,6 +153,7 @@
   import TemplateList from '@/views/application-management/templates/pages/list.vue';
   import CatalogList from '@/views/application-management/catalogs/pages/list.vue';
   import IconBtnGroup from '@/components/icon-btn-group/index.vue';
+  import Workflow from '@/views/application-management/workflow/pages/edit.vue';
   import { queryItemProject } from '../api';
   import { projectDetailTabs } from '../config';
   import userProjectBreadcrumbData from '../hooks/use-project-breadcrumb-data';
