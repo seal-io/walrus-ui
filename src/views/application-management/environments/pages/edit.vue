@@ -414,7 +414,7 @@
       };
       const { data } = await queryConnectors(params);
       const list = data?.items || [];
-      connectorList.value = map(list, (item) => {
+      connectorList.value = map(list, (item: any) => {
         item.value = item.id;
         item.label = item.name;
         item.tips = !item.project ? 'applications.variable.scope.global' : '';

@@ -10,6 +10,7 @@
         :data="resultList"
         :pagination="false"
         row-key="id"
+        :scroll="{ y: 300 }"
         :row-selection="rowSelection"
         @selection-change="handleSelect"
       >
@@ -102,8 +103,7 @@
     if (!environmentId) return;
     try {
       const { data } = await queryVariables({
-        page: -1,
-        includeInherited: true
+        page: -1
       } as any);
       dataList.value = data?.items || [];
     } catch (error) {
