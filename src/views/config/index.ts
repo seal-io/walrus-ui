@@ -68,7 +68,8 @@ export const ProjectTabs = {
   MEMBER: 'members',
   VARIABLES: 'variables',
   TEMPLATES: 'templates',
-  CATALOGS: 'catalogs'
+  CATALOGS: 'catalogs',
+  WORKFLOW: 'workflow'
 };
 
 export const EnvironmentTabs = {
