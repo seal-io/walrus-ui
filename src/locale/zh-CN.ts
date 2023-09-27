@@ -18,6 +18,8 @@ import localeOperation from '@/views/operation-hub/locale/zh-CN';
 import localeProfile from '@/views/profile/locale/zh-CN';
 import localeCatalogs from '@/views/operation-hub/catalogs/locale/zh-CN';
 
+import localeWorkflow from '@/views/application-management/workflow/locale/zh-CN';
+
 import localeCommon from './zh-CN/common';
 
 import localeSettings from './zh-CN/settings';
@@ -51,5 +53,6 @@ export default {
   ...localeProfile,
   ...localeMenu,
   ...localePermissionResource,
-  ...localeCatalogs
+  ...localeCatalogs,
+  ...localeWorkflow
 };
