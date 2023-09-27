@@ -82,6 +82,7 @@
 <style lang="less" scoped>
   .flow-stage {
     padding-top: 16px;
+    overflow-y: auto;
 
     .stage-header {
       margin-bottom: 40px;

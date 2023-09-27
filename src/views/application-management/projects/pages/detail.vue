@@ -128,7 +128,7 @@
             :key="ProjectTabs.WORKFLOW"
             :title="$t('menu.applicationManagement.workflow')"
           >
-            <Workflow></Workflow>
+            <WorkflowList></WorkflowList>
           </a-tab-pane>
         </a-tabs>
       </ComCard>
@@ -154,6 +154,7 @@
   import CatalogList from '@/views/application-management/catalogs/pages/list.vue';
   import IconBtnGroup from '@/components/icon-btn-group/index.vue';
   import Workflow from '@/views/application-management/workflow/pages/edit.vue';
+  import WorkflowList from '@/views/application-management/workflow/pages/list.vue';
   import { queryItemProject } from '../api';
   import { projectDetailTabs } from '../config';
   import userProjectBreadcrumbData from '../hooks/use-project-breadcrumb-data';
