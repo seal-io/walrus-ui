@@ -41,8 +41,11 @@ export function queryItemEnvironments(params: { id: string }) {
 export function createEnvironment(data: EnvironFormData) {
   return axios.post(`${PROJECT_API_PREFIX()}${ENVIRONMENT_API}`, data);
 }
-export function cloneEnvironment(data: EnvironFormData) {
-  return axios.post(`${PROJECT_API_PREFIX()}${ENVIRONMENT_API}/_/clone`, data);
+export function cloneEnvironment(data: EnvironFormData, environmentID: string) {
+  return axios.post(
+    `${PROJECT_API_PREFIX()}${ENVIRONMENT_API}/${environmentID}/clone`,
+    data
+  );
 }
 export function deleteEnvironment(data: { items: Record<string, any>[] }) {
   return axios.delete(`${PROJECT_API_PREFIX()}${ENVIRONMENT_API}`, { data });

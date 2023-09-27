@@ -79,6 +79,7 @@ export default {
   'operation.templates.table.title': 'Template List',
   'operation.templates.table.name': 'Template',
   'operation.templates.table.catalog': 'Catalog',
+  'operation.templates.table.noncatalog': 'non-catalog template',
   'operation.templates.table.holder': 'please enter a template',
   'operation.templates.catalogId.holder': 'please select a catalog',
   'operation.templates.table.catalogId': 'ID',

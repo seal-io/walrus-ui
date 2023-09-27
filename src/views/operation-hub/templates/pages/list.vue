@@ -127,7 +127,7 @@
   import { Resources, Actions } from '@/permissions/config';
   import { useUserStore } from '@/store';
   import _, { map, pickBy, remove } from 'lodash';
-  import { ref, reactive, onMounted, nextTick } from 'vue';
+  import { ref, reactive, onMounted, nextTick, computed } from 'vue';
   import useCallCommon from '@/hooks/use-call-common';
   import FilterBox from '@/components/filter-box/index.vue';
   import { useSetChunkRequest } from '@/api/axios-chunk-request';
@@ -150,12 +150,12 @@
   const userStore = useUserStore();
   const { setChunkRequest } = useSetChunkRequest();
   const { setChunkRequest: setCatalogChunkRequest } = useSetChunkRequest();
-  const { router } = useCallCommon();
+  const { router, t } = useCallCommon();
   const loading = ref(false);
   const selectedKeys = ref<string[]>([]);
   const sort = ref<string[]>(['-createTime']);
   const dataList = ref<TemplateRowData[]>([]);
-  const catalogList = ref<
+  const catalogs = ref<
     { label: string; value: string; id: string; name: string }[]
   >([]);
   const listViewRef = ref();
@@ -163,15 +163,36 @@
   const queryParams = reactive({
     query: '',
     catalogID: '',
+    nonCatalog: false,
     page: 1,
     perPage: 10
   });
+
+  const catalogList = computed(() => {
+    return [
+      ...catalogs.value,
+      {
+        label: t('operation.templates.table.noncatalog'),
+        value: 'nonCatalog',
+        id: 'nonCatalog',
+        name: t('operation.templates.table.noncatalog')
+      }
+    ];
+  });
+  const query = computed(() => {
+    const res = _.cloneDeep(queryParams);
+    if (res.catalogID === 'nonCatalog') {
+      res.catalogID = '';
+      res.nonCatalog = true;
+    }
+    return res;
+  });
   const { updateChunkedList } = useUpdateChunkedList(dataList);
   const { updateChunkedList: updateCatalogList } = useUpdateChunkedList(
-    catalogList,
+    catalogs,
     {
       callback: (list) => {
-        catalogList.value = _.map(list, (o) => {
+        catalogs.value = _.map(list, (o) => {
           const item = _.cloneDeep(o);
           return {
             label: item.name,
@@ -201,7 +222,7 @@
     try {
       loading.value = true;
       const params: any = {
-        ...pickBy(queryParams, (val) => !!val),
+        ...pickBy(query.value, (val) => !!val),
         sort: [sort.value]
       };
       const { data } = await queryTemplates(params);
@@ -273,9 +294,9 @@
       updateCatalogList(data);
     });
 
-    if (queryParams.catalogID) {
+    if (query.value.catalogID) {
       const catalog = _.find(catalogList.value, {
-        value: queryParams.catalogID
+        value: query.value.catalogID
       });
       if (!catalog) {
         queryParams.catalogID = '';
@@ -288,7 +309,7 @@
       setChunkRequest({
         url: TemplateAPI,
         params: {
-          ..._.pickBy(_.omit(queryParams, ['page', 'perPage']), (val) => !!val)
+          ..._.pickBy(_.omit(query.value, ['page', 'perPage']), (val) => !!val)
         },
         handler: updateHandler
       });
@@ -333,7 +354,7 @@
         extract: ['-status', '-sync']
       };
       const { data } = await queryCatalogs(params);
-      catalogList.value = _.map(data?.items || [], (item) => {
+      catalogs.value = _.map(data?.items || [], (item) => {
         return {
           label: item.name,
           value: item.id,
