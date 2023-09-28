@@ -459,7 +459,7 @@
         if (id && !environmentId) {
           await updateEnvironment(data);
         } else if (environmentId) {
-          // await cloneEnvironment(data, environmentId);
+          await cloneEnvironment(data, environmentId);
         } else if (!id && !environmentId) {
           await createEnvironment(data);
         }
