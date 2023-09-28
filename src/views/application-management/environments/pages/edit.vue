@@ -198,7 +198,7 @@
           :label="$t('menu.operatorHub.variables')"
         >
           <VariablesSelector
-            v-model:table-data="formData.variables"
+            v-model:selected-list="formData.variables"
             :style="{ width: `${InputWidth.XLARGE}px`, overflow: 'auto' }"
           ></VariablesSelector>
         </a-form-item>
@@ -393,7 +393,6 @@
       selectedList.value = [...formData.value.connectorIDs];
       setFormDataConnectors(formData.value.connectorIDs);
       copyFormData = cloneDeep(formData.value);
-      console.log('formData==22=', formData.value.edges);
     } catch (error) {
       formData.value = {
         projectID: route.params.projectId as string,
@@ -454,14 +453,13 @@
       try {
         submitLoading.value = true;
         const data = _.omit(formData.value, ['edges']);
-
         if (environmentId) {
           handleCloneEnvironment(data);
         }
         if (id && !environmentId) {
           await updateEnvironment(data);
         } else if (environmentId) {
-          await cloneEnvironment(data, environmentId);
+          // await cloneEnvironment(data, environmentId);
         } else if (!id && !environmentId) {
           await createEnvironment(data);
         }
