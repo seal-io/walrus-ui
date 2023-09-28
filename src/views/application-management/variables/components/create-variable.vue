@@ -24,7 +24,6 @@
           field="name"
           validate-trigger="change"
           :rules="[
-            // { required: true, message: $t('applications.projects.rule.name') },
             {
               required: true,
               match: validateLabelNameRegx,
