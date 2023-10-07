@@ -1,5 +1,6 @@
 <script lang="tsx">
-  import { defineComponent, toRefs, ref, onMounted, onUnmounted } from 'vue';
+  import { defineComponent, toRefs, ref } from 'vue';
+  import Draggable from 'vuedraggable';
 
   export default defineComponent({
     props: {
@@ -13,6 +14,7 @@
     emits: ['insertPrev', 'insertNext', 'addTask'],
     setup(props, { emit }) {
       const { position } = toRefs(props);
+      const drag = ref(false);
       const list = ref([1]);
 
       const handleInsertPrev = (index) => {
@@ -27,6 +29,15 @@
       const handleAddTask = () => {
         list.value.push(1);
         emit('addTask');
+      };
+
+      const handleDragStart = () => {
+        drag.value = true;
+      };
+
+      const handleDragEnd = () => {
+        drag.value = false;
+        console.log('drag end 1');
       };
 
       const renderStep = (item, index) => {
@@ -65,9 +76,20 @@
                 <div class="trigger-btn">
                   <icon-play-circle class="btn" />
                 </div>
-                {list.value.map((item, index) => {
-                  return renderStep(item, index);
-                })}
+                {
+                  <Draggable
+                    style={{ display: 'flex' }}
+                    v-model={list.value}
+                    item-key="id"
+                    onStart={() => handleDragStart()}
+                    onEnd={() => handleDragEnd()}
+                    v-slots={{
+                      item: ({ item, index }) => {
+                        return renderStep(item, index);
+                      }
+                    }}
+                  ></Draggable>
+                }
               </>
             ) : (
               renderPlusTaskBtn()
