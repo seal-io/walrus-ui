@@ -1,5 +1,5 @@
 <script lang="tsx">
-  import { defineComponent, toRefs, ref, onMounted, onUnmounted } from 'vue';
+  import { defineComponent, toRefs, ref } from 'vue';
   import FlowStep from './flow-step.vue';
   import ParallelButton from './parallel-button.vue';
 
