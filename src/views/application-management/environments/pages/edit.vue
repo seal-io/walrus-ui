@@ -198,6 +198,7 @@
           :label="$t('menu.operatorHub.variables')"
         >
           <VariablesSelector
+            ref="variablesRef"
             v-model:selected-list="formData.variables"
             :style="{ width: `${InputWidth.XLARGE}px`, overflow: 'auto' }"
           ></VariablesSelector>
@@ -299,6 +300,7 @@
   const breadCrumbList = ref<BreadcrumbOptions[]>([]);
   let copyFormData: any = {};
   const selectedList = ref<string[]>([]);
+  const variablesRef = ref();
 
   const formData = ref<EnvironFormData>({
     projectID: route.params.projectId as string,
@@ -523,6 +525,8 @@
     await getConnectors();
     await getItemEnvironmentInfo();
     getLabelList();
+    // only in clone: default select all variables
+    variablesRef.value?.selectAllVars();
   };
   defineExpose({
     handleSubmit,
