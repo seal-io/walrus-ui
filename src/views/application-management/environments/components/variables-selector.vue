@@ -178,7 +178,7 @@
   import EditPageFooter from '@/components/edit-page-footer/index.vue';
   import { validateLabelNameRegx } from '@/views/config';
   import useCallCommon from '@/hooks/use-call-common';
-  import { ref, PropType, computed } from 'vue';
+  import { ref, PropType, computed, onMounted, nextTick } from 'vue';
   import { queryVariables } from '@/views/application-management/variables/api';
   import useRowSelect from '@/hooks/use-row-select';
 
@@ -239,6 +239,12 @@
     handleSelectChange(list);
     updateSelectedList();
   };
+  const selectAllVars = () => {
+    const ids = _.map(dataList.value, (item) => {
+      return item.id;
+    });
+    handleSelect(ids);
+  };
   const getDataList = async () => {
     if (!environmentId) return;
     try {
@@ -288,6 +294,9 @@
     };
     show.value = true;
   };
+  defineExpose({
+    selectAllVars
+  });
   getDataList();
 </script>
 
