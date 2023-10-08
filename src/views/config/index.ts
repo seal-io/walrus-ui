@@ -67,7 +67,9 @@ export const ProjectTabs = {
   ENVIRONMENT: 'environments',
   CONNECTOR: 'connectors',
   MEMBER: 'members',
-  VARIABLES: 'variables'
+  VARIABLES: 'variables',
+  TEMPLATES: 'templates',
+  CATALOGS: 'catalogs'
 };
 
 export const EnvironmentTabs = {

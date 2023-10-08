@@ -72,6 +72,18 @@
             <ConnectorList scope="project"></ConnectorList>
           </a-tab-pane>
           <a-tab-pane
+            :key="ProjectTabs.TEMPLATES"
+            :title="$t('menu.operatorHub.module')"
+          >
+            <TemplateList :current-view="dataView.templates"></TemplateList>
+          </a-tab-pane>
+          <a-tab-pane
+            :key="ProjectTabs.CATALOGS"
+            :title="$t('menu.operatorHub.catalog')"
+          >
+            <CatalogList></CatalogList>
+          </a-tab-pane>
+          <a-tab-pane
             v-if="
               userStore.hasProjectResourceActions({
                 projectID: route.params.projectId,
@@ -84,6 +96,13 @@
           >
             <members></members>
           </a-tab-pane>
+          <template #extra>
+            <IconBtnGroup
+              v-if="activeKey === ProjectTabs.TEMPLATES"
+              v-model:active="dataView[activeKey]"
+              :icon-list="iconList"
+            ></IconBtnGroup>
+          </template>
         </a-tabs>
       </ComCard>
     </ComCard>
@@ -94,7 +113,7 @@
   import { Resources, Actions } from '@/permissions/config';
   import { PROJECT } from '@/router/config';
   import { ProjectTabs } from '@/views/config';
-  import { ref, onMounted } from 'vue';
+  import { ref, onMounted, reactive } from 'vue';
   import _ from 'lodash';
   import useTabActive, { TabPage } from '@/hooks/use-tab-active';
   import useCallCommon from '@/hooks/use-call-common';
@@ -104,9 +123,29 @@
   import variableList from '@/views/application-management/variables/pages/list.vue';
   import members from '@/views/application-management/members/pages/list.vue';
   import ConnectorList from '@/views/operation-hub/connectors/components/table-list.vue';
+  import TemplateList from '@/views/application-management/templates/pages/list.vue';
+  import CatalogList from '@/views/application-management/catalogs/pages/list.vue';
+  import IconBtnGroup from '@/components/icon-btn-group/index.vue';
   import { queryItemProject } from '../api';
   import { projectDetailTabs } from '../config';
   import userProjectBreadcrumbData from '../hooks/use-project-breadcrumb-data';
+
+  const iconList = [
+    {
+      icon: 'icon-apps',
+      view: 'thumb',
+      iconfont: false
+    },
+    {
+      icon: 'icon-table',
+      view: 'list',
+      iconfont: true
+    }
+  ];
+
+  const dataView = reactive({
+    templates: 'thumb'
+  });
 
   const {
     pageLevelMap,
