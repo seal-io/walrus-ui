@@ -91,7 +91,7 @@
   import { OPERATIONHUB } from '@/router/config';
   import { Resources } from '@/permissions/config';
   import _, { map, pickBy, remove } from 'lodash';
-  import { useUserStore } from '@/store';
+  import { useUserStore, useAppStore } from '@/store';
   import { ref, reactive, onMounted, nextTick, computed } from 'vue';
   import useCallCommon from '@/hooks/use-call-common';
   import FilterBox from '@/components/filter-box/index.vue';
@@ -113,6 +113,7 @@
   let timer: any = null;
   const builtinCatalog = 'https://catalog.seal.io/walrus-catalog';
   const builtinCatalogName = 'builtin';
+  const appStore = useAppStore();
   const userStore = useUserStore();
   const { setChunkRequest } = useSetChunkRequest();
   const { router, t } = useCallCommon();
@@ -128,7 +129,7 @@
   const queryParams = reactive({
     query: '',
     page: 1,
-    perPage: 10
+    perPage: appStore.perPage || 10
   });
   const { updateChunkedList } = useUpdateChunkedList(dataList, {
     mapFun(item) {
@@ -203,6 +204,7 @@
   const handlePageSizeChange = (pageSize: number) => {
     queryParams.page = 1;
     queryParams.perPage = pageSize;
+    appStore.updateSettings({ perPage: pageSize });
     handleFilter();
   };
   const handleDeleteConfirm = async () => {

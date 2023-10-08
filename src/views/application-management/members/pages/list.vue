@@ -120,7 +120,7 @@
   import _ from 'lodash';
   import { Resources, Actions } from '@/permissions/config';
   import { ref, reactive, PropType } from 'vue';
-  import { useUserStore } from '@/store';
+  import { useUserStore, useAppStore } from '@/store';
   import useCallCommon from '@/hooks/use-call-common';
   import FilterBox from '@/components/filter-box/index.vue';
   import { deleteModal, execSucceed } from '@/utils/monitor';
@@ -134,6 +134,7 @@
   import { ProjectRolesRowData } from '../../projects/config/interface';
   import AssignRoles from '../components/assign-roles.vue';
 
+  const appStore = useAppStore();
   const { route } = useCallCommon();
   const userStore = useUserStore();
   const { rowSelection, selectedKeys, handleSelectChange } = useRowSelect();
@@ -151,7 +152,7 @@
   });
   const queryParams = reactive({
     page: 1,
-    perPage: 10,
+    perPage: appStore.perPage || 10,
     query: ''
   });
 
@@ -192,6 +193,7 @@
   const handlePageSizeChange = (pageSize: number) => {
     queryParams.page = 1;
     queryParams.perPage = pageSize;
+    appStore.updateSettings({ perPage: pageSize });
     handleFilter();
   };
   const handleAdd = () => {

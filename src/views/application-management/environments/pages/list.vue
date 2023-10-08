@@ -210,10 +210,10 @@
   import dayjs from 'dayjs';
   import { PageAction } from '@/views/config';
   import { PROJECT } from '@/router/config';
-  import { useUserStore } from '@/store';
+  import { useUserStore, useAppStore } from '@/store';
   import { Resources, Actions } from '@/permissions/config';
-  import { map, pickBy, remove } from 'lodash';
-  import { ref, reactive, onActivated } from 'vue';
+  import { map, pickBy } from 'lodash';
+  import { ref, reactive } from 'vue';
   import useCallCommon from '@/hooks/use-call-common';
   import FilterBox from '@/components/filter-box/index.vue';
   import { deleteModal, execSucceed } from '@/utils/monitor';
@@ -229,6 +229,7 @@
     defaultSortField: '-createTime',
     defaultOrder: 'descend'
   });
+  const appStore = useAppStore();
   const userStore = useUserStore();
   const { router, route } = useCallCommon();
   const loading = ref(false);
@@ -241,7 +242,7 @@
   const queryParams = reactive({
     query: '',
     page: 1,
-    perPage: 10
+    perPage: appStore.perPage || 10
   });
 
   const handleCreate = () => {
@@ -291,15 +292,14 @@
   const handlePageSizeChange = (pageSize: number) => {
     queryParams.page = 1;
     queryParams.perPage = pageSize;
+    appStore.updateSettings({ perPage: pageSize });
     handleFilter();
   };
   const handleSortChange = (dataIndex: string, direction: string) => {
     setSortDirection(dataIndex, direction);
     fetchData();
   };
-  onActivated(() => {
-    // fetchData();
-  });
+
   const handleView = (row) => {
     router.push({
       name: PROJECT.EnvDetail,
