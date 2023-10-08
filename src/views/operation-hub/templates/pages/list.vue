@@ -125,7 +125,7 @@
 <script lang="ts" setup>
   import { OPERATIONHUB } from '@/router/config';
   import { Resources, Actions } from '@/permissions/config';
-  import { useUserStore } from '@/store';
+  import { useUserStore, useAppStore } from '@/store';
   import _, { map, pickBy, remove } from 'lodash';
   import { ref, reactive, onMounted, nextTick, computed } from 'vue';
   import useCallCommon from '@/hooks/use-call-common';
@@ -147,6 +147,7 @@
     }
   });
   let timer: any = null;
+  const appStore = useAppStore();
   const userStore = useUserStore();
   const { setChunkRequest } = useSetChunkRequest();
   const { setChunkRequest: setCatalogChunkRequest } = useSetChunkRequest();
@@ -165,7 +166,7 @@
     catalogID: '',
     nonCatalog: false,
     page: 1,
-    perPage: 10
+    perPage: appStore.perPage || 10
   });
 
   const catalogList = computed(() => {
@@ -255,6 +256,7 @@
   const handlePageSizeChange = (pageSize: number) => {
     queryParams.page = 1;
     queryParams.perPage = pageSize;
+    appStore.updateSettings({ perPage: pageSize });
     handleFilter();
   };
   const handleDeleteConfirm = async () => {

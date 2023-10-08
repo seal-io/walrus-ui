@@ -168,7 +168,7 @@
   import { Resources, Actions } from '@/permissions/config';
   import _ from 'lodash';
   import dayjs from 'dayjs';
-  import { useUserStore } from '@/store';
+  import { useUserStore, useAppStore } from '@/store';
   import { ref, reactive, onMounted } from 'vue';
   import FilterBox from '@/components/filter-box/index.vue';
   import { deleteModal, execSucceed } from '@/utils/monitor';
@@ -178,6 +178,7 @@
   import { querySubjects, deleteSubjects, queryRoles } from '../api/users';
   import CreateAccountModal from '../components/create-account-modal.vue';
 
+  const appStore = useAppStore();
   const userStore = useUserStore();
   const dataList = ref<RowData[]>([]);
   const loading = ref(false);
@@ -188,7 +189,7 @@
   const roleList = ref<RoleItem[]>(_.cloneDeep(roleTypeList));
   const queryParams = reactive({
     page: 1,
-    perPage: 10,
+    perPage: appStore.perPage || 10,
     query: ''
   });
 
@@ -217,6 +218,7 @@
   const handlePageSizeChange = (pageSize: number) => {
     queryParams.page = 1;
     queryParams.perPage = pageSize;
+    appStore.updateSettings({ perPage: pageSize });
     handleFilter();
   };
   const debounceFunc = _.debounce(() => {

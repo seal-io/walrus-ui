@@ -212,7 +212,7 @@
 
 <script lang="ts" setup>
   import { Resources, Actions } from '@/permissions/config';
-  import { useUserStore } from '@/store';
+  import { useUserStore, useAppStore } from '@/store';
   import dayjs from 'dayjs';
   import _, { cloneDeep, map, pickBy } from 'lodash';
   import { reactive, ref, onMounted, computed, PropType } from 'vue';
@@ -243,7 +243,7 @@
       }
     }
   });
-
+  const appStore = useAppStore();
   const userStore = useUserStore();
   const { rowSelection, selectedKeys, handleSelectChange } = useRowSelect();
   const { router, t, route } = useCallCommon();
@@ -274,7 +274,7 @@
   const queryParams = reactive({
     query: '',
     page: 1,
-    perPage: 10
+    perPage: appStore.perPage || 10
   });
   const dataList = ref<VariableRow[]>([]);
 
@@ -375,6 +375,7 @@
   const handlePageSizeChange = (pageSize: number) => {
     queryParams.page = 1;
     queryParams.perPage = pageSize;
+    appStore.updateSettings({ perPage: pageSize });
     handleFilter();
   };
   const handleCreate = () => {

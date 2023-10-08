@@ -15,6 +15,7 @@ export interface AppState {
   fullScreen: boolean;
   tabBar: boolean;
   hasNavList: boolean;
+  perPage: number;
   selectedKey: Array<string>;
   [key: string]: unknown;
 }

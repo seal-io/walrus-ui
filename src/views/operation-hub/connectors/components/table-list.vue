@@ -327,7 +327,7 @@
 
 <script lang="ts" setup>
   import { Resources, Actions } from '@/permissions/config';
-  import { useUserStore } from '@/store';
+  import { useUserStore, useAppStore } from '@/store';
   import { useSetChunkRequest } from '@/api/axios-chunk-request';
   import { useUpdateChunkedList } from '@/views/commons/hooks/use-update-chunked-list';
   import ADropdownButton from '@arco-design/web-vue/es/dropdown/dropdown-button';
@@ -389,6 +389,7 @@
     Github: 'GitHub',
     Gitlab: 'GitLab'
   };
+  const appStore = useAppStore();
   const userStore = useUserStore();
   const { setChunkRequest } = useSetChunkRequest();
   const axiosSource = useAxiosSource();
@@ -405,7 +406,7 @@
   const queryParams = reactive({
     query: '',
     page: 1,
-    perPage: 10,
+    perPage: appStore.perPage || 10,
     category: ''
   });
   const dataList = ref<ConnectorRowData[]>([]);
@@ -477,6 +478,7 @@
   const handlePageSizeChange = (pageSize: number) => {
     queryParams.page = 1;
     queryParams.perPage = pageSize;
+    appStore.updateSettings({ perPage: pageSize });
     handleFilter();
   };
   const handlCreateProjectConnector = (item) => {

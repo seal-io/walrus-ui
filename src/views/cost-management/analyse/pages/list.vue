@@ -189,7 +189,7 @@
 <script lang="ts" setup>
   import { COSTMANAGEMENT } from '@/router/config';
   import { Actions, Resources } from '@/permissions/config';
-  import { useUserStore } from '@/store';
+  import { useUserStore, useAppStore } from '@/store';
   import { map, find, toLower, pickBy, includes } from 'lodash';
   import dayjs from 'dayjs';
   import { reactive, ref, onMounted } from 'vue';
@@ -207,6 +207,7 @@
     builtinViewList
   } from '../config';
 
+  const appStore = useAppStore();
   const userStore = useUserStore();
   const { rowSelection, selectedKeys, handleSelectChange } = useRowSelect();
   const { router, t } = useCallCommon();
@@ -221,7 +222,7 @@
   const queryParams = reactive({
     query: '',
     page: 1,
-    perPage: 10
+    perPage: appStore.perPage || 10
   });
   const dataList = ref<PerspectiveRowData[]>([]);
   const getTimeValue = (val) => {
@@ -277,6 +278,7 @@
   const handlePageSizeChange = (pageSize: number) => {
     queryParams.page = 1;
     queryParams.perPage = pageSize;
+    appStore.updateSettings({ perPage: pageSize });
     handleFilter();
   };
   const handleCreate = () => {

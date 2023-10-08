@@ -64,8 +64,7 @@
   import { OPERATIONHUB } from '@/router/config';
   import { ref, reactive } from 'vue';
   import useTabActive, { TabPage } from '@/hooks/use-tab-active';
-  import { QAlinkMap, OperatorHubTabs } from '@/views/config';
-  import QuestionPopup from '@/components/question-popup/index.vue';
+  import { OperatorHubTabs } from '@/views/config';
   import HeaderInfo from '@/components/header-info/index.vue';
   import IconBtnGroup from '@/components/icon-btn-group/index.vue';
   import Connectors from '../connectors/components/table-list.vue';
