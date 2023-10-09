@@ -1,0 +1,375 @@
+{
+    "items": [
+        {
+            "id": "484361361447465501",
+            "createTime": "2023-10-25T18:57:48.929718+08:00",
+            "updateTime": "2023-10-25T18:57:48.929718+08:00",
+            "name": "test-vars",
+            "version": "main",
+            "source": "git::https://github.com/aiwantaozi/tf-variables?ref=main",
+            "template": {
+                "id": "484361356514963997",
+                "name": "test-vars",
+                "status": {}
+            },
+            "templateVersionSchema": {
+                "id": "484370897382158877",
+                "internal": {
+                    "schema": {
+                        "components": {
+                            "schemas": {
+                                "outputs": {
+                                    "properties": {
+                                        "ports": {
+                                            "description": "Service Ports",
+                                            "title": "ports",
+                                            "type": "string",
+                                            "x-walrus-original": {
+                                                "x-walrus-original": {
+                                                    "type": "dynamic",
+                                                    "value-expression": "var.ports"
+                                                }
+                                            }
+                                        },
+                                        "service_ip": {
+                                            "description": "Service IP",
+                                            "title": "service_ip",
+                                            "type": "string",
+                                            "x-walrus-original": {
+                                                "x-walrus-original": {
+                                                    "type": "dynamic",
+                                                    "value-expression": "data.kubernetes_service.service.spec.0.cluster_ip"
+                                                }
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                },
+                                "variables": {
+                                    "properties": {
+                                        "env": {
+                                            "additionalProperties": {
+                                                "type": "string"
+                                            },
+                                            "description": "Name and value pairs to set as the environment variables",
+                                            "title": "Environment Variables",
+                                            "type": "object",
+                                            "x-walrus-ui": {
+                                                "group": "Basic"
+                                            },
+                                            "x-walrus-original": {
+                                                "type": [
+                                                    "map",
+                                                    "string"
+                                                ]
+                                            }
+                                        },
+                                        "image": {
+                                            "description": "Docker image name",
+                                            "title": "Image Name",
+                                            "type": "string",
+                                            "x-walrus-ui": {
+                                                "group": "Basic"
+                                            },
+                                            "x-walrus-original": {
+                                                "type": "string"
+                                            }
+                                        },
+                                        "limit_cpu": {
+                                            "default": "",
+                                            "description": "CPU limit. e.g. 0.5, 1, 2",
+                                            "title": "CPU Request",
+                                            "type": "string",
+                                            "x-walrus-ui": {
+                                                "group": "Resources"
+                                            },
+                                            "x-walrus-original": {
+                                                "type": "string"
+                                            }
+                                        },
+                                        "limit_memory": {
+                                            "default": "",
+                                            "description": "Memory limit. e.g. 128Mi, 512Mi, 1Gi, 2Gi, 4Gi",
+                                            "title": "Memory Request",
+                                            "type": "string",
+                                            "x-walrus-ui": {
+                                                "group": "Resources",
+                                                "widget": "MemoryInput"
+                                            },
+                                            "x-walrus-original": {
+                                                "type": "string"
+                                            }
+                                        },
+                                        "name": {
+                                            "default": "",
+                                            "description": "Name of the deployment resource. Auto-generated if empty.",
+                                            "title": "Deployment Name",
+                                            "type": "string",
+                                            "x-walrus-ui": {
+                                                "group": "Advance"
+                                            },
+                                            "x-walrus-original": {
+                                                "type": "string"
+                                            }
+                                        },
+                                        "namespace": {
+                                            "default": "",
+                                            "description": "Namespace to deploy. Auto-generated if empty.",
+                                            "title": "Namespace",
+                                            "type": "string",
+                                            "x-walrus-ui": {
+                                                "group": "Advance",
+                                                "widget": "NamespaceSelect"
+                                            },
+                                            "x-walrus-original": {
+                                                "type": "string"
+                                            }
+                                        },
+                                        "ports": {
+                                            "default": [
+                                                80
+                                            ],
+                                            "description": "Service ports to expose",
+                                            "items": {
+                                                "type": "integer"
+                                            },
+                                            "title": "Ports",
+                                            "type": "array",
+                                            "x-walrus-ui": {
+                                                "group": "Basic"
+                                            },
+                                            "x-walrus-original": {
+                                                "type": [
+                                                    "list",
+                                                    "number"
+                                                ]
+                                            }
+                                        },
+                                        "replicas": {
+                                            "default": 1,
+                                            "description": "Replicas to deploy",
+                                            "title": "Replicas",
+                                            "type": "number",
+                                            "x-walrus-ui": {
+                                                "group": "Basic"
+                                            },
+                                            "x-walrus-original": {
+                                                "type": "number"
+                                            }
+                                        },
+                                        "request_cpu": {
+                                            "default": "0.1",
+                                            "description": "CPU request. e.g. 0.5, 1, 2",
+                                            "title": "CPU Request",
+                                            "type": "string",
+                                            "x-walrus-ui": {
+                                                "group": "Resources"
+                                            },
+                                            "x-walrus-original": {
+                                                "type": "string"
+                                            }
+                                        },
+                                        "request_memory": {
+                                            "default": "128Mi",
+                                            "description": "Memory request. e.g. 128Mi, 512Mi, 1Gi, 2Gi, 4Gi",
+                                            "title": "Memory Request",
+                                            "type": "string",
+                                            "x-walrus-ui": {
+                                                "group": "Resources",
+                                                "widget": "MemoryInput"
+                                            },
+                                            "x-walrus-original": {
+                                                "type": "string"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        },
+                        "info": {
+                            "title": "Schema for template test-vars",
+                            "version": "main"
+                        },
+                        "openapi": "3.0.3",
+                        "paths": null
+                    },
+                    "data": {
+                        "readme": "# Web Service Module\n\nThis module provides an efficient way to create a Kubernetes deployment and service for a web service.\n\nIt will generate an access endpoint as output for your web service, allowing it to be accessed from other services or applications.\n\n\u003c!-- BEGIN_TF_DOCS --\u003e\n## Requirements\n\n| Name | Version |\n|------|---------|\n| \u003ca name=\"requirement_kubectl\"\u003e\u003c/a\u003e [kubectl](#requirement\\_kubectl) | 1.14.0 |\n\n## Providers\n\n| Name | Version |\n|------|---------|\n| \u003ca name=\"provider_kubernetes\"\u003e\u003c/a\u003e [kubernetes](#provider\\_kubernetes) | n/a |\n\n## Modules\n\n| Name | Source | Version |\n|------|--------|---------|\n| \u003ca name=\"module_deployment\"\u003e\u003c/a\u003e [deployment](#module\\_deployment) | terraform-iaac/deployment/kubernetes | 1.4.2 |\n| \u003ca name=\"module_service\"\u003e\u003c/a\u003e [service](#module\\_service) | terraform-iaac/service/kubernetes | 1.0.4 |\n\n## Resources\n\n| Name | Type |\n|------|------|\n| [kubernetes_service.service](https://registry.terraform.io/providers/hashicorp/kubernetes/latest/docs/data-sources/service) | data source |\n\n## Inputs\n\n| Name | Description | Type | Default | Required |\n|------|-------------|------|---------|:--------:|\n| \u003ca name=\"input_env\"\u003e\u003c/a\u003e [env](#input\\_env) | Name and value pairs to set as the environment variables | `map(string)` | `{}` | no |\n| \u003ca name=\"input_image\"\u003e\u003c/a\u003e [image](#input\\_image) | Docker image name | `string` | n/a | yes |\n| \u003ca name=\"input_limit_cpu\"\u003e\u003c/a\u003e [limit\\_cpu](#input\\_limit\\_cpu) | CPU limit. e.g. 0.5, 1, 2 | `string` | `\"\"` | no |\n| \u003ca name=\"input_limit_memory\"\u003e\u003c/a\u003e [limit\\_memory](#input\\_limit\\_memory) | Memory limit. e.g. 128Mi, 512Mi, 1Gi, 2Gi, 4Gi | `string` | `\"\"` | no |\n| \u003ca name=\"input_list_bool\"\u003e\u003c/a\u003e [list\\_bool](#input\\_list\\_bool) | list bool. | `list(bool)` | n/a | yes |\n| \u003ca name=\"input_list_map\"\u003e\u003c/a\u003e [list\\_map](#input\\_list\\_map) | list map string. | `list(map(string))` | n/a | yes |\n| \u003ca name=\"input_list_string\"\u003e\u003c/a\u003e [list\\_string](#input\\_list\\_string) | list string. | `list(string)` | n/a | yes |\n| \u003ca name=\"input_map_bool\"\u003e\u003c/a\u003e [map\\_bool](#input\\_map\\_bool) | map bool. | `map(bool)` | n/a | yes |\n| \u003ca name=\"input_map_string\"\u003e\u003c/a\u003e [map\\_string](#input\\_map\\_string) | map string. | `map(string)` | n/a | yes |\n| \u003ca name=\"input_name\"\u003e\u003c/a\u003e [name](#input\\_name) | Name of the deployment resource. Auto-generated if empty. | `string` | `\"\"` | no |\n| \u003ca name=\"input_namespace\"\u003e\u003c/a\u003e [namespace](#input\\_namespace) | Namespace to deploy. Auto-generated if empty. | `string` | `\"\"` | no |\n| \u003ca name=\"input_ports\"\u003e\u003c/a\u003e [ports](#input\\_ports) | Service ports to expose | `list(number)` | \u003cpre\u003e[\u003cbr\u003e  80\u003cbr\u003e]\u003c/pre\u003e | no |\n| \u003ca name=\"input_replicas\"\u003e\u003c/a\u003e [replicas](#input\\_replicas) | Replicas to deploy | `number` | `1` | no |\n| \u003ca name=\"input_request_cpu\"\u003e\u003c/a\u003e [request\\_cpu](#input\\_request\\_cpu) | CPU request. e.g. 0.5, 1, 2 | `string` | `\"0.1\"` | no |\n| \u003ca name=\"input_request_memory\"\u003e\u003c/a\u003e [request\\_memory](#input\\_request\\_memory) | Memory request. e.g. 128Mi, 512Mi, 1Gi, 2Gi, 4Gi | `string` | `\"128Mi\"` | no |\n| \u003ca name=\"input_walrus_metadata_namespace_name\"\u003e\u003c/a\u003e [walrus\\_metadata\\_namespace\\_name](#input\\_walrus\\_metadata\\_namespace\\_name) | Walrus metadata namespace name. | `string` | `\"\"` | no |\n| \u003ca name=\"input_walrus_metadata_service_name\"\u003e\u003c/a\u003e [walrus\\_metadata\\_service\\_name](#input\\_walrus\\_metadata\\_service\\_name) | Walrus metadata service name. | `string` | `\"\"` | no |\n\n## Outputs\n\n| Name | Description |\n|------|-------------|\n| \u003ca name=\"output_ports\"\u003e\u003c/a\u003e [ports](#output\\_ports) | Service Ports |\n| \u003ca name=\"output_service_ip\"\u003e\u003c/a\u003e [service\\_ip](#output\\_service\\_ip) | Service IP |\n\u003c!-- END_TF_DOCS --\u003e\n",
+                        "requiredProviders": [
+                            {
+                                "source": "gavinbunney/kubectl",
+                                "version_constraints": [
+                                    "1.14.0"
+                                ],
+                                "name": "kubectl"
+                            },
+                            {
+                                "name": "kubernetes"
+                            }
+                        ]
+                    }
+                },
+                "external": {
+                    "schema": {
+                        "components": {
+                            "schemas": {
+                                "env": {
+                                    "additionalProperties": {
+                                        "type": "string"
+                                    },
+                                    "description": "Name and value pairs to set as the environment variables",
+                                    "title": "Environment Variables",
+                                    "type": "object",
+                                    "x-walrus-ui": {
+                                        "group": "Basic"
+                                    },
+                                    "x-walrus-original": {
+                                        "type": [
+                                            "map",
+                                            "string"
+                                        ]
+                                    }
+                                },
+                                "image": {
+                                    "description": "Docker image name",
+                                    "title": "Image Name",
+                                    "type": "string",
+                                    "x-walrus-ui": {
+                                        "group": "Basic"
+                                    },
+                                    "x-walrus-original": {
+                                        "type": "string"
+                                    }
+                                },
+                                "limit_cpu": {
+                                    "default": "",
+                                    "description": "CPU limit. e.g. 0.5, 1, 2",
+                                    "title": "CPU Request",
+                                    "type": "string",
+                                    "x-walrus-ui": {
+                                        "group": "Resources"
+                                    },
+                                    "x-walrus-original": {
+                                        "type": "string"
+                                    }
+                                },
+                                "limit_memory": {
+                                    "default": "",
+                                    "description": "Memory limit. e.g. 128Mi, 512Mi, 1Gi, 2Gi, 4Gi",
+                                    "title": "Memory Request",
+                                    "type": "string",
+                                    "x-walrus-ui": {
+                                        "group": "Resources",
+                                        "widget": "MemoryInput"
+                                    },
+                                    "x-walrus-original": {
+                                        "type": "string"
+                                    }
+                                },
+                                "name": {
+                                    "default": "",
+                                    "description": "Name of the deployment resource. Auto-generated if empty.",
+                                    "title": "Deployment Name",
+                                    "type": "string",
+                                    "x-walrus-ui": {
+                                        "group": "Advance"
+                                    },
+                                    "x-walrus-original": {
+                                        "type": "string"
+                                    }
+                                },
+                                "namespace": {
+                                    "default": "",
+                                    "description": "Namespace to deploy. Auto-generated if empty.",
+                                    "title": "Namespace",
+                                    "type": "string",
+                                    "x-walrus-ui": {
+                                        "group": "Advance",
+                                        "widget": "NamespaceSelect"
+                                    },
+                                    "x-walrus-original": {
+                                        "type": "string"
+                                    }
+                                },
+                                "ports": {
+                                    "default": [
+                                        80
+                                    ],
+                                    "description": "Service ports to expose",
+                                    "items": {
+                                        "type": "integer"
+                                    },
+                                    "title": "Ports",
+                                    "type": "array",
+                                    "x-walrus-ui": {
+                                        "group": "Basic"
+                                    },
+                                    "x-walrus-original": {
+                                        "type": [
+                                            "list",
+                                            "number"
+                                        ]
+                                    }
+                                },
+                                "replicas": {
+                                    "default": 1,
+                                    "description": "Replicas to deploy",
+                                    "title": "Replicas",
+                                    "type": "number",
+                                    "x-walrus-ui": {
+                                        "group": "Basic"
+                                    },
+                                    "x-walrus-original": {
+                                        "type": "number"
+                                    }
+                                },
+                                "request_cpu": {
+                                    "default": "0.1",
+                                    "description": "CPU request. e.g. 0.5, 1, 2",
+                                    "title": "CPU Request",
+                                    "type": "string",
+                                    "x-walrus-ui": {
+                                        "group": "Resources"
+                                    },
+                                    "x-walrus-original": {
+                                        "type": "string"
+                                    }
+                                },
+                                "request_memory": {
+                                    "default": "128Mi",
+                                    "description": "Memory request. e.g. 128Mi, 512Mi, 1Gi, 2Gi, 4Gi",
+                                    "title": "Memory Request",
+                                    "type": "string",
+                                    "x-walrus-ui": {
+                                        "group": "Resources",
+                                        "widget": "MemoryInput"
+                                    },
+                                    "x-walrus-original": {
+                                        "type": "string"
+                                    }
+                                }
+                            }
+                        },
+                        "info": {
+                            "title": "Schema for template test-vars",
+                            "version": "main"
+                        },
+                        "openapi": "3.0.3",
+                        "paths": null
+                    }
+                },
+                "templateVersion": {
+                    "id": "484361361447465501"
+                }
+            }
+        }
+    ],
+    "pagination": {
+        "page": 1,
+        "perPage": 100,
+        "total": 1,
+        "totalPage": 1,
+        "partial": false
+    }
+}

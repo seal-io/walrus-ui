@@ -1,11 +1,9 @@
-import _, { get, map, keys, split, toString } from 'lodash';
-import { LabelListItem, schemaType } from './interface';
+import _, { get, map, keys, split, toString, trim } from 'lodash';
+import i18n from '@/locale';
+import { LabelListItem, ComponentSchema, OptionsItem } from './interface';
 import { isOrCondition, parseExpression } from './experssion-parser';
-
-interface OptionsItem {
-  label: string;
-  value: string;
-}
+import { validateYaml } from './yaml-parse';
+import { schemaType } from './index';
 
 const operatorMap = {
   noequal: '!=',
@@ -90,6 +88,44 @@ export const getObjectConditionValue = (fm, formData) => {
   });
 };
 
+export const isJSONstr = (str) => {
+  let result = true;
+  try {
+    const obj = JSON.parse(str);
+    if (typeof obj === 'object') {
+      result = true;
+    }
+  } catch (error) {
+    result = false;
+  }
+  return result;
+};
+
+export const json2Str = (obj) => {
+  if (!obj || !Object.keys(obj).length) return '';
+  return JSON.stringify(obj, null, 2);
+};
+
+export const str2Json = (str, type) => {
+  str = trim(str);
+  if (!str) {
+    let res: any = [];
+    if (schemaType.isListPrimaryType(type)) {
+      res = [];
+    } else if (schemaType.isObjectPrimaryType(type)) {
+      res = {};
+    } else if (schemaType.isTuplePrimaryType(type)) {
+      res = [];
+    }
+    return res;
+  }
+  return JSON.parse(str);
+};
+
+export const unknowType = {
+  dynamic: 'dynamic'
+};
+
 export const parseMapstring = (comSchema, val?) => {
   let labelList: LabelListItem[] = [];
   const type = get(comSchema, 'type');
@@ -133,6 +169,123 @@ export const parseOptions = (comSchema) => {
     options = [];
   }
   return options;
+};
+
+// replace input width hintInput
+export const parseComponentSchema = (schema: ComponentSchema) => {
+  const props = {
+    min: schema?.min || -Infinity,
+    max: schema?.max || Infinity,
+    maxLength: schema?.maxLength || 300,
+    sensitive: schema?.sensitive,
+    showWordLimit: schema?.maxLength,
+    minLength: schema?.minLength || null
+  };
+  const { type, required, sensitive } = schema;
+
+  const rules = { required };
+
+  // ========= string ==============
+  if (schemaType.isStringType(type) || schemaType.isNumberType(type)) {
+    // =============Select======================
+    if (schema?.options?.length) {
+      return {
+        component: ['Select', 'Option'],
+        props: {
+          ...props
+        },
+        rules: [{ ...rules, message: 'common.form.rule.select' }]
+      };
+    }
+
+    //  ===========InputPassword============
+    if (sensitive && schemaType.isStringType(type)) {
+      return {
+        component: ['HintInput'],
+        props: {
+          ...props
+        },
+        rules: [{ ...rules, message: 'common.form.rule.input' }]
+      };
+    }
+    // =============InputeNmber==========
+    if (schemaType.isNumberType(type)) {
+      return {
+        component: ['InputNumber'],
+        props: {
+          ...props
+        },
+        rules: [{ ...rules, message: 'common.form.rule.input' }]
+      };
+    }
+    //  ============Input===========
+    if (!sensitive && schemaType.isStringType(type)) {
+      return {
+        component: ['HintInput'],
+        props: { ...props },
+        rules: [{ ...rules, message: 'common.form.rule.input' }]
+      };
+    }
+  }
+
+  // ========== Input group ==============
+  if (schemaType.isMapString(type)) {
+    return {
+      component: ['XInputGroup'],
+      props: { ...props, alwaysDelete: true, shouldKey: true },
+      rules: [{ ...rules, message: 'common.form.rule.input' }]
+    };
+  }
+  // ============ select =============
+  if (schemaType.isListNumber(type) || schemaType.isListString(type)) {
+    return {
+      component: ['Select', 'Option'],
+      props: {
+        ...props,
+        multiple: true,
+        allowCreate: !schema.options?.length
+      },
+      rules: [{ ...rules, message: 'common.form.rule.select' }]
+    };
+  }
+  // ============ boolean ============
+  if (schemaType.isBoolenType(type)) {
+    // ================Checkbox================
+    return {
+      component: ['Checkbox'],
+      props: { ...props },
+      rules: [{ ...rules, message: 'common.form.rule.select' }]
+    };
+  }
+  // ============ default ============ schemaType.isCollectionType(type) || schemaType.isUnknownType(type)
+  return {
+    component: ['AceEditor'],
+    props: {
+      ...props,
+      lang: 'yaml',
+      showGutter: true
+    },
+    rules: [
+      {
+        ...rules,
+        validator(val, callback) {
+          const result = validateYaml(val);
+          if (result.error) {
+            callback(`${result.error?.message}`);
+          } else if (!required) {
+            callback();
+          } else if (result?.empty) {
+            callback(
+              `${schema.name}${i18n.global.t('common.form.rule.input')}`
+            );
+          } else {
+            callback();
+          }
+        },
+        message: ''
+      }
+    ]
+  };
 };
 
 export const checkHasValue = (property) => {

@@ -13,20 +13,17 @@
   import ThumbButton from '@/components/buttons/thumb-button.vue';
   import SealFormItemWrap from '@/components/seal-form/components/seal-form-item-wrap.vue';
   import i18n from '@/locale/index';
-  import {
-    ComponentSchema,
-    parseComponentSchema,
-    schemaType
-  } from './config/interface';
+  import { ComponentSchema } from './config/interface';
   import { json2Yaml, yaml2Json } from './config/yaml-parse';
   import formComponents from './components';
   import {
     parseMapstring,
     parseOptions,
     parseQuery,
-    getConditionValue
+    getConditionValue,
+    parseComponentSchema
   } from './config/utils';
-  import { requiredOptions, hasValueOptions } from './config/index';
+  import { requiredOptions, hasValueOptions, schemaType } from './config/index';
   import { parseExpression } from './config/experssion-parser';
   import useFillterAttributes from './hooks/use-fillter-attributes';
 
