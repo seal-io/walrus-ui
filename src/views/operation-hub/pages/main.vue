@@ -47,6 +47,9 @@
           >
             <Connectors></Connectors>
           </a-tab-pane>
+          <a-tab-pane key="form" title="Form">
+            <dynamicForm></dynamicForm>
+          </a-tab-pane>
           <template #extra>
             <IconBtnGroup
               v-if="activeKey === OperatorHubTabs.TEMPLATES"
@@ -71,6 +74,7 @@
   import Templates from '../templates/pages/list.vue';
   import Catalogs from '../catalogs/pages/list.vue';
   import GlobalVariables from '../variables/pages/list.vue';
+  import dynamicForm from '../dynamic-form/index.vue';
 
   const iconList = [
     {

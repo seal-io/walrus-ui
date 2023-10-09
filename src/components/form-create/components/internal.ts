@@ -11,7 +11,7 @@ import {
   Textarea,
   Switch
 } from '@arco-design/web-vue/es';
-import hintInput from '@/components/hint-input/index.vue';
+import HintInput from '@/components/hint-input/index.vue';
 import AceEditor from '@/components/ace-editor/index.vue';
 import sealInputPassword from '@/components/seal-form/components/seal-input-password.vue';
 import sealInput from '@/components/seal-form/components/seal-input.vue';
@@ -32,7 +32,7 @@ export default {
   Checkbox: sealCheckbox,
   CheckboxGroup,
   Switch: sealSwitch,
-  hintInput,
+  HintInput,
   Textarea: sealTextarea,
   AceEditor
 };
