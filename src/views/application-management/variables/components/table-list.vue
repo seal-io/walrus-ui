@@ -66,7 +66,10 @@
             status="warning"
             :disabled="!selectedKeys.length"
             @click="handleDelete"
-            >{{ $t('common.button.delete') }}</a-button
+            >{{ $t('common.button.delete')
+            }}<span v-if="selectedKeys.length">{{
+              `(${selectedKeys.length})`
+            }}</span></a-button
           >
         </template>
       </FilterBox>
@@ -193,7 +196,7 @@
         :current="queryParams.page"
         show-total
         show-page-size
-        :hide-on-single-page="queryParams.perPage === 10"
+        :hide-on-single-page="total <= 10"
         @change="handlePageChange"
         @page-size-change="handlePageSizeChange"
       />
