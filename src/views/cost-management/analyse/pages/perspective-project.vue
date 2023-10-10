@@ -349,7 +349,7 @@
   const handleProjectChange = (val) => {
     queryParams.project = val;
     const projectData = find(projectList.value, (item) => item.value === val);
-    projectName.value = projectData?.label || 'Project';
+    projectName.value = projectData?.label || '';
     // group by service
     each(get(projectCostFilters.value, 'filters') || [], (fItem) => {
       each(fItem, (sItem) => {
@@ -379,13 +379,15 @@
   };
 
   const handleDateChange = async () => {
-    projectCostFilters.value = {
-      ...projectCostFilters.value,
-      ...queryParams,
-      endTime: setEndTimeAddDay(queryParams.endTime, timeMode.value)
-    };
-    await getProjectList(true);
-    handleProjectChange(get(projectList.value, '0.value'));
+    await getProjectList();
+    let projectData = find(
+      projectList.value,
+      (item) => item.value === queryParams.project
+    );
+    if (!projectData) {
+      projectData = get(projectList.value, '0');
+    }
+    handleProjectChange(projectData?.value);
   };
 
   const initData = async () => {
