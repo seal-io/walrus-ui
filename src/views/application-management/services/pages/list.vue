@@ -234,7 +234,7 @@
   import useRowSelect from '@/hooks/use-row-select';
   import FilterBox from '@/components/filter-box/index.vue';
   import StatusLabel from '@/views/operation-hub/connectors/components/status-label.vue';
-  import { useUserStore } from '@/store';
+  import { useUserStore, useAppStore } from '@/store';
   import { ServiceRowData, DriftDataItem } from '../config/interface';
   import { serviceActions, serviceActionMap } from '../config';
   import {
@@ -251,6 +251,7 @@
   import revisionDetail from '../components/revision-detail.vue';
   import driftResource from '../components/drift-resource.vue';
 
+  const appStore = useAppStore();
   const userStore = useUserStore();
   const {
     showRollbackModal,
@@ -295,7 +296,7 @@
   const queryParams = reactive({
     query: '',
     page: 1,
-    perPage: 10
+    perPage: appStore.perPage || 10
   });
   const actionHandlerMap = new Map();
   const axiosInstance: any = null;
@@ -386,6 +387,7 @@
   const handlePageSizeChange = (pageSize: number) => {
     queryParams.page = 1;
     queryParams.perPage = pageSize;
+    appStore.updateSettings({ perPage: pageSize });
     handleFilter();
   };
   const handleCreate = () => {
