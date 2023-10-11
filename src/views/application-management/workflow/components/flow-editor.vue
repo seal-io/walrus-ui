@@ -16,7 +16,7 @@
     },
     setup(props) {
       const { height } = toRefs(props);
-      const list = ref([1, 2, 3]);
+      const list = ref([1]);
       const drag = ref(false);
 
       const setPosition = (index, list) => {
@@ -43,7 +43,8 @@
         console.log('drag end 2');
       };
 
-      const renderFlowContent = (item, index) => {
+      const renderFlowContent = (data) => {
+        const { element, index } = data;
         return (
           <div class="flow-content-group">
             <FlowSplitLine
@@ -61,9 +62,10 @@
         );
       };
 
+      // use in no drag
       const renderStage = () => {
-        return list.value.map((item, index) => {
-          return renderFlowContent(item, index);
+        return list.value.map((element, index) => {
+          return renderFlowContent({ element, index });
         });
       };
 
@@ -76,8 +78,8 @@
             onStart={() => handleDragStart()}
             onEnd={() => handleDragEnd()}
             v-slots={{
-              item: (item, index) => {
-                return renderFlowContent(item, index);
+              item: (data) => {
+                return renderFlowContent(data);
               }
             }}
           ></Draggable>

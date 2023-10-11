@@ -8,11 +8,17 @@
         default() {
           return '';
         }
+      },
+      btnText: {
+        type: String,
+        default() {
+          return '';
+        }
       }
     },
     emits: ['addParallel'],
     setup(props, { emit }) {
-      const { position } = toRefs(props);
+      const { position, btnText } = toRefs(props);
 
       const handleAddParallel = () => {
         emit('addParallel');
@@ -23,7 +29,7 @@
             <div class="prev btn-wrap"></div>
             <div class="step-content" onClick={() => handleAddParallel()}>
               <icon-plus-circle-fill class="btn-icon m-r-5" />
-              <span>并行任务</span>
+              <span>{btnText.value}</span>
             </div>
             <div class="next btn-wrap"></div>
           </div>
@@ -67,6 +73,10 @@
       border-top: none;
       border-radius: 0 0 16px 16px;
       content: '';
+    }
+
+    &.non-step::before {
+      border-radius: 0;
     }
 
     .trigger-btn {
