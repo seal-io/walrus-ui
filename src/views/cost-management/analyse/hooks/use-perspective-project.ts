@@ -66,7 +66,7 @@ export default function usePerspectiveCost(props) {
         ...omit(queryParams, ['project']),
         fieldName: 'label:walrus.seal.io/project-name',
         fieldType: 'filter',
-        endTime: setEndTimeAddDay(queryParams.endTime, timeMode.value)
+        endTime: setEndTimeAddDay(Date.now(), timeMode.value)
       };
       const { data } = await queryPerspectiveFieldValues(params);
       projectList.value = data?.items || [];

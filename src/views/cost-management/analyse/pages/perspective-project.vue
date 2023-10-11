@@ -379,15 +379,7 @@
   };
 
   const handleDateChange = async () => {
-    await getProjectList();
-    let projectData = find(
-      projectList.value,
-      (item) => item.value === queryParams.project
-    );
-    if (!projectData) {
-      projectData = get(projectList.value, '0');
-    }
-    handleProjectChange(projectData?.value);
+    handleProjectChange(queryParams.project);
   };
 
   const initData = async () => {
