@@ -189,12 +189,10 @@
 <script lang="ts" setup>
   import { PROJECT } from '@/router/config';
   import { Resources, Actions } from '@/permissions/config';
-  import QuestionPopup from '@/components/question-popup/index.vue';
-  import { QAlinkMap, USER_DEFAULT_PROJECT } from '@/views/config';
   import _, { cloneDeep, map, pickBy, remove } from 'lodash';
   import { ref, reactive } from 'vue';
   import dayjs from 'dayjs';
-  import { useUserStore, useProjectStore } from '@/store';
+  import { useUserStore, useProjectStore, useAppStore } from '@/store';
   import HeaderInfo from '@/components/header-info/index.vue';
   import useCallCommon from '@/hooks/use-call-common';
   import FilterBox from '@/components/filter-box/index.vue';
@@ -206,6 +204,7 @@
   import { queryProjects, deleteProjects } from '../api';
 
   let timer: any = null;
+  const appStore = useAppStore();
   const userStore = useUserStore();
   const projectStore = useProjectStore();
   const { t, router } = useCallCommon();
@@ -225,7 +224,7 @@
   const queryParams = reactive({
     query: '',
     page: 1,
-    perPage: 10
+    perPage: appStore.perPage || 10
   });
   const handleCreate = () => {
     action.value = 'create';
@@ -302,15 +301,14 @@
   const handlePageSizeChange = (pageSize: number) => {
     queryParams.page = 1;
     queryParams.perPage = pageSize;
+    appStore.updateSettings({ perPage: pageSize });
     handleFilter();
   };
   const updateProjectStore = async (list) => {
     const ids = map(list, (item) => item.id);
     projectStore.removeProjects(ids);
-    // const defaultProject: any = await localStore.getValue(USER_DEFAULT_PROJECT);
     const defaultProject = projectStore.defaultActiveProject;
     if (ids.includes(defaultProject?.id)) {
-      // localStore.removeValue(USER_DEFAULT_PROJECT);
       projectStore.setInfo({
         defaultActiveProject: {}
       });
