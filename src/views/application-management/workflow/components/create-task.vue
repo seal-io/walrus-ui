@@ -1,6 +1,6 @@
 <template>
   <a-modal
-    top="10%"
+    top="0"
     :footer="false"
     hide-title
     :closable="false"
@@ -34,14 +34,19 @@
         <div class="form">
           <a-space v-if="current === 1" :size="12">
             <TaskCard
-              v-for="(item, index) in tasks"
+              v-for="(item, index) in TaskTypeList"
               :key="index"
               :data-info="item"
               :active="item.value === selectedTask"
               @click="handleClick(item)"
             ></TaskCard>
           </a-space>
-          <ManualCheckpoint v-else></ManualCheckpoint>
+          <ManualCheckpoint
+            v-else-if="selectedTask === StepTypes.APPROVAL"
+          ></ManualCheckpoint>
+          <ServiceTask
+            v-else-if="selectedTask === StepTypes.SERVICE"
+          ></ServiceTask>
         </div>
         <EditPageFooter class="footer-btn">
           <template #save>
@@ -72,8 +77,9 @@
   import locale from '@/locale';
   import EditPageFooter from '@/components/edit-page-footer/index.vue';
   import ManualCheckpoint from '../task-types/manual-checkpoint.vue';
+  import ServiceTask from '../task-types/service-task.vue';
   import TaskCard from '../task-types/task-cards.vue';
-  import tasks from '../task-types/config';
+  import { TaskTypeList, StepTypes } from '../task-types/config';
 
   const props = defineProps({
     dataInfo: {
@@ -103,13 +109,17 @@
 
   const handleClick = (item) => {
     selectedTask.value = item.value;
+    current.value = 2;
   };
   const handleCancel = () => {
     emits('update:show', false);
   };
   const handleOk = () => {};
   const handleBeforeOpen = () => {};
-  const handleBeforeClose = () => {};
+  const handleBeforeClose = () => {
+    current.value = 1;
+    selectedTask.value = '';
+  };
 </script>
 
 <style lang="less">
