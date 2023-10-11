@@ -1,5 +1,5 @@
 <script lang="tsx">
-  import { defineComponent, toRefs, ref, onMounted, onUnmounted } from 'vue';
+  import { defineComponent, toRefs } from 'vue';
 
   export default defineComponent({
     props: {

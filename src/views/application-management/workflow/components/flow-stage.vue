@@ -2,12 +2,14 @@
   import { defineComponent, toRefs, ref } from 'vue';
   import FlowStep from './flow-step.vue';
   import ParallelButton from './parallel-button.vue';
+  import CreateTask from './create-task.vue';
 
   export default defineComponent({
     setup(props) {
-      const list = ref([1]);
+      const list = ref([]);
       const stageName = ref('新阶段');
       const hoverable = ref(false);
+      const show = ref(false);
 
       const handleInputStageName = (e) => {
         stageName.value = e.target.innerText;
@@ -21,7 +23,19 @@
         hoverable.value = false;
       };
 
+      const renderModal = () => {
+        return (
+          <CreateTask
+            show={show.value}
+            title="新建任务"
+            dataInfo={{}}
+          ></CreateTask>
+        );
+      };
+
       const handleAddParallel = () => {
+        show.value = true;
+
         list.value.push(1);
       };
 
@@ -61,18 +75,26 @@
                 );
               })
             ) : (
-              <FlowStep
-                onAddTask={() => handleAddParallel()}
-                position="middle"
-              ></FlowStep>
+              <ParallelButton
+                btn-text="任务"
+                position="last"
+                class={['non-step']}
+                onAddParallel={() => handleAddParallel()}
+              ></ParallelButton>
             )}
             {hoverable.value ? (
               <ParallelButton
+                btn-text="并行任务"
                 position="last"
                 onAddParallel={() => handleAddParallel()}
               ></ParallelButton>
             ) : null}
           </div>
+          <CreateTask
+            v-model:show={show.value}
+            title="新建任务"
+            dataInfo={{}}
+          ></CreateTask>
         </div>
       );
     }
