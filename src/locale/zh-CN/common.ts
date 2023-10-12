@@ -49,7 +49,7 @@ export default {
   'common.button.close': '关闭',
   'common.button.done': '完成',
   'common.button.next': '下一步',
-  'common.button.pre': '上一步',
+  'common.button.prev': '上一步',
   'common.button.back': '返回',
   'common.tips.save': '您有未保存的更改。离开此页面将放弃更改。',
   'common.tips.cancel': '您有未保存的更改。确定放弃更改？',

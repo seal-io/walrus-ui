@@ -45,7 +45,7 @@
     margin-top: 40px;
     padding-top: 20px;
     padding-bottom: 20px;
-    // border-top: 1px solid var(--seal-border-gray-2)
+
     :deep(.arco-space-fill) {
       justify-content: center;
 
