@@ -90,11 +90,7 @@
               ></ParallelButton>
             ) : null}
           </div>
-          <CreateTask
-            v-model:show={show.value}
-            title="新建任务"
-            dataInfo={{}}
-          ></CreateTask>
+          <CreateTask v-model:show={show.value} dataInfo={{}}></CreateTask>
         </div>
       );
     }

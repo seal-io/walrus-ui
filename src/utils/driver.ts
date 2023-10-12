@@ -9,7 +9,7 @@ const options = {
   doneBtnText: i18n.global.t('common.button.done'), // Text on the final button
   closeBtnText: i18n.global.t('common.button.close'), // Text on the close button for this step
   nextBtnText: i18n.global.t('common.button.next'), // Next button text for this step
-  prevBtnText: i18n.global.t('common.button.pre'),
+  prevBtnText: i18n.global.t('common.button.prev'),
   opacity: 0.3,
   stageBackground: 'rgba(0, 0, 0, .3)'
 };

@@ -50,7 +50,7 @@ export default {
   'common.button.close': 'Close',
   'common.button.done': 'Done',
   'common.button.next': 'Next',
-  'common.button.pre': 'Previous',
+  'common.button.prev': 'Previous',
   'common.button.back': 'Back',
   'common.tips.save':
     'You have unsaved changes. Leaving this page will discard changes.',
