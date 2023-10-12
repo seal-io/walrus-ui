@@ -14,7 +14,7 @@ import { queryServices } from '@/views/application-management/services/api';
 import useCallCommon from '@/hooks/use-call-common';
 import { queryVariables } from '../../variables/api';
 
-export default function useCompleteData() {
+export default function useCompleteData(props?) {
   interface HintKey {
     service: any;
     var: any;
@@ -150,6 +150,11 @@ export default function useCompleteData() {
       };
     });
   };
+  /**
+   * Description
+   * @returns {any}
+   * params.flow: used for workflow create service step
+   */
   const getServiceList = async () => {
     serviceToken?.cancel?.();
     serviceToken = createAxiosToken();
@@ -157,8 +162,10 @@ export default function useCompleteData() {
       const params = {
         page: -1,
         withSchema: true,
-        extract: ['-projectId', '-status', '-schema', '-uiSchema']
+        extract: ['-projectId', '-status', '-schema', '-uiSchema'],
+        flow: undefined
       };
+      params.flow = props?.flow || undefined;
       const { data } = await queryServices(params, serviceToken.token);
       serviceDataList.value = data.items || [];
       allTemplateVersions.value = _.map(data?.items || [], (item) => {

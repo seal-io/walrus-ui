@@ -23,6 +23,7 @@
     }
   }
 
+  // ====== select start =========
   :deep(.arco-select-view) {
     padding-top: 20px;
 
@@ -38,7 +39,21 @@
       padding-right: @paddingLeft;
     }
   }
+  // ====== select end =========
 
+  // ======== date picker start =========
+  :deep(.arco-picker) {
+    height: auto;
+    padding: 20px 12px 0 12px;
+    cursor: pointer;
+
+    .arco-picker-input {
+      input {
+        padding: 4px 0;
+      }
+    }
+  }
+  // ======== date picker end =========
   .label {
     position: absolute;
     top: 50%;

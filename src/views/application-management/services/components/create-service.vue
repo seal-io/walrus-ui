@@ -282,18 +282,7 @@
         return 'page';
       }
     },
-    submitFunc: {
-      type: Function as PropType<(args: any) => Promise<any>>,
-      default() {
-        return () => {};
-      }
-    },
-    cancelFunc: {
-      type: Function as PropType<() => void>,
-      default() {
-        return () => {};
-      }
-    }
+    flow: Object
   });
 
   const emits = defineEmits(['cancel', 'save']);
@@ -500,12 +489,12 @@
     return { validFailedForm, moduleFormList };
   };
 
-  const cancel = async () => {
+  const cancel = async (callback) => {
     beforeLeaveCallback({
       isCancel: true,
       onOk: () => {
         copyFormData = cloneDeep(formData);
-        props.cancelFunc();
+        callback?.();
       }
     });
   };
@@ -515,30 +504,24 @@
     const res = await formref.value?.validate();
     const { validFailedForm, moduleFormList } = await validateFormData();
     if (!res && !validFailedForm && !validateTrigger.value) {
-      try {
-        submitLoading.value = true;
-        formData.attributes = {
-          ...reduce(
-            moduleFormList,
-            (obj, s) => {
-              obj = {
-                ...obj,
-                ...s.formData
-              };
-              return obj;
-            },
-            {}
-          )
-        };
-        copyFormData = _.cloneDeep(formData);
-        await props.submitFunc(formData);
-        submitLoading.value = false;
-      } catch (error) {
-        submitLoading.value = false;
-      }
-    } else {
-      scrollToView();
+      formData.attributes = {
+        ...reduce(
+          moduleFormList,
+          (obj, s) => {
+            obj = {
+              ...obj,
+              ...s.formData
+            };
+            return obj;
+          },
+          {}
+        )
+      };
+      copyFormData = _.cloneDeep(formData);
+      return formData;
     }
+    scrollToView();
+    return false;
   };
   watch(
     () => formData.template.version,

@@ -8,8 +8,12 @@ import { ServiceRowData, EndPointRow } from '../config/interface';
 
 export const SERVICE_API = '/services';
 
-export const SERVICE_API_PREFIX = () => {
-  const { environmentId, projectId } = router.currentRoute.value.params;
+export const SERVICE_API_PREFIX = (params?: {
+  environmentId: string;
+  projectId: string;
+}) => {
+  const { environmentId, projectId } =
+    params || router.currentRoute.value.params;
   return `/projects/${projectId}/environments/${environmentId}`;
 };
 
@@ -33,14 +37,25 @@ export interface ResultType {
 export interface QueryType extends Pagination {
   projectID?: string;
 }
-export const queryServices = (params: QueryType, token?) => {
-  return axios.get<ResultType>(`${SERVICE_API_PREFIX()}${SERVICE_API}`, {
-    params,
-    paramsSerializer: (obj) => {
-      return qs.stringify(obj);
-    },
-    cancelToken: token
-  });
+
+// workflow create service step
+interface ServiceParams extends Pagination {
+  flow?: {
+    projectId: string;
+    environmentId: string;
+  };
+}
+export const queryServices = (params: ServiceParams, token?) => {
+  return axios.get<ResultType>(
+    `${SERVICE_API_PREFIX(params.flow)}${SERVICE_API}`,
+    {
+      params,
+      paramsSerializer: (obj) => {
+        return qs.stringify(obj);
+      },
+      cancelToken: token
+    }
+  );
 };
 
 export const createService = (data) => {
