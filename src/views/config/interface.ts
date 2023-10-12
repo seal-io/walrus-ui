@@ -50,4 +50,9 @@ export interface DeletePayload {
   items: { id: string }[];
 }
 
+export interface ListItem {
+  label: string;
+  value: string;
+}
+
 export default {};

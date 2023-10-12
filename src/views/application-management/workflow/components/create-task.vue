@@ -42,25 +42,24 @@
               :key="index"
               :data-info="item"
               :active="item.value === selectedTask"
-              @click="handleClick(item)"
+              @click="handleSelectTask(item)"
             ></TaskCard>
           </a-space>
           <ManualCheckpoint
             v-else-if="
               selectedTask === TaskTypes.APPROVAL && current === steps.length
             "
+            ref="manualRef"
           ></ManualCheckpoint>
           <seal-select
             v-else-if="selectedTask === TaskTypes.SERVICE && current === 2"
-            v-model="targetEnv"
+            v-model="flow.environmentId"
             label="选择环境"
             :placeholder="$t('applications.applications.table.module')"
             :required="true"
             :style="{ width: `${InputWidth.LARGE}px` }"
-            :options="[
-              { lbale: 'dev', value: 'dev' },
-              { lbale: 'test', value: 'test' }
-            ]"
+            :options="environmentList"
+            :loading="loading"
             allow-search
             @change="handleOnSelect"
           >
@@ -69,6 +68,8 @@
             v-else-if="
               selectedTask === TaskTypes.SERVICE && current === steps.length
             "
+            ref="serviceRef"
+            :flow="flow"
           ></ServiceTask>
         </div>
         <EditPageFooter class="footer-btn" style="margin-top: 0">
@@ -93,7 +94,7 @@
             <a-space :size="40">
               <a-button
                 v-if="selectedTask && current < steps.length"
-                :disabled="!targetEnv"
+                :disabled="!flow.environmentId"
                 type="primary"
                 class="cap-title cancel-btn"
                 @click="handleOnNext"
@@ -114,10 +115,12 @@
 </template>
 
 <script lang="ts" setup>
-  import { toRefs, ref, computed, PropType } from 'vue';
-  import locale from '@/locale';
+  import { toRefs, reactive, ref, computed, PropType } from 'vue';
+  import useCallCommon from '@/hooks/use-call-common';
   import { InputWidth } from '@/views/config';
+  import { ListItem } from '@/views/config/interface';
   import EditPageFooter from '@/components/edit-page-footer/index.vue';
+  import { queryEnvironments } from '@/views/application-management/environments/api';
   import ManualCheckpoint from '../task-types/manual-checkpoint.vue';
   import ServiceTask from '../task-types/service-task.vue';
   import TaskCard from '../task-types/task-cards.vue';
@@ -144,11 +147,18 @@
     }
   });
   const emits = defineEmits(['submit', 'cancel', 'update:show']);
-  const { t } = locale.global;
+  const { route, t } = useCallCommon();
   const submitLoading = ref(false);
   const current = ref(1);
   const selectedTask = ref('');
-  const targetEnv = ref('');
+  const flow = reactive({
+    projectId: route.params.projectId,
+    environmentId: ''
+  });
+  const serviceRef = ref();
+  const manualRef = ref();
+  const environmentList = ref<ListItem[]>([]);
+  const loading = ref(false);
 
   const title = computed(() => {
     if (!selectedTask.value) {
@@ -169,25 +179,68 @@
       return true;
     });
   });
+
+  const getEnvironmentList = async () => {
+    try {
+      loading.value = true;
+      const { data } = await queryEnvironments({ page: -1 });
+      const items = data.items || [];
+      environmentList.value = items?.map((item) => {
+        return {
+          label: item.name,
+          value: item.id
+        };
+      });
+    } catch (error) {
+      environmentList.value = [];
+      // ignore
+    } finally {
+      loading.value = false;
+    }
+  };
   const handleOnPrev = () => {
     current.value = Math.max(1, current.value - 1);
   };
 
   const handleOnNext = () => {
-    current.value = Math.min(3, current.value + 1);
+    current.value = Math.min(steps.value.length, current.value + 1);
   };
 
   const handleOnSelect = () => {
     handleOnNext();
   };
-  const handleClick = (item) => {
+
+  const handleSelectTask = (item) => {
     selectedTask.value = item.value;
-    current.value = 2;
+    if (selectedTask.value === TaskTypes.SERVICE) {
+      getEnvironmentList();
+    }
+    handleOnNext();
   };
+
   const handleCancel = () => {
     emits('update:show', false);
   };
-  const handleOk = () => {};
+
+  const handleOk = async () => {
+    if (current.value === steps.value.length) {
+      if (selectedTask.value === TaskTypes.SERVICE) {
+        submitLoading.value = true;
+        const data = await serviceRef.value?.submit();
+        submitLoading.value = false;
+        if (data) {
+          emits('submit', data);
+        }
+      } else if (selectedTask.value === TaskTypes.APPROVAL) {
+        submitLoading.value = true;
+        const data = await manualRef.value?.submit();
+        submitLoading.value = false;
+        if (data) {
+          emits('submit', data);
+        }
+      }
+    }
+  };
   const handleBeforeOpen = () => {};
   const handleBeforeClose = () => {
     current.value = 1;

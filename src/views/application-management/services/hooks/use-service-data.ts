@@ -34,7 +34,7 @@ export default function useServiceData(props?) {
     templateList,
     completeDataLoading,
     allTemplateVersions
-  } = useCompleteData();
+  } = useCompleteData(props);
   const serviceStore = useServiceStore();
   const { pageAction, handleEdit } = usePageAction();
   const defaultGroupKey = '_default_default_';
