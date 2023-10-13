@@ -245,6 +245,7 @@
   const handleBeforeClose = () => {
     current.value = 1;
     selectedTask.value = '';
+    flow.environmentId = '';
   };
 </script>
 
