@@ -2,15 +2,28 @@
   import { defineComponent, toRefs, ref, onMounted, onUnmounted } from 'vue';
 
   export default defineComponent({
-    setup() {
+    props: {
+      basicInfo: {
+        type: Object,
+        default() {
+          return {};
+        }
+      }
+    },
+    emits: ['edit'],
+    setup(props, { emit }) {
+      const { basicInfo } = toRefs(props);
       return () => (
         <div class="flow-aside-container">
-          <div class="flow-header">流水线源</div>
+          <div class="flow-header">流水线</div>
           <div class="flow-content">
             <icon-branch class="m-r-5 size-16" />
-            <span>job-XXX-123123</span>
+            <span>{basicInfo.value.displayName}</span>
+            <a-link onClick={() => emit('edit')}>
+              <icon-edit />
+            </a-link>
           </div>
-          <a-button
+          {/* <a-button
             type="outline"
             shape="round"
             class="m-r-5"
@@ -20,7 +33,7 @@
             }}
           >
             添加流水线源
-          </a-button>
+          </a-button> */}
         </div>
       );
     }
@@ -38,11 +51,23 @@
     .flow-content {
       display: flex;
       align-items: center;
+      width: max-content;
       height: 36px;
       margin-left: 5px;
       padding: 0 10px;
       border-radius: 18px;
       box-shadow: 0 2px 4px 0 rgba(var(--gray-5), 60%);
+
+      .arco-link {
+        height: 22px;
+        margin-left: 5px;
+        overflow: hidden;
+        border-radius: 50%;
+
+        .arco-icon {
+          stroke-width: 4;
+        }
+      }
     }
 
     :deep(.arco-btn-outline) {

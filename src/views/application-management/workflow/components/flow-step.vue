@@ -1,6 +1,7 @@
 <script lang="tsx">
-  import { defineComponent, toRefs, ref } from 'vue';
+  import { defineComponent, toRefs, ref, PropType, inject } from 'vue';
   import Draggable from 'vuedraggable';
+  import { Step } from '../config/interface';
 
   export default defineComponent({
     props: {
@@ -9,11 +10,18 @@
         default() {
           return '';
         }
+      },
+      stepData: {
+        type: Object as PropType<Step>,
+        default() {
+          return {};
+        }
       }
     },
     emits: ['insertPrev', 'insertNext', 'addTask'],
     setup(props, { emit }) {
-      const { position } = toRefs(props);
+      const stageData = inject('stageData');
+      const { position, stepData } = toRefs(props);
       const drag = ref(false);
       const list = ref([1]);
 
@@ -43,16 +51,16 @@
       const renderStep = (item, index) => {
         return (
           <div class="step-box" key={index}>
-            <div class="prev btn-wrap" onClick={() => handleInsertPrev(index)}>
-              <a-tooltip content="添加串行任务">
-                <icon-plus-circle-fill class="plus-btn" />
-              </a-tooltip>
+            <div class="prev btn-wrap">
+              {/* <a-tooltip content="添加串行任务">
+                <icon-plus-circle-fill class="plus-btn" onClick={() => handleInsertPrev(index)}/>
+              </a-tooltip> */}
             </div>
             <div class="step-content">安全扫描-{index}</div>
-            <div class="next btn-wrap" onClick={() => handleInsertNext(index)}>
-              <a-tooltip content="添加串行任务">
-                <icon-plus-circle-fill class="plus-btn" />
-              </a-tooltip>
+            <div class="next btn-wrap">
+              {/* <a-tooltip content="添加串行任务">
+                <icon-plus-circle-fill class="plus-btn" onClick={() => handleInsertNext(index)}/>
+              </a-tooltip> */}
             </div>
           </div>
         );
@@ -68,33 +76,46 @@
           </div>
         );
       };
+
+      const renderStepsOnDrag = () => {
+        return list.value.length ? (
+          <>
+            {/* <div class="trigger-btn">
+                  <icon-play-circle class="btn" />
+                </div> */}
+            {
+              <Draggable
+                style={{ display: 'flex' }}
+                v-model={list.value}
+                item-key="id"
+                onStart={() => handleDragStart()}
+                onEnd={() => handleDragEnd()}
+                v-slots={{
+                  item: ({ item, index }) => {
+                    return renderStep(item, index);
+                  }
+                }}
+              ></Draggable>
+            }
+          </>
+        ) : (
+          renderPlusTaskBtn()
+        );
+      };
+
+      const renderStepContent = () => {
+        return (
+          <div class="step-box">
+            <div class="prev btn-wrap"></div>
+            <div class="step-content">安全扫描-{stepData.value.name}</div>
+            <div class="next btn-wrap"></div>
+          </div>
+        );
+      };
+
       return () => (
         <div class={['flow-step', position.value]}>
-          <div class="box">
-            {list.value.length ? (
-              <>
-                <div class="trigger-btn">
-                  <icon-play-circle class="btn" />
-                </div>
-                {
-                  <Draggable
-                    style={{ display: 'flex' }}
-                    v-model={list.value}
-                    item-key="id"
-                    onStart={() => handleDragStart()}
-                    onEnd={() => handleDragEnd()}
-                    v-slots={{
-                      item: ({ item, index }) => {
-                        return renderStep(item, index);
-                      }
-                    }}
-                  ></Draggable>
-                }
-              </>
-            ) : (
-              renderPlusTaskBtn()
-            )}
-          </div>
+          <div class="box">{renderStepContent()}</div>
         </div>
       );
     }
@@ -165,17 +186,16 @@
             display: block;
           }
 
-          &::before {
-            position: absolute;
-            right: -12px;
-            bottom: 10px;
-            display: inline-block;
-            width: 14px;
-            height: 1px;
-            background-color: rgb(var(--arcoblue-5));
-            content: '';
-          }
-
+          // &::before {
+          //   position: absolute;
+          //   right: -12px;
+          //   bottom: 10px;
+          //   display: inline-block;
+          //   width: 14px;
+          //   height: 1px;
+          //   background-color: rgb(var(--arcoblue-5));
+          //   content: '';
+          // }
           &.next::before {
             right: auto;
             left: -12px;

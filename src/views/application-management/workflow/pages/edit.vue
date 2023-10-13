@@ -12,9 +12,19 @@
         :menu="{ icon: 'icon-apps' }"
         @change="handleSelectChange"
       ></Breadcrumb>
+      <template #right>
+        <a-space fill :size="20" align="end" style="margin-right: 60px">
+          <a-button type="primary" size="small" @click="handleSubmit">
+            {{ $t('common.button.save') }}
+          </a-button>
+          <a-button type="outline" size="small">
+            {{ $t('common.button.cancel') }}
+          </a-button>
+        </a-space>
+      </template>
     </BreadWrapper>
     <ComCard>
-      <flow-editor :height="height"></flow-editor>
+      <flow-editor ref="flow" :height="height"></flow-editor>
     </ComCard>
   </div>
 </template>
@@ -29,6 +39,7 @@
   const height = 'calc(100vh - 90px)';
   const { t, route } = useCallCommon();
   const id = route.query.id as string;
+  const flow = ref();
   const {
     getProjectList,
     setProjectList,
@@ -62,6 +73,11 @@
   };
   const init = async () => {
     setBreadCrumbList();
+  };
+
+  const handleSubmit = () => {
+    const data = flow.value?.getStageList?.();
+    console.log('flow data', data);
   };
   init();
 </script>

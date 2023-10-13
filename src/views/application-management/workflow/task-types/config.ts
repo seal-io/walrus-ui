@@ -5,15 +5,15 @@ export const TaskTypes = {
 
 export const TaskTypeList = [
   {
-    title: '人工卡点',
+    title: '人工审核',
     value: TaskTypes.APPROVAL,
-    description: '人工卡点',
+    description: '人工审核',
     icon: 'icon-jiaoseshouquan'
   },
   {
-    title: '服务',
+    title: '部署服务',
     value: TaskTypes.SERVICE,
-    description: '服务',
+    description: '部署服务',
     icon: 'icon-fuwu'
   }
 ];

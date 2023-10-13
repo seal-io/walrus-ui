@@ -111,7 +111,7 @@ export default {
   'applications.applications.variables.label': 'Variable Name',
   'applications.applications.modules.button': 'Add a template',
   'applications.applications.button.upgrade': 'Upgrade',
-  'applications.workflows.menu': 'Workflows',
+  'applications.workflows.menu': 'Pipelines',
   'applications.workflows.create': 'New Pipeline',
   'applications.projects.menu': 'Projects',
   'applications.projects.authorize.title': 'Role Authorization',
