@@ -86,4 +86,36 @@ export const approvalRoles = [
     items: pipelineRoles
   }
 ];
+
+export const stageSchema = {
+  dependencies: [],
+  description: '',
+  name: '',
+  steps: []
+};
+
+export const stepSchema = {
+  dependencies: [],
+  description: '',
+  input: {},
+  labels: {},
+  name: '',
+  spec: {
+    // projectID: '',
+    // environmentID: '',
+    // environment: {
+    //   id: ''
+    // },
+    // name: '',
+    // attributes: {},
+    // template: {
+    //   name: '',
+    //   version: ''
+    // },
+    // jobType: 'apply',
+    // timeout: 0
+  },
+  timeout: 0,
+  type: ''
+};
 export default {};

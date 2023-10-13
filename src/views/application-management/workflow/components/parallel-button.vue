@@ -39,7 +39,7 @@
       return () => (
         <div class={['flow-step']}>
           <div class="box">
-            <div class="trigger-btn"></div>
+            {/* <div class="trigger-btn"></div> */}
             {renderStep()}
           </div>
         </div>

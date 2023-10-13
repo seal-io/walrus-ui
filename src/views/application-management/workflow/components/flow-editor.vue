@@ -1,9 +1,15 @@
 <script lang="tsx">
-  import { defineComponent, toRefs, ref } from 'vue';
+  import _ from 'lodash';
+  import { defineComponent, toRefs, ref, reactive, defineExpose } from 'vue';
   import Draggable from 'vuedraggable';
+  import dayjs from 'dayjs';
+  import i18n from '@/locale';
   import FlowStage from './flow-stage.vue';
   import FlowSplitLine from './split-line.vue';
   import FlowAside from './flow-aside.vue';
+  import BasicInfo from './basic-info.vue';
+  import { Stage } from '../config/interface';
+  import { stageSchema } from '../config';
 
   export default defineComponent({
     props: {
@@ -14,9 +20,18 @@
         }
       }
     },
-    setup(props) {
+    setup(props, { expose }) {
+      const { t } = i18n.global;
       const { height } = toRefs(props);
-      const list = ref([1]);
+      const show = ref(false);
+      const flowBasic = ref({
+        displayName: `pipeline-${dayjs().format('YYYYMMDDHHmmss')}`,
+        name: '',
+        type: 'default',
+        description: '',
+        parallelism: 0
+      });
+      const stageList = ref<Stage[]>([]);
       const drag = ref(false);
 
       const setPosition = (index, list) => {
@@ -26,12 +41,15 @@
         return 'middle';
       };
 
+      const handleEditBasicInfo = () => {
+        show.value = true;
+      };
       const handleInsertStagePrev = (index) => {
-        list.value.splice(index, 0, 1);
+        stageList.value.splice(index, 0, _.cloneDeep(stageSchema));
       };
 
       const handleInsertStageNext = (index) => {
-        list.value.splice(index + 1, 0, 1);
+        stageList.value.splice(index + 1, 0, _.cloneDeep(stageSchema));
       };
 
       const handleDragStart = () => {
@@ -49,10 +67,10 @@
           <div class="flow-content-group">
             <FlowSplitLine
               onAddStage={() => handleInsertStagePrev(index)}
-              position={setPosition(index, list.value)}
+              position={setPosition(index, stageList.value)}
             ></FlowSplitLine>
-            <FlowStage></FlowStage>
-            {index === list.value.length - 1 ? (
+            <FlowStage stepList={element.steps} stageData={element}></FlowStage>
+            {index === stageList.value.length - 1 ? (
               <FlowSplitLine
                 onAddStage={() => handleInsertStageNext(index)}
                 position="last"
@@ -64,16 +82,20 @@
 
       // use in no drag
       const renderStage = () => {
-        return list.value.map((element, index) => {
+        return stageList.value.map((element, index) => {
           return renderFlowContent({ element, index });
         });
+      };
+
+      const getStageList = () => {
+        return stageList.value;
       };
 
       const content = () => {
         return (
           <Draggable
             style={{ display: 'flex' }}
-            v-model={list.value}
+            v-model={stageList.value}
             item-key="id"
             onStart={() => handleDragStart()}
             onEnd={() => handleDragEnd()}
@@ -86,12 +108,29 @@
         );
       };
 
+      const initData = () => {
+        stageList.value.push(_.cloneDeep(stageSchema));
+      };
+
+      expose({
+        getStageList
+      });
+
+      initData();
+
       return () => (
         <div class="flow-wrapper" style={{ height: height.value }}>
           <div class="flow-side">
-            <FlowAside></FlowAside>
+            <FlowAside
+              basicInfo={flowBasic}
+              onEdit={() => handleEditBasicInfo()}
+            ></FlowAside>
           </div>
           <div class="flow-content">{content()}</div>
+          <BasicInfo
+            v-model:dataInfo={flowBasic.value}
+            v-model:show={show.value}
+          ></BasicInfo>
         </div>
       );
     }

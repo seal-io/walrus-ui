@@ -2,7 +2,7 @@
   <a-modal
     top="10%"
     :footer="false"
-    hide-title
+    :hide-title="true"
     :closable="false"
     :align-center="false"
     :width="1200"
@@ -17,7 +17,7 @@
       padding: 0
     }"
     modal-class="flow-task-modal"
-    :title="title"
+    title="新建任务"
     @cancel="handleCancel"
     @ok="handleOk"
     @before-open="handleBeforeOpen"

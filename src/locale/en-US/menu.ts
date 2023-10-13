@@ -7,7 +7,7 @@ export default {
   'menu.applicationManagement.serivce': 'Services',
   'menu.applicationManagement.secret': 'Variables',
   'menu.applicationManagement.members': 'Members',
-  'menu.applicationManagement.workflow': 'Workflows',
+  'menu.applicationManagement.workflow': 'Pipelines',
   'menu.costManagement': 'Cost Management',
   'menu.costManagement.analyse': 'Cost Analysis',
   'menu.costManagement.perspective': 'Perspectives',

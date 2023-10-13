@@ -1,22 +1,38 @@
 <script lang="tsx">
-  import { defineComponent, toRefs, ref } from 'vue';
+  import _ from 'lodash';
+  import { defineComponent, toRefs, ref, PropType, provide } from 'vue';
   import FlowStep from './flow-step.vue';
   import ParallelButton from './parallel-button.vue';
   import CreateTask from './create-task.vue';
+  import { Step, Stage } from '../config/interface';
+  import { stepSchema, stageSchema } from '../config';
 
   export default defineComponent({
+    props: {
+      stepList: {
+        type: Array as PropType<Step[]>,
+        default() {
+          return [];
+        }
+      },
+      stageData: {
+        type: Object as PropType<Stage>,
+        default() {
+          return {};
+        }
+      }
+    },
     setup(props) {
-      const list = ref([]);
-      const stageName = ref('新阶段');
+      const { stepList, stageData } = toRefs(props);
       const hoverable = ref(false);
       const show = ref(false);
-
+      provide('stageData', stageData);
       const handleInputStageName = (e) => {
-        stageName.value = e.target.innerText;
+        stageData.value.name = e.target.innerText;
       };
 
       const handleMouseenter = () => {
-        hoverable.value = !!list.value.length;
+        hoverable.value = !!stepList.value.length;
       };
 
       const handleMouseLeave = () => {
@@ -24,19 +40,13 @@
       };
 
       const renderModal = () => {
-        return (
-          <CreateTask
-            show={show.value}
-            title="新建任务"
-            dataInfo={{}}
-          ></CreateTask>
-        );
+        return <CreateTask show={show.value} dataInfo={{}}></CreateTask>;
       };
 
       const handleAddParallel = () => {
         show.value = true;
 
-        list.value.push(1);
+        stepList.value.push(_.cloneDeep(stepSchema));
       };
 
       const handleInsertNext = (index) => {};
@@ -51,22 +61,23 @@
         >
           <div class="stage-header">
             <div contenteditable onInput={(e) => handleInputStageName(e)}>
-              {stageName.value}
+              {stageData.value.name}
             </div>
           </div>
           <div class="stage-content">
-            {list.value.length ? (
-              list.value.map((item, index) => {
+            {stepList.value.length ? (
+              stepList.value.map((item, index) => {
                 return (
                   <>
                     <FlowStep
                       key={index}
                       onInsertNext={() => handleInsertNext(index)}
                       onInsertPrev={() => handleInsertPrev(index)}
+                      step-data={item}
                       position={
-                        index === list.value.length - 1 &&
+                        index === stepList.value.length - 1 &&
                         !hoverable.value &&
-                        list.value.length > 1
+                        stepList.value.length > 1
                           ? 'last'
                           : 'middle'
                       }
@@ -76,7 +87,7 @@
               })
             ) : (
               <ParallelButton
-                btn-text="任务"
+                btn-text="添加任务"
                 position="last"
                 class={['non-step']}
                 onAddParallel={() => handleAddParallel()}

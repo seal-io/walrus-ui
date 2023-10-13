@@ -7,7 +7,7 @@ export default {
   'menu.applicationManagement.serivce': '服务',
   'menu.applicationManagement.secret': '变量',
   'menu.applicationManagement.members': '成员',
-  'menu.applicationManagement.workflow': '工作流',
+  'menu.applicationManagement.workflow': '流水线',
   'menu.costManagement': '成本管理',
   'menu.costManagement.analyse': '成本分析',
   'menu.costManagement.perspective': '视图',
