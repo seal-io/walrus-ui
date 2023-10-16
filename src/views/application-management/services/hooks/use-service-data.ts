@@ -1,5 +1,5 @@
-import _ from 'lodash';
-import { ref, reactive, ComponentPublicInstance, computed } from 'vue';
+import _, { set } from 'lodash';
+import { ref, reactive, ComponentPublicInstance, inject } from 'vue';
 import { PageAction } from '@/views/config';
 import { createAxiosToken } from '@/api/axios-chunk-request';
 import useCallCommon from '@/hooks/use-call-common';
@@ -21,6 +21,11 @@ export default function useServiceData(props?) {
     label: string;
     value: string;
   }
+
+  const setServiceInfo = inject('setServiceInfo', {
+    enable: false,
+    info: {}
+  });
   /**
    * Service configuration can refer to output of other services,
    * so it is necessary to obtain the schema of existing services
@@ -292,7 +297,7 @@ export default function useServiceData(props?) {
   };
   // for service create page
   const initFormData = async () => {
-    if (id) {
+    if (id || setServiceInfo.enable) {
       await setFormAttributes();
     } else {
       setFormDataTemplate();
@@ -313,11 +318,21 @@ export default function useServiceData(props?) {
     asyncLoading.value = false;
   };
 
+  const initSerivceInfo = async () => {
+    if (!setServiceInfo.enable) return;
+    serviceInfo.value = setServiceInfo.info;
+    console.log('serviceInfo', setServiceInfo);
+  };
+
   // for service edit page
   const init = async () => {
     asyncLoading.value = true;
     // getServiceItemInfo would be called in create page
-    await Promise.all([getServiceItemInfo(), getTemplates()]);
+    await Promise.all([
+      getServiceItemInfo(),
+      initSerivceInfo(),
+      getTemplates()
+    ]);
     await initFormData();
     asyncLoading.value = false;
 

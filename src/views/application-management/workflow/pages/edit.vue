@@ -35,9 +35,10 @@
   import useCallCommon from '@/hooks/use-call-common';
   import useProjectBreadcrumbData from '@/views/application-management/projects/hooks/use-project-breadcrumb-data';
   import flowEditor from '../components/flow-editor.vue';
+  import { createPipeline, updatePipeline } from '../api';
 
   const height = 'calc(100vh - 90px)';
-  const { t, route } = useCallCommon();
+  const { t, route, router } = useCallCommon();
   const id = route.query.id as string;
   const flow = ref();
   const {
@@ -75,9 +76,21 @@
     setBreadCrumbList();
   };
 
-  const handleSubmit = () => {
-    const data = flow.value?.getStageList?.();
-    console.log('flow data', data);
+  const handleSubmit = async () => {
+    const data = flow.value?.getData?.();
+    try {
+      await createPipeline({
+        ...data.basic,
+        stages: data.stages
+      });
+      router.back();
+    } catch (error) {
+      // eslint-disable-next-line no-console
+    }
+    console.log('data===', {
+      ...data.basic,
+      stages: data.stages
+    });
   };
   init();
 </script>

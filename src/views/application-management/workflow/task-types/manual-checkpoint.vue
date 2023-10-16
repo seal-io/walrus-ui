@@ -80,12 +80,6 @@
   import { approvalRoles, approvalTypes } from '../config';
 
   const props = defineProps({
-    dataInfo: {
-      type: Object,
-      default() {
-        return {};
-      }
-    },
     action: {
       type: String,
       default() {
@@ -122,7 +116,17 @@
     }
     return false;
   };
+  const initFormData = (data) => {
+    formData.value = {
+      name: data.name,
+      type: data.type,
+      role: data.role,
+      flowRole: data.flowRole,
+      date: data.date
+    };
+  };
   defineExpose({
-    save
+    save,
+    initFormData
   });
 </script>

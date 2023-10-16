@@ -2,6 +2,12 @@ import { MoreAction } from '@/views/config/interface';
 
 export const NodeType = {};
 
+export const CustomShape = {
+  pipelineNode: 'pipeline-node',
+  separatorNode: 'separator-node',
+  pipelineEdge: 'pipeline-edge'
+};
+
 export const approvalTypes = [
   {
     label: '或签',

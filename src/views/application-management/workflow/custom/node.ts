@@ -3,12 +3,12 @@ import _ from 'lodash';
 import { register } from '@antv/x6-vue-shape';
 import PipelineNode from './pipeline-node.vue';
 import SeparatorLine from './separator-line.vue';
-import { PipelineNodeSize } from '../config';
+import { PipelineNodeSize, CustomShape } from '../config';
 
 export const defineCustomNode = () => {
   // PipelineNode
   register({
-    shape: 'pipeline-node',
+    shape: CustomShape.pipelineNode,
     inherit: 'vue-shape',
     width: PipelineNodeSize.width,
     height: PipelineNodeSize.height,
@@ -64,7 +64,7 @@ export const defineCustomNode = () => {
   });
   // SeparatorNode
   register({
-    shape: 'separator-node',
+    shape: CustomShape.separatorNode,
     inherit: 'vue-shape',
     component: SeparatorLine,
     attr: {
