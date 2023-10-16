@@ -1,6 +1,6 @@
 <script lang="tsx">
   import _ from 'lodash';
-  import { defineComponent, toRefs, ref, reactive, defineExpose } from 'vue';
+  import { defineComponent, toRefs, ref } from 'vue';
   import Draggable from 'vuedraggable';
   import dayjs from 'dayjs';
   import i18n from '@/locale';
@@ -126,7 +126,7 @@
               onEdit={() => handleEditBasicInfo()}
             ></FlowAside>
           </div>
-          <div class="flow-content">{content()}</div>
+          <div class="flow-content">{renderStage()}</div>
           <BasicInfo
             v-model:dataInfo={flowBasic.value}
             v-model:show={show.value}
