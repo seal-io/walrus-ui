@@ -45,11 +45,19 @@
         show.value = true;
       };
       const handleInsertStagePrev = (index) => {
-        stageList.value.splice(index, 0, _.cloneDeep(stageSchema));
+        stageList.value.splice(
+          index,
+          0,
+          _.cloneDeep({ ...stageSchema, name: '新阶段' })
+        );
       };
 
       const handleInsertStageNext = (index) => {
-        stageList.value.splice(index + 1, 0, _.cloneDeep(stageSchema));
+        stageList.value.splice(
+          index + 1,
+          0,
+          _.cloneDeep({ ...stageSchema, name: '新阶段' })
+        );
       };
 
       const handleDragStart = () => {
@@ -109,7 +117,9 @@
       };
 
       const initData = () => {
-        stageList.value.push(_.cloneDeep(stageSchema));
+        if (!stageList.value.length) {
+          stageList.value.push(_.cloneDeep({ ...stageSchema, name: '新阶段' }));
+        }
       };
 
       expose({
@@ -145,7 +155,7 @@
     .flow-side {
       flex-basis: 200px;
       height: 100%;
-      padding: 16px 0;
+      padding: 12px 0 16px 0;
     }
 
     .flow-content {

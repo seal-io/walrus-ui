@@ -1,9 +1,16 @@
 <script lang="tsx">
   import _ from 'lodash';
-  import { defineComponent, toRefs, ref, PropType, provide } from 'vue';
+  import {
+    defineComponent,
+    toRefs,
+    ref,
+    PropType,
+    provide,
+    nextTick
+  } from 'vue';
   import FlowStep from './flow-step.vue';
   import ParallelButton from './parallel-button.vue';
-  import CreateTask from './create-task.vue';
+  import CreateFlowTask from './create-flow-task.vue';
   import { Step, Stage } from '../config/interface';
   import { stepSchema, stageSchema } from '../config';
 
@@ -26,10 +33,10 @@
       const { stepList, stageData } = toRefs(props);
       const hoverable = ref(false);
       const show = ref(false);
+      const nameEditable = ref(false);
+      const activeStep = ref({});
+      const input = ref();
       provide('stageData', stageData);
-      const handleInputStageName = (e) => {
-        stageData.value.name = e.target.innerText;
-      };
 
       const handleMouseenter = () => {
         hoverable.value = !!stepList.value.length;
@@ -39,19 +46,39 @@
         hoverable.value = false;
       };
 
+      const handleInputEdit = async () => {
+        nameEditable.value = true;
+        setTimeout(() => {
+          input.value.focus();
+        }, 0);
+      };
+
+      const handleInputBlur = () => {
+        nameEditable.value = false;
+      };
+
       const renderModal = () => {
-        return <CreateTask show={show.value} dataInfo={{}}></CreateTask>;
+        return (
+          <CreateFlowTask show={show.value} dataInfo={{}}></CreateFlowTask>
+        );
       };
 
       const handleAddParallel = () => {
         show.value = true;
-
-        stepList.value.push(_.cloneDeep(stepSchema));
       };
 
+      const handleSaveFlowTask = (data) => {
+        stepList.value.push(_.cloneDeep(data));
+        show.value = false;
+      };
       const handleInsertNext = (index) => {};
 
       const handleInsertPrev = (index) => {};
+
+      const handleEditTask = (item) => {
+        show.value = true;
+        activeStep.value = item;
+      };
 
       return () => (
         <div
@@ -60,9 +87,22 @@
           onMouseleave={() => handleMouseLeave()}
         >
           <div class="stage-header">
-            <div contenteditable onInput={(e) => handleInputStageName(e)}>
-              {stageData.value.name}
-            </div>
+            {nameEditable.value ? (
+              <a-input
+                v-model={stageData.value.name}
+                size="small"
+                ref={input}
+                class={[{ 'border-less': !nameEditable.value }]}
+                onBlur={() => handleInputBlur()}
+              ></a-input>
+            ) : (
+              <>
+                <div class="title">{stageData.value.name}</div>
+                <a-link class="mleft-5">
+                  <icon-edit onClick={() => handleInputEdit()} />
+                </a-link>
+              </>
+            )}
           </div>
           <div class="stage-content">
             {stepList.value.length ? (
@@ -73,6 +113,7 @@
                       key={index}
                       onInsertNext={() => handleInsertNext(index)}
                       onInsertPrev={() => handleInsertPrev(index)}
+                      onEdit={() => handleEditTask(item)}
                       step-data={item}
                       position={
                         index === stepList.value.length - 1 &&
@@ -101,7 +142,11 @@
               ></ParallelButton>
             ) : null}
           </div>
-          <CreateTask v-model:show={show.value} dataInfo={{}}></CreateTask>
+          <CreateFlowTask
+            v-model:show={show.value}
+            onSave={handleSaveFlowTask}
+            dataInfo={activeStep.value}
+          ></CreateFlowTask>
         </div>
       );
     }
@@ -110,13 +155,24 @@
 
 <style lang="less" scoped>
   .flow-stage {
-    padding-top: 16px;
+    padding-top: 4px;
     overflow-y: auto;
 
     .stage-header {
+      display: flex;
+      align-items: center;
       margin-bottom: 40px;
       color: var(--color-text-3);
       font-size: 14px;
+
+      .title {
+        height: 28px;
+        line-height: 28px;
+      }
+
+      .arco-icon {
+        stroke-width: 4;
+      }
     }
 
     .stage-content {

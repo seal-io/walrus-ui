@@ -87,13 +87,7 @@
                 style="display: flex; align-items: center"
                 class="mleft-5"
               >
-                <span>{{ record.name }}</span>
-                <a-tooltip :content="$t('applications.instance.env.tips')">
-                  <icon-exclamation-circle-fill
-                    class="mleft-5"
-                    style="color: var(--color-text-2)"
-                  />
-                </a-tooltip>
+                <span>{{ record.name || 'pipeline-20231016' }}</span>
               </span>
             </template>
           </a-table-column>
@@ -138,14 +132,14 @@
             :width="210"
             :title="$t('common.table.operation')"
           >
-            <!-- <template #cell="{ record, rowIndex }">
+            <template #cell>
               <DropButtonGroup
                 layout="horizontal"
-                :actions="[]"
+                :actions="moreActions"
                 @click="(val) => {}"
-                @select="(value) => {}"
+                @select="handleDropSelect"
               ></DropButtonGroup>
-            </template> -->
+            </template>
           </a-table-column>
         </template>
       </a-table>
@@ -173,11 +167,12 @@
   import { map, pickBy, remove } from 'lodash';
   import { ref, reactive, onActivated } from 'vue';
   import useCallCommon from '@/hooks/use-call-common';
-  import FilterBox from '@/components/filter-box/index.vue';
   import DropButtonGroup from '@/components/drop-button-group/index.vue';
+  import FilterBox from '@/components/filter-box/index.vue';
   import { deleteModal, execSucceed } from '@/utils/monitor';
   import { UseSortDirection } from '@/utils/common';
   import useRowSelect from '@/hooks/use-row-select';
+  import { moreActions } from '../config';
 
   let timer: any = null;
   const { rowSelection, selectedKeys, handleSelectChange } = useRowSelect();
@@ -215,7 +210,7 @@
       };
       // TODO
       const data = {};
-      dataList.value = data?.items || [];
+      dataList.value = data?.items || [1];
       total.value = data?.pagination?.total || 0;
       loading.value = false;
     } catch (error) {
@@ -251,9 +246,15 @@
     setSortDirection(dataIndex, direction);
     fetchData();
   };
-  onActivated(() => {
-    // fetchData();
-  });
+
+  const handleDropSelect = () => {
+    router.push({
+      name: WORKFLOW.Detail,
+      params: {
+        ...route.params
+      }
+    });
+  };
   const handleView = (row) => {
     router.push({
       name: PROJECT.EnvDetail,

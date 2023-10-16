@@ -17,7 +17,7 @@
     }
   });
   const serviceRef = ref();
-  const submit = async () => {
+  const save = async () => {
     const data = await serviceRef.value?.submit();
     return data;
   };
@@ -26,7 +26,7 @@
   };
 
   defineExpose({
-    submit,
+    save,
     cancel
   });
 </script>

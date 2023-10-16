@@ -24,5 +24,26 @@ export default [
       cachePages: [],
       icon: 'icon-apps'
     }
+  },
+  {
+    path: 'project/:projectId/workflow/detail',
+    name: WORKFLOW.Detail,
+    component: () =>
+      import('@/views/application-management/workflow/pages/detail.vue'),
+    meta: {
+      hideInMenu: true,
+      hideMenu: false,
+      ignoreCache: false,
+      locale: 'applications.projects.menu',
+      requiresAuth: true,
+      selectedMenu: PROJECT.List,
+      permission: {
+        resource: Resources.Projects,
+        type: permissionKey.projectRoles,
+        actions: ['GET']
+      },
+      cachePages: [],
+      icon: 'icon-apps'
+    }
   }
 ];
