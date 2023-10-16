@@ -115,14 +115,14 @@
     formData.value.flowRole = '';
   };
 
-  const handleSubmit = async () => {
+  const save = async () => {
     const res = await formref.value?.validate();
     if (res) {
-      try {
-        emits('submit', formData.value);
-      } catch (error) {
-        // eslint-disable-next-line no-console
-      }
+      return formData.value;
     }
+    return false;
   };
+  defineExpose({
+    save
+  });
 </script>

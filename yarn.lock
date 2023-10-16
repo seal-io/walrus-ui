@@ -283,6 +283,35 @@
     gl-matrix "^3.3.0"
     tslib "^2.3.1"
 
+"@antv/x6-common@^2.0.15":
+  version "2.0.15"
+  resolved "https://registry.npmmirror.com/@antv/x6-common/-/x6-common-2.0.15.tgz#60c99334ee43c266f234b5f7934721f3da25d685"
+  integrity sha512-9ghYsxbT7WjQ0thqjcQwnjuBdL8DSTptEubf0DvBZOJ0wmapclXqYPOM+XYPNtC1dcKDqqxsw5mdcbcAmQ224Q==
+  dependencies:
+    lodash-es "^4.17.15"
+    utility-types "^3.10.0"
+
+"@antv/x6-geometry@^2.0.5":
+  version "2.0.5"
+  resolved "https://registry.npmmirror.com/@antv/x6-geometry/-/x6-geometry-2.0.5.tgz#c158317d74135bedd78c2fdeb76f9c7cfa0ef0aa"
+  integrity sha512-MId6riEQkxphBpVeTcL4ZNXL4lScyvDEPLyIafvWMcWNTGK0jgkK7N20XSzqt8ltJb0mGUso5s56mrk8ysHu2A==
+
+"@antv/x6-vue-shape@^2.1.1":
+  version "2.1.1"
+  resolved "https://registry.npmmirror.com/@antv/x6-vue-shape/-/x6-vue-shape-2.1.1.tgz#f24591a1b8904e92f05efd8090de823a1c8ac74c"
+  integrity sha512-XQwKyQmKH1m12tQ7ybh/p3XXe/XKWEa6zihoIb/IQd+w5WyTTosVfgXbn1io3Nb6zXc2R853R6iGe+T1+tWhfg==
+  dependencies:
+    vue-demi latest
+
+"@antv/x6@^2.15.2":
+  version "2.15.2"
+  resolved "https://registry.npmmirror.com/@antv/x6/-/x6-2.15.2.tgz#4b6a7e100e1a36f42ede8881e5c779202b3c708c"
+  integrity sha512-xYJzRr/MKUT+mjn4wNgd4Ko+J7N1NN+meyZrcF7GtrVAm9NvYEO4ugiKOrLiw9haYPU/e/C0D/SrNrFE5d6kEQ==
+  dependencies:
+    "@antv/x6-common" "^2.0.15"
+    "@antv/x6-geometry" "^2.0.5"
+    utility-types "^3.10.0"
+
 "@arco-design/color@^0.4.0":
   version "0.4.0"
   resolved "https://registry.npmmirror.com/@arco-design/color/-/color-0.4.0.tgz#52ddb40d318ee6df1057ca8c653cc1675023928f"
@@ -9086,6 +9115,11 @@ util-deprecate@^1.0.1, util-deprecate@^1.0.2, util-deprecate@~1.0.1:
   resolved "https://registry.npmmirror.com/util-deprecate/-/util-deprecate-1.0.2.tgz#450d4dc9fa70de732762fbd2d4a28981419a0ccf"
   integrity sha512-EPD5q1uXyFxJpCrLnCc1nHnq3gOa6DZBocAIiI2TaSCA7VCJ1UJDMagCzIkXNsUYfD1daK//LTEQ8xiIbrHtcw==
 
+utility-types@^3.10.0:
+  version "3.10.0"
+  resolved "https://registry.npmmirror.com/utility-types/-/utility-types-3.10.0.tgz#ea4148f9a741015f05ed74fd615e1d20e6bed82b"
+  integrity sha512-O11mqxmi7wMKCo6HKFt5AhO4BwY3VV68YU07tgxfz8zJTIxr4BpsezN49Ffwy9j3ZpwwJp4fkRwjRzq3uWE6Rg==
+
 uuid@^3.0.1:
   version "3.4.0"
   resolved "https://registry.npmmirror.com/uuid/-/uuid-3.4.0.tgz#b23e4358afa8a202fe7a100af1f5f883f02007ee"
@@ -9367,6 +9401,11 @@ vue-demi@^0.13.2:
   version "0.13.11"
   resolved "https://registry.npmmirror.com/vue-demi/-/vue-demi-0.13.11.tgz#7d90369bdae8974d87b1973564ad390182410d99"
   integrity sha512-IR8HoEEGM65YY3ZJYAjMlKygDQn25D5ajNFNoKh9RSDMQtlzCxtfQjdQgv9jjK+m3377SsJXY8ysq8kLCZL25A==
+
+vue-demi@latest:
+  version "0.14.6"
+  resolved "https://registry.npmmirror.com/vue-demi/-/vue-demi-0.14.6.tgz#dc706582851dc1cdc17a0054f4fec2eb6df74c92"
+  integrity sha512-8QA7wrYSHKaYgUxDA5ZC24w+eHm3sYCbp0EzcDwKqN3p6HqtTCGR/GVsPyZW92unff4UlcSh++lmqDWN3ZIq4w==
 
 vue-echarts@^6.0.0:
   version "6.6.0"

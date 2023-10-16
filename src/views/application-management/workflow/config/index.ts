@@ -1,3 +1,5 @@
+import { MoreAction } from '@/views/config/interface';
+
 export const NodeType = {};
 
 export const approvalTypes = [
@@ -117,5 +119,63 @@ export const stepSchema = {
   },
   timeout: 0,
   type: ''
+};
+
+export const tools = [
+  {
+    label: 'applications.environment.graph.fitview',
+    value: 'fitCenter',
+    icon: 'icon-fit_screen-o'
+  },
+  {
+    label: 'common.button.refresh',
+    value: 'refresh',
+    compile: true,
+    icon: 'icon-sync'
+  }
+  // {
+  //   label: 'common.button.undo',
+  //   value: 'undo',
+  //   disabled: false,
+  //   icon: 'icon-undo'
+  // },
+  // {
+  //   label: 'common.button.redo',
+  //   value: 'redo',
+  //   disabled: false,
+  //   icon: 'icon-redo'
+  // }
+];
+
+export const moreActions: MoreAction[] = [
+  {
+    label: 'common.button.edit',
+    value: 'edit',
+    icon: 'icon-edit',
+    handler: '',
+    status: 'normal',
+    disabled: false,
+    filterFun(currentInfo) {
+      return true;
+    }
+  }
+];
+
+export const moreMenu = [
+  {
+    label: 'common.button.delete',
+    value: 'remove',
+    status: 'danger',
+    icon: 'icon-shanchu'
+  }
+];
+export const NodeSize = {
+  width: 180,
+  height: 48
+};
+
+export const PipelineNodeSize = {
+  width: 220,
+  height: 80
 };
 export default {};

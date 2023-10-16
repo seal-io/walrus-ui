@@ -3,6 +3,7 @@ import { defineConfig } from 'vite';
 import vue from '@vitejs/plugin-vue';
 import vueJsx from '@vitejs/plugin-vue-jsx';
 import svgLoader from 'vite-svg-loader';
+import configArcoResolverPlugin from './plugin/arcoResolver';
 import { getBranchInfo } from './utils';
 
 const { argv } = require('yargs');
@@ -12,7 +13,12 @@ const mode = argv.mode || 'development';
 const versions = getBranchInfo();
 
 export default defineConfig({
-  plugins: [vue(), vueJsx(), svgLoader({ svgoConfig: {} })],
+  plugins: [
+    vue(),
+    vueJsx(),
+    svgLoader({ svgoConfig: {} }),
+    configArcoResolverPlugin()
+  ],
   base: baseUrl,
   // root: './',
   resolve: {
@@ -35,6 +41,9 @@ export default defineConfig({
       }
     ],
     extensions: ['.ts', '.js']
+  },
+  optimizeDeps: {
+    exclude: ['@antv/x6-vue-shape']
   },
   define: {
     'process.env': {

@@ -18,7 +18,7 @@
         }
       }
     },
-    emits: ['insertPrev', 'insertNext', 'addTask'],
+    emits: ['insertPrev', 'insertNext', 'add', 'edit'],
     setup(props, { emit }) {
       const stageData = inject('stageData');
       const { position, stepData } = toRefs(props);
@@ -36,7 +36,7 @@
 
       const handleAddTask = () => {
         list.value.push(1);
-        emit('addTask');
+        emit('add');
       };
 
       const handleDragStart = () => {
@@ -48,6 +48,10 @@
         console.log('drag end 1');
       };
 
+      const handleEditTask = () => {
+        emit('edit');
+      };
+
       const renderStep = (item, index) => {
         return (
           <div class="step-box" key={index}>
@@ -56,7 +60,7 @@
                 <icon-plus-circle-fill class="plus-btn" onClick={() => handleInsertPrev(index)}/>
               </a-tooltip> */}
             </div>
-            <div class="step-content">安全扫描-{index}</div>
+            <div class="step-content">{stepData.value.name}</div>
             <div class="next btn-wrap">
               {/* <a-tooltip content="添加串行任务">
                 <icon-plus-circle-fill class="plus-btn" onClick={() => handleInsertNext(index)}/>
@@ -107,7 +111,9 @@
         return (
           <div class="step-box">
             <div class="prev btn-wrap"></div>
-            <div class="step-content">安全扫描-{stepData.value.name}</div>
+            <div class="step-content" onClick={() => handleEditTask()}>
+              {stepData.value.name}
+            </div>
             <div class="next btn-wrap"></div>
           </div>
         );

@@ -43,7 +43,7 @@
 <style lang="less" scoped>
   .flow-aside-container {
     height: 100%;
-    // background-color: var(--color-fill-2);
+
     .flow-header {
       margin-bottom: 50px;
     }

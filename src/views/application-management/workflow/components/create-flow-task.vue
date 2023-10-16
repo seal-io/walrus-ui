@@ -146,7 +146,7 @@
       }
     }
   });
-  const emits = defineEmits(['submit', 'cancel', 'update:show']);
+  const emits = defineEmits(['save', 'cancel', 'update:show']);
   const { route, t } = useCallCommon();
   const submitLoading = ref(false);
   const current = ref(1);
@@ -226,17 +226,17 @@
     if (current.value === steps.value.length) {
       if (selectedTask.value === TaskTypes.SERVICE) {
         submitLoading.value = true;
-        const data = await serviceRef.value?.submit();
+        const data = await serviceRef.value?.save();
         submitLoading.value = false;
         if (data) {
-          emits('submit', data);
+          emits('save', data);
         }
       } else if (selectedTask.value === TaskTypes.APPROVAL) {
         submitLoading.value = true;
-        const data = await manualRef.value?.submit();
+        const data = await manualRef.value?.save();
         submitLoading.value = false;
         if (data) {
-          emits('submit', data);
+          emits('save', data);
         }
       }
     }
