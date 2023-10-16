@@ -33,17 +33,13 @@
           {renderStageName()}
           <div class="pipeline-node-title">
             <div class="title">Javascript代码扫描</div>
-            <div class="more">
-              <MoreAction></MoreAction>
-            </div>
+            <div class="more">{/* <MoreAction></MoreAction> */}</div>
           </div>
           <div class="operation-box">
             <span class="status">
               <i class={['iconfont icon-success-fill success']}></i>
             </span>
             <a-space class="btn">
-              <a-link hoverable={false}>重试</a-link>
-              <a-link hoverable={false}>扫描报告</a-link>
               <a-link hoverable={false}>日志</a-link>
             </a-space>
           </div>

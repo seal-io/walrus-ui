@@ -1,6 +1,6 @@
 <template>
-  <ComCard borderless class="projects" padding="0">
-    <div class="content">
+  <ComCard borderless padding="0">
+    <div>
       <FilterBox style="margin-bottom: 10px">
         <template #params>
           <a-input
@@ -390,46 +390,4 @@
   fetchData();
 </script>
 
-<script lang="ts">
-  export default {
-    name: 'EnvironmentList'
-  };
-</script>
-
-<style lang="less" scoped>
-  .projects {
-    .title {
-      display: flex;
-      align-items: center;
-
-      :deep(.arco-icon) {
-        margin-right: 6px;
-        color: var(--color-text-2);
-        font-size: 20px;
-        border-radius: 4px;
-        cursor: pointer;
-        .hoverable();
-
-        &:hover {
-          color: rgb(var(--arcoblue-6));
-          .hoverableHover();
-        }
-      }
-
-      .arco-icon.active {
-        color: rgb(var(--arcoblue-6));
-        box-shadow: var(--seal-hoverable-shadow);
-      }
-    }
-
-    .content {
-      :deep(.arco-tabs-nav-tab) {
-        display: none;
-      }
-
-      :deep(.arco-tabs-content) {
-        padding-top: 0;
-      }
-    }
-  }
-</style>
+<style lang="less" scoped></style>

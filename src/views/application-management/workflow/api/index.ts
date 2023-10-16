@@ -46,7 +46,7 @@ export function queryPipelineDetail(params: { id: string }) {
   return axios.get(`${PROJECT_API_PREFIX()}${PIPELINE_API}/${params.id}`);
 }
 
-export function queryPipelineApply(params: { id: string }) {
+export function applyPipeline(params: { id: string }) {
   return axios.get(`${PROJECT_API_PREFIX()}${PIPELINE_API}/${params.id}/apply`);
 }
 

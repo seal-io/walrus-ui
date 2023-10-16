@@ -1,13 +1,6 @@
 <script lang="tsx">
   import _ from 'lodash';
-  import {
-    defineComponent,
-    toRefs,
-    ref,
-    PropType,
-    provide,
-    nextTick
-  } from 'vue';
+  import { defineComponent, toRefs, ref, PropType, provide } from 'vue';
   import FlowStep from './flow-step.vue';
   import ParallelButton from './parallel-button.vue';
   import CreateFlowTask from './create-flow-task.vue';
@@ -35,6 +28,8 @@
       const show = ref(false);
       const nameEditable = ref(false);
       const activeStep = ref({});
+      const activeIndex = ref(0);
+      const action = ref<'create' | 'edit'>('create');
       const input = ref();
       provide('stageData', stageData);
 
@@ -64,11 +59,18 @@
       };
 
       const handleAddParallel = () => {
-        show.value = true;
+        action.value = 'create';
+        setTimeout(() => {
+          show.value = true;
+        });
       };
 
       const handleSaveFlowTask = (data) => {
-        stepList.value.push(_.cloneDeep(data));
+        if (action.value === 'create') {
+          stepList.value.push(_.cloneDeep(data));
+        } else {
+          stepList.value.splice(activeIndex.value, 1, _.cloneDeep(data));
+        }
         show.value = false;
       };
       const handleInsertNext = (index) => {};
@@ -76,8 +78,11 @@
       const handleInsertPrev = (index) => {};
 
       const handleEditTask = (item) => {
-        show.value = true;
+        action.value = 'edit';
         activeStep.value = item;
+        setTimeout(() => {
+          show.value = true;
+        });
       };
 
       return () => (
@@ -113,7 +118,7 @@
                       key={index}
                       onInsertNext={() => handleInsertNext(index)}
                       onInsertPrev={() => handleInsertPrev(index)}
-                      onEdit={() => handleEditTask(item)}
+                      onEdit={() => handleEditTask(item, index)}
                       step-data={item}
                       position={
                         index === stepList.value.length - 1 &&
@@ -145,7 +150,8 @@
           <CreateFlowTask
             v-model:show={show.value}
             onSave={handleSaveFlowTask}
-            dataInfo={activeStep.value}
+            action={action.value}
+            v-model:dataInfo={activeStep.value}
           ></CreateFlowTask>
         </div>
       );

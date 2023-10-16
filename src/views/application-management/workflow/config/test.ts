@@ -1,6 +1,6 @@
 export default [
   {
-    stageName: '阶段1',
+    name: '阶段1',
     id: 'stage-1',
     steps: [
       {
@@ -18,7 +18,7 @@ export default [
     ]
   },
   {
-    stageName: '阶段2',
+    name: '阶段2',
     id: 'stage-2',
     steps: [
       {
@@ -32,7 +32,7 @@ export default [
     ]
   },
   {
-    stageName: '阶段3',
+    name: '阶段3',
     id: 'stage-3',
     steps: [
       {
@@ -46,7 +46,7 @@ export default [
     ]
   },
   {
-    stageName: '阶段4',
+    name: '阶段4',
     id: 'stage-4',
     steps: [
       {

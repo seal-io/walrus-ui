@@ -14,11 +14,11 @@
       ></Breadcrumb>
       <template #right>
         <a-space fill :size="20" align="end" style="margin-right: 60px">
-          <a-button type="primary" size="small" @click="handleSubmit">
-            {{ $t('common.button.save') }}
+          <a-button type="outline" size="small" @click="handleBack">
+            {{ $t('common.button.back') }}
           </a-button>
-          <a-button type="outline" size="small">
-            {{ $t('common.button.cancel') }}
+          <a-button type="primary" size="small" @click="handleSubmit">
+            {{ $t('common.button.retry') }}
           </a-button>
         </a-space>
       </template>
@@ -35,9 +35,10 @@
   import useCallCommon from '@/hooks/use-call-common';
   import useProjectBreadcrumbData from '@/views/application-management/projects/hooks/use-project-breadcrumb-data';
   import FlowView from '../components/flow-view.vue';
+  import { applyPipeline } from '../api';
 
   const height = 'calc(100vh - 90px)';
-  const { t, route } = useCallCommon();
+  const { t, route, router } = useCallCommon();
   const id = route.query.id as string;
   const flow = ref();
   const {
@@ -75,6 +76,9 @@
     setBreadCrumbList();
   };
 
+  const handleBack = () => {
+    router.back();
+  };
   const handleSubmit = () => {
     const data = flow.value?.getStageList?.();
     console.log('flow data', data);

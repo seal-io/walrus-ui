@@ -26,7 +26,7 @@
       const show = ref(false);
       const flowBasic = ref({
         displayName: `pipeline-${dayjs().format('YYYYMMDDHHmmss')}`,
-        name: '',
+        name: `pipeline-ID-${dayjs().format('YYYYMMDDHHmmss')}`,
         type: 'default',
         description: '',
         parallelism: 0
@@ -95,8 +95,11 @@
         });
       };
 
-      const getStageList = () => {
-        return stageList.value;
+      const getData = () => {
+        return {
+          stages: stageList.value,
+          basic: flowBasic.value
+        };
       };
 
       const content = () => {
@@ -123,11 +126,10 @@
       };
 
       expose({
-        getStageList
+        getData
       });
 
       initData();
-
       return () => (
         <div class="flow-wrapper" style={{ height: height.value }}>
           <div class="flow-side">

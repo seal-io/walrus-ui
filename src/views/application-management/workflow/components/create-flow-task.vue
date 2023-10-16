@@ -41,18 +41,19 @@
               v-for="(item, index) in TaskTypeList"
               :key="index"
               :data-info="item"
-              :active="item.value === selectedTask"
+              :active="item.value === taskType"
               @click="handleSelectTask(item)"
             ></TaskCard>
           </a-space>
           <ManualCheckpoint
             v-else-if="
-              selectedTask === TaskTypes.APPROVAL && current === steps.length
+              taskType === TaskTypes.APPROVAL && current === steps.length
             "
             ref="manualRef"
+            :data-info="props.dataInfo"
           ></ManualCheckpoint>
           <seal-select
-            v-else-if="selectedTask === TaskTypes.SERVICE && current === 2"
+            v-else-if="taskType === TaskTypes.SERVICE && current === 2"
             v-model="flow.environmentId"
             label="选择环境"
             :placeholder="$t('applications.applications.table.module')"
@@ -66,7 +67,7 @@
           </seal-select>
           <ServiceTask
             v-else-if="
-              selectedTask === TaskTypes.SERVICE && current === steps.length
+              taskType === TaskTypes.SERVICE && current === steps.length
             "
             ref="serviceRef"
             :flow="flow"
@@ -93,7 +94,7 @@
           <template #cancel>
             <a-space :size="40">
               <a-button
-                v-if="selectedTask && current < steps.length"
+                v-if="taskType && current < steps.length"
                 :disabled="!flow.environmentId"
                 type="primary"
                 class="cap-title cancel-btn"
@@ -115,7 +116,8 @@
 </template>
 
 <script lang="ts" setup>
-  import { toRefs, reactive, ref, computed, PropType } from 'vue';
+  import _ from 'lodash';
+  import { toRefs, reactive, ref, computed, PropType, provide } from 'vue';
   import useCallCommon from '@/hooks/use-call-common';
   import { InputWidth } from '@/views/config';
   import { ListItem } from '@/views/config/interface';
@@ -148,9 +150,13 @@
   });
   const emits = defineEmits(['save', 'cancel', 'update:show']);
   const { route, t } = useCallCommon();
+  const serviceInfo = reactive({
+    enable: false,
+    info: null
+  });
   const submitLoading = ref(false);
   const current = ref(1);
-  const selectedTask = ref('');
+  const taskType = ref('');
   const flow = reactive({
     projectId: route.params.projectId,
     environmentId: ''
@@ -160,11 +166,13 @@
   const environmentList = ref<ListItem[]>([]);
   const loading = ref(false);
 
+  provide('setServiceInfo', serviceInfo);
+
   const title = computed(() => {
-    if (!selectedTask.value) {
+    if (!taskType.value) {
       return '新建任务';
     }
-    const task = TaskTypeList.find((item) => item.value === selectedTask.value);
+    const task = TaskTypeList.find((item) => item.value === taskType.value);
     const label = task?.title || '';
     return props.action === 'create'
       ? `${t('common.button.create')} - ${label}`
@@ -174,7 +182,7 @@
   const steps = computed(() => {
     return stepList.filter((item) => {
       if (item.taskType) {
-        return item.taskType === selectedTask.value;
+        return item.taskType === taskType.value;
       }
       return true;
     });
@@ -211,8 +219,8 @@
   };
 
   const handleSelectTask = (item) => {
-    selectedTask.value = item.value;
-    if (selectedTask.value === TaskTypes.SERVICE) {
+    taskType.value = item.value;
+    if (taskType.value === TaskTypes.SERVICE) {
       getEnvironmentList();
     }
     handleOnNext();
@@ -224,28 +232,77 @@
 
   const handleOk = async () => {
     if (current.value === steps.value.length) {
-      if (selectedTask.value === TaskTypes.SERVICE) {
+      if (taskType.value === TaskTypes.SERVICE) {
         submitLoading.value = true;
         const data = await serviceRef.value?.save();
         submitLoading.value = false;
+        const result = {
+          type: taskType.value,
+          ..._.pick(data, ['name', 'description', 'labels']),
+          spec: {
+            ..._.omit(data, ['name', 'description', 'labels']),
+            environment: {
+              id: flow.environmentId
+            },
+            project: {
+              id: flow.projectId
+            },
+            projectID: flow.projectId
+          }
+        };
         if (data) {
-          emits('save', data);
+          emits('save', result);
         }
-      } else if (selectedTask.value === TaskTypes.APPROVAL) {
+      } else if (taskType.value === TaskTypes.APPROVAL) {
         submitLoading.value = true;
         const data = await manualRef.value?.save();
         submitLoading.value = false;
+        const result = {
+          type: taskType.value,
+          ...data,
+          spec: {
+            ...data
+          }
+        };
         if (data) {
-          emits('save', data);
+          emits('save', result);
         }
       }
     }
   };
-  const handleBeforeOpen = () => {};
+  const setServiceInfo = () => {
+    if (props.action === 'edit' && props.dataInfo.type === TaskTypes.SERVICE) {
+      flow.environmentId = props.dataInfo.spec?.environment?.id;
+      serviceInfo.info = {
+        ...props.dataInfo.spec,
+        ..._.pick(props.dataInfo, ['name', 'description', 'labels'])
+      };
+      serviceInfo.enable = true;
+      getEnvironmentList();
+    } else {
+      serviceInfo.enable = false;
+      serviceInfo.info = null;
+    }
+  };
+  const initData = () => {
+    if (props.action === 'edit') {
+      taskType.value = props.dataInfo.type;
+      current.value = steps.value.length;
+    }
+    setServiceInfo();
+  };
+  const handleBeforeOpen = () => {
+    initData();
+  };
+
   const handleBeforeClose = () => {
     current.value = 1;
-    selectedTask.value = '';
+    taskType.value = '';
     flow.environmentId = '';
+
+    //  reset service info
+    serviceInfo.enable = false;
+    serviceInfo.info = null;
   };
 </script>
 

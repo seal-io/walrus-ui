@@ -13,18 +13,12 @@
   import { Graph, Node, Path, Edge, Cell, Platform, StringExt } from '@antv/x6';
   import '@antv/x6-vue-shape';
   import toolBar from './tool-bar.vue';
-  import {
-    setStyle,
-    setPlusButtonStyle,
-    setPipelineNodeStyle
-  } from '../custom/style';
-  import { NodeSize, PipelineNodeSize, tools } from '../config';
+  import { setPipelineNodeStyle } from '../custom/style';
+  import { NodeSize, PipelineNodeSize, tools, CustomShape } from '../config';
   import { defineCustomNode } from '../custom/node';
   import { defineConnector } from '../custom/edge';
   import test from '../config/test';
 
-  // setStyle(NodeSize);
-  // setPlusButtonStyle(NodeSize);
   setPipelineNodeStyle(PipelineNodeSize);
 
   const DX = 300;
@@ -76,14 +70,15 @@
       const nextStageSteps = nextStage.steps || [];
       const nextStageStepsFirstChild = _.get(nextStageSteps, `0`);
       nodes.push({
-        shape: 'separator-node',
+        shape: CustomShape.separatorNode,
         x: DX * index - DX2,
         y: 0
       });
       _.each(steps, (sItem, sIndex: number) => {
         nodes.push({
           ...sItem,
-          shape: 'pipeline-node',
+          parent: item.id,
+          shape: CustomShape.pipelineNode,
           x: DX * index,
           y: DY * sIndex,
           ports: [
@@ -93,12 +88,12 @@
           data: {
             stepPosition: sIndex,
             name: sItem.name,
-            stageName: item.stageName,
+            stageName: item.name,
             stageId: item.id,
             nextStageId: _.get(nextStage, `id`) || ''
           }
         });
-        if (nextStageStepsFirstChild) {
+        if (nextStageStepsFirstChild && sIndex === 0) {
           edges.push({
             id: `${sItem.id}-${_.get(nextStageStepsFirstChild, `id`)}`,
             source: {
@@ -109,7 +104,7 @@
               cell: nextStageStepsFirstChild?.id,
               port: `${nextStageStepsFirstChild?.id}-in`
             },
-            shape: 'data-processing-curve',
+            shape: CustomShape.pipelineEdge,
             zIndex: -1,
             data: {
               source: sItem.name,

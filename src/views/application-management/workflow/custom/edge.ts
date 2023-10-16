@@ -1,4 +1,5 @@
 import { Graph, Node, Path, Edge, Platform, StringExt } from '@antv/x6';
+import { CustomShape } from '../config';
 
 export const defineConnector = (edgeName?: string) => {
   // 注册连线
@@ -78,7 +79,7 @@ export const defineConnector = (edgeName?: string) => {
     }
   });
 
-  Graph.registerEdge(edgeName || 'data-processing-curve', Edge, true);
+  Graph.registerEdge(edgeName || CustomShape.pipelineEdge, Edge, true);
 };
 
 export default {};
