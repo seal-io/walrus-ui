@@ -1,6 +1,7 @@
 <script lang="tsx">
   import _ from 'lodash';
   import { defineComponent, toRefs, ref, PropType, provide } from 'vue';
+  import useCallCommon from '@/hooks/use-call-common';
   import FlowStep from './flow-step.vue';
   import ParallelButton from './parallel-button.vue';
   import CreateFlowTask from './create-flow-task.vue';
@@ -23,6 +24,7 @@
       }
     },
     setup(props) {
+      const { t } = useCallCommon();
       const { stepList, stageData } = toRefs(props);
       const hoverable = ref(false);
       const show = ref(false);
@@ -77,9 +79,10 @@
 
       const handleInsertPrev = (index) => {};
 
-      const handleEditTask = (item) => {
+      const handleEditTask = (item, index) => {
         action.value = 'edit';
         activeStep.value = item;
+        activeIndex.value = index;
         setTimeout(() => {
           show.value = true;
         });
@@ -133,7 +136,7 @@
               })
             ) : (
               <ParallelButton
-                btn-text="添加任务"
+                btn-text={t('workflow.stage.add.task')}
                 position="last"
                 class={['non-step']}
                 onAddParallel={() => handleAddParallel()}
@@ -141,7 +144,7 @@
             )}
             {hoverable.value ? (
               <ParallelButton
-                btn-text="并行任务"
+                btn-text={t('workflow.stage.add.paratask')}
                 position="last"
                 onAddParallel={() => handleAddParallel()}
               ></ParallelButton>

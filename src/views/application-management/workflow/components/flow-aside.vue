@@ -1,5 +1,6 @@
 <script lang="tsx">
-  import { defineComponent, toRefs, ref, onMounted, onUnmounted } from 'vue';
+  import { defineComponent, toRefs } from 'vue';
+  import useCallCommon from '@/hooks/use-call-common';
 
   export default defineComponent({
     props: {
@@ -12,10 +13,11 @@
     },
     emits: ['edit'],
     setup(props, { emit }) {
+      const { t } = useCallCommon();
       const { basicInfo } = toRefs(props);
       return () => (
         <div class="flow-aside-container">
-          <div class="flow-header">流水线</div>
+          <div class="flow-header">{t('applications.workflow.name')}</div>
           <div class="flow-content">
             <icon-branch class="m-r-5 size-16" />
             <span>{basicInfo.value.displayName}</span>

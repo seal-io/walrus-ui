@@ -70,25 +70,13 @@
             ellipsis
             tooltip
             :cell-style="{ minWidth: '40px' }"
-            data-index="name"
+            data-index="displayName"
             :title="$t('applications.workflow.name')"
           >
             <template #cell="{ record }">
-              <a-link
-                v-if="record.connectors?.length"
-                type="text"
-                size="small"
-                @click="handleView(record)"
-              >
-                {{ record.name }}
+              <a-link type="text" size="small" @click="handleView(record)">
+                {{ record.displayName }}
               </a-link>
-              <span
-                v-else
-                style="display: flex; align-items: center"
-                class="mleft-5"
-              >
-                <span>{{ record.name || 'pipeline-20231016' }}</span>
-              </span>
             </template>
           </a-table-column>
           <a-table-column
@@ -96,9 +84,21 @@
             tooltip
             :cell-style="{ minWidth: '40px' }"
             align="center"
-            data-index="description"
+            data-index="status"
             :title="$t('applications.workflow.table.status')"
           >
+            <template #cell="{ record }">
+              <StatusLabel
+                :zoom="0.9"
+                :status="{
+                  status: _.get(record, 'status.summaryStatus'),
+                  text: _.get(record, 'status.summaryStatus'),
+                  message: _.get(record, 'status.summaryStatusMessage'),
+                  transitioning: _.get(record, 'status.transitioning'),
+                  error: _.get(record, 'status.error')
+                }"
+              ></StatusLabel>
+            </template>
           </a-table-column>
           <a-table-column
             ellipsis
@@ -132,12 +132,11 @@
             :width="210"
             :title="$t('common.table.operation')"
           >
-            <template #cell>
+            <template #cell="{ record }">
               <DropButtonGroup
                 layout="horizontal"
                 :actions="moreActions"
-                @click="(val) => {}"
-                @select="handleDropSelect"
+                @select="(val) => handleDropSelect(val, record)"
               ></DropButtonGroup>
             </template>
           </a-table-column>
@@ -150,7 +149,7 @@
         :current="queryParams.page"
         show-total
         show-page-size
-        :hide-on-single-page="queryParams.perPage === 10"
+        :hide-on-single-page="total <= 10"
         @change="handlePageChange"
         @page-size-change="handlePageSizeChange"
       />
@@ -160,20 +159,22 @@
 
 <script lang="ts" setup>
   import dayjs from 'dayjs';
+  import _, { map, pickBy } from 'lodash';
   import { PageAction } from '@/views/config';
   import { PROJECT, WORKFLOW } from '@/router/config';
   import { useUserStore } from '@/store';
   import { Resources, Actions } from '@/permissions/config';
-  import { map, pickBy, remove } from 'lodash';
-  import { ref, reactive, onActivated } from 'vue';
+  import { ref, reactive } from 'vue';
   import useCallCommon from '@/hooks/use-call-common';
+  import StatusLabel from '@/views/operation-hub/connectors/components/status-label.vue';
   import DropButtonGroup from '@/components/drop-button-group/index.vue';
   import FilterBox from '@/components/filter-box/index.vue';
   import { deleteModal, execSucceed } from '@/utils/monitor';
   import { UseSortDirection } from '@/utils/common';
   import useRowSelect from '@/hooks/use-row-select';
   import { moreActions } from '../config';
-  import { queryPipelines } from '../api';
+  import { PipelineRow } from '../config/interface';
+  import { queryPipelines, deletePipeline } from '../api';
 
   let timer: any = null;
   const { rowSelection, selectedKeys, handleSelectChange } = useRowSelect();
@@ -184,7 +185,7 @@
   const userStore = useUserStore();
   const { router, route } = useCallCommon();
   const loading = ref(false);
-  const dataList = ref<any[]>([]);
+  const dataList = ref<PipelineRow[]>([]);
   const total = ref(0);
   const projectID = route.params.projectId as string;
   const queryParams = reactive({
@@ -209,9 +210,9 @@
         ...pickBy(queryParams, (val) => !!val),
         sort: [sort.value]
       };
-      // TODO
+
       const { data } = await queryPipelines(params);
-      dataList.value = data?.items || [1];
+      dataList.value = data?.items || [];
       total.value = data?.pagination?.total || 0;
       loading.value = false;
     } catch (error) {
@@ -248,20 +249,25 @@
     fetchData();
   };
 
-  const handleDropSelect = () => {
+  const handleDropSelect = (val, row) => {
     router.push({
-      name: WORKFLOW.Detail,
+      name: WORKFLOW.Edit,
       params: {
         ...route.params
+      },
+      query: {
+        pid: row.id
       }
     });
   };
   const handleView = (row) => {
     router.push({
-      name: PROJECT.EnvDetail,
+      name: WORKFLOW.Detail,
       params: {
-        ...route.params,
-        environmentId: row.id
+        ...route.params
+      },
+      query: {
+        pid: row.id
       }
     });
   };
@@ -302,7 +308,7 @@
           id: val
         };
       });
-      // TODO
+      await deletePipeline({ items: ids });
       loading.value = false;
       execSucceed();
       queryParams.page = 1;

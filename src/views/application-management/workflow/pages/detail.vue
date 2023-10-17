@@ -17,13 +17,13 @@
           <a-button type="outline" size="small" @click="handleBack">
             {{ $t('common.button.back') }}
           </a-button>
-          <a-button type="primary" size="small" @click="handleSubmit">
+          <a-button type="primary" size="small" @click="handleSubmitApply">
             {{ $t('common.button.retry') }}
           </a-button>
         </a-space>
       </template>
     </BreadWrapper>
-    <ComCard>
+    <ComCard padding="0">
       <FlowView ref="flow" :height="height"></FlowView>
     </ComCard>
   </div>
@@ -39,7 +39,7 @@
 
   const height = 'calc(100vh - 90px)';
   const { t, route, router } = useCallCommon();
-  const id = route.query.id as string;
+  const id = route.query.pid as string;
   const flow = ref();
   const {
     getProjectList,
@@ -51,7 +51,7 @@
 
   const title = computed(() => {
     if (id) {
-      return t('applications.workflow.edit');
+      return t('applications.workflow.view');
     }
     return t('applications.workflow.create');
   });
@@ -79,10 +79,19 @@
   const handleBack = () => {
     router.back();
   };
-  const handleSubmit = () => {
-    const data = flow.value?.getStageList?.();
-    console.log('flow data', data);
+
+  const handleSubmitApply = async () => {
+    try {
+      const data = {
+        id
+      };
+      await applyPipeline(data);
+      router.back();
+    } catch (error) {
+      // eslint-disable-next-line no-console
+    }
   };
+
   init();
 </script>
 

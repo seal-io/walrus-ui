@@ -1,6 +1,7 @@
 export default {
   'applications.workflow.create': 'New Pipeline',
   'applications.workflow.edit': 'Edit Pipeline',
+  'applications.workflow.view': 'View Pipeline',
   'applications.workflow.name': 'Pipeline',
   'applications.workflow.filter.holder': 'please enter pipeline',
   'applications.workflow.table.status': 'Running Status',
@@ -10,5 +11,11 @@ export default {
   'workflow.form.rules.displayName': 'Pipeline name required',
   'workflow.form.rules.name': 'Pipeline ID required',
   'workflow.form.displayName': 'Pipeline Name',
-  'workflow.form.name': 'Pipeline ID'
+  'workflow.form.name': 'Pipeline ID',
+  'workflow.step.modal.title': '{action} Pipeline Task',
+  'workflow.step.form.env': 'Deployment Environment',
+  'workflow.stage.add.task': 'Add Task',
+  'workflow.stage.add.paratask': 'Parallel Task',
+  'workflow.stage.add.title': 'New Stage',
+  'workflow.stage.add.button': 'Add New Stage'
 };

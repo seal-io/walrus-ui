@@ -14,6 +14,9 @@
       ></Breadcrumb>
       <template #right>
         <a-space fill :size="20" align="end" style="margin-right: 60px">
+          <a-button type="primary" size="small" @click="handleSubmitApply">
+            {{ $t('common.button.saverun') }}
+          </a-button>
           <a-button type="primary" size="small" @click="handleSubmit">
             {{ $t('common.button.save') }}
           </a-button>
@@ -35,11 +38,11 @@
   import useCallCommon from '@/hooks/use-call-common';
   import useProjectBreadcrumbData from '@/views/application-management/projects/hooks/use-project-breadcrumb-data';
   import flowEditor from '../components/flow-editor.vue';
-  import { createPipeline, updatePipeline } from '../api';
+  import { createPipeline, updatePipeline, applyPipeline } from '../api';
 
   const height = 'calc(100vh - 90px)';
   const { t, route, router } = useCallCommon();
-  const id = route.query.id as string;
+  const id = route.query.pid as string;
   const flow = ref();
   const {
     getProjectList,
@@ -59,6 +62,7 @@
   const handleSelectChange = ({ value, item }) => {
     handleBreadChange(value, item);
   };
+
   const setBreadCrumbList = async () => {
     const list = await initBreadValues();
 
@@ -77,20 +81,39 @@
   };
 
   const handleSubmit = async () => {
-    const data = flow.value?.getData?.();
+    const formData = flow.value?.getData?.();
     try {
-      await createPipeline({
-        ...data.basic,
-        stages: data.stages
-      });
+      const data = {
+        ...formData.basic,
+        stages: formData.stages
+      };
+      if (id) {
+        await updatePipeline(data);
+      } else {
+        await createPipeline(data);
+      }
       router.back();
     } catch (error) {
       // eslint-disable-next-line no-console
     }
     console.log('data===', {
-      ...data.basic,
-      stages: data.stages
+      ...formData.basic,
+      stages: formData.stages
     });
+  };
+
+  const handleSubmitApply = async () => {
+    const formData = flow.value?.getData?.();
+    try {
+      const data = {
+        ...formData.basic,
+        stages: formData.stages
+      };
+      await applyPipeline(data);
+      router.back();
+    } catch (error) {
+      // eslint-disable-next-line no-console
+    }
   };
   init();
 </script>

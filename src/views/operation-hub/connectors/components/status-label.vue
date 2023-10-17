@@ -31,11 +31,12 @@
         :color="color"
         :style="{ height: `${size}px`, minWidth: `${size}px` }"
       >
-        <span v-if="status.error || status.transitioning"
+        <span v-if="status.error || status.transitioning" class="flex"
           ><a-tooltip v-if="status.message" :content="status.message">
-            <icon-exclamation-circle-fill
+            <i
+              class="iconfont icon-ic-exclamation-circle"
               style="margin-right: 4px; color: #fff"
-            /> </a-tooltip
+            ></i> </a-tooltip
         ></span>
         <span>{{ status.text }}</span>
       </a-tag>

@@ -42,12 +42,20 @@ export function updatePipeline(data: PipelineRow) {
   return axios.put(`${PROJECT_API_PREFIX()}${PIPELINE_API}/${data.id}`, data);
 }
 
-export function queryPipelineDetail(params: { id: string }) {
-  return axios.get(`${PROJECT_API_PREFIX()}${PIPELINE_API}/${params.id}`);
+export function queryPipelineDetail(params: { id: string }, token?) {
+  return axios.get<PipelineRow>(
+    `${PROJECT_API_PREFIX()}${PIPELINE_API}/${params.id}`,
+    {
+      cancelToken: token
+    }
+  );
 }
 
-export function applyPipeline(params: { id: string }) {
-  return axios.get(`${PROJECT_API_PREFIX()}${PIPELINE_API}/${params.id}/apply`);
+export function applyPipeline(data: { id: string }) {
+  return axios.post(
+    `${PROJECT_API_PREFIX()}${PIPELINE_API}/${data.id}/apply`,
+    data
+  );
 }
 
 export default {};

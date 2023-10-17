@@ -1,6 +1,8 @@
 <script lang="tsx">
+  import _ from 'lodash';
   import { defineComponent, inject, toRefs, ref } from 'vue';
   import i18n from '@/locale';
+  import StatusLabel from '@/views/operation-hub/connectors/components/status-label.vue';
   import MoreAction from './more-action.vue';
 
   export default defineComponent({
@@ -32,15 +34,30 @@
         <div class="pipeline-node">
           {renderStageName()}
           <div class="pipeline-node-title">
-            <div class="title">Javascript代码扫描</div>
+            <div class="title">{node.value.data.name}</div>
             <div class="more">{/* <MoreAction></MoreAction> */}</div>
           </div>
           <div class="operation-box">
             <span class="status">
-              <i class={['iconfont icon-success-fill success']}></i>
+              {/* <i class={['iconfont icon-success-fill success']}></i> */}
+              <StatusLabel
+                zoom={0.9}
+                status={{
+                  status: _.get(node.value.data, 'status.summaryStatus'),
+                  text: _.get(node.value.data, 'status.summaryStatus'),
+                  message: _.get(
+                    node.value.data,
+                    'status.summaryStatusMessage'
+                  ),
+                  transitioning: _.get(node.value.data, 'status.transitioning'),
+                  error: _.get(node.value.data, 'status.error')
+                }}
+              ></StatusLabel>
             </span>
             <a-space class="btn">
-              <a-link hoverable={false}>日志</a-link>
+              <a-link hoverable={false}>
+                {t('applications.applications.instance.log')}
+              </a-link>
             </a-space>
           </div>
         </div>

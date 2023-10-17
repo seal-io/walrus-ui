@@ -318,6 +318,7 @@ export default function useServiceData(props?) {
     asyncLoading.value = false;
   };
 
+  // for workflow create service task
   const initSerivceInfo = async () => {
     if (!setServiceInfo.enable) return;
     serviceInfo.value = setServiceInfo.info;
