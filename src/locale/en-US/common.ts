@@ -7,6 +7,8 @@ export default {
   'common.button.continue': 'Continue',
   'common.button.upload': 'Upload',
   'common.button.save': 'Save',
+  'common.button.saverun': 'Save and Run',
+  'common.button.run': 'Run',
   'common.button.cancel': 'Cancel',
   'common.button.discard': 'Sure to discard',
   'common.button.submit': 'Submit',

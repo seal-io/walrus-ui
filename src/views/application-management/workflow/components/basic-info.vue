@@ -9,7 +9,7 @@
     :mask-closable="false"
     :body-style="{ 'max-height': '400px', 'overflow': 'auto' }"
     modal-class="project-modal"
-    title="基本信息"
+    :title="$t('common.title.basicInfo')"
     @cancel="handleCancel"
     @ok="handleOk"
     @before-open="handleBeforeOpen"
@@ -53,7 +53,7 @@
             v-model="formData.name"
             :label="$t('workflow.form.name')"
             :required="true"
-            :disabled="action === 'edit'"
+            :disabled="!!id"
             style="width: 100%"
             :max-length="63"
             show-word-limit
@@ -98,6 +98,7 @@
 </template>
 
 <script lang="ts" setup>
+  import useCallCommon from '@/hooks/use-call-common';
   import { validateLabelNameRegx } from '@/views/config';
   import EditPageFooter from '@/components/edit-page-footer/index.vue';
   import { ref, PropType } from 'vue';
@@ -124,7 +125,9 @@
     'update:show',
     'update:dataInfo'
   ]);
-  const formRef = ref();
+  const { route } = useCallCommon();
+  const id = route.query.pid as string;
+  const formref = ref();
   const formData = ref({
     displayName: '',
     name: '',
@@ -134,7 +137,7 @@
   });
 
   const handleOk = async () => {
-    const res = await formRef.value?.validate();
+    const res = await formref.value?.validate();
     if (!res) {
       emits('update:dataInfo', { ...formData.value });
       emits('update:show', false);
@@ -147,7 +150,7 @@
 
   const handleBeforeClose = () => {
     // reset form
-    formRef.value?.resetFields();
+    formref.value?.resetFields();
   };
 
   const handleBeforeOpen = () => {

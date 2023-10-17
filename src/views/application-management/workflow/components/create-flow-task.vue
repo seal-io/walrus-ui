@@ -17,7 +17,13 @@
       padding: 0
     }"
     modal-class="flow-task-modal"
-    title="新建任务"
+    :title="
+      action === 'create'
+        ? $t('workflow.step.modal.title', {
+            action: $t('common.button.create')
+          })
+        : $t('workflow.step.modal.title', { action: $t('common.button.edit') })
+    "
     @cancel="handleCancel"
     @ok="handleOk"
     @before-open="handleBeforeOpen"
@@ -55,7 +61,7 @@
           <seal-select
             v-else-if="taskType === TaskTypes.SERVICE && current === 2"
             v-model="flow.environmentId"
-            label="选择环境"
+            :label="$t('workflow.step.form.env')"
             :placeholder="$t('applications.applications.table.module')"
             :required="true"
             :style="{ width: `${InputWidth.LARGE}px` }"
@@ -170,7 +176,9 @@
 
   const title = computed(() => {
     if (!taskType.value) {
-      return '新建任务';
+      return t('workflow.step.modal.title', {
+        action: t('common.button.create')
+      });
     }
     const task = TaskTypeList.find((item) => item.value === taskType.value);
     const label = task?.title || '';

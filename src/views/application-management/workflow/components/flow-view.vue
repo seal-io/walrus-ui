@@ -1,14 +1,17 @@
 <template>
   <div class="wrapper">
-    <div class="tools">
+    <!-- <div class="tools">
       <toolBar :tool-list="toolList" @select="handleToolSelect"></toolBar>
-    </div>
-    <div ref="container" style="height: 800px"> </div>
+    </div> -->
+    <a-spin style="width: 100%" :loading="loading">
+      <div ref="container" style="height: 800px"> </div>
+    </a-spin>
   </div>
 </template>
 
 <script lang="ts" setup>
   import _ from 'lodash';
+  import useCallCommon from '@/hooks/use-call-common';
   import { ref, onMounted, onUnmounted, nextTick, computed } from 'vue';
   import { Graph, Node, Path, Edge, Cell, Platform, StringExt } from '@antv/x6';
   import '@antv/x6-vue-shape';
@@ -17,6 +20,7 @@
   import { NodeSize, PipelineNodeSize, tools, CustomShape } from '../config';
   import { defineCustomNode } from '../custom/node';
   import { defineConnector } from '../custom/edge';
+  import { queryPipelineDetail } from '../api';
   import test from '../config/test';
 
   setPipelineNodeStyle(PipelineNodeSize);
@@ -24,10 +28,13 @@
   const DX = 300;
   const DY = 120;
   const DX2 = 40;
+  const { route } = useCallCommon();
   let graphIns: any = null;
   const canRedo = ref(false);
   const canUndo = ref(false);
   const container = ref();
+  const loading = ref(false);
+  const id = route.query.pid as string;
   const nodes = ref<Node.Metadata[]>([]);
   const edges = ref<Edge.Metadata[]>([]);
 
@@ -61,6 +68,17 @@
     canUndo.value = graphIns?.canUndo();
   };
 
+  const getPipelineDetail = async () => {
+    if (!id) return null;
+    try {
+      const { data } = await queryPipelineDetail({ id });
+      return data;
+    } catch (error) {
+      // eslint-disable-next-line no-console
+    }
+    return null;
+  };
+
   const initNodes = (list: any[]) => {
     const nodes: Node.Metadata[] = [];
     const edges: Edge.Metadata[] = [];
@@ -86,8 +104,8 @@
             { id: `${sItem.id}-out`, group: 'out' }
           ],
           data: {
+            ...sItem,
             stepPosition: sIndex,
-            name: sItem.name,
             stageName: item.name,
             stageId: item.id,
             nextStageId: _.get(nextStage, `id`) || ''
@@ -183,7 +201,7 @@
         },
         createEdge() {
           return graphIns?.createEdge({
-            shape: 'data-processing-curve',
+            shape: CustomShape.pipelineEdge,
             attrs: {
               line: {
                 strokeDasharray: '5 5'
@@ -211,24 +229,32 @@
     console.log(data);
   };
 
-  const init = () => {
+  const fitPosition = () => {
+    graphIns?.positionPoint({ x: 0, y: 0 }, 50, 50);
+    graphIns?.zoomTo(1);
+  };
+  const initData = async () => {
+    loading.value = true;
+    const data = await getPipelineDetail();
+    const stages = data?.stages || [];
+    const result = initNodes(stages);
+    graphIns.fromJSON(result);
+    loading.value = false;
+    console.log('result', result);
+  };
+  const init = async () => {
     graphIns?.clearCells();
     defineCustomNode();
     defineConnector();
     createGraph();
     initEvent();
-    const result = initNodes(test);
-    graphIns.fromJSON(result);
-    console.log('result', result);
+    await initData();
     nextTick(() => {
-      graphIns?.centerContent();
-      graphIns?.zoomTo(1);
+      fitPosition();
     });
   };
   onMounted(() => {
-    nextTick(() => {
-      init();
-    });
+    init();
   });
 </script>
 

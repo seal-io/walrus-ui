@@ -1,6 +1,9 @@
 <script lang="tsx">
+  import _ from 'lodash';
   import { defineComponent, toRefs, ref, PropType, inject } from 'vue';
-  import Draggable from 'vuedraggable';
+  // import Draggable from 'vuedraggable';
+  import useCallCommon from '@/hooks/use-call-common';
+  import StatusLabel from '@/views/operation-hub/connectors/components/status-label.vue';
   import { Step } from '../config/interface';
 
   export default defineComponent({
@@ -20,6 +23,7 @@
     },
     emits: ['insertPrev', 'insertNext', 'add', 'edit'],
     setup(props, { emit }) {
+      const { t } = useCallCommon();
       const stageData = inject('stageData');
       const { position, stepData } = toRefs(props);
       const drag = ref(false);
@@ -75,7 +79,7 @@
           <div class="step-box">
             <div class="step-content" onClick={() => handleAddTask()}>
               <icon-plus-circle-fill class="btn-icon m-r-5" />
-              <span>添加任务</span>
+              <span>{t('workflow.stage.add.task')}</span>
             </div>
           </div>
         );
@@ -88,7 +92,8 @@
                   <icon-play-circle class="btn" />
                 </div> */}
             {
-              <Draggable
+              {
+                /* <Draggable
                 style={{ display: 'flex' }}
                 v-model={list.value}
                 item-key="id"
@@ -99,7 +104,8 @@
                     return renderStep(item, index);
                   }
                 }}
-              ></Draggable>
+              ></Draggable> */
+              }
             }
           </>
         ) : (
@@ -112,7 +118,19 @@
           <div class="step-box">
             <div class="prev btn-wrap"></div>
             <div class="step-content" onClick={() => handleEditTask()}>
-              {stepData.value.name}
+              <span>{stepData.value.name}</span>
+              <StatusLabel
+                class="mleft-5"
+                zoom={0.9}
+                showLoading={true}
+                status={{
+                  status: _.get(stepData.value, 'status.summaryStatus'),
+                  text: 'test',
+                  message: _.get(stepData.value, 'status.summaryStatusMessage'),
+                  transitioning: _.get(stepData.value, 'status.transitioning'),
+                  error: _.get(stepData.value, 'status.error')
+                }}
+              ></StatusLabel>
             </div>
             <div class="next btn-wrap"></div>
           </div>

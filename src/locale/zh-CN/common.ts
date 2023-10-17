@@ -7,6 +7,8 @@ export default {
   'common.button.continue': '继续',
   'common.button.upload': '上传',
   'common.button.save': '保存',
+  'common.button.saverun': '保存并运行',
+  'common.button.run': '运行',
   'common.button.submit': '提交',
   'common.button.discard': '确定放弃',
   'common.button.cancel': '取消',

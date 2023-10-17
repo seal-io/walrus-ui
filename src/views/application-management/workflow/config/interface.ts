@@ -21,6 +21,7 @@ export interface PipelineRow {
   description: string;
   displayName: string;
   environmentID: string;
+  parallelism: number;
   id: string;
   name: string;
   executions: Array<Step>;

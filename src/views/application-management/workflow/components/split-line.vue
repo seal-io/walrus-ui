@@ -1,5 +1,6 @@
 <script lang="tsx">
   import { defineComponent, toRefs } from 'vue';
+  import useCallCommon from '@/hooks/use-call-common';
 
   export default defineComponent({
     props: {
@@ -12,6 +13,7 @@
     },
     emits: ['addStage'],
     setup(props, { emit }) {
+      const { t } = useCallCommon();
       const { position } = toRefs(props);
       const handleAddStage = () => {
         emit('addStage');
@@ -20,7 +22,7 @@
       return () => (
         <div class="split-line">
           <div class={['split-line-btn', position.value]}>
-            <a-tooltip content="添加新的阶段">
+            <a-tooltip content={t('workflow.stage.add.button')}>
               <icon-plus-circle-fill
                 class="plus-btn"
                 onClick={() => handleAddStage()}

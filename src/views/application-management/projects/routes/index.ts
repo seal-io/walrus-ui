@@ -1,5 +1,5 @@
 import { Resources } from '@/permissions/config';
-import { PROJECT } from '@/router/config';
+import { PROJECT, WORKFLOW } from '@/router/config';
 import { permissionKey } from '@/store/modules/user/types';
 import { PageAction } from '@/views/config';
 import workflowRoutes from '@/views/application-management/workflow/routes';
@@ -54,7 +54,9 @@ export default [
         PROJECT.EnvDetail,
         PROJECT.EnvEdit,
         PROJECT.EnvClone,
-        PROJECT.TemplateDetail
+        PROJECT.TemplateDetail,
+        WORKFLOW.Detail,
+        WORKFLOW.Edit
       ],
       icon: 'icon-apps'
     }
