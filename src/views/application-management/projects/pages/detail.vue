@@ -153,8 +153,8 @@
   import TemplateList from '@/views/application-management/templates/pages/list.vue';
   import CatalogList from '@/views/application-management/catalogs/pages/list.vue';
   import IconBtnGroup from '@/components/icon-btn-group/index.vue';
-  import Workflow from '@/views/application-management/workflow/pages/edit.vue';
-  import WorkflowList from '@/views/application-management/workflow/pages/list.vue';
+  import Workflow from '@/views/application-management/workflows/pages/edit.vue';
+  import WorkflowList from '@/views/application-management/workflows/pages/list.vue';
   import { queryItemProject } from '../api';
   import { projectDetailTabs } from '../config';
   import userProjectBreadcrumbData from '../hooks/use-project-breadcrumb-data';

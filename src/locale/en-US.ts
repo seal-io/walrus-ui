@@ -18,7 +18,7 @@ import localeOperation from '@/views/operation-hub/locale/en-US';
 import localeProfile from '@/views/profile/locale/en-US';
 import localeCatalogs from '@/views/operation-hub/catalogs/locale/en-US';
 
-import localeWorkflow from '@/views/application-management/workflow/locale/en-US';
+import localeWorkflow from '@/views/application-management/workflows/locale/en-US';
 
 import localeCommon from './en-US/common';
 import localeSettings from './en-US/settings';

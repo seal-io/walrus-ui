@@ -2,7 +2,7 @@ import { Resources } from '@/permissions/config';
 import { PROJECT, WORKFLOW } from '@/router/config';
 import { permissionKey } from '@/store/modules/user/types';
 import { PageAction } from '@/views/config';
-import workflowRoutes from '@/views/application-management/workflow/routes';
+import workflowRoutes from '@/views/application-management/workflows/routes';
 import connectorRoutes from './connectors';
 import templateRoutes from '../../templates/routes';
 
@@ -56,7 +56,8 @@ export default [
         PROJECT.EnvClone,
         PROJECT.TemplateDetail,
         WORKFLOW.Detail,
-        WORKFLOW.Edit
+        WORKFLOW.Edit,
+        WORKFLOW.Records
       ],
       icon: 'icon-apps'
     }

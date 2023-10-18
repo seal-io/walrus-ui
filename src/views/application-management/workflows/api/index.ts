@@ -2,9 +2,12 @@ import axios from 'axios';
 import qs from 'query-string';
 import { Pagination } from '@/types/global';
 import router from '@/router';
-import { PipelineRow } from '../config/interface';
+import _ from 'lodash';
+import { PipelineRow, PipelineRecordsRow } from '../config/interface';
 
 export const PIPELINE_API = '/workflows';
+
+export const PIPELINE_EXECUTION_API = '/workflow-executions';
 
 export const PROJECT_API_PREFIX = () => {
   const { projectId } = router.currentRoute.value.params;
@@ -16,18 +19,21 @@ export interface QueryType extends Pagination {
   sort?: string[];
 }
 
-export interface ResultType {
-  items: PipelineRow[];
+export interface ResultType<T> {
+  items: T[];
   pagination: Pagination;
 }
 export function queryPipelines(params: QueryType, token?) {
-  return axios.get<ResultType>(`${PROJECT_API_PREFIX()}${PIPELINE_API}`, {
-    params,
-    cancelToken: token,
-    paramsSerializer: (obj) => {
-      return qs.stringify(obj);
+  return axios.get<ResultType<PipelineRow>>(
+    `${PROJECT_API_PREFIX()}${PIPELINE_API}`,
+    {
+      params,
+      cancelToken: token,
+      paramsSerializer: (obj) => {
+        return qs.stringify(obj);
+      }
     }
-  });
+  );
 }
 
 export function createPipeline(data: PipelineRow) {
@@ -58,4 +64,29 @@ export function applyPipeline(data: { id: string }) {
   );
 }
 
+export const queryPipelineRecords = (params: { id: string }, token?) => {
+  return axios.get<ResultType<PipelineRecordsRow>>(
+    `${PROJECT_API_PREFIX()}${PIPELINE_API}/${
+      params.id
+    }${PIPELINE_EXECUTION_API}`,
+    {
+      params: _.omit(params, ['id']),
+      cancelToken: token,
+      paramsSerializer: (obj) => {
+        return qs.stringify(obj);
+      }
+    }
+  );
+};
+
+export const queryPipelineRecordDetail = (params: { id: string }, token?) => {
+  return axios.get(
+    `${PROJECT_API_PREFIX()}${PIPELINE_API}${PIPELINE_EXECUTION_API}/${
+      params.id
+    }`,
+    {
+      cancelToken: token
+    }
+  );
+};
 export default {};

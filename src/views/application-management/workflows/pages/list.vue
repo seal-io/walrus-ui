@@ -203,6 +203,7 @@
       }
     });
   };
+
   const fetchData = async () => {
     try {
       loading.value = true;
@@ -262,12 +263,10 @@
   };
   const handleView = (row) => {
     router.push({
-      name: WORKFLOW.Detail,
+      name: WORKFLOW.Records,
       params: {
-        ...route.params
-      },
-      query: {
-        pid: row.id
+        ...route.params,
+        flowId: row.id
       }
     });
   };
@@ -280,26 +279,7 @@
       query: { id: row.id }
     });
   };
-  const handleViewDetail = (row) => {
-    router.push({
-      name: PROJECT.EnvEdit,
-      params: {
-        action: PageAction.VIEW
-      },
-      query: { id: row.id }
-    });
-  };
-  const handleClone = (row) => {
-    router.push({
-      name: PROJECT.EnvClone,
-      params: {
-        environmentId: row.id
-      },
-      query: {
-        id: row.id
-      }
-    });
-  };
+
   const handleDeleteConfirm = async () => {
     try {
       loading.value = true;
