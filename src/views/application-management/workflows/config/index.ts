@@ -167,6 +167,33 @@ export const moreActions: MoreAction[] = [
   }
 ];
 
+export const recordActions: MoreAction[] = [
+  {
+    label: 'common.button.view',
+    value: 'view',
+    icon: 'iconFont',
+    handler: '',
+    status: 'normal',
+    disabled: false,
+    filterFun(currentInfo) {
+      return true;
+    },
+    props: {
+      type: 'icon-xiangqing'
+    }
+  },
+  {
+    label: 'common.button.delete',
+    value: 'delete',
+    icon: 'icon-delete',
+    handler: '',
+    status: 'danger',
+    disabled: false,
+    filterFun(currentInfo) {
+      return true;
+    }
+  }
+];
 export const moreMenu = [
   {
     label: 'common.button.delete',

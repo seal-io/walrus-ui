@@ -36,3 +36,20 @@ export interface PipelineRow {
   updateTime: string;
   stages: Stage[];
 }
+
+export interface PipelineRecordsRow {
+  createTime: string;
+  updateTime: string;
+  description: string;
+  duration: number;
+  id: string;
+  input: string;
+  labels: object;
+  name: string;
+  progress: string;
+  project: object;
+  record: string;
+  stageExecutionIds: string[];
+  status: object;
+  subjectID: string;
+}

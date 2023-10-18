@@ -9,6 +9,7 @@
   import { stepSchema, stageSchema } from '../config';
 
   export default defineComponent({
+    emits: ['delete'],
     props: {
       stepList: {
         type: Array as PropType<Step[]>,
@@ -23,7 +24,7 @@
         }
       }
     },
-    setup(props) {
+    setup(props, { emit }) {
       const { t } = useCallCommon();
       const { stepList, stageData } = toRefs(props);
       const hoverable = ref(false);
@@ -79,6 +80,9 @@
 
       const handleInsertPrev = (index) => {};
 
+      const handleDeleteStage = () => {
+        emit('delete');
+      };
       const handleEditTask = (item, index) => {
         action.value = 'edit';
         activeStep.value = item;
@@ -95,21 +99,36 @@
           onMouseleave={() => handleMouseLeave()}
         >
           <div class="stage-header">
-            {nameEditable.value ? (
-              <a-input
-                v-model={stageData.value.name}
-                size="small"
-                ref={input}
-                class={[{ 'border-less': !nameEditable.value }]}
-                onBlur={() => handleInputBlur()}
-              ></a-input>
+            <div class="flex">
+              {nameEditable.value ? (
+                <a-input
+                  v-model={stageData.value.name}
+                  size="small"
+                  ref={input}
+                  max-length={63}
+                  show-word-limit={true}
+                  class={[{ 'border-less': !nameEditable.value }]}
+                  onBlur={() => handleInputBlur()}
+                ></a-input>
+              ) : (
+                <>
+                  <div class="title">{stageData.value.name}</div>
+                  <a-link class="mleft-5">
+                    <icon-edit onClick={() => handleInputEdit()} />
+                  </a-link>
+                </>
+              )}
+            </div>
+            {hoverable.value ? (
+              <a-link
+                status="danger"
+                class="mleft-5"
+                onClick={() => handleDeleteStage()}
+              >
+                <icon-delete />
+              </a-link>
             ) : (
-              <>
-                <div class="title">{stageData.value.name}</div>
-                <a-link class="mleft-5">
-                  <icon-edit onClick={() => handleInputEdit()} />
-                </a-link>
-              </>
+              <span class="mleft-5 btn-holder"></span>
             )}
           </div>
           <div class="stage-content">
@@ -170,9 +189,14 @@
     .stage-header {
       display: flex;
       align-items: center;
+      justify-content: space-between;
       margin-bottom: 40px;
       color: var(--color-text-3);
       font-size: 14px;
+
+      .btn-holder {
+        padding: 8px 11px;
+      }
 
       .title {
         height: 28px;

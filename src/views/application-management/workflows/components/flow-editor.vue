@@ -3,6 +3,7 @@
   import { defineComponent, toRefs, ref } from 'vue';
   // import Draggable from 'vuedraggable';
   import useCallCommon from '@/hooks/use-call-common';
+  import { deleteModal, execSucceed } from '@/utils/monitor';
   import dayjs from 'dayjs';
   import FlowStage from './flow-stage.vue';
   import FlowSplitLine from './split-line.vue';
@@ -76,6 +77,13 @@
         );
       };
 
+      const handleDeleteStage = (index) => {
+        deleteModal({
+          onOk() {
+            stageList.value.splice(index, 1);
+          }
+        });
+      };
       const handleDragStart = () => {
         drag.value = true;
       };
@@ -93,7 +101,11 @@
               onAddStage={() => handleInsertStagePrev(index)}
               position={setPosition(index, stageList.value)}
             ></FlowSplitLine>
-            <FlowStage stepList={element.steps} stageData={element}></FlowStage>
+            <FlowStage
+              stepList={element.steps}
+              stageData={element}
+              onDelete={() => handleDeleteStage(index)}
+            ></FlowStage>
             {index === stageList.value.length - 1 ? (
               <FlowSplitLine
                 onAddStage={() => handleInsertStageNext(index)}

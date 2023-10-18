@@ -59,7 +59,8 @@ export const TabPage = {
   COSTTAB: 'costTab',
   OPERATORHUBTAB: 'operatorHubTab',
   SETTINGSTAB: 'settingsTab',
-  USERTAB: 'userTab'
+  USERTAB: 'userTab',
+  PIPELINETAB: 'pipelineTab'
 };
 
 export const ProjectTabs = {
@@ -70,6 +71,11 @@ export const ProjectTabs = {
   TEMPLATES: 'templates',
   CATALOGS: 'catalogs',
   WORKFLOW: 'workflow'
+};
+
+export const PipelineTabs = {
+  LATESTRUN: 'latestRun',
+  HISTORY: 'history'
 };
 
 export const EnvironmentTabs = {

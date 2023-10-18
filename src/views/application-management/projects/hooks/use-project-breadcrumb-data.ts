@@ -2,12 +2,13 @@ import _ from 'lodash';
 import { createAxiosToken } from '@/api/axios-chunk-request';
 import { reactive, ref, onBeforeUnmount } from 'vue';
 import { Resources, Actions } from '@/permissions/config';
-import { PROJECT } from '@/router/config';
+import { PROJECT, WORKFLOW } from '@/router/config';
 import useCallCommon from '@/hooks/use-call-common';
 import { useProjectStore, useUserStore } from '@/store';
 import { queryProjects } from '@/views/application-management/projects/api';
 import { queryEnvironments } from '@/views/application-management/environments/api';
 import { queryServices } from '@/views/application-management/services/api';
+import { queryPipelines } from '@/views/application-management/workflows/api';
 import { BreadcrumbOptions } from '@/views/config/interface';
 import { getListLabel } from '@/utils/func';
 
@@ -19,17 +20,20 @@ export default function useProjectData() {
   let projectRequestToken: any = null;
   let environmentRequestToken: any = null;
   let serviceRequestToken: any = null;
+  let pipelineRequestToken: any = null;
 
   // breadCrumbList dropdown loading
   const RequestLoadingMap = reactive({
     project: false,
     environment: false,
-    service: false
+    service: false,
+    pipeline: false
   });
   const pageLevelMap = {
     Project: 'Project',
     Environment: 'Environment',
-    Service: 'Service'
+    Service: 'Service',
+    Pipeline: 'Pipeline'
   };
   const templateCommonConfig = {
     value: '',
@@ -41,6 +45,7 @@ export default function useProjectData() {
     options: []
   };
 
+  // =========== project start=============
   const projectTemplate = {
     ...templateCommonConfig,
     type: 'menu.applicationManagement.project',
@@ -48,21 +53,6 @@ export default function useProjectData() {
     wrapperId: 'projectWrapper',
     route: PROJECT.Detail
   };
-  const environmentTemplate = {
-    ...templateCommonConfig,
-    type: 'menu.operatorHub.evniroment',
-    level: pageLevelMap.Environment,
-    wrapperId: 'envWrapper',
-    route: PROJECT.EnvDetail
-  };
-  const serviceTemplate = {
-    ...templateCommonConfig,
-    type: 'menu.applicationManagement.serivce',
-    level: pageLevelMap.Service,
-    wrapperId: 'serviceWrapper',
-    route: PROJECT.ServiceDetail
-  };
-
   const getProjectList = async () => {
     if (!route.params.projectId) return [];
     let projectList: any[] = [];
@@ -93,50 +83,6 @@ export default function useProjectData() {
       RequestLoadingMap.project = false;
     }
     return projectList;
-  };
-  const getEnvironmentList = async () => {
-    if (!route.params.environmentId) return [];
-    let environmentList: any[] = [];
-    environmentRequestToken?.cancel();
-    environmentRequestToken = createAxiosToken();
-    try {
-      const params = {
-        page: -1
-      };
-      RequestLoadingMap.environment = true;
-      const { data } = await queryEnvironments(
-        params,
-        environmentRequestToken?.token
-      );
-      environmentList = data.items || [];
-    } catch (error) {
-      environmentList = [];
-    } finally {
-      RequestLoadingMap.environment = false;
-    }
-    return environmentList;
-  };
-
-  const getServiceList = async (queryparams?: object) => {
-    let serviceList: any[] = [];
-    serviceRequestToken?.cancel();
-    serviceRequestToken = createAxiosToken();
-    try {
-      const params = {
-        page: 1,
-        perPage: 10,
-        extract: ['-attributes', '-projectId', '-status', '-template'],
-        ...queryparams
-      };
-      RequestLoadingMap.service = true;
-      const { data } = await queryServices(params, serviceRequestToken?.token);
-      serviceList = data.items || [];
-    } catch (error) {
-      serviceList = [];
-    } finally {
-      RequestLoadingMap.service = false;
-    }
-    return serviceList;
   };
 
   const setProjectList = async (projectList) => {
@@ -169,6 +115,40 @@ export default function useProjectData() {
       }
     };
   };
+  // =========== project end =============
+
+  // =========== environment start=============
+  const environmentTemplate = {
+    ...templateCommonConfig,
+    type: 'menu.operatorHub.evniroment',
+    level: pageLevelMap.Environment,
+    wrapperId: 'envWrapper',
+    route: PROJECT.EnvDetail
+  };
+
+  const getEnvironmentList = async () => {
+    if (!route.params.environmentId) return [];
+    let environmentList: any[] = [];
+    environmentRequestToken?.cancel();
+    environmentRequestToken = createAxiosToken();
+    try {
+      const params = {
+        page: -1
+      };
+      RequestLoadingMap.environment = true;
+      const { data } = await queryEnvironments(
+        params,
+        environmentRequestToken?.token
+      );
+      environmentList = data.items || [];
+    } catch (error) {
+      environmentList = [];
+    } finally {
+      RequestLoadingMap.environment = false;
+    }
+    return environmentList;
+  };
+
   const setEnvironmentList = (environmentList) => {
     const list = _.map(environmentList, (item) => {
       return {
@@ -190,6 +170,39 @@ export default function useProjectData() {
       options: _.cloneDeep(list)
     };
   };
+  // =========== environment end =============
+
+  // ======== services start ==========
+  const serviceTemplate = {
+    ...templateCommonConfig,
+    type: 'menu.applicationManagement.serivce',
+    level: pageLevelMap.Service,
+    wrapperId: 'serviceWrapper',
+    route: PROJECT.ServiceDetail
+  };
+
+  const getServiceList = async (queryparams?: object) => {
+    let serviceList: any[] = [];
+    serviceRequestToken?.cancel();
+    serviceRequestToken = createAxiosToken();
+    try {
+      const params = {
+        page: 1,
+        perPage: 10,
+        extract: ['-attributes', '-projectId', '-status', '-template'],
+        ...queryparams
+      };
+      RequestLoadingMap.service = true;
+      const { data } = await queryServices(params, serviceRequestToken?.token);
+      serviceList = data.items || [];
+    } catch (error) {
+      serviceList = [];
+    } finally {
+      RequestLoadingMap.service = false;
+    }
+    return serviceList;
+  };
+
   const setServiceList = (serviceList) => {
     const list = _.map(serviceList, (item) => {
       return {
@@ -217,6 +230,64 @@ export default function useProjectData() {
       options: _.cloneDeep(list)
     };
   };
+  // =========== services end =============
+
+  // =========== pipelines start =============
+  const pipelineTemplate = {
+    ...templateCommonConfig,
+    type: 'applications.workflow.name',
+    level: pageLevelMap.Pipeline,
+    wrapperId: 'pipelineWrapper',
+    route: WORKFLOW.Records
+  };
+
+  const getPipelineList = async () => {
+    if (!route.params.flowId) return [];
+    let pipelineList: any[] = [];
+    pipelineRequestToken?.cancel();
+    pipelineRequestToken = createAxiosToken();
+    try {
+      const params = {
+        page: -1,
+        id: route.params.flowId
+      };
+      RequestLoadingMap.pipeline = true;
+      const { data } = await queryPipelines(
+        params,
+        pipelineRequestToken?.token
+      );
+      pipelineList = data.items || [];
+    } catch (error) {
+      pipelineList = [];
+    } finally {
+      RequestLoadingMap.pipeline = false;
+    }
+    return pipelineList;
+  };
+
+  const setPipelineList = (pipelineList) => {
+    const list = _.map(pipelineList, (item) => {
+      return {
+        ..._.cloneDeep(item),
+        label: item.displayName,
+        value: item.id
+      };
+    });
+    const defaultValue = route.params.flowId || _.get(list, '0.id');
+    const defaultName = _.find(list, { value: defaultValue })?.label as string;
+
+    projectStore.setInfo({
+      pipelineList: _.cloneDeep(list)
+    });
+    return {
+      ...pipelineTemplate,
+      value: defaultValue as string,
+      label: defaultName,
+      options: _.cloneDeep(list)
+    };
+  };
+  // =========== pipelines end =============
+
   const setBreabCrumbData = async () => {
     const [projectList, environmentList, serviceList] = await Promise.all([
       getProjectList(),
@@ -233,6 +304,14 @@ export default function useProjectData() {
     let query = {};
     item.value = val;
     item.label = getListLabel(val, item.options);
+
+    // pipeline
+    if (item.level === pageLevelMap.Pipeline) {
+      params = {
+        ...route.params,
+        flowId: val
+      };
+    }
     // environment
     if (item.level === pageLevelMap.Environment) {
       params = {
@@ -271,10 +350,18 @@ export default function useProjectData() {
     });
   };
   // init breadCrumbList data from cache
-  const initBreadValues = async (values?: Array<'env' | 'service'>) => {
+  const initBreadValues = async (
+    values?: Array<'env' | 'service' | 'pipeline'>
+  ) => {
     const projectRes = await setProjectList(projectStore.projectList);
     let environmentRes: any[] = [];
     let serviceRes: any[] = [];
+    let pipelineRes: any[] = [];
+    if (_.includes(values, 'pipeline')) {
+      const pipelines =
+        setPipelineList(projectStore.pipelineList) || pipelineTemplate;
+      pipelineRes = [{ ...pipelines }];
+    }
     if (_.includes(values, 'env')) {
       const env =
         setEnvironmentList(projectStore.environmentList) || environmentTemplate;
@@ -287,6 +374,7 @@ export default function useProjectData() {
     }
     return _.concat(
       projectRes,
+      pipelineRes,
       environmentRes,
       serviceRes
     ) as BreadcrumbOptions[];
@@ -311,6 +399,9 @@ export default function useProjectData() {
     RequestLoadingMap,
     projectTemplate,
     environmentTemplate,
-    serviceTemplate
+    serviceTemplate,
+    pipelineTemplate,
+    getPipelineList,
+    setPipelineList
   };
 }
