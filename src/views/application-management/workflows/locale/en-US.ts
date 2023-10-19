@@ -17,5 +17,6 @@ export default {
   'workflow.stage.add.task': 'Add Task',
   'workflow.stage.add.paratask': 'Parallel Task',
   'workflow.stage.add.title': 'New Stage',
-  'workflow.stage.add.button': 'Add New Stage'
+  'workflow.stage.add.button': 'Add New Stage',
+  'workflow.stage.records': 'Records'
 };

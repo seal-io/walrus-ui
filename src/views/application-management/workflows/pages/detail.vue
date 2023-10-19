@@ -2,13 +2,9 @@
   <div>
     <BreadWrapper>
       <Breadcrumb
-        :items="[
-          ...breadCrumbList,
-          {
-            type: 'applications.workflow.name',
-            label: title
-          }
-        ]"
+        :level="pageLevelMap.PipelineExcutions"
+        :loading="RequestLoadingMap.pipelineExcutions"
+        :items="breadCrumbList"
         :menu="{ icon: 'icon-apps' }"
         @change="handleSelectChange"
       ></Breadcrumb>
@@ -30,7 +26,7 @@
 </template>
 
 <script lang="ts" setup>
-  import { ref, computed } from 'vue';
+  import { ref, onMounted, computed } from 'vue';
   import { WORKFLOW } from '@/router/config';
   import useCallCommon from '@/hooks/use-call-common';
   import useProjectBreadcrumbData from '@/views/application-management/projects/hooks/use-project-breadcrumb-data';
@@ -39,41 +35,52 @@
 
   const height = 'calc(100vh - 90px)';
   const { t, route, router } = useCallCommon();
-  const id = route.query.pid as string;
+  const flowId = route.params.flowId as string;
   const flow = ref();
   const {
     getProjectList,
     setProjectList,
+    getPipelineList,
+    setPipelineList,
+    getPipelineRecordsList,
+    setPipelineRecordsList,
     initBreadValues,
     breadCrumbList,
+    pageLevelMap,
+    RequestLoadingMap,
     handleBreadChange
   } = useProjectBreadcrumbData();
-
-  const title = computed(() => {
-    if (id) {
-      return t('applications.workflow.view');
-    }
-    return t('applications.workflow.create');
-  });
 
   const handleSelectChange = ({ value, item }) => {
     handleBreadChange(value, item);
   };
   const setBreadCrumbList = async () => {
-    const list = await initBreadValues();
-
-    breadCrumbList.value = [...list];
-
-    const projectList = await getProjectList();
-    const projectRes = await setProjectList(projectList);
+    const [projectList, pipelineList, pipelineRecords] = await Promise.all([
+      getProjectList(),
+      getPipelineList(),
+      getPipelineRecordsList()
+    ]);
+    const [projectRes, pipelineRes, pipelineRecordsRes] = await Promise.all([
+      setProjectList(projectList),
+      setPipelineList(pipelineList),
+      setPipelineRecordsList(pipelineRecords)
+    ]);
     breadCrumbList.value = [
       {
         ...projectRes
+      },
+      {
+        ...pipelineRes
+      },
+      {
+        ...pipelineRecordsRes
       }
     ];
   };
   const init = async () => {
-    setBreadCrumbList();
+    const list = await initBreadValues(['pipeline', 'pipelineRecords']);
+
+    breadCrumbList.value = [...list];
   };
 
   const handleBack = () => {
@@ -83,7 +90,7 @@
   const handleSubmitApply = async () => {
     try {
       const data = {
-        id
+        id: flowId
       };
       await applyPipeline(data);
       router.back();
@@ -91,7 +98,9 @@
       // eslint-disable-next-line no-console
     }
   };
-
+  onMounted(() => {
+    setBreadCrumbList();
+  });
   init();
 </script>
 

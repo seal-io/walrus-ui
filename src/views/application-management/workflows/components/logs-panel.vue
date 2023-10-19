@@ -25,8 +25,6 @@
           <LogsContent
             v-if="type === 'logs'"
             :container-id="item.name"
-            :data-list="item.dataList"
-            :node-info="item.nodeInfo"
             :height="containerHeight"
           ></LogsContent>
         </a-tab-pane>
@@ -83,10 +81,8 @@
     tabs: {
       type: Array as PropType<
         {
-          dataList: any[];
           name: string;
           id: string;
-          nodeInfo: object;
         }[]
       >,
       default() {

@@ -164,9 +164,33 @@ export const moreActions: MoreAction[] = [
     filterFun(currentInfo) {
       return true;
     }
+  },
+  {
+    label: 'common.button.run',
+    value: 'apply',
+    icon: 'icon-play-circle-fill',
+    handler: '',
+    status: 'normal',
+    disabled: false,
+    filterFun(currentInfo) {
+      return true;
+    }
   }
 ];
 
+export const pipelineDetailActions: MoreAction[] = [
+  {
+    label: 'common.button.edit',
+    value: 'edit',
+    icon: 'icon-edit',
+    handler: '',
+    status: 'normal',
+    disabled: false,
+    filterFun(currentInfo) {
+      return true;
+    }
+  }
+];
 export const recordActions: MoreAction[] = [
   {
     label: 'common.button.view',

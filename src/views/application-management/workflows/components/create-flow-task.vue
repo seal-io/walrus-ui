@@ -116,6 +116,15 @@
             </a-space>
           </template>
         </EditPageFooter>
+        <a-button
+          v-if="props.action === 'edit'"
+          style="position: absolute; right: 20px; bottom: 20px"
+          type="primary"
+          status="danger"
+          class="cap-title cancel-btn"
+          @click="handleDelete"
+          >{{ $t('common.button.delete') }}</a-button
+        >
       </div>
     </div>
   </a-modal>
@@ -154,7 +163,7 @@
       }
     }
   });
-  const emits = defineEmits(['save', 'cancel', 'update:show']);
+  const emits = defineEmits(['save', 'cancel', 'update:show', 'delete']);
   const { route, t } = useCallCommon();
   const serviceInfo = reactive({
     enable: false,
@@ -238,6 +247,9 @@
     emits('update:show', false);
   };
 
+  const handleDelete = () => {
+    emits('delete');
+  };
   const handleOk = async () => {
     if (current.value === steps.value.length) {
       if (taskType.value === TaskTypes.SERVICE) {

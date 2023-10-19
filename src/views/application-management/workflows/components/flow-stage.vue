@@ -1,7 +1,9 @@
 <script lang="tsx">
   import _ from 'lodash';
+  import { validateLabelNameRegx } from '@/views/config';
   import { defineComponent, toRefs, ref, PropType, provide } from 'vue';
   import useCallCommon from '@/hooks/use-call-common';
+  import { deleteModal } from '@/utils/monitor';
   import FlowStep from './flow-step.vue';
   import ParallelButton from './parallel-button.vue';
   import CreateFlowTask from './create-flow-task.vue';
@@ -28,20 +30,24 @@
       const { t } = useCallCommon();
       const { stepList, stageData } = toRefs(props);
       const hoverable = ref(false);
+      const showDelete = ref(false);
       const show = ref(false);
       const nameEditable = ref(false);
       const activeStep = ref({});
       const activeIndex = ref(0);
       const action = ref<'create' | 'edit'>('create');
       const input = ref();
+      const valid = ref(false);
       provide('stageData', stageData);
 
       const handleMouseenter = () => {
         hoverable.value = !!stepList.value.length;
+        showDelete.value = true;
       };
 
       const handleMouseLeave = () => {
         hoverable.value = false;
+        showDelete.value = false;
       };
 
       const handleInputEdit = async () => {
@@ -52,7 +58,10 @@
       };
 
       const handleInputBlur = () => {
-        nameEditable.value = false;
+        valid.value = validateLabelNameRegx.test(stageData.value.name);
+        if (valid.value) {
+          nameEditable.value = false;
+        }
       };
 
       const renderModal = () => {
@@ -92,6 +101,14 @@
         });
       };
 
+      const handleDeleteTask = () => {
+        deleteModal({
+          onOk() {
+            stepList.value.splice(activeIndex.value, 1);
+            show.value = false;
+          }
+        });
+      };
       return () => (
         <div
           class="flow-stage"
@@ -105,10 +122,18 @@
                   v-model={stageData.value.name}
                   size="small"
                   ref={input}
+                  error={!valid.value}
                   max-length={63}
                   show-word-limit={true}
                   class={[{ 'border-less': !nameEditable.value }]}
                   onBlur={() => handleInputBlur()}
+                  v-slots={{
+                    prefix: () => (
+                      <a-tooltip content={t('common.validate.labelName')}>
+                        <i class="iconfont icon-ic-exclamation-circle color-text-3"></i>
+                      </a-tooltip>
+                    )
+                  }}
                 ></a-input>
               ) : (
                 <>
@@ -119,7 +144,7 @@
                 </>
               )}
             </div>
-            {hoverable.value ? (
+            {showDelete.value ? (
               <a-link
                 status="danger"
                 class="mleft-5"
@@ -171,9 +196,10 @@
           </div>
           <CreateFlowTask
             v-model:show={show.value}
-            onSave={handleSaveFlowTask}
-            action={action.value}
             v-model:dataInfo={activeStep.value}
+            onSave={handleSaveFlowTask}
+            onDelete={handleDeleteTask}
+            action={action.value}
           ></CreateFlowTask>
         </div>
       );

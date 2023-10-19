@@ -32,9 +32,10 @@
               }"
             ></StatusLabel>
           </div>
-          <div v-if="actionList.length" class="dropdown">
+          <div v-if="pipelineDetailActions.length" class="dropdown">
             <DropButtonGroup
-              :actions="actionList"
+              layout="horizontal"
+              :actions="pipelineDetailActions"
               @click="handleClick"
               @select="handleSelect"
             ></DropButtonGroup>
@@ -64,6 +65,7 @@
 <script lang="ts" setup>
   import _ from 'lodash';
   import { ref, onMounted } from 'vue';
+  import { WORKFLOW } from '@/router/config';
   import HeaderInfo from '@/components/header-info/index.vue';
   import useCallCommon from '@/hooks/use-call-common';
   import { PipelineTabs } from '@/views/config';
@@ -73,6 +75,7 @@
   import useTabActive, { TabPage } from '@/hooks/use-tab-active';
   import { queryPipelineDetail } from '../api';
   import RecordsList from '../components/records-list.vue';
+  import { pipelineDetailActions } from '../config';
 
   const {
     getProjectList,
@@ -86,17 +89,26 @@
     handleBreadChange
   } = useProjectBreadcrumbData();
 
-  const { route } = useCallCommon();
+  const { route, router } = useCallCommon();
   const { activeKey, setPageTabActive } = useTabActive(
     TabPage.PIPELINETAB,
     PipelineTabs.HISTORY
   );
   const id = route.params.flowId as string;
   const currentInfo = ref<any>({});
-  const actionList = ref<any[]>([]);
 
   const handleClick = () => {};
-  const handleSelect = () => {};
+  const handleSelect = () => {
+    router.push({
+      name: WORKFLOW.Edit,
+      params: {
+        projectId: route.params.projectId
+      },
+      query: {
+        flowId: route.params.flowId
+      }
+    });
+  };
   const getPipeListDetail = async () => {
     if (!id) return;
     try {
@@ -135,4 +147,10 @@
   init();
 </script>
 
-<style lang="less" scoped></style>
+<style lang="less" scoped>
+  .dropdown {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+  }
+</style>

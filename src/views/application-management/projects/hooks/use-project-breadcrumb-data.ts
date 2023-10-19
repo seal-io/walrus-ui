@@ -8,7 +8,10 @@ import { useProjectStore, useUserStore } from '@/store';
 import { queryProjects } from '@/views/application-management/projects/api';
 import { queryEnvironments } from '@/views/application-management/environments/api';
 import { queryServices } from '@/views/application-management/services/api';
-import { queryPipelines } from '@/views/application-management/workflows/api';
+import {
+  queryPipelines,
+  queryPipelineRecords
+} from '@/views/application-management/workflows/api';
 import { BreadcrumbOptions } from '@/views/config/interface';
 import { getListLabel } from '@/utils/func';
 
@@ -21,20 +24,24 @@ export default function useProjectData() {
   let environmentRequestToken: any = null;
   let serviceRequestToken: any = null;
   let pipelineRequestToken: any = null;
+  let pipelineExecutionRequestToken: any = null;
 
   // breadCrumbList dropdown loading
   const RequestLoadingMap = reactive({
     project: false,
     environment: false,
     service: false,
-    pipeline: false
+    pipeline: false,
+    pipelineExcutions: false
   });
   const pageLevelMap = {
     Project: 'Project',
     Environment: 'Environment',
     Service: 'Service',
-    Pipeline: 'Pipeline'
+    Pipeline: 'Pipeline',
+    PipelineExcutions: 'PipelineExcutions'
   };
+
   const templateCommonConfig = {
     value: '',
     label: '',
@@ -242,7 +249,7 @@ export default function useProjectData() {
   };
 
   const getPipelineList = async () => {
-    if (!route.params.flowId) return [];
+    if (!route.params.flowId && !route.query.flowId) return [];
     let pipelineList: any[] = [];
     pipelineRequestToken?.cancel();
     pipelineRequestToken = createAxiosToken();
@@ -266,6 +273,7 @@ export default function useProjectData() {
   };
 
   const setPipelineList = (pipelineList) => {
+    const flowId = route.params.flowId || route.query.flowId;
     const list = _.map(pipelineList, (item) => {
       return {
         ..._.cloneDeep(item),
@@ -273,7 +281,7 @@ export default function useProjectData() {
         value: item.id
       };
     });
-    const defaultValue = route.params.flowId || _.get(list, '0.id');
+    const defaultValue = flowId || _.get(list, '0.id');
     const defaultName = _.find(list, { value: defaultValue })?.label as string;
 
     projectStore.setInfo({
@@ -288,6 +296,67 @@ export default function useProjectData() {
   };
   // =========== pipelines end =============
 
+  // ========== pipeline excutions start ==========
+  const pipelineExcutionTemplate = {
+    ...templateCommonConfig,
+    type: 'applications.workflow.name',
+    level: pageLevelMap.PipelineExcutions,
+    wrapperId: 'pipelineExcutionWrapper',
+    route: WORKFLOW.Detail
+  };
+
+  const getPipelineRecordsList = async () => {
+    if (!route.params.flowId) return [];
+    let recordList: any[] = [];
+    pipelineExecutionRequestToken?.cancel();
+    pipelineExecutionRequestToken = createAxiosToken();
+    try {
+      const params = {
+        page: -1,
+        id: route.params.flowId as string
+      };
+      RequestLoadingMap.pipelineExcutions = true;
+      const { data } = await queryPipelineRecords(
+        params,
+        pipelineExecutionRequestToken?.token
+      );
+      recordList = data.items || [];
+    } catch (error) {
+      recordList = [];
+    } finally {
+      RequestLoadingMap.pipelineExcutions = false;
+    }
+    return recordList;
+  };
+
+  const setPipelineRecordsList = (recordList) => {
+    const list = _.map(recordList, (item) => {
+      return {
+        ..._.cloneDeep(item),
+        label: item.name as string,
+        value: item.id
+      };
+    });
+    const defaultValue = route.query.execId || _.get(list, '0.id');
+    const defaultName = _.find(list, { value: defaultValue })?.label as string;
+
+    projectStore.setInfo({
+      pipelineRecordList: _.cloneDeep(list)
+    });
+    return {
+      ...pipelineExcutionTemplate,
+      value: defaultValue as string,
+      label: defaultName,
+      icon: 'icon-apps',
+      type: 'workflow.stage.records',
+      level: pageLevelMap.PipelineExcutions,
+      wrapperId: 'pipelineRecordWrapper',
+      route: WORKFLOW.Detail,
+      visible: false,
+      options: _.cloneDeep(list)
+    };
+  };
+  // =========== pipeline excutions end =============
   const setBreabCrumbData = async () => {
     const [projectList, environmentList, serviceList] = await Promise.all([
       getProjectList(),
@@ -305,6 +374,15 @@ export default function useProjectData() {
     item.value = val;
     item.label = getListLabel(val, item.options);
 
+    // pipeline excutions
+    if (item.level === pageLevelMap.PipelineExcutions) {
+      params = {
+        ...route.params
+      };
+      query = {
+        execId: val
+      };
+    }
     // pipeline
     if (item.level === pageLevelMap.Pipeline) {
       params = {
@@ -351,12 +429,21 @@ export default function useProjectData() {
   };
   // init breadCrumbList data from cache
   const initBreadValues = async (
-    values?: Array<'env' | 'service' | 'pipeline'>
+    values?: Array<'env' | 'service' | 'pipeline' | 'pipelineRecords'>
   ) => {
     const projectRes = await setProjectList(projectStore.projectList);
     let environmentRes: any[] = [];
     let serviceRes: any[] = [];
     let pipelineRes: any[] = [];
+    let pipelineRecordsRes: any[] = [];
+
+    if (_.includes(values, 'pipelineRecords')) {
+      const pipelineRecords =
+        setPipelineRecordsList(projectStore.pipelineRecordList) ||
+        pipelineExcutionTemplate;
+      pipelineRecordsRes = [{ ...pipelineRecords }];
+    }
+
     if (_.includes(values, 'pipeline')) {
       const pipelines =
         setPipelineList(projectStore.pipelineList) || pipelineTemplate;
@@ -376,13 +463,16 @@ export default function useProjectData() {
       projectRes,
       pipelineRes,
       environmentRes,
-      serviceRes
+      serviceRes,
+      pipelineRecordsRes
     ) as BreadcrumbOptions[];
   };
   onBeforeUnmount(() => {
     projectRequestToken?.cancel();
     environmentRequestToken?.cancel();
     serviceRequestToken?.cancel();
+    pipelineRequestToken?.cancel();
+    pipelineExecutionRequestToken?.cancel();
   });
   return {
     getProjectList,
@@ -402,6 +492,8 @@ export default function useProjectData() {
     serviceTemplate,
     pipelineTemplate,
     getPipelineList,
-    setPipelineList
+    setPipelineList,
+    getPipelineRecordsList,
+    setPipelineRecordsList
   };
 }

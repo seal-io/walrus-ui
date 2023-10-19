@@ -126,7 +126,7 @@
     'update:dataInfo'
   ]);
   const { route } = useCallCommon();
-  const id = route.query.pid as string;
+  const id = route.query.flowId as string;
   const formref = ref();
   const formData = ref({
     displayName: '',

@@ -174,7 +174,7 @@
   import useRowSelect from '@/hooks/use-row-select';
   import { moreActions } from '../config';
   import { PipelineRow } from '../config/interface';
-  import { queryPipelines, deletePipeline } from '../api';
+  import { queryPipelines, deletePipeline, applyPipeline } from '../api';
 
   let timer: any = null;
   const { rowSelection, selectedKeys, handleSelectChange } = useRowSelect();
@@ -250,14 +250,25 @@
     fetchData();
   };
 
+  const handleApplyFlow = async (row) => {
+    try {
+      await applyPipeline({ id: row.id });
+    } catch (error) {
+      // ignore
+    }
+  };
   const handleDropSelect = (val, row) => {
+    if (val === 'apply') {
+      handleApplyFlow(row);
+      return;
+    }
     router.push({
       name: WORKFLOW.Edit,
       params: {
         ...route.params
       },
       query: {
-        pid: row.id
+        flowId: row.id
       }
     });
   };

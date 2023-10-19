@@ -6,23 +6,37 @@
     <a-spin style="width: 100%" :loading="loading">
       <div ref="container" style="height: 800px"> </div>
     </a-spin>
+    <LogsPanel
+      v-model:visible="showLogModal"
+      v-model:tabs="logTabs"
+      :update-active="updateActive"
+      type="logs"
+      @delete="handleDeleteLogTab"
+    >
+    </LogsPanel>
   </div>
 </template>
 
 <script lang="ts" setup>
   import _ from 'lodash';
   import useCallCommon from '@/hooks/use-call-common';
-  import { ref, onMounted, onUnmounted, nextTick, computed } from 'vue';
-  import { Graph, Node, Path, Edge, Cell, Platform, StringExt } from '@antv/x6';
+  import { ref, onMounted, nextTick, computed } from 'vue';
+  import { Graph, Node, Edge, Platform } from '@antv/x6';
   import '@antv/x6-vue-shape';
   import toolBar from './tool-bar.vue';
   import { setPipelineNodeStyle } from '../custom/style';
   import { NodeSize, PipelineNodeSize, tools, CustomShape } from '../config';
   import { defineCustomNode } from '../custom/node';
   import { defineConnector } from '../custom/edge';
-  import { queryPipelineDetail } from '../api';
-  import test from '../config/test';
+  import LogsPanel from './logs-panel.vue';
+  import { queryPipelineRecordDetail } from '../api';
 
+  const props = defineProps({
+    height: {
+      type: String,
+      default: '100%'
+    }
+  });
   setPipelineNodeStyle(PipelineNodeSize);
 
   const DX = 300;
@@ -32,9 +46,13 @@
   let graphIns: any = null;
   const canRedo = ref(false);
   const canUndo = ref(false);
+  const showLogModal = ref(false);
+  const updateActive = ref('');
+  const logTabs = ref<any[]>([]);
   const container = ref();
   const loading = ref(false);
-  const id = route.query.pid as string;
+  const flowId = route.params.flowId as string;
+  const execId = route.query.execId as string;
   const nodes = ref<Node.Metadata[]>([]);
   const edges = ref<Edge.Metadata[]>([]);
 
@@ -52,6 +70,8 @@
       };
     });
   });
+
+  const handleDeleteLogTab = () => {};
   const handleFitCenter = () => {
     graphIns?.centerContent();
     graphIns?.zoomTo(1);
@@ -69,9 +89,9 @@
   };
 
   const getPipelineDetail = async () => {
-    if (!id) return null;
+    if (!flowId || !execId) return null;
     try {
-      const { data } = await queryPipelineDetail({ id });
+      const { data } = await queryPipelineRecordDetail({ flowId, execId });
       return data;
     } catch (error) {
       // eslint-disable-next-line no-console

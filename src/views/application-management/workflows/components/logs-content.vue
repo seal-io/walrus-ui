@@ -4,15 +4,8 @@
     class="tab-logs-wrap"
     style="position: relative; z-index: 3001"
   >
-    <!-- <FilterBox style="margin-bottom: 10px">
+    <FilterBox style="margin-bottom: 10px">
       <template #params>
-        <a-select
-          v-model="logKey"
-          style="width: 240px"
-          :options="dataList"
-          :popup-container="getContainer()"
-          @change="handleKeyChange"
-        ></a-select>
         <a-input-number
           v-model="filterParams.tailLines"
           :min="1"
@@ -34,7 +27,7 @@
           $t('common.button.search')
         }}</a-button>
       </template>
-    </FilterBox> -->
+    </FilterBox>
     <div class="wrap" :style="{ height: `${height}px` }">
       <div class="content">
         <div class="text" v-html="content"></div>
@@ -64,28 +57,13 @@
         return '';
       }
     },
-    nodeInfo: {
-      type: Object as PropType<any>,
-      default() {
-        return {};
-      }
-    },
     height: {
       type: Number,
       default: 270
-    },
-    dataList: {
-      type: Array as PropType<any[]>,
-      default() {
-        return [];
-      }
     }
   });
   const { setChunkRequest } = useSetChunkRequest();
-  const resourceId = ref('');
-  const logKey = ref('');
   const content = ref('');
-  let timer: any = null;
   const convert = new Convert();
   const filterParams = reactive({
     tailLines: undefined, //  last ? lines
@@ -106,7 +84,6 @@
     setChunkRequest({
       url: props.url,
       params: {
-        key: logKey.value,
         ...pickBy(filterParams, (val) => val),
         watch: true
       },
@@ -115,10 +92,7 @@
     });
   };
 
-  const handleKeyChange = (val) => {
-    const result = find(props.dataList, (item) => item.value === val);
-    logKey.value = result?.value || '';
-    resourceId.value = result?.id || '';
+  const handleKeyChange = () => {
     content.value = '';
     createChunkConnection();
   };
@@ -133,24 +107,11 @@
     () => props.url,
     (val) => {
       if (val) {
-        createChunkConnection();
+        handleKeyChange();
       }
     },
     {
       immediate: true
-    }
-  );
-  watch(
-    () => props.dataList,
-    (list) => {
-      clearTimeout(timer);
-      timer = setTimeout(() => {
-        handleKeyChange(get(list, '0.value'));
-      }, 100);
-    },
-    {
-      immediate: true,
-      deep: true
     }
   );
 </script>
