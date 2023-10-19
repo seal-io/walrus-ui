@@ -7,7 +7,7 @@ import { PipelineRow, PipelineRecordsRow } from '../config/interface';
 
 export const PIPELINE_API = '/workflows';
 
-export const PIPELINE_EXECUTION_API = '/workflow-executions';
+export const PIPELINE_EXECUTION_API = '/executions';
 
 export const PROJECT_API_PREFIX = () => {
   const { projectId } = router.currentRoute.value.params;
@@ -27,7 +27,7 @@ export function queryPipelines(params: QueryType, token?) {
   return axios.get<ResultType<PipelineRow>>(
     `${PROJECT_API_PREFIX()}${PIPELINE_API}`,
     {
-      params,
+      params: _.omit(params, ['id']),
       cancelToken: token,
       paramsSerializer: (obj) => {
         return qs.stringify(obj);
@@ -58,10 +58,7 @@ export function queryPipelineDetail(params: { id: string }, token?) {
 }
 
 export function applyPipeline(data: { id: string }) {
-  return axios.post(
-    `${PROJECT_API_PREFIX()}${PIPELINE_API}/${data.id}/apply`,
-    data
-  );
+  return axios.post(`${PROJECT_API_PREFIX()}${PIPELINE_API}/${data.id}/apply`);
 }
 
 export const queryPipelineRecords = (params: { id: string }, token?) => {
@@ -79,14 +76,28 @@ export const queryPipelineRecords = (params: { id: string }, token?) => {
   );
 };
 
-export const queryPipelineRecordDetail = (params: { id: string }, token?) => {
+export const queryPipelineRecordDetail = (
+  params: { execId: string; flowId: string },
+  token?
+) => {
   return axios.get(
-    `${PROJECT_API_PREFIX()}${PIPELINE_API}${PIPELINE_EXECUTION_API}/${
-      params.id
-    }`,
+    `${PROJECT_API_PREFIX()}${PIPELINE_API}/${
+      params.flowId
+    }${PIPELINE_EXECUTION_API}/${params.execId}`,
     {
       cancelToken: token
     }
   );
 };
+
+export const getPipelineTaskLog = ({
+  projectId,
+  flowId,
+  flowExecId,
+  stageExecId,
+  stepExecId
+}) => {
+  return `/projects/${projectId}/workflows/${flowId}/executions/${flowExecId}/stage-executions/${stageExecId}/step-executions/${stepExecId}/log`;
+};
+
 export default {};

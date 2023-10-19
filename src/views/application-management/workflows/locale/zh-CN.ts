@@ -16,6 +16,7 @@ export default {
   'workflow.step.form.env': '部署环境',
   'workflow.stage.add.task': '添加任务',
   'workflow.stage.add.paratask': '并行任务',
-  'workflow.stage.add.title': '新阶段',
-  'workflow.stage.add.button': '添加新阶段'
+  'workflow.stage.add.title': 'stage',
+  'workflow.stage.add.button': '添加新阶段',
+  'workflow.stage.records': '运行记录'
 };

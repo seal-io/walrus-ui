@@ -24,7 +24,7 @@
     },
     setup(props, { expose }) {
       const { t, route } = useCallCommon();
-      const id = route.query.pid as string;
+      const id = route.query.flowId as string;
       const { height } = toRefs(props);
       const show = ref(false);
       const loading = ref(false);

@@ -105,6 +105,8 @@
   import { PageAction } from '@/views/config';
   import { PROJECT, WORKFLOW } from '@/router/config';
   import useCallCommon from '@/hooks/use-call-common';
+  import StatusLabel from '@/views/operation-hub/connectors/components/status-label.vue';
+  import DropButtonGroup from '@/components/drop-button-group/index.vue';
   import FilterBox from '@/components/filter-box/index.vue';
   import { deleteModal, execSucceed } from '@/utils/monitor';
   import { UseSortDirection } from '@/utils/common';
@@ -180,7 +182,7 @@
         ...route.params
       },
       query: {
-        pid: row.id
+        execId: row.id
       }
     });
   };
@@ -191,7 +193,7 @@
         ...route.params
       },
       query: {
-        pid: row.id
+        flowId: row.id
       }
     });
   };

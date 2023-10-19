@@ -26,7 +26,7 @@ export default [
     }
   },
   {
-    path: 'project/:projectId/workflow/detail',
+    path: 'project/:projectId/workflow/:flowId/detail',
     name: WORKFLOW.Detail,
     component: () =>
       import('@/views/application-management/workflows/pages/detail.vue'),

@@ -2,25 +2,21 @@
   <div>
     <BreadWrapper>
       <Breadcrumb
-        :items="[
-          ...breadCrumbList,
-          {
-            type: 'applications.workflow.name',
-            label: title
-          }
-        ]"
+        :level="pageLevelMap.Pipeline"
+        :loading="RequestLoadingMap.pipeline"
+        :items="breadCrumbList"
         :menu="{ icon: 'icon-apps' }"
         @change="handleSelectChange"
       ></Breadcrumb>
       <template #right>
         <a-space fill :size="20" align="end" style="margin-right: 60px">
-          <a-button type="primary" size="small" @click="handleSubmitApply">
+          <!-- <a-button type="primary" size="small" @click="handleSubmitApply">
             {{ $t('common.button.saverun') }}
-          </a-button>
+          </a-button> -->
           <a-button type="primary" size="small" @click="handleSubmit">
             {{ $t('common.button.save') }}
           </a-button>
-          <a-button type="outline" size="small">
+          <a-button type="outline" size="small" @click="handleCancel">
             {{ $t('common.button.cancel') }}
           </a-button>
         </a-space>
@@ -37,44 +33,80 @@
   import { WORKFLOW } from '@/router/config';
   import useCallCommon from '@/hooks/use-call-common';
   import useProjectBreadcrumbData from '@/views/application-management/projects/hooks/use-project-breadcrumb-data';
+  import { getListLabel } from '@/utils/func';
+  import { BreadcrumbOptions } from '@/views/config/interface';
   import flowEditor from '../components/flow-editor.vue';
   import { createPipeline, updatePipeline, applyPipeline } from '../api';
 
   const height = 'calc(100vh - 90px)';
   const { t, route, router } = useCallCommon();
-  const id = route.query.pid as string;
+  const flowId = route.query.flowId as string;
   const flow = ref();
   const {
     getProjectList,
     setProjectList,
     initBreadValues,
-    breadCrumbList,
-    handleBreadChange
+    getPipelineList,
+    setPipelineList,
+    handleBreadChange,
+    pageLevelMap,
+    RequestLoadingMap,
+    breadCrumbList
   } = useProjectBreadcrumbData();
 
   const title = computed(() => {
-    if (id) {
+    if (flowId) {
       return t('applications.workflow.edit');
     }
     return t('applications.workflow.create');
   });
 
   const handleSelectChange = ({ value, item }) => {
-    handleBreadChange(value, item);
+    item.value = value;
+    item.label = getListLabel(value, item.options);
+    if (item.level === pageLevelMap.Pipeline) {
+      router.replace({
+        name: WORKFLOW.Edit,
+        params: {
+          projectId: route.params.projectId
+        },
+        query: {
+          flowId: value
+        }
+      });
+    } else {
+      handleBreadChange(value, item);
+    }
   };
 
   const setBreadCrumbList = async () => {
-    const list = await initBreadValues();
+    const list = await initBreadValues(['pipeline']);
 
-    breadCrumbList.value = [...list];
+    breadCrumbList.value = list;
 
-    const projectList = await getProjectList();
-    const projectRes = await setProjectList(projectList);
+    const [projectList, pipelineList] = await Promise.all([
+      getProjectList(),
+      getPipelineList()
+    ]);
+    const [projectRes, pipelineRes] = await Promise.all([
+      setProjectList(projectList),
+      setPipelineList(pipelineList)
+    ]);
     breadCrumbList.value = [
       {
         ...projectRes
       }
     ];
+    if (!flowId) {
+      breadCrumbList.value.push({
+        type: 'applications.workflow.name',
+        label: t('applications.workflow.create')
+      } as any);
+    } else {
+      breadCrumbList.value.push({
+        ...pipelineRes
+      });
+    }
   };
   const init = async () => {
     setBreadCrumbList();
@@ -87,7 +119,7 @@
         ...formData.basic,
         stages: formData.stages
       };
-      if (id) {
+      if (flowId) {
         await updatePipeline(data);
       } else {
         await createPipeline(data);
@@ -96,10 +128,6 @@
     } catch (error) {
       // eslint-disable-next-line no-console
     }
-    console.log('data===', {
-      ...formData.basic,
-      stages: formData.stages
-    });
   };
 
   const handleSubmitApply = async () => {
@@ -114,6 +142,10 @@
     } catch (error) {
       // eslint-disable-next-line no-console
     }
+  };
+
+  const handleCancel = () => {
+    router.back();
   };
   init();
 </script>
