@@ -4,7 +4,16 @@
       <toolBar :tool-list="toolList" @select="handleToolSelect"></toolBar>
     </div> -->
     <a-spin style="width: 100%" :loading="loading">
-      <div ref="container" style="height: 800px"> </div>
+      <div
+        ref="graphWrapper"
+        class="graphWrapper"
+        :style="{
+          height: `max(${containerHeight},600px)`,
+          width: '100%'
+        }"
+      >
+        <div ref="container" style="width: 100%; height: 100%"> </div>
+      </div>
     </a-spin>
     <LogsPanel
       v-model:visible="showLogModal"
@@ -23,18 +32,29 @@
   import { ref, onMounted, nextTick, computed } from 'vue';
   import { Graph, Node, Edge, Platform } from '@antv/x6';
   import '@antv/x6-vue-shape';
+  import { useResizeObserver } from '@vueuse/core';
   import toolBar from './tool-bar.vue';
   import { setPipelineNodeStyle } from '../custom/style';
   import { NodeSize, PipelineNodeSize, tools, CustomShape } from '../config';
-  import { defineCustomNode } from '../custom/node';
+  import node, { defineCustomNode } from '../custom/node';
   import { defineConnector } from '../custom/edge';
   import LogsPanel from './logs-panel.vue';
-  import { queryPipelineRecordDetail } from '../api';
+  import {
+    queryPipelineRecordDetail,
+    getPipelineTaskLogUrl,
+    queryPipelineLatestRecordDetail
+  } from '../api';
 
   const props = defineProps({
-    height: {
+    containerHeight: {
       type: String,
       default: '100%'
+    },
+    showLatest: {
+      type: Boolean,
+      default() {
+        return false;
+      }
     }
   });
   setPipelineNodeStyle(PipelineNodeSize);
@@ -44,50 +64,32 @@
   const DX2 = 40;
   const { route } = useCallCommon();
   let graphIns: any = null;
-  const canRedo = ref(false);
-  const canUndo = ref(false);
   const showLogModal = ref(false);
   const updateActive = ref('');
   const logTabs = ref<any[]>([]);
   const container = ref();
+  const graphWrapper = ref();
+  const width = ref(0);
+  const height = ref(0);
   const loading = ref(false);
   const flowId = route.params.flowId as string;
   const execId = route.query.execId as string;
-  const nodes = ref<Node.Metadata[]>([]);
-  const edges = ref<Edge.Metadata[]>([]);
 
-  const toolList = computed(() => {
-    return tools.map((item) => {
-      let disabled = false;
-      if (item.value === 'redo') {
-        disabled = !canRedo.value;
-      } else if (item.value === 'undo') {
-        disabled = !canUndo.value;
-      }
-      return {
-        ...item,
-        disabled
-      };
-    });
-  });
-
-  const handleDeleteLogTab = () => {};
-  const handleFitCenter = () => {
-    graphIns?.centerContent();
-    graphIns?.zoomTo(1);
-  };
-  const handleUndo = () => {
-    graphIns?.undo();
-    canRedo.value = graphIns?.canRedo();
-    canUndo.value = graphIns?.canUndo();
+  const handleDeleteLogTab = (key) => {
+    const index = _.findIndex(logTabs.value, (item) => item.id === key);
+    logTabs.value.splice(index, 1);
   };
 
-  const handleRedo = () => {
-    graphIns?.redo();
-    canRedo.value = graphIns?.canRedo();
-    canUndo.value = graphIns?.canUndo();
+  const getPipelineLatestDetail = async () => {
+    if (!flowId) return null;
+    try {
+      const { data } = await queryPipelineLatestRecordDetail({ flowId });
+      return data;
+    } catch (error) {
+      // eslint-disable-next-line no-console
+    }
+    return null;
   };
-
   const getPipelineDetail = async () => {
     if (!flowId || !execId) return null;
     try {
@@ -99,6 +101,21 @@
     return null;
   };
 
+  const getDetailData = async () => {
+    if (props.showLatest) return getPipelineLatestDetail();
+    return getPipelineDetail();
+  };
+  useResizeObserver(graphWrapper, (entries) => {
+    const entry = entries[0];
+    const { width: boxWidth, height: boxHeight } = entry.contentRect;
+    width.value = boxWidth;
+    height.value = boxHeight < 600 ? 600 : boxHeight;
+    if (boxHeight < 600) {
+      graphWrapper.value.style.height = '600px';
+    }
+    if (!width.value || !height.value) return;
+    graphIns?.resize(width.value, height.value);
+  });
   const initNodes = (list: any[]) => {
     const nodes: Node.Metadata[] = [];
     const edges: Edge.Metadata[] = [];
@@ -127,7 +144,6 @@
             ...sItem,
             stepPosition: sIndex,
             stageName: item.name,
-            stageId: item.id,
             nextStageId: _.get(nextStage, `id`) || ''
           }
         });
@@ -158,18 +174,11 @@
     };
   };
 
-  const handleToolSelect = (val) => {
-    if (val === 'fitCenter') {
-      handleFitCenter();
-    } else if (val === 'undo') {
-      handleUndo();
-    } else if (val === 'redo') {
-      handleRedo();
-    }
-  };
   const createGraph = () => {
     graphIns = new Graph({
       container: container.value,
+      width: width.value || 1400,
+      height: height.value || 600,
       panning: {
         enabled: true,
         eventTypes: ['leftMouseDown']
@@ -200,7 +209,8 @@
         }
       },
       interacting: {
-        nodeMovable: false
+        nodeMovable: false,
+        magnetConnectable: false
       },
       connecting: {
         snap: false,
@@ -235,33 +245,58 @@
   };
 
   const initEvent = () => {
-    graphIns?.on('node:plus-button:click', (e) => {
-      console.log('node:plus-button:click 1', e);
+    graphIns?.on('node:logs', ({ view, e }) => {
+      e.stopPropagation();
+      const nodeData = view.cell.getData?.();
+      if (_.find(logTabs.value, (item) => item.id === nodeData.id)) {
+        updateActive.value = nodeData.id;
+        showLogModal.value = true;
+        return;
+      }
+      const {
+        project: { id: projectId },
+        workflowID: flowId,
+        workflowExecutionID: flowExecId,
+        stageExecution: { id: stageExecId },
+        id: stepExecId
+      } = nodeData || {};
+      logTabs.value.push({
+        url: getPipelineTaskLogUrl({
+          projectId,
+          flowId,
+          flowExecId,
+          stageExecId,
+          stepExecId
+        }),
+        name: `${nodeData.stageName}/${nodeData.name}`,
+        id: nodeData.id
+      });
+      updateActive.value = nodeData.id;
+
+      setTimeout(() => {
+        showLogModal.value = true;
+      }, 100);
     });
 
     graphIns?.on('node:click', (e) => {
-      console.log('node:plus-button:click 2', e);
+      console.log('node:click', e);
     });
-  };
-  const setDefaultData = () => {};
-  const saveGraphData = () => {
-    const data = graphIns?.toJSON();
-    console.log(data);
   };
 
   const fitPosition = () => {
     graphIns?.positionPoint({ x: 0, y: 0 }, 50, 50);
     graphIns?.zoomTo(1);
   };
+
   const initData = async () => {
     loading.value = true;
-    const data = await getPipelineDetail();
+    const data = await getDetailData();
     const stages = data?.stages || [];
     const result = initNodes(stages);
     graphIns.fromJSON(result);
     loading.value = false;
-    console.log('result', result);
   };
+
   const init = async () => {
     graphIns?.clearCells();
     defineCustomNode();
@@ -273,6 +308,7 @@
       fitPosition();
     });
   };
+
   onMounted(() => {
     init();
   });
@@ -281,6 +317,8 @@
 <style lang="less" scoped>
   .wrapper {
     position: relative;
+    font-size: 0;
+    background-color: var(--color-fill-2);
 
     .tools {
       position: absolute;

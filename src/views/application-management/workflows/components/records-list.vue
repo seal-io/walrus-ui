@@ -17,7 +17,7 @@
           tooltip
           :cell-style="{ minWidth: '40px' }"
           data-index="createTime"
-          title="开始运行时间"
+          :title="$t('applications.workflow.table.startTime')"
         >
           <template #cell="{ record }">
             {{ dayjs(record.createTime).format('YYYY-MM-DD HH:mm:ss') }}
@@ -29,7 +29,7 @@
           :cell-style="{ minWidth: '40px' }"
           align="center"
           data-index="status"
-          :title="$t('applications.workflow.table.status')"
+          :title="$t('applications.workflow.table.currentStatus')"
         >
           <template #cell="{ record }">
             <StatusLabel
@@ -49,7 +49,7 @@
           tooltip
           :cell-style="{ minWidth: '40px' }"
           data-index="createTime"
-          title="运行详情"
+          :title="$t('applications.workflow.table.runDetails')"
         >
         </a-table-column>
         <a-table-column
@@ -57,7 +57,7 @@
           tooltip
           :cell-style="{ minWidth: '40px' }"
           data-index="duration"
-          title="持续时间"
+          :title="$t('applications.workflow.table.duration')"
         >
         </a-table-column>
         <a-table-column

@@ -4,7 +4,7 @@
       v-if="visible"
       v-show="visible"
       :act-edges="{ top: true }"
-      class="operation-control"
+      class="pipeline-logs-control"
       @change="handleHeightChange"
     >
       <a-tabs
@@ -14,7 +14,7 @@
         :editable="true"
         @delete="handleDelete"
       >
-        <a-tab-pane v-for="item in tabs" :key="item.name" :title="item.name">
+        <a-tab-pane v-for="item in tabs" :key="item.id" :title="item.name">
           <template #title>
             <div style="width: 150px"
               ><AutoTip :tooltip-props="{ content: item.name }">
@@ -24,7 +24,8 @@
           </template>
           <LogsContent
             v-if="type === 'logs'"
-            :container-id="item.name"
+            :container-id="item.id"
+            :url="item.url"
             :height="containerHeight"
           ></LogsContent>
         </a-tab-pane>
@@ -50,7 +51,6 @@
   } from 'vue';
   import resizeContainer from '@/components/resizeable-container/index.vue';
   import slTransition from '@/components/sl-transition/index.vue';
-  import { listenerCloseControlPanel } from '@/views/application-management/services/hooks/use-close-control-panel';
   import LogsContent from './logs-content.vue';
 
   const props = defineProps({
@@ -83,6 +83,7 @@
         {
           name: string;
           id: string;
+          url: string;
         }[]
       >,
       default() {
@@ -90,7 +91,7 @@
       }
     }
   });
-  const activeKey = ref<string>('terminnal');
+  const activeKey = ref<string>('');
   const containerHeight = ref(270);
   const emits = defineEmits(['update:visible', 'update:tabs', 'delete']);
 
@@ -102,14 +103,12 @@
     emits('update:visible', false);
     emits('update:tabs', []);
   };
-  const handleOpened = () => {
-    activeKey.value = _.get(props.tabs, '0.name') || `${Date.now()}`;
-  };
+
   const handleDelete = (key) => {
     emits('delete', key);
     nextTick(() => {
       if (activeKey.value === key) {
-        activeKey.value = _.get(props.tabs, '0.name') || `${Date.now()}`;
+        activeKey.value = _.get(props.tabs, '0.id') || `${Date.now()}`;
       }
     });
   };
@@ -138,19 +137,17 @@
       if (val) {
         activeKey.value = val;
       }
+    },
+    {
+      immediate: true
     }
   );
-  listenerCloseControlPanel(() => {
-    setTimeout(() => {
-      document.body.style.overflow = 'auto';
-      document.body.style.paddingBottom = '0px';
-    }, 50);
-  });
+
   onMounted(() => {
-    handleOpened();
     window.addEventListener('resize', () => {
-      const wrapper: HTMLElement | null =
-        document.querySelector('.operation-control');
+      const wrapper: HTMLElement | null = document.querySelector(
+        '.pipeline-logs-control'
+      );
       if (wrapper) {
         wrapper.style.width = '100%';
       }
@@ -159,8 +156,9 @@
   // remove event listener
   onBeforeUnmount(() => {
     window.removeEventListener('resize', () => {
-      const wrapper: HTMLElement | null =
-        document.querySelector('.operation-control');
+      const wrapper: HTMLElement | null = document.querySelector(
+        '.pipeline-logs-control'
+      );
       if (wrapper) {
         wrapper.style.width = '100%';
       }
@@ -169,7 +167,7 @@
 </script>
 
 <style lang="less" scoped>
-  .operation-control {
+  .pipeline-logs-control {
     position: fixed;
     right: 0;
     bottom: 0;

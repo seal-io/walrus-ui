@@ -2,8 +2,10 @@
   import _ from 'lodash';
   import { defineComponent, toRefs, ref } from 'vue';
   // import Draggable from 'vuedraggable';
+  import SlTransition from '@/components/sl-transition/index.vue';
+  import { validateLabelNameRegx } from '@/views/config';
   import useCallCommon from '@/hooks/use-call-common';
-  import { deleteModal, execSucceed } from '@/utils/monitor';
+  import { deleteModal } from '@/utils/monitor';
   import dayjs from 'dayjs';
   import FlowStage from './flow-stage.vue';
   import FlowSplitLine from './split-line.vue';
@@ -26,8 +28,10 @@
       const { t, route } = useCallCommon();
       const id = route.query.flowId as string;
       const { height } = toRefs(props);
+      const formref = ref();
       const show = ref(false);
       const loading = ref(false);
+      const unfold = ref(true);
       const flowBasic = ref({
         displayName: `pipeline-${dayjs().format('YYYYMMDDHHmmss')}`,
         name: `pipeline-id-${dayjs().format('YYYYMMDDHHmmss')}`,
@@ -60,6 +64,11 @@
 
       const handleEditBasicInfo = () => {
         show.value = true;
+      };
+
+      const handleToggleForm = () => {
+        unfold.value = !unfold.value;
+        console.log('formref===', formref.value);
       };
       const handleInsertStagePrev = (index) => {
         stageList.value.splice(
@@ -104,6 +113,7 @@
             <FlowStage
               stepList={element.steps}
               stageData={element}
+              stageLength={stageList.value.length}
               onDelete={() => handleDeleteStage(index)}
             ></FlowStage>
             {index === stageList.value.length - 1 ? (
@@ -123,7 +133,9 @@
         });
       };
 
-      const getData = () => {
+      const getData = async () => {
+        const res = await formref.value.validate();
+        if (res) return null;
         return {
           stages: stageList.value,
           basic: flowBasic.value
@@ -167,19 +179,101 @@
       initData();
 
       return () => (
-        <a-spin loading={loading.value} fill>
+        <a-spin loading={loading.value} fill style="width: 100%">
           <div class="flow-wrapper" style={{ height: height.value }}>
             <div class="flow-side">
-              <FlowAside
+              {/* <FlowAside
                 basicInfo={flowBasic}
                 onEdit={() => handleEditBasicInfo()}
-              ></FlowAside>
+              ></FlowAside> */}
+              <div class="form-box">
+                <div class="title">
+                  {unfold.value ? (
+                    <span>{t('common.title.basicInfo')}</span>
+                  ) : null}
+                  <a-link type="text" onClick={() => handleToggleForm()}>
+                    <icon-menu-fold class="size-18" />
+                  </a-link>
+                </div>
+                <div
+                  style={{
+                    width: unfold.value ? '100%' : '0px',
+                    overflow: 'hidden',
+                    transition: 'width 0.3s'
+                  }}
+                >
+                  <a-form
+                    style={{ width: 'max-content' }}
+                    model={flowBasic.value}
+                    layout="vertical"
+                    ref={formref}
+                  >
+                    <a-form-item
+                      field="displayName"
+                      hide-label
+                      validate-trigger="change"
+                      rules={[
+                        {
+                          required: true,
+                          message: t('workflow.form.rules.displayName')
+                        }
+                      ]}
+                    >
+                      <seal-input
+                        v-model={flowBasic.value.displayName}
+                        label={t('workflow.form.displayName')}
+                        required={true}
+                        max-length={63}
+                        show-word-limit
+                      ></seal-input>
+                    </a-form-item>
+                    <a-form-item
+                      field="name"
+                      hide-label
+                      validate-trigger="change"
+                      rules={[
+                        {
+                          required: true,
+                          match: validateLabelNameRegx,
+                          message: t('common.validate.labelName')
+                        }
+                      ]}
+                      v-slots={{
+                        extra: () => (
+                          <span class="tips">
+                            {t('common.validate.labelName')}
+                          </span>
+                        )
+                      }}
+                    >
+                      <seal-input
+                        v-model={flowBasic.value.name}
+                        label={t('workflow.form.name')}
+                        required={true}
+                        disabled={!!id}
+                        max-length={63}
+                        show-word-limit
+                      ></seal-input>
+                    </a-form-item>
+                    <a-form-item hide-label field="description">
+                      <seal-textarea
+                        v-model={flowBasic.value.description}
+                        label={t('common.table.description')}
+                        max-length={200}
+                        show-word-limit
+                        style={{ width: '100%' }}
+                        auto-size={{ minRows: 4, maxRows: 6 }}
+                      ></seal-textarea>
+                    </a-form-item>
+                  </a-form>
+                </div>
+              </div>
             </div>
             <div class="flow-content">{renderStage()}</div>
-            <BasicInfo
+            {/* <BasicInfo
               v-model:dataInfo={flowBasic.value}
               v-model:show={show.value}
-            ></BasicInfo>
+            ></BasicInfo> */}
           </div>
         </a-spin>
       );
@@ -193,13 +287,23 @@
     overflow-x: auto;
 
     .flow-side {
-      flex-basis: 200px;
       height: 100%;
-      padding: 12px 0 16px 0;
+      padding: 0 16px 0 0;
+      box-shadow: 0 2px 4px var(--color-border-3);
+
+      .title {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 20px;
+        font-weight: 500;
+      }
     }
 
     .flow-content {
       display: flex;
+      flex: 1;
+      overflow-x: auto;
 
       .flow-content-group {
         display: flex;

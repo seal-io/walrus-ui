@@ -113,7 +113,8 @@
   };
 
   const handleSubmit = async () => {
-    const formData = flow.value?.getData?.();
+    const formData = await flow.value?.getData?.();
+    if (!formData) return;
     try {
       const data = {
         ...formData.basic,
