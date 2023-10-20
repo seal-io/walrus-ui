@@ -17,7 +17,7 @@
       const { basicInfo } = toRefs(props);
       return () => (
         <div class="flow-aside-container">
-          <div class="flow-header">{t('applications.workflow.name')}</div>
+          <div class="flow-header">{t('common.title.basicInfo')}</div>
           <div class="flow-content">
             <icon-branch class="m-r-5 size-16" />
             <span>{basicInfo.value.displayName}</span>

@@ -13,11 +13,7 @@ export const defineCustomNode = () => {
     width: PipelineNodeSize.width,
     height: PipelineNodeSize.height,
     component: PipelineNode,
-    attr: {
-      button: {
-        event: 'node:plus-button:click'
-      }
-    },
+    attr: {},
     ports: {
       groups: {
         in: {

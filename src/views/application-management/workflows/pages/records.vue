@@ -33,12 +33,17 @@
             ></StatusLabel>
           </div>
           <div v-if="pipelineDetailActions.length" class="dropdown">
-            <DropButtonGroup
+            <!-- <DropButtonGroup
               layout="horizontal"
               :actions="pipelineDetailActions"
               @click="handleClick"
               @select="handleSelect"
-            ></DropButtonGroup>
+            ></DropButtonGroup> -->
+            <a-button size="mini" type="text" @click="handleSelect">
+              <a-tooltip :content="$t('common.button.edit')">
+                <icon-edit style="stroke-width: 4" />
+              </a-tooltip>
+            </a-button>
           </div>
         </template>
         <template #description>
@@ -53,6 +58,9 @@
           :default-active-key="activeKey"
           @change="setPageTabActive"
         >
+          <a-tab-pane :key="PipelineTabs.LATESTRUN" title="最近运行结果">
+            <FlowView :show-latest="true" :container-height="height"></FlowView>
+          </a-tab-pane>
           <a-tab-pane :key="PipelineTabs.HISTORY" title="运行记录">
             <RecordsList></RecordsList>
           </a-tab-pane>
@@ -73,6 +81,7 @@
   import useProjectBreadcrumbData from '@/views/application-management/projects/hooks/use-project-breadcrumb-data';
   import DropButtonGroup from '@/components/drop-button-group/index.vue';
   import useTabActive, { TabPage } from '@/hooks/use-tab-active';
+  import FlowView from '../components/flow-view.vue';
   import { queryPipelineDetail } from '../api';
   import RecordsList from '../components/records-list.vue';
   import { pipelineDetailActions } from '../config';
@@ -88,11 +97,11 @@
     breadCrumbList,
     handleBreadChange
   } = useProjectBreadcrumbData();
-
+  const height = 'calc(100vh - 262px)';
   const { route, router } = useCallCommon();
   const { activeKey, setPageTabActive } = useTabActive(
     TabPage.PIPELINETAB,
-    PipelineTabs.HISTORY
+    PipelineTabs.LATESTRUN
   );
   const id = route.params.flowId as string;
   const currentInfo = ref<any>({});

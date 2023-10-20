@@ -115,7 +115,10 @@ export const defaultNode = {
   style: {
     lineWidth: 1,
     stroke: 'transparent',
-    cursor: 'grabbing'
+    cursor: 'grabbing',
+    shadowColor: 'rgba(169,174,184,60%)',
+    shadowOffsetY: 2,
+    shadowBlur: 4
   },
   labelCfg: {
     style: {

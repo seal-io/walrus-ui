@@ -20,7 +20,7 @@
       </template>
     </BreadWrapper>
     <ComCard padding="0">
-      <FlowView ref="flow" :height="height"></FlowView>
+      <FlowView ref="flow" :container-height="height"></FlowView>
     </ComCard>
   </div>
 </template>
@@ -33,7 +33,7 @@
   import FlowView from '../components/flow-view.vue';
   import { applyPipeline } from '../api';
 
-  const height = 'calc(100vh - 90px)';
+  const height = 'calc(100vh - 62px)';
   const { t, route, router } = useCallCommon();
   const flowId = route.params.flowId as string;
   const flow = ref();
@@ -93,7 +93,7 @@
         id: flowId
       };
       await applyPipeline(data);
-      router.back();
+      // router.back();
     } catch (error) {
       // eslint-disable-next-line no-console
     }

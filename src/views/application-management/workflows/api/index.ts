@@ -90,7 +90,18 @@ export const queryPipelineRecordDetail = (
   );
 };
 
-export const getPipelineTaskLog = ({
+export const queryPipelineLatestRecordDetail = (
+  params: { flowId: string },
+  token?
+) => {
+  return axios.get(
+    `${PROJECT_API_PREFIX()}${PIPELINE_API}/${params.flowId}/latest-execution`,
+    {
+      cancelToken: token
+    }
+  );
+};
+export const getPipelineTaskLogUrl = ({
   projectId,
   flowId,
   flowExecId,

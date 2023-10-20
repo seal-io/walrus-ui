@@ -63,7 +63,7 @@ export default [
         type: permissionKey.projectRoles,
         actions: ['GET']
       },
-      cachePages: [],
+      cachePages: [WORKFLOW.Detail],
       icon: 'icon-apps'
     }
   }

@@ -55,7 +55,7 @@
               ></StatusLabel>
             </span>
             <a-space class="btn">
-              <a-link hoverable={false}>
+              <a-link hoverable={false} data-event="node:logs">
                 {t('applications.applications.instance.log')}
               </a-link>
             </a-space>

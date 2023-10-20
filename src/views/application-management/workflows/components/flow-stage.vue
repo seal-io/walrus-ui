@@ -1,7 +1,14 @@
 <script lang="tsx">
   import _ from 'lodash';
   import { validateLabelNameRegx } from '@/views/config';
-  import { defineComponent, toRefs, ref, PropType, provide } from 'vue';
+  import {
+    defineComponent,
+    toRefs,
+    ref,
+    PropType,
+    provide,
+    computed
+  } from 'vue';
   import useCallCommon from '@/hooks/use-call-common';
   import { deleteModal } from '@/utils/monitor';
   import FlowStep from './flow-step.vue';
@@ -24,11 +31,17 @@
         default() {
           return {};
         }
+      },
+      stageLength: {
+        type: Number,
+        default() {
+          return 0;
+        }
       }
     },
     setup(props, { emit }) {
       const { t } = useCallCommon();
-      const { stepList, stageData } = toRefs(props);
+      const { stepList, stageData, stageLength } = toRefs(props);
       const hoverable = ref(false);
       const showDelete = ref(false);
       const show = ref(false);
@@ -40,6 +53,9 @@
       const valid = ref(false);
       provide('stageData', stageData);
 
+      const deleteEnabled = computed(() => {
+        return stageLength.value > 1 && showDelete.value;
+      });
       const handleMouseenter = () => {
         hoverable.value = !!stepList.value.length;
         showDelete.value = true;
@@ -144,7 +160,7 @@
                 </>
               )}
             </div>
-            {showDelete.value ? (
+            {deleteEnabled.value ? (
               <a-link
                 status="danger"
                 class="mleft-5"
