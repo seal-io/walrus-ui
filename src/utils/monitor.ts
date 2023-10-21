@@ -33,12 +33,14 @@ export const deleteModal = async ({
   onOk,
   content,
   title = 'common.delete.tips',
-  okText = 'common.button.delete'
+  okText = 'common.button.delete',
+  cancelText = 'common.button.cancel'
 }: {
   onOk: () => void;
   content?: string;
   title?: string;
   okText?: string;
+  cancelText?: string;
 }) => {
   const modalInstance = Modal.warning({
     alignCenter: false,
@@ -81,16 +83,16 @@ export const deleteModal = async ({
               modalInstance?.close?.();
             }
           },
-          i18n.global.t('common.button.cancel')
+          i18n.global.t(cancelText)
         )
       ]);
     },
     okText: i18n.global.t(okText),
-    cancelText: i18n.global.t('common.button.cancel'),
+    cancelText: i18n.global.t(cancelText),
     onOk
   });
 };
 
-export const execSucceed = () => {
-  Message.success(i18n.global.t('common.message.success'));
+export const execSucceed = (message?: string) => {
+  Message.success(i18n.global.t(message || 'common.message.success'));
 };

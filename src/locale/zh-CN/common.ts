@@ -10,6 +10,8 @@ export default {
   'common.button.saverun': '保存并运行',
   'common.button.run': '运行',
   'common.button.submit': '提交',
+  'common.button.aggreement': '同意',
+  'common.button.reject': '不同意',
   'common.button.discard': '确定放弃',
   'common.button.cancel': '取消',
   'common.button.search': '查询',

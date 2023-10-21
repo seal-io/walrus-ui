@@ -12,6 +12,7 @@ export default {
   'applications.workflow.table.startTime': '运行时间',
   'applications.workflow.table.runDetails': '运行详情',
   'applications.workflow.table.duration': '持续时间',
+  'applications.workflow.table.runmsg': '运行成功！',
   'workflow.form.rules.displayName': '流水线名称必填',
   'workflow.form.rules.name': '流水线ID必填',
   'workflow.form.displayName': '流水线名称',
@@ -19,8 +20,11 @@ export default {
   'workflow.step.modal.title': '{action}流水线任务',
   'workflow.step.form.env': '部署环境',
   'workflow.stage.add.task': '添加任务',
+  'workflow.stage.add.taskName': '任务名称',
+  'workflow.stage.add.approvalMode': '验证方式',
   'workflow.stage.add.paratask': '并行任务',
   'workflow.stage.add.title': 'stage',
   'workflow.stage.add.button': '添加新阶段',
-  'workflow.stage.records': '运行记录'
+  'workflow.stage.records': '运行记录',
+  'workflow.stage.approve': '审批'
 };

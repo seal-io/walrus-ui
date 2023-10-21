@@ -253,6 +253,7 @@
   const handleApplyFlow = async (row) => {
     try {
       await applyPipeline({ id: row.id });
+      execSucceed('applications.workflow.table.runmsg');
     } catch (error) {
       // ignore
     }

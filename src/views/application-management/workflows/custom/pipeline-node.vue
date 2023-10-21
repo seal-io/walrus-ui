@@ -3,6 +3,7 @@
   import { defineComponent, inject, toRefs, ref } from 'vue';
   import i18n from '@/locale';
   import StatusLabel from '@/views/operation-hub/connectors/components/status-label.vue';
+  import { TaskTypes } from '../task-types/config';
   import MoreAction from './more-action.vue';
 
   export default defineComponent({
@@ -55,6 +56,11 @@
               ></StatusLabel>
             </span>
             <a-space class="btn">
+              {node.value.type === TaskTypes.APPROVAL ? (
+                <a-link hoverable={false} data-event="node:approve">
+                  {t('workflow.stage.approve')}
+                </a-link>
+              ) : null}
               <a-link hoverable={false} data-event="node:logs">
                 {t('applications.applications.instance.log')}
               </a-link>

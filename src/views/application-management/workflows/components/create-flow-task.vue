@@ -51,26 +51,45 @@
               @click="handleSelectTask(item)"
             ></TaskCard>
           </a-space>
+
           <ManualCheckpoint
             v-else-if="
               taskType === TaskTypes.APPROVAL && current === steps.length
             "
             ref="manualRef"
-            :data-info="props.dataInfo"
+            :show="show"
+            :action="action"
+            :data-info="dataInfo"
           ></ManualCheckpoint>
-          <seal-select
+          <a-form
             v-else-if="taskType === TaskTypes.SERVICE && current === 2"
-            v-model="flow.environmentId"
-            :label="$t('workflow.step.form.env')"
-            :placeholder="$t('applications.applications.table.module')"
-            :required="true"
-            :style="{ width: `${InputWidth.LARGE}px` }"
-            :options="environmentList"
-            :loading="loading"
-            allow-search
-            @change="handleOnSelect"
+            ref="taskform"
+            :model="flow"
+            auto-label-width
           >
-          </seal-select>
+            <a-form-item field="name">
+              <seal-input
+                v-model="flow.name"
+                :required="true"
+                :label="$t('workflow.stage.add.taskName')"
+                :style="{ width: `${InputWidth.LARGE}px` }"
+              ></seal-input>
+            </a-form-item>
+            <a-form-item field="environmentId">
+              <seal-select
+                v-model="flow.environmentId"
+                :label="$t('workflow.step.form.env')"
+                :placeholder="$t('applications.applications.table.module')"
+                :required="true"
+                :style="{ width: `${InputWidth.LARGE}px` }"
+                :options="environmentList"
+                :loading="loading"
+                allow-search
+                @change="handleOnSelect"
+              >
+              </seal-select>
+            </a-form-item>
+          </a-form>
           <ServiceTask
             v-else-if="
               taskType === TaskTypes.SERVICE && current === steps.length
@@ -101,7 +120,7 @@
             <a-space :size="40">
               <a-button
                 v-if="taskType && current < steps.length"
-                :disabled="!flow.environmentId"
+                :disabled="!flow.environmentId || !flow.name"
                 type="primary"
                 class="cap-title cancel-btn"
                 @click="handleOnNext"
@@ -132,7 +151,15 @@
 
 <script lang="ts" setup>
   import _ from 'lodash';
-  import { toRefs, reactive, ref, computed, PropType, provide } from 'vue';
+  import {
+    toRefs,
+    reactive,
+    ref,
+    computed,
+    PropType,
+    provide,
+    nextTick
+  } from 'vue';
   import useCallCommon from '@/hooks/use-call-common';
   import { InputWidth } from '@/views/config';
   import { ListItem } from '@/views/config/interface';
@@ -172,9 +199,11 @@
   const submitLoading = ref(false);
   const current = ref(1);
   const taskType = ref('');
+  const taskform = ref();
   const flow = reactive({
     projectId: route.params.projectId,
-    environmentId: ''
+    environmentId: '',
+    name: ''
   });
   const serviceRef = ref();
   const manualRef = ref();
@@ -258,9 +287,9 @@
         submitLoading.value = false;
         const result = {
           type: taskType.value,
-          ..._.pick(data, ['name', 'description', 'labels']),
+          name: flow.name,
           spec: {
-            ..._.omit(data, ['name', 'description', 'labels']),
+            ...data,
             environment: {
               id: flow.environmentId
             },
@@ -279,7 +308,7 @@
         submitLoading.value = false;
         const result = {
           type: taskType.value,
-          ...data,
+          name: data.name,
           spec: {
             ...data
           }
@@ -299,7 +328,10 @@
       };
       serviceInfo.enable = true;
       getEnvironmentList();
-    } else {
+    } else if (
+      props.action === 'edit' &&
+      props.dataInfo.type === TaskTypes.APPROVAL
+    ) {
       serviceInfo.enable = false;
       serviceInfo.info = null;
     }
@@ -307,7 +339,9 @@
   const initData = () => {
     if (props.action === 'edit') {
       taskType.value = props.dataInfo.type;
-      current.value = steps.value.length;
+      setTimeout(() => {
+        current.value = steps.value.length;
+      });
     }
     setServiceInfo();
   };
@@ -319,6 +353,7 @@
     current.value = 1;
     taskType.value = '';
     flow.environmentId = '';
+    flow.name = '';
 
     //  reset service info
     serviceInfo.enable = false;

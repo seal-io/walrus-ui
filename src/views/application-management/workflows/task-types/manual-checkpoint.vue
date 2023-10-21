@@ -1,38 +1,66 @@
 <template>
-  <div>
-    <a-form ref="formref" :model="formData" auto-label-width>
-      <a-form-item field="name" hide-label validate-trigger="change">
-        <seal-input
-          v-model="formData.name"
-          label="任务名称"
-          :required="true"
-          style="width: 100%"
-          :max-length="63"
-          show-word-limit
-        ></seal-input>
-      </a-form-item>
-      <a-form-item field="type" hide-label validate-trigger="change">
-        <seal-select
-          v-model="formData.type"
-          label="验证者方式"
-          :required="true"
-          style="width: 100%"
+  <a-spin :loading="loading" style="width: 100%">
+    <div :style="{ width: `${InputWidth.LARGE}px` }">
+      <a-form ref="formref" :model="formData" auto-label-width>
+        <a-form-item
+          field="name"
+          hide-label
+          validate-trigger="change"
+          :rules="[{ required: true, message: '任务名称必填' }]"
         >
-          <a-option
-            v-for="item in approvalTypes"
-            :key="item.value"
-            :value="item.value"
+          <seal-input
+            v-model="formData.name"
+            :label="$t('workflow.stage.add.taskName')"
+            :required="true"
+            style="width: 100%"
+            :max-length="63"
+            show-word-limit
+          ></seal-input>
+        </a-form-item>
+        <a-form-item
+          field="approvalType"
+          hide-label
+          validate-trigger="change"
+          :rules="[{ required: true, message: '请选择审核方式' }]"
+        >
+          <seal-select
+            v-model="formData.approvalType"
+            label="审核方式"
+            :required="true"
+            :mutiple="true"
+            style="width: 100%"
           >
-            <span
-              >{{ item.label
-              }}<span style="color: var(--color-text-3)" class="mleft-5">{{
-                `(${item.description})`
-              }}</span></span
+            <a-option
+              v-for="item in approvalTypes"
+              :key="item.value"
+              :value="item.value"
             >
-          </a-option>
-        </seal-select>
-      </a-form-item>
-      <a-form-item field="role" hide-label validate-trigger="change">
+              <span
+                >{{ item.label
+                }}<span style="color: var(--color-text-3)" class="mleft-5">{{
+                  `(${item.description})`
+                }}</span></span
+              >
+            </a-option>
+          </seal-select>
+        </a-form-item>
+        <a-form-item
+          field="approvalUsers"
+          hide-label
+          validate-trigger="change"
+          :rules="[{ required: true, message: '请选择审核人员' }]"
+        >
+          <seal-select
+            v-model="formData.approvalUsers"
+            label="审核人员"
+            :loading="loading"
+            :required="true"
+            :options="subjectList"
+            style="width: 100%"
+          >
+          </seal-select>
+        </a-form-item>
+        <!-- <a-form-item field="role" hide-label validate-trigger="change">
         <seal-select
           v-model="formData.role"
           label="验证者类型"
@@ -70,13 +98,17 @@
           :required="true"
           style="width: 100%"
         ></seal-date-picker>
-      </a-form-item>
-    </a-form>
-  </div>
+      </a-form-item> -->
+      </a-form>
+    </div>
+  </a-spin>
 </template>
 
 <script lang="ts" setup>
-  import { ref, computed } from 'vue';
+  import _ from 'lodash';
+  import { InputWidth } from '@/views/config';
+  import { ref, watch, onMounted, computed } from 'vue';
+  import { queryProjectSubjects } from '@/views/application-management/projects/api';
   import { approvalRoles, approvalTypes } from '../config';
 
   const props = defineProps({
@@ -85,46 +117,99 @@
       default() {
         return 'edit';
       }
+    },
+    dataInfo: {
+      type: Object,
+      default() {
+        return {};
+      }
+    },
+    show: {
+      type: Boolean,
+      default() {
+        return false;
+      }
     }
   });
 
   const emits = defineEmits(['submit']);
   const formref = ref();
+  const loading = ref(false);
+  const subjectList = ref<{ label: string; value: string }[]>([]);
   const formData = ref({
     name: '',
-    type: '',
-    role: '',
-    flowRole: '',
-    date: ''
+    approvalType: '',
+    approvalUsers: []
   });
 
-  const pipelineRoles = computed(() => {
-    const data = approvalRoles.find(
-      (item) => item.value === formData.value.role
-    );
-    return data?.items || [];
-  });
+  // const pipelineRoles = computed(() => {
+  //   const data = approvalRoles.find(
+  //     (item) => item.value === formData.value.role
+  //   );
+  //   return data?.items || [];
+  // });
 
-  const handleRoleChange = (value) => {
-    formData.value.flowRole = '';
+  // const handleRoleChange = (value) => {
+  //   formData.value.flowRole = '';
+  // };
+
+  const getProjectSubjectList = async () => {
+    try {
+      loading.value = true;
+      const params = {
+        page: -1
+      };
+      const { data } = await queryProjectSubjects(params);
+      subjectList.value = _.map(data.items || [], (item) => {
+        return {
+          label: _.get(item, 'subject.name'),
+          value: _.get(item, 'subject.id'),
+          role: _.get(item, 'role.id')
+        };
+      });
+    } catch (error) {
+      subjectList.value = [];
+    } finally {
+      loading.value = false;
+    }
   };
-
   const save = async () => {
     const res = await formref.value?.validate();
-    if (res) {
+    if (!res) {
       return formData.value;
     }
     return false;
   };
-  const initFormData = (data) => {
+  const initFormData = () => {
+    if (props.action === 'create') {
+      formData.value = {
+        name: '',
+        approvalType: '',
+        approvalUsers: []
+      };
+      return;
+    }
     formData.value = {
-      name: data.name,
-      type: data.type,
-      role: data.role,
-      flowRole: data.flowRole,
-      date: data.date
+      name: props.dataInfo.spec?.name,
+      approvalType: props.dataInfo.spec?.approvalType,
+      approvalUsers: props.dataInfo.spec?.approvalUsers
     };
   };
+  const initData = async () => {
+    await getProjectSubjectList();
+    initFormData();
+  };
+  watch(
+    () => props.show,
+    (val) => {
+      if (val) {
+        initData();
+      }
+    },
+    {
+      immediate: true
+    }
+  );
   defineExpose({
     save,
     initFormData
