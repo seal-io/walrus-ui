@@ -111,4 +111,15 @@ export const getPipelineTaskLogUrl = ({
   return `/projects/${projectId}/workflows/${flowId}/executions/${flowExecId}/stage-executions/${stageExecId}/step-executions/${stepExecId}/log`;
 };
 
+export const approvePipelineTask = ({
+  projectId,
+  flowId,
+  flowExecId,
+  stageExecId,
+  stepExecId
+}) => {
+  const url = `/projects/${projectId}/workflows/${flowId}/executions/${flowExecId}/stage-executions/${stageExecId}/step-executions/${stepExecId}/approve`;
+  return axios.post(url);
+};
+
 export default {};

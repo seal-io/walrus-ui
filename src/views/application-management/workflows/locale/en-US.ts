@@ -11,6 +11,7 @@ export default {
   'applications.workflow.table.startTime': 'Started Running Time',
   'applications.workflow.table.runDetails': 'Running Details',
   'applications.workflow.table.duration': 'Duration',
+  'applications.workflow.table.runmsg': 'Running Successfully!',
   'applications.workflow.table.update': 'Recently Started Running Time',
   'workflow.form.rules.displayName': 'Pipeline name required',
   'workflow.form.rules.name': 'Pipeline ID required',
@@ -19,8 +20,10 @@ export default {
   'workflow.step.modal.title': '{action} Pipeline Task',
   'workflow.step.form.env': 'Deployment Environment',
   'workflow.stage.add.task': 'Add Task',
+  'workflow.stage.add.taskName': 'Task Name',
   'workflow.stage.add.paratask': 'Parallel Task',
   'workflow.stage.add.title': 'New Stage',
   'workflow.stage.add.button': 'Add New Stage',
-  'workflow.stage.records': 'Records'
+  'workflow.stage.records': 'Records',
+  'workflow.stage.approve': 'Approval'
 };

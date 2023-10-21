@@ -33,16 +33,18 @@
   import { Graph, Node, Edge, Platform } from '@antv/x6';
   import '@antv/x6-vue-shape';
   import { useResizeObserver } from '@vueuse/core';
+  import { deleteModal } from '@/utils/monitor';
   import toolBar from './tool-bar.vue';
   import { setPipelineNodeStyle } from '../custom/style';
   import { NodeSize, PipelineNodeSize, tools, CustomShape } from '../config';
-  import node, { defineCustomNode } from '../custom/node';
+  import { defineCustomNode } from '../custom/node';
   import { defineConnector } from '../custom/edge';
   import LogsPanel from './logs-panel.vue';
   import {
     queryPipelineRecordDetail,
     getPipelineTaskLogUrl,
-    queryPipelineLatestRecordDetail
+    queryPipelineLatestRecordDetail,
+    approvePipelineTask
   } from '../api';
 
   const props = defineProps({
@@ -101,6 +103,26 @@
     return null;
   };
 
+  const handleApprovePipelineTask = async (nodeData) => {
+    try {
+      const {
+        project: { id: projectId },
+        workflowID: flowId,
+        workflowExecutionID: flowExecId,
+        stageExecution: { id: stageExecId },
+        id: stepExecId
+      } = nodeData || {};
+      await approvePipelineTask({
+        projectId,
+        flowId,
+        flowExecId,
+        stageExecId,
+        stepExecId
+      });
+    } catch (error) {
+      // ingore
+    }
+  };
   const getDetailData = async () => {
     if (props.showLatest) return getPipelineLatestDetail();
     return getPipelineDetail();
@@ -244,6 +266,20 @@
     });
   };
 
+  const fitPosition = () => {
+    graphIns?.positionPoint({ x: 0, y: 0 }, 50, 50);
+    graphIns?.zoomTo(1);
+  };
+
+  const initData = async () => {
+    loading.value = true;
+    const data = await getDetailData();
+    const stages = data?.stages || [];
+    const result = initNodes(stages);
+    graphIns.fromJSON(result);
+    loading.value = false;
+  };
+
   const initEvent = () => {
     graphIns?.on('node:logs', ({ view, e }) => {
       e.stopPropagation();
@@ -278,23 +314,24 @@
       }, 100);
     });
 
+    graphIns?.on('node:approve', ({ view, e }) => {
+      e.stopPropagation();
+      const nodeData = view.cell.getData?.();
+
+      deleteModal({
+        okText: 'common.button.approval',
+        cancelText: 'common.button.reject',
+        title: 'workflow.stage.approve',
+        onOk: async () => {
+          await handleApprovePipelineTask(nodeData);
+          await initData();
+        }
+      });
+    });
+
     graphIns?.on('node:click', (e) => {
       console.log('node:click', e);
     });
-  };
-
-  const fitPosition = () => {
-    graphIns?.positionPoint({ x: 0, y: 0 }, 50, 50);
-    graphIns?.zoomTo(1);
-  };
-
-  const initData = async () => {
-    loading.value = true;
-    const data = await getDetailData();
-    const stages = data?.stages || [];
-    const result = initNodes(stages);
-    graphIns.fromJSON(result);
-    loading.value = false;
   };
 
   const init = async () => {
