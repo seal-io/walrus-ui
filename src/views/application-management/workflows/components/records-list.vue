@@ -176,6 +176,7 @@
   };
 
   const handleDropSelect = (val, row) => {
+    if (val === 'delete') return;
     router.push({
       name: WORKFLOW.Detail,
       params: {
