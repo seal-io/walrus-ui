@@ -56,7 +56,7 @@
               ></StatusLabel>
             </span>
             <a-space class="btn">
-              {node.value.type === TaskTypes.APPROVAL ? (
+              {node.value.data?.type === TaskTypes.APPROVAL ? (
                 <a-link hoverable={false} data-event="node:approve">
                   {t('workflow.stage.approve')}
                 </a-link>
