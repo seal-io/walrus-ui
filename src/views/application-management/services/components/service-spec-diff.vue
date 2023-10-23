@@ -38,6 +38,14 @@
       <EditPageFooter style="margin-top: 0">
         <template #save>
           <a-button
+            v-if="
+              userStore.hasProjectResourceActions({
+                projectID,
+                environmentID,
+                resource: Resources.ServiceRevisions,
+                actions: ['PUT']
+              })
+            "
             :disabled="
               _.get(serviceInfo, 'status.summaryStatus') ===
               RevisionStatus.Running
@@ -53,7 +61,7 @@
             :type="'outline'"
             class="cap-title cancel-btn"
             @click="handleCancel"
-            >{{ $t('common.button.cancel') }}</a-button
+            >{{ $t('common.button.close') }}</a-button
           >
         </template>
       </EditPageFooter>
@@ -63,6 +71,9 @@
 
 <script lang="ts" setup>
   import _ from 'lodash';
+  import { useRoute } from 'vue-router';
+  import { useUserStore } from '@/store';
+  import { Resources } from '@/permissions/config';
   import useCodeDiff from '@/hooks/use-code-diff';
   import EditPageFooter from '@/components/edit-page-footer/index.vue';
   import AceEditor from '@/components/ace-editor/index.vue';
@@ -98,6 +109,11 @@
     getDiffResultLines,
     clearDiffLines
   } = useCodeDiff();
+  const userStore = useUserStore();
+  const route = useRoute();
+  const projectID = route.params.projectId as string;
+  const environmentID = route.params.environmentId as string;
+
   const emit = defineEmits(['confirm', 'update:show']);
 
   const handleCancel = () => {

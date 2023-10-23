@@ -28,6 +28,7 @@
           pageAction === PageAction.VIEW &&
           userStore.hasProjectResourceActions({
             resource: Resources.Environments,
+            environmentID: id,
             projectID: route.params.projectId,
             actions: ['POST']
           })
@@ -66,6 +67,31 @@
               $t('common.validate.labelName')
             }}</div>
           </template>
+        </a-form-item>
+        <a-form-item
+          :label="$t('applications.environment.type')"
+          :hide-label="pageAction === PageAction.EDIT"
+          hide-asterisk
+          field="type"
+          :rules="[
+            {
+              required: true,
+              message: $t('applications.environment.rule.type')
+            }
+          ]"
+        >
+          <seal-select
+            v-if="pageAction === PageAction.EDIT"
+            v-model="formData.type"
+            :label="$t('applications.environment.type')"
+            :required="true"
+            :options="EnvironmentTypeList"
+            :style="{ width: `${InputWidth.LARGE}px` }"
+            @change="handleEnvironmentTypeChange"
+          ></seal-select>
+          <span v-else class="readonly-view-label">{{
+            formData.type || '-'
+          }}</span>
         </a-form-item>
         <a-form-item
           :label="$t('operation.environments.table.description')"
@@ -305,6 +331,7 @@
   const formData = ref<EnvironFormData>({
     projectID: route.params.projectId as string,
     name: '',
+    type: '',
     description: '',
     connectorIDs: [],
     connectors: [],
@@ -322,6 +349,15 @@
     handleDeleteLabel,
     getLabelList
   } = useLabelsActions(formData);
+
+  const EnvironmentTypeList = computed(() => {
+    return _.map(userStore.applicableEnvironmentTypes, (item) => {
+      return {
+        label: item,
+        value: item
+      };
+    });
+  });
   const title = computed(() => {
     // only in clone
     if (environmentId) {
@@ -399,6 +435,7 @@
       formData.value = {
         projectID: route.params.projectId as string,
         name: '',
+        type: '',
         description: '',
         connectorIDs: [],
         connectors: [],
@@ -411,6 +448,7 @@
     try {
       const params = {
         page: -1,
+        applicableEnvironmentType: formData.value.type,
         withGlobal: true
       };
       const { data } = await queryConnectors(params);
@@ -429,6 +467,13 @@
     showModal.value = true;
   };
 
+  const handleEnvironmentTypeChange = () => {
+    selectedList.value = [];
+    formData.value.connectorIDs = [];
+    formData.value.connectors = [];
+    formData.value.edges = [];
+    getConnectors();
+  };
   const handleConnectorChange = (values) => {
     formData.value.connectorIDs = [...values];
     setFormDataConnectors(formData.value.connectorIDs);

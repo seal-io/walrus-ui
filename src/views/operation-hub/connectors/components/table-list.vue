@@ -184,6 +184,15 @@
           tooltip
           :cell-style="{ minWidth: '40px' }"
           align="center"
+          data-index="applicableEnvironmentType"
+          :title="$t('operation.connectors.table.environmentType')"
+        >
+        </a-table-column>
+        <a-table-column
+          ellipsis
+          tooltip
+          :cell-style="{ minWidth: '40px' }"
+          align="center"
           data-index="CostSynced"
           :title="$t('operation.connectors.table.coststatus')"
         >

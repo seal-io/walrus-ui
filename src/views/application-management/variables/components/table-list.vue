@@ -41,6 +41,8 @@
                   })
                 : userStore.hasProjectResourceActions({
                     projectID: route.params.projectId,
+                    environmentID:
+                      scope === scopeMap.PROJECT ? '' : environmentId,
                     resource: Resources.Variables,
                     actions: [Actions.POST]
                   })
@@ -58,6 +60,8 @@
                   })
                 : userStore.hasProjectResourceActions({
                     projectID: route.params.projectId,
+                    environmentID:
+                      scope === scopeMap.PROJECT ? '' : environmentId,
                     resource: Resources.Variables,
                     actions: [Actions.DELETE]
                   })
@@ -81,7 +85,14 @@
         :data="dataList"
         :pagination="false"
         row-key="id"
-        :row-selection="rowSelectionStatue"
+        :row-selection="
+          userStore.isReadOnlyEnvironment(
+            route.params.projectId,
+            route.params.environmentId
+          )
+            ? null
+            : rowSelectionStatue
+        "
         @sorter-change="handleSortChange"
         @selection-change="handleSelectChange"
       >
@@ -159,6 +170,8 @@
                   })
                 : userStore.hasProjectResourceActions({
                     projectID: route.params.projectId,
+                    environmentID:
+                      scope === scopeMap.PROJECT ? '' : environmentId,
                     resource: Resources.Variables,
                     actions: [Actions.PUT]
                   })
@@ -342,7 +355,15 @@
         return {
           ...item,
           visible: false,
-          disabled: getScope(item) !== props.scope
+          disabled: [scopeMap.ENVIRONMENT, scopeMap.SERVICE]
+            ? getScope(item) !== props.scope ||
+              !userStore.hasProjectResourceActions({
+                projectID: route.params.projectId,
+                environmentID: environmentId,
+                resource: Resources.Variables,
+                actions: [Actions.PUT]
+              })
+            : getScope(item) !== props.scope
         };
       });
       total.value = data?.pagination?.total || 0;

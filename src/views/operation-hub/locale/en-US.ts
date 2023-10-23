@@ -14,6 +14,7 @@ export default {
   'operation.connectors.table.enableFin': 'Enable Cost Analysis',
   'operation.connectors.table.install': 'Reinstalling Cost Analysis Tool',
   'operation.connectors.table.fetch': 'Synchronize cost data',
+  'operation.connectors.table.environmentType': 'Applicable Environment Type',
   'operation.connectors.ready.tips':
     'The cluster cost analysis tool is available',
   'operation.connectors.error.tips':
@@ -26,6 +27,8 @@ export default {
   'operation.connectors.detail.clusterName': 'Cluster Name',
   'operation.connectors.rules.name': 'cluster name is required',
   'operation.connectors.rules.kubeconfig': 'kubeconfig is required',
+  'operation.connectors.rules.environmentType':
+    'please select applicable environment type',
   'operation.connectors.rules.kubeconfigTips':
     'can be read from a file or entered directly',
   'operation.connectors.rules.enable': 'Enable cost analysis',

@@ -1,6 +1,5 @@
 import dayjs from 'dayjs';
-import _, { each, get, sortBy, uniq } from 'lodash';
-import { VARIABLE_API } from '../application-management/variables/api';
+import _ from 'lodash';
 
 export const dateFormatMap = {
   day: 'YYYY.MM.DD',
@@ -165,5 +164,11 @@ export const QAlinkMap = {
   ]
 };
 export const USER_DEFAULT_PROJECT = 'USER_DEFAULT_PROJECT';
+
+export const EnvironmentTypeMap = {
+  DEVELOPMENT: 'development',
+  PRODUCTION: 'production',
+  STAGING: 'staging'
+};
 
 export default {};

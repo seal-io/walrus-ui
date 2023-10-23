@@ -28,6 +28,7 @@
           v-if="
             userStore.hasProjectResourceActions({
               projectID,
+              environmentID,
               resource: Resources.Services,
               actions: [Actions.POST]
             })
@@ -40,6 +41,7 @@
           v-if="
             userStore.hasProjectResourceActions({
               projectID,
+              environmentID,
               resource: Resources.Services,
               actions: [Actions.POST]
             })
@@ -57,6 +59,7 @@
           v-if="
             userStore.hasProjectResourceActions({
               projectID,
+              environmentID,
               resource: Resources.Services,
               actions: [Actions.DELETE]
             })
@@ -80,7 +83,11 @@
       :data="dataList"
       :pagination="false"
       row-key="id"
-      :row-selection="rowSelection"
+      :row-selection="
+        userStore.isReadOnlyEnvironment(projectID, environmentID)
+          ? null
+          : rowSelection
+      "
       @sorter-change="handleSortChange"
       @selection-change="handleSelectChange"
     >
@@ -342,7 +349,17 @@
         sort: [sort.value]
       };
       const { data } = await queryServices(params, fetchToken?.token);
-      dataList.value = data?.items || [];
+      dataList.value = _.map(data.items || [], (item) => {
+        return {
+          ...item,
+          disabled: !userStore.hasProjectResourceActions({
+            projectID,
+            environmentID,
+            resource: Resources.Services,
+            actions: [Actions.DELETE]
+          })
+        };
+      });
       total.value = data?.pagination?.total || 0;
       totalPage.value = data?.pagination.totalPage || 1;
       loading.value = false;
@@ -483,7 +500,18 @@
     const ids = data?.ids || [];
     // CREATE
     if (data?.type === websocketEventType.CREATE) {
-      dataList.value = _.concat(collections, dataList.value);
+      const createList = _.map(collections, (o) => {
+        return {
+          ...o,
+          disabled: !userStore.hasProjectResourceActions({
+            projectID,
+            environmentID,
+            resource: Resources.Services,
+            actions: [Actions.DELETE]
+          })
+        };
+      });
+      dataList.value = _.concat(createList, dataList.value);
       dataList.value = _.slice(dataList.value, 0, 10);
       return;
     }

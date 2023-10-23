@@ -22,6 +22,7 @@ export interface EnvironFormData {
   projectID?: string;
   id?: string;
   name: string;
+  type: string;
   description: string;
   connectorIDs: string[];
   connectors: any[];

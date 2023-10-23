@@ -33,6 +33,7 @@ export interface ConnectorFormData {
   name: string;
   description?: string;
   type: string;
+  applicableEnvironmentType: string;
   configData: {
     [k: string]: {
       visible?: boolean;

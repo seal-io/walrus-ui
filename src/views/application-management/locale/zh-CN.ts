@@ -144,6 +144,8 @@ export default {
   'applications.environment.clone.target': '目标环境',
   'applications.environment.clone.env.rules': '目标环境必选',
   'applications.environment.graph.fitview': '视图适中',
+  'applications.environment.type': '环境类型',
+  'applications.environment.rule.type': '请选择环境类型',
   'applications.environment.graph.fullscreen': '全屏',
   'applications.environment.graph.cancelfullscreen': '退出全屏',
   'applications.environment.graph.show': '显示子资源',

@@ -112,7 +112,7 @@ export default {
   'system.setting.enableSyncCatalog.desc': '开启后，每天1点会同步模板库数据',
   'system.user.visitor': '普通用户',
   'system.user.admin': '管理员',
-  'system.user.engineer': '平台工程师',
+  'system.user.engineer': '主管',
   'account.settings.apikeys': 'API密钥',
   'account.settings.title': '账户设置',
   'account.settings.tokens.new': '添加API密钥',
