@@ -163,6 +163,7 @@ export const serviceActions: MoreAction[] = [
     filterFun(currentInfo) {
       return userStore.hasProjectResourceActions({
         resource: Resources.Services,
+        environmentID: get(currentInfo, 'environment.id'),
         projectID: get(currentInfo, 'project.id'),
         actions: [Actions.PUT]
       });
@@ -187,6 +188,7 @@ export const serviceActions: MoreAction[] = [
     filterFun(currentInfo) {
       return userStore.hasProjectResourceActions({
         resource: Resources.Services,
+        environmentID: get(currentInfo, 'environment.id'),
         projectID: get(currentInfo, 'project.id'),
         actions: [Actions.PUT]
       });
@@ -209,6 +211,7 @@ export const serviceActions: MoreAction[] = [
     filterFun(currentInfo) {
       return userStore.hasProjectResourceActions({
         resource: Resources.Services,
+        environmentID: get(currentInfo, 'environment.id'),
         projectID: get(currentInfo, 'project.id'),
         actions: [Actions.DELETE]
       });

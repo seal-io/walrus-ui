@@ -83,6 +83,30 @@
             </template>
           </a-form-item>
           <a-form-item
+            :label="$t('operation.connectors.table.environmentType')"
+            :hide-label="pageAction === PageAction.EDIT"
+            hide-asterisk
+            field="applicableEnvironmentType"
+            :rules="[
+              {
+                required: true,
+                message: $t('operation.connectors.rules.environmentType')
+              }
+            ]"
+          >
+            <seal-select
+              v-if="pageAction === PageAction.EDIT"
+              v-model="formData.applicableEnvironmentType"
+              :label="$t('operation.connectors.table.environmentType')"
+              :required="true"
+              :options="EnvironmentTypeList"
+              :style="{ width: `${InputWidth.LARGE}px` }"
+            ></seal-select>
+            <span v-else class="readonly-view-label">{{
+              formData.applicableEnvironmentType || '-'
+            }}</span>
+          </a-form-item>
+          <a-form-item
             :label="$t('operation.connectors.form.type')"
             hide-asterisk
             :hide-label="pageAction === PageAction.EDIT"
@@ -308,9 +332,19 @@
     configData: {},
     description: '',
     configVersion: 'v1',
+    applicableEnvironmentType: '',
     type: '',
     category: ConnectorCategory.Custom,
     enableFinOps: false
+  });
+
+  const EnvironmentTypeList = computed(() => {
+    return _.map(userStore.applicableEnvironmentTypes, (item) => {
+      return {
+        label: item,
+        value: item
+      };
+    });
   });
 
   const visibleOptions = computed(() => {

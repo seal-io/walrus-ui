@@ -132,7 +132,7 @@ export default {
     'If enable, the template catalog data will be synchronized at 1:00 every day',
   'system.user.visitor': 'General User',
   'system.user.admin': 'Administrator',
-  'system.user.engineer': 'Platform Engineer',
+  'system.user.engineer': 'Manager',
   'account.settings.apikeys': 'API Keys',
   'account.settings.title': 'Account Settings',
   'account.settings.tokens.new': 'Add API Keys',

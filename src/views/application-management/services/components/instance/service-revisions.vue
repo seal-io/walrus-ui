@@ -89,6 +89,7 @@
                 v-if="
                   userStore.hasProjectResourceActions({
                     projectID,
+                    environmentID,
                     resource: Resources.ServiceRevisions,
                     actions: ['DELETE']
                   })
@@ -193,6 +194,7 @@
     defaultOrder: 'descend'
   });
   const projectID = route.params.projectId || '';
+  const environmentID = route.params.environmentId as string;
   const title = ref('');
   const serviceId = inject('serviceId', ref(''));
   const revisionDetailId = ref('');

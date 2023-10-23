@@ -82,6 +82,15 @@ export const permissionScope = {
   [Actions.PUT]: '修改'
 };
 
+export const ReadonlyActions = [Actions.GET];
+
+export const UpdateActions = [
+  Actions.PUT,
+  Actions.POST,
+  Actions.DELETE,
+  Actions.All
+];
+
 // group according to the menu, not Resource
 export enum Group {
   Dashboard = 'Dashboard',

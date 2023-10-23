@@ -12,7 +12,7 @@ import _ from 'lodash';
 import { FirstGetPasswordCommand } from '@/views/login/config';
 import { getUserResourcePermission } from '@/utils/auth';
 import { removeRouteListener } from '@/utils/route-listener';
-import { Actions } from '@/permissions/config';
+import { Actions, UpdateActions } from '@/permissions/config';
 import { RoleType } from '@/views/system/config/users';
 import { UserState } from './types';
 
@@ -21,6 +21,7 @@ const useUserStore = defineStore('user', {
     key: 'user'
   },
   state: (): UserState => ({
+    applicableEnvironmentTypes: [],
     name: undefined,
     avatar: undefined,
     job: undefined,
@@ -111,12 +112,40 @@ const useUserStore = defineStore('user', {
         _.every(actions, (ac) => _.includes(permissionActions, ac));
       return hasPermission;
     },
-    hasProjectResourceActions({ projectID, resource, actions }) {
+
+    hasUpdateAction(actions) {
+      return _.some(actions, (ac) => _.includes(UpdateActions, ac));
+    },
+    isReadOnlyEnvironment(projectID, environmentID) {
+      if (!projectID || !environmentID) return false;
+      const readOnlyEnvironments = _.get(
+        this.permissions,
+        `${this.permissionsKey.projectRoles}.${projectID}.readOnlyEnvironments`
+      ) as { environment: string; name: string }[];
+      return _.find(readOnlyEnvironments, {
+        environment: environmentID
+      });
+    },
+
+    hasProjectResourceActions({
+      projectID,
+      environmentID = '',
+      resource,
+      actions
+    }) {
+      if (this.isSystemAdmin()) {
+        return true;
+      }
+
+      if (
+        environmentID &&
+        this.isReadOnlyEnvironment(projectID, environmentID)
+      ) {
+        return !this.hasUpdateAction(actions);
+      }
+
       const path = this.getProjectUserActions(projectID, resource);
-      return (
-        this.isSystemAdmin() ||
-        this.hasActionsPermission({ resource: path, actions })
-      );
+      return this.hasActionsPermission({ resource: path, actions });
     },
     // Login
     async login(loginForm: LoginData) {

@@ -105,6 +105,15 @@
             tooltip
             :cell-style="{ minWidth: '40px' }"
             align="center"
+            data-index="type"
+            :title="$t('applications.environment.type')"
+          >
+          </a-table-column>
+          <a-table-column
+            ellipsis
+            tooltip
+            :cell-style="{ minWidth: '40px' }"
+            align="center"
             data-index="description"
             :title="$t('common.table.description')"
           >
@@ -140,6 +149,7 @@
                   v-if="
                     userStore.hasProjectResourceActions({
                       projectID,
+                      environmentID: record.id,
                       resource: Resources.Environments,
                       actions: [Actions.PUT]
                     })
@@ -154,6 +164,7 @@
                   v-if="
                     userStore.hasProjectResourceActions({
                       projectID,
+                      environmentID: record.id,
                       resource: Resources.Environments,
                       actions: [Actions.POST]
                     })
@@ -211,11 +222,11 @@
 
 <script lang="ts" setup>
   import dayjs from 'dayjs';
+  import _, { map, pickBy } from 'lodash';
   import { PageAction } from '@/views/config';
   import { PROJECT } from '@/router/config';
   import { useUserStore, useAppStore } from '@/store';
   import { Resources, Actions } from '@/permissions/config';
-  import { map, pickBy } from 'lodash';
   import { ref, reactive } from 'vue';
   import useCallCommon from '@/hooks/use-call-common';
   import FilterBox from '@/components/filter-box/index.vue';
@@ -265,7 +276,17 @@
         sort: [sort.value]
       };
       const { data } = await queryEnvironments(params);
-      dataList.value = data?.items || [];
+      dataList.value = _.map(data.items || [], (item) => {
+        return {
+          ...item,
+          disabled: !userStore.hasProjectResourceActions({
+            projectID,
+            environmentID: item.id,
+            resource: Resources.Environments,
+            actions: [Actions.DELETE]
+          })
+        };
+      });
       total.value = data?.pagination?.total || 0;
       loading.value = false;
     } catch (error) {

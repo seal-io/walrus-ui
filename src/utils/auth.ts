@@ -4,10 +4,10 @@ import {
   ROLES,
   permissionKey
 } from '@/store/modules/user/types';
-// import localForage from 'localforage';
 import JSCookies from 'js-cookie';
 import localForage from '@/utils/localStore';
 import _ from 'lodash';
+import { Resources } from '@/permissions/config';
 
 interface LoginInfo {
   username: string;
@@ -66,8 +66,13 @@ const getResourcePolicies = (role: RolesItem) => {
   const rolePolicies = _.reduce(
     policies,
     (rolePolicyMap, item) => {
+      const resources =
+        _.get(item, 'resources.0') === '*'
+          ? Object.values(Resources)
+          : _.get(item, 'resources') || [];
+
       const resourcePolicy = _.reduce(
-        _.get(item, 'resources') || [],
+        resources,
         (resourceActionsMap, resourceName) => {
           resourceActionsMap[resourceName] = [...(item.actions || [])];
           return resourceActionsMap;
@@ -116,10 +121,11 @@ const getProjectRolesPolicies = (projectRoles: ProjectRolesItem[]) => {
     projectRoles,
     (obj, project) => {
       const projectID = _.get(project, 'project.id') || '';
-      const projectName = _.get(project, 'project.name');
       obj[projectID] = {
         projectID,
-        projectName,
+        projectName: _.get(project, 'project.name'),
+        readOnlyEnvironments:
+          _.get(project, 'project.readOnlyEnvironments') || [],
         policies: {
           ..._.omit(getRolesPolicies(project.roles), ROLES)
         },

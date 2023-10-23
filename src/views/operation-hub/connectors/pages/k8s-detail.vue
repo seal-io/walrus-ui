@@ -86,6 +86,30 @@
             </template>
           </a-form-item>
           <a-form-item
+            :label="$t('operation.connectors.table.environmentType')"
+            :hide-label="pageAction === PageAction.EDIT"
+            hide-asterisk
+            field="applicableEnvironmentType"
+            :rules="[
+              {
+                required: true,
+                message: $t('operation.connectors.rules.environmentType')
+              }
+            ]"
+          >
+            <seal-select
+              v-if="pageAction === PageAction.EDIT"
+              v-model="formData.applicableEnvironmentType"
+              :label="$t('operation.connectors.table.environmentType')"
+              :required="true"
+              :options="EnvironmentTypeList"
+              :style="{ width: `${InputWidth.LARGE}px` }"
+            ></seal-select>
+            <span v-else class="readonly-view-label">{{
+              formData.applicableEnvironmentType || '-'
+            }}</span>
+          </a-form-item>
+          <a-form-item
             v-if="pageAction === PageAction.EDIT"
             field="configData.kubeconfig.value"
             hide-label
@@ -228,10 +252,10 @@
     validateLabelNameRegx,
     InputWidth
   } from '@/views/config';
+  import _, { assignIn, get, find, isEqual, cloneDeep } from 'lodash';
   import { OPERATIONHUB } from '@/router/config';
   import { Resources, Actions } from '@/permissions/config';
   import { useUserStore } from '@/store';
-  import { assignIn, get, find, isEqual, cloneDeep } from 'lodash';
   import { ref, reactive, onMounted, computed } from 'vue';
   import GroupTitle from '@/components/group-title/index.vue';
   import readBlob from '@/utils/readBlob';
@@ -271,8 +295,18 @@
     },
     configVersion: 'v1',
     type: 'Kubernetes',
+    applicableEnvironmentType: '',
     category: ConnectorCategory.Kubernetes,
     enableFinOps: true
+  });
+
+  const EnvironmentTypeList = computed(() => {
+    return _.map(userStore.applicableEnvironmentTypes, (item) => {
+      return {
+        label: item,
+        value: item
+      };
+    });
   });
 
   const title = computed(() => {
