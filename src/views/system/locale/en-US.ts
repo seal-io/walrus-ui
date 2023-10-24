@@ -126,6 +126,7 @@ export default {
   'system.setting.templateLib': 'Template Catalog Settings',
   'system.setting.enableBuiltinCatalog': 'Use built-in template catalog',
   'system.setting.SkipRemoteTLSVerify': 'Skip certificate authentication',
+  'system.setting.SkipRemoteTLSVerify.title': 'Certificate Settings',
   'system.setting.enableSyncCatalog':
     'Whether to synchronize the template catalog data',
   'system.setting.enableSyncCatalog.desc':

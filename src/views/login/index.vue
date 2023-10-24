@@ -96,7 +96,7 @@
     try {
       userStore.resetInfo();
       appStore.resetInfo();
-      await userStore.info();
+      // await userStore.info();
       if (userStore.name) {
         enterUserPage();
       }
