@@ -108,6 +108,7 @@ export default {
   'system.setting.templateLib': '模板库设置',
   'system.setting.enableBuiltinCatalog': '使用内置模板库',
   'system.setting.SkipRemoteTLSVerify': '跳过证书认证',
+  'system.setting.SkipRemoteTLSVerify.title': '证书设置',
   'system.setting.enableSyncCatalog': '是否同步模板库',
   'system.setting.enableSyncCatalog.desc': '开启后，每天1点会同步模板库数据',
   'system.user.visitor': '普通用户',
