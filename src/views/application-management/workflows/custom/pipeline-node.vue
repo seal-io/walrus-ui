@@ -3,6 +3,7 @@
   import { defineComponent, inject, toRefs, ref } from 'vue';
   import i18n from '@/locale';
   import StatusLabel from '@/views/operation-hub/connectors/components/status-label.vue';
+  import Autotip from '@arco-design/web-vue/es/_components/auto-tooltip/auto-tooltip';
   import { TaskTypes } from '../task-types/config';
   import MoreAction from './more-action.vue';
 
@@ -35,7 +36,9 @@
         <div class="pipeline-node">
           {renderStageName()}
           <div class="pipeline-node-title">
-            <div class="title">{node.value.data.name}</div>
+            <Autotip tooltip-props={{ content: node.value.data?.name }}>
+              <span class="title">{node.value.data?.name}</span>
+            </Autotip>
             <div class="more">{/* <MoreAction></MoreAction> */}</div>
           </div>
           <div class="operation-box">

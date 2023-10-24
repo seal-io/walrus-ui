@@ -118,6 +118,7 @@
   };
   const handleClick = () => {
     isFocus.value = true;
+    input.value?.click?.();
   };
   defineExpose({
     focus,

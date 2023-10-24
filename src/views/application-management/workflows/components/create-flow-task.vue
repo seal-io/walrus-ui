@@ -35,8 +35,8 @@
           <a-step
             v-for="item in steps"
             :key="item.value"
-            :description="item.description"
-            >{{ item.label }}</a-step
+            :description="$t(item.description || '')"
+            >{{ $t(item.label) }}</a-step
           >
         </a-steps>
       </div>

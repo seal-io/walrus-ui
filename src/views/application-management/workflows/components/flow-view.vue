@@ -28,12 +28,14 @@
 
 <script lang="ts" setup>
   import _ from 'lodash';
+  import { websocketEventType } from '@/views/config';
+  import { useSetChunkRequest } from '@/api/axios-chunk-request';
   import useCallCommon from '@/hooks/use-call-common';
   import { ref, onMounted, nextTick, computed } from 'vue';
   import { Graph, Node, Edge, Platform } from '@antv/x6';
   import '@antv/x6-vue-shape';
   import { useResizeObserver } from '@vueuse/core';
-  import { deleteModal } from '@/utils/monitor';
+  import { deleteModal, execSucceed } from '@/utils/monitor';
   import toolBar from './tool-bar.vue';
   import { setPipelineNodeStyle } from '../custom/style';
   import { NodeSize, PipelineNodeSize, tools, CustomShape } from '../config';
@@ -44,7 +46,10 @@
     queryPipelineRecordDetail,
     getPipelineTaskLogUrl,
     queryPipelineLatestRecordDetail,
-    approvePipelineTask
+    approvePipelineTask,
+    PROJECT_API_PREFIX,
+    PIPELINE_API,
+    PIPELINE_EXECUTION_API
   } from '../api';
 
   const props = defineProps({
@@ -64,6 +69,8 @@
   const DX = 300;
   const DY = 120;
   const DX2 = 40;
+  let chunkRequestToken: any = null;
+  const { setChunkRequest } = useSetChunkRequest();
   const { route } = useCallCommon();
   let graphIns: any = null;
   const showLogModal = ref(false);
@@ -76,6 +83,7 @@
   const loading = ref(false);
   const flowId = route.params.flowId as string;
   const execId = route.query.execId as string;
+  let lastestExecId = '';
 
   const handleDeleteLogTab = (key) => {
     const index = _.findIndex(logTabs.value, (item) => item.id === key);
@@ -86,6 +94,7 @@
     if (!flowId) return null;
     try {
       const { data } = await queryPipelineLatestRecordDetail({ flowId });
+      lastestExecId = data?.id || '';
       return data;
     } catch (error) {
       // eslint-disable-next-line no-console
@@ -119,6 +128,7 @@
         stageExecId,
         stepExecId
       });
+      execSucceed();
     } catch (error) {
       // ingore
     }
@@ -346,8 +356,54 @@
     });
   };
 
+  const updateChunkedList = (data) => {
+    // let collections = data?.collection || [];
+    // // DELETE
+    // if (data?.type === websocketEventType.DELETE) {
+    //   dataList.value = _.filter(dataList.value, (item) => {
+    //     return !_.find(ids, (id) => id === item.id);
+    //   });
+    // }
+    // // UPDATE
+    // if (data?.type === websocketEventType.UPDATE) {
+    //   _.each(collections, (item) => {
+    //     const updateIndex = _.findIndex(
+    //       dataList.value,
+    //       (sItem) => sItem.id === item.id
+    //     );
+    //     if (updateIndex > -1) {
+    //       const updateItem = _.cloneDeep(item);
+    //       dataList.value[updateIndex] = updateItem;
+    //     }
+    //   });
+    // }
+  };
+  const updateHandler = (list) => {
+    _.each(list, (data) => {
+      updateChunkedList(data);
+    });
+  };
+
+  const createWorkflowsChunkRequest = () => {
+    chunkRequestToken?.cancel();
+    const url = `${PROJECT_API_PREFIX()}${PIPELINE_API}/${flowId}${PIPELINE_EXECUTION_API}/${
+      execId || lastestExecId
+    }`;
+    try {
+      chunkRequestToken = setChunkRequest({
+        url: `${url}`,
+        handler: updateHandler
+      });
+    } catch (error) {
+      // ignore
+    }
+  };
+
   onMounted(() => {
     init();
+    nextTick(() => {
+      createWorkflowsChunkRequest();
+    });
   });
 </script>
 
