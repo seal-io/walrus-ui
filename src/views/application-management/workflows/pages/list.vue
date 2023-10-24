@@ -91,11 +91,17 @@
               <StatusLabel
                 :zoom="0.9"
                 :status="{
-                  status: _.get(record, 'status.summaryStatus'),
-                  text: _.get(record, 'status.summaryStatus'),
-                  message: _.get(record, 'status.summaryStatusMessage'),
-                  transitioning: _.get(record, 'status.transitioning'),
-                  error: _.get(record, 'status.error')
+                  status: _.get(record, 'executions.0.status.summaryStatus'),
+                  text: _.get(record, 'executions.0.status.summaryStatus'),
+                  message: _.get(
+                    record,
+                    'executions.0.status.summaryStatusMessage'
+                  ),
+                  transitioning: _.get(
+                    record,
+                    'executions.0.status.transitioning'
+                  ),
+                  error: _.get(record, 'executions.0.status.error')
                 }"
               ></StatusLabel>
             </template>
@@ -105,9 +111,12 @@
             tooltip
             :cell-style="{ minWidth: '40px' }"
             align="center"
-            data-index="description"
+            data-index="stages"
             :title="$t('applications.workflow.table.stage')"
           >
+            <template #cell="{ record }">
+              <SealSteps :steps="setRunStatus(record)"></SealSteps>
+            </template>
           </a-table-column>
           <a-table-column
             ellipsis
@@ -164,17 +173,27 @@
   import { PROJECT, WORKFLOW } from '@/router/config';
   import { useUserStore } from '@/store';
   import { Resources, Actions } from '@/permissions/config';
-  import { ref, reactive } from 'vue';
+  import { ref, reactive, onMounted } from 'vue';
   import useCallCommon from '@/hooks/use-call-common';
   import StatusLabel from '@/views/operation-hub/connectors/components/status-label.vue';
   import DropButtonGroup from '@/components/drop-button-group/index.vue';
   import FilterBox from '@/components/filter-box/index.vue';
   import { deleteModal, execSucceed } from '@/utils/monitor';
+  import { useSetChunkRequest } from '@/api/axios-chunk-request';
+  import { useUpdateChunkedList } from '@/views/commons/hooks/use-update-chunked-list';
   import { UseSortDirection } from '@/utils/common';
   import useRowSelect from '@/hooks/use-row-select';
+  import SealSteps from '@/components/seal-steps/index.vue';
+
   import { moreActions } from '../config';
   import { PipelineRow } from '../config/interface';
-  import { queryPipelines, deletePipeline, applyPipeline } from '../api';
+  import {
+    queryPipelines,
+    deletePipeline,
+    applyPipeline,
+    PROJECT_API_PREFIX,
+    PIPELINE_API
+  } from '../api';
 
   let timer: any = null;
   const { rowSelection, selectedKeys, handleSelectChange } = useRowSelect();
@@ -193,7 +212,19 @@
     page: 1,
     perPage: 10
   });
+  const { setChunkRequest } = useSetChunkRequest();
+  const { updateChunkedList } = useUpdateChunkedList(dataList);
 
+  const setRunStatus = (row) => {
+    const stages = _.get(row, 'executions.0.stages') || [];
+    return _.map(stages, (item) => {
+      return {
+        title: item.name,
+        info: item.status?.summaryStatusMessage,
+        status: item.status.error ? 'Error' : item.status?.summaryStatus
+      };
+    });
+  };
   const handleCreate = () => {
     router.push({
       name: WORKFLOW.Edit,
@@ -282,15 +313,6 @@
       }
     });
   };
-  const handleEdit = (row) => {
-    router.push({
-      name: PROJECT.EnvEdit,
-      params: {
-        action: PageAction.EDIT
-      },
-      query: { id: row.id }
-    });
-  };
 
   const handleDeleteConfirm = async () => {
     try {
@@ -314,6 +336,29 @@
   const handleDelete = async () => {
     deleteModal({ onOk: handleDeleteConfirm });
   };
+  const updateHandler = (list) => {
+    _.each(list, (data) => {
+      updateChunkedList(data);
+    });
+  };
+  const createWorkflowsChunkRequest = () => {
+    const url = `${PROJECT_API_PREFIX()}${PIPELINE_API}`;
+    try {
+      setChunkRequest({
+        url: `${url}`,
+        params: {
+          ..._.pickBy(_.omit(queryParams, ['page', 'perPage']), (val) => !!val)
+        },
+        handler: updateHandler
+      });
+    } catch (error) {
+      // ignore
+    }
+  };
+
+  onMounted(() => {
+    createWorkflowsChunkRequest();
+  });
   fetchData();
 </script>
 

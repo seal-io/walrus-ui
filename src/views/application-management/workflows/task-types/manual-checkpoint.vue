@@ -6,7 +6,9 @@
           field="name"
           hide-label
           validate-trigger="change"
-          :rules="[{ required: true, message: '任务名称必填' }]"
+          :rules="[
+            { required: true, message: $t('workflow.task.rules.taskName') }
+          ]"
         >
           <seal-input
             v-model="formData.name"
@@ -21,11 +23,13 @@
           field="approvalType"
           hide-label
           validate-trigger="change"
-          :rules="[{ required: true, message: '请选择审核方式' }]"
+          :rules="[
+            { required: true, message: $t('workflow.task.rules.approvalMode') }
+          ]"
         >
           <seal-select
             v-model="formData.approvalType"
-            label="审核方式"
+            :label="$t('workflow.stage.add.approvalMode')"
             :required="true"
             :mutiple="true"
             style="width: 100%"
@@ -36,9 +40,9 @@
               :value="item.value"
             >
               <span
-                >{{ item.label
+                >{{ $t(item.label)
                 }}<span style="color: var(--color-text-3)" class="mleft-5">{{
-                  `(${item.description})`
+                  `(${$t(item.description)})`
                 }}</span></span
               >
             </a-option>
@@ -48,14 +52,17 @@
           field="approvalUsers"
           hide-label
           validate-trigger="change"
-          :rules="[{ required: true, message: '请选择审核人员' }]"
+          :rules="[
+            { required: true, message: $t('workflow.task.rules.approvalUser') }
+          ]"
         >
           <seal-select
             v-model="formData.approvalUsers"
-            label="审核人员"
+            :label="$t('workflow.stage.add.approvalUser')"
             :loading="loading"
             :required="true"
             :options="subjectList"
+            :mutiple="true"
             style="width: 100%"
           >
           </seal-select>

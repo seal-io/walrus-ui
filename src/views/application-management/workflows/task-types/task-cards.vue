@@ -4,8 +4,8 @@
       <i :class="['iconfont ic', dataInfo.icon]"></i>
     </div>
     <div class="content">
-      <div class="title">{{ dataInfo.title }}</div>
-      <div class="desc">{{ dataInfo.description }}</div>
+      <div class="title">{{ $t(dataInfo.title) }}</div>
+      <div class="desc">{{ $t(dataInfo.description) }}</div>
     </div>
   </div>
 </template>

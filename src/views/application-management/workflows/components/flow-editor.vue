@@ -2,8 +2,7 @@
   import _ from 'lodash';
   import { defineComponent, toRefs, ref } from 'vue';
   // import Draggable from 'vuedraggable';
-  import SlTransition from '@/components/sl-transition/index.vue';
-  import { validateLabelNameRegx } from '@/views/config';
+  import { validateLabelNameRegx, InputWidth } from '@/views/config';
   import useCallCommon from '@/hooks/use-call-common';
   import { deleteModal } from '@/utils/monitor';
   import dayjs from 'dayjs';
@@ -203,7 +202,7 @@
                   }}
                 >
                   <a-form
-                    style={{ width: 'max-content' }}
+                    style={{ width: '360px' }}
                     model={flowBasic.value}
                     layout="vertical"
                     ref={formref}

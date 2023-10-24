@@ -5,28 +5,28 @@ export const TaskTypes = {
 
 export const TaskTypeList = [
   {
-    title: '人工审核',
+    title: 'workflow.task.form.manualapproval',
     value: TaskTypes.APPROVAL,
-    description: '人工审核',
+    description: 'workflow.task.form.manualapproval',
     icon: 'icon-jiaoseshouquan'
   },
   {
-    title: '部署服务',
+    title: 'workflow.task.form.deployservice',
     value: TaskTypes.SERVICE,
-    description: '部署服务',
+    description: 'workflow.task.form.deployservice',
     icon: 'icon-fuwu'
   }
 ];
 
 export const stepList = [
-  { label: '选择任务类型', value: 'taskType' },
+  { label: 'workflow.task.form.selectTask', value: 'taskType' },
   {
-    label: '选择环境',
+    label: 'workflow.task.form.selectenv',
     value: 'env',
     taskType: TaskTypes.SERVICE,
-    description: '服务部署环境'
+    description: 'workflow.task.form.deployEnv'
   },
-  { label: '填写表单', value: 'form' }
+  { label: 'workflow.task.form.fillin', value: 'form' }
 ];
 
 export default {};

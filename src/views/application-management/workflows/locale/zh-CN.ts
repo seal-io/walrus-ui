@@ -21,10 +21,20 @@ export default {
   'workflow.step.form.env': '部署环境',
   'workflow.stage.add.task': '添加任务',
   'workflow.stage.add.taskName': '任务名称',
-  'workflow.stage.add.approvalMode': '验证方式',
+  'workflow.stage.add.approvalMode': '审核方式',
+  'workflow.stage.add.approvalUser': '审核人员',
   'workflow.stage.add.paratask': '并行任务',
   'workflow.stage.add.title': 'stage',
   'workflow.stage.add.button': '添加新阶段',
   'workflow.stage.records': '运行记录',
-  'workflow.stage.approve': '审批'
+  'workflow.stage.approve': '审批',
+  'workflow.task.rules.taskName': '任务名称必填',
+  'workflow.task.rules.approvalMode': '请选择审核方式',
+  'workflow.task.rules.approvalUser': '请选择审核人员',
+  'workflow.task.form.manualapproval': '人工审核',
+  'workflow.task.form.deployservice': '部署服务',
+  'workflow.task.form.selectTask': '选择任务类型',
+  'workflow.task.form.fillin': '填写表单',
+  'workflow.task.form.selectenv': '选择环境',
+  'workflow.task.form.deployEnv': '服务部署环境'
 };

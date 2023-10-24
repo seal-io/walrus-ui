@@ -48,9 +48,12 @@
           ellipsis
           tooltip
           :cell-style="{ minWidth: '40px' }"
-          data-index="createTime"
+          data-index="details"
           :title="$t('applications.workflow.table.runDetails')"
         >
+          <template #cell="{ record }">
+            <SealSteps :steps="setRunStatus(record)"></SealSteps>
+          </template>
         </a-table-column>
         <a-table-column
           ellipsis
@@ -101,19 +104,28 @@
 <script lang="ts" setup>
   import _ from 'lodash';
   import dayjs from 'dayjs';
-  import { ref, reactive } from 'vue';
+  import { ref, reactive, onMounted } from 'vue';
   import { PageAction } from '@/views/config';
   import { PROJECT, WORKFLOW } from '@/router/config';
   import useCallCommon from '@/hooks/use-call-common';
   import StatusLabel from '@/views/operation-hub/connectors/components/status-label.vue';
+  import SealSteps from '@/components/seal-steps/index.vue';
   import DropButtonGroup from '@/components/drop-button-group/index.vue';
   import FilterBox from '@/components/filter-box/index.vue';
   import { deleteModal, execSucceed } from '@/utils/monitor';
   import { UseSortDirection } from '@/utils/common';
   import useRowSelect from '@/hooks/use-row-select';
+  import { useSetChunkRequest } from '@/api/axios-chunk-request';
+  import { useUpdateChunkedList } from '@/views/commons/hooks/use-update-chunked-list';
   import { recordActions } from '../config';
   import { PipelineRecordsRow } from '../config/interface';
-  import { queryPipelineRecords, deletePipeline } from '../api';
+  import {
+    queryPipelineRecords,
+    deletePipeline,
+    PROJECT_API_PREFIX,
+    PIPELINE_API,
+    PIPELINE_EXECUTION_API
+  } from '../api';
 
   let timer: any = null;
   const { rowSelection, selectedKeys, handleSelectChange } = useRowSelect();
@@ -130,6 +142,21 @@
     page: 1,
     perPage: 10
   });
+
+  const { setChunkRequest } = useSetChunkRequest();
+  const { updateChunkedList } = useUpdateChunkedList(dataList);
+
+  const setRunStatus = (row) => {
+    const stages = row.stages || [];
+    return _.map(stages, (item) => {
+      return {
+        title: item.name,
+        info: item.status?.summaryStatusMessage,
+        status: item.status.error ? 'Error' : item.status?.summaryStatus
+      };
+    });
+  };
+
   const fetchData = async () => {
     try {
       loading.value = true;
@@ -187,35 +214,6 @@
       }
     });
   };
-  const handleView = (row) => {
-    router.push({
-      name: WORKFLOW.Detail,
-      params: {
-        ...route.params
-      },
-      query: {
-        flowId: row.id
-      }
-    });
-  };
-  const handleEdit = (row) => {
-    router.push({
-      name: PROJECT.EnvEdit,
-      params: {
-        action: PageAction.EDIT
-      },
-      query: { id: row.id }
-    });
-  };
-  const handleViewDetail = (row) => {
-    router.push({
-      name: PROJECT.EnvEdit,
-      params: {
-        action: PageAction.VIEW
-      },
-      query: { id: row.id }
-    });
-  };
 
   const handleDeleteConfirm = async () => {
     try {
@@ -239,5 +237,31 @@
   const handleDelete = async () => {
     deleteModal({ onOk: handleDeleteConfirm });
   };
+
+  const updateHandler = (list) => {
+    _.each(list, (data) => {
+      updateChunkedList(data);
+    });
+  };
+  const createWorkflowsChunkRequest = () => {
+    const url = `${PROJECT_API_PREFIX()}${PIPELINE_API}/${
+      queryParams.id
+    }${PIPELINE_EXECUTION_API}`;
+    try {
+      setChunkRequest({
+        url: `${url}`,
+        params: {
+          ..._.pickBy(_.omit(queryParams, ['page', 'perPage']), (val) => !!val)
+        },
+        handler: updateHandler
+      });
+    } catch (error) {
+      // ignore
+    }
+  };
+
+  onMounted(() => {
+    createWorkflowsChunkRequest();
+  });
   fetchData();
 </script>

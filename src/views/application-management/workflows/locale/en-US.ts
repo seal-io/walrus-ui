@@ -21,9 +21,20 @@ export default {
   'workflow.step.form.env': 'Deployment Environment',
   'workflow.stage.add.task': 'Add Task',
   'workflow.stage.add.taskName': 'Task Name',
+  'workflow.stage.add.approvalMode': 'Approval Mode',
+  'workflow.stage.add.approvalUser': 'Approval Users',
   'workflow.stage.add.paratask': 'Parallel Task',
   'workflow.stage.add.title': 'New Stage',
   'workflow.stage.add.button': 'Add New Stage',
   'workflow.stage.records': 'Records',
-  'workflow.stage.approve': 'Approval'
+  'workflow.stage.approve': 'Approval',
+  'workflow.task.rules.taskName': 'task name required',
+  'workflow.task.rules.approvalMode': 'please select approval mode',
+  'workflow.task.rules.approvalUser': 'please select approval users',
+  'workflow.task.form.manualapproval': 'Manual Approval',
+  'workflow.task.form.deployservice': 'Deploy Service',
+  'workflow.task.form.selectTask': 'Select Task Type',
+  'workflow.task.form.fillin': 'Fill in the Form',
+  'workflow.task.form.selectenv': 'Select Environment',
+  'workflow.task.form.deployEnv': 'Service Deployment Environment'
 };
