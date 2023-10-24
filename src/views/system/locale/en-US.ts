@@ -125,6 +125,7 @@ export default {
     'Monitor whether the remote configuration of the service has changed',
   'system.setting.templateLib': 'Template Catalog Settings',
   'system.setting.enableBuiltinCatalog': 'Use built-in template catalog',
+  'system.setting.SkipRemoteTLSVerify': 'Skip certificate authentication',
   'system.setting.enableSyncCatalog':
     'Whether to synchronize the template catalog data',
   'system.setting.enableSyncCatalog.desc':

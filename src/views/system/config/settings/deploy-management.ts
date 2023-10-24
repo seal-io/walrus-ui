@@ -135,6 +135,20 @@ export const deployManagement: SettingsItem = {
             extra: 'system.setting.offlineManage.noProxy.extra'
           },
           type: 'string'
+        },
+        {
+          id: 'SkipRemoteTLSVerify',
+          key: 'SkipRemoteTLSVerify',
+          label: 'system.setting.SkipRemoteTLSVerify',
+          parentId: '',
+          component: {
+            type: 'switch',
+            required: false,
+            match: '',
+            message: ''
+          },
+          value: '',
+          type: 'boolean'
         }
       ]
     }
