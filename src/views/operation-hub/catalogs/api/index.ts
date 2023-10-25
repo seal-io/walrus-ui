@@ -1,9 +1,18 @@
 import axios from 'axios';
 import qs from 'query-string';
 import { Pagination } from '@/types/global';
+import router from '@/router';
 import { CatalogRowData, CatalogFormData } from '../config/interface';
 
 export const CatalogAPI = '/catalogs';
+
+export const PROJECT_API_PREFIX = () => {
+  return `/projects/${router.currentRoute.value.params.projectId}`;
+};
+
+export const isProjectContext = () => {
+  return !!router.currentRoute.value.params.projectId;
+};
 
 export interface QueryType extends Pagination {
   extract?: string[];
@@ -25,7 +34,11 @@ export interface FormDataPR {
   content: string;
 }
 export function queryCatalogs(params: QueryType) {
-  return axios.get<ResultType>('/catalogs', {
+  let url = CatalogAPI;
+  if (isProjectContext()) {
+    url = `${PROJECT_API_PREFIX()}${CatalogAPI}`;
+  }
+  return axios.get<ResultType>(url, {
     params,
     paramsSerializer: (obj) => {
       return qs.stringify(obj);
@@ -33,7 +46,11 @@ export function queryCatalogs(params: QueryType) {
   });
 }
 export function queryItemCatalog(params: { id: string }) {
-  return axios.get(`/catalogs/${params.id}`, {
+  let url = `${CatalogAPI}/${params.id}`;
+  if (isProjectContext()) {
+    url = `${PROJECT_API_PREFIX()}${CatalogAPI}/${params.id}`;
+  }
+  return axios.get(url, {
     params,
     paramsSerializer: (obj) => {
       return qs.stringify(obj);
@@ -41,16 +58,32 @@ export function queryItemCatalog(params: { id: string }) {
   });
 }
 export function createCatalog(data: CatalogFormData) {
-  return axios.post('/catalogs', data);
+  let url = CatalogAPI;
+  if (isProjectContext()) {
+    url = `${PROJECT_API_PREFIX()}${CatalogAPI}`;
+  }
+  return axios.post(url, data);
 }
 export function deleteCatalogs(data: { items: Record<string, any>[] }) {
-  return axios.delete('/catalogs', { data });
+  let url = CatalogAPI;
+  if (isProjectContext()) {
+    url = `${PROJECT_API_PREFIX()}${CatalogAPI}`;
+  }
+  return axios.delete(url, { data });
 }
 export function updateCatalog(data: CatalogFormData) {
-  return axios.put(`/catalogs/${data.id}`, data);
+  let url = `${CatalogAPI}/${data.id}`;
+  if (isProjectContext()) {
+    url = `${PROJECT_API_PREFIX()}${CatalogAPI}/${data.id}`;
+  }
+  return axios.put(url, data);
 }
 export function refreshCatalog(data: { id: string }) {
-  return axios.post(`/catalogs/${data.id}/refresh`);
+  let url = `${CatalogAPI}/${data.id}`;
+  if (isProjectContext()) {
+    url = `${PROJECT_API_PREFIX()}${CatalogAPI}/${data.id}`;
+  }
+  return axios.post(`${url}/refresh`);
 }
 
 export default {};

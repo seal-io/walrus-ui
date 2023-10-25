@@ -38,6 +38,7 @@
         </template>
         <template #button-group>
           <a-button
+            v-if="scope === 'global'"
             v-permission="{
               resource: `roles.${Resources.TemplateCompletions}`,
               actions: [Actions.POST]
@@ -85,6 +86,7 @@
         >
           <a-tab-pane key="thumb">
             <ThumbView
+              :scope="scope"
               :list="dataList"
               :catalog-list="catalogList"
               :checked-list="selectedKeys"
@@ -102,6 +104,7 @@
               ref="listViewRef"
               v-model:sort="sort"
               v-model:selectedList="selectedKeys"
+              :scope="scope"
               :list="dataList"
               :catalog-list="catalogList"
               @sort="handleSort"
@@ -126,7 +129,7 @@
 </template>
 
 <script lang="ts" setup>
-  import { OPERATIONHUB } from '@/router/config';
+  import { OPERATIONHUB, PROJECT } from '@/router/config';
   import { Resources, Actions } from '@/permissions/config';
   import { useUserStore, useAppStore } from '@/store';
   import _, { map, pickBy, remove } from 'lodash';
@@ -141,9 +144,14 @@
   import ThumbView from './thumb-view.vue';
   import ListView from './list-view.vue';
   import { TemplateRowData } from '../config/interface';
-  import { queryTemplates, deleteTemplates, TemplateAPI } from '../api';
+  import {
+    queryTemplates,
+    deleteTemplates,
+    TEMPLATE_API,
+    PROJECT_API_PREFIX
+  } from '../api';
 
-  defineProps({
+  const props = defineProps({
     currentView: {
       type: String,
       default: 'thumb'
@@ -160,7 +168,7 @@
   const userStore = useUserStore();
   const { setChunkRequest } = useSetChunkRequest();
   const { setChunkRequest: setCatalogChunkRequest } = useSetChunkRequest();
-  const { router, t } = useCallCommon();
+  const { router, route, t } = useCallCommon();
   const loading = ref(false);
   const selectedKeys = ref<string[]>([]);
   const sort = ref<string[]>(['-createTime']);
@@ -216,6 +224,16 @@
   );
 
   const handleCreate = () => {
+    if (props.scope === 'project') {
+      router.push({
+        name: PROJECT.TemplateDetail,
+        params: {
+          projectId: route.params.projectId,
+          action: PageAction.EDIT
+        }
+      });
+      return;
+    }
     router.push({
       name: OPERATIONHUB.TemplateDetail,
       params: {
@@ -302,9 +320,13 @@
   };
 
   const createTemplateChunkRequest = () => {
+    let url = TEMPLATE_API;
+    if (props.scope === 'project') {
+      url = `${PROJECT_API_PREFIX()}${TEMPLATE_API}`;
+    }
     try {
       setChunkRequest({
-        url: TemplateAPI,
+        url,
         params: {
           ..._.pickBy(_.omit(query.value, ['page', 'perPage']), (val) => !!val)
         },
@@ -343,9 +365,13 @@
   };
 
   const createCatalogChunkRequest = () => {
+    let url = CatalogAPI;
+    if (props.scope === 'project') {
+      url = `${PROJECT_API_PREFIX()}${CatalogAPI}`;
+    }
     try {
       setCatalogChunkRequest({
-        url: CatalogAPI,
+        url,
         handler: updateCatalogHandler
       });
     } catch (error) {

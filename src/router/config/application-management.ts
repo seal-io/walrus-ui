@@ -12,7 +12,8 @@ export const Project = {
   ConnectorK8sDetail: 'ProjectConnectorK8sDetail',
   ConnectorScmDetail: 'ProjectConnectorScmDetail',
   ConnectorCustomDetail: 'ProjectConnectorCustomDetail',
-  ConnectorProviderDetail: 'ProjectConnectorProviderDetail'
+  ConnectorProviderDetail: 'ProjectConnectorProviderDetail',
+  TemplateDetail: 'ProjectTemplateDetail'
 };
 
 export default Project;

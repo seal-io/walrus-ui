@@ -3,9 +3,11 @@ import { PROJECT } from '@/router/config';
 import { permissionKey } from '@/store/modules/user/types';
 import { PageAction } from '@/views/config';
 import connectorRoutes from './connectors';
+import templateRoutes from '../../templates/routes';
 
 export default [
   ...connectorRoutes,
+  ...templateRoutes,
   {
     path: 'project/list',
     name: PROJECT.List,
@@ -49,7 +51,8 @@ export default [
         PROJECT.ConnectorCustomDetail,
         PROJECT.EnvDetail,
         PROJECT.EnvEdit,
-        PROJECT.EnvClone
+        PROJECT.EnvClone,
+        PROJECT.TemplateDetail
       ],
       icon: 'icon-apps'
     }

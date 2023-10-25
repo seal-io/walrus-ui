@@ -1,16 +1,25 @@
 import axios from 'axios';
 import qs from 'query-string';
 import { Pagination } from '@/types/global';
+import router from '@/router';
 import { TemplateRowData, TemplateFormData } from '../config/interface';
 
 export const TEMPLATE_API = '/templates';
+
+export const PROJECT_API_PREFIX = () => {
+  return `/projects/${router.currentRoute.value.params.projectId}`;
+};
+
+export const isProjectContext = () => {
+  return !!router.currentRoute.value.params.projectId;
+};
 
 export interface QueryType extends Pagination {
   extract?: string[];
   sort?: string[];
   _group?: string[];
 }
-export const TemplateAPI = '/templates';
+
 export interface ResultType {
   filters: unknown;
   items: TemplateRowData[];
@@ -24,8 +33,15 @@ export interface FormDataPR {
   path: string;
   content: string;
 }
-export function queryTemplates(params: QueryType, token?: any) {
-  return axios.get<ResultType>('/templates', {
+export function queryTemplates(
+  params: QueryType & { withGlobal?: boolean },
+  token?: any
+) {
+  let url = TEMPLATE_API;
+  if (isProjectContext() && !params.withGlobal) {
+    url = `${PROJECT_API_PREFIX()}${TEMPLATE_API}`;
+  }
+  return axios.get<ResultType>(url, {
     params,
     cancelToken: token,
     paramsSerializer: (obj) => {
@@ -34,22 +50,48 @@ export function queryTemplates(params: QueryType, token?: any) {
   });
 }
 export function queryItemTemplate(params: { id: string }) {
-  return axios.get(`/templates/${params.id}`);
+  let url = `${TEMPLATE_API}/${params.id}`;
+  if (isProjectContext()) {
+    url = `${PROJECT_API_PREFIX()}${TEMPLATE_API}/${params.id}`;
+  }
+  return axios.get(url);
 }
 export function createTemplate(data: TemplateFormData) {
-  return axios.post('/templates', data);
+  let url = TEMPLATE_API;
+  if (isProjectContext()) {
+    url = `${PROJECT_API_PREFIX()}${TEMPLATE_API}`;
+  }
+  return axios.post(url, data);
 }
 export function deleteTemplates(data: { items: { id: string }[] }) {
-  return axios.delete('/templates', { data });
+  let url = TEMPLATE_API;
+  if (isProjectContext()) {
+    url = `${PROJECT_API_PREFIX()}${TEMPLATE_API}`;
+  }
+  return axios.delete(url, { data });
 }
 export function updateTemplate(data: TemplateFormData) {
-  return axios.put(`/templates/${data.id}`, data);
+  let url = `${TEMPLATE_API}/${data.id}`;
+  if (isProjectContext()) {
+    url = `${PROJECT_API_PREFIX()}${TEMPLATE_API}/${data.id}`;
+  }
+  return axios.put(url, data);
 }
 export function refreshTemplate(data: { id: string }) {
-  return axios.post(`/templates/${data.id}/refresh`);
+  let url = `${TEMPLATE_API}/${data.id}`;
+  if (isProjectContext()) {
+    url = `${PROJECT_API_PREFIX()}${TEMPLATE_API}/${data.id}`;
+  }
+  return axios.post(`${url}/refresh`);
 }
 export function queryTemplatesVersions(params: { templateID: string }) {
-  return axios.get(`/templates/${params.templateID}/versions`);
+  let url = `${TEMPLATE_API}/${params.templateID}/versions`;
+  if (isProjectContext()) {
+    url = `${PROJECT_API_PREFIX()}${TEMPLATE_API}/${
+      params.templateID
+    }/versions`;
+  }
+  return axios.get(url);
 }
 
 export function queryItemTemplatesVersions(

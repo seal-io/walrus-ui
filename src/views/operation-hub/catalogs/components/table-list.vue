@@ -104,10 +104,15 @@
   import { useUpdateChunkedList } from '@/views/commons/hooks/use-update-chunked-list';
   import ListView from './list-view.vue';
   import { CatalogRowData } from '../config/interface';
-  import { queryCatalogs, deleteCatalogs, CatalogAPI } from '../api';
+  import {
+    queryCatalogs,
+    deleteCatalogs,
+    CatalogAPI,
+    PROJECT_API_PREFIX
+  } from '../api';
   import addCatalog from './add-catalog.vue';
 
-  defineProps({
+  const props = defineProps({
     currentView: {
       type: String,
       default: 'list'
@@ -243,9 +248,13 @@
     });
   };
   const createCatalogChunkRequest = () => {
+    let url = CatalogAPI;
+    if (props.scope === 'project') {
+      url = `${PROJECT_API_PREFIX()}${CatalogAPI}`;
+    }
     try {
       setChunkRequest({
-        url: CatalogAPI,
+        url,
         params: {
           ..._.pickBy(queryParams, (val) => !!val)
         },
