@@ -104,7 +104,7 @@
               :style="{ width: `${InputWidth.LARGE}px` }"
             ></seal-select>
             <span v-else class="readonly-view-label">{{
-              formData.applicableEnvironmentType || '-'
+              $t(EnvironmentTypeMap[formData.applicableEnvironmentType] || '')
             }}</span>
           </a-form-item>
           <a-form-item
@@ -270,7 +270,8 @@
   import {
     PageAction,
     validateLabelNameRegx,
-    InputWidth
+    InputWidth,
+    EnvironmentTypeMap
   } from '@/views/config';
   import { OPERATIONHUB } from '@/router/config';
   import { Resources, Actions } from '@/permissions/config';
@@ -342,7 +343,7 @@
   const EnvironmentTypeList = computed(() => {
     return _.map(userStore.applicableEnvironmentTypes, (item) => {
       return {
-        label: item,
+        label: t(EnvironmentTypeMap[item] || ''),
         value: item
       };
     });

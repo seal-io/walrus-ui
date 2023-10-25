@@ -166,9 +166,9 @@ export const QAlinkMap = {
 export const USER_DEFAULT_PROJECT = 'USER_DEFAULT_PROJECT';
 
 export const EnvironmentTypeMap = {
-  DEVELOPMENT: 'development',
-  PRODUCTION: 'production',
-  STAGING: 'staging'
+  development: 'common.environment.development',
+  production: 'common.environment.production',
+  staging: 'common.environment.staging'
 };
 
 export default {};

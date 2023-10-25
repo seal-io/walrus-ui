@@ -108,6 +108,9 @@
             data-index="type"
             :title="$t('applications.environment.type')"
           >
+            <template #cell="{ record }">
+              <span>{{ $t(EnvironmentTypeMap[record.type] || '') }}</span>
+            </template>
           </a-table-column>
           <a-table-column
             ellipsis
@@ -223,7 +226,7 @@
 <script lang="ts" setup>
   import dayjs from 'dayjs';
   import _, { map, pickBy } from 'lodash';
-  import { PageAction } from '@/views/config';
+  import { PageAction, EnvironmentTypeMap } from '@/views/config';
   import { PROJECT } from '@/router/config';
   import { useUserStore, useAppStore } from '@/store';
   import { Resources, Actions } from '@/permissions/config';

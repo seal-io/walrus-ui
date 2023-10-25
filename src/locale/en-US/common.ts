@@ -115,5 +115,8 @@ export default {
   'common.filter.attrs': 'Attributes',
   'common.filter.filled.holder': 'Fill in',
   'common.filter.filled.true': 'Filled',
-  'common.filter.filled.false': 'Not Filled'
+  'common.filter.filled.false': 'Not Filled',
+  'common.environment.development': 'Development',
+  'common.environment.production': 'Production',
+  'common.environment.staging': 'Staging'
 };
