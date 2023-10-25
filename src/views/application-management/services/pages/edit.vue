@@ -72,11 +72,20 @@
               :placeholder="$t('applications.applications.table.module')"
               :required="true"
               :virtual-list-props="virtualListProps"
-              :options="templateList"
               :style="{ width: `${InputWidth.LARGE}px` }"
+              :options="templateList"
               allow-search
               @change="handleTemplateChange"
             >
+              <template #option="{ data }">
+                <span>{{ data.label }}</span>
+                <span
+                  v-if="!data.project?.id"
+                  style="color: var(--color-text-3)"
+                  class="font-12"
+                  >{{ `(${$t('applications.variable.scope.global')})` }}</span
+                >
+              </template>
             </seal-select>
           </div>
         </a-form-item>

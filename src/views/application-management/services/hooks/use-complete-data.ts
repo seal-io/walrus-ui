@@ -70,8 +70,12 @@ export default function useCompleteData() {
     templateVersionToken?.cancel?.();
     templateVersionToken = createAxiosToken();
     try {
+      const isProjectTemplate = _.find(templateList.value, (item) => {
+        return item.name === templateName && item.project?.id;
+      });
       const params = {
-        templateName
+        templateName,
+        isProjectTemplate: !!isProjectTemplate
       };
       const { data } = await queryItemTemplatesVersions(
         params,

@@ -38,7 +38,7 @@ export function queryTemplates(
   token?: any
 ) {
   let url = TEMPLATE_API;
-  if (isProjectContext() && !params.withGlobal) {
+  if (isProjectContext()) {
     url = `${PROJECT_API_PREFIX()}${TEMPLATE_API}`;
   }
   return axios.get<ResultType>(url, {
@@ -95,10 +95,16 @@ export function queryTemplatesVersions(params: { templateID: string }) {
 }
 
 export function queryItemTemplatesVersions(
-  params: { templateName: string },
+  params: { templateName: string; isProjectTemplate?: boolean },
   token?: any
 ) {
-  return axios.get(`/templates/${params.templateName}/versions`, {
+  let url = `${TEMPLATE_API}/${params.templateName}/versions`;
+  if (params.isProjectTemplate) {
+    url = `${PROJECT_API_PREFIX()}${TEMPLATE_API}/${
+      params.templateName
+    }/versions`;
+  }
+  return axios.get(url, {
     cancelToken: token
   });
 }

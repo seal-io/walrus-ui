@@ -24,6 +24,7 @@ export interface TemplateRowData {
   source: string;
   schema: Schema;
   name: string;
+  project?: { id: string };
   templateName: string;
   description: string;
   status: string;
