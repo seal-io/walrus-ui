@@ -36,8 +36,8 @@
       @focus="handleFocus"
       @input-value-change="handleInputValueChange"
     >
-      <template v-for="slot in Object.keys(slots)" #[slot] :key="slot">
-        <slot :name="slot"></slot>
+      <template v-for="slot in Object.keys(slots)" #[slot]="data" :key="slot">
+        <slot :name="slot" v-bind="{ ...data }"></slot>
       </template>
       <template #empty>
         <a-empty
