@@ -35,6 +35,7 @@
           (route.params.projectId
             ? userStore.hasProjectResourceActions({
                 resource: Resources.Connectors,
+                connectorID: id,
                 projectID: route.params.projectId,
                 actions: [Actions.PUT]
               })

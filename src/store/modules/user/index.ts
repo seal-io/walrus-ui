@@ -121,15 +121,26 @@ const useUserStore = defineStore('user', {
       const readOnlyEnvironments = _.get(
         this.permissions,
         `${this.permissionsKey.projectRoles}.${projectID}.readOnlyEnvironments`
-      ) as { environment: string; name: string }[];
+      ) as { id: string; name: string }[];
       return _.find(readOnlyEnvironments, {
-        environment: environmentID
+        id: environmentID
+      });
+    },
+    isReadOnlyConnector(projectID, connectorID) {
+      if (!projectID || !connectorID) return false;
+      const readOnlyConnectors = _.get(
+        this.permissions,
+        `${this.permissionsKey.projectRoles}.${projectID}.readOnlyConnectors`
+      ) as { id: string; name: string }[];
+      return _.find(readOnlyConnectors, {
+        id: connectorID
       });
     },
 
     hasProjectResourceActions({
       projectID,
       environmentID = '',
+      connectorID = '',
       resource,
       actions
     }) {
@@ -137,10 +148,15 @@ const useUserStore = defineStore('user', {
         return true;
       }
 
+      // read only environment
       if (
         environmentID &&
         this.isReadOnlyEnvironment(projectID, environmentID)
       ) {
+        return !this.hasUpdateAction(actions);
+      }
+      // read only connector
+      if (connectorID && this.isReadOnlyConnector(projectID, connectorID)) {
         return !this.hasUpdateAction(actions);
       }
 
