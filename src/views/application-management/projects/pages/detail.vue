@@ -72,12 +72,26 @@
             <ConnectorList scope="project"></ConnectorList>
           </a-tab-pane>
           <a-tab-pane
+            v-if="
+              userStore.hasProjectResourceActions({
+                resource: Resources.Templates,
+                projectID: route.params.projectId,
+                actions: [Actions.GET]
+              })
+            "
             :key="ProjectTabs.TEMPLATES"
             :title="$t('menu.operatorHub.module')"
           >
             <TemplateList :current-view="dataView.templates"></TemplateList>
           </a-tab-pane>
           <a-tab-pane
+            v-if="
+              userStore.hasProjectResourceActions({
+                resource: Resources.Catalogs,
+                projectID: route.params.projectId,
+                actions: [Actions.GET]
+              })
+            "
             :key="ProjectTabs.CATALOGS"
             :title="$t('menu.operatorHub.catalog')"
           >

@@ -150,6 +150,7 @@ export default {
   'applications.environment.graph.cancelfullscreen': '退出全屏',
   'applications.environment.graph.show': '显示子资源',
   'applications.environment.graph.hide': '隐藏子资源',
+  'applications.environment.connector.tips': '请先选择环境类型',
   'applications.variable.scope.project': '项目',
   'applications.variable.scope.envrionment': '环境',
   'applications.variable.scope.global': '全局',
