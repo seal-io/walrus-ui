@@ -71,18 +71,18 @@
           >
             <ConnectorList scope="project"></ConnectorList>
           </a-tab-pane>
-          <!-- <a-tab-pane
+          <a-tab-pane
             :key="ProjectTabs.TEMPLATES"
             :title="$t('menu.operatorHub.module')"
           >
             <TemplateList :current-view="dataView.templates"></TemplateList>
-          </a-tab-pane> -->
-          <!-- <a-tab-pane
+          </a-tab-pane>
+          <a-tab-pane
             :key="ProjectTabs.CATALOGS"
             :title="$t('menu.operatorHub.catalog')"
           >
             <CatalogList></CatalogList>
-          </a-tab-pane> -->
+          </a-tab-pane>
           <a-tab-pane
             v-if="
               userStore.hasProjectResourceActions({

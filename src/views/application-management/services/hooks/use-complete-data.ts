@@ -40,6 +40,7 @@ export default function useCompleteData() {
     try {
       const params = {
         page: -1,
+        withGlobal: true,
         extract: ['-status']
       };
       const { data } = await queryTemplates(params, templateToken.token);

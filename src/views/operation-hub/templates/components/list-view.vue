@@ -119,7 +119,7 @@
 </template>
 
 <script lang="ts" setup>
-  import { OPERATIONHUB } from '@/router/config';
+  import { OPERATIONHUB, PROJECT } from '@/router/config';
   import { Resources, Actions } from '@/permissions/config';
   import { PageAction } from '@/views/config';
   import { useUserStore } from '@/store';
@@ -152,13 +152,19 @@
       default() {
         return [];
       }
+    },
+    scope: {
+      type: String as PropType<'project' | 'global'>,
+      default() {
+        return 'global';
+      }
     }
   });
   type BaseType = string | number;
   const userStore = useUserStore();
   const emits = defineEmits(['update:selectedList', 'update:sort', 'sort']);
   const { rowSelection, selectedKeys } = useRowSelect();
-  const { router } = useCallCommon();
+  const { router, route } = useCallCommon();
   const { sort, sortOrder, setSortDirection } = UseSortDirection({
     defaultSortField: '-createTime',
     defaultOrder: 'descend'
@@ -257,9 +263,18 @@
   };
 
   const handleEdit = (row) => {
+    let routeName = OPERATIONHUB.TemplateDetail;
+    let params: any = { action: PageAction.EDIT };
+    if (props.scope === 'project') {
+      routeName = PROJECT.TemplateDetail;
+      params = {
+        action: PageAction.EDIT,
+        projectId: route.params.projectId as string
+      };
+    }
     router.push({
-      name: OPERATIONHUB.TemplateDetail,
-      params: { action: PageAction.EDIT },
+      name: routeName,
+      params,
       query: {
         id: row.id,
         catalog: getCatalogName(row.catalog?.id)
@@ -268,9 +283,18 @@
   };
 
   const handleView = (row) => {
+    let routeName = OPERATIONHUB.TemplateDetail;
+    let params: any = { action: PageAction.VIEW };
+    if (props.scope === 'project') {
+      routeName = PROJECT.TemplateDetail;
+      params = {
+        action: PageAction.VIEW,
+        projectId: route.params.projectId as string
+      };
+    }
     router.push({
-      name: OPERATIONHUB.TemplateDetail,
-      params: { action: PageAction.VIEW },
+      name: routeName,
+      params,
       query: {
         id: row.id,
         catalog: getCatalogName(row.catalog?.id)
