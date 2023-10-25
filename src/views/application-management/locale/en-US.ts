@@ -156,6 +156,8 @@ export default {
   'applications.environment.graph.fullscreen': 'full screen',
   'applications.environment.graph.show': 'show subresources',
   'applications.environment.graph.hide': 'hide subresources',
+  'applications.environment.connector.tips':
+    'Please select an environment type',
   'applications.variable.scope.project': 'Project',
   'applications.variable.scope.envrionment': 'Environment',
   'applications.variable.scope.global': 'Global',

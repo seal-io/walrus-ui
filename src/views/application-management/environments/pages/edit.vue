@@ -170,7 +170,17 @@
           :bordered="false"
           :title="$t('operation.connectors.table.connector')"
           flex-start
-        ></GroupTitle>
+        >
+          <template #title>
+            <span class="flex flex-align-center">
+              {{ $t('operation.connectors.table.connector') }}
+              <a-tooltip
+                :content="$t('applications.environment.connector.tips')"
+              >
+                <icon-info-circle class="m-l-2" /> </a-tooltip
+            ></span>
+          </template>
+        </GroupTitle>
         <a-form-item
           :label="$t('operation.connectors.menu')"
           field="connectorIDs"
@@ -182,14 +192,15 @@
               <a-button
                 v-if="pageAction === PageAction.EDIT"
                 type="primary"
+                :disabled="!formData.type"
                 style="margin-right: 8px; padding: 0 6px"
                 @click.stop="handleAddConnector"
               >
                 <template #icon>
                   <icon-plus />
                 </template>
-                {{ $t('operation.environments.detail.addConnector') }}</a-button
-              >
+                {{ $t('operation.environments.detail.addConnector') }}
+              </a-button>
               <ConnectorSelector
                 v-if="showModal"
                 v-model:show="showModal"
