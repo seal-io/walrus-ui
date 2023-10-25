@@ -244,7 +244,19 @@
           :cell-style="{ minWidth: '40px' }"
         >
           <template #cell="{ record }">
-            <a-space :size="16">
+            <a-space
+              v-if="
+                scope === 'project'
+                  ? userStore.hasProjectResourceActions({
+                      projectID: route.params.projectId,
+                      connectorID: record.id,
+                      resource: Resources.Connectors,
+                      actions: [Actions.DELETE]
+                    })
+                  : true
+              "
+              :size="16"
+            >
               <a-dropdown-button
                 v-if="record.category === ConnectorCategory.Kubernetes"
                 size="small"
@@ -431,6 +443,20 @@
           : !item.project;
       }
       return get(item, 'project.id') === route.params?.projectId;
+    },
+    mapFun(item) {
+      if (props.scope === 'project') {
+        return {
+          ...item,
+          disabled: !userStore.hasProjectResourceActions({
+            projectID: route.params.projectId,
+            connectorID: item.id,
+            resource: Resources.Connectors,
+            actions: [Actions.DELETE]
+          })
+        };
+      }
+      return item;
     }
   });
   const rowSelectionState = computed(() => {
@@ -468,7 +494,20 @@
         sort: [sort.value]
       };
       const { data } = await queryConnectors(params, axiosToken?.token);
-      dataList.value = data?.items || [];
+      dataList.value = _.map(data?.items || [], (item) => {
+        return {
+          ...item,
+          disabled:
+            props.scope === 'project'
+              ? !userStore.hasProjectResourceActions({
+                  projectID: route.params.projectId,
+                  connectorID: item.id,
+                  resource: Resources.Connectors,
+                  actions: [Actions.DELETE]
+                })
+              : false
+        };
+      });
       total.value = data?.pagination?.total || 0;
       loading.value = false;
     } catch (error) {

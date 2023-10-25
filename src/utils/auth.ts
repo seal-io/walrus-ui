@@ -71,6 +71,16 @@ const getResourcePolicies = (role: RolesItem) => {
           ? Object.values(Resources)
           : _.get(item, 'resources') || [];
 
+      const paths = _.get(item, 'paths') || [];
+      const pathsPolicy = _.reduce(
+        paths,
+        (pathPolicyMap, path) => {
+          pathPolicyMap[path] = [...(item.actions || [])];
+          return pathPolicyMap;
+        },
+        {}
+      );
+
       const resourcePolicy = _.reduce(
         resources,
         (resourceActionsMap, resourceName) => {
@@ -81,7 +91,8 @@ const getResourcePolicies = (role: RolesItem) => {
       );
       rolePolicyMap = {
         ...rolePolicyMap,
-        ...resourcePolicy
+        ...resourcePolicy,
+        ...pathsPolicy
       };
       return rolePolicyMap;
     },
@@ -126,6 +137,7 @@ const getProjectRolesPolicies = (projectRoles: ProjectRolesItem[]) => {
         projectName: _.get(project, 'project.name'),
         readOnlyEnvironments:
           _.get(project, 'project.readOnlyEnvironments') || [],
+        readOnlyConnectors: _.get(project, 'project.readOnlyConnectors') || [],
         policies: {
           ..._.omit(getRolesPolicies(project.roles), ROLES)
         },
