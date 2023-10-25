@@ -187,6 +187,11 @@
           data-index="applicableEnvironmentType"
           :title="$t('operation.connectors.table.environmentType')"
         >
+          <template #cell="{ record }">
+            <span>{{
+              $t(EnvironmentTypeMap[record.applicableEnvironmentType] || '')
+            }}</span>
+          </template>
         </a-table-column>
         <a-table-column
           ellipsis
@@ -351,6 +356,7 @@
 
 <script lang="ts" setup>
   import { Resources, Actions } from '@/permissions/config';
+  import { EnvironmentTypeMap } from '@/views/config';
   import { useUserStore, useAppStore } from '@/store';
   import { useSetChunkRequest } from '@/api/axios-chunk-request';
   import { useUpdateChunkedList } from '@/views/commons/hooks/use-update-chunked-list';

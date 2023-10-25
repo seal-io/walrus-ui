@@ -90,7 +90,7 @@
             @change="handleEnvironmentTypeChange"
           ></seal-select>
           <span v-else class="readonly-view-label">{{
-            formData.type || '-'
+            $t(EnvironmentTypeMap[formData.type] || '')
           }}</span>
         </a-form-item>
         <a-form-item
@@ -269,7 +269,8 @@
   import {
     PageAction,
     validateLabelNameRegx,
-    InputWidth
+    InputWidth,
+    EnvironmentTypeMap
   } from '@/views/config';
   import { ref, computed, nextTick } from 'vue';
   import _, {
@@ -353,7 +354,7 @@
   const EnvironmentTypeList = computed(() => {
     return _.map(userStore.applicableEnvironmentTypes, (item) => {
       return {
-        label: item,
+        label: t(EnvironmentTypeMap[item] || ''),
         value: item
       };
     });

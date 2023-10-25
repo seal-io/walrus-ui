@@ -37,7 +37,7 @@ export interface RolePolicy {
 }
 
 export interface UserState {
-  applicableEnvironmentTypes: { environment: string; name: string }[];
+  applicableEnvironmentTypes: string[];
   name?: string;
   avatar?: string;
   job?: string;

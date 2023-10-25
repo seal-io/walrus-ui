@@ -112,5 +112,8 @@ export default {
   'common.filter.attrs': '属性名',
   'common.filter.filled.holder': '是否填写',
   'common.filter.filled.true': '已填写',
-  'common.filter.filled.false': '未填写'
+  'common.filter.filled.false': '未填写',
+  'common.environment.development': '开发',
+  'common.environment.production': '生产',
+  'common.environment.staging': '预发布'
 };
