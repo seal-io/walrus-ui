@@ -57,7 +57,12 @@ export default function useServiceData(props?) {
     description: '',
     labels: {},
     name: '',
-    template: { name: '', version: '', id: '' },
+    template: {
+      name: '',
+      version: '',
+      id: '',
+      project: { id: route.params.projectId }
+    },
     attributes: {}
   });
 
@@ -244,6 +249,7 @@ export default function useServiceData(props?) {
 
       const moduleTemplate = getTemplateSchemaByName();
       formData.template.version = _.get(moduleTemplate, 'version') || '';
+      formData.template.id = _.get(moduleTemplate, 'id') || '';
       templateInfo.value = _.cloneDeep(_.get(moduleTemplate, 'schema')) || {};
     }
     generateVariablesGroup(pageAction.value);
