@@ -57,6 +57,18 @@ export const projectDetailTabs = [
     value: ProjectTabs.MEMBER,
     resource: Resources.ProjectSubjects,
     component: 'members'
+  },
+  {
+    label: 'menu.applicationManagement.templates',
+    value: ProjectTabs.TEMPLATES,
+    resource: Resources.Templates,
+    component: 'templates'
+  },
+  {
+    label: 'menu.applicationManagement.catalogs',
+    value: ProjectTabs.CATALOGS,
+    resource: Resources.Catalogs,
+    component: 'catalogs'
   }
 ];
 export default {};
