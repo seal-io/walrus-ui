@@ -613,6 +613,10 @@
             {}
           )
         };
+        formData.template = {
+          ...formData.template,
+          project: formData.project
+        };
         copyFormData = _.cloneDeep(formData);
         if (id) {
           await upgradeApplicationInstance(formData);
