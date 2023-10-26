@@ -7,14 +7,7 @@
       :data="list"
       :pagination="false"
       row-key="id"
-      :row-selection="
-        userStore.hasRolesActionsPermission({
-          resource: Resources.Catalogs,
-          actions: [Actions.DELETE]
-        })
-          ? rowSelection
-          : null
-      "
+      :row-selection="rowSelectionRef"
       @sorter-change="handleSortChange"
       @selection-change="handleSelectChange"
     >
@@ -108,10 +101,16 @@
         </a-table-column>
         <a-table-column
           v-if="
-            userStore.hasRolesActionsPermission({
-              resource: Resources.Catalogs,
-              actions: [Actions.PUT]
-            })
+            route.params.projectId
+              ? userStore.hasProjectResourceActions({
+                  resource: Resources.Catalogs,
+                  projectID: route.params.projectId,
+                  actions: [Actions.PUT]
+                })
+              : userStore.hasRolesActionsPermission({
+                  resource: Resources.Catalogs,
+                  actions: [Actions.PUT]
+                })
           "
           align="center"
           :width="210"
@@ -144,7 +143,7 @@
   import { map, get } from 'lodash';
   import dayjs from 'dayjs';
   import { useUserStore } from '@/store';
-  import { reactive, ref, onMounted, PropType } from 'vue';
+  import { reactive, ref, onMounted, PropType, computed } from 'vue';
   import useCallCommon from '@/hooks/use-call-common';
   import { deleteModal, execSucceed } from '@/utils/monitor';
   import useRowSelect from '@/hooks/use-row-select';
@@ -178,7 +177,7 @@
   ]);
   const userStore = useUserStore();
   const { rowSelection, selectedKeys } = useRowSelect();
-  const { router } = useCallCommon();
+  const { router, route } = useCallCommon();
   const { sort, sortOrder, setSortDirection } = UseSortDirection({
     defaultSortField: '-createTime',
     defaultOrder: 'descend'
@@ -193,6 +192,24 @@
     perPage: 10
   });
   const dataList = ref<CatalogRowData[]>([]);
+
+  const rowSelectionRef = computed(() => {
+    if (route.params.projectId) {
+      return userStore.hasProjectResourceActions({
+        resource: Resources.Catalogs,
+        projectID: route.params.projectId,
+        actions: [Actions.DELETE]
+      })
+        ? rowSelection
+        : null;
+    }
+    return userStore.hasRolesActionsPermission({
+      resource: Resources.Catalogs,
+      actions: [Actions.DELETE]
+    })
+      ? rowSelection
+      : null;
+  });
 
   const fetchData = async () => {
     try {

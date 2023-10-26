@@ -65,6 +65,7 @@
   });
   const emits = defineEmits(['create', 'change']);
   const { router, route } = useCallCommon();
+  const projectId = route.params.projectId as string;
   const handleCreate = () => {
     emits('create');
   };
@@ -74,7 +75,7 @@
   };
   const setModuleActions = (info) => {
     const result = filter(actionList, (item) => {
-      return item.filterFunc ? item.filterFunc(info) : true;
+      return item.filterFunc ? item.filterFunc(info, projectId) : true;
     });
     return result as MoreAction[];
   };

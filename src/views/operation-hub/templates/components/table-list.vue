@@ -52,20 +52,36 @@
             <span>{{ $t('operation.templates.button.gpt') }}</span>
           </a-button>
           <a-button
-            v-permission="{
-              resource: `roles.${Resources.Templates}`,
-              actions: [Actions.POST]
-            }"
+            v-if="
+              route.params.projectId
+                ? userStore.hasProjectResourceActions({
+                    resource: Resources.Templates,
+                    projectID: route.params.projectId,
+                    actions: [Actions.POST]
+                  })
+                : userStore.hasRolesActionsPermission({
+                    resource: Resources.Templates,
+                    actions: [Actions.POST]
+                  })
+            "
             type="primary"
             @click="handleCreate"
             >{{ $t('operation.templates.detail.add') }}</a-button
           >
 
           <a-button
-            v-permission="{
-              resource: `roles.${Resources.Templates}`,
-              actions: [Actions.DELETE]
-            }"
+            v-if="
+              route.params.projectId
+                ? userStore.hasProjectResourceActions({
+                    resource: Resources.Templates,
+                    projectID: route.params.projectId,
+                    actions: [Actions.DELETE]
+                  })
+                : userStore.hasRolesActionsPermission({
+                    resource: Resources.Templates,
+                    actions: [Actions.DELETE]
+                  })
+            "
             type="primary"
             status="warning"
             :disabled="!selectedKeys.length"
@@ -91,10 +107,16 @@
               :catalog-list="catalogList"
               :checked-list="selectedKeys"
               :show-checkbox="
-                userStore.hasRolesActionsPermission({
-                  resource: Resources.Templates,
-                  actions: [Actions.DELETE]
-                })
+                route.params.projectId
+                  ? userStore.hasProjectResourceActions({
+                      resource: Resources.Templates,
+                      projectID: route.params.projectId,
+                      actions: [Actions.DELETE]
+                    })
+                  : userStore.hasRolesActionsPermission({
+                      resource: Resources.Templates,
+                      actions: [Actions.DELETE]
+                    })
               "
               @change="handleCheckChange"
             ></ThumbView>

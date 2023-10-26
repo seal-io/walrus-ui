@@ -7,14 +7,7 @@
       :data="list"
       :pagination="false"
       row-key="id"
-      :row-selection="
-        userStore.hasRolesActionsPermission({
-          resource: Resources.Templates,
-          actions: [Actions.DELETE]
-        })
-          ? rowSelection
-          : null
-      "
+      :row-selection="rowSelectionRef"
       @sorter-change="handleSortChange"
       @selection-change="handleSelectChange"
     >
@@ -84,10 +77,16 @@
         </a-table-column>
         <a-table-column
           v-if="
-            userStore.hasRolesActionsPermission({
-              resource: Resources.Templates,
-              actions: [Actions.PUT]
-            })
+            route.params.projectId
+              ? userStore.hasProjectResourceActions({
+                  resource: Resources.Templates,
+                  projectID: route.params.projectId,
+                  actions: [Actions.PUT]
+                })
+              : userStore.hasRolesActionsPermission({
+                  resource: Resources.Templates,
+                  actions: [Actions.PUT]
+                })
           "
           align="center"
           :width="210"
@@ -125,7 +124,7 @@
   import { useUserStore } from '@/store';
   import _, { map, get } from 'lodash';
   import dayjs from 'dayjs';
-  import { reactive, ref, onMounted, PropType } from 'vue';
+  import { reactive, ref, onMounted, PropType, computed } from 'vue';
   import useCallCommon from '@/hooks/use-call-common';
   import { deleteModal, execSucceed } from '@/utils/monitor';
   import useRowSelect from '@/hooks/use-row-select';
@@ -180,6 +179,23 @@
   });
   const dataList = ref<TemplateRowData[]>([]);
 
+  const rowSelectionRef = computed(() => {
+    if (route.params.projectId) {
+      return userStore.hasProjectResourceActions({
+        resource: Resources.Templates,
+        projectID: route.params.projectId,
+        actions: [Actions.DELETE]
+      })
+        ? rowSelection
+        : null;
+    }
+    return userStore.hasRolesActionsPermission({
+      resource: Resources.Templates,
+      actions: [Actions.DELETE]
+    })
+      ? rowSelection
+      : null;
+  });
   const fetchData = async () => {
     try {
       loading.value = true;

@@ -27,12 +27,18 @@ export const actionList = [
     value: 'edit',
     icon: 'icon-edit',
     status: 'normal',
-    filterFunc(itemInfo) {
+    filterFunc(itemInfo, projectID) {
       if (_.get(itemInfo, 'catalog.id')) return false;
-      return userStore.hasRolesActionsPermission({
-        resource: Resources.Templates,
-        actions: [Actions.PUT]
-      });
+      return projectID
+        ? userStore.hasProjectResourceActions({
+            resource: Resources.Templates,
+            projectID,
+            actions: [Actions.PUT]
+          })
+        : userStore.hasRolesActionsPermission({
+            resource: Resources.Templates,
+            actions: [Actions.PUT]
+          });
     },
     permission: ['PUT']
   },
@@ -42,11 +48,17 @@ export const actionList = [
     icon: 'icon-refresh',
     status: 'normal',
     requiredAuth: true,
-    filterFunc(itemInfo) {
-      return userStore.hasRolesActionsPermission({
-        resource: Resources.Templates,
-        actions: [Actions.PUT]
-      });
+    filterFunc(itemInfo, projectID) {
+      return projectID
+        ? userStore.hasProjectResourceActions({
+            resource: Resources.Templates,
+            projectID,
+            actions: [Actions.PUT]
+          })
+        : userStore.hasRolesActionsPermission({
+            resource: Resources.Templates,
+            actions: [Actions.PUT]
+          });
     },
     permission: ['PUT']
   }
