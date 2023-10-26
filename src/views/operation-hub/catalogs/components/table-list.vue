@@ -26,20 +26,36 @@
         </template>
         <template #button-group>
           <a-button
-            v-permission="{
-              resource: `roles.${Resources.Catalogs}`,
-              actions: ['POST']
-            }"
+            v-if="
+              route.params.projectId
+                ? userStore.hasProjectResourceActions({
+                    resource: Resources.Catalogs,
+                    projectID: route.params.projectId,
+                    actions: [Actions.POST]
+                  })
+                : userStore.hasRolesActionsPermission({
+                    resource: Resources.Catalogs,
+                    actions: [Actions.POST]
+                  })
+            "
             type="primary"
             @click="handleCreate"
             >{{ $t('catalogs.list.button.add') }}</a-button
           >
 
           <a-button
-            v-permission="{
-              resource: `roles.${Resources.Catalogs}`,
-              actions: ['DELETE']
-            }"
+            v-if="
+              route.params.projectId
+                ? userStore.hasProjectResourceActions({
+                    resource: Resources.Catalogs,
+                    projectID: route.params.projectId,
+                    actions: [Actions.DELETE]
+                  })
+                : userStore.hasRolesActionsPermission({
+                    resource: Resources.Catalogs,
+                    actions: [Actions.DELETE]
+                  })
+            "
             type="primary"
             status="warning"
             :disabled="!selectedKeys.length"
@@ -92,7 +108,7 @@
 
 <script lang="ts" setup>
   import { OPERATIONHUB } from '@/router/config';
-  import { Resources } from '@/permissions/config';
+  import { Resources, Actions } from '@/permissions/config';
   import _, { map, pickBy, remove } from 'lodash';
   import { useUserStore, useAppStore } from '@/store';
   import { ref, reactive, onMounted, nextTick, computed, PropType } from 'vue';
@@ -128,7 +144,7 @@
   const appStore = useAppStore();
   const userStore = useUserStore();
   const { setChunkRequest } = useSetChunkRequest();
-  const { router, t } = useCallCommon();
+  const { router, route, t } = useCallCommon();
   const loading = ref(false);
   const selectedKeys = ref<string[]>([]);
   const sort = ref<string[]>(['-createTime']);
