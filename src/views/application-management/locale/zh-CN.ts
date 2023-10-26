@@ -104,7 +104,7 @@ export default {
   'applications.applications.variables.label': '变量名',
   'applications.applications.modules.button': '添加模板',
   'applications.applications.button.upgrade': '升级',
-  'applications.workflows.menu': '流水线',
+  'applications.workflows.menu': '工作流',
   'applications.workflows.create': '新建流程',
   'applications.projects.menu': '项目',
   'applications.projects.authorize.title': '角色授权',

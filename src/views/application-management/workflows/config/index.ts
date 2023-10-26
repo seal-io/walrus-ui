@@ -53,23 +53,23 @@ export const platformRoles = [
 
 export const pipelineRoles = [
   {
-    label: '流水线所有者',
+    label: '工作流所有者',
     value: 'pipelineOwner'
   },
   {
-    label: '流水线/所有权限',
+    label: '工作流/所有权限',
     value: 'pipelineOwnerAll'
   },
   {
-    label: '流水线/运行权限',
+    label: '工作流/运行权限',
     value: 'pipelineOwnerRun'
   },
   {
-    label: '流水线/查看权限',
+    label: '工作流/查看权限',
     value: 'pipelineOwnerView'
   },
   {
-    label: '流水线成员',
+    label: '工作流成员',
     value: 'pipelineMember'
   }
 ];
@@ -88,8 +88,8 @@ export const approvalRoles = [
     items: platformRoles
   },
   {
-    label: '流水线角色',
-    description: '选择流水线角色作为审核人员',
+    label: '工作流角色',
+    description: '选择工作流角色作为审核人员',
     value: 'pipelineRoles',
     items: pipelineRoles
   }

@@ -50,6 +50,10 @@
       flex: 1;
       align-items: center;
       justify-content: flex-start;
+
+      &:last-child {
+        flex: initial;
+      }
     }
 
     .seperator {
@@ -83,8 +87,8 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      width: 14px;
-      height: 14px;
+      width: 12px;
+      height: 12px;
       color: var(--color-text-2);
       font-size: 12px;
       background-color: var(--color-fill-3);
