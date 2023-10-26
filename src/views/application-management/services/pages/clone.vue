@@ -42,7 +42,7 @@
               :key="item.id"
               :value="item.id"
               :label="item.name"
-              :disabled="succeedList.has(item.id)"
+              :disabled="succeedList.has(item.id) || item.disabled"
             ></a-option>
           </seal-select>
         </a-form-item>
@@ -109,11 +109,13 @@
 
 <script lang="ts" setup>
   import _ from 'lodash';
+  import { Resources, Actions } from '@/permissions/config';
   import xInputGroup from '@/components/form-create/custom-components/x-input-group.vue';
   import EditPageFooter from '@/components/edit-page-footer/index.vue';
   import { PROJECT } from '@/router/config';
   import { InputWidth } from '@/views/config';
   import { ref, computed, reactive } from 'vue';
+  import { useUserStore } from '@/store';
   import { onBeforeRouteLeave } from 'vue-router';
   import { beforeLeaveCallback } from '@/hooks/save-before-leave';
   import useScrollToView from '@/hooks/use-scroll-to-view';
@@ -132,9 +134,11 @@
     handleBreadChange,
     initBreadValues
   } = useProjectBreadcrumbData();
+  const userStore = useUserStore();
   const { scrollToView } = useScrollToView();
   const { t, route, router } = useCallCommon();
   const ids = route.query.source as string;
+  const projectID = route.params.projectId as string;
   const breadCrumbList = ref<BreadcrumbOptions[]>([]);
   const selectServices = ref<any[]>(_.concat(ids));
   const environments = ref<any[]>([]);
@@ -187,7 +191,17 @@
         label: t('applications.service.clone')
       }
     ] as BreadcrumbOptions[];
-    environments.value = environmentList;
+    environments.value = _.map(environmentList, (item) => {
+      return {
+        ..._.cloneDeep(item),
+        disabled: !userStore.hasProjectResourceActions({
+          projectID,
+          environmentID: item.id,
+          resource: Resources.Environments,
+          actions: [Actions.POST]
+        })
+      };
+    });
   };
   const handleSelectChange = ({ value, item }) => {
     handleBreadChange(value, item);
