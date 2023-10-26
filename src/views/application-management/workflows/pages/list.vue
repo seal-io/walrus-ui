@@ -118,7 +118,7 @@
               <SealSteps :steps="setRunStatus(record)"></SealSteps>
             </template>
           </a-table-column>
-          <a-table-column
+          <!-- <a-table-column
             ellipsis
             tooltip
             :cell-style="{ minWidth: '40px' }"
@@ -126,7 +126,7 @@
             data-index="description"
             :title="$t('applications.workflow.table.trigger')"
           >
-          </a-table-column>
+          </a-table-column> -->
           <a-table-column
             ellipsis
             tooltip

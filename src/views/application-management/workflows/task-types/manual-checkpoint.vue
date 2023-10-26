@@ -92,7 +92,7 @@
       <a-form-item field="flowRole" hide-label validate-trigger="change">
         <seal-select
           v-model="formData.flowRole"
-          label="流水线角色"
+          label="工作流角色"
           :required="true"
           :options="pipelineRoles"
           style="width: 100%"
