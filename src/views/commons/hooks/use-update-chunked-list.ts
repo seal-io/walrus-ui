@@ -1,4 +1,4 @@
-import { Ref } from 'vue';
+import { Ref, toRaw } from 'vue';
 import _ from 'lodash';
 import { websocketEventType } from '../../config';
 
@@ -34,7 +34,7 @@ export function useUpdateChunkedList(
     const ids = data?.ids || [];
     // CREATE
     if (data?.type === websocketEventType.CREATE) {
-      dataList.value = _.concat(collections, dataList.value);
+      dataList.value = _.concat(collections, toRaw(dataList.value));
     }
     // DELETE
     if (data?.type === websocketEventType.DELETE) {
@@ -51,11 +51,11 @@ export function useUpdateChunkedList(
         );
         if (updateIndex > -1) {
           const updateItem = _.cloneDeep(item);
-          dataList.value[updateIndex] = updateItem;
+          dataList.value[updateIndex] = toRaw(updateItem);
         }
       });
     }
-
+    console.log('dataList.value===', { list: dataList.value, data });
     if (options?.callback) {
       options?.callback(dataList.value);
     }

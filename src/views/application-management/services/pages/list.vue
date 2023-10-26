@@ -512,7 +512,7 @@
         };
       });
       dataList.value = _.concat(createList, dataList.value);
-      dataList.value = _.slice(dataList.value, 0, 10);
+      dataList.value = _.slice(dataList.value, 0, queryParams.perPage);
       return;
     }
     // DELETE

@@ -166,14 +166,16 @@ export function useSetChunkRequest() {
           total.value = e.total || 0;
 
           let result = response;
+          let cres = '';
           if (contentType === 'json') {
             const currentRes = sliceData(response, e.loaded, loadedSize);
             result = parseData(currentRes);
             result = resetResultSchema(result);
+            cres = currentRes;
           }
 
           handler(result);
-          console.log('chunkrequest===', { result, url });
+          console.log('chunkrequest===', { result, url, cres });
         }
       });
       requestReadyState.value = request?.readyState;
