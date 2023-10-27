@@ -27,4 +27,11 @@ export const useLocaleKey = () => {
   };
 };
 
+export const ordinalNumber = (number) => {
+  const n = _.round(number);
+  if (_.isNaN(n)) {
+    return 0;
+  }
+  return n + (['st', 'nd', 'rd'][n < 20 ? n - 1 : (n % 10) - 1] || 'th');
+};
 export default {};

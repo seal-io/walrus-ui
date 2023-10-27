@@ -277,7 +277,7 @@ export default function useProjectData() {
     const list = _.map(pipelineList, (item) => {
       return {
         ..._.cloneDeep(item),
-        label: item.displayName,
+        label: item.name,
         value: item.id
       };
     });

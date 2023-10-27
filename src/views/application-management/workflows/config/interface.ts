@@ -6,6 +6,7 @@ export interface Step {
   labels: object;
   status?: Record<string, any>;
   name: string;
+  type: string;
   spec: Record<string, any>;
 }
 export interface Stage {
@@ -19,7 +20,7 @@ export interface Stage {
 export interface PipelineRow {
   createTime: string;
   description: string;
-  displayName: string;
+  displayName?: string;
   environmentID: string;
   parallelism: number;
   id: string;

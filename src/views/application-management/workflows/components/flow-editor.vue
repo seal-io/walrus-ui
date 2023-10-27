@@ -32,8 +32,8 @@
       const loading = ref(false);
       const unfold = ref(true);
       const flowBasic = ref({
-        displayName: `pipeline-${dayjs().format('YYYYMMDDHHmmss')}`,
-        name: `pipeline-id-${dayjs().format('YYYYMMDDHHmmss')}`,
+        // displayName: `pipeline-${dayjs().format('YYYYMMDDHHmmss')}`,
+        name: `flow-id-${dayjs().format('YYYYMMDDHHmmss')}`,
         type: 'default',
         description: '',
         parallelism: 1
@@ -207,7 +207,7 @@
                     layout="vertical"
                     ref={formref}
                   >
-                    <a-form-item
+                    {/* <a-form-item
                       field="displayName"
                       hide-label
                       validate-trigger="change"
@@ -225,7 +225,7 @@
                         max-length={63}
                         show-word-limit
                       ></seal-input>
-                    </a-form-item>
+                    </a-form-item> */}
                     <a-form-item
                       field="name"
                       hide-label

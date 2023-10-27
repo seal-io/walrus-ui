@@ -13,7 +13,7 @@
           <a-button type="outline" size="small" @click="handleBack">
             {{ $t('common.button.back') }}
           </a-button>
-          <a-button type="primary" size="small" @click="handleSubmitApply">
+          <a-button type="primary" size="small" @click="handleRetry">
             {{ $t('common.button.retry') }}
           </a-button>
         </a-space>
@@ -31,11 +31,12 @@
   import useCallCommon from '@/hooks/use-call-common';
   import useProjectBreadcrumbData from '@/views/application-management/projects/hooks/use-project-breadcrumb-data';
   import FlowView from '../components/flow-view.vue';
-  import { applyPipeline } from '../api';
+  import { retryApplyPipeline } from '../api';
 
   const height = 'calc(100vh - 62px)';
   const { t, route, router } = useCallCommon();
   const flowId = route.params.flowId as string;
+  const execId = route.params.execId as string;
   const flow = ref();
   const {
     getProjectList,
@@ -87,13 +88,13 @@
     router.back();
   };
 
-  const handleSubmitApply = async () => {
+  const handleRetry = async () => {
     try {
       const data = {
-        id: flowId
+        flowId,
+        execId
       };
-      await applyPipeline(data);
-      // router.back();
+      await retryApplyPipeline(data);
     } catch (error) {
       // eslint-disable-next-line no-console
     }

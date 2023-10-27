@@ -4,6 +4,7 @@
   import i18n from '@/locale';
   import StatusLabel from '@/views/operation-hub/connectors/components/status-label.vue';
   import Autotip from '@arco-design/web-vue/es/_components/auto-tooltip/auto-tooltip';
+  import { setDurationValue } from '@/views/config/utils';
   import { TaskTypes } from '../task-types/config';
   import MoreAction from './more-action.vue';
 
@@ -32,9 +33,23 @@
           <div class="stage-name">{data.stageName}</div>
         ) : null;
       };
+
       return () => (
         <div class="pipeline-node">
           {renderStageName()}
+          <span class="node-icon">
+            <i
+              class={[
+                'iconfont',
+                {
+                  'icon-fuwu': node.value.data?.type === TaskTypes.SERVICE,
+                  'icon-jiaoseshouquan':
+                    node.value.data?.type === TaskTypes.APPROVAL,
+                  'size-12': node.value.data?.type === TaskTypes.APPROVAL
+                }
+              ]}
+            ></i>
+          </span>
           <div class="pipeline-node-title">
             <Autotip tooltip-props={{ content: node.value.data?.name }}>
               <span class="title">{node.value.data?.name}</span>
@@ -68,6 +83,35 @@
                 {t('applications.applications.instance.log')}
               </a-link>
             </a-space>
+          </div>
+          <div class="info">
+            <span class="time item">
+              <span class="title">时间</span>
+              {node.value.data?.duration ? (
+                <span>{setDurationValue(node.value.data?.duration)}</span>
+              ) : null}
+            </span>
+            {node.value.data?.type === TaskTypes.SERVICE ? (
+              <>
+                <span class="item">
+                  <span class="title">环境</span>
+                  <Autotip>{node.value.data?.spec?.environment?.name}</Autotip>
+                </span>
+                <span class="item">
+                  <span class="title">服务</span>
+                  <Autotip>
+                    {_.get(node.value.data, 'status.summaryStatus') ===
+                    'Ready' ? (
+                      <a class="link" data-event="node:view-service">
+                        {node.value.data?.spec?.name}
+                      </a>
+                    ) : (
+                      node.value.data?.spec?.name
+                    )}
+                  </Autotip>
+                </span>
+              </>
+            ) : null}
           </div>
         </div>
       );

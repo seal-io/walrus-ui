@@ -124,7 +124,7 @@
         box-shadow: 0 2px 4px 0 rgba(var(--gray-5), 60%);
 
         .btn-icon {
-          color: var(--color-text-3);
+          color: rgb(var(--arcoblue-5));
           font-size: 16px;
         }
       }

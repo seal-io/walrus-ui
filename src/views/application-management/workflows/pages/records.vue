@@ -19,7 +19,7 @@
         </template>
         <template #title>
           <div class="title">
-            <span> {{ currentInfo.displayName }}</span>
+            <span> {{ currentInfo.name }}</span>
             <StatusLabel
               :zoom="0.9"
               :status="{
@@ -50,21 +50,28 @@
           <div class="description">{{ currentInfo.description }}</div>
         </template>
       </HeaderInfo>
-      <ComCard>
-        <a-tabs
+      <ComCard :title="$t('workflow.stage.records')" padding="0 16px 16px 16px">
+        <!-- <a-tabs
           v-model:active-key="activeKey"
           lazy-load
           class="page-line-tabs"
           :default-active-key="activeKey"
           @change="setPageTabActive"
         >
-          <a-tab-pane :key="PipelineTabs.LATESTRUN" title="最近运行结果">
+          <a-tab-pane
+            :key="PipelineTabs.LATESTRUN"
+            :title="$t('workflow.stage.recently.result')"
+          >
             <FlowView :show-latest="true" :container-height="height"></FlowView>
           </a-tab-pane>
-          <a-tab-pane :key="PipelineTabs.HISTORY" title="运行记录">
-            <RecordsList></RecordsList>
+          <a-tab-pane
+            :key="PipelineTabs.HISTORY"
+            :title="$t('workflow.stage.records')"
+          >
+            
           </a-tab-pane>
-        </a-tabs>
+        </a-tabs> -->
+        <RecordsList></RecordsList>
       </ComCard>
     </ComCard>
   </div>

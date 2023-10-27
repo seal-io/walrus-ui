@@ -16,6 +16,37 @@
           ellipsis
           tooltip
           :cell-style="{ minWidth: '40px' }"
+          align="center"
+          :width="60"
+          data-index="version"
+          title="#"
+        >
+          <template #cell="{ record }">
+            <a-tooltip
+              v-if="record.version"
+              :content="
+                $t('workflow.task.run.order', {
+                  order:
+                    currentLocale === 'en-US'
+                      ? ordinalNumber(record.version)
+                      : record.version
+                })
+              "
+            >
+              <a-button
+                type="text"
+                style="padding-left: 0"
+                @click="handleViewResult(record)"
+              >
+                #{{ record.version }}
+              </a-button>
+            </a-tooltip>
+          </template>
+        </a-table-column>
+        <a-table-column
+          ellipsis
+          tooltip
+          :cell-style="{ minWidth: '40px' }"
           data-index="createTime"
           :title="$t('applications.workflow.table.startTime')"
         >
@@ -48,20 +79,37 @@
           ellipsis
           tooltip
           :cell-style="{ minWidth: '40px' }"
+          align="center"
           data-index="details"
           :title="$t('applications.workflow.table.runDetails')"
         >
           <template #cell="{ record }">
-            <SealSteps :steps="setRunStatus(record)"></SealSteps>
+            <SealSteps
+              :steps="setRunStatus(record)"
+              class="flex-center"
+            ></SealSteps>
           </template>
         </a-table-column>
         <a-table-column
           ellipsis
           tooltip
           :cell-style="{ minWidth: '40px' }"
+          align="center"
+          data-index="trigger.user"
+          :title="$t('workflow.task.run.user')"
+        >
+        </a-table-column>
+        <a-table-column
+          ellipsis
+          tooltip
+          :cell-style="{ minWidth: '40px' }"
+          align="center"
           data-index="duration"
           :title="$t('applications.workflow.table.duration')"
         >
+          <template #cell="{ record }">
+            <span>{{ setDurationValue(record.duration) }}</span>
+          </template>
         </a-table-column>
         <!-- <a-table-column
           ellipsis
@@ -72,7 +120,7 @@
           :title="$t('applications.workflow.table.trigger')"
         >
         </a-table-column> -->
-        <a-table-column
+        <!-- <a-table-column
           align="center"
           :width="210"
           :title="$t('common.table.operation')"
@@ -84,7 +132,7 @@
               @select="(val) => handleDropSelect(val, record)"
             ></DropButtonGroup>
           </template>
-        </a-table-column>
+        </a-table-column> -->
       </template>
     </a-table>
     <a-pagination
@@ -105,7 +153,9 @@
   import _ from 'lodash';
   import dayjs from 'dayjs';
   import { ref, reactive, onMounted } from 'vue';
-  import { PageAction } from '@/views/config';
+  import { setDurationValue } from '@/views/config/utils';
+  import { ordinalNumber } from '@/utils/func';
+  import useLocale from '@/hooks/locale';
   import { PROJECT, WORKFLOW } from '@/router/config';
   import useCallCommon from '@/hooks/use-call-common';
   import StatusLabel from '@/views/operation-hub/connectors/components/status-label.vue';
@@ -133,6 +183,7 @@
     defaultSortField: '-createTime',
     defaultOrder: 'descend'
   });
+  const { currentLocale } = useLocale();
   const { route, router } = useCallCommon();
   const loading = ref(false);
   const dataList = ref<PipelineRecordsRow[]>([]);
@@ -202,6 +253,17 @@
     fetchData();
   };
 
+  const handleViewResult = (row) => {
+    router.push({
+      name: WORKFLOW.Detail,
+      params: {
+        ...route.params
+      },
+      query: {
+        execId: row.id
+      }
+    });
+  };
   const handleDropSelect = (val, row) => {
     if (val === 'delete') return;
     router.push({

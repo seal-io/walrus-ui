@@ -84,7 +84,7 @@
         top: 90px;
         left: 50%;
         z-index: 2;
-        color: var(--color-text-3);
+        color: rgb(var(--arcoblue-5));
         font-size: 20px;
         transform: translateX(-50%);
         cursor: pointer;
