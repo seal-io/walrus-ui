@@ -8,6 +8,7 @@ import { useServiceStore } from '@/store';
 import semverEq from 'semver/functions/eq';
 import semverGt from 'semver/functions/gt';
 
+import { ServiceFormData } from '../config/interface';
 import { queryItemService } from '../api';
 import useCompleteData from './use-complete-data';
 
@@ -46,7 +47,7 @@ export default function useServiceData(props?) {
   const asyncLoading = ref(false);
 
   const id = route.query.id as string;
-  const formData = reactive({
+  const formData: ServiceFormData = reactive({
     projectID: route.params.projectId,
     project: {
       id: route.params.projectId
@@ -58,10 +59,13 @@ export default function useServiceData(props?) {
     labels: {},
     name: '',
     template: {
+      // template version info
       name: '',
       version: '',
       id: '',
-      project: { id: route.params.projectId }
+      project: { id: route.params.projectId },
+      // template info
+      template: { id: '' }
     },
     attributes: {}
   });
@@ -172,10 +176,10 @@ export default function useServiceData(props?) {
   };
 
   //  change module ...
-  const getTemplateSchemaByName = () => {
+  const getTemplateSchemaById = () => {
     const moduleTemplate = _.find(
       templateVersionList.value,
-      (item) => item.template.name === formData.template.name
+      (item) => item.template.id === formData.template.template.id
     );
     return moduleTemplate;
   };
@@ -189,11 +193,11 @@ export default function useServiceData(props?) {
     return moduleTemplate;
   };
 
-  const getTemplateVersionList = async () => {
+  const setTemplateVersionList = async () => {
     try {
       const list = _.filter(
         allTemplateVersions.value,
-        (item) => item.template.name === formData.template.name
+        (item) => item.template.id === formData.template.template.id
       );
       let versions = _.map(list, (item) => {
         return {
@@ -220,8 +224,8 @@ export default function useServiceData(props?) {
   const setFormAttributes = async () => {
     _.assignIn(formData, serviceInfo.value);
     // 1. get the template meta data 2.set the default value
-    await getTemplateVersionByItem(formData.template.name);
-    await getTemplateVersionList();
+    await getTemplateVersionByItem(formData.template.template.id);
+    await setTemplateVersionList();
     const moduleTemplate = getTemplateSchemaByVersion();
     templateInfo.value = _.cloneDeep(_.get(moduleTemplate, 'schema'));
     const variablesList = _.filter(
@@ -232,22 +236,26 @@ export default function useServiceData(props?) {
       item.default = _.get(serviceInfo.value, `attributes.${item.name}`);
     });
   };
+  const setFormDataTemplate = () => {
+    // webservice bydefault
+    let defaultTemplate = _.find(templateList.value, (item) =>
+      setDefaultTemplate(item)
+    );
+    defaultTemplate = defaultTemplate || _.get(templateList.value, '0');
+    formData.template.name = defaultTemplate.name;
+    formData.template.template.id = defaultTemplate.id;
+    formData.template.project = defaultTemplate.project || {};
+  };
   // for service create page
   const initFormData = async () => {
     if (id) {
       await setFormAttributes();
     } else {
-      // webservice bydefault
-      const webservice = _.find(templateList.value, (item) =>
-        setDefaultTemplate(item)
-      );
-      formData.template.name = webservice
-        ? webservice.name
-        : _.get(templateList.value, '0.name') || '';
-      await getTemplateVersionByItem(formData.template.name);
-      await getTemplateVersionList();
+      setFormDataTemplate();
+      await getTemplateVersionByItem(formData.template.template.id);
+      await setTemplateVersionList();
 
-      const moduleTemplate = getTemplateSchemaByName();
+      const moduleTemplate = getTemplateSchemaById();
       formData.template.version = _.get(moduleTemplate, 'version') || '';
       formData.template.id = _.get(moduleTemplate, 'id') || '';
       templateInfo.value = _.cloneDeep(_.get(moduleTemplate, 'schema')) || {};
@@ -283,9 +291,9 @@ export default function useServiceData(props?) {
     init,
     generateVariablesGroup,
     setFormAttributes,
-    getTemplateSchemaByName,
+    getTemplateSchemaById,
     getTemplateSchemaByVersion,
-    getTemplateVersionList,
+    setTemplateVersionList,
     getTemplateVersionByItem,
     initCompleteData,
     initInfo,

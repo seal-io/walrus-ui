@@ -48,7 +48,7 @@ export default function useCompleteData() {
         return {
           ...item,
           label: item.name,
-          value: item.name
+          value: item.id
         };
       });
     } catch (error) {
@@ -56,13 +56,10 @@ export default function useCompleteData() {
     }
   };
   // get item template version, isOnSelect is a flag for select event
-  const getTemplateVersionByItem = async (
-    templateName,
-    isOnSelect?: boolean
-  ) => {
+  const getTemplateVersionByItem = async (templateID, isOnSelect?: boolean) => {
     const isVisited = _.find(
       allTemplateVersions.value,
-      (item) => item.template.name === templateName
+      (item) => item.template.id === templateID
     );
     if (isVisited && isOnSelect) {
       return;
@@ -71,10 +68,10 @@ export default function useCompleteData() {
     templateVersionToken = createAxiosToken();
     try {
       const isProjectTemplate = _.find(templateList.value, (item) => {
-        return item.name === templateName && item.project?.id;
+        return item.id === templateID && item.project?.id;
       });
       const params = {
-        templateName,
+        templateID,
         isProjectTemplate: !!isProjectTemplate
       };
       const { data } = await queryItemTemplatesVersions(
