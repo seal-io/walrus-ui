@@ -95,13 +95,13 @@ export function queryTemplatesVersions(params: { templateID: string }) {
 }
 
 export function queryItemTemplatesVersions(
-  params: { templateName: string; isProjectTemplate?: boolean },
+  params: { templateID: string; isProjectTemplate?: boolean },
   token?: any
 ) {
-  let url = `${TEMPLATE_API}/${params.templateName}/versions`;
+  let url = `${TEMPLATE_API}/${params.templateID}/versions`;
   if (params.isProjectTemplate) {
     url = `${PROJECT_API_PREFIX()}${TEMPLATE_API}/${
-      params.templateName
+      params.templateID
     }/versions`;
   }
   return axios.get(url, {

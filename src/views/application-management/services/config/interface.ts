@@ -7,6 +7,28 @@ export interface Variables {
   required?: boolean;
 }
 
+export interface ServiceFormData {
+  projectID: string;
+  project: {
+    id: string;
+  };
+  environment: {
+    id: string;
+  };
+  description: string;
+  labels: object;
+  name: string;
+  template: {
+    // template version info
+    name: string;
+    version: string;
+    id: string;
+    project?: { id?: string };
+    // template info
+    template: { id: string };
+  };
+  attributes: object;
+}
 export interface ServiceRowData {
   name: string;
   id: string;

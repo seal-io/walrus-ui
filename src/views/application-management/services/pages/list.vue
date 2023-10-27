@@ -122,9 +122,17 @@
           :title="$t('applications.applications.table.module')"
         >
           <template #cell="{ record }">
-            <span>{{
-              `${record.template?.name}@${record.template?.version || ''}`
-            }}</span>
+            <span>
+              <span>{{
+                `${record.template?.name}@${record.template?.version || ''}`
+              }}</span>
+              <span
+                v-if="!record.template.project?.id"
+                style="color: var(--color-text-3)"
+                class="font-12 m-l-2"
+                >{{ `(${$t('applications.variable.scope.global')})` }}</span
+              >
+            </span>
           </template>
         </a-table-column>
         <a-table-column

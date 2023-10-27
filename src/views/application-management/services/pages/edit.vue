@@ -56,7 +56,7 @@
         <a-form-item
           id="moduleId"
           hide-label
-          field="template.name"
+          field="template.template.id"
           :label="$t('applications.applications.table.module')"
           :disabled="pageAction === PageAction.EDIT && !!id"
           :rules="[
@@ -68,12 +68,13 @@
         >
           <div>
             <seal-select
-              v-model="formData.template.name"
+              v-model="formData.template.template.id"
               :placeholder="$t('applications.applications.table.module')"
               :required="true"
               :virtual-list-props="virtualListProps"
               :style="{ width: `${InputWidth.LARGE}px` }"
               :options="templateList"
+              :format-label="formatTemplateLael"
               allow-search
               @change="handleTemplateChange"
             >
@@ -339,7 +340,7 @@
     init,
     generateVariablesGroup,
     getTemplateSchemaByVersion,
-    getTemplateVersionList,
+    setTemplateVersionList,
     getTemplateVersionByItem,
     formData,
     pageAction,
@@ -533,10 +534,21 @@
     }, 100);
   };
 
+  const formatTemplateLael = (data) => {
+    if (!data.project?.id) {
+      return `${data.name} (${t('applications.variable.scope.global')})`;
+    }
+    return data.name;
+  };
   // template change: exec version change
   const handleTemplateChange = async (val) => {
+    const data = _.find(templateList.value, (item) => item.id === val);
+    formData.template.name = data?.name || '';
+    formData.template.project = data?.project || {};
+
     await getTemplateVersionByItem(val, true);
-    await getTemplateVersionList();
+    await setTemplateVersionList();
+
     formData.template.version =
       get(templateVersionList.value, '0.version') || '';
     templateVersionFormCache.value = {};
@@ -613,10 +625,10 @@
             {}
           )
         };
-        formData.template = {
-          ...formData.template,
-          project: formData.project
-        };
+        // omit template project if value is empty
+        if (!formData.template.project?.id) {
+          formData.template = _.omit(formData.template, 'project');
+        }
         copyFormData = _.cloneDeep(formData);
         if (id) {
           await upgradeApplicationInstance(formData);
