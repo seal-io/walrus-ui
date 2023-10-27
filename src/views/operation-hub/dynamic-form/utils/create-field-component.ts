@@ -2,10 +2,15 @@ import FIELD_TYPE from '../config/field-type';
 import { Widget } from '../config/widget';
 
 export const createFieldComponent = (fieldSchema): Record<string, string[]> => {
-  const { type } = fieldSchema;
-  if (type === FIELD_TYPE.OBJECT) {
+  const { type, additionalProperties } = fieldSchema;
+  if (type === FIELD_TYPE.OBJECT && !additionalProperties) {
     return {
       component: []
+    };
+  }
+  if (type === FIELD_TYPE.OBJECT && additionalProperties) {
+    return {
+      component: [Widget.XInputGroup]
     };
   }
   if (type === FIELD_TYPE.STRING) {

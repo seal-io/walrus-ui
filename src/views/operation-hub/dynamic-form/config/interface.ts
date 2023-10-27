@@ -37,8 +37,6 @@ export interface FieldSchema {
   type: string;
   default: any;
   uiSchema: UISchema;
-  parentCom: string;
-  childCom: string;
   description: string;
   multipleOf?: number;
   min?: number;

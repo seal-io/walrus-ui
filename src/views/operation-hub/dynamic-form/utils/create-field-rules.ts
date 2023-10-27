@@ -13,7 +13,7 @@ export const createFieldRules = (
   const { not, name, min, max, minLength, maxLength } = property;
   const { required, message } = uiExtensions;
   const rules: FieldRule[] = [];
-
+  const isRequired = requiredFlag || required || false;
   let msg = 'common.form.rule.input';
   if (
     [
@@ -29,13 +29,13 @@ export const createFieldRules = (
 
   if (not) {
     rules.push({
-      required: requiredFlag || required,
+      required: isRequired,
       match: not?.pattern
     });
   }
   if (Widget.AceEditor === component[0]) {
     rules.push({
-      required: requiredFlag || required,
+      required: isRequired,
       validator(val, callback) {
         const result = validateYaml(val);
         if (result.error) {
@@ -52,7 +52,7 @@ export const createFieldRules = (
     });
   } else {
     rules.push({
-      required: requiredFlag || required,
+      required: isRequired,
       min: min || -Infinity,
       max: max || Infinity,
       minLength: minLength || null,
