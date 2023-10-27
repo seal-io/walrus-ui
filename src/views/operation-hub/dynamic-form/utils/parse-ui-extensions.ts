@@ -12,7 +12,7 @@ export const parseUIExtensions = (
   requiredFlag: boolean
 ): UISchema => {
   const uiExtensions = property['x-walrus-ui'] || {};
-  const { type, not, min, max, minLength, maxLength } = property;
+  const { min, max, minLength, maxLength, readOnly } = property;
   const { widget, required, message, ...rest } = uiExtensions;
 
   const fieldComponent = widget
@@ -29,7 +29,8 @@ export const parseUIExtensions = (
     min,
     max,
     minLength,
-    maxLength
+    maxLength,
+    readOnly
   };
 
   return {

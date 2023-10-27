@@ -1,6 +1,5 @@
 import _ from 'lodash';
 import FIELD_TYPE from '../config/field-type';
-import { createFieldComponent } from './create-field-component';
 import { FieldSchema } from '../config/interface';
 import { parseUIExtensions } from './parse-ui-extensions';
 
@@ -26,17 +25,15 @@ export const initFormStateBySchema = ({
       name: key,
       type,
       fieldPath: [...fieldPath, key],
-      required: requiredFlag,
       title: property.title,
-      parentCom: null,
-      childCom: null,
       description: property.description,
       enum: property.enum || [],
-      default: property.default
+      default: property.default,
+      uiSchema: {}
     };
-    const component = createFieldComponent(fieldSchema).component || [];
-    fieldSchema.parentCom = component[0] || null;
-    fieldSchema.childCom = component[1] || null;
+    const component = parseUIExtensions(property, requiredFlag);
+    fieldSchema.uiSchema = component;
+
     if (type !== FIELD_TYPE.OBJECT) {
       fieldSchemaList.push(fieldSchema);
     }

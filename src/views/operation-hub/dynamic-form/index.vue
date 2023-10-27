@@ -5,7 +5,7 @@
   import SealFormItemWrap from '@/components/seal-form/components/seal-form-item-wrap.vue';
   import formComponents from '@/components/form-create/components/index';
   import EditPageFooter from '@/components/edit-page-footer/index.vue';
-  import test from './config/test';
+  import versionData from './config/versions-v3.json';
   import { initFormState } from './utils/init-form-state';
 
   export default defineComponent({
@@ -15,7 +15,12 @@
       const formData = ref({});
       let fieldSchemaList: any[] = [];
       const fetchData = () => {
-        const result = initFormState(test);
+        const result = initFormState(
+          _.get(
+            versionData,
+            'items.0.externalSchema.schema.components.schemas.variables'
+          )
+        );
         formData.value = result.formData;
         fieldSchemaList = result.fieldSchemaList;
         console.log('result===', formData.value, fieldSchemaList);
