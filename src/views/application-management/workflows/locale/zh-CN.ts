@@ -27,6 +27,7 @@ export default {
   'workflow.stage.add.title': 'stage',
   'workflow.stage.add.button': '添加新阶段',
   'workflow.stage.records': '运行记录',
+  'workflow.stage.recently.result': '最近运行结果',
   'workflow.stage.approve': '审批',
   'workflow.task.rules.taskName': '任务名称必填',
   'workflow.task.rules.approvalMode': '请选择审核方式',
@@ -36,5 +37,7 @@ export default {
   'workflow.task.form.selectTask': '选择任务类型',
   'workflow.task.form.fillin': '填写表单',
   'workflow.task.form.selectenv': '选择环境',
-  'workflow.task.form.deployEnv': '服务部署环境'
+  'workflow.task.form.deployEnv': '服务部署环境',
+  'workflow.task.run.order': '第 {order} 次运行',
+  'workflow.task.run.user': '执行人'
 };

@@ -70,12 +70,12 @@
             ellipsis
             tooltip
             :cell-style="{ minWidth: '40px' }"
-            data-index="displayName"
+            data-index="name"
             :title="$t('applications.workflow.name')"
           >
             <template #cell="{ record }">
               <a-link type="text" size="small" @click="handleView(record)">
-                {{ record.displayName }}
+                {{ record.name }}
               </a-link>
             </template>
           </a-table-column>
@@ -83,34 +83,55 @@
             ellipsis
             tooltip
             :cell-style="{ minWidth: '40px' }"
-            align="center"
+            align="left"
             data-index="status"
             :title="$t('applications.workflow.table.status')"
           >
             <template #cell="{ record }">
-              <StatusLabel
-                :zoom="0.9"
-                :status="{
-                  status: _.get(record, 'executions.0.status.summaryStatus'),
-                  text: _.get(record, 'executions.0.status.summaryStatus'),
-                  message: _.get(
-                    record,
-                    'executions.0.status.summaryStatusMessage'
-                  ),
-                  transitioning: _.get(
-                    record,
-                    'executions.0.status.transitioning'
-                  ),
-                  error: _.get(record, 'executions.0.status.error')
-                }"
-              ></StatusLabel>
+              <span class="flex">
+                <a-tooltip
+                  v-if="_.get(record, 'executions.0.version')"
+                  :content="
+                    $t('workflow.task.run.order', {
+                      order:
+                        currentLocale === 'en-US'
+                          ? ordinalNumber(_.get(record, 'executions.0.version'))
+                          : _.get(record, 'executions.0.version')
+                    })
+                  "
+                >
+                  <a-button
+                    type="text"
+                    style="padding-left: 0"
+                    @click="handleViewResult(record)"
+                  >
+                    #{{ _.get(record, 'executions.0.version') }}
+                  </a-button>
+                </a-tooltip>
+                <StatusLabel
+                  :zoom="0.9"
+                  :status="{
+                    status: _.get(record, 'executions.0.status.summaryStatus'),
+                    text: _.get(record, 'executions.0.status.summaryStatus'),
+                    message: _.get(
+                      record,
+                      'executions.0.status.summaryStatusMessage'
+                    ),
+                    transitioning: _.get(
+                      record,
+                      'executions.0.status.transitioning'
+                    ),
+                    error: _.get(record, 'executions.0.status.error')
+                  }"
+                ></StatusLabel>
+              </span>
             </template>
           </a-table-column>
           <a-table-column
             ellipsis
             tooltip
             :cell-style="{ minWidth: '40px' }"
-            align="center"
+            align="left"
             data-index="stages"
             :title="$t('applications.workflow.table.stage')"
           >
@@ -132,9 +153,27 @@
             tooltip
             :cell-style="{ minWidth: '40px' }"
             align="center"
-            data-index="description"
+            data-index="executions.0.trigger.user"
+            :title="$t('workflow.task.run.user')"
+          >
+          </a-table-column>
+          <a-table-column
+            ellipsis
+            tooltip
+            :cell-style="{ minWidth: '40px' }"
+            align="center"
+            data-index="executions.0.createTime"
             :title="$t('applications.workflow.table.update')"
           >
+            <template #cell="{ record }">
+              <span>{{
+                _.get(record, 'executions.0.createTime')
+                  ? dayjs(_.get(record, 'executions.0.createTime')).format(
+                      'YYYY-MM-DD HH:mm:ss'
+                    )
+                  : '-'
+              }}</span>
+            </template>
           </a-table-column>
           <a-table-column
             align="center"
@@ -169,10 +208,12 @@
 <script lang="ts" setup>
   import dayjs from 'dayjs';
   import _, { map, pickBy } from 'lodash';
+  import { ordinalNumber } from '@/utils/func';
   import { PageAction } from '@/views/config';
   import { PROJECT, WORKFLOW } from '@/router/config';
   import { useUserStore } from '@/store';
   import { Resources, Actions } from '@/permissions/config';
+  import useLocale from '@/hooks/locale';
   import { ref, reactive, onMounted } from 'vue';
   import useCallCommon from '@/hooks/use-call-common';
   import StatusLabel from '@/views/operation-hub/connectors/components/status-label.vue';
@@ -201,6 +242,7 @@
     defaultSortField: '-createTime',
     defaultOrder: 'descend'
   });
+  const { currentLocale } = useLocale();
   const userStore = useUserStore();
   const { router, route } = useCallCommon();
   const loading = ref(false);
@@ -314,6 +356,18 @@
     });
   };
 
+  const handleViewResult = (row) => {
+    router.push({
+      name: WORKFLOW.Detail,
+      params: {
+        ...route.params,
+        flowId: row.id
+      },
+      query: {
+        execId: _.get(row, 'executions.0.id')
+      }
+    });
+  };
   const handleDeleteConfirm = async () => {
     try {
       loading.value = true;

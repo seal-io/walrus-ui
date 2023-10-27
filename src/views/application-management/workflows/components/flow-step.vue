@@ -4,6 +4,7 @@
   // import Draggable from 'vuedraggable';
   import useCallCommon from '@/hooks/use-call-common';
   import { Step } from '../config/interface';
+  import { TaskTypes } from '../task-types/config';
 
   export default defineComponent({
     props: {
@@ -117,6 +118,17 @@
           <div class="step-box">
             <div class="prev btn-wrap"></div>
             <div class="step-content" onClick={() => handleEditTask()}>
+              <i
+                class={[
+                  'iconfont task-type-icon',
+                  {
+                    'icon-fuwu': stepData.value?.type === TaskTypes.SERVICE,
+                    'icon-jiaoseshouquan':
+                      stepData.value?.type === TaskTypes.APPROVAL,
+                    'size-12': stepData.value?.type === TaskTypes.APPROVAL
+                  }
+                ]}
+              ></i>
               <span>{stepData.value.name}</span>
             </div>
             <div class="next btn-wrap"></div>
@@ -224,17 +236,33 @@
       }
 
       .step-content {
+        position: relative;
         display: flex;
         align-items: center;
         justify-content: center;
         min-width: 120px;
         height: 36px;
         padding: 0 16px;
+        padding-left: 21px;
         color: var(--color-text-2);
         background-color: #fff;
         border: 1px solid var(--color-border-3);
         border-radius: 36px;
         box-shadow: 0 2px 4px 0 rgba(var(--gray-5), 60%);
+
+        .task-type-icon {
+          position: absolute;
+          top: 9px;
+          left: 5px;
+          color: rgb(var(--arcoblue-5));
+          font-size: 16px;
+          border-right: 1px solid var(--color-border-2);
+
+          &.size-12 {
+            padding: 2px 2px 3px 0;
+            font-size: 12px;
+          }
+        }
 
         .btn-icon {
           color: var(--color-text-3);

@@ -61,6 +61,14 @@ export function applyPipeline(data: { id: string }) {
   return axios.post(`${PROJECT_API_PREFIX()}${PIPELINE_API}/${data.id}/apply`);
 }
 
+export function retryApplyPipeline(data: { flowId: string; execId: string }) {
+  return axios.post(
+    `${PROJECT_API_PREFIX()}${PIPELINE_API}/${
+      data.flowId
+    }${PIPELINE_EXECUTION_API}/${data.execId}/resubmit`
+  );
+}
+
 export const queryPipelineRecords = (params: { id: string }, token?) => {
   return axios.get<ResultType<PipelineRecordsRow>>(
     `${PROJECT_API_PREFIX()}${PIPELINE_API}/${

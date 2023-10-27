@@ -85,7 +85,7 @@
                 :options="environmentList"
                 :loading="loading"
                 allow-search
-                @change="handleOnSelect"
+                @change="handleSelectEnvironment"
               >
               </seal-select>
             </a-form-item>
@@ -203,6 +203,7 @@
   const flow = reactive({
     projectId: route.params.projectId,
     environmentId: '',
+    environmentName: '',
     name: ''
   });
   const serviceRef = ref();
@@ -260,7 +261,11 @@
     current.value = Math.min(steps.value.length, current.value + 1);
   };
 
-  const handleOnSelect = () => {
+  const handleSelectEnvironment = () => {
+    const data = environmentList.value.find(
+      (item) => item.value === flow.environmentId
+    );
+    flow.environmentName = data?.label || '';
     handleOnNext();
   };
 
@@ -291,7 +296,8 @@
           spec: {
             ...data,
             environment: {
-              id: flow.environmentId
+              id: flow.environmentId,
+              name: flow.environmentName
             },
             project: {
               id: flow.projectId
@@ -353,6 +359,7 @@
     current.value = 1;
     taskType.value = '';
     flow.environmentId = '';
+    flow.environmentName = '';
     flow.name = '';
 
     //  reset service info

@@ -16,6 +16,9 @@ export const setPipelineNodeStyle = (size) => {
     }
   }
     .pipeline-node {
+      display: flex;
+      justify-content: space-between;
+      flex-direction: column;
       position: relative;
       font-size: 14px;
       color: var(--color-text-2);
@@ -27,6 +30,21 @@ export const setPipelineNodeStyle = (size) => {
       box-shadow: 0px 2px 4px 0px rgba(var(--gray-5), 60%);
       &:hover {
         box-shadow: 0px 6px 6px rgba(var(--gray-5), 80%);
+      }
+      .node-icon {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 18px;
+        height: 18px;
+        border-radius: 50%;
+        background-color: #fff;
+        box-shadow: 0px 0px 4px 0px rgba(var(--gray-5), 60%);
+        position: absolute;
+        right: 8px;
+        top: -6px;
+        font-weight: 700;
+        color: rgb(var(--arcoblue-5));
       }
       .stage-name {
         font-weight: 500;
@@ -43,6 +61,41 @@ export const setPipelineNodeStyle = (size) => {
           font-weight: 500;
         }
       }
+      .info {
+        height: 45px;
+        margin-top: 8px;
+        padding-top:6px;
+        margin-bottom: 0px; 
+        width: 100%;
+        font-size: 12px;
+        display: flex;
+        justify-content: space-between;
+        border-top: 1px solid var(--color-border-2);
+        .item {
+          margin-right: 6px;
+          display: flex;
+          flex-direction: column;
+          justify-content: space-between;
+          max-width: 90px;
+          .title {
+            font-weight: 500;
+          }
+          .link {
+            cursor: pointer;
+            color: rgb(var(--arcoblue-5));
+            transition: all 0.3s;
+            font-weight: 500;
+            padding: 0 2px;
+            border-radius: 2px;
+            &:hover {
+              color: rgb(var(--arcoblue-6));
+              background-color: var(--color-fill-2);
+              text-decoration: none;
+              transition: all 0.3s;
+            }
+          }
+        }
+      }
       .operation-box {
         display: flex;
         justify-content: space-between;
@@ -51,7 +104,7 @@ export const setPipelineNodeStyle = (size) => {
           font-size: 12px;
         }
         .btn {
-          padding: 12px 0;
+          padding: 0;
         }
         .status {
           .success {

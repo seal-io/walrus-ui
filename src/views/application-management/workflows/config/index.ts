@@ -205,18 +205,18 @@ export const recordActions: MoreAction[] = [
     props: {
       type: 'icon-xiangqing'
     }
-  },
-  {
-    label: 'common.button.delete',
-    value: 'delete',
-    icon: 'icon-delete',
-    handler: '',
-    status: 'danger',
-    disabled: false,
-    filterFun(currentInfo) {
-      return true;
-    }
   }
+  // {
+  //   label: 'common.button.delete',
+  //   value: 'delete',
+  //   icon: 'icon-delete',
+  //   handler: '',
+  //   status: 'danger',
+  //   disabled: false,
+  //   filterFun(currentInfo) {
+  //     return true;
+  //   }
+  // }
 ];
 export const moreMenu = [
   {
@@ -232,7 +232,7 @@ export const NodeSize = {
 };
 
 export const PipelineNodeSize = {
-  width: 220,
-  height: 80
+  width: 240,
+  height: 130
 };
 export default {};

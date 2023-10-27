@@ -62,50 +62,11 @@
             :loading="loading"
             :required="true"
             :options="subjectList"
-            :mutiple="true"
+            :multiple="true"
             style="width: 100%"
           >
           </seal-select>
         </a-form-item>
-        <!-- <a-form-item field="role" hide-label validate-trigger="change">
-        <seal-select
-          v-model="formData.role"
-          label="验证者类型"
-          :required="true"
-          style="width: 100%"
-          @change="handleRoleChange"
-        >
-          <a-option
-            v-for="item in approvalRoles"
-            :key="item.value"
-            :value="item.value"
-          >
-            <span
-              >{{ item.label
-              }}<span style="color: var(--color-text-3)" class="mleft-5">{{
-                `(${item.description})`
-              }}</span></span
-            >
-          </a-option>
-        </seal-select>
-      </a-form-item>
-      <a-form-item field="flowRole" hide-label validate-trigger="change">
-        <seal-select
-          v-model="formData.flowRole"
-          label="工作流角色"
-          :required="true"
-          :options="pipelineRoles"
-          style="width: 100%"
-        ></seal-select>
-      </a-form-item>
-      <a-form-item field="date" hide-label validate-trigger="change">
-        <seal-date-picker
-          v-model="formData.date"
-          label="截止时间"
-          :required="true"
-          style="width: 100%"
-        ></seal-date-picker>
-      </a-form-item> -->
       </a-form>
     </div>
   </a-spin>
@@ -148,17 +109,6 @@
     approvalType: '',
     approvalUsers: []
   });
-
-  // const pipelineRoles = computed(() => {
-  //   const data = approvalRoles.find(
-  //     (item) => item.value === formData.value.role
-  //   );
-  //   return data?.items || [];
-  // });
-
-  // const handleRoleChange = (value) => {
-  //   formData.value.flowRole = '';
-  // };
 
   const getProjectSubjectList = async () => {
     try {

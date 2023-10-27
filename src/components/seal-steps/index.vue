@@ -1,7 +1,13 @@
 <template>
-  <span class="steps-box">
-    <span v-for="(item, index) in steps" :key="index" class="wrap">
-      <span class="item" :class="[item.status]">
+  <div class="steps-box">
+    <div v-for="(item, index) in steps" :key="index" class="wrap">
+      <a-tooltip :content="item.title">
+        <span class="label">{{ item.title }}</span>
+      </a-tooltip>
+      <span
+        class="item"
+        :class="{ [item.status]: true, last: index === steps.length - 1 }"
+      >
         <span class="title">
           <a-tooltip
             v-if="item.status === 'Error' && item.info"
@@ -11,13 +17,13 @@
           </a-tooltip>
         </span>
       </span>
-      <span
+      <!-- <span
         v-if="index !== steps.length - 1"
         class="seperator"
         :class="[{ [item.status]: item.status !== 'Error' }]"
-      ></span>
-    </span>
-  </span>
+      ></span> -->
+    </div>
+  </div>
 </template>
 
 <script lang="ts" setup>
@@ -43,13 +49,26 @@
   .steps-box {
     display: flex;
     align-items: center;
-    justify-content: flex-start;
 
     .wrap {
       display: flex;
-      flex: 1;
+      flex-direction: column;
       align-items: center;
       justify-content: flex-start;
+      width: 45px;
+      margin-right: 5px;
+
+      .label {
+        width: 50px;
+        margin-bottom: 4px;
+        padding: 0 4px;
+        overflow: hidden;
+        color: var(--color-text-2);
+        font-size: 12px;
+        white-space: nowrap;
+        text-align: center;
+        text-overflow: ellipsis;
+      }
 
       &:last-child {
         flex: initial;
@@ -58,6 +77,8 @@
 
     .seperator {
       flex: 1;
+      min-width: 20px;
+      max-width: 60px;
       height: 1px;
       margin: 0 6px;
       background-color: var(--color-border-2);
@@ -84,34 +105,65 @@
     }
 
     .item {
+      position: relative;
       display: flex;
       align-items: center;
       justify-content: center;
-      width: 12px;
-      height: 12px;
+      width: 8px;
+      height: 8px;
       color: var(--color-text-2);
       font-size: 12px;
       background-color: var(--color-fill-3);
       border-radius: 50%;
 
+      &::after {
+        position: absolute;
+        left: 10px;
+        display: inline-block;
+        width: 39px;
+        height: 1px;
+        background-color: var(--color-border-2);
+        content: '';
+      }
+
+      &.last::after {
+        display: none;
+      }
+
       &.Ready {
         color: #fff;
         background-color: var(--seal-color-success);
+
+        &::after {
+          background-color: var(--seal-color-success);
+        }
       }
 
       &.Error {
         color: #fff;
         background-color: var(--seal-color-error);
+
+        &::after {
+          background-color: var(--seal-color-error);
+        }
       }
 
       &.Running {
         color: #fff;
         background-color: var(--seal-color-warning);
+
+        &::after {
+          background-color: var(--seal-color-warning);
+        }
       }
 
       &.Pending {
         color: #fff;
         background-color: var(--color-fill-3);
+
+        &::after {
+          background-color: var(--color-border-2);
+        }
       }
 
       .title {

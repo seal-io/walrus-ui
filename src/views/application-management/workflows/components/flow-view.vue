@@ -31,7 +31,8 @@
   import { websocketEventType } from '@/views/config';
   import { useSetChunkRequest } from '@/api/axios-chunk-request';
   import useCallCommon from '@/hooks/use-call-common';
-  import { ref, onMounted, nextTick, computed } from 'vue';
+  import { PROJECT } from '@/router/config';
+  import { ref, onMounted, nextTick, computed, watch } from 'vue';
   import { Graph, Node, Edge, Platform } from '@antv/x6';
   import '@antv/x6-vue-shape';
   import { useResizeObserver } from '@vueuse/core';
@@ -51,6 +52,7 @@
     PIPELINE_API,
     PIPELINE_EXECUTION_API
   } from '../api';
+  import testData from '../config/test';
 
   const props = defineProps({
     containerHeight: {
@@ -71,7 +73,7 @@
   const DX2 = 40;
   let chunkRequestToken: any = null;
   const { setChunkRequest } = useSetChunkRequest();
-  const { route } = useCallCommon();
+  const { route, router } = useCallCommon();
   let graphIns: any = null;
   const showLogModal = ref(false);
   const updateActive = ref('');
@@ -83,7 +85,7 @@
   const loading = ref(false);
   const flowId = route.params.flowId as string;
   const execId = route.query.execId as string;
-  let lastestExecId = '';
+  const lastestExecId = ref('');
 
   const handleDeleteLogTab = (key) => {
     const index = _.findIndex(logTabs.value, (item) => item.id === key);
@@ -94,7 +96,7 @@
     if (!flowId) return null;
     try {
       const { data } = await queryPipelineLatestRecordDetail({ flowId });
-      lastestExecId = data?.id || '';
+      lastestExecId.value = data?.id || '';
       return data;
     } catch (error) {
       // eslint-disable-next-line no-console
@@ -339,6 +341,20 @@
       });
     });
 
+    graphIns?.on('node:view-service', ({ view, e }) => {
+      e.stopPropagation();
+      const nodeData = view.cell.getData?.();
+      router.push({
+        name: PROJECT.ServiceDetail,
+        params: {
+          projectId: route.params.projectId,
+          environmentId: nodeData?.spec?.environment?.id
+        },
+        query: {
+          id: nodeData?.spec?.name
+        }
+      });
+    });
     graphIns?.on('node:click', (e) => {
       console.log('node:click', e);
     });
@@ -357,13 +373,8 @@
   };
 
   const updateChunkedList = (data) => {
+    console.log('updateChunkedList===', data);
     // let collections = data?.collection || [];
-    // // DELETE
-    // if (data?.type === websocketEventType.DELETE) {
-    //   dataList.value = _.filter(dataList.value, (item) => {
-    //     return !_.find(ids, (id) => id === item.id);
-    //   });
-    // }
     // // UPDATE
     // if (data?.type === websocketEventType.UPDATE) {
     //   _.each(collections, (item) => {
@@ -386,11 +397,12 @@
 
   const createWorkflowsChunkRequest = () => {
     chunkRequestToken?.cancel();
-    const url = `${PROJECT_API_PREFIX()}${PIPELINE_API}/${flowId}${PIPELINE_EXECUTION_API}/${
-      execId || lastestExecId
-    }`;
+    const url = `${PROJECT_API_PREFIX()}${PIPELINE_API}/${flowId}${PIPELINE_EXECUTION_API}`;
     try {
       chunkRequestToken = setChunkRequest({
+        params: {
+          query: execId
+        },
         url: `${url}`,
         handler: updateHandler
       });
@@ -399,8 +411,8 @@
     }
   };
 
-  onMounted(() => {
-    init();
+  onMounted(async () => {
+    await init();
     nextTick(() => {
       createWorkflowsChunkRequest();
     });

@@ -107,4 +107,11 @@ export const getStackLineData = ({
   return result;
 };
 
+export const setDurationValue = (val) => {
+  if (!val) return '-';
+  const seconds = val % 60;
+  const min = Math.floor(val / 60);
+  return `${min}'${seconds}"`;
+};
+
 export default {};

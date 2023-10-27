@@ -17,7 +17,7 @@
   >
     <div style="width: 100%; text-align: center">
       <a-form ref="formref" :model="formData" auto-label-width>
-        <a-form-item
+        <!-- <a-form-item
           field="displayName"
           hide-label
           validate-trigger="change"
@@ -36,7 +36,7 @@
             :max-length="63"
             show-word-limit
           ></seal-input>
-        </a-form-item>
+        </a-form-item> -->
         <a-form-item
           field="name"
           hide-label
@@ -129,7 +129,7 @@
   const id = route.query.flowId as string;
   const formref = ref();
   const formData = ref({
-    displayName: '',
+    // displayName: '',
     name: '',
     type: 'default',
     description: '',

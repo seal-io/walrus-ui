@@ -27,6 +27,7 @@ export default {
   'workflow.stage.add.title': 'New Stage',
   'workflow.stage.add.button': 'Add New Stage',
   'workflow.stage.records': 'Records',
+  'workflow.stage.recently.result': 'Recently Running Result',
   'workflow.stage.approve': 'Approval',
   'workflow.task.rules.taskName': 'task name required',
   'workflow.task.rules.approvalMode': 'please select approval mode',
@@ -36,5 +37,7 @@ export default {
   'workflow.task.form.selectTask': 'Select Task Type',
   'workflow.task.form.fillin': 'Fill in the Form',
   'workflow.task.form.selectenv': 'Select Environment',
-  'workflow.task.form.deployEnv': 'Service Deployment Environment'
+  'workflow.task.form.deployEnv': 'Service Deployment Environment',
+  'workflow.task.run.order': 'The {order} Running',
+  'workflow.task.run.user': 'Executor'
 };
