@@ -17,9 +17,9 @@ export default [
       requiresAuth: true,
       selectedMenu: PROJECT.List,
       permission: {
-        resource: Resources.Projects,
+        resource: Resources.Workflows,
         type: permissionKey.projectRoles,
-        actions: ['GET']
+        actions: ['POST']
       },
       cachePages: [],
       icon: 'icon-apps'
@@ -38,7 +38,7 @@ export default [
       requiresAuth: true,
       selectedMenu: PROJECT.List,
       permission: {
-        resource: Resources.Projects,
+        resource: Resources.WorkflowExecutions,
         type: permissionKey.projectRoles,
         actions: ['GET']
       },
@@ -59,7 +59,7 @@ export default [
       requiresAuth: true,
       selectedMenu: PROJECT.List,
       permission: {
-        resource: Resources.Projects,
+        resource: Resources.WorkflowExecutions,
         type: permissionKey.projectRoles,
         actions: ['GET']
       },

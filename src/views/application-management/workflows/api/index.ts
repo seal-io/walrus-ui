@@ -9,8 +9,11 @@ export const PIPELINE_API = '/workflows';
 
 export const PIPELINE_EXECUTION_API = '/executions';
 
-export const PROJECT_API_PREFIX = () => {
-  const { projectId } = router.currentRoute.value.params;
+export const PROJECT_API_PREFIX = (params?: {
+  environmentId?: string;
+  projectId?: string;
+}) => {
+  const { projectId } = params || router.currentRoute.value.params;
   return `/projects/${projectId}`;
 };
 
@@ -57,8 +60,10 @@ export function queryPipelineDetail(params: { id: string }, token?) {
   );
 }
 
-export function applyPipeline(data: { id: string }) {
-  return axios.post(`${PROJECT_API_PREFIX()}${PIPELINE_API}/${data.id}/apply`);
+export function applyPipeline(data: { id: string; projectId: string }) {
+  return axios.post(
+    `${PROJECT_API_PREFIX(data)}${PIPELINE_API}/${data.id}/apply`
+  );
 }
 
 export function retryApplyPipeline(data: { flowId: string; execId: string }) {

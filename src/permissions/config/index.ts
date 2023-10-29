@@ -18,7 +18,13 @@ export enum Resources {
   ProjectSubjects = 'projectSubjects',
   Subjects = 'subjects',
   Tokens = 'tokens',
-  Catalogs = 'catalogs'
+  Catalogs = 'catalogs',
+  Workflows = 'workflows',
+  WorkflowExecutions = 'workflowExecutions',
+  WorkflowStageExecutions = 'workflowStageExecutions',
+  WorkflowStepExecutions = 'workflowStepExecutions',
+  WorkflowApply = '/v1/projects/:project/workflows/:workflow/apply',
+  WorkflowResubmit = '/v1/projects/:project/workflows/:workflow/executions/:workflowexecution/resubmit'
 }
 
 const enum MenuOrder {
@@ -51,7 +57,11 @@ export enum ResourcesOrder {
   Variables = MenuOrder.OperationHub,
   Settings = MenuOrder.SystemSettings,
   Subjects = MenuOrder.Subjects,
-  Tokens = MenuOrder.SystemTokens
+  Tokens = MenuOrder.SystemTokens,
+  Workflows = MenuOrder.ApplicationManagement,
+  WorkflowExecutions = MenuOrder.ApplicationManagement,
+  WorkflowStageExecutions = MenuOrder.ApplicationManagement,
+  WorkflowStepExecutions = MenuOrder.ApplicationManagement
 }
 
 // project resource order
@@ -61,6 +71,7 @@ export enum ProjectResourcesOrder {
   Variables,
   Connectors,
   ProjectSubjects,
+  Workflows,
   Services,
   ServiceRevisions,
   ServiceResources

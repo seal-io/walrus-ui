@@ -9,10 +9,19 @@
         @change="handleSelectChange"
       ></Breadcrumb>
       <template #right>
-        <a-space fill :size="20" align="end" style="margin-right: 60px">
-          <!-- <a-button type="primary" size="small" @click="handleSubmitApply">
-            {{ $t('common.button.saverun') }}
-          </a-button> -->
+        <a-space
+          v-if="
+            userStore.hasProjectResourceActions({
+              projectID,
+              resource: Resources.Workflows,
+              actions: [Actions.POST]
+            })
+          "
+          fill
+          :size="20"
+          align="end"
+          style="margin-right: 60px"
+        >
           <a-button type="primary" size="small" @click="handleSubmit">
             {{ $t('common.button.save') }}
           </a-button>
@@ -30,6 +39,8 @@
 
 <script lang="ts" setup>
   import { ref, computed } from 'vue';
+  import { Resources, Actions } from '@/permissions/config';
+  import { useUserStore } from '@/store';
   import { WORKFLOW } from '@/router/config';
   import useCallCommon from '@/hooks/use-call-common';
   import useProjectBreadcrumbData from '@/views/application-management/projects/hooks/use-project-breadcrumb-data';
@@ -39,7 +50,9 @@
   import { createPipeline, updatePipeline, applyPipeline } from '../api';
 
   const height = 'calc(100vh - 90px)';
+  const userStore = useUserStore();
   const { t, route, router } = useCallCommon();
+  const projectID = route.params.projectId as string;
   const flowId = route.query.flowId as string;
   const flow = ref();
   const {
@@ -125,20 +138,6 @@
       } else {
         await createPipeline(data);
       }
-      router.back();
-    } catch (error) {
-      // eslint-disable-next-line no-console
-    }
-  };
-
-  const handleSubmitApply = async () => {
-    const formData = flow.value?.getData?.();
-    try {
-      const data = {
-        ...formData.basic,
-        stages: formData.stages
-      };
-      await applyPipeline(data);
       router.back();
     } catch (error) {
       // eslint-disable-next-line no-console

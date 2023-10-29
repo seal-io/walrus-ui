@@ -124,5 +124,6 @@ export default {
   'common.filter.filled.false': '未填写',
   'common.environment.development': '开发',
   'common.environment.production': '生产',
-  'common.environment.staging': '预发布'
+  'common.environment.staging': '预发布',
+  'common.time.label': '时间'
 };

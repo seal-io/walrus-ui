@@ -34,12 +34,20 @@
               "
             >
               <a-button
+                v-if="
+                  userStore.hasProjectResourceActions({
+                    projectID,
+                    resource: Resources.WorkflowExecutions,
+                    actions: [Actions.GET]
+                  })
+                "
                 type="text"
                 style="padding-left: 0"
                 @click="handleViewResult(record)"
               >
                 #{{ record.version }}
               </a-button>
+              <span v-else> #{{ record.version }}</span>
             </a-tooltip>
           </template>
         </a-table-column>
@@ -152,6 +160,8 @@
 <script lang="ts" setup>
   import _ from 'lodash';
   import dayjs from 'dayjs';
+  import { Resources, Actions } from '@/permissions/config';
+  import { useUserStore } from '@/store';
   import { ref, reactive, onMounted } from 'vue';
   import { setDurationValue } from '@/views/config/utils';
   import { ordinalNumber } from '@/utils/func';
@@ -178,13 +188,15 @@
   } from '../api';
 
   let timer: any = null;
+  const { currentLocale } = useLocale();
+  const { route, router } = useCallCommon();
+  const userStore = useUserStore();
   const { rowSelection, selectedKeys, handleSelectChange } = useRowSelect();
   const { sort, sortOrder, setSortDirection } = UseSortDirection({
     defaultSortField: '-createTime',
     defaultOrder: 'descend'
   });
-  const { currentLocale } = useLocale();
-  const { route, router } = useCallCommon();
+  const projectID = route.params.projectId as string;
   const loading = ref(false);
   const dataList = ref<PipelineRecordsRow[]>([]);
   const total = ref(0);

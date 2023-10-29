@@ -259,7 +259,7 @@
           border-right: 1px solid var(--color-border-2);
 
           &.size-12 {
-            padding: 2px 2px 3px 0;
+            padding: 2px 3px 2px 0;
             font-size: 12px;
           }
         }
