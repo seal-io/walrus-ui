@@ -34,10 +34,15 @@ export const initFormStateBySchema = ({
     const component = parseUIExtensions(property, requiredFlag);
     fieldSchema.uiSchema = component;
 
-    if (type !== FIELD_TYPE.OBJECT) {
+    if (type !== FIELD_TYPE.OBJECT || property.additionalProperties) {
       fieldSchemaList.push(fieldSchema);
     }
     if (type === FIELD_TYPE.OBJECT) {
+      _.set(
+        formData,
+        _.join(fieldSchema.fieldPath, '.'),
+        property.default || {}
+      );
       initFormStateBySchema({
         schema: property,
         formData,

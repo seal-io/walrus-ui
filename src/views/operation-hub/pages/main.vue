@@ -70,11 +70,11 @@
   import { OperatorHubTabs } from '@/views/config';
   import HeaderInfo from '@/components/header-info/index.vue';
   import IconBtnGroup from '@/components/icon-btn-group/index.vue';
+  import dynamicForm from '@/components/dynamic-form/index.vue';
   import Connectors from '../connectors/components/table-list.vue';
   import Templates from '../templates/pages/list.vue';
   import Catalogs from '../catalogs/pages/list.vue';
   import GlobalVariables from '../variables/pages/list.vue';
-  import dynamicForm from '../dynamic-form/index.vue';
 
   const iconList = [
     {

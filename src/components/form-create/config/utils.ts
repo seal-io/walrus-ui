@@ -157,7 +157,10 @@ export const parseOptions = (comSchema) => {
   let options: OptionsItem[] = [];
 
   const defaultValue =
-    get(comSchema, 'options') || get(comSchema, 'default') || [];
+    get(comSchema, 'options') ||
+    get(comSchema, 'enum') ||
+    get(comSchema, 'default') ||
+    [];
   if (defaultValue.length) {
     options = map(defaultValue, (val) => {
       return {

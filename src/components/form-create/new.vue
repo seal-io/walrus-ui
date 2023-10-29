@@ -6,13 +6,16 @@
     computed,
     watch,
     defineComponent,
-    withModifiers
+    withModifiers,
+    toRaw
   } from 'vue';
   import axios from 'axios';
   import { useI18n } from 'vue-i18n';
   import ThumbButton from '@/components/buttons/thumb-button.vue';
   import SealFormItemWrap from '@/components/seal-form/components/seal-form-item-wrap.vue';
   import i18n from '@/locale/index';
+  import { FieldSchema } from '@/components/dynamic-form/config/interface';
+  import { Widget } from '@/components/dynamic-form/config/widget';
   import { ComponentSchema } from './config/interface';
   import { json2Yaml, yaml2Json } from './config/yaml-parse';
   import formComponents from './components';
@@ -43,7 +46,7 @@
         }
       },
       formSchema: {
-        type: Array as PropType<ComponentSchema[]>,
+        type: Array as PropType<FieldSchema[]>,
         default() {
           return [];
         }
@@ -93,7 +96,7 @@
       const { t } = useI18n();
       const submitLoading = ref(false);
       const formref = ref();
-      const schemaList = ref<ComponentSchema[]>([]);
+      const schemaList = ref<FieldSchema[]>([]);
       const formData = ref({});
       const subGroupCache = ref({});
       const subGroupListCache = ref({});
@@ -115,7 +118,7 @@
       const activeSchemaList = computed(() => {
         if (!activeMenu.value) {
           const list = _.filter(schemaList.value, (sItem) => {
-            if (sItem.showIf) {
+            if (sItem.uiSchema.showIf) {
               return getConditionValue(sItem, {
                 ...props.attributes,
                 ...formData.value
@@ -123,19 +126,20 @@
             }
             return true;
           });
+          console.log('schemaList.value======', list, schemaList.value);
           return list;
         }
         const list = _.filter(schemaList.value, (sItem) => {
-          if (sItem.showIf) {
+          if (sItem.uiSchema.showIf) {
             return (
-              sItem.subGroup === activeMenu.value &&
+              sItem.uiSchema.subGroup === activeMenu.value &&
               getConditionValue(sItem, {
                 ...props.attributes,
                 ...formData.value
               })
             );
           }
-          return sItem.subGroup === activeMenu.value;
+          return sItem.uiSchema.subGroup === activeMenu.value;
         });
 
         return list;
@@ -161,13 +165,13 @@
             val = val || [];
           }
           formData.value[item.name] = val;
+          _.set(formData.value, item.fieldPath.join('.'), val);
         });
       };
       const calcGridItemSpan = (fm, index) => {
         const isEvenPosition = (index + 1) % 2 === 0;
         const fmSchemaIsCollectionType =
-          schemaType.isCollectionType(fm.type) ||
-          schemaType.isUnknownType(fm.type);
+          fm.uiSchema.widget === Widget.AceEditor;
         let bilingSchema: any = null;
         if (isEvenPosition) {
           bilingSchema = activeSchemaList.value[index - 1];
@@ -188,8 +192,7 @@
         }
 
         const bilingSchemaIsCollectionType =
-          schemaType.isCollectionType(bilingSchema.type) ||
-          schemaType.isUnknownType(bilingSchema.type);
+          bilingSchema.uiSchema.widget === Widget.AceEditor;
 
         if (
           (fmSchemaIsCollectionType && bilingSchemaIsCollectionType) ||
@@ -220,10 +223,15 @@
         }
         return calcGridItemSpan(fm, index);
       };
-      const handleSelectInputChange = (e: any, type) => {
+      const handleSelectInputChange = (e: any, fm) => {
+        const { type } = fm;
         if (schemaType.isListNumber(type) && !numberReg.test(e.data)) {
           e.target.value = e.target.value.replace(/[^\d]/g, '');
         }
+      };
+      const handleFieldChange = (val, fm) => {
+        _.set(formData.value, _.join(fm.fieldPath, '.'), val);
+        console.log('formData===change', formData.value, val);
       };
       const handleClickSubGroup = (k) => {
         activeMenu.value = k;
@@ -246,41 +254,34 @@
         thirdGroupCache.value = {};
 
         let list = _.map(props.formSchema, (o, i) => {
-          const item = _.cloneDeep(o);
-          const content = parseComponentSchema(item);
+          const item = _.cloneDeep(toRaw(o));
+          const ui = item.uiSchema || [];
           // filter empty group
           const groupConfig: string[] = _.filter(
-            _.split(item.group, /\/+/) || [],
+            _.split(ui.group, /\/+/) || [],
             (s) => !!s
           );
           const mainGroup = _.get(groupConfig, '0') || '';
           const subGroup = _.get(groupConfig, '1') || '';
           const thirdGroup = _.get(groupConfig, '2') || '';
 
-          item.showCondition = parseQuery(item.showIf);
-          item.conditions = parseExpression(item.showIf);
-          item.order = item.required ? 0 : 100 * (i + 1);
-          item.parentCom = _.get(content, 'component.0');
-          item.childCom = _.get(content, 'component.1');
-          item.labelList = parseMapstring(
+          ui.showCondition = parseQuery(ui.showIf);
+          ui.conditions = parseExpression(ui.showIf);
+          ui.order = ui.required ? 0 : 100 * (i + 1);
+          ui.parentCom = _.get(ui, 'component.0');
+          ui.childCom = _.get(ui, 'component.1');
+          ui.labelList = parseMapstring(
             item,
-            _.get(formData.value, item.name)
+            _.get(formData.value, item.fieldPath.join('.'))
           );
-          item.subGroup = subGroup;
-          item.mainGroup = mainGroup;
-          item.thirdGroup = thirdGroup;
-          item.subGroupOrder = !_.get(subGroupCache.value, subGroup) ? 0 : 1;
-          item.thirdGroupOrder = !_.get(thirdGroupCache.value, thirdGroup)
+          ui.subGroup = subGroup;
+          ui.mainGroup = mainGroup;
+          ui.thirdGroup = thirdGroup;
+          ui.subGroupOrder = !_.get(subGroupCache.value, subGroup) ? 0 : 1;
+          ui.thirdGroupOrder = !_.get(thirdGroupCache.value, thirdGroup)
             ? 0
             : 1;
           item.options = parseOptions(item);
-          item.props = _.get(content, 'props') || {};
-          item.rules = _.map(content.rules, (sItem) => {
-            sItem.message = i18n.global.t(sItem?.message, {
-              name: item.label || item.name
-            });
-            return sItem;
-          });
 
           if (subGroup) {
             subGroupCache.value[subGroup] = 1;
@@ -297,10 +298,11 @@
           if (subGroupListCache.value[mainGroup] && subGroup) {
             subGroupListCache.value[mainGroup] = 1;
           }
-          showIfMap[item.name] = item.order;
+          showIfMap[item.name] = ui.order;
           return item;
         });
-        list = _.map(list, (sItem) => {
+        list = _.map(list, (oItem) => {
+          const sItem = oItem.uiSchema || {};
           if (sItem.showIf) {
             const relativeOrders = _.map(sItem.conditions, (v) => {
               return _.get(showIfMap, v.variable);
@@ -315,16 +317,13 @@
             sItem.subGroup = OTHER_SUB_GROUP;
           }
           // transform default value data type
-          if (
-            schemaType.isCollectionType(sItem.type) ||
-            schemaType.isUnknownType(sItem.type)
-          ) {
-            sItem.default = json2Yaml(sItem.default);
-          }
-          return sItem;
+
+          return oItem;
         });
-        list = _.sortBy(list, (pItem) => pItem.order);
+        list = _.sortBy(list, (pItem) => pItem.uiSchema.order);
+
         schemaList.value = list;
+        console.log('schemaList.value====', schemaList.value);
       };
       const handleAddLabel = (obj, list) => {
         list.push({ ...obj });
@@ -339,10 +338,10 @@
       const resetFieldsDefaultValue = () => {
         _.each(schemaList.value, (item) => {
           if (
-            item.showIf &&
+            item.uiSchema.showIf &&
             !getConditionValue(item, { ...props.attributes, ...formData.value })
           ) {
-            Reflect.deleteProperty(formData.value, item.name);
+            _.unset(formData.value, item.fieldPath.join('.'));
           }
         });
       };
@@ -361,8 +360,8 @@
       };
       const validateLabels = () => {
         const result = _.find(schemaList.value, (sItem) => {
-          if (sItem.labelList?.length) {
-            return _.some(sItem.labelList, (item) => {
+          if (sItem.uiSchema.labelList?.length) {
+            return _.some(sItem.uiSchema.labelList, (item) => {
               return !item.key;
             });
           }
@@ -391,11 +390,11 @@
           const errorField = _.get(_.keys(result), '0');
           const d = _.find(
             schemaList.value,
-            (item) => item.name === errorField
+            (item) => _.join(item.fieldPath, '.') === errorField
           );
-          activeMenu.value = d?.subGroup || activeMenu.value;
+          activeMenu.value = d?.uiSchema.subGroup || activeMenu.value;
         } else if (validLabels) {
-          activeMenu.value = validLabels?.subGroup || activeMenu.value;
+          activeMenu.value = validLabels?.uiSchema.subGroup || activeMenu.value;
         }
 
         if (!result && !validLabels) {
@@ -544,23 +543,25 @@
         return null;
       };
       const renderOtherType = (fm, index) => {
-        const ChildComponent = formComponents[fm.childCom];
-        const ParentComponent = formComponents[fm.parentCom];
+        const ChildComponent = formComponents[fm.uiSchema.childCom];
+        const ParentComponent = formComponents[fm.uiSchema.parentCom];
 
         return (
           <ParentComponent
             key={`${props.formId}_editorId_${index}`}
             {...fm.props}
             v-model={formData.value[fm.name]}
-            label={`${fm.label || fm.name}`}
-            required={fm.required}
+            model-value={_.get(formData.value, _.join(fm.fieldPath, '.'))}
+            label={`${fm.title || fm.name}`}
+            required={fm.uiSchema.required}
             popup-info={fm.description}
             editor-default-value={formData.value[fm.name] || ''}
             style={{ width: '100%' }}
             width="100%"
             editor-id={`${fm.name}_editorId_${index}`}
             event-handler={() => eventHandler(fm.name)}
-            onInput={(e) => handleSelectInputChange(e, fm.type)}
+            onInput={(e) => handleSelectInputChange(e, fm)}
+            onChange={(val) => handleFieldChange(val, fm)}
           >
             {fm.childCom ? (
               <>
@@ -583,12 +584,12 @@
       };
 
       const renderMapStringType = (fm) => {
-        const ParentComponet = formComponents[fm.parentCom];
-        const ChildComponent = formComponents[fm.childCom];
+        const ParentComponet = formComponents[fm.uiSchema.parentCom];
+        const ChildComponent = formComponents[fm.uiSchema.childCom];
         return (
           <div style="display: flex; flex: 1; flex-direction: column">
             <SealFormItemWrap
-              label={fm.label || fm.name}
+              label={fm.title || fm.name}
               required={fm.required}
               show-required-mark={false}
               popup-info={fm.description}
@@ -666,12 +667,12 @@
                 field={fm.name}
                 rules={fm.rules}
                 hide-label
-                label={fm.label || fm.name}
+                label={fm.title || fm.name}
                 validate-trigger={['change']}
                 v-slots={{
                   label: () => (
                     <span>
-                      <span>{fm.label || fm.name}</span>
+                      <span>{fm.title || fm.name}</span>
                       {fm.description ? (
                         <a-tooltip content={fm.description}>
                           <icon-info-circle
@@ -686,9 +687,7 @@
                   )
                 }}
               >
-                {schemaType.isMapString(fm.type)
-                  ? renderMapStringType(fm)
-                  : renderOtherType(fm, index)}
+                {renderOtherType(fm, index)}
               </a-form-item>
             </a-grid-item>
           );
