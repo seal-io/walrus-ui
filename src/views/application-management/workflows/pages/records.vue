@@ -39,7 +39,18 @@
               @click="handleClick"
               @select="handleSelect"
             ></DropButtonGroup> -->
-            <a-button size="mini" type="text" @click="handleSelect">
+            <a-button
+              v-if="
+                userStore.hasProjectResourceActions({
+                  projectID,
+                  resource: Resources.Workflows,
+                  actions: [Actions.POST]
+                })
+              "
+              size="mini"
+              type="text"
+              @click="handleSelect"
+            >
               <a-tooltip :content="$t('common.button.edit')">
                 <icon-edit style="stroke-width: 4" />
               </a-tooltip>
@@ -60,6 +71,8 @@
 <script lang="ts" setup>
   import _ from 'lodash';
   import { ref, onMounted } from 'vue';
+  import { Resources, Actions } from '@/permissions/config';
+  import { useUserStore } from '@/store';
   import { WORKFLOW } from '@/router/config';
   import HeaderInfo from '@/components/header-info/index.vue';
   import useCallCommon from '@/hooks/use-call-common';
@@ -84,12 +97,14 @@
     breadCrumbList,
     handleBreadChange
   } = useProjectBreadcrumbData();
+  const userStore = useUserStore();
   const height = 'calc(100vh - 262px)';
   const { route, router } = useCallCommon();
   const { activeKey, setPageTabActive } = useTabActive(
     TabPage.PIPELINETAB,
     PipelineTabs.LATESTRUN
   );
+  const projectID = route.params.projectId as string;
   const id = route.params.flowId as string;
   const currentInfo = ref<any>({});
 
