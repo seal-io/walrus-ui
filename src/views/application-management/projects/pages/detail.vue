@@ -121,7 +121,7 @@
             v-if="
               userStore.hasProjectResourceActions({
                 projectID: route.params.projectId,
-                resource: Resources.ProjectSubjects,
+                resource: Resources.Workflows,
                 actions: [Actions.GET]
               })
             "

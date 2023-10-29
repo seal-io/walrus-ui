@@ -160,6 +160,8 @@
     provide,
     nextTick
   } from 'vue';
+  import { Resources, Actions } from '@/permissions/config';
+  import { useUserStore } from '@/store';
   import useCallCommon from '@/hooks/use-call-common';
   import { InputWidth } from '@/views/config';
   import { ListItem } from '@/views/config/interface';
@@ -191,6 +193,7 @@
     }
   });
   const emits = defineEmits(['save', 'cancel', 'update:show', 'delete']);
+  const userStore = useUserStore();
   const { route, t } = useCallCommon();
   const serviceInfo = reactive({
     enable: false,
@@ -243,7 +246,13 @@
       environmentList.value = items?.map((item) => {
         return {
           label: item.name,
-          value: item.id
+          value: item.id,
+          disabled: !userStore.hasProjectResourceActions({
+            projectID: route.params.projectId,
+            environmentID: item.id,
+            resource: Resources.Environments,
+            actions: [Actions.DELETE]
+          })
         };
       });
     } catch (error) {

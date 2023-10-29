@@ -1,5 +1,9 @@
 import { MoreAction } from '@/views/config/interface';
+import { useUserStore } from '@/store';
+import _ from 'lodash';
+import { Resources, Actions } from '@/permissions/config';
 
+const userStore = useUserStore();
 export const NodeType = {};
 
 export const CustomShape = {
@@ -8,6 +12,11 @@ export const CustomShape = {
   pipelineEdge: 'pipeline-edge'
 };
 
+export const WorkflowStatus = {
+  Running: 'Running',
+  Ready: 'Ready',
+  Pending: 'Pending'
+};
 export const approvalTypes = [
   {
     label: '或签',
@@ -162,7 +171,11 @@ export const moreActions: MoreAction[] = [
     status: 'normal',
     disabled: false,
     filterFun(currentInfo) {
-      return true;
+      return userStore.hasProjectResourceActions({
+        resource: Resources.Workflows,
+        projectID: _.get(currentInfo, 'project.id'),
+        actions: [Actions.PUT]
+      });
     }
   },
   {
@@ -173,7 +186,11 @@ export const moreActions: MoreAction[] = [
     status: 'normal',
     disabled: false,
     filterFun(currentInfo) {
-      return true;
+      return userStore.hasProjectResourceActions({
+        resource: Resources.WorkflowApply,
+        projectID: _.get(currentInfo, 'project.id'),
+        actions: [Actions.POST]
+      });
     }
   }
 ];
@@ -187,7 +204,11 @@ export const pipelineDetailActions: MoreAction[] = [
     status: 'normal',
     disabled: false,
     filterFun(currentInfo) {
-      return true;
+      return userStore.hasProjectResourceActions({
+        resource: Resources.Workflows,
+        projectID: _.get(currentInfo, 'project.id'),
+        actions: [Actions.PUT]
+      });
     }
   }
 ];
@@ -200,7 +221,11 @@ export const recordActions: MoreAction[] = [
     status: 'normal',
     disabled: false,
     filterFun(currentInfo) {
-      return true;
+      return userStore.hasProjectResourceActions({
+        resource: Resources.WorkflowExecutions,
+        projectID: _.get(currentInfo, 'project.id'),
+        actions: [Actions.GET]
+      });
     },
     props: {
       type: 'icon-xiangqing'

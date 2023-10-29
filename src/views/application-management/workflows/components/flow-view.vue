@@ -68,9 +68,9 @@
   });
   setPipelineNodeStyle(PipelineNodeSize);
 
-  const DX = 300;
-  const DY = 120;
-  const DX2 = 40;
+  const DX2 = 30;
+  const DY = PipelineNodeSize.height + 40;
+  const DX = PipelineNodeSize.width + 2 * DX2;
   let chunkRequestToken: any = null;
   const { setChunkRequest } = useSetChunkRequest();
   const { route, router } = useCallCommon();

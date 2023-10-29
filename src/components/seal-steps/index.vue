@@ -1,7 +1,13 @@
 <template>
   <div class="steps-box">
     <div v-for="(item, index) in steps" :key="index" class="wrap">
-      <a-tooltip :content="item.title">
+      <a-tooltip
+        :content="
+          item.status === 'Error' && item.info
+            ? `${item.title}: ${item.info}`
+            : item.title
+        "
+      >
         <span class="label">{{ item.title }}</span>
       </a-tooltip>
       <span
@@ -9,12 +15,12 @@
         :class="{ [item.status]: true, last: index === steps.length - 1 }"
       >
         <span class="title">
-          <a-tooltip
+          <!-- <a-tooltip
             v-if="item.status === 'Error' && item.info"
             :content="item.info"
           >
             <icon-exclamation />
-          </a-tooltip>
+          </a-tooltip> -->
         </span>
       </span>
       <!-- <span
@@ -60,7 +66,7 @@
 
       .label {
         width: 50px;
-        margin-bottom: 4px;
+        margin-bottom: 5px;
         padding: 0 4px;
         overflow: hidden;
         color: var(--color-text-2);

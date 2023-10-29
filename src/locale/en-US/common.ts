@@ -127,5 +127,6 @@ export default {
   'common.filter.filled.false': 'Not Filled',
   'common.environment.development': 'Development',
   'common.environment.production': 'Production',
-  'common.environment.staging': 'Staging'
+  'common.environment.staging': 'Staging',
+  'common.time.label': 'Duration'
 };

@@ -29,7 +29,7 @@
             v-if="
               userStore.hasProjectResourceActions({
                 projectID,
-                resource: Resources.Environments,
+                resource: Resources.Workflows,
                 actions: [Actions.POST]
               })
             "
@@ -41,7 +41,7 @@
             v-if="
               userStore.hasProjectResourceActions({
                 projectID,
-                resource: Resources.Environments,
+                resource: Resources.Workflows,
                 actions: [Actions.DELETE]
               })
             "
@@ -61,7 +61,15 @@
         :data="dataList"
         :pagination="false"
         row-key="id"
-        :row-selection="rowSelection"
+        :row-selection="
+          userStore.hasProjectResourceActions({
+            projectID,
+            resource: Resources.Workflows,
+            actions: [Actions.DELETE]
+          })
+            ? rowSelection
+            : null
+        "
         @sorter-change="handleSortChange"
         @selection-change="handleSelectChange"
       >
@@ -74,9 +82,21 @@
             :title="$t('applications.workflow.name')"
           >
             <template #cell="{ record }">
-              <a-link type="text" size="small" @click="handleView(record)">
+              <a-link
+                v-if="
+                  userStore.hasProjectResourceActions({
+                    projectID: record.project?.id,
+                    resource: Resources.WorkflowExecutions,
+                    actions: [Actions.GET]
+                  })
+                "
+                type="text"
+                size="small"
+                @click="handleView(record)"
+              >
                 {{ record.name }}
               </a-link>
+              <span v-else>{{ record.name }}</span>
             </template>
           </a-table-column>
           <a-table-column
@@ -101,12 +121,22 @@
                   "
                 >
                   <a-button
+                    v-if="
+                      userStore.hasProjectResourceActions({
+                        projectID: record.project?.id,
+                        resource: Resources.WorkflowExecutions,
+                        actions: [Actions.GET]
+                      })
+                    "
                     type="text"
                     style="padding-left: 0"
                     @click="handleViewResult(record)"
                   >
                     #{{ _.get(record, 'executions.0.version') }}
                   </a-button>
+                  <span v-else>
+                    #{{ _.get(record, 'executions.0.version') }}</span
+                  >
                 </a-tooltip>
                 <StatusLabel
                   :zoom="0.9"
@@ -180,10 +210,10 @@
             :width="210"
             :title="$t('common.table.operation')"
           >
-            <template #cell="{ record }">
+            <template #cell="{ record, rowIndex }">
               <DropButtonGroup
                 layout="horizontal"
-                :actions="moreActions"
+                :actions="setActionList(dataList[rowIndex])"
                 @select="(val) => handleDropSelect(val, record)"
               ></DropButtonGroup>
             </template>
@@ -267,6 +297,22 @@
       };
     });
   };
+
+  const setActionList = (row) => {
+    const list = _.filter(moreActions, (item) => {
+      if (item.value === 'delete') return false;
+      return item.filterFun ? item.filterFun(row) : true;
+    });
+    const res = _.map(list, (o) => {
+      const item = _.cloneDeep(o);
+      item.disabled = _.isFunction(item.disabled)
+        ? item.disabled?.(row)
+        : item.disabled;
+      return item;
+    });
+    return res;
+  };
+
   const handleCreate = () => {
     router.push({
       name: WORKFLOW.Edit,
@@ -325,7 +371,7 @@
 
   const handleApplyFlow = async (row) => {
     try {
-      await applyPipeline({ id: row.id });
+      await applyPipeline({ id: row.id, projectId: row.project?.id });
       execSucceed('applications.workflow.table.runmsg');
     } catch (error) {
       // ignore
@@ -339,7 +385,7 @@
     router.push({
       name: WORKFLOW.Edit,
       params: {
-        ...route.params
+        projctId: row.project?.id
       },
       query: {
         flowId: row.id
@@ -350,7 +396,7 @@
     router.push({
       name: WORKFLOW.Records,
       params: {
-        ...route.params,
+        projectId: row.project?.id,
         flowId: row.id
       }
     });
@@ -360,7 +406,7 @@
     router.push({
       name: WORKFLOW.Detail,
       params: {
-        ...route.params,
+        projectId: row.project?.id,
         flowId: row.id
       },
       query: {

@@ -7,9 +7,9 @@
 <script lang="ts" setup>
   import dayjs from 'dayjs';
   import { ref, watch, watchEffect } from 'vue';
-  import useCallCommon from '@/hooks/use-call-common';
+  import i18n from '@/locale';
 
-  const { t, locale } = useCallCommon();
+  const { t, locale } = i18n.global;
   const props = defineProps({
     startTime: {
       type: String,
@@ -40,6 +40,7 @@
   const time = ref('00:00:00');
   let timer: any = null;
   const updateTime = () => {
+    console.log('props.startTime', props.startTime);
     if (!props.startTime) {
       clearInterval(timer);
       return;
@@ -50,7 +51,7 @@
       // equal or great than 1 day
       if (res >= 24 * 60 * 60 * 1000) {
         const days = dayjs.duration(res).get('days');
-        const unit = days > 1 && locale.value === 'en-US' ? 's' : '';
+        const unit = days > 1 && locale === 'en-US' ? 's' : '';
         time.value = `${days}${t('common.time.day')}${unit} ${time.value}`;
       }
     }, 1000);

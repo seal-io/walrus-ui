@@ -36,7 +36,7 @@
   const height = 'calc(100vh - 62px)';
   const { t, route, router } = useCallCommon();
   const flowId = route.params.flowId as string;
-  const execId = route.params.execId as string;
+  const execId = route.query.execId as string;
   const flow = ref();
   const {
     getProjectList,

@@ -69,5 +69,13 @@ export default [
     order: ResourcesOrder.Environments,
     resourceOrder: ProjectResourcesOrder.Environments,
     actions: ['GET', 'POST', 'DELETE', 'PUT']
+  },
+  {
+    resource: Resources.Workflows,
+    title: 'menu.applicationManagement.workflow',
+    group: Group.AppManagement,
+    order: ResourcesOrder.Workflows,
+    resourceOrder: ProjectResourcesOrder.Workflows,
+    actions: ['GET', 'POST', 'DELETE', 'PUT']
   }
 ];

@@ -5,7 +5,9 @@
   import StatusLabel from '@/views/operation-hub/connectors/components/status-label.vue';
   import Autotip from '@arco-design/web-vue/es/_components/auto-tooltip/auto-tooltip';
   import { setDurationValue } from '@/views/config/utils';
+  import ClockTimer from '@/components/clock-timer/index.vue';
   import { TaskTypes } from '../task-types/config';
+  import { WorkflowStatus } from '../config';
   import MoreAction from './more-action.vue';
 
   export default defineComponent({
@@ -86,22 +88,32 @@
           </div>
           <div class="info">
             <span class="time item">
-              <span class="title">时间</span>
-              {node.value.data?.duration ? (
+              <span class="title">{t('common.time.label')}</span>
+              {_.get(node.value.data, 'status.summaryStatus') ===
+              WorkflowStatus.Running ? (
+                <ClockTimer
+                  start-time={node.value.data.createTime}
+                  show={true}
+                ></ClockTimer>
+              ) : (
                 <span>{setDurationValue(node.value.data?.duration)}</span>
-              ) : null}
+              )}
             </span>
             {node.value.data?.type === TaskTypes.SERVICE ? (
               <>
                 <span class="item">
-                  <span class="title">环境</span>
+                  <span class="title">
+                    {t('operation.environments.table.env')}
+                  </span>
                   <Autotip>{node.value.data?.spec?.environment?.name}</Autotip>
                 </span>
                 <span class="item">
-                  <span class="title">服务</span>
+                  <span class="title">
+                    {t('applications.applications.table.service')}
+                  </span>
                   <Autotip>
                     {_.get(node.value.data, 'status.summaryStatus') ===
-                    'Ready' ? (
+                    WorkflowStatus.Ready ? (
                       <a class="link" data-event="node:view-service">
                         {node.value.data?.spec?.name}
                       </a>

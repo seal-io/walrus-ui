@@ -21,7 +21,7 @@ export const defineCustomNode = () => {
             name: 'absolute',
             args: {
               x: 0,
-              y: PipelineNodeSize.height / 2 - 10
+              y: PipelineNodeSize.height / 2 - 25
             }
           },
 
@@ -41,7 +41,7 @@ export const defineCustomNode = () => {
             name: 'absolute',
             args: {
               x: PipelineNodeSize.width,
-              y: PipelineNodeSize.height / 2 - 10
+              y: PipelineNodeSize.height / 2 - 25
             }
           },
 
