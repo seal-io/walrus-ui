@@ -5,15 +5,18 @@
   import SealFormItemWrap from '@/components/seal-form/components/seal-form-item-wrap.vue';
   import formComponents from '@/components/form-create/components/index';
   import EditPageFooter from '@/components/edit-page-footer/index.vue';
+  import { FieldSchema } from './config/interface';
   import versionData from './config/versions-v3.json';
   import { initFormState } from './utils/init-form-state';
+  import DynamicForm from '../form-create/new.vue';
 
   export default defineComponent({
     setup() {
       const { t } = locale.global;
       const formref = ref();
       const formData = ref({});
-      let fieldSchemaList: any[] = [];
+      const attributes = ref({});
+      const fieldSchemaList = ref<FieldSchema[]>([]);
       const fetchData = () => {
         const result = initFormState(
           _.get(
@@ -22,8 +25,9 @@
           )
         );
         formData.value = result.formData;
-        fieldSchemaList = result.fieldSchemaList;
-        console.log('result===', formData.value, fieldSchemaList);
+        attributes.value = { ..._.cloneDeep(result.formData) };
+        fieldSchemaList.value = result.fieldSchemaList;
+        console.log('result===', formData.value, fieldSchemaList.value);
       };
       fetchData();
 
@@ -112,7 +116,7 @@
       };
       return () => (
         <>
-          <a-form ref={formref} model={formData.value} auto-label-width>
+          {/* <a-form ref={formref} model={formData.value} auto-label-width>
             <div class="content-wrap">
               <a-grid cols={24} col-gap={10} style="flex: 1">
                 {_.map(fieldSchemaList, (fm, index) => {
@@ -120,7 +124,12 @@
                 })}
               </a-grid>
             </div>
-          </a-form>
+          </a-form> */}
+          <DynamicForm
+            formSchema={fieldSchemaList.value}
+            attributes={attributes.value}
+            model={formData.value}
+          ></DynamicForm>
           <a-space fill>
             <a-button type="primary" onClick={() => handleSubmit()}>
               {t('common.button.save')}

@@ -15,6 +15,8 @@ export interface UISchema {
     operator: string;
     value: string;
   }>;
+  parentCom?: string;
+  childCom?: string;
   required?: boolean;
   hidden?: boolean;
   immutable?: boolean;
