@@ -88,6 +88,7 @@
             :hide-label="pageAction === PageAction.EDIT"
             hide-asterisk
             field="applicableEnvironmentType"
+            :disabled="!!id"
             :rules="[
               {
                 required: true,
