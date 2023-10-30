@@ -3,6 +3,7 @@
   import {
     PropType,
     ref,
+    provide,
     computed,
     watch,
     defineComponent,
@@ -13,18 +14,15 @@
   import { useI18n } from 'vue-i18n';
   import ThumbButton from '@/components/buttons/thumb-button.vue';
   import SealFormItemWrap from '@/components/seal-form/components/seal-form-item-wrap.vue';
-  import i18n from '@/locale/index';
   import { FieldSchema } from '@/components/dynamic-form/config/interface';
+  import { FieldDataType } from '@/components/dynamic-form/config/field-type';
   import { Widget } from '@/components/dynamic-form/config/widget';
-  import { ComponentSchema } from './config/interface';
   import { json2Yaml, yaml2Json } from './config/yaml-parse';
   import formComponents from './components';
   import {
-    parseMapstring,
+    parseAdditionalPropertiesField,
     parseOptions,
-    parseQuery,
-    getConditionValue,
-    parseComponentSchema
+    getConditionValue
   } from './config/utils';
   import { requiredOptions, hasValueOptions, schemaType } from './config/index';
   import { parseExpression } from './config/experssion-parser';
@@ -106,6 +104,8 @@
       const triggerValidate = ref(false);
       const validateState = ref(false); // if has executed validate
 
+      provide('showHintInput', true);
+
       const {
         queryName,
         filterFields,
@@ -119,21 +119,20 @@
         if (!activeMenu.value) {
           const list = _.filter(schemaList.value, (sItem) => {
             if (sItem.uiSchema.showIf) {
-              return getConditionValue(sItem, {
+              return getConditionValue(sItem.uiSchema, {
                 ...props.attributes,
                 ...formData.value
               });
             }
             return true;
           });
-          console.log('schemaList.value======', list, schemaList.value);
           return list;
         }
         const list = _.filter(schemaList.value, (sItem) => {
           if (sItem.uiSchema.showIf) {
             return (
               sItem.uiSchema.subGroup === activeMenu.value &&
-              getConditionValue(sItem, {
+              getConditionValue(sItem.uiSchema, {
                 ...props.attributes,
                 ...formData.value
               })
@@ -165,7 +164,7 @@
             val = val || [];
           }
           formData.value[item.name] = val;
-          _.set(formData.value, item.fieldPath.join('.'), val);
+          _.set(formData.value, item.fieldPath, val);
         });
       };
       const calcGridItemSpan = (fm, index) => {
@@ -224,13 +223,17 @@
         return calcGridItemSpan(fm, index);
       };
       const handleSelectInputChange = (e: any, fm) => {
-        const { type } = fm;
-        if (schemaType.isListNumber(type) && !numberReg.test(e.data)) {
+        console.log('formData=', e);
+
+        if (FieldDataType.isListNumber(fm) && !numberReg.test(e.data)) {
           e.target.value = e.target.value.replace(/[^\d]/g, '');
+        } else {
+          _.set(formData.value, fm.fieldPath, e);
         }
+        console.log('formData===input', formData.value, e.target.value);
       };
       const handleFieldChange = (val, fm) => {
-        _.set(formData.value, _.join(fm.fieldPath, '.'), val);
+        _.set(formData.value, fm.fieldPath, val);
         console.log('formData===change', formData.value, val);
       };
       const handleClickSubGroup = (k) => {
@@ -241,8 +244,9 @@
           });
         }
       };
-      const eventHandler = (filedName) => {
-        formref.value?.validateField?.(filedName);
+      const eventHandler = (fm) => {
+        const fieldName = _.join(fm.fieldPath, '.');
+        formref.value?.validateField?.(fieldName);
       };
       const setSchemaList = () => {
         const showIfMap = {};
@@ -265,14 +269,13 @@
           const subGroup = _.get(groupConfig, '1') || '';
           const thirdGroup = _.get(groupConfig, '2') || '';
 
-          ui.showCondition = parseQuery(ui.showIf);
           ui.conditions = parseExpression(ui.showIf);
           ui.order = ui.required ? 0 : 100 * (i + 1);
           ui.parentCom = _.get(ui, 'component.0');
           ui.childCom = _.get(ui, 'component.1');
-          ui.labelList = parseMapstring(
+          ui.labelList = parseAdditionalPropertiesField(
             item,
-            _.get(formData.value, item.fieldPath.join('.'))
+            _.get(formData.value, item.fieldPath)
           );
           ui.subGroup = subGroup;
           ui.mainGroup = mainGroup;
@@ -301,24 +304,24 @@
           showIfMap[item.name] = ui.order;
           return item;
         });
-        list = _.map(list, (oItem) => {
-          const sItem = oItem.uiSchema || {};
-          if (sItem.showIf) {
-            const relativeOrders = _.map(sItem.conditions, (v) => {
+        list = _.map(list, (sItem) => {
+          const ui = sItem.uiSchema || {};
+          if (ui.showIf) {
+            const relativeOrders = _.map(ui.conditions, (v) => {
               return _.get(showIfMap, v.variable);
             });
-            sItem.order = _.add(_.max(relativeOrders), 0.1);
+            ui.order = _.add(_.max(relativeOrders), 0.1);
           }
           if (
-            sItem.mainGroup &&
-            subGroupListCache.value[sItem.mainGroup] &&
-            !sItem.subGroup
+            ui.mainGroup &&
+            subGroupListCache.value[ui.mainGroup] &&
+            !ui.subGroup
           ) {
-            sItem.subGroup = OTHER_SUB_GROUP;
+            ui.subGroup = OTHER_SUB_GROUP;
           }
           // transform default value data type
 
-          return oItem;
+          return sItem;
         });
         list = _.sortBy(list, (pItem) => pItem.uiSchema.order);
 
@@ -334,14 +337,27 @@
       const handleDeleteLabel = (list, index) => {
         list.splice(index, 1);
       };
+      const handleUpdataMapValue = (val, fm) => {
+        _.set(formData.value, fm.fieldPath, val);
+        console.log('handleupdatemapValue===', val, fm.uiSchema.labelList);
+      };
+      const handleUpdateMapDataKey = (val, item) => {
+        item.key = val;
+      };
+      const handleUpdateMapDataValue = (val, item) => {
+        item.value = val;
+      };
       // reset field default value when showIf is negative
       const resetFieldsDefaultValue = () => {
         _.each(schemaList.value, (item) => {
           if (
             item.uiSchema.showIf &&
-            !getConditionValue(item, { ...props.attributes, ...formData.value })
+            !getConditionValue(item.uiSchema, {
+              ...props.attributes,
+              ...formData.value
+            })
           ) {
-            _.unset(formData.value, item.fieldPath.join('.'));
+            _.unset(formData.value, item.fieldPath);
           }
         });
       };
@@ -354,6 +370,20 @@
             schemaType.isUnknownType(item.type)
           ) {
             result[item.name] = yaml2Json(formData.value[item.name], item.type);
+          }
+        });
+        return result;
+      };
+      // transform data before submit for json type
+      const transformJsonData = () => {
+        const result = _.cloneDeep(formData.value);
+        _.each(schemaList.value, (item) => {
+          if (FieldDataType.isJson(item)) {
+            _.set(
+              result,
+              item.fieldPath,
+              JSON.parse(_.get(result, item.fieldPath))
+            );
           }
         });
         return result;
@@ -376,7 +406,7 @@
         // no need validate
         if (noValidate) {
           resetFieldsDefaultValue();
-          const resultFormData = transformDataByType();
+          const resultFormData = transformJsonData();
           return resultFormData;
         }
         // validate before submit form
@@ -399,31 +429,10 @@
 
         if (!result && !validLabels) {
           resetFieldsDefaultValue();
-          const resultFormData = transformDataByType();
+          const resultFormData = transformJsonData();
           return resultFormData;
         }
         return false;
-      };
-
-      const handleSubmit = async () => {
-        const res = await formref.value?.validate();
-        if (!res) {
-          try {
-            submitLoading.value = true;
-            resetFieldsDefaultValue();
-            if (props.submit) {
-              await props.submit?.(formData.value);
-            } else {
-              await doSubmit();
-            }
-            setTimeout(() => {
-              emit('done');
-            }, 200);
-            submitLoading.value = false;
-          } catch (error) {
-            submitLoading.value = false;
-          }
-        }
       };
 
       expose({
@@ -454,10 +463,6 @@
           deep: true
         }
       );
-
-      const handleCancel = () => {
-        emit('cancel');
-      };
 
       const renderSubMenu = () => {
         if (_.keys(subGroupCache.value).length) {
@@ -549,17 +554,16 @@
         return (
           <ParentComponent
             key={`${props.formId}_editorId_${index}`}
-            {...fm.props}
-            v-model={formData.value[fm.name]}
-            model-value={_.get(formData.value, _.join(fm.fieldPath, '.'))}
+            {...fm.uiSchema.props}
+            model-value={_.get(formData.value, fm.fieldPath)}
             label={`${fm.title || fm.name}`}
             required={fm.uiSchema.required}
             popup-info={fm.description}
-            editor-default-value={formData.value[fm.name] || ''}
+            editor-default-value={_.get(formData.value, fm.fieldPath) || ''}
             style={{ width: '100%' }}
             width="100%"
             editor-id={`${fm.name}_editorId_${index}`}
-            event-handler={() => eventHandler(fm.name)}
+            event-handler={() => eventHandler(fm)}
             onInput={(e) => handleSelectInputChange(e, fm)}
             onChange={(val) => handleFieldChange(val, fm)}
           >
@@ -590,30 +594,41 @@
           <div style="display: flex; flex: 1; flex-direction: column">
             <SealFormItemWrap
               label={fm.title || fm.name}
-              required={fm.required}
+              required={fm.uiSchema.required}
               show-required-mark={false}
               popup-info={fm.description}
             >
-              {fm?.labelList?.length ? (
-                _.map(fm.labelList, (sItem, sIndex) => {
+              {fm?.uiSchema.labelList?.length ? (
+                _.map(fm.uiSchema.labelList, (sItem, sIndex) => {
                   return (
                     <ParentComponet
                       key={sIndex}
-                      v-model:dataKey={sItem.key}
-                      v-model:dataValue={sItem.value}
-                      v-model:value={formData.value[fm.name]}
+                      dataKey={sItem.key}
+                      dataValue={sItem.value}
+                      value={_.get(formData.value, fm.fieldPath)}
+                      onUpdate:dataKey={(val) =>
+                        handleUpdateMapDataKey(val, sItem)
+                      }
+                      onUpdate:dataValue={(val) =>
+                        handleUpdateMapDataValue(val, sItem)
+                      }
+                      onUpdate:value={(val) => handleUpdataMapValue(val, fm)}
                       class="group-item"
                       style={{ width: '100%' }}
                       width="100%"
                       trigger-validate={triggerValidate.value}
                       form-id={fm.name}
-                      label-list={fm.labelList}
+                      label-list={fm.uiSchema.labelList}
                       position={sIndex}
-                      onAdd={(obj) => handleAddLabel(obj, fm.labelList)}
-                      onDelete={() => handleDeleteLabel(fm.labelList, sIndex)}
-                      {...fm.props}
+                      onAdd={(obj) =>
+                        handleAddLabel(obj, fm.uiSchema.labelList)
+                      }
+                      onDelete={() =>
+                        handleDeleteLabel(fm.uiSchema.labelList, sIndex)
+                      }
+                      {...fm.uiSchema.props}
                     >
-                      {fm.childCom ? (
+                      {fm.uiSchema.childCom ? (
                         <>
                           {_.map(fm.options, (com) => {
                             return (
@@ -635,7 +650,7 @@
                 <ThumbButton
                   size={24}
                   fontSize="14px"
-                  onClick={() => handleAddOne(fm.labelList)}
+                  onClick={() => handleAddOne(fm.uiSchema.labelList)}
                 ></ThumbButton>
               )}
             </SealFormItemWrap>
@@ -644,8 +659,8 @@
       };
 
       const renderField = (fm, index) => {
-        const showCondition = fm.showIf
-          ? getConditionValue(fm, {
+        const showCondition = fm.uiSchema.showIf
+          ? getConditionValue(fm.uiSchema, {
               ...props.attributes,
               ...formData.value
             })
@@ -663,16 +678,19 @@
               }}
             >
               <a-form-item
-                key={fm.name}
-                field={fm.name}
-                rules={fm.rules}
+                key={_.join(fm.fieldPath, '.')}
+                field={_.join(fm.fieldPath, '.')}
+                rules={_.map(fm.uiSchema.rules, (r) => {
+                  r.message = t(r.message, { name: fm.name });
+                  return r;
+                })}
                 hide-label
-                label={fm.title || fm.name}
+                label={fm.title || _.join(fm.fieldPath, '_')}
                 validate-trigger={['change']}
                 v-slots={{
                   label: () => (
                     <span>
-                      <span>{fm.title || fm.name}</span>
+                      <span>{fm.title || _.join(fm.fieldPath, '_')}</span>
                       {fm.description ? (
                         <a-tooltip content={fm.description}>
                           <icon-info-circle
@@ -687,7 +705,9 @@
                   )
                 }}
               >
-                {renderOtherType(fm, index)}
+                {FieldDataType.isMap(fm)
+                  ? renderMapStringType(fm)
+                  : renderOtherType(fm, index)}
               </a-form-item>
             </a-grid-item>
           );

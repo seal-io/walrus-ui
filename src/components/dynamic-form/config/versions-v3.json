@@ -275,6 +275,11 @@
                                         },
                                         "title": "ports",
                                         "type": "array",
+                                        "x-walrus-ui": {
+                                            "props": {
+                                                "allow-create": true
+                                            }
+                                        },
                                         "x-walrus-original": {
                                             "type": [
                                                 "list",

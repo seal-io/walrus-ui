@@ -53,10 +53,10 @@ export const createFieldRules = (
   } else {
     rules.push({
       required: isRequired,
-      min: min || -Infinity,
-      max: max || Infinity,
-      minLength: minLength || null,
-      maxLength: maxLength || 300,
+      // min: min || -Infinity,
+      // max: max || Infinity,
+      // minLength: minLength || null,
+      // maxLength: maxLength || 300,
       message: message || msg
     });
   }
