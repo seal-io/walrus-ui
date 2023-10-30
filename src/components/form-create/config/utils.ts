@@ -4,6 +4,7 @@ import { LabelListItem, ComponentSchema, OptionsItem } from './interface';
 import { isOrCondition, parseExpression } from './experssion-parser';
 import { validateYaml } from './yaml-parse';
 import { schemaType } from './index';
+import { setFieldDefaultValue } from '../../dynamic-form/config/field-type';
 
 const operatorMap = {
   noequal: '!=',
@@ -144,6 +145,38 @@ export const parseMapstring = (comSchema, val?) => {
   return labelList;
 };
 
+export const parseFieldProperties = (fieldSchema): LabelListItem[] => {
+  const properties = fieldSchema.properties || {};
+  const keys = _.keys(properties) || [];
+  if (!keys.length) return [];
+  return _.map(keys, (key) => {
+    return {
+      key,
+      value: setFieldDefaultValue(_.get(fieldSchema, `properties.${key}`)),
+      type: _.get(fieldSchema, `properties.${key}.type`)
+    };
+  });
+};
+
+export const parseAdditionalPropertiesField = (fieldSchema, val?) => {
+  let labelList: LabelListItem[] = [];
+  if (fieldSchema.type === 'object' && fieldSchema.additionalProperties) {
+    const value = val || get(fieldSchema, 'default') || {};
+    const defaultValue = keys(value || {});
+    if (defaultValue.length) {
+      labelList = map(defaultValue, (k) => {
+        return {
+          key: k,
+          value: get(value, `${k}`)
+        };
+      });
+    } else {
+      // properties
+      labelList = parseFieldProperties(fieldSchema);
+    }
+  }
+  return labelList;
+};
 export const parseQuery = (query) => {
   const parsestr = split(query, '=');
   return {

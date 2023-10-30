@@ -29,6 +29,7 @@ export const initFormStateBySchema = ({
       description: property.description,
       enum: property.enum || [],
       default: property.default,
+      additionalProperties: property.additionalProperties,
       uiSchema: {}
     };
     const component = parseUIExtensions(property, requiredFlag);

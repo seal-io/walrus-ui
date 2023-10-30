@@ -1,9 +1,10 @@
 import { FieldRule } from '@arco-design/web-vue';
 
 export interface LabelListItem {
+  type?: string;
   key?: string;
   label?: string;
-  value: string | number;
+  value: any;
 }
 
 export interface UISchema {
@@ -33,6 +34,9 @@ export interface UISchema {
   props?: object;
   rules?: FieldRule[];
 }
+export interface Item {
+  type?: string;
+}
 export interface FieldSchema {
   name: string;
   fieldPath: string[];
@@ -46,7 +50,8 @@ export interface FieldSchema {
   maxLength?: number;
   minLength?: number;
   enum?: any[];
-  items?: any[];
+  items?: any[] | Item;
+  additionalProperties?: any;
   options?: { label: string; value: string }[];
   label?: string;
 }

@@ -172,7 +172,7 @@
 <script lang="ts" setup>
   import _ from 'lodash';
   import { ref, computed, nextTick } from 'vue';
-  import { schemaType } from '@/components/form-create/config/interface';
+  import { schemaType } from '@/components/form-create/config';
   import { json2Yaml } from '@/components/form-create/config/yaml-parse';
   import {
     getObjectConditionValue,

@@ -3,6 +3,7 @@ import { ref, reactive, ComponentPublicInstance, computed } from 'vue';
 import { PageAction } from '@/views/config';
 import useCallCommon from '@/hooks/use-call-common';
 import { TemplateVersionData } from '@/views/operation-hub/templates/config/interface';
+import { initFormState } from '@/components/dynamic-form/utils/init-form-state';
 import usePageAction from '@/hooks/use-page-action';
 import { useServiceStore } from '@/store';
 import semverEq from 'semver/functions/eq';
@@ -221,19 +222,37 @@ export default function useServiceData(props?) {
     }
   };
 
+  const setTemplateInfo = (moduleData) => {
+    const variables =
+      _.cloneDeep(
+        _.get(moduleData, 'externalSchema.schema.components.schemas.variables')
+      ) || {};
+    const result = initFormState(variables);
+    templateInfo.value = result.fieldSchemaList;
+  };
+
   const setFormAttributes = async () => {
     _.assignIn(formData, serviceInfo.value);
     // 1. get the template meta data 2.set the default value
     await getTemplateVersionByItem(formData.template);
     await setTemplateVersionList();
     const moduleTemplate = getTemplateSchemaByVersion();
-    templateInfo.value = _.cloneDeep(_.get(moduleTemplate, 'schema'));
+    // templateInfo.value = _.cloneDeep(_.get(moduleTemplate, 'schema'));
+
+    // const variablesList = _.filter(
+    //   _.get(templateInfo.value, 'variables'),
+    //   (v) => !v.hidden
+    // );
+    setTemplateInfo(moduleTemplate);
     const variablesList = _.filter(
-      _.get(templateInfo.value, 'variables'),
-      (v) => !v.hidden
+      templateInfo.value,
+      (v) => !v.uiSchema.hidden
     );
     _.each(variablesList || [], (item) => {
-      item.default = _.get(serviceInfo.value, `attributes.${item.name}`);
+      item.default = _.get(serviceInfo.value, [
+        'attributes',
+        ...item.fieldPath
+      ]);
     });
   };
   const setFormDataTemplate = () => {
@@ -297,6 +316,7 @@ export default function useServiceData(props?) {
     getTemplateVersionByItem,
     initCompleteData,
     initInfo,
+    setTemplateInfo,
     asyncLoading,
     completeDataLoading,
     formData,

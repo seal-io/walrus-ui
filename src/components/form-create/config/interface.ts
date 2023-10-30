@@ -6,9 +6,10 @@ export interface OptionsItem {
   value: string;
 }
 export interface LabelListItem {
+  type?: string;
   key?: string;
   label?: string;
-  value: string | number;
+  value: any;
 }
 
 export interface ComponentSchema {

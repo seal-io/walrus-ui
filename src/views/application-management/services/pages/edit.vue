@@ -305,6 +305,8 @@
   import { BreadcrumbOptions } from '@/views/config/interface';
   import { beforeLeaveCallback } from '@/hooks/save-before-leave';
   import useLabelsActions from '@/components/form-create/hooks/use-labels-action';
+  import TestVersions from '@/components/dynamic-form/config/versions-v3.json';
+  import { initFormState } from '@/components/dynamic-form/utils/init-form-state';
   import useProjectBreadcrumbData from '../../projects/hooks/use-project-breadcrumb-data';
   import { createService, upgradeApplicationInstance } from '../api';
   import useServiceData from '../hooks/use-service-data';
@@ -342,6 +344,7 @@
     getTemplateSchemaByVersion,
     setTemplateVersionList,
     getTemplateVersionByItem,
+    setTemplateInfo,
     formData,
     pageAction,
     defaultGroupKey,
@@ -381,6 +384,11 @@
   provide('showHintInput', true);
   provide('completeData', completeData);
 
+  templateVersionList.value = _.map(get(TestVersions, 'items', []), (item) => {
+    item.value = item.version;
+    item.label = item.version;
+    return item;
+  });
   const formTabs = computed(() => {
     const list = keys(variablesGroup.value);
     if (includes(list, defaultGroupKey)) {
@@ -516,7 +524,9 @@
   const execVersionChangeCallback = async () => {
     await setModuleVersionFormCache();
     const moduleData = getTemplateSchemaByVersion();
-    templateInfo.value = cloneDeep(get(moduleData, 'schema')) || {};
+    // templateInfo.value = cloneDeep(get(moduleData, 'schema')) || {};
+    setTemplateInfo(moduleData);
+    console.log('moduleData===', templateInfo.value);
     formData.attributes = {};
 
     clearFormValidStatus();
