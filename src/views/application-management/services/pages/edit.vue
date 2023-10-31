@@ -307,7 +307,6 @@
   import useScrollToView from '@/hooks/use-scroll-to-view';
   import EditPageFooter from '@/components/edit-page-footer/index.vue';
   import xInputGroup from '@/components/form-create/custom-components/x-input-group.vue';
-  import formCreate from '@/components/form-create/index.vue';
   import SingleForm from '@/components/form-create/single-form.vue';
   import GroupForm from '@/components/form-create/group-form.vue';
   import GroupTitle from '@/components/group-title/index.vue';
@@ -319,8 +318,6 @@
   import { BreadcrumbOptions } from '@/views/config/interface';
   import { beforeLeaveCallback } from '@/hooks/save-before-leave';
   import useLabelsActions from '@/components/form-create/hooks/use-labels-action';
-  import TestVersions from '@/components/dynamic-form/config/versions-v3.json';
-  import { initFormState } from '@/components/dynamic-form/utils/init-form-state';
   import useProjectBreadcrumbData from '../../projects/hooks/use-project-breadcrumb-data';
   import { createService, upgradeApplicationInstance } from '../api';
   import useServiceData from '../hooks/use-service-data';
@@ -534,19 +531,13 @@
 
   const execVersionChangeCallback = async () => {
     await setModuleVersionFormCache();
-    const moduleData = getTemplateSchemaByVersion();
-    // templateInfo.value = cloneDeep(get(moduleData, 'schema')) || {};
+    const moduleData = await getTemplateSchemaByVersion();
     setTemplateInfo(moduleData);
-    console.log(
-      'moduleData===',
-      moduleData,
-      templateVersionList.value,
-      templateInfo.value
-    );
     formData.attributes = {};
 
-    clearFormValidStatus();
-    generateVariablesGroup(pageAction.value);
+    groupForm.value?.clearFormValidStatus?.();
+    // clearFormValidStatus();
+    // generateVariablesGroup(pageAction.value);
   };
 
   const handleVersionChange = () => {
@@ -728,14 +719,6 @@
     setBreadCrumbList();
     copyFormData = _.cloneDeep(formData);
     getLabelList();
-
-    templateVersionList.value = _.map(get(TestVersions, 'items', []), (o) => {
-      const item = _.cloneDeep(o);
-      item.label = o.version;
-      item.value = o.version;
-
-      return item;
-    });
   };
 
   initData();

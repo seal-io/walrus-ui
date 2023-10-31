@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { pick } from 'lodash';
 import qs from 'query-string';
 import { Pagination } from '@/types/global';
 import router from '@/router';
@@ -84,7 +85,25 @@ export function refreshTemplate(data: { id: string }) {
   }
   return axios.post(`${url}/refresh`);
 }
+
 export function queryTemplatesVersions(params: { templateID: string }) {
+  let url = `${TEMPLATE_API}/${params.templateID}/versions`;
+  if (isProjectContext()) {
+    url = `${PROJECT_API_PREFIX()}${TEMPLATE_API}/${
+      params.templateID
+    }/versions`;
+  }
+  return axios.get(url, {
+    params: {
+      ...pick(params, ['extract', 'query'])
+    },
+    paramsSerializer: (obj) => {
+      return qs.stringify(obj);
+    }
+  });
+}
+
+export function queryTemplatesVersionSchema(params: { templateID: string }) {
   let url = `${TEMPLATE_API}/${params.templateID}/versions`;
   if (isProjectContext()) {
     url = `${PROJECT_API_PREFIX()}${TEMPLATE_API}/${
@@ -94,6 +113,14 @@ export function queryTemplatesVersions(params: { templateID: string }) {
   return axios.get(url);
 }
 
+export function queryTemplateSchemaByVersionId(
+  params: { templateVersionID: string },
+  token?: any
+) {
+  return axios.get(`/template-versions/${params.templateVersionID}`, {
+    cancelToken: token
+  });
+}
 export function queryItemTemplatesVersions(
   params: { templateID: string; isProjectTemplate?: boolean },
   token?: any
@@ -105,20 +132,14 @@ export function queryItemTemplatesVersions(
     }/versions`;
   }
   return axios.get(url, {
+    params: {
+      ...pick(params, ['extract', 'query'])
+    },
+    paramsSerializer: (obj) => {
+      return qs.stringify(obj);
+    },
     cancelToken: token
   });
-}
-
-export function queryTemplateSchemaByVersion(
-  params: { templateName: string; versionID: string },
-  token?: any
-) {
-  return axios.get(
-    `/templates/${params.templateName}/versions/${params.versionID}`,
-    {
-      cancelToken: token
-    }
-  );
 }
 
 export function postCompletionsCorrect(data) {

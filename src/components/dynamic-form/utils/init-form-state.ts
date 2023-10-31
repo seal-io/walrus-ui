@@ -7,12 +7,14 @@ export const initFormStateBySchema = ({
   schema = {},
   formData = {},
   fieldSchemaList = [],
-  fieldPath = []
+  fieldPath = [],
+  ignoreExtension = false
 }: {
   schema: any;
   formData: object;
   fieldSchemaList: FieldSchema[];
   fieldPath: string[];
+  ignoreExtension?: boolean;
 }) => {
   const properties = schema.properties || {};
   const required = schema.required || [];
@@ -30,10 +32,13 @@ export const initFormStateBySchema = ({
       enum: property.enum || [],
       default: property.default,
       additionalProperties: property.additionalProperties,
+      xWalrusOriginal: property['x-walrus-original'],
       uiSchema: {}
     };
-    const component = parseUIExtensions(property, requiredFlag);
-    fieldSchema.uiSchema = component;
+    if (!ignoreExtension) {
+      const component = parseUIExtensions(property, requiredFlag);
+      fieldSchema.uiSchema = component;
+    }
 
     if (type !== FIELD_TYPE.OBJECT || property.additionalProperties) {
       fieldSchemaList.push(fieldSchema);
@@ -48,7 +53,8 @@ export const initFormStateBySchema = ({
         schema: property,
         formData,
         fieldSchemaList,
-        fieldPath: fieldSchema.fieldPath
+        fieldPath: fieldSchema.fieldPath,
+        ignoreExtension
       });
     } else if (type === FIELD_TYPE.ARRAY) {
       _.set(
@@ -78,14 +84,15 @@ export const initFormStateBySchema = ({
   });
 };
 
-export const initFormState = (schema: any) => {
+export const initFormState = (schema: any, ignoreExtension?: boolean) => {
   const formData = {};
   const fieldSchemaList: any[] = [];
   initFormStateBySchema({
     schema,
     formData,
     fieldSchemaList,
-    fieldPath: []
+    fieldPath: [],
+    ignoreExtension
   });
   return {
     formData,

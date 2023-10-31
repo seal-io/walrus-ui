@@ -71,7 +71,8 @@ export default function useCompleteData() {
       const isProjectTemplate = template.project?.id;
       const params = {
         templateID,
-        isProjectTemplate: !!isProjectTemplate
+        isProjectTemplate: !!isProjectTemplate,
+        extract: ['-externalSchema', '-internalSchema']
       };
       const { data } = await queryItemTemplatesVersions(
         params,

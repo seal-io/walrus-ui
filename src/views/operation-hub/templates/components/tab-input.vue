@@ -80,6 +80,7 @@
 <script lang="ts" setup>
   import { get, reduce, filter, pick, map, isString } from 'lodash';
   import { PropType, computed, ref } from 'vue';
+  import { initFormState } from '@/components/dynamic-form/utils/init-form-state';
   import AceEditor from '@/components/ace-editor/index.vue';
   import { Schema } from '../config/interface';
 
@@ -102,18 +103,22 @@
     return `calc(100vh - ${props.wrapSize + 180}px)`;
   });
   const dataList = computed(() => {
-    const list = filter(get(props.schema, 'variables'), (item) => {
-      return !item.hidden;
+    const result = initFormState(
+      get(props.schema, 'internalSchema.schema.components.schemas.variables')
+    );
+    const list = filter(result.fieldSchemaList, (item) => {
+      return !item.uiSchema.hidden;
     });
     return list || [];
   });
   const jsonData = computed(() => {
     const data = reduce(
-      get(props.schema, 'variables') || [],
+      dataList.value || [],
       (obj, item) => {
         const key = item.name as string;
         obj[key] = {
-          ...pick(item, ['type', 'default', 'description', 'required'])
+          ...pick(item, ['type', 'default', 'description']),
+          required: item.uiSchema.required || false
         };
         return obj;
       },
