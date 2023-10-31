@@ -103,7 +103,7 @@ export default function useServiceData(props?) {
     }
   };
   const getInitialValue = (item, sourceData) => {
-    return _.get(sourceData, `attributes.${item.name}`) || item.default;
+    return _.get(sourceData, ['attributes', ...item.fieldPath]) || item.default;
   };
   // get: set, edit: create
   const generateVariablesGroup = (type) => {
@@ -130,16 +130,21 @@ export default function useServiceData(props?) {
       };
     }
 
+    // const variablesList = _.filter(
+    //   _.get(templateInfo.value, 'variables'),
+    //   (v) => !v.hidden
+    // );
+    console.log('templateInfo.value:', templateInfo.value);
     const variablesList = _.filter(
-      _.get(templateInfo.value, 'variables'),
-      (v) => !v.hidden
+      templateInfo.value,
+      (v) => !v.uiSchema.hidden
     );
     _.each(variablesList, (item) => {
       const initialValue = getInitialValue(item, sourceData);
       item.default = initialValue;
       // filter empty group name
       const groups: string[] = _.filter(
-        _.split(item.group, /\/+/) || [],
+        _.split(item.uiSchema.group, /\/+/) || [],
         (g) => !!g
       );
       const group = _.get(groups, '0');
@@ -156,7 +161,7 @@ export default function useServiceData(props?) {
 
         _.set(
           variablesGroupForm.value,
-          `${group}.attributes.${item.name}`,
+          [group, 'attributes', ...item.fieldPath],
           initialValue
         );
       } else {
@@ -169,7 +174,7 @@ export default function useServiceData(props?) {
         variablesGroup.value[defaultGroupKey].variables.push(item);
         _.set(
           variablesGroupForm.value,
-          `${defaultGroupKey}.attributes.${item.name}`,
+          [defaultGroupKey, 'attributes', ...item.fieldPath],
           initialValue
         );
       }
@@ -223,6 +228,7 @@ export default function useServiceData(props?) {
   };
 
   const setTemplateInfo = (moduleData) => {
+    console.log('moduleData>>>>>>>>>>>>', moduleData);
     const variables =
       _.cloneDeep(
         _.get(moduleData, 'externalSchema.schema.components.schemas.variables')
@@ -277,7 +283,8 @@ export default function useServiceData(props?) {
       const moduleTemplate = getTemplateSchemaById();
       formData.template.version = _.get(moduleTemplate, 'version') || '';
       formData.template.id = _.get(moduleTemplate, 'id') || '';
-      templateInfo.value = _.cloneDeep(_.get(moduleTemplate, 'schema')) || {};
+      // templateInfo.value = _.cloneDeep(_.get(moduleTemplate, 'schema')) || {};
+      setTemplateInfo(moduleTemplate);
     }
     generateVariablesGroup(pageAction.value);
   };
