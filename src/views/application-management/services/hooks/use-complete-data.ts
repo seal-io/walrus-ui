@@ -56,7 +56,8 @@ export default function useCompleteData() {
     }
   };
   // get item template version, isOnSelect is a flag for select event
-  const getTemplateVersionByItem = async (templateID, isOnSelect?: boolean) => {
+  const getTemplateVersionByItem = async (template, isOnSelect?: boolean) => {
+    const templateID = template.template?.id;
     const isVisited = _.find(
       allTemplateVersions.value,
       (item) => item.template.id === templateID
@@ -67,9 +68,7 @@ export default function useCompleteData() {
     templateVersionToken?.cancel?.();
     templateVersionToken = createAxiosToken();
     try {
-      const isProjectTemplate = _.find(templateList.value, (item) => {
-        return item.id === templateID && item.project?.id;
-      });
+      const isProjectTemplate = template.project?.id;
       const params = {
         templateID,
         isProjectTemplate: !!isProjectTemplate
