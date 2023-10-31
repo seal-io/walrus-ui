@@ -31,6 +31,7 @@
 <script lang="ts" setup>
   import { get } from 'lodash';
   import { PropType, computed } from 'vue';
+  import { initFormState } from '@/components/dynamic-form/utils/init-form-state';
   import { Schema } from '../config/interface';
 
   const props = defineProps({
@@ -42,8 +43,10 @@
     }
   });
   const dataList = computed(() => {
-    const list = get(props.schema, 'outputs');
-    return list || [];
+    const result = initFormState(
+      get(props.schema, 'internalSchema.schema.components.schemas.outputs')
+    );
+    return result.fieldSchemaList || [];
   });
 </script>
 

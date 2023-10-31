@@ -208,8 +208,17 @@
     });
   };
 
+  const clearFormValidStatus = () => {
+    _.keys(refMap.value).map(async (key) => {
+      const refEL = refMap.value[key];
+      refEL?.clearFormValidStatus?.();
+    });
+    schemaForm.value?.clearFormValidStatus?.();
+  };
+
   defineExpose({
-    getData
+    getData,
+    clearFormValidStatus
   });
   watch(
     () => props.fieldList,

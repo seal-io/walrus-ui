@@ -18,7 +18,13 @@ export const tabList = [
   { label: 'operation.templates.detail.reademe', value: '', com: 'tabReadme' },
   { label: 'operation.templates.detail.inputs', value: '', com: 'tabInput' },
   { label: 'operation.templates.detail.outputs', value: '', com: 'tabOutput' },
-  { label: 'Providers', value: '', com: 'tabConnector' }
+  { label: 'Providers', value: '', com: 'tabConnector' },
+  {
+    label: '自定义 Schema',
+    icon: 'icon-edit',
+    value: '',
+    com: 'tabEditSchema'
+  }
 ];
 
 export const actionList = [

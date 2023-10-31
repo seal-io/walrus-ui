@@ -168,6 +168,14 @@
           :key="item.com"
           :title="$t(item.label)"
         >
+          <template #title>
+            <span>
+              <span v-if="item.icon" class="m-r-5">
+                <component :is="item.icon"></component>
+              </span>
+              <span>{{ $t(item.label) }}</span>
+            </span>
+          </template>
           <component
             :is="tabMap[item.com]"
             :height="tabContentHeight"
@@ -242,18 +250,21 @@
   import tabInput from '../components/tab-input.vue';
   import tabOutput from '../components/tab-output.vue';
   import tabProvider from '../components/tab-provider.vue';
+  import tabEditSchema from '../components/tab-edit-schema.vue';
   import {
     queryItemTemplate,
     createTemplate,
     updateTemplate,
-    queryTemplatesVersions
+    queryTemplatesVersions,
+    queryTemplateSchemaByVersionId
   } from '../api';
 
   const tabMap = {
     tabReadme: markRaw(tabReadme),
     tabInput: markRaw(tabInput),
     tabOutput: markRaw(tabOutput),
-    tabConnector: markRaw(tabProvider)
+    tabConnector: markRaw(tabProvider),
+    tabEditSchema: markRaw(tabEditSchema)
   };
 
   const { scrollToView } = useScrollToView();
@@ -295,31 +306,52 @@
     }
     return 'operation.templates.detail.edit';
   });
+
+  const getTemplateSchemaByVersionId = async () => {
+    try {
+      const params = {
+        templateVersionID: version.value
+      };
+      // const { data } = await queryTemplatesVersions(params);
+      // return data.items?.[0];
+      const { data } = await queryTemplateSchemaByVersionId(params);
+      templateSchema.value = data;
+    } catch (error) {
+      // ingore
+    }
+  };
+
+  const setVersion = (list) => {
+    versionList.value = map(list, (item) => {
+      return {
+        schema: item.schema,
+        label: item.version,
+        value: item.id,
+        version: item.version,
+        template: item.template
+      };
+    }).sort((v1, v2) => {
+      if (semverEq(v1.label, v2.label)) {
+        return 0;
+      }
+      if (semverGt(v1.label, v2.label)) {
+        return -1;
+      }
+      return 1;
+    });
+  };
+
   const getTemplateVersions = async () => {
     if (!id) return;
     try {
       const params = {
-        templateID: id
+        templateID: id,
+        extract: ['-externalSchema', '-internalSchema']
       };
       const { data } = await queryTemplatesVersions(params);
       const list = data.items || [];
-      versionList.value = map(list, (item) => {
-        return {
-          schema: item.schema,
-          label: item.version,
-          value: item.id
-        };
-      }).sort((v1, v2) => {
-        if (semverEq(v1.label, v2.label)) {
-          return 0;
-        }
-        if (semverGt(v1.label, v2.label)) {
-          return -1;
-        }
-        return 1;
-      });
-      version.value = get(versionList.value, '0.value') || '';
-      templateSchema.value = get(versionList.value, '0.schema') || {};
+      setVersion(list);
+      version.value = get(versionList.value, '0.value', '');
     } catch (error) {
       versionList.value = [];
     }
@@ -341,9 +373,8 @@
       loaded.value = true;
     }
   };
-  const handleVersonChange = (value) => {
-    const data = find(versionList.value, (item) => item.value === value);
-    templateSchema.value = data?.schema || {};
+  const handleVersonChange = () => {
+    getTemplateSchemaByVersionId();
   };
   const handleSubmit = async () => {
     const res = await formref.value?.validate();
@@ -413,9 +444,10 @@
     }
     return true;
   });
-  const initData = () => {
+  const initData = async () => {
     getItemTemplate();
-    getTemplateVersions();
+    await getTemplateVersions();
+    await getTemplateSchemaByVersionId();
   };
   initData();
 </script>

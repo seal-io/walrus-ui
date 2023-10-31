@@ -1,8 +1,10 @@
 import _ from 'lodash';
 import { ref, reactive, ComponentPublicInstance, computed } from 'vue';
 import { PageAction } from '@/views/config';
+import { createAxiosToken } from '@/api/axios-chunk-request';
 import useCallCommon from '@/hooks/use-call-common';
 import { TemplateVersionData } from '@/views/operation-hub/templates/config/interface';
+import { queryItemTemplatesVersions } from '@/views/operation-hub/templates/api';
 import { initFormState } from '@/components/dynamic-form/utils/init-form-state';
 import usePageAction from '@/hooks/use-page-action';
 import { useServiceStore } from '@/store';
@@ -46,15 +48,16 @@ export default function useServiceData(props?) {
   const templateVersionList = ref<TemplateVersion[]>([]);
   const templateVersionFormCache = ref({});
   const asyncLoading = ref(false);
+  let templateVersionSchemaToken: any = null;
 
   const id = route.query.id as string;
   const formData: ServiceFormData = reactive({
-    projectID: route.params.projectId,
+    projectID: route.params.projectId as string,
     project: {
-      id: route.params.projectId
+      id: route.params.projectId as string
     },
     environment: {
-      id: route.params.environmentId
+      id: route.params.environmentId as string
     },
     description: '',
     labels: {},
@@ -64,7 +67,7 @@ export default function useServiceData(props?) {
       name: '',
       version: '',
       id: '',
-      project: { id: route.params.projectId },
+      project: { id: route.params.projectId as string },
       // template info
       template: { id: '' }
     },
@@ -182,21 +185,41 @@ export default function useServiceData(props?) {
   };
 
   //  change module ...
-  const getTemplateSchemaById = () => {
+  const setFormTemplate = () => {
     const moduleTemplate = _.find(
       templateVersionList.value,
       (item) => item.template.id === formData.template.template.id
     );
+
+    formData.template.version = _.get(moduleTemplate, 'version') || '';
+    formData.template.id = _.get(moduleTemplate, 'id') || '';
     return moduleTemplate;
   };
 
   // change version ...
-  const getTemplateSchemaByVersion = () => {
-    const moduleTemplate = _.find(
-      templateVersionList.value,
-      (item) => item.value === formData.template.version
-    );
-    return moduleTemplate;
+  const getTemplateSchemaByVersion = async () => {
+    templateVersionSchemaToken?.cancel();
+    templateVersionSchemaToken = createAxiosToken();
+    try {
+      const params = {
+        templateID: formData.template.template.id,
+        isProjectTemplate: !!formData.template.project?.id,
+        query: formData.template.version
+      };
+      const { data } = await queryItemTemplatesVersions(
+        params,
+        templateVersionSchemaToken.token
+      );
+      return data?.items?.[0];
+    } catch (error) {
+      // ignore
+      return {};
+    }
+    // const moduleTemplate = _.find(
+    //   templateVersionList.value,
+    //   (item) => item.value === formData.template.version
+    // );
+    // return moduleTemplate;
   };
 
   const setTemplateVersionList = async () => {
@@ -228,7 +251,6 @@ export default function useServiceData(props?) {
   };
 
   const setTemplateInfo = (moduleData) => {
-    console.log('moduleData>>>>>>>>>>>>', moduleData);
     const variables =
       _.cloneDeep(
         _.get(moduleData, 'externalSchema.schema.components.schemas.variables')
@@ -242,7 +264,7 @@ export default function useServiceData(props?) {
     // 1. get the template meta data 2.set the default value
     await getTemplateVersionByItem(formData.template);
     await setTemplateVersionList();
-    const moduleTemplate = getTemplateSchemaByVersion();
+    const moduleTemplate = await getTemplateSchemaByVersion();
     // templateInfo.value = _.cloneDeep(_.get(moduleTemplate, 'schema'));
 
     // const variablesList = _.filter(
@@ -279,21 +301,18 @@ export default function useServiceData(props?) {
       setFormDataTemplate();
       await getTemplateVersionByItem(formData.template);
       await setTemplateVersionList();
-
-      const moduleTemplate = getTemplateSchemaById();
-      formData.template.version = _.get(moduleTemplate, 'version') || '';
-      formData.template.id = _.get(moduleTemplate, 'id') || '';
-      // templateInfo.value = _.cloneDeep(_.get(moduleTemplate, 'schema')) || {};
-      setTemplateInfo(moduleTemplate);
+      setFormTemplate();
+      const templateSchema = await getTemplateSchemaByVersion();
+      setTemplateInfo(templateSchema);
     }
-    generateVariablesGroup(pageAction.value);
+    // generateVariablesGroup(pageAction.value);
   };
   // for service detail
   const initInfo = async () => {
     asyncLoading.value = true;
     serviceInfo.value = serviceStore.getServiceInfo(id);
     await setFormAttributes();
-    generateVariablesGroup(pageAction.value);
+    // generateVariablesGroup(pageAction.value);
     asyncLoading.value = false;
   };
 
@@ -317,7 +336,7 @@ export default function useServiceData(props?) {
     init,
     generateVariablesGroup,
     setFormAttributes,
-    getTemplateSchemaById,
+    setFormTemplate,
     getTemplateSchemaByVersion,
     setTemplateVersionList,
     getTemplateVersionByItem,
