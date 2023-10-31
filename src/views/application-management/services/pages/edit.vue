@@ -546,7 +546,7 @@
     formData.template.name = data?.name || '';
     formData.template.project = data?.project || {};
 
-    await getTemplateVersionByItem(val, true);
+    await getTemplateVersionByItem(formData.template, true);
     await setTemplateVersionList();
 
     formData.template.version =

@@ -224,7 +224,7 @@ export default function useServiceData(props?) {
   const setFormAttributes = async () => {
     _.assignIn(formData, serviceInfo.value);
     // 1. get the template meta data 2.set the default value
-    await getTemplateVersionByItem(formData.template.template.id);
+    await getTemplateVersionByItem(formData.template);
     await setTemplateVersionList();
     const moduleTemplate = getTemplateSchemaByVersion();
     templateInfo.value = _.cloneDeep(_.get(moduleTemplate, 'schema'));
@@ -252,7 +252,7 @@ export default function useServiceData(props?) {
       await setFormAttributes();
     } else {
       setFormDataTemplate();
-      await getTemplateVersionByItem(formData.template.template.id);
+      await getTemplateVersionByItem(formData.template);
       await setTemplateVersionList();
 
       const moduleTemplate = getTemplateSchemaById();
