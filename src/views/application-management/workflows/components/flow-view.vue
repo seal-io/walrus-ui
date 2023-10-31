@@ -401,7 +401,7 @@
     try {
       chunkRequestToken = setChunkRequest({
         params: {
-          query: execId
+          id: execId
         },
         url: `${url}`,
         handler: updateHandler
