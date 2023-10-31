@@ -2,9 +2,6 @@
   import { defineComponent, reactive, ref, watch } from 'vue';
   import _ from 'lodash';
   import locale from '@/locale';
-  import SealFormItemWrap from '@/components/seal-form/components/seal-form-item-wrap.vue';
-  import formComponents from '@/components/form-create/components/index';
-  import EditPageFooter from '@/components/edit-page-footer/index.vue';
   import { FieldSchema } from './config/interface';
   import versionData from './config/versions-v3.json';
   import { initFormState } from './utils/init-form-state';

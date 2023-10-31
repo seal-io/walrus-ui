@@ -1,5 +1,6 @@
 import { FieldRule } from '@arco-design/web-vue';
 import i18n from '@/locale';
+import _ from 'lodash';
 import { validateYaml } from '@/components/form-create/config/yaml-parse';
 import { Widget } from '../config/widget';
 
@@ -15,6 +16,12 @@ export const createFieldRules = (
   const rules: FieldRule[] = [];
   const isRequired = requiredFlag || required || false;
   let msg = 'common.form.rule.input';
+  const ruleConfig = {
+    min,
+    max,
+    minLength,
+    maxLength
+  };
   if (
     [
       Widget.Select,
@@ -53,10 +60,7 @@ export const createFieldRules = (
   } else {
     rules.push({
       required: isRequired,
-      // min: min || -Infinity,
-      // max: max || Infinity,
-      // minLength: minLength || null,
-      // maxLength: maxLength || 300,
+      ..._.pickBy(ruleConfig, (v) => !!v),
       message: message || msg
     });
   }

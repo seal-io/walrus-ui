@@ -47,6 +47,9 @@
                                         "description": "Name and value pairs to set as the environment variables",
                                         "title": "env",
                                         "type": "object",
+                                        "x-walrus-ui": {
+                                            "group": "Basic"
+                                        },
                                         "x-walrus-original": {
                                             "type": [
                                                 "map",
@@ -58,6 +61,9 @@
                                         "description": "Docker image name",
                                         "title": "image",
                                         "type": "string",
+                                        "x-walrus-ui": {
+                                            "group": "Basic"
+                                        },
                                         "x-walrus-original": {
                                             "type": "string"
                                         }
@@ -67,6 +73,9 @@
                                         "description": "CPU limit. e.g. 0.5, 1, 2",
                                         "title": "limit_cpu",
                                         "type": "string",
+                                        "x-walrus-ui": {
+                                            "group": "Service"
+                                        },
                                         "x-walrus-original": {
                                             "type": "string"
                                         }
@@ -401,6 +410,9 @@
                                         "description": "Name and value pairs to set as the environment variables",
                                         "title": "env",
                                         "type": "object",
+                                        "x-walrus-ui": {
+                                            "group": "Basic"
+                                        },
                                         "x-walrus-original": {
                                             "type": [
                                                 "map",
@@ -412,6 +424,9 @@
                                         "description": "Docker image name",
                                         "title": "image",
                                         "type": "string",
+                                        "x-walrus-ui": {
+                                            "group": "Basic"
+                                        },
                                         "x-walrus-original": {
                                             "type": "string"
                                         }
@@ -421,6 +436,9 @@
                                         "description": "CPU limit. e.g. 0.5, 1, 2",
                                         "title": "limit_cpu",
                                         "type": "string",
+                                        "x-walrus-ui": {
+                                            "group": "Service"
+                                        },
                                         "x-walrus-original": {
                                             "type": "string"
                                         }
@@ -565,6 +583,9 @@
                                         "description": "Name and value pairs to set as the environment variables",
                                         "title": "env",
                                         "type": "object",
+                                        "x-walrus-ui": {
+                                            "group": "Basic/Env"
+                                        },
                                         "x-walrus-original": {
                                             "type": [
                                                 "map",
@@ -576,6 +597,9 @@
                                         "description": "Docker image name",
                                         "title": "image",
                                         "type": "string",
+                                        "x-walrus-ui": {
+                                            "group": "Basic/deploy"
+                                        },
                                         "x-walrus-original": {
                                             "type": "string"
                                         }
@@ -585,6 +609,9 @@
                                         "description": "CPU limit. e.g. 0.5, 1, 2",
                                         "title": "limit_cpu",
                                         "type": "string",
+                                        "x-walrus-ui": {
+                                            "group": "Service"
+                                        },
                                         "x-walrus-original": {
                                             "type": "string"
                                         }

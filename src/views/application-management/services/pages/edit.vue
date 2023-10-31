@@ -206,7 +206,11 @@
           </template>
         </GroupTitle>
       </div>
-      <a-spin class="variables" style="width: 100%" :loading="asyncLoading">
+      <a-spin
+        class="variables"
+        style="display: none; width: 100%"
+        :loading="asyncLoading"
+      >
         <a-tabs
           v-if="formTabs.length > 1"
           class="page-line-tabs"
@@ -218,7 +222,7 @@
             :key="`schemaForm${index}`"
             :title="variablesGroup[group]?.label"
           >
-            <formCreate
+            <SingleForm
               :ref="(el: refItem) => setRefMap(el, `schemaForm${index}`)"
               :form-id="`schemaForm${index}`"
               layout="vertical"
@@ -228,10 +232,10 @@
               :model="variablesGroupForm[group]?.attributes"
               :form-schema="variablesGroup[group]?.variables"
             >
-            </formCreate>
+            </SingleForm>
           </a-tab-pane>
         </a-tabs>
-        <formCreate
+        <SingleForm
           v-if="formTabs.length === 1"
           ref="schemaForm"
           form-id="schemaForm"
@@ -241,7 +245,15 @@
           :model="variablesGroupForm[formTabs[0]]?.attributes"
           :form-schema="variablesGroup[formTabs[0]]?.variables"
         >
-        </formCreate>
+        </SingleForm>
+      </a-spin>
+      <a-spin style="width: 100%" :loading="asyncLoading">
+        <GroupForm
+          ref="groupForm"
+          :field-list="templateInfo"
+          :async-loading="asyncLoading"
+          :original-form-data="serviceInfo.attributes || {}"
+        ></GroupForm>
       </a-spin>
       <EditPageFooter>
         <template #save>
@@ -296,6 +308,8 @@
   import EditPageFooter from '@/components/edit-page-footer/index.vue';
   import xInputGroup from '@/components/form-create/custom-components/x-input-group.vue';
   import formCreate from '@/components/form-create/index.vue';
+  import SingleForm from '@/components/form-create/single-form.vue';
+  import GroupForm from '@/components/form-create/group-form.vue';
   import GroupTitle from '@/components/group-title/index.vue';
   import {
     validateLabelNameRegx,
@@ -345,6 +359,7 @@
     setTemplateVersionList,
     getTemplateVersionByItem,
     setTemplateInfo,
+    serviceInfo,
     formData,
     pageAction,
     defaultGroupKey,
@@ -373,6 +388,7 @@
   let copyFormData: any = null;
   const { route, router, t } = useCallCommon();
   const formref = ref();
+  const groupForm = ref();
   const loading = ref(false);
   const activeKey = ref('schemaForm0');
   const schemaForm = ref();
@@ -384,11 +400,6 @@
   provide('showHintInput', true);
   provide('completeData', completeData);
 
-  templateVersionList.value = _.map(get(TestVersions, 'items', []), (item) => {
-    item.value = item.version;
-    item.label = item.version;
-    return item;
-  });
   const formTabs = computed(() => {
     const list = keys(variablesGroup.value);
     if (includes(list, defaultGroupKey)) {
@@ -526,7 +537,12 @@
     const moduleData = getTemplateSchemaByVersion();
     // templateInfo.value = cloneDeep(get(moduleData, 'schema')) || {};
     setTemplateInfo(moduleData);
-    console.log('moduleData===', templateInfo.value);
+    console.log(
+      'moduleData===',
+      moduleData,
+      templateVersionList.value,
+      templateInfo.value
+    );
     formData.attributes = {};
 
     clearFormValidStatus();
@@ -618,13 +634,15 @@
   const handleOk = async () => {
     validateLabel();
     const res = await formref.value?.validate();
-    const { validFailedForm, moduleFormList } = await validateFormData();
-    if (!res && !validFailedForm && !validateTrigger.value) {
+    // const { validFailedForm, moduleFormList } = await validateFormData();
+    const groupFormRes = await groupForm.value?.getData();
+    console.log('groupFormRes=======', groupFormRes);
+    if (!res && groupFormRes && !validateTrigger.value) {
       try {
         submitLoading.value = true;
         formData.attributes = {
           ...reduce(
-            moduleFormList,
+            groupFormRes,
             (obj, s) => {
               obj = {
                 ...obj,
@@ -710,6 +728,14 @@
     setBreadCrumbList();
     copyFormData = _.cloneDeep(formData);
     getLabelList();
+
+    templateVersionList.value = _.map(get(TestVersions, 'items', []), (o) => {
+      const item = _.cloneDeep(o);
+      item.label = o.version;
+      item.value = o.version;
+
+      return item;
+    });
   };
 
   initData();

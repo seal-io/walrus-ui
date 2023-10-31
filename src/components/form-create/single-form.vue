@@ -61,25 +61,10 @@
           return 'horizontal';
         }
       },
-      submit: {
-        type: Function
-      },
-      api: {
-        type: String,
-        default() {
-          return '';
-        }
-      },
       showFooter: {
         type: Boolean,
         default() {
           return true;
-        }
-      },
-      action: {
-        type: String as PropType<'post' | 'put'>,
-        default() {
-          return 'post';
         }
       },
       model: {
@@ -144,9 +129,6 @@
         return list;
       });
 
-      const doSubmit = async () => {
-        return axios[props.action](props.api, formData.value);
-      };
       const setFormData = () => {
         formData.value = {};
         _.each(props.formSchema, (item) => {
@@ -674,7 +656,7 @@
               span={setGridItemSpan(fm, index)}
               class={{
                 'hidden-field':
-                  activeMenu.value && activeMenu.value !== fm.subGroup
+                  activeMenu.value && activeMenu.value !== fm.uiSchema.subGroup
               }}
             >
               <a-form-item
