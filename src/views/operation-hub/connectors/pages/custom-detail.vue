@@ -186,7 +186,7 @@
               >
                 <template #value>
                   <seal-input
-                    v-if="!sItem.visible"
+                    v-if="!sItem.writeOnly"
                     v-model="sItem.value"
                     :show-required-mark="false"
                     style="width: 100%"
@@ -203,7 +203,7 @@
                   ></seal-input-password>
                 </template>
                 <template #description>
-                  <a-checkbox v-model="sItem.visible">{{
+                  <a-checkbox v-model="sItem.writeOnly">{{
                     $t('operation.connectors.attribute.sensitive')
                   }}</a-checkbox>
                   <a-tooltip
@@ -224,7 +224,7 @@
             <template
               v-if="
                 pageAction === PageAction.VIEW &&
-                _.filter(attributeList, (item) => item.key).length
+                _.filter(attributeList, (item) => !!item.key).length
               "
             >
               <DescriptionTable
@@ -238,7 +238,7 @@
                       content: row.value
                     }"
                   >
-                    <span>{{ row.sensitive ? '******' : row.value }}</span>
+                    <span>{{ row.writeOnly ? '******' : row.value }}</span>
                   </AutoTip>
                 </template>
               </DescriptionTable>
@@ -332,7 +332,10 @@
   let copyFormData: any = {};
   const formData: ConnectorFormData = reactive({
     name: '',
-    configData: {},
+    configData: {
+      value: {},
+      schema: {}
+    },
     description: '',
     configVersion: 'v1',
     applicableEnvironmentType: '',
@@ -367,7 +370,7 @@
       key: '',
       value: '',
       type: 'string',
-      visible: true,
+      writeOnly: true,
       ...labelOption
     }
   ]);
@@ -382,12 +385,36 @@
       type: t('operation.connectors.reinstall.custom')
     });
   });
+
+  const createAttribut2OpenAPISchema = () => {
+    const list = _.filter(
+      attributeList.value,
+      (item) => !!item.key
+    ) as CustomAttrbute[];
+    const data = reduce(
+      list,
+      (obj, item) => {
+        if (item.key) {
+          obj[item.key] = {
+            type: item.type,
+            writeOnly: item.writeOnly || false
+          };
+        }
+        return obj;
+      },
+      {}
+    );
+    formData.configData.schema = {
+      type: 'object',
+      properties: data
+    };
+  };
   const handleAddLabel = (obj) => {
     attributeList.value.push({
       key: '',
       value: '',
       type: 'string',
-      visible: true,
+      writeOnly: true,
       ...labelOption
     });
   };
@@ -400,19 +427,22 @@
   const checkAttributeValid = () => {
     triggerValidate.value = some(
       attributeList.value,
-      (item) => item.key && !item.value
+      (item) => !!item.key && !item.value
     );
   };
   const setAttributeList = () => {
     const configData = formData.configData || {};
-    attributeList.value = map(keys(configData), (key) => {
+    attributeList.value = map(keys(configData.value), (key) => {
       return {
         key,
-        value: get(configData, `${key}.value`) || '',
-        default: get(configData, `${key}.value`) || '', // default value
-        type: get(configData, `${key}.type`) || 'string',
-        visible: !get(configData, `${key}.visible`),
-        sensitive: !get(configData, `${key}.visible`),
+        value: get(configData, ['value', key], ''),
+        default: get(configData, ['value', key], ''),
+        type: get(configData, ['schema', 'properties', key, 'type'], 'string'),
+        writeOnly: get(
+          configData,
+          ['schema', 'properties', key, 'writeOnly'],
+          false
+        ),
         ...labelOption
       };
     }) as never[];
@@ -422,7 +452,7 @@
           key: '',
           value: '',
           type: 'string',
-          visible: true,
+          writeOnly: true,
           ...labelOption
         }
       ];
@@ -432,22 +462,19 @@
   const setConfigData = () => {
     const list = _.filter(
       attributeList.value,
-      (item) => item.key
+      (item) => !!item.key
     ) as CustomAttrbute[];
     const data = reduce(
       list,
       (obj, item) => {
         if (item.key) {
-          obj[item.key] = {
-            ...pick(item, ['value', 'type']),
-            visible: !item.visible
-          };
+          obj[item.key] = item.value;
         }
         return obj;
       },
       {}
     );
-    formData.configData = data;
+    formData.configData.value = data;
   };
   const handleSubmit = async () => {
     const res = await formref.value?.validate();
@@ -456,6 +483,7 @@
       try {
         submitLoading.value = true;
         setConfigData();
+        createAttribut2OpenAPISchema();
         copyFormData = cloneDeep(formData);
         if (id) {
           await updateConnector(formData);
@@ -473,12 +501,7 @@
 
     return false;
   };
-  const initConfigDataValue = () => {
-    const configData = formData.configData || {};
-    each(keys(configData) || [], (key) => {
-      configData[key].value = configData[key].value || '';
-    });
-  };
+
   const getConnectorInfo = async () => {
     copyFormData = cloneDeep(formData);
     if (!id) return;
@@ -486,7 +509,6 @@
       const { data } = await queryItemConnector({ id });
       assignIn(formData, data);
       setAttributeList();
-      initConfigDataValue();
       copyFormData = cloneDeep(formData);
     } catch (error) {
       // ignore

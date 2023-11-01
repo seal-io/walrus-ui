@@ -206,13 +206,11 @@
       };
       const handleSelectInputChange = (e: any, fm) => {
         console.log('formData=', e);
-
         if (FieldDataType.isListNumber(fm) && !numberReg.test(e.data)) {
           e.target.value = e.target.value.replace(/[^\d]/g, '');
         } else {
           _.set(formData.value, fm.fieldPath, e);
         }
-        console.log('formData===input', formData.value, e.target.value);
       };
       const handleFieldChange = (val, fm) => {
         _.set(formData.value, fm.fieldPath, val);
