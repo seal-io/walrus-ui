@@ -39,6 +39,7 @@ export interface Item {
 }
 export interface FieldSchema {
   name: string;
+  title?: string;
   fieldPath: string[];
   type: string;
   default: any;

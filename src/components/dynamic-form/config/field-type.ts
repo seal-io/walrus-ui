@@ -17,7 +17,16 @@ export const FieldDataType = {
     if (type === 'array') {
       return _.isArray(items)
         ? _.every(items, (val) => val === 'number' || val === 'integer')
-        : items?.type === 'number';
+        : items?.type === 'number' || items?.type === 'integer';
+    }
+    return false;
+  },
+  isListString(property: FieldSchema) {
+    const { type, items } = property;
+    if (type === 'array') {
+      return _.isArray(items)
+        ? _.every(items, (val) => val === 'string')
+        : items?.type === 'string';
     }
     return false;
   },
