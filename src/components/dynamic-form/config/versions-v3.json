@@ -84,10 +84,39 @@
                                         "default": "",
                                         "description": "Memory limit. e.g. 128Mi, 512Mi, 1Gi, 2Gi, 4Gi",
                                         "title": "limit_memory",
-                                        "type": "string",
+                                        "type": "object",
                                         "x-walrus-original": {
                                             "type": "string"
+                                        },
+                                        "properties":{
+                                            "limit_cpu_9": {
+                                            "default": "",
+                                            "description": "CPU limit. e.g. 0.5, 1, 2",
+                                            "title": "limit_cpu",
+                                            "type": "object",
+                                            "x-walrus-ui": {
+                                                "group": "Service"
+                                            },
+                                            "x-walrus-original": {
+                                                "type": "string"
+                                            },
+                                            "properties": {
+                                                
+                                                "limit_cpu_10": {
+                                                    "default": "",
+                                                    "description": "CPU limit. e.g. 0.5, 1, 2",
+                                                    "title": "limit_cpu",
+                                                    "type": "string",
+                                                    "x-walrus-ui": {
+                                                        "group": "Service"
+                                                    },
+                                                    "x-walrus-original": {
+                                                        "type": "string"
+                                                    }
+                                                }
+                                            }
                                         }
+                                    }
                                     },
                                     "name": {
                                         "default": "",
@@ -314,14 +343,77 @@
                                             "type": "string"
                                         }
                                     },
+                                    "request_array": {
+                                        "type": "array",
+                                        "items":[
+                                            {"name": "request_cpu"},
+                                            {"name": "request_memory"}
+                                        ]
+                                    },
                                     "request_memory": {
                                         "default": "128Mi",
                                         "description": "Memory request. e.g. 128Mi, 512Mi, 1Gi, 2Gi, 4Gi",
                                         "title": "request_memory",
-                                        "type": "string",
+                                        "type": "object",
                                         "x-walrus-original": {
                                             "type": "string"
+                                        },
+                                        "properties":{
+                                            "limit_cpu_9": {
+                                            "default": "",
+                                            "description": "CPU limit. e.g. 0.5, 1, 2",
+                                            "title": "limit_cpu_9",
+                                            "type": "object",
+                                            "x-walrus-ui": {
+                                                "group": "Service"
+                                            },
+                                            "x-walrus-original": {
+                                                "type": "string"
+                                            },
+                                            "properties": {
+                                                
+                                                "limit_cpu_10": {
+                                                    "default": "",
+                                                    "description": "CPU limit. e.g. 0.5, 1, 2",
+                                                    "title": "limit_cpu_10",
+                                                    "type": "string",
+                                                    "x-walrus-ui": {
+                                                        "group": "Service"
+                                                    },
+                                                    "x-walrus-original": {
+                                                        "type": "string"
+                                                    }
+                                                }
+                                            }
+                                        },
+                                        "limit_cpu_9_1": {
+                                            "default": "",
+                                            "description": "CPU limit. e.g. 0.5, 1, 2",
+                                            "title": "limit_cpu_9_1",
+                                            "type": "object",
+                                            "x-walrus-ui": {
+                                                "group": "Service"
+                                            },
+                                            "x-walrus-original": {
+                                                "type": "string"
+                                            },
+                                            "properties": {
+                                                
+                                                "limit_cpu_10": {
+                                                    "default": "",
+                                                    "description": "CPU limit. e.g. 0.5, 1, 2",
+                                                    "title": "limit_cpu_10_1",
+                                                    "type": "string",
+                                                    "x-walrus-ui": {
+                                                        "group": "Service"
+                                                    },
+                                                    "x-walrus-original": {
+                                                        "type": "string"
+                                                    }
+                                                }
+                                            }
                                         }
+                                    }
                                     },
                                     "walrus_metadata_namespace_name": {
                                         "default": "",

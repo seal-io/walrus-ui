@@ -31,9 +31,9 @@ export default function useFillterAttributes(formData) {
     let hasValue = true;
     let matchName = true;
     if (filterParams.required === 'true') {
-      required = sItem.required;
+      required = sItem.uiSchema.required;
     } else if (filterParams.required === 'false') {
-      required = !sItem.required;
+      required = !sItem.uiSchema.required;
     }
 
     if (filterParams.hasValue) {
@@ -51,7 +51,7 @@ export default function useFillterAttributes(formData) {
       const name = _.toLower(filterParams.name);
       matchName =
         _.includes(_.toLower(sItem.name), name) ||
-        _.includes(_.toLower(sItem.label), name);
+        _.includes(_.toLower(sItem.title), name);
     } else if (!filterParams.name) {
       matchName = true;
     }

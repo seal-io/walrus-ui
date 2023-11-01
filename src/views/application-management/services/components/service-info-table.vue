@@ -49,7 +49,7 @@
   </div>
 </template>
 
-<script lang="tsx" setup>
+<script lang="ts" setup>
   import _ from 'lodash';
   import { useAttrs, PropType, computed, toRef } from 'vue';
   import useFillterAttributes from '@/components/form-create/hooks/use-fillter-attributes';

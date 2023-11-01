@@ -1,8 +1,16 @@
 <template>
   <div class="service">
     <div class="variables m-t-10">
+      <ViewForm
+        :column="{ lg: 2, md: 1 }"
+        bordered
+        layout="inline-vertical"
+        style="padding: 0"
+        :form-data="serviceInfo.attributes"
+        :field-list="templateInfo"
+      ></ViewForm>
       <a-tabs
-        v-if="formTabs.length > 1"
+        v-if="formTabs.length == -1"
         lazy-load
         class="page-line-tabs"
         :active-key="activeKey"
@@ -120,7 +128,8 @@
         </a-tab-pane>
       </a-tabs>
       <serviceInfoTable
-        v-if="formTabs.length < 2"
+        v-if="formTabs.length === -1"
+        style="display: none"
         :column="{ lg: 2, md: 1 }"
         bordered
         layout="inline-vertical"
@@ -172,12 +181,14 @@
 <script lang="ts" setup>
   import _ from 'lodash';
   import { ref, computed, nextTick } from 'vue';
+  import { initFormState } from '@/components/dynamic-form/utils/init-form-state';
   import { schemaType } from '@/components/form-create/config';
   import { json2Yaml } from '@/components/form-create/config/yaml-parse';
   import {
     getObjectConditionValue,
     checkHasValue
   } from '@/components/form-create/config/utils';
+  import ViewForm from '@/components/form-create/view-form.vue';
   import LabelsList from './labels-list.vue';
   import useServiceData from '../hooks/use-service-data';
   import serviceInfoTable from './service-info-table.vue';
@@ -185,6 +196,8 @@
   const {
     initInfo,
     formData,
+    serviceInfo,
+    templateInfo,
     defaultGroupKey,
     variablesGroup,
     variablesGroupForm
