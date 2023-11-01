@@ -152,7 +152,7 @@
             hide-asterisk
             hide-label
             label="Access Token"
-            field="configData.token.value"
+            field="configData.value.token"
             :rules="[
               {
                 required: true,
@@ -161,7 +161,7 @@
             ]"
           >
             <seal-input-password
-              v-model="formData.configData.token.value"
+              v-model="formData.configData.value.token"
               label="Access Token"
               :required="true"
               :style="{ width: `${InputWidth.LARGE}px` }"
@@ -250,10 +250,8 @@
   const formData: ConnectorFormData = reactive({
     name: '',
     configData: {
-      token: {
-        value: '',
-        visiable: false,
-        type: 'string'
+      value: {
+        token: ''
       }
     },
     description: '',
