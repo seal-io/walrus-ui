@@ -343,6 +343,12 @@ export const checkHasValue = (property) => {
   return !!property;
 };
 
+export const XMLParser = (xmlString) => {
+  const parser = new DOMParser();
+  const xmlDoc = parser.parseFromString(xmlString, 'text/xml');
+  return xmlDoc;
+};
+
 export const parseXMLFragment = (
   xmlFragment,
   options: { item: string; label: string; value: string }
@@ -359,4 +365,5 @@ export const parseXMLFragment = (
       value
     });
   });
+  return result;
 };
