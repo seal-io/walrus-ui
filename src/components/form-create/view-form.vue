@@ -71,6 +71,7 @@
 
       const setSubGroupList = () => {
         const groupData = _.get(variablesGroup.value, activeKey.value);
+        console.log('groupData:', groupData, variablesGroup.value);
         subGroupList.value = [...(groupData?.subGroup || [])];
         activeSubGroup.value = _.get(subGroupList.value, '0');
       };
@@ -326,8 +327,8 @@
                   key={group}
                   title={variablesGroup.value[group]?.label}
                 >
-                  <div class="content-wrap">
-                    {renderSideMenu()}
+                  <div class="content-wrap-2">
+                    {/* {renderSideMenu()} */}
                     {renderSingleView(variablesGroup.value[group]?.variables)}
                   </div>
                 </a-tab-pane>

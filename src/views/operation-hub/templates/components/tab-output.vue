@@ -44,7 +44,7 @@
   });
   const dataList = computed(() => {
     const result = initFormState(
-      get(props.schema, 'internalSchema.schema.components.schemas.outputs')
+      get(props.schema, 'schema.openAPISchema.components.schemas.outputs')
     );
     return result.fieldSchemaList || [];
   });

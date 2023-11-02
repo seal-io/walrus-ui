@@ -104,7 +104,7 @@
   });
   const dataList = computed(() => {
     const result = initFormState(
-      get(props.schema, 'internalSchema.schema.components.schemas.variables')
+      get(props.schema, 'schema.openAPISchema.components.schemas.variables')
     );
     const list = filter(result.fieldSchemaList, (item) => {
       return !item.uiSchema.hidden;

@@ -251,7 +251,7 @@ export default function useServiceData(props?) {
   const setTemplateInfo = (moduleData) => {
     const variables =
       _.cloneDeep(
-        _.get(moduleData, 'externalSchema.schema.components.schemas.variables')
+        _.get(moduleData, 'customizeOpenAPISchema.components.schemas.variables')
       ) || {};
     const result = initFormState(variables);
     templateInfo.value = result.fieldSchemaList;

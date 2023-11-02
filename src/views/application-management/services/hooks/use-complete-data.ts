@@ -89,7 +89,7 @@ export default function useCompleteData() {
       const params = {
         templateID,
         isProjectTemplate: !!isProjectTemplate,
-        extract: ['-externalSchema', '-internalSchema']
+        extract: ['-schema', '-customizeOpenAPISchema']
       };
       const { data } = await queryItemTemplatesVersions(
         params,
@@ -139,9 +139,9 @@ export default function useCompleteData() {
     return list;
   };
 
-  const parseSchemaOutputs = (internalSchema) => {
+  const parseSchemaOutputs = (schema) => {
     const result = initFormState(
-      _.get(internalSchema, 'schema.components.schemas.outputs') || {}
+      _.get(schema, 'openAPISchema.components.schemas.outputs') || {}
     );
     return result.fieldSchemaList.map((item) => {
       return {
@@ -157,7 +157,7 @@ export default function useCompleteData() {
       const params = {
         page: -1,
         withSchema: true,
-        extract: ['-projectId', '-status', '-internalSchema', '-externalSchema']
+        extract: ['-projectId', '-status', '-schema', '-customizeOpenAPISchema']
       };
       const { data } = await queryServices(params, serviceToken.token);
       serviceDataList.value = data.items || [];
@@ -165,10 +165,10 @@ export default function useCompleteData() {
         const { template } = cloneDeep(item);
         return {
           schema: {
-            outputs: parseSchemaOutputs(template.internalSchema)
+            outputs: parseSchemaOutputs(template.schema)
           },
           template: {
-            ..._.omit(template, ['internalSchema', 'externalSchema'])
+            ..._.omit(template, ['schema', 'customizeOpenAPISchema'])
           }
         };
       }) as any[];
