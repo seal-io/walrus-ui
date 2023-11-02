@@ -113,7 +113,7 @@
           </a-form-item>
           <a-form-item
             v-if="pageAction === PageAction.EDIT"
-            field="configData.value.kubeconfig"
+            field="configData.kubeconfig.value"
             hide-label
             label="KubeConfig"
             class="kube"
@@ -140,7 +140,7 @@
                 }"
               >
                 <seal-textarea
-                  v-model="formData.configData.value.kubeconfig"
+                  v-model="formData.configData.kubeconfig.value"
                   placeholder="KubeConfig"
                   :required="true"
                   :spellcheck="false"
@@ -290,8 +290,10 @@
   const formData: ConnectorFormData = reactive({
     name: '',
     configData: {
-      value: {
-        kubeconfig: ''
+      kubeconfig: {
+        visible: false,
+        value: '',
+        type: 'string'
       }
     },
     configVersion: 'v1',
@@ -335,11 +337,12 @@
   };
   const handleUploadSuccess = async (list, fileItem) => {
     const res = await readBlob(fileItem.file);
-    // const kubeValue = formData.configData.value.kubeconfig;
-    formData.configData.value = {
-      kubeconfig: res
+    const kubeValue = formData.configData.kubeconfig;
+    formData.configData.kubeconfig = {
+      ...kubeValue,
+      value: res as string
     };
-    formref.value.validateField('configData.value.kubeconfig');
+    formref.value.validateField('configData.kubeconfig.value');
   };
   const handleBeforeUpload = async (file) => {
     return true;
@@ -372,14 +375,8 @@
     try {
       const { data } = await queryItemConnector({ id });
       assignIn(formData, data);
-      formData.configData = {
-        value: {
-          kubeconfig: ''
-        }
-      };
       formData.enableFinOps = data.enableFinOps || false;
       copyFormData = cloneDeep(formData);
-      console.log('formData======', formData);
     } catch (error) {
       // ignore
     }
