@@ -51,6 +51,13 @@ export enum ConnectorCategory {
   CloudProvider = 'CloudProvider',
   Kubernetes = 'Kubernetes'
 }
+
+export const ConnectorType = {
+  AWS: 'AWS',
+  Alibaba: 'Alibaba',
+  Kubernetes: 'Kubernetes',
+  Github: 'Github'
+};
 export const CloudProviderType = {
   AWS: 'AWS',
   Alibaba: 'Alibaba'

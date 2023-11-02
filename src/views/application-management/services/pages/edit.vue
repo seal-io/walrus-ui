@@ -19,6 +19,14 @@
         auto-label-width
         layout="vertical"
       >
+        <a-form-item>
+          <kuberSelect
+            v-model="Kubernamespace"
+            widget="AWSRegion"
+            label="AWSRegion"
+            @change="handleNamespaceChange"
+          ></kuberSelect>
+        </a-form-item>
         <a-form-item
           field="name"
           hide-label
@@ -238,6 +246,7 @@
 </template>
 
 <script lang="ts" setup>
+  import kuberSelect from '@/components/form-create/bussiness-components/kuber-select.vue';
   import { PROJECT } from '@/router/config';
   import _, {
     get,
@@ -355,6 +364,15 @@
 
   provide('showHintInput', true);
   provide('completeData', completeData);
+  provide('KuberEnvironment', {
+    projectID: route.params.projectId,
+    environmentID: route.params.environmentId
+  });
+  const Kubernamespace = ref('');
+
+  const handleNamespaceChange = (val) => {
+    console.log('handleNamespaceChange===', val);
+  };
 
   const formTabs = computed(() => {
     const list = keys(variablesGroup.value);

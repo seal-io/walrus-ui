@@ -1,6 +1,7 @@
 const proxyTableList = [
   'v1',
   'account',
+  'proxy',
   'cli',
   'debug',
   'openapi',
