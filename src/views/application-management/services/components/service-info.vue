@@ -2,9 +2,6 @@
   <div class="service">
     <div class="variables m-t-10">
       <ViewForm
-        :column="{ lg: 2, md: 1 }"
-        bordered
-        layout="inline-vertical"
         style="padding: 0"
         :form-data="serviceInfo.attributes"
         :field-list="templateInfo"
@@ -181,7 +178,6 @@
 <script lang="ts" setup>
   import _ from 'lodash';
   import { ref, computed, nextTick } from 'vue';
-  import { initFormState } from '@/components/dynamic-form/utils/init-form-state';
   import { schemaType } from '@/components/form-create/config';
   import { json2Yaml } from '@/components/form-create/config/yaml-parse';
   import {

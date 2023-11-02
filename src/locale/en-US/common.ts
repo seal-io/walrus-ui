@@ -1,5 +1,10 @@
 export default {
+  'common.button.resetdefault': 'Reset to default',
+  'common.button.perview': 'Preview',
+  'common.button.readonly': 'Readonly',
+  'common.button.editmode': 'Edit mode',
   'common.button.add': 'Add',
+  'common.button.continue': 'Continue',
   'common.button.upload': 'Upload',
   'common.button.save': 'Save',
   'common.button.cancel': 'Cancel',

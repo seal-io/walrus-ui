@@ -17,6 +17,9 @@
         />
       </a-tooltip>
     </div>
+    <!-- <div class="title">
+      <slot name="title"></slot>
+    </div> -->
     <div
       v-show="isAce"
       class="ace-box"
@@ -406,6 +409,12 @@
     .label {
       display: flex;
       align-items: center;
+      padding: 10px;
+      color: var(--color-text-3);
+      border-bottom: 1px solid var(--color-border-2);
+    }
+
+    .title {
       padding: 10px;
       color: var(--color-text-3);
       border-bottom: 1px solid var(--color-border-2);

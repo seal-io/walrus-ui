@@ -206,47 +206,6 @@
           </template>
         </GroupTitle>
       </div>
-      <a-spin
-        class="variables"
-        style="display: none; width: 100%"
-        :loading="asyncLoading"
-      >
-        <a-tabs
-          v-if="formTabs.length > 1"
-          class="page-line-tabs"
-          :active-key="activeKey"
-          @change="handleTabChange"
-        >
-          <a-tab-pane
-            v-for="(group, index) in formTabs"
-            :key="`schemaForm${index}`"
-            :title="variablesGroup[group]?.label"
-          >
-            <SingleForm
-              :ref="(el: refItem) => setRefMap(el, `schemaForm${index}`)"
-              :form-id="`schemaForm${index}`"
-              layout="vertical"
-              :show-footer="false"
-              :submit="() => {}"
-              :attributes="variableAttributes"
-              :model="variablesGroupForm[group]?.attributes"
-              :form-schema="variablesGroup[group]?.variables"
-            >
-            </SingleForm>
-          </a-tab-pane>
-        </a-tabs>
-        <SingleForm
-          v-if="formTabs.length === 1"
-          ref="schemaForm"
-          form-id="schemaForm"
-          layout="vertical"
-          :show-footer="false"
-          :submit="() => {}"
-          :model="variablesGroupForm[formTabs[0]]?.attributes"
-          :form-schema="variablesGroup[formTabs[0]]?.variables"
-        >
-        </SingleForm>
-      </a-spin>
       <a-spin style="width: 100%" :loading="asyncLoading">
         <GroupForm
           ref="groupForm"
@@ -354,7 +313,7 @@
     generateVariablesGroup,
     getTemplateSchemaByVersion,
     setTemplateVersionList,
-    getTemplateVersionByItem,
+    getTemplateVersions,
     setTemplateInfo,
     serviceInfo,
     formData,
@@ -563,11 +522,11 @@
     formData.template.name = data?.name || '';
     formData.template.project = data?.project || {};
 
-    await getTemplateVersionByItem(formData.template, true);
+    await getTemplateVersions(formData.template, true);
     await setTemplateVersionList();
 
     formData.template.version =
-      get(templateVersionList.value, '0.version') || '';
+      get(templateVersionList.value, '0.template.version') || '';
     templateVersionFormCache.value = {};
     setTimeout(() => {
       versionMap.value = { ov: '', nv: '' };
@@ -627,7 +586,6 @@
     const res = await formref.value?.validate();
     // const { validFailedForm, moduleFormList } = await validateFormData();
     const groupFormRes = await groupForm.value?.getData();
-    console.log('groupFormRes=======', groupFormRes);
     if (!res && groupFormRes && !validateTrigger.value) {
       try {
         submitLoading.value = true;

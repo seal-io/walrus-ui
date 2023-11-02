@@ -95,6 +95,9 @@ export default {
   'operation.templates.detail.version': 'Version',
   'operation.templates.detail.icon': 'Icon',
   'operation.templates.detail.reademe': 'Readme',
+  'operation.templates.detail.resetTips':
+    'Will be restored to the initial state, continue?',
+  'operation.templates.detail.variableConfig': 'Variable Configuration',
   'operation.templates.detail.inputs': 'Inputs',
   'operation.templates.detail.outputs': 'Outputs',
   'operation.templates.detail.example': 'please select an example',

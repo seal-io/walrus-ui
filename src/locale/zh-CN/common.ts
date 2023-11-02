@@ -1,5 +1,10 @@
 export default {
+  'common.button.resetdefault': '恢复默认',
+  'common.button.perview': '预览',
+  'common.button.readonly': '只读',
+  'common.button.editmode': '编辑模式',
   'common.button.add': '添加',
+  'common.button.continue': '继续',
   'common.button.upload': '上传',
   'common.button.save': '保存',
   'common.button.submit': '提交',
