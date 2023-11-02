@@ -172,7 +172,7 @@
             >
               <a-form-item
                 :label="item.label"
-                :field="`configData.value.${item.key}`"
+                :field="`configData.${item.key}.value`"
                 :hide-label="pageAction === PageAction.EDIT"
                 hide-asterisk
                 validate-trigger="change"
@@ -187,7 +187,7 @@
                   <seal-select
                     v-if="item.key === 'region'"
                     ref="regionSelect"
-                    v-model="formData.configData.value[item.key]"
+                    v-model="formData.configData[item.key].value"
                     allow-create
                     allow-search
                     :label="$t('operation.connectors.table.region')"
@@ -208,14 +208,14 @@
                   </seal-select>
                   <seal-input
                     v-else-if="item.visible"
-                    v-model="formData.configData.value[item.key]"
+                    v-model="formData.configData[item.key].value"
                     :label="item.label"
                     :required="true"
                     :style="{ width: `${InputWidth.LARGE}px` }"
                   />
                   <seal-input-password
                     v-else
-                    v-model="formData.configData.value[item.key]"
+                    v-model="formData.configData[item.key].value"
                     :label="item.label"
                     :required="true"
                     :style="{ width: `${InputWidth.LARGE}px` }"
@@ -237,13 +237,13 @@
                 <AutoTip
                   style="width: 350px"
                   :tooltip-props="{
-                    content: get(formData, `configData.value.${row.key}`)
+                    content: get(formData, `configData.${row.key}.value`)
                   }"
                 >
                   <span>{{
                     !row.visible
                       ? '******'
-                      : get(formData, `configData.value.${row.key}`)
+                      : get(formData, `configData.${row.key}.value`)
                   }}</span>
                 </AutoTip>
               </template>
@@ -325,10 +325,20 @@
   const formData: ConnectorFormData = reactive({
     name: '',
     configData: {
-      value: {
-        access_key: '',
-        secret_key: '',
-        region: ''
+      access_key: {
+        value: '',
+        visible: true,
+        type: 'string'
+      },
+      secret_key: {
+        value: '',
+        visible: false,
+        type: 'string'
+      },
+      region: {
+        value: '',
+        visible: true,
+        type: 'string'
       }
     },
     description: '',
@@ -393,7 +403,7 @@
   };
   const handleTypeChange = () => {
     // reset region
-    formData.configData.value.region = '';
+    formData.configData.region.value = '';
   };
   const formatRegionLabel = ({ value }) => {
     const item = regionOptions.value.find((item) => item.value === value);

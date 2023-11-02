@@ -21,7 +21,7 @@ export interface CustomAttrbute {
   type: string;
   default?: any;
   extraCom?: string;
-  writeOnly?: boolean;
+  visible?: boolean;
   extraProps?: any;
   error?: string;
   style?: object;
@@ -35,10 +35,11 @@ export interface ConnectorFormData {
   type: string;
   applicableEnvironmentType: string;
   configData: {
-    value: {
-      [k: string]: any;
+    [k: string]: {
+      visible?: boolean;
+      value: string;
+      type?: string;
     };
-    schema?: object;
   };
   configVersion: string;
   enableFinOps: boolean;
