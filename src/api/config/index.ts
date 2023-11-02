@@ -14,11 +14,12 @@ export const localeMap = {
 };
 
 // those apis has not version prefix. /v1
-export const authApiList: string[] = [
+export const NoBaseURLApiList: string[] = [
   '/account',
   '/openapi',
   '/debug/version',
-  '/cli'
+  '/cli',
+  '/proxy'
 ];
 
 export const responseStatusMap = {

@@ -342,3 +342,21 @@ export const checkHasValue = (property) => {
   }
   return !!property;
 };
+
+export const parseXMLFragment = (
+  xmlFragment,
+  options: { item: string; label: string; value: string }
+) => {
+  const result: Array<{ label: string; value: string }> = [];
+  const parser = new DOMParser();
+  const xmlDoc = parser.parseFromString(xmlFragment, 'text/xml');
+  const items = xmlDoc.querySelectorAll(options.item);
+  items.forEach(function (item: any) {
+    const label = item.querySelector(options.label).textContent;
+    const value = item.querySelector(options.value).textContent;
+    result.push({
+      label,
+      value
+    });
+  });
+};

@@ -9,7 +9,7 @@ import {
   AUTH_CODE,
   LoginRouteName,
   localeMap,
-  authApiList,
+  NoBaseURLApiList,
   responseStatusMap,
   noToastAPI
 } from './config';
@@ -43,7 +43,7 @@ axios.interceptors.request.use(
       ...config.headers,
       'Accept-Language': localeMap[locale] || 'en'
     };
-    if (some(authApiList, (api) => url.startsWith(api))) {
+    if (some(NoBaseURLApiList, (api) => url.startsWith(api))) {
       config.baseURL = '';
     }
     return config;
