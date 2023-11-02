@@ -349,7 +349,7 @@
     try {
       const params = {
         templateID: id,
-        extract: ['-externalSchema', '-internalSchema']
+        extract: ['-customizeOpenAPISchema', '-schema']
       };
       const { data } = await queryTemplatesVersions(params);
       const list = data.items || [];

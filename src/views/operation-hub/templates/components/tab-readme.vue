@@ -30,7 +30,7 @@
   watch(
     () => props.schema,
     () => {
-      const mdStr = get(props.schema, 'internalSchema.data.readme') || '';
+      const mdStr = get(props.schema, 'schema.readme') || '';
       content.value = marked.parse(mdStr);
     },
     {

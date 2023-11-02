@@ -53,7 +53,7 @@
         "
         :size="16"
       >
-        <a-button
+        <!-- <a-button
           v-if="readOnly"
           size="small"
           type="primary"
@@ -63,7 +63,7 @@
             <icon-edit></icon-edit>
           </template>
           {{ $t('common.button.edit') }}</a-button
-        >
+        > -->
         <a-button
           v-if="!readOnly"
           size="small"
@@ -91,7 +91,6 @@
             v-model="code"
             lang="yaml"
             :read-only="readOnly"
-            height="90vh"
             :editor-default-value="defaultCode"
           >
           </AceEditor>
@@ -210,16 +209,16 @@
     try {
       const codeData = yaml2Json(code.value);
       const variables = _.get(codeData, 'components.schemas.variables');
-      const copyExternalSchema = _.cloneDeep(props.schema.externalSchema);
+      const copyCustomSchema = _.cloneDeep(props.schema.customizeOpenAPISchema);
       const data = _.set(
-        copyExternalSchema,
-        'schema.components.schemas.variables',
+        copyCustomSchema,
+        'components.schemas.variables',
         variables
       );
       await putTemplateSchemaByVersionId({
         templateVersionID: props.versionId,
         data: {
-          externalSchema: data
+          customizeOpenAPISchema: data
         }
       });
       execSucceed();
@@ -249,13 +248,15 @@
         onOk: handleResetTemplateSchema
       });
     }
+    if (val === 'edit') {
+      handleEdit();
+    }
   };
   const initData = () => {
-    const copyExternalSchema = _.cloneDeep(props.schema.externalSchema);
-    const info = _.get(copyExternalSchema, 'schema.info');
-    const openapi = _.get(copyExternalSchema, 'schema.openapi');
-    const originData = _.omit(_.get(copyExternalSchema, 'schema'), ['paths']);
-    _.unset(originData, ['components', 'schemas', 'outputs']);
+    const copyCustomSchema = _.cloneDeep(props.schema.customizeOpenAPISchema);
+    const info = _.get(copyCustomSchema, 'info');
+    const openapi = _.get(copyCustomSchema, 'openapi');
+    const originData = _.omit(copyCustomSchema, ['paths']);
     const schemaData = {
       openapi,
       info,

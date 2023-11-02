@@ -2,7 +2,7 @@
   <div class="service">
     <div class="variables m-t-10">
       <ViewForm
-        style="padding: 0"
+        style="width: 100%; padding: 0"
         :form-data="serviceInfo.attributes"
         :field-list="templateInfo"
       ></ViewForm>

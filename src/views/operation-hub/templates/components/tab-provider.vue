@@ -51,7 +51,7 @@
     }
   });
   const dataList = computed(() => {
-    const list = get(props.schema, 'internalSchema.data.requiredProviders', []);
+    const list = get(props.schema, 'schema.requiredProviders', []);
     return list || [];
   });
 </script>

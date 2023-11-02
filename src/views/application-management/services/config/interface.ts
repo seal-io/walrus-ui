@@ -38,8 +38,8 @@ export interface ServiceRowData {
   environment: { id: string; name: string };
   project: { id: string };
   template: {
-    externalSchema?: object;
-    internalSchema?: object;
+    customizeOpenAPISchema?: object;
+    schema?: object;
     id: string;
     version: string;
     name: string;
