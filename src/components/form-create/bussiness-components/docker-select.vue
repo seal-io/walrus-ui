@@ -1,12 +1,12 @@
 <script lang="tsx">
   import _ from 'lodash';
-  import { defineComponent, ref, computed, toRefs, inject } from 'vue';
+  import { defineComponent, ref, computed, toRefs } from 'vue';
   import { InputWidth } from '@/views/config';
-  import { CheckConnectorCatagory } from './types';
-  import { BCWidget, queryKuberEnvironmentConnector } from './api';
+  import { createAxiosToken } from '@/api/axios-chunk-request';
+  import { BCWidget } from './api';
 
   export default defineComponent({
-    name: 'KuberSelect',
+    name: 'DockerSelect',
     props: {
       modelValue: {
         type: [String, Number, Array],
@@ -19,16 +19,14 @@
         default: ''
       }
     },
-    emits: ['update:modelValue', 'change', 'inputValueChange'],
+    emits: ['update:modelValue', 'change', 'inputValueChange', 'search'],
     setup(props, { attrs, emit }) {
-      const KuberEnvironment = inject('KuberEnvironment', {
-        environmentID: '',
-        projectID: ''
-      });
-      const connectorID = ref('');
       const { modelValue, widget } = toRefs(props);
       const loading = ref(false);
       const dataList = ref<{ label: string; value: string }[]>([]);
+      let axiosToken: any = null;
+      let timer: any = null;
+
       const virtualListProps = computed(() => {
         if (dataList.value.length > 20) {
           return {
@@ -38,34 +36,23 @@
         return undefined;
       });
 
-      const fetchConnectors = async () => {
-        const { environmentID, projectID } = KuberEnvironment;
+      const handlePopupVisibleChange = async (visible: boolean) => {};
 
-        if (!environmentID || !projectID) return;
-
-        const { data } = await queryKuberEnvironmentConnector({
-          environmentID,
-          projectID
-        });
-        const connectorData = _.find(data.connectors, (item) => {
-          return item.connector.type === CheckConnectorCatagory(widget.value);
-        });
-        connectorID.value = connectorData?.connector.id;
+      const fetchImage = async (val) => {
+        axiosToken?.cancel();
+        axiosToken = createAxiosToken();
+        loading.value = true;
+        const handler = _.get(BCWidget, widget.value);
+        const { data } = await handler.request({ q: val }, axiosToken.token);
+        dataList.value = handler.transform(data);
+        loading.value = false;
       };
 
-      const handlePopupVisibleChange = async (visible: boolean) => {
-        if (!widget.value || dataList.value.length) return;
-        if (visible) {
-          loading.value = true;
-          await fetchConnectors();
-
-          const handler = _.get(BCWidget, widget.value);
-          const { data } = await handler.request({
-            connectorID: connectorID.value
-          });
-          dataList.value = handler.transform(data);
-          loading.value = false;
-        }
+      const handleSearch = (val) => {
+        clearTimeout(timer);
+        timer = setTimeout(() => {
+          fetchImage(val);
+        }, 100);
       };
 
       return () => (
@@ -79,6 +66,9 @@
             options={dataList.value}
             allow-search={true}
             loading={loading.value}
+            onSearch={(value: string) => {
+              handleSearch(value);
+            }}
             onInputValueChange={(value: any) => {
               emit('inputValueChange', value);
             }}

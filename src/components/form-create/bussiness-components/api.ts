@@ -1,24 +1,32 @@
 import axios from 'axios';
-import _ from 'lodash';
+import _, { result } from 'lodash';
 import qs from 'query-string';
 import dayjs from 'dayjs';
 import { BU } from './types';
-import { parseXMLFragment } from '../config/utils';
+import { parseXMLFragment, XMLParser } from '../config/utils';
 
 const PROXY_API = '/proxy/api/v1';
 
+interface Item {
+  label: string;
+  value: string;
+}
 const awsRegionOptions = {
   item: 'item',
   label: 'regionName',
   value: 'regionEndpoint'
 };
 const awsInstanceOptions = {
-  item: 'item',
+  item: 'instanceTypeSet',
   label: 'instanceType',
   value: 'instanceType'
 };
 
-export const BCWidget = {
+interface Caller {
+  request: (params: any, token?) => Promise<any>;
+  transform: (res: any) => any;
+}
+export const BCWidget: Record<string, Caller> = {
   // namespace
   [BU.NamespaceSelect]: {
     request: async (params: { connectorID: string }) => {
@@ -123,12 +131,22 @@ export const BCWidget = {
       });
     },
     transform(data) {
-      return parseXMLFragment(data, awsInstanceOptions);
+      const result: Item[] = [];
+      const docs = XMLParser(data);
+      const items = docs.querySelectorAll(awsInstanceOptions.label);
+      items.forEach(function (item: any) {
+        const label = item.textContent;
+        result.push({
+          label,
+          value: label
+        });
+      });
+      return result;
     }
   },
   // docker image
   [BU.ImageSelect]: {
-    request: async (params: { q: string }) => {
+    request: async (params: { q: string }, token?) => {
       return axios.get(
         `/proxy/https://hub.docker.com/api/content/v1/products/search`,
         {
@@ -136,6 +154,7 @@ export const BCWidget = {
             ...params,
             source: 'community'
           },
+          cancelToken: token,
           paramsSerializer: (obj) => {
             return qs.stringify(obj);
           }
@@ -143,7 +162,12 @@ export const BCWidget = {
       );
     },
     transform(data) {
-      return _.get(data, 'data.results');
+      return _.map(data.summaries, (item) => {
+        return {
+          label: item.name,
+          value: item.name
+        };
+      });
     }
   },
   [BU.ImageTagSelect]: {
