@@ -180,7 +180,10 @@
             :is="tabMap[item.com]"
             :height="tabContentHeight"
             :wrap-size="height"
+            :version-id="version"
             :schema="templateSchema"
+            :template-info="formData"
+            @update="handleUpdateSchema"
           ></component>
         </a-tab-pane>
         <template #extra>
@@ -374,6 +377,9 @@
     }
   };
   const handleVersonChange = () => {
+    getTemplateSchemaByVersionId();
+  };
+  const handleUpdateSchema = () => {
     getTemplateSchemaByVersionId();
   };
   const handleSubmit = async () => {

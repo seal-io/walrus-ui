@@ -173,7 +173,7 @@
             style="margin: 10px 0 0 0"
           ></GroupTitle>
           <a-tabs
-            v-if="formTabs.length > 1"
+            v-if="formTabs.length === -1"
             class="page-line-tabs"
             :active-key="activeKey"
             @change="handleTabChange"
@@ -198,7 +198,7 @@
             </a-tab-pane>
           </a-tabs>
           <formCreate
-            v-if="formTabs.length < 2"
+            v-if="formTabs.length === -2"
             ref="schemaForm"
             form-size="small"
             form-id="schemaForm"
@@ -209,6 +209,12 @@
             :form-schema="variablesGroup[defaultGroupKey]?.variables"
           >
           </formCreate>
+          <GroupForm
+            ref="groupForm"
+            :field-list="templateInfo"
+            :async-loading="asyncLoading"
+            :original-form-data="serviceInfo.attributes || {}"
+          ></GroupForm>
         </div>
       </div>
       <template #footer>
@@ -243,6 +249,7 @@
     provide,
     watch
   } from 'vue';
+  import GroupForm from '@/components/form-create/group-form.vue';
   import xInputGroup from '@/components/form-create/custom-components/x-input-group.vue';
   import EditPageFooter from '@/components/edit-page-footer/index.vue';
   import useLabelsActions from '@/components/form-create/hooks/use-labels-action';
@@ -291,6 +298,7 @@
     completeDataLoading,
     serviceDataList,
     serviceInfo,
+    templateInfo,
     formData,
     pageAction,
     defaultGroupKey,
@@ -313,6 +321,7 @@
   provide('showHintInput', true);
   provide('completeData', completeData);
   const active = ref('');
+  const groupForm = ref();
   const selectedList = ref(new Set());
   const editServiceList = ref<any[]>([]);
   const activeKey = ref('schemaForm0');
@@ -475,10 +484,11 @@
     validateLabel();
     const res = await formref.value?.validate();
     const { validFailedForm, moduleFormList } = await validateFormData();
-    if (!validFailedForm && !res && !validateTrigger.value) {
+    const groupFormRes = await groupForm.value?.getData();
+    if (groupFormRes && !res && !validateTrigger.value) {
       formData.attributes = {
         ..._.reduce(
-          moduleFormList,
+          groupFormRes,
           (obj, s) => {
             obj = {
               ...obj,

@@ -24,6 +24,7 @@
     value: any;
     label: string;
     order: number;
+    span?: number;
   }
 
   export default defineComponent({
@@ -90,6 +91,7 @@
           item.value = initialValue;
           item.label = item.title || item.name;
           item.order = item.uiSchema.required ? 0 : 1;
+
           return item;
         }).sort((a, b) => a.order - b.order);
       };
@@ -263,7 +265,9 @@
           <>
             {renderFilterBox()}
             <a-descriptions
-              {...attrs}
+              column={{ lg: 2, md: 1, sm: 1, xs: 1 }}
+              bordered={true}
+              layout="inline-vertical"
               data={list}
               v-slots={{
                 value: ({ data }) => {
@@ -273,6 +277,7 @@
                   return renderLabel({ data });
                 }
               }}
+              {...attrs}
             ></a-descriptions>
           </>
         );

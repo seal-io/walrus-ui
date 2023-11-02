@@ -72,6 +72,12 @@
         default() {
           return {};
         }
+      },
+      showFilter: {
+        type: Boolean,
+        default() {
+          return true;
+        }
       }
     },
     setup(props, { slots, emit, expose }) {
@@ -535,6 +541,7 @@
           <ParentComponent
             key={`${props.formId}_editorId_${index}`}
             {...fm.uiSchema.props}
+            widget={fm.uiSchema.widget}
             model-value={_.get(formData.value, fm.fieldPath)}
             label={`${fm.title || fm.name}`}
             required={fm.uiSchema.required}
@@ -697,7 +704,7 @@
 
       return () => (
         <div class="form-create-wrap">
-          {renderFilterBox()}
+          {props.showFilter ? renderFilterBox() : null}
           <a-form
             ref={formref}
             model={formData.value}

@@ -28,7 +28,7 @@ export default function useServiceData(props?) {
   const {
     completeData,
     initCompleteData,
-    getTemplateVersionByItem,
+    getTemplateVersions,
     getTemplates,
     serviceDataList,
     templateList,
@@ -137,7 +137,6 @@ export default function useServiceData(props?) {
     //   _.get(templateInfo.value, 'variables'),
     //   (v) => !v.hidden
     // );
-    console.log('templateInfo.value:', templateInfo.value);
     const variablesList = _.filter(
       templateInfo.value,
       (v) => !v.uiSchema.hidden
@@ -185,14 +184,13 @@ export default function useServiceData(props?) {
   };
 
   //  change module ...
-  const setFormTemplate = () => {
+  const setFormTemplateVersion = () => {
     const moduleTemplate = _.find(
       templateVersionList.value,
-      (item) => item.template.id === formData.template.template.id
+      (item) => item.template.template?.id === formData.template.template.id
     );
-
-    formData.template.version = _.get(moduleTemplate, 'version') || '';
-    formData.template.id = _.get(moduleTemplate, 'id') || '';
+    formData.template.version = _.get(moduleTemplate, 'template.version') || '';
+    formData.template.id = _.get(moduleTemplate, 'template.id') || '';
     return moduleTemplate;
   };
 
@@ -226,13 +224,13 @@ export default function useServiceData(props?) {
     try {
       const list = _.filter(
         allTemplateVersions.value,
-        (item) => item.template.id === formData.template.template.id
+        (item) => item.template.template.id === formData.template.template.id
       );
       let versions = _.map(list, (item) => {
         return {
           ..._.cloneDeep(item),
-          label: item.version,
-          value: item.version
+          label: item.template.version,
+          value: item.template.version
         };
       });
       versions = _.uniqBy(versions, 'value');
@@ -244,7 +242,7 @@ export default function useServiceData(props?) {
           return -1;
         }
         return 1;
-      });
+      }) as TemplateVersion[];
     } catch (error) {
       // ignore
     }
@@ -262,7 +260,7 @@ export default function useServiceData(props?) {
   const setFormAttributes = async () => {
     _.assignIn(formData, serviceInfo.value);
     // 1. get the template meta data 2.set the default value
-    await getTemplateVersionByItem(formData.template);
+    await getTemplateVersions(formData.template);
     await setTemplateVersionList();
     const moduleTemplate = await getTemplateSchemaByVersion();
     // templateInfo.value = _.cloneDeep(_.get(moduleTemplate, 'schema'));
@@ -299,9 +297,9 @@ export default function useServiceData(props?) {
       await setFormAttributes();
     } else {
       setFormDataTemplate();
-      await getTemplateVersionByItem(formData.template);
+      await getTemplateVersions(formData.template);
       await setTemplateVersionList();
-      setFormTemplate();
+      setFormTemplateVersion();
       const templateSchema = await getTemplateSchemaByVersion();
       setTemplateInfo(templateSchema);
     }
@@ -336,10 +334,10 @@ export default function useServiceData(props?) {
     init,
     generateVariablesGroup,
     setFormAttributes,
-    setFormTemplate,
+    setFormTemplateVersion,
     getTemplateSchemaByVersion,
     setTemplateVersionList,
-    getTemplateVersionByItem,
+    getTemplateVersions,
     initCompleteData,
     initInfo,
     setTemplateInfo,

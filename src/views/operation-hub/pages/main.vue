@@ -48,12 +48,6 @@
             <Connectors></Connectors>
           </a-tab-pane>
 
-          <!-- <a-tab-pane key="form" title="form">
-            <div>
-              <dynamicForm></dynamicForm>
-            </div>
-          </a-tab-pane> -->
-
           <template #extra>
             <IconBtnGroup
               v-if="activeKey === OperatorHubTabs.TEMPLATES"
@@ -74,7 +68,6 @@
   import { OperatorHubTabs } from '@/views/config';
   import HeaderInfo from '@/components/header-info/index.vue';
   import IconBtnGroup from '@/components/icon-btn-group/index.vue';
-  import dynamicForm from '@/components/dynamic-form/index.vue';
   import Connectors from '../connectors/components/table-list.vue';
   import Templates from '../templates/pages/list.vue';
   import Catalogs from '../catalogs/pages/list.vue';

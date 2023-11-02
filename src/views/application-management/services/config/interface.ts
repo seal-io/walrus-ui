@@ -37,7 +37,13 @@ export interface ServiceRowData {
   description: string;
   environment: { id: string; name: string };
   project: { id: string };
-  template: { id: string; version: string; name: string };
+  template: {
+    externalSchema?: object;
+    internalSchema?: object;
+    id: string;
+    version: string;
+    name: string;
+  };
   attributes: object;
 }
 

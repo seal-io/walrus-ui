@@ -117,10 +117,36 @@ export function queryTemplateSchemaByVersionId(
   params: { templateVersionID: string },
   token?: any
 ) {
-  return axios.get(`/template-versions/${params.templateVersionID}`, {
+  let url = `/template-versions/${params.templateVersionID}`;
+  if (isProjectContext()) {
+    url = `${PROJECT_API_PREFIX()}${url}`;
+  }
+  return axios.get(url, {
     cancelToken: token
   });
 }
+
+export function putTemplateSchemaByVersionId(params: {
+  templateVersionID: string;
+  data;
+}) {
+  let url = `/template-versions/${params.templateVersionID}`;
+  if (isProjectContext()) {
+    url = `${PROJECT_API_PREFIX()}${url}`;
+  }
+  return axios.put(url, params.data);
+}
+
+export function resetTemplateSchemaByVersionId(params: {
+  templateVersionID: string;
+}) {
+  let url = `/template-versions/${params.templateVersionID}/reset`;
+  if (isProjectContext()) {
+    url = `${PROJECT_API_PREFIX()}${url}`;
+  }
+  return axios.post(url);
+}
+
 export function queryItemTemplatesVersions(
   params: { templateID: string; isProjectTemplate?: boolean },
   token?: any

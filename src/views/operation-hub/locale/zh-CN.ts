@@ -88,6 +88,8 @@ export default {
   'operation.templates.detail.version': '版本',
   'operation.templates.detail.icon': '图标',
   'operation.templates.detail.reademe': '说明',
+  'operation.templates.detail.resetTips': '将恢复至初始状态，是否继续？',
+  'operation.templates.detail.variableConfig': '变量配置',
   'operation.templates.detail.inputs': '输入',
   'operation.templates.detail.example': '请选择示例',
   'operation.templates.detail.gptcreate': '生成',

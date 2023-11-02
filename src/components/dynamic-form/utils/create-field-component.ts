@@ -15,7 +15,7 @@ export const createFieldComponent = (fieldSchema): Record<string, string[]> => {
   }
   if (type === FIELD_TYPE.STRING) {
     return {
-      component: ['Input']
+      component: [Widget.HintInput]
     };
   }
   if (type === FIELD_TYPE.NUMBER) {

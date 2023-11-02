@@ -372,8 +372,14 @@
     try {
       const { data } = await queryItemConnector({ id });
       assignIn(formData, data);
+      formData.configData = {
+        value: {
+          kubeconfig: ''
+        }
+      };
       formData.enableFinOps = data.enableFinOps || false;
       copyFormData = cloneDeep(formData);
+      console.log('formData======', formData);
     } catch (error) {
       // ignore
     }

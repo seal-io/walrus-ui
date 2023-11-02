@@ -9,6 +9,7 @@ import {
   queryTemplates,
   queryItemTemplatesVersions
 } from '@/views/operation-hub/templates/api';
+import { initFormState } from '@/components/dynamic-form/utils/init-form-state';
 import { queryServices } from '@/views/application-management/services/api';
 import useCallCommon from '@/hooks/use-call-common';
 import { queryVariables } from '../../variables/api';
@@ -18,11 +19,24 @@ export default function useCompleteData() {
     service: any;
     var: any;
   }
+  interface TemplateVersionItem {
+    schema?: {
+      outputs: any[];
+    };
+    template: {
+      id: string;
+      name: string;
+      version: string;
+      template: {
+        id: string;
+      };
+    };
+  }
   const { route } = useCallCommon();
   const id = route.query.id || '';
   const loading = ref(false);
   const templateList = ref<TemplateRowData[]>([]);
-  const allTemplateVersions = ref<TemplateVersionData[]>([]);
+  const allTemplateVersions = ref<TemplateVersionItem[]>([]);
   const completeData = ref<Partial<HintKey>>({
     service: null,
     var: null
@@ -56,11 +70,14 @@ export default function useCompleteData() {
     }
   };
   // get item template version, isOnSelect is a flag for select event
-  const getTemplateVersionByItem = async (template, isOnSelect?: boolean) => {
-    const templateID = template.template?.id;
+  const getTemplateVersions = async (
+    formTemplateData,
+    isOnSelect?: boolean
+  ) => {
+    const templateID = formTemplateData.template?.id;
     const isVisited = _.find(
       allTemplateVersions.value,
-      (item) => item.template.id === templateID
+      (item) => item.template.template.id === templateID
     );
     if (isVisited && isOnSelect) {
       return;
@@ -68,7 +85,7 @@ export default function useCompleteData() {
     templateVersionToken?.cancel?.();
     templateVersionToken = createAxiosToken();
     try {
-      const isProjectTemplate = template.project?.id;
+      const isProjectTemplate = formTemplateData.project?.id;
       const params = {
         templateID,
         isProjectTemplate: !!isProjectTemplate,
@@ -78,10 +95,15 @@ export default function useCompleteData() {
         params,
         templateVersionToken.token
       );
-      allTemplateVersions.value = _.concat(
-        allTemplateVersions.value,
-        data?.items || []
-      );
+      const list = _.map(data?.items || [], (item) => {
+        return {
+          template: {
+            ..._.pick(item, ['id', 'name', 'version']),
+            template: item.template
+          }
+        };
+      });
+      allTemplateVersions.value = _.concat(allTemplateVersions.value, list);
     } catch (error) {
       //
     }
@@ -109,13 +131,25 @@ export default function useCompleteData() {
     const list = _.map(services, (item) => {
       return {
         name: item.name,
-        type: item.template.name,
+        templateId: item.template.id,
+        versionId: item.template.template.id,
         version: item.template.version
       };
     });
     return list;
   };
 
+  const parseSchemaOutputs = (internalSchema) => {
+    const result = initFormState(
+      _.get(internalSchema, 'schema.components.schemas.outputs') || {}
+    );
+    return result.fieldSchemaList.map((item) => {
+      return {
+        name: item.name,
+        description: item.description
+      };
+    });
+  };
   const getServiceList = async () => {
     serviceToken?.cancel?.();
     serviceToken = createAxiosToken();
@@ -123,17 +157,21 @@ export default function useCompleteData() {
       const params = {
         page: -1,
         withSchema: true,
-        extract: ['-projectId', '-status']
+        extract: ['-projectId', '-status', '-internalSchema', '-externalSchema']
       };
       const { data } = await queryServices(params, serviceToken.token);
       serviceDataList.value = data.items || [];
       allTemplateVersions.value = _.map(data?.items || [], (item) => {
         const { template } = cloneDeep(item);
         return {
-          ...template,
-          template
+          schema: {
+            outputs: parseSchemaOutputs(template.internalSchema)
+          },
+          template: {
+            ..._.omit(template, ['internalSchema', 'externalSchema'])
+          }
         };
-      }) as TemplateVersionData[];
+      }) as any[];
     } catch (error) {
       serviceDataList.value = [];
     }
@@ -159,7 +197,10 @@ export default function useCompleteData() {
         const addedServiceTemplate = _.find(
           allTemplateVersions.value || [],
           (s) => {
-            return item.type === s.template.name && s.version === item.version;
+            return (
+              s.template.id === item.templateId &&
+              s.template.version === item.version
+            );
           }
         );
         const k = item.name;
@@ -205,7 +246,7 @@ export default function useCompleteData() {
   return {
     initCompleteData,
     getTemplates,
-    getTemplateVersionByItem,
+    getTemplateVersions,
     completeData,
     templateList,
     allTemplateVersions,

@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="group-form">
     <a-tabs
       v-if="formTabs.length > 1"
       class="page-line-tabs"
@@ -16,6 +16,7 @@
           :form-id="`schemaForm${index}`"
           layout="vertical"
           :show-footer="false"
+          :show-filter="showFilter"
           :attributes="variableData"
           :model="variablesGroupForm[group]"
           :form-schema="variablesGroup[group]?.variables"
@@ -29,6 +30,7 @@
       form-id="schemaForm"
       layout="vertical"
       :show-footer="false"
+      :show-filter="showFilter"
       :model="variablesGroupForm[formTabs[0]]"
       :form-schema="variablesGroup[formTabs[0]]?.variables"
     >
@@ -61,6 +63,12 @@
       type: Object as PropType<any>,
       default() {
         return {};
+      }
+    },
+    showFilter: {
+      type: Boolean,
+      default() {
+        return true;
       }
     },
     action: {
@@ -233,3 +241,15 @@
     }
   );
 </script>
+
+<style lang="less" scoped>
+  .group-form {
+    :deep(.arco-tabs-nav-tab) {
+      display: flex !important;
+    }
+
+    :deep(.arco-tabs-content) {
+      padding-top: 16px !important;
+    }
+  }
+</style>

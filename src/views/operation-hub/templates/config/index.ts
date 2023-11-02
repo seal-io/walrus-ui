@@ -1,6 +1,7 @@
 import { useUserStore } from '@/store';
 import { Resources, Actions } from '@/permissions/config';
 import _ from 'lodash';
+import { MoreAction } from '@/views/config/interface';
 
 const userStore = useUserStore();
 
@@ -20,13 +21,33 @@ export const tabList = [
   { label: 'operation.templates.detail.outputs', value: '', com: 'tabOutput' },
   { label: 'Providers', value: '', com: 'tabConnector' },
   {
-    label: '自定义 Schema',
-    icon: 'icon-edit',
+    label: 'operation.templates.detail.variableConfig',
+    icon: '',
     value: '',
     com: 'tabEditSchema'
   }
 ];
 
+export const schemaActionList: MoreAction[] = [
+  {
+    label: 'common.button.resetdefault',
+    value: 'reset',
+    icon: 'icon-sync',
+    status: 'normal',
+    filterFun({ projectID }) {
+      return projectID
+        ? userStore.hasProjectResourceActions({
+            resource: Resources.TemplateVersions,
+            projectID,
+            actions: [Actions.PUT]
+          })
+        : userStore.hasRolesActionsPermission({
+            resource: Resources.TemplateVersions,
+            actions: [Actions.PUT]
+          });
+    }
+  }
+];
 export const actionList = [
   {
     label: 'common.button.edit',
