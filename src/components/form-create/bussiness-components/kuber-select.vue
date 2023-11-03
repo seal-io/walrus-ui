@@ -2,11 +2,19 @@
   import _ from 'lodash';
   import { defineComponent, ref, computed, toRefs, inject } from 'vue';
   import { InputWidth } from '@/views/config';
-  import { CheckConnectorCatagory } from './types';
+  import { CheckConnectorCatagory, BU } from './types';
   import { BCWidget, queryEnvironmentConnector } from './api';
 
   export default defineComponent({
     name: 'KuberSelect',
+    widgets: [
+      BU.NamespaceSelect,
+      BU.SecretSelect,
+      BU.ConfigMapSelect,
+      BU.StorageClassSelect,
+      BU.AWSRegion,
+      BU.AWSInstanceType
+    ],
     props: {
       modelValue: {
         type: [String, Number, Array],
@@ -84,7 +92,7 @@
             {...attrs}
             placeholder={attrs.label}
             virtual-list-props={virtualListProps}
-            style={{ width: `${InputWidth.LARGE}px` }}
+            style={{ width: `100%` }}
             options={dataList.value}
             allow-search={true}
             loading={loading.value}

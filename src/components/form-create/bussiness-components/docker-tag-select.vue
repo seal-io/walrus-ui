@@ -2,12 +2,14 @@
   import _ from 'lodash';
   import { defineComponent, ref, computed, toRefs, watch } from 'vue';
   import { InputWidth } from '@/views/config';
-  import { createAxiosToken } from '@/api/axios-chunk-request';
   import sealFormItemWrap from '@/components/seal-form/components/seal-form-item-wrap.vue';
+  import { createAxiosToken } from '@/api/axios-chunk-request';
+  import { BU } from './types';
   import { BCWidget } from './api';
 
   export default defineComponent({
     name: 'DockerTagSelect',
+    widgets: [BU.ImageTagSelect],
     props: {
       modelValue: {
         type: [String],

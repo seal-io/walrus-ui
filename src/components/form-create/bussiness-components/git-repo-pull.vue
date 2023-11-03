@@ -13,10 +13,12 @@
   import { createAxiosToken } from '@/api/axios-chunk-request';
   import sealFormItemWrap from '@/components/seal-form/components/seal-form-item-wrap.vue';
   import useQueryConnector from './hooks/use-query-connector';
+  import { BU } from './types';
   import { BCWidget } from './api';
 
   export default defineComponent({
     name: 'GitRepoPull',
+    widgets: [BU.GitHubRepository],
     props: {
       modelValue: {
         type: [String],
