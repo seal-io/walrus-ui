@@ -67,7 +67,7 @@ export function applyPipeline(data: { id: string; projectId: string }) {
 }
 
 export function retryApplyPipeline(data: { flowId: string; execId: string }) {
-  return axios.post(
+  return axios.put(
     `${PROJECT_API_PREFIX()}${PIPELINE_API}/${
       data.flowId
     }${PIPELINE_EXECUTION_API}/${data.execId}/resubmit`

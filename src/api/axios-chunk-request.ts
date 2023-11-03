@@ -175,7 +175,11 @@ export function useSetChunkRequest() {
           }
 
           handler(result);
-          console.log('chunkrequest===', { result, url, cres });
+          console.log('chunkrequest===', {
+            result,
+            url: `${url}?${qs.stringify(params)}`,
+            cres
+          });
         }
       });
       requestReadyState.value = request?.readyState;

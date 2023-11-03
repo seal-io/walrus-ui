@@ -374,20 +374,16 @@
 
   const updateChunkedList = (data) => {
     console.log('updateChunkedList===', data);
-    // let collections = data?.collection || [];
-    // // UPDATE
-    // if (data?.type === websocketEventType.UPDATE) {
-    //   _.each(collections, (item) => {
-    //     const updateIndex = _.findIndex(
-    //       dataList.value,
-    //       (sItem) => sItem.id === item.id
-    //     );
-    //     if (updateIndex > -1) {
-    //       const updateItem = _.cloneDeep(item);
-    //       dataList.value[updateIndex] = updateItem;
-    //     }
-    //   });
-    // }
+    const collections = data?.collection || [];
+    // UPDATE
+    if (data?.type === websocketEventType.UPDATE) {
+      const currentData = _.find(collections, (item) => item.id === execId);
+      if (currentData) {
+        const stages = currentData?.stages || [];
+        const result = initNodes(stages);
+        graphIns.fromJSON(result, { silent: true });
+      }
+    }
   };
   const updateHandler = (list) => {
     _.each(list, (data) => {
