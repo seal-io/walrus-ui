@@ -42,7 +42,7 @@
         () => modelValue.value,
         (val) => {
           if (val) {
-            console.log('value', val);
+            currentValue.value = fomatter(val);
           }
         },
         { immediate: true }
