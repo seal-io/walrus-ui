@@ -19,14 +19,14 @@
         auto-label-width
         layout="vertical"
       >
-        <a-form-item>
+        <!-- <a-form-item>
           <KuberSelect
             v-model="Kubernamespace"
             widget="NamespaceSelect"
             label="NamespaceSelect"
             @change="handleNamespaceChange"
           ></KuberSelect>
-        </a-form-item>
+        </a-form-item> -->
         <a-form-item
           field="name"
           hide-label

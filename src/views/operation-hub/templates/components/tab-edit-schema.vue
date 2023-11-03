@@ -198,17 +198,17 @@
     if (!props.versionId) return;
     try {
       const codeData = yaml2Json(code.value);
-      const variables = _.get(codeData, 'components.schemas.variables');
-      const copyCustomSchema = _.cloneDeep(props.schema.uiSchema);
-      const data = _.set(
-        copyCustomSchema,
-        'components.schemas.variables',
-        variables
-      );
+      // const variables = _.get(codeData, 'components.schemas.variables');
+      // const copyCustomSchema = _.cloneDeep(props.schema.uiSchema);
+      // const data = _.set(
+      //   copyCustomSchema,
+      //   'components.schemas.variables',
+      //   variables
+      // );
       await putTemplateSchemaByVersionId({
         templateVersionID: props.versionId,
         data: {
-          uiSchema: data
+          uiSchema: codeData
         }
       });
       execSucceed();
