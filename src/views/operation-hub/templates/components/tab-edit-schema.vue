@@ -1,9 +1,7 @@
 <template>
-  <div ref="wrapper" class="wrap" :style="{ height }">
+  <div ref="wrapper" class="wrap">
     <div class="flex">
       <a-space>
-        <span class="title">schema.yaml</span>
-        <a-divider direction="vertical"></a-divider>
         <a-button type="text" size="small" @click="handleToggleFullScreen">
           <template #icon>
             <i
@@ -26,8 +24,8 @@
           type="text"
           @click="handleToggleMode('editor')"
         >
-          <template #icon><icon-edit /></template>
-          {{ $t('common.button.editmode') }}</a-button
+          <template #icon><icon-code /></template>
+          Schema</a-button
         >
         <a-button
           v-if="activeKey === 'editor'"
@@ -53,17 +51,6 @@
         "
         :size="16"
       >
-        <!-- <a-button
-          v-if="readOnly"
-          size="small"
-          type="primary"
-          @click="handleEdit"
-        >
-          <template #icon>
-            <icon-edit></icon-edit>
-          </template>
-          {{ $t('common.button.edit') }}</a-button
-        > -->
         <a-button
           v-if="!readOnly"
           size="small"
@@ -90,6 +77,9 @@
           <AceEditor
             v-model="code"
             lang="yaml"
+            :height="
+              isFullscreen ? 'calc(100vh - 60px)' : `calc(${height} - 55px)`
+            "
             :read-only="readOnly"
             :editor-default-value="defaultCode"
           >
@@ -97,7 +87,7 @@
         </div>
       </a-tab-pane>
       <a-tab-pane key="form" :title="$t('common.button.preview')">
-        <div class="form">
+        <div class="form" :class="{ isFullscreen }">
           <groupForm
             :show-filter="false"
             :field-list="fieldList"
@@ -209,7 +199,7 @@
     try {
       const codeData = yaml2Json(code.value);
       const variables = _.get(codeData, 'components.schemas.variables');
-      const copyCustomSchema = _.cloneDeep(props.schema.customizeOpenAPISchema);
+      const copyCustomSchema = _.cloneDeep(props.schema.uiSchema);
       const data = _.set(
         copyCustomSchema,
         'components.schemas.variables',
@@ -218,7 +208,7 @@
       await putTemplateSchemaByVersionId({
         templateVersionID: props.versionId,
         data: {
-          customizeOpenAPISchema: data
+          uiSchema: data
         }
       });
       execSucceed();
@@ -242,9 +232,9 @@
   const handleClickAction = (val) => {
     if (val === 'reset') {
       deleteModal({
-        title: 'common.button.resetdefault',
+        title: 'operation.templates.detail.resetTitle',
         content: 'operation.templates.detail.resetTips',
-        okText: 'common.button.continue',
+        okText: 'common.button.confirm',
         onOk: handleResetTemplateSchema
       });
     }
@@ -253,7 +243,7 @@
     }
   };
   const initData = () => {
-    const copyCustomSchema = _.cloneDeep(props.schema.customizeOpenAPISchema);
+    const copyCustomSchema = _.cloneDeep(props.schema.uiSchema);
     const info = _.get(copyCustomSchema, 'info');
     const openapi = _.get(copyCustomSchema, 'openapi');
     const originData = _.omit(copyCustomSchema, ['paths']);
@@ -337,12 +327,15 @@
 
     .form {
       flex: 1;
-      height: 100vh;
       padding: 10px;
       overflow: auto;
       background-color: #fff;
       border: 1px solid var(--color-border-2);
       border-radius: 0 0 var(--border-radius-small) var(--border-radius-small);
+
+      &.isFullscreen {
+        height: calc(100vh - 60px);
+      }
     }
   }
 </style>

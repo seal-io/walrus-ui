@@ -96,8 +96,9 @@ export default {
   'operation.templates.detail.icon': 'Icon',
   'operation.templates.detail.reademe': 'Readme',
   'operation.templates.detail.resetTips':
-    'Will be restored to the initial state, continue?',
-  'operation.templates.detail.variableConfig': 'Variable Configuration',
+    'Are you sure you want to reset to the initial schema?',
+  'operation.templates.detail.resetTitle': 'Reset to the initial schema',
+  'operation.templates.detail.variableConfig': 'UI Schema',
   'operation.templates.detail.inputs': 'Inputs',
   'operation.templates.detail.outputs': 'Outputs',
   'operation.templates.detail.example': 'please select an example',

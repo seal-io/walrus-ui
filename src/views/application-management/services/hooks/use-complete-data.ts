@@ -89,7 +89,7 @@ export default function useCompleteData() {
       const params = {
         templateID,
         isProjectTemplate: !!isProjectTemplate,
-        extract: ['-schema', '-customizeOpenAPISchema']
+        extract: ['-schema', '-uiSchema']
       };
       const { data } = await queryItemTemplatesVersions(
         params,
@@ -157,7 +157,7 @@ export default function useCompleteData() {
       const params = {
         page: -1,
         withSchema: true,
-        extract: ['-projectId', '-status', '-schema', '-customizeOpenAPISchema']
+        extract: ['-projectId', '-status', '-schema', '-uiSchema']
       };
       const { data } = await queryServices(params, serviceToken.token);
       serviceDataList.value = data.items || [];
@@ -168,7 +168,7 @@ export default function useCompleteData() {
             outputs: parseSchemaOutputs(template.schema)
           },
           template: {
-            ..._.omit(template, ['schema', 'customizeOpenAPISchema'])
+            ..._.omit(template, ['schema', 'uiSchema'])
           }
         };
       }) as any[];

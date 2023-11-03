@@ -20,6 +20,7 @@ export interface UISchema {
   childCom?: string;
   required?: boolean;
   hidden?: boolean;
+  enum?: any[];
   immutable?: boolean;
   sensitive?: boolean;
   group?: string;

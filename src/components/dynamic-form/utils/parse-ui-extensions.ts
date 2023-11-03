@@ -1,4 +1,5 @@
 import { FieldRule } from '@arco-design/web-vue';
+import _ from 'lodash';
 import { UISchema } from '../config/interface';
 import {
   createFieldComponent,
@@ -43,4 +44,12 @@ export const parseUIExtensions = (
   };
 };
 
+export const inhertGroupFromParent = (parentGroup, childGroup) => {
+  if (!parentGroup) return childGroup;
+  if (!childGroup) return parentGroup;
+  const parentGroupList = _.split(parentGroup, '/');
+  const childGroupList = _.split(childGroup, '/');
+  if (parentGroupList[0] === childGroupList[0]) return childGroup;
+  return `${parentGroup}/${childGroup}`;
+};
 export default {};

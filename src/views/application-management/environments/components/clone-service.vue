@@ -490,10 +490,7 @@
         ..._.reduce(
           groupFormRes,
           (obj, s) => {
-            obj = {
-              ...obj,
-              ...s.formData
-            };
+            obj = _.merge(obj, s.formData);
             return obj;
           },
           {}

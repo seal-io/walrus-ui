@@ -19,14 +19,14 @@
         auto-label-width
         layout="vertical"
       >
-        <a-form-item>
+        <!-- <a-form-item>
           <kuberSelect
             v-model="Kubernamespace"
             widget="AWSRegion"
             label="AWSRegion"
             @change="handleNamespaceChange"
           ></kuberSelect>
-        </a-form-item>
+        </a-form-item> -->
         <a-form-item
           field="name"
           hide-label
@@ -611,10 +611,7 @@
           ...reduce(
             groupFormRes,
             (obj, s) => {
-              obj = {
-                ...obj,
-                ...s.formData
-              };
+              obj = _.merge(obj, s.formData);
               return obj;
             },
             {}

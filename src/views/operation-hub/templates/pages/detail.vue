@@ -311,6 +311,7 @@
   });
 
   const getTemplateSchemaByVersionId = async () => {
+    if (!version.value) return;
     try {
       const params = {
         templateVersionID: version.value
@@ -349,7 +350,7 @@
     try {
       const params = {
         templateID: id,
-        extract: ['-customizeOpenAPISchema', '-schema']
+        extract: ['-uiSchema', '-schema']
       };
       const { data } = await queryTemplatesVersions(params);
       const list = data.items || [];
