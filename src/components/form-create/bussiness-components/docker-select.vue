@@ -39,13 +39,18 @@
       const handlePopupVisibleChange = async (visible: boolean) => {};
 
       const fetchImage = async (val) => {
-        axiosToken?.cancel();
-        axiosToken = createAxiosToken();
-        loading.value = true;
-        const handler = _.get(BCWidget, widget.value);
-        const { data } = await handler.request({ q: val }, axiosToken.token);
-        dataList.value = handler.transform(data);
-        loading.value = false;
+        try {
+          axiosToken?.cancel();
+          axiosToken = createAxiosToken();
+          loading.value = true;
+          const handler = _.get(BCWidget, widget.value);
+          const { data } = await handler.request({ q: val }, axiosToken.token);
+          dataList.value = handler.transform(data);
+          loading.value = false;
+        } catch (error) {
+          loading.value = false;
+          dataList.value = [];
+        }
       };
 
       const handleSearch = (val) => {

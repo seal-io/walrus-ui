@@ -3,7 +3,7 @@
   import { defineComponent, ref, computed, toRefs, inject } from 'vue';
   import { InputWidth } from '@/views/config';
   import { CheckConnectorCatagory } from './types';
-  import { BCWidget, queryKuberEnvironmentConnector } from './api';
+  import { BCWidget, queryEnvironmentConnector } from './api';
 
   export default defineComponent({
     name: 'KuberSelect',
@@ -21,7 +21,7 @@
     },
     emits: ['update:modelValue', 'change', 'inputValueChange'],
     setup(props, { attrs, emit }) {
-      const KuberEnvironment = inject('KuberEnvironment', {
+      const ProjectEnvironment = inject('ProjectEnvironment', {
         environmentID: '',
         projectID: ''
       });
@@ -39,32 +39,41 @@
       });
 
       const fetchConnectors = async () => {
-        const { environmentID, projectID } = KuberEnvironment;
+        try {
+          const { environmentID, projectID } = ProjectEnvironment;
 
-        if (!environmentID || !projectID) return;
+          if (!environmentID || !projectID) return;
 
-        const { data } = await queryKuberEnvironmentConnector({
-          environmentID,
-          projectID
-        });
-        const connectorData = _.find(data.connectors, (item) => {
-          return item.connector.type === CheckConnectorCatagory(widget.value);
-        });
-        connectorID.value = connectorData?.connector.id;
+          const { data } = await queryEnvironmentConnector({
+            environmentID,
+            projectID
+          });
+          const connectorData = _.find(data.connectors, (item) => {
+            return item.connector.type === CheckConnectorCatagory(widget.value);
+          });
+          connectorID.value = connectorData?.connector.id;
+        } catch (error) {
+          // eslint-disable-next-line no-console
+        }
       };
 
       const handlePopupVisibleChange = async (visible: boolean) => {
         if (!widget.value || dataList.value.length) return;
         if (visible) {
-          loading.value = true;
-          await fetchConnectors();
+          try {
+            loading.value = true;
+            await fetchConnectors();
 
-          const handler = _.get(BCWidget, widget.value);
-          const { data } = await handler.request({
-            connectorID: connectorID.value
-          });
-          dataList.value = handler.transform(data);
-          loading.value = false;
+            const handler = _.get(BCWidget, widget.value);
+            const { data } = await handler.request({
+              connectorID: connectorID.value
+            });
+            dataList.value = handler.transform(data);
+            loading.value = false;
+          } catch (error) {
+            loading.value = false;
+            dataList.value = [];
+          }
         }
       };
 

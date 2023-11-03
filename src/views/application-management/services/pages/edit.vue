@@ -19,14 +19,14 @@
         auto-label-width
         layout="vertical"
       >
-        <!-- <a-form-item>
-          <kuberSelect
+        <a-form-item>
+          <KuberSelect
             v-model="Kubernamespace"
-            widget="ImageSelect"
-            label="ImageSelect"
+            widget="NamespaceSelect"
+            label="NamespaceSelect"
             @change="handleNamespaceChange"
-          ></kuberSelect>
-        </a-form-item> -->
+          ></KuberSelect>
+        </a-form-item>
         <a-form-item
           field="name"
           hide-label
@@ -246,7 +246,7 @@
 </template>
 
 <script lang="ts" setup>
-  import DockerSelect from '@/components/form-create/bussiness-components/docker-select.vue';
+  import KuberSelect from '@/components/form-create/bussiness-components/kuber-select.vue';
   import { PROJECT } from '@/router/config';
   import _, {
     get,
@@ -364,11 +364,13 @@
 
   provide('showHintInput', true);
   provide('completeData', completeData);
-  provide('KuberEnvironment', {
+  provide('ProjectEnvironment', {
     projectID: route.params.projectId,
     environmentID: route.params.environmentId
   });
   const Kubernamespace = ref('');
+  const branchName = ref('');
+  const repoName = ref('');
 
   const handleNamespaceChange = (val) => {
     console.log('handleNamespaceChange===', val);
