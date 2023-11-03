@@ -13,7 +13,18 @@
           <a-button type="outline" size="small" @click="handleBack">
             {{ $t('common.button.back') }}
           </a-button>
-          <a-button type="primary" size="small" @click="handleRetry">
+          <a-button
+            v-if="
+              userStore.hasProjectResourceActions({
+                resource: Resources.WorkflowApply,
+                projectID,
+                actions: [Actions.PUT]
+              })
+            "
+            type="primary"
+            size="small"
+            @click="handleRetry"
+          >
             {{ $t('common.button.retry') }}
           </a-button>
         </a-space>
@@ -26,8 +37,11 @@
 </template>
 
 <script lang="ts" setup>
+  import { Resources, Actions } from '@/permissions/config';
   import { ref, onMounted, computed } from 'vue';
+  import { useUserStore } from '@/store';
   import { WORKFLOW } from '@/router/config';
+  import { execSucceed } from '@/utils/monitor';
   import useCallCommon from '@/hooks/use-call-common';
   import useProjectBreadcrumbData from '@/views/application-management/projects/hooks/use-project-breadcrumb-data';
   import FlowView from '../components/flow-view.vue';
@@ -37,7 +51,9 @@
   const { t, route, router } = useCallCommon();
   const flowId = route.params.flowId as string;
   const execId = route.query.execId as string;
+  const projectID = route.query.projectId as string;
   const flow = ref();
+  const userStore = useUserStore();
   const {
     getProjectList,
     setProjectList,
@@ -95,6 +111,7 @@
         execId
       };
       await retryApplyPipeline(data);
+      execSucceed();
     } catch (error) {
       // eslint-disable-next-line no-console
     }
