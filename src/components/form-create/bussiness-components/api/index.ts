@@ -1,16 +1,14 @@
 import axios from 'axios';
-import _, { result } from 'lodash';
+import _ from 'lodash';
 import qs from 'query-string';
-import dayjs from 'dayjs';
-import { BU } from './types';
-import { parseXMLFragment, XMLParser } from '../config/utils';
+import { BU } from '../types';
+import { parseXMLFragment, XMLParser } from '../../config/utils';
+import { Caller, Item } from '../config/interface';
+import { RepoPull } from './repo';
+import { KuberByNamespace } from './kuber-by-namespace';
 
 const PROXY_API = '/proxy/api/v1';
 
-interface Item {
-  label: string;
-  value: string;
-}
 const awsRegionOptions = {
   item: 'item',
   label: 'regionName',
@@ -22,11 +20,9 @@ const awsInstanceOptions = {
   value: 'instanceType'
 };
 
-interface Caller {
-  request: (params: any, token?) => Promise<any>;
-  transform: (res: any) => any;
-}
 export const BCWidget: Record<string, Caller> = {
+  ...RepoPull,
+  ...KuberByNamespace,
   // namespace
   [BU.NamespaceSelect]: {
     request: async (params: { connectorID: string }) => {
@@ -94,8 +90,13 @@ export const BCWidget: Record<string, Caller> = {
         }
       });
     },
-    transform: (res: any) => {
-      return _.get(res, 'data.data');
+    transform: (data: any) => {
+      return _.map(data.items, (item) => {
+        return {
+          label: item.metadata.name,
+          value: item.metadata.name
+        };
+      });
     }
   },
   // aws region
@@ -173,17 +174,16 @@ export const BCWidget: Record<string, Caller> = {
   [BU.ImageTagSelect]: {
     request: async (params: { user: string; repository: string }) => {
       return axios.get(
-        `/proxy/https://hub.docker.com/v2/repositories/${params.user}/${params.repository}/tags`,
-        {
-          params,
-          paramsSerializer: (obj) => {
-            return qs.stringify(obj);
-          }
-        }
+        `/proxy/https://hub.docker.com/v2/repositories/${params.user}/${params.repository}/tags`
       );
     },
-    transform(data) {
-      return data;
+    transform(data, params) {
+      return _.map(data.results, (item) => {
+        return {
+          label: item.name,
+          value: item.name
+        };
+      });
     }
   }
 };
@@ -208,7 +208,7 @@ export function queryConnectorRepositoriesBranch(params: {
   });
 }
 
-export const queryKuberEnvironmentConnector = (params: {
+export const queryEnvironmentConnector = (params: {
   projectID: string;
   environmentID: string;
 }) => {

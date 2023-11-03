@@ -18,8 +18,13 @@ export default mergeConfig(
         strict: true
       },
       https: true,
+<<<<<<< HEAD
       port: 5050,
       proxy: createProxyTable('https://192.168.50.30')
+=======
+      port: 4000,
+      proxy: createProxyTable('https://192.168.50.78')
+>>>>>>> 930b0f61 (chore: kuber select by namespace)
     },
     plugins: [
       basicSsl(),

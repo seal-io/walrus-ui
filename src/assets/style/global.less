@@ -385,6 +385,26 @@ body {
   border: 1px solid var(--color-border-2);
 }
 
+.seal-border-focus.bordered {
+  &:hover {
+    border: 1px solid var(--color-primary-light-2);
+    box-shadow: 0 0 2px 0 var(--color-primary-light-2);
+    transition: all 0.2s;
+  }
+
+  &:focus-within {
+    background-color: var(--color-bg-2);
+    border-color: rgb(var(--primary-6));
+    box-shadow: 0 0 0 0 var(--color-primary-light-2);
+  }
+
+  &:focus {
+    background-color: var(--color-bg-2);
+    border-color: rgb(var(--primary-6));
+    box-shadow: 0 0 0 0 var(--color-primary-light-2);
+  }
+}
+
 @import url('./variable.less');
 @import url('./custom.less');
 @import url('./form.less');

@@ -4,7 +4,10 @@ const KubernetesBU = {
   NamespaceSelect: 'NamespaceSelect',
   SecretSelect: 'SecretSelect',
   ConfigMapSelect: 'ConfigMapSelect',
-  StorageClassSelect: 'StorageClassSelect'
+  StorageClassSelect: 'StorageClassSelect',
+  SecretSelectByNamespace: 'SecretSelectByNamespace',
+  ConfigMapSelectByNamespace: 'ConfigMapSelectByNamespace',
+  StorageClassSelectByNamespace: 'StorageClassSelectByNamespace'
 };
 
 const DockerBU = {
@@ -23,7 +26,7 @@ const AliBU = {
 };
 
 const GitHubBU = {
-  Repository: 'Repository'
+  GitHubRepository: 'GitHubRepository'
 };
 
 export const BU = {
