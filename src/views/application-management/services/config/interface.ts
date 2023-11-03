@@ -38,7 +38,7 @@ export interface ServiceRowData {
   environment: { id: string; name: string };
   project: { id: string };
   template: {
-    customizeOpenAPISchema?: object;
+    uiSchema?: object;
     schema?: object;
     id: string;
     version: string;

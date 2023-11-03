@@ -152,8 +152,8 @@ export default {
   'applications.environment.graph.fitview': 'fit view',
   'applications.environment.type': 'Environment Type',
   'applications.environment.rule.type': 'Environment Type is required',
-  'applications.environment.graph.cancelfullscreen': 'exit Full Screen',
-  'applications.environment.graph.fullscreen': 'full screen',
+  'applications.environment.graph.cancelfullscreen': 'Exit Full Screen',
+  'applications.environment.graph.fullscreen': 'Full Screen',
   'applications.environment.graph.show': 'show subresources',
   'applications.environment.graph.hide': 'hide subresources',
   'applications.environment.connector.tips':

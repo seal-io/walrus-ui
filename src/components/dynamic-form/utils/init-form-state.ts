@@ -1,17 +1,22 @@
 import _ from 'lodash';
 import FIELD_TYPE from '../config/field-type';
 import { FieldSchema } from '../config/interface';
-import { parseUIExtensions } from './parse-ui-extensions';
+import {
+  parseUIExtensions,
+  inhertGroupFromParent
+} from './parse-ui-extensions';
 
 export const initFormStateBySchema = ({
   schema = {},
   formData = {},
   fieldSchemaList = [],
   fieldPath = [],
+  nested = false,
   ignoreExtension = false
 }: {
   schema: any;
   formData: object;
+  nested?: boolean;
   fieldSchemaList: FieldSchema[];
   fieldPath: string[];
   ignoreExtension?: boolean;
@@ -23,6 +28,17 @@ export const initFormStateBySchema = ({
     const property = properties[key];
     const { type } = property;
     const requiredFlag = required.includes(key);
+
+    // if nested, inherit group from parent
+    if (nested && schema.type === FIELD_TYPE.OBJECT) {
+      property['x-walrus-ui'] = {
+        ...property['x-walrus-ui'],
+        group: inhertGroupFromParent(
+          schema['x-walrus-ui']?.group,
+          property['x-walrus-ui']?.group
+        )
+      };
+    }
     const fieldSchema = {
       name: key,
       type,
@@ -32,12 +48,11 @@ export const initFormStateBySchema = ({
       enum: property.enum || [],
       default: property.default,
       additionalProperties: property.additionalProperties,
-      xWalrusOriginal: property['x-walrus-original'],
       uiSchema: {}
     };
     if (!ignoreExtension) {
-      const component = parseUIExtensions(property, requiredFlag);
-      fieldSchema.uiSchema = component;
+      const uiSchema = parseUIExtensions(property, requiredFlag);
+      fieldSchema.uiSchema = uiSchema;
     }
 
     if (type !== FIELD_TYPE.OBJECT || property.additionalProperties) {
@@ -54,6 +69,7 @@ export const initFormStateBySchema = ({
         formData,
         fieldSchemaList,
         fieldPath: fieldSchema.fieldPath,
+        nested: true,
         ignoreExtension
       });
     } else if (type === FIELD_TYPE.ARRAY) {

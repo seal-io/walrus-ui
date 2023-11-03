@@ -3,7 +3,6 @@
   import _, { result } from 'lodash';
   import locale from '@/locale';
   import { FieldSchema } from './config/interface';
-  import versionData from './config/versions-v3.json';
   import { initFormState } from './utils/init-form-state';
   import SingleForm from '../form-create/single-form.vue';
 
@@ -18,7 +17,7 @@
       const fetchData = () => {
         const result = initFormState(
           _.get(
-            versionData,
+            {},
             'items.0.externalSchema.schema.components.schemas.variables'
           )
         );

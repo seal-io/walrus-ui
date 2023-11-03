@@ -2,7 +2,7 @@ import FIELD_TYPE from '../config/field-type';
 import { Widget } from '../config/widget';
 
 export const createFieldComponent = (fieldSchema): Record<string, string[]> => {
-  const { type, additionalProperties } = fieldSchema;
+  const { type, additionalProperties, format } = fieldSchema;
   if (type === FIELD_TYPE.OBJECT && !additionalProperties) {
     return {
       component: []
@@ -13,31 +13,35 @@ export const createFieldComponent = (fieldSchema): Record<string, string[]> => {
       component: [Widget.XInputGroup]
     };
   }
+
+  if (format === 'password') {
+    return {
+      component: [Widget.InputPassword]
+    };
+  }
+
+  if (type === FIELD_TYPE.ARRAY || fieldSchema.enum) {
+    return {
+      component: ['Select', 'Option']
+    };
+  }
   if (type === FIELD_TYPE.STRING) {
     return {
       component: [Widget.HintInput]
     };
   }
-  if (type === FIELD_TYPE.NUMBER) {
+  if (type === FIELD_TYPE.NUMBER || type === FIELD_TYPE.INTEGER) {
     return {
       component: ['InputNumber']
     };
   }
-  if (type === FIELD_TYPE.INTEGER) {
-    return {
-      component: ['InputNumber']
-    };
-  }
+
   if (type === FIELD_TYPE.BOOLEAN) {
     return {
       component: ['Checkbox']
     };
   }
-  if (type === FIELD_TYPE.ARRAY) {
-    return {
-      component: ['Select', 'Option']
-    };
-  }
+
   return {
     component: ['Textarea']
   };

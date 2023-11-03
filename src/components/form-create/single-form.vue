@@ -140,10 +140,7 @@
         _.each(props.formSchema, (item) => {
           let val = _.get(props.model, item.name) || item.default;
           // transform data type
-          if (
-            schemaType.isCollectionType(item.type) ||
-            schemaType.isUnknownType(item.type)
-          ) {
+          if (item.uiSchema.widget === Widget.AceEditor) {
             val = json2Yaml(val);
           } else if (
             schemaType.isListNumber(item.type) ||
@@ -325,7 +322,6 @@
       };
       const handleUpdataMapValue = (val, fm) => {
         _.set(formData.value, fm.fieldPath, val);
-        console.log('handleupdatemapValue===', val, fm.uiSchema.labelList);
       };
       const handleUpdateMapDataKey = (val, item) => {
         item.key = val;
@@ -351,10 +347,7 @@
       const transformDataByType = () => {
         const result = _.cloneDeep(formData.value);
         _.each(schemaList.value, (item) => {
-          if (
-            schemaType.isCollectionType(item.type) ||
-            schemaType.isUnknownType(item.type)
-          ) {
+          if (item.uiSchema.parentCom?.[0] === Widget.AceEditor) {
             result[item.name] = yaml2Json(formData.value[item.name], item.type);
           }
         });
@@ -392,7 +385,7 @@
         // no need validate
         if (noValidate) {
           resetFieldsDefaultValue();
-          const resultFormData = transformJsonData();
+          const resultFormData = transformDataByType();
           return resultFormData;
         }
         // validate before submit form
@@ -415,7 +408,7 @@
 
         if (!result && !validLabels) {
           resetFieldsDefaultValue();
-          const resultFormData = transformJsonData();
+          const resultFormData = transformDataByType();
           return resultFormData;
         }
         return false;
@@ -554,7 +547,7 @@
             onInput={(e) => handleSelectInputChange(e, fm)}
             onChange={(val) => handleFieldChange(val, fm)}
           >
-            {fm.childCom ? (
+            {fm.uiSchema.childCom ? (
               <>
                 <ChildComponent
                   key={`${props.formId}_child_editorId_${index}`}

@@ -87,6 +87,7 @@
   const variablesGroup = ref<any>({});
   const variablesGroupForm = ref<any>({});
   const variableData = ref<any>({});
+  const formData = ref<any>({});
 
   const formTabs = computed(() => {
     const list = _.keys(variablesGroup.value);
@@ -119,13 +120,27 @@
     return resultList;
   };
 
+  const getHiddenFormData = () => {
+    const hiddenFormData = {};
+    _.each(props.fieldList, (item) => {
+      if (item.uiSchema.hidden) {
+        _.set(hiddenFormData, item.fieldPath, item.default);
+      }
+    });
+    return hiddenFormData;
+  };
   const getFormData = async (noValidate?: boolean) => {
     let moduleFormList: any[] = [];
+    const hiddenFormData = getHiddenFormData();
     if (_.keys(variablesGroup.value).length > 1) {
       moduleFormList = await getRefFormData(noValidate);
+      moduleFormList.push({
+        tab: `_schemaform_xx_cc_${formTabs.value.length}`,
+        formData: hiddenFormData
+      });
     } else {
       const result = await schemaForm.value?.getFormData(noValidate);
-      moduleFormList = [{ formData: result }];
+      moduleFormList = [{ formData: _.merge(result, hiddenFormData) }];
     }
     return moduleFormList;
   };
