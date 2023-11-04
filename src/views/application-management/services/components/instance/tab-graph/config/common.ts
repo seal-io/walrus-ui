@@ -69,7 +69,7 @@ export const defineCustomNode = () => {
           attrs: {
             img,
             x: -w / 2 + 18,
-            y: h / 2 - 15,
+            y: h / 2 - 12,
             width,
             height
           },

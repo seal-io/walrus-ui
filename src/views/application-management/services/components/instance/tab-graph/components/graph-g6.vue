@@ -350,6 +350,7 @@
         height: 32,
         offset: -25,
         img:
+          node.icon ||
           resourceImages.get(node.providerType)?.get(node.resourceType) ||
           serviceImg
       };

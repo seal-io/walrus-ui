@@ -5,6 +5,7 @@ export interface INode extends Node {
   order?: number;
   id: string;
   nodeId: string;
+  icon?: string;
   name: string;
   resourceType: string;
   subType: string;
