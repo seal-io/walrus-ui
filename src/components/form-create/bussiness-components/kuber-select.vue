@@ -4,6 +4,7 @@
   import { InputWidth } from '@/views/config';
   import { CheckConnectorCatagory, BU } from './types';
   import { BCWidget, queryEnvironmentConnector } from './api';
+  import useQueryConnector from './hooks/use-query-connector';
 
   export default defineComponent({
     name: 'KuberSelect',
@@ -29,11 +30,17 @@
     },
     emits: ['update:modelValue', 'change', 'inputValueChange'],
     setup(props, { attrs, emit }) {
-      const ProjectEnvironment = inject('ProjectEnvironment', {
-        environmentID: '',
-        projectID: ''
-      });
-      const connectorID = ref('');
+      // const ProjectEnvironment = inject('ProjectEnvironment', {
+      //   environmentID: '',
+      //   projectID: ''
+      // });
+      const {
+        fetchConnectors,
+        connectorID,
+        isProjectConnector,
+        ProjectEnvironment
+      } = useQueryConnector(props);
+      // const connectorID = ref('');
       const { modelValue, widget } = toRefs(props);
       const loading = ref(false);
       const dataList = ref<{ label: string; value: string }[]>([]);
@@ -46,24 +53,24 @@
         return undefined;
       });
 
-      const fetchConnectors = async () => {
-        try {
-          const { environmentID, projectID } = ProjectEnvironment;
+      // const fetchConnectors = async () => {
+      //   try {
+      //     const { environmentID, projectID } = ProjectEnvironment;
 
-          if (!environmentID || !projectID) return;
+      //     if (!environmentID || !projectID) return;
 
-          const { data } = await queryEnvironmentConnector({
-            environmentID,
-            projectID
-          });
-          const connectorData = _.find(data.connectors, (item) => {
-            return item.connector.type === CheckConnectorCatagory(widget.value);
-          });
-          connectorID.value = connectorData?.connector.id;
-        } catch (error) {
-          // eslint-disable-next-line no-console
-        }
-      };
+      //     const { data } = await queryEnvironmentConnector({
+      //       environmentID,
+      //       projectID
+      //     });
+      //     const connectorData = _.find(data.connectors, (item) => {
+      //       return item.connector.type === CheckConnectorCatagory(widget.value);
+      //     });
+      //     connectorID.value = connectorData?.connector.id;
+      //   } catch (error) {
+      //     // eslint-disable-next-line no-console
+      //   }
+      // };
 
       const handlePopupVisibleChange = async (visible: boolean) => {
         if (!widget.value || dataList.value.length) return;

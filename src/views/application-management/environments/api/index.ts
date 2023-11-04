@@ -57,3 +57,13 @@ export function updateEnvironment(data: EnvironFormData) {
     data
   );
 }
+
+// for custom service ui
+export const queryEnvironmentConnector = (params: {
+  projectID: string;
+  environmentID: string;
+}) => {
+  return axios.get(
+    `/projects/${params.projectID}/environments/${params.environmentID}`
+  );
+};

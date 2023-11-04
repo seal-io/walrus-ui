@@ -10,13 +10,19 @@
     onMounted
   } from 'vue';
   import { InputWidth } from '@/views/config';
-  import { createAxiosToken } from '@/api/axios-chunk-request';
   import sealFormItemWrap from '@/components/seal-form/components/seal-form-item-wrap.vue';
+  import { createAxiosToken } from '@/api/axios-chunk-request';
   import useQueryConnector from './hooks/use-query-connector';
   import { BCWidget } from './api';
+  import { BU } from './types';
 
   export default defineComponent({
     name: 'KuberSelectByNamespace',
+    widgets: [
+      BU.SecretSelectByNamespace,
+      BU.ConfigMapSelectByNamespace,
+      BU.StorageClassSelectByNamespace
+    ],
     props: {
       modelValue: {
         type: [String],
@@ -24,13 +30,7 @@
           return '';
         }
       },
-      repoName: {
-        type: String,
-        default() {
-          return '';
-        }
-      },
-      branchName: {
+      namespace: {
         type: String,
         default() {
           return '';
@@ -41,14 +41,7 @@
         default: ''
       }
     },
-    emits: [
-      'update:modelValue',
-      'change',
-      'inputValueChange',
-      'search',
-      'update:branchName',
-      'update:repoName'
-    ],
+    emits: ['update:modelValue', 'change'],
     setup(props, { attrs, emit }) {
       const {
         fetchConnectors,
@@ -56,16 +49,15 @@
         isProjectConnector,
         ProjectEnvironment
       } = useQueryConnector(props);
-      const { modelValue, widget, repoName, branchName } = toRefs(props);
+
+      const { modelValue, widget, namespace } = toRefs(props);
       const loading = ref(false);
-      const loadingBranch = ref(false);
+      const extraLoading = ref(false);
       const dataList = ref<{ label: string; value: string }[]>([]);
-      const branchList = ref<{ label: string; value: string }[]>([]);
-      const query = ref('');
-      const tag = ref('');
+      const namespaceList = ref<{ label: string; value: string }[]>([]);
+      const currentValue = ref('');
       let axiosToken: any = null;
-      let branchAxiosToken: any = null;
-      let timer: any = null;
+      let extraAxiosToken: any = null;
 
       const virtualListProps = computed(() => {
         if (dataList.value.length > 20) {
@@ -76,16 +68,23 @@
         return undefined;
       });
 
-      const getRepos = async (query) => {
+      const virtualNamespaceListProps = computed(() => {
+        if (namespaceList.value.length > 20) {
+          return {
+            height: 200
+          };
+        }
+        return undefined;
+      });
+
+      const getDataList = async () => {
         try {
           axiosToken?.cancel();
           axiosToken = createAxiosToken();
           loading.value = true;
           const params = {
             connectorID: connectorID.value,
-            projectID: ProjectEnvironment.projectID,
-            isProjectConnector,
-            query
+            namespace: currentValue.value
           };
           const handler = _.get(BCWidget, widget.value);
           const { data } = await handler.request(params, axiosToken.token);
@@ -97,88 +96,95 @@
         }
       };
 
-      const getBranches = async () => {
+      const getNamespaceList = async () => {
         try {
-          branchAxiosToken?.cancel();
-          branchAxiosToken = createAxiosToken();
-          loadingBranch.value = true;
+          extraAxiosToken?.cancel();
+          extraAxiosToken = createAxiosToken();
+          extraLoading.value = true;
           const params = {
-            connectorID: connectorID.value,
-            projectID: ProjectEnvironment.projectID,
-            isProjectConnector,
-            repository: repoName.value
+            connectorID: connectorID.value
           };
-          const handler = _.get(BCWidget, widget.value);
-          const data = await handler.queryBranches(
-            params,
-            branchAxiosToken.token
-          );
-          branchList.value = data;
-          loadingBranch.value = false;
+          const handler = _.get(BCWidget, BU.NamespaceSelect);
+          const data = await handler.request(params, extraAxiosToken.token);
+          namespaceList.value = handler.transform(data);
+          extraLoading.value = false;
         } catch (error) {
-          loadingBranch.value = false;
-          branchList.value = [];
+          extraLoading.value = false;
+          namespaceList.value = [];
         }
-      };
-
-      const handleSearch = (val) => {
-        clearTimeout(timer);
-        timer = setTimeout(() => {
-          getRepos(val);
-        }, 100);
       };
 
       const handlePopupVisibleChange = async (visible: boolean) => {
-        if (branchList.value.length || !branchName.value) return;
+        if (dataList.value.length || !namespace.value) return;
         if (visible) {
-          getBranches();
+          getDataList();
+        }
+      };
+      const handleNamespacePopupVisibleChange = async (visible: boolean) => {
+        if (namespaceList.value.length) return;
+        if (visible) {
+          getNamespaceList();
         }
       };
 
-      const handleRepoChange = (value) => {
-        emit('update:repoName', value);
-        emit('update:branchName', '');
+      const handleNamespaceChange = (value) => {
+        emit('update:modelValue', '');
+
         setTimeout(() => {
-          getBranches();
+          getDataList();
         }, 100);
       };
-      onMounted(async () => {
+
+      const init = async () => {
         await fetchConnectors();
+      };
+      onMounted(async () => {
+        await init();
       });
+
+      watch(
+        () => namespace.value,
+        () => {
+          currentValue.value = namespace.value;
+        },
+        {
+          immediate: true
+        }
+      );
       return () => (
         <>
           <div class="group-wrap seal-border-focus bordered">
             <seal-select
-              v-model={repoName.value}
+              v-model={currentValue.value}
               {...attrs}
               label={'nameSpace'}
+              virtual-list-props={virtualNamespaceListProps}
+              style={{ flex: 1 }}
+              options={namespaceList.value}
+              allow-search={true}
+              loading={extraLoading.value}
+              bordered={false}
+              onPopupVisibleChange={(visible) =>
+                handleNamespacePopupVisibleChange(visible)
+              }
+              onChange={handleNamespaceChange}
+            ></seal-select>
+            <seal-select
+              model-value={modelValue.value}
+              {...attrs}
+              label={widget.value}
               virtual-list-props={virtualListProps}
               style={{ flex: 1 }}
               options={dataList.value}
               allow-search={true}
               loading={loading.value}
               bordered={false}
-              onSearch={(value: string) => {
-                handleSearch(value);
-              }}
-              onChange={handleRepoChange}
-            ></seal-select>
-            <seal-select
-              v-model={branchName.value}
-              {...attrs}
-              label={widget.value}
-              virtual-list-props={virtualListProps}
-              style={{ flex: 1 }}
-              options={branchList.value}
-              allow-search={true}
-              loading={loadingBranch.value}
-              bordered={false}
               onPopupVisibleChange={(visible) =>
                 handlePopupVisibleChange(visible)
               }
               onChange={(value: any) => {
-                branchName.value = value;
-                emit('update:branchName', value);
+                emit('change', value);
+                emit('update:modelValue', value);
               }}
             ></seal-select>
           </div>

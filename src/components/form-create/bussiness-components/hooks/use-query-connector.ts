@@ -2,8 +2,16 @@ import { inject, toRefs, ref } from 'vue';
 import _ from 'lodash';
 import { queryEnvironmentConnector } from '../api';
 import { CheckConnectorCatagory } from '../types';
+import {
+  projectEnvCtxInjectionKey,
+  ProjectEnvironmentContext
+} from '../config';
 
 export default function useQueryConnector(props) {
+  const ProjectEnvContext = inject<Partial<ProjectEnvironmentContext>>(
+    projectEnvCtxInjectionKey,
+    {}
+  );
   const ProjectEnvironment = inject('ProjectEnvironment', {
     environmentID: '',
     projectID: ''
@@ -11,6 +19,7 @@ export default function useQueryConnector(props) {
   const connectorID = ref('');
   const isProjectConnector = ref(false);
   const { widget } = toRefs(props);
+  const { connectors } = toRefs(ProjectEnvContext);
 
   const fetchConnectors = async () => {
     try {

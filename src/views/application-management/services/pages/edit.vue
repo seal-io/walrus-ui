@@ -265,6 +265,7 @@
     computed,
     provide,
     watch,
+    reactive,
     nextTick,
     PropType,
     onMounted
@@ -283,6 +284,8 @@
     PageAction,
     InputWidth
   } from '@/views/config';
+  import { queryEnvironmentConnector } from '@/views/application-management/environments/api';
+  import { projectEnvCtxInjectionKey } from '@/components/form-create/bussiness-components/config';
   import { BreadcrumbOptions } from '@/views/config/interface';
   import { beforeLeaveCallback } from '@/hooks/save-before-leave';
   import useLabelsActions from '@/components/form-create/hooks/use-labels-action';
@@ -361,6 +364,11 @@
   const breadCrumbList = ref<BreadcrumbOptions[]>([]);
   const variableAttributes = ref<any>({});
   const versionMap = ref({ nv: '', ov: '' });
+  const projectEnvCtx = reactive({
+    projectID: route.params.projectId as string,
+    environmentID: route.params.environmentId as string,
+    connectors: []
+  });
 
   provide('showHintInput', true);
   provide('completeData', completeData);
@@ -368,6 +376,7 @@
     projectID: route.params.projectId,
     environmentID: route.params.environmentId
   });
+  provide(projectEnvCtxInjectionKey, projectEnvCtx);
   const Kubernamespace = ref('');
   const branchName = ref('');
   const repoName = ref('');
@@ -394,6 +403,18 @@
     return undefined;
   });
 
+  const getEnvironmentConnectors = async () => {
+    try {
+      const { data } = await queryEnvironmentConnector({
+        environmentID: route.params.environmentId as string,
+        projectID: route.params.projectId as string
+      });
+      projectEnvCtx.connectors = data.connectors || [];
+    } catch (error) {
+      // ingore
+      projectEnvCtx.connectors = [];
+    }
+  };
   const setBreadCrumbList = async () => {
     const [projectList, environmentList] = await Promise.all([
       getProjectList(),
@@ -694,6 +715,7 @@
     setBreadCrumbList();
     copyFormData = _.cloneDeep(formData);
     getLabelList();
+    getEnvironmentConnectors();
   };
 
   initData();
