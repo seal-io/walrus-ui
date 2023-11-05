@@ -65,10 +65,14 @@
           @click="handleCancel"
           >{{ $t('common.button.cancel') }}</a-button
         >
-        <MoreButtonActions
-          :actions="actionList"
-          @select="(value) => handleClickAction(value)"
-        ></MoreButtonActions>
+        <div id="btns-wrap" class="btns-wrapp">
+          <MoreButtonActions
+            :actions="actionList"
+            container-id="#btns-wrap"
+            style="top: 45px; right: 6px; left: auto"
+            @select="(value) => handleClickAction(value)"
+          ></MoreButtonActions>
+        </div>
       </a-space>
     </div>
     <a-tabs v-model:active-key="activeKey" size="mini" class="edit-tab">
@@ -101,6 +105,7 @@
 
 <script lang="ts" setup>
   import _ from 'lodash';
+  import Ajv from 'ajv';
   import { useUserStore } from '@/store';
   import { Resources, Actions } from '@/permissions/config';
   import { useFullscreen } from '@vueuse/core';
@@ -194,7 +199,35 @@
   const handleToggleFullScreen = () => {
     toggle();
   };
+
+  const previewForm = () => {
+    const jsonCode = yaml2Json(code.value);
+    const variables = _.get(jsonCode, 'components.schemas.variables');
+    const res = initFormState(variables);
+    fieldList.value = res.fieldSchemaList;
+    formData.value = res.formData;
+    return {
+      jsonCode,
+      formData: formData.value
+    };
+  };
+
+  const validateSchema = async () => {
+    try {
+      const ajv = new Ajv();
+      const data = previewForm();
+      console.log('data>>>>>>>', data);
+      const validate = ajv.compile(data.jsonCode.components.schemas.variables);
+      const res = validate(data.formData);
+      console.log('res========', res);
+      return true;
+    } catch (error) {
+      console.log('error=====', error);
+      return false;
+    }
+  };
   const handlePutTemplateSchema = async () => {
+    const valid = validateSchema();
     if (!props.versionId) return;
     try {
       const codeData = yaml2Json(code.value);
@@ -256,14 +289,6 @@
     defaultCode.value = json2Yaml(schemaData);
   };
 
-  const previewForm = () => {
-    const jsonCode = yaml2Json(code.value);
-    const variables = _.get(jsonCode, 'components.schemas.variables');
-    const res = initFormState(variables);
-    fieldList.value = res.fieldSchemaList;
-    formData.value = res.formData;
-  };
-
   watch(
     () => props.schema,
     (val) => {
@@ -291,6 +316,8 @@
 
 <style lang="less" scoped>
   .wrap {
+    position: relative;
+
     :deep(.arco-tabs-nav-tab) {
       display: none;
     }
