@@ -255,6 +255,7 @@
           top: 9px;
           left: 5px;
           color: rgb(var(--arcoblue-5));
+          font-weight: 700;
           font-size: 16px;
           border-right: 1px solid var(--color-border-2);
 

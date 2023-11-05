@@ -258,7 +258,7 @@
   import useRowSelect from '@/hooks/use-row-select';
   import SealSteps from '@/components/seal-steps/index.vue';
 
-  import { moreActions } from '../config';
+  import { moreActions, WorkflowStatusMap } from '../config';
   import { PipelineRow } from '../config/interface';
   import {
     queryPipelines,
@@ -295,7 +295,9 @@
       return {
         title: item.name,
         info: item.status?.summaryStatusMessage,
-        status: item.status.error ? 'Error' : item.status?.summaryStatus
+        status: item.status.error
+          ? 'Error'
+          : _.get(WorkflowStatusMap, item.status?.summaryStatus)
       };
     });
   };

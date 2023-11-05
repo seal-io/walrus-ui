@@ -18,15 +18,26 @@ export const WorkflowStatus = {
   Pending: 'Pending',
   Failed: 'Failed'
 };
+export const WorkflowStatusMap = {
+  Running: 'Running',
+  Completed: 'Ready',
+  Pending: 'Pending',
+  Error: 'Failed'
+};
+
+export const ApprovalTypeMap = {
+  OR: 'or',
+  AND: 'and'
+};
 export const approvalTypes = [
   {
-    label: '或签',
-    description: '所有审批人中只要有一名同意或拒绝即可',
+    label: 'workflow.task.approval.or',
+    description: 'workflow.task.approval.or.desc',
     value: 'or'
   },
   {
-    label: '会签',
-    description: '必须所有审批人都同意',
+    label: 'workflow.task.approval.and',
+    description: 'workflow.task.approval.and.desc',
     value: 'and'
   }
 ];

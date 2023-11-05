@@ -39,5 +39,10 @@ export default {
   'workflow.task.form.selectenv': 'Select Environment',
   'workflow.task.form.deployEnv': 'Deployment Environment',
   'workflow.task.run.order': 'The {order} Running',
-  'workflow.task.run.user': 'Executor'
+  'workflow.task.run.user': 'Executor',
+  'workflow.task.approval.or': 'Concurrent Approval',
+  'workflow.task.approval.and': 'Collective Approval',
+  'workflow.task.approval.or.desc':
+    'Approval is granted or denied if any one of the approvers agrees or rejects.',
+  'workflow.task.approval.and.desc': 'All approvers must agree.'
 };
