@@ -26,6 +26,7 @@
             v-if="type === 'logs'"
             :container-id="item.id"
             :url="item.url"
+            :log-content="item.content"
             :height="containerHeight"
           ></LogsContent>
         </a-tab-pane>
@@ -84,6 +85,7 @@
           name: string;
           id: string;
           url: string;
+          content?: string;
         }[]
       >,
       default() {
@@ -93,7 +95,12 @@
   });
   const activeKey = ref<string>('');
   const containerHeight = ref(270);
-  const emits = defineEmits(['update:visible', 'update:tabs', 'delete']);
+  const emits = defineEmits([
+    'update:visible',
+    'update:tabs',
+    'delete',
+    'update:updateActive'
+  ]);
 
   const handleHeightChange = ({ height }) => {
     containerHeight.value = height - 100;
@@ -109,6 +116,7 @@
     nextTick(() => {
       if (activeKey.value === key) {
         activeKey.value = _.get(props.tabs, '0.id') || `${Date.now()}`;
+        emits('update:updateActive', activeKey.value);
       }
     });
   };

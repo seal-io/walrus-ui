@@ -4,7 +4,7 @@
     class="tab-logs-wrap"
     style="position: relative; z-index: 3001"
   >
-    <FilterBox style="margin-bottom: 10px">
+    <FilterBox v-if="url" style="margin-bottom: 10px">
       <template #params>
         <a-input-number
           v-model="filterParams.tailLines"
@@ -57,6 +57,18 @@
         return '';
       }
     },
+    isStatic: {
+      type: Boolean,
+      default() {
+        return false;
+      }
+    },
+    logContent: {
+      type: String,
+      default() {
+        return '';
+      }
+    },
     height: {
       type: Number,
       default: 270
@@ -100,9 +112,18 @@
     content.value = '';
     createChunkConnection();
   };
-  const getContainer = () => {
-    return document.getElementById(props.containerId) || document.body;
-  };
+  watch(
+    () => props.logContent,
+    (val) => {
+      if (val) {
+        console.log('val>>>>>>>>>', props.logContent);
+        updateContent(val);
+      }
+    },
+    {
+      immediate: true
+    }
+  );
   watch(
     () => props.url,
     (val) => {

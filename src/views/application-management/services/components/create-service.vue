@@ -49,7 +49,7 @@
         <a-form-item
           id="moduleId"
           hide-label
-          field="template.name"
+          field="template.template.id"
           :label="$t('applications.applications.table.module')"
           :disabled="pageAction === PageAction.EDIT && !!id"
           :rules="[
@@ -61,15 +61,25 @@
         >
           <div>
             <seal-select
-              v-model="formData.template.name"
+              v-model="formData.template.template.id"
               :placeholder="$t('applications.applications.table.module')"
               :required="true"
               :virtual-list-props="virtualListProps"
               :options="templateList"
               :style="{ width: `${InputWidth.LARGE}px` }"
               allow-search
+              :format-label="formatTemplateLael"
               @change="handleTemplateChange"
             >
+              <template #option="{ data }">
+                <span>{{ data.label }}</span>
+                <span
+                  v-if="!data.project?.id"
+                  style="color: var(--color-text-3)"
+                  class="font-12"
+                  >{{ `(${$t('applications.variable.scope.global')})` }}</span
+                >
+              </template>
             </seal-select>
           </div>
         </a-form-item>
@@ -190,8 +200,14 @@
         </GroupTitle>
       </div>
       <a-spin class="variables" style="width: 100%" :loading="asyncLoading">
+        <GroupForm
+          ref="groupForm"
+          :field-list="templateInfo"
+          :async-loading="asyncLoading"
+          :original-form-data="serviceInfo.attributes || {}"
+        ></GroupForm>
         <a-tabs
-          v-if="formTabs.length > 1"
+          v-if="formTabs.length === -1"
           class="page-line-tabs"
           :active-key="activeKey"
           @change="handleTabChange"
@@ -215,7 +231,7 @@
           </a-tab-pane>
         </a-tabs>
         <formCreate
-          v-if="formTabs.length === 1"
+          v-if="formTabs.length === -1"
           ref="schemaForm"
           form-id="schemaForm"
           layout="vertical"
@@ -264,6 +280,7 @@
     PageAction,
     InputWidth
   } from '@/views/config';
+  import GroupForm from '@/components/form-create/group-form.vue';
   import { beforeLeaveCallback } from '@/hooks/save-before-leave';
   import useLabelsActions from '@/components/form-create/hooks/use-labels-action';
   import useServiceData from '../hooks/use-service-data';
@@ -293,9 +310,11 @@
     init,
     generateVariablesGroup,
     getTemplateSchemaByVersion,
-    getTemplateVersionList,
-    getTemplateVersionByItem,
+    setTemplateVersionList,
+    getTemplateVersions,
+    setTemplateInfo,
     formData,
+    serviceInfo,
     pageAction,
     defaultGroupKey,
     templateInfo,
@@ -323,6 +342,7 @@
   let copyFormData: any = null;
   const { route, router, t } = useCallCommon();
   const formref = ref();
+  const groupForm = ref();
   const loading = ref(false);
   const activeKey = ref('schemaForm0');
   const schemaForm = ref();
@@ -429,10 +449,7 @@
     const inputs = reduce(
       moduleFormList,
       (obj, s) => {
-        obj = {
-          ...obj,
-          ...s.formData
-        };
+        obj = _.merge(obj, s.formData);
         return obj;
       },
       {}
@@ -445,11 +462,11 @@
   const execVersionChangeCallback = async () => {
     await setModuleVersionFormCache();
     const moduleData = getTemplateSchemaByVersion();
-    templateInfo.value = cloneDeep(get(moduleData, 'schema')) || {};
+    setTemplateInfo(moduleData);
     formData.attributes = {};
-
-    clearFormValidStatus();
-    generateVariablesGroup(pageAction.value);
+    groupForm.value?.clearFormValidStatus?.();
+    // clearFormValidStatus();
+    // generateVariablesGroup(pageAction.value);
   };
 
   const handleVersionChange = () => {
@@ -463,12 +480,26 @@
     }, 100);
   };
 
+  const formatTemplateLael = (data) => {
+    if (!data.project?.id) {
+      return `${data.name} (${t('applications.variable.scope.global')})`;
+    }
+    return data.name;
+  };
   // template change: exec version change
   const handleTemplateChange = async (val) => {
-    await getTemplateVersionByItem(val, true);
-    await getTemplateVersionList();
-    formData.template.version =
-      get(templateVersionList.value, '0.version') || '';
+    const data = _.find(templateList.value, (item) => item.id === val);
+    formData.template.name = data?.name || '';
+    formData.template.project = data?.project || {};
+
+    await getTemplateVersions(formData.template, true);
+    await setTemplateVersionList();
+
+    formData.template.version = get(
+      templateVersionList.value,
+      '0.template.version',
+      ''
+    );
     templateVersionFormCache.value = {};
     setTimeout(() => {
       versionMap.value = { ov: '', nv: '' };
@@ -502,21 +533,22 @@
   const submit = async () => {
     validateLabel();
     const res = await formref.value?.validate();
-    const { validFailedForm, moduleFormList } = await validateFormData();
-    if (!res && !validFailedForm && !validateTrigger.value) {
+    // const { validFailedForm, moduleFormList } = await validateFormData();
+    const groupFormRes = await groupForm.value?.getData();
+    if (!res && groupFormRes && !validateTrigger.value) {
       formData.attributes = {
         ...reduce(
-          moduleFormList,
+          groupFormRes,
           (obj, s) => {
-            obj = {
-              ...obj,
-              ...s.formData
-            };
+            obj = _.merge(obj, s.formData);
             return obj;
           },
           {}
         )
       };
+      if (!formData.template.project?.id) {
+        formData.template = _.omit(formData.template, 'project');
+      }
       copyFormData = _.cloneDeep(formData);
       return formData;
     }

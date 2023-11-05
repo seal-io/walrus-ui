@@ -516,10 +516,7 @@
     const inputs = reduce(
       moduleFormList,
       (obj, s) => {
-        obj = {
-          ...obj,
-          ...s.formData
-        };
+        obj = _.merge(obj, s.formData);
         return obj;
       },
       {}
@@ -566,8 +563,11 @@
     await getTemplateVersions(formData.template, true);
     await setTemplateVersionList();
 
-    formData.template.version =
-      get(templateVersionList.value, '0.template.version') || '';
+    formData.template.version = get(
+      templateVersionList.value,
+      '0.template.version',
+      ''
+    );
     templateVersionFormCache.value = {};
     setTimeout(() => {
       versionMap.value = { ov: '', nv: '' };

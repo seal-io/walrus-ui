@@ -62,7 +62,7 @@ export function queryPipelineDetail(params: { id: string }, token?) {
 
 export function applyPipeline(data: { id: string; projectId: string }) {
   return axios.post(
-    `${PROJECT_API_PREFIX(data)}${PIPELINE_API}/${data.id}/apply`
+    `${PROJECT_API_PREFIX(data)}${PIPELINE_API}/${data.id}/run`
   );
 }
 
@@ -70,7 +70,7 @@ export function retryApplyPipeline(data: { flowId: string; execId: string }) {
   return axios.put(
     `${PROJECT_API_PREFIX()}${PIPELINE_API}/${
       data.flowId
-    }${PIPELINE_EXECUTION_API}/${data.execId}/resubmit`
+    }${PIPELINE_EXECUTION_API}/${data.execId}/rerun`
   );
 }
 
@@ -122,6 +122,17 @@ export const getPipelineTaskLogUrl = ({
   stepExecId
 }) => {
   return `/projects/${projectId}/workflows/${flowId}/executions/${flowExecId}/stage-executions/${stageExecId}/step-executions/${stepExecId}/log`;
+};
+
+export const getPipelineTaskDetail = ({
+  projectId,
+  flowId,
+  flowExecId,
+  stageExecId,
+  stepExecId
+}) => {
+  const url = `/projects/${projectId}/workflows/${flowId}/executions/${flowExecId}/stage-executions/${stageExecId}/step-executions/${stepExecId}`;
+  return axios.get(url);
 };
 
 export const approvePipelineTask = ({

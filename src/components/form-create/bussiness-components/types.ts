@@ -45,6 +45,7 @@ export const WidgetAppendUnit = {
   [BU.Memory]: 'Mi',
   [BU.Disk]: 'Mi'
 };
+
 export type BUType = (typeof BU)[keyof typeof BU];
 
 export const CheckConnectorCatagory = (widget) => {

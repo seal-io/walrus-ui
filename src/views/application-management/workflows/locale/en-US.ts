@@ -33,11 +33,11 @@ export default {
   'workflow.task.rules.approvalMode': 'please select approval mode',
   'workflow.task.rules.approvalUser': 'please select approval users',
   'workflow.task.form.manualapproval': 'Manual Approval',
-  'workflow.task.form.deployservice': 'Deploy Service',
+  'workflow.task.form.deployservice': 'Create Task',
   'workflow.task.form.selectTask': 'Select Task Type',
   'workflow.task.form.fillin': 'Fill in the Form',
   'workflow.task.form.selectenv': 'Select Environment',
-  'workflow.task.form.deployEnv': 'Service Deployment Environment',
+  'workflow.task.form.deployEnv': 'Deployment Environment',
   'workflow.task.run.order': 'The {order} Running',
   'workflow.task.run.user': 'Executor'
 };
