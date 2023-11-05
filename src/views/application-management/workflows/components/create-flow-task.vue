@@ -192,6 +192,7 @@
       }
     }
   });
+
   const emits = defineEmits(['save', 'cancel', 'update:show', 'delete']);
   const userStore = useUserStore();
   const { route, t } = useCallCommon();
@@ -215,6 +216,10 @@
   const loading = ref(false);
 
   provide('setServiceInfo', serviceInfo);
+  provide('ProjectEnvironment', {
+    projectID: route.params.projectId,
+    environmentID: flow.environmentId
+  });
 
   const title = computed(() => {
     if (!taskType.value) {

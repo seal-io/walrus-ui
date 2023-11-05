@@ -120,23 +120,25 @@
                     })
                   "
                 >
-                  <a-button
-                    v-if="
-                      userStore.hasProjectResourceActions({
-                        projectID: record.project?.id,
-                        resource: Resources.WorkflowExecutions,
-                        actions: [Actions.GET]
-                      })
-                    "
-                    type="text"
-                    style="padding-left: 0"
-                    @click="handleViewResult(record)"
-                  >
-                    #{{ _.get(record, 'executions.0.version') }}
-                  </a-button>
-                  <span v-else>
-                    #{{ _.get(record, 'executions.0.version') }}</span
-                  >
+                  <div style="width: 50px">
+                    <a-button
+                      v-if="
+                        userStore.hasProjectResourceActions({
+                          projectID: record.project?.id,
+                          resource: Resources.WorkflowExecutions,
+                          actions: [Actions.GET]
+                        })
+                      "
+                      type="text"
+                      style="padding-right: 10px; padding-left: 0"
+                      @click="handleViewResult(record)"
+                    >
+                      #{{ _.get(record, 'executions.0.version') }}
+                    </a-button>
+                    <span v-else>
+                      #{{ _.get(record, 'executions.0.version') }}</span
+                    >
+                  </div>
                 </a-tooltip>
                 <StatusLabel
                   :zoom="0.9"

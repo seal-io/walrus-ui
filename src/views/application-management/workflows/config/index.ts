@@ -14,8 +14,9 @@ export const CustomShape = {
 
 export const WorkflowStatus = {
   Running: 'Running',
-  Ready: 'Ready',
-  Pending: 'Pending'
+  Completed: 'Completed',
+  Pending: 'Pending',
+  Failed: 'Failed'
 };
 export const approvalTypes = [
   {

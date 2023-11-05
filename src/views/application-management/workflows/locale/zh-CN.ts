@@ -33,11 +33,11 @@ export default {
   'workflow.task.rules.approvalMode': '请选择审核方式',
   'workflow.task.rules.approvalUser': '请选择审核人员',
   'workflow.task.form.manualapproval': '人工审核',
-  'workflow.task.form.deployservice': '部署服务',
+  'workflow.task.form.deployservice': '创建任务',
   'workflow.task.form.selectTask': '选择任务类型',
   'workflow.task.form.fillin': '填写表单',
   'workflow.task.form.selectenv': '选择环境',
-  'workflow.task.form.deployEnv': '服务部署环境',
+  'workflow.task.form.deployEnv': '部署环境',
   'workflow.task.run.order': '第 {order} 次运行',
   'workflow.task.run.user': '执行人'
 };

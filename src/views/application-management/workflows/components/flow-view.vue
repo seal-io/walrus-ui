@@ -18,7 +18,7 @@
     <LogsPanel
       v-model:visible="showLogModal"
       v-model:tabs="logTabs"
-      :update-active="updateActive"
+      v-model:update-active="updateActive"
       type="logs"
       @delete="handleDeleteLogTab"
     >
@@ -39,13 +39,20 @@
   import { deleteModal, execSucceed } from '@/utils/monitor';
   import toolBar from './tool-bar.vue';
   import { setPipelineNodeStyle } from '../custom/style';
-  import { NodeSize, PipelineNodeSize, tools, CustomShape } from '../config';
+  import {
+    NodeSize,
+    PipelineNodeSize,
+    tools,
+    CustomShape,
+    WorkflowStatus
+  } from '../config';
   import { defineCustomNode } from '../custom/node';
   import { defineConnector } from '../custom/edge';
   import LogsPanel from './logs-panel.vue';
   import {
     queryPipelineRecordDetail,
     getPipelineTaskLogUrl,
+    getPipelineTaskDetail,
     queryPipelineLatestRecordDetail,
     approvePipelineTask,
     PROJECT_API_PREFIX,
@@ -90,6 +97,9 @@
   const handleDeleteLogTab = (key) => {
     const index = _.findIndex(logTabs.value, (item) => item.id === key);
     logTabs.value.splice(index, 1);
+    if (logTabs.value.length === 0) {
+      showLogModal.value = false;
+    }
   };
 
   const getPipelineLatestDetail = async () => {
@@ -293,7 +303,7 @@
   };
 
   const initEvent = () => {
-    graphIns?.on('node:logs', ({ view, e }) => {
+    graphIns?.on('node:logs', async ({ view, e }) => {
       e.stopPropagation();
       const nodeData = view.cell.getData?.();
       if (_.find(logTabs.value, (item) => item.id === nodeData.id)) {
@@ -308,18 +318,44 @@
         stageExecution: { id: stageExecId },
         id: stepExecId
       } = nodeData || {};
-      logTabs.value.push({
-        url: getPipelineTaskLogUrl({
+      if (WorkflowStatus.Running === nodeData?.status?.summaryStatus) {
+        logTabs.value.push({
+          content: '',
+          url: getPipelineTaskLogUrl({
+            projectId,
+            flowId,
+            flowExecId,
+            stageExecId,
+            stepExecId
+          }),
+          name: `${nodeData.stageName}/${nodeData.name}`,
+          id: nodeData.id
+        });
+      }
+
+      if (
+        [WorkflowStatus.Completed, WorkflowStatus.Failed].includes(
+          nodeData?.status?.summaryStatus
+        )
+      ) {
+        loading.value = true;
+        const { data } = await getPipelineTaskDetail({
           projectId,
           flowId,
           flowExecId,
           stageExecId,
           stepExecId
-        }),
-        name: `${nodeData.stageName}/${nodeData.name}`,
-        id: nodeData.id
-      });
+        });
+        logTabs.value.push({
+          url: '',
+          content: data?.record || '',
+          name: `${nodeData.stageName}/${nodeData.name}`,
+          id: nodeData.id
+        });
+      }
+
       updateActive.value = nodeData.id;
+      loading.value = false;
 
       setTimeout(() => {
         showLogModal.value = true;

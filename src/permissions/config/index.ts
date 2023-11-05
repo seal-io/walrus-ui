@@ -23,8 +23,8 @@ export enum Resources {
   WorkflowExecutions = 'workflowExecutions',
   WorkflowStageExecutions = 'workflowStageExecutions',
   WorkflowStepExecutions = 'workflowStepExecutions',
-  WorkflowApply = '/v1/projects/:project/workflows/:workflow/apply',
-  WorkflowResubmit = '/v1/projects/:project/workflows/:workflow/executions/:workflowexecution/resubmit'
+  WorkflowApply = '/v1/projects/:project/workflows/:workflow/run',
+  WorkflowResubmit = '/v1/projects/:project/workflows/:workflow/executions/:workflowexecution/rerun'
 }
 
 const enum MenuOrder {

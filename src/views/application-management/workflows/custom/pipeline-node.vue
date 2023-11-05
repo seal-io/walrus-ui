@@ -81,9 +81,13 @@
                   {t('workflow.stage.approve')}
                 </a-link>
               ) : null}
-              <a-link hoverable={false} data-event="node:logs">
-                {t('applications.applications.instance.log')}
-              </a-link>
+              {node.value.data?.type === TaskTypes.SERVICE &&
+              _.get(node.value.data, 'status.summaryStatus') !==
+                WorkflowStatus.Pending ? (
+                <a-link hoverable={false} data-event="node:logs">
+                  {t('applications.applications.instance.log')}
+                </a-link>
+              ) : null}
             </a-space>
           </div>
           <div class="info">
@@ -113,7 +117,7 @@
                   </span>
                   <Autotip>
                     {_.get(node.value.data, 'status.summaryStatus') ===
-                    WorkflowStatus.Ready ? (
+                    WorkflowStatus.Completed ? (
                       <a class="link" data-event="node:view-service">
                         {node.value.data?.spec?.name}
                       </a>
