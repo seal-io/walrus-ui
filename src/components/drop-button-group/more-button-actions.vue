@@ -3,6 +3,7 @@
     size="small"
     style="line-height: 30px"
     position="bl"
+    :popup-container="containerId"
     @select="handleSelectAction"
   >
     <a-link size="mini" @click.stop="() => {}">
@@ -31,10 +32,16 @@
   import { PropType } from 'vue';
   import { MoreAction } from '@/views/config/interface';
 
-  defineProps({
+  const props = defineProps({
     actions: {
       type: Array as PropType<MoreAction[]>,
       default: () => []
+    },
+    containerId: {
+      type: String,
+      default() {
+        return null;
+      }
     }
   });
 

@@ -50,6 +50,7 @@
     "@vueuse/components": "^10.1.2",
     "@vueuse/core": "10.1.0",
     "ace-builds": "^1.9.4",
+    "ajv": "^8.12.0",
     "ansi-to-html": "^0.7.2",
     "arco-design-pro-vue": "^2.3.3",
     "axios": "0.24.0",
