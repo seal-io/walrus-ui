@@ -161,6 +161,8 @@
     (val) => {
       if (val) {
         initData();
+      } else {
+        loading.value = false;
       }
     },
     {

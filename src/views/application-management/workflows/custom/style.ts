@@ -80,6 +80,9 @@ export const setPipelineNodeStyle = (size) => {
           .title {
             font-weight: 500;
           }
+          &.avatar {
+            max-width: max-content;
+          }
           .link {
             cursor: pointer;
             color: rgb(var(--arcoblue-5));

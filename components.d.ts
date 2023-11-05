@@ -7,6 +7,7 @@ declare module 'vue' {
     AAffix: typeof import('@arco-design/web-vue')['Affix'];
     AAlert: typeof import('@arco-design/web-vue')['Alert'];
     AAvatar: typeof import('@arco-design/web-vue')['Avatar'];
+    AAvatarGroup: typeof import('@arco-design/web-vue')['AvatarGroup'];
     ABreadcrumb: typeof import('@arco-design/web-vue')['Breadcrumb'];
     ABreadcrumbItem: typeof import('@arco-design/web-vue')['BreadcrumbItem'];
     AButton: typeof import('@arco-design/web-vue')['Button'];
