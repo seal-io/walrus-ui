@@ -10,7 +10,8 @@ export const OperationHub = {
   TemplateDetail: 'TemplateDetail',
   TemplateGPT: 'TemplateGPT',
   CatalogList: 'CatalogList',
-  CatalogDetail: 'CatalogDetail'
+  CatalogDetail: 'CatalogDetail',
+  ResourceDefinitionDetail: 'ResourceDefinitionDetail'
 };
 
 export default OperationHub;
