@@ -17,6 +17,7 @@ export default {
   'workflow.form.rules.name': '工作流ID必填',
   'workflow.form.displayName': '工作流名称',
   'workflow.form.name': '工作流ID',
+  'workflow.form.timeout': '超时时间',
   'workflow.step.modal.title': '{action}工作流任务',
   'workflow.step.form.env': '部署环境',
   'workflow.stage.add.task': '添加任务',
@@ -43,5 +44,18 @@ export default {
   'workflow.task.approval.or': '或签',
   'workflow.task.approval.and': '会签',
   'workflow.task.approval.or.desc': '所有审批人中只要有一名同意或拒绝即可',
-  'workflow.task.approval.and.desc': '必须所有审批人都同意'
+  'workflow.task.approval.and.desc': '必须所有审批人都同意',
+  'workflow.task.timeout.thirty': '30分钟',
+  'workflow.task.timeout.hour': '1小时',
+  'workflow.task.timeout.2hour': '2小时',
+  'workflow.task.retry.policy': '重试策略',
+  'workflow.task.retry.count': '重试次数',
+  'workflow.task.retry.always': '总是',
+  'workflow.task.retry.onfailure': '失败时',
+  'workflow.task.retry.onerror': '出错时',
+  'workflow.task.retry.always.desc': '重试所有失败的步骤',
+  'workflow.task.retry.onfailure.desc':
+    '重试 Kubernetes 中主容器被标记为失败的步骤',
+  'workflow.task.retry.onerror.desc':
+    '重试遇到 Argo 控制器错误或 init 或 wait 容器失败的步骤'
 };

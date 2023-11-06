@@ -1,7 +1,6 @@
 <script lang="tsx">
   import _ from 'lodash';
   import { defineComponent, toRefs, ref } from 'vue';
-  // import Draggable from 'vuedraggable';
   import { validateLabelNameRegx, InputWidth } from '@/views/config';
   import useCallCommon from '@/hooks/use-call-common';
   import { deleteModal } from '@/utils/monitor';
@@ -11,7 +10,7 @@
   import FlowAside from './flow-aside.vue';
   import BasicInfo from './basic-info.vue';
   import { Stage } from '../config/interface';
-  import { stageSchema } from '../config';
+  import { stageSchema, workflowTimeoutOptons } from '../config';
   import { queryPipelineDetail } from '../api';
 
   export default defineComponent({
@@ -32,11 +31,11 @@
       const loading = ref(false);
       const unfold = ref(true);
       const flowBasic = ref({
-        // displayName: `pipeline-${dayjs().format('YYYYMMDDHHmmss')}`,
         name: `flow-id-${dayjs().format('YYYYMMDDHHmmss')}`,
         type: 'default',
         description: '',
-        parallelism: 1
+        parallelism: 1,
+        timeout: 1800
       });
       const stageList = ref<Stage[]>([]);
       const drag = ref(false);
@@ -92,14 +91,6 @@
           }
         });
       };
-      const handleDragStart = () => {
-        drag.value = true;
-      };
-
-      const handleDragEnd = () => {
-        drag.value = false;
-        console.log('drag end 2');
-      };
 
       const renderFlowContent = (data) => {
         const { element, index } = data;
@@ -140,23 +131,6 @@
           basic: flowBasic.value
         };
       };
-
-      // const content = () => {
-      //   return (
-      //     <Draggable
-      //       style={{ display: 'flex' }}
-      //       v-model={stageList.value}
-      //       item-key="id"
-      //       onStart={() => handleDragStart()}
-      //       onEnd={() => handleDragEnd()}
-      //       v-slots={{
-      //         item: (data) => {
-      //           return renderFlowContent(data);
-      //         }
-      //       }}
-      //     ></Draggable>
-      //   );
-      // };
 
       const initData = async () => {
         const data = await getPipelineDetail();
@@ -207,25 +181,6 @@
                     layout="vertical"
                     ref={formref}
                   >
-                    {/* <a-form-item
-                      field="displayName"
-                      hide-label
-                      validate-trigger="change"
-                      rules={[
-                        {
-                          required: true,
-                          message: t('workflow.form.rules.displayName')
-                        }
-                      ]}
-                    >
-                      <seal-input
-                        v-model={flowBasic.value.displayName}
-                        label={t('workflow.form.displayName')}
-                        required={true}
-                        max-length={63}
-                        show-word-limit
-                      ></seal-input>
-                    </a-form-item> */}
                     <a-form-item
                       field="name"
                       hide-label
@@ -253,6 +208,26 @@
                         max-length={63}
                         show-word-limit
                       ></seal-input>
+                    </a-form-item>
+                    <a-form-item
+                      field="time"
+                      hide-label
+                      validate-trigger="change"
+                    >
+                      <seal-select
+                        v-model={flowBasic.value.timeout}
+                        label={t('workflow.form.timeout')}
+                        required={false}
+                      >
+                        {_.map(workflowTimeoutOptons, (item) => {
+                          return (
+                            <a-option
+                              value={item.value}
+                              label={t(item.label)}
+                            ></a-option>
+                          );
+                        })}
+                      </seal-select>
                     </a-form-item>
                     <a-form-item hide-label field="description">
                       <seal-textarea

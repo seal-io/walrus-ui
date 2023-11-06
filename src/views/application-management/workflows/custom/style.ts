@@ -83,6 +83,14 @@ export const setPipelineNodeStyle = (size) => {
           &.avatar {
             max-width: max-content;
           }
+          .icon-success-fill {
+            position: absolute;
+            bottom: -12px;
+            right: -6px;
+            background-color: #fff;
+            border-radius: 50%;
+            color: var(--seal-color-success);
+          }
           .link {
             cursor: pointer;
             color: rgb(var(--arcoblue-5));

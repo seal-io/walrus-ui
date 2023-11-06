@@ -17,6 +17,7 @@ export default {
   'workflow.form.rules.name': 'Workflow ID required',
   'workflow.form.displayName': 'Workflow Name',
   'workflow.form.name': 'Workflow ID',
+  'workflow.form.timeout': 'Timeout',
   'workflow.step.modal.title': '{action} Workflow Task',
   'workflow.step.form.env': 'Deployment Environment',
   'workflow.stage.add.task': 'Add Task',
@@ -44,5 +45,18 @@ export default {
   'workflow.task.approval.and': 'Collective Approval',
   'workflow.task.approval.or.desc':
     'Approval is granted or denied if any one of the approvers agrees or rejects.',
-  'workflow.task.approval.and.desc': 'All approvers must agree.'
+  'workflow.task.approval.and.desc': 'All approvers must agree.',
+  'workflow.task.timeout.thirty': '30 minutes',
+  'workflow.task.timeout.hour': '1 hour',
+  'workflow.task.timeout.2hour': '2 hours',
+  'workflow.task.retry.policy': 'Retry Policy',
+  'workflow.task.retry.count': 'Retry Times',
+  'workflow.task.retry.always': 'Always',
+  'workflow.task.retry.onfailure': 'OnFailure',
+  'workflow.task.retry.onerror': 'OnError',
+  'workflow.task.retry.always.desc': 'Retry all failed steps',
+  'workflow.task.retry.onfailure.desc':
+    'Retry steps whose main container is marked as failed in Kubernetes',
+  'workflow.task.retry.onerror.desc':
+    'Retry steps that encounter Argo controller errors, or whose init or wait containers fail'
 };

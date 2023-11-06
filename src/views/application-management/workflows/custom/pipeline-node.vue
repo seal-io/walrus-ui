@@ -8,7 +8,7 @@
   import ClockTimer from '@/components/clock-timer/index.vue';
   import { querySubjects } from '@/views/system/api/users';
   import { TaskTypes } from '../task-types/config';
-  import { WorkflowStatus, ApprovalTypeMap } from '../config';
+  import { WorkflowStatus, ApprovalTypeMap, colors } from '../config';
   import MoreAction from './more-action.vue';
 
   export default defineComponent({
@@ -29,7 +29,7 @@
       const getNode = inject('getNode');
       const { node, graph } = toRefs(props);
       const subjectList = ref<{ id: string; name: string }[]>([]);
-      const approvalUsers = ref<string[]>([]);
+      const approvalUsers = ref<{ name: string; approvaled: boolean }[]>([]);
 
       const randomColor = () => {
         const letters = '0123456789ABCDEF'; // 可用的颜色字符
@@ -55,8 +55,19 @@
           const { data } = await querySubjects(params);
           subjectList.value = data.items || [];
           approvalUsers.value = _.filter(data.items, (item) => {
-            return _.includes(node.value.data.spec.approvalUsers, item.id);
-          }).map((sItem) => sItem.name);
+            return _.includes(
+              node.value.data.attributes.approvalUsers,
+              item.id
+            );
+          }).map((sItem) => {
+            return {
+              name: sItem.name,
+              approvaled: _.includes(
+                node.value.data.attributes.approvedUsers,
+                sItem.id
+              )
+            };
+          });
         } catch (error) {
           subjectList.value = [];
         }
@@ -66,21 +77,29 @@
           return (
             <span class="item avatar">
               <span class="title">
-                {node.value.data.spec.approvalType === ApprovalTypeMap.OR
-                  ? t('workflow.task.approval.or')
-                  : t('workflow.task.approval.and')}
+                {t('workflow.stage.add.approvalUser')}
+                {node.value.data.attributes?.approvalType === ApprovalTypeMap.OR
+                  ? `(${t('workflow.task.approval.or')})`
+                  : `(${t('workflow.task.approval.and')})`}
               </span>
               <a-avatar-group max-count={8} class="m-t-2">
-                {_.map(approvalUsers.value, (user) => {
+                {_.map(approvalUsers.value, (user, index) => {
                   return (
                     <a-avatar
                       size={24}
                       style={{
-                        backgroundColor: randomColor(),
-                        marginLeft: '-4px'
+                        backgroundColor: colors[index],
+                        marginLeft: '-3px'
                       }}
                     >
-                      <a-tooltip content={user}>{user.slice(0, 3)}</a-tooltip>
+                      <span>
+                        {user.approvaled ? (
+                          <i class="iconfont icon-success-fill"></i>
+                        ) : null}
+                        <a-tooltip content={user.name}>
+                          <span>{user.name.slice(0, 3)}</span>
+                        </a-tooltip>
+                      </span>
                     </a-avatar>
                   );
                 })}
@@ -110,7 +129,9 @@
                 <span class="title">
                   {t('operation.environments.table.env')}
                 </span>
-                <Autotip>{node.value.data?.spec?.environment?.name}</Autotip>
+                <Autotip>
+                  {node.value.data?.attributes?.environment?.name}
+                </Autotip>
               </span>
               <span class="item">
                 <span class="title">
@@ -120,10 +141,10 @@
                   {_.get(node.value.data, 'status.summaryStatus') ===
                   WorkflowStatus.Completed ? (
                     <a class="link" data-event="node:view-service">
-                      {node.value.data?.spec?.name}
+                      {node.value.data?.attributes?.name}
                     </a>
                   ) : (
-                    node.value.data?.spec?.name
+                    node.value.data?.attributes?.name
                   )}
                 </Autotip>
               </span>
