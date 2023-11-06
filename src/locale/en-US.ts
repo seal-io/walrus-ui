@@ -17,6 +17,7 @@ import localeOperation from '@/views/operation-hub/locale/en-US';
 
 import localeProfile from '@/views/profile/locale/en-US';
 import localeCatalogs from '@/views/operation-hub/catalogs/locale/en-US';
+import localeResourceDefinition from '@/views/operation-hub/resource-definitions/locale/en-US';
 
 import localeWorkflow from '@/views/application-management/workflows/locale/en-US';
 
@@ -52,5 +53,6 @@ export default {
   ...localeMenu,
   ...localePermissionResource,
   ...localeCatalogs,
-  ...localeWorkflow
+  ...localeWorkflow,
+  ...localeResourceDefinition
 };

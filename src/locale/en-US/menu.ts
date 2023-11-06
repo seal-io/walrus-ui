@@ -19,6 +19,7 @@ export default {
   'menu.operatorHub.secret': 'Global Variables',
   'menu.systemsettings': 'System Settings',
   'menu.operatorHub.variables': 'Variables',
+  'menu.operatorHub.resourceDefinitions': 'Resource Definitions',
   'menu.subjects': 'User Management',
   'menu.systemsettings.user': 'User Management',
   'menu.systemsettings.config': 'Configuration Management'

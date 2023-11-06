@@ -47,6 +47,12 @@
           >
             <Connectors></Connectors>
           </a-tab-pane>
+          <a-tab-pane
+            :key="OperatorHubTabs.ResouceDefinitions"
+            :title="$t('menu.operatorHub.resourceDefinitions')"
+          >
+            <ResourceDefinition></ResourceDefinition>
+          </a-tab-pane>
 
           <template #extra>
             <IconBtnGroup
@@ -72,6 +78,7 @@
   import Templates from '../templates/pages/list.vue';
   import Catalogs from '../catalogs/pages/list.vue';
   import GlobalVariables from '../variables/pages/list.vue';
+  import ResourceDefinition from '../resource-definitions/pages/list.vue';
 
   const iconList = [
     {

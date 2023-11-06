@@ -94,7 +94,8 @@ export const OperatorHubTabs = {
   TEMPLATES: 'templates',
   VARIABLES: 'variables',
   CONNECTOR: 'connectors',
-  CATALOGS: 'catalogs'
+  CATALOGS: 'catalogs',
+  ResouceDefinitions: 'resourceDefinitions'
 };
 
 export const UserTabs = {
