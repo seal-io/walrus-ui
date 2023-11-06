@@ -23,11 +23,15 @@
     <div
       v-show="isAce"
       class="ace-box"
-      :style="{ height: _.isNumber(height) ? `${height}px` : height }"
+      :style="{
+        height: _.isNumber(height) ? `${height}px` : height
+      }"
     >
       <div
         :id="editorId"
-        :style="{ minHeight: _.isNumber(height) ? `${height}px` : height }"
+        :style="{
+          minHeight: _.isNumber(height) ? `${height}px` : height
+        }"
       ></div>
     </div>
     <a-input
@@ -57,7 +61,7 @@
   } from 'vue';
   import ace, { Range } from 'ace-builds';
   import 'ace-builds/src-noconflict/ext-language_tools';
-  import 'ace-builds/src-noconflict/theme-twilight';
+  import 'ace-builds/src-noconflict/theme-monokai';
   import 'ace-builds/src-noconflict/mode-javascript';
   import 'ace-builds/src-noconflict/mode-text';
   import 'ace-builds/src-noconflict/mode-json';
@@ -326,6 +330,13 @@
     () => props.lang,
     (newVal) => {
       aceEditor?.setOption('mode', `ace/mode/${newVal}`);
+    },
+    { immediate: false }
+  );
+  watch(
+    () => props.theme,
+    (newVal) => {
+      aceEditor?.setOption('theme', `ace/theme/${newVal}`);
     },
     { immediate: false }
   );

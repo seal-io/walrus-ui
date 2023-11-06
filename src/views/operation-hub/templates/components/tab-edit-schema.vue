@@ -2,6 +2,7 @@
   <div ref="wrapper" class="wrap">
     <div class="flex">
       <a-space>
+        <!-- <a-select v-model="theme" :options="themeList"> </a-select> -->
         <a-button type="text" size="small" @click="handleToggleFullScreen">
           <template #icon>
             <i
@@ -81,9 +82,7 @@
           <AceEditor
             v-model="code"
             lang="yaml"
-            :height="
-              isFullscreen ? 'calc(100vh - 60px)' : `calc(${height} - 55px)`
-            "
+            :height="isFullscreen ? 'calc(100vh - 60px)' : `800px`"
             :read-only="readOnly"
             :editor-default-value="defaultCode"
           >
@@ -127,6 +126,17 @@
   } from '../api';
   import { schemaActionList } from '../config/index';
 
+  const themeList = [
+    {
+      label: 'monokai',
+      value: 'monokai'
+    },
+    {
+      label: 'light',
+      value: 'twilight'
+    }
+  ];
+
   const props = defineProps({
     schema: {
       type: Object as PropType<any>,
@@ -162,6 +172,7 @@
   const activeKey = ref('editor');
   const code = ref('');
   const defaultCode = ref('');
+  const theme = ref('twilight');
   const fieldList = ref<FieldSchema[]>([]);
   const formData = ref({});
   const projectID = route.params.projectId as string;
@@ -231,13 +242,6 @@
     if (!props.versionId) return;
     try {
       const codeData = yaml2Json(code.value);
-      // const variables = _.get(codeData, 'components.schemas.variables');
-      // const copyCustomSchema = _.cloneDeep(props.schema.uiSchema);
-      // const data = _.set(
-      //   copyCustomSchema,
-      //   'components.schemas.variables',
-      //   variables
-      // );
       await putTemplateSchemaByVersionId({
         templateVersionID: props.versionId,
         data: {
