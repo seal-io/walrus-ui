@@ -16,7 +16,6 @@
           field="name"
           hide-label
           :label="$t('common.table.name')"
-          :disabled="pageAction === PageAction.EDIT && !!id"
           :rules="[
             {
               required: true,
@@ -51,7 +50,6 @@
           hide-label
           field="template.template.id"
           :label="$t('applications.applications.table.module')"
-          :disabled="pageAction === PageAction.EDIT && !!id"
           :rules="[
             {
               required: true,
@@ -299,6 +297,12 @@
         return 'page';
       }
     },
+    action: {
+      type: String,
+      default() {
+        return PageAction.CREATE;
+      }
+    },
     flow: Object
   });
 
@@ -372,7 +376,7 @@
   });
 
   const validateNameuniq = (val, callback) => {
-    if (id) {
+    if ([PageAction.EDIT, PageAction.VIEW]) {
       callback();
       return;
     }
@@ -465,8 +469,6 @@
     setTemplateInfo(moduleData);
     formData.attributes = {};
     groupForm.value?.clearFormValidStatus?.();
-    // clearFormValidStatus();
-    // generateVariablesGroup(pageAction.value);
   };
 
   const handleVersionChange = () => {

@@ -6,6 +6,40 @@ import { Resources, Actions } from '@/permissions/config';
 const userStore = useUserStore();
 export const NodeType = {};
 
+export const colors = [
+  '#6300D5',
+  '#8D74A5',
+  '#0084FF',
+  '#00C7A5',
+  '#6300D5',
+  '#8D74A5',
+  '#0084FF',
+  '#00C7A5'
+];
+export const workflowTimeoutOptons = [
+  { label: 'workflow.task.timeout.thirty', value: 1800 },
+  { label: 'workflow.task.timeout.hour', value: 3600 },
+  { label: 'workflow.task.timeout.2hour', value: 7200 }
+];
+
+export const retryOptions = [
+  {
+    label: 'workflow.task.retry.always',
+    value: 'Always',
+    description: 'workflow.task.retry.always.desc'
+  },
+  {
+    label: 'workflow.task.retry.onfailure',
+    value: 'OnFailure',
+    description: 'workflow.task.retry.onfailure.desc'
+  },
+  {
+    label: 'workflow.task.retry.onerror',
+    value: 'OnError',
+    description: 'workflow.task.retry.onerror.desc'
+  }
+];
+
 export const CustomShape = {
   pipelineNode: 'pipeline-node',
   separatorNode: 'separator-node',
@@ -129,7 +163,7 @@ export const stepSchema = {
   input: {},
   labels: {},
   name: '',
-  spec: {
+  attributes: {
     // projectID: '',
     // environmentID: '',
     // environment: {

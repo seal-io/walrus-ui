@@ -1,8 +1,5 @@
 <template>
   <div class="wrapper">
-    <!-- <div class="tools">
-      <toolBar :tool-list="toolList" @select="handleToolSelect"></toolBar>
-    </div> -->
     <a-spin style="width: 100%" :loading="loading">
       <div
         ref="graphWrapper"
@@ -384,10 +381,10 @@
         name: PROJECT.ServiceDetail,
         params: {
           projectId: route.params.projectId,
-          environmentId: nodeData?.spec?.environment?.id
+          environmentId: nodeData?.attributes?.environment?.id
         },
         query: {
-          id: nodeData?.spec?.name
+          id: nodeData?.attributes?.name
         }
       });
     });
@@ -409,7 +406,6 @@
   };
 
   const updateChunkedList = (data) => {
-    console.log('updateChunkedList===', data);
     const collections = data?.collection || [];
     // UPDATE
     if (data?.type === websocketEventType.UPDATE) {

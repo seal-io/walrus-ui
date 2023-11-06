@@ -62,8 +62,10 @@
             :loading="loading"
             :required="true"
             :options="subjectList"
+            :allow-create="false"
             :multiple="true"
             style="width: 100%"
+            @change="handleApprovalUsersChange"
           >
           </seal-select>
         </a-form-item>
@@ -130,6 +132,12 @@
       loading.value = false;
     }
   };
+  const handleApprovalUsersChange = () => {
+    formData.value.approvalUsers = _.filter(
+      formData.value.approvalUsers,
+      (id) => !!id
+    );
+  };
   const save = async () => {
     const res = await formref.value?.validate();
     if (!res) {
@@ -147,9 +155,9 @@
       return;
     }
     formData.value = {
-      name: props.dataInfo.spec?.name,
-      approvalType: props.dataInfo.spec?.approvalType,
-      approvalUsers: props.dataInfo.spec?.approvalUsers
+      name: props.dataInfo?.name,
+      approvalType: props.dataInfo.attributes?.approvalType,
+      approvalUsers: props.dataInfo.attributes?.approvalUsers
     };
   };
   const initData = async () => {

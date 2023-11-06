@@ -37,7 +37,8 @@ export const validateUserNameRegx =
 // page state
 export enum PageAction {
   EDIT = 'edit',
-  VIEW = 'view'
+  VIEW = 'view',
+  CREATE = 'create'
 }
 
 export enum ModalAction {

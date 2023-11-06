@@ -89,6 +89,58 @@
               >
               </seal-select>
             </a-form-item>
+            <a-form-item field="timeout">
+              <seal-select
+                v-model="flow.timeout"
+                :label="$t('workflow.form.timeout')"
+                :required="false"
+                :style="{ width: `${InputWidth.LARGE}px` }"
+                allow-search
+              >
+                <a-option
+                  v-for="item in workflowTimeoutOptons"
+                  :key="item.value"
+                  :value="item.value"
+                  :label="$t(item.label)"
+                ></a-option>
+              </seal-select>
+            </a-form-item>
+            <a-form-item field="retryStrategy.retryPolicy">
+              <seal-select
+                v-model="flow.retryStrategy.retryPolicy"
+                :label="$t('workflow.task.retry.policy')"
+                :required="false"
+                :style="{ width: `${InputWidth.LARGE}px` }"
+                allow-search
+                ><a-option
+                  v-for="item in retryOptions"
+                  :key="item.value"
+                  :value="item.value"
+                >
+                  <a-tooltip
+                    :content="`${$t(item.label)}(${$t(item.description)})`"
+                  >
+                    <span
+                      >{{ $t(item.label)
+                      }}<span class="m-l-2 font-12 color-text-3">{{
+                        `(${$t(item.description)})`
+                      }}</span></span
+                    >
+                  </a-tooltip>
+                </a-option>
+              </seal-select>
+            </a-form-item>
+            <a-form-item field="retryStrategy.limit">
+              <seal-input-number
+                v-model="flow.retryStrategy.limit"
+                :label="$t('workflow.task.retry.count')"
+                :required="false"
+                :min="1"
+                :style="{ width: `${InputWidth.LARGE}px` }"
+                allow-search
+              >
+              </seal-input-number>
+            </a-form-item>
           </a-form>
           <ServiceTask
             v-else-if="
@@ -171,6 +223,7 @@
   import ServiceTask from '../task-types/service-task.vue';
   import TaskCard from '../task-types/task-cards.vue';
   import { TaskTypeList, TaskTypes, stepList } from '../task-types/config';
+  import { retryOptions, workflowTimeoutOptons } from '../config';
 
   const props = defineProps({
     dataInfo: {
@@ -208,7 +261,12 @@
     projectId: route.params.projectId,
     environmentId: '',
     environmentName: '',
-    name: ''
+    name: '',
+    timeout: 1800,
+    retryStrategy: {
+      limit: 1,
+      retryPolicy: 'OnError'
+    }
   });
   const serviceRef = ref();
   const manualRef = ref();
@@ -286,7 +344,10 @@
   const handleSelectTask = (item) => {
     taskType.value = item.value;
     if (taskType.value === TaskTypes.SERVICE) {
+      flow.timeout = 1800;
       getEnvironmentList();
+    } else {
+      flow.timeout = 0;
     }
     handleOnNext();
   };
@@ -298,6 +359,22 @@
   const handleDelete = () => {
     emits('delete');
   };
+  const resetFlow = () => {
+    current.value = 1;
+    taskType.value = '';
+    flow.environmentId = '';
+    flow.environmentName = '';
+    flow.name = '';
+    flow.timeout = 1800;
+    flow.retryStrategy = {
+      limit: 1,
+      retryPolicy: 'Always'
+    };
+
+    //  reset service info
+    serviceInfo.enable = false;
+    serviceInfo.info = null;
+  };
   const handleOk = async () => {
     if (current.value === steps.value.length) {
       if (taskType.value === TaskTypes.SERVICE) {
@@ -307,7 +384,7 @@
         const result = {
           type: taskType.value,
           name: flow.name,
-          spec: {
+          attributes: {
             ...data,
             environment: {
               id: flow.environmentId,
@@ -317,7 +394,8 @@
               id: flow.projectId
             },
             projectID: flow.projectId
-          }
+          },
+          ..._.pick(flow, ['timeout', 'retryStrategy'])
         };
         if (data) {
           emits('save', result);
@@ -329,21 +407,28 @@
         const result = {
           type: taskType.value,
           name: data.name,
-          spec: {
+          attributes: {
             ...data
-          }
+          },
+          timeout: flow.timeout
         };
         if (data) {
           emits('save', result);
         }
       }
+      setTimeout(() => {
+        resetFlow();
+      });
     }
   };
   const setServiceInfo = () => {
     if (props.action === 'edit' && props.dataInfo.type === TaskTypes.SERVICE) {
-      flow.environmentId = props.dataInfo.spec?.environment?.id;
+      flow.environmentId = props.dataInfo.attributes?.environment?.id;
+      flow.retryStrategy = {
+        ..._.pick(props.dataInfo.retryStrategy, ['limit', 'retryPolicy'])
+      };
       serviceInfo.info = {
-        ...props.dataInfo.spec,
+        ...props.dataInfo.attributes,
         ..._.pick(props.dataInfo, ['name', 'description', 'labels'])
       };
       serviceInfo.enable = true;
@@ -359,6 +444,7 @@
   const initData = () => {
     if (props.action === 'edit') {
       taskType.value = props.dataInfo.type;
+      flow.name = props.dataInfo.name;
       setTimeout(() => {
         current.value = steps.value.length;
       });
@@ -369,17 +455,7 @@
     initData();
   };
 
-  const handleBeforeClose = () => {
-    current.value = 1;
-    taskType.value = '';
-    flow.environmentId = '';
-    flow.environmentName = '';
-    flow.name = '';
-
-    //  reset service info
-    serviceInfo.enable = false;
-    serviceInfo.info = null;
-  };
+  const handleBeforeClose = () => {};
 </script>
 
 <style lang="less">
