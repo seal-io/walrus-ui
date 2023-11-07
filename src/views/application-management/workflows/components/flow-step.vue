@@ -85,6 +85,7 @@
         );
       };
 
+      // TODO DELETE
       const renderStepsOnDrag = () => {
         return list.value.length ? (
           <>
