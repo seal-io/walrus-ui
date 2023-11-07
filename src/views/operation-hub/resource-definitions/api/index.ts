@@ -2,6 +2,7 @@ import axios from 'axios';
 import { pick } from 'lodash';
 import qs from 'query-string';
 import { Pagination } from '@/types/global';
+import { ResourceDefinitionFormData } from '../config/interface';
 
 export const RESOURCE_DEFINITION_API = '/resource-definitions';
 
@@ -32,4 +33,14 @@ export function queryResourceDefinitions(
 
 export function deleteResourceDefinitions(data: { items: { id: string }[] }) {
   return axios.delete(RESOURCE_DEFINITION_API, { data });
+}
+export function createResourceDefinition(data: ResourceDefinitionFormData) {
+  return axios.post(RESOURCE_DEFINITION_API, data);
+}
+export function upateResourceDefinition(data: ResourceDefinitionFormData) {
+  return axios.put(`${RESOURCE_DEFINITION_API}/${data.id}`, data);
+}
+
+export function queryItemResourceDefinition(params: { id: string }) {
+  return axios.get(`${RESOURCE_DEFINITION_API}/${params.id}`);
 }

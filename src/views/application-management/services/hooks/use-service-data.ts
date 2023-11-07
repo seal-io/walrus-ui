@@ -46,7 +46,7 @@ export default function useServiceData(props?) {
   const defaultGroupLabel = 'Basic';
   const { route } = useCallCommon();
   const refMap = ref<Record<string, any>>({});
-  const templateInfo = ref<any>({});
+  const templateInfo = ref<any[]>([]);
   const serviceInfo = ref<any>({}); // Store information about the active service, also be used when cloning
   const variablesGroup = ref<any>({});
   const variablesGroupForm = ref<any>({});
