@@ -176,6 +176,8 @@
   import { Resources, Actions } from '@/permissions/config';
   import { useUserStore, useAppStore } from '@/store';
   import dayjs from 'dayjs';
+  import { OPERATIONHUB } from '@/router/config';
+  import { PageAction } from '@/views/config';
   import _, { cloneDeep, map, pickBy } from 'lodash';
   import { reactive, ref, onMounted, computed, PropType } from 'vue';
   import useCallCommon from '@/hooks/use-call-common';
@@ -184,7 +186,7 @@
   import useRowSelect from '@/hooks/use-row-select';
   import FilterBox from '@/components/filter-box/index.vue';
   import { UseSortDirection } from '@/utils/common';
-  import { ResourceDefinitionRow } from '../config/interface';
+  import { ResourceDefinitionRowData } from '../config/interface';
   import { queryResourceDefinitions, deleteResourceDefinitions } from '../api';
 
   const appStore = useAppStore();
@@ -197,9 +199,6 @@
   });
   let timer: any = null;
   const loading = ref(false);
-  const showModal = ref(false);
-  const itemInfo = ref<any>({});
-  const action = ref<'create' | 'edit'>('create');
   const total = ref(0);
 
   const queryParams = reactive({
@@ -207,7 +206,7 @@
     page: 1,
     perPage: appStore.perPage || 10
   });
-  const dataList = ref<ResourceDefinitionRow[]>([]);
+  const dataList = ref<ResourceDefinitionRowData[]>([]);
 
   const rowSelectionStatue = computed(() => {
     return userStore.hasRolesActionsPermission({
@@ -264,11 +263,12 @@
     handleFilter();
   };
   const handleCreate = () => {
-    itemInfo.value = {};
-    action.value = 'create';
-    setTimeout(() => {
-      showModal.value = true;
-    }, 100);
+    router.push({
+      name: OPERATIONHUB.ResourceDefinitionDetail,
+      params: {
+        action: PageAction.EDIT
+      }
+    });
   };
   const handleDeleteConfirm = async () => {
     try {
@@ -292,13 +292,7 @@
     }
   };
 
-  const handleClickEdit = (row) => {
-    itemInfo.value = cloneDeep(row);
-    action.value = 'edit';
-    setTimeout(() => {
-      showModal.value = true;
-    }, 100);
-  };
+  const handleClickEdit = (row) => {};
 
   const handleDelete = async () => {
     deleteModal({ onOk: handleDeleteConfirm });

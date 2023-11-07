@@ -2,6 +2,7 @@ import { Resources } from '@/permissions/config';
 import connectorRoutes from '@/views/operation-hub/connectors/routes';
 import templateRoutes from '@/views/operation-hub/templates/routes';
 import secretRoutes from '@/views/operation-hub/variables/routes';
+import resourceDefinitionRoutes from '@/views/operation-hub/resource-definitions/routes';
 import operationRoutes from '@/views/operation-hub/routes';
 import OPERATIONHUB from '../../config/operation-hub';
 
@@ -35,6 +36,7 @@ export default {
     ...operationRoutes,
     ...connectorRoutes,
     ...templateRoutes,
-    ...secretRoutes
+    ...secretRoutes,
+    ...resourceDefinitionRoutes
   ]
 };
