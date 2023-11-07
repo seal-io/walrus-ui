@@ -17,7 +17,7 @@
   import { BCWidget } from './api';
 
   export default defineComponent({
-    name: 'GitRepoPull',
+    name: 'SourceCodeRepository',
     widgets: [BU.GitHubRepository],
     props: {
       modelValue: {
@@ -26,13 +26,13 @@
           return '';
         }
       },
-      repoName: {
+      repository: {
         type: String,
         default() {
           return '';
         }
       },
-      branchName: {
+      branch: {
         type: String,
         default() {
           return '';
@@ -48,8 +48,8 @@
       'change',
       'inputValueChange',
       'search',
-      'update:branchName',
-      'update:repoName'
+      'update:branch',
+      'update:repository'
     ],
     setup(props, { attrs, emit }) {
       const {
@@ -58,13 +58,12 @@
         isProjectConnector,
         ProjectEnvironment
       } = useQueryConnector(props);
-      const { modelValue, widget, repoName, branchName } = toRefs(props);
+      const { modelValue, widget, repository, branch } = toRefs(props);
       const loading = ref(false);
       const loadingBranch = ref(false);
       const dataList = ref<{ label: string; value: string }[]>([]);
       const branchList = ref<{ label: string; value: string }[]>([]);
-      const query = ref('');
-      const tag = ref('');
+
       let axiosToken: any = null;
       let branchAxiosToken: any = null;
       let timer: any = null;
@@ -86,7 +85,7 @@
           const params = {
             connectorID: connectorID.value,
             projectID: ProjectEnvironment.projectID,
-            isProjectConnector,
+            isProjectConnector: isProjectConnector.value,
             query
           };
           const handler = _.get(BCWidget, widget.value);
@@ -107,8 +106,8 @@
           const params = {
             connectorID: connectorID.value,
             projectID: ProjectEnvironment.projectID,
-            isProjectConnector,
-            repository: repoName.value
+            isProjectConnector: isProjectConnector.value,
+            repository: repository.value
           };
           const handler = _.get(BCWidget, widget.value);
           const data = await handler.queryBranches(
@@ -131,15 +130,21 @@
       };
 
       const handlePopupVisibleChange = async (visible: boolean) => {
-        if (branchList.value.length || !branchName.value) return;
+        if (branchList.value.length || !branch.value) return;
         if (visible) {
           getBranches();
         }
       };
+      const handleRepoPopupVisibleChange = async (visible: boolean) => {
+        if (dataList.value.length) return;
+        if (visible) {
+          getRepos(repository.value);
+        }
+      };
 
       const handleRepoChange = (value) => {
-        emit('update:repoName', value);
-        emit('update:branchName', '');
+        emit('update:repository', value);
+        emit('update:branch', '');
         setTimeout(() => {
           getBranches();
         }, 100);
@@ -151,7 +156,7 @@
         <>
           <div class="group-wrap seal-border-focus bordered">
             <seal-select
-              v-model={repoName.value}
+              v-model={repository.value}
               {...attrs}
               label={'项目'}
               virtual-list-props={virtualListProps}
@@ -160,27 +165,32 @@
               allow-search={true}
               loading={loading.value}
               bordered={false}
+              allow-create={true}
+              onPopupVisibleChange={(visible) =>
+                handleRepoPopupVisibleChange(visible)
+              }
               onSearch={(value: string) => {
                 handleSearch(value);
               }}
               onChange={handleRepoChange}
             ></seal-select>
             <seal-select
-              v-model={branchName.value}
+              v-model={branch.value}
               {...attrs}
               label={'分支'}
               virtual-list-props={virtualListProps}
               style={{ flex: 1 }}
               options={branchList.value}
               allow-search={true}
+              allow-create={true}
               loading={loadingBranch.value}
               bordered={false}
               onPopupVisibleChange={(visible) =>
                 handlePopupVisibleChange(visible)
               }
               onChange={(value: any) => {
-                branchName.value = value;
-                emit('update:branchName', value);
+                branch.value = value;
+                emit('update:branch', value);
               }}
             ></seal-select>
           </div>

@@ -16,7 +16,7 @@ export const RepoPull: Record<string, any> = {
     ) => {
       let url = `/connectors/${params.connectorID}/repositories`;
       if (params.isProjectConnector) {
-        url = `/projects/${params.projectID}/${url}`;
+        url = `/projects/${params.projectID}${url}`;
       }
       return axios.get(url, {
         params: {
@@ -49,7 +49,7 @@ export const RepoPull: Record<string, any> = {
     ) => {
       let url = `/connectors/${params.connectorID}/repository-branches`;
       if (params.isProjectConnector) {
-        url = `/projects/${params.projectID}/${url}`;
+        url = `/projects/${params.projectID}${url}`;
       }
       const { data } = await axios.get(url, {
         params: {
