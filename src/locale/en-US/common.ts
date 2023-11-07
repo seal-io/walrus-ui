@@ -42,6 +42,7 @@ export default {
   'common.table.description': 'Description',
   'common.table.name': 'Name',
   'common.table.type': 'Type',
+  'common.table.default': 'Default Value',
   'common.copy.success': 'Copied success!',
   'common.copy.fail': 'Copied failed!',
   'common.delete.success': 'delete success!',

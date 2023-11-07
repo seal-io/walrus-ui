@@ -87,17 +87,9 @@
             tooltip
             align="left"
             :cell-style="{ minWidth: '40px' }"
-            data-index="value"
-            :title="$t('applications.applications.secret.value')"
+            data-index="type"
+            :title="$t('common.table.type')"
           >
-            <template #cell="{ record }">
-              <span v-if="record.sensitive">
-                <icon-lock />
-              </span>
-              <span v-else>
-                {{ !record.sensitive ? record.value : '*******' }}
-              </span>
-            </template>
           </a-table-column>
           <a-table-column
             ellipsis
