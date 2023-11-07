@@ -19,14 +19,16 @@
         auto-label-width
         layout="vertical"
       >
-        <!-- <a-form-item>
+        <a-form-item>
           <KuberSelect
             v-model="Kubernamespace"
-            widget="NamespaceSelect"
-            label="NamespaceSelect"
+            v-model:branch="branch"
+            v-model:repository="repository"
+            widget="GitHubRepository"
+            label="GitHubRepository"
             @change="handleNamespaceChange"
           ></KuberSelect>
-        </a-form-item> -->
+        </a-form-item>
         <a-form-item
           field="name"
           hide-label
@@ -246,7 +248,7 @@
 </template>
 
 <script lang="ts" setup>
-  import KuberSelect from '@/components/form-create/bussiness-components/kuber-select.vue';
+  import KuberSelect from '@/components/form-create/bussiness-components/source-code-repository.vue';
   import { PROJECT } from '@/router/config';
   import _, {
     get,
@@ -378,8 +380,8 @@
   });
   provide(projectEnvCtxInjectionKey, projectEnvCtx);
   const Kubernamespace = ref('');
-  const branchName = ref('');
-  const repoName = ref('');
+  const repository = ref('');
+  const branch = ref('');
 
   const handleNamespaceChange = (val) => {
     console.log('handleNamespaceChange===', val);
@@ -623,6 +625,12 @@
   };
 
   const handleOk = async () => {
+    console.log(
+      'kube===',
+      Kubernamespace.value,
+      repository.value,
+      branch.value
+    );
     validateLabel();
     const res = await formref.value?.validate();
     // const { validFailedForm, moduleFormList } = await validateFormData();

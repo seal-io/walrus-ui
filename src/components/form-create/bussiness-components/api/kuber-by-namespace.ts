@@ -10,7 +10,9 @@ export const KuberByNamespace: Record<string, any> = {
   [BU.SecretSelectByNamespace]: {
     request: async (params: { connectorID: string; namespace: string }) => {
       return axios.get(`${PROXY_API}/${params.namespace}/secrets`, {
-        params,
+        params: {
+          connectorID: params.connectorID
+        },
         paramsSerializer: (obj) => {
           return qs.stringify(obj);
         }
@@ -29,7 +31,9 @@ export const KuberByNamespace: Record<string, any> = {
   [BU.ConfigMapSelectByNamespace]: {
     request: async (params: { connectorID: string; namespace: string }) => {
       return axios.get(`${PROXY_API}/${params.namespace}/configmaps`, {
-        params,
+        params: {
+          connectorID: params.connectorID
+        },
         paramsSerializer: (obj) => {
           return qs.stringify(obj);
         }
@@ -45,10 +49,12 @@ export const KuberByNamespace: Record<string, any> = {
     }
   },
   // storageClasses
-  [BU.SecretSelectByNamespace]: {
+  [BU.StorageClassSelectByNamespace]: {
     request: async (params: { connectorID: string; namespace: string }) => {
       return axios.get(`${PROXY_API}/${params.namespace}/storageClasses`, {
-        params,
+        params: {
+          connectorID: params.connectorID
+        },
         paramsSerializer: (obj) => {
           return qs.stringify(obj);
         }
