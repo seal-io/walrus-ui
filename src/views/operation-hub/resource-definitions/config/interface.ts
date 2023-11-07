@@ -35,6 +35,18 @@ export interface ResourceDefinitionRowData extends ResourceDefinitionFormData {
   createTime: string;
 }
 
+export interface Input {
+  name: string;
+  type: string;
+  description: string;
+  default: any;
+}
+
+export interface Output {
+  name: string;
+  description: string;
+}
+
 export const definitionFormData = {
   attributes: {},
   name: '',

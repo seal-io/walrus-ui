@@ -161,6 +161,8 @@
           class="m-b-20"
         >
         </DefinitionRules>
+        <GroupTitle :bordered="false" title="模式" flex-start> </GroupTitle>
+        <moduleWrapper></moduleWrapper>
       </div>
       <EditPageFooter v-if="pageAction === PageAction.EDIT">
         <template #save>
@@ -192,6 +194,7 @@
     validateLabelNameRegx,
     InputWidth
   } from '@/views/config';
+  import moduleWrapper from '@/components/module-wrapper/index.vue';
   import { OPERATIONHUB } from '@/router/config';
   import { Resources, Actions } from '@/permissions/config';
   import { useUserStore, useTabBarStore } from '@/store';
