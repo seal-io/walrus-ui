@@ -41,6 +41,7 @@ export default {
   'common.table.description': '描述',
   'common.table.name': '名称',
   'common.table.type': '类型',
+  'common.table.default': '默认值',
   'common.copy.success': '复制成功',
   'common.copy.fail': '复制失败',
   'common.delete.success': '删除成功',

@@ -162,7 +162,7 @@
         >
         </DefinitionRules>
         <GroupTitle :bordered="false" title="模式" flex-start> </GroupTitle>
-        <moduleWrapper></moduleWrapper>
+        <InputOutput></InputOutput>
       </div>
       <EditPageFooter v-if="pageAction === PageAction.EDIT">
         <template #save>
@@ -219,6 +219,7 @@
     definitionFormData
   } from '../config/interface';
   import DefinitionRules from '../components/definition-rules.vue';
+  import InputOutput from '../components/input-output.vue';
 
   const { scrollToView } = useScrollToView();
   const userStore = useUserStore();
