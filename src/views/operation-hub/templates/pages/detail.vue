@@ -223,6 +223,7 @@
           </div>
         </template>
       </a-tabs>
+
       <EditPageFooter v-if="pageAction === PageAction.EDIT">
         <template #save>
           <a-button

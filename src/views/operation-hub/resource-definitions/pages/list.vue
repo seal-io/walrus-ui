@@ -62,14 +62,7 @@
         :data="dataList"
         :pagination="false"
         row-key="id"
-        :row-selection="
-          userStore.hasRolesActionsPermission({
-            resource: Resources.Templates,
-            actions: [Actions.DELETE]
-          })
-            ? null
-            : rowSelectionStatue
-        "
+        :row-selection="rowSelectionStatue"
         @sorter-change="handleSortChange"
         @selection-change="handleSelectChange"
       >
@@ -81,6 +74,11 @@
             data-index="name"
             :title="$t('resource.definition.list.name')"
           >
+            <template #cell="{ record }">
+              <a-link size="small" @click="handleView(record)">{{
+                record.name
+              }}</a-link>
+            </template>
           </a-table-column>
           <a-table-column
             ellipsis
@@ -202,7 +200,7 @@
 
   const rowSelectionStatue = computed(() => {
     return userStore.hasRolesActionsPermission({
-      resource: Resources.Variables,
+      resource: Resources.Templates,
       actions: [Actions.PUT]
     })
       ? rowSelection
@@ -239,6 +237,17 @@
     }, 100);
   };
 
+  const handleView = (row) => {
+    router.push({
+      name: OPERATIONHUB.ResourceDefinitionDetail,
+      params: {
+        action: PageAction.VIEW
+      },
+      query: {
+        id: row.id
+      }
+    });
+  };
   const handleReset = () => {
     queryParams.query = '';
     queryParams.page = 1;
@@ -267,11 +276,11 @@
       loading.value = true;
       const ids = map(selectedKeys.value, (val) => {
         return {
-          id: val
+          id: val as string
         };
       });
       await deleteResourceDefinitions({
-        data: { items: ids }
+        items: ids
       });
       loading.value = false;
       execSucceed();

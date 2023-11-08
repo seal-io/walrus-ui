@@ -6,8 +6,9 @@
   interface MoreAction {
     label: string;
     value: string;
-    icon: string;
+    icon?: string;
     iconfont?: boolean;
+    disabled?: boolean;
   }
   export default defineComponent({
     emits: ['select'],
@@ -25,7 +26,7 @@
         }
       }
     },
-    setup(props, { emit }) {
+    setup(props, { emit, slots }) {
       const { t } = i18n.global;
       const { actionList, btnText } = toRefs(props);
 
@@ -48,12 +49,17 @@
                               key={item.value}
                               value={item.value}
                               label={t(item.label)}
+                              disabled={item.disabled}
                               v-slots={{
                                 icon: () => (
-                                  <i
-                                    class={['iconfont', item.icon]}
-                                    style="color: var(--sealblue-6);font-size: 16px;font-weight: 700"
-                                  ></i>
+                                  <>
+                                    {item.icon ? (
+                                      <i
+                                        class={['iconfont', item.icon]}
+                                        style="color: var(--sealblue-6);font-size: 16px;font-weight: 700"
+                                      ></i>
+                                    ) : null}
+                                  </>
                                 )
                               }}
                             >
@@ -68,10 +74,14 @@
               }
             }}
           >
-            <a-button type="primary">
-              {btnText.value}
-              <icon-down class="mleft-5" />
-            </a-button>
+            {slots.default ? (
+              slots.default()
+            ) : (
+              <a-button type="primary">
+                {btnText.value}
+                <icon-down class="mleft-5" />
+              </a-button>
+            )}
           </a-dropdown>
         </>
       );

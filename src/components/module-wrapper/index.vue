@@ -20,12 +20,16 @@
           ><span>{{ title }}</span></slot
         >
       </a-space>
-      <icon-delete
+      <a-button
         v-if="showDelete"
-        class="btn"
-        style="font-size: 18px"
+        status="danger"
+        type="text"
         @click="handleDelete"
-      />
+      >
+        <template #icon>
+          <icon-delete style="font-size: 18px" />
+        </template>
+      </a-button>
     </div>
     <slTransition>
       <div v-show="isCollapse">
@@ -101,21 +105,20 @@
       cursor: pointer;
 
       &.no-del-btn {
-        flex-direction: row-reverse;
         justify-content: space-between;
       }
 
-      :deep(.arco-icon) {
-        color: rgb(var(--arcoblue-6));
-        .hoverable();
+      // :deep(.arco-icon) {
+      //   color: rgb(var(--arcoblue-6));
+      //   .hoverable();
 
-        &:hover {
-          .hoverableHover();
+      //   &:hover {
+      //     .hoverableHover();
 
-          color: rgb(var(--arcoblue-5));
-          border-radius: 8px;
-        }
-      }
+      //     color: rgb(var(--arcoblue-5));
+      //     border-radius: 8px;
+      //   }
+      // }
     }
 
     .text {
