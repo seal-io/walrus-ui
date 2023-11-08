@@ -5,11 +5,11 @@
         <div class="content">
           <div class="title">
             <span>输入</span>
-            <span class="add">
+            <!-- <span class="add">
               <a-link size="small" @click="handleAddInput">
                 <icon-plus style="stroke-width: 4" />
               </a-link>
-            </span>
+            </span> -->
           </div>
           <a-table
             column-resizable
@@ -84,9 +84,9 @@
         <div class="content">
           <div class="title">
             <span>输出</span>
-            <a-link size="small" @click="handleAddOutput">
+            <!-- <a-link size="small" @click="handleAddOutput">
               <icon-plus style="stroke-width: 4" />
-            </a-link>
+            </a-link> -->
           </div>
           <a-table
             column-resizable
@@ -153,6 +153,9 @@
         >
         </AceEditor>
       </a-tab-pane>
+      <template #extra>
+        <slot></slot>
+      </template>
     </a-tabs>
     <addInputVariable
       v-model:show="showAddInputModal"
@@ -172,20 +175,33 @@
 </template>
 
 <script lang="ts" setup>
-  import { ref, computed } from 'vue';
+  import { ref, computed, PropType } from 'vue';
   import ModuleWrapper from '@/components/module-wrapper/index.vue';
   import AceEditor from '@/components/ace-editor/index.vue';
   import addInputVariable from './add-input-variable.vue';
   import addOutput from './add-output.vue';
   import { Input, Output } from '../config/interface';
 
+  const props = defineProps({
+    schemma: {
+      type: Object as PropType<{ input: any[]; output: any[] }>,
+      default() {
+        return {};
+      }
+    },
+    readOnly: {
+      type: Boolean,
+      default() {
+        return true;
+      }
+    }
+  });
   const activeKey = ref('table');
   const loading = ref(false);
   const inputList = ref<Input[]>([]);
   const outputList = ref<Output[]>([]);
   const code = ref('');
   const defaultCode = ref('');
-  const readOnly = ref(false);
   const inputData = ref<any>({});
   const outputData = ref<any>({});
   const action = ref<'create' | 'edit'>('create');

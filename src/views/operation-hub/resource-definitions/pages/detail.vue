@@ -14,7 +14,7 @@
       ></Breadcrumb>
     </BreadWrapper>
     <ComCard>
-      <div>
+      <div ref="extraWrapper">
         <GroupTitle
           :bordered="false"
           :title="$t('common.title.basicInfo')"
@@ -144,9 +144,11 @@
         <GroupTitle :bordered="false" title="匹配规则" flex-start>
           <template #title>
             <span>匹配规则</span>
-            <a-link size="small" @click="handleAddRule">
-              <icon-plus style="stroke-width: 4" />
-            </a-link>
+            <a-button type="text" size="small" @click="handleAddRule">
+              <template #icon>
+                <icon-plus-circle-fill class="size-20" />
+              </template>
+            </a-button>
           </template>
         </GroupTitle>
         <DefinitionRules
@@ -157,12 +159,68 @@
           :data-id="id"
           :origin-form-data="item"
           :action="pageAction"
+          :show-delete="formData.matchingRules.length > 1"
           :template-list="templateList"
           class="m-b-20"
+          @delete="handleDeleteDefinition(index)"
         >
         </DefinitionRules>
-        <GroupTitle :bordered="false" title="模式" flex-start> </GroupTitle>
-        <InputOutput></InputOutput>
+        <!-- <GroupTitle :bordered="false" title="输入-输出" flex-start>
+        </GroupTitle>
+        <InputOutput :schema="schema" :readOnly="readOnly">
+          <div>
+            <a-space v-if="!readOnly">
+              <a-button size="small" type="primary" @click="handleConfirm">{{
+                $t('common.button.confirm')
+              }}</a-button>
+              <a-button size="small" type="outline" @click="handleCancelEdit">{{
+                $t('common.button.cancel')
+              }}</a-button>
+            </a-space>
+            <MoreButtonActions
+              :actions="schemaActionList"
+              @select="handleSelectAction"
+            ></MoreButtonActions>
+          </div>
+        </InputOutput> -->
+
+        <a-tabs
+          v-if="
+            id &&
+            pageAction === PageAction.VIEW &&
+            userStore.hasRolesActionsPermission({
+              resource: Resources.Templates,
+              actions: [Actions.GET]
+            })
+          "
+          :active-key="activeKey"
+          lazy-load
+          class="page-line-tabs"
+          @change="handleTabChange"
+        >
+          <a-tab-pane
+            v-for="item in tabList"
+            :key="item.com"
+            :title="$t(item.label)"
+          >
+            <template #title>
+              <span>
+                <span v-if="item.icon" class="m-r-5">
+                  <component :is="item.icon"></component>
+                </span>
+                <span>{{ $t(item.label) }}</span>
+              </span>
+            </template>
+            <component
+              :is="tabMap[item.com]"
+              :height="tabContentHeight"
+              :wrap-size="height"
+              :schema="deinitionSchema"
+              :template-info="formData"
+              @update="handleUpdateSchema"
+            ></component>
+          </a-tab-pane>
+        </a-tabs>
       </div>
       <EditPageFooter v-if="pageAction === PageAction.EDIT">
         <template #save>
@@ -188,17 +246,18 @@
 </template>
 
 <script lang="ts" setup>
-  import { ref, onMounted, computed, provide } from 'vue';
+  import { ref, onMounted, computed, provide, markRaw } from 'vue';
   import {
     PageAction,
     validateLabelNameRegx,
     InputWidth
   } from '@/views/config';
+  import { useElementSize } from '@vueuse/core';
   import moduleWrapper from '@/components/module-wrapper/index.vue';
   import { OPERATIONHUB } from '@/router/config';
   import { Resources, Actions } from '@/permissions/config';
   import { useUserStore, useTabBarStore } from '@/store';
-  import _, { assignIn, find, get, map, isEqual, cloneDeep } from 'lodash';
+  import _, { get, isEqual, cloneDeep } from 'lodash';
   import { beforeLeaveCallback } from '@/hooks/save-before-leave';
   import useScrollToView from '@/hooks/use-scroll-to-view';
   import { onBeforeRouteLeave } from 'vue-router';
@@ -207,6 +266,7 @@
   import useCallCommon from '@/hooks/use-call-common';
   import usePageAction from '@/hooks/use-page-action';
   import { queryVariables } from '@/views/application-management/variables/api';
+  import MoreButtonActions from '@/components/drop-button-group/more-button-actions.vue';
   import { operationRootBread } from '../../connectors/config';
   import {
     createResourceDefinition,
@@ -218,8 +278,11 @@
     ResourceDefinitionFormData,
     definitionFormData
   } from '../config/interface';
+  import { tabList } from '../../templates/config';
   import DefinitionRules from '../components/definition-rules.vue';
-  import InputOutput from '../components/input-output.vue';
+  import tabInput from '../../templates/components/tab-input.vue';
+  import tabOutput from '../../templates/components/tab-output.vue';
+  import tabEditSchema from '../../templates/components/tab-edit-schema.vue';
 
   const { scrollToView } = useScrollToView();
   const userStore = useUserStore();
@@ -235,6 +298,10 @@
   const refMap = ref<Record<string, any>>({});
   let copyFormData: any = {};
   const templateList = ref<any[]>([]);
+  const schema = ref<any>({});
+  const extraWrapper = ref();
+  const readOnly = ref(true);
+  const deinitionSchema = ref<any>({});
   const completeData = ref<any>({
     var: null
   });
@@ -244,8 +311,20 @@
     type: '',
     matchingRules: []
   });
+  const activeKey = ref('tabEditSchema');
 
+  const tabMap = {
+    tabInput: markRaw(tabInput),
+    tabOutput: markRaw(tabOutput),
+    tabEditSchema: markRaw(tabEditSchema)
+  };
   provide('completeData', completeData);
+
+  const { height } = useElementSize(extraWrapper);
+
+  const tabContentHeight = computed(() => {
+    return `calc(100vh - ${height.value + 150}px)`;
+  });
   const title = computed(() => {
     if (!id) {
       return 'resource.definition.list.create';
@@ -259,6 +338,10 @@
   const setRefMap = (el, name) => {
     refMap.value[name] = el;
   };
+  const handleTabChange = (val) => {
+    activeKey.value = val;
+  };
+  const handleUpdateSchema = () => {};
   const getRefFormData = async () => {
     const resultList: any[] = [];
     await Promise.all(
@@ -269,6 +352,17 @@
           tab: key,
           formData: moduleForm
         });
+      })
+    );
+    return resultList;
+  };
+  const getRefUISchema = async () => {
+    const resultList: any[] = [];
+    await Promise.all(
+      _.keys(refMap.value).map(async (key) => {
+        const refEL = refMap.value[key];
+        const schema = await refEL?.getSchema?.();
+        resultList.push(schema);
       })
     );
     return resultList;
@@ -322,6 +416,7 @@
       };
       const { data } = await queryItemResourceDefinition(params);
       formData.value = data;
+      deinitionSchema.value = data;
       copyFormData = cloneDeep(formData.value);
     } catch (error) {
       formref.value.resetFields();
@@ -387,10 +482,24 @@
     }
   };
 
+  const handleSelectAction = (val) => {
+    if (val === 'edit') {
+      readOnly.value = false;
+    }
+    if (val === 'refresh') {
+      getRefUISchema();
+    }
+  };
+  const handleConfirm = () => {};
+  const handleCancelEdit = () => {};
   const handleAddRule = () => {
     formData.value.matchingRules.unshift({
       ..._.cloneDeep(definitionFormData)
     });
+  };
+
+  const handleDeleteDefinition = (index) => {
+    formData.value.matchingRules.splice(index, 1);
   };
   onBeforeRouteLeave(async (to, from) => {
     if (!isEqual(copyFormData, formData.value)) {

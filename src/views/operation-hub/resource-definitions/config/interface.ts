@@ -2,13 +2,13 @@ export interface MatchingRule {
   attributes: Record<string, any>;
   name: string;
   selector: {
-    environmentLabels: Record<string, any>;
-    environmentName: string;
-    environmentType: string;
-    projectName: string;
-    resourceLabels: Record<string, any>;
+    environmentLabels?: Record<string, any>;
+    environmentName?: string;
+    environmentType?: string;
+    projectName?: string;
+    resourceLabels?: Record<string, any>;
   };
-  templateVersion: {
+  template: {
     id: string;
     name: string;
     version: string;
@@ -16,9 +16,6 @@ export interface MatchingRule {
     //   id: string;
     //   name: string;
     // };
-    template: {
-      id: string;
-    };
   };
 }
 export interface ResourceDefinitionFormData {
@@ -57,17 +54,10 @@ export const definitionFormData = {
     projectName: '',
     resourceLabels: {}
   },
-  templateVersion: {
+  template: {
     id: '',
     name: '',
-    version: '',
-    // project: {
-    //   id: '',
-    //   name: ''
-    // },
-    template: {
-      id: ''
-    }
+    version: ''
   }
 };
 export default {};
