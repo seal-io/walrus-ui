@@ -125,5 +125,6 @@ export default {
   'common.environment.development': '开发',
   'common.environment.production': '生产',
   'common.environment.staging': '预发布',
-  'common.time.label': '时间'
+  'common.time.label': '时间',
+  'common.time.hour': '小时'
 };

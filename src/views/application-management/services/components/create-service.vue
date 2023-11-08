@@ -303,7 +303,12 @@
         return PageAction.CREATE;
       }
     },
-    flow: Object
+    flow: {
+      type: Object,
+      default() {
+        return {};
+      }
+    }
   });
 
   const emits = defineEmits(['cancel', 'save']);
@@ -465,7 +470,7 @@
 
   const execVersionChangeCallback = async () => {
     await setModuleVersionFormCache();
-    const moduleData = getTemplateSchemaByVersion();
+    const moduleData = await getTemplateSchemaByVersion();
     setTemplateInfo(moduleData);
     formData.attributes = {};
     groupForm.value?.clearFormValidStatus?.();
