@@ -1,5 +1,5 @@
 <template>
-  <ComCard padding="0" class="applications-list">
+  <div>
     <FilterBox style="margin-bottom: 10px">
       <template #params>
         <a-input
@@ -24,7 +24,7 @@
         </a-space>
       </template>
       <template #button-group>
-        <a-button
+        <primaryButtonGroup
           v-if="
             userStore.hasProjectResourceActions({
               projectID,
@@ -33,10 +33,10 @@
               actions: [Actions.POST]
             })
           "
-          type="primary"
-          @click="handleCreate"
-          >{{ $t('applications.applications.create') }}</a-button
-        >
+          :btn-text="$t('applications.applications.create.serviceResource')"
+          :action-list="CreatActions"
+          @select="handleSelectAction"
+        ></primaryButtonGroup>
         <a-button
           v-if="
             userStore.hasProjectResourceActions({
@@ -75,370 +75,81 @@
         >
       </template>
     </FilterBox>
-    <a-table
-      column-resizable
-      style="margin-bottom: 20px"
-      :bordered="false"
-      :loading="loading"
-      :data="dataList"
-      :pagination="false"
-      row-key="id"
-      :row-selection="
-        userStore.isReadOnlyEnvironment(projectID, environmentID)
-          ? null
-          : rowSelection
-      "
-      @sorter-change="handleSortChange"
-      @selection-change="handleSelectChange"
+
+    <moduleWrapper
+      :title="$t('applications.applications.table.service')"
+      :show-delete="false"
+      class="m-b-20"
+      :status="true"
     >
-      <template #columns>
-        <a-table-column
-          ellipsis
-          tooltip
-          :cell-style="{ minWidth: '40px' }"
-          data-index="name"
-          :title="$t('applications.applications.table.service')"
-        >
-          <template #cell="{ record }">
-            <a-link
-              v-if="
-                userStore.hasProjectResourceActions({
-                  projectID,
-                  resource: Resources.Services,
-                  actions: [Actions.GET]
-                })
-              "
-              @click.stop="handleClickViewDetail(record)"
-              >{{ record.name }}</a-link
-            >
-            <span v-else>{{ record.name }}</span>
-          </template>
-        </a-table-column>
-        <a-table-column
-          ellipsis
-          tooltip
-          :cell-style="{ minWidth: '40px' }"
-          data-index="template.name"
-          :title="$t('applications.applications.table.module')"
-        >
-          <template #cell="{ record }">
-            <span>
-              <span>{{
-                `${record.template?.name}@${record.template?.version || ''}`
-              }}</span>
-              <span
-                v-if="!record.template.project?.id"
-                style="color: var(--color-text-3)"
-                class="font-12 m-l-2"
-                >{{ `(${$t('applications.variable.scope.global')})` }}</span
-              >
-            </span>
-          </template>
-        </a-table-column>
-        <a-table-column
-          ellipsis
-          :cell-style="{ minWidth: '40px' }"
-          data-index="status"
-          :title="$t('applications.applications.table.status')"
-        >
-          <template #cell="{ record }">
-            <StatusLabel
-              :zoom="0.9"
-              :status="{
-                status: get(record, 'status.summaryStatus'),
-                text: get(record, 'status.summaryStatus'),
-                message: get(record, 'status.summaryStatusMessage'),
-                transitioning: get(record, 'status.transitioning'),
-                error: get(record, 'status.error')
-              }"
-            ></StatusLabel>
-          </template>
-        </a-table-column>
-        <a-table-column
-          ellipsis
-          tooltip
-          :cell-style="{ minWidth: '40px' }"
-          align="center"
-          data-index="createTime"
-          :sortable="{
-            sortDirections: ['ascend', 'descend'],
-            defaultSortOrder: 'descend',
-            sorter: true,
-            sortOrder: sortOrder
-          }"
-          :title="$t('common.table.createTime')"
-        >
-          <template #cell="{ record }">
-            <span>{{
-              dayjs(record.createTime).format('YYYY-MM-DD HH:mm:ss')
-            }}</span>
-          </template>
-        </a-table-column>
-        <a-table-column
-          align="center"
-          :width="210"
-          data-index="actions"
-          :title="$t('common.table.operation')"
-        >
-          <template #cell="{ record, rowIndex }">
-            <DropButtonGroup
-              layout="horizontal"
-              :actions="setActionList(dataList[rowIndex])"
-              @click="(val) => handleClickUpgrade(record)"
-              @select="(value) => handleClickAction(value, record)"
-            ></DropButtonGroup>
-          </template>
-        </a-table-column>
-      </template>
-    </a-table>
-    <a-pagination
-      size="small"
-      :total="total"
-      :page-size="queryParams.perPage"
-      :current="queryParams.page"
-      show-total
-      show-page-size
-      :hide-on-single-page="total <= 10"
-      @change="handlePageChange"
-      @page-size-change="handlePageSizeChange"
-    />
-    <rollbackModal
-      v-model:show="showRollbackModal"
-      :service-id="selectedVersion"
-      :project-i-d="projectID"
-      :title="rollbackTitle"
-    ></rollbackModal>
+      <tableList
+        ref="serviceTable"
+        :type="ServiceDataType.service"
+        :title="$t('applications.applications.table.service')"
+        :request-params="queryParams"
+        @selection-change="handleServiceSelectChange"
+      ></tableList>
+    </moduleWrapper>
+    <moduleWrapper
+      :title="$t('applications.applications.table.resource')"
+      :show-delete="false"
+      :status="true"
+    >
+      <tableList
+        ref="resourceTable"
+        :type="ServiceDataType.resource"
+        :title="$t('applications.applications.table.resource')"
+        :request-params="queryParams"
+        @selection-change="handleResourceSelectChange"
+      ></tableList>
+    </moduleWrapper>
     <deleteServiceModal
       v-model:show="showDeleteModal"
       :callback="handleDeleteConfirm"
       :title="$t('common.delete.tips')"
     >
     </deleteServiceModal>
-    <revisionDetail
-      v-model:show="showDetailModal"
-      :data-info="revisionData"
-      :revision-id="revisionDetailId"
-      :initial-status="initialStatus"
-    ></revisionDetail>
-    <driftResource
-      v-model:show="showDriftModal"
-      :title="$t('applications.service.resource.drift')"
-      :data-list="driftResourceList"
-      :active="activeDriftResource"
-    >
-    </driftResource>
-  </ComCard>
+  </div>
 </template>
 
 <script lang="ts" setup>
-  import { PROJECT } from '@/router/config';
+  import _ from 'lodash';
+  import { PageAction } from '@/views/config';
   import { Resources, Actions } from '@/permissions/config';
-  import _, { get, pickBy, filter } from 'lodash';
-  import dayjs from 'dayjs';
-  import {
-    reactive,
-    ref,
-    onBeforeUnmount,
-    onMounted,
-    nextTick,
-    provide
-  } from 'vue';
-  import {
-    useSetChunkRequest,
-    createAxiosToken
-  } from '@/api/axios-chunk-request';
-  import { websocketEventType, PageAction } from '@/views/config';
-  import useCallCommon from '@/hooks/use-call-common';
+  import { PROJECT } from '@/router/config';
+  import { reactive, ref, computed } from 'vue';
   import { execSucceed } from '@/utils/monitor';
-  import DropButtonGroup from '@/components/drop-button-group/index.vue';
-  import { UseSortDirection } from '@/utils/common';
-  import useRowSelect from '@/hooks/use-row-select';
+  import useCallCommon from '@/hooks/use-call-common';
+  import { useAppStore, useUserStore } from '@/store';
   import FilterBox from '@/components/filter-box/index.vue';
-  import StatusLabel from '@/views/operation-hub/connectors/components/status-label.vue';
-  import { useUserStore, useAppStore } from '@/store';
-  import { ServiceRowData, DriftDataItem } from '../config/interface';
-  import { serviceActions, serviceActionMap } from '../config';
-  import {
-    queryServices,
-    deleteServices,
-    refreshServiceConfig,
-    SERVICE_API,
-    SERVICE_API_PREFIX
-  } from '../api';
-  import useViewLatestLogs from '../hooks/use-view-latest-logs';
-  import useRollbackRevision from '../hooks/use-rollback-revision';
+  import primaryButtonGroup from '@/components/drop-button-group/primary-button-group.vue';
+  import tableList from '../components/table-list.vue';
+  import moduleWrapper from '../components/module-wrapper.vue';
   import deleteServiceModal from '../components/delete-service-modal.vue';
-  import rollbackModal from '../components/rollback-modal.vue';
-  import revisionDetail from '../components/revision-detail.vue';
-  import driftResource from '../components/drift-resource.vue';
+  import { CreatActions, ServiceDataType } from '../config';
+  import { deleteServices } from '../api';
 
+  const { route, router } = useCallCommon();
   const appStore = useAppStore();
   const userStore = useUserStore();
-  const {
-    showRollbackModal,
-    rollbackTitle,
-    selectedVersion,
-    handleRollbackRevision
-  } = useRollbackRevision();
-  const { setChunkRequest } = useSetChunkRequest();
-  const { rowSelection, selectedKeys, handleSelectChange } = useRowSelect();
-  const { router, locale, route } = useCallCommon();
-  const { sort, sortOrder, setSortDirection } = UseSortDirection({
-    defaultSortField: '-createTime',
-    defaultOrder: 'descend'
-  });
-  const {
-    revisionDetailId,
-    revisionData,
-    showDetailModal,
-    initialStatus,
-    currentServiceInfo,
-    handleViewServiceLatestLogs
-  } = useViewLatestLogs();
-
-  // logs
-  provide('currentServiceInfo', currentServiceInfo);
-
-  let fetchToken: any = null;
+  const serviceTable = ref();
+  const resourceTable = ref();
+  const serviceSelectKeys = ref<string[]>([]);
+  const resourceSelectKeys = ref<string[]>([]);
+  const projectID = route.params.projectId as string;
+  const environmentID = route.params.environmentId as string;
   const showDeleteModal = ref(false);
-  const showDriftModal = ref(false);
-  const driftResourceList = ref<DriftDataItem[]>([]);
-  const activeDriftResource = ref('');
-  const id = route.query.id as string;
-  let timer: any = null;
   const loading = ref(false);
-  const total = ref(0);
-  const totalPage = ref(1);
-  const { environmentId: environmentID, projectId: projectID } =
-    route.params as {
-      environmentId: string;
-      projectId: string;
-    };
   const queryParams = reactive({
     query: '',
     page: 1,
     perPage: appStore.perPage || 10
   });
-  const actionHandlerMap = new Map();
-  const axiosInstance: any = null;
-  const dataList = ref<ServiceRowData[]>([]);
 
-  const setActionList = (row) => {
-    const list = _.filter(serviceActions, (item) => {
-      if (item.value === 'delete') return false;
-      return item.filterFun ? item.filterFun(row) : true;
-    });
-    const res = _.map(list, (o) => {
-      const item = _.cloneDeep(o);
-      item.disabled = _.isFunction(item.disabled)
-        ? item.disabled?.(row)
-        : item.disabled;
-      return item;
-    });
-    return res;
-  };
-  const handleClickDriftResource = (row) => {
-    driftResourceList.value =
-      _.get(row, 'driftResult.drift.resource_drift') || [];
-    const item = _.head(driftResourceList.value);
-    activeDriftResource.value = `${item?.type}/${item?.name}`;
-    setTimeout(() => {
-      showDriftModal.value = true;
-    }, 100);
-  };
-  const fetchData = async () => {
-    if (!projectID || !environmentID) return;
-    fetchToken?.cancel?.();
-    fetchToken = createAxiosToken();
-    try {
-      loading.value = true;
-      const params: any = {
-        ...pickBy(queryParams, (val) => !!val),
-        sort: [sort.value]
-      };
-      const { data } = await queryServices(params, fetchToken?.token);
-      dataList.value = _.map(data.items || [], (item) => {
-        return {
-          ...item,
-          disabled: !userStore.hasProjectResourceActions({
-            projectID,
-            environmentID,
-            resource: Resources.Services,
-            actions: [Actions.DELETE]
-          })
-        };
-      });
-      total.value = data?.pagination?.total || 0;
-      totalPage.value = data?.pagination.totalPage || 1;
-      loading.value = false;
-    } catch (error) {
-      loading.value = false;
-      dataList.value = [];
-    }
-  };
-  const handleFilter = () => {
-    fetchData();
-  };
+  const selectedKeys = computed(() => {
+    return [...serviceSelectKeys.value, ...resourceSelectKeys.value];
+  });
 
-  const handleSortChange = (dataIndex: string, direction: string) => {
-    setSortDirection(dataIndex, direction);
-    fetchData();
-  };
-  const handleSearch = () => {
-    clearTimeout(timer);
-    timer = setTimeout(() => {
-      queryParams.page = 1;
-      handleFilter();
-    }, 100);
-  };
-  const handleClickRollback = (row) => {
-    handleRollbackRevision(row);
-  };
-  const handleClickUpgrade = (row) => {
-    router.push({
-      name: PROJECT.ServiceEdit,
-      params: {
-        action: PageAction.EDIT
-      },
-      query: {
-        id: row.id
-      }
-    });
-  };
-
-  const handleReset = () => {
-    queryParams.query = '';
-    queryParams.page = 1;
-    handleFilter();
-  };
-  const handlePageChange = (page: number) => {
-    queryParams.page = page;
-    handleFilter();
-  };
-  const handlePageSizeChange = (pageSize: number) => {
-    queryParams.page = 1;
-    queryParams.perPage = pageSize;
-    appStore.updateSettings({ perPage: pageSize });
-    handleFilter();
-  };
-  const handleCreate = () => {
-    router.push({
-      name: PROJECT.ServiceEdit,
-      params: {
-        projectId: projectID,
-        environmentId: environmentID,
-        action: PageAction.EDIT
-      }
-    });
-  };
-  const handleCloneService = () => {
-    router.push({
-      name: PROJECT.ServiceClone,
-      query: {
-        source: selectedKeys.value
-      }
-    });
-  };
   const handleDeleteConfirm = async (withoutCleanup) => {
     try {
       loading.value = true;
@@ -451,135 +162,50 @@
       });
       loading.value = false;
       execSucceed();
-      selectedKeys.value = [];
-      rowSelection.selectedRowKeys = [];
+      serviceSelectKeys.value = [];
+      resourceSelectKeys.value = [];
+      serviceTable.value.clearStatus();
+      resourceTable.value.clearStatus();
     } catch (error) {
       loading.value = false;
     }
-  };
-
-  const handleClickViewDetail = (row) => {
-    router.push({
-      name: PROJECT.ServiceDetail,
-      params: {
-        ...route.params
-      },
-      query: {
-        id: row.id
-      }
-    });
   };
 
   const handleDelete = () => {
     showDeleteModal.value = true;
   };
-  const handleRefreshServiceConfig = async (row) => {
-    try {
-      loading.value = true;
-      await refreshServiceConfig({
-        serviceID: row.id
-      });
-      loading.value = false;
-      execSucceed();
-    } catch (error) {
-      loading.value = false;
-    }
+
+  const handleCloneService = () => {
+    serviceTable.value.handleCloneService();
   };
 
-  const handleClickAction = (value, row) => {
-    actionHandlerMap.get(value)(row);
-  };
-  const setActionHandler = () => {
-    actionHandlerMap.set(serviceActionMap.upgrade, handleClickUpgrade);
-    actionHandlerMap.set(serviceActionMap.rollback, handleClickRollback);
-    actionHandlerMap.set(serviceActionMap.sync, handleRefreshServiceConfig);
-    actionHandlerMap.set(serviceActionMap.logs, handleViewServiceLatestLogs);
-  };
-  const init = async () => {
-    userStore.setInfo({ currentProject: projectID });
-    fetchData();
-  };
-
-  const updateServiceList = (data) => {
-    const collections = filter(
-      data.collection || [],
-      (sItem) => sItem?.project?.id === projectID
-    );
-    const ids = data?.ids || [];
-    // CREATE
-    if (data?.type === websocketEventType.CREATE) {
-      const createList = _.map(collections, (o) => {
-        return {
-          ...o,
-          disabled: !userStore.hasProjectResourceActions({
-            projectID,
-            environmentID,
-            resource: Resources.Services,
-            actions: [Actions.DELETE]
-          })
-        };
-      });
-      dataList.value = _.concat(createList, dataList.value);
-      dataList.value = _.slice(dataList.value, 0, queryParams.perPage);
-      return;
-    }
-    // DELETE
-    if (data?.type === websocketEventType.DELETE) {
-      dataList.value = _.filter(dataList.value, (item) => {
-        return !_.find(ids, (id) => id === item.id);
-      });
-      if (queryParams.page > totalPage.value) {
-        queryParams.page = 1;
-        fetchData();
-      } else {
-        fetchData();
-      }
-      return;
-    }
-
-    // UPDATE
-    _.each(collections, (item) => {
-      const updateIndex = _.findIndex(
-        dataList.value,
-        (sItem) => sItem.id === item.id
-      );
-      if (updateIndex > -1) {
-        const updateItem = _.cloneDeep(item);
-        dataList.value[updateIndex] = updateItem;
+  const handleSelectAction = (action: string) => {
+    if (!ServiceDataType[action]) return;
+    router.push({
+      name: PROJECT.ServiceEdit,
+      params: {
+        dataType: ServiceDataType[action],
+        projectId: projectID,
+        environmentId: environmentID,
+        action: PageAction.EDIT
       }
     });
   };
-  const updateHandler = (list) => {
-    _.each(list, (data) => {
-      updateServiceList(data);
-    });
+
+  const handleSearch = () => {
+    serviceTable.value.handleSearch();
+    resourceTable.value.handleSearch();
   };
-  const createServiceChunkRequest = () => {
-    try {
-      if (!projectID) return;
-      setChunkRequest({
-        url: `${SERVICE_API_PREFIX()}${SERVICE_API}`,
-        params: {
-          extract: ['-attributes', '-description']
-        },
-        handler: updateHandler,
-        beforeReconnect: fetchData
-      });
-    } catch (error) {
-      // ignore
-    }
+  const handleReset = () => {
+    queryParams.query = '';
+    handleSearch();
   };
 
-  onBeforeUnmount(() => {
-    axiosInstance?.cancel?.();
-  });
-  onMounted(() => {
-    setActionHandler();
-    nextTick(() => {
-      createServiceChunkRequest();
-    });
-  });
-  init();
+  const handleServiceSelectChange = (keys: string[]) => {
+    serviceSelectKeys.value = keys;
+  };
+
+  const handleResourceSelectChange = (keys: string[]) => {
+    resourceSelectKeys.value = keys;
+  };
 </script>
-
-<style lang="less" scoped></style>

@@ -308,11 +308,12 @@
     }
   };
   const getItemResourceDefinition = async () => {
-    copyFormData = cloneDeep(formData);
+    copyFormData = cloneDeep(formData.value);
     if (!id) {
       formData.value.matchingRules.push({
         ..._.cloneDeep(definitionFormData)
       });
+      return;
     }
     try {
       loaded.value = false;
@@ -320,8 +321,8 @@
         id
       };
       const { data } = await queryItemResourceDefinition(params);
-      assignIn(formData, data);
-      copyFormData = cloneDeep(formData);
+      formData.value = data;
+      copyFormData = cloneDeep(formData.value);
     } catch (error) {
       formref.value.resetFields();
     } finally {
@@ -341,7 +342,7 @@
             ...item.formData
           };
         });
-        copyFormData = cloneDeep(formData);
+        copyFormData = cloneDeep(formData.value);
         if (id) {
           await upateResourceDefinition(formData.value);
         } else {

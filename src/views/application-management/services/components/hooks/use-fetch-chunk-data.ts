@@ -239,7 +239,7 @@ export default function useFetchResource() {
       setChunkRequest({
         url: `${SERVICE_API_PREFIX()}${SERVICE_API}/${
           serviceId.value
-        }/resources`,
+        }/components`,
         handler: updateCallback,
         beforeReconnect: fetchData
       });

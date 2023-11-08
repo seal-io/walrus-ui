@@ -77,7 +77,7 @@
     }
     return `${proto}://${host}/v1${SERVICE_API_PREFIX()}${SERVICE_API}/${
       props.nodeInfo.serviceID
-    }/resources/${resourceId.value}/exec?${qs.stringify({
+    }/components/${resourceId.value}/exec?${qs.stringify({
       key: resourceKey.value
     })}`;
   });

@@ -101,7 +101,7 @@
     if (!logKey.value || !resourceId.value) return;
     const url = `${SERVICE_API_PREFIX()}${SERVICE_API}/${
       props.nodeInfo.serviceID
-    }/resources/${resourceId.value}/log`;
+    }/components/${resourceId.value}/log`;
     setChunkRequest({
       url,
       params: {

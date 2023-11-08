@@ -6,6 +6,11 @@ import { Resources, Actions } from '@/permissions/config';
 import { setDurationValue } from '@/views/config/utils';
 
 const userStore = useUserStore();
+
+export const ServiceDataType = {
+  service: 'service',
+  resource: 'resource'
+};
 export const instanceTabs = [
   {
     label: 'applications.instance.tab.resource',
@@ -103,6 +108,18 @@ export const variableTypeList = [
   { label: 'dynamic', value: 'dynamic' }
 ];
 
+export const CreatActions = [
+  {
+    label: 'applications.applications.create',
+    value: ServiceDataType.service,
+    icon: 'icon-fuwu'
+  },
+  {
+    label: 'applications.applications.create.resource',
+    value: ServiceDataType.resource,
+    icon: 'icon-shengchenglujing-01'
+  }
+];
 export const RevisionStatus = {
   Succeeded: 'Succeeded',
   Running: 'Running',

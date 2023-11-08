@@ -11,12 +11,14 @@ import {
 } from '@/views/operation-hub/templates/api';
 import { initFormState } from '@/components/dynamic-form/utils/init-form-state';
 import { queryServices } from '@/views/application-management/services/api';
+import { queryEnvironmentAvailableDefinitions } from '@/views/application-management/environments/api';
 import useCallCommon from '@/hooks/use-call-common';
 import { queryVariables } from '../../variables/api';
+import { ServiceDataType } from '../config';
 
 export default function useCompleteData(props?) {
   interface HintKey {
-    service: any;
+    resource: any;
     var: any;
   }
   interface TemplateVersionItem {
@@ -38,7 +40,7 @@ export default function useCompleteData(props?) {
   const templateList = ref<TemplateRowData[]>([]);
   const allTemplateVersions = ref<TemplateVersionItem[]>([]);
   const completeData = ref<Partial<HintKey>>({
-    service: null,
+    resource: null,
     var: null
   });
   const variableList = ref<any[]>([]);
@@ -67,6 +69,33 @@ export default function useCompleteData(props?) {
       });
     } catch (error) {
       templateList.value = [];
+    }
+  };
+
+  const getResourceDefinitions = async () => {
+    try {
+      const environmentID = route.params.environmentId as string;
+      const { data } = await queryEnvironmentAvailableDefinitions({
+        environmentID
+      });
+      templateList.value = _.map(data || [], (item) => {
+        return {
+          ...item,
+          label: item.name,
+          value: item.id
+        };
+      });
+    } catch (error) {
+      templateList.value = [];
+      // console.log(error)
+    }
+  };
+
+  const initTemplateList = async () => {
+    if (route.params.dataType === ServiceDataType.resource) {
+      await getResourceDefinitions();
+    } else {
+      await getTemplates();
     }
   };
   // get item template version, isOnSelect is a flag for select event
@@ -228,7 +257,7 @@ export default function useCompleteData(props?) {
   };
   const updateServiceCompleteData = () => {
     const services = setServiceCompleteData();
-    completeData.value.service = { ...services };
+    completeData.value.resource = { ...services };
   };
   const updateVariablesCompleteData = () => {
     const variables = setVariablesCompleteData();
@@ -252,8 +281,8 @@ export default function useCompleteData(props?) {
   });
   return {
     initCompleteData,
-    getTemplates,
     getTemplateVersions,
+    initTemplateList,
     completeData,
     templateList,
     allTemplateVersions,

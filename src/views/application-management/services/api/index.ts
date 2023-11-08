@@ -6,7 +6,7 @@ import router from '@/router';
 import { DeletePayload } from '@/views/config/interface';
 import { ServiceRowData, EndPointRow } from '../config/interface';
 
-export const SERVICE_API = '/services';
+export const SERVICE_API = '/resources';
 
 export const SERVICE_API_PREFIX = (params?: {
   environmentId: string;
@@ -20,7 +20,7 @@ export const SERVICE_API_PREFIX = (params?: {
 export const SERVICE_RESOURCE_API_PREFIX = () => {
   const { environmentId, projectId } = router.currentRoute.value.params;
   const { id } = router.currentRoute.value.query;
-  return `/projects/${projectId}/environments/${environmentId}/services/${id}`;
+  return `/projects/${projectId}/environments/${environmentId}${SERVICE_API}/${id}`;
 };
 
 // some params for permission
@@ -243,7 +243,7 @@ export const rollbackService = (data: {
 // ===========resource==========
 export const queryServiceResource = (params: ServiceRevisionParams, token?) => {
   return axios.get(
-    `${SERVICE_API_PREFIX()}${SERVICE_API}/${params.serviceID}/resources`,
+    `${SERVICE_API_PREFIX()}${SERVICE_API}/${params.serviceID}/components`,
     {
       params: {
         ..._.omit(params, ['serviceID'])
@@ -258,7 +258,7 @@ export const queryServiceResource = (params: ServiceRevisionParams, token?) => {
 
 export const queryServiceResourceKeys = (params: { id: string }) => {
   return axios.get(
-    `${SERVICE_RESOURCE_API_PREFIX()}/resources/${params.id}/keys`,
+    `${SERVICE_RESOURCE_API_PREFIX()}/components/${params.id}/keys`,
     {
       params: {
         ...params
@@ -272,7 +272,7 @@ export const queryServiceResourceKeys = (params: { id: string }) => {
 
 export const queryServiceResourceLogs = (params: { id: string }) => {
   return axios.get(
-    `${SERVICE_RESOURCE_API_PREFIX()}/resources/${params.id}/log`,
+    `${SERVICE_RESOURCE_API_PREFIX()}/components/${params.id}/log`,
     {
       params: {
         ...params
@@ -285,7 +285,7 @@ export const queryServiceResourceLogs = (params: { id: string }) => {
 };
 export const queryServiceResourceExec = (params: { id: string }) => {
   return axios.get(
-    `${SERVICE_RESOURCE_API_PREFIX()}/resources/${params.id}/exec`,
+    `${SERVICE_RESOURCE_API_PREFIX()}/components/${params.id}/exec`,
     {
       params: {
         ...params

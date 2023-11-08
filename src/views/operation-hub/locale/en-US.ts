@@ -130,5 +130,9 @@ export default {
   'operation.templates.detail.rule.connector': 'connector is required',
   'operation.templates.detail.rule.repo': 'repository is required',
   'operation.templates.detail.rule.branch': 'branch is required',
-  'operation.templates.detail.rule.locationfile': 'submission path is required'
+  'operation.templates.detail.rule.locationfile': 'submission path is required',
+  'operation.templates.button.useInservice':
+    'Set as Service Available Template',
+  'operation.templates.button.cancelUseInService':
+    'Cancel Service Available Template'
 };

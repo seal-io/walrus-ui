@@ -311,6 +311,7 @@
     queryTemplateSchemaByVersionId,
     queryItemTemplatesVersions
   } from '../../templates/api';
+  import { isProjectContext } from '../../catalogs/api';
 
   const props = defineProps({
     originFormData: {
@@ -360,10 +361,10 @@
       id: '',
       name: '',
       version: '',
-      project: {
-        id: '',
-        name: ''
-      },
+      // project: {
+      //   id: '',
+      //   name: ''
+      // },
       template: {
         id: ''
       }
@@ -453,7 +454,8 @@
     try {
       asyncLoading.value = true;
       const params = {
-        templateVersionID: formData.value.templateVersion?.id
+        templateVersionID: formData.value.templateVersion?.id,
+        isProjectContext: false
       };
       const { data } = await queryTemplateSchemaByVersionId(params);
       return data;

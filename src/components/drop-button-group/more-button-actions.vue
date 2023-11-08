@@ -21,7 +21,8 @@
           color: 'var(--color-text-2)'
         }"
       >
-        <component :is="item.icon" style="margin-right: 8px"></component
+        <i v-if="item.iconfont" class="iconfont m-r-8" :class="[item.icon]"></i>
+        <component :is="item.icon" v-else class="m-r-8"></component
         >{{ $t(item.label) }}
       </a-doption>
     </template>
