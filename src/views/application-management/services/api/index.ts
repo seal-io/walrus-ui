@@ -49,7 +49,9 @@ export const queryServices = (params: ServiceParams, token?) => {
   return axios.get<ResultType>(
     `${SERVICE_API_PREFIX(params.flow)}${SERVICE_API}`,
     {
-      params,
+      params: {
+        ..._.omit(params, ['flow'])
+      },
       paramsSerializer: (obj) => {
         return qs.stringify(obj);
       },

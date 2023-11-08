@@ -128,5 +128,6 @@ export default {
   'common.environment.development': 'Development',
   'common.environment.production': 'Production',
   'common.environment.staging': 'Staging',
-  'common.time.label': 'Duration'
+  'common.time.label': 'Duration',
+  'common.time.hour': 'hour'
 };

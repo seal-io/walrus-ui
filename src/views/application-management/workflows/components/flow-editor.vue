@@ -30,12 +30,12 @@
       const show = ref(false);
       const loading = ref(false);
       const unfold = ref(true);
-      const flowBasic = ref({
+      const flowBasic = ref<any>({
         name: `flow-id-${dayjs().format('YYYYMMDDHHmmss')}`,
         type: 'default',
         description: '',
         parallelism: 1,
-        timeout: 1800
+        timeout: null
       });
       const stageList = ref<Stage[]>([]);
       const drag = ref(false);
@@ -128,7 +128,10 @@
         if (res) return null;
         return {
           stages: stageList.value,
-          basic: flowBasic.value
+          basic: {
+            ...flowBasic.value,
+            timeout: Math.floor(flowBasic.value?.timeout * 3600)
+          }
         };
       };
 
@@ -136,6 +139,9 @@
         const data = await getPipelineDetail();
         if (data) {
           flowBasic.value = _.cloneDeep(_.omit(data, ['stages']));
+          flowBasic.value.timeout = flowBasic.value.timeout
+            ? Math.floor(flowBasic.value.timeout / 3600)
+            : null;
           stageList.value = _.cloneDeep(data.stages || []);
         }
         if (!stageList.value.length) {
@@ -210,24 +216,22 @@
                       ></seal-input>
                     </a-form-item>
                     <a-form-item
-                      field="time"
+                      field="timeout"
                       hide-label
                       validate-trigger="change"
                     >
-                      <seal-select
+                      <seal-input-number
                         v-model={flowBasic.value.timeout}
                         label={t('workflow.form.timeout')}
+                        min={0}
                         required={false}
-                      >
-                        {_.map(workflowTimeoutOptons, (item) => {
-                          return (
-                            <a-option
-                              value={item.value}
-                              label={t(item.label)}
-                            ></a-option>
-                          );
-                        })}
-                      </seal-select>
+                        hide-button={false}
+                        v-slots={{
+                          suffix: () => {
+                            return <span>{t('common.time.hour')}</span>;
+                          }
+                        }}
+                      ></seal-input-number>
                     </a-form-item>
                     <a-form-item hide-label field="description">
                       <seal-textarea
