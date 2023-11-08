@@ -109,6 +109,24 @@
                   <template #icon><icon-refresh /></template>
                 </a-link>
               </a-tooltip>
+              <a-tooltip
+                :content="
+                  _.get(record, ['labels', 'walrus.seal.io/category']) ===
+                  'service'
+                    ? $t('operation.templates.button.cancelUseInService')
+                    : $t('operation.templates.button.useInservice')
+                "
+              >
+                <a-link
+                  type="text"
+                  size="small"
+                  @click="handleToggleAvailable(record)"
+                >
+                  <template #icon>
+                    <i class="iconfont icon-shandian"></i>
+                  </template>
+                </a-link>
+              </a-tooltip>
             </a-space>
           </template>
         </a-table-column>
@@ -131,7 +149,12 @@
   import { UseSortDirection } from '@/utils/common';
   import { TemplateRowData } from '../config/interface';
   import StatusLabel from '../../connectors/components/status-label.vue';
-  import { queryTemplates, refreshTemplate, deleteTemplates } from '../api';
+  import {
+    queryTemplates,
+    updateTemplate,
+    refreshTemplate,
+    deleteTemplates
+  } from '../api';
 
   const props = defineProps({
     list: {
@@ -320,6 +343,23 @@
   const handlRefresh = async (row) => {
     try {
       await refreshTemplate({ id: row.id });
+      execSucceed();
+    } catch (error) {
+      // ignore
+    }
+  };
+  const handleToggleAvailable = async (row) => {
+    try {
+      const data = {
+        ...row,
+        labels: {
+          'walrus.seal.io/category':
+            _.get(row, ['labels', 'walrus.seal.io/category']) === 'service'
+              ? ''
+              : 'service'
+        }
+      };
+      await updateTemplate(data);
       execSucceed();
     } catch (error) {
       // ignore

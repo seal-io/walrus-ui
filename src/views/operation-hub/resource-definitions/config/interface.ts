@@ -12,10 +12,10 @@ export interface MatchingRule {
     id: string;
     name: string;
     version: string;
-    project: {
-      id: string;
-      name: string;
-    };
+    // project: {
+    //   id: string;
+    //   name: string;
+    // };
     template: {
       id: string;
     };
@@ -61,10 +61,10 @@ export const definitionFormData = {
     id: '',
     name: '',
     version: '',
-    project: {
-      id: '',
-      name: ''
-    },
+    // project: {
+    //   id: '',
+    //   name: ''
+    // },
     template: {
       id: ''
     }

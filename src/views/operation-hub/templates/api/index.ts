@@ -114,11 +114,11 @@ export function queryTemplatesVersionSchema(params: { templateID: string }) {
 }
 
 export function queryTemplateSchemaByVersionId(
-  params: { templateVersionID: string },
+  params: { templateVersionID: string; isProjectContext: boolean },
   token?: any
 ) {
   let url = `/template-versions/${params.templateVersionID}`;
-  if (isProjectContext()) {
+  if (params.isProjectContext) {
     url = `${PROJECT_API_PREFIX()}${url}`;
   }
   return axios.get(url, {

@@ -58,6 +58,16 @@ export function updateEnvironment(data: EnvironFormData) {
   );
 }
 
+export const queryEnvironmentAvailableDefinitions = (params: {
+  environmentID: string;
+}) => {
+  return axios.get(
+    `${PROJECT_API_PREFIX()}${ENVIRONMENT_API}/${
+      params.environmentID
+    }/resource-definitions`
+  );
+};
+
 // for custom service ui
 export const queryEnvironmentConnector = (params: {
   projectID: string;

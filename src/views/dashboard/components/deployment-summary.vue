@@ -55,7 +55,6 @@
   import StackLineChart from '@/components/stack-line-chart/index.vue';
   import pieChart from '@/components/pie-chart/index.vue';
   import DateRange from '@/components/date-range/index.vue';
-  import { queryApplicationRevisions } from '@/views/application-management/services/api';
   import { setEndTimeAddDay } from '@/views/config';
   import { getStackLineDataList } from '@/views/config/utils';
   import lastDeployApp from './last-deploy-app.vue';

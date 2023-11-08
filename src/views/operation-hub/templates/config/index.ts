@@ -106,6 +106,27 @@ export const actionList = [
           });
     },
     permission: ['PUT']
+  },
+  {
+    label: 'operation.templates.button.useInservice',
+    value: 'useInService',
+    icon: 'icon-shandian',
+    iconfont: true,
+    status: 'normal',
+    requiredAuth: true,
+    filterFunc(itemInfo, projectID) {
+      return projectID
+        ? userStore.hasProjectResourceActions({
+            resource: Resources.Templates,
+            projectID,
+            actions: [Actions.PUT]
+          })
+        : userStore.hasRolesActionsPermission({
+            resource: Resources.Templates,
+            actions: [Actions.PUT]
+          });
+    },
+    permission: ['PUT']
   }
 ];
 export default {};

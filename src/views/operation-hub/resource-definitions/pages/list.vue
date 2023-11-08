@@ -284,7 +284,17 @@
     }
   };
 
-  const handleClickEdit = (row) => {};
+  const handleClickEdit = (row) => {
+    router.push({
+      name: OPERATIONHUB.ResourceDefinitionDetail,
+      params: {
+        action: PageAction.EDIT
+      },
+      query: {
+        id: row.id
+      }
+    });
+  };
 
   const handleDelete = async () => {
     deleteModal({ onOk: handleDeleteConfirm });

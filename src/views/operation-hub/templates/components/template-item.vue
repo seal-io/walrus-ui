@@ -40,7 +40,7 @@
           <div class="btn-wrap">
             <moreButtonActions
               v-if="actionList.length"
-              :actions="actionList"
+              :actions="selectActions"
               @select="handleSelectAction"
             ></moreButtonActions>
           </div>
@@ -62,17 +62,15 @@
 </template>
 
 <script lang="ts" setup>
-  import { OPERATIONHUB } from '@/router/config';
-  import { PropType, ref, watch } from 'vue';
+  import _, { toLower, get } from 'lodash';
+  import { PropType, computed, ref, watch } from 'vue';
   import { MoreAction } from '@/views/config/interface';
-  import { toLower, get } from 'lodash';
   import { useRouter } from 'vue-router';
   import { execSucceed } from '@/utils/monitor';
   import moreButtonActions from '@/components/drop-button-group/more-button-actions.vue';
   import StatusLabel from '../../connectors/components/status-label.vue';
   import { TemplateRowData } from '../config/interface';
-
-  import { refreshTemplate } from '../api';
+  import { refreshTemplate, updateTemplate } from '../api';
 
   const props = defineProps({
     provider: {
@@ -109,6 +107,25 @@
 
   const emits = defineEmits(['change', 'refresh', 'edit', 'view']);
   const router = useRouter();
+
+  const selectActions = computed(() => {
+    return props.actionList.map((item) => {
+      if (item.value === 'useInService') {
+        return {
+          ...item,
+          label:
+            toLower(
+              get(props.dataInfo, ['labels', 'walrus.seal.io/category'])
+            ) === 'service'
+              ? 'operation.templates.button.cancelUseInService'
+              : 'operation.templates.button.useInservice'
+        };
+      }
+      return {
+        ...item
+      };
+    });
+  });
   const handleEditTemplate = () => {
     emits('edit');
   };
@@ -123,12 +140,33 @@
       // ignore
     }
   };
+  const handleUseInService = async () => {
+    try {
+      const data = {
+        ...props.dataInfo,
+        labels: {
+          'walrus.seal.io/category':
+            _.get(props.dataInfo, ['labels', 'walrus.seal.io/category']) ===
+            'service'
+              ? ''
+              : 'service'
+        }
+      };
+      await updateTemplate(data);
+      execSucceed();
+    } catch (error) {
+      // ignore
+    }
+  };
   const handleSelectAction = (val) => {
     if (val === 'edit') {
       handleEditTemplate();
     }
     if (val === 'refresh') {
       handleRefresh();
+    }
+    if (val === 'useInService') {
+      handleUseInService();
     }
   };
   const handleCheckedChange = (val) => {

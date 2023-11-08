@@ -309,7 +309,7 @@
   const loaded = ref(false);
   const templateSchema = ref({});
   let copyFormData: any = {};
-  const formData = reactive({
+  const formData = reactive<any>({
     name: '',
     description: '',
     source: ''
@@ -336,7 +336,8 @@
     if (!version.value) return;
     try {
       const params = {
-        templateVersionID: version.value
+        templateVersionID: version.value,
+        isProjectContext: !!formData.project?.id
       };
       // const { data } = await queryTemplatesVersions(params);
       // return data.items?.[0];

@@ -34,7 +34,7 @@ export default function useServiceData(props?) {
     completeData,
     initCompleteData,
     getTemplateVersions,
-    getTemplates,
+    initTemplateList,
     serviceDataList,
     templateList,
     completeDataLoading,
@@ -291,9 +291,9 @@ export default function useServiceData(props?) {
       setDefaultTemplate(item)
     );
     defaultTemplate = defaultTemplate || _.get(templateList.value, '0');
-    formData.template.name = defaultTemplate.name;
-    formData.template.template.id = defaultTemplate.id;
-    formData.template.project = defaultTemplate.project || {};
+    formData.template.name = defaultTemplate?.name;
+    formData.template.template.id = defaultTemplate?.id;
+    formData.template.project = defaultTemplate?.project || {};
   };
   // for service create page
   const initFormData = async () => {
@@ -332,7 +332,7 @@ export default function useServiceData(props?) {
     await Promise.all([
       getServiceItemInfo(),
       initSerivceInfo(),
-      getTemplates()
+      initTemplateList()
     ]);
     await initFormData();
     asyncLoading.value = false;

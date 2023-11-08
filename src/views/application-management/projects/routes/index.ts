@@ -128,7 +128,7 @@ export default [
     }
   },
   {
-    path: 'project/:projectId/environment/:environmentId/service/detail',
+    path: 'project/:projectId/environment/:environmentId/page/:dataType/detail',
     name: PROJECT.ServiceDetail,
     component: () =>
       import('@/views/application-management/services/pages/detail.vue'),
@@ -148,7 +148,7 @@ export default [
     }
   },
   {
-    path: 'project/:projectId/environment/:environmentId/service/:action',
+    path: 'project/:projectId/environment/:environmentId/page/:dataType/:action',
     name: PROJECT.ServiceEdit,
     component: () => import('../../services/pages/edit.vue'),
     meta: {
@@ -167,7 +167,7 @@ export default [
     }
   },
   {
-    path: 'project/:projectId/environment/:environmentId/service/clone',
+    path: 'project/:projectId/environment/:environmentId/data/clone',
     name: PROJECT.ServiceClone,
     component: () => import('../../services/pages/clone.vue'),
     meta: {

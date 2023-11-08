@@ -34,6 +34,7 @@ export interface MoreAction {
   label: string;
   value: string;
   icon: string;
+  iconfont?: boolean;
   handler?: string;
   disabled?: ((obj: any) => boolean) | boolean;
   filterFun?: (obj: any) => boolean;
