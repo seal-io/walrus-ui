@@ -359,7 +359,7 @@
   const queryParams = reactive({
     query: '',
     page: 1,
-    perPage: 10
+    perPage: appStore.perPage || 10
   });
   const actionHandlerMap = new Map();
   const axiosInstance: any = null;
@@ -635,10 +635,10 @@
     () => props.requestParams,
     () => {
       _.assign(queryParams, props.requestParams);
-      init();
     },
     {
-      immediate: true
+      immediate: true,
+      deep: true
     }
   );
   watch(
@@ -666,6 +666,7 @@
     handleReset,
     clearStatus
   });
+  init();
 </script>
 
 <style lang="less" scoped></style>

@@ -141,9 +141,7 @@
   const showDeleteModal = ref(false);
   const loading = ref(false);
   const queryParams = reactive({
-    query: '',
-    page: 1,
-    perPage: appStore.perPage || 10
+    query: ''
   });
 
   const selectedKeys = computed(() => {
@@ -199,11 +197,14 @@
   };
 
   const handleSearch = () => {
-    serviceTable.value.handleSearch();
-    resourceTable.value.handleSearch();
+    setTimeout(() => {
+      serviceTable.value.handleSearch();
+      resourceTable.value.handleSearch();
+    }, 100);
   };
   const handleReset = () => {
     queryParams.query = '';
+
     handleSearch();
   };
 
@@ -215,3 +216,18 @@
     resourceSelectKeys.value = keys;
   };
 </script>
+
+<style lang="less" scoped>
+  :deep(.mo-wrap) {
+    border: none;
+
+    .arco-table .arco-table-tr .arco-table-th {
+      background-color: #fff;
+      border-bottom: 1px solid var(--color-border-2);
+    }
+
+    .content {
+      padding: 0;
+    }
+  }
+</style>
