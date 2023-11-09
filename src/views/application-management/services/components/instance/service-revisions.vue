@@ -173,10 +173,11 @@
   import { deleteModal, execSucceed } from '@/utils/monitor';
   import { UseSortDirection } from '@/utils/common';
   import { websocketEventType } from '@/views/config';
+  import { setDurationValue } from '@/views/config/utils';
   import { HistoryData } from '../../config/interface';
   import revisionDetail from '../revision-detail.vue';
   import serviceSpecDiff from '../service-spec-diff.vue';
-  import { setDurationValue, RevisionStatus } from '../../config';
+  import { RevisionStatus } from '../../config';
   import {
     queryServiceRevisions,
     deleteApplicationRevisions,

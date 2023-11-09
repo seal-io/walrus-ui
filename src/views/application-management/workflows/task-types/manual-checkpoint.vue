@@ -79,6 +79,7 @@
   import { InputWidth } from '@/views/config';
   import { ref, watch, onMounted, computed } from 'vue';
   import { queryProjectSubjects } from '@/views/application-management/projects/api';
+  import { ProjectRoles } from '@/views/application-management/projects/config';
   import { approvalRoles, approvalTypes } from '../config';
 
   const props = defineProps({
@@ -125,7 +126,7 @@
           value: _.get(item, 'subject.id'),
           role: _.get(item, 'role.id')
         };
-      });
+      }).filter((sItem) => sItem.role === ProjectRoles.Owner);
     } catch (error) {
       subjectList.value = [];
     } finally {

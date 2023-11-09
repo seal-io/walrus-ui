@@ -80,6 +80,7 @@
       <a-tab-pane key="editor" :title="$t('common.button.edit')">
         <div class="editor">
           <AceEditor
+            ref="aceEditor"
             v-model="code"
             lang="yaml"
             :height="isFullscreen ? 'calc(100vh - 60px)' : `800px`"
@@ -169,6 +170,7 @@
   const { route } = useCallCommon();
   const readOnly = ref(true);
   const wrapper = ref();
+  const aceEditor = ref();
   const activeKey = ref('editor');
   const code = ref('');
   const defaultCode = ref('');
@@ -201,6 +203,7 @@
     readOnly.value = true;
     activeKey.value = 'editor';
     code.value = defaultCode.value;
+    aceEditor.value?.setValue(defaultCode.value);
   };
 
   const handleToggleMode = (mode) => {

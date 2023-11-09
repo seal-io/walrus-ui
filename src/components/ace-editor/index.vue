@@ -326,6 +326,9 @@
   const clear = () => {
     aceEditor?.setValue('');
   };
+  const setValue = (val) => {
+    aceEditor?.setValue(val, 1);
+  };
   watch(
     () => props.lang,
     (newVal) => {
@@ -383,7 +386,8 @@
     });
   });
   defineExpose({
-    clear
+    clear,
+    setValue
   });
   onBeforeMount(() => {
     aceEditor?.destroy?.();

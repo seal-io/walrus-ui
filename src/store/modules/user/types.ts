@@ -41,6 +41,7 @@ export interface UserState {
   name?: string;
   avatar?: string;
   job?: string;
+  id: string;
   organization?: string;
   location?: string;
   email?: string;

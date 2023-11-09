@@ -241,7 +241,7 @@
         display: flex;
         align-items: center;
         justify-content: center;
-        min-width: 120px;
+        min-width: 135px;
         height: 36px;
         padding: 0 16px;
         padding-left: 21px;
@@ -254,14 +254,14 @@
         .task-type-icon {
           position: absolute;
           top: 9px;
-          left: 5px;
+          left: 9px;
           color: rgb(var(--arcoblue-5));
           font-weight: 700;
           font-size: 16px;
           border-right: 1px solid var(--color-border-2);
 
           &.size-12 {
-            padding: 2px 3px 2px 0;
+            padding: 2px 5px 2px 0;
             font-size: 12px;
           }
         }

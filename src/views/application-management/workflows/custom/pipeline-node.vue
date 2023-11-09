@@ -2,6 +2,7 @@
   import _ from 'lodash';
   import { defineComponent, inject, toRefs, ref } from 'vue';
   import i18n from '@/locale';
+  import { useUserStore } from '@/store';
   import StatusLabel from '@/views/operation-hub/connectors/components/status-label.vue';
   import Autotip from '@arco-design/web-vue/es/_components/auto-tooltip/auto-tooltip';
   import { setDurationValue } from '@/views/config/utils';
@@ -25,20 +26,16 @@
     },
     setup(props, { emit }) {
       const { t } = i18n.global;
+      const userStore = useUserStore();
+
       const getGraph = inject('getGraph');
       const getNode = inject('getNode');
       const { node, graph } = toRefs(props);
       const subjectList = ref<{ id: string; name: string }[]>([]);
-      const approvalUsers = ref<{ name: string; approvaled: boolean }[]>([]);
+      const approvalUsers = ref<
+        { name: string; approvaled: boolean; id: string }[]
+      >([]);
 
-      const randomColor = () => {
-        const letters = '0123456789ABCDEF'; // 可用的颜色字符
-        let color = '#';
-        for (let i = 0; i < 6; i += 1) {
-          color += letters[Math.floor(Math.random() * 16)]; // 随机选择一个字符
-        }
-        return color;
-      };
       const renderStageName = () => {
         const data = node.value.getData();
         console.log('data', data);
@@ -62,6 +59,7 @@
           }).map((sItem) => {
             return {
               name: sItem.name,
+              id: sItem.id,
               approvaled: _.includes(
                 node.value.data.attributes.approvedUsers,
                 sItem.id
@@ -118,7 +116,7 @@
                 {_.get(node.value.data, 'status.summaryStatus') ===
                 WorkflowStatus.Running ? (
                   <ClockTimer
-                    start-time={node.value.data.createTime}
+                    start-time={node.value.data.executeTime}
                     show={true}
                   ></ClockTimer>
                 ) : (
@@ -153,6 +151,26 @@
         }
         return null;
       };
+
+      const setApprovalButton = () => {
+        const user = _.find(
+          approvalUsers.value,
+          (item) => item.id === userStore.userInfo.id
+        );
+        if (
+          !user ||
+          user.approvaled ||
+          node.value.data?.type !== TaskTypes.APPROVAL
+        ) {
+          return false;
+        }
+
+        return (
+          !!user &&
+          _.get(node.value.data, 'status.summaryStatus') ===
+            WorkflowStatus.Running
+        );
+      };
       getSubjects();
       return () => (
         <div class="pipeline-node">
@@ -178,7 +196,6 @@
           </div>
           <div class="operation-box">
             <span class="status">
-              {/* <i class={['iconfont icon-success-fill success']}></i> */}
               <StatusLabel
                 zoom={0.9}
                 status={{
@@ -194,9 +211,7 @@
               ></StatusLabel>
             </span>
             <a-space class="btn">
-              {node.value.data?.type === TaskTypes.APPROVAL &&
-              _.get(node.value.data, 'status.summaryStatus') ===
-                WorkflowStatus.Running ? (
+              {setApprovalButton() ? (
                 <a-link hoverable={false} data-event="node:approve">
                   {t('workflow.stage.approve')}
                 </a-link>

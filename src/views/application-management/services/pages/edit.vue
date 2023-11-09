@@ -19,7 +19,7 @@
         auto-label-width
         layout="vertical"
       >
-        <a-form-item>
+        <!-- <a-form-item>
           <KuberSelect
             v-model="Kubernamespace"
             v-model:branch="branch"
@@ -28,7 +28,7 @@
             label="GitHubRepository"
             @change="handleNamespaceChange"
           ></KuberSelect>
-        </a-form-item>
+        </a-form-item> -->
         <a-form-item
           field="name"
           hide-label

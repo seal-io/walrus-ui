@@ -98,6 +98,7 @@
 <script lang="ts" setup>
   import { Resources, Actions } from '@/permissions/config';
   import { PROJECT } from '@/router/config';
+  import { setDurationValue } from '@/views/config/utils';
   import _, { toLower, get } from 'lodash';
   import dayjs from 'dayjs';
   import { PropType } from 'vue';
@@ -123,12 +124,7 @@
   const { router } = useCallCommon();
   const userStore = useUserStore();
   const projectStore = useProjectStore();
-  const setDurationValue = (val) => {
-    if (!val) return '-';
-    const seconds = val % 60;
-    const min = Math.floor(val / 60);
-    return `${min}'${seconds}"`;
-  };
+
   const handleToDetail = async (row) => {
     projectStore.setInfo({
       defaultActiveProject: {

@@ -25,6 +25,7 @@ export default {
   'workflow.stage.add.approvalMode': '审核方式',
   'workflow.stage.add.approvalUser': '审核人员',
   'workflow.stage.add.paratask': '并行任务',
+  'workflow.stage.add.parallelism': '最大并行运行任务数',
   'workflow.stage.add.title': 'stage',
   'workflow.stage.add.button': '添加新阶段',
   'workflow.stage.records': '运行记录',

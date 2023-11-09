@@ -114,7 +114,7 @@
         display: flex;
         align-items: center;
         justify-content: center;
-        min-width: 120px;
+        min-width: 135px;
         height: 36px;
         padding: 0 16px;
         color: var(--color-text-2);

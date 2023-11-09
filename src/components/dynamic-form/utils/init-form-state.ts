@@ -36,7 +36,8 @@ export const initFormStateBySchema = ({
         group: inhertGroupFromParent(
           schema['x-walrus-ui']?.group,
           property['x-walrus-ui']?.group
-        )
+        ),
+        hidden: schema['x-walrus-ui']?.hidden
       };
     }
     const fieldSchema = {
@@ -110,6 +111,7 @@ export const initFormState = (schema: any, ignoreExtension?: boolean) => {
     fieldPath: [],
     ignoreExtension
   });
+  console.log('fieldSchemaList', fieldSchemaList);
   return {
     formData,
     fieldSchemaList

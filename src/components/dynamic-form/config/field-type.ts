@@ -39,6 +39,9 @@ export const FieldDataType = {
       property.type === 'object' &&
       property.uiSchema.widget === Widget.AceEditor
     );
+  },
+  isBoolean(property: FieldSchema) {
+    return property.type === 'boolean';
   }
 };
 
