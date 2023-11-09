@@ -37,7 +37,7 @@ export const initFormStateBySchema = ({
           schema['x-walrus-ui']?.group,
           property['x-walrus-ui']?.group
         ),
-        hidden: schema['x-walrus-ui']?.hidden
+        hidden: property['x-walrus-ui']?.hidden || schema['x-walrus-ui']?.hidden
       };
     }
     const fieldSchema = {

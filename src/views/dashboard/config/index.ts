@@ -65,7 +65,16 @@ export const overViewConfig = [
       'linear-gradient(rgba(255, 197, 192, 0.3) 0%, rgba(255, 197, 192, 0.4) 100%)'
   },
   {
-    label: 'menu.applicationManagement.serivce',
+    label: 'menu.applicationManagement.resource',
+    value: 0,
+    key: 'resource',
+    // color:
+    //   'linear-gradient(rgba(173, 209, 235, 0.3) 0%, rgba(173, 209, 235, 0.4) 100%)',
+    color:
+      'linear-gradient(rgba(159, 232, 219, 0.3) 0%, rgba(159, 232, 219, 0.4) 100%)'
+  },
+  {
+    label: 'menu.applicationManagement.services',
     value: 0,
     key: 'service',
     // color:

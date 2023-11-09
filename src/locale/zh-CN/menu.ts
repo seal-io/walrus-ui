@@ -5,6 +5,8 @@ export default {
   'menu.applicationManagement.projectList': '项目列表',
   'menu.applicationManagement.application': '应用',
   'menu.applicationManagement.serivce': '服务/资源',
+  'menu.applicationManagement.resource': '资源',
+  'menu.applicationManagement.services': '服务',
   'menu.applicationManagement.secret': '变量',
   'menu.applicationManagement.members': '成员',
   'menu.applicationManagement.workflow': '工作流',

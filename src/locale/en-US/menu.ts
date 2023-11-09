@@ -5,6 +5,8 @@ export default {
   'menu.applicationManagement.projectList': 'Project List',
   'menu.applicationManagement.application': 'Applications',
   'menu.applicationManagement.serivce': 'Services/Resources',
+  'menu.applicationManagement.resource': 'Resources',
+  'menu.applicationManagement.services': 'Services',
   'menu.applicationManagement.secret': 'Variables',
   'menu.applicationManagement.members': 'Members',
   'menu.applicationManagement.workflow': 'Workflows',

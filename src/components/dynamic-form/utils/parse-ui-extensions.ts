@@ -33,7 +33,8 @@ export const parseUIExtensions = (
     minLength,
     maxLength,
     readonly: readOnly || immutable,
-    disabled: immutable
+    disabled: immutable,
+    alwaysDelete: true
   };
 
   return {
