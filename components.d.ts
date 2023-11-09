@@ -6,8 +6,6 @@ declare module 'vue' {
   export interface GlobalComponents {
     AAffix: typeof import('@arco-design/web-vue')['Affix'];
     AAlert: typeof import('@arco-design/web-vue')['Alert'];
-    AAvatar: typeof import('@arco-design/web-vue')['Avatar'];
-    AAvatarGroup: typeof import('@arco-design/web-vue')['AvatarGroup'];
     ABreadcrumb: typeof import('@arco-design/web-vue')['Breadcrumb'];
     ABreadcrumbItem: typeof import('@arco-design/web-vue')['BreadcrumbItem'];
     AButton: typeof import('@arco-design/web-vue')['Button'];
@@ -26,7 +24,6 @@ declare module 'vue' {
     AGrid: typeof import('@arco-design/web-vue')['Grid'];
     AGridItem: typeof import('@arco-design/web-vue')['GridItem'];
     AInput: typeof import('@arco-design/web-vue')['Input'];
-    AInputGroup: typeof import('@arco-design/web-vue')['InputGroup'];
     AInputNumber: typeof import('@arco-design/web-vue')['InputNumber'];
     AInputPassword: typeof import('@arco-design/web-vue')['InputPassword'];
     AInputSearch: typeof import('@arco-design/web-vue')['InputSearch'];
@@ -45,13 +42,10 @@ declare module 'vue' {
     APagination: typeof import('@arco-design/web-vue')['Pagination'];
     AProgress: typeof import('@arco-design/web-vue')['Progress'];
     ARangePicker: typeof import('@arco-design/web-vue')['RangePicker'];
-    AResult: typeof import('@arco-design/web-vue')['Result'];
     ASelect: typeof import('@arco-design/web-vue')['Select'];
     ASpace: typeof import('@arco-design/web-vue')['Space'];
     ASpin: typeof import('@arco-design/web-vue')['Spin'];
     AStatistic: typeof import('@arco-design/web-vue')['Statistic'];
-    AStep: typeof import('@arco-design/web-vue')['Step'];
-    ASteps: typeof import('@arco-design/web-vue')['Steps'];
     ASubMenu: typeof import('@arco-design/web-vue')['SubMenu'];
     ASwitch: typeof import('@arco-design/web-vue')['Switch'];
     ATable: typeof import('@arco-design/web-vue')['Table'];
@@ -61,8 +55,6 @@ declare module 'vue' {
     ATag: typeof import('@arco-design/web-vue')['Tag'];
     ATextarea: typeof import('@arco-design/web-vue')['Textarea'];
     ATooltip: typeof import('@arco-design/web-vue')['Tooltip'];
-    ATypographyParagraph: typeof import('@arco-design/web-vue')['TypographyParagraph'];
-    ATypographyTitle: typeof import('@arco-design/web-vue')['TypographyTitle'];
     AUpload: typeof import('@arco-design/web-vue')['Upload'];
   }
 }
