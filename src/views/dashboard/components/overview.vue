@@ -1,10 +1,10 @@
 <template>
   <spinCard :title="$t('dashboard.overview.title')" borderless>
-    <a-grid :cols="24" :col-gap="20">
+    <a-grid :cols="25" :col-gap="20" :row-gap="20">
       <a-grid-item
         v-for="(item, index) in overviewData"
         :key="index"
-        :span="{ lg: 6, md: 6, sm: 12, xs: 24 }"
+        :span="{ lg: 5, md: 5, sm: 12, xs: 24 }"
       >
         <DataCard
           :title="$t(item.label)"
