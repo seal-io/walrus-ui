@@ -233,6 +233,19 @@
                         }}
                       ></seal-input-number>
                     </a-form-item>
+                    <a-form-item
+                      field="parallelism"
+                      hide-label
+                      validate-trigger="change"
+                    >
+                      <seal-input-number
+                        v-model={flowBasic.value.parallelism}
+                        label={t('workflow.stage.add.parallelism')}
+                        min={0}
+                        required={false}
+                        hide-button={false}
+                      ></seal-input-number>
+                    </a-form-item>
                     <a-form-item hide-label field="description">
                       <seal-textarea
                         v-model={flowBasic.value.description}

@@ -86,7 +86,7 @@
                 :style="{ ...item.style, display: 'flex', alignItems: 'cener' }"
               >
                 <span>{{ $t(item.label) }}</span>
-                <span style="margin-left: 5px">
+                <span class="flex mleft-5">
                   <a-tooltip
                     v-if="
                       !item.isEditable &&
@@ -106,16 +106,14 @@
                     :content="$t('common.button.cancel')"
                   >
                     <a-link @click="handleEditCancel(item)"
-                      ><icon-undo
-                    /></a-link>
+                      ><i class="iconfont icon-quxiao"></i
+                    ></a-link>
                   </a-tooltip>
                   <a-tooltip
                     v-if="item.isEditable"
                     :content="$t('common.button.save')"
                   >
-                    <a-link
-                      style="margin-left: 5px"
-                      @click="handleSaveSubGroup(item)"
+                    <a-link class="mleft-5" @click="handleSaveSubGroup(item)"
                       ><icon-save
                     /></a-link>
                   </a-tooltip>

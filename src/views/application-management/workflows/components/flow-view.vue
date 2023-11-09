@@ -121,7 +121,7 @@
     return null;
   };
 
-  const handleApprovePipelineTask = async (nodeData) => {
+  const handleApprovePipelineTask = async (nodeData, comment) => {
     try {
       const {
         project: { id: projectId },
@@ -367,8 +367,19 @@
         okText: 'common.button.approval',
         cancelText: 'common.button.reject',
         title: 'workflow.stage.approve',
+        maskClosable: true,
         onOk: async () => {
-          await handleApprovePipelineTask(nodeData);
+          await handleApprovePipelineTask(nodeData, {
+            approved: true,
+            reason: ''
+          });
+          await initData();
+        },
+        onCancel: async () => {
+          await handleApprovePipelineTask(nodeData, {
+            approved: false,
+            reason: ''
+          });
           await initData();
         }
       });
@@ -413,6 +424,7 @@
       if (currentData) {
         const stages = currentData?.stages || [];
         const result = initNodes(stages);
+        console.log('result..', result);
         graphIns.fromJSON(result, { silent: true });
       }
     }

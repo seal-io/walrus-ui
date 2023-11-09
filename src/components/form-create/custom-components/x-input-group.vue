@@ -171,6 +171,7 @@
       </div>
     </div>
     <div
+      v-if="!$attrs.disabled && !$attrs.readonly"
       class="btn-wrapper"
       :class="{ 'two-btn': labelList?.length > 1 || alwaysDelete }"
     >

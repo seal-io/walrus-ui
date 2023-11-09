@@ -49,7 +49,10 @@
 </script>
 
 <style lang="less" scoped>
+  @height: 52px;
+
   .seal-form-item-wrap {
+    min-height: @height;
     padding: 10px 12px;
     border: 1px solid var(--color-border-2);
     border-radius: var(--border-radius-small);

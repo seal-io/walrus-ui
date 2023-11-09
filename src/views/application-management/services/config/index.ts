@@ -3,6 +3,7 @@ import dayjs from 'dayjs';
 import { MoreAction } from '@/views/config/interface';
 import { useUserStore } from '@/store';
 import { Resources, Actions } from '@/permissions/config';
+import { setDurationValue } from '@/views/config/utils';
 
 const userStore = useUserStore();
 export const instanceTabs = [
@@ -54,12 +55,6 @@ export const setServiceStatus = (status) => {
   return Status.Running;
 };
 
-export const setDurationValue = (val) => {
-  if (!val) return '-';
-  const seconds = val % 60;
-  const min = Math.floor(val / 60);
-  return `${min}'${seconds}"`;
-};
 export const serviceBasicInfo = [
   { label: 'applications.projects.form.label', value: '', key: 'labels' },
   {

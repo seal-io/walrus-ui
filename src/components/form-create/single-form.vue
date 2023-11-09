@@ -208,9 +208,10 @@
         return calcGridItemSpan(fm, index);
       };
       const handleSelectInputChange = (e: any, fm) => {
-        console.log('formData=', e);
         if (FieldDataType.isListNumber(fm) && !numberReg.test(e.data)) {
           e.target.value = e.target.value.replace(/[^\d]/g, '');
+        } else if (FieldDataType.isBoolean(fm)) {
+          _.set(formData.value, fm.fieldPath, e.target.checked);
         } else {
           _.set(formData.value, fm.fieldPath, e);
         }
@@ -567,6 +568,19 @@
         );
       };
 
+      const renderThumbButton = (fm) => {
+        return (
+          <>
+            {!fm.uiSchema.props?.disabled ? (
+              <ThumbButton
+                size={24}
+                fontSize="14px"
+                onClick={() => handleAddOne(fm.uiSchema.labelList)}
+              ></ThumbButton>
+            ) : null}
+          </>
+        );
+      };
       const renderMapStringType = (fm) => {
         const ParentComponet = formComponents[fm.uiSchema.parentCom];
         const ChildComponent = formComponents[fm.uiSchema.childCom];
@@ -578,61 +592,55 @@
               show-required-mark={false}
               popup-info={fm.description}
             >
-              {fm?.uiSchema.labelList?.length ? (
-                _.map(fm.uiSchema.labelList, (sItem, sIndex) => {
-                  return (
-                    <ParentComponet
-                      key={sIndex}
-                      dataKey={sItem.key}
-                      dataValue={sItem.value}
-                      value={_.get(formData.value, fm.fieldPath)}
-                      onUpdate:dataKey={(val) =>
-                        handleUpdateMapDataKey(val, sItem)
-                      }
-                      onUpdate:dataValue={(val) =>
-                        handleUpdateMapDataValue(val, sItem)
-                      }
-                      onUpdate:value={(val) => handleUpdataMapValue(val, fm)}
-                      class="group-item"
-                      style={{ width: '100%' }}
-                      width="100%"
-                      trigger-validate={triggerValidate.value}
-                      form-id={fm.name}
-                      label-list={fm.uiSchema.labelList}
-                      position={sIndex}
-                      onAdd={(obj) =>
-                        handleAddLabel(obj, fm.uiSchema.labelList)
-                      }
-                      onDelete={() =>
-                        handleDeleteLabel(fm.uiSchema.labelList, sIndex)
-                      }
-                      {...fm.uiSchema.props}
-                    >
-                      {fm.uiSchema.childCom ? (
-                        <>
-                          {_.map(fm.options, (com) => {
-                            return (
-                              <ChildComponent
-                                key={com}
-                                value={com.value}
-                                form-id={props.formId}
-                              >
-                                {com.value}
-                              </ChildComponent>
-                            );
-                          })}
-                        </>
-                      ) : null}
-                    </ParentComponet>
-                  );
-                })
-              ) : (
-                <ThumbButton
-                  size={24}
-                  fontSize="14px"
-                  onClick={() => handleAddOne(fm.uiSchema.labelList)}
-                ></ThumbButton>
-              )}
+              {fm?.uiSchema.labelList?.length
+                ? _.map(fm.uiSchema.labelList, (sItem, sIndex) => {
+                    return (
+                      <ParentComponet
+                        key={sIndex}
+                        dataKey={sItem.key}
+                        dataValue={sItem.value}
+                        value={_.get(formData.value, fm.fieldPath)}
+                        onUpdate:dataKey={(val) =>
+                          handleUpdateMapDataKey(val, sItem)
+                        }
+                        onUpdate:dataValue={(val) =>
+                          handleUpdateMapDataValue(val, sItem)
+                        }
+                        onUpdate:value={(val) => handleUpdataMapValue(val, fm)}
+                        class="group-item"
+                        style={{ width: '100%' }}
+                        width="100%"
+                        trigger-validate={triggerValidate.value}
+                        form-id={fm.name}
+                        label-list={fm.uiSchema.labelList}
+                        position={sIndex}
+                        onAdd={(obj) =>
+                          handleAddLabel(obj, fm.uiSchema.labelList)
+                        }
+                        onDelete={() =>
+                          handleDeleteLabel(fm.uiSchema.labelList, sIndex)
+                        }
+                        {...fm.uiSchema.props}
+                      >
+                        {fm.uiSchema.childCom ? (
+                          <>
+                            {_.map(fm.options, (com) => {
+                              return (
+                                <ChildComponent
+                                  key={com}
+                                  value={com.value}
+                                  form-id={props.formId}
+                                >
+                                  {com.value}
+                                </ChildComponent>
+                              );
+                            })}
+                          </>
+                        ) : null}
+                      </ParentComponet>
+                    );
+                  })
+                : renderThumbButton(fm)}
             </SealFormItemWrap>
           </div>
         );

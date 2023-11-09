@@ -34,6 +34,7 @@
         class="arco-input completer arco-input-size-medium"
         :spellcheck="false"
         :readonly="disabled"
+        :disabled="disabled"
         autocomplete="off"
         v-bind="$attrs"
         :type="inputType"
@@ -489,17 +490,6 @@
 </script>
 
 <style lang="less" scoped>
-  // .autocomplete-area.arco-input-wrapper {
-  //   display: flex;
-  //   align-items: center;
-  //   padding-left: 10px;
-  //   border: 1px solid var(--seal-border-gray-2);
-
-  //   &:focus-within {
-  //     border: 1px solid rgb(var(--primary-6));
-  //     transition: all 0.2s var(--seal-transition-func);
-  //   }
-  // }
   .autocomplete-area {
     position: relative;
     width: 100%;

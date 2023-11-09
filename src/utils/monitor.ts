@@ -31,15 +31,19 @@ export default function handleError(Vue: App, baseUrl: string) {
 
 export const deleteModal = async ({
   onOk,
+  onCancel,
   content,
+  maskClosable,
   title = 'common.delete.tips',
   okText = 'common.button.delete',
   cancelText = 'common.button.cancel'
 }: {
   onOk: () => void;
+  onCancel?: () => void;
   content?: string;
   title?: string;
   okText?: string;
+  maskClosable?: boolean;
   cancelText?: string;
 }) => {
   const modalInstance = Modal.warning({
@@ -47,7 +51,7 @@ export const deleteModal = async ({
     top: '20%',
     width: 450,
     hideCancel: false,
-    maskClosable: false,
+    maskClosable,
     title: i18n.global.t(title),
     content: () => {
       return h(
@@ -80,6 +84,7 @@ export const deleteModal = async ({
           {
             type: 'outline',
             onClick: () => {
+              onCancel?.();
               modalInstance?.close?.();
             }
           },

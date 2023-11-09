@@ -108,10 +108,34 @@ export const getStackLineData = ({
 };
 
 export const setDurationValue = (val) => {
+  // val: seconds
   if (!val) return '-';
-  const seconds = val % 60;
-  const min = Math.floor(val / 60);
-  return `${min}'${seconds}"`;
+  const day = Math.floor(val / 86400);
+  let hour = Math.floor((val % 86400) / 3600);
+  let minute = Math.floor(((val % 86400) % 3600) / 60);
+  let second = Math.floor(((val % 86400) % 3600) % 60);
+  if (hour < 10) {
+    hour = Number(`0${hour}`);
+  }
+
+  if (minute < 10) {
+    minute = Number(`0${minute}`);
+  }
+
+  if (second < 10) {
+    second = Number(`0${second}`);
+  }
+
+  if (day) {
+    return `${day}d ${hour}:${minute}:${second}`;
+  }
+  if (hour) {
+    return `${hour}:${minute}:${second}`;
+  }
+  if (minute) {
+    return `${minute}'${second}''`;
+  }
+  return `${second}''`;
 };
 
 export default {};
