@@ -1,13 +1,7 @@
 <template>
   <div>
-    <GroupTitle
-      v-if="showCheck"
-      class="m-t-20"
-      :bordered="false"
-      :title="$t('applications.applications.table.service')"
-      flex-start
-    >
-      <template #right>
+    <GroupTitle class="m-t-20" :bordered="false" :title="title" flex-start>
+      <template v-if="showCheck" #right>
         <a-checkbox
           class="m-l-10 check-box"
           :indeterminate="
@@ -172,43 +166,6 @@
             flex-start
             style="margin: 10px 0 0 0"
           ></GroupTitle>
-          <a-tabs
-            v-if="formTabs.length === -1"
-            class="page-line-tabs"
-            :active-key="activeKey"
-            @change="handleTabChange"
-          >
-            <a-tab-pane
-              v-for="(group, index) in formTabs"
-              :key="`schemaForm${index}`"
-              :title="variablesGroup[group]?.label"
-            >
-              <formCreate
-                :ref="(el: refItem) => setRefMap(el, `schemaForm${index}`)"
-                :form-id="`schemaForm${index}`"
-                layout="vertical"
-                form-size="small"
-                :show-footer="false"
-                :submit="() => {}"
-                :attributes="variableAttributes"
-                :model="variablesGroupForm[group]?.attributes"
-                :form-schema="variablesGroup[group]?.variables"
-              >
-              </formCreate>
-            </a-tab-pane>
-          </a-tabs>
-          <formCreate
-            v-if="formTabs.length === -2"
-            ref="schemaForm"
-            form-size="small"
-            form-id="schemaForm"
-            layout="vertical"
-            :show-footer="false"
-            :submit="() => {}"
-            :model="variablesGroupForm[defaultGroupKey]?.attributes"
-            :form-schema="variablesGroup[defaultGroupKey]?.variables"
-          >
-          </formCreate>
           <GroupForm
             ref="groupForm"
             :field-list="templateInfo"
@@ -241,14 +198,7 @@
 <script lang="ts" setup>
   import _ from 'lodash';
   import { PageAction, validateLabelNameRegx } from '@/views/config';
-  import {
-    ref,
-    PropType,
-    computed,
-    ComponentPublicInstance,
-    provide,
-    watch
-  } from 'vue';
+  import { ref, PropType, computed, provide, watch } from 'vue';
   import GroupForm from '@/components/form-create/group-form.vue';
   import xInputGroup from '@/components/form-create/custom-components/x-input-group.vue';
   import EditPageFooter from '@/components/edit-page-footer/index.vue';
@@ -256,11 +206,9 @@
   import thumbButton from '@/components/buttons/thumb-button.vue';
   import useScrollToView from '@/hooks/use-scroll-to-view';
   import GroupTitle from '@/components/group-title/index.vue';
-  import formCreate from '@/components/form-create/index.vue';
   import serviceThumb from '../../services/components/service-thumb.vue';
   import useServiceData from '../../services/hooks/use-service-data';
 
-  type refItem = Element | ComponentPublicInstance | null;
   const CloneType = {
     SERVICE: 'service',
     ENVIRONMENT: 'environment'
@@ -284,6 +232,12 @@
         return true;
       }
     },
+    title: {
+      type: String,
+      default() {
+        return '';
+      }
+    },
     asyncLoading: {
       type: Boolean,
       default() {
@@ -292,7 +246,6 @@
     }
   });
   const {
-    generateVariablesGroup,
     setFormAttributes,
     initCompleteData,
     completeDataLoading,
@@ -301,12 +254,7 @@
     templateInfo,
     formData,
     pageAction,
-    defaultGroupKey,
-    variablesGroup,
-    variablesGroupForm,
-    completeData,
-    refMap,
-    setRefMap
+    completeData
   } = useServiceData();
   const {
     labelList,
@@ -325,22 +273,11 @@
   const selectedList = ref(new Set());
   const editServiceList = ref<any[]>([]);
   const activeKey = ref('schemaForm0');
-  const schemaForm = ref();
   const formref = ref();
   const show = ref(true);
   const activeServiceInfo = ref<any>({});
-  const variableAttributes = ref<any>({});
   const hasChange = ref(false);
   let copyFormData: any = null;
-
-  const formTabs = computed(() => {
-    const list = _.keys(variablesGroup.value);
-    if (_.includes(list, defaultGroupKey)) {
-      const res = [defaultGroupKey, ..._.pull(list, defaultGroupKey)];
-      return res;
-    }
-    return list;
-  });
 
   const handleCheckboxChange = (checked) => {
     if (checked) {
@@ -349,43 +286,14 @@
       selectedList.value = new Set();
     }
   };
-  // get group form data
-  const getRefFormData = async (noValidate?: boolean) => {
-    const resultList: any[] = [];
-    await Promise.all(
-      _.keys(refMap.value).map(async (key) => {
-        const refEL = refMap.value[key];
-        const moduleForm = await refEL?.getFormData?.(noValidate);
-        resultList.push({
-          tab: key,
-          formData: moduleForm
-        });
-      })
-    );
-    return resultList;
-  };
-
-  const getFormData = async (noValidate?: boolean) => {
-    let moduleFormList: any[] = [];
-    if (_.keys(variablesGroup.value).length > 1) {
-      moduleFormList = await getRefFormData(noValidate);
-    } else {
-      const result = await schemaForm.value?.getFormData(noValidate);
-      moduleFormList = [{ formData: result }];
-    }
-    return moduleFormList;
-  };
 
   const checkFormDataHasChange = async () => {
-    const moduleFormList = await getFormData(true);
+    const moduleFormList = await groupForm.value.getData();
     copyFormData.attributes = {
       ..._.reduce(
         moduleFormList,
         (obj, s) => {
-          obj = {
-            ...obj,
-            ...s.formData
-          };
+          obj = _.merge(obj, s.formData);
           return obj;
         },
         {}
@@ -410,7 +318,7 @@
     activeServiceInfo.value = data;
     serviceInfo.value = _.cloneDeep(data);
     await setFormAttributes();
-    generateVariablesGroup(PageAction.EDIT);
+
     getLabelList();
     copyFormData = _.cloneDeep(formData);
   };
@@ -422,42 +330,14 @@
     }
   };
 
-  const setVariableAttributes = async () => {
-    const moduleFormList = await getFormData(true);
-    variableAttributes.value = _.reduce(
-      moduleFormList,
-      (obj, s) => {
-        obj = {
-          ...obj,
-          ...s.formData
-        };
-        return obj;
-      },
-      {}
-    );
-  };
-
-  const handleTabChange = (val) => {
-    activeKey.value = val;
-    setVariableAttributes();
-  };
-
-  const validateFormData = async () => {
-    const moduleFormList = await getFormData();
-    const validFailedForm = _.find(moduleFormList, (item) => !item.formData);
-    if (validFailedForm && validFailedForm.tab) {
-      activeKey.value = validFailedForm.tab;
-    }
-    return { validFailedForm, moduleFormList };
-  };
   const updateCompleteData = (oldName, newName) => {
-    if (completeData.value.service[newName]) {
+    if (completeData.value.resource[newName]) {
       return;
     }
-    completeData.value.service[newName] = _.cloneDeep(
-      completeData.value.service[oldName]
+    completeData.value.resource[newName] = _.cloneDeep(
+      completeData.value.resource[oldName]
     );
-    delete completeData.value.service[oldName];
+    delete completeData.value.resource[oldName];
   };
   const updateActiveServiceData = () => {
     const index = _.findIndex(
@@ -483,7 +363,6 @@
   const handleOk = async () => {
     validateLabel();
     const res = await formref.value?.validate();
-    const { validFailedForm, moduleFormList } = await validateFormData();
     const groupFormRes = await groupForm.value?.getData();
     if (groupFormRes && !res && !validateTrigger.value) {
       formData.attributes = {
@@ -506,7 +385,6 @@
   const handleCancel = () => {
     serviceInfo.value = _.cloneDeep(activeServiceInfo.value);
     setFormAttributes();
-    generateVariablesGroup(PageAction.EDIT);
     show.value = false;
   };
   const setSelectServiceList = () => {

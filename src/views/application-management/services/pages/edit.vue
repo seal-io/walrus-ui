@@ -67,7 +67,11 @@
           id="moduleId"
           hide-label
           field="template.template.id"
-          :label="$t('applications.applications.table.module')"
+          :label="
+            route.params.dataType === ServiceDataType.service
+              ? $t('applications.applications.table.module')
+              : $t('resource.definition.list.name')
+          "
           :disabled="pageAction === PageAction.EDIT && !!id"
           :rules="[
             {
@@ -79,7 +83,11 @@
           <div>
             <seal-select
               v-model="formData.template.template.id"
-              :placeholder="$t('applications.applications.table.module')"
+              :label="
+                route.params.dataType === ServiceDataType.service
+                  ? $t('applications.applications.table.module')
+                  : $t('resource.definition.list.name')
+              "
               :required="true"
               :virtual-list-props="virtualListProps"
               :style="{ width: `${InputWidth.LARGE}px` }"
@@ -91,7 +99,10 @@
               <template #option="{ data }">
                 <span>{{ data.label }}</span>
                 <span
-                  v-if="!data.project?.id"
+                  v-if="
+                    !data.project?.id &&
+                    route.params.dataType === ServiceDataType.service
+                  "
                   style="color: var(--color-text-3)"
                   class="font-12"
                   >{{ `(${$t('applications.variable.scope.global')})` }}</span
@@ -101,6 +112,7 @@
           </div>
         </a-form-item>
         <a-form-item
+          v-if="route.params.dataType === ServiceDataType.service"
           hide-label
           field="template.version"
           :label="$t('applications.applications.history.version')"
@@ -292,14 +304,13 @@
   import { beforeLeaveCallback } from '@/hooks/save-before-leave';
   import useLabelsActions from '@/components/form-create/hooks/use-labels-action';
   import useProjectBreadcrumbData from '../../projects/hooks/use-project-breadcrumb-data';
-  import { createService, upgradeApplicationInstance } from '../api';
+  import {
+    createService,
+    createResourceBatch,
+    upgradeApplicationInstance
+  } from '../api';
   import useServiceData from '../hooks/use-service-data';
-
-  interface Group {
-    variables: object[];
-    label: string;
-  }
-  type refItem = Element | ComponentPublicInstance | null;
+  import { ServiceDataType } from '../config';
 
   const props = defineProps({
     // when in detail page
@@ -324,7 +335,6 @@
   const {
     id,
     init,
-    generateVariablesGroup,
     getTemplateSchemaByVersion,
     setTemplateVersionList,
     getTemplateVersions,
@@ -332,19 +342,14 @@
     serviceInfo,
     formData,
     pageAction,
-    defaultGroupKey,
     templateInfo,
-    variablesGroup,
-    variablesGroupForm,
     templateVersionList,
     templateVersionFormCache,
     serviceDataList,
     templateList,
     completeData,
     title,
-    refMap,
-    asyncLoading,
-    setRefMap
+    asyncLoading
   } = useServiceData(props);
   const {
     labelList,
@@ -359,13 +364,10 @@
   const { route, router, t } = useCallCommon();
   const formref = ref();
   const groupForm = ref();
-  const loading = ref(false);
-  const activeKey = ref('schemaForm0');
-  const schemaForm = ref();
   const submitLoading = ref(false);
   const breadCrumbList = ref<BreadcrumbOptions[]>([]);
-  const variableAttributes = ref<any>({});
   const versionMap = ref({ nv: '', ov: '' });
+  const dataType = route.params.dataType as string;
   const projectEnvCtx = reactive({
     projectID: route.params.projectId as string,
     environmentID: route.params.environmentId as string,
@@ -386,15 +388,6 @@
   const handleNamespaceChange = (val) => {
     console.log('handleNamespaceChange===', val);
   };
-
-  const formTabs = computed(() => {
-    const list = keys(variablesGroup.value);
-    if (includes(list, defaultGroupKey)) {
-      const res = [defaultGroupKey, ...pull(list, defaultGroupKey)];
-      return res;
-    }
-    return list;
-  });
 
   const virtualListProps = computed(() => {
     if (templateList.value.length > 20) {
@@ -456,65 +449,10 @@
     callback();
   };
 
-  // get group form data
-  const getRefFormData = async (noValidate?: boolean) => {
-    const resultList: any[] = [];
-    await Promise.all(
-      keys(refMap.value).map(async (key) => {
-        const refEL = refMap.value[key];
-        const moduleForm = await refEL?.getFormData?.(noValidate);
-        resultList.push({
-          tab: key,
-          formData: moduleForm
-        });
-      })
-    );
-    return resultList;
-  };
-
-  const getFormData = async (noValidate?: boolean) => {
-    let moduleFormList: any[] = [];
-    if (keys(variablesGroup.value).length > 1) {
-      moduleFormList = await getRefFormData(noValidate);
-    } else {
-      const result = await schemaForm.value?.getFormData(noValidate);
-      moduleFormList = [{ formData: result }];
-    }
-    return moduleFormList;
-  };
-
-  // update all the form data
-  const setVariableAttributes = async () => {
-    const moduleFormList = await getFormData(true);
-    variableAttributes.value = reduce(
-      moduleFormList,
-      (obj, s) => {
-        obj = {
-          ...obj,
-          ...s.formData
-        };
-        return obj;
-      },
-      {}
-    );
-  };
-
-  const handleTabChange = (val) => {
-    activeKey.value = val;
-    setVariableAttributes();
-  };
-
-  const clearFormValidStatus = () => {
-    keys(refMap.value).map(async (key) => {
-      const refEL = refMap.value[key];
-      refEL?.clearFormValidStatus?.();
-    });
-  };
-
   // cache the user inputs when change the module version
   const setModuleVersionFormCache = async () => {
     if (!versionMap.value.ov) return;
-    const moduleFormList = await getFormData(true);
+    const moduleFormList = await groupForm.value?.getData();
     const inputs = reduce(
       moduleFormList,
       (obj, s) => {
@@ -535,8 +473,6 @@
     formData.attributes = {};
 
     groupForm.value?.clearFormValidStatus?.();
-    // clearFormValidStatus();
-    // generateVariablesGroup(pageAction.value);
   };
 
   const handleVersionChange = () => {
@@ -551,7 +487,10 @@
   };
 
   const formatTemplateLael = (data) => {
-    if (!data.project?.id) {
+    if (
+      !data.project?.id &&
+      ServiceDataType.service === route.params.dataType
+    ) {
       return `${data.name} (${t('applications.variable.scope.global')})`;
     }
     return data.name;
@@ -562,52 +501,25 @@
     formData.template.name = data?.name || '';
     formData.template.project = data?.project || {};
 
-    await getTemplateVersions(formData.template, true);
-    await setTemplateVersionList();
+    if (dataType === ServiceDataType.resource) {
+      setTemplateInfo(data);
+      formData.attributes = {};
+      groupForm.value?.clearFormValidStatus?.();
+    } else {
+      await getTemplateVersions(formData.template, true);
+      await setTemplateVersionList();
 
-    formData.template.version = get(
-      templateVersionList.value,
-      '0.template.version',
-      ''
-    );
-    templateVersionFormCache.value = {};
-    setTimeout(() => {
-      versionMap.value = { ov: '', nv: '' };
-    }, 20);
-    handleVersionChange();
-    nextTick(() => {
-      handleTabChange('schemaForm0');
-      // in the execVersionChangeCallback would set cache, when change the template, should clear the cache
-    });
-  };
-
-  const validateFormData = async () => {
-    const moduleFormList = await getFormData();
-    const validFailedForm = find(moduleFormList, (item) => !item.formData);
-    if (validFailedForm && validFailedForm.tab) {
-      activeKey.value = validFailedForm.tab;
+      formData.template.version = get(
+        templateVersionList.value,
+        '0.template.version',
+        ''
+      );
+      templateVersionFormCache.value = {};
+      setTimeout(() => {
+        versionMap.value = { ov: '', nv: '' };
+      }, 20);
+      handleVersionChange();
     }
-    return { validFailedForm, moduleFormList };
-  };
-
-  const getCurrentFormData = async () => {
-    const noValidate = true;
-    const moduleFormList = await getFormData(noValidate);
-    const latestFormData = _.cloneDeep(formData);
-    latestFormData.attributes = {
-      ...reduce(
-        moduleFormList,
-        (obj, s) => {
-          obj = {
-            ...obj,
-            ...s.formData
-          };
-          return obj;
-        },
-        {}
-      )
-    };
-    return latestFormData;
   };
 
   const handleCancel = async () => {
@@ -623,7 +535,14 @@
       }
     });
   };
-
+  const handleCreate = async (formData) => {
+    if (dataType === ServiceDataType.service) {
+      const data = await createService(formData);
+      return data;
+    }
+    const data = await createResourceBatch(formData);
+    return data;
+  };
   const handleOk = async () => {
     console.log(
       'kube===',
@@ -633,7 +552,6 @@
     );
     validateLabel();
     const res = await formref.value?.validate();
-    // const { validFailedForm, moduleFormList } = await validateFormData();
     const groupFormRes = await groupForm.value?.getData();
     if (!res && groupFormRes && !validateTrigger.value) {
       try {
@@ -656,7 +574,7 @@
         if (id) {
           await upgradeApplicationInstance(formData);
         } else {
-          const { data } = await createService(formData);
+          const { data } = await handleCreate(formData);
           router.replace({
             name: PROJECT.ServiceDetail,
             params: {

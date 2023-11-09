@@ -243,11 +243,19 @@
         </a-form-item>
         <a-form-item
           v-if="environmentId"
+          no-style
           :hide-label="pageAction === PageAction.EDIT"
           :label="$t('applications.applications.table.service')"
         >
           <CloneService
             ref="serviceRef"
+            :title="$t('applications.applications.table.service')"
+            clone-type="environment"
+            :style="{ width: `${InputWidth.XLARGE}px`, overflow: 'auto' }"
+          ></CloneService>
+          <CloneService
+            ref="resourceRef"
+            :title="$t('applications.applications.table.resource')"
             clone-type="environment"
             :style="{ width: `${InputWidth.XLARGE}px`, overflow: 'auto' }"
           ></CloneService>
@@ -331,6 +339,7 @@
   const environmentId = route.params.environmentId as string; // only in clone
   const formref = ref();
   const serviceRef = ref(); // only in clone
+  const resourceRef = ref(); // only in clone
   const connectorList = ref<
     { label: string; value: string; project?: object; tips?: string }[]
   >([]);
@@ -501,7 +510,8 @@
   };
   const handleCloneEnvironment = async (data) => {
     const services = serviceRef.value.getSelectServiceData();
-    data.services = _.cloneDeep(services);
+    const resources = resourceRef.value.getSelectServiceData();
+    data.services = [..._.cloneDeep(services), ..._.cloneDeep(resources)];
     return data;
   };
 

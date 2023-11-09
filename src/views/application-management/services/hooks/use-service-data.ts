@@ -14,6 +14,7 @@ import semverGt from 'semver/functions/gt';
 import { ServiceFormData } from '../config/interface';
 import { queryItemService } from '../api';
 import useCompleteData from './use-complete-data';
+import { ServiceDataType } from '../config';
 
 export default function useServiceData(props?) {
   type refItem = Element | ComponentPublicInstance | null;
@@ -42,17 +43,14 @@ export default function useServiceData(props?) {
   } = useCompleteData(props);
   const serviceStore = useServiceStore();
   const { pageAction, handleEdit } = usePageAction();
-  const defaultGroupKey = '_default_default_';
-  const defaultGroupLabel = 'Basic';
   const { route } = useCallCommon();
   const refMap = ref<Record<string, any>>({});
   const templateInfo = ref<any[]>([]);
   const serviceInfo = ref<any>({}); // Store information about the active service, also be used when cloning
-  const variablesGroup = ref<any>({});
-  const variablesGroupForm = ref<any>({});
   const templateVersionList = ref<TemplateVersion[]>([]);
   const templateVersionFormCache = ref({});
   const asyncLoading = ref(false);
+  const dataType = props?.resourceType || (route.params.dataType as string);
   let templateVersionSchemaToken: any = null;
 
   const id = route.query.id as string;
@@ -81,12 +79,18 @@ export default function useServiceData(props?) {
 
   const title = () => {
     if (!id) {
-      return 'applications.applications.create';
+      return dataType === ServiceDataType.service
+        ? 'applications.applications.create'
+        : 'resource.definition.list.create';
     }
     if (id && pageAction.value === PageAction.EDIT) {
-      return 'applications.applications.edit';
+      return dataType === ServiceDataType.service
+        ? 'applications.applications.edit'
+        : 'resource.definition.detail.edit';
     }
-    return 'applications.applications.detail';
+    return dataType === ServiceDataType.service
+      ? 'applications.applications.detail'
+      : 'resource.definition.detail.view';
   };
 
   const setDefaultTemplate = (template) => {
@@ -109,83 +113,6 @@ export default function useServiceData(props?) {
     if (el) {
       refMap.value[`${name}`] = el;
     }
-  };
-  const getInitialValue = (item, sourceData) => {
-    return _.get(sourceData, ['attributes', ...item.fieldPath]) || item.default;
-  };
-  // get: set, edit: create
-  const generateVariablesGroup = (type) => {
-    refMap.value = {};
-    variablesGroup.value = {};
-    variablesGroupForm.value = {};
-    let sourceData = {
-      attributes: {}
-    };
-
-    if (_.get(templateVersionFormCache.value, formData.template.version)) {
-      sourceData = {
-        attributes: {
-          ..._.cloneDeep(
-            _.get(templateVersionFormCache.value, formData.template.version)
-          )
-        }
-      };
-    } else if (type === PageAction.EDIT && id) {
-      sourceData = {
-        attributes: {
-          ..._.cloneDeep(_.get(serviceInfo.value, 'attributes'))
-        }
-      };
-    }
-
-    // const variablesList = _.filter(
-    //   _.get(templateInfo.value, 'variables'),
-    //   (v) => !v.hidden
-    // );
-    const variablesList = _.filter(
-      templateInfo.value,
-      (v) => !v.uiSchema.hidden
-    );
-    _.each(variablesList, (item) => {
-      const initialValue = getInitialValue(item, sourceData);
-      item.default = initialValue;
-      // filter empty group name
-      const groups: string[] = _.filter(
-        _.split(item.uiSchema.group, /\/+/) || [],
-        (g) => !!g
-      );
-      const group = _.get(groups, '0');
-      if (group) {
-        if (!variablesGroup.value[group]) {
-          variablesGroup.value[group] = {
-            variables: [],
-            label: group
-          };
-          variablesGroup.value[group].variables.push(item);
-        } else {
-          variablesGroup.value[group].variables.push(item);
-        }
-
-        _.set(
-          variablesGroupForm.value,
-          [group, 'attributes', ...item.fieldPath],
-          initialValue
-        );
-      } else {
-        if (!variablesGroup.value[defaultGroupKey]) {
-          variablesGroup.value[defaultGroupKey] = {
-            variables: [],
-            label: defaultGroupLabel
-          };
-        }
-        variablesGroup.value[defaultGroupKey].variables.push(item);
-        _.set(
-          variablesGroupForm.value,
-          [defaultGroupKey, 'attributes', ...item.fieldPath],
-          initialValue
-        );
-      }
-    });
   };
 
   //  change module ...
@@ -218,15 +145,13 @@ export default function useServiceData(props?) {
       // ignore
       return {};
     }
-    // const moduleTemplate = _.find(
-    //   templateVersionList.value,
-    //   (item) => item.value === formData.template.version
-    // );
-    // return moduleTemplate;
   };
 
   const setTemplateVersionList = async () => {
     try {
+      if (dataType === ServiceDataType.resource) {
+        return;
+      }
       const list = _.filter(
         allTemplateVersions.value,
         (item) => item.template.template.id === formData.template.template.id
@@ -267,24 +192,16 @@ export default function useServiceData(props?) {
     // 1. get the template meta data 2.set the default value
     await getTemplateVersions(formData.template);
     await setTemplateVersionList();
-    const moduleTemplate = await getTemplateSchemaByVersion();
-    // templateInfo.value = _.cloneDeep(_.get(moduleTemplate, 'schema'));
+    let moduleTemplate: any = {};
+    if (dataType === ServiceDataType.resource) {
+      moduleTemplate = _.find(templateList.value, (item) => {
+        return item.id === formData.template.template.id;
+      });
+    } else {
+      moduleTemplate = await getTemplateSchemaByVersion();
+    }
 
-    // const variablesList = _.filter(
-    //   _.get(templateInfo.value, 'variables'),
-    //   (v) => !v.hidden
-    // );
     setTemplateInfo(moduleTemplate);
-    const variablesList = _.filter(
-      templateInfo.value,
-      (v) => !v.uiSchema.hidden
-    );
-    _.each(variablesList || [], (item) => {
-      item.default = _.get(serviceInfo.value, [
-        'attributes',
-        ...item.fieldPath
-      ]);
-    });
   };
   const setFormDataTemplate = () => {
     // webservice bydefault
@@ -305,17 +222,22 @@ export default function useServiceData(props?) {
       await getTemplateVersions(formData.template);
       await setTemplateVersionList();
       setFormTemplateVersion();
-      const templateSchema = await getTemplateSchemaByVersion();
+      let templateSchema: any = {};
+      if (dataType === ServiceDataType.resource) {
+        templateSchema = _.find(templateList.value, (item) => {
+          return item.id === formData.template.template.id;
+        });
+      } else {
+        templateSchema = await getTemplateSchemaByVersion();
+      }
       setTemplateInfo(templateSchema);
     }
-    // generateVariablesGroup(pageAction.value);
   };
   // for service detail
   const initInfo = async () => {
     asyncLoading.value = true;
     serviceInfo.value = serviceStore.getServiceInfo(id);
     await setFormAttributes();
-    // generateVariablesGroup(pageAction.value);
     asyncLoading.value = false;
   };
 
@@ -348,7 +270,6 @@ export default function useServiceData(props?) {
   return {
     id,
     init,
-    generateVariablesGroup,
     setFormAttributes,
     setFormTemplateVersion,
     getTemplateSchemaByVersion,
@@ -363,11 +284,8 @@ export default function useServiceData(props?) {
     refMap,
     pageAction,
     handleEdit,
-    defaultGroupKey,
     templateInfo,
     serviceInfo,
-    variablesGroup,
-    variablesGroupForm,
     templateVersionList,
     templateVersionFormCache,
     serviceDataList,

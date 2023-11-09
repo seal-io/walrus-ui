@@ -231,7 +231,9 @@
       const ajv = new Ajv();
       const data = previewForm();
       console.log('data>>>>>>>', data);
-      const validate = ajv.compile(data.jsonCode.components.schemas.variables);
+      const validate = ajv.compile(
+        data.jsonCode.openAPISchema.components.schemas.variables
+      );
       const res = validate(data.formData);
       console.log('res========', res);
       return true;
@@ -248,7 +250,9 @@
       await putTemplateSchemaByVersionId({
         templateVersionID: props.versionId,
         data: {
-          uiSchema: codeData
+          uiSchema: {
+            openAPISchema: codeData
+          }
         }
       });
       execSucceed();
@@ -283,7 +287,7 @@
     }
   };
   const initData = () => {
-    const copyCustomSchema = _.cloneDeep(props.schema.uiSchema);
+    const copyCustomSchema = _.cloneDeep(props.schema.uiSchema.openAPISchema);
     const info = _.get(copyCustomSchema, 'info');
     const openapi = _.get(copyCustomSchema, 'openapi');
     const originData = _.omit(copyCustomSchema, ['paths']);

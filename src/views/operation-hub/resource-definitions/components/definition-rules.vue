@@ -32,6 +32,7 @@
             ]"
           >
             <seal-input
+              v-if="pageAction === PageAction.EDIT"
               v-model="formData.name"
               allow-clear
               :required="true"
@@ -40,6 +41,13 @@
               :max-length="63"
               show-word-limit
             ></seal-input>
+            <SealFormItemWrap
+              v-else
+              :label="$t('common.table.name')"
+              :style="{ width: `${InputWidth.LARGE}px` }"
+            >
+              {{ formData.selector.projectName }}
+            </SealFormItemWrap>
             <template #extra>
               <div
                 class="tips"
@@ -52,13 +60,13 @@
             <template #title>
               <span>选择器</span>
               <primaryButtonGroup
+                v-if="pageAction === PageAction.EDIT"
                 :action-list="actionList"
                 @select="handleAddSelector"
               >
                 <a-link class="m-l-10">
                   <icon-plus class="size-14" style="stroke-width: 4" />
                   <span class="mleft-5">添加</span>
-                  <!-- <icon-down class="mleft-5" /> -->
                 </a-link>
               </primaryButtonGroup>
             </template>
@@ -80,15 +88,33 @@
               }
             ]"
           >
-            <seal-input
-              v-model="formData.selector.projectName"
-              allow-clear
-              :required="true"
+            <div v-if="pageAction === PageAction.EDIT">
+              <seal-input
+                v-model="formData.selector.projectName"
+                allow-clear
+                :required="true"
+                label="项目名称"
+                :style="{ width: `${InputWidth.LARGE}px` }"
+                :max-length="63"
+                show-word-limit
+              ></seal-input>
+              <a-button
+                type="text"
+                status="danger"
+                @click="handleDeleteSelector('projectName')"
+              >
+                <template #icon>
+                  <icon-delete class="size-20" />
+                </template>
+              </a-button>
+            </div>
+            <SealFormItemWrap
+              v-else
               label="项目名称"
               :style="{ width: `${InputWidth.LARGE}px` }"
-              :max-length="63"
-              show-word-limit
-            ></seal-input>
+            >
+              {{ formData.selector.projectName }}
+            </SealFormItemWrap>
             <template #extra>
               <div
                 class="tips"
@@ -96,11 +122,6 @@
                 >{{ $t('common.validate.labelName') }}</div
               >
             </template>
-            <a-button type="text" @click="handleDeleteSelector('projectName')">
-              <template #icon>
-                <icon-minus-circle class="size-20" />
-              </template>
-            </a-button>
           </a-form-item>
           <a-form-item
             v-if="selectors.has('environmentName')"
@@ -119,15 +140,33 @@
               }
             ]"
           >
-            <seal-input
-              v-model="formData.selector.environmentName"
-              allow-clear
-              :required="true"
+            <div v-if="pageAction === PageAction.EDIT">
+              <seal-input
+                v-model="formData.selector.environmentName"
+                allow-clear
+                :required="true"
+                label="环境名称"
+                :style="{ width: `${InputWidth.LARGE}px` }"
+                :max-length="63"
+                show-word-limit
+              ></seal-input>
+              <a-button
+                type="text"
+                status="danger"
+                @click="handleDeleteSelector('environmentName')"
+              >
+                <template #icon>
+                  <icon-delete class="size-20" />
+                </template>
+              </a-button>
+            </div>
+            <SealFormItemWrap
+              v-else
               label="环境名称"
               :style="{ width: `${InputWidth.LARGE}px` }"
-              :max-length="63"
-              show-word-limit
-            ></seal-input>
+            >
+              {{ formData.selector.environmentName }}
+            </SealFormItemWrap>
             <template #extra>
               <div
                 class="tips"
@@ -135,15 +174,6 @@
                 >{{ $t('common.validate.labelName') }}</div
               >
             </template>
-            <a-button
-              type="text"
-              status="danger"
-              @click="handleDeleteSelector('environmentName')"
-            >
-              <template #icon>
-                <icon-delete class="size-20" />
-              </template>
-            </a-button>
           </a-form-item>
           <a-form-item
             v-if="selectors.has('environmentType')"
@@ -157,7 +187,7 @@
               }
             ]"
           >
-            <div>
+            <div v-if="pageAction === PageAction.EDIT">
               <seal-select
                 v-model="formData.selector.environmentType"
                 :options="[]"
@@ -172,15 +202,30 @@
                   >{{ $t(EnvironmentTypeMap[item]) }}</a-option
                 >
               </seal-select>
+              <a-button
+                type="text"
+                status="danger"
+                @click="handleDeleteSelector('environmentType')"
+              >
+                <template #icon>
+                  <icon-delete class="size-20" />
+                </template>
+              </a-button>
             </div>
-            <a-button
-              type="text"
-              @click="handleDeleteSelector('environmentType')"
+            <SealFormItemWrap
+              v-else
+              label="环境类型"
+              :style="{ width: `${InputWidth.LARGE}px` }"
+              >{{
+                $t(
+                  _.get(
+                    EnvironmentTypeMap,
+                    formData.selector.environmentType || '',
+                    ''
+                  )
+                )
+              }}</SealFormItemWrap
             >
-              <template #icon>
-                <icon-delete class="size-20" />
-              </template>
-            </a-button>
           </a-form-item>
           <a-form-item
             v-if="selectors.has('environmentLabels')"
@@ -203,9 +248,11 @@
                 labels-key="environmentLabels"
                 :validate-trigger="validateTrigger"
                 :labels="formData.selector"
+                :page-action="pageAction"
               ></keyValueLabels>
             </SealFormItemWrap>
             <a-button
+              v-if="pageAction === PageAction.EDIT"
               type="text"
               status="danger"
               @click="handleDeleteSelector('environmentLabels')"
@@ -236,9 +283,11 @@
                 labels-key="resourceLabels"
                 :validate-trigger="validateTrigger"
                 :labels="formData.selector"
+                :page-action="pageAction"
               ></keyValueLabels>
             </SealFormItemWrap>
             <a-button
+              v-if="pageAction === PageAction.EDIT"
               type="text"
               status="danger"
               @click="handleDeleteSelector('resourceLabels')"
@@ -290,7 +339,7 @@
               }
             ]"
           >
-            <div>
+            <div v-if="pageAction === PageAction.EDIT">
               <seal-select
                 v-model="formData.template.id"
                 :placeholder="$t('applications.applications.table.module')"
@@ -303,6 +352,13 @@
               >
               </seal-select>
             </div>
+            <SealFormItemWrap
+              v-else
+              :label="$t('applications.applications.table.module')"
+              :style="{ width: `${InputWidth.LARGE}px` }"
+            >
+              {{ formData.template.name }}
+            </SealFormItemWrap>
           </a-form-item>
           <a-form-item
             hide-label
@@ -315,7 +371,7 @@
               }
             ]"
           >
-            <div>
+            <div v-if="pageAction === PageAction.EDIT">
               <seal-select
                 v-model="formData.template.version"
                 :options="[]"
@@ -333,19 +389,32 @@
                 >
               </seal-select>
             </div>
+            <SealFormItemWrap
+              v-else
+              :label="$t('applications.applications.history.version')"
+              :style="{ width: `${InputWidth.LARGE}px` }"
+            >
+              {{ formData.template.version }}
+            </SealFormItemWrap>
           </a-form-item>
         </a-form>
       </div>
-      <div>
-        <a-spin class="variables" style="width: 100%" :loading="asyncLoading">
-          <GroupForm
-            ref="groupForm"
-            :field-list="fieldSchemaList"
-            :async-loading="asyncLoading"
-            :original-form-data="originFormData.attributes || {}"
-          ></GroupForm>
-        </a-spin>
-      </div>
+
+      <a-spin class="variables" style="width: 100%" :loading="asyncLoading">
+        <GroupForm
+          v-if="pageAction === PageAction.EDIT"
+          ref="groupForm"
+          :field-list="fieldSchemaList"
+          :async-loading="asyncLoading"
+          :original-form-data="originFormData.attributes || {}"
+        ></GroupForm>
+        <ViewForm
+          v-if="pageAction === PageAction.VIEW"
+          style="width: 100%; padding: 0"
+          :form-data="originFormData.attributes"
+          :field-list="fieldSchemaList"
+        ></ViewForm>
+      </a-spin>
     </div>
   </ModuleWrapper>
 </template>
@@ -369,6 +438,7 @@
   import { initFormState } from '@/components/dynamic-form/utils/init-form-state';
   import keyValueLabels from '@/components/form-create/custom-components/key-value-labels.vue';
   import primaryButtonGroup from '@/components/drop-button-group/primary-button-group.vue';
+  import labelsList from '@/views/application-management/services/components/labels-list.vue';
   import semverEq from 'semver/functions/eq';
   import semverGt from 'semver/functions/gt';
   import { SelectorAction } from '../config';
@@ -389,10 +459,10 @@
         return {};
       }
     },
-    action: {
+    pageAction: {
       type: String,
       default() {
-        return PageAction.CREATE;
+        return PageAction.EDIT;
       }
     },
     templateList: {
@@ -470,6 +540,24 @@
     return undefined;
   });
 
+  const initSelectors = () => {
+    selectors.value = new Set();
+    if (formData.value.selector.projectName) {
+      selectors.value.add('projectName');
+    }
+    if (formData.value.selector.environmentName) {
+      selectors.value.add('environmentName');
+    }
+    if (formData.value.selector.environmentType) {
+      selectors.value.add('environmentType');
+    }
+    if (_.keys(formData.value.selector.environmentLabels).length) {
+      selectors.value.add('environmentLabels');
+    }
+    if (_.keys(formData.value.selector.resourceLabels).length) {
+      selectors.value.add('resourceLabels');
+    }
+  };
   const handleDelete = () => {
     emits('delete');
   };
@@ -618,11 +706,12 @@
   };
 
   const init = async () => {
-    if (props.action === PageAction.EDIT && props.dataId) {
+    if (props.pageAction === PageAction.VIEW && props.dataId) {
       formData.value = _.cloneDeep(props.originFormData);
       const moduleData = await getTemplateSchemaByVersion();
       setTemplateInfo(moduleData);
       templateVersionFormCache.value = {};
+      initSelectors();
     } else {
       formData.value.template.id = get(props.templateList, '0.value', '');
       await handleTemplateChange();

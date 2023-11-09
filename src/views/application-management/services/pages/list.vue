@@ -176,7 +176,13 @@
   };
 
   const handleCloneService = () => {
-    serviceTable.value.handleCloneService();
+    router.push({
+      name: PROJECT.ServiceClone,
+      query: {
+        services: serviceSelectKeys.value,
+        resources: resourceSelectKeys.value
+      }
+    });
   };
 
   const handleSelectAction = (action: string) => {
