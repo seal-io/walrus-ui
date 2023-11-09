@@ -182,7 +182,7 @@
       loading.value = true;
       const params = {
         id: props.revisionId,
-        serviceID: get(props.dataInfo, 'service.id')
+        serviceID: get(props.dataInfo, 'resource.id')
       };
       const { data } = await queryServiceRevisionsDetail(params);
       revisionData.value = data;

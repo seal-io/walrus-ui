@@ -104,7 +104,7 @@
                 @click="handleDeleteSelector('projectName')"
               >
                 <template #icon>
-                  <icon-delete class="size-20" />
+                  <icon-delete class="size-16" />
                 </template>
               </a-button>
             </div>
@@ -156,7 +156,7 @@
                 @click="handleDeleteSelector('environmentName')"
               >
                 <template #icon>
-                  <icon-delete class="size-20" />
+                  <icon-delete class="size-16" />
                 </template>
               </a-button>
             </div>
@@ -208,7 +208,7 @@
                 @click="handleDeleteSelector('environmentType')"
               >
                 <template #icon>
-                  <icon-delete class="size-20" />
+                  <icon-delete class="size-16" />
                 </template>
               </a-button>
             </div>
@@ -258,7 +258,7 @@
               @click="handleDeleteSelector('environmentLabels')"
             >
               <template #icon>
-                <icon-delete class="size-20" />
+                <icon-delete class="size-16" />
               </template>
             </a-button>
           </a-form-item>
@@ -293,7 +293,7 @@
               @click="handleDeleteSelector('resourceLabels')"
             >
               <template #icon>
-                <icon-delete class="size-20" />
+                <icon-delete class="size-16" />
               </template>
             </a-button>
           </a-form-item>
@@ -341,7 +341,7 @@
           >
             <div v-if="pageAction === PageAction.EDIT">
               <seal-select
-                v-model="formData.template.id"
+                v-model="formData.template.template.id"
                 :placeholder="$t('applications.applications.table.module')"
                 :required="true"
                 :virtual-list-props="virtualListProps"
@@ -373,7 +373,7 @@
           >
             <div v-if="pageAction === PageAction.EDIT">
               <seal-select
-                v-model="formData.template.version"
+                v-model="formData.template.id"
                 :options="[]"
                 :required="true"
                 :placeholder="$t('applications.applications.history.version')"
@@ -384,7 +384,7 @@
                 <a-option
                   v-for="item in templateVersionList"
                   :key="item.value"
-                  :value="item.label"
+                  :value="item.value"
                   >{{ item.label }}</a-option
                 >
               </seal-select>
@@ -505,7 +505,10 @@
     template: {
       id: '',
       name: '',
-      version: ''
+      version: '',
+      template: {
+        id: ''
+      }
     }
   });
   let copyFormData: any = null;
@@ -605,7 +608,7 @@
   const getTemplateVersions = async () => {
     try {
       const params = {
-        templateID: formData.value.template.id,
+        templateID: formData.value.template.template.id,
         extract: ['-uiSchema', '-schema']
       };
       const { data } = await queryItemTemplatesVersions(params);
@@ -633,7 +636,7 @@
     try {
       asyncLoading.value = true;
       const params = {
-        templateID: formData.value.template.id,
+        templateID: formData.value.template.template.id,
         query: formData.value.template.version,
         isProjectContext: false
       };
@@ -647,6 +650,14 @@
   };
 
   const handleVersionChange = async () => {
+    formData.value.template.version = _.get(
+      _.find(
+        templateVersionList.value,
+        (item) => item.value === formData.value.template.id
+      ),
+      'label',
+      ''
+    );
     uiSchema.value = await getTemplateSchemaByVersion();
     setTemplateInfo(uiSchema.value);
     formData.value.attributes = {};
@@ -658,12 +669,15 @@
 
   const handleTemplateChange = async () => {
     await getTemplateVersions();
-
-    formData.value.template.version = get(
-      templateVersionList.value,
-      '0.label',
+    formData.value.template.name = _.get(
+      _.find(
+        props.templateList,
+        (item) => item.value === formData.value.template.template.id
+      ),
+      'label',
       ''
     );
+    formData.value.template.id = get(templateVersionList.value, '0.value', '');
     await handleVersionChange();
     templateVersionFormCache.value = {};
     setTimeout(() => {
@@ -713,7 +727,11 @@
       templateVersionFormCache.value = {};
       initSelectors();
     } else {
-      formData.value.template.id = get(props.templateList, '0.value', '');
+      formData.value.template.template.id = get(
+        props.templateList,
+        '0.value',
+        ''
+      );
       await handleTemplateChange();
     }
   };

@@ -37,10 +37,10 @@ export function deleteResourceDefinitions(data: { items: { id: string }[] }) {
 export function createResourceDefinition(data: ResourceDefinitionFormData) {
   return axios.post(RESOURCE_DEFINITION_API, data);
 }
-export function upateResourceDefinition(data: ResourceDefinitionFormData) {
-  return axios.put(`${RESOURCE_DEFINITION_API}/${data.id}`, data);
+export function upateResourceDefinition(params: { id: string; data: any }) {
+  return axios.put(`${RESOURCE_DEFINITION_API}/${params.id}`, params.data);
 }
 
 export function queryItemResourceDefinition(params: { id: string }) {
-  return axios.get(`${RESOURCE_DEFINITION_API}/${params.id}`);
+  return axios.get(`${RESOURCE_DEFINITION_API}/${params.id}?t=${Date.now()}`);
 }

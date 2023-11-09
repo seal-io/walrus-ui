@@ -198,7 +198,7 @@
 <script lang="ts" setup>
   import _ from 'lodash';
   import { PageAction, validateLabelNameRegx } from '@/views/config';
-  import { ref, PropType, computed, provide, watch } from 'vue';
+  import { ref, PropType, computed, provide, onMounted, watch } from 'vue';
   import GroupForm from '@/components/form-create/group-form.vue';
   import xInputGroup from '@/components/form-create/custom-components/x-input-group.vue';
   import EditPageFooter from '@/components/edit-page-footer/index.vue';
@@ -243,19 +243,34 @@
       default() {
         return false;
       }
+    },
+    dataList: {
+      type: Array as PropType<any[]>,
+      default() {
+        return [];
+      }
+    },
+    hintData: {
+      type: Object as PropType<any>,
+      default() {
+        return {};
+      }
+    },
+    resourceType: {
+      type: String,
+      default() {
+        return '';
+      }
     }
   });
   const {
     setFormAttributes,
-    initCompleteData,
     completeDataLoading,
-    serviceDataList,
     serviceInfo,
     templateInfo,
     formData,
-    pageAction,
-    completeData
-  } = useServiceData();
+    pageAction
+  } = useServiceData(props);
   const {
     labelList,
     labelItem,
@@ -266,18 +281,21 @@
     validateTrigger
   } = useLabelsActions(formData);
   const { scrollToView } = useScrollToView();
-  provide('showHintInput', true);
-  provide('completeData', completeData);
+
+  const emits = defineEmits(['update:hintData']);
+  const completeData = ref<any>({});
+  const serviceDataList = ref<any[]>([]);
   const active = ref('');
   const groupForm = ref();
   const selectedList = ref(new Set());
   const editServiceList = ref<any[]>([]);
-  const activeKey = ref('schemaForm0');
   const formref = ref();
   const show = ref(true);
   const activeServiceInfo = ref<any>({});
   const hasChange = ref(false);
   let copyFormData: any = null;
+  provide('showHintInput', true);
+  provide('completeData', completeData);
 
   const handleCheckboxChange = (checked) => {
     if (checked) {
@@ -314,7 +332,6 @@
     data.attributes = data.attributes || {};
     active.value = data.id;
     show.value = true;
-    activeKey.value = 'schemaForm0';
     activeServiceInfo.value = data;
     serviceInfo.value = _.cloneDeep(data);
     await setFormAttributes();
@@ -338,6 +355,7 @@
       completeData.value.resource[oldName]
     );
     delete completeData.value.resource[oldName];
+    emits('update:hintData', completeData.value);
   };
   const updateActiveServiceData = () => {
     const index = _.findIndex(
@@ -375,6 +393,7 @@
           {}
         )
       };
+      console.log('formData===', formData);
       show.value = false;
       updateActiveServiceData();
       hasChange.value = false;
@@ -404,13 +423,33 @@
     }
   };
   const init = async () => {
-    await initCompleteData();
     setSelectServiceList();
   };
+  watch(
+    () => props.hintData,
+    () => {
+      completeData.value = props.hintData;
+    },
+    {
+      immediate: true
+    }
+  );
+  watch(
+    () => props.dataList,
+    () => {
+      serviceDataList.value = _.cloneDeep(props.dataList);
+      init();
+    },
+    {
+      immediate: true
+    }
+  );
   defineExpose({
     getSelectServiceData
   });
-  init();
+  onMounted(() => {
+    init();
+  });
 </script>
 
 <style lang="less" scoped>

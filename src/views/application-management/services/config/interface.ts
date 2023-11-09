@@ -12,6 +12,7 @@ export interface ServiceFormData {
   project: {
     id: string;
   };
+  type: string;
   environment: {
     id: string;
   };
@@ -34,6 +35,7 @@ export interface ServiceRowData {
   id: string;
   labels: object;
   status: string;
+  type?: string;
   description: string;
   environment: { id: string; name: string };
   project: { id: string };

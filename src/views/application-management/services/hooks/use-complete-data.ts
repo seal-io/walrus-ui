@@ -25,6 +25,7 @@ export default function useCompleteData(props?) {
     schema?: {
       outputs: any[];
     };
+    type?: string;
     template: {
       id: string;
       name: string;
@@ -34,11 +35,15 @@ export default function useCompleteData(props?) {
       };
     };
   }
+  interface TemplateListItem extends TemplateRowData {
+    label: string;
+    value: string;
+  }
   const { route } = useCallCommon();
   const id = route.query.id || '';
   const dataType = props?.resourceType || (route.params.dataType as string);
   const loading = ref(false);
-  const templateList = ref<TemplateRowData[]>([]);
+  const templateList = ref<TemplateListItem[]>([]);
   const allTemplateVersions = ref<TemplateVersionItem[]>([]);
   const completeData = ref<Partial<HintKey>>({
     resource: null,
@@ -82,8 +87,8 @@ export default function useCompleteData(props?) {
       templateList.value = _.map(data || [], (item) => {
         return {
           ...item,
-          label: item.name,
-          value: item.id
+          label: item.type,
+          value: item.type
         };
       });
     } catch (error) {
@@ -93,7 +98,8 @@ export default function useCompleteData(props?) {
   };
 
   const initTemplateList = async () => {
-    if (route.params.dataType === ServiceDataType.resource) {
+    console.log('dataType==========', dataType);
+    if (dataType === ServiceDataType.resource) {
       await getResourceDefinitions();
     } else {
       await getTemplates();
@@ -164,9 +170,11 @@ export default function useCompleteData(props?) {
     const list = _.map(services, (item) => {
       return {
         name: item.name,
-        templateId: item.template.id,
-        versionId: item.template.template.id,
-        version: item.template.version
+        type: item.type,
+        isService: !!item.type,
+        templateId: item.template?.id,
+        versionId: item.template?.template?.id,
+        version: item.template?.version
       };
     });
     return list;
@@ -183,12 +191,27 @@ export default function useCompleteData(props?) {
       };
     });
   };
+  const setAllTemplateVersions = (list) => {
+    allTemplateVersions.value = _.map(list || [], (item) => {
+      const { template } = cloneDeep(item);
+      return {
+        schema: {
+          outputs: parseSchemaOutputs(template?.schema)
+        },
+        type: item.type || '',
+        template: {
+          ..._.omit(template, ['schema', 'uiSchema'])
+        }
+      };
+    }) as any[];
+  };
+
   /**
    * Description
    * @returns {any}
    * params.flow: used for workflow create service step
    */
-  const getServiceList = async () => {
+  const getServiceList = async (partialParams?) => {
     serviceToken?.cancel?.();
     serviceToken = createAxiosToken();
     try {
@@ -196,24 +219,17 @@ export default function useCompleteData(props?) {
         page: -1,
         withSchema: true,
         extract: ['-projectId', '-status', '-schema', '-uiSchema'],
+        ...partialParams,
         flow: undefined
       };
       params.flow = props?.flow || undefined;
       const { data } = await queryServices(params, serviceToken.token);
       serviceDataList.value = data.items || [];
-      allTemplateVersions.value = _.map(data?.items || [], (item) => {
-        const { template } = cloneDeep(item);
-        return {
-          schema: {
-            outputs: parseSchemaOutputs(template.schema)
-          },
-          template: {
-            ..._.omit(template, ['schema', 'uiSchema'])
-          }
-        };
-      }) as any[];
+      setAllTemplateVersions(data.items || []);
+      return cloneDeep(data.items || []);
     } catch (error) {
       serviceDataList.value = [];
+      return [];
     }
   };
   const setVariablesCompleteData = () => {
@@ -237,6 +253,9 @@ export default function useCompleteData(props?) {
         const addedServiceTemplate = _.find(
           allTemplateVersions.value || [],
           (s) => {
+            if (item.isService) {
+              return s.type === item.type;
+            }
             return (
               s.template.id === item.templateId &&
               s.template.version === item.version
@@ -285,6 +304,10 @@ export default function useCompleteData(props?) {
   });
   return {
     initCompleteData,
+    setCompleteData,
+    setAllTemplateVersions,
+    getServiceList,
+    getProjectVariables,
     getTemplateVersions,
     initTemplateList,
     completeData,

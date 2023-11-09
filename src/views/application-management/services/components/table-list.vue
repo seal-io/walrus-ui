@@ -98,7 +98,7 @@
           tooltip
           :cell-style="{ minWidth: '40px' }"
           data-index="name"
-          :title="title"
+          :title="$t('common.table.name')"
         >
           <template #cell="{ record }">
             <a-link
@@ -116,6 +116,7 @@
           </template>
         </a-table-column>
         <a-table-column
+          v-if="ServiceDataType.service === type"
           ellipsis
           tooltip
           :cell-style="{ minWidth: '40px' }"
@@ -135,6 +136,15 @@
               >
             </span>
           </template>
+        </a-table-column>
+        <a-table-column
+          v-if="ServiceDataType.resource === type"
+          ellipsis
+          tooltip
+          :cell-style="{ minWidth: '40px' }"
+          data-index="type"
+          :title="$t('common.table.type')"
+        >
         </a-table-column>
         <a-table-column
           ellipsis
@@ -537,6 +547,7 @@
   };
 
   const handleClickAction = (value, row) => {
+    console.log('value======', value, row);
     actionHandlerMap.get(value)(row);
   };
   const setActionHandler = () => {

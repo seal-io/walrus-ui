@@ -247,18 +247,28 @@
           :hide-label="pageAction === PageAction.EDIT"
           :label="$t('applications.applications.table.service')"
         >
-          <CloneService
-            ref="serviceRef"
-            :title="$t('applications.applications.table.service')"
-            clone-type="environment"
-            :style="{ width: `${InputWidth.XLARGE}px`, overflow: 'auto' }"
-          ></CloneService>
-          <CloneService
-            ref="resourceRef"
-            :title="$t('applications.applications.table.resource')"
-            clone-type="environment"
-            :style="{ width: `${InputWidth.XLARGE}px`, overflow: 'auto' }"
-          ></CloneService>
+          <div>
+            <CloneService
+              ref="serviceRef"
+              key="serviceRef"
+              v-model:hint-data="completeData"
+              :data-list="serviceList"
+              :title="$t('applications.applications.table.service')"
+              clone-type="environment"
+              resource-type="service"
+              :style="{ width: `${InputWidth.XLARGE}px`, overflow: 'auto' }"
+            ></CloneService>
+            <CloneService
+              key="resourceRef"
+              ref="resourceRef"
+              v-model:hint-data="completeData"
+              :data-list="resourceList"
+              :title="$t('applications.applications.table.resource')"
+              clone-type="environment"
+              resource-type="resource"
+              :style="{ width: `${InputWidth.XLARGE}px`, overflow: 'auto' }"
+            ></CloneService>
+          </div>
         </a-form-item>
       </a-form>
       <EditPageFooter v-if="pageAction === PageAction.EDIT">
@@ -292,7 +302,7 @@
     InputWidth,
     EnvironmentTypeMap
   } from '@/views/config';
-  import { ref, computed, nextTick } from 'vue';
+  import { ref, computed, provide } from 'vue';
   import _, {
     each,
     includes,
@@ -314,6 +324,7 @@
   import xInputGroup from '@/components/form-create/custom-components/x-input-group.vue';
   import useLabelsActions from '@/components/form-create/hooks/use-labels-action';
   import useProjectBreadcrumbData from '@/views/application-management/projects/hooks/use-project-breadcrumb-data';
+  import useCompleteData from '@/views/application-management/services/hooks/use-complete-data';
   import { BreadcrumbOptions } from '@/views/config/interface';
   import CloneService from '../components/clone-service.vue';
   import { EnvironFormData } from '../config/interface';
@@ -328,6 +339,14 @@
     queryItemEnvironments
   } from '../api';
 
+  const {
+    setCompleteData,
+    getProjectVariables,
+    getServiceList,
+    serviceDataList,
+    completeData,
+    setAllTemplateVersions
+  } = useCompleteData();
   const { getProjectList, setProjectList, initBreadValues, handleBreadChange } =
     useProjectBreadcrumbData();
   const { scrollToView } = useScrollToView();
@@ -340,6 +359,8 @@
   const formref = ref();
   const serviceRef = ref(); // only in clone
   const resourceRef = ref(); // only in clone
+  const serviceList = ref<any[]>([]);
+  const resourceList = ref<any[]>([]);
   const connectorList = ref<
     { label: string; value: string; project?: object; tips?: string }[]
   >([]);
@@ -360,7 +381,7 @@
     variables: [],
     edges: [],
     labels: {},
-    services: []
+    resources: []
   });
   const {
     labelList,
@@ -511,7 +532,7 @@
   const handleCloneEnvironment = async (data) => {
     const services = serviceRef.value.getSelectServiceData();
     const resources = resourceRef.value.getSelectServiceData();
-    data.services = [..._.cloneDeep(services), ..._.cloneDeep(resources)];
+    data.resources = [..._.cloneDeep(services), ..._.cloneDeep(resources)];
     return data;
   };
 
@@ -588,6 +609,29 @@
     }
     return true;
   });
+
+  const initCloneEnvironmentResource = async () => {
+    if (!environmentId) return;
+    try {
+      serviceList.value = await getServiceList({
+        isService: true,
+        extract: ['-projectId', '-status']
+      });
+      resourceList.value = await getServiceList({
+        isService: false,
+        extract: ['-projectId', '-status']
+      });
+      await getProjectVariables();
+      serviceDataList.value = [
+        ..._.cloneDeep(serviceList.value),
+        ..._.cloneDeep(resourceList.value)
+      ];
+      setAllTemplateVersions(serviceDataList.value);
+      setCompleteData();
+    } catch (error) {
+      // ingore
+    }
+  };
   const init = async () => {
     setBreadCrumbList();
     await getConnectors();
@@ -595,11 +639,9 @@
     getLabelList();
     // only in clone: default select all variables
     variablesRef.value?.selectAllVars();
+    initCloneEnvironmentResource();
   };
-  defineExpose({
-    handleSubmit,
-    init
-  });
+
   init();
 </script>
 

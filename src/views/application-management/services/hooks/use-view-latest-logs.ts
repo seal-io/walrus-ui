@@ -59,7 +59,9 @@ export default function useViewLatestLogs() {
       revisionDetailId.value = _.get(revisionData.value, 'id') || '';
       initialStatus.value = _.get(revisionData.value, 'status') || {};
       currentServiceInfo.value = row;
-      showDetailModal.value = true;
+      setTimeout(() => {
+        showDetailModal.value = true;
+      });
       nextTick(() => {
         createServiceRevisionChunkRequest();
       });

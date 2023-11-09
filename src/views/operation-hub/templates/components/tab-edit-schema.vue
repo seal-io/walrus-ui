@@ -125,6 +125,7 @@
     putTemplateSchemaByVersionId,
     resetTemplateSchemaByVersionId
   } from '../api';
+  import { upateResourceDefinition } from '../../resource-definitions/api';
   import { schemaActionList } from '../config/index';
 
   const themeList = [
@@ -142,7 +143,7 @@
     schema: {
       type: Object as PropType<any>,
       default() {
-        return {};
+        return null;
       }
     },
     height: {
@@ -161,6 +162,12 @@
       type: Object as PropType<any>,
       default() {
         return {};
+      }
+    },
+    page: {
+      type: String,
+      default() {
+        return 'template';
       }
     }
   });
@@ -242,19 +249,38 @@
       return false;
     }
   };
+  const updateTemplateSchema = async () => {
+    if (!props.versionId) return;
+    const codeData = yaml2Json(code.value);
+    await putTemplateSchemaByVersionId({
+      templateVersionID: props.versionId,
+      data: {
+        uiSchema: {
+          openAPISchema: codeData
+        }
+      }
+    });
+  };
+  const updateDefinitionSchema = async () => {
+    const codeData = yaml2Json(code.value);
+    await upateResourceDefinition({
+      id: route.query.id as string,
+      data: {
+        uiSchema: {
+          openAPISchema: codeData
+        }
+      }
+    });
+  };
   const handlePutTemplateSchema = async () => {
     const valid = validateSchema();
-    if (!props.versionId) return;
+
     try {
-      const codeData = yaml2Json(code.value);
-      await putTemplateSchemaByVersionId({
-        templateVersionID: props.versionId,
-        data: {
-          uiSchema: {
-            openAPISchema: codeData
-          }
-        }
-      });
+      if (props.page === 'template') {
+        await updateTemplateSchema();
+      } else {
+        await updateDefinitionSchema();
+      }
       execSucceed();
       emits('update');
     } catch (error) {
@@ -287,7 +313,7 @@
     }
   };
   const initData = () => {
-    const copyCustomSchema = _.cloneDeep(props.schema.uiSchema.openAPISchema);
+    const copyCustomSchema = _.cloneDeep(props.schema?.uiSchema?.openAPISchema);
     const info = _.get(copyCustomSchema, 'info');
     const openapi = _.get(copyCustomSchema, 'openapi');
     const originData = _.omit(copyCustomSchema, ['paths']);

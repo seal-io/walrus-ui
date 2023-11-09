@@ -13,7 +13,7 @@
           tooltip
           :cell-style="{ minWidth: '40px' }"
           data-index="service.name"
-          :title="$t('applications.applications.table.service')"
+          :title="title"
         >
           <template #cell="{ record }">
             <a-link
@@ -25,9 +25,9 @@
                 })
               "
               @click="handleToDetail(record)"
-              >{{ record?.service?.name || '' }}</a-link
+              >{{ record?.resource?.name || '' }}</a-link
             >
-            <span v-else>{{ record?.service?.name || '' }}</span>
+            <span v-else>{{ record?.resource?.name || '' }}</span>
           </template>
         </a-table-column>
         <a-table-column
@@ -104,6 +104,7 @@
   import { PropType } from 'vue';
   import { useUserStore, useProjectStore } from '@/store';
   import useCallCommon from '@/hooks/use-call-common';
+  import { ServiceDataType } from '@/views/application-management/services/config';
   import StatusLabel from './status-label.vue';
   import { statusColorMap } from '../config';
 
@@ -112,6 +113,18 @@
       type: Boolean,
       default() {
         return false;
+      }
+    },
+    title: {
+      type: String,
+      default() {
+        return '';
+      }
+    },
+    type: {
+      type: String,
+      default() {
+        return ServiceDataType.service;
       }
     },
     list: {
@@ -136,10 +149,11 @@
       name: PROJECT.ServiceDetail,
       params: {
         projectId: _.get(row, 'project.id'),
-        environmentId: _.get(row, 'environment.id')
+        environmentId: _.get(row, 'environment.id'),
+        dataType: props.type
       },
       query: {
-        id: _.get(row, 'service.id'),
+        id: _.get(row, 'resource.id'),
         from: 'dashboard'
       }
     });

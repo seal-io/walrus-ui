@@ -7,6 +7,7 @@ import { TemplateVersionData } from '@/views/operation-hub/templates/config/inte
 import { queryItemTemplatesVersions } from '@/views/operation-hub/templates/api';
 import { initFormState } from '@/components/dynamic-form/utils/init-form-state';
 import usePageAction from '@/hooks/use-page-action';
+import { queryItemResourceDefinition } from '@/views/operation-hub/resource-definitions/api';
 import { useServiceStore } from '@/store';
 import semverEq from 'semver/functions/eq';
 import semverGt from 'semver/functions/gt';
@@ -64,6 +65,7 @@ export default function useServiceData(props?) {
     },
     description: '',
     labels: {},
+    type: '',
     name: '',
     template: {
       // template version info
@@ -86,15 +88,25 @@ export default function useServiceData(props?) {
     if (id && pageAction.value === PageAction.EDIT) {
       return dataType === ServiceDataType.service
         ? 'applications.applications.edit'
-        : 'resource.definition.detail.edit';
+        : 'applications.applications.edit.resource';
     }
     return dataType === ServiceDataType.service
       ? 'applications.applications.detail'
-      : 'resource.definition.detail.view';
+      : 'applications.applications.detail.resource';
   };
 
   const setDefaultTemplate = (template) => {
     return template.name === 'webservice';
+  };
+
+  const getItemResourceDefinition = async () => {
+    try {
+      const { data } = await queryItemResourceDefinition({ id: formData.type });
+      return data;
+    } catch (error) {
+      // ignore
+      return {};
+    }
   };
   const getServiceItemInfo = async () => {
     // create
@@ -190,14 +202,13 @@ export default function useServiceData(props?) {
   const setFormAttributes = async () => {
     _.assignIn(formData, serviceInfo.value);
     // 1. get the template meta data 2.set the default value
-    await getTemplateVersions(formData.template);
-    await setTemplateVersionList();
+
     let moduleTemplate: any = {};
     if (dataType === ServiceDataType.resource) {
-      moduleTemplate = _.find(templateList.value, (item) => {
-        return item.id === formData.template.template.id;
-      });
+      moduleTemplate = await getItemResourceDefinition();
     } else {
+      await getTemplateVersions(formData.template);
+      await setTemplateVersionList();
       moduleTemplate = await getTemplateSchemaByVersion();
     }
 
@@ -218,16 +229,15 @@ export default function useServiceData(props?) {
     if (id || setServiceInfo.enable) {
       await setFormAttributes();
     } else {
-      setFormDataTemplate();
-      await getTemplateVersions(formData.template);
-      await setTemplateVersionList();
-      setFormTemplateVersion();
       let templateSchema: any = {};
       if (dataType === ServiceDataType.resource) {
-        templateSchema = _.find(templateList.value, (item) => {
-          return item.id === formData.template.template.id;
-        });
+        formData.type = _.get(templateList.value, '0.value', '');
+        templateSchema = await getItemResourceDefinition();
       } else {
+        setFormDataTemplate();
+        await getTemplateVersions(formData.template);
+        await setTemplateVersionList();
+        setFormTemplateVersion();
         templateSchema = await getTemplateSchemaByVersion();
       }
       setTemplateInfo(templateSchema);
@@ -236,6 +246,7 @@ export default function useServiceData(props?) {
   // for service detail
   const initInfo = async () => {
     asyncLoading.value = true;
+    await initTemplateList();
     serviceInfo.value = serviceStore.getServiceInfo(id);
     await setFormAttributes();
     asyncLoading.value = false;
@@ -245,7 +256,6 @@ export default function useServiceData(props?) {
   const initSerivceInfo = async () => {
     if (!setServiceInfo.enable) return;
     serviceInfo.value = setServiceInfo.info;
-    console.log('serviceInfo', setServiceInfo);
   };
 
   // for service edit page
@@ -278,6 +288,7 @@ export default function useServiceData(props?) {
     initCompleteData,
     initInfo,
     setTemplateInfo,
+    getItemResourceDefinition,
     asyncLoading,
     completeDataLoading,
     formData,
