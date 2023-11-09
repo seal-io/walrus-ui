@@ -125,68 +125,32 @@
               route.query.catalog || ''
             }}</span>
           </a-form-item>
-          <a-form-item
-            v-if="id && pageAction === PageAction.VIEW"
-            :label="$t('operation.connectors.table.status')"
-          >
-            <StatusLabel
-              style="margin-left: 12px"
-              :status="{
-                status: get(formData, 'status.summaryStatus') || '',
-                text: get(formData, 'status.summaryStatus'),
-                message: get(formData, 'status.summaryStatusMessage') || '',
-                transitioning: get(formData, 'status.transitioning'),
-                error: get(formData, 'status.error')
-              }"
-            ></StatusLabel>
-          </a-form-item>
         </a-form>
-        <GroupTitle :bordered="false" title="匹配规则" flex-start>
-          <template #title>
-            <span>匹配规则</span>
-            <a-link
-              v-if="pageAction === PageAction.EDIT"
-              class="m-l-10"
-              @click="handleAddRule"
-            >
-              <icon-plus class="size-14" style="stroke-width: 4" />
-              <span class="mleft-5">添加</span>
-            </a-link>
-          </template>
-        </GroupTitle>
-        <DefinitionRules
-          v-for="(item, index) in formData.matchingRules"
-          :ref="(el) => setRefMap(el, `rules${index}`)"
-          :key="index"
-          :title="item.name || '规则'"
-          :data-id="id"
-          :origin-form-data="item"
-          :page-action="pageAction"
-          :show-delete="formData.matchingRules.length > 1"
-          :template-list="templateList"
-          class="m-b-20"
-          @delete="handleDeleteDefinition(index)"
-        >
-        </DefinitionRules>
-        <!-- <GroupTitle :bordered="false" title="输入-输出" flex-start>
-        </GroupTitle>
-        <InputOutput :schema="schema" :readOnly="readOnly">
-          <div>
-            <a-space v-if="!readOnly">
-              <a-button size="small" type="primary" @click="handleConfirm">{{
-                $t('common.button.confirm')
-              }}</a-button>
-              <a-button size="small" type="outline" @click="handleCancelEdit">{{
-                $t('common.button.cancel')
-              }}</a-button>
-            </a-space>
-            <MoreButtonActions
-              :actions="schemaActionList"
-              @select="handleSelectAction"
-            ></MoreButtonActions>
-          </div>
-        </InputOutput> -->
-
+        <div v-if="pageAction === PageAction.EDIT">
+          <GroupTitle :bordered="false" title="匹配规则" flex-start>
+            <template #title>
+              <span>匹配规则</span>
+              <a-link class="m-l-10" @click="handleAddRule">
+                <icon-plus class="size-14" style="stroke-width: 4" />
+                <span class="mleft-5">添加</span>
+              </a-link>
+            </template>
+          </GroupTitle>
+          <DefinitionRules
+            v-for="(item, index) in formData.matchingRules"
+            :ref="(el) => setRefMap(el, `rules${index}`)"
+            :key="index"
+            :title="item.name || '规则'"
+            :data-id="id"
+            :origin-form-data="item"
+            :page-action="pageAction"
+            :show-delete="formData.matchingRules.length > 1"
+            :template-list="templateList"
+            class="m-b-20"
+            @delete="handleDeleteDefinition(index)"
+          >
+          </DefinitionRules>
+        </div>
         <a-tabs
           v-if="
             id &&
@@ -201,6 +165,22 @@
           class="page-line-tabs"
           @change="handleTabChange"
         >
+          <a-tab-pane key="matchRules" title="匹配规则">
+            <DefinitionRules
+              v-for="(item, index) in formData.matchingRules"
+              :ref="(el) => setRefMap(el, `rules${index}`)"
+              :key="index"
+              :title="item.name || '规则'"
+              :data-id="id"
+              :origin-form-data="item"
+              :page-action="pageAction"
+              :show-delete="formData.matchingRules.length > 1"
+              :template-list="templateList"
+              class="m-b-20"
+              @delete="handleDeleteDefinition(index)"
+            >
+            </DefinitionRules>
+          </a-tab-pane>
           <a-tab-pane
             v-for="item in tabList"
             :key="item.com"
@@ -220,6 +200,7 @@
               :wrap-size="height"
               :schema="deinitionSchema"
               :template-info="formData"
+              page="definition"
               @update="handleUpdateSchema"
             ></component>
           </a-tab-pane>

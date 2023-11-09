@@ -64,14 +64,37 @@
           </template>
         </a-form-item>
         <a-form-item
-          id="moduleId"
+          v-if="dataType === ServiceDataType.resource"
+          hide-label
+          field="type"
+          :label="$t('applications.applications.table.resourceType')"
+          :disabled="pageAction === PageAction.EDIT && !!id"
+          :rules="[
+            {
+              required: true,
+              message: $t('资源类型必选')
+            }
+          ]"
+        >
+          <div>
+            <seal-select
+              v-model="formData.type"
+              :label="$t('applications.applications.table.resourceType')"
+              :required="true"
+              :virtual-list-props="virtualListProps"
+              :style="{ width: `${InputWidth.LARGE}px` }"
+              :options="templateList"
+              allow-search
+              @change="handleTemplateChange"
+            >
+            </seal-select>
+          </div>
+        </a-form-item>
+        <a-form-item
+          v-if="dataType === ServiceDataType.service"
           hide-label
           field="template.template.id"
-          :label="
-            route.params.dataType === ServiceDataType.service
-              ? $t('applications.applications.table.module')
-              : $t('resource.definition.list.name')
-          "
+          :label="$t('applications.applications.table.module')"
           :disabled="pageAction === PageAction.EDIT && !!id"
           :rules="[
             {
@@ -83,11 +106,7 @@
           <div>
             <seal-select
               v-model="formData.template.template.id"
-              :label="
-                route.params.dataType === ServiceDataType.service
-                  ? $t('applications.applications.table.module')
-                  : $t('resource.definition.list.name')
-              "
+              :label="$t('applications.applications.table.module')"
               :required="true"
               :virtual-list-props="virtualListProps"
               :style="{ width: `${InputWidth.LARGE}px` }"
@@ -100,8 +119,7 @@
                 <span>{{ data.label }}</span>
                 <span
                   v-if="
-                    !data.project?.id &&
-                    route.params.dataType === ServiceDataType.service
+                    !data.project?.id && dataType === ServiceDataType.service
                   "
                   style="color: var(--color-text-3)"
                   class="font-12"
@@ -112,7 +130,7 @@
           </div>
         </a-form-item>
         <a-form-item
-          v-if="route.params.dataType === ServiceDataType.service"
+          v-if="dataType === ServiceDataType.service"
           hide-label
           field="template.version"
           :label="$t('applications.applications.history.version')"
@@ -262,25 +280,13 @@
 <script lang="ts" setup>
   import KuberSelect from '@/components/form-create/bussiness-components/source-code-repository.vue';
   import { PROJECT } from '@/router/config';
-  import _, {
-    get,
-    find,
-    cloneDeep,
-    pull,
-    keys,
-    reduce,
-    includes,
-    pickBy,
-    toString
-  } from 'lodash';
+  import _, { get, find, cloneDeep, reduce, pickBy, toString } from 'lodash';
   import {
     ref,
-    ComponentPublicInstance,
     computed,
     provide,
     watch,
     reactive,
-    nextTick,
     PropType,
     onMounted
   } from 'vue';
@@ -290,7 +296,6 @@
   import useScrollToView from '@/hooks/use-scroll-to-view';
   import EditPageFooter from '@/components/edit-page-footer/index.vue';
   import xInputGroup from '@/components/form-create/custom-components/x-input-group.vue';
-  import SingleForm from '@/components/form-create/single-form.vue';
   import GroupForm from '@/components/form-create/group-form.vue';
   import GroupTitle from '@/components/group-title/index.vue';
   import {
@@ -339,6 +344,7 @@
     setTemplateVersionList,
     getTemplateVersions,
     setTemplateInfo,
+    getItemResourceDefinition,
     serviceInfo,
     formData,
     pageAction,
@@ -497,15 +503,15 @@
   };
   // template change: exec version change
   const handleTemplateChange = async (val) => {
-    const data = _.find(templateList.value, (item) => item.id === val);
-    formData.template.name = data?.name || '';
-    formData.template.project = data?.project || {};
-
     if (dataType === ServiceDataType.resource) {
+      const data = await getItemResourceDefinition();
       setTemplateInfo(data);
       formData.attributes = {};
       groupForm.value?.clearFormValidStatus?.();
     } else {
+      const data = _.find(templateList.value, (item) => item.id === val);
+      formData.template.name = data?.name || '';
+      formData.template.project = data?.project || {};
       await getTemplateVersions(formData.template, true);
       await setTemplateVersionList();
 
@@ -546,6 +552,7 @@
   const handleOk = async () => {
     console.log(
       'kube===',
+      formData,
       Kubernamespace.value,
       repository.value,
       branch.value
@@ -570,11 +577,17 @@
         if (!formData.template.project?.id) {
           formData.template = _.omit(formData.template, 'project');
         }
+        if (dataType === ServiceDataType.service) {
+          formData.type = null as any;
+        }
+        if (dataType === ServiceDataType.resource) {
+          formData.template = null as any;
+        }
         copyFormData = _.cloneDeep(formData);
         if (id) {
           await upgradeApplicationInstance(formData);
         } else {
-          const { data } = await handleCreate(formData);
+          const { data } = await createService(formData);
           router.replace({
             name: PROJECT.ServiceDetail,
             params: {

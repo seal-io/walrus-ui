@@ -8,7 +8,7 @@ export default {
   'dashboard.deployment.running': 'Running',
   'dashboard.deployment.failed': 'Failed',
   'dashboard.deployment.succeed': 'Succeed',
-  'dashboard.deployment.lastest': 'Latest 10 Deployments',
+  'dashboard.deployment.lastest': 'Latest 10 {name}',
   'dashboard.cost.title': 'Cost Management',
   'dashboard.table.name': 'Application',
   'dashboard.table.project': 'Project',

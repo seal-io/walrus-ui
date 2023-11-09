@@ -77,18 +77,24 @@
           <div>
             <cloneService
               ref="servicesRef"
+              v-model:hint-data="completeData"
               clone-type="service"
               :title="$t('applications.applications.table.service')"
               :show-check="false"
+              :data-list="serviceList"
               :service-ids="selectServices"
+              :resource-type="ServiceDataType.service"
               style="width: 800px"
             ></cloneService>
             <cloneService
               ref="resourceRef"
+              v-model:hint-data="completeData"
               :title="$t('applications.applications.table.resource')"
               clone-type="service"
               :show-check="false"
+              :data-list="resourceList"
               :service-ids="selectResources"
+              :resource-type="ServiceDataType.resource"
               style="width: 800px"
             ></cloneService>
           </div>
@@ -137,7 +143,9 @@
   import useLabelsActions from '@/components/form-create/hooks/use-labels-action';
   import cloneService from '../../environments/components/clone-service.vue';
   import useProjectBreadcrumbData from '../../projects/hooks/use-project-breadcrumb-data';
+  import useCompleteData from '../hooks/use-complete-data';
   import { cloneServices } from '../api';
+  import { ServiceDataType } from '../config';
 
   const {
     getProjectList,
@@ -147,6 +155,15 @@
     handleBreadChange,
     initBreadValues
   } = useProjectBreadcrumbData();
+  const {
+    setCompleteData,
+    getProjectVariables,
+    getServiceList,
+    serviceDataList,
+    completeData,
+    allTemplateVersions,
+    setAllTemplateVersions
+  } = useCompleteData();
   const userStore = useUserStore();
   const { scrollToView } = useScrollToView();
   const { t, route, router } = useCallCommon();
@@ -162,6 +179,8 @@
   const formref = ref();
   const servicesRef = ref();
   const resourceRef = ref();
+  const serviceList = ref<any[]>([]);
+  const resourceList = ref<any[]>([]);
   const succeedList = ref<Set<string>>(new Set());
   const failedList = ref<Set<string>>(new Set());
   const stageEnvironmentIDs = ref<string[]>([]);
@@ -258,6 +277,38 @@
     }
     stageEnvironmentIDs.value = [...failedList.value];
   };
+  const initCloneEnvironmentResource = async () => {
+    try {
+      const services = await getServiceList({
+        isService: true,
+        extract: ['-projectId', '-status']
+      });
+      const resources = await getServiceList({
+        isService: false,
+        extract: ['-projectId', '-status']
+      });
+      serviceList.value = _.filter(services, (item) => {
+        return selectServices.value.includes(item.id);
+      });
+      resourceList.value = _.filter(resources, (item) => {
+        return selectResources.value.includes(item.id);
+      });
+      await getProjectVariables();
+      serviceDataList.value = [
+        ..._.cloneDeep(serviceList.value),
+        ..._.cloneDeep(resourceList.value)
+      ];
+      setAllTemplateVersions(serviceDataList.value);
+      setCompleteData();
+      console.log(
+        'completeData====',
+        allTemplateVersions.value,
+        completeData.value
+      );
+    } catch (error) {
+      // ingore
+    }
+  };
   const handleOk = async () => {
     const res = await formref.value?.validate();
     if (!res) {
@@ -320,6 +371,7 @@
       }
     ] as BreadcrumbOptions[];
     setBreadCrumbList();
+    initCloneEnvironmentResource();
   };
   initData();
 </script>

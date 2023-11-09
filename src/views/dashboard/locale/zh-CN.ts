@@ -8,7 +8,7 @@ export default {
   'dashboard.deployment.running': '运行中',
   'dashboard.deployment.failed': '失败',
   'dashboard.deployment.succeed': '成功',
-  'dashboard.deployment.lastest': '最新10条部署',
+  'dashboard.deployment.lastest': '最新 10 条{name}',
   'dashboard.cost.title': '成本管理',
   'dashboard.table.name': '应用',
   'dashboard.table.project': '项目',

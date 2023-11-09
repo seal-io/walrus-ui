@@ -40,9 +40,29 @@
         </a-grid-item>
       </a-grid>
     </div>
+    <div class="m-b-20">
+      <div class="app-list-title">{{
+        $t('dashboard.deployment.lastest', {
+          name: $t('applications.applications.table.service')
+        })
+      }}</div>
+      <lastDeployApp
+        :title="$t('applications.applications.table.service')"
+        :list="serviceList"
+        :type="ServiceDataType.service"
+      ></lastDeployApp>
+    </div>
     <div>
-      <div class="app-list-title">{{ $t('dashboard.deployment.lastest') }}</div>
-      <lastDeployApp :list="appList"></lastDeployApp>
+      <div class="app-list-title">{{
+        $t('dashboard.deployment.lastest', {
+          name: $t('applications.applications.table.resource')
+        })
+      }}</div>
+      <lastDeployApp
+        :title="$t('applications.applications.table.resource')"
+        :list="resourceList"
+        :type="ServiceDataType.resource"
+      ></lastDeployApp>
     </div>
   </SpinCard>
 </template>
@@ -53,6 +73,7 @@
   import { useI18n } from 'vue-i18n';
   import { map, get, ceil, sortBy } from 'lodash';
   import StackLineChart from '@/components/stack-line-chart/index.vue';
+  import { ServiceDataType } from '@/views/application-management/services/config';
   import pieChart from '@/components/pie-chart/index.vue';
   import DateRange from '@/components/date-range/index.vue';
   import { setEndTimeAddDay } from '@/views/config';
@@ -109,7 +130,8 @@
   };
 
   const xAxis = ref<string[]>([]);
-  const appList = ref([]);
+  const serviceList = ref([]);
+  const resourceList = ref([]);
   const summaryData = ref({});
   const dataList = ref<{ name: string; value: number[] }[]>([]);
   const dataConfig = computed(() => {
@@ -188,18 +210,35 @@
       const params = {
         page: 1,
         perPage: 10,
-        sort: ['-createTime']
+        sort: ['-createTime'],
+        isService: true
       };
       const { data } = await queryLatestDeployments();
 
-      appList.value = data.items || [];
+      serviceList.value = data.items || [];
     } catch (error) {
-      appList.value = [];
+      serviceList.value = [];
+    }
+  };
+  const getResourceRevisionsList = async () => {
+    try {
+      const params = {
+        page: 1,
+        perPage: 10,
+        sort: ['-createTime'],
+        isService: false
+      };
+      const { data } = await queryLatestDeployments();
+
+      resourceList.value = data.items || [];
+    } catch (error) {
+      resourceList.value = [];
     }
   };
   const init = () => {
     getApplicationRevisionsChart();
     getApplicationRevisionsList();
+    getResourceRevisionsList();
   };
   const handleDateChange = (val) => {
     init();

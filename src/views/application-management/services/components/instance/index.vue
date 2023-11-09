@@ -294,11 +294,9 @@
       const { data } = await queryItemService(params);
       currentInfo.value = data;
       serviceStore.setServiceInfo(route.query.id, data);
+      await serviceInfoRef.value?.initInfo();
     } catch (error) {
       serviceStore.deleteService(route.query.id);
-    } finally {
-      // template confg info
-      serviceInfoRef.value?.initData();
     }
   };
   const handleEditSucceed = () => {
@@ -398,7 +396,9 @@
     getServiceItemInfo();
     fetchData();
   };
-  init();
+  onMounted(() => {
+    init();
+  });
 </script>
 
 <style lang="less" scoped>

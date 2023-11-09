@@ -12,16 +12,19 @@
 
 <script lang="ts" setup>
   import _ from 'lodash';
+  import { onMounted, nextTick } from 'vue';
   import ViewForm from '@/components/form-create/view-form.vue';
   import useServiceData from '../hooks/use-service-data';
 
   const { initInfo, serviceInfo, templateInfo } = useServiceData();
 
   const initData = async () => {
+    console.log('initfo=========');
     await initInfo();
   };
   defineExpose({
-    initData
+    initData,
+    initInfo
   });
 </script>
 

@@ -64,7 +64,7 @@ export const queryEnvironmentAvailableDefinitions = (params: {
   return axios.get(
     `${PROJECT_API_PREFIX()}${ENVIRONMENT_API}/${
       params.environmentID
-    }/resource-definitions`
+    }/resource-definitions?t=${Date.now()}`
   );
 };
 

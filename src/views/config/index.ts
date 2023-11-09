@@ -8,6 +8,8 @@ export const dateFormatMap = {
   year: 'YYYY'
 };
 
+export const InjectCompleteDataKey = Symbol('InjectCompleteDataKey');
+
 export const setEndTimeAddDay = (time, mode) => {
   if (mode === 'utc') {
     return dayjs(time).add(1, 'day').format('YYYY-MM-DDT00:00:00+00:00');
