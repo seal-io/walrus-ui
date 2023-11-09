@@ -3,6 +3,7 @@
     <CreateService
       ref="serviceRef"
       :flow="flow"
+      :resource-type="dataType"
       :action="flowId ? PageAction.EDIT : PageAction.CREATE"
     ></CreateService>
   </div>
@@ -20,6 +21,10 @@
       default() {
         return {};
       }
+    },
+    dataType: {
+      type: String,
+      default: ''
     }
   });
   const { route } = useCallCommon();

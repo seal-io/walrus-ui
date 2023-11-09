@@ -22,7 +22,8 @@ export default [
         OPERATIONHUB.ConnectorProviderDetail,
         OPERATIONHUB.ConnectorScmDetail,
         OPERATIONHUB.TemplateDetail,
-        OPERATIONHUB.TemplateGPT
+        OPERATIONHUB.TemplateGPT,
+        OPERATIONHUB.ResourceDefinitionDetail
       ]
     }
   }

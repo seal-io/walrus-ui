@@ -70,14 +70,28 @@
             </span>
           </div>
         </div>
-        <a-form-item :label="$t('applications.applications.table.service')">
-          <cloneService
-            ref="servicesRef"
-            clone-type="service"
-            :show-check="false"
-            :service-ids="selectServices"
-            style="width: 800px"
-          ></cloneService>
+        <a-form-item
+          :label="$t('applications.applications.table.service')"
+          no-style
+        >
+          <div>
+            <cloneService
+              ref="servicesRef"
+              clone-type="service"
+              :title="$t('applications.applications.table.service')"
+              :show-check="false"
+              :service-ids="selectServices"
+              style="width: 800px"
+            ></cloneService>
+            <cloneService
+              ref="resourceRef"
+              :title="$t('applications.applications.table.resource')"
+              clone-type="service"
+              :show-check="false"
+              :service-ids="selectResources"
+              style="width: 800px"
+            ></cloneService>
+          </div>
         </a-form-item>
       </a-form>
       <EditPageFooter>
@@ -110,7 +124,6 @@
 <script lang="ts" setup>
   import _ from 'lodash';
   import { Resources, Actions } from '@/permissions/config';
-  import xInputGroup from '@/components/form-create/custom-components/x-input-group.vue';
   import EditPageFooter from '@/components/edit-page-footer/index.vue';
   import { PROJECT } from '@/router/config';
   import { InputWidth } from '@/views/config';
@@ -137,16 +150,18 @@
   const userStore = useUserStore();
   const { scrollToView } = useScrollToView();
   const { t, route, router } = useCallCommon();
-  const ids = route.query.source as string;
+  const ids = route.query.services as string;
+  const rIds = route.query.resources as string;
   const projectID = route.params.projectId as string;
   const breadCrumbList = ref<BreadcrumbOptions[]>([]);
   const selectServices = ref<any[]>(_.concat(ids));
+  const selectResources = ref<any[]>(_.concat(rIds));
   const environments = ref<any[]>([]);
-  const validateTrigger = ref(false);
   const submitLoading = ref(false);
   const trigger = ref(false);
   const formref = ref();
   const servicesRef = ref();
+  const resourceRef = ref();
   const succeedList = ref<Set<string>>(new Set());
   const failedList = ref<Set<string>>(new Set());
   const stageEnvironmentIDs = ref<string[]>([]);
@@ -208,12 +223,13 @@
   };
   const handleCloneServices = async () => {
     const services = servicesRef.value.getSelectServiceData();
-    formData.items = _.cloneDeep(services);
+    const resources = resourceRef.value.getSelectServiceData();
+    formData.items = [
+      ..._.cloneDeep(services),
+      ..._.cloneDeep(resources)
+    ] as never[];
   };
-  const validateLabel = () => {
-    const valid = _.some(labelList.value, (item) => !item.value && item.key);
-    return valid;
-  };
+
   const batchCloneQueue = async () => {
     stageEnvironmentIDs.value = _.filter(formData.environmentIDs, (item) => {
       return !succeedList.value.has(item);
@@ -234,7 +250,7 @@
         succeedList.value.add(environmentID);
         failedList.value.delete(environmentID);
         errorMap.value.delete(environmentID);
-      } catch (error) {
+      } catch (error: any) {
         failedList.value.add(environmentID);
         succeedList.value.delete(environmentID);
         errorMap.value.set(environmentID, error?.data?.msg || error?.msg);

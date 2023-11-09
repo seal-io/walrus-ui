@@ -144,11 +144,14 @@
         <GroupTitle :bordered="false" title="匹配规则" flex-start>
           <template #title>
             <span>匹配规则</span>
-            <a-button type="text" size="small" @click="handleAddRule">
-              <template #icon>
-                <icon-plus-circle-fill class="size-20" />
-              </template>
-            </a-button>
+            <a-link
+              v-if="pageAction === PageAction.EDIT"
+              class="m-l-10"
+              @click="handleAddRule"
+            >
+              <icon-plus class="size-14" style="stroke-width: 4" />
+              <span class="mleft-5">添加</span>
+            </a-link>
           </template>
         </GroupTitle>
         <DefinitionRules
@@ -158,7 +161,7 @@
           :title="item.name || '规则'"
           :data-id="id"
           :origin-form-data="item"
-          :action="pageAction"
+          :page-action="pageAction"
           :show-delete="formData.matchingRules.length > 1"
           :template-list="templateList"
           class="m-b-20"
@@ -268,6 +271,7 @@
   import { queryVariables } from '@/views/application-management/variables/api';
   import MoreButtonActions from '@/components/drop-button-group/more-button-actions.vue';
   import { operationRootBread } from '../../connectors/config';
+  import StatusLabel from '../../connectors/components/status-label.vue';
   import {
     createResourceDefinition,
     queryItemResourceDefinition,
@@ -278,7 +282,7 @@
     ResourceDefinitionFormData,
     definitionFormData
   } from '../config/interface';
-  import { tabList } from '../../templates/config';
+  import { tabList } from '../config';
   import DefinitionRules from '../components/definition-rules.vue';
   import tabInput from '../../templates/components/tab-input.vue';
   import tabOutput from '../../templates/components/tab-output.vue';

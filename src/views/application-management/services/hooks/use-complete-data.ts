@@ -36,6 +36,7 @@ export default function useCompleteData(props?) {
   }
   const { route } = useCallCommon();
   const id = route.query.id || '';
+  const dataType = props?.resourceType || (route.params.dataType as string);
   const loading = ref(false);
   const templateList = ref<TemplateRowData[]>([]);
   const allTemplateVersions = ref<TemplateVersionItem[]>([]);
@@ -103,6 +104,9 @@ export default function useCompleteData(props?) {
     formTemplateData,
     isOnSelect?: boolean
   ) => {
+    if (dataType === ServiceDataType.resource) {
+      return;
+    }
     const templateID = formTemplateData.template?.id;
     const isVisited = _.find(
       allTemplateVersions.value,

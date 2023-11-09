@@ -1,6 +1,7 @@
 export const TaskTypes = {
   APPROVAL: 'approval',
-  SERVICE: 'service'
+  SERVICE: 'service',
+  RESOURCE: 'resource'
 };
 
 export const TaskTypeList = [

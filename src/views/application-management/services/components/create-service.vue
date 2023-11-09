@@ -204,41 +204,6 @@
           :async-loading="asyncLoading"
           :original-form-data="serviceInfo.attributes || {}"
         ></GroupForm>
-        <a-tabs
-          v-if="formTabs.length === -1"
-          class="page-line-tabs"
-          :active-key="activeKey"
-          @change="handleTabChange"
-        >
-          <a-tab-pane
-            v-for="(group, index) in formTabs"
-            :key="`schemaForm${index}`"
-            :title="variablesGroup[group]?.label"
-          >
-            <formCreate
-              :ref="(el: refItem) => setRefMap(el, `schemaForm${index}`)"
-              :form-id="`schemaForm${index}`"
-              layout="vertical"
-              :show-footer="false"
-              :submit="() => {}"
-              :attributes="variableAttributes"
-              :model="variablesGroupForm[group]?.attributes"
-              :form-schema="variablesGroup[group]?.variables"
-            >
-            </formCreate>
-          </a-tab-pane>
-        </a-tabs>
-        <formCreate
-          v-if="formTabs.length === -1"
-          ref="schemaForm"
-          form-id="schemaForm"
-          layout="vertical"
-          :show-footer="false"
-          :submit="() => {}"
-          :model="variablesGroupForm[formTabs[0]]?.attributes"
-          :form-schema="variablesGroup[formTabs[0]]?.variables"
-        >
-        </formCreate>
       </a-spin>
     </div>
   </div>
@@ -271,7 +236,6 @@
   import thumbButton from '@/components/buttons/thumb-button.vue';
   import useScrollToView from '@/hooks/use-scroll-to-view';
   import xInputGroup from '@/components/form-create/custom-components/x-input-group.vue';
-  import formCreate from '@/components/form-create/index.vue';
   import GroupTitle from '@/components/group-title/index.vue';
   import {
     validateLabelNameRegx,
@@ -308,6 +272,12 @@
       default() {
         return {};
       }
+    },
+    resourceType: {
+      type: String,
+      default() {
+        return '';
+      }
     }
   });
 
@@ -317,7 +287,6 @@
   const {
     id,
     init,
-    generateVariablesGroup,
     getTemplateSchemaByVersion,
     setTemplateVersionList,
     getTemplateVersions,
@@ -325,19 +294,13 @@
     formData,
     serviceInfo,
     pageAction,
-    defaultGroupKey,
     templateInfo,
-    variablesGroup,
-    variablesGroupForm,
     templateVersionList,
     templateVersionFormCache,
     serviceDataList,
     templateList,
     completeData,
-    title,
-    refMap,
-    asyncLoading,
-    setRefMap
+    asyncLoading
   } = useServiceData(props);
   const {
     labelList,
@@ -353,23 +316,10 @@
   const formref = ref();
   const groupForm = ref();
   const loading = ref(false);
-  const activeKey = ref('schemaForm0');
-  const schemaForm = ref();
-  const submitLoading = ref(false);
-  const variableAttributes = ref<any>({});
   const versionMap = ref({ nv: '', ov: '' });
 
   provide('showHintInput', true);
   provide('completeData', completeData);
-
-  const formTabs = computed(() => {
-    const list = keys(variablesGroup.value);
-    if (includes(list, defaultGroupKey)) {
-      const res = [defaultGroupKey, ...pull(list, defaultGroupKey)];
-      return res;
-    }
-    return list;
-  });
 
   const virtualListProps = computed(() => {
     if (templateList.value.length > 20) {
@@ -396,65 +346,10 @@
     callback();
   };
 
-  // get group form data
-  const getRefFormData = async (noValidate?: boolean) => {
-    const resultList: any[] = [];
-    await Promise.all(
-      keys(refMap.value).map(async (key) => {
-        const refEL = refMap.value[key];
-        const moduleForm = await refEL?.getFormData?.(noValidate);
-        resultList.push({
-          tab: key,
-          formData: moduleForm
-        });
-      })
-    );
-    return resultList;
-  };
-
-  const getFormData = async (noValidate?: boolean) => {
-    let moduleFormList: any[] = [];
-    if (keys(variablesGroup.value).length > 1) {
-      moduleFormList = await getRefFormData(noValidate);
-    } else {
-      const result = await schemaForm.value?.getFormData(noValidate);
-      moduleFormList = [{ formData: result }];
-    }
-    return moduleFormList;
-  };
-
-  // update all the form data
-  const setVariableAttributes = async () => {
-    const moduleFormList = await getFormData(true);
-    variableAttributes.value = reduce(
-      moduleFormList,
-      (obj, s) => {
-        obj = {
-          ...obj,
-          ...s.formData
-        };
-        return obj;
-      },
-      {}
-    );
-  };
-
-  const handleTabChange = (val) => {
-    activeKey.value = val;
-    setVariableAttributes();
-  };
-
-  const clearFormValidStatus = () => {
-    keys(refMap.value).map(async (key) => {
-      const refEL = refMap.value[key];
-      refEL?.clearFormValidStatus?.();
-    });
-  };
-
   // cache the user inputs when change the module version
   const setModuleVersionFormCache = async () => {
     if (!versionMap.value.ov) return;
-    const moduleFormList = await getFormData(true);
+    const moduleFormList = await groupForm.value.getData();
     const inputs = reduce(
       moduleFormList,
       (obj, s) => {
@@ -512,19 +407,6 @@
       versionMap.value = { ov: '', nv: '' };
     }, 20);
     handleVersionChange();
-    nextTick(() => {
-      handleTabChange('schemaForm0');
-      // in the execVersionChangeCallback would set cache, when change the template, should clear the cache
-    });
-  };
-
-  const validateFormData = async () => {
-    const moduleFormList = await getFormData();
-    const validFailedForm = find(moduleFormList, (item) => !item.formData);
-    if (validFailedForm && validFailedForm.tab) {
-      activeKey.value = validFailedForm.tab;
-    }
-    return { validFailedForm, moduleFormList };
   };
 
   const cancel = async (callback) => {
@@ -540,7 +422,6 @@
   const submit = async () => {
     validateLabel();
     const res = await formref.value?.validate();
-    // const { validFailedForm, moduleFormList } = await validateFormData();
     const groupFormRes = await groupForm.value?.getData();
     if (!res && groupFormRes && !validateTrigger.value) {
       formData.attributes = {

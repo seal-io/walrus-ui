@@ -141,7 +141,7 @@ export default {
   'applications.service.rollback.version.label': 'Select Version',
   'applications.service.rollback.version.holder': 'please select a version',
   'applications.service.rollback.config.compare': 'Configuration Comparison',
-  'applications.service.clone': 'Clone Services',
+  'applications.service.clone': 'Clone Services/Resources',
   'applications.service.graph.menu': 'Resource Executable',
   'applications.service.resource.drift': 'Resource Drift',
   'applications.service.resource.hasDrift': 'Existence drift',

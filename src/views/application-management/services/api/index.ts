@@ -64,6 +64,10 @@ export const createService = (data) => {
   return axios.post(`${SERVICE_API_PREFIX()}${SERVICE_API}`, data);
 };
 
+export const createResourceBatch = (data) => {
+  return axios.post(`${SERVICE_API_PREFIX()}${SERVICE_API}/_/batch`, data);
+};
+
 // environmentID is the tartget environment, projectID is the target project
 export const cloneServices = (data: {
   projectID: string;
