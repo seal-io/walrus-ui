@@ -374,13 +374,13 @@
         maskClosable: true,
         onOk: async () => {
           await handleApprovePipelineTask(nodeData, {
-            approved: true
+            approve: true
           });
           await initData();
         },
         onCancel: async () => {
           await handleApprovePipelineTask(nodeData, {
-            approved: false
+            approve: false
           });
           await initData();
         }

@@ -51,7 +51,7 @@
   const { t, route, router } = useCallCommon();
   const flowId = route.params.flowId as string;
   const execId = route.query.execId as string;
-  const projectID = route.query.projectId as string;
+  const projectID = route.params.projectId as string;
   const flow = ref();
   const userStore = useUserStore();
   const {

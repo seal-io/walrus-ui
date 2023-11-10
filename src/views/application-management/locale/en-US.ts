@@ -57,7 +57,7 @@ export default {
   'applications.applications.instance.status': 'Status',
   'applications.applications.instance.history': 'History Revisions',
   'applications.applications.instance.accessUrl': 'Access URL',
-  'applications.applications.instance.resource': 'Resource Information',
+  'applications.applications.instance.resource': 'Component Information',
   'applications.applications.instance.resource.tips':
     'When the connector of the environment is customized, the resources and outputs of the service are static data, which will be updated when the service is upgraded',
   'applications.applications.instance.endpoint': 'EndPoint',
@@ -70,7 +70,7 @@ export default {
   'applications.instance.rule.env': 'the deployment environment is required',
   'applications.instance.env.tips':
     'environments without added connectors are not available',
-  'applications.instance.tab.resource': 'Resources',
+  'applications.instance.tab.resource': 'Components',
   'applications.instance.tab.resource.holder': 'please enter a resource name',
   'applications.instance.tab.resourceName': 'Resource Name',
   'applications.instance.tab.log': 'Logs',

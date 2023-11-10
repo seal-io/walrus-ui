@@ -108,7 +108,7 @@
                   @click="
                     handleViewLogs({
                       ...record,
-                      serviceID: record.resource?.id
+                      resourceID: record.resource?.id
                     })
                   "
                 >
@@ -125,7 +125,7 @@
                   @click="
                     handleConnectTerminal({
                       ...record,
-                      serviceID: record.resource?.id
+                      resourceID: record.resource?.id
                     })
                   "
                 >
