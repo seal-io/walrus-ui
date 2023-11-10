@@ -55,7 +55,12 @@
             :title="$t('common.title.config')"
             :title-style="{ 'margin-bottom': '10px', 'margin-top': 0 }"
           >
-            <moduleWrapper :show-delete="false" inner-wrap title="template">
+            <moduleWrapper
+              :show-delete="false"
+              inner-wrap
+              title="template"
+              @collapse="handleBasicCollapse"
+            >
               <template #title>
                 <div
                   v-if="dataType === ServiceDataType.service"
@@ -270,6 +275,12 @@
   };
   const handleClick = () => {
     handleUpgrade();
+  };
+
+  const handleBasicCollapse = (val) => {
+    if (val) {
+      serviceInfoRef.value?.initInfo();
+    }
   };
 
   const handleDelete = () => {

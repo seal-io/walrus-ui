@@ -66,10 +66,11 @@
       }
     }
   });
-  const emits = defineEmits(['delete']);
+  const emits = defineEmits(['delete', 'collapse']);
   const isCollapse = ref(props.status);
   const handleCollapse = () => {
     isCollapse.value = !isCollapse.value;
+    emits('collapse', isCollapse.value);
   };
   const handleDeleteConfirm = () => {
     emits('delete');
