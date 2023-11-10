@@ -109,6 +109,7 @@
   import { useUserStore } from '@/store';
   import { Resources, Actions } from '@/permissions/config';
   import { useFullscreen } from '@vueuse/core';
+  import { Message } from '@arco-design/web-vue';
   import useCallCommon from '@/hooks/use-call-common';
   import { PropType, ref, watch, computed } from 'vue';
   import AceEditor from '@/components/ace-editor/index.vue';
@@ -237,15 +238,14 @@
     try {
       const ajv = new Ajv();
       const data = previewForm();
-      console.log('data>>>>>>>', data);
       const validate = ajv.compile(
         data.jsonCode.openAPISchema.components.schemas.variables
       );
       const res = validate(data.formData);
       console.log('res========', res);
       return true;
-    } catch (error) {
-      console.log('error=====', error);
+    } catch (error: any) {
+      Message.error(error.message);
       return false;
     }
   };
