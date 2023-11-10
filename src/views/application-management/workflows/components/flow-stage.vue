@@ -94,6 +94,7 @@
       };
 
       const handleSaveFlowTask = (data) => {
+        console.log('result========', data);
         if (action.value === 'create') {
           stepList.value.push(_.cloneDeep(data));
         } else {
@@ -112,6 +113,7 @@
         action.value = 'edit';
         activeStep.value = item;
         activeIndex.value = index;
+        console.log('activeStep', activeStep.value);
         setTimeout(() => {
           show.value = true;
         });
