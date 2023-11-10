@@ -24,7 +24,7 @@
         v-if="showDelete"
         status="danger"
         type="text"
-        @click="handleDelete"
+        @click.stop="handleDelete"
       >
         <template #icon>
           <icon-delete style="font-size: 18px" />

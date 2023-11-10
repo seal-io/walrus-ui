@@ -56,9 +56,13 @@
               >
             </template>
           </a-form-item>
-          <GroupTitle :bordered="false" title="选择器" flex-start>
+          <GroupTitle
+            :bordered="false"
+            :title="$t('resource.definition.detail.seletor')"
+            flex-start
+          >
             <template #title>
-              <span>选择器</span>
+              <span>{{ $t('resource.definition.detail.seletor') }}</span>
               <primaryButtonGroup
                 v-if="pageAction === PageAction.EDIT"
                 :action-list="actionList"
@@ -66,7 +70,7 @@
               >
                 <a-link class="m-l-10">
                   <icon-plus class="size-14" style="stroke-width: 4" />
-                  <span class="mleft-5">添加</span>
+                  <span class="mleft-5">{{ $t('common.button.add') }}</span>
                 </a-link>
               </primaryButtonGroup>
             </template>
@@ -75,7 +79,7 @@
             v-if="selectors.has('projectName')"
             field="selector.projectName"
             hide-label
-            label="项目名称"
+            :label="$t('resource.definition.detail.projectName')"
             :rules="[
               {
                 required: true,
@@ -93,7 +97,7 @@
                 v-model="formData.selector.projectName"
                 allow-clear
                 :required="true"
-                label="项目名称"
+                :label="$t('resource.definition.detail.projectName')"
                 :style="{ width: `${InputWidth.LARGE}px` }"
                 :max-length="63"
                 show-word-limit
@@ -110,7 +114,7 @@
             </div>
             <SealFormItemWrap
               v-else
-              label="项目名称"
+              :label="$t('resource.definition.detail.projectName')"
               :style="{ width: `${InputWidth.LARGE}px` }"
             >
               {{ formData.selector.projectName }}
@@ -127,7 +131,7 @@
             v-if="selectors.has('environmentName')"
             field="selector.environmentName"
             hide-label
-            label="环境名称"
+            :label="$t('resource.definition.detail.envName')"
             :rules="[
               {
                 required: true,
@@ -145,7 +149,7 @@
                 v-model="formData.selector.environmentName"
                 allow-clear
                 :required="true"
-                label="环境名称"
+                :label="$t('resource.definition.detail.envName')"
                 :style="{ width: `${InputWidth.LARGE}px` }"
                 :max-length="63"
                 show-word-limit
@@ -162,7 +166,7 @@
             </div>
             <SealFormItemWrap
               v-else
-              label="环境名称"
+              :label="$t('resource.definition.detail.envName')"
               :style="{ width: `${InputWidth.LARGE}px` }"
             >
               {{ formData.selector.environmentName }}
@@ -230,17 +234,17 @@
           <a-form-item
             v-if="selectors.has('environmentLabels')"
             field="selector.environmentLabels"
-            label="环境标签"
+            :label="$t('resource.definition.detail.envTag')"
             hide-label
             :rules="[
               {
                 validator: validateLabels,
-                message: '标签key不能为空'
+                message: $t('resource.definition.detail.rules.labelKey')
               }
             ]"
           >
             <SealFormItemWrap
-              label="环境标签"
+              :label="$t('resource.definition.detail.envTag')"
               :style="{ width: `${InputWidth.LARGE}px` }"
             >
               <keyValueLabels
@@ -265,17 +269,17 @@
           <a-form-item
             v-if="selectors.has('resourceLabels')"
             field="selector.resourceLabels"
-            label="资源标签"
+            :label="$t('resource.definition.detail.resourceTag')"
             hide-label
             :rules="[
               {
                 validator: validateLabels,
-                message: '标签key不能为空'
+                message: $t('resource.definition.detail.rules.labelKey')
               }
             ]"
           >
             <SealFormItemWrap
-              label="资源标签"
+              :label="$t('resource.definition.detail.resourceTag')"
               :style="{ width: `${InputWidth.LARGE}px` }"
             >
               <keyValueLabels
@@ -575,7 +579,7 @@
       return !key;
     });
     if (valid) {
-      callback('请输入标签');
+      callback(t('resource.definition.detail.rules.labelKey'));
       return;
     }
     callback();

@@ -50,6 +50,11 @@
         </div>
       </div>
     </div>
+    <i
+      v-if="_.get(dataInfo, ['labels', 'walrus.seal.io/category'])"
+      class="iconfont icon-shandian in-used"
+      style="color: var(--seal-color-success)"
+    ></i>
     <a-checkbox
       v-if="showCheckbox"
       class="check-box"
@@ -274,6 +279,12 @@
     .arco-checkbox {
       position: absolute;
       top: 10px;
+      right: 10px;
+    }
+
+    .in-used {
+      position: absolute;
+      top: 30px;
       right: 10px;
     }
   }

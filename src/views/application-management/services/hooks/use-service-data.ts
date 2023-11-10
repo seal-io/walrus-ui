@@ -140,6 +140,7 @@ export default function useServiceData(props?) {
 
   // change version ...
   const getTemplateSchemaByVersion = async () => {
+    if (!formData.template?.version) return {};
     templateVersionSchemaToken?.cancel();
     templateVersionSchemaToken = createAxiosToken();
     try {
