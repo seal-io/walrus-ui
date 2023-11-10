@@ -8,7 +8,7 @@
       <slot name="title"></slot>
     </template>
     <div>
-      <div padding="16px 16px 0 16px">
+      <div>
         <a-form
           ref="formref"
           :model="formData"
@@ -46,7 +46,7 @@
               :label="$t('common.table.name')"
               :style="{ width: `${InputWidth.LARGE}px` }"
             >
-              {{ formData.selector.projectName }}
+              {{ formData.name }}
             </SealFormItemWrap>
             <template #extra>
               <div
@@ -179,7 +179,7 @@
             v-if="selectors.has('environmentType')"
             hide-label
             field="selector.environmentType"
-            label="环境类型"
+            :label="$t('applications.environment.type')"
             :rules="[
               {
                 required: true,
@@ -192,7 +192,7 @@
                 v-model="formData.selector.environmentType"
                 :options="[]"
                 :required="true"
-                label="环境类型"
+                :label="$t('applications.environment.type')"
                 :style="{ width: `${InputWidth.LARGE}px` }"
               >
                 <a-option
@@ -214,7 +214,7 @@
             </div>
             <SealFormItemWrap
               v-else
-              label="环境类型"
+              :label="$t('applications.environment.type')"
               :style="{ width: `${InputWidth.LARGE}px` }"
               >{{
                 $t(
@@ -373,18 +373,20 @@
           >
             <div v-if="pageAction === PageAction.EDIT">
               <seal-select
-                v-model="formData.template.id"
+                v-model="formData.template.version"
                 :options="[]"
                 :required="true"
                 :placeholder="$t('applications.applications.history.version')"
                 :style="{ width: `${InputWidth.LARGE}px` }"
                 :loading="asyncLoading"
+                allow-search
+                @popup-visible-change="handleVersionPopupVisibleChange"
                 @change="handleVersionChange"
               >
                 <a-option
                   v-for="item in templateVersionList"
                   :key="item.value"
-                  :value="item.value"
+                  :value="item.label"
                   >{{ item.label }}</a-option
                 >
               </seal-select>
@@ -421,7 +423,7 @@
 
 <script lang="ts" setup>
   import _, { get, find, cloneDeep, reduce, toString } from 'lodash';
-  import { ref, computed, provide, watch, PropType } from 'vue';
+  import { ref, computed, provide, watch, PropType, onMounted } from 'vue';
   import ModuleWrapper from '@/components/module-wrapper/index.vue';
   import useCallCommon from '@/hooks/use-call-common';
   import useScrollToView from '@/hooks/use-scroll-to-view';
@@ -649,13 +651,18 @@
     }
   };
 
+  const handleVersionPopupVisibleChange = (visible) => {
+    if (visible && !templateVersionList.value.length) {
+      getTemplateVersions();
+    }
+  };
   const handleVersionChange = async () => {
-    formData.value.template.version = _.get(
+    formData.value.template.id = _.get(
       _.find(
         templateVersionList.value,
-        (item) => item.value === formData.value.template.id
+        (item) => item.label === formData.value.template.version
       ),
-      'label',
+      'value',
       ''
     );
     uiSchema.value = await getTemplateSchemaByVersion();
@@ -677,7 +684,11 @@
       'label',
       ''
     );
-    formData.value.template.id = get(templateVersionList.value, '0.value', '');
+    formData.value.template.version = get(
+      templateVersionList.value,
+      '0.label',
+      ''
+    );
     await handleVersionChange();
     templateVersionFormCache.value = {};
     setTimeout(() => {
@@ -720,7 +731,10 @@
   };
 
   const init = async () => {
-    if (props.pageAction === PageAction.VIEW && props.dataId) {
+    if (!props.templateList.length) {
+      return;
+    }
+    if (props.dataId) {
       formData.value = _.cloneDeep(props.originFormData);
       const moduleData = await getTemplateSchemaByVersion();
       setTemplateInfo(moduleData);
@@ -734,6 +748,7 @@
       );
       await handleTemplateChange();
     }
+    console.log('formData>>>', formData.value, props.dataId, props.pageAction);
   };
   watch(
     () => formData.value.template.version,
@@ -742,18 +757,6 @@
         nv,
         ov: ov || ''
       };
-    },
-    {
-      immediate: true
-    }
-  );
-  watch(
-    () => props.templateList,
-    () => {
-      if (!props.templateList.length) {
-        return;
-      }
-      init();
     },
     {
       immediate: true
@@ -768,6 +771,8 @@
   const initData = async () => {
     copyFormData = _.cloneDeep(formData);
   };
-
+  onMounted(() => {
+    init();
+  });
   initData();
 </script>

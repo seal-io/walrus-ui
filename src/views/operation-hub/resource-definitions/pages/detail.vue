@@ -168,7 +168,6 @@
           <a-tab-pane key="matchRules" title="匹配规则">
             <DefinitionRules
               v-for="(item, index) in formData.matchingRules"
-              :ref="(el) => setRefMap(el, `rules${index}`)"
               :key="index"
               :title="item.name || '规则'"
               :data-id="id"
@@ -424,7 +423,7 @@
         });
         copyFormData = cloneDeep(formData.value);
         if (id) {
-          await upateResourceDefinition(formData.value);
+          await upateResourceDefinition({ id, data: formData.value });
         } else {
           await createResourceDefinition(formData.value);
         }
