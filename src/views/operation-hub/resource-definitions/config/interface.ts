@@ -1,4 +1,5 @@
 export interface MatchingRule {
+  id?: string;
   attributes: Record<string, any>;
   name: string;
   selector: {

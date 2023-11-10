@@ -172,6 +172,7 @@
         if (
           !user ||
           user.approvaled ||
+          user.rejected ||
           node.value.data?.type !== TaskTypes.APPROVAL
         ) {
           return false;

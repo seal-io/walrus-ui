@@ -762,7 +762,6 @@
       );
       await handleTemplateChange();
     }
-    console.log('formData>>>', formData.value, props.dataId, props.pageAction);
   };
   watch(
     () => formData.value.template.version,
