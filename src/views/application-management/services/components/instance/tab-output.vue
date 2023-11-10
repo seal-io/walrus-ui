@@ -65,9 +65,10 @@
   import { websocketEventType } from '@/views/config';
   import { queryInstanceOutputs, SERVICE_RESOURCE_API_PREFIX } from '../../api';
   import { OutputsRow } from '../../config/interface';
+  import { ProvideServiceIDKey } from '../../config';
 
   const { setChunkRequest } = useSetChunkRequest();
-  const serviceId = inject('serviceId', ref(''));
+  const serviceId = inject(ProvideServiceIDKey, ref(''));
   const dataList = ref<OutputsRow[]>([]);
   let chunkRequesSource: any = null;
   const fetchData = async () => {

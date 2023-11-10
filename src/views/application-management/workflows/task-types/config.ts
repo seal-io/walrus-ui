@@ -1,7 +1,9 @@
+import { ServiceDataType } from '@/views/application-management/services/config';
+
 export const TaskTypes = {
   APPROVAL: 'approval',
-  SERVICE: 'service',
-  RESOURCE: 'resource'
+  SERVICE: ServiceDataType.service,
+  RESOURCE: ServiceDataType.resource
 };
 
 export const TaskTypeList = [

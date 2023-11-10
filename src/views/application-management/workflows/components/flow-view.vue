@@ -29,11 +29,12 @@
   import { useSetChunkRequest } from '@/api/axios-chunk-request';
   import useCallCommon from '@/hooks/use-call-common';
   import { PROJECT } from '@/router/config';
-  import { ref, onMounted, nextTick, computed, watch } from 'vue';
+  import { ref, onMounted, nextTick, computed, watch, provide } from 'vue';
   import { Graph, Node, Edge, Platform } from '@antv/x6';
   import '@antv/x6-vue-shape';
   import { useResizeObserver } from '@vueuse/core';
   import { deleteModal, execSucceed } from '@/utils/monitor';
+  import { querySubjects } from '@/views/system/api/users';
   import toolBar from './tool-bar.vue';
   import { setPipelineNodeStyle } from '../custom/style';
   import {
@@ -56,7 +57,6 @@
     PIPELINE_API,
     PIPELINE_EXECUTION_API
   } from '../api';
-  import testData from '../config/test';
 
   const props = defineProps({
     containerHeight: {
@@ -90,6 +90,7 @@
   const flowId = route.params.flowId as string;
   const execId = route.query.execId as string;
   const lastestExecId = ref('');
+  const subjectList = ref<{ id: string; name: string }[]>([]);
 
   const handleDeleteLogTab = (key) => {
     const index = _.findIndex(logTabs.value, (item) => item.id === key);
@@ -392,7 +393,8 @@
         name: PROJECT.ServiceDetail,
         params: {
           projectId: route.params.projectId,
-          environmentId: nodeData?.attributes?.environment?.id
+          environmentId: nodeData?.attributes?.environment?.id,
+          dataType: 'service'
         },
         query: {
           id: nodeData?.attributes?.name
@@ -403,7 +405,17 @@
       console.log('node:click', e);
     });
   };
-
+  const getSubjects = async () => {
+    try {
+      const params = {
+        page: -1
+      };
+      const { data } = await querySubjects(params);
+      subjectList.value = data.items || [];
+    } catch (error) {
+      subjectList.value = [];
+    }
+  };
   const init = async () => {
     graphIns?.clearCells();
     defineCustomNode();

@@ -16,7 +16,7 @@
           <a-button
             v-if="
               userStore.hasProjectResourceActions({
-                resource: Resources.WorkflowApply,
+                resource: Resources.WorkflowExecutions,
                 projectID,
                 actions: [Actions.PUT]
               })

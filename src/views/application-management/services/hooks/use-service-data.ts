@@ -15,7 +15,7 @@ import semverGt from 'semver/functions/gt';
 import { ServiceFormData } from '../config/interface';
 import { queryItemService } from '../api';
 import useCompleteData from './use-complete-data';
-import { ServiceDataType } from '../config';
+import { ServiceDataType, ProvideSetServiceInfoKey } from '../config';
 
 export default function useServiceData(props?) {
   type refItem = Element | ComponentPublicInstance | null;
@@ -24,7 +24,7 @@ export default function useServiceData(props?) {
     value: string;
   }
 
-  const setServiceInfo = inject('setServiceInfo', {
+  const setServiceInfo = inject(ProvideSetServiceInfoKey, {
     enable: false,
     info: {}
   });
@@ -257,6 +257,7 @@ export default function useServiceData(props?) {
   const initSerivceInfo = async () => {
     if (!setServiceInfo.enable) return;
     serviceInfo.value = setServiceInfo.info;
+    console.log('ProvideSetServiceInfoKey=======', serviceInfo.value);
   };
 
   // for service edit page

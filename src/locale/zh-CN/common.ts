@@ -102,6 +102,7 @@ export default {
   'common.permission.action.put': '更新',
   'common.button.settings': '设置',
   'common.button.management': '管理',
+  'common.title.config': '配置',
   'common.cli.download': '客户端下载',
   'common.table.sensitive': '是否敏感',
   'common.table.yes': '是',

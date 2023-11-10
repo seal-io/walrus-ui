@@ -395,6 +395,7 @@
   const init = () => {
     getServiceItemInfo();
     fetchData();
+    console.log('dataList=======', dataList.value);
   };
   onMounted(() => {
     init();

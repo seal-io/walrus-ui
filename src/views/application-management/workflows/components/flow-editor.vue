@@ -3,7 +3,7 @@
   import { defineComponent, toRefs, ref } from 'vue';
   import { validateLabelNameRegx, InputWidth } from '@/views/config';
   import useCallCommon from '@/hooks/use-call-common';
-  import { deleteModal } from '@/utils/monitor';
+  import { deleteModal, execError } from '@/utils/monitor';
   import dayjs from 'dayjs';
   import FlowStage from './flow-stage.vue';
   import FlowSplitLine from './split-line.vue';
@@ -125,9 +125,14 @@
 
       const getData = async () => {
         const res = await formref.value.validate();
+        const stages = _.filter(stageList.value, (item) => !!item.steps.length);
+        if (!stages.length) {
+          execError('workflow.task.run.stage');
+          return null;
+        }
         if (res) return null;
         return {
-          stages: stageList.value,
+          stages,
           basic: {
             ...flowBasic.value,
             timeout: Math.floor(flowBasic.value?.timeout * 3600)

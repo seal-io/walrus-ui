@@ -333,7 +333,7 @@ export default function useProjectData() {
     const list = _.map(recordList, (item) => {
       return {
         ..._.cloneDeep(item),
-        label: item.name as string,
+        label: `#${item.version}`,
         value: item.id
       };
     });

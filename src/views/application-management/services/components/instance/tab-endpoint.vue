@@ -72,6 +72,7 @@
   } from '@/api/axios-chunk-request';
   import { websocketEventType } from '@/views/config/index';
   import { EndPointRow } from '../../config/interface';
+  import { ProvideServiceIDKey } from '../../config';
   import {
     queryInstanceEndpoints,
     SERVICE_RESOURCE_API_PREFIX
@@ -80,12 +81,10 @@
   const { setChunkRequest } = useSetChunkRequest();
   let axiosInstance = createAxiosToken();
   let chunkRequesSource: any = null;
-  const serviceId = inject('serviceId', ref(''));
+  const serviceId = inject(ProvideServiceIDKey, ref(''));
   const loading = ref(false);
   const requestCacheList = ref<number[]>([]);
-  const queryParams = reactive({
-    page: -1
-  });
+
   const dataList = ref<EndPointRow[]>([]);
 
   const fetchData = async () => {
@@ -96,7 +95,6 @@
       loading.value = true;
       requestCacheList.value.push(1);
       const params = {
-        ...queryParams,
         serviceID: serviceId.value
       };
       const { data } = await queryInstanceEndpoints(
@@ -156,7 +154,6 @@
   watch(
     () => serviceId.value,
     () => {
-      queryParams.page = 1;
       fetchData();
       chunkRequesSource?.cancel?.();
       nextTick(() => {

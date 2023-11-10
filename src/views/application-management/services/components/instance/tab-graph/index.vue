@@ -74,8 +74,9 @@
   import GraphG6 from './components/graph-g6.vue';
   import { queryServiceResourceGraph } from '../../../api';
   import { INode, IEdge } from './config/interface';
+  import { ProvideServiceIDKey } from '../../../config';
 
-  const serviceId = inject('serviceId', ref(''));
+  const serviceId = inject(ProvideServiceIDKey, ref(''));
   const nodeActive = ref(false);
   const loading = ref(false);
   const showAll = ref(false);

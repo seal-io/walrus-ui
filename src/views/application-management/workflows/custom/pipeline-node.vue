@@ -56,16 +56,19 @@
               node.value.data.attributes.approvalUsers,
               item.id
             );
-          }).map((sItem) => {
-            return {
-              name: sItem.name,
-              id: sItem.id,
-              approvaled: _.includes(
-                node.value.data.attributes.approvedUsers,
-                sItem.id
-              )
-            };
-          });
+          })
+            .map((sItem) => {
+              return {
+                name: sItem.name,
+                id: sItem.id,
+                order: userStore.userInfo.id === sItem.id ? 0 : 1,
+                approvaled: _.includes(
+                  node.value.data.attributes.approvedUsers,
+                  sItem.id
+                )
+              };
+            })
+            .sort((a, b) => a.order - b.order);
         } catch (error) {
           subjectList.value = [];
         }
@@ -80,7 +83,7 @@
                   ? `(${t('workflow.task.approval.or')})`
                   : `(${t('workflow.task.approval.and')})`}
               </span>
-              <a-avatar-group max-count={8} class="m-t-2">
+              <a-avatar-group max-count={5} class="m-t-2">
                 {_.map(approvalUsers.value, (user, index) => {
                   return (
                     <a-avatar
