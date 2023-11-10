@@ -1,8 +1,8 @@
 // resource that same with the api data
 export enum Resources {
-  ServiceResources = 'serviceResources',
-  ServiceRevisions = 'serviceRevisions',
-  Services = 'services',
+  ServiceResources = 'resourceComponents',
+  ServiceRevisions = 'resourceRevisions',
+  Services = 'resources',
   Connectors = 'connectors',
   Costs = 'costs',
   Dashboards = 'dashboards',

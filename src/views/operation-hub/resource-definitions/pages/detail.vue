@@ -143,7 +143,7 @@
           <DefinitionRules
             v-for="(item, index) in formData.matchingRules"
             :ref="(el) => setRefMap(el, `${definitionRulePrefix}${index}`)"
-            :key="index"
+            :key="item.id"
             :title="
               item.name ||
               $t('resource.definition.detail.rule', { name: index + 1 })
@@ -401,7 +401,8 @@
     copyFormData = cloneDeep(formData.value);
     if (!id) {
       formData.value.matchingRules.push({
-        ..._.cloneDeep(definitionFormData)
+        ..._.cloneDeep(definitionFormData),
+        id: `${Date.now()}`
       });
       return;
     }
@@ -465,17 +466,24 @@
     router.back();
   };
   const handleCancel = () => {
-    if (!isEqual(copyFormData, formData.value)) {
-      beforeLeaveCallback({
-        isCancel: true,
-        onOk: () => {
-          copyFormData = cloneDeep(formData.value);
-          cancelCallback();
-        }
-      });
-    } else {
-      cancelCallback();
-    }
+    // if (!isEqual(copyFormData, formData.value)) {
+    //   beforeLeaveCallback({
+    //     isCancel: true,
+    //     onOk: () => {
+    //       copyFormData = cloneDeep(formData.value);
+    //       cancelCallback();
+    //     }
+    //   });
+    // } else {
+    //   cancelCallback();
+    // }
+    beforeLeaveCallback({
+      isCancel: true,
+      onOk: () => {
+        copyFormData = cloneDeep(formData.value);
+        cancelCallback();
+      }
+    });
   };
 
   const handleSelectAction = (val) => {
@@ -489,8 +497,9 @@
   const handleConfirm = () => {};
   const handleCancelEdit = () => {};
   const handleAddRule = () => {
-    formData.value.matchingRules.unshift({
-      ..._.cloneDeep(definitionFormData)
+    formData.value.matchingRules.push({
+      ..._.cloneDeep(definitionFormData),
+      id: `${Date.now()}`
     });
   };
 
