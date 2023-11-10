@@ -77,10 +77,20 @@
       };
       const renderApprovalIcon = (user) => {
         if (user.approvaled) {
-          return <i class="iconfont approval icon-success-fill"></i>;
+          return (
+            <i
+              class="iconfont approval icon-success-fill"
+              style="font-size: 12px;"
+            ></i>
+          );
         }
         if (user.rejected) {
-          return <i class="iconfont approval icon-status-error"></i>;
+          return (
+            <i
+              class="iconfont approval icon-status-error"
+              style="font-size: 12px;"
+            ></i>
+          );
         }
         return null;
       };
@@ -94,7 +104,7 @@
                   ? `(${t('workflow.task.approval.or')})`
                   : `(${t('workflow.task.approval.and')})`}
               </span>
-              <a-avatar-group max-count={5} class="m-t-2">
+              <a-avatar-group max-count={9} class="m-t-2">
                 {_.map(approvalUsers.value, (user, index) => {
                   return (
                     <a-avatar
@@ -106,10 +116,9 @@
                     >
                       <span>
                         {renderApprovalIcon(user)}
-                        {user.name.slice(0, 3)}
-                        {/* <a-tooltip content={user.name}>
+                        <a-tooltip content={user.name}>
                           <span>{user.name.slice(0, 3)}</span>
-                        </a-tooltip> */}
+                        </a-tooltip>
                       </span>
                     </a-avatar>
                   );

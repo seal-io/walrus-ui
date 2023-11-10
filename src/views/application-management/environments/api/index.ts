@@ -69,11 +69,17 @@ export const queryEnvironmentAvailableDefinitions = (params: {
 };
 
 // for custom service ui
-export const queryEnvironmentConnector = (params: {
-  projectID: string;
-  environmentID: string;
-}) => {
+export const queryEnvironmentConnector = (
+  params: {
+    projectID: string;
+    environmentID: string;
+  },
+  token?
+) => {
   return axios.get(
-    `/projects/${params.projectID}/environments/${params.environmentID}`
+    `/projects/${params.projectID}/environments/${params.environmentID}`,
+    {
+      cancelToken: token
+    }
   );
 };

@@ -22,11 +22,11 @@
               required: true,
               match: validateLabelNameRegx,
               message: $t('common.validate.labelName')
-            },
-            {
-              validator: validateNameuniq,
-              message: $t('applications.applications.rule.modules.name')
             }
+            // {
+            //   validator: validateNameuniq,
+            //   message: $t('applications.applications.rule.modules.name')
+            // }
           ]"
         >
           <seal-input
@@ -244,6 +244,7 @@
 <script lang="ts" setup>
   import { PROJECT } from '@/router/config';
   import _, { get, find, cloneDeep, reduce, pickBy, toString } from 'lodash';
+  import { createAxiosToken } from '@/api/axios-chunk-request';
   import {
     ref,
     computed,
@@ -251,7 +252,8 @@
     watch,
     reactive,
     PropType,
-    onMounted
+    onMounted,
+    onBeforeUnmount
   } from 'vue';
   import { onBeforeRouteLeave } from 'vue-router';
   import useCallCommon from '@/hooks/use-call-common';
@@ -337,6 +339,7 @@
   const groupForm = ref();
   const versionMap = ref({ nv: '', ov: '' });
   const dataType = ref(props.resourceType || '');
+  let connectorAxiosToken: any = null;
   const projectEnvCtx = reactive({
     projectID: route.params.projectId as string,
     environmentID: route.params.environmentId as string,
@@ -369,11 +372,18 @@
 
   const getEnvironmentConnectors = async () => {
     try {
-      const { data } = await queryEnvironmentConnector({
+      connectorAxiosToken?.cancel();
+      connectorAxiosToken = createAxiosToken();
+      const params = {
         environmentID:
           props.flow.environmentId || (route.params.environmentId as string),
         projectID: route.params.projectId as string
-      });
+      };
+      if (!params.environmentID || !params.projectID) return;
+      const { data } = await queryEnvironmentConnector(
+        params,
+        connectorAxiosToken.token
+      );
       projectEnvCtx.connectors = data.connectors || [];
     } catch (error) {
       // ingore
@@ -510,6 +520,9 @@
     scrollToView();
     return false;
   };
+  const axiosTokenCancel = () => {
+    connectorAxiosToken?.cancel();
+  };
   watch(
     () => formData.template.version,
     (nv, ov) => {
@@ -541,6 +554,9 @@
   defineExpose({
     submit,
     cancel
+  });
+  onBeforeUnmount(() => {
+    axiosTokenCancel();
   });
   const initData = async () => {
     await init();
