@@ -14,6 +14,14 @@ export const colors = [
   '#6300D5',
   '#8D74A5',
   '#0084FF',
+  '#00C7A5',
+  '#6300D5',
+  '#8D74A5',
+  '#0084FF',
+  '#00C7A5',
+  '#6300D5',
+  '#8D74A5',
+  '#0084FF',
   '#00C7A5'
 ];
 export const workflowTimeoutOptons = [

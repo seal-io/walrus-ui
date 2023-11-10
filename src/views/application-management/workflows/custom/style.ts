@@ -89,6 +89,7 @@ export const setPipelineNodeStyle = (size) => {
             right: -6px;
             background-color: #fff;
             border-radius: 50%;
+            font-size: 12px;
           }
           .icon-success-fill {
             color: var(--seal-color-success);

@@ -354,7 +354,6 @@
       (item) => item.value === flow.environmentId
     );
     flow.environmentName = data?.label || '';
-    handleOnNext();
   };
 
   const handleSelectTask = (item) => {
@@ -411,7 +410,8 @@
             },
             projectID: flow.projectId
           },
-          ..._.pick(flow, ['timeout', 'retryStrategy'])
+          timeout: Math.floor(flow.timeout * 3600),
+          ..._.pick(flow, ['retryStrategy'])
         };
         if (data) {
           emits('save', result);
@@ -432,6 +432,7 @@
           emits('save', result);
         }
       }
+      emits('update:show', false);
       setTimeout(() => {
         resetFlow();
       });
@@ -439,6 +440,7 @@
   };
   const setServiceInfo = () => {
     if (props.action === 'edit' && props.dataInfo.type === TaskTypes.SERVICE) {
+      console.log('props.dataInfo', props.dataInfo);
       flow.environmentId = props.dataInfo.attributes?.environment?.id;
       flow.retryStrategy = {
         ..._.pick(props.dataInfo.retryStrategy, ['limit', 'retryPolicy'])

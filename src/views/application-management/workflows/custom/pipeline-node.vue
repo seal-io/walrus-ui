@@ -106,9 +106,10 @@
                     >
                       <span>
                         {renderApprovalIcon(user)}
-                        <a-tooltip content={user.name}>
+                        {user.name.slice(0, 3)}
+                        {/* <a-tooltip content={user.name}>
                           <span>{user.name.slice(0, 3)}</span>
-                        </a-tooltip>
+                        </a-tooltip> */}
                       </span>
                     </a-avatar>
                   );
