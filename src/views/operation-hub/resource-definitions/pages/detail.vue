@@ -127,12 +127,16 @@
           </a-form-item>
         </a-form>
         <div v-if="pageAction === PageAction.EDIT">
-          <GroupTitle :bordered="false" title="匹配规则" flex-start>
+          <GroupTitle
+            :bordered="false"
+            :title="$t('resource.definition.detail.matchRule')"
+            flex-start
+          >
             <template #title>
-              <span>匹配规则</span>
+              <span>{{ $t('resource.definition.detail.matchRule') }}</span>
               <a-link class="m-l-10" @click="handleAddRule">
                 <icon-plus class="size-14" style="stroke-width: 4" />
-                <span class="mleft-5">添加</span>
+                <span class="mleft-5">{{ $t('common.button.add') }}</span>
               </a-link>
             </template>
           </GroupTitle>
@@ -140,7 +144,10 @@
             v-for="(item, index) in formData.matchingRules"
             :ref="(el) => setRefMap(el, `rules${index}`)"
             :key="index"
-            :title="item.name || '规则'"
+            :title="
+              item.name ||
+              $t('resource.definition.detail.rule', { name: index + 1 })
+            "
             :data-id="id"
             :origin-form-data="item"
             :page-action="pageAction"
@@ -165,11 +172,14 @@
           class="page-line-tabs"
           @change="handleTabChange"
         >
-          <a-tab-pane key="matchRules" title="匹配规则">
+          <a-tab-pane
+            key="matchRules"
+            :title="$t('resource.definition.detail.matchRule')"
+          >
             <DefinitionRules
               v-for="(item, index) in formData.matchingRules"
               :key="index"
-              :title="item.name || '规则'"
+              :title="item.name"
               :data-id="id"
               :origin-form-data="item"
               :page-action="pageAction"

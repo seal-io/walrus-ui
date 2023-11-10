@@ -63,6 +63,7 @@ export default function useCompleteData(props?) {
       const params = {
         page: -1,
         withGlobal: true,
+        isService: true,
         extract: ['-status']
       };
       const { data } = await queryTemplates(params, templateToken.token);
@@ -110,7 +111,10 @@ export default function useCompleteData(props?) {
     formTemplateData,
     isOnSelect?: boolean
   ) => {
-    if (dataType === ServiceDataType.resource) {
+    if (
+      dataType === ServiceDataType.resource ||
+      !formTemplateData.template?.id
+    ) {
       return;
     }
     const templateID = formTemplateData.template?.id;

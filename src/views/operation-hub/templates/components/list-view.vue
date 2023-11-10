@@ -20,9 +20,16 @@
           :title="$t('operation.templates.table.name')"
         >
           <template #cell="{ record }">
-            <a-link size="small" @click="handleView(record)">{{
-              record.name
-            }}</a-link>
+            <span>
+              <i
+                v-if="_.get(record, ['labels', 'walrus.seal.io/category'])"
+                class="iconfont icon-shandian"
+                style="color: var(--seal-color-success)"
+              ></i>
+              <a-link size="small" @click="handleView(record)">{{
+                record.name
+              }}</a-link>
+            </span>
           </template>
         </a-table-column>
         <a-table-column
