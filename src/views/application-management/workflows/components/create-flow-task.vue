@@ -90,7 +90,7 @@
               </seal-select>
             </a-form-item>
             <a-form-item field="timeout">
-              <seal-select
+              <!-- <seal-select
                 v-model="flow.timeout"
                 :label="$t('workflow.form.timeout')"
                 :required="false"
@@ -103,9 +103,20 @@
                   :value="item.value"
                   :label="$t(item.label)"
                 ></a-option>
-              </seal-select>
+              </seal-select> -->
+              <seal-input-number
+                v-model="flow.timeout"
+                :label="$t('workflow.form.timeout')"
+                :required="false"
+                :min="1"
+                :style="{ width: `${InputWidth.LARGE}px` }"
+              >
+                <template #suffix>
+                  <span>{{ $t('common.time.hour') }}</span>
+                </template>
+              </seal-input-number>
             </a-form-item>
-            <a-form-item field="retryStrategy.retryPolicy">
+            <!-- <a-form-item field="retryStrategy.retryPolicy">
               <seal-select
                 v-model="flow.retryStrategy.retryPolicy"
                 :label="$t('workflow.task.retry.policy')"
@@ -129,7 +140,7 @@
                   </a-tooltip>
                 </a-option>
               </seal-select>
-            </a-form-item>
+            </a-form-item> -->
             <a-form-item field="retryStrategy.limit">
               <seal-input-number
                 v-model="flow.retryStrategy.limit"
@@ -137,7 +148,6 @@
                 :required="false"
                 :min="1"
                 :style="{ width: `${InputWidth.LARGE}px` }"
-                allow-search
               >
               </seal-input-number>
             </a-form-item>
@@ -270,7 +280,7 @@
     timeout: 1800,
     retryStrategy: {
       limit: 1,
-      retryPolicy: 'OnError'
+      retryPolicy: 'Always'
     }
   });
   const serviceRef = ref();
@@ -350,7 +360,7 @@
   const handleSelectTask = (item) => {
     taskType.value = item.value;
     if (taskType.value === TaskTypes.SERVICE) {
-      flow.timeout = 1800;
+      flow.timeout = 1;
       getEnvironmentList();
     } else {
       flow.timeout = 0;
@@ -371,7 +381,7 @@
     flow.environmentId = '';
     flow.environmentName = '';
     flow.name = '';
-    flow.timeout = 1800;
+    flow.timeout = 1;
     flow.retryStrategy = {
       limit: 1,
       retryPolicy: 'Always'
@@ -416,7 +426,7 @@
           attributes: {
             ...data
           },
-          timeout: flow.timeout
+          timeout: Math.floor(flow.timeout * 3600)
         };
         if (data) {
           emits('save', result);
@@ -433,6 +443,7 @@
       flow.retryStrategy = {
         ..._.pick(props.dataInfo.retryStrategy, ['limit', 'retryPolicy'])
       };
+      flow.timeout = Math.floor(props.dataInfo.timeout / 3600) || 1;
       serviceInfo.info = {
         ...props.dataInfo.attributes
       };
@@ -450,6 +461,7 @@
     if (props.action === 'edit') {
       taskType.value = props.dataInfo.type;
       flow.name = props.dataInfo.name;
+
       setTimeout(() => {
         current.value = steps.value.length;
       });

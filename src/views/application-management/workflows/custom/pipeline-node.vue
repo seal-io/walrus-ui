@@ -80,7 +80,7 @@
           return <i class="iconfont approval icon-success-fill"></i>;
         }
         if (user.rejected) {
-          return <i class="iconfont approval icon-jujue"></i>;
+          return <i class="iconfont approval icon-status-error"></i>;
         }
         return null;
       };

@@ -93,7 +93,7 @@ export const setPipelineNodeStyle = (size) => {
           .icon-success-fill {
             color: var(--seal-color-success);
           }
-          .icon-jujue {
+          .icon-status-error {
             color: var(--seal-color-error);
           }
           .arco-avatar-circle.arco-avatar-group-max-count-avatar {
