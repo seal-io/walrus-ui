@@ -135,15 +135,12 @@ export const getPipelineTaskDetail = ({
   return axios.get(url);
 };
 
-export const approvePipelineTask = ({
-  projectId,
-  flowId,
-  flowExecId,
-  stageExecId,
-  stepExecId
-}) => {
+export const approvePipelineTask = (
+  { projectId, flowId, flowExecId, stageExecId, stepExecId },
+  data
+) => {
   const url = `/projects/${projectId}/workflows/${flowId}/executions/${flowExecId}/stage-executions/${stageExecId}/step-executions/${stepExecId}/approve`;
-  return axios.post(url);
+  return axios.post(url, data);
 };
 
 export default {};

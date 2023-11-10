@@ -2,7 +2,7 @@ export default {
   'applications.applications.menu': 'Applications',
   'applications.applications.create': 'New Service',
   'applications.applications.create.resource': 'New Resource',
-  'applications.applications.create.serviceResource': 'New Service/Resource',
+  'applications.applications.create.serviceResource': 'New',
   'applications.applications.add.member': 'Add Members',
   'applications.applications.edit': 'Edit Service',
   'applications.applications.edit.resource': 'Edit Resource',

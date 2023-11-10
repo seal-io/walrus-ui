@@ -126,7 +126,7 @@
           value: _.get(item, 'subject.id'),
           role: _.get(item, 'role.id')
         };
-      }).filter((sItem) => sItem.role === ProjectRoles.Owner);
+      }).filter((sItem) => sItem.role !== ProjectRoles.Viewer);
     } catch (error) {
       subjectList.value = [];
     } finally {

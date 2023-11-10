@@ -201,7 +201,8 @@
   const queryParams = reactive({
     query: '',
     page: 1,
-    perPage: appStore.perPage || 10
+    perPage: appStore.perPage || 10,
+    extract: ['-uiSchema', '-schema']
   });
   const dataList = ref<ResourceDefinitionRowData[]>([]);
 

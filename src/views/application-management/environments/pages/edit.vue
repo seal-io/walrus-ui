@@ -345,7 +345,8 @@
     getServiceList,
     serviceDataList,
     completeData,
-    setAllTemplateVersions
+    setAllTemplateVersions,
+    getAllResourceDefinitions
   } = useCompleteData();
   const { getProjectList, setProjectList, initBreadValues, handleBreadChange } =
     useProjectBreadcrumbData();
@@ -622,6 +623,7 @@
         extract: ['-projectId', '-status']
       });
       await getProjectVariables();
+      await getAllResourceDefinitions();
       serviceDataList.value = [
         ..._.cloneDeep(serviceList.value),
         ..._.cloneDeep(resourceList.value)

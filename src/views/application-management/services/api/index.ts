@@ -102,6 +102,16 @@ export const queryItemService = (params) => {
   return axios.get(`${SERVICE_API_PREFIX()}${SERVICE_API}/${params.id}`);
 };
 
+export const queryItemServiceDetail = (params: {
+  projectID: string;
+  environmentID: string;
+  serviceID: string;
+}) => {
+  return axios.get(
+    `/projects/${params.projectID}/environments/${params.environmentID}/${SERVICE_API}/${params.serviceID}`
+  );
+};
+
 // ========service======
 export const queryApplicationServices = (params) => {
   return axios.get(`${SERVICE_API_PREFIX()}${SERVICE_API}`, {

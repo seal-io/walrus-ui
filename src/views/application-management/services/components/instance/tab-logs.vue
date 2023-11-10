@@ -100,7 +100,7 @@
   const createChunkConnection = async () => {
     if (!logKey.value || !resourceId.value) return;
     const url = `${SERVICE_API_PREFIX()}${SERVICE_API}/${
-      props.nodeInfo.serviceID
+      props.nodeInfo.resourceID
     }/components/${resourceId.value}/log`;
     setChunkRequest({
       url,

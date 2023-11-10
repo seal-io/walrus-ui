@@ -52,12 +52,15 @@
         </ComCard>
         <ComCard>
           <ModuleCard
-            :title="$t('applications.applications.detail.configuration')"
+            :title="$t('common.title.config')"
             :title-style="{ 'margin-bottom': '10px', 'margin-top': 0 }"
           >
             <moduleWrapper :show-delete="false" inner-wrap title="template">
               <template #title>
-                <div class="bold-400">
+                <div
+                  v-if="dataType === ServiceDataType.service"
+                  class="bold-400"
+                >
                   <span class="m-r-20"
                     >{{ $t('applications.applications.table.module') }}:
                     <span class="mleft-5">{{
@@ -69,6 +72,15 @@
                     <span class="mleft-5">{{
                       currentInfo.template?.version
                     }}</span>
+                  </span>
+                </div>
+                <div
+                  v-if="dataType === ServiceDataType.resource"
+                  class="bold-400"
+                >
+                  <span class="m-r-20"
+                    >{{ $t('applications.applications.table.resourceType') }}:
+                    <span class="mleft-5">{{ currentInfo.type }}</span>
                   </span>
                 </div>
               </template>
@@ -181,7 +193,8 @@
     instanceTabs,
     serviceBasicInfo,
     serviceActions,
-    serviceActionMap
+    serviceActionMap,
+    ServiceDataType
   } from '../../config';
   import { ServiceRowData } from '../../config/interface';
   import useFetchResource from '../hooks/use-fetch-chunk-data';
@@ -214,6 +227,7 @@
     useFetchResource();
   const projectID = route.params.projectId || '';
   const serviceID = route.query.id || '';
+  const dataType = route.params.dataType || '';
   const activeKey = ref('resource');
   const currentInfo = ref<ServiceRowData>({} as ServiceRowData);
   const serviceInfoRef = ref();

@@ -28,9 +28,9 @@ export const customeLegend = [
   }
 ];
 export const nodeKindType = {
-  Service: 'Service',
-  ServiceResource: 'ServiceResource',
-  ServiceResourceGroup: 'ServiceResourceGroup'
+  Service: 'Resource',
+  ServiceResource: 'ResourceComponent',
+  ServiceResourceGroup: 'ResourceComponentGroup'
 };
 
 export const strokeStyle = {};
