@@ -106,7 +106,10 @@
                   type="text"
                   size="small"
                   @click="
-                    handleViewLogs({ ...record, serviceID: record.service?.id })
+                    handleViewLogs({
+                      ...record,
+                      serviceID: record.resource?.id
+                    })
                   "
                 >
                   <icon-font type="icon-rizhi" style="font-size: 16px" />
@@ -122,7 +125,7 @@
                   @click="
                     handleConnectTerminal({
                       ...record,
-                      serviceID: record.service?.id
+                      serviceID: record.resource?.id
                     })
                   "
                 >

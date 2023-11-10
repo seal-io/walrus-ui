@@ -161,8 +161,8 @@
     getServiceList,
     serviceDataList,
     completeData,
-    allTemplateVersions,
-    setAllTemplateVersions
+    setAllTemplateVersions,
+    getAllResourceDefinitions
   } = useCompleteData();
   const userStore = useUserStore();
   const { scrollToView } = useScrollToView();
@@ -294,19 +294,16 @@
         return selectResources.value.includes(item.id);
       });
       await getProjectVariables();
+      await getAllResourceDefinitions();
       serviceDataList.value = [
-        ..._.cloneDeep(serviceList.value),
-        ..._.cloneDeep(resourceList.value)
+        ..._.cloneDeep(services),
+        ..._.cloneDeep(resources)
       ];
       setAllTemplateVersions(serviceDataList.value);
       setCompleteData();
-      console.log(
-        'completeData====',
-        allTemplateVersions.value,
-        completeData.value
-      );
     } catch (error) {
       // ingore
+      console.log(error);
     }
   };
   const handleOk = async () => {

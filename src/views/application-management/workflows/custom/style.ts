@@ -83,13 +83,18 @@ export const setPipelineNodeStyle = (size) => {
           &.avatar {
             max-width: max-content;
           }
-          .icon-success-fill {
+          .iconfont.approval{
             position: absolute;
             bottom: -12px;
             right: -6px;
             background-color: #fff;
             border-radius: 50%;
+          }
+          .icon-success-fill {
             color: var(--seal-color-success);
+          }
+          .icon-jujue {
+            color: var(--seal-color-error);
           }
           .arco-avatar-circle.arco-avatar-group-max-count-avatar {
             margin-left: -5px !important;

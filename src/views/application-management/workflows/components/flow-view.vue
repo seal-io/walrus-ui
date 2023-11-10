@@ -35,6 +35,7 @@
   import { useResizeObserver } from '@vueuse/core';
   import { deleteModal, execSucceed } from '@/utils/monitor';
   import { querySubjects } from '@/views/system/api/users';
+  import { queryItemServiceDetail } from '@/views/application-management/services/api';
   import toolBar from './tool-bar.vue';
   import { setPipelineNodeStyle } from '../custom/style';
   import {
@@ -131,13 +132,16 @@
         stageExecution: { id: stageExecId },
         id: stepExecId
       } = nodeData || {};
-      await approvePipelineTask({
-        projectId,
-        flowId,
-        flowExecId,
-        stageExecId,
-        stepExecId
-      });
+      await approvePipelineTask(
+        {
+          projectId,
+          flowId,
+          flowExecId,
+          stageExecId,
+          stepExecId
+        },
+        comment
+      );
       execSucceed();
     } catch (error) {
       // ingore
@@ -363,7 +367,6 @@
     graphIns?.on('node:approve', ({ view, e }) => {
       e.stopPropagation();
       const nodeData = view.cell.getData?.();
-
       deleteModal({
         okText: 'common.button.approval',
         cancelText: 'common.button.reject',
@@ -371,24 +374,30 @@
         maskClosable: true,
         onOk: async () => {
           await handleApprovePipelineTask(nodeData, {
-            approved: true,
-            reason: ''
+            approved: true
           });
           await initData();
         },
         onCancel: async () => {
           await handleApprovePipelineTask(nodeData, {
-            approved: false,
-            reason: ''
+            approved: false
           });
           await initData();
         }
       });
     });
 
-    graphIns?.on('node:view-service', ({ view, e }) => {
+    graphIns?.on('node:view-service', async ({ view, e }) => {
       e.stopPropagation();
       const nodeData = view.cell.getData?.();
+      const params = {
+        projectID: route.params.projectId as string,
+        environmentID: nodeData?.attributes?.environment?.id as string,
+        serviceID: nodeData?.attributes?.name as string
+      };
+      const { data } = await queryItemServiceDetail(params);
+      const serviceID = _.get(data, 'id');
+      if (!serviceID) return;
       router.push({
         name: PROJECT.ServiceDetail,
         params: {
@@ -397,7 +406,7 @@
           dataType: 'service'
         },
         query: {
-          id: nodeData?.attributes?.name
+          id: serviceID
         }
       });
     });

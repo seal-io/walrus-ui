@@ -13,6 +13,7 @@ import { initFormState } from '@/components/dynamic-form/utils/init-form-state';
 import { queryServices } from '@/views/application-management/services/api';
 import { queryEnvironmentAvailableDefinitions } from '@/views/application-management/environments/api';
 import useCallCommon from '@/hooks/use-call-common';
+import { queryResourceDefinitions } from '@/views/operation-hub/resource-definitions/api';
 import { queryVariables } from '../../variables/api';
 import { ServiceDataType } from '../config';
 
@@ -45,6 +46,7 @@ export default function useCompleteData(props?) {
   const loading = ref(false);
   const templateList = ref<TemplateListItem[]>([]);
   const allTemplateVersions = ref<TemplateVersionItem[]>([]);
+  const resourceDefinitionSchemaMap = ref<any>({});
   const completeData = ref<Partial<HintKey>>({
     resource: null,
     var: null
@@ -55,6 +57,25 @@ export default function useCompleteData(props?) {
   let templateToken: any = null;
   let serviceToken: any = null;
 
+  const getAllResourceDefinitions = async () => {
+    try {
+      const params = {
+        page: -1,
+        extract: ['-uiSchema']
+      };
+      const { data } = await queryResourceDefinitions(params);
+      resourceDefinitionSchemaMap.value = _.reduce(
+        data?.items || [],
+        (obj, item) => {
+          obj[item.type] = item.schema;
+          return obj;
+        },
+        {}
+      );
+    } catch (error) {
+      console.log(error);
+    }
+  };
   // modules options
   const getTemplates = async () => {
     templateToken?.cancel?.();
@@ -197,12 +218,24 @@ export default function useCompleteData(props?) {
   };
   const setAllTemplateVersions = (list) => {
     allTemplateVersions.value = _.map(list || [], (item) => {
+      if (item.type) {
+        // resource
+        return {
+          schema: {
+            outputs: parseSchemaOutputs(
+              _.get(resourceDefinitionSchemaMap.value, item.type, {})
+            )
+          },
+          type: item.type,
+          template: {}
+        };
+      }
+      // service
       const { template } = cloneDeep(item);
       return {
         schema: {
           outputs: parseSchemaOutputs(template?.schema)
         },
-        type: item.type || '',
         template: {
           ..._.omit(template, ['schema', 'uiSchema'])
         }
@@ -297,6 +330,7 @@ export default function useCompleteData(props?) {
 
   const initCompleteData = async () => {
     loading.value = true;
+    await getAllResourceDefinitions();
     await Promise.all([getServiceList(), getProjectVariables()]);
     setCompleteData();
     loading.value = false;
@@ -310,7 +344,9 @@ export default function useCompleteData(props?) {
     initCompleteData,
     setCompleteData,
     setAllTemplateVersions,
+    resourceDefinitionSchemaMap,
     getServiceList,
+    getAllResourceDefinitions,
     getProjectVariables,
     getTemplateVersions,
     initTemplateList,

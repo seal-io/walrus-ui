@@ -142,7 +142,7 @@
           </GroupTitle>
           <DefinitionRules
             v-for="(item, index) in formData.matchingRules"
-            :ref="(el) => setRefMap(el, `rules${index}`)"
+            :ref="(el) => setRefMap(el, `${definitionRulePrefix}${index}`)"
             :key="index"
             :title="
               item.name ||
@@ -186,7 +186,6 @@
               :show-delete="formData.matchingRules.length > 1"
               :template-list="templateList"
               class="m-b-20"
-              @delete="handleDeleteDefinition(index)"
             >
             </DefinitionRules>
           </a-tab-pane>
@@ -284,6 +283,7 @@
   const tabBarStore = useTabBarStore();
   const { pageAction, handleEdit } = usePageAction();
 
+  const definitionRulePrefix = 'rule';
   const { router, route, t } = useCallCommon();
   const formref = ref();
   const id = route.query.id as string;
@@ -341,11 +341,13 @@
     await Promise.all(
       _.keys(refMap.value).map(async (key) => {
         const refEL = refMap.value[key];
-        const moduleForm = await refEL?.submit?.();
-        resultList.push({
-          tab: key,
-          formData: moduleForm
-        });
+        if (refEL) {
+          const moduleForm = await refEL?.submit?.();
+          resultList.push({
+            tab: key,
+            formData: moduleForm
+          });
+        }
       })
     );
     return resultList;
@@ -494,6 +496,7 @@
 
   const handleDeleteDefinition = (index) => {
     formData.value.matchingRules.splice(index, 1);
+    refMap.value[`${definitionRulePrefix}${index}`] = null;
   };
   onBeforeRouteLeave(async (to, from) => {
     if (!isEqual(copyFormData, formData.value)) {

@@ -31,9 +31,10 @@
       const getGraph = inject('getGraph');
       const getNode = inject('getNode');
       const { node, graph } = toRefs(props);
+      const { rejectedUsers } = node.value.data.attributes;
       const subjectList = ref<{ id: string; name: string }[]>([]);
       const approvalUsers = ref<
-        { name: string; approvaled: boolean; id: string }[]
+        { name: string; approvaled: boolean; rejected: boolean; id: string }[]
       >([]);
 
       const renderStageName = () => {
@@ -62,6 +63,7 @@
                 name: sItem.name,
                 id: sItem.id,
                 order: userStore.userInfo.id === sItem.id ? 0 : 1,
+                rejected: _.includes(rejectedUsers, sItem.id),
                 approvaled: _.includes(
                   node.value.data.attributes.approvedUsers,
                   sItem.id
@@ -72,6 +74,15 @@
         } catch (error) {
           subjectList.value = [];
         }
+      };
+      const renderApprovalIcon = (user) => {
+        if (user.approvaled) {
+          return <i class="iconfont approval icon-success-fill"></i>;
+        }
+        if (user.rejected) {
+          return <i class="iconfont approval icon-jujue"></i>;
+        }
+        return null;
       };
       const renderApprovalInfo = () => {
         if (node.value.data?.type === TaskTypes.APPROVAL) {
@@ -94,9 +105,7 @@
                       }}
                     >
                       <span>
-                        {user.approvaled ? (
-                          <i class="iconfont icon-success-fill"></i>
-                        ) : null}
+                        {renderApprovalIcon(user)}
                         <a-tooltip content={user.name}>
                           <span>{user.name.slice(0, 3)}</span>
                         </a-tooltip>
