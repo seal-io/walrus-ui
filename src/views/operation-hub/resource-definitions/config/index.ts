@@ -8,7 +8,7 @@ export const variableTypeList = [
 export const SelectorAction = [
   { label: '项目名称', value: 'projectName' },
   { label: '环境名称', value: 'environmentName' },
-  { label: '环境类型', value: 'environmentType' },
+  { label: 'applications.environment.type', value: 'environmentType' },
   { label: '环境标签', value: 'environmentLabels' },
   { label: '资源标签', value: 'resourceLabels' }
 ];

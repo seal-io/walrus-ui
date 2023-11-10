@@ -32,6 +32,7 @@ export interface ResourceDefinitionFormData {
 
 export interface ResourceDefinitionRowData extends ResourceDefinitionFormData {
   name: string;
+  id: string;
   createTime: string;
 }
 

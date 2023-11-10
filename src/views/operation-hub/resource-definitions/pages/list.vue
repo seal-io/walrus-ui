@@ -169,18 +169,25 @@
   import { OPERATIONHUB } from '@/router/config';
   import { PageAction } from '@/views/config';
   import _, { cloneDeep, map, pickBy } from 'lodash';
-  import { reactive, ref, onMounted, computed, PropType } from 'vue';
+  import { reactive, ref, onMounted, computed, nextTick, PropType } from 'vue';
   import useCallCommon from '@/hooks/use-call-common';
   import { Message } from '@arco-design/web-vue';
+  import { useSetChunkRequest } from '@/api/axios-chunk-request';
+  import { useUpdateChunkedList } from '@/views/commons/hooks/use-update-chunked-list';
   import { deleteModal, execSucceed } from '@/utils/monitor';
   import useRowSelect from '@/hooks/use-row-select';
   import FilterBox from '@/components/filter-box/index.vue';
   import { UseSortDirection } from '@/utils/common';
   import { ResourceDefinitionRowData } from '../config/interface';
-  import { queryResourceDefinitions, deleteResourceDefinitions } from '../api';
+  import {
+    queryResourceDefinitions,
+    deleteResourceDefinitions,
+    RESOURCE_DEFINITION_API
+  } from '../api';
 
   const appStore = useAppStore();
   const userStore = useUserStore();
+  const { setChunkRequest } = useSetChunkRequest();
   const { rowSelection, selectedKeys, handleSelectChange } = useRowSelect();
   const { router, t, route } = useCallCommon();
   const { sort, sortOrder, setSortDirection } = UseSortDirection({
@@ -197,6 +204,8 @@
     perPage: appStore.perPage || 10
   });
   const dataList = ref<ResourceDefinitionRowData[]>([]);
+
+  const { updateChunkedList } = useUpdateChunkedList(dataList);
 
   const rowSelectionStatue = computed(() => {
     return userStore.hasRolesActionsPermission({
@@ -229,12 +238,40 @@
     setSortDirection(dataIndex, direction);
     fetchData();
   };
+
+  const updateHandler = (list) => {
+    _.each(list, (data) => {
+      updateChunkedList(data);
+    });
+    if (!dataList.value.length) {
+      queryParams.page = 1;
+      handleFilter();
+    }
+  };
+
+  const createTemplateChunkRequest = () => {
+    try {
+      setChunkRequest({
+        url: RESOURCE_DEFINITION_API,
+        params: {
+          ..._.pickBy(_.omit(queryParams, ['page', 'perPage']), (val) => !!val)
+        },
+        handler: updateHandler
+      });
+    } catch (error) {
+      // ignore
+    }
+  };
+
   const handleSearch = () => {
     clearTimeout(timer);
     timer = setTimeout(() => {
       queryParams.page = 1;
       handleFilter();
     }, 100);
+    nextTick(() => {
+      createTemplateChunkRequest();
+    });
   };
 
   const handleView = (row) => {
@@ -252,6 +289,9 @@
     queryParams.query = '';
     queryParams.page = 1;
     handleFilter();
+    nextTick(() => {
+      createTemplateChunkRequest();
+    });
   };
   const handlePageChange = (page: number) => {
     queryParams.page = page;
@@ -311,6 +351,9 @@
 
   onMounted(async () => {
     fetchData();
+    nextTick(() => {
+      createTemplateChunkRequest();
+    });
   });
 </script>
 
