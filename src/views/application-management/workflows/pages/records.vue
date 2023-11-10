@@ -32,14 +32,13 @@
               }"
             ></StatusLabel>
           </div>
-          <div v-if="pipelineDetailActions.length" class="dropdown">
-            <!-- <DropButtonGroup
-              layout="horizontal"
-              :actions="pipelineDetailActions"
+          <div v-if="moreActions.length" class="dropdown">
+            <DropButtonGroup
+              :actions="moreActions"
               @click="handleClick"
               @select="handleSelect"
-            ></DropButtonGroup> -->
-            <a-button
+            ></DropButtonGroup>
+            <!-- <a-button
               v-if="
                 userStore.hasProjectResourceActions({
                   projectID,
@@ -54,7 +53,7 @@
               <a-tooltip :content="$t('common.button.edit')">
                 <icon-edit style="stroke-width: 4" />
               </a-tooltip>
-            </a-button>
+            </a-button> -->
           </div>
         </template>
         <template #description>
@@ -74,6 +73,7 @@
   import { Resources, Actions } from '@/permissions/config';
   import { useUserStore } from '@/store';
   import { WORKFLOW } from '@/router/config';
+  import { execSucceed } from '@/utils/monitor';
   import HeaderInfo from '@/components/header-info/index.vue';
   import useCallCommon from '@/hooks/use-call-common';
   import { PipelineTabs } from '@/views/config';
@@ -82,9 +82,9 @@
   import DropButtonGroup from '@/components/drop-button-group/index.vue';
   import useTabActive, { TabPage } from '@/hooks/use-tab-active';
   import FlowView from '../components/flow-view.vue';
-  import { queryPipelineDetail } from '../api';
+  import { queryPipelineDetail, applyPipeline } from '../api';
   import RecordsList from '../components/records-list.vue';
-  import { pipelineDetailActions } from '../config';
+  import { pipelineDetailActions, moreActions } from '../config';
 
   const {
     getProjectList,
@@ -108,8 +108,15 @@
   const id = route.params.flowId as string;
   const currentInfo = ref<any>({});
 
-  const handleClick = () => {};
-  const handleSelect = () => {
+  const handleApplyFlow = async (row) => {
+    try {
+      await applyPipeline({ id: row.id, projectId: row.project?.id });
+      execSucceed('applications.workflow.table.runmsg');
+    } catch (error) {
+      // ignore
+    }
+  };
+  const handleClick = () => {
     router.push({
       name: WORKFLOW.Edit,
       params: {
@@ -119,6 +126,11 @@
         flowId: route.params.flowId
       }
     });
+  };
+  const handleSelect = (val) => {
+    if (val === 'apply') {
+      handleApplyFlow(currentInfo.value);
+    }
   };
   const getPipeListDetail = async () => {
     if (!id) return;

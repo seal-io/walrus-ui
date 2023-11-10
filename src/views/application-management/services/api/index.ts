@@ -108,7 +108,7 @@ export const queryItemServiceDetail = (params: {
   serviceID: string;
 }) => {
   return axios.get(
-    `/projects/${params.projectID}/environments/${params.environmentID}/${SERVICE_API}/${params.serviceID}`
+    `/projects/${params.projectID}/environments/${params.environmentID}${SERVICE_API}/${params.serviceID}`
   );
 };
 
