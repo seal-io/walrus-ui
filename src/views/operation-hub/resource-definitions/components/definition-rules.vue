@@ -309,10 +309,8 @@
             >
               <template #title>
                 <div>
-                  <span>{{
-                    $t('applications.applications.detail.configuration')
-                  }}</span>
-                  <a-tooltip position="tl">
+                  <span>{{ $t('menu.operatorHub.module') }}</span>
+                  <!-- <a-tooltip position="tl">
                     <template #content>
                       <div>
                         <div>{{
@@ -327,7 +325,7 @@
                       </div>
                     </template>
                     <icon-question-circle class="mleft-5" />
-                  </a-tooltip>
+                  </a-tooltip> -->
                 </div>
               </template>
             </GroupTitle>
@@ -405,22 +403,26 @@
           </a-form-item>
         </a-form>
       </div>
-
-      <a-spin class="variables" style="width: 100%" :loading="asyncLoading">
-        <GroupForm
-          v-if="pageAction === PageAction.EDIT"
-          ref="groupForm"
-          :field-list="fieldSchemaList"
-          :async-loading="asyncLoading"
-          :original-form-data="originFormData.attributes || {}"
-        ></GroupForm>
-        <ViewForm
-          v-if="pageAction === PageAction.VIEW"
-          style="width: 100%; padding: 0"
-          :form-data="originFormData.attributes"
-          :field-list="fieldSchemaList"
-        ></ViewForm>
-      </a-spin>
+      <ModuleWrapper :show-delete="false" class="config-wrapper">
+        <template #title>
+          <span>{{ $t('common.title.config') }}</span>
+        </template>
+        <a-spin class="variables" style="width: 100%" :loading="asyncLoading">
+          <GroupForm
+            v-if="pageAction === PageAction.EDIT"
+            ref="groupForm"
+            :field-list="fieldSchemaList"
+            :async-loading="asyncLoading"
+            :original-form-data="originFormData.attributes || {}"
+          ></GroupForm>
+          <ViewForm
+            v-if="pageAction === PageAction.VIEW"
+            style="width: 100%; padding: 0"
+            :form-data="originFormData.attributes"
+            :field-list="fieldSchemaList"
+          ></ViewForm>
+        </a-spin>
+      </ModuleWrapper>
     </div>
   </ModuleWrapper>
 </template>
@@ -610,6 +612,14 @@
       ) || {};
     const result = initFormState(variables);
     fieldSchemaList.value = result.fieldSchemaList;
+    _.each(fieldSchemaList.value, (item) => {
+      item.uiSchema.required = false;
+      _.each(item.uiSchema.rules, (rule) => {
+        if (rule.required) {
+          rule.required = false;
+        }
+      });
+    });
   };
   const getTemplateVersions = async () => {
     try {
@@ -780,3 +790,15 @@
   });
   initData();
 </script>
+
+<style lang="less" scoped>
+  .config-wrapper {
+    &.mo-wrap {
+      border: none;
+
+      :deep(.content) {
+        padding: 10px 0;
+      }
+    }
+  }
+</style>

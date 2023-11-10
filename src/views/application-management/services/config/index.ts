@@ -6,7 +6,8 @@ import { Resources, Actions } from '@/permissions/config';
 import { setDurationValue } from '@/views/config/utils';
 
 const userStore = useUserStore();
-
+export const ProvideServiceIDKey = Symbol('ProvideServiceIDKey');
+export const ProvideSetServiceInfoKey = Symbol('ProvideSetServiceInfoKey');
 export const ServiceDataType = {
   service: 'service',
   resource: 'resource'
@@ -110,12 +111,12 @@ export const variableTypeList = [
 
 export const CreatActions = [
   {
-    label: 'applications.applications.create',
+    label: 'menu.applicationManagement.services',
     value: ServiceDataType.service,
     icon: 'icon-fuwu'
   },
   {
-    label: 'applications.applications.create.resource',
+    label: 'menu.applicationManagement.resource',
     value: ServiceDataType.resource,
     icon: 'icon-shengchenglujing-01'
   }

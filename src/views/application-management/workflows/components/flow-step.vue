@@ -1,8 +1,8 @@
 <script lang="tsx">
   import _ from 'lodash';
   import { defineComponent, toRefs, ref, PropType, inject } from 'vue';
-  // import Draggable from 'vuedraggable';
   import useCallCommon from '@/hooks/use-call-common';
+  import Autotip from '@arco-design/web-vue/es/_components/auto-tooltip/auto-tooltip';
   import { Step } from '../config/interface';
   import { TaskTypes } from '../task-types/config';
 
@@ -130,7 +130,9 @@
                   }
                 ]}
               ></i>
-              <span>{stepData.value.name}</span>
+              <Autotip>
+                <span>{stepData.value.name}</span>
+              </Autotip>
             </div>
             <div class="next btn-wrap"></div>
           </div>
@@ -242,9 +244,10 @@
         align-items: center;
         justify-content: center;
         min-width: 135px;
+        max-width: 220px;
         height: 36px;
         padding: 0 16px;
-        padding-left: 21px;
+        padding-left: 30px;
         color: var(--color-text-2);
         background-color: #fff;
         border: 1px solid var(--color-border-3);

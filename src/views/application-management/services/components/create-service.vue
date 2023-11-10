@@ -16,6 +16,7 @@
           field="name"
           hide-label
           :label="$t('common.table.name')"
+          :disabled="pageAction === PageAction.EDIT && !!id"
           :rules="[
             {
               required: true,
@@ -46,10 +47,38 @@
           </template>
         </a-form-item>
         <a-form-item
-          id="moduleId"
+          v-if="dataType === ServiceDataType.resource"
+          hide-label
+          field="type"
+          :label="$t('applications.applications.table.resourceType')"
+          :disabled="pageAction === PageAction.EDIT && !!id"
+          :rules="[
+            {
+              required: true,
+              message: $t('applications.applications.rules.reourceType')
+            }
+          ]"
+        >
+          <div>
+            <seal-select
+              v-model="formData.type"
+              :label="$t('applications.applications.table.resourceType')"
+              :required="true"
+              :virtual-list-props="virtualListProps"
+              :style="{ width: `${InputWidth.LARGE}px` }"
+              :options="templateList"
+              allow-search
+              @change="handleTemplateChange"
+            >
+            </seal-select>
+          </div>
+        </a-form-item>
+        <a-form-item
+          v-if="dataType === ServiceDataType.service"
           hide-label
           field="template.template.id"
           :label="$t('applications.applications.table.module')"
+          :disabled="pageAction === PageAction.EDIT && !!id"
           :rules="[
             {
               required: true,
@@ -60,19 +89,21 @@
           <div>
             <seal-select
               v-model="formData.template.template.id"
-              :placeholder="$t('applications.applications.table.module')"
+              :label="$t('applications.applications.table.module')"
               :required="true"
               :virtual-list-props="virtualListProps"
-              :options="templateList"
               :style="{ width: `${InputWidth.LARGE}px` }"
-              allow-search
+              :options="templateList"
               :format-label="formatTemplateLael"
+              allow-search
               @change="handleTemplateChange"
             >
               <template #option="{ data }">
                 <span>{{ data.label }}</span>
                 <span
-                  v-if="!data.project?.id"
+                  v-if="
+                    !data.project?.id && dataType === ServiceDataType.service
+                  "
                   style="color: var(--color-text-3)"
                   class="font-12"
                   >{{ `(${$t('applications.variable.scope.global')})` }}</span
@@ -82,6 +113,7 @@
           </div>
         </a-form-item>
         <a-form-item
+          v-if="dataType === ServiceDataType.service"
           hide-label
           field="template.version"
           :label="$t('applications.applications.history.version')"
@@ -161,10 +193,10 @@
         </a-form-item>
       </a-form>
     </div>
-    <!-- <a-divider
+    <a-divider
       style="margin: 0; border-color: var(--color-fill-2); border-radius: 1px"
       :size="4"
-    ></a-divider> -->
+    ></a-divider>
     <div>
       <div style="display: flex; justify-content: flex-start">
         <GroupTitle
@@ -197,7 +229,7 @@
           </template>
         </GroupTitle>
       </div>
-      <a-spin class="variables" style="width: 100%" :loading="asyncLoading">
+      <a-spin style="width: 100%" :loading="asyncLoading">
         <GroupForm
           ref="groupForm"
           :field-list="templateInfo"
@@ -210,24 +242,14 @@
 </template>
 
 <script lang="ts" setup>
-  import _, {
-    get,
-    find,
-    cloneDeep,
-    pull,
-    keys,
-    reduce,
-    includes,
-    pickBy,
-    toString
-  } from 'lodash';
+  import { PROJECT } from '@/router/config';
+  import _, { get, find, cloneDeep, reduce, pickBy, toString } from 'lodash';
   import {
     ref,
-    ComponentPublicInstance,
     computed,
     provide,
     watch,
-    nextTick,
+    reactive,
     PropType,
     onMounted
   } from 'vue';
@@ -236,22 +258,19 @@
   import thumbButton from '@/components/buttons/thumb-button.vue';
   import useScrollToView from '@/hooks/use-scroll-to-view';
   import xInputGroup from '@/components/form-create/custom-components/x-input-group.vue';
+  import GroupForm from '@/components/form-create/group-form.vue';
   import GroupTitle from '@/components/group-title/index.vue';
   import {
     validateLabelNameRegx,
     PageAction,
     InputWidth
   } from '@/views/config';
-  import GroupForm from '@/components/form-create/group-form.vue';
+  import { queryEnvironmentConnector } from '@/views/application-management/environments/api';
+  import { projectEnvCtxInjectionKey } from '@/components/form-create/bussiness-components/config';
   import { beforeLeaveCallback } from '@/hooks/save-before-leave';
   import useLabelsActions from '@/components/form-create/hooks/use-labels-action';
   import useServiceData from '../hooks/use-service-data';
-
-  interface Group {
-    variables: object[];
-    label: string;
-  }
-  type refItem = Element | ComponentPublicInstance | null;
+  import { ServiceDataType } from '../config';
 
   const props = defineProps({
     // when in detail page
@@ -291,8 +310,9 @@
     setTemplateVersionList,
     getTemplateVersions,
     setTemplateInfo,
-    formData,
+    getItemResourceDefinition,
     serviceInfo,
+    formData,
     pageAction,
     templateInfo,
     templateVersionList,
@@ -315,11 +335,28 @@
   const { route, router, t } = useCallCommon();
   const formref = ref();
   const groupForm = ref();
-  const loading = ref(false);
   const versionMap = ref({ nv: '', ov: '' });
+  const dataType = ref(props.resourceType || '');
+  const projectEnvCtx = reactive({
+    projectID: route.params.projectId as string,
+    environmentID: route.params.environmentId as string,
+    connectors: []
+  });
 
   provide('showHintInput', true);
   provide('completeData', completeData);
+  provide('ProjectEnvironment', {
+    projectID: route.params.projectId,
+    environmentID: route.params.environmentId
+  });
+  provide(projectEnvCtxInjectionKey, projectEnvCtx);
+  const Kubernamespace = ref('');
+  const repository = ref('');
+  const branch = ref('');
+
+  const handleNamespaceChange = (val) => {
+    console.log('handleNamespaceChange===', val);
+  };
 
   const virtualListProps = computed(() => {
     if (templateList.value.length > 20) {
@@ -330,8 +367,25 @@
     return undefined;
   });
 
+  const getEnvironmentConnectors = async () => {
+    try {
+      const { data } = await queryEnvironmentConnector({
+        environmentID:
+          props.flow.environmentId || (route.params.environmentId as string),
+        projectID: route.params.projectId as string
+      });
+      projectEnvCtx.connectors = data.connectors || [];
+    } catch (error) {
+      // ingore
+      projectEnvCtx.connectors = [];
+    }
+  };
+  const cancelCallback = () => {
+    router.back();
+  };
+
   const validateNameuniq = (val, callback) => {
-    if ([PageAction.EDIT, PageAction.VIEW]) {
+    if (id) {
       callback();
       return;
     }
@@ -349,7 +403,7 @@
   // cache the user inputs when change the module version
   const setModuleVersionFormCache = async () => {
     if (!versionMap.value.ov) return;
-    const moduleFormList = await groupForm.value.getData();
+    const moduleFormList = await groupForm.value?.getData();
     const inputs = reduce(
       moduleFormList,
       (obj, s) => {
@@ -368,6 +422,7 @@
     const moduleData = await getTemplateSchemaByVersion();
     setTemplateInfo(moduleData);
     formData.attributes = {};
+
     groupForm.value?.clearFormValidStatus?.();
   };
 
@@ -383,30 +438,36 @@
   };
 
   const formatTemplateLael = (data) => {
-    if (!data.project?.id) {
+    if (!data.project?.id && ServiceDataType.service === dataType.value) {
       return `${data.name} (${t('applications.variable.scope.global')})`;
     }
     return data.name;
   };
   // template change: exec version change
   const handleTemplateChange = async (val) => {
-    const data = _.find(templateList.value, (item) => item.id === val);
-    formData.template.name = data?.name || '';
-    formData.template.project = data?.project || {};
+    if (dataType.value === ServiceDataType.resource) {
+      const data = await getItemResourceDefinition();
+      setTemplateInfo(data);
+      formData.attributes = {};
+      groupForm.value?.clearFormValidStatus?.();
+    } else {
+      const data = _.find(templateList.value, (item) => item.id === val);
+      formData.template.name = data?.name || '';
+      formData.template.project = data?.project || {};
+      await getTemplateVersions(formData.template, true);
+      await setTemplateVersionList();
 
-    await getTemplateVersions(formData.template, true);
-    await setTemplateVersionList();
-
-    formData.template.version = get(
-      templateVersionList.value,
-      '0.template.version',
-      ''
-    );
-    templateVersionFormCache.value = {};
-    setTimeout(() => {
-      versionMap.value = { ov: '', nv: '' };
-    }, 20);
-    handleVersionChange();
+      formData.template.version = get(
+        templateVersionList.value,
+        '0.template.version',
+        ''
+      );
+      templateVersionFormCache.value = {};
+      setTimeout(() => {
+        versionMap.value = { ov: '', nv: '' };
+      }, 20);
+      handleVersionChange();
+    }
   };
 
   const cancel = async (callback) => {
@@ -418,7 +479,6 @@
       }
     });
   };
-
   const submit = async () => {
     validateLabel();
     const res = await formref.value?.validate();
@@ -434,8 +494,15 @@
           {}
         )
       };
+      // omit template project if value is empty
       if (!formData.template.project?.id) {
         formData.template = _.omit(formData.template, 'project');
+      }
+      if (dataType.value === ServiceDataType.service) {
+        formData.type = null as any;
+      }
+      if (dataType.value === ServiceDataType.resource) {
+        formData.template = null as any;
       }
       copyFormData = _.cloneDeep(formData);
       return formData;
@@ -479,7 +546,14 @@
     await init();
     copyFormData = _.cloneDeep(formData);
     getLabelList();
+    getEnvironmentConnectors();
   };
 
   initData();
+</script>
+
+<script lang="ts">
+  export default {
+    name: PROJECT.ServiceEdit
+  };
 </script>

@@ -91,6 +91,12 @@ export const setPipelineNodeStyle = (size) => {
             border-radius: 50%;
             color: var(--seal-color-success);
           }
+          .arco-avatar-circle.arco-avatar-group-max-count-avatar {
+            margin-left: -5px !important;
+            width: 26px;
+            height: 26px;
+            font-size: 12px;
+          }
           .link {
             cursor: pointer;
             color: rgb(var(--arcoblue-5));

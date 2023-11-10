@@ -177,7 +177,7 @@
   import { HistoryData } from '../../config/interface';
   import revisionDetail from '../revision-detail.vue';
   import serviceSpecDiff from '../service-spec-diff.vue';
-  import { RevisionStatus } from '../../config';
+  import { RevisionStatus, ProvideServiceIDKey } from '../../config';
   import {
     queryServiceRevisions,
     deleteApplicationRevisions,
@@ -197,7 +197,7 @@
   const projectID = route.params.projectId || '';
   const environmentID = route.params.environmentId as string;
   const title = ref('');
-  const serviceId = inject('serviceId', ref(''));
+  const serviceId = inject(ProvideServiceIDKey, ref(''));
   const revisionDetailId = ref('');
   const revisionData = ref({});
   const total = ref(0);

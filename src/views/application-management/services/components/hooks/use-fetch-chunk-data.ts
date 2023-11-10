@@ -6,6 +6,7 @@ import {
 } from '@/api/axios-chunk-request';
 import { websocketEventType } from '@/views/config';
 import { ServiceResource } from '../../config/interface';
+import { ProvideServiceIDKey } from '../../config';
 import {
   queryServiceResource,
   SERVICE_API_PREFIX,
@@ -16,7 +17,7 @@ export default function useFetchResource() {
   const { setChunkRequest } = useSetChunkRequest();
   const dataList = ref<ServiceResource[]>([]);
   const loading = ref(false);
-  const serviceId = inject('serviceId', ref(''));
+  const serviceId = inject(ProvideServiceIDKey, ref(''));
   const requestCacheList = ref<number[]>([]);
   const helmResourceNeedUpdate = new Set();
   let fetchToken = createAxiosToken();
@@ -97,7 +98,9 @@ export default function useFetchResource() {
   const updateDataList = (data) => {
     const collections = _.filter(
       data.collection || [],
-      (sItem) => sItem?.service?.id === serviceId.value
+      (sItem) =>
+        sItem?.resource?.id === serviceId.value ||
+        sItem?.resource?.name === serviceId.value
     );
 
     const childResources = _.filter(collections, (item) =>
@@ -173,6 +176,7 @@ export default function useFetchResource() {
     dataList.value = setDataList(dataList.value);
   };
   const fetchData = async () => {
+    console.log('fetchData===', serviceId.value);
     if (!serviceId.value) return;
     fetchToken?.cancel?.();
     fetchToken = createAxiosToken();
@@ -187,8 +191,11 @@ export default function useFetchResource() {
 
       let list: any = _.filter(
         data.items || [],
-        (item) => item?.service?.id === serviceId.value
+        (item) =>
+          item?.resource?.id === serviceId.value ||
+          item?.resource?.name === serviceId.value
       );
+
       list = setDataList(list);
       dataList.value = [].concat(list);
       loading.value = false;
@@ -217,7 +224,9 @@ export default function useFetchResource() {
         const { data } = await queryServiceResource(params, fetchToken.token);
         let list: any = _.filter(
           data?.items || [],
-          (item) => item?.service?.id === serviceId.value
+          (item) =>
+            item?.resource?.id === serviceId.value ||
+            item?.resource?.name === serviceId.value
         );
         list = setDataList(list);
         dataList.value = [].concat(list);

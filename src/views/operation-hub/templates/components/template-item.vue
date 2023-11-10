@@ -28,6 +28,11 @@
                 error: get(dataInfo, 'status.error')
               }"
             ></StatusLabel>
+            <i
+              v-if="_.get(dataInfo, ['labels', 'walrus.seal.io/category'])"
+              class="iconfont icon-shandian in-used mleft-5"
+              style="color: var(--seal-color-success)"
+            ></i>
             <AutoTip :tooltip-props="{ content: dataInfo.name }">
               <a-link
                 class="title-text"
@@ -50,11 +55,7 @@
         </div>
       </div>
     </div>
-    <i
-      v-if="_.get(dataInfo, ['labels', 'walrus.seal.io/category'])"
-      class="iconfont icon-shandian in-used"
-      style="color: var(--seal-color-success)"
-    ></i>
+
     <a-checkbox
       v-if="showCheckbox"
       class="check-box"
@@ -282,10 +283,10 @@
       right: 10px;
     }
 
-    .in-used {
-      position: absolute;
-      top: 30px;
-      right: 10px;
-    }
+    // .in-used {
+    //   position: absolute;
+    //   top: 30px;
+    //   right: 10px;
+    // }
   }
 </style>

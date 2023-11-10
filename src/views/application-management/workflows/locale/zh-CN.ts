@@ -42,6 +42,7 @@ export default {
   'workflow.task.form.deployEnv': '部署环境',
   'workflow.task.run.order': '第 {order} 次运行',
   'workflow.task.run.user': '执行人',
+  'workflow.task.run.stage': '请添加有效的任务',
   'workflow.task.approval.or': '或签',
   'workflow.task.approval.and': '会签',
   'workflow.task.approval.or.desc': '所有审批人中只要有一名同意或拒绝即可',

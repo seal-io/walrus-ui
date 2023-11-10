@@ -148,6 +148,7 @@
             "
             ref="serviceRef"
             :flow="flow"
+            :data-type="ServiceDataType.service"
           ></ServiceTask>
         </div>
         <EditPageFooter class="footer-btn" style="margin-top: 0">
@@ -219,6 +220,10 @@
   import { ListItem } from '@/views/config/interface';
   import EditPageFooter from '@/components/edit-page-footer/index.vue';
   import { queryEnvironments } from '@/views/application-management/environments/api';
+  import {
+    ProvideSetServiceInfoKey,
+    ServiceDataType
+  } from '@/views/application-management/services/config';
   import ManualCheckpoint from '../task-types/manual-checkpoint.vue';
   import ServiceTask from '../task-types/service-task.vue';
   import TaskCard from '../task-types/task-cards.vue';
@@ -273,7 +278,8 @@
   const environmentList = ref<ListItem[]>([]);
   const loading = ref(false);
 
-  provide('setServiceInfo', serviceInfo);
+  provide(ProvideSetServiceInfoKey, serviceInfo);
+
   provide('ProjectEnvironment', {
     projectID: route.params.projectId,
     environmentID: flow.environmentId
@@ -428,8 +434,7 @@
         ..._.pick(props.dataInfo.retryStrategy, ['limit', 'retryPolicy'])
       };
       serviceInfo.info = {
-        ...props.dataInfo.attributes,
-        ..._.pick(props.dataInfo, ['name', 'description', 'labels'])
+        ...props.dataInfo.attributes
       };
       serviceInfo.enable = true;
       getEnvironmentList();

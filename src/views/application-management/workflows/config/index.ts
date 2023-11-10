@@ -233,7 +233,7 @@ export const moreActions: MoreAction[] = [
     disabled: false,
     filterFun(currentInfo) {
       return userStore.hasProjectResourceActions({
-        resource: Resources.WorkflowApply,
+        resource: Resources.Workflows,
         projectID: _.get(currentInfo, 'project.id'),
         actions: [Actions.POST]
       });

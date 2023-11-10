@@ -26,6 +26,7 @@
   import useProjectBreadcrumbData from '@/views/application-management/projects/hooks/use-project-breadcrumb-data';
   import ServiceDetail from '../components/instance/index.vue';
   import { ServiceRowData } from '../config/interface';
+  import { ProvideServiceIDKey } from '../config';
 
   const { route, router } = useCallCommon();
   const {
@@ -46,7 +47,7 @@
   // when chunk request data update will be used to match the current service
   const serviceDataList = ref<ServiceRowData[]>([]);
 
-  provide('serviceId', serviceId);
+  provide(ProvideServiceIDKey, serviceId);
 
   const handleServiceChange = ({ value, item }) => {
     handleBreadChange(value, item);

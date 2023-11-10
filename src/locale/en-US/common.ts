@@ -49,6 +49,7 @@ export default {
   'common.delete.fail': 'delete failed',
   'common.edit.success': 'update success!',
   'common.edit.fail': 'update failed',
+  'common.title.config': 'Configuration',
   'common.message.fail': 'failed!',
   'common.message.success': 'succeed!',
   'common.delete.tips': 'Are you sure you want to delete?',

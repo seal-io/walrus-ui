@@ -42,6 +42,7 @@ export default {
   'workflow.task.form.deployEnv': 'Deployment Environment',
   'workflow.task.run.order': 'The {order} Running',
   'workflow.task.run.user': 'Executor',
+  'workflow.task.run.stage': 'Please add valid tasks',
   'workflow.task.approval.or': 'Concurrent Approval',
   'workflow.task.approval.and': 'Collective Approval',
   'workflow.task.approval.or.desc':
