@@ -24,6 +24,7 @@
           })
         : $t('workflow.step.modal.title', { action: $t('common.button.edit') })
     "
+    :unmount-on-close="true"
     @cancel="handleCancel"
     @ok="handleOk"
     @before-open="handleBeforeOpen"
@@ -433,9 +434,6 @@
         }
       }
       emits('update:show', false);
-      setTimeout(() => {
-        resetFlow();
-      });
     }
   };
   const setServiceInfo = () => {
@@ -467,6 +465,8 @@
       setTimeout(() => {
         current.value = steps.value.length;
       });
+    } else {
+      resetFlow();
     }
     setServiceInfo();
   };
