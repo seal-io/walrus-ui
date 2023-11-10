@@ -55,7 +55,7 @@
     "ajv": "^8.12.0",
     "ansi-to-html": "^0.7.2",
     "arco-design-pro-vue": "^2.3.3",
-    "axios": "0.24.0",
+    "axios": "1.6.0",
     "clipboard": "^2.0.11",
     "cron-validate": "^1.4.3",
     "crypto-js": "^4.1.1",
