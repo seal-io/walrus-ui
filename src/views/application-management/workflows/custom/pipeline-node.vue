@@ -88,7 +88,7 @@
           return (
             <i
               class="iconfont approval icon-status-error"
-              style="font-size: 12px;transform: scale(0.8);bottom:-10px"
+              style="font-size: 12px;transform: scale(0.75);"
             ></i>
           );
         }

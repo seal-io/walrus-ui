@@ -90,13 +90,17 @@ export const setPipelineNodeStyle = (size) => {
             background-color: #fff;
             border-radius: 50%;
             font-size: 12px;
+            &.icon-success-fill {
+              color: var(--seal-color-success);
+            }
+            &.icon-status-error {
+              color: var(--seal-color-error);
+              bottom:-11px;
+              right: -7px;
+              padding: 1px;
+            }
           }
-          .icon-success-fill {
-            color: var(--seal-color-success);
-          }
-          .icon-status-error {
-            color: var(--seal-color-error);
-          }
+          
           .arco-avatar-circle.arco-avatar-group-max-count-avatar {
             margin-left: -5px !important;
             width: 26px;
