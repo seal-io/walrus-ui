@@ -267,35 +267,35 @@ export const pipelineDetailActions: MoreAction[] = [
   }
 ];
 export const recordActions: MoreAction[] = [
-  {
-    label: 'common.button.view',
-    value: 'view',
-    icon: 'iconFont',
-    handler: '',
-    status: 'normal',
-    disabled: false,
-    filterFun(currentInfo) {
-      return userStore.hasProjectResourceActions({
-        resource: Resources.WorkflowExecutions,
-        projectID: _.get(currentInfo, 'project.id'),
-        actions: [Actions.GET]
-      });
-    },
-    props: {
-      type: 'icon-xiangqing'
-    }
-  }
   // {
-  //   label: 'common.button.delete',
-  //   value: 'delete',
-  //   icon: 'icon-delete',
+  //   label: 'common.button.view',
+  //   value: 'view',
+  //   icon: 'iconFont',
   //   handler: '',
-  //   status: 'danger',
+  //   status: 'normal',
   //   disabled: false,
   //   filterFun(currentInfo) {
-  //     return true;
+  //     return userStore.hasProjectResourceActions({
+  //       resource: Resources.WorkflowExecutions,
+  //       projectID: _.get(currentInfo, 'project.id'),
+  //       actions: [Actions.GET]
+  //     });
+  //   },
+  //   props: {
+  //     type: 'icon-xiangqing'
   //   }
   // }
+  {
+    label: 'common.button.delete',
+    value: 'delete',
+    icon: 'icon-delete',
+    handler: '',
+    status: 'danger',
+    disabled: false,
+    filterFun(currentInfo) {
+      return true;
+    }
+  }
 ];
 export const moreMenu = [
   {

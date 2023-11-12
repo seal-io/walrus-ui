@@ -10,6 +10,12 @@ export const dateFormatMap = {
 
 export const InjectCompleteDataKey = Symbol('InjectCompleteDataKey');
 
+export const InjectProjectEnvironmentKey = Symbol(
+  'InjectProjectEnvironmentKey'
+);
+
+export const InjectShowInputHintKey = Symbol('InjectShowInputHintKey');
+
 export const setEndTimeAddDay = (time, mode) => {
   if (mode === 'utc') {
     return dayjs(time).add(1, 'day').format('YYYY-MM-DDT00:00:00+00:00');

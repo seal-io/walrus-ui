@@ -301,7 +301,10 @@
   import {
     validateLabelNameRegx,
     PageAction,
-    InputWidth
+    InputWidth,
+    InjectCompleteDataKey,
+    InjectProjectEnvironmentKey,
+    InjectShowInputHintKey
   } from '@/views/config';
   import { queryEnvironmentConnector } from '@/views/application-management/environments/api';
   import { projectEnvCtxInjectionKey } from '@/components/form-create/bussiness-components/config';
@@ -380,9 +383,9 @@
     connectors: []
   });
 
-  provide('showHintInput', true);
-  provide('completeData', completeData);
-  provide('ProjectEnvironment', {
+  provide(InjectShowInputHintKey, true);
+  provide(InjectCompleteDataKey, completeData);
+  provide(InjectProjectEnvironmentKey, {
     projectID: route.params.projectId,
     environmentID: route.params.environmentId
   });

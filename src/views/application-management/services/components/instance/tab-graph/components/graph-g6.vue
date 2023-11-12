@@ -60,6 +60,7 @@
   import i18n from '@/locale';
   import resourceImages from '@/views/application-management/resource-images';
   import serviceImg from '@/assets/images/service.png';
+  import resourceImg from '@/assets/images/resource.png';
   import {
     ref,
     nextTick,
@@ -288,7 +289,14 @@
       );
     });
   };
-
+  const setNodeDescription = (node) => {
+    if (_.hasIn(node.extensions, 'isService')) {
+      return node.extensions.isService
+        ? i18n.global.t('menu.applicationManagement.services')
+        : i18n.global.t('menu.applicationManagement.resource');
+    }
+    return _.get(node, 'extensions.type') || _.get(node, 'kind');
+  };
   const setNodeList = () => {
     const { sourceData: data } = props;
     const style = {
@@ -328,7 +336,7 @@
         data: loggableList
       };
 
-      node.descTips = _.get(node, 'extensions.type') || _.get(node, 'kind');
+      node.descTips = setNodeDescription(node);
       node.drifted = _.get(node, 'extensions.drift.drifted') || false;
 
       if (_.get(node, 'kind') !== nodeKindType.ServiceResource) {
@@ -352,7 +360,7 @@
         img:
           node.icon ||
           resourceImages.get(node.providerType)?.get(node.resourceType) ||
-          serviceImg
+          (_.get(node, 'extensions.isService') ? serviceImg : resourceImg)
       };
       if (_.get(node, 'kind') === nodeKindType.ServiceResourceGroup) {
         node.style = {

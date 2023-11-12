@@ -113,6 +113,7 @@
 
   onMounted(() => {
     init();
+    console.log('breadCrumbList>>>>>>>>', breadCrumbList.value);
   });
 </script>
 

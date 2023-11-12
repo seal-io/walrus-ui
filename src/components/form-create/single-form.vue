@@ -17,6 +17,7 @@
   import { FieldSchema } from '@/components/dynamic-form/config/interface';
   import { FieldDataType } from '@/components/dynamic-form/config/field-type';
   import { Widget } from '@/components/dynamic-form/config/widget';
+  import { InjectShowInputHintKey } from '@/views/config';
   import { json2Yaml, yaml2Json } from './config/yaml-parse';
   import formComponents from './components';
   import {
@@ -95,7 +96,7 @@
       const triggerValidate = ref(false);
       const validateState = ref(false); // if has executed validate
 
-      provide('showHintInput', true);
+      provide(InjectShowInputHintKey, true);
 
       const {
         queryName,

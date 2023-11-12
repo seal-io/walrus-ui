@@ -82,6 +82,7 @@
     toLower,
     isArray
   } from 'lodash';
+  import { InjectCompleteDataKey } from '@/views/config';
   import { onClickOutside } from '@vueuse/core';
   import {
     nextTick,
@@ -162,7 +163,7 @@
     },
     eventHandler: Function
   });
-  const completeData = inject('completeData', ref(null));
+  const completeData = inject(InjectCompleteDataKey, ref(null));
   const $attrs = useAttrs();
   const emits = defineEmits(['update:modelValue', 'input', 'change']);
   const expression = ref('');
