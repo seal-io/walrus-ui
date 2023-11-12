@@ -444,15 +444,27 @@
       const currentData = _.find(collections, (item) => item.id === execId);
       if (currentData) {
         const stages = currentData?.stages || [];
-        const result = initNodes(stages);
-        console.log('result..', result);
-        graphIns.fromJSON(result, { silent: true });
+        // const result = initNodes(stages);
+        console.log('data====result', stages);
+        _.each(stages, (stage) => {
+          _.each(stage.steps, (node) => {
+            const nodeData = node;
+            const current = graphIns?.getCellById(nodeData?.id);
+            if (current) {
+              const newData = _.merge(_.cloneDeep(current.data), nodeData);
+              current.updateData(newData);
+              console.log('data====2', current, nodeData, newData);
+            }
+          });
+        });
+        // graphIns.fromJSON(result);
       }
     }
   };
+
   const updateHandler = (list) => {
-    _.each(list, (data) => {
-      updateChunkedList(data);
+    _.each(list, (item) => {
+      updateChunkedList(item);
     });
   };
 

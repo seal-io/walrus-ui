@@ -1,0 +1,739 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+      "title": "OpenAPI schema for template terraform-kubernetes-containerservice"
+  },
+  "components": {
+      "schemas": {
+          "variables": {
+              "required": [
+                  "containers"
+              ],
+              "type": "object",
+              "properties": {
+                  "context": {
+                      "title": "context",
+                      "type": "object",
+                      "description": "Receive contextual information. When Walrus deploys, Walrus will inject specific contextual information into this field.\n\nExamples:\n```\ncontext:\n  project:\n    name: string\n    id: string\n  environment:\n    name: string\n    id: string\n  resource:\n    name: string\n    id: string\n```\n",
+                      "additionalProperties": {
+                          "x-walrus-original": {
+                              "type": "dynamic"
+                          }
+                      },
+                      "x-walrus-ui": {
+                          "group": "Basic"
+                      }
+                  },
+                  "infrastructure": {
+                      "title": "infrastructure",
+                      "type": "object",
+                      "description": "Specify the infrastructure information for deploying.\n\nExamples:\n```\ninfrastructure:\n  namespace: string, optional\n  gpu_vendor: string, optional\n```\n",
+                      "properties": {
+                          "gpu_vendor": {
+                              "default": "nvidia.com",
+                              "title": "gpu_vendor",
+                              "type": "string"
+                          },
+                          "namespace": {
+                              "title": "namespace",
+                              "type": "string"
+                          }
+                      },
+                      "x-walrus-ui": {
+                          "group": "Basic"
+                      }
+                  },
+                  "deployment": {
+                      "title": "deployment",
+                      "type": "object",
+                      "description": "Specify the deployment action, including scaling and scheduling.\n\nExamples:\n```\ndeployment:\n  timeout: number, optional\n  replicas: 1\n  update_strategy:\n    type: recreate/rolling       \n    recreate: {}\n    rolling: \n      max_surge: number, in fraction, i.e. 0.25, 0.5, 1\n      max_unavailable: number, in fraction, i.e. 0.25, 0.5, 1\n  system_controls:\n  - name: string\n    value: string\n```\n",
+                      "properties": {
+                          "replicas": {
+                              "default": 1,
+                              "title": "replicas",
+                              "type": "number"
+                          },
+                          "system_controls": {
+                              "items": {
+                                  "properties": {
+                                      "name": {
+                                          "title": "name",
+                                          "type": "string"
+                                      },
+                                      "value": {
+                                          "title": "value",
+                                          "type": "string"
+                                      }
+                                  },
+                                  "required": [
+                                      "name",
+                                      "value"
+                                  ],
+                                  "type": "object"
+                              },
+                              "title": "system_controls",
+                              "type": "array"
+                          },
+                          "timeout": {
+                              "title": "timeout",
+                              "type": "number"
+                          },
+                          "update_strategy": {
+                              "properties": {
+                                  "recreate": {
+                                      "title": "recreate",
+                                      "type": "object"
+                                  },
+                                  "rolling": {
+                                      "properties": {
+                                          "max_surge": {
+                                              "default": 0.25,
+                                              "title": "max_surge",
+                                              "type": "number"
+                                          },
+                                          "max_unavailable": {
+                                              "default": 0.25,
+                                              "title": "max_unavailable",
+                                              "type": "number"
+                                          }
+                                      },
+                                      "title": "rolling",
+                                      "type": "object"
+                                  },
+                                  "type": {
+                                      "default": "rolling",
+                                      "title": "type",
+                                      "type": "string"
+                                  }
+                              },
+                              "title": "update_strategy",
+                              "type": "object"
+                          }
+                      },
+                      "x-walrus-ui": {
+                          "group": "Basic"
+                      }
+                  },
+                  "credentials": {
+                      "title": "credentials",
+                      "type": "array",
+                      "description": "Specify the credential items to fetch private data, like an internal image registry.\n\nExamples:\n```\ncredentials:\n- name: string                     # unique\n  type: image_registry\n  image_registry: \n    server: string\n    username: string\n    password: string\n    email: string, optional\n```\n",
+                      "items": {
+                          "properties": {
+                              "image_registry": {
+                                  "properties": {
+                                      "email": {
+                                          "title": "email",
+                                          "type": "string"
+                                      },
+                                      "password": {
+                                          "title": "password",
+                                          "type": "string"
+                                      },
+                                      "server": {
+                                          "title": "server",
+                                          "type": "string"
+                                      },
+                                      "username": {
+                                          "title": "username",
+                                          "type": "string"
+                                      }
+                                  },
+                                  "required": [
+                                      "password",
+                                      "server",
+                                      "username"
+                                  ],
+                                  "title": "image_registry",
+                                  "type": "object"
+                              },
+                              "name": {
+                                  "title": "name",
+                                  "type": "string"
+                              },
+                              "type": {
+                                  "default": "image_registry",
+                                  "title": "type",
+                                  "type": "string"
+                              }
+                          },
+                          "required": [
+                              "name"
+                          ],
+                          "type": "object"
+                      },
+                      "x-walrus-ui": {
+                          "group": "Basic"
+                      }
+                  },
+                  "configs": {
+                      "title": "configs",
+                      "type": "array",
+                      "description": "Specify the configuration items to configure containers, either raw or sensitive data.\n\nExamples:\n```\nconfigs:\n- name: string                     # unique\n  type: data                       # convert to config map\n  data: \n    (key: string): string\n- name: string\n  type: secret                     # convert to secret\n  secret:\n    (key: string): string\n```\n",
+                      "items": {
+                          "properties": {
+                              "data": {
+                                  "additionalProperties": {
+                                      "type": "string"
+                                  },
+                                  "title": "data",
+                                  "type": "object"
+                              },
+                              "name": {
+                                  "title": "name",
+                                  "type": "string"
+                              },
+                              "secret": {
+                                  "additionalProperties": {
+                                      "type": "string"
+                                  },
+                                  "title": "secret",
+                                  "type": "object"
+                              },
+                              "type": {
+                                  "default": "data",
+                                  "title": "type",
+                                  "type": "string"
+                              }
+                          },
+                          "required": [
+                              "name"
+                          ],
+                          "type": "object"
+                      },
+                      "x-walrus-ui": {
+                          "group": "Basic"
+                      }
+                  },
+                  "storages": {
+                      "title": "storages",
+                      "type": "array",
+                      "description": "Specify the storage items to mount containers.\n\nExamples:\n```\nstorages:\n- name: string                     # unique\n  type: empty                      # convert ot empty_dir volume\n  empty:\n    medium: string, optional\n    size: number, optional         # in megabyte\n- name: string\n  type: nas                        # convert to nfs volume\n  nas:\n    read_only: bool, optional\n    server: string\n    path: string, optional\n    username: string, optional\n    password: string, optional\n- name: string\n  type: san                        # convert to fc or iscsi volume\n  san:\n    read_only: bool, optional\n    fs_type: string, optional\n    type: fc/iscsi\n    fc: \n      lun: number\n      wwns: list(string)\n    iscsi\n      lun: number, optional\n      portal: string\n      iqn: string\n- name: string\n  type: ephemeral                   # convert to ephemeral volume claim template\n  ephemeral:\n    class: string, optional\n    access_mode: string, optional\n    size: number, optional          # in megabyte\n- name: string\n  type: persistent                  # convert to persistent volume claim template\n  persistent:\n    read_only: bool, optional\n    name: string                    # persistent volume claim name\n```\n",
+                      "items": {
+                          "properties": {
+                              "empty": {
+                                  "properties": {
+                                      "medium": {
+                                          "title": "medium",
+                                          "type": "string"
+                                      },
+                                      "size": {
+                                          "title": "size",
+                                          "type": "number"
+                                      }
+                                  },
+                                  "title": "empty",
+                                  "type": "object"
+                              },
+                              "ephemeral": {
+                                  "properties": {
+                                      "access_mode": {
+                                          "default": "ReadWriteOnce",
+                                          "title": "access_mode",
+                                          "type": "string"
+                                      },
+                                      "class": {
+                                          "title": "class",
+                                          "type": "string"
+                                      },
+                                      "size": {
+                                          "title": "size",
+                                          "type": "number"
+                                      }
+                                  },
+                                  "required": [
+                                      "size"
+                                  ],
+                                  "title": "ephemeral",
+                                  "type": "object"
+                              },
+                              "name": {
+                                  "title": "name",
+                                  "type": "string"
+                              },
+                              "nas": {
+                                  "properties": {
+                                      "password": {
+                                          "title": "password",
+                                          "type": "string"
+                                      },
+                                      "path": {
+                                          "default": "/",
+                                          "title": "path",
+                                          "type": "string"
+                                      },
+                                      "read_only": {
+                                          "default": false,
+                                          "title": "read_only",
+                                          "type": "boolean"
+                                      },
+                                      "server": {
+                                          "title": "server",
+                                          "type": "string"
+                                      },
+                                      "username": {
+                                          "title": "username",
+                                          "type": "string"
+                                      }
+                                  },
+                                  "required": [
+                                      "server"
+                                  ],
+                                  "title": "nas",
+                                  "type": "object"
+                              },
+                              "persistent": {
+                                  "properties": {
+                                      "name": {
+                                          "title": "name",
+                                          "type": "string"
+                                      },
+                                      "read_only": {
+                                          "default": false,
+                                          "title": "read_only",
+                                          "type": "boolean"
+                                      }
+                                  },
+                                  "required": [
+                                      "name"
+                                  ],
+                                  "title": "persistent",
+                                  "type": "object"
+                              },
+                              "san": {
+                                  "properties": {
+                                      "fc": {
+                                          "properties": {
+                                              "lun": {
+                                                  "default": 0,
+                                                  "title": "lun",
+                                                  "type": "number"
+                                              },
+                                              "wwns": {
+                                                  "items": {
+                                                      "type": "string"
+                                                  },
+                                                  "title": "wwns",
+                                                  "type": "array"
+                                              }
+                                          },
+                                          "required": [
+                                              "wwns"
+                                          ],
+                                          "title": "fc",
+                                          "type": "object"
+                                      },
+                                      "fs_type": {
+                                          "default": "ext4",
+                                          "title": "fs_type",
+                                          "type": "string"
+                                      },
+                                      "iscsi": {
+                                          "properties": {
+                                              "iqn": {
+                                                  "title": "iqn",
+                                                  "type": "string"
+                                              },
+                                              "lun": {
+                                                  "default": 0,
+                                                  "title": "lun",
+                                                  "type": "number"
+                                              },
+                                              "portal": {
+                                                  "title": "portal",
+                                                  "type": "string"
+                                              }
+                                          },
+                                          "required": [
+                                              "iqn",
+                                              "portal"
+                                          ],
+                                          "title": "iscsi",
+                                          "type": "object"
+                                      },
+                                      "read_only": {
+                                          "default": false,
+                                          "title": "read_only",
+                                          "type": "boolean"
+                                      },
+                                      "type": {
+                                          "title": "type",
+                                          "type": "string"
+                                      }
+                                  },
+                                  "required": [
+                                      "type"
+                                  ],
+                                  "title": "san",
+                                  "type": "object"
+                              },
+                              "type": {
+                                  "default": "empty",
+                                  "title": "type",
+                                  "type": "string"
+                              }
+                          },
+                          "required": [
+                              "name"
+                          ],
+                          "type": "object"
+                      },
+                      "x-walrus-ui": {
+                          "group": "Basic"
+                      }
+                  },
+                  "containers": {
+                      "title": "containers",
+                      "type": "array",
+                      "description": "Specify the container items to deployment.\n\nExamples:\n```\ncontainers:\n- name: string                     # unique\n  profile: init/run\n  image:\n    name: string\n    pull_policy: string, optional\n  execute:\n    command: list(string), optional\n    args: list(string), optional\n    working_dir: string, optional\n    as: string, optional       # i.e. non_root, user_id:group:id\n  resources:\n    requests:\n      cpu: number, optional        # in oneCPU, i.e. 0.25, 0.5, 1, 2, 4, 8\n      memory: number, optional     # in megabyte\n      gpu: number, optional        # i.e. 0.25, 0.5, 1, 2, 4, 8\n    limits:\n      cpu: number, optioanl        # in oneCPU, i.e. 0.25, 0.5, 1, 2, 4, 8\n      memory: number, optional     # in megabyte\n      gpu: number, optional        # i.e. 0.25, 0.5, 1, 2, 4, 8\n  envs:\n  - name: string, optional         # only work if the config.key is null\n    type: text/config\n    text:\n      content: string\n    config:\n      name: string\n      key: string, optional\n  mounts:\n  - path: string                   # unique\n    read_only: bool, optional\n    type: config/storage\n    config:\n      name: string\n      key: string, optional\n      mode: string, optional\n      disable_changed: bool, optional # only work if config.key is not null\n    storage:\n      name: string\n      sub_path: string, optional\n  ports:\n  - internal: number\n    external: number, optional\n    protocol: udp/tcp\n  checks:\n  - initial_delay: number\n    interval: number\n    timeout: number\n    retries: number\n    teardown_unhealthy: bool\n    type: execute/request\n    execute:\n      command: list(string)\n    request:\n      protocol: tcp/grpc/http/https\n      port: string\n      headers: map(string), optional\n      path: string, optional\n```\n",
+                      "items": {
+                          "properties": {
+                              "checks": {
+                                  "items": {
+                                      "properties": {
+                                          "execute": {
+                                              "properties": {
+                                                  "command": {
+                                                      "items": {
+                                                          "type": "string"
+                                                      },
+                                                      "title": "command",
+                                                      "type": "array"
+                                                  }
+                                              },
+                                              "required": [
+                                                  "command"
+                                              ],
+                                              "title": "execute",
+                                              "type": "object"
+                                          },
+                                          "initial_delay": {
+                                              "default": 0,
+                                              "title": "initial_delay",
+                                              "type": "number"
+                                          },
+                                          "interval": {
+                                              "default": 10,
+                                              "title": "interval",
+                                              "type": "number"
+                                          },
+                                          "request": {
+                                              "properties": {
+                                                  "headers": {
+                                                      "additionalProperties": {
+                                                          "type": "string"
+                                                      },
+                                                      "title": "headers",
+                                                      "type": "object"
+                                                  },
+                                                  "path": {
+                                                      "title": "path",
+                                                      "type": "string"
+                                                  },
+                                                  "port": {
+                                                      "title": "port",
+                                                      "type": "number"
+                                                  },
+                                                  "protocol": {
+                                                      "default": "http",
+                                                      "title": "protocol",
+                                                      "type": "string"
+                                                  }
+                                              },
+                                              "required": [
+                                                  "port"
+                                              ],
+                                              "title": "request",
+                                              "type": "object"
+                                          },
+                                          "retries": {
+                                              "default": 1,
+                                              "title": "retries",
+                                              "type": "number"
+                                          },
+                                          "teardown_unhealthy": {
+                                              "default": false,
+                                              "title": "teardown_unhealthy",
+                                              "type": "boolean"
+                                          },
+                                          "timeout": {
+                                              "default": 1,
+                                              "title": "timeout",
+                                              "type": "number"
+                                          },
+                                          "type": {
+                                              "default": "request",
+                                              "title": "type",
+                                              "type": "string"
+                                          }
+                                      },
+                                      "type": "object"
+                                  },
+                                  "title": "checks",
+                                  "type": "array"
+                              },
+                              "envs": {
+                                  "items": {
+                                      "properties": {
+                                          "config": {
+                                              "properties": {
+                                                  "key": {
+                                                      "title": "key",
+                                                      "type": "string"
+                                                  },
+                                                  "name": {
+                                                      "title": "name",
+                                                      "type": "string"
+                                                  }
+                                              },
+                                              "required": [
+                                                  "name"
+                                              ],
+                                              "title": "config",
+                                              "type": "object"
+                                          },
+                                          "name": {
+                                              "title": "name",
+                                              "type": "string"
+                                          },
+                                          "text": {
+                                              "properties": {
+                                                  "content": {
+                                                      "title": "content",
+                                                      "type": "string"
+                                                  }
+                                              },
+                                              "required": [
+                                                  "content"
+                                              ],
+                                              "title": "text",
+                                              "type": "object"
+                                          },
+                                          "type": {
+                                              "default": "text",
+                                              "title": "type",
+                                              "type": "string"
+                                          }
+                                      },
+                                      "type": "object"
+                                  },
+                                  "title": "envs",
+                                  "type": "array"
+                              },
+                              "execute": {
+                                  "properties": {
+                                      "args": {
+                                          "items": {
+                                              "type": "string"
+                                          },
+                                          "title": "args",
+                                          "type": "array"
+                                      },
+                                      "as": {
+                                          "title": "as",
+                                          "type": "string"
+                                      },
+                                      "command": {
+                                          "items": {
+                                              "type": "string"
+                                          },
+                                          "title": "command",
+                                          "type": "array"
+                                      },
+                                      "working_dir": {
+                                          "title": "working_dir",
+                                          "type": "string"
+                                      }
+                                  },
+                                  "title": "execute",
+                                  "type": "object"
+                              },
+                              "image": {
+                                  "properties": {
+                                      "name": {
+                                          "title": "name",
+                                          "type": "string"
+                                      },
+                                      "pull_policy": {
+                                          "default": "IfNotPresent",
+                                          "title": "pull_policy",
+                                          "type": "string"
+                                      }
+                                  },
+                                  "required": [
+                                      "name"
+                                  ],
+                                  "title": "image",
+                                  "type": "object"
+                              },
+                              "mounts": {
+                                  "items": {
+                                      "properties": {
+                                          "config": {
+                                              "properties": {
+                                                  "disable_changed": {
+                                                      "default": false,
+                                                      "title": "disable_changed",
+                                                      "type": "boolean"
+                                                  },
+                                                  "key": {
+                                                      "title": "key",
+                                                      "type": "string"
+                                                  },
+                                                  "mode": {
+                                                      "default": "0644",
+                                                      "title": "mode",
+                                                      "type": "string"
+                                                  },
+                                                  "name": {
+                                                      "title": "name",
+                                                      "type": "string"
+                                                  }
+                                              },
+                                              "required": [
+                                                  "name"
+                                              ],
+                                              "title": "config",
+                                              "type": "object"
+                                          },
+                                          "path": {
+                                              "title": "path",
+                                              "type": "string"
+                                          },
+                                          "read_only": {
+                                              "default": false,
+                                              "title": "read_only",
+                                              "type": "boolean"
+                                          },
+                                          "storage": {
+                                              "properties": {
+                                                  "name": {
+                                                      "title": "name",
+                                                      "type": "string"
+                                                  },
+                                                  "sub_path": {
+                                                      "title": "sub_path",
+                                                      "type": "string"
+                                                  }
+                                              },
+                                              "required": [
+                                                  "name"
+                                              ],
+                                              "title": "storage",
+                                              "type": "object"
+                                          },
+                                          "type": {
+                                              "default": "config",
+                                              "title": "type",
+                                              "type": "string"
+                                          }
+                                      },
+                                      "required": [
+                                          "path"
+                                      ],
+                                      "type": "object"
+                                  },
+                                  "title": "mounts",
+                                  "type": "array"
+                              },
+                              "name": {
+                                  "title": "name",
+                                  "type": "string"
+                              },
+                              "ports": {
+                                  "items": {
+                                      "properties": {
+                                          "external": {
+                                              "title": "external",
+                                              "type": "number"
+                                          },
+                                          "internal": {
+                                              "title": "internal",
+                                              "type": "number"
+                                          },
+                                          "protocol": {
+                                              "default": "tcp",
+                                              "title": "protocol",
+                                              "type": "string"
+                                          }
+                                      },
+                                      "required": [
+                                          "internal"
+                                      ],
+                                      "type": "object"
+                                  },
+                                  "title": "ports",
+                                  "type": "array"
+                              },
+                              "profile": {
+                                  "default": "run",
+                                  "title": "profile",
+                                  "type": "string"
+                              },
+                              "resources": {
+                                  "properties": {
+                                      "limits": {
+                                          "properties": {
+                                              "cpu": {
+                                                  "default": 0,
+                                                  "title": "cpu",
+                                                  "type": "number"
+                                              },
+                                              "gpu": {
+                                                  "default": 0,
+                                                  "title": "gpu",
+                                                  "type": "number"
+                                              },
+                                              "memory": {
+                                                  "default": 0,
+                                                  "title": "memory",
+                                                  "type": "number"
+                                              }
+                                          },
+                                          "title": "limits",
+                                          "type": "object"
+                                      },
+                                      "requests": {
+                                          "properties": {
+                                              "cpu": {
+                                                  "default": 0.1,
+                                                  "title": "cpu",
+                                                  "type": "number"
+                                              },
+                                              "gpu": {
+                                                  "default": 0,
+                                                  "title": "gpu",
+                                                  "type": "number"
+                                              },
+                                              "memory": {
+                                                  "default": 64,
+                                                  "title": "memory",
+                                                  "type": "number"
+                                              }
+                                          },
+                                          "title": "requests",
+                                          "type": "object"
+                                      }
+                                  },
+                                  "required": [
+                                      "requests"
+                                  ],
+                                  "title": "resources",
+                                  "type": "object"
+                              }
+                          },
+                          "required": [
+                              "image",
+                              "name"
+                          ],
+                          "type": "object"
+                      },
+                      "x-walrus-ui": {
+                          "group": "Basic"
+                      }
+                  }
+              }
+          }
+      }
+  }
+}

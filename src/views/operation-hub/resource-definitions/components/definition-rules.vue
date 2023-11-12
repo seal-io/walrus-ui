@@ -438,7 +438,8 @@
     validateLabelNameRegx,
     PageAction,
     InputWidth,
-    EnvironmentTypeMap
+    EnvironmentTypeMap,
+    InjectShowInputHintKey
   } from '@/views/config';
   import GroupForm from '@/components/form-create/group-form.vue';
   import ViewForm from '@/components/form-create/view-form.vue';
@@ -532,7 +533,7 @@
   const uiSchema = ref<any>({});
   const selectors = ref<Set<string>>(new Set());
 
-  provide('showHintInput', true);
+  provide(InjectShowInputHintKey, true);
 
   const actionList = computed(() => {
     return _.map(SelectorAction, (item) => {

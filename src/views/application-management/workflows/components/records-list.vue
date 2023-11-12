@@ -119,7 +119,7 @@
             <span>{{ setDurationValue(record.duration) }}</span>
           </template>
         </a-table-column>
-        <!-- <a-table-column
+        <a-table-column
           ellipsis
           tooltip
           :cell-style="{ minWidth: '40px' }"
@@ -127,8 +127,8 @@
           data-index="description"
           :title="$t('applications.workflow.table.trigger')"
         >
-        </a-table-column> -->
-        <!-- <a-table-column
+        </a-table-column>
+        <a-table-column
           align="center"
           :width="210"
           :title="$t('common.table.operation')"
@@ -140,7 +140,7 @@
               @select="(val) => handleDropSelect(val, record)"
             ></DropButtonGroup>
           </template>
-        </a-table-column> -->
+        </a-table-column>
       </template>
     </a-table>
     <a-pagination
@@ -278,28 +278,16 @@
       }
     });
   };
-  const handleDropSelect = (val, row) => {
-    if (val === 'delete') return;
-    router.push({
-      name: WORKFLOW.Detail,
-      params: {
-        ...route.params
-      },
-      query: {
-        execId: row.id
-      }
-    });
-  };
 
-  const handleDeleteConfirm = async () => {
+  const handleDeleteConfirm = async (row) => {
     try {
       loading.value = true;
-      const ids = _.map(selectedKeys.value, (val) => {
-        return {
-          id: val
-        };
-      });
-      await deletePipeline({ items: ids });
+      // const ids = _.map(selectedKeys.value, (val) => {
+      //   return {
+      //     id: val
+      //   };
+      // });
+      await deletePipeline({ items: [{ id: row.id }] });
       loading.value = false;
       execSucceed();
       queryParams.page = 1;
@@ -310,8 +298,24 @@
       loading.value = false;
     }
   };
-  const handleDelete = async () => {
-    deleteModal({ onOk: handleDeleteConfirm });
+  const handleDelete = async (row) => {
+    deleteModal({ onOk: () => handleDeleteConfirm(row) });
+  };
+
+  const handleDropSelect = (val, row) => {
+    if (val === 'delete') {
+      handleDelete(row);
+      return;
+    }
+    router.push({
+      name: WORKFLOW.Detail,
+      params: {
+        ...route.params
+      },
+      query: {
+        execId: row.id
+      }
+    });
   };
 
   const updateHandler = (list) => {

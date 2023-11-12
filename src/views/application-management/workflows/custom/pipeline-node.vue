@@ -1,6 +1,6 @@
 <script lang="tsx">
   import _ from 'lodash';
-  import { defineComponent, inject, toRefs, ref } from 'vue';
+  import { defineComponent, inject, toRefs, ref, onMounted } from 'vue';
   import i18n from '@/locale';
   import { useUserStore } from '@/store';
   import StatusLabel from '@/views/operation-hub/connectors/components/status-label.vue';
@@ -29,23 +29,29 @@
       const userStore = useUserStore();
 
       const getGraph = inject('getGraph');
-      const getNode = inject('getNode');
+      const getNode = inject('getNode', () => ({}));
       const { node, graph } = toRefs(props);
-      const { rejectedUsers } = node.value.data.attributes;
+      const nodeData = ref(node.value.data);
+      const { rejectedUsers } = nodeData.value.attributes;
       const subjectList = ref<{ id: string; name: string }[]>([]);
       const approvalUsers = ref<
         { name: string; approvaled: boolean; rejected: boolean; id: string }[]
       >([]);
 
+      const listenDataChange = () => {
+        const nodeIns = getNode() as any;
+        nodeIns?.on('change:data', (current) => {
+          nodeData.value = current.current;
+          console.log('current==========', current, node.value, nodeData.value);
+        });
+      };
       const renderStageName = () => {
-        const data = node.value.getData();
-        console.log('data', data);
-        return data.stepPosition === 0 ? (
-          <div class="stage-name">{data.stageName}</div>
+        return nodeData.value.stepPosition === 0 ? (
+          <div class="stage-name">{nodeData.value.stageName}</div>
         ) : null;
       };
       const getSubjects = async () => {
-        if (node.value.data?.type !== TaskTypes.APPROVAL) return;
+        if (nodeData.value?.type !== TaskTypes.APPROVAL) return;
         try {
           const params = {
             page: -1
@@ -53,10 +59,7 @@
           const { data } = await querySubjects(params);
           subjectList.value = data.items || [];
           approvalUsers.value = _.filter(data.items, (item) => {
-            return _.includes(
-              node.value.data.attributes.approvalUsers,
-              item.id
-            );
+            return _.includes(nodeData.value.attributes.approvalUsers, item.id);
           })
             .map((sItem) => {
               return {
@@ -65,7 +68,7 @@
                 order: userStore.userInfo.id === sItem.id ? 0 : 1,
                 rejected: _.includes(rejectedUsers, sItem.id),
                 approvaled: _.includes(
-                  node.value.data.attributes.approvedUsers,
+                  nodeData.value.attributes.approvedUsers,
                   sItem.id
                 )
               };
@@ -95,12 +98,12 @@
         return null;
       };
       const renderApprovalInfo = () => {
-        if (node.value.data?.type === TaskTypes.APPROVAL) {
+        if (nodeData.value?.type === TaskTypes.APPROVAL) {
           return (
             <span class="item avatar">
               <span class="title">
                 {t('workflow.stage.add.approvalUser')}
-                {node.value.data.attributes?.approvalType === ApprovalTypeMap.OR
+                {nodeData.value.attributes?.approvalType === ApprovalTypeMap.OR
                   ? `(${t('workflow.task.approval.or')})`
                   : `(${t('workflow.task.approval.and')})`}
               </span>
@@ -130,19 +133,19 @@
         return null;
       };
       const renderServiceInfo = () => {
-        if (node.value.data?.type === TaskTypes.SERVICE) {
+        if (nodeData.value?.type === TaskTypes.SERVICE) {
           return (
             <>
               <span class="time item">
                 <span class="title">{t('common.time.label')}</span>
-                {_.get(node.value.data, 'status.summaryStatus') ===
+                {_.get(nodeData.value, 'status.summaryStatus') ===
                 WorkflowStatus.Running ? (
                   <ClockTimer
-                    start-time={node.value.data.executeTime}
+                    start-time={nodeData.value.executeTime}
                     show={true}
                   ></ClockTimer>
                 ) : (
-                  <span>{setDurationValue(node.value.data?.duration)}</span>
+                  <span>{setDurationValue(nodeData.value?.duration)}</span>
                 )}
               </span>
               <span class="item">
@@ -150,7 +153,7 @@
                   {t('operation.environments.table.env')}
                 </span>
                 <Autotip>
-                  {node.value.data?.attributes?.environment?.name}
+                  {nodeData.value?.attributes?.environment?.name}
                 </Autotip>
               </span>
               <span class="item">
@@ -158,13 +161,13 @@
                   {t('applications.applications.table.service')}
                 </span>
                 <Autotip>
-                  {_.get(node.value.data, 'status.summaryStatus') ===
+                  {_.get(nodeData.value, 'status.summaryStatus') ===
                   WorkflowStatus.Completed ? (
                     <a class="link" data-event="node:view-service">
-                      {node.value.data?.attributes?.name}
+                      {nodeData.value?.attributes?.name}
                     </a>
                   ) : (
-                    node.value.data?.attributes?.name
+                    nodeData.value?.attributes?.name
                   )}
                 </Autotip>
               </span>
@@ -183,17 +186,20 @@
           !user ||
           user.approvaled ||
           user.rejected ||
-          node.value.data?.type !== TaskTypes.APPROVAL
+          nodeData.value?.type !== TaskTypes.APPROVAL
         ) {
           return false;
         }
 
         return (
           !!user &&
-          _.get(node.value.data, 'status.summaryStatus') ===
+          _.get(nodeData.value, 'status.summaryStatus') ===
             WorkflowStatus.Running
         );
       };
+      onMounted(() => {
+        listenDataChange();
+      });
       getSubjects();
       return () => (
         <div class="pipeline-node">
@@ -203,17 +209,17 @@
               class={[
                 'iconfont',
                 {
-                  'icon-fuwu': node.value.data?.type === TaskTypes.SERVICE,
+                  'icon-fuwu': nodeData.value?.type === TaskTypes.SERVICE,
                   'icon-jiaoseshouquan':
-                    node.value.data?.type === TaskTypes.APPROVAL,
-                  'size-12': node.value.data?.type === TaskTypes.APPROVAL
+                    nodeData.value?.type === TaskTypes.APPROVAL,
+                  'size-12': nodeData.value?.type === TaskTypes.APPROVAL
                 }
               ]}
             ></i>
           </span>
           <div class="pipeline-node-title">
-            <Autotip tooltip-props={{ content: node.value.data?.name }}>
-              <span class="title">{node.value.data?.name}</span>
+            <Autotip tooltip-props={{ content: nodeData.value?.name }}>
+              <span class="title">{nodeData.value?.name}</span>
             </Autotip>
             <div class="more">{/* <MoreAction></MoreAction> */}</div>
           </div>
@@ -222,14 +228,11 @@
               <StatusLabel
                 zoom={0.9}
                 status={{
-                  status: _.get(node.value.data, 'status.summaryStatus'),
-                  text: _.get(node.value.data, 'status.summaryStatus'),
-                  message: _.get(
-                    node.value.data,
-                    'status.summaryStatusMessage'
-                  ),
-                  transitioning: _.get(node.value.data, 'status.transitioning'),
-                  error: _.get(node.value.data, 'status.error')
+                  status: _.get(nodeData.value, 'status.summaryStatus'),
+                  text: _.get(nodeData.value, 'status.summaryStatus'),
+                  message: _.get(nodeData.value, 'status.summaryStatusMessage'),
+                  transitioning: _.get(nodeData.value, 'status.transitioning'),
+                  error: _.get(nodeData.value, 'status.error')
                 }}
               ></StatusLabel>
             </span>
@@ -239,8 +242,8 @@
                   {t('workflow.stage.approve')}
                 </a-link>
               ) : null}
-              {node.value.data?.type === TaskTypes.SERVICE &&
-              _.get(node.value.data, 'status.summaryStatus') !==
+              {nodeData.value?.type === TaskTypes.SERVICE &&
+              _.get(nodeData.value, 'status.summaryStatus') !==
                 WorkflowStatus.Pending ? (
                 <a-link hoverable={false} data-event="node:logs">
                   {t('applications.applications.instance.log')}

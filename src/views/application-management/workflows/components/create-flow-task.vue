@@ -227,7 +227,7 @@
   import { Resources, Actions } from '@/permissions/config';
   import { useUserStore } from '@/store';
   import useCallCommon from '@/hooks/use-call-common';
-  import { InputWidth } from '@/views/config';
+  import { InputWidth, InjectProjectEnvironmentKey } from '@/views/config';
   import { ListItem } from '@/views/config/interface';
   import EditPageFooter from '@/components/edit-page-footer/index.vue';
   import { queryEnvironments } from '@/views/application-management/environments/api';
@@ -291,7 +291,7 @@
 
   provide(ProvideSetServiceInfoKey, serviceInfo);
 
-  provide('ProjectEnvironment', {
+  provide(InjectProjectEnvironmentKey, {
     projectID: route.params.projectId,
     environmentID: flow.environmentId
   });

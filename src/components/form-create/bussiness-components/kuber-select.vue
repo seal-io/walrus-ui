@@ -30,7 +30,7 @@
     },
     emits: ['update:modelValue', 'change', 'inputValueChange'],
     setup(props, { attrs, emit }) {
-      // const ProjectEnvironment = inject('ProjectEnvironment', {
+      // const ProjectEnvironment = inject('InjectProjectEnvironmentKey', {
       //   environmentID: '',
       //   projectID: ''
       // });

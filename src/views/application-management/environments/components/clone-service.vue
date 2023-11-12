@@ -197,7 +197,12 @@
 
 <script lang="ts" setup>
   import _ from 'lodash';
-  import { PageAction, validateLabelNameRegx } from '@/views/config';
+  import {
+    PageAction,
+    validateLabelNameRegx,
+    InjectCompleteDataKey,
+    InjectShowInputHintKey
+  } from '@/views/config';
   import { ref, PropType, computed, provide, onMounted, watch } from 'vue';
   import GroupForm from '@/components/form-create/group-form.vue';
   import xInputGroup from '@/components/form-create/custom-components/x-input-group.vue';
@@ -294,8 +299,8 @@
   const activeServiceInfo = ref<any>({});
   const hasChange = ref(false);
   let copyFormData: any = null;
-  provide('showHintInput', true);
-  provide('completeData', completeData);
+  provide(InjectShowInputHintKey, true);
+  provide(InjectCompleteDataKey, completeData);
 
   const handleCheckboxChange = (checked) => {
     if (checked) {

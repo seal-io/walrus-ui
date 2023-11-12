@@ -193,6 +193,10 @@
 <script lang="ts" setup>
   import { cloneDeep, reduce, get, hasIn, filter } from 'lodash';
   import { useAttrs, PropType, ref, inject } from 'vue';
+  import {
+    InjectCompleteDataKey,
+    InjectShowInputHintKey
+  } from '@/views/config';
   import hintInput from '@/components/hint-input/index.vue';
   import internalComponents from '../components/internal';
 
@@ -338,8 +342,8 @@
     'update:dataDesc',
     'update:dataExtra'
   ]);
-  const showHintInput = inject('showHintInput', ref(false));
-  const completeData = inject('completeData', ref({}));
+  const showHintInput = inject(InjectShowInputHintKey, ref(false));
+  const completeData = inject(InjectCompleteDataKey, ref({}));
   const $attrs = useAttrs();
   const isError = ref(false);
   const popupvisible = ref(false);

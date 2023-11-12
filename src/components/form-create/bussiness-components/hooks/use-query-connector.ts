@@ -1,5 +1,6 @@
 import { inject, toRefs, ref } from 'vue';
 import _ from 'lodash';
+import { InjectProjectEnvironmentKey } from '@/views/config';
 import { queryEnvironmentConnector } from '../api';
 import { CheckConnectorCatagory } from '../types';
 import {
@@ -12,7 +13,7 @@ export default function useQueryConnector(props) {
     projectEnvCtxInjectionKey,
     {}
   );
-  const ProjectEnvironment = inject('ProjectEnvironment', {
+  const ProjectEnvironment = inject(InjectProjectEnvironmentKey, {
     environmentID: '',
     projectID: ''
   });

@@ -242,7 +242,8 @@
   import {
     PageAction,
     validateLabelNameRegx,
-    InputWidth
+    InputWidth,
+    InjectCompleteDataKey
   } from '@/views/config';
   import { useElementSize } from '@vueuse/core';
   import moduleWrapper from '@/components/module-wrapper/index.vue';
@@ -312,7 +313,7 @@
     tabOutput: markRaw(tabOutput),
     tabEditSchema: markRaw(tabEditSchema)
   };
-  provide('completeData', completeData);
+  provide(InjectCompleteDataKey, completeData);
 
   const { height } = useElementSize(extraWrapper);
 
