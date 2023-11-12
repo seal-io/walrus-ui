@@ -406,7 +406,8 @@
           dataType: 'service'
         },
         query: {
-          id: serviceID
+          id: serviceID,
+          from: 'workflow'
         }
       });
     });
@@ -444,8 +445,6 @@
       const currentData = _.find(collections, (item) => item.id === execId);
       if (currentData) {
         const stages = currentData?.stages || [];
-        // const result = initNodes(stages);
-        console.log('data====result', stages);
         _.each(stages, (stage) => {
           _.each(stage.steps, (node) => {
             const nodeData = node;
@@ -457,7 +456,6 @@
             }
           });
         });
-        // graphIns.fromJSON(result);
       }
     }
   };
