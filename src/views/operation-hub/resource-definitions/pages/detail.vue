@@ -74,6 +74,13 @@
             :disabled="!!id"
             :validate-trigger="['change']"
             :style="{ maxWidth: `${InputWidth.LARGE}px` }"
+            :rules="[
+              {
+                required: true,
+                match: validateLabelNameRegx,
+                message: $t('common.validate.labelName')
+              }
+            ]"
           >
             <seal-input
               v-if="pageAction === PageAction.EDIT"
@@ -81,18 +88,15 @@
               :label="$t('common.table.type')"
               :required="true"
               :style="{ width: `${InputWidth.LARGE}px` }"
-              :rules="[
-                {
-                  required: true,
-                  message: $t('common.form.rule.input', {
-                    name: $t('common.table.type')
-                  })
-                }
-              ]"
+              :max-length="63"
+              show-word-limit
             ></seal-input>
             <span v-else class="readonly-view-label">{{
               formData.type || '-'
             }}</span>
+            <template v-if="pageAction === PageAction.EDIT" #extra>
+              <div class="tips">{{ $t('common.validate.labelName') }}</div>
+            </template>
           </a-form-item>
           <a-form-item
             :label="$t('operation.environments.table.description')"
