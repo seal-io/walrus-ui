@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="service">
     <FilterBox style="margin-bottom: 10px">
       <template #params>
         <a-input
@@ -218,16 +218,19 @@
 </script>
 
 <style lang="less" scoped>
-  :deep(.mo-wrap) {
-    border: none;
+  .service {
+    :deep(.mo-wrap) {
+      overflow: hidden;
+      border: none !important;
 
-    .arco-table .arco-table-tr .arco-table-th {
-      background-color: #fff;
-      border-bottom: 1px solid var(--color-border-2);
-    }
+      .arco-table .arco-table-tr .arco-table-th {
+        background-color: #fff;
+        border-bottom: 1px solid var(--color-border-2);
+      }
 
-    .content {
-      padding: 0;
+      .content {
+        padding: 0;
+      }
     }
   }
 </style>
