@@ -213,7 +213,7 @@
         sort: ['-createTime'],
         isService: true
       };
-      const { data } = await queryLatestDeployments();
+      const { data } = await queryLatestDeployments(params);
 
       serviceList.value = data.items || [];
     } catch (error) {
@@ -228,7 +228,7 @@
         sort: ['-createTime'],
         isService: false
       };
-      const { data } = await queryLatestDeployments();
+      const { data } = await queryLatestDeployments(params);
 
       resourceList.value = data.items || [];
     } catch (error) {

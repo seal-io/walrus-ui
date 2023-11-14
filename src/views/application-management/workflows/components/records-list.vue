@@ -119,7 +119,7 @@
             <span>{{ setDurationValue(record.duration) }}</span>
           </template>
         </a-table-column>
-        <a-table-column
+        <!-- <a-table-column
           ellipsis
           tooltip
           :cell-style="{ minWidth: '40px' }"
@@ -127,7 +127,7 @@
           data-index="description"
           :title="$t('applications.workflow.table.trigger')"
         >
-        </a-table-column>
+        </a-table-column> -->
         <a-table-column
           align="center"
           :width="210"
@@ -181,7 +181,7 @@
   import { PipelineRecordsRow } from '../config/interface';
   import {
     queryPipelineRecords,
-    deletePipeline,
+    deletePipelineExecution,
     PROJECT_API_PREFIX,
     PIPELINE_API,
     PIPELINE_EXECUTION_API
@@ -287,7 +287,10 @@
       //     id: val
       //   };
       // });
-      await deletePipeline({ items: [{ id: row.id }] });
+      await deletePipelineExecution({
+        id: row.id,
+        flowId: route.params.flowId as string
+      });
       loading.value = false;
       execSucceed();
       queryParams.page = 1;

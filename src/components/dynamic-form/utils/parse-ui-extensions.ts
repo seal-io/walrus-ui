@@ -34,6 +34,7 @@ export const parseUIExtensions = (
     maxLength,
     readonly: readOnly || immutable,
     disabled: immutable,
+    password: property.format === 'password',
     alwaysDelete: true
   };
 

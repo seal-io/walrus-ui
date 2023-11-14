@@ -19,16 +19,16 @@
         auto-label-width
         layout="vertical"
       >
-        <!-- <a-form-item>
+        <a-form-item>
           <KuberSelect
             v-model="Kubernamespace"
             v-model:branch="branch"
             v-model:repository="repository"
-            widget="GitHubRepository"
-            label="GitHubRepository"
+            widget="StorageClassSelectByNamespace"
+            label="StorageClassSelectByNamespace"
             @change="handleNamespaceChange"
           ></KuberSelect>
-        </a-form-item> -->
+        </a-form-item>
         <a-form-item
           field="name"
           hide-label
@@ -72,7 +72,7 @@
           :rules="[
             {
               required: true,
-              message: $t('资源类型必选')
+              message: $t('applications.applications.rules.reourceType')
             }
           ]"
         >
@@ -278,7 +278,7 @@
 </template>
 
 <script lang="ts" setup>
-  import KuberSelect from '@/components/form-create/bussiness-components/source-code-repository.vue';
+  import KuberSelect from '@/components/form-create/bussiness-components/kuber-select-bynamespace.vue';
   import { PROJECT } from '@/router/config';
   import _, { get, find, cloneDeep, reduce, pickBy, toString } from 'lodash';
   import {

@@ -115,6 +115,7 @@
   import AceEditor from '@/components/ace-editor/index.vue';
   import groupForm from '@/components/form-create/group-form.vue';
   import {
+    validateYaml,
     json2Yaml,
     yaml2Json
   } from '@/components/form-create/config/yaml-parse';
@@ -251,6 +252,7 @@
   };
   const updateTemplateSchema = async () => {
     if (!props.versionId) return;
+
     const codeData = yaml2Json(code.value);
     await putTemplateSchemaByVersionId({
       templateVersionID: props.versionId,
@@ -273,8 +275,12 @@
     });
   };
   const handlePutTemplateSchema = async () => {
-    const valid = validateSchema();
-
+    // const valid = validateSchema();
+    const valid = validateYaml(code.value);
+    if (valid.error) {
+      Message.error(valid.error.message);
+      return;
+    }
     try {
       if (props.page === 'template') {
         await updateTemplateSchema();
@@ -342,6 +348,11 @@
     () => activeKey.value,
     () => {
       if (activeKey.value === 'form') {
+        const valid = validateYaml(code.value);
+        if (valid.error) {
+          Message.error(valid.error.message);
+          return;
+        }
         previewForm();
       }
     },
