@@ -16,6 +16,7 @@
                       "type": "object",
                       "description": "Receive contextual information. When Walrus deploys, Walrus will inject specific contextual information into this field.\n\nExamples:\n```\ncontext:\n  project:\n    name: string\n    id: string\n  environment:\n    name: string\n    id: string\n  resource:\n    name: string\n    id: string\n```\n",
                       "additionalProperties": {
+                        "type": "string",
                           "x-walrus-original": {
                               "type": "dynamic"
                           }
