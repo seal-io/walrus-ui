@@ -63,6 +63,8 @@ export const FieldTypes = {
   common: {
     textArea: sealTextarea,
     select: sealSelect,
+    password: sealInputPassword,
+    aceEditor: AceEditor,
     radioGroup: RadioGroup,
     checkboxGroup: CheckboxGroup
   }
