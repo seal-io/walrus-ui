@@ -12,6 +12,16 @@
       const handleChange = (data) => {
         console.log('data=======', data);
       };
+      watch(
+        () => props.originFormData,
+        () => {
+          formData.value = props.originFormData;
+        },
+        {
+          immediate: true,
+          deep: true
+        }
+      );
       return () => (
         <a-form
           ref={formref}

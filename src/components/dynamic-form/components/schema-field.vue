@@ -12,8 +12,8 @@
   import { getConditionValue } from '../../form-create/config/utils';
   import { parseExpression } from '../../form-create/config/experssion-parser';
   import schemaFieldProps from '../fields/schema-field-props';
-  import { FieldMaps } from '../fields/field-map';
-  import { getSchemaFieldComponent, genFieldPropsAndRules } from '../utils';
+  import { genFieldPropsAndRules } from '../utils';
+  import { getSchemaFieldComponent } from '../fields/field-map';
 
   export default defineComponent({
     props: schemaFieldProps,
@@ -35,7 +35,7 @@
         formData: props.formData,
         fieldPath: props.fieldPath
       });
-
+      console.log('fieldPath=======', props.schema);
       const {
         fieldProps,
         rules,
@@ -71,6 +71,7 @@
         fieldPath,
         onChange: handleChange
       };
+      console.log('currentProps=======', props.schema);
       return () => {
         const Component = component;
         return (

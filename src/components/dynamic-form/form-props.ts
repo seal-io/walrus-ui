@@ -18,5 +18,11 @@ export default {
     default() {
       return {};
     }
+  },
+  originFormData: {
+    type: Object as PropType<any>,
+    default() {
+      return {};
+    }
   }
 };

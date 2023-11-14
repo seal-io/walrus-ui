@@ -1,8 +1,8 @@
 import _ from 'lodash';
 import FIELD_TYPE from '../config/field-type';
-import { FieldTypes } from '../fields/field-map';
+// import { FieldTypes } from '../fields/field-map';
 import { FieldSchema } from '../interface';
-import ComponentsMap from '../components/components-map';
+// import ComponentsMap from '../components/components-map';
 
 export const isSelect = (schema: FieldSchema) => {
   const { type, enum: enumList, items } = schema;
@@ -10,6 +10,11 @@ export const isSelect = (schema: FieldSchema) => {
     return true;
   }
   return type === FIELD_TYPE.STRING && enumList && enumList.length > 0;
+};
+
+export const isMuliSelect = (schema: FieldSchema) => {
+  const { type, enum: enumList } = schema;
+  return type === FIELD_TYPE.ARRAY && enumList && enumList.length > 0;
 };
 
 export const isNumber = (schema: FieldSchema) => {
@@ -41,6 +46,9 @@ export const genObjectFieldProperties = ({
   formData: any;
   fieldPath: string[];
 }) => {
+  if (!_.keys(schema?.properties).length) {
+    return [];
+  }
   const { properties } = schema;
   const { required: requiredFlag } = schema;
   const resultList: FieldSchema[] = [];
@@ -49,9 +57,10 @@ export const genObjectFieldProperties = ({
   _.each(keys, (key) => {
     const property = _.get(properties, key);
     const { type } = property;
-    const required = requiredFlag?.includes(key);
+    const required = _.includes(requiredFlag, key);
     const fieldSchema = {
       ...property,
+      name: key,
       fieldPath: [...fieldPath, key],
       required: property.required || required
     };
@@ -168,7 +177,7 @@ export const genFieldPropsAndRules = ({
     };
   }
 
-  if (type === FIELD_TYPE.ARRAY && enumList?.length) {
+  if (isMuliSelect(schema)) {
     return {
       fieldProps: {
         ...commonProps,
@@ -213,34 +222,41 @@ export const genFieldPropsAndRules = ({
   };
 };
 
-export const getSchemaFieldComponent = ({ schema, fieldPath, formData }) => {
-  const { type } = schema;
-  const widget = _.get(schema, ['x-walrus-ui', 'widget'], '');
+// export const getSchemaFieldComponent = ({ schema, fieldPath, formData }) => {
+//   const { type } = schema;
+//   const widget = _.get(schema, ['x-walrus-ui', 'widget'], '');
 
-  if (widget) {
-    return {
-      component: ComponentsMap[widget],
-      fieldPath: [...fieldPath]
-    };
-  }
-  if (
-    type === FIELD_TYPE.OBJECT &&
-    _.get(schema, 'additionalProperties.type') === FIELD_TYPE.STRING
-  ) {
-    return {
-      component: FieldTypes.common.xInputGroup,
-      fieldPath: [...fieldPath]
-    };
-  }
-  if (type) {
-    return {
-      component: FieldTypes[type],
-      fieldPath: [...fieldPath]
-    };
-  }
-  return {
-    component: null,
-    fieldPath: []
-  };
-};
+//   if (widget) {
+//     return {
+//       component: ComponentsMap[widget],
+//       fieldPath: [...fieldPath]
+//     };
+//   }
+//   if (
+//     type === FIELD_TYPE.OBJECT &&
+//     _.get(schema, 'additionalProperties.type') === FIELD_TYPE.STRING
+//   ) {
+//     return {
+//       component: FieldTypes.common.xInputGroup,
+//       fieldPath: [...fieldPath]
+//     };
+//   }
+
+//   if (isMuliSelect(schema)) {
+//     return {
+//       component: FieldTypes.common.select,
+//       fieldPath: [...fieldPath]
+//     };
+//   }
+//   if (type) {
+//     return {
+//       component: FieldTypes[type],
+//       fieldPath: [...fieldPath]
+//     };
+//   }
+//   return {
+//     component: null,
+//     fieldPath: []
+//   };
+// };
 export default {};
