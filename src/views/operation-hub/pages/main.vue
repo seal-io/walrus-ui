@@ -53,6 +53,9 @@
           >
             <ResourceDefinition></ResourceDefinition>
           </a-tab-pane>
+          <a-tab-pane key="GroupFormDemo" title="GroupFormDemo">
+            <GroupFormDemo></GroupFormDemo>
+          </a-tab-pane>
 
           <template #extra>
             <IconBtnGroup
@@ -74,6 +77,7 @@
   import { OperatorHubTabs } from '@/views/config';
   import HeaderInfo from '@/components/header-info/index.vue';
   import IconBtnGroup from '@/components/icon-btn-group/index.vue';
+  import GroupFormDemo from '@/components/dynamic-form/demo.vue';
   import Connectors from '../connectors/components/table-list.vue';
   import Templates from '../templates/pages/list.vue';
   import Catalogs from '../catalogs/pages/list.vue';
