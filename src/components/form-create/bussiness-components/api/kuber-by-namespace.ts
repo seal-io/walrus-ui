@@ -4,6 +4,7 @@ import qs from 'query-string';
 import { BU } from '../types';
 
 const PROXY_API = '/proxy/api/v1/namespaces';
+const STORAGE_API = `/proxy/apis/storage.k8s.io/v1/namespaces`;
 
 export const KuberByNamespace: Record<string, any> = {
   // secrets

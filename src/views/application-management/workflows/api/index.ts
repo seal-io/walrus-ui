@@ -43,7 +43,18 @@ export function createPipeline(data: PipelineRow) {
   return axios.post(`${PROJECT_API_PREFIX()}${PIPELINE_API}`, data);
 }
 
-export function deletePipeline(data: { items: Record<string, any>[] }) {
+export function deletePipelineExecution(params: {
+  id: string;
+  flowId: string;
+}) {
+  return axios.delete(
+    `${PROJECT_API_PREFIX()}${PIPELINE_API}/${
+      params.flowId
+    }${PIPELINE_EXECUTION_API}/${params.id}`
+  );
+}
+
+export function deletePipeline(data: { items: { id: string }[] }) {
   return axios.delete(`${PROJECT_API_PREFIX()}${PIPELINE_API}`, { data });
 }
 

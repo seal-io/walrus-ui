@@ -20,7 +20,7 @@ export const deployDataConfig = [
   {
     name: 'dashboard.deployment.succeed',
     value: 0,
-    key: 'succeed',
+    key: 'succeeded',
     label: { show: false },
     itemStyle: { color: chartStatusColorMap.succeed }
   },

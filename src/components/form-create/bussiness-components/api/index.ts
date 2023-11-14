@@ -9,6 +9,8 @@ import { KuberByNamespace } from './kuber-by-namespace';
 
 const PROXY_API = '/proxy/api/v1';
 
+const STORAGE_API = `/proxy/apis/storage.k8s.io/v1`;
+
 const awsRegionOptions = {
   item: 'item',
   label: 'regionName',
@@ -83,7 +85,7 @@ export const BCWidget: Record<string, Caller> = {
   // storageClasses
   [BU.StorageClassSelect]: {
     request: async (params: { connectorID: string }) => {
-      return axios.get(`${PROXY_API}/storageClasses`, {
+      return axios.get(`${STORAGE_API}/storageclasses`, {
         params,
         paramsSerializer: (obj) => {
           return qs.stringify(obj);

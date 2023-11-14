@@ -191,7 +191,7 @@
   let tippyInstance: any = null;
 
   const inputType = computed(() => {
-    return $attrs.sensitive && invisible.value ? 'password' : 'text';
+    return $attrs.password && invisible.value ? 'password' : 'text';
   });
 
   const handleVisibleToggle = () => {

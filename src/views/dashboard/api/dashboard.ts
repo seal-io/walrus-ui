@@ -26,8 +26,13 @@ export const queryApplicationRevisionsChart = (data: RevisionParams) => {
   return axios.post('/dashboards/_/resource-revision-statistics', data);
 };
 
-export const queryLatestDeployments = () => {
-  return axios.get(`/dashboards/_/latest-resource-revisions`);
+export const queryLatestDeployments = (params) => {
+  return axios.get(`/dashboards/_/latest-resource-revisions`, {
+    params,
+    paramsSerializer: (obj) => {
+      return qs.stringify(obj);
+    }
+  });
 };
 export function queryCostManagemantData(data: any) {
   return axios.post('/costs/_/cost-reports', data);
