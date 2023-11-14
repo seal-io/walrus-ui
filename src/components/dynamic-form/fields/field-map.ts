@@ -21,6 +21,7 @@ import sealCheckbox from '@/components/seal-form/components/seal-checkbox.vue';
 import sealSwitch from '@/components/seal-form/components/seal-switch.vue';
 import sealTextarea from '@/components/seal-form/components/seal-textarea.vue';
 import datePicker from '@/components/seal-form/components/date-picker.vue';
+import xInputGroup from '@/components/form-create/custom-components/x-input-group.vue';
 import stringField from './string-field/index.vue';
 
 export default {
@@ -65,6 +66,7 @@ export const FieldTypes = {
     select: sealSelect,
     password: sealInputPassword,
     aceEditor: AceEditor,
+    xInputGroup,
     radioGroup: RadioGroup,
     checkboxGroup: CheckboxGroup
   }
