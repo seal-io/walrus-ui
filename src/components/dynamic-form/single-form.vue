@@ -1,6 +1,7 @@
 <script lang="tsx">
   import { defineComponent, toRefs, ref, reactive, computed, watch } from 'vue';
   import formProps from './form-props';
+  import SchemaField from './components/schema-field.vue';
 
   export default defineComponent({
     props: formProps,
@@ -8,7 +9,9 @@
       const formref = ref();
       const formData = ref();
       const { disabled, layout } = toRefs(props);
-
+      const handleChange = (data) => {
+        console.log('data=======', data);
+      };
       return () => (
         <a-form
           ref={formref}
@@ -16,7 +19,13 @@
           v-model={formData.value}
           auto-label-width
           layout={layout.value}
-        ></a-form>
+        >
+          <SchemaField
+            schema={props.schema}
+            formData={formData}
+            onChange={handleChange}
+          ></SchemaField>
+        </a-form>
       );
     }
   });

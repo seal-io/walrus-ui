@@ -1,5 +1,6 @@
 // form props
 import { PropType } from 'vue';
+import { FieldSchema } from './interface';
 
 export default {
   layout: {
@@ -11,5 +12,11 @@ export default {
   disabled: {
     type: Boolean,
     default: false
+  },
+  schema: {
+    type: Object as PropType<FieldSchema>,
+    default() {
+      return {};
+    }
   }
 };
