@@ -1,5 +1,6 @@
 import _ from 'lodash';
 import FIELD_TYPE from '../config/field-type';
+import { FieldTypes } from '../fields/field-map';
 import { FieldSchema } from '../interface';
 import ComponentsMap from '../components/components-map';
 
@@ -29,6 +30,36 @@ export const isDatePicker = (schema: FieldSchema) => {
   );
 };
 
+export const genObjectFieldProperties = ({
+  schema,
+  parentSchema,
+  formData,
+  fieldPath
+}: {
+  schema: FieldSchema;
+  parentSchema?: FieldSchema;
+  formData: any;
+  fieldPath: string[];
+}) => {
+  const { properties } = schema;
+  const { required: requiredFlag } = schema;
+  const resultList: FieldSchema[] = [];
+  // const { required: parentRequiredFlag } = parentSchema || {};
+  const keys = _.keys(properties);
+  _.each(keys, (key) => {
+    const property = _.get(properties, key);
+    const { type } = property;
+    const required = requiredFlag?.includes(key);
+    const fieldSchema = {
+      ...property,
+      fieldPath: [...fieldPath, key],
+      required: property.required || required
+    };
+    resultList.push(fieldSchema);
+  });
+  return resultList;
+};
+
 // real component
 export const genFieldPropsAndRules = ({
   parentSchema,
@@ -46,6 +77,7 @@ export const genFieldPropsAndRules = ({
     required,
     maximum,
     minimum,
+    externalDocs,
     default: defaultValue,
     enum: enumList,
     maxLength,
@@ -57,20 +89,25 @@ export const genFieldPropsAndRules = ({
     immutable,
     hidden,
     showIf,
-    doc,
     message,
     widget
   } = uiExtensions;
 
+  const commonProps = {
+    label: title,
+    disabled: readOnly || immutable,
+    hidden: hidden || false,
+    showIf: showIf || '',
+    doc: externalDocs || '',
+    password: isPassword(schema)
+  };
+
   if (type === FIELD_TYPE.BOOLEAN) {
     return {
       fieldProps: {
-        label: title,
-        disabled: readOnly || immutable,
         trueValue: true,
         falseValue: false,
-        hidden: hidden || false,
-        showIf: showIf || ''
+        ...commonProps
       },
       rules: [
         {
@@ -84,12 +121,9 @@ export const genFieldPropsAndRules = ({
   if (type === FIELD_TYPE.INTEGER || type === FIELD_TYPE.NUMBER) {
     return {
       fieldProps: {
-        label: title,
         min: minimum,
         max: maximum,
-        disabled: readOnly || immutable,
-        hidden: hidden || false,
-        showIf: showIf || ''
+        ...commonProps
       },
       rules: [
         {
@@ -104,13 +138,10 @@ export const genFieldPropsAndRules = ({
   if (type === FIELD_TYPE.STRING && !enumList?.length) {
     return {
       fieldProps: {
-        label: title,
         maxLength,
         minLength,
         showWordLimit: !!maxLength,
-        disabled: readOnly || immutable,
-        hidden: hidden || false,
-        showIf: showIf || ''
+        ...commonProps
       },
       rules: [
         {
@@ -125,10 +156,7 @@ export const genFieldPropsAndRules = ({
   if (type === FIELD_TYPE.STRING && enumList?.length) {
     return {
       fieldProps: {
-        label: title,
-        disabled: readOnly || immutable,
-        hidden: hidden || false,
-        showIf: showIf || ''
+        ...commonProps
       },
       rules: [
         {
@@ -143,10 +171,7 @@ export const genFieldPropsAndRules = ({
   if (type === FIELD_TYPE.ARRAY && enumList?.length) {
     return {
       fieldProps: {
-        label: title,
-        disabled: readOnly || immutable,
-        hidden: hidden || false,
-        showIf: showIf || '',
+        ...commonProps,
         multiple: true
       },
       rules: [
@@ -161,10 +186,7 @@ export const genFieldPropsAndRules = ({
   if (type === FIELD_TYPE.ARRAY && items && !enumList?.length) {
     return {
       fieldProps: {
-        label: title,
-        disabled: readOnly || immutable,
-        hidden: hidden || false,
-        showIf: showIf || '',
+        ...commonProps,
         allowCreate: true,
         multiple: true
       },
@@ -179,10 +201,7 @@ export const genFieldPropsAndRules = ({
   }
   return {
     fieldProps: {
-      label: title,
-      disabled: readOnly || immutable,
-      hidden: hidden || false,
-      showIf: showIf || ''
+      ...commonProps
     },
     rules: [
       {
@@ -204,9 +223,18 @@ export const getSchemaFieldComponent = ({ schema, fieldPath, formData }) => {
       fieldPath: [...fieldPath]
     };
   }
+  if (
+    type === FIELD_TYPE.OBJECT &&
+    _.get(schema, 'additionalProperties.type') === FIELD_TYPE.STRING
+  ) {
+    return {
+      component: FieldTypes.common.xInputGroup,
+      fieldPath: [...fieldPath]
+    };
+  }
   if (type) {
     return {
-      component: FIELD_TYPE[type],
+      component: FieldTypes[type],
       fieldPath: [...fieldPath]
     };
   }

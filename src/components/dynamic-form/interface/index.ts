@@ -18,7 +18,7 @@ export interface FieldSchema {
   items?: FieldSchema;
   required?: string[];
   properties?: FieldSchema;
-  additionalProperties?: any;
+  additionalProperties?: FieldSchema;
   options?: { label: string; value: string }[];
   label?: string;
   format?: string;
