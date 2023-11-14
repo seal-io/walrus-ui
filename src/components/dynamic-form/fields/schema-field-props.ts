@@ -13,5 +13,23 @@ export default {
     default() {
       return {};
     }
+  },
+  fieldPath: {
+    type: Array as PropType<string[]>,
+    default() {
+      return [];
+    }
+  },
+  onChange: {
+    type: Function as PropType<(value: any) => void>,
+    default() {
+      return () => {};
+    }
+  },
+  rules: {
+    type: Array as PropType<any[]>,
+    default() {
+      return [];
+    }
   }
 };

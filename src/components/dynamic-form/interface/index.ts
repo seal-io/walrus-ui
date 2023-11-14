@@ -33,4 +33,9 @@ export interface FormGroup {
   schema: FieldSchema;
 }
 
+export interface Option {
+  label: string;
+  value: string;
+}
+
 export default {};
