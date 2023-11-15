@@ -1,5 +1,5 @@
 <script lang="tsx">
-  import { defineComponent, toRefs, ref, reactive, computed, watch } from 'vue';
+  import { defineComponent } from 'vue';
   import _ from 'lodash';
   import schemaFieldProps from '../fields/schema-field-props';
 
@@ -8,10 +8,12 @@
     setup(props, { slots }) {
       return () => (
         <div class="field-group">
-          <div class="title parent-name">
-            {props.schema.title || props.schema.name}
-          </div>
-          <div class="description">{props.schema.description}</div>
+          {props.schema.title || props.schema.name ? (
+            <div class="title parent-name">
+              <div>{props.schema.title || props.schema.name}</div>
+              <div>{slots.buttons?.()}</div>
+            </div>
+          ) : null}
           <div class="child-fields">{slots.default?.()}</div>
         </div>
       );
@@ -21,11 +23,21 @@
 
 <style lang="less" scoped>
   .field-group {
-    padding: 10px 0;
+    margin-bottom: 16px;
+    padding: 0 16px;
+    padding-bottom: 16px;
+    border: 1px solid var(--color-border-2);
     border-radius: var(--border-radius-small);
 
+    &.level-0 {
+      padding: 0;
+      border: none;
+    }
+
     .title {
-      margin-top: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
       margin-bottom: 10px;
       padding: 10px 0;
       font-weight: 500;

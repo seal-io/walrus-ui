@@ -1,6 +1,8 @@
 <script lang="tsx">
   import {
     defineComponent,
+    h,
+    compile,
     PropType,
     toRefs,
     ref,
@@ -9,6 +11,7 @@
     watch
   } from 'vue';
   import _ from 'lodash';
+  import i18n from '@/locale';
   import KeyValueLabels from '@/components/form-create/custom-components/key-value-labels.vue';
   import SealFormItemWrap from '@/components/seal-form/components/seal-form-item-wrap.vue';
   import SealInput from '@/components/seal-form/components/seal-input.vue';
@@ -23,6 +26,7 @@
     props: schemaFieldProps,
     emits: ['change'],
     setup(props, { emit }) {
+      const { t } = i18n.global;
       let additionalPropertiesList: FieldSchema[] = [];
       let additionalPropertiesKeysObj = {};
       const childProperties = ref<FieldSchema[]>([]);
@@ -48,6 +52,10 @@
         fieldPath: props.fieldPath
       });
 
+      console.log('childProperties>>>>>>>>', {
+        name: props.schema.name,
+        childProperties: childProperties.value
+      });
       // raw data
       additionalPropertiesList = genObjectFieldProperties({
         schema: props.schema.additionalProperties as FieldSchema,
@@ -57,20 +65,36 @@
 
       const additionalList = ref<any[]>([]);
 
+      // value is any
       const isAnyAdditionalProperties =
         _.isBoolean(props.schema.additionalProperties) &&
         props.schema.additionalProperties;
 
+      // value is string
       const isMapString =
         _.isObject(props.schema.additionalProperties) &&
         props.schema.additionalProperties.type === 'string';
 
+      // value is number
+      const isMapNumber =
+        _.isObject(props.schema.additionalProperties) &&
+        _.includes(
+          ['number', 'integer'],
+          props.schema.additionalProperties.type
+        );
+
+      // value is boolean
+      const isMapBoolean =
+        _.isObject(props.schema.additionalProperties) &&
+        props.schema.additionalProperties.type === 'boolean';
+
+      // value is object or array
       const isMapObjectAdditionalProperties =
         _.isObject(props.schema.additionalProperties) &&
-        props.schema.additionalProperties.type === 'object';
+        _.includes(['object', 'array'], props.schema.additionalProperties.type);
 
       //
-      if (isAnyAdditionalProperties || isMapString) {
+      if (isAnyAdditionalProperties || isMapString || isMapNumber) {
         const keys = _.keys(_.get(props.formData, props.fieldPath));
         additionalList.value = _.map(keys, (value, key) => {
           return {
@@ -85,7 +109,7 @@
       };
 
       const handleAddClick = () => {
-        if (isAnyAdditionalProperties || isMapString) {
+        if (isAnyAdditionalProperties || isMapString || isMapNumber) {
           additionalList.value.push({
             label: '',
             value: ''
@@ -102,32 +126,50 @@
             additionalPropertiesKeysObj
           );
         }
-        console.log(
-          'isMapObjectAdditionalProperties=====',
-          isMapObjectAdditionalProperties,
-          isAnyAdditionalProperties,
-          isMapString,
-          props.schema.additionalProperties?.type,
-          props.schema
-        );
+        handleChange(props.formData);
+      };
+
+      const handleDeleteClick = (index) => {
+        if (isAnyAdditionalProperties || isMapString || isMapNumber) {
+          const labelKey = additionalList.value[index].label;
+          additionalList.value.splice(index, 1);
+          _.unset(props.formData, [...props.fieldPath, labelKey]);
+        }
+        if (isMapObjectAdditionalProperties) {
+          objectAdditionalList.value.splice(index, 1);
+          _.unset(props.formData, [...props.fieldPath]);
+        }
         handleChange(props.formData);
       };
 
       const renderAddButton = () => {
-        return props.schema.additionalProperties ? (
-          <div>
+        return isMapObjectAdditionalProperties ? (
+          <div class="add-btn">
             <CommonButton onClick={() => handleAddClick()} type="primary">
-              添加 {props.schema.title}
+              <icon-plus style="stroke-width: 4" class="m-r-5" /> 添加
+              {props.schema.title}
             </CommonButton>
           </div>
         ) : null;
       };
+      const renderDeleleButton = (index) => {
+        return (
+          <CommonButton onClick={() => handleDeleteClick(index)} type="text">
+            <icon-minus-circle style="stroke-width: 3" class="size-24" />
+            {props.schema.title}
+          </CommonButton>
+        );
+      };
       // additional value is string
       const rendermapStringAdditional = () => {
-        if (isAnyAdditionalProperties || isMapString) {
+        if (isAnyAdditionalProperties || isMapString || isMapNumber) {
           return (
-            <>
-              <SealFormItemWrap {...props} label={props.schema.title}>
+            <a-form-item>
+              <SealFormItemWrap
+                {...props}
+                label={props.schema.title}
+                style="width: 100%"
+              >
                 <KeyValueLabels
                   value={_.get(props.formData, props.fieldPath)}
                   labels={additionalList.value}
@@ -137,7 +179,7 @@
                   }}
                 ></KeyValueLabels>
               </SealFormItemWrap>
-            </>
+            </a-form-item>
           );
         }
         return null;
@@ -153,39 +195,49 @@
           <>
             {_.map(objectAdditionalList.value, (item, index) => {
               return (
-                <div key={_.join([props.fieldPath, index], '-')}>
-                  <SealInput
-                    modelValue={_.get(props.formData, [
-                      ...props.fieldPath,
-                      index,
-                      'field'
-                    ])}
-                    onUpdate:modelValue={(val) => {
-                      _.set(
-                        props.formData,
-                        [...props.fieldPath, index, 'field'],
-                        val
+                <div>
+                  <div key={_.join([props.fieldPath, index], '-')}>
+                    <SealInput
+                      modelValue={_.get(objectAdditionalList.value, [
+                        index,
+                        'field'
+                      ])}
+                      onUpdate:modelValue={(val) => {
+                        _.set(
+                          objectAdditionalList.value,
+                          [index, 'field'],
+                          val
+                        );
+                        handleChange(props.formData);
+                      }}
+                    ></SealInput>
+                    {_.map(item.list, (childSchema, cIndex) => {
+                      return (
+                        <SchemaField
+                          schema={childSchema}
+                          formData={props.formData}
+                          fieldPath={[
+                            ...props.fieldPath,
+                            item.field,
+                            childSchema.name
+                          ]}
+                          onChange={(data) => {
+                            _.set(
+                              props.formData,
+                              [
+                                ...props.fieldPath,
+                                item.field,
+                                childSchema.name
+                              ],
+                              data
+                            );
+                            handleChange(props.formData);
+                          }}
+                        />
                       );
-                      handleChange(props.formData);
-                    }}
-                  ></SealInput>
-                  {_.map(item.list, (childSchema) => {
-                    return (
-                      <SchemaField
-                        schema={childSchema}
-                        formData={props.formData}
-                        fieldPath={[...props.fieldPath, item.field]}
-                        onChange={(data) => {
-                          _.set(
-                            props.formData,
-                            [...props.fieldPath, item.field, childSchema.name],
-                            data
-                          );
-                          handleChange(props.formData);
-                        }}
-                      />
-                    );
-                  })}
+                    })}
+                  </div>
+                  <div>{renderDeleleButton(index)}</div>
                 </div>
               );
             })}
@@ -194,11 +246,20 @@
       };
       return () => (
         <>
-          <FieldGroup {...props}>
+          <FieldGroup
+            {...props}
+            class={[`level-${props.level}`]}
+            v-slots={{
+              buttons: () => {
+                return <>{renderAddButton()}</>;
+              }
+            }}
+          >
             <>
               {_.map(childProperties.value, (childSchema) => {
                 return (
                   <SchemaField
+                    level={props.level + 1}
                     schema={childSchema}
                     formData={props.formData}
                     fieldPath={childSchema.fieldPath}
@@ -210,7 +271,6 @@
               })}
               {renderAddtionalProperties()}
               {rendermapStringAdditional()}
-              {renderAddButton()}
             </>
           </FieldGroup>
         </>

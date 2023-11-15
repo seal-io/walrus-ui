@@ -26,6 +26,10 @@ export default {
       return () => {};
     }
   },
+  level: {
+    type: Number,
+    default: 0
+  },
   rules: {
     type: Array as PropType<any[]>,
     default() {

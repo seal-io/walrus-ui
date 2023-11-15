@@ -1,16 +1,27 @@
 <script lang="tsx">
-  import { defineComponent, toRefs, ref, reactive, computed, watch } from 'vue';
+  import {
+    defineComponent,
+    toRefs,
+    ref,
+    reactive,
+    computed,
+    toRaw,
+    watch
+  } from 'vue';
   import formProps from './form-props';
   import SchemaField from './components/schema-field.vue';
 
   export default defineComponent({
     props: formProps,
-    setup(props) {
+    emits: ['change'],
+    setup(props, { emit }) {
       const formref = ref();
       const formData = ref();
       const { disabled, layout } = toRefs(props);
       const handleChange = (data) => {
         console.log('data=======', data);
+        formData.value = data;
+        emit('change', toRaw(formData.value));
       };
       watch(
         () => props.originFormData,
@@ -32,7 +43,7 @@
         >
           <SchemaField
             schema={props.schema}
-            formData={formData}
+            formData={formData.value}
             onChange={handleChange}
           ></SchemaField>
         </a-form>
