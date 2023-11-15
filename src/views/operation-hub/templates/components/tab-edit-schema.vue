@@ -167,14 +167,14 @@
       }
     },
     page: {
-      type: String,
+      type: String as PropType<'template' | 'definition'>,
       default() {
         return 'template';
       }
     }
   });
 
-  const emits = defineEmits(['update']);
+  const emits = defineEmits(['update', 'reset']);
   const userStore = useUserStore();
   const { route } = useCallCommon();
   const readOnly = ref(true);
@@ -251,7 +251,7 @@
     }
   };
   const updateTemplateSchema = async () => {
-    if (!props.versionId) return;
+    if (!props.versionId && props.page === 'template') return;
 
     const codeData = yaml2Json(code.value);
     await putTemplateSchemaByVersionId({
@@ -294,13 +294,17 @@
     }
   };
   const handleResetTemplateSchema = async () => {
-    if (!props.versionId) return;
+    if (!props.versionId && props.page === 'template') return;
     try {
-      await resetTemplateSchemaByVersionId({
-        templateVersionID: props.versionId
-      });
-      execSucceed();
-      emits('update');
+      if (props.page === 'template') {
+        await resetTemplateSchemaByVersionId({
+          templateVersionID: props.versionId
+        });
+        execSucceed();
+        emits('update');
+      } else {
+        emits('reset');
+      }
     } catch (error) {
       // eslint-disable-next-line no-console
     }

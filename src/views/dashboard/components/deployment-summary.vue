@@ -147,7 +147,7 @@
         color: statusColorMap.failed
       },
       {
-        name: 'succeed',
+        name: 'succeeded',
         label: t('dashboard.deployment.succeed'),
         color: statusColorMap.succeed
       }
@@ -195,7 +195,7 @@
       const revisions = get(data, 'statusStats');
       // revisions = sortBy(revisions, (s) => s.startTime);
       const result = getStackLineDataList(revisions, {
-        fields: ['running', 'succeed', 'failed'],
+        fields: ['running', 'succeeded', 'failed'],
         xAxis: 'startTime'
       });
       dataList.value = result.data;

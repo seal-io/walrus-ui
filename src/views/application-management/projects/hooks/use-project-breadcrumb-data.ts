@@ -14,6 +14,7 @@ import {
 } from '@/views/application-management/workflows/api';
 import { BreadcrumbOptions } from '@/views/config/interface';
 import { getListLabel } from '@/utils/func';
+import { ServiceDataType } from '../../services/config';
 
 export default function useProjectData() {
   const breadCrumbList = ref<BreadcrumbOptions[]>([]);
@@ -201,7 +202,14 @@ export default function useProjectData() {
       };
       RequestLoadingMap.service = true;
       const { data } = await queryServices(params, serviceRequestToken?.token);
-      serviceList = data.items || [];
+      serviceList = _.map(data.items, (item) => {
+        return {
+          ...item,
+          isService: !item.type,
+          label: item.name,
+          value: item.id
+        };
+      });
     } catch (error) {
       serviceList = [];
     } finally {
@@ -218,12 +226,14 @@ export default function useProjectData() {
         value: item.id
       };
     });
+
     const defaultValue = route.query.id || _.get(list, '0.id');
     const defaultName = _.find(list, { value: defaultValue })?.label as string;
 
     projectStore.setInfo({
       serviceList: _.cloneDeep(list)
     });
+    console.log('list===99=', list);
     return {
       ...serviceTemplate,
       value: defaultValue as string,
@@ -363,9 +373,15 @@ export default function useProjectData() {
       getEnvironmentList(),
       getServiceList()
     ]);
+    const services = _.map(serviceList, (item) => {
+      return {
+        ...item,
+        isService: !item.type
+      };
+    });
     const projectRes = await setProjectList(projectList);
     const environmentRes = setEnvironmentList(environmentList);
-    const serviceRes = setServiceList(serviceList);
+    const serviceRes = setServiceList(services);
     breadCrumbList.value = [projectRes, environmentRes, serviceRes];
   };
   const handleBreadChange = (val, item) => {
@@ -413,8 +429,12 @@ export default function useProjectData() {
     }
     // service
     if (item.level === pageLevelMap.Service) {
+      const data = _.find(item.options, { value: val });
       params = {
-        ...route.params
+        ...route.params,
+        dataType: data.isService
+          ? ServiceDataType.service
+          : ServiceDataType.resource
       };
       query = {
         from: route.query.from, // if from has value click environment: router.replace
