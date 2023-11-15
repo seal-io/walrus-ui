@@ -450,7 +450,8 @@
             const nodeData = node;
             const current = graphIns?.getCellById(nodeData?.id);
             if (current) {
-              const newData = _.merge(_.cloneDeep(current.data), nodeData);
+              const oldData = _.set(_.cloneDeep(current.data), 'status', {});
+              const newData = _.merge(oldData, nodeData);
               current.updateData(newData);
               console.log('data====2', current, nodeData, newData);
             }

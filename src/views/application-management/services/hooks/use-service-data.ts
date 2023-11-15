@@ -83,7 +83,7 @@ export default function useServiceData(props?) {
     if (!id) {
       return dataType === ServiceDataType.service
         ? 'applications.applications.create'
-        : 'resource.definition.list.create';
+        : 'applications.applications.create.resource';
     }
     if (id && pageAction.value === PageAction.EDIT) {
       return dataType === ServiceDataType.service

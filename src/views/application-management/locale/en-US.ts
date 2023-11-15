@@ -28,7 +28,7 @@ export default {
   'applications.applications.form.label': 'Labels',
   'applications.applications.form.key': 'Key',
   'applications.applications.form.value': 'Value',
-  'applications.applications.detail.configuration': 'Template Configuration',
+  'applications.applications.detail.configuration': 'Configuration',
   'applications.applications.form.description': 'Description',
   'applications.applications.rule.name': 'name is required',
   'applications.module.rule.name': 'name is required',

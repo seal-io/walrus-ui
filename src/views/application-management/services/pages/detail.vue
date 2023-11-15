@@ -89,6 +89,7 @@
       getEnvironmentList(),
       getServiceList({ page: 1, perPage: 10 })
     ]);
+
     const projectRes = await setProjectList(projectList);
     const environmentRes = setEnvironmentList(environmentList);
     const serviceRes = setServiceList([

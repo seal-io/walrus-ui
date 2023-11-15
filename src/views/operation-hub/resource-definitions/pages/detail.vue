@@ -213,7 +213,7 @@
               :schema="deinitionSchema"
               :template-info="formData"
               page="definition"
-              @update="handleUpdateSchema"
+              @reset="handleResetUISchema"
             ></component>
           </a-tab-pane>
         </a-tabs>
@@ -261,6 +261,7 @@
   import GroupTitle from '@/components/group-title/index.vue';
   import EditPageFooter from '@/components/edit-page-footer/index.vue';
   import useCallCommon from '@/hooks/use-call-common';
+  import { execSucceed } from '@/utils/monitor';
   import usePageAction from '@/hooks/use-page-action';
   import { queryVariables } from '@/views/application-management/variables/api';
   import MoreButtonActions from '@/components/drop-button-group/more-button-actions.vue';
@@ -310,7 +311,7 @@
     type: '',
     matchingRules: []
   });
-  const activeKey = ref('tabEditSchema');
+  const activeKey = ref('matchRules');
 
   const tabMap = {
     tabInput: markRaw(tabInput),
@@ -340,7 +341,6 @@
   const handleTabChange = (val) => {
     activeKey.value = val;
   };
-  const handleUpdateSchema = () => {};
   const getRefFormData = async () => {
     const resultList: any[] = [];
     await Promise.all(
@@ -402,6 +402,7 @@
       templateList.value = [];
     }
   };
+
   const getItemResourceDefinition = async () => {
     copyFormData = cloneDeep(formData.value);
     if (!id) {
@@ -426,12 +427,22 @@
       loaded.value = true;
     }
   };
-
+  const handleResetUISchema = async () => {
+    try {
+      const data = _.cloneDeep(formData.value);
+      data.uiSchema = null;
+      await upateResourceDefinition({ id, data });
+      execSucceed();
+      getItemResourceDefinition();
+    } catch (error) {
+      // ignore
+    }
+  };
   const handleSubmit = async () => {
     const res = await formref.value?.validate();
     const matchRules = await getRefFormData();
-    console.log('matchRules', matchRules);
-    if (!res || !_.some(matchRules, (item) => !item.formData)) {
+    console.log('matchRules', matchRules, res);
+    if (!res && _.every(matchRules, (item) => !!item.formData)) {
       try {
         submitLoading.value = true;
         formData.value.matchingRules = _.map(matchRules, (item) => {
@@ -447,7 +458,7 @@
         }
         tabBarStore.deleteTag(0, {
           title: '',
-          name: OPERATIONHUB.TemplateList,
+          name: OPERATIONHUB.ResourceDefinitionDetail,
           fullPath: ''
         });
         router.back();
@@ -471,17 +482,6 @@
     router.back();
   };
   const handleCancel = () => {
-    // if (!isEqual(copyFormData, formData.value)) {
-    //   beforeLeaveCallback({
-    //     isCancel: true,
-    //     onOk: () => {
-    //       copyFormData = cloneDeep(formData.value);
-    //       cancelCallback();
-    //     }
-    //   });
-    // } else {
-    //   cancelCallback();
-    // }
     beforeLeaveCallback({
       isCancel: true,
       onOk: () => {

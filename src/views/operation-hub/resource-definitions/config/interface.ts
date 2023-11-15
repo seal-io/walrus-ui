@@ -29,6 +29,7 @@ export interface ResourceDefinitionFormData {
   description?: string;
   labels?: Record<string, string>;
   matchingRules: MatchingRule[];
+  uiSchema?: any;
 }
 
 export interface ResourceDefinitionRowData extends ResourceDefinitionFormData {

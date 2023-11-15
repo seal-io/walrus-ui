@@ -19,7 +19,8 @@
         auto-label-width
         layout="vertical"
       >
-        <a-form-item>
+        <!-- test code start -->
+        <!-- <a-form-item>
           <KuberSelect
             v-model="Kubernamespace"
             v-model:branch="branch"
@@ -28,7 +29,8 @@
             label="StorageClassSelectByNamespace"
             @change="handleNamespaceChange"
           ></KuberSelect>
-        </a-form-item>
+        </a-form-item> -->
+        <!-- test code end -->
         <a-form-item
           field="name"
           hide-label
@@ -215,7 +217,10 @@
       :size="4"
     ></a-divider>
     <ComCard>
-      <div style="display: flex; justify-content: flex-start">
+      <div
+        v-if="templateInfo.length"
+        style="display: flex; justify-content: flex-start"
+      >
         <GroupTitle
           :bordered="false"
           style="margin-bottom: 0"
