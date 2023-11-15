@@ -168,6 +168,45 @@
                           "group": "Basic"
                       }
                   },
+                  "my-configs": {
+                    "title": "my-configs",
+                    "type": "object",
+                    "description": "Specify the configuration items to configure containers, either raw or sensitive data.\n\nExamples:\n```\nconfigs:\n- name: string                     # unique\n  type: data                       # convert to config map\n  data: \n    (key: string): string\n- name: string\n  type: secret                     # convert to secret\n  secret:\n    (key: string): string\n```\n",
+                    "additionalProperties": {
+                        "properties": {
+                            "data": {
+                                "additionalProperties": {
+                                    "type": "string"
+                                },
+                                "title": "data",
+                                "type": "object"
+                            },
+                            "name": {
+                                "title": "name",
+                                "type": "string"
+                            },
+                            "secret": {
+                                "additionalProperties": {
+                                    "type": "string"
+                                },
+                                "title": "secret",
+                                "type": "object"
+                            },
+                            "type": {
+                                "default": "data",
+                                "title": "type",
+                                "type": "string"
+                            }
+                        },
+                        "required": [
+                            "name"
+                        ],
+                        "type": "object"
+                    },
+                    "x-walrus-ui": {
+                        "group": "my-configs"
+                    }
+                },
                   "configs": {
                       "title": "configs",
                       "type": "array",

@@ -34,14 +34,32 @@
           return false;
         }
       },
+      showNumberInput: {
+        type: Boolean,
+        default() {
+          return false;
+        }
+      },
+      showCheckbox: {
+        type: Boolean,
+        default() {
+          return false;
+        }
+      },
       pageAction: {
         type: String,
         default() {
           return PageAction.EDIT;
         }
+      },
+      width: {
+        type: Number,
+        default() {
+          return InputWidth.MIDDLE;
+        }
       }
     },
-    setup(props, { emit }) {
+    setup(props, { emit, attrs }) {
       const { labels, labelsKey, validateTrigger } = toRefs(props);
       const { labelList, labelItem, handleAddLabel, handleDeleteLabel } =
         useLabelsActions(labels, labelsKey.value);
@@ -56,7 +74,7 @@
                 style={{
                   'display': 'flex',
                   'flex-direction': 'column',
-                  'width': `${InputWidth.MIDDLE}px`
+                  'width': `${props.width ? props.width : InputWidth.MIDDLE}px`
                 }}
                 direction="vertical"
               >
@@ -64,6 +82,7 @@
                   return (
                     <XInputGroup
                       key={sIndex}
+                      v-bind={attrs}
                       v-model:dataKey={sItem.key}
                       v-model:dataValue={sItem.value}
                       onUpdate:value={(val) => handleUpdateValue(val)}

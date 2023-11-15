@@ -17,10 +17,6 @@
     props: schemaFieldProps,
     setup(props, { emit }) {
       const handleChange = (data) => {
-        if (props.onChange) {
-          props.onChange(data);
-          return;
-        }
         emit('change', data);
       };
       return () => {

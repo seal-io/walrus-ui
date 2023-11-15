@@ -19,7 +19,7 @@
   import { FieldSchema } from '../interface';
   import FieldGroup from './field-group.vue';
   import SchemaField from './schema-field.vue';
-  import { genObjectFieldProperties } from '../utils';
+  import { genObjectFieldProperties, initFieldDefaultValue } from '../utils';
   import CommonButton from './common-button.vue';
 
   export default defineComponent({
@@ -30,6 +30,20 @@
       let itemsProperties: FieldSchema[] = [];
       const propertiesList = ref<FieldSchema[][]>([]);
 
+      const handleChange = (data) => {
+        emit('change', data);
+      };
+
+      // init field value
+      if (!_.get(props.formData, props.fieldPath)) {
+        _.set(
+          props.formData,
+          props.fieldPath,
+          initFieldDefaultValue(props.schema)
+        );
+        handleChange(props.formData);
+      }
+
       itemsProperties = genObjectFieldProperties({
         schema: props.schema.items as FieldSchema,
         formData: props.formData,
@@ -38,27 +52,72 @@
 
       const handleAddClick = () => {
         const newProperties = _.cloneDeep(itemsProperties);
-        propertiesList.value = [...propertiesList.value, [...newProperties]];
-        console.log('propertiesList=======', propertiesList.value);
+        propertiesList.value = [
+          ..._.cloneDeep(propertiesList.value),
+          [...newProperties]
+        ];
+
+        // set the fieldpath
+        _.each(propertiesList.value, (item, index) => {
+          _.each(item, (sItem, sIndex) => {
+            sItem.fieldPath = [...props.fieldPath, `${index}`, sItem.name];
+          });
+        });
+
+        // update formData
+        _.each(propertiesList.value, (item, index) => {
+          _.each(item, (sItem, sIndex) => {
+            if (!_.get(props.formData, sItem.fieldPath)) {
+              _.set(
+                props.formData,
+                sItem.fieldPath,
+                initFieldDefaultValue(sItem)
+              );
+            }
+          });
+        });
+        console.log(
+          'propertiesList=======',
+          propertiesList.value,
+          props.formData
+        );
+        handleChange(props.formData);
       };
 
+      // check array every item is empty or null or undefined
+      const checkArrayIsEmpty = (arr) => {
+        return _.every(arr, (item) => {
+          return _.isEmpty(item) || _.isNull(item) || _.isUndefined(item);
+        });
+      };
       const handleDeleteClick = (index) => {
         propertiesList.value.splice(index, 1);
+
+        // update formData
+        _.unset(props.formData, [...props.fieldPath, `${index}`]);
+        if (
+          _.get(props.formData, props.fieldPath).length === 0 ||
+          checkArrayIsEmpty(_.get(props.formData, props.fieldPath))
+        ) {
+          _.unset(props.formData, props.fieldPath);
+        }
+        handleChange(props.formData);
       };
 
       const renderDeleleButton = (index) => {
         return (
-          <CommonButton onClick={() => handleDeleteClick(index)} type="text">
-            <icon-minus-circle style="stroke-width: 3" class="size-24" />
+          <CommonButton onClick={() => handleDeleteClick(index)} type="outline">
+            <icon-minus style="stroke-width: 4" class="m-r-5" />
             {props.schema.title}
           </CommonButton>
         );
       };
+
       const renderAddButton = () => {
         return props.schema.items ? (
           <div class="add-btn">
-            <CommonButton onClick={() => handleAddClick()} type="primary">
-              <icon-plus class="m-r-5" style="stroke-width: 4" /> 添加
+            <CommonButton onClick={() => handleAddClick()} type="outline">
+              <icon-plus class="m-r-5" style="stroke-width: 4" />
               {props.schema.title}
             </CommonButton>
           </div>
@@ -82,10 +141,10 @@
                     return (
                       <SchemaField
                         level={props.level + 1}
-                        key={_.join([props.fieldPath, index], '-')}
+                        key={_.join([props.fieldPath, index, sIndex], '.')}
                         schema={sItem}
                         formData={props.formData}
-                        fieldPath={props.fieldPath}
+                        fieldPath={sItem.fieldPath}
                       ></SchemaField>
                     );
                   })}
@@ -111,7 +170,7 @@
     }
 
     .delete-btn {
-      padding: 0 10px;
+      padding-left: 10px;
     }
   }
 </style>

@@ -1,6 +1,9 @@
 import _ from 'lodash';
+import i18n from '@/locale';
 import FIELD_TYPE from '../config/field-type';
 import { FieldSchema } from '../interface';
+import { getConditionValue } from '../../form-create/config/utils';
+import { parseExpression } from '../../form-create/config/experssion-parser';
 
 export const isSelect = (schema: FieldSchema) => {
   const { type, enum: enumList, items } = schema;
@@ -36,6 +39,37 @@ export const isDatePicker = (schema: FieldSchema) => {
     type === FIELD_TYPE.STRING &&
     _.includes(['date', 'date-time', 'time'], schema.format)
   );
+};
+
+export const getShowIfValue = (showif, formData) => {
+  const conditions = parseExpression(showif);
+  const isShow = getConditionValue(
+    {
+      conditions,
+      showIf: showif
+    },
+    formData
+  );
+  return isShow;
+};
+export const initFieldDefaultValue = (item) => {
+  if (item.default) {
+    return item.default;
+  }
+  const { type } = item;
+  if (type === FIELD_TYPE.ARRAY) {
+    return [];
+  }
+  if (type === FIELD_TYPE.OBJECT) {
+    return {};
+  }
+  if (type === FIELD_TYPE.BOOLEAN) {
+    return false;
+  }
+  if (type === FIELD_TYPE.NUMBER || type === FIELD_TYPE.INTEGER) {
+    return null;
+  }
+  return '';
 };
 
 export const genObjectFieldProperties = ({
@@ -85,6 +119,7 @@ export const genFieldPropsAndRules = ({
   const {
     type,
     title,
+    name,
     readOnly,
     required,
     maximum,
@@ -127,7 +162,9 @@ export const genFieldPropsAndRules = ({
       rules: [
         {
           required: requiredFlag || required || false,
-          message: message || 'common.form.rule.select'
+          message:
+            message ||
+            i18n.global.t('common.form.rule.select', { name: title || name })
         }
       ],
       default: defaultValue
@@ -143,7 +180,9 @@ export const genFieldPropsAndRules = ({
       rules: [
         {
           required: requiredFlag || required || false,
-          message: message || 'common.form.rule.input'
+          message:
+            message ||
+            i18n.global.t('common.form.rule.input', { name: title || name })
         }
       ],
       default: defaultValue
@@ -161,7 +200,9 @@ export const genFieldPropsAndRules = ({
       rules: [
         {
           required: requiredFlag || required || false,
-          message: message || 'common.form.rule.input'
+          message:
+            message ||
+            i18n.global.t('common.form.rule.input', { name: title || name })
         }
       ],
       default: defaultValue
@@ -176,7 +217,9 @@ export const genFieldPropsAndRules = ({
       rules: [
         {
           required: requiredFlag || required || false,
-          message: message || 'common.form.rule.select'
+          message:
+            message ||
+            i18n.global.t('common.form.rule.select', { name: title || name })
         }
       ],
       default: defaultValue
@@ -192,7 +235,9 @@ export const genFieldPropsAndRules = ({
       rules: [
         {
           required: requiredFlag || required || false,
-          message: message || 'common.form.rule.select'
+          message:
+            message ||
+            i18n.global.t('common.form.rule.select', { name: title || name })
         }
       ],
       default: defaultValue
@@ -208,7 +253,9 @@ export const genFieldPropsAndRules = ({
       rules: [
         {
           required: requiredFlag || required || false,
-          message: message || 'common.form.rule.input'
+          message:
+            message ||
+            i18n.global.t('common.form.rule.input', { name: title || name })
         }
       ],
       default: defaultValue
@@ -221,7 +268,9 @@ export const genFieldPropsAndRules = ({
     rules: [
       {
         required: requiredFlag || required || false,
-        message: message || 'common.form.rule.input'
+        message:
+          message ||
+          i18n.global.t('common.form.rule.input', { name: title || name })
       }
     ],
     default: defaultValue
