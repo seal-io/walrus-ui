@@ -1,16 +1,25 @@
 <script lang="tsx">
   import { defineComponent } from 'vue';
   import _ from 'lodash';
+  import ModuleWrapper from '@/components/module-wrapper/index.vue';
   import schemaFieldProps from '../fields/schema-field-props';
 
   export default defineComponent({
     props: schemaFieldProps,
     setup(props, { slots }) {
       return () => (
-        <div class="field-group">
+        <div
+          class="field-group"
+          id={`${props.schema.title || props.schema.name}`}
+        >
           {props.schema.title || props.schema.name ? (
             <div class="title parent-name">
-              <div>{props.schema.title || props.schema.name}</div>
+              <div>
+                <span>{props.schema.title || props.schema.name}</span>
+                <span class="field-path">{`(${props.fieldPath.join(
+                  '.'
+                )})`}</span>
+              </div>
               <div>{slots.buttons?.()}</div>
             </div>
           ) : null}
@@ -25,7 +34,7 @@
   .field-group {
     margin-bottom: 16px;
     padding: 0 16px;
-    padding-bottom: 16px;
+    padding-bottom: 10px;
     border: 1px solid var(--color-border-2);
     border-radius: var(--border-radius-small);
 
@@ -41,12 +50,18 @@
       margin-bottom: 10px;
       padding: 10px 0;
       font-weight: 500;
-      font-size: 24px;
+      font-size: 16px;
       border-bottom: 1px solid var(--color-border-2);
     }
 
     .description {
       margin-bottom: 20px;
+    }
+
+    .field-path {
+      margin-left: 5px;
+      color: var(--color-text-3);
+      font-size: 12px;
     }
   }
 </style>

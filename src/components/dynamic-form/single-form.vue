@@ -8,21 +8,43 @@
     toRaw,
     watch
   } from 'vue';
+  import useScrollToView from '@/hooks/use-scroll-to-view';
   import formProps from './form-props';
   import SchemaField from './components/schema-field.vue';
 
   export default defineComponent({
     props: formProps,
     emits: ['change'],
-    setup(props, { emit }) {
+    setup(props, { emit, expose }) {
       const formref = ref();
       const formData = ref();
       const { disabled, layout } = toRefs(props);
+
+      const { scrollToView } = useScrollToView();
+
       const handleChange = (data) => {
         console.log('data=======', data);
         formData.value = data;
         emit('change', toRaw(formData.value));
       };
+
+      const handleSubmitFailed = (data) => {
+        console.log('handleSubmitFailed====', data);
+      };
+
+      const validate = async () => {
+        const res = await formref.value.validate();
+        console.log('validate====', res, formData.value);
+        if (res) {
+          scrollToView();
+        }
+        return res;
+      };
+
+      expose({
+        validate
+      });
+
       watch(
         () => props.originFormData,
         () => {
@@ -37,9 +59,10 @@
         <a-form
           ref={formref}
           disabled={disabled.value}
-          v-model={formData.value}
+          model={formData.value}
           auto-label-width
           layout={layout.value}
+          onSubmitFailed={(error) => handleSubmitFailed(error)}
         >
           <SchemaField
             schema={props.schema}

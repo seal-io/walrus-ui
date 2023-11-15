@@ -1,5 +1,16 @@
 <template>
-  <GroupForm :form-data="formData" :schema="schema"></GroupForm>
+  <div>
+    <GroupForm
+      ref="formref"
+      v-model:form-data="formData"
+      :schema="schema"
+    ></GroupForm>
+    <div>
+      <a-button type="primary" @click="handleSubmit">{{
+        $t('common.button.submit')
+      }}</a-button>
+    </div>
+  </div>
 </template>
 
 <script lang="ts" setup>
@@ -9,6 +20,12 @@
   import GroupForm from './group-form.vue';
 
   const formData = ref({});
+  const formref = ref();
   const schema = _.get(testData, 'components.schemas.variables') as any;
   console.log('schema======', schema);
+
+  const handleSubmit = async () => {
+    const res = await formref.value.validate();
+    console.log('res====', res);
+  };
 </script>

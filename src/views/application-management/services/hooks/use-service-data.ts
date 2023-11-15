@@ -47,6 +47,7 @@ export default function useServiceData(props?) {
   const { route } = useCallCommon();
   const refMap = ref<Record<string, any>>({});
   const templateInfo = ref<any[]>([]);
+  const schemaVariables = ref<any>({});
   const serviceInfo = ref<any>({}); // Store information about the active service, also be used when cloning
   const templateVersionList = ref<TemplateVersion[]>([]);
   const templateVersionFormCache = ref({});
@@ -198,6 +199,7 @@ export default function useServiceData(props?) {
       ) || {};
     const result = initFormState(variables);
     templateInfo.value = result.fieldSchemaList;
+    schemaVariables.value = variables;
   };
 
   const setFormAttributes = async () => {
@@ -290,6 +292,7 @@ export default function useServiceData(props?) {
     initCompleteData,
     initInfo,
     setTemplateInfo,
+    schemaVariables,
     getItemResourceDefinition,
     asyncLoading,
     completeDataLoading,

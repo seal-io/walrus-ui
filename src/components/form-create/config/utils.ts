@@ -329,7 +329,7 @@ export const checkHasValue = (property) => {
     return false;
   }
   if (typeof property === 'object' && !Array.isArray(property)) {
-    return Object.keys(property).length !== 0;
+    return _.keys(property).length !== 0;
   }
   if (Array.isArray(property)) {
     return property.length !== 0;
