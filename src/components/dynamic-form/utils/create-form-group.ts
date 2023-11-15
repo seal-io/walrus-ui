@@ -16,12 +16,20 @@ export const createFormGroup = (rootSchema: FieldSchema) => {
     const groupKey = groudList[0] || DefaultGroup;
     if (group[groupKey]) {
       group[groupKey].push({
-        [key]: property
+        [key]: {
+          ...property,
+          fieldPath: [key],
+          name: key
+        }
       });
     } else {
       group[groupKey] = [
         {
-          [key]: property
+          [key]: {
+            ...property,
+            fieldPath: [key],
+            name: key
+          }
         }
       ];
     }
@@ -31,6 +39,7 @@ export const createFormGroup = (rootSchema: FieldSchema) => {
       group: key,
       schema: {
         ...rest,
+
         properties: _.merge({}, ...group[key])
       }
     });

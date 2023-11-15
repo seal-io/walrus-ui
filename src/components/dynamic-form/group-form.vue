@@ -8,7 +8,7 @@
     >
       <a-tab-pane
         v-for="(item, index) in formGroup"
-        :key="`schemaForm${index}`"
+        :key="item.group"
         :title="item.group"
       >
         <SingleForm
@@ -17,6 +17,7 @@
           layout="vertical"
           :origin-form-data="formData"
           :schema="item.schema"
+          @change="handleChange"
         >
         </SingleForm>
       </a-tab-pane>
@@ -28,6 +29,7 @@
       layout="vertical"
       :origin-form-data="formData"
       :schema="formGroup[0].schema"
+      @change="handleChange"
     >
     </SingleForm>
   </div>
@@ -54,6 +56,7 @@
     }
   });
 
+  const emits = defineEmits(['update:formData', 'change']);
   const activeKey = ref<string>('schemaForm');
   const refMap = ref<any>({});
   const formGroup = ref<FormGroup[]>([]);
@@ -62,6 +65,12 @@
     if (el) {
       refMap.value[`${name}`] = el;
     }
+  };
+
+  const handleChange = (data) => {
+    emits('update:formData', data);
+    emits('change', data);
+    console.log('data===99999===', props.formData);
   };
 
   const handleTabChange = (key) => {

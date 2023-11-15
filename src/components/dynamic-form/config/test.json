@@ -31,6 +31,7 @@
                       "description": "Specify the infrastructure information for deploying.\n\nExamples:\n```\ninfrastructure:\n  namespace: string, optional\n  gpu_vendor: string, optional\n```\n",
                       "properties": {
                           "gpu_vendor": {
+                            "description": "this is gpu_vendor",
                               "default": "nvidia.com",
                               "title": "gpu_vendor",
                               "type": "string"
@@ -730,7 +731,7 @@
                           "type": "object"
                       },
                       "x-walrus-ui": {
-                          "group": "Basic"
+                          "group": "container"
                       }
                   }
               }
