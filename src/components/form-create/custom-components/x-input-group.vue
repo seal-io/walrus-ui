@@ -76,6 +76,28 @@
             @input="(val) => handleDataChange(val, 'value', 'input')"
             @change="(val) => handleDataChange(val, 'value', 'change')"
           ></seal-input-password>
+          <seal-input-number
+            v-else-if="$attrs.showNumberInput"
+            style="width: 100%"
+            :model-value="dataValue"
+            :placeholder="
+              get($attrs?.placeholder, 'value') || $t('common.input.value')
+            "
+            show-word-limit
+            v-bind="$attrs"
+            @input="(val) => handleDataChange(val, 'value', 'input')"
+            @change="(val) => handleDataChange(val, 'value', 'change')"
+          ></seal-input-number>
+          <seal-checkbox
+            v-else-if="$attrs.showCheckbox"
+            style="width: 100%"
+            :model-value="dataValue"
+            :placeholder="
+              get($attrs?.placeholder, 'value') || $t('common.input.value')
+            "
+            v-bind="$attrs"
+            @change="(val) => handleDataChange(val, 'value', 'change')"
+          ></seal-checkbox>
           <seal-input
             v-else-if="!showHintInput"
             style="width: 100%"
@@ -316,7 +338,12 @@
         return false;
       }
     },
-
+    showNumberInput: {
+      type: Boolean,
+      default() {
+        return false;
+      }
+    },
     alwaysDelete: {
       type: Boolean,
       default() {

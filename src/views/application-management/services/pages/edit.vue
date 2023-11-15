@@ -252,11 +252,16 @@
         </GroupTitle>
       </div>
       <a-spin style="width: 100%" :loading="asyncLoading">
-        <GroupForm
+        <!-- <GroupForm
           ref="groupForm"
           :field-list="templateInfo"
           :async-loading="asyncLoading"
           :original-form-data="serviceInfo.attributes || {}"
+        ></GroupForm> -->
+        <GroupForm
+          ref="formref"
+          v-model:form-data="formData.attributes"
+          :schema="schemaVariables"
         ></GroupForm>
       </a-spin>
       <EditPageFooter>
@@ -302,7 +307,8 @@
   import useScrollToView from '@/hooks/use-scroll-to-view';
   import EditPageFooter from '@/components/edit-page-footer/index.vue';
   import xInputGroup from '@/components/form-create/custom-components/x-input-group.vue';
-  import GroupForm from '@/components/form-create/group-form.vue';
+  // import GroupForm from '@/components/form-create/group-form.vue';
+  import GroupForm from '@/components/dynamic-form/group-form.vue';
   import GroupTitle from '@/components/group-title/index.vue';
   import {
     validateLabelNameRegx,
@@ -354,6 +360,7 @@
     setTemplateVersionList,
     getTemplateVersions,
     setTemplateInfo,
+    schemaVariables,
     getItemResourceDefinition,
     serviceInfo,
     formData,
@@ -578,21 +585,20 @@
     );
     validateLabel();
     const res = await formref.value?.validate();
-    const groupFormRes = await groupForm.value?.getData();
-    if (!res && groupFormRes && !validateTrigger.value) {
+    // const groupFormRes = await groupForm.value?.getData();
+    if (res && !validateTrigger.value) {
       try {
         submitLoading.value = true;
-        formData.attributes = {
-          ...reduce(
-            groupFormRes,
-            (obj, s) => {
-              obj = _.merge(obj, s.formData);
-              return obj;
-            },
-            {}
-          )
-        };
-        formData.draft = draft;
+        // formData.attributes = {
+        //   ...reduce(
+        //     groupFormRes,
+        //     (obj, s) => {
+        //       obj = _.merge(obj, s.formData);
+        //       return obj;
+        //     },
+        //     {}
+        //   )
+        // };
         // omit template project if value is empty
         if (!formData.template.project?.id) {
           formData.template = _.omit(formData.template, 'project');

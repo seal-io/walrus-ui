@@ -19,7 +19,7 @@
   import { FieldSchema } from '../interface';
   import FieldGroup from './field-group.vue';
   import SchemaField from './schema-field.vue';
-  import { genObjectFieldProperties } from '../utils';
+  import { genObjectFieldProperties, initFieldDefaultValue } from '../utils';
   import CommonButton from './common-button.vue';
 
   export default defineComponent({
@@ -30,9 +30,14 @@
       let additionalPropertiesList: FieldSchema[] = [];
       let additionalPropertiesKeysObj = {};
       const childProperties = ref<FieldSchema[]>([]);
+      const additionalList = ref<any[]>([]);
       const objectAdditionalList = ref<
         { field: string; list: FieldSchema[] }[]
       >([]);
+
+      const handleChange = (data) => {
+        emit('change', data);
+      };
 
       additionalPropertiesKeysObj = _.reduce(
         _.keys(props.schema.additionalProperties?.properties),
@@ -45,6 +50,7 @@
         },
         {}
       );
+
       // default data
       childProperties.value = genObjectFieldProperties({
         schema: props.schema,
@@ -56,14 +62,28 @@
         name: props.schema.name,
         childProperties: childProperties.value
       });
+
+      // init field value
+      if (!_.get(props.formData, props.fieldPath)) {
+        _.set(
+          props.formData,
+          props.fieldPath,
+          initFieldDefaultValue(props.schema)
+        );
+        _.each(childProperties.value, (item) => {
+          if (!_.get(props.formData, item.fieldPath)) {
+            _.set(props.formData, item.fieldPath, initFieldDefaultValue(item));
+          }
+        });
+        handleChange(props.formData);
+      }
+
       // raw data
       additionalPropertiesList = genObjectFieldProperties({
         schema: props.schema.additionalProperties as FieldSchema,
         formData: props.formData,
         fieldPath: props.fieldPath
       });
-
-      const additionalList = ref<any[]>([]);
 
       // value is any
       const isAnyAdditionalProperties =
@@ -73,27 +93,30 @@
       // value is string
       const isMapString =
         _.isObject(props.schema.additionalProperties) &&
-        props.schema.additionalProperties.type === 'string';
+        props.schema.additionalProperties?.type === 'string';
 
       // value is number
       const isMapNumber =
         _.isObject(props.schema.additionalProperties) &&
         _.includes(
           ['number', 'integer'],
-          props.schema.additionalProperties.type
+          props.schema.additionalProperties?.type
         );
 
       // value is boolean
       const isMapBoolean =
         _.isObject(props.schema.additionalProperties) &&
-        props.schema.additionalProperties.type === 'boolean';
+        props.schema.additionalProperties?.type === 'boolean';
 
       // value is object or array
       const isMapObjectAdditionalProperties =
         _.isObject(props.schema.additionalProperties) &&
-        _.includes(['object', 'array'], props.schema.additionalProperties.type);
+        _.includes(
+          ['object', 'array'],
+          props.schema.additionalProperties?.type
+        );
 
-      //
+      // init map(string) value
       if (isAnyAdditionalProperties || isMapString || isMapNumber) {
         const keys = _.keys(_.get(props.formData, props.fieldPath));
         additionalList.value = _.map(keys, (value, key) => {
@@ -104,16 +127,14 @@
         });
       }
 
-      const handleChange = (data) => {
-        emit('change', data);
-      };
-
       const handleAddClick = () => {
         if (isAnyAdditionalProperties || isMapString || isMapNumber) {
           additionalList.value.push({
             label: '',
             value: ''
           });
+
+          // !!! upate formData on component change event !!!
         }
         if (isMapObjectAdditionalProperties) {
           objectAdditionalList.value.push({
@@ -136,8 +157,9 @@
           _.unset(props.formData, [...props.fieldPath, labelKey]);
         }
         if (isMapObjectAdditionalProperties) {
+          const itemField = objectAdditionalList.value[index]?.field;
           objectAdditionalList.value.splice(index, 1);
-          _.unset(props.formData, [...props.fieldPath]);
+          _.unset(props.formData, [...props.fieldPath, itemField]);
         }
         handleChange(props.formData);
       };
@@ -145,8 +167,8 @@
       const renderAddButton = () => {
         return isMapObjectAdditionalProperties ? (
           <div class="add-btn">
-            <CommonButton onClick={() => handleAddClick()} type="primary">
-              <icon-plus style="stroke-width: 4" class="m-r-5" /> 添加
+            <CommonButton onClick={() => handleAddClick()} type="outline">
+              <icon-plus style="stroke-width: 4" class="m-r-5" />
               {props.schema.title}
             </CommonButton>
           </div>
@@ -154,23 +176,45 @@
       };
       const renderDeleleButton = (index) => {
         return (
-          <CommonButton onClick={() => handleDeleteClick(index)} type="text">
-            <icon-minus-circle style="stroke-width: 3" class="size-24" />
+          <CommonButton onClick={() => handleDeleteClick(index)} type="outline">
+            <icon-minus style="stroke-width: 4" />
             {props.schema.title}
           </CommonButton>
         );
+      };
+
+      const handleAdditionalFieldChange = () => {
+        _.each(objectAdditionalList.value, (item) => {
+          _.each(item.list, (childSchema) => {
+            if (!_.get(props.formData, [...props.fieldPath, item.field])) {
+              _.set(
+                props.formData,
+                [...props.fieldPath, item.field, childSchema.name],
+                initFieldDefaultValue(childSchema)
+              );
+            }
+          });
+        });
       };
       // additional value is string
       const rendermapStringAdditional = () => {
         if (isAnyAdditionalProperties || isMapString || isMapNumber) {
           return (
-            <a-form-item>
+            <a-form-item
+              hide-label={true}
+              rules={props.rules}
+              field={_.join(props.fieldPath, '.')}
+              validate-trigger={['change']}
+            >
               <SealFormItemWrap
                 {...props}
                 label={props.schema.title}
                 style="width: 100%"
               >
                 <KeyValueLabels
+                  width={800}
+                  showNumberInput={isMapNumber}
+                  showCheckbox={isMapBoolean}
                   value={_.get(props.formData, props.fieldPath)}
                   labels={additionalList.value}
                   onUpdate:value={(val) => {
@@ -195,22 +239,38 @@
           <>
             {_.map(objectAdditionalList.value, (item, index) => {
               return (
-                <div>
-                  <div key={_.join([props.fieldPath, index], '-')}>
-                    <SealInput
-                      modelValue={_.get(objectAdditionalList.value, [
-                        index,
-                        'field'
-                      ])}
-                      onUpdate:modelValue={(val) => {
-                        _.set(
-                          objectAdditionalList.value,
-                          [index, 'field'],
-                          val
-                        );
-                        handleChange(props.formData);
-                      }}
-                    ></SealInput>
+                <div class="add-item">
+                  <div
+                    key={_.join([props.fieldPath, index], '.')}
+                    class="add-content"
+                  >
+                    <a-form-item
+                      field={_.join([props.fieldPath, index, 'field'], '.')}
+                    >
+                      <SealInput
+                        modelValue={_.get(objectAdditionalList.value, [
+                          index,
+                          'field'
+                        ])}
+                        placeholder="enter a proerty name"
+                        onChange={() => {
+                          handleAdditionalFieldChange();
+                          handleChange(props.formData);
+                        }}
+                        onUpdate:modelValue={(val) => {
+                          _.set(
+                            objectAdditionalList.value,
+                            [index, 'field'],
+                            val
+                          );
+                          console.log('objectAdditionalList.value>>>>>>>>>>>', {
+                            objectAdditionalList: objectAdditionalList.value,
+                            index,
+                            val
+                          });
+                        }}
+                      ></SealInput>
+                    </a-form-item>
                     {_.map(item.list, (childSchema, cIndex) => {
                       return (
                         <SchemaField
@@ -237,7 +297,7 @@
                       );
                     })}
                   </div>
-                  <div>{renderDeleleButton(index)}</div>
+                  <div class="delete-btn">{renderDeleleButton(index)}</div>
                 </div>
               );
             })}
@@ -278,3 +338,19 @@
     }
   });
 </script>
+
+<style lang="less" scoped>
+  .add-item {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+
+    .add-content {
+      flex: 1;
+    }
+
+    .delete-btn {
+      padding-left: 10px;
+    }
+  }
+</style>

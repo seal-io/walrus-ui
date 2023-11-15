@@ -61,6 +61,14 @@ export const FormatsFieldMaps = {
   'date-time': datePicker
 };
 
+export const isSelect = (schema: FieldSchema) => {
+  const { type, enum: enumList, items } = schema;
+  if (items && type === FIELD_TYPE.ARRAY) {
+    return true;
+  }
+  return type === FIELD_TYPE.STRING && enumList && enumList.length > 0;
+};
+
 export const isMuliSelect = (schema: FieldSchema) => {
   const { type, enum: enumList, items } = schema;
   return (
@@ -77,6 +85,14 @@ export const isFixedOptionSelect = (schema: FieldSchema) => {
 export const isAllowCreateSelect = (schema: FieldSchema) => {
   const { type, enum: enumList } = schema;
   return type === FIELD_TYPE.STRING && !enumList?.length;
+};
+
+export const isAllowCreateNumberSelect = (schema: FieldSchema) => {
+  const { type, enum: enumList } = schema;
+  return (
+    (type === FIELD_TYPE.NUMBER || type === FIELD_TYPE.INTEGER) &&
+    !enumList?.length
+  );
 };
 
 export const getSchemaFieldComponent = ({ schema, fieldPath, formData }) => {

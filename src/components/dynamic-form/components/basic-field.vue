@@ -9,36 +9,56 @@
     computed,
     watch
   } from 'vue';
+  import { InjectSchemaFormEditableKey } from '@/views/config';
   import schemaFieldProps from '../fields/schema-field-props';
   import {
     BasicFieldMaps,
     CommonFieldMaps,
-    FormatsFieldMaps
+    FormatsFieldMaps,
+    isAllowCreateNumberSelect,
+    isAllowCreateSelect
   } from '../fields/field-map';
   import {
     isSelect,
     isNumber,
     isBoolean,
     isDatePicker,
-    isPassword
+    isMuliSelect,
+    isPassword,
+    initFieldDefaultValue
   } from '../utils';
   import { Option } from '../interface';
 
   export default defineComponent({
-    inject: ['schemaFormEditable'],
     props: schemaFieldProps,
     emits: ['change'],
     setup(props, { emit, attrs }) {
       console.log('props=====99==', { props, attrs });
-      const schemaFormEditable = inject('schemaFormEditable');
+      const schemaFormEditable = inject(InjectSchemaFormEditableKey);
+
+      const numberReg = /\d+/;
       const { type } = toRefs(props.schema);
 
       let Component = BasicFieldMaps[type.value];
-      let options: Option[] = [];
+      const options = ref<Option[]>([]);
+
+      const handleChange = (data) => {
+        emit('change', data);
+      };
+
+      // init field value
+      if (!_.get(props.formData, props.fieldPath)) {
+        _.set(
+          props.formData,
+          props.fieldPath,
+          initFieldDefaultValue(props.schema)
+        );
+      }
+
       if (isSelect(props.schema)) {
         Component = CommonFieldMaps.select;
         if (props.schema.enum) {
-          options = props.schema.enum.map((item) => {
+          options.value = props.schema.enum.map((item) => {
             return {
               label: item,
               value: item
@@ -55,19 +75,11 @@
         Component = CommonFieldMaps.password;
       }
 
-      const handleChange = (val) => {
-        _.set(props.formData, props.fieldPath, val);
-        if (props.onChange) {
-          props.onChange(val);
-          return;
-        }
-        emit('change', val);
-      };
-
       const handleSelectInputChange = (e: any) => {
         if (isBoolean(props.schema)) {
           _.set(props.formData, props.fieldPath, e.target.checked);
-        } else {
+        }
+        if (!isSelect(props.schema)) {
           _.set(props.formData, props.fieldPath, e);
         }
       };
@@ -77,19 +89,23 @@
           hide-label={true}
           rules={props.rules}
           field={_.join(props.fieldPath, '.')}
+          validate-trigger={['change']}
         >
           <Component
             {...props}
             {...attrs}
             style="width: 100%"
             popupInfo={attrs.description}
-            modelValue={_.get(props.formData, props.fieldPath)}
-            options={options}
+            model-value={_.get(props.formData, props.fieldPath)}
+            options={options.value}
             onInput={(e) => {
+              console.log('basic-field==', e.target?.value, props.schema);
               handleSelectInputChange(e);
             }}
             onChange={(val) => {
-              handleChange(val);
+              _.set(props.formData, props.fieldPath, val);
+              console.log('basic-field==change', val, props, props.formData);
+              handleChange(props.formData);
             }}
           ></Component>
         </a-form-item>
