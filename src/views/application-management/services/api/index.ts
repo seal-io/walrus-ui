@@ -143,6 +143,12 @@ export const upgradeApplicationInstance = (data) => {
     data
   );
 };
+export const stopApplicationInstance = (data) => {
+  return axios.post(`${SERVICE_API_PREFIX()}${SERVICE_API}/${data.id}/stop`);
+};
+export const startApplicationInstance = (data) => {
+  return axios.post(`${SERVICE_API_PREFIX()}${SERVICE_API}/${data.id}/start`);
+};
 
 export const cloneApplicationInstance = (data: {
   id: string;

@@ -57,6 +57,16 @@ export function updateEnvironment(data: EnvironFormData) {
     data
   );
 }
+export function stopEnvironment(data: { id: string }) {
+  return axios.post(
+    `${PROJECT_API_PREFIX()}${ENVIRONMENT_API}/${data.id}/stop`
+  );
+}
+export function startEnvironment(data: { id: string }) {
+  return axios.post(
+    `${PROJECT_API_PREFIX()}${ENVIRONMENT_API}/${data.id}/start`
+  );
+}
 
 export const queryEnvironmentAvailableDefinitions = (params: {
   environmentID: string;

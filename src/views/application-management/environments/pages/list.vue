@@ -160,57 +160,12 @@
             :title="$t('common.table.operation')"
           >
             <template #cell="{ record }">
-              <a-space :size="16">
-                <a-tooltip
-                  v-if="
-                    userStore.hasProjectResourceActions({
-                      projectID,
-                      environmentID: record.id,
-                      resource: Resources.Environments,
-                      actions: [Actions.PUT]
-                    })
-                  "
-                  :content="$t('common.button.edit')"
-                >
-                  <a-link type="text" size="small" @click="handleEdit(record)">
-                    <template #icon><icon-edit class="size-14" /></template>
-                  </a-link>
-                </a-tooltip>
-                <a-tooltip
-                  v-if="
-                    userStore.hasProjectResourceActions({
-                      projectID,
-                      environmentID: record.id,
-                      resource: Resources.Environments,
-                      actions: [Actions.POST]
-                    })
-                  "
-                  :disabled="!record.connectors?.length"
-                  :content="$t('applications.environment.clone')"
-                >
-                  <a-link
-                    :disabled="!record.connectors?.length"
-                    type="text"
-                    size="small"
-                    @click="handleClone(record)"
-                  >
-                    <template #icon
-                      ><i class="size-14 icon-Clone-Cloud iconfont"
-                    /></template>
-                  </a-link>
-                </a-tooltip>
-                <a-tooltip :content="$t('common.button.detail')">
-                  <a-link
-                    type="text"
-                    size="small"
-                    @click="handleViewDetail(record)"
-                  >
-                    <template #icon
-                      ><i class="size-14 icon-xiangqing iconfont"
-                    /></template>
-                  </a-link>
-                </a-tooltip>
-              </a-space>
+              <DropButtonGroup
+                layout="vertical"
+                :actions="setActionList(record)"
+                @click="(val) => handleEdit(record)"
+                @select="(value) => handleClickAction(value, record)"
+              ></DropButtonGroup>
             </template>
           </a-table-column>
         </template>
@@ -239,20 +194,31 @@
 <script lang="ts" setup>
   import dayjs from 'dayjs';
   import _, { map, pickBy } from 'lodash';
-  import { PageAction, EnvironmentTypeMap } from '@/views/config';
+  import {
+    PageAction,
+    EnvironmentTypeMap,
+    CommonButtonValue
+  } from '@/views/config';
   import { PROJECT } from '@/router/config';
   import { useUserStore, useAppStore } from '@/store';
   import { Resources, Actions } from '@/permissions/config';
-  import { ref, reactive } from 'vue';
+  import { ref, reactive, onMounted } from 'vue';
   import useCallCommon from '@/hooks/use-call-common';
+  import DropButtonGroup from '@/components/drop-button-group/index.vue';
   import FilterBox from '@/components/filter-box/index.vue';
   import { deleteModal, execSucceed } from '@/utils/monitor';
   import { UseSortDirection } from '@/utils/common';
   import useRowSelect from '@/hooks/use-row-select';
   import { EnvironmentRow } from '../config/interface';
-  import { queryEnvironments, deleteEnvironment } from '../api';
+  import {
+    queryEnvironments,
+    deleteEnvironment,
+    stopEnvironment,
+    startEnvironment
+  } from '../api';
   import CreateEnvironment from '../components/create-environment.vue';
   import serviceSummary from '../components/service-summary.vue';
+  import { EnvironmentActions } from '../config';
 
   const orderMap = {
     error: 3,
@@ -273,6 +239,7 @@
   const total = ref(0);
   const showModal = ref(false);
   const currentInfo = ref({});
+  const actionHandlerMap = new Map();
   const action = ref(PageAction.EDIT);
   const projectID = route.params.projectId as string;
   const queryParams = reactive({
@@ -301,6 +268,20 @@
         action: PageAction.EDIT
       }
     });
+  };
+
+  const setActionList = (row) => {
+    const list = _.filter(EnvironmentActions, (item) => {
+      return item.filterFun ? item.filterFun({ row, projectID }) : true;
+    });
+    const res = _.map(list, (o) => {
+      const item = _.cloneDeep(o);
+      item.disabled = _.isFunction(item.disabled)
+        ? item.disabled?.({ row, projectID })
+        : item.disabled;
+      return item;
+    });
+    return res;
   };
   const fetchData = async () => {
     try {
@@ -396,6 +377,31 @@
       }
     });
   };
+  const handleStopEnvironment = async (row) => {
+    try {
+      await stopEnvironment({ id: row.id });
+      execSucceed();
+    } catch (error) {
+      // ingore
+    }
+  };
+  const handleStartEnvironment = async (row) => {
+    try {
+      await startEnvironment({ id: row.id });
+      execSucceed();
+    } catch (error) {
+      // ingore
+    }
+  };
+  const handleClickAction = (value, row) => {
+    actionHandlerMap.get(value)(row);
+  };
+  const setActionHandler = () => {
+    actionHandlerMap.set(CommonButtonValue.View, handleViewDetail);
+    actionHandlerMap.set(CommonButtonValue.Clone, handleClone);
+    actionHandlerMap.set(CommonButtonValue.Stop, handleStopEnvironment);
+    actionHandlerMap.set(CommonButtonValue.Start, handleStartEnvironment);
+  };
   const handleDeleteConfirm = async () => {
     try {
       loading.value = true;
@@ -418,6 +424,9 @@
   const handleDelete = async () => {
     deleteModal({ onOk: handleDeleteConfirm });
   };
+  onMounted(() => {
+    setActionHandler();
+  });
   fetchData();
 </script>
 

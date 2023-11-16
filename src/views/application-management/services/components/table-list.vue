@@ -1,81 +1,5 @@
 <template>
   <ComCard padding="0" class="applications-list">
-    <!-- <FilterBox style="margin-bottom: 10px">
-      <template #params>
-        <a-input
-          v-model="queryParams.query"
-          allow-clear
-          style="width: 220px"
-          :placeholder="$t('applications.applications.table.holder')"
-          @clear="handleSearch"
-          @press-enter="handleSearch"
-        >
-          <template #prefix>
-            <icon-search />
-          </template>
-        </a-input>
-        <a-space style="margin-left: 10px">
-          <a-button type="primary" @click="handleSearch">{{
-            $t('common.button.search')
-          }}</a-button>
-          <a-button type="outline" @click="handleReset">{{
-            $t('common.button.clear')
-          }}</a-button>
-        </a-space>
-      </template>
-      <template #button-group>
-        <primaryButtonGroup
-          v-if="
-            userStore.hasProjectResourceActions({
-              projectID,
-              environmentID,
-              resource: Resources.Services,
-              actions: [Actions.POST]
-            })
-          "
-          :btn-text="$t('applications.applications.create.serviceResource')"
-          :action-list="CreatActions"
-          @select="handleSelectAction"
-        ></primaryButtonGroup>
-        <a-button
-          v-if="
-            userStore.hasProjectResourceActions({
-              projectID,
-              environmentID,
-              resource: Resources.Services,
-              actions: [Actions.POST]
-            })
-          "
-          status="success"
-          type="primary"
-          :disabled="!selectedKeys.length"
-          @click="handleCloneService"
-          >{{ $t('applications.service.clone')
-          }}<span v-if="selectedKeys.length">{{
-            `(${selectedKeys.length})`
-          }}</span></a-button
-        >
-        <a-button
-          v-if="
-            userStore.hasProjectResourceActions({
-              projectID,
-              environmentID,
-              resource: Resources.Services,
-              actions: [Actions.DELETE]
-            })
-          "
-          type="primary"
-          status="warning"
-          :disabled="!selectedKeys.length"
-          @click="handleDelete"
-          >{{ $t('common.button.delete')
-          }}<span v-if="selectedKeys.length">{{
-            `(${selectedKeys.length})`
-          }}</span></a-button
-        >
-      </template>
-    </FilterBox> -->
-
     <a-table
       column-resizable
       style="margin-bottom: 20px"
@@ -193,7 +117,7 @@
         >
           <template #cell="{ record, rowIndex }">
             <DropButtonGroup
-              layout="horizontal"
+              layout="vertical"
               :actions="setActionList(dataList[rowIndex])"
               @click="(val) => handleClickUpgrade(record)"
               @select="(value) => handleClickAction(value, record)"
@@ -282,7 +206,9 @@
     deleteServices,
     refreshServiceConfig,
     SERVICE_API,
-    SERVICE_API_PREFIX
+    SERVICE_API_PREFIX,
+    startApplicationInstance,
+    stopApplicationInstance
   } from '../api';
   import useViewLatestLogs from '../hooks/use-view-latest-logs';
   import useRollbackRevision from '../hooks/use-rollback-revision';
@@ -455,6 +381,22 @@
     });
   };
 
+  const handleStopResource = async (row) => {
+    try {
+      await stopApplicationInstance(row);
+      execSucceed();
+    } catch (error) {
+      // ignore
+    }
+  };
+  const handleStartResource = async (row) => {
+    try {
+      await startApplicationInstance(row);
+      execSucceed();
+    } catch (error) {
+      // ignore
+    }
+  };
   const handleReset = () => {
     queryParams.query = '';
     queryParams.page = 1;
@@ -555,6 +497,8 @@
     actionHandlerMap.set(serviceActionMap.rollback, handleClickRollback);
     actionHandlerMap.set(serviceActionMap.sync, handleRefreshServiceConfig);
     actionHandlerMap.set(serviceActionMap.logs, handleViewServiceLatestLogs);
+    actionHandlerMap.set(serviceActionMap.stop, handleStopResource);
+    actionHandlerMap.set(serviceActionMap.start, handleStartResource);
   };
   const init = async () => {
     userStore.setInfo({ currentProject: projectID });

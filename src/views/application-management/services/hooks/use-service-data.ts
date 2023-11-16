@@ -63,6 +63,7 @@ export default function useServiceData(props?) {
     environment: {
       id: route.params.environmentId as string
     },
+    draft: false,
     description: '',
     labels: {},
     type: '',

@@ -38,14 +38,30 @@
           :status="item.status"
           :disabled="!!item.disabled"
         >
-          <template #icon>
+          <!-- <template #icon>
             <component
               :is="item.icon"
               v-bind="item.props"
               class="size-14"
             ></component>
-          </template>
-          {{ $t(item.label) }}
+          </template> -->
+
+          <span class="flex flex-align-center">
+            <span>
+              <i
+                v-if="item.iconfont"
+                :class="[item.icon]"
+                class="iconfont size-14"
+              ></i>
+              <component
+                :is="item.icon"
+                v-else
+                v-bind="item.props"
+                class="size-14"
+              ></component>
+            </span>
+            <span class="mleft-5">{{ $t(item.label) }}</span>
+          </span>
         </a-link>
       </a-doption>
     </template>

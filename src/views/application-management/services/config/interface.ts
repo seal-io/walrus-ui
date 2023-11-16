@@ -8,6 +8,7 @@ export interface Variables {
 }
 
 export interface ServiceFormData {
+  draft?: boolean;
   projectID: string;
   project: {
     id: string;

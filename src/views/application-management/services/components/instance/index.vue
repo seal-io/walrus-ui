@@ -169,6 +169,7 @@
   import { useUserStore, useServiceStore } from '@/store';
   import _ from 'lodash';
   import { PageAction, websocketEventType } from '@/views/config';
+  import { execSucceed } from '@/utils/monitor';
   import {
     markRaw,
     ref,
@@ -207,7 +208,9 @@
     queryItemService,
     deleteServiceItem,
     SERVICE_API,
-    SERVICE_API_PREFIX
+    SERVICE_API_PREFIX,
+    stopApplicationInstance,
+    startApplicationInstance
   } from '../../api';
   import serviceInfo from '../service-info.vue';
   import serviceEdit from '../../pages/edit.vue';
@@ -283,6 +286,22 @@
     }
   };
 
+  const handleStopResource = async () => {
+    try {
+      await stopApplicationInstance({ id: route.query.id });
+      execSucceed();
+    } catch (error) {
+      // ignore
+    }
+  };
+  const handleStartResource = async () => {
+    try {
+      await startApplicationInstance({ id: route.query.id });
+      execSucceed();
+    } catch (error) {
+      // ignore
+    }
+  };
   const handleDelete = () => {
     showDeleteModal.value = true;
   };
@@ -292,6 +311,8 @@
 
   const setActionMap = () => {
     actionMap.set(serviceActionMap.delete, handleDelete);
+    actionMap.set(serviceActionMap.start, handleStartResource);
+    actionMap.set(serviceActionMap.stop, handleStopResource);
   };
   const handleEditCancel = () => {
     pageAction.value = PageAction.VIEW;

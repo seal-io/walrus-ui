@@ -1,4 +1,11 @@
 import dayjs from 'dayjs';
+import _ from 'lodash';
+import { Resources, Actions } from '@/permissions/config';
+import { MoreAction } from '@/views/config/interface';
+import { CommonButtonValue } from '@/views/config';
+import { useUserStore } from '@/store';
+
+const userStore = useUserStore();
 
 export const basicInfoConfig = [
   { label: 'applications.applications.form.name', value: '', key: 'name' },
@@ -23,4 +30,89 @@ export const basicInfoConfig = [
   }
 ];
 
+export const EnvironmentActions: MoreAction[] = [
+  {
+    label: 'common.button.edit',
+    value: CommonButtonValue.Edit,
+    icon: 'icon-edit',
+    handler: '',
+    status: 'normal',
+    disabled: false,
+    filterFun({ row, projectID }) {
+      return userStore.hasProjectResourceActions({
+        projectID,
+        environmentID: row.id,
+        resource: Resources.Environments,
+        actions: [Actions.PUT]
+      });
+    }
+  },
+  {
+    label: 'common.button.stop',
+    value: CommonButtonValue.Stop,
+    icon: 'icon-pause-circle',
+    handler: '',
+    status: 'normal',
+    disabled({ row }) {
+      return !row.connectors?.length;
+    },
+    filterFun({ row, projectID }) {
+      return userStore.hasProjectResourceActions({
+        projectID,
+        environmentID: row.id,
+        resource: Resources.Environments,
+        actions: [Actions.PUT]
+      });
+    }
+  },
+  {
+    label: 'common.button.start',
+    value: CommonButtonValue.Start,
+    icon: 'icon-play-circle',
+    handler: '',
+    status: 'normal',
+    disabled({ row }) {
+      return !row.connectors?.length;
+    },
+    filterFun({ row, projectID }) {
+      return userStore.hasProjectResourceActions({
+        projectID,
+        environmentID: row.id,
+        resource: Resources.Environments,
+        actions: [Actions.PUT]
+      });
+    }
+  },
+  {
+    label: 'common.button.detail',
+    value: CommonButtonValue.View,
+    icon: 'icon-xiangqing',
+    iconfont: true,
+    handler: '',
+    status: 'normal',
+    disabled: false,
+    filterFun({ row, projectID }) {
+      return true;
+    }
+  },
+  {
+    label: 'common.button.clone',
+    value: CommonButtonValue.Clone,
+    icon: 'icon-Clone-Cloud',
+    iconfont: true,
+    handler: '',
+    status: 'normal',
+    disabled({ row }) {
+      return !row.connectors?.length;
+    },
+    filterFun({ row, projectID }) {
+      return userStore.hasProjectResourceActions({
+        projectID,
+        environmentID: row.id,
+        resource: Resources.Environments,
+        actions: [Actions.PUT]
+      });
+    }
+  }
+];
 export default {};

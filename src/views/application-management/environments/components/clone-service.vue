@@ -159,6 +159,13 @@
                 :auto-size="{ minRows: 4, maxRows: 6 }"
               ></seal-textarea>
             </a-form-item>
+            <a-form-item :label="$t('common.button.draft')" hide-label>
+              <seal-checkbox
+                v-model="formData.draft"
+                :label="$t('common.button.draft')"
+                style="width: 100%"
+              ></seal-checkbox>
+            </a-form-item>
           </a-form>
           <GroupTitle
             :title="$t('applications.applications.detail.configuration')"
@@ -375,6 +382,7 @@
       editServiceList.value[index].name = formData.name;
       editServiceList.value[index].description = formData.description;
       editServiceList.value[index].labels = formData.labels;
+      editServiceList.value[index].draft = formData.draft;
     }
   };
   const getSelectServiceData = () => {
@@ -402,6 +410,7 @@
       show.value = false;
       updateActiveServiceData();
       hasChange.value = false;
+      formData.draft = false;
     } else {
       scrollToView();
     }

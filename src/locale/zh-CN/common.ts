@@ -132,5 +132,9 @@ export default {
   'common.time.minute': '分钟',
   'common.issue.report': '问题反馈',
   'common.social.discord': '加入我们的Discord',
-  'common.table.mark': '备注'
+  'common.table.mark': '备注',
+  'common.button.saveDeploy': '保存并部署',
+  'common.button.draft': '保存草稿',
+  'common.button.stop': '停止',
+  'common.button.start': '启动'
 };
