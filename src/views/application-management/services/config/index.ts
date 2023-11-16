@@ -1,9 +1,9 @@
-import { get } from 'lodash';
+import _, { get } from 'lodash';
 import dayjs from 'dayjs';
 import { MoreAction } from '@/views/config/interface';
-import { useUserStore } from '@/store';
 import { Resources, Actions } from '@/permissions/config';
 import { setDurationValue } from '@/views/config/utils';
+import { useUserStore } from '@/store';
 
 const userStore = useUserStore();
 export const ProvideServiceIDKey = Symbol('ProvideServiceIDKey');
@@ -132,9 +132,43 @@ export const ServiceStatus = {
   Deleting: 'Deleting',
   Deploying: 'Deploying',
   Preparing: 'Preparing',
+  Running: 'Running',
   DeployFailed: 'DeployFailed',
-  DeleteFailed: 'DeleteFailed'
+  DeleteFailed: 'DeleteFailed',
+  Stopped: 'Stopped',
+  Undeployed: 'Undeployed',
+  StopFailed: 'StopFailed',
+  Stopping: 'Stopping'
 };
+
+export const StartableStatus = [
+  ServiceStatus.Stopped,
+  ServiceStatus.Undeployed
+];
+
+// export const NonStartableStatus = [
+//   ServiceStatus.Deleting,
+//   ServiceStatus.DeleteFailed,
+//   ServiceStatus.Deployed,
+//   ServiceStatus.Deploying,
+//   ServiceStatus.Preparing,
+//   ServiceStatus.Running
+// ];
+
+export const StoppableStatus = [
+  ServiceStatus.Deployed,
+  ServiceStatus.Deploying,
+  ServiceStatus.Preparing,
+  ServiceStatus.Running,
+  ServiceStatus.StopFailed
+];
+
+// export const NonStoppableStatus = [
+//   ServiceStatus.Deleting,
+//   ServiceStatus.DeleteFailed,
+//   ServiceStatus.Stopped,
+//   ServiceStatus.Undeployed
+// ];
 
 export const componentsMap = {
   string: 'Input',
@@ -157,7 +191,9 @@ export const serviceActionMap = {
   logs: 'logs',
   rollback: 'rollback',
   delete: 'delete',
-  sync: 'sync'
+  sync: 'sync',
+  stop: 'stop',
+  start: 'start'
 };
 
 export const serviceActions: MoreAction[] = [
@@ -179,6 +215,48 @@ export const serviceActions: MoreAction[] = [
         environmentID: get(currentInfo, 'environment.id'),
         projectID: get(currentInfo, 'project.id'),
         actions: [Actions.PUT]
+      });
+    }
+  },
+  {
+    label: 'common.button.stop',
+    value: serviceActionMap.stop,
+    icon: 'icon-pause-circle',
+    handler: '',
+    status: 'normal',
+    disabled(currentInfo: any): boolean {
+      return !_.includes(
+        StoppableStatus,
+        get(currentInfo, 'status.summaryStatus')
+      );
+    },
+    filterFun(currentInfo) {
+      return userStore.hasProjectResourceActions({
+        resource: Resources.Services,
+        environmentID: get(currentInfo, 'environment.id'),
+        projectID: get(currentInfo, 'project.id'),
+        actions: [Actions.POST]
+      });
+    }
+  },
+  {
+    label: 'common.button.start',
+    value: serviceActionMap.start,
+    icon: 'icon-play-circle',
+    handler: '',
+    status: 'normal',
+    disabled(currentInfo: any): boolean {
+      return !_.includes(
+        StartableStatus,
+        get(currentInfo, 'status.summaryStatus')
+      );
+    },
+    filterFun(currentInfo) {
+      return userStore.hasProjectResourceActions({
+        resource: Resources.Services,
+        environmentID: get(currentInfo, 'environment.id'),
+        projectID: get(currentInfo, 'project.id'),
+        actions: [Actions.POST]
       });
     }
   },

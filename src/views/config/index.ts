@@ -188,4 +188,17 @@ export const EnvironmentTypeMap = {
   staging: 'common.environment.staging'
 };
 
+export const CommonButtonValue = {
+  Edit: 'edit',
+  View: 'view',
+  Update: `update`,
+  Delete: 'delete',
+  Create: 'create',
+  Save: 'save',
+  Cancel: 'cancel',
+  Clone: 'clone',
+  Stop: 'stop',
+  Start: 'start'
+};
+
 export default {};

@@ -261,13 +261,23 @@
       </a-spin>
       <EditPageFooter>
         <template #save>
-          <a-button
-            :loading="submitLoading"
-            type="primary"
-            class="cap-title cancel-btn"
-            @click="handleOk"
-            >{{ $t('common.button.save') }}</a-button
-          >
+          <a-space :size="40">
+            <a-button
+              :loading="submitLoading && !formData.draft"
+              type="primary"
+              class="cap-title cancel-btn"
+              @click="() => handleOk()"
+              >{{ $t('common.button.saveDeploy') }}</a-button
+            >
+            <a-button
+              :loading="submitLoading && formData.draft"
+              type="primary"
+              status="success"
+              class="cap-title cancel-btn"
+              @click="() => handleOk(true)"
+              >{{ $t('common.button.draft') }}</a-button
+            >
+          </a-space>
         </template>
         <template #cancel>
           <a-button
@@ -549,15 +559,24 @@
       }
     });
   };
+
   const handleCreate = async (formData) => {
-    if (dataType === ServiceDataType.service) {
-      const data = await createService(formData);
-      return data;
+    const { data } = await createService(formData);
+    if (formData.draft) {
+      router.back();
+      return;
     }
-    const data = await createResourceBatch(formData);
-    return data;
+    router.replace({
+      name: PROJECT.ServiceDetail,
+      params: {
+        ...route.params
+      },
+      query: {
+        id: data.id
+      }
+    });
   };
-  const handleOk = async () => {
+  const handleOk = async (draft?: boolean) => {
     console.log(
       'kube===',
       formData,
@@ -581,6 +600,7 @@
             {}
           )
         };
+        formData.draft = draft;
         // omit template project if value is empty
         if (!formData.template.project?.id) {
           formData.template = _.omit(formData.template, 'project');
@@ -595,16 +615,7 @@
         if (id) {
           await upgradeApplicationInstance(formData);
         } else {
-          const { data } = await createService(formData);
-          router.replace({
-            name: PROJECT.ServiceDetail,
-            params: {
-              ...route.params
-            },
-            query: {
-              id: data.id
-            }
-          });
+          await handleCreate(formData);
           return;
         }
         if (props.pgType !== 'page') {

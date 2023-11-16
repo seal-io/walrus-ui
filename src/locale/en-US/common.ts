@@ -135,5 +135,9 @@ export default {
   'common.time.minute': 'minutes',
   'common.issue.report': 'Report an issue',
   'common.social.discord': 'Join our Discord',
-  'common.table.mark': 'Comment'
+  'common.table.mark': 'Comment',
+  'common.button.saveDeploy': 'Save and Deploy',
+  'common.button.draft': 'Save Draft',
+  'common.button.stop': 'Stop',
+  'common.button.start': 'Start'
 };
