@@ -21,6 +21,7 @@ export default function useCompleteData(props?) {
   interface HintKey {
     resource: any;
     var: any;
+    service: any;
   }
   interface TemplateVersionItem {
     schema?: {
@@ -49,7 +50,8 @@ export default function useCompleteData(props?) {
   const resourceDefinitionSchemaMap = ref<any>({});
   const completeData = ref<Partial<HintKey>>({
     resource: null,
-    var: null
+    var: null,
+    service: null
   });
   const variableList = ref<any[]>([]);
   const serviceDataList = ref<any[]>([]);
@@ -60,8 +62,7 @@ export default function useCompleteData(props?) {
   const getAllResourceDefinitions = async () => {
     try {
       const params = {
-        page: -1,
-        extract: ['-uiSchema']
+        page: -1
       };
       const { data } = await queryResourceDefinitions(params);
       resourceDefinitionSchemaMap.value = _.reduce(
@@ -196,7 +197,7 @@ export default function useCompleteData(props?) {
       return {
         name: item.name,
         type: item.type,
-        isService: !!item.type,
+        isService: !item.type,
         templateId: item.template?.id,
         versionId: item.template?.template?.id,
         version: item.template?.version
@@ -207,14 +208,16 @@ export default function useCompleteData(props?) {
 
   const parseSchemaOutputs = (schema) => {
     const result = initFormState(
-      _.get(schema, 'openAPISchema.components.schemas.outputs') || {}
+      _.get(schema, 'openAPISchema.components.schemas.outputs', {}),
+      true
     );
-    return result.fieldSchemaList.map((item) => {
+    const res = result.fieldSchemaList.map((item) => {
       return {
         name: item.name,
         description: item.description
       };
     });
+    return res;
   };
   const setAllTemplateVersions = (list) => {
     allTemplateVersions.value = _.map(list || [], (item) => {
@@ -232,6 +235,7 @@ export default function useCompleteData(props?) {
       }
       // service
       const { template } = cloneDeep(item);
+
       return {
         schema: {
           outputs: parseSchemaOutputs(template?.schema)
@@ -281,8 +285,36 @@ export default function useCompleteData(props?) {
     });
     return vars;
   };
-  const setServiceCompleteData = () => {
-    const list = getServiceTemplateVersionMap();
+  const genResourceCompleteData = (list) => {
+    const resources = _.reduce(
+      list,
+      (obj, item) => {
+        // The version corresponding to the module that has been added
+        const addedServiceTemplate = _.find(
+          allTemplateVersions.value || [],
+          (s) => {
+            return s.type === item.type;
+          }
+        );
+        const k = item.name;
+        obj[k] = [
+          ..._.map(_.get(addedServiceTemplate, 'schema.outputs') || [], (o) => {
+            return {
+              value: o.name,
+              label: o.name,
+              isService: item.isService,
+              description: o.description
+            };
+          })
+        ];
+        return obj;
+      },
+      {}
+    );
+    return resources;
+  };
+
+  const genServiceCompleteData = (list) => {
     const services = _.reduce(
       list,
       (obj, item) => {
@@ -290,9 +322,6 @@ export default function useCompleteData(props?) {
         const addedServiceTemplate = _.find(
           allTemplateVersions.value || [],
           (s) => {
-            if (item.isService) {
-              return s.type === item.type;
-            }
             return (
               s.template.id === item.templateId &&
               s.template.version === item.version
@@ -305,6 +334,7 @@ export default function useCompleteData(props?) {
             return {
               value: o.name,
               label: o.name,
+              isService: item.isService,
               description: o.description
             };
           })
@@ -315,9 +345,28 @@ export default function useCompleteData(props?) {
     );
     return services;
   };
+  const setServiceCompleteData = () => {
+    const list = getServiceTemplateVersionMap();
+    console.log('list===========', list);
+    const serviceList = _.filter(list, (item) => {
+      return item.isService;
+    });
+    const resourceList = _.filter(list, (item) => {
+      return !item.isService;
+    });
+
+    const services = genServiceCompleteData(serviceList);
+    const resources = genResourceCompleteData(resourceList);
+    return {
+      services,
+      resources
+    };
+  };
   const updateServiceCompleteData = () => {
-    const services = setServiceCompleteData();
-    completeData.value.resource = { ...services };
+    const res = setServiceCompleteData();
+
+    completeData.value.resource = { ...res.resources };
+    completeData.value.service = { ...res.services };
   };
   const updateVariablesCompleteData = () => {
     const variables = setVariablesCompleteData();
