@@ -102,7 +102,7 @@
       </a-form>
       <EditPageFooter>
         <template #save>
-          <a-button
+          <!-- <a-button
             :loading="submitLoading"
             type="primary"
             class="cap-title cancel-btn"
@@ -112,7 +112,14 @@
                 ? $t('common.button.retry')
                 : $t('common.button.save')
             }}</a-button
+          > -->
+          <primaryButtonGroup
+            :loading="submitLoading"
+            :action-list="SaveActions"
+            :btn-text="$t('common.button.save')"
+            @select="handleSelect"
           >
+          </primaryButtonGroup>
         </template>
         <template #cancel>
           <a-button
@@ -129,10 +136,11 @@
 
 <script lang="ts" setup>
   import _ from 'lodash';
+  import primaryButtonGroup from '@/components/drop-button-group/primary-button-group.vue';
   import { Resources, Actions } from '@/permissions/config';
   import EditPageFooter from '@/components/edit-page-footer/index.vue';
   import { PROJECT } from '@/router/config';
-  import { InputWidth } from '@/views/config';
+  import { InputWidth, SaveActions } from '@/views/config';
   import { ref, computed, reactive } from 'vue';
   import { useUserStore } from '@/store';
   import { onBeforeRouteLeave } from 'vue-router';
@@ -187,6 +195,7 @@
   const errorMap = ref<Map<string, string>>(new Map());
   let copyFormData: any = {};
   const formData = reactive({
+    draft: false,
     environmentID: '',
     environmentIDs: [],
     items: []
@@ -306,12 +315,13 @@
       console.log(error);
     }
   };
-  const handleOk = async () => {
+  const handleOk = async (draft: boolean) => {
     const res = await formref.value?.validate();
     if (!res) {
       trigger.value = true;
       try {
         submitLoading.value = true;
+        formData.draft = draft;
         await handleCloneServices();
         await batchCloneQueue();
         copyFormData = _.cloneDeep(formData);
@@ -325,6 +335,14 @@
       }
     } else {
       scrollToView();
+    }
+  };
+
+  const handleSelect = (value) => {
+    if (value === 'deploy') {
+      handleOk(false);
+    } else if (value === 'draft') {
+      handleOk(true);
     }
   };
 

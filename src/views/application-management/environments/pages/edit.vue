@@ -274,12 +274,21 @@
       <EditPageFooter v-if="pageAction === PageAction.EDIT">
         <template #save>
           <a-button
+            v-if="!environmentId"
             type="primary"
             class="cap-title cancel-btn"
             :loading="submitLoading"
-            @click="handleSubmit"
+            @click="() => handleSubmit()"
             >{{ $t('common.button.save') }}</a-button
           >
+          <primaryButtonGroup
+            v-else
+            :loading="submitLoading"
+            :action-list="SaveActions"
+            :btn-text="$t('common.button.save')"
+            @select="handleSelect"
+          >
+          </primaryButtonGroup>
         </template>
         <a-button
           type="outline"
@@ -300,7 +309,8 @@
     PageAction,
     validateLabelNameRegx,
     InputWidth,
-    EnvironmentTypeMap
+    EnvironmentTypeMap,
+    SaveActions
   } from '@/views/config';
   import { ref, computed, provide } from 'vue';
   import _, {
@@ -312,6 +322,7 @@
     isEqual,
     cloneDeep
   } from 'lodash';
+  import primaryButtonGroup from '@/components/drop-button-group/primary-button-group.vue';
   import GroupTitle from '@/components/group-title/index.vue';
   import EditPageFooter from '@/components/edit-page-footer/index.vue';
   import useCallCommon from '@/hooks/use-call-common';
@@ -548,13 +559,16 @@
     return data;
   };
 
-  const handleSubmit = async () => {
+  const handleSubmit = async (draft?: boolean) => {
     const res = await formref.value?.validate();
     validateLabel();
     scrollToView();
     if (!res && !validateTrigger.value) {
       try {
         submitLoading.value = true;
+        if (draft) {
+          formData.value.draft = true;
+        }
         const data = _.omit(formData.value, ['edges']);
         if (environmentId) {
           handleCloneEnvironment(data);
@@ -580,6 +594,14 @@
       return true;
     }
     return false;
+  };
+  const handleSelect = (value) => {
+    if (value === 'deploy') {
+      handleSubmit();
+    }
+    if (value === 'draft') {
+      handleSubmit(true);
+    }
   };
   const cancelCallback = () => {
     if (

@@ -24,6 +24,12 @@
         default() {
           return '';
         }
+      },
+      loading: {
+        type: Boolean,
+        default() {
+          return false;
+        }
       }
     },
     setup(props, { emit, slots }) {
@@ -77,7 +83,7 @@
             {slots.default ? (
               slots.default()
             ) : (
-              <a-button type="primary">
+              <a-button type="primary" loading={props.loading}>
                 {btnText.value}
                 <icon-down class="mleft-5" />
               </a-button>

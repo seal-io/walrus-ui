@@ -261,23 +261,13 @@
       </a-spin>
       <EditPageFooter>
         <template #save>
-          <a-space :size="40">
-            <a-button
-              :loading="submitLoading && !formData.draft"
-              type="primary"
-              class="cap-title cancel-btn"
-              @click="() => handleOk()"
-              >{{ $t('common.button.saveDeploy') }}</a-button
-            >
-            <a-button
-              :loading="submitLoading && formData.draft"
-              type="primary"
-              status="success"
-              class="cap-title cancel-btn"
-              @click="() => handleOk(true)"
-              >{{ $t('common.button.draft') }}</a-button
-            >
-          </a-space>
+          <primaryButtonGroup
+            :loading="submitLoading"
+            :action-list="SaveActions"
+            :btn-text="$t('common.button.save')"
+            @select="handleAddSelector"
+          >
+          </primaryButtonGroup>
         </template>
         <template #cancel>
           <a-button
@@ -306,6 +296,7 @@
     onMounted
   } from 'vue';
   import { onBeforeRouteLeave } from 'vue-router';
+  import primaryButtonGroup from '@/components/drop-button-group/primary-button-group.vue';
   import useCallCommon from '@/hooks/use-call-common';
   import thumbButton from '@/components/buttons/thumb-button.vue';
   import useScrollToView from '@/hooks/use-scroll-to-view';
@@ -319,7 +310,8 @@
     InputWidth,
     InjectCompleteDataKey,
     InjectProjectEnvironmentKey,
-    InjectShowInputHintKey
+    InjectShowInputHintKey,
+    SaveActions
   } from '@/views/config';
   import { queryEnvironmentConnector } from '@/views/application-management/environments/api';
   import { projectEnvCtxInjectionKey } from '@/components/form-create/bussiness-components/config';
@@ -629,6 +621,14 @@
       }
     } else {
       scrollToView();
+    }
+  };
+  const handleAddSelector = (value) => {
+    if (value === 'deploy') {
+      handleOk();
+    }
+    if (value === 'draft') {
+      handleOk(true);
     }
   };
   watch(

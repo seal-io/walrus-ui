@@ -72,11 +72,12 @@ export const createResourceBatch = (data) => {
 export const cloneServices = (data: {
   projectID: string;
   environmentID: string;
+  draft: boolean;
   items: Record<string, any>[];
 }) => {
   return axios.post(
     `/projects/${data.projectID}/environments/${data.environmentID}${SERVICE_API}/_/batch`,
-    { items: data.items }
+    { items: data.items, draft: data.draft }
   );
 };
 
