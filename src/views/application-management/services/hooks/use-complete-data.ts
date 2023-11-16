@@ -207,17 +207,20 @@ export default function useCompleteData(props?) {
   };
 
   const parseSchemaOutputs = (schema) => {
-    const result = initFormState(
-      _.get(schema, 'openAPISchema.components.schemas.outputs', {}),
-      true
+    const outputs = _.get(
+      schema,
+      'openAPISchema.components.schemas.outputs.properties',
+      {}
     );
-    const res = result.fieldSchemaList.map((item) => {
-      return {
-        name: item.name,
+    const result: any[] = [];
+    _.each(_.keys(outputs), (key) => {
+      const item = outputs[key];
+      result.push({
+        name: key,
         description: item.description
-      };
+      });
     });
-    return res;
+    return result;
   };
   const setAllTemplateVersions = (list) => {
     allTemplateVersions.value = _.map(list || [], (item) => {
@@ -235,7 +238,6 @@ export default function useCompleteData(props?) {
       }
       // service
       const { template } = cloneDeep(item);
-
       return {
         schema: {
           outputs: parseSchemaOutputs(template?.schema)

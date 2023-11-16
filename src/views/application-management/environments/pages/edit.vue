@@ -207,7 +207,7 @@
                 v-model:show="showModal"
                 v-model:connectorIDs="formData.connectorIDs"
                 :selected="selectedList"
-                :list="connectorList"
+                :list="selectableConnectors"
                 :placeholder="$t('operation.environments.detail.holder')"
                 @confirm="handleConnectorChange"
               ></ConnectorSelector>
@@ -363,7 +363,13 @@
   const serviceList = ref<any[]>([]);
   const resourceList = ref<any[]>([]);
   const connectorList = ref<
-    { label: string; value: string; project?: object; tips?: string }[]
+    {
+      label: string;
+      value: string;
+      project?: object;
+      tips?: string;
+      applicableEnvironmentType: string;
+    }[]
   >([]);
   const showModal = ref(false);
   const submitLoading = ref(false);
@@ -400,6 +406,11 @@
         label: t(EnvironmentTypeMap[item] || ''),
         value: item
       };
+    });
+  });
+  const selectableConnectors = computed(() => {
+    return _.filter(connectorList.value, (item) => {
+      return item.applicableEnvironmentType === formData.value.type;
     });
   });
   const title = computed(() => {
@@ -636,8 +647,8 @@
   };
   const init = async () => {
     setBreadCrumbList();
-    await getItemEnvironmentInfo();
     await getConnectors();
+    await getItemEnvironmentInfo();
     getLabelList();
     // only in clone: default select all variables
     variablesRef.value?.selectAllVars();
