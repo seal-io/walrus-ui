@@ -60,7 +60,6 @@ export const initFormStateBySchema = ({
     if (type !== FIELD_TYPE.OBJECT || property.additionalProperties) {
       fieldSchemaList.push(fieldSchema);
     }
-    console.log('ok=========', fieldSchemaList);
     if (type === FIELD_TYPE.OBJECT) {
       _.set(
         formData,
