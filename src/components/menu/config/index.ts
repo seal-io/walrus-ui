@@ -7,10 +7,16 @@ export const profileMenu = [
     icon: '<i class="iconfont icon-bangzhuyushuoming size-18" />',
     children: [
       {
-        name: 'walrus',
+        name: 'common.issue.report',
         key: 'home',
-        value: 'https://github.com/seal-io/walrus',
+        value: 'https://github.com/seal-io/walrus/issues/new/choose',
         icon: '<icon-github class="size-18"/>'
+      },
+      {
+        name: 'common.social.discord',
+        key: 'home',
+        value: 'https://discord.com/invite/fXZUKK2baF',
+        icon: '<i  class="iconfont icon-discord1 size-18"/>'
       },
       {
         name: 'settings.document',
@@ -25,12 +31,6 @@ export const profileMenu = [
         key: 'version',
         value: '',
         icon: '<i class="iconfont icon-version size-18" />'
-      },
-      {
-        name: 'seal.io',
-        key: 'home',
-        value: 'https://www.seal.io/',
-        icon: '<icon-home  class="size-18"/>'
       }
     ]
   },

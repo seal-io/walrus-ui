@@ -213,6 +213,7 @@
               :schema="deinitionSchema"
               :template-info="formData"
               page="definition"
+              @update="handleUpdateUISchema"
               @reset="handleResetUISchema"
             ></component>
           </a-tab-pane>
@@ -426,6 +427,9 @@
     } finally {
       loaded.value = true;
     }
+  };
+  const handleUpdateUISchema = async () => {
+    getItemResourceDefinition();
   };
   const handleResetUISchema = async () => {
     try {
