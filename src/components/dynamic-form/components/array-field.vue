@@ -85,9 +85,9 @@
       };
 
       // check array every item is empty or null or undefined
-      const checkArrayIsEmpty = (arr) => {
-        return _.every(arr, (item) => {
-          return _.isEmpty(item) || _.isNull(item) || _.isUndefined(item);
+      const filterArrayIsEmpty = (arr) => {
+        return _.filter(arr, (item) => {
+          return !_.isEmpty(item) || !_.isNull(item) || !_.isUndefined(item);
         });
       };
       const handleDeleteClick = (index) => {
@@ -96,8 +96,8 @@
         // update formData
         _.unset(props.formData, [...props.fieldPath, `${index}`]);
         if (
-          _.get(props.formData, props.fieldPath).length === 0 ||
-          checkArrayIsEmpty(_.get(props.formData, props.fieldPath))
+          !_.get(props.formData, props.fieldPath).length ||
+          !filterArrayIsEmpty(_.get(props.formData, props.fieldPath).length)
         ) {
           _.unset(props.formData, props.fieldPath);
         }

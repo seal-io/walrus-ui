@@ -259,7 +259,7 @@
           :original-form-data="serviceInfo.attributes || {}"
         ></GroupForm> -->
         <GroupForm
-          ref="formref"
+          ref="groupForm"
           v-model:form-data="formData.attributes"
           :schema="schemaVariables"
         ></GroupForm>
@@ -568,8 +568,10 @@
     console.log('kube===', formData);
     validateLabel();
     const res = await formref.value?.validate();
+    const groupres = await groupForm.value?.validate();
+    console.log('groupres===', groupres, res, validateTrigger.value);
     // const groupFormRes = await groupForm.value?.getData();
-    if (res && !validateTrigger.value) {
+    if (!res && groupres && !validateTrigger.value) {
       try {
         submitLoading.value = true;
         // formData.attributes = {

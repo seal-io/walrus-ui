@@ -5,6 +5,7 @@
     toRefs,
     inject,
     ref,
+    withModifiers,
     reactive,
     computed,
     watch
@@ -33,7 +34,6 @@
     props: schemaFieldProps,
     emits: ['change'],
     setup(props, { emit, attrs }) {
-      console.log('props=====99==', { props, attrs });
       const schemaFormEditable = inject(InjectSchemaFormEditableKey);
 
       const numberReg = /\d+/;
@@ -75,13 +75,33 @@
         Component = CommonFieldMaps.password;
       }
 
+      const filterEmptyOnSelect = (list, e) => {
+        if (isAllowCreateSelect(props.schema)) {
+          return _.filter(list, (v) => !_.isEmpty(v));
+        }
+        return list;
+      };
       const handleSelectInputChange = (e: any) => {
-        if (isBoolean(props.schema)) {
-          _.set(props.formData, props.fieldPath, e.target.checked);
+        if (
+          isAllowCreateNumberSelect(props.schema) &&
+          !numberReg.test(e.data)
+        ) {
+          e.target.value = e.target.value.replace(/[^\d]/g, '');
         }
-        if (!isSelect(props.schema)) {
-          _.set(props.formData, props.fieldPath, e);
+      };
+
+      const renderSelectOptions = () => {
+        if (isSelect(props.schema)) {
+          return (
+            <>
+              <a-option style={{ display: 'none' }}></a-option>
+              {_.map(options.value, (item) => {
+                return <a-option value={item.value}>{item.label}</a-option>;
+              })}
+            </>
+          );
         }
+        return null;
       };
 
       return () => (
@@ -95,19 +115,22 @@
             {...props}
             {...attrs}
             style="width: 100%"
+            allow-search={false}
             popupInfo={attrs.description}
             model-value={_.get(props.formData, props.fieldPath)}
-            options={options.value}
             onInput={(e) => {
-              console.log('basic-field==', e.target?.value, props.schema);
+              console.log('basic-field==input', e.target?.value, props.schema);
               handleSelectInputChange(e);
             }}
-            onChange={(val) => {
+            onChange={(val, e) => {
+              val = filterEmptyOnSelect(val, e);
               _.set(props.formData, props.fieldPath, val);
               console.log('basic-field==change', val, props, props.formData);
               handleChange(props.formData);
             }}
-          ></Component>
+          >
+            {renderSelectOptions()}
+          </Component>
         </a-form-item>
       );
     }

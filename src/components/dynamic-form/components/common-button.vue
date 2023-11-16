@@ -1,5 +1,5 @@
 <script lang="tsx">
-  import { defineComponent } from 'vue';
+  import { withModifiers, defineComponent } from 'vue';
 
   export default defineComponent({
     props: {
@@ -15,9 +15,7 @@
           <a-button
             type={props.type || 'primary'}
             {...attrs}
-            onClick={() => {
-              emit('click');
-            }}
+            onClick={withModifiers(() => emit('click'), ['stop'])}
           >
             {slots.default?.()}
           </a-button>

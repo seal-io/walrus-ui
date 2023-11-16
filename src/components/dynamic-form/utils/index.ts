@@ -212,7 +212,8 @@ export const genFieldPropsAndRules = ({
   if (type === FIELD_TYPE.STRING && enumList?.length) {
     return {
       fieldProps: {
-        ...commonProps
+        ...commonProps,
+        maxTagCount: 3
       },
       rules: [
         {
@@ -230,6 +231,7 @@ export const genFieldPropsAndRules = ({
     return {
       fieldProps: {
         ...commonProps,
+        maxTagCount: 3,
         multiple: true
       },
       rules: [
@@ -248,6 +250,7 @@ export const genFieldPropsAndRules = ({
       fieldProps: {
         ...commonProps,
         allowCreate: true,
+        maxTagCount: 3,
         multiple: true
       },
       rules: [

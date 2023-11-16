@@ -73,7 +73,11 @@ export const isMuliSelect = (schema: FieldSchema) => {
   const { type, enum: enumList, items } = schema;
   return (
     type === FIELD_TYPE.ARRAY &&
-    (enumList?.length || items?.type === FIELD_TYPE.STRING)
+    (enumList?.length ||
+      _.includes(
+        [FIELD_TYPE.STRING, FIELD_TYPE.NUMBER, FIELD_TYPE.INTEGER],
+        items?.type
+      ))
   );
 };
 
@@ -83,15 +87,23 @@ export const isFixedOptionSelect = (schema: FieldSchema) => {
 };
 
 export const isAllowCreateSelect = (schema: FieldSchema) => {
-  const { type, enum: enumList } = schema;
-  return type === FIELD_TYPE.STRING && !enumList?.length;
+  const { type, enum: enumList, items } = schema;
+  return (
+    type === FIELD_TYPE.ARRAY &&
+    ((!enumList?.length && enumList) ||
+      _.includes(
+        [FIELD_TYPE.STRING, FIELD_TYPE.NUMBER, FIELD_TYPE.INTEGER],
+        items?.type
+      ))
+  );
 };
 
 export const isAllowCreateNumberSelect = (schema: FieldSchema) => {
-  const { type, enum: enumList } = schema;
+  const { type, enum: enumList, items } = schema;
   return (
-    (type === FIELD_TYPE.NUMBER || type === FIELD_TYPE.INTEGER) &&
-    !enumList?.length
+    (items?.type === FIELD_TYPE.NUMBER || items?.type === FIELD_TYPE.INTEGER) &&
+    !enumList?.length &&
+    type === FIELD_TYPE.ARRAY
   );
 };
 
