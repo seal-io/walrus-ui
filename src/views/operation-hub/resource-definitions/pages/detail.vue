@@ -147,7 +147,7 @@
           <DefinitionRules
             v-for="(item, index) in formData.matchingRules"
             :ref="
-              (el) => setRefMap(el, `${definitionRulePrefix}${index}`, item)
+              (el) => setRefMap(el, `${definitionRulePrefix}${item.id}`, item)
             "
             :key="item.id"
             :title="
@@ -160,7 +160,9 @@
             :show-delete="formData.matchingRules.length > 1"
             :template-list="templateList"
             class="m-b-20"
-            @delete="handleDeleteDefinition(index)"
+            @delete="
+              handleDeleteDefinition(index, `${definitionRulePrefix}${item.id}`)
+            "
           >
           </DefinitionRules>
         </div>
@@ -510,9 +512,11 @@
     });
   };
 
-  const handleDeleteDefinition = (index) => {
+  const handleDeleteDefinition = (index, name) => {
     formData.value.matchingRules.splice(index, 1);
-    refMap.value[`${definitionRulePrefix}${index}`] = null;
+    setTimeout(() => {
+      refMap.value[name] = null;
+    }, 100);
   };
   onBeforeRouteLeave(async (to, from) => {
     if (!isEqual(copyFormData, formData.value)) {
