@@ -332,7 +332,7 @@
           </div>
           <a-form-item
             hide-label
-            field="template.id"
+            field="template.template.id"
             :label="$t('applications.applications.table.module')"
             :rules="[
               {
