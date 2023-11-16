@@ -51,12 +51,14 @@
               <i
                 v-if="item.iconfont"
                 :class="[item.icon]"
+                :style="{ ...item.style }"
                 class="iconfont size-14"
               ></i>
               <component
                 :is="item.icon"
                 v-else
                 v-bind="item.props"
+                :style="item.style"
                 class="size-14"
               ></component>
             </span>

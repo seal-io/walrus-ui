@@ -90,6 +90,9 @@ export const EnvironmentActions: MoreAction[] = [
     iconfont: true,
     handler: '',
     status: 'normal',
+    style: {
+      fontSize: '12px'
+    },
     disabled: false,
     filterFun({ row, projectID }) {
       return true;
@@ -102,6 +105,9 @@ export const EnvironmentActions: MoreAction[] = [
     iconfont: true,
     handler: '',
     status: 'normal',
+    style: {
+      fontSize: '12px'
+    },
     disabled({ row }) {
       return !row.connectors?.length;
     },

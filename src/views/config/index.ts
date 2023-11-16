@@ -201,4 +201,9 @@ export const CommonButtonValue = {
   Start: 'start'
 };
 
+export const SaveActions = [
+  { label: 'common.button.saveDeploy', value: 'deploy', icon: 'icon-Cloud' },
+  { label: 'common.button.draft', value: 'draft', icon: 'icon-xiangqing' }
+];
+
 export default {};
