@@ -636,8 +636,8 @@
   };
   const init = async () => {
     setBreadCrumbList();
-    await getConnectors();
     await getItemEnvironmentInfo();
+    await getConnectors();
     getLabelList();
     // only in clone: default select all variables
     variablesRef.value?.selectAllVars();
