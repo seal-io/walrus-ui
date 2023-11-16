@@ -90,12 +90,15 @@
           </AceEditor>
         </div>
       </a-tab-pane>
-      <a-tab-pane key="form" :title="$t('common.button.preview')">
+      <a-tab-pane
+        key="form"
+        :title="$t('common.button.preview')"
+        class="group-form-tab"
+      >
         <div class="form" :class="{ isFullscreen }">
           <groupForm
-            :show-filter="false"
-            :field-list="fieldList"
-            :original-form-data="formData"
+            v-model:form-data="originFormData"
+            :schema="schemaVariables"
           ></groupForm>
         </div>
       </a-tab-pane>
@@ -113,7 +116,8 @@
   import useCallCommon from '@/hooks/use-call-common';
   import { PropType, ref, watch, computed } from 'vue';
   import AceEditor from '@/components/ace-editor/index.vue';
-  import groupForm from '@/components/form-create/group-form.vue';
+  // import groupForm from '@/components/form-create/group-form.vue';
+  import groupForm from '@/components/dynamic-form/group-form.vue';
   import {
     validateYaml,
     json2Yaml,
@@ -186,6 +190,8 @@
   const theme = ref('twilight');
   const fieldList = ref<FieldSchema[]>([]);
   const formData = ref({});
+  const originFormData = ref({});
+  const schemaVariables = ref<any>({});
   const projectID = route.params.projectId as string;
   const { isFullscreen, toggle } = useFullscreen(wrapper);
 
@@ -229,6 +235,11 @@
     const res = initFormState(variables);
     fieldList.value = res.fieldSchemaList;
     formData.value = res.formData;
+    schemaVariables.value = _.get(
+      props.schema?.uiSchema?.openAPISchema,
+      'components.schemas.variables',
+      {}
+    );
     return {
       jsonCode,
       formData: formData.value
@@ -373,6 +384,16 @@
 
     :deep(.arco-tabs-content) {
       padding-top: 0;
+    }
+
+    .group-form-tab {
+      :deep(.arco-tabs-nav-tab) {
+        display: flex;
+      }
+
+      :deep(.arco-tabs-content) {
+        padding-top: 16px;
+      }
     }
 
     .ace-wrapper {
