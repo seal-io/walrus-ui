@@ -85,7 +85,7 @@
             v-model="formData.type"
             :label="$t('applications.environment.type')"
             :required="true"
-            :disabled="!!id"
+            :disabled="!!id && !environmentId"
             :options="EnvironmentTypeList"
             :style="{ width: `${InputWidth.LARGE}px` }"
             @change="handleEnvironmentTypeChange"

@@ -1,6 +1,6 @@
 <script lang="tsx">
   import _ from 'lodash';
-  import { defineComponent, inject, toRefs, ref, onMounted } from 'vue';
+  import { defineComponent, inject, toRefs, ref, watch, onMounted } from 'vue';
   import i18n from '@/locale';
   import { useUserStore } from '@/store';
   import StatusLabel from '@/views/operation-hub/connectors/components/status-label.vue';
@@ -42,13 +42,30 @@
         const nodeIns = getNode() as any;
         nodeIns?.on('change:data', (current) => {
           nodeData.value = current.current;
-          console.log('current==========', current, node.value, nodeData.value);
         });
       };
       const renderStageName = () => {
         return nodeData.value.stepPosition === 0 ? (
           <div class="stage-name">{nodeData.value.stageName}</div>
         ) : null;
+      };
+      const updateApproverStatus = () => {
+        approvalUsers.value = _.filter(subjectList.value, (item) => {
+          return _.includes(nodeData.value.attributes.approvalUsers, item.id);
+        })
+          .map((sItem) => {
+            return {
+              name: sItem.name,
+              id: sItem.id,
+              order: userStore.userInfo.id === sItem.id ? 0 : 1,
+              rejected: _.includes(rejectedUsers, sItem.id),
+              approvaled: _.includes(
+                nodeData.value.attributes.approvedUsers,
+                sItem.id
+              )
+            };
+          })
+          .sort((a, b) => a.order - b.order);
       };
       const getSubjects = async () => {
         if (nodeData.value?.type !== TaskTypes.APPROVAL) return;
@@ -58,22 +75,7 @@
           };
           const { data } = await querySubjects(params);
           subjectList.value = data.items || [];
-          approvalUsers.value = _.filter(data.items, (item) => {
-            return _.includes(nodeData.value.attributes.approvalUsers, item.id);
-          })
-            .map((sItem) => {
-              return {
-                name: sItem.name,
-                id: sItem.id,
-                order: userStore.userInfo.id === sItem.id ? 0 : 1,
-                rejected: _.includes(rejectedUsers, sItem.id),
-                approvaled: _.includes(
-                  nodeData.value.attributes.approvedUsers,
-                  sItem.id
-                )
-              };
-            })
-            .sort((a, b) => a.order - b.order);
+          updateApproverStatus();
         } catch (error) {
           subjectList.value = [];
         }
@@ -197,6 +199,15 @@
             WorkflowStatus.Running
         );
       };
+      watch(
+        () => nodeData.value.attributes,
+        () => {
+          updateApproverStatus();
+        },
+        {
+          deep: true
+        }
+      );
       onMounted(() => {
         listenDataChange();
       });

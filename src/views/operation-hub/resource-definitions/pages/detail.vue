@@ -146,7 +146,9 @@
           </GroupTitle>
           <DefinitionRules
             v-for="(item, index) in formData.matchingRules"
-            :ref="(el) => setRefMap(el, `${definitionRulePrefix}${index}`)"
+            :ref="
+              (el) => setRefMap(el, `${definitionRulePrefix}${index}`, item)
+            "
             :key="item.id"
             :title="
               item.name ||
@@ -336,8 +338,11 @@
     return 'resource.definition.detail.edit';
   });
 
-  const setRefMap = (el, name) => {
-    refMap.value[name] = el;
+  const setRefMap = (el, name, item) => {
+    refMap.value[name] = {
+      ref: el,
+      id: item.id
+    };
   };
   const handleTabChange = (val) => {
     activeKey.value = val;
@@ -348,9 +353,10 @@
       _.keys(refMap.value).map(async (key) => {
         const refEL = refMap.value[key];
         if (refEL) {
-          const moduleForm = await refEL?.submit?.();
+          const moduleForm = await refEL?.ref?.submit?.();
           resultList.push({
             tab: key,
+            id: refEL.id,
             formData: moduleForm
           });
         }
@@ -449,9 +455,11 @@
     if (!res && _.every(matchRules, (item) => !!item.formData)) {
       try {
         submitLoading.value = true;
+
         formData.value.matchingRules = _.map(matchRules, (item) => {
           return {
-            ...item.formData
+            ...item.formData,
+            id: item.id
           };
         });
         copyFormData = cloneDeep(formData.value);
@@ -495,16 +503,6 @@
     });
   };
 
-  const handleSelectAction = (val) => {
-    if (val === 'edit') {
-      readOnly.value = false;
-    }
-    if (val === 'refresh') {
-      getRefUISchema();
-    }
-  };
-  const handleConfirm = () => {};
-  const handleCancelEdit = () => {};
   const handleAddRule = () => {
     formData.value.matchingRules.push({
       ..._.cloneDeep(definitionFormData),
