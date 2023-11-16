@@ -98,6 +98,7 @@ export const setPipelineNodeStyle = (size) => {
               bottom:-11px;
               right: -7px;
               padding: 1px;
+              transform: scale(0.75);
             }
           }
           
