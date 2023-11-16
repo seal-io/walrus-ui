@@ -23,7 +23,8 @@ export const initFormStateBySchema = ({
 }) => {
   const properties = schema.properties || {};
   const required = schema.required || [];
-  const keys = Object.keys(properties);
+  const keys = _.keys(properties);
+
   _.each(keys, (key) => {
     const property = properties[key];
     const { type } = property;
@@ -59,6 +60,7 @@ export const initFormStateBySchema = ({
     if (type !== FIELD_TYPE.OBJECT || property.additionalProperties) {
       fieldSchemaList.push(fieldSchema);
     }
+    console.log('ok=========', fieldSchemaList);
     if (type === FIELD_TYPE.OBJECT) {
       _.set(
         formData,
@@ -111,7 +113,6 @@ export const initFormState = (schema: any, ignoreExtension?: boolean) => {
     fieldPath: [],
     ignoreExtension
   });
-  console.log('fieldSchemaList', fieldSchemaList);
   return {
     formData,
     fieldSchemaList
