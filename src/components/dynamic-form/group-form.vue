@@ -4,6 +4,7 @@
       v-if="formGroup.length > 1"
       class="page-line-tabs"
       :active-key="activeKey"
+      :destroy-on-hide="destroyed"
       @change="handleTabChange"
     >
       <a-tab-pane
@@ -37,7 +38,7 @@
 
 <script lang="ts" setup>
   import _ from 'lodash';
-  import { PropType, watch, ref } from 'vue';
+  import { PropType, watch, ref, nextTick } from 'vue';
   import SingleForm from './single-form.vue';
   import { FieldSchema, FormGroup } from './interface';
   import { createFormGroup } from './utils/create-form-group';
@@ -61,6 +62,7 @@
   const activeKey = ref<string>('schemaForm');
   const refMap = ref<any>({});
   const schemaForm = ref();
+  const destroyed = ref<boolean>(false);
   const formGroup = ref<FormGroup[]>([]);
 
   const setRefMap = (el: any, name) => {
@@ -82,7 +84,7 @@
   const validate = async () => {
     if (formGroup.value.length === 1) {
       const res = await schemaForm.value?.validate?.();
-      return !res;
+      return res;
     }
     const resultList: any[] = [];
     await Promise.all(
@@ -100,7 +102,7 @@
       activeKey.value = errorList[0].tab;
     }
     console.log('errorList====', errorList);
-    return !errorList.length;
+    return errorList.length;
   };
   defineExpose({
     validate
@@ -108,8 +110,12 @@
   watch(
     () => props.schema,
     () => {
+      destroyed.value = true;
       formGroup.value = createFormGroup(props.schema);
       activeKey.value = formGroup.value[0]?.group;
+      nextTick(() => {
+        destroyed.value = false;
+      });
       console.log('formGroup======', formGroup.value);
     },
     {

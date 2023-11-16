@@ -33,7 +33,7 @@
       };
 
       const validate = async () => {
-        const res = await formref.value.validate();
+        const res = await formref.value?.validate();
         console.log('validate====', res, formData.value);
         if (res) {
           scrollToView();
