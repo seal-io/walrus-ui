@@ -28,6 +28,7 @@
       const { t } = i18n.global;
       const userStore = useUserStore();
 
+      const MAX_COUNT = 9;
       const getGraph = inject('getGraph');
       const getNode = inject('getNode', () => ({}));
       const { node, graph } = toRefs(props);
@@ -49,6 +50,15 @@
           <div class="stage-name">{nodeData.value.stageName}</div>
         ) : null;
       };
+      const setOrder = (id) => {
+        if (userStore.userInfo.id === id) {
+          return 0;
+        }
+        if (_.includes(nodeData.value.attributes.approvedUsers, id)) {
+          return 1;
+        }
+        return _.includes(rejectedUsers.value, id) ? 2 : 3;
+      };
       const updateApproverStatus = () => {
         rejectedUsers.value = nodeData.value.attributes.rejectedUsers || [];
         approvalUsers.value = _.filter(subjectList.value, (item) => {
@@ -58,7 +68,7 @@
             return {
               name: sItem.name,
               id: sItem.id,
-              order: userStore.userInfo.id === sItem.id ? 0 : 1,
+              order: setOrder(sItem.id),
               rejected: _.includes(rejectedUsers.value, sItem.id),
               approvaled: _.includes(
                 nodeData.value.attributes.approvedUsers,
@@ -85,17 +95,76 @@
         if (user.approvaled) {
           return (
             <i
-              class="iconfont approval icon-success-fill"
-              style="font-size: 12px;"
+              key={user.id}
+              class="iconfont approval icon-correct"
+              style="font-size: 10px;"
             ></i>
           );
         }
         if (user.rejected) {
           return (
             <i
-              class="iconfont approval icon-status-error"
-              style="font-size: 12px;transform: scale(0.75);"
+              key={user.id}
+              class="iconfont approval icon-error-f"
+              style="font-size: 10px;"
             ></i>
+          );
+        }
+        return null;
+      };
+      const renderUser = (user, index, position?) => {
+        return (
+          <span class="wp">
+            <span
+              class="user"
+              key={user.id}
+              style={{
+                backgroundColor: colors[index]
+              }}
+            >
+              <span class="text">
+                {renderApprovalIcon(user)}
+                <a-tooltip content={user.name} position={position}>
+                  <span>{user.name.slice(0, 3)}</span>
+                </a-tooltip>
+              </span>
+            </span>
+          </span>
+        );
+      };
+      const renderRestUsers = () => {
+        const list = approvalUsers.value.slice(MAX_COUNT);
+        if (list.length > 0) {
+          return (
+            <span class="wp">
+              <span class="user" style={{ backgroundColor: '#f5f5f5' }}>
+                <span class="text">
+                  <a-tooltip
+                    backgroundColor="#fff"
+                    content-class="approval-user-tooltip"
+                    v-slots={{
+                      content: () => (
+                        <div>
+                          {_.map(list, (user, index) => {
+                            return (
+                              <div class="user-group">
+                                {renderUser(user, index, 'rt')}
+                              </div>
+                            );
+                          })}
+                        </div>
+                      )
+                    }}
+                  >
+                    <span
+                      style={{ color: 'var(--color-text-2)', fontWeight: 500 }}
+                    >
+                      +{list.length}
+                    </span>
+                  </a-tooltip>
+                </span>
+              </span>
+            </span>
           );
         }
         return null;
@@ -110,26 +179,15 @@
                   ? `(${t('workflow.task.approval.or')})`
                   : `(${t('workflow.task.approval.and')})`}
               </span>
-              <a-avatar-group max-count={9} class="m-t-2">
-                {_.map(approvalUsers.value, (user, index) => {
-                  return (
-                    <a-avatar
-                      size={24}
-                      style={{
-                        backgroundColor: colors[index],
-                        marginLeft: '-3px'
-                      }}
-                    >
-                      <span>
-                        {renderApprovalIcon(user)}
-                        <a-tooltip content={user.name}>
-                          <span>{user.name.slice(0, 3)}</span>
-                        </a-tooltip>
-                      </span>
-                    </a-avatar>
-                  );
-                })}
-              </a-avatar-group>
+              <span class="m-t-2 user-group">
+                {_.map(
+                  _.slice(approvalUsers.value, 0, MAX_COUNT),
+                  (user, index) => {
+                    return <>{renderUser(user, index)}</>;
+                  }
+                )}
+                {renderRestUsers()}
+              </span>
             </span>
           );
         }
