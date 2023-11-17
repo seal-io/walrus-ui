@@ -26,6 +26,6 @@
 
   const handleSubmit = async () => {
     const res = await formref.value.validate();
-    console.log('res====', res);
+    console.log('res====', res, formData.value);
   };
 </script>

@@ -102,7 +102,7 @@
       activeKey.value = errorList[0].tab;
     }
     console.log('errorList====', errorList);
-    return errorList.length;
+    return errorList.length > 0;
   };
   defineExpose({
     validate

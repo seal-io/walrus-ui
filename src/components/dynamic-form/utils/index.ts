@@ -106,6 +106,47 @@ export const genObjectFieldProperties = ({
   return resultList;
 };
 
+export const setFieldValue = (formData, fieldPath, schema) => {
+  return _.get(formData, fieldPath, initFieldDefaultValue(schema));
+};
+// set field schema value
+export const setHiddenFieldValue = ({
+  schema,
+  formData,
+  fieldPath
+}: {
+  schema: FieldSchema;
+  formData: any;
+  fieldPath: string[];
+}) => {
+  const { properties } = schema;
+  const { required: requiredFlag } = schema;
+  const keys = _.keys(properties);
+  _.each(keys, (key) => {
+    const property = _.get(properties, key);
+    const { type } = property;
+    const required = _.includes(requiredFlag, key);
+    const fieldSchema = {
+      ...property,
+      name: key,
+      fieldPath: [...fieldPath, key],
+      required: property.required || required
+    };
+    if (type === FIELD_TYPE.OBJECT) {
+      const value = setFieldValue(formData, [...fieldPath, key], fieldSchema);
+      _.set(formData, [...fieldPath, key], value);
+      setHiddenFieldValue({
+        schema: fieldSchema,
+        formData,
+        fieldPath: [...fieldPath, key]
+      });
+    } else {
+      const value = setFieldValue(formData, [...fieldPath, key], fieldSchema);
+      _.set(formData, [...fieldPath, key], value);
+    }
+  });
+};
+
 // real component
 export const genFieldPropsAndRules = ({
   parentSchema,
