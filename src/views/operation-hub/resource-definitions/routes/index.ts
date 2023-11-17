@@ -14,7 +14,7 @@ export default [
       locale: 'operation.templates.menu',
       requiresAuth: true,
       permission: {
-        resource: Resources.Templates,
+        resource: Resources.ResourceDefinitions,
         pageAction: {
           [PageAction.VIEW]: ['GET'],
           [PageAction.EDIT]: ['POST']

@@ -22,7 +22,7 @@
           :show-edit="
             pageAction === PageAction.VIEW &&
             userStore.hasRolesActionsPermission({
-              resource: Resources.Templates,
+              resource: Resources.ResourceDefinitions,
               actions: [Actions.PUT]
             })
           "
@@ -171,7 +171,7 @@
             id &&
             pageAction === PageAction.VIEW &&
             userStore.hasRolesActionsPermission({
-              resource: Resources.Templates,
+              resource: Resources.ResourceDefinitions,
               actions: [Actions.GET]
             })
           "

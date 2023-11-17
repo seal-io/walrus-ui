@@ -28,7 +28,7 @@
           <a-button
             v-if="
               userStore.hasRolesActionsPermission({
-                resource: Resources.Variables,
+                resource: Resources.ResourceDefinitions,
                 actions: [Actions.POST]
               })
             "
@@ -39,7 +39,7 @@
           <a-button
             v-if="
               userStore.hasRolesActionsPermission({
-                resource: Resources.Variables,
+                resource: Resources.ResourceDefinitions,
                 actions: [Actions.DELETE]
               })
             "
@@ -120,7 +120,7 @@
           <a-table-column
             v-if="
               userStore.hasRolesActionsPermission({
-                resource: Resources.Variables,
+                resource: Resources.ResourceDefinitions,
                 actions: [Actions.PUT]
               })
             "
@@ -210,7 +210,7 @@
 
   const rowSelectionStatue = computed(() => {
     return userStore.hasRolesActionsPermission({
-      resource: Resources.Templates,
+      resource: Resources.ResourceDefinitions,
       actions: [Actions.PUT]
     })
       ? rowSelection
