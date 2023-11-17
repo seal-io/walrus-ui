@@ -99,11 +99,12 @@ export const genObjectFieldProperties = ({
       ...property,
       name: key,
       fieldPath: [...fieldPath, key],
-      required: property.required || required
+      required: property.required || required,
+      order: property['x-walrus-ui']?.order || 9999
     };
     resultList.push(fieldSchema);
   });
-  return resultList;
+  return _.sortBy(resultList, 'order');
 };
 
 export const setFieldValue = (formData, fieldPath, schema) => {
