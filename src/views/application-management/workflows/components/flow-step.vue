@@ -243,7 +243,7 @@
         display: flex;
         align-items: center;
         justify-content: center;
-        min-width: 135px;
+        min-width: 145px;
         max-width: 220px;
         height: 36px;
         padding: 0 16px;

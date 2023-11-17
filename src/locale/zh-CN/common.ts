@@ -131,5 +131,6 @@ export default {
   'common.time.hour': '小时',
   'common.time.minute': '分钟',
   'common.issue.report': '问题反馈',
-  'common.social.discord': '加入我们的Discord'
+  'common.social.discord': '加入我们的Discord',
+  'common.table.mark': '备注'
 };

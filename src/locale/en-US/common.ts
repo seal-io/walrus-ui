@@ -134,5 +134,6 @@ export default {
   'common.time.hour': 'hour',
   'common.time.minute': 'minutes',
   'common.issue.report': 'Report an issue',
-  'common.social.discord': 'Join our Discord'
+  'common.social.discord': 'Join our Discord',
+  'common.table.mark': 'Comment'
 };

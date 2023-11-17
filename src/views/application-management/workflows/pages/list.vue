@@ -233,6 +233,11 @@
         @change="handlePageChange"
         @page-size-change="handlePageSizeChange"
       />
+      <runConfig
+        v-model:show="showConfig"
+        :info="dataInfo"
+        @save="handleSave"
+      ></runConfig>
     </div>
   </ComCard>
 </template>
@@ -257,6 +262,7 @@
   import { UseSortDirection } from '@/utils/common';
   import useRowSelect from '@/hooks/use-row-select';
   import SealSteps from '@/components/seal-steps/index.vue';
+  import runConfig from '../components/run-config.vue';
 
   import { moreActions, WorkflowStatusMap } from '../config';
   import { PipelineRow } from '../config/interface';
@@ -281,6 +287,8 @@
   const dataList = ref<PipelineRow[]>([]);
   const total = ref(0);
   const projectID = route.params.projectId as string;
+  const dataInfo = ref<any>({});
+  const showConfig = ref(false);
   const queryParams = reactive({
     query: '',
     page: 1,
@@ -373,17 +381,34 @@
     fetchData();
   };
 
-  const handleApplyFlow = async (row) => {
+  const handleApply = async (row) => {
     try {
-      await applyPipeline({ id: row.id, projectId: row.project?.id });
+      dataInfo.value = row;
+      setTimeout(() => {
+        showConfig.value = true;
+      }, 100);
+    } catch (error) {
+      // ignore
+    }
+  };
+  const handleApplyFlow = async (data) => {
+    try {
+      await applyPipeline({
+        ...data,
+        projectId: dataInfo.value.project?.id
+      });
       execSucceed('applications.workflow.table.runmsg');
     } catch (error) {
       // ignore
     }
   };
+
+  const handleSave = async (data) => {
+    handleApplyFlow(data);
+  };
   const handleDropSelect = (val, row) => {
     if (val === 'apply') {
-      handleApplyFlow(row);
+      handleApply(row);
       return;
     }
     router.push({

@@ -73,7 +73,8 @@ export function queryPipelineDetail(params: { id: string }, token?) {
 
 export function applyPipeline(data: { id: string; projectId: string }) {
   return axios.post(
-    `${PROJECT_API_PREFIX(data)}${PIPELINE_API}/${data.id}/run`
+    `${PROJECT_API_PREFIX(data)}${PIPELINE_API}/${data.id}/run`,
+    data
   );
 }
 
