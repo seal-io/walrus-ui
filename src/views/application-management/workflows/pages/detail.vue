@@ -21,6 +21,9 @@
                 actions: [Actions.PUT]
               })
             "
+            :disabled="
+              _.includes(StopableStatus, executionInfo.status?.summaryStatus)
+            "
             type="primary"
             size="small"
             @click="handleRetry"
@@ -36,7 +39,7 @@
               })
             "
             :disabled="
-              _.includes(StopableStatus, executionInfo.status?.summaryStatus)
+              !_.includes(StopableStatus, executionInfo.status?.summaryStatus)
             "
             type="primary"
             size="small"
@@ -55,6 +58,11 @@
         @view="handleViewInfo"
       ></FlowView>
     </ComCard>
+    <runConfig
+      v-model:show="showConfig"
+      :info="dataInfo"
+      @save="handleSave"
+    ></runConfig>
   </div>
 </template>
 
@@ -70,6 +78,8 @@
   import FlowView from '../components/flow-view.vue';
   import { retryApplyPipeline, stopApplyPipeline } from '../api';
   import { StopableStatus } from '../config';
+  import runConfig from '../components/run-config.vue';
+  import useRunWorkflow from '../hooks/use-run-workflow';
 
   const height = 'calc(100vh - 62px)';
   const { t, route, router } = useCallCommon();
@@ -93,6 +103,7 @@
     handleBreadChange
   } = useProjectBreadcrumbData();
 
+  const { showConfig, dataInfo, handleApply, handleSave } = useRunWorkflow();
   const handleSelectChange = ({ value, item }) => {
     handleBreadChange(value, item);
   };

@@ -12,6 +12,7 @@
   import { Stage } from '../config/interface';
   import { stageSchema, workflowTimeoutOptons } from '../config';
   import { queryPipelineDetail } from '../api';
+  import VariableList from './variable-list.vue';
 
   export default defineComponent({
     props: {
@@ -31,13 +32,15 @@
       const show = ref(false);
       const loading = ref(false);
       const unfold = ref(true);
+
       const flowBasic = ref<any>({
         // name: `flow-id-${dayjs().format('YYYYMMDDHHmmss')}`,
         name: '',
         type: 'default',
         description: '',
         parallelism: 10,
-        timeout: null
+        timeout: null,
+        variables: []
       });
       const stageList = ref<Stage[]>([]);
       const drag = ref(false);
@@ -202,7 +205,7 @@
                   }}
                 >
                   <a-form
-                    style={{ width: '360px' }}
+                    style={{ width: '460px' }}
                     model={flowBasic.value}
                     layout="vertical"
                     ref={formref}
@@ -229,6 +232,7 @@
                       <seal-input
                         v-model={flowBasic.value.name}
                         label={t('common.table.name')}
+                        style={{ width: '100%' }}
                         required={true}
                         disabled={!!id}
                         max-length={63}
@@ -244,6 +248,7 @@
                         v-model={flowBasic.value.timeout}
                         label={t('workflow.form.timeout')}
                         min={0}
+                        style={{ width: '100%' }}
                         required={false}
                         hide-button={false}
                         v-slots={{
@@ -260,6 +265,7 @@
                     >
                       <seal-input-number
                         v-model={flowBasic.value.parallelism}
+                        style={{ width: '100%' }}
                         label={t('workflow.stage.add.parallelism')}
                         min={0}
                         required={false}
@@ -276,6 +282,9 @@
                         auto-size={{ minRows: 4, maxRows: 6 }}
                       ></seal-textarea>
                     </a-form-item>
+                    <VariableList
+                      v-model:variables={flowBasic.value.variables}
+                    ></VariableList>
                   </a-form>
                 </div>
               </div>
