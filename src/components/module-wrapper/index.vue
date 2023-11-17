@@ -15,8 +15,10 @@
               'icon-collapseup': isCollapse
             }"
           /> -->
-          <icon-caret-right v-if="!isCollapse" />
-          <icon-caret-down v-else />
+          <!-- <icon-caret-right v-if="!isCollapse" />
+          <icon-caret-down v-else /> -->
+          <icon-right v-if="!isCollapse" />
+          <icon-down v-else />
         </span>
         <slot name="title"
           ><span>{{ title }}</span></slot

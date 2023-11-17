@@ -140,6 +140,7 @@
               <span class="user" style={{ backgroundColor: '#f5f5f5' }}>
                 <span class="text">
                   <a-tooltip
+                    position="rt"
                     backgroundColor="#fff"
                     content-class="approval-user-tooltip"
                     v-slots={{

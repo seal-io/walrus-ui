@@ -105,7 +105,7 @@ export default {
   'applications.applications.modules.params.tips1': `1. 使用密钥：可在输入框输入{'$'}{'{'}secret.密钥名称{'}'}`,
   'applications.applications.modules.params.tips2': `1. 使用变量：可在输入框输入{'$'}{'{'}var.变量名{'}'}`,
   'applications.applications.modules.params.tips3': `2. 使用服务的输出属性：可在输入框输入{'$'}{'{'}service.服务名称.属性名{'}'}`,
-  'applications.applications.rule.modules.name': '存在相同的服务',
+  'applications.applications.rule.modules.name': '存在相同的服务或资源',
   'applications.applications.variables.title': '变量',
   'applications.applications.variables.button': '添加变量',
   'applications.applications.variables.label': '变量名',
