@@ -73,6 +73,7 @@
   });
   setPipelineNodeStyle(PipelineNodeSize);
 
+  const emits = defineEmits(['view']);
   const DX2 = 30;
   const DY = PipelineNodeSize.height + 40;
   const DX = PipelineNodeSize.width + 2 * DX2;
@@ -301,6 +302,7 @@
     const stages = data?.stages || [];
     const result = initNodes(stages);
     graphIns.fromJSON(result);
+    emits('view', _.cloneDeep(_.omit(data, ['stages'])));
     loading.value = false;
   };
 

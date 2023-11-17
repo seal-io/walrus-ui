@@ -123,8 +123,8 @@
   import { useAppStore, useUserStore } from '@/store';
   import FilterBox from '@/components/filter-box/index.vue';
   import primaryButtonGroup from '@/components/drop-button-group/primary-button-group.vue';
+  import moduleWrapper from '@/components/module-wrapper/index.vue';
   import tableList from '../components/table-list.vue';
-  import moduleWrapper from '../components/module-wrapper.vue';
   import deleteServiceModal from '../components/delete-service-modal.vue';
   import { CreatActions, ServiceDataType } from '../config';
   import { deleteServices } from '../api';

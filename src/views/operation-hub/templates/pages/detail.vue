@@ -22,6 +22,7 @@
                 }
               ]
         "
+        @change="handleSelectChange"
       ></Breadcrumb>
     </BreadWrapper>
     <ComCard>

@@ -61,5 +61,6 @@ export default {
   'workflow.task.retry.onfailure.desc':
     '重试 Kubernetes 中主容器被标记为失败的步骤',
   'workflow.task.retry.onerror.desc':
-    '重试遇到 Argo 控制器错误或 init 或 wait 容器失败的步骤'
+    '重试遇到 Argo 控制器错误或 init 或 wait 容器失败的步骤',
+  'workflow.button.stop': '停止'
 };

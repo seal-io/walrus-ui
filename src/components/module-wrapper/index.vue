@@ -7,14 +7,16 @@
     >
       <a-space>
         <span class="text">
-          <i
+          <!-- <i
             class="collapse-icon iconfont"
             :class="{
               'collapse': isCollapse,
               'icon-collapsedown': !isCollapse,
               'icon-collapseup': isCollapse
             }"
-          />
+          /> -->
+          <icon-caret-right v-if="!isCollapse" />
+          <icon-caret-down v-else />
         </span>
         <slot name="title"
           ><span>{{ title }}</span></slot
@@ -90,6 +92,7 @@
 
 <style lang="less" scoped>
   .mo-wrap {
+    overflow: hidden;
     border: 1px solid var(--color-border-2);
     border-radius: var(--border-radius-small);
 

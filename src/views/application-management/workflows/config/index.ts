@@ -60,6 +60,8 @@ export const WorkflowStatus = {
   Pending: 'Pending',
   Failed: 'Failed'
 };
+
+export const StopableStatus = [WorkflowStatus.Running, WorkflowStatus.Pending];
 export const WorkflowStatusMap = {
   Running: 'Running',
   Completed: 'Ready',
@@ -267,24 +269,23 @@ export const pipelineDetailActions: MoreAction[] = [
   }
 ];
 export const recordActions: MoreAction[] = [
-  // {
-  //   label: 'common.button.view',
-  //   value: 'view',
-  //   icon: 'iconFont',
-  //   handler: '',
-  //   status: 'normal',
-  //   disabled: false,
-  //   filterFun(currentInfo) {
-  //     return userStore.hasProjectResourceActions({
-  //       resource: Resources.WorkflowExecutions,
-  //       projectID: _.get(currentInfo, 'project.id'),
-  //       actions: [Actions.GET]
-  //     });
-  //   },
-  //   props: {
-  //     type: 'icon-xiangqing'
-  //   }
-  // }
+  {
+    label: 'workflow.button.stop',
+    value: 'stop',
+    icon: 'icon-pause-circle',
+    handler: '',
+    status: 'normal',
+    disabled(currentInfo) {
+      return !StopableStatus.includes(currentInfo?.status?.summaryStatus);
+    },
+    filterFun(currentInfo) {
+      return userStore.hasProjectResourceActions({
+        resource: Resources.WorkflowExecutions,
+        projectID: _.get(currentInfo, 'project.id'),
+        actions: [Actions.PUT]
+      });
+    }
+  },
   {
     label: 'common.button.delete',
     value: 'delete',

@@ -187,7 +187,7 @@
   import EditPageFooter from '@/components/edit-page-footer/index.vue';
   import useBasicInfoData from '@/views/application-management/projects/hooks/use-basicInfo-data';
   import StatusLabel from '@/views/operation-hub/connectors/components/status-label.vue';
-  import moduleWrapper from '../module-wrapper.vue';
+  import moduleWrapper from '@/components/module-wrapper/index.vue';
   import tabOutput from './tab-output.vue';
   import tabEndpoint from './tab-endpoint.vue';
   import tabResource from './tab-resource.vue';

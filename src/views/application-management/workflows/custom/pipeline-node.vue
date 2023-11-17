@@ -32,7 +32,7 @@
       const getNode = inject('getNode', () => ({}));
       const { node, graph } = toRefs(props);
       const nodeData = ref(node.value.data);
-      const { rejectedUsers } = nodeData.value.attributes;
+      const rejectedUsers = ref<string[]>([]);
       const subjectList = ref<{ id: string; name: string }[]>([]);
       const approvalUsers = ref<
         { name: string; approvaled: boolean; rejected: boolean; id: string }[]
@@ -50,6 +50,7 @@
         ) : null;
       };
       const updateApproverStatus = () => {
+        rejectedUsers.value = nodeData.value.attributes.rejectedUsers || [];
         approvalUsers.value = _.filter(subjectList.value, (item) => {
           return _.includes(nodeData.value.attributes.approvalUsers, item.id);
         })
@@ -58,7 +59,7 @@
               name: sItem.name,
               id: sItem.id,
               order: userStore.userInfo.id === sItem.id ? 0 : 1,
-              rejected: _.includes(rejectedUsers, sItem.id),
+              rejected: _.includes(rejectedUsers.value, sItem.id),
               approvaled: _.includes(
                 nodeData.value.attributes.approvedUsers,
                 sItem.id

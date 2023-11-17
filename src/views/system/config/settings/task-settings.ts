@@ -47,8 +47,8 @@ export const taskSettings: SettingsItem = {
           type: 'string'
         },
         {
-          id: 'ResourceStatusSyncCronExpr',
-          key: 'ResourceStatusSyncCronExpr',
+          id: 'ResourceComponentStatusSyncCronExpr',
+          key: 'ResourceComponentStatusSyncCronExpr',
           label: 'system.setting.ResourceStatusCheckCronExpr',
           desc: 'system.setting.ResourceStatusCheckCronExpr.desc',
           parentId: '',
@@ -68,8 +68,8 @@ export const taskSettings: SettingsItem = {
           type: 'string'
         },
         {
-          id: 'ServiceRelationshipCheckCronExpr',
-          key: 'ServiceRelationshipCheckCronExpr',
+          id: 'ResourceRelationshipCheckCronExpr',
+          key: 'ResourceRelationshipCheckCronExpr',
           label: 'system.setting.ServiceDependencyCheckCronExpr',
           desc: 'system.setting.ServiceDependencyCheckCronExpr.desc',
           parentId: '',
@@ -160,8 +160,8 @@ export const taskSettings: SettingsItem = {
       },
       subGroup: [
         {
-          id: 'ResourceLabelApplyCronExpr',
-          key: 'ResourceLabelApplyCronExpr',
+          id: 'ResourceComponentLabelApplyCronExpr',
+          key: 'ResourceComponentLabelApplyCronExpr',
           label: 'system.setting.ResourceLabelApplyCronExpr',
           desc: 'system.setting.ResourceLabelApplyCronExpr.desc',
           parentId: '',
