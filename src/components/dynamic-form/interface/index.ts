@@ -25,11 +25,15 @@ export interface FieldSchema {
 }
 
 export interface Group {
-  [group: string]: Record<string, FieldSchema>[];
+  [group: string]: {
+    groupOrder: number;
+    schema: Record<string, FieldSchema>[];
+  };
 }
 
 export interface FormGroup {
   group: string;
+  groupOrder: number;
   schema: FieldSchema;
 }
 

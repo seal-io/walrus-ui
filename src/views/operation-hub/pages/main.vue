@@ -53,9 +53,9 @@
           >
             <ResourceDefinition></ResourceDefinition>
           </a-tab-pane>
-          <!-- <a-tab-pane key="GroupFormDemo" title="GroupFormDemo">
+          <a-tab-pane key="GroupFormDemo" title="GroupFormDemo">
             <GroupFormDemo></GroupFormDemo>
-          </a-tab-pane> -->
+          </a-tab-pane>
 
           <template #extra>
             <IconBtnGroup
