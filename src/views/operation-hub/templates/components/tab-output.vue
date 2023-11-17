@@ -29,7 +29,7 @@
 </template>
 
 <script lang="ts" setup>
-  import { get } from 'lodash';
+  import _, { get } from 'lodash';
   import { PropType, computed } from 'vue';
   import { initFormState } from '@/components/dynamic-form/utils/init-form-state';
   import { Schema } from '../config/interface';
@@ -43,10 +43,18 @@
     }
   });
   const dataList = computed(() => {
-    const result = initFormState(
-      get(props.schema, 'schema.openAPISchema.components.schemas.outputs')
+    const list: any[] = [];
+    const result = get(
+      props.schema,
+      'schema.openAPISchema.components.schemas.outputs.properties'
     );
-    return result.fieldSchemaList || [];
+    _.each(_.keys(result), (key) => {
+      list.push({
+        name: key,
+        description: get(result, `${key}.description`, '')
+      });
+    });
+    return list;
   });
 </script>
 

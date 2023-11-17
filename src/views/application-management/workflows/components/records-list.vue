@@ -207,7 +207,18 @@
   });
 
   const { setChunkRequest } = useSetChunkRequest();
-  const { updateChunkedList } = useUpdateChunkedList(dataList);
+  const { updateChunkedList } = useUpdateChunkedList(dataList, {
+    mapFun(item) {
+      const excutionData = _.get(item, 'executions.0', {});
+
+      if (excutionData.workflow?.id === route.params.flowId) {
+        return {
+          ...excutionData
+        };
+      }
+      return {};
+    }
+  });
 
   const setRunStatus = (row) => {
     const stages = row.stages || [];
@@ -327,9 +338,10 @@
     });
   };
   const createWorkflowsChunkRequest = () => {
-    const url = `${PROJECT_API_PREFIX()}${PIPELINE_API}/${
-      queryParams.id
-    }${PIPELINE_EXECUTION_API}`;
+    // const url = `${PROJECT_API_PREFIX()}${PIPELINE_API}/${
+    //   queryParams.id
+    // }${PIPELINE_EXECUTION_API}`;
+    const url = `${PROJECT_API_PREFIX()}${PIPELINE_API}`;
     try {
       setChunkRequest({
         url: `${url}`,

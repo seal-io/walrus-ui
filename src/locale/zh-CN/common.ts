@@ -129,6 +129,7 @@ export default {
   'common.environment.staging': '预发布',
   'common.time.label': '时间',
   'common.time.hour': '小时',
+  'common.time.minute': '分钟',
   'common.issue.report': '问题反馈',
   'common.social.discord': '加入我们的Discord'
 };

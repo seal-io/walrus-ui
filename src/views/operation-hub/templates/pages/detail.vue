@@ -2,15 +2,26 @@
   <div>
     <BreadWrapper>
       <Breadcrumb
-        :items="[
-          {
-            ...operationRootBread,
-            label: $t(operationRootBread.label)
-          },
-          {
-            label: title
-          }
-        ]"
+        :menu="route.params.projectId ? { icon: 'icon-apps' } : null"
+        :items="
+          route.params.projectId
+            ? [
+                ...breadCrumbList,
+                {
+                  type: 'menu.operatorHub.module',
+                  label: title
+                }
+              ]
+            : [
+                {
+                  ...operationRootBread,
+                  label: $t(operationRootBread.label)
+                },
+                {
+                  label: title
+                }
+              ]
+        "
       ></Breadcrumb>
     </BreadWrapper>
     <ComCard>
@@ -120,28 +131,6 @@
               >
             </template>
           </a-form-item>
-          <!-- <a-form-item
-            field="icon"
-            :label="$t('operation.templates.detail.icon')"
-            hide-asterisk
-            :hide-label="pageAction === PageAction.EDIT"
-            :rules="[
-              {
-                match: urlReg,
-                message: $t('system.rules.url')
-              }
-            ]"
-          >
-            <seal-input
-              v-if="pageAction === PageAction.EDIT"
-              v-model="formData.icon"
-              :label="$t('operation.templates.detail.icon')"
-              :style="{ width: `${InputWidth.LARGE}px` }"
-            ></seal-input>
-            <span v-else class="readonly-view-label">{{
-              formData.icon || '-'
-            }}</span>
-          </a-form-item> -->
           <a-form-item
             v-if="
               id &&
@@ -277,6 +266,8 @@
   import tabOutput from '../components/tab-output.vue';
   import tabProvider from '../components/tab-provider.vue';
   import tabEditSchema from '../components/tab-edit-schema.vue';
+  import useConnectorBread from '../../connectors/hooks/use-connector-bread';
+
   import {
     queryItemTemplate,
     createTemplate,
@@ -293,6 +284,8 @@
     tabEditSchema: markRaw(tabEditSchema)
   };
 
+  const { breadCrumbList, handleSelectChange, setBreadCrumbList } =
+    useConnectorBread();
   const { scrollToView } = useScrollToView();
   const userStore = useUserStore();
   const versionList = ref<{ label: string; value: string; schema: object }[]>(
@@ -479,6 +472,7 @@
     getItemTemplate();
     await getTemplateVersions();
     await getTemplateSchemaByVersionId();
+    setBreadCrumbList();
   };
   initData();
 </script>

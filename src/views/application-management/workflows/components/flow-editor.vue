@@ -23,6 +23,7 @@
       }
     },
     setup(props, { expose }) {
+      const TIME_UNIT = 60;
       const { t, route } = useCallCommon();
       const id = route.query.flowId as string;
       const { height } = toRefs(props);
@@ -31,10 +32,11 @@
       const loading = ref(false);
       const unfold = ref(true);
       const flowBasic = ref<any>({
-        name: `flow-id-${dayjs().format('YYYYMMDDHHmmss')}`,
+        // name: `flow-id-${dayjs().format('YYYYMMDDHHmmss')}`,
+        name: '',
         type: 'default',
         description: '',
-        parallelism: 1,
+        parallelism: 10,
         timeout: null
       });
       const stageList = ref<Stage[]>([]);
@@ -72,7 +74,12 @@
         stageList.value.splice(
           index,
           0,
-          _.cloneDeep({ ...stageSchema, name: t('workflow.stage.add.title') })
+          _.cloneDeep({
+            ...stageSchema,
+            name: t('workflow.stage.add.title', {
+              order: stageList.value.length + 1
+            })
+          })
         );
       };
 
@@ -80,7 +87,12 @@
         stageList.value.splice(
           index + 1,
           0,
-          _.cloneDeep({ ...stageSchema, name: t('workflow.stage.add.title') })
+          _.cloneDeep({
+            ...stageSchema,
+            name: t('workflow.stage.add.title', {
+              order: stageList.value.length + 1
+            })
+          })
         );
       };
 
@@ -135,7 +147,7 @@
           stages,
           basic: {
             ...flowBasic.value,
-            timeout: Math.floor(flowBasic.value?.timeout * 3600)
+            timeout: Math.floor(flowBasic.value?.timeout * TIME_UNIT)
           }
         };
       };
@@ -145,13 +157,16 @@
         if (data) {
           flowBasic.value = _.cloneDeep(_.omit(data, ['stages']));
           flowBasic.value.timeout = flowBasic.value.timeout
-            ? Math.floor(flowBasic.value.timeout / 3600)
+            ? Math.floor(flowBasic.value.timeout / TIME_UNIT)
             : null;
           stageList.value = _.cloneDeep(data.stages || []);
         }
         if (!stageList.value.length) {
           stageList.value.push(
-            _.cloneDeep({ ...stageSchema, name: t('workflow.stage.add.title') })
+            _.cloneDeep({
+              ...stageSchema,
+              name: t('workflow.stage.add.title', { order: 1 })
+            })
           );
         }
       };
@@ -213,7 +228,7 @@
                     >
                       <seal-input
                         v-model={flowBasic.value.name}
-                        label={t('workflow.form.name')}
+                        label={t('common.table.name')}
                         required={true}
                         disabled={!!id}
                         max-length={63}
@@ -233,7 +248,7 @@
                         hide-button={false}
                         v-slots={{
                           suffix: () => {
-                            return <span>{t('common.time.hour')}</span>;
+                            return <span>{t('common.time.minute')}</span>;
                           }
                         }}
                       ></seal-input-number>
