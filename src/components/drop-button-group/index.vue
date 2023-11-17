@@ -37,6 +37,7 @@
           size="small"
           :status="item.status"
           :disabled="!!item.disabled"
+          @click="(e) => handleClickItem(e, item)"
         >
           <!-- <template #icon>
             <component
@@ -94,6 +95,12 @@
   });
 
   const emits = defineEmits(['click', 'select']);
+
+  const handleClickItem = (e, item) => {
+    if (item.disabled) {
+      e.stopPropagation();
+    }
+  };
   const handleClick = (data) => {
     emits('click', data);
   };

@@ -272,7 +272,7 @@ export const recordActions: MoreAction[] = [
   {
     label: 'workflow.button.stop',
     value: 'stop',
-    icon: 'icon-pause-circle',
+    icon: 'icon-record-stop',
     handler: '',
     status: 'normal',
     disabled(currentInfo) {

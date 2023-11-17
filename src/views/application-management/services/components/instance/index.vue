@@ -11,6 +11,10 @@
             <StatusLabel
               :zoom="0.9"
               :status="{
+                inactive: _.includes(
+                  StartableStatus,
+                  _.get(currentInfo, 'status.summaryStatus')
+                ),
                 status: _.get(currentInfo, 'status.summaryStatus') || '',
                 text: _.get(currentInfo, 'status.summaryStatus'),
                 message:
@@ -200,7 +204,8 @@
     serviceBasicInfo,
     serviceActions,
     serviceActionMap,
-    ServiceDataType
+    ServiceDataType,
+    StartableStatus
   } from '../../config';
   import { ServiceRowData } from '../../config/interface';
   import useFetchResource from '../hooks/use-fetch-chunk-data';

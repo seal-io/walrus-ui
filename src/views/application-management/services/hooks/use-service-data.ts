@@ -199,6 +199,7 @@ export default function useServiceData(props?) {
       ) || {};
     const result = initFormState(variables);
     templateInfo.value = result.fieldSchemaList;
+    console.log('result.fieldSchemaList', result);
   };
 
   const setFormAttributes = async () => {

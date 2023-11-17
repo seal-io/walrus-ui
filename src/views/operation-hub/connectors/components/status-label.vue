@@ -53,6 +53,7 @@
     message: string;
     error?: boolean;
     transitioning?: boolean;
+    inactive?: boolean;
   }
   const props = defineProps({
     showLoading: {
@@ -87,6 +88,9 @@
     }
   });
   const color = computed(() => {
+    if (props.status.inactive) {
+      return '#bfbfbf';
+    }
     if (props.status.error) {
       return '#f53f3f';
     }
