@@ -81,6 +81,10 @@
               :zoom="0.9"
               :status="{
                 status: get(record, 'status.summaryStatus'),
+                inactive: _.includes(
+                  StartableStatus,
+                  get(record, 'status.summaryStatus')
+                ),
                 text: get(record, 'status.summaryStatus'),
                 message: get(record, 'status.summaryStatusMessage'),
                 transitioning: get(record, 'status.transitioning'),
@@ -199,7 +203,8 @@
     serviceActions,
     serviceActionMap,
     CreatActions,
-    ServiceDataType
+    ServiceDataType,
+    StartableStatus
   } from '../config';
   import {
     queryServices,

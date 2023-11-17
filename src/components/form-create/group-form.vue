@@ -120,13 +120,33 @@
     return resultList;
   };
 
+  const initFieldDefaultValue = (item) => {
+    if (item.default) {
+      return item.default;
+    }
+    const { type } = item;
+    if (type === 'array') {
+      return [];
+    }
+    if (type === 'object') {
+      return {};
+    }
+    if (type === 'boolean') {
+      return false;
+    }
+    if (type === 'number' || type === 'integer') {
+      return null;
+    }
+    return '';
+  };
   const getHiddenFormData = () => {
     const hiddenFormData = {};
     _.each(props.fieldList, (item) => {
       if (item.uiSchema.hidden) {
-        _.set(hiddenFormData, item.fieldPath, item.default);
+        _.set(hiddenFormData, item.fieldPath, initFieldDefaultValue(item));
       }
     });
+    console.log('hiddenFormData:', hiddenFormData);
     return hiddenFormData;
   };
   const getFormData = async (noValidate?: boolean) => {

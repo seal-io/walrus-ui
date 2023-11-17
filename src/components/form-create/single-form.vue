@@ -149,7 +149,6 @@
           ) {
             val = val || [];
           }
-          formData.value[item.name] = val;
           _.set(formData.value, item.fieldPath, val);
         });
       };

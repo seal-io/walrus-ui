@@ -50,7 +50,7 @@ export const EnvironmentActions: MoreAction[] = [
   {
     label: 'common.button.stop',
     value: CommonButtonValue.Stop,
-    icon: 'icon-pause-circle',
+    icon: 'icon-record-stop',
     handler: '',
     status: 'normal',
     disabled({ row }) {

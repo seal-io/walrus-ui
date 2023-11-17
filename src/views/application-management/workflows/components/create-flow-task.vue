@@ -270,12 +270,12 @@
   const current = ref(1);
   const taskType = ref('');
   const taskform = ref();
-  const flow = reactive({
+  const flow: any = reactive({
     projectId: route.params.projectId,
     environmentId: '',
     environmentName: '',
     name: '',
-    timeout: 30,
+    timeout: null,
     retryStrategy: {
       limit: null,
       retryPolicy: 'Always'
@@ -357,10 +357,10 @@
   const handleSelectTask = (item) => {
     taskType.value = item.value;
     if (taskType.value === TaskTypes.SERVICE) {
-      flow.timeout = 30;
+      flow.timeout = null;
       getEnvironmentList();
     } else {
-      flow.timeout = 0;
+      flow.timeout = null;
     }
     handleOnNext();
   };
@@ -378,7 +378,7 @@
     flow.environmentId = '';
     flow.environmentName = '';
     flow.name = '';
-    flow.timeout = 30;
+    flow.timeout = null;
     flow.retryStrategy = {
       limit: null,
       retryPolicy: 'Always'
@@ -416,7 +416,7 @@
             },
             projectID: flow.projectId
           },
-          timeout: Math.floor(flow.timeout * TIME_UNIT),
+          timeout: flow.timeout ? Math.floor(flow.timeout * TIME_UNIT) : null,
           ...limitInfo
         };
         if (data) {
@@ -432,7 +432,7 @@
           attributes: {
             ...data
           },
-          timeout: Math.floor(flow.timeout * TIME_UNIT)
+          timeout: flow.timeout ? Math.floor(flow.timeout * TIME_UNIT) : null
         };
         if (data) {
           emits('save', result);
@@ -449,7 +449,9 @@
         limit: null,
         retryPolicy: 'Always'
       });
-      flow.timeout = Math.floor(props.dataInfo.timeout / TIME_UNIT) || 30;
+      flow.timeout = props.dataInfo.timeout
+        ? Math.floor(props.dataInfo.timeout / TIME_UNIT)
+        : null;
       serviceInfo.info = {
         ...props.dataInfo.attributes
       };

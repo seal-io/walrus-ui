@@ -17,7 +17,9 @@
   >
     <a-spin :loading="loading" style="width: 100%; text-align: center">
       <a-form ref="formref" :model="formData" auto-label-width>
-        <div class="title">{{ $t('applications.secret.value') }}</div>
+        <div v-if="info.variables?.length" class="title">{{
+          $t('applications.secret.value')
+        }}</div>
         <a-form-item
           v-for="(item, index) in info.variables"
           :key="index"

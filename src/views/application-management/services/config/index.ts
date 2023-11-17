@@ -221,7 +221,7 @@ export const serviceActions: MoreAction[] = [
   {
     label: 'common.button.stop',
     value: serviceActionMap.stop,
-    icon: 'icon-pause-circle',
+    icon: 'icon-record-stop',
     handler: '',
     status: 'normal',
     disabled(currentInfo: any): boolean {
