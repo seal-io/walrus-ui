@@ -35,5 +35,12 @@ export default [
     group: Group.OperatorHub,
     order: ResourcesOrder.Variables,
     actions: ['GET', 'POST', 'DELETE', 'PUT']
+  },
+  {
+    resource: Resources.ResourceDefinitions,
+    title: 'menu.operatorHub.resourceDefinitions',
+    group: Group.OperatorHub,
+    order: ResourcesOrder.ResourceDefinitions,
+    actions: ['GET', 'POST', 'DELETE', 'PUT']
   }
 ];
