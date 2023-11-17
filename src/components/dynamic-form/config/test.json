@@ -43,7 +43,8 @@
                           }
                       },
                       "x-walrus-ui": {
-                          "group": "Basic"
+                          "group": "Basic",
+                          "hidden": true
                       }
                   },
                   "deployment": {

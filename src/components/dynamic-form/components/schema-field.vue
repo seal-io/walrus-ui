@@ -13,7 +13,8 @@
   import {
     genFieldPropsAndRules,
     getShowIfValue,
-    initFieldDefaultValue
+    initFieldDefaultValue,
+    setHiddenFieldValue
   } from '../utils';
   import { getSchemaFieldComponent } from '../fields/field-map';
 
@@ -58,9 +59,12 @@
       });
 
       if (fieldProps.hidden) {
-        if (!_.get(props.formData, fieldPath)) {
-          _.set(props.formData, fieldPath, defauleValue);
-        }
+        setHiddenFieldValue({
+          schema: props.schema,
+          formData: props.formData,
+          fieldPath: props.fieldPath
+        });
+        emit('change', props.formData);
         return null;
       }
       if (!component) return null;
