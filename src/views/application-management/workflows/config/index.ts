@@ -237,7 +237,7 @@ export const moreActions: MoreAction[] = [
   {
     label: 'common.button.run',
     value: 'apply',
-    icon: 'icon-play-circle-fill',
+    icon: 'icon-play-circle',
     handler: '',
     status: 'normal',
     disabled: false,

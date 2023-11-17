@@ -42,19 +42,19 @@
       align-items: center;
       justify-content: center;
       padding: 0;
-      font-size: 14px;
+      font-size: 12px;
+      border-radius: 4px;
 
       &.error {
         background-color: rgba(245, 63, 63, 0.7);
-        border-radius: 0 16px 16px 0;
       }
 
       &.ready {
         background-color: rgba(0, 191, 114, 0.7);
-        border-radius: 16px 0 0 16px;
       }
 
       &.transitioning {
+        margin: 0 10px;
         background-color: rgba(247, 186, 30, 0.7);
       }
     }

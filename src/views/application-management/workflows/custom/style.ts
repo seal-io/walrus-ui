@@ -2,6 +2,51 @@ import insertCss from 'insert-css';
 
 export const setPipelineNodeStyle = (size) => {
   insertCss(`
+  .approval-user-tooltip {
+    box-shadow: 0px 0px 4px 0px rgba(var(--gray-5), 60%);
+    .user-group {
+      display: flex;
+      align-items: center;
+      justify-content: flex-start;
+      .wp {
+        display: flex;
+        width:  24px;
+        height: 24px;
+        padding: 1px;
+        background-color: #fff;
+        border-radius: 50%;
+      }
+      .user {
+        position: relative;
+        display: flex;
+        width:  22px;
+        height: 22px;
+        border-radius: 50%;
+        box-shadow: 0px 0px 4px 0px rgba(var(--gray-5), 60%);
+        align-items: center;
+        justify-content: center;
+        color: #fff;
+        font-size: 12px;
+        .text {
+          transform: scale(0.85);
+        }
+      }
+      .iconfont.approval{
+        position: absolute;
+        top: 13px;
+        right: -9px;
+        background-color: #fff;
+        border-radius: 50%;
+        font-size: 10px;
+        &.icon-correct {
+          color: var(--seal-color-success);
+        }
+        &.icon-error-f {
+          color: var(--seal-color-error);
+        }
+      }
+    }
+  }
   .separator-line {
     position: relative;
     width: 1px;
@@ -86,22 +131,50 @@ export const setPipelineNodeStyle = (size) => {
           .iconfont.approval{
             position: absolute;
             bottom: -12px;
-            right: -6px;
+            right: -4px;
             background-color: #fff;
             border-radius: 50%;
             font-size: 12px;
-            &.icon-success-fill {
+            &.icon-correct {
               color: var(--seal-color-success);
             }
-            &.icon-status-error {
+            &.icon-error-f {
               color: var(--seal-color-error);
-              bottom:-11px;
-              right: -7px;
-              padding: 1px;
-              transform: scale(0.75);
+              // bottom:-11px;
+              // right: -7px;
+              // padding: 1px;
+              // transform: scale(0.75);
             }
           }
-          
+          .user-group {
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
+            .wp {
+              display: flex;
+              width:  24px;
+              height: 24px;
+              padding: 1px;
+              background-color: #fff;
+              margin-left: -4px;
+              border-radius: 50%;
+            }
+            .user {
+              position: relative;
+              display: flex;
+              width:  22px;
+              height: 22px;
+              border-radius: 50%;
+              box-shadow: 0px 0px 4px 0px rgba(var(--gray-5), 60%);
+              align-items: center;
+              justify-content: center;
+              color: #fff;
+              font-size: 12px;
+              .text {
+                transform: scale(0.85);
+              }
+            }
+          }
           .arco-avatar-circle.arco-avatar-group-max-count-avatar {
             margin-left: -5px !important;
             width: 26px;
