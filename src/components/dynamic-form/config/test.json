@@ -23,7 +23,8 @@
                       },
                       "x-walrus-ui": {
                           "group": "Basic",
-                          "groupOrder": 1
+                          "groupOrder": 1,
+                          "order": 5
                       }
                   },
                   "infrastructure": {
@@ -55,7 +56,10 @@
                           "replicas": {
                               "default": 1,
                               "title": "replicas",
-                              "type": "number"
+                              "type": "number",
+                              "x-walrus-ui": {
+                                "order": 4
+                              }
                           },
                           "system_controls": {
                               "items": {
@@ -76,11 +80,17 @@
                                   "type": "object"
                               },
                               "title": "system_controls",
-                              "type": "array"
+                              "type": "array",
+                              "x-walrus-ui": {
+                                "order": 3
+                              }
                           },
                           "timeout": {
                               "title": "timeout",
-                              "type": "number"
+                              "type": "number",
+                              "x-walrus-ui": {
+                                "order": 2
+                              }
                           },
                           "update_strategy": {
                               "properties": {
@@ -111,11 +121,15 @@
                                   }
                               },
                               "title": "update_strategy",
-                              "type": "object"
+                              "type": "object",
+                              "x-walrus-ui": {
+                                "order": 1
+                              }
                           }
                       },
                       "x-walrus-ui": {
-                          "group": "Basic"
+                          "group": "Basic",
+                          "order": 4
                       }
                   },
                   "credentials": {
@@ -167,7 +181,8 @@
                           "type": "object"
                       },
                       "x-walrus-ui": {
-                          "group": "Basic"
+                          "group": "Basic",
+                          "order": 3
                       }
                   },
                   "my-configs": {
@@ -207,7 +222,7 @@
                     },
                     "x-walrus-ui": {
                         "group": "my-configs",
-                        "groupOrder": 0
+                        "groupOrder": 10
                     }
                 },
                   "configs": {
@@ -246,7 +261,8 @@
                           "type": "object"
                       },
                       "x-walrus-ui": {
-                          "group": "Basic"
+                          "group": "Basic",
+                            "order": 2
                       }
                   },
                   "storages": {
@@ -423,7 +439,8 @@
                           "type": "object"
                       },
                       "x-walrus-ui": {
-                          "group": "Basic"
+                          "group": "Basic",
+                          "order": 1
                       }
                   },
                   "containers": {
@@ -773,7 +790,8 @@
                           "type": "object"
                       },
                       "x-walrus-ui": {
-                          "group": "container"
+                          "group": "container",
+                          "order": 0
                       }
                   }
               }

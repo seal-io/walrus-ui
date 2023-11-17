@@ -23,18 +23,16 @@
       const { scrollToView } = useScrollToView();
 
       const handleChange = (data) => {
-        console.log('data=======', data);
         formData.value = data;
         emit('change', toRaw(formData.value));
       };
 
       const handleSubmitFailed = (data) => {
-        console.log('handleSubmitFailed====', data);
+        // TODO
       };
 
       const validate = async () => {
         const res = await formref.value?.validate();
-        console.log('validate====', res, formData.value);
         if (res) {
           scrollToView();
         }

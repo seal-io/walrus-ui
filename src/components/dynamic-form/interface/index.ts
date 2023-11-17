@@ -1,27 +1,35 @@
 export interface FieldSchema {
-  name: string;
-  title?: string;
-  fieldPath: string[];
-  type: string;
-  default: any;
-  description: string;
-  multipleOf?: number;
-  readOnly?: boolean;
-  writeOnly?: boolean;
-  externalDocs?: string;
-  examples?: string;
-  minimum?: number;
-  maximum?: number;
-  maxLength?: number;
-  minLength?: number;
-  enum?: any[];
-  items?: FieldSchema;
-  required?: string[];
-  properties?: FieldSchema;
-  additionalProperties?: FieldSchema;
-  options?: { label: string; value: string }[];
-  label?: string;
-  format?: string;
+  'name': string;
+  'title'?: string;
+  'fieldPath': string[];
+  'type': string;
+  'default': any;
+  'description': string;
+  'multipleOf'?: number;
+  'readOnly'?: boolean;
+  'writeOnly'?: boolean;
+  'externalDocs'?: string;
+  'examples'?: string;
+  'minimum'?: number;
+  'maximum'?: number;
+  'maxLength'?: number;
+  'minLength'?: number;
+  'enum'?: any[];
+  'items'?: FieldSchema;
+  'required'?: string[];
+  'properties'?: FieldSchema;
+  'additionalProperties'?: FieldSchema;
+  'options'?: { label: string; value: string }[];
+  'label'?: string;
+  'format'?: string;
+  'x-walrus-ui'?: {
+    group?: string;
+    order?: number;
+    hidden?: boolean;
+    immutable?: boolean;
+    required?: boolean;
+    disabled?: boolean;
+  };
 }
 
 export interface Group {
