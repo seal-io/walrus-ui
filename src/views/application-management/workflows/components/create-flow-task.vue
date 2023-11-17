@@ -54,16 +54,14 @@
           </a-space>
 
           <ManualCheckpoint
-            v-else-if="
-              taskType === TaskTypes.APPROVAL && current === steps.length
-            "
+            v-if="taskType === TaskTypes.APPROVAL && current === steps.length"
             ref="manualRef"
             :show="show"
             :action="action"
             :data-info="dataInfo"
           ></ManualCheckpoint>
           <a-form
-            v-else-if="taskType === TaskTypes.SERVICE && current === 2"
+            v-if="taskType === TaskTypes.SERVICE && current === 2"
             ref="taskform"
             :model="flow"
             auto-label-width
@@ -113,8 +111,18 @@
                 :style="{ width: `${InputWidth.LARGE}px` }"
               >
                 <template #suffix>
-                  <span>{{ $t('common.time.hour') }}</span>
+                  <span>{{ $t('common.time.minute') }}</span>
                 </template>
+              </seal-input-number>
+            </a-form-item>
+            <a-form-item field="retryStrategy.limit">
+              <seal-input-number
+                v-model="flow.retryStrategy.limit"
+                :label="$t('workflow.task.retry.count')"
+                :required="false"
+                :min="1"
+                :style="{ width: `${InputWidth.LARGE}px` }"
+              >
               </seal-input-number>
             </a-form-item>
             <!-- <a-form-item field="retryStrategy.retryPolicy">
@@ -142,21 +150,9 @@
                 </a-option>
               </seal-select>
             </a-form-item> -->
-            <a-form-item field="retryStrategy.limit">
-              <seal-input-number
-                v-model="flow.retryStrategy.limit"
-                :label="$t('workflow.task.retry.count')"
-                :required="false"
-                :min="1"
-                :style="{ width: `${InputWidth.LARGE}px` }"
-              >
-              </seal-input-number>
-            </a-form-item>
           </a-form>
           <ServiceTask
-            v-else-if="
-              taskType === TaskTypes.SERVICE && current === steps.length
-            "
+            v-if="taskType === TaskTypes.SERVICE && current === steps.length"
             ref="serviceRef"
             :flow="flow"
             :data-type="ServiceDataType.service"
@@ -262,6 +258,7 @@
     }
   });
 
+  const TIME_UNIT = 60;
   const emits = defineEmits(['save', 'cancel', 'update:show', 'delete']);
   const userStore = useUserStore();
   const { route, t } = useCallCommon();
@@ -278,7 +275,7 @@
     environmentId: '',
     environmentName: '',
     name: '',
-    timeout: 1800,
+    timeout: 30,
     retryStrategy: {
       limit: 1,
       retryPolicy: 'Always'
@@ -360,7 +357,7 @@
   const handleSelectTask = (item) => {
     taskType.value = item.value;
     if (taskType.value === TaskTypes.SERVICE) {
-      flow.timeout = 1;
+      flow.timeout = 30;
       getEnvironmentList();
     } else {
       flow.timeout = 0;
@@ -381,7 +378,7 @@
     flow.environmentId = '';
     flow.environmentName = '';
     flow.name = '';
-    flow.timeout = 1;
+    flow.timeout = 30;
     flow.retryStrategy = {
       limit: 1,
       retryPolicy: 'Always'
@@ -411,7 +408,7 @@
             },
             projectID: flow.projectId
           },
-          timeout: Math.floor(flow.timeout * 3600),
+          timeout: Math.floor(flow.timeout * TIME_UNIT),
           ..._.pick(flow, ['retryStrategy'])
         };
         if (data) {
@@ -427,7 +424,7 @@
           attributes: {
             ...data
           },
-          timeout: Math.floor(flow.timeout * 3600)
+          timeout: Math.floor(flow.timeout * TIME_UNIT)
         };
         if (data) {
           emits('save', result);
@@ -443,7 +440,7 @@
       flow.retryStrategy = {
         ..._.pick(props.dataInfo.retryStrategy, ['limit', 'retryPolicy'])
       };
-      flow.timeout = Math.floor(props.dataInfo.timeout / 3600) || 1;
+      flow.timeout = Math.floor(props.dataInfo.timeout / TIME_UNIT) || 30;
       serviceInfo.info = {
         ...props.dataInfo.attributes
       };

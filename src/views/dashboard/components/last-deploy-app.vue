@@ -12,7 +12,7 @@
           ellipsis
           tooltip
           :cell-style="{ minWidth: '40px' }"
-          data-index="service.name"
+          data-index="resource.name"
           :title="title"
         >
           <template #cell="{ record }">

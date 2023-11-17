@@ -17,7 +17,7 @@ export default function useViewLatestLogs() {
     if (data?.type !== websocketEventType.UPDATE) return;
     const collections = _.filter(
       data.collection || [],
-      (sItem) => sItem?.service?.id === currentServiceInfo.value.id
+      (sItem) => sItem?.resource?.id === currentServiceInfo.value.id
     );
     const openRevisionData = _.find(
       collections,

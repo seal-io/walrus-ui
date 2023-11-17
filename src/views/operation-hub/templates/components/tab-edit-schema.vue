@@ -269,7 +269,14 @@
       id: route.query.id as string,
       data: {
         uiSchema: {
-          openAPISchema: codeData
+          openAPISchema: _.set(
+            codeData,
+            'components.schemas.outputs',
+            _.get(
+              props.schema,
+              'schema.openAPISchema.components.schemas.outputs'
+            )
+          )
         }
       }
     });

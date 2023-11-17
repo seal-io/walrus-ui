@@ -27,9 +27,20 @@ export const stepList = [
     label: 'workflow.task.form.selectenv',
     value: 'env',
     taskType: TaskTypes.SERVICE,
-    description: 'workflow.task.form.deployEnv'
+    description: ''
   },
-  { label: 'workflow.task.form.fillin', value: 'form' }
+  {
+    label: 'workflow.task.form.fillin',
+    value: 'form',
+    taskType: TaskTypes.SERVICE,
+    description: 'workflow.task.form.info.service'
+  },
+  {
+    label: 'workflow.task.form.fillin',
+    value: 'form',
+    taskType: TaskTypes.APPROVAL,
+    description: 'workflow.task.form.info.approval'
+  }
 ];
 
 export default {};

@@ -132,6 +132,7 @@ export default {
   'common.environment.staging': 'Staging',
   'common.time.label': 'Duration',
   'common.time.hour': 'hour',
+  'common.time.minute': 'minutes',
   'common.issue.report': 'Report an issue',
   'common.social.discord': 'Join our Discord'
 };

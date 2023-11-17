@@ -315,7 +315,7 @@
     if (data?.type !== websocketEventType.UPDATE) return;
     const collections = filter(
       data.collection || [],
-      (sItem) => sItem?.service?.id === serviceId.value
+      (sItem) => sItem?.resource?.id === serviceId.value
     );
     // const collections = data?.collection || [];
     const openRevisionData = find(
