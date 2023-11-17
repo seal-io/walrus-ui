@@ -22,7 +22,8 @@
                           }
                       },
                       "x-walrus-ui": {
-                          "group": "Basic"
+                          "group": "Basic",
+                          "groupOrder": 1
                       }
                   },
                   "infrastructure": {
@@ -204,7 +205,8 @@
                         "type": "object"
                     },
                     "x-walrus-ui": {
-                        "group": "my-configs"
+                        "group": "my-configs",
+                        "groupOrder": 0
                     }
                 },
                   "configs": {
