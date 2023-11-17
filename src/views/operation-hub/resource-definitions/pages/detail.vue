@@ -191,7 +191,7 @@
               :data-id="id"
               :origin-form-data="item"
               :page-action="pageAction"
-              :show-delete="formData.matchingRules.length > 1"
+              :show-delete="false"
               :template-list="templateList"
               class="m-b-20"
             >
@@ -217,7 +217,6 @@
               :schema="deinitionSchema"
               :template-info="formData"
               page="definition"
-              @update="handleUpdateUISchema"
               @reset="handleResetUISchema"
             ></component>
           </a-tab-pane>
@@ -255,7 +254,6 @@
     InjectCompleteDataKey
   } from '@/views/config';
   import { useElementSize } from '@vueuse/core';
-  import moduleWrapper from '@/components/module-wrapper/index.vue';
   import { OPERATIONHUB } from '@/router/config';
   import { Resources, Actions } from '@/permissions/config';
   import { useUserStore, useTabBarStore } from '@/store';
@@ -436,13 +434,11 @@
       loaded.value = true;
     }
   };
-  const handleUpdateUISchema = async () => {
-    getItemResourceDefinition();
-  };
-  const handleResetUISchema = async () => {
+
+  const handleResetUISchema = async (codeData?: object) => {
     try {
       const data = _.cloneDeep(formData.value);
-      data.uiSchema = null;
+      data.uiSchema = codeData || null;
       await upateResourceDefinition({ id, data });
       execSucceed();
       getItemResourceDefinition();

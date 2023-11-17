@@ -62,5 +62,6 @@ export default {
   'workflow.task.retry.onfailure.desc':
     'Retry steps whose main container is marked as failed in Kubernetes',
   'workflow.task.retry.onerror.desc':
-    'Retry steps that encounter Argo controller errors, or whose init or wait containers fail'
+    'Retry steps that encounter Argo controller errors, or whose init or wait containers fail',
+  'workflow.button.stop': 'Stop'
 };

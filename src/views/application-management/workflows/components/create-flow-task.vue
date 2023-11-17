@@ -277,7 +277,7 @@
     name: '',
     timeout: 30,
     retryStrategy: {
-      limit: 1,
+      limit: null,
       retryPolicy: 'Always'
     }
   });
@@ -380,7 +380,7 @@
     flow.name = '';
     flow.timeout = 30;
     flow.retryStrategy = {
-      limit: 1,
+      limit: null,
       retryPolicy: 'Always'
     };
 
@@ -394,6 +394,14 @@
         submitLoading.value = true;
         const data = await serviceRef.value?.save();
         submitLoading.value = false;
+        let limitInfo: any = flow.retryStrategy;
+        if (!limitInfo?.limit) {
+          limitInfo = null;
+        } else {
+          limitInfo = {
+            retryStrategy: limitInfo
+          };
+        }
         const result = {
           type: taskType.value,
           name: flow.name,
@@ -409,7 +417,7 @@
             projectID: flow.projectId
           },
           timeout: Math.floor(flow.timeout * TIME_UNIT),
-          ..._.pick(flow, ['retryStrategy'])
+          ...limitInfo
         };
         if (data) {
           emits('save', result);
@@ -437,9 +445,10 @@
     if (props.action === 'edit' && props.dataInfo.type === TaskTypes.SERVICE) {
       console.log('props.dataInfo', props.dataInfo);
       flow.environmentId = props.dataInfo.attributes?.environment?.id;
-      flow.retryStrategy = {
-        ..._.pick(props.dataInfo.retryStrategy, ['limit', 'retryPolicy'])
-      };
+      flow.retryStrategy = _.get(props.dataInfo, 'retryStrategy', {
+        limit: null,
+        retryPolicy: 'Always'
+      });
       flow.timeout = Math.floor(props.dataInfo.timeout / TIME_UNIT) || 30;
       serviceInfo.info = {
         ...props.dataInfo.attributes

@@ -27,16 +27,39 @@
           >
             {{ $t('common.button.retry') }}
           </a-button>
+          <a-button
+            v-if="
+              userStore.hasProjectResourceActions({
+                resource: Resources.WorkflowExecutions,
+                projectID,
+                actions: [Actions.PUT]
+              })
+            "
+            :disabled="
+              _.includes(StopableStatus, executionInfo.status?.summaryStatus)
+            "
+            type="primary"
+            size="small"
+            status="warning"
+            @click="handleStop"
+          >
+            {{ $t('workflow.button.stop') }}
+          </a-button>
         </a-space>
       </template>
     </BreadWrapper>
     <ComCard padding="0">
-      <FlowView ref="flow" :container-height="height"></FlowView>
+      <FlowView
+        ref="flow"
+        :container-height="height"
+        @view="handleViewInfo"
+      ></FlowView>
     </ComCard>
   </div>
 </template>
 
 <script lang="ts" setup>
+  import _ from 'lodash';
   import { Resources, Actions } from '@/permissions/config';
   import { ref, onMounted, computed } from 'vue';
   import { useUserStore } from '@/store';
@@ -45,7 +68,8 @@
   import useCallCommon from '@/hooks/use-call-common';
   import useProjectBreadcrumbData from '@/views/application-management/projects/hooks/use-project-breadcrumb-data';
   import FlowView from '../components/flow-view.vue';
-  import { retryApplyPipeline } from '../api';
+  import { retryApplyPipeline, stopApplyPipeline } from '../api';
+  import { StopableStatus } from '../config';
 
   const height = 'calc(100vh - 62px)';
   const { t, route, router } = useCallCommon();
@@ -53,6 +77,7 @@
   const execId = route.query.execId as string;
   const projectID = route.params.projectId as string;
   const flow = ref();
+  const executionInfo = ref<any>({});
   const userStore = useUserStore();
   const {
     getProjectList,
@@ -94,6 +119,10 @@
       }
     ];
   };
+
+  const handleViewInfo = (data) => {
+    executionInfo.value = data;
+  };
   const init = async () => {
     const list = await initBreadValues(['pipeline', 'pipelineRecords']);
 
@@ -111,6 +140,18 @@
         execId
       };
       await retryApplyPipeline(data);
+      execSucceed();
+    } catch (error) {
+      // eslint-disable-next-line no-console
+    }
+  };
+  const handleStop = async () => {
+    try {
+      const data = {
+        flowId,
+        execId
+      };
+      await stopApplyPipeline(data);
       execSucceed();
     } catch (error) {
       // eslint-disable-next-line no-console

@@ -265,20 +265,9 @@
   };
   const updateDefinitionSchema = async () => {
     const codeData = yaml2Json(code.value);
-    await upateResourceDefinition({
-      id: route.query.id as string,
-      data: {
-        uiSchema: {
-          openAPISchema: _.set(
-            codeData,
-            'components.schemas.outputs',
-            _.get(
-              props.schema,
-              'schema.openAPISchema.components.schemas.outputs'
-            )
-          )
-        }
-      }
+
+    emits('reset', {
+      openAPISchema: codeData
     });
   };
   const handlePutTemplateSchema = async () => {
@@ -291,11 +280,11 @@
     try {
       if (props.page === 'template') {
         await updateTemplateSchema();
+        execSucceed();
+        emits('update');
       } else {
         await updateDefinitionSchema();
       }
-      execSucceed();
-      emits('update');
     } catch (error) {
       // eslint-disable-next-line no-console
     }

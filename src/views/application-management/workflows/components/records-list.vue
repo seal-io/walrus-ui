@@ -136,7 +136,7 @@
           <template #cell="{ record }">
             <DropButtonGroup
               layout="horizontal"
-              :actions="recordActions"
+              :actions="setActionList(record)"
               @select="(val) => handleDropSelect(val, record)"
             ></DropButtonGroup>
           </template>
@@ -184,7 +184,8 @@
     deletePipelineExecution,
     PROJECT_API_PREFIX,
     PIPELINE_API,
-    PIPELINE_EXECUTION_API
+    PIPELINE_EXECUTION_API,
+    stopApplyPipeline
   } from '../api';
 
   let timer: any = null;
@@ -207,18 +208,22 @@
   });
 
   const { setChunkRequest } = useSetChunkRequest();
-  const { updateChunkedList } = useUpdateChunkedList(dataList, {
-    mapFun(item) {
-      const excutionData = _.get(item, 'executions.0', {});
+  const { updateChunkedList } = useUpdateChunkedList(dataList);
 
-      if (excutionData.workflow?.id === route.params.flowId) {
-        return {
-          ...excutionData
-        };
-      }
-      return {};
-    }
-  });
+  const setActionList = (row) => {
+    const list = _.filter(recordActions, (item) => {
+      return item.filterFun ? item.filterFun(row) : true;
+    });
+    const res = _.map(list, (o) => {
+      const item = _.cloneDeep(o);
+      item.disabled = _.isFunction(item.disabled)
+        ? item.disabled?.(row)
+        : item.disabled;
+      return item;
+    });
+    console.log('res======', res);
+    return res;
+  };
 
   const setRunStatus = (row) => {
     const stages = row.stages || [];
@@ -316,9 +321,25 @@
     deleteModal({ onOk: () => handleDeleteConfirm(row) });
   };
 
+  const handleStopExecution = async (row) => {
+    try {
+      const params = {
+        flowId: route.params.flowId as string,
+        execId: row.id
+      };
+      await stopApplyPipeline(params);
+      execSucceed();
+    } catch (error) {
+      // ignore
+    }
+  };
   const handleDropSelect = (val, row) => {
     if (val === 'delete') {
       handleDelete(row);
+      return;
+    }
+    if (val === 'stop') {
+      handleStopExecution(row);
       return;
     }
     router.push({
@@ -338,16 +359,12 @@
     });
   };
   const createWorkflowsChunkRequest = () => {
-    // const url = `${PROJECT_API_PREFIX()}${PIPELINE_API}/${
-    //   queryParams.id
-    // }${PIPELINE_EXECUTION_API}`;
-    const url = `${PROJECT_API_PREFIX()}${PIPELINE_API}`;
+    const url = `${PROJECT_API_PREFIX()}${PIPELINE_API}/${
+      queryParams.id
+    }${PIPELINE_EXECUTION_API}`;
     try {
       setChunkRequest({
         url: `${url}`,
-        params: {
-          ..._.pickBy(_.omit(queryParams, ['page', 'perPage']), (val) => !!val)
-        },
         handler: updateHandler
       });
     } catch (error) {

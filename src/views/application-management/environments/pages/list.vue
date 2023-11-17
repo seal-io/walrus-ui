@@ -103,6 +103,19 @@
           <a-table-column
             ellipsis
             tooltip
+            align="center"
+            data-index="type"
+            :title="$t('applications.environment.table.status')"
+          >
+            <template #cell="{ record }">
+              <serviceSummary
+                :data-list="genSummaryData(record)"
+              ></serviceSummary>
+            </template>
+          </a-table-column>
+          <a-table-column
+            ellipsis
+            tooltip
             :cell-style="{ minWidth: '40px' }"
             align="center"
             data-index="type"
@@ -239,7 +252,13 @@
   import { EnvironmentRow } from '../config/interface';
   import { queryEnvironments, deleteEnvironment } from '../api';
   import CreateEnvironment from '../components/create-environment.vue';
+  import serviceSummary from '../components/service-summary.vue';
 
+  const orderMap = {
+    error: 3,
+    transitioning: 2,
+    ready: 1
+  };
   let timer: any = null;
   const { rowSelection, selectedKeys, handleSelectChange } = useRowSelect();
   const { sort, sortOrder, setSortDirection } = UseSortDirection({
@@ -262,6 +281,18 @@
     perPage: appStore.perPage || 10
   });
 
+  const genSummaryData = (row) => {
+    return _.map(_.keys(row.statusSummary), (key) => {
+      return {
+        value: row.statusSummary[key] || 0,
+        status: key,
+        label: key,
+        order: orderMap[key]
+      };
+    }).sort((a, b) => {
+      return a.order - b.order;
+    });
+  };
   const handleCreate = () => {
     router.push({
       name: PROJECT.EnvEdit,
