@@ -50,7 +50,7 @@
           >{{ expression.length }}/{{ $attrs.maxLength }}</span
         >
         <span
-          v-if="$attrs.sensitive"
+          v-if="$attrs.password"
           class="arco-icon-hover"
           @click="handleVisibleToggle"
         >

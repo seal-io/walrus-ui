@@ -1,17 +1,5 @@
 import _ from 'lodash';
-import {
-  Input,
-  InputNumber,
-  InputPassword,
-  Select,
-  Option,
-  Radio,
-  RadioGroup,
-  Checkbox,
-  CheckboxGroup,
-  Textarea,
-  Switch
-} from '@arco-design/web-vue/es';
+import { RadioGroup, CheckboxGroup } from '@arco-design/web-vue/es';
 
 import HintInput from '@/components/hint-input/index.vue';
 import AceEditor from '@/components/ace-editor/index.vue';
@@ -35,7 +23,7 @@ import FIELD_TYPE from '../config/field-type';
 export const CommonFieldMaps = {
   textArea: sealTextarea,
   select: sealSelect,
-  password: sealInputPassword,
+  password: HintInput,
   aceEditor: AceEditor,
   xInputGroup,
   radioGroup: RadioGroup,

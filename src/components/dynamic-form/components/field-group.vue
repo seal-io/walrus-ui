@@ -1,15 +1,26 @@
 <script lang="tsx">
-  import { defineComponent, ref } from 'vue';
-  import _ from 'lodash';
+  import { defineComponent, ref, withModifiers } from 'vue';
+  import _, { divide } from 'lodash';
   import ModuleWrapper from '@/components/module-wrapper/index.vue';
   import schemaFieldProps from '../fields/schema-field-props';
 
   export default defineComponent({
     props: schemaFieldProps,
     setup(props, { slots }) {
-      const status = ref(true);
+      const status = ref(false);
+      const hovered = ref(false);
+
       const handleClickRight = () => {
-        status.value = false;
+        setTimeout(() => {
+          status.value = true;
+          console.log('status========', status.value);
+        }, 100);
+      };
+      const handleEnter = () => {
+        hovered.value = true;
+      };
+      const handleLeave = () => {
+        hovered.value = false;
       };
       const renderContent = () => {
         if (props.level < 2) {
@@ -19,6 +30,14 @@
                 <div class="title parent-name">
                   <div>
                     <span>{props.schema.title || props.schema.name}</span>
+                    {props.schema.description ? (
+                      <a-tooltip content={props.schema.description}>
+                        <icon-info-circle
+                          style="stroke-linecap: initial; cursor: default"
+                          class="m-l-2"
+                        />
+                      </a-tooltip>
+                    ) : null}
                   </div>
                   <div>{slots.buttons?.()}</div>
                 </div>
@@ -28,31 +47,48 @@
           );
         }
         return (
-          <ModuleWrapper
-            status={status.value}
-            title={props.schema.title || props.schema.name}
-            showDelete={false}
-            v-slots={{
-              title: () => {
-                return <span>{props.schema.title || props.schema.name}</span>;
-              },
-              right: () => {
-                return (
-                  <span onClick={() => handleClickRight()}>
-                    {slots.buttons?.()}
-                  </span>
-                );
-              }
-            }}
+          <div
+            onMouseover={withModifiers(
+              () => handleEnter(),
+              ['stop', 'prevent', 'native']
+            )}
+            onMouseout={withModifiers(
+              () => handleLeave(),
+              ['stop', 'prevent', 'native']
+            )}
           >
-            {slots.default?.()}
-          </ModuleWrapper>
+            <ModuleWrapper
+              class={[{ 'mo-wrap-hover': hovered.value }]}
+              v-model:status={status.value}
+              title={props.schema.title || props.schema.name}
+              showDelete={false}
+              v-slots={{
+                title: () => {
+                  return <span>{props.schema.title || props.schema.name}</span>;
+                },
+                right: () => {
+                  return (
+                    <span onClick={() => handleClickRight()}>
+                      {slots.buttons?.()}
+                    </span>
+                  );
+                }
+              }}
+            >
+              {slots.default?.()}
+            </ModuleWrapper>
+          </div>
         );
       };
 
       return () => (
         <div
-          class={['field-group', { collapse: props.level > 1 }]}
+          class={[
+            'field-group',
+            `level-${props.level}`,
+            { marked: props.level <= 1 },
+            { collapse: props.level > 1 }
+          ]}
           id={`${props.schema.title || props.schema.name}`}
         >
           {renderContent()}
@@ -67,6 +103,7 @@
     margin-bottom: 16px;
     padding: 0 16px;
     padding-bottom: 10px;
+    // padding-right: 6px;
     border: 1px solid var(--color-border-2);
     border-radius: var(--border-radius-small);
 
@@ -78,7 +115,16 @@
 
     :deep(.mo-wrap) {
       .title {
-        height: 52px;
+        background-color: #fff;
+      }
+
+      .content {
+        padding: 16px;
+      }
+
+      &.mo-wrap-hover:hover {
+        border-color: rgb(var(--arcoblue-6));
+        transition: border-color 0.2s var(--seal-transition-func);
       }
     }
 

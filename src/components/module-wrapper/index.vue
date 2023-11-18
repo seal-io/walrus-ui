@@ -1,29 +1,17 @@
 <template>
   <div class="mo-wrap">
-    <div
-      class="title"
-      :class="{ 'no-del-btn': !showDelete }"
-      @click="handleCollapse"
-    >
-      <a-space>
-        <span class="text">
-          <!-- <i
-            class="collapse-icon iconfont"
-            :class="{
-              'collapse': isCollapse,
-              'icon-collapsedown': !isCollapse,
-              'icon-collapseup': isCollapse
-            }"
-          /> -->
-          <!-- <icon-caret-right v-if="!isCollapse" />
-          <icon-caret-down v-else /> -->
-          <icon-right v-if="!isCollapse" />
-          <icon-down v-else />
-        </span>
-        <slot name="title"
-          ><span>{{ title }}</span></slot
-        >
-      </a-space>
+    <div class="title" :class="{ 'no-del-btn': !showDelete }">
+      <div class="text-wrap" @click.stop="handleCollapse">
+        <a-space>
+          <span class="text">
+            <icon-right v-if="!isCollapse" />
+            <icon-down v-else />
+          </span>
+          <slot name="title"
+            ><span>{{ title }}</span></slot
+          >
+        </a-space>
+      </div>
       <slot name="right">
         <a-button
           v-if="showDelete"
@@ -78,10 +66,11 @@
       }
     }
   });
-  const emits = defineEmits(['delete']);
+  const emits = defineEmits(['delete', 'update:status']);
   const isCollapse = ref(props.status);
   const handleCollapse = () => {
     isCollapse.value = !isCollapse.value;
+    emits('update:status', isCollapse.value);
   };
   const handleDeleteConfirm = () => {
     emits('delete');
@@ -110,6 +99,12 @@
       font-size: 14px;
       background-color: var(--color-fill-2);
       cursor: pointer;
+
+      .text-wrap {
+        display: flex;
+        flex: 1;
+        height: 100%;
+      }
 
       &.no-del-btn {
         justify-content: space-between;

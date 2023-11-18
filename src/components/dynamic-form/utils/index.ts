@@ -86,10 +86,12 @@ export const genObjectFieldProperties = ({
   const { properties } = schema;
   // const { required: requiredFlag } = schema;
   const resultList: FieldSchema[] = [];
+  const defaultOrder = 9999;
   const keys = _.keys(properties);
   _.each(keys, (key) => {
     const property = _.get(properties, key);
     const { type } = property;
+    const order = property['x-walrus-ui']?.order || defaultOrder;
     // const required = _.includes(requiredFlag, key);
     const fieldSchema = {
       ...property,
@@ -97,7 +99,7 @@ export const genObjectFieldProperties = ({
       fieldPath: [...fieldPath, key],
       required: property.required || [],
       parentRequired: schema.required || [],
-      order: property['x-walrus-ui']?.order || 9999
+      order
     };
     resultList.push(fieldSchema);
   });
@@ -187,6 +189,7 @@ export const genFieldPropsAndRules = ({
     showIf: showIf || '',
     doc: externalDocs || '',
     required: requiredFlag || required || false,
+    password: isPassword(schema),
     description
   };
 

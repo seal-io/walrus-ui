@@ -127,7 +127,12 @@
             popupInfo={props.schema.description}
             model-value={_.get(props.formData, props.fieldPath)}
             onInput={(e) => {
-              console.log('basic-field==input', e.target?.value, props.schema);
+              console.log(
+                'basic-field==input',
+                e,
+                e.target?.value,
+                props.schema
+              );
               handleSelectInputChange(e);
             }}
             onChange={(val, e) => {
