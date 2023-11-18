@@ -90,6 +90,7 @@
         ) {
           _.unset(props.formData, props.fieldPath);
         }
+
         handleChange(props.formData);
       };
 
@@ -97,25 +98,19 @@
         return (
           <CommonButton
             onClick={() => handleDeleteClick(index)}
-            type="outline"
+            action="delete"
             title={props.schema.title}
-          >
-            <icon-minus style="stroke-width: 4" />
-          </CommonButton>
+          ></CommonButton>
         );
       };
 
       const renderAddButton = () => {
         return props.schema.items ? (
-          <div class="add-btn">
-            <CommonButton
-              onClick={() => handleAddClick()}
-              type="outline"
-              title={props.schema.title}
-            >
-              <icon-plus style="stroke-width: 4" />
-            </CommonButton>
-          </div>
+          <CommonButton
+            onClick={() => handleAddClick()}
+            action="add"
+            title={props.schema.title}
+          ></CommonButton>
         ) : null;
       };
       return () => (
@@ -131,23 +126,33 @@
         >
           {_.map(propertiesList.value, (item, index) => {
             return (
-              <div class="add-item">
-                <div class="add-content">
-                  {_.map(item, (sItem, sIndex) => {
-                    return (
-                      <SchemaField
-                        level={props.level + 1}
-                        key={_.join([props.fieldPath, index, sIndex], '.')}
-                        schema={sItem}
-                        formData={props.formData}
-                        fieldPath={sItem.fieldPath}
-                        requiredFields={sItem.required}
-                      ></SchemaField>
-                    );
-                  })}
+              <>
+                <div class="add-item">
+                  <div class="add-content">
+                    {_.map(item, (sItem, sIndex) => {
+                      return (
+                        <SchemaField
+                          level={props.level + 1}
+                          key={_.join([props.fieldPath, index, sIndex], '.')}
+                          schema={sItem}
+                          formData={props.formData}
+                          fieldPath={sItem.fieldPath}
+                          requiredFields={sItem.required}
+                        ></SchemaField>
+                      );
+                    })}
+                  </div>
+
+                  <div class="delete-btn">{renderDeleleButton(index)}</div>
                 </div>
-                <div class="delete-btn">{renderDeleleButton(index)}</div>
-              </div>
+                {index === propertiesList.value.length - 1 ? null : (
+                  <a-divider
+                    direction="horizontal"
+                    type="dashed"
+                    size={2}
+                  ></a-divider>
+                )}
+              </>
             );
           })}
         </FieldGroup>

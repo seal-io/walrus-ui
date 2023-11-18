@@ -170,31 +170,26 @@
           objectAdditionalList.value.splice(index, 1);
           _.unset(props.formData, [...props.fieldPath, itemField]);
         }
+
         handleChange(props.formData);
       };
 
       const renderAddButton = () => {
         return isMapObjectAdditionalProperties ? (
-          <div class="add-btn">
-            <CommonButton
-              onClick={() => handleAddClick()}
-              type="outline"
-              title={props.schema.title}
-            >
-              <icon-plus style="stroke-width: 4" />
-            </CommonButton>
-          </div>
+          <CommonButton
+            onClick={() => handleAddClick()}
+            action="add"
+            title={props.schema.title}
+          ></CommonButton>
         ) : null;
       };
       const renderDeleleButton = (index) => {
         return (
           <CommonButton
             onClick={() => handleDeleteClick(index)}
-            type="outline"
+            action="delete"
             title={props.schema.title}
-          >
-            <icon-minus style="stroke-width: 4" />
-          </CommonButton>
+          ></CommonButton>
         );
       };
 
@@ -257,67 +252,80 @@
           <>
             {_.map(objectAdditionalList.value, (item, index) => {
               return (
-                <div class="add-item">
-                  <div
-                    key={_.join([props.fieldPath, index], '.')}
-                    class="add-content"
-                  >
-                    <a-form-item
-                      field={_.join([props.fieldPath, index, 'field'], '.')}
+                <>
+                  <div class="add-item">
+                    <div
+                      key={_.join([props.fieldPath, index], '.')}
+                      class="add-content"
                     >
-                      <SealInput
-                        modelValue={_.get(objectAdditionalList.value, [
-                          index,
-                          'field'
-                        ])}
-                        placeholder="enter proerty name"
-                        onChange={() => {
-                          handleAdditionalFieldChange();
-                          handleChange(props.formData);
-                        }}
-                        onUpdate:modelValue={(val) => {
-                          _.set(
-                            objectAdditionalList.value,
-                            [index, 'field'],
-                            val
-                          );
-                          console.log('objectAdditionalList.value>>>>>>>>>>>', {
-                            objectAdditionalList: objectAdditionalList.value,
+                      <a-form-item
+                        field={_.join([props.fieldPath, index, 'field'], '.')}
+                      >
+                        <SealInput
+                          modelValue={_.get(objectAdditionalList.value, [
                             index,
-                            val
-                          });
-                        }}
-                      ></SealInput>
-                    </a-form-item>
-                    {_.map(item.list, (childSchema, cIndex) => {
-                      return (
-                        <SchemaField
-                          formData={props.formData}
-                          schema={childSchema}
-                          requiredFields={childSchema.required}
-                          fieldPath={[
-                            ...props.fieldPath,
-                            item.field,
-                            childSchema.name
-                          ]}
-                          onChange={(data) => {
-                            _.set(
-                              props.formData,
-                              [
-                                ...props.fieldPath,
-                                item.field,
-                                childSchema.name
-                              ],
-                              data
-                            );
+                            'field'
+                          ])}
+                          placeholder="enter proerty name"
+                          onChange={() => {
+                            handleAdditionalFieldChange();
                             handleChange(props.formData);
                           }}
-                        />
-                      );
-                    })}
+                          onUpdate:modelValue={(val) => {
+                            _.set(
+                              objectAdditionalList.value,
+                              [index, 'field'],
+                              val
+                            );
+                            console.log(
+                              'objectAdditionalList.value>>>>>>>>>>>',
+                              {
+                                objectAdditionalList:
+                                  objectAdditionalList.value,
+                                index,
+                                val
+                              }
+                            );
+                          }}
+                        ></SealInput>
+                      </a-form-item>
+                      {_.map(item.list, (childSchema, cIndex) => {
+                        return (
+                          <SchemaField
+                            formData={props.formData}
+                            schema={childSchema}
+                            requiredFields={childSchema.required}
+                            fieldPath={[
+                              ...props.fieldPath,
+                              item.field,
+                              childSchema.name
+                            ]}
+                            onChange={(data) => {
+                              _.set(
+                                props.formData,
+                                [
+                                  ...props.fieldPath,
+                                  item.field,
+                                  childSchema.name
+                                ],
+                                data
+                              );
+                              handleChange(props.formData);
+                            }}
+                          />
+                        );
+                      })}
+                    </div>
+                    <div class="delete-btn">{renderDeleleButton(index)}</div>
                   </div>
-                  <div class="delete-btn">{renderDeleleButton(index)}</div>
-                </div>
+                  {index === objectAdditionalList.value.length - 1 ? null : (
+                    <a-divider
+                      direction="horizontal"
+                      type="dashed"
+                      size={2}
+                    ></a-divider>
+                  )}
+                </>
               );
             })}
           </>
@@ -328,7 +336,6 @@
           <FieldGroup
             schema={props.schema}
             level={props.level}
-            class={[`level-${props.level}`]}
             v-slots={{
               buttons: () => {
                 return <>{renderAddButton()}</>;
