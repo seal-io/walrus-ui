@@ -299,6 +299,7 @@
 
   const setRunStatus = (row) => {
     const stages = _.get(row, 'executions.0.stages') || [];
+
     return _.map(stages, (item) => {
       return {
         title: item.name,

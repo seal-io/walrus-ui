@@ -31,12 +31,13 @@
         v-for="item in _.tail(actions)"
         :key="item.value"
         :value="item.value"
+        :disabled="!!item.disabled"
       >
         <a-link
           type="text"
           size="small"
-          :status="item.status"
           :disabled="!!item.disabled"
+          :status="item.status"
           @click="(e) => handleClickItem(e, item)"
         >
           <!-- <template #icon>

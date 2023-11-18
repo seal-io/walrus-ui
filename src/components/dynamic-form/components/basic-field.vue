@@ -31,7 +31,13 @@
   import { Option } from '../interface';
 
   export default defineComponent({
-    props: schemaFieldProps,
+    props: {
+      ...schemaFieldProps,
+      rules: {
+        type: Array,
+        default: () => []
+      }
+    },
     emits: ['change'],
     setup(props, { emit, attrs }) {
       const schemaFormEditable = inject(InjectSchemaFormEditableKey);
@@ -108,15 +114,17 @@
         <a-form-item
           hide-label={true}
           rules={props.rules}
+          label={props.schema.title}
           field={_.join(props.fieldPath, '.')}
           validate-trigger={['change']}
         >
           <Component
-            {...props}
             {...attrs}
+            required={props.required}
+            label={props.label}
             style="width: 100%"
             allow-search={false}
-            popupInfo={attrs.description}
+            popupInfo={props.schema.description}
             model-value={_.get(props.formData, props.fieldPath)}
             onInput={(e) => {
               console.log('basic-field==input', e.target?.value, props.schema);

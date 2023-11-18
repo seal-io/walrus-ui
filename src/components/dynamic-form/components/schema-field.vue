@@ -1,17 +1,8 @@
 <script lang="tsx">
-  import {
-    defineComponent,
-    PropType,
-    toRefs,
-    ref,
-    reactive,
-    computed,
-    watch
-  } from 'vue';
+  import { defineComponent } from 'vue';
   import _ from 'lodash';
   import schemaFieldProps from '../fields/schema-field-props';
   import {
-    genFieldPropsAndRules,
     getShowIfValue,
     initFieldDefaultValue,
     setHiddenFieldValue
@@ -25,6 +16,10 @@
       if (!_.keys(props.schema.properties)) {
         return null;
       }
+      // hidden
+      const hidden = _.get(props.schema, ['x-walrus-ui', 'hidden'], false);
+      // showIf
+      const showIf = _.get(props.schema, ['x-walrus-ui', 'showIf'], '');
 
       // init field value
       if (!_.get(props.formData, props.fieldPath)) {
@@ -44,21 +39,14 @@
         return null;
       };
 
-      const { component, fieldPath } = getSchemaFieldComponent({
+      //  generate field component and fieldPath
+      const { component, fieldPath, requiredFields } = getSchemaFieldComponent({
         schema: props.schema,
         formData: props.formData,
         fieldPath: props.fieldPath
       });
 
-      const {
-        fieldProps,
-        rules,
-        default: defauleValue
-      } = genFieldPropsAndRules({
-        schema: props.schema
-      });
-
-      if (fieldProps.hidden) {
+      if (hidden) {
         setHiddenFieldValue({
           schema: props.schema,
           formData: props.formData,
@@ -69,20 +57,16 @@
       }
       if (!component) return null;
 
-      const currentProps = {
-        ...props,
-        ...fieldProps,
-        rules,
-        fieldPath,
-        onChange: handleChange
-      };
       console.log('currentProps=======', props.schema);
       const renderComponent = () => {
         const Component = component;
-        if (fieldProps.showIf) {
-          return getShowIfValue(fieldProps.showIf, props.formData) ? (
+        if (showIf) {
+          return getShowIfValue(showIf, props.formData) ? (
             <Component
-              {...currentProps}
+              fieldPath={fieldPath}
+              formData={props.formData}
+              schema={props.schema}
+              requiredFields={props.requiredFields}
               onChange={(data) => handleChange(data)}
             />
           ) : (
@@ -91,7 +75,11 @@
         }
         return (
           <Component
-            {...currentProps}
+            fieldPath={fieldPath}
+            formData={props.formData}
+            schema={props.schema}
+            requiredFields={props.requiredFields}
+            level={props.level || 0}
             onChange={(data) => handleChange(data)}
           />
         );

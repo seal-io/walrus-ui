@@ -115,9 +115,9 @@ export default {
   'applications.applications.rule.modules.name':
     'exists with the same service or resource',
   'applications.applications.variables.title': 'Variables',
-  'applications.applications.variables.button': 'Add a variable',
+  'applications.applications.variables.button': 'New Variable',
   'applications.applications.variables.label': 'Variable Name',
-  'applications.applications.modules.button': 'Add a template',
+  'applications.applications.modules.button': 'New Template',
   'applications.applications.button.upgrade': 'Upgrade',
   'applications.workflows.menu': 'Workflows',
   'applications.workflows.create': 'New Workflow',

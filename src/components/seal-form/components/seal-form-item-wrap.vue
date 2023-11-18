@@ -4,7 +4,7 @@
       <span
         ><span>{{ label }}</span>
         <span
-          v-if="$attrs.required"
+          v-if="required"
           class="bold-500 m-l-2 star"
           style="color: rgb(var(--danger-6))"
           >*</span

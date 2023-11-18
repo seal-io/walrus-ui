@@ -1,16 +1,5 @@
 <script lang="tsx">
-  import {
-    defineComponent,
-    compile,
-    h,
-    PropType,
-    toRefs,
-    ref,
-    reactive,
-    computed,
-    watch,
-    toRaw
-  } from 'vue';
+  import { defineComponent, ref } from 'vue';
   import _ from 'lodash';
   import KeyValueLabels from '@/components/form-create/custom-components/key-value-labels.vue';
   import SealFormItemWrap from '@/components/seal-form/components/seal-form-item-wrap.vue';
@@ -106,9 +95,12 @@
 
       const renderDeleleButton = (index) => {
         return (
-          <CommonButton onClick={() => handleDeleteClick(index)} type="outline">
-            <icon-minus style="stroke-width: 4" class="m-r-5" />
-            {props.schema.title}
+          <CommonButton
+            onClick={() => handleDeleteClick(index)}
+            type="outline"
+            title={props.schema.title}
+          >
+            <icon-minus style="stroke-width: 4" />
           </CommonButton>
         );
       };
@@ -116,16 +108,20 @@
       const renderAddButton = () => {
         return props.schema.items ? (
           <div class="add-btn">
-            <CommonButton onClick={() => handleAddClick()} type="outline">
-              <icon-plus class="m-r-5" style="stroke-width: 4" />
-              {props.schema.title}
+            <CommonButton
+              onClick={() => handleAddClick()}
+              type="outline"
+              title={props.schema.title}
+            >
+              <icon-plus style="stroke-width: 4" />
             </CommonButton>
           </div>
         ) : null;
       };
       return () => (
         <FieldGroup
-          {...props}
+          schema={props.schema}
+          level={props.level}
           class={[`level-${props.level}`]}
           v-slots={{
             buttons: () => {
@@ -145,6 +141,7 @@
                         schema={sItem}
                         formData={props.formData}
                         fieldPath={sItem.fieldPath}
+                        requiredFields={sItem.required}
                       ></SchemaField>
                     );
                   })}

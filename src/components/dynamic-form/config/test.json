@@ -7,7 +7,9 @@
       "schemas": {
           "variables": {
               "required": [
-                  "containers"
+                  "containers",
+                  "infrastructure",
+                  "context"
               ],
               "type": "object",
               "properties": {
@@ -40,12 +42,18 @@
                           },
                           "namespace": {
                               "title": "namespace",
-                              "type": "string"
+                              "type": "string",
+                              "'x-walrus-ui": {
+                                "required": true
+                              }
                           }
                       },
+                      "required": [
+                          "namespace"
+                      ],
                       "x-walrus-ui": {
                           "group": "Basic",
-                          "hidden": true
+                          "hidden": false
                       }
                   },
                   "deployment": {

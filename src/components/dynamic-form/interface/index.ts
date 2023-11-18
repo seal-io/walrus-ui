@@ -17,19 +17,13 @@ export interface FieldSchema {
   'enum'?: any[];
   'items'?: FieldSchema;
   'required'?: string[];
+  'parentRequired'?: string[];
   'properties'?: FieldSchema;
   'additionalProperties'?: FieldSchema;
   'options'?: { label: string; value: string }[];
   'label'?: string;
   'format'?: string;
-  'x-walrus-ui'?: {
-    group?: string;
-    order?: number;
-    hidden?: boolean;
-    immutable?: boolean;
-    required?: boolean;
-    disabled?: boolean;
-  };
+  'x-walrus-ui'?: Record<string, any>;
 }
 
 export interface Group {

@@ -1,7 +1,9 @@
 <template>
   <div class="box">
     <div class="title">
-      <span>{{ $t('applications.applications.variables.title') }}</span>
+      <span class="text">{{
+        $t('applications.applications.variables.title')
+      }}</span>
       <a-button type="primary" size="small" @click="handleAddVariable">
         {{ $t('applications.applications.variables.button') }}
       </a-button>
@@ -153,6 +155,11 @@
       align-items: center;
       justify-content: space-between;
       margin-bottom: 20px;
+    }
+
+    .text {
+      color: var(--color-text-2);
+      font-weight: 500;
     }
   }
 </style>

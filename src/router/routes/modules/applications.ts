@@ -6,7 +6,7 @@ export default {
   name: PROJECT.Index,
   component: () => import('@/views/application-management/index.vue'),
   meta: {
-    locale: 'navbar.appmanagement',
+    locale: 'menu.applicationManagement',
     requiresAuth: false,
     isRouteView: true,
     order: 1,

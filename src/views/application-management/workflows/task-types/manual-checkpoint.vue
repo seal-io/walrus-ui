@@ -38,6 +38,7 @@
               v-for="item in approvalTypes"
               :key="item.value"
               :value="item.value"
+              :label="$t(item.label)"
             >
               <span
                 >{{ $t(item.label)
