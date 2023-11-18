@@ -20,20 +20,43 @@ export default {
       return [];
     }
   },
-  onChange: {
-    type: Function as PropType<(value: any) => void>,
+  description: {
+    type: String,
+    default: ''
+  },
+  showIf: {
+    type: String,
+    default: ''
+  },
+  hidden: {
+    type: Boolean,
+    default: false
+  },
+  doc: {
+    type: String,
+    default: ''
+  },
+  required: {
+    type: Boolean,
+    default: false
+  },
+  // parent required fields
+  requiredFields: {
+    type: Array as PropType<string[]>,
     default() {
-      return () => {};
+      return [];
     }
+  },
+  disabled: {
+    type: Boolean,
+    default: false
   },
   level: {
     type: Number,
     default: 0
   },
-  rules: {
-    type: Array as PropType<any[]>,
-    default() {
-      return [];
-    }
+  label: {
+    type: String,
+    default: ''
   }
 };

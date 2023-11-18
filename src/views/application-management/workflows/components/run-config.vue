@@ -38,14 +38,14 @@
         </a-form-item>
         <div class="title">{{ $t('common.table.mark') }}</div>
         <a-form-item
-          :label="$t('common.table.description')"
+          :label="$t('common.table.mark')"
           field="description"
           hide-label
           validate-trigger="change"
         >
           <seal-textarea
             v-model="formData.description"
-            :label="$t('common.table.description')"
+            :label="$t('common.table.mark')"
             show-word-limit
             style="width: 100%"
             :auto-size="{ minRows: 4, maxRows: 6 }"

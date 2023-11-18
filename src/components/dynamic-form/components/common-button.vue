@@ -6,6 +6,10 @@
       type: {
         type: String,
         default: 'primary'
+      },
+      title: {
+        type: String,
+        default: ''
       }
     },
     emits: ['click'],

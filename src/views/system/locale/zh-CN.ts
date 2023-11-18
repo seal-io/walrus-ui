@@ -120,7 +120,7 @@ export default {
   'system.user.engineer': '主管',
   'account.settings.apikeys': 'API密钥',
   'account.settings.title': '账户设置',
-  'account.settings.tokens.new': '添加API密钥',
+  'account.settings.tokens.new': '新建密钥',
   'account.settings.tokens.name': '名称',
   'account.settings.tokens.expiration': '过期时间',
   'account.settings.tokens.button': '添加密钥',

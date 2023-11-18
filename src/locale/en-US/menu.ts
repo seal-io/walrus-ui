@@ -1,6 +1,6 @@
 export default {
   'menu.dashboard': 'Dashboard',
-  'menu.applicationManagement': 'App Management',
+  'menu.applicationManagement': 'Application Management',
   'menu.applicationManagement.project': 'Projects',
   'menu.applicationManagement.projectList': 'Project List',
   'menu.applicationManagement.application': 'Applications',

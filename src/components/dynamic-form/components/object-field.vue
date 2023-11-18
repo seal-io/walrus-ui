@@ -19,7 +19,11 @@
   import { FieldSchema } from '../interface';
   import FieldGroup from './field-group.vue';
   import SchemaField from './schema-field.vue';
-  import { genObjectFieldProperties, initFieldDefaultValue } from '../utils';
+  import {
+    genObjectFieldProperties,
+    initFieldDefaultValue,
+    genFieldPropsAndRules
+  } from '../utils';
   import CommonButton from './common-button.vue';
 
   export default defineComponent({
@@ -39,6 +43,11 @@
         emit('change', data);
       };
 
+      //
+      const { fieldProps, rules } = genFieldPropsAndRules({
+        schema: props.schema,
+        requiredFields: props.requiredFields
+      });
       additionalPropertiesKeysObj = _.reduce(
         _.keys(props.schema.additionalProperties?.properties),
         (obj, key) => {
@@ -167,18 +176,24 @@
       const renderAddButton = () => {
         return isMapObjectAdditionalProperties ? (
           <div class="add-btn">
-            <CommonButton onClick={() => handleAddClick()} type="outline">
-              <icon-plus style="stroke-width: 4" class="m-r-5" />
-              {props.schema.title}
+            <CommonButton
+              onClick={() => handleAddClick()}
+              type="outline"
+              title={props.schema.title}
+            >
+              <icon-plus style="stroke-width: 4" />
             </CommonButton>
           </div>
         ) : null;
       };
       const renderDeleleButton = (index) => {
         return (
-          <CommonButton onClick={() => handleDeleteClick(index)} type="outline">
+          <CommonButton
+            onClick={() => handleDeleteClick(index)}
+            type="outline"
+            title={props.schema.title}
+          >
             <icon-minus style="stroke-width: 4" />
-            {props.schema.title}
           </CommonButton>
         );
       };
@@ -202,13 +217,16 @@
           return (
             <a-form-item
               hide-label={true}
-              rules={props.rules}
+              rules={rules}
+              required={fieldProps.required}
+              label={props.schema.title}
               field={_.join(props.fieldPath, '.')}
               validate-trigger={['change']}
             >
               <SealFormItemWrap
-                {...props}
-                label={props.schema.title}
+                popupInfo={props.schema.description}
+                required={props.required}
+                label={props.schema.title || props.schema.name}
                 style="width: 100%"
               >
                 <KeyValueLabels
@@ -252,7 +270,7 @@
                           index,
                           'field'
                         ])}
-                        placeholder="enter a proerty name"
+                        placeholder="enter proerty name"
                         onChange={() => {
                           handleAdditionalFieldChange();
                           handleChange(props.formData);
@@ -274,8 +292,9 @@
                     {_.map(item.list, (childSchema, cIndex) => {
                       return (
                         <SchemaField
-                          schema={childSchema}
                           formData={props.formData}
+                          schema={childSchema}
+                          requiredFields={childSchema.required}
                           fieldPath={[
                             ...props.fieldPath,
                             item.field,
@@ -307,7 +326,8 @@
       return () => (
         <>
           <FieldGroup
-            {...props}
+            schema={props.schema}
+            level={props.level}
             class={[`level-${props.level}`]}
             v-slots={{
               buttons: () => {
@@ -323,6 +343,7 @@
                     schema={childSchema}
                     formData={props.formData}
                     fieldPath={childSchema.fieldPath}
+                    requiredFields={childSchema.parentRequired}
                     onChange={(data) => {
                       handleChange(data);
                     }}

@@ -74,12 +74,9 @@ export const initFieldDefaultValue = (item) => {
 
 export const genObjectFieldProperties = ({
   schema,
-  parentSchema,
-  formData,
   fieldPath
 }: {
   schema: FieldSchema;
-  parentSchema?: FieldSchema;
   formData: any;
   fieldPath: string[];
 }) => {
@@ -87,19 +84,19 @@ export const genObjectFieldProperties = ({
     return [];
   }
   const { properties } = schema;
-  const { required: requiredFlag } = schema;
+  // const { required: requiredFlag } = schema;
   const resultList: FieldSchema[] = [];
-  // const { required: parentRequiredFlag } = parentSchema || {};
   const keys = _.keys(properties);
   _.each(keys, (key) => {
     const property = _.get(properties, key);
     const { type } = property;
-    const required = _.includes(requiredFlag, key);
+    // const required = _.includes(requiredFlag, key);
     const fieldSchema = {
       ...property,
       name: key,
       fieldPath: [...fieldPath, key],
-      required: property.required || required,
+      required: property.required || [],
+      parentRequired: schema.required || [],
       order: property['x-walrus-ui']?.order || 9999
     };
     resultList.push(fieldSchema);
@@ -150,10 +147,10 @@ export const setHiddenFieldValue = ({
 
 // real component
 export const genFieldPropsAndRules = ({
-  parentSchema,
+  requiredFields,
   schema
 }: {
-  parentSchema?: FieldSchema;
+  requiredFields: string[];
   schema: FieldSchema;
 }) => {
   // const { additionalProperties, items } = schema;
@@ -163,7 +160,6 @@ export const genFieldPropsAndRules = ({
     title,
     name,
     readOnly,
-    required,
     maximum,
     minimum,
     externalDocs,
@@ -183,17 +179,18 @@ export const genFieldPropsAndRules = ({
     widget
   } = uiExtensions;
 
+  const required = _.includes(requiredFields, name);
   const commonProps = {
-    label: title,
+    label: title || name,
     disabled: readOnly || immutable,
     hidden: hidden || false,
     showIf: showIf || '',
     doc: externalDocs || '',
     required: requiredFlag || required || false,
-    description,
-    password: isPassword(schema)
+    description
   };
 
+  // boolean
   if (type === FIELD_TYPE.BOOLEAN) {
     return {
       fieldProps: {
@@ -212,6 +209,7 @@ export const genFieldPropsAndRules = ({
       default: defaultValue
     };
   }
+  // number
   if (type === FIELD_TYPE.INTEGER || type === FIELD_TYPE.NUMBER) {
     return {
       fieldProps: {
@@ -230,6 +228,8 @@ export const genFieldPropsAndRules = ({
       default: defaultValue
     };
   }
+
+  // string
 
   if (type === FIELD_TYPE.STRING && !enumList?.length) {
     return {
@@ -287,6 +287,7 @@ export const genFieldPropsAndRules = ({
       default: defaultValue
     };
   }
+
   if (type === FIELD_TYPE.ARRAY && (items || !enumList?.length)) {
     return {
       fieldProps: {

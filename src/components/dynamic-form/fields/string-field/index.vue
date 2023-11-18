@@ -11,6 +11,7 @@
   import _ from 'lodash';
   import schemaFieldProps from '../schema-field-props';
   import BasicField from '../../components/basic-field.vue';
+  import { genFieldPropsAndRules } from '../../utils';
 
   export default defineComponent({
     inject: ['schemaFormEditable'],
@@ -19,10 +20,25 @@
       const handleChange = (data) => {
         emit('change', data);
       };
+
+      const { fieldProps, rules } = genFieldPropsAndRules({
+        schema: props.schema,
+        requiredFields: props.requiredFields
+      });
+
+      console.log('fieldProps=======', props.requiredFields, {
+        fieldProps,
+        rules
+      });
       return () => {
         return (
           <BasicField
-            {...props}
+            {...fieldProps}
+            required={fieldProps.required}
+            formData={props.formData}
+            fieldPath={props.fieldPath}
+            schema={props.schema}
+            rules={rules}
             onChange={(data) => handleChange(data)}
           ></BasicField>
         );

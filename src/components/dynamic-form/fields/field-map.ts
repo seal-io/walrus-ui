@@ -108,31 +108,36 @@ export const isAllowCreateNumberSelect = (schema: FieldSchema) => {
 };
 
 export const getSchemaFieldComponent = ({ schema, fieldPath, formData }) => {
-  const { type } = schema;
+  const { type, required: requiredFields } = schema;
+  console.log('schema>>>>>>>>', requiredFields);
   const widget = _.get(schema, ['x-walrus-ui', 'widget'], '');
 
   // build-in component
   if (widget) {
     return {
       component: ComponentsMap[widget],
-      fieldPath: [...fieldPath]
+      fieldPath: [...fieldPath],
+      requiredFields
     };
   }
 
   if (type === FIELD_TYPE.ARRAY && !isMuliSelect(schema)) {
     return {
       component: FieldMaps.array,
-      fieldPath: [...fieldPath]
+      fieldPath: [...fieldPath],
+      requiredFields
     };
   }
   if (type === FIELD_TYPE.OBJECT) {
     return {
       component: FieldMaps.object,
-      fieldPath: [...fieldPath]
+      fieldPath: [...fieldPath],
+      requiredFields
     };
   }
   return {
     component: FieldMaps.stringField,
-    fieldPath: [...fieldPath]
+    fieldPath: [...fieldPath],
+    requiredFields
   };
 };
