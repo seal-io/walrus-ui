@@ -73,8 +73,7 @@
               <a-space
                 style={{
                   'display': 'flex',
-                  'flex-direction': 'column',
-                  'width': `${props.width ? props.width : InputWidth.MIDDLE}px`
+                  'flex-direction': 'column'
                 }}
                 direction="vertical"
               >

@@ -35,8 +35,10 @@
 
       itemsProperties = genObjectFieldProperties({
         schema: props.schema.items as FieldSchema,
+        grandParentHalfGrid: props.schema.halfGrid,
         formData: props.formData,
-        fieldPath: props.fieldPath
+        fieldPath: props.fieldPath,
+        parentSpan: props.parentSpan
       });
 
       const handleAddClick = () => {
@@ -117,7 +119,6 @@
         <FieldGroup
           schema={props.schema}
           level={props.level}
-          class={[`level-${props.level}`]}
           v-slots={{
             buttons: () => {
               return <>{renderAddButton()}</>;
@@ -129,18 +130,21 @@
               <>
                 <div class="add-item">
                   <div class="add-content">
-                    {_.map(item, (sItem, sIndex) => {
-                      return (
-                        <SchemaField
-                          level={props.level + 1}
-                          key={_.join([props.fieldPath, index, sIndex], '.')}
-                          schema={sItem}
-                          formData={props.formData}
-                          fieldPath={sItem.fieldPath}
-                          requiredFields={sItem.required}
-                        ></SchemaField>
-                      );
-                    })}
+                    <a-grid cols={24} col-gap={10}>
+                      {_.map(item, (sItem, sIndex) => {
+                        return (
+                          <SchemaField
+                            level={props.level + 1}
+                            key={_.join([props.fieldPath, index, sIndex], '.')}
+                            schema={sItem}
+                            formData={props.formData}
+                            fieldPath={sItem.fieldPath}
+                            requiredFields={sItem.required}
+                            parentSpan={props.schema.colSpan}
+                          ></SchemaField>
+                        );
+                      })}
+                    </a-grid>
                   </div>
 
                   <div class="delete-btn">{renderDeleleButton(index)}</div>

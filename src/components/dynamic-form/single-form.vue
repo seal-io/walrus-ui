@@ -62,11 +62,13 @@
           layout={layout.value}
           onSubmitFailed={(error) => handleSubmitFailed(error)}
         >
-          <SchemaField
-            schema={props.schema}
-            formData={formData.value}
-            onChange={handleChange}
-          ></SchemaField>
+          <a-grid cols={24} col-gap={16} row-gap={16}>
+            <SchemaField
+              schema={props.schema}
+              formData={formData.value}
+              onChange={handleChange}
+            ></SchemaField>
+          </a-grid>
         </a-form>
       );
     }

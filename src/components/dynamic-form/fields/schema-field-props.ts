@@ -47,6 +47,10 @@ export default {
       return [];
     }
   },
+  parentSpan: {
+    type: Number,
+    default: 24
+  },
   disabled: {
     type: Boolean,
     default: false

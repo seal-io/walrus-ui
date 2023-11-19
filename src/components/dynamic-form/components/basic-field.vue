@@ -1,15 +1,6 @@
 <script lang="tsx">
   import _ from 'lodash';
-  import {
-    defineComponent,
-    toRefs,
-    inject,
-    ref,
-    withModifiers,
-    reactive,
-    computed,
-    watch
-  } from 'vue';
+  import { defineComponent, toRefs, inject, ref } from 'vue';
   import { InjectSchemaFormEditableKey } from '@/views/config';
   import schemaFieldProps from '../fields/schema-field-props';
   import {

@@ -19,8 +19,7 @@
           "
           fill
           :size="20"
-          align="end"
-          style="margin-right: 60px"
+          style="padding-right: 16px"
         >
           <a-button type="primary" size="small" @click="handleSubmit">
             {{ $t('common.button.save') }}
