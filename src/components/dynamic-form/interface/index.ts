@@ -18,6 +18,8 @@ export interface FieldSchema {
   'items'?: FieldSchema;
   'required'?: string[];
   'parentRequired'?: string[];
+  'halfGrid'?: boolean;
+  'colSpan'?: number;
   'properties'?: FieldSchema;
   'additionalProperties'?: FieldSchema;
   'options'?: { label: string; value: string }[];

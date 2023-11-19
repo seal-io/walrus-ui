@@ -79,6 +79,7 @@
             formData={props.formData}
             schema={props.schema}
             requiredFields={props.requiredFields}
+            parentSpan={props.parentSpan || 24}
             level={props.level || 0}
             onChange={(data) => handleChange(data)}
           />

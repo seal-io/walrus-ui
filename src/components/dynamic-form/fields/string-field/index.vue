@@ -32,15 +32,17 @@
       });
       return () => {
         return (
-          <BasicField
-            {...fieldProps}
-            required={fieldProps.required}
-            formData={props.formData}
-            fieldPath={props.fieldPath}
-            schema={props.schema}
-            rules={rules}
-            onChange={(data) => handleChange(data)}
-          ></BasicField>
+          <a-grid-item span={{ lg: props.schema.colSpan, md: 24 }}>
+            <BasicField
+              {...fieldProps}
+              required={fieldProps.required}
+              formData={props.formData}
+              fieldPath={props.fieldPath}
+              schema={props.schema}
+              rules={rules}
+              onChange={(data) => handleChange(data)}
+            ></BasicField>
+          </a-grid-item>
         );
       };
     }

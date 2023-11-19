@@ -64,7 +64,8 @@
       childProperties.value = genObjectFieldProperties({
         schema: props.schema,
         formData: props.formData,
-        fieldPath: props.fieldPath
+        fieldPath: props.fieldPath,
+        parentSpan: props.parentSpan
       });
 
       console.log('childProperties>>>>>>>>', {
@@ -218,14 +219,16 @@
               field={_.join(props.fieldPath, '.')}
               validate-trigger={['change']}
             >
-              <SealFormItemWrap
+              {/* <SealFormItemWrap
                 popupInfo={props.schema.description}
                 required={props.required}
                 label={props.schema.title || props.schema.name}
                 style="width: 100%"
               >
+                
+              </SealFormItemWrap> */}
+              <div style={{ width: '100%' }}>
                 <KeyValueLabels
-                  width={800}
                   showNumberInput={isMapNumber}
                   showCheckbox={isMapBoolean}
                   value={_.get(props.formData, props.fieldPath)}
@@ -235,7 +238,7 @@
                     handleChange(props.formData);
                   }}
                 ></KeyValueLabels>
-              </SealFormItemWrap>
+              </div>
             </a-form-item>
           );
         }
@@ -295,6 +298,7 @@
                             formData={props.formData}
                             schema={childSchema}
                             requiredFields={childSchema.required}
+                            parentSpan={props.schema.colSpan}
                             fieldPath={[
                               ...props.fieldPath,
                               item.field,
@@ -332,36 +336,35 @@
         );
       };
       return () => (
-        <>
-          <FieldGroup
-            schema={props.schema}
-            level={props.level}
-            v-slots={{
-              buttons: () => {
-                return <>{renderAddButton()}</>;
-              }
-            }}
-          >
-            <>
-              {_.map(childProperties.value, (childSchema) => {
-                return (
-                  <SchemaField
-                    level={props.level + 1}
-                    schema={childSchema}
-                    formData={props.formData}
-                    fieldPath={childSchema.fieldPath}
-                    requiredFields={childSchema.parentRequired}
-                    onChange={(data) => {
-                      handleChange(data);
-                    }}
-                  />
-                );
-              })}
-              {renderAddtionalProperties()}
-              {rendermapStringAdditional()}
-            </>
-          </FieldGroup>
-        </>
+        <FieldGroup
+          schema={props.schema}
+          level={props.level}
+          v-slots={{
+            buttons: () => {
+              return <>{renderAddButton()}</>;
+            }
+          }}
+        >
+          <>
+            {_.map(childProperties.value, (childSchema) => {
+              return (
+                <SchemaField
+                  level={props.level + 1}
+                  schema={childSchema}
+                  formData={props.formData}
+                  fieldPath={childSchema.fieldPath}
+                  requiredFields={childSchema.parentRequired}
+                  parentSpan={props.schema.colSpan}
+                  onChange={(data) => {
+                    handleChange(data);
+                  }}
+                />
+              );
+            })}
+            {renderAddtionalProperties()}
+            {rendermapStringAdditional()}
+          </>
+        </FieldGroup>
       );
     }
   });

@@ -23,7 +23,7 @@
     >
       <slot></slot>
     </div>
-    <div>
+    <div class="right">
       <slot name="right"></slot>
     </div>
   </div>
@@ -72,7 +72,6 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    width: 100%;
     height: 48px;
     padding-left: 10px;
     background-color: #fff;

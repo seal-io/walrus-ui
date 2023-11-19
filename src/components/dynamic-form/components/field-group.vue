@@ -9,6 +9,7 @@
     setup(props, { slots }) {
       const status = ref(false);
       const hovered = ref(false);
+      const groupHovered = ref(false);
 
       const handleClickRight = () => {
         setTimeout(() => {
@@ -21,6 +22,12 @@
       };
       const handleLeave = () => {
         hovered.value = false;
+      };
+      const handleGroupEnter = () => {
+        groupHovered.value = true;
+      };
+      const handleGroupLeave = () => {
+        groupHovered.value = false;
       };
       const renderContent = () => {
         if (props.level < 2) {
@@ -42,7 +49,7 @@
                   <div>{slots.buttons?.()}</div>
                 </div>
               ) : null}
-              <div class="child-fields">{slots.default?.()}</div>
+              {slots.default?.()}
             </>
           );
         }
@@ -50,12 +57,9 @@
           <div
             onMouseover={withModifiers(
               () => handleEnter(),
-              ['stop', 'prevent', 'native']
+              ['stop', 'prevent']
             )}
-            onMouseout={withModifiers(
-              () => handleLeave(),
-              ['stop', 'prevent', 'native']
-            )}
+            onMouseout={withModifiers(() => handleLeave(), ['stop', 'prevent'])}
           >
             <ModuleWrapper
               class={[{ 'mo-wrap-hover': hovered.value }]}
@@ -82,17 +86,33 @@
       };
 
       return () => (
-        <div
-          class={[
-            'field-group',
-            `level-${props.level}`,
-            { marked: props.level <= 1 },
-            { collapse: props.level > 1 }
-          ]}
-          id={`${props.schema.title || props.schema.name}`}
-        >
-          {renderContent()}
-        </div>
+        <>
+          {props.level === 0 ? (
+            renderContent()
+          ) : (
+            <a-grid-item span={{ lg: props.schema.colSpan, md: 24 }}>
+              <div
+                onMouseover={withModifiers(
+                  () => handleGroupEnter(),
+                  ['stop', 'prevent']
+                )}
+                onMouseout={withModifiers(
+                  () => handleGroupLeave(),
+                  ['stop', 'prevent']
+                )}
+                class={[
+                  'field-group',
+                  `level-${props.level}`,
+                  { 'field-group-hovered': groupHovered.value },
+                  { collapse: props.level > 1 }
+                ]}
+                id={`${props.schema.title || props.schema.name}`}
+              >
+                {renderContent()}
+              </div>
+            </a-grid-item>
+          )}
+        </>
       );
     }
   });
@@ -100,12 +120,18 @@
 
 <style lang="less" scoped>
   .field-group {
-    margin-bottom: 16px;
+    // margin-bottom: 16px;
+    height: 100%;
     padding: 0 16px;
+    padding-right: 16px;
     padding-bottom: 10px;
-    // padding-right: 6px;
     border: 1px solid var(--color-border-2);
     border-radius: var(--border-radius-small);
+
+    &.field-group-hovered:hover {
+      border-color: rgb(var(--arcoblue-6));
+      transition: border-color 0.2s var(--seal-transition-func);
+    }
 
     &.collapse {
       padding: 0;
@@ -115,6 +141,7 @@
 
     :deep(.mo-wrap) {
       .title {
+        padding-right: 16px;
         background-color: #fff;
       }
 

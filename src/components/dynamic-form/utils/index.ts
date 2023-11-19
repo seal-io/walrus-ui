@@ -72,12 +72,37 @@ export const initFieldDefaultValue = (item) => {
   return '';
 };
 
+export const calcFieldSpan = ({ parentSpan, colSpan, parentHalfGrid }) => {
+  if (parentHalfGrid) {
+    return {
+      span: 24,
+      halfGird: true
+    };
+  }
+  if (parentSpan === 24) {
+    const span = colSpan || 12;
+    return {
+      span,
+      halfGird: span === 12
+    };
+  }
+
+  return {
+    span: 24,
+    halfGird: false
+  };
+};
+
 export const genObjectFieldProperties = ({
   schema,
-  fieldPath
+  fieldPath,
+  grandParentHalfGrid,
+  parentSpan
 }: {
   schema: FieldSchema;
   formData: any;
+  parentSpan?: number;
+  grandParentHalfGrid?: boolean; // when has items,need pass it
   fieldPath: string[];
 }) => {
   if (!_.keys(schema?.properties).length) {
@@ -92,6 +117,11 @@ export const genObjectFieldProperties = ({
     const property = _.get(properties, key);
     const { type } = property;
     const order = property['x-walrus-ui']?.order || defaultOrder;
+    const colSpanData = calcFieldSpan({
+      parentSpan,
+      colSpan: property['x-walrus-ui']?.colSpan,
+      parentHalfGrid: schema.halfGrid || grandParentHalfGrid
+    });
     // const required = _.includes(requiredFlag, key);
     const fieldSchema = {
       ...property,
@@ -99,10 +129,14 @@ export const genObjectFieldProperties = ({
       fieldPath: [...fieldPath, key],
       required: property.required || [],
       parentRequired: schema.required || [],
+      colSpan: colSpanData.span,
+      halfGrid: colSpanData.halfGird,
       order
     };
+    console.log('fieldSchema>>>>22>>>>', fieldSchema, colSpanData);
     resultList.push(fieldSchema);
   });
+
   return _.sortBy(resultList, 'order');
 };
 
