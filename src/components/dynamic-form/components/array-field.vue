@@ -139,7 +139,7 @@
                             schema={sItem}
                             formData={props.formData}
                             fieldPath={sItem.fieldPath}
-                            requiredFields={sItem.required}
+                            requiredFields={sItem.parentRequired}
                             parentSpan={props.schema.colSpan}
                           ></SchemaField>
                         );
