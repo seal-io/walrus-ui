@@ -122,6 +122,6 @@ export default {
   'operation.templates.detail.rule.repo': '代码仓库必选',
   'operation.templates.detail.rule.branch': '分支必选',
   'operation.templates.detail.rule.locationfile': '提交路径必填',
-  'operation.templates.button.useInservice': '设为服务可用模板',
-  'operation.templates.button.cancelUseInService': '取消服务可用模板'
+  'operation.templates.button.useInservice': '为服务启用',
+  'operation.templates.button.cancelUseInService': '为服务停用'
 };

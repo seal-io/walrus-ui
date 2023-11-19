@@ -134,9 +134,10 @@ export default {
   'applications.projects.role.owner': 'Owner',
   'applications.projects.role.member': 'Member',
   'applications.projects.role.select': 'please select members',
-  'applications.projects.role.holder': 'please enter a member name',
+  'applications.projects.role.holder': 'please enter a member',
   'applications.projects.role.viewer': 'Viewer',
   'applications.secret.create': 'New Variable',
+  'applications.member.table.name': 'Member',
   'applications.secret.rules.value': 'variable value is required',
   'applications.secret.name.tips':
     'consists of letters, numbers, underscores, cannot start with a number',

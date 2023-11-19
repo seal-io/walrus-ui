@@ -128,6 +128,7 @@ export default {
   'applications.projects.role.select': '请选择成员',
   'applications.projects.role.holder': '请输入成员名称',
   'applications.projects.role.viewer': '只读',
+  'applications.member.table.name': '成员',
   'applications.secret.create': '新建变量',
   'applications.secret.edit': '编辑变量',
   'applications.secret.value': '变量',

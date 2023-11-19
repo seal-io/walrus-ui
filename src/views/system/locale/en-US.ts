@@ -8,7 +8,7 @@ export default {
   'user.password.default.modify': 'Modify Default Password',
   'user.password.oldPassword': 'Old password',
   'user.password.newPassword': 'New password',
-  'user.password.confirmPassword': 'Confirm New password',
+  'user.password.confirmPassword': 'Confirm new password',
   'user.password.rules.oldpassword': 'Please enter old password',
   'user.password.rules.newpassword': 'Please enter new password',
   'user.password.rules.confirmpassword': 'Please enter the new password again',
@@ -24,8 +24,7 @@ export default {
   'system.setting.mavenRepo': 'Repository URL',
   'system.setting.mavenRepo.desc':
     'Used to retrieve non-extranet-visible Maven repository artifacts during source code inspection',
-  'system.setting.rules.mavenRepo':
-    'The maven repository address must be http or https',
+  'system.setting.rules.mavenRepo': 'The address must be http or https.',
   'system.setting.pulldependce': 'whether to search online',
   'system.setting.pulldependce.desc':
     'Used to retrieve the transitive dependencies of the component, the latest version and license information of the component, etc',
@@ -68,9 +67,9 @@ export default {
   'system.setting.offlineManage.noProxy.desc':
     'Used to not proxy outbound traffic for matching domain names and IPs in offline environment',
   'system.setting.rules.socks':
-    'Only addresses for socks4 and socks5 protocols',
+    'Only addresses for socks4 and socks5 protocols.',
   'system.setting.offlineManage.noProxy.extra':
-    "list of IPs、domain name with ',' separated;supporting fuzzy matching;e.g.:192.168.0.*,*ip.net",
+    "List of IPs ang domain names with ',' separated;supporting fuzzy matching;e.g.:192.168.0.*,*ip.net.",
   'system.setting.rules.noProxy': 'The input format is incorrect',
   'system.setting.TokenRefreshCronExpr': 'System token refresh cycle',
   'system.setting.TokenRefreshCronExpr.desc':
@@ -83,7 +82,7 @@ export default {
   'system.setting.cron.desc': 'The format is a cron expression',
   'system.setting.rules.cron': 'The expression is not in the correct format',
   'system.setting.cron.extra':
-    'Cron expression: seconds  minute  hour  day(month)  month  day(week)',
+    'Cron expression: seconds  minute  hour  day(month)  month  day(week).',
   'system.setting.analyze.goproxy.desc':
     'The repository(GOPROXY) is used for resolving Go modules and fetching module information',
   'system.setting.analyze.goprivate.desc':
@@ -125,9 +124,13 @@ export default {
   'system.setting.drift.check.desc':
     'Monitor whether the remote configuration of the service has changed',
   'system.setting.templateLib': 'Template Catalog Settings',
-  'system.setting.enableBuiltinCatalog': 'Use built-in template catalog',
+  'system.setting.enableBuiltinCatalog': 'Use built-in catalog',
+  'system.setting.enableBuiltinCatalog.desc':
+    'After disabled, the built-in catalog can be removed from the catalog, suitable for offline scenarios. If the built-in catalog is deleted and reopened, it will be re-added during the next Walrus restart',
   'system.setting.SkipRemoteTLSVerify': 'Skip certificate authentication',
   'system.setting.SkipRemoteTLSVerify.title': 'Certificate Settings',
+  'system.setting.SkipRemoteTLSVerify.desc':
+    'After enabled, SSL certificate verification will no longer be performed when refreshing the catalogs, templates, and downloading templates.',
   'system.setting.enableSyncCatalog':
     'Whether to synchronize the template catalog data',
   'system.setting.enableSyncCatalog.desc':
