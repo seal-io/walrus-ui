@@ -53,7 +53,7 @@
           :cell-style="{ minWidth: '40px' }"
           align="center"
           data-index="createTime"
-          :title="$t('dashboard.table.time')"
+          :title="$t('common.table.createTime')"
         >
           <template #cell="{ record }">
             <span>{{

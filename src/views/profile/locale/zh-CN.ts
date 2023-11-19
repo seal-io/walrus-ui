@@ -21,7 +21,7 @@ export default {
   'propfile.permission.table.project': '项目',
   'propfile.permission.table.resource': '资源',
   'propfile.permission.table.role': '角色',
-  'propfile.permission.table.permission': '界面权限',
+  'propfile.permission.table.permission': '权限',
   'propfile.permission.table.group': '分组',
   'propfile.permission.type.project': '项目权限',
   'propfile.permission.type.system': '系统权限',

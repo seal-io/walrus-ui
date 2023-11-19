@@ -60,7 +60,7 @@ export default {
   'system.setting.offlineManage.noProxy.desc':
     '用于在离线环境下不代理匹配的域名和IP的出站流量',
   'system.setting.offlineManage.noProxy.extra':
-    '逗号分割的IP列表、域名列表，支持模糊匹配；例：192.168.0.*,*ip.net',
+    '逗号分隔的IP列表、域名列表，支持模糊匹配；例如：192.168.0.,*ip.net',
   'system.setting.rules.noProxy': '输入格式不正确',
   'system.setting.rules.socks': '仅接受 socks4 和 socks5 协议的地址',
   'system.setting.TokenRefreshCronExpr': '系统令牌刷新周期',
@@ -107,7 +107,11 @@ export default {
   'system.setting.drift.check.desc': '监测服务的远端配置是否变更',
   'system.setting.templateLib': '模板库设置',
   'system.setting.enableBuiltinCatalog': '使用内置模板库',
+  'system.setting.enableBuiltinCatalog.desc':
+    '关闭后，将可以在模板库中删除Builtin模板库，适用于离线场景。若删除 Builtin模板库后重新开启，将在下次Walrus重启时重新添加Builtin模板库',
   'system.setting.SkipRemoteTLSVerify': '跳过证书认证',
+  'system.setting.SkipRemoteTLSVerify.desc':
+    '开启后，刷新模板库、模板和下载模板时将不再进行SSL证书验证',
   'system.setting.SkipRemoteTLSVerify.title': '证书设置',
   'system.setting.enableSyncCatalog': '是否同步模板库',
   'system.setting.enableSyncCatalog.desc': '开启后，每天1点会同步模板库数据',

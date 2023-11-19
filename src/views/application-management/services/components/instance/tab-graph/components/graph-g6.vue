@@ -292,8 +292,8 @@
   const setNodeDescription = (node) => {
     if (_.hasIn(node.extensions, 'isService')) {
       return node.extensions.isService
-        ? i18n.global.t('menu.applicationManagement.services')
-        : i18n.global.t('menu.applicationManagement.resource');
+        ? i18n.global.t('applications.applications.table.service')
+        : i18n.global.t('applications.applications.table.resource');
     }
     return _.get(node, 'extensions.type') || _.get(node, 'kind');
   };

@@ -74,6 +74,7 @@ export const serviceManagement: SettingsItem = {
           id: 'SkipRemoteTLSVerify',
           key: 'SkipRemoteTLSVerify',
           label: 'system.setting.SkipRemoteTLSVerify',
+          desc: 'system.setting.SkipRemoteTLSVerify.desc',
           parentId: '',
           component: {
             type: 'switch',
@@ -105,6 +106,7 @@ export const serviceManagement: SettingsItem = {
           id: 'EnableBuiltinCatalog',
           key: 'EnableBuiltinCatalog',
           label: 'system.setting.enableBuiltinCatalog',
+          desc: 'system.setting.enableBuiltinCatalog.desc',
           parentId: '',
           component: {
             type: 'switch',

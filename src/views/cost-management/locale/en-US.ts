@@ -93,5 +93,5 @@ export default {
   'cost.optimize.form.title.group1': 'Define The Cost Unit',
   'cost.optimize.form.title.group2': 'Shared Cost Splitting Rules',
   'cost.optimize.form.timeRange.tips':
-    'toggling the time range will clear the value of the cost source'
+    'Toggling the time range will clear the value of the cost source.'
 };

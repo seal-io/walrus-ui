@@ -3,7 +3,7 @@ export default {
   'applications.workflow.edit': 'Edit Workflow',
   'applications.workflow.view': 'View Workflow',
   'applications.workflow.name': 'Workflow',
-  'applications.workflow.filter.holder': 'please enter workflow',
+  'applications.workflow.filter.holder': 'please enter a workflow',
   'applications.workflow.table.status': 'Recently Running Status',
   'applications.workflow.table.stage': 'Recently Running Stage',
   'applications.workflow.table.trigger': 'Trigger Information',

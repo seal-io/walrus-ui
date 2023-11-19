@@ -108,7 +108,7 @@ export default {
   'common.table.yes': '是',
   'common.table.no': '否',
   'common.validate.labelName':
-    '仅包含小写字母数字或"-",以字母数字开头,以字母数字结尾',
+    '仅包含小写字母数字或"-",以字母数字开头,以字母数字结尾。',
   'common.search.nodata': '无匹配数据',
   'common.data.empty': '暂无数据',
   'common.tips.change': '有未保存的更改!',

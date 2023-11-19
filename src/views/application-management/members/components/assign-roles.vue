@@ -117,7 +117,7 @@
             tooltip
             :cell-style="{ minWidth: '40px' }"
             data-index="subject.name"
-            :title="$t('profile.account.name')"
+            :title="$t('profile.account.type.user')"
           >
           </a-table-column>
           <a-table-column
