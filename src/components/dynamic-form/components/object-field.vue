@@ -94,7 +94,10 @@
         formData: props.formData,
         fieldPath: props.fieldPath
       });
-
+      console.log(
+        'additionalPropertiesList============',
+        additionalPropertiesList
+      );
       // value is any
       const isAnyAdditionalProperties =
         _.isBoolean(props.schema.additionalProperties) &&
@@ -219,26 +222,38 @@
               field={_.join(props.fieldPath, '.')}
               validate-trigger={['change']}
             >
-              {/* <SealFormItemWrap
-                popupInfo={props.schema.description}
-                required={props.required}
-                label={props.schema.title || props.schema.name}
-                style="width: 100%"
-              >
-                
-              </SealFormItemWrap> */}
-              <div style={{ width: '100%' }}>
-                <KeyValueLabels
-                  showNumberInput={isMapNumber}
-                  showCheckbox={isMapBoolean}
-                  value={_.get(props.formData, props.fieldPath)}
-                  labels={additionalList.value}
-                  onUpdate:value={(val) => {
-                    _.set(props.formData, props.fieldPath, val);
-                    handleChange(props.formData);
-                  }}
-                ></KeyValueLabels>
-              </div>
+              {props.level < 2 ? (
+                <SealFormItemWrap
+                  popupInfo={props.schema.description}
+                  required={props.required}
+                  label={props.schema.title || props.schema.name}
+                  style="width: 100%"
+                >
+                  <KeyValueLabels
+                    showNumberInput={isMapNumber}
+                    showCheckbox={isMapBoolean}
+                    value={_.get(props.formData, props.fieldPath)}
+                    labels={additionalList.value}
+                    onUpdate:value={(val) => {
+                      _.set(props.formData, props.fieldPath, val);
+                      handleChange(props.formData);
+                    }}
+                  ></KeyValueLabels>
+                </SealFormItemWrap>
+              ) : (
+                <div style={{ width: '100%' }}>
+                  <KeyValueLabels
+                    showNumberInput={isMapNumber}
+                    showCheckbox={isMapBoolean}
+                    value={_.get(props.formData, props.fieldPath)}
+                    labels={additionalList.value}
+                    onUpdate:value={(val) => {
+                      _.set(props.formData, props.fieldPath, val);
+                      handleChange(props.formData);
+                    }}
+                  ></KeyValueLabels>
+                </div>
+              )}
             </a-form-item>
           );
         }
@@ -297,7 +312,7 @@
                           <SchemaField
                             formData={props.formData}
                             schema={childSchema}
-                            requiredFields={childSchema.required}
+                            requiredFields={childSchema.parentRequired}
                             parentSpan={props.schema.colSpan}
                             fieldPath={[
                               ...props.fieldPath,

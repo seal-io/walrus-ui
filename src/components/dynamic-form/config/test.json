@@ -815,6 +815,7 @@
                       },
                       "x-walrus-ui": {
                           "group": "container",
+                          "colSpan": 12,
                           "order": 0
                       }
                   }
