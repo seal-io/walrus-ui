@@ -266,13 +266,12 @@
       </a-spin>
       <EditPageFooter>
         <template #save>
-          <primaryButtonGroup
+          <GroupButtonMenu
             :loading="submitLoading"
-            :action-list="SaveActions"
-            :btn-text="$t('common.button.save')"
+            :actions="SaveActions"
             @select="handleAddSelector"
           >
-          </primaryButtonGroup>
+          </GroupButtonMenu>
         </template>
         <template #cancel>
           <a-button
@@ -301,7 +300,7 @@
     onMounted
   } from 'vue';
   import { onBeforeRouteLeave } from 'vue-router';
-  import primaryButtonGroup from '@/components/drop-button-group/primary-button-group.vue';
+  import GroupButtonMenu from '@/components/drop-button-group/group-button-menu.vue';
   import useCallCommon from '@/hooks/use-call-common';
   import thumbButton from '@/components/buttons/thumb-button.vue';
   import useScrollToView from '@/hooks/use-scroll-to-view';
