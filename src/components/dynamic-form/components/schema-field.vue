@@ -57,11 +57,21 @@
       }
       if (!component) return null;
 
-      console.log('currentProps=======', props.schema);
       const renderComponent = () => {
         const Component = component;
         if (showIf) {
-          return getShowIfValue(showIf, props.formData) ? (
+          console.log(
+            'showIf+++++++++++',
+            showIf,
+            _.initial(fieldPath),
+            props.formData,
+            fieldPath
+          );
+          return getShowIfValue(
+            showIf,
+            props.formData,
+            _.initial(fieldPath)
+          ) ? (
             <Component
               fieldPath={fieldPath}
               formData={props.formData}
@@ -79,7 +89,7 @@
             formData={props.formData}
             schema={props.schema}
             requiredFields={props.requiredFields}
-            parentSpan={props.parentSpan || 24}
+            parentSpan={props.parentSpan || 12}
             level={props.level || 0}
             onChange={(data) => handleChange(data)}
           />

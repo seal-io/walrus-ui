@@ -97,11 +97,10 @@ export const isAllowCreateNumberSelect = (schema: FieldSchema) => {
 
 export const getSchemaFieldComponent = ({ schema, fieldPath, formData }) => {
   const { type, required: requiredFields } = schema;
-  console.log('schema>>>>>>>>', requiredFields);
   const widget = _.get(schema, ['x-walrus-ui', 'widget'], '');
 
   // build-in component
-  if (widget) {
+  if (widget && widget !== 'TextArea') {
     return {
       component: ComponentsMap[widget],
       fieldPath: [...fieldPath],

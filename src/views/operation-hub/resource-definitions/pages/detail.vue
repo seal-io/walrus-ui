@@ -462,7 +462,10 @@
         });
         copyFormData = cloneDeep(formData.value);
         if (id) {
-          await upateResourceDefinition({ id, data: formData.value });
+          await upateResourceDefinition({
+            id,
+            data: { ..._.omit(formData.value, 'uiSchema') }
+          });
         } else {
           await createResourceDefinition(formData.value);
         }

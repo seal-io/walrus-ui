@@ -129,6 +129,7 @@ export const RevisionStatus = {
 
 export const ServiceStatus = {
   Deployed: 'Deployed',
+  Ready: 'Ready',
   Deleting: 'Deleting',
   Deploying: 'Deploying',
   Preparing: 'Preparing',
@@ -146,6 +147,14 @@ export const StartableStatus = [
   ServiceStatus.Undeployed
 ];
 
+export const StoppableStatus = [
+  ServiceStatus.Deployed,
+  ServiceStatus.Ready,
+  ServiceStatus.Deploying,
+  ServiceStatus.Preparing,
+  ServiceStatus.Running
+];
+
 // export const NonStartableStatus = [
 //   ServiceStatus.Deleting,
 //   ServiceStatus.DeleteFailed,
@@ -154,14 +163,6 @@ export const StartableStatus = [
 //   ServiceStatus.Preparing,
 //   ServiceStatus.Running
 // ];
-
-export const StoppableStatus = [
-  ServiceStatus.Deployed,
-  ServiceStatus.Deploying,
-  ServiceStatus.Preparing,
-  ServiceStatus.Running,
-  ServiceStatus.StopFailed
-];
 
 // export const NonStoppableStatus = [
 //   ServiceStatus.Deleting,

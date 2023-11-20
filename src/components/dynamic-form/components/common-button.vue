@@ -1,5 +1,6 @@
 <script lang="tsx">
   import { PropType, Prop, withModifiers, defineComponent } from 'vue';
+  import ThumbButton from '@/components/buttons/thumb-button.vue';
 
   export default defineComponent({
     props: {
@@ -29,10 +30,7 @@
               onClick={() => emit('click')}
             >
               {props.action === 'add' ? (
-                <icon-plus-circle-fill
-                  style="stroke-width: 3"
-                  class="size-24"
-                />
+                <ThumbButton size={28} fontSize={'16px'}></ThumbButton>
               ) : (
                 <icon-minus-circle style="stroke-width: 3" class="size-24" />
               )}

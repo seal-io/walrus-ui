@@ -64,11 +64,7 @@
             }
           });
         });
-        console.log(
-          'propertiesList=======',
-          propertiesList.value,
-          props.formData
-        );
+
         handleChange(props.formData);
       };
 
@@ -117,7 +113,7 @@
           schema={props.schema}
           level={props.level}
           v-slots={{
-            buttons: () => {
+            footer: () => {
               return <>{renderAddButton()}</>;
             }
           }}

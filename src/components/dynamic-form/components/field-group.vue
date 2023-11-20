@@ -14,7 +14,6 @@
       const handleClickRight = () => {
         setTimeout(() => {
           status.value = true;
-          console.log('status========', status.value);
         }, 100);
       };
       const handleEnter = () => {
@@ -50,6 +49,7 @@
                 </div>
               ) : null}
               {slots.default?.()}
+              <div>{slots.footer?.()}</div>
             </>
           );
         }
@@ -80,6 +80,7 @@
               }}
             >
               {slots.default?.()}
+              <div>{slots.footer?.()}</div>
             </ModuleWrapper>
           </div>
         );

@@ -629,7 +629,7 @@
     }
   };
   watch(
-    () => formData.template.version,
+    () => formData.template?.version,
     (nv, ov) => {
       versionMap.value = {
         nv,

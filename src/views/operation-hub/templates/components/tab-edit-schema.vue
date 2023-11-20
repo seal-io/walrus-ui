@@ -235,11 +235,7 @@
     const res = initFormState(variables);
     fieldList.value = res.fieldSchemaList;
     formData.value = res.formData;
-    schemaVariables.value = _.get(
-      props.schema?.uiSchema?.openAPISchema,
-      'components.schemas.variables',
-      {}
-    );
+    schemaVariables.value = variables;
     return {
       jsonCode,
       formData: formData.value

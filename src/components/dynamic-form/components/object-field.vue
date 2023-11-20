@@ -59,11 +59,6 @@
         parentSpan: props.parentSpan
       });
 
-      console.log('childProperties>>>>>>>>', {
-        name: props.schema.name,
-        childProperties: childProperties.value
-      });
-
       // init field value
       if (!_.get(props.formData, props.fieldPath)) {
         _.set(
@@ -213,7 +208,7 @@
               field={_.join(props.fieldPath, '.')}
               validate-trigger={['change']}
             >
-              {props.level < 2 ? (
+              {props.level < 1 ? (
                 <SealFormItemWrap
                   popupInfo={props.schema.description}
                   required={props.required}
@@ -265,10 +260,7 @@
               return (
                 <>
                   <div class="add-item">
-                    <div
-                      key={_.join([props.fieldPath, index], '.')}
-                      class="add-content"
-                    >
+                    <div class="add-content">
                       <a-form-item
                         field={_.join([props.fieldPath, index, 'field'], '.')}
                       >
@@ -336,7 +328,7 @@
           schema={props.schema}
           level={props.level}
           v-slots={{
-            buttons: () => {
+            footer: () => {
               return <>{renderAddButton()}</>;
             }
           }}

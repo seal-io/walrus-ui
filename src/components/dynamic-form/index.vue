@@ -24,7 +24,6 @@
         formData.value = result.formData;
         attributes.value = { ..._.cloneDeep(result.formData) };
         fieldSchemaList.value = result.fieldSchemaList;
-        console.log('result===', formData.value, fieldSchemaList.value);
       };
       fetchData();
 
@@ -41,14 +40,11 @@
             result.push({ key, title: key });
           }
         });
-        console.log('result===', result);
         return result;
       };
       treeData.value = convertToTree(toRaw(formData.value));
 
-      const handleSubmit = async () => {
-        console.log('formData===', await formref.value.getFormData());
-      };
+      const handleSubmit = async () => {};
 
       return () => (
         <>

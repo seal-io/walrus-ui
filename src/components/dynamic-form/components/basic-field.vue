@@ -33,6 +33,7 @@
     setup(props, { emit, attrs }) {
       const schemaFormEditable = inject(InjectSchemaFormEditableKey);
 
+      const widget = _.get(props.schema, ['x-walrus-ui', 'widget'], '');
       const numberReg = /\d+/;
       const { type } = toRefs(props.schema);
 
@@ -40,7 +41,6 @@
       const options = ref<Option[]>([]);
 
       const handleChange = (data) => {
-        console.log('data=====999=', data);
         emit('change', data);
       };
 
@@ -53,10 +53,25 @@
         );
       }
 
+      // textarea
+      if (type.value === 'string' && widget === 'TextArea') {
+        Component = CommonFieldMaps.textArea;
+      }
+
       if (isSelect(props.schema)) {
         Component = CommonFieldMaps.select;
         if (props.schema.enum) {
           options.value = props.schema.enum.map((item) => {
+            return {
+              label: item,
+              value: item
+            };
+          });
+        } else if (props.schema.default) {
+          const defaultList = _.isArray(props.schema.default)
+            ? props.schema.default
+            : [props.schema.default];
+          options.value = defaultList.map((item) => {
             return {
               label: item,
               value: item
@@ -81,11 +96,6 @@
       };
       const debounceChangeFormData = _.debounce((data) => {
         handleChange(data);
-        console.log(
-          'props.input.change===',
-          props.formData,
-          _.get(props.formData, props.fieldPath)
-        );
       }, 100);
 
       const handleSelectInputChange = (e: any) => {
@@ -105,7 +115,6 @@
         if (isSelect(props.schema)) {
           return (
             <>
-              <a-option style={{ display: 'none' }}></a-option>
               {_.map(options.value, (item) => {
                 return <a-option value={item.value}>{item.label}</a-option>;
               })}
@@ -129,7 +138,7 @@
             label={props.label}
             style="width: 100%"
             allow-search={false}
-            editorId={_.join(props.fieldPath, '-')}
+            editor-id={_.join(props.fieldPath, '-')}
             popupInfo={props.schema.description}
             model-value={_.get(props.formData, props.fieldPath)}
             onInput={(e) => {

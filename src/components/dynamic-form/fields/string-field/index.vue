@@ -18,7 +18,6 @@
     props: schemaFieldProps,
     setup(props, { emit }) {
       const handleChange = (data) => {
-        console.log('data=====99==', data);
         emit('change', data);
       };
 
