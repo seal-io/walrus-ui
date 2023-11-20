@@ -103,7 +103,6 @@
     if (errorList.length) {
       activeKey.value = errorList[0].tab;
     }
-    console.log('errorList====', errorList);
     return errorList.length > 0;
   };
   defineExpose({
@@ -112,14 +111,13 @@
   watch(
     () => props.schema,
     () => {
+      formGroup.value = [];
       destroyed.value = true;
-      refMap.value = {};
-      formGroup.value = createFormGroup(props.schema);
-      activeKey.value = formGroup.value[0]?.group;
       nextTick(() => {
         destroyed.value = false;
+        formGroup.value = createFormGroup(props.schema);
+        activeKey.value = formGroup.value[0]?.group;
       });
-      console.log('formGroup======', formGroup.value);
     },
     {
       immediate: true,

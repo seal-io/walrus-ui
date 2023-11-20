@@ -4,6 +4,6 @@ import businessComponents from '../../form-create/custom-components';
 
 export default {
   ...businessComponents,
-  Textarea: sealTextarea,
+  TextArea: sealTextarea,
   AceEditor
 };

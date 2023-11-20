@@ -22,10 +22,8 @@
   const formData = ref({});
   const formref = ref();
   const schema = _.get(testData, 'components.schemas.variables') as any;
-  console.log('schema======', schema);
 
   const handleSubmit = async () => {
     const res = await formref.value.validate();
-    console.log('res====', res, formData.value);
   };
 </script>

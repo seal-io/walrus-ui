@@ -50,7 +50,6 @@ export const createFormGroup = (rootSchema: FieldSchema) => {
       }
     });
   });
-  console.log('formGroup', formGroup);
   return _.sortBy(formGroup, ['groupOrder']);
 };
 

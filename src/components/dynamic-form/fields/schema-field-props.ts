@@ -49,7 +49,7 @@ export default {
   },
   parentSpan: {
     type: Number,
-    default: 24
+    default: 12
   },
   disabled: {
     type: Boolean,

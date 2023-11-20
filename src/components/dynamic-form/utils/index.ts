@@ -10,7 +10,7 @@ export const isSelect = (schema: FieldSchema) => {
   if (items && type === FIELD_TYPE.ARRAY) {
     return true;
   }
-  return type === FIELD_TYPE.STRING && enumList && enumList.length > 0;
+  return enumList && enumList.length > 0;
 };
 
 export const isBoolean = (schema: FieldSchema) => {
@@ -41,12 +41,14 @@ export const isDatePicker = (schema: FieldSchema) => {
   );
 };
 
-export const getShowIfValue = (showif, formData) => {
+export const getShowIfValue = (showif, formData, fieldPath?: string[]) => {
   const conditions = parseExpression(showif);
+  console.log('conditions====', showif, conditions);
   const isShow = getConditionValue(
     {
       conditions,
-      showIf: showif
+      showIf: showif,
+      fieldPath
     },
     formData
   );
@@ -133,7 +135,6 @@ export const genObjectFieldProperties = ({
       halfGrid: colSpanData.halfGird,
       order
     };
-    console.log('fieldSchema>>>>22>>>>', fieldSchema, colSpanData);
     resultList.push(fieldSchema);
   });
 

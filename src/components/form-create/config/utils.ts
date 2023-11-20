@@ -53,10 +53,11 @@ const funcMap = conditionFuncMap();
 
 export const getConditionValue = (fm, formData) => {
   const conditionList = fm.conditions;
+  const fieldPath = fm.fieldPath || [];
   if (isOrCondition(fm.showIf)) {
     return _.some(conditionList, (item) => {
       return funcMap.get(item.operator)(
-        _.toString(_.get(formData, item.variable)),
+        _.toString(_.get(formData, [...fieldPath, item.variable])),
         item.value
       );
     });
@@ -64,7 +65,7 @@ export const getConditionValue = (fm, formData) => {
 
   return _.every(conditionList, (item) => {
     return funcMap.get(item.operator)(
-      _.toString(_.get(formData, item.variable)),
+      _.toString(_.get(formData, [...fieldPath, item.variable])),
       item.value
     );
   });
@@ -72,10 +73,11 @@ export const getConditionValue = (fm, formData) => {
 
 export const getObjectConditionValue = (fm, formData) => {
   const conditionList = parseExpression(fm.showIf);
+  const fieldPath = fm.fieldPath || [];
   if (isOrCondition(fm.showIf)) {
     return _.some(conditionList, (item) => {
       return funcMap.get(item.operator)(
-        _.toString(_.get(formData, item.variable)),
+        _.toString(_.get(formData, [...fieldPath, item.variable])),
         item.value
       );
     });
@@ -83,7 +85,7 @@ export const getObjectConditionValue = (fm, formData) => {
 
   return _.every(conditionList, (item) => {
     return funcMap.get(item.operator)(
-      _.toString(_.get(formData, item.variable)),
+      _.toString(_.get(formData, [...fieldPath, item.variable])),
       item.value
     );
   });
