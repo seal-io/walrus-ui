@@ -52,6 +52,12 @@
           return PageAction.EDIT;
         }
       },
+      editorId: {
+        type: String,
+        default() {
+          return 'field';
+        }
+      },
       width: {
         type: Number,
         default() {
@@ -90,6 +96,7 @@
                       position={sIndex}
                       always-delete={true}
                       should-key={true}
+                      formId={props.editorId}
                       onAdd={(obj) => handleAddLabel(obj, labelList.value)}
                       onDelete={() =>
                         handleDeleteLabel(labelList.value, sIndex)

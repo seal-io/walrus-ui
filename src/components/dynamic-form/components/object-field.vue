@@ -1,20 +1,11 @@
 <script lang="tsx">
-  import {
-    defineComponent,
-    h,
-    compile,
-    PropType,
-    toRefs,
-    ref,
-    reactive,
-    computed,
-    watch
-  } from 'vue';
+  import { defineComponent, ref } from 'vue';
   import _ from 'lodash';
   import i18n from '@/locale';
   import KeyValueLabels from '@/components/form-create/custom-components/key-value-labels.vue';
   import SealFormItemWrap from '@/components/seal-form/components/seal-form-item-wrap.vue';
   import SealInput from '@/components/seal-form/components/seal-input.vue';
+  import HintInput from '@/components/hint-input/index.vue';
   import schemaFieldProps from '../fields/schema-field-props';
   import { FieldSchema } from '../interface';
   import FieldGroup from './field-group.vue';
@@ -230,6 +221,7 @@
                   style="width: 100%"
                 >
                   <KeyValueLabels
+                    editorId={_.join(props.fieldPath, '-')}
                     showNumberInput={isMapNumber}
                     showCheckbox={isMapBoolean}
                     value={_.get(props.formData, props.fieldPath)}
@@ -243,6 +235,7 @@
               ) : (
                 <div style={{ width: '100%' }}>
                   <KeyValueLabels
+                    editorId={_.join(props.fieldPath, '-')}
                     showNumberInput={isMapNumber}
                     showCheckbox={isMapBoolean}
                     value={_.get(props.formData, props.fieldPath)}
@@ -279,12 +272,16 @@
                       <a-form-item
                         field={_.join([props.fieldPath, index, 'field'], '.')}
                       >
-                        <SealInput
+                        <HintInput
                           modelValue={_.get(objectAdditionalList.value, [
                             index,
                             'field'
                           ])}
-                          placeholder="enter proerty name"
+                          editorId={_.join(
+                            [props.fieldPath, index, 'field'],
+                            '.'
+                          )}
+                          placeholder="enter property name"
                           onChange={() => {
                             handleAdditionalFieldChange();
                             handleChange(props.formData);
@@ -295,17 +292,8 @@
                               [index, 'field'],
                               val
                             );
-                            console.log(
-                              'objectAdditionalList.value>>>>>>>>>>>',
-                              {
-                                objectAdditionalList:
-                                  objectAdditionalList.value,
-                                index,
-                                val
-                              }
-                            );
                           }}
-                        ></SealInput>
+                        ></HintInput>
                       </a-form-item>
                       {_.map(item.list, (childSchema, cIndex) => {
                         return (
@@ -337,13 +325,6 @@
                     </div>
                     <div class="delete-btn">{renderDeleleButton(index)}</div>
                   </div>
-                  {index === objectAdditionalList.value.length - 1 ? null : (
-                    <a-divider
-                      direction="horizontal"
-                      type="dashed"
-                      size={2}
-                    ></a-divider>
-                  )}
                 </>
               );
             })}

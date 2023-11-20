@@ -62,6 +62,7 @@
   const activeKey = ref<string>('schemaForm');
   const refMap = ref<any>({});
   const schemaForm = ref();
+  const rootFormData = ref({});
   const destroyed = ref<boolean>(false);
   const formGroup = ref<FormGroup[]>([]);
 

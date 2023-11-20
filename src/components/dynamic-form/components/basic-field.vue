@@ -40,6 +40,7 @@
       const options = ref<Option[]>([]);
 
       const handleChange = (data) => {
+        console.log('data=====999=', data);
         emit('change', data);
       };
 
@@ -78,15 +79,28 @@
         }
         return list;
       };
+      const debounceChangeFormData = _.debounce((data) => {
+        handleChange(data);
+        console.log(
+          'props.input.change===',
+          props.formData,
+          _.get(props.formData, props.fieldPath)
+        );
+      }, 100);
+
       const handleSelectInputChange = (e: any) => {
         if (
           isAllowCreateNumberSelect(props.schema) &&
           !numberReg.test(e.data)
         ) {
           e.target.value = e.target.value.replace(/[^\d]/g, '');
+        } else if (isBoolean(props.schema)) {
+          _.set(props.schema, props.fieldPath, e.target.checked);
+        } else {
+          _.set(props.schema, props.fieldPath, e);
         }
       };
-
+      console.log('component===', Component);
       const renderSelectOptions = () => {
         if (isSelect(props.schema)) {
           return (
@@ -115,6 +129,7 @@
             label={props.label}
             style="width: 100%"
             allow-search={false}
+            editorId={_.join(props.fieldPath, '-')}
             popupInfo={props.schema.description}
             model-value={_.get(props.formData, props.fieldPath)}
             onInput={(e) => {
@@ -129,7 +144,13 @@
             onChange={(val, e) => {
               val = filterEmptyOnSelect(val, e);
               _.set(props.formData, props.fieldPath, val);
-              console.log('basic-field==change', val, props, props.formData);
+              console.log(
+                'basic-field==change',
+                { val },
+                { e },
+                { fieldPath: props.fieldPath },
+                { formData: props.formData }
+              );
               handleChange(props.formData);
             }}
           >

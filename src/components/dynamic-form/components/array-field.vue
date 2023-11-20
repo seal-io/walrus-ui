@@ -1,9 +1,6 @@
 <script lang="tsx">
   import { defineComponent, ref } from 'vue';
   import _ from 'lodash';
-  import KeyValueLabels from '@/components/form-create/custom-components/key-value-labels.vue';
-  import SealFormItemWrap from '@/components/seal-form/components/seal-form-item-wrap.vue';
-  import SealInput from '@/components/seal-form/components/seal-input.vue';
   import schemaFieldProps from '../fields/schema-field-props';
   import { FieldSchema } from '../interface';
   import FieldGroup from './field-group.vue';
@@ -130,7 +127,7 @@
               <>
                 <div class="add-item">
                   <div class="add-content">
-                    <a-grid cols={24} col-gap={10}>
+                    <a-grid cols={12} col-gap={10}>
                       {_.map(item, (sItem, sIndex) => {
                         return (
                           <SchemaField
@@ -149,13 +146,6 @@
 
                   <div class="delete-btn">{renderDeleleButton(index)}</div>
                 </div>
-                {index === propertiesList.value.length - 1 ? null : (
-                  <a-divider
-                    direction="horizontal"
-                    type="dashed"
-                    size={2}
-                  ></a-divider>
-                )}
               </>
             );
           })}
