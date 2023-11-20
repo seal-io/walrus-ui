@@ -588,7 +588,7 @@
     const groupres = await groupForm.value?.validate();
     console.log('groupres===', groupres, res, validateTrigger.value);
     // const groupFormRes = await groupForm.value?.getData();
-    if (!res && groupres && !validateTrigger.value) {
+    if (!res && !groupres && !validateTrigger.value) {
       try {
         submitLoading.value = true;
         if (!formData.template.project?.id) {

@@ -25,6 +25,7 @@
     </a-tabs>
     <SingleForm
       v-if="formGroup.length === 1"
+      :key="`${Date.now()}`"
       ref="schemaForm"
       form-id="schemaForm"
       layout="vertical"
@@ -112,6 +113,7 @@
     () => props.schema,
     () => {
       destroyed.value = true;
+      refMap.value = {};
       formGroup.value = createFormGroup(props.schema);
       activeKey.value = formGroup.value[0]?.group;
       nextTick(() => {
