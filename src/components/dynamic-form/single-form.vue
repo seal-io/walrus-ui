@@ -8,6 +8,7 @@
     toRaw,
     watch
   } from 'vue';
+  import _ from 'lodash';
   import useScrollToView from '@/hooks/use-scroll-to-view';
   import formProps from './form-props';
   import SchemaField from './components/schema-field.vue';
@@ -23,8 +24,8 @@
       const { scrollToView } = useScrollToView();
 
       const handleChange = (data) => {
-        formData.value = data;
-        emit('change', toRaw(formData.value));
+        // formData.value = data;
+        // emit('change', toRaw(formData.value));
       };
 
       const handleSubmitFailed = (data) => {
@@ -47,6 +48,7 @@
         () => props.originFormData,
         () => {
           formData.value = props.originFormData;
+          console.log('formData===9999===', formData.value);
         },
         {
           immediate: true,
@@ -62,7 +64,7 @@
           layout={layout.value}
           onSubmitFailed={(error) => handleSubmitFailed(error)}
         >
-          <a-grid cols={24} col-gap={16} row-gap={16}>
+          <a-grid cols={12} col-gap={10} row-gap={10}>
             <SchemaField
               schema={props.schema}
               formData={formData.value}

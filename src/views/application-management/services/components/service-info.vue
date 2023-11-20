@@ -7,6 +7,13 @@
         :field-list="templateInfo"
       ></ViewForm>
     </div>
+    <!-- <GroupForm
+      style="padding: 10px"
+      ref="groupForm"
+      :disabled="true"
+      v-model:form-data="serviceInfo.attributes"
+      :schema="schemaVariables"
+    ></GroupForm> -->
   </div>
 </template>
 
@@ -14,9 +21,11 @@
   import _ from 'lodash';
   import { onMounted, nextTick } from 'vue';
   import ViewForm from '@/components/form-create/view-form.vue';
+  import GroupForm from '@/components/dynamic-form/group-form.vue';
   import useServiceData from '../hooks/use-service-data';
 
-  const { initInfo, serviceInfo, templateInfo } = useServiceData();
+  const { initInfo, serviceInfo, schemaVariables, templateInfo } =
+    useServiceData();
 
   const initData = async () => {
     console.log('initfo=========');

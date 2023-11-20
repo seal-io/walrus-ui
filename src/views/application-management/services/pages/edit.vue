@@ -591,17 +591,6 @@
     if (!res && groupres && !validateTrigger.value) {
       try {
         submitLoading.value = true;
-        // formData.attributes = {
-        //   ...reduce(
-        //     groupFormRes,
-        //     (obj, s) => {
-        //       obj = _.merge(obj, s.formData);
-        //       return obj;
-        //     },
-        //     {}
-        //   )
-        // };
-        // omit template project if value is empty
         if (!formData.template.project?.id) {
           formData.template = _.omit(formData.template, 'project');
         }

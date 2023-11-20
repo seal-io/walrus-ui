@@ -10,7 +10,7 @@
       }"
       @click="handleClick"
     >
-      <span class="label" :class="{ pswd: $attrs.sensitive }">
+      <span class="label" :class="{ pswd: $attrs.password }">
         <span
           ><span>{{ $attrs.label || placeholder }}</span>
           <span
@@ -28,6 +28,7 @@
         </a-tooltip>
       </span>
       <input
+        v-bind="$attrs"
         :id="editorId"
         ref="input"
         v-model.trim="expression"
@@ -36,7 +37,6 @@
         :readonly="disabled"
         :disabled="disabled"
         autocomplete="off"
-        v-bind="$attrs"
         :type="inputType"
         @focus="handleFocus"
         @blur="handleBlur"

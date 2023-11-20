@@ -75,20 +75,20 @@ export const initFieldDefaultValue = (item) => {
 export const calcFieldSpan = ({ parentSpan, colSpan, parentHalfGrid }) => {
   if (parentHalfGrid) {
     return {
-      span: 24,
+      span: colSpan || 6,
       halfGird: true
     };
   }
-  if (parentSpan === 24) {
-    const span = colSpan || 12;
+  if (parentSpan === 12) {
+    const span = colSpan || 6;
     return {
       span,
-      halfGird: span === 12
+      halfGird: span >= 6
     };
   }
 
   return {
-    span: 24,
+    span: 12,
     halfGird: false
   };
 };

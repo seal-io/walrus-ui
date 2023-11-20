@@ -90,7 +90,9 @@
           {props.level === 0 ? (
             renderContent()
           ) : (
-            <a-grid-item span={{ lg: props.schema.colSpan, md: 24 }}>
+            <a-grid-item
+              span={{ lg: props.schema.colSpan, md: 12, sm: 12, xs: 12 }}
+            >
               <div
                 onMouseover={withModifiers(
                   () => handleGroupEnter(),
