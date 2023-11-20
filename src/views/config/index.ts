@@ -1,5 +1,6 @@
 import dayjs from 'dayjs';
 import _ from 'lodash';
+import { MoreAction } from '@/views/config/interface';
 
 export const dateFormatMap = {
   day: 'YYYY.MM.DD',
@@ -205,9 +206,19 @@ export const CommonButtonValue = {
   Start: 'start'
 };
 
-export const SaveActions = [
-  { label: 'common.button.saveDeploy', value: 'deploy', icon: 'icon-Cloud' },
-  { label: 'common.button.draft', value: 'draft', icon: 'icon-xiangqing' }
+export const SaveActions: MoreAction[] = [
+  {
+    label: 'common.button.saveDeploy',
+    value: 'deploy',
+    icon: 'icon-Cloud',
+    iconfont: true
+  },
+  {
+    label: 'common.button.draft',
+    value: 'draft',
+    icon: 'icon-xiangqing',
+    iconfont: true
+  }
 ];
 
 export default {};

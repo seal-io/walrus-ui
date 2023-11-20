@@ -281,14 +281,13 @@
             @click="() => handleSubmit()"
             >{{ $t('common.button.save') }}</a-button
           >
-          <primaryButtonGroup
+          <GroupButtonMenu
             v-else
             :loading="submitLoading"
-            :action-list="SaveActions"
-            :btn-text="$t('common.button.save')"
+            :actions="SaveActions"
             @select="handleSelect"
           >
-          </primaryButtonGroup>
+          </GroupButtonMenu>
         </template>
         <a-button
           type="outline"
@@ -322,7 +321,7 @@
     isEqual,
     cloneDeep
   } from 'lodash';
-  import primaryButtonGroup from '@/components/drop-button-group/primary-button-group.vue';
+  import GroupButtonMenu from '@/components/drop-button-group/group-button-menu.vue';
   import GroupTitle from '@/components/group-title/index.vue';
   import EditPageFooter from '@/components/edit-page-footer/index.vue';
   import useCallCommon from '@/hooks/use-call-common';

@@ -113,13 +113,12 @@
                 : $t('common.button.save')
             }}</a-button
           > -->
-          <primaryButtonGroup
+          <GroupButtonMenu
             :loading="submitLoading"
-            :action-list="SaveActions"
-            :btn-text="$t('common.button.save')"
+            :actions="SaveActions"
             @select="handleSelect"
           >
-          </primaryButtonGroup>
+          </GroupButtonMenu>
         </template>
         <template #cancel>
           <a-button
@@ -136,7 +135,7 @@
 
 <script lang="ts" setup>
   import _ from 'lodash';
-  import primaryButtonGroup from '@/components/drop-button-group/primary-button-group.vue';
+  import GroupButtonMenu from '@/components/drop-button-group/group-button-menu.vue';
   import { Resources, Actions } from '@/permissions/config';
   import EditPageFooter from '@/components/edit-page-footer/index.vue';
   import { PROJECT } from '@/router/config';
