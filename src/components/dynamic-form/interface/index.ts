@@ -31,7 +31,6 @@ export interface FieldSchema {
 
 export interface Group {
   [group: string]: {
-    groupOrder: number;
     schema: Record<string, FieldSchema>[];
   };
 }
