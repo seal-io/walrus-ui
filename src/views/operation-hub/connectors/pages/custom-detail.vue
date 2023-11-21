@@ -272,7 +272,8 @@
     PageAction,
     validateLabelNameRegx,
     InputWidth,
-    EnvironmentTypeMap
+    EnvironmentTypeMap,
+    EnvironmentTypeOrder
   } from '@/views/config';
   import { OPERATIONHUB } from '@/router/config';
   import { Resources, Actions } from '@/permissions/config';
@@ -345,9 +346,10 @@
     return _.map(userStore.applicableEnvironmentTypes, (item) => {
       return {
         label: t(EnvironmentTypeMap[item] || ''),
-        value: item
+        value: item,
+        order: EnvironmentTypeOrder[item]
       };
-    });
+    }).sort((a, b) => a.order - b.order);
   });
 
   const visibleOptions = computed(() => {

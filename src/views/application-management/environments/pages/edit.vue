@@ -309,6 +309,7 @@
     validateLabelNameRegx,
     InputWidth,
     EnvironmentTypeMap,
+    EnvironmentTypeOrder,
     SaveActions
   } from '@/views/config';
   import { ref, computed, provide } from 'vue';
@@ -414,9 +415,10 @@
     return _.map(userStore.applicableEnvironmentTypes, (item) => {
       return {
         label: t(EnvironmentTypeMap[item] || ''),
-        value: item
+        value: item,
+        order: EnvironmentTypeOrder[item]
       };
-    });
+    }).sort((a, b) => a.order - b.order);
   });
   const selectableConnectors = computed(() => {
     return _.filter(connectorList.value, (item) => {

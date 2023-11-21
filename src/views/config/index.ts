@@ -193,6 +193,12 @@ export const EnvironmentTypeMap = {
   staging: 'common.environment.staging'
 };
 
+export const EnvironmentTypeOrder = {
+  development: 1,
+  production: 3,
+  staging: 2
+};
+
 export const CommonButtonValue = {
   Edit: 'edit',
   View: 'view',

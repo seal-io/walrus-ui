@@ -264,17 +264,16 @@ export const serviceActions: MoreAction[] = [
   {
     label: 'applications.applications.history.running',
     value: serviceActionMap.logs,
-    icon: 'iconFont',
+    icon: 'icon-rizhi',
+    iconfont: true,
     handler: '',
-    status: 'normal',
-    props: {
-      type: 'icon-rizhi'
-    }
+    status: 'normal'
   },
   {
     label: 'common.button.rollback',
     value: serviceActionMap.rollback,
-    icon: 'iconFont',
+    icon: 'icon-rollback-copy',
+    iconfont: true,
     handler: '',
     status: 'normal',
     filterFun(currentInfo) {
@@ -284,9 +283,6 @@ export const serviceActions: MoreAction[] = [
         projectID: get(currentInfo, 'project.id'),
         actions: [Actions.PUT]
       });
-    },
-    props: {
-      type: 'icon-rollback-copy'
     }
   },
   {

@@ -43,6 +43,8 @@
   import SingleForm from './single-form.vue';
   import { FieldSchema, FormGroup } from './interface';
   import { createFormGroup } from './utils/create-form-group';
+  import { genFieldMap } from './utils/flatten-schema';
+  import FIELD_TYPE from './config/field-type';
 
   const props = defineProps({
     schema: {
@@ -66,6 +68,7 @@
   const rootFormData = ref({});
   const destroyed = ref<boolean>(false);
   const formGroup = ref<FormGroup[]>([]);
+  const fieldList = ref<FieldSchema[]>([]);
 
   const setRefMap = (el: any, name) => {
     if (el) {
@@ -83,27 +86,59 @@
     activeKey.value = key;
   };
 
+  const isEmptyvalue = (val) => {
+    return val === '' || val === null || val === undefined;
+  };
+
+  const isBasicType = (type) => {
+    return [
+      FIELD_TYPE.BOOLEAN,
+      FIELD_TYPE.NUMBER,
+      FIELD_TYPE.STRING,
+      FIELD_TYPE.INTEGER
+    ].includes(type);
+  };
+  const handleUnsetField = () => {
+    const fieldList = genFieldMap(props.schema);
+    _.each(fieldList, (item) => {
+      if (
+        isEmptyvalue(_.get(props.formData, item.fieldPath)) &&
+        !item.default &&
+        isBasicType(item.type)
+      ) {
+        _.unset(props.formData, item.fieldPath);
+      }
+    });
+  };
   const validate = async () => {
+    let valid: any = null;
     if (formGroup.value.length === 1) {
       const res = await schemaForm.value?.validate?.();
-      return res;
+      valid = res;
+    } else {
+      const resultList: any[] = [];
+      await Promise.all(
+        _.keys(refMap.value).map(async (key) => {
+          const refEL = refMap.value[key];
+          const res = await refEL?.validate?.();
+          resultList.push({
+            tab: key,
+            result: !res
+          });
+        })
+      );
+      const errorList = _.filter(resultList, (item) => !item.result);
+      if (errorList.length) {
+        activeKey.value = errorList[0].tab;
+      }
+      valid = errorList.length;
     }
-    const resultList: any[] = [];
-    await Promise.all(
-      _.keys(refMap.value).map(async (key) => {
-        const refEL = refMap.value[key];
-        const res = await refEL?.validate?.();
-        resultList.push({
-          tab: key,
-          result: !res
-        });
-      })
-    );
-    const errorList = _.filter(resultList, (item) => !item.result);
-    if (errorList.length) {
-      activeKey.value = errorList[0].tab;
+
+    if (!valid) {
+      handleUnsetField();
     }
-    return errorList.length > 0;
+
+    return valid;
   };
   defineExpose({
     validate

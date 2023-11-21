@@ -69,6 +69,7 @@
       const { labels, labelsKey, validateTrigger } = toRefs(props);
       const { labelList, labelItem, handleAddLabel, handleDeleteLabel } =
         useLabelsActions(labels, labelsKey.value);
+      console.log('labelList===', labelList.value);
       const handleUpdateValue = (obj) => {
         emit('update:value', obj);
       };
@@ -106,11 +107,13 @@
                 })}
               </a-space>
             ) : (
-              <ThumbButton
-                size={24}
-                font-size="14px"
-                onClick={() => handleAddLabel(labelItem, labelList.value)}
-              ></ThumbButton>
+              <a-link class="p-0">
+                <icon-plus-circle-fill
+                  size={24}
+                  font-size="14px size-24"
+                  onClick={() => handleAddLabel(labelItem, labelList.value)}
+                ></icon-plus-circle-fill>
+              </a-link>
             )}
           </>
         );

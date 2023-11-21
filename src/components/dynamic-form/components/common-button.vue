@@ -3,6 +3,7 @@
   import ThumbButton from '@/components/buttons/thumb-button.vue';
 
   export default defineComponent({
+    emits: ['click'],
     props: {
       type: {
         type: String,
@@ -19,7 +20,6 @@
         }
       }
     },
-    emits: ['click'],
     setup(props, { slots, attrs, emit }) {
       return () => (
         <span class="common-button">
@@ -30,7 +30,10 @@
               onClick={() => emit('click')}
             >
               {props.action === 'add' ? (
-                <ThumbButton size={28} fontSize={'16px'}></ThumbButton>
+                <icon-plus-circle-fill
+                  style="stroke-width: 3"
+                  class="size-24"
+                />
               ) : (
                 <icon-minus-circle style="stroke-width: 3" class="size-24" />
               )}

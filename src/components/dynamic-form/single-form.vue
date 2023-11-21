@@ -6,12 +6,14 @@
     reactive,
     computed,
     toRaw,
-    watch
+    watch,
+    provide
   } from 'vue';
   import _ from 'lodash';
   import useScrollToView from '@/hooks/use-scroll-to-view';
   import formProps from './form-props';
   import SchemaField from './components/schema-field.vue';
+  import { ProviderFormRefKey } from './config';
 
   export default defineComponent({
     props: formProps,
@@ -22,6 +24,8 @@
       const { disabled, layout } = toRefs(props);
 
       const { scrollToView } = useScrollToView();
+
+      provide(ProviderFormRefKey, formref);
 
       const handleChange = (data) => {
         // formData.value = data;
