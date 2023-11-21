@@ -270,7 +270,10 @@
           <GroupButtonMenu
             v-if="
               _.get(serviceInfo, 'status.summaryStatus') ===
-                ServiceStatus.Undeployed || !id
+                ServiceStatus.Undeployed ||
+              _.get(serviceInfo, 'status.summaryStatus') ===
+                ServiceStatus.Stopped ||
+              !id
             "
             :loading="submitLoading"
             :actions="SaveActions"
@@ -328,7 +331,8 @@
     InjectCompleteDataKey,
     InjectProjectEnvironmentKey,
     InjectShowInputHintKey,
-    SaveActions
+    SaveActions,
+    InjectSchemaFormEditableKey
   } from '@/views/config';
   import { queryEnvironmentConnector } from '@/views/application-management/environments/api';
   import { projectEnvCtxInjectionKey } from '@/components/form-create/bussiness-components/config';
@@ -354,6 +358,7 @@
     }
   });
 
+  provide(InjectSchemaFormEditableKey, true);
   const emits = defineEmits(['cancel', 'save']);
   const { scrollToView } = useScrollToView();
   const {

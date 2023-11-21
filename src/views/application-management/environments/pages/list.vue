@@ -225,9 +225,10 @@
   import { EnvironmentActions } from '../config';
 
   const orderMap = {
-    error: 3,
+    ready: 1,
     transitioning: 2,
-    ready: 1
+    error: 3,
+    inactive: 4
   };
   let timer: any = null;
   const { rowSelection, selectedKeys, handleSelectChange } = useRowSelect();

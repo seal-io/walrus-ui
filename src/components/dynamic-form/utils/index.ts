@@ -86,23 +86,29 @@ export const checkValidValue = ({ value, schema, required }) => {
   return true;
 };
 export const calcFieldSpan = ({ parentSpan, colSpan, parentHalfGrid }) => {
+  if (colSpan) {
+    return {
+      span: colSpan,
+      halfGrid: colSpan < 12
+    };
+  }
   if (parentHalfGrid) {
     return {
       span: colSpan || 6,
-      halfGird: true
+      halfGrid: true
     };
   }
   if (parentSpan === 12) {
     const span = colSpan || 6;
     return {
       span,
-      halfGird: span < 12
+      halfGrid: span < 12
     };
   }
 
   return {
     span: 12,
-    halfGird: false
+    halfGrid: false
   };
 };
 
@@ -155,7 +161,7 @@ export const genObjectFieldProperties = ({
       required: property.required || [],
       parentRequired: schema.required || [],
       colSpan: colSpanData.span,
-      halfGrid: colSpanData.halfGird,
+      halfGrid: colSpanData.halfGrid,
       level,
       order
     };

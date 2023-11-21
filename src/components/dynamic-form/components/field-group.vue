@@ -1,13 +1,18 @@
 <script lang="tsx">
   import { defineComponent, ref, withModifiers } from 'vue';
-  import _, { divide } from 'lodash';
+  import _ from 'lodash';
   import ModuleWrapper from '@/components/module-wrapper/index.vue';
   import schemaFieldProps from '../fields/schema-field-props';
 
   export default defineComponent({
     props: schemaFieldProps,
     setup(props, { slots }) {
-      const status = ref(false);
+      const collapsed = _.get(
+        props.schema,
+        ['x-walrus-ui', 'collapsed'],
+        false
+      );
+      const status = ref(collapsed);
       const hovered = ref(false);
       const groupHovered = ref(false);
 
@@ -125,24 +130,37 @@
   .field-group {
     // margin-bottom: 16px;
     height: 100%;
+    margin: 0 2px;
     padding: 0 16px;
     padding-right: 16px;
     padding-bottom: 10px;
-    border: 1px solid var(--color-border-2);
-    border-radius: var(--border-radius-small);
-
+    overflow: hidden;
+    border-radius: 0%;
+    box-shadow: rgba(169, 174, 184, 0.3) 0 3px 1px -1px,
+      rgba(169, 174, 184, 0.2) 0 1px 1px 0, rgba(169, 174, 184, 0.2) 0 1px 3px 0;
+    // border: 1px solid var(--color-border-2);
+    // border-radius: var(--border-radius-small);
     &.field-group-hovered:hover {
       border-color: rgb(var(--arcoblue-6));
       transition: border-color 0.2s var(--seal-transition-func);
     }
 
     &.collapse {
+      margin: 0;
       padding: 0;
       padding-bottom: 20px;
       border: none;
+      box-shadow: none;
     }
 
     :deep(.mo-wrap) {
+      margin: 0 2px;
+      border: none;
+      border-radius: 0;
+      box-shadow: rgba(169, 174, 184, 0.3) 0 3px 1px -1px,
+        rgba(169, 174, 184, 0.3) 0 1px 1px 0,
+        rgba(169, 174, 184, 0.3) 0 1px 3px 0;
+
       .title {
         padding-right: 16px;
         background-color: #fff;
@@ -171,7 +189,7 @@
       padding: 10px 0;
       font-weight: 500;
       font-size: 14px;
-      border-bottom: 1px solid var(--color-border-2);
+      // border-bottom: 1px solid var(--color-border-2);
     }
 
     .description {

@@ -119,15 +119,15 @@
             <span>{{ setDurationValue(record.duration) }}</span>
           </template>
         </a-table-column>
-        <!-- <a-table-column
+        <a-table-column
           ellipsis
           tooltip
           :cell-style="{ minWidth: '40px' }"
           align="center"
           data-index="description"
-          :title="$t('applications.workflow.table.trigger')"
+          :title="$t('common.table.mark')"
         >
-        </a-table-column> -->
+        </a-table-column>
         <a-table-column
           align="center"
           :width="210"

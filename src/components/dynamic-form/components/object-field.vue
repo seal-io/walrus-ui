@@ -13,7 +13,8 @@
   import {
     genObjectFieldProperties,
     initFieldDefaultValue,
-    genFieldPropsAndRules
+    genFieldPropsAndRules,
+    getCustomColSpan
   } from '../utils';
   import CommonButton from './common-button.vue';
 
@@ -56,10 +57,11 @@
         schema: props.schema,
         formData: props.formData,
         fieldPath: props.fieldPath,
-        parentSpan: props.parentSpan,
+        parentSpan: getCustomColSpan(props.schema) || props.schema.colSpan,
         level: props.level + 1
       });
 
+      console.log('childProperties++++++++++++', childProperties.value);
       // init field value
       if (!_.get(props.formData, props.fieldPath)) {
         _.set(

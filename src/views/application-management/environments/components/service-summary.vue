@@ -46,6 +46,7 @@
       border-radius: 4px;
 
       &.error {
+        margin-right: 10px;
         background-color: rgba(245, 63, 63, 0.7);
       }
 
@@ -56,6 +57,10 @@
       &.transitioning {
         margin: 0 10px;
         background-color: rgba(247, 186, 30, 0.7);
+      }
+
+      &.inactive {
+        background-color: rgb(191, 191, 191);
       }
     }
   }

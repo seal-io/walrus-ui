@@ -287,7 +287,7 @@
 
   const handleBasicCollapse = (val) => {
     if (val) {
-      serviceInfoRef.value?.initInfo();
+      serviceInfoRef.value?.initData();
     }
   };
 
@@ -345,7 +345,7 @@
       const { data } = await queryItemService(params);
       currentInfo.value = data;
       serviceStore.setServiceInfo(route.query.id, data);
-      await serviceInfoRef.value?.initInfo();
+      await serviceInfoRef.value?.initData();
     } catch (error) {
       serviceStore.deleteService(route.query.id);
     }
