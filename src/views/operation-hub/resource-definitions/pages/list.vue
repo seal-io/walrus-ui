@@ -7,7 +7,7 @@
             v-model="queryParams.query"
             allow-clear
             style="width: 200px"
-            :placeholder="$t('resource.definition.list.placeholder')"
+            :placeholder="$t('common.search.name.placeholder')"
             @clear="handleSearch"
             @press-enter="handleSearch"
           >
@@ -72,7 +72,11 @@
             tooltip
             :cell-style="{ minWidth: '40px' }"
             data-index="name"
-            :title="$t('resource.definition.list.name')"
+            :title="
+              $t('common.table.name.list', {
+                type: $t('resource.definition.list.name')
+              })
+            "
           >
             <template #cell="{ record }">
               <a-link size="small" @click="handleView(record)">{{

@@ -9,7 +9,7 @@ export default {
   'profile.account.form.role': '系统角色',
   'profile.account.create': '新建用户',
   'profile.account.edit': '编辑账户',
-  'profile.account.type.user': '用户',
+  'profile.account.type.user': '用户名',
   'profile.account.type.group': '组',
   'propfile.account.settings': '账户设置',
   'propfile.account.settings.holder': '请输入用户名',

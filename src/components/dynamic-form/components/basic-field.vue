@@ -156,6 +156,7 @@
             label={props.label}
             style="width: 100%"
             allow-search={false}
+            allow-clear={true}
             editor-id={_.join(props.fieldPath, '-')}
             popupInfo={props.schema.description}
             v-model={fieldValue.value}

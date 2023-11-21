@@ -25,7 +25,7 @@
               v-model="queryParams.query"
               allow-clear
               style="width: 240px"
-              :placeholder="$t('applications.projects.search.holder')"
+              :placeholder="$t('common.search.name.placeholder')"
               @clear="handleSearch"
               @press-enter="handleSearch"
             >
@@ -86,7 +86,11 @@
               tooltip
               :cell-style="{ minWidth: '40px' }"
               data-index="name"
-              :title="$t('applications.projects.table.name')"
+              :title="
+                $t('common.table.list', {
+                  type: $t('applications.projects.table.name')
+                })
+              "
             >
               <template #cell="{ record }">
                 <a-link

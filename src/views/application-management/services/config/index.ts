@@ -150,7 +150,6 @@ export const StartableStatus = [
 export const StoppableStatus = [
   ServiceStatus.Deployed,
   ServiceStatus.Ready,
-  ServiceStatus.Deploying,
   ServiceStatus.Preparing,
   ServiceStatus.Running
 ];

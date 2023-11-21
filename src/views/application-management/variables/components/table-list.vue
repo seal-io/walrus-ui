@@ -7,7 +7,7 @@
             v-model="queryParams.query"
             allow-clear
             style="width: 200px"
-            :placeholder="$t('applications.applications.secret.holder')"
+            :placeholder="$t('common.search.name.placeholder')"
             @clear="handleSearch"
             @press-enter="handleSearch"
           >
@@ -102,7 +102,11 @@
             tooltip
             :cell-style="{ minWidth: '40px' }"
             data-index="name"
-            :title="$t('applications.applications.secret')"
+            :title="
+              $t('common.table.name.list', {
+                type: $t('applications.applications.secret')
+              })
+            "
           >
           </a-table-column>
           <a-table-column

@@ -17,7 +17,11 @@
           tooltip
           :cell-style="{ minWidth: '40px' }"
           data-index="name"
-          :title="$t('applications.projects.table.name')"
+          :title="
+            $t('common.table.name.list', {
+              type: $t('applications.projects.table.name')
+            })
+          "
         >
         </a-table-column>
         <a-table-column

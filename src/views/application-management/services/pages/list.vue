@@ -6,7 +6,7 @@
           v-model="queryParams.query"
           allow-clear
           style="width: 220px"
-          :placeholder="$t('applications.applications.table.holder')"
+          :placeholder="$t('common.search.name.placeholder')"
           @clear="handleSearch"
           @press-enter="handleSearch"
         >

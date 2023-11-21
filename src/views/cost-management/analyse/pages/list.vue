@@ -6,7 +6,7 @@
           v-model="queryParams.query"
           allow-clear
           style="width: 240px"
-          :placeholder="$t('cost.analyse.table.holder')"
+          :placeholder="$t('common.search.name.placeholder')"
           @clear="handleSearch"
           @press-enter="handleSearch"
         >
@@ -74,7 +74,11 @@
           tooltip
           :cell-style="{ minWidth: '40px' }"
           data-index="name"
-          :title="$t('cost.analyse.table.manage')"
+          :title="
+            $t('common.table.name.list', {
+              type: $t('cost.analyse.table.manage')
+            })
+          "
         >
           <template #cell="{ record }">
             <a-link
