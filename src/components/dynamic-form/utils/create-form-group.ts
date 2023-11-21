@@ -8,11 +8,21 @@ export const createFormGroup = (rootSchema: FieldSchema) => {
   const keys = _.keys(properties || {});
   const formGroup: FormGroup[] = [];
   const group: Group = {};
+  const groupOrderList = _.get(rootSchema, ['x-walrus-ui', 'groupOrder'], []);
 
+  const groupOrder = _.reduce(
+    groupOrderList,
+    (result, item, index) => {
+      result[item] = index;
+      return result;
+    },
+    {}
+  );
+  console.log('groupOrder', groupOrder, groupOrderList);
   _.each(keys, (key) => {
     const property = _.get(properties, key, {} as FieldSchema);
     const uiGroup = _.get(property, ['x-walrus-ui', 'group'], '');
-    const groupOrder = _.get(property, ['x-walrus-ui', 'groupOrder'], 100);
+
     const groudList = _.filter(_.split(uiGroup, /\/+/) || [], (s) => !!s);
     const groupKey = groudList[0] || DefaultGroup;
     if (group[groupKey]) {
@@ -25,7 +35,6 @@ export const createFormGroup = (rootSchema: FieldSchema) => {
       });
     } else {
       group[groupKey] = {
-        groupOrder,
         schema: []
       };
       group[groupKey]['schema'] = [
@@ -42,7 +51,7 @@ export const createFormGroup = (rootSchema: FieldSchema) => {
   _.keys(group).forEach((key) => {
     formGroup.push({
       group: key,
-      groupOrder: group[key]['groupOrder'],
+      groupOrder: groupOrder[key],
       schema: {
         ...rest,
 

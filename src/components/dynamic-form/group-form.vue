@@ -152,6 +152,8 @@
         destroyed.value = false;
         formGroup.value = createFormGroup(props.schema);
         activeKey.value = formGroup.value[0]?.group;
+
+        console.log('formGroup===9999===', formGroup.value);
       });
     },
     {
