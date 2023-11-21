@@ -22,7 +22,7 @@
               })
             "
             :disabled="
-              _.includes(StopableStatus, executionInfo.status?.summaryStatus)
+              _.includes(RetryStatus, executionInfo.status?.summaryStatus)
             "
             type="primary"
             size="small"
@@ -77,7 +77,7 @@
   import useProjectBreadcrumbData from '@/views/application-management/projects/hooks/use-project-breadcrumb-data';
   import FlowView from '../components/flow-view.vue';
   import { retryApplyPipeline, stopApplyPipeline } from '../api';
-  import { StopableStatus } from '../config';
+  import { StopableStatus, RetryStatus, WorkflowStatus } from '../config';
   import runConfig from '../components/run-config.vue';
   import useRunWorkflow from '../hooks/use-run-workflow';
 

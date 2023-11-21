@@ -41,6 +41,8 @@ export default {
   'common.table.updateTime': 'Update Time',
   'common.table.description': 'Description',
   'common.table.name': 'Name',
+  'common.table.name.list': '{type} Name',
+  'common.search.name.placeholder': 'filter by name',
   'common.table.type': 'Type',
   'common.table.default': 'Default Value',
   'common.copy.success': 'Copied success!',

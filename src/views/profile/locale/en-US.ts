@@ -9,7 +9,7 @@ export default {
   'profile.account.form.role': 'System Role',
   'profile.account.create': 'New User',
   'profile.account.edit': 'Edit Account',
-  'profile.account.type.user': 'User',
+  'profile.account.type.user': 'User Name',
   'profile.account.type.group': 'Group',
   'propfile.account.settings': 'Account Settings',
   'propfile.account.settings.holder': 'please enter an user',

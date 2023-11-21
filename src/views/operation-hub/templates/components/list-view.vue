@@ -17,7 +17,11 @@
           tooltip
           :cell-style="{ minWidth: '40px' }"
           data-index="name"
-          :title="$t('operation.templates.table.name')"
+          :title="
+            $t('common.table.name.list', {
+              type: $t('operation.templates.table.name')
+            })
+          "
         >
           <template #cell="{ record }">
             <span>

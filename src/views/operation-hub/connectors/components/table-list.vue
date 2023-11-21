@@ -28,7 +28,7 @@
           v-model="queryParams.query"
           allow-clear
           style="width: 240px"
-          :placeholder="$t('operation.connectors.table.holder')"
+          :placeholder="$t('common.search.name.placeholder')"
           @clear="handleSearch"
           @press-enter="handleSearch"
         >
@@ -124,7 +124,11 @@
           tooltip
           :cell-style="{ minWidth: '40px' }"
           data-index="name"
-          :title="$t('operation.connectors.table.connector')"
+          :title="
+            $t('common.table.name.list', {
+              type: $t('operation.connectors.table.connector')
+            })
+          "
         >
           <template #cell="{ record }">
             <a-link type="text" size="small" @click="handleView(record)">

@@ -7,7 +7,7 @@
             v-model="queryParams.query"
             allow-clear
             style="width: 240px"
-            :placeholder="$t('operation.environments.table.holder')"
+            :placeholder="$t('common.search.name.placeholder')"
             @clear="handleSearch"
             @press-enter="handleSearch"
           >
@@ -74,7 +74,11 @@
             tooltip
             :cell-style="{ minWidth: '40px' }"
             data-index="name"
-            :title="$t('operation.environments.table.env')"
+            :title="
+              $t('common.table.name.list', {
+                type: $t('operation.environments.table.env')
+              })
+            "
           >
             <template #cell="{ record }">
               <a-link
