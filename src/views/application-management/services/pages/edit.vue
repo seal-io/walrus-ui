@@ -268,11 +268,22 @@
       <EditPageFooter>
         <template #save>
           <GroupButtonMenu
+            v-if="
+              _.get(serviceInfo, 'status.summaryStatus') ===
+                ServiceStatus.Undeployed || !id
+            "
             :loading="submitLoading"
             :actions="SaveActions"
             @select="handleAddSelector"
           >
           </GroupButtonMenu>
+          <a-button
+            v-else
+            :type="'primary'"
+            class="cap-title cancel-btn"
+            @click="() => handleOk()"
+            >{{ $t('common.button.save') }}</a-button
+          >
         </template>
         <template #cancel>
           <a-button
@@ -331,7 +342,7 @@
     upgradeApplicationInstance
   } from '../api';
   import useServiceData from '../hooks/use-service-data';
-  import { ServiceDataType } from '../config';
+  import { ServiceDataType, ServiceStatus } from '../config';
 
   const props = defineProps({
     // when in detail page
@@ -597,6 +608,7 @@
         if (dataType === ServiceDataType.service) {
           formData.type = null as any;
         }
+        formData.draft = draft;
         if (dataType === ServiceDataType.resource) {
           formData.template = null as any;
         }
