@@ -17,6 +17,7 @@
     emits: ['change'],
     setup(props, { emit }) {
       const items = props.schema.items || [];
+      const minItems = props.schema.minItems || 0;
       let itemsProperties: FieldSchema[] = [];
       const propertiesList = ref<FieldSchema[][]>([]);
 
@@ -118,6 +119,14 @@
           ></CommonButton>
         ) : null;
       };
+      const init = () => {
+        if (minItems) {
+          for (let i = 0; i < minItems; i += 1) {
+            handleAddClick();
+          }
+        }
+      };
+      init();
 
       return () => (
         <FieldGroup
@@ -151,7 +160,9 @@
                     </a-grid>
                   </div>
 
-                  <div class="delete-btn">{renderDeleleButton(index)}</div>
+                  {propertiesList.value.length > minItems
+                    ? renderDeleleButton(index)
+                    : null}
                 </div>
               </>
             );

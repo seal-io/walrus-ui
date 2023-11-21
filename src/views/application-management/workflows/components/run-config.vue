@@ -17,11 +17,11 @@
   >
     <a-spin :loading="loading" style="width: 100%; text-align: center">
       <a-form ref="formref" :model="formData" auto-label-width>
-        <div v-if="info.variables?.length" class="title">{{
+        <div v-if="aviliableVariables?.length" class="title">{{
           $t('applications.secret.value')
         }}</div>
         <a-form-item
-          v-for="(item, index) in info.variables"
+          v-for="(item, index) in aviliableVariables"
           :key="index"
           :label="$t('common.table.default')"
           :field="item.name"
@@ -117,6 +117,7 @@
   const formref = ref();
   const loading = ref(false);
   const submitLoading = ref(false);
+  const aviliableVariables = ref<any[]>([]);
   const formData = ref<any>({
     variables: {},
     description: '',
@@ -150,6 +151,7 @@
     const variables = _.filter(props.info?.variables, (item) => {
       return item.overwrite;
     });
+    aviliableVariables.value = variables;
     formData.value.variables = _.reduce(
       variables,
       (result, item) => {

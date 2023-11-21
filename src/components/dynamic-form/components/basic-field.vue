@@ -2,6 +2,7 @@
   import _ from 'lodash';
   import { defineComponent, toRefs, inject, ref } from 'vue';
   import { InjectSchemaFormEditableKey } from '@/views/config';
+  import SealFormItemWrap from '@/components/seal-form/components/seal-form-item-wrap.vue';
   import schemaFieldProps from '../fields/schema-field-props';
   import {
     BasicFieldMaps,
@@ -142,43 +143,57 @@
 
       const fieldValue = ref(_.get(props.formData, props.fieldPath));
 
-      return () => (
-        <a-form-item
-          hide-label={true}
-          rules={props.rules}
-          label={props.schema.title}
-          field={_.join(props.fieldPath, '.')}
-          validate-trigger={['change']}
-        >
-          <Component
-            {...attrs}
-            required={props.required}
-            label={props.label}
-            style="width: 100%"
-            allow-search={false}
-            allow-clear={true}
-            editor-id={_.join(props.fieldPath, '-')}
-            popupInfo={props.schema.description}
-            v-model={fieldValue.value}
-            onInput={(e) => {
-              console.log(
-                'basic-field==input----1',
-                e,
-                e.target?.value,
-                props.schema
-              );
-              handleSelectInputChange(e);
-            }}
-            onChange={(val, e) => {
-              val = filterEmptyOnSelect(val, e);
-              _.set(props.formData, props.fieldPath, val);
-
-              handleChange(props.formData);
-            }}
+      const renderEdit = () => {
+        return (
+          <a-form-item
+            hide-label={true}
+            rules={props.rules}
+            label={props.schema.title}
+            field={_.join(props.fieldPath, '.')}
+            validate-trigger={['change']}
           >
-            {renderSelectOptions()}
-          </Component>
-        </a-form-item>
+            <Component
+              {...attrs}
+              required={props.required}
+              label={props.label}
+              style="width: 100%"
+              allow-search={false}
+              allow-clear={true}
+              editor-id={_.join(props.fieldPath, '-')}
+              popupInfo={props.schema.description}
+              v-model={fieldValue.value}
+              onInput={(e) => {
+                console.log(
+                  'basic-field==input----1',
+                  e,
+                  e.target?.value,
+                  props.schema
+                );
+                handleSelectInputChange(e);
+              }}
+              onChange={(val, e) => {
+                val = filterEmptyOnSelect(val, e);
+                _.set(props.formData, props.fieldPath, val);
+
+                handleChange(props.formData);
+              }}
+            >
+              {renderSelectOptions()}
+            </Component>
+          </a-form-item>
+        );
+      };
+
+      return () => (
+        <>
+          {schemaFormEditable ? (
+            renderEdit()
+          ) : (
+            <SealFormItemWrap label={props.schema.title}>
+              <span>{_.get(props.formData, props.fieldPath)}</span>
+            </SealFormItemWrap>
+          )}
+        </>
       );
     }
   });

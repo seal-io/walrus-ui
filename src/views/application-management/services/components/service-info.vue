@@ -1,35 +1,37 @@
 <template>
   <div class="service">
-    <div class="variables m-t-10">
+    <!-- <div class="variables m-t-10">
       <ViewForm
         style="width: 100%; padding: 0"
         :form-data="serviceInfo.attributes"
         :field-list="templateInfo"
       ></ViewForm>
-    </div>
-    <!-- <GroupForm
-      style="padding: 10px"
+    </div> -->
+    <GroupForm
       ref="groupForm"
+      style="padding: 10px"
       :disabled="true"
-      v-model:form-data="serviceInfo.attributes"
-      :schema="schemaVariables"
-    ></GroupForm> -->
+      :form-data="serviceInfo.attributes"
+      :schema="schema"
+    ></GroupForm>
   </div>
 </template>
 
 <script lang="ts" setup>
   import _ from 'lodash';
-  import { onMounted, nextTick } from 'vue';
+  import { onMounted, nextTick, provide, ref } from 'vue';
   import ViewForm from '@/components/form-create/view-form.vue';
+  import { InjectSchemaFormEditableKey } from '@/views/config';
   import GroupForm from '@/components/dynamic-form/group-form.vue';
   import useServiceData from '../hooks/use-service-data';
 
   const { initInfo, serviceInfo, schemaVariables, templateInfo } =
     useServiceData();
-
+  const schema = ref<any>({});
+  provide(InjectSchemaFormEditableKey, false);
   const initData = async () => {
-    console.log('initfo=========');
     await initInfo();
+    schema.value = schemaVariables.value;
   };
   defineExpose({
     initData,
