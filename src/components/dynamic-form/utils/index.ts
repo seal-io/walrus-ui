@@ -43,7 +43,6 @@ export const isDatePicker = (schema: FieldSchema) => {
 
 export const getShowIfValue = (showif, formData, fieldPath?: string[]) => {
   const conditions = parseExpression(showif);
-  console.log('conditions====', showif, conditions);
   const isShow = getConditionValue(
     {
       conditions,
@@ -74,6 +73,18 @@ export const initFieldDefaultValue = (item) => {
   return '';
 };
 
+export const checkValidValue = ({ value, schema, required }) => {
+  if (
+    schema.default ||
+    [FIELD_TYPE.ARRAY, FIELD_TYPE.OBJECT].includes(schema.type)
+  ) {
+    return true;
+  }
+  if (!required && (value === '' || value === null || value === undefined)) {
+    return false;
+  }
+  return true;
+};
 export const calcFieldSpan = ({ parentSpan, colSpan, parentHalfGrid }) => {
   if (parentHalfGrid) {
     return {
@@ -85,7 +96,7 @@ export const calcFieldSpan = ({ parentSpan, colSpan, parentHalfGrid }) => {
     const span = colSpan || 6;
     return {
       span,
-      halfGird: span >= 6
+      halfGird: span < 12
     };
   }
 
@@ -95,14 +106,25 @@ export const calcFieldSpan = ({ parentSpan, colSpan, parentHalfGrid }) => {
   };
 };
 
+export const getCustomColSpan = (obj) => {
+  return _.get(obj, ['x-walrus-ui', 'colSpan']);
+};
+
+export const isHalfGrid = (obj) => {
+  const colSpan =
+    _.get(obj, 'colSpan') || _.get(obj, ['x-walrus-ui', 'colSpan']);
+  return colSpan < 12;
+};
 export const genObjectFieldProperties = ({
   schema,
   fieldPath,
   grandParentHalfGrid,
-  parentSpan
+  parentSpan,
+  level
 }: {
   schema: FieldSchema;
   formData: any;
+  level: number;
   parentSpan?: number;
   grandParentHalfGrid?: boolean; // when has items,need pass it
   fieldPath: string[];
@@ -115,6 +137,7 @@ export const genObjectFieldProperties = ({
   const resultList: FieldSchema[] = [];
   const defaultOrder = 9999;
   const keys = _.keys(properties);
+
   _.each(keys, (key) => {
     const property = _.get(properties, key);
     const { type } = property;
@@ -122,7 +145,7 @@ export const genObjectFieldProperties = ({
     const colSpanData = calcFieldSpan({
       parentSpan,
       colSpan: property['x-walrus-ui']?.colSpan,
-      parentHalfGrid: schema.halfGrid || grandParentHalfGrid
+      parentHalfGrid: isHalfGrid(schema)
     });
     // const required = _.includes(requiredFlag, key);
     const fieldSchema = {
@@ -133,8 +156,10 @@ export const genObjectFieldProperties = ({
       parentRequired: schema.required || [],
       colSpan: colSpanData.span,
       halfGrid: colSpanData.halfGird,
+      level,
       order
     };
+
     resultList.push(fieldSchema);
   });
 
@@ -202,8 +227,6 @@ export const genFieldPropsAndRules = ({
     externalDocs,
     default: defaultValue,
     enum: enumList,
-    maxLength,
-    minLength,
     description,
     items
   } = schema;
@@ -216,6 +239,8 @@ export const genFieldPropsAndRules = ({
     widget
   } = uiExtensions;
 
+  const maxLength = schema?.maxLength || null;
+  const minLength = schema.minLength || null;
   const required = _.includes(requiredFields, name);
   const commonProps = {
     label: title || name,
@@ -251,8 +276,8 @@ export const genFieldPropsAndRules = ({
   if (type === FIELD_TYPE.INTEGER || type === FIELD_TYPE.NUMBER) {
     return {
       fieldProps: {
-        min: minimum,
-        max: maximum,
+        min: minimum || -Infinity,
+        max: maximum || Infinity,
         ...commonProps
       },
       rules: [

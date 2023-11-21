@@ -5,7 +5,11 @@
   import { FieldSchema } from '../interface';
   import FieldGroup from './field-group.vue';
   import SchemaField from './schema-field.vue';
-  import { genObjectFieldProperties, initFieldDefaultValue } from '../utils';
+  import {
+    genObjectFieldProperties,
+    initFieldDefaultValue,
+    getCustomColSpan
+  } from '../utils';
   import CommonButton from './common-button.vue';
 
   export default defineComponent({
@@ -32,10 +36,16 @@
 
       itemsProperties = genObjectFieldProperties({
         schema: props.schema.items as FieldSchema,
-        grandParentHalfGrid: props.schema.halfGrid,
+        level: props.schema.level + 1,
+        grandParentHalfGrid: getCustomColSpan(items)
+          ? false
+          : props.schema.halfGrid,
         formData: props.formData,
         fieldPath: props.fieldPath,
-        parentSpan: props.parentSpan
+        parentSpan:
+          getCustomColSpan(props.schema) ||
+          getCustomColSpan(items) ||
+          props.parentSpan
       });
 
       const handleAddClick = () => {
@@ -108,10 +118,11 @@
           ></CommonButton>
         ) : null;
       };
+
       return () => (
         <FieldGroup
           schema={props.schema}
-          level={props.level}
+          level={props.schema.level}
           v-slots={{
             footer: () => {
               return <>{renderAddButton()}</>;
@@ -127,7 +138,7 @@
                       {_.map(item, (sItem, sIndex) => {
                         return (
                           <SchemaField
-                            level={props.level + 1}
+                            level={sItem.level}
                             key={_.join([props.fieldPath, index, sIndex], '.')}
                             schema={sItem}
                             formData={props.formData}
@@ -156,6 +167,7 @@
     display: flex;
     align-items: flex-start;
     justify-content: space-between;
+    border-radius: var(--border-radius-small);
 
     .add-content {
       flex: 1;

@@ -69,7 +69,7 @@ export default {
   'system.setting.rules.socks':
     'Only addresses for socks4 and socks5 protocols.',
   'system.setting.offlineManage.noProxy.extra':
-    "List of IPs ang domain names with ',' separated;supporting fuzzy matching;e.g.:192.168.0.*,*ip.net.",
+    "List of IPs and domain names with ',' separated;supporting fuzzy matching;e.g.:192.168.0.*,*ip.net.",
   'system.setting.rules.noProxy': 'The input format is incorrect',
   'system.setting.TokenRefreshCronExpr': 'System token refresh cycle',
   'system.setting.TokenRefreshCronExpr.desc':

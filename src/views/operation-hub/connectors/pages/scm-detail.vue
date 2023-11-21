@@ -213,7 +213,8 @@
     PageAction,
     validateLabelNameRegx,
     InputWidth,
-    EnvironmentTypeMap
+    EnvironmentTypeMap,
+    EnvironmentTypeOrder
   } from '@/views/config';
   import _, { assignIn, toLower, get, isEqual, cloneDeep } from 'lodash';
   import { OPERATIONHUB } from '@/router/config';
@@ -273,9 +274,10 @@
     return _.map(userStore.applicableEnvironmentTypes, (item) => {
       return {
         label: t(EnvironmentTypeMap[item] || ''),
-        value: item
+        value: item,
+        order: EnvironmentTypeOrder[item]
       };
-    });
+    }).sort((a, b) => a.order - b.order);
   });
 
   const title = computed(() => {

@@ -56,7 +56,8 @@
         schema: props.schema,
         formData: props.formData,
         fieldPath: props.fieldPath,
-        parentSpan: props.parentSpan
+        parentSpan: props.parentSpan,
+        level: props.level + 1
       });
 
       // init field value
@@ -78,12 +79,10 @@
       additionalPropertiesList = genObjectFieldProperties({
         schema: props.schema.additionalProperties as FieldSchema,
         formData: props.formData,
-        fieldPath: props.fieldPath
+        fieldPath: props.fieldPath,
+        level: props.level + 1
       });
-      console.log(
-        'additionalPropertiesList============',
-        additionalPropertiesList
-      );
+
       // value is any
       const isAnyAdditionalProperties =
         _.isBoolean(props.schema.additionalProperties) &&
@@ -124,6 +123,7 @@
             value: _.get(props.formData, `${props.fieldPath}.${value}`)
           };
         });
+        console.log('additionalList==>>>>>>>>=', additionalList.value);
       }
 
       const handleAddClick = () => {
@@ -219,8 +219,8 @@
                     editorId={_.join(props.fieldPath, '-')}
                     showNumberInput={isMapNumber}
                     showCheckbox={isMapBoolean}
-                    value={_.get(props.formData, props.fieldPath)}
-                    labels={additionalList.value}
+                    labels={props.formData}
+                    labelsKey={_.join(props.fieldPath, '.')}
                     onUpdate:value={(val) => {
                       _.set(props.formData, props.fieldPath, val);
                       handleChange(props.formData);
@@ -233,8 +233,8 @@
                     editorId={_.join(props.fieldPath, '-')}
                     showNumberInput={isMapNumber}
                     showCheckbox={isMapBoolean}
-                    value={_.get(props.formData, props.fieldPath)}
-                    labels={additionalList.value}
+                    labels={props.formData}
+                    labelsKey={_.join(props.fieldPath, '.')}
                     onUpdate:value={(val) => {
                       _.set(props.formData, props.fieldPath, val);
                       handleChange(props.formData);
@@ -249,10 +249,6 @@
       };
       // additional value is object
       const renderAddtionalProperties = () => {
-        console.log(
-          'isMapObjectAdditionalProperties=====',
-          isMapObjectAdditionalProperties
-        );
         if (!isMapObjectAdditionalProperties) return null;
         return (
           <>
@@ -294,6 +290,7 @@
                             schema={childSchema}
                             requiredFields={childSchema.parentRequired}
                             parentSpan={props.schema.colSpan}
+                            level={childSchema.level}
                             fieldPath={[
                               ...props.fieldPath,
                               item.field,
@@ -323,10 +320,11 @@
           </>
         );
       };
+
       return () => (
         <FieldGroup
           schema={props.schema}
-          level={props.level}
+          level={props.schema.level}
           v-slots={{
             footer: () => {
               return <>{renderAddButton()}</>;
@@ -337,7 +335,7 @@
             {_.map(childProperties.value, (childSchema) => {
               return (
                 <SchemaField
-                  level={props.level + 1}
+                  level={childSchema.level}
                   schema={childSchema}
                   formData={props.formData}
                   fieldPath={childSchema.fieldPath}

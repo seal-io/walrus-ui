@@ -17,9 +17,11 @@
     isDatePicker,
     isMuliSelect,
     isPassword,
+    checkValidValue,
     initFieldDefaultValue
   } from '../utils';
   import { Option } from '../interface';
+  import { ProviderFormRefKey } from '../config';
 
   export default defineComponent({
     props: {
@@ -32,6 +34,7 @@
     emits: ['change'],
     setup(props, { emit, attrs }) {
       const schemaFormEditable = inject(InjectSchemaFormEditableKey);
+      const formref = inject(ProviderFormRefKey, ref());
 
       const widget = _.get(props.schema, ['x-walrus-ui', 'widget'], '');
       const numberReg = /\d+/;
@@ -40,8 +43,24 @@
       let Component = BasicFieldMaps[type.value];
       const options = ref<Option[]>([]);
 
+      const handleUnsetField = () => {
+        if (
+          !checkValidValue({
+            schema: props.schema,
+            value: _.get(props.schema, props.fieldPath),
+            required: props.required
+          })
+        ) {
+          const res = _.unset(props.schema, props.fieldPath);
+          emit('change', props.formData);
+        }
+      };
       const handleChange = (data) => {
         emit('change', data);
+
+        setTimeout(() => {
+          formref.value?.validateField(props.fieldPath);
+        });
       };
 
       // init field value
@@ -94,9 +113,6 @@
         }
         return list;
       };
-      const debounceChangeFormData = _.debounce((data) => {
-        handleChange(data);
-      }, 100);
 
       const handleSelectInputChange = (e: any) => {
         if (
@@ -109,8 +125,8 @@
         } else {
           _.set(props.schema, props.fieldPath, e);
         }
+        console.log('basic-field==input---2', e, e.target?.value, props.schema);
       };
-      console.log('component===', Component);
       const renderSelectOptions = () => {
         if (isSelect(props.schema)) {
           return (
@@ -123,6 +139,8 @@
         }
         return null;
       };
+
+      const fieldValue = ref(_.get(props.formData, props.fieldPath));
 
       return () => (
         <a-form-item
@@ -140,10 +158,10 @@
             allow-search={false}
             editor-id={_.join(props.fieldPath, '-')}
             popupInfo={props.schema.description}
-            model-value={_.get(props.formData, props.fieldPath)}
+            v-model={fieldValue.value}
             onInput={(e) => {
               console.log(
-                'basic-field==input',
+                'basic-field==input----1',
                 e,
                 e.target?.value,
                 props.schema
@@ -153,13 +171,7 @@
             onChange={(val, e) => {
               val = filterEmptyOnSelect(val, e);
               _.set(props.formData, props.fieldPath, val);
-              console.log(
-                'basic-field==change',
-                { val },
-                { e },
-                { fieldPath: props.fieldPath },
-                { formData: props.formData }
-              );
+
               handleChange(props.formData);
             }}
           >

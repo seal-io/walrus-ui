@@ -438,7 +438,7 @@
   const handleResetUISchema = async (codeData?: object) => {
     try {
       const data = _.cloneDeep(formData.value);
-      data.uiSchema = codeData || null;
+      data.uiSchema = codeData || {};
       await upateResourceDefinition({ id, data });
       execSucceed();
       getItemResourceDefinition();

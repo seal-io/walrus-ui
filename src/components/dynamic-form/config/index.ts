@@ -7,4 +7,5 @@ export const extensionFields = [
   'group'
 ];
 
+export const ProviderFormRefKey = Symbol('ProviderFormRefKey');
 export default {};

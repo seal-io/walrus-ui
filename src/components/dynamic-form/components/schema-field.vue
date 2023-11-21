@@ -60,13 +60,6 @@
       const renderComponent = () => {
         const Component = component;
         if (showIf) {
-          console.log(
-            'showIf+++++++++++',
-            showIf,
-            _.initial(fieldPath),
-            props.formData,
-            fieldPath
-          );
           return getShowIfValue(
             showIf,
             props.formData,
@@ -90,7 +83,7 @@
             schema={props.schema}
             requiredFields={props.requiredFields}
             parentSpan={props.parentSpan || 12}
-            level={props.level || 0}
+            level={props.schema.level || 0}
             onChange={(data) => handleChange(data)}
           />
         );

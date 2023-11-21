@@ -31,21 +31,27 @@
           </template>
           <template #cell="{ record }">
             <span
-              v-if="_.isString(_.get(record, ['x-walrus-original', 'type']))"
-              >{{ _.get(record, ['x-walrus-original', 'type']) }}</span
+              v-if="
+                _.isString(
+                  _.get(record, ['schema', 'x-walrus-original', 'type'])
+                )
+              "
+              >{{
+                _.get(record, ['schema', 'x-walrus-original', 'type'])
+              }}</span
             >
             <a-tooltip v-else :content-style="{ maxHeight: '240px' }">
               <template #content>
                 <span style="white-space: pre-wrap">{{
                   JSON.stringify(
-                    _.get(record, ['x-walrus-original', 'type']),
+                    _.get(record, ['schema', 'x-walrus-original', 'type']),
                     null,
                     2
                   )
                 }}</span>
               </template>
               <span>{{
-                _.get(record, ['x-walrus-original', 'type', '0'])
+                _.get(record, ['schema', 'x-walrus-original', 'type', '0'])
               }}</span>
             </a-tooltip>
           </template>
