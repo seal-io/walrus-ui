@@ -11,5 +11,5 @@ export default {
   'resource.definition.detail.resourceTag': 'Resource Labels',
   'resource.definition.detail.matchRule': 'Match Rules',
   'resource.definition.detail.rule': 'Rule-{name}',
-  'resource.definition.detail.rules.labelKey': 'Label Key cannot be empty'
+  'resource.definition.detail.rules.labelKey': 'label Key cannot be empty'
 };
