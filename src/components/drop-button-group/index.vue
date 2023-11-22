@@ -36,6 +36,8 @@
     setup(props, { emit, slots }) {
       const { t } = i18n.global;
       const { actions, layout, loading } = toRefs(props);
+      const headItem = _.head(actions.value);
+      console.log('headItem===', headItem);
       const handleClickItem = (e, item) => {
         if (item.disabled) {
           e.stopPropagation();
@@ -113,29 +115,28 @@
                 return slots.default ? (
                   slots.default?.()
                 ) : (
-                  <a-tooltip
-                    content={t(_.get(_.head(actions.value), 'label') || '')}
-                  >
+                  <a-tooltip content={t(_.get(headItem, 'label') || '')}>
                     <a-link
                       class="mright-0"
                       hoverable={false}
                       loading={loading.value}
                       size="small"
-                      disabled={!!_.get(_.head(actions.value), 'disabled')}
-                      onClick={() => handleClick(_.head(actions.value))}
+                      disabled={!!_.get(headItem, 'disabled')}
+                      onClick={() => handleClick(headItem)}
                       v-slots={{
                         icon: () => {
-                          return h(
-                            compile(
-                              `<${_.get(_.head(actions.value), 'icon', '')} />`
-                            ),
-                            {
-                              ..._.get(_.head(actions.value), 'props', ''),
+                          return _.get(headItem, 'iconfont') ? (
+                            <i
+                              class={['iconfont', _.get(headItem, 'icon')]}
+                            ></i>
+                          ) : (
+                            h(compile(`<${_.get(headItem, 'icon', '')} />`), {
+                              ..._.get(headItem, 'props', ''),
                               style: {
                                 color: 'var(--sealblue-6)'
                               },
                               class: ['size-14']
-                            }
+                            })
                           );
                         }
                       }}

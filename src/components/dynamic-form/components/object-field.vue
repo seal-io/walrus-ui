@@ -170,6 +170,7 @@
       const renderAddButton = () => {
         return isMapObjectAdditionalProperties ? (
           <CommonButton
+            style={{ marginLeft: '16px' }}
             onClick={() => handleAddClick()}
             action="add"
             title={props.schema.title}

@@ -48,6 +48,7 @@ declare module 'vue' {
     APopconfirm: typeof import('@arco-design/web-vue')['Popconfirm'];
     AProgress: typeof import('@arco-design/web-vue')['Progress'];
     ARangePicker: typeof import('@arco-design/web-vue')['RangePicker'];
+    AResult: typeof import('@arco-design/web-vue')['Result'];
     ASelect: typeof import('@arco-design/web-vue')['Select'];
     ASpace: typeof import('@arco-design/web-vue')['Space'];
     ASpin: typeof import('@arco-design/web-vue')['Spin'];

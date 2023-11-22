@@ -85,7 +85,7 @@
               }}
             >
               {slots.default?.()}
-              <div style={{ paddingLeft: '16px' }}>{slots.footer?.()}</div>
+              <div>{slots.footer?.()}</div>
             </ModuleWrapper>
           </div>
         );
@@ -128,13 +128,13 @@
 
 <style lang="less" scoped>
   .field-group {
-    // margin-bottom: 16px;
+    position: relative;
+    z-index: 1;
     height: 100%;
     margin: 0 2px;
     padding: 0 16px;
     padding-right: 16px;
     padding-bottom: 10px;
-    overflow: hidden;
     border-radius: 0%;
     box-shadow: rgba(169, 174, 184, 0.3) 0 3px 1px -1px,
       rgba(169, 174, 184, 0.2) 0 1px 1px 0, rgba(169, 174, 184, 0.2) 0 1px 3px 0;
