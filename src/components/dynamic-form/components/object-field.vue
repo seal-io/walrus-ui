@@ -200,17 +200,36 @@
           });
         });
       };
+      const validateLabels = () => {
+        const labels = _.get(props.formData, props.fieldPath);
+        const keys = _.keys(labels);
+        return _.some(keys, (key) => {
+          return !_.trim(key) || !_.trim(labels[key]);
+        });
+      };
       // additional value is string
       const rendermapStringAdditional = () => {
         if (isAnyAdditionalProperties || isMapString || isMapNumber) {
           return (
             <a-form-item
-              hide-label={true}
-              rules={rules}
+              hide-label={false}
               required={fieldProps.required}
-              label={props.schema.title}
+              label={`${props.schema.title}dfsafdsdfasdf`}
               field={_.join(props.fieldPath, '.')}
               validate-trigger={['change']}
+              rules={[
+                {
+                  required: fieldProps.required,
+                  validator: (value, callback) => {
+                    if (!validateLabels()) {
+                      callback();
+                      return;
+                    }
+                    callback(i18n.global.t('detail.rules.labelKey'));
+                  },
+                  messages: i18n.global.t('detail.rules.labelKey')
+                }
+              ]}
             >
               {props.level < 1 ? (
                 <SealFormItemWrap

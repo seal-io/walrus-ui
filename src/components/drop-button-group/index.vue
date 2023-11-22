@@ -44,7 +44,7 @@
         }
       };
       const handleClick = (data) => {
-        emit('click', data);
+        emit('select', data.value);
       };
       const handleSelect = (val) => {
         emit('select', val);

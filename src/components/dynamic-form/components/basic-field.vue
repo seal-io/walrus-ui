@@ -117,10 +117,12 @@
       if (isPassword(props.schema)) {
         Component = CommonFieldMaps.password;
       }
-
+      const isNotEmpty = (val) => {
+        return val === '' || val === undefined || val === null;
+      };
       const filterEmptyOnSelect = (list, e) => {
         if (isAllowCreateSelect(props.schema)) {
-          return _.filter(list, (v) => !_.isEmpty(v));
+          return _.filter(list, (v) => !isNotEmpty(v));
         }
         return list;
       };
@@ -136,7 +138,6 @@
         } else {
           _.set(props.schema, props.fieldPath, e);
         }
-        console.log('basic-field==input---2', e, e.target?.value, props.schema);
       };
       const renderSelectOptions = () => {
         if (isSelect(props.schema)) {
@@ -172,18 +173,20 @@
               popupInfo={props.schema.description}
               v-model={fieldValue.value}
               onInput={(e) => {
-                console.log(
-                  'basic-field==input----1',
-                  e,
-                  e.target?.value,
-                  props.schema
-                );
+                console.log('basic-field==input----1', e, props.schema);
                 handleSelectInputChange(e);
               }}
               onChange={(val, e) => {
-                val = filterEmptyOnSelect(val, e);
-                _.set(props.formData, props.fieldPath, val);
-
+                const newVal = filterEmptyOnSelect(val, e);
+                fieldValue.value = val;
+                _.set(props.formData, props.fieldPath, newVal);
+                console.log(
+                  'basic-field==change----1',
+                  val,
+                  newVal,
+                  e,
+                  props.schema
+                );
                 handleChange(props.formData);
               }}
             >

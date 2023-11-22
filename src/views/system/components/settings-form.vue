@@ -106,8 +106,8 @@
                     :content="$t('common.button.cancel')"
                   >
                     <a-link @click="handleEditCancel(item)"
-                      ><i class="iconfont icon-quxiao"></i
-                    ></a-link>
+                      ><icon-undo
+                    /></a-link>
                   </a-tooltip>
                   <a-tooltip
                     v-if="item.isEditable"
