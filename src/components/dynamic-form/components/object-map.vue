@@ -1,0 +1,115 @@
+<script lang="tsx">
+  import { defineComponent, ref } from 'vue';
+  import _ from 'lodash';
+  import i18n from '@/locale';
+  import KeyValueLabels from '@/components/form-create/custom-components/key-value-labels.vue';
+  import SealFormItemWrap from '@/components/seal-form/components/seal-form-item-wrap.vue';
+  import SealInput from '@/components/seal-form/components/seal-input.vue';
+  import HintInput from '@/components/hint-input/index.vue';
+  import schemaFieldProps from '../fields/schema-field-props';
+  import { FieldSchema } from '../interface';
+  import FieldGroup from './field-group.vue';
+  import SchemaField from './schema-field.vue';
+  import {
+    genObjectFieldProperties,
+    initFieldDefaultValue,
+    genFieldPropsAndRules,
+    getCustomColSpan,
+    isBasicType
+  } from '../utils';
+  import CommonButton from './common-button.vue';
+
+  export default defineComponent({
+    props: schemaFieldProps,
+    emits: ['change'],
+    setup(props, { emit }) {
+      const handleChange = (data) => {
+        emit('change', data);
+      };
+
+      // init field value
+      if (props.action === 'create') {
+        _.set(
+          props.formData,
+          props.fieldPath,
+          initFieldDefaultValue(props.schema)
+        );
+        handleChange(props.formData);
+      }
+
+      const { fieldProps, rules } = genFieldPropsAndRules({
+        schema: props.schema,
+        requiredFields: props.requiredFields
+      });
+
+      // value is number
+      const isMapNumber =
+        _.isObject(props.schema.additionalProperties) &&
+        _.includes(
+          ['number', 'integer'],
+          props.schema.additionalProperties?.type
+        );
+
+      // value is boolean
+      const isMapBoolean =
+        _.isObject(props.schema.additionalProperties) &&
+        props.schema.additionalProperties?.type === 'boolean';
+
+      // init map(string) value
+
+      const validateLabels = () => {
+        const labels = _.get(props.formData, props.fieldPath);
+        const keys = _.keys(labels);
+        return _.some(keys, (key) => {
+          return !_.trim(key) || !_.trim(labels[key]);
+        });
+      };
+
+      return () => (
+        <a-grid-item
+          span={{ lg: props.schema.colSpan, md: 12, sm: 12, xs: 12 }}
+        >
+          <a-form-item
+            hide-label={true}
+            required={fieldProps.required}
+            label={`${props.schema.title}`}
+            field={_.join(props.fieldPath, '.')}
+            validate-trigger={['change']}
+            rules={[
+              {
+                required: fieldProps.required,
+                validator: (value, callback) => {
+                  if (!validateLabels()) {
+                    callback();
+                    return;
+                  }
+                  callback(i18n.global.t('common.rule.object.key'));
+                },
+                messages: i18n.global.t('common.rule.object.key')
+              }
+            ]}
+          >
+            <SealFormItemWrap
+              popupInfo={props.schema.description}
+              required={props.required}
+              label={props.schema.title || props.schema.name}
+              style="width: 100%"
+            >
+              <KeyValueLabels
+                editorId={_.join(props.fieldPath, '-')}
+                showNumberInput={isMapNumber}
+                showCheckbox={isMapBoolean}
+                labels={props.formData}
+                labelsKey={_.join(props.fieldPath, '.')}
+                onUpdate:value={(val) => {
+                  _.set(props.formData, props.fieldPath, val);
+                  handleChange(props.formData);
+                }}
+              ></KeyValueLabels>
+            </SealFormItemWrap>
+          </a-form-item>
+        </a-grid-item>
+      );
+    }
+  });
+</script>

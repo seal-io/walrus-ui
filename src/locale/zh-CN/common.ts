@@ -138,5 +138,6 @@ export default {
   'common.button.saveDeploy': '保存并部署',
   'common.button.draft': '保存草稿',
   'common.button.stop': '停止',
-  'common.button.start': '启动'
+  'common.button.start': '启动',
+  'common.rule.object.key': '键不能为空'
 };

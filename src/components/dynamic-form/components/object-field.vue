@@ -2,9 +2,6 @@
   import { defineComponent, ref } from 'vue';
   import _ from 'lodash';
   import i18n from '@/locale';
-  import KeyValueLabels from '@/components/form-create/custom-components/key-value-labels.vue';
-  import SealFormItemWrap from '@/components/seal-form/components/seal-form-item-wrap.vue';
-  import SealInput from '@/components/seal-form/components/seal-input.vue';
   import HintInput from '@/components/hint-input/index.vue';
   import schemaFieldProps from '../fields/schema-field-props';
   import { FieldSchema } from '../interface';
@@ -13,7 +10,6 @@
   import {
     genObjectFieldProperties,
     initFieldDefaultValue,
-    genFieldPropsAndRules,
     getCustomColSpan,
     isBasicType
   } from '../utils';
@@ -27,7 +23,6 @@
       let additionalPropertiesList: FieldSchema[] = [];
       let additionalPropertiesKeysObj = {};
       const childProperties = ref<FieldSchema[]>([]);
-      const additionalList = ref<any[]>([]);
       const objectAdditionalList = ref<
         { field: string; list: FieldSchema[] }[]
       >([]);
@@ -36,11 +31,6 @@
         emit('change', data);
       };
 
-      //
-      const { fieldProps, rules } = genFieldPropsAndRules({
-        schema: props.schema,
-        requiredFields: props.requiredFields
-      });
       additionalPropertiesKeysObj = _.reduce(
         _.keys(props.schema.additionalProperties?.properties),
         (obj, key) => {
@@ -86,29 +76,6 @@
         level: props.level + 1
       });
 
-      // value is any
-      const isAnyAdditionalProperties =
-        _.isBoolean(props.schema.additionalProperties) &&
-        props.schema.additionalProperties;
-
-      // value is string
-      const isMapString =
-        _.isObject(props.schema.additionalProperties) &&
-        props.schema.additionalProperties?.type === 'string';
-
-      // value is number
-      const isMapNumber =
-        _.isObject(props.schema.additionalProperties) &&
-        _.includes(
-          ['number', 'integer'],
-          props.schema.additionalProperties?.type
-        );
-
-      // value is boolean
-      const isMapBoolean =
-        _.isObject(props.schema.additionalProperties) &&
-        props.schema.additionalProperties?.type === 'boolean';
-
       // value is object or array
       const isMapObjectAdditionalProperties =
         _.isObject(props.schema.additionalProperties) &&
@@ -117,27 +84,7 @@
           props.schema.additionalProperties?.type
         );
 
-      // init map(string) value
-      if (isAnyAdditionalProperties || isMapString || isMapNumber) {
-        const keys = _.keys(_.get(props.formData, props.fieldPath));
-        additionalList.value = _.map(keys, (value, key) => {
-          return {
-            label: value,
-            value: _.get(props.formData, `${props.fieldPath}.${value}`)
-          };
-        });
-        console.log('additionalList==>>>>>>>>=', additionalList.value);
-      }
-
       const handleAddClick = () => {
-        if (isAnyAdditionalProperties || isMapString || isMapNumber) {
-          additionalList.value.push({
-            label: '',
-            value: ''
-          });
-
-          // !!! upate formData on component change event !!!
-        }
         if (isMapObjectAdditionalProperties) {
           objectAdditionalList.value.push({
             field: '',
@@ -153,11 +100,6 @@
       };
 
       const handleDeleteClick = (index) => {
-        if (isAnyAdditionalProperties || isMapString || isMapNumber) {
-          const labelKey = additionalList.value[index].label;
-          additionalList.value.splice(index, 1);
-          _.unset(props.formData, [...props.fieldPath, labelKey]);
-        }
         if (isMapObjectAdditionalProperties) {
           const itemField = objectAdditionalList.value[index]?.field;
           objectAdditionalList.value.splice(index, 1);
@@ -200,76 +142,7 @@
           });
         });
       };
-      const validateLabels = () => {
-        const labels = _.get(props.formData, props.fieldPath);
-        const keys = _.keys(labels);
-        return _.some(keys, (key) => {
-          return !_.trim(key) || !_.trim(labels[key]);
-        });
-      };
-      // additional value is string
-      const rendermapStringAdditional = () => {
-        if (isAnyAdditionalProperties || isMapString || isMapNumber) {
-          return (
-            <a-form-item
-              hide-label={false}
-              required={fieldProps.required}
-              label={`${props.schema.title}dfsafdsdfasdf`}
-              field={_.join(props.fieldPath, '.')}
-              validate-trigger={['change']}
-              rules={[
-                {
-                  required: fieldProps.required,
-                  validator: (value, callback) => {
-                    if (!validateLabels()) {
-                      callback();
-                      return;
-                    }
-                    callback(i18n.global.t('detail.rules.labelKey'));
-                  },
-                  messages: i18n.global.t('detail.rules.labelKey')
-                }
-              ]}
-            >
-              {props.level < 1 ? (
-                <SealFormItemWrap
-                  popupInfo={props.schema.description}
-                  required={props.required}
-                  label={props.schema.title || props.schema.name}
-                  style="width: 100%"
-                >
-                  <KeyValueLabels
-                    editorId={_.join(props.fieldPath, '-')}
-                    showNumberInput={isMapNumber}
-                    showCheckbox={isMapBoolean}
-                    labels={props.formData}
-                    labelsKey={_.join(props.fieldPath, '.')}
-                    onUpdate:value={(val) => {
-                      _.set(props.formData, props.fieldPath, val);
-                      handleChange(props.formData);
-                    }}
-                  ></KeyValueLabels>
-                </SealFormItemWrap>
-              ) : (
-                <div style={{ width: '100%' }}>
-                  <KeyValueLabels
-                    editorId={_.join(props.fieldPath, '-')}
-                    showNumberInput={isMapNumber}
-                    showCheckbox={isMapBoolean}
-                    labels={props.formData}
-                    labelsKey={_.join(props.fieldPath, '.')}
-                    onUpdate:value={(val) => {
-                      _.set(props.formData, props.fieldPath, val);
-                      handleChange(props.formData);
-                    }}
-                  ></KeyValueLabels>
-                </div>
-              )}
-            </a-form-item>
-          );
-        }
-        return null;
-      };
+
       // additional value is object
       const renderAddtionalProperties = () => {
         if (!isMapObjectAdditionalProperties) return null;
@@ -350,7 +223,7 @@
           return isBasicType(item.type);
         });
         return (
-          <a-grid cols={12} col-gap={10} row-gap={10} style={{ width: '100%' }}>
+          <a-grid cols={12} col-gap={18} row-gap={0} style={{ width: '100%' }}>
             {_.map(list, (childSchema) => {
               return (
                 <SchemaField
@@ -411,7 +284,6 @@
             {renderBasicTypeFields()}
             {renderNonBasicTypeFields()}
             {renderAddtionalProperties()}
-            {rendermapStringAdditional()}
           </>
         </FieldGroup>
       );

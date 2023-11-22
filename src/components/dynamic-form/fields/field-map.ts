@@ -15,6 +15,7 @@ import xInputGroup from '@/components/form-create/custom-components/x-input-grou
 import stringField from './string-field/index.vue';
 import ObjectField from '../components/object-field.vue';
 import ArrayField from '../components/array-field.vue';
+import ObjectMap from '../components/object-map.vue';
 
 import { FieldSchema } from '../interface';
 import ComponentsMap from '../components/components-map';
@@ -33,6 +34,7 @@ export const CommonFieldMaps = {
 export const FieldMaps = {
   array: ArrayField,
   object: ObjectField,
+  simpleObject: ObjectMap,
   stringField
 };
 
@@ -95,6 +97,24 @@ export const isAllowCreateNumberSelect = (schema: FieldSchema) => {
   );
 };
 
+export const isSimpleObject = (schema: FieldSchema) => {
+  // value is any
+  const isAnyAdditionalProperties =
+    _.isBoolean(schema.additionalProperties) && schema.additionalProperties;
+
+  // value is string
+  const isMapString =
+    _.isObject(schema.additionalProperties) &&
+    schema.additionalProperties?.type === 'string';
+
+  // value is number
+  const isMapNumber =
+    _.isObject(schema.additionalProperties) &&
+    _.includes(['number', 'integer'], schema.additionalProperties?.type);
+
+  return isAnyAdditionalProperties || isMapString || isMapNumber;
+};
+
 export const getSchemaFieldComponent = ({ schema, fieldPath, formData }) => {
   const { type, required: requiredFields } = schema;
   const widget = _.get(schema, ['x-walrus-ui', 'widget'], '');
@@ -111,6 +131,13 @@ export const getSchemaFieldComponent = ({ schema, fieldPath, formData }) => {
   if (type === FIELD_TYPE.ARRAY && !isMuliSelect(schema)) {
     return {
       component: FieldMaps.array,
+      fieldPath: [...fieldPath],
+      requiredFields
+    };
+  }
+  if (type === FIELD_TYPE.OBJECT && isSimpleObject(schema)) {
+    return {
+      component: FieldMaps.simpleObject,
       fieldPath: [...fieldPath],
       requiredFields
     };
