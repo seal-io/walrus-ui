@@ -121,9 +121,13 @@
         >
           <template #cell="{ record, rowIndex }">
             <DropButtonGroup
-              layout="vertical"
+              v-if="setActionList(dataList[rowIndex]).length"
+              :layout="
+                setActionList(dataList[rowIndex]).length === 1
+                  ? 'horizontal'
+                  : 'vertical'
+              "
               :actions="setActionList(dataList[rowIndex])"
-              @click="(val) => handleClickUpgrade(record)"
               @select="(value) => handleClickAction(value, record)"
             ></DropButtonGroup>
           </template>

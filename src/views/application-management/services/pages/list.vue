@@ -77,7 +77,7 @@
     </FilterBox>
 
     <moduleWrapper
-      :title="$t('applications.applications.table.service')"
+      :title="$t('menu.applicationManagement.services')"
       :show-delete="false"
       class="m-b-20"
       :status="true"
@@ -85,7 +85,7 @@
       <tableList
         ref="serviceTable"
         :type="ServiceDataType.service"
-        :title="$t('applications.applications.table.service')"
+        :title="$t('menu.applicationManagement.resources')"
         :request-params="queryParams"
         @selection-change="handleServiceSelectChange"
       ></tableList>

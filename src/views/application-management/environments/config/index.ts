@@ -45,9 +45,6 @@ export const EnvironmentActions: MoreAction[] = [
         resource: Resources.Environments,
         actions: [Actions.PUT]
       });
-    },
-    props: {
-      name: 'dkfsdjflkjsdlfk'
     }
   },
   {

@@ -102,7 +102,10 @@ export default [
       permission: {
         resource: Resources.Environments,
         type: permissionKey.projectRoles,
-        actions: ['POST']
+        pageAction: {
+          [PageAction.VIEW]: ['GET'],
+          [PageAction.EDIT]: ['POST']
+        }
       },
       icon: 'icon-apps'
     }

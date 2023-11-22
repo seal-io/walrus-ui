@@ -165,7 +165,10 @@
           >
             <template #cell="{ record }">
               <DropButtonGroup
-                layout="vertical"
+                v-if="setActionList(record).length"
+                :layout="
+                  setActionList(record).length === 1 ? 'horizontal' : 'vertical'
+                "
                 :actions="setActionList(record)"
                 @click="(val) => handleEdit(record)"
                 @select="(value) => handleClickAction(value, record)"

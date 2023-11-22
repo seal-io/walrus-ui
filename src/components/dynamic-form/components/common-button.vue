@@ -26,7 +26,6 @@
           <a-tooltip content={props.title}>
             <a-link
               type={props.type || 'primary'}
-              {...attrs}
               onClick={() => emit('click')}
             >
               {props.action === 'add' ? (
@@ -48,7 +47,6 @@
 <style lang="less" scoped>
   .common-button {
     display: flex;
-    margin-left: 16px;
     // margin-top: 10px;
     // margin-bottom: 10px;
   }

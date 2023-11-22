@@ -13,8 +13,10 @@
         @click="handleClick(item)"
       >
         <template #icon>
+          <i v-if="item.iconfont" :class="['iconfont', item.icon]"></i>
           <component
             :is="item.icon"
+            v-else
             v-bind="item.props"
             class="size-14"
           ></component>

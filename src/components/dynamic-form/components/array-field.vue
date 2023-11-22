@@ -1,5 +1,5 @@
 <script lang="tsx">
-  import { defineComponent, ref } from 'vue';
+  import { defineComponent, ref, withModifiers } from 'vue';
   import _ from 'lodash';
   import schemaFieldProps from '../fields/schema-field-props';
   import { FieldSchema } from '../interface';
@@ -16,6 +16,7 @@
     props: schemaFieldProps,
     emits: ['change'],
     setup(props, { emit }) {
+      const activeItemIndex = ref(-1);
       const items = props.schema.items || [];
       const minItems = props.schema.minItems || 0;
       let itemsProperties: FieldSchema[] = [];
@@ -100,20 +101,40 @@
         handleChange(props.formData);
       };
 
+      const handleButtonEnter = (index) => {
+        activeItemIndex.value = index;
+      };
+
+      const handleButtoneave = () => {
+        activeItemIndex.value = -1;
+      };
+
       const renderDeleleButton = (index) => {
         return (
-          <CommonButton
-            class="delete-btn"
-            onClick={() => handleDeleteClick(index)}
-            action="delete"
-            title={props.schema.title}
-          ></CommonButton>
+          <span
+            onMouseover={withModifiers(
+              () => handleButtonEnter(index),
+              ['stop', 'prevent']
+            )}
+            onMouseout={withModifiers(
+              () => handleButtoneave(),
+              ['stop', 'prevent']
+            )}
+          >
+            <CommonButton
+              class="delete-btn"
+              onClick={() => handleDeleteClick(index)}
+              action="delete"
+              title={props.schema.title}
+            ></CommonButton>
+          </span>
         );
       };
 
       const renderAddButton = () => {
         return props.schema.items ? (
           <CommonButton
+            style={{ marginLeft: '16px' }}
             onClick={() => handleAddClick()}
             action="add"
             title={props.schema.title}
@@ -142,8 +163,13 @@
           {_.map(propertiesList.value, (item, index) => {
             return (
               <>
-                <div class="add-item">
-                  <div class="add-content">
+                <div class={['add-item']}>
+                  <div
+                    class={[
+                      'add-content',
+                      { active: activeItemIndex.value === index }
+                    ]}
+                  >
                     <a-grid cols={12} col-gap={18}>
                       {_.map(item, (sItem, sIndex) => {
                         return (
@@ -166,6 +192,9 @@
                     ? renderDeleleButton(index)
                     : null}
                 </div>
+                {index === propertiesList.value.length - 1 ? null : (
+                  <a-divider size={1} type="dashed" class="divider"></a-divider>
+                )}
               </>
             );
           })}
@@ -176,13 +205,17 @@
 </script>
 
 <style lang="less" scoped>
+  .divider {
+    &.arco-divider-horizontal {
+      margin-top: 0;
+    }
+  }
+
   .add-item {
     display: flex;
     align-items: flex-start;
     justify-content: space-between;
-    padding: 20px 16px;
-    padding-top: 0;
-    padding-bottom: 0;
+    padding: 0 16px;
     border-radius: var(--border-radius-small);
     border-radius: 4px;
 
@@ -191,16 +224,26 @@
       top: 11px;
       left: 2px;
     }
-    // &:hover {
-    //   background-color: var(--color-fill-2);
-    //   padding: 20px 16px;
-    //   padding-bottom: 0;
-    //   padding-top: 0;
-    //   border-radius: 4px;
-    //   transition: background-color 0.3s var(--seal-transition-func);
-    // }
+
     .add-content {
+      position: relative;
       flex: 1;
+
+      &.active {
+        &::before {
+          position: absolute;
+          top: -20px;
+          right: -20px;
+          bottom: 0;
+          left: -20px;
+          display: block;
+          padding-bottom: 0;
+          background-color: var(--color-fill-2);
+          border-radius: 4px;
+          transition: background-color 0.3s var(--seal-transition-func);
+          content: '';
+        }
+      }
     }
 
     .delete-btn {
