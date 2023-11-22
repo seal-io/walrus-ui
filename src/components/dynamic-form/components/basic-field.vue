@@ -44,18 +44,6 @@
       let Component = BasicFieldMaps[type.value];
       const options = ref<Option[]>([]);
 
-      const handleUnsetField = () => {
-        if (
-          !checkValidValue({
-            schema: props.schema,
-            value: _.get(props.schema, props.fieldPath),
-            required: props.required
-          })
-        ) {
-          const res = _.unset(props.schema, props.fieldPath);
-          emit('change', props.formData);
-        }
-      };
       const handleChange = (data) => {
         emit('change', data);
 
@@ -178,13 +166,19 @@
               }}
               onChange={(val, e) => {
                 const newVal = filterEmptyOnSelect(val, e);
-                fieldValue.value = val;
-                _.set(props.formData, props.fieldPath, newVal);
+
+                if (isAllowCreateNumberSelect(props.schema)) {
+                  fieldValue.value = _.map(newVal, (v) => {
+                    return _.toNumber(v);
+                  });
+                } else {
+                  fieldValue.value = val;
+                }
+
+                _.set(props.formData, props.fieldPath, fieldValue.value);
                 console.log(
                   'basic-field==change----1',
-                  val,
-                  newVal,
-                  e,
+                  fieldValue.value,
                   props.schema
                 );
                 handleChange(props.formData);
@@ -201,9 +195,17 @@
           {schemaFormEditable.value ? (
             renderEdit()
           ) : (
-            <SealFormItemWrap label={props.schema.title}>
-              <span>{_.get(props.formData, props.fieldPath)}</span>
-            </SealFormItemWrap>
+            <a-form-item
+              hide-label={true}
+              rules={props.rules}
+              label={props.schema.title}
+              field={_.join(props.fieldPath, '.')}
+              validate-trigger={['change']}
+            >
+              <SealFormItemWrap label={props.schema.title} style="width: 100%">
+                <span>{_.get(props.formData, props.fieldPath)}</span>
+              </SealFormItemWrap>
+            </a-form-item>
           )}
         </>
       );

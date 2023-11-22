@@ -20,6 +20,7 @@ import ObjectMap from '../components/object-map.vue';
 import { FieldSchema } from '../interface';
 import ComponentsMap from '../components/components-map';
 import FIELD_TYPE from '../config/field-type';
+import { isBasicType } from '../utils';
 
 export const CommonFieldMaps = {
   textArea: sealTextarea,
@@ -115,6 +116,23 @@ export const isSimpleObject = (schema: FieldSchema) => {
   return isAnyAdditionalProperties || isMapString || isMapNumber;
 };
 
+export const isNonObject = (schema: any) => {
+  const { type, properties, additionalProperties } = schema;
+  return type === FIELD_TYPE.OBJECT && !properties && !additionalProperties;
+};
+export const isYamlEditor = (schema: FieldSchema) => {
+  const { type, properties, additionalProperties, items } = schema;
+  if (type === FIELD_TYPE.OBJECT && !properties && !additionalProperties) {
+    return true;
+  }
+  if (
+    type === FIELD_TYPE.ARRAY &&
+    (isNonObject(items) || !_.get(items, 'type'))
+  ) {
+    return true;
+  }
+  return false;
+};
 export const getSchemaFieldComponent = ({ schema, fieldPath, formData }) => {
   const { type, required: requiredFields } = schema;
   const widget = _.get(schema, ['x-walrus-ui', 'widget'], '');
@@ -123,6 +141,13 @@ export const getSchemaFieldComponent = ({ schema, fieldPath, formData }) => {
   if (widget && widget !== 'TextArea') {
     return {
       component: ComponentsMap[widget],
+      fieldPath: [...fieldPath],
+      requiredFields
+    };
+  }
+  if (isYamlEditor(schema)) {
+    return {
+      component: ComponentsMap.YamlEditor,
       fieldPath: [...fieldPath],
       requiredFields
     };
@@ -145,6 +170,13 @@ export const getSchemaFieldComponent = ({ schema, fieldPath, formData }) => {
   if (type === FIELD_TYPE.OBJECT) {
     return {
       component: FieldMaps.object,
+      fieldPath: [...fieldPath],
+      requiredFields
+    };
+  }
+  if (isBasicType(schema)) {
+    return {
+      component: FieldMaps.stringField,
       fieldPath: [...fieldPath],
       requiredFields
     };

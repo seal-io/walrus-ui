@@ -95,6 +95,7 @@ export const checkValidValue = ({ value, schema, required }) => {
   return true;
 };
 export const calcFieldSpan = ({ parentSpan, colSpan, parentHalfGrid }) => {
+  parentSpan = parentSpan || 12;
   if (colSpan) {
     return {
       span: colSpan,

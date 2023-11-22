@@ -27,7 +27,6 @@
           <div v-if="actionList.length" class="dropdown">
             <DropButtonGroup
               :actions="actionList"
-              @click="handleClick"
               @select="handleSelect"
             ></DropButtonGroup>
           </div>
@@ -281,9 +280,6 @@
       //
     }
   };
-  const handleClick = () => {
-    handleUpgrade();
-  };
 
   const handleBasicCollapse = async (val) => {
     if (val) {
@@ -318,6 +314,7 @@
     actionMap.set(serviceActionMap.delete, handleDelete);
     actionMap.set(serviceActionMap.start, handleStartResource);
     actionMap.set(serviceActionMap.stop, handleStopResource);
+    actionMap.set(serviceActionMap.upgrade, handleUpgrade);
   };
   const handleEditCancel = () => {
     pageAction.value = PageAction.VIEW;
