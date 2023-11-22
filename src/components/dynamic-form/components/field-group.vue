@@ -158,6 +158,7 @@
     z-index: 1;
     height: 100%;
     margin: 0 2px;
+    margin-top: 2px;
     margin-bottom: 20px;
     padding: 0 16px;
     padding-right: 16px;
@@ -198,6 +199,7 @@
       .title {
         height: 52px;
         padding-right: 16px;
+        font-size: 12px;
         background-color: #fff;
       }
 

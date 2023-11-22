@@ -34,6 +34,12 @@
           return false;
         }
       },
+      readonly: {
+        type: Boolean,
+        default() {
+          return false;
+        }
+      },
       showNumberInput: {
         type: Boolean,
         default() {

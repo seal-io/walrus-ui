@@ -73,8 +73,6 @@
     }
 
     :deep(.arco-form-item) {
-      margin-bottom: 0;
-
       .arco-form-item-label {
         font-size: 14px;
       }

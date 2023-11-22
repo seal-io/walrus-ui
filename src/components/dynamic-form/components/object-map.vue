@@ -1,7 +1,8 @@
 <script lang="tsx">
-  import { defineComponent, ref } from 'vue';
+  import { defineComponent, ref, inject } from 'vue';
   import _ from 'lodash';
   import i18n from '@/locale';
+  import { InjectSchemaFormEditableKey } from '@/views/config';
   import KeyValueLabels from '@/components/form-create/custom-components/key-value-labels.vue';
   import SealFormItemWrap from '@/components/seal-form/components/seal-form-item-wrap.vue';
   import SealInput from '@/components/seal-form/components/seal-input.vue';
@@ -23,6 +24,7 @@
     props: schemaFieldProps,
     emits: ['change'],
     setup(props, { emit }) {
+      const schemaFormEditable = inject(InjectSchemaFormEditableKey, ref(true));
       const handleChange = (data) => {
         emit('change', data);
       };
@@ -101,6 +103,7 @@
                 showCheckbox={isMapBoolean}
                 labels={props.formData}
                 labelsKey={_.join(props.fieldPath, '.')}
+                readonly={!schemaFormEditable.value || props.action === 'view'}
                 onUpdate:value={(val) => {
                   _.set(props.formData, props.fieldPath, val);
                   handleChange(props.formData);

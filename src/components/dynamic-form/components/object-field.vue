@@ -1,7 +1,8 @@
 <script lang="tsx">
-  import { defineComponent, ref } from 'vue';
+  import { defineComponent, ref, inject } from 'vue';
   import _ from 'lodash';
   import i18n from '@/locale';
+  import { InjectSchemaFormEditableKey } from '@/views/config';
   import HintInput from '@/components/hint-input/index.vue';
   import schemaFieldProps from '../fields/schema-field-props';
   import { FieldSchema } from '../interface';
@@ -20,6 +21,7 @@
     emits: ['change'],
     setup(props, { emit }) {
       const { t } = i18n.global;
+      const schemaFormEditable = inject(InjectSchemaFormEditableKey, ref(true));
       let additionalPropertiesList: FieldSchema[] = [];
       let additionalPropertiesKeysObj = {};
       const childProperties = ref<FieldSchema[]>([]);
@@ -52,7 +54,11 @@
         level: props.level + 1
       });
 
-      console.log('childProperties++++++++++++', childProperties.value);
+      console.log(
+        'childProperties++++++++++++',
+        props.schema,
+        childProperties.value
+      );
       // init field value
       if (props.action === 'create') {
         _.set(
@@ -156,28 +162,38 @@
                       <a-form-item
                         field={_.join([props.fieldPath, index, 'field'], '.')}
                       >
-                        <HintInput
-                          modelValue={_.get(objectAdditionalList.value, [
-                            index,
-                            'field'
-                          ])}
-                          editorId={_.join(
-                            [props.fieldPath, index, 'field'],
-                            '.'
-                          )}
-                          placeholder="enter property name"
-                          onChange={() => {
-                            handleAdditionalFieldChange();
-                            handleChange(props.formData);
-                          }}
-                          onUpdate:modelValue={(val) => {
-                            _.set(
-                              objectAdditionalList.value,
-                              [index, 'field'],
-                              val
-                            );
-                          }}
-                        ></HintInput>
+                        {!schemaFormEditable.value ||
+                        props.action === 'view' ? (
+                          <span>
+                            {_.get(objectAdditionalList.value, [
+                              index,
+                              'field'
+                            ])}
+                          </span>
+                        ) : (
+                          <HintInput
+                            modelValue={_.get(objectAdditionalList.value, [
+                              index,
+                              'field'
+                            ])}
+                            editorId={_.join(
+                              [props.fieldPath, index, 'field'],
+                              '.'
+                            )}
+                            placeholder="enter property name"
+                            onChange={() => {
+                              handleAdditionalFieldChange();
+                              handleChange(props.formData);
+                            }}
+                            onUpdate:modelValue={(val) => {
+                              _.set(
+                                objectAdditionalList.value,
+                                [index, 'field'],
+                                val
+                              );
+                            }}
+                          ></HintInput>
+                        )}
                       </a-form-item>
                       {_.map(item.list, (childSchema, cIndex) => {
                         return (
@@ -222,6 +238,7 @@
         const list = _.filter(childProperties.value, (item) => {
           return isBasicType(item.type);
         });
+
         return (
           <a-grid cols={12} col-gap={18} row-gap={0} style={{ width: '100%' }}>
             {_.map(list, (childSchema) => {

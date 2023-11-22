@@ -169,7 +169,7 @@
     yaml: '# yaml format'
   };
   const $attrs = useAttrs();
-  const emits = defineEmits(['change', 'update:modelValue', 'input']);
+  const emits = defineEmits(['change', 'update:modelValue', 'input', 'blur']);
 
   // let timer:any = null
   let aceEditor: any = null;
@@ -367,6 +367,9 @@
         emits('input', val);
         emits('update:modelValue', val);
         clearDiffRowDecoration(args);
+      });
+      aceEditor.on('blur', function (args: any) {
+        emits('blur');
       });
       aceEditor.setOptions({
         wrap: true,
