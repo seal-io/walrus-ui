@@ -22,7 +22,7 @@
               })
             "
             :disabled="
-              _.includes(RetryStatus, executionInfo.status?.summaryStatus)
+              !_.includes(RetryStatus, executionInfo.status?.summaryStatus)
             "
             type="primary"
             size="small"
