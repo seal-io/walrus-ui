@@ -18,6 +18,7 @@
           layout="vertical"
           :origin-form-data="formData"
           :schema="item.schema"
+          :action="action"
           @change="handleChange"
         >
         </SingleForm>
@@ -29,7 +30,8 @@
       ref="schemaForm"
       form-id="schemaForm"
       layout="vertical"
-      :origin-form-data="formData"
+      :action="action"
+      :origin-form-data="rootFormData"
       :schema="formGroup[0].schema"
       @change="handleChange"
     >
@@ -38,7 +40,7 @@
 </template>
 
 <script lang="ts" setup>
-  import _ from 'lodash';
+  import _, { clone } from 'lodash';
   import { PropType, watch, ref, nextTick } from 'vue';
   import SingleForm from './single-form.vue';
   import { FieldSchema, FormGroup } from './interface';
@@ -57,6 +59,12 @@
       type: Object as PropType<any>,
       default() {
         return {};
+      }
+    },
+    action: {
+      type: String as PropType<'edit' | 'view' | 'create'>,
+      default() {
+        return 'create';
       }
     }
   });
@@ -144,6 +152,16 @@
     validate
   });
   watch(
+    () => props.formData,
+    () => {
+      rootFormData.value = props.formData;
+    },
+    {
+      immediate: true,
+      deep: true
+    }
+  );
+  watch(
     () => props.schema,
     () => {
       formGroup.value = [];
@@ -153,7 +171,12 @@
         formGroup.value = createFormGroup(props.schema);
         activeKey.value = formGroup.value[0]?.group;
 
-        console.log('formGroup===9999===', formGroup.value);
+        console.log(
+          'formGroup===9999===',
+          formGroup.value,
+          props.action,
+          props.formData
+        );
       });
     },
     {

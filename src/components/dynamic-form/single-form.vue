@@ -3,11 +3,10 @@
     defineComponent,
     toRefs,
     ref,
-    reactive,
-    computed,
-    toRaw,
     watch,
-    provide
+    provide,
+    PropType,
+    toRaw
   } from 'vue';
   import _ from 'lodash';
   import useScrollToView from '@/hooks/use-scroll-to-view';
@@ -16,7 +15,15 @@
   import { ProviderFormRefKey } from './config';
 
   export default defineComponent({
-    props: formProps,
+    props: {
+      ...formProps,
+      action: {
+        type: String as PropType<'edit' | 'view' | 'create'>,
+        default() {
+          return 'create';
+        }
+      }
+    },
     emits: ['change'],
     setup(props, { emit, expose }) {
       const formref = ref();
@@ -29,7 +36,7 @@
 
       const handleChange = (data) => {
         // formData.value = data;
-        // emit('change', toRaw(formData.value));
+        emit('change', toRaw(formData.value));
       };
 
       const handleSubmitFailed = (data) => {
@@ -52,7 +59,6 @@
         () => props.originFormData,
         () => {
           formData.value = props.originFormData;
-          console.log('formData===9999===', formData.value);
         },
         {
           immediate: true,
@@ -68,8 +74,9 @@
           layout={layout.value}
           onSubmitFailed={(error) => handleSubmitFailed(error)}
         >
-          <a-grid cols={12} col-gap={10} row-gap={20}>
+          <a-grid cols={12} col-gap={18} row-gap={16}>
             <SchemaField
+              action={props.action}
               schema={props.schema}
               formData={formData.value}
               onChange={handleChange}

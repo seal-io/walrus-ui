@@ -27,20 +27,21 @@ export const flattenSchema = (
     };
     if (type === 'object') {
       flattenSchema(fieldSchema, resultList);
-    } else if (type === 'array') {
-      const items = _.get(property, 'items', {});
-      const itemSchema = {
-        ...items,
-        name: key,
-        fieldPath: [...fieldPath, key],
-        isRequired: customRequired || required
-      };
-      flattenSchema(itemSchema, resultList);
     } else if (additionalProperties) {
       flattenSchema(fieldSchema, resultList);
     } else {
       resultList.push(fieldSchema);
     }
+    // if (type === 'array') {
+    //   const items = _.get(property, 'items', {});
+    //   const itemSchema = {
+    //     ...items,
+    //     name: key,
+    //     fieldPath: [...fieldPath, key],
+    //     isRequired: customRequired || required
+    //   };
+    //   flattenSchema(itemSchema, resultList);
+    // }
   });
 };
 

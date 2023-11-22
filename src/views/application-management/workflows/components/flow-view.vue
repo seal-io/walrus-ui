@@ -447,6 +447,7 @@
       const currentData = _.find(collections, (item) => item.id === execId);
       if (currentData) {
         const stages = currentData?.stages || [];
+        emits('view', _.cloneDeep(_.omit(currentData, ['stages'])));
         _.each(stages, (stage) => {
           _.each(stage.steps, (node) => {
             const nodeData = node;

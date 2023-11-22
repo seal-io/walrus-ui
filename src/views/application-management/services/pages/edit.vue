@@ -262,6 +262,7 @@
         <GroupForm
           ref="groupForm"
           v-model:form-data="formData.attributes"
+          :action="formAction"
           :schema="schemaVariables"
         ></GroupForm>
       </a-spin>
@@ -285,7 +286,7 @@
             :type="'primary'"
             class="cap-title cancel-btn"
             @click="() => handleOk()"
-            >{{ $t('common.button.save') }}</a-button
+            >{{ $t('common.button.saveDeploy') }}</a-button
           >
         </template>
         <template #cancel>
@@ -358,7 +359,7 @@
     }
   });
 
-  provide(InjectSchemaFormEditableKey, true);
+  provide(InjectSchemaFormEditableKey, ref(true));
   const emits = defineEmits(['cancel', 'save']);
   const { scrollToView } = useScrollToView();
   const {
@@ -428,6 +429,12 @@
     console.log('handleNamespaceChange===', val);
   };
 
+  const formAction = computed(() => {
+    if (!id) {
+      return 'create';
+    }
+    return 'edit';
+  });
   const virtualListProps = computed(() => {
     if (templateList.value.length > 20) {
       return {

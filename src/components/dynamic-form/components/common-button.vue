@@ -31,7 +31,7 @@
             >
               {props.action === 'add' ? (
                 <icon-plus-circle-fill
-                  style="stroke-width: 3"
+                  style="stroke-width: 3;"
                   class="size-24"
                 />
               ) : (
@@ -48,6 +48,7 @@
 <style lang="less" scoped>
   .common-button {
     display: flex;
+    margin-left: 16px;
     // margin-top: 10px;
     // margin-bottom: 10px;
   }

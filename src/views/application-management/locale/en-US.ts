@@ -129,7 +129,7 @@ export default {
   'applications.projects.edit': 'Edit Project',
   'applications.projects.table.name': 'Project',
   'applications.projects.search.holder': 'please enter a project',
-  'applications.projects.form.label': 'Label{index}',
+  'applications.projects.form.label': 'Labels',
   'applications.projects.rule.name': 'Name is required',
   'applications.projects.role.owner': 'Owner',
   'applications.projects.role.member': 'Member',

@@ -22,7 +22,7 @@
       const showIf = _.get(props.schema, ['x-walrus-ui', 'showIf'], '');
 
       // init field value
-      if (!_.get(props.formData, props.fieldPath)) {
+      if (props.action === 'create') {
         _.set(
           props.formData,
           props.fieldPath,
@@ -40,7 +40,7 @@
       };
 
       //  generate field component and fieldPath
-      const { component, fieldPath, requiredFields } = getSchemaFieldComponent({
+      const { component, fieldPath } = getSchemaFieldComponent({
         schema: props.schema,
         formData: props.formData,
         fieldPath: props.fieldPath
@@ -84,6 +84,7 @@
             requiredFields={props.requiredFields}
             parentSpan={props.parentSpan || 12}
             level={props.schema.level || 0}
+            action={props.action}
             onChange={(data) => handleChange(data)}
           />
         );

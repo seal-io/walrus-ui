@@ -285,7 +285,7 @@
     handleUpgrade();
   };
 
-  const handleBasicCollapse = (val) => {
+  const handleBasicCollapse = async (val) => {
     if (val) {
       serviceInfoRef.value?.initData();
     }

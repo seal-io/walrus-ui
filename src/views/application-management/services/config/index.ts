@@ -204,10 +204,13 @@ export const serviceActions: MoreAction[] = [
     handler: '',
     status: 'normal',
     disabled(currentInfo: any): boolean {
-      return (
+      if (
         get(currentInfo, 'status.transitioning') &&
         get(currentInfo, 'status.summaryStatus') !== ServiceStatus.Preparing
-      );
+      ) {
+        return true;
+      }
+      return false;
     },
     filterFun(currentInfo) {
       return userStore.hasProjectResourceActions({

@@ -407,20 +407,26 @@
         <template #title>
           <span>{{ $t('common.title.config') }}</span>
         </template>
-        <a-spin class="variables" style="width: 100%" :loading="asyncLoading">
+        <a-spin
+          class="variables"
+          style="width: 100%"
+          :loading="asyncLoading"
+          fill
+        >
           <GroupForm
-            v-if="pageAction === PageAction.EDIT"
             ref="groupForm"
-            :field-list="fieldSchemaList"
-            :async-loading="asyncLoading"
-            :original-form-data="originFormData.attributes || {}"
+            v-model:form-data="formData.attributes"
+            class="group-form"
+            style="width: 100%"
+            :action="!id ? 'create' : 'edit'"
+            :schema="schemaVariables"
           ></GroupForm>
-          <ViewForm
+          <!-- <ViewForm
             v-if="pageAction === PageAction.VIEW"
             style="width: 100%; padding: 0"
             :form-data="originFormData.attributes"
             :field-list="fieldSchemaList"
-          ></ViewForm>
+          ></ViewForm> -->
         </a-spin>
       </ModuleWrapper>
     </div>
@@ -439,9 +445,10 @@
     PageAction,
     InputWidth,
     EnvironmentTypeMap,
-    InjectShowInputHintKey
+    InjectShowInputHintKey,
+    InjectSchemaFormEditableKey
   } from '@/views/config';
-  import GroupForm from '@/components/form-create/group-form.vue';
+  import GroupForm from '@/components/dynamic-form/group-form.vue';
   import ViewForm from '@/components/form-create/view-form.vue';
   import { beforeLeaveCallback } from '@/hooks/save-before-leave';
   import { initFormState } from '@/components/dynamic-form/utils/init-form-state';
@@ -529,12 +536,18 @@
   const versionMap = ref({ nv: '', ov: '' });
   const templateVersionList = ref<any[]>([]);
   const fieldSchemaList = ref<any[]>([]);
+  const id = route.query.id as string;
   const templateVersionFormCache = ref<any>({});
   const uiSchema = ref<any>({});
   const selectors = ref<Set<string>>(new Set());
 
   provide(InjectShowInputHintKey, true);
 
+  const schemaVariables = ref<any>({});
+
+  const schemaFormEditable = computed(() => {
+    return props.pageAction === PageAction.EDIT;
+  });
   const actionList = computed(() => {
     return _.map(SelectorAction, (item) => {
       return {
@@ -551,6 +564,8 @@
     }
     return undefined;
   });
+
+  provide(InjectSchemaFormEditableKey, ref(schemaFormEditable.value));
 
   const initSelectors = () => {
     selectors.value = new Set();
@@ -611,16 +626,18 @@
       _.cloneDeep(
         _.get(moduleData, 'uiSchema.openAPISchema.components.schemas.variables')
       ) || {};
-    const result = initFormState(variables);
-    fieldSchemaList.value = result.fieldSchemaList;
-    _.each(fieldSchemaList.value, (item) => {
-      item.uiSchema.required = false;
-      _.each(item.uiSchema.rules, (rule) => {
-        if (rule.required) {
-          rule.required = false;
-        }
-      });
-    });
+
+    schemaVariables.value = variables;
+    // const result = initFormState(variables);
+    // fieldSchemaList.value = result.fieldSchemaList;
+    // _.each(fieldSchemaList.value, (item) => {
+    //   item.uiSchema.required = false;
+    //   _.each(item.uiSchema.rules, (rule) => {
+    //     if (rule.required) {
+    //       rule.required = false;
+    //     }
+    //   });
+    // });
   };
   const getTemplateVersions = async () => {
     try {
@@ -711,34 +728,14 @@
     }, 20);
   };
 
-  const cancel = async (callback) => {
-    beforeLeaveCallback({
-      isCancel: true,
-      onOk: () => {
-        copyFormData = cloneDeep(formData);
-        callback?.();
-      }
-    });
-  };
   const getSchema = () => {
     return uiSchema.value;
   };
   const submit = async () => {
     const res = await formref.value?.validate();
-    const groupFormRes = await groupForm.value?.getData();
+    // const groupFormRes = await groupForm.value?.getData();
     validateTrigger.value = true;
-    if (!res && groupFormRes) {
-      formData.value.attributes = {
-        ...reduce(
-          groupFormRes,
-          (obj, s) => {
-            obj = _.merge(obj, s.formData);
-            return obj;
-          },
-          {}
-        )
-      };
-
+    if (!res) {
       return formData.value;
     }
     scrollToView();
@@ -779,7 +776,6 @@
 
   defineExpose({
     submit,
-    cancel,
     getSchema
   });
   const initData = async () => {
@@ -798,6 +794,14 @@
 
       :deep(.content) {
         padding: 10px 0;
+      }
+    }
+
+    .group-form {
+      :deep(.label) {
+        .star {
+          display: none;
+        }
       }
     }
   }

@@ -85,7 +85,7 @@
               }}
             >
               {slots.default?.()}
-              <div>{slots.footer?.()}</div>
+              <div style={{ paddingLeft: '16px' }}>{slots.footer?.()}</div>
             </ModuleWrapper>
           </div>
         );
@@ -138,8 +138,7 @@
     border-radius: 0%;
     box-shadow: rgba(169, 174, 184, 0.3) 0 3px 1px -1px,
       rgba(169, 174, 184, 0.2) 0 1px 1px 0, rgba(169, 174, 184, 0.2) 0 1px 3px 0;
-    // border: 1px solid var(--color-border-2);
-    // border-radius: var(--border-radius-small);
+
     &.field-group-hovered:hover {
       border-color: rgb(var(--arcoblue-6));
       transition: border-color 0.2s var(--seal-transition-func);
@@ -154,20 +153,23 @@
     }
 
     :deep(.mo-wrap) {
-      margin: 0 2px;
       border: none;
+      border: 1px solid var(--color-border-2);
       border-radius: 0;
-      box-shadow: rgba(169, 174, 184, 0.3) 0 3px 1px -1px,
-        rgba(169, 174, 184, 0.3) 0 1px 1px 0,
-        rgba(169, 174, 184, 0.3) 0 1px 3px 0;
+      border-radius: var(--border-radius-small);
+
+      .common-button {
+        margin-left: 0;
+      }
 
       .title {
+        height: 52px;
         padding-right: 16px;
         background-color: #fff;
       }
 
       .content {
-        padding: 16px;
+        padding: 10px;
       }
 
       &.mo-wrap-hover:hover {

@@ -192,7 +192,7 @@
   const formData = ref({});
   const originFormData = ref({});
   const schemaVariables = ref<any>({});
-  const projectID = route.params.projectId as string;
+  const projectID = route.params.projectId || '';
   const { isFullscreen, toggle } = useFullscreen(wrapper);
 
   const actionList = computed((row) => {

@@ -5,6 +5,15 @@ import { FieldSchema } from '../interface';
 import { getConditionValue } from '../../form-create/config/utils';
 import { parseExpression } from '../../form-create/config/experssion-parser';
 
+export const isBasicType = (type) => {
+  return [
+    FIELD_TYPE.BOOLEAN,
+    FIELD_TYPE.NUMBER,
+    FIELD_TYPE.STRING,
+    FIELD_TYPE.INTEGER
+  ].includes(type);
+};
+
 export const isSelect = (schema: FieldSchema) => {
   const { type, enum: enumList, items } = schema;
   if (items && type === FIELD_TYPE.ARRAY) {
@@ -54,7 +63,7 @@ export const getShowIfValue = (showif, formData, fieldPath?: string[]) => {
   return isShow;
 };
 export const initFieldDefaultValue = (item) => {
-  if (item.default) {
+  if (item.default || item.default === 0 || item.default === false) {
     return item.default;
   }
   const { type } = item;
@@ -65,7 +74,7 @@ export const initFieldDefaultValue = (item) => {
     return {};
   }
   if (type === FIELD_TYPE.BOOLEAN) {
-    return false;
+    return null;
   }
   if (type === FIELD_TYPE.NUMBER || type === FIELD_TYPE.INTEGER) {
     return null;

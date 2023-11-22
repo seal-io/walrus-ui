@@ -62,5 +62,11 @@ export default {
   label: {
     type: String,
     default: ''
+  },
+  action: {
+    type: String as PropType<'edit' | 'view' | 'create'>,
+    default() {
+      return 'create';
+    }
   }
 };
