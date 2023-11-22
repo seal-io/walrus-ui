@@ -24,6 +24,7 @@ declare module 'vue' {
     AEmpty: typeof import('@arco-design/web-vue')['Empty'];
     AForm: typeof import('@arco-design/web-vue')['Form'];
     AFormItem: typeof import('@arco-design/web-vue')['FormItem'];
+    AGird: typeof import('@arco-design/web-vue')['Gird'];
     AGrid: typeof import('@arco-design/web-vue')['Grid'];
     AGridItem: typeof import('@arco-design/web-vue')['GridItem'];
     AInput: typeof import('@arco-design/web-vue')['Input'];

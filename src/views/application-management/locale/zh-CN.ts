@@ -121,7 +121,7 @@ export default {
   'applications.projects.edit': '编辑基本信息',
   'applications.projects.table.name': '项目',
   'applications.projects.search.holder': '请输入项目',
-  'applications.projects.form.label': '标签{index}',
+  'applications.projects.form.label': '标签',
   'applications.projects.rule.name': '名称必填',
   'applications.projects.role.owner': '所有者',
   'applications.projects.role.member': '成员',

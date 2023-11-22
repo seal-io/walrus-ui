@@ -232,9 +232,9 @@
       <a-spin style="width: 100%" :loading="asyncLoading">
         <GroupForm
           ref="groupForm"
-          :field-list="templateInfo"
-          :async-loading="asyncLoading"
-          :original-form-data="serviceInfo.attributes || {}"
+          v-model:form-data="formData.attributes"
+          :action="action"
+          :schema="schemaVariables"
         ></GroupForm>
       </a-spin>
     </div>
@@ -260,7 +260,7 @@
   import thumbButton from '@/components/buttons/thumb-button.vue';
   import useScrollToView from '@/hooks/use-scroll-to-view';
   import xInputGroup from '@/components/form-create/custom-components/x-input-group.vue';
-  import GroupForm from '@/components/form-create/group-form.vue';
+  import GroupForm from '@/components/dynamic-form/group-form.vue';
   import GroupTitle from '@/components/group-title/index.vue';
   import {
     validateLabelNameRegx,
@@ -286,7 +286,7 @@
       }
     },
     action: {
-      type: String,
+      type: String as PropType<'edit' | 'view' | 'create'>,
       default() {
         return PageAction.CREATE;
       }
@@ -317,6 +317,7 @@
     setTemplateInfo,
     getItemResourceDefinition,
     serviceInfo,
+    schemaVariables,
     formData,
     pageAction,
     templateInfo,
@@ -495,18 +496,18 @@
   const submit = async () => {
     validateLabel();
     const res = await formref.value?.validate();
-    const groupFormRes = await groupForm.value?.getData();
-    if (!res && groupFormRes && !validateTrigger.value) {
-      formData.attributes = {
-        ...reduce(
-          groupFormRes,
-          (obj, s) => {
-            obj = _.merge(obj, s.formData);
-            return obj;
-          },
-          {}
-        )
-      };
+    const groupFormRes = await groupForm.value?.validate();
+    if (!res && !groupFormRes && !validateTrigger.value) {
+      // formData.attributes = {
+      //   ...reduce(
+      //     groupFormRes,
+      //     (obj, s) => {
+      //       obj = _.merge(obj, s.formData);
+      //       return obj;
+      //     },
+      //     {}
+      //   )
+      // };
       // omit template project if value is empty
       if (!formData.template.project?.id) {
         formData.template = _.omit(formData.template, 'project');

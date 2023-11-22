@@ -55,7 +55,7 @@ export default {
   'workflow.task.timeout.2hour': '2 hours',
   'workflow.task.retry.policy': 'Retry Policy',
   'workflow.task.retry.count': 'Retry Times',
-  'workflow.task.variable.runtieEditable': 'Runtime-configurable',
+  'workflow.task.variable.runtieEditable': 'Configurable',
   'workflow.task.retry.always': 'Always',
   'workflow.task.retry.onfailure': 'OnFailure',
   'workflow.task.retry.onerror': 'OnError',

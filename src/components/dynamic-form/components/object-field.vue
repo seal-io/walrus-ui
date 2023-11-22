@@ -14,7 +14,8 @@
     genObjectFieldProperties,
     initFieldDefaultValue,
     genFieldPropsAndRules,
-    getCustomColSpan
+    getCustomColSpan,
+    isBasicType
   } from '../utils';
   import CommonButton from './common-button.vue';
 
@@ -63,7 +64,7 @@
 
       console.log('childProperties++++++++++++', childProperties.value);
       // init field value
-      if (!_.get(props.formData, props.fieldPath)) {
+      if (props.action === 'create') {
         _.set(
           props.formData,
           props.fieldPath,
@@ -298,6 +299,7 @@
                               item.field,
                               childSchema.name
                             ]}
+                            action={props.action}
                             onChange={(data) => {
                               _.set(
                                 props.formData,
@@ -323,6 +325,58 @@
         );
       };
 
+      const renderBasicTypeFields = () => {
+        const list = _.filter(childProperties.value, (item) => {
+          return isBasicType(item.type);
+        });
+        return (
+          <a-grid cols={12} col-gap={10} row-gap={10} style={{ width: '100%' }}>
+            {_.map(list, (childSchema) => {
+              return (
+                <SchemaField
+                  level={childSchema.level}
+                  schema={childSchema}
+                  formData={props.formData}
+                  fieldPath={childSchema.fieldPath}
+                  requiredFields={childSchema.parentRequired}
+                  parentSpan={props.schema.colSpan}
+                  action={props.action}
+                  onChange={(data) => {
+                    handleChange(data);
+                  }}
+                />
+              );
+            })}
+          </a-grid>
+        );
+      };
+
+      const renderNonBasicTypeFields = () => {
+        const list = _.filter(childProperties.value, (item) => {
+          return !isBasicType(item.type);
+        });
+        return (
+          <>
+            {_.map(list, (childSchema) => {
+              return (
+                <SchemaField
+                  level={childSchema.level}
+                  schema={childSchema}
+                  formData={props.formData}
+                  fieldPath={childSchema.fieldPath}
+                  requiredFields={childSchema.parentRequired}
+                  parentSpan={props.schema.colSpan}
+                  action={props.action}
+                  onChange={(data) => {
+                    handleChange(data);
+                  }}
+                />
+              );
+            })}
+          </>
+        );
+      };
+
       return () => (
         <FieldGroup
           schema={props.schema}
@@ -334,21 +388,8 @@
           }}
         >
           <>
-            {_.map(childProperties.value, (childSchema) => {
-              return (
-                <SchemaField
-                  level={childSchema.level}
-                  schema={childSchema}
-                  formData={props.formData}
-                  fieldPath={childSchema.fieldPath}
-                  requiredFields={childSchema.parentRequired}
-                  parentSpan={props.schema.colSpan}
-                  onChange={(data) => {
-                    handleChange(data);
-                  }}
-                />
-              );
-            })}
+            {renderBasicTypeFields()}
+            {renderNonBasicTypeFields()}
             {renderAddtionalProperties()}
             {rendermapStringAdditional()}
           </>
@@ -363,6 +404,9 @@
     display: flex;
     align-items: flex-start;
     justify-content: space-between;
+    padding: 20px 16px;
+    padding-top: 0;
+    padding-bottom: 0;
 
     .add-content {
       flex: 1;

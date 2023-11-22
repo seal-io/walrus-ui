@@ -42,6 +42,7 @@
               fieldPath={props.fieldPath}
               schema={props.schema}
               rules={rules}
+              action={props.action}
               onChange={(data) => handleChange(data)}
             ></BasicField>
           </a-grid-item>

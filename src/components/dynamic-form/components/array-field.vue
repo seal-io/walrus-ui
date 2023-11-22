@@ -26,7 +26,7 @@
       };
 
       // init field value
-      if (!_.get(props.formData, props.fieldPath)) {
+      if (props.action === 'create') {
         _.set(
           props.formData,
           props.fieldPath,
@@ -103,6 +103,7 @@
       const renderDeleleButton = (index) => {
         return (
           <CommonButton
+            class="delete-btn"
             onClick={() => handleDeleteClick(index)}
             action="delete"
             title={props.schema.title}
@@ -143,7 +144,7 @@
               <>
                 <div class="add-item">
                   <div class="add-content">
-                    <a-grid cols={12} col-gap={10}>
+                    <a-grid cols={12} col-gap={18}>
                       {_.map(item, (sItem, sIndex) => {
                         return (
                           <SchemaField
@@ -154,6 +155,7 @@
                             fieldPath={sItem.fieldPath}
                             requiredFields={sItem.parentRequired}
                             parentSpan={props.schema.colSpan}
+                            action={props.action}
                           ></SchemaField>
                         );
                       })}
@@ -178,8 +180,25 @@
     display: flex;
     align-items: flex-start;
     justify-content: space-between;
+    padding: 20px 16px;
+    padding-top: 0;
+    padding-bottom: 0;
     border-radius: var(--border-radius-small);
+    border-radius: 4px;
 
+    .delete-btn {
+      position: relative;
+      top: 11px;
+      left: 2px;
+    }
+    // &:hover {
+    //   background-color: var(--color-fill-2);
+    //   padding: 20px 16px;
+    //   padding-bottom: 0;
+    //   padding-top: 0;
+    //   border-radius: 4px;
+    //   transition: background-color 0.3s var(--seal-transition-func);
+    // }
     .add-content {
       flex: 1;
     }

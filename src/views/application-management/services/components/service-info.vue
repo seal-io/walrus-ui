@@ -11,6 +11,7 @@
       ref="groupForm"
       style="padding: 10px"
       :disabled="true"
+      :action="action"
       :form-data="serviceInfo.attributes"
       :schema="schema"
     ></GroupForm>
@@ -28,10 +29,17 @@
   const { initInfo, serviceInfo, schemaVariables, templateInfo } =
     useServiceData();
   const schema = ref<any>({});
-  provide(InjectSchemaFormEditableKey, false);
-  const initData = async () => {
+  const action = ref<any>('view');
+  provide(InjectSchemaFormEditableKey, ref(false));
+  const callback = async () => {
     await initInfo();
     schema.value = schemaVariables.value;
+  };
+  const initData = async () => {
+    schema.value = [];
+    nextTick(() => {
+      callback();
+    });
   };
   defineExpose({
     initData,

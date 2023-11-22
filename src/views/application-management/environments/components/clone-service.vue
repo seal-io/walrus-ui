@@ -168,9 +168,9 @@
           ></GroupTitle>
           <GroupForm
             ref="groupForm"
-            :field-list="templateInfo"
-            :async-loading="asyncLoading"
-            :original-form-data="serviceInfo.attributes || {}"
+            v-model:form-data="formData.attributes"
+            action="edit"
+            :schema="schemaVariables"
           ></GroupForm>
         </div>
       </div>
@@ -201,10 +201,11 @@
     PageAction,
     validateLabelNameRegx,
     InjectCompleteDataKey,
-    InjectShowInputHintKey
+    InjectShowInputHintKey,
+    InjectSchemaFormEditableKey
   } from '@/views/config';
   import { ref, PropType, computed, provide, onMounted, watch } from 'vue';
-  import GroupForm from '@/components/form-create/group-form.vue';
+  import GroupForm from '@/components/dynamic-form/group-form.vue';
   import xInputGroup from '@/components/form-create/custom-components/x-input-group.vue';
   import EditPageFooter from '@/components/edit-page-footer/index.vue';
   import useLabelsActions from '@/components/form-create/hooks/use-labels-action';
@@ -273,6 +274,7 @@
     completeDataLoading,
     serviceInfo,
     templateInfo,
+    schemaVariables,
     formData,
     pageAction
   } = useServiceData(props);
@@ -286,6 +288,8 @@
     validateTrigger
   } = useLabelsActions(formData);
   const { scrollToView } = useScrollToView();
+
+  provide(InjectSchemaFormEditableKey, ref(true));
 
   const emits = defineEmits(['update:hintData']);
   const completeData = ref<any>({});
@@ -386,18 +390,18 @@
   const handleOk = async () => {
     validateLabel();
     const res = await formref.value?.validate();
-    const groupFormRes = await groupForm.value?.getData();
-    if (groupFormRes && !res && !validateTrigger.value) {
-      formData.attributes = {
-        ..._.reduce(
-          groupFormRes,
-          (obj, s) => {
-            obj = _.merge(obj, s.formData);
-            return obj;
-          },
-          {}
-        )
-      };
+    const groupFormRes = await groupForm.value?.validate();
+    if (!groupFormRes && !res && !validateTrigger.value) {
+      // formData.attributes = {
+      //   ..._.reduce(
+      //     groupFormRes,
+      //     (obj, s) => {
+      //       obj = _.merge(obj, s.formData);
+      //       return obj;
+      //     },
+      //     {}
+      //   )
+      // };
       console.log('formData===', formData);
       show.value = false;
       updateActiveServiceData();
