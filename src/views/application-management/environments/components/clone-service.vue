@@ -360,10 +360,10 @@
     if (completeData.value.resource[newName]) {
       return;
     }
-    completeData.value.resource[newName] = _.cloneDeep(
-      completeData.value.resource[oldName]
+    completeData.value[props.resourceType][newName] = _.cloneDeep(
+      completeData.value[props.resourceType][oldName]
     );
-    delete completeData.value.resource[oldName];
+    delete completeData.value[props.resourceType][oldName];
     emits('update:hintData', completeData.value);
   };
   const updateActiveServiceData = () => {

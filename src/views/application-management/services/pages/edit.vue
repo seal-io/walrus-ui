@@ -284,7 +284,7 @@
           <a-button
             v-else
             :type="'primary'"
-            class="cap-title cancel-btn"
+            class="cap-title"
             @click="() => handleOk()"
             >{{ $t('common.button.saveDeploy') }}</a-button
           >
