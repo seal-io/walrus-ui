@@ -141,5 +141,6 @@ export default {
   'common.button.saveDeploy': 'Save and Deploy',
   'common.button.draft': 'Save Draft',
   'common.button.stop': 'Stop',
-  'common.button.start': 'Start'
+  'common.button.start': 'Start',
+  'common.rule.object.key': 'key cannot be empty'
 };

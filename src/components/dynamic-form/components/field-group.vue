@@ -33,6 +33,32 @@
       const handleGroupLeave = () => {
         groupHovered.value = false;
       };
+      const renderLevel0Conent = () => {
+        return (
+          <a-grid-item
+            span={{ lg: props.schema.colSpan, md: 12, sm: 12, xs: 12 }}
+          >
+            {props.schema.title || props.schema.name ? (
+              <div class="title parent-name">
+                <div>
+                  <span>{props.schema.title || props.schema.name}</span>
+                  {props.schema.description ? (
+                    <a-tooltip content={props.schema.description}>
+                      <icon-info-circle
+                        style="stroke-linecap: initial; cursor: default"
+                        class="m-l-2"
+                      />
+                    </a-tooltip>
+                  ) : null}
+                </div>
+                <div>{slots.buttons?.()}</div>
+              </div>
+            ) : null}
+            {slots.default?.()}
+            <div>{slots.footer?.()}</div>
+          </a-grid-item>
+        );
+      };
       const renderContent = () => {
         if (props.level < 2) {
           return (
@@ -94,7 +120,7 @@
       return () => (
         <>
           {props.level === 0 ? (
-            renderContent()
+            renderLevel0Conent()
           ) : (
             <a-grid-item
               span={{ lg: props.schema.colSpan, md: 12, sm: 12, xs: 12 }}
@@ -132,12 +158,19 @@
     z-index: 1;
     height: 100%;
     margin: 0 2px;
+    margin-bottom: 20px;
     padding: 0 16px;
     padding-right: 16px;
     padding-bottom: 10px;
     border-radius: 0%;
     box-shadow: rgba(169, 174, 184, 0.3) 0 3px 1px -1px,
       rgba(169, 174, 184, 0.2) 0 1px 1px 0, rgba(169, 174, 184, 0.2) 0 1px 3px 0;
+
+    &:hover {
+      box-shadow: rgba(33, 74, 196, 0.3) 0 3px 1px -1px,
+        rgba(33, 74, 196, 0.2) 0 1px 5px 0, rgba(33, 74, 196, 0.2) 0 1px 3px 0;
+      transition: box-shadow 0.2s var(--seal-transition-func);
+    }
 
     &.field-group-hovered:hover {
       border-color: rgb(var(--arcoblue-6));

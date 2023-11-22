@@ -408,6 +408,7 @@
   const breadCrumbList = ref<BreadcrumbOptions[]>([]);
   const versionMap = ref({ nv: '', ov: '' });
   const dataType = route.params.dataType as string;
+  const isCancelLeave = ref(false);
   const projectEnvCtx = reactive({
     projectID: route.params.projectId as string,
     environmentID: route.params.environmentId as string,
@@ -498,22 +499,14 @@
   // cache the user inputs when change the module version
   const setModuleVersionFormCache = async () => {
     if (!versionMap.value.ov) return;
-    const moduleFormList = await groupForm.value?.getData();
-    const inputs = reduce(
-      moduleFormList,
-      (obj, s) => {
-        obj = _.merge(obj, s.formData);
-        return obj;
-      },
-      {}
-    );
+    const inputs = _.cloneDeep(formData.attributes);
     templateVersionFormCache.value[versionMap.value.ov] = {
       ...pickBy(inputs, (val) => toString(val))
     };
   };
 
   const execVersionChangeCallback = async () => {
-    await setModuleVersionFormCache();
+    // await setModuleVersionFormCache();
     const moduleData = await getTemplateSchemaByVersion();
     setTemplateInfo(moduleData);
     formData.attributes = {};
