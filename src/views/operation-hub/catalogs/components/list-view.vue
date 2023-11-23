@@ -119,19 +119,11 @@
           :title="$t('common.table.operation')"
         >
           <template #cell="{ record }">
-            <!-- <a-space :size="16">
-              <a-tooltip :content="$t('common.button.edit')">
-                <a-link type="text" size="small" @click="handleEdit(record)">
-                  <template #icon><icon-edit /></template>
-                </a-link>
-              </a-tooltip>
-              <a-tooltip :content="$t('common.button.refresh')">
-                <a-link type="text" size="small" @click="handlRefresh(record)">
-                  <template #icon><icon-refresh /></template>
-                </a-link>
-              </a-tooltip>
-            </a-space> -->
             <DropButtonGroup
+              v-if="setActionList(record).length"
+              :layout="
+                setActionList(record).length === 1 ? 'horizontal' : 'vertical'
+              "
               :actions="setActionList(record)"
               @select="(value) => handleClickAction(value, record)"
             ></DropButtonGroup>

@@ -66,13 +66,13 @@ export const schemaActionList: MoreAction[] = [
     }
   }
 ];
-export const actionList = [
+export const actionList: MoreAction[] = [
   {
     label: 'common.button.edit',
     value: 'edit',
     icon: 'icon-edit',
     status: 'normal',
-    filterFunc(itemInfo, projectID) {
+    filterFun({ itemInfo, projectID }) {
       if (_.get(itemInfo, 'catalog.id')) return false;
       return projectID
         ? userStore.hasProjectResourceActions({
@@ -84,16 +84,14 @@ export const actionList = [
             resource: Resources.Templates,
             actions: [Actions.PUT]
           });
-    },
-    permission: ['PUT']
+    }
   },
   {
     label: 'common.button.refresh',
     value: 'refresh',
     icon: 'icon-refresh',
     status: 'normal',
-    requiredAuth: true,
-    filterFunc(itemInfo, projectID) {
+    filterFun({ itemInfo, projectID }) {
       return projectID
         ? userStore.hasProjectResourceActions({
             resource: Resources.Templates,
@@ -104,8 +102,7 @@ export const actionList = [
             resource: Resources.Templates,
             actions: [Actions.PUT]
           });
-    },
-    permission: ['PUT']
+    }
   },
   {
     label: 'operation.templates.button.useInservice',
@@ -113,8 +110,7 @@ export const actionList = [
     icon: 'icon-shandian',
     iconfont: true,
     status: 'normal',
-    requiredAuth: true,
-    filterFunc(itemInfo, projectID) {
+    filterFun({ itemInfo, projectID }) {
       return projectID
         ? userStore.hasProjectResourceActions({
             resource: Resources.Templates,
@@ -125,16 +121,14 @@ export const actionList = [
             resource: Resources.Templates,
             actions: [Actions.PUT]
           });
-    },
-    permission: ['PUT']
+    }
   },
   {
     label: 'common.button.delete',
     value: 'delete',
     icon: 'icon-delete',
     status: 'danger',
-    requiredAuth: true,
-    filterFunc(itemInfo, projectID) {
+    filterFun({ itemInfo, projectID }) {
       return projectID
         ? userStore.hasProjectResourceActions({
             resource: Resources.Templates,
@@ -145,8 +139,7 @@ export const actionList = [
             resource: Resources.Templates,
             actions: [Actions.DELETE]
           });
-    },
-    permission: ['DELETE']
+    }
   }
 ];
 export default {};

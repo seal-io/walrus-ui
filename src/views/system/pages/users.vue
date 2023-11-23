@@ -109,7 +109,7 @@
           :title="$t('common.table.operation')"
         >
           <template #cell="{ record }">
-            <a-space :size="16">
+            <!-- <a-space :size="16">
               <a-tooltip :content="$t('common.button.edit')">
                 <a-link
                   v-permission="{
@@ -137,7 +137,11 @@
                   </template>
                 </a-link>
               </a-tooltip>
-            </a-space>
+            </a-space> -->
+            <DropButtonGroup
+              :actions="actionList"
+              @select="(value) => handleClickAction(value, record)"
+            ></DropButtonGroup>
           </template>
         </a-table-column>
       </template>
@@ -171,10 +175,11 @@
   import { useUserStore, useAppStore } from '@/store';
   import { ref, reactive, onMounted } from 'vue';
   import FilterBox from '@/components/filter-box/index.vue';
+  import DropButtonGroup from '@/components/drop-button-group/index.vue';
   import { deleteModal, execSucceed } from '@/utils/monitor';
   import { getListLabel } from '@/utils/func';
   import { RowData, RoleItem } from '../config/interface';
-  import { roleTypeList } from '../config/users';
+  import { roleTypeList, actionList } from '../config/users';
   import { querySubjects, deleteSubjects, queryRoles } from '../api/users';
   import CreateAccountModal from '../components/create-account-modal.vue';
 
@@ -265,6 +270,13 @@
         handleDeleteConfirm(row);
       }
     });
+  };
+  const handleClickAction = (value, row) => {
+    if (value === 'edit') {
+      handleClickEdit(row);
+    } else if (value === 'delete') {
+      handleDelete(row);
+    }
   };
   const getRolesList = async () => {
     try {

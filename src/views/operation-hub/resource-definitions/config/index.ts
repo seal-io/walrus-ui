@@ -1,3 +1,9 @@
+import { useUserStore } from '@/store';
+import { Resources, Actions } from '@/permissions/config';
+import _ from 'lodash';
+import { MoreAction } from '@/views/config/interface';
+
+const userStore = useUserStore();
 export const variableTypeList = [
   { label: 'string', value: 'string' },
   { label: 'number', value: 'number' },
@@ -36,6 +42,33 @@ export const schemaActionList: any[] = [
     value: 'refresh',
     icon: 'icon-sync',
     status: 'normal'
+  }
+];
+
+export const actionList: MoreAction[] = [
+  {
+    label: 'common.button.edit',
+    value: 'edit',
+    icon: 'icon-edit',
+    status: 'normal',
+    filterFun() {
+      return userStore.hasRolesActionsPermission({
+        resource: Resources.ResourceDefinitions,
+        actions: [Actions.PUT]
+      });
+    }
+  },
+  {
+    label: 'common.button.delete',
+    value: 'delete',
+    icon: 'icon-delete',
+    status: 'danger',
+    filterFun() {
+      return userStore.hasRolesActionsPermission({
+        resource: Resources.ResourceDefinitions,
+        actions: [Actions.DELETE]
+      });
+    }
   }
 ];
 export default {};

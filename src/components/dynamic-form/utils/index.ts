@@ -363,11 +363,12 @@ export const genFieldPropsAndRules = ({
     return {
       fieldProps: {
         ...commonProps,
-        maxTagCount: 3
+        maxTagCount: 3,
+        required: true
       },
       rules: [
         {
-          required: requiredFlag || required || false,
+          required: true,
           message:
             message ||
             i18n.global.t('common.form.rule.select', { name: title || name })
@@ -378,15 +379,17 @@ export const genFieldPropsAndRules = ({
   }
 
   if (isMuliSelect(schema)) {
+    const isRequired = !!enumList?.length || requiredFlag || required || false;
     return {
       fieldProps: {
         ...commonProps,
         maxTagCount: 3,
-        multiple: true
+        multiple: true,
+        required: isRequired
       },
       rules: [
         {
-          required: requiredFlag || required || false,
+          required: isRequired,
           message:
             message ||
             i18n.global.t('common.form.rule.select', { name: title || name })

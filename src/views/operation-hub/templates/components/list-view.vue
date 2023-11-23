@@ -104,41 +104,10 @@
           :title="$t('common.table.operation')"
         >
           <template #cell="{ record }">
-            <a-space :size="16">
-              <a-tooltip :content="$t('common.button.edit')">
-                <a-link
-                  v-if="!_.get(record, 'catalog.id')"
-                  type="text"
-                  size="small"
-                  @click="handleEdit(record)"
-                >
-                  <template #icon><icon-edit class="size-14" /></template>
-                </a-link>
-              </a-tooltip>
-              <a-tooltip :content="$t('common.button.refresh')">
-                <a-link type="text" size="small" @click="handlRefresh(record)">
-                  <template #icon><icon-refresh /></template>
-                </a-link>
-              </a-tooltip>
-              <a-tooltip
-                :content="
-                  _.get(record, ['labels', 'walrus.seal.io/category']) ===
-                  'service'
-                    ? $t('operation.templates.button.cancelUseInService')
-                    : $t('operation.templates.button.useInservice')
-                "
-              >
-                <a-link
-                  type="text"
-                  size="small"
-                  @click="handleToggleAvailable(record)"
-                >
-                  <template #icon>
-                    <i class="iconfont icon-shandian"></i>
-                  </template>
-                </a-link>
-              </a-tooltip>
-            </a-space>
+            <DropButtonGroup
+              :actions="setActionList(record)"
+              @select="(value) => handleClickAction(value, record)"
+            ></DropButtonGroup>
           </template>
         </a-table-column>
       </template>
@@ -157,9 +126,11 @@
   import useCallCommon from '@/hooks/use-call-common';
   import { deleteModal, execSucceed } from '@/utils/monitor';
   import useRowSelect from '@/hooks/use-row-select';
+  import DropButtonGroup from '@/components/drop-button-group/index.vue';
   import { UseSortDirection } from '@/utils/common';
   import { TemplateRowData } from '../config/interface';
   import StatusLabel from '../../connectors/components/status-label.vue';
+  import { actionList } from '../config';
   import {
     queryTemplates,
     updateTemplate,
@@ -195,7 +166,12 @@
   });
   type BaseType = string | number;
   const userStore = useUserStore();
-  const emits = defineEmits(['update:selectedList', 'update:sort', 'sort']);
+  const emits = defineEmits([
+    'update:selectedList',
+    'delete',
+    'update:sort',
+    'sort'
+  ]);
   const { rowSelection, selectedKeys } = useRowSelect();
   const { router, route } = useCallCommon();
   const { sort, sortOrder, setSortDirection } = UseSortDirection({
@@ -204,7 +180,8 @@
   });
   let timer: any = null;
   const loading = ref(false);
-  const total = ref(100);
+  const projectID = route.params.projectId as string;
+  const total = ref(0);
   const queryParams = reactive({
     // type: '',
     id: '',
@@ -230,6 +207,29 @@
       ? rowSelection
       : null;
   });
+
+  const setActionList = (row) => {
+    const list = _.filter(actionList, (item) => {
+      return item.filterFun
+        ? item.filterFun({ itemInfo: row, projectID })
+        : true;
+    });
+    const res = _.map(list, (o) => {
+      const item = _.cloneDeep(o);
+      item.disabled = _.isFunction(item.disabled)
+        ? item.disabled?.(row)
+        : item.disabled;
+      if (item.value === 'useInService') {
+        item.label =
+          _.toLower(_.get(row, ['labels', 'walrus.seal.io/category'])) ===
+          'service'
+            ? 'operation.templates.button.cancelUseInService'
+            : 'operation.templates.button.useInservice';
+      }
+      return item;
+    });
+    return res;
+  };
   const fetchData = async () => {
     try {
       loading.value = true;
@@ -378,6 +378,26 @@
   };
   const handleDelete = async () => {
     deleteModal({ onOk: handleDeleteConfirm });
+  };
+
+  const handleClickAction = (value, row) => {
+    console.log('value', value, row);
+    switch (value) {
+      case 'edit':
+        handleEdit(row);
+        break;
+      case 'refresh':
+        handlRefresh(row);
+        break;
+      case 'useInService':
+        handleToggleAvailable(row);
+        break;
+      case 'delete':
+        emits('delete', row.id);
+        break;
+      default:
+        break;
+    }
   };
   const clearSelection = () => {
     selectedKeys.value = [];
