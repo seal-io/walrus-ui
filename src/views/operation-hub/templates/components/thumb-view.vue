@@ -79,7 +79,9 @@
   };
   const setModuleActions = (info) => {
     const result = filter(actionList, (item) => {
-      return item.filterFunc ? item.filterFunc(info, projectId) : true;
+      return item.filterFun
+        ? item.filterFun({ itemInfo: info, projectID: projectId })
+        : true;
     });
     return result as MoreAction[];
   };

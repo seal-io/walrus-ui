@@ -1,5 +1,10 @@
 import dayjs from 'dayjs';
-import { find, round, get } from 'lodash';
+import _, { find, round, get } from 'lodash';
+import { useUserStore } from '@/store';
+import { Resources, Actions } from '@/permissions/config';
+import { MoreAction } from '@/views/config/interface';
+
+const userStore = useUserStore();
 
 export const relationOptions = [
   { label: 'AND', value: 'and' },
@@ -383,9 +388,41 @@ export const builtinViewMap = {
 };
 
 export const builtinViewList = ['ALL', 'Cluster', 'Project'];
+export const builtinList = ['All', 'Cluster', 'Project'];
 
 export const VIEW_MAP = {
   all: 'all',
   custom: 'custom'
 };
+
+export const actionList: MoreAction[] = [
+  {
+    label: 'common.button.edit',
+    value: 'edit',
+    icon: 'icon-edit',
+    status: 'normal',
+    filterFun({ itemInfo }) {
+      return (
+        userStore.hasRolesActionsPermission({
+          resource: Resources.Costs,
+          actions: [Actions.PUT]
+        }) && !_.includes(builtinList, itemInfo.name)
+      );
+    }
+  },
+  {
+    label: 'common.button.delete',
+    value: 'delete',
+    icon: 'icon-delete',
+    status: 'danger',
+    filterFun({ itemInfo }) {
+      return (
+        userStore.hasRolesActionsPermission({
+          resource: Resources.Costs,
+          actions: [Actions.DELETE]
+        }) && !_.includes(builtinList, itemInfo.name)
+      );
+    }
+  }
+];
 export default {};

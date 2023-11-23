@@ -66,6 +66,7 @@ export interface SettingsItem {
 }
 
 export const nonComponentList = ['layout', 'select-item'];
+
 export default {
   valueTypeMap
 };

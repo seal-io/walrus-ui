@@ -593,18 +593,11 @@
     });
   };
   const handleOk = async (draft?: boolean) => {
-    console.log(
-      'kube===',
-      formData.value,
-      Kubernamespace.value,
-      repository.value,
-      branch.value
-    );
     validateLabel();
     const res = await formref.value?.validate();
     const groupres = await groupForm.value?.validate();
     console.log('groupres===', groupres, res, validateTrigger.value);
-    // const groupFormRes = await groupForm.value?.getData();
+
     if (!res && !groupres && !validateTrigger.value) {
       try {
         submitLoading.value = true;

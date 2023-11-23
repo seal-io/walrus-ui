@@ -24,9 +24,11 @@
               }"
             ></StatusLabel>
           </div>
-          <div v-if="actionList.length" class="dropdown">
+          <div class="dropdown">
             <DropButtonGroup
+              v-if="actionList.length"
               :actions="actionList"
+              :layout="actionList.length === 1 ? 'horizontal' : 'vertical'"
               @select="handleSelect"
             ></DropButtonGroup>
           </div>

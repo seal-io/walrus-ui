@@ -170,7 +170,6 @@
                   setActionList(record).length === 1 ? 'horizontal' : 'vertical'
                 "
                 :actions="setActionList(record)"
-                @click="(val) => handleEdit(record)"
                 @select="(value) => handleClickAction(value, record)"
               ></DropButtonGroup>
             </template>

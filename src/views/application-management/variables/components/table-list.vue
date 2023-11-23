@@ -69,7 +69,7 @@
             type="primary"
             status="warning"
             :disabled="!selectedKeys.length"
-            @click="handleDelete"
+            @click="() => handleDelete()"
             >{{ $t('common.button.delete')
             }}<span v-if="selectedKeys.length">{{
               `(${selectedKeys.length})`
@@ -188,7 +188,7 @@
             :cell-style="{ minWidth: '40px' }"
           >
             <template #cell="{ record }">
-              <a-space :size="16">
+              <!-- <a-space :size="16">
                 <a-tooltip
                   v-if="visibleInScope(record)"
                   :content="$t('common.button.edit')"
@@ -201,7 +201,15 @@
                     <template #icon><icon-edit class="size-16" /></template>
                   </a-link>
                 </a-tooltip>
-              </a-space>
+              </a-space> -->
+              <DropButtonGroup
+                v-if="setActionList(record).length"
+                :layout="
+                  setActionList(record).length === 1 ? 'horizontal' : 'vertical'
+                "
+                :actions="setActionList(record)"
+                @select="(value) => handleClickAction(value, record)"
+              ></DropButtonGroup>
             </template>
           </a-table-column>
         </template>
@@ -241,10 +249,12 @@
   import { deleteModal, execSucceed } from '@/utils/monitor';
   import useRowSelect from '@/hooks/use-row-select';
   import FilterBox from '@/components/filter-box/index.vue';
+  import DropButtonGroup from '@/components/drop-button-group/index.vue';
   import { UseSortDirection } from '@/utils/common';
   import { VariableRow } from '../config/interface';
   import { queryVariables, deleteVariable } from '../api';
   import createVariable from './create-variable.vue';
+  import { actionList } from '../config';
 
   const scopeMap = {
     PROJECT: 'project',
@@ -305,6 +315,30 @@
     return t('applications.secret.edit');
   });
 
+  const visibleInScope = (row) => {
+    if (props.scope === scopeMap.PROJECT) {
+      return _.get(row, 'project.id') && !_.get(row, 'environment.id');
+    }
+    if (props.scope === scopeMap.ENVIRONMENT) {
+      return _.get(row, 'project.id') && _.get(row, 'environment.id');
+    }
+    return !_.get(row, 'project.id') && !_.get(row, 'environment.id');
+  };
+
+  const setActionList = (row) => {
+    const list = _.filter(actionList, (item) => {
+      return visibleInScope(row);
+    });
+    // const res = _.map(list, (o) => {
+    //   const item = _.cloneDeep(o);
+    //   item.disabled = _.isFunction(item.disabled)
+    //     ? item.disabled?.(row)
+    //     : item.disabled;
+
+    //   return item;
+    // });
+    return list;
+  };
   const rowSelectionStatue = computed(() => {
     if (props.scope === scopeMap.GLOBAL) {
       return userStore.hasRolesActionsPermission({
@@ -316,15 +350,7 @@
     }
     return rowSelection;
   });
-  const visibleInScope = (row) => {
-    if (props.scope === scopeMap.PROJECT) {
-      return _.get(row, 'project.id') && !_.get(row, 'environment.id');
-    }
-    if (props.scope === scopeMap.ENVIRONMENT) {
-      return _.get(row, 'project.id') && _.get(row, 'environment.id');
-    }
-    return !_.get(row, 'project.id') && !_.get(row, 'environment.id');
-  };
+
   const showScope = (row) => {
     if (_.get(row, 'project.id') && !_.get(row, 'environment.id')) {
       return 'applications.variable.scope.project';
@@ -413,10 +439,10 @@
       showModal.value = true;
     }, 100);
   };
-  const handleDeleteConfirm = async () => {
+  const handleDeleteConfirm = async (delList?: string[]) => {
     try {
       loading.value = true;
-      const ids = map(selectedKeys.value, (val) => {
+      const ids = map(delList || selectedKeys.value, (val) => {
         return {
           id: val
         };
@@ -443,8 +469,21 @@
     }, 100);
   };
 
-  const handleDelete = async () => {
-    deleteModal({ onOk: handleDeleteConfirm });
+  const handleDelete = async (ids?: string[]) => {
+    deleteModal({ onOk: () => handleDeleteConfirm(ids) });
+  };
+
+  const handleClickAction = (value, row) => {
+    switch (value) {
+      case 'edit':
+        handleClickEdit(row);
+        break;
+      case 'delete':
+        handleDelete([row.id]);
+        break;
+      default:
+        break;
+    }
   };
   const handleSaveItem = () => {
     queryParams.page = 1;

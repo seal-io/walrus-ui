@@ -85,7 +85,7 @@
             type="primary"
             status="warning"
             :disabled="!selectedKeys.length"
-            @click="handleDelete"
+            @click="() => handleDelete()"
             >{{ $t('common.button.delete')
             }}<span v-if="selectedKeys.length">{{
               `(${selectedKeys.length})`
@@ -130,6 +130,7 @@
               :scope="scope"
               :list="dataList"
               :catalog-list="catalogList"
+              @delete="handleCallDelete"
               @sort="handleSort"
             ></ListView>
           </a-tab-pane>
@@ -328,7 +329,7 @@
       loading.value = false;
     }
   };
-  const handleDelete = async (ids) => {
+  const handleDelete = async (ids?) => {
     deleteModal({ onOk: () => handleDeleteConfirm(ids) });
   };
 

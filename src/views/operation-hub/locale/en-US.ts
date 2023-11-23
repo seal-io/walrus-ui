@@ -12,6 +12,7 @@ export default {
   'operation.connectors.finops.disable': 'Disable',
   'operation.connectors.table.coststatus': 'Cost Data Information',
   'operation.connectors.table.enableFin': 'Enable Cost Analysis',
+  'operation.connectors.table.disableFin': 'Disable Cost Analysis',
   'operation.connectors.table.install': 'Reinstalling Cost Analysis Tool',
   'operation.connectors.table.fetch': 'Synchronize cost data',
   'operation.connectors.table.environmentType': 'Applicable Environment Type',

@@ -98,7 +98,7 @@
           type="primary"
           status="warning"
           :disabled="!selectedKeys.length"
-          @click="handleDelete"
+          @click="() => handleDelete()"
           >{{ $t('common.button.delete')
           }}<span v-if="selectedKeys.length">{{
             `(${selectedKeys.length})`
@@ -253,7 +253,7 @@
           :cell-style="{ minWidth: '40px' }"
         >
           <template #cell="{ record }">
-            <a-space
+            <!-- <a-space
               v-if="
                 scope === 'project'
                   ? userStore.hasProjectResourceActions({
@@ -327,6 +327,9 @@
                         size="small"
                         @change="(val) => handleEnableFinOps(val, record)"
                       ></a-switch>
+                      <a-link>
+                        <i class="iconfont icon-switch"></i>
+                      </a-link>
                     </a-tooltip>
                   </a-doption>
                 </template>
@@ -339,7 +342,15 @@
               >
                 <template #icon><icon-edit class="size-16" /></template>
               </a-link>
-            </a-space>
+            </a-space> -->
+            <DropButtonGroup
+              v-if="setActionList(record).length"
+              :layout="
+                setActionList(record).length === 1 ? 'horizontal' : 'vertical'
+              "
+              :actions="setActionList(record)"
+              @select="(value) => handleClickAction(value, record)"
+            ></DropButtonGroup>
           </template>
         </a-table-column>
       </template>
@@ -367,6 +378,7 @@
   import ADropdownButton from '@arco-design/web-vue/es/dropdown/dropdown-button';
   import useAxiosSource from '@/hooks/use-axios-cancel';
   import { UseSortDirection } from '@/utils/common';
+  import DropButtonGroup from '@/components/drop-button-group/index.vue';
   import ProviderIcon from '@/components/provider-icon/index.vue';
   import dayjs from 'dayjs';
   import _, { get, map, pickBy, find, toLower, cloneDeep } from 'lodash';
@@ -379,6 +391,7 @@
   import { ConnectorRowData, ConnectorTypeData } from '../config/interface';
   import {
     ConnectorCategory,
+    actionList,
     connectorTypeList as categoryList
   } from '../config';
   import StatusLabel from './status-label.vue';
@@ -423,6 +436,7 @@
     Github: 'GitHub',
     Gitlab: 'GitLab'
   };
+
   const appStore = useAppStore();
   const userStore = useUserStore();
   const { setChunkRequest } = useSetChunkRequest();
@@ -437,6 +451,7 @@
   let timer: any = null;
   const loading = ref(false);
   const total = ref(0);
+  const projectID = route.params.projectId as string;
   const queryParams = reactive({
     query: '',
     page: 1,
@@ -469,6 +484,28 @@
       return item;
     }
   });
+
+  const setActionList = (row) => {
+    const list = _.filter(actionList, (item) => {
+      return item.filterFun
+        ? item.filterFun({ itemInfo: row, projectID })
+        : true;
+    });
+    const res = _.map(list, (o) => {
+      const item = _.cloneDeep(o);
+      item.disabled = _.isFunction(item.disabled)
+        ? item.disabled?.(row)
+        : item.disabled;
+      if (item.value === 'enableFinops') {
+        item.label = row.enableFinOps
+          ? 'operation.connectors.table.disableFin'
+          : 'operation.connectors.table.enableFin';
+      }
+      return item;
+    });
+    return res;
+  };
+
   const rowSelectionState = computed(() => {
     // for project
     if (route.params.projectId) {
@@ -594,10 +631,10 @@
       });
     }
   };
-  const handleDeleteConfirm = async () => {
+  const handleDeleteConfirm = async (delList?: string[]) => {
     try {
       loading.value = true;
-      const ids = map(selectedKeys.value, (val) => {
+      const ids = map(delList || selectedKeys.value, (val) => {
         return {
           id: val
         };
@@ -659,10 +696,32 @@
       loading.value = false;
     }
   };
-  const handleDelete = async () => {
-    deleteModal({ onOk: handleDeleteConfirm });
+  const handleDelete = async (ids?: string[]) => {
+    deleteModal({ onOk: () => handleDeleteConfirm(ids) });
   };
 
+  const handleClickAction = (value, row) => {
+    console.log('value', value, row);
+    switch (value) {
+      case 'edit':
+        handleClickEdit(row);
+        break;
+      case 'fetch':
+        handleFetchCost(row);
+        break;
+      case 'enableFinops':
+        handleEnableFinOps(!row.enableFinOps, row);
+        break;
+      case 'reinstall':
+        handleReinstall(row);
+        break;
+      case 'delete':
+        handleDelete([row.id]);
+        break;
+      default:
+        break;
+    }
+  };
   const updateHandler = (list) => {
     _.each(list, (data) => {
       updateChunkedList(data);

@@ -1,3 +1,9 @@
+import { MoreAction } from '@/views/config/interface';
+import { useUserStore } from '@/store';
+import { Resources, Actions } from '@/permissions/config';
+import _ from 'lodash';
+
+const userStore = useUserStore();
 export const connectorTypeList = [
   {
     label: 'Kubernetes',
@@ -71,5 +77,103 @@ export const cutomeTypeOptions = [
 export const finOpsStatus = [
   { label: 'operation.connectors.status.ready', value: 'ready' },
   { label: 'operation.connectors.status.error', value: 'error' }
+];
+
+export const actionList: MoreAction[] = [
+  {
+    label: 'common.button.edit',
+    value: 'edit',
+    icon: 'icon-edit',
+    status: 'normal',
+    filterFun({ itemInfo, projectID }) {
+      return projectID
+        ? userStore.hasProjectResourceActions({
+            resource: Resources.Connectors,
+            projectID,
+            actions: [Actions.PUT]
+          })
+        : userStore.hasRolesActionsPermission({
+            resource: Resources.Connectors,
+            actions: [Actions.PUT]
+          });
+    }
+  },
+  {
+    label: 'operation.connectors.table.enableFin',
+    value: 'enableFinops',
+    icon: 'icon-switch',
+    iconfont: true,
+    status: 'normal',
+    filterFun({ itemInfo, projectID }) {
+      const isKubernetes = itemInfo.category === ConnectorCategory.Kubernetes;
+      return projectID
+        ? userStore.hasProjectResourceActions({
+            resource: Resources.Connectors,
+            projectID,
+            actions: [Actions.PUT]
+          }) && isKubernetes
+        : userStore.hasRolesActionsPermission({
+            resource: Resources.Connectors,
+            actions: [Actions.PUT]
+          }) && isKubernetes;
+    }
+  },
+  {
+    label: 'operation.connectors.table.install',
+    value: 'reinstall',
+    icon: 'icon-install',
+    iconfont: true,
+    status: 'normal',
+    filterFun({ itemInfo, projectID }) {
+      const { enableFinOps } = itemInfo;
+      return projectID
+        ? userStore.hasProjectResourceActions({
+            resource: Resources.Connectors,
+            projectID,
+            actions: [Actions.PUT]
+          }) && enableFinOps
+        : userStore.hasRolesActionsPermission({
+            resource: Resources.Connectors,
+            actions: [Actions.PUT]
+          }) && enableFinOps;
+    }
+  },
+  {
+    label: 'operation.connectors.table.fetch',
+    value: 'fetch',
+    icon: 'icon-cloud-download',
+    status: 'normal',
+    filterFun({ itemInfo, projectID }) {
+      const { enableFinOps } = itemInfo;
+      return projectID
+        ? userStore.hasProjectResourceActions({
+            resource: Resources.Connectors,
+            projectID,
+            actions: [Actions.PUT]
+          }) && enableFinOps
+        : userStore.hasRolesActionsPermission({
+            resource: Resources.Connectors,
+            actions: [Actions.PUT]
+          }) && enableFinOps;
+    }
+  },
+  {
+    label: 'common.button.delete',
+    value: 'delete',
+    icon: 'icon-delete',
+    status: 'danger',
+    filterFun({ itemInfo, projectID }) {
+      return projectID
+        ? userStore.hasProjectResourceActions({
+            resource: Resources.Connectors,
+            projectID,
+            actions: [Actions.DELETE]
+          })
+        : userStore.hasRolesActionsPermission({
+            resource: Resources.Connectors,
+            actions: [Actions.DELETE]
+          });
+    }
+  }
 ];
 export default {};

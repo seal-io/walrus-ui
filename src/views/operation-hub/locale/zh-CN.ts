@@ -12,6 +12,7 @@ export default {
   'operation.connectors.finops.disable': '未开启',
   'operation.connectors.table.coststatus': '成本数据信息',
   'operation.connectors.table.enableFin': '启用成本分析',
+  'operation.connectors.table.disableFin': '禁用成本分析',
   'operation.connectors.table.install': '重装成本分析工具',
   'operation.connectors.table.fetch': '同步成本数据',
   'operation.connectors.table.environmentType': '适用环境类型',
