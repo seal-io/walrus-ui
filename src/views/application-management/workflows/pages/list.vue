@@ -48,7 +48,7 @@
             type="primary"
             status="warning"
             :disabled="!selectedKeys.length"
-            @click="handleDelete"
+            @click="() => handleDelete()"
             >{{ $t('common.button.delete') }}</a-button
           >
         </template>
@@ -320,7 +320,6 @@
 
   const setActionList = (row) => {
     const list = _.filter(moreActions, (item) => {
-      if (item.value === 'delete') return false;
       return item.filterFun ? item.filterFun(row) : true;
     });
     const res = _.map(list, (o) => {
@@ -414,21 +413,7 @@
   const handleSave = async (data) => {
     handleApplyFlow(data);
   };
-  const handleDropSelect = (val, row) => {
-    if (val === 'apply') {
-      handleApply(row);
-      return;
-    }
-    router.push({
-      name: WORKFLOW.Edit,
-      params: {
-        projctId: row.project?.id
-      },
-      query: {
-        flowId: row.id
-      }
-    });
-  };
+
   const handleView = (row) => {
     router.push({
       name: WORKFLOW.Records,
@@ -451,12 +436,12 @@
       }
     });
   };
-  const handleDeleteConfirm = async () => {
+  const handleDeleteConfirm = async (delList?: string[]) => {
     try {
       loading.value = true;
-      const ids = map(selectedKeys.value, (val) => {
+      const ids = map(delList || selectedKeys.value, (val) => {
         return {
-          id: val
+          id: val as string
         };
       });
       await deletePipeline({ items: ids });
@@ -470,8 +455,30 @@
       loading.value = false;
     }
   };
-  const handleDelete = async () => {
-    deleteModal({ onOk: handleDeleteConfirm });
+  const handleDelete = async (ids?: string[]) => {
+    deleteModal({ onOk: () => handleDeleteConfirm(ids) });
+  };
+
+  const handleDropSelect = (val, row) => {
+    if (val === 'apply') {
+      handleApply(row);
+      return;
+    }
+    if (val === 'edit') {
+      router.push({
+        name: WORKFLOW.Edit,
+        params: {
+          projctId: row.project?.id
+        },
+        query: {
+          flowId: row.id
+        }
+      });
+      return;
+    }
+    if (val === 'delete') {
+      handleDelete([row.id]);
+    }
   };
   const updateHandler = (list) => {
     _.each(list, (data) => {
