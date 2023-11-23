@@ -355,6 +355,12 @@
       default() {
         return {};
       }
+    },
+    readonly: {
+      type: Boolean,
+      default() {
+        return false;
+      }
     }
   });
   const emits = defineEmits([

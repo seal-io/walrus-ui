@@ -111,7 +111,7 @@
     }
   });
 
-  const emits = defineEmits(['change', 'refresh', 'edit', 'view']);
+  const emits = defineEmits(['change', 'refresh', 'edit', 'view', 'delete']);
   const router = useRouter();
 
   const selectActions = computed(() => {
@@ -173,6 +173,9 @@
     }
     if (val === 'useInService') {
       handleUseInService();
+    }
+    if (val === 'delete') {
+      emits('delete');
     }
   };
   const handleCheckedChange = (val) => {

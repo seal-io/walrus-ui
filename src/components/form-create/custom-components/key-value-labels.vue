@@ -97,6 +97,7 @@
                       v-bind={attrs}
                       v-model:dataKey={sItem.key}
                       v-model:dataValue={sItem.value}
+                      readonly={props.readonly}
                       onUpdate:value={(val) => handleUpdateValue(val)}
                       trigger-validate={validateTrigger.value}
                       label-list={labelList.value}

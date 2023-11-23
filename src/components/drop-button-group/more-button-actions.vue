@@ -21,9 +21,15 @@
           color: 'var(--color-text-2)'
         }"
       >
-        <i v-if="item.iconfont" class="iconfont m-r-8" :class="[item.icon]"></i>
-        <component :is="item.icon" v-else class="m-r-8"></component
-        >{{ $t(item.label) }}
+        <a-link :status="item.status" :hoverable="false"
+          ><i
+            v-if="item.iconfont"
+            class="iconfont m-r-8"
+            :class="[item.icon]"
+          ></i>
+          <component :is="item.icon" v-else class="m-r-8"></component
+          >{{ $t(item.label) }}</a-link
+        >
       </a-doption>
     </template>
   </a-dropdown>

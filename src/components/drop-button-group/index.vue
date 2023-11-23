@@ -56,6 +56,7 @@
             size="small"
             class="action-dropdown"
             onSelect={(val) => handleSelect(val)}
+            trigger="hover"
             v-slots={{
               icon: () => {
                 return slots.icon

@@ -134,7 +134,6 @@
       const renderAddButton = () => {
         return props.schema.items ? (
           <CommonButton
-            style={{ marginLeft: '16px' }}
             onClick={() => handleAddClick()}
             action="add"
             title={props.schema.title}
@@ -215,7 +214,7 @@
     display: flex;
     align-items: flex-start;
     justify-content: space-between;
-    padding: 0 16px;
+    padding: 0;
     border-radius: var(--border-radius-small);
     border-radius: 4px;
 

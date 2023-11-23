@@ -14,6 +14,7 @@
           :show-checkbox="showCheckbox"
           @view="handleView(item)"
           @edit="handleEdit(item)"
+          @delete="handleDelete(item)"
           @change="handleCheckChange"
         ></templateItem>
       </a-grid-item>
@@ -63,7 +64,7 @@
       }
     }
   });
-  const emits = defineEmits(['create', 'change']);
+  const emits = defineEmits(['create', 'change', 'delete']);
   const { router, route } = useCallCommon();
   const projectId = route.params.projectId as string;
   const handleCreate = () => {
@@ -72,6 +73,9 @@
 
   const handleCheckChange = (checked, id) => {
     emits('change', checked, id);
+  };
+  const handleDelete = (item) => {
+    emits('delete', item.id);
   };
   const setModuleActions = (info) => {
     const result = filter(actionList, (item) => {
