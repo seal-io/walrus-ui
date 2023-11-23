@@ -254,7 +254,9 @@
 
       const renderBasicTypeFields = () => {
         const list = _.filter(childProperties.value, (item) => {
-          return isBasicType(item.type);
+          return (
+            isBasicType(item.type) || isSimpleObject(item) || isSelect(item)
+          );
         });
 
         return (
@@ -281,7 +283,9 @@
 
       const renderNonBasicTypeFields = () => {
         const list = _.filter(childProperties.value, (item) => {
-          return !isBasicType(item.type);
+          return (
+            !isBasicType(item.type) && !isSimpleObject(item) && !isSelect(item)
+          );
         });
         return (
           <>

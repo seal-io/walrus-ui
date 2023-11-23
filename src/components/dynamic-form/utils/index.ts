@@ -20,7 +20,7 @@ export const isEmptyvalue = (val) => {
 
 export const isSelect = (schema: FieldSchema) => {
   const { type, enum: enumList, items } = schema;
-  if (items && type === FIELD_TYPE.ARRAY) {
+  if (items && type === FIELD_TYPE.ARRAY && isBasicType(items.type)) {
     return true;
   }
   return enumList && enumList.length > 0;
