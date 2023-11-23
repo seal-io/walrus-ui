@@ -3,7 +3,7 @@
   import AceEditor from '@/components/ace-editor/index.vue';
   import _ from 'lodash';
   import i18n from '@/locale';
-  import { InjectSchemaFormEditableKey } from '@/views/config';
+  import { InjectSchemaFormStatusKey, PageAction } from '@/views/config';
   import { ProviderFormRefKey } from '../config';
   import schemaFieldProps from '../fields/schema-field-props';
   import {
@@ -23,7 +23,10 @@
       ...schemaFieldProps
     },
     setup(props, { emit, attrs }) {
-      const schemaFormEditable = inject(InjectSchemaFormEditableKey, ref(true));
+      const schemaFormStatus = inject(
+        InjectSchemaFormStatusKey,
+        ref(PageAction.CREATE)
+      );
       const formref = inject(ProviderFormRefKey, ref());
       const fieldValue = ref('');
       const defaultValue = ref('');
@@ -67,7 +70,7 @@
 
       // init field value
       if (
-        props.action === 'create' &&
+        schemaFormStatus.value === PageAction.CREATE &&
         isRequiredInitField(
           props.schema,
           _.includes(props.requiredFields, props.schema.name)
@@ -106,7 +109,7 @@
               label={props.schema.title || props.schema.name}
               popup-info={props.schema.description}
               editor-default-value={defaultValue.value}
-              readOnly={!schemaFormEditable.value}
+              readOnly={!schemaFormStatus.value}
               style={{ width: '100%' }}
               height={300}
               editor-id={`${_.join(props.fieldPath, '_')}`}

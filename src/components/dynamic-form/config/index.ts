@@ -8,4 +8,5 @@ export const extensionFields = [
 ];
 
 export const ProviderFormRefKey = Symbol('ProviderFormRefKey');
+
 export default {};

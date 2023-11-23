@@ -233,7 +233,6 @@
         <GroupForm
           ref="groupForm"
           v-model:form-data="formData.attributes"
-          :action="action"
           :schema="schemaVariables"
         ></GroupForm>
       </a-spin>
@@ -268,7 +267,8 @@
     InputWidth,
     InjectCompleteDataKey,
     InjectProjectEnvironmentKey,
-    InjectShowInputHintKey
+    InjectShowInputHintKey,
+    InjectSchemaFormStatusKey
   } from '@/views/config';
   import { queryEnvironmentConnector } from '@/views/application-management/environments/api';
   import { projectEnvCtxInjectionKey } from '@/components/form-create/bussiness-components/config';
@@ -350,6 +350,7 @@
     connectors: []
   });
 
+  provide(InjectSchemaFormStatusKey, ref(props.action));
   provide(InjectShowInputHintKey, true);
   provide(InjectCompleteDataKey, completeData);
   provide(InjectProjectEnvironmentKey, {

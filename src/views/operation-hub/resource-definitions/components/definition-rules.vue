@@ -418,7 +418,6 @@
             v-model:form-data="formData.attributes"
             class="group-form"
             style="width: 100%"
-            :action="!id ? 'create' : 'edit'"
             :schema="schemaVariables"
           ></GroupForm>
           <!-- <ViewForm
@@ -446,7 +445,7 @@
     InputWidth,
     EnvironmentTypeMap,
     InjectShowInputHintKey,
-    InjectSchemaFormEditableKey
+    InjectSchemaFormStatusKey
   } from '@/views/config';
   import GroupForm from '@/components/dynamic-form/group-form.vue';
   import ViewForm from '@/components/form-create/view-form.vue';
@@ -565,7 +564,7 @@
     return undefined;
   });
 
-  provide(InjectSchemaFormEditableKey, ref(schemaFormEditable.value));
+  provide(InjectSchemaFormStatusKey, ref(props.pageAction));
 
   const initSelectors = () => {
     selectors.value = new Set();

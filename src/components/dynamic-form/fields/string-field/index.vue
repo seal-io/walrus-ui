@@ -14,7 +14,7 @@
   import { genFieldPropsAndRules } from '../../utils';
 
   export default defineComponent({
-    inject: ['schemaFormEditable'],
+    inject: ['schemaFormStatus'],
     props: schemaFieldProps,
     setup(props, { emit }) {
       const handleChange = (data) => {

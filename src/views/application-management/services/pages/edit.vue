@@ -333,7 +333,7 @@
     InjectProjectEnvironmentKey,
     InjectShowInputHintKey,
     SaveActions,
-    InjectSchemaFormEditableKey
+    InjectSchemaFormStatusKey
   } from '@/views/config';
   import { queryEnvironmentConnector } from '@/views/application-management/environments/api';
   import { projectEnvCtxInjectionKey } from '@/components/form-create/bussiness-components/config';
@@ -359,7 +359,6 @@
     }
   });
 
-  provide(InjectSchemaFormEditableKey, ref(true));
   const emits = defineEmits(['cancel', 'save']);
   const { scrollToView } = useScrollToView();
   const {
@@ -437,6 +436,7 @@
     }
     return 'edit';
   });
+  provide(InjectSchemaFormStatusKey, formAction);
   const virtualListProps = computed(() => {
     if (templateList.value.length > 20) {
       return {

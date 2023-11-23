@@ -3,7 +3,6 @@
     <GroupForm
       ref="groupForm"
       style="padding: 10px"
-      :action="action"
       :form-data="serviceInfo.attributes"
       :schema="schema"
     ></GroupForm>
@@ -14,7 +13,7 @@
   import _ from 'lodash';
   import useCallCommon from '@/hooks/use-call-common';
   import { onMounted, nextTick, provide, ref, watch, inject } from 'vue';
-  import { InjectSchemaFormEditableKey } from '@/views/config';
+  import { InjectSchemaFormStatusKey, PageAction } from '@/views/config';
   import GroupForm from '@/components/dynamic-form/group-form.vue';
   import { queryItemResourceDefinition } from '@/views/operation-hub/resource-definitions/api';
   import { queryItemTemplatesVersions } from '@/views/operation-hub/templates/api';
@@ -32,7 +31,7 @@
   const action = ref<any>('view');
   const dataType = route.params.dataType as string;
   const loaded = ref(false);
-  provide(InjectSchemaFormEditableKey, ref(false));
+  provide(InjectSchemaFormStatusKey, ref(PageAction.VIEW));
 
   const setTemplateInfo = (moduleData) => {
     const variables =

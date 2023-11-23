@@ -2,7 +2,7 @@
   import { defineComponent, ref, inject } from 'vue';
   import _ from 'lodash';
   import i18n from '@/locale';
-  import { InjectSchemaFormEditableKey } from '@/views/config';
+  import { InjectSchemaFormStatusKey, PageAction } from '@/views/config';
   import KeyValueLabels from '@/components/form-create/custom-components/key-value-labels.vue';
   import SealFormItemWrap from '@/components/seal-form/components/seal-form-item-wrap.vue';
   import schemaFieldProps from '../fields/schema-field-props';
@@ -17,14 +17,17 @@
     props: schemaFieldProps,
     emits: ['change'],
     setup(props, { emit }) {
-      const schemaFormEditable = inject(InjectSchemaFormEditableKey, ref(true));
+      const schemaFormStatus = inject(
+        InjectSchemaFormStatusKey,
+        ref(PageAction.CREATE)
+      );
       const handleChange = (data) => {
         emit('change', data);
       };
 
       // init field value
       if (
-        props.action === 'create' &&
+        schemaFormStatus.value === PageAction.CREATE &&
         isRequiredInitField(
           props.schema,
           _.includes(props.requiredFields, props.schema.name)
@@ -102,7 +105,7 @@
                 showCheckbox={isMapBoolean}
                 labels={props.formData}
                 labelsKey={_.join(props.fieldPath, '.')}
-                readonly={!schemaFormEditable.value || props.action === 'view'}
+                readonly={PageAction.VIEW === schemaFormStatus.value}
                 onUpdate:value={(val) => {
                   _.set(props.formData, props.fieldPath, val);
                   handleChange(props.formData);

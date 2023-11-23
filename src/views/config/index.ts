@@ -17,9 +17,7 @@ export const InjectProjectEnvironmentKey = Symbol(
 
 export const InjectShowInputHintKey = Symbol('InjectShowInputHintKey');
 
-export const InjectSchemaFormEditableKey = Symbol(
-  'InjectSchemaFormEditableKey'
-);
+export const InjectSchemaFormStatusKey = Symbol('InjectSchemaFormStatusKey');
 
 export const setEndTimeAddDay = (time, mode) => {
   if (mode === 'utc') {

@@ -77,6 +77,7 @@
   const rootFormData = ref({});
   const destroyed = ref<boolean>(false);
   const formGroup = ref<FormGroup[]>([]);
+  const validResult = ref<any>([]);
 
   const setRefMap = (el: any, name) => {
     if (el) {
@@ -108,6 +109,7 @@
   };
   const validate = async () => {
     let valid: any = null;
+    validResult.value = [];
     console.log('schema==9999=========', props.schema);
     if (formGroup.value.length === 1) {
       const res = await schemaForm.value?.validate?.();
@@ -129,8 +131,9 @@
         activeKey.value = errorList[0].tab;
       }
       valid = errorList.length;
+      validResult.value = errorList;
     }
-
+    console.log('valid===9999===', validResult.value);
     if (!valid) {
       handleUnsetField();
     }
