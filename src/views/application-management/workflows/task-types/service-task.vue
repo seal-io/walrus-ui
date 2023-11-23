@@ -4,7 +4,7 @@
       ref="serviceRef"
       :flow="flow"
       :resource-type="dataType"
-      :action="flowId ? PageAction.EDIT : PageAction.CREATE"
+      :action="action"
     ></CreateService>
   </div>
 </template>
@@ -25,12 +25,19 @@
     dataType: {
       type: String,
       default: ''
+    },
+    action: {
+      type: String,
+      default: ''
     }
   });
   const { route } = useCallCommon();
   const serviceRef = ref();
   const flowId = route.query.flowId || '';
 
+  // const action = computed(() => {
+  //   return flowId ? PageAction.EDIT : PageAction.CREATE;
+  // });
   const save = async () => {
     const data = await serviceRef.value?.submit();
     return data;

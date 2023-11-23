@@ -111,9 +111,9 @@
       };
       const handleEditTask = (item, index) => {
         action.value = 'edit';
-        activeStep.value = item;
+        activeStep.value = _.cloneDeep(item);
         activeIndex.value = index;
-        console.log('activeStep', activeStep.value);
+        console.log('activeStep', _.cloneDeep(item), activeStep.value);
         setTimeout(() => {
           show.value = true;
         });

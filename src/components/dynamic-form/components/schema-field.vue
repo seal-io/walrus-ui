@@ -19,6 +19,7 @@
         InjectSchemaFormStatusKey,
         ref(PageAction.CREATE)
       );
+      console.log('schemaFormStatus+++++++++', schemaFormStatus.value);
       if (!_.keys(props.schema.properties)) {
         return null;
       }

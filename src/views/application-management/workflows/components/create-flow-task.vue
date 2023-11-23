@@ -155,6 +155,7 @@
             v-if="taskType === TaskTypes.SERVICE && current === steps.length"
             ref="serviceRef"
             :flow="flow"
+            :action="action"
             :data-type="ServiceDataType.service"
           ></ServiceTask>
         </div>
@@ -172,7 +173,7 @@
               :loading="submitLoading"
               type="primary"
               class="cap-title cancel-btn"
-              @click="handleOk"
+              @click="handleSubmit"
               >{{ $t('common.button.save') }}</a-button
             >
           </template>
@@ -223,7 +224,11 @@
   import { Resources, Actions } from '@/permissions/config';
   import { useUserStore } from '@/store';
   import useCallCommon from '@/hooks/use-call-common';
-  import { InputWidth, InjectProjectEnvironmentKey } from '@/views/config';
+  import {
+    InputWidth,
+    InjectProjectEnvironmentKey,
+    InjectSchemaFormStatusKey
+  } from '@/views/config';
   import { ListItem } from '@/views/config/interface';
   import EditPageFooter from '@/components/edit-page-footer/index.vue';
   import { queryEnvironments } from '@/views/application-management/environments/api';
@@ -287,7 +292,7 @@
   const loading = ref(false);
 
   provide(ProvideSetServiceInfoKey, serviceInfo);
-
+  provide(InjectSchemaFormStatusKey, props.action);
   provide(InjectProjectEnvironmentKey, {
     projectID: route.params.projectId,
     environmentID: flow.environmentId
@@ -392,7 +397,9 @@
     if (current.value === steps.value.length) {
       if (taskType.value === TaskTypes.SERVICE) {
         submitLoading.value = true;
-        const data = await serviceRef.value?.save();
+        const res = await serviceRef.value?.save();
+        console.log('res++++++++++');
+        const data = res.value;
         submitLoading.value = false;
         let limitInfo: any = flow.retryStrategy;
         if (!limitInfo?.limit) {
@@ -419,6 +426,7 @@
           timeout: flow.timeout ? Math.floor(flow.timeout * TIME_UNIT) : null,
           ...limitInfo
         };
+        console.log('result>>>>>>>>>>', result);
         if (data) {
           emits('save', result);
         }
@@ -441,6 +449,11 @@
       emits('update:show', false);
     }
   };
+  const handleSubmit = () => {
+    setTimeout(() => {
+      handleOk();
+    }, 100);
+  };
   const setServiceInfo = () => {
     if (props.action === 'edit' && props.dataInfo.type === TaskTypes.SERVICE) {
       console.log('props.dataInfo', props.dataInfo);
@@ -453,10 +466,11 @@
         ? Math.floor(props.dataInfo.timeout / TIME_UNIT)
         : null;
       serviceInfo.info = {
-        ...props.dataInfo.attributes
+        ..._.cloneDeep(props.dataInfo.attributes)
       };
       serviceInfo.enable = true;
       getEnvironmentList();
+      console.log('serviceInfo==========', _.cloneDeep(serviceInfo));
     } else if (
       props.action === 'edit' &&
       props.dataInfo.type === TaskTypes.APPROVAL
@@ -469,14 +483,14 @@
     if (props.action === 'edit') {
       taskType.value = props.dataInfo.type;
       flow.name = props.dataInfo.name;
-
-      setTimeout(() => {
-        current.value = steps.value.length;
-      });
     } else {
       resetFlow();
     }
     setServiceInfo();
+    setTimeout(() => {
+      current.value = steps.value.length;
+    });
+    console.log('log=====', props.action, _.cloneDeep(props.dataInfo));
   };
   const handleBeforeOpen = () => {
     initData();

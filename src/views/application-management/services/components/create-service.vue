@@ -422,7 +422,7 @@
     const inputs = reduce(
       moduleFormList,
       (obj, s) => {
-        obj = _.merge(obj, s.formData);
+        obj = _.merge(obj, s.formData.value);
         return obj;
       },
       {}
@@ -436,16 +436,16 @@
     await setModuleVersionFormCache();
     const moduleData = await getTemplateSchemaByVersion();
     setTemplateInfo(moduleData);
-    formData.attributes = {};
+    formData.value.attributes = {};
 
     groupForm.value?.clearFormValidStatus?.();
   };
 
   const handleVersionChange = () => {
-    formData.template.id =
+    formData.value.template.id =
       _.find(
         templateVersionList.value,
-        (item) => item.value === formData.template.version
+        (item) => item.value === formData.value.template.version
       )?.id || '';
     setTimeout(() => {
       execVersionChangeCallback();
@@ -463,16 +463,16 @@
     if (dataType.value === ServiceDataType.resource) {
       const data = await getItemResourceDefinition();
       setTemplateInfo(data);
-      formData.attributes = {};
+      formData.value.attributes = {};
       groupForm.value?.clearFormValidStatus?.();
     } else {
       const data = _.find(templateList.value, (item) => item.id === val);
-      formData.template.name = data?.name || '';
-      formData.template.project = data?.project || {};
-      await getTemplateVersions(formData.template, true);
+      formData.value.template.name = data?.name || '';
+      formData.value.template.project = data?.project || {};
+      await getTemplateVersions(formData.value.template, true);
       await setTemplateVersionList();
 
-      formData.template.version = get(
+      formData.value.template.version = get(
         templateVersionList.value,
         '0.template.version',
         ''
@@ -489,7 +489,7 @@
     beforeLeaveCallback({
       isCancel: true,
       onOk: () => {
-        copyFormData = cloneDeep(formData);
+        copyFormData = cloneDeep(formData.value);
         callback?.();
       }
     });
@@ -499,27 +499,17 @@
     const res = await formref.value?.validate();
     const groupFormRes = await groupForm.value?.validate();
     if (!res && !groupFormRes && !validateTrigger.value) {
-      // formData.attributes = {
-      //   ...reduce(
-      //     groupFormRes,
-      //     (obj, s) => {
-      //       obj = _.merge(obj, s.formData);
-      //       return obj;
-      //     },
-      //     {}
-      //   )
-      // };
-      // omit template project if value is empty
-      if (!formData.template.project?.id) {
-        formData.template = _.omit(formData.template, 'project');
+      console.log('formData.value==0000===', formData.value);
+      if (!formData.value.template.project?.id) {
+        formData.value.template = _.omit(formData.value.template, 'project');
       }
       if (dataType.value === ServiceDataType.service) {
-        formData.type = null as any;
+        formData.value.type = null as any;
       }
       if (dataType.value === ServiceDataType.resource) {
-        formData.template = null as any;
+        formData.value.template = null as any;
       }
-      copyFormData = _.cloneDeep(formData);
+      copyFormData = _.cloneDeep(formData.value);
       return formData;
     }
     scrollToView();
@@ -529,7 +519,7 @@
     connectorAxiosToken?.cancel();
   };
   watch(
-    () => formData.template.version,
+    () => formData.value.template.version,
     (nv, ov) => {
       versionMap.value = {
         nv,
@@ -541,12 +531,12 @@
     }
   );
   onBeforeRouteLeave(async (to, from) => {
-    if (!_.isEqual(copyFormData, formData)) {
+    if (!_.isEqual(copyFormData, formData.value)) {
       beforeLeaveCallback({
         to,
         from,
         onOk: () => {
-          copyFormData = cloneDeep(formData);
+          copyFormData = cloneDeep(formData.value);
           router.push({
             name: to.name as string
           });
@@ -565,7 +555,7 @@
   });
   const initData = async () => {
     await init();
-    copyFormData = _.cloneDeep(formData);
+    copyFormData = _.cloneDeep(formData.value);
     getLabelList();
     getEnvironmentConnectors();
   };
