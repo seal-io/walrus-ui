@@ -500,7 +500,7 @@
   // cache the user inputs when change the module version
   const setModuleVersionFormCache = async () => {
     if (!versionMap.value.ov) return;
-    const inputs = _.cloneDeep(formData.attributes);
+    const inputs = _.cloneDeep(formData.value.attributes);
     templateVersionFormCache.value[versionMap.value.ov] = {
       ...pickBy(inputs, (val) => toString(val))
     };
@@ -510,16 +510,16 @@
     // await setModuleVersionFormCache();
     const moduleData = await getTemplateSchemaByVersion();
     setTemplateInfo(moduleData);
-    formData.attributes = {};
+    formData.value.attributes = {};
 
     groupForm.value?.clearFormValidStatus?.();
   };
 
   const handleVersionChange = () => {
-    formData.template.id =
+    formData.value.template.id =
       _.find(
         templateVersionList.value,
-        (item) => item.value === formData.template.version
+        (item) => item.value === formData.value.template.version
       )?.id || '';
     setTimeout(() => {
       execVersionChangeCallback();
@@ -540,16 +540,16 @@
     if (dataType === ServiceDataType.resource) {
       const data = await getItemResourceDefinition();
       setTemplateInfo(data);
-      formData.attributes = {};
+      formData.value.attributes = {};
       groupForm.value?.clearFormValidStatus?.();
     } else {
       const data = _.find(templateList.value, (item) => item.id === val);
-      formData.template.name = data?.name || '';
-      formData.template.project = data?.project || {};
-      await getTemplateVersions(formData.template, true);
+      formData.value.template.name = data?.name || '';
+      formData.value.template.project = data?.project || {};
+      await getTemplateVersions(formData.value.template, true);
       await setTemplateVersionList();
 
-      formData.template.version = get(
+      formData.value.template.version = get(
         templateVersionList.value,
         '0.template.version',
         ''
@@ -569,7 +569,7 @@
         if (props.pgType !== 'page') {
           emits('cancel');
         } else {
-          copyFormData = cloneDeep(formData);
+          copyFormData = cloneDeep(formData.value);
           cancelCallback();
         }
       }
@@ -577,8 +577,8 @@
   };
 
   const handleCreate = async (formData) => {
-    const { data } = await createService(formData);
-    if (formData.draft) {
+    const { data } = await createService(formData.value);
+    if (formData.value.draft) {
       router.back();
       return;
     }
@@ -595,7 +595,7 @@
   const handleOk = async (draft?: boolean) => {
     console.log(
       'kube===',
-      formData,
+      formData.value,
       Kubernamespace.value,
       repository.value,
       branch.value
@@ -608,19 +608,19 @@
     if (!res && !groupres && !validateTrigger.value) {
       try {
         submitLoading.value = true;
-        if (!formData.template.project?.id) {
-          formData.template = _.omit(formData.template, 'project');
+        if (!formData.value.template.project?.id) {
+          formData.value.template = _.omit(formData.value.template, 'project');
         }
         if (dataType === ServiceDataType.service) {
-          formData.type = null as any;
+          formData.value.type = null as any;
         }
-        formData.draft = draft;
+        formData.value.draft = draft;
         if (dataType === ServiceDataType.resource) {
-          formData.template = null as any;
+          formData.value.template = null as any;
         }
-        copyFormData = _.cloneDeep(formData);
+        copyFormData = _.cloneDeep(formData.value);
         if (id) {
-          await upgradeApplicationInstance(formData);
+          await upgradeApplicationInstance(formData.value);
         } else {
           await handleCreate(formData);
           return;
@@ -649,7 +649,7 @@
     }, 100);
   };
   watch(
-    () => formData.template?.version,
+    () => formData.value.template?.version,
     (nv, ov) => {
       versionMap.value = {
         nv,
@@ -661,12 +661,12 @@
     }
   );
   onBeforeRouteLeave(async (to, from) => {
-    if (!_.isEqual(copyFormData, formData)) {
+    if (!_.isEqual(copyFormData, formData.value)) {
       beforeLeaveCallback({
         to,
         from,
         onOk: () => {
-          copyFormData = cloneDeep(formData);
+          copyFormData = cloneDeep(formData.value);
           router.push({
             name: to.name as string
           });
@@ -688,7 +688,7 @@
 
     await init();
     setBreadCrumbList();
-    copyFormData = _.cloneDeep(formData);
+    copyFormData = _.cloneDeep(formData.value);
     getLabelList();
     getEnvironmentConnectors();
   };

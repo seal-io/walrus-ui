@@ -110,11 +110,12 @@
   import _ from 'lodash';
   import Ajv from 'ajv';
   import { useUserStore } from '@/store';
+  import { InjectSchemaFormStatusKey, PageAction } from '@/views/config';
   import { Resources, Actions } from '@/permissions/config';
   import { useFullscreen } from '@vueuse/core';
   import { Message } from '@arco-design/web-vue';
   import useCallCommon from '@/hooks/use-call-common';
-  import { PropType, ref, watch, computed } from 'vue';
+  import { PropType, ref, provide, watch, computed } from 'vue';
   import AceEditor from '@/components/ace-editor/index.vue';
   // import groupForm from '@/components/form-create/group-form.vue';
   import groupForm from '@/components/dynamic-form/group-form.vue';
@@ -178,6 +179,7 @@
     }
   });
 
+  provide(InjectSchemaFormStatusKey, ref(PageAction.CREATE));
   const emits = defineEmits(['update', 'reset']);
   const userStore = useUserStore();
   const { route } = useCallCommon();

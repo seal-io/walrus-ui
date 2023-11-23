@@ -319,13 +319,13 @@
       ..._.reduce(
         moduleFormList,
         (obj, s) => {
-          obj = _.merge(obj, s.formData);
+          obj = _.merge(obj, s.formData.value);
           return obj;
         },
         {}
       )
     };
-    return !_.isEqual(copyFormData, formData);
+    return !_.isEqual(copyFormData, formData.value);
   };
   const handleClickInstance = async (data) => {
     if (active.value === data.id && show.value) {
@@ -345,7 +345,7 @@
     await setFormAttributes();
 
     getLabelList();
-    copyFormData = _.cloneDeep(formData);
+    copyFormData = _.cloneDeep(formData.value);
   };
   const handleCheckChange = (checked, item) => {
     if (checked) {
@@ -372,12 +372,15 @@
     );
     if (index > -1) {
       editServiceList.value[index].attributes = _.cloneDeep(
-        formData.attributes
+        formData.value.attributes
       );
-      updateCompleteData(editServiceList.value[index].name, formData.name);
-      editServiceList.value[index].name = formData.name;
-      editServiceList.value[index].description = formData.description;
-      editServiceList.value[index].labels = formData.labels;
+      updateCompleteData(
+        editServiceList.value[index].name,
+        formData.value.name
+      );
+      editServiceList.value[index].name = formData.value.name;
+      editServiceList.value[index].description = formData.value.description;
+      editServiceList.value[index].labels = formData.value.labels;
     }
   };
   const getSelectServiceData = () => {
@@ -391,17 +394,7 @@
     const res = await formref.value?.validate();
     const groupFormRes = await groupForm.value?.validate();
     if (!groupFormRes && !res && !validateTrigger.value) {
-      // formData.attributes = {
-      //   ..._.reduce(
-      //     groupFormRes,
-      //     (obj, s) => {
-      //       obj = _.merge(obj, s.formData);
-      //       return obj;
-      //     },
-      //     {}
-      //   )
-      // };
-      console.log('formData===', formData);
+      console.log('formData.value===', formData.value);
       show.value = false;
       updateActiveServiceData();
       hasChange.value = false;

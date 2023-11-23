@@ -139,6 +139,7 @@ export default function useCompleteData(props?) {
     ) {
       return;
     }
+    console.log('formTemplateData==========', formTemplateData);
     const templateID = formTemplateData.template?.id;
     const isVisited = _.find(
       allTemplateVersions.value,

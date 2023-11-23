@@ -56,7 +56,7 @@ export default function useServiceData(props?) {
   let templateVersionSchemaToken: any = null;
 
   const id = route.query.id as string;
-  const formData: ServiceFormData = reactive({
+  const formData = ref<ServiceFormData>({
     projectID: route.params.projectId as string,
     project: {
       id: route.params.projectId as string
@@ -103,7 +103,9 @@ export default function useServiceData(props?) {
 
   const getItemResourceDefinition = async () => {
     try {
-      const { data } = await queryItemResourceDefinition({ id: formData.type });
+      const { data } = await queryItemResourceDefinition({
+        id: formData.value.type
+      });
       return data;
     } catch (error) {
       // ignore
@@ -133,23 +135,25 @@ export default function useServiceData(props?) {
   const setFormTemplateVersion = () => {
     const moduleTemplate = _.find(
       templateVersionList.value,
-      (item) => item.template.template?.id === formData.template.template.id
+      (item) =>
+        item.template.template?.id === formData.value.template.template.id
     );
-    formData.template.version = _.get(moduleTemplate, 'template.version') || '';
-    formData.template.id = _.get(moduleTemplate, 'template.id') || '';
+    formData.value.template.version =
+      _.get(moduleTemplate, 'template.version') || '';
+    formData.value.template.id = _.get(moduleTemplate, 'template.id') || '';
     return moduleTemplate;
   };
 
   // change version ...
   const getTemplateSchemaByVersion = async () => {
-    if (!formData.template?.version) return {};
+    if (!formData.value.template?.version) return {};
     templateVersionSchemaToken?.cancel();
     templateVersionSchemaToken = createAxiosToken();
     try {
       const params = {
-        templateID: formData.template.template.id,
-        isProjectTemplate: !!formData.template.project?.id,
-        query: formData.template.version
+        templateID: formData.value.template.template.id,
+        isProjectTemplate: !!formData.value.template.project?.id,
+        query: formData.value.template.version
       };
       const { data } = await queryItemTemplatesVersions(
         params,
@@ -169,7 +173,8 @@ export default function useServiceData(props?) {
       }
       const list = _.filter(
         allTemplateVersions.value,
-        (item) => item.template.template.id === formData.template.template.id
+        (item) =>
+          item.template.template.id === formData.value.template.template.id
       );
       let versions = _.map(list, (item) => {
         return {
@@ -204,16 +209,21 @@ export default function useServiceData(props?) {
   };
 
   const setFormAttributes = async () => {
-    _.assignIn(formData, serviceInfo.value);
+    formData.value = _.cloneDeep(serviceInfo.value);
     // 1. get the template meta data 2.set the default value
-
+    console.log(
+      'setFormAttributes000000>>>>>>',
+      _.cloneDeep(serviceInfo.value),
+      formData.value
+    );
     let moduleTemplate: any = {};
     if (dataType === ServiceDataType.resource) {
       moduleTemplate = await getItemResourceDefinition();
     } else {
-      await getTemplateVersions(formData.template);
+      await getTemplateVersions(formData.value.template);
       await setTemplateVersionList();
       moduleTemplate = await getTemplateSchemaByVersion();
+      console.log('formData.value==1111===', formData.value);
     }
 
     setTemplateInfo(moduleTemplate);
@@ -224,22 +234,23 @@ export default function useServiceData(props?) {
       setDefaultTemplate(item)
     );
     defaultTemplate = defaultTemplate || _.get(templateList.value, '0');
-    formData.template.name = defaultTemplate?.name;
-    formData.template.template.id = defaultTemplate?.id;
-    formData.template.project = defaultTemplate?.project || {};
+    formData.value.template.name = defaultTemplate?.name;
+    formData.value.template.template.id = defaultTemplate?.id;
+    formData.value.template.project = defaultTemplate?.project || {};
   };
   // for service create page
   const initFormData = async () => {
     if (id || setServiceInfo.enable) {
+      console.log('initFormData>>>>>>>>>', id, setServiceInfo);
       await setFormAttributes();
     } else {
       let templateSchema: any = {};
       if (dataType === ServiceDataType.resource) {
-        formData.type = _.get(templateList.value, '0.value', '');
+        formData.value.type = _.get(templateList.value, '0.value', '');
         templateSchema = await getItemResourceDefinition();
       } else {
         setFormDataTemplate();
-        await getTemplateVersions(formData.template);
+        await getTemplateVersions(formData.value.template);
         await setTemplateVersionList();
         setFormTemplateVersion();
         templateSchema = await getTemplateSchemaByVersion();
@@ -260,7 +271,6 @@ export default function useServiceData(props?) {
   const initSerivceInfo = async () => {
     if (!setServiceInfo.enable) return;
     serviceInfo.value = setServiceInfo.info;
-    console.log('ProvideSetServiceInfoKey=======', serviceInfo.value);
   };
 
   // for service edit page
@@ -274,6 +284,11 @@ export default function useServiceData(props?) {
     ]);
     await initFormData();
     asyncLoading.value = false;
+    console.log(
+      'ProvideSetServiceInfoKey=======',
+      formData.value,
+      _.cloneDeep(setServiceInfo)
+    );
 
     /* beacuse of the init versions data do not include the all template versions,
      * but only the created service versions
