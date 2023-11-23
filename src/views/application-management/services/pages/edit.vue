@@ -409,6 +409,7 @@
   const versionMap = ref({ nv: '', ov: '' });
   const dataType = route.params.dataType as string;
   const isCancelLeave = ref(false);
+  const loaded = ref(false);
   const projectEnvCtx = reactive({
     projectID: route.params.projectId as string,
     environmentID: route.params.environmentId as string,
@@ -638,12 +639,14 @@
     }
   };
   const handleAddSelector = (value) => {
-    if (value === 'deploy') {
-      handleOk();
-    }
-    if (value === 'draft') {
-      handleOk(true);
-    }
+    setTimeout(() => {
+      if (value === 'deploy') {
+        handleOk();
+      }
+      if (value === 'draft') {
+        handleOk(true);
+      }
+    }, 100);
   };
   watch(
     () => formData.template?.version,

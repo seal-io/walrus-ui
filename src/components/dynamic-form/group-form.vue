@@ -16,7 +16,7 @@
           :ref="(el: any) => setRefMap(el, item.group)"
           :form-id="`schemaForm${index}`"
           layout="vertical"
-          :origin-form-data="formData"
+          :origin-form-data="rootFormData"
           :schema="item.schema"
           :action="action"
           @change="handleChange"
@@ -47,6 +47,7 @@
   import { createFormGroup } from './utils/create-form-group';
   import { genFieldMap } from './utils/flatten-schema';
   import FIELD_TYPE from './config/field-type';
+  import { isEmptyvalue, isBasicType } from './utils';
 
   const props = defineProps({
     schema: {
@@ -76,7 +77,6 @@
   const rootFormData = ref({});
   const destroyed = ref<boolean>(false);
   const formGroup = ref<FormGroup[]>([]);
-  const fieldList = ref<FieldSchema[]>([]);
 
   const setRefMap = (el: any, name) => {
     if (el) {
@@ -94,18 +94,6 @@
     activeKey.value = key;
   };
 
-  const isEmptyvalue = (val) => {
-    return val === '' || val === null || val === undefined;
-  };
-
-  const isBasicType = (type) => {
-    return [
-      FIELD_TYPE.BOOLEAN,
-      FIELD_TYPE.NUMBER,
-      FIELD_TYPE.STRING,
-      FIELD_TYPE.INTEGER
-    ].includes(type);
-  };
   const handleUnsetField = () => {
     const fieldList = genFieldMap(props.schema);
     _.each(fieldList, (item) => {
@@ -120,6 +108,7 @@
   };
   const validate = async () => {
     let valid: any = null;
+    console.log('schema==9999=========', props.schema);
     if (formGroup.value.length === 1) {
       const res = await schemaForm.value?.validate?.();
       valid = res;

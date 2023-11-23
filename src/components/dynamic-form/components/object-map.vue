@@ -9,7 +9,8 @@
   import {
     genObjectFieldProperties,
     initFieldDefaultValue,
-    genFieldPropsAndRules
+    genFieldPropsAndRules,
+    isRequiredInitField
   } from '../utils';
 
   export default defineComponent({
@@ -22,7 +23,13 @@
       };
 
       // init field value
-      if (props.action === 'create') {
+      if (
+        props.action === 'create' &&
+        isRequiredInitField(
+          props.schema,
+          _.includes(props.requiredFields, props.schema.name)
+        )
+      ) {
         _.set(
           props.formData,
           props.fieldPath,

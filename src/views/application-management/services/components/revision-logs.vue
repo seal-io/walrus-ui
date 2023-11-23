@@ -13,7 +13,7 @@
     SERVICE_API_PREFIX,
     SERVICE_API
   } from '@/views/application-management/services/api';
-  import { ServiceStatus } from '../config';
+  import { ServiceStatus, ProvideServiceInfoKey } from '../config';
 
   const props = defineProps({
     revisionId: {
@@ -39,7 +39,7 @@
       default: false
     }
   });
-  const currentServiceInfo = inject('currentServiceInfo', ref<any>({}));
+  const currentServiceInfo = inject(ProvideServiceInfoKey, ref<any>({}));
   const emits = defineEmits(['close']);
   const content = ref('');
   const scroller = ref();

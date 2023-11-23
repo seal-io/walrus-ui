@@ -20,7 +20,7 @@ import ObjectMap from '../components/object-map.vue';
 import { FieldSchema } from '../interface';
 import ComponentsMap from '../components/components-map';
 import FIELD_TYPE from '../config/field-type';
-import { isBasicType } from '../utils';
+import { isBasicType, isSimpleObject } from '../utils';
 
 export const CommonFieldMaps = {
   textArea: sealTextarea,
@@ -96,24 +96,6 @@ export const isAllowCreateNumberSelect = (schema: FieldSchema) => {
     !enumList?.length &&
     type === FIELD_TYPE.ARRAY
   );
-};
-
-export const isSimpleObject = (schema: FieldSchema) => {
-  // value is any
-  const isAnyAdditionalProperties =
-    _.isBoolean(schema.additionalProperties) && schema.additionalProperties;
-
-  // value is string
-  const isMapString =
-    _.isObject(schema.additionalProperties) &&
-    schema.additionalProperties?.type === 'string';
-
-  // value is number
-  const isMapNumber =
-    _.isObject(schema.additionalProperties) &&
-    _.includes(['number', 'integer'], schema.additionalProperties?.type);
-
-  return isAnyAdditionalProperties || isMapString || isMapNumber;
 };
 
 export const isNonObject = (schema: any) => {

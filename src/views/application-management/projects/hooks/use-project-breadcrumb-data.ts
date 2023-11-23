@@ -252,7 +252,7 @@ export default function useProjectData() {
   // =========== pipelines start =============
   const pipelineTemplate = {
     ...templateCommonConfig,
-    type: 'applications.workflow.name',
+    type: 'menu.applicationManagement.workflow',
     level: pageLevelMap.Pipeline,
     wrapperId: 'pipelineWrapper',
     route: WORKFLOW.Records

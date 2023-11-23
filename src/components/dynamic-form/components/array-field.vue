@@ -1,5 +1,11 @@
 <script lang="tsx">
-  import { defineComponent, ref, withModifiers } from 'vue';
+  import {
+    defineComponent,
+    ref,
+    withModifiers,
+    onMounted,
+    nextTick
+  } from 'vue';
   import _ from 'lodash';
   import schemaFieldProps from '../fields/schema-field-props';
   import { FieldSchema } from '../interface';
@@ -8,7 +14,8 @@
   import {
     genObjectFieldProperties,
     initFieldDefaultValue,
-    getCustomColSpan
+    getCustomColSpan,
+    isRequiredInitField
   } from '../utils';
   import CommonButton from './common-button.vue';
 
@@ -27,7 +34,13 @@
       };
 
       // init field value
-      if (props.action === 'create') {
+      if (
+        props.action === 'create' &&
+        isRequiredInitField(
+          props.schema,
+          _.includes(props.requiredFields, props.schema.name)
+        )
+      ) {
         _.set(
           props.formData,
           props.fieldPath,
@@ -68,16 +81,30 @@
         _.each(propertiesList.value, (item, index) => {
           _.each(item, (sItem, sIndex) => {
             if (!_.get(props.formData, sItem.fieldPath)) {
-              _.set(
-                props.formData,
-                sItem.fieldPath,
-                initFieldDefaultValue(sItem)
-              );
+              if (isRequiredInitField(sItem, sItem.isRequired)) {
+                _.set(
+                  props.formData,
+                  sItem.fieldPath,
+                  initFieldDefaultValue(sItem)
+                );
+              } else {
+                _.unset(props.formData, sItem.fieldPath);
+              }
             }
           });
         });
 
         handleChange(props.formData);
+      };
+      // init field value when edit
+      const initFieldValue = () => {
+        const value = _.get(props.formData, props.fieldPath);
+        console.log('value===', props.fieldPath, value);
+        if (value && value.length) {
+          for (let i = 0; i < value; i += 1) {
+            handleAddClick();
+          }
+        }
       };
 
       // check array every item is empty or null or undefined
@@ -109,6 +136,11 @@
         activeItemIndex.value = -1;
       };
 
+      onMounted(() => {
+        nextTick(() => {
+          initFieldValue();
+        });
+      });
       const renderDeleleButton = (index) => {
         return (
           <span

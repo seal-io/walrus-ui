@@ -1,16 +1,8 @@
 <template>
   <div class="service">
-    <!-- <div class="variables m-t-10">
-      <ViewForm
-        style="width: 100%; padding: 0"
-        :form-data="serviceInfo.attributes"
-        :field-list="templateInfo"
-      ></ViewForm>
-    </div> -->
     <GroupForm
       ref="groupForm"
       style="padding: 10px"
-      :disabled="true"
       :action="action"
       :form-data="serviceInfo.attributes"
       :schema="schema"
@@ -20,30 +12,83 @@
 
 <script lang="ts" setup>
   import _ from 'lodash';
-  import { onMounted, nextTick, provide, ref } from 'vue';
-  import ViewForm from '@/components/form-create/view-form.vue';
+  import useCallCommon from '@/hooks/use-call-common';
+  import { onMounted, nextTick, provide, ref, watch, inject } from 'vue';
   import { InjectSchemaFormEditableKey } from '@/views/config';
   import GroupForm from '@/components/dynamic-form/group-form.vue';
-  import useServiceData from '../hooks/use-service-data';
+  import { queryItemResourceDefinition } from '@/views/operation-hub/resource-definitions/api';
+  import { queryItemTemplatesVersions } from '@/views/operation-hub/templates/api';
+  import { ServiceDataType, ProvideServiceInfoKey } from '../config';
 
-  const { initInfo, serviceInfo, schemaVariables, templateInfo } =
-    useServiceData();
+  const props = defineProps({
+    isCollapsed: {
+      type: Boolean,
+      default: false
+    }
+  });
+  const { route } = useCallCommon();
+  const serviceInfo = inject(ProvideServiceInfoKey, ref<any>({}));
   const schema = ref<any>({});
   const action = ref<any>('view');
+  const dataType = route.params.dataType as string;
+  const loaded = ref(false);
   provide(InjectSchemaFormEditableKey, ref(false));
-  const callback = async () => {
-    await initInfo();
-    schema.value = schemaVariables.value;
+
+  const setTemplateInfo = (moduleData) => {
+    const variables =
+      _.cloneDeep(
+        _.get(moduleData, 'uiSchema.openAPISchema.components.schemas.variables')
+      ) || {};
+    schema.value = variables;
   };
-  const initData = async () => {
-    schema.value = [];
-    nextTick(() => {
-      callback();
+  const getItemResourceDefinitionSchema = async () => {
+    if (!serviceInfo.value.type) return;
+    const { data } = await queryItemResourceDefinition({
+      id: serviceInfo.value.type
     });
+    setTemplateInfo(data);
   };
-  defineExpose({
-    initData,
-    initInfo
+
+  const getItemTemplatesVersionsSchema = async () => {
+    if (!serviceInfo.value.template) return;
+    const params = {
+      templateID: serviceInfo.value.template.template.id,
+      isProjectTemplate: !!serviceInfo.value.template?.project?.id,
+      query: serviceInfo.value.template.version
+    };
+    const { data } = await queryItemTemplatesVersions(params);
+
+    setTemplateInfo(_.get(data, 'items.0', {}));
+  };
+  const getSchema = async () => {
+    try {
+      if (dataType === ServiceDataType.resource) {
+        await getItemResourceDefinitionSchema();
+      } else {
+        await getItemTemplatesVersionsSchema();
+      }
+      loaded.value = true;
+    } catch (error) {
+      // console.log('error', error);
+    }
+  };
+  watch(
+    () => props.isCollapsed,
+    (val) => {
+      if (val) {
+        console.log('serviceInfo.value====', val);
+        getSchema();
+      }
+    },
+    {
+      immediate: true
+    }
+  );
+  onMounted(() => {
+    schema.value = {};
+    nextTick(() => {
+      getSchema();
+    });
   });
 </script>
 

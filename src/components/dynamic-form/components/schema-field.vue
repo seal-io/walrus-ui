@@ -5,7 +5,8 @@
   import {
     getShowIfValue,
     initFieldDefaultValue,
-    setHiddenFieldValue
+    setHiddenFieldValue,
+    isRequiredInitField
   } from '../utils';
   import { getSchemaFieldComponent } from '../fields/field-map';
 
@@ -22,7 +23,13 @@
       const showIf = _.get(props.schema, ['x-walrus-ui', 'showIf'], '');
 
       // init field value
-      if (props.action === 'create') {
+      if (
+        props.action === 'create' &&
+        isRequiredInitField(
+          props.schema,
+          _.includes(props.requiredFields, props.schema.name)
+        )
+      ) {
         _.set(
           props.formData,
           props.fieldPath,
@@ -46,7 +53,13 @@
         fieldPath: props.fieldPath
       });
 
-      if (hidden) {
+      if (
+        hidden &&
+        isRequiredInitField(
+          props.schema,
+          _.includes(props.requiredFields, props.schema.name)
+        )
+      ) {
         setHiddenFieldValue({
           schema: props.schema,
           formData: props.formData,

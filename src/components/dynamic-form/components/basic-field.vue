@@ -19,7 +19,9 @@
     isMuliSelect,
     isPassword,
     checkValidValue,
-    initFieldDefaultValue
+    initFieldDefaultValue,
+    isRequiredInitField,
+    isEmptyvalue
   } from '../utils';
   import { Option } from '../interface';
   import { ProviderFormRefKey } from '../config';
@@ -44,7 +46,16 @@
       let Component = BasicFieldMaps[type.value];
       const options = ref<Option[]>([]);
 
+      const handleUnsetField = () => {
+        if (
+          isEmptyvalue(_.get(props.formData, props.fieldPath)) &&
+          !props.schema.default
+        ) {
+          _.unset(props.formData, props.fieldPath);
+        }
+      };
       const handleChange = (data) => {
+        handleUnsetField();
         emit('change', data);
 
         setTimeout(() => {
@@ -53,7 +64,13 @@
       };
 
       // init field value
-      if (props.action === 'create') {
+      if (
+        props.action === 'create' &&
+        isRequiredInitField(
+          props.schema,
+          _.includes(props.requiredFields, props.schema.name)
+        )
+      ) {
         _.set(
           props.formData,
           props.fieldPath,

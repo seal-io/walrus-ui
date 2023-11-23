@@ -60,7 +60,7 @@ export default {
   'applications.applications.instance.resource': 'Component Information',
   'applications.applications.instance.resource.tips':
     'When the connector of the environment is customized, the resources and outputs of the service are static data, which will be updated when the service is upgraded',
-  'applications.applications.instance.endpoint': 'EndPoint',
+  'applications.applications.instance.endpoint': 'Endpoint',
   'applications.applications.instance.log': 'Logs',
   'applications.applications.instance.value': 'Value',
   'applications.applications.instance.cloneName':
@@ -71,7 +71,7 @@ export default {
   'applications.instance.env.tips':
     'environments without added connectors are not available',
   'applications.instance.tab.resource': 'Components',
-  'applications.instance.tab.resource.holder': 'please enter a resource name',
+  'applications.instance.tab.resource.holder': 'please enter a component name',
   'applications.instance.tab.resourceName': 'Resource Name',
   'applications.instance.tab.log': 'Logs',
   'applications.instance.tab.term': 'Terminal',

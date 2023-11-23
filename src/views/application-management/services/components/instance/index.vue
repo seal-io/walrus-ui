@@ -92,7 +92,8 @@
                   </span>
                 </div>
               </template>
-              <serviceInfo ref="serviceInfoRef"> </serviceInfo>
+              <serviceInfo ref="serviceInfoRef" :is-collapsed="isCollapsed">
+              </serviceInfo>
             </moduleWrapper>
           </ModuleCard>
         </ComCard>
@@ -204,7 +205,8 @@
     serviceActions,
     serviceActionMap,
     ServiceDataType,
-    StartableStatus
+    StartableStatus,
+    ProvideServiceInfoKey
   } from '../../config';
   import { ServiceRowData } from '../../config/interface';
   import useFetchResource from '../hooks/use-fetch-chunk-data';
@@ -241,6 +243,7 @@
   const serviceID = route.query.id || '';
   const dataType = route.params.dataType || '';
   const activeKey = ref('resource');
+  const isCollapsed = ref(false);
   const currentInfo = ref<ServiceRowData>({} as ServiceRowData);
   const serviceInfoRef = ref();
   const instanceTabMap = {
@@ -250,7 +253,7 @@
   const instanceTabList = ref<any[]>([]);
   const basicDataList = useBasicInfoData(serviceBasicInfo, currentInfo);
 
-  provide('currentServiceInfo', currentInfo);
+  provide(ProvideServiceInfoKey, currentInfo);
   const actionList = computed(() => {
     const list = _.filter(serviceActions, (item) => {
       if (
@@ -282,9 +285,7 @@
   };
 
   const handleBasicCollapse = async (val) => {
-    if (val) {
-      serviceInfoRef.value?.initData();
-    }
+    isCollapsed.value = val;
   };
 
   const handleStopResource = async () => {
@@ -318,9 +319,6 @@
   };
   const handleEditCancel = () => {
     pageAction.value = PageAction.VIEW;
-    setTimeout(() => {
-      serviceInfoRef.value?.initData();
-    }, 100);
   };
   const setInstanceTabList = () => {
     instanceTabList.value = _.filter(instanceTabs, (item) => {
@@ -342,7 +340,6 @@
       const { data } = await queryItemService(params);
       currentInfo.value = data;
       serviceStore.setServiceInfo(route.query.id, data);
-      await serviceInfoRef.value?.initData();
     } catch (error) {
       serviceStore.deleteService(route.query.id);
     }

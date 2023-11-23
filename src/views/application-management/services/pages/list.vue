@@ -85,20 +85,20 @@
       <tableList
         ref="serviceTable"
         :type="ServiceDataType.service"
-        :title="$t('menu.applicationManagement.resources')"
+        ::title="$t('menu.applicationManagement.services')"
         :request-params="queryParams"
         @selection-change="handleServiceSelectChange"
       ></tableList>
     </moduleWrapper>
     <moduleWrapper
-      :title="$t('applications.applications.table.resource')"
+      :title="$t('menu.applicationManagement.resource')"
       :show-delete="false"
       :status="true"
     >
       <tableList
         ref="resourceTable"
         :type="ServiceDataType.resource"
-        :title="$t('applications.applications.table.resource')"
+        :title="$t('menu.applicationManagement.resource')"
         :request-params="queryParams"
         @selection-change="handleResourceSelectChange"
       ></tableList>

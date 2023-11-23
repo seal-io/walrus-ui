@@ -6,7 +6,12 @@
   import { InjectSchemaFormEditableKey } from '@/views/config';
   import { ProviderFormRefKey } from '../config';
   import schemaFieldProps from '../fields/schema-field-props';
-  import { genFieldPropsAndRules, initFieldDefaultValue } from '../utils';
+  import {
+    genFieldPropsAndRules,
+    initFieldDefaultValue,
+    isRequiredInitField,
+    isEmptyvalue
+  } from '../utils';
   import {
     json2Yaml,
     yaml2Json,
@@ -28,7 +33,17 @@
         requiredFields: props.requiredFields
       });
 
+      const handleUnsetField = () => {
+        if (
+          isEmptyvalue(_.get(props.formData, props.fieldPath)) &&
+          !props.schema.default
+        ) {
+          _.unset(props.formData, props.fieldPath);
+        }
+      };
+
       const handleChange = (data) => {
+        handleUnsetField();
         emit('change', data);
         setTimeout(() => {
           formref.value?.validateField(props.fieldPath);
@@ -51,7 +66,13 @@
       };
 
       // init field value
-      if (props.action === 'create') {
+      if (
+        props.action === 'create' &&
+        isRequiredInitField(
+          props.schema,
+          _.includes(props.requiredFields, props.schema.name)
+        )
+      ) {
         const jsonStr = initFieldDefaultValue(props.schema);
         fieldValue.value = json2Yaml(jsonStr);
       } else {
