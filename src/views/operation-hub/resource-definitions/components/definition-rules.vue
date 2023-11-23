@@ -544,9 +544,6 @@
 
   const schemaVariables = ref<any>({});
 
-  const schemaFormEditable = computed(() => {
-    return props.pageAction === PageAction.EDIT;
-  });
   const actionList = computed(() => {
     return _.map(SelectorAction, (item) => {
       return {
@@ -564,7 +561,13 @@
     return undefined;
   });
 
-  provide(InjectSchemaFormStatusKey, ref(props.pageAction));
+  const action = computed(() => {
+    if (!id) {
+      return PageAction.CREATE;
+    }
+    return props.pageAction;
+  });
+  provide(InjectSchemaFormStatusKey, ref(action));
 
   const initSelectors = () => {
     selectors.value = new Set();
