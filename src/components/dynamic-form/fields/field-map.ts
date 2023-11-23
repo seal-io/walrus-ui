@@ -54,7 +54,7 @@ export const FormatsFieldMaps = {
 
 export const isSelect = (schema: FieldSchema) => {
   const { type, enum: enumList, items } = schema;
-  if (items && type === FIELD_TYPE.ARRAY) {
+  if (items && type === FIELD_TYPE.ARRAY && isBasicType(items.type)) {
     return true;
   }
   return type === FIELD_TYPE.STRING && enumList && enumList.length > 0;
@@ -135,7 +135,7 @@ export const getSchemaFieldComponent = ({ schema, fieldPath, formData }) => {
     };
   }
 
-  if (type === FIELD_TYPE.ARRAY && !isMuliSelect(schema)) {
+  if (type === FIELD_TYPE.ARRAY && !isMuliSelect(schema) && !isSelect(schema)) {
     return {
       component: FieldMaps.array,
       fieldPath: [...fieldPath],

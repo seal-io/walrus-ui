@@ -58,7 +58,7 @@
         formData: props.formData,
         fieldPath: props.fieldPath
       });
-
+      console.log('component+++++++++', props.schema.name, component);
       if (
         hidden &&
         isRequiredInitField(
