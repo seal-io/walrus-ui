@@ -118,6 +118,9 @@
       };
       // init field value when edit
       const initFieldValue = () => {
+        if (schemaFormStatus.value === PageAction.CREATE) {
+          return;
+        }
         const value = _.get(props.formData, props.fieldPath);
         console.log(
           'value===9',
