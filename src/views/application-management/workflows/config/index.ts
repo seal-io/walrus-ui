@@ -249,6 +249,21 @@ export const moreActions: MoreAction[] = [
         actions: [Actions.POST]
       });
     }
+  },
+  {
+    label: 'common.button.delete',
+    value: 'delete',
+    icon: 'icon-delete',
+    handler: '',
+    status: 'danger',
+    disabled: false,
+    filterFun(currentInfo) {
+      return userStore.hasProjectResourceActions({
+        resource: Resources.Workflows,
+        projectID: _.get(currentInfo, 'project.id'),
+        actions: [Actions.DELETE]
+      });
+    }
   }
 ];
 

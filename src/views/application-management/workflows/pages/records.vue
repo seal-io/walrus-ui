@@ -34,7 +34,7 @@
           </div>
           <div v-if="moreActions.length" class="dropdown">
             <DropButtonGroup
-              :actions="moreActions"
+              :actions="actionList"
               @click="handleClick"
               @select="handleSelect"
             ></DropButtonGroup>
@@ -74,7 +74,7 @@
 
 <script lang="ts" setup>
   import _ from 'lodash';
-  import { ref, onMounted } from 'vue';
+  import { ref, onMounted, computed } from 'vue';
   import { Resources, Actions } from '@/permissions/config';
   import { useUserStore } from '@/store';
   import { WORKFLOW } from '@/router/config';
@@ -124,6 +124,21 @@
       // ignore
     }
   };
+
+  const actionList = computed(() => {
+    const list = _.filter(moreActions, (item) => {
+      if (item.value === 'delete') return false;
+      return item.filterFun ? item.filterFun(currentInfo.value) : true;
+    });
+    const res = _.map(list, (o) => {
+      const item = _.cloneDeep(o);
+      item.disabled = _.isFunction(item.disabled)
+        ? item.disabled?.(currentInfo.value)
+        : item.disabled;
+      return item;
+    });
+    return res;
+  });
   const handleClick = () => {
     router.push({
       name: WORKFLOW.Edit,

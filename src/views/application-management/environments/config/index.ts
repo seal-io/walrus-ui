@@ -119,6 +119,24 @@ export const EnvironmentActions: MoreAction[] = [
         actions: [Actions.PUT]
       });
     }
+  },
+  {
+    label: 'common.button.delete',
+    value: CommonButtonValue.Delete,
+    icon: 'icon-delete',
+    handler: '',
+    status: 'danger',
+    style: {
+      fontSize: '12px'
+    },
+    filterFun({ row, projectID }) {
+      return userStore.hasProjectResourceActions({
+        projectID,
+        environmentID: row.id,
+        resource: Resources.Environments,
+        actions: [Actions.DELETE]
+      });
+    }
   }
 ];
 export default {};

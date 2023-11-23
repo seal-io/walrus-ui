@@ -48,7 +48,7 @@
             type="primary"
             status="warning"
             :disabled="!selectedKeys.length"
-            @click="handleDelete"
+            @click="() => handleDelete()"
             >{{ $t('common.button.delete')
             }}<span v-if="selectedKeys.length">{{
               `(${selectedKeys.length})`
@@ -403,16 +403,11 @@
   const handleClickAction = (value, row) => {
     actionHandlerMap.get(value)(row);
   };
-  const setActionHandler = () => {
-    actionHandlerMap.set(CommonButtonValue.View, handleViewDetail);
-    actionHandlerMap.set(CommonButtonValue.Clone, handleClone);
-    actionHandlerMap.set(CommonButtonValue.Stop, handleStopEnvironment);
-    actionHandlerMap.set(CommonButtonValue.Start, handleStartEnvironment);
-  };
-  const handleDeleteConfirm = async () => {
+
+  const handleDeleteConfirm = async (delList?: string[]) => {
     try {
       loading.value = true;
-      const ids = map(selectedKeys.value, (val) => {
+      const ids = map(delList || selectedKeys.value, (val) => {
         return {
           id: val
         };
@@ -428,9 +423,19 @@
       loading.value = false;
     }
   };
-  const handleDelete = async () => {
-    deleteModal({ onOk: handleDeleteConfirm });
+  const handleDelete = async (row?: any) => {
+    const ids: any = row ? [row.id] : null;
+    deleteModal({ onOk: () => handleDeleteConfirm(ids) });
   };
+  const setActionHandler = () => {
+    actionHandlerMap.set(CommonButtonValue.Edit, handleEdit);
+    actionHandlerMap.set(CommonButtonValue.View, handleViewDetail);
+    actionHandlerMap.set(CommonButtonValue.Clone, handleClone);
+    actionHandlerMap.set(CommonButtonValue.Stop, handleStopEnvironment);
+    actionHandlerMap.set(CommonButtonValue.Start, handleStartEnvironment);
+    actionHandlerMap.set(CommonButtonValue.Delete, handleDelete);
+  };
+
   onMounted(() => {
     setActionHandler();
   });
