@@ -158,18 +158,16 @@
     z-index: 1;
     height: 100%;
     margin: 0 2px;
-    margin-top: 2px;
     margin-bottom: 20px;
-    padding: 0 16px;
-    padding-right: 16px;
+    padding: 0 20px;
     padding-bottom: 10px;
     border-radius: 0%;
-    box-shadow: rgba(169, 174, 184, 0.3) 0 3px 1px -1px,
-      rgba(169, 174, 184, 0.2) 0 1px 1px 0, rgba(169, 174, 184, 0.2) 0 1px 3px 0;
+    box-shadow: 0 4px 3px -1px rgba(234, 236, 238, 0.8),
+      0 1px 4px 0 rgba(169, 174, 184, 0.2);
 
     &:hover {
-      box-shadow: rgba(33, 74, 196, 0.3) 0 3px 1px -1px,
-        rgba(33, 74, 196, 0.2) 0 1px 5px 0, rgba(33, 74, 196, 0.2) 0 1px 3px 0;
+      box-shadow: rgba(33, 74, 196, 0.2) 0 3px 5px -1px,
+        rgba(33, 74, 196, 0.1) 0 3px 5px 0;
       transition: box-shadow 0.2s var(--seal-transition-func);
     }
 
@@ -204,7 +202,7 @@
       }
 
       .content {
-        padding: 10px;
+        padding: 20px;
       }
 
       &.mo-wrap-hover:hover {

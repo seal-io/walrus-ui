@@ -5,20 +5,12 @@
   import { InjectSchemaFormEditableKey } from '@/views/config';
   import KeyValueLabels from '@/components/form-create/custom-components/key-value-labels.vue';
   import SealFormItemWrap from '@/components/seal-form/components/seal-form-item-wrap.vue';
-  import SealInput from '@/components/seal-form/components/seal-input.vue';
-  import HintInput from '@/components/hint-input/index.vue';
   import schemaFieldProps from '../fields/schema-field-props';
-  import { FieldSchema } from '../interface';
-  import FieldGroup from './field-group.vue';
-  import SchemaField from './schema-field.vue';
   import {
     genObjectFieldProperties,
     initFieldDefaultValue,
-    genFieldPropsAndRules,
-    getCustomColSpan,
-    isBasicType
+    genFieldPropsAndRules
   } from '../utils';
-  import CommonButton from './common-button.vue';
 
   export default defineComponent({
     props: schemaFieldProps,

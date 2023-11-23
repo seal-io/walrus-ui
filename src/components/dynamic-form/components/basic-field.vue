@@ -69,7 +69,7 @@
       if (isSelect(props.schema)) {
         Component = CommonFieldMaps.select;
         if (props.schema.enum) {
-          options.value = props.schema.enum.map((item) => {
+          options.value = _.map(props.schema.enum, (item) => {
             return {
               label: item,
               value: item
@@ -156,7 +156,7 @@
               label={props.label}
               style="width: 100%"
               allow-search={false}
-              allow-clear={true}
+              allow-clear={!props.schema.enum}
               editor-id={_.join(props.fieldPath, '-')}
               popupInfo={props.schema.description}
               v-model={fieldValue.value}
@@ -203,7 +203,14 @@
               validate-trigger={['change']}
             >
               <SealFormItemWrap label={props.schema.title} style="width: 100%">
-                <span>{_.get(props.formData, props.fieldPath)}</span>
+                {isBoolean(props.schema) ? (
+                  <a-checkbox
+                    modelValue={fieldValue.value}
+                    size="small"
+                  ></a-checkbox>
+                ) : (
+                  <span>{_.get(props.formData, props.fieldPath)}</span>
+                )}
               </SealFormItemWrap>
             </a-form-item>
           )}

@@ -119,7 +119,7 @@
           :title="$t('common.table.operation')"
         >
           <template #cell="{ record }">
-            <a-space :size="16">
+            <!-- <a-space :size="16">
               <a-tooltip :content="$t('common.button.edit')">
                 <a-link type="text" size="small" @click="handleEdit(record)">
                   <template #icon><icon-edit /></template>
@@ -130,7 +130,11 @@
                   <template #icon><icon-refresh /></template>
                 </a-link>
               </a-tooltip>
-            </a-space>
+            </a-space> -->
+            <DropButtonGroup
+              :actions="setActionList(record)"
+              @select="(value) => handleClickAction(value, record)"
+            ></DropButtonGroup>
           </template>
         </a-table-column>
       </template>
@@ -139,10 +143,10 @@
 </template>
 
 <script lang="ts" setup>
+  import _, { map, get } from 'lodash';
   import { OPERATIONHUB } from '@/router/config';
   import { Resources, Actions } from '@/permissions/config';
   import { PageAction } from '@/views/config';
-  import { map, get } from 'lodash';
   import dayjs from 'dayjs';
   import { useUserStore } from '@/store';
   import { reactive, ref, onMounted, PropType, computed } from 'vue';
@@ -150,11 +154,11 @@
   import { deleteModal, execSucceed } from '@/utils/monitor';
   import useRowSelect from '@/hooks/use-row-select';
   import { UseSortDirection } from '@/utils/common';
-  import FilterBox from '@/components/filter-box/index.vue';
-  import copy from '@/components/copy/copy-command.vue';
+  import DropButtonGroup from '@/components/drop-button-group/index.vue';
   import { CatalogRowData } from '../config/interface';
   import StatusLabel from '../../connectors/components/status-label.vue';
   import { queryCatalogs, refreshCatalog, deleteCatalogs } from '../api';
+  import { actionList } from '../config';
 
   const props = defineProps({
     list: {
@@ -212,6 +216,20 @@
       ? rowSelection
       : null;
   });
+
+  const setActionList = (row) => {
+    const list = _.filter(actionList, (item) => {
+      return item.filterFun ? item.filterFun(row) : true;
+    });
+    const res = _.map(list, (o) => {
+      const item = _.cloneDeep(o);
+      item.disabled = _.isFunction(item.disabled)
+        ? item.disabled?.(row)
+        : item.disabled;
+      return item;
+    });
+    return res;
+  };
 
   const fetchData = async () => {
     try {
@@ -305,9 +323,28 @@
       // ignore
     }
   };
+
   const handleDelete = async () => {
     deleteModal({ onOk: handleDeleteConfirm });
   };
+
+  const handleClickAction = (value, row) => {
+    switch (value) {
+      case 'edit':
+        handleEdit(row);
+        break;
+      case 'refresh':
+        handlRefresh(row);
+        break;
+      case 'delete':
+        selectedKeys.value = [row.id];
+        handleDelete();
+        break;
+      default:
+        break;
+    }
+  };
+
   const clearSelection = () => {
     selectedKeys.value = [];
     rowSelection.selectedRowKeys = [];

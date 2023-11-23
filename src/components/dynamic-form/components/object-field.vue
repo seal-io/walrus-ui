@@ -118,7 +118,6 @@
       const renderAddButton = () => {
         return isMapObjectAdditionalProperties ? (
           <CommonButton
-            style={{ marginLeft: '16px' }}
             onClick={() => handleAddClick()}
             action="add"
             title={props.schema.title}
@@ -313,7 +312,7 @@
     display: flex;
     align-items: flex-start;
     justify-content: space-between;
-    padding: 20px 16px;
+    padding: 20px 0;
     padding-top: 0;
     padding-bottom: 0;
 

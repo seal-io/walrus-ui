@@ -80,7 +80,6 @@
   };
   const setModuleActions = () => {
     const result = filter(actionList, (item) => {
-      if (!item.requiredAuth) return true;
       return userStore.hasRolesActionsPermission({
         resource: Resources.Catalogs,
         actions: [Actions.PUT]

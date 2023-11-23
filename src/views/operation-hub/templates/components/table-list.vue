@@ -118,6 +118,7 @@
                       actions: [Actions.DELETE]
                     })
               "
+              @delete="handleCallDelete"
               @change="handleCheckChange"
             ></ThumbView>
           </a-tab-pane>
@@ -308,10 +309,10 @@
     appStore.updateSettings({ perPage: pageSize });
     handleFilter();
   };
-  const handleDeleteConfirm = async () => {
+  const handleDeleteConfirm = async (idList?: string[]) => {
     try {
       loading.value = true;
-      const ids = map(selectedKeys.value, (val) => {
+      const ids = map(idList || selectedKeys.value, (val) => {
         return {
           id: val as string
         };
@@ -327,10 +328,13 @@
       loading.value = false;
     }
   };
-  const handleDelete = async () => {
-    deleteModal({ onOk: handleDeleteConfirm });
+  const handleDelete = async (ids) => {
+    deleteModal({ onOk: () => handleDeleteConfirm(ids) });
   };
 
+  const handleCallDelete = (id) => {
+    handleDelete([id]);
+  };
   const updateHandler = (list) => {
     _.each(list, (data) => {
       updateChunkedList(data);

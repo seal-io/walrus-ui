@@ -127,6 +127,26 @@ export const actionList = [
           });
     },
     permission: ['PUT']
+  },
+  {
+    label: 'common.button.delete',
+    value: 'delete',
+    icon: 'icon-delete',
+    status: 'danger',
+    requiredAuth: true,
+    filterFunc(itemInfo, projectID) {
+      return projectID
+        ? userStore.hasProjectResourceActions({
+            resource: Resources.Templates,
+            projectID,
+            actions: [Actions.DELETE]
+          })
+        : userStore.hasRolesActionsPermission({
+            resource: Resources.Templates,
+            actions: [Actions.DELETE]
+          });
+    },
+    permission: ['DELETE']
   }
 ];
 export default {};
