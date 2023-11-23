@@ -2,7 +2,7 @@
   import { defineComponent, ref, inject } from 'vue';
   import _ from 'lodash';
   import i18n from '@/locale';
-  import { InjectSchemaFormEditableKey } from '@/views/config';
+  import { InjectSchemaFormStatusKey, PageAction } from '@/views/config';
   import HintInput from '@/components/hint-input/index.vue';
   import schemaFieldProps from '../fields/schema-field-props';
   import { FieldSchema } from '../interface';
@@ -24,7 +24,10 @@
     emits: ['change'],
     setup(props, { emit }) {
       const { t } = i18n.global;
-      const schemaFormEditable = inject(InjectSchemaFormEditableKey, ref(true));
+      const schemaFormStatus = inject(
+        InjectSchemaFormStatusKey,
+        ref(PageAction.CREATE)
+      );
       let additionalPropertiesList: FieldSchema[] = [];
       let additionalPropertiesKeysObj = {};
       const childProperties = ref<FieldSchema[]>([]);
@@ -64,7 +67,7 @@
       );
       // init field value
       if (
-        props.action === 'create' &&
+        schemaFormStatus.value === PageAction.CREATE &&
         isRequiredInitField(
           props.schema,
           _.includes(props.requiredFields, props.schema.name)
@@ -127,6 +130,9 @@
       };
 
       const renderAddButton = () => {
+        if (schemaFormStatus.value === PageAction.VIEW) {
+          return null;
+        }
         return isMapObjectAdditionalProperties ? (
           <CommonButton
             onClick={() => handleAddClick()}
@@ -136,6 +142,9 @@
         ) : null;
       };
       const renderDeleleButton = (index) => {
+        if (schemaFormStatus.value === PageAction.VIEW) {
+          return null;
+        }
         return (
           <CommonButton
             onClick={() => handleDeleteClick(index)}
@@ -172,8 +181,7 @@
                       <a-form-item
                         field={_.join([props.fieldPath, index, 'field'], '.')}
                       >
-                        {!schemaFormEditable.value ||
-                        props.action === 'view' ? (
+                        {schemaFormStatus.value === PageAction.VIEW ? (
                           <span>
                             {_.get(objectAdditionalList.value, [
                               index,

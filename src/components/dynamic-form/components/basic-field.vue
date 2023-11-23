@@ -1,7 +1,7 @@
 <script lang="tsx">
   import _ from 'lodash';
   import { defineComponent, toRefs, inject, ref, watch } from 'vue';
-  import { InjectSchemaFormEditableKey } from '@/views/config';
+  import { InjectSchemaFormStatusKey, PageAction } from '@/views/config';
   import SealFormItemWrap from '@/components/seal-form/components/seal-form-item-wrap.vue';
   import schemaFieldProps from '../fields/schema-field-props';
   import {
@@ -36,7 +36,10 @@
     },
     emits: ['change'],
     setup(props, { emit, attrs }) {
-      const schemaFormEditable = inject(InjectSchemaFormEditableKey, ref(true));
+      const schemaFormStatus = inject(
+        InjectSchemaFormStatusKey,
+        ref(PageAction.CREATE)
+      );
       const formref = inject(ProviderFormRefKey, ref());
 
       const widget = _.get(props.schema, ['x-walrus-ui', 'widget'], '');
@@ -65,7 +68,7 @@
 
       // init field value
       if (
-        props.action === 'create' &&
+        schemaFormStatus.value === PageAction.CREATE &&
         isRequiredInitField(
           props.schema,
           _.includes(props.requiredFields, props.schema.name)
@@ -103,7 +106,7 @@
             };
           });
         }
-        if (props.action !== 'create') {
+        if (schemaFormStatus.value !== PageAction.CREATE) {
           const value = _.get(props.formData, props.fieldPath);
           const list = _.concat(value).map((item) => {
             return {
@@ -209,7 +212,7 @@
 
       return () => (
         <>
-          {schemaFormEditable.value ? (
+          {schemaFormStatus.value !== PageAction.VIEW ? (
             renderEdit()
           ) : (
             <a-form-item

@@ -1,6 +1,7 @@
 <script lang="tsx">
-  import { defineComponent } from 'vue';
+  import { defineComponent, inject, ref } from 'vue';
   import _ from 'lodash';
+  import { InjectSchemaFormStatusKey, PageAction } from '@/views/config';
   import schemaFieldProps from '../fields/schema-field-props';
   import {
     getShowIfValue,
@@ -14,6 +15,10 @@
     props: schemaFieldProps,
     emits: ['change'],
     setup(props, { emit }) {
+      const schemaFormStatus = inject(
+        InjectSchemaFormStatusKey,
+        ref(PageAction.CREATE)
+      );
       if (!_.keys(props.schema.properties)) {
         return null;
       }
@@ -24,7 +29,7 @@
 
       // init field value
       if (
-        props.action === 'create' &&
+        schemaFormStatus.value === PageAction.CREATE &&
         isRequiredInitField(
           props.schema,
           _.includes(props.requiredFields, props.schema.name)

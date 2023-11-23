@@ -169,7 +169,6 @@
           <GroupForm
             ref="groupForm"
             v-model:form-data="formData.attributes"
-            action="edit"
             :schema="schemaVariables"
           ></GroupForm>
         </div>
@@ -202,7 +201,7 @@
     validateLabelNameRegx,
     InjectCompleteDataKey,
     InjectShowInputHintKey,
-    InjectSchemaFormEditableKey
+    InjectSchemaFormStatusKey
   } from '@/views/config';
   import { ref, PropType, computed, provide, onMounted, watch } from 'vue';
   import GroupForm from '@/components/dynamic-form/group-form.vue';
@@ -289,7 +288,7 @@
   } = useLabelsActions(formData);
   const { scrollToView } = useScrollToView();
 
-  provide(InjectSchemaFormEditableKey, ref(true));
+  provide(InjectSchemaFormStatusKey, ref(PageAction.EDIT));
 
   const emits = defineEmits(['update:hintData']);
   const completeData = ref<any>({});

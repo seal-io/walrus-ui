@@ -4,9 +4,11 @@
     ref,
     withModifiers,
     onMounted,
-    nextTick
+    nextTick,
+    inject
   } from 'vue';
   import _ from 'lodash';
+  import { InjectSchemaFormStatusKey, PageAction } from '@/views/config';
   import schemaFieldProps from '../fields/schema-field-props';
   import { FieldSchema } from '../interface';
   import FieldGroup from './field-group.vue';
@@ -23,6 +25,10 @@
     props: schemaFieldProps,
     emits: ['change'],
     setup(props, { emit }) {
+      const schemaFormStatus = inject(
+        InjectSchemaFormStatusKey,
+        ref(PageAction.CREATE)
+      );
       const activeItemIndex = ref(-1);
       const items = props.schema.items || [];
       const minItems = props.schema.minItems || 0;
@@ -35,7 +41,7 @@
 
       // init field value
       if (
-        props.action === 'create' &&
+        schemaFormStatus.value === PageAction.CREATE &&
         isRequiredInitField(
           props.schema,
           _.includes(props.requiredFields, props.schema.name)
@@ -63,6 +69,20 @@
           props.parentSpan
       });
 
+      const setPropertiesList = () => {
+        const newProperties = _.cloneDeep(itemsProperties);
+        propertiesList.value = [
+          ..._.cloneDeep(propertiesList.value),
+          [...newProperties]
+        ];
+
+        // set the fieldpath
+        _.each(propertiesList.value, (item, index) => {
+          _.each(item, (sItem, sIndex) => {
+            sItem.fieldPath = [...props.fieldPath, `${index}`, sItem.name];
+          });
+        });
+      };
       const handleAddClick = () => {
         const newProperties = _.cloneDeep(itemsProperties);
         propertiesList.value = [
@@ -99,10 +119,15 @@
       // init field value when edit
       const initFieldValue = () => {
         const value = _.get(props.formData, props.fieldPath);
-        console.log('value===', props.fieldPath, value);
+        console.log(
+          'value===9',
+          schemaFormStatus.value,
+          props.fieldPath,
+          value
+        );
         if (value && value.length) {
-          for (let i = 0; i < value; i += 1) {
-            handleAddClick();
+          for (let i = 0; i < value.length; i += 1) {
+            setPropertiesList();
           }
         }
       };
@@ -125,6 +150,7 @@
           _.unset(props.formData, props.fieldPath);
         }
 
+        activeItemIndex.value = -1;
         handleChange(props.formData);
       };
 
@@ -137,11 +163,15 @@
       };
 
       onMounted(() => {
-        nextTick(() => {
-          initFieldValue();
-        });
+        initFieldValue();
       });
       const renderDeleleButton = (index) => {
+        if (
+          propertiesList.value.length <= minItems ||
+          schemaFormStatus.value === PageAction.VIEW
+        ) {
+          return null;
+        }
         return (
           <span
             onMouseover={withModifiers(
@@ -164,6 +194,9 @@
       };
 
       const renderAddButton = () => {
+        if (schemaFormStatus.value === PageAction.VIEW) {
+          return null;
+        }
         return props.schema.items ? (
           <CommonButton
             onClick={() => handleAddClick()}
@@ -173,7 +206,7 @@
         ) : null;
       };
       const init = () => {
-        if (minItems) {
+        if (minItems && schemaFormStatus.value === PageAction.CREATE) {
           for (let i = 0; i < minItems; i += 1) {
             handleAddClick();
           }
@@ -219,9 +252,7 @@
                     </a-grid>
                   </div>
 
-                  {propertiesList.value.length > minItems
-                    ? renderDeleleButton(index)
-                    : null}
+                  {renderDeleleButton(index)}
                 </div>
                 {index === propertiesList.value.length - 1 ? null : (
                   <a-divider size={1} type="dashed" class="divider"></a-divider>
