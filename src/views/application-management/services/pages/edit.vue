@@ -285,7 +285,7 @@
             v-else
             :type="'primary'"
             class="cap-title"
-            @click="() => handleOk()"
+            @click="handleOkCallback"
             >{{ $t('common.button.saveDeploy') }}</a-button
           >
         </template>
@@ -313,7 +313,8 @@
     watch,
     reactive,
     PropType,
-    onMounted
+    onMounted,
+    nextTick
   } from 'vue';
   import { onBeforeRouteLeave } from 'vue-router';
   import GroupButtonMenu from '@/components/drop-button-group/group-button-menu.vue';
@@ -563,17 +564,21 @@
   };
 
   const handleCancel = async () => {
-    beforeLeaveCallback({
-      isCancel: true,
-      onOk: () => {
-        if (props.pgType !== 'page') {
-          emits('cancel');
-        } else {
-          copyFormData = cloneDeep(formData.value);
-          cancelCallback();
+    if (!_.isEqual(copyFormData, formData.value)) {
+      beforeLeaveCallback({
+        isCancel: true,
+        onOk: () => {
+          if (props.pgType !== 'page') {
+            emits('cancel');
+          } else {
+            copyFormData = cloneDeep(formData.value);
+            cancelCallback();
+          }
         }
-      }
-    });
+      });
+    } else {
+      cancelCallback();
+    }
   };
 
   const handleCreate = async (formData) => {
@@ -631,6 +636,11 @@
       scrollToView();
     }
   };
+  const handleOkCallback = () => {
+    setTimeout(() => {
+      handleOk();
+    }, 100);
+  };
   const handleAddSelector = (value) => {
     setTimeout(() => {
       if (value === 'deploy') {
@@ -681,9 +691,12 @@
 
     await init();
     setBreadCrumbList();
-    copyFormData = _.cloneDeep(formData.value);
+
     getLabelList();
     getEnvironmentConnectors();
+    setTimeout(() => {
+      copyFormData = _.cloneDeep(formData.value);
+    }, 100);
   };
 
   initData();
