@@ -14,6 +14,10 @@ export const isBasicType = (type) => {
   ].includes(type);
 };
 
+export const isEmptyvalue = (val) => {
+  return val === '' || val === null || val === undefined;
+};
+
 export const isSelect = (schema: FieldSchema) => {
   const { type, enum: enumList, items } = schema;
   if (items && type === FIELD_TYPE.ARRAY) {
@@ -25,6 +29,24 @@ export const isSelect = (schema: FieldSchema) => {
 export const isBoolean = (schema: FieldSchema) => {
   const { type } = schema;
   return type === FIELD_TYPE.BOOLEAN;
+};
+
+export const isSimpleObject = (schema: FieldSchema) => {
+  // value is any
+  const isAnyAdditionalProperties =
+    _.isBoolean(schema.additionalProperties) && schema.additionalProperties;
+
+  // value is string
+  const isMapString =
+    _.isObject(schema.additionalProperties) &&
+    schema.additionalProperties?.type === 'string';
+
+  // value is number
+  const isMapNumber =
+    _.isObject(schema.additionalProperties) &&
+    _.includes(['number', 'integer'], schema.additionalProperties?.type);
+
+  return isAnyAdditionalProperties || isMapString || isMapNumber;
 };
 
 export const isMuliSelect = (schema: FieldSchema) => {
@@ -62,6 +84,12 @@ export const getShowIfValue = (showif, formData, fieldPath?: string[]) => {
   );
   return isShow;
 };
+
+// has default value or required field
+export const isRequiredInitField = (schema: FieldSchema, required) => {
+  return schema.default || required || !isBasicType(schema.type);
+};
+
 export const initFieldDefaultValue = (item) => {
   if (item.default || item.default === 0 || item.default === false) {
     return item.default;
@@ -169,6 +197,7 @@ export const genObjectFieldProperties = ({
       name: key,
       fieldPath: [...fieldPath, key],
       required: property.required || [],
+      isRequired: _.includes(property.required || [], key),
       parentRequired: schema.required || [],
       colSpan: colSpanData.span,
       halfGrid: colSpanData.halfGrid,

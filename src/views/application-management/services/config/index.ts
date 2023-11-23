@@ -8,6 +8,7 @@ import { useUserStore } from '@/store';
 const userStore = useUserStore();
 export const ProvideServiceIDKey = Symbol('ProvideServiceIDKey');
 export const ProvideSetServiceInfoKey = Symbol('ProvideSetServiceInfoKey');
+export const ProvideServiceInfoKey = Symbol('ProvideServiceInfoKey');
 export const ServiceDataType = {
   service: 'service',
   resource: 'resource'
@@ -111,12 +112,12 @@ export const variableTypeList = [
 
 export const CreatActions = [
   {
-    label: 'menu.applicationManagement.services',
+    label: 'applications.applications.table.service',
     value: ServiceDataType.service,
     icon: 'icon-fuwu'
   },
   {
-    label: 'menu.applicationManagement.resource',
+    label: 'applications.applications.table.resource',
     value: ServiceDataType.resource,
     icon: 'icon-shengchenglujing-01'
   }

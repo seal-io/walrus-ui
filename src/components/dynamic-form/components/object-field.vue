@@ -12,7 +12,10 @@
     genObjectFieldProperties,
     initFieldDefaultValue,
     getCustomColSpan,
-    isBasicType
+    isBasicType,
+    isRequiredInitField,
+    isSelect,
+    isSimpleObject
   } from '../utils';
   import CommonButton from './common-button.vue';
 
@@ -60,15 +63,23 @@
         childProperties.value
       );
       // init field value
-      if (props.action === 'create') {
+      if (
+        props.action === 'create' &&
+        isRequiredInitField(
+          props.schema,
+          _.includes(props.requiredFields, props.schema.name)
+        )
+      ) {
         _.set(
           props.formData,
           props.fieldPath,
           initFieldDefaultValue(props.schema)
         );
         _.each(childProperties.value, (item) => {
-          if (!_.get(props.formData, item.fieldPath)) {
+          if (isRequiredInitField(item, item.isRequired)) {
             _.set(props.formData, item.fieldPath, initFieldDefaultValue(item));
+          } else {
+            _.unset(props.formData, item.fieldPath);
           }
         });
         handleChange(props.formData);

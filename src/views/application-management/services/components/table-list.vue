@@ -208,7 +208,8 @@
     serviceActionMap,
     CreatActions,
     ServiceDataType,
-    StartableStatus
+    StartableStatus,
+    ProvideServiceInfoKey
   } from '../config';
   import {
     queryServices,
@@ -274,7 +275,7 @@
   } = useViewLatestLogs();
 
   // logs
-  provide('currentServiceInfo', currentServiceInfo);
+  provide(ProvideServiceInfoKey, currentServiceInfo);
 
   let fetchToken: any = null;
   const showDeleteModal = ref(false);

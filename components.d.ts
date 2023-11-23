@@ -14,6 +14,7 @@ declare module 'vue' {
     ACard: typeof import('@arco-design/web-vue')['Card'];
     ACascader: typeof import('@arco-design/web-vue')['Cascader'];
     ACheckbox: typeof import('@arco-design/web-vue')['Checkbox'];
+    ACol: typeof import('@arco-design/web-vue')['Col'];
     AConfigProvider: typeof import('@arco-design/web-vue')['ConfigProvider'];
     ADatePicker: typeof import('@arco-design/web-vue')['DatePicker'];
     ADescriptions: typeof import('@arco-design/web-vue')['Descriptions'];
@@ -26,6 +27,7 @@ declare module 'vue' {
     AFormItem: typeof import('@arco-design/web-vue')['FormItem'];
     AGird: typeof import('@arco-design/web-vue')['Gird'];
     AGrid: typeof import('@arco-design/web-vue')['Grid'];
+    AGridIte: typeof import('@arco-design/web-vue')['GridIte'];
     AGridItem: typeof import('@arco-design/web-vue')['GridItem'];
     AInput: typeof import('@arco-design/web-vue')['Input'];
     AInputGroup: typeof import('@arco-design/web-vue')['InputGroup'];
@@ -49,6 +51,7 @@ declare module 'vue' {
     AProgress: typeof import('@arco-design/web-vue')['Progress'];
     ARangePicker: typeof import('@arco-design/web-vue')['RangePicker'];
     AResult: typeof import('@arco-design/web-vue')['Result'];
+    ARow: typeof import('@arco-design/web-vue')['Row'];
     ASelect: typeof import('@arco-design/web-vue')['Select'];
     ASpace: typeof import('@arco-design/web-vue')['Space'];
     ASpin: typeof import('@arco-design/web-vue')['Spin'];

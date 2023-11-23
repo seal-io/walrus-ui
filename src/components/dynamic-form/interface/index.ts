@@ -18,6 +18,7 @@ export interface FieldSchema {
   'enum'?: any[];
   'items'?: FieldSchema;
   'required'?: string[];
+  'isRequired'?: boolean;
   'parentRequired'?: string[];
   'halfGrid'?: boolean;
   'level': number;

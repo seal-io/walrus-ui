@@ -104,6 +104,12 @@
         return '';
       }
     },
+    label: {
+      type: String,
+      default() {
+        return '';
+      }
+    },
     lang: {
       type: String,
       default() {
