@@ -162,7 +162,13 @@
           });
           return;
         }
-
+        console.log(
+          'gotoproject=========',
+          pro,
+          item,
+          defaultProject,
+          projectID
+        );
         // has access permission to default project
         router.push({
           name: PROJECT.Detail,
@@ -230,6 +236,7 @@
         const query: any = item.meta?.query;
         const isReplace: any = item.meta?.replace;
         tabBarStore.clearTags();
+        console.log('project list', item, projectStore.projectList);
         if (item.name === PROJECT.List) {
           goToProject(item);
           return;

@@ -524,8 +524,9 @@
         from,
         onOk: () => {
           copyFormData = cloneDeep(formData.value);
+          console.log('name====', to, to.name);
           router.push({
-            name: to.name as string
+            path: to.path as string
           });
         }
       });

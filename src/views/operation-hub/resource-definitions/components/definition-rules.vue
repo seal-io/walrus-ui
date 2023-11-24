@@ -200,11 +200,11 @@
                 :style="{ width: `${InputWidth.LARGE}px` }"
               >
                 <a-option
-                  v-for="item in _.keys(EnvironmentTypeMap)"
-                  :key="item"
-                  :value="item"
-                  >{{ $t(EnvironmentTypeMap[item]) }}</a-option
-                >
+                  v-for="item in EnvironmentTypeList"
+                  :key="item.value"
+                  :value="item.value"
+                  :label="$t(item.label)"
+                ></a-option>
               </seal-select>
               <a-button
                 type="text"
@@ -444,6 +444,7 @@
     PageAction,
     InputWidth,
     EnvironmentTypeMap,
+    EnvironmentTypeList,
     InjectShowInputHintKey,
     InjectSchemaFormStatusKey
   } from '@/views/config';

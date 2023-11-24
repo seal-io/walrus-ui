@@ -191,6 +191,20 @@ export const EnvironmentTypeMap = {
   staging: 'common.environment.staging'
 };
 
+export const EnvironmentTypeList = [
+  {
+    label: 'common.environment.development',
+    value: 'development'
+  },
+  {
+    label: 'common.environment.staging',
+    value: 'staging'
+  },
+  {
+    label: 'common.environment.production',
+    value: 'production'
+  }
+];
 export const EnvironmentTypeOrder = {
   development: 1,
   production: 3,
