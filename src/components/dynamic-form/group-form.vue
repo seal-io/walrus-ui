@@ -140,6 +140,27 @@
 
     return valid;
   };
+
+  const getHiddenFormData = () => {
+    const list = _.filter(formGroup.value, (item) => {
+      return _.get(item, ['schema', 'properties', 'x-walrus-ui', 'hidden']);
+    });
+    const result = _.reduce(
+      list,
+      (prev, next) => {
+        return {
+          ...prev,
+          ...next?.schema?.properties
+        };
+      },
+      {}
+    );
+    const data = genFieldMap({
+      type: FIELD_TYPE.OBJECT,
+      properties: result
+    });
+    console.log('data===9999===', list, data);
+  };
   defineExpose({
     validate
   });
@@ -162,9 +183,10 @@
         destroyed.value = false;
         formGroup.value = createFormGroup(props.schema);
         activeKey.value = formGroup.value[0]?.group;
-
+        // getHiddenFormData();
         console.log(
           'formGroup===9999===',
+
           formGroup.value,
           props.action,
           props.formData
