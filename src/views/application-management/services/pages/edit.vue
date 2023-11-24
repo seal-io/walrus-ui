@@ -606,7 +606,7 @@
     if (!res && !groupres && !validateTrigger.value) {
       try {
         submitLoading.value = true;
-        if (!formData.value.template.project?.id) {
+        if (!formData.value.template?.project?.id) {
           formData.value.template = _.omit(formData.value.template, 'project');
         }
         if (dataType === ServiceDataType.service) {

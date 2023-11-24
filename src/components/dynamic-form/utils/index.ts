@@ -176,10 +176,27 @@ export const genObjectFieldProperties = ({
   if (!_.keys(schema?.properties).length) {
     return [];
   }
-  const { properties } = schema;
-  // const { required: requiredFlag } = schema;
-  const resultList: FieldSchema[] = [];
+  const { properties, items } = schema;
   const defaultOrder = 9999;
+
+  if (items) {
+    const colSpanData = calcFieldSpan({
+      parentSpan,
+      colSpan: items['x-walrus-ui']?.colSpan,
+      parentHalfGrid: isHalfGrid(schema)
+    });
+    const order = items['x-walrus-ui']?.order || defaultOrder;
+    const fieldSchema = {
+      ...items,
+      fieldPath: [...fieldPath],
+      parentRequired: schema.required || [],
+      level,
+      order
+    };
+    return [fieldSchema];
+  }
+
+  const resultList: FieldSchema[] = [];
   const keys = _.keys(properties);
 
   _.each(keys, (key) => {

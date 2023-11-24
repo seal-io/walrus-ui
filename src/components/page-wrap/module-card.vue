@@ -1,34 +1,58 @@
-<template>
-  <div class="module-card-wrap">
-    <div class="title" :class="{ iconed: showIcon }" :style="{ ...titleStyle }">
-      <!-- <icon-tag v-if="showIcon" /> -->
-      <slot name="title"
-        ><span>{{ title }}</span></slot
-      >
-    </div>
-    <slot></slot>
-  </div>
-</template>
+<script lang="tsx">
+  import { defineComponent } from 'vue';
 
-<script lang="ts" setup>
-  defineProps({
-    title: {
-      type: String,
-      default() {
-        return '';
+  export default defineComponent({
+    name: 'ModuleCard',
+    props: {
+      title: {
+        type: String,
+        default() {
+          return '';
+        }
+      },
+      showIcon: {
+        type: Boolean,
+        default() {
+          return true;
+        }
+      },
+      icon: {
+        type: String,
+        default() {
+          return '';
+        }
+      },
+      titleStyle: {
+        type: Object,
+        default() {
+          return {};
+        }
       }
     },
-    showIcon: {
-      type: Boolean,
-      default() {
-        return true;
-      }
-    },
-    titleStyle: {
-      type: Object,
-      default() {
-        return {};
-      }
+    setup(props, { slots }) {
+      return () => (
+        <div class="module-card-wrap">
+          <div
+            class={[
+              'title',
+              {
+                iconed: props.showIcon
+              }
+            ]}
+            style={{
+              ...props.titleStyle
+            }}
+          >
+            {/* {props.icon ? (
+              <i class={['iconfont size-16 m-r-5', props.icon]}></i>
+            ) : (
+              slots.icon?.()
+            )} */}
+            {props.title}
+          </div>
+          {slots.default?.()}
+        </div>
+      );
     }
   });
 </script>
@@ -44,6 +68,10 @@
       color: var(--color-text-2);
       font-weight: 500;
       font-size: 16px;
+
+      .iconfont {
+        color: var(--color-text-2);
+      }
 
       &.iconed {
         margin-top: 30px;

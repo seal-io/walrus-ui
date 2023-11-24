@@ -136,7 +136,7 @@
               :max-length="100"
               show-word-limit
               style="width: 100%"
-              :auto-size="{ minRows: 4, maxRows: 5 }"
+              :auto-size="{ minRows: 4, maxRows: 6 }"
             ></seal-textarea>
           </a-form-item>
           <a-form-item

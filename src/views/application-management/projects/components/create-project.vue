@@ -56,7 +56,7 @@
         <a-form-item :label="$t(`applications.projects.form.label`)" hide-label>
           <SealFormItemWrap
             :label="$t(`applications.projects.form.label`)"
-            style="width: 100%"
+            style="width: 100%; text-align: left"
           >
             <a-space
               v-if="labelList.length"
@@ -80,11 +80,9 @@
               ></xInputGroup>
             </a-space>
             <template v-else>
-              <thumbButton
-                :size="24"
-                font-size="14px"
-                @click="handleAddLabel(labelItem, labelList)"
-              ></thumbButton>
+              <a-link class="p-0" @click="handleAddLabel(labelItem, labelList)">
+                <icon-plus-circle-fill :size="24" font-size="14px" />
+              </a-link>
             </template>
           </SealFormItemWrap>
         </a-form-item>

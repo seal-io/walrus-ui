@@ -106,7 +106,7 @@
             :style="{ width: `${InputWidth.LARGE}px` }"
             :max-length="200"
             show-word-limit
-            :auto-size="{ minRows: 6, maxRows: 10 }"
+            :auto-size="{ minRows: 4, maxRows: 6 }"
           ></seal-textarea>
           <div v-else class="description-content readonly-view-label">{{
             formData.description || '-'
@@ -155,11 +155,9 @@
               ></xInputGroup>
             </a-space>
             <template v-else>
-              <thumbButton
-                :size="24"
-                font-size="14px"
-                @click="handleAddLabel(labelItem, labelList)"
-              ></thumbButton>
+              <a-link class="p-0" @click="handleAddLabel(labelItem, labelList)">
+                <icon-plus-circle-fill :size="24" font-size="14px" />
+              </a-link>
             </template>
           </SealFormItemWrap>
           <div v-else class="readonly-view-label">
