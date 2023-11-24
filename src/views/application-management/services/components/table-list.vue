@@ -152,12 +152,12 @@
       :project-i-d="projectID"
       :title="rollbackTitle"
     ></rollbackModal>
-    <!-- <deleteServiceModal
+    <deleteServiceModal
       v-model:show="showDeleteModal"
       :callback="handleDeleteConfirm"
       :title="$t('common.delete.tips')"
     >
-    </deleteServiceModal> -->
+    </deleteServiceModal>
     <revisionDetail
       v-model:show="showDetailModal"
       :data-info="revisionData"
@@ -307,7 +307,6 @@
   };
   const setActionList = (row) => {
     const list = _.filter(serviceActions, (item) => {
-      if (item.value === 'delete') return false;
       return item.filterFun ? item.filterFun(row) : true;
     });
     const res = _.map(list, (o) => {
@@ -482,8 +481,11 @@
     });
   };
 
-  const handleDelete = () => {
-    showDeleteModal.value = true;
+  const handleDelete = (row) => {
+    selectedKeys.value = [row.id];
+    setTimeout(() => {
+      showDeleteModal.value = true;
+    }, 100);
   };
   const handleRefreshServiceConfig = async (row) => {
     try {
@@ -509,6 +511,7 @@
     actionHandlerMap.set(serviceActionMap.logs, handleViewServiceLatestLogs);
     actionHandlerMap.set(serviceActionMap.stop, handleStopResource);
     actionHandlerMap.set(serviceActionMap.start, handleStartResource);
+    actionHandlerMap.set(serviceActionMap.delete, handleDelete);
   };
   const init = async () => {
     userStore.setInfo({ currentProject: projectID });
@@ -576,7 +579,7 @@
         url: `${SERVICE_API_PREFIX()}${SERVICE_API}`,
         params: {
           extract: ['-attributes', '-description'],
-          isService: props.type === 'service'
+          isService: props.type === ServiceDataType.service
         },
         handler: updateHandler,
         beforeReconnect: fetchData

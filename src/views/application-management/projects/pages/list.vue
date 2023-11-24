@@ -60,7 +60,7 @@
               type="primary"
               status="warning"
               :disabled="!selectedKeys.length"
-              @click="handleDelete"
+              @click="() => handleDelete()"
               >{{ $t('common.button.delete')
               }}<span v-if="selectedKeys.length">{{
                 `(${selectedKeys.length})`
@@ -147,7 +147,7 @@
               :cell-style="{ minWidth: '40px' }"
             >
               <template #cell="{ record }">
-                <a-space :size="16">
+                <!-- <a-space :size="16">
                   <a-tooltip :content="$t('common.button.edit')">
                     <a-link
                       v-permission-app="{
@@ -162,7 +162,16 @@
                       <template #icon><icon-edit class="size-16" /></template>
                     </a-link>
                   </a-tooltip>
-                </a-space>
+                </a-space> -->
+                <DropButtonGroup
+                  :layout="
+                    setActionList(record).length === 1
+                      ? 'horizontal'
+                      : 'vertical'
+                  "
+                  :actions="setActionList(record)"
+                  @select="(value) => handleClickAction(value, record)"
+                ></DropButtonGroup>
               </template>
             </a-table-column>
           </template>
@@ -197,6 +206,7 @@
   import { ref, reactive } from 'vue';
   import dayjs from 'dayjs';
   import { useUserStore, useProjectStore, useAppStore } from '@/store';
+  import DropButtonGroup from '@/components/drop-button-group/index.vue';
   import HeaderInfo from '@/components/header-info/index.vue';
   import useCallCommon from '@/hooks/use-call-common';
   import FilterBox from '@/components/filter-box/index.vue';
@@ -206,6 +216,7 @@
   import CreateProjectModal from '../components/create-project.vue';
   import { ProjectRowData } from '../config/interface';
   import { queryProjects, deleteProjects } from '../api';
+  import { actionList } from '../config';
 
   let timer: any = null;
   const appStore = useAppStore();
@@ -230,6 +241,20 @@
     page: 1,
     perPage: appStore.perPage || 10
   });
+
+  const setActionList = (row) => {
+    const list = _.filter(actionList, (item) => {
+      return item.filterFun ? item.filterFun({ row }) : true;
+    });
+    const res = _.map(list, (o) => {
+      const item = _.cloneDeep(o);
+      item.disabled = _.isFunction(item.disabled)
+        ? item.disabled?.({ row })
+        : item.disabled;
+      return item;
+    });
+    return res;
+  };
   const handleCreate = () => {
     action.value = 'create';
     projectInfo.value = {};
@@ -267,7 +292,16 @@
         sort: [sort.value]
       };
       const { data } = await queryProjects(params);
-      dataList.value = data?.items || [];
+      dataList.value = _.map(data?.items || [], (item) => {
+        return {
+          ...item,
+          disabled: !userStore.hasProjectResourceActions({
+            projectID: item.id,
+            resource: Resources.Projects,
+            actions: [Actions.DELETE]
+          })
+        };
+      });
       total.value = data?.pagination?.total || 0;
       loading.value = false;
     } catch (error) {
@@ -318,10 +352,10 @@
       });
     }
   };
-  const handleDeleteConfirm = async () => {
+  const handleDeleteConfirm = async (delList?: string[]) => {
     try {
       loading.value = true;
-      const ids = map(selectedKeys.value, (val) => {
+      const ids = map(delList || selectedKeys.value, (val) => {
         return {
           id: val as string
         };
@@ -338,8 +372,18 @@
       loading.value = false;
     }
   };
-  const handleDelete = async () => {
-    deleteModal({ onOk: handleDeleteConfirm });
+  const handleDelete = async (ids?: string[]) => {
+    deleteModal({ onOk: () => handleDeleteConfirm(ids) });
+  };
+
+  const handleClickAction = (value, row) => {
+    if (value === 'edit') {
+      handleEditProject(row);
+      return;
+    }
+    if (value === 'delete') {
+      handleDelete([row.id]);
+    }
   };
   fetchData();
 </script>

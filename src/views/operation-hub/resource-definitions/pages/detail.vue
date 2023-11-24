@@ -109,7 +109,7 @@
               v-model="formData.description"
               :label="$t('operation.environments.table.description')"
               :style="{ width: `${InputWidth.LARGE}px` }"
-              :auto-size="{ minRows: 6, maxRows: 10 }"
+              :auto-size="{ minRows: 4, maxRows: 6 }"
               :max-length="200"
               show-word-limit
             ></seal-textarea>

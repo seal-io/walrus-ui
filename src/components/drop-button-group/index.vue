@@ -163,18 +163,21 @@
           ></ADropdownButton>
         );
       };
-      return () => (
-        <>
-          {layout.value === 'vertical' ? (
-            renderVertical()
-          ) : (
-            <ButtonList
-              actions={actions.value}
-              onSelect={(val) => handleSelect(val)}
-            ></ButtonList>
-          )}
-        </>
-      );
+      const renderContent = () => {
+        return (
+          <>
+            {layout.value === 'vertical' ? (
+              renderVertical()
+            ) : (
+              <ButtonList
+                actions={actions.value}
+                onSelect={(val) => handleSelect(val)}
+              ></ButtonList>
+            )}
+          </>
+        );
+      };
+      return () => <>{!actions.value.length ? null : renderContent()}</>;
     }
   });
 </script>

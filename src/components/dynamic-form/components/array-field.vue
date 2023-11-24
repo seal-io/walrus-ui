@@ -68,7 +68,7 @@
           getCustomColSpan(items) ||
           props.parentSpan
       });
-
+      console.log('itemsProperties========', itemsProperties);
       const setPropertiesList = () => {
         const newProperties = _.cloneDeep(itemsProperties);
         propertiesList.value = [

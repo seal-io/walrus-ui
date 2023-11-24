@@ -320,6 +320,12 @@
         return false;
       }
     },
+    showCheckbox: {
+      type: Boolean,
+      default() {
+        return false;
+      }
+    },
     showPassword: {
       type: Boolean,
       default() {

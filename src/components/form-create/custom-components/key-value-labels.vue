@@ -103,6 +103,7 @@
                       label-list={labelList.value}
                       position={sIndex}
                       always-delete={true}
+                      showCheckbox={props.showCheckbox}
                       should-key={true}
                       formId={props.editorId}
                       onAdd={(obj) => handleAddLabel(obj, labelList.value)}

@@ -54,16 +54,15 @@
           data-index="overwritable"
           :title="$t('common.table.operation')"
         >
-          <template #cell="{ record, recordIndex }">
+          <template #cell="{ record, rowIndex }">
             <a-space>
               <a-tooltip :content="$t('common.button.edit')">
-                <a-link
-                  @click="handleEdit({ row: record, rowIndex: recordIndex })"
+                <a-link @click="() => handleEdit({ row: record, rowIndex })"
                   ><icon-edit
                 /></a-link>
               </a-tooltip>
               <a-tooltip :content="$t('common.button.delete')">
-                <a-link status="danger" @click="handleDelete(recordIndex)"
+                <a-link status="danger" @click="() => handleDelete(rowIndex)"
                   ><icon-delete
                 /></a-link>
               </a-tooltip>

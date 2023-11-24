@@ -1,7 +1,9 @@
 import dayjs from 'dayjs';
-import { ProjectTabs } from '@/views/config';
-import { Resources } from '@/permissions/config';
+import { useUserStore } from '@/store';
+import { ProjectTabs, CommonButtonValue } from '@/views/config';
+import { Resources, Actions } from '@/permissions/config';
 
+const userStore = useUserStore();
 export enum ProjectRoles {
   Owner = 'project/owner',
   Member = 'project/member',
@@ -75,6 +77,42 @@ export const projectDetailTabs = [
     value: ProjectTabs.WORKFLOW,
     resource: Resources.ProjectSubjects,
     component: 'workflow'
+  }
+];
+
+export const actionList: MoreAction[] = [
+  {
+    label: 'common.button.edit',
+    value: CommonButtonValue.Edit,
+    icon: 'icon-edit',
+    handler: '',
+    status: 'normal',
+    disabled: false,
+    filterFun({ row }) {
+      return userStore.hasProjectResourceActions({
+        projectID: row.id,
+        resource: Resources.Projects,
+        actions: [Actions.PUT]
+      });
+    }
+  },
+  {
+    label: 'common.button.delete',
+    value: CommonButtonValue.Delete,
+    icon: 'icon-delete',
+    handler: '',
+    status: 'danger',
+    style: {
+      fontSize: '12px'
+    },
+    filterFun({ row }) {
+      return userStore.hasProjectResourceActions({
+        projectID: row.id,
+        environmentID: row.id,
+        resource: Resources.Projects,
+        actions: [Actions.DELETE]
+      });
+    }
   }
 ];
 export default {};

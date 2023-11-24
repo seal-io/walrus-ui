@@ -47,6 +47,7 @@
         <ComCard>
           <ModuleCard
             :title="$t('common.title.basicInfo')"
+            icon="icon-jibenxinxi"
             :title-style="{ 'margin-bottom': '10px', 'margin-top': 0 }"
           >
             <BasicInfo
@@ -58,6 +59,7 @@
         <ComCard>
           <ModuleCard
             :title="$t('common.title.config')"
+            icon="icon-peizhixinxi"
             :title-style="{ 'margin-bottom': '10px', 'margin-top': 0 }"
           >
             <moduleWrapper
@@ -102,17 +104,20 @@
         <ComCard>
           <ModuleCard
             :title="$t('applications.applications.instance.history')"
+            icon="icon-lishibanben"
             :title-style="{ 'margin-top': 0 }"
           >
             <serviceRevisions></serviceRevisions>
           </ModuleCard>
           <ModuleCard
+            icon="icon-URLguanli"
             :title="$t('applications.applications.instance.accessUrl')"
           >
             <tabEndpoint ref="tabEndpointCom"></tabEndpoint>
           </ModuleCard>
 
           <ModuleCard
+            icon="icon-kaifazujian"
             :title="$t('applications.applications.instance.resource')"
             :title-style="{ 'margin-bottom': '10px' }"
           >
