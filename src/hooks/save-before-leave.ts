@@ -36,7 +36,9 @@ export const beforeLeaveCallback = async ({
           : i18n.global.t('common.tips.save')
       );
     },
-    onOk
+    onOk: () => {
+      onOk();
+    }
   });
 };
 

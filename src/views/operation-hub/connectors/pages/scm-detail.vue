@@ -368,7 +368,7 @@
         onOk: () => {
           copyFormData = cloneDeep(formData);
           router.push({
-            name: to.name as string
+            path: to.path as string
           });
         }
       });
