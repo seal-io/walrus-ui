@@ -739,11 +739,12 @@
     const hiddenFormData = groupForm.value?.getHiddenData?.();
     validateTrigger.value = true;
     if (!res) {
-      formData.value.attributes = {
-        ...formData.value.attributes,
+      const resultData = _.cloneDeep(formData.value);
+      resultData.attributes = {
+        ...resultData.attributes,
         ...hiddenFormData
       };
-      return formData.value;
+      return resultData;
     }
     scrollToView();
     return false;

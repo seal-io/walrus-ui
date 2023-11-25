@@ -593,8 +593,8 @@
   };
 
   const handleCreate = async (formData) => {
-    const { data } = await createService(formData.value);
-    if (formData.value.draft) {
+    const { data } = await createService(formData);
+    if (formData.draft) {
       router.back();
       return;
     }
@@ -618,10 +618,6 @@
     if (!res && !groupres && !validateTrigger.value) {
       try {
         submitLoading.value = true;
-        formData.value.attributes = {
-          ...formData.value.attributes,
-          ...hiddenFormData
-        };
         if (!formData.value.template?.project?.id) {
           formData.value.template = _.omit(formData.value.template, 'project');
         }
@@ -633,10 +629,15 @@
           formData.value.template = null as any;
         }
         copyFormData = _.cloneDeep(formData.value);
+        const data = _.cloneDeep(formData.value);
+        data.attributes = {
+          ...data.attributes,
+          ...hiddenFormData
+        };
         if (id) {
-          await upgradeApplicationInstance(formData.value);
+          await upgradeApplicationInstance(data);
         } else {
-          await handleCreate(formData);
+          await handleCreate(data);
           return;
         }
         if (props.pgType !== 'page') {
