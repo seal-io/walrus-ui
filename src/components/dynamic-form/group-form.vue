@@ -100,8 +100,8 @@
   };
 
   const handleUnsetField = () => {
-    const fieldList = genFieldMap(props.schema);
-    _.each(fieldList, (item) => {
+    const fieldList = genFieldMap(_.cloneDeep(props.schema));
+    _.each(fieldList.resultList, (item) => {
       if (
         isEmptyvalue(_.get(props.formData, item.fieldPath)) &&
         !item.default &&
@@ -136,7 +136,6 @@
       valid = errorList.length;
       validResult.value = errorList;
     }
-    console.log('valid===9999===', validResult.value);
     if (!valid) {
       handleUnsetField();
     }
