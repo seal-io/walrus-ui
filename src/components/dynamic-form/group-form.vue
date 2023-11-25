@@ -41,11 +41,15 @@
 
 <script lang="ts" setup>
   import _, { clone } from 'lodash';
-  import { PropType, watch, ref, nextTick } from 'vue';
+  import { PropType, watch, ref, nextTick, toRaw } from 'vue';
   import SingleForm from './single-form.vue';
   import { FieldSchema, FormGroup } from './interface';
   import { createFormGroup } from './utils/create-form-group';
-  import { genFieldMap } from './utils/flatten-schema';
+  import {
+    genFieldMap,
+    flattenSchema,
+    genHiddenFieldData
+  } from './utils/flatten-schema';
   import FIELD_TYPE from './config/field-type';
   import { isEmptyvalue, isBasicType } from './utils';
 
@@ -77,6 +81,7 @@
   const rootFormData = ref({});
   const destroyed = ref<boolean>(false);
   const formGroup = ref<FormGroup[]>([]);
+  const hiddenFormData = ref<any>({});
   const validResult = ref<any>([]);
 
   const setRefMap = (el: any, name) => {
@@ -88,7 +93,6 @@
   const handleChange = (data) => {
     emits('update:formData', data);
     emits('change', data);
-    console.log('data===99999===', props.formData);
   };
 
   const handleTabChange = (key) => {
@@ -110,7 +114,6 @@
   const validate = async () => {
     let valid: any = null;
     validResult.value = [];
-    console.log('schema==9999=========', props.schema);
     if (formGroup.value.length === 1) {
       const res = await schemaForm.value?.validate?.();
       valid = res;
@@ -141,28 +144,38 @@
     return valid;
   };
 
-  const getHiddenFormData = () => {
-    const list = _.filter(formGroup.value, (item) => {
-      return _.get(item, ['schema', 'properties', 'x-walrus-ui', 'hidden']);
+  const getHiddenFormData = (groups: FormGroup[]) => {
+    const result = {};
+    const list = _.filter(groups, (item) => {
+      return item.hidden;
     });
-    const result = _.reduce(
-      list,
-      (prev, next) => {
-        return {
-          ...prev,
-          ...next?.schema?.properties
-        };
-      },
-      {}
-    );
-    const data = genFieldMap({
-      type: FIELD_TYPE.OBJECT,
-      properties: result
+    _.each(list, (item) => {
+      genHiddenFieldData(toRaw(item.schema), result);
     });
-    console.log('data===9999===', list, data);
+    hiddenFormData.value = result;
+    console.log('data===9999===', list, result);
+  };
+
+  const getHiddenData = () => {
+    return hiddenFormData.value;
+  };
+
+  const setFormGroupHidden = (groups: FormGroup[]) => {
+    const list = _.map(groups, (item) => {
+      const properties = _.get(item, 'schema.properties') || {};
+      const shownFields = _.filter(_.keys(properties), (key) => {
+        return !_.get(properties, [key, 'x-walrus-ui', 'hidden']);
+      });
+      return {
+        ...item,
+        hidden: !shownFields.length
+      };
+    });
+    return list;
   };
   defineExpose({
-    validate
+    validate,
+    getHiddenData
   });
   watch(
     () => props.formData,
@@ -177,13 +190,20 @@
   watch(
     () => props.schema,
     () => {
+      hiddenFormData.value = {};
       formGroup.value = [];
       destroyed.value = true;
       nextTick(() => {
         destroyed.value = false;
-        formGroup.value = createFormGroup(props.schema);
+        const groups = createFormGroup(props.schema);
+        const allGroups = setFormGroupHidden(groups);
+        formGroup.value = _.filter(allGroups, (item) => {
+          return !item.hidden;
+        });
         activeKey.value = formGroup.value[0]?.group;
-        // getHiddenFormData();
+
+        getHiddenFormData(allGroups);
+
         console.log(
           'formGroup===9999===',
 

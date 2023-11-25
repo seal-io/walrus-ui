@@ -89,7 +89,7 @@
                   }
                   callback(i18n.global.t('common.rule.object.key'));
                 },
-                messages: i18n.global.t('common.rule.object.key')
+                message: i18n.global.t('common.rule.object.key')
               }
             ]}
           >

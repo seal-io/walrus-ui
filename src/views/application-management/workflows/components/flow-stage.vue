@@ -100,7 +100,9 @@
         } else {
           stepList.value.splice(activeIndex.value, 1, _.cloneDeep(data));
         }
-        show.value = false;
+        setTimeout(() => {
+          show.value = false;
+        }, 100);
       };
       const handleInsertNext = (index) => {};
 

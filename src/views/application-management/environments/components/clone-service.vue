@@ -301,7 +301,7 @@
   const show = ref(true);
   const activeServiceInfo = ref<any>({});
   const hasChange = ref(false);
-  let copyFormData: any = null;
+
   provide(InjectShowInputHintKey, true);
   provide(InjectCompleteDataKey, completeData);
 
@@ -313,30 +313,7 @@
     }
   };
 
-  const checkFormDataHasChange = async () => {
-    const moduleFormList = await groupForm.value.getData();
-    copyFormData.attributes = {
-      ..._.reduce(
-        moduleFormList,
-        (obj, s) => {
-          obj = _.merge(obj, s.formData.value);
-          return obj;
-        },
-        {}
-      )
-    };
-    return !_.isEqual(copyFormData, formData.value);
-  };
   const handleClickInstance = async (data) => {
-    if (active.value === data.id && show.value) {
-      return;
-    }
-    if (show.value && active.value) {
-      hasChange.value = await checkFormDataHasChange();
-    }
-    if (hasChange.value) {
-      return;
-    }
     data.attributes = data.attributes || {};
     active.value = data.id;
     show.value = true;
@@ -345,7 +322,6 @@
     await setFormAttributes();
 
     getLabelList();
-    copyFormData = _.cloneDeep(formData.value);
   };
   const handleCheckChange = (checked, item) => {
     if (checked) {
@@ -393,8 +369,12 @@
     validateLabel();
     const res = await formref.value?.validate();
     const groupFormRes = await groupForm.value?.validate();
+    const hiddenFormData = groupForm.value?.getHiddenData();
     if (!groupFormRes && !res && !validateTrigger.value) {
-      console.log('formData.value===', formData.value);
+      formData.value.attributes = {
+        ...formData.value.attributes,
+        ...hiddenFormData
+      };
       show.value = false;
       updateActiveServiceData();
       hasChange.value = false;

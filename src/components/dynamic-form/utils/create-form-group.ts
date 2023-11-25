@@ -51,6 +51,7 @@ export const createFormGroup = (rootSchema: FieldSchema) => {
     formGroup.push({
       group: key,
       groupOrder: groupOrder[key],
+      hidden: group[key]['hidden'],
       schema: {
         ...rest,
 

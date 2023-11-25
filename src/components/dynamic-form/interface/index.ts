@@ -40,6 +40,7 @@ export interface Group {
 
 export interface FormGroup {
   group: string;
+  hidden: boolean;
   groupOrder: number;
   schema: FieldSchema;
 }
