@@ -61,6 +61,7 @@
   } from 'vue';
   import ace, { Range } from 'ace-builds';
   import 'ace-builds/src-noconflict/ext-language_tools';
+  import 'ace-builds/src-noconflict/ext-searchbox';
   import 'ace-builds/src-noconflict/theme-monokai';
   import 'ace-builds/src-noconflict/mode-javascript';
   import 'ace-builds/src-noconflict/mode-text';

@@ -178,7 +178,7 @@
   const tooltipConfig = {
     ignoreAttributes: true,
     placement: 'top-end',
-    maxWidth: 240,
+    maxWidth: 300,
     maxHeight: 150,
     arrow: true,
     interactive: false,
@@ -330,7 +330,7 @@
   const options: TextcompleteOption = {
     dropdown: {
       className: `autocomplete-dropdown-list ${props.editorId}`,
-      maxCount: 10,
+      maxCount: 999,
       item: {
         className: 'complete-item',
         activeClassName: 'complete-item-active'
@@ -542,7 +542,7 @@
   .autocomplete-dropdown-list {
     z-index: 9999 !important;
     box-sizing: border-box;
-    min-width: 120px;
+    min-width: 180px;
     max-height: 160px;
     margin: 0;
     padding: 4px 0;

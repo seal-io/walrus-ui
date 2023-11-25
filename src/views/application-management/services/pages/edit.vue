@@ -454,7 +454,7 @@
     const labels = _.get(formData.value, 'labels', {});
     const keys = _.keys(labels);
     return _.some(keys, (key) => {
-      return !_.trim(key) || !_.trim(labels[key]);
+      return !_.trim(key);
     });
   };
 

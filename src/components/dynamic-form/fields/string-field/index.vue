@@ -37,6 +37,7 @@
           >
             <BasicField
               {...fieldProps}
+              readonly={fieldProps.readonly}
               required={fieldProps.required}
               formData={props.formData}
               fieldPath={props.fieldPath}

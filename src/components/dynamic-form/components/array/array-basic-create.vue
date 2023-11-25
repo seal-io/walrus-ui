@@ -3,14 +3,14 @@
   import { defineComponent, toRefs, inject, ref, watch } from 'vue';
   import { InjectSchemaFormStatusKey, PageAction } from '@/views/config';
   import SealFormItemWrap from '@/components/seal-form/components/seal-form-item-wrap.vue';
-  import schemaFieldProps from '../fields/schema-field-props';
+  import schemaFieldProps from '../../fields/schema-field-props';
   import {
     BasicFieldMaps,
     CommonFieldMaps,
     FormatsFieldMaps,
     isAllowCreateNumberSelect,
     isAllowCreateSelect
-  } from '../fields/field-map';
+  } from '../../fields/field-map';
   import {
     isSelect,
     isNumber,
@@ -22,9 +22,9 @@
     initFieldDefaultValue,
     isRequiredInitField,
     isEmptyvalue
-  } from '../utils';
-  import { Option } from '../interface';
-  import { ProviderFormRefKey } from '../config';
+  } from '../../utils';
+  import { Option } from '../../interface';
+  import { ProviderFormRefKey } from '../../config';
 
   export default defineComponent({
     props: {
@@ -175,11 +175,6 @@
               label={props.label}
               style="width: 100%"
               allow-search={false}
-              readonly={
-                props.readonly ||
-                (attrs.immutable &&
-                  schemaFormStatus.value !== PageAction.CREATE)
-              }
               allow-clear={!props.schema.enum}
               editor-id={_.join(props.fieldPath, '-')}
               popupInfo={props.schema.description}
@@ -233,11 +228,7 @@
                     size="small"
                   ></a-checkbox>
                 ) : (
-                  <span>
-                    {isPassword(props.schema) || props.schema.writeOnly
-                      ? '******'
-                      : _.get(props.formData, props.fieldPath)}
-                  </span>
+                  <span>{_.get(props.formData, props.fieldPath)}</span>
                 )}
               </SealFormItemWrap>
             </a-form-item>

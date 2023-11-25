@@ -65,7 +65,7 @@
         const labels = _.get(props.formData, props.fieldPath);
         const keys = _.keys(labels);
         return _.some(keys, (key) => {
-          return !_.trim(key) || !_.trim(labels[key]);
+          return !_.trim(key);
         });
       };
 
@@ -105,7 +105,10 @@
                 showCheckbox={isMapBoolean}
                 labels={props.formData}
                 labelsKey={_.join(props.fieldPath, '.')}
-                readonly={PageAction.VIEW === schemaFormStatus.value}
+                readonly={
+                  PageAction.VIEW === schemaFormStatus.value ||
+                  fieldProps.readonly
+                }
                 onUpdate:value={(val) => {
                   _.set(props.formData, props.fieldPath, val);
                   handleChange(props.formData);
