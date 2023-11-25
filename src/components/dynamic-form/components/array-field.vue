@@ -17,7 +17,9 @@
     genObjectFieldProperties,
     initFieldDefaultValue,
     getCustomColSpan,
-    isRequiredInitField
+    isRequiredInitField,
+    calcFieldSpan,
+    isHalfGrid
   } from '../utils';
   import CommonButton from './common-button.vue';
 
@@ -30,7 +32,7 @@
         ref(PageAction.CREATE)
       );
       const activeItemIndex = ref(-1);
-      const items = props.schema.items || [];
+      const items = props.schema.items || ({} as FieldSchema);
       const minItems = props.schema.minItems || 0;
       let itemsProperties: FieldSchema[] = [];
       const propertiesList = ref<FieldSchema[][]>([]);
@@ -55,20 +57,82 @@
         handleChange(props.formData);
       }
 
-      itemsProperties = genObjectFieldProperties({
-        schema: props.schema.items as FieldSchema,
-        level: props.schema.level + 1,
-        grandParentHalfGrid: getCustomColSpan(items)
-          ? false
-          : props.schema.halfGrid,
-        formData: props.formData,
-        fieldPath: props.fieldPath,
-        parentSpan:
-          getCustomColSpan(props.schema) ||
-          getCustomColSpan(items) ||
-          props.parentSpan
-      });
-      console.log('itemsProperties========', itemsProperties);
+      const genItemsProperties = () => {
+        // items
+        if (items?.items) {
+          itemsProperties = [
+            {
+              ...props.schema.items,
+              fieldPath: [...props.fieldPath],
+              grandParentHalfGrid: getCustomColSpan(items?.items)
+                ? false
+                : props.schema.halfGrid,
+              parentSpan:
+                getCustomColSpan(props.schema?.items) ||
+                getCustomColSpan(items?.items) ||
+                props.parentSpan,
+              level: props.schema.level + 1,
+              halfGrid: getCustomColSpan(items?.items)
+                ? false
+                : props.schema.halfGrid
+            }
+          ] as FieldSchema[];
+        } else if (items?.properties) {
+          itemsProperties = genObjectFieldProperties({
+            schema: props.schema.items as FieldSchema,
+            level: props.schema.level + 1,
+            grandParentHalfGrid: getCustomColSpan(items)
+              ? false
+              : props.schema.halfGrid,
+            formData: props.formData,
+            fieldPath: props.fieldPath,
+            parentSpan:
+              getCustomColSpan(props.schema) ||
+              getCustomColSpan(items) ||
+              props.parentSpan
+          });
+        } else if (items?.additionalProperties) {
+          // items.addtionalProperties
+          itemsProperties = [
+            {
+              ...props.schema.items,
+              fieldPath: [...props.fieldPath],
+              parentSpan:
+                getCustomColSpan(props.schema.items) ||
+                getCustomColSpan(items?.additionalProperties) ||
+                props.parentSpan,
+              level: props.schema.level + 1,
+              halfGrid: getCustomColSpan(items?.additionalProperties)
+                ? false
+                : props.schema.halfGrid
+            }
+          ] as FieldSchema[];
+        }
+      };
+
+      const setPropertiesListFieldPath = () => {
+        _.each(propertiesList.value, (item, index) => {
+          _.each(item, (sItem, sIndex) => {
+            sItem.fieldPath = [
+              ...props.fieldPath,
+              `${index}`,
+              sItem.name
+            ].filter((i) => i);
+          });
+        });
+      };
+      const setPropertiesListFieldPathForMapList = () => {
+        _.each(propertiesList.value, (item, index) => {
+          _.each(item, (sItem, sIndex) => {
+            sItem.fieldPath = [
+              ...props.fieldPath,
+              `${index}`,
+              `${sIndex}`,
+              sItem.name
+            ].filter((i) => i);
+          });
+        });
+      };
       const setPropertiesList = () => {
         const newProperties = _.cloneDeep(itemsProperties);
         propertiesList.value = [
@@ -77,11 +141,11 @@
         ];
 
         // set the fieldpath
-        _.each(propertiesList.value, (item, index) => {
-          _.each(item, (sItem, sIndex) => {
-            sItem.fieldPath = [...props.fieldPath, `${index}`, sItem.name];
-          });
-        });
+        if (items?.properties) {
+          setPropertiesListFieldPath();
+        } else {
+          setPropertiesListFieldPathForMapList();
+        }
       };
       const handleAddClick = () => {
         const newProperties = _.cloneDeep(itemsProperties);
@@ -91,11 +155,12 @@
         ];
 
         // set the fieldpath
-        _.each(propertiesList.value, (item, index) => {
-          _.each(item, (sItem, sIndex) => {
-            sItem.fieldPath = [...props.fieldPath, `${index}`, sItem.name];
-          });
-        });
+        // set the fieldpath
+        if (items?.properties) {
+          setPropertiesListFieldPath();
+        } else {
+          setPropertiesListFieldPathForMapList();
+        }
 
         // update formData
         _.each(propertiesList.value, (item, index) => {
@@ -165,9 +230,6 @@
         activeItemIndex.value = -1;
       };
 
-      onMounted(() => {
-        initFieldValue();
-      });
       const renderDeleleButton = (index) => {
         if (
           propertiesList.value.length <= minItems ||
@@ -215,7 +277,13 @@
           }
         }
       };
+
+      genItemsProperties();
       init();
+
+      onMounted(() => {
+        initFieldValue();
+      });
 
       return () => (
         <FieldGroup

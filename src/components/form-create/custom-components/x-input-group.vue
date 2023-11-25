@@ -89,13 +89,14 @@
             @change="(val) => handleDataChange(val, 'value', 'change')"
           ></seal-input-number>
           <seal-checkbox
-            v-else-if="$attrs.showCheckbox"
+            v-else-if="showCheckbox"
             style="width: 100%"
             :model-value="dataValue"
             :placeholder="
               get($attrs?.placeholder, 'value') || $t('common.input.value')
             "
             v-bind="$attrs"
+            :disabled="readonly || $attrs.disabled"
             @change="(val) => handleDataChange(val, 'value', 'change')"
           ></seal-checkbox>
           <seal-input
@@ -159,6 +160,7 @@
             <template v-if="get($attrs?.components, dataValue) === 'Checkbox'">
               <a-checkbox
                 :default-checked="!!dataDesc"
+                :disabled="readonly || $attrs.disabled"
                 @change="
                   (val) => handleDataChange(val, 'description', 'change')
                 "
@@ -193,7 +195,7 @@
       </div>
     </div>
     <div
-      v-if="!$attrs.disabled && !$attrs.readonly"
+      v-if="!$attrs.disabled && !readonly"
       class="btn-wrapper"
       :class="{ 'two-btn': labelList?.length > 1 || alwaysDelete }"
     >

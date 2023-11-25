@@ -59,19 +59,23 @@
         fieldPath: props.fieldPath
       });
       console.log('component+++++++++', props.schema.name, component);
-      if (
-        hidden &&
-        isRequiredInitField(
-          props.schema,
-          _.includes(props.requiredFields, props.schema.name)
-        )
-      ) {
-        setHiddenFieldValue({
-          schema: props.schema,
-          formData: props.formData,
-          fieldPath: props.fieldPath
-        });
-        emit('change', props.formData);
+
+      if (hidden) {
+        // init hidden field default value
+        if (
+          isRequiredInitField(
+            props.schema,
+            _.includes(props.requiredFields, props.schema.name)
+          )
+        ) {
+          setHiddenFieldValue({
+            schema: props.schema,
+            formData: props.formData,
+            fieldPath: props.fieldPath
+          });
+          emit('change', props.formData);
+        }
+
         return null;
       }
       if (!component) return null;

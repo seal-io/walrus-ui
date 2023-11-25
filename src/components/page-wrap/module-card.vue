@@ -59,6 +59,8 @@
 
 <style lang="less" scoped>
   .module-card-wrap {
+    height: max-content;
+
     .title {
       position: relative;
       display: flex;

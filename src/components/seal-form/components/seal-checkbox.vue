@@ -1,5 +1,5 @@
 <template>
-  <span class="wrapper check">
+  <span class="wrapper check" :style="{ width: $attrs.style?.width }">
     <a-checkbox
       v-bind="$attrs"
       :model-value="modelValue"
