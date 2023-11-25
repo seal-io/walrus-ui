@@ -96,7 +96,7 @@
             <SealFormItemWrap
               popupInfo={props.schema.description}
               required={props.required}
-              label={props.schema.title || props.schema.name}
+              label={`${props.schema.title || props.schema.name || ''}`}
               style="width: 100%"
             >
               <KeyValueLabels

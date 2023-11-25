@@ -41,12 +41,19 @@ export const isSimpleObject = (schema: FieldSchema) => {
     _.isObject(schema.additionalProperties) &&
     schema.additionalProperties?.type === 'string';
 
+  // value is boolean
+  const isMapBoolean =
+    _.isObject(schema.additionalProperties) &&
+    schema.additionalProperties?.type === 'boolean';
+
   // value is number
   const isMapNumber =
     _.isObject(schema.additionalProperties) &&
     _.includes(['number', 'integer'], schema.additionalProperties?.type);
 
-  return isAnyAdditionalProperties || isMapString || isMapNumber;
+  return (
+    isAnyAdditionalProperties || isMapString || isMapNumber || isMapBoolean
+  );
 };
 
 export const isMuliSelect = (schema: FieldSchema) => {
@@ -176,25 +183,8 @@ export const genObjectFieldProperties = ({
   if (!_.keys(schema?.properties).length) {
     return [];
   }
-  const { properties, items } = schema;
+  const { properties } = schema;
   const defaultOrder = 9999;
-
-  // if (items) {
-  //   const colSpanData = calcFieldSpan({
-  //     parentSpan,
-  //     colSpan: items['x-walrus-ui']?.colSpan,
-  //     parentHalfGrid: isHalfGrid(schema)
-  //   });
-  //   const order = items['x-walrus-ui']?.order || defaultOrder;
-  //   const fieldSchema = {
-  //     ...items,
-  //     fieldPath: [...fieldPath],
-  //     parentRequired: schema.required || [],
-  //     level,
-  //     order
-  //   };
-  //   return [fieldSchema];
-  // }
 
   const resultList: FieldSchema[] = [];
   const keys = _.keys(properties);

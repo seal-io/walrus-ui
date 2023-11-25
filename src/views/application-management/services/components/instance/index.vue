@@ -191,6 +191,7 @@
     provide,
     onBeforeUnmount
   } from 'vue';
+  import ModuleCard from '@/components/page-wrap/module-card.vue';
   import DropButtonGroup from '@/components/drop-button-group/index.vue';
   import slTransition from '@/components/sl-transition/index.vue';
   import { useSetChunkRequest } from '@/api/axios-chunk-request';
@@ -347,8 +348,10 @@
       const { data } = await queryItemService(params);
       currentInfo.value = data;
       serviceStore.setServiceInfo(route.query.id, data);
+      console.log('currentInfo========', currentInfo.value);
     } catch (error) {
       serviceStore.deleteService(route.query.id);
+      console.log('error===========', error);
     }
   };
   const handleEditSucceed = () => {
@@ -423,7 +426,7 @@
         beforeReconnect: getServiceItemInfo
       });
     } catch (error) {
-      //
+      console.log('error===========', error);
     }
   };
 
