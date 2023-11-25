@@ -736,9 +736,13 @@
   };
   const submit = async () => {
     const res = await formref.value?.validate();
-    // const groupFormRes = await groupForm.value?.getData();
+    const hiddenFormData = groupForm.value?.getHiddenData?.();
     validateTrigger.value = true;
     if (!res) {
+      formData.value.attributes = {
+        ...formData.value.attributes,
+        ...hiddenFormData
+      };
       return formData.value;
     }
     scrollToView();

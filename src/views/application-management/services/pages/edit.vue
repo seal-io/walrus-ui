@@ -162,7 +162,23 @@
             </seal-select>
           </div>
         </a-form-item>
-        <a-form-item :label="$t(`applications.projects.form.label`)" hide-label>
+        <a-form-item
+          :label="$t(`applications.projects.form.label`)"
+          hide-label
+          :rules="[
+            {
+              required: false,
+              validator(value, callback) {
+                if (!validateLabels()) {
+                  callback();
+                  return;
+                }
+                callback(i18n.global.t('common.rule.object.key'));
+              },
+              message: i18n.global.t('common.rule.object.key')
+            }
+          ]"
+        >
           <SealFormItemWrap
             :label="$t('applications.projects.form.label')"
             :style="{ width: `${InputWidth.LARGE}px` }"
@@ -253,12 +269,6 @@
         </GroupTitle>
       </div>
       <a-spin style="width: 100%" :loading="asyncLoading">
-        <!-- <GroupForm
-          ref="groupForm"
-          :field-list="templateInfo"
-          :async-loading="asyncLoading"
-          :original-form-data="serviceInfo.attributes || {}"
-        ></GroupForm> -->
         <GroupForm
           ref="groupForm"
           v-model:form-data="formData.attributes"
@@ -316,14 +326,13 @@
     onMounted,
     nextTick
   } from 'vue';
+  import i18n from '@/locale';
   import { onBeforeRouteLeave } from 'vue-router';
   import GroupButtonMenu from '@/components/drop-button-group/group-button-menu.vue';
   import useCallCommon from '@/hooks/use-call-common';
-  import thumbButton from '@/components/buttons/thumb-button.vue';
   import useScrollToView from '@/hooks/use-scroll-to-view';
   import EditPageFooter from '@/components/edit-page-footer/index.vue';
   import xInputGroup from '@/components/form-create/custom-components/x-input-group.vue';
-  // import GroupForm from '@/components/form-create/group-form.vue';
   import GroupForm from '@/components/dynamic-form/group-form.vue';
   import GroupTitle from '@/components/group-title/index.vue';
   import {
@@ -342,11 +351,7 @@
   import { beforeLeaveCallback } from '@/hooks/save-before-leave';
   import useLabelsActions from '@/components/form-create/hooks/use-labels-action';
   import useProjectBreadcrumbData from '../../projects/hooks/use-project-breadcrumb-data';
-  import {
-    createService,
-    createResourceBatch,
-    upgradeApplicationInstance
-  } from '../api';
+  import { createService, upgradeApplicationInstance } from '../api';
   import useServiceData from '../hooks/use-service-data';
   import { ServiceDataType, ServiceStatus } from '../config';
 
@@ -408,8 +413,6 @@
   const breadCrumbList = ref<BreadcrumbOptions[]>([]);
   const versionMap = ref({ nv: '', ov: '' });
   const dataType = route.params.dataType as string;
-  const isCancelLeave = ref(false);
-  const loaded = ref(false);
   const projectEnvCtx = reactive({
     projectID: route.params.projectId as string,
     environmentID: route.params.environmentId as string,
@@ -446,6 +449,14 @@
     }
     return undefined;
   });
+
+  const validateLabels = () => {
+    const labels = _.get(formData.value, 'labels', {});
+    const keys = _.keys(labels);
+    return _.some(keys, (key) => {
+      return !_.trim(key) || !_.trim(labels[key]);
+    });
+  };
 
   const getEnvironmentConnectors = async () => {
     try {
@@ -601,11 +612,16 @@
     validateLabel();
     const res = await formref.value?.validate();
     const groupres = await groupForm.value?.validate();
+    const hiddenFormData = groupForm.value?.getHiddenData();
     console.log('groupres===', groupres, res, validateTrigger.value);
 
     if (!res && !groupres && !validateTrigger.value) {
       try {
         submitLoading.value = true;
+        formData.value.attributes = {
+          ...formData.value.attributes,
+          ...hiddenFormData
+        };
         if (!formData.value.template?.project?.id) {
           formData.value.template = _.omit(formData.value.template, 'project');
         }

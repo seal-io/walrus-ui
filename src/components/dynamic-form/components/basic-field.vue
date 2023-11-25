@@ -58,7 +58,6 @@
         }
       };
       const handleChange = (data) => {
-        handleUnsetField();
         emit('change', data);
 
         setTimeout(() => {
@@ -195,12 +194,12 @@
                   fieldValue.value = val;
                 }
 
-                _.set(props.formData, props.fieldPath, fieldValue.value);
-                console.log(
-                  'basic-field==change----1',
-                  fieldValue.value,
-                  props.schema
-                );
+                if (isEmptyvalue(fieldValue.value) && !props.schema.default) {
+                  _.unset(props.formData, props.fieldPath);
+                } else {
+                  _.set(props.formData, props.fieldPath, fieldValue.value);
+                }
+
                 handleChange(props.formData);
               }}
             >

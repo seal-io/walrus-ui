@@ -433,7 +433,7 @@
   };
 
   const execVersionChangeCallback = async () => {
-    await setModuleVersionFormCache();
+    // await setModuleVersionFormCache();
     const moduleData = await getTemplateSchemaByVersion();
     setTemplateInfo(moduleData);
     formData.value.attributes = {};
@@ -498,8 +498,13 @@
     validateLabel();
     const res = await formref.value?.validate();
     const groupFormRes = await groupForm.value?.validate();
+    const hiddenFormData = groupForm.value?.getHiddenData();
     if (!res && !groupFormRes && !validateTrigger.value) {
       console.log('formData.value==0000===', formData.value);
+      formData.value.attributes = {
+        ...formData.value.attributes,
+        ...hiddenFormData
+      };
       if (!formData.value.template.project?.id) {
         formData.value.template = _.omit(formData.value.template, 'project');
       }
