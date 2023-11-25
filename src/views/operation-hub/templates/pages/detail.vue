@@ -124,12 +124,20 @@
               formData.source || '-'
             }}</span>
             <template v-if="pageAction === PageAction.EDIT" #extra>
-              <span
-                >{{
-                  $t('common.help.eg')
-                }}
-                https://github.com/terraform-seal-modules/rds-seeder</span
+              <div
+                :style="{
+                  'line-height': '20px',
+                  'width': `${InputWidth.LARGE}px`
+                }"
               >
+                <div>{{ $t('operation.templates.source.description') }}</div>
+                <div
+                  >https://github.com/terraform-aws-modules/terraform-aws-vpc?ref=master</div
+                >
+                <div
+                  >https://github.com/terraform-aws-modules/terraform-aws-vpc?ref=v5.2.0</div
+                >
+              </div>
             </template>
           </a-form-item>
           <a-form-item

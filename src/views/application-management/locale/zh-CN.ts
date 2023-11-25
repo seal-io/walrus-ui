@@ -50,7 +50,7 @@ export default {
   'applications.applications.title.view': '应用详情',
   'applications.applications.title.clone': '克隆应用',
   'applications.applications.detail.info': '应用信息',
-  'applications.applications.instance.deleteTips': '不清理底层资源',
+  'applications.applications.instance.deleteTips': '不清理底层组件',
   'applications.applications.instance.application': '应用',
   'applications.applications.instance.status': '状态',
   'applications.applications.instance.history': '历史版本',

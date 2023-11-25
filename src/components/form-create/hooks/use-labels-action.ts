@@ -22,7 +22,7 @@ export default function useLabelsActions(formData, key?: string) {
     labelList.value = map(labelKeys, (k) => {
       return {
         key: k,
-        value: get(formData, `${labelsKey}.${k}`)
+        value: get(formData, [labelsKey, k])
       };
     });
   };

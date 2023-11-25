@@ -124,5 +124,7 @@ export default {
   'operation.templates.detail.rule.branch': '分支必选',
   'operation.templates.detail.rule.locationfile': '提交路径必填',
   'operation.templates.button.useInservice': '为服务启用',
-  'operation.templates.button.cancelUseInService': '为服务停用'
+  'operation.templates.button.cancelUseInService': '为服务停用',
+  'operation.templates.source.description':
+    '可通过查询参数`ref`来指定模板版本，ref 的值可以是分支名、Tag名例如：'
 };

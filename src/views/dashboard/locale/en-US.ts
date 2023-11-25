@@ -3,7 +3,7 @@ export default {
   'dashboard.overview.applications': 'Applications',
   'dashboard.overview.environment': 'Environments',
   'dashboard.overview.connector': 'Connectors',
-  'dashboard.deployment.title': 'Deployment',
+  'dashboard.deployment.title': 'Deployments',
   'dashboard.deployment.history': 'History',
   'dashboard.deployment.running': 'Running',
   'dashboard.deployment.failed': 'Failed',
