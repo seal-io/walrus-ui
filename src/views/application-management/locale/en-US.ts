@@ -52,7 +52,7 @@ export default {
   'applications.applications.title.clone': 'Clone Application',
   'applications.applications.detail.info': 'Application Information',
   'applications.applications.instance.deleteTips':
-    'Do not clean up underlying resources',
+    'Do not clean up underlying components',
   'applications.applications.instance.application': 'Application',
   'applications.applications.instance.status': 'Status',
   'applications.applications.instance.history': 'History Revisions',

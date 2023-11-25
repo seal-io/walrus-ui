@@ -97,6 +97,9 @@
             {
               ...props.schema.items,
               fieldPath: [...props.fieldPath],
+              grandParentHalfGrid: getCustomColSpan(items?.items)
+                ? false
+                : props.schema.halfGrid,
               parentSpan:
                 getCustomColSpan(props.schema.items) ||
                 getCustomColSpan(items?.additionalProperties) ||

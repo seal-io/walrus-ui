@@ -33,6 +33,7 @@ export interface FieldSchema {
 
 export interface Group {
   [group: string]: {
+    hidden: boolean;
     schema: Record<string, FieldSchema>[];
   };
 }
