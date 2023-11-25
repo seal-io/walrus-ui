@@ -499,12 +499,8 @@
     const res = await formref.value?.validate();
     const groupFormRes = await groupForm.value?.validate();
     const hiddenFormData = groupForm.value?.getHiddenData();
+    const resultData: any = {};
     if (!res && !groupFormRes && !validateTrigger.value) {
-      console.log('formData.value==0000===', formData.value);
-      formData.value.attributes = {
-        ...formData.value.attributes,
-        ...hiddenFormData
-      };
       if (!formData.value.template.project?.id) {
         formData.value.template = _.omit(formData.value.template, 'project');
       }
@@ -515,7 +511,14 @@
         formData.value.template = null as any;
       }
       copyFormData = _.cloneDeep(formData.value);
-      return formData;
+
+      const resultData = _.cloneDeep(formData.value);
+      resultData.attributes = {
+        ...resultData.attributes,
+        ...hiddenFormData
+      };
+
+      return resultData;
     }
     scrollToView();
     return false;
