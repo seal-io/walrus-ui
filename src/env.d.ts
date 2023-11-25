@@ -6,13 +6,6 @@ declare module '*.vue' {
   const component: DefineComponent<{}, {}, any>;
   export default component;
 }
-
-declare module '@vue-flow/background' {
-  export { Background } from '@vue-flow/background';
-}
-declare module '@vue-flow/controls' {
-  export { Controls } from '@vue-flow/controls';
-}
 declare module 'xterm-addon-fit' {
   export { FitAddon } from 'xterm-addon-fit';
 }

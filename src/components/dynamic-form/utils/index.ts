@@ -296,7 +296,9 @@ export const genFieldPropsAndRules = ({
   const required = _.includes(requiredFields, name);
   const commonProps = {
     label: title || name,
-    disabled: readOnly || immutable,
+    disabled: false,
+    readonly: readOnly,
+    immutable,
     hidden: hidden || false,
     showIf: showIf || '',
     doc: externalDocs || '',

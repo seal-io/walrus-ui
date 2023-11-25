@@ -338,7 +338,9 @@ export default function useCompleteData(props?) {
               value: o.name,
               label: o.name,
               isService: item.isService,
-              description: o.description
+              showTips: true,
+              tips: o.description,
+              description: ''
             };
           })
         ];

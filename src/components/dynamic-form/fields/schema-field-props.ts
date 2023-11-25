@@ -68,5 +68,9 @@ export default {
     default() {
       return 'create';
     }
+  },
+  readonly: {
+    type: Boolean,
+    default: false
   }
 };
