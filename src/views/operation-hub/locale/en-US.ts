@@ -135,5 +135,5 @@ export default {
   'operation.templates.button.useInservice': 'Enable for Service',
   'operation.templates.button.cancelUseInService': 'Disable for Service',
   'operation.templates.source.description':
-    "The template version can be specified by using the query parameter 'ref,' and the value of 'ref' can be a branch name or tag, e.g.:"
+    'URL of a git repository. Use the ref query parameter if you want to use a specific version. For example:'
 };

@@ -132,12 +132,12 @@
               >
                 <div>{{ $t('operation.templates.source.description') }}</div>
                 <div
-                  >https://github.com/terraform-aws-modules/terraform-aws-vpc?ref=master</div
-                >
-                <div
-                  >https://github.com/terraform-aws-modules/terraform-aws-vpc?ref=v5.2.0</div
+                  >https://github.com/terraform-aws-modules/terraform-aws-vpc</div
                 >
               </div>
+              <div
+                >https://github.com/terraform-aws-modules/terraform-aws-vpc?ref=master</div
+              >
             </template>
           </a-form-item>
           <a-form-item
