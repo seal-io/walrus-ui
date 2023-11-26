@@ -397,9 +397,12 @@
     if (current.value === steps.value.length) {
       if (taskType.value === TaskTypes.SERVICE) {
         submitLoading.value = true;
-        const res = await serviceRef.value?.save();
-        console.log('res++++++++++');
-        const data = res.value;
+        const data = await serviceRef.value?.save();
+        console.log('res++++++++++', data);
+        if (!data) {
+          submitLoading.value = false;
+          return;
+        }
         submitLoading.value = false;
         let limitInfo: any = flow.retryStrategy;
         if (!limitInfo?.limit) {
@@ -427,12 +430,14 @@
           ...limitInfo
         };
         console.log('result>>>>>>>>>>', result);
-        if (data) {
-          emits('save', result);
-        }
+        emits('save', result);
       } else if (taskType.value === TaskTypes.APPROVAL) {
         submitLoading.value = true;
         const data = await manualRef.value?.save();
+        if (!data) {
+          submitLoading.value = false;
+          return;
+        }
         submitLoading.value = false;
         const result = {
           type: taskType.value,
@@ -442,11 +447,8 @@
           },
           timeout: flow.timeout ? Math.floor(flow.timeout * TIME_UNIT) : null
         };
-        if (data) {
-          emits('save', result);
-        }
+        emits('save', result);
       }
-      emits('update:show', false);
     }
   };
   const handleSubmit = () => {

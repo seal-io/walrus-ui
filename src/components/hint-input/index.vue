@@ -34,8 +34,7 @@
         v-model.trim="expression"
         class="arco-input completer arco-input-size-medium"
         :spellcheck="false"
-        :readonly="disabled"
-        :disabled="disabled"
+        :disabled="disabled || !!$attrs.readonly"
         autocomplete="off"
         :type="inputType"
         @focus="handleFocus"
@@ -59,12 +58,6 @@
         </span>
       </span>
     </span>
-    <!-- <span
-      class="arco-icon-hover arco-input-icon-hover arco-input-clear-btn"
-      @click.stop="handleClear"
-    >
-      <icon-close />
-    </span> -->
   </div>
 </template>
 
@@ -82,7 +75,11 @@
     toLower,
     isArray
   } from 'lodash';
-  import { InjectCompleteDataKey } from '@/views/config';
+  import {
+    InjectCompleteDataKey,
+    InjectSchemaFormStatusKey,
+    PageAction
+  } from '@/views/config';
   import { onClickOutside } from '@vueuse/core';
   import {
     nextTick,
@@ -164,6 +161,10 @@
     eventHandler: Function
   });
   const completeData = inject(InjectCompleteDataKey, ref(null));
+  const schemaFormStatus = inject(
+    InjectSchemaFormStatusKey,
+    ref(PageAction.CREATE)
+  );
   const $attrs = useAttrs();
   const emits = defineEmits(['update:modelValue', 'input', 'change']);
   const expression = ref('');
@@ -191,6 +192,9 @@
   let tippyInstance: any = null;
 
   const inputType = computed(() => {
+    if ($attrs.writeOnly && schemaFormStatus.value !== PageAction.CREATE) {
+      return invisible.value ? 'password' : 'text';
+    }
     return $attrs.password && invisible.value ? 'password' : 'text';
   });
 
