@@ -458,6 +458,9 @@
     isFocus.value = true;
   };
   const handleClick = () => {
+    if (props.disabled || $attrs.readonly) {
+      return;
+    }
     isFocus.value = true;
     input.value?.focus?.();
   };
