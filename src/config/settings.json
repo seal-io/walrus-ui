@@ -15,6 +15,6 @@
   "device": "desktop",
   "hasNavList": true,
   "tabBar": false,
-  "perPage": 10,
+  "perPage": 20,
   "selectedKey": []
 }

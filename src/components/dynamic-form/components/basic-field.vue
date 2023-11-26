@@ -115,6 +115,7 @@
           });
           options.value = _.uniqBy(_.concat(options.value, list), 'value');
         }
+        options.value = _.filter(options.value, (v) => !isEmptyvalue(v.value));
       }
 
       if (isDatePicker(props.schema) && props.schema.format) {
@@ -160,6 +161,13 @@
       };
 
       const fieldValue = ref(_.get(props.formData, props.fieldPath));
+
+      const showArrayValue = (val) => {
+        if (_.isArray(val)) {
+          return _.join(val, ',');
+        }
+        return val;
+      };
       const renderEdit = () => {
         return (
           <a-form-item
@@ -241,7 +249,7 @@
                   <span>
                     {isPassword(props.schema) || props.schema.writeOnly
                       ? '******'
-                      : _.get(props.formData, props.fieldPath)}
+                      : showArrayValue(_.get(props.formData, props.fieldPath))}
                   </span>
                 )}
               </SealFormItemWrap>
