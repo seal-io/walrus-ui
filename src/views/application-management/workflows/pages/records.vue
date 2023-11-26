@@ -35,25 +35,8 @@
           <div v-if="moreActions.length" class="dropdown">
             <DropButtonGroup
               :actions="actionList"
-              @click="handleClick"
               @select="handleSelect"
             ></DropButtonGroup>
-            <!-- <a-button
-              v-if="
-                userStore.hasProjectResourceActions({
-                  projectID,
-                  resource: Resources.Workflows,
-                  actions: [Actions.POST]
-                })
-              "
-              size="mini"
-              type="text"
-              @click="handleSelect"
-            >
-              <a-tooltip :content="$t('common.button.edit')">
-                <icon-edit style="stroke-width: 4" />
-              </a-tooltip>
-            </a-button> -->
           </div>
         </template>
         <template #description>
@@ -139,7 +122,7 @@
     });
     return res;
   });
-  const handleClick = () => {
+  const handleEdit = () => {
     router.push({
       name: WORKFLOW.Edit,
       params: {
@@ -151,6 +134,9 @@
     });
   };
   const handleSelect = (val) => {
+    if (val === 'edit') {
+      handleEdit();
+    }
     if (val === 'apply') {
       handleApply(currentInfo.value);
     }

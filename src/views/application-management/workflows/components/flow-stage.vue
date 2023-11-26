@@ -90,7 +90,7 @@
         action.value = 'create';
         setTimeout(() => {
           show.value = true;
-        });
+        }, 100);
       };
 
       const handleSaveFlowTask = (data) => {
@@ -118,7 +118,7 @@
         console.log('activeStep', _.cloneDeep(item), activeStep.value);
         setTimeout(() => {
           show.value = true;
-        });
+        }, 100);
       };
 
       const handleDeleteTask = () => {

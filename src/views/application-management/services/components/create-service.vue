@@ -173,11 +173,12 @@
               ></xInputGroup>
             </a-space>
             <template v-else>
-              <thumbButton
-                :size="24"
-                font-size="14px"
-                @click="handleAddLabel(labelItem, labelList)"
-              ></thumbButton>
+              <a-link class="p-0" @click="handleAddLabel(labelItem, labelList)">
+                <icon-plus-circle-fill
+                  :size="24"
+                  font-size="14px size-24"
+                ></icon-plus-circle-fill>
+              </a-link>
             </template>
           </SealFormItemWrap>
         </a-form-item>
@@ -499,7 +500,7 @@
     const res = await formref.value?.validate();
     const groupFormRes = await groupForm.value?.validate();
     const hiddenFormData = groupForm.value?.getHiddenData();
-    const resultData: any = {};
+    console.log('hiddenFormData===', groupFormRes, hiddenFormData);
     if (!res && !groupFormRes && !validateTrigger.value) {
       if (!formData.value.template.project?.id) {
         formData.value.template = _.omit(formData.value.template, 'project');

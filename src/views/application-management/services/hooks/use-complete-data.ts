@@ -282,7 +282,7 @@ export default function useCompleteData(props?) {
         value: item.name,
         label: item.name,
         tips: item.value,
-        showTips: true,
+        showTips: false,
         sensitive: item.sensitive
       };
     });
@@ -306,7 +306,7 @@ export default function useCompleteData(props?) {
               value: o.name,
               label: o.name,
               isService: item.isService,
-              description: o.description
+              description: ''
             };
           })
         ];
@@ -338,7 +338,7 @@ export default function useCompleteData(props?) {
               value: o.name,
               label: o.name,
               isService: item.isService,
-              showTips: true,
+              showTips: false,
               tips: o.description,
               description: ''
             };
