@@ -142,6 +142,5 @@ export default {
   'common.button.draft': 'Save Draft',
   'common.button.stop': 'Stop',
   'common.button.start': 'Start',
-  'common.rule.object.key': 'key cannot be empty',
-  'common.form.rule.minlength': '{name} minimum length is {length}'
+  'common.rule.object.key': 'key cannot be empty'
 };
