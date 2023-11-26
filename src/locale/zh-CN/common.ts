@@ -139,5 +139,6 @@ export default {
   'common.button.draft': '保存草稿',
   'common.button.stop': '停止',
   'common.button.start': '启动',
-  'common.rule.object.key': '键不能为空'
+  'common.rule.object.key': '键不能为空',
+  'common.form.rule.minlength': '{name}最小长度为{length}'
 };

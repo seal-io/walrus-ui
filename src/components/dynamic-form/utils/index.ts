@@ -362,6 +362,19 @@ export const genFieldPropsAndRules = ({
           message:
             message ||
             i18n.global.t('common.form.rule.input', { name: title || name })
+        },
+        {
+          validator: (value, callback) => {
+            const len = value?.length || 0;
+            if (minLength && len < minLength) {
+              callback(
+                i18n.global.t('common.form.rule.minlength', {
+                  name: title || name,
+                  length: minLength
+                })
+              );
+            }
+          }
         }
       ],
       default: defaultValue
