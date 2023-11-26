@@ -634,6 +634,7 @@
           ...data.attributes,
           ...hiddenFormData
         };
+        console.log('ok+++++++++++', data);
         if (id) {
           await upgradeApplicationInstance(data);
         } else {

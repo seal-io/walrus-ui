@@ -6,6 +6,7 @@
       :class="{
         'arco-input-focus': isFocus,
         'arco-input-error': $attrs.error,
+        'arco-input-disabled': disabled || !!$attrs.readonly,
         'is-focused': isFocus || modelValue
       }"
       @click="handleClick"

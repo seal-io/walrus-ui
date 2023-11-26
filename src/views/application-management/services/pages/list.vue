@@ -87,6 +87,7 @@
         :type="ServiceDataType.service"
         ::title="$t('menu.applicationManagement.services')"
         :request-params="queryParams"
+        @deleted="handleDeleted"
         @selection-change="handleServiceSelectChange"
       ></tableList>
     </moduleWrapper>
@@ -214,6 +215,16 @@
 
   const handleResourceSelectChange = (keys: string[]) => {
     resourceSelectKeys.value = keys;
+  };
+  const handleDeleted = (ids) => {
+    serviceSelectKeys.value = _.difference(
+      serviceSelectKeys.value,
+      ids as string[]
+    );
+    resourceSelectKeys.value = _.difference(
+      resourceSelectKeys.value,
+      ids as string[]
+    );
   };
 </script>
 

@@ -9,4 +9,6 @@ export const extensionFields = [
 
 export const ProviderFormRefKey = Symbol('ProviderFormRefKey');
 
+export const ProvideErrorFieldsKey = Symbol('errorFields');
+
 export default {};

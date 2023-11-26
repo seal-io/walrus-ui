@@ -253,7 +253,7 @@
       };
 
       const renderBasicTypeFields = () => {
-        const list = _.filter(childProperties.value, (item) => {
+        const list = _.filter(childProperties.value, (item: FieldSchema) => {
           return (
             isBasicType(item.type) || isSimpleObject(item) || isSelect(item)
           );
@@ -261,7 +261,7 @@
 
         return (
           <a-grid cols={12} col-gap={18} row-gap={0} style={{ width: '100%' }}>
-            {_.map(list, (childSchema) => {
+            {_.map(list, (childSchema: FieldSchema) => {
               return (
                 <SchemaField
                   level={childSchema.level}
@@ -313,6 +313,7 @@
         <FieldGroup
           schema={props.schema}
           level={props.schema.level}
+          fieldPath={props.fieldPath}
           v-slots={{
             footer: () => {
               return <>{renderAddButton()}</>;

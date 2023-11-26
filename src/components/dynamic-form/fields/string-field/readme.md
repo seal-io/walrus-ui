@@ -1,1 +1,0 @@
-### property type is string
