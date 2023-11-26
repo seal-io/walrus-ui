@@ -2,7 +2,6 @@
   import _ from 'lodash';
   import { InputWidth, PageAction } from '@/views/config';
   import { defineComponent, PropType, ref, watchEffect, toRefs } from 'vue';
-  import ThumbButton from '@/components/buttons/thumb-button.vue';
   import XInputGroup from './x-input-group.vue';
   import useLabelsActions from '../hooks/use-labels-action';
   import LabelsList from './labels-list.vue';

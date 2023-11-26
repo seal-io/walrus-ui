@@ -1,12 +1,14 @@
 <script lang="tsx">
-  import { defineComponent, ref, withModifiers } from 'vue';
+  import { defineComponent, ref, withModifiers, inject } from 'vue';
   import _ from 'lodash';
   import ModuleWrapper from '@/components/module-wrapper/index.vue';
   import schemaFieldProps from '../fields/schema-field-props';
+  import { ProvideErrorFieldsKey } from '../config';
 
   export default defineComponent({
     props: schemaFieldProps,
     setup(props, { slots }) {
+      const errorFields = inject(ProvideErrorFieldsKey, ref([]));
       const collapsed = _.get(
         props.schema,
         ['x-walrus-ui', 'collapsed'],
@@ -16,6 +18,12 @@
       const hovered = ref(false);
       const groupHovered = ref(false);
 
+      const exsitsError = () => {
+        const fieldPath = _.join(props.fieldPath, '.');
+        return _.some(errorFields.value, (item) => {
+          return _.startsWith(item, fieldPath);
+        });
+      };
       const handleClickRight = () => {
         setTimeout(() => {
           status.value = true;
@@ -93,8 +101,14 @@
             onMouseout={withModifiers(() => handleLeave(), ['stop', 'prevent'])}
           >
             <ModuleWrapper
-              class={[{ 'mo-wrap-hover': hovered.value }]}
-              v-model:status={status.value}
+              class={[
+                { 'mo-wrap-hover': hovered.value },
+                _.join(props.fieldPath, '.')
+              ]}
+              status={status.value || exsitsError()}
+              onUpdate:status={(val) => {
+                status.value = val;
+              }}
               title={props.schema.title || props.schema.name}
               showDelete={false}
               v-slots={{

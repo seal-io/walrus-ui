@@ -160,7 +160,7 @@
             <template v-if="get($attrs?.components, dataValue) === 'Checkbox'">
               <a-checkbox
                 :default-checked="!!dataDesc"
-                :disabled="readonly || $attrs.disabled"
+                :disabled="!!readonly || !!$attrs.disabled"
                 @change="
                   (val) => handleDataChange(val, 'description', 'change')
                 "

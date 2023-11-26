@@ -249,7 +249,7 @@
       default: false
     }
   });
-  const emits = defineEmits(['selectionChange']);
+  const emits = defineEmits(['selectionChange', 'deleted']);
   const appStore = useAppStore();
   const userStore = useUserStore();
   const {
@@ -463,6 +463,7 @@
       execSucceed();
       selectedKeys.value = [];
       rowSelection.selectedRowKeys = [];
+      emits('deleted', ids);
     } catch (error) {
       loading.value = false;
     }

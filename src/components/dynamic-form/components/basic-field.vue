@@ -175,6 +175,11 @@
               label={props.label}
               style="width: 100%"
               allow-search={false}
+              disabled={
+                props.readonly ||
+                (attrs.immutable &&
+                  schemaFormStatus.value !== PageAction.CREATE)
+              }
               readonly={
                 props.readonly ||
                 (attrs.immutable &&

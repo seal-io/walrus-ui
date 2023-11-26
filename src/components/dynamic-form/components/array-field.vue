@@ -292,6 +292,7 @@
         <FieldGroup
           schema={props.schema}
           level={props.schema.level}
+          fieldPath={props.fieldPath}
           v-slots={{
             footer: () => {
               return <>{renderAddButton()}</>;

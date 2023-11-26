@@ -40,11 +40,12 @@
 </template>
 
 <script lang="ts" setup>
-  import _, { clone } from 'lodash';
-  import { PropType, watch, ref, nextTick, toRaw } from 'vue';
+  import _ from 'lodash';
+  import { PropType, watch, ref, nextTick, toRaw, provide } from 'vue';
   import SingleForm from './single-form.vue';
   import { FieldSchema, FormGroup } from './interface';
   import { createFormGroup } from './utils/create-form-group';
+  import { ProvideErrorFieldsKey } from './config';
   import {
     genFieldMap,
     flattenSchema,
@@ -83,7 +84,9 @@
   const formGroup = ref<FormGroup[]>([]);
   const hiddenFormData = ref<any>({});
   const validResult = ref<any>([]);
+  const errorFields = ref<string[]>([]);
 
+  provide(ProvideErrorFieldsKey, errorFields);
   const setRefMap = (el: any, name) => {
     if (el) {
       refMap.value[`${name}`] = el;
@@ -99,6 +102,12 @@
     activeKey.value = key;
   };
 
+  const genErrorFields = () => {
+    errorFields.value = [];
+    _.each(validResult.value, (item) => {
+      errorFields.value = _.concat(errorFields.value, _.keys(item.errors));
+    });
+  };
   const handleUnsetField = () => {
     const fieldList = genFieldMap(_.cloneDeep(props.schema));
     _.each(fieldList.resultList, (item) => {
@@ -112,35 +121,46 @@
     });
   };
   const validate = async () => {
-    let valid: any = null;
+    const resultList: any[] = [];
     validResult.value = [];
+    errorFields.value = [];
     if (formGroup.value.length === 1) {
       const res = await schemaForm.value?.validate?.();
-      valid = res;
+      resultList.push({
+        tab: 'Baisc',
+        errors: res,
+        result: !res
+      });
     } else {
-      const resultList: any[] = [];
       await Promise.all(
         _.keys(refMap.value).map(async (key) => {
           const refEL = refMap.value[key];
           const res = await refEL?.validate?.();
           resultList.push({
             tab: key,
+            errors: res,
             result: !res
           });
         })
       );
-      const errorList = _.filter(resultList, (item) => !item.result);
-      if (errorList.length) {
-        activeKey.value = errorList[0].tab;
-      }
-      valid = errorList.length;
-      validResult.value = errorList;
-    }
-    if (!valid) {
-      handleUnsetField();
     }
 
-    return valid;
+    const errorList = _.filter(resultList, (item) => !item.result);
+    if (errorList.length) {
+      activeKey.value = errorList[0].tab;
+    }
+
+    validResult.value = errorList;
+
+    console.log('valid===9999===', validResult.value);
+
+    if (!errorList.length) {
+      handleUnsetField();
+    } else {
+      genErrorFields();
+    }
+
+    return errorList.length;
   };
 
   const getHiddenFormData = (groups: FormGroup[]) => {
