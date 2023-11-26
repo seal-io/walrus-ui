@@ -207,7 +207,7 @@
     catalogID: '',
     nonCatalog: false,
     page: 1,
-    perPage: appStore.perPage || 10
+    perPage: appStore.perPage || 20
   });
 
   const catalogList = computed(() => {

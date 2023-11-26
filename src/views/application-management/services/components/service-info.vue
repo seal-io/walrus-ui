@@ -2,7 +2,7 @@
   <div class="service">
     <GroupForm
       ref="groupForm"
-      style="padding: 10px"
+      style="padding: 10px 20px"
       :form-data="serviceInfo.attributes"
       :schema="schema"
     ></GroupForm>

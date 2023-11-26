@@ -50,7 +50,10 @@
                 return (
                   <a-button
                     type="primary"
-                    style="padding:10px"
+                    style={{
+                      borderLeftColor: 'rgba(255,255,255,.2)',
+                      padding: '10px'
+                    }}
                     disabled={loading.value}
                   >
                     <icon-down />
