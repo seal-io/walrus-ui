@@ -130,7 +130,7 @@
             }}</span>
           </a-form-item>
         </a-form>
-        <div v-if="pageAction === PageAction.EDIT">
+        <div v-if="pageAction !== PageAction.VIEW">
           <GroupTitle
             :bordered="false"
             :title="$t('resource.definition.detail.matchRule')"
@@ -157,6 +157,7 @@
             :data-id="id"
             :origin-form-data="item"
             :page-action="pageAction"
+            :schema-form-action="item.pageAction || schemaFormAction"
             :show-delete="formData.matchingRules.length > 1"
             :template-list="templateList"
             class="m-b-20"
@@ -191,6 +192,7 @@
               :data-id="id"
               :origin-form-data="item"
               :page-action="pageAction"
+              :schema-form-action="schemaFormAction"
               :show-delete="false"
               :template-list="templateList"
               class="m-b-20"
@@ -267,9 +269,7 @@
   import { execSucceed } from '@/utils/monitor';
   import usePageAction from '@/hooks/use-page-action';
   import { queryVariables } from '@/views/application-management/variables/api';
-  import MoreButtonActions from '@/components/drop-button-group/more-button-actions.vue';
   import { operationRootBread } from '../../connectors/config';
-  import StatusLabel from '../../connectors/components/status-label.vue';
   import {
     createResourceDefinition,
     queryItemResourceDefinition,
@@ -301,9 +301,7 @@
   const refMap = ref<Record<string, any>>({});
   let copyFormData: any = {};
   const templateList = ref<any[]>([]);
-  const schema = ref<any>({});
   const extraWrapper = ref();
-  const readOnly = ref(true);
   const deinitionSchema = ref<any>({});
   const completeData = ref<any>({
     var: null
@@ -338,6 +336,13 @@
     return 'resource.definition.detail.edit';
   });
 
+  const schemaFormAction = computed(() => {
+    if (!id) {
+      return PageAction.CREATE;
+    }
+    return pageAction.value;
+  });
+
   const setRefMap = (el, name, item) => {
     refMap.value[name] = {
       ref: el,
@@ -364,17 +369,7 @@
     );
     return resultList;
   };
-  const getRefUISchema = async () => {
-    const resultList: any[] = [];
-    await Promise.all(
-      _.keys(refMap.value).map(async (key) => {
-        const refEL = refMap.value[key];
-        const schema = await refEL?.getSchema?.();
-        resultList.push(schema);
-      })
-    );
-    return resultList;
-  };
+
   const setVariablesCompleteData = (list) => {
     const vars = _.map(list, (item) => {
       return {
@@ -507,7 +502,8 @@
   const handleAddRule = () => {
     formData.value.matchingRules.push({
       ..._.cloneDeep(definitionFormData),
-      id: `${Date.now()}`
+      id: `${Date.now()}`,
+      pageAction: PageAction.CREATE
     });
   };
 
@@ -524,7 +520,6 @@
         from,
         onOk: () => {
           copyFormData = cloneDeep(formData.value);
-          console.log('name====', to, to.name);
           router.push({
             path: to.path as string
           });
@@ -534,6 +529,7 @@
     }
     return true;
   });
+
   const initData = async () => {
     await getTemplateList();
     getItemResourceDefinition();

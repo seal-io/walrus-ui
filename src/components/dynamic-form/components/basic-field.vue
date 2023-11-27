@@ -247,7 +247,8 @@
                   ></a-checkbox>
                 ) : (
                   <span>
-                    {isPassword(props.schema) || props.schema.writeOnly
+                    {(isPassword(props.schema) || props.schema.writeOnly) &&
+                    _.get(props.formData, props.fieldPath)
                       ? '******'
                       : showArrayValue(_.get(props.formData, props.fieldPath))}
                   </span>

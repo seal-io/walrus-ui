@@ -274,6 +274,7 @@
           v-model:form-data="formData.attributes"
           :action="formAction"
           :schema="schemaVariables"
+          @change="handleFormAttributeChange"
         ></GroupForm>
       </a-spin>
       <EditPageFooter>
@@ -389,7 +390,6 @@
     pageAction,
     templateInfo,
     templateVersionList,
-    templateVersionFormCache,
     serviceDataList,
     templateList,
     completeData,
@@ -411,7 +411,7 @@
   const groupForm = ref();
   const submitLoading = ref(false);
   const breadCrumbList = ref<BreadcrumbOptions[]>([]);
-  const versionMap = ref({ nv: '', ov: '' });
+  const schemaFormCache = ref<any>({});
   const dataType = route.params.dataType as string;
   const projectEnvCtx = reactive({
     projectID: route.params.projectId as string,
@@ -509,30 +509,39 @@
     callback();
   };
 
-  // cache the user inputs when change the module version
-  const setModuleVersionFormCache = async () => {
-    if (!versionMap.value.ov) return;
-    const inputs = _.cloneDeep(formData.value.attributes);
-    templateVersionFormCache.value[versionMap.value.ov] = {
-      ...pickBy(inputs, (val) => toString(val))
-    };
+  const getFormDataAttributeCache = () => {
+    if (dataType === ServiceDataType.service) {
+      formData.value.attributes = _.cloneDeep(
+        _.get(schemaFormCache.value, formData.value.template.version, {})
+      );
+    }
+  };
+
+  const setFormDataAttributeCache = () => {
+    if (dataType === ServiceDataType.service) {
+      schemaFormCache.value[formData.value.template.version] = _.cloneDeep(
+        formData.value.attributes
+      );
+    }
   };
 
   const execVersionChangeCallback = async () => {
-    // await setModuleVersionFormCache();
+    getFormDataAttributeCache();
     const moduleData = await getTemplateSchemaByVersion();
     setTemplateInfo(moduleData);
-    formData.value.attributes = {};
-
-    groupForm.value?.clearFormValidStatus?.();
   };
 
+  const handleFormAttributeChange = () => {
+    setFormDataAttributeCache();
+    console.log('schemaFormCache===', schemaFormCache.value);
+  };
   const handleVersionChange = () => {
     formData.value.template.id =
       _.find(
         templateVersionList.value,
         (item) => item.value === formData.value.template.version
       )?.id || '';
+
     setTimeout(() => {
       execVersionChangeCallback();
     }, 100);
@@ -549,11 +558,11 @@
   };
   // template change: exec version change
   const handleTemplateChange = async (val) => {
+    schemaFormCache.value = {};
     if (dataType === ServiceDataType.resource) {
       const data = await getItemResourceDefinition();
       setTemplateInfo(data);
       formData.value.attributes = {};
-      groupForm.value?.clearFormValidStatus?.();
     } else {
       const data = _.find(templateList.value, (item) => item.id === val);
       formData.value.template.name = data?.name || '';
@@ -566,10 +575,7 @@
         '0.template.version',
         ''
       );
-      templateVersionFormCache.value = {};
-      setTimeout(() => {
-        versionMap.value = { ov: '', nv: '' };
-      }, 20);
+
       handleVersionChange();
     }
   };
@@ -634,7 +640,6 @@
           ...data.attributes,
           ...hiddenFormData
         };
-        console.log('ok+++++++++++', data);
         if (id) {
           await upgradeApplicationInstance(data);
         } else {
@@ -669,18 +674,7 @@
       }
     }, 100);
   };
-  watch(
-    () => formData.value.template?.version,
-    (nv, ov) => {
-      versionMap.value = {
-        nv,
-        ov: ov || ''
-      };
-    },
-    {
-      immediate: true
-    }
-  );
+
   onBeforeRouteLeave(async (to, from) => {
     if (!_.isEqual(copyFormData, formData.value)) {
       beforeLeaveCallback({
@@ -714,6 +708,7 @@
     getEnvironmentConnectors();
     setTimeout(() => {
       copyFormData = _.cloneDeep(formData.value);
+      setFormDataAttributeCache();
     }, 100);
   };
 

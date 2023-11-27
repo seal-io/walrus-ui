@@ -1,5 +1,6 @@
 export interface MatchingRule {
   id?: string;
+  pageAction?: string;
   attributes: Record<string, any>;
   name: string;
   selector: {

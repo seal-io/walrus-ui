@@ -50,7 +50,6 @@ export default function useServiceData(props?) {
   const schemaVariables = ref<any>({});
   const serviceInfo = ref<any>({}); // Store information about the active service, also be used when cloning
   const templateVersionList = ref<TemplateVersion[]>([]);
-  const templateVersionFormCache = ref({});
   const asyncLoading = ref(false);
   const dataType = props?.resourceType || (route.params.dataType as string);
   let templateVersionSchemaToken: any = null;
@@ -319,7 +318,6 @@ export default function useServiceData(props?) {
     templateInfo,
     serviceInfo,
     templateVersionList,
-    templateVersionFormCache,
     serviceDataList,
     templateList,
     completeData,

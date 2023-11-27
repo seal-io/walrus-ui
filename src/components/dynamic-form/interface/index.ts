@@ -23,6 +23,7 @@ export interface FieldSchema {
   'halfGrid'?: boolean;
   'level': number;
   'colSpan'?: number;
+  'nullable'?: boolean;
   'properties'?: FieldSchema;
   'additionalProperties'?: FieldSchema;
   'options'?: { label: string; value: string }[];

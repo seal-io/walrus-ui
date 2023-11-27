@@ -26,7 +26,7 @@ export default {
   'workflow.stage.add.approvalUser': '审核人员',
   'workflow.stage.add.paratask': '并行步骤',
   'workflow.stage.add.parallelism': '最大并行运行步骤数',
-  'workflow.stage.add.title': 'Stage-{order}',
+  'workflow.stage.add.title': 'stage-{order}',
   'workflow.stage.add.button': '添加新阶段',
   'workflow.stage.records': '运行记录',
   'workflow.stage.recently.result': '最近运行结果',

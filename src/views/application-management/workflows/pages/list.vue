@@ -54,6 +54,7 @@
         </template>
       </FilterBox>
       <a-table
+        class="workflow-table"
         column-resizable
         style="margin-bottom: 20px"
         :bordered="false"
@@ -165,8 +166,8 @@
           </a-table-column>
           <a-table-column
             ellipsis
-            tooltip
             :cell-style="{ minWidth: '40px' }"
+            :body-cell-style="{ fontSize: 0 }"
             align="left"
             data-index="stages"
             :title="$t('applications.workflow.table.stage')"
@@ -506,4 +507,4 @@
   fetchData();
 </script>
 
-<style lang="less" scoped></style>
+<style lang="less"></style>

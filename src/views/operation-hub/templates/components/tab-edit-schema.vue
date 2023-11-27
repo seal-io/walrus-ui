@@ -117,7 +117,6 @@
   import useCallCommon from '@/hooks/use-call-common';
   import { PropType, ref, provide, watch, computed } from 'vue';
   import AceEditor from '@/components/ace-editor/index.vue';
-  // import groupForm from '@/components/form-create/group-form.vue';
   import groupForm from '@/components/dynamic-form/group-form.vue';
   import {
     validateYaml,
@@ -132,7 +131,6 @@
     putTemplateSchemaByVersionId,
     resetTemplateSchemaByVersionId
   } from '../api';
-  import { upateResourceDefinition } from '../../resource-definitions/api';
   import { schemaActionList } from '../config/index';
 
   const themeList = [

@@ -87,6 +87,7 @@
           ellipsis
           tooltip
           :cell-style="{ minWidth: '40px' }"
+          :body-cell-style="{ fontSize: 0 }"
           align="left"
           data-index="details"
           :title="$t('applications.workflow.table.runDetails')"
