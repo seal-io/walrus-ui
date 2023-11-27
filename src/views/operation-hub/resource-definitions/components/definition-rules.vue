@@ -310,22 +310,6 @@
               <template #title>
                 <div>
                   <span>{{ $t('menu.operatorHub.module') }}</span>
-                  <!-- <a-tooltip position="tl">
-                    <template #content>
-                      <div>
-                        <div>{{
-                          $t('applications.applications.modules.params.title')
-                        }}</div>
-                        <div>{{
-                          $t('applications.applications.modules.params.tips2')
-                        }}</div>
-                        <div>{{
-                          $t('applications.applications.modules.params.tips3')
-                        }}</div>
-                      </div>
-                    </template>
-                    <icon-question-circle class="mleft-5" />
-                  </a-tooltip> -->
                 </div>
               </template>
             </GroupTitle>
@@ -419,13 +403,8 @@
             class="group-form"
             style="width: 100%"
             :schema="schemaVariables"
+            @change="handleAttributeChange"
           ></GroupForm>
-          <!-- <ViewForm
-            v-if="pageAction === PageAction.VIEW"
-            style="width: 100%; padding: 0"
-            :form-data="originFormData.attributes"
-            :field-list="fieldSchemaList"
-          ></ViewForm> -->
         </a-spin>
       </ModuleWrapper>
     </div>
@@ -433,8 +412,16 @@
 </template>
 
 <script lang="ts" setup>
-  import _, { get, find, cloneDeep, reduce, toString } from 'lodash';
-  import { ref, computed, provide, watch, PropType, onMounted } from 'vue';
+  import _, { get, find, toString } from 'lodash';
+  import {
+    ref,
+    computed,
+    provide,
+    watch,
+    PropType,
+    onMounted,
+    nextTick
+  } from 'vue';
   import ModuleWrapper from '@/components/module-wrapper/index.vue';
   import useCallCommon from '@/hooks/use-call-common';
   import useScrollToView from '@/hooks/use-scroll-to-view';
@@ -449,12 +436,8 @@
     InjectSchemaFormStatusKey
   } from '@/views/config';
   import GroupForm from '@/components/dynamic-form/group-form.vue';
-  import ViewForm from '@/components/form-create/view-form.vue';
-  import { beforeLeaveCallback } from '@/hooks/save-before-leave';
-  import { initFormState } from '@/components/dynamic-form/utils/init-form-state';
   import keyValueLabels from '@/components/form-create/custom-components/key-value-labels.vue';
   import primaryButtonGroup from '@/components/drop-button-group/primary-button-group.vue';
-  import labelsList from '@/views/application-management/services/components/labels-list.vue';
   import semverEq from 'semver/functions/eq';
   import semverGt from 'semver/functions/gt';
   import { SelectorAction } from '../config';
@@ -479,6 +462,12 @@
       type: String,
       default() {
         return PageAction.EDIT;
+      }
+    },
+    schemaFormAction: {
+      type: String,
+      default() {
+        return PageAction.CREATE;
       }
     },
     templateList: {
@@ -506,7 +495,7 @@
       }
     }
   });
-  const emits = defineEmits(['cancel', 'save', 'versionChange', 'delete']);
+  const emits = defineEmits(['cancel', 'save', 'delete']);
   const { scrollToView } = useScrollToView();
   const formData = ref<MatchingRule>({
     attributes: {},
@@ -527,19 +516,16 @@
       }
     }
   });
-  let copyFormData: any = null;
   const { route, router, t } = useCallCommon();
   const formref = ref();
   const groupForm = ref();
   const asyncLoading = ref(false);
   const validateTrigger = ref(false);
-  const versionMap = ref({ nv: '', ov: '' });
   const templateVersionList = ref<any[]>([]);
-  const fieldSchemaList = ref<any[]>([]);
   const id = route.query.id as string;
-  const templateVersionFormCache = ref<any>({});
   const uiSchema = ref<any>({});
   const selectors = ref<Set<string>>(new Set());
+  const formDataAttributeCache = ref<any>({});
 
   provide(InjectShowInputHintKey, true);
 
@@ -562,14 +548,13 @@
     return undefined;
   });
 
-  const action = computed(() => {
-    if (!id) {
-      return PageAction.CREATE;
-    }
-    return props.pageAction;
-  });
-  provide(InjectSchemaFormStatusKey, ref(action));
+  provide(InjectSchemaFormStatusKey, ref(props.schemaFormAction));
 
+  const handleAttributeChange = () => {
+    formDataAttributeCache.value[formData.value.template.version] = _.cloneDeep(
+      formData.value.attributes
+    );
+  };
   const initSelectors = () => {
     selectors.value = new Set();
     if (formData.value.selector.projectName) {
@@ -631,17 +616,8 @@
       ) || {};
 
     schemaVariables.value = variables;
-    // const result = initFormState(variables);
-    // fieldSchemaList.value = result.fieldSchemaList;
-    // _.each(fieldSchemaList.value, (item) => {
-    //   item.uiSchema.required = false;
-    //   _.each(item.uiSchema.rules, (rule) => {
-    //     if (rule.required) {
-    //       rule.required = false;
-    //     }
-    //   });
-    // });
   };
+
   const getTemplateVersions = async () => {
     try {
       const params = {
@@ -678,7 +654,7 @@
         isProjectContext: false
       };
       const { data } = await queryItemTemplatesVersions(params);
-      return get(data, 'items[0]', {});
+      return get(data, 'items.0', {});
     } catch (error) {
       return {};
     } finally {
@@ -687,8 +663,32 @@
   };
 
   const handleVersionPopupVisibleChange = (visible) => {
+    if (!formData.value.template?.template?.id) {
+      return;
+    }
     if (visible && !templateVersionList.value.length) {
       getTemplateVersions();
+    }
+  };
+
+  const getFormDataAttributeCache = () => {
+    if (
+      formData.value.template.version ===
+        props.originFormData.template.version &&
+      formData.value.template.template.id ===
+        props.originFormData.template.template.id
+    ) {
+      formData.value.attributes = _.cloneDeep(props.originFormData.attributes);
+      return;
+    }
+    if (
+      _.get(formDataAttributeCache.value, [formData.value.template.version])
+    ) {
+      formData.value.attributes = _.cloneDeep(
+        _.get(formDataAttributeCache.value, [formData.value.template.version])
+      );
+    } else {
+      formData.value.attributes = {};
     }
   };
   const handleVersionChange = async () => {
@@ -700,21 +700,21 @@
       'value',
       ''
     );
+
+    getFormDataAttributeCache();
+
     uiSchema.value = await getTemplateSchemaByVersion();
+
     setTemplateInfo(uiSchema.value);
-    formData.value.attributes = {};
-    groupForm.value?.clearFormValidStatus?.();
-    setTimeout(() => {
-      emits('versionChange');
-    }, 100);
   };
 
   const handleTemplateChange = async () => {
+    formDataAttributeCache.value = {};
     await getTemplateVersions();
     formData.value.template.name = _.get(
       _.find(
         props.templateList,
-        (item) => item.value === formData.value.template.template.id
+        (item) => item.value === formData.value.template?.template?.id
       ),
       'label',
       ''
@@ -725,10 +725,6 @@
       ''
     );
     await handleVersionChange();
-    templateVersionFormCache.value = {};
-    setTimeout(() => {
-      versionMap.value = { ov: '', nv: '' };
-    }, 20);
   };
 
   const getSchema = () => {
@@ -758,7 +754,6 @@
       formData.value = _.cloneDeep(props.originFormData);
       const moduleData = await getTemplateSchemaByVersion();
       setTemplateInfo(moduleData);
-      templateVersionFormCache.value = {};
       initSelectors();
     } else {
       formData.value.template.template.id = get(
@@ -769,30 +764,15 @@
       await handleTemplateChange();
     }
   };
-  watch(
-    () => formData.value.template.version,
-    (nv, ov) => {
-      versionMap.value = {
-        nv,
-        ov: ov || ''
-      };
-    },
-    {
-      immediate: true
-    }
-  );
 
   defineExpose({
     submit,
     getSchema
   });
-  const initData = async () => {
-    copyFormData = _.cloneDeep(formData);
-  };
+
   onMounted(() => {
     init();
   });
-  initData();
 </script>
 
 <style lang="less" scoped>

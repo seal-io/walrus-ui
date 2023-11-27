@@ -323,7 +323,6 @@
     pageAction,
     templateInfo,
     templateVersionList,
-    templateVersionFormCache,
     serviceDataList,
     templateList,
     completeData,
@@ -417,21 +416,6 @@
   };
 
   // cache the user inputs when change the module version
-  const setModuleVersionFormCache = async () => {
-    if (!versionMap.value.ov) return;
-    const moduleFormList = await groupForm.value?.getData();
-    const inputs = reduce(
-      moduleFormList,
-      (obj, s) => {
-        obj = _.merge(obj, s.formData.value);
-        return obj;
-      },
-      {}
-    );
-    templateVersionFormCache.value[versionMap.value.ov] = {
-      ...pickBy(inputs, (val) => toString(val))
-    };
-  };
 
   const execVersionChangeCallback = async () => {
     // await setModuleVersionFormCache();
@@ -478,10 +462,7 @@
         '0.template.version',
         ''
       );
-      templateVersionFormCache.value = {};
-      setTimeout(() => {
-        versionMap.value = { ov: '', nv: '' };
-      }, 20);
+
       handleVersionChange();
     }
   };
@@ -527,18 +508,7 @@
   const axiosTokenCancel = () => {
     connectorAxiosToken?.cancel();
   };
-  watch(
-    () => formData.value.template.version,
-    (nv, ov) => {
-      versionMap.value = {
-        nv,
-        ov: ov || ''
-      };
-    },
-    {
-      immediate: true
-    }
-  );
+
   onBeforeRouteLeave(async (to, from) => {
     if (!_.isEqual(copyFormData, formData.value)) {
       beforeLeaveCallback({

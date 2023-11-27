@@ -26,7 +26,7 @@ export default {
   'workflow.stage.add.approvalUser': 'Approvers',
   'workflow.stage.add.paratask': 'Parallel Step',
   'workflow.stage.add.parallelism': 'Parallel Step Limit',
-  'workflow.stage.add.title': 'Stage-{order}',
+  'workflow.stage.add.title': 'stage-{order}',
   'workflow.stage.add.button': 'New Stage',
   'workflow.stage.records': 'Executions',
   'workflow.stage.recently.result': 'Recent Running Result',
