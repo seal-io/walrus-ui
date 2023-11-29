@@ -194,7 +194,7 @@
   } from '@/api/axios-chunk-request';
   import { websocketEventType, PageAction } from '@/views/config';
   import useCallCommon from '@/hooks/use-call-common';
-  import { execSucceed } from '@/utils/monitor';
+  import { execSucceed, deleteModal } from '@/utils/monitor';
   import DropButtonGroup from '@/components/drop-button-group/index.vue';
   import { UseSortDirection } from '@/utils/common';
   import useRowSelect from '@/hooks/use-row-select';
@@ -260,7 +260,7 @@
   } = useRollbackRevision();
   const { setChunkRequest } = useSetChunkRequest();
   const { rowSelection, selectedKeys, handleSelectChange } = useRowSelect();
-  const { router, locale, route } = useCallCommon();
+  const { router, locale, route, t } = useCallCommon();
   const { sort, sortOrder, setSortDirection } = UseSortDirection({
     defaultSortField: '-createTime',
     defaultOrder: 'descend'
@@ -501,16 +501,29 @@
     }
   };
 
+  const handleStopModal = async (row) => {
+    deleteModal({
+      content: 'applications.service.stop.confirm',
+      title: t('applications.service.stop.tips', {
+        type:
+          props.type === ServiceDataType.service
+            ? t('applications.applications.service.title')
+            : t('applications.applications.resource.title')
+      }),
+      okText: 'common.button.stop',
+      onOk: () => handleStopResource(row)
+    });
+  };
   const handleClickAction = (value, row) => {
-    console.log('value======', value, row);
     actionHandlerMap.get(value)(row);
   };
+
   const setActionHandler = () => {
     actionHandlerMap.set(serviceActionMap.upgrade, handleClickUpgrade);
     actionHandlerMap.set(serviceActionMap.rollback, handleClickRollback);
     actionHandlerMap.set(serviceActionMap.sync, handleRefreshServiceConfig);
     actionHandlerMap.set(serviceActionMap.logs, handleViewServiceLatestLogs);
-    actionHandlerMap.set(serviceActionMap.stop, handleStopResource);
+    actionHandlerMap.set(serviceActionMap.stop, handleStopModal);
     actionHandlerMap.set(serviceActionMap.start, handleStartResource);
     actionHandlerMap.set(serviceActionMap.delete, handleDelete);
   };

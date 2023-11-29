@@ -15,6 +15,8 @@ export default {
   'applications.applications.configuration.create': 'Add Template',
   'applications.applications.table.name': 'Application',
   'applications.applications.table.module': 'Template',
+  'applications.applications.service.title': 'service',
+  'applications.applications.resource.title': 'resource',
   'applications.applications.table.service': 'Service',
   'applications.applications.table.resource': 'Resource',
   'applications.applications.table.resourceType': 'Resource Type',
@@ -175,5 +177,9 @@ export default {
   'applications.variable.scope.global': 'Global',
   'applications.resource.log.lastlines': 'Last Lines',
   'applications.resource.log.showtime': 'Show Timestamp',
-  'applications.resource.log.lastlog': 'Last Run Log'
+  'applications.resource.log.lastlog': 'Last Run Log',
+  'applications.service.stop.tips': 'Stop the {type}!',
+  'applications.service.stop.env': 'Stop the environment!',
+  'applications.service.stop.confirm':
+    'The underlying component will be removed, are you sure you want to stop?'
 };

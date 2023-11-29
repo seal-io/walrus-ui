@@ -180,7 +180,7 @@
   import { useUserStore, useServiceStore } from '@/store';
   import _ from 'lodash';
   import { PageAction, websocketEventType } from '@/views/config';
-  import { execSucceed } from '@/utils/monitor';
+  import { execSucceed, deleteModal } from '@/utils/monitor';
   import {
     markRaw,
     ref,
@@ -312,6 +312,19 @@
       // ignore
     }
   };
+  const handleStopModal = async (row) => {
+    deleteModal({
+      content: 'applications.service.stop.confirm',
+      title: t('applications.service.stop.tips', {
+        type:
+          dataType === ServiceDataType.service
+            ? t('applications.applications.service.title')
+            : t('applications.applications.resource.title')
+      }),
+      okText: 'common.button.stop',
+      onOk: () => handleStopResource()
+    });
+  };
   const handleDelete = () => {
     showDeleteModal.value = true;
   };
@@ -322,7 +335,7 @@
   const setActionMap = () => {
     actionMap.set(serviceActionMap.delete, handleDelete);
     actionMap.set(serviceActionMap.start, handleStartResource);
-    actionMap.set(serviceActionMap.stop, handleStopResource);
+    actionMap.set(serviceActionMap.stop, handleStopModal);
     actionMap.set(serviceActionMap.upgrade, handleUpgrade);
   };
   const handleEditCancel = () => {
