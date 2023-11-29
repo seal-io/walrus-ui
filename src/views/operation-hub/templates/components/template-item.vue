@@ -42,13 +42,13 @@
               >
             </AutoTip>
           </div>
-          <div class="btn-wrap">
+          <span class="btn-wrap">
             <moreButtonActions
               v-if="actionList.length"
               :actions="selectActions"
               @select="handleSelectAction"
             ></moreButtonActions>
-          </div>
+          </span>
         </div>
         <div class="text">
           {{ dataInfo.description }}
@@ -206,9 +206,7 @@
 
     .btn-wrap {
       position: relative;
-      top: -4px;
-      display: flex;
-      justify-content: flex-end;
+      top: -2px;
     }
 
     .img-box {

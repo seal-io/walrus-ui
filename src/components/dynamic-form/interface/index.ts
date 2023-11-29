@@ -1,4 +1,5 @@
 export interface FieldSchema {
+  '_t'?: string | number;
   'name': string;
   'title'?: string;
   'fieldPath': string[];

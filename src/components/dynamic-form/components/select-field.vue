@@ -5,46 +5,36 @@
   import SealFormItemWrap from '@/components/seal-form/components/seal-form-item-wrap.vue';
   import schemaFieldProps from '../fields/schema-field-props';
   import {
-    BasicFieldMaps,
-    CommonFieldMaps,
-    FormatsFieldMaps
-  } from '../fields/field-map';
-  import {
     isSelect,
     isNumber,
     isBoolean,
     isDatePicker,
     isMuliSelect,
     isPassword,
-    checkValidValue,
     initFieldDefaultValue,
     isRequiredInitField,
-    isEmptyvalue
+    isEmptyvalue,
+    isAllowCreateNumberSelect,
+    isAllowCreateSelect,
+    genFieldPropsAndRules
   } from '../utils';
   import { Option } from '../interface';
   import { ProviderFormRefKey } from '../config';
 
   export default defineComponent({
     props: {
-      ...schemaFieldProps,
-      rules: {
-        type: Array,
-        default: () => []
-      }
+      ...schemaFieldProps
     },
     emits: ['change'],
-    setup(props, { emit, attrs }) {
+    setup(props, { emit }) {
       const schemaFormStatus = inject(
         InjectSchemaFormStatusKey,
         ref(PageAction.CREATE)
       );
       const formref = inject(ProviderFormRefKey, ref());
-
-      const widget = _.get(props.schema, ['x-walrus-ui', 'widget'], '');
-      const numberReg = /\d+/;
       const { type } = toRefs(props.schema);
 
-      let Component = BasicFieldMaps[type.value];
+      const options = ref<Option[]>([]);
 
       const handleUnsetField = () => {
         if (
@@ -54,6 +44,10 @@
           _.unset(props.formData, props.fieldPath);
         }
       };
+      const { fieldProps, rules } = genFieldPropsAndRules({
+        schema: props.schema,
+        requiredFields: props.requiredFields
+      });
       const handleChange = (data) => {
         emit('change', data);
 
@@ -77,25 +71,59 @@
         );
       }
 
-      // textarea
-      if (type.value === 'string' && widget === 'TextArea') {
-        Component = CommonFieldMaps.textArea;
-      }
-
-      if (isDatePicker(props.schema) && props.schema.format) {
-        Component = FormatsFieldMaps[props.schema.format];
-      }
-
-      if (isPassword(props.schema)) {
-        Component = CommonFieldMaps.password;
-      }
-
-      const handleSelectInputChange = (e: any) => {
-        if (isBoolean(props.schema)) {
-          _.set(props.schema, props.fieldPath, e.target.checked);
-        } else {
-          _.set(props.schema, props.fieldPath, e);
+      const initOptions = () => {
+        if (props.schema.enum) {
+          options.value = _.map(props.schema.enum, (item) => {
+            return {
+              label: item,
+              value: item
+            };
+          });
+        } else if (props.schema.default) {
+          const defaultList = _.isArray(props.schema.default)
+            ? props.schema.default
+            : [props.schema.default];
+          options.value = defaultList.map((item) => {
+            return {
+              label: item,
+              value: item
+            };
+          });
         }
+        if (schemaFormStatus.value !== PageAction.CREATE) {
+          const value = _.get(props.formData, props.fieldPath);
+          const list = _.concat(value).map((item) => {
+            return {
+              label: item,
+              value: item
+            };
+          });
+          options.value = _.uniqBy(_.concat(options.value, list), 'value');
+        }
+        options.value = _.filter(options.value, (v) => !isEmptyvalue(v.value));
+      };
+
+      const isValueEmpty = (val) => {
+        return val === '' || val === undefined || val === null;
+      };
+      const filterEmptyOnSelect = (list, e) => {
+        if (isAllowCreateSelect(props.schema)) {
+          return _.filter(list, (v) => !isValueEmpty(v));
+        }
+        return list;
+      };
+
+      const renderSelectOptions = () => {
+        if (isSelect(props.schema)) {
+          return (
+            <>
+              {_.map(options.value, (item) => {
+                return <a-option value={item.value}>{item.label}</a-option>;
+              })}
+            </>
+          );
+        }
+        return null;
       };
 
       const fieldValue = ref(_.get(props.formData, props.fieldPath));
@@ -106,41 +134,43 @@
         }
         return val;
       };
+
+      initOptions();
+
       const renderEdit = () => {
         return (
           <a-form-item
             hide-label={true}
-            rules={props.rules}
-            label={props.schema.title}
+            rules={rules}
+            label={fieldProps.label}
             field={_.join(props.fieldPath, '.')}
             validate-trigger={['change']}
           >
-            <Component
-              {...attrs}
-              required={props.required}
-              label={props.label}
+            <seal-select
+              {...fieldProps}
               style="width: 100%"
               allow-search={false}
+              required={fieldProps.required}
+              label={fieldProps.label}
               disabled={
-                props.readonly ||
-                (attrs.immutable &&
-                  schemaFormStatus.value !== PageAction.CREATE)
-              }
-              readonly={
-                props.readonly ||
-                (attrs.immutable &&
+                fieldProps.readonly ||
+                (fieldProps.immutable &&
                   schemaFormStatus.value !== PageAction.CREATE)
               }
               allow-clear={!props.schema.enum}
               editor-id={_.join(props.fieldPath, '-')}
               popupInfo={props.schema.description}
               v-model={fieldValue.value}
-              onInput={(e) => {
-                console.log('basic-field==input----1', e, props.schema);
-                handleSelectInputChange(e);
-              }}
               onChange={(val, e) => {
-                fieldValue.value = val;
+                const newVal = filterEmptyOnSelect(val, e);
+
+                if (isAllowCreateNumberSelect(props.schema)) {
+                  fieldValue.value = _.map(newVal, (v) => {
+                    return _.toNumber(v);
+                  });
+                } else {
+                  fieldValue.value = val;
+                }
 
                 if (isEmptyvalue(fieldValue.value) && !props.schema.default) {
                   _.unset(props.formData, props.fieldPath);
@@ -150,19 +180,23 @@
 
                 handleChange(props.formData);
               }}
-            ></Component>
+            >
+              {renderSelectOptions()}
+            </seal-select>
           </a-form-item>
         );
       };
 
       return () => (
-        <>
+        <a-grid-item
+          span={{ lg: props.schema.colSpan, md: 12, sm: 12, xs: 12 }}
+        >
           {schemaFormStatus.value !== PageAction.VIEW ? (
             renderEdit()
           ) : (
             <a-form-item
               hide-label={true}
-              rules={props.rules}
+              rules={rules}
               label={props.schema.title}
               field={_.join(props.fieldPath, '.')}
               validate-trigger={['change']}
@@ -184,7 +218,7 @@
               </SealFormItemWrap>
             </a-form-item>
           )}
-        </>
+        </a-grid-item>
       );
     }
   });

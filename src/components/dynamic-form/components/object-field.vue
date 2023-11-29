@@ -60,11 +60,6 @@
         level: props.level + 1
       });
 
-      console.log(
-        'childProperties++++++++++++',
-        props.schema,
-        childProperties.value
-      );
       // init field value
       if (
         schemaFormStatus.value === PageAction.CREATE &&

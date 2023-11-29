@@ -104,7 +104,7 @@
                 showNumberInput={isMapNumber}
                 showCheckbox={isMapBoolean}
                 labels={props.formData}
-                labelsKey={_.join(props.fieldPath, '.')}
+                labelsKey={props.fieldPath}
                 readonly={
                   PageAction.VIEW === schemaFormStatus.value ||
                   fieldProps.readonly

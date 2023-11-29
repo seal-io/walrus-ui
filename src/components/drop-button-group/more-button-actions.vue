@@ -1,15 +1,12 @@
 <template>
   <a-dropdown
     size="small"
-    style="line-height: 30px"
     position="bl"
     :popup-container="containerId"
     @select="handleSelectAction"
   >
     <a-link size="mini" @click.stop="() => {}">
-      <template #icon
-        ><icon-more style="margin-right: 0; font-size: 18px; stroke-width: 5"
-      /></template>
+      <icon-more style="margin-right: 0; font-size: 18px; stroke-width: 5" />
     </a-link>
     <template #content>
       <a-doption

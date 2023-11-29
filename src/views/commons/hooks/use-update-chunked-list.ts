@@ -34,7 +34,16 @@ export function useUpdateChunkedList(
     const ids = data?.ids || [];
     // CREATE
     if (data?.type === websocketEventType.CREATE) {
-      dataList.value = _.concat(collections, toRaw(dataList.value));
+      _.each(collections, (item) => {
+        const updateIndex = _.findIndex(
+          dataList.value,
+          (sItem) => sItem.id === item.id
+        );
+        if (updateIndex === -1) {
+          const updateItem = _.cloneDeep(item);
+          dataList.value = _.concat(updateItem, toRaw(dataList.value));
+        }
+      });
     }
     // DELETE
     if (data?.type === websocketEventType.DELETE) {
@@ -55,7 +64,6 @@ export function useUpdateChunkedList(
         }
       });
     }
-    console.log('dataList.value===', { list: dataList.value, data });
     if (options?.callback) {
       options?.callback(dataList.value);
     }
