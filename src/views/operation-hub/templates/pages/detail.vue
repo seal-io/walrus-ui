@@ -478,7 +478,7 @@
     return true;
   });
   const initData = async () => {
-    getItemTemplate();
+    await getItemTemplate();
     await getTemplateVersions();
     await getTemplateSchemaByVersionId();
     setBreadCrumbList();

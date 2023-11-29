@@ -88,7 +88,6 @@ export function refreshTemplate(data: { id: string }) {
 
 export function queryTemplatesVersions(params: { templateID: string }) {
   let url = `${TEMPLATE_API}/${params.templateID}/versions`;
-  console.log('isProjectContext=====', isProjectContext());
   if (isProjectContext()) {
     url = `${PROJECT_API_PREFIX()}${TEMPLATE_API}/${
       params.templateID
