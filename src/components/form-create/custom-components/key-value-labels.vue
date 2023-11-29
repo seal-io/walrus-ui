@@ -16,7 +16,7 @@
         }
       },
       labelsKey: {
-        type: String,
+        type: [String, Array] as PropType<string | string[]>,
         default() {
           return 'labels';
         }

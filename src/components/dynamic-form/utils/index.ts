@@ -79,6 +79,50 @@ export const isDatePicker = (schema: FieldSchema) => {
   );
 };
 
+export const isFixedOptionSelect = (schema: FieldSchema) => {
+  const { type, enum: enumList } = schema;
+  return type === FIELD_TYPE.STRING && enumList?.length;
+};
+
+export const isAllowCreateSelect = (schema: FieldSchema) => {
+  const { type, enum: enumList, items } = schema;
+  return (
+    type === FIELD_TYPE.ARRAY &&
+    ((!enumList?.length && enumList) ||
+      _.includes(
+        [FIELD_TYPE.STRING, FIELD_TYPE.NUMBER, FIELD_TYPE.INTEGER],
+        items?.type
+      ))
+  );
+};
+
+export const isAllowCreateNumberSelect = (schema: FieldSchema) => {
+  const { type, enum: enumList, items } = schema;
+  return (
+    (items?.type === FIELD_TYPE.NUMBER || items?.type === FIELD_TYPE.INTEGER) &&
+    !enumList?.length &&
+    type === FIELD_TYPE.ARRAY
+  );
+};
+
+export const isNonObject = (schema: any) => {
+  const { type, properties, additionalProperties } = schema;
+  return type === FIELD_TYPE.OBJECT && !properties && !additionalProperties;
+};
+export const isYamlEditor = (schema: FieldSchema) => {
+  const { type, properties, additionalProperties, items } = schema;
+  if (type === FIELD_TYPE.OBJECT && !properties && !additionalProperties) {
+    return true;
+  }
+  if (
+    type === FIELD_TYPE.ARRAY &&
+    (isNonObject(items) || !_.get(items, 'type'))
+  ) {
+    return true;
+  }
+  return false;
+};
+
 export const getShowIfValue = (showif, formData, fieldPath?: string[]) => {
   const conditions = parseExpression(showif);
   const isShow = getConditionValue(
@@ -209,7 +253,8 @@ export const genObjectFieldProperties = ({
       colSpan: colSpanData.span,
       halfGrid: colSpanData.halfGrid,
       level,
-      order
+      order,
+      _t: Date.now()
     };
 
     resultList.push(fieldSchema);

@@ -3,8 +3,6 @@ import { RadioGroup, CheckboxGroup } from '@arco-design/web-vue/es';
 
 import HintInput from '@/components/hint-input/index.vue';
 import AceEditor from '@/components/ace-editor/index.vue';
-import sealInputPassword from '@/components/seal-form/components/seal-input-password.vue';
-import sealInput from '@/components/seal-form/components/seal-input.vue';
 import sealSelect from '@/components/seal-form/components/seal-select.vue';
 import sealInputNumber from '@/components/seal-form/components/seal-input-number.vue';
 import sealCheckbox from '@/components/seal-form/components/seal-checkbox.vue';
@@ -15,12 +13,17 @@ import xInputGroup from '@/components/form-create/custom-components/x-input-grou
 import stringField from './string-field/index.vue';
 import ObjectField from '../components/object-field.vue';
 import ArrayField from '../components/array-field.vue';
+import SelectField from '../components/select-field.vue';
 import ObjectMap from '../components/object-map.vue';
-
-import { FieldSchema } from '../interface';
 import ComponentsMap from '../components/components-map';
 import FIELD_TYPE from '../config/field-type';
-import { isBasicType, isSimpleObject } from '../utils';
+import {
+  isBasicType,
+  isSimpleObject,
+  isSelect,
+  isMuliSelect,
+  isYamlEditor
+} from '../utils';
 
 export const CommonFieldMaps = {
   textArea: sealTextarea,
@@ -32,9 +35,11 @@ export const CommonFieldMaps = {
   checkboxGroup: CheckboxGroup
 };
 
+// has formItem component
 export const FieldMaps = {
   array: ArrayField,
   object: ObjectField,
+  select: SelectField,
   simpleObject: ObjectMap,
   stringField
 };
@@ -52,120 +57,75 @@ export const FormatsFieldMaps = {
   'date-time': datePicker
 };
 
-export const isSelect = (schema: FieldSchema) => {
-  const { type, enum: enumList, items } = schema;
-  if (items && type === FIELD_TYPE.ARRAY && isBasicType(items.type)) {
-    return true;
-  }
-  return type === FIELD_TYPE.STRING && enumList && enumList.length > 0;
-};
-
-export const isMuliSelect = (schema: FieldSchema) => {
-  const { type, enum: enumList, items } = schema;
-  return (
-    type === FIELD_TYPE.ARRAY &&
-    (enumList?.length ||
-      _.includes(
-        [FIELD_TYPE.STRING, FIELD_TYPE.NUMBER, FIELD_TYPE.INTEGER],
-        items?.type
-      ))
-  );
-};
-
-export const isFixedOptionSelect = (schema: FieldSchema) => {
-  const { type, enum: enumList } = schema;
-  return type === FIELD_TYPE.STRING && enumList?.length;
-};
-
-export const isAllowCreateSelect = (schema: FieldSchema) => {
-  const { type, enum: enumList, items } = schema;
-  return (
-    type === FIELD_TYPE.ARRAY &&
-    ((!enumList?.length && enumList) ||
-      _.includes(
-        [FIELD_TYPE.STRING, FIELD_TYPE.NUMBER, FIELD_TYPE.INTEGER],
-        items?.type
-      ))
-  );
-};
-
-export const isAllowCreateNumberSelect = (schema: FieldSchema) => {
-  const { type, enum: enumList, items } = schema;
-  return (
-    (items?.type === FIELD_TYPE.NUMBER || items?.type === FIELD_TYPE.INTEGER) &&
-    !enumList?.length &&
-    type === FIELD_TYPE.ARRAY
-  );
-};
-
-export const isNonObject = (schema: any) => {
-  const { type, properties, additionalProperties } = schema;
-  return type === FIELD_TYPE.OBJECT && !properties && !additionalProperties;
-};
-export const isYamlEditor = (schema: FieldSchema) => {
-  const { type, properties, additionalProperties, items } = schema;
-  if (type === FIELD_TYPE.OBJECT && !properties && !additionalProperties) {
-    return true;
-  }
-  if (
-    type === FIELD_TYPE.ARRAY &&
-    (isNonObject(items) || !_.get(items, 'type'))
-  ) {
-    return true;
-  }
-  return false;
-};
 export const getSchemaFieldComponent = ({ schema, fieldPath, formData }) => {
   const { type, required: requiredFields } = schema;
   const widget = _.get(schema, ['x-walrus-ui', 'widget'], '');
 
+  const commonAttrs = {
+    key: Date.now()
+  };
   // build-in component
   if (widget && widget !== 'TextArea') {
     return {
       component: ComponentsMap[widget],
       fieldPath: [...fieldPath],
-      requiredFields
+      requiredFields,
+      commonAttrs
     };
   }
   if (isYamlEditor(schema)) {
     return {
       component: ComponentsMap.YamlEditor,
       fieldPath: [...fieldPath],
-      requiredFields
+      requiredFields,
+      commonAttrs
     };
   }
 
-  if (type === FIELD_TYPE.ARRAY && !isMuliSelect(schema) && !isSelect(schema)) {
+  if (isMuliSelect(schema) || isSelect(schema)) {
+    return {
+      component: FieldMaps.select,
+      fieldPath: [...fieldPath],
+      requiredFields,
+      commonAttrs
+    };
+  }
+  if (type === FIELD_TYPE.ARRAY) {
     return {
       component: FieldMaps.array,
       fieldPath: [...fieldPath],
-      requiredFields
+      requiredFields,
+      commonAttrs
     };
   }
   if (type === FIELD_TYPE.OBJECT && isSimpleObject(schema)) {
     return {
       component: FieldMaps.simpleObject,
       fieldPath: [...fieldPath],
-      requiredFields
+      requiredFields,
+      commonAttrs
     };
   }
   if (type === FIELD_TYPE.OBJECT) {
     return {
       component: FieldMaps.object,
       fieldPath: [...fieldPath],
-      requiredFields
+      requiredFields,
+      commonAttrs
     };
   }
   if (isBasicType(schema)) {
     return {
       component: FieldMaps.stringField,
       fieldPath: [...fieldPath],
-      requiredFields
+      requiredFields,
+      commonAttrs
     };
   }
   return {
     component: FieldMaps.stringField,
     fieldPath: [...fieldPath],
-    requiredFields
+    requiredFields,
+    commonAttrs
   };
 };

@@ -19,7 +19,8 @@
     getCustomColSpan,
     isRequiredInitField,
     calcFieldSpan,
-    isHalfGrid
+    isHalfGrid,
+    isEmptyvalue
   } from '../utils';
   import CommonButton from './common-button.vue';
 
@@ -158,7 +159,6 @@
         ];
 
         // set the fieldpath
-        // set the fieldpath
         if (items?.properties) {
           setPropertiesListFieldPath();
         } else {
@@ -206,14 +206,15 @@
       // check array every item is empty or null or undefined
       const filterArrayIsEmpty = (arr) => {
         return _.filter(arr, (item) => {
-          return !_.isEmpty(item) || !_.isNull(item) || !_.isUndefined(item);
+          return !isEmptyvalue(item);
         });
       };
       const handleDeleteClick = (index) => {
         propertiesList.value.splice(index, 1);
 
         // update formData
-        _.unset(props.formData, [...props.fieldPath, `${index}`]);
+        // _.unset(props.formData, [...props.fieldPath, `${index}`]);
+        _.get(props.formData, props.fieldPath).splice(index, 1);
         if (
           !_.get(props.formData, props.fieldPath).length ||
           !filterArrayIsEmpty(_.get(props.formData, props.fieldPath).length)

@@ -1,7 +1,7 @@
 import { ref, isRef, onBeforeUnmount } from 'vue';
 import _, { keys, map } from 'lodash';
 
-export default function useLabelsActions(formData, key?: string) {
+export default function useLabelsActions(formData, key?: string | string[]) {
   const get = (obj, key) => {
     return isRef(obj) ? _.get(obj.value, key) : _.get(obj, key);
   };
@@ -20,9 +20,13 @@ export default function useLabelsActions(formData, key?: string) {
     labelList.value = [];
     const labelKeys = keys(get(formData, labelsKey));
     labelList.value = map(labelKeys, (k) => {
+      let fieldKey = [labelsKey, k];
+      if (_.isArray(labelsKey)) {
+        fieldKey = [...labelsKey, k];
+      }
       return {
         key: k,
-        value: get(formData, [labelsKey, k])
+        value: get(formData, fieldKey)
       };
     });
   };

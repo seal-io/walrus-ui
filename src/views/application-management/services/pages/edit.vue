@@ -619,7 +619,13 @@
     const res = await formref.value?.validate();
     const groupres = await groupForm.value?.validate();
     const hiddenFormData = groupForm.value?.getHiddenData();
-    console.log('groupres===', groupres, res, validateTrigger.value);
+    console.log(
+      'groupres===',
+      groupres,
+      res,
+      formData.value.attributes,
+      validateTrigger.value
+    );
 
     if (!res && !groupres && !validateTrigger.value) {
       try {
