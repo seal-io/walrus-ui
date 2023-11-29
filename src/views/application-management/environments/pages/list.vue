@@ -427,11 +427,19 @@
     const ids: any = row ? [row.id] : null;
     deleteModal({ onOk: () => handleDeleteConfirm(ids) });
   };
+  const handleStopModal = async (row) => {
+    deleteModal({
+      content: 'applications.service.stop.confirm',
+      title: 'applications.service.stop.env',
+      okText: 'common.button.stop',
+      onOk: () => handleStopEnvironment(row)
+    });
+  };
   const setActionHandler = () => {
     actionHandlerMap.set(CommonButtonValue.Edit, handleEdit);
     actionHandlerMap.set(CommonButtonValue.View, handleViewDetail);
     actionHandlerMap.set(CommonButtonValue.Clone, handleClone);
-    actionHandlerMap.set(CommonButtonValue.Stop, handleStopEnvironment);
+    actionHandlerMap.set(CommonButtonValue.Stop, handleStopModal);
     actionHandlerMap.set(CommonButtonValue.Start, handleStartEnvironment);
     actionHandlerMap.set(CommonButtonValue.Delete, handleDelete);
   };
