@@ -55,6 +55,12 @@
           props.fieldPath,
           initFieldDefaultValue(props.schema)
         );
+        console.log(
+          'array formData++++++++++++++',
+          props.formData,
+          props.schema.default,
+          props.schema.title
+        );
         handleChange(props.formData);
       }
 
@@ -131,7 +137,6 @@
             sItem.fieldPath = [
               ...props.fieldPath,
               `${index}`,
-              `${sIndex}`,
               sItem.name
             ].filter((i) => i);
           });
@@ -187,24 +192,6 @@
           propertiesList.value
         );
         handleChange(props.formData);
-      };
-      // init field value when edit
-      const initFieldValue = () => {
-        if (schemaFormStatus.value === PageAction.CREATE) {
-          return;
-        }
-        const value = _.get(props.formData, props.fieldPath);
-        console.log(
-          'value===9',
-          schemaFormStatus.value,
-          props.fieldPath,
-          value
-        );
-        if (value && value.length) {
-          for (let i = 0; i < value.length; i += 1) {
-            setPropertiesList();
-          }
-        }
       };
 
       // check array every item is empty or null or undefined
@@ -286,8 +273,27 @@
         }
       };
 
+      // init field value when edit
+      const initFieldValue = () => {
+        if (schemaFormStatus.value === PageAction.CREATE) {
+          init();
+        } else {
+          const value = _.get(props.formData, props.fieldPath);
+          if (value && value.length) {
+            for (let i = 0; i < value.length; i += 1) {
+              setPropertiesList();
+            }
+          }
+        }
+        console.log(
+          'value===9',
+          schemaFormStatus.value,
+          props.fieldPath,
+          props.formData
+        );
+      };
+
       genItemsProperties();
-      init();
 
       onMounted(() => {
         initFieldValue();
@@ -319,7 +325,7 @@
                         return (
                           <SchemaField
                             level={sItem.level}
-                            key={_.join([props.fieldPath, index, sIndex], '.')}
+                            key={_.join(sItem.fieldPath, '.')}
                             schema={sItem}
                             formData={props.formData}
                             fieldPath={sItem.fieldPath}
