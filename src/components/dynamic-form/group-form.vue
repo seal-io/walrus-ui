@@ -41,7 +41,8 @@
 
 <script lang="ts" setup>
   import _ from 'lodash';
-  import { PropType, watch, ref, nextTick, toRaw, provide } from 'vue';
+  import { InjectSchemaFormStatusKey, PageAction } from '@/views/config';
+  import { PropType, watch, ref, nextTick, toRaw, provide, inject } from 'vue';
   import SingleForm from './single-form.vue';
   import { FieldSchema, FormGroup } from './interface';
   import { createFormGroup } from './utils/create-form-group';
@@ -75,6 +76,7 @@
     }
   });
 
+  const schemaFormStatus = inject(InjectSchemaFormStatusKey, ref(''));
   const emits = defineEmits(['update:formData', 'change']);
   const activeKey = ref<string>('schemaForm');
   const refMap = ref<any>({});
@@ -212,7 +214,9 @@
       hiddenFormData.value = {};
       formGroup.value = [];
       destroyed.value = true;
-      rootFormData.value = {};
+      if (schemaFormStatus.value === PageAction.CREATE) {
+        rootFormData.value = {};
+      }
       nextTick(() => {
         destroyed.value = false;
         const groups = createFormGroup(props.schema);
