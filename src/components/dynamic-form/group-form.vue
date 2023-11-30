@@ -212,6 +212,7 @@
       hiddenFormData.value = {};
       formGroup.value = [];
       destroyed.value = true;
+      rootFormData.value = {};
       nextTick(() => {
         destroyed.value = false;
         const groups = createFormGroup(props.schema);
