@@ -646,17 +646,17 @@
           ...data.attributes,
           ...hiddenFormData
         };
-        if (id) {
-          await upgradeApplicationInstance(data);
-        } else {
-          await handleCreate(data);
-          return;
-        }
-        if (props.pgType !== 'page') {
-          emits('save');
-        } else {
-          router.back();
-        }
+        // if (id) {
+        //   await upgradeApplicationInstance(data);
+        // } else {
+        //   await handleCreate(data);
+        //   return;
+        // }
+        // if (props.pgType !== 'page') {
+        //   emits('save');
+        // } else {
+        //   router.back();
+        // }
         submitLoading.value = false;
       } catch (error) {
         submitLoading.value = false;

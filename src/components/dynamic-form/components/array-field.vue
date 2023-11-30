@@ -181,7 +181,11 @@
             }
           });
         });
-
+        console.log(
+          'formData++++++++++++++',
+          props.formData,
+          propertiesList.value
+        );
         handleChange(props.formData);
       };
       // init field value when edit
