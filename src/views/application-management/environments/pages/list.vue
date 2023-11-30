@@ -208,8 +208,10 @@
   import { PROJECT } from '@/router/config';
   import { useUserStore, useAppStore } from '@/store';
   import { Resources, Actions } from '@/permissions/config';
-  import { ref, reactive, onMounted } from 'vue';
+  import { ref, reactive, onMounted, nextTick } from 'vue';
   import useCallCommon from '@/hooks/use-call-common';
+  import { useSetChunkRequest } from '@/api/axios-chunk-request';
+  import { useUpdateChunkedList } from '@/views/commons/hooks/use-update-chunked-list';
   import DropButtonGroup from '@/components/drop-button-group/index.vue';
   import FilterBox from '@/components/filter-box/index.vue';
   import { deleteModal, execSucceed } from '@/utils/monitor';
@@ -220,7 +222,9 @@
     queryEnvironments,
     deleteEnvironment,
     stopEnvironment,
-    startEnvironment
+    startEnvironment,
+    ENVIRONMENT_API,
+    PROJECT_API_PREFIX
   } from '../api';
   import CreateEnvironment from '../components/create-environment.vue';
   import serviceSummary from '../components/service-summary.vue';
@@ -238,6 +242,8 @@
     defaultSortField: '-createTime',
     defaultOrder: 'descend'
   });
+  const { setChunkRequest } = useSetChunkRequest();
+
   const appStore = useAppStore();
   const userStore = useUserStore();
   const { router, route } = useCallCommon();
@@ -255,6 +261,7 @@
     perPage: appStore.perPage || 10
   });
 
+  const { updateChunkedList } = useUpdateChunkedList(dataList);
   const genSummaryData = (row) => {
     return _.map(_.keys(row.statusSummary), (key) => {
       return {
@@ -444,8 +451,30 @@
     actionHandlerMap.set(CommonButtonValue.Delete, handleDelete);
   };
 
+  const updateHandler = (list) => {
+    _.each(list, (data) => {
+      updateChunkedList(data);
+    });
+  };
+  const createEnvironmentChunkRequest = () => {
+    const url = `${PROJECT_API_PREFIX()}${ENVIRONMENT_API}`;
+    try {
+      setChunkRequest({
+        url,
+        params: {
+          ..._.pickBy(queryParams, (val) => !!val)
+        },
+        handler: updateHandler
+      });
+    } catch (error) {
+      // ignore
+    }
+  };
   onMounted(() => {
     setActionHandler();
+    nextTick(() => {
+      createEnvironmentChunkRequest();
+    });
   });
   fetchData();
 </script>
