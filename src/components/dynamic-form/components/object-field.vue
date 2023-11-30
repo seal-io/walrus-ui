@@ -171,7 +171,7 @@
             {_.map(objectAdditionalList.value, (item, index) => {
               return (
                 <>
-                  <div class="add-item">
+                  <div class="add-item" key={index}>
                     <div class="add-content">
                       <a-form-item
                         field={_.join([props.fieldPath, index, 'field'], '.')}
@@ -340,6 +340,9 @@
     }
 
     .delete-btn {
+      position: relative;
+      top: 15px;
+      left: 2px;
       padding-left: 10px;
     }
   }

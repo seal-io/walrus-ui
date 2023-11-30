@@ -361,6 +361,7 @@
       position: relative;
       top: 11px;
       left: 2px;
+      padding-left: 10px;
     }
 
     .add-content {
@@ -382,10 +383,6 @@
           content: '';
         }
       }
-    }
-
-    .delete-btn {
-      padding-left: 10px;
     }
   }
 </style>
