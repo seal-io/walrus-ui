@@ -1,5 +1,5 @@
 <script lang="tsx">
-  import { defineComponent, PropType, inject, ref, toRaw } from 'vue';
+  import { defineComponent, PropType, inject, ref, watch, toRaw } from 'vue';
   import AceEditor from '@/components/ace-editor/index.vue';
   import _ from 'lodash';
   import i18n from '@/locale';
@@ -47,7 +47,6 @@
       };
 
       const handleChange = (data) => {
-        handleUnsetField();
         emit('change', data);
         setTimeout(() => {
           formref.value?.validateField(props.fieldPath);
@@ -70,21 +69,30 @@
       };
 
       // init field value
-      if (
-        schemaFormStatus.value === PageAction.CREATE &&
-        isRequiredInitField(
-          props.schema,
-          _.includes(props.requiredFields, props.schema.name)
-        )
-      ) {
-        const jsonStr = initFieldDefaultValue(props.schema);
-        fieldValue.value = json2Yaml(jsonStr);
-      } else {
-        const jsonStr = _.get(props.formData, props.fieldPath, '');
-        fieldValue.value = json2Yaml(jsonStr);
-      }
-      defaultValue.value = fieldValue.value;
 
+      const initDefaultValue = () => {
+        if (
+          schemaFormStatus.value === PageAction.CREATE &&
+          isRequiredInitField(
+            props.schema,
+            _.includes(props.requiredFields, props.schema.name)
+          )
+        ) {
+          const jsonStr = initFieldDefaultValue(props.schema);
+          fieldValue.value = json2Yaml(jsonStr);
+        } else {
+          const jsonStr = _.get(props.uiFormData, props.fieldPath, '');
+          fieldValue.value = json2Yaml(jsonStr);
+        }
+        defaultValue.value = fieldValue.value;
+      };
+      watch(
+        () => _.get(props.uiFormData, props.fieldPath),
+        () => {
+          initDefaultValue();
+        },
+        { immediate: true }
+      );
       return () => (
         <a-grid-item
           span={{ lg: props.schema.colSpan, md: 12, sm: 12, xs: 12 }}
@@ -125,14 +133,9 @@
                   });
                 } else {
                   _.set(props.formData, props.fieldPath, jsonstr);
+                  _.set(props.uiFormData, props.fieldPath, jsonstr);
                 }
                 handleChange(props.formData);
-                console.log(
-                  'josn===',
-                  defaultValue.value,
-                  jsonstr,
-                  fieldValue.value
-                );
               }}
             ></AceEditor>
           </a-form-item>

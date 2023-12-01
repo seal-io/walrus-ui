@@ -44,24 +44,30 @@
       };
 
       // init field value
-      if (
-        schemaFormStatus.value === PageAction.CREATE &&
-        isRequiredInitField(
-          props.schema,
-          _.includes(props.requiredFields, props.schema.name)
-        )
-      ) {
-        _.set(
-          props.formData,
-          props.fieldPath,
-          initFieldDefaultValue(props.schema)
-        );
-        console.log(
-          'array formData++++++++++++++',
-          props.formData,
-          props.schema.default,
-          props.schema.title
-        );
+      // if (
+      //   schemaFormStatus.value === PageAction.CREATE &&
+      //   isRequiredInitField(
+      //     props.schema,
+      //     _.includes(props.requiredFields, props.schema.name)
+      //   )
+      // ) {
+      //   _.set(
+      //     props.formData,
+      //     props.fieldPath,
+      //     initFieldDefaultValue(props.schema)
+      //   );
+
+      //   handleChange(props.formData);
+      // }
+
+      if (schemaFormStatus.value === PageAction.CREATE) {
+        initFieldValue({
+          schema: props.schema,
+          formData: props.formData,
+          uiFormData: props.uiFormData,
+          fieldPath: props.fieldPath,
+          required: _.includes(props.requiredFields, props.schema.name)
+        });
         handleChange(props.formData);
       }
 
@@ -92,7 +98,6 @@
             grandParentHalfGrid: getCustomColSpan(items)
               ? false
               : props.schema.halfGrid,
-            formData: props.formData,
             fieldPath: props.fieldPath,
             parentSpan:
               getCustomColSpan(props.schema) ||
@@ -121,41 +126,12 @@
         }
       };
 
-      const setPropertiesListFieldPath = () => {
-        _.each(propertiesList.value, (item, index) => {
-          _.each(item, (sItem, sIndex) => {
-            sItem.fieldPath = [
-              ...props.fieldPath,
-              `${index}`,
-              sItem.name
-            ].filter((i) => i);
-          });
-        });
-      };
-      const setPropertiesListFieldPathForMapList = () => {
-        _.each(propertiesList.value, (item, index) => {
-          _.each(item, (sItem, sIndex) => {
-            sItem.fieldPath = [
-              ...props.fieldPath,
-              `${index}`,
-              sItem.name
-            ].filter((i) => i);
-          });
-        });
-      };
       const setPropertiesList = () => {
         const newProperties = _.cloneDeep(itemsProperties);
         propertiesList.value = [
           ..._.cloneDeep(propertiesList.value),
           [...newProperties]
         ];
-
-        // set the fieldpath
-        // if (items?.properties) {
-        //   setPropertiesListFieldPath();
-        // } else {
-        //   setPropertiesListFieldPathForMapList();
-        // }
       };
       const handleAddClick = () => {
         const newProperties = _.cloneDeep(itemsProperties);
@@ -163,13 +139,6 @@
           ..._.cloneDeep(propertiesList.value),
           [...newProperties]
         ];
-
-        // set the fieldpath
-        // if (items?.properties) {
-        //   setPropertiesListFieldPath();
-        // } else {
-        //   setPropertiesListFieldPathForMapList();
-        // }
 
         // update formData
         _.each(propertiesList.value, (item, index) => {
@@ -179,21 +148,20 @@
               `${index}`,
               sItem.name
             ].filter((i) => i);
-            // const { fieldPath } = sItem;
-            if (!_.get(props.formData, fieldPath)) {
-              if (isRequiredInitField(sItem, sItem.isRequired)) {
-                _.set(props.formData, fieldPath, initFieldDefaultValue(sItem));
-              } else {
-                _.unset(props.formData, fieldPath);
-              }
-            }
-            // initFieldValue({
-            //   schema: sItem,
-            //   formData: props.formData,
-            //   fieldPath: sItem.fieldPath,
-            //   required: !!sItem.isRequired
-            // });
-            console.log('add++++++++++', fieldPath);
+            // if (!_.get(props.formData, fieldPath)) {
+            //   if (isRequiredInitField(sItem, sItem.isRequired)) {
+            //     _.set(props.formData, fieldPath, initFieldDefaultValue(sItem));
+            //   } else {
+            //     _.unset(props.formData, fieldPath);
+            //   }
+            // }
+            initFieldValue({
+              schema: sItem,
+              formData: props.formData,
+              uiFormData: props.uiFormData,
+              fieldPath,
+              required: !!sItem.isRequired
+            });
           });
         });
 
@@ -209,23 +177,25 @@
       const handleDeleteClick = (index) => {
         propertiesList.value.splice(index, 1);
 
-        // update formData
+        // update uiFormData
+        _.get(props.uiFormData, props.fieldPath, []).splice(index, 1);
         _.get(props.formData, props.fieldPath, []).splice(index, 1);
         if (
+          !_.get(props.uiFormData, props.fieldPath).length ||
+          !filterArrayIsEmpty(_.get(props.uiFormData, props.fieldPath).length)
+        ) {
+          _.unset(props.uiFormData, props.fieldPath);
+        }
+
+        // update formData
+        if (
           !_.get(props.formData, props.fieldPath).length ||
-          !filterArrayIsEmpty(_.get(props.formData, props.fieldPath).length)
+          !filterArrayIsEmpty(_.get(props.uiFormData, props.fieldPath).length)
         ) {
           _.unset(props.formData, props.fieldPath);
         }
-        setPropertiesListFieldPath();
         activeItemIndex.value = -1;
         handleChange(props.formData);
-        console.log(
-          'handleDeleteClick++++++++++',
-          props.fieldPath,
-          props.formData,
-          propertiesList.value
-        );
       };
 
       const handleButtonEnter = (index) => {
@@ -289,7 +259,7 @@
         if (schemaFormStatus.value === PageAction.CREATE) {
           init();
         } else {
-          const value = _.get(props.formData, props.fieldPath);
+          const value = _.get(props.uiFormData, props.fieldPath);
           if (value && value.length) {
             for (let i = 0; i < value.length; i += 1) {
               setPropertiesList();
@@ -333,6 +303,7 @@
                             schema={sItem}
                             key={`${index}-${sIndex}`}
                             formData={props.formData}
+                            uiFormData={props.uiFormData}
                             fieldPath={[
                               ...props.fieldPath,
                               `${index}`,

@@ -272,6 +272,7 @@
         <GroupForm
           ref="groupForm"
           v-model:form-data="formData.attributes"
+          :ui-form-data="uiFormData"
           :action="formAction"
           :schema="schemaVariables"
           @change="handleFormAttributeChange"
@@ -387,6 +388,7 @@
     getItemResourceDefinition,
     serviceInfo,
     formData,
+    uiFormData,
     pageAction,
     templateInfo,
     templateVersionList,
@@ -515,6 +517,7 @@
       formData.value.attributes = _.cloneDeep(
         _.get(schemaFormCache.value, formData.value.template.version, {})
       );
+      uiFormData.value = _.cloneDeep(formData.value.attributes);
       formAction.value = _.get(
         schemaFormCache.value,
         formData.value.template.version
@@ -570,6 +573,7 @@
       const data = await getItemResourceDefinition();
       setTemplateInfo(data);
       formData.value.attributes = {};
+      uiFormData.value = {};
     } else {
       const data = _.find(templateList.value, (item) => item.id === val);
       formData.value.template.name = data?.name || '';

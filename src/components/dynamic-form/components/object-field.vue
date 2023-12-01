@@ -15,7 +15,9 @@
     isBasicType,
     isRequiredInitField,
     isSelect,
-    isSimpleObject
+    isSimpleObject,
+    initFieldValue,
+    unsetFieldValue
   } from '../utils';
   import CommonButton from './common-button.vue';
 
@@ -54,7 +56,6 @@
       // default data
       childProperties.value = genObjectFieldProperties({
         schema: props.schema,
-        formData: props.formData,
         fieldPath: props.fieldPath,
         parentSpan: getCustomColSpan(props.schema) || props.schema.colSpan,
         level: props.level + 1
@@ -83,10 +84,20 @@
       //   handleChange(props.formData);
       // }
 
+      if (schemaFormStatus.value === PageAction.CREATE) {
+        initFieldValue({
+          schema: props.schema,
+          formData: props.formData,
+          uiFormData: props.uiFormData,
+          fieldPath: props.fieldPath,
+          required: _.includes(props.requiredFields, props.schema.name)
+        });
+        handleChange(props.formData);
+      }
+
       // raw data
       additionalPropertiesList = genObjectFieldProperties({
         schema: props.schema.additionalProperties as FieldSchema,
-        formData: props.formData,
         fieldPath: props.fieldPath,
         level: props.level + 1
       });
@@ -110,6 +121,11 @@
             [...props.fieldPath],
             additionalPropertiesKeysObj
           );
+          _.set(
+            props.uiFormData,
+            [...props.fieldPath],
+            additionalPropertiesKeysObj
+          );
         }
         handleChange(props.formData);
       };
@@ -119,6 +135,13 @@
           const itemField = objectAdditionalList.value[index]?.field;
           objectAdditionalList.value.splice(index, 1);
           _.unset(props.formData, [...props.fieldPath, itemField]);
+          _.unset(props.uiFormData, [...props.fieldPath, itemField]);
+          unsetFieldValue({
+            schema: props.schema,
+            formData: props.formData,
+            fieldPath: [...props.fieldPath, itemField],
+            required: false
+          });
         }
 
         handleChange(props.formData);
@@ -153,10 +176,16 @@
         _.each(objectAdditionalList.value, (item) => {
           _.each(item.list, (childSchema) => {
             if (!_.get(props.formData, [...props.fieldPath, item.field])) {
+              const defaultVal = initFieldDefaultValue(childSchema);
               _.set(
                 props.formData,
                 [...props.fieldPath, item.field, childSchema.name],
-                initFieldDefaultValue(childSchema)
+                defaultVal
+              );
+              _.set(
+                props.uiFormData,
+                [...props.fieldPath, item.field, childSchema.name],
+                defaultVal
               );
             }
           });
@@ -212,6 +241,7 @@
                         return (
                           <SchemaField
                             formData={props.formData}
+                            uiFormData={props.uiFormData}
                             schema={childSchema}
                             requiredFields={childSchema.parentRequired}
                             parentSpan={props.schema.colSpan}
@@ -225,6 +255,15 @@
                             onChange={(data) => {
                               _.set(
                                 props.formData,
+                                [
+                                  ...props.fieldPath,
+                                  item.field,
+                                  childSchema.name
+                                ],
+                                data
+                              );
+                              _.set(
+                                props.uiFormData,
                                 [
                                   ...props.fieldPath,
                                   item.field,
@@ -262,6 +301,7 @@
                   level={childSchema.level}
                   schema={childSchema}
                   formData={props.formData}
+                  uiFormData={props.uiFormData}
                   fieldPath={childSchema.fieldPath}
                   requiredFields={childSchema.parentRequired}
                   parentSpan={props.schema.colSpan}
@@ -290,6 +330,7 @@
                   level={childSchema.level}
                   schema={childSchema}
                   formData={props.formData}
+                  uiFormData={props.uiFormData}
                   fieldPath={childSchema.fieldPath}
                   requiredFields={childSchema.parentRequired}
                   parentSpan={props.schema.colSpan}

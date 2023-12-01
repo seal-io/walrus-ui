@@ -18,7 +18,6 @@ export const createFormGroup = (rootSchema: FieldSchema) => {
     },
     {}
   );
-  console.log('groupOrder', groupOrder, groupOrderList);
   _.each(keys, (key) => {
     const property = _.get(properties, key, {} as FieldSchema);
     const groupKey = _.get(property, ['x-walrus-ui', 'group'], DefaultGroup);

@@ -111,7 +111,6 @@ export const initFormState = (schema: any, ignoreExtension?: boolean) => {
     fieldPath: [],
     ignoreExtension
   });
-  console.log('fieldSchemaList', fieldSchemaList);
   return {
     formData,
     fieldSchemaList

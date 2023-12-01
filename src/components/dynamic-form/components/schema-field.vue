@@ -20,7 +20,6 @@
         InjectSchemaFormStatusKey,
         ref(PageAction.CREATE)
       );
-      console.log('schemaFormStatus+++++++++', schemaFormStatus.value);
       if (!_.keys(props.schema.properties)) {
         return null;
       }
@@ -30,25 +29,26 @@
       const showIf = _.get(props.schema, ['x-walrus-ui', 'showIf'], '');
 
       // init field value
-      if (
-        schemaFormStatus.value === PageAction.CREATE &&
-        isRequiredInitField(
-          props.schema,
-          _.includes(props.requiredFields, props.schema.name)
-        )
-      ) {
-        _.set(
-          props.formData,
-          props.fieldPath,
-          initFieldDefaultValue(props.schema)
-        );
-      }
+      // if (
+      //   schemaFormStatus.value === PageAction.CREATE &&
+      //   isRequiredInitField(
+      //     props.schema,
+      //     _.includes(props.requiredFields, props.schema.name)
+      //   )
+      // ) {
+      //   _.set(
+      //     props.formData,
+      //     props.fieldPath,
+      //     initFieldDefaultValue(props.schema)
+      //   );
+      // }
 
       const handleChange = (data) => {
         emit('change', data);
       };
       const setShowIfField = () => {
         _.unset(props.formData, props.fieldPath);
+        _.unset(props.uiFormData, props.fieldPath);
         emit('change', props.formData);
         return null;
       };
@@ -56,10 +56,8 @@
       //  generate field component and fieldPath
       const { component, fieldPath } = getSchemaFieldComponent({
         schema: props.schema,
-        formData: props.formData,
         fieldPath: props.fieldPath
       });
-      console.log('component+++++++++', props.schema.name, component);
 
       if (hidden) {
         // init hidden field default value
@@ -82,17 +80,16 @@
       if (!component) return null;
 
       // init field value
-      const initValue = () => {
-        if (schemaFormStatus.value === PageAction.CREATE) {
-          initFieldValue({
-            schema: props.schema,
-            formData: props.formData,
-            fieldPath,
-            required: _.includes(props.requiredFields, props.schema.name)
-          });
-        }
-      };
-      initValue();
+      if (schemaFormStatus.value === PageAction.CREATE) {
+        initFieldValue({
+          schema: props.schema,
+          formData: props.formData,
+          uiFormData: props.uiFormData,
+          fieldPath,
+          required: _.includes(props.requiredFields, props.schema.name)
+        });
+      }
+      console.log('data+++++++++', fieldPath, props.formData, props.uiFormData);
       const renderComponent = () => {
         const Component = component;
         if (showIf) {
@@ -104,6 +101,7 @@
             <Component
               fieldPath={fieldPath}
               formData={props.formData}
+              uiFormData={props.uiFormData}
               schema={props.schema}
               requiredFields={props.requiredFields}
               onChange={(data) => handleChange(data)}
@@ -116,6 +114,7 @@
           <Component
             fieldPath={fieldPath}
             formData={props.formData}
+            uiFormData={props.uiFormData}
             schema={props.schema}
             requiredFields={props.requiredFields}
             parentSpan={props.parentSpan || 12}

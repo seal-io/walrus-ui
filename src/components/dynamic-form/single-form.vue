@@ -28,6 +28,7 @@
     setup(props, { emit, expose }) {
       const formref = ref();
       const formData = ref();
+      const uiFormData = ref();
       const { disabled, layout } = toRefs(props);
 
       const { scrollToView } = useScrollToView();
@@ -54,7 +55,16 @@
       expose({
         validate
       });
-
+      watch(
+        () => props.internalFormData,
+        () => {
+          uiFormData.value = props.internalFormData;
+        },
+        {
+          immediate: true,
+          deep: true
+        }
+      );
       watch(
         () => props.originFormData,
         () => {
@@ -79,6 +89,7 @@
               action={props.action}
               schema={props.schema}
               formData={formData.value}
+              uiFormData={uiFormData.value}
               onChange={handleChange}
             ></SchemaField>
           </a-grid>

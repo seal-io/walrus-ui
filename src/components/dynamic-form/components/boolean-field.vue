@@ -57,31 +57,33 @@
       };
 
       // init field value
-      if (
-        schemaFormStatus.value === PageAction.CREATE &&
-        isRequiredInitField(props.schema, fieldProps.required)
-      ) {
-        _.set(
-          props.formData,
-          props.fieldPath,
-          initFieldDefaultValue(props.schema)
-        );
-      }
+      // if (
+      //   schemaFormStatus.value === PageAction.CREATE &&
+      //   isRequiredInitField(
+      //     props.schema,
+      //     _.includes(props.requiredFields, props.schema.name)
+      //   )
+      // ) {
+      //   _.set(
+      //     props.formData,
+      //     props.fieldPath,
+      //     initFieldDefaultValue(props.schema)
+      //   );
+      // }
 
       const initValue = () => {
         if (schemaFormStatus.value === PageAction.CREATE) {
           initFieldValue({
             schema: props.schema,
             formData: props.formData,
+            uiFormData: props.uiFormData,
             fieldPath: props.fieldPath,
             required: fieldProps.required
           });
         }
       };
 
-      const fieldValue = ref(_.get(props.formData, props.fieldPath));
-
-      // initValue();
+      initValue();
       const renderEdit = () => {
         return (
           <a-form-item
@@ -115,13 +117,12 @@
                   schemaFormStatus.value !== PageAction.CREATE)
               }
               popupInfo={props.schema.description}
-              modelValue={_.get(props.formData, props.fieldPath)}
+              modelValue={_.get(props.uiFormData, props.fieldPath)}
               onChange={(val) => {
-                fieldValue.value = val;
                 _.set(props.formData, props.fieldPath, val);
+                _.set(props.uiFormData, props.fieldPath, val);
                 handleChange(props.formData);
                 if (val === !!props.schema.default) {
-                  console.log('unsetFieldValue+++++++++++', props.fieldPath);
                   unsetFieldValue({
                     schema: props.schema,
                     formData: props.formData,
@@ -129,6 +130,13 @@
                     required: fieldProps.required
                   });
                 }
+                console.log(
+                  'checkbox+++++++++++++++',
+                  props.fieldPath,
+                  _.get(props.uiFormData, props.fieldPath),
+                  props.formData,
+                  props.uiFormData
+                );
               }}
             ></seal-checkbox>
           </a-form-item>
@@ -151,7 +159,7 @@
             >
               <SealFormItemWrap label={props.schema.title} style="width: 100%">
                 <a-checkbox
-                  modelValue={_.get(props.formData, props.fieldPath)}
+                  modelValue={_.get(props.uiFormData, props.fieldPath)}
                   size="small"
                 ></a-checkbox>
               </SealFormItemWrap>
