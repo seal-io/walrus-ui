@@ -331,7 +331,7 @@
                           <SchemaField
                             level={sItem.level}
                             schema={sItem}
-                            key={sIndex}
+                            key={`${index}-${sIndex}`}
                             formData={props.formData}
                             fieldPath={[
                               ...props.fieldPath,
