@@ -4,13 +4,16 @@
   import i18n from '@/locale';
   import { InjectSchemaFormStatusKey, PageAction } from '@/views/config';
   import KeyValueLabels from '@/components/form-create/custom-components/key-value-labels.vue';
+  import MapString from '@/components/form-create/custom-components/map-string.vue';
   import SealFormItemWrap from '@/components/seal-form/components/seal-form-item-wrap.vue';
   import schemaFieldProps from '../fields/schema-field-props';
   import {
     genObjectFieldProperties,
     initFieldDefaultValue,
     genFieldPropsAndRules,
-    isRequiredInitField
+    isRequiredInitField,
+    unsetFieldValue,
+    unsetFieldByPath
   } from '../utils';
 
   export default defineComponent({
@@ -26,20 +29,20 @@
       };
 
       // init field value
-      if (
-        schemaFormStatus.value === PageAction.CREATE &&
-        isRequiredInitField(
-          props.schema,
-          _.includes(props.requiredFields, props.schema.name)
-        )
-      ) {
-        _.set(
-          props.formData,
-          props.fieldPath,
-          initFieldDefaultValue(props.schema)
-        );
-        handleChange(props.formData);
-      }
+      // if (
+      //   schemaFormStatus.value === PageAction.CREATE &&
+      //   isRequiredInitField(
+      //     props.schema,
+      //     _.includes(props.requiredFields, props.schema.name)
+      //   )
+      // ) {
+      //   _.set(
+      //     props.formData,
+      //     props.fieldPath,
+      //     initFieldDefaultValue(props.schema)
+      //   );
+      //   handleChange(props.formData);
+      // }
 
       const { fieldProps, rules } = genFieldPropsAndRules({
         schema: props.schema,
@@ -99,12 +102,10 @@
               label={`${props.schema.title || props.schema.name || ''}`}
               style="width: 100%"
             >
-              <KeyValueLabels
-                editorId={_.join(props.fieldPath, '-')}
+              <MapString
                 showNumberInput={isMapNumber}
                 showCheckbox={isMapBoolean}
-                labels={props.formData}
-                labelsKey={props.fieldPath}
+                modelValue={_.get(props.formData, props.fieldPath)}
                 readonly={
                   PageAction.VIEW === schemaFormStatus.value ||
                   fieldProps.readonly
@@ -112,8 +113,14 @@
                 onUpdate:value={(val) => {
                   _.set(props.formData, props.fieldPath, val);
                   handleChange(props.formData);
+                  if (!_.keys(_.get(props.formData, props.fieldPath)).length) {
+                    unsetFieldByPath(
+                      props.formData,
+                      _.initial(props.fieldPath)
+                    );
+                  }
                 }}
-              ></KeyValueLabels>
+              ></MapString>
             </SealFormItemWrap>
           </a-form-item>
         </a-grid-item>

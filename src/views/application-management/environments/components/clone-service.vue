@@ -141,11 +141,15 @@
                   ></xInputGroup>
                 </a-space>
                 <template v-else>
-                  <thumbButton
-                    :size="24"
-                    font-size="14px"
+                  <a-link
+                    class="p-0"
                     @click="handleAddLabel(labelItem, labelList)"
-                  ></thumbButton>
+                  >
+                    <icon-plus-circle-fill
+                      :size="24"
+                      font-size="14px size-24"
+                    ></icon-plus-circle-fill>
+                  </a-link>
                 </template>
               </SealFormItemWrap>
             </a-form-item>
@@ -208,7 +212,6 @@
   import xInputGroup from '@/components/form-create/custom-components/x-input-group.vue';
   import EditPageFooter from '@/components/edit-page-footer/index.vue';
   import useLabelsActions from '@/components/form-create/hooks/use-labels-action';
-  import thumbButton from '@/components/buttons/thumb-button.vue';
   import useScrollToView from '@/hooks/use-scroll-to-view';
   import GroupTitle from '@/components/group-title/index.vue';
   import serviceThumb from '../../services/components/service-thumb.vue';

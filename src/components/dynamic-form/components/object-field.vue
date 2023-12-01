@@ -61,27 +61,27 @@
       });
 
       // init field value
-      if (
-        schemaFormStatus.value === PageAction.CREATE &&
-        isRequiredInitField(
-          props.schema,
-          _.includes(props.requiredFields, props.schema.name)
-        )
-      ) {
-        _.set(
-          props.formData,
-          props.fieldPath,
-          initFieldDefaultValue(props.schema)
-        );
-        _.each(childProperties.value, (item) => {
-          if (isRequiredInitField(item, item.isRequired)) {
-            _.set(props.formData, item.fieldPath, initFieldDefaultValue(item));
-          } else {
-            _.unset(props.formData, item.fieldPath);
-          }
-        });
-        handleChange(props.formData);
-      }
+      // if (
+      //   schemaFormStatus.value === PageAction.CREATE &&
+      //   isRequiredInitField(
+      //     props.schema,
+      //     _.includes(props.requiredFields, props.schema.name)
+      //   )
+      // ) {
+      //   _.set(
+      //     props.formData,
+      //     props.fieldPath,
+      //     initFieldDefaultValue(props.schema)
+      //   );
+      //   _.each(childProperties.value, (item) => {
+      //     if (isRequiredInitField(item, item.isRequired)) {
+      //       _.set(props.formData, item.fieldPath, initFieldDefaultValue(item));
+      //     } else {
+      //       _.unset(props.formData, item.fieldPath);
+      //     }
+      //   });
+      //   handleChange(props.formData);
+      // }
 
       // raw data
       additionalPropertiesList = genObjectFieldProperties({

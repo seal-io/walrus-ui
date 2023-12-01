@@ -14,6 +14,7 @@ import stringField from './string-field/index.vue';
 import ObjectField from '../components/object-field.vue';
 import ArrayField from '../components/array-field.vue';
 import SelectField from '../components/select-field.vue';
+import BooleanField from '../components/boolean-field.vue';
 import ObjectMap from '../components/object-map.vue';
 import ComponentsMap from '../components/components-map';
 import FIELD_TYPE from '../config/field-type';
@@ -40,6 +41,7 @@ export const FieldMaps = {
   array: ArrayField,
   object: ObjectField,
   select: SelectField,
+  checkbox: BooleanField,
   simpleObject: ObjectMap,
   stringField
 };
@@ -109,6 +111,14 @@ export const getSchemaFieldComponent = ({ schema, fieldPath, formData }) => {
   if (type === FIELD_TYPE.OBJECT) {
     return {
       component: FieldMaps.object,
+      fieldPath: [...fieldPath],
+      requiredFields,
+      commonAttrs
+    };
+  }
+  if (type === FIELD_TYPE.BOOLEAN) {
+    return {
+      component: FieldMaps.checkbox,
       fieldPath: [...fieldPath],
       requiredFields,
       commonAttrs

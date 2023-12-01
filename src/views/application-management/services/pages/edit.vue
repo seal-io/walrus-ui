@@ -413,6 +413,7 @@
   const breadCrumbList = ref<BreadcrumbOptions[]>([]);
   const schemaFormCache = ref<any>({});
   const dataType = route.params.dataType as string;
+  const formAction = ref(!id ? PageAction.CREATE : PageAction.EDIT);
   const projectEnvCtx = reactive({
     projectID: route.params.projectId as string,
     environmentID: route.params.environmentId as string,
@@ -434,12 +435,12 @@
     console.log('handleNamespaceChange===', val);
   };
 
-  const formAction = computed(() => {
-    if (!id) {
-      return 'create';
-    }
-    return 'edit';
-  });
+  // const formAction = computed(() => {
+  //   if (!id) {
+  //     return 'create';
+  //   }
+  //   return 'edit';
+  // });
   provide(InjectSchemaFormStatusKey, formAction);
   const virtualListProps = computed(() => {
     if (templateList.value.length > 20) {
@@ -514,6 +515,12 @@
       formData.value.attributes = _.cloneDeep(
         _.get(schemaFormCache.value, formData.value.template.version, {})
       );
+      formAction.value = _.get(
+        schemaFormCache.value,
+        formData.value.template.version
+      )
+        ? PageAction.EDIT
+        : PageAction.CREATE;
     }
   };
 
@@ -646,17 +653,17 @@
           ...data.attributes,
           ...hiddenFormData
         };
-        if (id) {
-          await upgradeApplicationInstance(data);
-        } else {
-          await handleCreate(data);
-          return;
-        }
-        if (props.pgType !== 'page') {
-          emits('save');
-        } else {
-          router.back();
-        }
+        // if (id) {
+        //   await upgradeApplicationInstance(data);
+        // } else {
+        //   await handleCreate(data);
+        //   return;
+        // }
+        // if (props.pgType !== 'page') {
+        //   emits('save');
+        // } else {
+        //   router.back();
+        // }
         submitLoading.value = false;
       } catch (error) {
         submitLoading.value = false;

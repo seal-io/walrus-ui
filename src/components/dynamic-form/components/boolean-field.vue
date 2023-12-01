@@ -6,24 +6,12 @@
   import SealFormItemWrap from '@/components/seal-form/components/seal-form-item-wrap.vue';
   import schemaFieldProps from '../fields/schema-field-props';
   import {
-    BasicFieldMaps,
-    CommonFieldMaps,
-    FormatsFieldMaps
-  } from '../fields/field-map';
-  import {
-    isSelect,
-    isNumber,
-    isBoolean,
-    isDatePicker,
-    isMuliSelect,
-    isPassword,
-    checkValidValue,
-    initFieldDefaultValue,
-    isRequiredInitField,
     isEmptyvalue,
     initFieldValue,
     unsetFieldValue,
-    parentObjectExsits
+    parentObjectExsits,
+    isRequiredInitField,
+    initFieldDefaultValue
   } from '../utils';
   import { ProviderFormRefKey } from '../config';
 
@@ -43,11 +31,7 @@
       );
       const formref = inject(ProviderFormRefKey, ref());
 
-      const widget = _.get(props.schema, ['x-walrus-ui', 'widget'], '');
-      const numberReg = /\d+/;
       const { type } = toRefs(props.schema);
-
-      let Component = BasicFieldMaps[type.value];
 
       const handleUnsetField = () => {
         if (
@@ -91,33 +75,8 @@
         }
       };
 
-      // textarea
-      if (type.value === 'string' && widget === 'TextArea') {
-        Component = CommonFieldMaps.textArea;
-      }
-
-      if (isDatePicker(props.schema) && props.schema.format) {
-        Component = FormatsFieldMaps[props.schema.format];
-      }
-
-      if (isPassword(props.schema)) {
-        Component = CommonFieldMaps.password;
-      }
-
-      const handleSelectInputChange = (e: any) => {
-        _.set(props.schema, props.fieldPath, e);
-      };
-
       const fieldValue = ref(_.get(props.formData, props.fieldPath));
 
-      const showArrayValue = (val) => {
-        if (_.isArray(val)) {
-          return _.join(val, ',');
-        }
-        return val;
-      };
-
-      console.log('basic-field+++++++++++=', props.formData, props.fieldPath);
       // initValue();
       const renderEdit = () => {
         return (
@@ -132,29 +91,15 @@
                     !props.required
                   ) {
                     callback();
-                    return;
-                  }
-                  if (!isBoolean(props.schema)) {
-                    if (!value) {
-                      callback(
-                        `${props.schema.title}${i18n.global.t(
-                          'common.form.rule.input'
-                        )}`
-                      );
-                    } else {
-                      callback();
-                    }
-                  } else {
-                    callback();
                   }
                 }
               }
             ]}
             label={props.schema.title}
             field={_.join(props.fieldPath, '.')}
-            validate-trigger={['change', 'blur']}
+            validate-trigger={['change']}
           >
-            <Component
+            <seal-checkbox
               {...attrs}
               required={props.required}
               label={props.label}
@@ -165,23 +110,13 @@
                 (attrs.immutable &&
                   schemaFormStatus.value !== PageAction.CREATE)
               }
-              readonly={
-                props.readonly ||
-                (attrs.immutable &&
-                  schemaFormStatus.value !== PageAction.CREATE)
-              }
-              allow-clear={true}
               popupInfo={props.schema.description}
               modelValue={_.get(props.formData, props.fieldPath)}
-              onInput={(e) => {
-                console.log('basic-field==input----1', e, props.schema);
-                handleSelectInputChange(e);
-              }}
-              onChange={(val, e) => {
+              onChange={(val) => {
                 fieldValue.value = val;
                 _.set(props.formData, props.fieldPath, val);
                 handleChange(props.formData);
-                if (isEmptyvalue(val) && !props.schema.default) {
+                if (val === !!props.schema.default) {
                   console.log('unsetFieldValue+++++++++++', props.fieldPath);
                   unsetFieldValue({
                     schema: props.schema,
@@ -191,13 +126,15 @@
                   });
                 }
               }}
-            ></Component>
+            ></seal-checkbox>
           </a-form-item>
         );
       };
 
       return () => (
-        <>
+        <a-grid-item
+          span={{ lg: props.schema.colSpan, md: 12, sm: 12, xs: 12 }}
+        >
           {schemaFormStatus.value !== PageAction.VIEW ? (
             renderEdit()
           ) : (
@@ -209,16 +146,14 @@
               validate-trigger={['change']}
             >
               <SealFormItemWrap label={props.schema.title} style="width: 100%">
-                <span>
-                  {(isPassword(props.schema) || props.schema.writeOnly) &&
-                  _.get(props.formData, props.fieldPath)
-                    ? '******'
-                    : showArrayValue(_.get(props.formData, props.fieldPath))}
-                </span>
+                <a-checkbox
+                  modelValue={_.get(props.formData, props.fieldPath)}
+                  size="small"
+                ></a-checkbox>
               </SealFormItemWrap>
             </a-form-item>
           )}
-        </>
+        </a-grid-item>
       );
     }
   });

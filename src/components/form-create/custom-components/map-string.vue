@@ -10,25 +10,13 @@
     watch
   } from 'vue';
   import XInputGroup from './x-input-group.vue';
-  import useLabelsActions from '../hooks/use-labels-action';
+  import { useMapString } from '../hooks/use-labels-action';
   import LabelsList from './labels-list.vue';
 
   export default defineComponent({
     emits: ['update:value'],
     props: {
-      labels: {
-        type: Object as PropType<Record<string, any>>,
-        default() {
-          return {};
-        }
-      },
-      labelsKey: {
-        type: [String, Array] as PropType<string | string[]>,
-        default() {
-          return 'labels';
-        }
-      },
-      value: {
+      modelValue: {
         type: Object as PropType<Record<string, any>>,
         default() {
           return {};
@@ -78,14 +66,27 @@
       }
     },
     setup(props, { emit, attrs }) {
-      const { labels, labelsKey, validateTrigger } = toRefs(props);
-      const { labelList, labelItem, handleAddLabel, handleDeleteLabel } =
-        useLabelsActions(labels, labelsKey.value);
+      const { validateTrigger } = toRefs(props);
+      const {
+        labelList,
+        labelItem,
+        getLabelList,
+        handleAddLabel,
+        handleDeleteLabel
+      } = useMapString();
       console.log('labelList===', labelList.value);
       const handleUpdateValue = (obj) => {
         emit('update:value', obj);
       };
-
+      watch(
+        () => props.modelValue,
+        (val) => {
+          getLabelList(props.modelValue);
+        },
+        {
+          immediate: true
+        }
+      );
       const renderEditLabels = () => {
         return (
           <>
@@ -134,7 +135,7 @@
         );
       };
       const renderViewLabels = () => {
-        return <LabelsList labels={props.value}></LabelsList>;
+        return <LabelsList labels={props.modelValue}></LabelsList>;
       };
       return () => (
         <>

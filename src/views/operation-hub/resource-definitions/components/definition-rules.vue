@@ -526,6 +526,7 @@
   const uiSchema = ref<any>({});
   const selectors = ref<Set<string>>(new Set());
   const formDataAttributeCache = ref<any>({});
+  const formAction = ref(props.schemaFormAction);
 
   provide(InjectShowInputHintKey, true);
 
@@ -548,7 +549,7 @@
     return undefined;
   });
 
-  provide(InjectSchemaFormStatusKey, ref(props.schemaFormAction));
+  provide(InjectSchemaFormStatusKey, ref(formAction));
 
   const handleAttributeChange = () => {
     formDataAttributeCache.value[formData.value.template.version] = _.cloneDeep(
@@ -690,6 +691,11 @@
     } else {
       formData.value.attributes = {};
     }
+    formAction.value = _.get(formDataAttributeCache.value, [
+      formData.value.template.version
+    ])
+      ? PageAction.EDIT
+      : PageAction.CREATE;
   };
   const handleVersionChange = async () => {
     formData.value.template.id = _.get(
@@ -781,7 +787,7 @@
       border: none;
 
       :deep(.content) {
-        padding: 10px 0;
+        // padding: 10px 0;
       }
     }
 
