@@ -11,7 +11,8 @@
     unsetFieldValue,
     parentObjectExsits,
     isRequiredInitField,
-    initFieldDefaultValue
+    initFieldDefaultValue,
+    genFieldPropsAndRules
   } from '../utils';
   import { ProviderFormRefKey } from '../config';
 
@@ -41,6 +42,12 @@
           _.unset(props.formData, props.fieldPath);
         }
       };
+
+      const { fieldProps, rules } = genFieldPropsAndRules({
+        schema: props.schema,
+        requiredFields: props.requiredFields
+      });
+
       const handleChange = (data) => {
         emit('change', data);
 
@@ -52,10 +59,7 @@
       // init field value
       if (
         schemaFormStatus.value === PageAction.CREATE &&
-        isRequiredInitField(
-          props.schema,
-          _.includes(props.requiredFields, props.schema.name)
-        )
+        isRequiredInitField(props.schema, fieldProps.required)
       ) {
         _.set(
           props.formData,
@@ -70,7 +74,7 @@
             schema: props.schema,
             formData: props.formData,
             fieldPath: props.fieldPath,
-            required: props.required
+            required: fieldProps.required
           });
         }
       };
@@ -83,31 +87,31 @@
           <a-form-item
             hide-label={true}
             rules={[
-              ...props.rules,
+              ...rules,
               {
                 validator: (value, callback) => {
                   if (
                     !parentObjectExsits(props.formData, props.fieldPath) ||
-                    !props.required
+                    !fieldProps.required
                   ) {
                     callback();
                   }
                 }
               }
             ]}
-            label={props.schema.title}
+            label={fieldProps.label}
             field={_.join(props.fieldPath, '.')}
             validate-trigger={['change']}
           >
             <seal-checkbox
-              {...attrs}
-              required={props.required}
-              label={props.label}
+              {...fieldProps}
+              required={fieldProps.required}
+              label={fieldProps.label}
               style="width: 100%"
               allow-search={false}
               disabled={
-                props.readonly ||
-                (attrs.immutable &&
+                fieldProps.readonly ||
+                (fieldProps.immutable &&
                   schemaFormStatus.value !== PageAction.CREATE)
               }
               popupInfo={props.schema.description}
@@ -122,7 +126,7 @@
                     schema: props.schema,
                     formData: props.formData,
                     fieldPath: props.fieldPath,
-                    required: props.required
+                    required: fieldProps.required
                   });
                 }
               }}

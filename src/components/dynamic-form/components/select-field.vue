@@ -61,10 +61,7 @@
       // init field value
       if (
         schemaFormStatus.value === PageAction.CREATE &&
-        isRequiredInitField(
-          props.schema,
-          _.includes(props.requiredFields, props.schema.name)
-        )
+        isRequiredInitField(props.schema, fieldProps.required)
       ) {
         _.set(
           props.formData,
@@ -79,7 +76,7 @@
             schema: props.schema,
             formData: props.formData,
             fieldPath: props.fieldPath,
-            required: props.required
+            required: fieldProps.required
           });
         }
       };
@@ -194,7 +191,7 @@
                     schema: props.schema,
                     formData: props.formData,
                     fieldPath: props.fieldPath,
-                    required: props.required
+                    required: fieldProps.required
                   });
                 }
                 console.log('group====newVal=', newVal, fieldValue.value);
