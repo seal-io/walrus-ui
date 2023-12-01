@@ -147,11 +147,13 @@ export const initFieldValue = ({
   fieldPath,
   schema,
   formData,
+  uiFormData,
   required
 }: {
   fieldPath: string[];
   schema: FieldSchema;
   formData: object;
+  uiFormData: object;
   required: boolean;
 }) => {
   console.log(
@@ -161,23 +163,27 @@ export const initFieldValue = ({
     formData,
     required
   );
+
   // nullable or optional
-  if (schema.nullable || isEmptyvalue(schema.default)) {
+  if (isEmptyvalue(schema.default) || (isBasicType(schema.type) && !required)) {
     return;
   }
   const initialPath = _.initial(fieldPath);
+  const defaultValue = initFieldDefaultValue(schema);
 
   // root field and required
   if (!initialPath.length && (required || !isEmptyvalue(schema.default))) {
-    _.set(formData, fieldPath, initFieldDefaultValue(schema));
-    return;
+    _.set(uiFormData, fieldPath, defaultValue);
   }
 
   if (initialPath.length && (required || !isEmptyvalue(schema.default))) {
-    const parentValue = _.get(formData, initialPath);
+    const parentValue = _.get(uiFormData, initialPath);
     if (parentValue) {
-      _.set(formData, fieldPath, initFieldDefaultValue(schema));
+      _.set(uiFormData, fieldPath, defaultValue);
     }
+  }
+  if (!schema.nullable) {
+    _.set(formData, fieldPath, defaultValue);
   }
 };
 
@@ -296,7 +302,6 @@ export const genObjectFieldProperties = ({
   level
 }: {
   schema: FieldSchema;
-  formData: any;
   level: number;
   parentSpan?: number;
   grandParentHalfGrid?: boolean; // when has items,need pass it

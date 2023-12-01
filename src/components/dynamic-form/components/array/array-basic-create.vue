@@ -180,7 +180,6 @@
               popupInfo={props.schema.description}
               v-model={fieldValue.value}
               onInput={(e) => {
-                console.log('basic-field==input----1', e, props.schema);
                 handleSelectInputChange(e);
               }}
               onChange={(val, e) => {

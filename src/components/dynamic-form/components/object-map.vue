@@ -13,7 +13,8 @@
     genFieldPropsAndRules,
     isRequiredInitField,
     unsetFieldValue,
-    unsetFieldByPath
+    unsetFieldByPath,
+    initFieldValue
   } from '../utils';
 
   export default defineComponent({
@@ -43,6 +44,16 @@
       //   );
       //   handleChange(props.formData);
       // }
+      if (schemaFormStatus.value === PageAction.CREATE) {
+        initFieldValue({
+          schema: props.schema,
+          formData: props.formData,
+          uiFormData: props.uiFormData,
+          fieldPath: props.fieldPath,
+          required: _.includes(props.requiredFields, props.schema.name)
+        });
+        handleChange(props.formData);
+      }
 
       const { fieldProps, rules } = genFieldPropsAndRules({
         schema: props.schema,
@@ -65,7 +76,7 @@
       // init map(string) value
 
       const validateLabels = () => {
-        const labels = _.get(props.formData, props.fieldPath);
+        const labels = _.get(props.uiFormData, props.fieldPath);
         const keys = _.keys(labels);
         return _.some(keys, (key) => {
           return !_.trim(key);
@@ -105,13 +116,14 @@
               <MapString
                 showNumberInput={isMapNumber}
                 showCheckbox={isMapBoolean}
-                modelValue={_.get(props.formData, props.fieldPath)}
+                modelValue={_.get(props.uiFormData, props.fieldPath)}
                 readonly={
                   PageAction.VIEW === schemaFormStatus.value ||
                   fieldProps.readonly
                 }
                 onUpdate:value={(val) => {
                   _.set(props.formData, props.fieldPath, val);
+                  _.set(props.uiFormData, props.fieldPath, val);
                   handleChange(props.formData);
                   if (!_.keys(_.get(props.formData, props.fieldPath)).length) {
                     unsetFieldByPath(

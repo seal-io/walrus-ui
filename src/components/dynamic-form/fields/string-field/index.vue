@@ -26,10 +26,6 @@
         requiredFields: props.requiredFields
       });
 
-      console.log('fieldProps=======', props.requiredFields, {
-        fieldProps,
-        rules
-      });
       return () => {
         return (
           <a-grid-item
@@ -40,6 +36,7 @@
               readonly={fieldProps.readonly}
               required={fieldProps.required}
               formData={props.formData}
+              uiFormData={props.uiFormData}
               fieldPath={props.fieldPath}
               schema={props.schema}
               rules={rules}

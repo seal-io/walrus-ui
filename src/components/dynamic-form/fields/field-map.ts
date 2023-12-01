@@ -59,7 +59,7 @@ export const FormatsFieldMaps = {
   'date-time': datePicker
 };
 
-export const getSchemaFieldComponent = ({ schema, fieldPath, formData }) => {
+export const getSchemaFieldComponent = ({ schema, fieldPath }) => {
   const { type, required: requiredFields } = schema;
   const widget = _.get(schema, ['x-walrus-ui', 'widget'], '');
 

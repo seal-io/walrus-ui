@@ -49,14 +49,6 @@
 
       let Component = BasicFieldMaps[type.value];
 
-      const handleUnsetField = () => {
-        if (
-          isEmptyvalue(_.get(props.formData, props.fieldPath)) &&
-          !props.schema.default
-        ) {
-          _.unset(props.formData, props.fieldPath);
-        }
-      };
       const handleChange = (data) => {
         emit('change', data);
 
@@ -66,25 +58,26 @@
       };
 
       // init field value
-      if (
-        schemaFormStatus.value === PageAction.CREATE &&
-        isRequiredInitField(
-          props.schema,
-          _.includes(props.requiredFields, props.schema.name)
-        )
-      ) {
-        _.set(
-          props.formData,
-          props.fieldPath,
-          initFieldDefaultValue(props.schema)
-        );
-      }
+      // if (
+      //   schemaFormStatus.value === PageAction.CREATE &&
+      //   isRequiredInitField(
+      //     props.schema,
+      //     _.includes(props.requiredFields, props.schema.name)
+      //   )
+      // ) {
+      //   _.set(
+      //     props.formData,
+      //     props.fieldPath,
+      //     initFieldDefaultValue(props.schema)
+      //   );
+      // }
 
       const initValue = () => {
         if (schemaFormStatus.value === PageAction.CREATE) {
           initFieldValue({
             schema: props.schema,
             formData: props.formData,
+            uiFormData: props.uiFormData,
             fieldPath: props.fieldPath,
             required: props.required
           });
@@ -108,7 +101,7 @@
         _.set(props.schema, props.fieldPath, e);
       };
 
-      const fieldValue = ref(_.get(props.formData, props.fieldPath));
+      const fieldValue = ref(_.get(props.uiFormData, props.fieldPath));
 
       const showArrayValue = (val) => {
         if (_.isArray(val)) {
@@ -117,8 +110,7 @@
         return val;
       };
 
-      console.log('basic-field+++++++++++=', props.formData, props.fieldPath);
-      // initValue();
+      initValue();
       const renderEdit = () => {
         return (
           <a-form-item
@@ -128,7 +120,7 @@
               {
                 validator: (value, callback) => {
                   if (
-                    !parentObjectExsits(props.formData, props.fieldPath) ||
+                    !parentObjectExsits(props.uiFormData, props.fieldPath) ||
                     !props.required
                   ) {
                     callback();
@@ -172,17 +164,16 @@
               }
               allow-clear={true}
               popupInfo={props.schema.description}
-              modelValue={_.get(props.formData, props.fieldPath)}
+              modelValue={_.get(props.uiFormData, props.fieldPath)}
               onInput={(e) => {
-                console.log('basic-field==input----1', e, props.schema);
                 handleSelectInputChange(e);
               }}
               onChange={(val, e) => {
                 fieldValue.value = val;
                 _.set(props.formData, props.fieldPath, val);
+                _.set(props.uiFormData, props.fieldPath, val);
                 handleChange(props.formData);
                 if (isEmptyvalue(val) && !props.schema.default) {
-                  console.log('unsetFieldValue+++++++++++', props.fieldPath);
                   unsetFieldValue({
                     schema: props.schema,
                     formData: props.formData,
@@ -211,9 +202,9 @@
               <SealFormItemWrap label={props.schema.title} style="width: 100%">
                 <span>
                   {(isPassword(props.schema) || props.schema.writeOnly) &&
-                  _.get(props.formData, props.fieldPath)
+                  _.get(props.uiFormData, props.fieldPath)
                     ? '******'
-                    : showArrayValue(_.get(props.formData, props.fieldPath))}
+                    : showArrayValue(_.get(props.uiFormData, props.fieldPath))}
                 </span>
               </SealFormItemWrap>
             </a-form-item>

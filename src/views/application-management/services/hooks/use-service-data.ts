@@ -55,6 +55,7 @@ export default function useServiceData(props?) {
   let templateVersionSchemaToken: any = null;
 
   const id = route.query.id as string;
+  const uiFormData = ref<any>({});
   const formData = ref<ServiceFormData>({
     projectID: route.params.projectId as string,
     project: {
@@ -209,6 +210,7 @@ export default function useServiceData(props?) {
 
   const setFormAttributes = async () => {
     formData.value = _.cloneDeep(serviceInfo.value);
+    uiFormData.value = _.cloneDeep(serviceInfo.value.attributes);
     // 1. get the template meta data 2.set the default value
     console.log(
       'setFormAttributes000000>>>>>>',
@@ -312,6 +314,7 @@ export default function useServiceData(props?) {
     asyncLoading,
     completeDataLoading,
     formData,
+    uiFormData,
     refMap,
     pageAction,
     handleEdit,

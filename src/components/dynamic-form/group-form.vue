@@ -17,6 +17,7 @@
           :form-id="`schemaForm${index}`"
           layout="vertical"
           :origin-form-data="rootFormData"
+          :internal-form-data="uiFormData"
           :schema="item.schema"
           :action="action"
           @change="handleChange"
@@ -31,6 +32,7 @@
       form-id="schemaForm"
       layout="vertical"
       :action="action"
+      :internal-form-data="uiFormData"
       :origin-form-data="rootFormData"
       :schema="formGroup[0].schema"
       @change="handleChange"
@@ -47,12 +49,7 @@
   import { FieldSchema, FormGroup } from './interface';
   import { createFormGroup } from './utils/create-form-group';
   import { ProvideErrorFieldsKey } from './config';
-  import {
-    genFieldMap,
-    flattenSchema,
-    genHiddenFieldData
-  } from './utils/flatten-schema';
-  import FIELD_TYPE from './config/field-type';
+  import { genFieldMap, genHiddenFieldData } from './utils/flatten-schema';
   import { isEmptyvalue, isBasicType } from './utils';
 
   const props = defineProps({
@@ -63,6 +60,12 @@
       }
     },
     formData: {
+      type: Object as PropType<any>,
+      default() {
+        return {};
+      }
+    },
+    uiFormData: {
       type: Object as PropType<any>,
       default() {
         return {};
@@ -154,8 +157,6 @@
 
     validResult.value = errorList;
 
-    console.log('valid===9999===', validResult.value);
-
     if (!errorList.length) {
       handleUnsetField();
     } else {
@@ -174,7 +175,6 @@
       genHiddenFieldData(toRaw(item.schema), result);
     });
     hiddenFormData.value = result;
-    console.log('data===9999===', list, result);
   };
 
   const getHiddenData = () => {
@@ -202,7 +202,6 @@
     () => props.formData,
     () => {
       rootFormData.value = props.formData;
-      console.log('formData===9999===2', props.formData);
     },
     {
       immediate: true,
@@ -228,14 +227,6 @@
         activeKey.value = formGroup.value[0]?.group;
 
         getHiddenFormData(allGroups);
-
-        console.log(
-          'formGroup===9999===',
-
-          formGroup.value,
-          props.action,
-          props.formData
-        );
       });
     },
     {

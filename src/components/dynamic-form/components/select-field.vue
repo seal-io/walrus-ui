@@ -59,27 +59,30 @@
       };
 
       // init field value
-      if (
-        schemaFormStatus.value === PageAction.CREATE &&
-        isRequiredInitField(props.schema, fieldProps.required)
-      ) {
-        _.set(
-          props.formData,
-          props.fieldPath,
-          initFieldDefaultValue(props.schema)
-        );
-      }
+      // if (
+      //   schemaFormStatus.value === PageAction.CREATE &&
+      //   isRequiredInitField(
+      //     props.schema,
+      //     _.includes(props.requiredFields, props.schema.name)
+      //   )
+      // ) {
+      //   _.set(
+      //     props.formData,
+      //     props.fieldPath,
+      //     initFieldDefaultValue(props.schema)
+      //   );
+      // }
 
-      const initValue = () => {
-        if (schemaFormStatus.value === PageAction.CREATE) {
-          initFieldValue({
-            schema: props.schema,
-            formData: props.formData,
-            fieldPath: props.fieldPath,
-            required: fieldProps.required
-          });
-        }
-      };
+      if (schemaFormStatus.value === PageAction.CREATE) {
+        initFieldValue({
+          schema: props.schema,
+          formData: props.formData,
+          uiFormData: props.uiFormData,
+          fieldPath: props.fieldPath,
+          required: props.required
+        });
+        handleChange(props.formData);
+      }
       const initOptions = () => {
         if (props.schema.enum) {
           options.value = _.map(props.schema.enum, (item) => {
@@ -135,8 +138,6 @@
         return null;
       };
 
-      const fieldValue = ref(_.get(props.formData, props.fieldPath));
-
       const showArrayValue = (val) => {
         if (_.isArray(val)) {
           return _.join(val, ',');
@@ -145,7 +146,7 @@
       };
 
       initOptions();
-      // initValue();
+
       const renderEdit = () => {
         return (
           <a-form-item
@@ -169,7 +170,7 @@
               allow-clear={!props.schema.enum}
               editor-id={_.join(props.fieldPath, '-')}
               popupInfo={props.schema.description}
-              modelValue={_.get(props.formData, props.fieldPath)}
+              modelValue={_.get(props.uiFormData, props.fieldPath)}
               onChange={(val) => {
                 const newVal = filterEmptyOnSelect(val);
                 let value = newVal;
@@ -182,6 +183,7 @@
                 }
 
                 _.set(props.formData, props.fieldPath, value);
+                _.set(props.uiFormData, props.fieldPath, value);
                 handleChange(props.formData);
                 if (
                   (isEmptyvalue(value) || !value?.length) &&
@@ -194,7 +196,6 @@
                     required: fieldProps.required
                   });
                 }
-                console.log('group====newVal=', newVal, fieldValue.value);
               }}
             >
               {renderSelectOptions()}
@@ -220,15 +221,17 @@
               <SealFormItemWrap label={props.schema.title} style="width: 100%">
                 {isBoolean(props.schema) ? (
                   <a-checkbox
-                    modelValue={fieldValue.value}
+                    modelValue={_.get(props.uiFormData, props.fieldPath)}
                     size="small"
                   ></a-checkbox>
                 ) : (
                   <span>
                     {(isPassword(props.schema) || props.schema.writeOnly) &&
-                    _.get(props.formData, props.fieldPath)
+                    _.get(props.uiFormData, props.fieldPath)
                       ? '******'
-                      : showArrayValue(_.get(props.formData, props.fieldPath))}
+                      : showArrayValue(
+                          _.get(props.uiFormData, props.fieldPath)
+                        )}
                   </span>
                 )}
               </SealFormItemWrap>

@@ -14,6 +14,12 @@ export default {
       return {};
     }
   },
+  uiFormData: {
+    type: Object,
+    default() {
+      return {};
+    }
+  },
   fieldPath: {
     type: Array as PropType<string[]>,
     default() {

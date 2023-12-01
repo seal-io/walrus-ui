@@ -24,5 +24,11 @@ export default {
     default() {
       return {};
     }
+  },
+  internalFormData: {
+    type: Object as PropType<any>,
+    default() {
+      return {};
+    }
   }
 };
