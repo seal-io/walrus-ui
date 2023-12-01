@@ -119,15 +119,6 @@
                   return (
                     <span>
                       <span>{props.schema.title || props.schema.name}</span>
-                      {props.schema.nullable ? (
-                        <a-button
-                          type="text"
-                          size="mini"
-                          onClick={() => handleUnsetField()}
-                        >
-                          置为空
-                        </a-button>
-                      ) : null}
                     </span>
                   );
                 },

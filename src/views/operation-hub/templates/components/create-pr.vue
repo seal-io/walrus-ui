@@ -43,7 +43,7 @@
               <ProviderIcon :provider="toLower(item.type)"></ProviderIcon>
               <span style="margin-left: 5px">{{ item.label }}</span>
             </a-option>
-            <template #prefix>
+            <template v-if="iconType" #prefix>
               <ProviderIcon :provider="toLower(iconType)"></ProviderIcon>
             </template>
           </seal-select>
