@@ -20,7 +20,8 @@
     isRequiredInitField,
     calcFieldSpan,
     isHalfGrid,
-    isEmptyvalue
+    isEmptyvalue,
+    initFieldValue
   } from '../utils';
   import CommonButton from './common-button.vue';
 
@@ -150,11 +151,11 @@
         ];
 
         // set the fieldpath
-        if (items?.properties) {
-          setPropertiesListFieldPath();
-        } else {
-          setPropertiesListFieldPathForMapList();
-        }
+        // if (items?.properties) {
+        //   setPropertiesListFieldPath();
+        // } else {
+        //   setPropertiesListFieldPathForMapList();
+        // }
       };
       const handleAddClick = () => {
         const newProperties = _.cloneDeep(itemsProperties);
@@ -164,33 +165,38 @@
         ];
 
         // set the fieldpath
-        if (items?.properties) {
-          setPropertiesListFieldPath();
-        } else {
-          setPropertiesListFieldPathForMapList();
-        }
+        // if (items?.properties) {
+        //   setPropertiesListFieldPath();
+        // } else {
+        //   setPropertiesListFieldPathForMapList();
+        // }
 
         // update formData
         _.each(propertiesList.value, (item, index) => {
           _.each(item, (sItem, sIndex) => {
-            if (!_.get(props.formData, sItem.fieldPath)) {
+            const fieldPath = [
+              ...props.fieldPath,
+              `${index}`,
+              sItem.name
+            ].filter((i) => i);
+            // const { fieldPath } = sItem;
+            if (!_.get(props.formData, fieldPath)) {
               if (isRequiredInitField(sItem, sItem.isRequired)) {
-                _.set(
-                  props.formData,
-                  sItem.fieldPath,
-                  initFieldDefaultValue(sItem)
-                );
+                _.set(props.formData, fieldPath, initFieldDefaultValue(sItem));
               } else {
-                _.unset(props.formData, sItem.fieldPath);
+                _.unset(props.formData, fieldPath);
               }
             }
+            // initFieldValue({
+            //   schema: sItem,
+            //   formData: props.formData,
+            //   fieldPath: sItem.fieldPath,
+            //   required: !!sItem.isRequired
+            // });
+            console.log('add++++++++++', fieldPath);
           });
         });
-        console.log(
-          'formData++++++++++++++',
-          props.formData,
-          propertiesList.value
-        );
+
         handleChange(props.formData);
       };
 
@@ -204,17 +210,22 @@
         propertiesList.value.splice(index, 1);
 
         // update formData
-        // _.unset(props.formData, [...props.fieldPath, `${index}`]);
-        _.get(props.formData, props.fieldPath).splice(index, 1);
+        _.get(props.formData, props.fieldPath, []).splice(index, 1);
         if (
           !_.get(props.formData, props.fieldPath).length ||
           !filterArrayIsEmpty(_.get(props.formData, props.fieldPath).length)
         ) {
           _.unset(props.formData, props.fieldPath);
         }
-
+        setPropertiesListFieldPath();
         activeItemIndex.value = -1;
         handleChange(props.formData);
+        console.log(
+          'handleDeleteClick++++++++++',
+          props.fieldPath,
+          props.formData,
+          propertiesList.value
+        );
       };
 
       const handleButtonEnter = (index) => {
@@ -274,7 +285,7 @@
       };
 
       // init field value when edit
-      const initFieldValue = () => {
+      const initFormFieldValue = () => {
         if (schemaFormStatus.value === PageAction.CREATE) {
           init();
         } else {
@@ -285,18 +296,12 @@
             }
           }
         }
-        console.log(
-          'value===9',
-          schemaFormStatus.value,
-          props.fieldPath,
-          props.formData
-        );
       };
 
       genItemsProperties();
 
       onMounted(() => {
-        initFieldValue();
+        initFormFieldValue();
       });
 
       return () => (
@@ -313,7 +318,7 @@
           {_.map(propertiesList.value, (item, index) => {
             return (
               <>
-                <div class={['add-item']}>
+                <div class={['add-item']} key={index}>
                   <div
                     class={[
                       'add-content',
@@ -325,10 +330,14 @@
                         return (
                           <SchemaField
                             level={sItem.level}
-                            key={_.join(sItem.fieldPath, '.')}
                             schema={sItem}
+                            key={sIndex}
                             formData={props.formData}
-                            fieldPath={sItem.fieldPath}
+                            fieldPath={[
+                              ...props.fieldPath,
+                              `${index}`,
+                              sItem.name
+                            ].filter((i) => i)}
                             requiredFields={sItem.parentRequired}
                             parentSpan={props.schema.colSpan}
                             action={props.action}

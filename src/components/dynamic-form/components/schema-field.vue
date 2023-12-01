@@ -7,7 +7,8 @@
     getShowIfValue,
     initFieldDefaultValue,
     setHiddenFieldValue,
-    isRequiredInitField
+    isRequiredInitField,
+    initFieldValue
   } from '../utils';
   import { getSchemaFieldComponent } from '../fields/field-map';
 
@@ -80,6 +81,18 @@
       }
       if (!component) return null;
 
+      // init field value
+      const initValue = () => {
+        if (schemaFormStatus.value === PageAction.CREATE) {
+          initFieldValue({
+            schema: props.schema,
+            formData: props.formData,
+            fieldPath,
+            required: _.includes(props.requiredFields, props.schema.name)
+          });
+        }
+      };
+      initValue();
       const renderComponent = () => {
         const Component = component;
         if (showIf) {

@@ -10,7 +10,8 @@
     genFieldPropsAndRules,
     initFieldDefaultValue,
     isRequiredInitField,
-    isEmptyvalue
+    isEmptyvalue,
+    unsetFieldValue
   } from '../utils';
   import {
     json2Yaml,
@@ -115,7 +116,16 @@
               editor-id={`${_.join(props.fieldPath, '_')}`}
               onBlur={(val) => {
                 const jsonstr = yaml2Json(fieldValue.value);
-                _.set(props.formData, props.fieldPath, jsonstr);
+                if (isEmptyvalue(jsonstr) && !props.schema.default) {
+                  unsetFieldValue({
+                    schema: props.schema,
+                    formData: props.formData,
+                    fieldPath: props.fieldPath,
+                    required: props.required
+                  });
+                } else {
+                  _.set(props.formData, props.fieldPath, jsonstr);
+                }
                 handleChange(props.formData);
                 console.log(
                   'josn===',

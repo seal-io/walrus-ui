@@ -16,7 +16,9 @@
     isEmptyvalue,
     isAllowCreateNumberSelect,
     isAllowCreateSelect,
-    genFieldPropsAndRules
+    genFieldPropsAndRules,
+    initFieldValue,
+    unsetFieldValue
   } from '../utils';
   import { Option } from '../interface';
   import { ProviderFormRefKey } from '../config';
@@ -71,6 +73,16 @@
         );
       }
 
+      const initValue = () => {
+        if (schemaFormStatus.value === PageAction.CREATE) {
+          initFieldValue({
+            schema: props.schema,
+            formData: props.formData,
+            fieldPath: props.fieldPath,
+            required: props.required
+          });
+        }
+      };
       const initOptions = () => {
         if (props.schema.enum) {
           options.value = _.map(props.schema.enum, (item) => {
@@ -106,7 +118,7 @@
       const isValueEmpty = (val) => {
         return val === '' || val === undefined || val === null;
       };
-      const filterEmptyOnSelect = (list, e) => {
+      const filterEmptyOnSelect = (list) => {
         if (isAllowCreateSelect(props.schema)) {
           return _.filter(list, (v) => !isValueEmpty(v));
         }
@@ -136,7 +148,7 @@
       };
 
       initOptions();
-
+      // initValue();
       const renderEdit = () => {
         return (
           <a-form-item
@@ -160,25 +172,32 @@
               allow-clear={!props.schema.enum}
               editor-id={_.join(props.fieldPath, '-')}
               popupInfo={props.schema.description}
-              v-model={fieldValue.value}
-              onChange={(val, e) => {
-                const newVal = filterEmptyOnSelect(val, e);
-
+              modelValue={_.get(props.formData, props.fieldPath)}
+              onChange={(val) => {
+                const newVal = filterEmptyOnSelect(val);
+                let value = newVal;
                 if (isAllowCreateNumberSelect(props.schema)) {
-                  fieldValue.value = _.map(newVal, (v) => {
+                  value = _.map(newVal, (v) => {
                     return _.toNumber(v);
                   });
                 } else {
-                  fieldValue.value = val;
+                  value = newVal;
                 }
 
-                if (isEmptyvalue(fieldValue.value) && !props.schema.default) {
-                  _.unset(props.formData, props.fieldPath);
-                } else {
-                  _.set(props.formData, props.fieldPath, fieldValue.value);
-                }
-
+                _.set(props.formData, props.fieldPath, value);
                 handleChange(props.formData);
+                if (
+                  (isEmptyvalue(value) || !value?.length) &&
+                  !props.schema.default
+                ) {
+                  unsetFieldValue({
+                    schema: props.schema,
+                    formData: props.formData,
+                    fieldPath: props.fieldPath,
+                    required: props.required
+                  });
+                }
+                console.log('group====newVal=', newVal, fieldValue.value);
               }}
             >
               {renderSelectOptions()}

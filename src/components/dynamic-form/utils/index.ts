@@ -123,24 +123,6 @@ export const isYamlEditor = (schema: FieldSchema) => {
   return false;
 };
 
-export const getShowIfValue = (showif, formData, fieldPath?: string[]) => {
-  const conditions = parseExpression(showif);
-  const isShow = getConditionValue(
-    {
-      conditions,
-      showIf: showif,
-      fieldPath
-    },
-    formData
-  );
-  return isShow;
-};
-
-// has default value or required field
-export const isRequiredInitField = (schema: FieldSchema, required) => {
-  return schema.default || required || !isBasicType(schema.type);
-};
-
 export const initFieldDefaultValue = (item) => {
   if (item.default || item.default === 0 || item.default === false) {
     return item.default;
@@ -159,6 +141,102 @@ export const initFieldDefaultValue = (item) => {
     return null;
   }
   return '';
+};
+
+export const initFieldValue = ({
+  fieldPath,
+  schema,
+  formData,
+  required
+}: {
+  fieldPath: string[];
+  schema: FieldSchema;
+  formData: object;
+  required: boolean;
+}) => {
+  console.log(
+    'initFieldValue==========',
+    fieldPath,
+    schema,
+    formData,
+    required
+  );
+  // nullable or optional
+  if (schema.nullable || isEmptyvalue(schema.default)) {
+    return;
+  }
+  const initialPath = _.initial(fieldPath);
+
+  // root field and required
+  if (!initialPath.length && (required || !isEmptyvalue(schema.default))) {
+    _.set(formData, fieldPath, initFieldDefaultValue(schema));
+    return;
+  }
+
+  if (initialPath.length && (required || !isEmptyvalue(schema.default))) {
+    const parentValue = _.get(formData, initialPath);
+    if (parentValue) {
+      _.set(formData, fieldPath, initFieldDefaultValue(schema));
+    }
+  }
+};
+
+export const parentObjectExsits = (formData, fieldPath: string[]) => {
+  const initialPath = _.initial(fieldPath);
+  if (!initialPath.length) return true;
+  const parentValue = _.get(formData, initialPath);
+  return parentValue && _.keys(parentValue).length > 0;
+};
+
+export const unsetFieldByPath = (formData, initialPath) => {
+  if (!initialPath.length) return;
+  if (_.keys(_.get(formData, initialPath)).length === 0) {
+    _.unset(formData, initialPath);
+    unsetFieldByPath(formData, _.initial(initialPath));
+  }
+};
+export const unsetFieldValue = ({
+  fieldPath,
+  schema,
+  formData,
+  required
+}: {
+  fieldPath: string[];
+  schema: FieldSchema;
+  formData: object;
+  required: boolean;
+}) => {
+  const value = _.get(formData, fieldPath);
+  const initialPath = _.initial(fieldPath);
+  // nullable or optional
+
+  if (!required) {
+    _.unset(formData, fieldPath);
+  } else if (
+    schema.nullable &&
+    _.keys(_.get(formData, initialPath).length === 1)
+  ) {
+    _.unset(formData, fieldPath);
+  }
+  unsetFieldByPath(formData, initialPath);
+};
+
+export const getShowIfValue = (showif, formData, fieldPath?: string[]) => {
+  const conditions = parseExpression(showif);
+  const isShow = getConditionValue(
+    {
+      conditions,
+      showIf: showif,
+      fieldPath
+    },
+    formData
+  );
+  return isShow;
+};
+
+// has default value or required field
+export const isRequiredInitField = (schema: FieldSchema, required) => {
+  return schema.default || required || !isBasicType(schema.type);
 };
 
 export const checkValidValue = ({ value, schema, required }) => {
@@ -362,7 +440,7 @@ export const genFieldPropsAndRules = ({
       },
       rules: [
         {
-          required: requiredFlag || required || false,
+          // required: requiredFlag || required || false,
           message:
             message ||
             i18n.global.t('common.form.rule.select', { name: title || name })
@@ -381,7 +459,7 @@ export const genFieldPropsAndRules = ({
       },
       rules: [
         {
-          required: requiredFlag || required || false,
+          // required: requiredFlag || required || false,
           message:
             message ||
             i18n.global.t('common.form.rule.input', { name: title || name })
@@ -403,7 +481,7 @@ export const genFieldPropsAndRules = ({
       },
       rules: [
         {
-          required: requiredFlag || required || false,
+          // required: requiredFlag || required || false,
           message:
             message ||
             i18n.global.t('common.form.rule.input', { name: title || name })
@@ -422,7 +500,7 @@ export const genFieldPropsAndRules = ({
       },
       rules: [
         {
-          required: true,
+          // required: true,
           message:
             message ||
             i18n.global.t('common.form.rule.select', { name: title || name })
@@ -443,7 +521,7 @@ export const genFieldPropsAndRules = ({
       },
       rules: [
         {
-          required: isRequired,
+          // required: isRequired,
           message:
             message ||
             i18n.global.t('common.form.rule.select', { name: title || name })
@@ -463,7 +541,7 @@ export const genFieldPropsAndRules = ({
       },
       rules: [
         {
-          required: requiredFlag || required || false,
+          // required: requiredFlag || required || false,
           message:
             message ||
             i18n.global.t('common.form.rule.input', { name: title || name })
@@ -478,7 +556,7 @@ export const genFieldPropsAndRules = ({
     },
     rules: [
       {
-        required: requiredFlag || required || false,
+        // required: requiredFlag || required || false,
         message:
           message ||
           i18n.global.t('common.form.rule.input', { name: title || name })
