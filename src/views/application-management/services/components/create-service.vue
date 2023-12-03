@@ -234,6 +234,7 @@
         <GroupForm
           ref="groupForm"
           v-model:form-data="formData.attributes"
+          :ui-form-data="uiFormData"
           :schema="schemaVariables"
         ></GroupForm>
       </a-spin>
@@ -320,6 +321,7 @@
     serviceInfo,
     schemaVariables,
     formData,
+    uiFormData,
     pageAction,
     templateInfo,
     templateVersionList,
@@ -343,6 +345,8 @@
   const groupForm = ref();
   const versionMap = ref({ nv: '', ov: '' });
   const dataType = ref(props.resourceType || '');
+  const formAction = ref(props.action);
+  const schemaFormCache = ref<any>({});
   let connectorAxiosToken: any = null;
   const projectEnvCtx = reactive({
     projectID: route.params.projectId as string,
@@ -350,7 +354,7 @@
     connectors: []
   });
 
-  provide(InjectSchemaFormStatusKey, ref(props.action));
+  provide(InjectSchemaFormStatusKey, ref(formAction));
   provide(InjectShowInputHintKey, true);
   provide(InjectCompleteDataKey, completeData);
   provide(InjectProjectEnvironmentKey, {
@@ -415,26 +419,62 @@
     callback();
   };
 
+  const getFormDataAttributeCache = () => {
+    if (dataType.value === ServiceDataType.service) {
+      if (
+        formData.value.template?.version === copyFormData.template?.version &&
+        formData.value.template?.template?.id ===
+          copyFormData.template?.template?.id &&
+        props.action === PageAction.EDIT
+      ) {
+        formData.value.attributes = _.cloneDeep(copyFormData.attributes);
+        formAction.value = PageAction.EDIT;
+      } else if (
+        _.get(schemaFormCache.value, [formData.value.template.version])
+      ) {
+        formData.value.attributes = _.cloneDeep(
+          _.get(schemaFormCache.value, [formData.value.template.version], {})
+        );
+      } else {
+        formData.value.attributes = {};
+      }
+
+      uiFormData.value = _.cloneDeep(formData.value.attributes);
+
+      console.log('schemaFormCache===11', {
+        data: formData.value,
+        copy: copyFormData,
+        action: formAction.value
+      });
+    }
+  };
+
   // cache the user inputs when change the module version
 
   const execVersionChangeCallback = async () => {
-    // await setModuleVersionFormCache();
-    const moduleData = await getTemplateSchemaByVersion();
-    setTemplateInfo(moduleData);
-    formData.value.attributes = {};
-
-    groupForm.value?.clearFormValidStatus?.();
+    getFormDataAttributeCache();
+    setTimeout(async () => {
+      const moduleData = await getTemplateSchemaByVersion();
+      setTemplateInfo(moduleData);
+    });
   };
 
   const handleVersionChange = () => {
+    formAction.value = PageAction.CREATE;
     formData.value.template.id =
       _.find(
         templateVersionList.value,
         (item) => item.value === formData.value.template.version
       )?.id || '';
-    setTimeout(() => {
-      execVersionChangeCallback();
-    }, 100);
+    execVersionChangeCallback();
+  };
+
+  const setFormDataAttributeCache = () => {
+    if (dataType.value === ServiceDataType.service) {
+      schemaFormCache.value[formData.value.template.version] = _.cloneDeep(
+        formData.value.attributes
+      );
+    }
   };
 
   const formatTemplateLael = (data) => {
@@ -445,6 +485,7 @@
   };
   // template change: exec version change
   const handleTemplateChange = async (val) => {
+    schemaFormCache.value = {};
     if (dataType.value === ServiceDataType.resource) {
       const data = await getItemResourceDefinition();
       setTemplateInfo(data);
@@ -517,7 +558,7 @@
         onOk: () => {
           copyFormData = cloneDeep(formData.value);
           router.push({
-            name: to.name as string
+            path: to.path as string
           });
         }
       });
@@ -537,6 +578,9 @@
     copyFormData = _.cloneDeep(formData.value);
     getLabelList();
     getEnvironmentConnectors();
+    if (props.action === PageAction.EDIT) {
+      setFormDataAttributeCache();
+    }
   };
 
   initData();

@@ -21,7 +21,8 @@
     calcFieldSpan,
     isHalfGrid,
     isEmptyvalue,
-    initFieldValue
+    initFieldValue,
+    viewFieldValue
   } from '../utils';
   import CommonButton from './common-button.vue';
 
@@ -35,7 +36,8 @@
       );
       const activeItemIndex = ref(-1);
       const items = props.schema.items || ({} as FieldSchema);
-      const minItems = props.schema.minItems || 0;
+      const minItems =
+        props.schema.minItems || props.schema.default?.length || 0;
       let itemsProperties: FieldSchema[] = [];
       const propertiesList = ref<FieldSchema[][]>([]);
 
@@ -43,33 +45,24 @@
         emit('change', data);
       };
 
-      // init field value
-      // if (
-      //   schemaFormStatus.value === PageAction.CREATE &&
-      //   isRequiredInitField(
-      //     props.schema,
-      //     _.includes(props.requiredFields, props.schema.name)
-      //   )
-      // ) {
-      //   _.set(
-      //     props.formData,
-      //     props.fieldPath,
-      //     initFieldDefaultValue(props.schema)
-      //   );
-
+      // if (schemaFormStatus.value === PageAction.CREATE) {
+      //   initFieldValue({
+      //     schema: props.schema,
+      //     formData: props.formData,
+      //     uiFormData: props.uiFormData,
+      //     fieldPath: props.fieldPath,
+      //     required: _.includes(props.requiredFields, props.schema.name)
+      //   });
       //   handleChange(props.formData);
+      // } else {
+      //   viewFieldValue({
+      //     schema: props.schema,
+      //     formData: props.formData,
+      //     uiFormData: props.uiFormData,
+      //     fieldPath: props.fieldPath,
+      //     required: _.includes(props.requiredFields, props.schema.name)
+      //   });
       // }
-
-      if (schemaFormStatus.value === PageAction.CREATE) {
-        initFieldValue({
-          schema: props.schema,
-          formData: props.formData,
-          uiFormData: props.uiFormData,
-          fieldPath: props.fieldPath,
-          required: _.includes(props.requiredFields, props.schema.name)
-        });
-        handleChange(props.formData);
-      }
 
       const genItemsProperties = () => {
         // items
@@ -134,11 +127,7 @@
         ];
       };
       const handleAddClick = () => {
-        const newProperties = _.cloneDeep(itemsProperties);
-        propertiesList.value = [
-          ..._.cloneDeep(propertiesList.value),
-          [...newProperties]
-        ];
+        setPropertiesList();
 
         // update formData
         _.each(propertiesList.value, (item, index) => {
@@ -148,13 +137,6 @@
               `${index}`,
               sItem.name
             ].filter((i) => i);
-            // if (!_.get(props.formData, fieldPath)) {
-            //   if (isRequiredInitField(sItem, sItem.isRequired)) {
-            //     _.set(props.formData, fieldPath, initFieldDefaultValue(sItem));
-            //   } else {
-            //     _.unset(props.formData, fieldPath);
-            //   }
-            // }
             initFieldValue({
               schema: sItem,
               formData: props.formData,
@@ -166,6 +148,12 @@
         });
 
         handleChange(props.formData);
+        console.log(
+          'add++++++++++++',
+          props.formData,
+          props.uiFormData,
+          propertiesList.value
+        );
       };
 
       // check array every item is empty or null or undefined
@@ -181,16 +169,18 @@
         _.get(props.uiFormData, props.fieldPath, []).splice(index, 1);
         _.get(props.formData, props.fieldPath, []).splice(index, 1);
         if (
-          !_.get(props.uiFormData, props.fieldPath).length ||
-          !filterArrayIsEmpty(_.get(props.uiFormData, props.fieldPath).length)
+          !_.get(props.uiFormData, props.fieldPath, []).length ||
+          !filterArrayIsEmpty(
+            _.get(props.uiFormData, props.fieldPath, []).length
+          )
         ) {
           _.unset(props.uiFormData, props.fieldPath);
         }
 
         // update formData
         if (
-          !_.get(props.formData, props.fieldPath).length ||
-          !filterArrayIsEmpty(_.get(props.uiFormData, props.fieldPath).length)
+          !_.get(props.formData, props.fieldPath, []).length ||
+          !filterArrayIsEmpty(_.get(props.formData, props.fieldPath, []).length)
         ) {
           _.unset(props.formData, props.fieldPath);
         }
@@ -273,12 +263,25 @@
       onMounted(() => {
         initFormFieldValue();
       });
+      console.log(
+        'array++++++++++++',
+        props.fieldPath,
+        schemaFormStatus.value,
+        props.formData,
+        props.uiFormData
+      );
 
       return () => (
         <FieldGroup
           schema={props.schema}
           level={props.schema.level}
           fieldPath={props.fieldPath}
+          formData={props.formData}
+          uiFormData={props.uiFormData}
+          requiredFields={props.requiredFields}
+          onChange={(val) => {
+            handleChange(val);
+          }}
           v-slots={{
             footer: () => {
               return <>{renderAddButton()}</>;

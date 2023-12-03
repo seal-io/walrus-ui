@@ -124,7 +124,7 @@
               editor-id={`${_.join(props.fieldPath, '_')}`}
               onBlur={(val) => {
                 const jsonstr = yaml2Json(fieldValue.value);
-                if (isEmptyvalue(jsonstr) && !props.schema.default) {
+                if (isEmptyvalue(jsonstr)) {
                   unsetFieldValue({
                     schema: props.schema,
                     formData: props.formData,

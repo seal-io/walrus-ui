@@ -17,10 +17,6 @@
     inject: ['schemaFormStatus'],
     props: schemaFieldProps,
     setup(props, { emit }) {
-      const handleChange = (data) => {
-        emit('change', data);
-      };
-
       const { fieldProps, rules } = genFieldPropsAndRules({
         schema: props.schema,
         requiredFields: props.requiredFields
@@ -41,7 +37,6 @@
               schema={props.schema}
               rules={rules}
               action={props.action}
-              onChange={(data) => handleChange(data)}
             ></BasicField>
           </a-grid-item>
         );

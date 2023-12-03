@@ -173,6 +173,7 @@
           <GroupForm
             ref="groupForm"
             v-model:form-data="formData.attributes"
+            :ui-form-data="uiFormData"
             :schema="schemaVariables"
           ></GroupForm>
         </div>
@@ -278,6 +279,7 @@
     templateInfo,
     schemaVariables,
     formData,
+    uiFormData,
     pageAction
   } = useServiceData(props);
   const {

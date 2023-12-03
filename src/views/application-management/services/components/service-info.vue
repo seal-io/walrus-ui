@@ -3,6 +3,7 @@
     <GroupForm
       ref="groupForm"
       style="padding: 10px 20px"
+      :ui-form-data="serviceInfo.attributes"
       :form-data="serviceInfo.attributes"
       :schema="schema"
     ></GroupForm>

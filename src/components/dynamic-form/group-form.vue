@@ -2,6 +2,7 @@
   <div class="group-form">
     <a-tabs
       v-if="formGroup.length > 1"
+      ref="schemaForm"
       class="page-line-tabs"
       :active-key="activeKey"
       :destroy-on-hide="destroyed"
@@ -16,8 +17,8 @@
           :ref="(el: any) => setRefMap(el, item.group)"
           :form-id="`schemaForm${index}`"
           layout="vertical"
-          :origin-form-data="rootFormData"
           :internal-form-data="uiFormData"
+          :origin-form-data="rootFormData"
           :schema="item.schema"
           :action="action"
           @change="handleChange"
@@ -90,6 +91,7 @@
   const hiddenFormData = ref<any>({});
   const validResult = ref<any>([]);
   const errorFields = ref<string[]>([]);
+  const formDataCache: any = {};
 
   provide(ProvideErrorFieldsKey, errorFields);
   const setRefMap = (el: any, name) => {
@@ -101,6 +103,7 @@
   const handleChange = (data) => {
     emits('update:formData', data);
     emits('change', data);
+    console.log('handleChange++++++++++++++', _.cloneDeep(data));
   };
 
   const handleTabChange = (key) => {
@@ -157,11 +160,7 @@
 
     validResult.value = errorList;
 
-    if (!errorList.length) {
-      handleUnsetField();
-    } else {
-      genErrorFields();
-    }
+    genErrorFields();
 
     return errorList.length;
   };
@@ -196,12 +195,19 @@
   };
   defineExpose({
     validate,
+    rootFormData,
     getHiddenData
   });
   watch(
     () => props.formData,
     () => {
       rootFormData.value = props.formData;
+      console.log(
+        'formGroup+++++++++++++++++222+++',
+        Date.now(),
+        rootFormData.value,
+        _.cloneDeep(props.formData)
+      );
     },
     {
       immediate: true,
@@ -213,9 +219,13 @@
     () => {
       hiddenFormData.value = {};
       formGroup.value = [];
+      refMap.value = {};
       destroyed.value = true;
+
       if (schemaFormStatus.value === PageAction.CREATE) {
-        rootFormData.value = {};
+        handleChange({});
+      } else {
+        rootFormData.value = _.cloneDeep(props.uiFormData);
       }
       nextTick(() => {
         destroyed.value = false;
@@ -227,6 +237,13 @@
         activeKey.value = formGroup.value[0]?.group;
 
         getHiddenFormData(allGroups);
+        console.log(
+          'formGroup++++++++++++++',
+          Date.now(),
+          schemaFormStatus.value,
+          formGroup.value,
+          props.formData
+        );
       });
     },
     {

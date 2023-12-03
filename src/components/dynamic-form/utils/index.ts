@@ -143,6 +143,13 @@ export const initFieldDefaultValue = (item) => {
   return '';
 };
 
+export const parentObjectExsits = (formData, fieldPath: string[]) => {
+  const initialPath = _.initial(fieldPath);
+  if (!initialPath.length) return true;
+  const parentValue = _.get(formData, initialPath);
+  return parentValue && _.keys(parentValue).length > 0;
+};
+
 export const initFieldValue = ({
   fieldPath,
   schema,
@@ -156,42 +163,46 @@ export const initFieldValue = ({
   uiFormData: object;
   required: boolean;
 }) => {
-  console.log(
-    'initFieldValue==========',
-    fieldPath,
-    schema,
-    formData,
-    required
-  );
-
-  // nullable or optional
-  if (isEmptyvalue(schema.default) || (isBasicType(schema.type) && !required)) {
+  // no default value and not required
+  if (isEmptyvalue(schema.default) && !required) {
     return;
   }
-  const initialPath = _.initial(fieldPath);
   const defaultValue = initFieldDefaultValue(schema);
-
-  // root field and required
-  if (!initialPath.length && (required || !isEmptyvalue(schema.default))) {
-    _.set(uiFormData, fieldPath, defaultValue);
-  }
-
-  if (initialPath.length && (required || !isEmptyvalue(schema.default))) {
-    const parentValue = _.get(uiFormData, initialPath);
-    if (parentValue) {
-      _.set(uiFormData, fieldPath, defaultValue);
-    }
-  }
-  if (!schema.nullable) {
-    _.set(formData, fieldPath, defaultValue);
+  _.set(uiFormData, fieldPath, _.cloneDeep(defaultValue));
+  const requiredField = !schema.nullable && !schema.originNullable && required;
+  const listField = schema.type === FIELD_TYPE.ARRAY && schema.default;
+  if (requiredField) {
+    _.set(formData, fieldPath, _.cloneDeep(defaultValue));
+  } else if (listField) {
+    _.set(formData, fieldPath, _.cloneDeep(defaultValue));
   }
 };
 
-export const parentObjectExsits = (formData, fieldPath: string[]) => {
-  const initialPath = _.initial(fieldPath);
-  if (!initialPath.length) return true;
-  const parentValue = _.get(formData, initialPath);
-  return parentValue && _.keys(parentValue).length > 0;
+export const viewFieldValue = ({
+  fieldPath,
+  schema,
+  formData,
+  uiFormData,
+  required
+}: {
+  fieldPath: string[];
+  schema: FieldSchema;
+  formData: object;
+  uiFormData: object;
+  required: boolean;
+}) => {
+  if (_.hasIn(formData, fieldPath)) {
+    return;
+  }
+  const defaultValue = initFieldDefaultValue(schema);
+  _.set(uiFormData, fieldPath, _.cloneDeep(defaultValue));
+  const requiredField = !schema.nullable && !schema.originNullable && required;
+  const listField = schema.type === FIELD_TYPE.ARRAY && schema.default;
+  if (requiredField) {
+    _.set(formData, fieldPath, _.cloneDeep(defaultValue));
+  } else if (listField) {
+    _.set(formData, fieldPath, _.cloneDeep(defaultValue));
+  }
 };
 
 export const unsetFieldByPath = (formData, initialPath) => {
@@ -335,6 +346,7 @@ export const genObjectFieldProperties = ({
       parentRequired: schema.required || [],
       colSpan: colSpanData.span,
       halfGrid: colSpanData.halfGrid,
+      originNullable: schema.nullable || schema.originNullable || false,
       level,
       order,
       _t: Date.now()

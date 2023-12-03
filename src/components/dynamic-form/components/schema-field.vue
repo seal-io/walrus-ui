@@ -8,7 +8,8 @@
     initFieldDefaultValue,
     setHiddenFieldValue,
     isRequiredInitField,
-    initFieldValue
+    initFieldValue,
+    viewFieldValue
   } from '../utils';
   import { getSchemaFieldComponent } from '../fields/field-map';
 
@@ -27,21 +28,6 @@
       const hidden = _.get(props.schema, ['x-walrus-ui', 'hidden'], false);
       // showIf
       const showIf = _.get(props.schema, ['x-walrus-ui', 'showIf'], '');
-
-      // init field value
-      // if (
-      //   schemaFormStatus.value === PageAction.CREATE &&
-      //   isRequiredInitField(
-      //     props.schema,
-      //     _.includes(props.requiredFields, props.schema.name)
-      //   )
-      // ) {
-      //   _.set(
-      //     props.formData,
-      //     props.fieldPath,
-      //     initFieldDefaultValue(props.schema)
-      //   );
-      // }
 
       const handleChange = (data) => {
         emit('change', data);
@@ -88,8 +74,22 @@
           fieldPath,
           required: _.includes(props.requiredFields, props.schema.name)
         });
+      } else {
+        viewFieldValue({
+          schema: props.schema,
+          formData: props.formData,
+          uiFormData: props.uiFormData,
+          fieldPath,
+          required: _.includes(props.requiredFields, props.schema.name)
+        });
       }
-      console.log('data+++++++++', fieldPath, props.formData, props.uiFormData);
+      console.log(
+        'data+++++++++',
+        schemaFormStatus.value,
+        fieldPath,
+        props.formData,
+        props.uiFormData
+      );
       const renderComponent = () => {
         const Component = component;
         if (showIf) {
