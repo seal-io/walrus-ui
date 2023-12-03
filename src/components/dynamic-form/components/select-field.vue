@@ -63,30 +63,30 @@
         });
       };
 
-      if (schemaFormStatus.value === PageAction.CREATE) {
-        initFieldValue({
-          schema: props.schema,
-          formData: props.formData,
-          uiFormData: props.uiFormData,
-          fieldPath: props.fieldPath,
-          required: fieldProps.required
-        });
-        handleChange(props.formData);
-        console.log(
-          'initValue++++++++++++',
-          props.fieldPath,
-          props.uiFormData,
-          fieldProps
-        );
-      } else {
-        viewFieldValue({
-          schema: props.schema,
-          formData: props.formData,
-          uiFormData: props.uiFormData,
-          fieldPath: props.fieldPath,
-          required: fieldProps.required
-        });
-      }
+      // if (schemaFormStatus.value === PageAction.CREATE) {
+      //   initFieldValue({
+      //     schema: props.schema,
+      //     formData: props.formData,
+      //     uiFormData: props.uiFormData,
+      //     fieldPath: props.fieldPath,
+      //     required: fieldProps.required
+      //   });
+      //   handleChange(props.formData);
+      //   console.log(
+      //     'initValue++++++++++++',
+      //     props.fieldPath,
+      //     props.uiFormData,
+      //     fieldProps
+      //   );
+      // } else {
+      //   viewFieldValue({
+      //     schema: props.schema,
+      //     formData: props.formData,
+      //     uiFormData: props.uiFormData,
+      //     fieldPath: props.fieldPath,
+      //     required: fieldProps.required
+      //   });
+      // }
       const initOptions = () => {
         if (props.schema.enum) {
           options.value = _.map(props.schema.enum, (item) => {
@@ -171,9 +171,9 @@
                   }
                   if (!value) {
                     callback(
-                      `${props.schema.title}${i18n.global.t(
-                        'common.form.rule.select'
-                      )}`
+                      `${i18n.global.t('common.form.rule.select', {
+                        name: fieldProps.label
+                      })}`
                     );
                   } else {
                     callback();

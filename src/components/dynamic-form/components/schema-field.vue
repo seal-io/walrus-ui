@@ -74,6 +74,7 @@
           fieldPath,
           required: _.includes(props.requiredFields, props.schema.name)
         });
+        handleChange(props.formData);
       } else {
         viewFieldValue({
           schema: props.schema,

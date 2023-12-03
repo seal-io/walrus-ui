@@ -79,7 +79,7 @@
         }
       };
 
-      initValue();
+      // initValue();
       const renderEdit = () => {
         return (
           <a-form-item

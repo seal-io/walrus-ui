@@ -29,8 +29,8 @@
     emits: ['change'],
     setup(props, { emit, expose }) {
       const formref = ref();
-      const formData = ref();
-      const uiFormData = ref();
+      const formData = ref({});
+      const uiFormData = ref({});
       const { disabled, layout } = toRefs(props);
 
       const { scrollToView } = useScrollToView();
@@ -38,7 +38,7 @@
       provide(ProviderFormRefKey, formref);
 
       const handleChange = (data) => {
-        emit('change', toRaw(data));
+        emit('change', data);
       };
 
       const handleSubmitFailed = (data) => {
@@ -70,11 +70,6 @@
         () => props.originFormData,
         () => {
           formData.value = props.originFormData;
-          console.log(
-            'uiFormData======++++===2',
-            formData.value,
-            uiFormData.value
-          );
         },
         {
           immediate: true,

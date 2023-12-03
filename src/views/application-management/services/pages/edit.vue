@@ -260,6 +260,9 @@
                     <div>{{
                       $t('applications.applications.modules.params.tips3')
                     }}</div>
+                    <div>{{
+                      $t('applications.applications.modules.params.tips4')
+                    }}</div>
                   </div>
                 </template>
                 <icon-question-circle class="mleft-5" />

@@ -222,6 +222,9 @@
                     <div>{{
                       $t('applications.applications.modules.params.tips3')
                     }}</div>
+                    <div>{{
+                      $t('applications.applications.modules.params.tips4')
+                    }}</div>
                   </div>
                 </template>
                 <icon-question-circle class="mleft-5" />
@@ -258,7 +261,6 @@
   } from 'vue';
   import { onBeforeRouteLeave } from 'vue-router';
   import useCallCommon from '@/hooks/use-call-common';
-  import thumbButton from '@/components/buttons/thumb-button.vue';
   import useScrollToView from '@/hooks/use-scroll-to-view';
   import xInputGroup from '@/components/form-create/custom-components/x-input-group.vue';
   import GroupForm from '@/components/dynamic-form/group-form.vue';
@@ -490,7 +492,7 @@
       const data = await getItemResourceDefinition();
       setTemplateInfo(data);
       formData.value.attributes = {};
-      groupForm.value?.clearFormValidStatus?.();
+      uiFormData.value = {};
     } else {
       const data = _.find(templateList.value, (item) => item.id === val);
       formData.value.template.name = data?.name || '';
@@ -522,7 +524,12 @@
     const res = await formref.value?.validate();
     const groupFormRes = await groupForm.value?.validate();
     const hiddenFormData = groupForm.value?.getHiddenData();
-    console.log('hiddenFormData===', groupFormRes, hiddenFormData);
+    console.log(
+      'hiddenFormData===',
+      formData.value.attributes,
+      groupFormRes,
+      hiddenFormData
+    );
     if (!res && !groupFormRes && !validateTrigger.value) {
       if (!formData.value.template.project?.id) {
         formData.value.template = _.omit(formData.value.template, 'project');

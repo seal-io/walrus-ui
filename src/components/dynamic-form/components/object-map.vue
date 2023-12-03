@@ -45,24 +45,24 @@
       //   );
       //   handleChange(props.formData);
       // }
-      if (schemaFormStatus.value === PageAction.CREATE) {
-        initFieldValue({
-          schema: props.schema,
-          formData: props.formData,
-          uiFormData: props.uiFormData,
-          fieldPath: props.fieldPath,
-          required: _.includes(props.requiredFields, props.schema.name)
-        });
-        handleChange(props.formData);
-      } else {
-        viewFieldValue({
-          schema: props.schema,
-          formData: props.formData,
-          uiFormData: props.uiFormData,
-          fieldPath: props.fieldPath,
-          required: _.includes(props.requiredFields, props.schema.name)
-        });
-      }
+      // if (schemaFormStatus.value === PageAction.CREATE) {
+      //   initFieldValue({
+      //     schema: props.schema,
+      //     formData: props.formData,
+      //     uiFormData: props.uiFormData,
+      //     fieldPath: props.fieldPath,
+      //     required: _.includes(props.requiredFields, props.schema.name)
+      //   });
+      //   handleChange(props.formData);
+      // } else {
+      //   viewFieldValue({
+      //     schema: props.schema,
+      //     formData: props.formData,
+      //     uiFormData: props.uiFormData,
+      //     fieldPath: props.fieldPath,
+      //     required: _.includes(props.requiredFields, props.schema.name)
+      //   });
+      // }
 
       const { fieldProps, rules } = genFieldPropsAndRules({
         schema: props.schema,
