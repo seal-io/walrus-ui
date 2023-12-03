@@ -10,6 +10,7 @@
   import {
     genObjectFieldProperties,
     initFieldDefaultValue,
+    viewFieldValue,
     genFieldPropsAndRules,
     isRequiredInitField,
     unsetFieldValue,
@@ -53,6 +54,14 @@
           required: _.includes(props.requiredFields, props.schema.name)
         });
         handleChange(props.formData);
+      } else {
+        viewFieldValue({
+          schema: props.schema,
+          formData: props.formData,
+          uiFormData: props.uiFormData,
+          fieldPath: props.fieldPath,
+          required: _.includes(props.requiredFields, props.schema.name)
+        });
       }
 
       const { fieldProps, rules } = genFieldPropsAndRules({
@@ -124,13 +133,13 @@
                 onUpdate:value={(val) => {
                   _.set(props.formData, props.fieldPath, val);
                   _.set(props.uiFormData, props.fieldPath, val);
-                  handleChange(props.formData);
                   if (!_.keys(_.get(props.formData, props.fieldPath)).length) {
                     unsetFieldByPath(
                       props.formData,
                       _.initial(props.fieldPath)
                     );
                   }
+                  handleChange(props.formData);
                 }}
               ></MapString>
             </SealFormItemWrap>

@@ -1,5 +1,6 @@
 <script lang="tsx">
   import _ from 'lodash';
+  import i18n from '@/locale';
   import { defineComponent, toRefs, inject, ref, watch } from 'vue';
   import { InjectSchemaFormStatusKey, PageAction } from '@/views/config';
   import SealFormItemWrap from '@/components/seal-form/components/seal-form-item-wrap.vue';
@@ -18,7 +19,9 @@
     isAllowCreateSelect,
     genFieldPropsAndRules,
     initFieldValue,
-    unsetFieldValue
+    viewFieldValue,
+    unsetFieldValue,
+    parentObjectExsits
   } from '../utils';
   import { Option } from '../interface';
   import { ProviderFormRefKey } from '../config';
@@ -52,26 +55,13 @@
       });
       const handleChange = (data) => {
         emit('change', data);
+      };
 
+      const validateField = () => {
         setTimeout(() => {
           formref.value?.validateField(props.fieldPath);
         });
       };
-
-      // init field value
-      // if (
-      //   schemaFormStatus.value === PageAction.CREATE &&
-      //   isRequiredInitField(
-      //     props.schema,
-      //     _.includes(props.requiredFields, props.schema.name)
-      //   )
-      // ) {
-      //   _.set(
-      //     props.formData,
-      //     props.fieldPath,
-      //     initFieldDefaultValue(props.schema)
-      //   );
-      // }
 
       if (schemaFormStatus.value === PageAction.CREATE) {
         initFieldValue({
@@ -79,9 +69,23 @@
           formData: props.formData,
           uiFormData: props.uiFormData,
           fieldPath: props.fieldPath,
-          required: props.required
+          required: fieldProps.required
         });
         handleChange(props.formData);
+        console.log(
+          'initValue++++++++++++',
+          props.fieldPath,
+          props.uiFormData,
+          fieldProps
+        );
+      } else {
+        viewFieldValue({
+          schema: props.schema,
+          formData: props.formData,
+          uiFormData: props.uiFormData,
+          fieldPath: props.fieldPath,
+          required: fieldProps.required
+        });
       }
       const initOptions = () => {
         if (props.schema.enum) {
@@ -151,10 +155,32 @@
         return (
           <a-form-item
             hide-label={true}
-            rules={rules}
             label={fieldProps.label}
             field={_.join(props.fieldPath, '.')}
             validate-trigger={['change']}
+            rules={[
+              ...rules,
+              {
+                validator: (value, callback) => {
+                  if (
+                    !parentObjectExsits(props.formData, props.fieldPath) ||
+                    !fieldProps.required
+                  ) {
+                    callback();
+                    return;
+                  }
+                  if (!value) {
+                    callback(
+                      `${props.schema.title}${i18n.global.t(
+                        'common.form.rule.select'
+                      )}`
+                    );
+                  } else {
+                    callback();
+                  }
+                }
+              }
+            ]}
           >
             <seal-select
               {...fieldProps}
@@ -184,11 +210,7 @@
 
                 _.set(props.formData, props.fieldPath, value);
                 _.set(props.uiFormData, props.fieldPath, value);
-                handleChange(props.formData);
-                if (
-                  (isEmptyvalue(value) || !value?.length) &&
-                  !props.schema.default
-                ) {
+                if (isEmptyvalue(value) || !value?.length) {
                   unsetFieldValue({
                     schema: props.schema,
                     formData: props.formData,
@@ -196,6 +218,8 @@
                     required: fieldProps.required
                   });
                 }
+                handleChange(props.formData);
+                validateField();
               }}
             >
               {renderSelectOptions()}

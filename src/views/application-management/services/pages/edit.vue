@@ -437,12 +437,6 @@
     console.log('handleNamespaceChange===', val);
   };
 
-  // const formAction = computed(() => {
-  //   if (!id) {
-  //     return 'create';
-  //   }
-  //   return 'edit';
-  // });
   provide(InjectSchemaFormStatusKey, formAction);
   const virtualListProps = computed(() => {
     if (templateList.value.length > 20) {
@@ -514,16 +508,29 @@
 
   const getFormDataAttributeCache = () => {
     if (dataType === ServiceDataType.service) {
-      formData.value.attributes = _.cloneDeep(
-        _.get(schemaFormCache.value, formData.value.template.version, {})
+      if (
+        formData.value.template?.version === copyFormData.template?.version &&
+        formData.value.template?.template?.id ===
+          copyFormData.template?.template?.id &&
+        id
+      ) {
+        formData.value.attributes = _.cloneDeep(copyFormData.attributes);
+        formAction.value = PageAction.EDIT;
+      } else if (
+        _.get(schemaFormCache.value, [formData.value.template?.version])
+      ) {
+        formData.value.attributes = _.cloneDeep(
+          _.get(schemaFormCache.value, [formData.value.template?.version], {})
+        );
+      } else {
+        formData.value.attributes = {};
+      }
+
+      console.log(
+        'schemaFormCache++++++++++++++----=',
+        _.cloneDeep(formData.value)
       );
       uiFormData.value = _.cloneDeep(formData.value.attributes);
-      formAction.value = _.get(
-        schemaFormCache.value,
-        formData.value.template.version
-      )
-        ? PageAction.EDIT
-        : PageAction.CREATE;
     }
   };
 
@@ -537,24 +544,24 @@
 
   const execVersionChangeCallback = async () => {
     getFormDataAttributeCache();
-    const moduleData = await getTemplateSchemaByVersion();
-    setTemplateInfo(moduleData);
+    setTimeout(async () => {
+      const moduleData = await getTemplateSchemaByVersion();
+      setTemplateInfo(moduleData);
+    }, 100);
   };
 
   const handleFormAttributeChange = () => {
-    setFormDataAttributeCache();
-    console.log('schemaFormCache===', schemaFormCache.value);
+    console.log('schemaFormCache===33', formData.value.attributes);
   };
   const handleVersionChange = () => {
+    formAction.value = PageAction.CREATE;
     formData.value.template.id =
       _.find(
         templateVersionList.value,
         (item) => item.value === formData.value.template.version
       )?.id || '';
 
-    setTimeout(() => {
-      execVersionChangeCallback();
-    }, 100);
+    execVersionChangeCallback();
   };
 
   const formatTemplateLael = (data) => {
@@ -569,6 +576,7 @@
   // template change: exec version change
   const handleTemplateChange = async (val) => {
     schemaFormCache.value = {};
+
     if (dataType === ServiceDataType.resource) {
       const data = await getItemResourceDefinition();
       setTemplateInfo(data);
@@ -725,7 +733,9 @@
     getEnvironmentConnectors();
     setTimeout(() => {
       copyFormData = _.cloneDeep(formData.value);
-      setFormDataAttributeCache();
+      if (id) {
+        setFormDataAttributeCache();
+      }
     }, 100);
   };
 

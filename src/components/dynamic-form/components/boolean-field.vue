@@ -8,6 +8,7 @@
   import {
     isEmptyvalue,
     initFieldValue,
+    viewFieldValue,
     unsetFieldValue,
     parentObjectExsits,
     isRequiredInitField,
@@ -50,30 +51,25 @@
 
       const handleChange = (data) => {
         emit('change', data);
+      };
 
+      const validateField = () => {
         setTimeout(() => {
           formref.value?.validateField(props.fieldPath);
         });
       };
 
-      // init field value
-      // if (
-      //   schemaFormStatus.value === PageAction.CREATE &&
-      //   isRequiredInitField(
-      //     props.schema,
-      //     _.includes(props.requiredFields, props.schema.name)
-      //   )
-      // ) {
-      //   _.set(
-      //     props.formData,
-      //     props.fieldPath,
-      //     initFieldDefaultValue(props.schema)
-      //   );
-      // }
-
       const initValue = () => {
         if (schemaFormStatus.value === PageAction.CREATE) {
           initFieldValue({
+            schema: props.schema,
+            formData: props.formData,
+            uiFormData: props.uiFormData,
+            fieldPath: props.fieldPath,
+            required: fieldProps.required
+          });
+        } else {
+          viewFieldValue({
             schema: props.schema,
             formData: props.formData,
             uiFormData: props.uiFormData,
@@ -121,7 +117,6 @@
               onChange={(val) => {
                 _.set(props.formData, props.fieldPath, val);
                 _.set(props.uiFormData, props.fieldPath, val);
-                handleChange(props.formData);
                 if (val === !!props.schema.default) {
                   unsetFieldValue({
                     schema: props.schema,
@@ -130,6 +125,8 @@
                     required: fieldProps.required
                   });
                 }
+                handleChange(props.formData);
+                validateField();
                 console.log(
                   'checkbox+++++++++++++++',
                   props.fieldPath,

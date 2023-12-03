@@ -131,6 +131,7 @@ export const RevisionStatus = {
 export const ServiceStatus = {
   Deployed: 'Deployed',
   Ready: 'Ready',
+  NotReady: 'NotReady',
   Deleting: 'Deleting',
   Deploying: 'Deploying',
   Preparing: 'Preparing',
@@ -151,6 +152,7 @@ export const StartableStatus = [
 export const StoppableStatus = [
   ServiceStatus.Deployed,
   ServiceStatus.Ready,
+  ServiceStatus.NotReady,
   ServiceStatus.Preparing,
   ServiceStatus.Running
 ];

@@ -7,9 +7,7 @@
   import {
     BasicFieldMaps,
     CommonFieldMaps,
-    FormatsFieldMaps,
-    isAllowCreateNumberSelect,
-    isAllowCreateSelect
+    FormatsFieldMaps
   } from '../../fields/field-map';
   import {
     isSelect,
@@ -21,7 +19,9 @@
     checkValidValue,
     initFieldDefaultValue,
     isRequiredInitField,
-    isEmptyvalue
+    isEmptyvalue,
+    isAllowCreateNumberSelect,
+    isAllowCreateSelect
   } from '../../utils';
   import { Option } from '../../interface';
   import { ProviderFormRefKey } from '../../config';

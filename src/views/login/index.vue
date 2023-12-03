@@ -2,7 +2,7 @@
   <div>
     <div class="container login">
       <div class="logo">
-        <img alt="logo" src="../../assets/images/logo2.png" />
+        <img alt="logo" src="../../assets/images/logo_02.png" />
       </div>
 
       <div class="content">
@@ -208,7 +208,7 @@
     align-items: center;
 
     img {
-      width: 100px;
+      width: 136px;
       height: auto;
     }
 

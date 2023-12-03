@@ -4,16 +4,20 @@
   import ModuleWrapper from '@/components/module-wrapper/index.vue';
   import schemaFieldProps from '../fields/schema-field-props';
   import { ProvideErrorFieldsKey } from '../config';
+  import FIELD_TYPE from '../config/field-type';
+  import { initFieldValue } from '../utils';
 
   export default defineComponent({
     props: schemaFieldProps,
-    setup(props, { slots }) {
+    emits: ['change'],
+    setup(props, { slots, emit }) {
       const errorFields = inject(ProvideErrorFieldsKey, ref([]));
       const collapsed = _.get(
         props.schema,
         ['x-walrus-ui', 'collapsed'],
         false
       );
+      const nullableText = _.get(props.schema, ['x-walrus-ui', 'nullable'], '');
       const status = ref(collapsed);
       const hovered = ref(false);
       const groupHovered = ref(false);
@@ -25,7 +29,15 @@
         });
       };
       const handleUnsetField = () => {
-        _.unset(props.formData, props.fieldPath);
+        initFieldValue({
+          schema: props.schema,
+          formData: props.formData,
+          uiFormData: props.uiFormData,
+          fieldPath: props.fieldPath,
+          required: _.includes(props.requiredFields, props.schema.name)
+        });
+        emit('change', props.formData);
+        console.log('handleUnsetField', props.formData, props.fieldPath);
       };
       const handleClickRight = () => {
         setTimeout(() => {
@@ -44,6 +56,21 @@
       const handleGroupLeave = () => {
         groupHovered.value = false;
       };
+      const renderNullableButton = () => {
+        return (
+          <>
+            {props.schema.nullable && nullableText ? (
+              <a-button
+                type="text"
+                size="mini"
+                onClick={() => handleUnsetField()}
+              >
+                {nullableText}
+              </a-button>
+            ) : null}
+          </>
+        );
+      };
       const renderLevel0Conent = () => {
         return (
           <a-grid-item
@@ -53,14 +80,7 @@
               <div class="title parent-name">
                 <div>
                   <span>{props.schema.title || props.schema.name}</span>
-                  {props.schema.description ? (
-                    <a-tooltip content={props.schema.description}>
-                      <icon-info-circle
-                        style="stroke-linecap: initial; cursor: default"
-                        class="m-l-2"
-                      />
-                    </a-tooltip>
-                  ) : null}
+                  {renderNullableButton()}
                 </div>
                 <div>{slots.buttons?.()}</div>
               </div>
@@ -86,6 +106,7 @@
                         />
                       </a-tooltip>
                     ) : null}
+                    {renderNullableButton()}
                   </div>
                   <div>{slots.buttons?.()}</div>
                 </div>
@@ -119,6 +140,7 @@
                   return (
                     <span>
                       <span>{props.schema.title || props.schema.name}</span>
+                      {renderNullableButton()}
                     </span>
                   );
                 },

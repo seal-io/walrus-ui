@@ -25,7 +25,7 @@
             @click="handleBackHome"
           >
             <div>
-              <img alt="logo" class="logo" src="../assets/images/logo2.png" />
+              <img alt="logo" class="logo" src="../assets/images/logo_02.png" />
             </div>
           </div>
           <div class="menu-wrapper">
@@ -175,7 +175,7 @@
       display: flex;
       align-items: center;
       height: 48px;
-      padding-left: 7px;
+      padding-left: 8px;
       overflow: hidden;
       font-size: 0;
       border-bottom: 1px solid var(--color-border-1);
@@ -189,7 +189,15 @@
       }
 
       .logo {
-        height: 34px;
+        height: 24px;
+      }
+
+      &.menuCollapse {
+        padding-left: 4px;
+
+        .logo {
+          height: 20px;
+        }
       }
     }
 

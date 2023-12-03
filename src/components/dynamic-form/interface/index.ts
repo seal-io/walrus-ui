@@ -25,6 +25,7 @@ export interface FieldSchema {
   'level': number;
   'colSpan'?: number;
   'nullable'?: boolean;
+  'originNullable'?: boolean;
   'properties'?: FieldSchema;
   'additionalProperties'?: FieldSchema;
   'options'?: { label: string; value: string }[];

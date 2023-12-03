@@ -1,7 +1,15 @@
 <script lang="tsx">
   import _ from 'lodash';
   import i18n from '@/locale';
-  import { defineComponent, toRefs, inject, ref, watch } from 'vue';
+  import {
+    defineComponent,
+    toRefs,
+    inject,
+    ref,
+    onMounted,
+    nextTick,
+    watch
+  } from 'vue';
   import { InjectSchemaFormStatusKey, PageAction } from '@/views/config';
   import SealFormItemWrap from '@/components/seal-form/components/seal-form-item-wrap.vue';
   import schemaFieldProps from '../fields/schema-field-props';
@@ -23,7 +31,8 @@
     isEmptyvalue,
     initFieldValue,
     unsetFieldValue,
-    parentObjectExsits
+    parentObjectExsits,
+    viewFieldValue
   } from '../utils';
   import { ProviderFormRefKey } from '../config';
 
@@ -51,30 +60,25 @@
 
       const handleChange = (data) => {
         emit('change', data);
+      };
 
+      const validateField = () => {
         setTimeout(() => {
           formref.value?.validateField(props.fieldPath);
         });
       };
-
-      // init field value
-      // if (
-      //   schemaFormStatus.value === PageAction.CREATE &&
-      //   isRequiredInitField(
-      //     props.schema,
-      //     _.includes(props.requiredFields, props.schema.name)
-      //   )
-      // ) {
-      //   _.set(
-      //     props.formData,
-      //     props.fieldPath,
-      //     initFieldDefaultValue(props.schema)
-      //   );
-      // }
-
       const initValue = () => {
         if (schemaFormStatus.value === PageAction.CREATE) {
           initFieldValue({
+            schema: props.schema,
+            formData: props.formData,
+            uiFormData: props.uiFormData,
+            fieldPath: props.fieldPath,
+            required: props.required
+          });
+          handleChange(props.formData);
+        } else {
+          viewFieldValue({
             schema: props.schema,
             formData: props.formData,
             uiFormData: props.uiFormData,
@@ -98,19 +102,13 @@
       }
 
       const handleSelectInputChange = (e: any) => {
-        _.set(props.schema, props.fieldPath, e);
-      };
-
-      const fieldValue = ref(_.get(props.uiFormData, props.fieldPath));
-
-      const showArrayValue = (val) => {
-        if (_.isArray(val)) {
-          return _.join(val, ',');
-        }
-        return val;
+        _.set(props.formData, props.fieldPath, e);
+        _.set(props.uiFormData, props.fieldPath, e);
+        handleChange(props.formData);
       };
 
       initValue();
+
       const renderEdit = () => {
         return (
           <a-form-item
@@ -120,22 +118,18 @@
               {
                 validator: (value, callback) => {
                   if (
-                    !parentObjectExsits(props.uiFormData, props.fieldPath) ||
+                    !parentObjectExsits(props.formData, props.fieldPath) ||
                     !props.required
                   ) {
                     callback();
                     return;
                   }
-                  if (!isBoolean(props.schema)) {
-                    if (!value) {
-                      callback(
-                        `${props.schema.title}${i18n.global.t(
-                          'common.form.rule.input'
-                        )}`
-                      );
-                    } else {
-                      callback();
-                    }
+                  if (!value) {
+                    callback(
+                      `${props.schema.title}${i18n.global.t(
+                        'common.form.rule.input'
+                      )}`
+                    );
                   } else {
                     callback();
                   }
@@ -144,11 +138,12 @@
             ]}
             label={props.schema.title}
             field={_.join(props.fieldPath, '.')}
-            validate-trigger={['change', 'blur']}
+            validate-trigger={['change']}
           >
             <Component
               {...attrs}
               required={props.required}
+              editorId={_.join(props.fieldPath, '.')}
               label={props.label}
               style="width: 100%"
               allow-search={false}
@@ -166,14 +161,13 @@
               popupInfo={props.schema.description}
               modelValue={_.get(props.uiFormData, props.fieldPath)}
               onInput={(e) => {
+                console.log('group inpu+++++input========', e, props.formData);
                 handleSelectInputChange(e);
               }}
-              onChange={(val, e) => {
-                fieldValue.value = val;
+              onChange={(val) => {
                 _.set(props.formData, props.fieldPath, val);
                 _.set(props.uiFormData, props.fieldPath, val);
-                handleChange(props.formData);
-                if (isEmptyvalue(val) && !props.schema.default) {
+                if (isEmptyvalue(val)) {
                   unsetFieldValue({
                     schema: props.schema,
                     formData: props.formData,
@@ -181,6 +175,13 @@
                     required: props.required
                   });
                 }
+                console.log(
+                  'group inpu+++++change========',
+                  val,
+                  props.formData
+                );
+                handleChange(props.formData);
+                validateField();
               }}
             ></Component>
           </a-form-item>
@@ -204,7 +205,7 @@
                   {(isPassword(props.schema) || props.schema.writeOnly) &&
                   _.get(props.uiFormData, props.fieldPath)
                     ? '******'
-                    : showArrayValue(_.get(props.uiFormData, props.fieldPath))}
+                    : _.get(props.uiFormData, props.fieldPath)}
                 </span>
               </SealFormItemWrap>
             </a-form-item>

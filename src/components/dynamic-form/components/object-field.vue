@@ -11,6 +11,7 @@
   import {
     genObjectFieldProperties,
     initFieldDefaultValue,
+    viewFieldValue,
     getCustomColSpan,
     isBasicType,
     isRequiredInitField,
@@ -93,6 +94,14 @@
           required: _.includes(props.requiredFields, props.schema.name)
         });
         handleChange(props.formData);
+      } else {
+        viewFieldValue({
+          schema: props.schema,
+          formData: props.formData,
+          uiFormData: props.uiFormData,
+          fieldPath: props.fieldPath,
+          required: _.includes(props.requiredFields, props.schema.name)
+        });
       }
 
       // raw data
@@ -119,12 +128,12 @@
           _.set(
             props.formData,
             [...props.fieldPath],
-            additionalPropertiesKeysObj
+            _.cloneDeep(additionalPropertiesKeysObj)
           );
           _.set(
             props.uiFormData,
             [...props.fieldPath],
-            additionalPropertiesKeysObj
+            _.cloneDeep(additionalPropertiesKeysObj)
           );
         }
         handleChange(props.formData);
@@ -188,8 +197,16 @@
                 defaultVal
               );
             }
+            // initFieldValue({
+            //   schema: childSchema,
+            //   formData: props.formData,
+            //   uiFormData: props.uiFormData,
+            //   fieldPath: [...props.fieldPath, item.field, childSchema.name],
+            //   required: childSchema.isRequired || false
+            // });
           });
         });
+        handleChange(props.formData);
       };
 
       // additional value is object
@@ -225,7 +242,6 @@
                             placeholder="enter property name"
                             onChange={() => {
                               handleAdditionalFieldChange();
-                              handleChange(props.formData);
                             }}
                             onUpdate:modelValue={(val) => {
                               _.set(
@@ -350,6 +366,12 @@
           schema={props.schema}
           level={props.schema.level}
           fieldPath={props.fieldPath}
+          formData={props.formData}
+          uiFormData={props.uiFormData}
+          requiredFields={props.requiredFields}
+          onChange={(val) => {
+            handleChange(val);
+          }}
           v-slots={{
             footer: () => {
               return <>{renderAddButton()}</>;

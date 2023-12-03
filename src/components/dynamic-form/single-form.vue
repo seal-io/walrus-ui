@@ -6,7 +6,9 @@
     watch,
     provide,
     PropType,
-    toRaw
+    toRaw,
+    onMounted,
+    nextTick
   } from 'vue';
   import _ from 'lodash';
   import useScrollToView from '@/hooks/use-scroll-to-view';
@@ -36,8 +38,7 @@
       provide(ProviderFormRefKey, formref);
 
       const handleChange = (data) => {
-        // formData.value = data;
-        emit('change', toRaw(formData.value));
+        emit('change', toRaw(data));
       };
 
       const handleSubmitFailed = (data) => {
@@ -69,12 +70,18 @@
         () => props.originFormData,
         () => {
           formData.value = props.originFormData;
+          console.log(
+            'uiFormData======++++===2',
+            formData.value,
+            uiFormData.value
+          );
         },
         {
           immediate: true,
           deep: true
         }
       );
+
       return () => (
         <a-form
           ref={formref}

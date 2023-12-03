@@ -400,6 +400,7 @@
           <GroupForm
             ref="groupForm"
             v-model:form-data="formData.attributes"
+            :ui-form-data="uiFormData"
             class="group-form"
             style="width: 100%"
             :schema="schemaVariables"
@@ -527,6 +528,7 @@
   const selectors = ref<Set<string>>(new Set());
   const formDataAttributeCache = ref<any>({});
   const formAction = ref(props.schemaFormAction);
+  const uiFormData = ref<any>({});
 
   provide(InjectShowInputHintKey, true);
 
@@ -676,13 +678,12 @@
     if (
       formData.value.template.version ===
         props.originFormData.template.version &&
-      formData.value.template.template.id ===
-        props.originFormData.template.template.id
+      formData.value.template?.template?.id ===
+        props.originFormData.template?.template?.id
     ) {
       formData.value.attributes = _.cloneDeep(props.originFormData.attributes);
-      return;
-    }
-    if (
+      formAction.value = PageAction.EDIT;
+    } else if (
       _.get(formDataAttributeCache.value, [formData.value.template.version])
     ) {
       formData.value.attributes = _.cloneDeep(
@@ -691,13 +692,10 @@
     } else {
       formData.value.attributes = {};
     }
-    formAction.value = _.get(formDataAttributeCache.value, [
-      formData.value.template.version
-    ])
-      ? PageAction.EDIT
-      : PageAction.CREATE;
+    uiFormData.value = _.cloneDeep(formData.value.attributes);
   };
   const handleVersionChange = async () => {
+    formAction.value = PageAction.CREATE;
     formData.value.template.id = _.get(
       _.find(
         templateVersionList.value,
@@ -709,9 +707,10 @@
 
     getFormDataAttributeCache();
 
-    uiSchema.value = await getTemplateSchemaByVersion();
-
-    setTemplateInfo(uiSchema.value);
+    setTimeout(async () => {
+      uiSchema.value = await getTemplateSchemaByVersion();
+      setTemplateInfo(uiSchema.value);
+    });
   };
 
   const handleTemplateChange = async () => {
@@ -758,6 +757,7 @@
     }
     if (props.dataId) {
       formData.value = _.cloneDeep(props.originFormData);
+      uiFormData.value = _.cloneDeep(props.originFormData?.attributes || {});
       const moduleData = await getTemplateSchemaByVersion();
       setTemplateInfo(moduleData);
       initSelectors();
