@@ -2,6 +2,7 @@
   <div class="group-form">
     <a-tabs
       v-if="formGroup.length > 1"
+      :key="formKey"
       ref="schemaForm"
       class="page-line-tabs"
       :active-key="activeKey"
@@ -28,7 +29,7 @@
     </a-tabs>
     <SingleForm
       v-if="formGroup.length === 1"
-      :key="`${Date.now()}`"
+      :key="formKey"
       ref="schemaForm"
       form-id="schemaForm"
       layout="vertical"
@@ -91,7 +92,7 @@
   const hiddenFormData = ref<any>({});
   const validResult = ref<any>([]);
   const errorFields = ref<string[]>([]);
-  const formDataCache: any = {};
+  const formKey = ref(Date.now());
 
   provide(ProvideErrorFieldsKey, errorFields);
   const setRefMap = (el: any, name) => {
@@ -103,7 +104,6 @@
   const handleChange = (data) => {
     emits('update:formData', data);
     emits('change', data);
-    console.log('handleChange++++++++++++++', _.cloneDeep(data));
   };
 
   const handleTabChange = (key) => {
@@ -202,12 +202,6 @@
     () => props.formData,
     () => {
       rootFormData.value = props.formData;
-      console.log(
-        'formGroup+++++++++++++++++222+++',
-        Date.now(),
-        rootFormData.value,
-        _.cloneDeep(props.formData)
-      );
     },
     {
       immediate: true,
@@ -221,12 +215,12 @@
       formGroup.value = [];
       refMap.value = {};
       destroyed.value = true;
+      formKey.value = Date.now();
 
       if (schemaFormStatus.value === PageAction.CREATE) {
         handleChange({});
-      } else {
-        rootFormData.value = _.cloneDeep(props.uiFormData);
       }
+
       nextTick(() => {
         destroyed.value = false;
         const groups = createFormGroup(props.schema);

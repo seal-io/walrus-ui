@@ -113,7 +113,8 @@ export default {
     'To use variables, output properties in related services, the method is as follows:',
   'applications.applications.modules.params.tips1': `1. Use the secret: you can enter {'$'}{'{'}secret.secretName{'}'} in the input box`,
   'applications.applications.modules.params.tips2': `1. Use variables: you can enter {'$'}{'{'}var.variableName{'}'} in the input box`,
-  'applications.applications.modules.params.tips3': `2. Use the attributes in the template: you can enter {'$'}{'{'}service.serviceName.attributeName{'}'} in the input box`,
+  'applications.applications.modules.params.tips3': `2. Use the attributes in the service: you can enter {'$'}{'{'}service.serviceName.attributeName{'}'} in the input box`,
+  'applications.applications.modules.params.tips4': `2. Use the attributes in the resource: you can enter {'$'}{'{'}resource.resourceName.attributeName{'}'} in the input box`,
   'applications.applications.rule.modules.name':
     'exists with the same service or resource',
   'applications.applications.variables.title': 'Variables',

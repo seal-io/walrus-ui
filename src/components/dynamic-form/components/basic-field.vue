@@ -107,7 +107,7 @@
         handleChange(props.formData);
       };
 
-      initValue();
+      // initValue();
 
       const renderEdit = () => {
         return (
@@ -126,9 +126,9 @@
                   }
                   if (!value) {
                     callback(
-                      `${props.schema.title}${i18n.global.t(
-                        'common.form.rule.input'
-                      )}`
+                      `${i18n.global.t('common.form.rule.input', {
+                        name: props.schema.title
+                      })}`
                     );
                   } else {
                     callback();

@@ -12,7 +12,7 @@
 <script lang="ts" setup>
   import { PageAction } from '@/views/config';
   import CreateService from '@/views/application-management/services/components/create-service.vue';
-  import { ref, computed } from 'vue';
+  import { ref, computed, PropType } from 'vue';
   import useCallCommon from '@/hooks/use-call-common';
 
   defineProps({
@@ -27,8 +27,8 @@
       default: ''
     },
     action: {
-      type: String,
-      default: ''
+      type: String as PropType<'create' | 'edit' | 'view'>,
+      default: PageAction.CREATE
     }
   });
   const { route } = useCallCommon();
