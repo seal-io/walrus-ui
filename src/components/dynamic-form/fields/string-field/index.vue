@@ -16,11 +16,16 @@
   export default defineComponent({
     inject: ['schemaFormStatus'],
     props: schemaFieldProps,
+    emits: ['change'],
     setup(props, { emit }) {
       const { fieldProps, rules } = genFieldPropsAndRules({
         schema: props.schema,
         requiredFields: props.requiredFields
       });
+
+      const handleChange = (data) => {
+        emit('change', data);
+      };
 
       return () => {
         return (
@@ -37,6 +42,7 @@
               schema={props.schema}
               rules={rules}
               action={props.action}
+              onChange={(data) => handleChange(data)}
             ></BasicField>
           </a-grid-item>
         );

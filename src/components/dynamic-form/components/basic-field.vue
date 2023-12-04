@@ -101,10 +101,10 @@
         Component = CommonFieldMaps.password;
       }
 
-      const handleSelectInputChange = (e: any) => {
+      const handleInputChange = (e: any) => {
         _.set(props.formData, props.fieldPath, e);
         _.set(props.uiFormData, props.fieldPath, e);
-        handleChange(props.formData);
+        // handleChange(props.formData);
       };
 
       // initValue();
@@ -160,9 +160,13 @@
               allow-clear={true}
               popupInfo={props.schema.description}
               modelValue={_.get(props.uiFormData, props.fieldPath)}
-              onInput={(e) => {
-                console.log('group inpu+++++input========', e, props.formData);
-                handleSelectInputChange(e);
+              onInput={(val) => {
+                console.log(
+                  'group inpu+++++input========',
+                  val,
+                  props.formData
+                );
+                handleInputChange(val);
               }}
               onChange={(val) => {
                 _.set(props.formData, props.fieldPath, val);
