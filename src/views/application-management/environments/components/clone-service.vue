@@ -206,7 +206,8 @@
     validateLabelNameRegx,
     InjectCompleteDataKey,
     InjectShowInputHintKey,
-    InjectSchemaFormStatusKey
+    InjectSchemaFormStatusKey,
+    InjectTraceKey
   } from '@/views/config';
   import { ref, PropType, computed, provide, onMounted, watch } from 'vue';
   import GroupForm from '@/components/dynamic-form/group-form.vue';
@@ -306,9 +307,11 @@
   const show = ref(true);
   const activeServiceInfo = ref<any>({});
   const hasChange = ref(false);
+  const traceKey = ref();
 
   provide(InjectShowInputHintKey, true);
   provide(InjectCompleteDataKey, completeData);
+  provide(InjectTraceKey, traceKey);
 
   const handleCheckboxChange = (checked) => {
     if (checked) {
@@ -319,6 +322,7 @@
   };
 
   const handleClickInstance = async (data) => {
+    traceKey.value = data.id;
     data.attributes = data.attributes || {};
     active.value = data.id;
     show.value = true;

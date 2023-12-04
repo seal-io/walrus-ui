@@ -30,7 +30,7 @@
       </span>
       <input
         v-bind="$attrs"
-        :id="editorId"
+        :id="`${editorId}-${traceKey}`"
         ref="input"
         v-model.trim="expression"
         class="arco-input completer arco-input-size-medium"
@@ -78,6 +78,7 @@
   import {
     InjectCompleteDataKey,
     InjectSchemaFormStatusKey,
+    InjectTraceKey,
     PageAction
   } from '@/views/config';
   import { onClickOutside } from '@vueuse/core';
@@ -161,6 +162,7 @@
     eventHandler: Function
   });
   const completeData = inject(InjectCompleteDataKey, ref(null));
+  const traceKey = inject(InjectTraceKey, ref(null));
   const schemaFormStatus = inject(
     InjectSchemaFormStatusKey,
     ref(PageAction.CREATE)
@@ -283,7 +285,7 @@
   };
   const Strategy: any = [
     {
-      id: props.editorId,
+      id: `${props.editorId}-${traceKey.value}`,
       match: /^.*(?:\$\{.*)([\w-]+)\.?([\w-]*)$/,
       index: 1,
       search(term: string, callback: SearchCallback<resultItem>, match: any) {
@@ -311,7 +313,7 @@
       }
     },
     {
-      id: props.editorId,
+      id: `${props.editorId}-${traceKey.value}`,
       match: /^.*(?:\$\{?).*(?=.*)/,
       index: 2,
       search(term: string, callback: SearchCallback<resultItem>, match: any) {
@@ -333,7 +335,7 @@
   ];
   const options: TextcompleteOption = {
     dropdown: {
-      className: `autocomplete-dropdown-list ${props.editorId}`,
+      className: `autocomplete-dropdown-list ${props.editorId}-${traceKey.value}`,
       maxCount: 999,
       item: {
         className: 'complete-item',
@@ -373,10 +375,13 @@
 
     if (data?.showTips) {
       const content = data.sensitive ? '******' : data.tips;
-      tippyInstance = tippy(`.${props.editorId} .complete-item-active`, {
-        ...tooltipConfig,
-        content
-      });
+      tippyInstance = tippy(
+        `.${props.editorId}-${traceKey.value} .complete-item-active`,
+        {
+          ...tooltipConfig,
+          content
+        }
+      );
     }
   };
   const debounceGetTextcompleteDownItem = _.debounce(() => {
@@ -406,7 +411,7 @@
   };
   const initEditor = () => {
     const textarea = document.getElementById(
-      `${props.editorId}`
+      `${props.editorId}-${traceKey.value}`
     ) as HTMLTextAreaElement;
     if (!textarea) return;
     textEditor = new TextareaEditor(textarea);
@@ -483,7 +488,7 @@
     }
   );
 
-  onMounted(async () => {
+  onMounted(() => {
     expression.value = props.modelValue;
     nextTick(() => {
       initEditor();

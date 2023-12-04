@@ -3,7 +3,6 @@
   import _ from 'lodash';
   import i18n from '@/locale';
   import { InjectSchemaFormStatusKey, PageAction } from '@/views/config';
-  import KeyValueLabels from '@/components/form-create/custom-components/key-value-labels.vue';
   import MapString from '@/components/form-create/custom-components/map-string.vue';
   import SealFormItemWrap from '@/components/seal-form/components/seal-form-item-wrap.vue';
   import schemaFieldProps from '../fields/schema-field-props';
@@ -125,6 +124,7 @@
               <MapString
                 showNumberInput={isMapNumber}
                 showCheckbox={isMapBoolean}
+                editorId={_.join(props.fieldPath, '.')}
                 modelValue={_.get(props.uiFormData, props.fieldPath)}
                 readonly={
                   PageAction.VIEW === schemaFormStatus.value ||

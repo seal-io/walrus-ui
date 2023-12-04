@@ -434,6 +434,7 @@
     EnvironmentTypeMap,
     EnvironmentTypeList,
     InjectShowInputHintKey,
+    InjectTraceKey,
     InjectSchemaFormStatusKey
   } from '@/views/config';
   import GroupForm from '@/components/dynamic-form/group-form.vue';
@@ -494,6 +495,12 @@
       default() {
         return '';
       }
+    },
+    traceId: {
+      type: String,
+      default() {
+        return '';
+      }
     }
   });
   const emits = defineEmits(['cancel', 'save', 'delete']);
@@ -542,6 +549,10 @@
       };
     });
   });
+  const traceKey = computed(() => {
+    return `${props.traceId}-${formAction.value}`;
+  });
+
   const virtualListProps = computed(() => {
     if (props.templateList.length > 20) {
       return {
@@ -552,6 +563,7 @@
   });
 
   provide(InjectSchemaFormStatusKey, ref(formAction));
+  provide(InjectTraceKey, traceKey);
 
   const handleAttributeChange = () => {
     formDataAttributeCache.value[formData.value.template.version] = _.cloneDeep(

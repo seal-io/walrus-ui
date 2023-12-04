@@ -150,6 +150,7 @@
               (el) => setRefMap(el, `${definitionRulePrefix}${item.id}`, item)
             "
             :key="item.id"
+            :trace-id="item.id"
             :title="
               item.name ||
               $t('resource.definition.detail.rule', { name: index + 1 })
@@ -187,7 +188,8 @@
           >
             <DefinitionRules
               v-for="(item, index) in formData.matchingRules"
-              :key="index"
+              :key="`${index}-view`"
+              :trace-id="item.id"
               :title="item.name"
               :data-id="id"
               :origin-form-data="item"

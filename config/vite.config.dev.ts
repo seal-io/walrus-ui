@@ -18,8 +18,8 @@ export default mergeConfig(
         strict: true
       },
       https: true,
-      port: 5050,
-      proxy: createProxyTable('https://192.168.50.30')
+      port: 4000,
+      proxy: createProxyTable()
     },
     plugins: [
       basicSsl(),
