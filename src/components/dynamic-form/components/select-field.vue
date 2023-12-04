@@ -210,7 +210,11 @@
 
                 _.set(props.formData, props.fieldPath, value);
                 _.set(props.uiFormData, props.fieldPath, value);
-                if (isEmptyvalue(value) || !value?.length) {
+                if (
+                  isEmptyvalue(value) ||
+                  !value?.length ||
+                  value === props.schema.default
+                ) {
                   unsetFieldValue({
                     schema: props.schema,
                     formData: props.formData,
