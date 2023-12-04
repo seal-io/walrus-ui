@@ -11,7 +11,7 @@
     watch
   } from 'vue';
   import { InjectSchemaFormStatusKey, PageAction } from '@/views/config';
-  import SealFormItemWrap from '@/components/seal-form/components/seal-form-item-wrap.vue';
+  import SealViewItemWrap from '@/components/seal-form/components/seal-view-item-wrap.vue';
   import schemaFieldProps from '../fields/schema-field-props';
   import {
     BasicFieldMaps,
@@ -204,14 +204,14 @@
               field={_.join(props.fieldPath, '.')}
               validate-trigger={['change']}
             >
-              <SealFormItemWrap label={props.schema.title} style="width: 100%">
+              <SealViewItemWrap label={props.schema.title} style="width: 100%">
                 <span>
                   {(isPassword(props.schema) || props.schema.writeOnly) &&
                   _.get(props.uiFormData, props.fieldPath)
                     ? '******'
                     : _.get(props.uiFormData, props.fieldPath)}
                 </span>
-              </SealFormItemWrap>
+              </SealViewItemWrap>
             </a-form-item>
           )}
         </>
