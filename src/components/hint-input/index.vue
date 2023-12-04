@@ -38,12 +38,11 @@
         :disabled="disabled || !!$attrs.readonly"
         autocomplete="off"
         :type="inputType"
-        @focus="handleFocus"
-        @blur="handleBlur"
+        @focus.stop="handleFocus"
+        @blur.stop="handleBlur"
         @input="handleInput"
         @keydown.enter="handleEnter"
         @keyup.delete="handleDelete"
-        @change="handleExpressionChange"
       />
       <span class="arco-input-suffix">
         <span v-if="$attrs.showWordLimit" class="arco-input-word-limit"
@@ -400,6 +399,10 @@
       }
       getTextcompleteDownItem();
     });
+    textEditor?.on('change', () => {
+      emits('update:modelValue', expression.value);
+      emits('change', expression.value);
+    });
   };
   const initEditor = () => {
     const textarea = document.getElementById(
@@ -412,13 +415,13 @@
   };
 
   const dispatchInput = () => {
-    emits('update:modelValue', expression.value);
-    emits('input', expression.value);
+    // emits('update:modelValue', expression.value);
+    // emits('input', expression.value);
   };
   const debounceDispatchInput = _.debounce(() => {
     dispatchInput();
   }, 100);
-  const handleInput = (e) => {
+  const handleInput = () => {
     inputFlag.value = true;
     isNeedHide();
     debounceDispatchInput();
@@ -433,12 +436,12 @@
     isFocus.value = false;
     textcomplete?.hide?.();
   };
-  onClickOutside(editorWrap, (ev) => {
+  onClickOutside(editorWrap, () => {
     handleBlur();
     isFocus.value = false;
   });
   const handleEnter = () => {};
-  const handleExpressionChange = (e) => {
+  const handleExpressionChange = () => {
     textcomplete?.hide?.();
     emits('update:modelValue', expression.value);
     setTimeout(() => {
