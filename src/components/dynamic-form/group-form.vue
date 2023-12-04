@@ -45,7 +45,11 @@
 
 <script lang="ts" setup>
   import _ from 'lodash';
-  import { InjectSchemaFormStatusKey, PageAction } from '@/views/config';
+  import {
+    InjectSchemaFormStatusKey,
+    PageAction,
+    InjectShowInputHintKey
+  } from '@/views/config';
   import { PropType, watch, ref, nextTick, toRaw, provide, inject } from 'vue';
   import SingleForm from './single-form.vue';
   import { FieldSchema, FormGroup } from './interface';
@@ -94,6 +98,7 @@
   const errorFields = ref<string[]>([]);
   const formKey = ref(Date.now());
 
+  provide(InjectShowInputHintKey, true);
   provide(ProvideErrorFieldsKey, errorFields);
   const setRefMap = (el: any, name) => {
     if (el) {
