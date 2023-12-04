@@ -540,7 +540,14 @@
     const ids = data?.ids || [];
     // CREATE
     if (data?.type === websocketEventType.CREATE) {
-      const createList = _.map(collections, (o) => {
+      const newList = _.filter(collections, (item) => {
+        const updateIndex = _.findIndex(
+          dataList.value,
+          (sItem) => sItem.id === item.id
+        );
+        return updateIndex === -1;
+      });
+      const createList = _.map(newList, (o) => {
         return {
           ...o,
           disabled: !userStore.hasProjectResourceActions({

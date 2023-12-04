@@ -164,14 +164,16 @@ export const initFieldValue = ({
   required: boolean;
 }) => {
   // no default value and not required
-  if (isEmptyvalue(schema.default) && !required) {
+  const isRequired = !!schema.enum || required;
+  if (isEmptyvalue(schema.default) && !isRequired) {
     return;
   }
   const defaultValue = initFieldDefaultValue(schema);
   const currentValue = _.get(uiFormData, fieldPath);
   const value = currentValue || defaultValue;
   _.set(uiFormData, fieldPath, _.cloneDeep(value));
-  const requiredField = !schema.nullable && !schema.originNullable && required;
+  const requiredField =
+    !schema.nullable && !schema.originNullable && isRequired;
   const listField = schema.type === FIELD_TYPE.ARRAY && schema.default;
   if (requiredField) {
     _.set(formData, fieldPath, _.cloneDeep(value));
@@ -307,6 +309,18 @@ export const isHalfGrid = (obj) => {
     _.get(obj, 'colSpan') || _.get(obj, ['x-walrus-ui', 'colSpan']);
   return colSpan < 12;
 };
+
+const setNullableValue = (schema: FieldSchema, property) => {
+  const nullObj = {
+    nullable: schema.nullable || false,
+    originNullable: schema.nullable || schema.originNullable || false
+  };
+  if (property?.enum) {
+    nullObj.nullable = false;
+    nullObj.originNullable = false;
+  }
+  return nullObj;
+};
 export const genObjectFieldProperties = ({
   schema,
   fieldPath,
@@ -339,8 +353,10 @@ export const genObjectFieldProperties = ({
       parentHalfGrid: isHalfGrid(schema)
     });
     // const required = _.includes(requiredFlag, key);
+    const nullObj = setNullableValue(schema, property);
     const fieldSchema = {
       ...property,
+      ...nullObj,
       name: key,
       fieldPath: [...fieldPath, key],
       required: property.required || [],
@@ -348,7 +364,6 @@ export const genObjectFieldProperties = ({
       parentRequired: schema.required || [],
       colSpan: colSpanData.span,
       halfGrid: colSpanData.halfGrid,
-      originNullable: schema.nullable || schema.originNullable || false,
       level,
       order,
       _t: Date.now()

@@ -19,6 +19,8 @@ export const InjectShowInputHintKey = Symbol('InjectShowInputHintKey');
 
 export const InjectSchemaFormStatusKey = Symbol('InjectSchemaFormStatusKey');
 
+export const InjectTraceKey = Symbol('InjectTraceKey');
+
 export const setEndTimeAddDay = (time, mode) => {
   if (mode === 'utc') {
     return dayjs(time).add(1, 'day').format('YYYY-MM-DDT00:00:00+00:00');

@@ -348,7 +348,8 @@
     InjectProjectEnvironmentKey,
     InjectShowInputHintKey,
     SaveActions,
-    InjectSchemaFormStatusKey
+    InjectSchemaFormStatusKey,
+    InjectTraceKey
   } from '@/views/config';
   import { queryEnvironmentConnector } from '@/views/application-management/environments/api';
   import { projectEnvCtxInjectionKey } from '@/components/form-create/bussiness-components/config';
@@ -441,6 +442,7 @@
   };
 
   provide(InjectSchemaFormStatusKey, formAction);
+  provide(InjectTraceKey, Date.now());
   const virtualListProps = computed(() => {
     if (templateList.value.length > 20) {
       return {

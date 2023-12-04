@@ -113,7 +113,7 @@
                       always-delete={true}
                       showCheckbox={props.showCheckbox}
                       should-key={true}
-                      formId={props.editorId}
+                      formId={`${props.editorId}-${sIndex}`}
                       onAdd={(obj) => handleAddLabel(obj, labelList.value)}
                       onDelete={() =>
                         handleDeleteLabel(labelList.value, sIndex)
