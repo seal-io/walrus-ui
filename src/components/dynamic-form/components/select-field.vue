@@ -162,12 +162,6 @@
               ...rules,
               {
                 validator: (value, callback) => {
-                  console.log(
-                    'validator++++++++++++',
-                    value,
-                    props.formData,
-                    props.fieldPath
-                  );
                   if (
                     !parentObjectExsits(props.formData, props.fieldPath) ||
                     !fieldProps.required
