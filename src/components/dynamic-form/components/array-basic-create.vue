@@ -1,23 +1,12 @@
 <script lang="tsx">
   import _ from 'lodash';
   import i18n from '@/locale';
-  import {
-    defineComponent,
-    toRefs,
-    inject,
-    ref,
-    onMounted,
-    nextTick,
-    watch
-  } from 'vue';
+  import { defineComponent, toRefs, inject, ref } from 'vue';
   import { InjectSchemaFormStatusKey, PageAction } from '@/views/config';
   import SealViewItemWrap from '@/components/seal-form/components/seal-view-item-wrap.vue';
+  import SealFormItemWrap from '@/components/seal-form/components/seal-form-item-wrap.vue';
   import schemaFieldProps from '../fields/schema-field-props';
-  import {
-    BasicFieldMaps,
-    CommonFieldMaps,
-    FormatsFieldMaps
-  } from './basic-components';
+  import { BasicFieldMaps, CommonFieldMaps } from './basic-components';
   import {
     isSelect,
     isNumber,
@@ -31,12 +20,11 @@
     isEmptyvalue,
     initFieldValue,
     unsetFieldValue,
-    genFieldInFormData,
     parentObjectExsits,
-    viewFieldValue,
-    isEqualOn
+    viewFieldValue
   } from '../utils';
   import { ProviderFormRefKey } from '../config';
+  import CommonButton from './common-button.vue';
 
   export default defineComponent({
     props: {
@@ -53,12 +41,12 @@
         ref(PageAction.CREATE)
       );
       const formref = inject(ProviderFormRefKey, ref());
+      const list = ref<any>([]);
 
-      const widget = _.get(props.schema, ['x-walrus-ui', 'widget'], '');
       const numberReg = /\d+/;
-      const { type } = toRefs(props.schema);
-
-      let Component = BasicFieldMaps[type.value];
+      const type = props.schema.items?.type || 'string';
+      console.log('group props=======', props.schema);
+      let Component = BasicFieldMaps[type];
 
       const handleChange = (data) => {
         emit('change', data);
@@ -72,7 +60,6 @@
       const initValue = () => {
         if (schemaFormStatus.value === PageAction.CREATE) {
           initFieldValue({
-            defaultFormData: props.defaultFormData,
             schema: props.schema,
             formData: props.formData,
             uiFormData: props.uiFormData,
@@ -82,7 +69,6 @@
           handleChange(props.formData);
         } else {
           viewFieldValue({
-            defaultFormData: props.defaultFormData,
             schema: props.schema,
             formData: props.formData,
             uiFormData: props.uiFormData,
@@ -92,45 +78,40 @@
         }
       };
 
-      // textarea
-      if (type.value === 'string' && widget === 'TextArea') {
-        Component = CommonFieldMaps.textArea;
-      }
-
-      if (isDatePicker(props.schema) && props.schema.format) {
-        Component = FormatsFieldMaps[props.schema.format];
-      }
-
-      if (isPassword(props.schema)) {
+      if (isPassword(props.schema.items)) {
         Component = CommonFieldMaps.password;
       }
 
-      const handleInputChange = (val: any) => {
-        _.set(props.formData, props.fieldPath, val);
-        _.set(props.uiFormData, props.fieldPath, val);
-        if (isEqualOn(val, props.schema.default)) {
-          unsetFieldValue({
-            defaultFormData: props.defaultFormData,
-            schema: props.schema,
-            formData: props.formData,
-            uiFormData: props.uiFormData,
-            fieldPath: props.fieldPath,
-            required: props.required
-          });
-        } else {
-          genFieldInFormData({
-            schema: props.schema,
-            uiFormData: props.uiFormData,
-            formData: props.formData,
-            fieldPath: props.fieldPath,
-            required: props.required
-          });
-        }
+      const handleInputChange = () => {
+        _.set(props.formData, props.fieldPath, list.value);
+        _.set(props.uiFormData, props.fieldPath, list.value);
         handleChange(props.formData);
       };
 
+      const handleAddClick = () => {
+        list.value.push(null);
+      };
+
+      const setDataList = () => {
+        list.value = _.get(props.uiFormData, props.fieldPath, []);
+      };
+
+      setDataList();
+
       // initValue();
 
+      const renderAddButton = () => {
+        if (schemaFormStatus.value === PageAction.VIEW) {
+          return null;
+        }
+        return (
+          <CommonButton
+            onClick={() => handleAddClick()}
+            action="add"
+            title={props.schema.title}
+          ></CommonButton>
+        );
+      };
       const renderEdit = () => {
         return (
           <a-form-item
@@ -162,45 +143,59 @@
             field={_.join(props.fieldPath, '.')}
             validate-trigger={['change']}
           >
-            <Component
-              {...attrs}
-              required={props.required}
-              editorId={_.join(props.fieldPath, '.')}
-              label={props.label}
-              style="width: 100%"
-              allow-search={false}
-              disabled={
-                props.readonly ||
-                (attrs.immutable &&
-                  schemaFormStatus.value !== PageAction.CREATE)
-              }
-              readonly={
-                props.readonly ||
-                (attrs.immutable &&
-                  schemaFormStatus.value !== PageAction.CREATE)
-              }
-              allow-clear={true}
-              popupInfo={props.schema.description}
-              modelValue={_.get(props.uiFormData, props.fieldPath)}
-              onInput={(val) => {
-                console.log(
-                  'group inpu+++++input========',
-                  val,
-                  props.formData
+            <SealFormItemWrap label={props.schema.title} style="width: 100%">
+              {_.map(list.value, (item, index) => {
+                return (
+                  <Component
+                    {...attrs}
+                    required={props.required}
+                    editorId={_.join(props.fieldPath, '.')}
+                    label={props.label}
+                    style="width: 100%"
+                    allow-search={false}
+                    disabled={
+                      props.readonly ||
+                      (attrs.immutable &&
+                        schemaFormStatus.value !== PageAction.CREATE)
+                    }
+                    readonly={
+                      props.readonly ||
+                      (attrs.immutable &&
+                        schemaFormStatus.value !== PageAction.CREATE)
+                    }
+                    allow-clear={true}
+                    popupInfo={props.schema.description}
+                    modelValue={_.get(list.value, index)}
+                    onInput={(val) => {
+                      console.log(
+                        'group inpu+++++input========',
+                        val,
+                        props.formData
+                      );
+                      list.value[index] = val;
+                      handleInputChange();
+                    }}
+                    onChange={(val) => {
+                      list.value[index] = val;
+                      _.set(props.formData, props.fieldPath, list.value);
+                      _.set(props.uiFormData, props.fieldPath, list.value);
+
+                      handleChange(props.formData);
+                      validateField();
+                    }}
+                  ></Component>
                 );
-                handleInputChange(val);
-              }}
-              onChange={(val) => {
-                handleInputChange(val);
-                validateField();
-              }}
-            ></Component>
+              })}
+              {renderAddButton()}
+            </SealFormItemWrap>
           </a-form-item>
         );
       };
 
       return () => (
-        <>
+        <a-grid-item
+          span={{ lg: props.schema.colSpan, md: 12, sm: 12, xs: 12 }}
+        >
           {schemaFormStatus.value !== PageAction.VIEW ? (
             renderEdit()
           ) : (
@@ -221,7 +216,7 @@
               </SealViewItemWrap>
             </a-form-item>
           )}
-        </>
+        </a-grid-item>
       );
     }
   });
