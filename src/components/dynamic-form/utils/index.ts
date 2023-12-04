@@ -168,13 +168,15 @@ export const initFieldValue = ({
     return;
   }
   const defaultValue = initFieldDefaultValue(schema);
-  _.set(uiFormData, fieldPath, _.cloneDeep(defaultValue));
+  const currentValue = _.get(uiFormData, fieldPath);
+  const value = currentValue || defaultValue;
+  _.set(uiFormData, fieldPath, _.cloneDeep(value));
   const requiredField = !schema.nullable && !schema.originNullable && required;
   const listField = schema.type === FIELD_TYPE.ARRAY && schema.default;
   if (requiredField) {
-    _.set(formData, fieldPath, _.cloneDeep(defaultValue));
+    _.set(formData, fieldPath, _.cloneDeep(value));
   } else if (listField) {
-    _.set(formData, fieldPath, _.cloneDeep(defaultValue));
+    _.set(formData, fieldPath, _.cloneDeep(value));
   }
 };
 

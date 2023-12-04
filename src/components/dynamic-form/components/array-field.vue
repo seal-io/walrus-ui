@@ -130,24 +130,24 @@
         setPropertiesList();
 
         // update formData
-        _.each(propertiesList.value, (item, index) => {
-          _.each(item, (sItem, sIndex) => {
-            const fieldPath = [
-              ...props.fieldPath,
-              `${index}`,
-              sItem.name
-            ].filter((i) => i);
-            initFieldValue({
-              schema: sItem,
-              formData: props.formData,
-              uiFormData: props.uiFormData,
-              fieldPath,
-              required: !!sItem.isRequired
-            });
-          });
-        });
+        // _.each(propertiesList.value, (item, index) => {
+        //   _.each(item, (sItem, sIndex) => {
+        //     const fieldPath = [
+        //       ...props.fieldPath,
+        //       `${index}`,
+        //       sItem.name
+        //     ].filter((i) => i);
+        //     initFieldValue({
+        //       schema: sItem,
+        //       formData: props.formData,
+        //       uiFormData: props.uiFormData,
+        //       fieldPath,
+        //       required: !!sItem.isRequired
+        //     });
+        //   });
+        // });
 
-        handleChange(props.formData);
+        // handleChange(props.formData);
         console.log(
           'add++++++++++++',
           props.formData,
