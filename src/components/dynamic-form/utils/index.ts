@@ -232,7 +232,7 @@ export const unsetFieldValue = ({
   if (!required) {
     _.unset(formData, fieldPath);
   } else if (
-    schema.nullable &&
+    (schema.nullable || schema.originNullable) &&
     _.keys(_.get(formData, initialPath).length === 1)
   ) {
     _.unset(formData, fieldPath);

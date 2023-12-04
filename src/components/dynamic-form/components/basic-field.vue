@@ -171,7 +171,7 @@
               onChange={(val) => {
                 _.set(props.formData, props.fieldPath, val);
                 _.set(props.uiFormData, props.fieldPath, val);
-                if (isEmptyvalue(val)) {
+                if (isEmptyvalue(val) || val === props.schema.default) {
                   unsetFieldValue({
                     schema: props.schema,
                     formData: props.formData,
