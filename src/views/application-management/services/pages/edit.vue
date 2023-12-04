@@ -420,13 +420,13 @@
   const schemaFormCache = ref<any>({});
   const dataType = route.params.dataType as string;
   const formAction = ref(!id ? PageAction.CREATE : PageAction.EDIT);
+  const traceKey = ref(Date.now());
   const projectEnvCtx = reactive({
     projectID: route.params.projectId as string,
     environmentID: route.params.environmentId as string,
     connectors: []
   });
 
-  provide(InjectShowInputHintKey, true);
   provide(InjectCompleteDataKey, completeData);
   provide(InjectProjectEnvironmentKey, {
     projectID: route.params.projectId,
@@ -442,7 +442,7 @@
   };
 
   provide(InjectSchemaFormStatusKey, formAction);
-  provide(InjectTraceKey, Date.now());
+  provide(InjectTraceKey, traceKey);
   const virtualListProps = computed(() => {
     if (templateList.value.length > 20) {
       return {

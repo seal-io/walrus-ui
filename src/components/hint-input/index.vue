@@ -162,7 +162,7 @@
     eventHandler: Function
   });
   const completeData = inject(InjectCompleteDataKey, ref(null));
-  const traceKey = inject(InjectTraceKey, ref(null));
+  const traceKey = inject(InjectTraceKey, ref('traceKey'));
   const schemaFormStatus = inject(
     InjectSchemaFormStatusKey,
     ref(PageAction.CREATE)
