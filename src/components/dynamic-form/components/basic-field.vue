@@ -104,7 +104,7 @@
       const handleInputChange = (e: any) => {
         _.set(props.formData, props.fieldPath, e);
         _.set(props.uiFormData, props.fieldPath, e);
-        // handleChange(props.formData);
+        handleChange(props.formData);
       };
 
       // initValue();
