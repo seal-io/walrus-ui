@@ -45,26 +45,6 @@
         fieldPath: props.fieldPath
       });
 
-      if (hidden) {
-        // init hidden field default value
-        if (
-          isRequiredInitField(
-            props.schema,
-            _.includes(props.requiredFields, props.schema.name)
-          )
-        ) {
-          setHiddenFieldValue({
-            schema: props.schema,
-            formData: props.formData,
-            fieldPath: props.fieldPath
-          });
-          emit('change', props.formData);
-        }
-
-        return null;
-      }
-      if (!component) return null;
-
       // init field value
       if (schemaFormStatus.value === PageAction.CREATE) {
         initFieldValue({
@@ -91,12 +71,15 @@
         props.formData,
         props.uiFormData
       );
+      // hidden field
+      if (!component || hidden) return null;
+
       const renderComponent = () => {
         const Component = component;
         if (showIf) {
           return getShowIfValue(
             showIf,
-            props.formData,
+            props.uiFormData,
             _.initial(fieldPath)
           ) ? (
             <Component
