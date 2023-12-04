@@ -213,7 +213,7 @@
                 if (
                   isEmptyvalue(value) ||
                   !value?.length ||
-                  value === props.schema.default
+                  _.isEqual(value, props.schema.default)
                 ) {
                   unsetFieldValue({
                     schema: props.schema,

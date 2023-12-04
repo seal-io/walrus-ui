@@ -126,7 +126,7 @@
                 const jsonstr = yaml2Json(fieldValue.value);
                 if (
                   isEmptyvalue(jsonstr) ||
-                  fieldValue.value === defaultValue.value
+                  _.trim(fieldValue.value) === _.trim(defaultValue.value)
                 ) {
                   unsetFieldValue({
                     schema: props.schema,
