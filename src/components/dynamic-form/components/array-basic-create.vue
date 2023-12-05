@@ -25,6 +25,7 @@
   } from '../utils';
   import { ProviderFormRefKey } from '../config';
   import CommonButton from './common-button.vue';
+  import { FieldSchema } from '../interface';
 
   export default defineComponent({
     props: {
@@ -78,7 +79,7 @@
         }
       };
 
-      if (isPassword(props.schema.items)) {
+      if (isPassword(props.schema.items as FieldSchema)) {
         Component = CommonFieldMaps.password;
       }
 
@@ -92,6 +93,11 @@
         list.value.push(null);
       };
 
+      const handleDeleteClick = (index) => {
+        list.value.splice(index, 1);
+        handleInputChange();
+      };
+
       const setDataList = () => {
         list.value = _.get(props.uiFormData, props.fieldPath, []);
       };
@@ -100,7 +106,7 @@
 
       // initValue();
 
-      const renderAddButton = () => {
+      const renderAddButton = ({ size, hoverable }) => {
         if (schemaFormStatus.value === PageAction.VIEW) {
           return null;
         }
@@ -108,7 +114,23 @@
           <CommonButton
             onClick={() => handleAddClick()}
             action="add"
-            title={props.schema.title}
+            size={size}
+            hoverable={hoverable}
+            tooltip={false}
+          ></CommonButton>
+        );
+      };
+      const renderDeleteButton = (index) => {
+        if (schemaFormStatus.value === PageAction.VIEW) {
+          return null;
+        }
+        return (
+          <CommonButton
+            onClick={() => handleDeleteClick(index)}
+            action="delete"
+            size={20}
+            tooltip={false}
+            hoverable={false}
           ></CommonButton>
         );
       };
@@ -143,50 +165,61 @@
             field={_.join(props.fieldPath, '.')}
             validate-trigger={['change']}
           >
-            <SealFormItemWrap label={props.schema.title} style="width: 100%">
+            <SealFormItemWrap
+              label={props.schema.title}
+              popupInfo={props.schema.description}
+              style="width: 100%"
+            >
               {_.map(list.value, (item, index) => {
                 return (
-                  <Component
-                    {...attrs}
-                    required={props.required}
-                    editorId={_.join(props.fieldPath, '.')}
-                    label={props.label}
-                    style="width: 100%"
-                    allow-search={false}
-                    disabled={
-                      props.readonly ||
-                      (attrs.immutable &&
-                        schemaFormStatus.value !== PageAction.CREATE)
-                    }
-                    readonly={
-                      props.readonly ||
-                      (attrs.immutable &&
-                        schemaFormStatus.value !== PageAction.CREATE)
-                    }
-                    allow-clear={true}
-                    popupInfo={props.schema.description}
-                    modelValue={_.get(list.value, index)}
-                    onInput={(val) => {
-                      console.log(
-                        'group inpu+++++input========',
-                        val,
-                        props.formData
-                      );
-                      list.value[index] = val;
-                      handleInputChange();
-                    }}
-                    onChange={(val) => {
-                      list.value[index] = val;
-                      _.set(props.formData, props.fieldPath, list.value);
-                      _.set(props.uiFormData, props.fieldPath, list.value);
+                  <span class="item">
+                    <Component
+                      {...attrs}
+                      required={props.required}
+                      editorId={_.join(props.fieldPath, '.')}
+                      label={`${props.schema.title} ${index + 1}`}
+                      style="width: 100%"
+                      allow-search={false}
+                      disabled={
+                        props.readonly ||
+                        (attrs.immutable &&
+                          schemaFormStatus.value !== PageAction.CREATE)
+                      }
+                      readonly={
+                        props.readonly ||
+                        (attrs.immutable &&
+                          schemaFormStatus.value !== PageAction.CREATE)
+                      }
+                      allow-clear={true}
+                      modelValue={_.get(list.value, index)}
+                      onInput={(val) => {
+                        console.log(
+                          'group inpu+++++input========',
+                          val,
+                          props.formData
+                        );
+                        list.value[index] = val;
+                        handleInputChange();
+                      }}
+                      onChange={(val) => {
+                        list.value[index] = val;
+                        _.set(props.formData, props.fieldPath, list.value);
+                        _.set(props.uiFormData, props.fieldPath, list.value);
 
-                      handleChange(props.formData);
-                      validateField();
-                    }}
-                  ></Component>
+                        handleChange(props.formData);
+                        validateField();
+                      }}
+                    ></Component>
+                    <span class="btn-wrap">
+                      {renderDeleteButton(index)}
+                      {renderAddButton({ size: 20, hoverable: false })}
+                    </span>
+                  </span>
                 );
               })}
-              {renderAddButton()}
+              {!list.value.length
+                ? renderAddButton({ size: 24, hoverable: true })
+                : null}
             </SealFormItemWrap>
           </a-form-item>
         );
@@ -221,3 +254,19 @@
     }
   });
 </script>
+
+<style lang="less" scoped>
+  .item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    .btn-wrap {
+      display: flex;
+      flex-basis: 60px;
+      align-items: center;
+      justify-content: space-between;
+      margin-left: 12px;
+    }
+  }
+</style>
