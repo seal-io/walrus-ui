@@ -277,7 +277,7 @@
     });
   };
   const handlePutTemplateSchema = async () => {
-    validateSchema();
+    // validateSchema();
     const valid = validateYaml(code.value);
     if (valid.error) {
       Message.error(valid.error.message);
