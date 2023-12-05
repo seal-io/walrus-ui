@@ -124,7 +124,7 @@
                 })}
               </a-space>
             ) : (
-              <a-link class="p-0">
+              <a-link>
                 <icon-plus-circle-fill
                   size={24}
                   font-size="14px size-24"

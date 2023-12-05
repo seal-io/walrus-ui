@@ -18,26 +18,51 @@
         default() {
           return 'add';
         }
+      },
+      size: {
+        type: Number,
+        default: 24
+      },
+      tooltip: {
+        type: Boolean,
+        default: true
+      },
+      hoverable: {
+        type: Boolean,
+        default: true
       }
     },
     setup(props, { slots, attrs, emit }) {
-      return () => (
-        <span class="common-button">
-          <a-tooltip content={props.title}>
+      const renderBtn = () => {
+        return (
+          <>
             <a-link
+              hoverable={props.hoverable}
               type={props.type || 'primary'}
               onClick={() => emit('click')}
             >
               {props.action === 'add' ? (
                 <icon-plus-circle-fill
                   style="stroke-width: 3;"
-                  class="size-24"
+                  class={[`size-${props.size}`]}
                 />
               ) : (
-                <icon-minus-circle style="stroke-width: 3" class="size-24" />
+                <icon-minus-circle
+                  style="stroke-width: 3"
+                  class={[`size-${props.size}`]}
+                />
               )}
             </a-link>
-          </a-tooltip>
+          </>
+        );
+      };
+      return () => (
+        <span class="common-button">
+          {props.tooltip ? (
+            <a-tooltip content={props.title}>{renderBtn()}</a-tooltip>
+          ) : (
+            renderBtn()
+          )}
         </span>
       );
     }
