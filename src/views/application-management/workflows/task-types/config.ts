@@ -11,7 +11,8 @@ export const TaskTypeList = [
     title: 'workflow.task.form.manualapproval',
     value: TaskTypes.APPROVAL,
     description: 'workflow.task.form.manualapproval',
-    icon: 'icon-jiaoseshouquan'
+    icon: 'icon-jiaoseshouquan',
+    iconStyle: { fontSize: '20px' }
   },
   {
     title: 'workflow.task.form.deployservice',

@@ -66,7 +66,19 @@
             :model="flow"
             auto-label-width
           >
-            <a-form-item field="name">
+            <a-form-item
+              field="name"
+              hide-label
+              hide-asterisk
+              :rules="[
+                {
+                  required: true,
+                  message: $t('common.form.rule.input', {
+                    name: $t('workflow.stage.add.taskName')
+                  })
+                }
+              ]"
+            >
               <seal-input
                 v-model="flow.name"
                 :required="true"
@@ -74,7 +86,19 @@
                 :style="{ width: `${InputWidth.LARGE}px` }"
               ></seal-input>
             </a-form-item>
-            <a-form-item field="environmentId">
+            <a-form-item
+              field="environmentId"
+              hide-label
+              hide-asterisk
+              :rules="[
+                {
+                  required: true,
+                  message: $t('common.form.rule.select', {
+                    name: $t('workflow.step.form.env')
+                  })
+                }
+              ]"
+            >
               <seal-select
                 v-model="flow.environmentId"
                 :label="$t('workflow.step.form.env')"
@@ -88,7 +112,7 @@
               >
               </seal-select>
             </a-form-item>
-            <a-form-item field="timeout">
+            <a-form-item field="timeout" hide-label>
               <!-- <seal-select
                 v-model="flow.timeout"
                 :label="$t('workflow.form.timeout')"
@@ -115,7 +139,7 @@
                 </template>
               </seal-input-number>
             </a-form-item>
-            <a-form-item field="retryStrategy.limit">
+            <a-form-item field="retryStrategy.limit" hide-label>
               <seal-input-number
                 v-model="flow.retryStrategy.limit"
                 :label="$t('workflow.task.retry.count')"
@@ -152,8 +176,10 @@
             </a-form-item> -->
           </a-form>
           <ServiceTask
-            v-if="taskType === TaskTypes.SERVICE && current === steps.length"
+            v-if="taskType === TaskTypes.SERVICE && flow.environmentId"
+            v-show="current === steps.length"
             ref="serviceRef"
+            :key="flow.environmentId"
             :flow="flow"
             :action="action"
             :data-type="ServiceDataType.service"
@@ -169,7 +195,7 @@
               >{{ $t('common.button.prev') }}</a-button
             >
             <a-button
-              v-if="current === steps.length"
+              v-if="current === steps.length && taskType"
               :loading="submitLoading"
               type="primary"
               class="cap-title cancel-btn"
@@ -181,7 +207,6 @@
             <a-space :size="40">
               <a-button
                 v-if="taskType && current < steps.length"
-                :disabled="!flow.environmentId || !flow.name"
                 type="primary"
                 class="cap-title cancel-btn"
                 @click="handleOnNext"
@@ -200,7 +225,7 @@
           v-if="props.action === 'edit'"
           style="position: absolute; right: 20px; bottom: 20px"
           type="primary"
-          status="danger"
+          status="warning"
           class="cap-title cancel-btn"
           @click="handleDelete"
           >{{ $t('common.button.delete') }}</a-button
@@ -348,7 +373,11 @@
     current.value = Math.max(1, current.value - 1);
   };
 
-  const handleOnNext = () => {
+  const handleOnNext = async () => {
+    if (taskType.value === TaskTypes.SERVICE && current.value === 2) {
+      const res = await taskform.value.validate();
+      if (res) return;
+    }
     current.value = Math.min(steps.value.length, current.value + 1);
   };
 
@@ -394,61 +423,60 @@
     serviceInfo.info = null;
   };
   const handleOk = async () => {
-    if (current.value === steps.value.length) {
-      if (taskType.value === TaskTypes.SERVICE) {
-        submitLoading.value = true;
-        const data = await serviceRef.value?.save();
-        console.log('res++++++++++', data);
-        if (!data) {
-          submitLoading.value = false;
-          return;
-        }
+    if (current.value !== steps.value.length) {
+      return;
+    }
+    if (taskType.value === TaskTypes.SERVICE) {
+      submitLoading.value = true;
+      const data = await serviceRef.value?.save();
+      if (!data) {
         submitLoading.value = false;
-        let limitInfo: any = flow.retryStrategy;
-        if (!limitInfo?.limit) {
-          limitInfo = null;
-        } else {
-          limitInfo = {
-            retryStrategy: limitInfo
-          };
-        }
-        const result = {
-          type: taskType.value,
-          name: flow.name,
-          attributes: {
-            ...data,
-            environment: {
-              id: flow.environmentId,
-              name: flow.environmentName
-            },
-            project: {
-              id: flow.projectId
-            },
-            projectID: flow.projectId
-          },
-          timeout: flow.timeout ? Math.floor(flow.timeout * TIME_UNIT) : null,
-          ...limitInfo
-        };
-        console.log('result>>>>>>>>>>', result);
-        emits('save', result);
-      } else if (taskType.value === TaskTypes.APPROVAL) {
-        submitLoading.value = true;
-        const data = await manualRef.value?.save();
-        if (!data) {
-          submitLoading.value = false;
-          return;
-        }
-        submitLoading.value = false;
-        const result = {
-          type: taskType.value,
-          name: data.name,
-          attributes: {
-            ...data
-          },
-          timeout: flow.timeout ? Math.floor(flow.timeout * TIME_UNIT) : null
-        };
-        emits('save', result);
+        return;
       }
+      submitLoading.value = false;
+      let limitInfo: any = flow.retryStrategy;
+      if (!limitInfo?.limit) {
+        limitInfo = null;
+      } else {
+        limitInfo = {
+          retryStrategy: limitInfo
+        };
+      }
+      const result = {
+        type: taskType.value,
+        name: flow.name,
+        attributes: {
+          ...data,
+          environment: {
+            id: flow.environmentId,
+            name: flow.environmentName
+          },
+          project: {
+            id: flow.projectId
+          },
+          projectID: flow.projectId
+        },
+        timeout: flow.timeout ? Math.floor(flow.timeout * TIME_UNIT) : null,
+        ...limitInfo
+      };
+      emits('save', result);
+    } else if (taskType.value === TaskTypes.APPROVAL) {
+      submitLoading.value = true;
+      const data = await manualRef.value?.save();
+      if (!data) {
+        submitLoading.value = false;
+        return;
+      }
+      submitLoading.value = false;
+      const result = {
+        type: taskType.value,
+        name: data.name,
+        attributes: {
+          ...data
+        },
+        timeout: flow.timeout ? Math.floor(flow.timeout * TIME_UNIT) : null
+      };
+      emits('save', result);
     }
   };
   const handleSubmit = () => {
@@ -472,7 +500,6 @@
       };
       serviceInfo.enable = true;
       getEnvironmentList();
-      console.log('serviceInfo==========', _.cloneDeep(serviceInfo));
     } else if (
       props.action === 'edit' &&
       props.dataInfo.type === TaskTypes.APPROVAL
@@ -492,7 +519,6 @@
     setTimeout(() => {
       current.value = steps.value.length;
     });
-    console.log('log=====', props.action, _.cloneDeep(props.dataInfo));
   };
   const handleBeforeOpen = () => {
     initData();
