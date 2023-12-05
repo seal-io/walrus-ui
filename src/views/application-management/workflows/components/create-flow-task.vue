@@ -486,7 +486,6 @@
   };
   const setServiceInfo = () => {
     if (props.action === 'edit' && props.dataInfo.type === TaskTypes.SERVICE) {
-      console.log('props.dataInfo', props.dataInfo);
       flow.environmentId = props.dataInfo.attributes?.environment?.id;
       flow.retryStrategy = _.get(props.dataInfo, 'retryStrategy', {
         limit: null,

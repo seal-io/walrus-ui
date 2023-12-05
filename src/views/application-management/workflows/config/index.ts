@@ -62,7 +62,7 @@ export const WorkflowStatus = {
 };
 
 export const StopableStatus = [WorkflowStatus.Running];
-export const RetryStatus = [WorkflowStatus.Completed];
+export const RetryStatus = [WorkflowStatus.Completed, WorkflowStatus.Failed];
 export const WorkflowStatusMap = {
   Running: 'Running',
   Completed: 'Ready',

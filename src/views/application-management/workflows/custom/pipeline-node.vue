@@ -47,7 +47,9 @@
       };
       const renderStageName = () => {
         return nodeData.value.stepPosition === 0 ? (
-          <div class="stage-name">{nodeData.value.stageName}</div>
+          <div class="stage-name">
+            <Autotip>{nodeData.value.stageName}</Autotip>
+          </div>
         ) : null;
       };
       const setOrder = (id) => {

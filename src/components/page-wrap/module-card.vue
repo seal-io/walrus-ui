@@ -48,7 +48,7 @@
             ) : (
               slots.icon?.()
             )} */}
-            {props.title}
+            {slots.title ? slots.title() : props.title}
           </div>
           {slots.default?.()}
         </div>
