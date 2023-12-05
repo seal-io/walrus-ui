@@ -367,8 +367,8 @@
   const getTextcompleteDownItem = () => {
     tippyInstanceHide();
     resetCursorPos();
-    const activeIndex = textcomplete.dropdown.activeIndex || 0;
-    const items = textcomplete.dropdown.items || [];
+    const activeIndex = textcomplete.dropdown?.activeIndex || 0;
+    const items = textcomplete.dropdown?.items || [];
     const data = get(items, `${activeIndex}.searchResult.data`);
     moveLastPosition.value =
       activeIndex === items.length - 1 && activeIndex > 0;
@@ -420,8 +420,8 @@
   };
 
   const dispatchInput = () => {
-    // emits('update:modelValue', expression.value);
-    // emits('input', expression.value);
+    emits('update:modelValue', expression.value);
+    emits('input', expression.value);
   };
   const debounceDispatchInput = _.debounce(() => {
     dispatchInput();
