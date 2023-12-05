@@ -553,6 +553,27 @@
     scrollToView();
     return false;
   };
+  const getData = () => {
+    const hiddenFormData = groupForm.value?.getHiddenData();
+    if (!formData.value.template.project?.id) {
+      formData.value.template = _.omit(formData.value.template, 'project');
+    }
+    if (dataType.value === ServiceDataType.service) {
+      formData.value.type = null as any;
+    }
+    if (dataType.value === ServiceDataType.resource) {
+      formData.value.template = null as any;
+    }
+    copyFormData = _.cloneDeep(formData.value);
+
+    const resultData = _.cloneDeep(formData.value);
+    resultData.attributes = {
+      ...resultData.attributes,
+      ...hiddenFormData
+    };
+
+    return resultData;
+  };
   const axiosTokenCancel = () => {
     connectorAxiosToken?.cancel();
   };
@@ -575,6 +596,7 @@
   });
   defineExpose({
     submit,
+    getData,
     cancel
   });
   onBeforeUnmount(() => {

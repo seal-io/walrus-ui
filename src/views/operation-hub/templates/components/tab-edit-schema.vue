@@ -246,14 +246,13 @@
     try {
       const ajv = new Ajv();
       const data = previewForm();
-      const validate = ajv.compile(
-        data.jsonCode.openAPISchema.components.schemas.variables
-      );
+      const validate = ajv.compile(data.jsonCode.components.schemas.variables);
       const res = validate(data.formData);
-      console.log('res========', res);
+      console.log('res========', res, validate);
       return true;
     } catch (error: any) {
-      // Message.error(error.message);
+      Message.error(error.message);
+      console.log('error========', error);
       return false;
     }
   };
@@ -278,7 +277,7 @@
     });
   };
   const handlePutTemplateSchema = async () => {
-    // const valid = validateSchema();
+    validateSchema();
     const valid = validateYaml(code.value);
     if (valid.error) {
       Message.error(valid.error.message);

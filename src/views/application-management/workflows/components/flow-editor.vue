@@ -1,14 +1,11 @@
 <script lang="tsx">
   import _ from 'lodash';
   import { defineComponent, toRefs, ref } from 'vue';
-  import { validateLabelNameRegx, InputWidth } from '@/views/config';
+  import { validateLabelNameRegx } from '@/views/config';
   import useCallCommon from '@/hooks/use-call-common';
   import { deleteModal, execError } from '@/utils/monitor';
-  import dayjs from 'dayjs';
   import FlowStage from './flow-stage.vue';
   import FlowSplitLine from './split-line.vue';
-  import FlowAside from './flow-aside.vue';
-  import BasicInfo from './basic-info.vue';
   import { Stage } from '../config/interface';
   import { stageSchema, workflowTimeoutOptons } from '../config';
   import { queryPipelineDetail } from '../api';
@@ -34,7 +31,6 @@
       const unfold = ref(true);
 
       const flowBasic = ref<any>({
-        // name: `flow-id-${dayjs().format('YYYYMMDDHHmmss')}`,
         name: '',
         type: 'default',
         description: '',
@@ -184,10 +180,6 @@
         <a-spin loading={loading.value} fill style="width: 100%">
           <div class="flow-wrapper" style={{ height: height.value }}>
             <div class="flow-side">
-              {/* <FlowAside
-                basicInfo={flowBasic}
-                onEdit={() => handleEditBasicInfo()}
-              ></FlowAside> */}
               <div class="form-box">
                 <div class="title">
                   {unfold.value ? (
@@ -290,10 +282,6 @@
               </div>
             </div>
             <div class="flow-content">{renderStage()}</div>
-            {/* <BasicInfo
-              v-model:dataInfo={flowBasic.value}
-              v-model:show={show.value}
-            ></BasicInfo> */}
           </div>
         </a-spin>
       );

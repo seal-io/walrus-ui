@@ -1,7 +1,10 @@
 <template>
   <div class="task-card" :class="{ active: active }">
     <div class="icon">
-      <i :class="['iconfont ic', dataInfo.icon]"></i>
+      <i
+        :class="['iconfont ic', dataInfo.icon]"
+        :style="{ ...dataInfo.iconStyle }"
+      ></i>
     </div>
     <div class="content">
       <div class="title">{{ $t(dataInfo.title) }}</div>
@@ -11,8 +14,6 @@
 </template>
 
 <script lang="ts" setup>
-  import { ref, computed } from 'vue';
-
   const props = defineProps({
     dataInfo: {
       type: Object,

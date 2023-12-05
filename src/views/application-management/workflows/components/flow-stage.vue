@@ -15,7 +15,6 @@
   import ParallelButton from './parallel-button.vue';
   import CreateFlowTask from './create-flow-task.vue';
   import { Step, Stage } from '../config/interface';
-  import { stepSchema, stageSchema } from '../config';
 
   export default defineComponent({
     emits: ['delete'],

@@ -33,14 +33,13 @@
   });
   const { route } = useCallCommon();
   const serviceRef = ref();
-  const flowId = route.query.flowId || '';
 
-  // const action = computed(() => {
-  //   return flowId ? PageAction.EDIT : PageAction.CREATE;
-  // });
   const save = async () => {
     const data = await serviceRef.value?.submit();
     return data;
+  };
+  const getData = () => {
+    return serviceRef.value?.getData();
   };
   const cancel = (callback) => {
     serviceRef.value?.cancel(callback);
@@ -48,6 +47,7 @@
 
   defineExpose({
     save,
+    getData,
     cancel
   });
 </script>
