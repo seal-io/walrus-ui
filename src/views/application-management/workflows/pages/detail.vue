@@ -154,6 +154,7 @@
       execSucceed();
     } catch (error) {
       // eslint-disable-next-line no-console
+      console.log(error);
     }
   };
   const handleStop = async () => {
@@ -166,6 +167,7 @@
       execSucceed();
     } catch (error) {
       // eslint-disable-next-line no-console
+      console.log(error);
     }
   };
   onMounted(() => {

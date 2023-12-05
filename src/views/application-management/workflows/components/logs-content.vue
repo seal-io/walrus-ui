@@ -116,7 +116,6 @@
     () => props.logContent,
     (val) => {
       if (val) {
-        console.log('val>>>>>>>>>', props.logContent);
         updateContent(val);
       }
     },

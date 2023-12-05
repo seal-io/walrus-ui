@@ -110,6 +110,7 @@
       return data;
     } catch (error) {
       // eslint-disable-next-line no-console
+      console.log(error);
     }
     return null;
   };
@@ -120,6 +121,7 @@
       return data;
     } catch (error) {
       // eslint-disable-next-line no-console
+      console.log(error);
     }
     return null;
   };
@@ -226,6 +228,9 @@
       container: container.value,
       width: width.value || 1400,
       height: height.value || 600,
+      translating: {
+        restrict: true
+      },
       panning: {
         enabled: true,
         eventTypes: ['leftMouseDown']
@@ -456,7 +461,6 @@
               const oldData = _.set(_.cloneDeep(current.data), 'status', {});
               const newData = _.merge(oldData, nodeData);
               current.updateData(newData);
-              console.log('data====2', current, nodeData, newData);
             }
           });
         });
@@ -483,6 +487,7 @@
       });
     } catch (error) {
       // ignore
+      console.log(error);
     }
   };
 

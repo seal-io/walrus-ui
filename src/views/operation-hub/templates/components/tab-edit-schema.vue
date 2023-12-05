@@ -108,7 +108,7 @@
 
 <script lang="ts" setup>
   import _ from 'lodash';
-  import Ajv from 'ajv';
+  // import Ajv from 'ajv';
   import { useUserStore } from '@/store';
   import { InjectSchemaFormStatusKey, PageAction } from '@/views/config';
   import { Resources, Actions } from '@/permissions/config';
@@ -243,18 +243,18 @@
   };
 
   const validateSchema = async () => {
-    try {
-      const ajv = new Ajv();
-      const data = previewForm();
-      const validate = ajv.compile(data.jsonCode.components.schemas.variables);
-      const res = validate(data.formData);
-      console.log('res========', res, validate);
-      return true;
-    } catch (error: any) {
-      Message.error(error.message);
-      console.log('error========', error);
-      return false;
-    }
+    // try {
+    //   const ajv = new Ajv();
+    //   const data = previewForm();
+    //   const validate = ajv.compile(data.jsonCode.components.schemas.variables);
+    //   const res = validate(data.formData);
+    //   console.log('res========', res, validate);
+    //   return true;
+    // } catch (error: any) {
+    //   Message.error(error.message);
+    //   console.log('error========', error);
+    //   return false;
+    // }
   };
   const updateTemplateSchema = async () => {
     if (!props.versionId && props.page === 'template') return;

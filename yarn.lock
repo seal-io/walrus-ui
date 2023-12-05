@@ -283,10 +283,10 @@
     gl-matrix "^3.3.0"
     tslib "^2.3.1"
 
-"@antv/x6-common@^2.0.15":
-  version "2.0.15"
-  resolved "https://registry.npmmirror.com/@antv/x6-common/-/x6-common-2.0.15.tgz#60c99334ee43c266f234b5f7934721f3da25d685"
-  integrity sha512-9ghYsxbT7WjQ0thqjcQwnjuBdL8DSTptEubf0DvBZOJ0wmapclXqYPOM+XYPNtC1dcKDqqxsw5mdcbcAmQ224Q==
+"@antv/x6-common@^2.0.16":
+  version "2.0.16"
+  resolved "https://registry.npmmirror.com/@antv/x6-common/-/x6-common-2.0.16.tgz#f5b12c3eb7afd5736deb1c9bd899c83de08d77f3"
+  integrity sha512-iT60SnTpzoXJwURH+ERYGsTQ8lOuXd7nBuDhgx135VdBG88TizgKrSknz35k8+6j6Qv7O8mRDCGmi2He9li8kg==
   dependencies:
     lodash-es "^4.17.15"
     utility-types "^3.10.0"
@@ -303,12 +303,12 @@
   dependencies:
     vue-demi latest
 
-"@antv/x6@^2.15.2":
-  version "2.15.2"
-  resolved "https://registry.npmmirror.com/@antv/x6/-/x6-2.15.2.tgz#4b6a7e100e1a36f42ede8881e5c779202b3c708c"
-  integrity sha512-xYJzRr/MKUT+mjn4wNgd4Ko+J7N1NN+meyZrcF7GtrVAm9NvYEO4ugiKOrLiw9haYPU/e/C0D/SrNrFE5d6kEQ==
+"@antv/x6@^2.16.1":
+  version "2.16.1"
+  resolved "https://registry.npmmirror.com/@antv/x6/-/x6-2.16.1.tgz#52051466629b1cbf4597ace00dca11866b3a2fe1"
+  integrity sha512-frH8gEa24dZGl/ca8tHVM2NWVETt3o8Cac7t55SyjzX1AKFifrV2SRqgp/Z4mrUt/SmfjUr6jUId5ZyQZJNRgQ==
   dependencies:
-    "@antv/x6-common" "^2.0.15"
+    "@antv/x6-common" "^2.0.16"
     "@antv/x6-geometry" "^2.0.5"
     utility-types "^3.10.0"
 

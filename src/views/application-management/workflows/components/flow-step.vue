@@ -49,7 +49,6 @@
 
       const handleDragEnd = () => {
         drag.value = false;
-        console.log('drag end 1');
       };
 
       const handleEditTask = () => {

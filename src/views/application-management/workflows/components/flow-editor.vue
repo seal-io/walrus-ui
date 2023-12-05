@@ -67,7 +67,6 @@
 
       const handleToggleForm = () => {
         unfold.value = !unfold.value;
-        console.log('formref===', formref.value);
       };
       const handleInsertStagePrev = (index) => {
         stageList.value.splice(

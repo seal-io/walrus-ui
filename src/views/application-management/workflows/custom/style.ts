@@ -92,6 +92,7 @@ export const setPipelineNodeStyle = (size) => {
         color: rgb(var(--arcoblue-5));
       }
       .stage-name {
+        max-width: 200px;
         font-weight: 500;
         position: absolute;
         top: -40px;
@@ -140,10 +141,6 @@ export const setPipelineNodeStyle = (size) => {
             }
             &.icon-error-f {
               color: var(--seal-color-error);
-              // bottom:-11px;
-              // right: -7px;
-              // padding: 1px;
-              // transform: scale(0.75);
             }
           }
           .user-group {
