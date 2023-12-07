@@ -45,25 +45,51 @@
         emit('change', data);
       };
 
+      const genItemsColSpanInfo = () => {
+        const parentSpan =
+          props.schema?.colSpan ||
+          _.get(props.schema, ['x-walrus-ui', 'colSpan']);
+
+        const colSpanData = calcFieldSpan({
+          parentSpan,
+          colSpan: _.get(props.schema, ['items', 'x-walrus-ui', 'colSpan']),
+          parentHalfGrid: props.schema.halfGrid
+        });
+        return {
+          colSpan: colSpanData.span,
+          halfGrid: colSpanData.halfGrid,
+          parentSpan
+        };
+      };
+
       const genItemsProperties = () => {
-        // items
+        const itemSpanInfo = genItemsColSpanInfo();
+
         if (items?.items) {
+          const childColSpanData = calcFieldSpan({
+            parentSpan:
+              _.get(props.schema, ['items', 'x-walrus-ui', 'colSpan']) ||
+              itemSpanInfo.colSpan,
+            colSpan:
+              _.get(props.schema, [
+                'items',
+                'item',
+                'x-walrus-ui',
+                'colSpan'
+              ]) || itemSpanInfo.colSpan,
+            parentHalfGrid: props.schema.halfGrid || itemSpanInfo.halfGrid
+          });
           itemsProperties = [
             {
               ...props.schema.items,
               ..._.pick(props.schema, ['nullable', 'originNullable']),
               fieldPath: [...props.fieldPath],
-              grandParentHalfGrid: getCustomColSpan(items?.items)
-                ? false
-                : props.schema.halfGrid,
-              parentSpan:
-                getCustomColSpan(props.schema?.items) ||
-                getCustomColSpan(items?.items) ||
-                props.parentSpan,
+              title: props.schema.title,
+              parentHalfGrid: childColSpanData.halfGrid,
               level: props.schema.level + 1,
-              halfGrid: getCustomColSpan(items?.items)
-                ? false
-                : props.schema.halfGrid
+              colSpan: childColSpanData.span,
+              halfGrid: childColSpanData.halfGrid,
+              parentSpan: props.schema.colSpan
             }
           ] as FieldSchema[];
         } else if (items?.properties) {
@@ -75,14 +101,9 @@
               ..._.pick(props.schema, ['nullable', 'originNullable'])
             },
             level: props.schema.level + 1,
-            grandParentHalfGrid: getCustomColSpan(items)
-              ? false
-              : props.schema.halfGrid,
+            parentHalfGrid: props.schema.halfGrid,
             fieldPath: props.fieldPath,
-            parentSpan:
-              getCustomColSpan(props.schema) ||
-              getCustomColSpan(items) ||
-              props.parentSpan
+            parentSpan: itemSpanInfo.colSpan
           });
         } else if (items?.additionalProperties) {
           // items.addtionalProperties
@@ -91,17 +112,23 @@
               ...props.schema.items,
               ..._.pick(props.schema, ['nullable', 'originNullable']),
               fieldPath: [...props.fieldPath],
-              grandParentHalfGrid: getCustomColSpan(items?.items)
-                ? false
-                : props.schema.halfGrid,
-              parentSpan:
-                getCustomColSpan(props.schema.items) ||
-                getCustomColSpan(items?.additionalProperties) ||
-                props.parentSpan,
+              parentHalfGrid: props.schema.halfGrid,
+              parentSpan: itemSpanInfo.colSpan,
               level: props.schema.level + 1,
-              halfGrid: getCustomColSpan(items?.additionalProperties)
-                ? false
-                : props.schema.halfGrid
+              halfGrid: itemSpanInfo.halfGrid
+            }
+          ] as FieldSchema[];
+        } else {
+          itemsProperties = [
+            {
+              ...props.schema.items,
+              ..._.pick(props.schema, ['nullable', 'originNullable']),
+              fieldPath: [...props.fieldPath],
+              parentHalfGrid: props.schema.halfGrid || false,
+              level: props.schema.level + 1,
+              colSpan: itemSpanInfo.colSpan,
+              halfGrid: itemSpanInfo.halfGrid,
+              parentSpan: props.schema.colSpan
             }
           ] as FieldSchema[];
         }

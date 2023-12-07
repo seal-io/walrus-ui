@@ -370,7 +370,7 @@ export const calcFieldSpan = ({ parentSpan, colSpan, parentHalfGrid }) => {
   }
   if (parentHalfGrid) {
     return {
-      span: colSpan || 6,
+      span: colSpan || 12,
       halfGrid: true
     };
   }
@@ -408,10 +408,10 @@ const setNullableValue = (schema: FieldSchema, property, parentNullableObj) => {
       parentNullableObj?.originNullable ||
       false
   };
-  if (property?.enum) {
-    nullObj.nullable = false;
-    nullObj.originNullable = false;
-  }
+  // if (property?.enum) {
+  //   nullObj.nullable = false;
+  //   nullObj.originNullable = false;
+  // }
   return nullObj;
 };
 export const genObjectFieldProperties = ({

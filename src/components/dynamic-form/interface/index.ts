@@ -21,6 +21,7 @@ export interface FieldSchema {
   'required'?: string[];
   'isRequired'?: boolean;
   'parentRequired'?: string[];
+  'parentSpan'?: number;
   'halfGrid'?: boolean;
   'level': number;
   'colSpan'?: number;
