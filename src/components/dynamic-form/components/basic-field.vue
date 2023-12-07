@@ -1,15 +1,7 @@
 <script lang="tsx">
   import _ from 'lodash';
   import i18n from '@/locale';
-  import {
-    defineComponent,
-    toRefs,
-    inject,
-    ref,
-    onMounted,
-    nextTick,
-    watch
-  } from 'vue';
+  import { defineComponent, toRefs, inject, ref } from 'vue';
   import { InjectSchemaFormStatusKey, PageAction } from '@/views/config';
   import SealViewItemWrap from '@/components/seal-form/components/seal-view-item-wrap.vue';
   import schemaFieldProps from '../fields/schema-field-props';
@@ -19,16 +11,8 @@
     FormatsFieldMaps
   } from './basic-components';
   import {
-    isSelect,
-    isNumber,
-    isBoolean,
     isDatePicker,
-    isMuliSelect,
     isPassword,
-    checkValidValue,
-    initFieldDefaultValue,
-    isRequiredInitField,
-    isEmptyvalue,
     initFieldValue,
     unsetFieldValue,
     genFieldInFormData,

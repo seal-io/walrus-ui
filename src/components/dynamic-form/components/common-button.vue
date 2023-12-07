@@ -1,6 +1,5 @@
 <script lang="tsx">
   import { PropType, Prop, withModifiers, defineComponent } from 'vue';
-  import ThumbButton from '@/components/buttons/thumb-button.vue';
 
   export default defineComponent({
     emits: ['click'],

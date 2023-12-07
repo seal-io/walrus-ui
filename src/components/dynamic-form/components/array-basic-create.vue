@@ -8,18 +8,10 @@
   import schemaFieldProps from '../fields/schema-field-props';
   import { BasicFieldMaps, CommonFieldMaps } from './basic-components';
   import {
-    isSelect,
-    isNumber,
     isBoolean,
-    isDatePicker,
-    isMuliSelect,
     isPassword,
-    checkValidValue,
-    initFieldDefaultValue,
-    isRequiredInitField,
     isEmptyvalue,
     initFieldValue,
-    unsetFieldValue,
     parentObjectExsits,
     viewFieldValue,
     isEqualOn

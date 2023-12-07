@@ -286,6 +286,24 @@ export const pipelineDetailActions: MoreAction[] = [
 ];
 export const recordActions: MoreAction[] = [
   {
+    label: 'common.button.retry',
+    value: 'retry',
+    icon: 'icon-retry',
+    iconfont: true,
+    handler: '',
+    status: 'normal',
+    disabled(currentInfo) {
+      return !RetryStatus.includes(currentInfo?.status?.summaryStatus);
+    },
+    filterFun(currentInfo) {
+      return userStore.hasProjectResourceActions({
+        resource: Resources.WorkflowExecutions,
+        projectID: _.get(currentInfo, 'project.id'),
+        actions: [Actions.PUT]
+      });
+    }
+  },
+  {
     label: 'workflow.button.stop',
     value: 'stop',
     icon: 'icon-record-stop',

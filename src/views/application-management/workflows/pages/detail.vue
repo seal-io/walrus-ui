@@ -26,7 +26,7 @@
             "
             type="primary"
             size="small"
-            @click="handleRetry"
+            @click="handleRetryAction"
           >
             {{ $t('common.button.retry') }}
           </a-button>
@@ -44,7 +44,7 @@
             type="primary"
             size="small"
             status="warning"
-            @click="handleStop"
+            @click="handleStopAction"
           >
             {{ $t('workflow.button.stop') }}
           </a-button>
@@ -72,7 +72,7 @@
   import { ref, onMounted, computed } from 'vue';
   import { useUserStore } from '@/store';
   import { WORKFLOW } from '@/router/config';
-  import { execSucceed } from '@/utils/monitor';
+  import { execSucceed, deleteModal } from '@/utils/monitor';
   import useCallCommon from '@/hooks/use-call-common';
   import useProjectBreadcrumbData from '@/views/application-management/projects/hooks/use-project-breadcrumb-data';
   import FlowView from '../components/flow-view.vue';
@@ -169,6 +169,26 @@
       // eslint-disable-next-line no-console
       console.log(error);
     }
+  };
+
+  const handleStopAction = async (row) => {
+    deleteModal({
+      onOk: () => handleStop(),
+      okText: 'common.button.stop',
+      title: t('common.confirm.title', {
+        action: _.toLower(t('common.button.stop'))
+      })
+    });
+  };
+
+  const handleRetryAction = async () => {
+    deleteModal({
+      onOk: () => handleRetry(),
+      okText: 'common.button.retry',
+      title: t('common.confirm.title', {
+        action: _.toLower(t('common.button.retry'))
+      })
+    });
   };
   onMounted(() => {
     setBreadCrumbList();
