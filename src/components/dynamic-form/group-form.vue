@@ -20,6 +20,7 @@
           layout="vertical"
           :internal-form-data="uiFormData"
           :origin-form-data="rootFormData"
+          :default-form-data="defaultFormData"
           :schema="item.schema"
           :action="action"
           @change="handleChange"
@@ -36,6 +37,7 @@
       :action="action"
       :internal-form-data="uiFormData"
       :origin-form-data="rootFormData"
+      :default-form-data="defaultFormData"
       :schema="formGroup[0].schema"
       @change="handleChange"
     >
@@ -91,6 +93,7 @@
   const refMap = ref<any>({});
   const schemaForm = ref();
   const rootFormData = ref({});
+  const defaultFormData = ref({});
   const destroyed = ref<boolean>(false);
   const formGroup = ref<FormGroup[]>([]);
   const hiddenFormData = ref<any>({});
@@ -213,6 +216,7 @@
       deep: true
     }
   );
+
   watch(
     () => props.schema,
     () => {
@@ -220,6 +224,7 @@
       formGroup.value = [];
       refMap.value = {};
       destroyed.value = true;
+      defaultFormData.value = {};
       formKey.value = Date.now();
 
       if (schemaFormStatus.value === PageAction.CREATE) {

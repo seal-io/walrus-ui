@@ -30,5 +30,11 @@ export default {
     default() {
       return {};
     }
+  },
+  defaultFormData: {
+    type: Object as PropType<any>,
+    default() {
+      return {};
+    }
   }
 };

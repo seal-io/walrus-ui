@@ -203,8 +203,7 @@ export default function useServiceData(props?) {
       _.cloneDeep(
         _.get(moduleData, 'uiSchema.openAPISchema.components.schemas.variables')
       ) || {};
-    const result = initFormState(variables);
-    templateInfo.value = result.fieldSchemaList;
+
     schemaVariables.value = variables;
   };
 

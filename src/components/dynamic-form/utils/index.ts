@@ -31,6 +31,23 @@ export const isBoolean = (schema: FieldSchema) => {
   return type === FIELD_TYPE.BOOLEAN;
 };
 
+export const isInvalidSchema = (schema: FieldSchema) => {
+  const { type, properties, additionalProperties } = schema;
+  return (
+    type === FIELD_TYPE.OBJECT &&
+    !_.keys(properties).length &&
+    !additionalProperties
+  );
+};
+
+export const isAnyObject = (schema: FieldSchema) => {
+  const { type, properties, additionalProperties } = schema;
+  return (
+    (type === FIELD_TYPE.OBJECT || !type) &&
+    !_.keys(properties).length &&
+    !additionalProperties
+  );
+};
 export const isSimpleObject = (schema: FieldSchema) => {
   // value is any
   const isAnyAdditionalProperties =
@@ -111,7 +128,13 @@ export const isNonObject = (schema: any) => {
 };
 export const isYamlEditor = (schema: FieldSchema) => {
   const { type, properties, additionalProperties, items } = schema;
-  if (type === FIELD_TYPE.OBJECT && !properties && !additionalProperties) {
+  if (
+    type === FIELD_TYPE.OBJECT &&
+    !_.keys(properties).length &&
+    (!additionalProperties ||
+      additionalProperties?.type === FIELD_TYPE.OBJECT ||
+      additionalProperties?.type === FIELD_TYPE.ARRAY)
+  ) {
     return true;
   }
   if (
@@ -151,6 +174,7 @@ export const parentObjectExsits = (formData, fieldPath: string[]) => {
 };
 
 export const initFieldValue = ({
+  defaultFormData,
   fieldPath,
   schema,
   formData,
@@ -161,6 +185,7 @@ export const initFieldValue = ({
   schema: FieldSchema;
   formData: object;
   uiFormData: object;
+  defaultFormData: object;
   required: boolean;
 }) => {
   // no default value and not required
@@ -168,16 +193,15 @@ export const initFieldValue = ({
   if (isEmptyvalue(schema.default) && !isRequired) {
     return;
   }
+
   const defaultValue = initFieldDefaultValue(schema);
   const currentValue = _.get(uiFormData, fieldPath);
   const value = currentValue || defaultValue;
   _.set(uiFormData, fieldPath, _.cloneDeep(value));
-  const requiredField =
-    !schema.nullable && !schema.originNullable && isRequired;
-  const listField = schema.type === FIELD_TYPE.ARRAY && schema.default;
-  if (requiredField) {
-    _.set(formData, fieldPath, _.cloneDeep(value));
-  } else if (listField) {
+  if (!_.hasIn(defaultFormData, fieldPath)) {
+    _.set(defaultFormData, fieldPath, _.cloneDeep(value));
+  }
+  if (!schema.nullable && !schema.originNullable) {
     _.set(formData, fieldPath, _.cloneDeep(value));
   }
 };
@@ -187,6 +211,52 @@ export const viewFieldValue = ({
   schema,
   formData,
   uiFormData,
+  required,
+  defaultFormData
+}: {
+  fieldPath: string[];
+  schema: FieldSchema;
+  formData: object;
+  uiFormData: object;
+  defaultFormData: object;
+  required: boolean;
+}) => {
+  const defaultValue = initFieldDefaultValue(schema);
+  const currentValue = _.get(formData, fieldPath);
+  const originValue = _.get(defaultFormData, fieldPath);
+
+  if (_.hasIn(formData, fieldPath)) {
+    _.set(uiFormData, fieldPath, _.cloneDeep(currentValue));
+  } else {
+    _.set(uiFormData, fieldPath, _.cloneDeep(originValue || defaultValue));
+  }
+  // Avoid overriding global defaults
+  if (!_.hasIn(formData, fieldPath)) {
+    _.set(defaultFormData, fieldPath, _.cloneDeep(defaultValue));
+  }
+};
+
+export const unsetFieldByPath = (formData, initialPath) => {
+  if (!initialPath.length) return;
+  const len = _.keys(_.get(formData, initialPath)).length;
+  const childInitialPath = _.initial(initialPath);
+  if (!len && !_.isArray(_.get(formData, initialPath))) {
+    _.unset(formData, initialPath);
+  } else if (
+    !len &&
+    _.isArray(_.get(formData, initialPath)) &&
+    _.last(initialPath)
+  ) {
+    _.pullAt(_.get(formData, initialPath), _.toNumber(_.last(initialPath)));
+  }
+  unsetFieldByPath(formData, childInitialPath);
+};
+
+export const genFieldInFormData = ({
+  fieldPath,
+  schema,
+  formData,
+  uiFormData,
   required
 }: {
   fieldPath: string[];
@@ -195,51 +265,69 @@ export const viewFieldValue = ({
   uiFormData: object;
   required: boolean;
 }) => {
-  if (_.hasIn(formData, fieldPath)) {
+  if (!schema.nullable && !schema.originNullable) {
     return;
   }
-  const defaultValue = initFieldDefaultValue(schema);
-  _.set(uiFormData, fieldPath, _.cloneDeep(defaultValue));
-  const requiredField = !schema.nullable && !schema.originNullable && required;
-  const listField = schema.type === FIELD_TYPE.ARRAY && schema.default;
-  if (requiredField) {
-    _.set(formData, fieldPath, _.cloneDeep(defaultValue));
-  } else if (listField) {
-    _.set(formData, fieldPath, _.cloneDeep(defaultValue));
-  }
+  const initialPath = _.initial(fieldPath);
+  const originValue = _.get(uiFormData, initialPath);
+  _.each(_.keys(originValue), (key) => {
+    if (!_.hasIn(formData, [...initialPath, key])) {
+      const value = _.get(uiFormData, [...initialPath, key]);
+      _.set(formData, [...initialPath, key], _.cloneDeep(value));
+    }
+  });
 };
-
-export const unsetFieldByPath = (formData, initialPath) => {
-  if (!initialPath.length) return;
-  if (_.keys(_.get(formData, initialPath)).length === 0) {
-    _.unset(formData, initialPath);
-    unsetFieldByPath(formData, _.initial(initialPath));
-  }
+export const isEqualOn = (current, origin) => {
+  return _.isEqualWith(current, origin, (value1, value2) => {
+    if (isEmptyvalue(value1) && isEmptyvalue(value2)) {
+      return true;
+    }
+    return _.isEqual(value1, value2);
+  });
 };
 export const unsetFieldValue = ({
   fieldPath,
   schema,
   formData,
+  uiFormData,
+  defaultFormData,
   required
 }: {
   fieldPath: string[];
   schema: FieldSchema;
   formData: object;
+  uiFormData: object;
+  defaultFormData: object;
   required: boolean;
 }) => {
-  const value = _.get(formData, fieldPath);
+  if (!schema.nullable && !schema.originNullable) {
+    return;
+  }
   const initialPath = _.initial(fieldPath);
-  // nullable or optional
+  const originValue = _.get(defaultFormData, initialPath);
+  const currentValue = _.get(uiFormData, initialPath);
+  console.log('unsetFieldValue++++++++++99=', {
+    originValue,
+    currentValue,
+    defaultFormData
+  });
 
-  if (!required) {
+  // if each field'value is default value,unset it
+  if (initialPath.length === 0) {
     _.unset(formData, fieldPath);
-  } else if (
-    (schema.nullable || schema.originNullable) &&
-    _.keys(_.get(formData, initialPath).length === 1)
-  ) {
-    _.unset(formData, fieldPath);
+  } else if (isEqualOn(currentValue, originValue)) {
+    _.unset(formData, initialPath);
   }
   unsetFieldByPath(formData, initialPath);
+  // if (!required) {
+  //   _.unset(formData, fieldPath);
+  // } else if (
+  //   (schema.nullable || schema.originNullable) &&
+  //   _.keys(_.get(formData, initialPath).length === 1)
+  // ) {
+  //   _.unset(formData, fieldPath);
+  // }
+  // unsetFieldByPath(formData, initialPath);
 };
 
 export const getShowIfValue = (showif, formData, fieldPath?: string[]) => {
@@ -310,10 +398,15 @@ export const isHalfGrid = (obj) => {
   return colSpan < 12;
 };
 
-const setNullableValue = (schema: FieldSchema, property) => {
+const setNullableValue = (schema: FieldSchema, property, parentNullableObj) => {
   const nullObj = {
-    nullable: schema.nullable || false,
-    originNullable: schema.nullable || schema.originNullable || false
+    nullable: property.nullable || false,
+    originNullable:
+      schema.nullable ||
+      schema.originNullable ||
+      parentNullableObj?.nullable ||
+      parentNullableObj?.originNullable ||
+      false
   };
   if (property?.enum) {
     nullObj.nullable = false;
@@ -322,13 +415,22 @@ const setNullableValue = (schema: FieldSchema, property) => {
   return nullObj;
 };
 export const genObjectFieldProperties = ({
+  uiFormData,
+  defaultFormData,
   schema,
   fieldPath,
   grandParentHalfGrid,
+  parentNullableObj,
   parentSpan,
   level
 }: {
+  uiFormData: object;
+  defaultFormData: object;
   schema: FieldSchema;
+  parentNullableObj?: {
+    nullable?: boolean;
+    originNullable?: boolean;
+  };
   level: number;
   parentSpan?: number;
   grandParentHalfGrid?: boolean; // when has items,need pass it
@@ -353,10 +455,14 @@ export const genObjectFieldProperties = ({
       parentHalfGrid: isHalfGrid(schema)
     });
     // const required = _.includes(requiredFlag, key);
-    const nullObj = setNullableValue(schema, property);
+    const nullObj = setNullableValue(schema, property, parentNullableObj);
+
     const fieldSchema = {
       ...property,
       ...nullObj,
+      default:
+        property.default ||
+        _.cloneDeep(_.get(defaultFormData, [...fieldPath, key])),
       name: key,
       fieldPath: [...fieldPath, key],
       required: property.required || [],

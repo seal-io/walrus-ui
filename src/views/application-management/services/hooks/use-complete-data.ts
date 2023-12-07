@@ -9,20 +9,15 @@ import {
   queryTemplates,
   queryItemTemplatesVersions
 } from '@/views/operation-hub/templates/api';
-import { initFormState } from '@/components/dynamic-form/utils/init-form-state';
 import { queryServices } from '@/views/application-management/services/api';
 import { queryEnvironmentAvailableDefinitions } from '@/views/application-management/environments/api';
 import useCallCommon from '@/hooks/use-call-common';
 import { queryResourceDefinitions } from '@/views/operation-hub/resource-definitions/api';
+import { HintKey } from '@/views/config/interface';
 import { queryVariables } from '../../variables/api';
 import { ServiceDataType } from '../config';
 
 export default function useCompleteData(props?) {
-  interface HintKey {
-    resource: any;
-    var: any;
-    service: any;
-  }
   interface TemplateVersionItem {
     schema?: {
       outputs: any[];
@@ -49,9 +44,9 @@ export default function useCompleteData(props?) {
   const allTemplateVersions = ref<TemplateVersionItem[]>([]);
   const resourceDefinitionSchemaMap = ref<any>({});
   const completeData = ref<Partial<HintKey>>({
-    resource: null,
+    res: null,
     var: null,
-    service: null
+    svc: null
   });
   const variableList = ref<any[]>([]);
   const serviceDataList = ref<any[]>([]);
@@ -370,8 +365,8 @@ export default function useCompleteData(props?) {
   const updateServiceCompleteData = () => {
     const res = setServiceCompleteData();
 
-    completeData.value.resource = { ...res.resources };
-    completeData.value.service = { ...res.services };
+    completeData.value.res = { ...res.resources };
+    completeData.value.svc = { ...res.services };
   };
   const updateVariablesCompleteData = () => {
     const variables = setVariablesCompleteData();

@@ -325,7 +325,6 @@
     formData,
     uiFormData,
     pageAction,
-    templateInfo,
     templateVersionList,
     serviceDataList,
     templateList,

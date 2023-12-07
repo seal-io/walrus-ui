@@ -87,7 +87,7 @@ export default {
   'applications.applications.history.deploymentTime': 'Deployment Time',
   'applications.applications.history.rollback': 'Rollback',
   'applications.applications.history.detail': 'Revision Details',
-  'applications.applications.history.changeList': 'History Change',
+  'applications.applications.history.changeList': 'Change History',
   'applications.applications.history.running': 'Deployment details',
   'applications.applications.history.diff.title':
     'Comparison between the current version and the target version configuration',

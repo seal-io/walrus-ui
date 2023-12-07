@@ -13,7 +13,9 @@
     parentObjectExsits,
     isRequiredInitField,
     initFieldDefaultValue,
-    genFieldPropsAndRules
+    genFieldPropsAndRules,
+    genFieldInFormData,
+    isEqualOn
   } from '../utils';
   import { ProviderFormRefKey } from '../config';
 
@@ -62,6 +64,7 @@
       const initValue = () => {
         if (schemaFormStatus.value === PageAction.CREATE) {
           initFieldValue({
+            defaultFormData: props.defaultFormData,
             schema: props.schema,
             formData: props.formData,
             uiFormData: props.uiFormData,
@@ -70,6 +73,7 @@
           });
         } else {
           viewFieldValue({
+            defaultFormData: props.defaultFormData,
             schema: props.schema,
             formData: props.formData,
             uiFormData: props.uiFormData,
@@ -117,8 +121,18 @@
               onChange={(val) => {
                 _.set(props.formData, props.fieldPath, val);
                 _.set(props.uiFormData, props.fieldPath, val);
-                if (val === !!props.schema.default) {
+                if (isEqualOn(val, props.schema.default)) {
                   unsetFieldValue({
+                    defaultFormData: props.defaultFormData,
+                    uiFormData: props.uiFormData,
+                    schema: props.schema,
+                    formData: props.formData,
+                    fieldPath: props.fieldPath,
+                    required: fieldProps.required
+                  });
+                } else {
+                  genFieldInFormData({
+                    uiFormData: props.uiFormData,
                     schema: props.schema,
                     formData: props.formData,
                     fieldPath: props.fieldPath,

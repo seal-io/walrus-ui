@@ -38,6 +38,7 @@
               required={fieldProps.required}
               formData={props.formData}
               uiFormData={props.uiFormData}
+              defaultFormData={props.defaultFormData}
               fieldPath={props.fieldPath}
               schema={props.schema}
               rules={rules}

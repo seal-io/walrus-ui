@@ -34,6 +34,42 @@ export interface FieldSchema {
   'x-walrus-ui'?: Record<string, any>;
 }
 
+// custom keywords and type map
+export const customFields = {
+  'x-walrus-ui': {
+    type: 'object'
+  },
+  'fieldPath': {
+    type: 'array'
+  },
+  'halfGrid': {
+    type: 'boolean'
+  },
+  'colSpan': {
+    type: 'number'
+  },
+  'originNullable': {
+    type: 'boolean'
+  },
+  'level': {
+    type: 'number'
+  },
+  'isRequired': {
+    type: 'boolean'
+  },
+  'parentRequired': {
+    type: 'array'
+  },
+  '_t': {
+    type: 'string'
+  },
+  'options': {
+    type: 'array'
+  },
+  'name': {
+    type: 'string'
+  }
+};
 export interface Group {
   [group: string]: {
     hidden: boolean;

@@ -14,7 +14,9 @@
     isRequiredInitField,
     unsetFieldValue,
     unsetFieldByPath,
-    initFieldValue
+    initFieldValue,
+    isEqualOn,
+    genFieldInFormData
   } from '../utils';
 
   export default defineComponent({
@@ -25,44 +27,12 @@
         InjectSchemaFormStatusKey,
         ref(PageAction.CREATE)
       );
+      const initialPath = _.initial(props.fieldPath);
       const handleChange = (data) => {
         emit('change', data);
       };
 
-      // init field value
-      // if (
-      //   schemaFormStatus.value === PageAction.CREATE &&
-      //   isRequiredInitField(
-      //     props.schema,
-      //     _.includes(props.requiredFields, props.schema.name)
-      //   )
-      // ) {
-      //   _.set(
-      //     props.formData,
-      //     props.fieldPath,
-      //     initFieldDefaultValue(props.schema)
-      //   );
-      //   handleChange(props.formData);
-      // }
-      // if (schemaFormStatus.value === PageAction.CREATE) {
-      //   initFieldValue({
-      //     schema: props.schema,
-      //     formData: props.formData,
-      //     uiFormData: props.uiFormData,
-      //     fieldPath: props.fieldPath,
-      //     required: _.includes(props.requiredFields, props.schema.name)
-      //   });
-      //   handleChange(props.formData);
-      // } else {
-      //   viewFieldValue({
-      //     schema: props.schema,
-      //     formData: props.formData,
-      //     uiFormData: props.uiFormData,
-      //     fieldPath: props.fieldPath,
-      //     required: _.includes(props.requiredFields, props.schema.name)
-      //   });
-      // }
-
+      console.log('schema=map==string=', props.schema.nullable);
       const { fieldProps, rules } = genFieldPropsAndRules({
         schema: props.schema,
         requiredFields: props.requiredFields
@@ -131,12 +101,29 @@
                   fieldProps.readonly
                 }
                 onUpdate:value={(val) => {
-                  _.set(props.formData, props.fieldPath, val);
-                  _.set(props.uiFormData, props.fieldPath, val);
-                  if (!_.keys(_.get(props.formData, props.fieldPath)).length) {
-                    unsetFieldByPath(
+                  if (_.keys(val).length) {
+                    _.set(props.uiFormData, props.fieldPath, val);
+                  } else if (!_.keys(val).length && _.last(props.fieldPath)) {
+                    _.pullAt(
+                      _.get(props.uiFormData, initialPath),
+                      _.toNumber(_.last(props.fieldPath))
+                    );
+                  }
+                  console.log('schema==111=', props.schema);
+                  if (
+                    (isEqualOn(
+                      _.get(props.uiFormData, initialPath),
+                      _.get(props.defaultFormData, initialPath)
+                    ) ||
+                      !_.get(props.uiFormData, initialPath)?.length) &&
+                    (props.schema.nullable || props.schema.originNullable)
+                  ) {
+                    _.unset(props.formData, initialPath);
+                  } else {
+                    _.set(
                       props.formData,
-                      _.initial(props.fieldPath)
+                      initialPath,
+                      _.cloneDeep(_.get(props.uiFormData, initialPath))
                     );
                   }
                   handleChange(props.formData);

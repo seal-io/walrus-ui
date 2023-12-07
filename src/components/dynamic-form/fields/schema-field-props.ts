@@ -78,5 +78,11 @@ export default {
   readonly: {
     type: Boolean,
     default: false
+  },
+  defaultFormData: {
+    type: Object,
+    default() {
+      return {};
+    }
   }
 };

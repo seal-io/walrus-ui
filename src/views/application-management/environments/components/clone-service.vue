@@ -209,6 +209,7 @@
     InjectSchemaFormStatusKey,
     InjectTraceKey
   } from '@/views/config';
+  import { HintKey } from '@/views/config/interface';
   import { ref, PropType, computed, provide, onMounted, watch } from 'vue';
   import GroupForm from '@/components/dynamic-form/group-form.vue';
   import xInputGroup from '@/components/form-create/custom-components/x-input-group.vue';
@@ -216,6 +217,7 @@
   import useLabelsActions from '@/components/form-create/hooks/use-labels-action';
   import useScrollToView from '@/hooks/use-scroll-to-view';
   import GroupTitle from '@/components/group-title/index.vue';
+  import { ServiceDataType } from '../../services/config';
   import serviceThumb from '../../services/components/service-thumb.vue';
   import useServiceData from '../../services/hooks/use-service-data';
 
@@ -277,7 +279,6 @@
     setFormAttributes,
     completeDataLoading,
     serviceInfo,
-    templateInfo,
     schemaVariables,
     formData,
     uiFormData,
@@ -297,7 +298,7 @@
   provide(InjectSchemaFormStatusKey, ref(PageAction.EDIT));
 
   const emits = defineEmits(['update:hintData']);
-  const completeData = ref<any>({});
+  const completeData = ref<Partial<HintKey>>({});
   const serviceDataList = ref<any[]>([]);
   const active = ref('');
   const groupForm = ref();
@@ -309,6 +310,10 @@
   const hasChange = ref(false);
   const traceKey = ref();
 
+  const HintKeyMap = {
+    [ServiceDataType.service]: 'svc',
+    [ServiceDataType.resource]: 'res'
+  };
   provide(InjectShowInputHintKey, true);
   provide(InjectCompleteDataKey, completeData);
   provide(InjectTraceKey, traceKey);
@@ -341,13 +346,14 @@
   };
 
   const updateCompleteData = (oldName, newName) => {
-    if (completeData.value.resource[newName]) {
+    if (completeData.value.res[newName]) {
       return;
     }
-    completeData.value[props.resourceType][newName] = _.cloneDeep(
-      completeData.value[props.resourceType][oldName]
+    const hintType = HintKeyMap[props.resourceType];
+    completeData.value[hintType][newName] = _.cloneDeep(
+      completeData.value[hintType][oldName]
     );
-    delete completeData.value[props.resourceType][oldName];
+    delete completeData.value[hintType][oldName];
     emits('update:hintData', completeData.value);
   };
   const updateActiveServiceData = () => {
