@@ -21,7 +21,9 @@
     initFieldValue,
     viewFieldValue,
     unsetFieldValue,
-    parentObjectExsits
+    genFieldInFormData,
+    parentObjectExsits,
+    isEqualOn
   } from '../utils';
   import { Option } from '../interface';
   import { ProviderFormRefKey } from '../config';
@@ -63,30 +65,6 @@
         });
       };
 
-      // if (schemaFormStatus.value === PageAction.CREATE) {
-      //   initFieldValue({
-      //     schema: props.schema,
-      //     formData: props.formData,
-      //     uiFormData: props.uiFormData,
-      //     fieldPath: props.fieldPath,
-      //     required: fieldProps.required
-      //   });
-      //   handleChange(props.formData);
-      //   console.log(
-      //     'initValue++++++++++++',
-      //     props.fieldPath,
-      //     props.uiFormData,
-      //     fieldProps
-      //   );
-      // } else {
-      //   viewFieldValue({
-      //     schema: props.schema,
-      //     formData: props.formData,
-      //     uiFormData: props.uiFormData,
-      //     fieldPath: props.fieldPath,
-      //     required: fieldProps.required
-      //   });
-      // }
       const initOptions = () => {
         if (props.schema.enum) {
           options.value = _.map(props.schema.enum, (item) => {
@@ -210,12 +188,24 @@
 
                 _.set(props.formData, props.fieldPath, value);
                 _.set(props.uiFormData, props.fieldPath, value);
-                if (
-                  isEmptyvalue(value) ||
-                  !value?.length ||
-                  _.isEqual(value, props.schema.default)
-                ) {
+                console.log(
+                  'selectList===',
+                  props.fieldPath,
+                  value,
+                  props.schema.default
+                );
+                if (isEqualOn(value, props.schema.default)) {
                   unsetFieldValue({
+                    defaultFormData: props.defaultFormData,
+                    uiFormData: props.uiFormData,
+                    schema: props.schema,
+                    formData: props.formData,
+                    fieldPath: props.fieldPath,
+                    required: fieldProps.required
+                  });
+                } else {
+                  genFieldInFormData({
+                    uiFormData: props.uiFormData,
                     schema: props.schema,
                     formData: props.formData,
                     fieldPath: props.fieldPath,

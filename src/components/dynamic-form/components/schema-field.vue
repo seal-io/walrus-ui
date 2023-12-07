@@ -21,9 +21,7 @@
         InjectSchemaFormStatusKey,
         ref(PageAction.CREATE)
       );
-      if (!_.keys(props.schema.properties)) {
-        return null;
-      }
+
       // hidden
       const hidden = _.get(props.schema, ['x-walrus-ui', 'hidden'], false);
       // showIf
@@ -49,6 +47,7 @@
       if (schemaFormStatus.value === PageAction.CREATE) {
         initFieldValue({
           schema: props.schema,
+          defaultFormData: props.defaultFormData,
           formData: props.formData,
           uiFormData: props.uiFormData,
           fieldPath,
@@ -57,6 +56,7 @@
         handleChange(props.formData);
       } else {
         viewFieldValue({
+          defaultFormData: props.defaultFormData,
           schema: props.schema,
           formData: props.formData,
           uiFormData: props.uiFormData,
@@ -64,12 +64,15 @@
           required: _.includes(props.requiredFields, props.schema.name)
         });
       }
+
       console.log(
-        'data+++++++++',
-        schemaFormStatus.value,
-        fieldPath,
+        'create+++++++++++++',
+
+        props.uiFormData,
         props.formData,
-        props.uiFormData
+        props.defaultFormData,
+        _.keys(props.schema.properties),
+        props.fieldPath
       );
       // hidden field
       if (!component || hidden) return null;
@@ -86,6 +89,7 @@
               fieldPath={fieldPath}
               formData={props.formData}
               uiFormData={props.uiFormData}
+              defaultFormData={props.defaultFormData}
               schema={props.schema}
               requiredFields={props.requiredFields}
               onChange={(data) => handleChange(data)}
@@ -99,6 +103,7 @@
             fieldPath={fieldPath}
             formData={props.formData}
             uiFormData={props.uiFormData}
+            defaultFormData={props.defaultFormData}
             schema={props.schema}
             requiredFields={props.requiredFields}
             parentSpan={props.parentSpan || 12}

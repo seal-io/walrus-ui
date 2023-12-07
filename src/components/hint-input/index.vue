@@ -43,6 +43,7 @@
         @input="handleInput"
         @keydown.enter="handleEnter"
         @keyup.delete="handleDelete"
+        @change="handleExpressionChange"
       />
       <span class="arco-input-suffix">
         <span v-if="$attrs.showWordLimit" class="arco-input-word-limit"
@@ -404,10 +405,10 @@
       }
       getTextcompleteDownItem();
     });
-    textEditor?.on('change', () => {
-      emits('update:modelValue', expression.value);
-      emits('change', expression.value);
-    });
+    // textEditor?.on('change', () => {
+    //   emits('update:modelValue', expression.value);
+    //   emits('change', expression.value);
+    // });
   };
   const initEditor = () => {
     const textarea = document.getElementById(
@@ -451,7 +452,7 @@
     emits('update:modelValue', expression.value);
     setTimeout(() => {
       runChange();
-    }, 100);
+    });
   };
   const handleDelete = (val) => {
     // const regx = /\.$/;

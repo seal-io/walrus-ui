@@ -14,6 +14,7 @@
     viewFieldValue,
     getCustomColSpan,
     isBasicType,
+    isInvalidSchema,
     isRequiredInitField,
     isSelect,
     isSimpleObject,
@@ -31,11 +32,12 @@
         InjectSchemaFormStatusKey,
         ref(PageAction.CREATE)
       );
+
       let additionalPropertiesList: FieldSchema[] = [];
       let additionalPropertiesKeysObj = {};
       const childProperties = ref<FieldSchema[]>([]);
       const objectAdditionalList = ref<
-        { field: string; list: FieldSchema[] }[]
+        { field: string; schema: FieldSchema }[]
       >([]);
 
       const handleChange = (data) => {
@@ -56,60 +58,41 @@
 
       // default data
       childProperties.value = genObjectFieldProperties({
+        defaultFormData: props.defaultFormData,
+        uiFormData: props.uiFormData,
         schema: props.schema,
         fieldPath: props.fieldPath,
         parentSpan: getCustomColSpan(props.schema) || props.schema.colSpan,
         level: props.level + 1
       });
-
-      // init field value
-      // if (
-      //   schemaFormStatus.value === PageAction.CREATE &&
-      //   isRequiredInitField(
-      //     props.schema,
-      //     _.includes(props.requiredFields, props.schema.name)
-      //   )
-      // ) {
-      //   _.set(
-      //     props.formData,
-      //     props.fieldPath,
-      //     initFieldDefaultValue(props.schema)
-      //   );
-      //   _.each(childProperties.value, (item) => {
-      //     if (isRequiredInitField(item, item.isRequired)) {
-      //       _.set(props.formData, item.fieldPath, initFieldDefaultValue(item));
-      //     } else {
-      //       _.unset(props.formData, item.fieldPath);
-      //     }
-      //   });
-      //   handleChange(props.formData);
-      // }
-
-      // if (schemaFormStatus.value === PageAction.CREATE) {
-      //   initFieldValue({
-      //     schema: props.schema,
-      //     formData: props.formData,
-      //     uiFormData: props.uiFormData,
-      //     fieldPath: props.fieldPath,
-      //     required: _.includes(props.requiredFields, props.schema.name)
-      //   });
-      //   handleChange(props.formData);
-      // } else {
-      //   viewFieldValue({
-      //     schema: props.schema,
-      //     formData: props.formData,
-      //     uiFormData: props.uiFormData,
-      //     fieldPath: props.fieldPath,
-      //     required: _.includes(props.requiredFields, props.schema.name)
-      //   });
-      // }
-
+      console.log('childProperties++++++++++++', childProperties.value);
       // raw data
-      additionalPropertiesList = genObjectFieldProperties({
-        schema: props.schema.additionalProperties as FieldSchema,
-        fieldPath: props.fieldPath,
-        level: props.level + 1
-      });
+      if (
+        props.schema.additionalProperties &&
+        !_.keys(props.schema.additionalProperties?.properties).length
+      ) {
+        additionalPropertiesList = [
+          {
+            ..._.cloneDeep(props.schema.additionalProperties),
+            fieldPath: props.fieldPath,
+            level: props.level + 1
+          }
+        ] as FieldSchema[];
+      } else if (
+        props.schema.additionalProperties &&
+        _.keys(props.schema.additionalProperties?.properties).length
+      ) {
+        additionalPropertiesList = genObjectFieldProperties({
+          defaultFormData: props.defaultFormData,
+          uiFormData: props.uiFormData,
+          schema: props.schema.additionalProperties as FieldSchema,
+          parentNullableObj: {
+            ..._.pick(props.schema, ['nullable', 'originNullable'])
+          },
+          fieldPath: props.fieldPath,
+          level: props.level + 1
+        });
+      }
 
       // value is object or array
       const isMapObjectAdditionalProperties =
@@ -123,20 +106,11 @@
         if (isMapObjectAdditionalProperties) {
           objectAdditionalList.value.push({
             field: '',
-            list: _.cloneDeep(additionalPropertiesList)
+            schema: _.cloneDeep(
+              props.schema.additionalProperties
+            ) as FieldSchema
           });
-          _.set(
-            props.formData,
-            [...props.fieldPath],
-            _.cloneDeep(additionalPropertiesKeysObj)
-          );
-          _.set(
-            props.uiFormData,
-            [...props.fieldPath],
-            _.cloneDeep(additionalPropertiesKeysObj)
-          );
         }
-        handleChange(props.formData);
       };
 
       const handleDeleteClick = (index) => {
@@ -146,6 +120,8 @@
           _.unset(props.formData, [...props.fieldPath, itemField]);
           _.unset(props.uiFormData, [...props.fieldPath, itemField]);
           unsetFieldValue({
+            defaultFormData: props.defaultFormData,
+            uiFormData: props.uiFormData,
             schema: props.schema,
             formData: props.formData,
             fieldPath: [...props.fieldPath, itemField],
@@ -181,34 +157,44 @@
         );
       };
 
-      const handleAdditionalFieldChange = () => {
-        _.each(objectAdditionalList.value, (item) => {
-          _.each(item.list, (childSchema) => {
-            if (!_.get(props.formData, [...props.fieldPath, item.field])) {
-              const defaultVal = initFieldDefaultValue(childSchema);
-              _.set(
-                props.formData,
-                [...props.fieldPath, item.field, childSchema.name],
-                defaultVal
-              );
-              _.set(
-                props.uiFormData,
-                [...props.fieldPath, item.field, childSchema.name],
-                defaultVal
-              );
-            }
-            // initFieldValue({
-            //   schema: childSchema,
-            //   formData: props.formData,
-            //   uiFormData: props.uiFormData,
-            //   fieldPath: [...props.fieldPath, item.field, childSchema.name],
-            //   required: childSchema.isRequired || false
-            // });
-          });
-        });
+      const handleAdditionalMapFieldChange = (index, val) => {
+        const fieldValue = _.get(objectAdditionalList.value, [index, 'field']);
+        const field = _.cloneDeep(fieldValue);
+        const obj = _.get(props.uiFormData, [...props.fieldPath, field]);
+        console.log('handleAdditionalMapFieldChange++++++++++++', val, obj);
+        _.set(objectAdditionalList.value, [index, 'field'], _.cloneDeep(val));
+        _.set(props.formData, [...props.fieldPath, val], _.cloneDeep(obj));
+        _.set(props.uiFormData, [...props.fieldPath, val], _.cloneDeep(obj));
+        _.unset(props.formData, [...props.fieldPath, field]);
+        _.unset(props.uiFormData, [...props.fieldPath, field]);
+
+        console.log(
+          'handleAdditionalMapFieldChange++++++++++++',
+          props.formData,
+          props.uiFormData
+        );
         handleChange(props.formData);
       };
 
+      const renderMapAdditionalValue = (index) => {
+        const item = _.get(objectAdditionalList.value, [index]);
+        return (
+          <SchemaField
+            formData={props.formData}
+            uiFormData={props.uiFormData}
+            defaultFormData={props.defaultFormData}
+            schema={item.schema}
+            requiredFields={[]}
+            parentSpan={props.schema.colSpan}
+            level={props.schema.level}
+            fieldPath={[...props.fieldPath, item.field]}
+            action={props.action}
+            onChange={(data) => {
+              handleChange(data);
+            }}
+          />
+        );
+      };
       // additional value is object
       const renderAddtionalProperties = () => {
         if (!isMapObjectAdditionalProperties) return null;
@@ -220,6 +206,7 @@
                   <div class="add-item" key={index}>
                     <div class="add-content">
                       <a-form-item
+                        hide-label={true}
                         field={_.join([props.fieldPath, index, 'field'], '.')}
                       >
                         {schemaFormStatus.value === PageAction.VIEW ? (
@@ -230,68 +217,26 @@
                             ])}
                           </span>
                         ) : (
-                          <HintInput
-                            modelValue={_.get(objectAdditionalList.value, [
-                              index,
-                              'field'
-                            ])}
-                            editorId={_.join(
-                              [props.fieldPath, index, 'field'],
-                              '.'
-                            )}
-                            placeholder="enter property name"
-                            onChange={() => {
-                              handleAdditionalFieldChange();
-                            }}
-                            onUpdate:modelValue={(val) => {
-                              _.set(
-                                objectAdditionalList.value,
-                                [index, 'field'],
-                                val
-                              );
-                            }}
-                          ></HintInput>
+                          <>
+                            <HintInput
+                              modelValue={_.get(objectAdditionalList.value, [
+                                index,
+                                'field'
+                              ])}
+                              editorId={_.join(
+                                [props.fieldPath, index, 'field'],
+                                '.'
+                              )}
+                              placeholder="enter property name"
+                              onChange={(val) => {
+                                handleAdditionalMapFieldChange(index, val);
+                              }}
+                              onInput={(val) => {}}
+                            ></HintInput>
+                            {renderMapAdditionalValue(index)}
+                          </>
                         )}
                       </a-form-item>
-                      {_.map(item.list, (childSchema, cIndex) => {
-                        return (
-                          <SchemaField
-                            formData={props.formData}
-                            uiFormData={props.uiFormData}
-                            schema={childSchema}
-                            requiredFields={childSchema.parentRequired}
-                            parentSpan={props.schema.colSpan}
-                            level={childSchema.level}
-                            fieldPath={[
-                              ...props.fieldPath,
-                              item.field,
-                              childSchema.name
-                            ]}
-                            action={props.action}
-                            onChange={(data) => {
-                              _.set(
-                                props.formData,
-                                [
-                                  ...props.fieldPath,
-                                  item.field,
-                                  childSchema.name
-                                ],
-                                data
-                              );
-                              _.set(
-                                props.uiFormData,
-                                [
-                                  ...props.fieldPath,
-                                  item.field,
-                                  childSchema.name
-                                ],
-                                data
-                              );
-                              handleChange(props.formData);
-                            }}
-                          />
-                        );
-                      })}
                     </div>
                     <div class="delete-btn">{renderDeleleButton(index)}</div>
                   </div>
@@ -308,7 +253,6 @@
             isBasicType(item.type) || isSimpleObject(item) || isSelect(item)
           );
         });
-
         return (
           <a-grid cols={12} col-gap={18} row-gap={0} style={{ width: '100%' }}>
             {_.map(list, (childSchema: FieldSchema) => {
@@ -318,6 +262,7 @@
                   schema={childSchema}
                   formData={props.formData}
                   uiFormData={props.uiFormData}
+                  defaultFormData={props.defaultFormData}
                   fieldPath={childSchema.fieldPath}
                   requiredFields={childSchema.parentRequired}
                   parentSpan={props.schema.colSpan}
@@ -347,6 +292,7 @@
                   schema={childSchema}
                   formData={props.formData}
                   uiFormData={props.uiFormData}
+                  defaultFormData={props.defaultFormData}
                   fieldPath={childSchema.fieldPath}
                   requiredFields={childSchema.parentRequired}
                   parentSpan={props.schema.colSpan}
@@ -368,6 +314,7 @@
           fieldPath={props.fieldPath}
           formData={props.formData}
           uiFormData={props.uiFormData}
+          defaultFormData={props.defaultFormData}
           requiredFields={props.requiredFields}
           onChange={(val) => {
             handleChange(val);

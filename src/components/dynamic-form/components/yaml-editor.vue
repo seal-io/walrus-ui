@@ -11,7 +11,8 @@
     initFieldDefaultValue,
     isRequiredInitField,
     isEmptyvalue,
-    unsetFieldValue
+    unsetFieldValue,
+    genFieldInFormData
   } from '../utils';
   import {
     json2Yaml,
@@ -23,6 +24,7 @@
     props: {
       ...schemaFieldProps
     },
+    emits: ['change'],
     setup(props, { emit, attrs }) {
       const schemaFormStatus = inject(
         InjectSchemaFormStatusKey,
@@ -48,6 +50,9 @@
 
       const handleChange = (data) => {
         emit('change', data);
+      };
+
+      const validateField = () => {
         setTimeout(() => {
           formref.value?.validateField(props.fieldPath);
         });
@@ -118,27 +123,35 @@
               label={props.schema.title || props.schema.name}
               popup-info={props.schema.description}
               editor-default-value={defaultValue.value}
-              readOnly={!schemaFormStatus.value}
+              readOnly={schemaFormStatus.value === PageAction.VIEW}
               style={{ width: '100%' }}
               height={300}
               editor-id={`${_.join(props.fieldPath, '_')}`}
               onBlur={(val) => {
                 const jsonstr = yaml2Json(fieldValue.value);
-                if (
-                  isEmptyvalue(jsonstr) ||
-                  _.trim(fieldValue.value) === _.trim(defaultValue.value)
-                ) {
+                _.set(props.formData, props.fieldPath, jsonstr);
+                _.set(props.uiFormData, props.fieldPath, jsonstr);
+                console.log('jsonstr+++++++++++++++++', jsonstr);
+                if (_.trim(fieldValue.value) === _.trim(defaultValue.value)) {
                   unsetFieldValue({
+                    defaultFormData: props.defaultFormData,
+                    uiFormData: props.uiFormData,
                     schema: props.schema,
                     formData: props.formData,
                     fieldPath: props.fieldPath,
                     required: props.required
                   });
                 } else {
-                  _.set(props.formData, props.fieldPath, jsonstr);
-                  _.set(props.uiFormData, props.fieldPath, jsonstr);
+                  genFieldInFormData({
+                    uiFormData: props.uiFormData,
+                    schema: props.schema,
+                    formData: props.formData,
+                    fieldPath: props.fieldPath,
+                    required: props.required
+                  });
                 }
                 handleChange(props.formData);
+                validateField();
               }}
             ></AceEditor>
           </a-form-item>

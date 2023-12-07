@@ -28,7 +28,7 @@
       }"
     >
       <div
-        :id="editorId"
+        :id="`${editorId}-${traceKey}`"
         :style="{
           minHeight: _.isNumber(height) ? `${height}px` : height
         }"
@@ -57,9 +57,11 @@
     watch,
     PropType,
     ref,
-    useAttrs
+    useAttrs,
+    inject
   } from 'vue';
-  import ace, { Range } from 'ace-builds';
+  import { InjectTraceKey } from '@/views/config';
+  import ace, { Range, edit } from 'ace-builds';
   import 'ace-builds/src-noconflict/ext-language_tools';
   import 'ace-builds/src-noconflict/ext-searchbox';
   import 'ace-builds/src-noconflict/theme-monokai';
@@ -169,6 +171,7 @@
   const defaultHolder = {
     yaml: '# yaml format'
   };
+  const traceKey = inject(InjectTraceKey, ref('traceKey'));
   const $attrs = useAttrs();
   const emits = defineEmits(['change', 'update:modelValue', 'input', 'blur']);
 
@@ -356,7 +359,7 @@
     nextTick(() => {
       setLanguageTools();
 
-      aceEditor = ace.edit(`${props.editorId}`);
+      aceEditor = ace.edit(`${props.editorId}-${traceKey.value}`);
 
       aceEditor.session.on('change', (args) => {
         // TODO

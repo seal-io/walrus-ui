@@ -257,6 +257,7 @@
     InputWidth,
     InjectCompleteDataKey
   } from '@/views/config';
+  import { HintKey } from '@/views/config/interface';
   import { useElementSize } from '@vueuse/core';
   import { OPERATIONHUB } from '@/router/config';
   import { Resources, Actions } from '@/permissions/config';
@@ -305,7 +306,7 @@
   const templateList = ref<any[]>([]);
   const extraWrapper = ref();
   const deinitionSchema = ref<any>({});
-  const completeData = ref<any>({
+  const completeData = ref<Partial<HintKey>>({
     var: null
   });
   const formData = ref<ResourceDefinitionFormData>({

@@ -30,6 +30,7 @@
       };
       const handleUnsetField = () => {
         initFieldValue({
+          defaultFormData: props.defaultFormData,
           schema: props.schema,
           formData: props.formData,
           uiFormData: props.uiFormData,

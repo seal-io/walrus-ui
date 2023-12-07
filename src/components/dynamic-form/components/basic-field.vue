@@ -31,8 +31,10 @@
     isEmptyvalue,
     initFieldValue,
     unsetFieldValue,
+    genFieldInFormData,
     parentObjectExsits,
-    viewFieldValue
+    viewFieldValue,
+    isEqualOn
   } from '../utils';
   import { ProviderFormRefKey } from '../config';
 
@@ -70,6 +72,7 @@
       const initValue = () => {
         if (schemaFormStatus.value === PageAction.CREATE) {
           initFieldValue({
+            defaultFormData: props.defaultFormData,
             schema: props.schema,
             formData: props.formData,
             uiFormData: props.uiFormData,
@@ -79,6 +82,7 @@
           handleChange(props.formData);
         } else {
           viewFieldValue({
+            defaultFormData: props.defaultFormData,
             schema: props.schema,
             formData: props.formData,
             uiFormData: props.uiFormData,
@@ -101,9 +105,27 @@
         Component = CommonFieldMaps.password;
       }
 
-      const handleInputChange = (e: any) => {
-        _.set(props.formData, props.fieldPath, e);
-        _.set(props.uiFormData, props.fieldPath, e);
+      const handleInputChange = (val: any) => {
+        _.set(props.formData, props.fieldPath, val);
+        _.set(props.uiFormData, props.fieldPath, val);
+        if (isEqualOn(val, props.schema.default)) {
+          unsetFieldValue({
+            defaultFormData: props.defaultFormData,
+            schema: props.schema,
+            formData: props.formData,
+            uiFormData: props.uiFormData,
+            fieldPath: props.fieldPath,
+            required: props.required
+          });
+        } else {
+          genFieldInFormData({
+            schema: props.schema,
+            uiFormData: props.uiFormData,
+            formData: props.formData,
+            fieldPath: props.fieldPath,
+            required: props.required
+          });
+        }
         handleChange(props.formData);
       };
 
@@ -169,22 +191,7 @@
                 handleInputChange(val);
               }}
               onChange={(val) => {
-                _.set(props.formData, props.fieldPath, val);
-                _.set(props.uiFormData, props.fieldPath, val);
-                if (isEmptyvalue(val) || val === props.schema.default) {
-                  unsetFieldValue({
-                    schema: props.schema,
-                    formData: props.formData,
-                    fieldPath: props.fieldPath,
-                    required: props.required
-                  });
-                }
-                console.log(
-                  'group inpu+++++change========',
-                  val,
-                  props.formData
-                );
-                handleChange(props.formData);
+                handleInputChange(val);
                 validateField();
               }}
             ></Component>

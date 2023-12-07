@@ -36,8 +36,8 @@
       );
       const activeItemIndex = ref(-1);
       const items = props.schema.items || ({} as FieldSchema);
-      const minItems =
-        props.schema.minItems || props.schema.default?.length || 0;
+      const minItems = props.schema.minItems || 0;
+      const defaultItems = props.schema.default?.length || 0;
       let itemsProperties: FieldSchema[] = [];
       const propertiesList = ref<FieldSchema[][]>([]);
 
@@ -45,31 +45,13 @@
         emit('change', data);
       };
 
-      // if (schemaFormStatus.value === PageAction.CREATE) {
-      //   initFieldValue({
-      //     schema: props.schema,
-      //     formData: props.formData,
-      //     uiFormData: props.uiFormData,
-      //     fieldPath: props.fieldPath,
-      //     required: _.includes(props.requiredFields, props.schema.name)
-      //   });
-      //   handleChange(props.formData);
-      // } else {
-      //   viewFieldValue({
-      //     schema: props.schema,
-      //     formData: props.formData,
-      //     uiFormData: props.uiFormData,
-      //     fieldPath: props.fieldPath,
-      //     required: _.includes(props.requiredFields, props.schema.name)
-      //   });
-      // }
-
       const genItemsProperties = () => {
         // items
         if (items?.items) {
           itemsProperties = [
             {
               ...props.schema.items,
+              ..._.pick(props.schema, ['nullable', 'originNullable']),
               fieldPath: [...props.fieldPath],
               grandParentHalfGrid: getCustomColSpan(items?.items)
                 ? false
@@ -86,7 +68,12 @@
           ] as FieldSchema[];
         } else if (items?.properties) {
           itemsProperties = genObjectFieldProperties({
+            defaultFormData: props.defaultFormData,
+            uiFormData: props.uiFormData,
             schema: props.schema.items as FieldSchema,
+            parentNullableObj: {
+              ..._.pick(props.schema, ['nullable', 'originNullable'])
+            },
             level: props.schema.level + 1,
             grandParentHalfGrid: getCustomColSpan(items)
               ? false
@@ -102,6 +89,7 @@
           itemsProperties = [
             {
               ...props.schema.items,
+              ..._.pick(props.schema, ['nullable', 'originNullable']),
               fieldPath: [...props.fieldPath],
               grandParentHalfGrid: getCustomColSpan(items?.items)
                 ? false
@@ -149,7 +137,7 @@
 
         // handleChange(props.formData);
         console.log(
-          'add++++++++++++',
+          'add++++++++++++9',
           props.formData,
           props.uiFormData,
           propertiesList.value
@@ -165,9 +153,10 @@
       const handleDeleteClick = (index) => {
         propertiesList.value.splice(index, 1);
 
-        // update uiFormData
         _.get(props.uiFormData, props.fieldPath, []).splice(index, 1);
         _.get(props.formData, props.fieldPath, []).splice(index, 1);
+
+        // update uiFormData
         if (
           !_.get(props.uiFormData, props.fieldPath, []).length ||
           !filterArrayIsEmpty(
@@ -237,8 +226,9 @@
         ) : null;
       };
       const init = () => {
-        if (minItems && schemaFormStatus.value === PageAction.CREATE) {
-          for (let i = 0; i < minItems; i += 1) {
+        const counts = minItems || defaultItems;
+        if (counts && schemaFormStatus.value === PageAction.CREATE) {
+          for (let i = 0; i < counts; i += 1) {
             handleAddClick();
           }
         }
@@ -266,9 +256,9 @@
       console.log(
         'array++++++++++++',
         props.fieldPath,
-        schemaFormStatus.value,
         props.formData,
-        props.uiFormData
+        props.uiFormData,
+        props.defaultFormData
       );
 
       return () => (
@@ -278,6 +268,7 @@
           fieldPath={props.fieldPath}
           formData={props.formData}
           uiFormData={props.uiFormData}
+          defaultFormData={props.defaultFormData}
           requiredFields={props.requiredFields}
           onChange={(val) => {
             handleChange(val);
@@ -307,6 +298,7 @@
                             key={`${index}-${sIndex}`}
                             formData={props.formData}
                             uiFormData={props.uiFormData}
+                            defaultFormData={props.defaultFormData}
                             fieldPath={[
                               ...props.fieldPath,
                               `${index}`,

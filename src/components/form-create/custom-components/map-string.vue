@@ -76,6 +76,7 @@
       } = useMapString();
       console.log('labelList===', labelList.value);
       const handleUpdateValue = (obj) => {
+        console.log('handleUpdateValue===', obj);
         emit('update:value', obj);
       };
       watch(

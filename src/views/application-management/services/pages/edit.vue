@@ -235,7 +235,7 @@
     ></a-divider>
     <ComCard>
       <div
-        v-if="templateInfo.length"
+        v-if="_.keys(schemaVariables?.properties).length"
         style="display: flex; justify-content: flex-start"
       >
         <GroupTitle
@@ -394,7 +394,6 @@
     formData,
     uiFormData,
     pageAction,
-    templateInfo,
     templateVersionList,
     serviceDataList,
     templateList,

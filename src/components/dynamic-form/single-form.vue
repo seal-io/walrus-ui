@@ -11,6 +11,7 @@
     nextTick
   } from 'vue';
   import _ from 'lodash';
+  import ajvValidate from '@/utils/ajv-validate';
   import useScrollToView from '@/hooks/use-scroll-to-view';
   import formProps from './form-props';
   import SchemaField from './components/schema-field.vue';
@@ -92,6 +93,7 @@
               schema={props.schema}
               formData={formData.value}
               uiFormData={uiFormData.value}
+              defaultFormData={props.defaultFormData}
               onChange={handleChange}
             ></SchemaField>
           </a-grid>
