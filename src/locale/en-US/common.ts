@@ -142,5 +142,6 @@ export default {
   'common.button.draft': 'Save Draft',
   'common.button.stop': 'Stop',
   'common.button.start': 'Start',
-  'common.rule.object.key': 'key cannot be empty'
+  'common.rule.object.key': 'key cannot be empty',
+  'common.confirm.title': 'Are you sure you want to {action}?'
 };

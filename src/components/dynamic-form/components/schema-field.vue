@@ -3,14 +3,7 @@
   import _ from 'lodash';
   import { InjectSchemaFormStatusKey, PageAction } from '@/views/config';
   import schemaFieldProps from '../fields/schema-field-props';
-  import {
-    getShowIfValue,
-    initFieldDefaultValue,
-    setHiddenFieldValue,
-    isRequiredInitField,
-    initFieldValue,
-    viewFieldValue
-  } from '../utils';
+  import { getShowIfValue, initFieldValue, viewFieldValue } from '../utils';
   import { getSchemaFieldComponent } from '../fields/field-map';
 
   export default defineComponent({

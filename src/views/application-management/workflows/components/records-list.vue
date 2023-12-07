@@ -189,12 +189,12 @@
     PROJECT_API_PREFIX,
     PIPELINE_API,
     PIPELINE_EXECUTION_API,
-    stopApplyPipeline
+    stopApplyPipeline,
+    retryApplyPipeline
   } from '../api';
 
-  let timer: any = null;
   const { currentLocale } = useLocale();
-  const { route, router } = useCallCommon();
+  const { route, router, t } = useCallCommon();
   const userStore = useUserStore();
   const { rowSelection, selectedKeys, handleSelectChange } = useRowSelect();
   const { sort, sortOrder, setSortDirection } = UseSortDirection({
@@ -261,17 +261,6 @@
     fetchData();
   };
 
-  const handleSearch = () => {
-    clearTimeout(timer);
-    timer = setTimeout(() => {
-      queryParams.page = 1;
-      handleFilter();
-    }, 100);
-  };
-  const handleReset = () => {
-    queryParams.page = 1;
-    handleFilter();
-  };
   const handlePageChange = (page: number) => {
     queryParams.page = page;
     handleFilter();
@@ -301,11 +290,6 @@
   const handleDeleteConfirm = async (row) => {
     try {
       loading.value = true;
-      // const ids = _.map(selectedKeys.value, (val) => {
-      //   return {
-      //     id: val
-      //   };
-      // });
       await deletePipelineExecution({
         id: row.id,
         flowId: route.params.flowId as string
@@ -336,13 +320,48 @@
       // ignore
     }
   };
+  const handleStop = async (row) => {
+    deleteModal({
+      onOk: () => handleStopExecution(row),
+      okText: 'common.button.stop',
+      title: t('common.confirm.title', {
+        action: _.toLower(t('common.button.stop'))
+      })
+    });
+  };
+  const handleRetryPipeline = async (row) => {
+    try {
+      const data = {
+        flowId: route.params.flowId as string,
+        execId: row.id
+      };
+      await retryApplyPipeline(data);
+      execSucceed();
+    } catch (error) {
+      // eslint-disable-next-line no-console
+      console.log(error);
+    }
+  };
+  const handleRetry = async (row) => {
+    deleteModal({
+      onOk: () => handleRetryPipeline(row),
+      okText: 'common.button.retry',
+      title: t('common.confirm.title', {
+        action: _.toLower(t('common.button.retry'))
+      })
+    });
+  };
   const handleDropSelect = (val, row) => {
     if (val === 'delete') {
       handleDelete(row);
       return;
     }
     if (val === 'stop') {
-      handleStopExecution(row);
+      handleStop(row);
+      return;
+    }
+    if (val === 'retry') {
+      handleRetry(row);
       return;
     }
     router.push({

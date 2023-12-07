@@ -15,14 +15,8 @@
   import SchemaField from './schema-field.vue';
   import {
     genObjectFieldProperties,
-    initFieldDefaultValue,
-    getCustomColSpan,
-    isRequiredInitField,
     calcFieldSpan,
-    isHalfGrid,
-    isEmptyvalue,
-    initFieldValue,
-    viewFieldValue
+    isEmptyvalue
   } from '../utils';
   import CommonButton from './common-button.vue';
 
