@@ -616,6 +616,8 @@
           }
         }
       });
+    } else if (props.pgType !== 'page') {
+      emits('cancel');
     } else {
       cancelCallback();
     }

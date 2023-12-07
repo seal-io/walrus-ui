@@ -21,7 +21,8 @@
     initFieldValue,
     unsetFieldValue,
     parentObjectExsits,
-    viewFieldValue
+    viewFieldValue,
+    isEqualOn
   } from '../utils';
   import { ProviderFormRefKey } from '../config';
   import CommonButton from './common-button.vue';
@@ -42,11 +43,11 @@
         ref(PageAction.CREATE)
       );
       const formref = inject(ProviderFormRefKey, ref());
-      const list = ref<any>([]);
+      const list = ref<any[]>([]);
 
       const numberReg = /\d+/;
       const type = props.schema.items?.type || 'string';
-      console.log('group props=======', props.schema);
+      console.log('group props=======', props.schema, props.fieldPath);
       let Component = BasicFieldMaps[type];
 
       const handleChange = (data) => {
@@ -61,6 +62,7 @@
       const initValue = () => {
         if (schemaFormStatus.value === PageAction.CREATE) {
           initFieldValue({
+            defaultFormData: props.defaultFormData,
             schema: props.schema,
             formData: props.formData,
             uiFormData: props.uiFormData,
@@ -70,6 +72,7 @@
           handleChange(props.formData);
         } else {
           viewFieldValue({
+            defaultFormData: props.defaultFormData,
             schema: props.schema,
             formData: props.formData,
             uiFormData: props.uiFormData,
@@ -84,8 +87,29 @@
       }
 
       const handleInputChange = () => {
-        _.set(props.formData, props.fieldPath, list.value);
+        const res = _.filter(list.value, (item) => {
+          return !isEmptyvalue(item);
+        });
+        _.set(props.formData, props.fieldPath, res);
         _.set(props.uiFormData, props.fieldPath, list.value);
+
+        if (props.schema.nullable || props.schema.originNullable) {
+          if (
+            isEqualOn(
+              _.get(props.formData, props.fieldPath),
+              _.get(props.defaultFormData, props.fieldPath)
+            ) ||
+            !_.get(props.formData, props.fieldPath)?.length
+          ) {
+            _.unset(props.formData, props.fieldPath);
+          }
+        }
+        console.log(
+          'group inpu+++++input========',
+          list.value,
+          props.formData,
+          props.uiFormData
+        );
         handleChange(props.formData);
       };
 
@@ -100,6 +124,7 @@
 
       const setDataList = () => {
         list.value = _.get(props.uiFormData, props.fieldPath, []);
+        console.log('group inpu+++++init========', list.value);
       };
 
       setDataList();
@@ -138,6 +163,7 @@
         return (
           <a-form-item
             hide-label={true}
+            style="width: 100%"
             rules={[
               ...props.rules,
               {
@@ -166,89 +192,115 @@
             validate-trigger={['change']}
           >
             <SealFormItemWrap
-              label={props.schema.title}
+              label={`${props.schema.title || props.schema.name || ''}`}
               popupInfo={props.schema.description}
               style="width: 100%"
             >
-              {_.map(list.value, (item, index) => {
-                return (
-                  <span class="item">
-                    <Component
-                      {...attrs}
-                      required={props.required}
-                      editorId={_.join(props.fieldPath, '.')}
-                      label={`${props.schema.title} ${index + 1}`}
-                      style="width: 100%"
-                      allow-search={false}
-                      disabled={
-                        props.readonly ||
-                        (attrs.immutable &&
-                          schemaFormStatus.value !== PageAction.CREATE)
-                      }
-                      readonly={
-                        props.readonly ||
-                        (attrs.immutable &&
-                          schemaFormStatus.value !== PageAction.CREATE)
-                      }
-                      allow-clear={true}
-                      modelValue={_.get(list.value, index)}
-                      onInput={(val) => {
-                        console.log(
-                          'group inpu+++++input========',
-                          val,
-                          props.formData
-                        );
-                        list.value[index] = val;
-                        handleInputChange();
+              <a-grid cols={12} col-gap={18} row-gap={16}>
+                {_.map(list.value, (item, index) => {
+                  return (
+                    <a-grid-item
+                      key={index}
+                      span={{
+                        lg: props.schema.colSpan || 12,
+                        md: 12,
+                        sm: 12,
+                        xs: 12
                       }}
-                      onChange={(val) => {
-                        list.value[index] = val;
-                        _.set(props.formData, props.fieldPath, list.value);
-                        _.set(props.uiFormData, props.fieldPath, list.value);
-
-                        handleChange(props.formData);
-                        validateField();
-                      }}
-                    ></Component>
-                    <span class="btn-wrap">
-                      {renderDeleteButton(index)}
-                      {renderAddButton({ size: 20, hoverable: false })}
-                    </span>
-                  </span>
-                );
-              })}
-              {!list.value.length
-                ? renderAddButton({ size: 24, hoverable: true })
-                : null}
+                    >
+                      <span class="item">
+                        <Component
+                          {...attrs}
+                          required={props.required}
+                          editorId={_.join(props.fieldPath, '.')}
+                          label={`${props.schema.title || ''} ${index + 1}`}
+                          style="width: 100%"
+                          allow-search={false}
+                          disabled={
+                            props.readonly ||
+                            (attrs.immutable &&
+                              schemaFormStatus.value !== PageAction.CREATE)
+                          }
+                          readonly={
+                            props.readonly ||
+                            (attrs.immutable &&
+                              schemaFormStatus.value !== PageAction.CREATE)
+                          }
+                          allow-clear={true}
+                          modelValue={_.get(list.value, index)}
+                          onInput={(val) => {
+                            if (isBoolean(props.schema.items as FieldSchema)) {
+                              list.value[index] = val.target.checked;
+                            } else {
+                              list.value[index] = val;
+                            }
+                            handleInputChange();
+                          }}
+                          onChange={(val) => {
+                            handleInputChange();
+                            validateField();
+                          }}
+                        ></Component>
+                        <span class="btn-wrap">
+                          {renderDeleteButton(index)}
+                          {index === list.value.length - 1
+                            ? renderAddButton({ size: 20, hoverable: false })
+                            : null}
+                        </span>
+                      </span>
+                    </a-grid-item>
+                  );
+                })}
+                {!list.value.length
+                  ? renderAddButton({ size: 24, hoverable: true })
+                  : null}
+              </a-grid>
             </SealFormItemWrap>
           </a-form-item>
         );
       };
 
+      const renderView = () => {
+        return (
+          <a-form-item
+            style="width: 100%"
+            hide-label={true}
+            rules={props.rules}
+            label={props.schema.title}
+            field={_.join(props.fieldPath, '.')}
+            validate-trigger={['change']}
+          >
+            <a-grid cols={12} col-gap={18} row-gap={16} style="width: 100%">
+              {_.map(list.value, (item, index) => {
+                return (
+                  <a-grid-item
+                    key={index}
+                    span={{
+                      lg: props.schema.colSpan || 12,
+                      md: 12,
+                      sm: 12,
+                      xs: 12
+                    }}
+                  >
+                    <SealViewItemWrap
+                      label={`${props.schema.title || ''} ${index + 1}`}
+                    >
+                      {_.get(list.value, index)}
+                    </SealViewItemWrap>
+                  </a-grid-item>
+                );
+              })}
+            </a-grid>
+          </a-form-item>
+        );
+      };
       return () => (
         <a-grid-item
-          span={{ lg: props.schema.colSpan, md: 12, sm: 12, xs: 12 }}
+          span={{ lg: props.schema.parentSpan, md: 12, sm: 12, xs: 12 }}
         >
-          {schemaFormStatus.value !== PageAction.VIEW ? (
-            renderEdit()
-          ) : (
-            <a-form-item
-              hide-label={true}
-              rules={props.rules}
-              label={props.schema.title}
-              field={_.join(props.fieldPath, '.')}
-              validate-trigger={['change']}
-            >
-              <SealViewItemWrap label={props.schema.title} style="width: 100%">
-                <span>
-                  {(isPassword(props.schema) || props.schema.writeOnly) &&
-                  _.get(props.uiFormData, props.fieldPath)
-                    ? '******'
-                    : _.get(props.uiFormData, props.fieldPath)}
-                </span>
-              </SealViewItemWrap>
-            </a-form-item>
-          )}
+          {schemaFormStatus.value !== PageAction.VIEW
+            ? renderEdit()
+            : renderView()}
         </a-grid-item>
       );
     }
