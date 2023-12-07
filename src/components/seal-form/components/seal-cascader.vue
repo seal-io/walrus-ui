@@ -75,7 +75,7 @@
   ]);
   const input = ref(null);
   const isFocus = ref(false);
-  const $attrs = useAttrs();
+  const $attrs: any = useAttrs();
   const slots = useSlots();
   const handleInput = (e) => {
     emits('input', e);

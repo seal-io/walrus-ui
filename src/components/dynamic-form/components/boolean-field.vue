@@ -57,7 +57,7 @@
 
       const validateField = () => {
         setTimeout(() => {
-          formref.value?.validateField(props.fieldPath);
+          formref.value?.validateField(_.join(props.fieldPath, '.'));
         });
       };
 

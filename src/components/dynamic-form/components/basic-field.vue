@@ -50,7 +50,7 @@
 
       const validateField = () => {
         setTimeout(() => {
-          formref.value?.validateField(props.fieldPath);
+          formref.value?.validateField(_.join(props.fieldPath, '.'));
         });
       };
       const initValue = () => {
@@ -175,6 +175,11 @@
                 handleInputChange(val);
               }}
               onChange={(val) => {
+                console.log(
+                  'group inpu+++++change========',
+                  val,
+                  props.formData
+                );
                 handleInputChange(val);
                 validateField();
               }}
