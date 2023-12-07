@@ -10,6 +10,7 @@
           <span>{{ $attrs.label || placeholder }}</span>
           <a-tooltip v-if="popupInfo" :content="popupInfo">
             <icon-info-circle
+              class="m-l-2"
               style="stroke-linecap: initial; cursor: default"
             />
           </a-tooltip>
@@ -37,7 +38,7 @@
     }
   });
   const emits = defineEmits(['update:modelValue', 'change']);
-  const $attrs = useAttrs();
+  const $attrs: any = useAttrs();
   const handleChange = (value, e) => {
     emits('update:modelValue', value);
     emits('change', value, e);

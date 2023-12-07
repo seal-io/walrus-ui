@@ -39,7 +39,7 @@
     }
   });
   const emits = defineEmits(['update:modelValue', 'change']);
-  const $attrs = useAttrs();
+  const $attrs: any = useAttrs();
   const handleChange = (value, e) => {
     emits('update:modelValue', value);
     emits('change', value, e);

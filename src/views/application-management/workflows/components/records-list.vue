@@ -55,11 +55,17 @@
           ellipsis
           tooltip
           :cell-style="{ minWidth: '40px' }"
-          data-index="createTime"
+          data-index="executeTime"
           :title="$t('applications.workflow.table.startTime')"
+          :sortable="{
+            sortDirections: ['ascend', 'descend'],
+            defaultSortOrder: 'descend',
+            sorter: true,
+            sortOrder: sortOrder
+          }"
         >
           <template #cell="{ record }">
-            {{ dayjs(record.createTime).format('YYYY-MM-DD HH:mm:ss') }}
+            {{ dayjs(record.executeTime).format('YYYY-MM-DD HH:mm:ss') }}
           </template>
         </a-table-column>
         <a-table-column
@@ -198,7 +204,7 @@
   const userStore = useUserStore();
   const { rowSelection, selectedKeys, handleSelectChange } = useRowSelect();
   const { sort, sortOrder, setSortDirection } = UseSortDirection({
-    defaultSortField: '-createTime',
+    defaultSortField: '-executeTime',
     defaultOrder: 'descend'
   });
   const projectID = route.params.projectId as string;

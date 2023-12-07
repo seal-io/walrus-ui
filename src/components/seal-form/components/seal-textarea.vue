@@ -71,7 +71,7 @@
     'blur',
     'clear'
   ]);
-  const $attrs = useAttrs();
+  const $attrs: any = useAttrs();
   const slots = useSlots();
   const handleInput = (value, e) => {
     const maxLength = $attrs.maxLength || $attrs['max-length'];

@@ -85,7 +85,7 @@
   const input = ref();
   const isFocus = ref(false);
   const searchValue = ref('');
-  const $attrs = useAttrs();
+  const $attrs: any = useAttrs();
   const slots = useSlots();
   const handleInput = (e) => {
     emits('input', e);

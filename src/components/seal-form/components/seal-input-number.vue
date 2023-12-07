@@ -72,7 +72,7 @@
     'blur',
     'clear'
   ]);
-  const $attrs = useAttrs();
+  const $attrs: any = useAttrs();
   const slots = useSlots();
   const handleInput = (value, e) => {
     emits('update:modelValue', value);
