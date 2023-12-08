@@ -262,27 +262,33 @@
             field={_.join(props.fieldPath, '.')}
             validate-trigger={['change']}
           >
-            <a-grid cols={12} col-gap={18} row-gap={16} style="width: 100%">
-              {_.map(list.value, (item, index) => {
-                return (
-                  <a-grid-item
-                    key={index}
-                    span={{
-                      lg: props.schema.colSpan || 12,
-                      md: 12,
-                      sm: 12,
-                      xs: 12
-                    }}
-                  >
-                    <SealViewItemWrap
-                      label={`${props.schema.title || ''} ${index + 1}`}
+            <SealFormItemWrap
+              label={`${props.schema.title || props.schema.name || ''}`}
+              popupInfo={props.schema.description}
+              style="width: 100%"
+            >
+              <a-grid cols={12} col-gap={18} row-gap={16} style="width: 100%">
+                {_.map(list.value, (item, index) => {
+                  return (
+                    <a-grid-item
+                      key={index}
+                      span={{
+                        lg: props.schema.colSpan || 12,
+                        md: 12,
+                        sm: 12,
+                        xs: 12
+                      }}
                     >
-                      {_.get(list.value, index)}
-                    </SealViewItemWrap>
-                  </a-grid-item>
-                );
-              })}
-            </a-grid>
+                      <SealViewItemWrap
+                        label={`${props.schema.title || ''} ${index + 1}`}
+                      >
+                        {_.get(list.value, index)}
+                      </SealViewItemWrap>
+                    </a-grid-item>
+                  );
+                })}
+              </a-grid>
+            </SealFormItemWrap>
           </a-form-item>
         );
       };

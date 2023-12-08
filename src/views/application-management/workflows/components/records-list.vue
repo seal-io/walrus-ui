@@ -57,12 +57,6 @@
           :cell-style="{ minWidth: '40px' }"
           data-index="executeTime"
           :title="$t('applications.workflow.table.startTime')"
-          :sortable="{
-            sortDirections: ['ascend', 'descend'],
-            defaultSortOrder: 'descend',
-            sorter: true,
-            sortOrder: sortOrder
-          }"
         >
           <template #cell="{ record }">
             {{ dayjs(record.executeTime).format('YYYY-MM-DD HH:mm:ss') }}
