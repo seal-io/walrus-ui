@@ -61,29 +61,6 @@
         });
       };
 
-      const initValue = () => {
-        if (schemaFormStatus.value === PageAction.CREATE) {
-          initFieldValue({
-            defaultFormData: props.defaultFormData,
-            schema: props.schema,
-            formData: props.formData,
-            uiFormData: props.uiFormData,
-            fieldPath: props.fieldPath,
-            required: fieldProps.required
-          });
-        } else {
-          viewFieldValue({
-            defaultFormData: props.defaultFormData,
-            schema: props.schema,
-            formData: props.formData,
-            uiFormData: props.uiFormData,
-            fieldPath: props.fieldPath,
-            required: fieldProps.required
-          });
-        }
-      };
-
-      // initValue();
       const renderEdit = () => {
         return (
           <a-form-item

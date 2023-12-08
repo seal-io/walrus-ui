@@ -51,28 +51,6 @@
           formref.value?.validateField(_.join(props.fieldPath, '.'));
         });
       };
-      const initValue = () => {
-        if (schemaFormStatus.value === PageAction.CREATE) {
-          initFieldValue({
-            defaultFormData: props.defaultFormData,
-            schema: props.schema,
-            formData: props.formData,
-            uiFormData: props.uiFormData,
-            fieldPath: props.fieldPath,
-            required: props.required
-          });
-          handleChange(props.formData);
-        } else {
-          viewFieldValue({
-            defaultFormData: props.defaultFormData,
-            schema: props.schema,
-            formData: props.formData,
-            uiFormData: props.uiFormData,
-            fieldPath: props.fieldPath,
-            required: props.required
-          });
-        }
-      };
 
       if (isPassword(props.schema.items as FieldSchema)) {
         Component = CommonFieldMaps.password;
@@ -120,8 +98,6 @@
       };
 
       setDataList();
-
-      // initValue();
 
       const renderAddButton = ({ size, hoverable }) => {
         if (schemaFormStatus.value === PageAction.VIEW) {
