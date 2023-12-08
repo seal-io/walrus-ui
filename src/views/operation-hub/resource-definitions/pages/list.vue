@@ -77,6 +77,12 @@
                 type: $t('resource.definition.list.name')
               })
             "
+            :sortable="{
+              sortDirections: ['ascend', 'descend'],
+              defaultSortOrder: '',
+              sorter: true,
+              sortOrder: sortDataIndex === 'name' ? sortOrder : ''
+            }"
           >
             <template #cell="{ record }">
               <a-link size="small" @click="handleView(record)">{{
@@ -111,7 +117,7 @@
               sortDirections: ['ascend', 'descend'],
               defaultSortOrder: 'descend',
               sorter: true,
-              sortOrder: sortOrder
+              sortOrder: sortDataIndex === 'createTime' ? sortOrder : ''
             }"
             :title="$t('common.table.createTime')"
           >
@@ -136,17 +142,6 @@
             :cell-style="{ minWidth: '40px' }"
           >
             <template #cell="{ record }">
-              <!-- <a-space :size="16">
-                <a-tooltip :content="$t('common.button.edit')">
-                  <a-link
-                    type="text"
-                    size="small"
-                    @click="handleClickEdit(record)"
-                  >
-                    <template #icon><icon-edit class="size-16" /></template>
-                  </a-link>
-                </a-tooltip>
-              </a-space> -->
               <DropButtonGroup
                 v-if="setActionList(record).length"
                 :layout="
@@ -204,10 +199,12 @@
   const { setChunkRequest } = useSetChunkRequest();
   const { rowSelection, selectedKeys, handleSelectChange } = useRowSelect();
   const { router, t, route } = useCallCommon();
-  const { sort, sortOrder, setSortDirection } = UseSortDirection({
-    defaultSortField: '-createTime',
-    defaultOrder: 'descend'
-  });
+  const { sort, sortOrder, sortDataIndex, setSortDirection } = UseSortDirection(
+    {
+      defaultSortField: '-createTime',
+      defaultOrder: 'descend'
+    }
+  );
   let timer: any = null;
   const loading = ref(false);
   const total = ref(0);

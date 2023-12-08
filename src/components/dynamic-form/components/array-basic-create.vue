@@ -14,7 +14,10 @@
     initFieldValue,
     parentObjectExsits,
     viewFieldValue,
-    isEqualOn
+    unsetFieldValue,
+    isEqualOn,
+    genFieldInFormData,
+    genFieldPropsAndRules
   } from '../utils';
   import { ProviderFormRefKey } from '../config';
   import CommonButton from './common-button.vue';
@@ -39,7 +42,10 @@
 
       const numberReg = /\d+/;
       const type = props.schema.items?.type || 'string';
-      console.log('group props=======', props.schema, props.fieldPath);
+      const { fieldProps, rules } = genFieldPropsAndRules({
+        schema: props.schema,
+        requiredFields: props.requiredFields
+      });
       let Component = BasicFieldMaps[type];
 
       const handleChange = (data) => {
@@ -63,23 +69,25 @@
         _.set(props.formData, props.fieldPath, res);
         _.set(props.uiFormData, props.fieldPath, list.value);
 
-        if (props.schema.nullable || props.schema.originNullable) {
-          if (
-            isEqualOn(
-              _.get(props.formData, props.fieldPath),
-              _.get(props.defaultFormData, props.fieldPath)
-            ) ||
-            !_.get(props.formData, props.fieldPath)?.length
-          ) {
-            _.unset(props.formData, props.fieldPath);
-          }
+        if (isEqualOn(res, _.get(props.defaultFormData, props.fieldPath))) {
+          unsetFieldValue({
+            defaultFormData: props.defaultFormData,
+            uiFormData: props.uiFormData,
+            schema: props.schema,
+            formData: props.formData,
+            fieldPath: props.fieldPath,
+            required: fieldProps.required
+          });
+        } else {
+          genFieldInFormData({
+            defaultFormData: props.defaultFormData,
+            uiFormData: props.uiFormData,
+            schema: props.schema,
+            formData: props.formData,
+            fieldPath: props.fieldPath,
+            required: fieldProps.required
+          });
         }
-        console.log(
-          'group inpu+++++input========',
-          list.value,
-          props.formData,
-          props.uiFormData
-        );
         handleChange(props.formData);
       };
 
@@ -133,17 +141,17 @@
             hide-label={true}
             style="width: 100%"
             rules={[
-              ...props.rules,
+              ...rules,
               {
                 validator: (value, callback) => {
                   if (
                     !parentObjectExsits(props.formData, props.fieldPath) ||
-                    !props.required
+                    !fieldProps.required
                   ) {
                     callback();
                     return;
                   }
-                  if (!value) {
+                  if (!value || !value.length) {
                     callback(
                       `${i18n.global.t('common.form.rule.input', {
                         name: props.schema.title
@@ -162,6 +170,7 @@
             <SealFormItemWrap
               label={`${props.schema.title || props.schema.name || ''}`}
               popupInfo={props.schema.description}
+              required={fieldProps.required}
               style="width: 100%"
             >
               <a-grid cols={12} col-gap={18} row-gap={16}>
@@ -179,7 +188,6 @@
                       <span class="item">
                         <Component
                           {...attrs}
-                          required={props.required}
                           editorId={_.join(props.fieldPath, '.')}
                           label={`${props.schema.title || ''} ${index + 1}`}
                           style="width: 100%"

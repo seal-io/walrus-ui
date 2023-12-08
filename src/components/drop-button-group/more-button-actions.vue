@@ -6,7 +6,9 @@
     @select="handleSelectAction"
   >
     <a-link size="mini" @click.stop="() => {}">
-      <icon-more style="margin-right: 0; font-size: 18px; stroke-width: 5" />
+      <icon-more-vertical
+        style="margin-right: 0; font-size: 18px; stroke-width: 5"
+      />
     </a-link>
     <template #content>
       <a-doption

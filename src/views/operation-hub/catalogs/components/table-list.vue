@@ -1,5 +1,5 @@
 <template>
-  <ComCard borderless padding="0" :loading="loading" class="projects">
+  <ComCard borderless padding="0" class="projects">
     <div class="content">
       <FilterBox class="m-b-10">
         <template #params>
@@ -67,22 +67,24 @@
           >
         </template>
       </FilterBox>
-      <a-tabs
-        lazy-load
-        default-active-key="currentView"
-        :active-key="currentView"
-      >
-        <a-tab-pane key="list">
-          <ListView
-            ref="listViewRef"
-            v-model:sort="sort"
-            v-model:selectedList="selectedKeys"
-            :list="dataList"
-            @edit="handleEditItem"
-            @sort="handleSort"
-          ></ListView>
-        </a-tab-pane>
-      </a-tabs>
+      <a-spin :loading="loading">
+        <a-tabs
+          lazy-load
+          default-active-key="currentView"
+          :active-key="currentView"
+        >
+          <a-tab-pane key="list">
+            <ListView
+              ref="listViewRef"
+              v-model:sort="sort"
+              v-model:selectedList="selectedKeys"
+              :list="dataList"
+              @edit="handleEditItem"
+              @sort="handleSort"
+            ></ListView>
+          </a-tab-pane>
+        </a-tabs>
+      </a-spin>
       <a-pagination
         style="margin-top: 20px"
         size="small"
@@ -147,7 +149,7 @@
   const { router, route, t } = useCallCommon();
   const loading = ref(false);
   const selectedKeys = ref<string[]>([]);
-  const sort = ref<string[]>(['-createTime']);
+  const sort = ref<string>('-createTime');
   const dataList = ref<CatalogRowData[]>([]);
   const listViewRef = ref();
   const total = ref(0);
@@ -191,6 +193,7 @@
         sort: [sort.value]
       };
       const { data } = await queryCatalogs(params);
+
       dataList.value = _.map(data?.items || [], (sItem) => {
         sItem.disabled =
           userStore.userSetting?.EnableBuiltinCatalog?.value === 'true' &&

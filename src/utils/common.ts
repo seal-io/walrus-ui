@@ -17,19 +17,22 @@ type orderType = 'ascend' | 'descend' | '';
 
 export function UseSortDirection(data: sortOrderParams) {
   const { defaultSortField, defaultOrder, isResetOrder } = data;
+  const field = defaultSortField?.replace(/^[-+]/, '');
   const sort = ref(defaultSortField);
   const sortOrder = ref<'ascend' | 'descend' | ''>(defaultOrder);
+  const sortDataIndex = ref('');
   const defaultSort = defaultOrder || ('descend' as orderType);
   const setSortDirection = (dataIndex, direction) => {
+    sortDataIndex.value = dataIndex;
     const sortMap = {
       ascend: `${dataIndex}`,
       descend: `-${dataIndex}`,
-      defaultSort: '',
+      defaultSort: ''
     };
     const sortOrderMap = {
       ascend: `descend`,
       descend: `ascend`,
-      defautOrder: '',
+      defautOrder: ''
     };
     if (direction === '') {
       sortOrder.value = isResetOrder
@@ -46,7 +49,8 @@ export function UseSortDirection(data: sortOrderParams) {
   return {
     sort,
     sortOrder,
-    setSortDirection,
+    sortDataIndex,
+    setSortDirection
   };
 }
 export default {};

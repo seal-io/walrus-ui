@@ -79,6 +79,12 @@
                 type: $t('operation.environments.table.env')
               })
             "
+            :sortable="{
+              sortDirections: ['ascend', 'descend'],
+              defaultSortOrder: '',
+              sorter: true,
+              sortOrder: sortDataIndex === 'name' ? sortOrder : ''
+            }"
           >
             <template #cell="{ record }">
               <a-link
@@ -148,7 +154,7 @@
               sortDirections: ['ascend', 'descend'],
               defaultSortOrder: 'descend',
               sorter: true,
-              sortOrder: sortOrder
+              sortOrder: sortDataIndex === 'createTime' ? sortOrder : ''
             }"
             :title="$t('common.table.createTime')"
           >
@@ -238,10 +244,12 @@
   };
   let timer: any = null;
   const { rowSelection, selectedKeys, handleSelectChange } = useRowSelect();
-  const { sort, sortOrder, setSortDirection } = UseSortDirection({
-    defaultSortField: '-createTime',
-    defaultOrder: 'descend'
-  });
+  const { sort, sortOrder, sortDataIndex, setSortDirection } = UseSortDirection(
+    {
+      defaultSortField: '-createTime',
+      defaultOrder: 'descend'
+    }
+  );
   const { setChunkRequest } = useSetChunkRequest();
 
   const appStore = useAppStore();

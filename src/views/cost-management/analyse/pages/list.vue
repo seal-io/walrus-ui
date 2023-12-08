@@ -79,6 +79,12 @@
               type: $t('cost.analyse.table.manage')
             })
           "
+          :sortable="{
+            sortDirections: ['ascend', 'descend'],
+            defaultSortOrder: '',
+            sorter: true,
+            sortOrder: sortDataIndex === 'name' ? sortOrder : ''
+          }"
         >
           <template #cell="{ record }">
             <a-link
@@ -141,7 +147,7 @@
             sortDirections: ['ascend', 'descend'],
             defaultSortOrder: 'descend',
             sorter: true,
-            sortOrder: sortOrder
+            sortOrder: sortDataIndex === 'createTime' ? sortOrder : ''
           }"
           :title="$t('common.table.createTime')"
         >
@@ -165,16 +171,6 @@
           :title="$t('common.table.operation')"
         >
           <template #cell="{ record }">
-            <!-- <a-space :size="20">
-              <a-tooltip
-                v-if="!record.builtin"
-                :content="$t('common.button.edit')"
-              >
-                <a-link type="text" size="small" @click="handleEdit(record)">
-                  <template #icon><icon-edit class="size-16" /></template>
-                </a-link>
-              </a-tooltip>
-            </a-space> -->
             <DropButtonGroup
               v-if="setActionList(record).length"
               :layout="
@@ -228,10 +224,12 @@
   const userStore = useUserStore();
   const { rowSelection, selectedKeys, handleSelectChange } = useRowSelect();
   const { router, t } = useCallCommon();
-  const { sort, sortOrder, setSortDirection } = UseSortDirection({
-    defaultSortField: '-createTime',
-    defaultOrder: 'descend'
-  });
+  const { sort, sortOrder, sortDataIndex, setSortDirection } = UseSortDirection(
+    {
+      defaultSortField: '-createTime',
+      defaultOrder: 'descend'
+    }
+  );
   let timer: any = null;
   const loading = ref(false);
   const showDrawer = ref(false);

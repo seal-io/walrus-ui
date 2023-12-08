@@ -70,6 +70,7 @@
       const {
         labelList,
         labelItem,
+        dataObj,
         getLabelList,
         handleAddLabel,
         handleDeleteLabel
@@ -115,7 +116,9 @@
                       showCheckbox={props.showCheckbox}
                       should-key={true}
                       formId={`${props.editorId}-${sIndex}`}
-                      onAdd={(obj) => handleAddLabel(obj, labelList.value)}
+                      onAdd={(obj) => {
+                        handleAddLabel(obj, labelList.value);
+                      }}
                       onDelete={() =>
                         handleDeleteLabel(labelList.value, sIndex)
                       }
@@ -128,7 +131,10 @@
                 <icon-plus-circle-fill
                   size={24}
                   font-size="14px size-24"
-                  onClick={() => handleAddLabel(labelItem, labelList.value)}
+                  onClick={() => {
+                    handleAddLabel(labelItem, labelList.value);
+                    handleUpdateValue(dataObj.value);
+                  }}
                 ></icon-plus-circle-fill>
               </a-link>
             )}

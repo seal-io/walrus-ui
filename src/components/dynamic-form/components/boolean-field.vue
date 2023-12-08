@@ -33,18 +33,10 @@
         InjectSchemaFormStatusKey,
         ref(PageAction.CREATE)
       );
+
       const formref = inject(ProviderFormRefKey, ref());
 
       const { type } = toRefs(props.schema);
-
-      const handleUnsetField = () => {
-        if (
-          isEmptyvalue(_.get(props.formData, props.fieldPath)) &&
-          !props.schema.default
-        ) {
-          _.unset(props.formData, props.fieldPath);
-        }
-      };
 
       const { fieldProps, rules } = genFieldPropsAndRules({
         schema: props.schema,
@@ -96,9 +88,15 @@
               popupInfo={props.schema.description}
               modelValue={_.get(props.uiFormData, props.fieldPath)}
               onChange={(val) => {
+                if (_.get(props.defaultFormData, props.fieldPath) === null) {
+                  val = !val ? null : val;
+                }
                 _.set(props.formData, props.fieldPath, val);
                 _.set(props.uiFormData, props.fieldPath, val);
-                if (isEqualOn(val, props.schema.default)) {
+                console.log('schema=boolean=', props.schema);
+                if (
+                  isEqualOn(val, _.get(props.defaultFormData, props.fieldPath))
+                ) {
                   unsetFieldValue({
                     defaultFormData: props.defaultFormData,
                     uiFormData: props.uiFormData,
@@ -109,6 +107,7 @@
                   });
                 } else {
                   genFieldInFormData({
+                    defaultFormData: props.defaultFormData,
                     uiFormData: props.uiFormData,
                     schema: props.schema,
                     formData: props.formData,
@@ -118,13 +117,6 @@
                 }
                 handleChange(props.formData);
                 validateField();
-                console.log(
-                  'checkbox+++++++++++++++',
-                  props.fieldPath,
-                  _.get(props.uiFormData, props.fieldPath),
-                  props.formData,
-                  props.uiFormData
-                );
               }}
             ></seal-checkbox>
           </a-form-item>

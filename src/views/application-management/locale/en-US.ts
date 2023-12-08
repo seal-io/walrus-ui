@@ -57,7 +57,7 @@ export default {
     'Do not clean up underlying components',
   'applications.applications.instance.application': 'Application',
   'applications.applications.instance.status': 'Status',
-  'applications.applications.instance.history': 'History Revisions',
+  'applications.applications.instance.history': 'Revision History',
   'applications.applications.instance.accessUrl': 'Access URL',
   'applications.applications.instance.resource': 'Component Information',
   'applications.applications.instance.resource.tips':

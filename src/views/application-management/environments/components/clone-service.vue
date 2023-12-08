@@ -136,14 +136,23 @@
                     :position="sIndex"
                     always-delete
                     should-key
-                    @add="(obj) => handleAddLabel(obj, labelList)"
+                    @add="
+                      (obj) => {
+                        handleAddLabel(obj, labelList);
+                      }
+                    "
                     @delete="handleDeleteLabel(labelList, sIndex)"
                   ></xInputGroup>
                 </a-space>
                 <template v-else>
                   <a-link
                     class="p-0"
-                    @click="handleAddLabel(labelItem, labelList)"
+                    @click="
+                      () => {
+                        handleAddLabel(labelItem, labelList);
+                        formData.labels = dataObj;
+                      }
+                    "
                   >
                     <icon-plus-circle-fill
                       :size="24"
@@ -287,6 +296,7 @@
   const {
     labelList,
     labelItem,
+    dataObj,
     handleAddLabel,
     handleDeleteLabel,
     validateLabel,

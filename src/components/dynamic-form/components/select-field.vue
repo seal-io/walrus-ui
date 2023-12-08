@@ -147,7 +147,7 @@
                     callback();
                     return;
                   }
-                  if (!value) {
+                  if (!value || !value.length) {
                     callback(
                       `${i18n.global.t('common.form.rule.select', {
                         name: fieldProps.label
@@ -188,13 +188,13 @@
 
                 _.set(props.formData, props.fieldPath, value);
                 _.set(props.uiFormData, props.fieldPath, value);
-                console.log(
-                  'selectList===',
-                  props.fieldPath,
-                  value,
-                  props.schema.default
-                );
-                if (isEqualOn(value, props.schema.default)) {
+
+                if (
+                  isEqualOn(
+                    value,
+                    _.get(props.defaultFormData, props.fieldPath)
+                  )
+                ) {
                   unsetFieldValue({
                     defaultFormData: props.defaultFormData,
                     uiFormData: props.uiFormData,
@@ -205,6 +205,7 @@
                   });
                 } else {
                   genFieldInFormData({
+                    defaultFormData: props.defaultFormData,
                     uiFormData: props.uiFormData,
                     schema: props.schema,
                     formData: props.formData,

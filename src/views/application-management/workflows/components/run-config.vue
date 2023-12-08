@@ -166,6 +166,7 @@
     formData.value.name = props.info.name;
     formData.value.project.id = props.info.project?.id;
     formData.value.project.name = props.info.project?.name;
+    formData.value.description = '';
     setFormVariables();
   };
   const handleBeforeClose = () => {

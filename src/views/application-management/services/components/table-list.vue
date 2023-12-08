@@ -23,6 +23,12 @@
           :cell-style="{ minWidth: '40px' }"
           data-index="name"
           :title="$t('common.table.name')"
+          :sortable="{
+            sortDirections: ['ascend', 'descend'],
+            defaultSortOrder: '',
+            sorter: true,
+            sortOrder: sortDataIndex === 'name' ? sortOrder : ''
+          }"
         >
           <template #cell="{ record }">
             <a-link
@@ -103,7 +109,7 @@
             sortDirections: ['ascend', 'descend'],
             defaultSortOrder: 'descend',
             sorter: true,
-            sortOrder: sortOrder
+            sortOrder: sortDataIndex === 'createTime' ? sortOrder : ''
           }"
           :title="$t('common.table.createTime')"
         >
@@ -261,10 +267,12 @@
   const { setChunkRequest } = useSetChunkRequest();
   const { rowSelection, selectedKeys, handleSelectChange } = useRowSelect();
   const { router, locale, route, t } = useCallCommon();
-  const { sort, sortOrder, setSortDirection } = UseSortDirection({
-    defaultSortField: '-createTime',
-    defaultOrder: 'descend'
-  });
+  const { sort, sortOrder, sortDataIndex, setSortDirection } = UseSortDirection(
+    {
+      defaultSortField: '-createTime',
+      defaultOrder: 'descend'
+    }
+  );
   const {
     revisionDetailId,
     revisionData,

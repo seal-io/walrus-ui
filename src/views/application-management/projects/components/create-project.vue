@@ -80,7 +80,15 @@
               ></xInputGroup>
             </a-space>
             <template v-else>
-              <a-link class="p-0" @click="handleAddLabel(labelItem, labelList)">
+              <a-link
+                class="p-0"
+                @click="
+                  () => {
+                    handleAddLabel(labelItem, labelList);
+                    formData.labels = dataObj;
+                  }
+                "
+              >
                 <icon-plus-circle-fill :size="24" font-size="14px" />
               </a-link>
             </template>
@@ -164,6 +172,7 @@
 
   const {
     labelList,
+    dataObj,
     handleAddLabel,
     handleDeleteLabel,
     getLabelList,
