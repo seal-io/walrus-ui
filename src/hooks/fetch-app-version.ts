@@ -3,6 +3,7 @@ import { h } from 'vue';
 import i18n from '@/locale/index';
 import { Modal } from '@arco-design/web-vue';
 import { get, startsWith } from 'lodash';
+import walrusLogo from '@/assets/images/logo_02.png';
 
 export const getVersion = (data) => {
   const version = get(data, 'version') || '';
@@ -27,11 +28,15 @@ export function queryAppServerVersion() {
   return axios.get(`/debug/version`);
 }
 export function showVersionModal(data: versionData) {
-  Modal.info({
-    title: i18n.global.t('common.footer.version.title'),
+  Modal.open({
+    // title: i18n.global.t('common.footer.version.title'),
     top: '20%',
     footer: () => h('span'),
-    // title: () => h('div', {}, i18n.global.t('common.footer.version.title')),
+    title: () =>
+      h('img', {
+        style: 'width: auto;height: 24px;',
+        src: walrusLogo
+      }),
     simple: true,
     alignCenter: false,
     content: () =>
@@ -40,14 +45,26 @@ export function showVersionModal(data: versionData) {
           h(
             'span',
             {
-              style:
-                'font-weight: 500;display: inline-block;width: 60px;padding-right: 10px;text-align: right;'
+              style: {
+                'font-weight': 500,
+                'display': 'inline-block',
+                'width': '60px',
+                'padding-right': '10px',
+                'text-align': 'right',
+                'font-size': '16px'
+              }
             },
             `${i18n.global.t('common.footer.version.web')}`
           ),
           h(
             'span',
-            { style: 'display: inline-block;width: 100px;text-align: left' },
+            {
+              style: {
+                'display': 'inline-block',
+                'width': '100px',
+                'text-align': 'left'
+              }
+            },
             `${getVersion(get(data, 'web'))}`
           )
         ]),
@@ -55,14 +72,26 @@ export function showVersionModal(data: versionData) {
           h(
             'span',
             {
-              style:
-                'font-weight: 500;display: inline-block;width: 60px;padding-right: 10px;text-align: right;'
+              style: {
+                'font-weight': 500,
+                'display': 'inline-block',
+                'width': '60px',
+                'padding-right': '10px',
+                'text-align': 'right',
+                'font-size': '16px'
+              }
             },
             `${i18n.global.t('common.footer.version.server')}`
           ),
           h(
             'span',
-            { style: 'display: inline-block;width: 100px;text-align: left' },
+            {
+              style: {
+                'display': 'inline-block',
+                'width': '100px',
+                'text-align': 'left'
+              }
+            },
             `${getVersion(get(data, 'server'))}`
           )
         ])

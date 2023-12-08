@@ -18,6 +18,7 @@
     genFieldInFormData,
     parentObjectExsits,
     viewFieldValue,
+    isEmptyvalue,
     isEqualOn
   } from '../utils';
   import { ProviderFormRefKey } from '../config';
@@ -38,8 +39,9 @@
       );
       const formref = inject(ProviderFormRefKey, ref());
 
+      console.log('defaultFormData++++++++', props.defaultFormData);
       const widget = _.get(props.schema, ['x-walrus-ui', 'widget'], '');
-      const numberReg = /\d+/;
+
       const { type } = toRefs(props.schema);
 
       let Component = BasicFieldMaps[type.value];
@@ -68,9 +70,10 @@
       }
 
       const handleInputChange = (val: any) => {
+        val = isEmptyvalue(val) ? null : val;
         _.set(props.formData, props.fieldPath, val);
         _.set(props.uiFormData, props.fieldPath, val);
-        if (isEqualOn(val, props.schema.default)) {
+        if (isEqualOn(val, _.get(props.defaultFormData, props.fieldPath))) {
           unsetFieldValue({
             defaultFormData: props.defaultFormData,
             schema: props.schema,
@@ -81,6 +84,7 @@
           });
         } else {
           genFieldInFormData({
+            defaultFormData: props.defaultFormData,
             schema: props.schema,
             uiFormData: props.uiFormData,
             formData: props.formData,
@@ -143,19 +147,6 @@
               popupInfo={props.schema.description}
               modelValue={_.get(props.uiFormData, props.fieldPath)}
               onInput={(val) => {
-                console.log(
-                  'group inpu+++++input========',
-                  val,
-                  props.formData
-                );
-                handleInputChange(val);
-              }}
-              onChange={(val) => {
-                console.log(
-                  'group inpu+++++change========',
-                  val,
-                  props.formData
-                );
                 handleInputChange(val);
                 validateField();
               }}

@@ -91,6 +91,12 @@
                   type: $t('applications.projects.table.name')
                 })
               "
+              :sortable="{
+                sortDirections: ['ascend', 'descend'],
+                defaultSortOrder: '',
+                sorter: true,
+                sortOrder: sortDataIndex === 'name' ? sortOrder : ''
+              }"
             >
               <template #cell="{ record }">
                 <a-link
@@ -127,7 +133,7 @@
                 sortDirections: ['ascend', 'descend'],
                 defaultSortOrder: 'descend',
                 sorter: true,
-                sortOrder: sortOrder
+                sortOrder: sortDataIndex === 'createTime' ? sortOrder : ''
               }"
               :title="$t('common.table.createTime')"
             >
@@ -147,22 +153,6 @@
               :cell-style="{ minWidth: '40px' }"
             >
               <template #cell="{ record }">
-                <!-- <a-space :size="16">
-                  <a-tooltip :content="$t('common.button.edit')">
-                    <a-link
-                      v-permission-app="{
-                        projectID: record.id,
-                        resource: Resources.Projects,
-                        actions: [Actions.PUT]
-                      }"
-                      type="text"
-                      size="small"
-                      @click="handleEditProject(record)"
-                    >
-                      <template #icon><icon-edit class="size-16" /></template>
-                    </a-link>
-                  </a-tooltip>
-                </a-space> -->
                 <DropButtonGroup
                   :layout="
                     setActionList(record).length === 1
@@ -224,10 +214,12 @@
   const projectStore = useProjectStore();
   const { t, router } = useCallCommon();
   const { rowSelection, selectedKeys, handleSelectChange } = useRowSelect();
-  const { sort, sortOrder, setSortDirection } = UseSortDirection({
-    defaultSortField: '-createTime',
-    defaultOrder: 'descend'
-  });
+  const { sort, sortOrder, sortDataIndex, setSortDirection } = UseSortDirection(
+    {
+      defaultSortField: '-createTime',
+      defaultOrder: 'descend'
+    }
+  );
   const loading = ref(false);
   const modalTitle = ref('');
   const showProjectModal = ref(false);
@@ -317,6 +309,7 @@
     handleFilter();
   };
   const handleSortChange = (dataIndex: string, direction: string) => {
+    console.log(dataIndex, direction);
     setSortDirection(dataIndex, direction);
     fetchData();
   };

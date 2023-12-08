@@ -1,6 +1,6 @@
 <template>
   <div>
-    <TableList scope="global"></TableList>
+    <TableList scope="global" current-view="list"></TableList>
   </div>
 </template>
 

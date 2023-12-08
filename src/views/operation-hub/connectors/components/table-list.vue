@@ -129,6 +129,12 @@
               type: $t('operation.connectors.table.connector')
             })
           "
+          :sortable="{
+            sortDirections: ['ascend', 'descend'],
+            defaultSortOrder: '',
+            sorter: true,
+            sortOrder: sortDataIndex === 'name' ? sortOrder : ''
+          }"
         >
           <template #cell="{ record }">
             <a-link type="text" size="small" @click="handleView(record)">
@@ -222,7 +228,7 @@
             sortDirections: ['ascend', 'descend'],
             defaultSortOrder: 'descend',
             sorter: true,
-            sortOrder: sortOrder
+            sortOrder: sortDataIndex === 'createTime' ? sortOrder : ''
           }"
           :title="$t('common.table.createTime')"
         >
@@ -253,96 +259,6 @@
           :cell-style="{ minWidth: '40px' }"
         >
           <template #cell="{ record }">
-            <!-- <a-space
-              v-if="
-                scope === 'project'
-                  ? userStore.hasProjectResourceActions({
-                      projectID: route.params.projectId,
-                      connectorID: record.id,
-                      resource: Resources.Connectors,
-                      actions: [Actions.DELETE]
-                    })
-                  : true
-              "
-              :size="16"
-            >
-              <a-dropdown-button
-                v-if="record.category === ConnectorCategory.Kubernetes"
-                size="small"
-              >
-                <a-tooltip :content="$t('common.button.edit')">
-                  <a-link
-                    :hoverable="false"
-                    class="mright-0"
-                    type="text"
-                    size="small"
-                    @click="handleClickEdit(record)"
-                  >
-                    <template #icon><icon-edit class="size-14" /></template>
-                  </a-link>
-                </a-tooltip>
-                <template #icon>
-                  <icon-more style="font-size: 18px; stroke-width: 5" />
-                </template>
-                <template #content>
-                  <a-doption v-if="record.enableFinOps">
-                    <a-tooltip
-                      :content="$t('operation.connectors.table.install')"
-                    >
-                      <a-link
-                        type="text"
-                        size="small"
-                        @click="handleReinstall(record)"
-                      >
-                        <template #icon
-                          ><icon-font type="icon-install" class="size-16"
-                        /></template>
-                      </a-link>
-                    </a-tooltip>
-                  </a-doption>
-                  <a-doption v-if="record.enableFinOps">
-                    <a-tooltip
-                      :content="$t('operation.connectors.table.fetch')"
-                    >
-                      <a-link
-                        type="text"
-                        size="small"
-                        :loading="record.loading"
-                        @click="handleFetchCost(record)"
-                      >
-                        <template #icon
-                          ><icon-cloud-download class="size-16"
-                        /></template>
-                      </a-link>
-                    </a-tooltip>
-                  </a-doption>
-                  <a-doption
-                    v-if="record.category === ConnectorCategory.Kubernetes"
-                  >
-                    <a-tooltip
-                      :content="$t('operation.connectors.table.enableFin')"
-                    >
-                      <a-switch
-                        v-model="record.enableFinOps"
-                        size="small"
-                        @change="(val) => handleEnableFinOps(val, record)"
-                      ></a-switch>
-                      <a-link>
-                        <i class="iconfont icon-switch"></i>
-                      </a-link>
-                    </a-tooltip>
-                  </a-doption>
-                </template>
-              </a-dropdown-button>
-              <a-link
-                v-else
-                type="text"
-                size="small"
-                @click="handleClickEdit(record)"
-              >
-                <template #icon><icon-edit class="size-16" /></template>
-              </a-link>
-            </a-space> -->
             <DropButtonGroup
               v-if="setActionList(record).length"
               :layout="
@@ -444,10 +360,12 @@
   let axiosToken: any = null;
   const { rowSelection, selectedKeys, handleSelectChange } = useRowSelect();
   const { router, route, t } = useCallCommon();
-  const { sort, sortOrder, setSortDirection } = UseSortDirection({
-    defaultSortField: '-createTime',
-    defaultOrder: 'descend'
-  });
+  const { sort, sortOrder, sortDataIndex, setSortDirection } = UseSortDirection(
+    {
+      defaultSortField: '-createTime',
+      defaultOrder: 'descend'
+    }
+  );
   let timer: any = null;
   const loading = ref(false);
   const total = ref(0);

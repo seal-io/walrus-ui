@@ -23,6 +23,12 @@
               type: $t('operation.environments.table.env')
             })
           "
+          :sortable="{
+            sortDirections: ['ascend', 'descend'],
+            defaultSortOrder: '',
+            sorter: true,
+            sortOrder: sortDataIndex === 'name' ? sortOrder : ''
+          }"
         >
           <template #cell="{ record }">
             <a-link type="text" size="small" @click="handleView(record)">
@@ -49,7 +55,7 @@
             sortDirections: ['ascend', 'descend'],
             defaultSortOrder: 'descend',
             sorter: true,
-            sortOrder: sortOrder
+            sortOrder: sortDataIndex === 'createTime' ? sortOrder : ''
           }"
           :title="$t('common.table.createTime')"
         >
@@ -121,10 +127,12 @@
   let timer: any = null;
   const emits = defineEmits(['update:selectedList', 'sort', 'update:sort']);
   const { router, route } = useCallCommon();
-  const { sort, sortOrder, setSortDirection } = UseSortDirection({
-    defaultSortField: '-createTime',
-    defaultOrder: 'descend'
-  });
+  const { sort, sortOrder, sortDataIndex, setSortDirection } = UseSortDirection(
+    {
+      defaultSortField: '-createTime',
+      defaultOrder: 'descend'
+    }
+  );
   const { rowSelection, selectedKeys } = useRowSelect();
   const handleSelectChange = (list: BaseType[]) => {
     rowSelection.selectedRowKeys = [...list];

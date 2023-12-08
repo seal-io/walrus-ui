@@ -162,13 +162,7 @@
           });
           return;
         }
-        console.log(
-          'gotoproject=========',
-          pro,
-          item,
-          defaultProject,
-          projectID
-        );
+
         // has access permission to default project
         router.push({
           name: PROJECT.Detail,

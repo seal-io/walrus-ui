@@ -38,7 +38,7 @@
               :loading="loading && level === item.level"
               :popup-container="getContainer(item.wrapperId) || ''"
               size="mini"
-              :options="item.options"
+              :options="_.sortBy(item.options, 'label')"
               class="border-less"
               @click="handleClick(item, index)"
               @change="(val) => handleSelectChange(val, item)"

@@ -11,6 +11,7 @@
     initFieldDefaultValue,
     isRequiredInitField,
     isEmptyvalue,
+    isEqualOn,
     unsetFieldValue,
     genFieldInFormData
   } from '../utils';
@@ -38,15 +39,6 @@
         schema: props.schema,
         requiredFields: props.requiredFields
       });
-
-      const handleUnsetField = () => {
-        if (
-          isEmptyvalue(_.get(props.formData, props.fieldPath)) &&
-          !props.schema.default
-        ) {
-          _.unset(props.formData, props.fieldPath);
-        }
-      };
 
       const handleChange = (data) => {
         emit('change', data);
@@ -131,8 +123,13 @@
                 const jsonstr = yaml2Json(fieldValue.value);
                 _.set(props.formData, props.fieldPath, jsonstr);
                 _.set(props.uiFormData, props.fieldPath, jsonstr);
-                console.log('jsonstr+++++++++++++++++', jsonstr);
-                if (_.trim(fieldValue.value) === _.trim(defaultValue.value)) {
+
+                if (
+                  isEqualOn(
+                    jsonstr,
+                    _.get(props.defaultFormData, props.fieldPath)
+                  )
+                ) {
                   unsetFieldValue({
                     defaultFormData: props.defaultFormData,
                     uiFormData: props.uiFormData,
@@ -143,6 +140,7 @@
                   });
                 } else {
                   genFieldInFormData({
+                    defaultFormData: props.defaultFormData,
                     uiFormData: props.uiFormData,
                     schema: props.schema,
                     formData: props.formData,

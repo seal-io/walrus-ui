@@ -79,8 +79,13 @@
     },
     setup(props, { emit, attrs }) {
       const { labels, labelsKey, validateTrigger } = toRefs(props);
-      const { labelList, labelItem, handleAddLabel, handleDeleteLabel } =
-        useLabelsActions(labels, labelsKey.value);
+      const {
+        labelList,
+        labelItem,
+        dataObj,
+        handleAddLabel,
+        handleDeleteLabel
+      } = useLabelsActions(labels, labelsKey.value);
       console.log('labelList===', labelList.value);
       const handleUpdateValue = (obj) => {
         emit('update:value', obj);
@@ -113,7 +118,9 @@
                       showCheckbox={props.showCheckbox}
                       should-key={true}
                       formId={props.editorId}
-                      onAdd={(obj) => handleAddLabel(obj, labelList.value)}
+                      onAdd={(obj) => {
+                        handleAddLabel(obj, labelList.value);
+                      }}
                       onDelete={() =>
                         handleDeleteLabel(labelList.value, sIndex)
                       }
@@ -126,7 +133,10 @@
                 <icon-plus-circle-fill
                   size={24}
                   font-size="14px size-24"
-                  onClick={() => handleAddLabel(labelItem, labelList.value)}
+                  onClick={() => {
+                    handleAddLabel(labelItem, labelList.value);
+                    handleUpdateValue(dataObj.value);
+                  }}
                 ></icon-plus-circle-fill>
               </a-link>
             )}

@@ -10,7 +10,8 @@
   import {
     genFieldPropsAndRules,
     isEqualOn,
-    genFieldInFormData
+    genFieldInFormData,
+    unsetFieldValue
   } from '../utils';
 
   export default defineComponent({
@@ -55,6 +56,22 @@
         });
       };
 
+      const checkInvalidKey = (obj) => {
+        const keys = _.keys(obj);
+        return _.some(keys, (key) => {
+          return !_.trim(key);
+        });
+      };
+      const genObjValue = (obj) => {
+        const keys = _.keys(obj);
+        const res = {};
+        _.forEach(keys, (key) => {
+          if (key) {
+            res[key] = _.get(obj, key);
+          }
+        });
+        return res;
+      };
       const renderEdit = () => {
         return (
           <a-form-item
@@ -93,30 +110,37 @@
                   fieldProps.readonly
                 }
                 onUpdate:value={(val) => {
-                  if (_.keys(val).length) {
-                    _.set(props.uiFormData, props.fieldPath, val);
-                  } else if (!_.keys(val).length && _.last(props.fieldPath)) {
-                    _.pullAt(
-                      _.get(props.uiFormData, initialPath),
-                      _.toNumber(_.last(props.fieldPath))
-                    );
+                  console.log('schema=map==string=111', val);
+                  if (checkInvalidKey(val)) {
+                    return;
                   }
-                  if (props.schema.nullable || props.schema.originNullable) {
-                    if (
-                      isEqualOn(
-                        _.get(props.uiFormData, initialPath),
-                        _.get(props.defaultFormData, initialPath)
-                      ) ||
-                      !_.get(props.uiFormData, initialPath)?.length
-                    ) {
-                      _.unset(props.formData, initialPath);
-                    }
+                  val = genObjValue(_.clone(val));
+
+                  _.set(props.formData, props.fieldPath, val);
+                  _.set(props.uiFormData, props.fieldPath, val);
+                  if (
+                    isEqualOn(
+                      val,
+                      _.get(props.defaultFormData, props.fieldPath)
+                    )
+                  ) {
+                    unsetFieldValue({
+                      defaultFormData: props.defaultFormData,
+                      uiFormData: props.uiFormData,
+                      schema: props.schema,
+                      formData: props.formData,
+                      fieldPath: props.fieldPath,
+                      required: fieldProps.required
+                    });
                   } else {
-                    _.set(
-                      props.formData,
-                      initialPath,
-                      _.cloneDeep(_.get(props.uiFormData, initialPath))
-                    );
+                    genFieldInFormData({
+                      defaultFormData: props.defaultFormData,
+                      uiFormData: props.uiFormData,
+                      schema: props.schema,
+                      formData: props.formData,
+                      fieldPath: props.fieldPath,
+                      required: fieldProps.required
+                    });
                   }
                   handleChange(props.formData);
                 }}

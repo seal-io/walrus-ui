@@ -85,6 +85,12 @@
                 type: $t('applications.workflow.name')
               })
             "
+            :sortable="{
+              sortDirections: ['ascend', 'descend'],
+              defaultSortOrder: '',
+              sorter: true,
+              sortOrder: sortDataIndex === 'name' ? sortOrder : ''
+            }"
           >
             <template #cell="{ record }">
               <a-link
@@ -204,6 +210,26 @@
             </template>
           </a-table-column>
           <a-table-column
+            ellipsis
+            tooltip
+            :cell-style="{ minWidth: '40px' }"
+            align="center"
+            data-index="createTime"
+            :sortable="{
+              sortDirections: ['ascend', 'descend'],
+              defaultSortOrder: 'descend',
+              sorter: true,
+              sortOrder: sortDataIndex === 'createTime' ? sortOrder : ''
+            }"
+            :title="$t('common.table.createTime')"
+          >
+            <template #cell="{ record }">
+              <span>{{
+                dayjs(record.createTime).format('YYYY-MM-DD HH:mm:ss')
+              }}</span>
+            </template>
+          </a-table-column>
+          <a-table-column
             align="center"
             :width="210"
             :title="$t('common.table.operation')"
@@ -275,10 +301,12 @@
 
   let timer: any = null;
   const { rowSelection, selectedKeys, handleSelectChange } = useRowSelect();
-  const { sort, sortOrder, setSortDirection } = UseSortDirection({
-    defaultSortField: '-createTime',
-    defaultOrder: 'descend'
-  });
+  const { sort, sortOrder, sortDataIndex, setSortDirection } = UseSortDirection(
+    {
+      defaultSortField: '-createTime',
+      defaultOrder: 'descend'
+    }
+  );
   const { currentLocale } = useLocale();
   const userStore = useUserStore();
   const { router, route } = useCallCommon();

@@ -215,7 +215,7 @@
 </template>
 
 <script lang="ts" setup>
-  import { cloneDeep, reduce, get, hasIn, filter } from 'lodash';
+  import _, { cloneDeep, reduce, get, hasIn, filter } from 'lodash';
   import { useAttrs, PropType, ref, inject } from 'vue';
   import {
     InjectCompleteDataKey,
@@ -389,6 +389,9 @@
   const isError = ref(false);
   const popupvisible = ref(false);
   const getDataObj = (list) => {
+    if (_.uniqBy(list, 'key').length !== list.length) {
+      return;
+    }
     const result = reduce(
       list,
       (obj, item) => {
@@ -409,8 +412,11 @@
     );
   };
   const handleAddLabel = () => {
-    const item = { key: '', value: '' };
+    const item = { key: `key${props.labelList.length + 1}`, value: '' };
     emits('add', item);
+    setTimeout(() => {
+      getDataObj(props.labelList);
+    }, 100);
   };
   const handleDeleteLabel = () => {
     const list = cloneDeep(props.labelList);
@@ -421,17 +427,24 @@
   const handleDataChange = (value, attr, type?) => {
     // check duplication key
     const val = value;
+    console.log('error===', val, attr, type);
     if (
       attr === 'key' &&
       !!val &&
       type === 'change' &&
-      filter(props.labelList, (s) => s.key === val).length > 1
+      filter(props.labelList, (s, i) => s.key === val && i !== props.position)
+        .length
     ) {
       popupvisible.value = true;
       setTimeout(() => {
         popupvisible.value = false;
       }, 1500);
-      emits('update:dataKey', '');
+      emits('update:dataKey', `key${props.position + 1}`);
+      return;
+    }
+
+    if (attr === 'key' && !val && type === 'change') {
+      emits('update:dataKey', `key${props.position + 1}`);
       return;
     }
     if (attr === 'key') {

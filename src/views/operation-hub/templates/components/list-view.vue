@@ -22,6 +22,12 @@
               type: $t('operation.templates.table.name')
             })
           "
+          :sortable="{
+            sortDirections: ['ascend', 'descend'],
+            defaultSortOrder: '',
+            sorter: true,
+            sortOrder: sortDataIndex === 'name' ? sortOrder : ''
+          }"
         >
           <template #cell="{ record }">
             <span>
@@ -76,7 +82,7 @@
             sortDirections: ['ascend', 'descend'],
             defaultSortOrder: 'descend',
             sorter: true,
-            sortOrder: sortOrder
+            sortOrder: sortDataIndex === 'createTime' ? sortOrder : ''
           }"
           :title="$t('common.table.createTime')"
         >
@@ -174,10 +180,12 @@
   ]);
   const { rowSelection, selectedKeys } = useRowSelect();
   const { router, route } = useCallCommon();
-  const { sort, sortOrder, setSortDirection } = UseSortDirection({
-    defaultSortField: '-createTime',
-    defaultOrder: 'descend'
-  });
+  const { sort, sortOrder, sortDataIndex, setSortDirection } = UseSortDirection(
+    {
+      defaultSortField: '-createTime',
+      defaultOrder: 'descend'
+    }
+  );
   let timer: any = null;
   const loading = ref(false);
   const projectID = route.params.projectId as string;
@@ -250,6 +258,7 @@
   };
   const handleSortChange = (dataIndex: string, direction: string) => {
     setSortDirection(dataIndex, direction);
+    console.log({ sort: sort.value, dataIndex, direction });
     emits('update:sort', sort.value);
     clearTimeout(timer);
     timer = setTimeout(() => {

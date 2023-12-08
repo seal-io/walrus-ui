@@ -109,35 +109,6 @@
           :title="$t('common.table.operation')"
         >
           <template #cell="{ record }">
-            <!-- <a-space :size="16">
-              <a-tooltip :content="$t('common.button.edit')">
-                <a-link
-                  v-permission="{
-                    resource: `roles.${Resources.Subjects}`,
-                    actions: [Actions.PUT]
-                  }"
-                  @click="handleClickEdit(record)"
-                >
-                  <template #icon>
-                    <icon-edit></icon-edit>
-                  </template>
-                </a-link>
-              </a-tooltip>
-              <a-tooltip :content="$t('common.button.delete')">
-                <a-link
-                  v-permission="{
-                    resource: `roles.${Resources.Subjects}`,
-                    actions: [Actions.DELETE]
-                  }"
-                  status="danger"
-                  @click="handleDelete(record)"
-                >
-                  <template #icon>
-                    <icon-delete></icon-delete>
-                  </template>
-                </a-link>
-              </a-tooltip>
-            </a-space> -->
             <DropButtonGroup
               :actions="actionList"
               @select="(value) => handleClickAction(value, record)"

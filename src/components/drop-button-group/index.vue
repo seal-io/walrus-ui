@@ -61,7 +61,7 @@
               icon: () => {
                 return slots.icon
                   ? slots.icon?.()
-                  : h(compile('<icon-more />'), {
+                  : h(compile('<icon-more-vertical />'), {
                       style: {
                         'font-size': '18px',
                         'stroke-width': 5
