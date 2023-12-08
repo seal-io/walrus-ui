@@ -53,28 +53,6 @@
           formref.value?.validateField(_.join(props.fieldPath, '.'));
         });
       };
-      const initValue = () => {
-        if (schemaFormStatus.value === PageAction.CREATE) {
-          initFieldValue({
-            defaultFormData: props.defaultFormData,
-            schema: props.schema,
-            formData: props.formData,
-            uiFormData: props.uiFormData,
-            fieldPath: props.fieldPath,
-            required: props.required
-          });
-          handleChange(props.formData);
-        } else {
-          viewFieldValue({
-            defaultFormData: props.defaultFormData,
-            schema: props.schema,
-            formData: props.formData,
-            uiFormData: props.uiFormData,
-            fieldPath: props.fieldPath,
-            required: props.required
-          });
-        }
-      };
 
       // textarea
       if (type.value === 'string' && widget === 'TextArea') {
@@ -112,8 +90,6 @@
         }
         handleChange(props.formData);
       };
-
-      // initValue();
 
       const renderEdit = () => {
         return (
