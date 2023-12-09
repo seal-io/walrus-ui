@@ -43,11 +43,12 @@
         requiredFields: props.requiredFields
       });
 
-      props.FieldPathMap.set(props.fieldPath, {
+      props.FieldPathMap.set(_.join(props.fieldPath, '.'), {
         required: fieldProps.required,
         type: props.schema.type,
         fieldPath: props.fieldPath,
-        isNullabel: props.schema.nullable || props.schema.originNullable
+        isBasicType: true,
+        isNullable: props.schema.nullable || props.schema.originNullable
       });
 
       const handleChange = (data) => {
