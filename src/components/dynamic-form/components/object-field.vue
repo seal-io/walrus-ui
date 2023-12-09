@@ -185,7 +185,6 @@
             uiFormData={props.uiFormData}
             defaultFormData={props.defaultFormData}
             FieldPathMap={props.FieldPathMap}
-            FieldPathMap={props.FieldPathMap}
             schema={item.schema}
             requiredFields={[]}
             parentSpan={props.schema.colSpan}

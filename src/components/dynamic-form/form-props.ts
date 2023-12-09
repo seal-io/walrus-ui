@@ -40,7 +40,7 @@ export default {
   FieldPathMap: {
     type: Object as PropType<any>,
     default() {
-      return {};
+      return new Map();
     }
   }
 };

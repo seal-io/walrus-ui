@@ -226,7 +226,7 @@
       hiddenFormData.value = {};
       formGroup.value = [];
       refMap.value = {};
-      FieldPathMap.value = new Map();
+      FieldPathMap.value.clear();
       destroyed.value = true;
       defaultFormData.value = {};
       formKey.value = Date.now();

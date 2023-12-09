@@ -27,7 +27,6 @@ declare module 'vue' {
     AInputGroup: typeof import('@arco-design/web-vue')['InputGroup'];
     AInputNumber: typeof import('@arco-design/web-vue')['InputNumber'];
     AInputPassword: typeof import('@arco-design/web-vue')['InputPassword'];
-    AInputSearch: typeof import('@arco-design/web-vue')['InputSearch'];
     ALayout: typeof import('@arco-design/web-vue')['Layout'];
     ALayoutContent: typeof import('@arco-design/web-vue')['LayoutContent'];
     ALayoutFooter: typeof import('@arco-design/web-vue')['LayoutFooter'];
@@ -58,7 +57,6 @@ declare module 'vue' {
     ATag: typeof import('@arco-design/web-vue')['Tag'];
     ATextarea: typeof import('@arco-design/web-vue')['Textarea'];
     ATooltip: typeof import('@arco-design/web-vue')['Tooltip'];
-    AUpload: typeof import('@arco-design/web-vue')['Upload'];
   }
 }
 
