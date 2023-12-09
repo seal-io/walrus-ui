@@ -3,7 +3,13 @@
   import _ from 'lodash';
   import { InjectSchemaFormStatusKey, PageAction } from '@/views/config';
   import schemaFieldProps from '../fields/schema-field-props';
-  import { getShowIfValue, initFieldValue, viewFieldValue } from '../utils';
+  import {
+    getShowIfValue,
+    isBasicType,
+    isSelect,
+    initFieldValue,
+    viewFieldValue
+  } from '../utils';
   import { getSchemaFieldComponent } from '../fields/field-map';
 
   export default defineComponent({
@@ -37,27 +43,29 @@
       });
 
       // init field value
-      if (schemaFormStatus.value === PageAction.CREATE) {
-        initFieldValue({
-          schema: props.schema,
-          defaultFormData: props.defaultFormData,
-          formData: props.formData,
-          uiFormData: props.uiFormData,
-          fieldPath,
-          required: _.includes(props.requiredFields, props.schema.name)
-        });
-        handleChange(props.formData);
-      } else {
-        viewFieldValue({
-          defaultFormData: props.defaultFormData,
-          schema: props.schema,
-          formData: props.formData,
-          uiFormData: props.uiFormData,
-          fieldPath,
-          required: _.includes(props.requiredFields, props.schema.name)
-        });
-      }
-
+      const initValue = () => {
+        if (schemaFormStatus.value === PageAction.CREATE) {
+          initFieldValue({
+            schema: props.schema,
+            defaultFormData: props.defaultFormData,
+            formData: props.formData,
+            uiFormData: props.uiFormData,
+            fieldPath,
+            required: _.includes(props.requiredFields, props.schema.name)
+          });
+          handleChange(props.formData);
+        } else {
+          viewFieldValue({
+            defaultFormData: props.defaultFormData,
+            schema: props.schema,
+            formData: props.formData,
+            uiFormData: props.uiFormData,
+            fieldPath,
+            required: _.includes(props.requiredFields, props.schema.name)
+          });
+        }
+      };
+      initValue();
       console.log(
         'create+++++++++++++',
 
@@ -108,6 +116,7 @@
           />
         );
       };
+
       return () => {
         return <>{renderComponent()}</>;
       };

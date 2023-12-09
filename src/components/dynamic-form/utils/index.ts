@@ -263,10 +263,61 @@ export const unsetInitialField = (formData, initialPath) => {
   }
   if (_.isArray(_.get(formData, initialPath))) {
     unsetArrayField(formData, initialPath);
-  } else {
+  } else if (_.isObject(_.get(formData, initialPath))) {
     unsetObjectField(formData, initialPath);
   }
   unsetInitialField(formData, _.initial(initialPath));
+};
+
+export const genFieldInFormDataByRecursion = ({
+  initialPath,
+  formData,
+  defaultFormData,
+  FieldPathMap,
+  required
+}: {
+  FieldPathMap: Map<string, any>;
+  initialPath: string[];
+  formData: object;
+  defaultFormData: object;
+  required: boolean;
+}) => {
+  const prevInitialPath = _.initial(initialPath);
+  const prevSchema = FieldPathMap.get(prevInitialPath.join('.'));
+  if (prevSchema && !prevSchema.isNullable) {
+    return;
+  }
+
+  const originValue = _.get(defaultFormData, prevInitialPath);
+  console.log('originValue+++++++', _.join(prevInitialPath, '.'), originValue);
+
+  const isArrayPrevInitialPath = _.isArray(_.get(formData, prevInitialPath));
+  if (_.keys(originValue).length === 1) {
+    return;
+  }
+  _.each(_.keys(originValue), (key) => {
+    const path = _.join([...prevInitialPath, key], '.');
+    const pathSchema = FieldPathMap.get(path);
+
+    if (pathSchema?.isNullable && path !== _.join(initialPath, '.')) {
+      if (
+        !_.hasIn(formData, path) ||
+        (isArrayPrevInitialPath && _.isUndefined(_.get(formData, path)))
+      ) {
+        const value = _.get(defaultFormData, path);
+        _.set(formData, path, _.cloneDeep(value));
+        console.log('pathSchema+++++++', path, pathSchema, value, formData);
+      }
+    }
+  });
+
+  genFieldInFormDataByRecursion({
+    initialPath: prevInitialPath,
+    formData,
+    defaultFormData,
+    FieldPathMap,
+    required: prevSchema?.required
+  });
 };
 
 export const genFieldInFormData = ({
@@ -309,6 +360,14 @@ export const genFieldInFormData = ({
       _.set(formData, [...initialPath, key], _.cloneDeep(value));
     }
   });
+
+  genFieldInFormDataByRecursion({
+    initialPath,
+    formData,
+    defaultFormData,
+    FieldPathMap,
+    required
+  });
 };
 export const isEqualOn = (current, origin) => {
   return _.isEqualWith(current, origin, (value1, value2, ...args) => {
@@ -318,6 +377,55 @@ export const isEqualOn = (current, origin) => {
     return _.isEqual(value1, value2);
   });
 };
+
+export const unsetNullabelFieldByRecursion = ({
+  initialPath,
+  formData,
+  uiFormData,
+  defaultFormData,
+  FieldPathMap,
+  required
+}: {
+  FieldPathMap: Map<string, any>;
+  initialPath: string[];
+  formData: object;
+  uiFormData: object;
+  defaultFormData: object;
+  required: boolean;
+}) => {
+  const prevInitialPath = _.initial(initialPath);
+  const prevSchema = FieldPathMap.get(prevInitialPath.join('.'));
+
+  if (prevSchema && !prevSchema?.isNullable) {
+    return initialPath;
+  }
+  const originValue = _.get(defaultFormData, prevInitialPath);
+  const currentValue = _.get(uiFormData, prevInitialPath);
+  console.log(
+    'input+++++++',
+    initialPath,
+    prevInitialPath,
+    originValue,
+    currentValue,
+    defaultFormData,
+    isEqualOn(originValue, currentValue),
+    uiFormData
+  );
+  if (isEqualOn(originValue, currentValue)) {
+    const path = unsetNullabelFieldByRecursion({
+      initialPath: prevInitialPath,
+      formData,
+      uiFormData,
+      defaultFormData,
+      FieldPathMap,
+      required
+    });
+    console.log('path+++++++', path);
+    return path;
+  }
+  return initialPath;
+};
+
 export const unsetFieldValue = ({
   fieldPath,
   schema,
@@ -338,7 +446,7 @@ export const unsetFieldValue = ({
   if (!schema.nullable && !schema.originNullable) {
     return;
   }
-  const initialPath = _.initial(fieldPath);
+  let initialPath = _.initial(fieldPath);
   const originValue = _.get(defaultFormData, initialPath);
   const currentValue = _.get(uiFormData, initialPath);
   console.log(
@@ -350,9 +458,18 @@ export const unsetFieldValue = ({
     fieldPath
   );
   // if each field'value is default value,unset it
+
   if (initialPath.length === 0) {
     _.unset(formData, fieldPath);
   } else if (isEqualOn(currentValue, originValue)) {
+    initialPath = unsetNullabelFieldByRecursion({
+      initialPath,
+      formData,
+      uiFormData,
+      defaultFormData,
+      FieldPathMap,
+      required
+    });
     _.unset(formData, initialPath);
   }
 

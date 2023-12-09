@@ -39,7 +39,6 @@
       );
       const formref = inject(ProviderFormRefKey, ref());
 
-      console.log('defaultFormData++++++++', props.defaultFormData);
       const widget = _.get(props.schema, ['x-walrus-ui', 'widget'], '');
 
       const { type } = toRefs(props.schema);
