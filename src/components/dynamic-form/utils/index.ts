@@ -275,8 +275,10 @@ export const genFieldInFormData = ({
   formData,
   uiFormData,
   defaultFormData,
+  FieldPathMap,
   required
 }: {
+  FieldPathMap: Map<string, any>;
   fieldPath: string[];
   schema: FieldSchema;
   formData: object;
@@ -322,8 +324,10 @@ export const unsetFieldValue = ({
   formData,
   uiFormData,
   defaultFormData,
+  FieldPathMap,
   required
 }: {
+  FieldPathMap: Map<string, any>;
   fieldPath: string[];
   schema: FieldSchema;
   formData: object;
@@ -353,6 +357,7 @@ export const unsetFieldValue = ({
   }
 
   unsetInitialField(formData, initialPath);
+  console.log('formData+++++22++', formData);
 };
 
 export const getShowIfValue = (showif, formData, fieldPath?: string[]) => {

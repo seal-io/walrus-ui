@@ -83,6 +83,7 @@
               formData={props.formData}
               uiFormData={props.uiFormData}
               defaultFormData={props.defaultFormData}
+              FieldPathMap={props.FieldPathMap}
               schema={props.schema}
               requiredFields={props.requiredFields}
               onChange={(data) => handleChange(data)}
@@ -97,6 +98,7 @@
             formData={props.formData}
             uiFormData={props.uiFormData}
             defaultFormData={props.defaultFormData}
+            FieldPathMap={props.FieldPathMap}
             schema={props.schema}
             requiredFields={props.requiredFields}
             parentSpan={props.parentSpan || 12}

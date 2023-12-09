@@ -290,6 +290,7 @@
           formData={props.formData}
           uiFormData={props.uiFormData}
           defaultFormData={props.defaultFormData}
+          FieldPathMap={props.FieldPathMap}
           requiredFields={props.requiredFields}
           onChange={(val) => {
             handleChange(val);
@@ -320,6 +321,7 @@
                             formData={props.formData}
                             uiFormData={props.uiFormData}
                             defaultFormData={props.defaultFormData}
+                            FieldPathMap={props.FieldPathMap}
                             fieldPath={[
                               ...props.fieldPath,
                               `${index}`,

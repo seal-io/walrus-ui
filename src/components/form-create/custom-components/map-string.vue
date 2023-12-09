@@ -9,7 +9,7 @@
     toRefs,
     watch
   } from 'vue';
-  import XInputGroup from './x-input-group.vue';
+  import MapInputGroup from './map-input-group.vue';
   import { useMapString } from '../hooks/use-labels-action';
   import LabelsList from './labels-list.vue';
 
@@ -102,7 +102,7 @@
               >
                 {_.map(labelList.value, (sItem, sIndex) => {
                   return (
-                    <XInputGroup
+                    <MapInputGroup
                       key={sIndex}
                       v-bind={attrs}
                       v-model:dataKey={sItem.key}
@@ -122,7 +122,7 @@
                       onDelete={() =>
                         handleDeleteLabel(labelList.value, sIndex)
                       }
-                    ></XInputGroup>
+                    ></MapInputGroup>
                   );
                 })}
               </a-space>

@@ -150,7 +150,6 @@
                     @click="
                       () => {
                         handleAddLabel(labelItem, labelList);
-                        formData.labels = dataObj;
                       }
                     "
                   >
@@ -296,7 +295,6 @@
   const {
     labelList,
     labelItem,
-    dataObj,
     handleAddLabel,
     handleDeleteLabel,
     validateLabel,

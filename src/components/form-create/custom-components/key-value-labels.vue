@@ -79,13 +79,8 @@
     },
     setup(props, { emit, attrs }) {
       const { labels, labelsKey, validateTrigger } = toRefs(props);
-      const {
-        labelList,
-        labelItem,
-        dataObj,
-        handleAddLabel,
-        handleDeleteLabel
-      } = useLabelsActions(labels, labelsKey.value);
+      const { labelList, labelItem, handleAddLabel, handleDeleteLabel } =
+        useLabelsActions(labels, labelsKey.value);
       console.log('labelList===', labelList.value);
       const handleUpdateValue = (obj) => {
         emit('update:value', obj);
@@ -135,7 +130,6 @@
                   font-size="14px size-24"
                   onClick={() => {
                     handleAddLabel(labelItem, labelList.value);
-                    handleUpdateValue(dataObj.value);
                   }}
                 ></icon-plus-circle-fill>
               </a-link>

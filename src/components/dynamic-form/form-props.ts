@@ -36,5 +36,11 @@ export default {
     default() {
       return {};
     }
+  },
+  FieldPathMap: {
+    type: Object as PropType<any>,
+    default() {
+      return {};
+    }
   }
 };

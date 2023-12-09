@@ -23,6 +23,13 @@
         requiredFields: props.requiredFields
       });
 
+      props.FieldPathMap.set(props.fieldPath, {
+        required: fieldProps.required,
+        type: props.schema.type,
+        fieldPath: props.fieldPath,
+        isNullabel: props.schema.nullable || props.schema.originNullable
+      });
+
       const handleChange = (data) => {
         emit('change', data);
       };
@@ -39,6 +46,7 @@
               formData={props.formData}
               uiFormData={props.uiFormData}
               defaultFormData={props.defaultFormData}
+              FieldPathMap={props.FieldPathMap}
               fieldPath={props.fieldPath}
               schema={props.schema}
               rules={rules}
