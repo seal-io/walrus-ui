@@ -32,7 +32,12 @@
         schema: props.schema,
         requiredFields: props.requiredFields
       });
-
+      props.FieldPathMap.set(props.fieldPath, {
+        required: fieldProps.required,
+        type: props.schema.type,
+        fieldPath: props.fieldPath,
+        isNullabel: props.schema.nullable || props.schema.originNullable
+      });
       // value is number
       const isMapNumber =
         _.isObject(props.schema.additionalProperties) &&
@@ -110,21 +115,25 @@
                   fieldProps.readonly
                 }
                 onUpdate:value={(val) => {
-                  console.log('schema=map==string=111', val);
                   if (checkInvalidKey(val)) {
                     return;
                   }
                   val = genObjValue(_.clone(val));
 
-                  _.set(props.formData, props.fieldPath, val);
-                  _.set(props.uiFormData, props.fieldPath, val);
+                  _.set(props.formData, props.fieldPath, _.clone(val));
+                  _.set(props.uiFormData, props.fieldPath, _.clone(val));
                   if (
                     isEqualOn(
                       val,
                       _.get(props.defaultFormData, props.fieldPath)
                     )
                   ) {
+                    console.log(
+                      'unset++++++++',
+                      props.FieldPathMap.get(props.fieldPath)
+                    );
                     unsetFieldValue({
+                      FieldPathMap: props.FieldPathMap,
                       defaultFormData: props.defaultFormData,
                       uiFormData: props.uiFormData,
                       schema: props.schema,
@@ -134,6 +143,7 @@
                     });
                   } else {
                     genFieldInFormData({
+                      FieldPathMap: props.FieldPathMap,
                       defaultFormData: props.defaultFormData,
                       uiFormData: props.uiFormData,
                       schema: props.schema,

@@ -43,6 +43,13 @@
         requiredFields: props.requiredFields
       });
 
+      props.FieldPathMap.set(props.fieldPath, {
+        required: fieldProps.required,
+        type: props.schema.type,
+        fieldPath: props.fieldPath,
+        isNullabel: props.schema.nullable || props.schema.originNullable
+      });
+
       const handleChange = (data) => {
         emit('change', data);
       };
@@ -98,6 +105,7 @@
                   isEqualOn(val, _.get(props.defaultFormData, props.fieldPath))
                 ) {
                   unsetFieldValue({
+                    FieldPathMap: props.FieldPathMap,
                     defaultFormData: props.defaultFormData,
                     uiFormData: props.uiFormData,
                     schema: props.schema,
@@ -107,6 +115,7 @@
                   });
                 } else {
                   genFieldInFormData({
+                    FieldPathMap: props.FieldPathMap,
                     defaultFormData: props.defaultFormData,
                     uiFormData: props.uiFormData,
                     schema: props.schema,

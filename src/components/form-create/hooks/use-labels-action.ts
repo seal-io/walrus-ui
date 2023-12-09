@@ -7,20 +7,12 @@ export default function useLabelsActions(formData, key?: string | string[]) {
   };
   const validateTrigger = ref(false);
   const labelList = ref<{ key: string; value: string }[]>([]);
-  const labelItem = { key: `key${labelList.value.length + 1}`, value: '' };
+  const labelItem = { key: ``, value: '' };
   const labelsKey = key || 'labels';
   const dataObj = ref({});
 
   const handleAddLabel = (obj, list) => {
     list.push({ ...obj });
-    dataObj.value = _.reduce(
-      list,
-      (result, item) => {
-        result[item.key] = item.value;
-        return result;
-      },
-      {}
-    );
   };
   const handleDeleteLabel = (list, index) => {
     list.splice(index, 1);

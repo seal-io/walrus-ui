@@ -120,6 +120,7 @@
           _.unset(props.formData, [...props.fieldPath, itemField]);
           _.unset(props.uiFormData, [...props.fieldPath, itemField]);
           unsetFieldValue({
+            FieldPathMap: props.FieldPathMap,
             defaultFormData: props.defaultFormData,
             uiFormData: props.uiFormData,
             schema: props.schema,
@@ -183,6 +184,8 @@
             formData={props.formData}
             uiFormData={props.uiFormData}
             defaultFormData={props.defaultFormData}
+            FieldPathMap={props.FieldPathMap}
+            FieldPathMap={props.FieldPathMap}
             schema={item.schema}
             requiredFields={[]}
             parentSpan={props.schema.colSpan}
@@ -263,6 +266,7 @@
                   formData={props.formData}
                   uiFormData={props.uiFormData}
                   defaultFormData={props.defaultFormData}
+                  FieldPathMap={props.FieldPathMap}
                   fieldPath={childSchema.fieldPath}
                   requiredFields={childSchema.parentRequired}
                   parentSpan={props.schema.colSpan}
@@ -293,6 +297,7 @@
                   formData={props.formData}
                   uiFormData={props.uiFormData}
                   defaultFormData={props.defaultFormData}
+                  FieldPathMap={props.FieldPathMap}
                   fieldPath={childSchema.fieldPath}
                   requiredFields={childSchema.parentRequired}
                   parentSpan={props.schema.colSpan}
@@ -315,6 +320,7 @@
           formData={props.formData}
           uiFormData={props.uiFormData}
           defaultFormData={props.defaultFormData}
+          FieldPathMap={props.FieldPathMap}
           requiredFields={props.requiredFields}
           onChange={(val) => {
             handleChange(val);

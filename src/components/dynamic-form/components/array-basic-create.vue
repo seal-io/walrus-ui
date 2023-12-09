@@ -40,11 +40,16 @@
       const formref = inject(ProviderFormRefKey, ref());
       const list = ref<any[]>([]);
 
-      const numberReg = /\d+/;
       const type = props.schema.items?.type || 'string';
       const { fieldProps, rules } = genFieldPropsAndRules({
         schema: props.schema,
         requiredFields: props.requiredFields
+      });
+      props.FieldPathMap.set(props.fieldPath, {
+        required: fieldProps.required,
+        type: props.schema.type,
+        fieldPath: props.fieldPath,
+        isNullabel: props.schema.nullable || props.schema.originNullable
       });
       let Component = BasicFieldMaps[type];
 
@@ -71,6 +76,7 @@
 
         if (isEqualOn(res, _.get(props.defaultFormData, props.fieldPath))) {
           unsetFieldValue({
+            FieldPathMap: props.FieldPathMap,
             defaultFormData: props.defaultFormData,
             uiFormData: props.uiFormData,
             schema: props.schema,
@@ -80,6 +86,7 @@
           });
         } else {
           genFieldInFormData({
+            FieldPathMap: props.FieldPathMap,
             defaultFormData: props.defaultFormData,
             uiFormData: props.uiFormData,
             schema: props.schema,

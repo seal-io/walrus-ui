@@ -73,8 +73,10 @@
         val = isEmptyvalue(val) ? null : val;
         _.set(props.formData, props.fieldPath, val);
         _.set(props.uiFormData, props.fieldPath, val);
+        console.log('unset++++++++', props.FieldPathMap.get(props.fieldPath));
         if (isEqualOn(val, _.get(props.defaultFormData, props.fieldPath))) {
           unsetFieldValue({
+            FieldPathMap: props.FieldPathMap,
             defaultFormData: props.defaultFormData,
             schema: props.schema,
             formData: props.formData,
@@ -84,6 +86,7 @@
           });
         } else {
           genFieldInFormData({
+            FieldPathMap: props.FieldPathMap,
             defaultFormData: props.defaultFormData,
             schema: props.schema,
             uiFormData: props.uiFormData,
@@ -110,7 +113,7 @@
                     callback();
                     return;
                   }
-                  if (!value) {
+                  if (!value && value !== 0) {
                     callback(
                       `${i18n.global.t('common.form.rule.input', {
                         name: props.schema.title
