@@ -77,12 +77,11 @@
       initValue();
       console.log(
         'create+++++++++++++',
-
+        props.fieldPath,
+        schemaFormStatus.value,
         props.uiFormData,
         props.formData,
-        props.defaultFormData,
-        _.keys(props.schema?.properties),
-        props.fieldPath
+        props.defaultFormData
       );
       // hidden field
       if (!component || hidden) return null;

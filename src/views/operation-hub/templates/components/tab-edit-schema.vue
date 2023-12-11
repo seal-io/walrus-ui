@@ -232,9 +232,6 @@
   const previewForm = () => {
     const jsonCode = yaml2Json(code.value);
     const variables = _.get(jsonCode, 'components.schemas.variables');
-    const res = initFormState(variables);
-    fieldList.value = res.fieldSchemaList;
-    formData.value = res.formData;
     schemaVariables.value = variables;
     return {
       jsonCode,
