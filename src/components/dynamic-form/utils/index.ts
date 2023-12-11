@@ -195,10 +195,12 @@ export const initFieldValue = ({
   const currentValue = _.get(uiFormData, fieldPath);
   const value = currentValue || defaultValue;
   const isNullable = schema.nullable || schema.originNullable;
+
   _.set(uiFormData, fieldPath, _.cloneDeep(value));
   if (!_.hasIn(defaultFormData, fieldPath)) {
     _.set(defaultFormData, fieldPath, _.cloneDeep(value));
   }
+
   if (!isNullable || (schema.isItemsProperty && required)) {
     _.set(formData, fieldPath, _.cloneDeep(value));
   }
@@ -629,6 +631,7 @@ export const genObjectFieldProperties = ({
     const defaultValue =
       property.default ||
       _.cloneDeep(_.get(defaultFormData, [...fieldPath, key]));
+
     const fieldSchema = {
       ...property,
       ...nullObj,

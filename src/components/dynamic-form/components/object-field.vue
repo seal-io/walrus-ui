@@ -65,7 +65,11 @@
         parentSpan: getCustomColSpan(props.schema) || props.schema.colSpan,
         level: props.level + 1
       });
-      console.log('childProperties++++++++++++', childProperties.value);
+      console.log(
+        'childProperties++++++++++++',
+        props.schema,
+        childProperties.value
+      );
       // raw data
       if (
         props.schema.additionalProperties &&
