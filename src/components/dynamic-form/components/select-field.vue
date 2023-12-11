@@ -196,7 +196,9 @@
 
                 _.set(props.formData, props.fieldPath, value);
                 _.set(props.uiFormData, props.fieldPath, value);
-
+                if (props.schema.isItemsProperty) {
+                  return;
+                }
                 if (
                   isEqualOn(
                     value,

@@ -17,7 +17,8 @@
     genObjectFieldProperties,
     calcFieldSpan,
     isEmptyvalue,
-    unsetFieldValue
+    unsetFieldValue,
+    genFieldInFormData
   } from '../utils';
   import CommonButton from './common-button.vue';
 
@@ -89,6 +90,7 @@
           ] as FieldSchema[];
         } else if (items?.properties) {
           itemsProperties = genObjectFieldProperties({
+            isItemsProperty: true,
             defaultFormData: props.defaultFormData,
             uiFormData: props.uiFormData,
             schema: props.schema.items as FieldSchema,
@@ -138,6 +140,15 @@
       };
       const handleAddClick = () => {
         setPropertiesList();
+        genFieldInFormData({
+          FieldPathMap: props.FieldPathMap,
+          defaultFormData: props.defaultFormData,
+          schema: props.schema,
+          uiFormData: props.uiFormData,
+          formData: props.formData,
+          fieldPath: props.fieldPath,
+          required: props.required
+        });
       };
 
       // check array every item is empty or null or undefined
@@ -151,24 +162,42 @@
 
         _.get(props.uiFormData, props.fieldPath, []).splice(index, 1);
         _.get(props.formData, props.fieldPath, []).splice(index, 1);
-
-        // update uiFormData
         if (
-          !_.get(props.uiFormData, props.fieldPath, []).length ||
-          !filterArrayIsEmpty(
-            _.get(props.uiFormData, props.fieldPath, []).length
-          )
-        ) {
-          _.unset(props.uiFormData, props.fieldPath);
-        }
-
-        // update formData
-        if (
-          !_.get(props.formData, props.fieldPath, []).length ||
-          !filterArrayIsEmpty(_.get(props.formData, props.fieldPath, []).length)
+          props.schema.nullable &&
+          !_.get(props.uiFormData, props.fieldPath).length
         ) {
           _.unset(props.formData, props.fieldPath);
         }
+        if (props.schema.isItemsProperty) {
+          return;
+        }
+        unsetFieldValue({
+          FieldPathMap: props.FieldPathMap,
+          defaultFormData: props.defaultFormData,
+          uiFormData: props.uiFormData,
+          schema: props.schema,
+          formData: props.formData,
+          fieldPath: [...props.fieldPath],
+          required: false
+        });
+
+        // update uiFormData
+        // if (
+        //   !_.get(props.uiFormData, props.fieldPath, []).length ||
+        //   !filterArrayIsEmpty(
+        //     _.get(props.uiFormData, props.fieldPath, []).length
+        //   )
+        // ) {
+        //   _.unset(props.uiFormData, props.fieldPath);
+        // }
+
+        // update formData
+        // if (
+        //   !_.get(props.formData, props.fieldPath, []).length ||
+        //   !filterArrayIsEmpty(_.get(props.formData, props.fieldPath, []).length)
+        // ) {
+        //   _.unset(props.formData, props.fieldPath);
+        // }
         activeItemIndex.value = -1;
         handleChange(props.formData);
       };

@@ -96,7 +96,9 @@
         const jsonstr = yaml2Json(fieldValue.value);
         _.set(props.formData, props.fieldPath, jsonstr);
         _.set(props.uiFormData, props.fieldPath, jsonstr);
-
+        if (props.schema.isItemsProperty) {
+          return;
+        }
         if (_.trim(fieldValue.value) === _.trim(defaultValue.value)) {
           unsetFieldValue({
             FieldPathMap: props.FieldPathMap,
