@@ -166,7 +166,7 @@
                     callback();
                     return;
                   }
-                  if (!value || !value.length) {
+                  if (!value || !value?.length) {
                     callback(
                       `${i18n.global.t('common.form.rule.input', {
                         name: props.schema.title

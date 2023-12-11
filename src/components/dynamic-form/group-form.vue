@@ -1,7 +1,7 @@
 <template>
   <div class="group-form">
     <a-tabs
-      v-if="formGroup.length > 1"
+      v-if="formGroup?.length > 1"
       :key="formKey"
       ref="schemaForm"
       class="page-line-tabs"
@@ -30,7 +30,7 @@
       </a-tab-pane>
     </a-tabs>
     <SingleForm
-      v-if="formGroup.length === 1"
+      v-if="formGroup?.length === 1"
       :key="formKey"
       ref="schemaForm"
       form-id="schemaForm"

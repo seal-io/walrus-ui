@@ -164,7 +164,7 @@
         _.get(props.formData, props.fieldPath, []).splice(index, 1);
         if (
           props.schema.nullable &&
-          !_.get(props.uiFormData, props.fieldPath).length
+          !_.get(props.uiFormData, props.fieldPath)?.length
         ) {
           _.unset(props.formData, props.fieldPath);
         }
@@ -264,7 +264,7 @@
         if (schemaFormStatus.value === PageAction.CREATE) {
           init();
         } else {
-          const value = _.get(props.uiFormData, props.fieldPath);
+          const value = _.get(props.uiFormData, props.fieldPath, []);
           if (value && value.length) {
             for (let i = 0; i < value.length; i += 1) {
               setPropertiesList();

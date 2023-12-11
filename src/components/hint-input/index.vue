@@ -47,7 +47,7 @@
       />
       <span class="arco-input-suffix">
         <span v-if="$attrs.showWordLimit" class="arco-input-word-limit"
-          >{{ expression.length }}/{{ $attrs.maxLength }}</span
+          >{{ expression?.length }}/{{ $attrs.maxLength }}</span
         >
         <span
           v-if="$attrs.password"
