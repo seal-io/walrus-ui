@@ -16,7 +16,8 @@
   import {
     genObjectFieldProperties,
     calcFieldSpan,
-    isEmptyvalue
+    isEmptyvalue,
+    unsetFieldValue
   } from '../utils';
   import CommonButton from './common-button.vue';
 
@@ -137,32 +138,6 @@
       };
       const handleAddClick = () => {
         setPropertiesList();
-
-        // update formData
-        // _.each(propertiesList.value, (item, index) => {
-        //   _.each(item, (sItem, sIndex) => {
-        //     const fieldPath = [
-        //       ...props.fieldPath,
-        //       `${index}`,
-        //       sItem.name
-        //     ].filter((i) => i);
-        //     initFieldValue({
-        //       schema: sItem,
-        //       formData: props.formData,
-        //       uiFormData: props.uiFormData,
-        //       fieldPath,
-        //       required: !!sItem.isRequired
-        //     });
-        //   });
-        // });
-
-        // handleChange(props.formData);
-        console.log(
-          'add++++++++++++9',
-          props.formData,
-          props.uiFormData,
-          propertiesList.value
-        );
       };
 
       // check array every item is empty or null or undefined

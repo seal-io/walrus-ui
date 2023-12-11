@@ -394,25 +394,14 @@ export const unsetNullabelFieldByRecursion = ({
   required: boolean;
 }) => {
   const prevInitialPath = _.initial(initialPath);
-  const prevSchema = FieldPathMap.get(prevInitialPath.join('.'));
-
-  if (prevSchema && !prevSchema?.isNullable) {
+  if (!prevInitialPath.length) {
     return initialPath;
   }
-  const originValue = _.get(defaultFormData, prevInitialPath);
-  const currentValue = _.get(uiFormData, prevInitialPath);
-  console.log(
-    'input+++++++',
-    initialPath,
-    prevInitialPath,
-    originValue,
-    currentValue,
-    defaultFormData,
-    isEqualOn(originValue, currentValue),
-    uiFormData
-  );
-  if (isEqualOn(originValue, currentValue)) {
-    const path = unsetNullabelFieldByRecursion({
+  const prevSchema = FieldPathMap.get(prevInitialPath.join('.'));
+
+  // it is array item
+  if (!prevSchema) {
+    return unsetNullabelFieldByRecursion({
       initialPath: prevInitialPath,
       formData,
       uiFormData,
@@ -420,10 +409,38 @@ export const unsetNullabelFieldByRecursion = ({
       FieldPathMap,
       required
     });
-    console.log('path+++++++', path);
-    return path;
   }
-  return initialPath;
+  console.log(
+    'unsetNullabelFieldByRecursion+++++++',
+    prevInitialPath,
+    prevSchema
+  );
+
+  //
+  if (!prevSchema?.isNullable && prevSchema) {
+    return initialPath;
+  }
+
+  const originValue = _.get(defaultFormData, prevInitialPath);
+  const currentValue = _.get(uiFormData, prevInitialPath);
+
+  if (!isEqualOn(originValue, currentValue)) {
+    return initialPath;
+  }
+
+  // when it is array  stop unset
+  if (prevSchema?.type === FIELD_TYPE.ARRAY) {
+    return prevInitialPath;
+  }
+  //
+  return unsetNullabelFieldByRecursion({
+    initialPath: prevInitialPath,
+    formData,
+    uiFormData,
+    defaultFormData,
+    FieldPathMap,
+    required
+  });
 };
 
 export const unsetFieldValue = ({
@@ -449,13 +466,15 @@ export const unsetFieldValue = ({
   let initialPath = _.initial(fieldPath);
   const originValue = _.get(defaultFormData, initialPath);
   const currentValue = _.get(uiFormData, initialPath);
+
   console.log(
     'unsetFieldValue+++++++',
     originValue,
     defaultFormData,
     currentValue,
     formData,
-    fieldPath
+    fieldPath,
+    isEqualOn(currentValue, originValue)
   );
   // if each field'value is default value,unset it
 
@@ -470,6 +489,7 @@ export const unsetFieldValue = ({
       FieldPathMap,
       required
     });
+    console.log('unstInitialField+++++222++', initialPath);
     _.unset(formData, initialPath);
   }
 
