@@ -101,7 +101,17 @@
                 }
                 _.set(props.formData, props.fieldPath, val);
                 _.set(props.uiFormData, props.fieldPath, val);
+                if (
+                  _.get(props.defaultFormData, props.fieldPath) === null &&
+                  !val &&
+                  props.schema.nullable
+                ) {
+                  _.unset(props.formData, props.fieldPath);
+                }
                 console.log('schema=boolean=', props.schema);
+                if (props.schema.isItemsProperty) {
+                  return;
+                }
                 if (
                   isEqualOn(val, _.get(props.defaultFormData, props.fieldPath))
                 ) {

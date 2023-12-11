@@ -119,6 +119,15 @@
           objectAdditionalList.value.splice(index, 1);
           _.unset(props.formData, [...props.fieldPath, itemField]);
           _.unset(props.uiFormData, [...props.fieldPath, itemField]);
+          if (
+            !_.keys(_.get(props.schema, props.fieldPath)).length &&
+            props.schema.nullable
+          ) {
+            _.unset(props.formData, props.fieldPath);
+          }
+          if (props.schema.isItemsProperty) {
+            return;
+          }
           unsetFieldValue({
             FieldPathMap: props.FieldPathMap,
             defaultFormData: props.defaultFormData,

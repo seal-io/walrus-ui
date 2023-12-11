@@ -427,7 +427,6 @@
   const handleDataChange = (value, attr, type?) => {
     // check duplication key
     const val = value;
-    console.log('error===', val, attr, type);
     if (
       attr === 'key' &&
       !!val &&
@@ -440,11 +439,17 @@
         popupvisible.value = false;
       }, 1500);
       emits('update:dataKey', `key${props.position + 1}`);
+      setTimeout(() => {
+        getDataObj(props.labelList);
+      }, 100);
       return;
     }
 
     if (attr === 'key' && !val && type === 'change') {
       emits('update:dataKey', `key${props.position + 1}`);
+      setTimeout(() => {
+        getDataObj(props.labelList);
+      }, 100);
       return;
     }
     if (attr === 'key') {

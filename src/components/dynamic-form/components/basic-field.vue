@@ -38,6 +38,7 @@
         InjectSchemaFormStatusKey,
         ref(PageAction.CREATE)
       );
+      console.log('attrs==========', attrs);
       const formref = inject(ProviderFormRefKey, ref());
 
       const widget = _.get(props.schema, ['x-walrus-ui', 'widget'], '');
@@ -74,6 +75,9 @@
         _.set(props.formData, props.fieldPath, val);
         _.set(props.uiFormData, props.fieldPath, val);
         console.log('unset++++++++', props.FieldPathMap.get(props.fieldPath));
+        if (props.schema.isItemsProperty) {
+          return;
+        }
         if (isEqualOn(val, _.get(props.defaultFormData, props.fieldPath))) {
           unsetFieldValue({
             FieldPathMap: props.FieldPathMap,
@@ -150,6 +154,15 @@
               allow-clear={true}
               popupInfo={props.schema.description}
               modelValue={_.get(props.uiFormData, props.fieldPath)}
+              model-event="input"
+              onUpdate:modelValue={(val) => {
+                if (isNumber(props.schema)) {
+                  debunceHandleInputChange(val);
+                } else {
+                  handleInputChange(val);
+                }
+                validateField();
+              }}
               onInput={(val) => {
                 if (isNumber(props.schema)) {
                   debunceHandleInputChange(val);

@@ -72,14 +72,15 @@
         const res = _.filter(list.value, (item) => {
           return !isEmptyvalue(item);
         });
-        console.log(
-          'res+++++++++++',
-          res,
-          _.get(props.defaultFormData, props.fieldPath)
-        );
+
         _.set(props.formData, props.fieldPath, res);
         _.set(props.uiFormData, props.fieldPath, res);
-
+        if (!res.length && props.schema.nullable) {
+          _.unset(props.formData, props.fieldPath);
+        }
+        if (props.schema.isItemsProperty) {
+          return;
+        }
         if (isEqualOn(res, _.get(props.defaultFormData, props.fieldPath))) {
           unsetFieldValue({
             FieldPathMap: props.FieldPathMap,

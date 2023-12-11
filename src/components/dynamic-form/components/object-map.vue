@@ -120,19 +120,21 @@
                     return;
                   }
                   val = genObjValue(_.clone(val));
-
+                  console.log('update value========', val);
                   _.set(props.formData, props.fieldPath, _.clone(val));
                   _.set(props.uiFormData, props.fieldPath, _.clone(val));
+                  if (!_.keys(val).length && props.schema.nullable) {
+                    _.unset(props.formData, props.fieldPath);
+                  }
+                  if (props.schema.isItemsProperty) {
+                    return;
+                  }
                   if (
                     isEqualOn(
                       val,
                       _.get(props.defaultFormData, props.fieldPath)
                     )
                   ) {
-                    console.log(
-                      'unset++++++++',
-                      props.FieldPathMap.get(props.fieldPath)
-                    );
                     unsetFieldValue({
                       FieldPathMap: props.FieldPathMap,
                       defaultFormData: props.defaultFormData,
@@ -187,7 +189,7 @@
                       <span class="separator">:</span>
                       <SealViewItemWrap
                         label={`${i18n.global.t('common.input.value')}`}
-                        style="width: 100%"
+                        style="width: 100%;"
                       >
                         {_.get(props.uiFormData, [...props.fieldPath, key])}
                       </SealViewItemWrap>

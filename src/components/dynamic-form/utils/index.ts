@@ -194,11 +194,12 @@ export const initFieldValue = ({
   const defaultValue = initFieldDefaultValue(schema);
   const currentValue = _.get(uiFormData, fieldPath);
   const value = currentValue || defaultValue;
+  const isNullable = schema.nullable || schema.originNullable;
   _.set(uiFormData, fieldPath, _.cloneDeep(value));
   if (!_.hasIn(defaultFormData, fieldPath)) {
     _.set(defaultFormData, fieldPath, _.cloneDeep(value));
   }
-  if (!schema.nullable && !schema.originNullable) {
+  if (!isNullable || (schema.isItemsProperty && required)) {
     _.set(formData, fieldPath, _.cloneDeep(value));
   }
 };
@@ -589,8 +590,10 @@ export const genObjectFieldProperties = ({
   grandParentHalfGrid,
   parentNullableObj,
   parentSpan,
+  isItemsProperty,
   level
 }: {
+  isItemsProperty?: boolean;
   uiFormData: object;
   defaultFormData: object;
   schema: FieldSchema;
@@ -631,6 +634,7 @@ export const genObjectFieldProperties = ({
       ...nullObj,
       default: _.cloneDeep(defaultValue),
       name: key,
+      isItemsProperty: isItemsProperty || schema.isItemsProperty,
       fieldPath: [...fieldPath, key],
       required: property.required || [],
       isRequired: _.includes(property.required || [], key),
