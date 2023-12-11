@@ -5,7 +5,7 @@
     :popup-container="containerId"
     @select="handleSelectAction"
   >
-    <a-link size="mini" @click.stop="() => {}">
+    <a-link size="mini" style="padding: 4px 1px" @click.stop="() => {}">
       <icon-more-vertical
         style="margin-right: 0; font-size: 18px; stroke-width: 5"
       />
