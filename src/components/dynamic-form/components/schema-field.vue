@@ -81,7 +81,7 @@
         props.uiFormData,
         props.formData,
         props.defaultFormData,
-        _.keys(props.schema.properties),
+        _.keys(props.schema?.properties),
         props.fieldPath
       );
       // hidden field

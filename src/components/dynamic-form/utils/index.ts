@@ -24,7 +24,7 @@ export const isSelect = (schema: FieldSchema) => {
   if (items && type === FIELD_TYPE.ARRAY && isBasicType(items.type)) {
     return true;
   }
-  return enumList && enumList.length > 0;
+  return enumList && enumList?.length > 0;
 };
 
 export const isBoolean = (schema: FieldSchema) => {
@@ -76,7 +76,7 @@ export const isSimpleObject = (schema: FieldSchema) => {
 
 export const isMuliSelect = (schema: FieldSchema) => {
   const { type, enum: enumList } = schema;
-  return type === FIELD_TYPE.ARRAY && enumList && enumList.length > 0;
+  return type === FIELD_TYPE.ARRAY && enumList && enumList?.length > 0;
 };
 
 export const isNumber = (schema: FieldSchema) => {
@@ -236,7 +236,7 @@ export const viewFieldValue = ({
 
 const unsetArrayField = (formData, initialPath) => {
   const list = _.get(formData, initialPath);
-  const validList = list.filter((item) => {
+  const validList = _.filter(list, (item) => {
     return (
       !isEmptyvalue(item) &&
       !_.isEmpty(item) &&
@@ -259,7 +259,7 @@ const unsetObjectField = (formData, initialPath) => {
 };
 
 export const unsetInitialField = (formData, initialPath) => {
-  if (!initialPath.length) {
+  if (!initialPath?.length) {
     return;
   }
   if (_.isArray(_.get(formData, initialPath))) {
@@ -395,7 +395,7 @@ export const unsetNullabelFieldByRecursion = ({
   required: boolean;
 }) => {
   const prevInitialPath = _.initial(initialPath);
-  if (!prevInitialPath.length) {
+  if (!prevInitialPath?.length) {
     return initialPath;
   }
   const prevSchema = FieldPathMap.get(prevInitialPath.join('.'));
@@ -479,7 +479,7 @@ export const unsetFieldValue = ({
   );
   // if each field'value is default value,unset it
 
-  if (initialPath.length === 0) {
+  if (initialPath?.length === 0) {
     _.unset(formData, fieldPath);
   } else if (isEqualOn(currentValue, originValue)) {
     initialPath = unsetNullabelFieldByRecursion({
