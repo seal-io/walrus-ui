@@ -121,36 +121,30 @@
     });
 
     // CREATE
-    if (
-      data?.type === websocketEventType.CREATE ||
-      data?.type === websocketEventType.UPDATE
-    ) {
-      dataList.value = _.concat(collections);
+    if (data?.type === websocketEventType.CREATE) {
+      dataList.value = _.concat(collections, dataList.value);
       return;
     }
+    // DELETE
     if (data?.type === websocketEventType.DELETE) {
-      dataList.value = [];
+      dataList.value = _.filter(dataList.value, (item) => {
+        return !_.find(collections, (sItem) => sItem.id === item.id);
+      });
+      return;
     }
-    // // DELETE
-    // if (data?.type === websocketEventType.DELETE) {
-    //   dataList.value = _.filter(dataList.value, (item) => {
-    //     return !_.find(collections, (sItem) => sItem.id === item.id);
-    //   });
-    //   return;
-    // }
-    // // UPDATE
-    // _.each(collections, (item) => {
-    //   const updateIndex = _.findIndex(
-    //     dataList.value,
-    //     (sItem) => sItem.id === item.id
-    //   );
-    //   if (updateIndex > -1) {
-    //     const updateItem = _.cloneDeep(item);
-    //     dataList.value[updateIndex] = updateItem;
-    //   } else {
-    //     dataList.value = _.concat(_.cloneDeep(item), dataList.value);
-    //   }
-    // });
+    // UPDATE
+    _.each(collections, (item) => {
+      const updateIndex = _.findIndex(
+        dataList.value,
+        (sItem) => sItem.id === item.id
+      );
+      if (updateIndex > -1) {
+        const updateItem = _.cloneDeep(item);
+        dataList.value[updateIndex] = updateItem;
+      } else {
+        dataList.value = _.concat(_.cloneDeep(item), dataList.value);
+      }
+    });
   };
   const updateHandler = (list: object[]) => {
     _.each(list, (data) => {
