@@ -72,8 +72,13 @@
         const res = _.filter(list.value, (item) => {
           return !isEmptyvalue(item);
         });
+        console.log(
+          'res+++++++++++',
+          res,
+          _.get(props.defaultFormData, props.fieldPath)
+        );
         _.set(props.formData, props.fieldPath, res);
-        _.set(props.uiFormData, props.fieldPath, list.value);
+        _.set(props.uiFormData, props.fieldPath, res);
 
         if (isEqualOn(res, _.get(props.defaultFormData, props.fieldPath))) {
           unsetFieldValue({
@@ -99,6 +104,7 @@
         handleChange(props.formData);
       };
 
+      const debounceHandleInputChange = _.debounce(handleInputChange, 100);
       const handleAddClick = () => {
         list.value.push(null);
       };
@@ -218,7 +224,7 @@
                             } else {
                               list.value[index] = val;
                             }
-                            handleInputChange();
+                            debounceHandleInputChange();
                           }}
                           onChange={(val) => {
                             handleInputChange();

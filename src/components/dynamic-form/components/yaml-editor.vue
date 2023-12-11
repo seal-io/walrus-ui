@@ -91,6 +91,39 @@
         }
         defaultValue.value = fieldValue.value;
       };
+
+      const handleInputChange = () => {
+        const jsonstr = yaml2Json(fieldValue.value);
+        _.set(props.formData, props.fieldPath, jsonstr);
+        _.set(props.uiFormData, props.fieldPath, jsonstr);
+
+        if (_.trim(fieldValue.value) === _.trim(defaultValue.value)) {
+          unsetFieldValue({
+            FieldPathMap: props.FieldPathMap,
+            defaultFormData: props.defaultFormData,
+            uiFormData: props.uiFormData,
+            schema: props.schema,
+            formData: props.formData,
+            fieldPath: props.fieldPath,
+            required: props.required
+          });
+        } else {
+          genFieldInFormData({
+            FieldPathMap: props.FieldPathMap,
+            defaultFormData: props.defaultFormData,
+            uiFormData: props.uiFormData,
+            schema: props.schema,
+            formData: props.formData,
+            fieldPath: props.fieldPath,
+            required: props.required
+          });
+        }
+        handleChange(props.formData);
+        validateField();
+      };
+
+      const debounceHandleInputChange = _.debounce(handleInputChange, 100);
+
       watch(
         () => _.get(props.uiFormData, props.fieldPath),
         () => {
@@ -127,39 +160,8 @@
               style={{ width: '100%' }}
               height={300}
               editor-id={`${_.join(props.fieldPath, '_')}`}
-              onBlur={(val) => {
-                const jsonstr = yaml2Json(fieldValue.value);
-                _.set(props.formData, props.fieldPath, jsonstr);
-                _.set(props.uiFormData, props.fieldPath, jsonstr);
-
-                if (
-                  isEqualOn(
-                    jsonstr,
-                    _.get(props.defaultFormData, props.fieldPath)
-                  )
-                ) {
-                  unsetFieldValue({
-                    FieldPathMap: props.FieldPathMap,
-                    defaultFormData: props.defaultFormData,
-                    uiFormData: props.uiFormData,
-                    schema: props.schema,
-                    formData: props.formData,
-                    fieldPath: props.fieldPath,
-                    required: props.required
-                  });
-                } else {
-                  genFieldInFormData({
-                    FieldPathMap: props.FieldPathMap,
-                    defaultFormData: props.defaultFormData,
-                    uiFormData: props.uiFormData,
-                    schema: props.schema,
-                    formData: props.formData,
-                    fieldPath: props.fieldPath,
-                    required: props.required
-                  });
-                }
-                handleChange(props.formData);
-                validateField();
+              onBlur={() => {
+                handleInputChange();
               }}
             ></AceEditor>
           </a-form-item>

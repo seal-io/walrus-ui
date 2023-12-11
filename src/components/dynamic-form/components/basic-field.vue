@@ -13,6 +13,7 @@
   import {
     isDatePicker,
     isPassword,
+    isNumber,
     initFieldValue,
     unsetFieldValue,
     genFieldInFormData,
@@ -97,6 +98,7 @@
         handleChange(props.formData);
       };
 
+      const debunceHandleInputChange = _.debounce(handleInputChange, 100);
       const renderEdit = () => {
         return (
           <a-form-item
@@ -149,7 +151,11 @@
               popupInfo={props.schema.description}
               modelValue={_.get(props.uiFormData, props.fieldPath)}
               onInput={(val) => {
-                handleInputChange(val);
+                if (isNumber(props.schema)) {
+                  debunceHandleInputChange(val);
+                } else {
+                  handleInputChange(val);
+                }
                 validateField();
               }}
             ></Component>

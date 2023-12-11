@@ -32,6 +32,7 @@
       const setShowIfField = () => {
         _.unset(props.formData, props.fieldPath);
         _.unset(props.uiFormData, props.fieldPath);
+        _.unset(props.defaultFormData, props.fieldPath);
         emit('change', props.formData);
         return null;
       };
@@ -40,6 +41,14 @@
       const { component, fieldPath } = getSchemaFieldComponent({
         schema: props.schema,
         fieldPath: props.fieldPath
+      });
+
+      props.FieldPathMap.set(_.join(props.fieldPath, '.'), {
+        required: _.includes(props.requiredFields, props.schema.name),
+        type: props.schema.type,
+        fieldPath,
+        isBasicType: isBasicType(props.schema) || isSelect(props.schema),
+        isNullable: props.schema.nullable || props.schema.originNullable
       });
 
       // init field value
