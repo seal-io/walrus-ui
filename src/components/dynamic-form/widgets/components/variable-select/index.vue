@@ -1,36 +1,47 @@
 <script lang="tsx">
   import _ from 'lodash';
   import i18n from '@/locale';
-  import { defineComponent, toRefs, inject, ref, watch } from 'vue';
-  import { InjectSchemaFormStatusKey, PageAction } from '@/views/config';
+  import {
+    defineComponent,
+    toRefs,
+    inject,
+    ref,
+    onMounted,
+    computed,
+    watch
+  } from 'vue';
+  import {
+    InjectSchemaFormStatusKey,
+    InjectCompleteDataKey,
+    PageAction
+  } from '@/views/config';
+  import { HintKey } from '@/views/config/interface';
   import SealViewItemWrap from '@/components/seal-form/components/seal-view-item-wrap.vue';
-  import schemaFieldProps from '../fields/schema-field-props';
+  import schemaFieldProps from '@/components/dynamic-form/fields/schema-field-props';
   import {
     isSelect,
     isNumber,
     isBoolean,
-    isDatePicker,
-    isMuliSelect,
     isPassword,
-    initFieldDefaultValue,
-    isRequiredInitField,
     isEmptyvalue,
-    isAllowCreateNumberSelect,
-    isAllowCreateSelect,
     genFieldPropsAndRules,
-    initFieldValue,
-    viewFieldValue,
     unsetFieldValue,
     genFieldInFormData,
     parentObjectExsits,
     isEqualOn
-  } from '../utils';
-  import { Option } from '../interface';
-  import { ProviderFormRefKey } from '../config';
+  } from '@/components/dynamic-form/utils';
+  import { Option } from '@/components/dynamic-form/interface';
+  import { ProviderFormRefKey } from '@/components/dynamic-form/config';
+  import { CheckConnectorCatagory, BU } from '../../types';
 
   export default defineComponent({
+    widgets: [BU.SensitiveVariableSelect, BU.VariableSelect],
     props: {
-      ...schemaFieldProps
+      ...schemaFieldProps,
+      widget: {
+        type: String,
+        default: ''
+      }
     },
     emits: ['change'],
     setup(props, { emit }) {
@@ -38,11 +49,33 @@
         InjectSchemaFormStatusKey,
         ref(PageAction.CREATE)
       );
+      const completeData: any = inject(InjectCompleteDataKey, ref({}));
       const formref = inject(ProviderFormRefKey, ref());
+
       const { type } = toRefs(props.schema);
 
       const options = ref<Option[]>([]);
 
+      const optionList = computed(() => {
+        let resultList: any[] = [];
+        const vars = _.get(completeData.value, 'var', []);
+        if (props.widget === BU.SensitiveVariableSelect) {
+          resultList = _.filter(vars, (item) => {
+            return item?.sensitive;
+          });
+        }
+        if (props.widget === BU.VariableSelect) {
+          resultList = _.filter(vars, (item) => {
+            return !item?.sensitive;
+          });
+        }
+        return _.map(resultList || [], (item) => {
+          return {
+            label: item?.label,
+            value: `\${var.${item?.label}}`
+          };
+        });
+      });
       const { fieldProps, rules } = genFieldPropsAndRules({
         schema: props.schema,
         requiredFields: props.requiredFields
@@ -50,15 +83,10 @@
 
       props.FieldPathMap.set(_.join(props.fieldPath, '.'), {
         required: fieldProps.required,
+        type: props.schema.type,
         fieldPath: props.fieldPath,
-        isNullable: props.schema.nullable || props.schema.originNullable,
         isBasicType: true,
-        ..._.pick(props.schema, [
-          'type',
-          'nullable',
-          'originNullable',
-          'isItemsProperty'
-        ])
+        isNullable: props.schema.nullable || props.schema.originNullable
       });
       const handleChange = (data) => {
         emit('change', data);
@@ -71,24 +99,6 @@
       };
 
       const initOptions = () => {
-        if (props.schema.enum) {
-          options.value = _.map(props.schema.enum, (item) => {
-            return {
-              label: item,
-              value: item
-            };
-          });
-        } else if (props.schema.default) {
-          const defaultList = _.isArray(props.schema.default)
-            ? props.schema.default
-            : [props.schema.default];
-          options.value = defaultList.map((item) => {
-            return {
-              label: item,
-              value: item
-            };
-          });
-        }
         if (schemaFormStatus.value !== PageAction.CREATE) {
           const value = _.get(props.formData, props.fieldPath);
           const list = _.concat(value).map((item) => {
@@ -102,29 +112,6 @@
         options.value = _.filter(options.value, (v) => !isEmptyvalue(v.value));
       };
 
-      const isValueEmpty = (val) => {
-        return val === '' || val === undefined || val === null;
-      };
-      const filterEmptyOnSelect = (list) => {
-        if (isAllowCreateSelect(props.schema)) {
-          return _.filter(list, (v) => !isValueEmpty(v));
-        }
-        return list;
-      };
-
-      const renderSelectOptions = () => {
-        if (isSelect(props.schema)) {
-          return (
-            <>
-              {_.map(options.value, (item) => {
-                return <a-option value={item.value}>{item.label}</a-option>;
-              })}
-            </>
-          );
-        }
-        return null;
-      };
-
       const showArrayValue = (val) => {
         if (_.isArray(val)) {
           return _.join(val, ',');
@@ -133,7 +120,6 @@
       };
 
       initOptions();
-
       const renderEdit = () => {
         return (
           <a-form-item
@@ -176,24 +162,18 @@
                 (fieldProps.immutable &&
                   schemaFormStatus.value !== PageAction.CREATE)
               }
+              options={optionList.value}
               allow-clear={!props.schema.enum}
               editor-id={_.join(props.fieldPath, '-')}
               popupInfo={props.schema.description}
               modelValue={_.get(props.uiFormData, props.fieldPath)}
-              onChange={(val) => {
-                const newVal = filterEmptyOnSelect(val);
-                let value = newVal;
-                if (isAllowCreateNumberSelect(props.schema)) {
-                  value = _.map(newVal, (v) => {
-                    return _.toNumber(v);
-                  });
-                } else {
-                  value = newVal;
-                }
-
+              onChange={(value) => {
+                console.log('value==========', value);
                 _.set(props.formData, props.fieldPath, value);
                 _.set(props.uiFormData, props.fieldPath, value);
-
+                if (props.schema.isItemsProperty) {
+                  return;
+                }
                 if (
                   isEqualOn(
                     value,
@@ -223,9 +203,7 @@
                 handleChange(props.formData);
                 validateField();
               }}
-            >
-              {renderSelectOptions()}
-            </seal-select>
+            ></seal-select>
           </a-form-item>
         );
       };

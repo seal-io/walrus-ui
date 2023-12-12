@@ -1,13 +1,13 @@
 import { ConnectorType } from '@/views/operation-hub/connectors/config';
 
 const KubernetesBU = {
-  NamespaceSelect: 'NamespaceSelect',
-  SecretSelect: 'SecretSelect',
-  ConfigMapSelect: 'ConfigMapSelect',
-  StorageClassSelect: 'StorageClassSelect',
-  SecretSelectByNamespace: 'SecretSelectByNamespace',
-  ConfigMapSelectByNamespace: 'ConfigMapSelectByNamespace',
-  StorageClassSelectByNamespace: 'StorageClassSelectByNamespace'
+  K8sNamespaceSelect: 'K8sNamespaceSelect',
+  K8sSecretSelect: 'K8sSecretSelect',
+  K8sConfigMapSelect: 'K8sConfigMapSelect',
+  K8sStorageClassSelect: 'K8sStorageClassSelect',
+  K8sSecretSelectByNamespace: 'K8sSecretSelectByNamespace',
+  K8sConfigMapSelectByNamespace: 'K8sConfigMapSelectByNamespace',
+  K8sStorageClassSelectByNamespace: 'K8sStorageClassSelectByNamespace'
 };
 
 const DockerBU = {
@@ -29,6 +29,10 @@ const GitBU = {
   CodeRepositorySelect: 'CodeRepositorySelect'
 };
 
+const VariableBU = {
+  VariableSelect: 'VariableSelect',
+  SensitiveVariableSelect: 'SensitiveVariableSelect'
+};
 export const BU = {
   CpuCore: 'CpuCore',
   Memory: 'Memory',
@@ -37,7 +41,8 @@ export const BU = {
   ...KubernetesBU,
   ...AWSBU,
   ...AliBU,
-  ...GitBU
+  ...GitBU,
+  ...VariableBU
 };
 
 export const WidgetAppendUnit = {
@@ -48,8 +53,8 @@ export const WidgetAppendUnit = {
 
 export const WidgetValueUnit = {
   [BU.CpuCore]: '',
-  [BU.Memory]: 'Mi',
-  [BU.Disk]: 'Mi'
+  [BU.Memory]: '',
+  [BU.Disk]: ''
 };
 
 export type BUType = (typeof BU)[keyof typeof BU];

@@ -3,8 +3,8 @@ import _ from 'lodash';
 import qs from 'query-string';
 import { BU } from '../types';
 
-export const RepoPull: Record<string, any> = {
-  [BU.GitHubRepository]: {
+export const CodeRepo: Record<string, any> = {
+  [BU.CodeRepositorySelect]: {
     request: async (
       params: {
         connectorID: string;

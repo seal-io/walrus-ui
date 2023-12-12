@@ -4,7 +4,7 @@ import qs from 'query-string';
 import { BU } from '../types';
 import { parseXMLFragment, XMLParser } from '../../../form-create/config/utils';
 import { Caller, Item } from '../config/interface';
-import { RepoPull } from './repo';
+import { CodeRepo } from './code-repo';
 import { KuberByNamespace } from './kuber-by-namespace';
 
 const PROXY_API = '/proxy/api/v1';
@@ -23,10 +23,10 @@ const awsInstanceOptions = {
 };
 
 export const BCWidget: Record<string, Caller> = {
-  ...RepoPull,
+  ...CodeRepo,
   ...KuberByNamespace,
   // namespace
-  [BU.NamespaceSelect]: {
+  [BU.K8sNamespaceSelect]: {
     request: async (params: { connectorID: string }) => {
       return axios.get(`${PROXY_API}/namespaces`, {
         params,
@@ -45,7 +45,7 @@ export const BCWidget: Record<string, Caller> = {
     }
   },
   // secrets
-  [BU.SecretSelect]: {
+  [BU.K8sSecretSelect]: {
     request: async (params: { connectorID: string }) => {
       return axios.get(`${PROXY_API}/secrets`, {
         params,
@@ -64,7 +64,7 @@ export const BCWidget: Record<string, Caller> = {
     }
   },
   // configmaps
-  [BU.ConfigMapSelect]: {
+  [BU.K8sConfigMapSelect]: {
     request: async (params: { connectorID: string }) => {
       return axios.get(`${PROXY_API}/configmaps`, {
         params,
@@ -83,7 +83,7 @@ export const BCWidget: Record<string, Caller> = {
     }
   },
   // storageClasses
-  [BU.StorageClassSelect]: {
+  [BU.K8sStorageClassSelect]: {
     request: async (params: { connectorID: string }) => {
       return axios.get(`${STORAGE_API}/storageclasses`, {
         params,

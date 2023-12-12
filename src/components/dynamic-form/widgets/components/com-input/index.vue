@@ -9,6 +9,7 @@
     onMounted,
     withModifiers
   } from 'vue';
+  import _ from 'lodash';
   import { BU, WidgetAppendUnit, WidgetValueUnit } from '../../types';
 
   export default defineComponent({
@@ -34,7 +35,7 @@
 
       const fomatter = (val) => {
         const reg = new RegExp(`(${WidgetAppendUnit[widget.value]})$`);
-        return val.replace(reg, '');
+        return _.replace(val, reg, '');
       };
       const setFormatterValue = (val) => {
         if (!val) return '';
