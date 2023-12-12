@@ -2,6 +2,7 @@ import _ from 'lodash';
 import ComponentsMap from '../components/components-map';
 import { FieldMaps } from '../components/basic-components';
 import FIELD_TYPE from '../config/field-type';
+import widgetProxyVue from '../widget/widget-proxy.vue';
 import {
   isBasicType,
   isSimpleObject,
@@ -19,9 +20,9 @@ export const getSchemaFieldComponent = ({ schema, fieldPath }) => {
     key: Date.now()
   };
   // build-in component
-  if (widget && widget !== 'TextArea') {
+  if (widget) {
     return {
-      component: ComponentsMap[widget],
+      component: widgetProxyVue,
       fieldPath: [...fieldPath],
       requiredFields,
       commonAttrs
