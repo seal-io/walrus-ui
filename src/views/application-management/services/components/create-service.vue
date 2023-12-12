@@ -407,10 +407,13 @@
   const workflowVariables = inject(InjectWorkflowKey, ref({}));
   provide(InjectSchemaFormStatusKey, ref(formAction));
   provide(InjectShowInputHintKey, true);
-  provide(InjectProjectEnvironmentKey, {
-    projectID: route.params.projectId,
-    environmentID: route.params.environmentId
-  });
+  provide(
+    InjectProjectEnvironmentKey,
+    ref({
+      projectID: route.params.projectId,
+      environmentID: route.params.environmentId
+    })
+  );
   provide(projectEnvCtxInjectionKey, projectEnvCtx);
 
   const completeDataObj = computed(() => {

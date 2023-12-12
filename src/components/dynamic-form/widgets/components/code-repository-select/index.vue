@@ -10,7 +10,11 @@
     onMounted
   } from 'vue';
   import i18n from '@/locale';
-  import { InputWidth } from '@/views/config';
+  import {
+    InputWidth,
+    InjectSchemaFormStatusKey,
+    PageAction
+  } from '@/views/config';
   import {
     parentObjectExsits,
     genObjectFieldProperties,
@@ -19,6 +23,7 @@
   import { createAxiosToken } from '@/api/axios-chunk-request';
   import schemaFieldProps from '@/components/dynamic-form/fields/schema-field-props';
   import { FieldSchema } from '@/components/dynamic-form/interface';
+  import SealViewItemWrap from '@/components/seal-form/components/seal-view-item-wrap.vue';
   import useQueryConnector from '../../hooks/use-query-connector';
   import { BU } from '../../types';
   import { BCWidget } from '../../api';
@@ -59,6 +64,10 @@
     ],
     widgets: [BU.CodeRepositorySelect],
     setup(props, { attrs, emit }) {
+      const schemaFormStatus = inject(
+        InjectSchemaFormStatusKey,
+        ref(PageAction.CREATE)
+      );
       const {
         fetchConnectors,
         connectorID,
@@ -103,7 +112,7 @@
           loading.value = true;
           const params = {
             connectorID: connectorID.value,
-            projectID: ProjectEnvironment.projectID,
+            projectID: ProjectEnvironment.value.projectID,
             isProjectConnector: isProjectConnector.value,
             query
           };
@@ -124,7 +133,7 @@
           loadingBranch.value = true;
           const params = {
             connectorID: connectorID.value,
-            projectID: ProjectEnvironment.projectID,
+            projectID: ProjectEnvironment.value.projectID,
             isProjectConnector: isProjectConnector.value,
             repository: repository.value
           };
@@ -155,13 +164,13 @@
         }
       };
       const handleRepoPopupVisibleChange = async (visible: boolean) => {
-        if (dataList.value.length) return;
+        if (dataList.value.length || !repository.value) return;
         if (visible) {
           getRepos(repository.value);
         }
       };
 
-      const handleRepoChange = (value) => {
+      const handleRepoChange = () => {
         setTimeout(() => {
           getBranches();
         }, 100);
@@ -179,54 +188,77 @@
       });
       const renderURLWidget = (item: FieldSchema) => {
         return (
-          <seal-select
-            modelValue={repository.value}
-            {...attrs}
-            style={{ width: '100%' }}
-            label={item.title || item.name}
-            virtual-list-props={virtualListProps}
-            options={dataList.value}
-            allow-search={true}
-            loading={loading.value}
-            bordered={true}
-            allow-create={true}
-            onPopupVisibleChange={(visible) =>
-              handleRepoPopupVisibleChange(visible)
-            }
-            onSearch={(value: string) => {
-              handleSearch(value);
-            }}
-            onChange={(val) => {
-              _.set(props.formData, [...props.fieldPath, item.name], val);
-              _.set(props.uiFormData, [...props.fieldPath, item.name], val);
-              handleChange(props.formData);
-            }}
-          ></seal-select>
+          <>
+            {schemaFormStatus.value !== PageAction.VIEW ? (
+              <seal-select
+                modelValue={repository.value}
+                {...attrs}
+                style={{ width: '100%' }}
+                label={item.title || item.name}
+                virtual-list-props={virtualListProps}
+                options={dataList.value}
+                allow-search={true}
+                loading={loading.value}
+                bordered={true}
+                allow-create={true}
+                onPopupVisibleChange={(visible) =>
+                  handleRepoPopupVisibleChange(visible)
+                }
+                onSearch={(value: string) => {
+                  handleSearch(value);
+                }}
+                onChange={(val) => {
+                  _.set(props.formData, [...props.fieldPath, item.name], val);
+                  _.set(props.uiFormData, [...props.fieldPath, item.name], val);
+                  handleChange(props.formData);
+                  handleRepoChange();
+                }}
+              ></seal-select>
+            ) : (
+              <SealViewItemWrap
+                label={item.title || item.name}
+                style="width: 100%"
+              >
+                {_.get(props.uiFormData, [...props.fieldPath, item.name])}
+              </SealViewItemWrap>
+            )}
+          </>
         );
       };
 
       const renderBranchWidget = (item: FieldSchema) => {
         return (
-          <seal-select
-            modelValue={branch.value}
-            {...attrs}
-            label={item.title || item.name}
-            style={{ width: '100%' }}
-            virtual-list-props={virtualListProps}
-            options={branchList.value}
-            allow-search={true}
-            allow-create={true}
-            loading={loadingBranch.value}
-            bordered={true}
-            onPopupVisibleChange={(visible) =>
-              handlePopupVisibleChange(visible)
-            }
-            onChange={(val: any) => {
-              _.set(props.formData, [...props.fieldPath, item.name], val);
-              _.set(props.uiFormData, [...props.fieldPath, item.name], val);
-              handleChange(props.formData);
-            }}
-          ></seal-select>
+          <>
+            {schemaFormStatus.value !== PageAction.VIEW ? (
+              <seal-select
+                modelValue={branch.value}
+                {...attrs}
+                label={item.title || item.name}
+                style={{ width: '100%' }}
+                virtual-list-props={virtualListProps}
+                options={branchList.value}
+                allow-search={true}
+                allow-create={true}
+                loading={loadingBranch.value}
+                bordered={true}
+                onPopupVisibleChange={(visible) =>
+                  handlePopupVisibleChange(visible)
+                }
+                onChange={(val: any) => {
+                  _.set(props.formData, [...props.fieldPath, item.name], val);
+                  _.set(props.uiFormData, [...props.fieldPath, item.name], val);
+                  handleChange(props.formData);
+                }}
+              ></seal-select>
+            ) : (
+              <SealViewItemWrap
+                label={item.title || item.name}
+                style="width: 100%"
+              >
+                {_.get(props.uiFormData, [...props.fieldPath, item.name])}
+              </SealViewItemWrap>
+            )}
+          </>
         );
       };
       return () => (

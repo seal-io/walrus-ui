@@ -319,10 +319,13 @@
 
   provide(ProvideSetServiceInfoKey, serviceInfo);
   provide(InjectSchemaFormStatusKey, props.action);
-  provide(InjectProjectEnvironmentKey, {
-    projectID: route.params.projectId,
-    environmentID: flow.environmentId
-  });
+  provide(
+    InjectProjectEnvironmentKey,
+    ref({
+      projectID: route.params.projectId,
+      environmentID: flow.environmentId
+    })
+  );
 
   const title = computed(() => {
     if (!taskType.value) {

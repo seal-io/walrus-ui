@@ -1,4 +1,4 @@
-import { inject, toRefs, ref } from 'vue';
+import { inject, toRefs, ref, Ref } from 'vue';
 import _ from 'lodash';
 import { InjectProjectEnvironmentKey } from '@/views/config';
 import { queryEnvironmentConnector } from '../api';
@@ -9,22 +9,25 @@ import {
 } from '../config';
 
 export default function useQueryConnector(props) {
-  const ProjectEnvContext = inject<Partial<ProjectEnvironmentContext>>(
+  const ProjectEnvContext = inject<Ref<Partial<ProjectEnvironmentContext>>>(
     projectEnvCtxInjectionKey,
-    {}
+    ref({})
   );
-  const ProjectEnvironment = inject(InjectProjectEnvironmentKey, {
-    environmentID: '',
-    projectID: ''
-  });
+  const ProjectEnvironment = inject(
+    InjectProjectEnvironmentKey,
+    ref({
+      environmentID: '',
+      projectID: ''
+    })
+  );
   const connectorID = ref('');
   const isProjectConnector = ref(false);
   const { widget } = toRefs(props);
-  const { connectors } = toRefs(ProjectEnvContext);
+  const { connectors } = toRefs(ProjectEnvContext.value);
 
   const fetchConnectors = async () => {
     try {
-      const { environmentID, projectID } = ProjectEnvironment;
+      const { environmentID, projectID } = ProjectEnvironment.value;
 
       if (!environmentID || !projectID) return;
 
@@ -36,7 +39,7 @@ export default function useQueryConnector(props) {
         return item.connector.type === CheckConnectorCatagory(widget.value);
       });
       connectorID.value = connectorData?.connector.id;
-      isProjectConnector.value = !!connectorData?.project?.id;
+      isProjectConnector.value = !!connectorData?.connector?.project?.id;
     } catch (error) {
       // eslint-disable-next-line no-console
     }

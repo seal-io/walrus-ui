@@ -472,10 +472,13 @@
   });
   const submitData = ref<any>({});
   provide(InjectCompleteDataKey, completeData);
-  provide(InjectProjectEnvironmentKey, {
-    projectID: route.params.projectId,
-    environmentID: route.params.environmentId
-  });
+  provide(
+    InjectProjectEnvironmentKey,
+    ref({
+      projectID: route.params.projectId,
+      environmentID: route.params.environmentId
+    })
+  );
   provide(projectEnvCtxInjectionKey, projectEnvCtx);
 
   provide(InjectSchemaFormStatusKey, formAction);

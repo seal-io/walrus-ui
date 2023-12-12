@@ -242,7 +242,6 @@
               rules={rules}
               label={props.schema.title}
               field={_.join(props.fieldPath, '.')}
-              validate-trigger={['change']}
             >
               <SealViewItemWrap label={props.schema.title} style="width: 100%">
                 {isBoolean(props.schema) ? (

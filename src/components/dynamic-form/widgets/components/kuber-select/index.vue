@@ -9,6 +9,7 @@
   } from '@/views/config';
   import { parentObjectExsits } from '@/components/dynamic-form/utils';
   import schemaFieldProps from '@/components/dynamic-form/fields/schema-field-props';
+  import SealViewItemWrap from '@/components/seal-form/components/seal-view-item-wrap.vue';
   import { CheckConnectorCatagory, BU } from '../../types';
   import { BCWidget, queryEnvironmentConnector } from '../../api';
   import useQueryConnector from '../../hooks/use-query-connector';
@@ -87,62 +88,85 @@
         }
       };
 
-      return () => (
-        <a-form-item
-          hide-label={true}
-          rules={[
-            ...props.rules,
-            {
-              validator: (value, callback) => {
-                if (
-                  !parentObjectExsits(props.formData, props.fieldPath) ||
-                  !props.required
-                ) {
-                  callback();
-                  return;
-                }
-                if (!value && value !== 0) {
-                  callback(
-                    `${i18n.global.t('common.form.rule.select', {
-                      name: props.schema.title
-                    })}`
-                  );
-                } else {
-                  callback();
+      const renderEdit = () => {
+        return (
+          <a-form-item
+            hide-label={true}
+            rules={[
+              ...props.rules,
+              {
+                validator: (value, callback) => {
+                  if (
+                    !parentObjectExsits(props.formData, props.fieldPath) ||
+                    !props.required
+                  ) {
+                    callback();
+                    return;
+                  }
+                  if (!value && value !== 0) {
+                    callback(
+                      `${i18n.global.t('common.form.rule.select', {
+                        name: props.schema.title
+                      })}`
+                    );
+                  } else {
+                    callback();
+                  }
                 }
               }
-            }
-          ]}
-          label={props.schema.title}
-          field={_.join(props.fieldPath, '.')}
-          validate-trigger={['change']}
-        >
-          <seal-select
-            model-value={_.get(props.uiFormData, props.fieldPath)}
-            {...attrs}
-            disabled={
-              props.readonly ||
-              (attrs.immutable && schemaFormStatus.value !== PageAction.CREATE)
-            }
-            required={props.required}
-            label={props.label}
-            popupInfo={props.schema.description}
-            placeholder={attrs.label}
-            virtual-list-props={virtualListProps}
-            style={{ width: `100%` }}
-            options={dataList.value}
-            allow-search={true}
-            loading={loading.value}
-            onPopupVisibleChange={(visible) =>
-              handlePopupVisibleChange(visible)
-            }
-            onChange={(value: any) => {
-              _.set(props.formData, props.fieldPath, value);
-              _.set(props.uiFormData, props.fieldPath, value);
-              handleChange(props.formData);
-            }}
-          ></seal-select>
-        </a-form-item>
+            ]}
+            label={props.schema.title}
+            field={_.join(props.fieldPath, '.')}
+            validate-trigger={['change']}
+          >
+            <seal-select
+              model-value={_.get(props.uiFormData, props.fieldPath)}
+              {...attrs}
+              disabled={
+                props.readonly ||
+                (attrs.immutable &&
+                  schemaFormStatus.value !== PageAction.CREATE)
+              }
+              required={props.required}
+              label={props.label}
+              popupInfo={props.schema.description}
+              placeholder={attrs.label}
+              virtual-list-props={virtualListProps}
+              style={{ width: `100%` }}
+              options={dataList.value}
+              allow-search={true}
+              loading={loading.value}
+              onPopupVisibleChange={(visible) =>
+                handlePopupVisibleChange(visible)
+              }
+              onChange={(value: any) => {
+                _.set(props.formData, props.fieldPath, value);
+                _.set(props.uiFormData, props.fieldPath, value);
+                handleChange(props.formData);
+              }}
+            ></seal-select>
+          </a-form-item>
+        );
+      };
+      const renderView = () => {
+        return (
+          <a-form-item
+            hide-label={true}
+            label={props.schema.title}
+            field={_.join(props.fieldPath, '.')}
+          >
+            <SealViewItemWrap label={props.schema.title} style="width: 100%">
+              {_.get(props.uiFormData, props.fieldPath)}
+            </SealViewItemWrap>
+          </a-form-item>
+        );
+      };
+      return () => (
+        <>
+          {schemaFormStatus.value === PageAction.VIEW
+            ? renderView()
+            : renderEdit()}
+        </>
       );
     }
   });
