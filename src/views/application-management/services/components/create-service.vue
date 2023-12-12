@@ -320,7 +320,7 @@
     InjectSchemaFormStatusKey
   } from '@/views/config';
   import { queryEnvironmentConnector } from '@/views/application-management/environments/api';
-  import { projectEnvCtxInjectionKey } from '@/components/form-create/bussiness-components/config';
+  import { projectEnvCtxInjectionKey } from '@/components/dynamic-form/widgets/config';
   import { beforeLeaveCallback } from '@/hooks/save-before-leave';
   import useLabelsActions from '@/components/form-create/hooks/use-labels-action';
   import { InjectWorkflowKey } from '@/views/application-management/workflows/config';

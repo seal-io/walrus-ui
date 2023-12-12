@@ -15,6 +15,9 @@ export const isBasicType = (type) => {
   ].includes(type);
 };
 
+export const isWidget = (schema) => {
+  return _.get(schema, ['x-walrus-ui', 'widget']);
+};
 export const isEmptyvalue = (val) => {
   return val === '' || val === null || val === undefined;
 };

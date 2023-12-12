@@ -1,4 +1,4 @@
-const components: Record<string, any> = import.meta.glob('./*.vue', {
+const components: Record<string, any> = import.meta.glob('./*/index.vue', {
   eager: true
 });
 const map = {};

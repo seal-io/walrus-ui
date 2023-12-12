@@ -2,11 +2,11 @@
   import { defineComponent, inject, ref } from 'vue';
   import { InjectSchemaFormStatusKey, PageAction } from '@/views/config';
   import _ from 'lodash';
-  import schemaFieldProps from '../fields/schema-field-props';
-  import { genFieldPropsAndRules } from '../utils';
-  import { widgetTypeMap } from '../../form-create/bussiness-components';
-  import widgetMaps from './widget-maps';
-  import ComponentsMap from '../components/components-map';
+  import schemaFieldProps from '@/components/dynamic-form/fields/schema-field-props';
+  import { genFieldPropsAndRules } from '@/components/dynamic-form/utils';
+  import ComponentsMap from '@/components/dynamic-form/components/components-map';
+  import { widgetTypeMap } from '../components/index';
+  import widgetWrapMaps from './widget-wrap-maps';
 
   export default defineComponent({
     inject: ['schemaFormStatus'],
@@ -21,10 +21,10 @@
         schema: props.schema,
         requiredFields: props.requiredFields
       });
-
+      console.log('widget proxy=========', props.schema);
       const widget = _.get(props.schema, ['x-walrus-ui', 'widget'], '');
       const widgetType = widgetTypeMap[widget];
-      let Component = _.get(widgetMaps, widgetType);
+      let Component = _.get(widgetWrapMaps, widgetType);
 
       if (!widgetType) {
         Component = ComponentsMap[widget];
@@ -45,6 +45,7 @@
       return () => {
         return (
           <a-grid-item
+            class="widget-proxy"
             span={{ lg: props.schema.colSpan, md: 12, sm: 12, xs: 12 }}
           >
             <Component

@@ -2,7 +2,7 @@ import axios from 'axios';
 import _ from 'lodash';
 import qs from 'query-string';
 import { BU } from '../types';
-import { parseXMLFragment, XMLParser } from '../../config/utils';
+import { parseXMLFragment, XMLParser } from '../../../form-create/config/utils';
 import { Caller, Item } from '../config/interface';
 import { RepoPull } from './repo';
 import { KuberByNamespace } from './kuber-by-namespace';

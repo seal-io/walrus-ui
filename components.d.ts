@@ -35,6 +35,7 @@ declare module 'vue' {
     ALink: typeof import('@arco-design/web-vue')['Link'];
     AMenu: typeof import('@arco-design/web-vue')['Menu'];
     AMenuItem: typeof import('@arco-design/web-vue')['MenuItem'];
+    AMinus: typeof import('@arco-design/web-vue')['Minus'];
     AModal: typeof import('@arco-design/web-vue')['Modal'];
     AOption: typeof import('@arco-design/web-vue')['Option'];
     APagination: typeof import('@arco-design/web-vue')['Pagination'];

@@ -3,8 +3,8 @@
   import { defineComponent, ref, computed, toRefs } from 'vue';
   import { InputWidth } from '@/views/config';
   import { createAxiosToken } from '@/api/axios-chunk-request';
-  import { BU } from './types';
-  import { BCWidget } from './api';
+  import { BU } from '../../types';
+  import { BCWidget } from '../../api';
 
   export default defineComponent({
     name: 'DockerSelect',

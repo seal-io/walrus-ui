@@ -4,8 +4,8 @@
   import { InputWidth } from '@/views/config';
   import sealFormItemWrap from '@/components/seal-form/components/seal-form-item-wrap.vue';
   import { createAxiosToken } from '@/api/axios-chunk-request';
-  import { BU } from './types';
-  import { BCWidget } from './api';
+  import { BU } from '../../types';
+  import { BCWidget } from '../../api';
 
   export default defineComponent({
     name: 'DockerTagSelect',
