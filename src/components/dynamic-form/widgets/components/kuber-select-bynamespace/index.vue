@@ -19,9 +19,9 @@
   export default defineComponent({
     name: 'KuberSelectByNamespace',
     widgets: [
-      BU.SecretSelectByNamespace,
-      BU.ConfigMapSelectByNamespace,
-      BU.StorageClassSelectByNamespace
+      BU.K8sSecretSelectByNamespace,
+      BU.K8sConfigMapSelectByNamespace,
+      BU.K8sStorageClassSelectByNamespace
     ],
     props: {
       modelValue: {
@@ -104,7 +104,7 @@
           const params = {
             connectorID: connectorID.value
           };
-          const handler = _.get(BCWidget, BU.NamespaceSelect);
+          const handler = _.get(BCWidget, BU.K8sNamespaceSelect);
           const { data } = await handler.request(params, extraAxiosToken.token);
           namespaceList.value = handler.transform(data);
           console.log('namespaceList', namespaceList.value);

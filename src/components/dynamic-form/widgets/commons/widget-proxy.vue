@@ -21,7 +21,7 @@
         schema: props.schema,
         requiredFields: props.requiredFields
       });
-      console.log('widget proxy=========', props.schema);
+
       const widget = _.get(props.schema, ['x-walrus-ui', 'widget'], '');
       const widgetType = widgetTypeMap[widget];
       let Component = _.get(widgetWrapMaps, widgetType);
@@ -32,7 +32,7 @@
 
       props.FieldPathMap.set(_.join(props.fieldPath, '.'), {
         required: fieldProps.required,
-        type: props.schema.type,
+        type: props.schema?.type,
         fieldPath: props.fieldPath,
         isBasicType: true,
         isNullable: props.schema.nullable || props.schema.originNullable

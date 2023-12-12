@@ -1,23 +1,22 @@
 <script lang="tsx">
   import _ from 'lodash';
+  import i18n from '@/locale';
   import { defineComponent, ref, computed, toRefs, inject } from 'vue';
-  import { InputWidth } from '@/views/config';
+  import {
+    InputWidth,
+    InjectSchemaFormStatusKey,
+    PageAction
+  } from '@/views/config';
+  import { parentObjectExsits } from '@/components/dynamic-form/utils';
+  import schemaFieldProps from '@/components/dynamic-form/fields/schema-field-props';
   import { CheckConnectorCatagory, BU } from '../../types';
   import { BCWidget, queryEnvironmentConnector } from '../../api';
   import useQueryConnector from '../../hooks/use-query-connector';
 
   export default defineComponent({
     name: 'KuberSelect',
-    widgetType: 'select',
-    widgets: [
-      BU.NamespaceSelect,
-      BU.SecretSelect,
-      BU.ConfigMapSelect,
-      BU.StorageClassSelect,
-      BU.AWSRegion,
-      BU.AWSInstanceType
-    ],
     props: {
+      ...schemaFieldProps,
       modelValue: {
         type: [String, Number, Array],
         default() {
@@ -27,22 +26,33 @@
       widget: {
         type: String,
         default: ''
+      },
+      rules: {
+        type: Array,
+        default: () => []
       }
     },
     emits: ['update:modelValue', 'change', 'inputValueChange'],
+    widgets: [
+      BU.K8sNamespaceSelect,
+      BU.K8sSecretSelect,
+      BU.K8sConfigMapSelect,
+      BU.K8sStorageClassSelect,
+      BU.AWSRegion,
+      BU.AWSInstanceType
+    ],
     setup(props, { attrs, emit }) {
-      // const ProjectEnvironment = inject('InjectProjectEnvironmentKey', {
-      //   environmentID: '',
-      //   projectID: ''
-      // });
+      const schemaFormStatus = inject(
+        InjectSchemaFormStatusKey,
+        ref(PageAction.CREATE)
+      );
       const {
         fetchConnectors,
         connectorID,
         isProjectConnector,
         ProjectEnvironment
       } = useQueryConnector(props);
-      // const connectorID = ref('');
-      const { modelValue, widget } = toRefs(props);
+      const { widget } = toRefs(props);
       const loading = ref(false);
       const dataList = ref<{ label: string; value: string }[]>([]);
       const virtualListProps = computed(() => {
@@ -54,25 +64,9 @@
         return undefined;
       });
 
-      // const fetchConnectors = async () => {
-      //   try {
-      //     const { environmentID, projectID } = ProjectEnvironment;
-
-      //     if (!environmentID || !projectID) return;
-
-      //     const { data } = await queryEnvironmentConnector({
-      //       environmentID,
-      //       projectID
-      //     });
-      //     const connectorData = _.find(data.connectors, (item) => {
-      //       return item.connector.type === CheckConnectorCatagory(widget.value);
-      //     });
-      //     connectorID.value = connectorData?.connector.id;
-      //   } catch (error) {
-      //     // eslint-disable-next-line no-console
-      //   }
-      // };
-
+      const handleChange = (data) => {
+        emit('change', data);
+      };
       const handlePopupVisibleChange = async (visible: boolean) => {
         if (!widget.value || dataList.value.length) return;
         if (visible) {
@@ -94,28 +88,61 @@
       };
 
       return () => (
-        <>
+        <a-form-item
+          hide-label={true}
+          rules={[
+            ...props.rules,
+            {
+              validator: (value, callback) => {
+                if (
+                  !parentObjectExsits(props.formData, props.fieldPath) ||
+                  !props.required
+                ) {
+                  callback();
+                  return;
+                }
+                if (!value && value !== 0) {
+                  callback(
+                    `${i18n.global.t('common.form.rule.select', {
+                      name: props.schema.title
+                    })}`
+                  );
+                } else {
+                  callback();
+                }
+              }
+            }
+          ]}
+          label={props.schema.title}
+          field={_.join(props.fieldPath, '.')}
+          validate-trigger={['change']}
+        >
           <seal-select
-            model-value={modelValue.value}
+            model-value={_.get(props.uiFormData, props.fieldPath)}
             {...attrs}
+            disabled={
+              props.readonly ||
+              (attrs.immutable && schemaFormStatus.value !== PageAction.CREATE)
+            }
+            required={props.required}
+            label={props.label}
+            popupInfo={props.schema.description}
             placeholder={attrs.label}
             virtual-list-props={virtualListProps}
             style={{ width: `100%` }}
             options={dataList.value}
             allow-search={true}
             loading={loading.value}
-            onInputValueChange={(value: any) => {
-              emit('inputValueChange', value);
-            }}
             onPopupVisibleChange={(visible) =>
               handlePopupVisibleChange(visible)
             }
             onChange={(value: any) => {
-              emit('change', value);
-              emit('update:modelValue', value);
+              _.set(props.formData, props.fieldPath, value);
+              _.set(props.uiFormData, props.fieldPath, value);
+              handleChange(props.formData);
             }}
           ></seal-select>
-        </>
+        </a-form-item>
       );
     }
   });

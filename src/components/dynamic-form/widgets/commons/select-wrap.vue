@@ -7,19 +7,10 @@
   import schemaFieldProps from '@/components/dynamic-form/fields/schema-field-props';
   import {
     isSelect,
-    isNumber,
-    isBoolean,
-    isDatePicker,
-    isMuliSelect,
-    isPassword,
-    initFieldDefaultValue,
-    isRequiredInitField,
     isEmptyvalue,
     isAllowCreateNumberSelect,
     isAllowCreateSelect,
     genFieldPropsAndRules,
-    initFieldValue,
-    viewFieldValue,
     unsetFieldValue,
     genFieldInFormData,
     parentObjectExsits,
@@ -43,14 +34,6 @@
 
       const options = ref<Option[]>([]);
 
-      const handleUnsetField = () => {
-        if (
-          isEmptyvalue(_.get(props.formData, props.fieldPath)) &&
-          !props.schema.default
-        ) {
-          _.unset(props.formData, props.fieldPath);
-        }
-      };
       const { fieldProps, rules } = genFieldPropsAndRules({
         schema: props.schema,
         requiredFields: props.requiredFields

@@ -8,7 +8,7 @@ const STORAGE_API = `/proxy/apis/storage.k8s.io/v1/namespaces`;
 
 export const KuberByNamespace: Record<string, any> = {
   // secrets
-  [BU.SecretSelectByNamespace]: {
+  [BU.K8sSecretSelectByNamespace]: {
     request: async (params: { connectorID: string; namespace: string }) => {
       return axios.get(`${PROXY_API}/${params.namespace}/secrets`, {
         params: {
@@ -29,7 +29,7 @@ export const KuberByNamespace: Record<string, any> = {
     }
   },
   // configmaps
-  [BU.ConfigMapSelectByNamespace]: {
+  [BU.K8sConfigMapSelectByNamespace]: {
     request: async (params: { connectorID: string; namespace: string }) => {
       return axios.get(`${PROXY_API}/${params.namespace}/configmaps`, {
         params: {
@@ -50,7 +50,7 @@ export const KuberByNamespace: Record<string, any> = {
     }
   },
   // storageClasses
-  [BU.StorageClassSelectByNamespace]: {
+  [BU.K8sStorageClassSelectByNamespace]: {
     request: async (params: { connectorID: string; namespace: string }) => {
       return axios.get(`${PROXY_API}/${params.namespace}/storageClasses`, {
         params: {
