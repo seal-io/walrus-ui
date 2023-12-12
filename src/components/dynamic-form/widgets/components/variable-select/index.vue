@@ -223,21 +223,7 @@
               validate-trigger={['change']}
             >
               <SealViewItemWrap label={props.schema.title} style="width: 100%">
-                {isBoolean(props.schema) ? (
-                  <a-checkbox
-                    modelValue={_.get(props.uiFormData, props.fieldPath)}
-                    size="small"
-                  ></a-checkbox>
-                ) : (
-                  <span>
-                    {(isPassword(props.schema) || props.schema.writeOnly) &&
-                    _.get(props.uiFormData, props.fieldPath)
-                      ? '******'
-                      : showArrayValue(
-                          _.get(props.uiFormData, props.fieldPath)
-                        )}
-                  </span>
-                )}
+                {_.get(props.uiFormData, props.fieldPath)}
               </SealViewItemWrap>
             </a-form-item>
           )}
