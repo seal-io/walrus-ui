@@ -215,7 +215,8 @@
     InjectCompleteDataKey,
     InjectShowInputHintKey,
     InjectSchemaFormStatusKey,
-    InjectTraceKey
+    InjectTraceKey,
+    HintKeyMaps
   } from '@/views/config';
   import { HintKey } from '@/views/config/interface';
   import { ref, PropType, computed, provide, onMounted, watch } from 'vue';
@@ -319,8 +320,8 @@
   const traceKey = ref();
 
   const HintKeyMap = {
-    [ServiceDataType.service]: 'svc',
-    [ServiceDataType.resource]: 'res'
+    [ServiceDataType.service]: HintKeyMaps.service,
+    [ServiceDataType.resource]: HintKeyMaps.resource
   };
   provide(InjectShowInputHintKey, true);
   provide(InjectCompleteDataKey, completeData);
@@ -354,7 +355,7 @@
   };
 
   const updateCompleteData = (oldName, newName) => {
-    if (completeData.value.res[newName]) {
+    if (_.get(completeData.value, [HintKeyMaps.resource, newName])) {
       return;
     }
     const hintType = HintKeyMap[props.resourceType];

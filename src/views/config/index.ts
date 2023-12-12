@@ -241,4 +241,10 @@ export const SaveActions: MoreAction[] = [
   }
 ];
 
+export const HintKeyMaps = {
+  resource: 'resource',
+  var: 'var',
+  service: 'service'
+};
+
 export default {};
