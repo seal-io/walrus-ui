@@ -112,13 +112,6 @@
         options.value = _.filter(options.value, (v) => !isEmptyvalue(v.value));
       };
 
-      const showArrayValue = (val) => {
-        if (_.isArray(val)) {
-          return _.join(val, ',');
-        }
-        return val;
-      };
-
       initOptions();
       const renderEdit = () => {
         return (
@@ -168,7 +161,6 @@
               popupInfo={props.schema.description}
               modelValue={_.get(props.uiFormData, props.fieldPath)}
               onChange={(value) => {
-                console.log('value==========', value);
                 _.set(props.formData, props.fieldPath, value);
                 _.set(props.uiFormData, props.fieldPath, value);
                 if (props.schema.isItemsProperty) {
@@ -223,7 +215,11 @@
               validate-trigger={['change']}
             >
               <SealViewItemWrap label={props.schema.title} style="width: 100%">
-                {_.get(props.uiFormData, props.fieldPath)}
+                {
+                  _.find(optionList.value, {
+                    value: _.get(props.uiFormData, props.fieldPath)
+                  })?.label
+                }
               </SealViewItemWrap>
             </a-form-item>
           )}
