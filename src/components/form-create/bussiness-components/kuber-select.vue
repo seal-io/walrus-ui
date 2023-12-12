@@ -8,6 +8,7 @@
 
   export default defineComponent({
     name: 'KuberSelect',
+    widgetType: 'select',
     widgets: [
       BU.NamespaceSelect,
       BU.SecretSelect,

@@ -11,14 +11,13 @@
   } from 'vue';
   import { InputWidth } from '@/views/config';
   import { createAxiosToken } from '@/api/axios-chunk-request';
-  import sealFormItemWrap from '@/components/seal-form/components/seal-form-item-wrap.vue';
   import useQueryConnector from './hooks/use-query-connector';
   import { BU } from './types';
   import { BCWidget } from './api';
 
   export default defineComponent({
-    name: 'SourceCodeRepository',
-    widgets: [BU.GitHubRepository],
+    name: 'CodeRepositorySelect',
+    widgets: [BU.CodeRepositorySelect],
     props: {
       modelValue: {
         type: [String],
@@ -154,7 +153,7 @@
       });
       return () => (
         <>
-          <div class="group-wrap seal-border-focus bordered">
+          <div>
             <seal-select
               v-model={repository.value}
               {...attrs}
@@ -164,7 +163,7 @@
               options={dataList.value}
               allow-search={true}
               loading={loading.value}
-              bordered={false}
+              bordered={true}
               allow-create={true}
               onPopupVisibleChange={(visible) =>
                 handleRepoPopupVisibleChange(visible)
@@ -184,7 +183,7 @@
               allow-search={true}
               allow-create={true}
               loading={loadingBranch.value}
-              bordered={false}
+              bordered={true}
               onPopupVisibleChange={(visible) =>
                 handlePopupVisibleChange(visible)
               }

@@ -6,12 +6,14 @@
     toRefs,
     watch,
     inject,
-    onMounted
+    onMounted,
+    withModifiers
   } from 'vue';
-  import { BU, WidgetAppendUnit } from './types';
+  import { BU, WidgetAppendUnit, WidgetValueUnit } from './types';
 
   export default defineComponent({
     name: 'ComInput',
+    widgetType: 'input',
     widgets: [BU.CpuCore, BU.Memory, BU.Disk],
     props: {
       modelValue: {
@@ -36,7 +38,7 @@
       };
       const setFormatterValue = (val) => {
         if (!val) return '';
-        return `${val}${WidgetAppendUnit[widget.value]}`;
+        return `${val}${WidgetValueUnit[widget.value]}`;
       };
       watch(
         () => modelValue.value,
@@ -51,9 +53,8 @@
         <span class="com-input">
           <seal-input
             {...attrs}
+            popupInfo={attrs.popupInfo}
             v-model={[currentValue.value, ['trim']]}
-            allow-clear
-            min={0}
             formatter={(value) => {
               return fomatter(value);
             }}

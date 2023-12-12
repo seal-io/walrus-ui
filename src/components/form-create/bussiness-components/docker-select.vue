@@ -8,6 +8,7 @@
 
   export default defineComponent({
     name: 'DockerSelect',
+    widgetType: 'select',
     widgets: [BU.ImageSelect],
     props: {
       modelValue: {

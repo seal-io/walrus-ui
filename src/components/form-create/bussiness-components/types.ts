@@ -25,8 +25,8 @@ const AliBU = {
   AliyunInstanceType: 'AliyunInstanceType'
 };
 
-const GitHubBU = {
-  GitHubRepository: 'GitHubRepository'
+const GitBU = {
+  CodeRepositorySelect: 'CodeRepositorySelect'
 };
 
 export const BU = {
@@ -37,11 +37,17 @@ export const BU = {
   ...KubernetesBU,
   ...AWSBU,
   ...AliBU,
-  ...GitHubBU
+  ...GitBU
 };
 
 export const WidgetAppendUnit = {
   [BU.CpuCore]: 'Core',
+  [BU.Memory]: 'Mi',
+  [BU.Disk]: 'Mi'
+};
+
+export const WidgetValueUnit = {
+  [BU.CpuCore]: '',
   [BU.Memory]: 'Mi',
   [BU.Disk]: 'Mi'
 };
@@ -58,7 +64,7 @@ export const CheckConnectorCatagory = (widget) => {
   if (AliBU[widget]) {
     return ConnectorType.Alibaba;
   }
-  if (GitHubBU[widget]) {
+  if (GitBU[widget]) {
     return ConnectorType.Github;
   }
   return ConnectorType.Kubernetes;

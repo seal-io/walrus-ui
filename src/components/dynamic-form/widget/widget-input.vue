@@ -1,25 +1,20 @@
 <script lang="tsx">
   import _ from 'lodash';
-  import i18n from '@/locale';
   import { defineComponent, toRefs, inject, ref } from 'vue';
+  import i18n from '@/locale';
   import { InjectSchemaFormStatusKey, PageAction } from '@/views/config';
   import SealViewItemWrap from '@/components/seal-form/components/seal-view-item-wrap.vue';
-  import schemaFieldProps from '../fields/schema-field-props';
   import {
-    BasicFieldMaps,
-    CommonFieldMaps,
-    FormatsFieldMaps
-  } from '../components/basic-components';
-  import {
-    isDatePicker,
+    parentObjectExsits,
     isPassword,
-    initFieldValue,
+    isNumber,
     unsetFieldValue,
     genFieldInFormData,
-    parentObjectExsits,
-    viewFieldValue,
+    isEmptyvalue,
     isEqualOn
   } from '../utils';
+  import schemaFieldProps from '../fields/schema-field-props';
+  import ComponentsMap from '../components/components-map';
   import { ProviderFormRefKey } from '../config';
 
   export default defineComponent({
@@ -39,10 +34,8 @@
       const formref = inject(ProviderFormRefKey, ref());
 
       const widget = _.get(props.schema, ['x-walrus-ui', 'widget'], '');
-      const numberReg = /\d+/;
-      const { type } = toRefs(props.schema);
 
-      const Component = BasicFieldMaps[type.value];
+      const Component = ComponentsMap[widget];
 
       const handleChange = (data) => {
         emit('change', data);
@@ -53,55 +46,39 @@
           formref.value?.validateField(_.join(props.fieldPath, '.'));
         });
       };
-      const initValue = () => {
-        if (schemaFormStatus.value === PageAction.CREATE) {
-          initFieldValue({
-            defaultFormData: props.defaultFormData,
-            schema: props.schema,
-            formData: props.formData,
-            uiFormData: props.uiFormData,
-            fieldPath: props.fieldPath,
-            required: props.required
-          });
-          handleChange(props.formData);
-        } else {
-          viewFieldValue({
-            defaultFormData: props.defaultFormData,
-            schema: props.schema,
-            formData: props.formData,
-            uiFormData: props.uiFormData,
-            fieldPath: props.fieldPath,
-            required: props.required
-          });
-        }
-      };
 
       const handleInputChange = (val: any) => {
+        val = isEmptyvalue(val) ? null : val;
         _.set(props.formData, props.fieldPath, val);
         _.set(props.uiFormData, props.fieldPath, val);
-        if (isEqualOn(val, props.schema.default)) {
-          unsetFieldValue({
-            defaultFormData: props.defaultFormData,
-            schema: props.schema,
-            formData: props.formData,
-            uiFormData: props.uiFormData,
-            fieldPath: props.fieldPath,
-            required: props.required
-          });
-        } else {
-          genFieldInFormData({
-            schema: props.schema,
-            uiFormData: props.uiFormData,
-            formData: props.formData,
-            fieldPath: props.fieldPath,
-            required: props.required
-          });
-        }
+        // if (props.schema.isItemsProperty) {
+        //   return;
+        // }
+        // if (isEqualOn(val, _.get(props.defaultFormData, props.fieldPath))) {
+        //   unsetFieldValue({
+        //     FieldPathMap: props.FieldPathMap,
+        //     defaultFormData: props.defaultFormData,
+        //     schema: props.schema,
+        //     formData: props.formData,
+        //     uiFormData: props.uiFormData,
+        //     fieldPath: props.fieldPath,
+        //     required: props.required
+        //   });
+        // } else {
+        //   genFieldInFormData({
+        //     FieldPathMap: props.FieldPathMap,
+        //     defaultFormData: props.defaultFormData,
+        //     schema: props.schema,
+        //     uiFormData: props.uiFormData,
+        //     formData: props.formData,
+        //     fieldPath: props.fieldPath,
+        //     required: props.required
+        //   });
+        // }
         handleChange(props.formData);
       };
 
-      // initValue();
-
+      const debunceHandleInputChange = _.debounce(handleInputChange, 100);
       const renderEdit = () => {
         return (
           <a-form-item
@@ -117,7 +94,7 @@
                     callback();
                     return;
                   }
-                  if (!value) {
+                  if (!value && value !== 0) {
                     callback(
                       `${i18n.global.t('common.form.rule.input', {
                         name: props.schema.title
@@ -135,11 +112,12 @@
           >
             <Component
               {...attrs}
+              widget={widget}
               required={props.required}
               editorId={_.join(props.fieldPath, '.')}
               label={props.label}
               style="width: 100%"
-              allow-search={false}
+              allow-search={true}
               disabled={
                 props.readonly ||
                 (attrs.immutable &&
@@ -153,21 +131,20 @@
               allow-clear={true}
               popupInfo={props.schema.description}
               modelValue={_.get(props.uiFormData, props.fieldPath)}
-              onInput={(val) => {
-                console.log(
-                  'group inpu+++++input========',
-                  val,
-                  props.formData
-                );
-                handleInputChange(val);
+              onUpdate:modelValue={(val) => {
+                if (isNumber(props.schema)) {
+                  debunceHandleInputChange(val);
+                } else {
+                  handleInputChange(val);
+                }
+                validateField();
               }}
-              onChange={(val) => {
-                console.log(
-                  'group inpu+++++change========',
-                  val,
-                  props.formData
-                );
-                handleInputChange(val);
+              onInput={(val) => {
+                if (isNumber(props.schema)) {
+                  debunceHandleInputChange(val);
+                } else {
+                  handleInputChange(val);
+                }
                 validateField();
               }}
             ></Component>
@@ -182,10 +159,8 @@
           ) : (
             <a-form-item
               hide-label={true}
-              rules={props.rules}
               label={props.schema.title}
               field={_.join(props.fieldPath, '.')}
-              validate-trigger={['change']}
             >
               <SealViewItemWrap label={props.schema.title} style="width: 100%">
                 <span>
