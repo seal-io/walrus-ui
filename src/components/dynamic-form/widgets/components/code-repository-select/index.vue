@@ -9,16 +9,24 @@
     inject,
     onMounted
   } from 'vue';
+  import i18n from '@/locale';
   import { InputWidth } from '@/views/config';
+  import {
+    parentObjectExsits,
+    genObjectFieldProperties,
+    getCustomColSpan
+  } from '@/components/dynamic-form/utils';
   import { createAxiosToken } from '@/api/axios-chunk-request';
-  import useQueryConnector from './hooks/use-query-connector';
-  import { BU } from './types';
-  import { BCWidget } from './api';
+  import schemaFieldProps from '@/components/dynamic-form/fields/schema-field-props';
+  import { FieldSchema } from '@/components/dynamic-form/interface';
+  import useQueryConnector from '../../hooks/use-query-connector';
+  import { BU } from '../../types';
+  import { BCWidget } from '../../api';
 
   export default defineComponent({
     name: 'CodeRepositorySelect',
-    widgets: [BU.CodeRepositorySelect],
     props: {
+      ...schemaFieldProps,
       modelValue: {
         type: [String],
         default() {
@@ -47,9 +55,9 @@
       'change',
       'inputValueChange',
       'search',
-      'update:branch',
-      'update:repository'
+      'change'
     ],
+    widgets: [BU.CodeRepositorySelect],
     setup(props, { attrs, emit }) {
       const {
         fetchConnectors,
@@ -57,7 +65,8 @@
         isProjectConnector,
         ProjectEnvironment
       } = useQueryConnector(props);
-      const { modelValue, widget, repository, branch } = toRefs(props);
+      const childProperties = ref<FieldSchema[]>([]);
+      const { widget } = toRefs(props);
       const loading = ref(false);
       const loadingBranch = ref(false);
       const dataList = ref<{ label: string; value: string }[]>([]);
@@ -76,6 +85,17 @@
         return undefined;
       });
 
+      const repository = computed(() => {
+        return _.get(props.uiFormData, [...props.fieldPath, 'url'], '');
+      });
+
+      const branch = computed(() => {
+        return _.get(props.uiFormData, [...props.fieldPath, 'branch'], '');
+      });
+
+      const handleChange = (data) => {
+        emit('change', data);
+      };
       const getRepos = async (query) => {
         try {
           axiosToken?.cancel();
@@ -142,58 +162,116 @@
       };
 
       const handleRepoChange = (value) => {
-        emit('update:repository', value);
-        emit('update:branch', '');
         setTimeout(() => {
           getBranches();
         }, 100);
       };
+      childProperties.value = genObjectFieldProperties({
+        defaultFormData: props.defaultFormData,
+        uiFormData: props.uiFormData,
+        schema: props.schema,
+        fieldPath: props.fieldPath,
+        parentSpan: getCustomColSpan(props.schema) || props.schema.colSpan,
+        level: props.level + 1
+      });
       onMounted(async () => {
         await fetchConnectors();
       });
+      const renderURLWidget = (item: FieldSchema) => {
+        return (
+          <seal-select
+            modelValue={repository.value}
+            {...attrs}
+            style={{ width: '100%' }}
+            label={item.title || item.name}
+            virtual-list-props={virtualListProps}
+            options={dataList.value}
+            allow-search={true}
+            loading={loading.value}
+            bordered={true}
+            allow-create={true}
+            onPopupVisibleChange={(visible) =>
+              handleRepoPopupVisibleChange(visible)
+            }
+            onSearch={(value: string) => {
+              handleSearch(value);
+            }}
+            onChange={(val) => {
+              _.set(props.formData, [...props.fieldPath, item.name], val);
+              _.set(props.uiFormData, [...props.fieldPath, item.name], val);
+              handleChange(props.formData);
+            }}
+          ></seal-select>
+        );
+      };
+
+      const renderBranchWidget = (item: FieldSchema) => {
+        return (
+          <seal-select
+            modelValue={branch.value}
+            {...attrs}
+            label={item.title || item.name}
+            style={{ width: '100%' }}
+            virtual-list-props={virtualListProps}
+            options={branchList.value}
+            allow-search={true}
+            allow-create={true}
+            loading={loadingBranch.value}
+            bordered={true}
+            onPopupVisibleChange={(visible) =>
+              handlePopupVisibleChange(visible)
+            }
+            onChange={(val: any) => {
+              _.set(props.formData, [...props.fieldPath, item.name], val);
+              _.set(props.uiFormData, [...props.fieldPath, item.name], val);
+              handleChange(props.formData);
+            }}
+          ></seal-select>
+        );
+      };
       return () => (
-        <>
-          <div>
-            <seal-select
-              v-model={repository.value}
-              {...attrs}
-              label={'项目'}
-              virtual-list-props={virtualListProps}
-              style={{ flex: 1 }}
-              options={dataList.value}
-              allow-search={true}
-              loading={loading.value}
-              bordered={true}
-              allow-create={true}
-              onPopupVisibleChange={(visible) =>
-                handleRepoPopupVisibleChange(visible)
+        <a-form-item
+          hide-label={true}
+          rules={[
+            {
+              validator: (value, callback) => {
+                if (
+                  !parentObjectExsits(props.formData, props.fieldPath) ||
+                  !props.required
+                ) {
+                  callback();
+                  return;
+                }
+                if (!value && value !== 0) {
+                  callback(
+                    `${i18n.global.t('common.form.rule.input', {
+                      name: props.schema.title
+                    })}`
+                  );
+                } else {
+                  callback();
+                }
               }
-              onSearch={(value: string) => {
-                handleSearch(value);
-              }}
-              onChange={handleRepoChange}
-            ></seal-select>
-            <seal-select
-              v-model={branch.value}
-              {...attrs}
-              label={'分支'}
-              virtual-list-props={virtualListProps}
-              style={{ flex: 1 }}
-              options={branchList.value}
-              allow-search={true}
-              allow-create={true}
-              loading={loadingBranch.value}
-              bordered={true}
-              onPopupVisibleChange={(visible) =>
-                handlePopupVisibleChange(visible)
-              }
-              onChange={(value: any) => {
-                branch.value = value;
-                emit('update:branch', value);
-              }}
-            ></seal-select>
-          </div>
-        </>
+            }
+          ]}
+          label={props.schema.title}
+          field={_.join(props.fieldPath, '.')}
+          validate-trigger={['change']}
+        >
+          <a-grid cols={12} col-gap={18} style="width: 100%">
+            {_.map(childProperties.value, (item, index) => {
+              return (
+                <a-grid-item
+                  span={{ lg: item.colSpan, md: 12, sm: 12, xs: 12 }}
+                >
+                  {item.name === 'url'
+                    ? renderURLWidget(item)
+                    : renderBranchWidget(item)}
+                </a-grid-item>
+              );
+            })}
+          </a-grid>
+        </a-form-item>
       );
     }
   });

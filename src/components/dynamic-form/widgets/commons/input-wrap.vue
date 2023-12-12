@@ -12,10 +12,10 @@
     genFieldInFormData,
     isEmptyvalue,
     isEqualOn
-  } from '../utils';
-  import schemaFieldProps from '../fields/schema-field-props';
-  import ComponentsMap from '../components/components-map';
-  import { ProviderFormRefKey } from '../config';
+  } from '@/components/dynamic-form/utils';
+  import schemaFieldProps from '@/components/dynamic-form/fields/schema-field-props';
+  import ComponentsMap from '@/components/dynamic-form/components/components-map';
+  import { ProviderFormRefKey } from '@/components/dynamic-form/config';
 
   export default defineComponent({
     props: {

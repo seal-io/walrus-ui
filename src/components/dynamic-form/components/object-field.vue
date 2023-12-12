@@ -19,7 +19,8 @@
     isSelect,
     isSimpleObject,
     initFieldValue,
-    unsetFieldValue
+    unsetFieldValue,
+    isWidget
   } from '../utils';
   import CommonButton from './common-button.vue';
 
@@ -265,7 +266,10 @@
       const renderBasicTypeFields = () => {
         const list = _.filter(childProperties.value, (item: FieldSchema) => {
           return (
-            isBasicType(item.type) || isSimpleObject(item) || isSelect(item)
+            isBasicType(item.type) ||
+            isSimpleObject(item) ||
+            isSelect(item) ||
+            isWidget(item)
           );
         });
         return (
@@ -296,7 +300,10 @@
       const renderNonBasicTypeFields = () => {
         const list = _.filter(childProperties.value, (item) => {
           return (
-            !isBasicType(item.type) && !isSimpleObject(item) && !isSelect(item)
+            !isBasicType(item.type) &&
+            !isSimpleObject(item) &&
+            !isSelect(item) &&
+            !isWidget(item)
           );
         });
         return (

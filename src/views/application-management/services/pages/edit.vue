@@ -353,6 +353,10 @@
 </template>
 
 <script lang="ts" setup>
+<<<<<<< HEAD
+=======
+  import KuberSelect from '@/components/dynamic-form/widgets/components/kuber-select-bynamespace/index.vue';
+>>>>>>> 026b72f5 (chore: widget source repo widget)
   import { PROJECT } from '@/router/config';
   import _, { get, find, cloneDeep, toString } from 'lodash';
   import {
@@ -391,7 +395,7 @@
   } from '@/views/config';
   import keyValueLabels from '@/components/form-create/custom-components/key-value-labels.vue';
   import { queryEnvironmentConnector } from '@/views/application-management/environments/api';
-  import { projectEnvCtxInjectionKey } from '@/components/form-create/bussiness-components/config';
+  import { projectEnvCtxInjectionKey } from '@/components/dynamic-form/widgets/config';
   import { BreadcrumbOptions } from '@/views/config/interface';
   import { beforeLeaveCallback } from '@/hooks/save-before-leave';
   import useLabelsActions from '@/components/form-create/hooks/use-labels-action';

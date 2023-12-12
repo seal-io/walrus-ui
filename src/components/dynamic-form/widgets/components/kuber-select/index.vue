@@ -2,9 +2,9 @@
   import _ from 'lodash';
   import { defineComponent, ref, computed, toRefs, inject } from 'vue';
   import { InputWidth } from '@/views/config';
-  import { CheckConnectorCatagory, BU } from './types';
-  import { BCWidget, queryEnvironmentConnector } from './api';
-  import useQueryConnector from './hooks/use-query-connector';
+  import { CheckConnectorCatagory, BU } from '../../types';
+  import { BCWidget, queryEnvironmentConnector } from '../../api';
+  import useQueryConnector from '../../hooks/use-query-connector';
 
   export default defineComponent({
     name: 'KuberSelect',

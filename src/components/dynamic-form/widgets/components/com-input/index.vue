@@ -9,7 +9,7 @@
     onMounted,
     withModifiers
   } from 'vue';
-  import { BU, WidgetAppendUnit, WidgetValueUnit } from './types';
+  import { BU, WidgetAppendUnit, WidgetValueUnit } from '../../types';
 
   export default defineComponent({
     name: 'ComInput',

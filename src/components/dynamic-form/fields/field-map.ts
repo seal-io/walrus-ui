@@ -2,7 +2,7 @@ import _ from 'lodash';
 import ComponentsMap from '../components/components-map';
 import { FieldMaps } from '../components/basic-components';
 import FIELD_TYPE from '../config/field-type';
-import widgetProxyVue from '../widget/widget-proxy.vue';
+import widgetProxyVue from '../widgets/commons/widget-proxy.vue';
 import {
   isBasicType,
   isSimpleObject,

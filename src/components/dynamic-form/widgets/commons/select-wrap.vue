@@ -4,7 +4,7 @@
   import { defineComponent, toRefs, inject, ref, watch } from 'vue';
   import { InjectSchemaFormStatusKey, PageAction } from '@/views/config';
   import SealViewItemWrap from '@/components/seal-form/components/seal-view-item-wrap.vue';
-  import schemaFieldProps from '../fields/schema-field-props';
+  import schemaFieldProps from '@/components/dynamic-form/fields/schema-field-props';
   import {
     isSelect,
     isNumber,
@@ -24,9 +24,9 @@
     genFieldInFormData,
     parentObjectExsits,
     isEqualOn
-  } from '../utils';
-  import { Option } from '../interface';
-  import { ProviderFormRefKey } from '../config';
+  } from '@/components/dynamic-form/utils';
+  import { Option } from '@/components/dynamic-form/interface';
+  import { ProviderFormRefKey } from '@/components/dynamic-form/config';
 
   export default defineComponent({
     props: {

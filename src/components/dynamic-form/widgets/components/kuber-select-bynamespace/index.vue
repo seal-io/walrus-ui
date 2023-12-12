@@ -12,9 +12,9 @@
   import { InputWidth } from '@/views/config';
   import sealFormItemWrap from '@/components/seal-form/components/seal-form-item-wrap.vue';
   import { createAxiosToken } from '@/api/axios-chunk-request';
-  import useQueryConnector from './hooks/use-query-connector';
-  import { BCWidget } from './api';
-  import { BU } from './types';
+  import useQueryConnector from '../../hooks/use-query-connector';
+  import { BCWidget } from '../../api';
+  import { BU } from '../../types';
 
   export default defineComponent({
     name: 'KuberSelectByNamespace',
