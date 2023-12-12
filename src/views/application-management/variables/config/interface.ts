@@ -2,6 +2,8 @@ export interface VariableRow {
   id: string;
   name: string;
   createTime: string;
+  value: string;
+  sensitive: boolean;
 }
 export interface VariableFormData {
   name: string;
