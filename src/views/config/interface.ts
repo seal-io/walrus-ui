@@ -58,8 +58,9 @@ export interface ListItem {
 }
 
 export interface HintKey {
-  res: any;
+  resource: any;
   var: any;
-  svc: any;
+  service: any;
 }
+
 export default {};

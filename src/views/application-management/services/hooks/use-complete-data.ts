@@ -14,6 +14,7 @@ import { queryEnvironmentAvailableDefinitions } from '@/views/application-manage
 import useCallCommon from '@/hooks/use-call-common';
 import { queryResourceDefinitions } from '@/views/operation-hub/resource-definitions/api';
 import { HintKey } from '@/views/config/interface';
+import { HintKeyMaps } from '@/views/config';
 import { queryVariables } from '../../variables/api';
 import { ServiceDataType } from '../config';
 
@@ -44,9 +45,9 @@ export default function useCompleteData(props?) {
   const allTemplateVersions = ref<TemplateVersionItem[]>([]);
   const resourceDefinitionSchemaMap = ref<any>({});
   const completeData = ref<Partial<HintKey>>({
-    res: null,
-    var: null,
-    svc: null
+    [HintKeyMaps.resource]: null,
+    [HintKeyMaps.var]: null,
+    [HintKeyMaps.service]: null
   });
   const variableList = ref<any[]>([]);
   const serviceDataList = ref<any[]>([]);
@@ -365,12 +366,12 @@ export default function useCompleteData(props?) {
   const updateServiceCompleteData = () => {
     const res = setServiceCompleteData();
 
-    completeData.value.res = { ...res.resources };
-    completeData.value.svc = { ...res.services };
+    completeData.value[HintKeyMaps.resource] = { ...res.resources };
+    completeData.value[HintKeyMaps.service] = { ...res.services };
   };
   const updateVariablesCompleteData = () => {
     const variables = setVariablesCompleteData();
-    completeData.value.var = [...variables];
+    completeData.value[HintKeyMaps.var] = [...variables];
   };
   const setCompleteData = () => {
     updateServiceCompleteData();

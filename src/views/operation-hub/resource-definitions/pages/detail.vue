@@ -255,7 +255,8 @@
     PageAction,
     validateLabelNameRegx,
     InputWidth,
-    InjectCompleteDataKey
+    InjectCompleteDataKey,
+    HintKeyMaps
   } from '@/views/config';
   import { HintKey } from '@/views/config/interface';
   import { useElementSize } from '@vueuse/core';
@@ -307,7 +308,7 @@
   const extraWrapper = ref();
   const deinitionSchema = ref<any>({});
   const completeData = ref<Partial<HintKey>>({
-    var: null
+    [HintKeyMaps.var]: null
   });
   const formData = ref<ResourceDefinitionFormData>({
     name: '',
@@ -388,10 +389,12 @@
   const getVariablesCompleteData = async () => {
     try {
       const { data } = await queryVariables({ page: -1 });
-      completeData.value.var = setVariablesCompleteData(data.items || []);
+      completeData.value[HintKeyMaps.var] = setVariablesCompleteData(
+        data.items || []
+      );
     } catch (error) {
       // ignore
-      completeData.value.var = null;
+      completeData.value[HintKeyMaps.var] = null;
     }
   };
   const getTemplateList = async () => {
