@@ -71,18 +71,18 @@ export const statusMap = {
 export enum Status {
   Warning = 'warning',
   Error = 'error',
-  Inactive = 'inactive',
+  Undeployed = 'undeployed',
+  Stopped = 'stopped',
   Running = 'running'
 }
 export const setServiceStatus = (status) => {
   if (get(status, 'transitioning')) return Status.Warning;
   if (get(status, 'error')) return Status.Error;
-  if (
-    [ServiceStatus.Undeployed, ServiceStatus.Stopped].includes(
-      status.summaryStatus
-    )
-  ) {
-    return Status.Inactive;
+  if (status?.summaryStatus === ServiceStatus.Undeployed) {
+    return Status.Undeployed;
+  }
+  if (status?.summaryStatus === ServiceStatus.Stopped) {
+    return Status.Stopped;
   }
 
   return Status.Running;
