@@ -13,6 +13,23 @@ export const ServiceDataType = {
   service: 'service',
   resource: 'resource'
 };
+
+export const ServiceStatus = {
+  Deployed: 'Deployed',
+  Ready: 'Ready',
+  NotReady: 'NotReady',
+  Deleting: 'Deleting',
+  Deploying: 'Deploying',
+  Preparing: 'Preparing',
+  Running: 'Running',
+  DeployFailed: 'DeployFailed',
+  DeleteFailed: 'DeleteFailed',
+  Stopped: 'Stopped',
+  Undeployed: 'Undeployed',
+  StopFailed: 'StopFailed',
+  Stopping: 'Stopping'
+};
+
 export const instanceTabs = [
   {
     label: 'applications.instance.tab.resource',
@@ -54,11 +71,20 @@ export const statusMap = {
 export enum Status {
   Warning = 'warning',
   Error = 'error',
+  Inactive = 'inactive',
   Running = 'running'
 }
 export const setServiceStatus = (status) => {
   if (get(status, 'transitioning')) return Status.Warning;
   if (get(status, 'error')) return Status.Error;
+  if (
+    [ServiceStatus.Undeployed, ServiceStatus.Stopped].includes(
+      status.summaryStatus
+    )
+  ) {
+    return Status.Inactive;
+  }
+
   return Status.Running;
 };
 
@@ -126,22 +152,6 @@ export const RevisionStatus = {
   Succeeded: 'Succeeded',
   Running: 'Running',
   Failed: 'Failed'
-};
-
-export const ServiceStatus = {
-  Deployed: 'Deployed',
-  Ready: 'Ready',
-  NotReady: 'NotReady',
-  Deleting: 'Deleting',
-  Deploying: 'Deploying',
-  Preparing: 'Preparing',
-  Running: 'Running',
-  DeployFailed: 'DeployFailed',
-  DeleteFailed: 'DeleteFailed',
-  Stopped: 'Stopped',
-  Undeployed: 'Undeployed',
-  StopFailed: 'StopFailed',
-  Stopping: 'Stopping'
 };
 
 export const StartableStatus = [

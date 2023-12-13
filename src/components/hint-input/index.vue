@@ -169,7 +169,7 @@
     ref(PageAction.CREATE)
   );
   const $attrs = useAttrs();
-  const emits = defineEmits(['update:modelValue', 'input', 'change']);
+  const emits = defineEmits(['update:modelValue', 'input', 'change', 'blur']);
   const expression = ref('');
   const editorCtx = ref('');
   const editorWrap = ref();
@@ -441,6 +441,7 @@
   const handleBlur = () => {
     isFocus.value = false;
     textcomplete?.hide?.();
+    emits('blur');
   };
   onClickOutside(editorWrap, () => {
     handleBlur();

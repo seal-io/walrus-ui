@@ -1,13 +1,5 @@
 <script lang="tsx">
-  import {
-    defineComponent,
-    inject,
-    toRefs,
-    ref,
-    reactive,
-    computed,
-    watch
-  } from 'vue';
+  import { defineComponent } from 'vue';
   import _ from 'lodash';
   import schemaFieldProps from '../schema-field-props';
   import BasicField from '../../components/basic-field.vue';
