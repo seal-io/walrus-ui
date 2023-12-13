@@ -308,7 +308,7 @@ export const genFieldInFormDataByRecursion = ({
     if (
       !pathSchema?.nullable &&
       path !== _.join(initialPath, '.') &&
-      pathSchema.required
+      pathSchema?.required
     ) {
       if (
         !_.hasIn(formData, path) ||
