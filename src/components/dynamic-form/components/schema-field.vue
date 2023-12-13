@@ -45,10 +45,15 @@
 
       props.FieldPathMap.set(_.join(props.fieldPath, '.'), {
         required: _.includes(props.requiredFields, props.schema.name),
-        type: props.schema.type,
         fieldPath,
         isBasicType: isBasicType(props.schema) || isSelect(props.schema),
-        isNullable: props.schema.nullable || props.schema.originNullable
+        isNullable: props.schema.nullable || props.schema.originNullable,
+        ..._.pick(props.schema, [
+          'type',
+          'nullable',
+          'originNullable',
+          'isItemsProperty'
+        ])
       });
 
       // init field value
@@ -77,6 +82,7 @@
       initValue();
       console.log(
         'create+++++++++++++',
+        props.schema,
         props.fieldPath,
         schemaFormStatus.value,
         props.uiFormData,

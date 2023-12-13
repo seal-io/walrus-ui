@@ -17,6 +17,7 @@ export interface FieldSchema {
   'minLength'?: number;
   'minItems'?: number;
   'isItemsProperty'?: boolean;
+  'isItems'?: boolean;
   'enum'?: any[];
   'items'?: FieldSchema;
   'required'?: string[];

@@ -45,10 +45,15 @@
 
       props.FieldPathMap.set(_.join(props.fieldPath, '.'), {
         required: fieldProps.required,
-        type: props.schema.type,
-        fieldPath: props.fieldPath,
         isBasicType: true,
-        isNullable: props.schema.nullable || props.schema.originNullable
+        isNullable: props.schema.nullable || props.schema.originNullable,
+        fieldPath: props.fieldPath,
+        ..._.pick(props.schema, [
+          'type',
+          'nullable',
+          'originNullable',
+          'isItemsProperty'
+        ])
       });
 
       const handleChange = (data) => {
@@ -109,9 +114,7 @@
                   _.unset(props.formData, props.fieldPath);
                 }
                 console.log('schema=boolean=', props.schema);
-                if (props.schema.isItemsProperty) {
-                  return;
-                }
+
                 if (
                   isEqualOn(val, _.get(props.defaultFormData, props.fieldPath))
                 ) {

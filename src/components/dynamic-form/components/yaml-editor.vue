@@ -42,10 +42,15 @@
 
       props.FieldPathMap.set(_.join(props.fieldPath, '.'), {
         required: fieldProps.required,
-        type: props.schema.type,
         fieldPath: props.fieldPath,
+        isNullable: props.schema.nullable || props.schema.originNullable,
         isBasicType: true,
-        isNullable: props.schema.nullable || props.schema.originNullable
+        ..._.pick(props.schema, [
+          'type',
+          'nullable',
+          'originNullable',
+          'isItemsProperty'
+        ])
       });
 
       const handleChange = (data) => {
@@ -96,9 +101,9 @@
         const jsonstr = yaml2Json(fieldValue.value);
         _.set(props.formData, props.fieldPath, jsonstr);
         _.set(props.uiFormData, props.fieldPath, jsonstr);
-        if (props.schema.isItemsProperty) {
-          return;
-        }
+        // if (props.schema.isItemsProperty) {
+        //   return;
+        // }
         if (_.trim(fieldValue.value) === _.trim(defaultValue.value)) {
           unsetFieldValue({
             FieldPathMap: props.FieldPathMap,

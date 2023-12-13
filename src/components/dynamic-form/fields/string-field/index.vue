@@ -25,10 +25,15 @@
 
       props.FieldPathMap.set(_.join(props.fieldPath, '.'), {
         required: fieldProps.required,
-        type: props.schema.type,
-        fieldPath: props.fieldPath,
         isBasicType: true,
-        isNullable: props.schema.nullable || props.schema.originNullable
+        isNullable: props.schema.nullable || props.schema.originNullable,
+        fieldPath: props.fieldPath,
+        ..._.pick(props.schema, [
+          'type',
+          'nullable',
+          'originNullable',
+          'isItemsProperty'
+        ])
       });
 
       console.log(

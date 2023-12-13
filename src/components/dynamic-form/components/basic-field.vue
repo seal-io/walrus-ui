@@ -75,9 +75,9 @@
         _.set(props.formData, props.fieldPath, val);
         _.set(props.uiFormData, props.fieldPath, val);
         console.log('unset++++++++', props.FieldPathMap.get(props.fieldPath));
-        if (props.schema.isItemsProperty) {
-          return;
-        }
+        // if (props.schema.isItemsProperty) {
+        //   return;
+        // }
         if (isEqualOn(val, _.get(props.defaultFormData, props.fieldPath))) {
           unsetFieldValue({
             FieldPathMap: props.FieldPathMap,
