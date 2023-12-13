@@ -5,7 +5,7 @@
         <img
           alt="logo"
           class="logo"
-          src="../../assets/images/logo2.png"
+          src="../../assets/images/logo_02.png"
           @click="handleToHome"
         />
       </div>
@@ -344,7 +344,7 @@
     }
 
     .logo {
-      width: 100px;
+      width: 136px;
       height: auto;
       cursor: pointer;
     }
@@ -380,7 +380,7 @@
     }
 
     svg {
-      color: var(--seal-color-text-1);
+      color: var(--seal-color-text-2);
     }
 
     .trigger-btn,

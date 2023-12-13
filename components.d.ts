@@ -6,6 +6,7 @@ declare module 'vue' {
   export interface GlobalComponents {
     AAffix: typeof import('@arco-design/web-vue')['Affix'];
     AAlert: typeof import('@arco-design/web-vue')['Alert'];
+    AAvatar: typeof import('@arco-design/web-vue')['Avatar'];
     ABreadcrumb: typeof import('@arco-design/web-vue')['Breadcrumb'];
     ABreadcrumbItem: typeof import('@arco-design/web-vue')['BreadcrumbItem'];
     AButton: typeof import('@arco-design/web-vue')['Button'];
@@ -24,6 +25,7 @@ declare module 'vue' {
     AGrid: typeof import('@arco-design/web-vue')['Grid'];
     AGridItem: typeof import('@arco-design/web-vue')['GridItem'];
     AInput: typeof import('@arco-design/web-vue')['Input'];
+    AInputGroup: typeof import('@arco-design/web-vue')['InputGroup'];
     AInputNumber: typeof import('@arco-design/web-vue')['InputNumber'];
     AInputPassword: typeof import('@arco-design/web-vue')['InputPassword'];
     ALayout: typeof import('@arco-design/web-vue')['Layout'];
@@ -41,6 +43,7 @@ declare module 'vue' {
     APagination: typeof import('@arco-design/web-vue')['Pagination'];
     AProgress: typeof import('@arco-design/web-vue')['Progress'];
     ARangePicker: typeof import('@arco-design/web-vue')['RangePicker'];
+    AResult: typeof import('@arco-design/web-vue')['Result'];
     ASelect: typeof import('@arco-design/web-vue')['Select'];
     ASpace: typeof import('@arco-design/web-vue')['Space'];
     ASpin: typeof import('@arco-design/web-vue')['Spin'];
