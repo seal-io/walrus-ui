@@ -58,10 +58,15 @@
 
       props.FieldPathMap.set(_.join(props.fieldPath, '.'), {
         required: fieldProps.required,
-        type: props.schema.type,
         fieldPath: props.fieldPath,
+        isNullable: props.schema.nullable || props.schema.originNullable,
         isBasicType: true,
-        isNullable: props.schema.nullable || props.schema.originNullable
+        ..._.pick(props.schema, [
+          'type',
+          'nullable',
+          'originNullable',
+          'isItemsProperty'
+        ])
       });
       const handleChange = (data) => {
         emit('change', data);
@@ -196,9 +201,7 @@
 
                 _.set(props.formData, props.fieldPath, value);
                 _.set(props.uiFormData, props.fieldPath, value);
-                if (props.schema.isItemsProperty) {
-                  return;
-                }
+
                 if (
                   isEqualOn(
                     value,

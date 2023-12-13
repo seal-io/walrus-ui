@@ -129,9 +129,9 @@
           ) {
             _.unset(props.formData, props.fieldPath);
           }
-          if (props.schema.isItemsProperty) {
-            return;
-          }
+          // if (props.schema.isItemsProperty) {
+          //   return;
+          // }
           unsetFieldValue({
             FieldPathMap: props.FieldPathMap,
             defaultFormData: props.defaultFormData,

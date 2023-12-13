@@ -34,10 +34,15 @@
       });
       props.FieldPathMap.set(_.join(props.fieldPath, '.'), {
         required: fieldProps.required,
-        type: props.schema.type,
         fieldPath: props.fieldPath,
+        isNullable: props.schema.nullable || props.schema.originNullable,
         isBasicType: false,
-        isNullable: props.schema.nullable || props.schema.originNullable
+        ..._.pick(props.schema, [
+          'type',
+          'nullable',
+          'originNullable',
+          'isItemsProperty'
+        ])
       });
       // value is number
       const isMapNumber =
@@ -126,9 +131,7 @@
                   if (!_.keys(val).length && props.schema.nullable) {
                     _.unset(props.formData, props.fieldPath);
                   }
-                  if (props.schema.isItemsProperty) {
-                    return;
-                  }
+
                   if (
                     isEqualOn(
                       val,

@@ -47,10 +47,15 @@
       });
       props.FieldPathMap.set(_.join(props.fieldPath, '.'), {
         required: fieldProps.required,
-        type: props.schema.type,
+        isNullable: props.schema.nullable || props.schema.originNullable,
         fieldPath: props.fieldPath,
         isBasicType: true,
-        isNullable: props.schema.nullable || props.schema.originNullable
+        ..._.pick(props.schema, [
+          'type',
+          'nullable',
+          'originNullable',
+          'isItemsProperty'
+        ])
       });
       let Component = BasicFieldMaps[type];
 
@@ -78,9 +83,9 @@
         if (!res.length && props.schema.nullable) {
           _.unset(props.formData, props.fieldPath);
         }
-        if (props.schema.isItemsProperty) {
-          return;
-        }
+        // if (props.schema.isItemsProperty) {
+        //   return;
+        // }
         if (isEqualOn(res, _.get(props.defaultFormData, props.fieldPath))) {
           unsetFieldValue({
             FieldPathMap: props.FieldPathMap,

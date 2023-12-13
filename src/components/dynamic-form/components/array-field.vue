@@ -90,7 +90,7 @@
           ] as FieldSchema[];
         } else if (items?.properties) {
           itemsProperties = genObjectFieldProperties({
-            isItemsProperty: true,
+            isItems: true,
             defaultFormData: props.defaultFormData,
             uiFormData: props.uiFormData,
             schema: props.schema.items as FieldSchema,
@@ -168,9 +168,9 @@
         ) {
           _.unset(props.formData, props.fieldPath);
         }
-        if (props.schema.isItemsProperty) {
-          return;
-        }
+        // if (props.schema.isItemsProperty) {
+        //   return;
+        // }
         unsetFieldValue({
           FieldPathMap: props.FieldPathMap,
           defaultFormData: props.defaultFormData,
@@ -254,7 +254,7 @@
         const counts = minItems || defaultItems;
         if (counts && schemaFormStatus.value === PageAction.CREATE) {
           for (let i = 0; i < counts; i += 1) {
-            handleAddClick();
+            setPropertiesList();
           }
         }
       };

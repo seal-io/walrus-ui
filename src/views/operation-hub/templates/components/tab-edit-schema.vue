@@ -97,6 +97,7 @@
       >
         <div class="form" :class="{ isFullscreen }">
           <groupForm
+            :key="formKey"
             v-model:form-data="originFormData"
             :schema="schemaVariables"
           ></groupForm>
@@ -193,6 +194,7 @@
   const originFormData = ref({});
   const schemaVariables = ref<any>({});
   const projectID = route.params.projectId || '';
+  const formKey = ref(Date.now());
   const { isFullscreen, toggle } = useFullscreen(wrapper);
 
   const actionList = computed((row) => {
@@ -232,6 +234,9 @@
   const previewForm = () => {
     const jsonCode = yaml2Json(code.value);
     const variables = _.get(jsonCode, 'components.schemas.variables');
+    console.log('variables========', variables);
+    originFormData.value = {};
+    formKey.value = Date.now();
     schemaVariables.value = variables;
     return {
       jsonCode,
