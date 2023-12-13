@@ -13,7 +13,8 @@
   import {
     InjectSchemaFormStatusKey,
     InjectCompleteDataKey,
-    PageAction
+    PageAction,
+    HintKeyMaps
   } from '@/views/config';
   import { HintKey } from '@/views/config/interface';
   import SealViewItemWrap from '@/components/seal-form/components/seal-view-item-wrap.vue';
@@ -58,7 +59,7 @@
 
       const optionList = computed(() => {
         let resultList: any[] = [];
-        const vars = _.get(completeData.value, 'var', []);
+        const vars = _.get(completeData.value, HintKeyMaps.var, []);
         if (props.widget === BU.SensitiveVariableSelect) {
           resultList = _.filter(vars, (item) => {
             return item?.sensitive;
@@ -72,7 +73,7 @@
         return _.map(resultList || [], (item) => {
           return {
             label: item?.label,
-            value: `\${var.${item?.label}}`
+            value: `\${${HintKeyMaps.var}.${item?.label}}`
           };
         });
       });
