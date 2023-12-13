@@ -1,9 +1,9 @@
 export default {
-  'permission.resource.project.appResource': 'Service Resources',
-  'permission.resource.project.appRevision': 'Service Revisions',
+  'permission.resource.project.appResource': 'Service/Resource Components',
+  'permission.resource.project.appRevision': 'Service/Resource Revisions',
   'permission.resource.project.roleAuth': 'Members',
   'permission.resource.project.secret': 'Variables',
-  'permission.resource.project.appList': 'Service List',
+  'permission.resource.project.appList': 'Service/Resource List',
   'permission.resource.project.project': 'Project',
   'permission.resource.system.dashboard': 'Dashboard',
   'permission.resource.system.appManagement.project': 'Projects',

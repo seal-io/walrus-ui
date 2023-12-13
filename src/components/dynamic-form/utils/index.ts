@@ -496,7 +496,7 @@ export const unsetFieldValue = ({
   if (initialPath?.length === 0) {
     _.unset(formData, fieldPath);
   } else if (isEqualOn(currentValue, originValue)) {
-    if (initialSchema.nullable) {
+    if (initialSchema?.nullable) {
       unsetFieldPath = [...initialPath];
     }
     unsetNullabelFieldByRecursion({
@@ -825,8 +825,8 @@ export const genFieldPropsAndRules = ({
     return {
       fieldProps: {
         ...commonProps,
-        maxTagCount: 3,
-        required: true
+        maxTagCount: 3
+        // required: true
       },
       rules: [
         {
@@ -841,13 +841,13 @@ export const genFieldPropsAndRules = ({
   }
 
   if (isMuliSelect(schema)) {
-    const isRequired = !!enumList?.length || requiredFlag || required || false;
+    // const isRequired = !!enumList?.length || requiredFlag || required || false;
     return {
       fieldProps: {
         ...commonProps,
         maxTagCount: 3,
-        multiple: true,
-        required: isRequired
+        multiple: true
+        // required: isRequired
       },
       rules: [
         {

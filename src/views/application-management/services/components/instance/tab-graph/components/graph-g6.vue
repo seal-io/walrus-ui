@@ -345,7 +345,6 @@
       } else {
         node.label = fittingString(node.name, 112);
       }
-
       node.stateIcon = {
         animate,
         width: animate ? 20 : 14,

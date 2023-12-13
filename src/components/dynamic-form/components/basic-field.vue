@@ -52,9 +52,7 @@
       };
 
       const validateField = () => {
-        setTimeout(() => {
-          formref.value?.validateField(_.join(props.fieldPath, '.'));
-        });
+        formref.value.validateField(props.fieldPath);
       };
 
       // textarea
@@ -103,6 +101,11 @@
       };
 
       const debunceHandleInputChange = _.debounce(handleInputChange, 100);
+      const debunceHandleChange = _.debounce((val) => {
+        console.log('val++++++++++++++', val);
+        handleInputChange(val);
+        validateField();
+      });
       const renderEdit = () => {
         return (
           <a-form-item
@@ -161,7 +164,6 @@
                 } else {
                   handleInputChange(val);
                 }
-                validateField();
               }}
               onInput={(val) => {
                 if (isNumber(props.schema)) {
@@ -170,6 +172,12 @@
                   handleInputChange(val);
                 }
                 validateField();
+              }}
+              onChange={(val) => {
+                if (isNumber(props.schema)) {
+                  handleInputChange(val);
+                  validateField();
+                }
               }}
             ></Component>
           </a-form-item>
