@@ -23,7 +23,7 @@
           }
         ]"
       >
-        <a-input v-model="formData.name" />
+        <a-input v-model.trim="formData.name" />
       </a-form-item>
       <a-form-item
         field="expirationSeconds"

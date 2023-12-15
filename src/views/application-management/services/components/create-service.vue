@@ -30,7 +30,7 @@
           ]"
         >
           <seal-input
-            v-model="formData.name"
+            v-model.trim="formData.name"
             allow-clear
             :required="true"
             :placeholder="$t('common.table.name')"

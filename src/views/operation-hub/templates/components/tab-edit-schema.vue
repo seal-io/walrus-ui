@@ -1,5 +1,5 @@
 <template>
-  <div ref="wrapper" class="wrap">
+  <div ref="wrapper" class="wrap" :class="{ fullscreen: fullscreen }">
     <div class="flex">
       <a-space>
         <!-- <a-select v-model="theme" :options="themeList"> </a-select> -->
@@ -124,7 +124,6 @@
     json2Yaml,
     yaml2Json
   } from '@/components/form-create/config/yaml-parse';
-  import { initFormState } from '@/components/dynamic-form/utils/init-form-state';
   import { FieldSchema } from '@/components/dynamic-form/config/interface';
   import { execSucceed, deleteModal } from '@/utils/monitor';
   import MoreButtonActions from '@/components/drop-button-group/more-button-actions.vue';
@@ -195,6 +194,7 @@
   const schemaVariables = ref<any>({});
   const projectID = route.params.projectId || '';
   const formKey = ref(Date.now());
+  const fullscreen = ref(false);
   const { isFullscreen, toggle } = useFullscreen(wrapper);
 
   const actionList = computed((row) => {
@@ -228,7 +228,8 @@
   };
 
   const handleToggleFullScreen = () => {
-    toggle();
+    // toggle();
+    fullscreen.value = !fullscreen.value;
   };
 
   const previewForm = () => {
@@ -319,6 +320,9 @@
         title: 'operation.templates.detail.resetTitle',
         content: 'operation.templates.detail.resetTips',
         okText: 'common.button.confirm',
+        style: {
+          zIndex: 2000
+        },
         onOk: handleResetTemplateSchema
       });
     }
@@ -372,8 +376,21 @@
 </script>
 
 <style lang="less" scoped>
+  :not(:root):fullscreen::backdrop {
+    z-index: 100;
+  }
+
   .wrap {
     position: relative;
+
+    &.fullscreen {
+      position: fixed;
+      top: 0;
+      right: 0;
+      bottom: 0;
+      left: 0;
+      z-index: 1500;
+    }
 
     :deep(.arco-tabs-nav-tab) {
       display: none;

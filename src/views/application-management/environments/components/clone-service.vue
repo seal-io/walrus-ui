@@ -90,7 +90,7 @@
               ]"
             >
               <seal-input
-                v-model="formData.name"
+                v-model.trim="formData.name"
                 style="width: 100%"
                 :max-length="63"
                 :required="pageAction === PageAction.EDIT"

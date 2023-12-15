@@ -38,7 +38,7 @@
           ]"
         >
           <seal-input
-            v-model="formData.name"
+            v-model.trim="formData.name"
             :label="$t('operation.connectors.table.name')"
             :required="true"
             :style="{ width: `${InputWidth.LARGE}px` }"

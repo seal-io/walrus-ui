@@ -11,7 +11,7 @@
           ]"
         >
           <seal-input
-            v-model="formData.name"
+            v-model.trim="formData.name"
             :label="$t('workflow.stage.add.taskName')"
             :required="true"
             style="width: 100%"
