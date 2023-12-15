@@ -31,7 +31,7 @@
           ]"
         >
           <seal-input
-            v-model="formData.name"
+            v-model.trim="formData.name"
             :label="$t('common.table.name')"
             :required="true"
             :disabled="action === 'edit'"

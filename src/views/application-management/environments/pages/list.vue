@@ -275,7 +275,7 @@
       return {
         value: row.statusSummary[key] || 0,
         status: key,
-        label: key,
+        label: _.capitalize(key),
         order: orderMap[key]
       };
     }).sort((a, b) => {

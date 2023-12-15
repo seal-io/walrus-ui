@@ -31,7 +31,7 @@
           ]"
         >
           <seal-input
-            v-model="formData.name"
+            v-model.trim="formData.name"
             :label="$t('applications.applications.form.name')"
             :required="true"
             style="width: 100%"

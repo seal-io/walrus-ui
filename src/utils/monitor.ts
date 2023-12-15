@@ -1,4 +1,4 @@
-import { App, ComponentPublicInstance, h, compile } from 'vue';
+import { App, ComponentPublicInstance, h, compile, CSSProperties } from 'vue';
 import axios from 'axios';
 import { Modal, Message, Button } from '@arco-design/web-vue';
 import i18n from '@/locale/index';
@@ -36,17 +36,20 @@ export const deleteModal = async ({
   maskClosable,
   title = 'common.delete.tips',
   okText = 'common.button.delete',
-  cancelText = 'common.button.cancel'
+  cancelText = 'common.button.cancel',
+  ...rest
 }: {
   onOk: () => void;
   onCancel?: () => void;
   content?: string;
   title?: string;
   okText?: string;
+  style?: CSSProperties;
   maskClosable?: boolean;
   cancelText?: string;
 }) => {
   const modalInstance = Modal.warning({
+    ...rest,
     alignCenter: false,
     top: '20%',
     width: 450,

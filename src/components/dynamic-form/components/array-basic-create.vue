@@ -112,7 +112,10 @@
 
       const debounceHandleInputChange = _.debounce(handleInputChange, 100);
       const handleAddClick = () => {
-        list.value.push(null);
+        const item = !list.value.length
+          ? props.schema.items?.default || null
+          : null;
+        list.value.push(item);
       };
 
       const handleDeleteClick = (index) => {

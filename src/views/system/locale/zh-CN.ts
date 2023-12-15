@@ -108,7 +108,7 @@ export default {
   'system.setting.templateLib': '模板库设置',
   'system.setting.enableBuiltinCatalog': '使用内置模板库',
   'system.setting.enableBuiltinCatalog.desc':
-    '关闭后，将可以在模板库中删除Builtin模板库，适用于离线场景。若删除 Builtin模板库后重新开启，将在下次Walrus重启时重新添加Builtin模板库',
+    '关闭后，将可以在模板库中删除内置模板库，适用于离线场景。若删除内置模板库后重新开启，将在下次Walrus重启时重新添加内置模板库',
   'system.setting.SkipRemoteTLSVerify': '跳过证书认证',
   'system.setting.SkipRemoteTLSVerify.desc':
     '开启后，刷新模板库、模板和下载模板时将不再进行SSL证书验证',

@@ -50,7 +50,7 @@
           ]"
         >
           <seal-input
-            v-model="formData.name"
+            v-model.trim="formData.name"
             :label="$t('workflow.form.name')"
             :required="true"
             :disabled="!!id"

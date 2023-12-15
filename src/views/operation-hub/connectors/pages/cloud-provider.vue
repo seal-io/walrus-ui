@@ -67,7 +67,7 @@
           >
             <seal-input
               v-if="pageAction === PageAction.EDIT"
-              v-model="formData.name"
+              v-model.trim="formData.name"
               :label="$t('operation.connectors.form.name')"
               :required="true"
               :style="{ width: `${InputWidth.LARGE}px` }"

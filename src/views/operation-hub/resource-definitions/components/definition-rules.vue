@@ -33,7 +33,7 @@
           >
             <seal-input
               v-if="pageAction === PageAction.EDIT"
-              v-model="formData.name"
+              v-model.trim="formData.name"
               allow-clear
               :required="true"
               :placeholder="$t('common.table.name')"
@@ -781,6 +781,7 @@
       );
       await handleTemplateChange();
     }
+    console.log('formData====', formData.value);
   };
 
   defineExpose({

@@ -51,7 +51,7 @@
         >
           <seal-input
             v-if="pageAction === PageAction.EDIT"
-            v-model="formData.name"
+            v-model.trim="formData.name"
             :disabled="!!id && !environmentId"
             :label="$t('operation.environments.table.name')"
             :required="true"
