@@ -80,6 +80,13 @@
       const value = data?.value;
       isFirstLogin.value = value !== FirstGetPasswordCommand.Invalid;
       firstLoginStatus.value = data;
+      userStore.setInfo({
+        userSetting: {
+          FirstLogin: {
+            value
+          }
+        }
+      });
     } catch (error) {
       // ignore
     }
@@ -94,9 +101,7 @@
   // enter page password-free
   const enterPageForFree = async () => {
     try {
-      userStore.resetInfo();
-      appStore.resetInfo();
-      // await userStore.info();
+      await userStore.info();
       if (userStore.name) {
         enterUserPage();
       }
@@ -104,9 +109,14 @@
       // ingore
     }
   };
-  onMounted(async () => {
-    getUserLoginStatus();
+  const init = async () => {
+    userStore.resetInfo();
+    appStore.resetInfo();
+    await getUserLoginStatus();
     enterPageForFree();
+  };
+  onMounted(() => {
+    init();
   });
 </script>
 
