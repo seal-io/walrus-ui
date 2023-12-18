@@ -115,7 +115,7 @@
           >
             <seal-input
               v-if="pageAction === PageAction.EDIT"
-              v-model="formData.source"
+              v-model.trim="formData.source"
               :label="$t('operation.templates.detail.source')"
               :required="true"
               :style="{ width: `${InputWidth.LARGE}px` }"
@@ -376,6 +376,7 @@
     try {
       const params = {
         templateID: id,
+        page: -1,
         extract: ['-uiSchema', '-schema']
       };
       const { data } = await queryTemplatesVersions(params);

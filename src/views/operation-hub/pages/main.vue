@@ -10,11 +10,11 @@
       ></Breadcrumb>
     </BreadWrapper>
     <ComCard padding="0">
-      <HeaderInfo :info="{ name: $t('menu.operatorHub') }">
+      <!-- <HeaderInfo :info="{ name: $t('menu.operatorHub') }">
         <template #icon>
           <i class="iconfont icon-a-relation10-fill"></i>
         </template>
-      </HeaderInfo>
+      </HeaderInfo> -->
       <ComCard>
         <a-tabs
           v-model:active-key="activeKey"
@@ -23,6 +23,12 @@
           :default-active-key="activeKey"
           @change="handleTabChange"
         >
+          <a-tab-pane
+            :key="OperatorHubTabs.ResouceDefinitions"
+            :title="$t('menu.operatorHub.resourceDefinitions')"
+          >
+            <ResourceDefinition></ResourceDefinition>
+          </a-tab-pane>
           <a-tab-pane
             :key="OperatorHubTabs.TEMPLATES"
             :title="$t('menu.operatorHub.module')"
@@ -46,12 +52,6 @@
             :title="$t('menu.operatorHub.connector')"
           >
             <Connectors></Connectors>
-          </a-tab-pane>
-          <a-tab-pane
-            :key="OperatorHubTabs.ResouceDefinitions"
-            :title="$t('menu.operatorHub.resourceDefinitions')"
-          >
-            <ResourceDefinition></ResourceDefinition>
           </a-tab-pane>
 
           <template #extra>
@@ -100,7 +100,7 @@
   });
   const { activeKey, setPageTabActive } = useTabActive(
     TabPage.OPERATORHUBTAB,
-    OperatorHubTabs.TEMPLATES
+    OperatorHubTabs.ResouceDefinitions
   );
   const handleTabChange = (val) => {
     setPageTabActive(val);

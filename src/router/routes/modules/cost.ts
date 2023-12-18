@@ -18,5 +18,5 @@ export default {
       actions: ['POST']
     }
   },
-  children: [...analyseRoutes]
+  children: []
 };

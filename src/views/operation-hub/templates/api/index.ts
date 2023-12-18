@@ -95,7 +95,7 @@ export function queryTemplatesVersions(params: { templateID: string }) {
   }
   return axios.get(url, {
     params: {
-      ...pick(params, ['extract', 'query'])
+      ...pick(params, ['extract', 'query', 'page'])
     },
     paramsSerializer: (obj) => {
       return qs.stringify(obj);
