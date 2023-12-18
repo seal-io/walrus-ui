@@ -90,7 +90,11 @@
                 text: _.get(record, 'status.summaryStatus'),
                 message: _.get(record, 'status.summaryStatusMessage'),
                 transitioning: _.get(record, 'status.transitioning'),
-                error: _.get(record, 'status.error')
+                error: _.get(record, 'status.error'),
+                inactive: _.includes(
+                  StartableStatus,
+                  _.get(record, 'status.summaryStatus')
+                )
               }"
             ></StatusLabel>
           </template>
@@ -158,6 +162,7 @@
   import { getResourceKeyList } from '../../config/utils';
   import resourceControl from './resource-control.vue';
   import useResourceControl from '../hooks/use-resource-control';
+  import { StartableStatus } from '../../config';
 
   const props = defineProps({
     resourceList: {
