@@ -65,6 +65,7 @@
         :pagination="false"
         row-key="id"
         :row-selection="rowSelection"
+        @cell-click="handleCellClick"
         @sorter-change="handleSortChange"
         @selection-change="handleSelectChange"
       >
@@ -79,6 +80,11 @@
                 type: $t('operation.environments.table.env')
               })
             "
+            :body-cell-class="
+              (record) => {
+                return record.connectors?.length ? 'clickable' : '';
+              }
+            "
             :sortable="{
               sortDirections: ['ascend', 'descend'],
               defaultSortOrder: '',
@@ -91,7 +97,7 @@
                 v-if="record.connectors?.length"
                 type="text"
                 size="small"
-                @click="handleView(record)"
+                :hoverable="false"
               >
                 {{ record.name }}
               </a-link>
@@ -387,6 +393,11 @@
       },
       query: { id: row.id }
     });
+  };
+  const handleCellClick = (row, col) => {
+    if (col.dataIndex === 'name' && row.connectors?.length) {
+      handleView(row);
+    }
   };
   const handleClone = (row) => {
     router.push({

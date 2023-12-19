@@ -1,6 +1,6 @@
 <template>
-  <div class="status-label">
-    <div v-if="status.status">
+  <span class="status-label">
+    <span v-if="status.status">
       <span v-if="showLoading" class="loading">
         <span v-if="status.transitioning">
           <a-progress
@@ -26,26 +26,30 @@
             style="color: var(--seal-color-success)"
         /></span>
       </span>
-      <a-tag
+      <span
         v-else
-        :color="color"
-        :style="{ height: `${size}px`, minWidth: `${size}px` }"
+        class="tag"
+        :style="{
+          color: color.color5,
+          backgroundColor: color.color1
+        }"
       >
         <span v-if="status.error || status.transitioning" class="flex"
           ><a-tooltip v-if="status.message" :content="status.message">
             <i
               class="iconfont icon-ic-exclamation-circle"
-              style="margin-right: 4px; color: #fff"
+              :style="{ 'margin-right': '4px', 'color': color.color6 }"
             ></i> </a-tooltip
         ></span>
         <span>{{ status.text }}</span>
-      </a-tag>
-    </div>
-  </div>
+      </span>
+    </span>
+  </span>
 </template>
 
 <script lang="ts" setup>
   import { PropType, computed } from 'vue';
+  import { StatusColor } from '@/views/config';
 
   interface StatusType {
     status: string;
@@ -89,15 +93,15 @@
   });
   const color = computed(() => {
     if (props.status.inactive) {
-      return '#bfbfbf';
+      return StatusColor.inactive;
     }
     if (props.status.error) {
-      return '#f53f3f';
+      return StatusColor.error;
     }
     if (props.status.transitioning) {
-      return '#f7ba1e';
+      return StatusColor.warning;
     }
-    return '#00bf72';
+    return StatusColor.success;
   });
 </script>
 
@@ -117,9 +121,20 @@
   }
 
   .status-label {
-    display: inline-flex;
+    display: flex;
     align-items: center;
     font-size: 0;
+
+    .tag {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0 8px;
+      font-weight: 400;
+      font-size: var(--font-size-normal);
+      line-height: 22px;
+      border-radius: 22px;
+    }
 
     .extra {
       font-size: 0;
@@ -141,14 +156,6 @@
 
     .arco-icon-loading.progress {
       animation: arco-loading-circle 1.5s infinite cubic-bezier(0, 0, 1, 1);
-    }
-
-    :deep(.arco-tag) {
-      box-sizing: border-box;
-      padding: 0 5px;
-      // min-width: 20px;
-      // height: 20px;
-      border-radius: 12px;
     }
   }
 </style>

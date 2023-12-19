@@ -29,24 +29,24 @@ export const tabList = [
 ];
 
 export const schemaActionList: MoreAction[] = [
-  {
-    label: 'common.button.edit',
-    value: 'edit',
-    icon: 'icon-edit',
-    status: 'normal',
-    filterFun({ projectID }) {
-      return projectID
-        ? userStore.hasProjectResourceActions({
-            resource: Resources.TemplateVersions,
-            projectID,
-            actions: [Actions.PUT]
-          })
-        : userStore.hasRolesActionsPermission({
-            resource: Resources.TemplateVersions,
-            actions: [Actions.PUT]
-          });
-    }
-  },
+  // {
+  //   label: 'common.button.edit',
+  //   value: 'edit',
+  //   icon: 'icon-edit',
+  //   status: 'normal',
+  //   filterFun({ projectID }) {
+  //     return projectID
+  //       ? userStore.hasProjectResourceActions({
+  //           resource: Resources.TemplateVersions,
+  //           projectID,
+  //           actions: [Actions.PUT]
+  //         })
+  //       : userStore.hasRolesActionsPermission({
+  //           resource: Resources.TemplateVersions,
+  //           actions: [Actions.PUT]
+  //         });
+  //   }
+  // },
   {
     label: 'common.button.resetdefault',
     value: 'reset',

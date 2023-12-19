@@ -77,6 +77,7 @@
           :pagination="false"
           row-key="id"
           :row-selection="rowSelection"
+          @cell-click="handleCellClick"
           @selection-change="handleSelectChange"
           @sorter-change="handleSortChange"
         >
@@ -84,6 +85,16 @@
             <a-table-column
               ellipsis
               tooltip
+              :body-cell-class="
+                (record) =>
+                  userStore.hasProjectResourceActions({
+                    projectID: record.id,
+                    resource: Resources.Projects,
+                    actions: [Actions.GET]
+                  })
+                    ? 'clickable'
+                    : ''
+              "
               :cell-style="{ minWidth: '40px' }"
               data-index="name"
               :title="
@@ -107,8 +118,8 @@
                       actions: [Actions.GET]
                     })
                   "
+                  :hoverable="false"
                   size="small"
-                  @click="handleViewProject(record)"
                   >{{ record.name }}</a-link
                 >
                 <span v-else>{{ record.name }}</span>
@@ -263,6 +274,7 @@
       modalTitle.value = t('applications.projects.edit');
     }, 100);
   };
+
   const handleViewProject = async (row) => {
     projectStore.setInfo({
       defaultActiveProject: {
@@ -275,7 +287,18 @@
       params: { projectId: row.id }
     });
   };
-
+  const handleCellClick = (row, col) => {
+    if (
+      col.dataIndex === 'name' &&
+      userStore.hasProjectResourceActions({
+        projectID: row.id,
+        resource: Resources.Projects,
+        actions: [Actions.GET]
+      })
+    ) {
+      handleViewProject(row);
+    }
+  };
   const fetchData = async () => {
     try {
       loading.value = true;

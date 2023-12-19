@@ -63,6 +63,7 @@
         :pagination="false"
         row-key="id"
         :row-selection="rowSelectionStatue"
+        @cell-click="handleCellClick"
         @sorter-change="handleSortChange"
         @selection-change="handleSelectChange"
       >
@@ -77,6 +78,7 @@
                 type: $t('resource.definition.list.name')
               })
             "
+            cell-class="clickable"
             :sortable="{
               sortDirections: ['ascend', 'descend'],
               defaultSortOrder: '',
@@ -85,9 +87,7 @@
             }"
           >
             <template #cell="{ record }">
-              <a-link size="small" @click="handleView(record)">{{
-                record.name
-              }}</a-link>
+              <a-link size="small" :hoverable="false">{{ record.name }}</a-link>
             </template>
           </a-table-column>
           <a-table-column
@@ -310,6 +310,11 @@
         id: row.id
       }
     });
+  };
+  const handleCellClick = (row, column) => {
+    if (column.dataIndex === 'name') {
+      handleView(row);
+    }
   };
   const handleReset = () => {
     queryParams.query = '';
