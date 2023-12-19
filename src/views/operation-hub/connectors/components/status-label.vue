@@ -34,13 +34,17 @@
           backgroundColor: color.color1
         }"
       >
-        <span v-if="status.error || status.transitioning" class="flex"
-          ><a-tooltip v-if="status.message" :content="status.message">
-            <i
-              class="iconfont icon-ic-exclamation-circle"
-              :style="{ 'margin-right': '4px', 'color': color.color6 }"
-            ></i> </a-tooltip
-        ></span>
+        <span v-if="status.error || status.transitioning" class="flex">
+          <a-tooltip v-if="status.message" :content="status.message">
+            <icon-info-circle-fill class="m-r-4" />
+          </a-tooltip>
+          <!-- <span v-else class="m-r-4">
+            <component :is="color.icon"></component>
+          </span> -->
+        </span>
+        <!-- <span v-else-if="color.icon" class="m-r-4">
+          <component :is="color.icon"></component>
+        </span> -->
         <span>{{ status.text }}</span>
       </span>
     </span>
@@ -130,6 +134,7 @@
       align-items: center;
       justify-content: center;
       padding: 0 8px;
+      font-weight: 400;
       font-weight: 400;
       font-size: var(--font-size-normal);
       line-height: 22px;

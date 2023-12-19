@@ -103,7 +103,7 @@
           ellipsis
           tooltip
           :cell-style="{ minWidth: '40px' }"
-          align="center"
+          align="left"
           data-index="createTime"
           :sortable="{
             sortDirections: ['ascend', 'descend'],
@@ -120,7 +120,7 @@
           </template>
         </a-table-column>
         <a-table-column
-          align="center"
+          align="left"
           :width="210"
           data-index="actions"
           :title="$t('common.table.operation')"
