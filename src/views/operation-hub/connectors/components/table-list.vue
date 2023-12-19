@@ -115,6 +115,7 @@
       :pagination="false"
       row-key="id"
       :row-selection="rowSelectionState"
+      @cell-click="handleCellClick"
       @sorter-change="handleSortChange"
       @selection-change="handleSelectChange"
     >
@@ -129,6 +130,7 @@
               type: $t('operation.connectors.table.connector')
             })
           "
+          cell-class="clickable"
           :sortable="{
             sortDirections: ['ascend', 'descend'],
             defaultSortOrder: '',
@@ -137,7 +139,7 @@
           }"
         >
           <template #cell="{ record }">
-            <a-link type="text" size="small" @click="handleView(record)">
+            <a-link type="text" size="small" :hoverable="false">
               {{ record.name }}
             </a-link>
           </template>
@@ -547,6 +549,11 @@
           id: row.id
         }
       });
+    }
+  };
+  const handleCellClick = (row, col) => {
+    if (col.dataIndex === 'name') {
+      handleView(row);
     }
   };
   const handleDeleteConfirm = async (delList?: string[]) => {

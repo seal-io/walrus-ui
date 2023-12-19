@@ -8,6 +8,7 @@
       :pagination="false"
       row-key="id"
       :row-selection="rowSelectionRef"
+      @cell-click="handleCellClick"
       @sorter-change="handleSortChange"
       @selection-change="handleSelectChange"
     >
@@ -22,6 +23,7 @@
               type: $t('operation.templates.table.name')
             })
           "
+          cell-class="clickable"
           :sortable="{
             sortDirections: ['ascend', 'descend'],
             defaultSortOrder: '',
@@ -36,9 +38,7 @@
                 class="iconfont icon-shandian"
                 style="color: var(--seal-color-success)"
               ></i>
-              <a-link size="small" @click="handleView(record)">{{
-                record.name
-              }}</a-link>
+              <a-link size="small" :hoverable="false">{{ record.name }}</a-link>
             </span>
           </template>
         </a-table-column>
@@ -359,6 +359,11 @@
         catalog: getCatalogName(row.catalog?.id)
       }
     });
+  };
+  const handleCellClick = (row, col) => {
+    if (col.dataIndex === 'name') {
+      handleView(row);
+    }
   };
   const handlRefresh = async (row) => {
     try {

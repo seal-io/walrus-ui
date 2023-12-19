@@ -71,6 +71,7 @@
             ? rowSelection
             : null
         "
+        @cell-click="handleCellClick"
         @sorter-change="handleSortChange"
         @selection-change="handleSelectChange"
       >
@@ -84,6 +85,17 @@
               $t('common.table.name.list', {
                 type: $t('applications.workflow.name')
               })
+            "
+            :body-cell-class="
+              (record) => {
+                return userStore.hasProjectResourceActions({
+                  projectID: record.project?.id,
+                  resource: Resources.WorkflowExecutions,
+                  actions: [Actions.GET]
+                })
+                  ? 'clickable'
+                  : '';
+              }
             "
             :sortable="{
               sortDirections: ['ascend', 'descend'],
@@ -101,9 +113,9 @@
                     actions: [Actions.GET]
                   })
                 "
+                :hoverable="false"
                 type="text"
                 size="small"
-                @click="handleView(record)"
               >
                 {{ record.name }}
               </a-link>
@@ -444,6 +456,18 @@
     });
   };
 
+  const handleCellClick = (row, col) => {
+    if (
+      col.dataIndex === 'name' &&
+      userStore.hasProjectResourceActions({
+        projectID: row.project?.id,
+        resource: Resources.WorkflowExecutions,
+        actions: [Actions.GET]
+      })
+    ) {
+      handleView(row);
+    }
+  };
   const handleViewResult = (row) => {
     router.push({
       name: WORKFLOW.Detail,

@@ -3,7 +3,7 @@
     <div class="flex">
       <a-space>
         <!-- <a-select v-model="theme" :options="themeList"> </a-select> -->
-        <a-button type="text" size="small" @click="handleToggleFullScreen">
+        <!-- <a-button type="text" size="small" @click="handleToggleFullScreen">
           <template #icon>
             <i
               class="icon iconfont"
@@ -18,7 +18,7 @@
               ? $t('applications.environment.graph.cancelfullscreen')
               : $t('applications.environment.graph.fullscreen')
           }}</span>
-        </a-button>
+        </a-button> -->
         <a-button
           v-if="activeKey === 'form'"
           size="small"
@@ -52,6 +52,10 @@
         "
         :size="16"
       >
+        <a-button v-if="readOnly" size="small" type="text" @click="handleEdit">
+          <template #icon><icon-edit /></template>
+          {{ $t('common.button.edit') }}
+        </a-button>
         <a-button
           v-if="!readOnly"
           size="small"

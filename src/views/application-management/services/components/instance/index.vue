@@ -9,7 +9,6 @@
           <div class="title">
             <span> {{ currentInfo.name }}</span>
             <StatusLabel
-              :zoom="0.9"
               :status="{
                 inactive: _.includes(
                   StartableStatus,

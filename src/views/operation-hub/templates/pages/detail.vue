@@ -212,6 +212,7 @@
               v-model="version"
               style="width: 200px"
               :options="versionList"
+              allow-search
               @change="handleVersonChange"
             >
               <template #prefix>

@@ -6,6 +6,7 @@
       :loading="loading"
       :data="list"
       :pagination="false"
+      @cell-click="handleCellClick"
     >
       <template #columns>
         <a-table-column
@@ -14,6 +15,17 @@
           :cell-style="{ minWidth: '40px' }"
           data-index="resource.name"
           :title="title"
+          :body-cell-class="
+            (record) => {
+              return userStore.hasProjectResourceActions({
+                resource: Resources.Services,
+                projectID: record.project?.id,
+                actions: [Actions.GET]
+              })
+                ? 'clickable'
+                : '';
+            }
+          "
         >
           <template #cell="{ record }">
             <a-link
@@ -24,7 +36,7 @@
                   actions: [Actions.GET]
                 })
               "
-              @click="handleToDetail(record)"
+              :hoverable="false"
               >{{ record?.resource?.name || '' }}</a-link
             >
             <span v-else>{{ record?.resource?.name || '' }}</span>
@@ -157,6 +169,19 @@
         from: 'dashboard'
       }
     });
+  };
+
+  const handleCellClick = (row, col) => {
+    if (
+      col.dataIndex === 'resource.name' &&
+      userStore.hasProjectResourceActions({
+        resource: Resources.Services,
+        projectID: row.project?.id,
+        actions: [Actions.GET]
+      })
+    ) {
+      handleToDetail(row);
+    }
   };
 </script>
 
