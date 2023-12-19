@@ -251,22 +251,32 @@ export const StatusColor = {
   error: {
     color6: '#FFECE8',
     color5: '#F76560',
-    color1: '#FFECE8'
+    color1: '#FFECE8',
+    icon: 'icon-close-circle-fill'
   },
+  // warning: {
+  //   color6: '#f7ba1e',
+  //   color5: '#F9CC45',
+  //   color1: '#FDF4BF',
+  //   icon1: ''
+  // },
   warning: {
-    color6: '#f7ba1e',
-    color5: '#F9CC45',
-    color1: '#FDF4BF'
+    color6: '#214ac4',
+    color5: '#426AD0',
+    color1: '#E8F2FF',
+    icon: ''
   },
   success: {
     color6: '#00BF72',
     color5: '#25CC84',
-    color1: '#E8FFF2'
+    color1: '#E8FFF2',
+    icon: 'icon-check-circle-fill'
   },
   inactive: {
     color6: '#86909c',
     color5: '#99A4B0',
-    color1: '#f2f3f5'
+    color1: '#f2f3f5',
+    icon: 'icon-minus-circle-fill'
   }
 };
 export default {};
