@@ -242,9 +242,9 @@ export const SaveActions: MoreAction[] = [
 ];
 
 export const HintKeyMaps = {
-  resource: 'resource',
+  resource: 'res',
   var: 'var',
-  service: 'service'
+  service: 'svc'
 };
 
 export const StatusColor = {
