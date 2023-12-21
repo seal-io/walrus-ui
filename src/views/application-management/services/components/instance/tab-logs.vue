@@ -4,7 +4,7 @@
     class="tab-logs-wrap"
     style="position: relative; z-index: 3001"
   >
-    <FilterBox style="margin-bottom: 10px">
+    <FilterBox style="margin-bottom: var(--filter-box-margin)">
       <template #params>
         <a-select
           v-model="logKey"

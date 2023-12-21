@@ -1,7 +1,7 @@
 <template>
   <ComCard borderless padding="0">
     <div>
-      <FilterBox style="margin-bottom: 10px">
+      <FilterBox style="margin-bottom: var(--filter-box-margin)">
         <template #params>
           <a-input
             v-model="queryParams.query"
@@ -119,7 +119,7 @@
           <a-table-column
             ellipsis
             tooltip
-            align="center"
+            align="left"
             data-index="type"
             :title="$t('applications.environment.table.status')"
           >
@@ -133,7 +133,7 @@
             ellipsis
             tooltip
             :cell-style="{ minWidth: '40px' }"
-            align="center"
+            align="left"
             data-index="type"
             :title="$t('applications.environment.type')"
           >
@@ -145,7 +145,7 @@
             ellipsis
             tooltip
             :cell-style="{ minWidth: '40px' }"
-            align="center"
+            align="left"
             data-index="description"
             :title="$t('common.table.description')"
           >
@@ -154,7 +154,7 @@
             ellipsis
             tooltip
             :cell-style="{ minWidth: '40px' }"
-            align="center"
+            align="left"
             data-index="createTime"
             :sortable="{
               sortDirections: ['ascend', 'descend'],
@@ -171,7 +171,7 @@
             </template>
           </a-table-column>
           <a-table-column
-            align="center"
+            align="left"
             :width="210"
             :title="$t('common.table.operation')"
           >

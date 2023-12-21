@@ -276,7 +276,6 @@
         function travel(_route: RouteRecordRaw[], nodes = []) {
           if (_route) {
             _route.forEach((element) => {
-              // This is demo, modify nodes as needed
               const icon = element?.meta?.icon
                 ? `<${element?.meta?.icon}/>`
                 : ``;
@@ -323,14 +322,9 @@
               ) {
                 rt = element?.children?.map((elem) => {
                   return (
-                    <a-menu-item
-                      key={elem.name}
-                      onClick={() => goto(elem)}
-                      v-slots={{
-                        icon: () => h(compile(icon))
-                      }}
-                    >
-                      {t(elem?.meta?.locale || '')}
+                    <a-menu-item key={elem.name} onClick={() => goto(elem)}>
+                      {h(compile(icon))}
+                      <span class="title"> {t(elem?.meta?.locale || '')}</span>
                     </a-menu-item>
                   );
                 });
@@ -391,7 +385,6 @@
                     'icon': () =>
                       h(compile(item.icon), {
                         style: {
-                          color: 'var(--color-text-3)',
                           ...item.iconStyle
                         }
                       }),
@@ -404,24 +397,13 @@
                       <a-menu-item
                         key={cItem.name}
                         v-slots={{
-                          icon: () =>
-                            h(compile(cItem.icon), {
-                              style: {
-                                color: 'var(--color-text-2)',
-                                fontSize: '16px'
-                              }
-                            })
+                          icon: () => h(compile(cItem.icon))
                         }}
                         onClick={() => {
                           handleClickUserMenu(cItem);
                         }}
                       >
-                        <span
-                          style={{
-                            color: 'var(--color-text-2)',
-                            fontSize: '14px'
-                          }}
-                        >
+                        <span class="title" style={{ fontSize: '12px' }}>
                           {t(cItem.name)}
                         </span>
                       </a-menu-item>
@@ -434,19 +416,13 @@
                 <a-menu-item
                   key={item.key}
                   v-slots={{
-                    icon: () =>
-                      h(compile(item.icon), {
-                        style: {
-                          color: 'var(--color-text-3)',
-                          fontSize: '18px'
-                        }
-                      })
+                    icon: () => h(compile(item.icon))
                   }}
                   onClick={() => {
                     handleClickUserMenu(item);
                   }}
                 >
-                  {t(item.name)}
+                  <span class="title">{t(item.name)}</span>
                 </a-menu-item>
               );
             }
@@ -468,11 +444,12 @@
         <div class="menu-container">
           <a-menu
             mode="pop"
-            v-model:collapsed={collapsed.value}
-            show-collapse-button={true}
+            collapsed={false}
+            show-collapse-button={false}
             auto-open={false}
             selected-keys={appStore.selectedKey}
             auto-open-selected={true}
+            collapsed-width={appStore.smallWidth}
             level-indent={20}
             style="height: 100%"
             onCollapse={setCollapse}
@@ -495,18 +472,13 @@
   @import url('./style.less');
 
   :deep(.arco-menu-inner) {
-    // padding-top: 0 !important;
-    .arco-menu-item {
-      // line-height: 36px;
-    }
-
     .arco-menu-inline-header {
       display: flex;
       align-items: center;
     }
 
     .arco-menu-icon-suffix .arco-icon {
-      font-size: 16px;
+      font-size: 14px;
     }
 
     .arco-icon {
@@ -518,6 +490,7 @@
 
   .menu-container {
     height: 100%;
+    padding-top: 10px;
 
     .box {
       display: flex;
@@ -528,8 +501,8 @@
 
       .account {
         margin-top: 6px;
-        padding-top: 2px;
-        border-top: 1px solid var(--color-border-1);
+        padding-top: 6px;
+        border-top: 1px solid var(--color-border-2);
 
         .iconfont.icon-language {
           margin-left: 1px;

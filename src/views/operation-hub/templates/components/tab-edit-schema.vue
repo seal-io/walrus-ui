@@ -410,7 +410,7 @@
       }
 
       :deep(.arco-tabs-content) {
-        padding-top: 16px;
+        padding-top: var(--container-padding);
       }
     }
 

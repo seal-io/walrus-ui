@@ -8,7 +8,7 @@ export default {
   meta: {
     hideInMenu: false,
     ignoreCache: true,
-    locale: 'menu.system.setting',
+    locale: 'menu.systemsettings',
     icon: 'icon-settings',
     requiresAuth: true,
     isRouteView: true,
@@ -30,7 +30,7 @@ export default {
         hideInMenu: false,
         ignoreCache: true,
         clearMenuStatus: false,
-        locale: 'menu.system.setting',
+        locale: 'menu.systemsettings',
         requiresAuth: true,
         permission: [
           {

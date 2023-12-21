@@ -3,12 +3,12 @@
     <template #separator>
       <span></span>
     </template>
-    <a-breadcrumb-item v-if="menu">
+    <a-breadcrumb-item v-if="menu && !items.length">
       <span class="box">
         <span v-if="menu.type" class="type">{{ menu.type }}</span>
         <span class="item-content">
-          <i v-if="menu.iconfont" class="iconfont" :class="[menu.icon]"></i>
-          <component :is="menu.icon" v-else-if="menu.icon"></component>
+          <!-- <i v-if="menu.iconfont" class="iconfont" :class="[menu.icon]"></i>
+          <component :is="menu.icon" v-else-if="menu.icon"></component> -->
           <span class="label menu">{{ $t(menu.label || '') }}</span>
         </span>
       </span>
@@ -242,10 +242,11 @@
     .label {
       margin-left: 5px;
       color: var(--color-text-2);
-      font-size: 14px;
+      font-weight: 500;
+      font-size: var(--font-size-large);
 
       &.menu {
-        margin-left: 8px;
+        margin-left: 0;
       }
 
       &.single {
@@ -332,6 +333,7 @@
     :deep(.arco-breadcrumb-item) {
       display: flex;
       align-items: center;
+      padding: 0;
       color: rgba(255, 255, 255, 1);
 
       .arco-trigger-content {

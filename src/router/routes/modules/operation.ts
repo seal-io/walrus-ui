@@ -15,7 +15,7 @@ export default {
     requiresAuth: true,
     isRouteView: true,
     order: 3,
-    icon: 'i class="icon-a-relation10-line iconfont size-18"',
+    icon: 'i class="icon-a-relation10-line iconfont"',
     onlyRenderChildren: true,
     permission: [
       {

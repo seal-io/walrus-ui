@@ -57,6 +57,49 @@
         </ComCard>
         <ComCard>
           <ModuleCard
+            icon="icon-kaifazujian"
+            :title="$t('applications.applications.instance.resource')"
+            :title-style="{ 'margin-bottom': '10px' }"
+          >
+            <template #title>
+              <span>{{
+                $t('applications.applications.instance.resource')
+              }}</span>
+              <a-tooltip
+                :content="
+                  $t('applications.applications.instance.resource.tips')
+                "
+              >
+                <icon-info-circle class="mleft-5" />
+              </a-tooltip>
+            </template>
+            <a-tabs
+              lazy-load
+              type="line"
+              :active-key="activeKey"
+              class="page-line-tabs"
+              @change="handleTabChange"
+            >
+              <a-tab-pane
+                v-for="item in instanceTabList"
+                :key="item.value"
+                :title="$t(item.label)"
+              >
+                <Component
+                  :is="instanceTabMap[item.com]"
+                  :resource-list="dataList"
+                  :is-loading="loading"
+                ></Component>
+              </a-tab-pane>
+            </a-tabs>
+          </ModuleCard>
+          <ModuleCard
+            icon="icon-URLguanli"
+            :title="$t('applications.applications.instance.accessUrl')"
+          >
+            <tabEndpoint ref="tabEndpointCom"></tabEndpoint>
+          </ModuleCard>
+          <ModuleCard
             :title="$t('common.title.config')"
             icon="icon-peizhixinxi"
             :title-style="{ 'margin-bottom': '10px', 'margin-top': 0 }"
@@ -108,50 +151,7 @@
           >
             <serviceRevisions></serviceRevisions>
           </ModuleCard>
-          <ModuleCard
-            icon="icon-URLguanli"
-            :title="$t('applications.applications.instance.accessUrl')"
-          >
-            <tabEndpoint ref="tabEndpointCom"></tabEndpoint>
-          </ModuleCard>
 
-          <ModuleCard
-            icon="icon-kaifazujian"
-            :title="$t('applications.applications.instance.resource')"
-            :title-style="{ 'margin-bottom': '10px' }"
-          >
-            <template #title>
-              <span>{{
-                $t('applications.applications.instance.resource')
-              }}</span>
-              <a-tooltip
-                :content="
-                  $t('applications.applications.instance.resource.tips')
-                "
-              >
-                <icon-info-circle class="mleft-5" />
-              </a-tooltip>
-            </template>
-            <a-tabs
-              lazy-load
-              type="line"
-              :active-key="activeKey"
-              class="page-line-tabs"
-              @change="handleTabChange"
-            >
-              <a-tab-pane
-                v-for="item in instanceTabList"
-                :key="item.value"
-                :title="$t(item.label)"
-              >
-                <Component
-                  :is="instanceTabMap[item.com]"
-                  :resource-list="dataList"
-                  :is-loading="loading"
-                ></Component>
-              </a-tab-pane>
-            </a-tabs>
-          </ModuleCard>
           <EditPageFooter>
             <template #save>
               <a-button

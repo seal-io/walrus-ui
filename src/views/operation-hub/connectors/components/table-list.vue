@@ -1,6 +1,6 @@
 <template>
   <div class="connectors-list">
-    <FilterBox style="margin-bottom: 10px">
+    <FilterBox style="margin-bottom: var(--filter-box-margin)">
       <template #params>
         <a-select
           v-model="queryParams.category"

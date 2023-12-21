@@ -13,7 +13,7 @@
       showIcon: {
         type: Boolean,
         default() {
-          return true;
+          return false;
         }
       },
       icon: {
@@ -69,7 +69,7 @@
       margin-bottom: @title-bottom-gap;
       color: var(--color-text-2);
       font-weight: 500;
-      font-size: 16px;
+      font-size: var(--font-size-large);
 
       .iconfont {
         color: var(--color-text-2);

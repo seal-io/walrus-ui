@@ -11,11 +11,11 @@
           v-show="!hideMenu"
           class="layout-sider"
           breakpoint="xl"
-          :collapsed="collapsed"
+          :collapsed="false"
           :collapsible="true"
           :width="menuWidth"
           :style="{
-            paddingTop: navbar ? `${appStore.navbarHeight + 2}px` : ''
+            paddingTop: '5px'
           }"
           :hide-trigger="true"
         >
@@ -25,7 +25,11 @@
             @click="handleBackHome"
           >
             <div>
-              <img alt="logo" class="logo" src="../assets/images/logo_02.png" />
+              <img
+                alt="logo"
+                class="logo"
+                src="../assets/images/walrus_logo.png"
+              />
             </div>
           </div>
           <div class="menu-wrapper">
@@ -78,12 +82,12 @@
   const paddingStyle = computed(() => {
     const paddingLeft =
       renderMenu.value && !hideMenu.value
-        ? { paddingLeft: `${menuWidth.value + 10}px` }
+        ? { paddingLeft: `${menuWidth.value + 0}px` }
         : {};
     const paddingTop = navbar.value
-      ? { paddingTop: `${appStore.navbarHeight + 10}px` }
+      ? { paddingTop: `${appStore.navbarHeight + 0}px` }
       : {};
-    return { ...paddingLeft, ...paddingTop, paddingRight: '10px' };
+    return { ...paddingLeft, ...paddingTop, paddingRight: '0px' };
   });
 
   const handleBackHome = () => {
@@ -111,6 +115,8 @@
     height: 100%;
 
     .arco-layout-sider-light {
+      background-color: var(--color-fill-2);
+      // box-shadow: 3px 0 6px rgba(0, 0, 0, 0.05);
       box-shadow: none;
     }
   }
@@ -168,18 +174,19 @@
     transition: all 0.2s cubic-bezier(0.34, 0.69, 0.1, 1);
 
     .logo-wrapper {
-      position: absolute;
-      top: 0;
-      right: 0;
-      left: 0;
+      // position: absolute;
+      // top: 10px;
+      // right: 0;
+      // left: 0;
       display: flex;
       align-items: center;
+      justify-content: center;
       height: 48px;
       padding-left: 8px;
       overflow: hidden;
       font-size: 0;
-      border-bottom: 1px solid var(--color-border-1);
-      box-shadow: 1px 0 0 var(--color-border-1);
+      // border-bottom: 1px solid var(--color-border-1);
+      // box-shadow: 1px 0 0 var(--color-border-1);
       cursor: pointer;
       transition: all 0.2s cubic-bezier(0.34, 0.69, 0.1, 1);
 
@@ -189,14 +196,14 @@
       }
 
       .logo {
-        height: 24px;
+        height: 40px;
       }
 
       &.menuCollapse {
-        padding-left: 4px;
+        padding-left: 0;
 
         .logo {
-          height: 20px;
+          height: 40px;
         }
       }
     }
@@ -239,7 +246,7 @@
     min-height: 100vh;
     overflow-y: hidden;
     font-size: 0;
-    background-color: var(--color-fill-2);
+    background-color: #fff;
     transition: padding 0.2s cubic-bezier(0.34, 0.69, 0.1, 1);
 
     .page-content-wrap {

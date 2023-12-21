@@ -127,7 +127,7 @@
       width: 100%;
       color: var(--color-text-2);
       font-weight: 500;
-      font-size: 16px;
+      font-size: var(--font-size-large);
 
       .title-wrap {
         display: flex;

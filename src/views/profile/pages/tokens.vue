@@ -1,7 +1,7 @@
 <template>
   <div class="box">
     <div>
-      <FilterBox style="margin-bottom: 10px">
+      <FilterBox style="margin-bottom: var(--filter-box-margin)">
         <template #button-group
           ><a-button type="primary" @click="handleCreate">{{
             $t('account.settings.tokens.button')

@@ -29,8 +29,7 @@
   .box {
     display: flex;
     align-items: center;
-    justify-content: center;
-    padding: 0 10px;
+    padding: 0;
     color: rgba(78, 89, 105, 0.8);
     font-weight: 500;
     font-size: 0;
@@ -43,6 +42,7 @@
       justify-content: center;
       padding: 0;
       font-size: 12px;
+      line-height: 1.6;
       border-radius: 4px;
 
       &.error {

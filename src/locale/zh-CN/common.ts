@@ -106,6 +106,7 @@ export default {
   'common.button.management': '管理',
   'common.title.config': '配置',
   'common.cli.download': '客户端下载',
+  'common.button.download': '下载',
   'common.table.sensitive': '是否敏感',
   'common.table.yes': '是',
   'common.table.no': '否',

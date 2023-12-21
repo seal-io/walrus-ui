@@ -8,7 +8,7 @@
         }"
       ></Breadcrumb>
     </BreadWrapper>
-    <ComCard padding="0">
+    <!-- <ComCard padding="0">
       <HeaderInfo
         :info="{ name: $t('menu.applicationManagement.projectList') }"
       >
@@ -16,10 +16,10 @@
           <i class="iconfont icon-app-fill"></i>
         </template>
       </HeaderInfo>
-    </ComCard>
+    </ComCard> -->
     <SpinCard borderless class="projects">
       <div class="content">
-        <FilterBox style="margin-bottom: 10px">
+        <FilterBox style="margin-bottom: var(--filter-box-margin)">
           <template #params>
             <a-input
               v-model="queryParams.query"

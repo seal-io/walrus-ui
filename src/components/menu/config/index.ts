@@ -4,7 +4,7 @@ export const profileMenu = [
   {
     name: 'settings.help',
     key: 'help',
-    icon: '<i class="iconfont icon-bangzhuyushuoming size-18" />',
+    icon: '<i class="iconfont icon-bangzhuyushuoming" />',
     children: [
       {
         name: 'common.issue.report',
@@ -37,7 +37,7 @@ export const profileMenu = [
   {
     name: 'settings.language',
     key: 'userCenter',
-    icon: '<i class="iconfont icon-language size-18"></i>',
+    icon: '<i class="iconfont icon-language"></i>',
     children: [
       {
         name: '中文',
@@ -55,28 +55,21 @@ export const profileMenu = [
     ]
   },
   {
-    name: 'common.cli.download',
+    name: 'common.button.download',
     key: 'clidownload',
     route: 'CliDownload',
-    icon: '<icon-download class="size-18"/>',
-    children: [
-      // {
-      //   name: 'common.cli.download',
-      //   key: 'clidownload',
-      //   route: 'CliDownload',
-      //   icon: '<icon-download />'
-      // }
-    ]
+    icon: '<icon-download/>',
+    children: []
   }
 ];
 
 export const avatarMenu = [
   {
-    name: 'propfile.account.user.title',
+    name: 'mneu.user.account',
     key: 'Profile',
-    icon: '<i class="iconfont icon-user-circle size-18" />',
-    iconStyle: { color: 'rgb(var(--arcoblue-5))' },
-    itemStyle: { paddingLeft: '12px' },
+    icon: '<i class="iconfont icon-user-circle" />',
+    iconStyle: { color: 'rgb(var(--arcoblue-5))', opacity: 1 },
+    itemStyle: { paddingLeft: '4px' },
     children: [
       {
         name: 'propfile.account.user.info',
