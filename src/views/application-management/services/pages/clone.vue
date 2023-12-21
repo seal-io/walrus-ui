@@ -229,7 +229,7 @@
       { ...projectRes },
       { ...environmentRes },
       {
-        type: 'menu.applicationManagement.serivce',
+        type: 'menu.applicationManagement.resource',
         label: t('applications.service.clone')
       }
     ] as BreadcrumbOptions[];
@@ -380,7 +380,7 @@
     breadCrumbList.value = [
       ...list,
       {
-        type: 'menu.applicationManagement.serivce',
+        type: 'menu.applicationManagement.resource',
         label: t('applications.service.clone')
       }
     ] as BreadcrumbOptions[];

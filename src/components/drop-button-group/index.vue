@@ -32,6 +32,10 @@
       loading: {
         type: Boolean,
         default: false
+      },
+      size: {
+        type: String as PropType<'small' | 'medium' | 'large'>,
+        default: 'small'
       }
     },
     setup(props, { emit, slots }) {
@@ -53,7 +57,7 @@
       const renderVertical = () => {
         return (
           <ADropdownButton
-            size="small"
+            size={props.size}
             class="action-dropdown"
             onSelect={(val) => handleSelect(val)}
             trigger="hover"

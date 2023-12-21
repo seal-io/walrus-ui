@@ -65,7 +65,7 @@
               <span>{{ $t('resource.definition.detail.seletor') }}</span>
               <primaryButtonGroup
                 v-if="pageAction === PageAction.EDIT"
-                :action-list="actionList"
+                :actions="actionList"
                 @select="handleAddSelector"
               >
                 <a-link class="m-l-10">

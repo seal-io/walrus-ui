@@ -7,19 +7,19 @@ import {
 
 export default [
   {
-    resource: Resources.ServiceResources,
+    resource: Resources.ResourceComponents,
     title: 'permission.resource.project.appResource',
     group: Group.AppManagement,
-    order: ResourcesOrder.ServiceResources,
-    resourceOrder: ProjectResourcesOrder.ServiceResources,
+    order: ResourcesOrder.ResourceComponents,
+    resourceOrder: ProjectResourcesOrder.ResourceComponents,
     actions: ['GET']
   },
   {
-    resource: Resources.ServiceRevisions,
+    resource: Resources.ResourceRevisions,
     title: 'permission.resource.project.appRevision',
     group: Group.AppManagement,
-    order: ResourcesOrder.ServiceRevisions,
-    resourceOrder: ProjectResourcesOrder.ServiceRevisions,
+    order: ResourcesOrder.ResourceRevisions,
+    resourceOrder: ProjectResourcesOrder.ResourceRevisions,
     actions: ['GET', 'DELETE']
   },
   {
@@ -39,11 +39,11 @@ export default [
     actions: ['GET', 'POST', 'DELETE', 'PUT']
   },
   {
-    resource: Resources.Services,
+    resource: Resources.Resources,
     title: 'permission.resource.project.appList',
     group: Group.AppManagement,
-    order: ResourcesOrder.Services,
-    resourceOrder: ProjectResourcesOrder.Services,
+    order: ResourcesOrder.Resources,
+    resourceOrder: ProjectResourcesOrder.Resources,
     actions: ['GET', 'POST', 'DELETE', 'PUT']
   },
   {

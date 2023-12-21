@@ -90,7 +90,7 @@
                   userStore.hasProjectResourceActions({
                     projectID,
                     environmentID,
-                    resource: Resources.ServiceRevisions,
+                    resource: Resources.ResourceRevisions,
                     actions: ['DELETE']
                   })
                 "

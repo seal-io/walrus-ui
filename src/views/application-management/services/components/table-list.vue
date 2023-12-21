@@ -24,7 +24,7 @@
         </a-space>
         <a-pagination
           size="small"
-          :total="100"
+          :total="total"
           :page-size="queryParams.perPage"
           :current="queryParams.page"
           show-total
@@ -34,62 +34,68 @@
           @page-size-change="handlePageSizeChange"
         />
       </div>
-      <a-space direction="vertical" :size="16" fill>
-        <ResourceItem
-          v-for="(item, index) in dataList"
-          :key="item.id"
-          :row-data="item"
-          :index="index"
-          :show-checkbox="
-            !userStore.isReadOnlyEnvironment(projectID, environmentID)
-          "
-          :selected-row-keys="rowSelection.selectedRowKeys"
-          @selectionChange="handleRowSelectChange"
-        >
-          <template #name="{ record }">
-            <a-link
-              v-if="
-                userStore.hasProjectResourceActions({
-                  projectID,
-                  resource: Resources.Services,
-                  actions: [Actions.GET]
-                })
-              "
-              @click.stop="handleClickViewDetail(record)"
-              >{{ record.name }}</a-link
-            >
-            <span v-else>{{ record.name }}</span>
-          </template>
-          <template #status="{ record }">
-            <StatusLabel
-              :zoom="0.9"
-              :status="{
-                status: get(record, 'status.summaryStatus'),
-                inactive: _.includes(
-                  StartableStatus,
-                  get(record, 'status.summaryStatus')
-                ),
-                text: get(record, 'status.summaryStatus'),
-                message: get(record, 'status.summaryStatusMessage'),
-                transitioning: get(record, 'status.transitioning'),
-                error: get(record, 'status.error')
-              }"
-            ></StatusLabel>
-          </template>
-          <template #actions="{ record, rowIndex }">
-            <DropButtonGroup
-              v-if="setActionList(dataList[rowIndex]).length"
-              :layout="
-                setActionList(dataList[rowIndex]).length === 1
-                  ? 'horizontal'
-                  : 'vertical'
-              "
-              :actions="setActionList(dataList[rowIndex])"
-              @select="(value) => handleClickAction(value, record)"
-            ></DropButtonGroup>
-          </template>
-        </ResourceItem>
-      </a-space>
+      <a-spin :loading="loading" style="width: 100%">
+        <a-space v-if="dataList.length" direction="vertical" :size="16" fill>
+          <ResourceItem
+            v-for="(item, index) in dataList"
+            :key="item.id"
+            :row-data="item"
+            :index="index"
+            :show-checkbox="
+              !userStore.isReadOnlyEnvironment(projectID, environmentID)
+            "
+            :selected-row-keys="rowSelection.selectedRowKeys"
+            @selectionChange="handleRowSelectChange"
+          >
+            <template #name="{ record }">
+              <a-link
+                v-if="
+                  userStore.hasProjectResourceActions({
+                    projectID,
+                    resource: Resources.Resources,
+                    actions: [Actions.GET]
+                  })
+                "
+                @click.stop="handleClickViewDetail(record)"
+                >{{ record.name }}</a-link
+              >
+              <span v-else>{{ record.name }}</span>
+            </template>
+            <template #status="{ record }">
+              <StatusLabel
+                :zoom="0.9"
+                :status="{
+                  status: get(record, 'status.summaryStatus'),
+                  inactive: _.includes(
+                    StartableStatus,
+                    get(record, 'status.summaryStatus')
+                  ),
+                  text: get(record, 'status.summaryStatus'),
+                  message: get(record, 'status.summaryStatusMessage'),
+                  transitioning: get(record, 'status.transitioning'),
+                  error: get(record, 'status.error')
+                }"
+              ></StatusLabel>
+            </template>
+            <template #actions="{ record, rowIndex }">
+              <DropButtonGroup
+                v-if="setActionList(dataList[rowIndex]).length"
+                :layout="
+                  setActionList(dataList[rowIndex]).length === 1
+                    ? 'horizontal'
+                    : 'vertical'
+                "
+                :actions="setActionList(dataList[rowIndex])"
+                @select="(value) => handleClickAction(value, record)"
+              >
+              </DropButtonGroup>
+            </template>
+          </ResourceItem>
+        </a-space>
+        <div style="height: 200px">
+          <a-empty v-if="!dataList.length && !loading"></a-empty>
+        </div>
+      </a-spin>
     </div>
     <!-- <a-table
       column-resizable
@@ -126,7 +132,7 @@
               v-if="
                 userStore.hasProjectResourceActions({
                   projectID,
-                  resource: Resources.Services,
+                  resource: Resources.Resources,
                   actions: [Actions.GET]
                 })
               "
@@ -403,7 +409,7 @@
 
   const handleRowSelectChange = (list) => {
     handleSelectChange(list);
-    emits('selectionChange', list);
+    emits('selectionChange', list, dataList.value);
   };
   const handleSelectAll = (checked) => {
     const list = _.map(dataList.value, (item) => {
@@ -455,7 +461,7 @@
           disabled: !userStore.hasProjectResourceActions({
             projectID,
             environmentID,
-            resource: Resources.Services,
+            resource: Resources.Resources,
             actions: [Actions.DELETE]
           })
         };
@@ -677,7 +683,7 @@
           disabled: !userStore.hasProjectResourceActions({
             projectID,
             environmentID,
-            resource: Resources.Services,
+            resource: Resources.Resources,
             actions: [Actions.DELETE]
           })
         };

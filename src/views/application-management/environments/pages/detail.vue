@@ -39,7 +39,7 @@
           <a-tab-pane
             v-if="
               userStore.hasProjectResourceActions({
-                resource: Resources.Services,
+                resource: Resources.Resources,
                 projectID: route.params.projectId,
                 actions: [Actions.GET]
               })
@@ -52,7 +52,7 @@
           <a-tab-pane
             v-if="
               userStore.hasProjectResourceActions({
-                resource: Resources.Services,
+                resource: Resources.Resources,
                 projectID: route.params.projectId,
                 actions: [Actions.GET]
               })

@@ -29,7 +29,7 @@
             userStore.hasProjectResourceActions({
               projectID,
               environmentID,
-              resource: Resources.Services,
+              resource: Resources.Resources,
               actions: [Actions.POST]
             })
           "
@@ -43,15 +43,15 @@
             userStore.hasProjectResourceActions({
               projectID,
               environmentID,
-              resource: Resources.Services,
+              resource: Resources.Resources,
               actions: [Actions.POST]
             })
           "
           status="success"
           type="primary"
           :disabled="!selectedKeys.length"
-          @click="handleCloneService"
-          >{{ $t('applications.service.clone')
+          @click="handleBatchDeployment"
+          >{{ $t('applications.service.batchDeploy')
           }}<span v-if="selectedKeys.length">{{
             `(${selectedKeys.length})`
           }}</span></a-button
@@ -61,7 +61,7 @@
             userStore.hasProjectResourceActions({
               projectID,
               environmentID,
-              resource: Resources.Services,
+              resource: Resources.Resources,
               actions: [Actions.DELETE]
             })
           "
@@ -74,6 +74,17 @@
             `(${selectedKeys.length})`
           }}</span></a-button
         >
+        <primaryButtonGroup
+          v-if="batchActions.length"
+          size="medium"
+          :actions="batchActions"
+          trigger="hover"
+          @select="(value) => handleClickAction(value)"
+        >
+          <a-button type="primary"
+            ><icon-more-vertical style="stroke-width: 5"
+          /></a-button>
+        </primaryButtonGroup>
       </template>
     </FilterBox>
 
@@ -112,6 +123,11 @@
       :title="$t('common.delete.tips')"
     >
     </deleteServiceModal>
+    <importWalrusFile
+      v-model:show="showImportYaml"
+      :title="$t('applications.service.importyaml')"
+      @save="handleImportYaml"
+    ></importWalrusFile>
   </div>
 </template>
 
@@ -125,13 +141,26 @@
   import useCallCommon from '@/hooks/use-call-common';
   import { useAppStore, useUserStore } from '@/store';
   import FilterBox from '@/components/filter-box/index.vue';
+  import {
+    applyEnvironment,
+    exportEnvironment
+  } from '@/views/application-management/environments/api';
+  import GroupButtonMenu from '@/components/drop-button-group/group-button-menu.vue';
+  import DropButtonGroup from '@/components/drop-button-group/index.vue';
   import primaryButtonGroup from '@/components/drop-button-group/primary-button-group.vue';
-  import moduleWrapper from '@/components/module-wrapper/index.vue';
+  import useDownload from '@/hooks/use-download';
   import tableList from '../components/table-list.vue';
   import deleteServiceModal from '../components/delete-service-modal.vue';
-  import { CreatActions, ServiceDataType } from '../config';
+  import importWalrusFile from '../components/import-walrus-file.vue';
+  import {
+    CreatActions,
+    serviceBatchAction,
+    serviceActionMap,
+    ServiceDataType
+  } from '../config';
   import { deleteServices } from '../api';
 
+  const { download } = useDownload();
   const { route, router } = useCallCommon();
   const appStore = useAppStore();
   const userStore = useUserStore();
@@ -142,6 +171,7 @@
   const projectID = route.params.projectId as string;
   const environmentID = route.params.environmentId as string;
   const showDeleteModal = ref(false);
+  const showImportYaml = ref(false);
   const loading = ref(false);
   const queryParams = reactive({
     query: ''
@@ -151,6 +181,20 @@
     return [...serviceSelectKeys.value, ...resourceSelectKeys.value];
   });
 
+  const batchActions = computed(() => {
+    const list: any[] = _.map(serviceBatchAction, (o) => {
+      const item = _.cloneDeep(o);
+      if (!_.isFunction(item.disabled)) {
+        item.disabled = !selectedKeys.value.length;
+      } else {
+        item.disabled = item.disabled({ selectedKeys: selectedKeys.value });
+      }
+      return item;
+    });
+    return _.filter(list, (item) => {
+      return item?.filterFun?.({ projectID, environmentID });
+    });
+  });
   const handleDeleteConfirm = async (withoutCleanup) => {
     try {
       loading.value = true;
@@ -186,6 +230,7 @@
     });
   };
 
+  const handleBatchDeployment = async () => {};
   const handleCreate = () => {
     router.push({
       name: PROJECT.ServiceEdit,
@@ -210,11 +255,44 @@
     handleSearch();
   };
 
+  const handleImportYaml = async (data) => {
+    try {
+      const res = await applyEnvironment({
+        data: {
+          ...data
+        },
+        id: environmentID
+      });
+      if (res) {
+        showImportYaml.value = false;
+        execSucceed();
+        handleSearch();
+      }
+    } catch (error) {
+      // eslint-disable-next-line no-console
+      console.log(error);
+    }
+  };
+  const handleExportYaml = async () => {
+    try {
+      const url = exportEnvironment({
+        id: environmentID,
+        data: {
+          id: resourceSelectKeys.value
+        }
+      });
+      download(url);
+      // execSucceed();
+    } catch (error) {
+      // eslint-disable-next-line no-console
+      console.log(error);
+    }
+  };
   const handleServiceSelectChange = (keys: string[]) => {
     serviceSelectKeys.value = keys;
   };
 
-  const handleResourceSelectChange = (keys: string[]) => {
+  const handleResourceSelectChange = (keys: string[], dataList) => {
     resourceSelectKeys.value = keys;
   };
   const handleDeleted = (ids) => {
@@ -226,6 +304,19 @@
       resourceSelectKeys.value,
       ids as string[]
     );
+  };
+  const handleClickAction = (val) => {
+    if (val === serviceActionMap.import) {
+      showImportYaml.value = true;
+      return;
+    }
+    if (val === serviceActionMap.clone) {
+      handleCloneService();
+      return;
+    }
+    if (serviceActionMap.export) {
+      handleExportYaml();
+    }
   };
 </script>
 

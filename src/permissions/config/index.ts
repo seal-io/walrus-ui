@@ -1,8 +1,8 @@
 // resource that same with the api data
 export enum Resources {
-  ServiceResources = 'resourceComponents',
-  ServiceRevisions = 'resourceRevisions',
-  Services = 'resources',
+  ResourceComponents = 'resourceComponents',
+  ResourceRevisions = 'resourceRevisions',
+  Resources = 'resources',
   Connectors = 'connectors',
   ResourceDefinitions = 'resourceDefinitions',
   Costs = 'costs',
@@ -40,9 +40,9 @@ const enum MenuOrder {
 
 // resource order according to the menu
 export enum ResourcesOrder {
-  ServiceResources = MenuOrder.ApplicationManagement,
-  ServiceRevisions = MenuOrder.ApplicationManagement,
-  Services = MenuOrder.ApplicationManagement,
+  ResourceComponents = MenuOrder.ApplicationManagement,
+  ResourceRevisions = MenuOrder.ApplicationManagement,
+  Resources = MenuOrder.ApplicationManagement,
   Environments = MenuOrder.ApplicationManagement,
   ProjectSubjects = MenuOrder.ApplicationManagement,
   Connectors = MenuOrder.OperationHub,
@@ -74,9 +74,9 @@ export enum ProjectResourcesOrder {
   Connectors,
   ProjectSubjects,
   Workflows,
-  Services,
-  ServiceRevisions,
-  ServiceResources
+  Resources,
+  ResourceRevisions,
+  ResourceComponents
 }
 
 export enum Actions {

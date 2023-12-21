@@ -1,5 +1,5 @@
 <script lang="tsx">
-  import { defineComponent, PropType, toRefs } from 'vue';
+  import { defineComponent, PropType, toRefs, h, compile } from 'vue';
   import i18n from '@/locale';
   import _ from 'lodash';
 
@@ -13,7 +13,7 @@
   export default defineComponent({
     emits: ['select'],
     props: {
-      actionList: {
+      actions: {
         type: Array as PropType<MoreAction[]>,
         default() {
           return [];
@@ -30,24 +30,37 @@
         default() {
           return false;
         }
+      },
+      trigger: {
+        type: String,
+        default() {
+          return 'click';
+        }
       }
     },
     setup(props, { emit, slots }) {
       const { t } = i18n.global;
-      const { actionList, btnText } = toRefs(props);
+      const { actions, btnText } = toRefs(props);
 
       const handleSelectAction = (value) => {
         emit('select', value);
+      };
+      const renderIcon = (item) => {
+        if (item.iconfont) {
+          return <i class={['iconfont', item.icon]}></i>;
+        }
+        return h(compile(`<${item.icon} />`));
       };
       return () => (
         <>
           <a-dropdown
             onSelect={handleSelectAction}
+            trigger={props.trigger}
             v-slots={{
               content: () => {
                 return (
                   <>
-                    {_.map(actionList.value, (item) => {
+                    {_.map(actions.value, (item) => {
                       return (
                         <>
                           {
@@ -56,20 +69,22 @@
                               value={item.value}
                               label={t(item.label)}
                               disabled={item.disabled}
-                              v-slots={{
-                                icon: () => (
-                                  <>
-                                    {item.icon ? (
-                                      <i
-                                        class={['iconfont', item.icon]}
-                                        style="color: var(--sealblue-6);font-size: 16px;font-weight: 700"
-                                      ></i>
-                                    ) : null}
-                                  </>
-                                )
-                              }}
                             >
-                              {t(item.label)}
+                              <a-link
+                                disabled={item.disabled}
+                                v-slots={{
+                                  icon: () => (
+                                    <>
+                                      {item.icon ? (
+                                        <>{renderIcon(item)}</>
+                                      ) : null}
+                                    </>
+                                  )
+                                }}
+                                style={{ fontSize: 'var(--font-size-small)' }}
+                              >
+                                {t(item.label)}
+                              </a-link>
                             </a-doption>
                           }
                         </>

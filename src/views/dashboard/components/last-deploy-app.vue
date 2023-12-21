@@ -18,7 +18,7 @@
           :body-cell-class="
             (record) => {
               return userStore.hasProjectResourceActions({
-                resource: Resources.Services,
+                resource: Resources.Resources,
                 projectID: record.project?.id,
                 actions: [Actions.GET]
               })
@@ -31,7 +31,7 @@
             <a-link
               v-if="
                 userStore.hasProjectResourceActions({
-                  resource: Resources.Services,
+                  resource: Resources.Resources,
                   projectID: record.project?.id,
                   actions: [Actions.GET]
                 })
@@ -175,7 +175,7 @@
     if (
       col.dataIndex === 'resource.name' &&
       userStore.hasProjectResourceActions({
-        resource: Resources.Services,
+        resource: Resources.Resources,
         projectID: row.project?.id,
         actions: [Actions.GET]
       })

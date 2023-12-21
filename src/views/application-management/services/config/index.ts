@@ -204,10 +204,99 @@ export const serviceActionMap = {
   logs: 'logs',
   rollback: 'rollback',
   delete: 'delete',
+  clone: 'clone',
+  import: 'import',
+  export: 'export',
   sync: 'sync',
   stop: 'stop',
   start: 'start'
 };
+
+export const serviceBatchAction: MoreAction[] = [
+  {
+    label: 'common.button.clone',
+    value: serviceActionMap.clone,
+    icon: 'icon-Clone-Cloud',
+    iconfont: true,
+    handler: '',
+    status: 'normal',
+    disabled: false,
+    filterFun({ projectID, environmentID }) {
+      return userStore.hasProjectResourceActions({
+        resource: Resources.Resources,
+        environmentID,
+        projectID,
+        actions: [Actions.POST]
+      });
+    }
+  },
+  {
+    label: 'common.button.stop',
+    value: serviceActionMap.stop,
+    icon: 'icon-record-stop',
+    handler: '',
+    status: 'normal',
+    disabled: false,
+    filterFun({ projectID, environmentID }) {
+      return userStore.hasProjectResourceActions({
+        resource: Resources.Resources,
+        environmentID,
+        projectID,
+        actions: [Actions.PUT]
+      });
+    }
+  },
+  {
+    label: 'common.button.start',
+    value: serviceActionMap.start,
+    icon: 'icon-play-circle',
+    handler: '',
+    status: 'normal',
+    disabled: false,
+    filterFun({ projectID, environmentID }) {
+      return userStore.hasProjectResourceActions({
+        resource: Resources.Resources,
+        environmentID,
+        projectID,
+        actions: [Actions.PUT]
+      });
+    }
+  },
+  {
+    label: 'common.button.import',
+    value: serviceActionMap.import,
+    icon: 'icon-import',
+    handler: '',
+    status: 'normal',
+    disabled(item) {
+      return false;
+    },
+    filterFun({ projectID, environmentID }) {
+      return userStore.hasProjectResourceActions({
+        resource: Resources.Resources,
+        environmentID,
+        projectID,
+        actions: [Actions.POST]
+      });
+    }
+  },
+  {
+    label: 'common.button.export',
+    value: serviceActionMap.export,
+    icon: 'icon-export',
+    handler: '',
+    status: 'normal',
+    disabled: false,
+    filterFun({ projectID, environmentID }) {
+      return userStore.hasProjectResourceActions({
+        resource: Resources.Resources,
+        environmentID,
+        projectID,
+        actions: [Actions.POST]
+      });
+    }
+  }
+];
 
 export const serviceActions: MoreAction[] = [
   {
@@ -227,7 +316,7 @@ export const serviceActions: MoreAction[] = [
     },
     filterFun(currentInfo) {
       return userStore.hasProjectResourceActions({
-        resource: Resources.Services,
+        resource: Resources.Resources,
         environmentID: get(currentInfo, 'environment.id'),
         projectID: get(currentInfo, 'project.id'),
         actions: [Actions.PUT]
@@ -248,7 +337,7 @@ export const serviceActions: MoreAction[] = [
     },
     filterFun(currentInfo) {
       return userStore.hasProjectResourceActions({
-        resource: Resources.Services,
+        resource: Resources.Resources,
         environmentID: get(currentInfo, 'environment.id'),
         projectID: get(currentInfo, 'project.id'),
         actions: [Actions.POST]
@@ -269,7 +358,7 @@ export const serviceActions: MoreAction[] = [
     },
     filterFun(currentInfo) {
       return userStore.hasProjectResourceActions({
-        resource: Resources.Services,
+        resource: Resources.Resources,
         environmentID: get(currentInfo, 'environment.id'),
         projectID: get(currentInfo, 'project.id'),
         actions: [Actions.POST]
@@ -293,7 +382,7 @@ export const serviceActions: MoreAction[] = [
     status: 'normal',
     filterFun(currentInfo) {
       return userStore.hasProjectResourceActions({
-        resource: Resources.Services,
+        resource: Resources.Resources,
         environmentID: get(currentInfo, 'environment.id'),
         projectID: get(currentInfo, 'project.id'),
         actions: [Actions.PUT]
@@ -313,7 +402,7 @@ export const serviceActions: MoreAction[] = [
     },
     filterFun(currentInfo) {
       return userStore.hasProjectResourceActions({
-        resource: Resources.Services,
+        resource: Resources.Resources,
         environmentID: get(currentInfo, 'environment.id'),
         projectID: get(currentInfo, 'project.id'),
         actions: [Actions.DELETE]

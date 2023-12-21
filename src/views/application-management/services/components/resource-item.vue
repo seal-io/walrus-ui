@@ -115,7 +115,7 @@
     border-radius: var(--border-radius-small);
 
     &:hover {
-      background-color: var(--color-fill-2);
+      background-color: var(--color-fill-1);
       transition: background-color 0.2s var(--seal-transition-func);
     }
 
@@ -132,7 +132,10 @@
 
     .type {
       display: flex;
+      align-items: center;
+      justify-content: center;
       width: fit-content;
+      min-width: 40px;
       padding: 0 8px;
       line-height: 22px;
       border: 1px solid var(--color-border-2);
