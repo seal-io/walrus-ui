@@ -153,6 +153,8 @@ export default {
   'applications.service.rollback.version.holder': 'please select a version',
   'applications.service.rollback.config.compare': 'Configuration Comparison',
   'applications.service.clone': 'Clone',
+  'applications.service.batchDeploy': 'Deploy',
+  'applications.service.importyaml': 'Import YAML',
   'applications.service.graph.menu': 'Resource Executable',
   'applications.service.resource.drift': 'Resource Drift',
   'applications.service.resource.hasDrift': 'Existence drift',

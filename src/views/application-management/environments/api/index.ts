@@ -68,6 +68,23 @@ export function startEnvironment(data: { id: string }) {
   );
 }
 
+export function applyEnvironment(data: { id: string; data: any }) {
+  return axios.post(
+    `${PROJECT_API_PREFIX()}${ENVIRONMENT_API}/${data.id}/apply`,
+    data.data
+  );
+}
+
+export function exportEnvironment(data: {
+  id: string;
+  data: { id: string[] };
+}) {
+  const url = `/v1${PROJECT_API_PREFIX()}${ENVIRONMENT_API}/${
+    data.id
+  }/export?${qs.stringify(data.data)}`;
+  return url;
+}
+
 export const queryEnvironmentAvailableDefinitions = (params: {
   environmentID: string;
 }) => {

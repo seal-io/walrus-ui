@@ -3,55 +3,47 @@
     top="10%"
     :closable="false"
     :align-center="false"
-    :width="600"
+    :width="800"
     :ok-text="$t('common.button.save')"
     :visible="show"
     :mask-closable="false"
-    :body-style="{ 'max-height': '500px', 'overflow': 'auto' }"
+    :body-style="{ 'max-height': '600px', 'overflow': 'auto' }"
     modal-class="run-config-modal"
-    :title="$t('workflow.table.run.config')"
     @cancel="handleCancel"
     @ok="handleOk"
     @before-open="handleBeforeOpen"
     @before-close="handleBeforeClose"
   >
     <a-spin :loading="loading" style="width: 100%; text-align: center">
-      <a-form ref="formref" :model="formData" auto-label-width>
-        <div v-if="aviliableVariables?.length" class="title">{{
-          $t('menu.applicationManagement.secret')
-        }}</div>
-        <a-form-item
-          v-for="(item, index) in aviliableVariables"
-          :key="index"
-          :label="$t('common.table.default')"
-          :field="item.name"
-          hide-label
-          validate-trigger="change"
+      <div class="flex m-b-10">
+        <a-upload
+          action="/"
+          :auto-upload="false"
+          :show-file-list="false"
+          :on-before-upload="handleBeforeUpload"
+          @change="handleUploadSuccess"
         >
-          <seal-textarea
-            v-model="formData.variables[item.name]"
-            :label="item.name"
-            show-word-limit
-            style="width: 100%"
-            :auto-size="{ minRows: 1, maxRows: 4 }"
-          ></seal-textarea>
-        </a-form-item>
-        <div class="title">{{ $t('common.table.mark') }}</div>
-        <a-form-item
-          :label="$t('common.table.mark')"
-          field="description"
-          hide-label
-          validate-trigger="change"
-        >
-          <seal-textarea
-            v-model="formData.description"
-            :label="$t('common.table.mark')"
-            show-word-limit
-            style="width: 100%"
-            :auto-size="{ minRows: 4, maxRows: 6 }"
-          ></seal-textarea>
-        </a-form-item>
-      </a-form>
+          <template #upload-button>
+            <div>
+              <a-button type="primary" size="small">
+                <template #icon><icon-file /></template>
+                {{ $t('operation.connectors.detail.readfile') }}</a-button
+              >
+              <!-- <span style="margin-left: 5px">{{
+                $t('operation.connectors.detail.fileformat')
+              }}</span> -->
+            </div>
+          </template>
+        </a-upload>
+      </div>
+      <AceEditor
+        ref="editor"
+        v-model="formData.yaml"
+        :editor-default-value="defaultValue"
+        editor-id="firstEditor"
+        lang="yaml"
+        :height="500"
+      ></AceEditor>
     </a-spin>
     <template #footer>
       <EditPageFooter style="margin-top: 0">
@@ -79,15 +71,15 @@
 
 <script lang="ts" setup>
   import { ref, reactive, PropType, computed } from 'vue';
+  import readBlob from '@/utils/readBlob';
   import _ from 'lodash';
   import i18n from '@/locale';
   import AceEditor from '@/components/ace-editor/index.vue';
-  import EditPageFooter from '@/components/edit-page-footer/index.vue';
-  import { validateLabelNameRegx } from '@/views/config';
   import {
-    json2Yaml,
+    validateYaml,
     yaml2Json
   } from '@/components/form-create/config/yaml-parse';
+  import EditPageFooter from '@/components/edit-page-footer/index.vue';
 
   interface InfoData {
     variables: object;
@@ -114,28 +106,31 @@
     }
   });
   const emit = defineEmits(['save', 'update:show']);
-  const formref = ref();
   const loading = ref(false);
   const submitLoading = ref(false);
-  const aviliableVariables = ref<any[]>([]);
+  const defaultValue = ref<string>('');
+  const editor = ref<any>();
   const formData = ref<any>({
-    variables: {},
-    description: '',
-    id: '',
-    name: '',
-    project: {
-      id: '',
-      name: ''
-    }
+    yaml: ''
   });
 
   const handleCancel = () => {
+    formData.value.yaml = '';
     emit('update:show', false);
   };
 
+  const handleUploadSuccess = async (list, fileItem) => {
+    const res = await readBlob(fileItem.file);
+    formData.value.yaml = res;
+    defaultValue.value = res as string;
+  };
+  const handleBeforeUpload = async (file) => {
+    return true;
+  };
+
   const handleOk = async () => {
-    const res = await formref.value?.validate();
-    if (!res) {
+    const res = validateYaml(formData.value.yaml);
+    if (!res.error) {
       try {
         const data = _.cloneDeep(formData.value);
         emit('save', data);
@@ -147,39 +142,14 @@
       }
     }
   };
-  const setFormVariables = () => {
-    const variables = _.filter(props.info?.variables, (item) => {
-      return item.overwrite;
-    });
-    aviliableVariables.value = variables;
-    formData.value.variables = _.reduce(
-      variables,
-      (result, item) => {
-        result[item.name] = item.value;
-        return result;
-      },
-      {}
-    );
-  };
+
   const handleBeforeOpen = () => {
-    formData.value.id = props.info.id;
-    formData.value.name = props.info.name;
-    formData.value.project.id = props.info.project?.id;
-    formData.value.project.name = props.info.project?.name;
-    formData.value.description = '';
-    setFormVariables();
+    formData.value.yaml = '';
+    defaultValue.value = '';
+    editor?.value?.clear();
   };
   const handleBeforeClose = () => {
-    // formData.value = {
-    //   variables: {},
-    //   description: '',
-    //   id: '',
-    //   name: '',
-    //   project: {
-    //     id: '',
-    //     name: ''
-    //   }
-    // };
+    defaultValue.value = '';
   };
 </script>
 

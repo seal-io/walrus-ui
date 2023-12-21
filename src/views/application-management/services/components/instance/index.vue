@@ -345,7 +345,7 @@
       if (!item.requiredAuth) return true;
       return userStore.hasProjectResourceActions({
         projectID,
-        resource: Resources.ServiceResources,
+        resource: Resources.ResourceComponents,
         actions: ['GET']
       });
     });

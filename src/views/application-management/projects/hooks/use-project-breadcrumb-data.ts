@@ -183,7 +183,7 @@ export default function useProjectData() {
   // ======== services start ==========
   const serviceTemplate = {
     ...templateCommonConfig,
-    type: 'menu.applicationManagement.serivce',
+    type: 'menu.applicationManagement.resource',
     level: pageLevelMap.Service,
     wrapperId: 'serviceWrapper',
     route: PROJECT.ServiceDetail
@@ -239,7 +239,7 @@ export default function useProjectData() {
       value: defaultValue as string,
       label: defaultName,
       icon: 'icon-apps',
-      type: 'menu.applicationManagement.serivce',
+      type: 'menu.applicationManagement.resource',
       level: pageLevelMap.Service,
       wrapperId: 'serviceWrapper',
       route: PROJECT.ServiceDetail,

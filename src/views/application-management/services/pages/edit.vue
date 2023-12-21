@@ -236,10 +236,12 @@
         </a-form-item>
       </a-form>
     </ComCard>
-    <a-divider
-      style="margin: 0; border-color: var(--color-fill-2); border-radius: 1px"
-      :size="4"
-    ></a-divider>
+    <div style="padding: 0 20px">
+      <a-divider
+        style="margin: 0; border-color: var(--color-fill-2); border-radius: 1px"
+        :size="3"
+      ></a-divider>
+    </div>
     <ComCard>
       <div
         v-if="_.keys(schemaVariables?.properties).length"
@@ -489,7 +491,7 @@
       { ...projectRes },
       { ...environmentRes },
       {
-        type: 'menu.applicationManagement.serivce',
+        type: 'menu.applicationManagement.resource',
         label: title()
       }
     ] as BreadcrumbOptions[];
@@ -734,7 +736,7 @@
     breadCrumbList.value = [
       ...list,
       {
-        type: 'menu.applicationManagement.serivce',
+        type: 'menu.applicationManagement.resource',
         label: title()
       }
     ] as BreadcrumbOptions[];

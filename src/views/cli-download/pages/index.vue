@@ -6,12 +6,7 @@
       ></Breadcrumb>
     </BreadWrapper>
     <ComCard>
-      <a-descriptions
-        :data="downloadConfig"
-        :title="$t('common.cli.download')"
-        bordered
-        :column="1"
-      >
+      <a-descriptions :data="downloadConfig" title="" bordered :column="1">
         <template #value="{ data, value }">
           <a-space :size="12">
             <a-link

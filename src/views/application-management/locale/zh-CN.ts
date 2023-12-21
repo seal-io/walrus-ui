@@ -142,6 +142,8 @@ export default {
   'applications.service.rollback.version.holder': '请选择版本',
   'applications.service.rollback.config.compare': '配置对比',
   'applications.service.clone': '克隆',
+  'applications.service.batchDeploy': '部署',
+  'applications.service.importyaml': '导入YAML',
   'applications.service.graph.menu': '资源可执行',
   'applications.service.resource.drift': '资源漂移',
   'applications.service.resource.hasDrift': '存在飘移',

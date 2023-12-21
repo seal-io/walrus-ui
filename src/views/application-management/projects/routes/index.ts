@@ -143,7 +143,7 @@ export default [
       locale: 'applications.projects.menu',
       requiresAuth: true,
       permission: {
-        resource: Resources.Services,
+        resource: Resources.Resources,
         type: permissionKey.projectRoles,
         actions: ['GET']
       },
@@ -162,7 +162,7 @@ export default [
       locale: 'applications.projects.menu',
       requiresAuth: true,
       permission: {
-        resource: Resources.Services,
+        resource: Resources.Resources,
         type: permissionKey.projectRoles,
         actions: ['POST']
       },
@@ -181,7 +181,7 @@ export default [
       locale: 'applications.projects.menu',
       requiresAuth: true,
       permission: {
-        resource: Resources.Services,
+        resource: Resources.Resources,
         type: permissionKey.projectRoles,
         actions: ['POST']
       },

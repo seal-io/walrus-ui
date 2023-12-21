@@ -17,6 +17,8 @@ export default {
   'common.button.search': '查询',
   'common.button.clear': '清除',
   'common.button.reset': '重置',
+  'common.button.export': '导出',
+  'common.button.import': '导入',
   'common.button.retry': '重试',
   'common.button.create.now': '立即创建',
   'common.button.refresh': '刷新',
