@@ -63,7 +63,7 @@
                   ? slots.icon?.()
                   : h(compile('<icon-more-vertical />'), {
                       style: {
-                        'font-size': '18px',
+                        'font-size': '14px',
                         'stroke-width': 5
                       }
                     });
@@ -103,7 +103,12 @@
                                   })
                                 )}
                               </span>
-                              <span class="mleft-5">{t(item.label)}</span>
+                              <span
+                                class="mleft-5"
+                                style={{ fontSize: 'var(--font-size-small)' }}
+                              >
+                                {t(item.label)}
+                              </span>
                             </span>
                           </a-link>
                         </a-doption>

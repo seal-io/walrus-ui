@@ -1,6 +1,6 @@
 export default {
   'menu.dashboard': 'Dashboard',
-  'menu.applicationManagement': 'Application Management',
+  'menu.applicationManagement': 'Applications',
   'menu.applicationManagement.project': 'Projects',
   'menu.applicationManagement.projectList': 'Project List',
   'menu.applicationManagement.application': 'Applications',
@@ -13,16 +13,17 @@ export default {
   'menu.costManagement': 'Cost Management',
   'menu.costManagement.analyse': 'Cost Analysis',
   'menu.costManagement.perspective': 'Perspectives',
-  'menu.operatorHub': 'Operation Hub',
+  'menu.operatorHub': 'Operation',
   'menu.operatorHub.connector': 'Connectors',
   'menu.operatorHub.evniroment': 'Environments',
   'menu.operatorHub.module': 'Templates',
   'menu.operatorHub.catalog': 'Catalogs',
   'menu.operatorHub.secret': 'Global Variables',
-  'menu.systemsettings': 'System Settings',
+  'menu.systemsettings': 'System',
   'menu.operatorHub.variables': 'Variables',
   'menu.operatorHub.resourceDefinitions': 'Resource Definitions',
   'menu.subjects': 'User Management',
-  'menu.systemsettings.user': 'User Management',
-  'menu.systemsettings.config': 'Configuration Management'
+  'menu.systemsettings.user': 'Users',
+  'menu.systemsettings.config': 'Configuration Management',
+  'mneu.user.account': 'Account'
 };

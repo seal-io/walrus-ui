@@ -1,6 +1,97 @@
 <template>
-  <ComCard padding="0" class="applications-list">
-    <a-table
+  <ComCard padding="0" class="list">
+    <div>
+      <div class="pagination">
+        <a-space class="sort" :size="20">
+          <a-checkbox
+            v-if="!userStore.isReadOnlyEnvironment(projectID, environmentID)"
+            :model-value="
+              rowSelection.selectedRowKeys.length === dataList.length &&
+              dataList.length > 0
+            "
+            :indeterminate="
+              rowSelection.selectedRowKeys.length > 0 &&
+              rowSelection.selectedRowKeys.length < dataList.length
+            "
+            @change="handleSelectAll"
+          ></a-checkbox>
+          <a-button type="text" size="mini" @click="handleNameSort">
+            <i class="iconfont icon-sort size-16" style="stroke-width: 4"></i>
+          </a-button>
+          <a-button type="text" size="mini" @click="handleTimeSort">
+            <i class="iconfont icon-Field-time size-16"></i>
+          </a-button>
+        </a-space>
+        <a-pagination
+          size="small"
+          :total="100"
+          :page-size="queryParams.perPage"
+          :current="queryParams.page"
+          show-total
+          show-page-size
+          :hide-on-single-page="total <= 10"
+          @change="handlePageChange"
+          @page-size-change="handlePageSizeChange"
+        />
+      </div>
+      <a-space direction="vertical" :size="16" fill>
+        <ResourceItem
+          v-for="(item, index) in dataList"
+          :key="item.id"
+          :row-data="item"
+          :index="index"
+          :show-checkbox="
+            !userStore.isReadOnlyEnvironment(projectID, environmentID)
+          "
+          :selected-row-keys="rowSelection.selectedRowKeys"
+          @selectionChange="handleRowSelectChange"
+        >
+          <template #name="{ record }">
+            <a-link
+              v-if="
+                userStore.hasProjectResourceActions({
+                  projectID,
+                  resource: Resources.Services,
+                  actions: [Actions.GET]
+                })
+              "
+              @click.stop="handleClickViewDetail(record)"
+              >{{ record.name }}</a-link
+            >
+            <span v-else>{{ record.name }}</span>
+          </template>
+          <template #status="{ record }">
+            <StatusLabel
+              :zoom="0.9"
+              :status="{
+                status: get(record, 'status.summaryStatus'),
+                inactive: _.includes(
+                  StartableStatus,
+                  get(record, 'status.summaryStatus')
+                ),
+                text: get(record, 'status.summaryStatus'),
+                message: get(record, 'status.summaryStatusMessage'),
+                transitioning: get(record, 'status.transitioning'),
+                error: get(record, 'status.error')
+              }"
+            ></StatusLabel>
+          </template>
+          <template #actions="{ record, rowIndex }">
+            <DropButtonGroup
+              v-if="setActionList(dataList[rowIndex]).length"
+              :layout="
+                setActionList(dataList[rowIndex]).length === 1
+                  ? 'horizontal'
+                  : 'vertical'
+              "
+              :actions="setActionList(dataList[rowIndex])"
+              @select="(value) => handleClickAction(value, record)"
+            ></DropButtonGroup>
+          </template>
+        </ResourceItem>
+      </a-space>
+    </div>
+    <!-- <a-table
       column-resizable
       style="margin-bottom: 20px"
       :bordered="false"
@@ -151,7 +242,7 @@
       :hide-on-single-page="total <= 10"
       @change="handlePageChange"
       @page-size-change="handlePageSizeChange"
-    />
+    /> -->
     <rollbackModal
       v-model:show="showRollbackModal"
       :service-id="selectedVersion"
@@ -232,6 +323,7 @@
   import rollbackModal from './rollback-modal.vue';
   import revisionDetail from './revision-detail.vue';
   import driftResource from './drift-resource.vue';
+  import ResourceItem from './resource-item.vue';
 
   const props = defineProps({
     title: {
@@ -313,6 +405,16 @@
     handleSelectChange(list);
     emits('selectionChange', list);
   };
+  const handleSelectAll = (checked) => {
+    const list = _.map(dataList.value, (item) => {
+      return item.id;
+    });
+    if (checked) {
+      handleRowSelectChange(list);
+    } else {
+      handleRowSelectChange([]);
+    }
+  };
   const setActionList = (row) => {
     const list = _.filter(serviceActions, (item) => {
       return item.filterFun ? item.filterFun(row) : true;
@@ -372,6 +474,20 @@
 
   const handleSortChange = (dataIndex: string, direction: string) => {
     setSortDirection(dataIndex, direction);
+    fetchData();
+  };
+  const handleTimeSort = () => {
+    setSortDirection(
+      'createTime',
+      sortOrder.value === 'ascend' ? 'descend' : 'ascend'
+    );
+    fetchData();
+  };
+  const handleNameSort = () => {
+    setSortDirection(
+      'name',
+      sortOrder.value === 'ascend' ? 'descend' : 'ascend'
+    );
     fetchData();
   };
   const handleSearch = () => {
@@ -655,4 +771,28 @@
   init();
 </script>
 
-<style lang="less" scoped></style>
+<style lang="less" scoped>
+  .list {
+    .pagination {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px 15px;
+      padding-right: 0;
+
+      .arco-checkbox {
+        padding: 0;
+
+        :deep(.arco-checkbox-icon) {
+          border: 1px solid var(--color-border-3);
+        }
+      }
+
+      .sort {
+        display: flex;
+        align-items: center;
+        justify-content: flex-start;
+      }
+    }
+  }
+</style>

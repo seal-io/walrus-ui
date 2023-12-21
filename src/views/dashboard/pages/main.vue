@@ -6,11 +6,11 @@
       ></Breadcrumb>
     </BreadWrapper>
 
-    <HeaderInfo :info="{ name: $t('menu.dashboard') }">
+    <!-- <HeaderInfo :info="{ name: $t('menu.dashboard') }">
       <template #icon>
         <i class="iconfont icon-dashboard-Fill"></i>
       </template>
-    </HeaderInfo>
+    </HeaderInfo> -->
     <a-spin style="width: 100%" :loading="loading">
       <a-space v-if="!isEmpty" :size="8" direction="vertical" fill>
         <overview

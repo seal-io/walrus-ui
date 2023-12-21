@@ -35,7 +35,7 @@
           tooltip
           :cell-style="{ minWidth: '40px' }"
           data-index="duration"
-          align="center"
+          align="left"
           :title="$t('dashboard.table.duration')"
         >
           <template #cell="{ record }">
@@ -47,7 +47,7 @@
           tooltip
           :cell-style="{ minWidth: '40px' }"
           data-index="status"
-          align="center"
+          align="left"
           :title="$t('dashboard.table.status')"
         >
           <template #cell="{ record }">
@@ -62,7 +62,7 @@
             ></StatusLabel>
           </template>
         </a-table-column>
-        <a-table-column align="center" :title="$t('common.table.operation')">
+        <a-table-column align="left" :title="$t('common.table.operation')">
           <template #cell="{ record }">
             <a-space :size="20">
               <a-tooltip :content="$t('common.button.logs')">

@@ -4,7 +4,7 @@ import { replace } from 'lodash';
 
 export const emailReg = /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(.\w{2,3})+$/;
 
-export const urlReg = urlRegex();
+export const urlReg = urlRegex({ returnString: true });
 export const urlHttp = /(http|https):\/\/([\w.]+\/?)\S*/;
 export const scoksReg = /(socks4|socks5):\/\/([\w.]+\/?)\S*/;
 export const hostReg = /^([^\s.]+\.)([^\s.]+\.)*[^\s.]+$/;
@@ -27,8 +27,8 @@ const cronPreset = {
     useLastDayOfMonth: true, // optional, default to false
     useLastDayOfWeek: true, // optional, default to false
     useNearestWeekday: true, // optional, default to false
-    useNthWeekdayOfMonth: true,
-  },
+    useNthWeekdayOfMonth: true
+  }
 };
 export const validateCron = (str) => {
   const result = cron(replace(str, /\s+/g, ' '), cronPreset);
@@ -59,5 +59,5 @@ export default {
   validateEmail,
   getValueOnConfigs,
   scoksReg,
-  validateCron,
+  validateCron
 };

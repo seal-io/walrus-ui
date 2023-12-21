@@ -124,7 +124,7 @@
     }
 
     :deep(.arco-tabs-content) {
-      padding: 16px 0 0 0;
+      padding: var(--container-padding) 0 0 0;
     }
 
     :deep(.arco-descriptions-layout-inline-vertical) {

@@ -10,7 +10,7 @@
       ></Breadcrumb>
     </BreadWrapper>
     <ComCard padding="0">
-      <HeaderInfo :info="currentInfo">
+      <!-- <HeaderInfo :info="currentInfo">
         <template #icon>
           <i class="iconfont icon-rongqiyunfuwu"></i>
         </template>
@@ -22,7 +22,12 @@
         <template #description>
           <div class="description">{{ currentInfo.description }}</div>
         </template>
-      </HeaderInfo>
+      </HeaderInfo> -->
+      <!-- <TabList
+        :tabs="tabs"
+        v-model:active-key="activeKey"
+        @change="handleTabChange"
+      ></TabList> -->
       <ComCard>
         <a-tabs
           v-model:active-key="activeKey"
@@ -40,7 +45,7 @@
               })
             "
             :key="EnvironmentTabs.SERVICE"
-            :title="$t('menu.applicationManagement.serivce')"
+            :title="$t('menu.applicationManagement.resource')"
           >
             <ServiceList></ServiceList>
           </a-tab-pane>
@@ -92,6 +97,7 @@
   import useProjectData from '@/views/application-management/projects/hooks/use-project-breadcrumb-data';
   import useBasicInfoData from '@/views/application-management/projects/hooks/use-basicInfo-data';
   import VariableList from '@/views/application-management/variables/components/table-list.vue';
+  import TabList from '@/components/tab-list/index.vue';
   import { basicInfoConfig } from '../config';
   import { queryItemEnvironments } from '../api';
   import environmentGraph from '../components/environment-graph.vue';
@@ -120,6 +126,21 @@
     projectTemplate,
     environmentTemplate
   ]);
+
+  const tabs = [
+    {
+      label: 'menu.applicationManagement.resource',
+      key: EnvironmentTabs.SERVICE
+    },
+    {
+      label: 'applications.instance.tab.graph',
+      key: EnvironmentTabs.GRAPH
+    },
+    {
+      label: 'menu.applicationManagement.secret',
+      key: EnvironmentTabs.VARIABLES
+    }
+  ];
   const basicDataList = useBasicInfoData(basicInfoConfig, currentInfo);
 
   const handleTabChange = (val) => {

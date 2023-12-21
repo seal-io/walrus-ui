@@ -4,7 +4,7 @@
     class="tab-logs-wrap"
     style="position: relative; z-index: 3001"
   >
-    <FilterBox v-if="url" style="margin-bottom: 10px">
+    <FilterBox v-if="url" style="margin-bottom: var(--filter-box-margin)">
       <template #params>
         <a-input-number
           v-model="filterParams.tailLines"

@@ -1,6 +1,6 @@
 <template>
   <div class="service">
-    <FilterBox style="margin-bottom: 10px">
+    <FilterBox style="margin-bottom: var(--filter-box-margin)">
       <template #params>
         <a-input
           v-model="queryParams.query"
@@ -24,7 +24,7 @@
         </a-space>
       </template>
       <template #button-group>
-        <primaryButtonGroup
+        <a-button
           v-if="
             userStore.hasProjectResourceActions({
               projectID,
@@ -33,10 +33,11 @@
               actions: [Actions.POST]
             })
           "
-          :btn-text="$t('applications.applications.create.serviceResource')"
-          :action-list="CreatActions"
-          @select="handleSelectAction"
-        ></primaryButtonGroup>
+          type="primary"
+          @click="handleCreate"
+        >
+          {{ $t('applications.applications.create.resource') }}</a-button
+        >
         <a-button
           v-if="
             userStore.hasProjectResourceActions({
@@ -76,7 +77,7 @@
       </template>
     </FilterBox>
 
-    <moduleWrapper
+    <!-- <moduleWrapper
       :title="$t('menu.applicationManagement.services')"
       :show-delete="false"
       class="m-b-20"
@@ -90,20 +91,21 @@
         @deleted="handleDeleted"
         @selection-change="handleServiceSelectChange"
       ></tableList>
-    </moduleWrapper>
-    <moduleWrapper
+    </moduleWrapper> -->
+    <!-- <moduleWrapper
       :title="$t('menu.applicationManagement.resource')"
       :show-delete="false"
       :status="true"
     >
-      <tableList
-        ref="resourceTable"
-        :type="ServiceDataType.resource"
-        :title="$t('menu.applicationManagement.resource')"
-        :request-params="queryParams"
-        @selection-change="handleResourceSelectChange"
-      ></tableList>
-    </moduleWrapper>
+      
+    </moduleWrapper> -->
+    <tableList
+      ref="resourceTable"
+      :type="ServiceDataType.resource"
+      :title="$t('menu.applicationManagement.resource')"
+      :request-params="queryParams"
+      @selection-change="handleResourceSelectChange"
+    ></tableList>
     <deleteServiceModal
       v-model:show="showDeleteModal"
       :callback="handleDeleteConfirm"
@@ -163,7 +165,7 @@
       execSucceed();
       serviceSelectKeys.value = [];
       resourceSelectKeys.value = [];
-      serviceTable.value.clearStatus();
+      // serviceTable.value.clearStatus();
       resourceTable.value.clearStatus();
     } catch (error) {
       loading.value = false;
@@ -184,12 +186,11 @@
     });
   };
 
-  const handleSelectAction = (action: string) => {
-    if (!ServiceDataType[action]) return;
+  const handleCreate = () => {
     router.push({
       name: PROJECT.ServiceEdit,
       params: {
-        dataType: ServiceDataType[action],
+        dataType: ServiceDataType.resource,
         projectId: projectID,
         environmentId: environmentID,
         action: PageAction.EDIT
@@ -199,7 +200,7 @@
 
   const handleSearch = () => {
     setTimeout(() => {
-      serviceTable.value.handleSearch();
+      // serviceTable.value.handleSearch();
       resourceTable.value.handleSearch();
     }, 100);
   };

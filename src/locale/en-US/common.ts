@@ -109,6 +109,7 @@ export default {
   'common.button.settings': 'Settings',
   'common.button.management': 'Management',
   'common.cli.download': 'Clients Download',
+  'common.button.download': 'Download',
   'common.table.sensitive': 'Sensitive',
   'common.table.yes': 'Yes',
   'common.table.no': 'No',

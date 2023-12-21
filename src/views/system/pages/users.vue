@@ -1,6 +1,6 @@
 <template>
   <div>
-    <FilterBox style="margin-bottom: 10px">
+    <FilterBox style="margin-bottom: var(--filter-box-margin)">
       <template #params>
         <a-input
           v-model="queryParams.query"

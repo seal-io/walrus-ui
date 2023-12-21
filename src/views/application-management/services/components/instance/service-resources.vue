@@ -1,6 +1,6 @@
 <template>
   <div id="resource-wrap" class="resource-wrap">
-    <FilterBox style="margin-bottom: 10px">
+    <FilterBox style="margin-bottom: var(--filter-box-margin)">
       <template #params>
         <a-input
           v-model="query"
@@ -53,7 +53,7 @@
           ellipsis
           tooltip
           :cell-style="{ minWidth: '40px' }"
-          align="center"
+          align="left"
           data-index="type"
           :title="$t('applications.applications.table.type')"
         >
@@ -62,7 +62,7 @@
           ellipsis
           tooltip
           :cell-style="{ minWidth: '40px' }"
-          align="center"
+          align="left"
           data-index="createTime"
           :title="$t('common.table.createTime')"
         >
@@ -77,7 +77,7 @@
           ellipsis
           tooltip
           :cell-style="{ minWidth: '40px' }"
-          align="center"
+          align="left"
           data-index="status.summaryStatus"
           :title="$t('applications.applications.table.status')"
         >
@@ -99,7 +99,7 @@
             ></StatusLabel>
           </template>
         </a-table-column>
-        <a-table-column align="center" :title="$t('common.table.operation')">
+        <a-table-column align="left" :title="$t('common.table.operation')">
           <template #cell="{ record }">
             <a-space :size="20">
               <a-tooltip

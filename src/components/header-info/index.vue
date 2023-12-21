@@ -20,10 +20,12 @@
         <slot name="extra"></slot>
       </div>
     </div>
-    <a-divider
-      style="margin: 0; border-color: var(--color-fill-2); border-radius: 1px"
-      :size="4"
-    ></a-divider>
+    <div style="padding: 0 20px">
+      <a-divider
+        style="margin: 0; border-color: var(--color-fill-2); border-radius: 1px"
+        :size="3"
+      ></a-divider>
+    </div>
   </div>
 </template>
 
@@ -77,7 +79,7 @@
 
         :deep(.iconfont) {
           color: rgb(var(--arcoblue-5));
-          font-size: 56px;
+          font-size: 42px;
           background-color: transparent;
           // box-shadow: 0 0 16px 2px rgb(var(--arcoblue-4));
           border-radius: 50%;

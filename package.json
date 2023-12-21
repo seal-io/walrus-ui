@@ -83,7 +83,7 @@
     "semver": "^7.5.4",
     "strip-ansi": "^7.0.1",
     "tippy.js": "^6.3.7",
-    "url-regex-safe": "^3.0.0",
+    "url-regex-safe": "^4.0.0",
     "vue": "^3.2.31",
     "vue-echarts": "^6.0.0",
     "vue-i18n": "^9.2.0-beta.17",

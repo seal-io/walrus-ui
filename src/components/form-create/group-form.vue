@@ -284,7 +284,7 @@
     }
 
     :deep(.arco-tabs-content) {
-      padding-top: 16px !important;
+      padding-top: var(--container-padding) !important;
     }
   }
 </style>
