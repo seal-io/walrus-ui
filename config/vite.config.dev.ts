@@ -19,7 +19,7 @@ export default mergeConfig(
       },
       https: true,
       port: 4000,
-      proxy: createProxyTable('https://192.168.50.30')
+      proxy: createProxyTable('https://alexcc.cf')
     },
     plugins: [
       basicSsl(),

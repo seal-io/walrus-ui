@@ -78,6 +78,7 @@
           v-if="batchActions.length"
           size="medium"
           :actions="batchActions"
+          position="br"
           trigger="hover"
           @select="(value) => handleClickAction(value)"
         >
@@ -136,8 +137,8 @@
   import { PageAction } from '@/views/config';
   import { Resources, Actions } from '@/permissions/config';
   import { PROJECT } from '@/router/config';
-  import { reactive, ref, computed } from 'vue';
-  import { execSucceed } from '@/utils/monitor';
+  import { reactive, ref, computed, onMounted } from 'vue';
+  import { execSucceed, deleteModal } from '@/utils/monitor';
   import useCallCommon from '@/hooks/use-call-common';
   import { useAppStore, useUserStore } from '@/store';
   import FilterBox from '@/components/filter-box/index.vue';
@@ -158,10 +159,15 @@
     serviceActionMap,
     ServiceDataType
   } from '../config';
-  import { deleteServices } from '../api';
+  import {
+    deleteServices,
+    batchDeployService,
+    batchStartService,
+    batchStopService
+  } from '../api';
 
   const { download } = useDownload();
-  const { route, router } = useCallCommon();
+  const { route, router, t } = useCallCommon();
   const appStore = useAppStore();
   const userStore = useUserStore();
   const serviceTable = ref();
@@ -173,6 +179,7 @@
   const showDeleteModal = ref(false);
   const showImportYaml = ref(false);
   const loading = ref(false);
+  const actionHandlerMap = new Map();
   const queryParams = reactive({
     query: ''
   });
@@ -230,7 +237,58 @@
     });
   };
 
-  const handleBatchDeployment = async () => {};
+  const handleBatchDeployment = async () => {
+    try {
+      await batchDeployService({
+        items: _.map(resourceSelectKeys.value, (val) => {
+          return { id: val as string };
+        })
+      });
+      execSucceed();
+    } catch (error) {
+      // eslint-disable-next-line no-console
+      console.log(error);
+    }
+  };
+
+  const handleBatchStart = async () => {
+    try {
+      await batchStartService({
+        items: _.map(resourceSelectKeys.value, (val) => {
+          return { id: val as string };
+        })
+      });
+      execSucceed();
+    } catch (error) {
+      // eslint-disable-next-line no-console
+      console.log(error);
+    }
+  };
+
+  const handleBatchStop = async () => {
+    try {
+      await batchStopService({
+        items: _.map(resourceSelectKeys.value, (val) => {
+          return { id: val as string };
+        })
+      });
+      execSucceed();
+    } catch (error) {
+      // eslint-disable-next-line no-console
+      console.log(error);
+    }
+  };
+
+  const handleStopModal = async () => {
+    deleteModal({
+      content: 'applications.service.stop.confirm',
+      title: t('applications.service.stop.tips', {
+        type: t('applications.applications.resource.title')
+      }),
+      okText: 'common.button.stop',
+      onOk: () => handleBatchStop()
+    });
+  };
   const handleCreate = () => {
     router.push({
       name: PROJECT.ServiceEdit,
@@ -305,19 +363,24 @@
       ids as string[]
     );
   };
+
+  const setActionHandler = () => {
+    actionHandlerMap.set(serviceActionMap.clone, handleCloneService);
+    actionHandlerMap.set(serviceActionMap.export, handleExportYaml);
+    actionHandlerMap.set(serviceActionMap.stop, handleStopModal);
+    actionHandlerMap.set(serviceActionMap.start, handleBatchStart);
+  };
+
   const handleClickAction = (val) => {
     if (val === serviceActionMap.import) {
       showImportYaml.value = true;
       return;
     }
-    if (val === serviceActionMap.clone) {
-      handleCloneService();
-      return;
-    }
-    if (serviceActionMap.export) {
-      handleExportYaml();
-    }
+    actionHandlerMap.get(val)();
   };
+  onMounted(() => {
+    setActionHandler();
+  });
 </script>
 
 <style lang="less" scoped>

@@ -15,6 +15,8 @@ export default {
   'applications.applications.configuration.create': '添加模板',
   'applications.applications.table.name': '应用',
   'applications.applications.table.module': '模板',
+  'applications.applications.service.title': '服务',
+  'applications.applications.resource.title': '资源',
   'applications.applications.table.service': '服务',
   'applications.applications.table.resource': '资源',
   'applications.applications.table.resourceType': '资源类型',
