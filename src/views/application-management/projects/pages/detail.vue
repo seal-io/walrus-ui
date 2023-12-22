@@ -10,7 +10,7 @@
       ></Breadcrumb>
     </BreadWrapper>
     <ComCard padding="0">
-      <!-- <HeaderInfo :info="currentInfo">
+      <HeaderInfo :info="currentInfo">
         <template #icon>
           <i class="iconfont icon-project"></i>
         </template>
@@ -22,7 +22,7 @@
         <template #description>
           <div class="description">{{ currentInfo.description }}</div>
         </template>
-      </HeaderInfo> -->
+      </HeaderInfo>
       <ComCard>
         <a-tabs
           v-model:active-key="activeKey"

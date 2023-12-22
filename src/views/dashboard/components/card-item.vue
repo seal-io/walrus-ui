@@ -24,8 +24,8 @@
       type: Object as PropType<DataType>,
       default() {
         return {};
-      },
-    },
+      }
+    }
   });
 </script>
 
@@ -37,7 +37,7 @@
     text-align: center;
     // background: linear-gradient(#ebfdff 0%, #e9f1fc 100%);
     background: rgba(230, 244, 254, 0.5);
-    border-radius: 4px;
+    border-radius: var(--border-radius-small);
 
     .content {
       display: flex;

@@ -20,12 +20,12 @@
         <slot name="extra"></slot>
       </div>
     </div>
-    <div style="padding: 0 20px">
+    <!-- <div style="padding: 0 20px">
       <a-divider
         style="margin: 0; border-color: var(--color-fill-2); border-radius: 1px"
         :size="3"
       ></a-divider>
-    </div>
+    </div> -->
   </div>
 </template>
 

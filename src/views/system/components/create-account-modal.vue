@@ -65,7 +65,7 @@
         <a-input-group style="width: 100%">
           <seal-input-password
             v-model="formData.password"
-            style="width: 100%; border-radius: 4px 0 0 4px"
+            style="width: 100%; border-radius:  var(--border-radius-small); 0 0 4px"
             :label="$t('profile.account.password')"
             :required="action === 'create'"
           />

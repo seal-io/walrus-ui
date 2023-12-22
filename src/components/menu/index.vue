@@ -24,7 +24,14 @@
   import useListenerRouteChange from '@/hooks/use-listener-route-change';
   import { listenerRouteChange } from '@/utils/route-listener';
   import useLocale from '@/hooks/locale';
-  import { queryProjects } from '@/views/application-management/projects/api';
+  import {
+    queryProjects,
+    PROJECT_API
+  } from '@/views/application-management/projects/api';
+  import {
+    queryEnvironmentList,
+    ENVIRONMENT_API
+  } from '@/views/application-management/environments/api';
   import { profileMenu, avatarMenu } from './config';
 
   export default defineComponent({
@@ -171,6 +178,53 @@
           }
         });
       };
+      const gotoEnvironmentDetail = (item: RouteRecordRaw) => {
+        const defaultProject = projectStore.defaultActiveProject;
+        const defaultEnvironment = projectStore.defaultActiveEnvironment;
+        if (!defaultEnvironment?.id) {
+          goToProject(item);
+          return;
+        }
+        router.push({
+          name: PROJECT.EnvDetail,
+          params: {
+            projectId: defaultProject?.id,
+            environmentId: defaultEnvironment?.id
+          }
+        });
+      };
+
+      const setDefaultProject = (list) => {
+        const defaultProject = projectStore.defaultActiveProject;
+        const defaultValue = route.params.projectId || _.get(list, '0.value');
+        const defaultName = _.find(list, (item) => item.value === defaultValue)
+          ?.label as string;
+
+        if (!defaultProject?.id && list.length) {
+          projectStore.setInfo({
+            defaultActiveProject: {
+              id: defaultValue,
+              name: defaultName
+            }
+          });
+        } else if (!list.length) {
+          projectStore.setInfo({
+            defaultActiveProject: {}
+          });
+        } else {
+          const data = _.find(
+            list,
+            (item) => item.value === defaultProject?.id
+          );
+          projectStore.setInfo({
+            defaultActiveProject: {
+              id: data?.value || defaultValue,
+              name: data?.label || defaultName
+            }
+          });
+        }
+      };
+
       const getProjectList = async () => {
         try {
           const params = {
@@ -184,36 +238,8 @@
             };
           });
 
-          const defaultProject = projectStore.defaultActiveProject;
-          const defaultValue = route.params.projectId || _.get(list, '0.value');
-          const defaultName = _.find(
-            list,
-            (item) => item.value === defaultValue
-          )?.label as string;
+          setDefaultProject(list);
 
-          if (!defaultProject?.id && list.length) {
-            projectStore.setInfo({
-              defaultActiveProject: {
-                id: defaultValue,
-                name: defaultName
-              }
-            });
-          } else if (!list.length) {
-            projectStore.setInfo({
-              defaultActiveProject: {}
-            });
-          } else {
-            const data = _.find(
-              list,
-              (item) => item.value === defaultProject?.id
-            );
-            projectStore.setInfo({
-              defaultActiveProject: {
-                id: data?.value || defaultValue,
-                name: data?.label || defaultName
-              }
-            });
-          }
           projectStore.setInfo({
             projectList: _.cloneDeep(list)
           });
@@ -221,6 +247,62 @@
           projectStore.setInfo({
             projectList: []
           });
+        }
+      };
+
+      const setDefaultEnvironment = (list) => {
+        const defaultEnvironment = projectStore.defaultActiveEnvironment;
+        const defaultValue =
+          route.params.environmentId || _.get(list, '0.value');
+        const defaultName = _.find(list, (item) => item.value === defaultValue)
+          ?.label as string;
+
+        if (!defaultEnvironment?.id && list.length) {
+          projectStore.setInfo({
+            defaultActiveEnvironment: {
+              id: defaultValue,
+              name: defaultName
+            }
+          });
+        } else if (!list.length) {
+          projectStore.setInfo({
+            defaultActiveEnvironment: {}
+          });
+        } else {
+          const data = _.find(
+            list,
+            (item) => item.value === defaultEnvironment?.id
+          );
+          projectStore.setInfo({
+            defaultActiveEnvironment: {
+              id: data?.value || defaultValue,
+              name: data?.label || defaultName
+            }
+          });
+        }
+      };
+      const getEnvironmentList = async () => {
+        const defaultProject = projectStore.defaultActiveProject;
+        if (!defaultProject?.id) return;
+        try {
+          const params = {
+            page: -1,
+            projectID: defaultProject?.id
+          };
+          const { data } = await queryEnvironmentList(params);
+          const list = _.map(data.items, (item) => {
+            return {
+              ..._.cloneDeep(item),
+              label: item.name,
+              value: item.id
+            };
+          });
+          projectStore.setInfo({
+            environmentList: _.cloneDeep(list)
+          });
+          setDefaultEnvironment(list);
+        } catch (error) {
+          // ignore
         }
       };
       // In this case only two levels of menus are available
@@ -232,7 +314,7 @@
         tabBarStore.clearTags();
         console.log('project list', item, projectStore.projectList);
         if (item.name === PROJECT.List) {
-          goToProject(item);
+          gotoEnvironmentDetail(item);
           return;
         }
         if (!isReplace) {
@@ -434,10 +516,11 @@
         return travel();
       };
 
-      const init = () => {
+      const init = async () => {
         userStore.info();
-        getProjectList();
         getAppVersion();
+        await getProjectList();
+        await getEnvironmentList();
       };
       init();
       return () => (

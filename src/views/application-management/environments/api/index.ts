@@ -17,6 +17,7 @@ export const getPermissionRouteParams = () => {
 
 export interface QueryType extends Pagination {
   extract?: string[];
+  projectID?: string;
   sort?: string[];
 }
 
@@ -32,6 +33,20 @@ export function queryEnvironments(params: QueryType, token?) {
       return qs.stringify(obj);
     }
   });
+}
+export function queryEnvironmentList(params: QueryType, token?) {
+  return axios.get<ResultType>(
+    `/projects/${params.projectID}${ENVIRONMENT_API}`,
+    {
+      params: {
+        ..._.omit(params, ['projectID'])
+      },
+      cancelToken: token,
+      paramsSerializer: (obj) => {
+        return qs.stringify(obj);
+      }
+    }
+  );
 }
 
 export function queryItemEnvironments(params: { id: string }) {

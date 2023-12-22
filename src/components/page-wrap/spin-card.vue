@@ -79,11 +79,11 @@
 
   .spin-card-content {
     // background: var(--color-fill-1);
-    // border-radius: 4px;
+    // border-radius:  var(--border-radius-small);;
   }
 
   :deep(.arco-card) {
-    border-radius: 4px;
+    border-radius: var(--border-radius-small);
   }
 
   .header-border-less {

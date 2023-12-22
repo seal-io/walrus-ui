@@ -44,7 +44,7 @@
     color: rgb(var(--arcoblue-5));
     background-color: rgba(var(--arcoblue-1), 0.3);
     border: 1px solid rgb(var(--arcoblue-5));
-    border-radius: 4px;
+    border-radius: var(--border-radius-small);
     cursor: pointer;
     transition: all 0.2s;
 

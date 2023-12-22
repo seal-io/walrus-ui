@@ -12,7 +12,8 @@ const useProjectStore = defineStore('project', {
     serviceList: [],
     pipelineList: [],
     pipelineRecordList: [],
-    defaultActiveProject: {} // {id: '', name: ''}
+    defaultActiveProject: {}, // {id: '', name: ''}
+    defaultActiveEnvironment: {} // {id: '', name: ''}
   }),
   getters: {
     filterInfo(state: any): any {

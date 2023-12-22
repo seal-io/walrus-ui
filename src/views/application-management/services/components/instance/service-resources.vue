@@ -6,7 +6,7 @@
           v-model="query"
           :placeholder="$t('applications.instance.tab.resource.holder')"
           allow-clear
-          style="width: 240px"
+          style="width: 260px"
           @clear="handleSearch"
           @press-enter="handleSearch"
         >

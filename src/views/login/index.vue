@@ -155,7 +155,7 @@
       .arco-space-vertical.get-pwd {
         padding: 20px;
         background-color: var(--color-fill-2);
-        border-radius: 4px;
+        border-radius: var(--border-radius-small);
 
         .arco-icon {
           margin-right: 8px;
@@ -169,7 +169,7 @@
       margin-top: 40px;
       padding: 10px;
       font-size: 12px;
-      border-radius: 4px;
+      border-radius: var(--border-radius-small);
 
       .text {
         margin-bottom: 10px;

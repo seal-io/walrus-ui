@@ -155,7 +155,7 @@
             ellipsis
             tooltip
             :cell-style="{ minWidth: '40px' }"
-            align="center"
+            align="left"
             data-index="createTime"
             :sortable="{
               sortDirections: ['ascend', 'descend'],
@@ -186,7 +186,7 @@
                     actions: [Actions.PUT]
                   })
             "
-            align="center"
+            align="left"
             :width="210"
             :title="$t('common.table.operation')"
             ellipsis

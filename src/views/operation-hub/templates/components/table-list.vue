@@ -1,7 +1,7 @@
 <template>
   <ComCard borderless padding="0" class="projects">
     <div class="content">
-      <FilterBox>
+      <FilterBox style="margin-bottom: var(--filter-box-margin)">
         <template #params>
           <a-select
             v-model="queryParams.catalogID"
@@ -93,7 +93,7 @@
           >
         </template>
       </FilterBox>
-      <a-divider :margin="8"></a-divider>
+      <!-- <a-divider :margin="8"></a-divider> -->
       <a-spin :loading="loading" class="fill-width">
         <a-tabs
           lazy-load
@@ -465,7 +465,7 @@
         margin-right: 6px;
         color: var(--color-text-2);
         font-size: 20px;
-        border-radius: 4px;
+        border-radius: var(--border-radius-small);
         cursor: pointer;
         .hoverable();
 

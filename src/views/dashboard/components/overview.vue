@@ -1,5 +1,5 @@
 <template>
-  <spinCard :title="$t('dashboard.overview.title')" borderless>
+  <spinCard borderless>
     <a-grid :cols="25" :col-gap="20" :row-gap="20">
       <a-grid-item
         v-for="(item, index) in overviewData"

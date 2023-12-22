@@ -173,7 +173,7 @@
           ellipsis
           tooltip
           :cell-style="{ minWidth: '40px' }"
-          align="center"
+          align="left"
           data-index="finOpsStatus"
           :title="$t('operation.connectors.table.status')"
         >
@@ -195,7 +195,7 @@
           ellipsis
           tooltip
           :cell-style="{ minWidth: '40px' }"
-          align="center"
+          align="left"
           data-index="applicableEnvironmentType"
           :title="$t('operation.connectors.table.environmentType')"
         >
@@ -209,7 +209,7 @@
           ellipsis
           tooltip
           :cell-style="{ minWidth: '40px' }"
-          align="center"
+          align="left"
           data-index="CostSynced"
           :title="$t('operation.connectors.table.coststatus')"
         >
@@ -224,7 +224,7 @@
           ellipsis
           tooltip
           :cell-style="{ minWidth: '40px' }"
-          align="center"
+          align="left"
           data-index="createTime"
           :sortable="{
             sortDirections: ['ascend', 'descend'],
@@ -253,7 +253,7 @@
                   actions: [Actions.PUT]
                 })
           "
-          align="center"
+          align="left"
           :title="$t('common.table.operation')"
           ellipsis
           tooltip

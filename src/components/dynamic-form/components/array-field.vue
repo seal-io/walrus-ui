@@ -367,7 +367,7 @@
     justify-content: space-between;
     padding: 0;
     border-radius: var(--border-radius-small);
-    border-radius: 4px;
+    border-radius: var(--border-radius-small);
 
     .delete-btn {
       position: relative;
@@ -390,7 +390,7 @@
           display: block;
           padding-bottom: 0;
           background-color: var(--color-fill-2);
-          border-radius: 4px;
+          border-radius: var(--border-radius-small);
           transition: background-color 0.3s var(--seal-transition-func);
           content: '';
         }

@@ -9,39 +9,28 @@
       <a-tab-pane key="list">
         <ServiceResources :resource-list="resourceList" :is-loading="isLoading">
           <template #right>
-            <a-space class="title">
-              <icon-font
-                type="icon-table"
-                :class="{ active: activeKey === 'list' }"
-                @click="handleToggle('list')"
-              />
-              <icon-font
-                type="icon-a-relation3-line"
-                :class="{ active: activeKey === 'graph' }"
-                @click="handleToggle('graph')"
-              />
-            </a-space>
+            <IconBtnGroup
+              v-model:active="activeKey"
+              :icon-list="iconList"
+              @change="handleToggle"
+            ></IconBtnGroup>
           </template>
         </ServiceResources>
       </a-tab-pane>
       <a-tab-pane key="graph">
         <div>
-          <a-space
-            v-if="activeKey === 'graph'"
-            class="title"
-            style="
-              justify-content: flex-end;
-              margin-bottom: 10px;
-              padding: 6px 0;
-            "
+          <div
+            v-show="activeKey === 'graph'"
+            class="flex"
+            style="justify-content: flex-end; margin-bottom: 20px; padding: 0"
           >
-            <icon-font type="icon-table" @click="handleToggle('list')" />
-            <icon-font
-              type="icon-a-relation3-line"
-              :class="{ active: activeKey === 'graph' }"
-              @click="handleToggle('graph')"
-            />
-          </a-space>
+            <IconBtnGroup
+              v-model:active="activeKey"
+              :icon-list="iconList"
+              @change="handleToggle"
+            ></IconBtnGroup>
+          </div>
+
           <TabGraph ref="graph"></TabGraph>
         </div>
       </a-tab-pane>
@@ -52,10 +41,23 @@
 <script lang="ts" setup>
   import { ref, PropType } from 'vue';
   import { emitCloseControlPanel } from '@/views/application-management/services/hooks/use-close-control-panel';
+  import IconBtnGroup from '@/components/icon-btn-group/index.vue';
   import ServiceResources from './service-resources.vue';
   import TabGraph from './tab-graph/index.vue';
   import { ServiceResource } from '../../config/interface';
 
+  const iconList = [
+    {
+      icon: 'icon-table',
+      view: 'list',
+      iconfont: true
+    },
+    {
+      icon: 'icon-a-relation3-line',
+      view: 'graph',
+      iconfont: true
+    }
+  ];
   const props = defineProps({
     resourceList: {
       type: Array as PropType<ServiceResource[]>,
@@ -89,21 +91,24 @@
 
     :deep(.arco-icon) {
       margin-right: 6px;
+      padding: 4px 16px;
       color: var(--color-text-2);
       font-size: 20px;
-      border-radius: 4px;
+      border-radius: 6px;
       cursor: pointer;
-      .hoverable();
 
       &:hover {
-        color: rgb(var(--arcoblue-6));
-        .hoverableHover();
+        background-color: var(--color-fill-1);
+      }
+
+      &.active {
+        background-color: var(--color-fill-1);
       }
     }
 
     .arco-icon.active {
       color: rgb(var(--arcoblue-6));
-      box-shadow: var(--seal-hoverable-shadow);
+      background-color: var(--color-fill-1);
     }
   }
 

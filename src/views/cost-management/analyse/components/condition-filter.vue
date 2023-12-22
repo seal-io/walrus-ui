@@ -352,7 +352,7 @@
         left: -8px;
         display: inline-block;
         background-color: rgba(168, 186, 240, 0.2);
-        border-radius: 4px;
+        border-radius: var(--border-radius-small);
         content: '';
       }
     }

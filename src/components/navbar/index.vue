@@ -375,7 +375,7 @@
 
     .nav-btn {
       color: rgb(var(--gray-8));
-      font-size: 16px;
+      font-size: var(--font-size-large);
       border-color: var(--seal-color-text-1);
     }
 

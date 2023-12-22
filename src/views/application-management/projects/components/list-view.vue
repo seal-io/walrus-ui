@@ -28,7 +28,7 @@
           ellipsis
           tooltip
           :cell-style="{ minWidth: '40px' }"
-          align="center"
+          align="left"
           data-index="createTime"
           :title="$t('common.table.createTime')"
         >
@@ -40,13 +40,13 @@
           ellipsis
           tooltip
           :cell-style="{ minWidth: '40px' }"
-          align="center"
+          align="left"
           data-index="description"
           :title="$t('common.table.description')"
         >
         </a-table-column>
         <a-table-column
-          align="center"
+          align="left"
           :title="$t('common.table.operation')"
           ellipsis
           tooltip

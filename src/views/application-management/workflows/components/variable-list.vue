@@ -49,7 +49,7 @@
         <a-table-column
           ellipsis
           tooltip
-          align="center"
+          align="left"
           :cell-style="{ minWidth: '40px' }"
           data-index="overwritable"
           :title="$t('common.table.operation')"

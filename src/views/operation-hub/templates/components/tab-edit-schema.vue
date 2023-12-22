@@ -426,12 +426,12 @@
       background-color: #fff;
       border: 1px solid var(--color-border-2);
       border-bottom: 0;
-      border-radius: 4px 4px 0 0;
+      border-radius: var(--border-radius-small) var(--border-radius-small) 0 0;
 
       .title {
         color: var(--color-text-2);
         font-weight: 500;
-        font-size: 16px;
+        font-size: var(--font-size-large);
       }
     }
 

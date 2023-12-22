@@ -777,7 +777,8 @@
     position: relative;
     width: 100%;
     min-height: 50vh;
-    background-color: var(--color-fill-2);
+    background-color: var(--color-fill-1);
+    border-radius: var(--border-radius-small);
 
     .legend {
       position: absolute;

@@ -134,7 +134,7 @@
             </template>
           </a-table-column>
           <a-table-column
-            align="center"
+            align="left"
             :width="210"
             :title="$t('common.table.operation')"
           >

@@ -237,7 +237,7 @@
         margin-bottom: 5px;
         overflow: hidden;
         font-weight: 500;
-        font-size: 16px;
+        font-size: var(--font-size-large);
         white-space: nowrap;
         text-overflow: ellipsis;
 
@@ -245,7 +245,7 @@
           display: inline;
           height: 21px;
           margin-left: 5px;
-          font-size: 16px;
+          font-size: var(--font-size-large);
           line-height: 32px;
         }
       }

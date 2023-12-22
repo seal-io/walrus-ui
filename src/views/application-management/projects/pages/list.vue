@@ -129,7 +129,7 @@
               ellipsis
               tooltip
               :cell-style="{ minWidth: '40px' }"
-              align="center"
+              align="left"
               data-index="description"
               :title="$t('common.table.description')"
             >
@@ -138,7 +138,7 @@
               ellipsis
               tooltip
               :cell-style="{ minWidth: '40px' }"
-              align="center"
+              align="left"
               data-index="createTime"
               :sortable="{
                 sortDirections: ['ascend', 'descend'],
@@ -156,7 +156,7 @@
             </a-table-column>
 
             <a-table-column
-              align="center"
+              align="left"
               :title="$t('common.table.operation')"
               ellipsis
               tooltip
@@ -420,7 +420,7 @@
         margin-right: 6px;
         color: var(--color-text-2);
         font-size: 20px;
-        border-radius: 4px;
+        border-radius: var(--border-radius-small);
         cursor: pointer;
         .hoverable();
 

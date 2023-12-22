@@ -24,7 +24,7 @@
 
 <script lang="ts">
   export default {
-    name: '404',
+    name: '404'
   };
 </script>
 
@@ -42,7 +42,7 @@
       height: 100%;
       text-align: center;
       background-color: var(--color-bg-1);
-      border-radius: 4px;
+      border-radius: var(--border-radius-small);
     }
   }
 </style>

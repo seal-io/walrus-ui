@@ -43,7 +43,7 @@
       padding: 0;
       font-size: 12px;
       line-height: 1.6;
-      border-radius: 4px;
+      border-radius: var(--border-radius-small);
 
       &.error {
         margin-right: 10px;

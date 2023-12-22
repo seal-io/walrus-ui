@@ -10,11 +10,11 @@
       ></Breadcrumb>
     </BreadWrapper>
     <ComCard padding="0">
-      <!-- <HeaderInfo :info="{ name: $t('menu.operatorHub') }">
+      <HeaderInfo :info="{ name: $t('menu.operatorHub') }">
         <template #icon>
           <i class="iconfont icon-a-relation10-fill"></i>
         </template>
-      </HeaderInfo> -->
+      </HeaderInfo>
       <ComCard>
         <a-tabs
           v-model:active-key="activeKey"
