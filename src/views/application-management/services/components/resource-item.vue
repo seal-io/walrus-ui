@@ -116,6 +116,7 @@
 
     &:hover {
       background-color: var(--color-fill-1);
+      border-color: var(--color-fill-1);
       transition: background-color 0.2s var(--seal-transition-func);
     }
 

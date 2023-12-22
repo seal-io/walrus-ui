@@ -36,6 +36,12 @@
         default() {
           return 'click';
         }
+      },
+      position: {
+        type: String,
+        default() {
+          return 'bl';
+        }
       }
     },
     setup(props, { emit, slots }) {
@@ -55,6 +61,7 @@
         <>
           <a-dropdown
             onSelect={handleSelectAction}
+            position={props.position}
             trigger={props.trigger}
             v-slots={{
               content: () => {

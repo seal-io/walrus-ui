@@ -321,7 +321,8 @@
     SERVICE_API,
     SERVICE_API_PREFIX,
     startApplicationInstance,
-    stopApplicationInstance
+    stopApplicationInstance,
+    redeployService
   } from '../api';
   import useViewLatestLogs from '../hooks/use-view-latest-logs';
   import useRollbackRevision from '../hooks/use-rollback-revision';
@@ -536,6 +537,14 @@
       // ignore
     }
   };
+  const handleRedeployResource = async (row) => {
+    try {
+      await redeployService(row);
+      execSucceed();
+    } catch (error) {
+      // ignore
+    }
+  };
   const handleReset = () => {
     queryParams.query = '';
     queryParams.page = 1;
@@ -655,6 +664,7 @@
     actionHandlerMap.set(serviceActionMap.logs, handleViewServiceLatestLogs);
     actionHandlerMap.set(serviceActionMap.stop, handleStopModal);
     actionHandlerMap.set(serviceActionMap.start, handleStartResource);
+    actionHandlerMap.set(serviceActionMap.deploy, handleRedeployResource);
     actionHandlerMap.set(serviceActionMap.delete, handleDelete);
   };
   const init = async () => {

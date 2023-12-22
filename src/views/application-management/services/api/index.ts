@@ -144,9 +144,26 @@ export const upgradeApplicationInstance = (data) => {
     data
   );
 };
+export const redeployService = (data) => {
+  return axios.post(`${SERVICE_API_PREFIX()}${SERVICE_API}/${data.id}/deploy`);
+};
+
+export const batchDeployService = (data: { items: { id: string }[] }) => {
+  return axios.post(`${SERVICE_API_PREFIX()}${SERVICE_API}/_/deploy`, data);
+};
+
+export const batchStopService = (data: { items: { id: string }[] }) => {
+  return axios.post(`${SERVICE_API_PREFIX()}${SERVICE_API}/_/stop`, data);
+};
+
+export const batchStartService = (data: { items: { id: string }[] }) => {
+  return axios.post(`${SERVICE_API_PREFIX()}${SERVICE_API}/_/start`, data);
+};
+
 export const stopApplicationInstance = (data) => {
   return axios.post(`${SERVICE_API_PREFIX()}${SERVICE_API}/${data.id}/stop`);
 };
+
 export const startApplicationInstance = (data) => {
   return axios.post(`${SERVICE_API_PREFIX()}${SERVICE_API}/${data.id}/start`);
 };

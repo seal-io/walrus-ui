@@ -205,6 +205,7 @@ export const serviceActionMap = {
   rollback: 'rollback',
   delete: 'delete',
   clone: 'clone',
+  deploy: 'deploy',
   import: 'import',
   export: 'export',
   sync: 'sync',
@@ -320,6 +321,30 @@ export const serviceActions: MoreAction[] = [
         environmentID: get(currentInfo, 'environment.id'),
         projectID: get(currentInfo, 'project.id'),
         actions: [Actions.PUT]
+      });
+    }
+  },
+  {
+    label: 'common.button.deploy',
+    value: serviceActionMap.deploy,
+    icon: 'icon-send',
+    handler: '',
+    status: 'normal',
+    disabled(currentInfo: any): boolean {
+      if (
+        get(currentInfo, 'status.transitioning') &&
+        get(currentInfo, 'status.summaryStatus') !== ServiceStatus.Preparing
+      ) {
+        return true;
+      }
+      return false;
+    },
+    filterFun(currentInfo) {
+      return userStore.hasProjectResourceActions({
+        resource: Resources.Resources,
+        environmentID: get(currentInfo, 'environment.id'),
+        projectID: get(currentInfo, 'project.id'),
+        actions: [Actions.POST]
       });
     }
   },
