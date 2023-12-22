@@ -38,13 +38,13 @@
     box-shadow: 0 0 6px rgba(229, 230, 235, 0.3);
 
     :deep(.arco-statistic-title) {
-      font-size: 16px;
+      font-size: var(--font-size-large);
     }
 
     :deep(.arco-statistic-extra) {
       margin-top: 0;
       font-weight: 500;
-      font-size: 24px;
+      font-size: var(--font-size-large);
     }
   }
 </style>

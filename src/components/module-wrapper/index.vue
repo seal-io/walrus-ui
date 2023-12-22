@@ -98,7 +98,7 @@
       padding: 0 10px;
       font-weight: 500;
       font-size: 14px;
-      background-color: var(--color-fill-2);
+      background-color: var(--color-fill-1);
       cursor: pointer;
 
       .text-wrap {

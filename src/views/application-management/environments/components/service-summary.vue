@@ -60,7 +60,7 @@
       }
 
       &.inactive {
-        background-color: rgb(191, 191, 191);
+        background-color: rgba(201, 205, 212, 0.9);
       }
     }
   }

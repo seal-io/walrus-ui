@@ -497,7 +497,7 @@
       flex-direction: column;
       justify-content: space-between;
       height: 100%;
-      padding-bottom: 60px;
+      padding-bottom: 50px;
 
       .account {
         margin-top: 6px;

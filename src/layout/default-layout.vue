@@ -115,7 +115,7 @@
     height: 100%;
 
     .arco-layout-sider-light {
-      background-color: var(--color-fill-2);
+      background-color: var(--color-fill-1);
       // box-shadow: 3px 0 6px rgba(0, 0, 0, 0.05);
       box-shadow: none;
     }
