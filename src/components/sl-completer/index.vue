@@ -199,7 +199,7 @@
 
   .completer {
     color: #e4e420;
-    font-size: 16px;
+    font-size: var(--font-size-large);
     background-color: rgb(29 33 41 / 80%);
 
     &.arco-textarea {

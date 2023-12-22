@@ -259,7 +259,7 @@
           left: 9px;
           color: rgb(var(--arcoblue-5));
           font-weight: 700;
-          font-size: 16px;
+          font-size: var(--font-size-large);
           border-right: 1px solid var(--color-border-2);
 
           &.size-12 {

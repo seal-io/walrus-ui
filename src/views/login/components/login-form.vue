@@ -300,7 +300,7 @@
 
     &-sub-title {
       color: var(--color-text-3);
-      font-size: 16px;
+      font-size: var(--font-size-large);
       line-height: 24px;
     }
 

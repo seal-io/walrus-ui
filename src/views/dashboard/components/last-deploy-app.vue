@@ -54,7 +54,7 @@
           ellipsis
           tooltip
           :cell-style="{ minWidth: '40px' }"
-          align="center"
+          align="left"
           data-index="environment.name"
           :title="$t('dashboard.table.envrionment')"
         >
@@ -63,7 +63,7 @@
           ellipsis
           tooltip
           :cell-style="{ minWidth: '40px' }"
-          align="center"
+          align="left"
           data-index="createTime"
           :title="$t('common.table.createTime')"
         >
@@ -77,7 +77,7 @@
           ellipsis
           tooltip
           :cell-style="{ minWidth: '40px' }"
-          align="center"
+          align="left"
           data-index="duration"
           :title="$t('dashboard.table.duration')"
         >

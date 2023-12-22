@@ -117,7 +117,7 @@
     &:hover {
       background-color: var(--color-fill-1);
       border-color: var(--color-fill-1);
-      transition: background-color 0.2s var(--seal-transition-func);
+      // transition: background-color 0.2s var(--seal-transition-func);
     }
 
     :deep(.arco-grid-item) {
@@ -145,7 +145,7 @@
 
     .actions {
       display: flex;
-      justify-content: flex-end;
+      justify-content: center;
     }
 
     :deep(.arco-link) {

@@ -125,7 +125,7 @@
 
         .btn-icon {
           color: rgb(var(--arcoblue-5));
-          font-size: 16px;
+          font-size: var(--font-size-large);
         }
       }
 

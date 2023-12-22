@@ -209,6 +209,11 @@
     box-shadow: 0 4px 3px -1px rgba(234, 236, 238, 0.8),
       0 1px 4px 0 rgba(169, 174, 184, 0.2);
 
+    // &:hover {
+    //   box-shadow: rgba(201, 205, 212, 0.2) 0 4px 6px -1px,
+    //     rgba(201, 205, 212, 0.8) 0 4px 6px 0;
+    //   transition: box-shadow 0.2s var(--seal-transition-func);
+    // }
     &:hover {
       box-shadow: rgba(33, 74, 196, 0.2) 0 3px 5px -1px,
         rgba(33, 74, 196, 0.1) 0 3px 5px 0;

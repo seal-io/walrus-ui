@@ -16,7 +16,7 @@
           ellipsis
           tooltip
           :cell-style="{ minWidth: '40px' }"
-          align="center"
+          align="left"
           :width="60"
           data-index="version"
           title="#"
@@ -66,7 +66,7 @@
           ellipsis
           tooltip
           :cell-style="{ minWidth: '40px' }"
-          align="center"
+          align="left"
           data-index="status"
           :title="$t('applications.workflow.table.currentStatus')"
         >
@@ -103,7 +103,7 @@
           ellipsis
           tooltip
           :cell-style="{ minWidth: '40px' }"
-          align="center"
+          align="left"
           data-index="trigger.user"
           :title="$t('workflow.task.run.user')"
         >
@@ -112,7 +112,7 @@
           ellipsis
           tooltip
           :cell-style="{ minWidth: '40px' }"
-          align="center"
+          align="left"
           data-index="duration"
           :title="$t('applications.workflow.table.duration')"
         >
@@ -124,13 +124,13 @@
           ellipsis
           tooltip
           :cell-style="{ minWidth: '40px' }"
-          align="center"
+          align="left"
           data-index="description"
           :title="$t('common.table.mark')"
         >
         </a-table-column>
         <a-table-column
-          align="center"
+          align="left"
           :width="210"
           :title="$t('common.table.operation')"
         >

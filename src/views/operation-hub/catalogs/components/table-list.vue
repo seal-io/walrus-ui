@@ -334,7 +334,7 @@
         margin-right: 6px;
         color: var(--color-text-2);
         font-size: 20px;
-        border-radius: 4px;
+        border-radius: var(--border-radius-small);
         cursor: pointer;
         .hoverable();
 

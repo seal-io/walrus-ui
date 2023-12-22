@@ -106,7 +106,7 @@
 </script>
 
 <style scoped lang="less">
-  @nav-size-height: 48px;
+  @nav-size-height: 58px;
   @nav-size-gap: 68px;
   @layout-max-width: 1100px;
 

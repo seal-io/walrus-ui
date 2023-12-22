@@ -84,7 +84,7 @@
           :body-cell-class="setRowClass"
           :cell-style="{ minWidth: '40px' }"
           data-index="role"
-          align="center"
+          align="left"
           :title="$t('propfile.permission.table.role')"
         >
           <template #cell="{ record }">
@@ -97,12 +97,12 @@
         </a-table-column>
         <a-table-column
           :body-cell-class="setRowClass"
-          align="center"
+          align="left"
           data-index="actions"
           :title="$t('propfile.permission.table.permission')"
         >
           <a-table-column
-            align="center"
+            align="left"
             data-index="post"
             :body-cell-class="setRowClass"
             :width="65"
@@ -115,7 +115,7 @@
             </template>
           </a-table-column>
           <a-table-column
-            align="center"
+            align="left"
             data-index="get"
             :body-cell-class="setRowClass"
             :width="65"
@@ -129,7 +129,7 @@
           </a-table-column>
 
           <a-table-column
-            align="center"
+            align="left"
             data-index="put"
             :body-cell-class="setRowClass"
             :width="65"
@@ -142,7 +142,7 @@
             </template>
           </a-table-column>
           <a-table-column
-            align="center"
+            align="left"
             data-index="delete"
             :body-cell-class="setRowClass"
             :width="65"

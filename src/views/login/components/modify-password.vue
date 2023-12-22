@@ -242,7 +242,7 @@
     .password-info-wrap {
       padding: 10px;
       background-color: var(--color-fill-2);
-      border-radius: 4px;
+      border-radius: var(--border-radius-small);
     }
 
     .arco-input-wrapper {

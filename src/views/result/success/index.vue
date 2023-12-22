@@ -55,7 +55,7 @@
 
 <script lang="ts">
   export default {
-    name: 'Success',
+    name: 'Success'
   };
 </script>
 
@@ -67,7 +67,7 @@
   .wrapper {
     padding: 24px 150px;
     background-color: var(--color-bg-2);
-    border-radius: 4px;
+    border-radius: var(--border-radius-small);
   }
 
   .result {

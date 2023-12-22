@@ -85,7 +85,7 @@
       color: var(--color-text-2);
       text-align: center;
       background-color: rgba(159, 232, 219, 0.3);
-      border-radius: 4px;
+      border-radius: var(--border-radius-small);
 
       .title {
         margin-right: 10px;

@@ -71,7 +71,7 @@ export const setPipelineNodeStyle = (size) => {
       width: ${size.width}px;
       height: ${size.height}px;
       background-color: #fff;
-      border-radius: 4px;
+      border-radius:  var(--border-radius-small);;
       box-shadow: 0px 2px 4px 0px rgba(var(--gray-5), 60%);
       &:hover {
         box-shadow: 0px 6px 6px rgba(var(--gray-5), 80%);

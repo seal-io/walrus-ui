@@ -17,15 +17,9 @@
     flex-wrap: wrap;
     justify-content: space-between;
     width: 100%;
-    // margin-top: 20px;
-    // margin-bottom: 12px;
 
-    // :deep(.arco-select) {
-    //   background-color: #fff;
-    // }
-
-    // :deep(.arco-input-wrapper) {
-    //   background-color: #fff;
-    // }
+    .arco-space {
+      height: max-content;
+    }
   }
 </style>

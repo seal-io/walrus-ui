@@ -44,26 +44,26 @@
       type: String,
       default() {
         return '';
-      },
+      }
     },
     bordered: {
       type: Boolean,
       default() {
         return true;
-      },
+      }
     },
     dropList: {
       type: Array as PropType<{ value: string; label: string }[]>,
       default() {
         return [];
-      },
+      }
     },
     menuClick: {
       type: Function as PropType<MenuClickType>,
       default() {
         return null;
-      },
-    },
+      }
+    }
   });
   const trigger = ref();
 
@@ -72,7 +72,7 @@
       const event = new MouseEvent('click', {
         view: window,
         bubbles: true,
-        cancelable: true,
+        cancelable: true
       });
       trigger.value.dispatchEvent(event);
     } else if (props.menuClick) {
@@ -85,7 +85,7 @@
   .button-menu-wrap {
     .nav-btn {
       color: rgb(var(--gray-8));
-      font-size: 16px;
+      font-size: var(--font-size-large);
 
       &:hover {
         border: none;

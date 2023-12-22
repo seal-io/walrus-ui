@@ -14,7 +14,7 @@ insertCss(`
     left: -150px;
     background-color: rgba(255, 255, 255, 0.9);
     border: 1px solid #e2e2e2;
-    border-radius: 4px;
+    border-radius:  var(--border-radius-small);;
     font-size: 12px;
     color: #545454;
   }

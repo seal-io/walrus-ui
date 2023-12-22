@@ -412,6 +412,12 @@ export default function useProjectData() {
         ...route.params,
         environmentId: val
       };
+      projectStore.setInfo({
+        defaultActiveEnvironment: {
+          id: val,
+          name: item.label
+        }
+      });
     }
     // project
     if (item.level === pageLevelMap.Project) {

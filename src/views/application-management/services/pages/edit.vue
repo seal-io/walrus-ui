@@ -236,12 +236,12 @@
         </a-form-item>
       </a-form>
     </ComCard>
-    <div style="padding: 0 20px">
+    <!-- <div style="padding: 0 20px">
       <a-divider
         style="margin: 0; border-color: var(--color-fill-2); border-radius: 1px"
         :size="3"
       ></a-divider>
-    </div>
+    </div> -->
     <ComCard>
       <div
         v-if="_.keys(schemaVariables?.properties).length"

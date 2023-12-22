@@ -53,7 +53,7 @@
                   top: 1px;
                   left: 0;
                   color: #4cd263;
-                  font-size: 16px;
+                  font-size: var(--font-size-large);
                 "
               />
               <span class="label">{{ $t(item.label) }}</span>

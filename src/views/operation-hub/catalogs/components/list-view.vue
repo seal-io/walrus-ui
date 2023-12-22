@@ -36,7 +36,7 @@
           ellipsis
           tooltip
           :cell-style="{ minWidth: '40px' }"
-          align="center"
+          align="left"
           data-index="sync.total"
           :title="$t('catalogs.list.total')"
         >
@@ -45,7 +45,7 @@
           ellipsis
           tooltip
           :cell-style="{ minWidth: '40px' }"
-          align="center"
+          align="left"
           data-index="description"
           :title="$t('common.table.description')"
         >
@@ -54,7 +54,7 @@
           ellipsis
           tooltip
           :cell-style="{ minWidth: '40px' }"
-          align="center"
+          align="left"
           data-index="status"
           :title="$t('applications.applications.table.status')"
         >
@@ -75,7 +75,7 @@
           ellipsis
           tooltip
           :cell-style="{ minWidth: '40px' }"
-          align="center"
+          align="left"
           data-index="createTime"
           :sortable="{
             sortDirections: ['ascend', 'descend'],
@@ -95,7 +95,7 @@
           ellipsis
           tooltip
           :cell-style="{ minWidth: '40px' }"
-          align="center"
+          align="left"
           data-index="sync.time"
           :title="$t('catalogs.list.sync.time')"
         >
@@ -120,7 +120,7 @@
                   actions: [Actions.PUT]
                 })
           "
-          align="center"
+          align="left"
           :width="210"
           :title="$t('common.table.operation')"
         >

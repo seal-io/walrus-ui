@@ -47,7 +47,7 @@
     .arco-link {
       padding: 1px;
       border: 1px solid var(--color-border-2);
-      border-radius: 4px;
+      border-radius: var(--border-radius-small);
       transition: all 0.2s var(--seal-transition-func);
 
       &:hover {

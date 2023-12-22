@@ -20,7 +20,7 @@
       height: @itemHeight;
       height: @itemHeight;
       padding-right: 0;
-      padding-left: 4px;
+      padding-left: 0;
       overflow: hidden;
       font-size: 0;
       border-radius: 0 4px 4px 0;
@@ -35,16 +35,16 @@
         background-color: var(--color-fill-2);
         background-color: #fff;
 
-        &::after {
-          position: absolute;
-          top: 0;
-          right: 0;
-          bottom: 0;
-          display: inline-block;
-          width: 4px;
-          background-color: rgb(var(--arcoblue-5));
-          content: '';
-        }
+        // &::after {
+        //   position: absolute;
+        //   top: 0;
+        //   right: 0;
+        //   bottom: 0;
+        //   display: inline-block;
+        //   width: 4px;
+        //   background-color: rgb(var(--arcoblue-5));
+        //   content: '';
+        // }
       }
 
       .arco-menu-title {
@@ -64,7 +64,7 @@
       justify-content: center;
       height: @itemHeight;
       padding-right: 0;
-      padding-left: 4px;
+      padding-left: 0;
       font-size: 12px;
       border-radius: 0;
 
@@ -88,17 +88,16 @@
       &.arco-menu-selected {
         background-color: #fff;
 
-        &::after {
-          position: absolute;
-          top: 0;
-          bottom: 0;
-          left: 0;
-          display: inline-block;
-          width: 4px;
-          background-color: rgb(var(--arcoblue-5));
-          content: '';
-        }
-
+        // &::after {
+        //   position: absolute;
+        //   top: 0;
+        //   bottom: 0;
+        //   left: 0;
+        //   display: inline-block;
+        //   width: 4px;
+        //   background-color: rgb(var(--arcoblue-5));
+        //   content: '';
+        // }
         .iconfont {
           color: rgb(var(--arcoblue-5));
           opacity: 1;

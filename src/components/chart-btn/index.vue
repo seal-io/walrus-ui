@@ -38,7 +38,7 @@
     .arco-icon {
       color: rgb(var(--arcoblue-4));
       font-size: 20px;
-      border-radius: 4px;
+      border-radius: var(--border-radius-small);
       .hoverable();
 
       &:hover {

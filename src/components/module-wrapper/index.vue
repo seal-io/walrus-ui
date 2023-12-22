@@ -118,7 +118,7 @@
 
     .collapse-icon {
       color: rgba(var(--arcoblue-6), 0.7);
-      font-size: 16px;
+      font-size: var(--font-size-large);
       cursor: pointer;
       transition: all 0.2s var(--seal-transition-func);
       .hoverable();

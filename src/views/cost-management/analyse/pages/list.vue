@@ -113,7 +113,7 @@
           ellipsis
           tooltip
           :cell-style="{ minWidth: '40px' }"
-          align="center"
+          align="left"
           data-index="builtin"
           :title="$t('cost.analyse.table.type')"
         >
@@ -129,7 +129,7 @@
           ellipsis
           tooltip
           :cell-style="{ minWidth: '40px' }"
-          align="center"
+          align="left"
           data-index="startTime"
           :title="$t('cost.analyse.table.time')"
         >
@@ -141,7 +141,7 @@
           ellipsis
           tooltip
           :cell-style="{ minWidth: '40px' }"
-          align="center"
+          align="left"
           data-index="createTime"
           :sortable="{
             sortDirections: ['ascend', 'descend'],
@@ -167,7 +167,7 @@
           ellipsis
           tooltip
           :cell-style="{ minWidth: '40px' }"
-          align="center"
+          align="left"
           :title="$t('common.table.operation')"
         >
           <template #cell="{ record }">

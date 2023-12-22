@@ -126,13 +126,17 @@
             </a-link>
             <span v-else>{{ $t(item.label || '') }}</span>
           </span>
-          <icon-oblique-line
-            v-if="index < items.length - 1"
-            class="size-14 separator-line"
-            style="stroke-width: 3; margin-left: 14px"
-          />
         </span>
       </span>
+      <icon-oblique-line
+        v-if="index < items.length - 1"
+        class="size-14 separator-line"
+        style="stroke-width: 3; margin: 0 20px"
+      />
+      <!-- <i
+        class="iconfont icon-narrow separator-line"
+        v-if="index < items.length - 1"
+      ></i> -->
     </a-breadcrumb-item>
   </a-breadcrumb>
 </template>
@@ -266,13 +270,14 @@
           }
 
           .arco-select-view-icon {
+            padding: 2px;
             color: var(--sealblue-6);
             transition: transform 0.2s cubic-bezier(0, 0, 1, 1);
 
             &:hover {
-              background-color: transparent;
-              border-radius: 50%;
-              box-shadow: 0 0 6px var(--sealblue-6);
+              background-color: var(--color-fill-3);
+              border-radius: var(--border-radius-mini);
+              box-shadow: 0 0 6px var(--color-fill-3);
               cursor: pointer;
             }
           }
@@ -290,6 +295,15 @@
           }
         }
       }
+    }
+
+    .separator-line {
+      position: relative;
+      top: 6px;
+      margin: 0 20px;
+      color: var(--color-text-3);
+      font-weight: 500;
+      font-size: 14px;
     }
 
     .box {

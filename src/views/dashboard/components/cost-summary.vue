@@ -260,7 +260,7 @@
     .pie {
       padding: 10px;
       background-color: rgba(230, 244, 254, 0.5);
-      border-radius: 4px;
+      border-radius: var(--border-radius-small);
     }
 
     .list {

@@ -24,7 +24,7 @@
           ellipsis
           tooltip
           :cell-style="{ minWidth: '40px' }"
-          align="center"
+          align="left"
           data-index="type"
           :title="$t('operation.connectors.table.type')"
         >
@@ -33,7 +33,7 @@
           ellipsis
           tooltip
           :cell-style="{ minWidth: '40px' }"
-          align="center"
+          align="left"
           data-index="status"
           :title="$t('operation.connectors.table.status')"
         >
@@ -53,7 +53,7 @@
         </a-table-column>
         <a-table-column
           v-if="action === 'edit'"
-          align="center"
+          align="left"
           :width="160"
           :title="$t('common.table.operation')"
         >

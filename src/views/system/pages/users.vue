@@ -104,7 +104,7 @@
               actions: [Actions.PUT, Actions.DELETE]
             })
           "
-          align="center"
+          align="left"
           :width="210"
           :title="$t('common.table.operation')"
         >
