@@ -18,7 +18,7 @@
             v-if="!showHintInput"
             :error="!dataKey && triggerValidate && shouldKey"
             :model-value="dataKey"
-            :max-length="30"
+            :max-length="100"
             show-word-limit
             v-bind="$attrs"
             :placeholder="
@@ -103,7 +103,7 @@
             v-else-if="!showHintInput"
             style="width: 100%"
             show-word-limit
-            :max-length="50"
+            :max-length="100"
             v-bind="$attrs"
             :model-value="dataValue"
             :placeholder="
