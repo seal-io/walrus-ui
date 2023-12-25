@@ -44,7 +44,7 @@
       width: 14px;
       height: 14px;
       background-color: var(--color-fill-3);
-      border-radius: var(--border-radius-small);
+      border-radius: var(--border-radius-mini);
 
       &.Ready {
         color: #fff;

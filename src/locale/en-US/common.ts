@@ -43,6 +43,7 @@ export default {
   'common.table.updateTime': 'Update Time',
   'common.table.description': 'Description',
   'common.table.name': 'Name',
+  'common.table.status': 'Status',
   'common.table.name.list': '{type} Name',
   'common.search.name.placeholder': 'filter by name',
   'common.table.type': 'Type',

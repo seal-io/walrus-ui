@@ -42,6 +42,7 @@ export default {
   'common.table.updateTime': '更新时间',
   'common.table.description': '描述',
   'common.table.name': '名称',
+  'common.table.status': '状态',
   'common.table.name.list': '{type}名称',
   'common.search.name.placeholder': '名称搜索',
   'common.table.type': '类型',

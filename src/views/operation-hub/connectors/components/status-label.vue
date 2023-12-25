@@ -134,8 +134,7 @@
       align-items: center;
       justify-content: center;
       padding: 0 8px;
-      font-weight: 400;
-      font-weight: 400;
+      font-weight: 500;
       font-size: var(--font-size-small);
       line-height: 22px;
       border-radius: 22px;

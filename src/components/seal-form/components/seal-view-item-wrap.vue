@@ -68,7 +68,7 @@
       display: flex;
       align-items: center;
       color: var(--color-text-3);
-      font-weight: 400;
+      font-weight: 500;
       font-size: 12px;
     }
   }

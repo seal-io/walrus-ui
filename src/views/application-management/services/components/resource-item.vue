@@ -149,6 +149,7 @@
     }
 
     :deep(.arco-link) {
+      padding: 1px 0;
       font-size: var(--font-size-small);
     }
   }

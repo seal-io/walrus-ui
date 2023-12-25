@@ -26,12 +26,19 @@
           <div class="dropdown">
             <DropButtonGroup
               v-if="actionList.length"
+              size="medium"
               :actions="actionList"
               :layout="actionList.length === 1 ? 'horizontal' : 'vertical'"
               @select="handleSelect"
             ></DropButtonGroup>
           </div>
         </template>
+        <!-- <template #description v-if="pageAction === PageAction.VIEW">
+          <BasicInfo
+            :data-info="basicDataList"
+            style="max-width: 800px"
+          ></BasicInfo>
+        </template> -->
       </HeaderInfo>
       <slTransition>
         <div v-if="pageAction === PageAction.EDIT">
@@ -43,7 +50,7 @@
         </div>
       </slTransition>
       <div v-if="pageAction === PageAction.VIEW">
-        <ComCard>
+        <!-- <ComCard>
           <ModuleCard
             :title="$t('common.title.basicInfo')"
             icon="icon-jibenxinxi"
@@ -54,52 +61,86 @@
               style="max-width: 800px"
             ></BasicInfo>
           </ModuleCard>
-        </ComCard>
+        </ComCard> -->
         <ComCard>
-          <ModuleCard
-            icon="icon-kaifazujian"
-            :title="$t('applications.applications.instance.resource')"
-            :title-style="{ 'margin-bottom': '10px' }"
+          <a-tabs
+            v-model:active-key="activeTab"
+            lazy-load
+            class="page-line-tabs"
+            :default-active-key="activeTab"
           >
-            <template #title>
-              <span>{{
-                $t('applications.applications.instance.resource')
-              }}</span>
-              <a-tooltip
-                :content="
-                  $t('applications.applications.instance.resource.tips')
-                "
-              >
-                <icon-info-circle class="mleft-5" />
-              </a-tooltip>
-            </template>
-            <a-tabs
-              lazy-load
-              type="line"
-              :active-key="activeKey"
-              class="page-line-tabs"
-              @change="handleTabChange"
+            <a-tab-pane
+              v-for="item in instanceTabList"
+              :key="item.value"
+              :title="$t(item.label)"
             >
-              <a-tab-pane
-                v-for="item in instanceTabList"
-                :key="item.value"
-                :title="$t(item.label)"
+              <Component
+                :is="instanceTabMap[item.com]"
+                :resource-list="dataList"
+                :is-loading="loading"
+              ></Component>
+            </a-tab-pane>
+            <a-tab-pane
+              key="accessUrl"
+              :title="$t('applications.applications.instance.accessUrl')"
+            >
+              <tabEndpoint ref="tabEndpointCom"></tabEndpoint>
+            </a-tab-pane>
+            <a-tab-pane key="config" :title="$t('common.title.config')">
+              <serviceInfo ref="serviceInfoRef" :is-collapsed="isCollapsed">
+              </serviceInfo>
+            </a-tab-pane>
+            <a-tab-pane
+              key="revisions"
+              :title="$t('applications.applications.instance.history')"
+            >
+              <serviceRevisions></serviceRevisions>
+            </a-tab-pane>
+          </a-tabs>
+          <!-- <ModuleCard
+                icon="icon-kaifazujian"
+                :title-style="{ 'margin-bottom': '10px' }"
               >
-                <Component
-                  :is="instanceTabMap[item.com]"
-                  :resource-list="dataList"
-                  :is-loading="loading"
-                ></Component>
-              </a-tab-pane>
-            </a-tabs>
-          </ModuleCard>
-          <ModuleCard
+                <template #title>
+                  <span>{{
+                    $t('applications.applications.instance.resource')
+                  }}</span>
+                  <a-tooltip
+                    :content="
+                      $t('applications.applications.instance.resource.tips')
+                    "
+                  >
+                    <icon-info-circle class="mleft-5" />
+                  </a-tooltip>
+                </template>
+                <a-tabs
+                  lazy-load
+                  type="line"
+                  :active-key="activeKey"
+                  class="page-line-tabs"
+                  @change="handleTabChange"
+                >
+                  <a-tab-pane
+                    v-for="item in instanceTabList"
+                    :key="item.value"
+                    :title="$t(item.label)"
+                  >
+                    <Component
+                      :is="instanceTabMap[item.com]"
+                      :resource-list="dataList"
+                      :is-loading="loading"
+                    ></Component>
+                  </a-tab-pane>
+                </a-tabs>
+              </ModuleCard> -->
+
+          <!-- <ModuleCard
             icon="icon-URLguanli"
             :title="$t('applications.applications.instance.accessUrl')"
           >
             <tabEndpoint ref="tabEndpointCom"></tabEndpoint>
-          </ModuleCard>
-          <ModuleCard
+          </ModuleCard> -->
+          <!-- <ModuleCard
             :title="$t('common.title.config')"
             icon="icon-peizhixinxi"
             :title-style="{ 'margin-bottom': '10px', 'margin-top': 0 }"
@@ -141,16 +182,16 @@
               <serviceInfo ref="serviceInfoRef" :is-collapsed="isCollapsed">
               </serviceInfo>
             </moduleWrapper>
-          </ModuleCard>
+          </ModuleCard> -->
         </ComCard>
         <ComCard>
-          <ModuleCard
+          <!-- <ModuleCard
             :title="$t('applications.applications.instance.history')"
             icon="icon-lishibanben"
             :title-style="{ 'margin-top': 0 }"
           >
             <serviceRevisions></serviceRevisions>
-          </ModuleCard>
+          </ModuleCard> -->
 
           <EditPageFooter>
             <template #save>
@@ -253,6 +294,7 @@
   const isCollapsed = ref(false);
   const currentInfo = ref<ServiceRowData>({} as ServiceRowData);
   const serviceInfoRef = ref();
+  const activeTab = ref('resource');
   const instanceTabMap = {
     tabResource: markRaw(tabResource),
     tabOutput: markRaw(tabOutput)

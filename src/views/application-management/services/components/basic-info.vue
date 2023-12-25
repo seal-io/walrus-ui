@@ -1,6 +1,6 @@
 <template>
   <div class="basic-info">
-    <a-descriptions :data="dataInfo" :column="2">
+    <a-descriptions :data="dataInfo" :column="2" layout="inline-vertical">
       <a-descriptions-item
         v-for="(item, index) in dataInfo"
         :key="index"
@@ -84,14 +84,17 @@
 
     :deep(.arco-descriptions-row) {
       .arco-descriptions-item-label-block {
-        font-weight: 400;
+        font-weight: 500;
         font-size: var(--font-size-small);
       }
 
       .arco-descriptions-item,
       .arco-descriptions-item-label,
       .arco-descriptions-item-value {
-        line-height: 1.5;
+        min-height: 30px;
+        font-weight: 500;
+        font-size: var(--font-size-small);
+        line-height: 2.5;
       }
 
       .val-content {

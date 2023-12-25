@@ -35,6 +35,7 @@
           <div v-if="moreActions.length" class="dropdown">
             <DropButtonGroup
               :actions="actionList"
+              size="medium"
               @select="handleSelect"
             ></DropButtonGroup>
           </div>

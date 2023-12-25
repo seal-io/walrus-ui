@@ -4,7 +4,7 @@
       v-for="(item, index) in labelList"
       :key="index"
       class="label-item"
-      :style="{ backgroundColor: bgColor }"
+      :style="{ backgroundColor: 'var(--color-fill-1)' }"
     >
       <slot name="item" :data="{ ...item }">
         <AutoTip
@@ -74,6 +74,7 @@
       height: 24px;
       margin-top: 1px;
       margin-right: 10px;
+      margin-bottom: 5px;
       padding: 2px 10px;
       overflow: hidden;
       line-height: 18px;

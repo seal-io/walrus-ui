@@ -1,9 +1,9 @@
 <template>
   <div class="filter-box-wrap">
-    <a-space direction="horizontal">
+    <a-space direction="horizontal" :size="10">
       <slot name="params"></slot>
     </a-space>
-    <a-space>
+    <a-space :size="10">
       <slot name="button-group"></slot>
     </a-space>
   </div>

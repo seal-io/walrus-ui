@@ -42,5 +42,5 @@ export function upateResourceDefinition(params: { id: string; data: any }) {
 }
 
 export function queryItemResourceDefinition(params: { id: string }) {
-  return axios.get(`${RESOURCE_DEFINITION_API}/${params.id}?t=${Date.now()}`);
+  return axios.get(`${RESOURCE_DEFINITION_API}/${params.id}`);
 }

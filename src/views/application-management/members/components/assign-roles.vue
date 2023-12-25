@@ -87,7 +87,7 @@
               <span>{{ $t(item.label) }}</span>
             </a-option>
           </a-select>
-          <a-space style="margin-left: 10px">
+          <a-space style="margin-left: 0">
             <a-button
               type="primary"
               :disabled="!formData.role.id || !formData.subject.id"
