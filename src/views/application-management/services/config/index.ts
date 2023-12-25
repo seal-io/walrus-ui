@@ -231,38 +231,38 @@ export const serviceBatchAction: MoreAction[] = [
       });
     }
   },
-  {
-    label: 'common.button.stop',
-    value: serviceActionMap.stop,
-    icon: 'icon-record-stop',
-    handler: '',
-    status: 'normal',
-    disabled: false,
-    filterFun({ projectID, environmentID }) {
-      return userStore.hasProjectResourceActions({
-        resource: Resources.Resources,
-        environmentID,
-        projectID,
-        actions: [Actions.PUT]
-      });
-    }
-  },
-  {
-    label: 'common.button.start',
-    value: serviceActionMap.start,
-    icon: 'icon-play-circle',
-    handler: '',
-    status: 'normal',
-    disabled: false,
-    filterFun({ projectID, environmentID }) {
-      return userStore.hasProjectResourceActions({
-        resource: Resources.Resources,
-        environmentID,
-        projectID,
-        actions: [Actions.PUT]
-      });
-    }
-  },
+  // {
+  //   label: 'common.button.stop',
+  //   value: serviceActionMap.stop,
+  //   icon: 'icon-record-stop',
+  //   handler: '',
+  //   status: 'normal',
+  //   disabled: false,
+  //   filterFun({ projectID, environmentID }) {
+  //     return userStore.hasProjectResourceActions({
+  //       resource: Resources.Resources,
+  //       environmentID,
+  //       projectID,
+  //       actions: [Actions.PUT]
+  //     });
+  //   }
+  // },
+  // {
+  //   label: 'common.button.start',
+  //   value: serviceActionMap.start,
+  //   icon: 'icon-play-circle',
+  //   handler: '',
+  //   status: 'normal',
+  //   disabled: false,
+  //   filterFun({ projectID, environmentID }) {
+  //     return userStore.hasProjectResourceActions({
+  //       resource: Resources.Resources,
+  //       environmentID,
+  //       projectID,
+  //       actions: [Actions.PUT]
+  //     });
+  //   }
+  // },
   {
     label: 'common.button.import',
     value: serviceActionMap.import,
@@ -324,30 +324,30 @@ export const serviceActions: MoreAction[] = [
       });
     }
   },
-  {
-    label: 'common.button.deploy',
-    value: serviceActionMap.deploy,
-    icon: 'icon-send',
-    handler: '',
-    status: 'normal',
-    disabled(currentInfo: any): boolean {
-      if (
-        get(currentInfo, 'status.transitioning') &&
-        get(currentInfo, 'status.summaryStatus') !== ServiceStatus.Preparing
-      ) {
-        return true;
-      }
-      return false;
-    },
-    filterFun(currentInfo) {
-      return userStore.hasProjectResourceActions({
-        resource: Resources.Resources,
-        environmentID: get(currentInfo, 'environment.id'),
-        projectID: get(currentInfo, 'project.id'),
-        actions: [Actions.POST]
-      });
-    }
-  },
+  // {
+  //   label: 'common.button.deploy',
+  //   value: serviceActionMap.deploy,
+  //   icon: 'icon-send',
+  //   handler: '',
+  //   status: 'normal',
+  //   disabled(currentInfo: any): boolean {
+  //     if (
+  //       get(currentInfo, 'status.transitioning') &&
+  //       get(currentInfo, 'status.summaryStatus') !== ServiceStatus.Preparing
+  //     ) {
+  //       return true;
+  //     }
+  //     return false;
+  //   },
+  //   filterFun(currentInfo) {
+  //     return userStore.hasProjectResourceActions({
+  //       resource: Resources.Resources,
+  //       environmentID: get(currentInfo, 'environment.id'),
+  //       projectID: get(currentInfo, 'project.id'),
+  //       actions: [Actions.POST]
+  //     });
+  //   }
+  // },
   {
     label: 'common.button.stop',
     value: serviceActionMap.stop,
