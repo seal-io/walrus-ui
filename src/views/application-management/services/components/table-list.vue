@@ -1,8 +1,8 @@
 <template>
   <ComCard padding="0" class="list">
     <div>
-      <div class="pagination">
-        <a-space class="sort" :size="20">
+      <div v-if="total > 10" class="pagination">
+        <!-- <a-space class="sort" :size="20">
           <a-checkbox
             v-if="!userStore.isReadOnlyEnvironment(projectID, environmentID)"
             :model-value="
@@ -21,7 +21,7 @@
           <a-button type="text" size="mini" @click="handleTimeSort">
             <i class="iconfont icon-Field-time size-16"></i>
           </a-button>
-        </a-space>
+        </a-space> -->
         <a-pagination
           size="small"
           :total="total"
@@ -35,7 +35,95 @@
         />
       </div>
       <a-spin :loading="loading" style="width: 100%">
-        <a-space v-if="dataList.length" direction="vertical" :size="16" fill>
+        <div class="header">
+          <span
+            v-if="!userStore.isReadOnlyEnvironment(projectID, environmentID)"
+            class="ft-size0"
+          >
+            <a-checkbox
+              :model-value="
+                rowSelection.selectedRowKeys.length === dataList.length &&
+                dataList.length > 0
+              "
+              :indeterminate="
+                rowSelection.selectedRowKeys.length > 0 &&
+                rowSelection.selectedRowKeys.length < dataList.length
+              "
+              @change="handleSelectAll"
+            ></a-checkbox>
+          </span>
+          <a-grid :cols="24" :style="{ width: '100%' }">
+            <a-grid-item :span="4" class="sort-item" @click="handleNameSort">
+              <Autotip>
+                <span class="sort-col">
+                  <span>{{ $t('common.table.name') }}</span>
+                  <span class="sort-icon">
+                    <icon-caret-up
+                      :class="{
+                        sorted:
+                          sortDataIndex === 'name' && sortOrder === 'ascend'
+                      }"
+                    />
+                    <icon-caret-down
+                      :class="{
+                        sorted:
+                          sortDataIndex === 'name' && sortOrder === 'descend'
+                      }"
+                    />
+                  </span>
+                </span>
+              </Autotip>
+            </a-grid-item>
+            <a-grid-item :span="4">
+              <Autotip>
+                <span class="type">{{ $t('common.table.type') }}</span>
+              </Autotip>
+            </a-grid-item>
+            <a-grid-item :span="4">
+              <Autotip>
+                <span>{{ $t('common.table.status') }}</span>
+              </Autotip>
+            </a-grid-item>
+            <a-grid-item :span="4" class="sort-item" @click="handleTimeSort">
+              <Autotip>
+                <span class="sort-col">
+                  <span>{{ $t('common.table.createTime') }}</span>
+                  <span class="sort-icon">
+                    <icon-caret-up
+                      :class="{
+                        sorted:
+                          sortDataIndex === 'createTime' &&
+                          sortOrder === 'ascend'
+                      }"
+                    />
+                    <icon-caret-down
+                      :class="{
+                        sorted:
+                          sortDataIndex === 'createTime' &&
+                          sortOrder === 'descend'
+                      }"
+                    />
+                  </span>
+                </span>
+              </Autotip>
+            </a-grid-item>
+            <a-grid-item :span="4">
+              <Autotip>
+                <span>{{
+                  $t('applications.applications.instance.endpoint')
+                }}</span>
+              </Autotip>
+            </a-grid-item>
+            <a-grid-item :span="4" class="actions">
+              <Autotip>
+                <span class="actions">
+                  {{ $t('common.table.operation') }}
+                </span>
+              </Autotip>
+            </a-grid-item>
+          </a-grid>
+        </div>
+        <a-space v-if="dataList.length" direction="vertical" :size="20" fill>
           <ResourceItem
             v-for="(item, index) in dataList"
             :key="item.id"
@@ -281,6 +369,7 @@
   import { PROJECT } from '@/router/config';
   import { Resources, Actions } from '@/permissions/config';
   import _, { get, pickBy, filter } from 'lodash';
+  import Autotip from '@arco-design/web-vue/es/_components/auto-tooltip/auto-tooltip';
   import dayjs from 'dayjs';
   import {
     reactive,
@@ -789,11 +878,77 @@
 
 <style lang="less" scoped>
   .list {
+    .header {
+      display: flex;
+      align-items: center;
+      padding: 0 15px;
+
+      :deep(.arco-grid-item) {
+        display: flex;
+        align-items: center;
+        padding: 15px 16px;
+      }
+
+      .sort-item {
+        cursor: pointer;
+
+        &:hover {
+          background-color: var(--color-fill-1);
+        }
+      }
+
+      .sort-col {
+        display: flex;
+        align-items: center;
+      }
+
+      .sort-icon {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        margin-left: 8px;
+        color: var(--color-neutral-6);
+
+        .arco-icon {
+          font-size: var(--font-size-small);
+
+          &.sorted {
+            color: rgb(var(--primary-6));
+          }
+        }
+
+        .arco-icon-caret-up {
+          position: relative;
+          top: 2px;
+        }
+
+        .arco-icon-caret-down {
+          position: relative;
+          top: -3px;
+        }
+      }
+
+      .arco-checkbox {
+        margin-right: 20px;
+        padding: 0;
+
+        :deep(.arco-checkbox-icon) {
+          border: 1px solid var(--color-border-3);
+        }
+      }
+    }
+
+    .actions {
+      display: flex;
+      justify-content: center;
+    }
+
     .pagination {
       display: flex;
       align-items: center;
-      justify-content: space-between;
-      padding: 10px 15px;
+      justify-content: end;
+      padding: 15px;
       padding-right: 0;
 
       .arco-checkbox {

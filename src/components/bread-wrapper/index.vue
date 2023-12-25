@@ -21,7 +21,7 @@
           'display': 'flex',
           'align-items': 'center',
           'height': `${appStore.navbarHeight}px`,
-          'paddingTop': '6px'
+          'paddingTop': '0px'
         }"
       >
         <slot></slot>
@@ -84,7 +84,7 @@
       align-items: center;
       justify-content: space-between;
       width: 100%;
-      padding-left: var(--container-padding);
+      padding-left: var(--card-content-padding);
       background-color: #fff;
       border-radius: 24px 0 0 0;
     }

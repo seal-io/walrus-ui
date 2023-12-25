@@ -121,18 +121,16 @@
               style="color: var(--sealblue-6)"
               @click="handleClickItem(item)"
             >
-              <component :is="item.icon" v-if="item.icon"></component>
+              <!-- <component :is="item.icon" v-if="item.icon"></component> -->
               {{ $t(item.label || '') }}
             </a-link>
             <span v-else>{{ $t(item.label || '') }}</span>
           </span>
         </span>
       </span>
-      <icon-oblique-line
-        v-if="index < items.length - 1"
-        class="size-14 separator-line"
-        style="stroke-width: 3; margin: 0 20px"
-      />
+      <span v-if="index < items.length - 1" class="separator-line">
+        <icon-oblique-line class="size-14" style="stroke-width: 4" />
+      </span>
       <!-- <i
         class="iconfont icon-narrow separator-line"
         v-if="index < items.length - 1"
@@ -243,6 +241,10 @@
     margin: 0;
     color: var(--color-text-2);
 
+    :deep(.arco-breadcrumb-item-separator) {
+      display: none;
+    }
+
     .label {
       margin-left: 5px;
       color: var(--color-text-2);
@@ -299,8 +301,8 @@
 
     .separator-line {
       position: relative;
-      top: 6px;
-      margin: 0 20px;
+      top: 8px;
+      margin: 0 30px;
       color: var(--color-text-3);
       font-weight: 500;
       font-size: 14px;
@@ -315,6 +317,7 @@
 
       .type {
         color: rgba(78, 89, 105, 0.5);
+        font-weight: 400;
       }
 
       .separator-line {
@@ -349,6 +352,10 @@
       align-items: center;
       padding: 0;
       color: rgba(255, 255, 255, 1);
+
+      .arco-link {
+        font-size: var(--font-size-large);
+      }
 
       .arco-trigger-content {
         .arco-select-option {

@@ -196,14 +196,14 @@
       }
 
       .logo {
-        height: 40px;
+        height: 36px;
       }
 
       &.menuCollapse {
         padding-left: 0;
 
         .logo {
-          height: 40px;
+          height: 36px;
         }
       }
     }

@@ -189,11 +189,12 @@
   .list-view-wrap {
     :deep(.arco-table) {
       .arco-table-th {
+        line-height: 2.5;
         background-color: rgba(230, 244, 254, 0.5);
       }
 
       .arco-table-td {
-        font-weight: 400;
+        font-weight: 500;
       }
     }
   }

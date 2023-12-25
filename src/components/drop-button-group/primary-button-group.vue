@@ -88,7 +88,10 @@
                                     </>
                                   )
                                 }}
-                                style={{ fontSize: 'var(--font-size-small)' }}
+                                style={{
+                                  fontSize: 'var(--font-size-small)',
+                                  fontWeight: 500
+                                }}
                               >
                                 {t(item.label)}
                               </a-link>

@@ -57,7 +57,7 @@
     position: relative;
     display: flex;
     align-items: center;
-    height: 112px;
+    min-height: 112px;
     padding: 16px;
     background-color: #fff;
     border-radius: var(--border-radius-small);
@@ -117,6 +117,7 @@
         max-width: max-content;
         font-weight: 500;
         font-size: 20px;
+        line-height: 2.5;
 
         .normal {
           margin-left: 40px;

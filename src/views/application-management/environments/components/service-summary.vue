@@ -15,7 +15,9 @@
 </template>
 
 <script lang="ts" setup>
+  import _ from 'lodash';
   import { ref, PropType } from 'vue';
+  import { StatusColor } from '@/views/config';
 
   const props = defineProps({
     dataList: {
@@ -23,6 +25,12 @@
       default: () => []
     }
   });
+  const colorMap = {
+    ready: StatusColor.success,
+    error: StatusColor.error,
+    transitioning: StatusColor.warning,
+    inactive: StatusColor.inactive
+  };
 </script>
 
 <style lang="less" scoped>

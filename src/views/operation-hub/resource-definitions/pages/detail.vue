@@ -26,7 +26,7 @@
               actions: [Actions.PUT]
             })
           "
-          @edit="handleEdit"
+          @edit="handleEditPage"
         ></GroupTitle>
         <a-form
           ref="formref"
@@ -144,7 +144,51 @@
               </a-link>
             </template>
           </GroupTitle>
-          <DefinitionRules
+          <a-tabs
+            v-if="formData.matchingRules.length"
+            v-model:active-key="activeRule"
+            :default-active-key="activeRule"
+            type="rounded"
+            direction="vertical"
+            class="page-line-tabs"
+          >
+            <a-tab-pane
+              v-for="(item, index) in formData.matchingRules"
+              :key="item.id"
+              :title="
+                item.name ||
+                $t('resource.definition.detail.rule', { name: index + 1 })
+              "
+            >
+              <DefinitionRules
+                :ref="
+                  (el) =>
+                    setRefMap(el, `${definitionRulePrefix}${item.id}`, item)
+                "
+                :key="item.id"
+                :trace-id="item.id"
+                :title="
+                  item.name ||
+                  $t('resource.definition.detail.rule', { name: index + 1 })
+                "
+                :data-id="id"
+                :origin-form-data="item"
+                :page-action="pageAction"
+                :schema-form-action="item.pageAction || schemaFormAction"
+                :show-delete="formData.matchingRules.length > 1"
+                :template-list="templateList"
+                class="m-b-20"
+                @delete="
+                  handleDeleteDefinition(
+                    index,
+                    `${definitionRulePrefix}${item.id}`
+                  )
+                "
+              >
+              </DefinitionRules>
+            </a-tab-pane>
+          </a-tabs>
+          <!-- <DefinitionRules
             v-for="(item, index) in formData.matchingRules"
             :ref="
               (el) => setRefMap(el, `${definitionRulePrefix}${item.id}`, item)
@@ -166,7 +210,7 @@
               handleDeleteDefinition(index, `${definitionRulePrefix}${item.id}`)
             "
           >
-          </DefinitionRules>
+          </DefinitionRules> -->
         </div>
         <a-tabs
           v-if="
@@ -186,7 +230,37 @@
             key="matchRules"
             :title="$t('resource.definition.detail.matchRule')"
           >
-            <DefinitionRules
+            <a-tabs
+              v-if="formData.matchingRules.length"
+              v-model:active-key="activeViewRule"
+              :default-active-key="activeViewRule"
+              type="rounded"
+              direction="vertical"
+            >
+              <a-tab-pane
+                v-for="(item, index) in formData.matchingRules"
+                :key="item.id"
+                :title="
+                  item.name ||
+                  $t('resource.definition.detail.rule', { name: index + 1 })
+                "
+              >
+                <DefinitionRules
+                  :key="`${index}-view`"
+                  :trace-id="item.id"
+                  :title="item.name"
+                  :data-id="id"
+                  :origin-form-data="item"
+                  :page-action="pageAction"
+                  :schema-form-action="schemaFormAction"
+                  :show-delete="false"
+                  :template-list="templateList"
+                  class="m-b-20"
+                >
+                </DefinitionRules>
+              </a-tab-pane>
+            </a-tabs>
+            <!-- <DefinitionRules
               v-for="(item, index) in formData.matchingRules"
               :key="`${index}-view`"
               :trace-id="item.id"
@@ -199,7 +273,7 @@
               :template-list="templateList"
               class="m-b-20"
             >
-            </DefinitionRules>
+            </DefinitionRules> -->
           </a-tab-pane>
           <a-tab-pane
             v-for="item in tabList"
@@ -307,6 +381,8 @@
   const templateList = ref<any[]>([]);
   const extraWrapper = ref();
   const deinitionSchema = ref<any>({});
+  const activeRule = ref('');
+  const activeViewRule = ref('');
   const completeData = ref<Partial<HintKey>>({
     [HintKeyMaps.var]: null
   });
@@ -347,6 +423,10 @@
     return pageAction.value;
   });
 
+  const handleEditPage = () => {
+    handleEdit();
+    activeRule.value = _.get(formData.value, 'matchingRules.0.id', '');
+  };
   const setRefMap = (el, name, item) => {
     refMap.value[name] = {
       ref: el,
@@ -414,10 +494,12 @@
   const getItemResourceDefinition = async () => {
     copyFormData = cloneDeep(formData.value);
     if (!id) {
+      const itemId = `${Date.now()}`;
       formData.value.matchingRules.push({
         ..._.cloneDeep(definitionFormData),
-        id: `${Date.now()}`
+        id: itemId
       });
+      activeRule.value = itemId;
       return;
     }
     try {
@@ -427,6 +509,7 @@
       };
       const { data } = await queryItemResourceDefinition(params);
       formData.value = data;
+      activeViewRule.value = _.get(formData.value, 'matchingRules.0.id', '');
       deinitionSchema.value = data;
       copyFormData = cloneDeep(formData.value);
     } catch (error) {
@@ -484,13 +567,14 @@
       scrollToView();
     }
   };
-  const cancelCallback = () => {
+  const cancelCallback = async () => {
     if (
       pageAction.value === PageAction.EDIT &&
       route.params.action === PageAction.VIEW
     ) {
       pageAction.value = PageAction.VIEW;
-      getItemResourceDefinition();
+      await getItemResourceDefinition();
+      activeViewRule.value = _.get(formData.value, 'matchingRules.0.id', '');
       return;
     }
     router.back();
@@ -506,11 +590,13 @@
   };
 
   const handleAddRule = () => {
+    const itemId = `${Date.now()}`;
     formData.value.matchingRules.push({
       ..._.cloneDeep(definitionFormData),
-      id: `${Date.now()}`,
+      id: itemId,
       pageAction: PageAction.CREATE
     });
+    activeRule.value = itemId;
   };
 
   const handleDeleteDefinition = (index, name) => {

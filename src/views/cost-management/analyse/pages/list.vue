@@ -14,7 +14,7 @@
             <icon-search />
           </template>
         </a-input>
-        <a-space style="margin-left: 10px">
+        <a-space style="margin-left: 0">
           <a-button type="primary" @click="handleSearch">{{
             $t('common.button.search')
           }}</a-button>
