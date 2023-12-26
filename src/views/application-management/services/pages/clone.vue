@@ -75,7 +75,7 @@
           no-style
         >
           <div>
-            <cloneService
+            <!-- <cloneService
               ref="servicesRef"
               v-model:hint-data="completeData"
               clone-type="service"
@@ -85,7 +85,7 @@
               :service-ids="selectServices"
               :resource-type="ServiceDataType.service"
               style="width: 800px"
-            ></cloneService>
+            ></cloneService> -->
             <cloneService
               ref="resourceRef"
               v-model:hint-data="completeData"

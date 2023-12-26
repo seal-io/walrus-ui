@@ -13,6 +13,7 @@ import {
   queryPipelineRecords
 } from '@/views/application-management/workflows/api';
 import { BreadcrumbOptions } from '@/views/config/interface';
+import { pageLevelMap, PageAction } from '@/views/config';
 import { getListLabel } from '@/utils/func';
 import { ServiceDataType } from '../../services/config';
 
@@ -35,13 +36,6 @@ export default function useProjectData() {
     pipeline: false,
     pipelineExcutions: false
   });
-  const pageLevelMap = {
-    Project: 'Project',
-    Environment: 'Environment',
-    Service: 'Service',
-    Pipeline: 'Pipeline',
-    PipelineExcutions: 'PipelineExcutions'
-  };
 
   const templateCommonConfig = {
     value: '',
@@ -410,14 +404,12 @@ export default function useProjectData() {
     if (item.level === pageLevelMap.Environment) {
       params = {
         ...route.params,
-        environmentId: val
+        environmentId: val,
+        action: PageAction.VIEW
       };
-      projectStore.setInfo({
-        defaultActiveEnvironment: {
-          id: val,
-          name: item.label
-        }
-      });
+      query = {
+        id: val
+      };
     }
     // project
     if (item.level === pageLevelMap.Project) {
@@ -425,13 +417,6 @@ export default function useProjectData() {
         ...route.params,
         projectId: val
       };
-
-      projectStore.setInfo({
-        defaultActiveProject: {
-          id: val,
-          name: item.label
-        }
-      });
     }
     // service
     if (item.level === pageLevelMap.Service) {

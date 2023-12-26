@@ -75,6 +75,19 @@
           >
             <VariableList scope="environment"></VariableList>
           </a-tab-pane>
+          <a-tab-pane
+            v-if="
+              userStore.hasProjectResourceActions({
+                resource: Resources.Environments,
+                projectID: route.params.projectId,
+                actions: [Actions.GET]
+              })
+            "
+            :key="EnvironmentTabs.SETTINGS"
+            :title="$t('common.button.settings')"
+          >
+            <EnvSettings scope="environment"></EnvSettings>
+          </a-tab-pane>
         </a-tabs>
       </ComCard>
     </ComCard>
@@ -101,6 +114,7 @@
   import { basicInfoConfig } from '../config';
   import { queryItemEnvironments } from '../api';
   import environmentGraph from '../components/environment-graph.vue';
+  import EnvSettings from './edit.vue';
 
   const {
     getEnvironmentList,
