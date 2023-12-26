@@ -42,7 +42,7 @@
           >
             <a-checkbox
               :model-value="
-                rowSelection.selectedRowKeys.length === dataList.length &&
+                rowSelection.selectedRowKeys.length >= dataList.length &&
                 dataList.length > 0
               "
               :indeterminate="
@@ -541,7 +541,6 @@
       loading.value = true;
       const params: any = {
         ...pickBy(queryParams, (val) => !!val),
-        isService: props.type === 'service',
         sort: [sort.value]
       };
       const { data } = await queryServices(params, fetchToken?.token);
@@ -828,8 +827,7 @@
       setChunkRequest({
         url: `${SERVICE_API_PREFIX()}${SERVICE_API}`,
         params: {
-          extract: ['-attributes', '-description'],
-          isService: props.type === ServiceDataType.service
+          extract: ['-attributes', '-description']
         },
         handler: updateHandler,
         beforeReconnect: fetchData

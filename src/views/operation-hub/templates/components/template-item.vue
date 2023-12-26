@@ -46,6 +46,7 @@
             <moreButtonActions
               v-if="actionList.length"
               :actions="selectActions"
+              trigger="hover"
               @select="handleSelectAction"
             ></moreButtonActions>
           </span>

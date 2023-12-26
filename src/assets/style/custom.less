@@ -140,10 +140,6 @@ div#driver-highlighted-element-stage {
   margin-left: 0;
 }
 
-.page-line-tabs.arco-tabs .arco-tabs-tab {
-  margin: 0 16px;
-}
-
 .module-tabs.arco-tabs .arco-tabs-tab-active {
   font-weight: 400;
 }
@@ -171,6 +167,8 @@ div#driver-highlighted-element-stage {
 }
 
 .arco-dropdown {
+  border-radius: var(--border-radius-small);
+
   .arco-dropdown-option {
     line-height: 32px;
   }
@@ -182,6 +180,7 @@ div#driver-highlighted-element-stage {
 // modal
 .arco-modal {
   overflow: hidden;
+  border-radius: 16px !important;
 
   .arco-modal-body {
     padding: 16px;
@@ -229,7 +228,7 @@ div#driver-highlighted-element-stage {
   font-size: 14px;
   stroke-linecap: round;
   stroke-linejoin: bevel;
-  stroke-width: 3;
+  stroke-width: 4;
 
   &.stroke-w-4 {
     stroke-width: 4;
@@ -263,6 +262,10 @@ div#driver-highlighted-element-stage {
 .arco-btn-size-medium {
   font-weight: 500;
   font-size: var(--font-size-normal) !important;
+}
+
+.arco-btn-size-small {
+  font-size: var(--font-size-small) !important;
 }
 
 .arco-message {

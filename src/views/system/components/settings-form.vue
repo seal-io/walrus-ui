@@ -282,7 +282,9 @@
     return [
       {
         required: data.component.required,
-        message: t('system.rules.value')
+        message: data.component.message
+          ? t(data.component.message)
+          : t('system.rules.value')
       },
       {
         validator

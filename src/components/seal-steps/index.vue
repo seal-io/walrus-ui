@@ -48,37 +48,37 @@
 
       &.Ready {
         color: #fff;
-        background-color: var(--seal-color-success);
+        background-color: rgba(var(--green-6), 0.7);
 
         &::after {
-          background-color: var(--seal-color-success);
+          background-color: rgba(var(--green-6), 0.7);
         }
       }
 
       &.Error {
         color: #fff;
-        background-color: var(--seal-color-error);
+        background-color: rgba(var(--red-6), 0.7);
 
         &::after {
-          background-color: var(--seal-color-error);
+          background-color: rgba(var(--red-6), 0.7);
         }
       }
 
       &.Running {
         color: #fff;
-        background-color: var(--seal-color-warning);
+        background-color: rgb(251, 222, 55);
 
         &::after {
-          background-color: var(--seal-color-warning);
+          background-color: rgb(251, 222, 55);
         }
       }
 
       &.Pending {
         color: #fff;
-        background-color: var(--color-fill-3);
+        background-color: rgba(var(--gray-4), 0.9);
 
         &::after {
-          background-color: var(--color-border-2);
+          background-color: rgba(var(--gray-4), 0.9);
         }
       }
     }

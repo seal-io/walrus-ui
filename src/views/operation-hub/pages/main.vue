@@ -54,13 +54,13 @@
             <Connectors></Connectors>
           </a-tab-pane>
 
-          <template #extra>
+          <!-- <template #extra>
             <IconBtnGroup
               v-if="activeKey === OperatorHubTabs.TEMPLATES"
               v-model:active="dataView[activeKey]"
               :icon-list="iconList"
             ></IconBtnGroup>
-          </template>
+          </template> -->
         </a-tabs>
       </ComCard>
     </ComCard>

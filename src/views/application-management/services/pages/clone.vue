@@ -287,26 +287,22 @@
   };
   const initCloneEnvironmentResource = async () => {
     try {
-      const services = await getServiceList({
-        isService: true,
-        extract: ['-projectId', '-status']
-      });
+      // const services = await getServiceList({
+      //   isService: true,
+      //   extract: ['-projectId', '-status']
+      // });
       const resources = await getServiceList({
-        isService: false,
         extract: ['-projectId', '-status']
       });
-      serviceList.value = _.filter(services, (item) => {
-        return selectServices.value.includes(item.id);
-      });
+      // serviceList.value = _.filter(services, (item) => {
+      //   return selectServices.value.includes(item.id);
+      // });
       resourceList.value = _.filter(resources, (item) => {
         return selectResources.value.includes(item.id);
       });
       await getProjectVariables();
       await getAllResourceDefinitions();
-      serviceDataList.value = [
-        ..._.cloneDeep(services),
-        ..._.cloneDeep(resources)
-      ];
+      serviceDataList.value = [..._.cloneDeep(resources)];
       setAllTemplateVersions(serviceDataList.value);
       setCompleteData();
     } catch (error) {

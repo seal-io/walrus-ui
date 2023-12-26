@@ -38,8 +38,8 @@
     display: flex;
     align-items: center;
     padding: 0;
-    color: rgba(78, 89, 105, 0.8);
-    font-weight: 500;
+    color: rgb(255 255 255 / 90%);
+    font-weight: 700;
     font-size: 0;
     border-radius: 10px 10px;
 
@@ -55,20 +55,20 @@
 
       &.error {
         margin-right: 10px;
-        background-color: rgba(245, 63, 63, 0.7);
+        background-color: rgba(var(--red-6), 0.7);
       }
 
       &.ready {
-        background-color: rgba(0, 191, 114, 0.7);
+        background-color: rgba(var(--green-6), 0.7);
       }
 
       &.transitioning {
         margin: 0 10px;
-        background-color: rgba(247, 186, 30, 0.7);
+        background-color: rgb(251, 222, 55);
       }
 
       &.inactive {
-        background-color: rgba(201, 205, 212, 0.9);
+        background-color: rgba(var(--gray-4), 0.9);
       }
     }
   }

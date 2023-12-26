@@ -93,7 +93,58 @@
           >
         </template>
       </FilterBox>
-      <!-- <a-divider :margin="8"></a-divider> -->
+      <div class="pagination">
+        <a-space class="sort" :size="20">
+          <a-checkbox
+            v-if="
+              route.params.projectId
+                ? userStore.hasProjectResourceActions({
+                    resource: Resources.Templates,
+                    projectID: route.params.projectId,
+                    actions: [Actions.DELETE]
+                  })
+                : userStore.hasRolesActionsPermission({
+                    resource: Resources.Templates,
+                    actions: [Actions.DELETE]
+                  })
+            "
+            :model-value="
+              selectedKeys.length >= dataList.length && dataList.length > 0
+            "
+            :indeterminate="
+              selectedKeys.length > 0 && selectedKeys.length < dataList.length
+            "
+            @change="handleSelectAll"
+          ></a-checkbox>
+          <a-button
+            type="text"
+            size="mini"
+            :class="{ active: sortDataIndex === 'name' }"
+            @click="handleNameSort"
+          >
+            <i class="iconfont icon-sort size-16" style="stroke-width: 4"></i>
+          </a-button>
+          <a-button
+            type="text"
+            size="mini"
+            :class="{ active: sortDataIndex === 'createTime' }"
+            @click="handleTimeSort"
+          >
+            <i class="iconfont icon-Field-time size-16"></i>
+          </a-button>
+        </a-space>
+        <a-pagination
+          size="small"
+          :total="total"
+          :page-size="queryParams.perPage"
+          :current="queryParams.page"
+          show-total
+          show-page-size
+          :hide-on-single-page="total <= 10"
+          @change="handlePageChange"
+          @page-size-change="handlePageSizeChange"
+        />
+      </div>
       <a-spin :loading="loading" class="fill-width">
         <a-tabs
           lazy-load
@@ -122,7 +173,7 @@
               @change="handleCheckChange"
             ></ThumbView>
           </a-tab-pane>
-          <a-tab-pane key="list">
+          <!-- <a-tab-pane key="list">
             <ListView
               ref="listViewRef"
               v-model:sort="sort"
@@ -133,10 +184,10 @@
               @delete="handleCallDelete"
               @sort="handleSort"
             ></ListView>
-          </a-tab-pane>
+          </a-tab-pane> -->
         </a-tabs>
       </a-spin>
-      <a-pagination
+      <!-- <a-pagination
         style="margin-top: 20px"
         size="small"
         :total="total"
@@ -147,7 +198,7 @@
         :hide-on-single-page="total <= 10"
         @change="handlePageChange"
         @page-size-change="handlePageSizeChange"
-      />
+      /> -->
     </div>
   </ComCard>
 </template>
@@ -159,6 +210,7 @@
   import _, { map, pickBy, remove } from 'lodash';
   import { ref, reactive, onMounted, nextTick, computed, PropType } from 'vue';
   import useCallCommon from '@/hooks/use-call-common';
+  import { UseSortDirection } from '@/utils/common';
   import FilterBox from '@/components/filter-box/index.vue';
   import { useSetChunkRequest } from '@/api/axios-chunk-request';
   import { deleteModal, execSucceed } from '@/utils/monitor';
@@ -193,9 +245,15 @@
   const { setChunkRequest } = useSetChunkRequest();
   const { setChunkRequest: setCatalogChunkRequest } = useSetChunkRequest();
   const { router, route, t } = useCallCommon();
+  const { sort, sortOrder, sortDataIndex, setSortDirection } = UseSortDirection(
+    {
+      defaultSortField: '-createTime',
+      defaultOrder: 'descend'
+    }
+  );
   const loading = ref(false);
   const selectedKeys = ref<string[]>([]);
-  const sort = ref<string[]>(['-createTime']);
+  // const sort = ref<string[]>(['-createTime']);
   const dataList = ref<TemplateRowData[]>([]);
   const catalogs = ref<
     { label: string; value: string; id: string; name: string }[]
@@ -290,6 +348,30 @@
     fetchData();
   };
   const handleSort = () => {
+    fetchData();
+  };
+  const handleSelectAll = (checked) => {
+    const list = _.map(dataList.value, (item) => {
+      return item.id;
+    });
+    if (checked) {
+      selectedKeys.value = list;
+    } else {
+      selectedKeys.value = [];
+    }
+  };
+  const handleTimeSort = () => {
+    setSortDirection(
+      'createTime',
+      sortOrder.value === 'ascend' ? 'descend' : 'ascend'
+    );
+    fetchData();
+  };
+  const handleNameSort = () => {
+    setSortDirection(
+      'name',
+      sortOrder.value === 'ascend' ? 'descend' : 'ascend'
+    );
     fetchData();
   };
   const handleCheckChange = (checked, id) => {
@@ -453,6 +535,32 @@
       .size-14 {
         margin-right: 4px;
         font-size: 12px;
+      }
+    }
+
+    .pagination {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 15px;
+      padding-right: 0;
+
+      .arco-checkbox {
+        padding: 0;
+
+        :deep(.arco-checkbox-icon) {
+          border: 1px solid var(--color-border-3);
+        }
+      }
+
+      .sort {
+        display: flex;
+        align-items: center;
+        justify-content: flex-start;
+      }
+
+      .arco-btn.active {
+        background-color: var(--color-fill-1);
       }
     }
 

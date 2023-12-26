@@ -30,6 +30,7 @@ export default {
   'applications.applications.form.label': 'Labels',
   'applications.applications.form.key': 'Key',
   'applications.applications.form.value': 'Value',
+  'applications.applications.form.useTemplate': 'Use Template',
   'applications.applications.detail.configuration': 'Configuration',
   'applications.applications.form.description': 'Description',
   'applications.applications.rule.name': 'name is required',
@@ -57,7 +58,7 @@ export default {
     'Do not clean up underlying components',
   'applications.applications.instance.application': 'Application',
   'applications.applications.instance.status': 'Status',
-  'applications.applications.instance.history': 'Revision History',
+  'applications.applications.instance.history': 'Revisions',
   'applications.applications.instance.accessUrl': 'Access URL',
   'applications.applications.instance.resource': 'Component Information',
   'applications.applications.instance.resource.tips':

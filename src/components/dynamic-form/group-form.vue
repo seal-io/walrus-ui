@@ -7,6 +7,8 @@
       class="page-line-tabs"
       :active-key="activeKey"
       :destroy-on-hide="destroyed"
+      :direction="layout.direction"
+      :type="layout.type"
       @change="handleTabChange"
     >
       <a-tab-pane
@@ -85,6 +87,15 @@
       type: String as PropType<'edit' | 'view' | 'create'>,
       default() {
         return 'create';
+      }
+    },
+    layout: {
+      type: Object as PropType<any>,
+      default() {
+        return {
+          direction: 'horizontal',
+          type: 'line'
+        };
       }
     }
   });

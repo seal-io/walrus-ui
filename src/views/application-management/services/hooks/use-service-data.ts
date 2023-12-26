@@ -1,11 +1,17 @@
 import _, { set } from 'lodash';
-import { ref, reactive, ComponentPublicInstance, inject } from 'vue';
+import {
+  ref,
+  reactive,
+  ComponentPublicInstance,
+  inject,
+  computed,
+  watch
+} from 'vue';
 import { PageAction } from '@/views/config';
 import { createAxiosToken } from '@/api/axios-chunk-request';
 import useCallCommon from '@/hooks/use-call-common';
 import { TemplateVersionData } from '@/views/operation-hub/templates/config/interface';
 import { queryItemTemplatesVersions } from '@/views/operation-hub/templates/api';
-import { initFormState } from '@/components/dynamic-form/utils/init-form-state';
 import usePageAction from '@/hooks/use-page-action';
 import { queryItemResourceDefinition } from '@/views/operation-hub/resource-definitions/api';
 import { useServiceStore } from '@/store';
@@ -24,14 +30,21 @@ export default function useServiceData(props?) {
     value: string;
   }
 
-  const setServiceInfo = inject(ProvideSetServiceInfoKey, {
-    enable: false,
-    info: {}
-  });
+  // const setServiceInfo = inject(ProvideSetServiceInfoKey, {
+  //   enable: false,
+  //   info: {}
+  // });
   /**
    * Service configuration can refer to output of other services,
    * so it is necessary to obtain the schema of existing services
    */
+
+  const dataType = ref<string>(ServiceDataType.resource);
+  const resourceTypeData = computed(() => {
+    return { resourceType: dataType.value, ...props };
+  });
+
+  console.log('dataType>>>>>>>>>.', resourceTypeData.value.flowStepInfo);
   const {
     completeData,
     initCompleteData,
@@ -41,7 +54,8 @@ export default function useServiceData(props?) {
     templateList,
     completeDataLoading,
     allTemplateVersions
-  } = useCompleteData(props);
+  } = useCompleteData(resourceTypeData);
+
   const serviceStore = useServiceStore();
   const { pageAction, handleEdit } = usePageAction();
   const { route } = useCallCommon();
@@ -51,7 +65,6 @@ export default function useServiceData(props?) {
   const serviceInfo = ref<any>({}); // Store information about the active service, also be used when cloning
   const templateVersionList = ref<TemplateVersion[]>([]);
   const asyncLoading = ref(false);
-  const dataType = props?.resourceType || (route.params.dataType as string);
   let templateVersionSchemaToken: any = null;
 
   const id = route.query.id as string;
@@ -81,20 +94,20 @@ export default function useServiceData(props?) {
     attributes: {}
   });
 
+  // const dataType = computed(() => {
+  //   return props?.value.resourceType || (route.params.dataType as string);
+  // });
+
   const title = () => {
     if (!id) {
-      return dataType === ServiceDataType.service
+      return dataType.value === ServiceDataType.service
         ? 'applications.applications.create'
         : 'applications.applications.create.resource';
     }
     if (id && pageAction.value === PageAction.EDIT) {
-      return dataType === ServiceDataType.service
-        ? 'applications.applications.edit'
-        : 'applications.applications.edit.resource';
+      return 'applications.applications.edit.resource';
     }
-    return dataType === ServiceDataType.service
-      ? 'applications.applications.detail'
-      : 'applications.applications.detail.resource';
+    return 'applications.applications.detail.resource';
   };
 
   const setDefaultTemplate = (template) => {
@@ -121,6 +134,9 @@ export default function useServiceData(props?) {
       };
       const { data } = await queryItemService(params);
       serviceInfo.value = data;
+      dataType.value = data.type
+        ? ServiceDataType.resource
+        : ServiceDataType.service;
     } catch (error) {
       serviceInfo.value = {};
     }
@@ -168,7 +184,7 @@ export default function useServiceData(props?) {
 
   const setTemplateVersionList = async () => {
     try {
-      if (dataType === ServiceDataType.resource) {
+      if (dataType.value === ServiceDataType.resource) {
         return;
       }
       const list = _.filter(
@@ -212,7 +228,7 @@ export default function useServiceData(props?) {
     uiFormData.value = _.cloneDeep(serviceInfo.value.attributes);
     // 1. get the template meta data 2.set the default value
     let moduleTemplate: any = {};
-    if (dataType === ServiceDataType.resource) {
+    if (dataType.value === ServiceDataType.resource) {
       moduleTemplate = await getItemResourceDefinition();
     } else {
       await getTemplateVersions(formData.value.template);
@@ -235,12 +251,12 @@ export default function useServiceData(props?) {
   };
   // for service create page
   const initFormData = async () => {
-    if (id || setServiceInfo.enable) {
-      console.log('initFormData>>>>>>>>>', id, setServiceInfo);
+    if (id || resourceTypeData?.value?.flowStepInfo?.enable) {
+      console.log('initFormData>>>>>>>>>', id, resourceTypeData.value);
       await setFormAttributes();
     } else {
       let templateSchema: any = {};
-      if (dataType === ServiceDataType.resource) {
+      if (dataType.value === ServiceDataType.resource) {
         formData.value.type = _.get(templateList.value, '0.value', '');
         templateSchema = await getItemResourceDefinition();
       } else {
@@ -264,31 +280,34 @@ export default function useServiceData(props?) {
 
   // for workflow create service task
   const initSerivceInfo = async () => {
-    if (!setServiceInfo.enable) return;
-    serviceInfo.value = setServiceInfo.info;
+    if (!resourceTypeData.value.flowStepInfo?.enable) return;
+    serviceInfo.value = resourceTypeData.value.flowStepInfo?.info;
+    dataType.value = serviceInfo.value.type
+      ? ServiceDataType.resource
+      : ServiceDataType.service;
   };
 
   // for service edit page
   const init = async () => {
     asyncLoading.value = true;
     // getServiceItemInfo would be called in create page
-    await Promise.all([
-      getServiceItemInfo(),
-      initSerivceInfo(),
-      initTemplateList()
-    ]);
+    await Promise.all([getServiceItemInfo(), initSerivceInfo()]);
+    await initTemplateList();
     await initFormData();
     asyncLoading.value = false;
-    console.log(
-      'ProvideSetServiceInfoKey=======',
-      formData.value,
-      _.cloneDeep(setServiceInfo)
-    );
 
     /* beacuse of the init versions data do not include the all template versions,
      * but only the created service versions
      */
     await initCompleteData();
+    allTemplateVersions.value = [];
+  };
+
+  const toggleDataType = async () => {
+    asyncLoading.value = true;
+    await initTemplateList();
+    await initFormData();
+    asyncLoading.value = false;
     allTemplateVersions.value = [];
   };
 
@@ -302,10 +321,13 @@ export default function useServiceData(props?) {
     getTemplateVersions,
     initCompleteData,
     initInfo,
+    toggleDataType,
+    initTemplateList,
     setTemplateInfo,
     schemaVariables,
     getItemResourceDefinition,
     asyncLoading,
+    dataType,
     completeDataLoading,
     formData,
     uiFormData,

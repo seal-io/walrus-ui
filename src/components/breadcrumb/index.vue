@@ -128,13 +128,13 @@
           </span>
         </span>
       </span>
-      <span v-if="index < items.length - 1" class="separator-line">
+      <span
+        v-if="index < items.length - 1"
+        class="separator-line"
+        :class="{ 'sub-label': !!item.type }"
+      >
         <icon-oblique-line class="size-14" style="stroke-width: 4" />
       </span>
-      <!-- <i
-        class="iconfont icon-narrow separator-line"
-        v-if="index < items.length - 1"
-      ></i> -->
     </a-breadcrumb-item>
   </a-breadcrumb>
 </template>
@@ -301,11 +301,15 @@
 
     .separator-line {
       position: relative;
-      top: 8px;
+      top: 0;
       margin: 0 30px;
       color: var(--color-text-3);
       font-weight: 500;
       font-size: 14px;
+
+      &.sub-label {
+        top: 8px;
+      }
     }
 
     .box {

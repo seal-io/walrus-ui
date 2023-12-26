@@ -6,6 +6,7 @@
   >
     <a-card
       :title="title"
+      :style="{ ...cardStyle }"
       :class="{ 'header-border-less': borderless }"
       :body-style="{ padding: padding, ...bodyStyle }"
       :bordered="bordered"
@@ -24,6 +25,12 @@
   import { useAttrs } from 'vue';
 
   defineProps({
+    cardStyle: {
+      type: Object,
+      default() {
+        return {};
+      }
+    },
     padding: {
       type: String,
       default() {

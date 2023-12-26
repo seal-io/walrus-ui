@@ -85,18 +85,13 @@
 </script>
 
 <style lang="less" scoped>
-  .container {
-    .opts-item {
-      position: relative;
-      padding-left: 20px;
+  :deep(.arco-descriptions) {
+    .arco-descriptions-item-label-block {
+      font-weight: var(--font-weight-regular);
+    }
 
-      :deep(.arco-icon) {
-        position: absolute;
-      }
-
-      .label {
-        margin-left: 10px;
-      }
+    .arco-descriptions-item-value-block {
+      font-weight: var(--font-weight-regular);
     }
   }
 </style>

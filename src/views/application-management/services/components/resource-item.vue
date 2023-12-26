@@ -1,6 +1,7 @@
 <script lang="tsx">
   import _ from 'lodash';
   import dayjs from 'dayjs';
+  import i18n from '@/locale';
   import { defineComponent, ref, watch } from 'vue';
   import Autotip from '@arco-design/web-vue/es/_components/auto-tooltip/auto-tooltip';
 
@@ -64,7 +65,24 @@
             </a-grid-item>
             <a-grid-item span={4}>
               <Autotip>
-                <span class="type">{_.get(props.rowData, 'type')}</span>
+                <>
+                  {_.get(props.rowData, 'type') ? (
+                    <span class="type">{_.get(props.rowData, 'type')}</span>
+                  ) : (
+                    <span class="type">
+                      <span>{`${props.rowData.template?.name}@${
+                        props.rowData.template?.version || ''
+                      }`}</span>
+                      <span
+                        v-if="!record.template.project?.id"
+                        style="color: var(--color-text-3)"
+                        class="font-12 m-l-2"
+                      >{`(${i18n.global.t(
+                        'applications.variable.scope.global'
+                      )})`}</span>
+                    </span>
+                  )}
+                </>
               </Autotip>
             </a-grid-item>
             <a-grid-item span={4}>
@@ -83,9 +101,7 @@
             </a-grid-item>
             <a-grid-item span={4}>
               <Autotip>
-                <span>
-                  <a-link>Endpoints</a-link>
-                </span>
+                <span></span>
               </Autotip>
             </a-grid-item>
             <a-grid-item span={4} class="actions">

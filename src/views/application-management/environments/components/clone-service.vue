@@ -286,13 +286,14 @@
   });
   const {
     setFormAttributes,
+    dataType,
     completeDataLoading,
     serviceInfo,
     schemaVariables,
     formData,
     uiFormData,
     pageAction
-  } = useServiceData(props);
+  } = useServiceData();
   const {
     labelList,
     labelItem,
@@ -342,6 +343,9 @@
     show.value = true;
     activeServiceInfo.value = data;
     serviceInfo.value = _.cloneDeep(data);
+    dataType.value = serviceInfo.value.type
+      ? ServiceDataType.resource
+      : ServiceDataType.service;
     await setFormAttributes();
 
     getLabelList();

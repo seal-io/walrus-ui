@@ -182,6 +182,7 @@
             :key="flow.environmentId"
             :flow="flow"
             :action="action"
+            :flow-step-info="serviceInfo"
             :data-type="ServiceDataType.service"
           ></ServiceTask>
         </div>
@@ -561,13 +562,13 @@
         border-right: 1px solid var(--color-border-2);
 
         .arco-steps-item-title {
-          font-size: 14px;
+          font-size: var(--font-size-small);
         }
 
         .arco-steps-icon {
           width: 24px;
           height: 24px;
-          font-size: 14px;
+          font-size: var(--font-size-small);
           line-height: 22px;
         }
       }

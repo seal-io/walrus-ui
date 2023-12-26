@@ -4,6 +4,7 @@
       ref="serviceRef"
       :flow="flow"
       :resource-type="dataType"
+      :flow-step-info="flowStepInfo"
       :action="action"
     ></CreateService>
   </div>
@@ -20,6 +21,15 @@
       type: Object,
       default() {
         return {};
+      }
+    },
+    flowStepInfo: {
+      type: Object as PropType<{ enable: boolean; info: any }>,
+      default() {
+        return {
+          enable: false,
+          info: null
+        };
       }
     },
     dataType: {

@@ -110,13 +110,13 @@
           >
             <members></members>
           </a-tab-pane>
-          <template #extra>
+          <!-- <template #extra>
             <IconBtnGroup
               v-if="activeKey === ProjectTabs.TEMPLATES"
               v-model:active="dataView[activeKey]"
               :icon-list="iconList"
             ></IconBtnGroup>
-          </template>
+          </template> -->
           <a-tab-pane
             v-if="
               userStore.hasProjectResourceActions({
