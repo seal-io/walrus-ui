@@ -372,7 +372,11 @@
       name: PROJECT.EnvDetail,
       params: {
         ...route.params,
-        environmentId: row.id
+        environmentId: row.id,
+        action: PageAction.VIEW
+      },
+      query: {
+        id: row.id
       }
     });
   };
@@ -403,7 +407,8 @@
     router.push({
       name: PROJECT.EnvClone,
       params: {
-        environmentId: row.id
+        environmentId: row.id,
+        clone: 'clone'
       },
       query: {
         id: row.id

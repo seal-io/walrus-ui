@@ -95,7 +95,8 @@ export const PipelineTabs = {
 export const EnvironmentTabs = {
   SERVICE: 'services',
   GRAPH: 'graph',
-  VARIABLES: 'variables'
+  VARIABLES: 'variables',
+  SETTINGS: 'settings'
 };
 
 export const CostTabs = {
@@ -249,8 +250,8 @@ export const HintKeyMaps = {
 
 export const StatusColorValueMap = {
   error: '--red-6',
-  warningColor: 'rgb(244, 143, 11)',
-  warningBg: 'rgba(251, 222, 55, 0.4)',
+  warningColor: '244, 143, 11',
+  warningBg: '251, 222, 55',
   success: '--green-6',
   inactiveColor: '#86909c',
   inactiveBg: '--gray-4'
@@ -277,5 +278,13 @@ export const StatusColor = {
     color1: 'rgba(var(--gray-4), 0.4)',
     icon: 'icon-minus-circle-fill'
   }
+};
+
+export const pageLevelMap = {
+  Project: 'Project',
+  Environment: 'Environment',
+  Service: 'Service',
+  Pipeline: 'Pipeline',
+  PipelineExcutions: 'PipelineExcutions'
 };
 export default {};

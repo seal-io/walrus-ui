@@ -19,6 +19,9 @@
         maxWidth:
           pageAction === PageAction.VIEW ? `${InputWidth.XLARGE}px` : '100%'
       }"
+      :padding="
+        route.name === PROJECT.EnvDetail ? '0' : `20px var(--container-padding)`
+      "
     >
       <GroupTitle
         :bordered="false"
@@ -52,7 +55,7 @@
           <seal-input
             v-if="pageAction === PageAction.EDIT"
             v-model.trim="formData.name"
-            :disabled="!!id && !environmentId"
+            :disabled="!!id && !isCloneAction"
             :label="$t('operation.environments.table.name')"
             :required="true"
             :style="{ width: `${InputWidth.LARGE}px` }"
@@ -85,7 +88,7 @@
             v-model="formData.type"
             :label="$t('applications.environment.type')"
             :required="true"
-            :disabled="!!id && !environmentId"
+            :disabled="!!id && !isCloneAction"
             :options="EnvironmentTypeList"
             :style="{ width: `${InputWidth.LARGE}px` }"
             @change="handleEnvironmentTypeChange"
@@ -229,14 +232,14 @@
           </div>
         </a-form-item>
         <GroupTitle
-          v-if="environmentId"
+          v-if="isCloneAction"
           class="m-t-20"
           :bordered="false"
           :title="$t('menu.operatorHub.variables')"
           flex-start
         ></GroupTitle>
         <a-form-item
-          v-if="environmentId"
+          v-if="isCloneAction"
           :hide-label="pageAction === PageAction.EDIT"
           :label="$t('menu.operatorHub.variables')"
         >
@@ -247,13 +250,13 @@
           ></VariablesSelector>
         </a-form-item>
         <a-form-item
-          v-if="environmentId"
+          v-if="isCloneAction"
           no-style
           :hide-label="pageAction === PageAction.EDIT"
           :label="$t('applications.applications.table.service')"
         >
           <div>
-            <CloneService
+            <!-- <CloneService
               ref="serviceRef"
               key="serviceRef"
               v-model:hint-data="completeData"
@@ -262,7 +265,7 @@
               clone-type="environment"
               resource-type="service"
               :style="{ width: `${InputWidth.XLARGE}px`, overflow: 'auto' }"
-            ></CloneService>
+            ></CloneService> -->
             <CloneService
               key="resourceRef"
               ref="resourceRef"
@@ -279,7 +282,7 @@
       <EditPageFooter v-if="pageAction === PageAction.EDIT">
         <template #save>
           <a-button
-            v-if="!environmentId"
+            v-if="!isCloneAction"
             type="primary"
             class="cap-title cancel-btn"
             :loading="submitLoading"
@@ -372,7 +375,8 @@
   const { router, route, t } = useCallCommon();
   const { pageAction, handleEdit } = usePageAction();
   const id = route.query.id as string;
-  const environmentId = route.params.environmentId as string; // only in clone
+  const isCloneAction = route.params.clone as string; // only in clone
+  const environmentId = route.params.environmentId as string;
   const formref = ref();
   const serviceRef = ref(); // only in clone
   const resourceRef = ref(); // only in clone
@@ -432,7 +436,7 @@
   });
   const title = computed(() => {
     // only in clone
-    if (environmentId) {
+    if (isCloneAction) {
       return t('applications.environment.clone');
     }
     if (!id) {
@@ -497,7 +501,7 @@
         return s?.connector?.id;
       });
       // only in clone
-      formData.value.name = environmentId
+      formData.value.name = isCloneAction
         ? `${formData.value.name}-clone`
         : formData.value.name;
       selectedList.value = [...formData.value.connectorIDs];
@@ -576,12 +580,12 @@
           formData.value.draft = true;
         }
         const data = _.omit(formData.value, ['edges']);
-        if (environmentId) {
+        if (isCloneAction) {
           handleCloneEnvironment(data);
         }
-        if (id && !environmentId) {
+        if (id && !isCloneAction) {
           await updateEnvironment(data);
-        } else if (environmentId) {
+        } else if (isCloneAction) {
           await cloneEnvironment(data, environmentId);
         } else if (!id && !environmentId) {
           await createEnvironment(data);
@@ -592,7 +596,11 @@
           name: PROJECT.Detail,
           fullPath: ''
         });
-        router.back();
+        if (route.name === PROJECT.EnvDetail) {
+          pageAction.value = PageAction.VIEW;
+        } else {
+          router.back();
+        }
         submitLoading.value = false;
       } catch (error) {
         submitLoading.value = false;
@@ -651,22 +659,18 @@
   });
 
   const initCloneEnvironmentResource = async () => {
-    if (!environmentId) return;
+    if (!isCloneAction) return;
     try {
-      serviceList.value = await getServiceList({
-        isService: true,
-        extract: ['-projectId', '-status']
-      });
+      // serviceList.value = await getServiceList({
+      //   isService: true,
+      //   extract: ['-projectId', '-status']
+      // });
       resourceList.value = await getServiceList({
-        isService: false,
         extract: ['-projectId', '-status']
       });
       await getProjectVariables();
       await getAllResourceDefinitions();
-      serviceDataList.value = [
-        ..._.cloneDeep(serviceList.value),
-        ..._.cloneDeep(resourceList.value)
-      ];
+      serviceDataList.value = [..._.cloneDeep(resourceList.value)];
       setAllTemplateVersions(serviceDataList.value);
       setCompleteData();
     } catch (error) {

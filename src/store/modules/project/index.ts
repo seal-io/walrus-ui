@@ -25,7 +25,17 @@ const useProjectStore = defineStore('project', {
       this.$patch(partial);
     },
     resetInfo() {
+      const project = cloneDeep(this.defaultActiveProject);
+      const environment = cloneDeep(this.defaultActiveEnvironment);
       this.$reset();
+      this.setDefaultActiveProject(project);
+      this.setDefaultActiveEnvironment(environment);
+    },
+    setDefaultActiveProject(project: any) {
+      this.defaultActiveProject = project;
+    },
+    setDefaultActiveEnvironment(environment: any) {
+      this.defaultActiveEnvironment = environment;
     },
     removeProjects(ids) {
       const projectList = cloneDeep(this.projectList).filter(

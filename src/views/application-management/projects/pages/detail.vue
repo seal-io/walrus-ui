@@ -57,7 +57,19 @@
           >
             <variableList></variableList>
           </a-tab-pane>
-
+          <a-tab-pane
+            v-if="
+              userStore.hasProjectResourceActions({
+                projectID: route.params.projectId,
+                resource: Resources.Workflows,
+                actions: [Actions.GET]
+              })
+            "
+            :key="ProjectTabs.WORKFLOW"
+            :title="$t('menu.applicationManagement.workflow')"
+          >
+            <WorkflowList></WorkflowList>
+          </a-tab-pane>
           <a-tab-pane
             v-if="
               userStore.hasProjectResourceActions({
@@ -117,19 +129,6 @@
               :icon-list="iconList"
             ></IconBtnGroup>
           </template> -->
-          <a-tab-pane
-            v-if="
-              userStore.hasProjectResourceActions({
-                projectID: route.params.projectId,
-                resource: Resources.Workflows,
-                actions: [Actions.GET]
-              })
-            "
-            :key="ProjectTabs.WORKFLOW"
-            :title="$t('menu.applicationManagement.workflow')"
-          >
-            <WorkflowList></WorkflowList>
-          </a-tab-pane>
         </a-tabs>
       </ComCard>
     </ComCard>

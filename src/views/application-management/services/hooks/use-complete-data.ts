@@ -81,7 +81,6 @@ export default function useCompleteData(props?) {
       const params = {
         page: -1,
         withGlobal: true,
-        isService: true,
         extract: ['-status']
       };
       const { data } = await queryTemplates(params, templateToken.token);
@@ -367,8 +366,11 @@ export default function useCompleteData(props?) {
   const updateServiceCompleteData = () => {
     const res = setServiceCompleteData();
 
-    completeData.value[HintKeyMaps.resource] = { ...res.resources };
-    completeData.value[HintKeyMaps.service] = { ...res.services };
+    completeData.value[HintKeyMaps.resource] = {
+      ...res.resources,
+      ...res.services
+    };
+    // completeData.value[HintKeyMaps.service] = { ...res.services };
   };
   const updateVariablesCompleteData = () => {
     const variables = setVariablesCompleteData();

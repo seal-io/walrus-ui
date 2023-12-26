@@ -55,7 +55,33 @@
                     content: data.label
                   }"
                 >
-                  <span>{{ data.label }}</span>
+                  <span>
+                    <span
+                      v-if="level === pageLevelMap.Environment"
+                      class="m-r-4"
+                      @click.stop="handleSetDefault(data)"
+                    >
+                      <icon-star
+                        v-if="
+                          projectStore.defaultActiveEnvironment?.id !==
+                          data.value
+                        "
+                        :style="{
+                          color: `rgb(${StatusColorValueMap.warningBg})`
+                        }"
+                      />
+                      <icon-star-fill
+                        v-if="
+                          projectStore.defaultActiveEnvironment?.id ===
+                          data.value
+                        "
+                        :style="{
+                          color: `rgb(${StatusColorValueMap.warningColor})`
+                        }"
+                      />
+                    </span>
+                    {{ data.label }}</span
+                  >
                 </AutoTip>
               </template>
               <template #arrow-icon>
@@ -140,8 +166,10 @@
 </template>
 
 <script lang="ts" setup>
-  import _, { filter } from 'lodash';
+  import _ from 'lodash';
+  import { StatusColorValueMap, pageLevelMap } from '@/views/config';
   import { PropType, ref } from 'vue';
+  import { useProjectStore } from '@/store';
   import useCallCommon from '@/hooks/use-call-common';
   import { vOnClickOutside, OnClickOutside } from '@vueuse/components';
   import { BreadcrumbOptions } from '@/views/config/interface';
@@ -171,10 +199,21 @@
       default: ''
     }
   });
+  const projectStore = useProjectStore();
   const { router } = useCallCommon();
   const emits = defineEmits(['change', 'search']);
   let timer: any = null;
 
+  const handleSetDefault = (item) => {
+    projectStore.setDefaultActiveProject({
+      id: item.project?.id,
+      name: item.project?.name || ''
+    });
+    projectStore.setDefaultActiveEnvironment({
+      id: item.value,
+      name: item.label
+    });
+  };
   const handleSearch = (item) => {
     clearTimeout(timer);
     timer = setTimeout(() => {

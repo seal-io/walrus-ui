@@ -24,6 +24,7 @@
   import useListenerRouteChange from '@/hooks/use-listener-route-change';
   import { listenerRouteChange } from '@/utils/route-listener';
   import useLocale from '@/hooks/locale';
+  import { PageAction } from '@/views/config';
   import {
     queryProjects,
     PROJECT_API
@@ -189,7 +190,11 @@
           name: PROJECT.EnvDetail,
           params: {
             projectId: defaultProject?.id,
-            environmentId: defaultEnvironment?.id
+            environmentId: defaultEnvironment?.id,
+            action: PageAction.VIEW
+          },
+          query: {
+            id: defaultEnvironment?.id
           }
         });
       };

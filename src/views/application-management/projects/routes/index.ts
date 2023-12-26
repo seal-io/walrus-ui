@@ -63,7 +63,7 @@ export default [
     }
   },
   {
-    path: 'project/:projectId/environment/:environmentId/detail',
+    path: 'project/:projectId/environment/:environmentId/detail/:action',
     name: PROJECT.EnvDetail,
     component: () =>
       import('@/views/application-management/environments/pages/detail.vue'),
@@ -111,7 +111,7 @@ export default [
     }
   },
   {
-    path: 'project/:projectId/environment/:environmentId/clone',
+    path: 'project/:projectId/environment/:environmentId/:clone',
     name: PROJECT.EnvClone,
     component: () =>
       import('@/views/application-management/environments/pages/edit.vue'),
