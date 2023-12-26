@@ -247,35 +247,34 @@ export const HintKeyMaps = {
   service: 'svc'
 };
 
+export const StatusColorValueMap = {
+  error: '--red-6',
+  warningColor: 'rgb(244, 143, 11)',
+  warningBg: 'rgba(251, 222, 55, 0.4)',
+  success: '--green-6',
+  inactiveColor: '#86909c',
+  inactiveBg: '--gray-4'
+};
+
 export const StatusColor = {
   error: {
-    color6: '#FFECE8',
-    color5: '#F76560',
-    color1: '#FFECE8',
+    color5: 'rgba(var(--red-6), 0.8)',
+    color1: 'rgba(var(--red-6), 0.15)',
     icon: 'icon-close-circle-fill'
   },
   warning: {
-    color6: '#f7b357',
-    color5: '#f7b357', // color
-    color1: '#FDF0A6', // backgroundColor #f9cc45
+    color5: 'rgb(244, 143, 11)', // color
+    color1: 'rgba(251, 222, 55, 0.4)', // backgroundColor #f9cc45
     icon: ''
   },
-  // warning: {
-  //   color6: '#214ac4',
-  //   color5: '#426AD0',
-  //   color1: '#E8F2FF',
-  //   icon: ''
-  // },
   success: {
-    color6: '#00BF72',
-    color5: '#25CC84',
-    color1: '#E8FFF2',
+    color5: 'rgba(var(--green-6), 0.9)',
+    color1: 'rgba(var(--green-6), 0.15)',
     icon: 'icon-check-circle-fill'
   },
   inactive: {
-    color6: '#86909c',
     color5: '#86909c',
-    color1: '#f2f3f5',
+    color1: 'rgba(var(--gray-4), 0.4)',
     icon: 'icon-minus-circle-fill'
   }
 };

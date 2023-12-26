@@ -1,5 +1,5 @@
 <template>
-  <spinCard borderless>
+  <spinCard borderless :card-style="{ 'border-radius': '0 0 8px 8px' }">
     <a-grid :cols="25" :col-gap="20" :row-gap="20">
       <a-grid-item
         v-for="(item, index) in overviewData"

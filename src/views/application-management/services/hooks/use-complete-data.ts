@@ -1,9 +1,6 @@
 import _, { cloneDeep } from 'lodash';
-import { ref, onBeforeUnmount } from 'vue';
-import {
-  TemplateRowData,
-  TemplateVersionData
-} from '@/views/operation-hub/templates/config/interface';
+import { ref, onBeforeUnmount, computed, inject, watch } from 'vue';
+import { TemplateRowData } from '@/views/operation-hub/templates/config/interface';
 import { createAxiosToken } from '@/api/axios-chunk-request';
 import {
   queryTemplates,
@@ -16,7 +13,7 @@ import { queryResourceDefinitions } from '@/views/operation-hub/resource-definit
 import { HintKey } from '@/views/config/interface';
 import { HintKeyMaps } from '@/views/config';
 import { queryVariables } from '../../variables/api';
-import { ServiceDataType } from '../config';
+import { ServiceDataType, ProvideSetServiceInfoKey } from '../config';
 
 export default function useCompleteData(props?) {
   interface TemplateVersionItem {
@@ -39,7 +36,6 @@ export default function useCompleteData(props?) {
   }
   const { route } = useCallCommon();
   const id = route.query.id || '';
-  const dataType = props?.resourceType || (route.params.dataType as string);
   const loading = ref(false);
   const templateList = ref<TemplateListItem[]>([]);
   const allTemplateVersions = ref<TemplateVersionItem[]>([]);
@@ -54,6 +50,10 @@ export default function useCompleteData(props?) {
   let templateVersionToken: any = null;
   let templateToken: any = null;
   let serviceToken: any = null;
+
+  const dataType = computed(() => {
+    return props?.value.resourceType;
+  });
 
   const getAllResourceDefinitions = async () => {
     try {
@@ -73,7 +73,7 @@ export default function useCompleteData(props?) {
       console.log(error);
     }
   };
-  // modules options
+  // template options
   const getTemplates = async () => {
     templateToken?.cancel?.();
     templateToken = createAxiosToken();
@@ -99,7 +99,8 @@ export default function useCompleteData(props?) {
 
   const getResourceDefinitions = async () => {
     try {
-      const environmentID = route.params.environmentId as string;
+      const environmentID =
+        route.params.environmentId || props?.value?.flow?.environmentId;
       const { data } = await queryEnvironmentAvailableDefinitions({
         environmentID
       });
@@ -117,12 +118,12 @@ export default function useCompleteData(props?) {
   };
 
   const initTemplateList = async () => {
-    console.log('dataType==========', dataType);
-    if (dataType === ServiceDataType.resource) {
+    if (dataType.value === ServiceDataType.resource) {
       await getResourceDefinitions();
     } else {
       await getTemplates();
     }
+    console.log('dataType.value==========', dataType.value);
   };
   // get item template version, isOnSelect is a flag for select event
   const getTemplateVersions = async (
@@ -130,7 +131,7 @@ export default function useCompleteData(props?) {
     isOnSelect?: boolean
   ) => {
     if (
-      dataType === ServiceDataType.resource ||
+      dataType.value === ServiceDataType.resource ||
       !formTemplateData.template?.id
     ) {
       return;
@@ -262,7 +263,7 @@ export default function useCompleteData(props?) {
         ...partialParams,
         flow: undefined
       };
-      params.flow = props?.flow || undefined;
+      params.flow = props?.value?.flow || undefined;
       const { data } = await queryServices(params, serviceToken.token);
       serviceDataList.value = data.items || [];
       setAllTemplateVersions(data.items || []);

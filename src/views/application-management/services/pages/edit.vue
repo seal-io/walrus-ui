@@ -19,18 +19,6 @@
         auto-label-width
         layout="vertical"
       >
-        <!-- test code start -->
-        <!-- <a-form-item>
-          <KuberSelect
-            v-model="Kubernamespace"
-            v-model:branch="branch"
-            v-model:repository="repository"
-            widget="StorageClassSelectByNamespace"
-            label="StorageClassSelectByNamespace"
-            @change="handleNamespaceChange"
-          ></KuberSelect>
-        </a-form-item> -->
-        <!-- test code end -->
         <a-form-item
           field="name"
           hide-label
@@ -64,6 +52,19 @@
               >{{ $t('common.validate.labelName') }}</div
             >
           </template>
+        </a-form-item>
+        <a-form-item hide-label>
+          <SealFormItemWrap
+            :label="$t('applications.applications.form.useTemplate')"
+            :style="{ width: `${InputWidth.LARGE}px` }"
+          >
+            <a-switch
+              :model-value="dataType === ServiceDataType.service"
+              :disabled="pageAction === PageAction.EDIT && !!id"
+              size="small"
+              @change="handleDataTypeChange"
+            ></a-switch>
+          </SealFormItemWrap>
         </a-form-item>
         <a-form-item
           v-if="dataType === ServiceDataType.resource"
@@ -379,7 +380,11 @@
       }
     }
   });
-
+  const { route, router, t } = useCallCommon();
+  // const dataType = ref<string>(ServiceDataType.resource);
+  // const resourceTypeData = computed(() => {
+  //   return { resourceType: dataType.value };
+  // });
   const emits = defineEmits(['cancel', 'save']);
   const { scrollToView } = useScrollToView();
   const {
@@ -393,12 +398,14 @@
   const {
     id,
     init,
+    toggleDataType,
     getTemplateSchemaByVersion,
     setTemplateVersionList,
     getTemplateVersions,
     setTemplateInfo,
     schemaVariables,
     getItemResourceDefinition,
+    dataType,
     serviceInfo,
     formData,
     uiFormData,
@@ -409,7 +416,7 @@
     completeData,
     title,
     asyncLoading
-  } = useServiceData(props);
+  } = useServiceData();
   const {
     labelList,
     labelItem,
@@ -420,13 +427,11 @@
     validateTrigger
   } = useLabelsActions(formData);
   let copyFormData: any = null;
-  const { route, router, t } = useCallCommon();
   const formref = ref();
   const groupForm = ref();
   const submitLoading = ref(false);
   const breadCrumbList = ref<BreadcrumbOptions[]>([]);
   const schemaFormCache = ref<any>({});
-  const dataType = route.params.dataType as string;
   const formAction = ref(!id ? PageAction.CREATE : PageAction.EDIT);
   const traceKey = ref(Date.now());
   const projectEnvCtx = reactive({
@@ -441,13 +446,6 @@
     environmentID: route.params.environmentId
   });
   provide(projectEnvCtxInjectionKey, projectEnvCtx);
-  const Kubernamespace = ref('');
-  const repository = ref('');
-  const branch = ref('');
-
-  const handleNamespaceChange = (val) => {
-    console.log('handleNamespaceChange===', val);
-  };
 
   provide(InjectSchemaFormStatusKey, formAction);
   provide(InjectTraceKey, traceKey);
@@ -520,7 +518,7 @@
   };
 
   const getFormDataAttributeCache = () => {
-    if (dataType === ServiceDataType.service) {
+    if (dataType.value === ServiceDataType.service) {
       if (
         formData.value.template?.version === copyFormData.template?.version &&
         formData.value.template?.template?.id ===
@@ -548,7 +546,7 @@
   };
 
   const setFormDataAttributeCache = () => {
-    if (dataType === ServiceDataType.service) {
+    if (dataType.value === ServiceDataType.service) {
       schemaFormCache.value[formData.value.template.version] = _.cloneDeep(
         formData.value.attributes
       );
@@ -561,6 +559,30 @@
       const moduleData = await getTemplateSchemaByVersion();
       setTemplateInfo(moduleData);
     }, 100);
+  };
+
+  const handleDataTypeChange = (val) => {
+    dataType.value = val ? ServiceDataType.service : ServiceDataType.resource;
+    formData.value.attributes = {};
+    uiFormData.value = {};
+    formAction.value = PageAction.CREATE;
+    if (dataType.value === ServiceDataType.service) {
+      formData.value.type = null as any;
+      formData.value.template = {
+        name: '',
+        version: '',
+        id: '',
+        project: { id: route.params.projectId as string },
+        // template info
+        template: { id: '' }
+      };
+    }
+    if (dataType.value === ServiceDataType.resource) {
+      formData.value.template = null as any;
+    }
+    nextTick(() => {
+      toggleDataType();
+    });
   };
 
   const handleFormAttributeChange = () => {
@@ -578,10 +600,7 @@
   };
 
   const formatTemplateLael = (data) => {
-    if (
-      !data.project?.id &&
-      ServiceDataType.service === route.params.dataType
-    ) {
+    if (!data.project?.id && ServiceDataType.service === dataType.value) {
       return `${data.name} (${t('applications.variable.scope.global')})`;
     }
     return data.name;
@@ -590,7 +609,7 @@
   const handleTemplateChange = async (val) => {
     schemaFormCache.value = {};
 
-    if (dataType === ServiceDataType.resource) {
+    if (dataType.value === ServiceDataType.resource) {
       const data = await getItemResourceDefinition();
       setTemplateInfo(data);
       formData.value.attributes = {};
@@ -667,11 +686,11 @@
         if (!formData.value.template?.project?.id) {
           formData.value.template = _.omit(formData.value.template, 'project');
         }
-        if (dataType === ServiceDataType.service) {
+        if (dataType.value === ServiceDataType.service) {
           formData.value.type = null as any;
         }
         formData.value.draft = draft;
-        if (dataType === ServiceDataType.resource) {
+        if (dataType.value === ServiceDataType.resource) {
           formData.value.template = null as any;
         }
         copyFormData = _.cloneDeep(formData.value);
@@ -742,6 +761,7 @@
     ] as BreadcrumbOptions[];
 
     await init();
+
     setBreadCrumbList();
 
     getLabelList();

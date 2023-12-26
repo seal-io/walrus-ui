@@ -3,6 +3,7 @@
     size="small"
     position="bl"
     :popup-container="containerId"
+    :trigger="trigger"
     @select="handleSelectAction"
   >
     <a-link size="mini" style="padding: 4px 1px" @click.stop="() => {}">
@@ -47,6 +48,12 @@
       type: String,
       default() {
         return null;
+      }
+    },
+    trigger: {
+      type: String as PropType<'click' | 'hover'>,
+      default() {
+        return 'click';
       }
     }
   });

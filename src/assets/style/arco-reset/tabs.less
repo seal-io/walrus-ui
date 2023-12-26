@@ -31,4 +31,41 @@
     height: 3px;
     border-radius: 2px;
   }
+
+  &.arco-tabs-vertical {
+    .arco-tabs.arco-tabs-type-line.arco-tabs-horizontal {
+      .arco-tabs-content {
+        padding-top: var(--container-padding);
+      }
+    }
+
+    .arco-tabs-nav-vertical {
+      .arco-tabs-nav-tab-list {
+        max-height: 500px;
+        overflow: auto;
+      }
+
+      .arco-tabs-tab {
+        display: flex;
+        padding: 8px 15px;
+
+        > .arco-tabs-tab-title {
+          width: 120px;
+          overflow: hidden;
+          white-space: nowrap;
+          text-overflow: ellipsis;
+        }
+      }
+    }
+  }
+
+  &.arco-tabs-left.arco-tabs-vertical .arco-tabs-content {
+    padding-left: 0;
+  }
+
+  &.page-line-tabs .arco-tabs-tab {
+    margin-right: 30px;
+    margin-left: 0;
+    padding: 8px;
+  }
 }

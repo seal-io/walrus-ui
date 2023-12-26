@@ -1,12 +1,5 @@
 <template>
-  <ModuleWrapper
-    :status="true"
-    :show-delete="showDelete"
-    @delete="handleDelete"
-  >
-    <template #title>
-      <slot name="title"></slot>
-    </template>
+  <div>
     <div>
       <div>
         <a-form
@@ -40,6 +33,7 @@
               :style="{ width: `${InputWidth.LARGE}px` }"
               :max-length="63"
               show-word-limit
+              @change="handleNameChange"
             ></seal-input>
             <SealFormItemWrap
               v-else
@@ -102,6 +96,14 @@
                 :max-length="63"
                 show-word-limit
               ></seal-input>
+              <!-- <seal-select
+                v-model="formData.selector.projectName"
+                :options="projectList"
+                :required="true"
+                :label="$t('resource.definition.detail.projectName')"
+                :style="{ width: `${InputWidth.LARGE}px` }"
+              >
+              </seal-select> -->
               <a-button
                 type="text"
                 status="danger"
@@ -119,13 +121,6 @@
             >
               {{ formData.selector.projectName }}
             </SealFormItemWrap>
-            <template #extra>
-              <div
-                class="tips"
-                :style="{ 'max-width': `${InputWidth.LARGE}px` }"
-                >{{ $t('common.validate.labelName') }}</div
-              >
-            </template>
           </a-form-item>
           <a-form-item
             v-if="selectors.has('environmentName')"
@@ -409,7 +404,7 @@
         </a-spin>
       </ModuleWrapper>
     </div>
-  </ModuleWrapper>
+  </div>
 </template>
 
 <script lang="ts" setup>
@@ -421,7 +416,8 @@
     watch,
     PropType,
     onMounted,
-    nextTick
+    nextTick,
+    h
   } from 'vue';
   import ModuleWrapper from '@/components/module-wrapper/index.vue';
   import useCallCommon from '@/hooks/use-call-common';
@@ -454,6 +450,18 @@
     | 'projectName';
 
   const props = defineProps({
+    projectList: {
+      type: Array as PropType<{ value: string; label: string }[]>,
+      default() {
+        return [];
+      }
+    },
+    title: {
+      type: String,
+      default() {
+        return '';
+      }
+    },
     originFormData: {
       type: Object as PropType<MatchingRule>,
       default() {
@@ -503,7 +511,7 @@
       }
     }
   });
-  const emits = defineEmits(['cancel', 'save', 'delete']);
+  const emits = defineEmits(['cancel', 'save', 'update:title']);
   const { scrollToView } = useScrollToView();
   const formData = ref<MatchingRule>({
     attributes: {},
@@ -588,9 +596,7 @@
       selectors.value.add('resourceLabels');
     }
   };
-  const handleDelete = () => {
-    emits('delete');
-  };
+
   const validateLabels = (val, callback) => {
     if (_.keys(val).length) {
       callback();
@@ -616,6 +622,10 @@
       return;
     }
     callback();
+  };
+
+  const handleNameChange = (val) => {
+    emits('update:title', val);
   };
   const handleAddSelector = (selector) => {
     selectors.value.add(selector);
@@ -797,10 +807,8 @@
 <style lang="less" scoped>
   .config-wrapper {
     &.mo-wrap {
-      border: none;
-
       :deep(.content) {
-        // padding: 10px 0;
+        padding: 20px;
       }
     }
 

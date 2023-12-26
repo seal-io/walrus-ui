@@ -2,17 +2,20 @@
   <div class="service">
     <GroupForm
       ref="groupForm"
-      style="padding: 10px 20px"
+      style="padding: 0"
       :ui-form-data="serviceInfo.attributes"
       :form-data="serviceInfo.attributes"
       :schema="schema"
+      :layout="{
+        direction: 'vertical',
+        type: 'rounded'
+      }"
     ></GroupForm>
   </div>
 </template>
 
 <script lang="ts" setup>
   import _ from 'lodash';
-  import useCallCommon from '@/hooks/use-call-common';
   import { onMounted, nextTick, provide, ref, watch, inject } from 'vue';
   import { InjectSchemaFormStatusKey, PageAction } from '@/views/config';
   import GroupForm from '@/components/dynamic-form/group-form.vue';
@@ -26,11 +29,8 @@
       default: false
     }
   });
-  const { route } = useCallCommon();
   const serviceInfo = inject(ProvideServiceInfoKey, ref<any>({}));
   const schema = ref<any>({});
-  const action = ref<any>('view');
-  const dataType = route.params.dataType as string;
   const loaded = ref(false);
   provide(InjectSchemaFormStatusKey, ref(PageAction.VIEW));
 
@@ -61,6 +61,9 @@
     setTemplateInfo(_.get(data, 'items.0', {}));
   };
   const getSchema = async () => {
+    const dataType = serviceInfo.value.type
+      ? ServiceDataType.resource
+      : ServiceDataType.service;
     try {
       if (dataType === ServiceDataType.resource) {
         await getItemResourceDefinitionSchema();
@@ -76,7 +79,6 @@
     () => props.isCollapsed,
     (val) => {
       if (val) {
-        console.log('serviceInfo.value====', val);
         getSchema();
       }
     },
@@ -114,7 +116,7 @@
 
   .service {
     :deep(.arco-tabs-nav-tab-list) {
-      padding-left: 10px;
+      padding-left: 0;
     }
 
     :deep(.arco-form-item) {
@@ -124,7 +126,7 @@
     }
 
     :deep(.arco-tabs-content) {
-      padding: var(--container-padding) 0 0 0;
+      padding: 0;
     }
 
     :deep(.arco-descriptions-layout-inline-vertical) {

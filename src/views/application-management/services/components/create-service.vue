@@ -46,12 +46,23 @@
             >
           </template>
         </a-form-item>
+        <a-form-item hide-label>
+          <SealFormItemWrap
+            :label="$t('applications.applications.form.useTemplate')"
+            :style="{ width: `${InputWidth.LARGE}px` }"
+          >
+            <a-switch
+              :model-value="dataType === ServiceDataType.service"
+              size="small"
+              @change="handleDataTypeChange"
+            ></a-switch>
+          </SealFormItemWrap>
+        </a-form-item>
         <a-form-item
           v-if="dataType === ServiceDataType.resource"
           hide-label
           field="type"
           :label="$t('applications.applications.table.resourceType')"
-          :disabled="pageAction === PageAction.EDIT && !!id"
           :rules="[
             {
               required: true,
@@ -78,7 +89,6 @@
           hide-label
           field="template.template.id"
           :label="$t('applications.applications.table.module')"
-          :disabled="pageAction === PageAction.EDIT && !!id"
           :rules="[
             {
               required: true,
@@ -254,7 +264,7 @@
 
 <script lang="ts" setup>
   import { PROJECT } from '@/router/config';
-  import _, { get, find, cloneDeep, reduce, pickBy, toString } from 'lodash';
+  import _, { get, find, cloneDeep, toString } from 'lodash';
   import { createAxiosToken } from '@/api/axios-chunk-request';
   import {
     ref,
@@ -264,6 +274,7 @@
     reactive,
     PropType,
     onMounted,
+    nextTick,
     onBeforeUnmount
   } from 'vue';
   import { onBeforeRouteLeave } from 'vue-router';
@@ -308,17 +319,31 @@
         return {};
       }
     },
-    resourceType: {
-      type: String,
+    flowStepInfo: {
+      type: Object as PropType<{ enable: boolean; info: any }>,
       default() {
-        return '';
+        return {
+          enable: false,
+          info: null
+        };
       }
     }
   });
 
   const emits = defineEmits(['cancel', 'save']);
   const { scrollToView } = useScrollToView();
-
+  const flowProps = reactive({
+    ..._.cloneDeep(props)
+  });
+  console.log('flowProps>>>>>>>>', flowProps);
+  // const flowProps = computed(() => {
+  //   return {
+  //     ...props,
+  //     flowStepInfo: {
+  //       ...flowStepEnable
+  //     }
+  //   };
+  // });
   const {
     id,
     init,
@@ -328,6 +353,7 @@
     setTemplateInfo,
     getItemResourceDefinition,
     serviceInfo,
+    toggleDataType,
     schemaVariables,
     formData,
     uiFormData,
@@ -336,8 +362,9 @@
     serviceDataList,
     templateList,
     completeData,
+    dataType,
     asyncLoading
-  } = useServiceData(props);
+  } = useServiceData(flowProps);
   const {
     labelList,
     labelItem,
@@ -349,10 +376,9 @@
   } = useLabelsActions(formData);
   let copyFormData: any = null;
   const { route, router, t } = useCallCommon();
+  const flowId = route.query.flowId as string;
   const formref = ref();
   const groupForm = ref();
-  const versionMap = ref({ nv: '', ov: '' });
-  const dataType = ref(props.resourceType || '');
   const formAction = ref(props.action);
   const schemaFormCache = ref<any>({});
   let connectorAxiosToken: any = null;
@@ -370,13 +396,6 @@
     environmentID: route.params.environmentId
   });
   provide(projectEnvCtxInjectionKey, projectEnvCtx);
-  const Kubernamespace = ref('');
-  const repository = ref('');
-  const branch = ref('');
-
-  const handleNamespaceChange = (val) => {
-    console.log('handleNamespaceChange===', val);
-  };
 
   const virtualListProps = computed(() => {
     if (templateList.value.length > 20) {
@@ -514,6 +533,40 @@
 
       handleVersionChange();
     }
+  };
+
+  const handleDataTypeChange = (val) => {
+    const originDataType = flowProps.flowStepInfo.info.type
+      ? ServiceDataType.resource
+      : ServiceDataType.service;
+    dataType.value = val ? ServiceDataType.service : ServiceDataType.resource;
+    formData.value.attributes = {};
+    uiFormData.value = {};
+    formAction.value = PageAction.CREATE;
+    if (dataType.value === ServiceDataType.service) {
+      formData.value.type = null as any;
+      formData.value.template = {
+        name: '',
+        version: '',
+        id: '',
+        project: { id: route.params.projectId as string },
+        // template info
+        template: { id: '' }
+      };
+    }
+    if (dataType.value === ServiceDataType.resource) {
+      formData.value.template = null as any;
+    }
+
+    if (flowId && dataType.value === originDataType) {
+      flowProps.flowStepInfo.enable = true;
+    } else {
+      flowProps.flowStepInfo.enable = false;
+    }
+
+    nextTick(() => {
+      toggleDataType();
+    });
   };
 
   const cancel = async (callback) => {

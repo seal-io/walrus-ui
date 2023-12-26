@@ -12,7 +12,7 @@ body {
   --color-menu-light-bg: 247, 248, 250;
   --sealblue-6: #214ac4;
   --seal-color-warning: #f7b357;
-  --seal-color-error: #f53f3f;
+  --seal-color-error: rgb(var(--red-6));
   --seal-color-mark: #fff3e8;
   --page-rest-value: '160px';
   --seal-color-bg: rgba(230, 244, 254, 0.5);
@@ -34,6 +34,7 @@ body {
   --arcoblue-2: 185, 207, 243;
   --arcoblue-1: 232, 242, 255;
   --green-6: 0, 191, 114;
+  --red-6: 245, 63, 63;
   --border-radius-small: 8px;
   --border-radius-mini: 4px;
   --seal-hoverable-shadow: 0 0 4px rgb(var(--arcoblue-5));
@@ -53,12 +54,17 @@ body {
   --card-content-padding: 26px;
   --color-text-2: #1d2129;
 
+  // font weight
+  --font-weight-regular: 500;
+  --font-weight-light: 400;
+  --font-weight-bold: 700;
   // input
   .arco-input-wrapper,
   .arco-select-view-single,
   .arco-select-view-multiple,
   .arco-picker,
   .arco-textarea-wrapper {
+    font-size: var(--font-size-small);
     background-color: #fff;
     border: 1px solid var(--color-border-2);
     transition: all 0.2s;

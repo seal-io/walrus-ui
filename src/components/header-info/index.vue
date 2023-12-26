@@ -112,7 +112,6 @@
 
       :deep(.title) {
         display: flex;
-        justify-content: space-between;
         min-width: 400px;
         max-width: max-content;
         font-weight: 500;

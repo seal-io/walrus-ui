@@ -24,8 +24,33 @@
   color: var(--color-text-3);
 }
 
+.arco-select .arco-select-view-suffix {
+  color: var(--color-text-3);
+}
+
 .arco-btn.arco-btn-size-medium {
   height: 36px;
+}
+
+.arco-btn-text:hover,
+.arco-btn-text[type='button']:hover,
+.arco-btn-text[type='submit']:hover {
+  background-color: var(--color-fill-1);
+}
+
+.arco-select-dropdown .arco-select-option {
+  font-size: var(--font-size-small);
+}
+
+.arco-trigger-popup-wrapper {
+  .arco-trigger-arrow {
+    width: 12px;
+    height: 12px;
+  }
+
+  .arco-trigger-menu {
+    border-radius: var(--border-radius-small);
+  }
 }
 
 @import url('./alert.less');

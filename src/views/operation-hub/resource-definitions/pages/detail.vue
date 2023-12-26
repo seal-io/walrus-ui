@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="def-detail">
     <BreadWrapper>
       <Breadcrumb
         :items="[
@@ -148,9 +148,11 @@
             v-if="formData.matchingRules.length"
             v-model:active-key="activeRule"
             :default-active-key="activeRule"
+            :editable="formData.matchingRules.length > 1"
             type="rounded"
             direction="vertical"
             class="page-line-tabs"
+            @delete="handleDeleteRule"
           >
             <a-tab-pane
               v-for="(item, index) in formData.matchingRules"
@@ -160,30 +162,28 @@
                 $t('resource.definition.detail.rule', { name: index + 1 })
               "
             >
+              <!-- <template #title>
+                <span class="title">{{
+                  item.name ||
+                  $t('resource.definition.detail.rule', { name: index + 1 })
+                }}</span>
+              </template> -->
               <DefinitionRules
                 :ref="
                   (el) =>
                     setRefMap(el, `${definitionRulePrefix}${item.id}`, item)
                 "
                 :key="item.id"
+                v-model:title="item.name"
                 :trace-id="item.id"
-                :title="
-                  item.name ||
-                  $t('resource.definition.detail.rule', { name: index + 1 })
-                "
                 :data-id="id"
                 :origin-form-data="item"
                 :page-action="pageAction"
                 :schema-form-action="item.pageAction || schemaFormAction"
                 :show-delete="formData.matchingRules.length > 1"
                 :template-list="templateList"
+                :project-list="projectList"
                 class="m-b-20"
-                @delete="
-                  handleDeleteDefinition(
-                    index,
-                    `${definitionRulePrefix}${item.id}`
-                  )
-                "
               >
               </DefinitionRules>
             </a-tab-pane>
@@ -255,6 +255,7 @@
                   :schema-form-action="schemaFormAction"
                   :show-delete="false"
                   :template-list="templateList"
+                  :project-list="projectList"
                   class="m-b-20"
                 >
                 </DefinitionRules>
@@ -344,9 +345,10 @@
   import GroupTitle from '@/components/group-title/index.vue';
   import EditPageFooter from '@/components/edit-page-footer/index.vue';
   import useCallCommon from '@/hooks/use-call-common';
-  import { execSucceed } from '@/utils/monitor';
+  import { execSucceed, deleteModal } from '@/utils/monitor';
   import usePageAction from '@/hooks/use-page-action';
   import { queryVariables } from '@/views/application-management/variables/api';
+  import { queryProjects } from '@/views/application-management/projects/api';
   import { operationRootBread } from '../../connectors/config';
   import {
     createResourceDefinition,
@@ -383,6 +385,7 @@
   const deinitionSchema = ref<any>({});
   const activeRule = ref('');
   const activeViewRule = ref('');
+  const projectList = ref<any[]>([]);
   const completeData = ref<Partial<HintKey>>({
     [HintKeyMaps.var]: null
   });
@@ -423,6 +426,23 @@
     return pageAction.value;
   });
 
+  const getProjectList = async () => {
+    try {
+      const params = {
+        page: -1
+      };
+      const { data } = await queryProjects(params);
+      projectList.value = _.map(data.items || [], (item) => {
+        return {
+          label: item.name,
+          value: item.id
+        };
+      });
+    } catch (error) {
+      console.log(error);
+      projectList.value = [];
+    }
+  };
   const handleEditPage = () => {
     handleEdit();
     activeRule.value = _.get(formData.value, 'matchingRules.0.id', '');
@@ -510,6 +530,7 @@
       const { data } = await queryItemResourceDefinition(params);
       formData.value = data;
       activeViewRule.value = _.get(formData.value, 'matchingRules.0.id', '');
+      activeRule.value = activeViewRule.value;
       deinitionSchema.value = data;
       copyFormData = cloneDeep(formData.value);
     } catch (error) {
@@ -564,6 +585,10 @@
         submitLoading.value = false;
       }
     } else {
+      const invalidTab = _.find(matchRules, (item) => !item.formData);
+      if (invalidTab) {
+        activeRule.value = invalidTab.id;
+      }
       scrollToView();
     }
   };
@@ -605,6 +630,35 @@
       refMap.value[name] = null;
     }, 100);
   };
+  const setActiveRule = (index) => {
+    if (index - 1 > 0) {
+      activeRule.value = _.get(
+        formData.value,
+        `matchingRules.${index - 1}.id`,
+        ''
+      );
+    } else {
+      activeRule.value = _.get(formData.value, 'matchingRules.0.id', '');
+    }
+  };
+
+  const handleDeleteRuleCallback = (key) => {
+    const index = _.findIndex(formData.value.matchingRules, (item) => {
+      return item.id === key;
+    });
+    const item = _.get(formData.value.matchingRules, `${index}`);
+    handleDeleteDefinition(index, `${definitionRulePrefix}${item.id}`);
+    setActiveRule(index);
+  };
+
+  const handleDeleteRule = (key) => {
+    deleteModal({
+      onOk: () => {
+        handleDeleteRuleCallback(key);
+      }
+    });
+  };
+
   onBeforeRouteLeave(async (to, from) => {
     if (!isEqual(copyFormData, formData.value)) {
       beforeLeaveCallback({
@@ -624,6 +678,7 @@
 
   const initData = async () => {
     await getTemplateList();
+    await getProjectList();
     getItemResourceDefinition();
     getVariablesCompleteData();
   };
@@ -636,4 +691,20 @@
   };
 </script>
 
-<style></style>
+<style lang="less" scoped>
+  .def-detail {
+    :deep(.arco-tabs) {
+      &.arco-tabs-vertical {
+        .arco-tabs-nav-tab-list {
+          .arco-tabs-tab {
+            &.arco-tabs-tab-closable {
+              display: flex;
+              align-items: center;
+              justify-content: space-between;
+            }
+          }
+        }
+      }
+    }
+  }
+</style>

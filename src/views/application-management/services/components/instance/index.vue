@@ -7,7 +7,7 @@
         </template>
         <template #title>
           <div class="title">
-            <span> {{ currentInfo.name }}</span>
+            <span class="m-r-30"> {{ currentInfo.name }}</span>
             <StatusLabel
               :status="{
                 inactive: _.includes(
@@ -86,15 +86,15 @@
             >
               <tabEndpoint ref="tabEndpointCom"></tabEndpoint>
             </a-tab-pane>
-            <a-tab-pane key="config" :title="$t('common.title.config')">
-              <serviceInfo ref="serviceInfoRef" :is-collapsed="isCollapsed">
-              </serviceInfo>
-            </a-tab-pane>
             <a-tab-pane
               key="revisions"
               :title="$t('applications.applications.instance.history')"
             >
               <serviceRevisions></serviceRevisions>
+            </a-tab-pane>
+            <a-tab-pane key="config" :title="$t('common.title.config')">
+              <serviceInfo ref="serviceInfoRef" :is-collapsed="isCollapsed">
+              </serviceInfo>
             </a-tab-pane>
           </a-tabs>
           <!-- <ModuleCard
@@ -289,7 +289,6 @@
     useFetchResource();
   const projectID = route.params.projectId || '';
   const serviceID = route.query.id || '';
-  const dataType = route.params.dataType || '';
   const activeKey = ref('resource');
   const isCollapsed = ref(false);
   const currentInfo = ref<ServiceRowData>({} as ServiceRowData);
@@ -357,10 +356,7 @@
     deleteModal({
       content: 'applications.service.stop.confirm',
       title: t('applications.service.stop.tips', {
-        type:
-          dataType === ServiceDataType.service
-            ? t('applications.applications.service.title')
-            : t('applications.applications.resource.title')
+        type: t('applications.applications.resource.title')
       }),
       okText: 'common.button.stop',
       onOk: () => handleStopResource()

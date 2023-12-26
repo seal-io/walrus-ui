@@ -13,7 +13,7 @@ export default {
   'dashboard.table.name': 'Application',
   'dashboard.table.project': 'Project',
   'dashboard.table.instance': 'Instance',
-  'dashboard.table.time': 'Create Time',
+  'dashboard.table.time': 'Created',
   'dashboard.table.duration': 'Duration',
   'dashboard.table.status': 'Status',
   'dashboard.table.envrionment': 'Environment',

@@ -6,6 +6,7 @@
       multiple
       :max-tag-count="1"
       allow-search
+      size="large"
       style="width: 386px"
       @change="handleChange"
     >
