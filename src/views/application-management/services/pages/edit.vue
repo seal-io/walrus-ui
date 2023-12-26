@@ -703,6 +703,7 @@
           await upgradeApplicationInstance(data);
         } else {
           await handleCreate(data);
+          router.back();
           return;
         }
         if (props.pgType !== 'page') {

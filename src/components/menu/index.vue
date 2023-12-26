@@ -150,7 +150,7 @@
 
         const pro = _.find(
           projectStore.projectList,
-          (item) => item.value === defaultProject?.id
+          (s) => s.value === defaultProject?.id
         );
 
         const projectID = pro
@@ -186,6 +186,7 @@
           goToProject(item);
           return;
         }
+
         router.push({
           name: PROJECT.EnvDetail,
           params: {

@@ -57,7 +57,7 @@
                 >
                   <span>
                     <span
-                      v-if="level === pageLevelMap.Environment"
+                      v-if="item.level === pageLevelMap.Environment"
                       class="m-r-4"
                       @click.stop="handleSetDefault(data)"
                     >

@@ -2,6 +2,7 @@ import axios from 'axios';
 import qs from 'query-string';
 import { Pagination } from '@/types/global';
 import router from '@/router';
+import _ from 'lodash';
 import { EnvironmentRow, EnvironFormData } from '../config/interface';
 
 export const ENVIRONMENT_API = '/environments';

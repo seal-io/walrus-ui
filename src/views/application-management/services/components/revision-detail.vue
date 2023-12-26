@@ -231,6 +231,7 @@
         max-height: 360px;
         padding: 0 10px;
         overflow-y: auto;
+        font-size: var(--font-size-small);
         white-space: pre-wrap;
         background-color: var(--color-fill-2);
         border: 1px solid var(--color-border-2);
@@ -245,6 +246,7 @@
         margin-top: 10px;
         margin-bottom: 10px;
         color: var(--color-text-3);
+        font-size: var(--font-size-small);
       }
     }
 
