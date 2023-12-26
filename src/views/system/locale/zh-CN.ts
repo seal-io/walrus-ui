@@ -3,7 +3,7 @@ export default {
   'menu.system.user': '用户管理',
   'menu.system.config': '配置管理',
   'system.rules.value': '值不能为空',
-  'system.rules.url': 'URL格式不正确',
+  'system.rules.url': '服务器地址必填',
   'user.password.modify': '修改密码',
   'user.password.default.modify': '修改默认密码',
   'user.password.oldPassword': '原密码',

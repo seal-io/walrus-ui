@@ -3,7 +3,7 @@ export default {
   'menu.system.user': 'Users Management',
   'menu.system.config': 'Configuration Management',
   'system.rules.value': 'value is required',
-  'system.rules.url': 'URL format invalid',
+  'system.rules.url': 'server address is required',
   'user.password.modify': 'Modify Password',
   'user.password.default.modify': 'Modify Default Password',
   'user.password.oldPassword': 'Old password',

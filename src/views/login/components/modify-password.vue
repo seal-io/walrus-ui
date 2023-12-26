@@ -71,12 +71,7 @@
               hide-label
               :validate-trigger="['change', 'input']"
               :rules="[
-                { required: true, message: $t('login.config.serverUrl') },
-                {
-                  match: urlReg,
-                  required: true,
-                  message: t('system.rules.url')
-                }
+                { required: true, message: $t('login.config.serverUrl') }
               ]"
             >
               <seal-input
