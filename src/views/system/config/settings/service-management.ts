@@ -33,7 +33,6 @@ export const serviceManagement: SettingsItem = {
           component: {
             type: 'input',
             required: true,
-            match: 'urlReg',
             message: 'system.rules.url'
           },
           value: '',
