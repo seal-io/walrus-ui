@@ -200,7 +200,7 @@
     }
   });
   const projectStore = useProjectStore();
-  const { router } = useCallCommon();
+  const { router, route } = useCallCommon();
   const emits = defineEmits(['change', 'search']);
   let timer: any = null;
 
@@ -241,6 +241,7 @@
     return document.getElementById(name);
   };
   const handleClick = (item, index) => {
+    console.log('item>>>>>>>>', 2, item, route.params);
     item.visible = false;
     if (index === props.items.length - 1) {
       return;
@@ -248,17 +249,26 @@
     if (item.backAction) {
       router.back();
     } else {
+      const params = item.routeParams ? { params: item.routeParams } : {};
+      const query = item.routeQuery ? { query: item.routeQuery } : {};
       router.replace({
-        name: item.route
+        name: item.route,
+        ...params,
+        ...query
       });
     }
   };
   const handleClickItem = (item) => {
+    console.log('item>>>>>>>>', 1, route.params);
     if (item.backAction) {
       router.back();
     } else {
+      const params = item.routeParams ? { params: item.routeParams } : {};
+      const query = item.routeQuery ? { query: item.routeQuery } : {};
       router.replace({
-        name: item.route
+        name: item.route,
+        ...params,
+        ...query
       });
     }
   };

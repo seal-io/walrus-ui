@@ -785,7 +785,7 @@
       top: 10px;
       right: 10px;
       padding: 6px 4px;
-      font-size: 14px;
+      font-size: var(--font-size-small);
       background-color: rgba(255, 255, 255, 0.8);
       border-radius: 2px;
 
@@ -835,7 +835,7 @@
   #contextMenu-wrapper {
     .res-name {
       font-weight: 500;
-      font-size: 14px;
+      font-size: var(--font-size-small);
     }
 
     ul {

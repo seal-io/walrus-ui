@@ -95,7 +95,7 @@
       height: 36px;
       padding: 0 10px;
       font-weight: 500;
-      font-size: 14px;
+      font-size: var(--font-size-small);
       background-color: var(--color-fill-1);
       cursor: pointer;
 

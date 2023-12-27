@@ -19,8 +19,8 @@ const router = createRouter({
   routes: [
     {
       path: '/',
+      children: []
       // redirect: 'login'
-      redirect: '/app'
     },
     Login,
     ...resetRoutes,

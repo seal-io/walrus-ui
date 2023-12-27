@@ -246,6 +246,7 @@
     });
   };
   const handleSelectChange = ({ value, item }) => {
+    console.log('handleSelectChange====', value, item);
     handleBreadChange(value, item);
   };
   const handleCloneServices = async () => {
@@ -355,6 +356,7 @@
     }
   };
   onBeforeRouteLeave(async (to, from) => {
+    console.log('failedList====', to);
     if (!_.isEqual(copyFormData, formData) || failedList.value.size) {
       beforeLeaveCallback({
         to,
@@ -363,7 +365,8 @@
           copyFormData = _.cloneDeep(formData);
           failedList.value.clear();
           router.push({
-            name: to.name as string
+            path: to.path as string,
+            query: to.query
           });
         }
       });

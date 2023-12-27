@@ -4,6 +4,8 @@
     font-size: var(--font-size-normal);
 
     &:hover {
+      background-color: var(--color-fill-1);
+
       .arco-tabs-tab-title {
         font-weight: 500;
       }
@@ -56,6 +58,14 @@
           text-overflow: ellipsis;
         }
       }
+    }
+  }
+
+  &.arco-tabs-type-rounded {
+    .arco-tabs-nav-type-rounded .arco-tabs-tab-active,
+    .arco-tabs-nav-type-rounded .arco-tabs-tab-active:hover,
+    .arco-tabs-nav-type-rounded .arco-tabs-tab:hover {
+      background-color: var(--color-fill-1);
     }
   }
 

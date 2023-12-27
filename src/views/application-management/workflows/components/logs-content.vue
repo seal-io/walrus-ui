@@ -147,7 +147,7 @@
       .content {
         overflow: auto;
         color: #ddd;
-        font-size: 14px;
+        font-size: var(--font-size-small);
         line-height: 22px;
         white-space: pre-wrap;
         background-color: #181d28;

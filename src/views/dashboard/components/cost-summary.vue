@@ -30,7 +30,7 @@
             bg-color="linear-gradient(rgba(184, 218, 243, 0.3) 0%, rgba(184, 218, 243, 0.4) 100%)"
           >
             <template #title>
-              <span style="font-weight: 500; font-size: 16px">{{
+              <span style="font-weight: 500">{{
                 $t('dashboard.cost.currentMonth')
               }}</span>
             </template>

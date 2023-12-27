@@ -27,14 +27,15 @@
               @click="handleClickInstance(item)"
             >
               <template #description>
-                <span style="font-size: 14px">{{
+                <span style="font-size: 'var(--font-size-small)'">{{
                   _.get(item, 'environment.name')
                 }}</span>
               </template>
               <template #default>
-                <span style="font-weight: 700; font-size: 14px">{{
-                  _.get(item, 'name')
-                }}</span>
+                <span
+                  style="font-weight: 700; font-size: 'var(--font-size-small)'"
+                  >{{ _.get(item, 'name') }}</span
+                >
               </template>
               <template #status>
                 <div v-if="showCheck">
@@ -476,7 +477,7 @@
   .change-tips {
     margin-left: 10px;
     color: rgb(var(--danger-6));
-    font-size: 14px;
+    font-size: var(--font-size-small);
   }
 
   .svc-wrapper {

@@ -23,7 +23,7 @@
     padding: {
       type: String,
       default() {
-        return '20px 26px';
+        return '0 26px 20px';
       }
     },
     title: {

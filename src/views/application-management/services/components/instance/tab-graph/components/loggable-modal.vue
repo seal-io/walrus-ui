@@ -166,7 +166,7 @@
         .content {
           height: 450px;
           overflow: auto;
-          font-size: 14px;
+          font-size: var(--font-size-small);
           line-height: 22px;
           white-space: pre-wrap;
           background-color: var(--color-fill-2);

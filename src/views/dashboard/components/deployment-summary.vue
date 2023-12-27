@@ -40,7 +40,7 @@
         </a-grid-item>
       </a-grid>
     </div>
-    <div class="m-b-20">
+    <!-- <div class="m-b-20">
       <div class="app-list-title">{{
         $t('dashboard.deployment.lastest', {
           name: $t('applications.applications.table.service')
@@ -51,7 +51,7 @@
         :list="serviceList"
         :type="ServiceDataType.service"
       ></lastDeployApp>
-    </div>
+    </div> -->
     <div>
       <div class="app-list-title">{{
         $t('dashboard.deployment.lastest', {
@@ -225,8 +225,7 @@
       const params = {
         page: 1,
         perPage: 10,
-        sort: ['-createTime'],
-        isService: false
+        sort: ['-createTime']
       };
       const { data } = await queryLatestDeployments(params);
 
@@ -237,7 +236,6 @@
   };
   const init = () => {
     getApplicationRevisionsChart();
-    getApplicationRevisionsList();
     getResourceRevisionsList();
   };
   const handleDateChange = (val) => {
