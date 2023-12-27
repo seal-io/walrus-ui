@@ -133,6 +133,8 @@
               !userStore.isReadOnlyEnvironment(projectID, environmentID)
             "
             :selected-row-keys="rowSelection.selectedRowKeys"
+            @logs="handleViewLogs"
+            @terminal="handleConnectTerminal"
             @selectionChange="handleRowSelectChange"
           >
             <template #name="{ record }">
@@ -337,6 +339,14 @@
       @change="handlePageChange"
       @page-size-change="handlePageSizeChange"
     /> -->
+    <resourceControl
+      v-model:visible="terminalShow"
+      v-model:tabs="drawerTabs"
+      :type="modalType"
+      :update-active="updateActive"
+      @delete="handleTerminalDelete"
+    >
+    </resourceControl>
     <rollbackModal
       v-model:show="showRollbackModal"
       :service-id="selectedVersion"
@@ -420,6 +430,8 @@
   import revisionDetail from './revision-detail.vue';
   import driftResource from './drift-resource.vue';
   import ResourceItem from './resource-item.vue';
+  import resourceControl from './instance/resource-control.vue';
+  import useResourceControl from './hooks/use-resource-control';
 
   const props = defineProps({
     title: {
@@ -452,6 +464,17 @@
     selectedVersion,
     handleRollbackRevision
   } = useRollbackRevision();
+
+  const {
+    modalType,
+    drawerTabs,
+    terminalShow,
+    updateActive,
+    handleViewLogs,
+    handleConnectTerminal,
+    handleTerminalDelete
+  } = useResourceControl();
+
   const { setChunkRequest } = useSetChunkRequest();
   const { rowSelection, selectedKeys, handleSelectChange } = useRowSelect();
   const { router, locale, route, t } = useCallCommon();

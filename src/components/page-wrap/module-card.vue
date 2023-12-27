@@ -68,7 +68,7 @@
       margin-top: @title-top-gap;
       margin-bottom: @title-bottom-gap;
       color: var(--color-text-2);
-      font-weight: 500;
+      font-weight: var(--font-weight-medium);
       font-size: var(--font-size-large);
 
       .iconfont {

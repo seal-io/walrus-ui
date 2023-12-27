@@ -64,7 +64,7 @@
 
     .icon {
       color: var(--color-text-2);
-      font-size: 18px;
+      font-size: 16px;
 
       &:hover {
         color: rgb(var(--arcoblue-5));

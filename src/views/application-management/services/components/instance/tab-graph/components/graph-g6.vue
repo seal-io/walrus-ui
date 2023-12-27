@@ -834,7 +834,7 @@
 
   #contextMenu-wrapper {
     .res-name {
-      font-weight: 500;
+      font-weight: var(--font-weight-medium);
       font-size: var(--font-size-small);
     }
 

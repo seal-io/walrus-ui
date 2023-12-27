@@ -271,7 +271,7 @@
       justify-content: space-between;
       margin-bottom: 10px;
       padding: 10px 0;
-      font-weight: 500;
+      font-weight: var(--font-weight-medium);
       font-size: 14px;
       // border-bottom: 1px solid var(--color-border-2);
     }

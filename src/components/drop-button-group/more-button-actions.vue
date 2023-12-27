@@ -8,7 +8,7 @@
   >
     <a-link size="mini" style="padding: 4px 1px" @click.stop="() => {}">
       <icon-more-vertical
-        style="margin-right: 0; font-size: 18px; stroke-width: 5"
+        style="margin-right: 0; font-size: 16px; stroke-width: 5"
       />
     </a-link>
     <template #content>

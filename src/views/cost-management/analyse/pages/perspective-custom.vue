@@ -82,7 +82,9 @@
         >
           <DataCard :precision="3" :title="item.label" :bg-color="item.color">
             <template #title>
-              <span style="font-weight: 500">{{ item.label }}</span>
+              <span style="font-weight: 'var(--font-weight-medium)'">{{
+                item.label
+              }}</span>
             </template>
             <template #extra>
               <span>{{ round(item.value, 4) || 0 }}</span>

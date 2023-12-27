@@ -30,7 +30,7 @@
             bg-color="linear-gradient(rgba(184, 218, 243, 0.3) 0%, rgba(184, 218, 243, 0.4) 100%)"
           >
             <template #title>
-              <span style="font-weight: 500">{{
+              <span style="font-weight: 'var(--font-weight-medium)'">{{
                 $t('dashboard.cost.currentMonth')
               }}</span>
             </template>
@@ -268,14 +268,14 @@
       // margin-left: 20px;
       .title {
         color: var(--color-text-1);
-        font-weight: 500;
+        font-weight: var(--font-weight-medium);
       }
     }
 
     .rate {
       margin-left: 6px;
       color: var(--seal-color-warning);
-      font-weight: 500;
+      font-weight: var(--font-weight-medium);
       font-size: 14px;
     }
   }

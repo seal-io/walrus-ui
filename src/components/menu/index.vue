@@ -580,7 +580,7 @@
 
     .arco-icon {
       &:not(.arco-icon-down) {
-        font-size: 18px;
+        font-size: 16px;
       }
     }
   }

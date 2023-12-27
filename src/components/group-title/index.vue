@@ -85,7 +85,7 @@
     justify-content: space-between;
     margin-bottom: 10px;
     padding-bottom: 10px;
-    font-weight: 400;
+    font-weight: var(--font-weight-regular);
 
     &.iconed {
       padding-left: 8px;
@@ -104,7 +104,7 @@
     }
 
     &.bordered {
-      font-weight: 400;
+      font-weight: var(--font-weight-regular);
       border-bottom: 1px solid var(--seal-border-gray);
     }
 
@@ -126,7 +126,7 @@
       align-items: center;
       width: 100%;
       color: var(--color-text-2);
-      font-weight: 500;
+      font-weight: var(--font-weight-medium);
       font-size: var(--font-size-large);
 
       .title-wrap {

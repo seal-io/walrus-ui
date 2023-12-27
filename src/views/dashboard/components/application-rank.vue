@@ -70,7 +70,7 @@
 
         .arco-list-item-meta-title {
           color: rgb(var(--gray-10));
-          font-weight: 400;
+          font-weight: var(--font-weight-regular);
           font-size: 12px;
         }
       }

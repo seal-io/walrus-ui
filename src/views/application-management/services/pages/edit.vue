@@ -7,7 +7,7 @@
         @change="handleSelectChange"
       ></Breadcrumb>
     </BreadWrapper>
-    <ComCard padding="16px 16px 0 16px">
+    <ComCard padding="20px 26px">
       <GroupTitle
         :title="$t('common.title.basicInfo')"
         :bordered="false"

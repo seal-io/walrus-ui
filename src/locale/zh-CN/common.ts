@@ -12,6 +12,7 @@ export default {
   'common.button.submit': '提交',
   'common.button.approval': '同意',
   'common.button.reject': '不同意',
+  'common.button.more': '更多',
   'common.button.discard': '确定放弃',
   'common.button.cancel': '取消',
   'common.button.search': '查询',

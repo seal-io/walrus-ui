@@ -187,7 +187,7 @@
 
     .title {
       color: rgb(78, 89, 105);
-      font-weight: 500;
+      font-weight: var(--font-weight-medium);
       font-size: 12px;
       text-align: center;
     }

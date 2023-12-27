@@ -1,6 +1,6 @@
 <template>
   <div>
-    <BreadWrapper>
+    <BreadWrapper v-if="route.name !== PROJECT.EnvDetail">
       <Breadcrumb
         :items="[
           ...breadCrumbList,
@@ -197,7 +197,10 @@
           :validate-trigger="['change']"
         >
           <div>
-            <div style="display: flex; margin-bottom: 10px">
+            <div
+              v-if="pageAction === PageAction.EDIT || showModal"
+              style="display: flex; margin-bottom: 10px"
+            >
               <a-button
                 v-if="pageAction === PageAction.EDIT"
                 type="primary"

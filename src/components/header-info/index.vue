@@ -114,13 +114,13 @@
         display: flex;
         min-width: 400px;
         max-width: max-content;
-        font-weight: 500;
+        font-weight: var(--font-weight-medium);
         font-size: 20px;
         line-height: 2.5;
 
         .normal {
           margin-left: 40px;
-          font-weight: 400;
+          font-weight: var(--font-weight-regular);
           font-size: 14px;
         }
       }

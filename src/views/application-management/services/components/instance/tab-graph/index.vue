@@ -171,7 +171,7 @@
       padding: 5px 6px;
 
       .icon {
-        font-size: 18px;
+        font-size: 16px;
         cursor: pointer;
         transition: all 0.3s var(--seal-transition-func);
 

@@ -303,7 +303,7 @@
         align-items: center;
         justify-content: space-between;
         margin-bottom: 20px;
-        font-weight: 500;
+        font-weight: var(--font-weight-medium);
       }
     }
 

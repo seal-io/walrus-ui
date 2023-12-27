@@ -21,7 +21,7 @@
       <icon-delete
         v-if="showDelete"
         class="btn"
-        style="font-size: 18px"
+        style="font-size: 16px"
         @click="handleDelete"
       />
     </div>
@@ -94,7 +94,7 @@
       justify-content: space-between;
       height: 36px;
       padding: 0 10px;
-      font-weight: 500;
+      font-weight: var(--font-weight-medium);
       font-size: var(--font-size-small);
       background-color: var(--color-fill-1);
       cursor: pointer;

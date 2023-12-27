@@ -93,7 +93,7 @@ export const setPipelineNodeStyle = (size) => {
       }
       .stage-name {
         max-width: 200px;
-        font-weight: 500;
+        font-weight: var(--font-weight-medium);
         position: absolute;
         top: -40px;
         left: 20px;
@@ -104,7 +104,7 @@ export const setPipelineNodeStyle = (size) => {
         justify-content: space-between;
         align-items: center;
         .title {
-          font-weight: 500;
+          font-weight: var(--font-weight-medium);
         }
       }
       .info {
@@ -124,7 +124,7 @@ export const setPipelineNodeStyle = (size) => {
           justify-content: space-between;
           max-width: 90px;
           .title {
-            font-weight: 500;
+            font-weight: var(--font-weight-medium);
           }
           &.avatar {
             max-width: max-content;
@@ -182,7 +182,7 @@ export const setPipelineNodeStyle = (size) => {
             cursor: pointer;
             color: rgb(var(--arcoblue-5));
             transition: all 0.3s;
-            font-weight: 500;
+            font-weight: var(--font-weight-medium);
             padding: 0 2px;
             border-radius: 2px;
             &:hover {

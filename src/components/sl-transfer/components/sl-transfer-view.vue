@@ -26,7 +26,7 @@
         :data="dataList"
         :bordered="false"
         :virtual-list-props="{
-          height: 200,
+          height: 200
         }"
       >
         <template #item="{ item, index }">
@@ -63,20 +63,20 @@
       required: true,
       default() {
         return [];
-      },
+      }
     },
     title: {
       type: String,
       default() {
         return '';
-      },
+      }
     },
     selectedList: {
       type: Array,
       default() {
         return [];
-      },
-    },
+      }
+    }
   });
   const refCheckBox = ref();
   const filterVal = ref('');
@@ -104,7 +104,7 @@
     const event = new MouseEvent('click', {
       view: window,
       bubbles: true,
-      cancelable: true,
+      cancelable: true
     });
     refCheckBox.value.dispatchEvent(event);
   };
@@ -154,7 +154,7 @@
       background-color: var(--color-fill-1);
 
       .title {
-        font-weight: 500;
+        font-weight: var(--font-weight-medium);
         font-size: 14px;
       }
 
