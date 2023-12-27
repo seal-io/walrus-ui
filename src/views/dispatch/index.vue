@@ -6,7 +6,9 @@
   import { DASHBOARD } from '@/router/config';
   import { onMounted } from 'vue';
   import useCallCommon from '@/hooks/use-call-common';
+  import useDefaultEnterPage from '@/views/hooks/use-enter-application';
 
+  const { initDefaultProject, gotoEnvironmentDetail } = useDefaultEnterPage();
   const { router } = useCallCommon();
   const redirectPage = () => {
     const { page, ...othersQuery } = router.currentRoute.value.query;
@@ -17,9 +19,14 @@
       }
     });
   };
-  onMounted(() => {
-    redirectPage();
-  });
+  const init = async () => {
+    await initDefaultProject();
+    gotoEnvironmentDetail();
+  };
+  init();
+  // onMounted(() => {
+  //   redirectPage();
+  // });
 </script>
 
 <style></style>

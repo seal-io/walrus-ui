@@ -14,6 +14,7 @@ export default function setupPermissionGuard(router: Router) {
 
     // when forbidden to use password-free login from ui only need userStore.name && userStore?.userSetting?.FirstLogin?.value
     if (userStore.name && !userStore.isFirstLogin()) {
+      // path to '/' redirect to 'login'
       if (to.name === LoginRouteName) {
         const destination = Permission.getFirstRouteName(appRoutes) || {
           name: 'forbidden'
