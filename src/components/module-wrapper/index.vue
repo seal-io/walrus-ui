@@ -20,7 +20,7 @@
           @click.stop="handleDelete"
         >
           <template #icon>
-            <icon-delete style="font-size: 18px" />
+            <icon-delete style="font-size: 16px" />
           </template>
         </a-button>
       </slot>
@@ -96,7 +96,7 @@
       justify-content: space-between;
       height: 36px;
       padding: 0 10px;
-      font-weight: 500;
+      font-weight: var(--font-weight-medium);
       font-size: 14px;
       background-color: var(--color-fill-1);
       cursor: pointer;

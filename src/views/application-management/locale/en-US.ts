@@ -72,7 +72,7 @@ export default {
   'applications.applications.logs.live': 'Running Logs',
   'applications.instance.rule.env': 'the deployment environment is required',
   'applications.instance.env.tips':
-    'environments without added connectors are not available',
+    'environments without connectors are not available',
   'applications.instance.tab.resource': 'Components',
   'applications.instance.tab.resource.holder': 'please enter a component name',
   'applications.instance.tab.resourceName': 'Resource Name',
@@ -163,7 +163,7 @@ export default {
   'applications.service.resource.isDrifted': 'Drifted',
   'applications.service.resource.sync': 'Configuration Synchronization',
   'applications.environment.clone': 'Clone Environment',
-  'applications.environment.table.status': 'Service/Resource Status',
+  'applications.environment.table.status': 'Resources Status',
   'applications.environment.clone.variable': 'Select variables',
   'applications.environment.clone.target': 'Target Environments',
   'applications.environment.clone.env.rules': 'Target Environments is required',

@@ -269,7 +269,7 @@
       .title {
         height: 32px;
         padding: 0 10px;
-        font-weight: 500;
+        font-weight: var(--font-weight-medium);
         line-height: 32px;
       }
     }

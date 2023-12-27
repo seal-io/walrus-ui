@@ -84,7 +84,7 @@
 
     :deep(.arco-descriptions-row) {
       .arco-descriptions-item-label-block {
-        font-weight: 500;
+        font-weight: var(--font-weight-medium);
         font-size: var(--font-size-small);
       }
 
@@ -92,7 +92,7 @@
       .arco-descriptions-item-label,
       .arco-descriptions-item-value {
         min-height: 30px;
-        font-weight: 500;
+        font-weight: var(--font-weight-medium);
         font-size: var(--font-size-small);
         line-height: 2.5;
       }

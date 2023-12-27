@@ -87,11 +87,11 @@
 <style lang="less" scoped>
   :deep(.arco-descriptions) {
     .arco-descriptions-item-label-block {
-      font-weight: var(--font-weight-regular);
+      font-weight: var(--font-weight-medium);
     }
 
     .arco-descriptions-item-value-block {
-      font-weight: var(--font-weight-regular);
+      font-weight: var(--font-weight-medium);
     }
   }
 </style>

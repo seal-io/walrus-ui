@@ -23,13 +23,14 @@
                     :content="item.accessToken"
                   ></copy>
                 </div>
-                <a-button
-                  type="outline"
+                <a-link
+                  type="text"
                   status="danger"
-                  size="mini"
+                  size="small"
                   @click="handleDelete(item)"
-                  >{{ $t('common.button.delete') }}</a-button
                 >
+                  <icon-delete class="size-18" style="stroke-width: 3" />
+                </a-link>
               </a-space>
             </template>
             <template #description>
@@ -178,7 +179,7 @@
 
       :deep(.arco-empty-description) {
         margin-top: 16px;
-        font-size: 14px;
+        font-size: var(--font-size-small);
       }
     }
 
@@ -206,7 +207,7 @@
       color: #f76560;
       background-color: #ffece8;
       border: 1px solid #fdcdc5;
-      border-radius: 2px;
+      border-radius: 4px;
     }
 
     .arco-list-wrapper {
@@ -231,7 +232,7 @@
       }
 
       .arco-list-item-meta-description {
-        font-size: 12px;
+        font-size: var(--font-size-small);
 
         .date {
           font-weight: 700;
@@ -249,6 +250,7 @@
           margin-right: 8px;
           overflow: hidden;
           color: var(--color-text-2);
+          font-size: var(--font-size-small);
           white-space: nowrap;
           text-overflow: ellipsis;
           vertical-align: top;

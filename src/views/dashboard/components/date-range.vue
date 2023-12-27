@@ -186,7 +186,7 @@
       display: inline-block;
       width: 100px;
       height: 28px;
-      font-weight: 500;
+      font-weight: var(--font-weight-medium);
       line-height: 28px;
       text-align: center;
       border: 1px solid var(--seal-border-gray-2);

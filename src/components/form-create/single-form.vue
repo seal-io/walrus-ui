@@ -750,7 +750,7 @@
       margin-bottom: 10px;
       padding: 2px 0;
       color: var(--color-text-1);
-      font-weight: 500;
+      font-weight: var(--font-weight-medium);
       font-size: 14px;
       background-color: var(--color-fill-2);
     }

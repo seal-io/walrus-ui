@@ -158,7 +158,7 @@
 
     .text {
       color: var(--color-text-2);
-      font-weight: 500;
+      font-weight: var(--font-weight-medium);
     }
   }
 </style>

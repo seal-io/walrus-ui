@@ -119,7 +119,7 @@
                     align-items: center;
                     height: 36px;
                     overflow: hidden;
-                    font-weight: 400;
+                    font-weight: var(--font-weight-regular);
                   "
                 >
                   <a-link
@@ -297,7 +297,7 @@
     .label {
       margin-left: 5px;
       color: var(--color-text-2);
-      font-weight: 500;
+      font-weight: var(--font-weight-medium);
       font-size: var(--font-size-large);
 
       &.menu {
@@ -321,7 +321,7 @@
           }
 
           .arco-select-view-icon {
-            padding: 2px;
+            padding: 3px;
             color: var(--sealblue-6);
             transition: transform 0.2s cubic-bezier(0, 0, 1, 1);
 
@@ -337,7 +337,7 @@
         .arco-select-view-value {
           margin-right: 12px;
           color: var(--sealblue-6);
-          font-weight: 500;
+          font-weight: var(--font-weight-medium);
           font-size: 14px;
           transform: scale(1.05);
 
@@ -353,7 +353,7 @@
       top: 0;
       margin: 0 30px;
       color: var(--color-text-3);
-      font-weight: 500;
+      font-weight: var(--font-weight-medium);
       font-size: 14px;
 
       &.sub-label {
@@ -370,7 +370,7 @@
 
       .type {
         color: rgba(78, 89, 105, 0.5);
-        font-weight: 400;
+        font-weight: var(--font-weight-regular);
       }
 
       .separator-line {
@@ -417,12 +417,12 @@
       }
 
       &:last-child {
-        font-weight: 400;
+        font-weight: var(--font-weight-regular);
 
         .arco-select-view-single {
           .arco-select-view-value {
             color: var(--color-text-2);
-            font-weight: 500;
+            font-weight: var(--font-weight-medium);
             cursor: default;
 
             // &:hover {
@@ -439,11 +439,11 @@
   .component-select-drop {
     .arco-select-dropdown-has-footer {
       position: relative;
-      padding-top: 42px;
+      padding-top: 45px;
 
       .search-box {
         position: absolute;
-        top: 5px;
+        top: 8px;
         left: 0;
         padding: 0 8px;
       }

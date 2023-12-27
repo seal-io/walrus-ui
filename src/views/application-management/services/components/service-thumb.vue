@@ -20,7 +20,7 @@
         @click.stop="() => {}"
       >
         <template #icon
-          ><icon-more style="font-size: 18px; stroke-width: 5"
+          ><icon-more style="font-size: 16px; stroke-width: 5"
         /></template>
       </a-link>
       <template #content>

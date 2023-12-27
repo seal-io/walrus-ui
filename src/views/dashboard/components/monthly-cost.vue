@@ -90,14 +90,14 @@
       .title {
         margin-right: 10px;
         margin-bottom: 8px;
-        font-weight: 500;
+        font-weight: var(--font-weight-medium);
         font-size: 14px;
       }
 
       .value {
         margin-right: 10px;
         margin-bottom: 6px;
-        font-weight: 500;
+        font-weight: var(--font-weight-medium);
         font-size: 14px;
       }
 
@@ -107,7 +107,7 @@
 
       .rate {
         color: var(--seal-color-warning);
-        font-weight: 500;
+        font-weight: var(--font-weight-medium);
         font-size: 14px;
       }
     }

@@ -26,21 +26,21 @@
       type: Array as PropType<NavDataMap[]>,
       default() {
         return [];
-      },
+      }
     },
     defaultActive: {
       type: String,
       dfault() {
         return '';
-      },
-    },
+      }
+    }
   });
   const handleTabChange = (active) => {
     const tab: NavDataMap | undefined = props.list.find(
       (item) => item.active === active
     );
     router.push({
-      name: tab?.name,
+      name: tab?.name
     });
   };
 </script>
@@ -70,7 +70,7 @@
 
       .arco-tabs-tab {
         color: var(--seal-color-text-1);
-        font-weight: 500;
+        font-weight: var(--font-weight-medium);
 
         &:hover {
           color: var(--seal-active-text);

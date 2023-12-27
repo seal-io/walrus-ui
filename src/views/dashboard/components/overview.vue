@@ -12,7 +12,7 @@
           :bg-color="item.color"
         >
           <template #title>
-            <span style="font-weight: 500">{{ $t(item.label) }}</span>
+            <span>{{ $t(item.label) }}</span>
           </template>
         </DataCard>
       </a-grid-item>

@@ -291,7 +291,7 @@
 
     &-title {
       color: var(--color-text-1);
-      font-weight: 500;
+      font-weight: var(--font-weight-medium);
       font-size: 24px;
       line-height: 32px;
     }

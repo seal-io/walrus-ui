@@ -266,7 +266,7 @@
         align-items: center;
         margin-bottom: 5px;
         overflow: hidden;
-        font-weight: 500;
+        font-weight: var(--font-weight-medium);
         font-size: var(--font-size-large);
         white-space: nowrap;
         text-overflow: ellipsis;
