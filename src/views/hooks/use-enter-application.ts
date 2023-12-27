@@ -8,7 +8,7 @@ import { Resources, Actions } from '@/permissions/config';
 import { PROJECT } from '@/router/config';
 import { PageAction } from '@/views/config';
 
-export default function useDefaultEnterPage() {
+export default function useEnterApplication() {
   const projectStore = useProjectStore();
   const userStore = useUserStore();
   const router = useRouter();

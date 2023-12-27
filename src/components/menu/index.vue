@@ -25,6 +25,7 @@
   import { listenerRouteChange } from '@/utils/route-listener';
   import useLocale from '@/hooks/locale';
   import { PageAction } from '@/views/config';
+  import useEnterApplication from '@/views/hooks/use-enter-application';
   import {
     queryProjects,
     PROJECT_API
@@ -38,6 +39,8 @@
   export default defineComponent({
     emit: ['collapse'],
     setup() {
+      const { initDefaultProject, gotoEnvironmentDetail } =
+        useEnterApplication();
       const { t, router, route } = useCallCommon();
       const currentRoute = ref<string>('');
       const appStore = useAppStore();
@@ -292,7 +295,7 @@
         }
       };
 
-      const gotoEnvironmentDetail = async (item: RouteRecordRaw) => {
+      const redirecttoEnvironmentDetail = async (item: RouteRecordRaw) => {
         await getProjectList();
         await getEnvironmentList();
         const defaultProject = projectStore.defaultActiveProject;
@@ -324,7 +327,8 @@
         tabBarStore.clearTags();
         console.log('project list', item, projectStore.projectList);
         if (item.name === PROJECT.List) {
-          gotoEnvironmentDetail(item);
+          await initDefaultProject();
+          gotoEnvironmentDetail();
           return;
         }
         if (!isReplace) {

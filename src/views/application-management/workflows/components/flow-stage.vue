@@ -235,7 +235,7 @@
       justify-content: space-between;
       margin-bottom: 40px;
       color: var(--color-text-3);
-      font-size: 14px;
+      font-size: var(--font-size-small);
 
       .btn-holder {
         padding: 8px 11px;

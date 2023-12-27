@@ -65,7 +65,7 @@ export const setPipelineNodeStyle = (size) => {
       justify-content: space-between;
       flex-direction: column;
       position: relative;
-      font-size: 14px;
+      font-size: var(--font-size-small);
       color: var(--color-text-2);
       padding: 12px;
       width: ${size.width}px;

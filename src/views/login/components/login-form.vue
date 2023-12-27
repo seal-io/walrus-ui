@@ -173,9 +173,7 @@
     userStore.getUserSetting();
     enterUserPage();
   };
-  const isNotFirstLogin = () => {
-    return props.firstLoginStatus.value === 'Invalid';
-  };
+
   const getUserPartialSetting = async () => {
     try {
       const params = {

@@ -125,7 +125,15 @@ export default function useProjectData() {
     type: 'menu.operatorHub.evniroment',
     level: pageLevelMap.Environment,
     wrapperId: 'envWrapper',
-    route: PROJECT.EnvDetail
+    route: PROJECT.EnvDetail,
+    routeParams: {
+      action: PageAction.VIEW,
+      projectId: route.params.projectId,
+      environmentId: route.params.environmentId
+    },
+    routeQuery: {
+      id: route.params.environmentId
+    }
   };
 
   const getEnvironmentList = async () => {
@@ -432,6 +440,7 @@ export default function useProjectData() {
         id: val
       };
     }
+    console.log('params===', params);
     router.replace({
       name: item.route,
       params,
