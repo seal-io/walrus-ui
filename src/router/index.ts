@@ -20,7 +20,7 @@ const router = createRouter({
     {
       path: '/',
       // redirect: 'login'
-      redirect: '/dispatch'
+      redirect: '/app'
     },
     Login,
     ...resetRoutes,

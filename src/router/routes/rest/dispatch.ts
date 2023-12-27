@@ -1,5 +1,5 @@
 export default {
-  path: '/dispatch',
+  path: '/app',
   name: 'PageDispatch',
   component: () => import('@/views/dispatch/index.vue'),
   meta: {
