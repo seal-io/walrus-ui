@@ -19,7 +19,8 @@ const router = createRouter({
   routes: [
     {
       path: '/',
-      redirect: 'login'
+      // redirect: 'login'
+      redirect: '/dispatch'
     },
     Login,
     ...resetRoutes,

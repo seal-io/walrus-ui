@@ -179,26 +179,6 @@
           }
         });
       };
-      const gotoEnvironmentDetail = (item: RouteRecordRaw) => {
-        const defaultProject = projectStore.defaultActiveProject;
-        const defaultEnvironment = projectStore.defaultActiveEnvironment;
-        if (!defaultEnvironment?.id) {
-          goToProject(item);
-          return;
-        }
-
-        router.push({
-          name: PROJECT.EnvDetail,
-          params: {
-            projectId: defaultProject?.id,
-            environmentId: defaultEnvironment?.id,
-            action: PageAction.VIEW
-          },
-          query: {
-            id: defaultEnvironment?.id
-          }
-        });
-      };
 
       const setDefaultProject = (list) => {
         const defaultProject = projectStore.defaultActiveProject;
@@ -311,6 +291,30 @@
           // ignore
         }
       };
+
+      const gotoEnvironmentDetail = async (item: RouteRecordRaw) => {
+        await getProjectList();
+        await getEnvironmentList();
+        const defaultProject = projectStore.defaultActiveProject;
+        const defaultEnvironment = projectStore.defaultActiveEnvironment;
+        if (!defaultEnvironment?.id) {
+          goToProject(item);
+          return;
+        }
+
+        router.push({
+          name: PROJECT.EnvDetail,
+          params: {
+            projectId: defaultProject?.id,
+            environmentId: defaultEnvironment?.id,
+            action: PageAction.VIEW
+          },
+          query: {
+            id: defaultEnvironment?.id
+          }
+        });
+      };
+
       // In this case only two levels of menus are available
       // You can expand as needed
 
@@ -525,8 +529,8 @@
       const init = async () => {
         userStore.info();
         getAppVersion();
-        await getProjectList();
-        await getEnvironmentList();
+        // await getProjectList();
+        // await getEnvironmentList();
       };
       init();
       return () => (

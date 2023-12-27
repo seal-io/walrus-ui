@@ -3,10 +3,12 @@ import { ref } from 'vue';
 import { listenerRouteChange } from '@/utils/route-listener';
 import { useAppStore, useTabBarStore } from '@/store';
 import { NO_LOGIN_CHECK_PATH } from '@/components/navbar/configs';
+import useDefaultEnterPage from '@/views/hooks/use-enter-application';
 import useCallCommon from './use-call-common';
 
 export default function useListenerRouteChange() {
   const { router, route } = useCallCommon();
+  const { initDefaultProject, gotoEnvironmentDetail } = useDefaultEnterPage();
   const appStore = useAppStore();
   const tabBarStore = useTabBarStore();
   const defaultActive = ref<string>('TotalView');
@@ -56,6 +58,11 @@ export default function useListenerRouteChange() {
     listenerRouteChange(async ({ to: newRoute, from }) => {
       defaultActive.value = newRoute.matched[1]?.name as string;
       updateCacheList(newRoute, from);
+      console.log('newRoute', newRoute);
+      // if (newRoute.path === '/') {
+      //   await initDefaultProject();
+      //   gotoEnvironmentDetail();
+      // }
     }, true);
   };
   return execListenerRouteChange;

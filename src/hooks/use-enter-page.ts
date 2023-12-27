@@ -4,7 +4,7 @@ import { Message } from '@arco-design/web-vue';
 import { useI18n } from 'vue-i18n';
 import { get } from 'lodash';
 import { useUserStore } from '@/store';
-import useDefaultEnterPage from '@/views/hooks/use-default-enter-page';
+import useDefaultEnterPage from '@/views/hooks/use-enter-application';
 
 export default function useEnterPage() {
   // const router = useRouter();

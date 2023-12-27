@@ -1,6 +1,6 @@
 <template>
   <span v-if="isSupported" class="copy-btn">
-    <span @click="handleCopy">
+    <span @click.stop="handleCopy">
       <a-link v-if="!copied"><icon-copy class="size-14" /></a-link>
       <span v-else
         ><icon-check-circle
