@@ -46,7 +46,7 @@
       </HeaderInfo>
       <ComCard
         :title="$t('workflow.stage.records')"
-        padding="0 var(--container-padding) 20px"
+        padding="0 var(--card-content-padding) 20px"
       >
         <RecordsList></RecordsList>
       </ComCard>
@@ -187,6 +187,6 @@
   .dropdown {
     position: absolute;
     top: 16px;
-    right: var(--container-padding);
+    right: var(--card-content-padding);
   }
 </style>

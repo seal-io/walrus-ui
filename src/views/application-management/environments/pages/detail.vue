@@ -28,7 +28,7 @@
         v-model:active-key="activeKey"
         @change="handleTabChange"
       ></TabList> -->
-      <ComCard padding="0 var(--container-padding) 20px">
+      <ComCard padding="0 var(--card-content-padding) 20px">
         <a-tabs
           v-model:active-key="activeKey"
           lazy-load

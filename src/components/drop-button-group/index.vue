@@ -61,6 +61,10 @@
             size={props.size}
             class="action-dropdown"
             onSelect={(val) => handleSelect(val)}
+            onClick={(e) => {
+              e.stopPropagation();
+              handleClick(_.head(actions.value));
+            }}
             trigger="hover"
             v-slots={{
               icon: () => {
@@ -135,7 +139,6 @@
                       loading={loading.value}
                       size="small"
                       disabled={!!_.get(_.head(actions.value), 'disabled')}
-                      onClick={() => handleClick(_.head(actions.value))}
                       v-slots={{
                         icon: () => {
                           return _.get(_.head(actions.value), 'iconfont') ? (

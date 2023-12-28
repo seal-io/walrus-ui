@@ -11,7 +11,7 @@
           <i class="iconfont icon-custom"></i>
         </template>
       </HeaderInfo>
-      <ComCard padding="0 var(--container-padding) 20px">
+      <ComCard padding="0 var(--card-content-padding) 20px">
         <Settings></Settings>
       </ComCard>
     </ComCard>
