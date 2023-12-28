@@ -7,6 +7,7 @@ import { useProjectStore, useUserStore } from '@/store';
 import { Resources, Actions } from '@/permissions/config';
 import { PROJECT } from '@/router/config';
 import { PageAction } from '@/views/config';
+import project from '@/directive/project';
 
 export default function useEnterApplication() {
   const projectStore = useProjectStore();
@@ -34,62 +35,55 @@ export default function useEnterApplication() {
     });
   };
   const setDefaultProject = (list) => {
+    if (!list.length) {
+      projectStore.setInfo({
+        defaultActiveProject: null
+      });
+      return;
+    }
     const defaultProject = projectStore.defaultActiveProject;
-    const defaultValue = defaultProject?.id || _.get(list, '0.value');
+    const exsitProject = _.find(list, (item) => {
+      return item.value === defaultProject?.id;
+    });
+    const defaultValue = exsitProject
+      ? defaultProject?.id
+      : _.get(list, '0.value');
+
     const defaultName = _.find(list, (item) => item.value === defaultValue)
       ?.label as string;
 
-    if (!defaultProject?.id && list.length) {
-      projectStore.setInfo({
-        defaultActiveProject: {
-          id: defaultValue,
-          name: defaultName
-        }
-      });
-    } else if (!list.length) {
-      projectStore.setInfo({
-        defaultActiveProject: {}
-      });
-    } else {
-      const data = _.find(list, (item) => item.value === defaultProject?.id);
-      projectStore.setInfo({
-        defaultActiveProject: {
-          id: data?.value || defaultValue,
-          name: data?.label || defaultName
-        }
-      });
-    }
+    projectStore.setInfo({
+      defaultActiveProject: {
+        id: defaultValue,
+        name: defaultName
+      }
+    });
   };
 
   const setDefaultEnvironment = (list) => {
+    if (!list.length) {
+      projectStore.setInfo({
+        defaultActiveEnvironment: null
+      });
+      return;
+    }
     const defaultEnvironment = projectStore.defaultActiveEnvironment;
-    const defaultValue = defaultEnvironment?.id || _.get(list, '0.value');
+    const exsitEnvironment = _.find(list, (item) => {
+      return item.value === defaultEnvironment?.id;
+    });
+    const defaultValue = exsitEnvironment
+      ? defaultEnvironment?.id
+      : _.get(list, '0.value');
+
     const defaultName = _.find(list, (item) => item.value === defaultValue)
       ?.label as string;
 
-    if (!defaultEnvironment?.id && list.length) {
-      projectStore.setInfo({
-        defaultActiveEnvironment: {
-          id: defaultValue,
-          name: defaultName
-        }
-      });
-    } else if (!list.length) {
-      projectStore.setInfo({
-        defaultActiveEnvironment: {}
-      });
-    } else {
-      const data = _.find(
-        list,
-        (item) => item.value === defaultEnvironment?.id
-      );
-      projectStore.setInfo({
-        defaultActiveEnvironment: {
-          id: data?.value || defaultValue,
-          name: data?.label || defaultName
-        }
-      });
-    }
+    projectStore.setInfo({
+      defaultActiveEnvironment: {
+        id: defaultValue,
+        name: defaultName
+      }
+    });
   };
 
   const getProjectList = async () => {
@@ -187,6 +181,7 @@ export default function useEnterApplication() {
   const gotoEnvironmentDetail = () => {
     const defaultProject = projectStore.defaultActiveProject;
     const defaultEnvironment = projectStore.defaultActiveEnvironment;
+
     if (!defaultEnvironment?.id) {
       goToProject({ name: PROJECT.List });
       return;

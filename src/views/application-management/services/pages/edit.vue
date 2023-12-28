@@ -703,7 +703,17 @@
           await upgradeApplicationInstance(data);
         } else {
           await handleCreate(data);
-          router.back();
+          router.replace({
+            name: PROJECT.EnvDetail,
+            params: {
+              projectId: route.params.projectId,
+              environmentId: route.params.environmentId,
+              action: PageAction.VIEW
+            },
+            query: {
+              id: route.params.environmentId
+            }
+          });
           return;
         }
         if (props.pgType !== 'page') {

@@ -19,81 +19,83 @@
         <slot name="right"></slot>
       </template>
     </FilterBox> -->
-    <div class="list">
-      <div v-if="componentList.length">
-        <RowItem
-          v-for="(item, index) in componentList"
-          :key="index"
-          :row-data="item"
-        >
-          <template #status="{ record }">
-            <span v-if="!_.get(record, 'status.summaryStatus')">-</span>
-            <StatusLabel
-              v-else
-              :status="{
-                status: _.get(record, 'status.summaryStatus'),
-                text: _.get(record, 'status.summaryStatus'),
-                message: _.get(record, 'status.summaryStatusMessage'),
-                transitioning: _.get(record, 'status.transitioning'),
-                error: _.get(record, 'status.error'),
-                inactive: _.includes(
-                  StartableStatus,
-                  _.get(record, 'status.summaryStatus')
-                )
-              }"
-            ></StatusLabel>
-          </template>
-          <template #actions="{ record }">
-            <a-space :size="20">
-              <a-tooltip
-                v-if="resourceLoggable(record)"
-                :content="$t('common.button.logs')"
-              >
-                <a-link
-                  type="text"
-                  size="small"
-                  @click="
-                    handleViewLogs({
-                      ...record,
-                      resourceID: record.resource?.id
-                    })
-                  "
+    <a-spin :loading="loading" style="width: 100%">
+      <div class="list">
+        <div v-if="componentList.length">
+          <RowItem
+            v-for="(item, index) in componentList"
+            :key="index"
+            :row-data="item"
+          >
+            <template #status="{ record }">
+              <span v-if="!_.get(record, 'status.summaryStatus')">-</span>
+              <StatusLabel
+                v-else
+                :status="{
+                  status: _.get(record, 'status.summaryStatus'),
+                  text: _.get(record, 'status.summaryStatus'),
+                  message: _.get(record, 'status.summaryStatusMessage'),
+                  transitioning: _.get(record, 'status.transitioning'),
+                  error: _.get(record, 'status.error'),
+                  inactive: _.includes(
+                    StartableStatus,
+                    _.get(record, 'status.summaryStatus')
+                  )
+                }"
+              ></StatusLabel>
+            </template>
+            <template #actions="{ record }">
+              <a-space :size="20">
+                <a-tooltip
+                  v-if="resourceLoggable(record)"
+                  :content="$t('common.button.logs')"
                 >
-                  <icon-font type="icon-rizhi" style="font-size: 16px" />
-                </a-link>
-              </a-tooltip>
-              <a-tooltip
-                v-if="resourceExecutable(record)"
-                :content="$t('applications.instance.tab.term')"
-              >
-                <a-link
-                  type="text"
-                  size="small"
-                  @click="
-                    handleConnectTerminal({
-                      ...record,
-                      resourceID: record.resource?.id
-                    })
-                  "
+                  <a-link
+                    type="text"
+                    size="small"
+                    @click="
+                      handleViewLogs({
+                        ...record,
+                        resourceID: record.resource?.id
+                      })
+                    "
+                  >
+                    <icon-font type="icon-rizhi" style="font-size: 16px" />
+                  </a-link>
+                </a-tooltip>
+                <a-tooltip
+                  v-if="resourceExecutable(record)"
+                  :content="$t('applications.instance.tab.term')"
                 >
-                  <icon-code-square class="size-16" />
-                </a-link>
-              </a-tooltip>
-            </a-space>
-          </template>
-        </RowItem>
-        <div
-          v-if="!showMore && componentList.length > 10"
-          class="flex flex-align-center flex-justify-center m-t-20"
-          @click.stop="handleShowMore"
-        >
-          <a-link>{{ $t('common.button.more') }}<icon-double-down /></a-link
-        ></div>
+                  <a-link
+                    type="text"
+                    size="small"
+                    @click="
+                      handleConnectTerminal({
+                        ...record,
+                        resourceID: record.resource?.id
+                      })
+                    "
+                  >
+                    <icon-code-square class="size-16" />
+                  </a-link>
+                </a-tooltip>
+              </a-space>
+            </template>
+          </RowItem>
+          <div
+            v-if="!showMore && dataList.length > 10"
+            class="flex flex-align-center flex-justify-center m-t-20"
+            @click.stop="handleShowMore"
+          >
+            <a-link>{{ $t('common.button.more') }}<icon-double-down /></a-link
+          ></div>
+        </div>
+        <div v-else class="empty">
+          <a-empty></a-empty>
+        </div>
       </div>
-      <div v-else class="empty">
-        <a-empty></a-empty>
-      </div>
-    </div>
+    </a-spin>
   </div>
 </template>
 
