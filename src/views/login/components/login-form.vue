@@ -39,7 +39,7 @@
             :rules="[
               { required: true, message: $t('login.form.userName.errMsg') }
             ]"
-            :validate-trigger="['change', 'blur']"
+            :validate-trigger="['change']"
             hide-label
           >
             <seal-input
@@ -59,7 +59,7 @@
             :rules="[
               { required: true, message: $t('login.form.password.errMsg') }
             ]"
-            :validate-trigger="['change', 'blur']"
+            :validate-trigger="['change']"
             hide-label
           >
             <seal-input-password

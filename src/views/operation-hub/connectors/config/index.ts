@@ -98,65 +98,65 @@ export const actionList: MoreAction[] = [
           });
     }
   },
-  {
-    label: 'operation.connectors.table.enableFin',
-    value: 'enableFinops',
-    icon: 'icon-switch',
-    iconfont: true,
-    status: 'normal',
-    filterFun({ itemInfo, projectID }) {
-      const isKubernetes = itemInfo.category === ConnectorCategory.Kubernetes;
-      return projectID
-        ? userStore.hasProjectResourceActions({
-            resource: Resources.Connectors,
-            projectID,
-            actions: [Actions.PUT]
-          }) && isKubernetes
-        : userStore.hasRolesActionsPermission({
-            resource: Resources.Connectors,
-            actions: [Actions.PUT]
-          }) && isKubernetes;
-    }
-  },
-  {
-    label: 'operation.connectors.table.install',
-    value: 'reinstall',
-    icon: 'icon-install',
-    iconfont: true,
-    status: 'normal',
-    filterFun({ itemInfo, projectID }) {
-      const { enableFinOps } = itemInfo;
-      return projectID
-        ? userStore.hasProjectResourceActions({
-            resource: Resources.Connectors,
-            projectID,
-            actions: [Actions.PUT]
-          }) && enableFinOps
-        : userStore.hasRolesActionsPermission({
-            resource: Resources.Connectors,
-            actions: [Actions.PUT]
-          }) && enableFinOps;
-    }
-  },
-  {
-    label: 'operation.connectors.table.fetch',
-    value: 'fetch',
-    icon: 'icon-cloud-download',
-    status: 'normal',
-    filterFun({ itemInfo, projectID }) {
-      const { enableFinOps } = itemInfo;
-      return projectID
-        ? userStore.hasProjectResourceActions({
-            resource: Resources.Connectors,
-            projectID,
-            actions: [Actions.PUT]
-          }) && enableFinOps
-        : userStore.hasRolesActionsPermission({
-            resource: Resources.Connectors,
-            actions: [Actions.PUT]
-          }) && enableFinOps;
-    }
-  },
+  // {
+  //   label: 'operation.connectors.table.enableFin',
+  //   value: 'enableFinops',
+  //   icon: 'icon-switch',
+  //   iconfont: true,
+  //   status: 'normal',
+  //   filterFun({ itemInfo, projectID }) {
+  //     const isKubernetes = itemInfo.category === ConnectorCategory.Kubernetes;
+  //     return projectID
+  //       ? userStore.hasProjectResourceActions({
+  //           resource: Resources.Connectors,
+  //           projectID,
+  //           actions: [Actions.PUT]
+  //         }) && isKubernetes
+  //       : userStore.hasRolesActionsPermission({
+  //           resource: Resources.Connectors,
+  //           actions: [Actions.PUT]
+  //         }) && isKubernetes;
+  //   }
+  // },
+  // {
+  //   label: 'operation.connectors.table.install',
+  //   value: 'reinstall',
+  //   icon: 'icon-install',
+  //   iconfont: true,
+  //   status: 'normal',
+  //   filterFun({ itemInfo, projectID }) {
+  //     const { enableFinOps } = itemInfo;
+  //     return projectID
+  //       ? userStore.hasProjectResourceActions({
+  //           resource: Resources.Connectors,
+  //           projectID,
+  //           actions: [Actions.PUT]
+  //         }) && enableFinOps
+  //       : userStore.hasRolesActionsPermission({
+  //           resource: Resources.Connectors,
+  //           actions: [Actions.PUT]
+  //         }) && enableFinOps;
+  //   }
+  // },
+  // {
+  //   label: 'operation.connectors.table.fetch',
+  //   value: 'fetch',
+  //   icon: 'icon-cloud-download',
+  //   status: 'normal',
+  //   filterFun({ itemInfo, projectID }) {
+  //     const { enableFinOps } = itemInfo;
+  //     return projectID
+  //       ? userStore.hasProjectResourceActions({
+  //           resource: Resources.Connectors,
+  //           projectID,
+  //           actions: [Actions.PUT]
+  //         }) && enableFinOps
+  //       : userStore.hasRolesActionsPermission({
+  //           resource: Resources.Connectors,
+  //           actions: [Actions.PUT]
+  //         }) && enableFinOps;
+  //   }
+  // },
   {
     label: 'common.button.delete',
     value: 'delete',

@@ -16,7 +16,7 @@
     @before-close="handleBeforeClose"
   >
     <div>
-      <div v-show="removeLines.length || addLines.length">
+      <div>
         <AceEditor
           ref="editor_instance"
           read-only
@@ -28,10 +28,11 @@
           :height="460"
         ></AceEditor>
       </div>
-      <div
-        v-show="!removeLines.length && !addLines.length"
+      <a-alert
+        v-if="!removeLines.length && !addLines.length"
+        class="m-t-10"
         style="color: var(--color-text-3); text-align: left"
-        >{{ $t('applications.applications.history.diff.same') }}</div
+        >{{ $t('applications.applications.history.diff.same') }}</a-alert
       >
     </div>
     <template #footer>

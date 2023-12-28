@@ -331,7 +331,6 @@
   import { onBeforeRouteLeave } from 'vue-router';
   import { queryConnectors } from '@/views/operation-hub/connectors/api';
   import usePageAction from '@/hooks/use-page-action';
-  import thumbButton from '@/components/buttons/thumb-button.vue';
   import xInputGroup from '@/components/form-create/custom-components/x-input-group.vue';
   import useLabelsActions from '@/components/form-create/hooks/use-labels-action';
   import useProjectBreadcrumbData from '@/views/application-management/projects/hooks/use-project-breadcrumb-data';

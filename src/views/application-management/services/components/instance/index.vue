@@ -62,7 +62,7 @@
             ></BasicInfo>
           </ModuleCard>
         </ComCard> -->
-        <ComCard>
+        <ComCard padding="0 var(--container-padding) 20px">
           <a-tabs
             v-model:active-key="activeTab"
             lazy-load

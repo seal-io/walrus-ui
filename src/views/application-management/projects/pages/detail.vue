@@ -23,7 +23,7 @@
           <div class="description">{{ currentInfo.description }}</div>
         </template>
       </HeaderInfo>
-      <ComCard>
+      <ComCard padding="0 var(--container-padding) 20px">
         <a-tabs
           v-model:active-key="activeKey"
           lazy-load

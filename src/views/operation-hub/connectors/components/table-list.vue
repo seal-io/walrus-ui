@@ -36,7 +36,7 @@
             <icon-search />
           </template>
         </a-input>
-        <a-space style="margin-left: 0">
+        <a-space style="margin-left: 0" :size="10">
           <a-button type="primary" @click="handleSearch">{{
             $t('common.button.search')
           }}</a-button>
@@ -205,7 +205,7 @@
             }}</span>
           </template>
         </a-table-column>
-        <a-table-column
+        <!-- <a-table-column
           ellipsis
           tooltip
           :cell-style="{ minWidth: '40px' }"
@@ -219,7 +219,7 @@
             }}</span>
             <span v-else>-</span>
           </template>
-        </a-table-column>
+        </a-table-column> -->
         <a-table-column
           ellipsis
           tooltip

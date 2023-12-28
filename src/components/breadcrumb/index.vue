@@ -67,7 +67,7 @@
                           data.value
                         "
                         :style="{
-                          color: `rgb(${StatusColorValueMap.warningBg})`
+                          color: `rgb(var(${StatusColorValueMap.warningBg}))`
                         }"
                       />
                       <icon-star-fill
@@ -76,7 +76,7 @@
                           data.value
                         "
                         :style="{
-                          color: `rgb(${StatusColorValueMap.warningColor})`
+                          color: `rgb(var(${StatusColorValueMap.warningColor}))`
                         }"
                       />
                     </span>

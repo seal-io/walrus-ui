@@ -44,7 +44,10 @@
           <div class="description">{{ currentInfo.description }}</div>
         </template>
       </HeaderInfo>
-      <ComCard :title="$t('workflow.stage.records')" padding="0 16px 16px 16px">
+      <ComCard
+        :title="$t('workflow.stage.records')"
+        padding="0 var(--container-padding) 20px"
+      >
         <RecordsList></RecordsList>
       </ComCard>
     </ComCard>
