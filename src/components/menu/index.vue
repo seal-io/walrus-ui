@@ -26,14 +26,6 @@
   import useLocale from '@/hooks/locale';
   import { PageAction } from '@/views/config';
   import useEnterApplication from '@/views/hooks/use-enter-application';
-  import {
-    queryProjects,
-    PROJECT_API
-  } from '@/views/application-management/projects/api';
-  import {
-    queryEnvironmentList,
-    ENVIRONMENT_API
-  } from '@/views/application-management/environments/api';
   import { profileMenu, avatarMenu } from './config';
 
   export default defineComponent({
@@ -140,182 +132,6 @@
       };
       const handleShowVersion = () => {
         showVersionModal(versionInfo.value as versionData);
-      };
-      const goToProject = (item: RouteRecordRaw) => {
-        const defaultProject = projectStore.defaultActiveProject;
-        // need create new project
-        if (!projectStore.projectList.length) {
-          router.push({
-            name: item.name
-          });
-          return;
-        }
-
-        const pro = _.find(
-          projectStore.projectList,
-          (s) => s.value === defaultProject?.id
-        );
-
-        const projectID = pro
-          ? defaultProject?.id
-          : _.get(projectStore.projectList, '0.value');
-
-        // no permission access to default project
-        if (
-          !userStore.hasProjectResourceActions({
-            resource: Resources.Projects,
-            actions: [Actions.GET],
-            projectID
-          })
-        ) {
-          router.push({
-            name: item.name
-          });
-          return;
-        }
-
-        // has access permission to default project
-        router.push({
-          name: PROJECT.Detail,
-          params: {
-            projectId: projectID
-          }
-        });
-      };
-
-      const setDefaultProject = (list) => {
-        const defaultProject = projectStore.defaultActiveProject;
-        const defaultValue = route.params.projectId || _.get(list, '0.value');
-        const defaultName = _.find(list, (item) => item.value === defaultValue)
-          ?.label as string;
-
-        if (!defaultProject?.id && list.length) {
-          projectStore.setInfo({
-            defaultActiveProject: {
-              id: defaultValue,
-              name: defaultName
-            }
-          });
-        } else if (!list.length) {
-          projectStore.setInfo({
-            defaultActiveProject: null
-          });
-        } else {
-          const data = _.find(
-            list,
-            (item) => item.value === defaultProject?.id
-          );
-          projectStore.setInfo({
-            defaultActiveProject: {
-              id: data?.value || defaultValue,
-              name: data?.label || defaultName
-            }
-          });
-        }
-      };
-
-      const getProjectList = async () => {
-        try {
-          const params = {
-            page: -1
-          };
-          const { data } = await queryProjects(params);
-          const list = _.map(data.items, (item) => {
-            return {
-              label: item.name,
-              value: item.id
-            };
-          });
-
-          setDefaultProject(list);
-
-          projectStore.setInfo({
-            projectList: _.cloneDeep(list)
-          });
-        } catch (error) {
-          projectStore.setInfo({
-            projectList: []
-          });
-        }
-      };
-
-      const setDefaultEnvironment = (list) => {
-        const defaultEnvironment = projectStore.defaultActiveEnvironment;
-        const defaultValue =
-          route.params.environmentId || _.get(list, '0.value');
-        const defaultName = _.find(list, (item) => item.value === defaultValue)
-          ?.label as string;
-
-        if (!defaultEnvironment?.id && list.length) {
-          projectStore.setInfo({
-            defaultActiveEnvironment: {
-              id: defaultValue,
-              name: defaultName
-            }
-          });
-        } else if (!list.length) {
-          projectStore.setInfo({
-            defaultActiveEnvironment: null
-          });
-        } else {
-          const data = _.find(
-            list,
-            (item) => item.value === defaultEnvironment?.id
-          );
-          projectStore.setInfo({
-            defaultActiveEnvironment: {
-              id: data?.value || defaultValue,
-              name: data?.label || defaultName
-            }
-          });
-        }
-      };
-      const getEnvironmentList = async () => {
-        const defaultProject = projectStore.defaultActiveProject;
-        if (!defaultProject?.id) return;
-        try {
-          const params = {
-            page: -1,
-            projectID: defaultProject?.id
-          };
-          const { data } = await queryEnvironmentList(params);
-          const list = _.map(data.items, (item) => {
-            return {
-              ..._.cloneDeep(item),
-              label: item.name,
-              value: item.id
-            };
-          });
-          projectStore.setInfo({
-            environmentList: _.cloneDeep(list)
-          });
-          setDefaultEnvironment(list);
-        } catch (error) {
-          // ignore
-        }
-      };
-
-      const redirecttoEnvironmentDetail = async (item: RouteRecordRaw) => {
-        await getProjectList();
-        await getEnvironmentList();
-        const defaultProject = projectStore.defaultActiveProject;
-        const defaultEnvironment = projectStore.defaultActiveEnvironment;
-        if (!defaultEnvironment?.id) {
-          goToProject(item);
-          return;
-        }
-
-        router.push({
-          name: PROJECT.EnvDetail,
-          params: {
-            projectId: defaultProject?.id,
-            environmentId: defaultEnvironment?.id,
-            action: PageAction.VIEW
-          },
-          query: {
-            id: defaultEnvironment?.id
-          }
-        });
       };
 
       // In this case only two levels of menus are available
@@ -533,8 +349,6 @@
       const init = async () => {
         userStore.info();
         getAppVersion();
-        // await getProjectList();
-        // await getEnvironmentList();
       };
       init();
       return () => (

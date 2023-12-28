@@ -418,7 +418,7 @@
     .dropdown {
       position: absolute;
       top: 16px;
-      right: 16px;
+      right: var(--container-padding);
     }
   }
 

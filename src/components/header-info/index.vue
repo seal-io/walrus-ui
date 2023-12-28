@@ -58,7 +58,7 @@
     display: flex;
     align-items: center;
     min-height: 112px;
-    padding: 16px;
+    padding: 16px var(--container-padding);
     background-color: #fff;
     border-radius: var(--border-radius-small);
 
