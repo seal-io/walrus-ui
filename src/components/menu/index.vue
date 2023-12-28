@@ -198,7 +198,7 @@
           });
         } else if (!list.length) {
           projectStore.setInfo({
-            defaultActiveProject: {}
+            defaultActiveProject: null
           });
         } else {
           const data = _.find(
@@ -255,7 +255,7 @@
           });
         } else if (!list.length) {
           projectStore.setInfo({
-            defaultActiveEnvironment: {}
+            defaultActiveEnvironment: null
           });
         } else {
           const data = _.find(

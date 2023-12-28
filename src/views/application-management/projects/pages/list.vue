@@ -276,12 +276,6 @@
   };
 
   const handleViewProject = async (row) => {
-    projectStore.setInfo({
-      defaultActiveProject: {
-        id: row.id,
-        name: row.name
-      }
-    });
     router.push({
       name: PROJECT.Detail,
       params: { projectId: row.id }
@@ -364,7 +358,7 @@
     const defaultProject = projectStore.defaultActiveProject;
     if (ids.includes(defaultProject?.id)) {
       projectStore.setInfo({
-        defaultActiveProject: {}
+        defaultActiveProject: null
       });
     }
   };

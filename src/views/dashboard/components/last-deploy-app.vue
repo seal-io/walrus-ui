@@ -151,12 +151,6 @@
   const projectStore = useProjectStore();
 
   const handleToDetail = async (row) => {
-    projectStore.setInfo({
-      defaultActiveProject: {
-        id: _.get(row, 'project.id'),
-        name: _.get(row, 'project.name')
-      }
-    });
     router.push({
       name: PROJECT.ServiceDetail,
       params: {
