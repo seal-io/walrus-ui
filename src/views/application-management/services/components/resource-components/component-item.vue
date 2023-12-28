@@ -97,10 +97,10 @@
 <style lang="less" scoped>
   .box {
     border-radius: var(--border-radius-small);
+    cursor: default;
 
     &:hover {
       background-color: var(--color-fill-1);
-      border-color: var(--color-fill-1);
     }
 
     &.is-child {

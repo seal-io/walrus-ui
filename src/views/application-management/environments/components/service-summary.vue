@@ -5,7 +5,13 @@
       :key="index"
       :content="item.label"
     >
-      <span class="item" :class="[item.status]">
+      <span
+        class="item"
+        :class="[item.status]"
+        :style="{
+          backgroundColor: _.get(StatusColorBgMap, [item.status])
+        }"
+      >
         <span class="val">
           {{ item.value }}
         </span>
@@ -17,7 +23,7 @@
 <script lang="ts" setup>
   import _ from 'lodash';
   import { ref, PropType } from 'vue';
-  import { StatusColor } from '@/views/config';
+  import { StatusColorBgMap } from '@/views/config';
 
   const props = defineProps({
     dataList: {
@@ -25,12 +31,6 @@
       default: () => []
     }
   });
-  const colorMap = {
-    ready: StatusColor.success,
-    error: StatusColor.error,
-    transitioning: StatusColor.warning,
-    inactive: StatusColor.inactive
-  };
 </script>
 
 <style lang="less" scoped>
@@ -55,20 +55,20 @@
 
       &.error {
         margin-right: 10px;
-        background-color: rgba(var(--red-6), 0.7);
+        // background-color: rgba(var(--red-6), 0.7);
       }
 
       &.ready {
-        background-color: rgba(var(--green-6), 0.7);
+        // background-color: rgba(var(--green-6), 0.7);
       }
 
       &.transitioning {
         margin: 0 10px;
-        background-color: rgb(251, 222, 55);
+        // background-color: rgb(251, 222, 55);
       }
 
       &.inactive {
-        background-color: rgba(var(--gray-4), 0.9);
+        // background-color: rgba(var(--gray-4), 0.9);
       }
     }
   }

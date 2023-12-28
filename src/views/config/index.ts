@@ -250,32 +250,40 @@ export const HintKeyMaps = {
 
 export const StatusColorValueMap = {
   error: '--red-6',
-  warningColor: '244, 143, 11',
-  warningBg: '251, 222, 55',
+  warningColor: '--warning-6',
+  warningBg: '--warning-3',
   success: '--green-6',
-  inactiveColor: '#86909c',
+  inactiveColor: '--gray-6',
   inactiveBg: '--gray-4'
 };
 
+export const StatusColorBgMap = {
+  ready: `rgba(var(${StatusColorValueMap.success}),0.7)`,
+  error: `rgba(var(${StatusColorValueMap.error}),0.7)`,
+  transitioning: `rgba(var(${StatusColorValueMap.warningBg}))`,
+  inactive: `rgba(var(${StatusColorValueMap.inactiveBg}),1)`
+};
+
+// color1: background color; color5: font color
 export const StatusColor = {
   error: {
-    color5: 'rgba(var(--red-6), 0.8)',
-    color1: 'rgba(var(--red-6), 0.15)',
+    color5: `rgba(var(${StatusColorValueMap.error}), 0.8)`,
+    color1: `rgba(var(${StatusColorValueMap.error}), 0.15)`,
     icon: 'icon-close-circle-fill'
   },
   warning: {
-    color5: 'rgb(244, 143, 11)', // color
-    color1: 'rgba(251, 222, 55, 0.4)', // backgroundColor #f9cc45
+    color5: `rgba(var(${StatusColorValueMap.warningColor}))`, // color
+    color1: `rgba(var(${StatusColorValueMap.warningBg}),0.4)`, // backgroundColor #f9cc45
     icon: ''
   },
   success: {
-    color5: 'rgba(var(--green-6), 0.9)',
-    color1: 'rgba(var(--green-6), 0.15)',
+    color5: `rgba(var(${StatusColorValueMap.success}), 0.9)`,
+    color1: `rgba(var(${StatusColorValueMap.success}), 0.15)`,
     icon: 'icon-check-circle-fill'
   },
   inactive: {
-    color5: '#86909c',
-    color1: 'rgba(var(--gray-4), 0.4)',
+    color5: `rgba(var(${StatusColorValueMap.inactiveColor}), 1)`,
+    color1: `rgba(var(${StatusColorValueMap.inactiveBg}), 0.4)`,
     icon: 'icon-minus-circle-fill'
   }
 };

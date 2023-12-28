@@ -10,7 +10,7 @@
       ></Breadcrumb>
       <template #right>
         <a-space fill :size="20" align="end" style="margin-right: 60px">
-          <a-button type="outline" size="small" @click="handleBack">
+          <a-button type="outline" @click="handleBack">
             {{ $t('common.button.back') }}
           </a-button>
           <a-button
@@ -25,7 +25,6 @@
               !_.includes(RetryStatus, executionInfo.status?.summaryStatus)
             "
             type="primary"
-            size="small"
             @click="handleRetryAction"
           >
             {{ $t('common.button.retry') }}
@@ -42,7 +41,6 @@
               !_.includes(StopableStatus, executionInfo.status?.summaryStatus)
             "
             type="primary"
-            size="small"
             status="warning"
             @click="handleStopAction"
           >
