@@ -20,11 +20,7 @@
             tooltip
             :cell-style="{ minWidth: '40px' }"
             data-index="name"
-            :title="
-              $t('common.table.name.list', {
-                type: $t('operation.connectors.table.name')
-              })
-            "
+            :title="$t('operation.connectors.table.name')"
           >
           </a-table-column>
           <a-table-column

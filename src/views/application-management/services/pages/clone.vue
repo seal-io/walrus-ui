@@ -250,12 +250,8 @@
     handleBreadChange(value, item);
   };
   const handleCloneServices = async () => {
-    const services = servicesRef.value.getSelectServiceData();
     const resources = resourceRef.value.getSelectServiceData();
-    formData.items = [
-      ..._.cloneDeep(services),
-      ..._.cloneDeep(resources)
-    ] as never[];
+    formData.items = [..._.cloneDeep(resources)] as never[];
   };
 
   const batchCloneQueue = async () => {
@@ -327,6 +323,7 @@
         }
         submitLoading.value = false;
       } catch (error) {
+        console.log(error);
         submitLoading.value = false;
       }
     } else {
