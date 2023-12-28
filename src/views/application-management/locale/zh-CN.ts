@@ -79,7 +79,7 @@ export default {
   'applications.applications.history.version': '版本',
   'applications.applications.history.operator': '操作人',
   'applications.applications.history.clone': '克隆',
-  'applications.applications.history.rollbackapp': '应用回滚',
+  'applications.applications.history.rollbackapp': '版本回滚',
   'applications.applications.history.rollbackinstance': '服务回滚',
   'applications.applications.history.deploymentTime': '部署时间',
   'applications.applications.history.createTime': '部署时间',

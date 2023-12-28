@@ -44,8 +44,8 @@
             <a-option
               v-for="item in revisionList"
               :key="item.id"
-              :value="item.id"
-              :label="item.createTime"
+              :value="item.value"
+              :label="item.label"
             ></a-option>
           </seal-select>
         </a-form-item>
@@ -98,6 +98,7 @@
 
 <script lang="ts" setup>
   import _ from 'lodash';
+  import dayjs from 'dayjs';
   import { ref, reactive, PropType } from 'vue';
   import useCodeDiff from '@/hooks/use-code-diff';
   import AceEditor from '@/components/ace-editor/index.vue';
@@ -144,7 +145,7 @@
     clearDiffLines
   } = useCodeDiff();
   const emit = defineEmits(['update:show']);
-  const revisionList = ref<HistoryData[]>([]);
+  const revisionList = ref<{ value: string; label: string }[]>([]);
   const submitLoading = ref(false);
   const loading = ref(false);
   const compareloading = ref(false);
@@ -175,7 +176,12 @@
         serviceID: formData.serviceID
       };
       const { data } = await queryServiceRevisions(params);
-      revisionList.value = data?.items || [];
+      revisionList.value = _.map(data?.items || [], (item) => {
+        return {
+          value: item.id,
+          label: dayjs(item.createTime).format('YYYY-MM-DD HH:mm:ss')
+        };
+      });
       loading.value = false;
     } catch (error) {
       revisionList.value = [];

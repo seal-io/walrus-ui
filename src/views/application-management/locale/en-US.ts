@@ -83,7 +83,7 @@ export default {
   'applications.applications.history.version': 'Version',
   'applications.applications.history.operator': 'Operator',
   'applications.applications.history.clone': 'Clone',
-  'applications.applications.history.rollbackapp': 'Application Rollback',
+  'applications.applications.history.rollbackapp': 'Revision Rollback',
   'applications.applications.history.rollbackinstance': 'Service Rollback',
   'applications.applications.history.deploymentTime': 'Deployment Time',
   'applications.applications.history.rollback': 'Rollback',

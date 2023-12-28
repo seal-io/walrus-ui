@@ -179,7 +179,7 @@
               </div>
             </template>
           </a-form-item>
-          <a-form-item label="" :hide-label="pageAction === PageAction.EDIT">
+          <!-- <a-form-item label="" :hide-label="pageAction === PageAction.EDIT">
             <template #label>
               <div class="label-wrap">
                 <span class="text">{{
@@ -198,7 +198,7 @@
                 ? $t('operation.connectors.finops.enable')
                 : $t('operation.connectors.finops.disable')
             }}</span>
-          </a-form-item>
+          </a-form-item> -->
           <a-form-item
             v-if="pageAction === PageAction.VIEW"
             :label="$t('operation.connectors.table.status')"
@@ -301,7 +301,7 @@
     type: 'Kubernetes',
     applicableEnvironmentType: '',
     category: ConnectorCategory.Kubernetes,
-    enableFinOps: true
+    enableFinOps: false
   });
 
   const EnvironmentTypeList = computed(() => {

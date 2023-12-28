@@ -10,7 +10,7 @@
       style="width: 386px"
       @change="handleChange"
     >
-      <a-option style="display: none"></a-option>
+      <a-option v-if="list.length" style="display: none"></a-option>
       <a-option
         v-for="(item, index) in list"
         :key="index"
@@ -21,6 +21,13 @@
           item.tips ? `(${$t(item.tips)})` : ''
         }}</span></a-option
       >
+      <!-- <template #empty>
+        <div class="flex flex-justify-center p-10">
+          <a-button type="text" size="small"
+            ><icon-plus /> 新建连接器
+          </a-button>
+        </div>
+      </template> -->
     </a-select>
   </div>
 </template>
