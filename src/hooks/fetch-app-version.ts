@@ -3,7 +3,7 @@ import { h } from 'vue';
 import i18n from '@/locale/index';
 import { Modal } from '@arco-design/web-vue';
 import { get, startsWith } from 'lodash';
-import walrusLogo from '@/assets/images/logo_02.png';
+import walrusLogo from '@/assets/images/walrus_logo.png';
 
 export const getVersion = (data) => {
   const version = get(data, 'version') || '';
@@ -34,7 +34,7 @@ export function showVersionModal(data: versionData) {
     footer: () => h('span'),
     title: () =>
       h('img', {
-        style: 'width: auto;height: 24px;',
+        style: 'width: auto;height: 44px;',
         src: walrusLogo
       }),
     simple: true,
@@ -51,7 +51,7 @@ export function showVersionModal(data: versionData) {
                 'width': '60px',
                 'padding-right': '10px',
                 'text-align': 'right',
-                'font-size': '16px'
+                'font-size': 'var(--font-size-large)'
               }
             },
             `${i18n.global.t('common.footer.version.web')}`
@@ -78,7 +78,7 @@ export function showVersionModal(data: versionData) {
                 'width': '60px',
                 'padding-right': '10px',
                 'text-align': 'right',
-                'font-size': '16px'
+                'font-size': 'var(--font-size-large)'
               }
             },
             `${i18n.global.t('common.footer.version.server')}`

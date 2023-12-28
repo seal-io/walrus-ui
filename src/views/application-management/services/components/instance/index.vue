@@ -1,7 +1,7 @@
 <template>
   <div id="service-page" class="service-page">
     <ComCard padding="0">
-      <HeaderInfo :info="currentInfo">
+      <HeaderInfo v-if="pageAction === PageAction.VIEW" :info="currentInfo">
         <template #icon>
           <i class="iconfont icon-apps-fill"></i>
         </template>
@@ -23,9 +23,8 @@
               }"
             ></StatusLabel>
           </div>
-          <div class="dropdown">
+          <div v-if="actionList.length" class="dropdown">
             <DropButtonGroup
-              v-if="actionList.length"
               size="medium"
               :actions="actionList"
               :layout="actionList.length === 1 ? 'horizontal' : 'vertical'"
@@ -62,7 +61,7 @@
             ></BasicInfo>
           </ModuleCard>
         </ComCard> -->
-        <ComCard padding="0 var(--container-padding) 20px">
+        <ComCard padding="0 var(--card-content-padding) 20px">
           <a-tabs
             v-model:active-key="activeTab"
             lazy-load
@@ -418,7 +417,7 @@
     .dropdown {
       position: absolute;
       top: 16px;
-      right: var(--container-padding);
+      right: var(--card-content-padding);
     }
   }
 

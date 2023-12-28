@@ -34,7 +34,7 @@
     padding: {
       type: String,
       default() {
-        return '20px 26px 20px';
+        return '20px var(--card-content-padding) 20px';
       }
     },
     title: {

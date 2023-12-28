@@ -7,7 +7,7 @@
         @change="handleSelectChange"
       ></Breadcrumb>
     </BreadWrapper>
-    <ComCard padding="20px 26px">
+    <ComCard padding="20px var(--card-content-padding)">
       <GroupTitle
         :title="$t('common.title.basicInfo')"
         :bordered="false"
@@ -243,7 +243,7 @@
         :size="3"
       ></a-divider>
     </div> -->
-    <ComCard>
+    <ComCard padding="0px var(--card-content-padding)">
       <div
         v-if="_.keys(schemaVariables?.properties).length"
         style="display: flex; justify-content: flex-start"
