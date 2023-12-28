@@ -256,19 +256,8 @@
           v-if="isCloneAction"
           no-style
           :hide-label="pageAction === PageAction.EDIT"
-          :label="$t('applications.applications.table.service')"
         >
           <div>
-            <!-- <CloneService
-              ref="serviceRef"
-              key="serviceRef"
-              v-model:hint-data="completeData"
-              :data-list="serviceList"
-              :title="$t('applications.applications.table.service')"
-              clone-type="environment"
-              resource-type="service"
-              :style="{ width: `${InputWidth.XLARGE}px`, overflow: 'auto' }"
-            ></CloneService> -->
             <CloneService
               key="resourceRef"
               ref="resourceRef"
@@ -381,9 +370,7 @@
   const isCloneAction = route.params.clone as string; // only in clone
   const environmentId = route.params.environmentId as string;
   const formref = ref();
-  const serviceRef = ref(); // only in clone
   const resourceRef = ref(); // only in clone
-  const serviceList = ref<any[]>([]);
   const resourceList = ref<any[]>([]);
   const connectorList = ref<
     {
@@ -565,10 +552,9 @@
     remove(selectedList.value, (id) => record.id === id);
     formref.value.validateField('connectorIDs');
   };
-  const handleCloneEnvironment = async (data) => {
-    const services = serviceRef.value.getSelectServiceData();
+  const handleCloneEnvironment = (data) => {
     const resources = resourceRef.value.getSelectServiceData();
-    data.resources = [..._.cloneDeep(services), ..._.cloneDeep(resources)];
+    data.resources = [..._.cloneDeep(resources)];
     return data;
   };
 
@@ -664,10 +650,6 @@
   const initCloneEnvironmentResource = async () => {
     if (!isCloneAction) return;
     try {
-      // serviceList.value = await getServiceList({
-      //   isService: true,
-      //   extract: ['-projectId', '-status']
-      // });
       resourceList.value = await getServiceList({
         extract: ['-projectId', '-status']
       });

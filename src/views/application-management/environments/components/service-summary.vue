@@ -55,20 +55,10 @@
 
       &.error {
         margin-right: 10px;
-        // background-color: rgba(var(--red-6), 0.7);
-      }
-
-      &.ready {
-        // background-color: rgba(var(--green-6), 0.7);
       }
 
       &.transitioning {
         margin: 0 10px;
-        // background-color: rgb(251, 222, 55);
-      }
-
-      &.inactive {
-        // background-color: rgba(var(--gray-4), 0.9);
       }
     }
   }
