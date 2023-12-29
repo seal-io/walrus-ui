@@ -12,6 +12,7 @@
             field="name"
             hide-label
             :label="$t('common.table.name')"
+            :validate-trigger="['change', 'input']"
             :rules="[
               {
                 required: true,
@@ -25,8 +26,8 @@
             ]"
           >
             <seal-input
-              v-if="pageAction === PageAction.EDIT"
               v-model.trim="formData.name"
+              :view-status="pageAction === PageAction.VIEW"
               allow-clear
               :required="true"
               :placeholder="$t('common.table.name')"
@@ -35,20 +36,13 @@
               show-word-limit
               @change="handleNameChange"
             ></seal-input>
-            <SealFormItemWrap
-              v-else
-              :label="$t('common.table.name')"
-              :style="{ width: `${InputWidth.LARGE}px` }"
-            >
-              {{ formData.name }}
-            </SealFormItemWrap>
-            <template #extra>
+            <!-- <template #extra>
               <div
                 class="tips"
                 :style="{ 'max-width': `${InputWidth.LARGE}px` }"
                 >{{ $t('common.validate.labelName') }}</div
               >
-            </template>
+            </template> -->
           </a-form-item>
           <GroupTitle
             :bordered="false"
@@ -64,7 +58,9 @@
               >
                 <a-link class="m-l-10">
                   <icon-plus class="size-14" style="stroke-width: 4" />
-                  <span class="mleft-5">{{ $t('common.button.add') }}</span>
+                  <span class="mleft-5 font-12">{{
+                    $t('common.button.add')
+                  }}</span>
                 </a-link>
               </primaryButtonGroup>
             </template>
@@ -86,47 +82,33 @@
               }
             ]"
           >
-            <div v-if="pageAction === PageAction.EDIT">
-              <seal-input
-                v-model="formData.selector.projectName"
-                allow-clear
-                :required="true"
-                :label="$t('resource.definition.detail.projectName')"
-                :style="{ width: `${InputWidth.LARGE}px` }"
-                :max-length="63"
-                show-word-limit
-              ></seal-input>
-              <!-- <seal-select
-                v-model="formData.selector.projectName"
-                :options="projectList"
-                :required="true"
-                :label="$t('resource.definition.detail.projectName')"
-                :style="{ width: `${InputWidth.LARGE}px` }"
-              >
-              </seal-select> -->
-              <a-button
-                type="text"
-                status="danger"
-                @click="handleDeleteSelector('projectName')"
-              >
-                <template #icon>
-                  <icon-delete class="size-16" />
-                </template>
-              </a-button>
-            </div>
-            <SealFormItemWrap
-              v-else
+            <seal-input
+              v-model="formData.selector.projectName"
+              :view-status="pageAction === PageAction.VIEW"
+              allow-clear
+              :required="true"
               :label="$t('resource.definition.detail.projectName')"
               :style="{ width: `${InputWidth.LARGE}px` }"
+              :max-length="63"
+              show-word-limit
+            ></seal-input>
+            <a-button
+              v-if="pageAction === PageAction.EDIT"
+              type="text"
+              status="danger"
+              @click="handleDeleteSelector('projectName')"
             >
-              {{ formData.selector.projectName }}
-            </SealFormItemWrap>
+              <template #icon>
+                <icon-delete class="size-16" />
+              </template>
+            </a-button>
           </a-form-item>
           <a-form-item
             v-if="selectors.has('environmentName')"
             field="selector.environmentName"
             hide-label
             :label="$t('resource.definition.detail.envName')"
+            :validate-trigger="['change', 'input']"
             :rules="[
               {
                 required: true,
@@ -139,40 +121,33 @@
               }
             ]"
           >
-            <div v-if="pageAction === PageAction.EDIT">
-              <seal-input
-                v-model="formData.selector.environmentName"
-                allow-clear
-                :required="true"
-                :label="$t('resource.definition.detail.envName')"
-                :style="{ width: `${InputWidth.LARGE}px` }"
-                :max-length="63"
-                show-word-limit
-              ></seal-input>
-              <a-button
-                type="text"
-                status="danger"
-                @click="handleDeleteSelector('environmentName')"
-              >
-                <template #icon>
-                  <icon-delete class="size-16" />
-                </template>
-              </a-button>
-            </div>
-            <SealFormItemWrap
-              v-else
+            <seal-input
+              v-model="formData.selector.environmentName"
+              :view-status="pageAction === PageAction.VIEW"
+              allow-clear
+              :required="true"
               :label="$t('resource.definition.detail.envName')"
               :style="{ width: `${InputWidth.LARGE}px` }"
+              :max-length="63"
+              show-word-limit
+            ></seal-input>
+            <a-button
+              v-if="pageAction === PageAction.EDIT"
+              type="text"
+              status="danger"
+              @click="handleDeleteSelector('environmentName')"
             >
-              {{ formData.selector.environmentName }}
-            </SealFormItemWrap>
-            <template #extra>
+              <template #icon>
+                <icon-delete class="size-16" />
+              </template>
+            </a-button>
+            <!-- <template #extra>
               <div
                 class="tips"
                 :style="{ 'max-width': `${InputWidth.LARGE}px` }"
                 >{{ $t('common.validate.labelName') }}</div
               >
-            </template>
+            </template> -->
           </a-form-item>
           <a-form-item
             v-if="selectors.has('environmentType')"
@@ -186,45 +161,31 @@
               }
             ]"
           >
-            <div v-if="pageAction === PageAction.EDIT">
-              <seal-select
-                v-model="formData.selector.environmentType"
-                :options="[]"
-                :required="true"
-                :label="$t('applications.environment.type')"
-                :style="{ width: `${InputWidth.LARGE}px` }"
-              >
-                <a-option
-                  v-for="item in EnvironmentTypeList"
-                  :key="item.value"
-                  :value="item.value"
-                  :label="$t(item.label)"
-                ></a-option>
-              </seal-select>
-              <a-button
-                type="text"
-                status="danger"
-                @click="handleDeleteSelector('environmentType')"
-              >
-                <template #icon>
-                  <icon-delete class="size-16" />
-                </template>
-              </a-button>
-            </div>
-            <SealFormItemWrap
-              v-else
+            <seal-select
+              v-model="formData.selector.environmentType"
+              :view-status="pageAction === PageAction.VIEW"
+              :options="[]"
+              :required="true"
               :label="$t('applications.environment.type')"
               :style="{ width: `${InputWidth.LARGE}px` }"
-              >{{
-                $t(
-                  _.get(
-                    EnvironmentTypeMap,
-                    formData.selector.environmentType || '',
-                    ''
-                  )
-                )
-              }}</SealFormItemWrap
             >
+              <a-option
+                v-for="item in EnvironmentTypeList"
+                :key="item.value"
+                :value="item.value"
+                :label="$t(item.label)"
+              ></a-option>
+            </seal-select>
+            <a-button
+              v-if="pageAction === PageAction.EDIT"
+              type="text"
+              status="danger"
+              @click="handleDeleteSelector('environmentType')"
+            >
+              <template #icon>
+                <icon-delete class="size-16" />
+              </template>
+            </a-button>
           </a-form-item>
           <a-form-item
             v-if="selectors.has('environmentLabels')"
@@ -320,26 +281,18 @@
               }
             ]"
           >
-            <div v-if="pageAction === PageAction.EDIT">
-              <seal-select
-                v-model="formData.template.template.id"
-                :placeholder="$t('applications.applications.table.module')"
-                :required="true"
-                :virtual-list-props="virtualListProps"
-                :options="templateList"
-                :style="{ width: `${InputWidth.LARGE}px` }"
-                allow-search
-                @change="handleTemplateChange"
-              >
-              </seal-select>
-            </div>
-            <SealFormItemWrap
-              v-else
-              :label="$t('applications.applications.table.module')"
+            <seal-select
+              v-model="formData.template.template.id"
+              :view-status="pageAction === PageAction.VIEW"
+              :placeholder="$t('applications.applications.table.module')"
+              :required="true"
+              :virtual-list-props="virtualListProps"
+              :options="templateList"
               :style="{ width: `${InputWidth.LARGE}px` }"
+              allow-search
+              @change="handleTemplateChange"
             >
-              {{ formData.template.name }}
-            </SealFormItemWrap>
+            </seal-select>
           </a-form-item>
           <a-form-item
             hide-label
@@ -352,33 +305,25 @@
               }
             ]"
           >
-            <div v-if="pageAction === PageAction.EDIT">
-              <seal-select
-                v-model="formData.template.version"
-                :options="[]"
-                :required="true"
-                :placeholder="$t('applications.applications.history.version')"
-                :style="{ width: `${InputWidth.LARGE}px` }"
-                :loading="asyncLoading"
-                allow-search
-                @popup-visible-change="handleVersionPopupVisibleChange"
-                @change="handleVersionChange"
-              >
-                <a-option
-                  v-for="item in templateVersionList"
-                  :key="item.value"
-                  :value="item.label"
-                  >{{ item.label }}</a-option
-                >
-              </seal-select>
-            </div>
-            <SealFormItemWrap
-              v-else
-              :label="$t('applications.applications.history.version')"
+            <seal-select
+              v-model="formData.template.version"
+              :view-status="pageAction === PageAction.VIEW"
+              :options="[]"
+              :required="true"
+              :placeholder="$t('applications.applications.history.version')"
               :style="{ width: `${InputWidth.LARGE}px` }"
+              :loading="asyncLoading"
+              allow-search
+              @popup-visible-change="handleVersionPopupVisibleChange"
+              @change="handleVersionChange"
             >
-              {{ formData.template.version }}
-            </SealFormItemWrap>
+              <a-option
+                v-for="item in templateVersionList"
+                :key="item.value"
+                :value="item.label"
+                >{{ item.label }}</a-option
+              >
+            </seal-select>
           </a-form-item>
         </a-form>
       </div>

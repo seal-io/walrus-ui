@@ -268,22 +268,22 @@ export const StatusColorBgMap = {
 export const StatusColor = {
   error: {
     color5: `rgba(var(${StatusColorValueMap.error}), 0.8)`,
-    color1: `rgba(var(${StatusColorValueMap.error}), 0.15)`,
+    color1: `rgba(var(${StatusColorValueMap.error}), 0.1)`,
     icon: 'icon-close-circle-fill'
   },
   warning: {
     color5: `rgba(var(${StatusColorValueMap.warningColor}))`, // color
-    color1: `rgba(var(${StatusColorValueMap.warningBg}),0.4)`, // backgroundColor #f9cc45
+    color1: `rgba(var(${StatusColorValueMap.warningBg}),0.3)`, // backgroundColor #f9cc45
     icon: ''
   },
   success: {
     color5: `rgba(var(${StatusColorValueMap.success}), 0.9)`,
-    color1: `rgba(var(${StatusColorValueMap.success}), 0.15)`,
+    color1: `rgba(var(${StatusColorValueMap.success}), 0.1)`,
     icon: 'icon-check-circle-fill'
   },
   inactive: {
     color5: `rgba(var(${StatusColorValueMap.inactiveColor}), 1)`,
-    color1: `rgba(var(${StatusColorValueMap.inactiveBg}), 0.4)`,
+    color1: `rgba(var(${StatusColorValueMap.inactiveBg}), 0.3)`,
     icon: 'icon-minus-circle-fill'
   }
 };

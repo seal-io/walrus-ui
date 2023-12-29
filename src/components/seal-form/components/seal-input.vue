@@ -1,5 +1,6 @@
 <template>
   <span
+    v-if="!viewStatus"
     ref="wrapper"
     class="seal-relative wrapper input"
     :class="{
@@ -41,6 +42,13 @@
       </template>
     </a-input>
   </span>
+  <SealViewItemWrap
+    v-else
+    :label="$attrs.label || placeholder"
+    :style="{ width: $attrs.style?.width || 'max-content' }"
+  >
+    <span>{{ modelValue }}</span>
+  </SealViewItemWrap>
 </template>
 
 <script lang="ts" setup>
@@ -54,6 +62,10 @@
     placeholder: {
       type: String,
       default: ''
+    },
+    viewStatus: {
+      type: Boolean,
+      default: false
     },
     showRequiredMark: {
       type: Boolean,

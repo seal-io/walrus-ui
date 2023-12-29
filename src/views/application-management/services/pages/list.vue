@@ -83,7 +83,7 @@
           @select="(value) => handleClickAction(value)"
         >
           <a-button type="primary"
-            ><icon-more-vertical style="stroke-width: 5"
+            ><icon-more-vertical style="stroke-width: 5" class="font-14"
           /></a-button>
         </primaryButtonGroup>
       </template>

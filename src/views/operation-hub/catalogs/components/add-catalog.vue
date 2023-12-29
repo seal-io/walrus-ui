@@ -28,7 +28,7 @@
           hide-asterisk
           :hide-label="true"
           :disabled="action === ModalAction.EDIT"
-          :validate-trigger="['change']"
+          :validate-trigger="['change', 'input']"
           :rules="[
             {
               required: true,
@@ -46,9 +46,9 @@
             show-word-limit
           ></seal-input>
 
-          <template #extra>
+          <!-- <template #extra>
             <span class="tips">{{ $t('common.validate.labelName') }}</span>
-          </template>
+          </template> -->
         </a-form-item>
         <a-form-item
           hide-label
@@ -199,6 +199,10 @@
     {
       label: 'GitLab',
       value: 'Gitlab'
+    },
+    {
+      label: 'Gitee',
+      value: 'Gitee'
     }
   ];
   const sealCatalog = 'https://github.com/walrus-catalog';

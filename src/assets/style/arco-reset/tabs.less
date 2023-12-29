@@ -48,6 +48,7 @@
       .arco-tabs-tab {
         display: flex;
         padding: 8px 15px;
+        color: var(--color-text-3);
 
         > .arco-tabs-tab-title {
           width: 120px;
@@ -56,6 +57,13 @@
           text-overflow: ellipsis;
         }
       }
+    }
+
+    .arco-tabs-nav-type-rounded .arco-tabs-tab-active,
+    .arco-tabs-nav-type-rounded .arco-tabs-tab-active:hover,
+    .arco-tabs-nav-type-rounded .arco-tabs-tab:hover {
+      color: rgb(var(--primary-6));
+      background-color: var(--color-fill-1);
     }
   }
 

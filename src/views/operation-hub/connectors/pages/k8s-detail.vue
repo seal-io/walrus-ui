@@ -55,10 +55,11 @@
         >
           <a-form-item
             :label="$t('operation.connectors.detail.clusterName')"
-            :hide-label="pageAction === PageAction.EDIT"
+            :hide-label="true"
             hide-asterisk
             field="name"
             :disabled="!!id"
+            :validate-trigger="['change', 'input']"
             :style="{ maxWidth: `${InputWidth.LARGE}px` }"
             :rules="[
               {
@@ -69,26 +70,23 @@
             ]"
           >
             <seal-input
-              v-if="pageAction === PageAction.EDIT"
               v-model.trim="formData.name"
+              :view-status="pageAction === PageAction.VIEW"
               :label="$t('operation.connectors.detail.clusterName')"
               :required="true"
               :style="{ width: `${InputWidth.LARGE}px` }"
               :max-length="63"
               show-word-limit
             ></seal-input>
-            <span v-else class="readonly-view-label">{{
-              formData.name || '-'
-            }}</span>
-            <template v-if="pageAction === PageAction.EDIT" #extra>
+            <!-- <template v-if="pageAction === PageAction.EDIT" #extra>
               <div :style="{ maxWidth: `${InputWidth.LARGE}px` }">{{
                 $t('common.validate.labelName')
               }}</div>
-            </template>
+            </template> -->
           </a-form-item>
           <a-form-item
             :label="$t('operation.connectors.table.environmentType')"
-            :hide-label="pageAction === PageAction.EDIT"
+            :hide-label="true"
             hide-asterisk
             field="applicableEnvironmentType"
             :disabled="!!id"
@@ -100,16 +98,13 @@
             ]"
           >
             <seal-select
-              v-if="pageAction === PageAction.EDIT"
               v-model="formData.applicableEnvironmentType"
+              :view-status="pageAction === PageAction.VIEW"
               :label="$t('operation.connectors.table.environmentType')"
               :required="true"
               :options="EnvironmentTypeList"
               :style="{ width: `${InputWidth.LARGE}px` }"
             ></seal-select>
-            <span v-else class="readonly-view-label">{{
-              $t(EnvironmentTypeMap[formData.applicableEnvironmentType] || '')
-            }}</span>
           </a-form-item>
           <a-form-item
             v-if="pageAction === PageAction.EDIT"
@@ -201,9 +196,13 @@
           </a-form-item> -->
           <a-form-item
             v-if="pageAction === PageAction.VIEW"
+            hide-label
             :label="$t('operation.connectors.table.status')"
           >
-            <span class="readonly-view-label">
+            <SealFormItemWrap
+              :label="$t('operation.connectors.table.status')"
+              :style="{ width: `${InputWidth.LARGE}px` }"
+            >
               <StatusLabel
                 :status="{
                   status: get(formData, 'status.summaryStatus') || '',
@@ -213,9 +212,20 @@
                   error: get(formData, 'status.error')
                 }"
               ></StatusLabel>
-            </span>
+            </SealFormItemWrap>
+            <!-- <span class="readonly-view-label">
+              <StatusLabel
+                :status="{
+                  status: get(formData, 'status.summaryStatus') || '',
+                  text: get(formData, 'status.summaryStatus'),
+                  message: get(formData, 'status.summaryStatusMessage') || '',
+                  transitioning: get(formData, 'status.transitioning'),
+                  error: get(formData, 'status.error')
+                }"
+              ></StatusLabel>
+            </span> -->
           </a-form-item>
-          <a-form-item
+          <!-- <a-form-item
             v-if="pageAction === PageAction.VIEW"
             :label="$t('operation.connectors.table.coststatus')"
           >
@@ -224,7 +234,7 @@
                 getCostStatus(get(formData, 'status.conditions') || [])
               }}</span>
             </div>
-          </a-form-item>
+          </a-form-item> -->
         </a-form>
       </div>
       <EditPageFooter v-if="pageAction === PageAction.EDIT">

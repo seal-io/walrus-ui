@@ -17,6 +17,7 @@
           hide-label
           :label="$t('common.table.name')"
           :disabled="pageAction === PageAction.EDIT && !!id"
+          :validate-trigger="['change', 'input']"
           :rules="[
             {
               required: true,
@@ -38,13 +39,13 @@
             :max-length="63"
             show-word-limit
           ></seal-input>
-          <template #extra>
+          <!-- <template #extra>
             <div
               class="tips"
               :style="{ 'max-width': `${InputWidth.LARGE}px` }"
               >{{ $t('common.validate.labelName') }}</div
             >
-          </template>
+          </template> -->
         </a-form-item>
         <a-form-item hide-label>
           <SealFormItemWrap

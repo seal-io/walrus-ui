@@ -369,6 +369,7 @@
       line-height: 1.4;
 
       .type {
+        margin-top: 6px;
         color: rgba(78, 89, 105, 0.5);
         font-weight: var(--font-weight-regular);
       }

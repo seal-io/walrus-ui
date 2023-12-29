@@ -141,7 +141,7 @@ export default {
   'common.time.hour': 'hour',
   'common.time.minute': 'minutes',
   'common.issue.report': 'Report an issue',
-  'common.social.discord': 'Join our Discord',
+  'common.social.discord': 'Join Our Discord',
   'common.table.mark': 'Comment',
   'common.button.saveDeploy': 'Save and Deploy',
   'common.button.draft': 'Save Draft',

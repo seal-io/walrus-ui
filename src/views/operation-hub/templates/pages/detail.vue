@@ -52,9 +52,9 @@
             :label="$t('operation.connectors.table.name')"
             field="name"
             hide-asterisk
-            :hide-label="pageAction === PageAction.EDIT"
+            hide-label
             :disabled="!!id"
-            :validate-trigger="['change']"
+            :validate-trigger="['change', 'input']"
             :style="{ maxWidth: `${InputWidth.LARGE}px` }"
             :rules="[
               {
@@ -65,46 +65,41 @@
             ]"
           >
             <seal-input
-              v-if="pageAction === PageAction.EDIT"
               v-model.trim="formData.name"
+              :view-status="pageAction === PageAction.VIEW"
               :label="$t('operation.connectors.table.name')"
               :required="true"
               :style="{ width: `${InputWidth.LARGE}px` }"
               :max-length="63"
               show-word-limit
             ></seal-input>
-            <span v-else class="readonly-view-label">{{
-              formData.name || '-'
-            }}</span>
-            <template v-if="pageAction === PageAction.EDIT" #extra>
+
+            <!-- <template v-if="pageAction === PageAction.EDIT" #extra>
               <div class="tips">{{ $t('common.validate.labelName') }}</div>
-            </template>
+            </template> -->
           </a-form-item>
           <a-form-item
             :label="$t('operation.environments.table.description')"
             hide-asterisk
-            :hide-label="pageAction === PageAction.EDIT"
+            hide-label
             field="description"
           >
             <seal-textarea
-              v-if="pageAction === PageAction.EDIT"
               v-model="formData.description"
+              :view-status="pageAction === PageAction.VIEW"
               :label="$t('operation.environments.table.description')"
               :style="{ width: `${InputWidth.LARGE}px` }"
               :auto-size="{ minRows: 4, maxRows: 6 }"
               :max-length="200"
               show-word-limit
             ></seal-textarea>
-            <div v-else class="description-content readonly-view-label">{{
-              formData.description || '-'
-            }}</div>
           </a-form-item>
           <a-form-item
             field="source"
             :label="$t('operation.templates.detail.source')"
             :disabled="!!id"
             hide-asterisk
-            :hide-label="pageAction === PageAction.EDIT"
+            :hide-label="true"
             :validate-trigger="['change']"
             :rules="[
               {
@@ -114,15 +109,13 @@
             ]"
           >
             <seal-input
-              v-if="pageAction === PageAction.EDIT"
               v-model.trim="formData.source"
+              :view-status="pageAction === PageAction.VIEW"
               :label="$t('operation.templates.detail.source')"
               :required="true"
               :style="{ width: `${InputWidth.LARGE}px` }"
             ></seal-input>
-            <span v-else class="readonly-view-label">{{
-              formData.source || '-'
-            }}</span>
+
             <template v-if="pageAction === PageAction.EDIT" #extra>
               <div
                 :style="{
@@ -146,26 +139,34 @@
               pageAction === PageAction.VIEW &&
               _.get(formData, 'catalog.id')
             "
-            :label="$t('operation.templates.table.catalog')"
+            hide-label
           >
-            <span class="readonly-view-label">{{
-              route.query.catalog || ''
-            }}</span>
+            <seal-input
+              :view-status="true"
+              :model-value="route.query.catalog"
+              :label="$t('operation.templates.table.catalog')"
+              :style="{ width: `${InputWidth.LARGE}px` }"
+            ></seal-input>
           </a-form-item>
           <a-form-item
             v-if="id && pageAction === PageAction.VIEW"
-            :label="$t('operation.connectors.table.status')"
+            hide-label
+            :style="{ width: `${InputWidth.LARGE}px` }"
           >
-            <StatusLabel
-              style="margin-left: 12px"
-              :status="{
-                status: get(formData, 'status.summaryStatus') || '',
-                text: get(formData, 'status.summaryStatus'),
-                message: get(formData, 'status.summaryStatusMessage') || '',
-                transitioning: get(formData, 'status.transitioning'),
-                error: get(formData, 'status.error')
-              }"
-            ></StatusLabel>
+            <SealFormItemWrap
+              :label="$t('operation.connectors.table.status')"
+              :style="{ width: `100%` }"
+            >
+              <StatusLabel
+                :status="{
+                  status: get(formData, 'status.summaryStatus') || '',
+                  text: get(formData, 'status.summaryStatus'),
+                  message: get(formData, 'status.summaryStatusMessage') || '',
+                  transitioning: get(formData, 'status.transitioning'),
+                  error: get(formData, 'status.error')
+                }"
+              ></StatusLabel>
+            </SealFormItemWrap>
           </a-form-item>
         </a-form>
       </div>

@@ -52,26 +52,22 @@
         "
         :size="16"
       >
-        <a-button v-if="readOnly" size="small" type="text" @click="handleEdit">
+        <a-button v-if="readOnly" type="text" @click="handleEdit">
           <template #icon><icon-edit /></template>
           {{ $t('common.button.edit') }}
         </a-button>
         <a-button
           v-if="!readOnly"
-          size="small"
           type="primary"
           @click="handlePutTemplateSchema"
           >{{ $t('common.button.save') }}</a-button
         >
-        <a-button
-          v-if="!readOnly"
-          size="small"
-          type="outline"
-          @click="handleCancel"
-          >{{ $t('common.button.cancel') }}</a-button
-        >
+        <a-button v-if="!readOnly" type="outline" @click="handleCancel">{{
+          $t('common.button.cancel')
+        }}</a-button>
         <div id="btns-wrap" class="btns-wrapp">
           <MoreButtonActions
+            trigger="hover"
             :actions="actionList"
             container-id="#btns-wrap"
             style="top: 45px; right: 6px; left: auto"

@@ -10,6 +10,6 @@ export default {
   'resource.definition.detail.envTag': '环境标签',
   'resource.definition.detail.resourceTag': '资源标签',
   'resource.definition.detail.matchRule': '匹配规则',
-  'resource.definition.detail.rule': '规则-{name}',
+  'resource.definition.detail.rule': 'rule-{name}',
   'resource.definition.detail.rules.labelKey': '标签键不能为空'
 };

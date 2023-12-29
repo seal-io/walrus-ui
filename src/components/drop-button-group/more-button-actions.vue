@@ -17,7 +17,6 @@
         :key="index"
         :value="item.value"
         :style="{
-          lineHeight: '28px',
           color: 'var(--color-text-2)'
         }"
       >

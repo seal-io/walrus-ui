@@ -5,7 +5,8 @@
     :class="{
       'is-focused':
         isFocus || (Array.isArray(modelValue) ? modelValue.length : modelValue),
-      'prefix-icon': slots.prefix
+      'prefix-icon': slots.prefix,
+      'v-sel-view': viewStatus
     }"
     :style="{ width: $attrs.style?.width || 'max-content' }"
     @click="handleClick"
@@ -14,7 +15,7 @@
       <span
         ><span>{{ $attrs.label || placeholder }}</span>
         <span
-          v-if="$attrs.required"
+          v-if="$attrs.required && !viewStatus"
           class="bold-500 m-l-2 star"
           style="color: rgb(var(--danger-6))"
           >*</span
@@ -27,8 +28,10 @@
       </a-tooltip>
     </div>
     <a-select
+      v-if="!viewStatus"
       v-bind="$attrs"
       ref="input"
+      class="v-sel"
       :model-value="modelValue"
       @clear="handleClear"
       @change="handleChange"
@@ -47,11 +50,30 @@
         ></a-empty>
       </template>
     </a-select>
+    <a-select
+      v-else
+      v-bind="$attrs"
+      ref="input"
+      :model-value="modelValue"
+      :popup-visible="false"
+      class="v-sel"
+      @clear="handleClear"
+      @change="handleChange"
+      @input="handleInput"
+      @focus="handleFocus"
+      @input-value-change="handleInputValueChange"
+    >
+      <template v-for="slot in Object.keys(slots)" #[slot]="data" :key="slot">
+        <slot :name="slot" v-bind="{ ...data }"></slot>
+      </template>
+      <template #arrow-icon></template>
+    </a-select>
   </span>
 </template>
 
 <script lang="ts" setup>
-  import { useAttrs, useSlots, ref } from 'vue';
+  import i18n from '@/locale';
+  import { useAttrs, useSlots, ref, PropType, computed } from 'vue';
   import { vOnClickOutside } from '@vueuse/components';
 
   const props = defineProps({
@@ -62,6 +84,14 @@
     inputValue: {
       type: String,
       default: ''
+    },
+    isLocale: {
+      type: Boolean,
+      default: false
+    },
+    viewStatus: {
+      type: Boolean,
+      default: false
     },
     placeholder: {
       type: String,
@@ -117,6 +147,7 @@
     emits('change', '');
   };
   const handleClick = () => {
+    if (props.viewStatus) return;
     isFocus.value = true;
     input.value?.click?.();
   };
@@ -135,4 +166,36 @@
 
 <style lang="less" scoped>
   @import url('../style/index.less');
+
+  .seal-relative.wrapper.select {
+    &.v-sel-view {
+      cursor: default;
+
+      .label {
+        cursor: default;
+      }
+    }
+
+    :deep(.arco-select-view-single) {
+      &.v-sel {
+        cursor: default;
+
+        &:focus-within {
+          border: 1px solid var(--color-border-2) !important;
+          box-shadow: none !important;
+        }
+      }
+
+      &.v-sel:hover {
+        border: 1px solid var(--color-border-2) !important;
+        box-shadow: none !important;
+      }
+    }
+
+    :deep(.arco-select-view-disabled) {
+      &.v-sel:hover {
+        border-color: transparent !important;
+      }
+    }
+  }
 </style>

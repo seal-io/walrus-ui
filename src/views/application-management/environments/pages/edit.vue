@@ -20,7 +20,9 @@
           pageAction === PageAction.VIEW ? `${InputWidth.XLARGE}px` : '100%'
       }"
       :padding="
-        route.name === PROJECT.EnvDetail ? '0' : `20px var(--container-padding)`
+        route.name === PROJECT.EnvDetail
+          ? '0'
+          : `20px var(--card-content-padding)`
       "
     >
       <GroupTitle
@@ -42,8 +44,8 @@
         <a-form-item
           :label="$t('operation.environments.table.name')"
           field="name"
-          :validate-trigger="['change']"
-          :hide-label="pageAction === PageAction.EDIT"
+          :validate-trigger="['change', 'input']"
+          :hide-label="true"
           :rules="[
             {
               required: pageAction === PageAction.EDIT,
@@ -53,8 +55,8 @@
           ]"
         >
           <seal-input
-            v-if="pageAction === PageAction.EDIT"
             v-model.trim="formData.name"
+            :view-status="pageAction === PageAction.VIEW"
             :disabled="!!id && !isCloneAction"
             :label="$t('operation.environments.table.name')"
             :required="true"
@@ -62,18 +64,15 @@
             :max-length="63"
             show-word-limit
           ></seal-input>
-          <span v-else class="readonly-view-label">{{
-            formData.name || '-'
-          }}</span>
-          <template v-if="pageAction === PageAction.EDIT" #extra>
+          <!-- <template v-if="pageAction === PageAction.EDIT" #extra>
             <div :style="{ maxWidth: `${InputWidth.LARGE}px` }">{{
               $t('common.validate.labelName')
             }}</div>
-          </template>
+          </template> -->
         </a-form-item>
         <a-form-item
           :label="$t('applications.environment.type')"
-          :hide-label="pageAction === PageAction.EDIT"
+          :hide-label="true"
           hide-asterisk
           field="type"
           :rules="[
@@ -84,8 +83,8 @@
           ]"
         >
           <seal-select
-            v-if="pageAction === PageAction.EDIT"
             v-model="formData.type"
+            :view-status="pageAction === PageAction.VIEW"
             :label="$t('applications.environment.type')"
             :required="true"
             :disabled="!!id && !isCloneAction"
@@ -93,32 +92,26 @@
             :style="{ width: `${InputWidth.LARGE}px` }"
             @change="handleEnvironmentTypeChange"
           ></seal-select>
-          <span v-else class="readonly-view-label">{{
-            $t(EnvironmentTypeMap[formData.type] || '')
-          }}</span>
         </a-form-item>
         <a-form-item
           :label="$t('operation.environments.table.description')"
           field="description"
-          :hide-label="pageAction === PageAction.EDIT"
+          :hide-label="true"
         >
           <seal-textarea
-            v-if="pageAction === PageAction.EDIT"
             v-model="formData.description"
+            :view-status="pageAction === PageAction.VIEW"
             :label="$t('operation.environments.table.description')"
             :style="{ width: `${InputWidth.LARGE}px` }"
             :max-length="200"
             show-word-limit
             :auto-size="{ minRows: 4, maxRows: 6 }"
           ></seal-textarea>
-          <div v-else class="description-content readonly-view-label">{{
-            formData.description || '-'
-          }}</div>
         </a-form-item>
 
         <a-form-item
           :label="$t(`applications.projects.form.label`)"
-          :hide-label="pageAction === PageAction.EDIT"
+          :hide-label="true"
         >
           <SealFormItemWrap
             v-if="pageAction === PageAction.EDIT"
@@ -170,9 +163,13 @@
               </a-link>
             </template>
           </SealFormItemWrap>
-          <div v-else class="readonly-view-label">
+          <SealFormItemWrap
+            v-else
+            :label="$t(`applications.projects.form.label`)"
+            :style="{ width: `${InputWidth.LARGE}px` }"
+          >
             <LabelsList :labels="formData.labels"></LabelsList>
-          </div>
+          </SealFormItemWrap>
         </a-form-item>
         <GroupTitle
           class="m-t-20"
@@ -333,6 +330,7 @@
   import usePageAction from '@/hooks/use-page-action';
   import xInputGroup from '@/components/form-create/custom-components/x-input-group.vue';
   import useLabelsActions from '@/components/form-create/hooks/use-labels-action';
+  import LabelsList from '@/components/form-create/custom-components/labels-list.vue';
   import useProjectBreadcrumbData from '@/views/application-management/projects/hooks/use-project-breadcrumb-data';
   import useCompleteData from '@/views/application-management/services/hooks/use-complete-data';
   import { BreadcrumbOptions } from '@/views/config/interface';
@@ -340,7 +338,6 @@
   import { EnvironFormData } from '../config/interface';
   import connectorsTable from '../components/connectors.vue';
   import ConnectorSelector from '../components/connector-selector.vue';
-  import LabelsList from '../../services/components/labels-list.vue';
   import VariablesSelector from '../components/variables-selector.vue';
   import {
     createEnvironment,

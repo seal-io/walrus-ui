@@ -1,5 +1,6 @@
 <template>
   <span
+    v-if="!viewStatus"
     class="seal-relative wrapper textarea"
     :class="{
       'is-focused': isFocus || modelValue,
@@ -42,6 +43,13 @@
       </template>
     </a-textarea>
   </span>
+  <SealViewItemWrap
+    v-else
+    :label="$attrs.label || placeholder"
+    :style="{ width: $attrs.style?.width || 'max-content' }"
+  >
+    <span>{{ modelValue }}</span>
+  </SealViewItemWrap>
 </template>
 
 <script lang="ts" setup>
@@ -55,6 +63,10 @@
     placeholder: {
       type: String,
       default: ''
+    },
+    viewStatus: {
+      type: Boolean,
+      default: false
     },
     popupInfo: {
       type: String,

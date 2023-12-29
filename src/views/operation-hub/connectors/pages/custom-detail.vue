@@ -53,9 +53,10 @@
           <a-form-item
             :label="$t('operation.connectors.form.name')"
             hide-asterisk
-            :hide-label="pageAction === PageAction.EDIT"
+            hide-label
             field="name"
             :disabled="!!id"
+            :validate-trigger="['change', 'input']"
             :style="{ maxWidth: `${InputWidth.LARGE}px` }"
             :rules="[
               {
@@ -66,26 +67,24 @@
             ]"
           >
             <seal-input
-              v-if="pageAction === PageAction.EDIT"
               v-model.trim="formData.name"
+              :view-status="pageAction === PageAction.VIEW"
               :label="$t('operation.connectors.form.name')"
               :required="true"
               :style="{ width: `${InputWidth.LARGE}px` }"
               :max-length="63"
               show-word-limit
             ></seal-input>
-            <span v-else class="readonly-view-label">{{
-              formData.name || '-'
-            }}</span>
-            <template v-if="pageAction === PageAction.EDIT" #extra>
+
+            <!-- <template v-if="pageAction === PageAction.EDIT" #extra>
               <div :style="{ maxWidth: `${InputWidth.LARGE}px` }">{{
                 $t('common.validate.labelName')
               }}</div>
-            </template>
+            </template> -->
           </a-form-item>
           <a-form-item
             :label="$t('operation.connectors.table.environmentType')"
-            :hide-label="pageAction === PageAction.EDIT"
+            hide-label
             hide-asterisk
             field="applicableEnvironmentType"
             :disabled="!!id"
@@ -97,21 +96,21 @@
             ]"
           >
             <seal-select
-              v-if="pageAction === PageAction.EDIT"
               v-model="formData.applicableEnvironmentType"
+              :view-status="pageAction === PageAction.VIEW"
               :label="$t('operation.connectors.table.environmentType')"
               :required="true"
               :options="EnvironmentTypeList"
               :style="{ width: `${InputWidth.LARGE}px` }"
             ></seal-select>
-            <span v-else class="readonly-view-label">{{
+            <!-- <span v-else class="readonly-view-label">{{
               $t(EnvironmentTypeMap[formData.applicableEnvironmentType] || '')
-            }}</span>
+            }}</span> -->
           </a-form-item>
           <a-form-item
             :label="$t('operation.connectors.form.type')"
             hide-asterisk
-            :hide-label="pageAction === PageAction.EDIT"
+            hide-label
             field="type"
             :rules="[
               {
@@ -121,23 +120,19 @@
             ]"
           >
             <seal-input
-              v-if="pageAction === PageAction.EDIT"
               v-model="formData.type"
+              :view-status="pageAction === PageAction.VIEW"
               :disabled="formData.id"
               :label="$t('operation.connectors.form.type')"
               :required="true"
               :style="{ width: `${InputWidth.LARGE}px` }"
             ></seal-input>
-            <span
-              v-else-if="pageAction === PageAction.VIEW"
-              class="readonly-view-label"
-              >{{ formData.type || '-' }}</span
-            >
           </a-form-item>
           <a-form-item
             :label="$t('operation.connectors.form.attribute')"
             hide-asterisk
-            :hide-label="pageAction === PageAction.EDIT"
+            hide-label
+            no-style
             field="configData"
             :rules="[
               {
@@ -227,13 +222,17 @@
                 _.filter(attributeList, (item) => item.key).length
               "
             >
+              <div class="arco-form-item-label m-b-10"
+                ><span>{{
+                  $t('operation.connectors.form.attribute')
+                }}</span></div
+              >
               <DescriptionTable
-                style="width: 600px; margin-left: 12px"
+                :style="{ width: `${InputWidth.LARGE}px` }"
                 :data-list="attributeList"
               >
                 <template #value="{ row }">
                   <AutoTip
-                    style="width: 350px"
                     :tooltip-props="{
                       content: row.value
                     }"
