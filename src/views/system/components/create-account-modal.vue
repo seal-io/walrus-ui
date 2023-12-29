@@ -29,7 +29,7 @@
         :label="$t('profile.account.name')"
         hide-label
         field="name"
-        validate-trigger="change"
+        :validate-trigger="['change', 'input']"
         :rules="[
           {
             required: true,
@@ -47,13 +47,14 @@
           style="width: 100%"
           :disabled="action === 'edit'"
         ></seal-input>
-        <template #extra>
+        <!-- <template #extra>
           <div>{{ $t('account.create.rules.username') }}</div>
-        </template>
+        </template> -->
       </a-form-item>
       <a-form-item
         :label="$t('profile.account.password')"
         field="password"
+        :validate-trigger="['change', 'input']"
         hide-label
         :rules="[
           {
@@ -64,14 +65,18 @@
       >
         <a-input-group style="width: 100%">
           <seal-input-password
-            v-model="formData.password"
-            style="width: 100%; border-radius:  var(--border-radius-small); 0 0 4px"
+            v-model.trim="formData.password"
+            style="
+              width: 100%;
+              border-radius: var(--border-radius-small) 0 0
+                var(--border-radius-small);
+            "
             :label="$t('profile.account.password')"
             :required="action === 'create'"
           />
           <a-button
             type="primary"
-            style="width: 60px; height: 52px"
+            style="width: 60px; height: 54px"
             @click="handleGeneratePassword"
           >
             <template #icon>

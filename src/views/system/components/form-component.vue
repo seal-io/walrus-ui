@@ -87,7 +87,7 @@
 </template>
 
 <script lang="ts">
-  import { replace } from 'lodash';
+  import _, { replace } from 'lodash';
   import { useI18n } from 'vue-i18n';
   import { defineComponent, PropType } from 'vue';
   import { SettingsItem, ValueType, ChildrenItem } from '../config';
@@ -145,7 +145,7 @@
         if (this.matchType === 'url' && value) {
           const list = value.split('/');
           const val = this.formatValue(list);
-          this.$emit('update:modelValue', val);
+          this.$emit('update:modelValue', _.trim(val));
         }
       },
       handleInput(val) {

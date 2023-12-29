@@ -10,7 +10,7 @@ export const ProjectPermissionResource = [...project];
 export default [
   ...dashboard,
   ...project,
-  ...costManagement,
+  // ...costManagement,
   ...operationHub,
   ...systemSettings
 ];

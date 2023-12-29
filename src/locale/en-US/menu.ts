@@ -24,6 +24,7 @@ export default {
   'menu.operatorHub.resourceDefinitions': 'Resource Definitions',
   'menu.subjects': 'User Management',
   'menu.systemsettings.user': 'Users',
+  'menu.systemsettings.permissions': 'User Permissions',
   'menu.systemsettings.config': 'Configuration Management',
   'mneu.user.account': 'Account'
 };

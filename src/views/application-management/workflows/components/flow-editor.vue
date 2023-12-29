@@ -204,7 +204,7 @@
                     <a-form-item
                       field="name"
                       hide-label
-                      validate-trigger="change"
+                      validate-trigger={['change', 'input']}
                       rules={[
                         {
                           required: true,
@@ -212,13 +212,6 @@
                           message: t('common.validate.labelName')
                         }
                       ]}
-                      v-slots={{
-                        extra: () => (
-                          <span class="tips">
-                            {t('common.validate.labelName')}
-                          </span>
-                        )
-                      }}
                     >
                       <seal-input
                         v-model={flowBasic.value.name}

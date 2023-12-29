@@ -24,6 +24,7 @@ export default {
   'menu.systemsettings': '系统设置',
   'menu.subjects': '用户管理',
   'menu.systemsettings.user': '用户管理',
+  'menu.systemsettings.permissions': '用户权限',
   'menu.systemsettings.config': '配置管理',
   'mneu.user.account': '账号'
 };

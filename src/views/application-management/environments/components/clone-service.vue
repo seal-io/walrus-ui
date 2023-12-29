@@ -81,7 +81,7 @@
               :label="$t('operation.environments.table.name')"
               field="name"
               hide-label
-              :validate-trigger="['change']"
+              :validate-trigger="['change', 'input']"
               :rules="[
                 {
                   required: pageAction === PageAction.EDIT,
@@ -98,11 +98,11 @@
                 :label="$t('operation.environments.table.name')"
                 show-word-limit
               ></seal-input>
-              <template #extra>
+              <!-- <template #extra>
                 <div style="max-width: 500px">{{
                   $t('common.validate.labelName')
                 }}</div>
-              </template>
+              </template> -->
             </a-form-item>
             <a-form-item
               :label="$t(`applications.projects.form.label`)"
