@@ -38,7 +38,7 @@
         >
           {{ $t('applications.applications.create.resource') }}</a-button
         >
-        <!-- <a-button
+        <a-button
           v-if="
             userStore.hasProjectResourceActions({
               projectID,
@@ -55,7 +55,7 @@
           }}<span v-if="selectedKeys.length">{{
             `(${selectedKeys.length})`
           }}</span></a-button
-        > -->
+        >
         <a-button
           v-if="
             userStore.hasProjectResourceActions({
@@ -242,7 +242,8 @@
       await batchDeployService({
         items: _.map(resourceSelectKeys.value, (val) => {
           return { id: val as string };
-        })
+        }),
+        reuseAttributes: true
       });
       execSucceed();
     } catch (error) {

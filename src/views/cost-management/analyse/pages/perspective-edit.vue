@@ -33,7 +33,7 @@
           <a-form-item
             :label="$t('cost.analyse.table.name')"
             field="name"
-            validate-trigger="change"
+            :validate-trigger="['change', 'input']"
             hide-label
             :rules="[
               {
@@ -54,11 +54,11 @@
               :show-word-limit="!viewable"
             ></seal-input>
             <span v-else class="readonly-view-label">{{ formData.name }}</span>
-            <template v-if="!viewable" #extra>
+            <!-- <template v-if="!viewable" #extra>
               <div :style="{ maxWidth: `${InputWidth.LARGE}px` }">{{
                 $t('common.validate.labelName')
               }}</div>
-            </template>
+            </template> -->
           </a-form-item>
         </ComCard>
 

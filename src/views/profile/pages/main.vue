@@ -27,7 +27,7 @@
         >
           <a-tab-pane
             :key="UserTabs.USERS"
-            :title="$t('propfile.account.user.info')"
+            :title="$t('menu.systemsettings.permissions')"
           >
             <UserInfo></UserInfo>
           </a-tab-pane>

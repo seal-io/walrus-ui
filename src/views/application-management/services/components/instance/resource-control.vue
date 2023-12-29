@@ -14,24 +14,32 @@
         :editable="true"
         @delete="handleDelete"
       >
-        <a-tab-pane v-for="item in tabs" :key="item.name" :title="item.name">
+        <a-tab-pane v-for="item in tabs" :key="item.tabName" :title="item.name">
           <template #title>
             <div style="width: 150px"
               ><AutoTip :tooltip-props="{ content: item.name }">
+                <i
+                  v-if="item.tabType === drawerType.LOGS"
+                  class="iconfont icon-rizhi font-16 m-r-4"
+                ></i>
+                <icon-code-square
+                  v-if="item.tabType === drawerType.TERMINAL"
+                  class="size-16 m-r-4"
+                />
                 <span>{{ item.name }}</span>
               </AutoTip></div
             >
           </template>
           <tabTerminal
-            v-if="type === 'terminal'"
-            :container-id="item.name"
+            v-if="item.tabType === drawerType.TERMINAL"
+            :container-id="item.tabName"
             :height="containerHeight"
             :node-info="item.nodeInfo"
             :data-list="item.dataList"
           ></tabTerminal>
           <tabLogs
-            v-if="type === 'logs'"
-            :container-id="item.name"
+            v-if="item.tabType === drawerType.LOGS"
+            :container-id="item.tabName"
             :data-list="item.dataList"
             :node-info="item.nodeInfo"
             :height="containerHeight"
@@ -95,6 +103,9 @@
           dataList: ResourceKey[];
           name: string;
           id: string;
+          tabName: string;
+          tabId: string;
+          tabType: string;
           nodeInfo: object;
         }[]
       >,
@@ -103,6 +114,10 @@
       }
     }
   });
+  const drawerType = {
+    TERMINAL: 'terminal',
+    LOGS: 'logs'
+  };
   const activeKey = ref<string>('terminnal');
   const containerHeight = ref(270);
   const emits = defineEmits(['update:visible', 'update:tabs', 'delete']);
@@ -116,13 +131,13 @@
     emits('update:tabs', []);
   };
   const handleOpened = () => {
-    activeKey.value = _.get(props.tabs, '0.name') || `${Date.now()}`;
+    activeKey.value = _.get(props.tabs, '0.tabName') || `${Date.now()}`;
   };
   const handleDelete = (key) => {
     emits('delete', key);
     nextTick(() => {
       if (activeKey.value === key) {
-        activeKey.value = _.get(props.tabs, '0.name') || `${Date.now()}`;
+        activeKey.value = _.get(props.tabs, '0.tabName') || `${Date.now()}`;
       }
     });
   };
@@ -193,7 +208,7 @@
 
     :deep(.arco-tabs) {
       .arco-tabs-nav {
-        background-color: var(--color-fill-1);
+        background-color: var(--color-neutral-3);
       }
 
       .arco-tabs-content {

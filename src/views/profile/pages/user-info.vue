@@ -1,6 +1,6 @@
 <template>
   <div class="wrapper">
-    <a-form
+    <!-- <a-form
       :model="formData"
       auto-label-width
       layout="inline"
@@ -12,7 +12,7 @@
       <a-form-item :label="$t('profile.account.form.role')" auto-label-width>
         <span class="readonly-view-label">{{ $t(userRole) }}</span>
       </a-form-item>
-    </a-form>
+    </a-form> -->
     <div>
       <PermissionTable
         v-if="projectPermissions.length"

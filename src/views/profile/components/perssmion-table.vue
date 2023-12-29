@@ -29,7 +29,7 @@
       </span>
     </DefinePermissionState>
     <div class="search-box">
-      <GroupTitle :title="title" iconed :bordered="false"></GroupTitle>
+      <GroupTitle :title="title" :bordered="false"></GroupTitle>
       <a-space v-if="pagination && permissionList.length > 10" class="page">
         <a-input-search
           v-model="query"
@@ -48,7 +48,7 @@
     <a-table
       column-resizable
       style="margin-bottom: 40px"
-      :bordered="true"
+      :bordered="false"
       :data="resultList"
       :pagination="false"
       :row-class="setRowClass"
@@ -96,64 +96,57 @@
           </template>
         </a-table-column>
         <a-table-column
-          :body-cell-class="setRowClass"
           align="left"
-          data-index="actions"
-          :title="$t('propfile.permission.table.permission')"
+          data-index="post"
+          :body-cell-class="setRowClass"
+          :width="65"
+          :title="$t('common.permission.action.post')"
         >
-          <a-table-column
-            align="left"
-            data-index="post"
-            :body-cell-class="setRowClass"
-            :width="65"
-            :title="$t('common.permission.action.post')"
-          >
-            <template #cell="{ record }">
-              <ReusePermissionState
-                v-bind="{ record, action: Actions.POST }"
-              ></ReusePermissionState>
-            </template>
-          </a-table-column>
-          <a-table-column
-            align="left"
-            data-index="get"
-            :body-cell-class="setRowClass"
-            :width="65"
-            :title="$t('common.permission.action.get')"
-          >
-            <template #cell="{ record }">
-              <ReusePermissionState
-                v-bind="{ record, action: Actions.GET }"
-              ></ReusePermissionState>
-            </template>
-          </a-table-column>
+          <template #cell="{ record }">
+            <ReusePermissionState
+              v-bind="{ record, action: Actions.POST }"
+            ></ReusePermissionState>
+          </template>
+        </a-table-column>
+        <a-table-column
+          align="left"
+          data-index="get"
+          :body-cell-class="setRowClass"
+          :width="65"
+          :title="$t('common.permission.action.get')"
+        >
+          <template #cell="{ record }">
+            <ReusePermissionState
+              v-bind="{ record, action: Actions.GET }"
+            ></ReusePermissionState>
+          </template>
+        </a-table-column>
 
-          <a-table-column
-            align="left"
-            data-index="put"
-            :body-cell-class="setRowClass"
-            :width="65"
-            :title="$t('common.permission.action.put')"
-          >
-            <template #cell="{ record }">
-              <ReusePermissionState
-                v-bind="{ record, action: Actions.PUT }"
-              ></ReusePermissionState>
-            </template>
-          </a-table-column>
-          <a-table-column
-            align="left"
-            data-index="delete"
-            :body-cell-class="setRowClass"
-            :width="65"
-            :title="$t('common.permission.action.delete')"
-          >
-            <template #cell="{ record }">
-              <ReusePermissionState
-                v-bind="{ record, action: Actions.DELETE }"
-              ></ReusePermissionState>
-            </template>
-          </a-table-column>
+        <a-table-column
+          align="left"
+          data-index="put"
+          :body-cell-class="setRowClass"
+          :width="65"
+          :title="$t('common.permission.action.put')"
+        >
+          <template #cell="{ record }">
+            <ReusePermissionState
+              v-bind="{ record, action: Actions.PUT }"
+            ></ReusePermissionState>
+          </template>
+        </a-table-column>
+        <a-table-column
+          align="left"
+          data-index="delete"
+          :body-cell-class="setRowClass"
+          :width="65"
+          :title="$t('common.permission.action.delete')"
+        >
+          <template #cell="{ record }">
+            <ReusePermissionState
+              v-bind="{ record, action: Actions.DELETE }"
+            ></ReusePermissionState>
+          </template>
         </a-table-column>
       </template>
     </a-table>

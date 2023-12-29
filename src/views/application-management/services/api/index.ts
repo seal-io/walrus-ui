@@ -148,8 +148,11 @@ export const redeployService = (data) => {
   return axios.post(`${SERVICE_API_PREFIX()}${SERVICE_API}/${data.id}/deploy`);
 };
 
-export const batchDeployService = (data: { items: { id: string }[] }) => {
-  return axios.post(`${SERVICE_API_PREFIX()}${SERVICE_API}/_/deploy`, data);
+export const batchDeployService = (data: {
+  items: { id: string }[];
+  reuseAttributes: boolean;
+}) => {
+  return axios.post(`${SERVICE_API_PREFIX()}${SERVICE_API}/_/upgrade`, data);
 };
 
 export const batchStopService = (data: { items: { id: string }[] }) => {

@@ -89,7 +89,7 @@ export const taskSettings: SettingsItem = {
           type: 'string'
         }
       ]
-    },
+    }
     // {
     //   id: '',
     //   key: '',
@@ -144,65 +144,65 @@ export const taskSettings: SettingsItem = {
     //     }
     //   ]
     // },
-    {
-      id: '',
-      key: '',
-      label: 'system.setting.task.finops',
-      value: '',
-      type: 'groupTitle',
-      component: {},
-      parentId: '',
-      isEditable: false,
-      style: {
-        fontWeight: 500,
-        marginTop: '10px',
-        marginBottom: '15px'
-      },
-      subGroup: [
-        {
-          id: 'ResourceComponentLabelApplyCronExpr',
-          key: 'ResourceComponentLabelApplyCronExpr',
-          label: 'system.setting.ResourceLabelApplyCronExpr',
-          desc: 'system.setting.ResourceLabelApplyCronExpr.desc',
-          parentId: '',
-          component: {
-            type: 'input',
-            required: true,
-            validator(val, callback) {
-              if (validateCron(val)) {
-                callback();
-              } else {
-                callback(i18n.global.t('system.setting.rules.cron'));
-              }
-            },
-            extra: 'system.setting.cron.extra'
-          },
-          value: '',
-          type: 'string'
-        },
-        {
-          id: 'ConnectorCostCollectCronExpr',
-          key: 'ConnectorCostCollectCronExpr',
-          label: 'system.setting.CostCollectCronExpr',
-          desc: 'system.setting.CostCollectCronExpr.desc',
-          parentId: '',
-          component: {
-            type: 'input',
-            required: true,
-            validator(val, callback) {
-              if (validateCron(val)) {
-                callback();
-              } else {
-                callback(i18n.global.t('system.setting.rules.cron'));
-              }
-            },
-            extra: 'system.setting.cron.extra'
-          },
-          value: '',
-          type: 'string'
-        }
-      ]
-    }
+    // {
+    //   id: '',
+    //   key: '',
+    //   label: 'system.setting.task.finops',
+    //   value: '',
+    //   type: 'groupTitle',
+    //   component: {},
+    //   parentId: '',
+    //   isEditable: false,
+    //   style: {
+    //     fontWeight: 500,
+    //     marginTop: '10px',
+    //     marginBottom: '15px'
+    //   },
+    //   subGroup: [
+    //     {
+    //       id: 'ResourceComponentLabelApplyCronExpr',
+    //       key: 'ResourceComponentLabelApplyCronExpr',
+    //       label: 'system.setting.ResourceLabelApplyCronExpr',
+    //       desc: 'system.setting.ResourceLabelApplyCronExpr.desc',
+    //       parentId: '',
+    //       component: {
+    //         type: 'input',
+    //         required: true,
+    //         validator(val, callback) {
+    //           if (validateCron(val)) {
+    //             callback();
+    //           } else {
+    //             callback(i18n.global.t('system.setting.rules.cron'));
+    //           }
+    //         },
+    //         extra: 'system.setting.cron.extra'
+    //       },
+    //       value: '',
+    //       type: 'string'
+    //     },
+    //     {
+    //       id: 'ConnectorCostCollectCronExpr',
+    //       key: 'ConnectorCostCollectCronExpr',
+    //       label: 'system.setting.CostCollectCronExpr',
+    //       desc: 'system.setting.CostCollectCronExpr.desc',
+    //       parentId: '',
+    //       component: {
+    //         type: 'input',
+    //         required: true,
+    //         validator(val, callback) {
+    //           if (validateCron(val)) {
+    //             callback();
+    //           } else {
+    //             callback(i18n.global.t('system.setting.rules.cron'));
+    //           }
+    //         },
+    //         extra: 'system.setting.cron.extra'
+    //       },
+    //       value: '',
+    //       type: 'string'
+    //     }
+    //   ]
+    // }
   ]
 };
 

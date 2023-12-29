@@ -70,6 +70,7 @@
             field="selector.projectName"
             hide-label
             :label="$t('resource.definition.detail.projectName')"
+            :validate-trigger="['change', 'input']"
             :rules="[
               {
                 required: true,

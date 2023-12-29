@@ -118,7 +118,7 @@ export default {
   'common.table.yes': 'Yes',
   'common.table.no': 'No',
   'common.validate.labelName':
-    'Contains only lowercase alphanumeric or "-", starts with an alphanumeric and ends with an alphanumeric.',
+    'Only contains lowercase alphanumeric or "-", starts with an alphanumeric and ends with an alphanumeric.',
   'common.search.nodata': 'no matching data',
   'common.data.empty': 'No Data',
   'common.tips.change': 'there are unsaved changes!',

@@ -20,7 +20,15 @@ export default function useResourceControl() {
   const terminalShow = ref(false);
   const updateActive = ref('');
   const drawerTabs = ref<
-    { dataList: ResourceKey[]; name: string; id: string; nodeInfo: object }[]
+    {
+      dataList: ResourceKey[];
+      name: string;
+      id: string;
+      nodeInfo: object;
+      tabType: string;
+      tabId: string;
+      tabName: string;
+    }[]
   >([]);
 
   listenerCloseControlPanel(() => {
@@ -28,43 +36,49 @@ export default function useResourceControl() {
     drawerTabs.value = [];
   });
   const handleConnectTerminal = (row) => {
-    if (modalType.value === drawerType.LOGS) {
-      modalType.value = drawerType.TERMINAL;
-      drawerTabs.value = [];
-      terminalShow.value = false;
-    }
+    // if (modalType.value === drawerType.LOGS) {
+    //   modalType.value = drawerType.TERMINAL;
+    //   drawerTabs.value = [];
+    //   terminalShow.value = false;
+    // }
     drawerTabs.value.push({
       dataList: getResourceKeyList({ ...row }, resourceAction.Executable),
       name: row.name,
+      tabType: drawerType.TERMINAL,
+      tabName: `${row.name}-terminal`,
+      tabId: `${row.id}-terminal`,
       id: row.id,
       nodeInfo: { ...row }
     });
-    updateActive.value = row.name;
-    drawerTabs.value = _.uniqBy(drawerTabs.value, 'id');
+    updateActive.value = `${row.name}-terminal`;
+    drawerTabs.value = _.uniqBy(drawerTabs.value, 'tabId');
     setTimeout(() => {
       terminalShow.value = true;
     }, 100);
   };
   const handleViewLogs = (row) => {
-    if (modalType.value === drawerType.TERMINAL) {
-      modalType.value = drawerType.LOGS;
-      drawerTabs.value = [];
-      terminalShow.value = false;
-    }
+    // if (modalType.value === drawerType.TERMINAL) {
+    //   modalType.value = drawerType.LOGS;
+    //   drawerTabs.value = [];
+    //   terminalShow.value = false;
+    // }
     drawerTabs.value.push({
       dataList: getResourceKeyList({ ...row }, resourceAction.Loggable),
       name: row.name,
+      tabType: drawerType.LOGS,
+      tabName: `${row.name}-logs`,
+      tabId: `${row.id}-logs`,
       id: row.id,
       nodeInfo: { ...row }
     });
-    updateActive.value = row.name;
-    drawerTabs.value = _.uniqBy(drawerTabs.value, 'id');
+    updateActive.value = `${row.name}-logs`;
+    drawerTabs.value = _.uniqBy(drawerTabs.value, 'tabId');
     setTimeout(() => {
       terminalShow.value = true;
     }, 100);
   };
   const handleTerminalDelete = (key) => {
-    const index = _.findIndex(drawerTabs.value, (item) => item.name === key);
+    const index = _.findIndex(drawerTabs.value, (item) => item.tabName === key);
     drawerTabs.value.splice(index, 1);
     if (!drawerTabs.value.length) {
       terminalShow.value = false;
