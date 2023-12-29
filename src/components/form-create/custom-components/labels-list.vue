@@ -1,27 +1,29 @@
 <template>
-  <div class="labels-wrap">
-    <span
+  <a-space direction="vertical" fill class="labels-wrap">
+    <div
       v-for="(item, index) in labelList"
       :key="index"
-      class="label-item"
-      :style="{ backgroundColor: bgColor }"
+      class="item"
+      style="width: 100%"
     >
-      <slot name="item" :data="{ ...item }">
-        <AutoTip
-          :tooltip-props="{
-            content: `${item.key}:${JSON.stringify(item.value)}`
-          }"
-        >
-          <span>
-            <span>{{ item.key }}:{{ item.value }}</span>
-          </span>
-        </AutoTip>
-      </slot>
-    </span>
-  </div>
+      <SealViewItemWrap :label="$t('common.input.key')">
+        <Autotip style="width: 100%">
+          <span>{{ item.key }}</span>
+        </Autotip>
+      </SealViewItemWrap>
+      <div class="separator">:</div>
+      <SealViewItemWrap :label="$t('common.input.value')">
+        <Autotip style="width: 100%">
+          {{ item.value }}
+        </Autotip>
+      </SealViewItemWrap>
+    </div>
+  </a-space>
 </template>
 
 <script lang="ts" setup>
+  import SealViewItemWrap from '@/components/seal-form/components/seal-view-item-wrap.vue';
+  import Autotip from '@arco-design/web-vue/es/_components/auto-tooltip/auto-tooltip';
   import { computed, PropType } from 'vue';
   import { get, keys, map } from 'lodash';
 
@@ -64,24 +66,21 @@
 
 <style lang="less" scoped>
   .labels-wrap {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
+    .item {
+      display: flex;
+      align-items: center;
 
-    .label-item {
-      display: inline-block;
-      max-width: 160px;
-      height: 24px;
-      margin-top: 1px;
-      margin-right: 10px;
-      padding: 2px 10px;
-      overflow: hidden;
-      line-height: 18px;
-      white-space: nowrap;
-      text-overflow: ellipsis;
-      background-color: rgba(var(--arcoblue-1), 1);
-      // color: var(--color-text-2);
-      border-radius: 12px;
+      .seal-view-item-wrap {
+        flex: 1;
+        width: 50%;
+      }
+
+      .separator {
+        display: flex;
+        justify-content: center;
+        padding: 0 4px;
+        color: var(--color-text-2);
+      }
     }
   }
 </style>

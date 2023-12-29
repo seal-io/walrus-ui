@@ -10,6 +10,6 @@ export default {
   'resource.definition.detail.envTag': 'Environment Labels',
   'resource.definition.detail.resourceTag': 'Resource Labels',
   'resource.definition.detail.matchRule': 'Match Rules',
-  'resource.definition.detail.rule': 'Rule-{name}',
+  'resource.definition.detail.rule': 'rule-{name}',
   'resource.definition.detail.rules.labelKey': 'label Key cannot be empty'
 };

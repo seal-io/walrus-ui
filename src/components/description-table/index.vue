@@ -1,47 +1,48 @@
 <template>
-  <a-table
-    class="description-table"
-    style="margin-bottom: 10px；"
-    :bordered="true"
-    :data="dataList"
-    :pagination="false"
-    :virtual-list-props="virtualProps"
-  >
-    <template #columns>
-      <a-table-column
-        ellipsis
-        tooltip
-        :width="220"
-        :cell-style="{ minWidth: '40px' }"
-        data-index="key"
-        :title="$t('common.input.key')"
-      >
-        <template #cell="{ record }">
-          <AutoTip
-            style="width: 200px"
-            :tooltip-props="{
-              content: record.key
-            }"
-          >
-            <span>{{ record.key }}</span>
-          </AutoTip>
-        </template>
-      </a-table-column>
-      <a-table-column
-        ellipsis
-        tooltip
-        :cell-style="{ minWidth: '40px' }"
-        data-index="value"
-        :title="$t('common.input.value')"
-      >
-        <template #cell="{ record }">
-          <slot name="value" :row="{ ...record }" :value="record.value">
-            <span>{{ record.sensitive ? '******' : record.value }}</span>
-          </slot>
-        </template>
-      </a-table-column>
-    </template>
-  </a-table>
+  <div class="description-table">
+    <a-table
+      style="margin-bottom: 10px；"
+      :bordered="false"
+      :data="dataList"
+      :pagination="false"
+      :virtual-list-props="virtualProps"
+    >
+      <template #columns>
+        <a-table-column
+          ellipsis
+          tooltip
+          :width="220"
+          :cell-style="{ minWidth: '40px' }"
+          data-index="key"
+          :title="$t('common.input.key')"
+        >
+          <template #cell="{ record }">
+            <AutoTip
+              style="width: 200px"
+              :tooltip-props="{
+                content: record.key
+              }"
+            >
+              <span>{{ record.key }}</span>
+            </AutoTip>
+          </template>
+        </a-table-column>
+        <a-table-column
+          ellipsis
+          tooltip
+          :cell-style="{ minWidth: '40px' }"
+          data-index="value"
+          :title="$t('common.input.value')"
+        >
+          <template #cell="{ record }">
+            <slot name="value" :row="{ ...record }" :value="record.value">
+              <span>{{ record.sensitive ? '******' : record.value }}</span>
+            </slot>
+          </template>
+        </a-table-column>
+      </template>
+    </a-table>
+  </div>
 </template>
 
 <script lang="ts" setup>
@@ -82,6 +83,10 @@
 
 <style lang="less" scoped>
   .description-table {
+    overflow: hidden;
+    border: 1px solid var(--color-border-2);
+    border-radius: var(--border-radius-small);
+
     :deep(.arco-table-element) {
       width: auto;
     }
@@ -99,6 +104,12 @@
 
         &::after {
           display: none;
+        }
+      }
+
+      &:last-child {
+        .arco-table-td {
+          border-bottom: none;
         }
       }
 

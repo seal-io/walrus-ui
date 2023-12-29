@@ -51,7 +51,12 @@
     min-height: 200px;
     padding: 10px;
     overflow: auto;
+    font-size: 12px !important;
     background-color: var(--color-fill-2);
     border-radius: var(--border-radius-small);
+
+    &.markdown-body {
+      font-family: 'noto sans', sans-serif;
+    }
   }
 </style>

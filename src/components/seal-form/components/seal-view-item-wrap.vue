@@ -17,7 +17,7 @@
         />
       </a-tooltip>
     </div>
-    <slot></slot>
+    <div class="s-v-t"><slot></slot></div>
   </div>
 </template>
 
@@ -49,27 +49,33 @@
 </script>
 
 <style lang="less" scoped>
-  @height: 52px;
+  @height: 54px;
 
   .seal-view-item-wrap {
-    position: relative;
-    display: flex;
-    align-items: center;
     min-height: @height;
-    padding: 0 12px;
-    padding-top: 20px;
+    padding: 8px 12px;
+    padding-bottom: 0;
+    line-height: 1;
+    word-break: break-word;
     border: 1px solid var(--color-border-2);
     border-radius: var(--border-radius-small);
 
     .label {
-      position: absolute;
-      top: 6px;
-      left: 12px;
       display: flex;
       align-items: center;
+      width: fit-content;
+      margin-bottom: 0;
       color: var(--color-text-3);
       font-weight: var(--font-weight-medium);
       font-size: 12px;
+    }
+
+    .s-v-t {
+      max-height: 140px;
+      padding: 4px 0;
+      overflow: auto;
+      font-size: var(--font-size-small);
+      line-height: 2;
     }
   }
 </style>

@@ -49,17 +49,18 @@
 </script>
 
 <style lang="less" scoped>
-  @height: 52px;
+  @height: 54px;
 
   .seal-form-item-wrap {
     min-height: @height;
-    padding: 10px 12px;
+    padding: 8px 12px;
     border: 1px solid var(--color-border-2);
     border-radius: var(--border-radius-small);
 
     .label {
       display: flex;
       align-items: center;
+      width: fit-content;
       margin-bottom: 10px;
       color: var(--color-text-3);
       font-weight: var(--font-weight-medium);

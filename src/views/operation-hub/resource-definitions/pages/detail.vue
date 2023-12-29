@@ -38,9 +38,9 @@
             :label="$t('operation.connectors.table.name')"
             field="name"
             hide-asterisk
-            :hide-label="pageAction === PageAction.EDIT"
+            hide-label
             :disabled="!!id"
-            :validate-trigger="['change']"
+            :validate-trigger="['change', 'input']"
             :style="{ maxWidth: `${InputWidth.LARGE}px` }"
             :rules="[
               {
@@ -51,28 +51,25 @@
             ]"
           >
             <seal-input
-              v-if="pageAction === PageAction.EDIT"
               v-model.trim="formData.name"
+              :view-status="pageAction === PageAction.VIEW"
               :label="$t('operation.connectors.table.name')"
               :required="true"
               :style="{ width: `${InputWidth.LARGE}px` }"
               :max-length="63"
               show-word-limit
             ></seal-input>
-            <span v-else class="readonly-view-label">{{
-              formData.name || '-'
-            }}</span>
-            <template v-if="pageAction === PageAction.EDIT" #extra>
+            <!-- <template v-if="pageAction === PageAction.EDIT" #extra>
               <div class="tips">{{ $t('common.validate.labelName') }}</div>
-            </template>
+            </template> -->
           </a-form-item>
           <a-form-item
             :label="$t('common.table.type')"
             field="type"
             hide-asterisk
-            :hide-label="pageAction === PageAction.EDIT"
+            hide-label
             :disabled="!!id"
-            :validate-trigger="['change']"
+            :validate-trigger="['change', 'input']"
             :style="{ maxWidth: `${InputWidth.LARGE}px` }"
             :rules="[
               {
@@ -83,39 +80,33 @@
             ]"
           >
             <seal-input
-              v-if="pageAction === PageAction.EDIT"
               v-model.trim="formData.type"
+              :view-status="pageAction === PageAction.VIEW"
               :label="$t('common.table.type')"
               :required="true"
               :style="{ width: `${InputWidth.LARGE}px` }"
               :max-length="63"
               show-word-limit
             ></seal-input>
-            <span v-else class="readonly-view-label">{{
-              formData.type || '-'
-            }}</span>
-            <template v-if="pageAction === PageAction.EDIT" #extra>
+            <!-- <template v-if="pageAction === PageAction.EDIT" #extra>
               <div class="tips">{{ $t('common.validate.labelName') }}</div>
-            </template>
+            </template> -->
           </a-form-item>
           <a-form-item
             :label="$t('operation.environments.table.description')"
             hide-asterisk
-            :hide-label="pageAction === PageAction.EDIT"
+            hide-label
             field="description"
           >
             <seal-textarea
-              v-if="pageAction === PageAction.EDIT"
               v-model="formData.description"
+              :view-status="pageAction === PageAction.VIEW"
               :label="$t('operation.environments.table.description')"
               :style="{ width: `${InputWidth.LARGE}px` }"
               :auto-size="{ minRows: 4, maxRows: 6 }"
               :max-length="200"
               show-word-limit
             ></seal-textarea>
-            <div v-else class="description-content readonly-view-label">{{
-              formData.description || '-'
-            }}</div>
           </a-form-item>
           <a-form-item
             v-if="
@@ -140,7 +131,9 @@
               <span>{{ $t('resource.definition.detail.matchRule') }}</span>
               <a-link class="m-l-10" @click="handleAddRule">
                 <icon-plus class="size-14" style="stroke-width: 4" />
-                <span class="mleft-5">{{ $t('common.button.add') }}</span>
+                <span class="mleft-5 font-12">{{
+                  $t('common.button.add')
+                }}</span>
               </a-link>
             </template>
           </GroupTitle>
@@ -188,29 +181,6 @@
               </DefinitionRules>
             </a-tab-pane>
           </a-tabs>
-          <!-- <DefinitionRules
-            v-for="(item, index) in formData.matchingRules"
-            :ref="
-              (el) => setRefMap(el, `${definitionRulePrefix}${item.id}`, item)
-            "
-            :key="item.id"
-            :trace-id="item.id"
-            :title="
-              item.name ||
-              $t('resource.definition.detail.rule', { name: index + 1 })
-            "
-            :data-id="id"
-            :origin-form-data="item"
-            :page-action="pageAction"
-            :schema-form-action="item.pageAction || schemaFormAction"
-            :show-delete="formData.matchingRules.length > 1"
-            :template-list="templateList"
-            class="m-b-20"
-            @delete="
-              handleDeleteDefinition(index, `${definitionRulePrefix}${item.id}`)
-            "
-          >
-          </DefinitionRules> -->
         </div>
         <a-tabs
           v-if="
@@ -261,20 +231,6 @@
                 </DefinitionRules>
               </a-tab-pane>
             </a-tabs>
-            <!-- <DefinitionRules
-              v-for="(item, index) in formData.matchingRules"
-              :key="`${index}-view`"
-              :trace-id="item.id"
-              :title="item.name"
-              :data-id="id"
-              :origin-form-data="item"
-              :page-action="pageAction"
-              :schema-form-action="schemaFormAction"
-              :show-delete="false"
-              :template-list="templateList"
-              class="m-b-20"
-            >
-            </DefinitionRules> -->
           </a-tab-pane>
           <a-tab-pane
             v-for="item in tabList"

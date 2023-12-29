@@ -21,7 +21,7 @@
           :label="$t('applications.applications.form.name')"
           hide-label
           field="name"
-          validate-trigger="change"
+          :validate-trigger="['change', 'input']"
           :rules="[
             {
               required: true,
@@ -38,9 +38,9 @@
             :max-length="63"
             show-word-limit
           ></seal-input>
-          <template #extra>
+          <!-- <template #extra>
             <span class="tips">{{ $t('common.validate.labelName') }}</span>
-          </template>
+          </template> -->
         </a-form-item>
         <a-form-item
           :label="$t('common.table.description')"

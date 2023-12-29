@@ -53,9 +53,10 @@
           <a-form-item
             :label="$t('operation.connectors.form.name')"
             hide-asterisk
-            :hide-label="pageAction === PageAction.EDIT"
+            :hide-label="true"
             field="name"
             :disabled="!!id"
+            :validate-trigger="['change', 'input']"
             :style="{ maxWidth: `${InputWidth.LARGE}px` }"
             :rules="[
               {
@@ -66,26 +67,23 @@
             ]"
           >
             <seal-input
-              v-if="pageAction === PageAction.EDIT"
               v-model.trim="formData.name"
+              :view-status="pageAction === PageAction.VIEW"
               :label="$t('operation.connectors.form.name')"
               :required="true"
               :style="{ width: `${InputWidth.LARGE}px` }"
               :max-length="63"
               show-word-limit
             ></seal-input>
-            <span v-else class="readonly-view-label">{{
-              formData.name || '-'
-            }}</span>
-            <template v-if="pageAction === PageAction.EDIT" #extra>
+            <!-- <template v-if="pageAction === PageAction.EDIT" #extra>
               <div :style="{ maxWidth: `${InputWidth.LARGE}px` }">{{
                 $t('common.validate.labelName')
               }}</div>
-            </template>
+            </template> -->
           </a-form-item>
           <a-form-item
             :label="$t('operation.connectors.table.environmentType')"
-            :hide-label="pageAction === PageAction.EDIT"
+            :hide-label="true"
             hide-asterisk
             field="applicableEnvironmentType"
             :disabled="!!id"
@@ -97,21 +95,18 @@
             ]"
           >
             <seal-select
-              v-if="pageAction === PageAction.EDIT"
               v-model="formData.applicableEnvironmentType"
+              :view-status="pageAction === PageAction.VIEW"
               :label="$t('operation.connectors.table.environmentType')"
               :required="true"
               :options="EnvironmentTypeList"
               :style="{ width: `${InputWidth.LARGE}px` }"
             ></seal-select>
-            <span v-else class="readonly-view-label">{{
-              $t(EnvironmentTypeMap[formData.applicableEnvironmentType] || '')
-            }}</span>
           </a-form-item>
           <a-form-item
             :label="$t('operation.connectors.form.type')"
             hide-asterisk
-            :hide-label="pageAction === PageAction.EDIT"
+            :hide-label="true"
             field="type"
             :rules="[
               {
@@ -121,8 +116,8 @@
             ]"
           >
             <seal-select
-              v-if="pageAction === PageAction.EDIT"
               v-model="formData.type"
+              :view-status="pageAction === PageAction.VIEW"
               :label="$t('operation.connectors.form.type')"
               :required="true"
               :style="{ width: `${InputWidth.LARGE}px` }"
@@ -140,19 +135,16 @@
                 <ProviderIcon :provider="toLower(formData.type)"></ProviderIcon>
               </template>
             </seal-select>
-            <span v-else class="readonly-view-label"
-              ><ProviderIcon
-                :provider="toLower(formData.type)"
-                class="mright-5"
-              ></ProviderIcon>
-              <span>{{ formData.type }}</span>
-            </span>
           </a-form-item>
           <a-form-item
             v-if="pageAction === PageAction.VIEW"
+            hide-label
             :label="$t('operation.connectors.table.status')"
           >
-            <span class="readonly-view-label">
+            <SealFormItemWrap
+              :label="$t('operation.connectors.table.status')"
+              :style="{ width: `${InputWidth.LARGE}px` }"
+            >
               <StatusLabel
                 :status="{
                   status: get(formData, 'status.summaryStatus') || '',
@@ -162,7 +154,7 @@
                   error: get(formData, 'status.error')
                 }"
               ></StatusLabel>
-            </span>
+            </SealFormItemWrap>
           </a-form-item>
           <template v-if="pageAction === PageAction.EDIT">
             <div
@@ -227,15 +219,19 @@
           <a-form-item
             v-if="pageAction === PageAction.VIEW"
             :label="$t('operation.connectors.form.attribute')"
+            hide-label
+            no-style
             :hide-asterisk="true"
           >
+            <div class="arco-form-item-label m-b-10"
+              ><span>{{ $t('operation.connectors.form.attribute') }}</span></div
+            >
             <DescriptionTable
-              style="width: 600px; margin-left: 12px"
+              :style="{ width: `${InputWidth.LARGE}px` }"
               :data-list="providerKeys"
             >
               <template #value="{ row }">
                 <AutoTip
-                  style="width: 350px"
                   :tooltip-props="{
                     content: get(formData, `configData.${row.key}.value`)
                   }"
