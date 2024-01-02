@@ -89,7 +89,7 @@ export default {
   'applications.applications.history.rollback': 'Rollback',
   'applications.applications.history.detail': 'Revision Details',
   'applications.applications.history.changeList': 'Change History',
-  'applications.applications.history.running': 'Deployment details',
+  'applications.applications.history.running': 'Deployment Logs',
   'applications.applications.history.diff.title':
     'Comparison between the current version and the target version configuration',
   'applications.applications.history.diff.upgrade':

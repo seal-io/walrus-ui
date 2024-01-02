@@ -101,7 +101,13 @@
                                 }}
                               >
                                 {props.itemType === 'text' ? (
-                                  <span style="color: var(--color-text-2)">
+                                  <span
+                                    style={{
+                                      color: item.disabled
+                                        ? 'var(--color-text-4)'
+                                        : 'var(--color-text-2)'
+                                    }}
+                                  >
                                     {t(item.label)}
                                   </span>
                                 ) : (

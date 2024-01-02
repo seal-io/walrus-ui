@@ -120,7 +120,6 @@
       };
       return () => (
         <div
-          onClick={withModifiers(handleToggle, ['stop'])}
           class={[
             'box',
             {
@@ -232,10 +231,9 @@
       // }
     }
 
-    &.clickable {
-      cursor: pointer;
-    }
-
+    // &.clickable {
+    //   cursor: pointer;
+    // }
     .components-container {
       margin: 10px 15px 10px;
     }

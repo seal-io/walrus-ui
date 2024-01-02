@@ -158,12 +158,36 @@
             </seal-select>
           </div>
         </a-form-item>
-        <a-form-item :label="$t(`applications.projects.form.label`)" hide-label>
+        <a-form-item
+          :label="$t(`applications.projects.form.label`)"
+          hide-label
+          field="labels"
+          :rules="[
+            {
+              required: false,
+              validator(value, callback) {
+                if (!validateLabels()) {
+                  callback();
+                  return;
+                }
+                callback(i18n.global.t('common.rule.object.key'));
+              },
+              message: i18n.global.t('common.rule.object.key')
+            }
+          ]"
+        >
           <SealFormItemWrap
             :label="$t('applications.projects.form.label')"
             :style="{ width: `${InputWidth.LARGE}px` }"
           >
-            <a-space
+            <keyValueLabels
+              v-model:value="formData.labels"
+              labels-key="labels"
+              :validate-trigger="validateTrigger"
+              :labels="formData"
+              :page-action="pageAction"
+            ></keyValueLabels>
+            <!-- <a-space
               v-if="labelList?.length"
               :style="{
                 'display': 'flex',
@@ -201,7 +225,7 @@
                   font-size="14px size-24"
                 ></icon-plus-circle-fill>
               </a-link>
-            </template>
+            </template> -->
           </SealFormItemWrap>
         </a-form-item>
         <a-form-item :label="$t('common.table.description')" hide-label>
@@ -242,9 +266,6 @@
                       $t('applications.applications.modules.params.tips2')
                     }}</div>
                     <div>{{
-                      $t('applications.applications.modules.params.tips3')
-                    }}</div>
-                    <div>{{
                       $t('applications.applications.modules.params.tips4')
                     }}</div>
                   </div>
@@ -268,6 +289,7 @@
 </template>
 
 <script lang="ts" setup>
+  import i18n from '@/locale';
   import { PROJECT } from '@/router/config';
   import _, { get, find, cloneDeep, toString } from 'lodash';
   import { createAxiosToken } from '@/api/axios-chunk-request';
@@ -402,6 +424,12 @@
     }
     return undefined;
   });
+
+  const validateLabels = () => {
+    return _.some(labelList.value, (item) => {
+      return !_.trim(item.key);
+    });
+  };
 
   const getEnvironmentConnectors = async () => {
     try {
@@ -576,17 +604,11 @@
     });
   };
   const submit = async () => {
-    validateLabel();
     const res = await formref.value?.validate();
     const groupFormRes = await groupForm.value?.validate();
     const hiddenFormData = groupForm.value?.getHiddenData();
-    console.log(
-      'hiddenFormData===',
-      formData.value.attributes,
-      groupFormRes,
-      hiddenFormData
-    );
-    if (!res && !groupFormRes && !validateTrigger.value) {
+    validateTrigger.value = true;
+    if (!res && !groupFormRes) {
       if (!formData.value.template.project?.id) {
         formData.value.template = _.omit(formData.value.template, 'project');
       }

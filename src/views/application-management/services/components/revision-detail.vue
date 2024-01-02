@@ -221,8 +221,8 @@
   .log-detail-modal {
     .full-btn {
       position: absolute;
-      top: 5px;
-      left: -8px;
+      top: 2px;
+      left: 0;
     }
 
     .logs-content {
@@ -253,7 +253,11 @@
 
     .arco-descriptions-row {
       .arco-descriptions-item-label-block {
-        font-weight: var(--font-weight-regular);
+        font-weight: var(--font-weight-medium);
+      }
+
+      .arco-descriptions-item-value-block {
+        font-weight: var(--font-weight-medium);
       }
     }
   }

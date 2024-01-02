@@ -225,13 +225,15 @@
       }
       return item.filterFun ? item.filterFun(currentInfo.value) : true;
     });
-    return _.map(list, (o) => {
+    const res = _.map(list, (o) => {
       const item = _.cloneDeep(o);
       item.disabled = _.isFunction(item.disabled)
         ? item.disabled?.(currentInfo.value)
         : item.disabled;
       return item;
     });
+    console.log('res');
+    return res;
   });
   const handleUpgrade = () => {
     pageAction.value = PageAction.EDIT;
