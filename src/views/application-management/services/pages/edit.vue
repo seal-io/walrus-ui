@@ -173,6 +173,7 @@
         <a-form-item
           :label="$t(`applications.projects.form.label`)"
           hide-label
+          field="labels"
           :rules="[
             {
               required: false,
@@ -277,9 +278,7 @@
                     <div>{{
                       $t('applications.applications.modules.params.tips2')
                     }}</div>
-                    <div>{{
-                      $t('applications.applications.modules.params.tips3')
-                    }}</div>
+
                     <div>{{
                       $t('applications.applications.modules.params.tips4')
                     }}</div>
@@ -469,10 +468,8 @@
   });
 
   const validateLabels = () => {
-    const labels = _.get(formData.value, 'labels', {});
-    const keys = _.keys(labels);
-    return _.some(keys, (key) => {
-      return !_.trim(key);
+    return _.some(labelList.value, (item) => {
+      return !_.trim(item.key);
     });
   };
 
@@ -679,15 +676,8 @@
     const res = await formref.value?.validate();
     const groupres = await groupForm.value?.validate();
     const hiddenFormData = groupForm.value?.getHiddenData();
-    console.log(
-      'groupres===',
-      groupres,
-      res,
-      formData.value.attributes,
-      validateTrigger.value
-    );
-
-    if (!res && !groupres && !validateTrigger.value) {
+    validateTrigger.value = true;
+    if (!res && !groupres) {
       try {
         submitLoading.value = true;
         if (!formData.value.template?.project?.id) {

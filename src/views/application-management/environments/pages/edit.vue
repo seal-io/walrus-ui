@@ -93,6 +93,7 @@
           :label="$t('operation.environments.table.description')"
           field="description"
           :hide-label="true"
+          validate-trigger="change"
         >
           <seal-textarea
             v-model="formData.description"
@@ -108,6 +109,21 @@
         <a-form-item
           :label="$t(`applications.projects.form.label`)"
           :hide-label="true"
+          field="labels"
+          validate-trigger="change"
+          :rules="[
+            {
+              required: false,
+              validator(value, callback) {
+                if (!validateLabels()) {
+                  callback();
+                  return;
+                }
+                callback(i18n.global.t('common.rule.object.key'));
+              },
+              message: $t('common.rule.object.key')
+            }
+          ]"
         >
           <SealFormItemWrap
             :label="$t(`applications.projects.form.label`)"
@@ -115,6 +131,7 @@
           >
             <keyValueLabels
               v-model:value="formData.labels"
+              v-model:labelList="labelList"
               labels-key="labels"
               :validate-trigger="validateTrigger"
               :labels="formData"
@@ -299,6 +316,7 @@
 </template>
 
 <script lang="ts" setup>
+  import i18n from '@/locale';
   import { PROJECT } from '@/router/config';
   import { Resources } from '@/permissions/config';
   import { useUserStore, useTabBarStore } from '@/store';
@@ -437,6 +455,11 @@
     return t('operation.environments.view');
   });
 
+  const validateLabels = () => {
+    return _.some(labelList.value, (item) => {
+      return !_.trim(item.key);
+    });
+  };
   const initPageAction = () => {
     if (route.name === PROJECT.EnvDetail) {
       pageAction.value = userStore.hasProjectResourceActions({
@@ -584,9 +607,10 @@
 
   const handleSubmit = async (draft?: boolean) => {
     const res = await formref.value?.validate();
-    validateLabel();
+    validateTrigger.value = true;
+    console.log('res==========', res);
     scrollToView();
-    if (!res && !validateTrigger.value) {
+    if (!res) {
       try {
         submitLoading.value = true;
         if (draft) {

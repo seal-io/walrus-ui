@@ -1,7 +1,7 @@
 <template>
   <a-modal
     top="10%"
-    :closable="false"
+    :closable="true"
     :align-center="false"
     :width="600"
     :ok-text="$t('common.button.save')"
@@ -34,7 +34,7 @@
             },
             {
               validator: validateNameuniq,
-              message: $t('applications.applications.rule.modules.name')
+              message: $t('workflow.rule.variable.same')
             }
           ]"
         >

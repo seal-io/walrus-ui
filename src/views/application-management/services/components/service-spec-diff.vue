@@ -22,7 +22,7 @@
           read-only
           :remove-lines="removeLines"
           :add-lines="addLines"
-          editor-id="firstEditor"
+          editor-id="diffModelEditor"
           :editor-default-value="codeResult"
           lang="json"
           :height="460"
@@ -72,6 +72,7 @@
 
 <script lang="ts" setup>
   import _ from 'lodash';
+  import { ref } from 'vue';
   import { useRoute } from 'vue-router';
   import { useUserStore } from '@/store';
   import { Resources } from '@/permissions/config';
@@ -114,6 +115,7 @@
   const route = useRoute();
   const projectID = route.params.projectId as string;
   const environmentID = route.params.environmentId as string;
+  const editorKey = ref(Date.now());
 
   const emit = defineEmits(['confirm', 'update:show']);
 
@@ -137,6 +139,7 @@
     getDiffResultLines();
   };
   const handleBeforeOpen = () => {
+    editorKey.value = Date.now();
     init();
   };
   const handleBeforeClose = () => {

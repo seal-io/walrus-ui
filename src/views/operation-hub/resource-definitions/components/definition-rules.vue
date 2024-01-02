@@ -58,6 +58,7 @@
               <primaryButtonGroup
                 v-if="pageAction === PageAction.EDIT"
                 :actions="actionList"
+                item-type="text"
                 @select="handleAddSelector"
               >
                 <a-link class="m-l-10">

@@ -86,7 +86,7 @@ export default {
   'applications.applications.history.rollback': '回滚',
   'applications.applications.history.detail': '版本详情',
   'applications.applications.history.changeList': '历史变更',
-  'applications.applications.history.running': '部署详情',
+  'applications.applications.history.running': '部署日志',
   'applications.applications.history.diff.title': '当前版本与目标版本配置对比',
   'applications.applications.history.diff.upgrade': '与最新应用配置对比',
   'applications.applications.history.change.title':

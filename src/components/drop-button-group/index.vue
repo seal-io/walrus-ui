@@ -63,6 +63,9 @@
             onSelect={(val) => handleSelect(val)}
             onClick={(e) => {
               e.stopPropagation();
+              if (_.get(_.head(actions.value), 'disabled')) {
+                return;
+              }
               handleClick(_.head(actions.value));
             }}
             trigger="hover"
@@ -159,9 +162,6 @@
                               ),
                               {
                                 ..._.get(_.head(actions.value), 'props', ''),
-                                style: {
-                                  color: 'var(--sealblue-6)'
-                                },
                                 class: ['size-14']
                               }
                             )

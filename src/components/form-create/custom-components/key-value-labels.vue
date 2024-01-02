@@ -14,7 +14,7 @@
   import LabelsList from './labels-list.vue';
 
   export default defineComponent({
-    emits: ['update:value'],
+    emits: ['update:value', 'update:labelList'],
     props: {
       labels: {
         type: Object as PropType<Record<string, any>>,
@@ -129,10 +129,12 @@
                       formId={props.editorId}
                       onAdd={(obj) => {
                         handleAddLabel(obj, labelList.value);
+                        emit('update:labelList', labelList.value);
                       }}
-                      onDelete={() =>
-                        handleDeleteLabel(labelList.value, sIndex)
-                      }
+                      onDelete={() => {
+                        handleDeleteLabel(sIndex, labelList.value);
+                        emit('update:labelList', labelList.value);
+                      }}
                     ></XInputGroup>
                   );
                 })}
