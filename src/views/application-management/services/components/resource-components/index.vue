@@ -26,6 +26,7 @@
             v-for="(item, index) in componentList"
             :key="index"
             :row-data="item"
+            :show-checkbox="showCheckbox"
           >
             <template #status="{ record }">
               <span v-if="!_.get(record, 'status.summaryStatus')">-</span>
@@ -123,6 +124,10 @@
       default() {
         return false;
       }
+    },
+    showCheckbox: {
+      type: Boolean,
+      default: true
     }
   });
   const { loading, fetchData, createResourceChunkRequest, dataList } =

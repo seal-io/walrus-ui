@@ -32,6 +32,7 @@
               @change="handleSelectAll"
             ></a-checkbox>
           </span>
+          <span class="empty-holder" style="width: 14px; height: 14px"></span>
           <a-grid :cols="24" :style="{ width: '100%' }">
             <a-grid-item :span="4" class="sort-item" @click="handleNameSort">
               <Autotip>
@@ -167,158 +168,6 @@
         </div>
       </a-spin>
     </div>
-    <!-- <a-table
-      column-resizable
-      style="margin-bottom: 20px"
-      :bordered="false"
-      :loading="loading"
-      :data="dataList"
-      :pagination="false"
-      row-key="id"
-      :row-selection="
-        userStore.isReadOnlyEnvironment(projectID, environmentID)
-          ? null
-          : rowSelection
-      "
-      @sorter-change="handleSortChange"
-      @selection-change="handleRowSelectChange"
-    >
-      <template #columns>
-        <a-table-column
-          ellipsis
-          tooltip
-          :cell-style="{ minWidth: '40px' }"
-          data-index="name"
-          :title="$t('common.table.name')"
-          :sortable="{
-            sortDirections: ['ascend', 'descend'],
-            defaultSortOrder: '',
-            sorter: true,
-            sortOrder: sortDataIndex === 'name' ? sortOrder : ''
-          }"
-        >
-          <template #cell="{ record }">
-            <a-link
-              v-if="
-                userStore.hasProjectResourceActions({
-                  projectID,
-                  resource: Resources.Resources,
-                  actions: [Actions.GET]
-                })
-              "
-              @click.stop="handleClickViewDetail(record)"
-              >{{ record.name }}</a-link
-            >
-            <span v-else>{{ record.name }}</span>
-          </template>
-        </a-table-column>
-        <a-table-column
-          v-if="ServiceDataType.service === type"
-          ellipsis
-          tooltip
-          :cell-style="{ minWidth: '40px' }"
-          data-index="template.name"
-          :title="$t('applications.applications.table.module')"
-        >
-          <template #cell="{ record }">
-            <span>
-              <span>{{
-                `${record.template?.name}@${record.template?.version || ''}`
-              }}</span>
-              <span
-                v-if="!record.template.project?.id"
-                style="color: var(--color-text-3)"
-                class="font-12 m-l-2"
-                >{{ `(${$t('applications.variable.scope.global')})` }}</span
-              >
-            </span>
-          </template>
-        </a-table-column>
-        <a-table-column
-          v-if="ServiceDataType.resource === type"
-          ellipsis
-          tooltip
-          :cell-style="{ minWidth: '40px' }"
-          data-index="type"
-          :title="$t('common.table.type')"
-        >
-        </a-table-column>
-        <a-table-column
-          ellipsis
-          :cell-style="{ minWidth: '40px' }"
-          data-index="status"
-          :title="$t('applications.applications.table.status')"
-        >
-          <template #cell="{ record }">
-            <StatusLabel
-              :zoom="0.9"
-              :status="{
-                status: get(record, 'status.summaryStatus'),
-                inactive: _.includes(
-                  StartableStatus,
-                  get(record, 'status.summaryStatus')
-                ),
-                text: get(record, 'status.summaryStatus'),
-                message: get(record, 'status.summaryStatusMessage'),
-                transitioning: get(record, 'status.transitioning'),
-                error: get(record, 'status.error')
-              }"
-            ></StatusLabel>
-          </template>
-        </a-table-column>
-        <a-table-column
-          ellipsis
-          tooltip
-          :cell-style="{ minWidth: '40px' }"
-          align="left"
-          data-index="createTime"
-          :sortable="{
-            sortDirections: ['ascend', 'descend'],
-            defaultSortOrder: 'descend',
-            sorter: true,
-            sortOrder: sortDataIndex === 'createTime' ? sortOrder : ''
-          }"
-          :title="$t('common.table.createTime')"
-        >
-          <template #cell="{ record }">
-            <span>{{
-              dayjs(record.createTime).format('YYYY-MM-DD HH:mm:ss')
-            }}</span>
-          </template>
-        </a-table-column>
-        <a-table-column
-          align="left"
-          :width="210"
-          data-index="actions"
-          :title="$t('common.table.operation')"
-        >
-          <template #cell="{ record, rowIndex }">
-            <DropButtonGroup
-              v-if="setActionList(dataList[rowIndex]).length"
-              :layout="
-                setActionList(dataList[rowIndex]).length === 1
-                  ? 'horizontal'
-                  : 'vertical'
-              "
-              :actions="setActionList(dataList[rowIndex])"
-              @select="(value) => handleClickAction(value, record)"
-            ></DropButtonGroup>
-          </template>
-        </a-table-column>
-      </template>
-    </a-table>
-
-    <a-pagination
-      size="small"
-      :total="total"
-      :page-size="queryParams.perPage"
-      :current="queryParams.page"
-      show-total
-      show-page-size
-      :hide-on-single-page="total <= 10"
-      @change="handlePageChange"
-      @page-size-change="handlePageSizeChange"
-    /> -->
     <resourceControl
       v-model:visible="terminalShow"
       v-model:tabs="drawerTabs"
@@ -931,7 +780,7 @@
       }
 
       .arco-checkbox {
-        margin-right: 20px;
+        margin-right: 12px;
         padding: 0;
 
         :deep(.arco-checkbox-icon) {

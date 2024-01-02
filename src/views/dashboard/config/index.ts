@@ -64,15 +64,15 @@ export const overViewConfig = [
     color:
       'linear-gradient(rgba(255, 197, 192, 0.3) 0%, rgba(255, 197, 192, 0.4) 100%)'
   },
-  {
-    label: 'menu.applicationManagement.services',
-    value: 0,
-    key: 'service',
-    // color:
-    //   'linear-gradient(rgba(173, 209, 235, 0.3) 0%, rgba(173, 209, 235, 0.4) 100%)',
-    color:
-      'linear-gradient(rgba(184, 218, 243, 0.3) 0%, rgba(184, 218, 243, 0.4) 100%)'
-  },
+  // {
+  //   label: 'menu.applicationManagement.services',
+  //   value: 0,
+  //   key: 'service',
+  //   // color:
+  //   //   'linear-gradient(rgba(173, 209, 235, 0.3) 0%, rgba(173, 209, 235, 0.4) 100%)',
+  //   color:
+  //     'linear-gradient(rgba(184, 218, 243, 0.3) 0%, rgba(184, 218, 243, 0.4) 100%)'
+  // },
   {
     label: 'menu.applicationManagement.resource',
     value: 0,
@@ -80,7 +80,7 @@ export const overViewConfig = [
     // color:
     //   'linear-gradient(rgba(173, 209, 235, 0.3) 0%, rgba(173, 209, 235, 0.4) 100%)',
     color:
-      'linear-gradient(rgba(159, 232, 219, 0.3) 0%, rgba(159, 232, 219, 0.4) 100%)'
+      'linear-gradient(rgba(184, 218, 243, 0.3) 0%, rgba(184, 218, 243, 0.4) 100%)'
   },
   {
     label: 'dashboard.overview.connector',

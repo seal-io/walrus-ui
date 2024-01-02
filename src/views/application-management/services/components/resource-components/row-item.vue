@@ -12,6 +12,10 @@
       index: {
         type: Number,
         default: 0
+      },
+      showCheckbox: {
+        type: Boolean,
+        default: true
       }
     },
     setup(props, { slots }) {
@@ -20,6 +24,7 @@
           <ComponentItem
             rowData={props.rowData}
             index={props.index}
+            showCheckbox={props.showCheckbox}
             v-slots={{
               status: () => {
                 return <>{slots?.status?.({ record: props.rowData })}</>;
@@ -46,6 +51,7 @@
             {_.map(props.rowData.children, (item, cIndex) => {
               return (
                 <ComponentItem
+                  showCheckbox={props.showCheckbox}
                   rowData={item}
                   index={Number(cIndex)}
                   treeLine={true}
