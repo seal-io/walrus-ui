@@ -58,6 +58,7 @@
               <a-link
                 type="text"
                 size="small"
+                status="danger"
                 @click="handleDelete(record, rowIndex)"
               >
                 <template #icon><icon-delete class="size=20" /></template>

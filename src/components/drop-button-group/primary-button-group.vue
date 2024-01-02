@@ -42,6 +42,12 @@
         default() {
           return 'bl';
         }
+      },
+      itemType: {
+        type: String as PropType<'button' | 'text'>,
+        default() {
+          return 'button';
+        }
       }
     },
     setup(props, { emit, slots }) {
@@ -49,7 +55,8 @@
       const { actions, btnText } = toRefs(props);
 
       const handleSelectAction = (value) => {
-        emit('select', value);
+        const item = _.find(actions.value, (item) => item.value === value);
+        emit('select', value, item);
       };
       const renderIcon = (item) => {
         if (item.iconfont) {
@@ -93,7 +100,13 @@
                                   fontWeight: 500
                                 }}
                               >
-                                {t(item.label)}
+                                {props.itemType === 'text' ? (
+                                  <span style="color: var(--color-text-2)">
+                                    {t(item.label)}
+                                  </span>
+                                ) : (
+                                  t(item.label)
+                                )}
                               </a-link>
                             </a-doption>
                           }

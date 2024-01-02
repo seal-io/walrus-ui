@@ -46,42 +46,31 @@
         </a-space>
       </template>
       <template #button-group>
-        <a-dropdown @select="handleCreate">
-          <a-button
-            v-if="
-              route.params.projectId
-                ? userStore.hasProjectResourceActions({
-                    resource: Resources.Connectors,
-                    projectID: route.params.projectId,
-                    actions: [Actions.POST]
-                  })
-                : userStore.hasRolesActionsPermission({
-                    resource: Resources.Connectors,
-                    actions: [Actions.POST]
-                  })
-            "
-            type="primary"
-            >{{ $t('operation.connectors.create') }}<icon-down class="mleft-5"
+        <primaryButtonGroup
+          v-if="
+            route.params.projectId
+              ? userStore.hasProjectResourceActions({
+                  resource: Resources.Connectors,
+                  projectID: route.params.projectId,
+                  actions: [Actions.POST]
+                })
+              : userStore.hasRolesActionsPermission({
+                  resource: Resources.Connectors,
+                  actions: [Actions.POST]
+                })
+          "
+          size="medium"
+          :actions="connectorTypeList"
+          position="br"
+          trigger="hover"
+          item-type="text"
+          @select="(value, item) => handleCreate(value, item)"
+        >
+          <a-button type="primary"
+            >{{ $t('operation.connectors.create')
+            }}<icon-down style="stroke-width: 5" class="font-14 mleft-5"
           /></a-button>
-          <template #content>
-            <a-doption
-              v-for="item in connectorTypeList"
-              :key="item.value"
-              :value="item"
-              :label="$t(item.label)"
-            >
-              <template #icon>
-                <i
-                  class="iconfont"
-                  :class="item.icon"
-                  style="color: var(--sealblue-6)"
-                ></i>
-              </template>
-              {{ $t(item.label) }}</a-doption
-            >
-          </template>
-        </a-dropdown>
-
+        </primaryButtonGroup>
         <a-button
           v-if="
             route.params.projectId
@@ -288,6 +277,7 @@
 </template>
 
 <script lang="ts" setup>
+  import primaryButtonGroup from '@/components/drop-button-group/primary-button-group.vue';
   import { Resources, Actions } from '@/permissions/config';
   import { EnvironmentTypeMap } from '@/views/config';
   import { useUserStore, useAppStore } from '@/store';
@@ -516,7 +506,7 @@
       }
     });
   };
-  const handleCreate = (item) => {
+  const handleCreate = (val, item) => {
     if (props.scope === 'project') {
       handlCreateProjectConnector(item);
     } else {

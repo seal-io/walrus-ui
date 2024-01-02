@@ -153,7 +153,7 @@
       },
       handleBlur(ev) {
         const value = replace(ev.target.value, /\s+/g, ' ');
-        this.$emit('update:modelValue', value);
+        this.$emit('update:modelValue', _.trim(value));
       },
       formatValue(list: string[]) {
         const len = list.length;

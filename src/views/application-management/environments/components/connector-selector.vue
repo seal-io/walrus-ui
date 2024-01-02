@@ -21,20 +21,43 @@
           item.tips ? `(${$t(item.tips)})` : ''
         }}</span></a-option
       >
-      <!-- <template #empty>
+      <template #empty>
         <div class="flex flex-justify-center p-10">
-          <a-button type="text" size="small"
-            ><icon-plus /> 新建连接器
-          </a-button>
+          <primaryButtonGroup
+            v-if="
+              userStore.hasProjectResourceActions({
+                resource: Resources.Connectors,
+                projectID: route.params.projectId,
+                actions: [Actions.POST]
+              })
+            "
+            size="medium"
+            :actions="connectorTypeList"
+            position="br"
+            trigger="hover"
+            item-type="text"
+            @select="(value, item) => handleCreate(value, item)"
+          >
+            <a-button type="text" size="small"
+              ><icon-plus class="font-14 m-r-5" />{{
+                $t('operation.connectors.create')
+              }}</a-button
+            >
+          </primaryButtonGroup>
         </div>
-      </template> -->
+      </template>
     </a-select>
   </div>
 </template>
 
 <script lang="ts" setup>
+  import { Resources, Actions } from '@/permissions/config';
   import { includes } from 'lodash';
+  import { useUserStore } from '@/store';
+  import primaryButtonGroup from '@/components/drop-button-group/primary-button-group.vue';
   import { PropType, ref, watchEffect } from 'vue';
+  import { connectorTypeList } from '@/views/operation-hub/connectors/config';
+  import useCallCommon from '@/hooks/use-call-common';
 
   const props = defineProps({
     list: {
@@ -79,6 +102,8 @@
       }
     }
   });
+  const { route, router } = useCallCommon();
+  const userStore = useUserStore();
   const emits = defineEmits(['confirm', 'update:show', 'update:connectorIDs']);
   const values = ref<string[]>([]);
 
@@ -94,6 +119,16 @@
       values.value = [];
       emits('update:show', false);
     }, 100);
+  };
+
+  const handleCreate = (val, item) => {
+    router.push({
+      name: item.route,
+      params: {
+        action: 'edit',
+        projectId: route.params.projectId
+      }
+    });
   };
   watchEffect(() => {
     values.value = [...props.connectorIDs];

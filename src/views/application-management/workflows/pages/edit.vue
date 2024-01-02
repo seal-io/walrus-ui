@@ -21,10 +21,10 @@
           :size="20"
           style="padding-right: 16px"
         >
-          <a-button type="primary" size="small" @click="handleSubmit">
+          <a-button type="primary" @click="handleSubmit">
             {{ $t('common.button.save') }}
           </a-button>
-          <a-button type="outline" size="small" @click="handleCancel">
+          <a-button type="outline" @click="handleCancel">
             {{ $t('common.button.cancel') }}
           </a-button>
         </a-space>
@@ -48,7 +48,7 @@
   import flowEditor from '../components/flow-editor.vue';
   import { createPipeline, updatePipeline, applyPipeline } from '../api';
 
-  const height = 'calc(100vh - 90px)';
+  const height = 'calc(100vh - 100px)';
   const userStore = useUserStore();
   const { t, route, router } = useCallCommon();
   const projectID = route.params.projectId as string;

@@ -1,7 +1,7 @@
 <template>
   <ComCard borderless padding="0" class="projects">
     <div class="content">
-      <FilterBox class="m-b-10">
+      <FilterBox style="margin-bottom: var(--filter-box-margin)">
         <template #params>
           <a-input
             v-model="queryParams.query"
