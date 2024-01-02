@@ -8,8 +8,9 @@
             :hide-label="true"
             :hide-asterisk="false"
             :field="dataInfo.key"
-            :validate-trigger="['blur', 'change']"
+            :validate-trigger="['blur', 'input', 'change']"
             :rules="getRules(dataInfo)"
+            :style="{ width: `${InputWidth.LARGE}px` }"
           >
             <form-component
               v-model="formData[dataInfo.key]"
@@ -46,7 +47,7 @@
                   :hide-label="true"
                   :hide-asterisk="false"
                   :field="`${item.key}.${child.key}`"
-                  :validate-trigger="['blur', 'change']"
+                  :validate-trigger="['blur', 'input', 'change']"
                   :rules="getRules(child)"
                 >
                   <form-component
@@ -70,11 +71,11 @@
                       </a-tooltip>
                     </span>
                   </template>
-                  <template #extra>
+                  <!-- <template #extra>
                     <span v-if="child.component.extra">{{
                       $t(child.component.extra)
                     }}</span>
-                  </template>
+                  </template> -->
                 </a-form-item>
               </template>
             </template>
@@ -132,7 +133,7 @@
                   :hide-label="true"
                   :hide-asterisk="false"
                   :field="`${subGroupItem.key}`"
-                  :validate-trigger="['blur', 'change']"
+                  :validate-trigger="['blur', 'input', 'change']"
                   :rules="getRules(subGroupItem)"
                 >
                   <form-component
@@ -159,10 +160,16 @@
                       </a-tooltip>
                     </span>
                   </template>
-                  <template #extra>
-                    <span v-if="subGroupItem.component.extra">{{
-                      $t(subGroupItem.component.extra)
-                    }}</span>
+                  <template v-if="subGroupItem.showExtra" #extra>
+                    <div :style="{ width: `${InputWidth.LARGE}px` }">
+                      <span
+                        v-if="subGroupItem.extraHtml"
+                        v-html="$t(subGroupItem.component.extra || '')"
+                      ></span>
+                      <span v-else-if="subGroupItem.component.extra">{{
+                        $t(subGroupItem.component.extra)
+                      }}</span>
+                    </div>
                   </template>
                 </a-form-item>
               </template>
@@ -175,7 +182,7 @@
               :hide-label="true"
               :hide-asterisk="false"
               :field="item.key"
-              :validate-trigger="['blur', 'change']"
+              :validate-trigger="['blur', 'input', 'change']"
               :rules="getRules(item)"
             >
               <form-component
@@ -198,11 +205,11 @@
                   </a-tooltip>
                 </span>
               </template>
-              <template #extra>
+              <!-- <template #extra>
                 <span v-if="item.component.extra">{{
                   $t(item.component.extra)
                 }}</span>
-              </template>
+              </template> -->
             </a-form-item>
           </div>
         </template>

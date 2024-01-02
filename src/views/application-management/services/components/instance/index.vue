@@ -39,7 +39,7 @@
           ></BasicInfo>
         </template> -->
       </HeaderInfo>
-      <slTransition>
+      <!-- <slTransition>
         <div v-if="pageAction === PageAction.EDIT">
           <serviceEdit
             pg-type="com"
@@ -47,7 +47,7 @@
             @cancel="handleEditCancel"
           ></serviceEdit>
         </div>
-      </slTransition>
+      </slTransition> -->
       <div v-if="pageAction === PageAction.VIEW">
         <!-- <ComCard>
           <ModuleCard
@@ -91,23 +91,28 @@
             >
               <serviceRevisions></serviceRevisions>
             </a-tab-pane>
-            <a-tab-pane key="config" :title="$t('common.title.config')">
-              <serviceInfo ref="serviceInfoRef" :is-collapsed="isCollapsed">
+            <a-tab-pane key="config" :title="$t('common.button.settings')">
+              <serviceEdit
+                v-if="
+                  userStore.hasProjectResourceActions({
+                    resource: Resources.Resources,
+                    environmentID: _.get(currentInfo, 'environment.id'),
+                    projectID: _.get(currentInfo, 'project.id'),
+                    actions: [Actions.PUT]
+                  })
+                "
+                pg-type="com"
+                @save="handleEditSucceed"
+                @cancel="handleEditCancel"
+              ></serviceEdit>
+              <serviceInfo
+                v-else
+                ref="serviceInfoRef"
+                :is-collapsed="isCollapsed"
+              >
               </serviceInfo>
             </a-tab-pane>
           </a-tabs>
-        </ComCard>
-        <ComCard>
-          <EditPageFooter>
-            <template #save>
-              <a-button
-                type="primary"
-                class="cap-title cancel-btn"
-                @click="handleOk"
-                >{{ $t('common.button.back') }}</a-button
-              >
-            </template>
-          </EditPageFooter>
         </ComCard>
       </div>
     </ComCard>
@@ -121,7 +126,7 @@
 </template>
 
 <script lang="ts" setup>
-  import { Resources } from '@/permissions/config';
+  import { Resources, Actions } from '@/permissions/config';
   import { useUserStore, useServiceStore } from '@/store';
   import _ from 'lodash';
   import { PageAction, websocketEventType } from '@/views/config';
@@ -210,7 +215,11 @@
   const actionList = computed(() => {
     const list = _.filter(serviceActions, (item) => {
       if (
-        [serviceActionMap.rollback, serviceActionMap.logs].includes(item.value)
+        [
+          serviceActionMap.rollback,
+          serviceActionMap.logs,
+          serviceActionMap.upgrade
+        ].includes(item.value)
       ) {
         return false;
       }
@@ -280,9 +289,7 @@
     actionMap.set(serviceActionMap.stop, handleStopModal);
     actionMap.set(serviceActionMap.upgrade, handleUpgrade);
   };
-  const handleEditCancel = () => {
-    pageAction.value = PageAction.VIEW;
-  };
+
   const setInstanceTabList = () => {
     instanceTabList.value = _.filter(instanceTabs, (item) => {
       if (!item.requiredAuth) return true;
@@ -308,6 +315,10 @@
       serviceStore.deleteService(route.query.id);
       console.log('error===========', error);
     }
+  };
+
+  const handleEditCancel = () => {
+    // pageAction.value = PageAction.VIEW;
   };
   const handleEditSucceed = () => {
     router.replace({

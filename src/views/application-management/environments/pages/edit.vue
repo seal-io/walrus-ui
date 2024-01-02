@@ -29,15 +29,7 @@
         :bordered="false"
         :title="$t('common.title.basicInfo')"
         flex-start
-        :show-edit="
-          pageAction === PageAction.VIEW &&
-          userStore.hasProjectResourceActions({
-            resource: Resources.Environments,
-            environmentID: id,
-            projectID: route.params.projectId,
-            actions: ['POST']
-          })
-        "
+        :show-edit="showEdit()"
         @edit="handleEdit"
       ></GroupTitle>
       <a-form ref="formref" :model="formData" auto-label-width>
@@ -114,11 +106,17 @@
           :hide-label="true"
         >
           <SealFormItemWrap
-            v-if="pageAction === PageAction.EDIT"
             :label="$t(`applications.projects.form.label`)"
             :style="{ width: `${InputWidth.LARGE}px` }"
           >
-            <a-space
+            <keyValueLabels
+              v-model:value="formData.labels"
+              labels-key="labels"
+              :validate-trigger="validateTrigger"
+              :labels="formData"
+              :page-action="pageAction"
+            ></keyValueLabels>
+            <!-- <a-space
               v-if="labelList.length"
               style="display: flex; flex-direction: column; width: 100%"
               direction="vertical"
@@ -161,15 +159,14 @@
               >
                 <icon-plus-circle-fill :size="24" font-size="14px" />
               </a-link>
-            </template>
+            </template> -->
           </SealFormItemWrap>
-          <SealFormItemWrap
-            v-else
+          <!-- <SealFormItemWrap
             :label="$t(`applications.projects.form.label`)"
             :style="{ width: `${InputWidth.LARGE}px` }"
           >
             <LabelsList :labels="formData.labels"></LabelsList>
-          </SealFormItemWrap>
+          </SealFormItemWrap> -->
         </a-form-item>
         <GroupTitle
           class="m-t-20"
@@ -319,6 +316,7 @@
     isEqual,
     cloneDeep
   } from 'lodash';
+  import keyValueLabels from '@/components/form-create/custom-components/key-value-labels.vue';
   import GroupButtonMenu from '@/components/drop-button-group/group-button-menu.vue';
   import GroupTitle from '@/components/group-title/index.vue';
   import EditPageFooter from '@/components/edit-page-footer/index.vue';
@@ -433,6 +431,31 @@
     }
     return t('operation.environments.view');
   });
+
+  const initPageAction = () => {
+    if (route.name === PROJECT.EnvDetail) {
+      pageAction.value = userStore.hasProjectResourceActions({
+        resource: Resources.Environments,
+        environmentID: id,
+        projectID: route.params.projectId,
+        actions: ['POST']
+      })
+        ? PageAction.EDIT
+        : PageAction.VIEW;
+    }
+  };
+  const showEdit = () => {
+    if (route.name === PROJECT.EnvDetail) {
+      return false;
+    }
+    const hasPermission = userStore.hasProjectResourceActions({
+      resource: Resources.Environments,
+      environmentID: id,
+      projectID: route.params.projectId,
+      actions: ['POST']
+    });
+    return pageAction.value === PageAction.VIEW && hasPermission;
+  };
   const handleSelectChange = ({ value, item }) => {
     handleBreadChange(value, item);
   };
@@ -581,11 +604,8 @@
           name: PROJECT.Detail,
           fullPath: ''
         });
-        if (route.name === PROJECT.EnvDetail) {
-          pageAction.value = PageAction.VIEW;
-        } else {
-          router.back();
-        }
+
+        router.back();
         submitLoading.value = false;
       } catch (error) {
         submitLoading.value = false;
@@ -603,6 +623,10 @@
     }
   };
   const cancelCallback = () => {
+    if (route.name === PROJECT.EnvDetail) {
+      getItemEnvironmentInfo();
+      return;
+    }
     if (
       pageAction.value === PageAction.EDIT &&
       route.params.action === PageAction.VIEW
@@ -666,6 +690,7 @@
     // only in clone: default select all variables
     variablesRef.value?.selectAllVars();
     initCloneEnvironmentResource();
+    initPageAction();
   };
 
   init();

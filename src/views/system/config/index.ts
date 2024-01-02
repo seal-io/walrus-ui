@@ -38,7 +38,9 @@ export interface DataListItem {
   hidden?: boolean;
   label: string;
   desc?: string;
+  showExtra?: boolean;
   editable?: boolean;
+  extraHtml?: boolean;
   isEditable?: boolean;
   style?: Record<string, any>;
   private?: boolean;
@@ -57,6 +59,8 @@ export interface SettingsItem {
   hidden?: boolean;
   label: string;
   desc?: string;
+  showExtra?: boolean;
+  extraHtml?: boolean;
   editable?: boolean;
   private?: boolean;
   children?: ChildrenItem[];

@@ -101,6 +101,11 @@ export default {
   'system.setting.deployment.proxy': 'Proxy',
   'system.setting.openAiApiToken': 'OpenAI API Token',
   'system.setting.TerraformDeployerImage': 'Deployer Image',
+  'system.setting.DeployerNetworkMirrorUrl': 'Deployer Network Mirror URL',
+  'system.setting.DeployerNetworkMirrorUrl.desc':
+    'Configure networking mirroring for the Deployer.',
+  'system.setting.DeployerNetworkMirrorUrl.extra':
+    'Please input <span style="color: var(--color-text-1);margin: 0 4px;">https://walrus-mirror-hermitcrab.walrus-system/v1/providers/</span> if consumes the built-in Deployer network mirroring service.',
   'system.setting.ConnectorCheckCronExpr': 'Check Connector Status',
   'system.setting.ConnectorCheckCronExpr.desc':
     'The default is to execute every 5 minutes',

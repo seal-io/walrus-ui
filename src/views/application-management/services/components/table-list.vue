@@ -2,26 +2,6 @@
   <ComCard padding="0" class="list">
     <div>
       <div v-if="total > 10" class="pagination">
-        <!-- <a-space class="sort" :size="20">
-          <a-checkbox
-            v-if="!userStore.isReadOnlyEnvironment(projectID, environmentID)"
-            :model-value="
-              rowSelection.selectedRowKeys.length === dataList.length &&
-              dataList.length > 0
-            "
-            :indeterminate="
-              rowSelection.selectedRowKeys.length > 0 &&
-              rowSelection.selectedRowKeys.length < dataList.length
-            "
-            @change="handleSelectAll"
-          ></a-checkbox>
-          <a-button type="text" size="mini" @click="handleNameSort">
-            <i class="iconfont icon-sort size-16" style="stroke-width: 4"></i>
-          </a-button>
-          <a-button type="text" size="mini" @click="handleTimeSort">
-            <i class="iconfont icon-Field-time size-16"></i>
-          </a-button>
-        </a-space> -->
         <a-pagination
           size="small"
           :total="total"
@@ -74,17 +54,17 @@
                 </span>
               </Autotip>
             </a-grid-item>
-            <a-grid-item :span="4">
+            <a-grid-item :span="6">
               <Autotip>
                 <span class="type">{{ $t('common.table.type') }}</span>
               </Autotip>
             </a-grid-item>
-            <a-grid-item :span="4">
+            <a-grid-item :span="3">
               <Autotip>
                 <span>{{ $t('common.table.status') }}</span>
               </Autotip>
             </a-grid-item>
-            <a-grid-item :span="4" class="sort-item" @click="handleTimeSort">
+            <a-grid-item :span="3" class="sort-item" @click="handleTimeSort">
               <Autotip>
                 <span class="sort-col">
                   <span>{{ $t('common.table.createTime') }}</span>

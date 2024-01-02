@@ -39,6 +39,24 @@ export const deployManagement: SettingsItem = {
           },
           value: '',
           type: 'string'
+        },
+        {
+          id: 'DeployerNetworkMirrorUrl',
+          key: 'DeployerNetworkMirrorUrl',
+          label: 'system.setting.DeployerNetworkMirrorUrl',
+          desc: 'system.setting.DeployerNetworkMirrorUrl.desc',
+          showExtra: true,
+          extraHtml: true,
+          parentId: '',
+          component: {
+            type: 'input',
+            required: false,
+            match: '',
+            message: '',
+            extra: 'system.setting.DeployerNetworkMirrorUrl.extra'
+          },
+          value: '',
+          type: 'string'
         }
       ]
     },

@@ -215,9 +215,13 @@
     });
     return list;
   };
+  const refreshkey = () => {
+    formKey.value = Date.now();
+  };
   defineExpose({
     validate,
     rootFormData,
+    refreshkey,
     getHiddenData
   });
   watch(
@@ -240,7 +244,7 @@
       FieldPathMap.value.clear();
       destroyed.value = true;
       defaultFormData.value = {};
-      formKey.value = Date.now();
+      refreshkey();
 
       if (schemaFormStatus.value === PageAction.CREATE) {
         handleChange({});

@@ -82,6 +82,26 @@
           </div>
         );
       };
+      const renderCollapseButton = () => {
+        if (props.rowData?.status?.summaryStatus === ServiceStatus.Undeployed) {
+          return null;
+        }
+        return (
+          <a-button
+            onClick={withModifiers(handleToggle, ['stop'])}
+            class="collapse-btn p-0"
+            type="text"
+          >
+            <>
+              {collapse.value ? (
+                <icon-minus style={{ 'store-width': 3 }} class="font-12" />
+              ) : (
+                <icon-plus style={{ 'store-width': 3 }} class="font-12" />
+              )}
+            </>
+          </a-button>
+        );
+      };
       return () => (
         <div
           onClick={withModifiers(handleToggle, ['stop'])}
@@ -96,25 +116,34 @@
           ]}
         >
           <div class="item-wrap">
-            <a-checkbox
-              onClick={withModifiers(() => {}, ['stop'])}
-              model-value={_.includes(props.selectedRowKeys, props.rowData.id)}
-              disabled={props.rowData.disabled}
-              onChange={(val) => {
-                handleCheckboxChange(val, props.rowData.id);
-              }}
-            />
+            <span class="check-box">
+              <a-checkbox
+                clas="checkbox-wrap"
+                onClick={withModifiers(() => {}, ['stop'])}
+                model-value={_.includes(
+                  props.selectedRowKeys,
+                  props.rowData.id
+                )}
+                disabled={props.rowData.disabled}
+                onChange={(val) => {
+                  handleCheckboxChange(val, props.rowData.id);
+                }}
+              />
+            </span>
             <a-grid cols={24} style={{ width: '100%' }}>
               <a-grid-item span={4}>
-                <Autotip>
-                  <span>
-                    {slots.name
-                      ? slots.name?.({ record: props.rowData })
-                      : props.rowData.name}
-                  </span>
-                </Autotip>
+                <span class="name-box">
+                  <Autotip>
+                    <span>
+                      {slots.name
+                        ? slots.name?.({ record: props.rowData })
+                        : props.rowData.name}
+                    </span>
+                  </Autotip>
+                  {renderCollapseButton()}
+                </span>
               </a-grid-item>
-              <a-grid-item span={4}>
+              <a-grid-item span={6}>
                 <Autotip>
                   <>
                     {_.get(props.rowData, 'type') ? (
@@ -136,12 +165,12 @@
                   </>
                 </Autotip>
               </a-grid-item>
-              <a-grid-item span={4}>
+              <a-grid-item span={3}>
                 <Autotip>
                   <span>{slots?.status?.({ record: props.rowData })}</span>
                 </Autotip>
               </a-grid-item>
-              <a-grid-item span={4}>
+              <a-grid-item span={3}>
                 <Autotip>
                   <span>
                     {dayjs(_.get(props.rowData, 'createTime')).format(
@@ -191,6 +220,12 @@
         border-color: var(--color-fill-1);
         // border-bottom: 1px dotted var(--color-border-3);
       }
+
+      .name-box {
+        .collapse-btn {
+          background-color: var(--color-fill-4);
+        }
+      }
     }
 
     &.clickable {
@@ -210,6 +245,29 @@
     font-size: var(--font-size-small);
     line-height: 3;
 
+    .check-box {
+      display: flex;
+    }
+
+    .name-box {
+      display: flex;
+      flex-direction: column;
+      line-height: 2;
+
+      .collapse-btn {
+        width: 14px;
+        height: 14px;
+        margin-top: 4px;
+        color: var(--color-text-3);
+        background-color: var(--color-fill-3);
+        border-radius: 2px;
+
+        &:hover {
+          background-color: var(--color-fill-4);
+        }
+      }
+    }
+
     &:hover {
       background-color: var(--color-fill-1);
       border-color: var(--color-fill-1);
@@ -224,18 +282,6 @@
     .arco-checkbox {
       margin-right: 20px;
       padding-left: 0;
-    }
-
-    .type {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      width: fit-content;
-      min-width: 40px;
-      padding: 0 8px;
-      line-height: 22px;
-      border: 1px solid var(--color-border-2);
-      border-radius: 22px;
     }
 
     .actions {
