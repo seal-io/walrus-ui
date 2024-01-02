@@ -33,10 +33,10 @@ export default {
   'applications.applications.form.useTemplate': 'Use Template',
   'applications.applications.detail.configuration': 'Configuration',
   'applications.applications.form.description': 'Description',
-  'applications.applications.rule.name': 'name is required',
-  'applications.module.rule.name': 'name is required',
+  'applications.applications.rule.name': 'Name is required.',
+  'applications.module.rule.name': 'Name is required.',
   'applications.applications.rule.allName':
-    'consists of lowercase letters, numbers or "-", starts with a letter and ends with a letter or number',
+    'Consists of lowercase letters, numbers or "-", starts with a letter and ends with a letter or number',
   'applications.module.name.tips':
     'consists of letters, numbers, underscores, cannot start with a number',
   'applications.module.rule.name.tips':
@@ -70,7 +70,7 @@ export default {
     'please enter a new service name',
   'applications.applications.instance.clonetitle': 'Clone Service ({from})',
   'applications.applications.logs.live': 'Running Logs',
-  'applications.instance.rule.env': 'the deployment environment is required',
+  'applications.instance.rule.env': 'The deployment environment is required.',
   'applications.instance.env.tips':
     'environments without connectors are not available',
   'applications.instance.tab.resource': 'Components',
@@ -106,9 +106,9 @@ export default {
   'applications.applications.labels.title': 'Add labels',
   'applications.applications.tags.title': 'Tags',
   'applications.applications.tags.button': 'Add tags',
-  'applications.applications.rules.modules': 'template is required',
-  'applications.applications.rules.versions': 'version is required',
-  'applications.applications.rules.reourceType': 'resource type is required',
+  'applications.applications.rules.modules': 'Template is required.',
+  'applications.applications.rules.versions': 'Version is required.',
+  'applications.applications.rules.reourceType': 'Resource type is required.',
   'applications.applications.modules.tips': 'Required for new applications',
   'applications.applications.modules.params.title':
     'To use variables, output properties in related services, the method is as follows:',
@@ -116,8 +116,7 @@ export default {
   'applications.applications.modules.params.tips2': `1. Use variables: you can enter {'$'}{'{'}var.variableName{'}'} in the input box`,
   'applications.applications.modules.params.tips3': `2. Use the attributes in the service: you can enter {'$'}{'{'}service.serviceName.attributeName{'}'} in the input box`,
   'applications.applications.modules.params.tips4': `2. Use the attributes in the resource: you can enter {'$'}{'{'}resource.resourceName.attributeName{'}'} in the input box`,
-  'applications.applications.rule.modules.name':
-    'exists with the same service or resource',
+  'applications.applications.rule.modules.name': 'Duplicate resource found.',
   'applications.applications.variables.title': 'Variables',
   'applications.applications.variables.button': 'New Variable',
   'applications.applications.variables.label': 'Variable Name',
@@ -134,7 +133,7 @@ export default {
   'applications.projects.table.name': 'Project',
   'applications.projects.search.holder': 'please enter a project',
   'applications.projects.form.label': 'Labels',
-  'applications.projects.rule.name': 'Name is required',
+  'applications.projects.rule.name': 'Name is required.',
   'applications.projects.role.owner': 'Owner',
   'applications.projects.role.member': 'Member',
   'applications.projects.role.select': 'please select members',
@@ -142,7 +141,7 @@ export default {
   'applications.projects.role.viewer': 'Viewer',
   'applications.secret.create': 'New Variable',
   'applications.member.table.name': 'Member',
-  'applications.secret.rules.value': 'variable value is required',
+  'applications.secret.rules.value': 'Variable value is required.',
   'applications.secret.name.tips':
     'consists of letters, numbers, underscores, cannot start with a number',
   'applications.secret.edit': 'Edit Variable',
@@ -166,10 +165,11 @@ export default {
   'applications.environment.table.status': 'Resources Status',
   'applications.environment.clone.variable': 'Select variables',
   'applications.environment.clone.target': 'Target Environments',
-  'applications.environment.clone.env.rules': 'Target Environments is required',
+  'applications.environment.clone.env.rules':
+    'Target Environments is required.',
   'applications.environment.graph.fitview': 'fit view',
   'applications.environment.type': 'Environment Type',
-  'applications.environment.rule.type': 'Environment Type is required',
+  'applications.environment.rule.type': 'Environment Type is required.',
   'applications.environment.graph.cancelfullscreen': 'Exit Full Screen',
   'applications.environment.graph.fullscreen': 'Full Screen',
   'applications.environment.graph.show': 'show subresources',

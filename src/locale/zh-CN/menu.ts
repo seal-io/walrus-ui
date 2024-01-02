@@ -4,7 +4,7 @@ export default {
   'menu.applicationManagement.project': '项目',
   'menu.applicationManagement.projectList': '项目列表',
   'menu.applicationManagement.application': '应用',
-  'menu.applicationManagement.serivce': '服务/资源',
+  'menu.applicationManagement.serivce': '资源',
   'menu.applicationManagement.resource': '资源',
   'menu.applicationManagement.services': '服务',
   'menu.applicationManagement.secret': '变量',

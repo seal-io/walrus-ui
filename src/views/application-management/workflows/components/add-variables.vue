@@ -25,8 +25,16 @@
           :rules="[
             {
               required: true,
+              message: $t('common.rule.name')
+            },
+            {
+              required: true,
               match: validateLabelNameRegx,
               message: $t('common.validate.labelName')
+            },
+            {
+              validator: validateNameuniq,
+              message: $t('applications.applications.rule.modules.name')
             }
           ]"
         >
@@ -183,6 +191,12 @@
       default() {
         return 'create';
       }
+    },
+    variables: {
+      type: Array as PropType<any[]>,
+      default() {
+        return [];
+      }
     }
   });
   const emit = defineEmits(['save', 'update:show']);
@@ -201,6 +215,14 @@
       ? i18n.global.t('applications.applications.variables.button')
       : i18n.global.t('applications.secret.edit');
   });
+
+  const validateNameuniq = async (value, callback) => {
+    const res = props.variables.find((item) => item.name === value);
+    if (res) {
+      return callback(i18n.global.t('workflow.rule.variable.same'));
+    }
+    return callback();
+  };
   const handleCancel = () => {
     emit('update:show', false);
   };

@@ -45,6 +45,10 @@
             :rules="[
               {
                 required: true,
+                message: $t('common.rule.name')
+              },
+              {
+                required: true,
                 match: validateLabelNameRegx,
                 message: $t('common.validate.labelName')
               }
@@ -72,6 +76,10 @@
             :validate-trigger="['change', 'input']"
             :style="{ maxWidth: `${InputWidth.LARGE}px` }"
             :rules="[
+              {
+                required: true,
+                message: $t('resource.definition.detail.rules.defType')
+              },
               {
                 required: true,
                 match: validateLabelNameRegx,

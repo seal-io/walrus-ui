@@ -65,5 +65,6 @@ export default {
   'workflow.task.retry.onerror.desc':
     'Retry steps that encounter Argo controller errors, or whose init or wait containers fail',
   'workflow.button.stop': 'Stop',
-  'workflow.table.run.config': 'Runtime configuration'
+  'workflow.table.run.config': 'Runtime configuration',
+  'workflow.rule.variable.same': 'Duplicate variable found'
 };

@@ -4,7 +4,7 @@ export default {
   'menu.applicationManagement.project': 'Projects',
   'menu.applicationManagement.projectList': 'Project List',
   'menu.applicationManagement.application': 'Applications',
-  'menu.applicationManagement.serivce': 'Services/Resources',
+  'menu.applicationManagement.serivce': 'Resources',
   'menu.applicationManagement.resource': 'Resources',
   'menu.applicationManagement.services': 'Services',
   'menu.applicationManagement.secret': 'Variables',

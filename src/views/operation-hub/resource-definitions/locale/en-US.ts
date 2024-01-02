@@ -11,5 +11,14 @@ export default {
   'resource.definition.detail.resourceTag': 'Resource Labels',
   'resource.definition.detail.matchRule': 'Match Rules',
   'resource.definition.detail.rule': 'rule-{name}',
-  'resource.definition.detail.rules.labelKey': 'label Key cannot be empty'
+  'resource.definition.detail.rules.labelKey': 'label Key cannot be empty',
+  'resource.definition.detail.rules.defName':
+    'Resource definition name is required.',
+  'resource.definition.detail.rules.defType':
+    'Resource definition type is required.',
+  'resource.definition.detail.rules.ruleName':
+    'Matching rule name is required.',
+  'resource.definition.detail.rules.envName': 'Environment name is required.',
+  'resource.definition.detail.rules.envType': 'Environment type is required.',
+  'resource.definition.detail.rules.projectName': 'Project name is required.'
 };

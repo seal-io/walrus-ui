@@ -38,6 +38,10 @@
             :rules="[
               {
                 required: true,
+                message: $t('common.rule.name')
+              },
+              {
+                required: true,
                 match: validateLabelNameRegx,
                 message: $t('common.validate.labelName')
               }
