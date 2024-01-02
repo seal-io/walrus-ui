@@ -82,7 +82,7 @@
           trigger="hover"
           @select="(value) => handleClickAction(value)"
         >
-          <a-button type="primary"
+          <a-button type="primary" style="padding: 0 12px"
             ><icon-more-vertical style="stroke-width: 5" class="font-14"
           /></a-button>
         </primaryButtonGroup>

@@ -76,6 +76,7 @@
         return (
           <div class="components-container">
             <ResourceComponents
+              showCheckbox={props.showCheckbox}
               onLogs={(data) => handleLogClick(data)}
               onTerminal={(data) => handleTerminalClick(data)}
             ></ResourceComponents>
@@ -84,22 +85,37 @@
       };
       const renderCollapseButton = () => {
         if (props.rowData?.status?.summaryStatus === ServiceStatus.Undeployed) {
-          return null;
+          return <span class="empty-holder"></span>;
         }
         return (
-          <a-button
+          <a-link
             onClick={withModifiers(handleToggle, ['stop'])}
             class="collapse-btn p-0"
-            type="text"
+            style={{ color: 'var(--color-text-4)' }}
           >
             <>
               {collapse.value ? (
-                <icon-minus style={{ 'store-width': 3 }} class="font-12" />
+                <icon-down style={{ 'store-width': 3 }} class="font-12" />
               ) : (
-                <icon-plus style={{ 'store-width': 3 }} class="font-12" />
+                <icon-right style={{ 'store-width': 3 }} class="font-12" />
               )}
             </>
-          </a-button>
+          </a-link>
+        );
+      };
+
+      const renderCheckbox = () => {
+        if (!props.showCheckbox) return null;
+        return (
+          <a-checkbox
+            clas="checkbox-wrap"
+            onClick={withModifiers(() => {}, ['stop'])}
+            model-value={_.includes(props.selectedRowKeys, props.rowData.id)}
+            disabled={props.rowData.disabled}
+            onChange={(val) => {
+              handleCheckboxChange(val, props.rowData.id);
+            }}
+          />
         );
       };
       return () => (
@@ -117,18 +133,8 @@
         >
           <div class="item-wrap">
             <span class="check-box">
-              <a-checkbox
-                clas="checkbox-wrap"
-                onClick={withModifiers(() => {}, ['stop'])}
-                model-value={_.includes(
-                  props.selectedRowKeys,
-                  props.rowData.id
-                )}
-                disabled={props.rowData.disabled}
-                onChange={(val) => {
-                  handleCheckboxChange(val, props.rowData.id);
-                }}
-              />
+              {renderCheckbox()}
+              {renderCollapseButton()}
             </span>
             <a-grid cols={24} style={{ width: '100%' }}>
               <a-grid-item span={4}>
@@ -140,7 +146,6 @@
                         : props.rowData.name}
                     </span>
                   </Autotip>
-                  {renderCollapseButton()}
                 </span>
               </a-grid-item>
               <a-grid-item span={6}>
@@ -218,14 +223,13 @@
       .item-wrap {
         background-color: var(--color-fill-1);
         border-color: var(--color-fill-1);
-        // border-bottom: 1px dotted var(--color-border-3);
       }
 
-      .name-box {
-        .collapse-btn {
-          background-color: var(--color-fill-4);
-        }
-      }
+      // .check-box {
+      //   .collapse-btn {
+      //     background-color: var(--color-fill-4);
+      //   }
+      // }
     }
 
     &.clickable {
@@ -247,25 +251,26 @@
 
     .check-box {
       display: flex;
-    }
-
-    .name-box {
-      display: flex;
-      flex-direction: column;
-      line-height: 2;
+      align-items: center;
 
       .collapse-btn {
         width: 14px;
         height: 14px;
-        margin-top: 4px;
         color: var(--color-text-3);
-        background-color: var(--color-fill-3);
-        border-radius: 2px;
 
         &:hover {
           background-color: var(--color-fill-4);
+
+          .arco-icon {
+            color: var(--color-text-3);
+          }
         }
       }
+    }
+
+    .empty-holder {
+      width: 14px;
+      height: 14px;
     }
 
     &:hover {
@@ -280,7 +285,7 @@
     }
 
     .arco-checkbox {
-      margin-right: 20px;
+      margin-right: 12px;
       padding-left: 0;
     }
 

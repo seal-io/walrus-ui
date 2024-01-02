@@ -22,6 +22,10 @@
       index: {
         type: Number,
         default: 0
+      },
+      showCheckbox: {
+        type: Boolean,
+        default: true
       }
     },
     emits: ['selectionChange'],
@@ -33,7 +37,7 @@
             onClick={withModifiers(() => {}, ['stop'])}
           >
             <div class="item-wrap">
-              <span class="holder"></span>
+              <span class={['holder', { empty: !props.showCheckbox }]}></span>
               <a-grid
                 cols={24}
                 style={{ width: '100%' }}
@@ -159,7 +163,11 @@
       display: flex;
       width: 14px;
       height: 14px;
-      margin-right: 20px;
+      margin-right: 26px;
+
+      &.empty {
+        margin-right: 0;
+      }
     }
 
     .type {
