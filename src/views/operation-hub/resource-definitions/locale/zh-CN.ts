@@ -11,5 +11,11 @@ export default {
   'resource.definition.detail.resourceTag': '资源标签',
   'resource.definition.detail.matchRule': '匹配规则',
   'resource.definition.detail.rule': 'rule-{name}',
-  'resource.definition.detail.rules.labelKey': '标签键不能为空'
+  'resource.definition.detail.rules.labelKey': '标签键不能为空',
+  'resource.definition.detail.rules.defName': '资源定义名称必填',
+  'resource.definition.detail.rules.defType': '资源定义类型必填',
+  'resource.definition.detail.rules.ruleName': '匹配规则名称必填',
+  'resource.definition.detail.rules.envName': '环境名称必填',
+  'resource.definition.detail.rules.envType': '环境类型必填',
+  'resource.definition.detail.rules.projectName': '项目名称必填'
 };

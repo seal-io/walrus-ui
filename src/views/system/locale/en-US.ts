@@ -2,8 +2,8 @@ export default {
   'menu.system.setting': 'System Settings',
   'menu.system.user': 'Users Management',
   'menu.system.config': 'Configuration Management',
-  'system.rules.value': 'value is required',
-  'system.rules.url': 'server address is required',
+  'system.rules.value': 'Value is required.',
+  'system.rules.url': 'Server address is required.',
   'user.password.modify': 'Modify Password',
   'user.password.default.modify': 'Modify Default Password',
   'user.password.oldPassword': 'Old password',
@@ -90,7 +90,7 @@ export default {
   'system.setting.analyze.gonoproxy.desc':
     'List of glob patterns of module path prefixes that should always be fetched directly or that should not be compared against the checksum database.',
   'system.setting.analyze.repoconfig': 'Repository Configuration',
-  'system.setting.rule.openai': 'openai api token is required',
+  'system.setting.rule.openai': 'Openai api token is required.',
   'system.setting.task': 'Task',
   'system.setting.task.basic': 'Basic',
   'system.setting.task.basicmng': 'Basic',
@@ -157,7 +157,7 @@ export default {
   'account.settings.expired': 'Expired',
   'account.settings.expireSoon': 'Expiring soon',
   'account.settings.token.rules.name': 'API key is required',
-  'account.settings.token.rules.expire': 'Expiration time is required',
+  'account.settings.token.rules.expire': 'Expiration time is required.',
   'account.settings.token.expireDate': 'Expire date',
   'account.settings.token.desc': 'API keys can be used to access Walrus API.',
   'account.settings.token.tips':
@@ -165,5 +165,5 @@ export default {
   'account.settings.clear.tips': 'Save, the following settings will be cleared',
   'account.create.rules.username':
     'Can only contain alphanumeric, _, -, cannot have consecutive _, -, start or end with alphanumeric',
-  'account.create.rules.password': 'password is required'
+  'account.create.rules.password': 'Password is required.'
 };

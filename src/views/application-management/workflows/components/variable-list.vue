@@ -75,6 +75,7 @@
       v-model:show="showVariableModal"
       :info="currentVariable"
       :action="action"
+      :variables="dataList"
       @save="handleSaveVariable"
     ></addVariables>
   </div>

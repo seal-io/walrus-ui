@@ -64,5 +64,6 @@ export default {
   'workflow.task.retry.onerror.desc':
     '重试遇到 Argo 控制器错误或 init 或 wait 容器失败的步骤',
   'workflow.button.stop': '停止',
-  'workflow.table.run.config': '运行配置'
+  'workflow.table.run.config': '运行配置',
+  'workflow.rule.variable.same': '存在相同的变量'
 };

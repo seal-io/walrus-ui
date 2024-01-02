@@ -85,6 +85,10 @@
               :rules="[
                 {
                   required: pageAction === PageAction.EDIT,
+                  message: $t('common.rule.name')
+                },
+                {
+                  required: pageAction === PageAction.EDIT,
                   match: validateLabelNameRegx,
                   message: $t('common.validate.labelName')
                 }

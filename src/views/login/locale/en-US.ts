@@ -27,7 +27,7 @@ export default {
     'Internationalization, routing configuration, state management everything',
   'login.banner.slogan3': 'Access visualization enhancement tool AUX',
   'login.banner.subSlogan3': 'Realize flexible block development',
-  'login.config.serverUrl': 'server address is required',
+  'login.config.serverUrl': 'Server address is required.',
   'login.config.pswd.exec':
     'For the first login, use the following way to get the initial admin password',
   'login.config.pswd.specified': 'The initial password is set at startup',

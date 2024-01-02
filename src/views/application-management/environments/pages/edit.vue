@@ -40,7 +40,11 @@
           :hide-label="true"
           :rules="[
             {
-              required: pageAction === PageAction.EDIT,
+              required: true,
+              message: $t('common.rule.name')
+            },
+            {
+              required: true,
               match: validateLabelNameRegx,
               message: $t('common.validate.labelName')
             }

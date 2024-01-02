@@ -16,6 +16,10 @@
             :rules="[
               {
                 required: true,
+                message: $t('resource.definition.detail.rules.ruleName')
+              },
+              {
+                required: true,
                 match: validateLabelNameRegx,
                 message: $t('common.validate.labelName')
               },
@@ -74,6 +78,10 @@
             :rules="[
               {
                 required: true,
+                message: $t('resource.definition.detail.rules.projectName')
+              },
+              {
+                required: true,
                 match: validateLabelNameRegx,
                 message: $t('common.validate.labelName')
               },
@@ -111,6 +119,10 @@
             :label="$t('resource.definition.detail.envName')"
             :validate-trigger="['change', 'input']"
             :rules="[
+              {
+                required: true,
+                message: $t('resource.definition.detail.rules.envName')
+              },
               {
                 required: true,
                 match: validateLabelNameRegx,
@@ -158,7 +170,7 @@
             :rules="[
               {
                 required: true,
-                message: $t('applications.applications.rules.versions')
+                message: $t('resource.definition.detail.rules.envType')
               }
             ]"
           >

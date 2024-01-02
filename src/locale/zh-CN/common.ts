@@ -145,5 +145,6 @@ export default {
   'common.button.stop': '停止',
   'common.button.start': '启动',
   'common.rule.object.key': '键不能为空',
-  'common.confirm.title': '确定要{action}吗？'
+  'common.confirm.title': '确定要{action}吗？',
+  'common.rule.name': '名称必填'
 };
