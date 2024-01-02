@@ -59,7 +59,7 @@ export default {
   'applications.applications.instance.application': 'Application',
   'applications.applications.instance.status': 'Status',
   'applications.applications.instance.history': 'Revisions',
-  'applications.applications.instance.accessUrl': 'Access URL',
+  'applications.applications.instance.accessUrl': 'Endpoints',
   'applications.applications.instance.resource': 'Component Information',
   'applications.applications.instance.resource.tips':
     'When the connector of the environment is customized, the resources and outputs of the service are static data, which will be updated when the service is upgraded',

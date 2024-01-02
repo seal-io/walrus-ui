@@ -90,7 +90,12 @@ export default {
   'system.setting.deployment.basic': '基础设置',
   'system.setting.deployment.proxy': '代理设置',
   'system.setting.openAiApiToken': 'OpenAI API令牌',
-  'system.setting.TerraformDeployerImage': '运行镜像',
+  'system.setting.TerraformDeployerImage': '部署器镜像',
+  'system.setting.DeployerNetworkMirrorUrl': '部署器加速地址',
+  'system.setting.DeployerNetworkMirrorUrl.desc':
+    '用于配置部署器下载 Provider 的代理服务，详情请参看',
+  'system.setting.DeployerNetworkMirrorUrl.extra':
+    '如使用内置部署器加速服务地址，请填写：<span style="color: var(--color-text-1);margin: 0 4px;">https://walrus-mirror-hermitcrab.walrus-system/v1/providers/</span>',
   'system.setting.ConnectorCheckCronExpr': '检查连接器状态',
   'system.setting.ConnectorCheckCronExpr.desc': '默认是每5分钟执行一次',
   'system.setting.ResourceStatusCheckCronExpr': '检查资源组件状态',

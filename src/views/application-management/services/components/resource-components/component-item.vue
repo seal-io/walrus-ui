@@ -53,17 +53,17 @@
                     </span>
                   </Autotip>
                 </a-grid-item>
-                <a-grid-item span={4}>
+                <a-grid-item span={6}>
                   <Autotip>
                     <span>{props.rowData.type}</span>
                   </Autotip>
                 </a-grid-item>
-                <a-grid-item span={4}>
+                <a-grid-item span={3}>
                   <Autotip>
                     <span>{slots?.status?.({ record: props.rowData })}</span>
                   </Autotip>
                 </a-grid-item>
-                <a-grid-item span={4}>
+                <a-grid-item span={3}>
                   <Autotip>
                     <span>
                       {dayjs(_.get(props.rowData, 'createTime')).format(

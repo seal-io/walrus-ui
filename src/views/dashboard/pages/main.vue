@@ -18,14 +18,14 @@
           v-model:loading="loading"
         ></overview>
         <DeploymentSummary></DeploymentSummary>
-        <CostSummary
+        <!-- <CostSummary
           v-if="
             userStore.hasRolesActionsPermission({
               resource: Resources.Dashboards,
               actions: [Actions.POST]
             })
           "
-        ></CostSummary>
+        ></CostSummary> -->
       </a-space>
       <ComCard v-else>
         <a-empty class="relative">

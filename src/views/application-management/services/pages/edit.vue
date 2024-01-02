@@ -1,13 +1,15 @@
 <template>
   <div>
-    <BreadWrapper>
+    <BreadWrapper v-if="pgType === 'page'">
       <Breadcrumb
         :items="breadCrumbList"
         :menu="{ icon: 'icon-apps' }"
         @change="handleSelectChange"
       ></Breadcrumb>
     </BreadWrapper>
-    <ComCard padding="20px var(--card-content-padding)">
+    <ComCard
+      :padding="pgType === 'page' ? '20px var(--card-content-padding)' : 0"
+    >
       <GroupTitle
         :title="$t('common.title.basicInfo')"
         :bordered="false"
@@ -185,7 +187,7 @@
             :label="$t('applications.projects.form.label')"
             :style="{ width: `${InputWidth.LARGE}px` }"
           >
-            <a-space
+            <!-- <a-space
               v-if="labelList?.length"
               :style="{
                 'display': 'flex',
@@ -208,8 +210,15 @@
                 @add="(obj) => handleAddLabel(obj, labelList)"
                 @delete="handleDeleteLabel(labelList, sIndex)"
               ></xInputGroup>
-            </a-space>
-            <template v-else>
+            </a-space> -->
+            <keyValueLabels
+              v-model:value="formData.labels"
+              labels-key="labels"
+              :validate-trigger="validateTrigger"
+              :labels="formData"
+              :page-action="pageAction"
+            ></keyValueLabels>
+            <!-- <template v-else>
               <a-link
                 class="p-0"
                 @click="
@@ -223,7 +232,7 @@
                   font-size="14px size-24"
                 ></icon-plus-circle-fill>
               </a-link>
-            </template>
+            </template> -->
           </SealFormItemWrap>
         </a-form-item>
         <a-form-item :label="$t('common.table.description')" hide-label>
@@ -238,13 +247,9 @@
         </a-form-item>
       </a-form>
     </ComCard>
-    <!-- <div style="padding: 0 20px">
-      <a-divider
-        style="margin: 0; border-color: var(--color-fill-2); border-radius: 1px"
-        :size="3"
-      ></a-divider>
-    </div> -->
-    <ComCard padding="0px var(--card-content-padding)">
+    <ComCard
+      :padding="pgType === 'page' ? '0px var(--card-content-padding)' : 0"
+    >
       <div
         v-if="_.keys(schemaVariables?.properties).length"
         style="display: flex; justify-content: flex-start"
@@ -289,7 +294,6 @@
           :ui-form-data="uiFormData"
           :action="formAction"
           :schema="schemaVariables"
-          @change="handleFormAttributeChange"
         ></GroupForm>
       </a-spin>
       <EditPageFooter>
@@ -362,6 +366,7 @@
     InjectSchemaFormStatusKey,
     InjectTraceKey
   } from '@/views/config';
+  import keyValueLabels from '@/components/form-create/custom-components/key-value-labels.vue';
   import { queryEnvironmentConnector } from '@/views/application-management/environments/api';
   import { projectEnvCtxInjectionKey } from '@/components/form-create/bussiness-components/config';
   import { BreadcrumbOptions } from '@/views/config/interface';
@@ -538,10 +543,6 @@
         formData.value.attributes = {};
       }
 
-      console.log(
-        'schemaFormCache++++++++++++++----=',
-        _.cloneDeep(formData.value)
-      );
       uiFormData.value = _.cloneDeep(formData.value.attributes);
     }
   };
@@ -586,9 +587,6 @@
     });
   };
 
-  const handleFormAttributeChange = () => {
-    console.log('schemaFormCache===33', formData.value.attributes);
-  };
   const handleVersionChange = () => {
     formAction.value = PageAction.CREATE;
     formData.value.template.id =
@@ -638,6 +636,10 @@
         isCancel: true,
         onOk: () => {
           if (props.pgType !== 'page') {
+            setTimeout(() => {
+              formData.value = _.cloneDeep(copyFormData);
+              groupForm.value?.refreshkey();
+            }, 100);
             emits('cancel');
           } else {
             copyFormData = cloneDeep(formData.value);

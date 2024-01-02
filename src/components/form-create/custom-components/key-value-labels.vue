@@ -79,13 +79,27 @@
     },
     setup(props, { emit, attrs }) {
       const { labels, labelsKey, validateTrigger } = toRefs(props);
-      const { labelList, labelItem, handleAddLabel, handleDeleteLabel } =
-        useLabelsActions(labels, labelsKey.value);
-      console.log('labelList===', labelList.value);
+      const {
+        labelList,
+        labelItem,
+        handleAddLabel,
+        handleDeleteLabel,
+        getLabelList
+      } = useLabelsActions(labels, labelsKey.value);
       const handleUpdateValue = (obj) => {
         emit('update:value', obj);
       };
 
+      watch(
+        () => props.labels,
+        (val) => {
+          getLabelList();
+        },
+        {
+          immediate: true,
+          deep: true
+        }
+      );
       const renderEditLabels = () => {
         return (
           <>
