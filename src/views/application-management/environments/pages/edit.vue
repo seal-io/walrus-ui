@@ -203,7 +203,7 @@
                 v-if="pageAction === PageAction.EDIT"
                 type="primary"
                 :disabled="!formData.type"
-                style="margin-right: 8px; padding: 0 6px"
+                style="margin-right: 8px"
                 @click.stop="handleAddConnector"
               >
                 <template #icon>
@@ -320,6 +320,7 @@
     isEqual,
     cloneDeep
   } from 'lodash';
+  import { execSucceed } from '@/utils/monitor';
   import keyValueLabels from '@/components/form-create/custom-components/key-value-labels.vue';
   import GroupButtonMenu from '@/components/drop-button-group/group-button-menu.vue';
   import GroupTitle from '@/components/group-title/index.vue';
@@ -608,8 +609,11 @@
           name: PROJECT.Detail,
           fullPath: ''
         });
-
-        router.back();
+        if (route.name !== PROJECT.EnvDetail) {
+          router.back();
+        } else {
+          execSucceed();
+        }
         submitLoading.value = false;
       } catch (error) {
         submitLoading.value = false;

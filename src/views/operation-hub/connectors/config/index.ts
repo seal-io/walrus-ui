@@ -12,7 +12,8 @@ export const connectorTypeList = [
     com: 'kubernetes',
     route: 'ProjectConnectorK8sDetail',
     globalRoute: 'ConnectorK8sDetail',
-    icon: 'icon-bxl-kubernetes'
+    icon: 'icon-bxl-kubernetes',
+    iconfont: true
   },
   {
     label: 'operation.connectors.reinstall.cloudProvider',
@@ -21,7 +22,8 @@ export const connectorTypeList = [
     com: 'cloud',
     route: 'ProjectConnectorProviderDetail',
     globalRoute: 'ConnectorProviderDetail',
-    icon: 'icon-fill-cloud'
+    icon: 'icon-fill-cloud',
+    iconfont: true
   },
   {
     label: 'operation.connectors.table.versioncontrol',
@@ -30,7 +32,8 @@ export const connectorTypeList = [
     com: 'versionControl',
     route: 'ProjectConnectorScmDetail',
     globalRoute: 'ConnectorScmDetail',
-    icon: 'icon-git'
+    icon: 'icon-git',
+    iconfont: true
   },
   {
     label: 'operation.connectors.reinstall.custom',
@@ -39,7 +42,8 @@ export const connectorTypeList = [
     com: 'custom',
     route: 'ProjectConnectorCustomDetail',
     globalRoute: 'ConnectorCustomDetail',
-    icon: 'icon-custom'
+    icon: 'icon-custom',
+    iconfont: true
   }
 
   // { label: 'Cloud Provider', value: 'cloud', com: 'cloud' }

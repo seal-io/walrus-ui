@@ -158,18 +158,22 @@
             :style="{ width: `${InputWidth.LARGE}px` }"
           >
             <SealFormItemWrap
-              :label="$t('operation.connectors.table.status')"
-              :style="{ width: `100%` }"
+              :style="{ width: `100%`, color: 'var(--color-text-3)' }"
             >
-              <StatusLabel
-                :status="{
-                  status: get(formData, 'status.summaryStatus') || '',
-                  text: get(formData, 'status.summaryStatus'),
-                  message: get(formData, 'status.summaryStatusMessage') || '',
-                  transitioning: get(formData, 'status.transitioning'),
-                  error: get(formData, 'status.error')
-                }"
-              ></StatusLabel>
+              <div class="flex flex-align-center">
+                <span class="m-r-10 font-12">{{
+                  $t('operation.connectors.table.status')
+                }}</span>
+                <StatusLabel
+                  :status="{
+                    status: get(formData, 'status.summaryStatus') || '',
+                    text: get(formData, 'status.summaryStatus'),
+                    message: get(formData, 'status.summaryStatusMessage') || '',
+                    transitioning: get(formData, 'status.transitioning'),
+                    error: get(formData, 'status.error')
+                  }"
+                ></StatusLabel>
+              </div>
             </SealFormItemWrap>
           </a-form-item>
         </a-form>

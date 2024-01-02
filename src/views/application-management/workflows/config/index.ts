@@ -221,21 +221,6 @@ export const tools = [
 
 export const moreActions: MoreAction[] = [
   {
-    label: 'common.button.edit',
-    value: 'edit',
-    icon: 'icon-edit',
-    handler: '',
-    status: 'normal',
-    disabled: false,
-    filterFun(currentInfo) {
-      return userStore.hasProjectResourceActions({
-        resource: Resources.Workflows,
-        projectID: _.get(currentInfo, 'project.id'),
-        actions: [Actions.PUT]
-      });
-    }
-  },
-  {
     label: 'common.button.run',
     value: 'apply',
     icon: 'icon-play-circle',
@@ -247,6 +232,21 @@ export const moreActions: MoreAction[] = [
         resource: Resources.Workflows,
         projectID: _.get(currentInfo, 'project.id'),
         actions: [Actions.POST]
+      });
+    }
+  },
+  {
+    label: 'common.button.edit',
+    value: 'edit',
+    icon: 'icon-edit',
+    handler: '',
+    status: 'normal',
+    disabled: false,
+    filterFun(currentInfo) {
+      return userStore.hasProjectResourceActions({
+        resource: Resources.Workflows,
+        projectID: _.get(currentInfo, 'project.id'),
+        actions: [Actions.PUT]
       });
     }
   },

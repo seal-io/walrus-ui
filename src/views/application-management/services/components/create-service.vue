@@ -340,15 +340,7 @@
   const flowProps = reactive({
     ..._.cloneDeep(props)
   });
-  console.log('flowProps>>>>>>>>', flowProps);
-  // const flowProps = computed(() => {
-  //   return {
-  //     ...props,
-  //     flowStepInfo: {
-  //       ...flowStepEnable
-  //     }
-  //   };
-  // });
+
   const {
     id,
     init,
@@ -541,7 +533,7 @@
   };
 
   const handleDataTypeChange = (val) => {
-    const originDataType = flowProps.flowStepInfo.info.type
+    const originDataType = flowProps.flowStepInfo?.info?.type
       ? ServiceDataType.resource
       : ServiceDataType.service;
     dataType.value = val ? ServiceDataType.service : ServiceDataType.resource;

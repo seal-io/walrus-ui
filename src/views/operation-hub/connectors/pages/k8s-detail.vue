@@ -153,7 +153,7 @@
               </div>
             </ResizeableContainer>
             <template v-if="pageAction === PageAction.EDIT" #extra>
-              <div class="m-t-5 btn">
+              <div class="m-t-10 btn">
                 <a-upload
                   action="/"
                   :auto-upload="false"
