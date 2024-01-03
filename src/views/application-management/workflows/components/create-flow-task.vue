@@ -581,7 +581,7 @@
 
         .form {
           height: 100%;
-          padding: 16px;
+          padding: 20px 26px;
           overflow: auto;
         }
       }

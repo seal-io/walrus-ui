@@ -139,7 +139,7 @@
               <span>{{ $t('resource.definition.detail.matchRule') }}</span>
               <a-link class="m-l-10" @click="handleAddRule">
                 <icon-plus class="size-14" style="stroke-width: 4" />
-                <span class="mleft-5 font-12">{{
+                <span class="mleft-5 font-13" style="line-height: 1">{{
                   $t('common.button.add')
                 }}</span>
               </a-link>
