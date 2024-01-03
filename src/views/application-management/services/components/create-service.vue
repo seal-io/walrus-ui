@@ -240,10 +240,6 @@
         </a-form-item>
       </a-form>
     </div>
-    <a-divider
-      style="margin: 0; border-color: var(--color-fill-2); border-radius: 1px"
-      :size="4"
-    ></a-divider>
     <div>
       <div style="display: flex; justify-content: flex-start">
         <GroupTitle
@@ -290,6 +286,7 @@
 
 <script lang="ts" setup>
   import i18n from '@/locale';
+  import keyValueLabels from '@/components/form-create/custom-components/key-value-labels.vue';
   import { PROJECT } from '@/router/config';
   import _, { get, find, cloneDeep, toString } from 'lodash';
   import { createAxiosToken } from '@/api/axios-chunk-request';

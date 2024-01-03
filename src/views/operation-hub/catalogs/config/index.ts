@@ -8,15 +8,15 @@ const userStore = useUserStore();
 
 export const actionList: MoreAction[] = [
   {
-    label: 'common.button.edit',
-    value: 'edit',
-    icon: 'icon-edit',
-    status: 'normal'
-  },
-  {
     label: 'common.button.refresh',
     value: 'refresh',
     icon: 'icon-refresh',
+    status: 'normal'
+  },
+  {
+    label: 'common.button.edit',
+    value: 'edit',
+    icon: 'icon-edit',
     status: 'normal'
   },
   {
