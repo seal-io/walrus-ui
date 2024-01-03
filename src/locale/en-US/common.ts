@@ -65,7 +65,7 @@ export default {
   'common.button.prev': 'Previous',
   'common.button.back': 'Back',
   'common.tips.save':
-    'You have unsaved changes. Leaving this page will discard changes.',
+    'You have unsaved changes, leaving this page will discard changes.',
   'common.tips.cancel':
     'You have unsaved changes. Are you sure you want to discard changes?',
   'common.tips.discard': 'Discard Changes?',

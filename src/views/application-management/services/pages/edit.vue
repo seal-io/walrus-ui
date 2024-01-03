@@ -80,19 +80,17 @@
             }
           ]"
         >
-          <div>
-            <seal-select
-              v-model="formData.type"
-              :label="$t('applications.applications.table.resourceType')"
-              :required="true"
-              :virtual-list-props="virtualListProps"
-              :style="{ width: `${InputWidth.LARGE}px` }"
-              :options="templateList"
-              allow-search
-              @change="handleTemplateChange"
-            >
-            </seal-select>
-          </div>
+          <seal-select
+            v-model="formData.type"
+            :label="$t('applications.applications.table.resourceType')"
+            :required="true"
+            :virtual-list-props="virtualListProps"
+            :style="{ width: `${InputWidth.LARGE}px` }"
+            :options="templateList"
+            allow-search
+            @change="handleTemplateChange"
+          >
+          </seal-select>
         </a-form-item>
         <a-form-item
           v-if="

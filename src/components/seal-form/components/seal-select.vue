@@ -1,167 +1,228 @@
-<template>
-  <span
-    v-on-click-outside="handleBlur"
-    class="seal-relative wrapper select"
-    :class="{
-      'is-focused':
-        isFocus || (Array.isArray(modelValue) ? modelValue.length : modelValue),
-      'prefix-icon': slots.prefix,
-      'v-sel-view': viewStatus
-    }"
-    :style="{ width: $attrs.style?.width || 'max-content' }"
-    @click="handleClick"
-  >
-    <div class="label" :class="{ disabled: $attrs.disabled }">
-      <span
-        ><span>{{ $attrs.label || placeholder }}</span>
-        <span
-          v-if="$attrs.required && !viewStatus"
-          class="bold-500 m-l-2 star"
-          style="color: rgb(var(--danger-6))"
-          >*</span
-        ></span
-      >
-      <a-tooltip v-if="popupInfo" :content="popupInfo">
-        <icon-info-circle
-          style="margin-left: 2px; stroke-linecap: initial; cursor: default"
-        />
-      </a-tooltip>
-    </div>
-    <a-select
-      v-if="!viewStatus"
-      v-bind="$attrs"
-      ref="input"
-      class="v-sel"
-      :model-value="modelValue"
-      @clear="handleClear"
-      @change="handleChange"
-      @input="handleInput"
-      @focus="handleFocus"
-      @input-value-change="handleInputValueChange"
-    >
-      <template v-for="slot in Object.keys(slots)" #[slot]="data" :key="slot">
-        <slot :name="slot" v-bind="{ ...data }"></slot>
-      </template>
-      <template #empty>
-        <a-empty
-          :description="
-            searchValue ? $t('common.search.nodata') : $t('common.data.empty')
-          "
-        ></a-empty>
-      </template>
-    </a-select>
-    <a-select
-      v-else
-      v-bind="$attrs"
-      ref="input"
-      :model-value="modelValue"
-      :popup-visible="false"
-      class="v-sel"
-      @clear="handleClear"
-      @change="handleChange"
-      @input="handleInput"
-      @focus="handleFocus"
-      @input-value-change="handleInputValueChange"
-    >
-      <template v-for="slot in Object.keys(slots)" #[slot]="data" :key="slot">
-        <slot :name="slot" v-bind="{ ...data }"></slot>
-      </template>
-      <template #arrow-icon></template>
-    </a-select>
-  </span>
-</template>
-
-<script lang="ts" setup>
+<script lang="tsx">
   import i18n from '@/locale';
-  import { useAttrs, useSlots, ref, PropType, computed } from 'vue';
+  import _ from 'lodash';
+  import { defineComponent, ref, toRefs, PropType } from 'vue';
+  import TagList from '@/components/tag-list/index.vue';
   import { vOnClickOutside } from '@vueuse/components';
+  import SealViewItemWrap from './seal-view-item-wrap.vue';
 
-  const props = defineProps({
-    modelValue: {
-      type: String,
-      default: ''
+  export default defineComponent({
+    name: 'SealSelect',
+    emits: [
+      'update:modelValue',
+      'update:inputValue',
+      'inputValueChange',
+      'input',
+      'change',
+      'focus',
+      'blur',
+      'clear'
+    ],
+    props: {
+      modelValue: {
+        type: [String, Array] as PropType<any[] | string>,
+        default: ''
+      },
+      inputValue: {
+        type: String,
+        default: ''
+      },
+      isLocale: {
+        type: Boolean,
+        default: false
+      },
+      viewStatus: {
+        type: Boolean,
+        default: false
+      },
+      placeholder: {
+        type: String,
+        default: ''
+      },
+      popupInfo: {
+        type: String,
+        default: ''
+      }
     },
-    inputValue: {
-      type: String,
-      default: ''
-    },
-    isLocale: {
-      type: Boolean,
-      default: false
-    },
-    viewStatus: {
-      type: Boolean,
-      default: false
-    },
-    placeholder: {
-      type: String,
-      default: ''
-    },
-    popupInfo: {
-      type: String,
-      default: ''
+    setup(props, { emit, attrs, slots, expose }) {
+      const input = ref();
+      const isFocus = ref(false);
+      const searchValue = ref('');
+      const { t } = i18n.global;
+
+      const handleInput = (e) => {
+        emit('input', e);
+      };
+      const handleChange = (value) => {
+        emit('update:modelValue', value);
+        emit('change', value);
+      };
+      const handleInputValueChange = (value) => {
+        searchValue.value = value;
+        emit('update:inputValue', value);
+        emit('inputValueChange', value);
+      };
+      const handleFocus = (e) => {
+        emit('focus', e);
+        isFocus.value = true;
+      };
+      const handleBlur = (e) => {
+        isFocus.value = false;
+      };
+      const focus = () => {
+        input.value?.focus?.();
+      };
+      const blur = () => {
+        input.value?.blur?.();
+      };
+      const handleClear = () => {
+        emit('update:modelValue', '');
+        emit('change', '');
+      };
+      const handleClick = () => {
+        if (props.viewStatus) return;
+        isFocus.value = true;
+        input.value?.click?.();
+      };
+      expose({
+        focus,
+        blur
+      });
+
+      const renderViewSelect = () => {
+        if (props.viewStatus) {
+          return (
+            <a-select
+              {...attrs}
+              ref="input2"
+              model-value={props.modelValue}
+              popup-visible={false}
+              allow-search={false}
+              allow-create={false}
+              allow-clear={false}
+              class="v-sel"
+              v-slots={{
+                ..._.reduce(
+                  _.keys(slots),
+                  (result, key) => {
+                    result[key] = () => slots[key]?.();
+                    return result;
+                  },
+                  {}
+                ),
+                empty: () => (
+                  <a-empty
+                    description={
+                      searchValue.value
+                        ? t('common.search.nodata')
+                        : t('common.data.empty')
+                    }
+                  ></a-empty>
+                ),
+                allowIcon: () => null
+              }}
+            ></a-select>
+          );
+        }
+        return (
+          <a-select
+            {...attrs}
+            ref="input"
+            class="v-sel"
+            model-value={props.modelValue}
+            onClear={() => handleClear()}
+            onChange={(value) => handleChange(value)}
+            onInput={(e) => handleInput(e)}
+            onFocus={(e) => handleFocus(e)}
+            onInputValueChange={(value) => handleInputValueChange(value)}
+            v-slots={{
+              ..._.reduce(
+                _.keys(slots),
+                (result, key) => {
+                  result[key] = () => slots[key]?.();
+                  return result;
+                },
+                {}
+              ),
+              empty: () => (
+                <a-empty
+                  description={
+                    searchValue.value
+                      ? t('common.search.nodata')
+                      : t('common.data.empty')
+                  }
+                ></a-empty>
+              )
+            }}
+          ></a-select>
+        );
+      };
+      // edit status
+      const renderSelect = () => {
+        return (
+          <span
+            v-on-click-outside={(e) => handleBlur(e)}
+            class={[
+              'seal-relative wrapper select',
+              {
+                'is-focused':
+                  isFocus.value ||
+                  (Array.isArray(props.modelValue)
+                    ? props.modelValue.length
+                    : props.modelValue),
+                'prefix-icon': slots.prefix,
+                'v-sel-view': props.viewStatus
+              }
+            ]}
+            style={{ width: attrs.style?.width || 'max-content' }}
+            onClick={() => handleClick()}
+          >
+            <span class={['label', { disabled: attrs.disabled }]}>
+              <span>
+                <span>{attrs.label || props.placeholder}</span>
+                {attrs.required && !props.viewStatus ? (
+                  <span
+                    class="bold-500 m-l-2 star"
+                    style="color: rgb(var(--danger-6))"
+                  >
+                    *
+                  </span>
+                ) : null}
+              </span>
+              {props.popupInfo ? (
+                <a-tooltip content={props.popupInfo}>
+                  <icon-info-circle style="margin-left: 2px; stroke-linecap: initial; cursor: default" />
+                </a-tooltip>
+              ) : null}
+            </span>
+            {renderViewSelect()}
+          </span>
+        );
+      };
+      // multiple, viewStatus
+      const renderView = () => {
+        if (props.viewStatus && attrs.multiple) {
+          const label = attrs.label || props.placeholder;
+          const list = attrs.options || [];
+          const values = props.modelValue || [];
+          return (
+            <SealViewItemWrap
+              label={label as string}
+              style={{ width: attrs.style?.width || 'max-content' }}
+            >
+              <TagList values={values as any} list={list as any}></TagList>
+            </SealViewItemWrap>
+          );
+        }
+        return null;
+      };
+      return () => (
+        <>
+          {props.viewStatus && attrs.multiple ? renderView() : renderSelect()}
+        </>
+      );
     }
   });
-  const emits = defineEmits([
-    'update:modelValue',
-    'update:inputValue',
-    'inputValueChange',
-    'input',
-    'change',
-    'focus',
-    'blur',
-    'clear'
-  ]);
-  const input = ref();
-  const isFocus = ref(false);
-  const searchValue = ref('');
-  const $attrs: any = useAttrs();
-  const slots = useSlots();
-  const handleInput = (e) => {
-    emits('input', e);
-  };
-  const handleChange = (value) => {
-    emits('update:modelValue', value);
-    emits('change', value);
-  };
-  const handleInputValueChange = (value) => {
-    searchValue.value = value;
-    emits('update:inputValue', value);
-    emits('inputValueChange', value);
-  };
-  const handleFocus = (e) => {
-    emits('focus', e);
-    isFocus.value = true;
-  };
-  const handleBlur = (e) => {
-    isFocus.value = false;
-  };
-  const focus = () => {
-    input.value?.focus?.();
-  };
-  const blur = () => {
-    input.value?.blur?.();
-  };
-  const handleClear = () => {
-    emits('update:modelValue', '');
-    emits('change', '');
-  };
-  const handleClick = () => {
-    if (props.viewStatus) return;
-    isFocus.value = true;
-    input.value?.click?.();
-  };
-  defineExpose({
-    focus,
-    blur
-  });
-</script>
-
-<script lang="ts">
-  export default {
-    name: 'SealSelect',
-    inheritAttrs: false
-  };
 </script>
 
 <style lang="less" scoped>
@@ -174,27 +235,27 @@
       .label {
         cursor: default;
       }
-    }
 
-    :deep(.arco-select-view-single) {
-      &.v-sel {
-        cursor: default;
+      :deep(.arco-select-view-single) {
+        &.v-sel {
+          cursor: default;
 
-        &:focus-within {
+          &:focus-within {
+            border: 1px solid var(--color-border-2) !important;
+            box-shadow: none !important;
+          }
+        }
+
+        &.v-sel:hover {
           border: 1px solid var(--color-border-2) !important;
           box-shadow: none !important;
         }
       }
 
-      &.v-sel:hover {
-        border: 1px solid var(--color-border-2) !important;
-        box-shadow: none !important;
-      }
-    }
-
-    :deep(.arco-select-view-disabled) {
-      &.v-sel:hover {
-        border-color: transparent !important;
+      :deep(.arco-select-view-disabled) {
+        &.v-sel:hover {
+          border-color: transparent !important;
+        }
       }
     }
   }
