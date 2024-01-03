@@ -122,6 +122,31 @@
             ></seal-textarea>
           </a-form-item>
           <a-form-item
+            hide-label
+            field="applicableProjectNames"
+            :label="$t('resource.definition.detail.applicableProjectNames')"
+            :rules="[
+              {
+                required: true,
+                message: $t(
+                  'resource.definition.detail.rules.applicableProjects'
+                )
+              }
+            ]"
+          >
+            <seal-select
+              v-model="formData.applicableProjectNames"
+              :view-status="pageAction === PageAction.VIEW"
+              :options="projectList"
+              :required="true"
+              :multiple="true"
+              :max-tag-count="2"
+              :label="$t('resource.definition.detail.applicableProjectNames')"
+              :style="{ width: `${InputWidth.LARGE}px` }"
+            >
+            </seal-select>
+          </a-form-item>
+          <a-form-item
             v-if="
               id &&
               pageAction === PageAction.VIEW &&
@@ -188,7 +213,6 @@
                 :schema-form-action="item.pageAction || schemaFormAction"
                 :show-delete="formData.matchingRules.length > 1"
                 :template-list="templateList"
-                :project-list="projectList"
                 class="m-b-20"
               >
               </DefinitionRules>
@@ -238,7 +262,6 @@
                   :schema-form-action="schemaFormAction"
                   :show-delete="false"
                   :template-list="templateList"
-                  :project-list="projectList"
                   class="m-b-20"
                 >
                 </DefinitionRules>
@@ -268,6 +291,14 @@
               :editable="!_.get(formData, 'builtin')"
               @reset="handleResetUISchema"
             ></component>
+          </a-tab-pane>
+          <a-tab-pane
+            key="provisionedResources"
+            :title="$t('resource.definition.detail.createdResource')"
+          >
+            <ProvisionedResources
+              :project-list="projectList"
+            ></ProvisionedResources>
           </a-tab-pane>
         </a-tabs>
       </div>
@@ -339,6 +370,7 @@
   import tabInput from '../../templates/components/tab-input.vue';
   import tabOutput from '../../templates/components/tab-output.vue';
   import tabEditSchema from '../../templates/components/tab-edit-schema.vue';
+  import ProvisionedResources from '../components/provisioned-resources.vue';
 
   const { scrollToView } = useScrollToView();
   const userStore = useUserStore();
@@ -367,6 +399,7 @@
     name: '',
     description: '',
     type: '',
+    applicableProjectNames: [],
     matchingRules: []
   });
   const activeKey = ref('matchRules');
@@ -408,8 +441,10 @@
       const { data } = await queryProjects(params);
       projectList.value = _.map(data.items || [], (item) => {
         return {
+          id: item.id,
+          name: item.name,
           label: item.name,
-          value: item.id
+          value: item.name
         };
       });
     } catch (error) {

@@ -81,13 +81,31 @@ export const cloneServices = (data: {
   );
 };
 
-export const deleteServices = ({ data, withoutCleanup }) => {
+export const deleteServices = (data: {
+  data: { items: Array<{ id: string }> };
+  withoutCleanup: boolean;
+  projectID?: string;
+  environmentID?: string;
+  withParams?: boolean;
+}) => {
+  if (data.withParams) {
+    return axios.delete(
+      `/projects/${data.projectID}/environments/${
+        data.environmentID
+      }${SERVICE_API}?${qs.stringify({
+        withoutCleanup: data.withoutCleanup
+      })}`,
+      {
+        data: data.data
+      }
+    );
+  }
   return axios.delete(
     `${SERVICE_API_PREFIX()}${SERVICE_API}?${qs.stringify({
-      withoutCleanup
+      withoutCleanup: data.withoutCleanup
     })}`,
     {
-      data
+      data: data.data
     }
   );
 };
@@ -148,6 +166,19 @@ export const redeployService = (data) => {
   return axios.post(`${SERVICE_API_PREFIX()}${SERVICE_API}/${data.id}/deploy`);
 };
 
+export const deployItemService = (data: {
+  items: { id: string }[];
+  reuseAttributes: boolean;
+  projectID: string;
+  environmentID: string;
+  serviceID: string;
+}) => {
+  return axios.post(
+    `/projects/${data.projectID}/environments/${data.environmentID}${SERVICE_API}/_/upgrade`,
+    { items: data.items, reuseAttributes: data.reuseAttributes }
+  );
+};
+
 export const batchDeployService = (data: {
   items: { id: string }[];
   reuseAttributes: boolean;
@@ -164,11 +195,21 @@ export const batchStartService = (data: { items: { id: string }[] }) => {
   return axios.post(`${SERVICE_API_PREFIX()}${SERVICE_API}/_/start`, data);
 };
 
-export const stopApplicationInstance = (data) => {
+export const stopApplicationInstance = (data, withParams?: boolean) => {
+  if (withParams) {
+    return axios.post(
+      `/projects/${data.projectID}/environments/${data.environmentID}${SERVICE_API}/${data.serviceID}/stop`
+    );
+  }
   return axios.post(`${SERVICE_API_PREFIX()}${SERVICE_API}/${data.id}/stop`);
 };
 
-export const startApplicationInstance = (data) => {
+export const startApplicationInstance = (data, withParams?: boolean) => {
+  if (withParams) {
+    return axios.post(
+      `/projects/${data.projectID}/environments/${data.environmentID}${SERVICE_API}/${data.serviceID}/start`
+    );
+  }
   return axios.post(`${SERVICE_API_PREFIX()}${SERVICE_API}/${data.id}/start`);
 };
 

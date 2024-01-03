@@ -129,6 +129,7 @@
                       height: 34px;
                       padding: 0 10px;
                       color: var(--sealblue-6);
+                      font-weight: var(--font-weight-medium);
                       font-size: 13px;
                       line-height: 34px;
                     "

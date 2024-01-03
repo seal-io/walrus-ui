@@ -44,3 +44,15 @@ export function upateResourceDefinition(params: { id: string; data: any }) {
 export function queryItemResourceDefinition(params: { id: string }) {
   return axios.get(`${RESOURCE_DEFINITION_API}/${params.id}`);
 }
+
+export function queryItemDefinitionResources(params: {
+  id: string;
+  pageParams: any;
+}) {
+  return axios.get(`${RESOURCE_DEFINITION_API}/${params.id}/resources`, {
+    params: params.pageParams,
+    paramsSerializer: (obj) => {
+      return qs.stringify(obj);
+    }
+  });
+}

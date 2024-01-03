@@ -328,6 +328,7 @@ export const serviceActions: MoreAction[] = [
   //   label: 'common.button.deploy',
   //   value: serviceActionMap.deploy,
   //   icon: 'icon-send',
+  //   iconfont: false,
   //   handler: '',
   //   status: 'normal',
   //   disabled(currentInfo: any): boolean {
@@ -436,4 +437,93 @@ export const serviceActions: MoreAction[] = [
   }
 ];
 
+export const definitionResourceActions: MoreAction[] = [
+  {
+    label: 'common.button.deploy',
+    value: serviceActionMap.deploy,
+    icon: 'icon-send',
+    iconfont: false,
+    handler: '',
+    status: 'normal',
+    disabled(currentInfo: any): boolean {
+      if (
+        get(currentInfo, 'status.transitioning') &&
+        get(currentInfo, 'status.summaryStatus') !== ServiceStatus.Preparing
+      ) {
+        return true;
+      }
+      return false;
+    },
+    filterFun(currentInfo) {
+      return userStore.hasProjectResourceActions({
+        resource: Resources.Resources,
+        environmentID: get(currentInfo, 'environment.id'),
+        projectID: get(currentInfo, 'project.id'),
+        actions: [Actions.POST]
+      });
+    }
+  },
+  {
+    label: 'common.button.stop',
+    value: serviceActionMap.stop,
+    icon: 'icon-record-stop',
+    handler: '',
+    status: 'normal',
+    disabled(currentInfo: any): boolean {
+      return !_.includes(
+        StoppableStatus,
+        get(currentInfo, 'status.summaryStatus')
+      );
+    },
+    filterFun(currentInfo) {
+      return userStore.hasProjectResourceActions({
+        resource: Resources.Resources,
+        environmentID: get(currentInfo, 'environment.id'),
+        projectID: get(currentInfo, 'project.id'),
+        actions: [Actions.POST]
+      });
+    }
+  },
+  {
+    label: 'common.button.start',
+    value: serviceActionMap.start,
+    icon: 'icon-play-circle',
+    handler: '',
+    status: 'normal',
+    disabled(currentInfo: any): boolean {
+      return !_.includes(
+        StartableStatus,
+        get(currentInfo, 'status.summaryStatus')
+      );
+    },
+    filterFun(currentInfo) {
+      return userStore.hasProjectResourceActions({
+        resource: Resources.Resources,
+        environmentID: get(currentInfo, 'environment.id'),
+        projectID: get(currentInfo, 'project.id'),
+        actions: [Actions.POST]
+      });
+    }
+  },
+  {
+    label: 'common.button.delete',
+    value: serviceActionMap.delete,
+    icon: 'icon-delete',
+    handler: '',
+    status: 'danger',
+    disabled(currentInfo) {
+      return (
+        get(currentInfo, 'status.summaryStatus') === ServiceStatus.Deleting
+      );
+    },
+    filterFun(currentInfo) {
+      return userStore.hasProjectResourceActions({
+        resource: Resources.Resources,
+        environmentID: get(currentInfo, 'environment.id'),
+        projectID: get(currentInfo, 'project.id'),
+        actions: [Actions.DELETE]
+      });
+    }
+  }
+];
 export default {};

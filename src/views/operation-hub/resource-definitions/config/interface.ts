@@ -29,6 +29,7 @@ export interface ResourceDefinitionFormData {
   type: string;
   description?: string;
   labels?: Record<string, string>;
+  applicableProjectNames: string[];
   matchingRules: MatchingRule[];
   uiSchema?: any;
 }

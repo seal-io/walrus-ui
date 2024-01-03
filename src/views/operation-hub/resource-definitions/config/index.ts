@@ -12,7 +12,7 @@ export const variableTypeList = [
 ];
 
 export const SelectorAction = [
-  { label: 'resource.definition.detail.projectName', value: 'projectName' },
+  // { label: 'resource.definition.detail.projectName', value: 'projectName' },
   { label: 'resource.definition.detail.envName', value: 'environmentName' },
   { label: 'applications.environment.type', value: 'environmentType' },
   { label: 'resource.definition.detail.envTag', value: 'environmentLabels' },

@@ -142,19 +142,17 @@
               <span v-else>{{ record.name }}</span>
             </template>
             <template #status="{ record }">
-              <AutoTip>
-                <StatusLabel
-                  :zoom="0.9"
-                  :status="{
-                    status: get(record, 'status.summaryStatus'),
-                    inactive: get(record, 'status.inactive'),
-                    text: get(record, 'status.summaryStatus'),
-                    message: get(record, 'status.summaryStatusMessage'),
-                    transitioning: get(record, 'status.transitioning'),
-                    error: get(record, 'status.error')
-                  }"
-                ></StatusLabel>
-              </AutoTip>
+              <StatusLabel
+                :zoom="0.9"
+                :status="{
+                  status: get(record, 'status.summaryStatus'),
+                  inactive: get(record, 'status.inactive'),
+                  text: get(record, 'status.summaryStatus'),
+                  message: get(record, 'status.summaryStatusMessage'),
+                  transitioning: get(record, 'status.transitioning'),
+                  error: get(record, 'status.error')
+                }"
+              ></StatusLabel>
             </template>
             <template #actions="{ record, rowIndex }">
               <a-space :size="10">

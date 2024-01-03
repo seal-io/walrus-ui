@@ -435,12 +435,6 @@
     | 'projectName';
 
   const props = defineProps({
-    projectList: {
-      type: Array as PropType<{ value: string; label: string }[]>,
-      default() {
-        return [];
-      }
-    },
     title: {
       type: String,
       default() {
