@@ -14,21 +14,24 @@ interface LoginInfo {
   password: string;
   rememberPswd: boolean;
 }
+export const LOGIN_INFO = 'LOGIN_INFO';
+
+export const TEMP_LOGIN_INFO = 'TEMP_LOGIN_INFO';
+
 const TOKEN_KEY = 'authed';
-const LOGIN_INFO = 'LOGIN_INFO';
 const LOGIN_HISTORY = 'LOGIN_HISTORY';
 
 const localStore = localForage.createInstance({ name: 'walrus' });
 
-const rememberPasswordFn = (data: LoginInfo) => {
+const rememberPasswordFn = (key, data: LoginInfo) => {
   if (localStore) {
-    localStore.setItem(LOGIN_INFO, data);
+    localStore.setItem(key, data);
   }
 };
 
-const readLocalLoginInfo = (): Promise<LoginInfo> | null => {
+const readLocalLoginInfo = (key): Promise<LoginInfo> | null => {
   if (localStore) {
-    return localStore.getItem(LOGIN_INFO) as Promise<LoginInfo>;
+    return localStore.getItem(key) as Promise<LoginInfo>;
   }
   return null;
 };
@@ -49,6 +52,11 @@ const getUserLoginHistory = async () => {
 const removeLocalLoginInfo = () => {
   localStore.removeItem(LOGIN_INFO);
 };
+
+const removeTempLocalLoginInfo = () => {
+  localStore.removeItem(TEMP_LOGIN_INFO);
+};
+
 const getToken = () => {
   return JSCookies.get(TOKEN_KEY);
 };
@@ -174,6 +182,7 @@ export {
   rememberPasswordFn,
   readLocalLoginInfo,
   removeLocalLoginInfo,
+  removeTempLocalLoginInfo,
   setUserLoginHistory,
   getUserLoginHistory,
   removeUserLoginHistory

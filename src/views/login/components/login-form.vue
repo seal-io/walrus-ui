@@ -98,7 +98,7 @@
       <!-- modify password box -->
       <modifyPassword
         v-show="showModify"
-        :old-password="userInfo.password"
+        :old-password="userInfo.password || tempPassword"
         :user-name="userInfo.username"
         :settings-info="settingsInfo"
         @updatePassword="handleModifyDefaultPassword"
@@ -120,7 +120,10 @@
   import {
     rememberPasswordFn,
     readLocalLoginInfo,
-    removeLocalLoginInfo
+    removeLocalLoginInfo,
+    removeTempLocalLoginInfo,
+    LOGIN_INFO,
+    TEMP_LOGIN_INFO
   } from '@/utils/auth';
   import modifyPassword from './modify-password.vue';
 
@@ -145,6 +148,7 @@
     ServeUrl: window.location.origin,
     EnableTelemetry: 'true'
   });
+  const tempPassword = ref<string>('');
   const showModify = ref<boolean>(false);
   const userInfo = reactive({
     username: '',
@@ -164,12 +168,13 @@
     showModify.value = false;
     if (rememberPassword.value) {
       const hash = encryptPassword(newpassword);
-      rememberPasswordFn({
+      rememberPasswordFn(LOGIN_INFO, {
         rememberPswd: rememberPassword.value,
         username: userInfo.username,
         password: hash
       });
     }
+    removeTempLocalLoginInfo();
     userStore.getUserSetting();
     enterUserPage();
   };
@@ -200,16 +205,20 @@
     if (!errors) {
       setLoading(true);
       try {
+        const hash = encryptPassword(userInfo.password);
         if (rememberPassword.value) {
-          const hash = encryptPassword(userInfo.password);
-
-          rememberPasswordFn({
+          rememberPasswordFn(LOGIN_INFO, {
             rememberPswd: rememberPassword.value,
             username: userInfo.username,
             password: hash
           });
         } else {
           removeLocalLoginInfo();
+          rememberPasswordFn(TEMP_LOGIN_INFO, {
+            rememberPswd: rememberPassword.value,
+            username: userInfo.username,
+            password: hash
+          });
         }
         await userStore.login(values);
         // help to get serverURL id
@@ -249,10 +258,19 @@
     }
   };
   const getLocalSetting = async () => {
-    const res = await readLocalLoginInfo();
+    const res = await readLocalLoginInfo(LOGIN_INFO);
     userInfo.username = res?.username || '';
     userInfo.password = res?.password ? decryptPassword(res?.password) : '';
     rememberPassword.value = res?.rememberPswd || false;
+
+    // ========= refresh page when modify password =============
+
+    const tempRes = await readLocalLoginInfo(TEMP_LOGIN_INFO);
+    tempPassword.value = tempRes?.password
+      ? decryptPassword(tempRes?.password)
+      : '';
+
+    // ========= refresh page when modify password =============
   };
   onMounted(async () => {
     getLocalSetting();
