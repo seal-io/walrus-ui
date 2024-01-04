@@ -112,6 +112,7 @@ export default {
   'common.cli.download': '客户端下载',
   'common.button.download': '下载',
   'common.table.sensitive': '是否敏感',
+  'common.table.createdBy': '执行人',
   'common.table.yes': '是',
   'common.table.no': '否',
   'common.validate.labelName':
@@ -140,6 +141,7 @@ export default {
   'common.issue.report': '问题反馈',
   'common.social.discord': '加入我们的Discord',
   'common.table.mark': '备注',
+  'common.table.rollback.mark': '回滚备注',
   'common.button.saveDeploy': '保存并部署',
   'common.button.draft': '保存草稿',
   'common.button.stop': '停止',

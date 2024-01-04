@@ -333,14 +333,18 @@
         </template>
       </EditPageFooter>
     </ComCard>
+    <CommentModal
+      v-model:show="showCommentModal"
+      :title="$t('common.button.saveDeploy')"
+      @confirm="handleComfirmComment"
+      @cancel="() => (submitLoading = false)"
+    ></CommentModal>
   </div>
 </template>
 
 <script lang="ts" setup>
-  import KuberSelect from '@/components/form-create/bussiness-components/kuber-select-bynamespace.vue';
   import { PROJECT } from '@/router/config';
-  import { deleteModal } from '@/utils/monitor';
-  import _, { get, find, cloneDeep, reduce, pickBy, toString } from 'lodash';
+  import _, { get, find, cloneDeep, toString } from 'lodash';
   import {
     ref,
     computed,
@@ -349,9 +353,11 @@
     reactive,
     PropType,
     onMounted,
-    nextTick
+    nextTick,
+    render
   } from 'vue';
   import i18n from '@/locale';
+  import CommentModal from '@/views/commons/components/comment-modal/index.vue';
   import { onBeforeRouteLeave } from 'vue-router';
   import GroupButtonMenu from '@/components/drop-button-group/group-button-menu.vue';
   import useCallCommon from '@/hooks/use-call-common';
@@ -366,10 +372,10 @@
     InputWidth,
     InjectCompleteDataKey,
     InjectProjectEnvironmentKey,
-    InjectShowInputHintKey,
     SaveActions,
     InjectSchemaFormStatusKey,
-    InjectTraceKey
+    InjectTraceKey,
+    ResourceSaveAction
   } from '@/views/config';
   import keyValueLabels from '@/components/form-create/custom-components/key-value-labels.vue';
   import { queryEnvironmentConnector } from '@/views/application-management/environments/api';
@@ -438,6 +444,7 @@
     validateTrigger
   } = useLabelsActions(formData);
   let copyFormData: any = null;
+  const showCommentModal = ref(false);
   const formref = ref();
   const groupForm = ref();
   const submitLoading = ref(false);
@@ -450,7 +457,7 @@
     environmentID: route.params.environmentId as string,
     connectors: []
   });
-
+  const submitData = ref<any>({});
   provide(InjectCompleteDataKey, completeData);
   provide(InjectProjectEnvironmentKey, {
     projectID: route.params.projectId,
@@ -673,11 +680,43 @@
       }
     });
   };
+
+  const saveCallback = async () => {
+    const hiddenFormData = groupForm.value?.getHiddenData();
+    copyFormData = _.cloneDeep(formData.value);
+    const data = _.cloneDeep(formData.value);
+    data.attributes = {
+      ...data.attributes,
+      ...hiddenFormData
+    };
+    if (id) {
+      await upgradeApplicationInstance(data);
+    } else {
+      await handleCreate(data);
+      router.replace({
+        name: PROJECT.EnvDetail,
+        params: {
+          projectId: route.params.projectId,
+          environmentId: route.params.environmentId,
+          action: PageAction.VIEW
+        },
+        query: {
+          id: route.params.environmentId
+        }
+      });
+      return;
+    }
+    if (props.pgType !== 'page') {
+      emits('save');
+    } else {
+      router.back();
+    }
+    submitLoading.value = false;
+  };
   const handleOk = async (draft?: boolean) => {
     validateLabel();
     const res = await formref.value?.validate();
     const groupres = await groupForm.value?.validate();
-    const hiddenFormData = groupForm.value?.getHiddenData();
     validateTrigger.value = true;
     if (!res && !groupres) {
       try {
@@ -692,35 +731,12 @@
         if (dataType.value === ServiceDataType.resource) {
           formData.value.template = null as any;
         }
-        copyFormData = _.cloneDeep(formData.value);
-        const data = _.cloneDeep(formData.value);
-        data.attributes = {
-          ...data.attributes,
-          ...hiddenFormData
-        };
-        if (id) {
-          await upgradeApplicationInstance(data);
+        if (draft) {
+          formData.value.changeComment = '';
+          saveCallback();
         } else {
-          await handleCreate(data);
-          router.replace({
-            name: PROJECT.EnvDetail,
-            params: {
-              projectId: route.params.projectId,
-              environmentId: route.params.environmentId,
-              action: PageAction.VIEW
-            },
-            query: {
-              id: route.params.environmentId
-            }
-          });
-          return;
+          showCommentModal.value = true;
         }
-        if (props.pgType !== 'page') {
-          emits('save');
-        } else {
-          router.back();
-        }
-        submitLoading.value = false;
       } catch (error) {
         submitLoading.value = false;
       }
@@ -728,17 +744,24 @@
       scrollToView();
     }
   };
+
   const handleOkCallback = () => {
     setTimeout(() => {
       handleOk();
     }, 100);
   };
+  const handleComfirmComment = (val) => {
+    formData.value.changeComment = val;
+    saveCallback();
+  };
+
   const handleAddSelector = (value) => {
     setTimeout(() => {
-      if (value === 'deploy') {
+      if (value === ResourceSaveAction.Deploy) {
+        showCommentModal.value = true;
         handleOk();
       }
-      if (value === 'draft') {
+      if (value === ResourceSaveAction.Draft) {
         handleOk(true);
       }
     }, 100);

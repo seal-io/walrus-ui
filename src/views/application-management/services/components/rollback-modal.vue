@@ -43,11 +43,30 @@
           >
             <a-option
               v-for="item in revisionList"
-              :key="item.id"
+              :key="item.value"
               :value="item.value"
               :label="item.label"
-            ></a-option>
+            >
+              <span class="flex">
+                <span style="width: 100px">
+                  <AutoTip> {{ item.createdBy }} </AutoTip>
+                </span>
+                <span style="width: 120px">{{ item.label }}</span>
+                <span style="width: 300px; padding: 0 20px"
+                  ><AutoTip>{{ item.changeComment }}</AutoTip></span
+                >
+              </span>
+            </a-option>
           </seal-select>
+        </a-form-item>
+        <a-form-item hide-label>
+          <seal-textarea
+            v-model="formData.changeComment"
+            style="width: 100%"
+            :label="$t('common.table.mark')"
+            :max-length="100"
+            show-word-limit
+          ></seal-textarea>
         </a-form-item>
         <a-form-item
           :label="$t('applications.service.rollback.config.compare')"
@@ -145,7 +164,9 @@
     clearDiffLines
   } = useCodeDiff();
   const emit = defineEmits(['update:show']);
-  const revisionList = ref<{ value: string; label: string }[]>([]);
+  const revisionList = ref<
+    { value: string; label: string; createdBy: string; changeComment: string }[]
+  >([]);
   const submitLoading = ref(false);
   const loading = ref(false);
   const compareloading = ref(false);
@@ -153,6 +174,7 @@
   const formData = reactive({
     projectID: props.projectID,
     serviceID: '',
+    changeComment: '',
     id: ''
   });
 
@@ -160,7 +182,8 @@
     try {
       await rollbackService({
         revisionID: formData.id,
-        serviceID: formData.serviceID
+        serviceID: formData.serviceID,
+        changeComment: formData.changeComment
       });
       execSucceed();
     } catch (error) {
@@ -178,6 +201,7 @@
       const { data } = await queryServiceRevisions(params);
       revisionList.value = _.map(data?.items || [], (item) => {
         return {
+          ...item,
           value: item.id,
           label: dayjs(item.createTime).format('YYYY-MM-DD HH:mm:ss')
         };
@@ -231,6 +255,7 @@
   };
   const handleBeforeOpen = () => {
     formData.serviceID = props.serviceId;
+    formData.changeComment = '';
     getRevisionList();
   };
   const handleBeforeClose = () => {

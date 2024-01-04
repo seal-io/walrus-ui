@@ -25,8 +25,17 @@
           editor-id="diffModelEditor"
           :editor-default-value="codeResult"
           lang="json"
-          :height="460"
+          :height="400"
         ></AceEditor>
+        <div class="m-t-10">
+          <seal-textarea
+            v-model="changeComment"
+            style="width: 100%"
+            :label="$t('common.table.rollback.mark')"
+            :max-length="100"
+            show-word-limit
+          ></seal-textarea>
+        </div>
       </div>
       <a-alert
         v-if="!removeLines.length && !addLines.length"
@@ -116,6 +125,7 @@
   const projectID = route.params.projectId as string;
   const environmentID = route.params.environmentId as string;
   const editorKey = ref(Date.now());
+  const changeComment = ref('');
 
   const emit = defineEmits(['confirm', 'update:show']);
 
@@ -124,7 +134,7 @@
   };
   const handleOk = async () => {
     emit('update:show', false);
-    emit('confirm');
+    emit('confirm', changeComment.value);
   };
   const reset = () => {
     codeResult.value = '';
@@ -140,6 +150,7 @@
   };
   const handleBeforeOpen = () => {
     editorKey.value = Date.now();
+    changeComment.value = '';
     init();
   };
   const handleBeforeClose = () => {

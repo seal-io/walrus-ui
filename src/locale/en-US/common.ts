@@ -115,6 +115,7 @@ export default {
   'common.cli.download': 'Download CLI',
   'common.button.download': 'Download',
   'common.table.sensitive': 'Sensitive',
+  'common.table.createdBy': 'Operator',
   'common.table.yes': 'Yes',
   'common.table.no': 'No',
   'common.validate.labelName':
@@ -143,6 +144,7 @@ export default {
   'common.issue.report': 'Report an issue',
   'common.social.discord': 'Join Our Discord',
   'common.table.mark': 'Comment',
+  'common.table.rollback.mark': 'Rollback Comment',
   'common.button.saveDeploy': 'Save and Deploy',
   'common.button.draft': 'Save Draft',
   'common.button.stop': 'Stop',
