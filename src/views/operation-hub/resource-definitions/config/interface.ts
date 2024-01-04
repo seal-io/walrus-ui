@@ -59,7 +59,7 @@ export const definitionFormData = {
     environmentLabels: {},
     environmentName: '',
     environmentType: '',
-    projectName: '',
+    // projectName: '',
     resourceLabels: {}
   },
   template: {

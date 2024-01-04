@@ -499,7 +499,6 @@
       environmentLabels: {},
       environmentName: '',
       environmentType: '',
-      projectName: '',
       resourceLabels: {}
     },
     template: {
@@ -772,6 +771,7 @@
     if (!props.templateList.length) {
       return;
     }
+    formData.value.name = props.originFormData.name;
     if (props.dataId) {
       formData.value = _.cloneDeep(props.originFormData);
       uiFormData.value = _.cloneDeep(props.originFormData?.attributes || {});

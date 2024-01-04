@@ -20,5 +20,7 @@ export default {
   'resource.definition.detail.rules.envName': '环境名称必填',
   'resource.definition.detail.rules.envType': '环境类型必填',
   'resource.definition.detail.rules.projectName': '项目名称必填',
-  'resource.definition.detail.rules.applicableProjects': '请选择适用项目'
+  'resource.definition.detail.rules.applicableProjects': '请选择适用项目',
+  'resource.definition.detail.applicableProjects.tips': '所有项目',
+  'resource.definition.detail.applicableProjects.all': '默认适用于所有项目'
 };
