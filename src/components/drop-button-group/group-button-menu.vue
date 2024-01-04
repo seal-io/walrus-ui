@@ -17,6 +17,10 @@
       loading: {
         type: Boolean,
         default: false
+      },
+      trigger: {
+        type: String as PropType<'click' | 'hover'>,
+        default: 'click'
       }
     },
     setup(props, { emit }) {
@@ -34,6 +38,7 @@
           <ADropdownButton
             style="border-radius: var(--border-radius-small); overflow: hidden"
             onSelect={(val) => handleSelect(val)}
+            trigger={props.trigger}
             v-slots={{
               default: () => {
                 return (

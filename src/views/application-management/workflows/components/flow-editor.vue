@@ -1,13 +1,17 @@
 <script lang="tsx">
   import _ from 'lodash';
-  import { defineComponent, toRefs, ref } from 'vue';
-  import { validateLabelNameRegx } from '@/views/config';
+  import { defineComponent, toRefs, ref, computed, provide, watch } from 'vue';
+  import { validateLabelNameRegx, HintKeyMaps } from '@/views/config';
   import useCallCommon from '@/hooks/use-call-common';
   import { deleteModal, execError } from '@/utils/monitor';
   import FlowStage from './flow-stage.vue';
   import FlowSplitLine from './split-line.vue';
   import { Stage } from '../config/interface';
-  import { stageSchema, workflowTimeoutOptons } from '../config';
+  import {
+    stageSchema,
+    InjectWorkflowKey,
+    workflowTimeoutOptons
+  } from '../config';
   import { queryPipelineDetail } from '../api';
   import VariableList from './variable-list.vue';
 
@@ -41,6 +45,19 @@
       const stageList = ref<Stage[]>([]);
       const drag = ref(false);
 
+      const workflowVariables = computed(() => {
+        const list = _.map(flowBasic.value.variables, (item) => {
+          return {
+            label: item.name,
+            value: item.name
+          };
+        });
+        return {
+          [HintKeyMaps.workflow]: list
+        };
+      });
+
+      provide(InjectWorkflowKey, workflowVariables);
       const getPipelineDetail = async () => {
         if (!id) return null;
         try {

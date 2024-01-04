@@ -245,7 +245,8 @@ export const SaveActions: MoreAction[] = [
 export const HintKeyMaps = {
   resource: 'res',
   var: 'var',
-  service: 'svc'
+  service: 'svc',
+  workflow: 'workflow'
 };
 
 export const StatusColorValueMap = {

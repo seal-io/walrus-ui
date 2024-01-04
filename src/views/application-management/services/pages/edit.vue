@@ -309,6 +309,7 @@
                 ServiceStatus.Stopped ||
               !id
             "
+            trigger="hover"
             :loading="submitLoading"
             :actions="SaveActions"
             @select="handleAddSelector"
@@ -338,6 +339,7 @@
 <script lang="ts" setup>
   import KuberSelect from '@/components/form-create/bussiness-components/kuber-select-bynamespace.vue';
   import { PROJECT } from '@/router/config';
+  import { deleteModal } from '@/utils/monitor';
   import _, { get, find, cloneDeep, reduce, pickBy, toString } from 'lodash';
   import {
     ref,

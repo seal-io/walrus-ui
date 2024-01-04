@@ -150,7 +150,9 @@
               <!-- <component :is="item.icon" v-if="item.icon"></component> -->
               {{ $t(item.label || '') }}
             </a-link>
-            <span v-else>{{ $t(item.label || '') }}</span>
+            <span v-else>
+              {{ $t(item.label || '') }}
+            </span>
           </span>
         </span>
       </span>
@@ -241,7 +243,6 @@
     return document.getElementById(name);
   };
   const handleClick = (item, index) => {
-    console.log('item>>>>>>>>', 2, item, route.params);
     item.visible = false;
     if (index === props.items.length - 1) {
       return;
@@ -259,7 +260,6 @@
     }
   };
   const handleClickItem = (item) => {
-    console.log('item>>>>>>>>', 1, route.params);
     if (item.backAction) {
       router.back();
     } else {
