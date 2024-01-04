@@ -173,6 +173,11 @@ div#driver-highlighted-element-stage {
   .arco-dropdown-option {
     line-height: 32px;
   }
+
+  .arco-dropdown-option-active,
+  .arco-dropdown-option:not(.arco-dropdown-option-disabled):hover {
+    background-color: var(--color-fill-1);
+  }
 }
 
 .arco-trigger-popup {
@@ -312,6 +317,7 @@ div#driver-highlighted-element-stage {
 
 .arco-empty .arco-empty-description {
   font-size: 12px;
+  line-height: 1;
 }
 // checkbox
 .arco-checkbox {

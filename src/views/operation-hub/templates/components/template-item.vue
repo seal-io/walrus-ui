@@ -2,12 +2,9 @@
   <div class="template-item" @click="handleView">
     <div class="img-box">
       <span v-if="provider" class="icon-wrap">
-        <span
-          class="img"
-          :style="{
-            'background-image': `url(${provider})`
-          }"
-        ></span>
+        <span class="img">
+          <img :src="provider" alt="" />
+        </span>
       </span>
       <span v-else class="icon-wrap">
         <IconFont type="icon-template-1"></IconFont>
@@ -213,7 +210,7 @@
     .img-box {
       flex-basis: 50px;
       padding: 10px;
-      // background-color: var(--color-primary-light-1);
+
       .img {
         display: inline-block;
         width: 50px;
@@ -221,15 +218,17 @@
         background-repeat: no-repeat;
         background-position: center center;
         background-size: contain;
+
+        img {
+          width: 100%;
+          height: 100%;
+        }
       }
 
       .icon-wrap {
         display: flex;
         padding: 0;
-        // overflow: hidden;
         background-color: #fff;
-        // border-radius: 50%;
-        // box-shadow: 0 0 16px 4px var(--color-border-2);
       }
 
       :deep(.arco-icon) {

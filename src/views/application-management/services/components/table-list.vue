@@ -1,19 +1,6 @@
 <template>
   <ComCard padding="0" class="list">
     <div>
-      <div v-if="total > 10" class="pagination">
-        <a-pagination
-          size="small"
-          :total="total"
-          :page-size="queryParams.perPage"
-          :current="queryParams.page"
-          show-total
-          show-page-size
-          :hide-on-single-page="total <= 10"
-          @change="handlePageChange"
-          @page-size-change="handlePageSizeChange"
-        />
-      </div>
       <a-spin :loading="loading" style="width: 100%">
         <div class="header">
           <span
@@ -163,10 +150,23 @@
             </template>
           </ResourceItem>
         </a-space>
-        <div style="height: 200px">
-          <a-empty v-if="!dataList.length && !loading"></a-empty>
+        <div v-if="!dataList.length && !loading" style="height: 200px">
+          <a-empty></a-empty>
         </div>
       </a-spin>
+      <div class="pagination">
+        <a-pagination
+          size="small"
+          :total="total"
+          :page-size="queryParams.perPage"
+          :current="queryParams.page"
+          show-total
+          show-page-size
+          :hide-on-single-page="total <= 10"
+          @change="handlePageChange"
+          @page-size-change="handlePageSizeChange"
+        />
+      </div>
     </div>
     <resourceControl
       v-model:visible="terminalShow"
@@ -798,8 +798,7 @@
       display: flex;
       align-items: center;
       justify-content: end;
-      padding: 15px;
-      padding-right: 0;
+      padding: 20px 0;
 
       .arco-checkbox {
         padding: 0;

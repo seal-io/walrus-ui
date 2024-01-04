@@ -4,6 +4,9 @@ import _ from 'lodash';
 import { Resources, Actions } from '@/permissions/config';
 
 const userStore = useUserStore();
+
+export const InjectWorkflowKey = Symbol('InjectWorkflowKey');
+
 export const NodeType = {};
 
 export const colors = [

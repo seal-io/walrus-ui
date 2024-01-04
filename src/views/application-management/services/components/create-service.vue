@@ -298,6 +298,7 @@
     reactive,
     PropType,
     onMounted,
+    inject,
     nextTick,
     onBeforeUnmount
   } from 'vue';
@@ -311,6 +312,7 @@
     validateLabelNameRegx,
     PageAction,
     InputWidth,
+    HintKeyMaps,
     InjectCompleteDataKey,
     InjectProjectEnvironmentKey,
     InjectShowInputHintKey,
@@ -320,6 +322,7 @@
   import { projectEnvCtxInjectionKey } from '@/components/form-create/bussiness-components/config';
   import { beforeLeaveCallback } from '@/hooks/save-before-leave';
   import useLabelsActions from '@/components/form-create/hooks/use-labels-action';
+  import { InjectWorkflowKey } from '@/views/application-management/workflows/config';
   import useServiceData from '../hooks/use-service-data';
   import { ServiceDataType } from '../config';
 
@@ -404,14 +407,21 @@
     connectors: []
   });
 
+  const workflowVariables = inject(InjectWorkflowKey, ref({}));
   provide(InjectSchemaFormStatusKey, ref(formAction));
   provide(InjectShowInputHintKey, true);
-  provide(InjectCompleteDataKey, completeData);
   provide(InjectProjectEnvironmentKey, {
     projectID: route.params.projectId,
     environmentID: route.params.environmentId
   });
   provide(projectEnvCtxInjectionKey, projectEnvCtx);
+
+  const completeDataObj = computed(() => {
+    return {
+      ...completeData.value,
+      ...workflowVariables.value
+    };
+  });
 
   const virtualListProps = computed(() => {
     if (templateList.value.length > 20) {
@@ -421,6 +431,8 @@
     }
     return undefined;
   });
+
+  provide(InjectCompleteDataKey, completeDataObj);
 
   const validateLabels = () => {
     return _.some(labelList.value, (item) => {

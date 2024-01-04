@@ -61,6 +61,7 @@ export interface HintKey {
   resource: any;
   var: any;
   service: any;
+  workflow: any;
 }
 
 export default {};
