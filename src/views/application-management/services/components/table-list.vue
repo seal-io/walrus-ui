@@ -21,7 +21,11 @@
           </span>
           <span class="empty-holder" style="width: 14px; height: 14px"></span>
           <a-grid :cols="24" :style="{ width: '100%' }">
-            <a-grid-item :span="4" class="sort-item" @click="handleNameSort">
+            <a-grid-item
+              :span="4"
+              class="sort-item"
+              @click="() => handleSort('name')"
+            >
               <Autotip>
                 <span class="sort-col">
                   <span>{{ $t('common.table.name') }}</span>
@@ -42,9 +46,29 @@
                 </span>
               </Autotip>
             </a-grid-item>
-            <a-grid-item :span="6">
+            <a-grid-item
+              :span="6"
+              class="sort-item"
+              @click="() => handleSort('type')"
+            >
               <Autotip>
-                <span class="type">{{ $t('common.table.type') }}</span>
+                <span class="sort-col">
+                  <span class="type">{{ $t('common.table.type') }}</span>
+                  <span class="sort-icon">
+                    <icon-caret-up
+                      :class="{
+                        sorted:
+                          sortDataIndex === 'type' && sortOrder === 'ascend'
+                      }"
+                    />
+                    <icon-caret-down
+                      :class="{
+                        sorted:
+                          sortDataIndex === 'type' && sortOrder === 'descend'
+                      }"
+                    />
+                  </span>
+                </span>
               </Autotip>
             </a-grid-item>
             <a-grid-item :span="3">
@@ -52,7 +76,11 @@
                 <span>{{ $t('common.table.status') }}</span>
               </Autotip>
             </a-grid-item>
-            <a-grid-item :span="3" class="sort-item" @click="handleTimeSort">
+            <a-grid-item
+              :span="3"
+              class="sort-item"
+              @click="() => handleSort('createTime')"
+            >
               <Autotip>
                 <span class="sort-col">
                   <span>{{ $t('common.table.createTime') }}</span>
@@ -423,16 +451,10 @@
     setSortDirection(dataIndex, direction);
     fetchData();
   };
-  const handleTimeSort = () => {
+
+  const handleSort = (dataIndex: string) => {
     setSortDirection(
-      'createTime',
-      sortOrder.value === 'ascend' ? 'descend' : 'ascend'
-    );
-    fetchData();
-  };
-  const handleNameSort = () => {
-    setSortDirection(
-      'name',
+      dataIndex,
       sortOrder.value === 'ascend' ? 'descend' : 'ascend'
     );
     fetchData();

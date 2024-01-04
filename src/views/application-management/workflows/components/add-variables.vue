@@ -197,6 +197,12 @@
       default() {
         return [];
       }
+    },
+    currentIndex: {
+      type: Number,
+      default() {
+        return 0;
+      }
     }
   });
   const emit = defineEmits(['save', 'update:show']);
@@ -217,8 +223,12 @@
   });
 
   const validateNameuniq = async (value, callback) => {
-    const res = props.variables.find((item) => item.name === value);
-    if (res) {
+    const idx = props.variables.findIndex((item) => item.name === value);
+    const duplicate =
+      props.action === 'create'
+        ? idx > -1
+        : idx > -1 && idx !== props.currentIndex;
+    if (duplicate) {
       return callback(i18n.global.t('workflow.rule.variable.same'));
     }
     return callback();
