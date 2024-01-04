@@ -76,6 +76,7 @@
       :info="currentVariable"
       :action="action"
       :variables="dataList"
+      :current-index="currentIndex"
       @save="handleSaveVariable"
     ></addVariables>
   </div>
