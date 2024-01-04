@@ -8,7 +8,7 @@
       <template #params>
         <a-select
           v-model="logKey"
-          style="width: 240px"
+          style="width: 240px; height: 36px"
           :options="dataList"
           :popup-container="getContainer()"
           @change="handleKeyChange"
@@ -16,7 +16,7 @@
         <a-input-number
           v-model="filterParams.tailLines"
           :min="1"
-          style="width: 180px"
+          style="width: 180px; height: 36px"
           :placeholder="$t('applications.resource.log.lastlines')"
           allow-clear
         ></a-input-number>

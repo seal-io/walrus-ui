@@ -6,7 +6,11 @@
   >
     <a-select
       v-model="resourceKey"
-      style="width: 240px; margin-bottom: var(--filter-box-margin)"
+      style="
+        width: 240px;
+        height: 36px;
+        margin-bottom: var(--filter-box-margin);
+      "
       :options="dataList"
       :popup-container="getContainer()"
       @change="handleKeyChange"

@@ -17,6 +17,7 @@ export interface ServiceFormData {
   environment: {
     id: string;
   };
+  changeComment?: string;
   description: string;
   labels: object;
   name: string;

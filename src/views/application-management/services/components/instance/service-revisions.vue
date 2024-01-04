@@ -34,6 +34,24 @@
           ellipsis
           tooltip
           :cell-style="{ minWidth: '40px' }"
+          data-index="createdBy"
+          align="left"
+          :title="$t('common.table.createdBy')"
+        >
+        </a-table-column>
+        <a-table-column
+          ellipsis
+          tooltip
+          :cell-style="{ minWidth: '40px' }"
+          data-index="changeComment"
+          align="left"
+          :title="$t('common.table.mark')"
+        >
+        </a-table-column>
+        <a-table-column
+          ellipsis
+          tooltip
+          :cell-style="{ minWidth: '40px' }"
           data-index="duration"
           align="left"
           :title="$t('dashboard.table.duration')"
@@ -55,7 +73,7 @@
               :status="{
                 status: record.status?.summaryStatus,
                 text: record.status?.summaryStatus,
-                message: '',
+                message: record.status?.summaryStatusMessage,
                 transitioning: record.status?.transitioning,
                 error: record.status?.error
               }"
@@ -214,11 +232,12 @@
     perPage: 10
   });
 
-  const handleRollbackService = async () => {
+  const handleRollbackService = async (comment) => {
     try {
       await rollbackService({
         revisionID: rollbackData.value.id,
-        serviceID: serviceId.value
+        serviceID: serviceId.value,
+        changeComment: comment
       });
       execSucceed();
     } catch (error) {
@@ -226,8 +245,8 @@
     }
   };
 
-  const handleConfirmDiff = async () => {
-    handleRollbackService();
+  const handleConfirmDiff = async (comment) => {
+    handleRollbackService(comment);
   };
   const handleViewHistoryChange = async (row) => {
     rollbackData.value = row;

@@ -9,6 +9,11 @@ export const dateFormatMap = {
   year: 'YYYY'
 };
 
+export const ResourceSaveAction = {
+  Draft: 'draft',
+  Deploy: 'deploy'
+};
+
 export const InjectCompleteDataKey = Symbol('InjectCompleteDataKey');
 
 export const InjectProjectEnvironmentKey = Symbol(
@@ -230,13 +235,13 @@ export const CommonButtonValue = {
 export const SaveActions: MoreAction[] = [
   {
     label: 'common.button.saveDeploy',
-    value: 'deploy',
+    value: ResourceSaveAction.Deploy,
     icon: 'icon-Cloud',
     iconfont: true
   },
   {
     label: 'common.button.draft',
-    value: 'draft',
+    value: ResourceSaveAction.Draft,
     icon: 'icon-xiangqing',
     iconfont: true
   }

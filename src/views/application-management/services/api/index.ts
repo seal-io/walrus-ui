@@ -151,6 +151,7 @@ export const redeployService = (data) => {
 export const batchDeployService = (data: {
   items: { id: string }[];
   reuseAttributes: boolean;
+  changeComment: string;
 }) => {
   return axios.post(`${SERVICE_API_PREFIX()}${SERVICE_API}/_/upgrade`, data);
 };
@@ -271,13 +272,15 @@ export const queryRevisionChange = (params: {
 export const rollbackService = (data: {
   revisionID: string;
   serviceID: string;
+  changeComment: string;
 }) => {
   return axios.post(
     `${SERVICE_API_PREFIX()}${SERVICE_API}/${
       data.serviceID
     }/rollback?${qs.stringify({
       revisionID: data.revisionID
-    })}`
+    })}`,
+    { changeComment: data.changeComment }
   );
 };
 

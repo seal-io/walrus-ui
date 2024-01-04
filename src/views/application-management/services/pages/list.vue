@@ -129,6 +129,11 @@
       :title="$t('applications.service.importyaml')"
       @save="handleImportYaml"
     ></importWalrusFile>
+    <CommentModal
+      v-model:show="showCommentModal"
+      :title="$t('applications.service.batchDeploy')"
+      @confirm="handleComfirmComment"
+    ></CommentModal>
   </div>
 </template>
 
@@ -146,15 +151,13 @@
     applyEnvironment,
     exportEnvironment
   } from '@/views/application-management/environments/api';
-  import GroupButtonMenu from '@/components/drop-button-group/group-button-menu.vue';
-  import DropButtonGroup from '@/components/drop-button-group/index.vue';
+  import CommentModal from '@/views/commons/components/comment-modal/index.vue';
   import primaryButtonGroup from '@/components/drop-button-group/primary-button-group.vue';
   import useDownload from '@/hooks/use-download';
   import tableList from '../components/table-list.vue';
   import deleteServiceModal from '../components/delete-service-modal.vue';
   import importWalrusFile from '../components/import-walrus-file.vue';
   import {
-    CreatActions,
     serviceBatchAction,
     serviceActionMap,
     ServiceDataType
@@ -179,6 +182,7 @@
   const showDeleteModal = ref(false);
   const showImportYaml = ref(false);
   const loading = ref(false);
+  const showCommentModal = ref(false);
   const actionHandlerMap = new Map();
   const queryParams = reactive({
     query: ''
@@ -238,12 +242,17 @@
   };
 
   const handleBatchDeployment = async () => {
+    showCommentModal.value = true;
+  };
+
+  const handleComfirmComment = async (val) => {
     try {
       await batchDeployService({
         items: _.map(resourceSelectKeys.value, (val) => {
           return { id: val as string };
         }),
-        reuseAttributes: true
+        reuseAttributes: true,
+        changeComment: val
       });
       execSucceed();
     } catch (error) {
@@ -251,7 +260,6 @@
       console.log(error);
     }
   };
-
   const handleBatchStart = async () => {
     try {
       await batchStartService({
