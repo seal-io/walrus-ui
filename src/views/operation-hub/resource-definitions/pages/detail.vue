@@ -127,18 +127,34 @@
             :label="$t('resource.definition.detail.applicableProjectNames')"
             :rules="[
               {
-                required: true,
+                required: false,
                 message: $t(
                   'resource.definition.detail.rules.applicableProjects'
                 )
               }
             ]"
           >
+            <SealViewItemWrap
+              v-if="
+                pageAction === PageAction.VIEW &&
+                !formData.applicableProjectNames.length
+              "
+              :label="$t('resource.definition.detail.applicableProjectNames')"
+              :style="{ width: `${InputWidth.LARGE}px` }"
+            >
+              <span>{{
+                $t('resource.definition.detail.applicableProjects.tips')
+              }}</span>
+            </SealViewItemWrap>
             <seal-select
+              v-else
               v-model="formData.applicableProjectNames"
               :view-status="pageAction === PageAction.VIEW"
               :options="projectList"
-              :required="true"
+              :required="false"
+              :popup-info="
+                $t('resource.definition.detail.applicableProjects.all')
+              "
               :multiple="true"
               :max-tag-count="2"
               :label="$t('resource.definition.detail.applicableProjectNames')"
@@ -526,6 +542,7 @@
       const itemId = `${Date.now()}`;
       formData.value.matchingRules.push({
         ..._.cloneDeep(definitionFormData),
+        name: !formData.value.matchingRules.length ? 'default' : '',
         id: itemId
       });
       activeRule.value = itemId;
@@ -627,6 +644,7 @@
     const itemId = `${Date.now()}`;
     formData.value.matchingRules.push({
       ..._.cloneDeep(definitionFormData),
+      name: !formData.value.matchingRules.length ? 'default' : '',
       id: itemId,
       pageAction: PageAction.CREATE
     });

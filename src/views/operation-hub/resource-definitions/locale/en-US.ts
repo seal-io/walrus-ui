@@ -24,5 +24,8 @@ export default {
   'resource.definition.detail.rules.envType': 'Environment type is required.',
   'resource.definition.detail.rules.projectName': 'Project name is required.',
   'resource.definition.detail.rules.applicableProjects':
-    'Please select projects.'
+    'Please select projects.',
+  'resource.definition.detail.applicableProjects.tips': 'All Projects',
+  'resource.definition.detail.applicableProjects.all':
+    'Applies to all projects by default'
 };

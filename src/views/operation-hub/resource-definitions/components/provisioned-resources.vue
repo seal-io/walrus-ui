@@ -40,7 +40,7 @@
               type="primary"
               status="warning"
               :disabled="!selectedKeys.length"
-              @click="() => handleDelete()"
+              @click="() => (showDeleteModal = true)"
               >{{ $t('common.button.delete')
               }}<span v-if="selectedKeys.length">{{
                 `(${selectedKeys.length})`
@@ -174,7 +174,7 @@
             >
               <template #cell="{ record }">
                 <span>{{
-                  dayjs(record.createTime).format('YYYY-MM-DD HH:mm:ss')
+                  dayjs(record.createTime).locale(locale).fromNow()
                 }}</span>
               </template>
             </a-table-column>
@@ -225,11 +225,12 @@
 </template>
 
 <script lang="ts" setup>
+  import i18n from '@/locale';
   import { PROJECT } from '@/router/config';
   import StatusLabel from '@/views/operation-hub/connectors/components/status-label.vue';
   import { Resources, Actions } from '@/permissions/config';
   import _, { cloneDeep, map, pickBy, remove } from 'lodash';
-  import { ref, reactive, PropType } from 'vue';
+  import { ref, reactive, PropType, computed } from 'vue';
   import dayjs from 'dayjs';
   import { useUserStore, useProjectStore, useAppStore } from '@/store';
   import DropButtonGroup from '@/components/drop-button-group/index.vue';
@@ -285,6 +286,16 @@
     perPage: appStore.perPage || 10
   });
 
+  const locale = computed(() => {
+    switch (i18n.global.locale) {
+      case 'zh-CN':
+        return 'zh-cn';
+      case 'en-US':
+        return 'en';
+      default:
+        return 'en';
+    }
+  });
   const setActionList = (row) => {
     const list = _.filter(definitionResourceActions, (item) => {
       return item.filterFun ? item.filterFun(row) : true;
