@@ -353,10 +353,6 @@
 </template>
 
 <script lang="ts" setup>
-<<<<<<< HEAD
-=======
-  import KuberSelect from '@/components/dynamic-form/widgets/components/kuber-select-bynamespace/index.vue';
->>>>>>> 026b72f5 (chore: widget source repo widget)
   import { PROJECT } from '@/router/config';
   import _, { get, find, cloneDeep, toString } from 'lodash';
   import {
