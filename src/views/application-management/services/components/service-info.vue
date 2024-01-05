@@ -17,16 +17,11 @@
 <script lang="ts" setup>
   import _ from 'lodash';
   import { onMounted, nextTick, provide, ref, watch, inject } from 'vue';
-  import {
-    InjectSchemaFormStatusKey,
-    PageAction,
-    InjectCompleteDataKey
-  } from '@/views/config';
+  import { InjectSchemaFormStatusKey, PageAction } from '@/views/config';
   import GroupForm from '@/components/dynamic-form/group-form.vue';
   import { queryItemResourceDefinition } from '@/views/operation-hub/resource-definitions/api';
   import { queryItemTemplatesVersions } from '@/views/operation-hub/templates/api';
   import { ServiceDataType, ProvideServiceInfoKey } from '../config';
-  import { queryVariables } from '../../variables/api';
 
   const props = defineProps({
     isCollapsed: {
