@@ -19,7 +19,8 @@ export const NoBaseURLApiList: string[] = [
   '/openapi',
   '/debug/version',
   '/cli',
-  '/proxy'
+  '/proxy',
+  '/walrus-file-hub'
 ];
 
 export const responseStatusMap = {
