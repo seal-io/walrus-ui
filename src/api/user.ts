@@ -1,6 +1,5 @@
 import axios from 'axios';
 import { SILENCEAPI } from '@/api/config';
-import { UserState } from '@/store/modules/user/types';
 
 interface ResList {
   items: { id: string; value: string; name: string }[];
@@ -50,4 +49,8 @@ export function getFirstLoginStatus() {
   return axios.get<{ id: string; value: string }>(
     `/settings/BootPwdGainSource`
   );
+}
+
+export function getWalrusFileHub() {
+  return axios.get<{ id: string; value: string }>(`/walrus-file-hub`);
 }

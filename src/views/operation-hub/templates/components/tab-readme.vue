@@ -52,7 +52,7 @@
     padding: 10px;
     overflow: auto;
     font-size: 12px !important;
-    background-color: var(--color-fill-2);
+    background-color: var(--color-fill-1);
     border-radius: var(--border-radius-small);
 
     &.markdown-body {

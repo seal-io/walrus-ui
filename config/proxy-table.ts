@@ -7,7 +7,8 @@ const proxyTableList = [
   'openapi',
   'verify-auth',
   'ws',
-  'wss'
+  'wss',
+  'walrus-file-hub'
 ];
 
 export default function createProxyTable(target?) {
