@@ -425,6 +425,7 @@
 
   .ace-wrapper {
     position: relative;
+    overflow: hidden;
     border: 1px solid var(--color-border-2);
     border-radius: var(--border-radius-small);
 

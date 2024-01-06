@@ -17,7 +17,7 @@
             v-model="type"
             :disabled="loading"
             :options="optionList"
-            style="width: 300px"
+            style="width: 300px; height: 36px"
             :placeholder="$t('operation.templates.detail.example')"
             @change="handleTyeChange"
           >
@@ -499,6 +499,7 @@
       flex-direction: row-reverse;
       align-items: center;
       justify-content: space-between;
+      margin-bottom: 6px;
 
       .link-btn {
         font-size: 12px;

@@ -183,6 +183,7 @@
   const showImportYaml = ref(false);
   const loading = ref(false);
   const showCommentModal = ref(false);
+  const commentTitle = ref('');
   const actionHandlerMap = new Map();
   const queryParams = reactive({
     query: ''

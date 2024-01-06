@@ -451,7 +451,13 @@
   watch(
     () => props.dataList,
     () => {
-      serviceDataList.value = _.cloneDeep(props.dataList);
+      serviceDataList.value = _.map(props.dataList, (o) => {
+        const item = _.cloneDeep(o);
+        item.labels = {};
+        return {
+          ...item
+        };
+      });
       init();
     },
     {
