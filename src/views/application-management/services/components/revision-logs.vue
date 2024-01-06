@@ -116,7 +116,7 @@
       border-radius: var(--border-radius-small);
 
       &.fullscreen {
-        max-height: calc(100vh - 254px);
+        max-height: calc(100vh - 270px);
       }
     }
   }
