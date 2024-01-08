@@ -101,7 +101,7 @@
   import useTabActive, { TabPage } from '@/hooks/use-tab-active';
   import { EnvironmentTabs } from '@/views/config';
   import _ from 'lodash';
-  import { useUserStore } from '@/store';
+  import { useUserStore, useProjectStore } from '@/store';
   import useCallCommon from '@/hooks/use-call-common';
   import HeaderInfo from '@/components/header-info/index.vue';
   import { BreadcrumbOptions } from '@/views/config/interface';
@@ -128,6 +128,7 @@
     projectTemplate,
     environmentTemplate
   } = useProjectData();
+  const projectStore = useProjectStore();
   const userStore = useUserStore();
   const { router, route, t } = useCallCommon();
   const currentInfo = ref<any>({});
@@ -197,9 +198,21 @@
     getItemEnvironmentInfo();
     breadCrumbList.value = await initBreadValues(['env']);
   };
+  const setDefaultActiveEnvironment = () => {
+    if (projectStore.isSetDefaultActiveEnvironment) {
+      return;
+    }
+    projectStore.setDefaultActiveProject({
+      id: route.params.projectId
+    });
+    projectStore.setDefaultActiveEnvironment({
+      id: route.params.environmentId
+    });
+  };
   onMounted(() => {
     initBread();
     init();
+    setDefaultActiveEnvironment();
   });
 </script>
 

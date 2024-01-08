@@ -64,7 +64,8 @@
                       <icon-star
                         v-if="
                           projectStore.defaultActiveEnvironment?.id !==
-                          data.value
+                            data.value ||
+                          !projectStore.isSetDefaultActiveEnvironment
                         "
                         :style="{
                           color: `rgb(var(${StatusColorValueMap.warningBg}))`
@@ -73,7 +74,8 @@
                       <icon-star-fill
                         v-if="
                           projectStore.defaultActiveEnvironment?.id ===
-                          data.value
+                            data.value &&
+                          projectStore.isSetDefaultActiveEnvironment
                         "
                         :style="{
                           color: `rgb(var(${StatusColorValueMap.warningColor}))`
@@ -207,6 +209,23 @@
   let timer: any = null;
 
   const handleSetDefault = (item) => {
+    if (
+      projectStore.checkIsDefaultActiveEnvironment({
+        id: item.value,
+        name: item.label
+      }) &&
+      projectStore.isSetDefaultActiveEnvironment
+    ) {
+      projectStore.setIsDefaultActiveEnvironment(false);
+      projectStore.setDefaultActiveProject({
+        id: route.params.projectId
+      });
+      projectStore.setDefaultActiveEnvironment({
+        id: route.params.environmentId
+      });
+      return;
+    }
+    projectStore.setIsDefaultActiveEnvironment(true);
     projectStore.setDefaultActiveProject({
       id: item.project?.id,
       name: item.project?.name || ''

@@ -22,6 +22,7 @@ export default function useCodeDiff() {
 
   const setDiffResult = (oldStr, newStr) => {
     diffResult.value = Diff.diffLines(oldStr || '', newStr || '');
+    console.log('diffResult==========', _.cloneDeep(diffResult.value));
   };
 
   const getCodeResult = () => {
@@ -41,7 +42,8 @@ export default function useCodeDiff() {
       if (index === 0) {
         item.line = item.count;
       } else {
-        item.line = item.count + _.get(diffResult.value, `${index - 1}.line`);
+        item.line =
+          item.count + _.get(diffResult.value, `${index - 1}.line`, 0);
       }
       return item;
     });

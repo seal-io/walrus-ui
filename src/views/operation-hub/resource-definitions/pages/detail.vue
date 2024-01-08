@@ -27,7 +27,11 @@
             })
           "
           @edit="handleEditPage"
-        ></GroupTitle>
+        >
+          <!-- <template #right>
+            <QuestionPopup :link="QAlinkMap.Settings"></QuestionPopup>
+          </template> -->
+        </GroupTitle>
         <a-form
           ref="formref"
           :model="formData"
@@ -295,8 +299,10 @@
     validateLabelNameRegx,
     InputWidth,
     InjectCompleteDataKey,
-    HintKeyMaps
+    HintKeyMaps,
+    QAlinkMap
   } from '@/views/config';
+  import QuestionPopup from '@/components/question-popup/index.vue';
   import { HintKey } from '@/views/config/interface';
   import { useElementSize } from '@vueuse/core';
   import { OPERATIONHUB } from '@/router/config';

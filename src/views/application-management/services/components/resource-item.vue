@@ -169,7 +169,7 @@
                   </>
                 </Autotip>
               </a-grid-item>
-              <a-grid-item span={3}>
+              <a-grid-item span={4}>
                 <Autotip>
                   <span>{slots?.status?.({ record: props.rowData })}</span>
                 </Autotip>
@@ -188,7 +188,7 @@
                   <span></span>
                 </Autotip>
               </a-grid-item>
-              <a-grid-item span={4} class="actions">
+              <a-grid-item span={3} class="actions">
                 <span
                   class="actions"
                   onClick={withModifiers(() => {}, ['stop'])}
