@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div padding="16px 16px 0 16px">
+    <div>
       <GroupTitle
         :title="$t('common.title.basicInfo')"
         :bordered="false"
@@ -28,10 +28,6 @@
               match: validateLabelNameRegx,
               message: $t('common.validate.labelName')
             }
-            // {
-            //   validator: validateNameuniq,
-            //   message: $t('applications.applications.rule.modules.name')
-            // }
           ]"
         >
           <seal-input
@@ -43,13 +39,6 @@
             :max-length="63"
             show-word-limit
           ></seal-input>
-          <!-- <template #extra>
-            <div
-              class="tips"
-              :style="{ 'max-width': `${InputWidth.LARGE}px` }"
-              >{{ $t('common.validate.labelName') }}</div
-            >
-          </template> -->
         </a-form-item>
         <a-form-item hide-label>
           <SealFormItemWrap
@@ -89,8 +78,12 @@
             </seal-select>
           </div>
         </a-form-item>
+
         <a-form-item
-          v-if="dataType === ServiceDataType.service"
+          v-if="
+            dataType === ServiceDataType.service &&
+            !!formData.template?.template
+          "
           hide-label
           field="template.template.id"
           :label="$t('applications.applications.table.module')"
@@ -103,7 +96,7 @@
         >
           <div>
             <seal-select
-              :model-value="formData.template?.template?.id"
+              v-model="formData.template.template.id"
               :label="$t('applications.applications.table.module')"
               :required="true"
               :virtual-list-props="virtualListProps"
@@ -111,12 +104,7 @@
               :options="templateList"
               :format-label="formatTemplateLael"
               allow-search
-              @change="
-                (val) => {
-                  formData.template.template.id = val;
-                  handleTemplateChange(val);
-                }
-              "
+              @change="handleTemplateChange"
             >
               <template #option="{ data }">
                 <span>{{ data.label }}</span>
@@ -133,7 +121,7 @@
           </div>
         </a-form-item>
         <a-form-item
-          v-if="dataType === ServiceDataType.service"
+          v-if="dataType === ServiceDataType.service && !!formData.template"
           hide-label
           field="template.version"
           :label="$t('applications.applications.history.version')"
@@ -146,18 +134,13 @@
         >
           <div>
             <seal-select
-              :model-value="formData.template?.version"
+              v-model="formData.template.version"
               :options="[]"
               :required="true"
               :placeholder="$t('applications.applications.history.version')"
               :style="{ width: `${InputWidth.LARGE}px` }"
               :loading="asyncLoading"
-              @change="
-                (val) => {
-                  formData.template.version = val;
-                  handleVersionChange();
-                }
-              "
+              @change="handleVersionChange"
             >
               <a-option
                 v-for="item in templateVersionList"
@@ -602,7 +585,11 @@
       formData.value.template = null as any;
     }
 
-    if (flowId && dataType.value === originDataType) {
+    if (
+      flowId &&
+      dataType.value === originDataType &&
+      props.action === PageAction.EDIT
+    ) {
       flowProps.flowStepInfo.enable = true;
     } else {
       flowProps.flowStepInfo.enable = false;
