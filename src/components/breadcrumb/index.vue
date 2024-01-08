@@ -55,7 +55,7 @@
                     content: data.label
                   }"
                 >
-                  <span>
+                  <span style="font-weight: var(--font-weight-medium)">
                     <span
                       v-if="item.level === pageLevelMap.Environment"
                       class="m-r-4"
