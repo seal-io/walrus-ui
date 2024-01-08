@@ -244,6 +244,15 @@ export default function useServiceData(props?) {
     let defaultTemplate = _.find(templateList.value, (item) =>
       setDefaultTemplate(item)
     );
+    formData.value.template = {
+      // template version info
+      name: '',
+      version: '',
+      id: '',
+      project: { id: route.params.projectId as string },
+      // template info
+      template: { id: '' }
+    };
     defaultTemplate = defaultTemplate || _.get(templateList.value, '0');
     formData.value.template.name = defaultTemplate?.name;
     formData.value.template.template.id = defaultTemplate?.id;
@@ -252,7 +261,6 @@ export default function useServiceData(props?) {
   // for service create page
   const initFormData = async () => {
     if (id || resourceTypeData?.value?.flowStepInfo?.enable) {
-      console.log('initFormData>>>>>>>>>', id, resourceTypeData.value);
       await setFormAttributes();
     } else {
       let templateSchema: any = {};
