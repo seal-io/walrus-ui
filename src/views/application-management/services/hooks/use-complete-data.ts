@@ -131,7 +131,7 @@ export default function useCompleteData(props?) {
   ) => {
     if (
       dataType.value === ServiceDataType.resource ||
-      !formTemplateData.template?.id
+      !formTemplateData?.template?.id
     ) {
       return;
     }

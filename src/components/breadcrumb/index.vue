@@ -121,7 +121,6 @@
                     align-items: center;
                     height: 36px;
                     overflow: hidden;
-                    font-weight: var(--font-weight-regular);
                   "
                 >
                   <a-link
