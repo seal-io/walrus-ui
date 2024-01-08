@@ -1,4 +1,4 @@
-import { InjectionKey } from 'vue';
+import { InjectionKey, Ref } from 'vue';
 
 export interface ProjectEnvironmentContext {
   projectID: string;
@@ -7,5 +7,6 @@ export interface ProjectEnvironmentContext {
   isProjectConnector?: boolean;
 }
 
-export const projectEnvCtxInjectionKey: InjectionKey<ProjectEnvironmentContext> =
-  Symbol('projectEnvCtxInjectionKey');
+export const projectEnvCtxInjectionKey: InjectionKey<
+  Ref<Partial<ProjectEnvironmentContext>>
+> = Symbol('projectEnvCtxInjectionKey');

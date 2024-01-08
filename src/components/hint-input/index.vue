@@ -8,7 +8,8 @@
         'arco-input-error': $attrs.error,
         'arco-input-disabled': disabled || !!$attrs.readonly,
         'is-focused': isFocus || modelValue,
-        'ignore-error': ignoreError
+        'ignore-error': ignoreError,
+        'input-has-append': slots?.append
       }"
       @click="handleClick"
     >
@@ -60,6 +61,9 @@
         </span>
       </span>
     </span>
+    <span v-if="slots?.append" class="arco-input-append">
+      <slot name="append"></slot>
+    </span>
   </div>
 </template>
 
@@ -91,6 +95,7 @@
     onUnmounted,
     watch,
     useAttrs,
+    useSlots,
     PropType,
     inject,
     onBeforeUnmount,
@@ -176,6 +181,7 @@
     ref(PageAction.CREATE)
   );
   const $attrs = useAttrs();
+  const slots = useSlots();
   const emits = defineEmits(['update:modelValue', 'input', 'change', 'blur']);
   const expression = ref('');
   const editorCtx = ref('');
@@ -518,7 +524,22 @@
 <style lang="less" scoped>
   .autocomplete-area {
     position: relative;
+    display: flex;
+    align-items: center;
     width: 100%;
+
+    .arco-input-append {
+      height: 54px;
+      border: 1px solid var(--color-border-2);
+      border-left: 0;
+      border-radius: 0 var(--border-radius-small) var(--border-radius-small) 0;
+    }
+
+    .arco-input-wrapper {
+      &.input-has-append {
+        border-radius: var(--border-radius-small) 0 0 var(--border-radius-small);
+      }
+    }
   }
 
   .close {

@@ -461,7 +461,7 @@
   const schemaFormCache = ref<any>({});
   const formAction = ref(!id ? PageAction.CREATE : PageAction.EDIT);
   const traceKey = ref(Date.now());
-  const projectEnvCtx = reactive({
+  const projectEnvCtx = ref({
     projectID: route.params.projectId as string,
     environmentID: route.params.environmentId as string,
     connectors: []
@@ -494,10 +494,10 @@
         environmentID: route.params.environmentId as string,
         projectID: route.params.projectId as string
       });
-      projectEnvCtx.connectors = data.connectors || [];
+      projectEnvCtx.value.connectors = data.connectors || [];
     } catch (error) {
       // ingore
-      projectEnvCtx.connectors = [];
+      projectEnvCtx.value.connectors = [];
     }
   };
   const setBreadCrumbList = async () => {

@@ -1,27 +1,34 @@
 <template>
-  <div class="seal-form-item-wrap">
-    <div class="label">
-      <span
-        ><span>{{ label }}</span>
+  <div class="item-wrap-box">
+    <div class="seal-form-item-wrap" :class="{ 'has-append': slots.append }">
+      <div class="label">
         <span
-          v-if="required"
-          class="bold-500 m-l-2 star"
-          style="color: rgb(var(--danger-6))"
-          >*</span
-        ></span
-      >
-      <a-tooltip v-if="popupInfo" :content="popupInfo">
-        <icon-info-circle
-          style="stroke-linecap: initial; cursor: default"
-          class="m-l-2"
-        />
-      </a-tooltip>
+          ><span>{{ label }}</span>
+          <span
+            v-if="required"
+            class="bold-500 m-l-2 star"
+            style="color: rgb(var(--danger-6))"
+            >*</span
+          ></span
+        >
+        <a-tooltip v-if="popupInfo" :content="popupInfo">
+          <icon-info-circle
+            style="stroke-linecap: initial; cursor: default"
+            class="m-l-2"
+          />
+        </a-tooltip>
+      </div>
+      <slot></slot>
     </div>
-    <slot></slot>
+    <span v-if="slots?.append" class="arco-input-append">
+      <slot name="append"></slot>
+    </span>
   </div>
 </template>
 
 <script lang="ts" setup>
+  import { useSlots } from 'vue';
+
   defineProps({
     label: {
       type: String,
@@ -40,6 +47,7 @@
       default: ''
     }
   });
+  const slots = useSlots();
 </script>
 
 <script lang="ts">
@@ -51,11 +59,29 @@
 <style lang="less" scoped>
   @height: 54px;
 
+  .item-wrap-box {
+    display: flex;
+    align-items: center;
+
+    .arco-input-append {
+      height: @height;
+      padding: 0 12px;
+      border: 1px solid var(--color-border-2);
+      border-left: none;
+      border-radius: 0 var(--border-radius-small) var(--border-radius-small) 0;
+    }
+  }
+
   .seal-form-item-wrap {
+    flex: 1;
     min-height: @height;
     padding: 8px 12px;
     border: 1px solid var(--color-border-2);
     border-radius: var(--border-radius-small);
+
+    &.has-append {
+      border-radius: var(--border-radius-small) 0 0 var(--border-radius-small);
+    }
 
     .label {
       display: flex;

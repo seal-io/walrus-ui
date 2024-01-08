@@ -105,6 +105,17 @@
         handleInputChange(val);
         validateField();
       });
+      const renderAppend = () => {
+        const unit = _.get(props.schema, ['x-walrus-ui', 'unit'], '');
+        if (unit) {
+          return {
+            append: () => {
+              return unit;
+            }
+          };
+        }
+        return null;
+      };
       const renderEdit = () => {
         return (
           <a-form-item
@@ -143,6 +154,9 @@
               label={props.label}
               style="width: 100%"
               allow-search={false}
+              v-slots={{
+                ...renderAppend()
+              }}
               disabled={
                 props.readonly ||
                 (attrs.immutable &&
@@ -195,7 +209,13 @@
               field={_.join(props.fieldPath, '.')}
               validate-trigger={['change']}
             >
-              <SealViewItemWrap label={props.schema.title} style="width: 100%">
+              <SealViewItemWrap
+                label={props.schema.title}
+                style="width: 100%"
+                v-slots={{
+                  ...renderAppend()
+                }}
+              >
                 <span>
                   {(isPassword(props.schema) || props.schema.writeOnly) &&
                   _.get(props.uiFormData, props.fieldPath)

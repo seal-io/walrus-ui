@@ -395,7 +395,7 @@
   const formAction = ref(props.action);
   const schemaFormCache = ref<any>({});
   let connectorAxiosToken: any = null;
-  const projectEnvCtx = reactive({
+  const projectEnvCtx = ref({
     projectID: route.params.projectId as string,
     environmentID: route.params.environmentId as string,
     connectors: []
@@ -448,10 +448,10 @@
         params,
         connectorAxiosToken.token
       );
-      projectEnvCtx.connectors = data.connectors || [];
+      projectEnvCtx.value.connectors = data.connectors || [];
     } catch (error) {
       // ingore
-      projectEnvCtx.connectors = [];
+      projectEnvCtx.value.connectors = [];
     }
   };
   const cancelCallback = () => {
