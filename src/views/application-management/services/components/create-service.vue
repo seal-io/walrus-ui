@@ -103,7 +103,7 @@
         >
           <div>
             <seal-select
-              v-model="formData.template.template.id"
+              :model-value="formData.template?.template?.id"
               :label="$t('applications.applications.table.module')"
               :required="true"
               :virtual-list-props="virtualListProps"
@@ -111,7 +111,12 @@
               :options="templateList"
               :format-label="formatTemplateLael"
               allow-search
-              @change="handleTemplateChange"
+              @change="
+                (val) => {
+                  formData.template.template.id = val;
+                  handleTemplateChange(val);
+                }
+              "
             >
               <template #option="{ data }">
                 <span>{{ data.label }}</span>
@@ -141,13 +146,18 @@
         >
           <div>
             <seal-select
-              v-model="formData.template.version"
+              :model-value="formData.template?.version"
               :options="[]"
               :required="true"
               :placeholder="$t('applications.applications.history.version')"
               :style="{ width: `${InputWidth.LARGE}px` }"
               :loading="asyncLoading"
-              @change="handleVersionChange"
+              @change="
+                (val) => {
+                  formData.template.version = val;
+                  handleVersionChange();
+                }
+              "
             >
               <a-option
                 v-for="item in templateVersionList"
@@ -598,9 +608,9 @@
       flowProps.flowStepInfo.enable = false;
     }
 
-    nextTick(() => {
+    setTimeout(() => {
       toggleDataType();
-    });
+    }, 100);
   };
 
   const cancel = async (callback) => {

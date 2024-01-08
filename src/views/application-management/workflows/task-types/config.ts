@@ -10,14 +10,16 @@ export const TaskTypeList = [
   {
     title: 'workflow.task.form.manualapproval',
     value: TaskTypes.APPROVAL,
-    description: 'workflow.task.form.manualapproval',
+    // description: 'workflow.task.form.manualapproval',
+    description: '',
     icon: 'icon-jiaoseshouquan',
     iconStyle: { fontSize: '20px' }
   },
   {
     title: 'workflow.task.form.deployservice',
     value: TaskTypes.SERVICE,
-    description: 'workflow.task.form.deployservice',
+    // description: 'workflow.task.form.deployservice',
+    description: '',
     icon: 'icon-fuwu'
   }
 ];
