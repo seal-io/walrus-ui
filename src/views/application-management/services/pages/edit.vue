@@ -758,7 +758,6 @@
   const handleAddSelector = (value) => {
     setTimeout(() => {
       if (value === ResourceSaveAction.Deploy) {
-        showCommentModal.value = true;
         handleOk();
       }
       if (value === ResourceSaveAction.Draft) {

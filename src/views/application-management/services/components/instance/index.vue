@@ -10,10 +10,7 @@
             <span class="m-r-30"> {{ currentInfo.name }}</span>
             <StatusLabel
               :status="{
-                inactive: _.includes(
-                  StartableStatus,
-                  _.get(currentInfo, 'status.summaryStatus')
-                ),
+                inactive: _.get(currentInfo, 'status.inactive'),
                 status: _.get(currentInfo, 'status.summaryStatus') || '',
                 text: _.get(currentInfo, 'status.summaryStatus'),
                 message:
