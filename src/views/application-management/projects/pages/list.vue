@@ -8,7 +8,7 @@
         }"
       ></Breadcrumb>
     </BreadWrapper>
-    <!-- <ComCard padding="0">
+    <ComCard padding="0">
       <HeaderInfo
         :info="{ name: $t('menu.applicationManagement.projectList') }"
       >
@@ -16,8 +16,12 @@
           <i class="iconfont icon-app-fill"></i>
         </template>
       </HeaderInfo>
-    </ComCard> -->
-    <SpinCard borderless class="projects">
+    </ComCard>
+    <SpinCard
+      borderless
+      class="projects"
+      padding="0 var(--card-content-padding) 20px"
+    >
       <div class="content">
         <FilterBox style="margin-bottom: var(--filter-box-margin)">
           <template #params>
@@ -204,7 +208,7 @@
   import { PROJECT } from '@/router/config';
   import { Resources, Actions } from '@/permissions/config';
   import _, { cloneDeep, map, pickBy, remove } from 'lodash';
-  import { ref, reactive } from 'vue';
+  import { ref, reactive, onMounted } from 'vue';
   import dayjs from 'dayjs';
   import { useUserStore, useProjectStore, useAppStore } from '@/store';
   import DropButtonGroup from '@/components/drop-button-group/index.vue';
@@ -352,6 +356,14 @@
     appStore.updateSettings({ perPage: pageSize });
     handleFilter();
   };
+
+  const setEnterProjectDefault = () => {
+    projectStore.setEnterProjectDefault({
+      projectId: '',
+      detail: false,
+      list: true
+    });
+  };
   const updateProjectStore = async (list) => {
     const ids = map(list, (item) => item.id);
     projectStore.removeProjects(ids);
@@ -395,6 +407,9 @@
       handleDelete([row.id]);
     }
   };
+  onMounted(() => {
+    setEnterProjectDefault();
+  });
   fetchData();
 </script>
 

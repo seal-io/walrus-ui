@@ -91,10 +91,7 @@
                 message: _.get(record, 'status.summaryStatusMessage'),
                 transitioning: _.get(record, 'status.transitioning'),
                 error: _.get(record, 'status.error'),
-                inactive: _.includes(
-                  StartableStatus,
-                  _.get(record, 'status.summaryStatus')
-                )
+                inactive: _.get(record, 'status.inactive')
               }"
             ></StatusLabel>
           </template>

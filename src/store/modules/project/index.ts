@@ -12,6 +12,11 @@ const useProjectStore = defineStore('project', {
     serviceList: [],
     pipelineList: [],
     pipelineRecordList: [],
+    enterProjectDefault: {
+      detail: false,
+      list: false,
+      projectId: ''
+    },
     isSetDefaultActiveEnvironment: false,
     defaultActiveProject: {}, // {id: '', name: ''}
     defaultActiveEnvironment: {} // {id: '', name: ''}
@@ -42,6 +47,9 @@ const useProjectStore = defineStore('project', {
     },
     setIsDefaultActiveEnvironment(isSet: boolean) {
       this.isSetDefaultActiveEnvironment = isSet;
+    },
+    setEnterProjectDefault(data: any) {
+      this.enterProjectDefault = data;
     },
     checkIsDefaultActiveEnvironment({ id }: any) {
       const { defaultActiveEnvironment } = this;
