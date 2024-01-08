@@ -62,7 +62,7 @@
                     <span>{props.rowData.type}</span>
                   </Autotip>
                 </a-grid-item>
-                <a-grid-item span={3}>
+                <a-grid-item span={4}>
                   <Autotip>
                     <span>{slots?.status?.({ record: props.rowData })}</span>
                   </Autotip>
@@ -81,7 +81,7 @@
                     <span></span>
                   </Autotip>
                 </a-grid-item>
-                <a-grid-item span={4} class="actions">
+                <a-grid-item span={3} class="actions">
                   <span class="actions">
                     {slots?.actions?.({
                       record: props.rowData,
@@ -120,10 +120,10 @@
 
       &::before {
         position: absolute;
-        top: -26px;
+        top: -33px;
+        bottom: 18px;
         left: 18px;
         display: inline-block;
-        height: 44px;
         border-left: 1px dotted var(--color-border-3);
         content: '';
       }

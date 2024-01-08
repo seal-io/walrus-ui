@@ -1,7 +1,7 @@
 <template>
   <div class="tab-content-wrap">
-    <a-space class="icon-btn-group margin-b10">
-      <icon-font
+    <div class="icon-btn-group margin-b10">
+      <!-- <icon-font
         type="icon-table"
         class="size-14"
         :class="{ active: currentView === 'list' }"
@@ -12,8 +12,14 @@
         class="size-14"
         :class="{ active: currentView === 'json' }"
         @click="handleToggle('json')"
-      />
-    </a-space>
+      /> -->
+      <IconBtnGroup
+        v-model:active="currentView"
+        :icon-list="iconList"
+        @change="handleToggle"
+      ></IconBtnGroup>
+    </div>
+
     <a-table
       v-if="currentView === 'list'"
       column-resizable
@@ -80,10 +86,29 @@
 <script lang="ts" setup>
   import { get, reduce, filter, pick, map, isString } from 'lodash';
   import { PropType, computed, ref } from 'vue';
+  import IconBtnGroup from '@/components/icon-btn-group/index.vue';
   import { initFormState } from '@/components/dynamic-form/utils/init-form-state';
   import AceEditor from '@/components/ace-editor/index.vue';
   import { Schema } from '../config/interface';
 
+  const iconList = [
+    {
+      icon: 'icon-table',
+      view: 'list',
+      style: {
+        fontSize: '14px'
+      },
+      iconfont: true
+    },
+    {
+      icon: 'icon-code-square',
+      view: 'json',
+      style: {
+        fontSize: '14px'
+      },
+      iconfont: false
+    }
+  ];
   const props = defineProps({
     schema: {
       type: Object as PropType<Schema>,
@@ -133,5 +158,5 @@
 </script>
 
 <style lang="less" scoped>
-  @import url('@/views/commons/style/icon-btn-group.less');
+  // @import url('@/views/commons/style/icon-btn-group.less');
 </style>

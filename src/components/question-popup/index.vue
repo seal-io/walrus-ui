@@ -70,5 +70,8 @@
   .box {
     display: flex;
     align-items: center;
+    width: max-content;
+    font-weight: var(--font-weight-medium);
+    font-size: var(--font-size-large);
   }
 </style>

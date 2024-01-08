@@ -5,18 +5,19 @@
       :key="item.icon"
       class="item"
       :class="{ active: active === item.view }"
+      @click="handleToggle(item.view)"
     >
       <icon-font
         v-if="item.iconfont"
         :type="item.icon"
+        :style="{ ...item.style }"
         :class="{ active: active === item.view }"
-        @click="handleToggle(item.view)"
       />
       <component
         :is="item.icon"
         v-else
+        :style="{ ...item.style }"
         :class="{ active: active === item.view }"
-        @click="handleToggle(item.view)"
       />
     </span>
   </a-space>
@@ -29,6 +30,7 @@
     icon: string;
     view: string;
     iconfont: boolean;
+    style?: Record<string, string>;
   }
   defineProps({
     iconList: {
@@ -64,6 +66,7 @@
       justify-content: center;
       padding: 4px 16px;
       border-radius: 6px;
+      cursor: pointer;
 
       &:hover {
         background-color: var(--color-fill-1);

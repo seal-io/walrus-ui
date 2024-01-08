@@ -71,7 +71,7 @@
                 </span>
               </Autotip>
             </a-grid-item>
-            <a-grid-item :span="3">
+            <a-grid-item :span="4">
               <Autotip>
                 <span>{{ $t('common.table.status') }}</span>
               </Autotip>
@@ -110,7 +110,7 @@
                 }}</span>
               </Autotip>
             </a-grid-item>
-            <a-grid-item :span="4" class="actions">
+            <a-grid-item :span="3" class="actions">
               <Autotip>
                 <span class="actions">
                   {{ $t('common.table.operation') }}
@@ -148,20 +148,22 @@
               <span v-else>{{ record.name }}</span>
             </template>
             <template #status="{ record }">
-              <StatusLabel
-                :zoom="0.9"
-                :status="{
-                  status: get(record, 'status.summaryStatus'),
-                  inactive: _.includes(
-                    StartableStatus,
-                    get(record, 'status.summaryStatus')
-                  ),
-                  text: get(record, 'status.summaryStatus'),
-                  message: get(record, 'status.summaryStatusMessage'),
-                  transitioning: get(record, 'status.transitioning'),
-                  error: get(record, 'status.error')
-                }"
-              ></StatusLabel>
+              <AutoTip>
+                <StatusLabel
+                  :zoom="0.9"
+                  :status="{
+                    status: get(record, 'status.summaryStatus'),
+                    inactive: _.includes(
+                      StartableStatus,
+                      get(record, 'status.summaryStatus')
+                    ),
+                    text: get(record, 'status.summaryStatus'),
+                    message: get(record, 'status.summaryStatusMessage'),
+                    transitioning: get(record, 'status.transitioning'),
+                    error: get(record, 'status.error')
+                  }"
+                ></StatusLabel>
+              </AutoTip>
             </template>
             <template #actions="{ record, rowIndex }">
               <DropButtonGroup

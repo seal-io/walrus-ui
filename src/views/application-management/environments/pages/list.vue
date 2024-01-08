@@ -218,7 +218,7 @@
     CommonButtonValue
   } from '@/views/config';
   import { PROJECT } from '@/router/config';
-  import { useUserStore, useAppStore } from '@/store';
+  import { useUserStore, useAppStore, useProjectStore } from '@/store';
   import { Resources, Actions } from '@/permissions/config';
   import { ref, reactive, onMounted, nextTick } from 'vue';
   import useCallCommon from '@/hooks/use-call-common';
@@ -260,6 +260,7 @@
 
   const appStore = useAppStore();
   const userStore = useUserStore();
+  const projectStore = useProjectStore();
   const { router, route } = useCallCommon();
   const loading = ref(false);
   const dataList = ref<EnvironmentRow[]>([]);
@@ -435,17 +436,29 @@
     actionHandlerMap.get(value)(row);
   };
 
+  const removeDefaultActiveEnvironment = (ids: Array<{ id: string }>) => {
+    const { defaultActiveEnvironment } = projectStore;
+    if (!defaultActiveEnvironment) return;
+    const index = _.findIndex(ids, (item) => {
+      return item.id === defaultActiveEnvironment?.id;
+    });
+    if (index > -1) {
+      projectStore.setDefaultActiveEnvironment(null);
+      projectStore.setIsDefaultActiveEnvironment(false);
+    }
+  };
   const handleDeleteConfirm = async (delList?: string[]) => {
     try {
       loading.value = true;
       const ids = map(delList || selectedKeys.value, (val) => {
         return {
-          id: val
+          id: val as string
         };
       });
       await deleteEnvironment({ items: ids });
       loading.value = false;
       execSucceed();
+      removeDefaultActiveEnvironment(ids);
       queryParams.page = 1;
       selectedKeys.value = [];
       rowSelection.selectedRowKeys = [];
