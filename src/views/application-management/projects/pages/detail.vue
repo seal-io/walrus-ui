@@ -143,7 +143,7 @@
   import _ from 'lodash';
   import useTabActive, { TabPage } from '@/hooks/use-tab-active';
   import useCallCommon from '@/hooks/use-call-common';
-  import { useUserStore } from '@/store';
+  import { useUserStore, useProjectStore } from '@/store';
   import HeaderInfo from '@/components/header-info/index.vue';
   import EnviromentList from '@/views/application-management/environments/pages/list.vue';
   import variableList from '@/views/application-management/variables/pages/list.vue';
@@ -187,6 +187,7 @@
   } = userProjectBreadcrumbData();
   const { router, route } = useCallCommon();
   const userStore = useUserStore();
+  const projectStore = useProjectStore();
 
   const { activeKey, setPageTabActive } = useTabActive(
     TabPage.PROJECTTAB,
@@ -246,6 +247,11 @@
   };
   onMounted(() => {
     initBread();
+    projectStore.setEnterProjectDefault({
+      projectId: route.params.projectId,
+      detail: true,
+      list: false
+    });
   });
   init();
 </script>

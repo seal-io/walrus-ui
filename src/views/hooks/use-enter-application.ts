@@ -181,6 +181,44 @@ export default function useEnterApplication() {
   const gotoEnvironmentDetail = () => {
     const defaultProject = projectStore.defaultActiveProject;
     const defaultEnvironment = projectStore.defaultActiveEnvironment;
+    const enterProjectDefaultInfo = projectStore.enterProjectDefault;
+
+    // ===================== enter project default during operation start =====================
+
+    // to project list
+    if (enterProjectDefaultInfo?.list || !projectStore.projectList.length) {
+      router.push({
+        name: PROJECT.List
+      });
+      return;
+    }
+
+    const existProject = _.find(
+      projectStore.projectList,
+      (item) => item.value === enterProjectDefaultInfo?.projectId
+    );
+
+    // to project detail
+    if (enterProjectDefaultInfo?.detail) {
+      if (existProject) {
+        router.push({
+          name: PROJECT.Detail,
+          params: {
+            projectId: enterProjectDefaultInfo?.projectId
+          }
+        });
+      } else {
+        router.push({
+          name: PROJECT.Detail,
+          params: {
+            projectId: _.get(projectStore.projectList, '0.value')
+          }
+        });
+      }
+      return;
+    }
+
+    // ===================== enter project default during operation end =====================
 
     if (!defaultEnvironment?.id) {
       goToProject({ name: PROJECT.List });
