@@ -233,6 +233,7 @@
   const handleBeforeOpen = () => {
     formData.value.yaml = '';
     defaultValue.value = '';
+    showBox.value = true;
     editor?.value?.clear();
   };
   const handleBeforeClose = () => {
