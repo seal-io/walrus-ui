@@ -153,7 +153,7 @@
   const walrusFileList = ref<any[]>([]);
   const query = ref<string>('');
   const showReadme = ref<boolean>(false);
-  const showBox = ref<boolean>(false);
+  const showBox = ref<boolean>(true);
   const markdownConent = ref<string>('');
   const selectedFile = ref(false);
   const refreshKey = ref(Date.now());
