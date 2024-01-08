@@ -212,6 +212,41 @@ export const initFieldValue = ({
   }
 };
 
+export const initFieldValueByNullable = ({
+  defaultFormData,
+  fieldPath,
+  schema,
+  formData,
+  uiFormData,
+  required
+}: {
+  fieldPath: string[];
+  schema: FieldSchema;
+  formData: object;
+  uiFormData: object;
+  defaultFormData: object;
+  required: boolean;
+}) => {
+  // no default value and not required
+
+  const defaultValue = initFieldDefaultValue(schema);
+  const currentValue = _.get(uiFormData, fieldPath);
+  const value = currentValue || defaultValue;
+  const isNullable = schema.nullable || schema.originNullable;
+
+  _.set(uiFormData, fieldPath, _.cloneDeep(value));
+  if (!_.hasIn(defaultFormData, fieldPath)) {
+    _.set(defaultFormData, fieldPath, _.cloneDeep(value));
+  }
+
+  // !isNullable ||
+  // (schema.isItemsProperty && schema.required && !schema.nullable)
+  const isRequiredItemProperty = schema.isItemsProperty && !schema.nullable;
+  if (required && (!isNullable || isRequiredItemProperty)) {
+    _.set(formData, fieldPath, _.cloneDeep(value));
+  }
+};
+
 export const viewFieldValue = ({
   fieldPath,
   schema,
