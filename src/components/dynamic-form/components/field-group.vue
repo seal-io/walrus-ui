@@ -28,15 +28,21 @@
           return _.startsWith(item, fieldPath);
         });
       };
-      const handleUnsetField = () => {
-        initFieldValue({
-          defaultFormData: props.defaultFormData,
-          schema: props.schema,
-          formData: props.formData,
-          uiFormData: props.uiFormData,
-          fieldPath: props.fieldPath,
-          required: _.includes(props.requiredFields, props.schema.name)
-        });
+      const handleUnsetField = (checked) => {
+        if (!checked) {
+          status.value = false;
+          _.unset(props.formData, props.fieldPath);
+        } else {
+          status.value = true;
+          initFieldValue({
+            defaultFormData: props.defaultFormData,
+            schema: props.schema,
+            formData: props.formData,
+            uiFormData: props.uiFormData,
+            fieldPath: props.fieldPath,
+            required: _.includes(props.requiredFields, props.schema.name)
+          });
+        }
         emit('change', props.formData);
         console.log('handleUnsetField', props.formData, props.fieldPath);
       };
@@ -57,17 +63,22 @@
       const handleGroupLeave = () => {
         groupHovered.value = false;
       };
+      const unsetType = () => {
+        return (
+          props.schema.type === FIELD_TYPE.OBJECT ||
+          props.schema.type === FIELD_TYPE.ARRAY
+        );
+      };
+
       const renderNullableButton = () => {
         return (
           <>
-            {props.schema.nullable && nullableText ? (
-              <a-button
+            {!props.schema.isRequired && unsetType() ? (
+              <a-switch
                 type="text"
                 size="mini"
-                onClick={() => handleUnsetField()}
-              >
-                {nullableText}
-              </a-button>
+                onChange={(val) => handleUnsetField(val)}
+              ></a-switch>
             ) : null}
           </>
         );
@@ -81,7 +92,7 @@
               <div class="title parent-name">
                 <div>
                   <span>{props.schema.title || props.schema.name}</span>
-                  {renderNullableButton()}
+                  <span class="m-l-10">{renderNullableButton()}</span>
                 </div>
                 <div>{slots.buttons?.()}</div>
               </div>
@@ -102,12 +113,12 @@
                     {props.schema.description ? (
                       <a-tooltip content={props.schema.description}>
                         <icon-info-circle
-                          style="stroke-linecap: initial; cursor: default"
+                          style="stroke-linecap: initial; cursor: default;position: relative;top: 1px;"
                           class="m-l-2"
                         />
                       </a-tooltip>
                     ) : null}
-                    {renderNullableButton()}
+                    <span class="m-l-10">{renderNullableButton()}</span>
                   </div>
                   <div>{slots.buttons?.()}</div>
                 </div>
@@ -141,16 +152,11 @@
                   return (
                     <span>
                       <span>{props.schema.title || props.schema.name}</span>
-                      {renderNullableButton()}
                     </span>
                   );
                 },
                 right: () => {
-                  return (
-                    <span onClick={() => handleClickRight()}>
-                      {slots.buttons?.()}
-                    </span>
-                  );
+                  return <>{renderNullableButton()}</>;
                 }
               }}
             >
@@ -205,8 +211,8 @@
     margin-bottom: 20px;
     padding: 0 20px;
     padding-bottom: 10px;
-    border-radius: 0%;
-    box-shadow: 0 4px 3px -1px rgba(234, 236, 238, 0.8),
+    border-radius: 0 0 var(--border-radius-small) var(--border-radius-small);
+    box-shadow: 0 4px 3px -1px rgba(234, 236, 238, 1),
       0 1px 4px 0 rgba(169, 174, 184, 0.2);
 
     // &:hover {
@@ -215,8 +221,8 @@
     //   transition: box-shadow 0.2s var(--seal-transition-func);
     // }
     &:hover {
-      box-shadow: rgba(33, 74, 196, 0.2) 0 3px 5px -1px,
-        rgba(33, 74, 196, 0.1) 0 3px 5px 0;
+      box-shadow: rgba(169, 174, 184, 1) 0 3px 6px -1px,
+        rgba(169, 174, 184, 0.2) 0 3px 6px 0;
       transition: box-shadow 0.2s var(--seal-transition-func);
     }
 

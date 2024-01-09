@@ -18,7 +18,7 @@ export default mergeConfig(
         strict: true
       },
       https: true,
-      port: 4000,
+      port: 5050,
       proxy: createProxyTable()
     },
     plugins: [
