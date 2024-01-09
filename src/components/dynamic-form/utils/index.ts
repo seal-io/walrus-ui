@@ -170,11 +170,15 @@ export const initFieldDefaultValue = (item) => {
   return null;
 };
 
-export const parentObjectExsits = (formData, fieldPath: string[]) => {
+export const parentObjectExsitsInFormData = (formData, fieldPath: string[]) => {
   const initialPath = _.initial(fieldPath);
   if (!initialPath.length) return true;
   const parentValue = _.get(formData, initialPath);
   return parentValue && _.keys(parentValue).length > 0;
+};
+
+export const parentObjectExsits = (formData, fieldPath: string[]) => {
+  return _.has(formData, fieldPath);
 };
 
 export const initFieldValue = ({
