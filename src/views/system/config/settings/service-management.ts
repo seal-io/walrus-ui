@@ -89,6 +89,38 @@ export const serviceManagement: SettingsItem = {
     {
       id: '',
       key: '',
+      label: 'system.setting.resourceDefinition',
+      value: '',
+      type: 'groupTitle',
+      component: {},
+      parentId: '',
+      isEditable: false,
+      style: {
+        fontWeight: 500,
+        marginTop: '10px',
+        marginBottom: '15px'
+      },
+      subGroup: [
+        {
+          id: 'EnableBuiltinResourceDefinition',
+          key: 'EnableBuiltinResourceDefinition',
+          label: 'system.setting.enableBuiltinDefinition',
+          desc: '',
+          parentId: '',
+          component: {
+            type: 'switch',
+            required: false,
+            match: '',
+            message: ''
+          },
+          value: '',
+          type: 'boolean'
+        }
+      ]
+    },
+    {
+      id: '',
+      key: '',
       label: 'system.setting.templateLib',
       value: '',
       type: 'groupTitle',

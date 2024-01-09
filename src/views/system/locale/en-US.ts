@@ -129,7 +129,9 @@ export default {
   'system.setting.drift.check.desc':
     'Monitor whether the remote configuration of the service has changed',
   'system.setting.templateLib': 'Template Catalog',
+  'system.setting.resourceDefinition': 'Resource Definition',
   'system.setting.enableBuiltinCatalog': 'Use built-in catalog',
+  'system.setting.enableBuiltinDefinition': 'Use built-in resource definition',
   'system.setting.enableBuiltinCatalog.desc':
     'After disabled, the built-in catalog can be removed from the catalog, suitable for offline scenarios. If the built-in catalog is deleted and reopened, it will be re-added during the next Walrus restart',
   'system.setting.SkipRemoteTLSVerify': 'Skip certificate authentication',

@@ -111,7 +111,9 @@ export default {
   'system.setting.drift.cronExpr': '检测飘移任务设置',
   'system.setting.drift.check.desc': '监测服务的远端配置是否变更',
   'system.setting.templateLib': '模板库设置',
+  'system.setting.resourceDefinition': '资源定义设置',
   'system.setting.enableBuiltinCatalog': '使用内置模板库',
+  'system.setting.enableBuiltinDefinition': '使用内置资源定义',
   'system.setting.enableBuiltinCatalog.desc':
     '关闭后，将可以在模板库中删除内置模板库，适用于离线场景。若删除内置模板库后重新开启，将在下次Walrus重启时重新添加内置模板库',
   'system.setting.SkipRemoteTLSVerify': '跳过证书认证',
