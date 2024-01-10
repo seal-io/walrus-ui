@@ -17,6 +17,9 @@
           <seal-input
             v-if="!showHintInput"
             :error="!dataKey && triggerValidate && shouldKey"
+            :class="{
+              'ignore-error': !!dataKey
+            }"
             :model-value="dataKey"
             :max-length="100"
             show-word-limit
@@ -32,6 +35,7 @@
             v-else
             :model-value="dataKey"
             :error="!dataKey && triggerValidate && shouldKey"
+            :ignore-error="!!dataKey"
             :placeholder="
               get($attrs?.placeholder, 'key') || $t('common.input.key')
             "
@@ -106,6 +110,7 @@
             :max-length="100"
             v-bind="$attrs"
             :model-value="dataValue"
+            class="ignore-error"
             :placeholder="
               get($attrs?.placeholder, 'value') || $t('common.input.value')
             "
@@ -121,6 +126,7 @@
             :placeholder="
               get($attrs?.placeholder, 'value') || $t('common.input.value')
             "
+            :ignore-error="true"
             :show-required-mark="false"
             style="width: 100%"
             :editor-id="`${formId}_valueEditor${position}`"
@@ -392,7 +398,9 @@
     const result = reduce(
       list,
       (obj, item) => {
-        obj[item.key] = item.value;
+        if (item.key) {
+          obj[item.key] = item.value;
+        }
         return obj;
       },
       {}
@@ -413,9 +421,9 @@
     emits('add', item);
   };
   const handleDeleteLabel = () => {
-    const list = cloneDeep(props.labelList);
-    list?.splice(props.position, 1);
-    getDataObj(list);
+    // const list = cloneDeep(props.labelList);
+    // list?.splice(props.position, 1);
+    // getDataObj(list);
     emits('delete');
   };
   const handleDataChange = (value, attr, type?) => {

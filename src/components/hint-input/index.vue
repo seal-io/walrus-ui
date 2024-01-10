@@ -7,7 +7,8 @@
         'arco-input-focus': isFocus,
         'arco-input-error': $attrs.error,
         'arco-input-disabled': disabled || !!$attrs.readonly,
-        'is-focused': isFocus || modelValue
+        'is-focused': isFocus || modelValue,
+        'ignore-error': ignoreError
       }"
       @click="handleClick"
     >
@@ -116,6 +117,12 @@
       type: String,
       default() {
         return '';
+      }
+    },
+    ignoreError: {
+      type: Boolean,
+      default() {
+        return false;
       }
     },
     showRequiredMark: {

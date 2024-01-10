@@ -119,7 +119,7 @@
               type: $t('operation.connectors.table.connector')
             })
           "
-          cell-class="clickable"
+          :cell-class="isLocalConnectorType('category') ? 'clickable' : ''"
           :sortable="{
             sortDirections: ['ascend', 'descend'],
             defaultSortOrder: '',
@@ -128,9 +128,15 @@
           }"
         >
           <template #cell="{ record }">
-            <a-link type="text" size="small" :hoverable="false">
+            <a-link
+              v-if="isLocalConnectorType(record.category)"
+              type="text"
+              size="small"
+              :hoverable="false"
+            >
               {{ record.name }}
             </a-link>
+            <span v-else>{{ record.name }}</span>
           </template>
         </a-table-column>
         <a-table-column
@@ -395,6 +401,11 @@
     }
   });
 
+  const isLocalConnectorType = (category) => {
+    return _.find(props.connectorTypeList, (o) => {
+      return o.value === category;
+    });
+  };
   const setActionList = (row) => {
     const list = _.filter(actionList, (item) => {
       return item.filterFun
@@ -542,7 +553,7 @@
     }
   };
   const handleCellClick = (row, col) => {
-    if (col.dataIndex === 'name') {
+    if (col.dataIndex === 'name' && isLocalConnectorType(row.category)) {
       handleView(row);
     }
   };

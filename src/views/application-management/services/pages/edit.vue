@@ -176,15 +176,23 @@
           :label="$t(`applications.projects.form.label`)"
           hide-label
           field="labels"
+          :validate-trigger="['change']"
           :rules="[
             {
               required: false,
-              validator(value, callback) {
-                if (!validateLabels()) {
+              validator(val, callback) {
+                if (!labelsData.list.length) {
                   callback();
                   return;
                 }
-                callback(i18n.global.t('common.rule.object.key'));
+                const valid = _.some(labelsData.list, (item) => {
+                  return !_.trim(item.key);
+                });
+                if (valid) {
+                  callback(t('resource.definition.detail.rules.labelKey'));
+                  return;
+                }
+                callback();
               },
               message: i18n.global.t('common.rule.object.key')
             }
@@ -220,9 +228,9 @@
             </a-space> -->
             <keyValueLabels
               v-model:value="formData.labels"
-              labels-key="labels"
+              v-model:label-list="labelsData.list"
               :validate-trigger="validateTrigger"
-              :labels="formData"
+              :labels="labelsData.labels"
               :page-action="pageAction"
             ></keyValueLabels>
             <!-- <template v-else>
@@ -354,6 +362,8 @@
     watch,
     reactive,
     PropType,
+    toRaw,
+    unref,
     onMounted,
     nextTick,
     render
@@ -436,20 +446,17 @@
     title,
     asyncLoading
   } = useServiceData();
-  const {
-    labelList,
-    labelItem,
-    handleAddLabel,
-    handleDeleteLabel,
-    validateLabel,
-    getLabelList,
-    validateTrigger
-  } = useLabelsActions(formData);
+
   let copyFormData: any = null;
   const showCommentModal = ref(false);
   const formref = ref();
   const groupForm = ref();
   const submitLoading = ref(false);
+  const labelsData = ref<any>({
+    labels: {},
+    list: []
+  });
+  const validateTrigger = ref(false);
   const breadCrumbList = ref<BreadcrumbOptions[]>([]);
   const schemaFormCache = ref<any>({});
   const formAction = ref(!id ? PageAction.CREATE : PageAction.EDIT);
@@ -477,12 +484,6 @@
     }
     return undefined;
   });
-
-  const validateLabels = () => {
-    return _.some(labelList.value, (item) => {
-      return !_.trim(item.key);
-    });
-  };
 
   const getEnvironmentConnectors = async () => {
     try {
@@ -716,7 +717,6 @@
     submitLoading.value = false;
   };
   const handleOk = async (draft?: boolean) => {
-    validateLabel();
     const res = await formref.value?.validate();
     const groupres = await groupForm.value?.validate();
     validateTrigger.value = true;
@@ -798,7 +798,6 @@
 
     setBreadCrumbList();
 
-    getLabelList();
     getEnvironmentConnectors();
     setTimeout(() => {
       copyFormData = _.cloneDeep(formData.value);
@@ -806,6 +805,7 @@
         setFormDataAttributeCache();
       }
     }, 100);
+    labelsData.value.labels = _.cloneDeep(formData.value.labels);
   };
 
   initData();

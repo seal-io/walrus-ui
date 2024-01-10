@@ -208,6 +208,7 @@
   let timer: any = null;
 
   const handleSetDefault = (item) => {
+    // cancel default environment
     if (
       projectStore.checkIsDefaultActiveEnvironment({
         id: item.value,
@@ -232,6 +233,11 @@
     projectStore.setDefaultActiveEnvironment({
       id: item.value,
       name: item.label
+    });
+    projectStore.setEnterProjectDefault({
+      list: false,
+      detail: false,
+      projectId: ''
     });
   };
   const handleSearch = (item) => {

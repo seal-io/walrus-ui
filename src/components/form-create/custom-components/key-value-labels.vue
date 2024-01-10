@@ -78,14 +78,14 @@
       }
     },
     setup(props, { emit, attrs }) {
-      const { labels, labelsKey, validateTrigger } = toRefs(props);
+      const { validateTrigger } = toRefs(props);
       const {
         labelList,
         labelItem,
         handleAddLabel,
         handleDeleteLabel,
-        getLabelList
-      } = useLabelsActions(labels, labelsKey.value);
+        setLabelList
+      } = useLabelsActions(props.labels, props.labelsKey);
       const handleUpdateValue = (obj) => {
         emit('update:value', obj);
       };
@@ -93,7 +93,8 @@
       watch(
         () => props.labels,
         (val) => {
-          getLabelList();
+          setLabelList(val);
+          emit('update:labelList', labelList.value);
         },
         {
           immediate: true,
@@ -115,7 +116,7 @@
                   return (
                     <XInputGroup
                       key={sIndex}
-                      v-bind={attrs}
+                      {...attrs}
                       v-model:dataKey={sItem.key}
                       v-model:dataValue={sItem.value}
                       readonly={props.readonly}
@@ -132,7 +133,7 @@
                         emit('update:labelList', labelList.value);
                       }}
                       onDelete={() => {
-                        handleDeleteLabel(sIndex, labelList.value);
+                        handleDeleteLabel(labelList.value, sIndex);
                         emit('update:labelList', labelList.value);
                       }}
                     ></XInputGroup>

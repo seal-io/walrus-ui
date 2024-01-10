@@ -31,6 +31,16 @@ export default function useLabelsActions(formData, key?: string | string[]) {
       };
     });
   };
+  const setLabelList = (labels) => {
+    labelList.value = [];
+    const labelKeys = keys(labels);
+    labelList.value = map(labelKeys, (k) => {
+      return {
+        key: k,
+        value: get(labels, k)
+      };
+    });
+  };
   const validateLabel = () => {
     if (!labelList.value.length) {
       validateTrigger.value = false;
@@ -41,7 +51,6 @@ export default function useLabelsActions(formData, key?: string | string[]) {
   const resetStatus = () => {
     validateTrigger.value = false;
   };
-  getLabelList();
 
   return {
     labelList,
@@ -52,7 +61,8 @@ export default function useLabelsActions(formData, key?: string | string[]) {
     handleAddLabel,
     handleDeleteLabel,
     validateLabel,
-    getLabelList
+    getLabelList,
+    setLabelList
   };
 }
 
