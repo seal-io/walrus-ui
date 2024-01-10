@@ -178,12 +178,31 @@ export default function useEnterApplication() {
     });
   };
 
-  const gotoEnvironmentDetail = () => {
+  const gotoDefaultEnvironment = () => {
     const defaultProject = projectStore.defaultActiveProject;
     const defaultEnvironment = projectStore.defaultActiveEnvironment;
     const enterProjectDefaultInfo = projectStore.enterProjectDefault;
+    if (!defaultEnvironment?.id) {
+      goToProject({ name: PROJECT.List });
+      return;
+    }
+    router.push({
+      name: PROJECT.EnvDetail,
+      params: {
+        projectId: defaultProject?.id,
+        environmentId: defaultEnvironment?.id,
+        action: PageAction.VIEW
+      },
+      query: {
+        id: defaultEnvironment?.id
+      }
+    });
+  };
 
-    // ===================== enter project default during operation start =====================
+  const gotoPreviousPage = () => {
+    const defaultProject = projectStore.defaultActiveProject;
+    const defaultEnvironment = projectStore.defaultActiveEnvironment;
+    const enterProjectDefaultInfo = projectStore.enterProjectDefault;
 
     // to project list
     if (enterProjectDefaultInfo?.list || !projectStore.projectList.length) {
@@ -217,24 +236,15 @@ export default function useEnterApplication() {
       }
       return;
     }
+    gotoDefaultEnvironment();
+  };
 
-    // ===================== enter project default during operation end =====================
-
-    if (!defaultEnvironment?.id) {
-      goToProject({ name: PROJECT.List });
+  const gotoEnvironmentDetail = () => {
+    if (projectStore.isSetDefaultActiveEnvironment) {
+      gotoDefaultEnvironment();
       return;
     }
-    router.push({
-      name: PROJECT.EnvDetail,
-      params: {
-        projectId: defaultProject?.id,
-        environmentId: defaultEnvironment?.id,
-        action: PageAction.VIEW
-      },
-      query: {
-        id: defaultEnvironment?.id
-      }
-    });
+    gotoPreviousPage();
   };
 
   const initDefaultProject = async () => {
