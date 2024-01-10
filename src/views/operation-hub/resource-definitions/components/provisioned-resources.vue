@@ -26,7 +26,7 @@
             </a-space> -->
           </template>
           <template #button-group>
-            <!-- <a-button
+            <a-button
               status="success"
               type="primary"
               :disabled="!selectedKeys.length"
@@ -35,12 +35,12 @@
               }}<span v-if="selectedKeys.length">{{
                 `(${selectedKeys.length})`
               }}</span></a-button
-            > -->
+            >
             <a-button
               type="primary"
               status="warning"
               :disabled="!selectedKeys.length"
-              @click="() => (showDeleteModal = true)"
+              @click="() => handleDelete()"
               >{{ $t('common.button.delete')
               }}<span v-if="selectedKeys.length">{{
                 `(${selectedKeys.length})`
@@ -221,12 +221,18 @@
       :title="$t('common.delete.tips')"
     >
     </deleteServiceModal>
+    <CommentModal
+      v-model:show="showCommentModal"
+      :title="$t('applications.service.batchDeploy')"
+      @confirm="handleComfirmComment"
+    ></CommentModal>
   </div>
 </template>
 
 <script lang="ts" setup>
   import i18n from '@/locale';
   import { PROJECT } from '@/router/config';
+  import CommentModal from '@/views/commons/components/comment-modal/index.vue';
   import StatusLabel from '@/views/operation-hub/connectors/components/status-label.vue';
   import { Resources, Actions } from '@/permissions/config';
   import _, { cloneDeep, map, pickBy, remove } from 'lodash';
@@ -246,12 +252,16 @@
   } from '@/views/application-management/services/config';
   import {
     deleteServices,
-    deployItemService,
     stopApplicationInstance,
     startApplicationInstance
   } from '@/views/application-management/services/api';
   import deleteServiceModal from '@/views/application-management/services/components/delete-service-modal.vue';
-  import { queryItemDefinitionResources } from '../api';
+  import {
+    queryItemDefinitionResources,
+    batchDeployDefinitionResources,
+    batchDeleteDefinitionResource,
+    batchDeployService
+  } from '../api';
 
   const props = defineProps({
     projectList: {
@@ -263,6 +273,10 @@
   });
 
   let timer: any = null;
+  const currentResource = ref<any>({});
+  const isBatchDelete = ref(false);
+  const isBatchDeploy = ref(false);
+  const showCommentModal = ref(false);
   const delItem = ref<any>({});
   const actionHandlerMap = new Map();
   const appStore = useAppStore();
@@ -391,21 +405,57 @@
     appStore.updateSettings({ perPage: pageSize });
     handleFilter();
   };
+  const handleBatchDeployment = () => {
+    isBatchDeploy.value = true;
+    setTimeout(() => {
+      showCommentModal.value = true;
+    }, 100);
+  };
 
-  const handleDeployItemService = async (row) => {
+  const handleDeployItemCall = async (comment) => {
     try {
-      await deployItemService({
-        items: [{ id: row.id }],
+      await batchDeployService({
+        items: [{ id: currentResource.value.id }],
         reuseAttributes: true,
-        projectID: row.project.id,
-        environmentID: row.environment.id,
-        serviceID: row.id
+        projectID: currentResource.value.project?.id,
+        environmentID: currentResource.value.environment?.id,
+        changeComment: comment
       });
-      execSucceed();
     } catch (error) {
       // eslint-disable-next-line no-console
       console.log(error);
     }
+  };
+
+  const handleComfirmComment = async (val) => {
+    try {
+      if (isBatchDeploy.value) {
+        await batchDeployDefinitionResources({
+          id: route.query.id as string,
+          changeComment: val,
+          items: _.map(selectedKeys.value, (val) => {
+            return { id: val as string };
+          }),
+          reuseAttributes: true
+        });
+      } else {
+        await handleDeployItemCall(val);
+      }
+
+      execSucceed();
+      handleFilter();
+    } catch (error) {
+      // eslint-disable-next-line no-console
+      console.log(error);
+    }
+  };
+
+  const handleDeployItemService = async (row) => {
+    currentResource.value = row;
+    isBatchDeploy.value = false;
+    setTimeout(() => {
+      showCommentModal.value = true;
+    }, 100);
   };
   const handleDeleteConfirm = async (withoutCleanup) => {
     try {
@@ -413,13 +463,22 @@
       const ids = _.map(selectedKeys.value, (val) => {
         return { id: val as string };
       });
-      await deleteServices({
-        data: { items: ids },
-        withoutCleanup,
-        withParams: true,
-        projectID: delItem.value.project?.id,
-        environmentID: delItem.value.environment?.id
-      });
+      if (isBatchDelete.value) {
+        await batchDeleteDefinitionResource({
+          id: route.query.id as string,
+          withoutCleanup,
+          data: { items: ids }
+        });
+      } else {
+        await deleteServices({
+          data: { items: ids },
+          withoutCleanup,
+          withParams: true,
+          projectID: delItem.value.project?.id,
+          environmentID: delItem.value.environment?.id
+        });
+      }
+
       loading.value = false;
       execSucceed();
       selectedKeys.value = [];
@@ -429,9 +488,14 @@
     }
   };
 
-  const handleDelete = (row) => {
-    selectedKeys.value = [row.id];
-    delItem.value = row;
+  const handleDelete = (row?) => {
+    if (row) {
+      selectedKeys.value = [row.id];
+      delItem.value = row;
+      isBatchDelete.value = false;
+    } else {
+      isBatchDelete.value = true;
+    }
     setTimeout(() => {
       showDeleteModal.value = true;
     }, 100);
@@ -439,9 +503,6 @@
 
   const handleClickAction = async (value, row) => {
     await actionHandlerMap.get(value)(row);
-    if (value !== serviceActionMap.delete) {
-      handleFilter();
-    }
   };
   const handleStopResource = async (row) => {
     try {

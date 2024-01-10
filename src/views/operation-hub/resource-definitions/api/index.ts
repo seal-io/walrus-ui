@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { pick } from 'lodash';
+import { omit } from 'lodash';
 import qs from 'query-string';
 import { Pagination } from '@/types/global';
 import { ResourceDefinitionFormData } from '../config/interface';
@@ -56,3 +56,47 @@ export function queryItemDefinitionResources(params: {
     }
   });
 }
+
+export const batchDeployDefinitionResources = (data: {
+  id: string;
+  items: { id: string }[];
+  reuseAttributes: boolean;
+  changeComment: string;
+}) => {
+  return axios.post(
+    `${RESOURCE_DEFINITION_API}/${data.id}/resources/_/upgrade`,
+    { ...omit(data, ['id']) }
+  );
+};
+
+export const batchDeleteDefinitionResource = (data: {
+  data: { items: Array<{ id: string }> };
+  id: string;
+  withoutCleanup: boolean;
+}) => {
+  return axios.delete(
+    `${RESOURCE_DEFINITION_API}/${data.id}?${qs.stringify({
+      withoutCleanup: data.withoutCleanup
+    })}`,
+    {
+      data: data.data
+    }
+  );
+};
+
+export const batchDeployService = (data: {
+  items: { id: string }[];
+  reuseAttributes: boolean;
+  changeComment: string;
+  projectID: string;
+  environmentID: string;
+}) => {
+  return axios.post(
+    `/projects/${data.projectID}/environments/${data.environmentID}/resources/_/upgrade`,
+    {
+      items: data.items,
+      reuseAttributes: data.reuseAttributes,
+      changeComment: data.changeComment
+    }
+  );
+};
