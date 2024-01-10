@@ -137,7 +137,7 @@
             <SealViewItemWrap
               v-if="
                 pageAction === PageAction.VIEW &&
-                !formData.applicableProjectNames.length
+                !formData.applicableProjectNames?.length
               "
               :label="$t('resource.definition.detail.applicableProjectNames')"
               :style="{ width: `${InputWidth.LARGE}px` }"
@@ -192,10 +192,10 @@
             </template>
           </GroupTitle>
           <a-tabs
-            v-if="formData.matchingRules.length"
+            v-if="formData.matchingRules?.length"
             v-model:active-key="activeRule"
             :default-active-key="activeRule"
-            :editable="formData.matchingRules.length > 1"
+            :editable="formData.matchingRules?.length > 1"
             type="rounded"
             direction="vertical"
             class="page-line-tabs"
@@ -227,7 +227,7 @@
                 :origin-form-data="item"
                 :page-action="pageAction"
                 :schema-form-action="item.pageAction || schemaFormAction"
-                :show-delete="formData.matchingRules.length > 1"
+                :show-delete="formData.matchingRules?.length > 1"
                 :template-list="templateList"
                 class="m-b-20"
               >
@@ -254,7 +254,7 @@
             :title="$t('resource.definition.detail.matchRule')"
           >
             <a-tabs
-              v-if="formData.matchingRules.length"
+              v-if="formData.matchingRules?.length"
               v-model:active-key="activeViewRule"
               :default-active-key="activeViewRule"
               type="rounded"
@@ -542,7 +542,7 @@
       const itemId = `${Date.now()}`;
       formData.value.matchingRules.push({
         ..._.cloneDeep(definitionFormData),
-        name: !formData.value.matchingRules.length ? 'default' : '',
+        name: !formData.value.matchingRules?.length ? 'default' : '',
         id: itemId
       });
       activeRule.value = itemId;
@@ -644,7 +644,7 @@
     const itemId = `${Date.now()}`;
     formData.value.matchingRules.push({
       ..._.cloneDeep(definitionFormData),
-      name: !formData.value.matchingRules.length ? 'default' : '',
+      name: !formData.value.matchingRules?.length ? 'default' : '',
       id: itemId,
       pageAction: PageAction.CREATE
     });
