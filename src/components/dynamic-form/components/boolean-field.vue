@@ -66,6 +66,50 @@
         });
       };
 
+      const handleInputChangeCall = (val) => {
+        _.set(props.formData, props.fieldPath, val);
+        _.set(props.uiFormData, props.fieldPath, val);
+        if (
+          _.get(props.defaultFormData, props.fieldPath) === null &&
+          !val &&
+          props.schema.nullable
+        ) {
+          _.unset(props.formData, props.fieldPath);
+        }
+        console.log('schema=boolean=', props.schema);
+
+        if (isEqualOn(val, _.get(props.defaultFormData, props.fieldPath))) {
+          unsetFieldValue({
+            FieldPathMap: props.FieldPathMap,
+            defaultFormData: props.defaultFormData,
+            uiFormData: props.uiFormData,
+            schema: props.schema,
+            formData: props.formData,
+            fieldPath: props.fieldPath,
+            required: fieldProps.required
+          });
+        } else {
+          genFieldInFormData({
+            FieldPathMap: props.FieldPathMap,
+            defaultFormData: props.defaultFormData,
+            uiFormData: props.uiFormData,
+            schema: props.schema,
+            formData: props.formData,
+            fieldPath: props.fieldPath,
+            required: fieldProps.required
+          });
+        }
+      };
+
+      const handleInputChange = (val) => {
+        if (val === null && !fieldProps.required) {
+          _.unset(props.formData, props.fieldPath);
+        } else {
+          _.set(props.formData, props.fieldPath, val);
+          _.set(props.uiFormData, props.fieldPath, val);
+        }
+      };
+
       const renderEdit = () => {
         return (
           <a-form-item
@@ -104,40 +148,7 @@
                 if (_.get(props.defaultFormData, props.fieldPath) === null) {
                   val = !val ? null : val;
                 }
-                _.set(props.formData, props.fieldPath, val);
-                _.set(props.uiFormData, props.fieldPath, val);
-                if (
-                  _.get(props.defaultFormData, props.fieldPath) === null &&
-                  !val &&
-                  props.schema.nullable
-                ) {
-                  _.unset(props.formData, props.fieldPath);
-                }
-                console.log('schema=boolean=', props.schema);
-
-                if (
-                  isEqualOn(val, _.get(props.defaultFormData, props.fieldPath))
-                ) {
-                  unsetFieldValue({
-                    FieldPathMap: props.FieldPathMap,
-                    defaultFormData: props.defaultFormData,
-                    uiFormData: props.uiFormData,
-                    schema: props.schema,
-                    formData: props.formData,
-                    fieldPath: props.fieldPath,
-                    required: fieldProps.required
-                  });
-                } else {
-                  genFieldInFormData({
-                    FieldPathMap: props.FieldPathMap,
-                    defaultFormData: props.defaultFormData,
-                    uiFormData: props.uiFormData,
-                    schema: props.schema,
-                    formData: props.formData,
-                    fieldPath: props.fieldPath,
-                    required: fieldProps.required
-                  });
-                }
+                handleInputChange(val);
                 handleChange(props.formData);
                 validateField();
               }}

@@ -51,30 +51,9 @@
         val = isEmptyvalue(val) ? null : val;
         _.set(props.formData, props.fieldPath, val);
         _.set(props.uiFormData, props.fieldPath, val);
-        // if (props.schema.isItemsProperty) {
-        //   return;
-        // }
-        // if (isEqualOn(val, _.get(props.defaultFormData, props.fieldPath))) {
-        //   unsetFieldValue({
-        //     FieldPathMap: props.FieldPathMap,
-        //     defaultFormData: props.defaultFormData,
-        //     schema: props.schema,
-        //     formData: props.formData,
-        //     uiFormData: props.uiFormData,
-        //     fieldPath: props.fieldPath,
-        //     required: props.required
-        //   });
-        // } else {
-        //   genFieldInFormData({
-        //     FieldPathMap: props.FieldPathMap,
-        //     defaultFormData: props.defaultFormData,
-        //     schema: props.schema,
-        //     uiFormData: props.uiFormData,
-        //     formData: props.formData,
-        //     fieldPath: props.fieldPath,
-        //     required: props.required
-        //   });
-        // }
+        if (!val && val !== 0 && !props.required) {
+          _.unset(props.formData, props.fieldPath);
+        }
         handleChange(props.formData);
       };
 

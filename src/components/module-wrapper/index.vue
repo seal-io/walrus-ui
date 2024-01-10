@@ -1,5 +1,5 @@
 <template>
-  <div class="mo-wrap">
+  <div class="mo-wrap" :class="{ disabled }">
     <div class="title" :class="{ 'no-del-btn': !showDelete }">
       <div class="text-wrap" @click.stop="handleCollapse">
         <a-space>
@@ -59,6 +59,12 @@
         return false;
       }
     },
+    disabled: {
+      type: Boolean,
+      default() {
+        return false;
+      }
+    },
     showDelete: {
       type: Boolean,
       default() {
@@ -69,6 +75,7 @@
   const emits = defineEmits(['delete', 'update:status', 'collapse']);
   const isCollapse = ref(props.status);
   const handleCollapse = () => {
+    if (props.disabled) return;
     isCollapse.value = !isCollapse.value;
     emits('update:status', isCollapse.value);
     emits('collapse', isCollapse.value);

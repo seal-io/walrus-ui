@@ -100,7 +100,8 @@
             level: props.schema.level + 1,
             parentHalfGrid: props.schema.halfGrid,
             fieldPath: props.fieldPath,
-            parentSpan: itemSpanInfo.colSpan
+            parentSpan: itemSpanInfo.colSpan,
+            arrayItemProperty: true
           });
         } else if (items?.additionalProperties) {
           // items.addtionalProperties
@@ -112,7 +113,8 @@
               parentHalfGrid: props.schema.halfGrid,
               parentSpan: itemSpanInfo.colSpan,
               level: props.schema.level + 1,
-              halfGrid: itemSpanInfo.halfGrid
+              halfGrid: itemSpanInfo.halfGrid,
+              arrayItemProperty: true
             }
           ] as FieldSchema[];
         } else {
@@ -125,7 +127,8 @@
               level: props.schema.level + 1,
               colSpan: itemSpanInfo.colSpan,
               halfGrid: itemSpanInfo.halfGrid,
-              parentSpan: props.schema.colSpan
+              parentSpan: props.schema.colSpan,
+              arrayItemProperty: true
             }
           ] as FieldSchema[];
         }
@@ -151,17 +154,7 @@
         });
       };
 
-      // check array every item is empty or null or undefined
-      const filterArrayIsEmpty = (arr) => {
-        return _.filter(arr, (item) => {
-          return !isEmptyvalue(item);
-        });
-      };
-      const handleDeleteClick = (index) => {
-        propertiesList.value.splice(index, 1);
-
-        _.get(props.uiFormData, props.fieldPath, []).splice(index, 1);
-        _.get(props.formData, props.fieldPath, []).splice(index, 1);
+      const handleDeleteCall = () => {
         if (
           props.schema.nullable &&
           !_.get(props.uiFormData, props.fieldPath)?.length
@@ -180,26 +173,27 @@
           fieldPath: [...props.fieldPath],
           required: false
         });
-
-        // update uiFormData
-        // if (
-        //   !_.get(props.uiFormData, props.fieldPath, []).length ||
-        //   !filterArrayIsEmpty(
-        //     _.get(props.uiFormData, props.fieldPath, []).length
-        //   )
-        // ) {
-        //   _.unset(props.uiFormData, props.fieldPath);
-        // }
-
-        // update formData
-        // if (
-        //   !_.get(props.formData, props.fieldPath, []).length ||
-        //   !filterArrayIsEmpty(_.get(props.formData, props.fieldPath, []).length)
-        // ) {
-        //   _.unset(props.formData, props.fieldPath);
-        // }
         activeItemIndex.value = -1;
         handleChange(props.formData);
+      };
+
+      // do not handle nullable peroperty
+      const handleDeleteCallback = () => {
+        if (
+          !_.get(props.uiFormData, props.fieldPath)?.length &&
+          !props.schema.isRequired
+        ) {
+          _.unset(props.formData, props.fieldPath);
+        }
+        activeItemIndex.value = -1;
+        handleChange(props.formData);
+      };
+      const handleDeleteClick = (index) => {
+        propertiesList.value.splice(index, 1);
+
+        _.get(props.uiFormData, props.fieldPath, []).splice(index, 1);
+        _.get(props.formData, props.fieldPath, []).splice(index, 1);
+        handleDeleteCallback();
       };
 
       const handleButtonEnter = (index) => {
@@ -278,13 +272,6 @@
       onMounted(() => {
         initFormFieldValue();
       });
-      console.log(
-        'array++++++++++++',
-        props.fieldPath,
-        props.formData,
-        props.uiFormData,
-        props.defaultFormData
-      );
 
       return () => (
         <FieldGroup

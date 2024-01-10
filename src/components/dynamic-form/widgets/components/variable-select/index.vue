@@ -113,6 +113,49 @@
         options.value = _.filter(options.value, (v) => !isEmptyvalue(v.value));
       };
 
+      const handleInputChangeCall = (value) => {
+        _.set(props.formData, props.fieldPath, value);
+        _.set(props.uiFormData, props.fieldPath, value);
+        if (props.schema.isItemsProperty) {
+          return;
+        }
+        if (isEqualOn(value, _.get(props.defaultFormData, props.fieldPath))) {
+          unsetFieldValue({
+            FieldPathMap: props.FieldPathMap,
+            defaultFormData: props.defaultFormData,
+            uiFormData: props.uiFormData,
+            schema: props.schema,
+            formData: props.formData,
+            fieldPath: props.fieldPath,
+            required: fieldProps.required
+          });
+        } else {
+          genFieldInFormData({
+            FieldPathMap: props.FieldPathMap,
+            defaultFormData: props.defaultFormData,
+            uiFormData: props.uiFormData,
+            schema: props.schema,
+            formData: props.formData,
+            fieldPath: props.fieldPath,
+            required: fieldProps.required
+          });
+        }
+      };
+
+      // do not handle nullable peroperty
+      const handleInputChange = (val) => {
+        if (
+          !fieldProps.required &&
+          (isEmptyvalue(val) || !val?.length) &&
+          val !== 0
+        ) {
+          _.unset(props.formData, props.fieldPath);
+        } else {
+          _.set(props.formData, props.fieldPath, val);
+          _.set(props.uiFormData, props.fieldPath, val);
+        }
+      };
+
       initOptions();
       const renderEdit = () => {
         return (
@@ -162,37 +205,7 @@
               popupInfo={props.schema.description}
               modelValue={_.get(props.uiFormData, props.fieldPath)}
               onChange={(value) => {
-                _.set(props.formData, props.fieldPath, value);
-                _.set(props.uiFormData, props.fieldPath, value);
-                if (props.schema.isItemsProperty) {
-                  return;
-                }
-                if (
-                  isEqualOn(
-                    value,
-                    _.get(props.defaultFormData, props.fieldPath)
-                  )
-                ) {
-                  unsetFieldValue({
-                    FieldPathMap: props.FieldPathMap,
-                    defaultFormData: props.defaultFormData,
-                    uiFormData: props.uiFormData,
-                    schema: props.schema,
-                    formData: props.formData,
-                    fieldPath: props.fieldPath,
-                    required: fieldProps.required
-                  });
-                } else {
-                  genFieldInFormData({
-                    FieldPathMap: props.FieldPathMap,
-                    defaultFormData: props.defaultFormData,
-                    uiFormData: props.uiFormData,
-                    schema: props.schema,
-                    formData: props.formData,
-                    fieldPath: props.fieldPath,
-                    required: fieldProps.required
-                  });
-                }
+                handleInputChange(value);
                 handleChange(props.formData);
                 validateField();
               }}

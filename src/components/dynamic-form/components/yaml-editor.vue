@@ -97,7 +97,7 @@
         defaultValue.value = fieldValue.value;
       };
 
-      const handleInputChange = () => {
+      const handleInputChangeCall = () => {
         const jsonstr = yaml2Json(fieldValue.value);
         _.set(props.formData, props.fieldPath, jsonstr);
         _.set(props.uiFormData, props.fieldPath, jsonstr);
@@ -124,6 +124,21 @@
             fieldPath: props.fieldPath,
             required: props.required
           });
+        }
+        handleChange(props.formData);
+        validateField();
+      };
+
+      const handleInputChange = () => {
+        if (
+          !_.trim(fieldValue.value) &&
+          (!fieldProps.required || !props.schema.isRequired)
+        ) {
+          _.unset(props.formData, props.fieldPath);
+        } else {
+          const jsonstr = yaml2Json(fieldValue.value);
+          _.set(props.formData, props.fieldPath, jsonstr);
+          _.set(props.uiFormData, props.fieldPath, jsonstr);
         }
         handleChange(props.formData);
         validateField();

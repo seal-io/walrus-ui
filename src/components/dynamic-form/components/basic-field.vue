@@ -67,14 +67,10 @@
         Component = CommonFieldMaps.password;
       }
 
-      const handleInputChange = (val: any) => {
+      const handleInputChangeCall = (val: any) => {
         val = isEmptyvalue(val) ? null : val;
         _.set(props.formData, props.fieldPath, val);
         _.set(props.uiFormData, props.fieldPath, val);
-        console.log('unset++++++++', props.FieldPathMap.get(props.fieldPath));
-        // if (props.schema.isItemsProperty) {
-        //   return;
-        // }
         if (isEqualOn(val, _.get(props.defaultFormData, props.fieldPath))) {
           unsetFieldValue({
             FieldPathMap: props.FieldPathMap,
@@ -99,9 +95,19 @@
         handleChange(props.formData);
       };
 
+      // do not handle nullable peroperty
+      const handleInputChange = (val) => {
+        if (!props.required && isEmptyvalue(val) && val !== 0) {
+          _.unset(props.formData, props.fieldPath);
+        } else {
+          _.set(props.formData, props.fieldPath, val);
+          _.set(props.uiFormData, props.fieldPath, val);
+        }
+        handleChange(props.formData);
+      };
+
       const debunceHandleInputChange = _.debounce(handleInputChange, 100);
       const debunceHandleChange = _.debounce((val) => {
-        console.log('val++++++++++++++', val);
         handleInputChange(val);
         validateField();
       });

@@ -22,6 +22,16 @@ export const isEmptyvalue = (val) => {
   return val === '' || val === null || val === undefined;
 };
 
+export const isEmptyValueField = (schema, val) => {
+  if (schema.type === FIELD_TYPE.ARRAY) {
+    return !val?.length;
+  }
+  if (schema.type === FIELD_TYPE.OBJECT) {
+    return !_.keys(val).length;
+  }
+  return val === '' || val === null || val === undefined;
+};
+
 export const isSelect = (schema: FieldSchema) => {
   const { type, enum: enumList, items } = schema;
   if (items && type === FIELD_TYPE.ARRAY && isBasicType(items.type)) {
@@ -201,17 +211,17 @@ export const initFieldValue = ({
   const defaultValue = initFieldDefaultValue(schema);
   const currentValue = _.get(uiFormData, fieldPath);
   const value = currentValue || defaultValue;
-  const isNullable = schema.nullable || schema.originNullable;
 
   _.set(uiFormData, fieldPath, _.cloneDeep(value));
-  if (!_.hasIn(defaultFormData, fieldPath)) {
+  if (!_.has(defaultFormData, fieldPath)) {
     _.set(defaultFormData, fieldPath, _.cloneDeep(value));
   }
+  console.log('minItems==========', schema);
+  const isRequiredItemProperty = schema.arrayItemProperty;
+  const checkByValue = required || !isEmptyValueField(schema, value);
+  const checkByParentObject = parentObjectExsitsInFormData(formData, fieldPath);
 
-  // !isNullable ||
-  // (schema.isItemsProperty && schema.required && !schema.nullable)
-  const isRequiredItemProperty = schema.isItemsProperty && !schema.nullable;
-  if (required && (!isNullable || isRequiredItemProperty)) {
+  if (checkByValue && (checkByParentObject || isRequiredItemProperty)) {
     _.set(formData, fieldPath, _.cloneDeep(value));
   }
 };
@@ -239,12 +249,14 @@ export const initFieldValueByNullable = ({
   const isNullable = schema.nullable || schema.originNullable;
 
   _.set(uiFormData, fieldPath, _.cloneDeep(value));
-  if (!_.hasIn(defaultFormData, fieldPath)) {
+  if (!_.has(defaultFormData, fieldPath)) {
     _.set(defaultFormData, fieldPath, _.cloneDeep(value));
   }
 
-  // !isNullable ||
-  // (schema.isItemsProperty && schema.required && !schema.nullable)
+  /**
+  *  !isNullable ||
+  (schema.isItemsProperty && schema.required && !schema.nullable)
+  */
   const isRequiredItemProperty = schema.isItemsProperty && !schema.nullable;
   if (required && (!isNullable || isRequiredItemProperty)) {
     _.set(formData, fieldPath, _.cloneDeep(value));
@@ -270,13 +282,13 @@ export const viewFieldValue = ({
   const currentValue = _.get(formData, fieldPath);
   const originValue = _.get(defaultFormData, fieldPath);
 
-  if (_.hasIn(formData, fieldPath)) {
+  if (_.has(formData, fieldPath)) {
     _.set(uiFormData, fieldPath, _.cloneDeep(currentValue));
   } else {
     _.set(uiFormData, fieldPath, _.cloneDeep(originValue || defaultValue));
   }
   // Avoid overriding global defaults
-  if (!_.hasIn(formData, fieldPath)) {
+  if (!_.has(formData, fieldPath)) {
     _.set(defaultFormData, fieldPath, _.cloneDeep(defaultValue));
   }
 };
@@ -353,7 +365,7 @@ export const genFieldInFormDataByRecursion = ({
       pathSchema?.required
     ) {
       if (
-        !_.hasIn(formData, path) ||
+        !_.has(formData, path) ||
         (isArrayPrevInitialPath && _.isUndefined(_.get(formData, path)))
       ) {
         const value = _.get(defaultFormData, path);
@@ -392,21 +404,6 @@ export const genFieldInFormData = ({
   if (!schema.nullable && !schema.originNullable) {
     return;
   }
-  // const initialPath = _.initial(fieldPath);
-  // const originValue = _.get(defaultFormData, initialPath);
-  console.log('fieldPath+++++++', defaultFormData, fieldPath, formData);
-  // const isArrayInitial = _.isArray(_.get(formData, initialPath));
-  // _.each(_.keys(originValue), (key) => {
-  //   const pathSchema = FieldPathMap.get([...initialPath, key].join('.'));
-
-  //   if (
-  //     !_.hasIn(formData, [...initialPath, key]) ||
-  //     (isArrayInitial && _.isUndefined(_.get(formData, [...initialPath, key])))
-  //   ) {
-  //     const value = _.get(defaultFormData, [...initialPath, key]);
-  //     _.set(formData, [...initialPath, key], _.cloneDeep(value));
-  //   }
-  // });
 
   genFieldInFormDataByRecursion({
     initialPath: fieldPath,
@@ -524,15 +521,6 @@ export const unsetFieldValue = ({
   const initialSchema = FieldPathMap.get(initialPath.join('.'));
   let unsetFieldPath: string[] = [];
 
-  console.log(
-    'unsetFieldValue+++++++',
-    originValue,
-    defaultFormData,
-    currentValue,
-    formData,
-    fieldPath,
-    isEqualOn(currentValue, originValue)
-  );
   // if each field'value is default value,unset it
 
   if (initialPath?.length === 0) {
@@ -550,12 +538,10 @@ export const unsetFieldValue = ({
       FieldPathMap,
       required
     });
-    console.log('unstInitialField+++++222++', initialPath);
     _.unset(formData, unsetFieldPath);
   }
 
   unsetInitialField(formData, unsetFieldPath);
-  console.log('formData+++++22++', formData);
 };
 
 export const getShowIfValue = (showif, formData, fieldPath?: string[]) => {
@@ -636,11 +622,12 @@ const setNullableValue = (schema: FieldSchema, property, parentNullableObj) => {
       parentNullableObj?.originNullable ||
       false
   };
-  // if (property?.enum) {
-  //   nullObj.nullable = false;
-  //   nullObj.originNullable = false;
-  // }
-  return nullObj;
+
+  // do not care nullable property
+  return {
+    nullable: false,
+    originNullable: false
+  };
 };
 export const genObjectFieldProperties = ({
   uiFormData,
@@ -651,9 +638,11 @@ export const genObjectFieldProperties = ({
   parentNullableObj,
   parentSpan,
   isItems,
+  arrayItemProperty,
   level
 }: {
   isItems?: boolean;
+  arrayItemProperty?: boolean;
   uiFormData: object;
   defaultFormData: object;
   schema: FieldSchema;
@@ -696,6 +685,7 @@ export const genObjectFieldProperties = ({
       default: _.cloneDeep(defaultValue),
       name: key,
       isItemsProperty: isItems || false,
+      arrayItemProperty: arrayItemProperty || false,
       fieldPath: [...fieldPath, key],
       required: property.required || [],
       isRequired: _.includes(property.required || [], key),
@@ -762,7 +752,6 @@ export const genFieldPropsAndRules = ({
   requiredFields: string[];
   schema: FieldSchema;
 }) => {
-  // const { additionalProperties, items } = schema;
   const uiExtensions = schema['x-walrus-ui'] || {};
   const {
     type,
@@ -812,7 +801,6 @@ export const genFieldPropsAndRules = ({
       },
       rules: [
         {
-          // required: requiredFlag || required || false,
           message:
             message ||
             i18n.global.t('common.form.rule.select', { name: title || name })
@@ -831,7 +819,6 @@ export const genFieldPropsAndRules = ({
       },
       rules: [
         {
-          // required: requiredFlag || required || false,
           message:
             message ||
             i18n.global.t('common.form.rule.input', { name: title || name })
@@ -853,7 +840,6 @@ export const genFieldPropsAndRules = ({
       },
       rules: [
         {
-          // required: requiredFlag || required || false,
           message:
             message ||
             i18n.global.t('common.form.rule.input', { name: title || name })
@@ -868,11 +854,9 @@ export const genFieldPropsAndRules = ({
       fieldProps: {
         ...commonProps,
         maxTagCount: 3
-        // required: true
       },
       rules: [
         {
-          // required: true,
           message:
             message ||
             i18n.global.t('common.form.rule.select', { name: title || name })
@@ -883,17 +867,14 @@ export const genFieldPropsAndRules = ({
   }
 
   if (isMuliSelect(schema)) {
-    // const isRequired = !!enumList?.length || requiredFlag || required || false;
     return {
       fieldProps: {
         ...commonProps,
         maxTagCount: 3,
         multiple: true
-        // required: isRequired
       },
       rules: [
         {
-          // required: isRequired,
           message:
             message ||
             i18n.global.t('common.form.rule.select', { name: title || name })
@@ -913,7 +894,6 @@ export const genFieldPropsAndRules = ({
       },
       rules: [
         {
-          // required: requiredFlag || required || false,
           message:
             message ||
             i18n.global.t('common.form.rule.input', { name: title || name })
@@ -928,7 +908,6 @@ export const genFieldPropsAndRules = ({
     },
     rules: [
       {
-        // required: requiredFlag || required || false,
         message:
           message ||
           i18n.global.t('common.form.rule.input', { name: title || name })

@@ -86,6 +86,17 @@
           options.value = _.uniqBy(_.concat(options.value, list), 'value');
         }
         options.value = _.filter(options.value, (v) => !isEmptyvalue(v.value));
+
+        // init default value for enum
+        if (
+          schemaFormStatus.value === PageAction.CREATE &&
+          props.schema.enum &&
+          !props.schema.default &&
+          parentObjectExsits(props.formData, props.fieldPath)
+        ) {
+          _.set(props.formData, props.fieldPath, options.value[0].value);
+          _.set(props.uiFormData, props.fieldPath, options.value[0].value);
+        }
       };
 
       const isValueEmpty = (val) => {
@@ -116,6 +127,49 @@
           return _.join(val, ',');
         }
         return val;
+      };
+
+      const handleInputChangeCall = (value) => {
+        _.set(props.formData, props.fieldPath, value);
+        _.set(props.uiFormData, props.fieldPath, value);
+        if (props.schema.isItemsProperty) {
+          return;
+        }
+        if (isEqualOn(value, _.get(props.defaultFormData, props.fieldPath))) {
+          unsetFieldValue({
+            FieldPathMap: props.FieldPathMap,
+            defaultFormData: props.defaultFormData,
+            uiFormData: props.uiFormData,
+            schema: props.schema,
+            formData: props.formData,
+            fieldPath: props.fieldPath,
+            required: fieldProps.required
+          });
+        } else {
+          genFieldInFormData({
+            FieldPathMap: props.FieldPathMap,
+            defaultFormData: props.defaultFormData,
+            uiFormData: props.uiFormData,
+            schema: props.schema,
+            formData: props.formData,
+            fieldPath: props.fieldPath,
+            required: fieldProps.required
+          });
+        }
+      };
+
+      // do not handle nullable peroperty
+      const handleInputChange = (val) => {
+        if (
+          !fieldProps.required &&
+          (isEmptyvalue(val) || !val?.length) &&
+          val !== 0
+        ) {
+          _.unset(props.formData, props.fieldPath);
+        } else {
+          _.set(props.formData, props.fieldPath, val);
+          _.set(props.uiFormData, props.fieldPath, val);
+        }
       };
 
       initOptions();
@@ -168,46 +222,8 @@
               modelValue={_.get(props.uiFormData, props.fieldPath)}
               onChange={(val) => {
                 const newVal = filterEmptyOnSelect(val);
-                let value = newVal;
-                if (isAllowCreateNumberSelect(props.schema)) {
-                  value = _.map(newVal, (v) => {
-                    return _.toNumber(v);
-                  });
-                } else {
-                  value = newVal;
-                }
+                handleInputChange(newVal);
 
-                _.set(props.formData, props.fieldPath, value);
-                _.set(props.uiFormData, props.fieldPath, value);
-                if (props.schema.isItemsProperty) {
-                  return;
-                }
-                if (
-                  isEqualOn(
-                    value,
-                    _.get(props.defaultFormData, props.fieldPath)
-                  )
-                ) {
-                  unsetFieldValue({
-                    FieldPathMap: props.FieldPathMap,
-                    defaultFormData: props.defaultFormData,
-                    uiFormData: props.uiFormData,
-                    schema: props.schema,
-                    formData: props.formData,
-                    fieldPath: props.fieldPath,
-                    required: fieldProps.required
-                  });
-                } else {
-                  genFieldInFormData({
-                    FieldPathMap: props.FieldPathMap,
-                    defaultFormData: props.defaultFormData,
-                    uiFormData: props.uiFormData,
-                    schema: props.schema,
-                    formData: props.formData,
-                    fieldPath: props.fieldPath,
-                    required: fieldProps.required
-                  });
-                }
                 handleChange(props.formData);
                 validateField();
               }}

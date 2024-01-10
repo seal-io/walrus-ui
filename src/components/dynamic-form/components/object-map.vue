@@ -83,6 +83,40 @@
         });
         return res;
       };
+
+      const handleInputChangeCall = (val) => {
+        if (!_.keys(val).length && props.schema.nullable) {
+          _.unset(props.formData, props.fieldPath);
+        }
+
+        if (isEqualOn(val, _.get(props.defaultFormData, props.fieldPath))) {
+          unsetFieldValue({
+            FieldPathMap: props.FieldPathMap,
+            defaultFormData: props.defaultFormData,
+            uiFormData: props.uiFormData,
+            schema: props.schema,
+            formData: props.formData,
+            fieldPath: props.fieldPath,
+            required: fieldProps.required
+          });
+        } else {
+          genFieldInFormData({
+            FieldPathMap: props.FieldPathMap,
+            defaultFormData: props.defaultFormData,
+            uiFormData: props.uiFormData,
+            schema: props.schema,
+            formData: props.formData,
+            fieldPath: props.fieldPath,
+            required: fieldProps.required
+          });
+        }
+      };
+
+      const handleInputChange = (val) => {
+        if (!_.keys(val).length && !fieldProps.required) {
+          _.unset(props.formData, props.fieldPath);
+        }
+      };
       const renderEdit = () => {
         return (
           <a-form-item
@@ -125,39 +159,9 @@
                     return;
                   }
                   val = genObjValue(_.clone(val));
-                  console.log('update value========', val);
                   _.set(props.formData, props.fieldPath, _.clone(val));
                   _.set(props.uiFormData, props.fieldPath, _.clone(val));
-                  if (!_.keys(val).length && props.schema.nullable) {
-                    _.unset(props.formData, props.fieldPath);
-                  }
-
-                  if (
-                    isEqualOn(
-                      val,
-                      _.get(props.defaultFormData, props.fieldPath)
-                    )
-                  ) {
-                    unsetFieldValue({
-                      FieldPathMap: props.FieldPathMap,
-                      defaultFormData: props.defaultFormData,
-                      uiFormData: props.uiFormData,
-                      schema: props.schema,
-                      formData: props.formData,
-                      fieldPath: props.fieldPath,
-                      required: fieldProps.required
-                    });
-                  } else {
-                    genFieldInFormData({
-                      FieldPathMap: props.FieldPathMap,
-                      defaultFormData: props.defaultFormData,
-                      uiFormData: props.uiFormData,
-                      schema: props.schema,
-                      formData: props.formData,
-                      fieldPath: props.fieldPath,
-                      required: fieldProps.required
-                    });
-                  }
+                  handleInputChange(val);
                   handleChange(props.formData);
                 }}
               ></MapString>

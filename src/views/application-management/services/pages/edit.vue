@@ -723,6 +723,7 @@
     const res = await formref.value?.validate();
     const groupres = await groupForm.value?.validate();
     validateTrigger.value = true;
+    console.log('formdata=============', formData.value.attributes);
     if (!res && !groupres) {
       try {
         submitLoading.value = true;
