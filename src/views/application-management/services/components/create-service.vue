@@ -155,15 +155,23 @@
           :label="$t(`applications.projects.form.label`)"
           hide-label
           field="labels"
+          :validate-trigger="['change']"
           :rules="[
             {
               required: false,
-              validator(value, callback) {
-                if (!validateLabels()) {
+              validator(val, callback) {
+                if (!labelsData.list.length) {
                   callback();
                   return;
                 }
-                callback(i18n.global.t('common.rule.object.key'));
+                const valid = _.some(labelsData.list, (item) => {
+                  return !_.trim(item.key);
+                });
+                if (valid) {
+                  callback(t('resource.definition.detail.rules.labelKey'));
+                  return;
+                }
+                callback();
               },
               message: i18n.global.t('common.rule.object.key')
             }
@@ -175,9 +183,9 @@
           >
             <keyValueLabels
               v-model:value="formData.labels"
-              labels-key="labels"
+              v-model:label-list="labelsData.list"
               :validate-trigger="validateTrigger"
-              :labels="formData"
+              :labels="labelsData.labels"
               :page-action="pageAction"
             ></keyValueLabels>
             <!-- <a-space
@@ -377,20 +385,13 @@
     dataType,
     asyncLoading
   } = useServiceData(flowProps);
-  const {
-    labelList,
-    labelItem,
-    handleAddLabel,
-    handleDeleteLabel,
-    validateLabel,
-    getLabelList,
-    validateTrigger
-  } = useLabelsActions(formData);
+
   let copyFormData: any = null;
   const { route, router, t } = useCallCommon();
   const flowId = route.query.flowId as string;
   const formref = ref();
   const groupForm = ref();
+  const validateTrigger = ref(false);
   const formAction = ref(props.action);
   const schemaFormCache = ref<any>({});
   let connectorAxiosToken: any = null;
@@ -399,7 +400,10 @@
     environmentID: route.params.environmentId as string,
     connectors: []
   });
-
+  const labelsData = ref<any>({
+    labels: {},
+    list: []
+  });
   const workflowVariables = inject(InjectWorkflowKey, ref({}));
   provide(InjectSchemaFormStatusKey, ref(formAction));
   provide(InjectShowInputHintKey, true);
@@ -426,12 +430,6 @@
   });
 
   provide(InjectCompleteDataKey, completeDataObj);
-
-  const validateLabels = () => {
-    return _.some(labelList.value, (item) => {
-      return !_.trim(item.key);
-    });
-  };
 
   const getEnvironmentConnectors = async () => {
     try {
@@ -689,11 +687,11 @@
   const initData = async () => {
     await init();
     copyFormData = _.cloneDeep(formData.value);
-    getLabelList();
     getEnvironmentConnectors();
     if (props.action === PageAction.EDIT) {
       setFormDataAttributeCache();
     }
+    labelsData.value.labels = _.cloneDeep(formData.value.labels);
   };
 
   initData();

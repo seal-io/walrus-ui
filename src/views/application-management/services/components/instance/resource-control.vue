@@ -123,7 +123,7 @@
   const emits = defineEmits(['update:visible', 'update:tabs', 'delete']);
 
   const handleHeightChange = ({ height }) => {
-    containerHeight.value = height - 100;
+    containerHeight.value = height - 120;
   };
 
   const handleClose = () => {

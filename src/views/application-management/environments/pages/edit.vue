@@ -114,12 +114,19 @@
           :rules="[
             {
               required: false,
-              validator(value, callback) {
-                if (!validateLabels()) {
+              validator(val, callback) {
+                if (!labelsData.list.length) {
                   callback();
                   return;
                 }
-                callback(i18n.global.t('common.rule.object.key'));
+                const valid = _.some(labelsData.list, (item) => {
+                  return !_.trim(item.key);
+                });
+                if (valid) {
+                  callback(t('resource.definition.detail.rules.labelKey'));
+                  return;
+                }
+                callback();
               },
               message: $t('common.rule.object.key')
             }
@@ -131,10 +138,9 @@
           >
             <keyValueLabels
               v-model:value="formData.labels"
-              v-model:labelList="labelList"
-              labels-key="labels"
+              v-model:labelList="labelsData.list"
               :validate-trigger="validateTrigger"
-              :labels="formData"
+              :labels="labelsData.labels"
               :page-action="pageAction"
             ></keyValueLabels>
             <!-- <a-space
@@ -404,6 +410,11 @@
   let copyFormData: any = {};
   const selectedList = ref<string[]>([]);
   const variablesRef = ref();
+  const validateTrigger = ref(false);
+  const labelsData = ref<any>({
+    labels: {},
+    list: []
+  });
 
   const formData = ref<EnvironFormData>({
     projectID: route.params.projectId as string,
@@ -417,15 +428,6 @@
     labels: {},
     resources: []
   });
-  const {
-    labelList,
-    labelItem,
-    validateLabel,
-    validateTrigger,
-    handleAddLabel,
-    handleDeleteLabel,
-    getLabelList
-  } = useLabelsActions(formData);
 
   const EnvironmentTypeList = computed(() => {
     return _.map(userStore.applicableEnvironmentTypes, (item) => {
@@ -455,11 +457,6 @@
     return t('operation.environments.view');
   });
 
-  const validateLabels = () => {
-    return _.some(labelList.value, (item) => {
-      return !_.trim(item.key);
-    });
-  };
   const initPageAction = () => {
     if (route.name === PROJECT.EnvDetail) {
       pageAction.value = userStore.hasProjectResourceActions({
@@ -714,15 +711,19 @@
       // ingore
     }
   };
+  const setLabels = () => {
+    labelsData.value.labels = _.cloneDeep(formData.value.labels);
+  };
   const init = async () => {
     setBreadCrumbList();
     await getConnectors();
     await getItemEnvironmentInfo();
-    getLabelList();
+
     // only in clone: default select all variables
     variablesRef.value?.selectAllVars();
     initCloneEnvironmentResource();
     initPageAction();
+    setLabels();
   };
 
   init();

@@ -90,6 +90,9 @@ export const actionList: MoreAction[] = [
     icon: 'icon-edit',
     status: 'normal',
     filterFun({ itemInfo, projectID }) {
+      if (!ConnectorCategory[itemInfo.category]) {
+        return false;
+      }
       return projectID
         ? userStore.hasProjectResourceActions({
             resource: Resources.Connectors,

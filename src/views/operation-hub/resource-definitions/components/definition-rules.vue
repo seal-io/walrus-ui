@@ -208,7 +208,20 @@
             hide-label
             :rules="[
               {
-                validator: validateLabels,
+                validator(val, callback) {
+                  if (!environmentLabels.list.length) {
+                    callback();
+                    return;
+                  }
+                  const valid = _.some(environmentLabels.list, (item) => {
+                    return !_.trim(item.key);
+                  });
+                  if (valid) {
+                    callback(t('resource.definition.detail.rules.labelKey'));
+                    return;
+                  }
+                  callback();
+                },
                 message: $t('resource.definition.detail.rules.labelKey')
               }
             ]"
@@ -219,9 +232,9 @@
             >
               <keyValueLabels
                 v-model:value="formData.selector.environmentLabels"
-                labels-key="environmentLabels"
+                v-model:label-list="environmentLabels.list"
                 :validate-trigger="validateTrigger"
-                :labels="formData.selector"
+                :labels="environmentLabels.labels"
                 :page-action="pageAction"
               ></keyValueLabels>
             </SealFormItemWrap>
@@ -243,7 +256,20 @@
             hide-label
             :rules="[
               {
-                validator: validateLabels,
+                validator(val, callback) {
+                  if (!resourceLabels.list.length) {
+                    callback();
+                    return;
+                  }
+                  const valid = _.some(resourceLabels.list, (item) => {
+                    return !_.trim(item.key);
+                  });
+                  if (valid) {
+                    callback(t('resource.definition.detail.rules.labelKey'));
+                    return;
+                  }
+                  callback();
+                },
                 message: $t('resource.definition.detail.rules.labelKey')
               }
             ]"
@@ -254,9 +280,9 @@
             >
               <keyValueLabels
                 v-model:value="formData.selector.resourceLabels"
-                labels-key="resourceLabels"
+                v-model:label-list="resourceLabels.list"
                 :validate-trigger="validateTrigger"
-                :labels="formData.selector"
+                :labels="resourceLabels.labels"
                 :page-action="pageAction"
               ></keyValueLabels>
             </SealFormItemWrap>
@@ -499,12 +525,20 @@
   const templateVersionList = ref<any[]>([]);
   const id = route.query.id as string;
   const uiSchema = ref<any>({});
+  const environmentLabels = ref<any>({
+    labels: {},
+    list: []
+  });
+  const resourceLabels = ref<any>({
+    labels: {},
+    list: []
+  });
   const selectors = ref<Set<string>>(new Set());
   const formDataAttributeCache = ref<any>({});
   const formAction = ref(props.schemaFormAction);
   const uiFormData = ref<any>({});
 
-  provide(InjectShowInputHintKey, true);
+  provide(InjectShowInputHintKey, false);
 
   const schemaVariables = ref<any>({});
 
@@ -557,7 +591,7 @@
   };
 
   const validateLabels = (val, callback) => {
-    if (_.keys(val).length) {
+    if (!_.keys(val).length) {
       callback();
       return;
     }
@@ -732,6 +766,14 @@
     return false;
   };
 
+  const setLabels = () => {
+    environmentLabels.value.labels = _.cloneDeep(
+      formData.value.selector?.environmentLabels
+    );
+    resourceLabels.value.labels = _.cloneDeep(
+      formData.value.selector?.resourceLabels
+    );
+  };
   const init = async () => {
     if (!props.templateList.length) {
       return;
@@ -750,6 +792,7 @@
       );
       await handleTemplateChange();
     }
+    setLabels();
     console.log('formData====', formData.value);
   };
 

@@ -44,19 +44,7 @@
           >
             <EnviromentList ref="enviromentRef"></EnviromentList>
           </a-tab-pane>
-          <a-tab-pane
-            v-if="
-              userStore.hasProjectResourceActions({
-                resource: Resources.Variables,
-                projectID: route.params.projectId,
-                actions: [Actions.GET]
-              })
-            "
-            :key="ProjectTabs.VARIABLES"
-            :title="$t('menu.applicationManagement.secret')"
-          >
-            <variableList></variableList>
-          </a-tab-pane>
+
           <a-tab-pane
             v-if="
               userStore.hasProjectResourceActions({
@@ -73,16 +61,17 @@
           <a-tab-pane
             v-if="
               userStore.hasProjectResourceActions({
-                resource: Resources.Connectors,
+                resource: Resources.Variables,
                 projectID: route.params.projectId,
                 actions: [Actions.GET]
               })
             "
-            :key="ProjectTabs.CONNECTOR"
-            :title="$t('menu.operatorHub.connector')"
+            :key="ProjectTabs.VARIABLES"
+            :title="$t('menu.applicationManagement.secret')"
           >
-            <ConnectorList scope="project"></ConnectorList>
+            <variableList></variableList>
           </a-tab-pane>
+
           <a-tab-pane
             v-if="
               userStore.hasProjectResourceActions({
@@ -112,6 +101,19 @@
           <a-tab-pane
             v-if="
               userStore.hasProjectResourceActions({
+                resource: Resources.Connectors,
+                projectID: route.params.projectId,
+                actions: [Actions.GET]
+              })
+            "
+            :key="ProjectTabs.CONNECTOR"
+            :title="$t('menu.operatorHub.connector')"
+          >
+            <ConnectorList scope="project"></ConnectorList>
+          </a-tab-pane>
+          <a-tab-pane
+            v-if="
+              userStore.hasProjectResourceActions({
                 projectID: route.params.projectId,
                 resource: Resources.ProjectSubjects,
                 actions: [Actions.GET]
@@ -122,13 +124,6 @@
           >
             <members></members>
           </a-tab-pane>
-          <!-- <template #extra>
-            <IconBtnGroup
-              v-if="activeKey === ProjectTabs.TEMPLATES"
-              v-model:active="dataView[activeKey]"
-              :icon-list="iconList"
-            ></IconBtnGroup>
-          </template> -->
         </a-tabs>
       </ComCard>
     </ComCard>

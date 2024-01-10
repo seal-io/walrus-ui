@@ -57,15 +57,15 @@
           </template>
         </a-table-column>
         <a-table-column
-          ellipsis
-          tooltip
           :cell-style="{ minWidth: '40px' }"
           align="left"
           data-index="value"
           :title="capitalize($t('common.input.value'))"
         >
           <template #cell="{ record }">
-            <span>{{ record.sensitive ? '******' : record.value }}</span>
+            <AutoTip :tooltip-props="{ style: 'white-space: pre' }">
+              <span>{{ record.sensitive ? '******' : record.value }}</span>
+            </AutoTip>
           </template>
         </a-table-column>
       </template>
