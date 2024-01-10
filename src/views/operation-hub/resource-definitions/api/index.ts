@@ -75,7 +75,7 @@ export const batchDeleteDefinitionResource = (data: {
   withoutCleanup: boolean;
 }) => {
   return axios.delete(
-    `${RESOURCE_DEFINITION_API}/${data.id}?${qs.stringify({
+    `${RESOURCE_DEFINITION_API}/${data.id}/resources?${qs.stringify({
       withoutCleanup: data.withoutCleanup
     })}`,
     {

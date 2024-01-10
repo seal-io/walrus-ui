@@ -313,6 +313,7 @@
             :title="$t('resource.definition.detail.createdResource')"
           >
             <ProvisionedResources
+              :match-rules="formData.matchingRules"
               :project-list="projectList"
             ></ProvisionedResources>
           </a-tab-pane>
