@@ -9,21 +9,21 @@
               allow-clear
               style="width: 240px"
               :placeholder="$t('common.search.name.placeholder')"
-              @clear="handleSearch"
-              @press-enter="handleSearch"
+              @clear="handleSearchByQuery"
+              @press-enter="handleSearchByQuery"
             >
               <template #prefix>
                 <icon-search />
               </template>
             </a-input>
-            <!-- <a-space style="margin-left: 0" :size="10">
+            <a-space style="margin-left: 0" :size="10">
               <a-button type="primary" @click="handleSearch">{{
                 $t('common.button.search')
               }}</a-button>
               <a-button type="outline" @click="handleReset">{{
                 $t('common.button.clear')
               }}</a-button>
-            </a-space> -->
+            </a-space>
           </template>
           <template #button-group>
             <a-button
@@ -109,6 +109,17 @@
               data-index="project"
               :title="$t('applications.projects.table.name')"
             >
+              <template #title>
+                <a-select
+                  v-model="queryParams.projectName"
+                  :options="projectList"
+                  style="width: 180px"
+                  :placeholder="$t('applications.projects.table.name')"
+                  allow-clear
+                  allow-search
+                  @change="handleSearchByTabelField"
+                ></a-select>
+              </template>
               <template #cell="{ record }">
                 <span>{{
                   _.find(
@@ -132,9 +143,29 @@
               tooltip
               :cell-style="{ minWidth: '40px' }"
               align="left"
-              data-index="environment.name"
+              data-index="resourceDefinitionMatchingRule.name"
               :title="$t('resource.definition.detail.matchRule')"
             >
+              <template #title>
+                <a-select
+                  v-model="queryParams.matchingRuleName"
+                  style="width: 180px"
+                  allow-clear
+                  allow-search
+                  :placeholder="$t('resource.definition.detail.matchRule')"
+                  @change="handleSearchByTabelField"
+                >
+                  <a-option
+                    v-for="(item, index) in matchRules"
+                    :key="index"
+                    :value="item.name"
+                  >
+                    <AutoTip>
+                      {{ item.name }}
+                    </AutoTip>
+                  </a-option>
+                </a-select>
+              </template>
             </a-table-column>
             <a-table-column
               ellipsis
@@ -269,6 +300,12 @@
       default() {
         return [];
       }
+    },
+    matchRules: {
+      type: Array as PropType<any[]>,
+      default() {
+        return [];
+      }
     }
   });
 
@@ -296,6 +333,8 @@
   const total = ref(0);
   const queryParams = reactive({
     query: '',
+    matchingRuleName: '',
+    projectName: '',
     page: 1,
     perPage: appStore.perPage || 10
   });
@@ -390,8 +429,18 @@
       handleFilter();
     }, 100);
   };
+  const handleSearchByQuery = () => {
+    queryParams.page = 1;
+    handleFilter();
+  };
+  const handleSearchByTabelField = () => {
+    queryParams.page = 1;
+    handleFilter();
+  };
   const handleReset = () => {
     queryParams.query = '';
+    queryParams.matchingRuleName = '';
+    queryParams.projectName = '';
     queryParams.page = 1;
     handleFilter();
   };
