@@ -199,6 +199,11 @@
     breadCrumbList.value = await initBreadValues(['env']);
   };
   const setDefaultActiveEnvironment = () => {
+    projectStore.setEnterProjectDefault({
+      projectId: '',
+      detail: false,
+      list: false
+    });
     if (projectStore.isSetDefaultActiveEnvironment) {
       return;
     }
@@ -207,12 +212,6 @@
     });
     projectStore.setDefaultActiveEnvironment({
       id: route.params.environmentId
-    });
-
-    projectStore.setEnterProjectDefault({
-      projectId: '',
-      detail: false,
-      list: false
     });
   };
   onMounted(() => {

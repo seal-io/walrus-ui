@@ -56,7 +56,7 @@ export const profileMenu = [
   },
   {
     name: 'common.button.download',
-    key: 'clidownload',
+    key: 'CliDownload',
     route: 'CliDownload',
     icon: '<icon-download/>',
     children: []

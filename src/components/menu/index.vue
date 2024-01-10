@@ -178,6 +178,7 @@
         if (newRoute.meta.clearMenuStatus) {
           appStore.updateSettings({ selectedKey: [] });
         }
+        console.log('currentRoute', appStore.selectedKey);
       }, true);
       const setCollapse = (val: boolean) => {
         if (appStore.device === 'desktop')
@@ -255,7 +256,7 @@
           });
           return;
         }
-        if (item.key === 'clidownload') {
+        if (item.key === 'CliDownload') {
           router.push({
             name: item.route
           });
