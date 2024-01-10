@@ -2,6 +2,7 @@
   import { defineComponent, ref, withModifiers, inject } from 'vue';
   import _ from 'lodash';
   import ModuleWrapper from '@/components/module-wrapper/index.vue';
+  import { InjectSchemaFormStatusKey, PageAction } from '@/views/config';
   import schemaFieldProps from '../fields/schema-field-props';
   import { ProvideErrorFieldsKey } from '../config';
   import FIELD_TYPE from '../config/field-type';
@@ -12,12 +13,16 @@
     emits: ['change'],
     setup(props, { slots, emit }) {
       const errorFields = inject(ProvideErrorFieldsKey, ref([]));
+      const schemaFormStatus = inject(
+        InjectSchemaFormStatusKey,
+        ref(PageAction.CREATE)
+      );
       const collapsed = _.get(
         props.schema,
         ['x-walrus-ui', 'collapsed'],
         false
       );
-      const nullableText = _.get(props.schema, ['x-walrus-ui', 'nullable'], '');
+      const isUnset = ref(true);
       const status = ref(collapsed);
       const hovered = ref(false);
       const groupHovered = ref(false);
@@ -28,23 +33,21 @@
           return _.startsWith(item, fieldPath);
         });
       };
-      const handleUnsetField = (checked) => {
+      const handleToggleField = (checked) => {
         if (!checked) {
           status.value = false;
+          isUnset.value = true;
           _.unset(props.formData, props.fieldPath);
         } else {
           status.value = true;
-          initFieldValue({
-            defaultFormData: props.defaultFormData,
-            schema: props.schema,
-            formData: props.formData,
-            uiFormData: props.uiFormData,
-            fieldPath: props.fieldPath,
-            required: _.includes(props.requiredFields, props.schema.name)
-          });
+          isUnset.value = false;
+          _.set(
+            props.formData,
+            props.fieldPath,
+            _.cloneDeep(_.get(props.uiFormData, props.fieldPath))
+          );
         }
         emit('change', props.formData);
-        console.log('handleUnsetField', props.formData, props.fieldPath);
       };
       const handleClickRight = () => {
         setTimeout(() => {
@@ -52,12 +55,18 @@
         }, 100);
       };
       const handleEnter = () => {
+        if (isUnset.value) {
+          return;
+        }
         hovered.value = true;
       };
       const handleLeave = () => {
         hovered.value = false;
       };
       const handleGroupEnter = () => {
+        if (isUnset.value) {
+          return;
+        }
         groupHovered.value = true;
       };
       const handleGroupLeave = () => {
@@ -70,14 +79,37 @@
         );
       };
 
+      const initUnsetValue = () => {
+        if (schemaFormStatus.value === PageAction.CREATE) {
+          return;
+        }
+        if (schemaFormStatus.value === PageAction.VIEW) {
+          isUnset.value = false;
+          return;
+        }
+        if (unsetType()) {
+          if (_.has(props.formData, props.fieldPath)) {
+            isUnset.value = false;
+          } else {
+            isUnset.value = true;
+          }
+        }
+      };
+
+      initUnsetValue();
+
       const renderNullableButton = () => {
+        if (schemaFormStatus.value === PageAction.VIEW) {
+          return null;
+        }
         return (
           <>
             {!props.schema.isRequired && unsetType() ? (
               <a-switch
                 type="text"
                 size="mini"
-                onChange={(val) => handleUnsetField(val)}
+                model-value={!isUnset.value}
+                onChange={(val) => handleToggleField(val)}
               ></a-switch>
             ) : null}
           </>
@@ -138,10 +170,11 @@
           >
             <ModuleWrapper
               class={[
-                { 'mo-wrap-hover': hovered.value },
+                { 'mo-wrap-hover': hovered.value && !isUnset.value },
                 _.join(props.fieldPath, '.')
               ]}
               status={status.value || exsitsError()}
+              disabled={isUnset.value}
               onUpdate:status={(val) => {
                 status.value = val;
               }}
@@ -256,6 +289,18 @@
         background-color: #fff;
       }
 
+      &.disabled {
+        cursor: default;
+
+        .title {
+          cursor: default;
+        }
+        // border-color: transparent;
+        // .title {
+        //   background-color: var(--color-fill-1);
+        // }
+      }
+
       .content {
         padding: 20px;
       }
@@ -279,7 +324,6 @@
       padding: 10px 0;
       font-weight: var(--font-weight-medium);
       font-size: 14px;
-      // border-bottom: 1px solid var(--color-border-2);
     }
 
     .description {

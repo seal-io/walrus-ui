@@ -73,7 +73,7 @@
         Component = CommonFieldMaps.password;
       }
 
-      const handleInputChange = () => {
+      const handleInputChangeCall = () => {
         const res = _.filter(list.value, (item) => {
           return !isEmptyvalue(item);
         });
@@ -106,6 +106,20 @@
             fieldPath: props.fieldPath,
             required: fieldProps.required
           });
+        }
+        handleChange(props.formData);
+      };
+
+      // do not handle nullable peroperty
+      const handleInputChange = () => {
+        const val = _.filter(list.value, (item) => {
+          return !isEmptyvalue(item);
+        });
+        if (!props.required && !val?.length) {
+          _.unset(props.formData, props.fieldPath);
+        } else {
+          _.set(props.formData, props.fieldPath, val);
+          _.set(props.uiFormData, props.fieldPath, val);
         }
         handleChange(props.formData);
       };

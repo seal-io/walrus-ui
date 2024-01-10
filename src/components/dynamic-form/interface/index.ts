@@ -1,6 +1,7 @@
 export interface FieldSchema {
   '_t'?: string | number;
   'name': string;
+  'arrayItemProperty'?: boolean;
   'title'?: string;
   'fieldPath': string[];
   'type': string;

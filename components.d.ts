@@ -33,6 +33,8 @@ declare module 'vue' {
     ALayoutFooter: typeof import('@arco-design/web-vue')['LayoutFooter'];
     ALayoutSider: typeof import('@arco-design/web-vue')['LayoutSider'];
     ALink: typeof import('@arco-design/web-vue')['Link'];
+    AList: typeof import('@arco-design/web-vue')['List'];
+    AListItemMeta: typeof import('@arco-design/web-vue')['ListItemMeta'];
     AMenu: typeof import('@arco-design/web-vue')['Menu'];
     AMenuItem: typeof import('@arco-design/web-vue')['MenuItem'];
     AMinus: typeof import('@arco-design/web-vue')['Minus'];
