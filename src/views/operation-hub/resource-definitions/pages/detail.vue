@@ -24,7 +24,8 @@
             userStore.hasRolesActionsPermission({
               resource: Resources.ResourceDefinitions,
               actions: [Actions.PUT]
-            })
+            }) &&
+            !_.get(formData, 'builtin')
           "
           @edit="handleEditPage"
         >
@@ -269,7 +270,9 @@
           </a-tab-pane>
         </a-tabs>
       </div>
-      <EditPageFooter v-if="pageAction === PageAction.EDIT">
+      <EditPageFooter
+        v-if="pageAction === PageAction.EDIT && !_.get(formData, 'builtin')"
+      >
         <template #save>
           <a-button
             type="primary"

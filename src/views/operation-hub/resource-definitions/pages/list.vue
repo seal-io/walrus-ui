@@ -87,7 +87,10 @@
             }"
           >
             <template #cell="{ record }">
-              <a-link size="small" :hoverable="false">{{ record.name }}</a-link>
+              <span v-if="record.builtin"></span>
+              <a-link v-else size="small" :hoverable="false">{{
+                record.name
+              }}</a-link>
             </template>
           </a-table-column>
           <a-table-column
@@ -312,7 +315,7 @@
     });
   };
   const handleCellClick = (row, column) => {
-    if (column.dataIndex === 'name') {
+    if (column.dataIndex === 'name' && !row.builtin) {
       handleView(row);
     }
   };
