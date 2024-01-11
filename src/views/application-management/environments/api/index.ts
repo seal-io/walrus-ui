@@ -7,6 +7,8 @@ import { EnvironmentRow, EnvironFormData } from '../config/interface';
 
 export const ENVIRONMENT_API = '/environments';
 
+export const PROJECT_API = '/projects';
+
 export const PROJECT_API_PREFIX = () => {
   return `/projects/${router.currentRoute.value.params.projectId}`;
 };
@@ -26,6 +28,19 @@ export interface ResultType {
   items: EnvironmentRow[];
   pagination: Pagination;
 }
+export function queryEnvironmentsList(params: QueryType, token?) {
+  return axios.get<ResultType>(
+    `${PROJECT_API}/${params.projectID}${ENVIRONMENT_API}`,
+    {
+      params,
+      cancelToken: token,
+      paramsSerializer: (obj) => {
+        return qs.stringify(obj);
+      }
+    }
+  );
+}
+
 export function queryEnvironments(params: QueryType, token?) {
   return axios.get<ResultType>(`${PROJECT_API_PREFIX()}${ENVIRONMENT_API}`, {
     params,

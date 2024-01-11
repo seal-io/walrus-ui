@@ -3,7 +3,7 @@
   import _ from 'lodash';
   import { defineComponent, ref, toRefs, PropType } from 'vue';
   import TagList from '@/components/tag-list/index.vue';
-  import { vOnClickOutside } from '@vueuse/components';
+  import { vOnClickOutside, OnClickOutside } from '@vueuse/components';
   import SealViewItemWrap from './seal-view-item-wrap.vue';
 
   export default defineComponent({
@@ -46,6 +46,8 @@
     },
     setup(props, { emit, attrs, slots, expose }) {
       const input = ref();
+      const input2 = ref();
+      const selectRef = ref();
       const isFocus = ref(false);
       const searchValue = ref('');
       const { t } = i18n.global;
@@ -66,7 +68,7 @@
         emit('focus', e);
         isFocus.value = true;
       };
-      const handleBlur = (e) => {
+      const handleBlur = () => {
         isFocus.value = false;
       };
       const focus = () => {
@@ -94,7 +96,7 @@
           return (
             <a-select
               {...attrs}
-              ref="input2"
+              ref={input2.value}
               model-value={props.modelValue}
               popup-visible={false}
               allow-search={false}
@@ -105,7 +107,9 @@
                 ..._.reduce(
                   _.keys(slots),
                   (result, key) => {
-                    result[key] = () => slots[key]?.();
+                    if (slots[key]) {
+                      result[key] = () => slots[key]?.();
+                    }
                     return result;
                   },
                   {}
@@ -127,7 +131,7 @@
         return (
           <a-select
             {...attrs}
-            ref="input"
+            ref={input.value}
             class="v-sel"
             model-value={props.modelValue}
             onClear={() => handleClear()}
@@ -161,7 +165,6 @@
       const renderSelect = () => {
         return (
           <span
-            v-on-click-outside={(e) => handleBlur(e)}
             class={[
               'seal-relative wrapper select',
               {
@@ -218,7 +221,13 @@
       };
       return () => (
         <>
-          {props.viewStatus && attrs.multiple ? renderView() : renderSelect()}
+          {props.viewStatus && attrs.multiple ? (
+            renderView()
+          ) : (
+            <OnClickOutside onTrigger={() => handleBlur()}>
+              {renderSelect()}
+            </OnClickOutside>
+          )}
         </>
       );
     }
