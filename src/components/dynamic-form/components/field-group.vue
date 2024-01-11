@@ -104,7 +104,9 @@
         }
         return (
           <>
-            {!props.schema.isRequired && unsetType() ? (
+            {!props.schema.isRequired &&
+            unsetType() &&
+            !props.schema.minItems ? (
               <a-switch
                 type="text"
                 size="mini"
