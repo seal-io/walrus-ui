@@ -57,11 +57,11 @@ export default {
   'applications.applications.instance.application': '应用',
   'applications.applications.instance.status': '状态',
   'applications.applications.instance.history': '历史版本',
-  'applications.applications.instance.accessUrl': '访问URL',
+  'applications.applications.instance.accessUrl': '访问 URL',
   'applications.applications.instance.resource': '组件信息',
   'applications.applications.instance.resource.tips':
     '环境的连接器为自定义时，服务的资源和输出为静态数据，当服务升级时将会更新',
-  'applications.applications.instance.endpoint': '入口',
+  'applications.applications.instance.endpoint': 'URL',
   'applications.applications.instance.log': '日志',
   'applications.applications.instance.value': '值',
   'applications.applications.instance.cloneName': '请输入新服务名称',

@@ -346,9 +346,7 @@ export const queryInstanceEndpoints = (
   token
 ) => {
   return axios.get<EndPointResult>(
-    `${SERVICE_API_PREFIX()}${SERVICE_API}/${
-      params.serviceID
-    }/access-endpoints`,
+    `${SERVICE_API_PREFIX()}${SERVICE_API}/${params.serviceID}/endpoints`,
     {
       params: {
         ..._.omit(params, ['serviceID'])

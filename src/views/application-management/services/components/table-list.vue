@@ -22,7 +22,7 @@
           <span class="empty-holder" style="width: 14px; height: 14px"></span>
           <a-grid :cols="24" :style="{ width: '100%' }">
             <a-grid-item
-              :span="4"
+              :span="5"
               class="sort-item"
               @click="() => handleSort('name')"
             >
@@ -71,13 +71,13 @@
                 </span>
               </Autotip>
             </a-grid-item>
-            <a-grid-item :span="4">
+            <a-grid-item :span="5">
               <Autotip>
                 <span>{{ $t('common.table.status') }}</span>
               </Autotip>
             </a-grid-item>
             <a-grid-item
-              :span="3"
+              :span="4"
               class="sort-item"
               @click="() => handleSort('createTime')"
             >
@@ -103,14 +103,7 @@
                 </span>
               </Autotip>
             </a-grid-item>
-            <a-grid-item :span="4">
-              <Autotip>
-                <span>{{
-                  $t('applications.applications.instance.endpoint')
-                }}</span>
-              </Autotip>
-            </a-grid-item>
-            <a-grid-item :span="3" class="actions">
+            <a-grid-item :span="4" class="actions">
               <Autotip>
                 <span class="actions">
                   {{ $t('common.table.operation') }}
@@ -163,17 +156,47 @@
               </AutoTip>
             </template>
             <template #actions="{ record, rowIndex }">
-              <DropButtonGroup
-                v-if="setActionList(dataList[rowIndex]).length"
-                :layout="
-                  setActionList(dataList[rowIndex]).length === 1
-                    ? 'horizontal'
-                    : 'vertical'
-                "
-                :actions="setActionList(dataList[rowIndex])"
-                @select="(value) => handleClickAction(value, record)"
-              >
-              </DropButtonGroup>
+              <a-space :size="10">
+                <DropButtonGroup
+                  v-if="setActionList(dataList[rowIndex]).length"
+                  :layout="
+                    setActionList(dataList[rowIndex]).length === 1
+                      ? 'horizontal'
+                      : 'vertical'
+                  "
+                  :actions="setActionList(dataList[rowIndex])"
+                  @select="(value) => handleClickAction(value, record)"
+                >
+                </DropButtonGroup>
+                <primaryButtonGroup
+                  v-if="getEndpoints(record).length > 1"
+                  size="medium"
+                  :actions="getEndpoints(record)"
+                  position="br"
+                  trigger="hover"
+                >
+                  <template #item="{ item }">
+                    <a-link :href="item.value">{{ item.label }}</a-link>
+                  </template>
+                  <a-link size="small" type="text" class="m-l-10"
+                    ><icon-link style="stroke-width: 4" class="font-14"
+                  /></a-link>
+                </primaryButtonGroup>
+                <AutoTip
+                  v-if="getEndpoints(record).length === 1"
+                  style="max-width: 120px; font-size: 0"
+                >
+                  <a-link
+                    :href="getEndpoints(record)[0].value"
+                    target="_blank"
+                    size="small"
+                    type="text"
+                    class="m-l-10"
+                  >
+                    <icon-link style="stroke-width: 4" class="font-14"
+                  /></a-link>
+                </AutoTip>
+              </a-space>
             </template>
           </ResourceItem>
         </a-space>
@@ -389,6 +412,19 @@
     } else {
       handleRowSelectChange([]);
     }
+  };
+  const getEndpoints = (row) => {
+    const list = _.map(row.endpoints || [], (item) => {
+      return {
+        label: item.name,
+        value: item.url,
+        icon: ''
+      };
+    }).filter(
+      (item) =>
+        _.startsWith(item.label, 'http') || _.startsWith(item.label, 'https')
+    );
+    return list;
   };
   const setActionList = (row) => {
     const list = _.filter(serviceActions, (item) => {
@@ -812,7 +848,7 @@
 
     .actions {
       display: flex;
-      justify-content: center;
+      justify-content: flex-start;
     }
 
     .pagination {
