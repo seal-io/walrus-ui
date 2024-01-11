@@ -207,7 +207,7 @@
     term.value?.dispose?.();
     term.value = new Terminal({
       lineHeight: 1.2,
-      fontSize: 14,
+      fontSize: 12,
       fontFamily:
         "monospace,Menlo,Courier,'Courier New',Consolas,Monaco, 'Liberation Mono'",
       theme: {
