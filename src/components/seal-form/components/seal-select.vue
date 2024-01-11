@@ -224,9 +224,11 @@
           {props.viewStatus && attrs.multiple ? (
             renderView()
           ) : (
-            <OnClickOutside onTrigger={() => handleBlur()}>
-              {renderSelect()}
-            </OnClickOutside>
+            <span style={{ width: attrs.style?.width || 'max-content' }}>
+              <OnClickOutside onTrigger={() => handleBlur()}>
+                {renderSelect()}
+              </OnClickOutside>
+            </span>
           )}
         </>
       );
