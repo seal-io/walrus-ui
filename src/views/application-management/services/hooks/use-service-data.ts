@@ -116,8 +116,12 @@ export default function useServiceData(props?) {
 
   const getItemResourceDefinition = async () => {
     try {
+      const resourceDefId = _.find(templateList.value, (item) => {
+        return item.value === formData.value.type;
+      })?.id;
+      if (!resourceDefId) return {};
       const { data } = await queryItemResourceDefinition({
-        id: formData.value.type
+        id: resourceDefId
       });
       return data;
     } catch (error) {
