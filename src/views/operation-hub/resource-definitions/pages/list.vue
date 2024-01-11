@@ -87,7 +87,7 @@
             }"
           >
             <template #cell="{ record }">
-              <span v-if="record.builtin"></span>
+              <span v-if="record.builtin">{{ record.name }}</span>
               <a-link v-else size="small" :hoverable="false">{{
                 record.name
               }}</a-link>
