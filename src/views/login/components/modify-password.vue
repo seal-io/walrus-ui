@@ -25,6 +25,7 @@
           >
             <seal-input-password
               v-model.trim="formData.newPassword"
+              style="width: 100%"
               size="large"
               :required="true"
               :placeholder="$t('user.password.newPassword')"
@@ -49,6 +50,7 @@
           >
             <seal-input-password
               v-model.trim="formData.confirmPassword"
+              style="width: 100%"
               size="large"
               :required="true"
               :placeholder="$t('user.password.confirmPassword')"
@@ -76,6 +78,7 @@
             >
               <seal-input
                 v-model.trim="formData.serverUrl"
+                style="width: 100%"
                 size="large"
                 :placeholder="$t('system.setting.serverurl')"
               >
