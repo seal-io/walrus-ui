@@ -271,7 +271,7 @@
       >
         <GroupTitle
           :bordered="false"
-          style="margin-bottom: 0"
+          style="margin-bottom: 10px"
           :title="$t('applications.applications.detail.configuration')"
         >
           <template #title>
