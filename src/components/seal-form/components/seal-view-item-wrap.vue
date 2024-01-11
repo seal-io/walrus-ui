@@ -63,6 +63,7 @@
   .view-item-box {
     display: flex;
     align-items: center;
+    width: 100%;
 
     .arco-input-append {
       height: @height;

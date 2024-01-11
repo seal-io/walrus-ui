@@ -70,14 +70,19 @@
       display: flex;
       align-items: center;
 
-      .seal-view-item-wrap {
-        flex: 1;
-        width: 50%;
+      .view-item-box {
+        width: calc(50% - 6px);
+
+        :deep(.seal-view-item-wrap) {
+          width: 50% !important;
+        }
       }
 
       .separator {
         display: flex;
+        flex: none;
         justify-content: center;
+        width: 12px;
         padding: 0 4px;
         color: var(--color-text-2);
       }
