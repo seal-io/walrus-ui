@@ -5,7 +5,7 @@ export interface MatchingRule {
   name: string;
   selector: {
     environmentLabels?: Record<string, any>;
-    environmentName?: string;
+    environmentNames?: string[];
     environmentType?: string;
     projectName?: string;
     resourceLabels?: Record<string, any>;
@@ -29,7 +29,6 @@ export interface ResourceDefinitionFormData {
   type: string;
   description?: string;
   labels?: Record<string, string>;
-  applicableProjectNames: string[];
   matchingRules: MatchingRule[];
   uiSchema?: any;
 }
@@ -57,9 +56,9 @@ export const definitionFormData = {
   name: '',
   selector: {
     environmentLabels: {},
-    environmentName: '',
+    environmentNames: [],
     environmentType: '',
-    // projectName: '',
+    projectName: '',
     resourceLabels: {}
   },
   template: {

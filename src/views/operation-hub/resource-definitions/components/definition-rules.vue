@@ -40,13 +40,6 @@
               show-word-limit
               @change="handleNameChange"
             ></seal-input>
-            <!-- <template #extra>
-              <div
-                class="tips"
-                :style="{ 'max-width': `${InputWidth.LARGE}px` }"
-                >{{ $t('common.validate.labelName') }}</div
-              >
-            </template> -->
           </a-form-item>
           <GroupTitle
             :bordered="false"
@@ -75,33 +68,25 @@
             field="selector.projectName"
             hide-label
             :label="$t('resource.definition.detail.projectName')"
-            :validate-trigger="['change', 'input']"
+            :validate-trigger="['change']"
             :rules="[
               {
                 required: true,
                 message: $t('resource.definition.detail.rules.projectName')
-              },
-              {
-                required: true,
-                match: validateLabelNameRegx,
-                message: $t('common.validate.labelName')
-              },
-              {
-                validator: validateNameuniq,
-                message: $t('applications.applications.rule.modules.name')
               }
             ]"
           >
-            <seal-input
+            <seal-select
               v-model="formData.selector.projectName"
               :view-status="pageAction === PageAction.VIEW"
-              allow-clear
+              :options="projectList"
               :required="true"
+              :multiple="false"
               :label="$t('resource.definition.detail.projectName')"
               :style="{ width: `${InputWidth.LARGE}px` }"
-              :max-length="63"
-              show-word-limit
-            ></seal-input>
+              @change="handleProjectChange"
+            >
+            </seal-select>
             <a-button
               v-if="pageAction === PageAction.EDIT"
               type="text"
@@ -114,54 +99,55 @@
             </a-button>
           </a-form-item>
           <a-form-item
-            v-if="selectors.has('environmentName')"
-            field="selector.environmentName"
+            v-if="selectors.has('environmentNames')"
+            field="selector.environmentNames"
             hide-label
             :label="$t('resource.definition.detail.envName')"
-            :validate-trigger="['change', 'input']"
+            :validate-trigger="['change']"
             :rules="[
               {
                 required: true,
                 message: $t('resource.definition.detail.rules.envName')
-              },
-              {
-                required: true,
-                match: validateLabelNameRegx,
-                message: $t('common.validate.labelName')
-              },
-              {
-                validator: validateNameuniq,
-                message: $t('applications.applications.rule.modules.name')
               }
             ]"
           >
-            <seal-input
-              v-model="formData.selector.environmentName"
+            <SealViewItemWrap
+              v-if="
+                pageAction === PageAction.VIEW &&
+                !formData.selector?.environmentNames?.length
+              "
+              :label="$t('resource.definition.detail.envName')"
+              :style="{ width: `${InputWidth.LARGE}px` }"
+            >
+              <span>{{
+                $t('resource.definition.detail.applicableProjects.tips')
+              }}</span>
+            </SealViewItemWrap>
+            <seal-select
+              v-else
+              v-model="formData.selector.environmentNames"
               :view-status="pageAction === PageAction.VIEW"
               allow-clear
+              :options="environmentList"
               :required="true"
+              :multiple="true"
+              :max-count="2"
+              :loading="envLoading"
               :label="$t('resource.definition.detail.envName')"
               :style="{ width: `${InputWidth.LARGE}px` }"
               :max-length="63"
               show-word-limit
-            ></seal-input>
+            ></seal-select>
             <a-button
               v-if="pageAction === PageAction.EDIT"
               type="text"
               status="danger"
-              @click="handleDeleteSelector('environmentName')"
+              @click="handleDeleteSelector('environmentNames')"
             >
               <template #icon>
                 <icon-delete class="size-16" />
               </template>
             </a-button>
-            <!-- <template #extra>
-              <div
-                class="tips"
-                :style="{ 'max-width': `${InputWidth.LARGE}px` }"
-                >{{ $t('common.validate.labelName') }}</div
-              >
-            </template> -->
           </a-form-item>
           <a-form-item
             v-if="selectors.has('environmentType')"
@@ -404,6 +390,7 @@
     nextTick,
     h
   } from 'vue';
+  import { createAxiosToken } from '@/api/axios-chunk-request';
   import ModuleWrapper from '@/components/module-wrapper/index.vue';
   import useCallCommon from '@/hooks/use-call-common';
   import useScrollToView from '@/hooks/use-scroll-to-view';
@@ -421,6 +408,7 @@
   import GroupForm from '@/components/dynamic-form/group-form.vue';
   import keyValueLabels from '@/components/form-create/custom-components/key-value-labels.vue';
   import primaryButtonGroup from '@/components/drop-button-group/primary-button-group.vue';
+  import { queryEnvironmentsList } from '@/views/application-management/environments/api';
   import semverEq from 'semver/functions/eq';
   import semverGt from 'semver/functions/gt';
   import { SelectorAction } from '../config';
@@ -430,7 +418,7 @@
   type SelectorType =
     | 'environmentLabels'
     | 'resourceLabels'
-    | 'environmentName'
+    | 'environmentNames'
     | 'environmentType'
     | 'projectName';
 
@@ -488,6 +476,12 @@
       default() {
         return '';
       }
+    },
+    projectList: {
+      type: Array,
+      default() {
+        return [];
+      }
     }
   });
   const emits = defineEmits(['cancel', 'save', 'update:title']);
@@ -496,8 +490,9 @@
     attributes: {},
     name: '',
     selector: {
+      projectName: '',
       environmentLabels: {},
-      environmentName: '',
+      environmentNames: [],
       environmentType: '',
       resourceLabels: {}
     },
@@ -511,12 +506,15 @@
     }
   });
   const { route, router, t } = useCallCommon();
+  const envLoading = ref(false);
   const formref = ref();
   const groupForm = ref();
   const asyncLoading = ref(false);
   const validateTrigger = ref(false);
   const templateVersionList = ref<any[]>([]);
   const id = route.query.id as string;
+  let envToken = createAxiosToken();
+  const environmentList = ref<any[]>([]);
   const uiSchema = ref<any>({});
   const environmentLabels = ref<any>({
     labels: {},
@@ -569,8 +567,8 @@
     if (formData.value.selector.projectName) {
       selectors.value.add('projectName');
     }
-    if (formData.value.selector.environmentName) {
-      selectors.value.add('environmentName');
+    if (formData.value.selector?.environmentNames?.length) {
+      selectors.value.add('environmentNames');
     }
     if (formData.value.selector.environmentType) {
       selectors.value.add('environmentType');
@@ -583,20 +581,6 @@
     }
   };
 
-  const validateLabels = (val, callback) => {
-    if (!_.keys(val).length) {
-      callback();
-      return;
-    }
-    const valid = _.some(_.keys(val), (key) => {
-      return !key;
-    });
-    if (valid) {
-      callback(t('resource.definition.detail.rules.labelKey'));
-      return;
-    }
-    callback();
-  };
   const validateNameuniq = (val, callback) => {
     if ([PageAction.EDIT, PageAction.VIEW]) {
       callback();
@@ -629,6 +613,36 @@
     schemaVariables.value = variables;
   };
 
+  const handleProjectChange = () => {
+    if (formData.value.selector.environmentNames) {
+      formData.value.selector.environmentNames = [];
+    }
+  };
+  const getEnvironmentList = async () => {
+    if (!formData.value.selector?.projectName) {
+      return;
+    }
+    envToken?.cancel?.();
+    envToken = createAxiosToken();
+    try {
+      envLoading.value = true;
+      const params = {
+        projectID: formData.value.selector.projectName,
+        page: -1
+      };
+      const { data } = await queryEnvironmentsList(params, envToken.token);
+      environmentList.value = _.map(data.items || [], (item) => ({
+        label: item.name,
+        value: item.name,
+        id: item.id,
+        name: item.name
+      }));
+      envLoading.value = false;
+    } catch (error) {
+      environmentList.value = [];
+      envLoading.value = false;
+    }
+  };
   const getTemplateVersions = async () => {
     try {
       const params = {
@@ -794,7 +808,15 @@
     submit,
     getSchema
   });
-
+  watch(
+    () => formData.value.selector.projectName,
+    () => {
+      getEnvironmentList();
+    },
+    {
+      immediate: true
+    }
+  );
   onMounted(() => {
     init();
   });

@@ -68,9 +68,6 @@
               :max-length="63"
               show-word-limit
             ></seal-input>
-            <!-- <template v-if="pageAction === PageAction.EDIT" #extra>
-              <div class="tips">{{ $t('common.validate.labelName') }}</div>
-            </template> -->
           </a-form-item>
           <a-form-item
             :label="$t('common.table.type')"
@@ -101,9 +98,6 @@
               :max-length="63"
               show-word-limit
             ></seal-input>
-            <!-- <template v-if="pageAction === PageAction.EDIT" #extra>
-              <div class="tips">{{ $t('common.validate.labelName') }}</div>
-            </template> -->
           </a-form-item>
           <a-form-item
             :label="$t('operation.environments.table.description')"
@@ -121,47 +115,7 @@
               show-word-limit
             ></seal-textarea>
           </a-form-item>
-          <a-form-item
-            hide-label
-            field="applicableProjectNames"
-            :label="$t('resource.definition.detail.applicableProjectNames')"
-            :rules="[
-              {
-                required: false,
-                message: $t(
-                  'resource.definition.detail.rules.applicableProjects'
-                )
-              }
-            ]"
-          >
-            <SealViewItemWrap
-              v-if="
-                pageAction === PageAction.VIEW &&
-                !formData.applicableProjectNames?.length
-              "
-              :label="$t('resource.definition.detail.applicableProjectNames')"
-              :style="{ width: `${InputWidth.LARGE}px` }"
-            >
-              <span>{{
-                $t('resource.definition.detail.applicableProjects.tips')
-              }}</span>
-            </SealViewItemWrap>
-            <seal-select
-              v-else
-              v-model="formData.applicableProjectNames"
-              :view-status="pageAction === PageAction.VIEW"
-              :options="projectList"
-              :required="false"
-              :popup-info="
-                $t('resource.definition.detail.applicableProjects.all')
-              "
-              :multiple="true"
-              :max-tag-count="2"
-              :label="$t('resource.definition.detail.applicableProjectNames')"
-              :style="{ width: `${InputWidth.LARGE}px` }"
-            >
-            </seal-select>
-          </a-form-item>
+
           <a-form-item
             v-if="
               id &&
@@ -209,12 +163,6 @@
                 $t('resource.definition.detail.rule', { name: index + 1 })
               "
             >
-              <!-- <template #title>
-                <span class="title">{{
-                  item.name ||
-                  $t('resource.definition.detail.rule', { name: index + 1 })
-                }}</span>
-              </template> -->
               <DefinitionRules
                 :ref="
                   (el) =>
@@ -226,6 +174,7 @@
                 :data-id="id"
                 :origin-form-data="item"
                 :page-action="pageAction"
+                :project-list="projectList"
                 :schema-form-action="item.pageAction || schemaFormAction"
                 :show-delete="formData.matchingRules?.length > 1"
                 :template-list="templateList"
@@ -276,6 +225,7 @@
                   :origin-form-data="item"
                   :page-action="pageAction"
                   :schema-form-action="schemaFormAction"
+                  :project-list="projectList"
                   :show-delete="false"
                   :template-list="templateList"
                   class="m-b-20"
@@ -416,7 +366,6 @@
     name: '',
     description: '',
     type: '',
-    applicableProjectNames: [],
     matchingRules: []
   });
   const activeKey = ref('matchRules');
