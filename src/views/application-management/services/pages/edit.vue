@@ -202,30 +202,6 @@
             :label="$t('applications.projects.form.label')"
             :style="{ width: `${InputWidth.LARGE}px` }"
           >
-            <!-- <a-space
-              v-if="labelList?.length"
-              :style="{
-                'display': 'flex',
-                'flex-direction': 'column',
-                'width': `${InputWidth.MIDDLE}px`
-              }"
-              direction="vertical"
-            >
-              <xInputGroup
-                v-for="(sItem, sIndex) in labelList"
-                :key="sIndex"
-                v-model:dataKey="sItem.key"
-                v-model:dataValue="sItem.value"
-                v-model:value="formData.labels"
-                :trigger-validate="validateTrigger"
-                :label-list="labelList"
-                :position="sIndex"
-                always-delete
-                should-key
-                @add="(obj) => handleAddLabel(obj, labelList)"
-                @delete="handleDeleteLabel(labelList, sIndex)"
-              ></xInputGroup>
-            </a-space> -->
             <keyValueLabels
               v-model:value="formData.labels"
               v-model:label-list="labelsData.list"
@@ -233,21 +209,6 @@
               :labels="labelsData.labels"
               :page-action="pageAction"
             ></keyValueLabels>
-            <!-- <template v-else>
-              <a-link
-                class="p-0"
-                @click="
-                  () => {
-                    handleAddLabel(labelItem, labelList);
-                  }
-                "
-              >
-                <icon-plus-circle-fill
-                  :size="24"
-                  font-size="14px size-24"
-                ></icon-plus-circle-fill>
-              </a-link>
-            </template> -->
           </SealFormItemWrap>
         </a-form-item>
         <a-form-item :label="$t('common.table.description')" hide-label>

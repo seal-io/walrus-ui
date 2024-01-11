@@ -111,12 +111,44 @@
             <a-form-item
               :label="$t(`applications.projects.form.label`)"
               hide-label
+              :validate-trigger="['change']"
+              :rules="[
+                {
+                  required: false,
+                  validator(val, callback) {
+                    if (!labelsData.list.length) {
+                      callback();
+                      return;
+                    }
+                    const valid = _.some(labelsData.list, (item) => {
+                      return !_.trim(item.key);
+                    });
+                    if (valid) {
+                      callback(
+                        i18n.global.t(
+                          'resource.definition.detail.rules.labelKey'
+                        )
+                      );
+                      return;
+                    }
+                    callback();
+                  },
+                  message: i18n.global.t('common.rule.object.key')
+                }
+              ]"
             >
               <SealFormItemWrap
                 :label="$t(`applications.projects.form.label`)"
                 style="width: 100%"
               >
-                <a-space
+                <keyValueLabels
+                  v-model:value="formData.labels"
+                  v-model:label-list="labelsData.list"
+                  :validate-trigger="validateTrigger"
+                  :labels="labelsData.labels"
+                  :page-action="pageAction"
+                ></keyValueLabels>
+                <!-- <a-space
                   v-if="labelList?.length"
                   style="display: flex; flex-direction: column"
                   direction="vertical"
@@ -163,7 +195,7 @@
                       font-size="14px size-24"
                     ></icon-plus-circle-fill>
                   </a-link>
-                </template>
+                </template> -->
               </SealFormItemWrap>
             </a-form-item>
             <a-form-item :label="$t('common.table.description')" hide-label>
@@ -223,9 +255,11 @@
     InjectTraceKey,
     HintKeyMaps
   } from '@/views/config';
+  import i18n from '@/locale';
   import { HintKey } from '@/views/config/interface';
   import { ref, PropType, computed, provide, onMounted, watch } from 'vue';
   import GroupForm from '@/components/dynamic-form/group-form.vue';
+  import keyValueLabels from '@/components/form-create/custom-components/key-value-labels.vue';
   import xInputGroup from '@/components/form-create/custom-components/x-input-group.vue';
   import EditPageFooter from '@/components/edit-page-footer/index.vue';
   import useLabelsActions from '@/components/form-create/hooks/use-labels-action';
@@ -299,20 +333,17 @@
     uiFormData,
     pageAction
   } = useServiceData();
-  const {
-    labelList,
-    labelItem,
-    handleAddLabel,
-    handleDeleteLabel,
-    validateLabel,
-    getLabelList,
-    validateTrigger
-  } = useLabelsActions(formData);
+
   const { scrollToView } = useScrollToView();
 
   provide(InjectSchemaFormStatusKey, ref(PageAction.EDIT));
 
   const emits = defineEmits(['update:hintData']);
+  const labelsData = ref<any>({
+    labels: [],
+    list: []
+  });
+  const validateTrigger = ref(false);
   const completeData = ref<Partial<HintKey>>({});
   const serviceDataList = ref<any[]>([]);
   const active = ref('');
@@ -352,8 +383,7 @@
       ? ServiceDataType.resource
       : ServiceDataType.service;
     await setFormAttributes();
-
-    getLabelList();
+    labelsData.value.labels = _.cloneDeep(formData.value.labels);
   };
   const handleCheckChange = (checked, item) => {
     if (checked) {
@@ -399,11 +429,11 @@
     return result;
   };
   const handleOk = async () => {
-    validateLabel();
     const res = await formref.value?.validate();
     const groupFormRes = await groupForm.value?.validate();
     const hiddenFormData = groupForm.value?.getHiddenData();
-    if (!groupFormRes && !res && !validateTrigger.value) {
+    validateTrigger.value = true;
+    if (!groupFormRes && !res) {
       formData.value.attributes = {
         ...formData.value.attributes,
         ...hiddenFormData
@@ -453,7 +483,7 @@
     () => {
       serviceDataList.value = _.map(props.dataList, (o) => {
         const item = _.cloneDeep(o);
-        item.labels = {};
+        _.unset(item, ['labels', 'walrus.seal.io/stoppable']);
         return {
           ...item
         };
