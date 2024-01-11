@@ -7,7 +7,8 @@ export interface MatchingRule {
     environmentLabels?: Record<string, any>;
     environmentNames?: string[];
     environmentType?: string;
-    projectName?: string;
+    projectNames?: Array<string>;
+    projectLabels?: Record<string, any>;
     resourceLabels?: Record<string, any>;
   };
   template: {
@@ -58,8 +59,9 @@ export const definitionFormData = {
     environmentLabels: {},
     environmentNames: [],
     environmentType: '',
-    projectName: '',
-    resourceLabels: {}
+    projectNames: '',
+    resourceLabels: {},
+    projectLabels: {}
   },
   template: {
     id: '',

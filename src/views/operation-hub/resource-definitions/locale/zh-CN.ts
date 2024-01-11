@@ -9,6 +9,7 @@ export default {
   'resource.definition.detail.projectName': '项目名称',
   'resource.definition.detail.envName': '环境名称',
   'resource.definition.detail.envTag': '环境标签',
+  'resource.definition.detail.projectTag': '项目标签',
   'resource.definition.detail.resourceTag': '资源标签',
   'resource.definition.detail.matchRule': '匹配规则',
   'resource.definition.detail.createdResource': '已创建资源',

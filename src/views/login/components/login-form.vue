@@ -20,9 +20,6 @@
             </template>
           </a-dropdown>
         </div>
-        <div v-show="showModify" class="setting-tips">{{
-          $t('login.form.login.update.tips')
-        }}</div>
       </div>
       <!-- login box -->
       <div v-show="!showModify">

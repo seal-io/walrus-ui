@@ -1,6 +1,10 @@
 <template>
   <div class="item-wrap-box">
-    <div class="seal-form-item-wrap" :class="{ 'has-append': slots.append }">
+    <div
+      class="seal-form-item-wrap"
+      :class="{ 'has-append': slots.append }"
+      style="width: 100%"
+    >
       <div class="label">
         <span
           ><span>{{ label }}</span>

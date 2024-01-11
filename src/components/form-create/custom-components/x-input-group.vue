@@ -474,6 +474,7 @@
 
   .btn-wrapper {
     display: flex;
+    flex: none;
     justify-content: space-between;
     width: 60px;
     margin-left: 0;

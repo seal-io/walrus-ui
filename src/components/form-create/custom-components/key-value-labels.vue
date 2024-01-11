@@ -82,6 +82,7 @@
       const {
         labelList,
         labelItem,
+        dataObj,
         handleAddLabel,
         handleDeleteLabel,
         setLabelList
@@ -135,6 +136,7 @@
                       onDelete={() => {
                         handleDeleteLabel(labelList.value, sIndex);
                         emit('update:labelList', labelList.value);
+                        emit('update:value', dataObj.value);
                       }}
                     ></XInputGroup>
                   );

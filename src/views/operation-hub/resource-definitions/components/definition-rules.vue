@@ -64,8 +64,8 @@
             </template>
           </GroupTitle>
           <a-form-item
-            v-if="selectors.has('projectName')"
-            field="selector.projectName"
+            v-if="selectors.has('projectNames')"
+            field="selector.projectNames"
             hide-label
             :label="$t('resource.definition.detail.projectName')"
             :validate-trigger="['change']"
@@ -76,12 +76,26 @@
               }
             ]"
           >
+            <SealViewItemWrap
+              v-if="
+                pageAction === PageAction.VIEW &&
+                !formData.selector?.projectNames?.length
+              "
+              :label="$t('resource.definition.detail.envName')"
+              :style="{ width: `${InputWidth.LARGE}px` }"
+            >
+              <span>{{
+                $t('resource.definition.detail.applicableProjects.tips')
+              }}</span>
+            </SealViewItemWrap>
             <seal-select
-              v-model="formData.selector.projectName"
+              v-else
+              v-model="formData.selector.projectNames"
               :view-status="pageAction === PageAction.VIEW"
               :options="projectList"
               :required="true"
-              :multiple="false"
+              :multiple="true"
+              :max-count="2"
               :label="$t('resource.definition.detail.projectName')"
               :style="{ width: `${InputWidth.LARGE}px` }"
               @change="handleProjectChange"
@@ -91,7 +105,55 @@
               v-if="pageAction === PageAction.EDIT"
               type="text"
               status="danger"
-              @click="handleDeleteSelector('projectName')"
+              @click="handleDeleteSelector('projectNames')"
+            >
+              <template #icon>
+                <icon-delete class="size-16" />
+              </template>
+            </a-button>
+          </a-form-item>
+          <a-form-item
+            v-if="selectors.has('projectLabels')"
+            field="selector.projectLabels"
+            :label="$t('resource.definition.detail.projectTag')"
+            hide-label
+            :rules="[
+              {
+                validator(val, callback) {
+                  if (!projectLabels.list.length) {
+                    callback();
+                    return;
+                  }
+                  const valid = _.some(projectLabels.list, (item) => {
+                    return !_.trim(item.key);
+                  });
+                  if (valid) {
+                    callback(t('resource.definition.detail.rules.labelKey'));
+                    return;
+                  }
+                  callback();
+                },
+                message: $t('resource.definition.detail.rules.labelKey')
+              }
+            ]"
+          >
+            <SealFormItemWrap
+              :label="$t('resource.definition.detail.projectTag')"
+              :style="{ width: `${InputWidth.LARGE}px` }"
+            >
+              <keyValueLabels
+                v-model:value="formData.selector.projectLabels"
+                v-model:label-list="projectLabels.list"
+                :validate-trigger="validateTrigger"
+                :labels="projectLabels.labels"
+                :page-action="pageAction"
+              ></keyValueLabels>
+            </SealFormItemWrap>
+            <a-button
+              v-if="pageAction === PageAction.EDIT"
+              type="text"
+              status="danger"
+              @click="handleDeleteSelector('projectLabels')"
             >
               <template #icon>
                 <icon-delete class="size-16" />
@@ -111,33 +173,23 @@
               }
             ]"
           >
-            <SealViewItemWrap
-              v-if="
-                pageAction === PageAction.VIEW &&
-                !formData.selector?.environmentNames?.length
-              "
-              :label="$t('resource.definition.detail.envName')"
+            <SealFormItemWrap
               :style="{ width: `${InputWidth.LARGE}px` }"
+              :label="$t('resource.definition.detail.envName')"
             >
-              <span>{{
-                $t('resource.definition.detail.applicableProjects.tips')
-              }}</span>
-            </SealViewItemWrap>
-            <seal-select
-              v-else
-              v-model="formData.selector.environmentNames"
-              :view-status="pageAction === PageAction.VIEW"
-              allow-clear
-              :options="environmentList"
-              :required="true"
-              :multiple="true"
-              :max-count="2"
-              :loading="envLoading"
-              :label="$t('resource.definition.detail.envName')"
-              :style="{ width: `${InputWidth.LARGE}px` }"
-              :max-length="63"
-              show-word-limit
-            ></seal-select>
+              <CommonList
+                style="width: 100%"
+                :label="$t('resource.definition.detail.envName')"
+                :model-value="formData.selector.environmentNames"
+                :view-status="pageAction === PageAction.EDIT"
+                @update:model-value="
+                  (val) => {
+                    formData.selector.environmentNames = val;
+                  }
+                "
+              ></CommonList>
+            </SealFormItemWrap>
+
             <a-button
               v-if="pageAction === PageAction.EDIT"
               type="text"
@@ -219,6 +271,7 @@
               <keyValueLabels
                 v-model:value="formData.selector.environmentLabels"
                 v-model:label-list="environmentLabels.list"
+                :style="{ width: `100%` }"
                 :validate-trigger="validateTrigger"
                 :labels="environmentLabels.labels"
                 :page-action="pageAction"
@@ -405,6 +458,7 @@
     InjectTraceKey,
     InjectSchemaFormStatusKey
   } from '@/views/config';
+  import CommonList from '@/components/common-list/index.vue';
   import GroupForm from '@/components/dynamic-form/group-form.vue';
   import keyValueLabels from '@/components/form-create/custom-components/key-value-labels.vue';
   import primaryButtonGroup from '@/components/drop-button-group/primary-button-group.vue';
@@ -420,7 +474,8 @@
     | 'resourceLabels'
     | 'environmentNames'
     | 'environmentType'
-    | 'projectName';
+    | 'projectNames'
+    | 'projectLabels';
 
   const props = defineProps({
     title: {
@@ -490,7 +545,8 @@
     attributes: {},
     name: '',
     selector: {
-      projectName: '',
+      projectNames: [],
+      projectLabels: {},
       environmentLabels: {},
       environmentNames: [],
       environmentType: '',
@@ -517,6 +573,10 @@
   const environmentList = ref<any[]>([]);
   const uiSchema = ref<any>({});
   const environmentLabels = ref<any>({
+    labels: {},
+    list: []
+  });
+  const projectLabels = ref<any>({
     labels: {},
     list: []
   });
@@ -564,8 +624,8 @@
   };
   const initSelectors = () => {
     selectors.value = new Set();
-    if (formData.value.selector.projectName) {
-      selectors.value.add('projectName');
+    if (formData.value.selector.projectNames) {
+      selectors.value.add('projectNames');
     }
     if (formData.value.selector?.environmentNames?.length) {
       selectors.value.add('environmentNames');
@@ -578,6 +638,9 @@
     }
     if (_.keys(formData.value.selector.resourceLabels).length) {
       selectors.value.add('resourceLabels');
+    }
+    if (_.keys(formData.value.selector.projectLabels).length) {
+      selectors.value.add('projectLabels');
     }
   };
 
@@ -619,7 +682,7 @@
     }
   };
   const getEnvironmentList = async () => {
-    if (!formData.value.selector?.projectName) {
+    if (!formData.value.selector?.projectNames) {
       return;
     }
     envToken?.cancel?.();
@@ -627,7 +690,7 @@
     try {
       envLoading.value = true;
       const params = {
-        projectID: formData.value.selector.projectName,
+        projectID: formData.value.selector.projectNames,
         page: -1
       };
       const { data } = await queryEnvironmentsList(params, envToken.token);
@@ -780,6 +843,9 @@
     resourceLabels.value.labels = _.cloneDeep(
       formData.value.selector?.resourceLabels
     );
+    projectLabels.value.labels = _.cloneDeep(
+      formData.value.selector?.projectLabels
+    );
   };
   const init = async () => {
     if (!props.templateList.length) {
@@ -808,15 +874,7 @@
     submit,
     getSchema
   });
-  watch(
-    () => formData.value.selector.projectName,
-    () => {
-      getEnvironmentList();
-    },
-    {
-      immediate: true
-    }
-  );
+
   onMounted(() => {
     init();
   });
