@@ -48,7 +48,7 @@
                   }
                 ]}
               >
-                <a-grid-item span={4}>
+                <a-grid-item span={5}>
                   <Autotip>
                     <span>
                       {slots.name
@@ -62,12 +62,12 @@
                     <span>{props.rowData.type}</span>
                   </Autotip>
                 </a-grid-item>
-                <a-grid-item span={4}>
+                <a-grid-item span={5}>
                   <Autotip>
                     <span>{slots?.status?.({ record: props.rowData })}</span>
                   </Autotip>
                 </a-grid-item>
-                <a-grid-item span={3}>
+                <a-grid-item span={4}>
                   <Autotip>
                     <span>
                       {dayjs(_.get(props.rowData, 'createTime')).format(
@@ -76,12 +76,7 @@
                     </span>
                   </Autotip>
                 </a-grid-item>
-                <a-grid-item span={4}>
-                  <Autotip>
-                    <span></span>
-                  </Autotip>
-                </a-grid-item>
-                <a-grid-item span={3} class="actions">
+                <a-grid-item span={4} class="actions">
                   <span class="actions">
                     {slots?.actions?.({
                       record: props.rowData,
@@ -184,7 +179,7 @@
 
     .actions {
       display: flex;
-      justify-content: center;
+      justify-content: flex-start;
     }
 
     :deep(.arco-link) {

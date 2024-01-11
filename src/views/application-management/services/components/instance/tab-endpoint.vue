@@ -22,32 +22,21 @@
           tooltip
           :cell-style="{ minWidth: '40px' }"
           align="left"
-          data-index="type"
+          data-index="url"
           :title="$t('applications.applications.instance.endpoint')"
         >
           <template #cell="{ record }">
-            <a-space
-              v-if="record?.endpoints?.length"
-              direction="vertical"
-              :size="5"
+            <a-link
+              v-if="
+                _.startsWith(record.url, 'https') ||
+                _.startsWith(record.url, 'http')
+              "
+              style="line-height: 1"
+              :href="record.url"
+              target="_blank"
+              >{{ record.url }}</a-link
             >
-              <a-link
-                v-for="(item, index) in record.endpoints"
-                :key="index"
-                style="line-height: 1"
-                :href="
-                  includes(item, 'https') || includes(item, 'http')
-                    ? item
-                    : `http://${item}`
-                "
-                target="_blank"
-                >{{
-                  record.resourceSubKind === 'NodePort'
-                    ? get(split(item, ':'), 1)
-                    : item
-                }}</a-link
-              >
-            </a-space>
+            <span v-else style="padding: 1px 4px">{{ record.url }}</span>
           </template>
         </a-table-column>
       </template>
@@ -101,10 +90,7 @@
         params,
         axiosInstance?.token
       );
-      dataList.value = _.map(data || [], (item) => {
-        item.id = `${item.moduleName}/${item.name}`;
-        return item;
-      });
+      dataList.value = data || [];
       loading.value = false;
       requestCacheList.value.pop();
     } catch (error) {
@@ -115,36 +101,38 @@
   };
 
   const updateChunkedList = (data) => {
-    const collections = _.map(data?.collection, (item) => {
-      item.id = `${item.moduleName}/${item.name}`;
-      return item;
-    });
+    dataList.value = data?.collection || [];
 
-    // CREATE
-    if (data?.type === websocketEventType.CREATE) {
-      dataList.value = _.concat(collections, dataList.value);
-      return;
-    }
-    // DELETE
-    if (data?.type === websocketEventType.DELETE) {
-      dataList.value = _.filter(dataList.value, (item) => {
-        return !_.find(collections, (sItem) => sItem.id === item.id);
-      });
-      return;
-    }
-    // UPDATE
-    _.each(collections, (item) => {
-      const updateIndex = _.findIndex(
-        dataList.value,
-        (sItem) => sItem.id === item.id
-      );
-      if (updateIndex > -1) {
-        const updateItem = _.cloneDeep(item);
-        dataList.value[updateIndex] = updateItem;
-      } else {
-        dataList.value = _.concat(_.cloneDeep(item), dataList.value);
-      }
-    });
+    // const collections = _.map(data?.collection, (item) => {
+    //   item.id = `${item.moduleName}/${item.name}`;
+    //   return item;
+    // });
+
+    // // CREATE
+    // if (data?.type === websocketEventType.CREATE) {
+    //   dataList.value = _.concat(collections, dataList.value);
+    //   return;
+    // }
+    // // DELETE
+    // if (data?.type === websocketEventType.DELETE) {
+    //   dataList.value = _.filter(dataList.value, (item) => {
+    //     return !_.find(collections, (sItem) => sItem.id === item.id);
+    //   });
+    //   return;
+    // }
+    // // UPDATE
+    // _.each(collections, (item) => {
+    //   const updateIndex = _.findIndex(
+    //     dataList.value,
+    //     (sItem) => sItem.id === item.id
+    //   );
+    //   if (updateIndex > -1) {
+    //     const updateItem = _.cloneDeep(item);
+    //     dataList.value[updateIndex] = updateItem;
+    //   } else {
+    //     dataList.value = _.concat(_.cloneDeep(item), dataList.value);
+    //   }
+    // });
   };
   const updateHandler = (list: object[]) => {
     _.each(list, (data) => {
@@ -158,7 +146,7 @@
       chunkRequesSource?.cancel?.();
       nextTick(() => {
         chunkRequesSource = setChunkRequest({
-          url: `${SERVICE_RESOURCE_API_PREFIX()}/access-endpoints`,
+          url: `${SERVICE_RESOURCE_API_PREFIX()}/endpoints`,
           handler: updateHandler,
           beforeReconnect: fetchData
         });

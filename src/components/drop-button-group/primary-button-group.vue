@@ -84,36 +84,40 @@
                               label={t(item.label)}
                               disabled={item.disabled}
                             >
-                              <a-link
-                                disabled={item.disabled}
-                                v-slots={{
-                                  icon: () => (
-                                    <>
-                                      {item.icon ? (
-                                        <>{renderIcon(item)}</>
-                                      ) : null}
-                                    </>
-                                  )
-                                }}
-                                style={{
-                                  fontSize: 'var(--font-size-small)',
-                                  fontWeight: 500
-                                }}
-                              >
-                                {props.itemType === 'text' ? (
-                                  <span
-                                    style={{
-                                      color: item.disabled
-                                        ? 'var(--color-text-4)'
-                                        : 'var(--color-text-2)'
-                                    }}
-                                  >
-                                    {t(item.label)}
-                                  </span>
-                                ) : (
-                                  t(item.label)
-                                )}
-                              </a-link>
+                              {slots?.item ? (
+                                slots.item({ item })
+                              ) : (
+                                <a-link
+                                  disabled={item.disabled}
+                                  v-slots={{
+                                    icon: () => (
+                                      <>
+                                        {item.icon ? (
+                                          <>{renderIcon(item)}</>
+                                        ) : null}
+                                      </>
+                                    )
+                                  }}
+                                  style={{
+                                    fontSize: 'var(--font-size-small)',
+                                    fontWeight: 500
+                                  }}
+                                >
+                                  {props.itemType === 'text' ? (
+                                    <span
+                                      style={{
+                                        color: item.disabled
+                                          ? 'var(--color-text-4)'
+                                          : 'var(--color-text-2)'
+                                      }}
+                                    >
+                                      {t(item.label)}
+                                    </span>
+                                  ) : (
+                                    t(item.label)
+                                  )}
+                                </a-link>
+                              )}
                             </a-doption>
                           }
                         </>
