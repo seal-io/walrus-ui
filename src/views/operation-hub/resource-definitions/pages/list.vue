@@ -87,10 +87,7 @@
             }"
           >
             <template #cell="{ record }">
-              <span v-if="record.builtin">{{ record.name }}</span>
-              <a-link v-else size="small" :hoverable="false">{{
-                record.name
-              }}</a-link>
+              <a-link size="small" :hoverable="false">{{ record.name }}</a-link>
             </template>
           </a-table-column>
           <a-table-column
@@ -253,7 +250,12 @@
         sort: [sort.value]
       };
       const { data } = await queryResourceDefinitions(params);
-      dataList.value = data?.items || [];
+      dataList.value = _.map(data?.items || [], (sItem) => {
+        sItem.disabled =
+          userStore.userSetting?.EnableBuiltinResourceDefinition?.value ===
+            'true' && sItem.builtin;
+        return sItem;
+      });
       total.value = data?.pagination?.total || 0;
       loading.value = false;
     } catch (error) {
@@ -315,7 +317,7 @@
     });
   };
   const handleCellClick = (row, column) => {
-    if (column.dataIndex === 'name' && !row.builtin) {
+    if (column.dataIndex === 'name') {
       handleView(row);
     }
   };

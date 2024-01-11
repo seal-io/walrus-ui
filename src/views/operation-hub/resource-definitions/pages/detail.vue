@@ -265,6 +265,7 @@
               :schema="deinitionSchema"
               :template-info="formData"
               page="definition"
+              :editable="!_.get(formData, 'builtin')"
               @reset="handleResetUISchema"
             ></component>
           </a-tab-pane>

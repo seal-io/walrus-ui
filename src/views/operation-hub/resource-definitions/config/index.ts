@@ -51,11 +51,13 @@ export const actionList: MoreAction[] = [
     value: 'edit',
     icon: 'icon-edit',
     status: 'normal',
-    filterFun() {
-      return userStore.hasRolesActionsPermission({
-        resource: Resources.ResourceDefinitions,
-        actions: [Actions.PUT]
-      });
+    filterFun(itemInfo: any) {
+      return (
+        userStore.hasRolesActionsPermission({
+          resource: Resources.ResourceDefinitions,
+          actions: [Actions.PUT]
+        }) && !itemInfo?.builtin
+      );
     }
   },
   {
@@ -63,11 +65,16 @@ export const actionList: MoreAction[] = [
     value: 'delete',
     icon: 'icon-delete',
     status: 'danger',
-    filterFun() {
-      return userStore.hasRolesActionsPermission({
-        resource: Resources.ResourceDefinitions,
-        actions: [Actions.DELETE]
-      });
+    filterFun(itemInfo) {
+      return (
+        userStore.hasRolesActionsPermission({
+          resource: Resources.ResourceDefinitions,
+          actions: [Actions.DELETE]
+        }) &&
+        (userStore.userSetting?.EnableBuiltinResourceDefinition?.value ===
+          'false' ||
+          !itemInfo?.builtin)
+      );
     }
   }
 ];

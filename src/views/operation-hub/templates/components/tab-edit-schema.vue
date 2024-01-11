@@ -39,16 +39,18 @@
       </a-space>
       <a-space
         v-if="
-          projectID
-            ? userStore.hasProjectResourceActions({
-                resource: Resources.TemplateVersions,
-                projectID,
-                actions: [Actions.PUT]
-              })
-            : userStore.hasRolesActionsPermission({
-                resource: Resources.TemplateVersions,
-                actions: [Actions.PUT]
-              })
+          page === 'template'
+            ? projectID
+              ? userStore.hasProjectResourceActions({
+                  resource: Resources.TemplateVersions,
+                  projectID,
+                  actions: [Actions.PUT]
+                })
+              : userStore.hasRolesActionsPermission({
+                  resource: Resources.TemplateVersions,
+                  actions: [Actions.PUT]
+                })
+            : editable
         "
         :size="16"
       >
@@ -173,6 +175,12 @@
       type: String as PropType<'template' | 'definition'>,
       default() {
         return 'template';
+      }
+    },
+    editable: {
+      type: Boolean,
+      default() {
+        return true;
       }
     }
   });
