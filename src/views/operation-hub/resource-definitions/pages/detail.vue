@@ -29,9 +29,9 @@
           "
           @edit="handleEditPage"
         >
-          <!-- <template #right>
+          <template #right>
             <QuestionPopup :link="QAlinkMap.Settings"></QuestionPopup>
-          </template> -->
+          </template>
         </GroupTitle>
         <a-form
           ref="formref"

@@ -3,6 +3,7 @@
     top="10%"
     :align-center="false"
     :visible="show"
+    :closable="false"
     :mask-closable="false"
     :ok-text="$t('common.button.save')"
     :title="$t('account.settings.tokens.new')"
@@ -15,6 +16,7 @@
       <a-form-item
         field="name"
         :label="$t('account.settings.tokens.name')"
+        hide-label
         validate-trigger="change"
         :rules="[
           {
@@ -23,10 +25,16 @@
           }
         ]"
       >
-        <a-input v-model.trim="formData.name" />
+        <seal-input
+          v-model.trim="formData.name"
+          :style="{ width: `${InputWidth.LARGE}px` }"
+          :required="true"
+          :label="$t('account.settings.tokens.name')"
+        />
       </a-form-item>
       <a-form-item
         field="expirationSeconds"
+        hide-label
         :label="$t('account.settings.tokens.expiration')"
         validate-trigger="change"
         :rules="[
@@ -36,7 +44,13 @@
           }
         ]"
       >
-        <a-select v-model="formData.expirationSeconds" class="expire-select">
+        <seal-select
+          v-model="formData.expirationSeconds"
+          class="expire-select"
+          :style="{ width: `${InputWidth.LARGE}px` }"
+          :required="true"
+          :label="$t('account.settings.tokens.expiration')"
+        >
           <a-option
             v-for="(item, index) in expireList"
             :key="index"
@@ -59,7 +73,7 @@
               <span class="label">{{ $t(item.label) }}</span>
             </span>
           </a-option>
-        </a-select>
+        </seal-select>
       </a-form-item>
     </a-form>
     <template #footer>
@@ -88,6 +102,7 @@
 <script lang="ts" setup>
   import EditPageFooter from '@/components/edit-page-footer/index.vue';
   import dayjs from 'dayjs';
+  import { InputWidth } from '@/views/config';
   import { cloneDeep } from 'lodash';
   import { reactive, ref } from 'vue';
   import { createTokens, FormDataType } from '../api/tokens';

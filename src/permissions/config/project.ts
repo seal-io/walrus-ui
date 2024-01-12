@@ -7,14 +7,6 @@ import {
 
 export default [
   {
-    resource: Resources.ResourceComponents,
-    title: 'permission.resource.project.appResource',
-    group: Group.AppManagement,
-    order: ResourcesOrder.ResourceComponents,
-    resourceOrder: ProjectResourcesOrder.ResourceComponents,
-    actions: ['GET']
-  },
-  {
     resource: Resources.ResourceRevisions,
     title: 'permission.resource.project.appRevision',
     group: Group.AppManagement,
@@ -60,6 +52,22 @@ export default [
     group: Group.OperatorHub,
     order: ResourcesOrder.Connectors,
     resourceOrder: ProjectResourcesOrder.Connectors,
+    actions: ['GET', 'POST', 'DELETE', 'PUT']
+  },
+  {
+    resource: Resources.Templates,
+    title: 'permission.resource.system.operation.module',
+    group: Group.OperatorHub,
+    order: ResourcesOrder.Templates,
+    resourceOrder: ProjectResourcesOrder.Templates,
+    actions: ['GET', 'POST', 'DELETE', 'PUT']
+  },
+  {
+    resource: Resources.Catalogs,
+    title: 'menu.operatorHub.catalog',
+    group: Group.OperatorHub,
+    order: ResourcesOrder.Catalogs,
+    resourceOrder: ProjectResourcesOrder.Catalogs,
     actions: ['GET', 'POST', 'DELETE', 'PUT']
   },
   {

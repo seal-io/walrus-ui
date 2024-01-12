@@ -27,7 +27,7 @@
           <a-select
             v-model="formData.subject.id"
             allow-search
-            style="width: 220px"
+            style="width: 220px; height: 36px"
             :placeholder="$t('applications.projects.authorize.account')"
             @change="handleSubjectChange"
           >

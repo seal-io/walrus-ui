@@ -70,10 +70,12 @@ export enum ResourcesOrder {
 export enum ProjectResourcesOrder {
   Projects,
   Environments,
+  Workflows,
   Variables,
+  Templates,
+  Catalogs,
   Connectors,
   ProjectSubjects,
-  Workflows,
   Resources,
   ResourceRevisions,
   ResourceComponents

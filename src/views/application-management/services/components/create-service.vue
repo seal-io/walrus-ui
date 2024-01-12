@@ -616,7 +616,7 @@
     const hiddenFormData = groupForm.value?.getHiddenData();
     validateTrigger.value = true;
     if (!res && !groupFormRes) {
-      if (!formData.value.template.project?.id) {
+      if (!formData.value.template?.project?.id) {
         formData.value.template = _.omit(formData.value.template, 'project');
       }
       if (dataType.value === ServiceDataType.service) {
@@ -640,7 +640,7 @@
   };
   const getData = () => {
     const hiddenFormData = groupForm.value?.getHiddenData();
-    if (!formData.value.template.project?.id) {
+    if (!formData.value.template?.project?.id) {
       formData.value.template = _.omit(formData.value.template, 'project');
     }
     if (dataType.value === ServiceDataType.service) {
