@@ -26,7 +26,24 @@
           :editor-default-value="codeResult"
           lang="json"
           :height="400"
-        ></AceEditor>
+        >
+          <template #label>
+            <a-select
+              v-model="compareType"
+              :bordered="false"
+              style="height: 36px; padding-left: 0"
+              @change="handleCompareTypeChange"
+            >
+              <a-option
+                v-for="item in options"
+                :key="item.value"
+                :value="item.value"
+              >
+                {{ $t(item.label) }}
+              </a-option>
+            </a-select>
+          </template>
+        </AceEditor>
         <div class="m-t-10">
           <seal-textarea
             v-model="changeComment"
@@ -81,7 +98,7 @@
 
 <script lang="ts" setup>
   import _ from 'lodash';
-  import { ref } from 'vue';
+  import { ref, PropType, Prop, watch } from 'vue';
   import { useRoute } from 'vue-router';
   import { useUserStore } from '@/store';
   import { Resources } from '@/permissions/config';
@@ -98,10 +115,22 @@
         return {};
       }
     },
+    options: {
+      type: Array as PropType<{ label: string; value: string }[]>,
+      default() {
+        return [];
+      }
+    },
     show: {
       type: Boolean,
       default() {
         return false;
+      }
+    },
+    activeType: {
+      type: String,
+      default() {
+        return '';
       }
     },
     content: {
@@ -126,9 +155,21 @@
   const environmentID = route.params.environmentId as string;
   const editorKey = ref(Date.now());
   const changeComment = ref('');
+  const compareType = ref(props.activeType);
+  const compareOptions = [
+    {
+      label: 'applications.service.revision.runtime',
+      value: 'computedAttributes'
+    },
+    { label: 'applications.service.revision.custom', value: 'attributes' }
+  ];
 
-  const emit = defineEmits(['confirm', 'update:show']);
+  const emit = defineEmits(['confirm', 'update:show', 'compare']);
 
+  const handleCompareTypeChange = (val) => {
+    compareType.value = val;
+    emit('compare', val);
+  };
   const handleCancel = () => {
     emit('update:show', false);
   };
@@ -158,6 +199,12 @@
       reset();
     }, 300);
   };
+  watch(
+    () => props.content,
+    () => {
+      init();
+    }
+  );
 </script>
 
 <style lang="less">

@@ -89,8 +89,7 @@ export default {
   'applications.applications.history.running': '部署日志',
   'applications.applications.history.diff.title': '当前版本与目标版本配置对比',
   'applications.applications.history.diff.upgrade': '与最新应用配置对比',
-  'applications.applications.history.change.title':
-    '当前版本与上一版本配置对比',
+  'applications.applications.history.change.title': '与上一版本配置对比',
   'applications.applications.history.diff.remove': '标记为最新版本配置',
   'applications.applications.history.diff.same': '配置一致',
   'applications.applications.history.diff.add': '标记为当前版本配置',
@@ -174,5 +173,7 @@ export default {
   'applications.resource.log.lastlog': '上次运行日志',
   'applications.service.stop.tips': '停止{type}！',
   'applications.service.stop.env': '停止环境！',
-  'applications.service.stop.confirm': '底层组件将被删除,是否确定停止?'
+  'applications.service.stop.confirm': '底层组件将被删除,是否确定停止?',
+  'applications.service.revision.runtime': '运行时配置',
+  'applications.service.revision.custom': '自定义配置'
 };

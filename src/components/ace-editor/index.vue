@@ -1,8 +1,10 @@
 <template>
   <div class="ace-wrapper">
-    <div v-if="$attrs.label" class="label">
+    <div v-if="$attrs.label || slots.label" class="label">
       <span>
-        <span>{{ $attrs.label }}</span>
+        <slot name="label"
+          ><span>{{ $attrs.label }}</span></slot
+        >
         <span
           v-if="$attrs.required"
           class="bold-500 m-l-2 star"
@@ -58,7 +60,8 @@
     PropType,
     ref,
     useAttrs,
-    inject
+    inject,
+    useSlots
   } from 'vue';
   import { InjectTraceKey } from '@/views/config';
   import ace, { Range, edit } from 'ace-builds';
@@ -171,6 +174,7 @@
   const defaultHolder = {
     yaml: '# yaml format'
   };
+  const slots = useSlots();
   const traceKey = inject(InjectTraceKey, ref('traceKey'));
   const $attrs = useAttrs();
   const emits = defineEmits(['change', 'update:modelValue', 'input', 'blur']);
@@ -432,7 +436,8 @@
     .label {
       display: flex;
       align-items: center;
-      padding: 10px;
+      height: 36px;
+      padding: 0 10px;
       color: var(--color-text-3);
       border-bottom: 1px solid var(--color-border-2);
     }

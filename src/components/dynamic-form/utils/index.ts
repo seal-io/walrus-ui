@@ -216,7 +216,6 @@ export const initFieldValue = ({
   if (!_.has(defaultFormData, fieldPath)) {
     _.set(defaultFormData, fieldPath, _.cloneDeep(value));
   }
-  console.log('minItems==========', schema);
   const isRequiredItemProperty = schema.arrayItemProperty;
   const checkByValue = required || !isEmptyValueField(schema, value);
   const checkByParentObject = parentObjectExsitsInFormData(formData, fieldPath);
@@ -279,16 +278,26 @@ export const viewFieldValue = ({
   required: boolean;
 }) => {
   const defaultValue = initFieldDefaultValue(schema);
-  const currentValue = _.get(formData, fieldPath);
   const originValue = _.get(defaultFormData, fieldPath);
 
-  if (_.has(formData, fieldPath)) {
-    _.set(uiFormData, fieldPath, _.cloneDeep(currentValue));
+  if (_.has(uiFormData, fieldPath)) {
+    _.set(formData, fieldPath, _.cloneDeep(_.get(uiFormData, fieldPath)));
   } else {
     _.set(uiFormData, fieldPath, _.cloneDeep(originValue || defaultValue));
+
+    const checkByParentObject = parentObjectExsitsInFormData(
+      uiFormData,
+      fieldPath
+    );
+    const isRequiredItemProperty = schema.arrayItemProperty;
+    const checkByValue = required || !isEmptyValueField(schema, defaultValue);
+    if (checkByValue && (checkByParentObject || isRequiredItemProperty)) {
+      _.set(formData, fieldPath, _.cloneDeep(originValue || defaultValue));
+    }
   }
+
   // Avoid overriding global defaults
-  if (!_.has(formData, fieldPath)) {
+  if (!_.has(uiFormData, fieldPath)) {
     _.set(defaultFormData, fieldPath, _.cloneDeep(defaultValue));
   }
 };

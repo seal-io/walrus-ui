@@ -225,7 +225,11 @@ export default function useServiceData(props?) {
 
   const setFormAttributes = async () => {
     formData.value = _.cloneDeep(serviceInfo.value);
-    uiFormData.value = _.cloneDeep(serviceInfo.value.attributes);
+    uiFormData.value = _.cloneDeep(serviceInfo.value.computedAttributes);
+    formData.value.attributes = _.cloneDeep(
+      serviceInfo.value.computedAttributes
+    );
+    _.unset(formData.value, 'computedAttributes');
     // 1. get the template meta data 2.set the default value
     let moduleTemplate: any = {};
     if (dataType.value === ServiceDataType.resource) {
