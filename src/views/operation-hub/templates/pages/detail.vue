@@ -41,7 +41,11 @@
             })
           "
           @edit="handleEdit"
-        ></GroupTitle>
+        >
+          <template #right>
+            <QuestionPopup :link="QAlinkMap.UISchema"></QuestionPopup>
+          </template>
+        </GroupTitle>
         <a-form
           ref="formref"
           :model="formData"
@@ -259,8 +263,10 @@
   import {
     PageAction,
     validateLabelNameRegx,
-    InputWidth
+    InputWidth,
+    QAlinkMap
   } from '@/views/config';
+  import QuestionPopup from '@/components/question-popup/index.vue';
   import { OPERATIONHUB } from '@/router/config';
   import { Resources, Actions } from '@/permissions/config';
   import { useUserStore, useTabBarStore } from '@/store';
