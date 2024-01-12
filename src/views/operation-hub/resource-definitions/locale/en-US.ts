@@ -12,7 +12,7 @@ export default {
   'resource.definition.detail.projectTag': 'Project Labels',
   'resource.definition.detail.resourceTag': 'Resource Labels',
   'resource.definition.detail.matchRule': 'Match Rules',
-  'resource.definition.detail.createdResource': 'Created Resources',
+  'resource.definition.detail.createdResource': 'Provisioned Resources',
   'resource.definition.detail.rule': 'rule-{name}',
   'resource.definition.detail.rules.labelKey': 'label Key cannot be empty',
   'resource.definition.detail.rules.defName':
