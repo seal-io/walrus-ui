@@ -76,26 +76,13 @@
               }
             ]"
           >
-            <SealViewItemWrap
-              v-if="
-                pageAction === PageAction.VIEW &&
-                !formData.selector?.projectNames?.length
-              "
-              :label="$t('resource.definition.detail.envName')"
-              :style="{ width: `${InputWidth.LARGE}px` }"
-            >
-              <span>{{
-                $t('resource.definition.detail.applicableProjects.tips')
-              }}</span>
-            </SealViewItemWrap>
             <seal-select
-              v-else
               v-model="formData.selector.projectNames"
               :view-status="pageAction === PageAction.VIEW"
               :options="projectList"
               :required="true"
               :multiple="true"
-              :max-count="2"
+              :max-tag-count="2"
               :label="$t('resource.definition.detail.projectName')"
               :style="{ width: `${InputWidth.LARGE}px` }"
               @change="handleProjectChange"
@@ -216,17 +203,20 @@
             <seal-select
               v-model="formData.selector.environmentType"
               :view-status="pageAction === PageAction.VIEW"
-              :options="[]"
+              :options="
+                _.map(EnvironmentTypeList, (item) => {
+                  return {
+                    label: t(item.label),
+                    value: item.value
+                  };
+                })
+              "
+              :multiple="true"
               :required="true"
+              :max-tag-count="3"
               :label="$t('applications.environment.type')"
               :style="{ width: `${InputWidth.LARGE}px` }"
             >
-              <a-option
-                v-for="item in EnvironmentTypeList"
-                :key="item.value"
-                :value="item.value"
-                :label="$t(item.label)"
-              ></a-option>
             </seal-select>
             <a-button
               v-if="pageAction === PageAction.EDIT"
@@ -549,7 +539,7 @@
       projectLabels: {},
       environmentLabels: {},
       environmentNames: [],
-      environmentType: '',
+      environmentType: [],
       resourceLabels: {}
     },
     template: {
@@ -630,7 +620,7 @@
     if (formData.value.selector?.environmentNames?.length) {
       selectors.value.add('environmentNames');
     }
-    if (formData.value.selector.environmentType) {
+    if (formData.value.selector?.environmentType?.length) {
       selectors.value.add('environmentType');
     }
     if (_.keys(formData.value.selector.environmentLabels).length) {

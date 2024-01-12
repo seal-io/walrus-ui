@@ -213,7 +213,11 @@
               label={label as string}
               style={{ width: attrs.style?.width || 'max-content' }}
             >
-              <TagList values={values as any} list={list as any}></TagList>
+              <TagList
+                values={values as any}
+                list={list as any}
+                isLocale={props.isLocale}
+              ></TagList>
             </SealViewItemWrap>
           );
         }
