@@ -222,7 +222,7 @@
               </span>
               <span class="item">
                 <span class="title">
-                  {t('applications.applications.table.service')}
+                  {t('applications.applications.table.resource')}
                 </span>
                 <Autotip>
                   {_.get(nodeData.value, 'status.summaryStatus') ===

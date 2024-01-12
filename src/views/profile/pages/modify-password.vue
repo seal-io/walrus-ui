@@ -12,6 +12,7 @@
       >
         <seal-input-password
           v-model="formData.oldPassword"
+          :style="{ width: `${InputWidth.LARGE}px` }"
           :required="true"
           allow-clear
           :placeholder="$t('user.password.oldPassword')"
@@ -29,6 +30,7 @@
       >
         <seal-input-password
           v-model="formData.newPassword"
+          :style="{ width: `${InputWidth.LARGE}px` }"
           :required="true"
           allow-clear
           :placeholder="$t('user.password.newPassword')"
@@ -49,6 +51,7 @@
       >
         <seal-input-password
           v-model="formData.confirmPassword"
+          :style="{ width: `${InputWidth.LARGE}px` }"
           :required="true"
           allow-clear
           :placeholder="$t('user.password.confirmPassword')"
@@ -85,6 +88,7 @@
 </template>
 
 <script lang="ts" setup>
+  import { InputWidth } from '@/views/config';
   import EditPageFooter from '@/components/edit-page-footer/index.vue';
   import { reactive } from 'vue';
   import { useI18n } from 'vue-i18n';

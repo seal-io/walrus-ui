@@ -42,8 +42,7 @@ export default function useCompleteData(props?) {
   const resourceDefinitionSchemaMap = ref<any>({});
   const completeData = ref<Partial<HintKey>>({
     [HintKeyMaps.resource]: null,
-    [HintKeyMaps.var]: null,
-    [HintKeyMaps.service]: null
+    [HintKeyMaps.var]: null
   });
   const variableList = ref<any[]>([]);
   const serviceDataList = ref<any[]>([]);
