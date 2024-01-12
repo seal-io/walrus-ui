@@ -112,8 +112,13 @@
 <script lang="ts" setup>
   import _ from 'lodash';
   // import Ajv from 'ajv';
+  import QuestionPopup from '@/components/question-popup/index.vue';
   import { useUserStore } from '@/store';
-  import { InjectSchemaFormStatusKey, PageAction } from '@/views/config';
+  import {
+    InjectSchemaFormStatusKey,
+    PageAction,
+    QAlinkMap
+  } from '@/views/config';
   import { Resources, Actions } from '@/permissions/config';
   import { useFullscreen } from '@vueuse/core';
   import { Message } from '@arco-design/web-vue';

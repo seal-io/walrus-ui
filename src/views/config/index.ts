@@ -130,6 +130,20 @@ export const QAlinkMap = {
       'en-US': 'https://seal-io.github.io/docs/application/project'
     }
   ],
+  Definition: [
+    {
+      'zh-CN': 'https://seal-io.github.io/docs/operation/resource-definition',
+      'en-US': 'https://seal-io.github.io/docs/operation/resource-definition'
+    }
+  ],
+  UISchema: [
+    {
+      'zh-CN':
+        'https://seal-io.github.io/docs/operation/template#customizing-template-ui-styles',
+      'en-US':
+        'https://seal-io.github.io/docs/operation/template#customizing-template-ui-styles'
+    }
+  ],
   ProjectDetail: [
     {
       'label': 'menu.operatorHub.evniroment',

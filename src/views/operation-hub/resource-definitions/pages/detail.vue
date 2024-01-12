@@ -30,7 +30,7 @@
           @edit="handleEditPage"
         >
           <template #right>
-            <QuestionPopup :link="QAlinkMap.Settings"></QuestionPopup>
+            <QuestionPopup :link="QAlinkMap.Definition"></QuestionPopup>
           </template>
         </GroupTitle>
         <a-form
