@@ -318,6 +318,10 @@
 
         .title {
           cursor: default;
+
+          .text {
+            color: var(--color-text-4);
+          }
         }
         // border-color: transparent;
         // .title {
