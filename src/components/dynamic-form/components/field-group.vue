@@ -125,7 +125,7 @@
           return null;
         }
         return (
-          <>
+          <span class="m-r-10" onClick={withModifiers(() => {}, ['stop'])}>
             {!props.schema.isRequired &&
             unsetType() &&
             !props.schema.minItems ? (
@@ -136,9 +136,10 @@
                 onChange={(val) => handleToggleField(val)}
               ></a-switch>
             ) : null}
-          </>
+          </span>
         );
       };
+      // level 0 content always show
       const renderLevel0Conent = () => {
         return (
           <a-grid-item
@@ -147,8 +148,8 @@
             {props.schema.title || props.schema.name ? (
               <div class="title parent-name">
                 <div>
+                  <>{renderNullableButton()}</>
                   <span>{props.schema.title || props.schema.name}</span>
-                  <span class="m-l-10">{renderNullableButton()}</span>
                 </div>
                 <div>{slots.buttons?.()}</div>
               </div>
@@ -165,6 +166,7 @@
               {props.schema.title || props.schema.name ? (
                 <div class="title parent-name">
                   <div>
+                    <>{renderNullableButton()}</>
                     <span>{props.schema.title || props.schema.name}</span>
                     {props.schema.description ? (
                       <a-tooltip content={props.schema.description}>
@@ -174,7 +176,6 @@
                         />
                       </a-tooltip>
                     ) : null}
-                    <span class="m-l-10">{renderNullableButton()}</span>
                   </div>
                   <div>{slots.buttons?.()}</div>
                 </div>
@@ -204,16 +205,15 @@
               }}
               title={props.schema.title || props.schema.name}
               showDelete={false}
+              showArrow={false}
               v-slots={{
                 title: () => {
                   return (
                     <span>
+                      <>{renderNullableButton()}</>
                       <span>{props.schema.title || props.schema.name}</span>
                     </span>
                   );
-                },
-                right: () => {
-                  return <>{renderNullableButton()}</>;
                 }
               }}
             >
