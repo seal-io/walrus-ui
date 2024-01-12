@@ -151,7 +151,10 @@
       v-model:show="showDiffModal"
       :title="title"
       :content="diffContent"
+      :options="compareOptions"
       :service-info="rollbackData"
+      active-type="attributes"
+      @compare="handleCompareChange"
       @confirm="handleConfirmDiff"
     ></serviceSpecDiff>
   </div>
@@ -212,6 +215,13 @@
     defaultSortField: '-createTime',
     defaultOrder: 'descend'
   });
+  const compareOptions = [
+    {
+      label: 'applications.service.revision.runtime',
+      value: 'computedAttributes'
+    },
+    { label: 'applications.service.revision.custom', value: 'attributes' }
+  ];
   const projectID = route.params.projectId || '';
   const environmentID = route.params.environmentId as string;
   const title = ref('');
@@ -224,6 +234,8 @@
   const showDiffModal = ref(false);
   const initialStatus = ref({});
   const diffContent = ref({});
+  const attributesDiffContent = ref({});
+  const computedDiffContent = ref({});
   const rollbackData = ref<any>({});
   const ids = ref<{ id: string }[]>([]);
   const dataList = ref<HistoryData[]>([]);
@@ -232,6 +244,13 @@
     perPage: 10
   });
 
+  const handleCompareChange = (val) => {
+    if (val === 'attributes') {
+      diffContent.value = attributesDiffContent.value;
+    } else {
+      diffContent.value = computedDiffContent.value;
+    }
+  };
   const handleRollbackService = async (comment) => {
     try {
       await rollbackService({
@@ -256,10 +275,19 @@
         id: row.id
       };
       const { data } = await queryRevisionChange(params);
-      diffContent.value = {
-        old: data.old?.attributes ? JSON.stringify(data.old, null, 2) : '',
-        new: JSON.stringify(data.new, null, 2)
+      attributesDiffContent.value = {
+        old: data.old?.attributes
+          ? JSON.stringify(_.omit(data.old, 'computedAttributes'), null, 2)
+          : '',
+        new: JSON.stringify(_.omit(data.new, 'computedAttributes'), null, 2)
       };
+      computedDiffContent.value = {
+        old: data.old?.computedAttributes
+          ? JSON.stringify(data.old.computedAttributes, null, 2)
+          : '',
+        new: JSON.stringify(data.new.computedAttributes, null, 2)
+      };
+      diffContent.value = attributesDiffContent.value;
       showDiffModal.value = true;
       title.value = t('applications.applications.history.change.title');
     } catch (error) {

@@ -1,15 +1,15 @@
 <template>
   <a-modal
-    top="10%"
+    top="5%"
     :closable="false"
     :align-center="false"
-    :width="600"
+    :width="700"
     :ok-text="$t('common.button.save')"
     :visible="show"
     :mask-closable="false"
     unmount-on-close
     :body-style="{
-      'max-height': '500px',
+      'max-height': '660px',
       'overflow': 'auto',
       'text-align': 'center'
     }"
@@ -73,16 +73,32 @@
         >
           <a-spin style="width: 100%" :loading="compareloading">
             <AceEditor
-              v-show="removeLines.length || addLines.length"
               ref="rollback_editor"
               read-only
-              style="width: 100%"
+              style="width: 100%; margin-bottom: 10px"
               :remove-lines="removeLines"
               :add-lines="addLines"
               :editor-default-value="codeResult"
               lang="json"
-              :height="320"
-            ></AceEditor>
+              :height="300"
+            >
+              <template #label>
+                <a-select
+                  v-model="compareType"
+                  :bordered="false"
+                  style="height: 36px; padding-left: 0"
+                  @change="handleCompareTypeChange"
+                >
+                  <a-option
+                    v-for="item in compareOptions"
+                    :key="item.value"
+                    :value="item.value"
+                  >
+                    {{ $t(item.label) }}
+                  </a-option>
+                </a-select>
+              </template>
+            </AceEditor>
             <a-alert
               v-show="!removeLines.length && !addLines.length && formData.id"
               >{{ $t('applications.applications.history.diff.same') }}</a-alert
@@ -92,7 +108,7 @@
       </a-form>
     </div>
     <template #footer>
-      <EditPageFooter style="margin-top: 0">
+      <EditPageFooter style="margin-top: 0; padding-top: 0">
         <template #save>
           <a-button
             :loading="submitLoading"
@@ -171,6 +187,8 @@
   const loading = ref(false);
   const compareloading = ref(false);
   const formref = ref();
+  const attributesDiffContent = ref({});
+  const computedDiffContent = ref({});
   const formData = reactive({
     projectID: props.projectID,
     serviceID: '',
@@ -178,6 +196,23 @@
     id: ''
   });
 
+  const compareType = ref('attributes');
+
+  const compareOptions = [
+    {
+      label: 'applications.service.revision.runtime',
+      value: 'computedAttributes'
+    },
+    { label: 'applications.service.revision.custom', value: 'attributes' }
+  ];
+
+  const handleCompareTypeChange = () => {
+    if (compareType.value === 'attributes') {
+      getDiffCodeResult(attributesDiffContent.value);
+    } else {
+      getDiffCodeResult(computedDiffContent.value);
+    }
+  };
   const handleRollbackService = async () => {
     try {
       await rollbackService({
@@ -221,11 +256,20 @@
         id: formData.id
       };
       const { data } = await diffRevisionSpec(params);
-      const diffContent = {
-        old: JSON.stringify(data.old, null, 2),
-        new: JSON.stringify(data.new, null, 2)
+      attributesDiffContent.value = {
+        old: data.old?.attributes
+          ? JSON.stringify(_.omit(data.old, 'computedAttributes'), null, 2)
+          : '',
+        new: JSON.stringify(_.omit(data.new, 'computedAttributes'), null, 2)
       };
-      getDiffCodeResult(diffContent);
+      computedDiffContent.value = {
+        old: data.old?.computedAttributes
+          ? JSON.stringify(data.old.computedAttributes, null, 2)
+          : '',
+        new: JSON.stringify(data.new.computedAttributes, null, 2)
+      };
+
+      handleCompareTypeChange();
       compareloading.value = false;
     } catch (error) {
       compareloading.value = false;

@@ -1,5 +1,12 @@
 <script lang="tsx">
-  import { defineComponent, ref, withModifiers, inject } from 'vue';
+  import {
+    defineComponent,
+    ref,
+    withModifiers,
+    inject,
+    computed,
+    watch
+  } from 'vue';
   import _ from 'lodash';
   import ModuleWrapper from '@/components/module-wrapper/index.vue';
   import { InjectSchemaFormStatusKey, PageAction } from '@/views/config';
@@ -27,6 +34,9 @@
       const hovered = ref(false);
       const groupHovered = ref(false);
 
+      const fieldPathData = computed(() => {
+        return _.get(props.formData, props.fieldPath);
+      });
       const exsitsError = () => {
         const fieldPath = _.join(props.fieldPath, '.');
         return _.some(errorFields.value, (item) => {
@@ -98,6 +108,18 @@
 
       initUnsetValue();
 
+      watch(
+        () => fieldPathData.value,
+        () => {
+          if (_.has(props.formData, props.fieldPath)) {
+            isUnset.value = false;
+            status.value = props.level < 2 ? true : status.value;
+          } else {
+            isUnset.value = true;
+          }
+        },
+        { immediate: true }
+      );
       const renderNullableButton = () => {
         if (schemaFormStatus.value === PageAction.VIEW) {
           return null;
@@ -157,7 +179,7 @@
                   <div>{slots.buttons?.()}</div>
                 </div>
               ) : null}
-              {slots.default?.()}
+              {status.value ? slots.default?.() : null}
               <div>{slots.footer?.()}</div>
             </>
           );

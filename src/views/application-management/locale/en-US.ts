@@ -95,7 +95,7 @@ export default {
   'applications.applications.history.diff.upgrade':
     'Comparison between the current version and the latest version configuration',
   'applications.applications.history.change.title':
-    'Comparison between the current version and the previous version configuration',
+    'Comparison with previous version configuration',
   'applications.applications.history.diff.remove':
     'marker as the latest version configuration',
   'applications.applications.history.diff.same': 'no change in configuration',
@@ -185,5 +185,7 @@ export default {
   'applications.service.stop.tips': 'Stop the {type}!',
   'applications.service.stop.env': 'Stop the environment!',
   'applications.service.stop.confirm':
-    'The underlying component will be removed, are you sure you want to stop?'
+    'The underlying component will be removed, are you sure you want to stop?',
+  'applications.service.revision.runtime': 'Runtime Configuration',
+  'applications.service.revision.custom': 'Custom Configuration'
 };

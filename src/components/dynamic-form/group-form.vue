@@ -114,6 +114,8 @@
   const validResult = ref<any>([]);
   const errorFields = ref<string[]>([]);
   const formKey = ref(Date.now());
+  const computedFormData = ref({});
+  const computedUiFormData = ref({});
 
   provide(InjectShowInputHintKey, true);
   provide(ProvideErrorFieldsKey, errorFields);
@@ -246,9 +248,7 @@
       defaultFormData.value = {};
       refreshkey();
 
-      if (schemaFormStatus.value === PageAction.CREATE) {
-        handleChange({});
-      }
+      handleChange({});
 
       nextTick(() => {
         destroyed.value = false;
