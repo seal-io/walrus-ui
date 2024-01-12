@@ -232,7 +232,7 @@
                 (fieldProps.immutable &&
                   schemaFormStatus.value !== PageAction.CREATE)
               }
-              allow-clear={!fieldProps.required}
+              allow-clear={!fieldProps.required && !props.schema.enum}
               editor-id={_.join(props.fieldPath, '-')}
               popupInfo={props.schema.description}
               modelValue={_.get(props.uiFormData, props.fieldPath)}

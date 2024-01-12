@@ -3,7 +3,7 @@
     <div class="title" :class="{ 'no-del-btn': !showDelete }">
       <div class="text-wrap" @click.stop="handleCollapse">
         <a-space>
-          <span class="text">
+          <span v-if="showArrow" class="text">
             <icon-right v-if="!isCollapse" />
             <icon-down v-else />
           </span>
@@ -63,6 +63,12 @@
       type: Boolean,
       default() {
         return false;
+      }
+    },
+    showArrow: {
+      type: Boolean,
+      default() {
+        return true;
       }
     },
     showDelete: {
