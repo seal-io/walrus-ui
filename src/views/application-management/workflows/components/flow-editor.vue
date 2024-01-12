@@ -53,7 +53,9 @@
           };
         });
         return {
-          [HintKeyMaps.workflow]: list
+          [HintKeyMaps.workflow]: {
+            var: list
+          }
         };
       });
 

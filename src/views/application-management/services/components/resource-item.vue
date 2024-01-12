@@ -8,9 +8,11 @@
     provide,
     withModifiers,
     toRef,
-    watch
+    watch,
+    computed
   } from 'vue';
   import Autotip from '@arco-design/web-vue/es/_components/auto-tooltip/auto-tooltip';
+  import PrimaryButtonGroup from '@/components/drop-button-group/primary-button-group.vue';
   import { ProvideServiceIDKey, ServiceStatus } from '../config';
   import ResourceComponents from './resource-components/index.vue';
 
@@ -47,6 +49,22 @@
       provide(ProvideServiceIDKey, resourceID);
 
       const collapse = ref(false);
+
+      const linkList = computed(() => {
+        const list = _.map(props.rowData.endpoints || [], (item) => {
+          return {
+            label: item.name,
+            value: item.url,
+            icon: ''
+          };
+        }).filter(
+          (item) =>
+            _.startsWith(item.label, 'http') ||
+            _.startsWith(item.label, 'https')
+        );
+        return list;
+      });
+
       const handleCheckboxChange = (checked, id) => {
         if (checked) {
           emit('selectionChange', _.uniq([...props.selectedRowKeys, id]));
@@ -71,6 +89,71 @@
         emit('terminal', data);
       };
 
+      const renderLinkButton = () => {
+        if (linkList.value.length === 0) {
+          return null;
+        }
+        if (linkList.value.length === 1) {
+          return (
+            <a-link
+              href={_.get(linkList.value, '0.value')}
+              target="_blank"
+              size="mini"
+              class="m-l-10"
+              style={{
+                backgroundColor: 'var(--color-fill-1)',
+                padding: '2px 4px'
+              }}
+            >
+              <a-tooltip
+                content={i18n.global.t(
+                  'applications.applications.instance.accessUrl'
+                )}
+              >
+                <icon-share-internal style="stroke-width: 4" class="font-14" />
+              </a-tooltip>
+            </a-link>
+          );
+        }
+        return (
+          <>
+            <PrimaryButtonGroup
+              actions={linkList.value}
+              position="br"
+              trigger="hover"
+              v-slots={{
+                item: (item) => {
+                  return (
+                    <a-link href={item.value} target="_blank">
+                      {item.label}
+                    </a-link>
+                  );
+                }
+              }}
+            >
+              <a-link
+                size="mini"
+                class="m-l-10"
+                style={{
+                  backgroundColor: 'var(--color-fill-1)',
+                  padding: '2px 4px'
+                }}
+              >
+                <a-tooltip
+                  content={i18n.global.t(
+                    'applications.applications.instance.accessUrl'
+                  )}
+                >
+                  <icon-share-internal
+                    style="stroke-width: 4"
+                    class="font-14"
+                  />
+                </a-tooltip>
+              </a-link>
+            </PrimaryButtonGroup>
+          </>
+        );
+      };
       const renderComponents = () => {
         if (!collapse.value) return null;
         return (
@@ -136,16 +219,17 @@
               {renderCollapseButton()}
             </span>
             <a-grid cols={24} style={{ width: '100%' }}>
-              <a-grid-item span={5}>
-                <span class="name-box">
-                  <Autotip>
+              <a-grid-item span={5} style="justify-content: space-between;">
+                <Autotip>
+                  <span class="name-box">
                     <span>
                       {slots.name
                         ? slots.name?.({ record: props.rowData })
                         : props.rowData.name}
                     </span>
-                  </Autotip>
-                </span>
+                  </span>
+                </Autotip>
+                {renderLinkButton()}
               </a-grid-item>
               <a-grid-item span={6}>
                 <Autotip>

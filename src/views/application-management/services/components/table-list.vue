@@ -135,8 +135,9 @@
                     actions: [Actions.GET]
                   })
                 "
+                style="display: inline"
                 @click.stop="handleClickViewDetail(record)"
-                >{{ record.name }}</a-link
+                >{{ record.name }}dfaslkdjflkasdjflkasjdlfkjasdlkfjasdlk</a-link
               >
               <span v-else>{{ record.name }}</span>
             </template>
@@ -168,34 +169,6 @@
                   @select="(value) => handleClickAction(value, record)"
                 >
                 </DropButtonGroup>
-                <primaryButtonGroup
-                  v-if="getEndpoints(record).length > 1"
-                  size="medium"
-                  :actions="getEndpoints(record)"
-                  position="br"
-                  trigger="hover"
-                >
-                  <template #item="{ item }">
-                    <a-link :href="item.value">{{ item.label }}</a-link>
-                  </template>
-                  <a-link size="small" type="text" class="m-l-10"
-                    ><icon-link style="stroke-width: 4" class="font-14"
-                  /></a-link>
-                </primaryButtonGroup>
-                <AutoTip
-                  v-if="getEndpoints(record).length === 1"
-                  style="max-width: 120px; font-size: 0"
-                >
-                  <a-link
-                    :href="getEndpoints(record)[0].value"
-                    target="_blank"
-                    size="small"
-                    type="text"
-                    class="m-l-10"
-                  >
-                    <icon-link style="stroke-width: 4" class="font-14"
-                  /></a-link>
-                </AutoTip>
               </a-space>
             </template>
           </ResourceItem>

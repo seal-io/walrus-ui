@@ -75,17 +75,6 @@
           no-style
         >
           <div>
-            <!-- <cloneService
-              ref="servicesRef"
-              v-model:hint-data="completeData"
-              clone-type="service"
-              :title="$t('applications.applications.table.service')"
-              :show-check="false"
-              :data-list="serviceList"
-              :service-ids="selectServices"
-              :resource-type="ServiceDataType.service"
-              style="width: 800px"
-            ></cloneService> -->
             <cloneService
               ref="resourceRef"
               v-model:hint-data="completeData"
@@ -102,17 +91,6 @@
       </a-form>
       <EditPageFooter>
         <template #save>
-          <!-- <a-button
-            :loading="submitLoading"
-            type="primary"
-            class="cap-title cancel-btn"
-            @click="handleOk"
-            >{{
-              failedList.size
-                ? $t('common.button.retry')
-                : $t('common.button.save')
-            }}</a-button
-          > -->
           <GroupButtonMenu
             :loading="submitLoading"
             :actions="SaveActions"
@@ -284,16 +262,10 @@
   };
   const initCloneEnvironmentResource = async () => {
     try {
-      // const services = await getServiceList({
-      //   isService: true,
-      //   extract: ['-projectId', '-status']
-      // });
       const resources = await getServiceList({
         extract: ['-projectId', '-status']
       });
-      // serviceList.value = _.filter(services, (item) => {
-      //   return selectServices.value.includes(item.id);
-      // });
+
       resourceList.value = _.filter(resources, (item) => {
         return selectResources.value.includes(item.id);
       });
