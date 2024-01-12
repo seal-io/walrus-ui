@@ -89,28 +89,6 @@
       </template>
     </FilterBox>
 
-    <!-- <moduleWrapper
-      :title="$t('menu.applicationManagement.services')"
-      :show-delete="false"
-      class="m-b-20"
-      :status="true"
-    >
-      <tableList
-        ref="serviceTable"
-        :type="ServiceDataType.service"
-        ::title="$t('menu.applicationManagement.services')"
-        :request-params="queryParams"
-        @deleted="handleDeleted"
-        @selection-change="handleServiceSelectChange"
-      ></tableList>
-    </moduleWrapper> -->
-    <!-- <moduleWrapper
-      :title="$t('menu.applicationManagement.resource')"
-      :show-delete="false"
-      :status="true"
-    >
-      
-    </moduleWrapper> -->
     <tableList
       ref="resourceTable"
       :type="ServiceDataType.resource"
