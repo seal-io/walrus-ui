@@ -267,27 +267,34 @@
       </a-spin>
       <EditPageFooter>
         <template #save>
-          <GroupButtonMenu
-            v-if="
-              _.get(serviceInfo, 'status.summaryStatus') ===
-                ServiceStatus.Undeployed ||
-              _.get(serviceInfo, 'status.summaryStatus') ===
-                ServiceStatus.Stopped ||
-              !id
-            "
-            trigger="hover"
-            :loading="submitLoading"
-            :actions="SaveActions"
-            @select="handleAddSelector"
-          >
-          </GroupButtonMenu>
-          <a-button
-            v-else
-            :type="'primary'"
-            class="cap-title"
-            @click="handleOkCallback"
-            >{{ $t('common.button.saveDeploy') }}</a-button
-          >
+          <div class="flex">
+            <!-- <a-textarea
+              style="height: 36px"
+              class="m-r-5"
+              :auto-size="{ minRows: 2 }"
+            ></a-textarea> -->
+            <GroupButtonMenu
+              v-if="
+                _.get(serviceInfo, 'status.summaryStatus') ===
+                  ServiceStatus.Undeployed ||
+                _.get(serviceInfo, 'status.summaryStatus') ===
+                  ServiceStatus.Stopped ||
+                !id
+              "
+              trigger="hover"
+              :loading="submitLoading"
+              :actions="SaveActions"
+              @select="handleAddSelector"
+            >
+            </GroupButtonMenu>
+            <a-button
+              v-else
+              :type="'primary'"
+              class="cap-title"
+              @click="handleOkCallback"
+              >{{ $t('common.button.saveDeploy') }}</a-button
+            >
+          </div>
         </template>
         <template #cancel>
           <a-button
@@ -700,6 +707,8 @@
           showCommentModal.value = true;
         }
       } catch (error) {
+        submitLoading.value = false;
+      } finally {
         submitLoading.value = false;
       }
     } else {

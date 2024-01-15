@@ -17,7 +17,7 @@
 
   export default defineComponent({
     props: schemaFieldProps,
-    emits: ['change'],
+    emits: ['change', 'unset'],
     setup(props, { slots, emit }) {
       const errorFields = inject(ProvideErrorFieldsKey, ref([]));
       const schemaFormStatus = inject(
@@ -57,6 +57,7 @@
             _.cloneDeep(_.get(props.uiFormData, props.fieldPath))
           );
         }
+        emit('unset', isUnset.value);
         emit('change', props.formData);
       };
       const handleClickRight = () => {
@@ -199,13 +200,15 @@
                 _.join(props.fieldPath, '.')
               ]}
               status={status.value || exsitsError()}
-              disabled={isUnset.value}
+              disabled={
+                isUnset.value && schemaFormStatus.value !== PageAction.VIEW
+              }
               onUpdate:status={(val) => {
                 status.value = val;
               }}
               title={props.schema.title || props.schema.name}
               showDelete={false}
-              showArrow={false}
+              showArrow={schemaFormStatus.value === PageAction.VIEW}
               v-slots={{
                 title: () => {
                   return (
@@ -318,15 +321,7 @@
 
         .title {
           cursor: default;
-
-          .text {
-            color: var(--color-text-4);
-          }
         }
-        // border-color: transparent;
-        // .title {
-        //   background-color: var(--color-fill-1);
-        // }
       }
 
       .content {

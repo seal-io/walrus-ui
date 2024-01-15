@@ -45,7 +45,6 @@
       const { type } = toRefs(props.schema);
 
       let Component = BasicFieldMaps[type.value];
-
       const handleChange = (data) => {
         emit('change', data);
       };

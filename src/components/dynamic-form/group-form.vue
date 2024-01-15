@@ -256,7 +256,7 @@
       refreshkey();
 
       handleChange({});
-
+      console.log('schemaFormStatus.value', props.schema);
       // if (schemaFormStatus.value === PageAction.CREATE) {
       //   handleChange({});
       // } else {

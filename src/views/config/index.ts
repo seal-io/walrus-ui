@@ -132,14 +132,15 @@ export const QAlinkMap = {
   ],
   Definition: [
     {
-      'zh-CN': 'https://seal-io.github.io/docs/operation/resource-definition',
+      'zh-CN':
+        'https://seal-io.github.io/docs/zh/operation/resource-definition',
       'en-US': 'https://seal-io.github.io/docs/operation/resource-definition'
     }
   ],
   UISchema: [
     {
       'zh-CN':
-        'https://seal-io.github.io/docs/operation/template#customizing-template-ui-styles',
+        'https://seal-io.github.io/docs/zh/operation/template#%E8%87%AA%E5%AE%9A%E4%B9%89%E6%A8%A1%E6%9D%BF-ui-%E6%A0%B7%E5%BC%8F',
       'en-US':
         'https://seal-io.github.io/docs/operation/template#customizing-template-ui-styles'
     }
