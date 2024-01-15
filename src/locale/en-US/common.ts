@@ -151,5 +151,6 @@ export default {
   'common.button.start': 'Start',
   'common.rule.object.key': 'key cannot be empty',
   'common.confirm.title': 'Are you sure you want to {action}?',
-  'common.rule.name': 'Name is required'
+  'common.rule.name': 'Name is required',
+  'common.rule.wordlimit': 'Maximum {length} characters'
 };

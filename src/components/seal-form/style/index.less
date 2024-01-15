@@ -87,6 +87,16 @@
     }
   }
 
+  .input-tips {
+    position: absolute;
+    top: 50%;
+    right: @paddingLeft;
+    z-index: 5;
+    color: var(--color-text-3);
+    font-size: 12px;
+    transform: translateY(calc(-50% + 1px));
+  }
+
   &.select {
     .label:hover {
       cursor: pointer;

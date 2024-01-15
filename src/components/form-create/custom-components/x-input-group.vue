@@ -22,7 +22,7 @@
             }"
             :model-value="dataKey"
             :max-length="maxKeyLength"
-            show-word-limit
+            :show-word-limit="false"
             v-bind="$attrs"
             :placeholder="
               get($attrs?.placeholder, 'key') || $t('common.input.key')
@@ -106,7 +106,7 @@
           <seal-input
             v-else-if="!showHintInput"
             style="width: 100%"
-            show-word-limit
+            :show-word-limit="false"
             :max-length="maxValueLength"
             v-bind="$attrs"
             :model-value="dataValue"
@@ -150,7 +150,7 @@
           <template v-if="!valueOptions.length">
             <seal-input
               :max-length="maxValueLength"
-              show-word-limit
+              :show-word-limit="false"
               v-bind="$attrs"
               style="width: 100%"
               :model-value="dataDesc"
