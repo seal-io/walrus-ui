@@ -3,7 +3,11 @@
   import AceEditor from '@/components/ace-editor/index.vue';
   import _ from 'lodash';
   import i18n from '@/locale';
-  import { InjectSchemaFormStatusKey, PageAction } from '@/views/config';
+  import {
+    InjectSchemaFormStatusKey,
+    InjectSchemaCustomMetaKey,
+    PageAction
+  } from '@/views/config';
   import { ProviderFormRefKey } from '../config';
   import schemaFieldProps from '../fields/schema-field-props';
   import {
@@ -31,12 +35,14 @@
         InjectSchemaFormStatusKey,
         ref(PageAction.CREATE)
       );
+      const schemaCustomMeta = inject(InjectSchemaCustomMetaKey, ref({}));
       const formref = inject(ProviderFormRefKey, ref());
       const fieldValue = ref('');
       const defaultValue = ref('');
 
       const { fieldProps, rules } = genFieldPropsAndRules({
         schema: props.schema,
+        schemaCustomMeta: schemaCustomMeta.value,
         requiredFields: props.requiredFields
       });
 

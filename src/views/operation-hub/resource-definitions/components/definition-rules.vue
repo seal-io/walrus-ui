@@ -446,7 +446,8 @@
     EnvironmentTypeList,
     InjectShowInputHintKey,
     InjectTraceKey,
-    InjectSchemaFormStatusKey
+    InjectSchemaFormStatusKey,
+    InjectSchemaCustomMetaKey
   } from '@/views/config';
   import CommonList from '@/components/common-list/index.vue';
   import GroupForm from '@/components/dynamic-form/group-form.vue';
@@ -580,6 +581,12 @@
   const uiFormData = ref<any>({});
 
   provide(InjectShowInputHintKey, false);
+  provide(
+    InjectSchemaCustomMetaKey,
+    ref({
+      immutable: false
+    })
+  );
 
   const schemaVariables = ref<any>({});
 

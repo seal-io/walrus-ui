@@ -2,28 +2,25 @@
   import _ from 'lodash';
   import i18n from '@/locale';
   import { defineComponent, toRefs, inject, ref, watch } from 'vue';
-  import { InjectSchemaFormStatusKey, PageAction } from '@/views/config';
+  import {
+    InjectSchemaFormStatusKey,
+    InjectSchemaCustomMetaKey,
+    PageAction
+  } from '@/views/config';
   import SealViewItemWrap from '@/components/seal-form/components/seal-view-item-wrap.vue';
   import schemaFieldProps from '../fields/schema-field-props';
   import {
     isSelect,
-    isNumber,
     isBoolean,
-    isDatePicker,
-    isMuliSelect,
     isPassword,
-    initFieldDefaultValue,
-    isRequiredInitField,
     isEmptyvalue,
-    isAllowCreateNumberSelect,
     isAllowCreateSelect,
     genFieldPropsAndRules,
-    initFieldValue,
-    viewFieldValue,
     unsetFieldValue,
     genFieldInFormData,
     parentObjectExsits,
-    isEqualOn
+    isEqualOn,
+    parentObjectExsitsInFormData
   } from '../utils';
   import { Option } from '../interface';
   import { ProviderFormRefKey } from '../config';
@@ -39,12 +36,14 @@
         ref(PageAction.CREATE)
       );
       const formref = inject(ProviderFormRefKey, ref());
+      const schemaCustomMeta = inject(InjectSchemaCustomMetaKey, ref({}));
       const { type } = toRefs(props.schema);
 
       const options = ref<Option[]>([]);
 
       const { fieldProps, rules } = genFieldPropsAndRules({
         schema: props.schema,
+        schemaCustomMeta: schemaCustomMeta.value,
         requiredFields: props.requiredFields
       });
 
@@ -151,7 +150,7 @@
           schemaFormStatus.value === PageAction.CREATE &&
           props.schema.enum &&
           !props.schema.default &&
-          parentObjectExsits(props.formData, props.fieldPath)
+          parentObjectExsitsInFormData(props.formData, props.fieldPath)
         ) {
           _.set(props.formData, props.fieldPath, options.value[0].value);
           _.set(props.uiFormData, props.fieldPath, options.value[0].value);

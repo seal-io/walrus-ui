@@ -33,6 +33,7 @@
     <a-input
       v-bind="$attrs"
       ref="input"
+      :error="staticError || $attrs.error"
       :model-value="modelValue"
       @clear="handleClear"
       @focus="handleFocus"
@@ -92,6 +93,7 @@
   ]);
   const $attrs: any = useAttrs();
   const slots = useSlots();
+  const staticError = ref(false);
 
   const handleInput = (value, e) => {
     // check the value length, when the length  is great than the $attrs.maxlength, the value will be cut

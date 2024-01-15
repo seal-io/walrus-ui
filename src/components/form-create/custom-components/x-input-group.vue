@@ -21,7 +21,7 @@
               'ignore-error': !!dataKey
             }"
             :model-value="dataKey"
-            :max-length="100"
+            :max-length="maxKeyLength"
             show-word-limit
             v-bind="$attrs"
             :placeholder="
@@ -39,7 +39,7 @@
             :placeholder="
               get($attrs?.placeholder, 'key') || $t('common.input.key')
             "
-            :max-length="100"
+            :max-length="maxKeyLength"
             show-word-limit
             v-bind="$attrs"
             style="width: 100%"
@@ -107,7 +107,7 @@
             v-else-if="!showHintInput"
             style="width: 100%"
             show-word-limit
-            :max-length="100"
+            :max-length="maxValueLength"
             v-bind="$attrs"
             :model-value="dataValue"
             class="ignore-error"
@@ -121,7 +121,7 @@
             v-else
             :model-value="dataValue"
             show-word-limit
-            :max-length="100"
+            :max-length="maxValueLength"
             v-bind="$attrs"
             :placeholder="
               get($attrs?.placeholder, 'value') || $t('common.input.value')
@@ -149,7 +149,7 @@
         <slot name="description">
           <template v-if="!valueOptions.length">
             <seal-input
-              :max-length="100"
+              :max-length="maxValueLength"
               show-word-limit
               v-bind="$attrs"
               style="width: 100%"
@@ -389,6 +389,8 @@
     'update:dataDesc',
     'update:dataExtra'
   ]);
+  const maxKeyLength = 100;
+  const maxValueLength = 100;
   const showHintInput = inject(InjectShowInputHintKey, ref(false));
   const completeData = inject(InjectCompleteDataKey, ref({}));
   const $attrs = useAttrs();

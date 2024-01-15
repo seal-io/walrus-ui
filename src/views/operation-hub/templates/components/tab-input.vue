@@ -125,7 +125,7 @@
   });
   const currentView = ref('list');
   const height = computed(() => {
-    return `calc(100vh - ${props.wrapSize + 180}px)`;
+    return `calc(100vh - ${props.wrapSize + 205}px)`;
   });
   const dataList = computed(() => {
     const result = initFormState(
