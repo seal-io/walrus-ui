@@ -224,11 +224,12 @@ export default function useServiceData(props?) {
   };
 
   const setFormAttributes = async () => {
-    formData.value = _.cloneDeep(serviceInfo.value);
-    uiFormData.value = _.cloneDeep(serviceInfo.value.computedAttributes);
-    formData.value.attributes = _.cloneDeep(
-      serviceInfo.value.computedAttributes
+    const attributes = _.cloneDeep(
+      serviceInfo.value.computedAttributes || serviceInfo.value.attributes
     );
+    formData.value = _.cloneDeep(serviceInfo.value);
+    uiFormData.value = _.cloneDeep(attributes);
+    formData.value.attributes = _.cloneDeep(attributes);
     formData.value.description = serviceInfo.value.description || '';
     _.unset(formData.value, 'computedAttributes');
     // 1. get the template meta data 2.set the default value

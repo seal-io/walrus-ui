@@ -283,8 +283,6 @@ export const viewFieldValue = ({
   if (_.has(uiFormData, fieldPath)) {
     _.set(formData, fieldPath, _.cloneDeep(_.get(uiFormData, fieldPath)));
   } else {
-    _.set(uiFormData, fieldPath, _.cloneDeep(originValue || defaultValue));
-
     const checkByParentObject = parentObjectExsitsInFormData(
       uiFormData,
       fieldPath
@@ -293,6 +291,7 @@ export const viewFieldValue = ({
     const checkByValue = required || !isEmptyValueField(schema, defaultValue);
     if (checkByValue && (checkByParentObject || isRequiredItemProperty)) {
       _.set(formData, fieldPath, _.cloneDeep(originValue || defaultValue));
+      _.set(uiFormData, fieldPath, _.cloneDeep(originValue || defaultValue));
     }
   }
 

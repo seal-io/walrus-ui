@@ -181,7 +181,7 @@
   import useRowSelect from '@/hooks/use-row-select';
   import { useSetChunkRequest } from '@/api/axios-chunk-request';
   import { useUpdateChunkedList } from '@/views/commons/hooks/use-update-chunked-list';
-  import { recordActions, WorkflowStatusMap } from '../config';
+  import { recordActions, WorkflowExcutionStatusMap } from '../config';
   import { PipelineRecordsRow } from '../config/interface';
   import {
     queryPipelineRecords,
@@ -236,7 +236,7 @@
         info: item.status?.summaryStatusMessage,
         status: item.status.error
           ? 'Error'
-          : _.get(WorkflowStatusMap, item.status?.summaryStatus)
+          : _.get(WorkflowExcutionStatusMap, item.status?.summaryStatus)
       };
     });
   };
