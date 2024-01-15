@@ -61,16 +61,20 @@ export const WorkflowStatus = {
   Running: 'Running',
   Completed: 'Completed',
   Pending: 'Pending',
-  Failed: 'Failed'
+  Failed: 'Failed',
+  Canceled: 'Canceled'
 };
 
 export const StopableStatus = [WorkflowStatus.Running];
+
 export const RetryStatus = [WorkflowStatus.Completed, WorkflowStatus.Failed];
-export const WorkflowStatusMap = {
-  Running: 'Running',
-  Completed: 'Ready',
-  Pending: 'Pending',
-  Error: 'Failed'
+
+export const WorkflowExcutionStatusMap = {
+  [WorkflowStatus.Running]: 'Running',
+  [WorkflowStatus.Completed]: 'Ready',
+  [WorkflowStatus.Pending]: 'Pending',
+  Error: 'Failed',
+  [WorkflowStatus.Canceled]: 'Failed'
 };
 
 export const ApprovalTypeMap = {

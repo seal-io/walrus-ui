@@ -301,7 +301,7 @@
   import SealSteps from '@/components/seal-steps/index.vue';
   import runConfig from '../components/run-config.vue';
 
-  import { moreActions, WorkflowStatusMap } from '../config';
+  import { moreActions, WorkflowExcutionStatusMap } from '../config';
   import { PipelineRow } from '../config/interface';
   import {
     queryPipelines,
@@ -345,7 +345,7 @@
         info: item.status?.summaryStatusMessage,
         status: item.status.error
           ? 'Error'
-          : _.get(WorkflowStatusMap, item.status?.summaryStatus)
+          : _.get(WorkflowExcutionStatusMap, item.status?.summaryStatus)
       };
     });
   };

@@ -484,6 +484,7 @@
       serviceDataList.value = _.map(props.dataList, (o) => {
         const item = _.cloneDeep(o);
         _.unset(item, ['labels', 'walrus.seal.io/stoppable']);
+        _.unset(item, 'computedAttributes');
         return {
           ...item
         };
