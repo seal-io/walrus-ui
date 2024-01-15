@@ -683,9 +683,17 @@ export const genObjectFieldProperties = ({
     });
     // const required = _.includes(requiredFlag, key);
     const nullObj = setNullableValue(schema, property, parentNullableObj);
-    const defaultValue =
+    let defaultValue = property.default;
+
+    if (
       property.default ||
-      _.cloneDeep(_.get(defaultFormData, [...fieldPath, key]));
+      property.default === 0 ||
+      property.default === false
+    ) {
+      defaultValue = property.default;
+    } else {
+      defaultValue = _.cloneDeep(_.get(defaultFormData, [...fieldPath, key]));
+    }
 
     const fieldSchema = {
       ...property,

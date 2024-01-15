@@ -782,7 +782,16 @@
       formData.value = _.cloneDeep(props.originFormData);
       uiFormData.value = _.cloneDeep(props.originFormData?.attributes || {});
       const moduleData = await getTemplateSchemaByVersion();
-      setTemplateInfo(moduleData);
+
+      setTimeout(() => {
+        setTemplateInfo(moduleData);
+        console.log(
+          'formData====2',
+          props.dataId,
+          moduleData,
+          schemaVariables.value
+        );
+      }, 100);
       initSelectors();
     } else {
       formData.value.template.template.id = get(
@@ -793,7 +802,6 @@
       await handleTemplateChange();
     }
     setLabels();
-    console.log('formData====', formData.value);
   };
 
   defineExpose({

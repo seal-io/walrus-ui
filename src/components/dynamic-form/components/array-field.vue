@@ -179,12 +179,6 @@
 
       // do not handle nullable peroperty
       const handleDeleteCallback = () => {
-        if (
-          !_.get(props.uiFormData, props.fieldPath)?.length &&
-          !props.schema.isRequired
-        ) {
-          _.unset(props.formData, props.fieldPath);
-        }
         activeItemIndex.value = -1;
         handleChange(props.formData);
       };
@@ -283,6 +277,11 @@
           defaultFormData={props.defaultFormData}
           FieldPathMap={props.FieldPathMap}
           requiredFields={props.requiredFields}
+          onUnset={(isUnset) => {
+            if (!isUnset && !propertiesList.value.length) {
+              handleAddClick();
+            }
+          }}
           onChange={(val) => {
             handleChange(val);
           }}
