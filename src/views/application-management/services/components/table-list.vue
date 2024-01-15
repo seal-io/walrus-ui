@@ -137,7 +137,7 @@
                 "
                 style="display: inline"
                 @click.stop="handleClickViewDetail(record)"
-                >{{ record.name }}dfaslkdjflkasdjflkasjdlfkjasdlkfjasdlk</a-link
+                >{{ record.name }}</a-link
               >
               <span v-else>{{ record.name }}</span>
             </template>

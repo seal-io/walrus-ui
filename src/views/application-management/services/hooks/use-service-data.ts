@@ -229,6 +229,7 @@ export default function useServiceData(props?) {
     formData.value.attributes = _.cloneDeep(
       serviceInfo.value.computedAttributes
     );
+    formData.value.description = serviceInfo.value.description || '';
     _.unset(formData.value, 'computedAttributes');
     // 1. get the template meta data 2.set the default value
     let moduleTemplate: any = {};

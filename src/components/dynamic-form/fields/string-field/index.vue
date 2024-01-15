@@ -28,12 +28,6 @@
         ])
       });
 
-      console.log(
-        'defaultFormData----666++++++++',
-        _.join(props.fieldPath, '.'),
-        props.FieldPathMap.get(_.join(props.fieldPath, '.'))
-      );
-
       const handleChange = (data) => {
         emit('change', data);
       };

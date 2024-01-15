@@ -52,13 +52,6 @@
             :max-length="63"
             show-word-limit
           ></seal-input>
-          <!-- <template #extra>
-            <div
-              class="tips"
-              :style="{ 'max-width': `${InputWidth.LARGE}px` }"
-              >{{ $t('common.validate.labelName') }}</div
-            >
-          </template> -->
         </a-form-item>
         <a-form-item hide-label>
           <SealFormItemWrap
@@ -266,8 +259,10 @@
           ref="groupForm"
           v-model:form-data="formData.attributes"
           :ui-form-data="uiFormData"
-          :action="formAction"
           :schema="schemaVariables"
+          :custom-data="serviceInfo.attributes"
+          @render-end="handleRenderEnd"
+          @change="handleFormChange"
         ></GroupForm>
       </a-spin>
       <EditPageFooter>
@@ -297,6 +292,7 @@
         <template #cancel>
           <a-button
             :type="'outline'"
+            :disabled="!isFormChange && pgType === 'com'"
             class="cap-title cancel-btn"
             @click="handleCancel"
             >{{ $t('common.button.cancel') }}</a-button
@@ -316,19 +312,7 @@
 <script lang="ts" setup>
   import { PROJECT } from '@/router/config';
   import _, { get, find, cloneDeep, toString } from 'lodash';
-  import {
-    ref,
-    computed,
-    provide,
-    watch,
-    reactive,
-    PropType,
-    toRaw,
-    unref,
-    onMounted,
-    nextTick,
-    render
-  } from 'vue';
+  import { ref, computed, provide, PropType, toRaw } from 'vue';
   import i18n from '@/locale';
   import CommentModal from '@/views/commons/components/comment-modal/index.vue';
   import { onBeforeRouteLeave } from 'vue-router';
@@ -409,6 +393,7 @@
   } = useServiceData();
 
   let copyFormData: any = null;
+  const isFormChange = ref(false);
   const showCommentModal = ref(false);
   const formref = ref();
   const groupForm = ref();
@@ -427,7 +412,6 @@
     environmentID: route.params.environmentId as string,
     connectors: []
   });
-  const submitData = ref<any>({});
   provide(InjectCompleteDataKey, completeData);
   provide(
     InjectProjectEnvironmentKey,
@@ -449,6 +433,15 @@
     return undefined;
   });
 
+  const handleBasicFormChange = (e) => {
+    isFormChange.value = !_.isEqual(copyFormData, formData.value);
+  };
+  const handleFormChange = (val) => {
+    isFormChange.value = !_.isEqual(copyFormData, formData.value);
+  };
+  const handleRenderEnd = () => {
+    isFormChange.value = false;
+  };
   const getEnvironmentConnectors = async () => {
     try {
       const { data } = await queryEnvironmentConnector({
@@ -615,7 +608,9 @@
           if (props.pgType !== 'page') {
             setTimeout(() => {
               formData.value = _.cloneDeep(copyFormData);
+              uiFormData.value = _.cloneDeep(copyFormData.attributes);
               groupForm.value?.refreshkey();
+              isFormChange.value = false;
             }, 100);
             emits('cancel');
           } else {
@@ -764,12 +759,10 @@
     setBreadCrumbList();
 
     getEnvironmentConnectors();
-    setTimeout(() => {
-      copyFormData = _.cloneDeep(formData.value);
-      if (id) {
-        setFormDataAttributeCache();
-      }
-    }, 100);
+    copyFormData = _.cloneDeep(formData.value);
+    if (id) {
+      setFormDataAttributeCache();
+    }
     labelsData.value.labels = _.cloneDeep(formData.value.labels);
   };
 

@@ -95,7 +95,9 @@
               uiFormData={uiFormData.value}
               defaultFormData={props.defaultFormData}
               FieldPathMap={props.FieldPathMap}
-              onChange={handleChange}
+              onChange={(val) => {
+                handleChange(val);
+              }}
             ></SchemaField>
           </a-grid>
         </a-form>
