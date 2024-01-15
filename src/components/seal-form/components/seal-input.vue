@@ -45,6 +45,21 @@
         <slot :name="slot"></slot>
       </template>
     </a-input>
+    <span
+      v-if="!$attrs.showWordLimit || !$attrs['show-word-limit']"
+      class="input-tips"
+    >
+      <a-tooltip
+        :popup-visible="staticError"
+        :content="
+          $t('common.rule.wordlimit', {
+            length: $attrs.maxLength || $attrs['max-length']
+          })
+        "
+      >
+        <span style="padding: 1px"></span>
+      </a-tooltip>
+    </span>
   </span>
   <SealViewItemWrap
     v-else
@@ -98,6 +113,13 @@
   const handleInput = (value, e) => {
     // check the value length, when the length  is great than the $attrs.maxlength, the value will be cut
     const maxLength = $attrs.maxLength || $attrs['max-length'];
+    const showWordLimit = $attrs.showWordLimit || $attrs['show-word-limit'];
+    staticError.value = value.length === maxLength;
+    if (value.length === maxLength && !showWordLimit) {
+      setTimeout(() => {
+        staticError.value = false;
+      }, 1500);
+    }
     if (maxLength && value.length > maxLength) {
       value = value.slice(0, maxLength);
     }

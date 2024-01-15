@@ -148,5 +148,6 @@ export default {
   'common.button.start': '启动',
   'common.rule.object.key': '键不能为空',
   'common.confirm.title': '确定要{action}吗？',
-  'common.rule.name': '名称必填'
+  'common.rule.name': '名称必填',
+  'common.rule.wordlimit': '最多输入{length}个字符'
 };

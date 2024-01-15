@@ -143,7 +143,9 @@
               ..._.reduce(
                 _.keys(slots),
                 (result, key) => {
-                  result[key] = (data) => slots[key]?.(data);
+                  if (slots[key]) {
+                    result[key] = (data) => slots[key]?.(data);
+                  }
                   return result;
                 },
                 {}
