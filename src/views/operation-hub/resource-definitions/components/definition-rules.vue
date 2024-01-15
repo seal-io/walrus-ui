@@ -783,15 +783,7 @@
       uiFormData.value = _.cloneDeep(props.originFormData?.attributes || {});
       const moduleData = await getTemplateSchemaByVersion();
 
-      setTimeout(() => {
-        setTemplateInfo(moduleData);
-        console.log(
-          'formData====2',
-          props.dataId,
-          moduleData,
-          schemaVariables.value
-        );
-      }, 100);
+      setTemplateInfo(moduleData);
       initSelectors();
     } else {
       formData.value.template.template.id = get(

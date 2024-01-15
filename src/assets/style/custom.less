@@ -423,9 +423,9 @@ div#driver-highlighted-element-stage {
 .arco-overlay-message {
   .arco-message.arco-message-error {
     position: relative;
-    height: 60px;
+    height: 48px;
     background-color: #fff;
-    box-shadow: 0 4px 4px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 0 4px rgba(0, 0, 0, 0.1);
 
     &::before {
       position: absolute;
@@ -433,7 +433,24 @@ div#driver-highlighted-element-stage {
       right: 0;
       bottom: 0;
       left: 0;
-      background-color: rgba(var(--red-6), 0.15);
+      background-color: rgba(var(--red-6), 0.1);
+      content: '';
+    }
+  }
+
+  .arco-message.arco-message-success {
+    position: relative;
+    height: 48px;
+    background-color: #fff;
+    box-shadow: 0 0 4px rgba(0, 0, 0, 0.1);
+
+    &::before {
+      position: absolute;
+      top: 0;
+      right: 0;
+      bottom: 0;
+      left: 0;
+      background-color: rgba(var(--green-6), 0.1);
       content: '';
     }
   }

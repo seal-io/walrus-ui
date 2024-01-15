@@ -66,7 +66,7 @@
         }, 100);
       };
       const handleEnter = () => {
-        if (isUnset.value) {
+        if (isUnset.value && schemaFormStatus.value !== PageAction.VIEW) {
           return;
         }
         hovered.value = true;
@@ -75,7 +75,7 @@
         hovered.value = false;
       };
       const handleGroupEnter = () => {
-        if (isUnset.value) {
+        if (isUnset.value && schemaFormStatus.value !== PageAction.VIEW) {
           return;
         }
         groupHovered.value = true;
@@ -196,7 +196,12 @@
           >
             <ModuleWrapper
               class={[
-                { 'mo-wrap-hover': hovered.value && !isUnset.value },
+                {
+                  'mo-wrap-hover':
+                    hovered.value &&
+                    (!isUnset.value ||
+                      schemaFormStatus.value === PageAction.VIEW)
+                },
                 _.join(props.fieldPath, '.')
               ]}
               status={status.value || exsitsError()}

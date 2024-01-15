@@ -20,6 +20,7 @@
         :model="formData"
         auto-label-width
         layout="vertical"
+        @change="handleBasicFormChange"
       >
         <a-form-item
           field="name"
