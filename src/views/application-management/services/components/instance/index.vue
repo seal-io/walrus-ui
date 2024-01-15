@@ -36,28 +36,7 @@
           ></BasicInfo>
         </template> -->
       </HeaderInfo>
-      <!-- <slTransition>
-        <div v-if="pageAction === PageAction.EDIT">
-          <serviceEdit
-            pg-type="com"
-            @save="handleEditSucceed"
-            @cancel="handleEditCancel"
-          ></serviceEdit>
-        </div>
-      </slTransition> -->
       <div v-if="pageAction === PageAction.VIEW">
-        <!-- <ComCard>
-          <ModuleCard
-            :title="$t('common.title.basicInfo')"
-            icon="icon-jibenxinxi"
-            :title-style="{ 'margin-bottom': '10px', 'margin-top': 0 }"
-          >
-            <BasicInfo
-              :data-info="basicDataList"
-              style="max-width: 800px"
-            ></BasicInfo>
-          </ModuleCard>
-        </ComCard> -->
         <ComCard padding="0 var(--card-content-padding) 20px">
           <a-tabs
             v-model:active-key="activeTab"

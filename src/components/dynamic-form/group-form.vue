@@ -83,6 +83,12 @@
         return {};
       }
     },
+    customData: {
+      type: Object as PropType<any>,
+      default() {
+        return {};
+      }
+    },
     action: {
       type: String as PropType<'edit' | 'view' | 'create'>,
       default() {
@@ -101,7 +107,7 @@
   });
 
   const schemaFormStatus = inject(InjectSchemaFormStatusKey, ref(''));
-  const emits = defineEmits(['update:formData', 'change']);
+  const emits = defineEmits(['update:formData', 'change', 'renderEnd']);
   const activeKey = ref<string>('schemaForm');
   const refMap = ref<any>({});
   const schemaForm = ref();
@@ -126,8 +132,8 @@
   };
 
   const handleChange = (data) => {
-    emits('update:formData', data);
     emits('change', data);
+    emits('update:formData', data);
   };
 
   const handleTabChange = (key) => {
@@ -220,6 +226,7 @@
   const refreshkey = () => {
     formKey.value = Date.now();
   };
+
   defineExpose({
     validate,
     rootFormData,
@@ -250,6 +257,13 @@
 
       handleChange({});
 
+      // if (schemaFormStatus.value === PageAction.CREATE) {
+      //   handleChange({});
+      // } else {
+      //   const data = _.omit(props.formData, _.keys(props.customData));
+      //   handleChange(data);
+      // }
+
       nextTick(() => {
         destroyed.value = false;
         const groups = createFormGroup(props.schema);
@@ -260,6 +274,7 @@
         activeKey.value = formGroup.value[0]?.group;
 
         getHiddenFormData(allGroups);
+        emits('renderEnd');
         console.log(
           'formGroup++++++++++++++',
           Date.now(),

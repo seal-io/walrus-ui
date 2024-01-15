@@ -321,6 +321,9 @@
                             requiredFields={sItem.parentRequired}
                             parentSpan={props.schema.colSpan}
                             action={props.action}
+                            onChange={(val) => {
+                              handleChange(val);
+                            }}
                           ></SchemaField>
                         );
                       })}

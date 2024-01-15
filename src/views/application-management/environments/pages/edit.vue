@@ -32,7 +32,12 @@
         :show-edit="showEdit()"
         @edit="handleEdit"
       ></GroupTitle>
-      <a-form ref="formref" :model="formData" auto-label-width>
+      <a-form
+        ref="formref"
+        :model="formData"
+        auto-label-width
+        @change="handleFormChange"
+      >
         <a-form-item
           :label="$t('operation.environments.table.name')"
           field="name"
@@ -60,11 +65,6 @@
             :max-length="63"
             show-word-limit
           ></seal-input>
-          <!-- <template v-if="pageAction === PageAction.EDIT" #extra>
-            <div :style="{ maxWidth: `${InputWidth.LARGE}px` }">{{
-              $t('common.validate.labelName')
-            }}</div>
-          </template> -->
         </a-form-item>
         <a-form-item
           :label="$t('applications.environment.type')"
@@ -143,57 +143,7 @@
               :labels="labelsData.labels"
               :page-action="pageAction"
             ></keyValueLabels>
-            <!-- <a-space
-              v-if="labelList.length"
-              style="display: flex; flex-direction: column; width: 100%"
-              direction="vertical"
-            >
-              <xInputGroup
-                v-for="(sItem, sIndex) in labelList"
-                :key="sIndex"
-                v-model:dataKey="sItem.key"
-                v-model:dataValue="sItem.value"
-                v-model:value="formData.labels"
-                :trigger-validate="validateTrigger"
-                :max-length="Infinity"
-                :show-word-limit="false"
-                :show-required-mark="false"
-                :label-list="labelList"
-                :data-item="{
-                  style: {
-                    key: {
-                      'display': 'flex',
-                      'flex': 1,
-                      'align-items': 'center'
-                    }
-                  }
-                }"
-                :position="sIndex"
-                always-delete
-                should-key
-                @add="(obj) => handleAddLabel(obj, labelList)"
-                @delete="handleDeleteLabel(labelList, sIndex)"
-              ></xInputGroup>
-            </a-space>
-            <template v-else>
-              <a-link
-                class="p-0"
-                @click="
-                  () => {
-                    handleAddLabel(labelItem, labelList);
-                  }
-                "
-              >
-                <icon-plus-circle-fill :size="24" font-size="14px" />
-              </a-link>
-            </template> -->
           </SealFormItemWrap>
-          <!-- <SealFormItemWrap
-            :label="$t(`applications.projects.form.label`)"
-            :style="{ width: `${InputWidth.LARGE}px` }"
-          >
-            <LabelsList :labels="formData.labels"></LabelsList>
-          </SealFormItemWrap> -->
         </a-form-item>
         <GroupTitle
           class="m-t-20"
@@ -312,6 +262,7 @@
         </template>
         <a-button
           type="outline"
+          :disabled="!isFormChanged && route.name === PROJECT.EnvDetail"
           class="cap-title cancel-btn"
           @click="handleCancel"
           >{{ $t('common.button.cancel') }}</a-button
@@ -334,7 +285,7 @@
     EnvironmentTypeOrder,
     SaveActions
   } from '@/views/config';
-  import { ref, computed, provide } from 'vue';
+  import { ref, computed, provide, onMounted, nextTick } from 'vue';
   import _, {
     each,
     includes,
@@ -404,6 +355,7 @@
       applicableEnvironmentType: string;
     }[]
   >([]);
+  const isFormChanged = ref(false);
   const showModal = ref(false);
   const submitLoading = ref(false);
   const breadCrumbList = ref<BreadcrumbOptions[]>([]);
@@ -457,6 +409,12 @@
     return t('operation.environments.view');
   });
 
+  const handleFormChange = () => {
+    if (route.name !== PROJECT.EnvDetail) {
+      return;
+    }
+    isFormChanged.value = !_.isEqual(copyFormData, formData.value);
+  };
   const initPageAction = () => {
     if (route.name === PROJECT.EnvDetail) {
       pageAction.value = userStore.hasProjectResourceActions({
@@ -534,6 +492,7 @@
       formData.value.connectorIDs = map(get(data, 'connectors') || [], (s) => {
         return s?.connector?.id;
       });
+      formData.value.description = get(data, 'description') || '';
       // only in clone
       formData.value.name = isCloneAction
         ? `${formData.value.name}-clone`
@@ -725,7 +684,11 @@
     initPageAction();
     setLabels();
   };
-
+  onMounted(() => {
+    nextTick(() => {
+      isFormChanged.value = false;
+    });
+  });
   init();
 </script>
 
