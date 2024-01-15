@@ -24,6 +24,8 @@ export const InjectShowInputHintKey = Symbol('InjectShowInputHintKey');
 
 export const InjectSchemaFormStatusKey = Symbol('InjectSchemaFormStatusKey');
 
+export const InjectSchemaCustomMetaKey = Symbol('InjectSchemaCustomMeta');
+
 export const InjectTraceKey = Symbol('InjectTraceKey');
 
 export const setEndTimeAddDay = (time, mode) => {
@@ -68,7 +70,7 @@ export enum ModalAction {
 export const InputWidth = {
   DEFAULT: 360,
   MIDDLE: 474,
-  LARGE: 500,
+  LARGE: 600,
   XLARGE: 800
 };
 

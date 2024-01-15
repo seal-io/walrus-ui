@@ -763,10 +763,12 @@ export const setHiddenFieldValue = ({
 // real component
 export const genFieldPropsAndRules = ({
   requiredFields,
+  schemaCustomMeta,
   schema
 }: {
   requiredFields: string[];
   schema: FieldSchema;
+  schemaCustomMeta: any;
 }) => {
   const uiExtensions = schema['x-walrus-ui'] || {};
   const {
@@ -798,7 +800,7 @@ export const genFieldPropsAndRules = ({
     label: title || name,
     disabled: false,
     readonly: readOnly,
-    immutable,
+    immutable: schemaCustomMeta?.immutable ?? immutable,
     hidden: hidden || false,
     showIf: showIf || '',
     doc: externalDocs || '',

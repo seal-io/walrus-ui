@@ -216,7 +216,7 @@
       </a-form>
     </ComCard>
     <ComCard
-      :padding="pgType === 'page' ? '0px var(--card-content-padding)' : 0"
+      :padding="pgType === 'page' ? '0px var(--card-content-padding) 20px' : 0"
     >
       <div
         v-if="_.keys(schemaVariables?.properties).length"
@@ -264,36 +264,50 @@
           @change="handleFormChange"
         ></GroupForm>
       </a-spin>
+
       <EditPageFooter>
         <template #save>
-          <div class="flex">
-            <!-- <a-textarea
-              style="height: 36px"
-              class="m-r-5"
-              :auto-size="{ minRows: 2 }"
-            ></a-textarea> -->
-            <GroupButtonMenu
-              v-if="
-                _.get(serviceInfo, 'status.summaryStatus') ===
-                  ServiceStatus.Undeployed ||
-                _.get(serviceInfo, 'status.summaryStatus') ===
-                  ServiceStatus.Stopped ||
-                !id
-              "
-              trigger="hover"
-              :loading="submitLoading"
-              :actions="SaveActions"
-              @select="handleAddSelector"
-            >
-            </GroupButtonMenu>
-            <a-button
-              v-else
-              :type="'primary'"
-              class="cap-title"
-              @click="handleOkCallback"
-              >{{ $t('common.button.saveDeploy') }}</a-button
-            >
-          </div>
+          <a-popconfirm
+            position="top"
+            trigger="hover"
+            content-class="deploy-comment-popup"
+          >
+            <template #icon>
+              <span></span>
+            </template>
+            <template #content>
+              <seal-textarea
+                v-model="formData.changeComment"
+                :label="$t('common.table.mark')"
+                allow-clear
+                style="width: 300px"
+                :auto-size="{ minRows: 2, maxRows: 4 }"
+              ></seal-textarea>
+            </template>
+            <div>
+              <GroupButtonMenu
+                v-if="
+                  _.get(serviceInfo, 'status.summaryStatus') ===
+                    ServiceStatus.Undeployed ||
+                  _.get(serviceInfo, 'status.summaryStatus') ===
+                    ServiceStatus.Stopped ||
+                  !id
+                "
+                trigger="hover"
+                :loading="submitLoading"
+                :actions="SaveActions"
+                @select="handleAddSelector"
+              >
+              </GroupButtonMenu>
+              <a-button
+                v-else
+                :type="'primary'"
+                class="cap-title"
+                @click="handleOkCallback"
+                >{{ $t('common.button.saveDeploy') }}</a-button
+              >
+            </div>
+          </a-popconfirm>
         </template>
         <template #cancel>
           <a-button
@@ -699,12 +713,7 @@
         if (dataType.value === ServiceDataType.resource) {
           formData.value.template = null as any;
         }
-        if (draft) {
-          formData.value.changeComment = '';
-          saveCallback();
-        } else {
-          showCommentModal.value = true;
-        }
+        saveCallback();
       } catch (error) {
         submitLoading.value = false;
       } finally {
@@ -782,3 +791,26 @@
     name: PROJECT.ServiceEdit
   };
 </script>
+
+<style lang="less">
+  .arco-popconfirm-popup-content.deploy-comment-popup {
+    border: none;
+    border-radius: var(--border-radius-small);
+
+    .arco-popconfirm-body {
+      padding: 0;
+    }
+
+    .arco-popconfirm-footer {
+      display: none;
+    }
+
+    .arco-popconfirm-body {
+      margin-bottom: 0;
+    }
+
+    .arco-popconfirm-icon {
+      display: none;
+    }
+  }
+</style>

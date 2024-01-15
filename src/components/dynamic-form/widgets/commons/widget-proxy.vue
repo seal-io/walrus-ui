@@ -1,6 +1,10 @@
 <script lang="tsx">
   import { defineComponent, inject, ref } from 'vue';
-  import { InjectSchemaFormStatusKey, PageAction } from '@/views/config';
+  import {
+    InjectSchemaFormStatusKey,
+    InjectSchemaCustomMetaKey,
+    PageAction
+  } from '@/views/config';
   import _ from 'lodash';
   import schemaFieldProps from '@/components/dynamic-form/fields/schema-field-props';
   import { genFieldPropsAndRules } from '@/components/dynamic-form/utils';
@@ -17,8 +21,10 @@
         InjectSchemaFormStatusKey,
         ref(PageAction.CREATE)
       );
+      const schemaCustomMeta = inject(InjectSchemaCustomMetaKey, ref({}));
       const { fieldProps, rules } = genFieldPropsAndRules({
         schema: props.schema,
+        schemaCustomMeta: schemaCustomMeta.value,
         requiredFields: props.requiredFields
       });
 

@@ -2,7 +2,11 @@
   import { defineComponent, ref, inject } from 'vue';
   import _ from 'lodash';
   import i18n from '@/locale';
-  import { InjectSchemaFormStatusKey, PageAction } from '@/views/config';
+  import {
+    InjectSchemaFormStatusKey,
+    InjectSchemaCustomMetaKey,
+    PageAction
+  } from '@/views/config';
   import MapString from '@/components/form-create/custom-components/map-string.vue';
   import SealFormItemWrap from '@/components/seal-form/components/seal-form-item-wrap.vue';
   import SealViewItemWrap from '@/components/seal-form/components/seal-view-item-wrap.vue';
@@ -22,14 +26,17 @@
         InjectSchemaFormStatusKey,
         ref(PageAction.CREATE)
       );
+
+      const schemaCustomMeta = inject(InjectSchemaCustomMetaKey, ref({}));
+
       const initialPath = _.initial(props.fieldPath);
       const handleChange = (data) => {
         emit('change', data);
       };
 
-      console.log('schema=map==string=', props.schema);
       const { fieldProps, rules } = genFieldPropsAndRules({
         schema: props.schema,
+        schemaCustomMeta: schemaCustomMeta.value,
         requiredFields: props.requiredFields
       });
       props.FieldPathMap.set(_.join(props.fieldPath, '.'), {

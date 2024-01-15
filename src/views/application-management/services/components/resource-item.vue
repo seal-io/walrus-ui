@@ -59,8 +59,8 @@
           };
         }).filter(
           (item) =>
-            _.startsWith(item.label, 'http') ||
-            _.startsWith(item.label, 'https')
+            _.startsWith(item.value, 'http') ||
+            _.startsWith(item.value, 'https')
         );
         return list;
       });
@@ -120,9 +120,9 @@
             <PrimaryButtonGroup
               actions={linkList.value}
               position="br"
-              trigger="hover"
+              trigger="click"
               v-slots={{
-                item: (item) => {
+                item: ({ item }) => {
                   return (
                     <a-link href={item.value} target="_blank">
                       {item.label}

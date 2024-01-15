@@ -1,6 +1,7 @@
 <script lang="tsx">
-  import { defineComponent } from 'vue';
+  import { defineComponent, ref, inject } from 'vue';
   import _ from 'lodash';
+  import { InjectSchemaCustomMetaKey } from '@/views/config';
   import schemaFieldProps from '../schema-field-props';
   import BasicField from '../../components/basic-field.vue';
   import { genFieldPropsAndRules } from '../../utils';
@@ -10,8 +11,11 @@
     props: schemaFieldProps,
     emits: ['change'],
     setup(props, { emit }) {
+      const schemaCustomMeta = inject(InjectSchemaCustomMetaKey, ref({}));
+
       const { fieldProps, rules } = genFieldPropsAndRules({
         schema: props.schema,
+        schemaCustomMeta: schemaCustomMeta.value,
         requiredFields: props.requiredFields
       });
 

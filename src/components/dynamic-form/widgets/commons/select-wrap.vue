@@ -2,7 +2,11 @@
   import _ from 'lodash';
   import i18n from '@/locale';
   import { defineComponent, toRefs, inject, ref, watch } from 'vue';
-  import { InjectSchemaFormStatusKey, PageAction } from '@/views/config';
+  import {
+    InjectSchemaFormStatusKey,
+    InjectSchemaCustomMetaKey,
+    PageAction
+  } from '@/views/config';
   import SealViewItemWrap from '@/components/seal-form/components/seal-view-item-wrap.vue';
   import schemaFieldProps from '@/components/dynamic-form/fields/schema-field-props';
   import {
@@ -29,6 +33,7 @@
         InjectSchemaFormStatusKey,
         ref(PageAction.CREATE)
       );
+      const schemaCustomMeta = inject(InjectSchemaCustomMetaKey, ref({}));
       const formref = inject(ProviderFormRefKey, ref());
       const { type } = toRefs(props.schema);
 
@@ -36,6 +41,7 @@
 
       const { fieldProps, rules } = genFieldPropsAndRules({
         schema: props.schema,
+        schemaCustomMeta: schemaCustomMeta.value,
         requiredFields: props.requiredFields
       });
 

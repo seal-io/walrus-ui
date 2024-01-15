@@ -13,6 +13,7 @@
   import {
     InjectSchemaFormStatusKey,
     InjectCompleteDataKey,
+    InjectSchemaCustomMetaKey,
     PageAction,
     HintKeyMaps
   } from '@/views/config';
@@ -50,6 +51,7 @@
         InjectSchemaFormStatusKey,
         ref(PageAction.CREATE)
       );
+      const schemaCustomMeta = inject(InjectSchemaCustomMetaKey, ref({}));
       const completeData: any = inject(InjectCompleteDataKey, ref({}));
       const formref = inject(ProviderFormRefKey, ref());
 
@@ -79,6 +81,7 @@
       });
       const { fieldProps, rules } = genFieldPropsAndRules({
         schema: props.schema,
+        schemaCustomMeta: schemaCustomMeta.value,
         requiredFields: props.requiredFields
       });
 
