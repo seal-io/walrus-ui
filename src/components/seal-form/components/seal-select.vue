@@ -58,8 +58,12 @@
         emit('input', e);
       };
       const handleChange = (value) => {
-        emit('update:modelValue', value);
-        emit('change', value);
+        let val = value;
+        if (attrs.multiple) {
+          val = _.filter(value, (item) => item !== '');
+        }
+        emit('update:modelValue', val);
+        emit('change', val);
       };
       const handleInputValueChange = (value) => {
         searchValue.value = value;
