@@ -337,8 +337,9 @@
       height: 100%;
       padding: 5px;
       overflow: hidden;
+      overflow: hidden;
       background-color: #181d28;
-      border-radius: 0 0 4px 4px;
+      border-radius: 0 0 8px 8px;
     }
 
     .status-text {

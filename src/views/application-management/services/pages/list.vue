@@ -49,12 +49,8 @@
           "
           status="success"
           type="primary"
-          :disabled="!selectedKeys.length"
-          @click="handleBatchDeployment"
-          >{{ $t('applications.service.batchDeploy')
-          }}<span v-if="selectedKeys.length">{{
-            `(${selectedKeys.length})`
-          }}</span></a-button
+          @click="handleImportFile"
+          >{{ $t('common.button.import') }}</a-button
         >
         <a-button
           v-if="
@@ -352,18 +348,18 @@
     );
   };
 
+  const handleImportFile = () => {
+    showImportYaml.value = true;
+  };
   const setActionHandler = () => {
     actionHandlerMap.set(serviceActionMap.clone, handleCloneService);
     actionHandlerMap.set(serviceActionMap.export, handleExportYaml);
     actionHandlerMap.set(serviceActionMap.stop, handleStopModal);
     actionHandlerMap.set(serviceActionMap.start, handleBatchStart);
+    actionHandlerMap.set(serviceActionMap.deploy, handleBatchDeployment);
   };
 
   const handleClickAction = (val) => {
-    if (val === serviceActionMap.import) {
-      showImportYaml.value = true;
-      return;
-    }
     actionHandlerMap.get(val)();
   };
   onMounted(() => {

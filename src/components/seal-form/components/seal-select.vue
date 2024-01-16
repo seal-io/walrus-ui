@@ -9,6 +9,7 @@
 
   export default defineComponent({
     name: 'SealSelect',
+    inheritAttrs: false,
     emits: [
       'update:modelValue',
       'update:inputValue',
@@ -97,6 +98,7 @@
           return (
             <a-select
               {...attrs}
+              style={{ width: '100%' }}
               ref={input2.value}
               model-value={props.modelValue}
               popup-visible={false}
@@ -132,6 +134,7 @@
         return (
           <a-select
             {...attrs}
+            style={{ width: '100%' }}
             ref={input.value}
             class="v-sel"
             model-value={props.modelValue}
@@ -180,7 +183,7 @@
                 'v-sel-view': props.viewStatus
               }
             ]}
-            style={{ width: attrs.style?.width || 'max-content' }}
+            style={{ width: '100%' }}
             onClick={() => handleClick()}
           >
             <span class={['label', { disabled: attrs.disabled }]}>
@@ -208,10 +211,7 @@
           const list = attrs.options || [];
           const values = props.modelValue || [];
           return (
-            <SealViewItemWrap
-              label={label as string}
-              style={{ width: attrs.style?.width || 'max-content' }}
-            >
+            <SealViewItemWrap label={label as string} style={{ width: '100%' }}>
               <TagList
                 values={values as any}
                 list={list as any}
@@ -227,8 +227,14 @@
           {props.viewStatus && attrs.multiple ? (
             renderView()
           ) : (
-            <span style={{ width: attrs.style?.width || 'max-content' }}>
-              <OnClickOutside onTrigger={() => handleBlur()}>
+            <span
+              style={{ width: attrs.style?.width || 'max-content' }}
+              class="flex"
+            >
+              <OnClickOutside
+                onTrigger={() => handleBlur()}
+                style={{ width: '100%' }}
+              >
                 {renderSelect()}
               </OnClickOutside>
             </span>

@@ -200,6 +200,7 @@
     .btn-wrap {
       position: relative;
       top: -5px;
+      right: 2px;
     }
 
     .img-box {

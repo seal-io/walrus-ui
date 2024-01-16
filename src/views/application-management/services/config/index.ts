@@ -232,6 +232,23 @@ export const serviceBatchAction: MoreAction[] = [
     }
   },
   {
+    label: 'common.button.deploy',
+    value: serviceActionMap.deploy,
+    icon: 'icon-send',
+    iconfont: false,
+    handler: '',
+    status: 'normal',
+    disabled: false,
+    filterFun({ projectID, environmentID }) {
+      return userStore.hasProjectResourceActions({
+        resource: Resources.Resources,
+        environmentID,
+        projectID,
+        actions: [Actions.POST]
+      });
+    }
+  },
+  {
     label: 'common.button.stop',
     value: serviceActionMap.stop,
     icon: 'icon-record-stop',
