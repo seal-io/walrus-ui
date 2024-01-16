@@ -46,7 +46,7 @@
       </template>
     </a-input>
     <span
-      v-if="!$attrs.showWordLimit || !$attrs['show-word-limit']"
+      v-if="!$attrs.showWordLimit && !$attrs['show-word-limit']"
       class="input-tips"
     >
       <a-tooltip

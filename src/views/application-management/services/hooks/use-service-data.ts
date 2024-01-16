@@ -43,8 +43,6 @@ export default function useServiceData(props?) {
   const resourceTypeData = computed(() => {
     return { resourceType: dataType.value, ...props };
   });
-
-  console.log('dataType>>>>>>>>>.', resourceTypeData.value.flowStepInfo);
   const {
     completeData,
     initCompleteData,
