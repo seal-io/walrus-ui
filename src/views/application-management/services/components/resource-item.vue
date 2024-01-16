@@ -110,7 +110,7 @@
                   'applications.applications.instance.accessUrl'
                 )}
               >
-                <icon-share-internal style="stroke-width: 4" class="font-14" />
+                <icon-link style="stroke-width: 4" class="font-14" />
               </a-tooltip>
             </a-link>
           );
@@ -120,7 +120,7 @@
             <PrimaryButtonGroup
               actions={linkList.value}
               position="br"
-              trigger="click"
+              trigger="hover"
               v-slots={{
                 item: ({ item }) => {
                   return (
@@ -144,10 +144,7 @@
                     'applications.applications.instance.accessUrl'
                   )}
                 >
-                  <icon-share-internal
-                    style="stroke-width: 4"
-                    class="font-14"
-                  />
+                  <icon-link style="stroke-width: 4" class="font-14" />
                 </a-tooltip>
               </a-link>
             </PrimaryButtonGroup>

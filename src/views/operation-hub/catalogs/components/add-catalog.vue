@@ -49,10 +49,6 @@
             :max-length="63"
             show-word-limit
           ></seal-input>
-
-          <!-- <template #extra>
-            <span class="tips">{{ $t('common.validate.labelName') }}</span>
-          </template> -->
         </a-form-item>
         <a-form-item
           hide-label

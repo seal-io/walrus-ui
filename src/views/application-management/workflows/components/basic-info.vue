@@ -17,26 +17,6 @@
   >
     <div style="width: 100%; text-align: center">
       <a-form ref="formref" :model="formData" auto-label-width>
-        <!-- <a-form-item
-          field="displayName"
-          hide-label
-          validate-trigger="change"
-          :rules="[
-            {
-              required: true,
-              message: $t('workflow.form.rules.displayName')
-            }
-          ]"
-        >
-          <seal-input
-            v-model="formData.displayName"
-            :label="$t('workflow.form.displayName')"
-            :required="true"
-            style="width: 100%"
-            :max-length="63"
-            show-word-limit
-          ></seal-input>
-        </a-form-item> -->
         <a-form-item
           field="name"
           hide-label
@@ -62,9 +42,6 @@
             :max-length="63"
             show-word-limit
           ></seal-input>
-          <!-- <template #extra>
-            <span class="tips">{{ $t('common.validate.labelName') }}</span>
-          </template> -->
         </a-form-item>
         <a-form-item :label="$t('common.table.description')" hide-label>
           <seal-textarea

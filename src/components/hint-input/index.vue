@@ -217,7 +217,6 @@
     showOnCreate: true
   };
 
-  console.log('$attrs===========', $attrs);
   // const textarea = ref()
   let textcomplete: any = null;
   let textEditor: any = null;
