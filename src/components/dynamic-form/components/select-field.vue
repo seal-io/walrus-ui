@@ -100,9 +100,10 @@
 
       // do not handle nullable peroperty
       const handleInputChange = (val) => {
+        const isEmptyList = _.isArray(val) && !val.length;
         if (
           !props.required &&
-          (isEmptyvalue(val) || !val?.length) &&
+          (isEmptyvalue(val) || isEmptyList) &&
           val !== 0
         ) {
           _.unset(props.formData, props.fieldPath);
@@ -118,7 +119,7 @@
         if (props.schema.enum) {
           options.value = _.map(props.schema.enum, (item) => {
             return {
-              label: item,
+              label: _.toString(item),
               value: item
             };
           });
@@ -128,7 +129,7 @@
             : [props.schema.default];
           options.value = defaultList.map((item) => {
             return {
-              label: item,
+              label: _.toString(item),
               value: item
             };
           });
@@ -137,7 +138,7 @@
           const value = _.get(props.formData, props.fieldPath);
           const list = _.concat(value).map((item) => {
             return {
-              label: item,
+              label: _.toString(item),
               value: item
             };
           });
@@ -165,19 +166,6 @@
           return _.filter(list, (v) => !isValueEmpty(v));
         }
         return list;
-      };
-
-      const renderSelectOptions = () => {
-        if (isSelect(props.schema)) {
-          return (
-            <>
-              {_.map(options.value, (item) => {
-                return <a-option value={item.value}>{item.label}</a-option>;
-              })}
-            </>
-          );
-        }
-        return null;
       };
 
       const showArrayValue = (val) => {
@@ -222,6 +210,7 @@
           >
             <seal-select
               {...fieldProps}
+              options={options.value}
               style="width: 100%"
               allow-search={false}
               required={fieldProps.required}
@@ -239,9 +228,7 @@
                 const newVal = filterEmptyOnSelect(val);
                 handleInputChange(newVal);
               }}
-            >
-              {renderSelectOptions()}
-            </seal-select>
+            ></seal-select>
           </a-form-item>
         );
       };
