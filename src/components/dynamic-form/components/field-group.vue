@@ -24,25 +24,22 @@
         InjectSchemaFormStatusKey,
         ref(PageAction.CREATE)
       );
-      const collapsed = _.get(
-        props.schema,
-        ['x-walrus-ui', 'collapsed'],
-        false
-      );
+
       const isUnset = ref(true);
-      const status = ref(collapsed);
+      const status = ref(false);
       const hovered = ref(false);
       const groupHovered = ref(false);
+      const staticErrorFields = ref([]);
 
       const fieldPathData = computed(() => {
         return _.get(props.formData, props.fieldPath);
       });
-      const exsitsError = () => {
+      const exsitsError = computed(() => {
         const fieldPath = _.join(props.fieldPath, '.');
         return _.some(errorFields.value, (item) => {
           return _.startsWith(item, fieldPath);
         });
-      };
+      });
       const handleToggleField = (checked) => {
         if (!checked) {
           status.value = false;
@@ -117,6 +114,15 @@
             status.value = props.level < 2 ? true : status.value;
           } else {
             isUnset.value = true;
+          }
+        },
+        { immediate: true }
+      );
+      watch(
+        () => exsitsError.value,
+        (val) => {
+          if (exsitsError.value) {
+            status.value = true;
           }
         },
         { immediate: true }
@@ -204,7 +210,7 @@
                 },
                 _.join(props.fieldPath, '.')
               ]}
-              status={status.value || exsitsError()}
+              status={status.value}
               disabled={
                 isUnset.value && schemaFormStatus.value !== PageAction.VIEW
               }

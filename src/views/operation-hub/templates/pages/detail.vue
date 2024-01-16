@@ -81,10 +81,6 @@
               :max-length="63"
               show-word-limit
             ></seal-input>
-
-            <!-- <template v-if="pageAction === PageAction.EDIT" #extra>
-              <div class="tips">{{ $t('common.validate.labelName') }}</div>
-            </template> -->
           </a-form-item>
           <a-form-item
             :label="$t('operation.environments.table.description')"

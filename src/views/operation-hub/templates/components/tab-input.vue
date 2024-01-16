@@ -124,9 +124,8 @@
     }
   });
   const currentView = ref('list');
-  const height = computed(() => {
-    return `calc(100vh - ${props.wrapSize + 205}px)`;
-  });
+  const height = ref(`calc(100vh - 480px)`);
+
   const dataList = computed(() => {
     const result = initFormState(
       get(props.schema, 'schema.openAPISchema.components.schemas.variables')

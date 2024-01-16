@@ -161,9 +161,7 @@
         ) {
           _.unset(props.formData, props.fieldPath);
         }
-        // if (props.schema.isItemsProperty) {
-        //   return;
-        // }
+
         unsetFieldValue({
           FieldPathMap: props.FieldPathMap,
           defaultFormData: props.defaultFormData,
@@ -238,9 +236,10 @@
           ></CommonButton>
         ) : null;
       };
+      // init data when create
       const init = () => {
         const counts = minItems || defaultItems;
-        if (counts && schemaFormStatus.value === PageAction.CREATE) {
+        if (counts) {
           for (let i = 0; i < counts; i += 1) {
             setPropertiesList();
           }
@@ -252,11 +251,15 @@
         if (schemaFormStatus.value === PageAction.CREATE) {
           init();
         } else {
+          const counts = minItems || defaultItems;
           const value = _.get(props.uiFormData, props.fieldPath, []);
+
           if (value && value.length) {
             for (let i = 0; i < value.length; i += 1) {
               setPropertiesList();
             }
+          } else if (counts) {
+            init();
           }
         }
       };

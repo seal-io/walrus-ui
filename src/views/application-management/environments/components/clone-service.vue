@@ -148,54 +148,6 @@
                   :labels="labelsData.labels"
                   :page-action="pageAction"
                 ></keyValueLabels>
-                <!-- <a-space
-                  v-if="labelList?.length"
-                  style="display: flex; flex-direction: column"
-                  direction="vertical"
-                >
-                  <xInputGroup
-                    v-for="(sItem, sIndex) in labelList"
-                    :key="sIndex"
-                    v-model:dataKey="sItem.key"
-                    v-model:dataValue="sItem.value"
-                    v-model:value="formData.labels"
-                    :data-item="{
-                      style: {
-                        key: {
-                          'display': 'flex',
-                          'flex': 1,
-                          'align-items': 'center'
-                        }
-                      }
-                    }"
-                    :trigger-validate="validateTrigger"
-                    :label-list="labelList"
-                    :position="sIndex"
-                    always-delete
-                    should-key
-                    @add="
-                      (obj) => {
-                        handleAddLabel(obj, labelList);
-                      }
-                    "
-                    @delete="handleDeleteLabel(labelList, sIndex)"
-                  ></xInputGroup>
-                </a-space>
-                <template v-else>
-                  <a-link
-                    class="p-0"
-                    @click="
-                      () => {
-                        handleAddLabel(labelItem, labelList);
-                      }
-                    "
-                  >
-                    <icon-plus-circle-fill
-                      :size="24"
-                      font-size="14px size-24"
-                    ></icon-plus-circle-fill>
-                  </a-link>
-                </template> -->
               </SealFormItemWrap>
             </a-form-item>
             <a-form-item :label="$t('common.table.description')" hide-label>
@@ -256,15 +208,15 @@
     HintKeyMaps
   } from '@/views/config';
   import i18n from '@/locale';
+  import { useRoute } from 'vue-router';
   import { HintKey } from '@/views/config/interface';
   import { ref, PropType, computed, provide, onMounted, watch } from 'vue';
   import GroupForm from '@/components/dynamic-form/group-form.vue';
   import keyValueLabels from '@/components/form-create/custom-components/key-value-labels.vue';
-  import xInputGroup from '@/components/form-create/custom-components/x-input-group.vue';
   import EditPageFooter from '@/components/edit-page-footer/index.vue';
-  import useLabelsActions from '@/components/form-create/hooks/use-labels-action';
   import useScrollToView from '@/hooks/use-scroll-to-view';
   import GroupTitle from '@/components/group-title/index.vue';
+  import { queryEnvironmentAvailableDefinitions } from '@/views/application-management/environments/api';
   import { ServiceDataType } from '../../services/config';
   import serviceThumb from '../../services/components/service-thumb.vue';
   import useServiceData from '../../services/hooks/use-service-data';
@@ -331,9 +283,11 @@
     schemaVariables,
     formData,
     uiFormData,
+    templateList,
     pageAction
   } = useServiceData();
 
+  const route = useRoute();
   const { scrollToView } = useScrollToView();
 
   provide(InjectSchemaFormStatusKey, ref(PageAction.EDIT));
@@ -372,6 +326,25 @@
     }
   };
 
+  const getResourceDefinitions = async () => {
+    try {
+      const environmentID = route.params.environmentId as string;
+      const { data } = await queryEnvironmentAvailableDefinitions({
+        environmentID
+      });
+      templateList.value = _.map(data || [], (item) => {
+        return {
+          ...item,
+          label: item.type,
+          value: item.type
+        };
+      });
+    } catch (error) {
+      templateList.value = [];
+      // console.log(error)
+    }
+  };
+
   const handleClickInstance = async (data) => {
     traceKey.value = data.id;
     data.attributes = data.attributes || {};
@@ -382,6 +355,9 @@
     dataType.value = serviceInfo.value.type
       ? ServiceDataType.resource
       : ServiceDataType.service;
+    if (dataType.value === ServiceDataType.resource) {
+      await getResourceDefinitions();
+    }
     await setFormAttributes();
     labelsData.value.labels = _.cloneDeep(formData.value.labels);
   };

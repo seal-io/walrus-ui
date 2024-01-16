@@ -6,7 +6,7 @@ export interface MatchingRule {
   selector: {
     environmentLabels?: Record<string, any>;
     environmentNames?: string[];
-    environmentType?: string[];
+    environmentTypes?: string[];
     projectNames?: Array<string>;
     projectLabels?: Record<string, any>;
     resourceLabels?: Record<string, any>;
@@ -58,7 +58,7 @@ export const definitionFormData = {
   selector: {
     environmentLabels: {},
     environmentNames: [],
-    environmentType: [],
+    environmentTypes: [],
     projectNames: [],
     resourceLabels: {},
     projectLabels: {}

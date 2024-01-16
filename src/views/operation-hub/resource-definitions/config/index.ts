@@ -15,7 +15,7 @@ export const SelectorAction = [
   { label: 'resource.definition.detail.projectName', value: 'projectNames' },
   { label: 'resource.definition.detail.projectTag', value: 'projectLabels' },
   { label: 'resource.definition.detail.envName', value: 'environmentNames' },
-  { label: 'applications.environment.type', value: 'environmentType' },
+  { label: 'applications.environment.type', value: 'environmentTypes' },
   { label: 'resource.definition.detail.envTag', value: 'environmentLabels' },
   { label: 'resource.definition.detail.resourceTag', value: 'resourceLabels' }
 ];

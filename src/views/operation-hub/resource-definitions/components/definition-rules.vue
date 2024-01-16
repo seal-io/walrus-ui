@@ -189,9 +189,9 @@
             </a-button>
           </a-form-item>
           <a-form-item
-            v-if="selectors.has('environmentType')"
+            v-if="selectors.has('environmentTypes')"
             hide-label
-            field="selector.environmentType"
+            field="selector.environmentTypes"
             :label="$t('applications.environment.type')"
             :rules="[
               {
@@ -201,7 +201,7 @@
             ]"
           >
             <seal-select
-              v-model="formData.selector.environmentType"
+              v-model="formData.selector.environmentTypes"
               :view-status="pageAction === PageAction.VIEW"
               :options="
                 _.map(EnvironmentTypeList, (item) => {
@@ -222,7 +222,7 @@
               v-if="pageAction === PageAction.EDIT"
               type="text"
               status="danger"
-              @click="handleDeleteSelector('environmentType')"
+              @click="handleDeleteSelector('environmentTypes')"
             >
               <template #icon>
                 <icon-delete class="size-16" />
@@ -464,7 +464,7 @@
     | 'environmentLabels'
     | 'resourceLabels'
     | 'environmentNames'
-    | 'environmentType'
+    | 'environmentTypes'
     | 'projectNames'
     | 'projectLabels';
 
@@ -540,7 +540,7 @@
       projectLabels: {},
       environmentLabels: {},
       environmentNames: [],
-      environmentType: [],
+      environmentTypes: [],
       resourceLabels: {}
     },
     template: {
@@ -627,8 +627,8 @@
     if (formData.value.selector?.environmentNames?.length) {
       selectors.value.add('environmentNames');
     }
-    if (formData.value.selector?.environmentType?.length) {
-      selectors.value.add('environmentType');
+    if (formData.value.selector?.environmentTypes?.length) {
+      selectors.value.add('environmentTypes');
     }
     if (_.keys(formData.value.selector.environmentLabels).length) {
       selectors.value.add('environmentLabels');
