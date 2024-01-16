@@ -336,7 +336,9 @@
     .terminal {
       height: 100%;
       padding: 5px;
+      overflow: hidden;
       background-color: #181d28;
+      border-radius: 0 0 4px 4px;
     }
 
     .status-text {

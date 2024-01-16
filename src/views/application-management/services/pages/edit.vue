@@ -296,7 +296,7 @@
                 trigger="hover"
                 :loading="submitLoading"
                 :actions="SaveActions"
-                @select="handleAddSelector"
+                @select="handleActionSelect"
               >
               </GroupButtonMenu>
               <a-button
@@ -332,15 +332,15 @@
 <script lang="ts" setup>
   import { PROJECT } from '@/router/config';
   import _, { get, find, cloneDeep, toString } from 'lodash';
-  import { ref, computed, provide, PropType, toRaw } from 'vue';
+  import { ref, computed, provide, PropType, nextTick, onMounted } from 'vue';
   import i18n from '@/locale';
+  import { useSetChunkRequest } from '@/api/axios-chunk-request';
   import CommentModal from '@/views/commons/components/comment-modal/index.vue';
   import { onBeforeRouteLeave } from 'vue-router';
   import GroupButtonMenu from '@/components/drop-button-group/group-button-menu.vue';
   import useCallCommon from '@/hooks/use-call-common';
   import useScrollToView from '@/hooks/use-scroll-to-view';
   import EditPageFooter from '@/components/edit-page-footer/index.vue';
-  import xInputGroup from '@/components/form-create/custom-components/x-input-group.vue';
   import GroupForm from '@/components/dynamic-form/group-form.vue';
   import GroupTitle from '@/components/group-title/index.vue';
   import {
@@ -352,6 +352,7 @@
     SaveActions,
     InjectSchemaFormStatusKey,
     InjectTraceKey,
+    websocketEventType,
     ResourceSaveAction
   } from '@/views/config';
   import keyValueLabels from '@/components/form-create/custom-components/key-value-labels.vue';
@@ -359,9 +360,13 @@
   import { projectEnvCtxInjectionKey } from '@/components/dynamic-form/widgets/config';
   import { BreadcrumbOptions } from '@/views/config/interface';
   import { beforeLeaveCallback } from '@/hooks/save-before-leave';
-  import useLabelsActions from '@/components/form-create/hooks/use-labels-action';
   import useProjectBreadcrumbData from '../../projects/hooks/use-project-breadcrumb-data';
-  import { createService, upgradeApplicationInstance } from '../api';
+  import {
+    createService,
+    upgradeApplicationInstance,
+    SERVICE_API,
+    SERVICE_API_PREFIX
+  } from '../api';
   import useServiceData from '../hooks/use-service-data';
   import { ServiceDataType, ServiceStatus } from '../config';
 
@@ -375,10 +380,7 @@
     }
   });
   const { route, router, t } = useCallCommon();
-  // const dataType = ref<string>(ServiceDataType.resource);
-  // const resourceTypeData = computed(() => {
-  //   return { resourceType: dataType.value };
-  // });
+
   const emits = defineEmits(['cancel', 'save']);
   const { scrollToView } = useScrollToView();
   const {
@@ -397,6 +399,7 @@
     setTemplateVersionList,
     getTemplateVersions,
     setTemplateInfo,
+    updateServiceCompleteData,
     schemaVariables,
     getItemResourceDefinition,
     dataType,
@@ -411,7 +414,7 @@
     title,
     asyncLoading
   } = useServiceData();
-
+  const { setChunkRequest } = useSetChunkRequest();
   let copyFormData: any = null;
   const isFormChange = ref(false);
   const showCommentModal = ref(false);
@@ -422,11 +425,13 @@
     labels: {},
     list: []
   });
+  const deletedIds = ref<string[]>([]);
   const validateTrigger = ref(false);
   const breadCrumbList = ref<BreadcrumbOptions[]>([]);
   const schemaFormCache = ref<any>({});
   const formAction = ref(!id ? PageAction.CREATE : PageAction.EDIT);
   const traceKey = ref(Date.now());
+  const projectID = route.params.projectId as string;
   const projectEnvCtx = ref({
     projectID: route.params.projectId as string,
     environmentID: route.params.environmentId as string,
@@ -504,7 +509,8 @@
     }
     const data = find(
       serviceDataList.value,
-      (item) => get(item, 'name') === val
+      (item) =>
+        get(item, 'name') === val && !_.includes(deletedIds.value, item.id)
     );
     if (data) {
       callback(t('applications.applications.rule.modules.name'));
@@ -734,7 +740,7 @@
     saveCallback();
   };
 
-  const handleAddSelector = (value) => {
+  const handleActionSelect = (value) => {
     setTimeout(() => {
       if (value === ResourceSaveAction.Deploy) {
         handleOk();
@@ -783,6 +789,44 @@
     labelsData.value.labels = _.cloneDeep(formData.value.labels);
   };
 
+  const updateServiceList = (data) => {
+    const ids = data?.ids || [];
+
+    // DELETE
+    if (data?.type === websocketEventType.DELETE) {
+      deletedIds.value = _.uniq([...deletedIds.value, ...ids]);
+      serviceDataList.value = _.filter(
+        serviceDataList.value,
+        (item) => !_.includes(ids, item.id)
+      );
+      updateServiceCompleteData();
+    }
+  };
+
+  const updateHandler = (list) => {
+    _.each(list, (data) => {
+      updateServiceList(data);
+    });
+  };
+
+  const createServiceChunkRequest = () => {
+    try {
+      setChunkRequest({
+        url: `${SERVICE_API_PREFIX()}${SERVICE_API}`,
+        params: {
+          extract: ['-attributes', '-description']
+        },
+        handler: updateHandler
+      });
+    } catch (error) {
+      // ignore
+    }
+  };
+  onMounted(() => {
+    nextTick(() => {
+      createServiceChunkRequest();
+    });
+  });
   initData();
 </script>
 

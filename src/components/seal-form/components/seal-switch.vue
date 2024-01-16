@@ -10,12 +10,7 @@
     <span class="label-wrap">
       <span class="label" :class="{ disabled: $attrs.disabled }">
         <span>{{ $attrs.label || placeholder }}</span>
-        <a-tooltip v-if="popupInfo" :content="popupInfo">
-          <icon-info-circle
-            style="stroke-linecap: initial; cursor: default"
-            class="m-l-2"
-          />
-        </a-tooltip>
+        <Tooltip :popup-info="popupInfo" :doc="$attrs.doc"></Tooltip>
       </span>
     </span>
   </span>
@@ -23,6 +18,7 @@
 
 <script lang="ts" setup>
   import { useAttrs, ref } from 'vue';
+  import Tooltip from '../_components/tooltip.vue';
 
   const props = defineProps({
     modelValue: {

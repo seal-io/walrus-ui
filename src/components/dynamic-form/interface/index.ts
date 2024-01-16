@@ -10,7 +10,7 @@ export interface FieldSchema {
   'multipleOf'?: number;
   'readOnly'?: boolean;
   'writeOnly'?: boolean;
-  'externalDocs'?: string;
+  'externalDocs'?: object;
   'examples'?: string;
   'minimum'?: number;
   'maximum'?: number;

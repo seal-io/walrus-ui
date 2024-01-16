@@ -3,8 +3,9 @@
   import _ from 'lodash';
   import { defineComponent, ref, toRefs, PropType } from 'vue';
   import TagList from '@/components/tag-list/index.vue';
-  import { vOnClickOutside, OnClickOutside } from '@vueuse/components';
+  import { OnClickOutside } from '@vueuse/components';
   import SealViewItemWrap from './seal-view-item-wrap.vue';
+  import Tooltip from '../_components/tooltip.vue';
 
   export default defineComponent({
     name: 'SealSelect',
@@ -194,11 +195,7 @@
                   </span>
                 ) : null}
               </span>
-              {props.popupInfo ? (
-                <a-tooltip content={props.popupInfo}>
-                  <icon-info-circle style="margin-left: 2px; stroke-linecap: initial; cursor: default" />
-                </a-tooltip>
-              ) : null}
+              <Tooltip popupInfo={props.popupInfo} doc={attrs.doc}></Tooltip>
             </span>
             {renderViewSelect()}
           </span>

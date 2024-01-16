@@ -39,8 +39,10 @@ export default {
     default: false
   },
   doc: {
-    type: String,
-    default: ''
+    type: Object as PropType<{ url: string; description: string }>,
+    default() {
+      return null;
+    }
   },
   required: {
     type: Boolean,

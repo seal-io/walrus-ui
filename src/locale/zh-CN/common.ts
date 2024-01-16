@@ -149,5 +149,7 @@ export default {
   'common.rule.object.key': '键不能为空',
   'common.confirm.title': '确定要{action}吗？',
   'common.rule.name': '名称必填',
-  'common.rule.wordlimit': '最多输入{length}个字符'
+  'common.rule.wordlimit': '最多输入{length}个字符',
+  'common.docs.link.tips': '查看文档',
+  'common.docs.link': '这里'
 };

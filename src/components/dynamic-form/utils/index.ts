@@ -803,7 +803,7 @@ export const genFieldPropsAndRules = ({
     immutable: schemaCustomMeta?.immutable ?? immutable,
     hidden: hidden || false,
     showIf: showIf || '',
-    doc: externalDocs || '',
+    doc: externalDocs,
     required: requiredFlag || required || false,
     password: isPassword(schema),
     description
