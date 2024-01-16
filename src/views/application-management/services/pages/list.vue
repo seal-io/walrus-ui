@@ -362,6 +362,7 @@
   const handleClickAction = (val) => {
     actionHandlerMap.get(val)();
   };
+
   onMounted(() => {
     setActionHandler();
   });
