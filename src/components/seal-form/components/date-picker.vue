@@ -22,12 +22,7 @@
           >*</span
         >
       </span>
-      <a-tooltip v-if="popupInfo" :content="popupInfo">
-        <icon-info-circle
-          style="stroke-linecap: initial; cursor: default"
-          class="m-l-2"
-        />
-      </a-tooltip>
+      <Tooltip :popup-info="popupInfo" :doc="$attrs.doc"></Tooltip>
     </span>
     <a-date-picker
       v-bind="$attrs"
@@ -50,6 +45,7 @@
 <script lang="ts" setup>
   import { useAttrs, useSlots, ref } from 'vue';
   import { vOnClickOutside } from '@vueuse/components';
+  import Tooltip from '../_components/tooltip.vue';
 
   const props = defineProps({
     modelValue: {

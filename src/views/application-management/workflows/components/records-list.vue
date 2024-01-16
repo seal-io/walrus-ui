@@ -78,7 +78,8 @@
                 text: _.get(record, 'status.summaryStatus'),
                 message: _.get(record, 'status.summaryStatusMessage'),
                 transitioning: _.get(record, 'status.transitioning'),
-                error: _.get(record, 'status.error')
+                error: _.get(record, 'status.error'),
+                inactive: _.get(record, 'status.inactive')
               }"
             ></StatusLabel>
           </template>
@@ -181,7 +182,7 @@
   import useRowSelect from '@/hooks/use-row-select';
   import { useSetChunkRequest } from '@/api/axios-chunk-request';
   import { useUpdateChunkedList } from '@/views/commons/hooks/use-update-chunked-list';
-  import { recordActions, WorkflowExcutionStatusMap } from '../config';
+  import { recordActions, WorkflowStatusList } from '../config';
   import { PipelineRecordsRow } from '../config/interface';
   import {
     queryPipelineRecords,
@@ -234,9 +235,9 @@
       return {
         title: item.name,
         info: item.status?.summaryStatusMessage,
-        status: item.status.error
-          ? 'Error'
-          : _.get(WorkflowExcutionStatusMap, item.status?.summaryStatus)
+        status: item.status?.summaryStatus,
+        colorStatus:
+          _.find(WorkflowStatusList, (s) => _.get(item.status, s)) || 'ready'
       };
     });
   };

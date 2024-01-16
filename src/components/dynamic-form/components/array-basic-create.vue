@@ -214,6 +214,7 @@
               label={`${props.schema.title || props.schema.name || ''}`}
               popupInfo={props.schema.description}
               required={fieldProps.required}
+              doc={props.schema.externalDocs}
               style="width: 100%"
             >
               <a-grid cols={12} col-gap={18} row-gap={16}>

@@ -28,6 +28,7 @@
                 message:
                   _.get(currentInfo, 'status.summaryStatusMessage') || '',
                 transitioning: _.get(currentInfo, 'status.transitioning'),
+                inactive: _.get(currentInfo, 'status.inactive'),
                 error: _.get(currentInfo, 'status.error')
               }"
             ></StatusLabel>

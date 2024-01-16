@@ -176,7 +176,8 @@
                       record,
                       'executions.0.status.transitioning'
                     ),
-                    error: _.get(record, 'executions.0.status.error')
+                    error: _.get(record, 'executions.0.status.error'),
+                    inactive: _.get(record, 'executions.0.status.inactive')
                   }"
                 ></StatusLabel>
               </span>
@@ -301,7 +302,7 @@
   import SealSteps from '@/components/seal-steps/index.vue';
   import runConfig from '../components/run-config.vue';
 
-  import { moreActions, WorkflowExcutionStatusMap } from '../config';
+  import { moreActions, WorkflowStatusList } from '../config';
   import { PipelineRow } from '../config/interface';
   import {
     queryPipelines,
@@ -343,9 +344,9 @@
       return {
         title: item.name,
         info: item.status?.summaryStatusMessage,
-        status: item.status.error
-          ? 'Error'
-          : _.get(WorkflowExcutionStatusMap, item.status?.summaryStatus)
+        status: item.status?.summaryStatus,
+        colorStatus:
+          _.find(WorkflowStatusList, (s) => _.get(item.status, s)) || 'ready'
       };
     });
   };

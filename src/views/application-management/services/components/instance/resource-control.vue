@@ -46,7 +46,12 @@
           ></tabLogs>
         </a-tab-pane>
         <template #extra>
-          <a-button size="mini" type="text" @click="handleClose"
+          <a-button
+            size="mini"
+            type="text"
+            shape="circle"
+            class="m-r-8"
+            @click="handleClose"
             ><icon-close
           /></a-button>
         </template>
@@ -203,8 +208,10 @@
     bottom: 0;
     left: 0;
     z-index: 3000;
+    overflow: hidden;
     background-color: #fff;
     border: 1px solid var(--color-border-2);
+    border-radius: var(--border-radius-small) var(--border-radius-small) 0 0;
 
     :deep(.arco-tabs) {
       .arco-tabs-nav {
@@ -218,6 +225,10 @@
       .arco-tabs-tab {
         margin-right: 5px;
         border-top: 0 solid transparent;
+
+        &:hover {
+          background-color: #fff;
+        }
       }
 
       .arco-tabs-tab-active {

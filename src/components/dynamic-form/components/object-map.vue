@@ -150,6 +150,7 @@
               popupInfo={props.schema.description}
               required={props.required}
               label={`${props.schema.title || props.schema.name || ''}`}
+              doc={props.schema.externalDocs}
               style="width: 100%"
             >
               <MapString

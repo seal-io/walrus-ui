@@ -11,12 +11,7 @@
             >*</span
           ></span
         >
-        <a-tooltip v-if="popupInfo" :content="popupInfo">
-          <icon-info-circle
-            style="stroke-linecap: initial; cursor: default"
-            class="m-l-2"
-          />
-        </a-tooltip>
+        <Tooltip :popup-info="popupInfo" :doc="doc"></Tooltip>
       </div>
       <div class="s-v-t"><slot></slot></div>
     </div>
@@ -28,6 +23,7 @@
 
 <script lang="ts" setup>
   import { useSlots } from 'vue';
+  import Tooltip from '../_components/tooltip.vue';
 
   defineProps({
     label: {
@@ -45,6 +41,12 @@
     popupInfo: {
       type: String,
       default: ''
+    },
+    doc: {
+      type: Object,
+      default() {
+        return null;
+      }
     }
   });
 

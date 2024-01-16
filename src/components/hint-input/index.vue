@@ -7,7 +7,7 @@
         'arco-input-focus': isFocus,
         'arco-input-error': $attrs.error,
         'arco-input-disabled': disabled || !!$attrs.readonly,
-        'is-focused': isFocus || modelValue,
+        'is-focused': isFocus || modelValue || modelValue === 0,
         'ignore-error': ignoreError,
         'input-has-append': slots?.append
       }"
@@ -23,7 +23,22 @@
             >*</span
           ></span
         >
-        <a-tooltip v-if="popupInfo" :content="popupInfo">
+        <a-tooltip v-if="popupInfo || $attrs.doc" :content="popupInfo">
+          <template v-if="$attrs.doc?.url" #content>
+            <div>{{ popupInfo }}</div>
+            <div>
+              <div>{{ $attrs.doc?.description }}</div>
+              <div class="align-right"
+                ><a-link
+                  :href="$attrs.doc?.url"
+                  class="m-l-2"
+                  target="_blank"
+                  style="background-color: #fff"
+                  >{{ $t('common.docs.link.tips') }}</a-link
+                ></div
+              >
+            </div>
+          </template>
           <icon-info-circle
             style="stroke-linecap: initial; cursor: default"
             class="m-l-2"
@@ -119,7 +134,7 @@
 
   const props = defineProps({
     modelValue: {
-      type: String,
+      type: [String, Number],
       default() {
         return '';
       }
@@ -180,7 +195,7 @@
     InjectSchemaFormStatusKey,
     ref(PageAction.CREATE)
   );
-  const $attrs = useAttrs();
+  const $attrs: any = useAttrs();
   const slots = useSlots();
   const emits = defineEmits(['update:modelValue', 'input', 'change', 'blur']);
   const expression = ref('');
@@ -202,6 +217,7 @@
     showOnCreate: true
   };
 
+  console.log('$attrs===========', $attrs);
   // const textarea = ref()
   let textcomplete: any = null;
   let textEditor: any = null;
@@ -496,7 +512,13 @@
   watch(
     () => props.modelValue,
     () => {
-      expression.value = props.modelValue;
+      if (_.isNumber(props.modelValue)) {
+        expression.value = _.toString(props.modelValue);
+      } else if (_.isString(props.modelValue)) {
+        expression.value = props.modelValue;
+      } else {
+        expression.value = '';
+      }
     },
     {
       immediate: true
@@ -504,7 +526,6 @@
   );
 
   onMounted(() => {
-    expression.value = props.modelValue;
     nextTick(() => {
       initEditor();
     });

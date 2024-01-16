@@ -6,15 +6,10 @@
   interface Step {
     title: string;
     info: string;
+    colorStatus: string; // 'ready' | 'error' | 'transitioning' | 'inactive
     status: string; // 'Ready' | 'Error' | 'Running' | 'Pending'
   }
 
-  const statusMap = {
-    Ready: 'ready',
-    Error: 'error',
-    Running: 'transitioning',
-    Pending: 'inactive'
-  };
   export default defineComponent({
     props: {
       steps: {
@@ -35,10 +30,7 @@
                 <span
                   class={['item', item.status]}
                   style={{
-                    backgroundColor: _.get(
-                      StatusColorBgMap,
-                      _.get(statusMap, item.status)
-                    )
+                    backgroundColor: _.get(StatusColorBgMap, item.colorStatus)
                   }}
                 ></span>
               </a-tooltip>

@@ -38,6 +38,7 @@
         InjectSchemaFormStatusKey,
         ref(PageAction.CREATE)
       );
+      console.log('attrs>>>>>>>>>>>>>>', attrs);
       const formref = inject(ProviderFormRefKey, ref());
 
       const widget = _.get(props.schema, ['x-walrus-ui', 'widget'], '');
@@ -154,6 +155,7 @@
           >
             <Component
               {...attrs}
+              doc={props.doc}
               required={props.required}
               editorId={_.join(props.fieldPath, '.')}
               label={props.label}

@@ -8,6 +8,7 @@
     watch
   } from 'vue';
   import _ from 'lodash';
+  import i18n from '@/locale';
   import ModuleWrapper from '@/components/module-wrapper/index.vue';
   import { InjectSchemaFormStatusKey, PageAction } from '@/views/config';
   import schemaFieldProps from '../fields/schema-field-props';
@@ -175,8 +176,35 @@
                   <div>
                     <>{renderNullableButton()}</>
                     <span>{props.schema.title || props.schema.name}</span>
-                    {props.schema.description ? (
-                      <a-tooltip content={props.schema.description}>
+                    {props.schema.description || props.schema.externalDocs ? (
+                      <a-tooltip
+                        content={props.schema.description}
+                        v-slots={{
+                          content: () => {
+                            if (!props.schema.externalDocs) {
+                              return <span>{props.schema.description}</span>;
+                            }
+                            return (
+                              <>
+                                <div>{props.schema.description}</div>
+                                <div>
+                                  <div>
+                                    {props.schema.externalDocs?.description}
+                                  </div>
+                                  <a-link
+                                    href={props.schema.externalDocs?.url}
+                                    class="m-l-2"
+                                    target="_blank"
+                                    style="background-color: #fff"
+                                  >
+                                    {i18n.global.t('common.docs.link.tips')}
+                                  </a-link>
+                                </div>
+                              </>
+                            );
+                          }
+                        }}
+                      >
                         <icon-info-circle
                           style="stroke-linecap: initial; cursor: default;position: relative;top: 1px;"
                           class="m-l-2"

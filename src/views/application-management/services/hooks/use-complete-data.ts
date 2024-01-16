@@ -347,7 +347,7 @@ export default function useCompleteData(props?) {
   };
   const setServiceCompleteData = () => {
     const list = getServiceTemplateVersionMap();
-    console.log('list===========', list);
+
     const serviceList = _.filter(list, (item) => {
       return item.isService;
     });
@@ -395,6 +395,7 @@ export default function useCompleteData(props?) {
   return {
     initCompleteData,
     setCompleteData,
+    updateServiceCompleteData,
     setAllTemplateVersions,
     resourceDefinitionSchemaMap,
     getServiceList,
