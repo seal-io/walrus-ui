@@ -280,24 +280,24 @@ export const serviceBatchAction: MoreAction[] = [
       });
     }
   },
-  {
-    label: 'common.button.import',
-    value: serviceActionMap.import,
-    icon: 'icon-import',
-    handler: '',
-    status: 'normal',
-    disabled(item) {
-      return false;
-    },
-    filterFun({ projectID, environmentID }) {
-      return userStore.hasProjectResourceActions({
-        resource: Resources.Resources,
-        environmentID,
-        projectID,
-        actions: [Actions.POST]
-      });
-    }
-  },
+  // {
+  //   label: 'common.button.import',
+  //   value: serviceActionMap.import,
+  //   icon: 'icon-import',
+  //   handler: '',
+  //   status: 'normal',
+  //   disabled(item) {
+  //     return false;
+  //   },
+  //   filterFun({ projectID, environmentID }) {
+  //     return userStore.hasProjectResourceActions({
+  //       resource: Resources.Resources,
+  //       environmentID,
+  //       projectID,
+  //       actions: [Actions.POST]
+  //     });
+  //   }
+  // },
   {
     label: 'common.button.export',
     value: serviceActionMap.export,
