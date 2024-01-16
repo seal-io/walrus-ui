@@ -17,6 +17,18 @@ export default function useLabelsActions(formData, key?: string | string[]) {
   const handleDeleteLabel = (list, index) => {
     list.splice(index, 1);
   };
+  const getDataObj = () => {
+    dataObj.value = _.reduce(
+      labelList.value,
+      (result, item) => {
+        if (item.key) {
+          result[item.key] = item.value;
+        }
+        return result;
+      },
+      {}
+    );
+  };
   const getLabelList = () => {
     labelList.value = [];
     const labelKeys = keys(get(formData, labelsKey));
@@ -57,6 +69,7 @@ export default function useLabelsActions(formData, key?: string | string[]) {
     validateTrigger,
     labelItem,
     dataObj,
+    getDataObj,
     resetStatus,
     handleAddLabel,
     handleDeleteLabel,

@@ -83,10 +83,12 @@
         labelList,
         labelItem,
         dataObj,
+        getDataObj,
         handleAddLabel,
         handleDeleteLabel,
         setLabelList
       } = useLabelsActions(props.labels, props.labelsKey);
+
       const handleUpdateValue = (obj) => {
         emit('update:value', obj);
       };
@@ -135,6 +137,7 @@
                       }}
                       onDelete={() => {
                         handleDeleteLabel(labelList.value, sIndex);
+                        getDataObj();
                         emit('update:labelList', labelList.value);
                         emit('update:value', dataObj.value);
                       }}
