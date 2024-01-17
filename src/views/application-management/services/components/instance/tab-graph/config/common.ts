@@ -124,6 +124,7 @@ export const defaultNode = {
     style: {
       fill: '#1d2129',
       fontSize: 12,
+      fontWeight: 500,
       width: 110
     },
     offset: 15
@@ -134,7 +135,8 @@ export const defaultNode = {
   descriptionCfg: {
     style: {
       fill: GlobalColor.text3,
-      fontSize: 11
+      fontSize: 11,
+      fontWeight: 500
     }
   },
   preRect: {

@@ -36,7 +36,7 @@
           <div v-if="moreActions.length" class="dropdown">
             <DropButtonGroup
               :actions="actionList"
-              size="medium"
+              size="small"
               @select="handleSelect"
             ></DropButtonGroup>
           </div>
@@ -189,5 +189,9 @@
     position: absolute;
     top: 16px;
     right: var(--card-content-padding);
+  }
+
+  :deep(.arco-card-header) {
+    padding: 16px var(--card-content-padding);
   }
 </style>

@@ -52,5 +52,5 @@ export function getFirstLoginStatus() {
 }
 
 export function getWalrusFileHub() {
-  return axios.get<{ id: string; value: string }>(`/walrus-file-hub`);
+  return axios.get<{ id: string; value: string }[]>(`/walrus-file-hub`);
 }

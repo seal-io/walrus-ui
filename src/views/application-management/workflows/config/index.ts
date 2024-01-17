@@ -59,15 +59,21 @@ export const CustomShape = {
 
 export const WorkflowStatus = {
   Running: 'Running',
-  Completed: 'Completed',
   Pending: 'Pending',
+  Canceled: 'Canceled',
+  Canceling: 'Canceling',
+  CanceledFailed: 'CanceledFailed',
   Failed: 'Failed',
-  Canceled: 'Canceled'
+  Completed: 'Completed'
 };
 
 export const StopableStatus = [WorkflowStatus.Running];
 
-export const RetryStatus = [WorkflowStatus.Completed, WorkflowStatus.Failed];
+export const RetryStatus = [
+  WorkflowStatus.Completed,
+  WorkflowStatus.Failed,
+  WorkflowStatus.CanceledFailed
+];
 
 export const WorkflowStatusList = [
   'ready',

@@ -62,7 +62,7 @@
 </script>
 
 <style lang="less" scoped>
-  @paddingSize: 16px;
+  @paddingSize: 20px;
 
   .spin-card-content {
     // background: var(--color-fill-1);
@@ -82,7 +82,7 @@
 
   :deep(.arco-card-header) {
     height: auto;
-    padding: @paddingSize @paddingSize 0;
+    padding: @paddingSize var(--card-content-padding) 0;
     overflow: visible;
     border: none;
 

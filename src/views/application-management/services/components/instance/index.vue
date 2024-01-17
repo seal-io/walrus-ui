@@ -22,7 +22,7 @@
           </div>
           <div v-if="actionList.length" class="dropdown">
             <DropButtonGroup
-              size="medium"
+              size="small"
               :actions="actionList"
               :layout="actionList.length === 1 ? 'horizontal' : 'vertical'"
               @select="handleSelect"

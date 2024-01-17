@@ -173,32 +173,8 @@
               @change="handleCheckChange"
             ></ThumbView>
           </a-tab-pane>
-          <!-- <a-tab-pane key="list">
-            <ListView
-              ref="listViewRef"
-              v-model:sort="sort"
-              v-model:selectedList="selectedKeys"
-              :scope="scope"
-              :list="dataList"
-              :catalog-list="catalogList"
-              @delete="handleCallDelete"
-              @sort="handleSort"
-            ></ListView>
-          </a-tab-pane> -->
         </a-tabs>
       </a-spin>
-      <!-- <a-pagination
-        style="margin-top: 20px"
-        size="small"
-        :total="total"
-        :page-size="queryParams.perPage"
-        :current="queryParams.page"
-        show-total
-        show-page-size
-        :hide-on-single-page="total <= 10"
-        @change="handlePageChange"
-        @page-size-change="handlePageSizeChange"
-      /> -->
     </div>
   </ComCard>
 </template>
