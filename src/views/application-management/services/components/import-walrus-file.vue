@@ -107,7 +107,7 @@
 
 <script lang="ts" setup>
   import 'github-markdown-css';
-  import { ref, reactive, PropType, computed } from 'vue';
+  import { ref, reactive, PropType, computed, nextTick } from 'vue';
   import readBlob from '@/utils/readBlob';
   import _ from 'lodash';
   import AceEditor from '@/components/ace-editor/index.vue';
@@ -180,11 +180,20 @@
     showReadme.value = false;
   };
 
+  const openNewTab = () => {
+    const aList = document.querySelectorAll('.readme-content a');
+    aList?.forEach((item) => {
+      item.setAttribute('target', '_blank');
+    });
+  };
   const handleShowReadme = (item) => {
     formData.value.yaml = item.content;
     defaultValue.value = item.content;
     markdownConent.value = marked.parse(item.readme);
     showReadme.value = true;
+    nextTick(() => {
+      openNewTab();
+    });
   };
   const handleCancel = () => {
     formData.value.yaml = '';

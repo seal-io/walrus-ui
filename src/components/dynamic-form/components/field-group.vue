@@ -49,11 +49,24 @@
         } else {
           status.value = true;
           isUnset.value = false;
-          _.set(
-            props.formData,
-            props.fieldPath,
-            _.cloneDeep(_.get(props.uiFormData, props.fieldPath))
-          );
+          if (_.has(props.uiFormData, props.fieldPath)) {
+            _.set(
+              props.formData,
+              props.fieldPath,
+              _.cloneDeep(_.get(props.uiFormData, props.fieldPath))
+            );
+          } else {
+            _.set(
+              props.formData,
+              props.fieldPath,
+              _.cloneDeep(_.get(props.defaultFormData, props.fieldPath))
+            );
+            _.set(
+              props.uiFormData,
+              props.fieldPath,
+              _.cloneDeep(_.get(props.defaultFormData, props.fieldPath))
+            );
+          }
         }
         emit('unset', isUnset.value);
         emit('change', props.formData);

@@ -105,9 +105,10 @@ export default {
   'applications.applications.modules.params.title':
     '若要使用变量、相关服务中的输出属性，方法如下：',
   'applications.applications.modules.params.tips1': `1. 使用密钥：可在输入框输入{'$'}{'{'}secret.密钥名称{'}'}`,
-  'applications.applications.modules.params.tips2': `1. 使用变量：可在输入框输入{'$'}{'{'}var.变量名{'}'}`,
+  'applications.applications.modules.params.tips2': `1. 使用全局或项目变量：可在输入框输入{'$'}{'{'}var.变量名{'}'}`,
   'applications.applications.modules.params.tips3': `2. 使用服务的输出属性：可在输入框输入{'$'}{'{'}svc.服务名称.属性名{'}'}`,
   'applications.applications.modules.params.tips4': `2. 使用资源的输出属性：可在输入框输入{'$'}{'{'}res.资源名称.属性名{'}'}`,
+  'applications.applications.modules.params.flowvar': `使用当前工作流的变量：可在输入框输入{'$'}{'{'}workflow.var.变量名{'}'}`,
   'applications.applications.rule.modules.name': '存在相同的资源',
   'applications.applications.variables.title': '变量',
   'applications.applications.variables.button': '添加变量',

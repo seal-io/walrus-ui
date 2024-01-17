@@ -188,45 +188,6 @@
               :labels="labelsData.labels"
               :page-action="pageAction"
             ></keyValueLabels>
-            <!-- <a-space
-              v-if="labelList?.length"
-              :style="{
-                'display': 'flex',
-                'flex-direction': 'column',
-                'width': `${InputWidth.MIDDLE}px`
-              }"
-              direction="vertical"
-            >
-              <xInputGroup
-                v-for="(sItem, sIndex) in labelList"
-                :key="sIndex"
-                v-model:dataKey="sItem.key"
-                v-model:dataValue="sItem.value"
-                v-model:value="formData.labels"
-                :trigger-validate="validateTrigger"
-                :label-list="labelList"
-                :position="sIndex"
-                always-delete
-                should-key
-                @add="(obj) => handleAddLabel(obj, labelList)"
-                @delete="handleDeleteLabel(labelList, sIndex)"
-              ></xInputGroup>
-            </a-space>
-            <template v-else>
-              <a-link
-                class="p-0"
-                @click="
-                  () => {
-                    handleAddLabel(labelItem, labelList);
-                  }
-                "
-              >
-                <icon-plus-circle-fill
-                  :size="24"
-                  font-size="14px size-24"
-                ></icon-plus-circle-fill>
-              </a-link>
-            </template> -->
           </SealFormItemWrap>
         </a-form-item>
         <a-form-item :label="$t('common.table.description')" hide-label>
@@ -253,7 +214,7 @@
               <span>{{
                 $t('applications.applications.detail.configuration')
               }}</span>
-              <a-tooltip position="tl">
+              <a-tooltip position="top">
                 <template #content>
                   <div>
                     <div>{{
@@ -265,6 +226,12 @@
                     <div>{{
                       $t('applications.applications.modules.params.tips4')
                     }}</div>
+                    <div
+                      >3.
+                      {{
+                        $t('applications.applications.modules.params.flowvar')
+                      }}</div
+                    >
                   </div>
                 </template>
                 <icon-question-circle class="mleft-5" />
@@ -306,7 +273,6 @@
   import { onBeforeRouteLeave } from 'vue-router';
   import useCallCommon from '@/hooks/use-call-common';
   import useScrollToView from '@/hooks/use-scroll-to-view';
-  import xInputGroup from '@/components/form-create/custom-components/x-input-group.vue';
   import GroupForm from '@/components/dynamic-form/group-form.vue';
   import GroupTitle from '@/components/group-title/index.vue';
   import {
@@ -322,7 +288,6 @@
   import { queryEnvironmentConnector } from '@/views/application-management/environments/api';
   import { projectEnvCtxInjectionKey } from '@/components/dynamic-form/widgets/config';
   import { beforeLeaveCallback } from '@/hooks/save-before-leave';
-  import useLabelsActions from '@/components/form-create/hooks/use-labels-action';
   import { InjectWorkflowKey } from '@/views/application-management/workflows/config';
   import useServiceData from '../hooks/use-service-data';
   import { ServiceDataType } from '../config';

@@ -72,8 +72,7 @@ export const actionList: MoreAction[] = [
           resource: Resources.ResourceDefinitions,
           actions: [Actions.DELETE]
         }) &&
-        (userStore.userSetting?.EnableBuiltinResourceDefinition?.value ===
-          'false' ||
+        (userStore.userSetting?.EnableBuiltinCatalog?.value === 'false' ||
           !itemInfo?.builtin)
       );
     }

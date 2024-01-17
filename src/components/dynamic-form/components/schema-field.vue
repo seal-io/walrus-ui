@@ -75,21 +75,13 @@
             formData: props.formData,
             uiFormData: props.uiFormData,
             fieldPath,
+            hidden,
             required: _.includes(props.requiredFields, props.schema.name)
           });
         }
       };
 
       initValue();
-      console.log(
-        'create+++++++++++++',
-        props.schema,
-        props.fieldPath,
-        schemaFormStatus.value,
-        props.uiFormData,
-        props.formData,
-        props.defaultFormData
-      );
       // hidden field
       if (!component || hidden) return null;
 

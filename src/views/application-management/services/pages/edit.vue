@@ -232,7 +232,7 @@
               <span>{{
                 $t('applications.applications.detail.configuration')
               }}</span>
-              <a-tooltip position="tl">
+              <a-tooltip position="top">
                 <template #content>
                   <div>
                     <div>{{
@@ -268,7 +268,7 @@
       <EditPageFooter>
         <template #save>
           <a-popconfirm
-            position="top"
+            position="left"
             trigger="hover"
             content-class="deploy-comment-popup"
           >
@@ -303,6 +303,7 @@
                 v-else
                 :type="'primary'"
                 class="cap-title"
+                :loading="submitLoading"
                 @click="handleOkCallback"
                 >{{ $t('common.button.saveDeploy') }}</a-button
               >
@@ -699,7 +700,6 @@
     } else {
       router.back();
     }
-    submitLoading.value = false;
   };
   const handleOk = async (draft?: boolean) => {
     const res = await formref.value?.validate();
@@ -723,9 +723,7 @@
         if (dataType.value === ServiceDataType.resource) {
           formData.value.template = null as any;
         }
-        saveCallback();
-      } catch (error) {
-        submitLoading.value = false;
+        await saveCallback();
       } finally {
         submitLoading.value = false;
       }

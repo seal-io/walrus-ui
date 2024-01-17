@@ -268,12 +268,14 @@ export const viewFieldValue = ({
   formData,
   uiFormData,
   required,
+  hidden,
   defaultFormData
 }: {
   fieldPath: string[];
   schema: FieldSchema;
   formData: object;
   uiFormData: object;
+  hidden: boolean;
   defaultFormData: object;
   required: boolean;
 }) => {
@@ -289,7 +291,8 @@ export const viewFieldValue = ({
     );
     const isRequiredItemProperty = schema.arrayItemProperty;
     const checkByValue = required || !isEmptyValueField(schema, defaultValue);
-    if (checkByValue && (checkByParentObject || isRequiredItemProperty)) {
+
+    if (required && checkByParentObject && isRequiredItemProperty) {
       _.set(formData, fieldPath, _.cloneDeep(originValue || defaultValue));
       _.set(uiFormData, fieldPath, _.cloneDeep(originValue || defaultValue));
     }
@@ -297,7 +300,13 @@ export const viewFieldValue = ({
 
   // Avoid overriding global defaults
   if (!_.has(uiFormData, fieldPath)) {
-    _.set(defaultFormData, fieldPath, _.cloneDeep(defaultValue));
+    if (!hidden || !isEmptyValueField(schema, originValue || defaultValue)) {
+      _.set(
+        defaultFormData,
+        fieldPath,
+        _.cloneDeep(originValue || defaultValue)
+      );
+    }
   }
 };
 

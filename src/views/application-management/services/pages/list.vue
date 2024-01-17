@@ -50,7 +50,7 @@
           status="success"
           type="primary"
           @click="handleImportFile"
-          >{{ $t('common.button.import') }}</a-button
+          >{{ $t('common.button.import') }} YAML</a-button
         >
         <a-button
           v-if="

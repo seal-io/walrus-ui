@@ -252,8 +252,8 @@
       const { data } = await queryResourceDefinitions(params);
       dataList.value = _.map(data?.items || [], (sItem) => {
         sItem.disabled =
-          userStore.userSetting?.EnableBuiltinResourceDefinition?.value ===
-            'true' && sItem.builtin;
+          userStore.userSetting?.EnableBuiltinCatalog?.value === 'true' &&
+          sItem.builtin;
         return sItem;
       });
       total.value = data?.pagination?.total || 0;

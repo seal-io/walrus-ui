@@ -113,9 +113,10 @@ export default {
   'applications.applications.modules.params.title':
     'To use variables, output properties in related services, the method is as follows:',
   'applications.applications.modules.params.tips1': `1. Use the secret: you can enter {'$'}{'{'}secret.secretName{'}'} in the input box`,
-  'applications.applications.modules.params.tips2': `1. Use variables: you can enter {'$'}{'{'}var.variableName{'}'} in the input box`,
+  'applications.applications.modules.params.tips2': `1. Use global or project variables: you can enter {'$'}{'{'}var.variableName{'}'} in the input box`,
   'applications.applications.modules.params.tips3': `2. Use the attributes in the service: you can enter {'$'}{'{'}service.serviceName.attributeName{'}'} in the input box`,
   'applications.applications.modules.params.tips4': `2. Use the attributes in the resource: you can enter {'$'}{'{'}resource.resourceName.attributeName{'}'} in the input box`,
+  'applications.applications.modules.params.flowvar': `Use the variables defined in current workflow: you can enter {'$'}{'{'}workflow.var.variableName{'}'} in the input box`,
   'applications.applications.rule.modules.name': 'Duplicate resource found.',
   'applications.applications.variables.title': 'Variables',
   'applications.applications.variables.button': 'New Variable',

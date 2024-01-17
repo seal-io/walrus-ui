@@ -78,7 +78,7 @@
 </script>
 
 <style lang="less" scoped>
-  @paddingSize: 16px;
+  @paddingSize: 20px;
 
   .top-gap {
     margin-top: 10px;
@@ -96,7 +96,7 @@
   .header-border-less {
     :deep(.arco-card-header) {
       height: auto;
-      padding: @paddingSize @paddingSize 0;
+      padding: @paddingSize var(--card-content-padding) 0;
       overflow: visible;
       border: none;
 
