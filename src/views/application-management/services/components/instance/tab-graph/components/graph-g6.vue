@@ -811,10 +811,10 @@
       position: absolute;
       top: 10px;
       right: 10px;
-      padding: 6px 4px;
+      padding: 6px 8px;
       font-size: var(--font-size-small);
       background-color: rgba(255, 255, 255, 0.8);
-      border-radius: 2px;
+      border-radius: 4px;
 
       .legend-item {
         color: rgb(var(--arcoblue-5));

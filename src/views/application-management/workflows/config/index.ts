@@ -62,7 +62,7 @@ export const WorkflowStatus = {
   Pending: 'Pending',
   Canceled: 'Canceled',
   Canceling: 'Canceling',
-  CanceledFailed: 'CanceledFailed',
+  CancelFailed: 'CancelFailed',
   Failed: 'Failed',
   Completed: 'Completed'
 };
@@ -73,7 +73,7 @@ export const RetryStatus = [
   WorkflowStatus.Completed,
   WorkflowStatus.Failed,
   WorkflowStatus.Canceled,
-  WorkflowStatus.CanceledFailed
+  WorkflowStatus.CancelFailed
 ];
 
 export const WorkflowStatusList = [
