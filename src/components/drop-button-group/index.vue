@@ -214,5 +214,13 @@
         content: '';
       }
     }
+
+    .arco-link.arco-link-disabled {
+      :deep(.arco-link-icon) {
+        color: var(--color-link-light-3) !important;
+      }
+
+      color: var(--color-link-light-3) !important;
+    }
   }
 </style>

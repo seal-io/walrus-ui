@@ -6,17 +6,16 @@
     PropType,
     watch,
     onBeforeUnmount,
-    computed,
-    h,
-    compile,
-    onMounted,
-    watchEffect
+    computed
   } from 'vue';
   import _ from 'lodash';
   import i18n from '@/locale';
   import resourceImages from '@/views/application-management/resource-images';
   import serviceImg from '@/assets/images/service.png';
   import resourceImg from '@/assets/images/resource.png';
+  import dependencyIcon from '@/assets/images/dependency-03.png';
+  import compositionIcon from '@/assets/images/composition-03.png';
+  import realizationIcon from '@/assets/images/realization-03.png';
   import G6 from '@antv/g6';
   import { useResizeObserver } from '@vueuse/core';
   import { loadImage, createCanvasImage } from '@/utils/load-canvas-image';
@@ -90,8 +89,8 @@
       const loading = ref(false);
       const animateFlag = ref(false);
       const allNodeToggle = ref(false);
-      let nodeList: INode[] = [];
-      let edgeList: IEdge[] = [];
+      const nodeList = ref<INode[]>([]);
+      const edgeList = ref<IEdge[]>([]);
       let graph: any = null;
       const width = ref(0);
       const height = ref(0);
@@ -240,6 +239,14 @@
           );
         });
       };
+      // const hasDependencyNodes = (node) => {
+      //   return _.some(props.sourceData.links, (item) => {
+      //     return (
+      //       _.get(item, 'target') === node.id &&
+      //       item.edgeType === edgeType.Dependency
+      //     );
+      //   });
+      // };
       const setNodeDescription = (node) => {
         if (_.hasIn(node.extensions, 'isService')) {
           return node.extensions.isService
@@ -248,6 +255,32 @@
         }
         return _.get(node, 'extensions.type') || _.get(node, 'kind');
       };
+      const updateNodeImage = (node, defaultImg) => {
+        if (!node.icon) return;
+        const iconImage = new Image();
+        iconImage.src = node.icon;
+        iconImage.crossOrigin = 'Anonymous';
+        iconImage.onload = () => {
+          const item = graph?.findById(node.id);
+          graph?.updateItem(item, {
+            ...node,
+            logoIcon: {
+              ...node.logoIcon,
+              img: iconImage
+            }
+          });
+        };
+        iconImage.onerror = () => {
+          const item = graph?.findById(node.id);
+          graph?.updateItem(item, {
+            ...node,
+            logoIcon: {
+              ...node.logoIcon,
+              img: defaultImg
+            }
+          });
+        };
+      };
       const setNodeList = async () => {
         const { sourceData: data } = props;
         const style = {
@@ -255,7 +288,7 @@
           stroke: 'transparent',
           cursor: 'grabbing'
         };
-        nodeList = _.map(data.nodes || [], (o) => {
+        nodeList.value = _.map(data.nodes || [], (o) => {
           const node = _.cloneDeep(o);
           const loggableList = getResourceKeyList(
             { ...node.extensions, id: node.nodeId },
@@ -321,6 +354,8 @@
             img: node.icon || defaultImg
           };
 
+          // updateNodeImage(node, defaultImg);
+
           // ========== node state style ==========
           if (_.get(node, 'kind') === nodeKindType.ServiceResourceGroup) {
             node.style = {
@@ -377,29 +412,49 @@
       };
       const setLinks = () => {
         const { sourceData: data } = props;
-        edgeList = _.map(data.links || [], (o) => {
+        edgeList.value = _.map(data.links || [], (o) => {
           const link = _.cloneDeep(o);
           const style: any = {};
           if (o.edgeType === edgeType.Dependency) {
             style.lineWidth = 1.5;
             style.lineDash = [5, 5];
+            const targetNode = _.find(nodeList.value, (item) => {
+              return item.id === o.target;
+            });
+
+            if (targetNode) {
+              targetNode.UMLDependencyIcon = dependencyIcon;
+            }
           }
 
           if (o.edgeType === edgeType.Composition) {
-            style.endArrow = false;
-            style.startArrow = {
-              path: G6.Arrow.diamond(12, 14, 0),
-              fill: 'rgba(102, 139, 220,1)'
-            };
+            // style.endArrow = false;
+            // style.startArrow = {
+            //   path: G6.Arrow.diamond(12, 14, -7),
+            //   fill: 'rgba(102, 139, 220,1)'
+            // };
+            const sourceNode = _.find(nodeList.value, (item) => {
+              return item.id === o.source;
+            });
+            if (sourceNode) {
+              sourceNode.UMLCompositionIcon = compositionIcon;
+              console.log('icon========', sourceNode);
+            }
           }
 
           if (o.edgeType === edgeType.Realization) {
-            style.endArrow = {
-              path: G6.Arrow.triangle(8, 8, 0),
-              fill: '#86909c'
-            };
+            // style.endArrow = {
+            //   path: G6.Arrow.triangle(8, 8, 0),
+            //   fill: '#86909c'
+            // };
             style.stroke = '#86909c';
             style.lineDash = [8, 3, 3];
+            const targetNode = _.find(nodeList.value, (item) => {
+              return item.id === o.target;
+            });
+            if (targetNode) {
+              targetNode.UMLRealizationIcon = realizationIcon;
+            }
           }
 
           link.labelCfg = {
@@ -451,14 +506,15 @@
         if (graph?.getZoom() !== 1) {
           graph?.zoomTo(1);
         }
+
         graph?.layout();
         graph?.set('animate', false);
       };
       const renderGraph = () => {
         if (!graph) return;
         graph?.data({
-          nodes: nodeList,
-          edges: edgeList
+          nodes: nodeList.value,
+          edges: edgeList.value
         });
         graph?.render();
       };
@@ -597,7 +653,7 @@
 
       const createGraph = () => {
         graph = new G6.Graph({
-          // renderer: 'svg', // arrow style will be change
+          renderer: 'svg', // arrow style will be change
           container: 'graph-mount',
           plugins: [
             contextMenu.value,
@@ -632,11 +688,11 @@
               radius: 0,
               offset: 0,
               shadowBlur: 0,
-              endArrow: {
-                path: G6.Arrow.vee(8, 8, 0),
-                fill: 'rgba(102, 139, 220,1)',
-                lineDash: [0, 0]
-              },
+              // endArrow: {
+              //   path: G6.Arrow.vee(8, 8, 0),
+              //   fill: 'rgba(102, 139, 220,1)',
+              //   lineDash: [0, 0]
+              // },
               lineWidth: 1.2,
               stroke: 'rgba(66, 106, 208,.8)'
             }
@@ -681,14 +737,14 @@
         if (!graph) return;
         graph?.clear();
         initData();
-        graph?.read({ nodes: nodeList, edges: edgeList });
+        graph?.read({ nodes: nodeList.value, edges: edgeList.value });
         toggleAllNodeShow(props.showAll);
       };
       const updateGraph = () => {
         loading.value = true;
         graph?.clear();
         initData();
-        graph?.read({ nodes: nodeList, edges: edgeList });
+        graph?.read({ nodes: nodeList.value, edges: edgeList.value });
         toggleAllNodeShow(props.showAll);
       };
       const init = () => {

@@ -531,6 +531,7 @@
       loading.value = false;
       execSucceed();
       selectedKeys.value = [];
+      rowSelection.selectedRowKeys = [];
       handleFilter();
     } catch (error) {
       loading.value = false;

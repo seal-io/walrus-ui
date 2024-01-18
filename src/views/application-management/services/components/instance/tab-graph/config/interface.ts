@@ -20,6 +20,9 @@ export interface INode extends Node {
     executable: boolean;
     data: object;
   };
+  UMLDependencyIcon: string;
+  UMLCompositionIcon: string;
+  UMLRealizationIcon: string;
   hasComposition: boolean;
   visible?: boolean;
   isCollapsed: boolean;
