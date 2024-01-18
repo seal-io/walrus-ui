@@ -256,13 +256,6 @@
       refreshkey();
 
       handleChange({});
-      console.log('schemaFormStatus.value', props.schema);
-      // if (schemaFormStatus.value === PageAction.CREATE) {
-      //   handleChange({});
-      // } else {
-      //   const data = _.omit(props.formData, _.keys(props.customData));
-      //   handleChange(data);
-      // }
 
       nextTick(() => {
         destroyed.value = false;
@@ -275,13 +268,6 @@
 
         getHiddenFormData(allGroups);
         emits('renderEnd');
-        console.log(
-          'formGroup++++++++++++++',
-          Date.now(),
-          schemaFormStatus.value,
-          formGroup.value,
-          props.formData
-        );
       });
     },
     {

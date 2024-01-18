@@ -146,13 +146,14 @@
           return null;
         }
         return (
-          <span class="m-r-10" onClick={withModifiers(() => {}, ['stop'])}>
+          <span onClick={withModifiers(() => {}, ['stop'])}>
             {!props.schema.isRequired &&
             unsetType() &&
             !props.schema.minItems ? (
               <a-switch
                 type="text"
                 size="mini"
+                class="m-r-10"
                 model-value={!isUnset.value}
                 onChange={(val) => handleToggleField(val)}
               ></a-switch>

@@ -25,9 +25,9 @@
           editor-id="diffModelEditor"
           :editor-default-value="codeResult"
           lang="json"
-          :height="400"
+          :height="380"
         >
-          <template #label>
+          <!-- <template #label>
             <a-select
               v-model="compareType"
               :bordered="false"
@@ -42,7 +42,7 @@
                 {{ $t(item.label) }}
               </a-option>
             </a-select>
-          </template>
+          </template> -->
         </AceEditor>
         <div class="m-t-10">
           <seal-textarea

@@ -72,6 +72,7 @@ export const StopableStatus = [WorkflowStatus.Running];
 export const RetryStatus = [
   WorkflowStatus.Completed,
   WorkflowStatus.Failed,
+  WorkflowStatus.Canceled,
   WorkflowStatus.CanceledFailed
 ];
 

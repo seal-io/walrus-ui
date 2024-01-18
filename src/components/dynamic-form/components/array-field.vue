@@ -143,6 +143,9 @@
       };
       const handleAddClick = () => {
         setPropertiesList();
+      };
+      const handleAddClickCall = () => {
+        setPropertiesList();
         genFieldInFormData({
           FieldPathMap: props.FieldPathMap,
           defaultFormData: props.defaultFormData,

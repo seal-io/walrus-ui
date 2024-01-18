@@ -82,7 +82,7 @@
               lang="json"
               :height="300"
             >
-              <template #label>
+              <!-- <template #label>
                 <a-select
                   v-model="compareType"
                   :bordered="false"
@@ -97,7 +97,7 @@
                     {{ $t(item.label) }}
                   </a-option>
                 </a-select>
-              </template>
+              </template> -->
             </AceEditor>
             <a-alert
               v-show="!removeLines.length && !addLines.length && formData.id"
@@ -196,7 +196,7 @@
     id: ''
   });
 
-  const compareType = ref('attributes');
+  const compareType = ref('computedAttributes');
 
   const compareOptions = [
     {

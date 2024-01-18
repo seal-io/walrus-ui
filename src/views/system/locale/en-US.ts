@@ -110,9 +110,9 @@ export default {
   'system.setting.ConnectorCheckCronExpr.desc':
     'The default is to execute every 5 minutes',
   'system.setting.ResourceStatusCheckCronExpr':
-    'Check resource component status',
+    'Check Resource Component Status',
   'system.setting.ServiceDependencyCheckCronExpr':
-    'Check resource dependency status',
+    'Check Resource Dependency Status',
   'system.setting.ServiceDependencyCheckCronExpr.desc':
     'The default is to execute every 30 seconds',
   'system.setting.ResourceStatusCheckCronExpr.desc':
