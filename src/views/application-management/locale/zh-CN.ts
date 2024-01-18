@@ -175,6 +175,6 @@ export default {
   'applications.service.stop.tips': '停止{type}！',
   'applications.service.stop.env': '停止环境！',
   'applications.service.stop.confirm': '底层组件将被删除,是否确定停止?',
-  'applications.service.revision.runtime': '运行时配置',
-  'applications.service.revision.custom': '自定义配置'
+  'applications.service.revision.runtime': '计算配置',
+  'applications.service.revision.custom': '用户配置'
 };

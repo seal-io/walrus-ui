@@ -1,6 +1,6 @@
 <template>
   <a-modal
-    top="10%"
+    top="5%"
     :footer="false"
     :hide-title="true"
     :closable="false"
@@ -113,20 +113,6 @@
               </seal-select>
             </a-form-item>
             <a-form-item field="timeout" hide-label>
-              <!-- <seal-select
-                v-model="flow.timeout"
-                :label="$t('workflow.form.timeout')"
-                :required="false"
-                :style="{ width: `${InputWidth.LARGE}px` }"
-                allow-search
-              >
-                <a-option
-                  v-for="item in workflowTimeoutOptons"
-                  :key="item.value"
-                  :value="item.value"
-                  :label="$t(item.label)"
-                ></a-option>
-              </seal-select> -->
               <seal-input-number
                 v-model="flow.timeout"
                 :label="$t('workflow.form.timeout')"
@@ -149,31 +135,6 @@
               >
               </seal-input-number>
             </a-form-item>
-            <!-- <a-form-item field="retryStrategy.retryPolicy">
-              <seal-select
-                v-model="flow.retryStrategy.retryPolicy"
-                :label="$t('workflow.task.retry.policy')"
-                :required="false"
-                :style="{ width: `${InputWidth.LARGE}px` }"
-                allow-search
-                ><a-option
-                  v-for="item in retryOptions"
-                  :key="item.value"
-                  :value="item.value"
-                >
-                  <a-tooltip
-                    :content="`${$t(item.label)}(${$t(item.description)})`"
-                  >
-                    <span
-                      >{{ $t(item.label)
-                      }}<span class="m-l-2 font-12 color-text-3">{{
-                        `(${$t(item.description)})`
-                      }}</span></span
-                    >
-                  </a-tooltip>
-                </a-option>
-              </seal-select>
-            </a-form-item> -->
           </a-form>
           <ServiceTask
             v-if="taskType === TaskTypes.SERVICE && flow.environmentId"

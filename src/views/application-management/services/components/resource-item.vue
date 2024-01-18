@@ -101,7 +101,6 @@
               size="mini"
               class="m-l-10"
               style={{
-                backgroundColor: 'var(--color-fill-1)',
                 padding: '2px 4px'
               }}
             >
@@ -110,7 +109,10 @@
                   'applications.applications.instance.accessUrl'
                 )}
               >
-                <icon-link style="stroke-width: 4" class="font-14" />
+                <i
+                  style="font-weight: 700;"
+                  class="font-14 icon-link-external iconfont"
+                />
               </a-tooltip>
             </a-link>
           );
@@ -135,7 +137,6 @@
                 size="mini"
                 class="m-l-10"
                 style={{
-                  backgroundColor: 'var(--color-fill-1)',
                   padding: '2px 4px'
                 }}
               >
@@ -144,7 +145,10 @@
                     'applications.applications.instance.accessUrl'
                   )}
                 >
-                  <icon-link style="stroke-width: 4" class="font-14" />
+                  <i
+                    style="font-weight: 700;"
+                    class="font-14 icon-link-external iconfont"
+                  />
                 </a-tooltip>
               </a-link>
             </PrimaryButtonGroup>
@@ -238,13 +242,14 @@
                         <span>{`${props.rowData.template?.name}@${
                           props.rowData.template?.version || ''
                         }`}</span>
-                        <span
-                          v-if="!record.template.project?.id"
-                          style="color: var(--color-text-3)"
-                          class="font-12 m-l-2"
-                        >{`(${i18n.global.t(
-                          'applications.variable.scope.global'
-                        )})`}</span>
+                        {!props.rowData.template?.project?.id ? (
+                          <span
+                            style="color: var(--color-text-3)"
+                            class="font-12 m-l-2"
+                          >{`(${i18n.global.t(
+                            'applications.variable.scope.global'
+                          )})`}</span>
+                        ) : null}
                       </span>
                     )}
                   </>
@@ -299,17 +304,8 @@
         background-color: var(--color-fill-1);
         border-color: var(--color-fill-1);
       }
-
-      // .check-box {
-      //   .collapse-btn {
-      //     background-color: var(--color-fill-4);
-      //   }
-      // }
     }
 
-    // &.clickable {
-    //   cursor: pointer;
-    // }
     .components-container {
       margin: 10px 15px 10px;
     }

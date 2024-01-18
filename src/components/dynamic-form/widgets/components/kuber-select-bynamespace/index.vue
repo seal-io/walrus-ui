@@ -107,7 +107,6 @@
           const handler = _.get(BCWidget, BU.K8sNamespaceSelect);
           const { data } = await handler.request(params, extraAxiosToken.token);
           namespaceList.value = handler.transform(data);
-          console.log('namespaceList', namespaceList.value);
           extraLoading.value = false;
         } catch (error) {
           extraLoading.value = false;

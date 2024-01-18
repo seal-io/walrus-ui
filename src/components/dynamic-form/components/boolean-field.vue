@@ -82,7 +82,6 @@
         ) {
           _.unset(props.formData, props.fieldPath);
         }
-        console.log('schema=boolean=', props.schema);
 
         if (isEqualOn(val, _.get(props.defaultFormData, props.fieldPath))) {
           unsetFieldValue({

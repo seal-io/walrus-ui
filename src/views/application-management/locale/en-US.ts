@@ -187,6 +187,6 @@ export default {
   'applications.service.stop.env': 'Stop the environment!',
   'applications.service.stop.confirm':
     'The underlying component will be removed, are you sure you want to stop?',
-  'applications.service.revision.runtime': 'Runtime Configuration',
-  'applications.service.revision.custom': 'Custom Configuration'
+  'applications.service.revision.runtime': 'Computed Configuration',
+  'applications.service.revision.custom': 'User-supplied Configuration'
 };

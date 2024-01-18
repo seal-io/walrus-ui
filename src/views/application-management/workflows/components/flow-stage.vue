@@ -93,6 +93,7 @@
       };
 
       const handleSaveFlowTask = (data) => {
+        console.log('create task========', data);
         if (action.value === 'create') {
           stepList.value.push(_.cloneDeep(data));
         } else {

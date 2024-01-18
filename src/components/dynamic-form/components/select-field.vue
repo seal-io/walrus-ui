@@ -147,8 +147,9 @@
         options.value = _.filter(options.value, (v) => !isEmptyvalue(v.value));
 
         // init default value for enum
+
         if (
-          schemaFormStatus.value === PageAction.CREATE &&
+          schemaFormStatus.value !== PageAction.VIEW &&
           props.schema.enum &&
           !props.schema.default &&
           parentObjectExsitsInFormData(props.formData, props.fieldPath)

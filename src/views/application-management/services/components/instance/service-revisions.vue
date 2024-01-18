@@ -150,10 +150,10 @@
     <serviceSpecDiff
       v-model:show="showDiffModal"
       :title="title"
-      :content="diffContent"
+      :content="computedDiffContent"
       :options="compareOptions"
       :service-info="rollbackData"
-      active-type="attributes"
+      active-type="computedAttributes"
       @compare="handleCompareChange"
       @confirm="handleConfirmDiff"
     ></serviceSpecDiff>

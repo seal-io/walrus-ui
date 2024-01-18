@@ -58,20 +58,6 @@
           :title="$t('applications.applications.table.type')"
         >
         </a-table-column>
-        <a-table-column
-          ellipsis
-          tooltip
-          :cell-style="{ minWidth: '40px' }"
-          align="left"
-          data-index="createTime"
-          :title="$t('common.table.createTime')"
-        >
-          <template #cell="{ record }">
-            <span>{{
-              dayjs(record.createTime).format('YYYY-MM-DD HH:mm:ss')
-            }}</span>
-          </template>
-        </a-table-column>
 
         <a-table-column
           ellipsis
@@ -96,6 +82,22 @@
             ></StatusLabel>
           </template>
         </a-table-column>
+
+        <a-table-column
+          ellipsis
+          tooltip
+          :cell-style="{ minWidth: '40px' }"
+          align="left"
+          data-index="createTime"
+          :title="$t('common.table.createTime')"
+        >
+          <template #cell="{ record }">
+            <span>{{
+              dayjs(record.createTime).format('YYYY-MM-DD HH:mm:ss')
+            }}</span>
+          </template>
+        </a-table-column>
+
         <a-table-column align="left" :title="$t('common.table.operation')">
           <template #cell="{ record }">
             <a-space :size="20">

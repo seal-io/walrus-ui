@@ -290,16 +290,16 @@ export const viewFieldValue = ({
       fieldPath
     );
     const isRequiredItemProperty = schema.arrayItemProperty;
-    const checkByValue = required || !isEmptyValueField(schema, defaultValue);
+    const checkByValue =
+      required || !isEmptyValueField(schema, originValue || defaultValue);
 
-    if (required && checkByParentObject && isRequiredItemProperty) {
+    if (required && checkByParentObject) {
+      _.set(formData, fieldPath, _.cloneDeep(originValue || defaultValue));
+    } else if (checkByValue && isRequiredItemProperty) {
       _.set(formData, fieldPath, _.cloneDeep(originValue || defaultValue));
       _.set(uiFormData, fieldPath, _.cloneDeep(originValue || defaultValue));
     }
-  }
 
-  // Avoid overriding global defaults
-  if (!_.has(uiFormData, fieldPath)) {
     if (!hidden || !isEmptyValueField(schema, originValue || defaultValue)) {
       _.set(
         defaultFormData,
@@ -361,12 +361,12 @@ export const genFieldInFormDataByRecursion = ({
 }) => {
   const prevInitialPath = _.initial(initialPath);
   const prevSchema = FieldPathMap.get(prevInitialPath.join('.'));
+
   if (prevSchema && !prevSchema.isNullable) {
     return;
   }
 
   const originValue = _.get(defaultFormData, prevInitialPath);
-  console.log('originValue+++++++', _.join(prevInitialPath, '.'), originValue);
 
   const isArrayPrevInitialPath = _.isArray(_.get(formData, prevInitialPath));
   if (_.keys(originValue).length === 1) {
@@ -387,7 +387,6 @@ export const genFieldInFormDataByRecursion = ({
       ) {
         const value = _.get(defaultFormData, path);
         _.set(formData, path, _.cloneDeep(value));
-        console.log('pathSchema+++++++', path, pathSchema, value, formData);
       }
     }
   });
@@ -474,11 +473,6 @@ export const unsetNullabelFieldByRecursion = ({
       required
     });
   }
-  console.log(
-    'unsetNullabelFieldByRecursion+++++++',
-    prevInitialPath,
-    prevSchema
-  );
 
   //
   if (!prevSchema?.isNullable && prevSchema) {

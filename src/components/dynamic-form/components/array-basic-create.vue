@@ -145,7 +145,6 @@
 
       const setDataList = () => {
         list.value = _.get(props.uiFormData, props.fieldPath, []);
-        console.log('group inpu+++++init========', list.value);
       };
 
       setDataList();

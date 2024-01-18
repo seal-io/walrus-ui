@@ -4,19 +4,20 @@
 
   export default defineComponent({
     setup(props, { attrs }) {
+      const popupInfo = attrs.popupInfo || attrs['popup-info'];
       return () => (
         <>
-          {attrs.popupInfo || attrs.doc ? (
+          {popupInfo || attrs.doc ? (
             <a-tooltip
-              content={attrs.popupInfo}
+              content={popupInfo}
               v-slots={{
                 content: () => {
                   if (!attrs.doc) {
-                    return <span>{attrs.popupInfo}</span>;
+                    return <span>{popupInfo}</span>;
                   }
                   return (
                     <>
-                      <div>{attrs.popupInfo}</div>
+                      <div>{popupInfo}</div>
                       <div>
                         <div>{attrs.doc?.description}</div>
                         <div class="align-right">

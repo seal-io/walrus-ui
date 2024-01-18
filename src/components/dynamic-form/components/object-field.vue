@@ -66,11 +66,7 @@
         parentSpan: getCustomColSpan(props.schema) || props.schema.colSpan,
         level: props.level + 1
       });
-      console.log(
-        'childProperties++++++++++++',
-        props.schema,
-        childProperties.value
-      );
+
       // raw data
       if (
         props.schema.additionalProperties &&
@@ -188,18 +184,12 @@
         const fieldValue = _.get(objectAdditionalList.value, [index, 'field']);
         const field = _.cloneDeep(fieldValue);
         const obj = _.get(props.uiFormData, [...props.fieldPath, field]);
-        console.log('handleAdditionalMapFieldChange++++++++++++', val, obj);
         _.set(objectAdditionalList.value, [index, 'field'], _.cloneDeep(val));
         _.set(props.formData, [...props.fieldPath, val], _.cloneDeep(obj));
         _.set(props.uiFormData, [...props.fieldPath, val], _.cloneDeep(obj));
         _.unset(props.formData, [...props.fieldPath, field]);
         _.unset(props.uiFormData, [...props.fieldPath, field]);
 
-        console.log(
-          'handleAdditionalMapFieldChange++++++++++++',
-          props.formData,
-          props.uiFormData
-        );
         handleChange(props.formData);
       };
 
