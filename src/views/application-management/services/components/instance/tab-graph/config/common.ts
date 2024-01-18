@@ -28,6 +28,7 @@ insertCss(`
     color: #aaa;
   }
 `);
+export const UMLIconSize = [16, 16];
 export const globalFontSize = 12;
 export const DefaultNodeSize = [185, 60];
 export const GlobalColor = {
@@ -42,7 +43,7 @@ export const defineCustomNode = () => {
       afterDraw(cfg: Node & NodeConfig, group: IGroup) {
         (this as any).drawCompositionIcon(cfg, group);
         (this as any).drawActionButton(cfg, group);
-        // (this as any).drawStateIconAnimate(cfg, group);
+        (this as any).drawUMLIcon(cfg, group);
       },
       drawStateIconAnimate(cfg: Node & NodeConfig, group: IGroup) {
         const { stateIcon = {} } = cfg;
@@ -78,6 +79,67 @@ export const defineCustomNode = () => {
           draggable: true
         });
       },
+
+      drawUMLIcon(cfg: Node & NodeConfig, group: IGroup) {
+        const {
+          UMLCompositionIcon,
+          UMLDependencyIcon,
+          UMLRealizationIcon,
+          hasComposition,
+          isCollapsed,
+          size
+        } = cfg;
+        if (!UMLCompositionIcon && !UMLDependencyIcon && !UMLRealizationIcon)
+          return;
+
+        const w: number = _.get(size, '0') || DefaultNodeSize[0];
+        const h: number = _.get(size, '1') || DefaultNodeSize[1];
+        // const { width, height, img } = compositionIcon as any;
+        console.log('isCollapsed=============', isCollapsed);
+        if (UMLCompositionIcon && isCollapsed && hasComposition) {
+          group['shapeMap']['uml-icon'] = group.addShape('image', {
+            attrs: {
+              img: UMLCompositionIcon,
+              x: w / 2 - 1,
+              y: -h / 2 + 22,
+              width: 14,
+              height: 14
+            },
+            className: 'uml-icon',
+            name: 'uml-icon',
+            draggable: true
+          });
+        }
+        if (UMLRealizationIcon) {
+          group['shapeMap']['uml-icon'] = group.addShape('image', {
+            attrs: {
+              img: UMLRealizationIcon,
+              x: -w / 2 - 12,
+              y: -h / 2 + 23,
+              width: 14,
+              height: 14
+            },
+            className: 'uml-icon',
+            name: 'uml-icon',
+            draggable: true
+          });
+        }
+        if (UMLDependencyIcon) {
+          group['shapeMap']['uml-icon'] = group.addShape('image', {
+            attrs: {
+              img: UMLDependencyIcon,
+              x: -w / 2 - 15,
+              y: -h / 2 + 22,
+              width: 16,
+              height: 16
+            },
+            className: 'uml-icon',
+            name: 'uml-icon',
+            draggable: true
+          });
+        }
+      },
+
       drawActionButton(cfg: Node & NodeConfig, group: IGroup) {
         if (
           _.get(cfg, 'loggableInfo.loggable') ||
@@ -85,8 +147,8 @@ export const defineCustomNode = () => {
           _.get(cfg, 'drifted')
         ) {
           const { size, moreButtonIcon } = cfg;
-          const w: number = _.get(size, '0');
-          const h: number = _.get(size, '1');
+          const w: number = _.get(size, '0') || 16;
+          const h: number = _.get(size, '1') || 16;
           const { width, height, img } = moreButtonIcon as any;
           group['shapeMap']['more-button-icon'] = group.addShape('image', {
             attrs: {

@@ -26,7 +26,7 @@ export const loadImage = (url, { document, width, height, defaultImg }) => {
 
 export const createCanvasImage = (url, { document, width, height }) => {
   const img = new Image();
-  img.crossOrigin = '';
+  img.crossOrigin = 'anonymous';
   img.src = url;
 
   const canvas: any = document.createElement('canvas');
