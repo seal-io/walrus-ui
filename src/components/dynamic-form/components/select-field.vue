@@ -152,7 +152,11 @@
           schemaFormStatus.value !== PageAction.VIEW &&
           props.schema.enum &&
           !props.schema.default &&
-          parentObjectExsitsInFormData(props.formData, props.fieldPath)
+          parentObjectExsitsInFormData({
+            formData: props.formData,
+            fieldPath: props.fieldPath,
+            schema: props.schema
+          })
         ) {
           _.set(props.formData, props.fieldPath, options.value[0].value);
           _.set(props.uiFormData, props.fieldPath, options.value[0].value);

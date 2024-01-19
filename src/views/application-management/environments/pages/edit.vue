@@ -565,7 +565,6 @@
   const handleSubmit = async (draft?: boolean) => {
     const res = await formref.value?.validate();
     validateTrigger.value = true;
-    console.log('res==========', res);
     scrollToView();
     if (!res) {
       try {
@@ -593,8 +592,12 @@
         if (route.name !== PROJECT.EnvDetail) {
           router.back();
         } else {
-          execSucceed();
+          window.scrollTo({
+            top: 0,
+            behavior: 'smooth'
+          });
         }
+        execSucceed();
         submitLoading.value = false;
       } catch (error) {
         submitLoading.value = false;

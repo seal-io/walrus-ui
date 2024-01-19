@@ -17,6 +17,7 @@ export interface FieldSchema {
   'maxLength'?: number;
   'minLength'?: number;
   'minItems'?: number;
+  'maxItems'?: number;
   'isItemsProperty'?: boolean;
   'isItems'?: boolean;
   'enum'?: any[];

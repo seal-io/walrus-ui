@@ -39,10 +39,11 @@
       <div v-if="pageAction === PageAction.VIEW">
         <ComCard padding="0 var(--card-content-padding) 20px">
           <a-tabs
-            v-model:active-key="activeTab"
+            v-model:active-key="activeKey"
             lazy-load
             class="page-line-tabs"
-            :default-active-key="activeTab"
+            :default-active-key="activeKey"
+            @change="setPageTabActive"
           >
             <a-tab-pane
               v-for="item in instanceTabList"
@@ -56,18 +57,21 @@
               ></Component>
             </a-tab-pane>
             <a-tab-pane
-              key="accessUrl"
+              :key="ResourceDetailTabs.ENDPOINTS"
               :title="$t('applications.applications.instance.accessUrl')"
             >
               <tabEndpoint ref="tabEndpointCom"></tabEndpoint>
             </a-tab-pane>
             <a-tab-pane
-              key="revisions"
+              :key="ResourceDetailTabs.REVISIONS"
               :title="$t('applications.applications.instance.history')"
             >
               <serviceRevisions></serviceRevisions>
             </a-tab-pane>
-            <a-tab-pane key="config" :title="$t('common.button.settings')">
+            <a-tab-pane
+              :key="ResourceDetailTabs.SETTINGS"
+              :title="$t('common.button.settings')"
+            >
               <serviceEdit
                 v-if="
                   userStore.hasProjectResourceActions({
@@ -105,7 +109,11 @@
   import { Resources, Actions } from '@/permissions/config';
   import { useUserStore, useServiceStore } from '@/store';
   import _ from 'lodash';
-  import { PageAction, websocketEventType } from '@/views/config';
+  import {
+    PageAction,
+    websocketEventType,
+    ResourceDetailTabs
+  } from '@/views/config';
   import { execSucceed, deleteModal } from '@/utils/monitor';
   import {
     markRaw,
@@ -117,16 +125,14 @@
     provide,
     onBeforeUnmount
   } from 'vue';
-  import ModuleCard from '@/components/page-wrap/module-card.vue';
+  import useTabActive, { TabPage } from '@/hooks/use-tab-active';
   import DropButtonGroup from '@/components/drop-button-group/index.vue';
   import slTransition from '@/components/sl-transition/index.vue';
   import { useSetChunkRequest } from '@/api/axios-chunk-request';
   import HeaderInfo from '@/components/header-info/index.vue';
   import useCallCommon from '@/hooks/use-call-common';
-  import EditPageFooter from '@/components/edit-page-footer/index.vue';
   import useBasicInfoData from '@/views/application-management/projects/hooks/use-basicInfo-data';
   import StatusLabel from '@/views/operation-hub/connectors/components/status-label.vue';
-  import moduleWrapper from '@/components/module-wrapper/index.vue';
   import tabOutput from './tab-output.vue';
   import tabEndpoint from './tab-endpoint.vue';
   import tabResource from './tab-resource.vue';
@@ -175,17 +181,20 @@
     useFetchResource();
   const projectID = route.params.projectId || '';
   const serviceID = route.query.id || '';
-  const activeKey = ref('resource');
   const isCollapsed = ref(false);
   const currentInfo = ref<ServiceRowData>({} as ServiceRowData);
   const serviceInfoRef = ref();
-  const activeTab = ref('resource');
   const instanceTabMap = {
     tabResource: markRaw(tabResource),
     tabOutput: markRaw(tabOutput)
   };
   const instanceTabList = ref<any[]>([]);
   const basicDataList = useBasicInfoData(serviceBasicInfo, currentInfo);
+
+  const { activeKey, setPageTabActive } = useTabActive(
+    TabPage.RESOURCEDETAILTAB,
+    ResourceDetailTabs.COMPONENTS
+  );
 
   provide(ProvideServiceInfoKey, currentInfo);
   const actionList = computed(() => {
@@ -288,17 +297,15 @@
       const { data } = await queryItemService(params);
       currentInfo.value = data;
       serviceStore.setServiceInfo(route.query.id, data);
-      console.log('currentInfo========', currentInfo.value);
     } catch (error) {
       serviceStore.deleteService(route.query.id);
-      console.log('error===========', error);
     }
   };
 
   const handleEditCancel = () => {
     // pageAction.value = PageAction.VIEW;
   };
-  const handleEditSucceed = () => {
+  const handleEditSucceed = async () => {
     router.replace({
       params: {
         ...route.params
@@ -308,13 +315,11 @@
       }
     });
     pageAction.value = PageAction.VIEW;
-    setTimeout(() => {
-      getServiceItemInfo();
-    }, 100);
+
+    await getServiceItemInfo();
+    setPageTabActive(ResourceDetailTabs.COMPONENTS);
   };
-  const handleTabChange = (val) => {
-    activeKey.value = val;
-  };
+
   const updateServiceState = (data) => {
     const ids = data.ids || [];
     // delete: if current service is deleted, jump to the next service
