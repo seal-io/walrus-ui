@@ -268,7 +268,7 @@
       <EditPageFooter>
         <template #save>
           <a-popconfirm
-            position="left"
+            position="tr"
             trigger="hover"
             content-class="deploy-comment-popup"
           >
@@ -297,6 +297,7 @@
                 :loading="submitLoading"
                 :actions="SaveActions"
                 @select="handleActionSelect"
+                @enterDefault="(flag) => (showPopconfirm = flag)"
               >
               </GroupButtonMenu>
               <a-button
@@ -427,6 +428,7 @@
     labels: {},
     list: []
   });
+  const showPopconfirm = ref(false);
   const deletedIds = ref<string[]>([]);
   const validateTrigger = ref(false);
   const breadCrumbList = ref<BreadcrumbOptions[]>([]);
