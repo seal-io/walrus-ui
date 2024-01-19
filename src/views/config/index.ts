@@ -47,6 +47,9 @@ export const websocketEventType = {
 
 export const validateLabelNameRegx = /^[a-z0-9](?:[a-z0-9-]{0,28}[a-z0-9])?$/;
 
+export const validateLabelNameRegxFor63 =
+  /^[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?$/;
+
 // up to 39 characters
 // Can only contain alphanumeric, _, -
 // cannot have consecutive -, _
@@ -76,7 +79,8 @@ export const InputWidth = {
 
 export const validateInputLength = {
   NAME: 30,
-  DESC: 255
+  TemplateName: 63,
+  DESC: 200
 };
 
 export const TabPage = {
@@ -86,7 +90,8 @@ export const TabPage = {
   OPERATORHUBTAB: 'operatorHubTab',
   SETTINGSTAB: 'settingsTab',
   USERTAB: 'userTab',
-  PIPELINETAB: 'pipelineTab'
+  PIPELINETAB: 'pipelineTab',
+  RESOURCEDETAILTAB: 'resourceDetailTab'
 };
 
 export const ProjectTabs = {
@@ -108,6 +113,14 @@ export const EnvironmentTabs = {
   SERVICE: 'services',
   GRAPH: 'graph',
   VARIABLES: 'variables',
+  SETTINGS: 'settings'
+};
+
+export const ResourceDetailTabs = {
+  COMPONENTS: 'components',
+  OUTPUTS: 'outputs',
+  ENDPOINTS: 'endpoints',
+  REVISIONS: 'revisions',
   SETTINGS: 'settings'
 };
 

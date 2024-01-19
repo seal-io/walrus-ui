@@ -171,11 +171,16 @@ export const deployItemService = (data: {
   reuseAttributes: boolean;
   projectID: string;
   environmentID: string;
+  changeComment?: string;
   serviceID: string;
 }) => {
   return axios.post(
     `/projects/${data.projectID}/environments/${data.environmentID}${SERVICE_API}/_/upgrade`,
-    { items: data.items, reuseAttributes: data.reuseAttributes }
+    {
+      items: data.items,
+      reuseAttributes: data.reuseAttributes,
+      changeComment: data.changeComment
+    }
   );
 };
 

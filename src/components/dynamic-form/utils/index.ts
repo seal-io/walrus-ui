@@ -180,7 +180,15 @@ export const initFieldDefaultValue = (item) => {
   return null;
 };
 
-export const parentObjectExsitsInFormData = (formData, fieldPath: string[]) => {
+export const parentObjectExsitsInFormData = ({
+  formData,
+  fieldPath,
+  schema
+}: {
+  formData: object;
+  fieldPath: string[];
+  schema: FieldSchema;
+}) => {
   const initialPath = _.initial(fieldPath);
   if (!initialPath.length) return true;
   const parentValue = _.get(formData, initialPath);
@@ -218,7 +226,11 @@ export const initFieldValue = ({
   }
   const isRequiredItemProperty = schema.arrayItemProperty;
   const checkByValue = required || !isEmptyValueField(schema, value);
-  const checkByParentObject = parentObjectExsitsInFormData(formData, fieldPath);
+  const checkByParentObject = parentObjectExsitsInFormData({
+    formData,
+    fieldPath,
+    schema
+  });
 
   if (checkByValue && (checkByParentObject || isRequiredItemProperty)) {
     _.set(formData, fieldPath, _.cloneDeep(value));
@@ -281,26 +293,22 @@ export const viewFieldValue = ({
 }) => {
   const defaultValue = initFieldDefaultValue(schema);
   const originValue = _.get(defaultFormData, fieldPath);
+  const checkByParentObject = parentObjectExsitsInFormData({
+    formData: uiFormData,
+    fieldPath,
+    schema
+  });
+  const checkByValue =
+    required || !isEmptyValueField(schema, originValue || defaultValue);
 
   if (_.has(uiFormData, fieldPath)) {
     _.set(formData, fieldPath, _.cloneDeep(_.get(uiFormData, fieldPath)));
-  } else {
-    const checkByParentObject = parentObjectExsitsInFormData(
-      uiFormData,
-      fieldPath
-    );
-    const isRequiredItemProperty = schema.arrayItemProperty;
-    const checkByValue =
-      required || !isEmptyValueField(schema, originValue || defaultValue);
+  } else if (required && checkByParentObject) {
+    _.set(formData, fieldPath, _.cloneDeep(originValue || defaultValue));
+    _.set(uiFormData, fieldPath, _.cloneDeep(originValue || defaultValue));
+  }
 
-    if (required && checkByParentObject) {
-      _.set(formData, fieldPath, _.cloneDeep(originValue || defaultValue));
-      _.set(uiFormData, fieldPath, _.cloneDeep(originValue || defaultValue));
-    } else if (required && isRequiredItemProperty) {
-      // _.set(formData, fieldPath, _.cloneDeep(originValue || defaultValue));
-      // _.set(uiFormData, fieldPath, _.cloneDeep(originValue || defaultValue));
-    }
-
+  if (!_.has(uiFormData, fieldPath) && !_.has(defaultFormData, fieldPath)) {
     if (!hidden || !isEmptyValueField(schema, originValue || defaultValue)) {
       _.set(
         defaultFormData,

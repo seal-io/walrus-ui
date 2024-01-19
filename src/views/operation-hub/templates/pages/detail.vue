@@ -67,7 +67,7 @@
               },
               {
                 required: true,
-                match: validateLabelNameRegx,
+                match: validateLabelNameRegxFor63,
                 message: $t('common.validate.labelName')
               }
             ]"
@@ -78,7 +78,7 @@
               :label="$t('operation.connectors.table.name')"
               :required="true"
               :style="{ width: `${InputWidth.LARGE}px` }"
-              :max-length="validateInputLength.NAME"
+              :max-length="validateInputLength.TemplateName"
               show-word-limit
             ></seal-input>
           </a-form-item>
@@ -259,6 +259,7 @@
   import {
     PageAction,
     validateLabelNameRegx,
+    validateLabelNameRegxFor63,
     validateInputLength,
     InputWidth,
     QAlinkMap

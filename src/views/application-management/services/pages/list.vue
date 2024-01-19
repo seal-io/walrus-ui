@@ -50,8 +50,8 @@
           status="success"
           type="primary"
           @click="handleImportFile"
-          >{{ $t('common.button.import') }} YAML</a-button
-        >
+          >{{ $t('applications.service.importyaml') }}
+        </a-button>
         <a-button
           v-if="
             userStore.hasProjectResourceActions({
@@ -145,9 +145,7 @@
 
   const { download } = useDownload();
   const { route, router, t } = useCallCommon();
-  const appStore = useAppStore();
   const userStore = useUserStore();
-  const serviceTable = ref();
   const resourceTable = ref();
   const serviceSelectKeys = ref<string[]>([]);
   const resourceSelectKeys = ref<string[]>([]);
@@ -287,7 +285,6 @@
 
   const handleSearch = () => {
     setTimeout(() => {
-      // serviceTable.value.handleSearch();
       resourceTable.value.handleSearch();
     }, 100);
   };

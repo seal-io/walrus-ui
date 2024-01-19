@@ -222,6 +222,11 @@
       :active="activeDriftResource"
     >
     </driftResource>
+    <CommentModal
+      v-model:show="showCommentModal"
+      :title="$t('applications.service.batchDeploy')"
+      @confirm="handleComfirmComment"
+    ></CommentModal>
   </ComCard>
 </template>
 
@@ -230,6 +235,7 @@
   import { Resources, Actions } from '@/permissions/config';
   import _, { get, pickBy, filter } from 'lodash';
   import Autotip from '@arco-design/web-vue/es/_components/auto-tooltip/auto-tooltip';
+  import CommentModal from '@/views/commons/components/comment-modal/index.vue';
   import dayjs from 'dayjs';
   import {
     reactive,
@@ -271,7 +277,8 @@
     SERVICE_API_PREFIX,
     startApplicationInstance,
     stopApplicationInstance,
-    redeployService
+    redeployService,
+    deployItemService
   } from '../api';
   import useViewLatestLogs from '../hooks/use-view-latest-logs';
   import useRollbackRevision from '../hooks/use-rollback-revision';
@@ -347,6 +354,8 @@
   provide(ProvideServiceInfoKey, currentServiceInfo);
 
   let fetchToken: any = null;
+  const activeResource = ref<any>({});
+  const showCommentModal = ref(false);
   const showDeleteModal = ref(false);
   const showDriftModal = ref(false);
   const driftResourceList = ref<DriftDataItem[]>([]);
@@ -505,9 +514,23 @@
       // ignore
     }
   };
-  const handleRedeployResource = async (row) => {
+  const handleRedeployResource = (row) => {
+    activeResource.value = row;
+    setTimeout(() => {
+      showCommentModal.value = true;
+    }, 100);
+  };
+  const handleComfirmComment = async (comment) => {
     try {
-      await redeployService(row);
+      const params = {
+        items: [{ id: activeResource.value.id }],
+        serviceID: activeResource.value.id,
+        environmentID,
+        projectID,
+        changeComment: comment,
+        reuseAttributes: true
+      };
+      await deployItemService(params);
       execSucceed();
     } catch (error) {
       // ignore

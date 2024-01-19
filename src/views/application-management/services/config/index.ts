@@ -3,6 +3,7 @@ import dayjs from 'dayjs';
 import { MoreAction } from '@/views/config/interface';
 import { Resources, Actions } from '@/permissions/config';
 import { setDurationValue } from '@/views/config/utils';
+import { ResourceDetailTabs } from '@/views/config';
 import { useUserStore } from '@/store';
 
 const userStore = useUserStore();
@@ -33,14 +34,14 @@ export const ServiceStatus = {
 export const instanceTabs = [
   {
     label: 'applications.instance.tab.resource',
-    value: 'resource',
+    value: ResourceDetailTabs.COMPONENTS,
     com: 'tabResource',
     requiredAuth: true,
     permission: ['GET']
   },
   {
     label: 'applications.instance.tab.output',
-    value: 'outputs',
+    value: ResourceDetailTabs.OUTPUTS,
     requiredAuth: false,
     com: 'tabOutput'
   }

@@ -267,49 +267,57 @@
 
       <EditPageFooter>
         <template #save>
-          <a-popconfirm
-            position="tr"
-            trigger="hover"
-            content-class="deploy-comment-popup"
-          >
-            <template #icon>
-              <span></span>
-            </template>
-            <template #content>
-              <seal-textarea
-                v-model="formData.changeComment"
-                :label="$t('common.table.mark')"
-                allow-clear
-                style="width: 300px"
-                :auto-size="{ minRows: 2, maxRows: 4 }"
-              ></seal-textarea>
-            </template>
-            <div>
-              <GroupButtonMenu
-                v-if="
-                  _.get(serviceInfo, 'status.summaryStatus') ===
-                    ServiceStatus.Undeployed ||
-                  _.get(serviceInfo, 'status.summaryStatus') ===
-                    ServiceStatus.Stopped ||
-                  !id
-                "
-                trigger="hover"
-                :loading="submitLoading"
-                :actions="SaveActions"
-                @select="handleActionSelect"
-                @enterDefault="(flag) => (showPopconfirm = flag)"
-              >
-              </GroupButtonMenu>
-              <a-button
-                v-else
-                :type="'primary'"
-                class="cap-title"
-                :loading="submitLoading"
-                @click="handleOkCallback"
-                >{{ $t('common.button.saveDeploy') }}</a-button
-              >
-            </div>
-          </a-popconfirm>
+          <div>
+            <GroupButtonMenu
+              v-if="
+                _.get(serviceInfo, 'status.summaryStatus') ===
+                  ServiceStatus.Undeployed ||
+                _.get(serviceInfo, 'status.summaryStatus') ===
+                  ServiceStatus.Stopped ||
+                !id
+              "
+              trigger="hover"
+              :loading="submitLoading"
+              :actions="SaveActions"
+              @select="handleActionSelect"
+            >
+              <template #default>
+                <a-popconfirm
+                  position="tr"
+                  trigger="hover"
+                  content-class="deploy-comment-popup"
+                >
+                  <template #icon>
+                    <span></span>
+                  </template>
+                  <template #content>
+                    <seal-textarea
+                      v-model="formData.changeComment"
+                      :label="$t('common.table.mark')"
+                      allow-clear
+                      style="width: 300px"
+                      :auto-size="{ minRows: 2, maxRows: 4 }"
+                    ></seal-textarea>
+                  </template>
+                  <a-button
+                    :loading="submitLoading"
+                    type="primary"
+                    @click="() => handleActionSelect(ResourceSaveAction.Deploy)"
+                  >
+                    {{ $t(_.get(_.head(SaveActions), 'label') || '') }}
+                  </a-button>
+                </a-popconfirm>
+              </template>
+            </GroupButtonMenu>
+            <a-button
+              v-else
+              :type="'primary'"
+              class="cap-title"
+              :loading="submitLoading"
+              @click="handleOkCallback"
+              >{{ $t('common.button.saveDeploy') }}</a-button
+            >
+          </div>
         </template>
         <template #cancel>
           <a-button
@@ -336,6 +344,7 @@
   import _, { get, find, cloneDeep, toString } from 'lodash';
   import { ref, computed, provide, PropType, nextTick, onMounted } from 'vue';
   import i18n from '@/locale';
+  import { execSucceed } from '@/utils/monitor';
   import { useSetChunkRequest } from '@/api/axios-chunk-request';
   import CommentModal from '@/views/commons/components/comment-modal/index.vue';
   import { onBeforeRouteLeave } from 'vue-router';
@@ -428,7 +437,6 @@
     labels: {},
     list: []
   });
-  const showPopconfirm = ref(false);
   const deletedIds = ref<string[]>([]);
   const validateTrigger = ref(false);
   const breadCrumbList = ref<BreadcrumbOptions[]>([]);
@@ -727,6 +735,7 @@
           formData.value.template = null as any;
         }
         await saveCallback();
+        execSucceed();
       } finally {
         submitLoading.value = false;
       }

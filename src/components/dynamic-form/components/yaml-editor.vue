@@ -19,6 +19,7 @@
     unsetFieldValue,
     genFieldInFormData
   } from '../utils';
+  import FIELD_TYPE from '../config/field-type';
   import {
     json2Yaml,
     yaml2Json,
@@ -39,6 +40,7 @@
       const formref = inject(ProviderFormRefKey, ref());
       const fieldValue = ref('');
       const defaultValue = ref('');
+      const lang = ref('yaml');
 
       const { fieldProps, rules } = genFieldPropsAndRules({
         schema: props.schema,
@@ -87,6 +89,10 @@
       // init field value
 
       const initDefaultValue = () => {
+        if (props.schema.type === FIELD_TYPE.STRING) {
+          defaultValue.value = _.get(props.uiFormData, props.fieldPath, '');
+          return;
+        }
         if (
           schemaFormStatus.value === PageAction.CREATE &&
           isRequiredInitField(
@@ -107,9 +113,7 @@
         const jsonstr = yaml2Json(fieldValue.value);
         _.set(props.formData, props.fieldPath, jsonstr);
         _.set(props.uiFormData, props.fieldPath, jsonstr);
-        // if (props.schema.isItemsProperty) {
-        //   return;
-        // }
+
         if (_.trim(fieldValue.value) === _.trim(defaultValue.value)) {
           unsetFieldValue({
             FieldPathMap: props.FieldPathMap,
@@ -142,7 +146,10 @@
         ) {
           _.unset(props.formData, props.fieldPath);
         } else {
-          const jsonstr = yaml2Json(fieldValue.value);
+          const jsonstr =
+            props.schema.type === FIELD_TYPE.STRING
+              ? fieldValue.value
+              : yaml2Json(fieldValue.value);
           _.set(props.formData, props.fieldPath, jsonstr);
           _.set(props.uiFormData, props.fieldPath, jsonstr);
         }
@@ -179,7 +186,7 @@
             <AceEditor
               key={`${_.join(props.fieldPath, '_')}`}
               {...attrs}
-              lang="yaml"
+              lang={lang.value}
               v-model={fieldValue.value}
               label={props.schema.title || props.schema.name}
               popup-info={props.schema.description}

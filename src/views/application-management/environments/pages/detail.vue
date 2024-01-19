@@ -23,11 +23,7 @@
           <div class="description">{{ currentInfo.description }}</div>
         </template>
       </HeaderInfo>
-      <!-- <TabList
-        :tabs="tabs"
-        v-model:active-key="activeKey"
-        @change="handleTabChange"
-      ></TabList> -->
+
       <ComCard padding="0 var(--card-content-padding) 20px">
         <a-tabs
           v-model:active-key="activeKey"

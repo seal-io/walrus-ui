@@ -18,7 +18,8 @@
     calcFieldSpan,
     isEmptyvalue,
     unsetFieldValue,
-    genFieldInFormData
+    genFieldInFormData,
+    initFieldDefaultValue
   } from '../utils';
   import CommonButton from './common-button.vue';
 
@@ -33,6 +34,7 @@
       const activeItemIndex = ref(-1);
       const items = props.schema.items || ({} as FieldSchema);
       const minItems = props.schema.minItems || 0;
+      const maxItems = props.schema.maxItems || Infinity;
       const defaultItems = props.schema.default?.length || 0;
       let itemsProperties: FieldSchema[] = [];
       const propertiesList = ref<FieldSchema[][]>([]);
@@ -143,6 +145,13 @@
       };
       const handleAddClick = () => {
         setPropertiesList();
+        const defaultValue = initFieldDefaultValue(props.schema);
+        const originValue = _.get(props.defaultFormData, props.fieldPath);
+
+        _.set(props.uiFormData, props.fieldPath, [
+          ..._.cloneDeep(_.get(props.uiFormData, props.fieldPath, [])),
+          ..._.cloneDeep(originValue || defaultValue)
+        ]);
       };
       const handleAddClickCall = () => {
         setPropertiesList();
@@ -228,7 +237,10 @@
       };
 
       const renderAddButton = () => {
-        if (schemaFormStatus.value === PageAction.VIEW) {
+        if (
+          schemaFormStatus.value === PageAction.VIEW ||
+          propertiesList.value.length >= maxItems
+        ) {
           return null;
         }
         return props.schema.items ? (
@@ -261,7 +273,7 @@
             for (let i = 0; i < value.length; i += 1) {
               setPropertiesList();
             }
-          } else if (counts) {
+          } else if (minItems) {
             init();
           }
         }
