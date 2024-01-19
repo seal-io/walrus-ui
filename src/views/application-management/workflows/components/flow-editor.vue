@@ -1,7 +1,11 @@
 <script lang="tsx">
   import _ from 'lodash';
   import { defineComponent, toRefs, ref, computed, provide, watch } from 'vue';
-  import { validateLabelNameRegx, HintKeyMaps } from '@/views/config';
+  import {
+    validateLabelNameRegx,
+    validateInputLength,
+    HintKeyMaps
+  } from '@/views/config';
   import useCallCommon from '@/hooks/use-call-common';
   import { deleteModal, execError } from '@/utils/monitor';
   import FlowStage from './flow-stage.vue';
@@ -242,7 +246,7 @@
                         style={{ width: '100%' }}
                         required={true}
                         disabled={!!id}
-                        max-length={63}
+                        max-length={validateInputLength.NAME}
                         show-word-limit
                       ></seal-input>
                     </a-form-item>

@@ -15,7 +15,7 @@
             :label="$t('workflow.stage.add.taskName')"
             :required="true"
             style="width: 100%"
-            :max-length="63"
+            :max-length="validateInputLength.NAME"
             show-word-limit
           ></seal-input>
         </a-form-item>

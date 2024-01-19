@@ -1,6 +1,6 @@
 <script lang="tsx">
   import _ from 'lodash';
-  import { validateLabelNameRegx } from '@/views/config';
+  import { validateLabelNameRegx, validateInputLength } from '@/views/config';
   import {
     defineComponent,
     toRefs,
@@ -141,7 +141,7 @@
                   size="small"
                   ref={input}
                   error={!valid.value}
-                  max-length={63}
+                  max-length={validateInputLength.NAME}
                   show-word-limit={true}
                   class={[{ 'border-less': !nameEditable.value }]}
                   onBlur={() => handleInputBlur()}

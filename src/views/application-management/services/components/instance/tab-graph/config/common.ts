@@ -5,6 +5,7 @@ import insertCss from 'insert-css';
 import serviceImg from '@/assets/images/service.png';
 import compositionImg from '@/assets/images/graph_nodes.png';
 import moreButtonIcon from '@/assets/images/more.png';
+import umlcompositionIcon from '@/assets/images/composition-03.png';
 
 insertCss(`
   #contextMenu {
@@ -45,6 +46,7 @@ export const defineCustomNode = () => {
         (this as any).drawActionButton(cfg, group);
         (this as any).drawUMLIcon(cfg, group);
       },
+
       drawStateIconAnimate(cfg: Node & NodeConfig, group: IGroup) {
         const { stateIcon = {} } = cfg;
         if (!stateIcon.animate) return;
@@ -59,6 +61,16 @@ export const defineCustomNode = () => {
         //     repeat: true // repeat
         //   }
         // );
+      },
+      update(cfg: Node & NodeConfig, node: any) {
+        const group = node?.getContainer();
+        const umlCompositionIconImg = group['shapeMap']['uml-comp-icon'];
+        const model = node?.getModel();
+        if (model?.isCollapsed) {
+          umlCompositionIconImg?.show();
+        } else {
+          umlCompositionIconImg?.hide();
+        }
       },
       drawCompositionIcon(cfg: Node & NodeConfig, group: IGroup) {
         if (!cfg.hasComposition) return;
@@ -94,24 +106,26 @@ export const defineCustomNode = () => {
 
         const w: number = _.get(size, '0') || DefaultNodeSize[0];
         const h: number = _.get(size, '1') || DefaultNodeSize[1];
-        // const { width, height, img } = compositionIcon as any;
-        console.log('isCollapsed=============', isCollapsed);
-        if (UMLCompositionIcon && isCollapsed && hasComposition) {
-          group['shapeMap']['uml-icon'] = group.addShape('image', {
+        const { width, height, img } = UMLCompositionIcon as any;
+        console.log('isCollapsed=============', width, height, hasComposition);
+        if (UMLCompositionIcon && hasComposition) {
+          group['shapeMap']['uml-comp-icon'] = group.addShape('image', {
             attrs: {
-              img: UMLCompositionIcon,
+              img,
               x: w / 2 - 1,
               y: -h / 2 + 22,
-              width: 14,
-              height: 14
+              width,
+              height
             },
-            className: 'uml-icon',
-            name: 'uml-icon',
+            className: hasComposition
+              ? 'has-composition-icon uml-comp-icon'
+              : 'uml-comp-icon',
+            name: 'uml-comp-icon',
             draggable: true
           });
         }
         if (UMLRealizationIcon) {
-          group['shapeMap']['uml-icon'] = group.addShape('image', {
+          group['shapeMap']['uml-real-icon'] = group.addShape('image', {
             attrs: {
               img: UMLRealizationIcon,
               x: -w / 2 - 12,
@@ -119,13 +133,13 @@ export const defineCustomNode = () => {
               width: 14,
               height: 14
             },
-            className: 'uml-icon',
-            name: 'uml-icon',
+            className: 'uml-real-icon',
+            name: 'uml-real-icon',
             draggable: true
           });
         }
         if (UMLDependencyIcon) {
-          group['shapeMap']['uml-icon'] = group.addShape('image', {
+          group['shapeMap']['uml-dep-icon'] = group.addShape('image', {
             attrs: {
               img: UMLDependencyIcon,
               x: -w / 2 - 15,
@@ -133,8 +147,8 @@ export const defineCustomNode = () => {
               width: 16,
               height: 16
             },
-            className: 'uml-icon',
-            name: 'uml-icon',
+            className: 'uml-dep-icon',
+            name: 'uml-dep-icon',
             draggable: true
           });
         }
@@ -219,6 +233,11 @@ export const defaultNode = {
     height: 10,
     offset: -10,
     img: compositionImg
+  },
+  UMLCompositionIcon: {
+    width: 14,
+    height: 14,
+    img: umlcompositionIcon
   },
   moreButtonIcon: {
     width: 16,

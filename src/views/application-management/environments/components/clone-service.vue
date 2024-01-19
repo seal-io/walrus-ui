@@ -97,7 +97,7 @@
               <seal-input
                 v-model.trim="formData.name"
                 style="width: 100%"
-                :max-length="63"
+                :max-length="validateInputLength.NAME"
                 :required="pageAction === PageAction.EDIT"
                 :label="$t('operation.environments.table.name')"
                 show-word-limit
@@ -201,6 +201,7 @@
   import {
     PageAction,
     validateLabelNameRegx,
+    validateInputLength,
     InjectCompleteDataKey,
     InjectShowInputHintKey,
     InjectSchemaFormStatusKey,

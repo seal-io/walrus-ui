@@ -36,7 +36,7 @@
               :required="true"
               :placeholder="$t('common.table.name')"
               :style="{ width: `${InputWidth.LARGE}px` }"
-              :max-length="63"
+              :max-length="validateInputLength.NAME"
               show-word-limit
               @change="handleNameChange"
             ></seal-input>
@@ -193,6 +193,7 @@
             hide-label
             field="selector.environmentTypes"
             :label="$t('applications.environment.type')"
+            :style="{ width: `${InputWidth.LARGE}px` }"
             :rules="[
               {
                 required: true,
@@ -440,6 +441,7 @@
   import GroupTitle from '@/components/group-title/index.vue';
   import {
     validateLabelNameRegx,
+    validateInputLength,
     PageAction,
     InputWidth,
     EnvironmentTypeMap,

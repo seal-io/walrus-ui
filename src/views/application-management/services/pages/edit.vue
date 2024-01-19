@@ -50,7 +50,7 @@
             :required="true"
             :placeholder="$t('common.table.name')"
             :style="{ width: `${InputWidth.LARGE}px` }"
-            :max-length="63"
+            :max-length="validateInputLength.NAME"
             show-word-limit
           ></seal-input>
         </a-form-item>
@@ -346,6 +346,7 @@
   import GroupTitle from '@/components/group-title/index.vue';
   import {
     validateLabelNameRegx,
+    validateInputLength,
     PageAction,
     InputWidth,
     InjectCompleteDataKey,

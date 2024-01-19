@@ -76,7 +76,7 @@
               :label="$t('operation.connectors.form.name')"
               :required="true"
               :style="{ width: `${InputWidth.LARGE}px` }"
-              :max-length="63"
+              :max-length="validateInputLength.NAME"
               show-word-limit
             ></seal-input>
             <!-- <template v-if="pageAction === PageAction.EDIT" #extra>
@@ -276,6 +276,7 @@
   import {
     PageAction,
     validateLabelNameRegx,
+    validateInputLength,
     InputWidth,
     EnvironmentTypeMap,
     EnvironmentTypeOrder

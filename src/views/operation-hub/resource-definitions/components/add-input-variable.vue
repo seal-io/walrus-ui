@@ -39,7 +39,7 @@
             :label="$t('applications.applications.form.name')"
             :required="true"
             style="width: 100%"
-            :max-length="63"
+            :max-length="validateInputLength.NAME"
             show-word-limit
           ></seal-input>
           <!-- <template #extra>
@@ -152,7 +152,7 @@
   import _ from 'lodash';
   import AceEditor from '@/components/ace-editor/index.vue';
   import EditPageFooter from '@/components/edit-page-footer/index.vue';
-  import { validateLabelNameRegx } from '@/views/config';
+  import { validateLabelNameRegx, validateInputLength } from '@/views/config';
   import {
     json2Yaml,
     yaml2Json

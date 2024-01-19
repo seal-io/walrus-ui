@@ -40,12 +40,9 @@
             :required="true"
             :disabled="action === 'edit'"
             style="width: 100%"
-            :max-length="63"
+            :max-length="validateInputLength.NAME"
             show-word-limit
           ></seal-input>
-          <!-- <template #extra>
-            <span class="tips">{{ $t('common.validate.labelName') }}</span>
-          </template> -->
         </a-form-item>
         <a-form-item :label="$t('common.table.description')" hide-label>
           <seal-textarea
@@ -131,7 +128,7 @@
   import xInputGroup from '@/components/form-create/custom-components/x-input-group.vue';
   import useLabelsActions from '@/components/form-create/hooks/use-labels-action';
   import thumbButton from '@/components/buttons/thumb-button.vue';
-  import { validateLabelNameRegx } from '@/views/config';
+  import { validateLabelNameRegx, validateInputLength } from '@/views/config';
   import { createProject, updateProject } from '../api';
   import { ProjectFormData } from '../config/interface';
 
