@@ -6,7 +6,7 @@
   import ADropdownButton from '@arco-design/web-vue/es/dropdown/dropdown-button';
 
   export default defineComponent({
-    emits: ['select', 'click'],
+    emits: ['select', 'click', 'enterDefault'],
     props: {
       actions: {
         type: Array as PropType<MoreAction[]>,
@@ -33,6 +33,10 @@
       const handleSelect = (val) => {
         emit('select', val);
       };
+      const handleMouseenterDefault = (flag) => {
+        console.log('enterDefault');
+        emit('enterDefault', flag);
+      };
       return () => (
         <div class="group-button-menu">
           <ADropdownButton
@@ -43,6 +47,9 @@
               default: () => {
                 return (
                   <a-button
+                    onMouseover={() => {
+                      handleMouseenterDefault(true);
+                    }}
                     loading={loading.value}
                     type="primary"
                     onClick={() => handleClick(_.head(actions.value))}
@@ -54,6 +61,11 @@
               icon: () => {
                 return (
                   <a-button
+                    onMouseover={() => {
+                      setTimeout(() => {
+                        handleMouseenterDefault(false);
+                      }, 100);
+                    }}
                     type="primary"
                     style={{
                       borderLeftColor: 'rgba(255,255,255,.2)',

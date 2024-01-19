@@ -107,7 +107,6 @@ export const defineCustomNode = () => {
         const w: number = _.get(size, '0') || DefaultNodeSize[0];
         const h: number = _.get(size, '1') || DefaultNodeSize[1];
         const { width, height, img } = UMLCompositionIcon as any;
-        console.log('isCollapsed=============', width, height, hasComposition);
         if (UMLCompositionIcon && hasComposition) {
           group['shapeMap']['uml-comp-icon'] = group.addShape('image', {
             attrs: {

@@ -77,7 +77,7 @@
 
 <script lang="ts" setup>
   import _ from 'lodash';
-  import { InputWidth } from '@/views/config';
+  import { InputWidth, validateInputLength } from '@/views/config';
   import { ref, watch, onMounted, computed } from 'vue';
   import { queryProjectSubjects } from '@/views/application-management/projects/api';
   import { ProjectRoles } from '@/views/application-management/projects/config';

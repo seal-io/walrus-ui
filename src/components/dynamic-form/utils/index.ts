@@ -297,8 +297,8 @@ export const viewFieldValue = ({
       _.set(formData, fieldPath, _.cloneDeep(originValue || defaultValue));
       _.set(uiFormData, fieldPath, _.cloneDeep(originValue || defaultValue));
     } else if (required && isRequiredItemProperty) {
-      _.set(formData, fieldPath, _.cloneDeep(originValue || defaultValue));
-      _.set(uiFormData, fieldPath, _.cloneDeep(originValue || defaultValue));
+      // _.set(formData, fieldPath, _.cloneDeep(originValue || defaultValue));
+      // _.set(uiFormData, fieldPath, _.cloneDeep(originValue || defaultValue));
     }
 
     if (!hidden || !isEmptyValueField(schema, originValue || defaultValue)) {
