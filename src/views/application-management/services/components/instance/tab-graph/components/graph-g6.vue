@@ -437,7 +437,11 @@
               return item.id === o.source;
             });
             if (sourceNode) {
-              sourceNode.UMLCompositionIcon = compositionIcon;
+              sourceNode.UMLCompositionIcon = {
+                img: compositionIcon,
+                width: 14,
+                height: 14
+              };
               console.log('icon========', sourceNode);
             }
           }
@@ -495,10 +499,15 @@
             graph?.hideItem(node);
           }
           if (model.hasComposition) {
-            node.update({
+            graph.updateItem(node, {
               ...model,
+              UMLCompositionIcon: {
+                ...model.UMLCompositionIcon,
+                img: compositionIcon
+              },
               isCollapsed: show
             });
+            // graph.refreshItem(node);
           }
         });
         animateFlag.value = true;
@@ -545,17 +554,25 @@
         if (!result.length) return;
         const model = node.getModel();
 
-        _.each(result, (n) => {
+        _.each(result, (nd) => {
           if (model.isCollapsed) {
-            graph?.hideItem(n);
+            graph?.hideItem(nd);
           } else {
-            graph?.showItem(n);
+            graph?.showItem(nd);
           }
+
+          graph.updateItem(nd, {
+            ...nd.getModel(),
+            isCollapsed: !model.isCollapsed
+          });
         });
-        node.update({
+
+        graph.updateItem(node, {
           ...model,
           isCollapsed: !model.isCollapsed
         });
+
+        // graph.refreshItem(node);
         animateFlag.value = true;
 
         graph?.layout();
@@ -913,6 +930,10 @@
   .g6-component-contextmenu {
     padding: 6px 8px;
     border: none;
+  }
+
+  .uml-comp-icon {
+    display: none;
   }
 
   #contextMenu-wrapper {

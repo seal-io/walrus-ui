@@ -53,7 +53,7 @@
               :label="$t('cost.analyse.table.name')"
               :required="true"
               :disabled="!!id"
-              :max-length="63"
+              :max-length="validateInputLength.NAME"
               :style="{ width: `${InputWidth.LARGE}px` }"
               :show-word-limit="!viewable"
             ></seal-input>
@@ -410,6 +410,7 @@
   import {
     PageAction,
     validateLabelNameRegx,
+    validateInputLength,
     InputWidth
   } from '@/views/config';
   import useCallCommon from '@/hooks/use-call-common';

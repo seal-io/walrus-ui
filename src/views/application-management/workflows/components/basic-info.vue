@@ -39,7 +39,7 @@
             :required="true"
             :disabled="!!id"
             style="width: 100%"
-            :max-length="63"
+            :max-length="validateInputLength.NAME"
             show-word-limit
           ></seal-input>
         </a-form-item>
@@ -80,7 +80,7 @@
 
 <script lang="ts" setup>
   import useCallCommon from '@/hooks/use-call-common';
-  import { validateLabelNameRegx } from '@/views/config';
+  import { validateLabelNameRegx, validateInputLength } from '@/views/config';
   import EditPageFooter from '@/components/edit-page-footer/index.vue';
   import { ref, PropType } from 'vue';
 

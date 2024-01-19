@@ -40,12 +40,12 @@ export const websocketEventType = {
   UPDATE: 'update',
   DELETE: 'delete'
 };
-// can contain up to 63 characters
+// can contain up to 30 characters
 // Contains only lowercase alphanumeric characters or "-"
 // starts with an alphanumeric character
 // end with an alphanumeric character
 
-export const validateLabelNameRegx = /^[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?$/;
+export const validateLabelNameRegx = /^[a-z0-9](?:[a-z0-9-]{0,28}[a-z0-9])?$/;
 
 // up to 39 characters
 // Can only contain alphanumeric, _, -
@@ -72,6 +72,11 @@ export const InputWidth = {
   MIDDLE: 474,
   LARGE: 600,
   XLARGE: 800
+};
+
+export const validateInputLength = {
+  NAME: 30,
+  DESC: 255
 };
 
 export const TabPage = {

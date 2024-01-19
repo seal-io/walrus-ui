@@ -78,7 +78,7 @@
               :label="$t('operation.connectors.table.name')"
               :required="true"
               :style="{ width: `${InputWidth.LARGE}px` }"
-              :max-length="63"
+              :max-length="validateInputLength.NAME"
               show-word-limit
             ></seal-input>
           </a-form-item>
@@ -259,6 +259,7 @@
   import {
     PageAction,
     validateLabelNameRegx,
+    validateInputLength,
     InputWidth,
     QAlinkMap
   } from '@/views/config';

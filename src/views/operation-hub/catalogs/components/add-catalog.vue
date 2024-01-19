@@ -46,7 +46,7 @@
             :label="$t('operation.connectors.table.name')"
             :required="true"
             :style="{ width: `${InputWidth.LARGE}px` }"
-            :max-length="63"
+            :max-length="validateInputLength.NAME"
             show-word-limit
           ></seal-input>
         </a-form-item>
@@ -158,7 +158,8 @@
   import {
     ModalAction,
     InputWidth,
-    validateLabelNameRegx
+    validateLabelNameRegx,
+    validateInputLength
   } from '@/views/config';
   import EditPageFooter from '@/components/edit-page-footer/index.vue';
   import ProviderIcon from '@/components/provider-icon/index.vue';

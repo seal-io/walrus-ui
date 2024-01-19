@@ -295,7 +295,8 @@ export const viewFieldValue = ({
 
     if (required && checkByParentObject) {
       _.set(formData, fieldPath, _.cloneDeep(originValue || defaultValue));
-    } else if (checkByValue && isRequiredItemProperty) {
+      _.set(uiFormData, fieldPath, _.cloneDeep(originValue || defaultValue));
+    } else if (required && isRequiredItemProperty) {
       _.set(formData, fieldPath, _.cloneDeep(originValue || defaultValue));
       _.set(uiFormData, fieldPath, _.cloneDeep(originValue || defaultValue));
     }

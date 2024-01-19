@@ -83,7 +83,6 @@
   import i18n from '@/locale';
   import AceEditor from '@/components/ace-editor/index.vue';
   import EditPageFooter from '@/components/edit-page-footer/index.vue';
-  import { validateLabelNameRegx } from '@/views/config';
   import {
     json2Yaml,
     yaml2Json

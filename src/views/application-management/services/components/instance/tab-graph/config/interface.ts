@@ -21,7 +21,7 @@ export interface INode extends Node {
     data: object;
   };
   UMLDependencyIcon: string;
-  UMLCompositionIcon: string;
+  UMLCompositionIcon: object;
   UMLRealizationIcon: string;
   hasComposition: boolean;
   visible?: boolean;
