@@ -4,13 +4,14 @@ import { websocketEventType } from '@/views/config';
 import { useSetChunkRequest } from '@/api/axios-chunk-request';
 import { queryServiceRevisions, SERVICE_API_PREFIX, SERVICE_API } from '../api';
 
-export default function useViewLatestLogs() {
+export default function useViewLatestLogs(defaultShow?: boolean) {
   const { setChunkRequest } = useSetChunkRequest();
   const revisionDetailId = ref('');
   const revisionData = ref({});
   const showDetailModal = ref(false);
   const initialStatus = ref({});
   const currentServiceInfo = ref<any>({});
+  const isShow = ref(defaultShow ?? true);
   let axiosToken: any = null;
 
   const updateRevisions = (data) => {
@@ -60,7 +61,7 @@ export default function useViewLatestLogs() {
       initialStatus.value = _.get(revisionData.value, 'status') || {};
       currentServiceInfo.value = row;
       setTimeout(() => {
-        showDetailModal.value = true;
+        showDetailModal.value = isShow.value;
       });
       nextTick(() => {
         createServiceRevisionChunkRequest();

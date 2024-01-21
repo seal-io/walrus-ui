@@ -107,6 +107,7 @@ body {
 
   .arco-card-header .arco-card-header-title {
     color: var(--color-text-1);
+    font-weight: var(--font-weight-bold);
     font-size: var(--font-size-large);
   }
 }
@@ -164,6 +165,14 @@ body {
 
 .arco-table {
   .arco-table-tr {
+    &.arco-table-tr-empty {
+      &:hover {
+        .arco-table-td::after {
+          display: none;
+        }
+      }
+    }
+
     &:hover {
       .arco-table-td {
         position: relative;
@@ -476,4 +485,4 @@ body {
 @import url('./arco-descriptions.less');
 @import url('./flex.less');
 @import url('./margin.less');
-@import url('//at.alicdn.com/t/c/font_3892962_2t1npwdzo42.css');
+@import url('//at.alicdn.com/t/c/font_3892962_5b00x6o9vmm.css');

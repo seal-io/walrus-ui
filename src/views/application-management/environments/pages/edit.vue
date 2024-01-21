@@ -234,7 +234,7 @@
               ref="resourceRef"
               v-model:hint-data="completeData"
               :data-list="resourceList"
-              :title="$t('applications.applications.table.resource')"
+              :title="$t('menu.applicationManagement.resource')"
               clone-type="environment"
               resource-type="resource"
               :style="{ width: `${InputWidth.XLARGE}px`, overflow: 'auto' }"

@@ -1,9 +1,16 @@
 <template>
-  <div ref="wrapper" class="wrap" :class="{ fullscreen: fullscreen }">
-    <div class="flex">
-      <a-space>
-        <!-- <a-select v-model="theme" :options="themeList"> </a-select> -->
-        <!-- <a-button type="text" size="small" @click="handleToggleFullScreen">
+  <div>
+    <!-- <div class="doc-refs">
+      <dl class="tips-wrap">
+        <dt class="title">Tips</dt>
+        <dd class="content">描述</dd>
+      </dl>
+    </div> -->
+    <div ref="wrapper" class="wrap" :class="{ fullscreen: fullscreen }">
+      <div class="flex">
+        <a-space>
+          <!-- <a-select v-model="theme" :options="themeList"> </a-select> -->
+          <!-- <a-button type="text" size="small" @click="handleToggleFullScreen">
           <template #icon>
             <i
               class="icon iconfont"
@@ -19,93 +26,94 @@
               : $t('applications.environment.graph.fullscreen')
           }}</span>
         </a-button> -->
-        <a-button
-          v-if="activeKey === 'form'"
-          size="small"
-          type="text"
-          @click="handleToggleMode('editor')"
-        >
-          <template #icon><icon-code /></template>
-          Schema</a-button
-        >
-        <a-button
-          v-if="activeKey === 'editor'"
-          type="text"
-          @click="handleToggleMode('form')"
-        >
-          <template #icon><icon-eye /></template>
-          {{ $t('common.button.perview') }}</a-button
-        >
-      </a-space>
-      <a-space
-        v-if="
-          page === 'template'
-            ? projectID
-              ? userStore.hasProjectResourceActions({
-                  resource: Resources.TemplateVersions,
-                  projectID,
-                  actions: [Actions.PUT]
-                })
-              : userStore.hasRolesActionsPermission({
-                  resource: Resources.TemplateVersions,
-                  actions: [Actions.PUT]
-                })
-            : editable
-        "
-        :size="16"
-      >
-        <a-button v-if="readOnly" type="text" @click="handleEdit">
-          <template #icon><icon-edit /></template>
-          {{ $t('common.button.edit') }}
-        </a-button>
-        <a-button
-          v-if="!readOnly"
-          type="primary"
-          @click="handlePutTemplateSchema"
-          >{{ $t('common.button.save') }}</a-button
-        >
-        <a-button v-if="!readOnly" type="outline" @click="handleCancel">{{
-          $t('common.button.cancel')
-        }}</a-button>
-        <div id="btns-wrap" class="btns-wrapp">
-          <MoreButtonActions
-            trigger="hover"
-            :actions="actionList"
-            container-id="#btns-wrap"
-            style="top: 45px; right: 6px; left: auto"
-            @select="(value) => handleClickAction(value)"
-          ></MoreButtonActions>
-        </div>
-      </a-space>
-    </div>
-    <a-tabs v-model:active-key="activeKey" size="mini" class="edit-tab">
-      <a-tab-pane key="editor" :title="$t('common.button.edit')">
-        <div class="editor">
-          <AceEditor
-            ref="aceEditor"
-            v-model="code"
-            lang="yaml"
-            :height="isFullscreen ? 'calc(100vh - 60px)' : `800px`"
-            :read-only="readOnly"
-            :editor-default-value="defaultCode"
+          <a-button
+            v-if="activeKey === 'form'"
+            size="small"
+            type="text"
+            @click="handleToggleMode('editor')"
           >
-          </AceEditor>
-        </div>
-      </a-tab-pane>
-      <a-tab-pane
-        key="form"
-        :title="$t('common.button.preview')"
-        class="group-form-tab"
-      >
-        <div class="form" :class="{ isFullscreen }">
-          <groupForm
-            :key="formKey"
-            v-model:form-data="originFormData"
-            :schema="schemaVariables"
-          ></groupForm>
-        </div>
-      </a-tab-pane>
-    </a-tabs>
+            <template #icon><icon-code /></template>
+            Schema</a-button
+          >
+          <a-button
+            v-if="activeKey === 'editor'"
+            type="text"
+            @click="handleToggleMode('form')"
+          >
+            <template #icon><icon-eye /></template>
+            {{ $t('common.button.perview') }}</a-button
+          >
+        </a-space>
+        <a-space
+          v-if="
+            page === 'template'
+              ? projectID
+                ? userStore.hasProjectResourceActions({
+                    resource: Resources.TemplateVersions,
+                    projectID,
+                    actions: [Actions.PUT]
+                  })
+                : userStore.hasRolesActionsPermission({
+                    resource: Resources.TemplateVersions,
+                    actions: [Actions.PUT]
+                  })
+              : editable
+          "
+          :size="16"
+        >
+          <a-button v-if="readOnly" type="text" @click="handleEdit">
+            <template #icon><icon-edit /></template>
+            {{ $t('common.button.edit') }}
+          </a-button>
+          <a-button
+            v-if="!readOnly"
+            type="primary"
+            @click="handlePutTemplateSchema"
+            >{{ $t('common.button.save') }}</a-button
+          >
+          <a-button v-if="!readOnly" type="outline" @click="handleCancel">{{
+            $t('common.button.cancel')
+          }}</a-button>
+          <div id="btns-wrap" class="btns-wrapp">
+            <MoreButtonActions
+              trigger="hover"
+              :actions="actionList"
+              container-id="#btns-wrap"
+              style="top: 45px; right: 6px; left: auto"
+              @select="(value) => handleClickAction(value)"
+            ></MoreButtonActions>
+          </div>
+        </a-space>
+      </div>
+      <a-tabs v-model:active-key="activeKey" size="mini" class="edit-tab">
+        <a-tab-pane key="editor" :title="$t('common.button.edit')">
+          <div class="editor">
+            <AceEditor
+              ref="aceEditor"
+              v-model="code"
+              lang="yaml"
+              :height="isFullscreen ? 'calc(100vh - 60px)' : `800px`"
+              :read-only="readOnly"
+              :editor-default-value="defaultCode"
+            >
+            </AceEditor>
+          </div>
+        </a-tab-pane>
+        <a-tab-pane
+          key="form"
+          :title="$t('common.button.preview')"
+          class="group-form-tab"
+        >
+          <div class="form" :class="{ isFullscreen }">
+            <groupForm
+              :key="formKey"
+              v-model:form-data="originFormData"
+              :schema="schemaVariables"
+            ></groupForm>
+          </div>
+        </a-tab-pane>
+      </a-tabs>
+    </div>
   </div>
 </template>
 
@@ -391,6 +399,25 @@
 <style lang="less" scoped>
   :not(:root):fullscreen::backdrop {
     z-index: 100;
+  }
+
+  .doc-refs {
+    margin-bottom: 10px;
+    padding: 20px;
+    background-color: var(--color-fill-1);
+    border-radius: var(--border-radius-small);
+
+    .tips-wrap {
+      margin: 0;
+    }
+
+    .title {
+      margin-bottom: 10px;
+    }
+
+    .content {
+      margin-left: 30px;
+    }
   }
 
   .wrap {

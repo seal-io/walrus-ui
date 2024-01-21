@@ -140,7 +140,7 @@
               :placeholder="$t('applications.applications.history.version')"
               :style="{ width: `${InputWidth.LARGE}px` }"
               :loading="asyncLoading"
-              @change="handleVersionChange"
+              @change="(val) => handleVersionChange(val)"
             >
               <a-option
                 v-for="item in templateVersionList"
@@ -473,15 +473,16 @@
   // cache the user inputs when change the module version
 
   const execVersionChangeCallback = async () => {
-    getFormDataAttributeCache();
     setTimeout(async () => {
       const moduleData = await getTemplateSchemaByVersion();
       setTemplateInfo(moduleData);
     });
   };
 
-  const handleVersionChange = () => {
-    formAction.value = PageAction.CREATE;
+  const handleVersionChange = (val?: string) => {
+    if (val) {
+      formAction.value = PageAction.EDIT;
+    }
     formData.value.template.id =
       _.find(
         templateVersionList.value,
@@ -506,12 +507,13 @@
   };
   // template change: exec version change
   const handleTemplateChange = async (val) => {
+    formAction.value = PageAction.CREATE;
     schemaFormCache.value = {};
+    formData.value.attributes = {};
+    uiFormData.value = {};
     if (dataType.value === ServiceDataType.resource) {
       const data = await getItemResourceDefinition();
       setTemplateInfo(data);
-      formData.value.attributes = {};
-      uiFormData.value = {};
     } else {
       const data = _.find(templateList.value, (item) => item.id === val);
       formData.value.template.name = data?.name || '';

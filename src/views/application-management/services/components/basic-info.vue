@@ -1,75 +1,99 @@
-<template>
-  <div class="basic-info">
-    <a-descriptions :data="dataInfo" :column="2" layout="inline-vertical">
-      <a-descriptions-item
-        v-for="(item, index) in dataInfo"
-        :key="index"
-        :label="item.label"
-        :span="item.span"
-      >
-        <slot name="value" :data="item">
-          <StatusLabel
-            v-if="item.key === 'status'"
-            :zoom="0.9"
-            :status="{
-              status: get(item, 'value.summaryStatus') || '',
-              text: get(item, 'value.summaryStatus'),
-              message: get(item, 'value.summaryStatusMessage') || '',
-              transitioning: get(item, 'value.transitioning'),
-              error: get(item, 'value.error')
-            }"
-          ></StatusLabel>
-          <labelsList
-            v-else-if="item.key === 'labels'"
-            :labels="item.value"
-          ></labelsList>
-          <div v-else class="val-content">{{ get(item, 'value') }}</div>
-        </slot>
-      </a-descriptions-item>
-    </a-descriptions>
-    <div v-if="actions.length" class="dropdown">
-      <DropButtonGroup
-        :actions="actions"
-        @click="handleClick"
-        @select="handleSelect"
-      ></DropButtonGroup>
-    </div>
-  </div>
-</template>
-
-<script lang="ts" setup>
-  import { PropType } from 'vue';
+<script lang="tsx">
+  import { PropType, defineComponent } from 'vue';
   import DropButtonGroup from '@/components/drop-button-group/index.vue';
   import ADescriptionsItem from '@arco-design/web-vue/es/descriptions/descriptions-item';
   import StatusLabel from '@/views/operation-hub/connectors/components/status-label.vue';
-  import { get } from 'lodash';
+  import _, { get } from 'lodash';
   import { MoreAction } from '@/views/config/interface';
-  import labelsList from './labels-list.vue';
+  import LabelsList from './labels-list.vue';
 
-  const props = defineProps({
-    dataInfo: {
-      type: Array as PropType<
-        { label: string; value: any; key: string; span?: number }[]
-      >,
-      default() {
-        return [];
+  export default defineComponent({
+    emits: ['groupSelect', 'groupClick'],
+    props: {
+      dataInfo: {
+        type: Array as PropType<
+          { label: string; value: any; key: string; span?: number }[]
+        >,
+        default() {
+          return [];
+        }
+      },
+      cols: {
+        type: Number,
+        default: 2
+      },
+      actions: {
+        type: Array as PropType<MoreAction[]>,
+        default() {
+          return [];
+        }
       }
     },
-    actions: {
-      type: Array as PropType<MoreAction[]>,
-      default() {
-        return [];
-      }
+    setup(props, { slots, emit }) {
+      const handleSelect = (val) => {
+        emit('groupSelect', val);
+      };
+      const handleClick = (data) => {
+        emit('groupClick', data);
+      };
+      const renderValue = (item) => {
+        if (item.key === 'status') {
+          return (
+            <>
+              <StatusLabel
+                zoom={0.9}
+                status={{
+                  status: get(item, 'value.summaryStatus') || '',
+                  text: get(item, 'value.summaryStatus'),
+                  message: get(item, 'value.summaryStatusMessage') || '',
+                  transitioning: get(item, 'value.transitioning'),
+                  error: get(item, 'value.error')
+                }}
+              ></StatusLabel>
+            </>
+          );
+        }
+        if (item.key === 'labels') {
+          return (
+            <>
+              <LabelsList labels={item.value}></LabelsList>
+            </>
+          );
+        }
+        return <div class="val-content">{get(item, 'value')}</div>;
+      };
+      return () => (
+        <div class="basic-info">
+          <a-descriptions
+            data={props.dataInfo}
+            column={props.cols}
+            layout="inline-vertical"
+          >
+            {_.map(props.dataInfo, (item, index) => {
+              return (
+                <ADescriptionsItem
+                  key={index}
+                  label={item.label}
+                  span={item.span}
+                >
+                  {slots.value ? slots.value(item) : renderValue(item)}
+                </ADescriptionsItem>
+              );
+            })}
+          </a-descriptions>
+          {props.actions.length ? (
+            <div class="dropdown">
+              <DropButtonGroup
+                actions={props.actions}
+                onClick={(val) => handleClick(val)}
+                onSelect={(val) => handleSelect(val)}
+              ></DropButtonGroup>
+            </div>
+          ) : null}
+        </div>
+      );
     }
   });
-
-  const emits = defineEmits(['groupSelect', 'groupClick']);
-  const handleSelect = (val) => {
-    emits('groupSelect', val);
-  };
-  const handleClick = (data) => {
-    emits('groupClick', data);
-  };
 </script>
 
 <style lang="less" scoped>

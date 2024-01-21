@@ -198,6 +198,12 @@
         _.get(props.uiFormData, props.fieldPath, []).splice(index, 1);
         _.get(props.formData, props.fieldPath, []).splice(index, 1);
         handleDeleteCallback();
+        console.log(
+          'handleDeleteClick===',
+          props.uiFormData,
+          props.formData,
+          props.defaultFormData
+        );
       };
 
       const handleButtonEnter = (index) => {

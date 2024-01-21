@@ -309,14 +309,32 @@
                 </a-popconfirm>
               </template>
             </GroupButtonMenu>
-            <a-button
+            <a-popconfirm
               v-else
-              :type="'primary'"
-              class="cap-title"
-              :loading="submitLoading"
-              @click="handleOkCallback"
-              >{{ $t('common.button.saveDeploy') }}</a-button
+              position="tr"
+              trigger="hover"
+              content-class="deploy-comment-popup"
             >
+              <template #icon>
+                <span></span>
+              </template>
+              <template #content>
+                <seal-textarea
+                  v-model="formData.changeComment"
+                  :label="$t('common.table.mark')"
+                  allow-clear
+                  style="width: 300px"
+                  :auto-size="{ minRows: 2, maxRows: 4 }"
+                ></seal-textarea>
+              </template>
+              <a-button
+                :type="'primary'"
+                class="cap-title"
+                :loading="submitLoading"
+                @click="handleOkCallback"
+                >{{ $t('common.button.saveDeploy') }}</a-button
+              >
+            </a-popconfirm>
           </div>
         </template>
         <template #cancel>
@@ -539,7 +557,7 @@
           copyFormData.template?.template?.id &&
         id
       ) {
-        formData.value.attributes = _.cloneDeep(copyFormData.attributes);
+        formData.value.attributes = _.cloneDeep(copyFormData.attributes || {});
         formAction.value = PageAction.EDIT;
       } else if (
         _.get(schemaFormCache.value, [formData.value.template?.version])
@@ -564,7 +582,6 @@
   };
 
   const execVersionChangeCallback = async () => {
-    getFormDataAttributeCache();
     setTimeout(async () => {
       const moduleData = await getTemplateSchemaByVersion();
       setTemplateInfo(moduleData);
@@ -597,6 +614,9 @@
 
   const handleVersionChange = () => {
     formAction.value = PageAction.CREATE;
+    if (id) {
+      formAction.value = PageAction.EDIT;
+    }
     formData.value.template.id =
       _.find(
         templateVersionList.value,
@@ -615,12 +635,11 @@
   // template change: exec version change
   const handleTemplateChange = async (val) => {
     schemaFormCache.value = {};
-
+    formData.value.attributes = {};
+    uiFormData.value = {};
     if (dataType.value === ServiceDataType.resource) {
       const data = await getItemResourceDefinition();
       setTemplateInfo(data);
-      formData.value.attributes = {};
-      uiFormData.value = {};
     } else {
       const data = _.find(templateList.value, (item) => item.id === val);
       formData.value.template.name = data?.name || '';
@@ -799,6 +818,12 @@
     copyFormData = _.cloneDeep(formData.value);
     if (id) {
       setFormDataAttributeCache();
+      console.log(
+        'dataType=====',
+        dataType.value,
+        schemaFormCache.value,
+        copyFormData
+      );
     }
     labelsData.value.labels = _.cloneDeep(formData.value.labels);
   };

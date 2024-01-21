@@ -61,7 +61,7 @@
       :mask-closable="false"
       :body-style="{ 'max-height': '500px', 'overflow': 'auto' }"
       modal-class="project-modal"
-      :title="$t('applications.applications.edit')"
+      :title="$t('applications.applications.clone')"
     >
       <div v-if="active" v-show="show">
         <GroupTitle
