@@ -38,6 +38,12 @@
         default() {
           return false;
         }
+      },
+      headerStyle: {
+        type: Object,
+        default() {
+          return {};
+        }
       }
     },
     setup(props, { attrs, slots }) {
@@ -46,6 +52,7 @@
           <a-card
             title={props.title}
             {...attrs}
+            headerStyle={{ ...props.headerStyle }}
             body-style={{ padding: props.padding, ...props.bodyStyle }}
             bordered={props.bordered}
             v-slots={{
