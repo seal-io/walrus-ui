@@ -56,11 +56,12 @@
                   <ComCard
                     :title="$t('applications.applications.table.latestRun')"
                     padding="0 20px 20px"
+                    :header-style="{ padding: '20px', height: 'auto' }"
                     bordered
                     style="height: 100%; border-radius: 16px"
                   >
                     <template #title>
-                      <div class="flex flex-justify-between">
+                      <div class="flex flex-justify-between flex-align-center">
                         <span>{{
                           $t('applications.applications.table.latestRun')
                         }}</span>
@@ -90,6 +91,7 @@
                   <ComCard
                     :title="$t('applications.instance.tab.resource')"
                     padding="0 20px 20px"
+                    :header-style="{ padding: '20px', height: 'auto' }"
                     bordered
                     style="height: 100%; border-radius: 16px"
                   >
@@ -103,6 +105,7 @@
                   <ComCard
                     :title="$t('applications.applications.instance.accessUrl')"
                     padding="0 20px 20px"
+                    :header-style="{ padding: '20px', height: 'auto' }"
                     bordered
                     style="height: 100%; border-radius: 16px"
                   >
@@ -115,6 +118,7 @@
                   <ComCard
                     :title="$t('applications.instance.tab.output')"
                     padding="0 20px 20px"
+                    :header-style="{ padding: '20px', height: 'auto' }"
                     bordered
                     style="height: 100%; border-radius: 16px"
                   >
