@@ -46,6 +46,84 @@
             @change="setPageTabActive"
           >
             <a-tab-pane
+              :key="ResourceDetailTabs.OVERVIEW"
+              :title="$t('applications.applications.table.overview')"
+            >
+              <a-grid :cols="24" :col-gap="20" :row-gap="20">
+                <a-grid-item
+                  :span="{ xxl: 24, xl: 24, lg: 24, md: 24, sm: 24, xs: 24 }"
+                >
+                  <ComCard
+                    :title="$t('applications.applications.table.latestRun')"
+                    padding="0 20px 20px"
+                    bordered
+                    style="height: 100%; border-radius: 16px"
+                  >
+                    <template #title>
+                      <div class="flex flex-justify-between">
+                        <span>{{
+                          $t('applications.applications.table.latestRun')
+                        }}</span>
+                        <a-link
+                          type="text"
+                          size="small"
+                          @click="
+                            () => {
+                              latestRunRef?.viewLogs?.();
+                            }
+                          "
+                        >
+                          <icon-font type="icon-rizhi" class="size-16 m-r-5" />
+                          {{ $t('common.button.logs') }}</a-link
+                        >
+                      </div>
+                    </template>
+                    <LatestRun
+                      ref="latestRunRef"
+                      :service-info="currentInfo"
+                    ></LatestRun>
+                  </ComCard>
+                </a-grid-item>
+                <a-grid-item
+                  :span="{ xxl: 24, xl: 24, lg: 24, md: 24, sm: 24, xs: 24 }"
+                >
+                  <ComCard
+                    :title="$t('applications.instance.tab.resource')"
+                    padding="0 20px 20px"
+                    bordered
+                    style="height: 100%; border-radius: 16px"
+                  >
+                    <tabResource :resource-list="dataList"></tabResource>
+                  </ComCard>
+                </a-grid-item>
+
+                <a-grid-item
+                  :span="{ xxl: 12, xl: 12, lg: 24, md: 24, sm: 24, xs: 24 }"
+                >
+                  <ComCard
+                    :title="$t('applications.applications.instance.accessUrl')"
+                    padding="0 20px 20px"
+                    bordered
+                    style="height: 100%; border-radius: 16px"
+                  >
+                    <tabEndpoint ref="tabEndpointCom"></tabEndpoint>
+                  </ComCard>
+                </a-grid-item>
+                <a-grid-item
+                  :span="{ xxl: 12, xl: 12, lg: 24, md: 24, sm: 24, xs: 24 }"
+                >
+                  <ComCard
+                    :title="$t('applications.instance.tab.output')"
+                    padding="0 20px 20px"
+                    bordered
+                    style="height: 100%; border-radius: 16px"
+                  >
+                    <tabOutput></tabOutput>
+                  </ComCard>
+                </a-grid-item>
+              </a-grid>
+            </a-tab-pane>
+            <!-- <a-tab-pane
               v-for="item in instanceTabList"
               :key="item.value"
               :title="$t(item.label)"
@@ -55,13 +133,14 @@
                 :resource-list="dataList"
                 :is-loading="loading"
               ></Component>
-            </a-tab-pane>
-            <a-tab-pane
+            </a-tab-pane> -->
+
+            <!-- <a-tab-pane
               :key="ResourceDetailTabs.ENDPOINTS"
               :title="$t('applications.applications.instance.accessUrl')"
             >
               <tabEndpoint ref="tabEndpointCom"></tabEndpoint>
-            </a-tab-pane>
+            </a-tab-pane> -->
             <a-tab-pane
               :key="ResourceDetailTabs.REVISIONS"
               :title="$t('applications.applications.instance.history')"
@@ -102,6 +181,11 @@
       :title="$t('common.delete.tips')"
     >
     </deleteServiceModal>
+    <CommentModal
+      v-model:show="showCommentModal"
+      :title="$t('applications.service.batchDeploy')"
+      @confirm="handleComfirmComment"
+    ></CommentModal>
   </div>
 </template>
 
@@ -115,6 +199,7 @@
     ResourceDetailTabs
   } from '@/views/config';
   import { execSucceed, deleteModal } from '@/utils/monitor';
+  import CommentModal from '@/views/commons/components/comment-modal/index.vue';
   import {
     markRaw,
     ref,
@@ -156,10 +241,12 @@
     SERVICE_API,
     SERVICE_API_PREFIX,
     stopApplicationInstance,
-    startApplicationInstance
+    startApplicationInstance,
+    deployItemService
   } from '../../api';
   import serviceInfo from '../service-info.vue';
   import serviceEdit from '../../pages/edit.vue';
+  import LatestRun from './latest-run.vue';
 
   const props = defineProps({
     serviceList: {
@@ -171,6 +258,8 @@
   });
   // 1: create 2: update 3: delete
   const actionMap = new Map();
+  const latestRunRef = ref();
+  const showCommentModal = ref(false);
   const showDeleteModal = ref(false);
   const pageAction = ref(PageAction.VIEW);
   const { setChunkRequest } = useSetChunkRequest();
@@ -179,7 +268,7 @@
   const { router, route, t } = useCallCommon();
   const { loading, fetchData, createResourceChunkRequest, dataList } =
     useFetchResource();
-  const projectID = route.params.projectId || '';
+  const projectID = route.params.projectId as string;
   const serviceID = route.query.id || '';
   const isCollapsed = ref(false);
   const currentInfo = ref<ServiceRowData>({} as ServiceRowData);
@@ -193,7 +282,7 @@
 
   const { activeKey, setPageTabActive } = useTabActive(
     TabPage.RESOURCEDETAILTAB,
-    ResourceDetailTabs.COMPONENTS
+    ResourceDetailTabs.OVERVIEW
   );
 
   provide(ProvideServiceInfoKey, currentInfo);
@@ -220,8 +309,26 @@
     console.log('res');
     return res;
   });
+
+  const handleComfirmComment = async (comment: string) => {
+    try {
+      const params = {
+        items: [{ id: currentInfo.value.id }],
+        serviceID: currentInfo.value.id,
+        environmentID: route.params.environmentId as string,
+        projectID,
+        changeComment: comment,
+        reuseAttributes: true
+      };
+      await deployItemService(params);
+      execSucceed();
+    } catch (error) {
+      // ignore
+    }
+  };
   const handleUpgrade = () => {
-    pageAction.value = PageAction.EDIT;
+    // pageAction.value = PageAction.EDIT;
+    showCommentModal.value = true;
   };
 
   const handleDeleteConfirm = async (withoutCleanup) => {
@@ -274,7 +381,8 @@
     actionMap.set(serviceActionMap.delete, handleDelete);
     actionMap.set(serviceActionMap.start, handleStartResource);
     actionMap.set(serviceActionMap.stop, handleStopModal);
-    actionMap.set(serviceActionMap.upgrade, handleUpgrade);
+    actionMap.set(serviceActionMap.deploy, handleUpgrade);
+    // actionMap.set(serviceActionMap.upgrade, handleUpgrade);
   };
 
   const setInstanceTabList = () => {
@@ -317,7 +425,7 @@
     pageAction.value = PageAction.VIEW;
 
     await getServiceItemInfo();
-    setPageTabActive(ResourceDetailTabs.COMPONENTS);
+    setPageTabActive(ResourceDetailTabs.OVERVIEW);
   };
 
   const updateServiceState = (data) => {
@@ -384,7 +492,6 @@
   };
 
   onMounted(() => {
-    setInstanceTabList();
     setActionMap();
 
     // chunk request

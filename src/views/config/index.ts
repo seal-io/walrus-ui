@@ -117,6 +117,7 @@ export const EnvironmentTabs = {
 };
 
 export const ResourceDetailTabs = {
+  OVERVIEW: 'overview',
   COMPONENTS: 'components',
   OUTPUTS: 'outputs',
   ENDPOINTS: 'endpoints',

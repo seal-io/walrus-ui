@@ -205,7 +205,7 @@
             >
               <template #cell="{ record }">
                 <span>{{
-                  dayjs(record.createTime).locale(locale).fromNow()
+                  dayjs(record.createTime).format('YYYY-MM-DD HH:mm:ss')
                 }}</span>
               </template>
             </a-table-column>
@@ -262,12 +262,17 @@
 
 <script lang="ts" setup>
   import i18n from '@/locale';
+  import {
+    useSetChunkRequest,
+    createAxiosToken
+  } from '@/api/axios-chunk-request';
+  import { useUpdateChunkedList } from '@/views/commons/hooks/use-update-chunked-list';
   import { PROJECT } from '@/router/config';
   import CommentModal from '@/views/commons/components/comment-modal/index.vue';
   import StatusLabel from '@/views/operation-hub/connectors/components/status-label.vue';
   import { Resources, Actions } from '@/permissions/config';
   import _, { cloneDeep, map, pickBy, remove } from 'lodash';
-  import { ref, reactive, PropType, computed } from 'vue';
+  import { ref, reactive, PropType, computed, nextTick, onMounted } from 'vue';
   import dayjs from 'dayjs';
   import { useUserStore, useProjectStore, useAppStore } from '@/store';
   import DropButtonGroup from '@/components/drop-button-group/index.vue';
@@ -291,7 +296,8 @@
     queryItemDefinitionResources,
     batchDeployDefinitionResources,
     batchDeleteDefinitionResource,
-    batchDeployService
+    batchDeployService,
+    RESOURCE_DEFINITION_API
   } from '../api';
 
   const props = defineProps({
@@ -309,6 +315,7 @@
     }
   });
 
+  const { setChunkRequest } = useSetChunkRequest();
   let timer: any = null;
   const currentResource = ref<any>({});
   const isBatchDelete = ref(false);
@@ -327,6 +334,7 @@
       defaultOrder: 'descend'
     }
   );
+
   const showDeleteModal = ref(false);
   const loading = ref(false);
   const dataList = ref<any[]>([]);
@@ -338,6 +346,8 @@
     page: 1,
     perPage: appStore.perPage || 10
   });
+
+  const { updateChunkedList } = useUpdateChunkedList(dataList);
 
   const locale = computed(() => {
     switch (i18n.global.locale) {
@@ -600,10 +610,40 @@
     actionHandlerMap.set(serviceActionMap.deploy, handleDeployItemService);
     actionHandlerMap.set(serviceActionMap.delete, handleDelete);
   };
+
+  const updateHandler = (list) => {
+    _.each(list, (data) => {
+      updateChunkedList(data);
+    });
+    if (!dataList.value.length) {
+      queryParams.page = 1;
+      handleFilter();
+    }
+  };
+  const createResourcesChunkRequest = () => {
+    try {
+      if (!route.query.id) return;
+      setChunkRequest({
+        url: `${RESOURCE_DEFINITION_API}/${route.query.id}/resources`,
+        params: {
+          ..._.pickBy(_.omit(queryParams, ['page', 'perPage']), (val) => !!val)
+        },
+        handler: updateHandler,
+        beforeReconnect: fetchData
+      });
+    } catch (error) {
+      // ignore
+    }
+  };
   const init = () => {
     fetchData();
     setActionHandler();
   };
+  onMounted(() => {
+    nextTick(() => {
+      // createResourcesChunkRequest();
+    });
+  });
   init();
 </script>
 

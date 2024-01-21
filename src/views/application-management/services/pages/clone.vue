@@ -78,7 +78,7 @@
             <cloneService
               ref="resourceRef"
               v-model:hint-data="completeData"
-              :title="$t('applications.applications.table.resource')"
+              :title="$t('menu.applicationManagement.resource')"
               clone-type="service"
               :show-check="false"
               :data-list="resourceList"

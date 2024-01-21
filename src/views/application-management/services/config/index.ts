@@ -106,6 +106,44 @@ export const serviceBasicInfo = [
   }
 ];
 
+export const latestRunConfig = [
+  {
+    label: 'dashboard.table.status',
+    key: 'status',
+    value: '',
+    span: 1
+  },
+  {
+    label: 'common.table.createdBy',
+    key: 'createdBy',
+    value: '',
+    span: 1
+  },
+  {
+    label: 'applications.applications.history.deploymentTime',
+    key: 'createTime',
+    value: '',
+    formatter(val) {
+      return dayjs(val).format('YYYY-MM-DD HH:mm:ss');
+    },
+    span: 1
+  },
+  {
+    label: 'dashboard.table.duration',
+    key: 'duration',
+    value: '',
+    formatter(val) {
+      return setDurationValue(val);
+    },
+    span: 1
+  },
+  {
+    label: 'common.table.mark',
+    key: 'changeComment',
+    value: '',
+    span: 2
+  }
+];
 export const revisionDetailConfig = [
   {
     label: 'applications.applications.history.deploymentTime',
@@ -235,8 +273,8 @@ export const serviceBatchAction: MoreAction[] = [
   {
     label: 'common.button.deploy',
     value: serviceActionMap.deploy,
-    icon: 'icon-send',
-    iconfont: false,
+    icon: 'icon-sendfasong',
+    iconfont: true,
     handler: '',
     status: 'normal',
     disabled: false,
@@ -342,31 +380,31 @@ export const serviceActions: MoreAction[] = [
       });
     }
   },
-  // {
-  //   label: 'common.button.deploy',
-  //   value: serviceActionMap.deploy,
-  //   icon: 'icon-send',
-  //   iconfont: false,
-  //   handler: '',
-  //   status: 'normal',
-  //   disabled(currentInfo: any): boolean {
-  //     if (
-  //       get(currentInfo, 'status.transitioning') &&
-  //       get(currentInfo, 'status.summaryStatus') !== ServiceStatus.Preparing
-  //     ) {
-  //       return true;
-  //     }
-  //     return false;
-  //   },
-  //   filterFun(currentInfo) {
-  //     return userStore.hasProjectResourceActions({
-  //       resource: Resources.Resources,
-  //       environmentID: get(currentInfo, 'environment.id'),
-  //       projectID: get(currentInfo, 'project.id'),
-  //       actions: [Actions.POST]
-  //     });
-  //   }
-  // },
+  {
+    label: 'common.button.deploy',
+    value: serviceActionMap.deploy,
+    icon: 'icon-sendfasong',
+    iconfont: true,
+    handler: '',
+    status: 'normal',
+    disabled(currentInfo: any): boolean {
+      if (
+        get(currentInfo, 'status.transitioning') &&
+        get(currentInfo, 'status.summaryStatus') !== ServiceStatus.Preparing
+      ) {
+        return true;
+      }
+      return false;
+    },
+    filterFun(currentInfo) {
+      return userStore.hasProjectResourceActions({
+        resource: Resources.Resources,
+        environmentID: get(currentInfo, 'environment.id'),
+        projectID: get(currentInfo, 'project.id'),
+        actions: [Actions.POST]
+      });
+    }
+  },
   {
     label: 'common.button.stop',
     value: serviceActionMap.stop,
@@ -459,8 +497,8 @@ export const definitionResourceActions: MoreAction[] = [
   {
     label: 'common.button.deploy',
     value: serviceActionMap.deploy,
-    icon: 'icon-send',
-    iconfont: false,
+    icon: 'icon-sendfasong',
+    iconfont: true,
     handler: '',
     status: 'normal',
     disabled(currentInfo: any): boolean {

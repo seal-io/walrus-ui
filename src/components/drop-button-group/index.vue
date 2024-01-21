@@ -138,6 +138,7 @@
                   >
                     <a-link
                       class="mright-0"
+                      style={{ lineHeight: 1 }}
                       hoverable={false}
                       loading={loading.value}
                       size="small"

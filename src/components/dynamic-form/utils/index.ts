@@ -308,7 +308,7 @@ export const viewFieldValue = ({
     _.set(uiFormData, fieldPath, _.cloneDeep(originValue || defaultValue));
   }
 
-  if (!_.has(uiFormData, fieldPath) && !_.has(defaultFormData, fieldPath)) {
+  if (!_.has(defaultFormData, fieldPath)) {
     if (!hidden || !isEmptyValueField(schema, originValue || defaultValue)) {
       _.set(
         defaultFormData,

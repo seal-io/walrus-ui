@@ -562,7 +562,6 @@
   const validateTrigger = ref(false);
   const templateVersionList = ref<any[]>([]);
   const id = route.query.id as string;
-  let envToken = createAxiosToken();
   const environmentList = ref<any[]>([]);
   const uiSchema = ref<any>({});
   const environmentLabels = ref<any>({
@@ -680,31 +679,7 @@
       formData.value.selector.environmentNames = [];
     }
   };
-  const getEnvironmentList = async () => {
-    if (!formData.value.selector?.projectNames) {
-      return;
-    }
-    envToken?.cancel?.();
-    envToken = createAxiosToken();
-    try {
-      envLoading.value = true;
-      const params = {
-        projectID: formData.value.selector.projectNames,
-        page: -1
-      };
-      const { data } = await queryEnvironmentsList(params, envToken.token);
-      environmentList.value = _.map(data.items || [], (item) => ({
-        label: item.name,
-        value: item.name,
-        id: item.id,
-        name: item.name
-      }));
-      envLoading.value = false;
-    } catch (error) {
-      environmentList.value = [];
-      envLoading.value = false;
-    }
-  };
+
   const getTemplateVersions = async () => {
     try {
       const params = {

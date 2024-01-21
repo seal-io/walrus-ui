@@ -1,64 +1,71 @@
-<template>
-  <div class="com-card" :class="{ 'top-gap': topGap }">
-    <a-card
-      :title="title"
-      v-bind="attrs"
-      :body-style="{ padding: padding, ...bodyStyle }"
-      :bordered="bordered"
-    >
-      <template v-if="title" #title>
-        <slot name="title">{{ title }}</slot>
-      </template>
-      <div :style="contentStyle" class="spin-card-content">
-        <slot></slot>
-      </div>
-    </a-card>
-  </div>
-</template>
+<script lang="tsx">
+  import { defineComponent } from 'vue';
 
-<script lang="ts" setup>
-  import { useAttrs } from 'vue';
-
-  defineProps({
-    padding: {
-      type: String,
-      default() {
-        return '20px var(--card-content-padding) 20px';
+  export default defineComponent({
+    props: {
+      padding: {
+        type: String,
+        default() {
+          return '20px var(--card-content-padding) 20px';
+        }
+      },
+      title: {
+        type: String,
+        default() {
+          return '';
+        }
+      },
+      bordered: {
+        type: Boolean,
+        default() {
+          return false;
+        }
+      },
+      bodyStyle: {
+        type: Object,
+        default() {
+          return {};
+        }
+      },
+      contentStyle: {
+        type: Object,
+        default() {
+          return {};
+        }
+      },
+      topGap: {
+        type: Boolean,
+        default() {
+          return false;
+        }
       }
     },
-    title: {
-      type: String,
-      default() {
-        return '';
-      }
-    },
-    bordered: {
-      type: Boolean,
-      default() {
-        return false;
-      }
-    },
-    bodyStyle: {
-      type: Object,
-      default() {
-        return {};
-      }
-    },
-    contentStyle: {
-      type: Object,
-      default() {
-        return {};
-      }
-    },
-    topGap: {
-      type: Boolean,
-      default() {
-        return false;
-      }
+    setup(props, { attrs, slots }) {
+      return () => (
+        <div class={['com-card', { 'top-gap': props.topGap }]}>
+          <a-card
+            title={props.title}
+            {...attrs}
+            body-style={{ padding: props.padding, ...props.bodyStyle }}
+            bordered={props.bordered}
+            v-slots={{
+              title: !props.title
+                ? null
+                : () => {
+                    return (
+                      <>{slots.title ? slots.title() : props.title ?? null}</>
+                    );
+                  }
+            }}
+          >
+            <div style={props.contentStyle} class="spin-card-content">
+              {slots.default?.()}
+            </div>
+          </a-card>
+        </div>
+      );
     }
   });
-
-  const attrs = useAttrs();
 </script>
 
 <style lang="less" scoped>
