@@ -254,9 +254,9 @@ export const serviceActionMap = {
 
 export const serviceBatchAction: MoreAction[] = [
   {
-    label: 'common.button.clone',
-    value: serviceActionMap.clone,
-    icon: 'icon-Clone-Cloud',
+    label: 'common.button.deploy',
+    value: serviceActionMap.deploy,
+    icon: 'icon-sendfasong',
     iconfont: true,
     handler: '',
     status: 'normal',
@@ -271,9 +271,9 @@ export const serviceBatchAction: MoreAction[] = [
     }
   },
   {
-    label: 'common.button.deploy',
-    value: serviceActionMap.deploy,
-    icon: 'icon-sendfasong',
+    label: 'common.button.clone',
+    value: serviceActionMap.clone,
+    icon: 'icon-Clone-Cloud',
     iconfont: true,
     handler: '',
     status: 'normal',

@@ -198,11 +198,6 @@
     () => {
       if (props.initialStatus?.summaryStatus === RevisionStatus.Running) {
         revisionData.value = cloneDeep(props.dataInfo);
-        console.log(
-          'revisionData.value',
-          revisionData.value,
-          props.initialStatus
-        );
       } else {
         fetchData();
       }

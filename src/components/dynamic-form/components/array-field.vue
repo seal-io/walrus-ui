@@ -147,11 +147,20 @@
         setPropertiesList();
         const defaultValue = initFieldDefaultValue(props.schema);
         const originValue = _.get(props.defaultFormData, props.fieldPath);
+        const len = propertiesList.value.length;
 
         _.set(props.uiFormData, props.fieldPath, [
           ..._.cloneDeep(_.get(props.uiFormData, props.fieldPath, [])),
           ..._.cloneDeep(originValue || defaultValue)
         ]);
+        _.each(itemsProperties, (schema) => {
+          const itemDefaultValue = initFieldDefaultValue(schema);
+          _.set(
+            props.uiFormData,
+            [...props.fieldPath, `${len - 1}`, schema.name].filter((i) => i),
+            _.cloneDeep(itemDefaultValue)
+          );
+        });
       };
       const handleAddClickCall = () => {
         setPropertiesList();
@@ -197,13 +206,8 @@
 
         _.get(props.uiFormData, props.fieldPath, []).splice(index, 1);
         _.get(props.formData, props.fieldPath, []).splice(index, 1);
+        _.get(props.defaultFormData, props.fieldPath, []).splice(index, 1);
         handleDeleteCallback();
-        console.log(
-          'handleDeleteClick===',
-          props.uiFormData,
-          props.formData,
-          props.defaultFormData
-        );
       };
 
       const handleButtonEnter = (index) => {
@@ -331,7 +335,10 @@
                           <SchemaField
                             level={sItem.level}
                             schema={sItem}
-                            key={`${index}-${sIndex}`}
+                            key={_.join(
+                              [...props.fieldPath, `${index}`, sItem.name],
+                              '.'
+                            )}
                             formData={props.formData}
                             uiFormData={props.uiFormData}
                             defaultFormData={props.defaultFormData}
@@ -402,7 +409,7 @@
           left: -20px;
           display: block;
           padding-bottom: 0;
-          background-color: var(--color-fill-2);
+          background-color: var(--color-fill-1);
           border-radius: var(--border-radius-small);
           transition: background-color 0.3s var(--seal-transition-func);
           content: '';

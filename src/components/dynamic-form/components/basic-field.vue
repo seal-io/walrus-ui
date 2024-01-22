@@ -96,11 +96,10 @@
 
       // do not handle nullable peroperty
       const handleInputChange = (val) => {
+        _.set(props.formData, props.fieldPath, val);
+        _.set(props.uiFormData, props.fieldPath, val);
         if (!props.required && isEmptyvalue(val) && val !== 0) {
           _.unset(props.formData, props.fieldPath);
-        } else {
-          _.set(props.formData, props.fieldPath, val);
-          _.set(props.uiFormData, props.fieldPath, val);
         }
         handleChange(props.formData);
       };
@@ -159,6 +158,7 @@
               editorId={_.join(props.fieldPath, '.')}
               label={props.label}
               style="width: 100%"
+              key={_.join(props.fieldPath, '.')}
               allow-search={false}
               v-slots={{
                 ...renderAppend()
@@ -193,10 +193,8 @@
                 validateField();
               }}
               onChange={(val) => {
-                if (isNumber(props.schema)) {
-                  handleInputChange(val);
-                  validateField();
-                }
+                handleInputChange(val);
+                validateField();
               }}
             ></Component>
           </a-form-item>
