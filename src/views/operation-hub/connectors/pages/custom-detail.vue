@@ -148,7 +148,7 @@
             <a-space
               v-if="attributeList?.length && pageAction === PageAction.EDIT"
               fill
-              style="display: flex; flex-direction: column; width: 680px"
+              style="display: flex; flex-direction: column; width: 780px"
               direction="vertical"
             >
               <xInputGroup
@@ -323,7 +323,7 @@
   };
   const labelOption = {
     style: {
-      key: setPropertyStyle({ 'flex-basis': '180px' }),
+      key: setPropertyStyle({ 'flex-basis': '280px' }),
       description: setPropertyStyle({ 'flex-basis': '110px' }),
       value: setPropertyStyle({ 'flex-basis': '320px' })
     }

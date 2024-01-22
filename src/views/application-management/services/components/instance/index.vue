@@ -163,6 +163,7 @@
                     actions: [Actions.PUT]
                   })
                 "
+                :key="settingKey"
                 pg-type="com"
                 @save="handleEditSucceed"
                 @cancel="handleEditCancel"
@@ -260,6 +261,7 @@
     }
   });
   // 1: create 2: update 3: delete
+  const settingKey = ref(Date.now());
   const actionMap = new Map();
   const latestRunRef = ref();
   const showCommentModal = ref(false);
@@ -415,6 +417,7 @@
 
   const handleEditCancel = () => {
     // pageAction.value = PageAction.VIEW;
+    setPageTabActive(ResourceDetailTabs.OVERVIEW);
   };
   const handleEditSucceed = async () => {
     router.replace({
@@ -428,6 +431,7 @@
     pageAction.value = PageAction.VIEW;
 
     await getServiceItemInfo();
+    settingKey.value = Date.now();
     setPageTabActive(ResourceDetailTabs.OVERVIEW);
   };
 
