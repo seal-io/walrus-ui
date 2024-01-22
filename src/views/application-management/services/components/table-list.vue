@@ -709,14 +709,7 @@
       }
       return;
     }
-    const openRevisionData = _.find(
-      collections,
-      (item) => item.id === get(revisionData.value, 'id')
-    );
-    if (openRevisionData) {
-      revisionData.value = openRevisionData;
-      initialStatus.value = openRevisionData.status;
-    }
+
     // UPDATE
     _.each(collections, (item) => {
       const updateIndex = _.findIndex(

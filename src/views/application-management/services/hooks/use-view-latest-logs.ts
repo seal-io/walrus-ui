@@ -26,6 +26,7 @@ export default function useViewLatestLogs(defaultShow?: boolean) {
     );
     if (openRevisionData) {
       revisionData.value = openRevisionData;
+      initialStatus.value = _.get(revisionData.value, 'status') || {};
     }
   };
   const updateHandler = (list) => {
