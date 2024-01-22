@@ -13,13 +13,16 @@
   import { FieldSchema } from '../interface';
   import FieldGroup from './field-group.vue';
   import SchemaField from './schema-field.vue';
+  import FIELD_TYPE from '../config/field-type';
   import {
     genObjectFieldProperties,
     calcFieldSpan,
     isEmptyvalue,
     unsetFieldValue,
     genFieldInFormData,
-    initFieldDefaultValue
+    initFieldDefaultValue,
+    isSelect,
+    isEmptyValueField
   } from '../utils';
   import CommonButton from './common-button.vue';
 
@@ -145,21 +148,20 @@
       };
       const handleAddClick = () => {
         setPropertiesList();
-        const defaultValue = initFieldDefaultValue(props.schema);
-        const originValue = _.get(props.defaultFormData, props.fieldPath);
         const len = propertiesList.value.length;
 
-        _.set(props.uiFormData, props.fieldPath, [
-          ..._.cloneDeep(_.get(props.uiFormData, props.fieldPath, [])),
-          ..._.cloneDeep(originValue || defaultValue)
-        ]);
         _.each(itemsProperties, (schema) => {
           const itemDefaultValue = initFieldDefaultValue(schema);
-          _.set(
-            props.uiFormData,
-            [...props.fieldPath, `${len - 1}`, schema.name].filter((i) => i),
-            _.cloneDeep(itemDefaultValue)
-          );
+          if (
+            schema.isRequired ||
+            !isEmptyValueField(schema, itemDefaultValue)
+          ) {
+            _.set(
+              props.uiFormData,
+              [...props.fieldPath, `${len - 1}`, schema.name].filter((i) => i),
+              _.cloneDeep(itemDefaultValue)
+            );
+          }
         });
       };
       const handleAddClickCall = () => {
