@@ -74,8 +74,9 @@
 
       const initFieldValue = () => {
         if (
-          (fieldProps.required || _.isBoolean(props.schema.default)) &&
-          !props.schema.readOnly
+          fieldProps.required &&
+          !props.schema.readOnly &&
+          schemaFormStatus.value === PageAction.CREATE
         ) {
           _.set(props.formData, props.fieldPath, !!props.schema.default);
           _.set(props.uiFormData, props.fieldPath, !!props.schema.default);
