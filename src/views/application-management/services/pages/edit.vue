@@ -613,9 +613,12 @@
   };
 
   const handleVersionChange = () => {
-    formAction.value = PageAction.CREATE;
     if (id) {
       formAction.value = PageAction.EDIT;
+    } else {
+      formAction.value = PageAction.CREATE;
+      formData.value.attributes = {};
+      uiFormData.value = {};
     }
     formData.value.template.id =
       _.find(

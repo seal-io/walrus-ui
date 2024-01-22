@@ -66,7 +66,6 @@
                           $t('applications.applications.table.latestRun')
                         }}</span>
                         <a-link
-                          type="text"
                           size="small"
                           @click="
                             () => {

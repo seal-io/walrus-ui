@@ -480,8 +480,12 @@
   };
 
   const handleVersionChange = (val?: string) => {
-    if (val) {
+    if (val && props.action === PageAction.EDIT) {
       formAction.value = PageAction.EDIT;
+    } else {
+      schemaFormCache.value = {};
+      formData.value.attributes = {};
+      uiFormData.value = {};
     }
     formData.value.template.id =
       _.find(

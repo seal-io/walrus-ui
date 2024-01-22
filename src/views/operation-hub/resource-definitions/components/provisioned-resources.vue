@@ -486,6 +486,7 @@
         environmentID: currentResource.value.environment?.id,
         changeComment: comment
       });
+      execSucceed();
     } catch (error) {
       // eslint-disable-next-line no-console
       console.log(error);
@@ -503,11 +504,10 @@
           }),
           reuseAttributes: true
         });
+        execSucceed();
       } else {
         await handleDeployItemCall(val);
       }
-
-      execSucceed();
     } catch (error) {
       // eslint-disable-next-line no-console
       console.log(error);
