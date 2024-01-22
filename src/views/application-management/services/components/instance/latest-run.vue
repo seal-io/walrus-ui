@@ -15,7 +15,7 @@
 </template>
 
 <script lang="ts" setup>
-  import { onMounted, provide, PropType, watch, defineExpose } from 'vue';
+  import { onMounted, ref, provide, PropType, watch, defineExpose } from 'vue';
   import useBasicInfoData from '@/views/application-management/projects/hooks/use-basicInfo-data';
   import { latestRunConfig, ProvideServiceInfoKey } from '../../config';
   import BasicInfo from '../basic-info.vue';
@@ -38,7 +38,7 @@
   } = useViewLatestLogs(false);
 
   const basicDataList = useBasicInfoData(latestRunConfig, revisionData);
-  let runFlag = true;
+  const runFlag = ref(true);
 
   // logs
   provide(ProvideServiceInfoKey, currentServiceInfo);
@@ -50,20 +50,19 @@
     () => props.serviceInfo,
     (data) => {
       if (data.id && runFlag) {
-        runFlag = false;
         handleViewServiceLatestLogs(data);
+        console.log('data===========', data);
       }
     },
     {
-      immediate: true
+      immediate: true,
+      deep: true
     }
   );
   watch(
     () => showDetailModal.value,
     () => {
-      if (!showDetailModal.value) {
-        runFlag = true;
-      }
+      runFlag.value = !showDetailModal.value;
     },
     {
       immediate: true

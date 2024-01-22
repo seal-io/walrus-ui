@@ -91,7 +91,8 @@ export const TabPage = {
   SETTINGSTAB: 'settingsTab',
   USERTAB: 'userTab',
   PIPELINETAB: 'pipelineTab',
-  RESOURCEDETAILTAB: 'resourceDetailTab'
+  RESOURCEDETAILTAB: 'resourceDetailTab',
+  DEFINITIONDETAILTAB: 'definitionDetailTab'
 };
 
 export const ProjectTabs = {
@@ -123,6 +124,14 @@ export const ResourceDetailTabs = {
   ENDPOINTS: 'endpoints',
   REVISIONS: 'revisions',
   SETTINGS: 'settings'
+};
+
+export const DefinitionDetailTabs = {
+  RULES: 'rules',
+  INPUTS: 'inputs',
+  OUTPUTS: 'outputs',
+  UISCHEMA: 'uiSchema',
+  DEFINITIONRESOURCES: 'definitionResources'
 };
 
 export const CostTabs = {

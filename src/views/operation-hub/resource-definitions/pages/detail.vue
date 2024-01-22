@@ -196,10 +196,10 @@
           :active-key="activeKey"
           lazy-load
           class="page-line-tabs"
-          @change="handleTabChange"
+          @change="setPageTabActive"
         >
           <a-tab-pane
-            key="matchRules"
+            :key="DefinitionDetailTabs.RULES"
             :title="$t('resource.definition.detail.matchRule')"
           >
             <a-tabs
@@ -236,7 +236,7 @@
           </a-tab-pane>
           <a-tab-pane
             v-for="item in tabList"
-            :key="item.com"
+            :key="item.value"
             :title="$t(item.label)"
           >
             <template #title>
@@ -259,7 +259,7 @@
             ></component>
           </a-tab-pane>
           <a-tab-pane
-            key="provisionedResources"
+            :key="DefinitionDetailTabs.DEFINITIONRESOURCES"
             :title="$t('resource.definition.detail.createdResource')"
           >
             <ProvisionedResources
@@ -303,8 +303,10 @@
     InputWidth,
     InjectCompleteDataKey,
     HintKeyMaps,
-    QAlinkMap
+    QAlinkMap,
+    DefinitionDetailTabs
   } from '@/views/config';
+  import useTabActive, { TabPage } from '@/hooks/use-tab-active';
   import QuestionPopup from '@/components/question-popup/index.vue';
   import { HintKey } from '@/views/config/interface';
   import { useElementSize } from '@vueuse/core';
@@ -345,6 +347,10 @@
 
   const tabBarStore = useTabBarStore();
   const { pageAction, handleEdit } = usePageAction();
+  const { activeKey, setPageTabActive } = useTabActive(
+    TabPage.DEFINITIONDETAILTAB,
+    DefinitionDetailTabs.RULES
+  );
 
   const definitionRulePrefix = 'rule';
   const { router, route, t } = useCallCommon();
@@ -369,7 +375,7 @@
     type: '',
     matchingRules: []
   });
-  const activeKey = ref('matchRules');
+  // const activeKey = ref('matchRules');
 
   const tabMap = {
     tabInput: markRaw(tabInput),

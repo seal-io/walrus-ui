@@ -622,7 +622,7 @@
   };
   const initSelectors = () => {
     selectors.value = new Set();
-    if (formData.value.selector.projectNames) {
+    if (formData.value.selector.projectNames?.length) {
       selectors.value.add('projectNames');
     }
     if (formData.value.selector?.environmentNames?.length) {

@@ -1,6 +1,7 @@
 import { useUserStore } from '@/store';
 import { Resources, Actions } from '@/permissions/config';
 import _ from 'lodash';
+import { DefinitionDetailTabs } from '@/views/config';
 import { MoreAction } from '@/views/config/interface';
 
 const userStore = useUserStore();
@@ -21,12 +22,20 @@ export const SelectorAction = [
 ];
 
 export const tabList = [
-  { label: 'operation.templates.detail.inputs', value: '', com: 'tabInput' },
-  { label: 'operation.templates.detail.outputs', value: '', com: 'tabOutput' },
+  {
+    label: 'operation.templates.detail.inputs',
+    value: DefinitionDetailTabs.INPUTS,
+    com: 'tabInput'
+  },
+  {
+    label: 'operation.templates.detail.outputs',
+    value: DefinitionDetailTabs.OUTPUTS,
+    com: 'tabOutput'
+  },
   {
     label: 'operation.templates.detail.variableConfig',
     icon: '',
-    value: '',
+    value: DefinitionDetailTabs.UISCHEMA,
     com: 'tabEditSchema'
   }
 ];
