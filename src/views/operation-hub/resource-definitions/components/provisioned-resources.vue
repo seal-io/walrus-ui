@@ -438,6 +438,9 @@
       queryParams.page = 1;
       handleFilter();
     }, 100);
+    nextTick(() => {
+      createResourcesChunkRequest();
+    });
   };
   const handleSearchByQuery = () => {
     queryParams.page = 1;
@@ -453,6 +456,9 @@
     queryParams.projectName = '';
     queryParams.page = 1;
     handleFilter();
+    nextTick(() => {
+      createResourcesChunkRequest();
+    });
   };
   const handlePageChange = (page: number) => {
     queryParams.page = page;
@@ -502,7 +508,6 @@
       }
 
       execSucceed();
-      handleFilter();
     } catch (error) {
       // eslint-disable-next-line no-console
       console.log(error);
@@ -641,7 +646,7 @@
   };
   onMounted(() => {
     nextTick(() => {
-      // createResourcesChunkRequest();
+      createResourcesChunkRequest();
     });
   });
   init();
