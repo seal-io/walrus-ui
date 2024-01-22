@@ -495,7 +495,9 @@
     isFormChange.value = !_.isEqual(copyFormData, formData.value);
   };
   const handleRenderEnd = () => {
-    isFormChange.value = false;
+    setTimeout(() => {
+      isFormChange.value = false;
+    }, 100);
   };
   const getEnvironmentConnectors = async () => {
     try {

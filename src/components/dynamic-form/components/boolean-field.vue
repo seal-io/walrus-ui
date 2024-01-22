@@ -72,6 +72,17 @@
         });
       };
 
+      const initFieldValue = () => {
+        if (
+          (fieldProps.required || _.isBoolean(props.schema.default)) &&
+          !props.schema.readOnly
+        ) {
+          _.set(props.formData, props.fieldPath, !!props.schema.default);
+          _.set(props.uiFormData, props.fieldPath, !!props.schema.default);
+          handleChange(props.formData);
+        }
+      };
+
       const handleInputChangeCall = (val) => {
         _.set(props.formData, props.fieldPath, val);
         _.set(props.uiFormData, props.fieldPath, val);
@@ -161,6 +172,8 @@
           </a-form-item>
         );
       };
+
+      initFieldValue();
 
       return () => (
         <a-grid-item

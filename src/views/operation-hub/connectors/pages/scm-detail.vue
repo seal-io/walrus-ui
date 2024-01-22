@@ -153,7 +153,6 @@
               label="Access Token"
               :required="true"
               :style="{ width: `${InputWidth.LARGE}px` }"
-              style="width: 500px"
             ></seal-input-password>
           </a-form-item>
           <a-form-item
