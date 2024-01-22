@@ -38,6 +38,7 @@
   } = useViewLatestLogs(false);
 
   const basicDataList = useBasicInfoData(latestRunConfig, revisionData);
+  let runFlag = true;
 
   // logs
   provide(ProvideServiceInfoKey, currentServiceInfo);
@@ -48,8 +49,20 @@
   watch(
     () => props.serviceInfo,
     (data) => {
-      if (data.id) {
+      if (data.id && runFlag) {
+        runFlag = false;
         handleViewServiceLatestLogs(data);
+      }
+    },
+    {
+      immediate: true
+    }
+  );
+  watch(
+    () => showDetailModal.value,
+    () => {
+      if (!showDetailModal.value) {
+        runFlag = true;
       }
     },
     {

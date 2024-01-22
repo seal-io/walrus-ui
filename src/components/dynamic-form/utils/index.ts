@@ -308,6 +308,11 @@ export const viewFieldValue = ({
     _.set(uiFormData, fieldPath, _.cloneDeep(originValue || defaultValue));
   }
 
+  console.log(
+    'viewFieldValue+++++++++++++++',
+    fieldPath,
+    _.cloneDeep(defaultFormData)
+  );
   if (!_.has(defaultFormData, fieldPath)) {
     if (!hidden || !isEmptyValueField(schema, originValue || defaultValue)) {
       _.set(
@@ -714,7 +719,7 @@ export const genObjectFieldProperties = ({
       name: key,
       isItemsProperty: isItems || false,
       arrayItemProperty: arrayItemProperty || false,
-      fieldPath: [...fieldPath, key],
+      fieldPath: arrayItemProperty ? [...fieldPath] : [...fieldPath, key],
       required: property.required || [],
       isRequired: _.includes(property.required || [], key),
       parentRequired: schema.required || [],
