@@ -371,6 +371,7 @@
     );
     if (openRevisionData) {
       revisionData.value = openRevisionData;
+      initialStatus.value = openRevisionData.status;
     }
     each(collections, (item) => {
       const updateIndex = findIndex(
