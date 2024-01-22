@@ -35,7 +35,7 @@
       watch(
         () => props.serviceInfo,
         (data) => {
-          if (data.id && runFlag.value) {
+          if (data.id) {
             handleViewServiceLatestLogs(data);
           }
         },
@@ -46,8 +46,10 @@
       );
       watch(
         () => showDetailModal.value,
-        () => {
-          runFlag.value = !showDetailModal.value;
+        async () => {
+          if (props.serviceInfo.id && showDetailModal.value) {
+            handleViewServiceLatestLogs(props.serviceInfo);
+          }
         },
         {
           immediate: true

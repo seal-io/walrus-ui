@@ -647,12 +647,15 @@
   const handleClickAction = (value, row) => {
     actionHandlerMap.get(value)(row);
   };
-
+  const handleViewLatestLogs = async (row) => {
+    await handleViewServiceLatestLogs(row);
+    showDetailModal.value = true;
+  };
   const setActionHandler = () => {
     actionHandlerMap.set(serviceActionMap.upgrade, handleClickUpgrade);
     actionHandlerMap.set(serviceActionMap.rollback, handleClickRollback);
     actionHandlerMap.set(serviceActionMap.sync, handleRefreshServiceConfig);
-    actionHandlerMap.set(serviceActionMap.logs, handleViewServiceLatestLogs);
+    actionHandlerMap.set(serviceActionMap.logs, handleViewLatestLogs);
     actionHandlerMap.set(serviceActionMap.stop, handleStopModal);
     actionHandlerMap.set(serviceActionMap.start, handleStartResource);
     actionHandlerMap.set(serviceActionMap.deploy, handleRedeployResource);
@@ -706,7 +709,14 @@
       }
       return;
     }
-
+    const openRevisionData = _.find(
+      collections,
+      (item) => item.id === get(revisionData.value, 'id')
+    );
+    if (openRevisionData) {
+      revisionData.value = openRevisionData;
+      initialStatus.value = openRevisionData.status;
+    }
     // UPDATE
     _.each(collections, (item) => {
       const updateIndex = _.findIndex(
