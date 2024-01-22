@@ -124,7 +124,7 @@ export const latestRunConfig = [
     key: 'createTime',
     value: '',
     formatter(val) {
-      return dayjs(val).format('YYYY-MM-DD HH:mm:ss');
+      return val ? dayjs(val).format('YYYY-MM-DD HH:mm:ss') : '';
     },
     span: 1
   },
