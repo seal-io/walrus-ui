@@ -29,6 +29,7 @@
       :expanded-keys="expandedKeys"
       :row-class="setRowClass"
       :pagination="false"
+      :scroll="{ y: 700 }"
       @expanded-change="handleExpandedChange"
     >
       <template #columns>

@@ -76,7 +76,9 @@
                   label={item.label}
                   span={item.span}
                 >
-                  {slots.value ? slots.value(item) : renderValue(item)}
+                  {slots.value
+                    ? slots.value({ data: item, value: renderValue(item) })
+                    : renderValue(item)}
                 </ADescriptionsItem>
               );
             })}

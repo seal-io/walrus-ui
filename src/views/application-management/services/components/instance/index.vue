@@ -51,7 +51,7 @@
             >
               <a-grid :cols="24" :col-gap="20" :row-gap="20">
                 <a-grid-item
-                  :span="{ xxl: 24, xl: 24, lg: 24, md: 24, sm: 24, xs: 24 }"
+                  :span="{ xxl: 16, xl: 16, lg: 24, md: 24, sm: 24, xs: 24 }"
                 >
                   <ComCard
                     :title="$t('applications.applications.table.latestRun')"
@@ -66,6 +66,10 @@
                           $t('applications.applications.table.latestRun')
                         }}</span>
                         <a-link
+                          v-if="
+                            currentInfo?.status?.summaryStatus !==
+                            ServiceStatus.Undeployed
+                          "
                           size="small"
                           @click="
                             () => {
@@ -84,22 +88,9 @@
                     ></LatestRun>
                   </ComCard>
                 </a-grid-item>
-                <a-grid-item
-                  :span="{ xxl: 24, xl: 24, lg: 24, md: 24, sm: 24, xs: 24 }"
-                >
-                  <ComCard
-                    :title="$t('applications.instance.tab.resource')"
-                    padding="0 20px 20px"
-                    :header-style="{ padding: '20px', height: 'auto' }"
-                    bordered
-                    style="height: 100%; border-radius: 16px"
-                  >
-                    <tabResource :resource-list="dataList"></tabResource>
-                  </ComCard>
-                </a-grid-item>
 
                 <a-grid-item
-                  :span="{ xxl: 12, xl: 12, lg: 24, md: 24, sm: 24, xs: 24 }"
+                  :span="{ xxl: 8, xl: 8, lg: 24, md: 24, sm: 24, xs: 24 }"
                 >
                   <ComCard
                     :title="$t('applications.applications.instance.accessUrl')"
@@ -112,7 +103,20 @@
                   </ComCard>
                 </a-grid-item>
                 <a-grid-item
-                  :span="{ xxl: 12, xl: 12, lg: 24, md: 24, sm: 24, xs: 24 }"
+                  :span="{ xxl: 16, xl: 16, lg: 24, md: 24, sm: 24, xs: 24 }"
+                >
+                  <ComCard
+                    :title="$t('applications.instance.tab.resource')"
+                    padding="0 20px 20px"
+                    :header-style="{ padding: '20px', height: 'auto' }"
+                    bordered
+                    style="height: 100%; border-radius: 16px"
+                  >
+                    <tabResource :resource-list="dataList"></tabResource>
+                  </ComCard>
+                </a-grid-item>
+                <a-grid-item
+                  :span="{ xxl: 8, xl: 8, lg: 24, md: 24, sm: 24, xs: 24 }"
                 >
                   <ComCard
                     :title="$t('applications.instance.tab.output')"
@@ -235,6 +239,7 @@
     serviceActionMap,
     ServiceDataType,
     StartableStatus,
+    ServiceStatus,
     ProvideServiceInfoKey
   } from '../../config';
   import { ServiceRowData } from '../../config/interface';
