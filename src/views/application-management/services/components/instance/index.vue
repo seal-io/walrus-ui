@@ -29,12 +29,6 @@
             ></DropButtonGroup>
           </div>
         </template>
-        <!-- <template #description v-if="pageAction === PageAction.VIEW">
-          <BasicInfo
-            :data-info="basicDataList"
-            style="max-width: 800px"
-          ></BasicInfo>
-        </template> -->
       </HeaderInfo>
       <div v-if="pageAction === PageAction.VIEW">
         <ComCard padding="0 var(--card-content-padding) 20px">
@@ -131,24 +125,6 @@
                 </a-grid-item>
               </a-grid>
             </a-tab-pane>
-            <!-- <a-tab-pane
-              v-for="item in instanceTabList"
-              :key="item.value"
-              :title="$t(item.label)"
-            >
-              <Component
-                :is="instanceTabMap[item.com]"
-                :resource-list="dataList"
-                :is-loading="loading"
-              ></Component>
-            </a-tab-pane> -->
-
-            <!-- <a-tab-pane
-              :key="ResourceDetailTabs.ENDPOINTS"
-              :title="$t('applications.applications.instance.accessUrl')"
-            >
-              <tabEndpoint ref="tabEndpointCom"></tabEndpoint>
-            </a-tab-pane> -->
             <a-tab-pane
               :key="ResourceDetailTabs.REVISIONS"
               :title="$t('applications.applications.instance.history')"
