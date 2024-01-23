@@ -47,9 +47,6 @@
           style="width: 100%"
           :disabled="action === 'edit'"
         ></seal-input>
-        <!-- <template #extra>
-          <div>{{ $t('account.create.rules.username') }}</div>
-        </template> -->
       </a-form-item>
       <a-form-item
         :label="$t('profile.account.password')"
@@ -81,7 +78,7 @@
           >
             <template #icon>
               <a-tooltip :content="$t('profile.account.creatrandom')">
-                <i class="iconfont icon-random size-24"></i>
+                <i class="iconfont icon-refresh size-24"></i>
               </a-tooltip>
             </template>
           </a-button>

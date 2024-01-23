@@ -1,7 +1,10 @@
 import { watch, nextTick, ref } from 'vue';
 import _ from 'lodash';
 import { websocketEventType } from '@/views/config';
-import { useSetChunkRequest } from '@/api/axios-chunk-request';
+import {
+  useSetChunkRequest,
+  createAxiosToken
+} from '@/api/axios-chunk-request';
 import { queryServiceRevisions, SERVICE_API_PREFIX, SERVICE_API } from '../api';
 
 export default function useViewLatestLogs(defaultShow?: boolean) {
@@ -13,6 +16,7 @@ export default function useViewLatestLogs(defaultShow?: boolean) {
   const currentServiceInfo = ref<any>({});
   const isShow = ref(defaultShow ?? true);
   let axiosToken: any = null;
+  let revisionAxiosToken: any = null;
 
   const updateRevisions = (data) => {
     if (data?.type !== websocketEventType.UPDATE) return;
@@ -49,6 +53,8 @@ export default function useViewLatestLogs(defaultShow?: boolean) {
   };
 
   const handleViewServiceLatestLogs = async (row) => {
+    revisionAxiosToken?.cancel?.();
+    revisionAxiosToken = createAxiosToken();
     try {
       const params = {
         page: 1,
@@ -56,14 +62,15 @@ export default function useViewLatestLogs(defaultShow?: boolean) {
         sort: ['-createTime'],
         serviceID: row.id
       };
-      const { data } = await queryServiceRevisions(params);
+      const { data } = await queryServiceRevisions(
+        params,
+        revisionAxiosToken.token
+      );
       revisionData.value = _.get(data, 'items.0') || {};
       revisionDetailId.value = _.get(revisionData.value, 'id') || '';
       initialStatus.value = _.get(revisionData.value, 'status') || {};
       currentServiceInfo.value = row;
-      setTimeout(() => {
-        // showDetailModal.value = isShow.value;
-      });
+
       nextTick(() => {
         createServiceRevisionChunkRequest();
       });

@@ -35,8 +35,7 @@
       watch(
         () => props.serviceInfo,
         (data) => {
-          if (data.id && runFlag.value) {
-            runFlag.value = false;
+          if (data.id) {
             handleViewServiceLatestLogs(data);
           }
         },
