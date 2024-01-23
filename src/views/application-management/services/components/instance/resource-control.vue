@@ -22,10 +22,11 @@
                   v-if="item.tabType === drawerType.LOGS"
                   class="iconfont icon-rizhi font-16 m-r-4"
                 ></i>
-                <icon-code-square
+
+                <i
                   v-if="item.tabType === drawerType.TERMINAL"
-                  class="size-16 m-r-4"
-                />
+                  class="size-14 iconfont icon-terminal m-r-4"
+                ></i>
                 <span>{{ item.name }}</span>
               </AutoTip></div
             >

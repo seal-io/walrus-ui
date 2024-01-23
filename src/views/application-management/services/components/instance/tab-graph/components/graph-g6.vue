@@ -127,13 +127,13 @@
 
           const renderLogHtml = () => {
             if (!logabble) return '';
-            return ` <li code="log" class="iconfont icon-xiangqing-">
+            return ` <li code="log" class="iconfont icon-rizhi">
                 ${i18n.global.t('applications.instance.tab.log')}
               </li>`;
           };
           const renderExecHtml = () => {
             if (!executable) return '';
-            return `<li code="exec" class="iconfont icon-code">
+            return `<li code="exec" class="iconfont icon-terminal">
                 ${i18n.global.t('applications.instance.tab.term')}
               </li>`;
           };
@@ -239,14 +239,6 @@
           );
         });
       };
-      // const hasDependencyNodes = (node) => {
-      //   return _.some(props.sourceData.links, (item) => {
-      //     return (
-      //       _.get(item, 'target') === node.id &&
-      //       item.edgeType === edgeType.Dependency
-      //     );
-      //   });
-      // };
       const setNodeDescription = (node) => {
         if (_.hasIn(node.extensions, 'isService')) {
           return node.extensions.isService
@@ -255,32 +247,7 @@
         }
         return _.get(node, 'extensions.type') || _.get(node, 'kind');
       };
-      const updateNodeImage = (node, defaultImg) => {
-        if (!node.icon) return;
-        const iconImage = new Image();
-        iconImage.src = node.icon;
-        iconImage.crossOrigin = 'Anonymous';
-        iconImage.onload = () => {
-          const item = graph?.findById(node.id);
-          graph?.updateItem(item, {
-            ...node,
-            logoIcon: {
-              ...node.logoIcon,
-              img: iconImage
-            }
-          });
-        };
-        iconImage.onerror = () => {
-          const item = graph?.findById(node.id);
-          graph?.updateItem(item, {
-            ...node,
-            logoIcon: {
-              ...node.logoIcon,
-              img: defaultImg
-            }
-          });
-        };
-      };
+
       const setNodeList = async () => {
         const { sourceData: data } = props;
         const style = {
