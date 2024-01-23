@@ -377,6 +377,8 @@
         clearDiffRowDecoration(args);
       });
       aceEditor.on('blur', function (args: any) {
+        const val = aceEditor.getValue();
+        emits('update:modelValue', val);
         emits('blur');
       });
       aceEditor.setOptions({
