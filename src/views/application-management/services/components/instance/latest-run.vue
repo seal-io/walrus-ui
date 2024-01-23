@@ -35,18 +35,18 @@
       watch(
         () => props.serviceInfo,
         (data) => {
-          if (data.id) {
+          if (data.id && runFlag.value) {
+            runFlag.value = false;
             handleViewServiceLatestLogs(data);
           }
         },
         {
-          immediate: true,
-          deep: true
+          immediate: true
         }
       );
       watch(
         () => showDetailModal.value,
-        async () => {
+        () => {
           if (props.serviceInfo.id && showDetailModal.value) {
             handleViewServiceLatestLogs(props.serviceInfo);
           }

@@ -36,7 +36,7 @@ export interface ServiceRowData {
   name: string;
   id: string;
   labels: object;
-  status: string;
+  status: object;
   type?: string;
   description: string;
   environment: { id: string; name: string };

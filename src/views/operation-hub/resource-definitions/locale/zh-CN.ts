@@ -23,5 +23,15 @@ export default {
   'resource.definition.detail.rules.projectName': '项目名称必填',
   'resource.definition.detail.rules.applicableProjects': '请选择适用项目',
   'resource.definition.detail.applicableProjects.tips': '所有项目',
-  'resource.definition.detail.applicableProjects.all': '默认适用于所有项目'
+  'resource.definition.detail.applicableProjects.all': '默认适用于所有项目',
+  'resource.definition.detail.helps.definition': '用于声明一种资源类型',
+  'resource.definition.detail.helps.rules':
+    '匹配规则：对不同的项目、环境，使用相应的模板',
+  'resource.definition.detail.helps.uischema': '自定义资源定义的配置属性',
+  'resource.definition.detail.helps.uischemaContent':
+    'UI Schema 是匹配规则的中模板的配置交集',
+  'resource.definition.detail.helps.uischemaType':
+    'UI Schema 中配置属性的类型可能与在匹配规则中模板的类型不同',
+  'resource.template.detail.helps.templateType': '自定义模板的配置属性',
+  'resource.template.detail.helps.preview': '预览在创建资源时的实际显示效果'
 };

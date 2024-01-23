@@ -42,141 +42,150 @@
           "
           @edit="handleEdit"
         >
-          <template #right>
-            <QuestionPopup :link="QAlinkMap.UISchema"></QuestionPopup>
-          </template>
         </GroupTitle>
-        <a-form
-          ref="formref"
-          :model="formData"
-          auto-label-width
-          label-align="left"
-        >
-          <a-form-item
-            :label="$t('operation.connectors.table.name')"
-            field="name"
-            hide-asterisk
-            hide-label
-            :disabled="!!id"
-            :validate-trigger="['change', 'input']"
-            :style="{ maxWidth: `${InputWidth.LARGE}px` }"
-            :rules="[
-              {
-                required: true,
-                message: $t('common.rule.name')
-              },
-              {
-                required: true,
-                match: validateLabelNameRegxFor63,
-                message: $t('common.validate.labelName')
-              }
-            ]"
+        <div class="flex flex-justify-between">
+          <a-form
+            ref="formref"
+            :model="formData"
+            auto-label-width
+            label-align="left"
           >
-            <seal-input
-              v-model.trim="formData.name"
-              :view-status="pageAction === PageAction.VIEW"
+            <a-form-item
               :label="$t('operation.connectors.table.name')"
-              :required="true"
-              :style="{ width: `${InputWidth.LARGE}px` }"
-              :max-length="validateInputLength.TemplateName"
-              show-word-limit
-            ></seal-input>
-          </a-form-item>
-          <a-form-item
-            :label="$t('operation.environments.table.description')"
-            hide-asterisk
-            hide-label
-            field="description"
-          >
-            <seal-textarea
-              v-model="formData.description"
-              :view-status="pageAction === PageAction.VIEW"
-              :label="$t('operation.environments.table.description')"
-              :style="{ width: `${InputWidth.LARGE}px` }"
-              :auto-size="{ minRows: 4, maxRows: 6 }"
-              :max-length="200"
-              show-word-limit
-            ></seal-textarea>
-          </a-form-item>
-          <a-form-item
-            field="source"
-            :label="$t('operation.templates.detail.source')"
-            :disabled="!!id"
-            hide-asterisk
-            :hide-label="true"
-            :validate-trigger="['change']"
-            :rules="[
-              {
-                required: true,
-                message: $t('operation.templates.rules.source')
-              }
-            ]"
-          >
-            <seal-input
-              v-model.trim="formData.source"
-              :view-status="pageAction === PageAction.VIEW"
-              :label="$t('operation.templates.detail.source')"
-              :required="true"
-              :style="{ width: `${InputWidth.LARGE}px` }"
-            ></seal-input>
-
-            <template v-if="pageAction === PageAction.EDIT" #extra>
-              <div
-                :style="{
-                  'line-height': '20px',
-                  'width': `${InputWidth.LARGE}px`
-                }"
-              >
-                <div>{{ $t('operation.templates.source.description') }}</div>
-                <div
-                  >https://github.com/terraform-aws-modules/terraform-aws-vpc</div
-                >
-              </div>
-              <div
-                >https://github.com/terraform-aws-modules/terraform-aws-vpc?ref=master</div
-              >
-            </template>
-          </a-form-item>
-          <a-form-item
-            v-if="
-              id &&
-              pageAction === PageAction.VIEW &&
-              _.get(formData, 'catalog.id')
-            "
-            hide-label
-          >
-            <seal-input
-              :view-status="true"
-              :model-value="route.query.catalog"
-              :label="$t('operation.templates.table.catalog')"
-              :style="{ width: `${InputWidth.LARGE}px` }"
-            ></seal-input>
-          </a-form-item>
-          <a-form-item
-            v-if="id && pageAction === PageAction.VIEW"
-            hide-label
-            :style="{ width: `${InputWidth.LARGE}px` }"
-          >
-            <SealFormItemWrap
-              :style="{ width: `100%`, color: 'var(--color-text-3)' }"
+              field="name"
+              hide-asterisk
+              hide-label
+              :disabled="!!id"
+              :validate-trigger="['change', 'input']"
+              :style="{ maxWidth: `${InputWidth.LARGE}px` }"
+              :rules="[
+                {
+                  required: true,
+                  message: $t('common.rule.name')
+                },
+                {
+                  required: true,
+                  match: validateLabelNameRegxFor63,
+                  message: $t('common.validate.labelName')
+                }
+              ]"
             >
-              <div class="flex flex-align-center">
-                <span class="m-r-10 font-12">{{
-                  $t('operation.connectors.table.status')
-                }}</span>
-                <StatusLabel
-                  :status="{
-                    status: get(formData, 'status.summaryStatus') || '',
-                    text: get(formData, 'status.summaryStatus'),
-                    message: get(formData, 'status.summaryStatusMessage') || '',
-                    transitioning: get(formData, 'status.transitioning'),
-                    error: get(formData, 'status.error')
+              <seal-input
+                v-model.trim="formData.name"
+                :view-status="pageAction === PageAction.VIEW"
+                :label="$t('operation.connectors.table.name')"
+                :required="true"
+                :style="{ width: `${InputWidth.LARGE}px` }"
+                :max-length="validateInputLength.TemplateName"
+                show-word-limit
+              ></seal-input>
+            </a-form-item>
+            <a-form-item
+              :label="$t('operation.environments.table.description')"
+              hide-asterisk
+              hide-label
+              field="description"
+            >
+              <seal-textarea
+                v-model="formData.description"
+                :view-status="pageAction === PageAction.VIEW"
+                :label="$t('operation.environments.table.description')"
+                :style="{ width: `${InputWidth.LARGE}px` }"
+                :auto-size="{ minRows: 4, maxRows: 6 }"
+                :max-length="200"
+                show-word-limit
+              ></seal-textarea>
+            </a-form-item>
+            <a-form-item
+              field="source"
+              :label="$t('operation.templates.detail.source')"
+              :disabled="!!id"
+              hide-asterisk
+              :hide-label="true"
+              :validate-trigger="['change']"
+              :rules="[
+                {
+                  required: true,
+                  message: $t('operation.templates.rules.source')
+                }
+              ]"
+            >
+              <seal-input
+                v-model.trim="formData.source"
+                :view-status="pageAction === PageAction.VIEW"
+                :label="$t('operation.templates.detail.source')"
+                :required="true"
+                :style="{ width: `${InputWidth.LARGE}px` }"
+              ></seal-input>
+
+              <template v-if="pageAction === PageAction.EDIT" #extra>
+                <div
+                  :style="{
+                    'line-height': '20px',
+                    'width': `${InputWidth.LARGE}px`
                   }"
-                ></StatusLabel>
-              </div>
-            </SealFormItemWrap>
-          </a-form-item>
-        </a-form>
+                >
+                  <div>{{ $t('operation.templates.source.description') }}</div>
+                  <div
+                    >https://github.com/terraform-aws-modules/terraform-aws-vpc</div
+                  >
+                </div>
+                <div
+                  >https://github.com/terraform-aws-modules/terraform-aws-vpc?ref=master</div
+                >
+              </template>
+            </a-form-item>
+            <a-form-item
+              v-if="
+                id &&
+                pageAction === PageAction.VIEW &&
+                _.get(formData, 'catalog.id')
+              "
+              hide-label
+            >
+              <seal-input
+                :view-status="true"
+                :model-value="route.query.catalog"
+                :label="$t('operation.templates.table.catalog')"
+                :style="{ width: `${InputWidth.LARGE}px` }"
+              ></seal-input>
+            </a-form-item>
+            <a-form-item
+              v-if="id && pageAction === PageAction.VIEW"
+              hide-label
+              :style="{ width: `${InputWidth.LARGE}px` }"
+            >
+              <SealFormItemWrap
+                :style="{ width: `100%`, color: 'var(--color-text-3)' }"
+              >
+                <div class="flex flex-align-center">
+                  <span class="m-r-10 font-12">{{
+                    $t('operation.connectors.table.status')
+                  }}</span>
+                  <StatusLabel
+                    :status="{
+                      status: get(formData, 'status.summaryStatus') || '',
+                      text: get(formData, 'status.summaryStatus'),
+                      message:
+                        get(formData, 'status.summaryStatusMessage') || '',
+                      transitioning: get(formData, 'status.transitioning'),
+                      error: get(formData, 'status.error')
+                    }"
+                  ></StatusLabel>
+                </div>
+              </SealFormItemWrap>
+            </a-form-item>
+          </a-form>
+          <QuestionPopup
+            :link="QAlinkMap.UISchema"
+            class="m-l-20 relative"
+            title="UI Schema"
+            style="top: -40px"
+          >
+            <span>{{ $t('resource.template.detail.helps.templateType') }}</span>
+            <span>{{ $t('resource.template.detail.helps.preview') }}</span>
+          </QuestionPopup>
+        </div>
       </div>
       <a-tabs
         v-if="

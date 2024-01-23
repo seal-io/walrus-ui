@@ -79,7 +79,7 @@
   .seal-view-item-wrap {
     flex: 1;
     min-height: @height;
-    padding: 8px 12px;
+    padding: 8px 12px 12px;
     padding-bottom: 0;
     line-height: 1;
     word-break: break-word;

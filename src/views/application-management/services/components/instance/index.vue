@@ -71,6 +71,7 @@
                             ServiceStatus.Undeployed
                           "
                           size="small"
+                          class="font-13"
                           @click="
                             () => {
                               latestRunRef?.viewLogs?.();

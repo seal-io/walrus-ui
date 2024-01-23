@@ -40,6 +40,28 @@ export const tabList = [
   }
 ];
 
+export const definitionHelps = [
+  {
+    title: 'resource.definition.list.name',
+    type: 'definiton',
+    texts: [
+      { value: 'resource.definition.detail.helps.definition' },
+      { value: 'resource.definition.detail.helps.rules' }
+    ]
+  }
+];
+
+export const schemaHelps = [
+  {
+    title: 'UI Schema',
+    type: 'schema',
+    texts: [
+      { value: 'resource.definition.detail.helps.uischema' },
+      { value: 'resource.definition.detail.helps.uischemaContent' },
+      { value: 'resource.definition.detail.helps.uischemaType' }
+    ]
+  }
+];
 export const schemaActionList: any[] = [
   {
     label: 'common.button.edit',
