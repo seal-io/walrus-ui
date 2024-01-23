@@ -508,11 +508,15 @@
     emits('update:modelValue', expression.value);
     input.value.dispatchEvent(new CustomEvent('change'));
   };
+  const validValue = (val) => {
+    return val === '' || val === null || val === undefined;
+  };
   watch(
     () => props.modelValue,
     () => {
-      if (_.isNumber(props.modelValue)) {
+      if (!_.isString(props.modelValue) && !validValue(props.modelValue)) {
         expression.value = _.toString(props.modelValue);
+        emits('change', expression.value);
       } else if (_.isString(props.modelValue)) {
         expression.value = props.modelValue;
       } else {

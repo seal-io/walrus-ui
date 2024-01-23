@@ -41,7 +41,8 @@
 </template>
 
 <script lang="ts" setup>
-  import { useAttrs, useSlots, ref } from 'vue';
+  import { isNumber, toNumber, isNaN } from 'lodash';
+  import { useAttrs, useSlots, ref, watch } from 'vue';
   import Tooltip from '../_components/tooltip.vue';
 
   const props = defineProps({
@@ -94,6 +95,23 @@
     input.value?.focus?.();
     isFocus.value = true;
   };
+  const validValue = (val) => {
+    return val === '' || val === null || val === undefined;
+  };
+  watch(
+    () => props.modelValue,
+    (value) => {
+      if (!isNumber(value) && !validValue(value)) {
+        const val = toNumber(value);
+        const newValue = isNaN(val) ? null : val;
+        emits('update:modelValue', newValue);
+        emits('change', newValue);
+      }
+    },
+    {
+      immediate: true
+    }
+  );
 </script>
 
 <script lang="ts">

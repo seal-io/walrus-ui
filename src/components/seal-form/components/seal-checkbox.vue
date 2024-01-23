@@ -16,7 +16,8 @@
 </template>
 
 <script lang="ts" setup>
-  import { useAttrs, ref } from 'vue';
+  import { isBoolean } from 'lodash';
+  import { useAttrs, ref, watch } from 'vue';
   import Tooltip from '../_components/tooltip.vue';
 
   const props = defineProps({
@@ -39,6 +40,22 @@
     emits('update:modelValue', value);
     emits('change', value, e);
   };
+  const validValue = (val) => {
+    return val === '' || val === null || val === undefined;
+  };
+  watch(
+    () => props.modelValue,
+    (value) => {
+      if (!isBoolean(value) && !validValue(value)) {
+        const newValue = !!value;
+        emits('update:modelValue', newValue);
+        emits('change', newValue);
+      }
+    },
+    {
+      immediate: true
+    }
+  );
 </script>
 
 <script lang="ts">

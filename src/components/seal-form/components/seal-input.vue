@@ -66,7 +66,8 @@
 </template>
 
 <script lang="ts" setup>
-  import { useAttrs, useSlots, ref } from 'vue';
+  import { isString, toString } from 'lodash';
+  import { useAttrs, useSlots, ref, watch } from 'vue';
   import Tooltip from '../_components/tooltip.vue';
 
   const props = defineProps({
@@ -152,6 +153,22 @@
     focus,
     blur
   });
+  const validValue = (val) => {
+    return val === '' || val === null || val === undefined;
+  };
+  watch(
+    () => props.modelValue,
+    () => {
+      if (!isString(props.modelValue) && !validValue(props.modelValue)) {
+        const newValue = toString(props.modelValue);
+        emits('update:modelValue', '');
+        emits('change', newValue);
+      }
+    },
+    {
+      immediate: true
+    }
+  );
 </script>
 
 <script lang="ts">
