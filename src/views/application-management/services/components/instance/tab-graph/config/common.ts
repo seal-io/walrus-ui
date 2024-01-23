@@ -112,9 +112,9 @@ export const defineCustomNode = () => {
             attrs: {
               img,
               x: w / 2 - 1,
-              y: -h / 2 + 22,
-              width,
-              height
+              y: -h / 2 + 24,
+              width: 12,
+              height: 12
             },
             className: hasComposition
               ? 'has-composition-icon uml-comp-icon'
@@ -127,10 +127,10 @@ export const defineCustomNode = () => {
           group['shapeMap']['uml-real-icon'] = group.addShape('image', {
             attrs: {
               img: UMLRealizationIcon,
-              x: -w / 2 - 12,
-              y: -h / 2 + 23,
-              width: 14,
-              height: 14
+              x: -w / 2 - 11,
+              y: -h / 2 + 24,
+              width: 12,
+              height: 12
             },
             className: 'uml-real-icon',
             name: 'uml-real-icon',
@@ -141,10 +141,10 @@ export const defineCustomNode = () => {
           group['shapeMap']['uml-dep-icon'] = group.addShape('image', {
             attrs: {
               img: UMLDependencyIcon,
-              x: -w / 2 - 15,
-              y: -h / 2 + 22,
-              width: 16,
-              height: 16
+              x: -w / 2 - 13,
+              y: -h / 2 + 23,
+              width: 14,
+              height: 14
             },
             className: 'uml-dep-icon',
             name: 'uml-dep-icon',
