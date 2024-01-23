@@ -28,5 +28,18 @@ export default {
     'Please select projects.',
   'resource.definition.detail.applicableProjects.tips': 'All Projects',
   'resource.definition.detail.applicableProjects.all':
-    'Applies to all projects by default'
+    'Applies to all projects by default',
+  'resource.definition.detail.helps.definition':
+    'Used to declare a resource type',
+  'resource.definition.detail.helps.rules':
+    'Matching rules: Use corresponding templates when creating resources in different projects and environments.',
+  'resource.definition.detail.helps.uischema':
+    'Customize configuration properties for resource definition.',
+  'resource.definition.detail.helps.uischemaContent':
+    'UI Schema is the configuration intersection of templates in matching rules.',
+  'resource.definition.detail.helps.uischemaType':
+    'The types of configuration properties in the UI Schema may be different from the types in the template.',
+  'resource.template.detail.helps.templateType':
+    'Customize template configuration properties.',
+  'resource.template.detail.helps.preview': 'Preview resource creation display.'
 };

@@ -29,106 +29,112 @@
           "
           @edit="handleEditPage"
         >
-          <template #right>
-            <QuestionPopup :link="QAlinkMap.Definition"></QuestionPopup>
-          </template>
         </GroupTitle>
-        <a-form
-          ref="formref"
-          :model="formData"
-          auto-label-width
-          label-align="left"
-        >
-          <a-form-item
-            :label="$t('operation.connectors.table.name')"
-            field="name"
-            hide-asterisk
-            hide-label
-            :disabled="!!id"
-            :validate-trigger="['change', 'input']"
-            :style="{ maxWidth: `${InputWidth.LARGE}px` }"
-            :rules="[
-              {
-                required: true,
-                message: $t('common.rule.name')
-              },
-              {
-                required: true,
-                match: validateLabelNameRegx,
-                message: $t('common.validate.labelName')
-              }
-            ]"
+        <div class="flex flex-justify-between">
+          <a-form
+            ref="formref"
+            :model="formData"
+            auto-label-width
+            label-align="left"
           >
-            <seal-input
-              v-model.trim="formData.name"
-              :view-status="pageAction === PageAction.VIEW"
+            <a-form-item
               :label="$t('operation.connectors.table.name')"
-              :required="true"
-              :style="{ width: `${InputWidth.LARGE}px` }"
-              :max-length="validateInputLength.NAME"
-              show-word-limit
-            ></seal-input>
-          </a-form-item>
-          <a-form-item
-            :label="$t('common.table.type')"
-            field="type"
-            hide-asterisk
-            hide-label
-            :disabled="!!id"
-            :validate-trigger="['change', 'input']"
-            :style="{ maxWidth: `${InputWidth.LARGE}px` }"
-            :rules="[
-              {
-                required: true,
-                message: $t('resource.definition.detail.rules.defType')
-              },
-              {
-                required: true,
-                match: validateLabelNameRegx,
-                message: $t('common.validate.labelName')
-              }
-            ]"
-          >
-            <seal-input
-              v-model.trim="formData.type"
-              :view-status="pageAction === PageAction.VIEW"
+              field="name"
+              hide-asterisk
+              hide-label
+              :disabled="!!id"
+              :validate-trigger="['change', 'input']"
+              :style="{ maxWidth: `${InputWidth.LARGE}px` }"
+              :rules="[
+                {
+                  required: true,
+                  message: $t('common.rule.name')
+                },
+                {
+                  required: true,
+                  match: validateLabelNameRegx,
+                  message: $t('common.validate.labelName')
+                }
+              ]"
+            >
+              <seal-input
+                v-model.trim="formData.name"
+                :view-status="pageAction === PageAction.VIEW"
+                :label="$t('operation.connectors.table.name')"
+                :required="true"
+                :style="{ width: `${InputWidth.LARGE}px` }"
+                :max-length="validateInputLength.NAME"
+                show-word-limit
+              ></seal-input>
+            </a-form-item>
+            <a-form-item
               :label="$t('common.table.type')"
-              :required="true"
-              :style="{ width: `${InputWidth.LARGE}px` }"
-              :max-length="validateInputLength.NAME"
-              show-word-limit
-            ></seal-input>
-          </a-form-item>
-          <a-form-item
-            :label="$t('operation.environments.table.description')"
-            hide-asterisk
-            hide-label
-            field="description"
-          >
-            <seal-textarea
-              v-model="formData.description"
-              :view-status="pageAction === PageAction.VIEW"
+              field="type"
+              hide-asterisk
+              hide-label
+              :disabled="!!id"
+              :validate-trigger="['change', 'input']"
+              :style="{ maxWidth: `${InputWidth.LARGE}px` }"
+              :rules="[
+                {
+                  required: true,
+                  message: $t('resource.definition.detail.rules.defType')
+                },
+                {
+                  required: true,
+                  match: validateLabelNameRegx,
+                  message: $t('common.validate.labelName')
+                }
+              ]"
+            >
+              <seal-input
+                v-model.trim="formData.type"
+                :view-status="pageAction === PageAction.VIEW"
+                :label="$t('common.table.type')"
+                :required="true"
+                :style="{ width: `${InputWidth.LARGE}px` }"
+                :max-length="validateInputLength.NAME"
+                show-word-limit
+              ></seal-input>
+            </a-form-item>
+            <a-form-item
               :label="$t('operation.environments.table.description')"
-              :style="{ width: `${InputWidth.LARGE}px` }"
-              :auto-size="{ minRows: 4, maxRows: 6 }"
-              :max-length="200"
-              show-word-limit
-            ></seal-textarea>
-          </a-form-item>
+              hide-asterisk
+              hide-label
+              field="description"
+            >
+              <seal-textarea
+                v-model="formData.description"
+                :view-status="pageAction === PageAction.VIEW"
+                :label="$t('operation.environments.table.description')"
+                :style="{ width: `${InputWidth.LARGE}px` }"
+                :auto-size="{ minRows: 4, maxRows: 6 }"
+                :max-length="200"
+                show-word-limit
+              ></seal-textarea>
+            </a-form-item>
 
-          <a-form-item
-            v-if="
-              id &&
-              pageAction === PageAction.VIEW &&
-              _.get(formData, 'catalog.id')
-            "
-            :label="$t('operation.templates.table.catalog')"
+            <a-form-item
+              v-if="
+                id &&
+                pageAction === PageAction.VIEW &&
+                _.get(formData, 'catalog.id')
+              "
+              :label="$t('operation.templates.table.catalog')"
+            >
+              <span class="readonly-view-label">{{
+                route.query.catalog || ''
+              }}</span>
+            </a-form-item>
+          </a-form>
+          <QuestionPopup
+            :link="QAlinkMap.Definition"
+            :group-list="definitionPageHelpInfo"
+            class="m-l-20 relative"
+            style="top: -40px"
           >
-            <span class="readonly-view-label">{{
-              route.query.catalog || ''
-            }}</span>
-          </a-form-item>
-        </a-form>
+          </QuestionPopup>
+        </div>
         <div v-if="pageAction !== PageAction.VIEW">
           <GroupTitle
             :bordered="false"
@@ -196,6 +202,7 @@
           :active-key="activeKey"
           lazy-load
           class="page-line-tabs"
+          style="margin-top: 50px"
           @change="setPageTabActive"
         >
           <a-tab-pane
@@ -335,7 +342,7 @@
     ResourceDefinitionFormData,
     definitionFormData
   } from '../config/interface';
-  import { tabList } from '../config';
+  import { tabList, definitionHelps, schemaHelps } from '../config';
   import DefinitionRules from '../components/definition-rules.vue';
   import tabInput from '../../templates/components/tab-input.vue';
   import tabOutput from '../../templates/components/tab-output.vue';
@@ -404,6 +411,13 @@
       return PageAction.CREATE;
     }
     return pageAction.value;
+  });
+
+  const definitionPageHelpInfo = computed(() => {
+    if (pageAction.value === PageAction.EDIT) {
+      return definitionHelps;
+    }
+    return [...definitionHelps, ...schemaHelps];
   });
 
   const getProjectList = async () => {
