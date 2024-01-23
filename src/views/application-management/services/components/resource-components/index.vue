@@ -1,24 +1,5 @@
 <template>
   <div id="resource-wrap" class="resource-wrap">
-    <!-- <FilterBox style="margin-bottom: var(--filter-box-margin)">
-      <template #params>
-        <a-input
-          v-model="query"
-          :placeholder="$t('applications.instance.tab.resource.holder')"
-          allow-clear
-          style="width: 260px"
-          @clear="handleSearch"
-          @press-enter="handleSearch"
-        >
-          <template #prefix>
-            <icon-search />
-          </template>
-        </a-input>
-      </template>
-      <template #button-group>
-        <slot name="right"></slot>
-      </template>
-    </FilterBox> -->
     <a-spin :loading="loading" style="width: 100%">
       <div class="list">
         <div v-if="componentList.length">
@@ -75,7 +56,7 @@
                       })
                     "
                   >
-                    <icon-code-square class="size-16" />
+                    <i class="size-14 iconfont icon-terminal"></i>
                   </a-link>
                 </a-tooltip>
               </a-space>

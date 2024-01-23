@@ -133,7 +133,7 @@
                     })
                   "
                 >
-                  <icon-code-square class="size-16" />
+                  <i class="size-14 iconfont icon-terminal"></i>
                 </a-link>
               </a-tooltip>
             </a-space>
