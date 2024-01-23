@@ -15,7 +15,6 @@
         :bordered="false"
         flex-start
       ></GroupTitle>
-      <seal-input-number v-model="d_obj.value"></seal-input-number>
       <a-form
         ref="formref"
         :model="formData"
@@ -456,9 +455,6 @@
     labels: {},
     list: []
   });
-  const d_obj = ref({
-    value: 'aadd'
-  });
   const deletedIds = ref<string[]>([]);
   const validateTrigger = ref(false);
   const breadCrumbList = ref<BreadcrumbOptions[]>([]);
@@ -746,7 +742,6 @@
     validateTrigger.value = true;
     console.log(
       'formdata=============',
-      d_obj.value,
       formData.value,
       formData.value.attributes
     );
