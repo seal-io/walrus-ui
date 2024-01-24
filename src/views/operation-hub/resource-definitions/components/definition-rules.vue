@@ -532,7 +532,12 @@
       }
     }
   });
-  const emits = defineEmits(['cancel', 'save', 'update:title']);
+  const emits = defineEmits([
+    'cancel',
+    'save',
+    'update:title',
+    'update:activeKey'
+  ]);
   const { scrollToView } = useScrollToView();
   const formData = ref<MatchingRule>({
     attributes: {},
@@ -786,6 +791,15 @@
   const getSchema = () => {
     return uiSchema.value;
   };
+  const getRuleData = async () => {
+    const hiddenFormData = groupForm.value?.getHiddenData?.();
+    const resultData = _.cloneDeep(formData.value);
+    resultData.attributes = {
+      ...resultData.attributes,
+      ...hiddenFormData
+    };
+    return resultData;
+  };
   const submit = async () => {
     const res = await formref.value?.validate();
     const hiddenFormData = groupForm.value?.getHiddenData?.();
@@ -798,6 +812,7 @@
       };
       return resultData;
     }
+    emits('update:activeKey', props.originFormData.id);
     scrollToView();
     return false;
   };
@@ -818,7 +833,7 @@
       return;
     }
     formData.value.name = props.originFormData.name;
-    if (props.dataId) {
+    if (props.schemaFormAction !== PageAction.CREATE) {
       formData.value = _.cloneDeep(props.originFormData);
       uiFormData.value = _.cloneDeep(props.originFormData?.attributes || {});
       const moduleData = await getTemplateSchemaByVersion();
@@ -838,6 +853,7 @@
 
   defineExpose({
     submit,
+    getRuleData,
     getSchema
   });
 

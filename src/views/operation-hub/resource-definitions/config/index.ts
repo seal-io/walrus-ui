@@ -1,7 +1,7 @@
 import { useUserStore } from '@/store';
 import { Resources, Actions } from '@/permissions/config';
 import _ from 'lodash';
-import { DefinitionDetailTabs } from '@/views/config';
+import { DefinitionDetailTabs, QAlinkMap } from '@/views/config';
 import { MoreAction } from '@/views/config/interface';
 
 const userStore = useUserStore();
@@ -44,6 +44,7 @@ export const definitionHelps = [
   {
     title: 'resource.definition.list.name',
     type: 'definiton',
+    links: QAlinkMap.Definition,
     texts: [{ value: 'resource.definition.detail.helps.definition' }]
   }
 ];
@@ -52,6 +53,7 @@ export const definitionSchemaHelps = [
   {
     title: 'UI Schema',
     type: 'schema',
+    links: QAlinkMap.DefinitionSchema,
     texts: [{ value: 'resource.definition.detail.helps.definitionSchema' }]
   }
 ];
@@ -60,6 +62,7 @@ export const schemaHelps = [
   {
     title: 'UI Schema',
     type: 'schema',
+    links: QAlinkMap.UISchema,
     texts: [{ value: 'resource.definition.detail.helps.uischema' }]
   }
 ];

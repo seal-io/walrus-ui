@@ -100,7 +100,12 @@
               </template> -->
             </AceEditor>
             <a-alert
-              v-show="!removeLines.length && !addLines.length && formData.id"
+              v-show="
+                !removeLines.length &&
+                !addLines.length &&
+                formData.id &&
+                !compareloading
+              "
               >{{ $t('applications.applications.history.diff.same') }}</a-alert
             >
           </a-spin>
@@ -264,9 +269,9 @@
       };
       computedDiffContent.value = {
         old: data.old?.computedAttributes
-          ? JSON.stringify(data.old.computedAttributes, null, 2)
+          ? JSON.stringify(data.old?.computedAttributes, null, 2)
           : '',
-        new: JSON.stringify(data.new.computedAttributes, null, 2)
+        new: JSON.stringify(data.new?.computedAttributes, null, 2)
       };
 
       handleCompareTypeChange();
@@ -276,6 +281,7 @@
     }
   };
   const handleRevisionChange = () => {
+    codeResult.value = '';
     clearDiffLines();
     getRevisionDiff();
   };

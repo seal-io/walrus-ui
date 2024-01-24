@@ -65,12 +65,16 @@ export default function useCodeDiff() {
     });
   };
   const getDiffCodeResult = (content) => {
+    removeLines.value = [];
+    addLines.value = [];
     if (!content?.old && !content?.new) {
       return;
     }
-    setDiffResult(content.old, content.new);
-    getCodeResult();
-    getDiffResultLines();
+    setTimeout(() => {
+      setDiffResult(content.old, content.new);
+      getCodeResult();
+      getDiffResultLines();
+    }, 100);
   };
   return {
     removeLines,

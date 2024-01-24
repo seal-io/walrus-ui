@@ -2,7 +2,7 @@
   import _, { get } from 'lodash';
   import i18n from '@/locale';
   import useLocale from '@/hooks/locale';
-  import { PropType, defineComponent } from 'vue';
+  import { PropType, defineComponent, ref, computed, watch } from 'vue';
 
   interface Link {
     'label'?: string;
@@ -28,11 +28,43 @@
         default() {
           return [];
         }
+      },
+      height: {
+        type: String,
+        default() {
+          return '120px';
+        }
       }
     },
     setup(props, { emit, slots }) {
       const { currentLocale } = useLocale();
+      const activeIndex = ref(1);
 
+      const currentData = computed(() => {
+        return props.groupList[activeIndex.value - 1];
+      });
+
+      watch(
+        () => props.groupList,
+        () => {
+          activeIndex.value = 1;
+        },
+        {
+          immediate: true
+        }
+      );
+
+      const handlePre = () => {
+        if (activeIndex.value > 1) {
+          activeIndex.value -= 1;
+        }
+      };
+
+      const handleNext = () => {
+        if (activeIndex.value < props.groupList.length) {
+          activeIndex.value += 1;
+        }
+      };
       const renderHelpList = () => {
         if (props.link.length > 1) {
           <a-tooltip
@@ -81,12 +113,14 @@
                 return (
                   <>
                     <span class="title-wrap">
-                      <icon-bulb
-                        style={{ strokeWidth: 3, marginRight: '4px' }}
-                      />
-                      {item.title ? (
-                        <div class="title">{i18n.global.t(item.title)}</div>
-                      ) : null}
+                      <span class="flex flex-align-center">
+                        <a-tag color="rgb(var(--primary-5))" class="m-r-10">
+                          <icon-bulb />
+                        </a-tag>
+                        {item.title ? (
+                          <div class="title">{i18n.global.t(item.title)}</div>
+                        ) : null}
+                      </span>
                     </span>
                     <ul class="content">
                       {_.map(item?.texts, (sItem, index) => {
@@ -117,44 +151,64 @@
         }
         return null;
       };
+      const renderPagination = () => {
+        if (props.groupList.length > 1) {
+          return (
+            <a-space>
+              <a-link
+                onClick={() => handlePre()}
+                disabled={activeIndex.value <= 1}
+              >
+                <icon-left />
+              </a-link>
+              <span class="pagination">
+                {activeIndex.value}/{props.groupList.length}
+              </span>
+              <a-link
+                onClick={() => handleNext()}
+                disabled={activeIndex.value >= props.groupList.length}
+              >
+                <icon-right />
+              </a-link>
+            </a-space>
+          );
+        }
+        return null;
+      };
       const renderDescriptions = () => {
         return (
           <>
             <span class="title-wrap">
-              <icon-bulb style={{ strokeWidth: 3, marginRight: '4px' }} />
-              {props.title ? (
-                <div class="title">{i18n.global.t(props.title)}</div>
-              ) : null}
+              <span class="flex flex-align-center">
+                <a-tag color="rgb(var(--primary-5))" class="m-r-10">
+                  <icon-bulb />
+                </a-tag>
+                <div class="title">
+                  {i18n.global.t(currentData.value.title)}
+                </div>
+              </span>
+              {renderPagination()}
             </span>
             <ul class="content">
-              {_.map(slots.default?.(), (item, index) => {
-                return (
-                  <li key={index} class="item">
-                    {item}
-                  </li>
-                );
-              })}
+              <li class="item">
+                {i18n.global.t(currentData.value?.texts[0]?.value)}
+              </li>
             </ul>
-            {props.link.length === 1 ? (
-              <a-link
-                v-if="link.length === 1"
-                class="font-12 p-0"
-                href={get(props.link[0], currentLocale.value)}
-                hoverable={true}
-                target="_blank"
-              >
-                <i class="iconfont icon-shouzhi m-r-5"></i>
-                {i18n.global.t('common.help.need')}
-              </a-link>
-            ) : null}
+            <a-link
+              class="font-12 p-0"
+              href={get(currentData.value?.links?.[0], currentLocale.value)}
+              hoverable={true}
+              target="_blank"
+            >
+              <i class="iconfont icon-shouzhi m-r-5"></i>
+              {i18n.global.t('common.help.need')}
+            </a-link>
           </>
         );
       };
       return () => (
         <div class="box">
-          <div class="description">
-            {props.groupList.length ? renderGroupList() : renderDescriptions()}
-          </div>
+          <div class="description">{renderDescriptions()}</div>
         </div>
       );
     }
@@ -172,9 +226,9 @@
     padding: 20px;
     font-weight: var(--font-weight-medium);
     font-size: var(--font-size-large);
-    background-color: rgb(243 246 250 / 50%);
+    border: 1px solid rgb(234 236 238 / 50%);
+    // background-color: rgb(243 246 250 / 50%);
     border-radius: var(--border-radius-small);
-    opacity: 0.8;
 
     .pin-icon {
       position: absolute;
@@ -187,7 +241,12 @@
       .title-wrap {
         display: flex;
         align-items: center;
-        opacity: 0.8;
+        justify-content: space-between;
+      }
+
+      .pagination {
+        color: var(--color-text-3);
+        font-size: 12px;
       }
 
       .title {
@@ -196,8 +255,8 @@
       }
 
       .content {
-        margin: 12px 0;
-        padding-left: 5px;
+        margin: 0;
+        padding: 12px 0;
         color: var(--color-text-3);
         font-size: var(--font-size-small);
       }

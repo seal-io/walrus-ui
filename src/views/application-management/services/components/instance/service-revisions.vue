@@ -294,9 +294,9 @@
       };
       computedDiffContent.value = {
         old: data.old?.computedAttributes
-          ? JSON.stringify(data.old.computedAttributes, null, 2)
+          ? JSON.stringify(data.old?.computedAttributes, null, 2)
           : '',
-        new: JSON.stringify(data.new.computedAttributes, null, 2)
+        new: JSON.stringify(data.new?.computedAttributes, null, 2)
       };
       diffContent.value = attributesDiffContent.value;
       showDiffModal.value = true;

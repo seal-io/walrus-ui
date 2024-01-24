@@ -177,13 +177,13 @@
             </a-form-item>
           </a-form>
           <QuestionPopup
-            v-if="pageAction === PageAction.EDIT"
+            v-if="pageAction === PageAction.VIEW"
             :link="QAlinkMap.UISchema"
+            :group-list="schemaHelps"
             class="m-l-20 relative"
             title="UI Schema"
             style="top: -40px"
           >
-            <span>{{ $t('resource.definition.detail.helps.uischema') }}</span>
           </QuestionPopup>
         </div>
       </div>
@@ -299,6 +299,7 @@
   import tabProvider from '../components/tab-provider.vue';
   import tabEditSchema from '../components/tab-edit-schema.vue';
   import useConnectorBread from '../../connectors/hooks/use-connector-bread';
+  import { schemaHelps } from '../../resource-definitions/config';
 
   import {
     queryItemTemplate,
