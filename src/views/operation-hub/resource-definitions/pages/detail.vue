@@ -302,7 +302,7 @@
 </template>
 
 <script lang="ts" setup>
-  import { ref, onMounted, computed, provide, markRaw } from 'vue';
+  import { ref, onMounted, computed, provide, markRaw, watch } from 'vue';
   import {
     PageAction,
     validateLabelNameRegx,
@@ -548,6 +548,19 @@
       // ignore
     }
   };
+
+  const handleActiveRuleWatch = async (ruleId) => {
+    const index = _.findIndex(formData.value.matchingRules, (item) => {
+      return item.id === ruleId;
+    });
+    const item = _.get(formData.value.matchingRules, `${index}`);
+    if (item) {
+      const ruleData = await refMap.value[
+        `${definitionRulePrefix}${item.id}`
+      ]?.ref?.submit?.();
+      formData.value.matchingRules[index] = ruleData;
+    }
+  };
   const handleSubmit = async () => {
     const res = await formref.value?.validate();
     const matchRules = await getRefFormData();
@@ -656,6 +669,18 @@
       }
     });
   };
+
+  watch(
+    () => activeRule.value,
+    (nv, ov) => {
+      if (pageAction.value === PageAction.EDIT && ov) {
+        handleActiveRuleWatch(ov);
+      }
+    },
+    {
+      immediate: true
+    }
+  );
 
   onBeforeRouteLeave(async (to, from) => {
     if (!isEqual(copyFormData, formData.value)) {

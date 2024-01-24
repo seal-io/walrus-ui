@@ -735,26 +735,17 @@
 
   const getFormDataAttributeCache = () => {
     if (
-      formData.value.template.version ===
-        props.originFormData.template.version &&
       formData.value.template?.template?.id ===
-        props.originFormData.template?.template?.id
+      props.originFormData.template?.template?.id
     ) {
       formData.value.attributes = _.cloneDeep(props.originFormData.attributes);
       formAction.value = PageAction.EDIT;
-    } else if (
-      _.get(formDataAttributeCache.value, [formData.value.template.version])
-    ) {
-      formData.value.attributes = _.cloneDeep(
-        _.get(formDataAttributeCache.value, [formData.value.template.version])
-      );
     } else {
       formData.value.attributes = {};
     }
     uiFormData.value = _.cloneDeep(formData.value.attributes);
   };
   const handleVersionChange = async () => {
-    formAction.value = PageAction.CREATE;
     formData.value.template.id = _.get(
       _.find(
         templateVersionList.value,
@@ -774,6 +765,7 @@
 
   const handleTemplateChange = async () => {
     formDataAttributeCache.value = {};
+    formAction.value = PageAction.CREATE;
     await getTemplateVersions();
     formData.value.template.name = _.get(
       _.find(
