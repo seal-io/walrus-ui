@@ -80,9 +80,14 @@
               {_.map(props.groupList, (item) => {
                 return (
                   <>
-                    {item.title ? (
-                      <div class="title">{i18n.global.t(item.title)}</div>
-                    ) : null}
+                    <span class="title-wrap">
+                      <icon-bulb
+                        style={{ strokeWidth: 3, marginRight: '4px' }}
+                      />
+                      {item.title ? (
+                        <div class="title">{i18n.global.t(item.title)}</div>
+                      ) : null}
+                    </span>
                     <ul class="content">
                       {_.map(item?.texts, (sItem, index) => {
                         return (
@@ -115,9 +120,12 @@
       const renderDescriptions = () => {
         return (
           <>
-            {props.title ? (
-              <div class="title">{i18n.global.t(props.title)}</div>
-            ) : null}
+            <span class="title-wrap">
+              <icon-bulb style={{ strokeWidth: 3, marginRight: '4px' }} />
+              {props.title ? (
+                <div class="title">{i18n.global.t(props.title)}</div>
+              ) : null}
+            </span>
             <ul class="content">
               {_.map(slots.default?.(), (item, index) => {
                 return (
@@ -145,10 +153,6 @@
       return () => (
         <div class="box">
           <div class="description">
-            <a-tag color="rgb(var(--primary-5))">
-              <icon-bulb />
-            </a-tag>
-
             {props.groupList.length ? renderGroupList() : renderDescriptions()}
           </div>
         </div>
@@ -168,8 +172,9 @@
     padding: 20px;
     font-weight: var(--font-weight-medium);
     font-size: var(--font-size-large);
-    background-color: var(--color-fill-2);
+    background-color: rgb(243 246 250 / 50%);
     border-radius: var(--border-radius-small);
+    opacity: 0.8;
 
     .pin-icon {
       position: absolute;
@@ -179,20 +184,27 @@
     }
 
     .description {
+      .title-wrap {
+        display: flex;
+        align-items: center;
+        opacity: 0.8;
+      }
+
       .title {
-        margin-top: 16px;
+        margin-left: 0;
         font-size: 12px;
       }
 
       .content {
         margin: 12px 0;
-        padding-left: 16px;
+        padding-left: 5px;
         color: var(--color-text-3);
         font-size: var(--font-size-small);
       }
 
       .item {
         line-height: 1.6;
+        list-style: none;
       }
     }
   }

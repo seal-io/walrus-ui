@@ -20,6 +20,7 @@ import localeCatalogs from '@/views/operation-hub/catalogs/locale/en-US';
 import localeResourceDefinition from '@/views/operation-hub/resource-definitions/locale/en-US';
 
 import localeWorkflow from '@/views/application-management/workflows/locale/en-US';
+import localeEnvironment from '@/views/application-management/environments/locale/en-US';
 
 import localeCommon from './en-US/common';
 import localeSettings from './en-US/settings';
@@ -54,5 +55,6 @@ export default {
   ...localePermissionResource,
   ...localeCatalogs,
   ...localeWorkflow,
-  ...localeResourceDefinition
+  ...localeResourceDefinition,
+  ...localeEnvironment
 };

@@ -1,6 +1,9 @@
 <template>
   <div id="resource-wrap" class="resource-wrap">
-    <FilterBox style="margin-bottom: var(--filter-box-margin)">
+    <FilterBox
+      v-if="resourceList.length"
+      style="margin-bottom: var(--filter-box-margin)"
+    >
       <template #params>
         <a-input
           v-model="query"
@@ -139,6 +142,24 @@
             </a-space>
           </template>
         </a-table-column>
+      </template>
+      <template #empty>
+        <result-view
+          :loading="isLoading"
+          :title="
+            query
+              ? $t('common.result.nodata.title', {
+                  type: $t('applications.instance.tab.resource')
+                })
+              : $t('resource.components.result.title')
+          "
+          :subtitle="query ? ' ' : $t('resource.components.result.subTitle')"
+        >
+          <template #icon>
+            <icon-find-replace v-if="query" />
+            <i v-else class="iconfont icon-kaifazujian"></i>
+          </template>
+        </result-view>
       </template>
     </a-table>
     <resourceControl

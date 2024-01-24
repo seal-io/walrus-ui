@@ -44,10 +44,15 @@ export const definitionHelps = [
   {
     title: 'resource.definition.list.name',
     type: 'definiton',
-    texts: [
-      { value: 'resource.definition.detail.helps.definition' },
-      { value: 'resource.definition.detail.helps.rules' }
-    ]
+    texts: [{ value: 'resource.definition.detail.helps.definition' }]
+  }
+];
+
+export const definitionSchemaHelps = [
+  {
+    title: 'UI Schema',
+    type: 'schema',
+    texts: [{ value: 'resource.definition.detail.helps.definitionSchema' }]
   }
 ];
 
@@ -55,11 +60,7 @@ export const schemaHelps = [
   {
     title: 'UI Schema',
     type: 'schema',
-    texts: [
-      { value: 'resource.definition.detail.helps.uischema' },
-      { value: 'resource.definition.detail.helps.uischemaContent' },
-      { value: 'resource.definition.detail.helps.uischemaType' }
-    ]
+    texts: [{ value: 'resource.definition.detail.helps.uischema' }]
   }
 ];
 export const schemaActionList: any[] = [

@@ -1,7 +1,12 @@
 <script lang="tsx">
+  import i18n from '@/locale';
   import { ref, provide, PropType, watch, defineComponent } from 'vue';
   import useBasicInfoData from '@/views/application-management/projects/hooks/use-basicInfo-data';
-  import { latestRunConfig, ProvideServiceInfoKey } from '../../config';
+  import {
+    latestRunConfig,
+    ProvideServiceInfoKey,
+    ServiceStatus
+  } from '../../config';
   import BasicInfo from '../basic-info.vue';
   import useViewLatestLogs from '../../hooks/use-view-latest-logs';
   import RevisionDetail from '../revision-detail.vue';
@@ -57,17 +62,38 @@
       expose({
         viewLogs
       });
-
+      const renderNoRunData = () => {
+        return (
+          <result-view
+            title={i18n.global.t('resource.runs.result.title')}
+            subtitle={i18n.global.t('resource.runs.result.subTitle')}
+            v-slots={{
+              icon: () => {
+                return <i class="iconfont icon-sendfasong"></i>;
+              }
+            }}
+          ></result-view>
+        );
+      };
+      const renderLatestRun = () => {
+        return (
+          <div>
+            <BasicInfo data-info={basicDataList.value} cols={2}></BasicInfo>
+            <RevisionDetail
+              v-model:show={showDetailModal.value}
+              data-info={revisionData.value}
+              revision-id={revisionDetailId.value}
+              initial-status={initialStatus.value}
+            ></RevisionDetail>
+          </div>
+        );
+      };
       return () => (
-        <div>
-          <BasicInfo data-info={basicDataList.value} cols={2}></BasicInfo>
-          <RevisionDetail
-            v-model:show={showDetailModal.value}
-            data-info={revisionData.value}
-            revision-id={revisionDetailId.value}
-            initial-status={initialStatus.value}
-          ></RevisionDetail>
-        </div>
+        <>
+          {props.serviceInfo?.status?.summaryStatus === ServiceStatus.Undeployed
+            ? renderNoRunData()
+            : renderLatestRun()}
+        </>
       );
     }
   });

@@ -172,7 +172,7 @@
           </ResourceItem>
         </a-space>
         <div v-if="!dataList.length && !loading" style="height: 200px">
-          <a-empty></a-empty>
+          <slot name="empty"></slot>
         </div>
       </a-spin>
       <div class="pagination">

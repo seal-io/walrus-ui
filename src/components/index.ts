@@ -8,7 +8,7 @@ import ComCard from '@/components/page-wrap/com-card.vue';
 import SpinCard from '@/components/page-wrap/spin-card.vue';
 import ModuleCard from '@/components/page-wrap/module-card.vue';
 import BreadWrapper from '@/components/bread-wrapper/index.vue';
-import { BarChart, LineChart, PieChart, GaugeChart } from 'echarts/charts';
+import { BarChart, LineChart, PieChart } from 'echarts/charts';
 import {
   TitleComponent,
   GridComponent,
@@ -20,9 +20,10 @@ import {
 import Chart from './chart/index.vue';
 import Breadcrumb from './breadcrumb/index.vue';
 import GroupTitle from './group-title/index.vue';
+import ResultView from './result-view/index.vue';
 
 const IconFont = Icon.addFromIconFontCn({
-  src: '//at.alicdn.com/t/c/font_3892962_mwkfth1mmqj.js'
+  src: '//at.alicdn.com/t/c/font_3892962_jqpgydmf1k.js'
 });
 // Manually introduce ECharts modules to reduce packing size
 
@@ -31,7 +32,6 @@ use([
   BarChart,
   LineChart,
   PieChart,
-  GaugeChart,
   TitleComponent,
   GridComponent,
   TooltipComponent,
@@ -52,5 +52,6 @@ export default {
     Vue.component('ModuleCard', ModuleCard);
     Vue.component('BreadWrapper', BreadWrapper);
     Vue.component('GroupTitle', GroupTitle);
+    Vue.component('ResultView', ResultView);
   }
 };

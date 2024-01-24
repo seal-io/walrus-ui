@@ -113,7 +113,7 @@
                 <a-select
                   v-model="queryParams.projectName"
                   :options="projectList"
-                  style="width: 180px"
+                  style="max-width: 180px"
                   :placeholder="$t('applications.projects.table.name')"
                   allow-clear
                   allow-search
@@ -149,7 +149,7 @@
               <template #title>
                 <a-select
                   v-model="queryParams.matchingRuleName"
-                  style="width: 180px"
+                  style="max-width: 180px"
                   allow-clear
                   allow-search
                   :placeholder="$t('resource.definition.detail.matchRule')"

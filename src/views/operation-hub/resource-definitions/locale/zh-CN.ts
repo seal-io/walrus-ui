@@ -24,10 +24,14 @@ export default {
   'resource.definition.detail.rules.applicableProjects': '请选择适用项目',
   'resource.definition.detail.applicableProjects.tips': '所有项目',
   'resource.definition.detail.applicableProjects.all': '默认适用于所有项目',
-  'resource.definition.detail.helps.definition': '用于声明一种资源类型',
+  'resource.definition.detail.helps.definition':
+    '用于声明一种资源类型。通过设置匹配规则，可以指定在特定环境中部署该类型资源时要使用的模板。',
+  'resource.definition.detail.helps.definitionSchema':
+    '用于规定该类型资源的UI样式。默认情况下，Walrus会提取匹配规则中所有模板的共同输入，生成资源定义的UI样式。您可以根据需要进行自定义。',
   'resource.definition.detail.helps.rules':
     '匹配规则：对不同的项目、环境，使用相应的模板',
-  'resource.definition.detail.helps.uischema': '自定义资源定义的配置属性',
+  'resource.definition.detail.helps.uischema':
+    '用于规定模板的UI样式。您可以根据需要进行自定义。',
   'resource.definition.detail.helps.uischemaContent':
     'UI Schema 是匹配规则的中模板的配置交集',
   'resource.definition.detail.helps.uischemaType':

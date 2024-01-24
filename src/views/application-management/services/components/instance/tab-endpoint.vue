@@ -40,6 +40,17 @@
           </template>
         </a-table-column>
       </template>
+      <template #empty>
+        <result-view
+          :loading="loading"
+          :title="$t('resource.endpoints.result.title')"
+          :subtitle="$t('resource.endpoints.result.subTitle')"
+        >
+          <template #icon>
+            <i class="iconfont icon-endpoints"></i>
+          </template>
+        </result-view>
+      </template>
     </a-table>
   </div>
 </template>
