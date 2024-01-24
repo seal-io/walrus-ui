@@ -38,7 +38,10 @@
       const items = props.schema.items || ({} as FieldSchema);
       const minItems = props.schema.minItems || 0;
       const maxItems = props.schema.maxItems || Infinity;
-      const defaultItems = props.schema.default?.length || 0;
+      const defaultItems =
+        _.get(props.defaultFormData, props.fieldPath).length ||
+        props.schema.default?.length ||
+        0;
       let itemsProperties: FieldSchema[] = [];
       const propertiesList = ref<FieldSchema[][]>([]);
 
@@ -151,16 +154,17 @@
         const len = propertiesList.value.length;
 
         _.each(itemsProperties, (schema) => {
+          const fieldPath = [
+            ...props.fieldPath,
+            `${len - 1}`,
+            schema.name
+          ].filter((i) => i);
           const itemDefaultValue = initFieldDefaultValue(schema);
           if (
             schema.isRequired ||
             !isEmptyValueField(schema, itemDefaultValue)
           ) {
-            _.set(
-              props.uiFormData,
-              [...props.fieldPath, `${len - 1}`, schema.name].filter((i) => i),
-              _.cloneDeep(itemDefaultValue)
-            );
+            _.set(props.uiFormData, fieldPath, _.cloneDeep(itemDefaultValue));
           }
         });
       };
@@ -265,7 +269,7 @@
       };
       // init data when create
       const init = () => {
-        const counts = minItems || defaultItems;
+        const counts = _.max([minItems, defaultItems]);
         if (counts) {
           for (let i = 0; i < counts; i += 1) {
             setPropertiesList();
@@ -278,7 +282,6 @@
         if (schemaFormStatus.value === PageAction.CREATE) {
           init();
         } else {
-          const counts = minItems || defaultItems;
           const value = _.get(props.uiFormData, props.fieldPath, []);
 
           if (value && value.length) {
