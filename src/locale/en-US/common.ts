@@ -154,5 +154,7 @@ export default {
   'common.rule.name': 'Name is required',
   'common.rule.wordlimit': 'Maximum {length} characters',
   'common.docs.link.tips': 'View Documentation',
-  'common.docs.link': 'here'
+  'common.docs.link': 'here',
+  'common.result.nodata.subtitle': 'Please check if it has been created',
+  'common.result.nodata.title': '{type} not found'
 };

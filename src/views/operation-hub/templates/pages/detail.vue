@@ -90,7 +90,7 @@
                 v-model="formData.description"
                 :view-status="pageAction === PageAction.VIEW"
                 :label="$t('operation.environments.table.description')"
-                :style="{ width: `${InputWidth.LARGE}px` }"
+                :style="{ width: `${InputWidth.LARGE}px`, height: '100px' }"
                 :auto-size="{ minRows: 4, maxRows: 6 }"
                 :max-length="200"
                 show-word-limit
@@ -177,13 +177,13 @@
             </a-form-item>
           </a-form>
           <QuestionPopup
+            v-if="pageAction === PageAction.EDIT"
             :link="QAlinkMap.UISchema"
             class="m-l-20 relative"
             title="UI Schema"
             style="top: -40px"
           >
-            <span>{{ $t('resource.template.detail.helps.templateType') }}</span>
-            <span>{{ $t('resource.template.detail.helps.preview') }}</span>
+            <span>{{ $t('resource.definition.detail.helps.uischema') }}</span>
           </QuestionPopup>
         </div>
       </div>

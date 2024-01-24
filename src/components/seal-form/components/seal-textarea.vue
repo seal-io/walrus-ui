@@ -44,7 +44,7 @@
   <SealViewItemWrap
     v-else
     :label="$attrs.label || placeholder"
-    :style="{ width: $attrs.style?.width || 'max-content' }"
+    :style="{ width: $attrs.style?.width || 'max-content', ...$attrs.height }"
   >
     <span>{{ modelValue }}</span>
   </SealViewItemWrap>

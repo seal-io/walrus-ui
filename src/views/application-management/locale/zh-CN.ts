@@ -179,5 +179,22 @@ export default {
   'applications.service.stop.env': '停止环境！',
   'applications.service.stop.confirm': '底层组件将被删除,是否确定停止?',
   'applications.service.revision.runtime': '计算配置',
-  'applications.service.revision.custom': '用户配置'
+  'applications.service.revision.custom': '用户配置',
+  'project.result.title': '尚未创建项目',
+  'project.result.subTitle': '系统内项目名唯一，您可以在此创建项目',
+  'project.result.nodata.title': '未找到项目',
+  'project.resource.result.title': '尚未创建资源',
+  'project.resource.result.subTitle': '您可以在此创建资源，或者从YAML导入',
+  'resource.runs.result.title': '尚未执行任何部署操作',
+  'resource.runs.result.subTitle': '执行部署操作后，即可查看最新运行状态',
+  'resource.components.result.title': '未产生组件',
+  'resource.components.result.subTitle': '组件是资源部署生成的实体',
+  'resource.endpoints.result.title': '未发现可访问地址',
+  'resource.endpoints.result.subTitle':
+    '在模板中配置ports，部署后会自动生成访问地址',
+  'resource.outputs.result.title': '未发现输出',
+  'resource.outputs.result.subTitle': '',
+  'resource.revisions.result.title': '未产生版本',
+  'resource.revisions.result.subTitle':
+    '每次部署都将生成一个版本，最新的版本不能被删除'
 };

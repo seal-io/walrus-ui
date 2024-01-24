@@ -187,6 +187,42 @@
             </template>
           </a-table-column>
         </template>
+        <template #empty>
+          <result-view
+            :loading="loading"
+            :title="
+              queryParams.query
+                ? $t('project.environment.result.nodata.title')
+                : $t('project.environment.result.title')
+            "
+            :subtitle="
+              queryParams.query
+                ? $t('project.environment.result.nodata.subtitle')
+                : $t('project.environment.result.subTitle')
+            "
+          >
+            <template #icon>
+              <icon-find-replace v-if="queryParams.query" />
+              <i v-else class="iconfont icon-rongqiyunfuwu"></i>
+            </template>
+            <template #extra>
+              <a-button
+                v-if="
+                  userStore.hasProjectResourceActions({
+                    projectID,
+                    resource: Resources.Environments,
+                    actions: [Actions.POST]
+                  }) && !queryParams.query
+                "
+                type="outline"
+                @click="handleCreate"
+                ><icon-plus class="m-r-4" />{{
+                  $t('common.button.create.now')
+                }}</a-button
+              >
+            </template>
+          </result-view>
+        </template>
       </a-table>
       <a-pagination
         size="small"

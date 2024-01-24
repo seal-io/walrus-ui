@@ -24,10 +24,12 @@
           :title="capitalize($t('common.input.type'))"
         >
           <template #title>
-            <span>{{ $t('common.table.type') }}</span>
-            <a-tooltip :content="$t('operation.templates.detail.type.tips')">
-              <icon-info-circle class="mleft-5" />
-            </a-tooltip>
+            <span class="flex flex-align-center">
+              <span>{{ $t('common.table.type') }}</span>
+              <a-tooltip :content="$t('operation.templates.detail.type.tips')">
+                <icon-info-circle class="mleft-5" />
+              </a-tooltip>
+            </span>
           </template>
           <template #cell="{ record }">
             <span
@@ -69,6 +71,20 @@
           </template>
         </a-table-column>
       </template>
+      <template #empty>
+        <result-view
+          :loading="loading"
+          :title="$t('resource.outputs.result.title')"
+          subtitle=""
+        >
+          <template #icon>
+            <i
+              class="iconfont icon-variable"
+              style="font-weight: 500; font-size: 24px"
+            ></i>
+          </template>
+        </result-view>
+      </template>
     </a-table>
   </div>
 </template>
@@ -85,16 +101,21 @@
   const { setChunkRequest } = useSetChunkRequest();
   const serviceId = inject(ProvideServiceIDKey, ref(''));
   const dataList = ref<OutputsRow[]>([]);
+  const loading = ref(false);
   let chunkRequesSource: any = null;
+
   const fetchData = async () => {
     try {
+      loading.value = true;
       const { data } = await queryInstanceOutputs({ id: serviceId.value });
       dataList.value = _.map(data || [], (item) => {
         item.id = `${item.moduleName}/${item.name}`;
         return item;
       });
+      loading.value = false;
     } catch (error) {
       //
+      loading.value = false;
     }
   };
   const updateChunkedList = (data) => {

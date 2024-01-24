@@ -151,5 +151,7 @@ export default {
   'common.rule.name': '名称必填',
   'common.rule.wordlimit': '最多输入{length}个字符',
   'common.docs.link.tips': '查看文档',
-  'common.docs.link': '这里'
+  'common.docs.link': '这里',
+  'common.result.nodata.subtitle': '请检查是否已创建',
+  'common.result.nodata.title': '未找到{type}'
 };

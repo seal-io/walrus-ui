@@ -91,7 +91,57 @@
       :title="$t('menu.applicationManagement.resource')"
       :request-params="queryParams"
       @selection-change="handleResourceSelectChange"
-    ></tableList>
+    >
+      <template #empty>
+        <result-view
+          :loading="loading"
+          :title="
+            queryParams.query
+              ? $t('common.result.nodata.title', {
+                  type: $t('applications.applications.table.resource')
+                })
+              : $t('project.resource.result.title')
+          "
+          :subtitle="
+            queryParams.query
+              ? $t('common.result.nodata.subtitle')
+              : $t('project.resource.result.subTitle')
+          "
+        >
+          <template #icon>
+            <icon-find-replace v-if="queryParams.query" />
+            <i v-else class="iconfont icon-apps-fill"></i>
+          </template>
+          <template #extra>
+            <a-space
+              v-if="
+                userStore.hasProjectResourceActions({
+                  projectID,
+                  environmentID,
+                  resource: Resources.Resources,
+                  actions: [Actions.POST]
+                }) && !queryParams.query
+              "
+              :size="30"
+            >
+              <a-button type="outline" @click="handleCreate"
+                ><icon-plus class="m-r-4" />{{
+                  $t('common.button.create.now')
+                }}</a-button
+              >
+              <a-button
+                status="success"
+                type="outline"
+                @click="handleImportFile"
+                ><icon-import class="m-r-4" />{{
+                  $t('applications.service.importyaml')
+                }}
+              </a-button>
+            </a-space>
+          </template>
+        </result-view>
+      </template>
+    </tableList>
     <deleteServiceModal
       v-model:show="showDeleteModal"
       :callback="handleDeleteConfirm"

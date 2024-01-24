@@ -103,15 +103,17 @@
               hide-label
               field="description"
             >
-              <seal-textarea
-                v-model="formData.description"
-                :view-status="pageAction === PageAction.VIEW"
-                :label="$t('operation.environments.table.description')"
-                :style="{ width: `${InputWidth.LARGE}px` }"
-                :auto-size="{ minRows: 4, maxRows: 6 }"
-                :max-length="200"
-                show-word-limit
-              ></seal-textarea>
+              <div class="description">
+                <seal-textarea
+                  v-model="formData.description"
+                  :view-status="pageAction === PageAction.VIEW"
+                  :label="$t('operation.environments.table.description')"
+                  :style="{ width: `${InputWidth.LARGE}px` }"
+                  :auto-size="{ minRows: 4, maxRows: 6 }"
+                  :max-length="200"
+                  show-word-limit
+                ></seal-textarea>
+              </div>
             </a-form-item>
 
             <a-form-item
@@ -202,7 +204,6 @@
           :active-key="activeKey"
           lazy-load
           class="page-line-tabs"
-          style="margin-top: 50px"
           @change="setPageTabActive"
         >
           <a-tab-pane
@@ -342,7 +343,7 @@
     ResourceDefinitionFormData,
     definitionFormData
   } from '../config/interface';
-  import { tabList, definitionHelps, schemaHelps } from '../config';
+  import { tabList, definitionHelps, definitionSchemaHelps } from '../config';
   import DefinitionRules from '../components/definition-rules.vue';
   import tabInput from '../../templates/components/tab-input.vue';
   import tabOutput from '../../templates/components/tab-output.vue';
@@ -417,7 +418,7 @@
     if (pageAction.value === PageAction.EDIT) {
       return definitionHelps;
     }
-    return [...definitionHelps, ...schemaHelps];
+    return [...definitionHelps, ...definitionSchemaHelps];
   });
 
   const getProjectList = async () => {
@@ -727,6 +728,13 @@
             }
           }
         }
+      }
+    }
+
+    .description {
+      :deep(.seal-view-item-wrap) {
+        height: 150px;
+        overflow: auto;
       }
     }
   }

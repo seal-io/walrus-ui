@@ -129,6 +129,17 @@
           </template>
         </a-table-column>
       </template>
+      <template #empty>
+        <result-view
+          :loading="loading"
+          :title="$t('resource.revisions.result.title')"
+          :subtitle="$t('resource.revisions.result.subTitle')"
+        >
+          <template #icon>
+            <i class="iconfont icon-rizhi"></i>
+          </template>
+        </result-view>
+      </template>
     </a-table>
     <a-pagination
       size="small"
