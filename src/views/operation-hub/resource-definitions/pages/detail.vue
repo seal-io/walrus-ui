@@ -187,6 +187,7 @@
                 :show-delete="formData.matchingRules?.length > 1"
                 :template-list="templateList"
                 class="m-b-20"
+                @update:active-key="(val) => (activeRule = val)"
               >
               </DefinitionRules>
             </a-tab-pane>
@@ -558,8 +559,12 @@
     if (item) {
       const ruleData = await refMap.value[
         `${definitionRulePrefix}${item.id}`
-      ]?.ref?.submit?.();
-      formData.value.matchingRules[index] = ruleData;
+      ]?.ref?.getRuleData?.();
+      formData.value.matchingRules[index] = {
+        ..._.cloneDeep(ruleData),
+        id: item.id,
+        pageAction: PageAction.EDIT
+      };
     }
   };
   const handleSubmit = async () => {
