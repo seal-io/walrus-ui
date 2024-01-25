@@ -21,7 +21,7 @@ export default {
   'operation.connectors.title.edit': '编辑{type}连接器',
   'operation.connectors.title.view': '{type}连接器详情',
   'operation.connectors.title.new': '新建{type}连接器',
-  'operation.connectors.detail.clusterName': '集群名称',
+  'operation.connectors.detail.clusterName': '名称',
   'operation.connectors.detail.readfile': '从文件读取',
   'operation.connectors.detail.fileformat': '文件格式: yaml或文本文件',
   'operation.connectors.rules.name': '集群名称必填',

@@ -171,13 +171,13 @@ export default {
   'applications.environment.clone.target': 'Target Environments',
   'applications.environment.clone.env.rules':
     'Target Environments is required.',
-  'applications.environment.graph.fitview': 'fit view',
+  'applications.environment.graph.fitview': 'Fit View',
   'applications.environment.type': 'Environment Type',
   'applications.environment.rule.type': 'Environment Type is required.',
   'applications.environment.graph.cancelfullscreen': 'Exit Full Screen',
   'applications.environment.graph.fullscreen': 'Full Screen',
-  'applications.environment.graph.show': 'show subresources',
-  'applications.environment.graph.hide': 'hide subresources',
+  'applications.environment.graph.show': 'Show Components',
+  'applications.environment.graph.hide': 'hide Components',
   'applications.environment.connector.tips':
     'Please select an environment type',
   'applications.variable.scope.project': 'Project',

@@ -16,11 +16,24 @@
 
 <script lang="ts" setup>
   import _ from 'lodash';
-  import { onMounted, nextTick, provide, ref, watch, inject } from 'vue';
+  import {
+    onMounted,
+    nextTick,
+    provide,
+    ref,
+    watch,
+    inject,
+    computed
+  } from 'vue';
+  import useCallCommon from '@/hooks/use-call-common';
   import { InjectSchemaFormStatusKey, PageAction } from '@/views/config';
   import GroupForm from '@/components/dynamic-form/group-form.vue';
   import { queryItemResourceDefinition } from '@/views/operation-hub/resource-definitions/api';
-  import { queryItemTemplatesVersions } from '@/views/operation-hub/templates/api';
+  import { queryEnvironmentAvailableDefinitions } from '@/views/application-management/environments/api';
+  import {
+    queryItemTemplatesVersions,
+    queryTemplates
+  } from '@/views/operation-hub/templates/api';
   import { ServiceDataType, ProvideServiceInfoKey } from '../config';
 
   const props = defineProps({
@@ -29,10 +42,65 @@
       default: false
     }
   });
+
+  const { route } = useCallCommon();
   const serviceInfo = inject(ProvideServiceInfoKey, ref<any>({}));
   const schema = ref<any>({});
   const loaded = ref(false);
+  const templateList = ref<any[]>([]);
+  const requestFlag = ref(true);
   provide(InjectSchemaFormStatusKey, ref(PageAction.VIEW));
+
+  // template options
+  const getTemplates = async () => {
+    try {
+      const params = {
+        page: -1,
+        withGlobal: true,
+        extract: ['-status']
+      };
+      const { data } = await queryTemplates(params);
+      templateList.value = _.map(data?.items || [], (item) => {
+        return {
+          ...item,
+          label: item.name,
+          value: item.id
+        };
+      });
+    } catch (error) {
+      templateList.value = [];
+    }
+  };
+
+  const getResourceDefinitions = async () => {
+    try {
+      const environmentID = route.params.environmentId as string;
+      const { data } = await queryEnvironmentAvailableDefinitions({
+        environmentID
+      });
+      templateList.value = _.map(data || [], (item) => {
+        return {
+          ...item,
+          label: item.type,
+          value: item.type
+        };
+      });
+    } catch (error) {
+      templateList.value = [];
+      // console.log(error)
+    }
+  };
+
+  const initTemplateList = async () => {
+    const type = serviceInfo.value.type
+      ? ServiceDataType.resource
+      : ServiceDataType.service;
+    if (type === ServiceDataType.resource) {
+      await getResourceDefinitions();
+    } else {
+      await getTemplates();
+    }
+  };
   const setTemplateInfo = (moduleData) => {
     const variables =
       _.cloneDeep(
@@ -43,8 +111,11 @@
 
   const getItemResourceDefinitionSchema = async () => {
     if (!serviceInfo.value.type) return;
+    const resourceDefId = _.find(templateList.value, (item) => {
+      return item.value === serviceInfo.value.type;
+    })?.id;
     const { data } = await queryItemResourceDefinition({
-      id: serviceInfo.value.type
+      id: resourceDefId as string
     });
     setTemplateInfo(data);
   };
@@ -61,11 +132,11 @@
     setTemplateInfo(_.get(data, 'items.0', {}));
   };
   const getSchema = async () => {
-    const dataType = serviceInfo.value.type
+    const type = serviceInfo.value.type
       ? ServiceDataType.resource
       : ServiceDataType.service;
     try {
-      if (dataType === ServiceDataType.resource) {
+      if (type === ServiceDataType.resource) {
         await getItemResourceDefinitionSchema();
       } else {
         await getItemTemplatesVersionsSchema();
@@ -74,6 +145,11 @@
     } catch (error) {
       // console.log('error', error);
     }
+  };
+  const init = async () => {
+    schema.value = {};
+    await initTemplateList();
+    await getSchema();
   };
   watch(
     () => props.isCollapsed,
@@ -86,12 +162,18 @@
       immediate: true
     }
   );
-  onMounted(() => {
-    schema.value = {};
-    nextTick(() => {
-      getSchema();
-    });
-  });
+  watch(
+    () => serviceInfo.value,
+    () => {
+      if (serviceInfo.value.id && requestFlag.value) {
+        requestFlag.value = false;
+        init();
+      }
+    },
+    {
+      immediate: true
+    }
+  );
 </script>
 
 <style lang="less">

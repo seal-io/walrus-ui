@@ -44,7 +44,17 @@
             </a-select>
           </template> -->
         </AceEditor>
-        <div class="m-t-10">
+        <div
+          v-if="
+            userStore.hasProjectResourceActions({
+              projectID,
+              environmentID,
+              resource: Resources.ResourceRevisions,
+              actions: ['PUT']
+            })
+          "
+          class="m-t-10"
+        >
           <seal-textarea
             v-model="changeComment"
             style="width: 100%"

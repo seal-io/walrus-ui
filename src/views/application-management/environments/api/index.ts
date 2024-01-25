@@ -118,11 +118,20 @@ export function exportEnvironment(data: {
 
 export const queryEnvironmentAvailableDefinitions = (params: {
   environmentID: string;
+  sort?: string[];
 }) => {
   return axios.get(
     `${PROJECT_API_PREFIX()}${ENVIRONMENT_API}/${
       params.environmentID
-    }/resource-definitions`
+    }/resource-definitions`,
+    {
+      params: {
+        ..._.omit(params, ['environmentID'])
+      },
+      paramsSerializer: (obj) => {
+        return qs.stringify(obj);
+      }
+    }
   );
 };
 

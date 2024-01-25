@@ -129,6 +129,7 @@
               :style="{ width: `${InputWidth.LARGE}px` }"
             >
               <keyValueLabels
+                ref="projectLabelsSelector"
                 v-model:value="formData.selector.projectLabels"
                 v-model:label-list="projectLabels.list"
                 :validate-trigger="validateTrigger"
@@ -260,6 +261,7 @@
               :style="{ width: `${InputWidth.LARGE}px` }"
             >
               <keyValueLabels
+                ref="environmentLabelsSelector"
                 v-model:value="formData.selector.environmentLabels"
                 v-model:label-list="environmentLabels.list"
                 :style="{ width: `100%` }"
@@ -309,6 +311,7 @@
               :style="{ width: `${InputWidth.LARGE}px` }"
             >
               <keyValueLabels
+                ref="resourceLabelsSelector"
                 v-model:value="formData.selector.resourceLabels"
                 v-model:label-list="resourceLabels.list"
                 :validate-trigger="validateTrigger"
@@ -583,6 +586,9 @@
     labels: {},
     list: []
   });
+  const environmentLabelsSelector = ref();
+  const projectLabelsSelector = ref();
+  const resourceLabelsSelector = ref();
   const selectors = ref<Set<string>>(new Set());
   const formDataAttributeCache = ref<any>({});
   const formAction = ref(props.schemaFormAction);
@@ -672,10 +678,43 @@
   };
   const handleAddSelector = (selector) => {
     selectors.value.add(selector);
+    nextTick(() => {
+      if (selector === 'projectLabels') {
+        projectLabelsSelector.value?.handleAddLabel?.({
+          key: '',
+          value: ''
+        });
+      }
+      if (selector === 'environmentLabels') {
+        environmentLabelsSelector.value?.handleAddLabel?.({
+          key: '',
+          value: ''
+        });
+      }
+      if (selector === 'resourceLabels') {
+        resourceLabelsSelector.value?.handleAddLabel?.({
+          key: '',
+          value: ''
+        });
+      }
+      if (selector === 'environmentNames') {
+        formData.value.selector.environmentNames = [''];
+      }
+    });
   };
   const handleDeleteSelector = (selector: SelectorType) => {
     formData.value.selector = _.omit(formData.value.selector, [selector]);
     selectors.value.delete(selector);
+
+    if (selector === 'projectLabels') {
+      projectLabels.value.labels = {};
+    }
+    if (selector === 'environmentLabels') {
+      environmentLabels.value.labels = {};
+    }
+    if (selector === 'resourceLabels') {
+      resourceLabels.value.labels = {};
+    }
   };
   const setTemplateInfo = (moduleData) => {
     const variables =

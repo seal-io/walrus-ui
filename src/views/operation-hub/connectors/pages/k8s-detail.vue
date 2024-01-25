@@ -82,11 +82,6 @@
               :max-length="validateInputLength.NAME"
               show-word-limit
             ></seal-input>
-            <!-- <template v-if="pageAction === PageAction.EDIT" #extra>
-              <div :style="{ maxWidth: `${InputWidth.LARGE}px` }">{{
-                $t('common.validate.labelName')
-              }}</div>
-            </template> -->
           </a-form-item>
           <a-form-item
             :label="$t('operation.connectors.table.environmentType')"
@@ -217,17 +212,6 @@
                 }"
               ></StatusLabel>
             </SealFormItemWrap>
-            <!-- <span class="readonly-view-label">
-              <StatusLabel
-                :status="{
-                  status: get(formData, 'status.summaryStatus') || '',
-                  text: get(formData, 'status.summaryStatus'),
-                  message: get(formData, 'status.summaryStatusMessage') || '',
-                  transitioning: get(formData, 'status.transitioning'),
-                  error: get(formData, 'status.error')
-                }"
-              ></StatusLabel>
-            </span> -->
           </a-form-item>
           <!-- <a-form-item
             v-if="pageAction === PageAction.VIEW"
