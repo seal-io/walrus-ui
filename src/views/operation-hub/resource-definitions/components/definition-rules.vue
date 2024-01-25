@@ -397,16 +397,17 @@
           </a-form-item>
         </a-form>
       </div>
-      <ModuleWrapper :show-delete="false" class="config-wrapper">
-        <template #title>
-          <span>{{ $t('common.title.config') }}</span>
-        </template>
-        <a-spin
-          class="variables"
-          style="width: 100%"
-          :loading="asyncLoading"
-          fill
-        >
+      <a-spin
+        class="variables"
+        style="width: 100%"
+        :loading="asyncLoading"
+        fill
+      >
+        <ModuleWrapper :show-delete="false" class="config-wrapper">
+          <template #title>
+            <span>{{ $t('common.title.config') }}</span>
+          </template>
+
           <GroupForm
             ref="groupForm"
             v-model:form-data="formData.attributes"
@@ -414,10 +415,11 @@
             class="group-form"
             style="width: 100%"
             :schema="schemaVariables"
+            @render-end="handleRenderEnd"
             @change="handleAttributeChange"
           ></GroupForm>
-        </a-spin>
-      </ModuleWrapper>
+        </ModuleWrapper>
+      </a-spin>
     </div>
   </div>
 </template>
@@ -620,6 +622,11 @@
   provide(InjectSchemaFormStatusKey, ref(formAction));
   provide(InjectTraceKey, traceKey);
 
+  const handleRenderEnd = () => {
+    setTimeout(() => {
+      asyncLoading.value = false;
+    }, 100);
+  };
   const handleAttributeChange = () => {
     formDataAttributeCache.value[formData.value.template.version] = _.cloneDeep(
       formData.value.attributes
@@ -724,8 +731,6 @@
       return get(data, 'items.0', {});
     } catch (error) {
       return {};
-    } finally {
-      asyncLoading.value = false;
     }
   };
 
