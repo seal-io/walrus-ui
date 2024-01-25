@@ -461,6 +461,7 @@
   import keyValueLabels from '@/components/form-create/custom-components/key-value-labels.vue';
   import primaryButtonGroup from '@/components/drop-button-group/primary-button-group.vue';
   import { queryEnvironmentsList } from '@/views/application-management/environments/api';
+  import { parseSchemaDefaultValue } from '@/components/dynamic-form/utils/parser-schema-default-value';
   import semverEq from 'semver/functions/eq';
   import semverGt from 'semver/functions/gt';
   import { SelectorAction } from '../config';
@@ -480,6 +481,12 @@
       type: String,
       default() {
         return '';
+      }
+    },
+    builtin: {
+      type: Boolean,
+      default() {
+        return false;
       }
     },
     originFormData: {
@@ -861,6 +868,15 @@
     return false;
   };
 
+  const parseBuiltDefinitionDefault = () => {
+    if (!props.builtin) return;
+    const data = {};
+    parseSchemaDefaultValue({
+      schema: schemaVariables.value,
+      formData: data
+    });
+    uiFormData.value = _.cloneDeep(data);
+  };
   const setLabels = () => {
     environmentLabels.value.labels = _.cloneDeep(
       formData.value.selector?.environmentLabels
@@ -884,6 +900,7 @@
 
       setTemplateInfo(moduleData);
       initSelectors();
+      parseBuiltDefinitionDefault();
     } else {
       formData.value.template.template.id = get(
         props.templateList,

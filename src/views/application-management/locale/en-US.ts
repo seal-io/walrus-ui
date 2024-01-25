@@ -177,7 +177,7 @@ export default {
   'applications.environment.graph.cancelfullscreen': 'Exit Full Screen',
   'applications.environment.graph.fullscreen': 'Full Screen',
   'applications.environment.graph.show': 'Show Components',
-  'applications.environment.graph.hide': 'hide Components',
+  'applications.environment.graph.hide': 'Hide Components',
   'applications.environment.connector.tips':
     'Please select an environment type',
   'applications.variable.scope.project': 'Project',

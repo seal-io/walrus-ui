@@ -177,7 +177,7 @@
   };
 
   const fetchData = async () => {
-    if (!props.revisionId) return;
+    if (!props.revisionId || !get(props.dataInfo, 'resource.id')) return;
     try {
       loading.value = true;
       const params = {
