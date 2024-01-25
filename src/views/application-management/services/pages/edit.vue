@@ -497,6 +497,7 @@
   const handleRenderEnd = () => {
     setTimeout(() => {
       isFormChange.value = false;
+      asyncLoading.value = false;
     }, 100);
   };
   const getEnvironmentConnectors = async () => {

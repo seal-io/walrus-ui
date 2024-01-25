@@ -167,12 +167,15 @@
             flex-start
             style="margin: 10px 0 0 0"
           ></GroupTitle>
-          <GroupForm
-            ref="groupForm"
-            v-model:form-data="formData.attributes"
-            :ui-form-data="uiFormData"
-            :schema="schemaVariables"
-          ></GroupForm>
+          <a-spin style="width: 100%" :loading="asyncLoading">
+            <GroupForm
+              ref="groupForm"
+              v-model:form-data="formData.attributes"
+              :ui-form-data="uiFormData"
+              :schema="schemaVariables"
+              @render-end="handleRenderEnd"
+            ></GroupForm>
+          </a-spin>
         </div>
       </div>
       <template #footer>
@@ -251,12 +254,7 @@
         return '';
       }
     },
-    asyncLoading: {
-      type: Boolean,
-      default() {
-        return false;
-      }
-    },
+
     dataList: {
       type: Array as PropType<any[]>,
       default() {
@@ -285,7 +283,8 @@
     formData,
     uiFormData,
     templateList,
-    pageAction
+    pageAction,
+    asyncLoading
   } = useServiceData();
 
   const route = useRoute();
@@ -319,6 +318,9 @@
   provide(InjectCompleteDataKey, completeData);
   provide(InjectTraceKey, traceKey);
 
+  const handleRenderEnd = () => {
+    asyncLoading.value = false;
+  };
   const handleCheckboxChange = (checked) => {
     if (checked) {
       selectedList.value = new Set(_.map(editServiceList.value, 'id'));

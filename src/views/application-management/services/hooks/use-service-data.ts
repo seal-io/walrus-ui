@@ -292,7 +292,7 @@ export default function useServiceData(props?) {
     await initTemplateList();
     serviceInfo.value = serviceStore.getServiceInfo(id);
     await setFormAttributes();
-    asyncLoading.value = false;
+    // asyncLoading.value = false;
   };
 
   // for workflow create service task
@@ -311,7 +311,7 @@ export default function useServiceData(props?) {
     await Promise.all([getServiceItemInfo(), initSerivceInfo()]);
     await initTemplateList();
     await initFormData();
-    asyncLoading.value = false;
+    // asyncLoading.value = false;
 
     /* beacuse of the init versions data do not include the all template versions,
      * but only the created service versions
@@ -324,7 +324,7 @@ export default function useServiceData(props?) {
     asyncLoading.value = true;
     await initTemplateList();
     await initFormData();
-    asyncLoading.value = false;
+    // asyncLoading.value = false;
     allTemplateVersions.value = [];
   };
 

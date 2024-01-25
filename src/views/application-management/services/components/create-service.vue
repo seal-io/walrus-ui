@@ -246,6 +246,7 @@
           v-model:form-data="formData.attributes"
           :ui-form-data="uiFormData"
           :schema="schemaVariables"
+          @render-end="handleRenderEnd"
         ></GroupForm>
       </a-spin>
     </div>
@@ -400,6 +401,11 @@
 
   provide(InjectCompleteDataKey, completeDataObj);
 
+  const handleRenderEnd = () => {
+    setTimeout(() => {
+      asyncLoading.value = false;
+    }, 100);
+  };
   const getEnvironmentConnectors = async () => {
     try {
       connectorAxiosToken?.cancel();
