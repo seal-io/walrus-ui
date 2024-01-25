@@ -176,6 +176,7 @@
 
 <script lang="ts" setup>
   import { Resources, Actions } from '@/permissions/config';
+  import { PROJECT } from '@/router/config';
   import { useUserStore, useServiceStore } from '@/store';
   import _ from 'lodash';
   import {
@@ -357,6 +358,15 @@
       onOk: () => handleStopResource()
     });
   };
+
+  const handleCloneService = () => {
+    router.push({
+      name: PROJECT.ServiceClone,
+      query: {
+        resources: [currentInfo.value.id]
+      }
+    });
+  };
   const handleDelete = () => {
     showDeleteModal.value = true;
   };
@@ -369,7 +379,7 @@
     actionMap.set(serviceActionMap.start, handleStartResource);
     actionMap.set(serviceActionMap.stop, handleStopModal);
     actionMap.set(serviceActionMap.deploy, handleUpgrade);
-    // actionMap.set(serviceActionMap.upgrade, handleUpgrade);
+    actionMap.set(serviceActionMap.clone, handleCloneService);
   };
 
   const setInstanceTabList = () => {

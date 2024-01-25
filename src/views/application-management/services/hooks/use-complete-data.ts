@@ -80,6 +80,7 @@ export default function useCompleteData(props?) {
       const params = {
         page: -1,
         withGlobal: true,
+        sort: ['-name'],
         extract: ['-status']
       };
       const { data } = await queryTemplates(params, templateToken.token);
@@ -100,7 +101,8 @@ export default function useCompleteData(props?) {
       const environmentID =
         route.params.environmentId || props?.value?.flow?.environmentId;
       const { data } = await queryEnvironmentAvailableDefinitions({
-        environmentID
+        environmentID,
+        sort: ['-type']
       });
       templateList.value = _.map(data || [], (item) => {
         return {

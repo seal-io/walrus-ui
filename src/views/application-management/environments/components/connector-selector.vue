@@ -33,12 +33,21 @@
             "
             size="medium"
             :actions="connectorTypeList"
-            position="br"
+            position="bl"
             trigger="hover"
             item-type="text"
+            drop-class-name="connector-selector-drop"
             @select="(value, item) => handleCreate(value, item)"
           >
-            <a-button type="text" size="small"
+            <a-button
+              type="text"
+              size="small"
+              style="
+                display: flex;
+                justify-content: flex-start;
+                width: 360px;
+                height: 40px;
+              "
               ><icon-plus class="font-14 m-r-5" />{{
                 $t('operation.connectors.create')
               }}</a-button
@@ -135,4 +144,8 @@
   });
 </script>
 
-<style></style>
+<style lang="less">
+  .arco-trigger-popup.connector-selector-drop {
+    width: 360px;
+  }
+</style>

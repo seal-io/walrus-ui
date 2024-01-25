@@ -48,6 +48,12 @@
         default() {
           return 'button';
         }
+      },
+      dropClassName: {
+        type: String,
+        default() {
+          return '';
+        }
       }
     },
     setup(props, { emit, slots }) {
@@ -70,6 +76,7 @@
             onSelect={handleSelectAction}
             position={props.position}
             trigger={props.trigger}
+            class={[props.dropClassName]}
             v-slots={{
               content: () => {
                 return (

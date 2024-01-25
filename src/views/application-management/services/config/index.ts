@@ -206,22 +206,6 @@ export const StoppableStatus = [
   ServiceStatus.Running
 ];
 
-// export const NonStartableStatus = [
-//   ServiceStatus.Deleting,
-//   ServiceStatus.DeleteFailed,
-//   ServiceStatus.Deployed,
-//   ServiceStatus.Deploying,
-//   ServiceStatus.Preparing,
-//   ServiceStatus.Running
-// ];
-
-// export const NonStoppableStatus = [
-//   ServiceStatus.Deleting,
-//   ServiceStatus.DeleteFailed,
-//   ServiceStatus.Stopped,
-//   ServiceStatus.Undeployed
-// ];
-
 export const componentsMap = {
   string: 'Input',
   number: 'InputNumber',
@@ -401,6 +385,23 @@ export const serviceActions: MoreAction[] = [
         resource: Resources.Resources,
         environmentID: get(currentInfo, 'environment.id'),
         projectID: get(currentInfo, 'project.id'),
+        actions: [Actions.POST]
+      });
+    }
+  },
+  {
+    label: 'common.button.clone',
+    value: serviceActionMap.clone,
+    icon: 'icon-Clone-Cloud',
+    iconfont: true,
+    handler: '',
+    status: 'normal',
+    disabled: false,
+    filterFun({ projectID, environmentID }) {
+      return userStore.hasProjectResourceActions({
+        resource: Resources.Resources,
+        environmentID,
+        projectID,
         actions: [Actions.POST]
       });
     }

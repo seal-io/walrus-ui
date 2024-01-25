@@ -19,7 +19,9 @@
         </a-table-column>
         <a-table-column
           ellipsis
-          tooltip
+          :tooltip="{
+            position: 'tr'
+          }"
           :cell-style="{ minWidth: '40px' }"
           align="left"
           data-index="url"

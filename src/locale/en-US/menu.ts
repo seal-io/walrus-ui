@@ -13,7 +13,7 @@ export default {
   'menu.costManagement': 'Cost Management',
   'menu.costManagement.analyse': 'Cost Analysis',
   'menu.costManagement.perspective': 'Perspectives',
-  'menu.operatorHub': 'Operation',
+  'menu.operatorHub': 'Operations',
   'menu.operatorHub.connector': 'Connectors',
   'menu.operatorHub.evniroment': 'Environments',
   'menu.operatorHub.module': 'Templates',

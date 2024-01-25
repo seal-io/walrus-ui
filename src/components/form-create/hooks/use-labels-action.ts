@@ -11,8 +11,12 @@ export default function useLabelsActions(formData, key?: string | string[]) {
   const labelsKey = key || 'labels';
   const dataObj = ref({});
 
-  const handleAddLabel = (obj, list) => {
-    list.push({ ...obj });
+  const handleAddLabel = (obj, list?) => {
+    if (list) {
+      list.push({ ...obj });
+    } else {
+      labelList.value.push({ ...obj });
+    }
   };
   const handleDeleteLabel = (list, index) => {
     list.splice(index, 1);
@@ -64,6 +68,10 @@ export default function useLabelsActions(formData, key?: string | string[]) {
     validateTrigger.value = false;
   };
 
+  const clearList = () => {
+    labelList.value = [];
+  };
+
   return {
     labelList,
     validateTrigger,
@@ -75,6 +83,7 @@ export default function useLabelsActions(formData, key?: string | string[]) {
     handleDeleteLabel,
     validateLabel,
     getLabelList,
+    clearList,
     setLabelList
   };
 }

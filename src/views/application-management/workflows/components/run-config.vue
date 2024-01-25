@@ -61,7 +61,7 @@
             type="primary"
             class="cap-title cancel-btn"
             @click="handleOk"
-            >{{ $t('common.button.confirm') }}</a-button
+            >{{ $t('common.button.run') }}</a-button
           >
         </template>
         <template #cancel>

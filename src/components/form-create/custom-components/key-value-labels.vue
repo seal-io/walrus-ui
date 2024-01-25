@@ -77,14 +77,16 @@
         }
       }
     },
-    setup(props, { emit, attrs }) {
+    setup(props, { emit, attrs, expose }) {
       const { validateTrigger } = toRefs(props);
+      const attrsLabelList = attrs['labelList'] || attrs['label-list'];
       const {
         labelList,
         labelItem,
         dataObj,
         getDataObj,
         handleAddLabel,
+        clearList,
         handleDeleteLabel,
         setLabelList
       } = useLabelsActions(props.labels, props.labelsKey);
@@ -104,6 +106,11 @@
           deep: true
         }
       );
+
+      expose({
+        handleAddLabel,
+        clearList
+      });
       const renderEditLabels = () => {
         return (
           <>

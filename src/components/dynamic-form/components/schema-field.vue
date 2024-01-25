@@ -20,7 +20,7 @@
         InjectSchemaFormStatusKey,
         ref(PageAction.CREATE)
       );
-
+      console.log('schemaFormStatus=========', schemaFormStatus.value);
       // hidden
       const hidden = _.get(props.schema, ['x-walrus-ui', 'hidden'], false);
       // showIf

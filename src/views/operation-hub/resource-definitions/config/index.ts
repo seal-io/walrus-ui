@@ -14,11 +14,26 @@ export const variableTypeList = [
 
 export const SelectorAction = [
   { label: 'resource.definition.detail.projectName', value: 'projectNames' },
-  { label: 'resource.definition.detail.projectTag', value: 'projectLabels' },
-  { label: 'resource.definition.detail.envName', value: 'environmentNames' },
+  {
+    label: 'resource.definition.detail.projectTag',
+    value: 'projectLabels',
+    type: 'object'
+  },
+  {
+    label: 'resource.definition.detail.envName',
+    value: 'environmentNames'
+  },
   { label: 'applications.environment.type', value: 'environmentTypes' },
-  { label: 'resource.definition.detail.envTag', value: 'environmentLabels' },
-  { label: 'resource.definition.detail.resourceTag', value: 'resourceLabels' }
+  {
+    label: 'resource.definition.detail.envTag',
+    value: 'environmentLabels',
+    type: 'object'
+  },
+  {
+    label: 'resource.definition.detail.resourceTag',
+    value: 'resourceLabels',
+    type: 'object'
+  }
 ];
 
 export const tabList = [

@@ -891,7 +891,7 @@
     }
 
     .arco-popconfirm-footer {
-      display: none;
+      display: none !important;
     }
 
     .arco-popconfirm-body {

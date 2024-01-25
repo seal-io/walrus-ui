@@ -566,11 +566,11 @@
       handleCreate();
     }
   };
-  const handleCloneService = () => {
+  const handleCloneService = (row) => {
     router.push({
       name: PROJECT.ServiceClone,
       query: {
-        source: selectedKeys.value
+        resources: [row.id]
       }
     });
   };
@@ -644,6 +644,7 @@
       onOk: () => handleStopResource(row)
     });
   };
+
   const handleClickAction = (value, row) => {
     actionHandlerMap.get(value)(row);
   };
@@ -660,6 +661,7 @@
     actionHandlerMap.set(serviceActionMap.start, handleStartResource);
     actionHandlerMap.set(serviceActionMap.deploy, handleRedeployResource);
     actionHandlerMap.set(serviceActionMap.delete, handleDelete);
+    actionHandlerMap.set(serviceActionMap.clone, handleCloneService);
   };
   const init = async () => {
     userStore.setInfo({ currentProject: projectID });

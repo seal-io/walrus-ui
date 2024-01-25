@@ -65,7 +65,9 @@
           :title="capitalize($t('common.input.value'))"
         >
           <template #cell="{ record }">
-            <AutoTip :tooltip-props="{ style: 'white-space: pre' }">
+            <AutoTip
+              :tooltip-props="{ style: 'white-space: pre', position: 'tr' }"
+            >
               <span>{{ record.sensitive ? '******' : record.value }}</span>
             </AutoTip>
           </template>
