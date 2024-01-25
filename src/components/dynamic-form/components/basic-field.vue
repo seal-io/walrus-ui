@@ -64,6 +64,7 @@
 
       if (isPassword(props.schema)) {
         Component = CommonFieldMaps.password;
+        console.log('password++++++++++++++', props.schema);
       }
 
       const handleInputChangeCall = (val: any) => {
@@ -153,6 +154,7 @@
           >
             <Component
               {...attrs}
+              password={isPassword(props.schema) || props.schema.writeOnly}
               doc={props.doc}
               required={props.required}
               editorId={_.join(props.fieldPath, '.')}
