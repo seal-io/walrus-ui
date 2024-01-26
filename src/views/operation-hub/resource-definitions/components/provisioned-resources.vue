@@ -68,7 +68,8 @@
               :body-cell-class="
                 (record) =>
                   userStore.hasProjectResourceActions({
-                    projectID: record.id,
+                    projectID: record.project?.id,
+                    environmentID: record.environment?.id,
                     resource: Resources.Projects,
                     actions: [Actions.GET]
                   })
@@ -89,7 +90,8 @@
                 <a-link
                   v-if="
                     userStore.hasProjectResourceActions({
-                      projectID: record.id,
+                      projectID: record.project?.id,
+                      environmentID: record.environment?.id,
                       resource: Resources.Projects,
                       actions: [Actions.GET]
                     })
@@ -106,27 +108,19 @@
               tooltip
               :cell-style="{ minWidth: '40px' }"
               align="left"
-              data-index="project"
+              data-index="project.name"
               :title="$t('applications.projects.table.name')"
             >
               <template #title>
                 <a-select
                   v-model="queryParams.projectName"
                   :options="projectList"
-                  style="max-width: 180px"
+                  style="min-width: 150px; max-width: 180px"
                   :placeholder="$t('applications.projects.table.name')"
                   allow-clear
                   allow-search
                   @change="handleSearchByTabelField"
                 ></a-select>
-              </template>
-              <template #cell="{ record }">
-                <span>{{
-                  _.find(
-                    projectList,
-                    (item) => _.get(record, 'project.id') === item.id
-                  )?.name
-                }}</span>
               </template>
             </a-table-column>
             <a-table-column
@@ -149,7 +143,7 @@
               <template #title>
                 <a-select
                   v-model="queryParams.matchingRuleName"
-                  style="max-width: 180px"
+                  style="min-width: 150px; max-width: 180px"
                   allow-clear
                   allow-search
                   :placeholder="$t('resource.definition.detail.matchRule')"
@@ -271,7 +265,7 @@
   import CommentModal from '@/views/commons/components/comment-modal/index.vue';
   import StatusLabel from '@/views/operation-hub/connectors/components/status-label.vue';
   import { Resources, Actions } from '@/permissions/config';
-  import _, { cloneDeep, map, pickBy, remove } from 'lodash';
+  import _, { pickBy } from 'lodash';
   import { ref, reactive, PropType, computed, nextTick, onMounted } from 'vue';
   import dayjs from 'dayjs';
   import { useUserStore, useProjectStore, useAppStore } from '@/store';
@@ -347,18 +341,20 @@
     perPage: appStore.perPage || 10
   });
 
-  const { updateChunkedList } = useUpdateChunkedList(dataList);
-
-  const locale = computed(() => {
-    switch (i18n.global.locale) {
-      case 'zh-CN':
-        return 'zh-cn';
-      case 'en-US':
-        return 'en';
-      default:
-        return 'en';
+  const { updateChunkedList } = useUpdateChunkedList(dataList, {
+    mapFun: (item) => {
+      return {
+        ...item,
+        disabled: !userStore.hasProjectResourceActions({
+          projectID: item.project?.id,
+          environmentID: item.environment?.id,
+          resource: Resources.Resources,
+          actions: [Actions.DELETE]
+        })
+      };
     }
   });
+
   const setActionList = (row) => {
     const list = _.filter(definitionResourceActions, (item) => {
       return item.filterFun ? item.filterFun(row) : true;
@@ -388,7 +384,8 @@
     if (
       col.dataIndex === 'name' &&
       userStore.hasProjectResourceActions({
-        projectID: row.project.id,
+        projectID: row.project?.id,
+        environmentID: row.environment?.id,
         resource: Resources.Resources,
         actions: [Actions.GET]
       })
@@ -411,8 +408,9 @@
         return {
           ...item,
           disabled: !userStore.hasProjectResourceActions({
-            projectID: item.id,
-            resource: Resources.Projects,
+            projectID: item.project?.id,
+            environmentID: item.environment?.id,
+            resource: Resources.Resources,
             actions: [Actions.DELETE]
           })
         };
