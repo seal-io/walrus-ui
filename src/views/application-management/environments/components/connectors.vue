@@ -34,7 +34,7 @@
           :title="$t('operation.connectors.table.status')"
         >
           <template #cell="{ record }">
-            <span v-if="record.category === 'Custom'">-</span>
+            <span v-if="record.category === ConnectorCategory.Custom">-</span>
             <StatusLabel
               v-else
               :status="{
@@ -76,6 +76,7 @@
   import { ref, PropType } from 'vue';
   import { deleteModal } from '@/utils/monitor';
   import { ConnectorRowData } from '@/views/operation-hub/connectors/config/interface';
+  import { ConnectorCategory } from '@/views/operation-hub/connectors/config';
   import StatusLabel from '@/views/operation-hub/connectors/components/status-label.vue';
 
   const props = defineProps({
@@ -116,9 +117,19 @@
 
 <style lang="less" scoped>
   .connectors-list {
+    :deep(.arco-table-container) {
+      overflow: hidden;
+      border: 1px solid var(--color-neutral-3);
+      border-radius: var(--border-radius-small);
+
+      .arco-table-tr:last-child .arco-table-td {
+        border-bottom: none;
+      }
+    }
+
     :deep(.arco-table) {
       .arco-table-tr.arco-table-tr-empty .arco-table-td {
-        border-bottom: 1px solid var(--seal-color-table-border);
+        border-bottom: none;
       }
     }
   }

@@ -278,8 +278,6 @@
     }
 
     :deep(.arco-table-tr) {
-      background-color: red;
-
       &.row-child {
         .arco-table-td:first-child {
           .arco-table-cell {

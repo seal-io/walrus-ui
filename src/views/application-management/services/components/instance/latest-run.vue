@@ -40,7 +40,7 @@
       };
       const debounceViewLatestLogs = _.debounce(
         handleViewServiceLatestLogs,
-        500
+        300
       );
 
       watch(

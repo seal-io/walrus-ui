@@ -5,7 +5,7 @@ import { useRouter } from 'vue-router';
 import _ from 'lodash';
 import { useProjectStore, useUserStore } from '@/store';
 import { Resources, Actions } from '@/permissions/config';
-import { PROJECT } from '@/router/config';
+import { PROJECT, DASHBOARD } from '@/router/config';
 import { PageAction } from '@/views/config';
 import project from '@/directive/project';
 
@@ -240,6 +240,12 @@ export default function useEnterApplication() {
   };
 
   const gotoEnvironmentDetail = () => {
+    if (!projectStore.projectList.length) {
+      router.push({
+        name: PROJECT.List
+      });
+      return;
+    }
     if (projectStore.isSetDefaultActiveEnvironment) {
       gotoDefaultEnvironment();
       return;
