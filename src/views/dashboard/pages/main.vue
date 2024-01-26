@@ -35,13 +35,18 @@
               style="color: var(--sealblue-6)"
             ></i>
           </template>
-          <div>
-            <span class="font-16">{{
+          <div style="font-size: 16px">
+            <span class="font-16" style="font-size: 16px">{{
               $t('dashboard.createProject.tips')
             }}</span>
-            <a-link class="font-16 m-t-20" @click="handleCreateProject">{{
-              $t('common.button.create.now')
-            }}</a-link>
+            <a-link
+              class="font-16 m-t-20"
+              style="font-size: 16px"
+              @click="handleCreateProject"
+            >
+              <icon-plus class="m-r-4"></icon-plus
+              >{{ $t('common.button.create.now') }}</a-link
+            >
           </div>
         </a-empty>
       </ComCard>
