@@ -154,16 +154,16 @@
                 }"
               ></StatusLabel>
             </template>
-            <template #actions="{ record, rowIndex }">
+            <template #actions="{ record }">
               <a-space :size="10">
                 <DropButtonGroup
-                  v-if="setActionList(dataList[rowIndex]).length"
+                  v-if="setActionList(record).length"
                   :layout="
-                    setActionList(dataList[rowIndex]).length === 1
+                    setActionList(record).length === 1
                       ? 'horizontal'
                       : 'vertical'
                   "
-                  :actions="setActionList(dataList[rowIndex])"
+                  :actions="setActionList(record)"
                   @select="(value) => handleClickAction(value, record)"
                 >
                 </DropButtonGroup>
