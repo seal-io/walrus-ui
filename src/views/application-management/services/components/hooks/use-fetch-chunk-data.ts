@@ -176,7 +176,6 @@ export default function useFetchResource() {
     dataList.value = setDataList(dataList.value);
   };
   const fetchData = async () => {
-    console.log('fetchData===', serviceId.value);
     if (!serviceId.value) return;
     fetchToken?.cancel?.();
     fetchToken = createAxiosToken();
@@ -244,6 +243,7 @@ export default function useFetchResource() {
   };
   const createResourceChunkRequest = () => {
     requestCacheList.value = [];
+    if (!serviceId.value) return;
     try {
       setChunkRequest({
         url: `${SERVICE_API_PREFIX()}${SERVICE_API}/${

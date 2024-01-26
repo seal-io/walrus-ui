@@ -483,7 +483,7 @@
         beforeReconnect: getServiceItemInfo
       });
     } catch (error) {
-      console.log('error===========', error);
+      // console.log('error===========', error);
     }
   };
 
@@ -506,7 +506,6 @@
   const init = () => {
     getServiceItemInfo();
     fetchData();
-    console.log('dataList=======', dataList.value);
   };
   onMounted(() => {
     init();

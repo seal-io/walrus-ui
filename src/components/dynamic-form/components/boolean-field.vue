@@ -121,6 +121,7 @@
       const handleInputChange = (val) => {
         if (val === null && !fieldProps.required) {
           _.unset(props.formData, props.fieldPath);
+          _.set(props.uiFormData, props.fieldPath, false);
         } else {
           _.set(props.formData, props.fieldPath, val);
           _.set(props.uiFormData, props.fieldPath, val);

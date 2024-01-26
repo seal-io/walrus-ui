@@ -2,8 +2,8 @@
   <div class="thumb-view-wrap" wrap :size="16">
     <a-grid v-if="list.length" :cols="24" :col-gap="20" :row-gap="20" wrap>
       <a-grid-item
-        v-for="(item, index) in list"
-        :key="index"
+        v-for="item in list"
+        :key="item.id"
         :span="{ lg: 6, md: 12, sm: 24, xs: 24 }"
       >
         <templateItem

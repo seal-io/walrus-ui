@@ -12,16 +12,8 @@
           >*</span
         >
       </span>
-      <a-tooltip v-if="popupInfo" :content="popupInfo">
-        <icon-info-circle
-          style="stroke-linecap: initial; cursor: default"
-          class="mleft-5"
-        />
-      </a-tooltip>
+      <Tooltip :popup-info="popupInfo" :doc="$attrs.doc"></Tooltip>
     </div>
-    <!-- <div class="title">
-      <slot name="title"></slot>
-    </div> -->
     <div
       v-show="isAce"
       class="ace-box"
@@ -52,6 +44,7 @@
 
 <script lang="ts" setup>
   import _, { cloneDeep, each, get, isString, toString } from 'lodash';
+  import Tooltip from '@/components/seal-form/_components/tooltip.vue';
   import {
     onMounted,
     nextTick,

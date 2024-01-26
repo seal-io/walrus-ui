@@ -115,37 +115,6 @@
 
   const updateChunkedList = (data) => {
     dataList.value = data?.collection || [];
-
-    // const collections = _.map(data?.collection, (item) => {
-    //   item.id = `${item.moduleName}/${item.name}`;
-    //   return item;
-    // });
-
-    // // CREATE
-    // if (data?.type === websocketEventType.CREATE) {
-    //   dataList.value = _.concat(collections, dataList.value);
-    //   return;
-    // }
-    // // DELETE
-    // if (data?.type === websocketEventType.DELETE) {
-    //   dataList.value = _.filter(dataList.value, (item) => {
-    //     return !_.find(collections, (sItem) => sItem.id === item.id);
-    //   });
-    //   return;
-    // }
-    // // UPDATE
-    // _.each(collections, (item) => {
-    //   const updateIndex = _.findIndex(
-    //     dataList.value,
-    //     (sItem) => sItem.id === item.id
-    //   );
-    //   if (updateIndex > -1) {
-    //     const updateItem = _.cloneDeep(item);
-    //     dataList.value[updateIndex] = updateItem;
-    //   } else {
-    //     dataList.value = _.concat(_.cloneDeep(item), dataList.value);
-    //   }
-    // });
   };
   const updateHandler = (list: object[]) => {
     _.each(list, (data) => {
