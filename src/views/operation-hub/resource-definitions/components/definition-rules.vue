@@ -194,7 +194,6 @@
             hide-label
             field="selector.environmentTypes"
             :label="$t('applications.environment.type')"
-            :style="{ width: `${InputWidth.LARGE}px` }"
             :rules="[
               {
                 required: true,

@@ -167,40 +167,37 @@
         { immediate: true }
       );
       return () => (
-        <a-grid-item
-          span={{ lg: props.schema.colSpan, md: 12, sm: 12, xs: 12 }}
+        <a-form-item
+          hide-label={true}
+          label={props.schema.title}
+          field={_.join(props.fieldPath, '.')}
+          validate-trigger={['blur']}
+          rules={[
+            ...rules,
+            {
+              required: fieldProps.required,
+              validator
+            }
+          ]}
         >
-          <a-form-item
-            hide-label={true}
-            label={props.schema.title}
-            field={_.join(props.fieldPath, '.')}
-            validate-trigger={['blur']}
-            rules={[
-              ...rules,
-              {
-                required: fieldProps.required,
-                validator
-              }
-            ]}
-          >
-            <AceEditor
-              key={`${_.join(props.fieldPath, '_')}`}
-              {...attrs}
-              lang={lang.value}
-              v-model={fieldValue.value}
-              label={props.schema.title || props.schema.name}
-              popup-info={props.schema.description}
-              editor-default-value={defaultValue.value}
-              readOnly={schemaFormStatus.value === PageAction.VIEW}
-              style={{ width: '100%' }}
-              height={300}
-              editor-id={`${_.join(props.fieldPath, '_')}`}
-              onBlur={() => {
-                handleInputChange();
-              }}
-            ></AceEditor>
-          </a-form-item>
-        </a-grid-item>
+          <AceEditor
+            key={`${_.join(props.fieldPath, '_')}`}
+            {...attrs}
+            doc={props.schema.externalDocs}
+            lang={lang.value}
+            v-model={fieldValue.value}
+            label={props.schema.title || props.schema.name}
+            popup-info={props.schema.description}
+            editor-default-value={defaultValue.value}
+            readOnly={schemaFormStatus.value === PageAction.VIEW}
+            style={{ width: '100%' }}
+            height={300}
+            editor-id={`${_.join(props.fieldPath, '_')}`}
+            onBlur={() => {
+              handleInputChange();
+            }}
+          ></AceEditor>
+        </a-form-item>
       );
     }
   });

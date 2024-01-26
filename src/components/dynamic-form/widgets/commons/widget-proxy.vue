@@ -43,7 +43,6 @@
         isBasicType: true,
         isNullable: props.schema.nullable || props.schema.originNullable
       });
-
       const handleChange = (data) => {
         emit('change', data);
       };

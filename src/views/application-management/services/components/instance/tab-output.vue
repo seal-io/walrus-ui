@@ -104,9 +104,12 @@
   const serviceId = inject(ProvideServiceIDKey, ref(''));
   const dataList = ref<OutputsRow[]>([]);
   const loading = ref(false);
-  let chunkRequesSource: any = null;
+  let chunkRequestSource: any = null;
 
   const fetchData = async () => {
+    if (!serviceId.value) {
+      return;
+    }
     try {
       loading.value = true;
       const { data } = await queryInstanceOutputs({ id: serviceId.value });
@@ -161,9 +164,9 @@
     () => serviceId.value,
     () => {
       fetchData();
-      chunkRequesSource?.cancel?.();
+      chunkRequestSource?.cancel?.();
       nextTick(() => {
-        chunkRequesSource = setChunkRequest({
+        chunkRequestSource = setChunkRequest({
           url: `${SERVICE_RESOURCE_API_PREFIX()}/outputs`,
           handler: updateHandler,
           beforeReconnect: fetchData
@@ -174,9 +177,6 @@
       immediate: true
     }
   );
-  onMounted(() => {
-    // fetchData();
-  });
 </script>
 
 <style></style>
