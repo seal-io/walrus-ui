@@ -37,9 +37,13 @@
       size: {
         type: String as PropType<'small' | 'medium' | 'large'>,
         default: 'small'
+      },
+      trigger: {
+        type: String as PropType<'click' | 'hover'>,
+        default: 'hover'
       }
     },
-    setup(props, { emit, slots }) {
+    setup(props, { emit, slots, attrs }) {
       const { t } = i18n.global;
       const { actions, layout, loading } = toRefs(props);
 
@@ -58,8 +62,9 @@
       const renderVertical = () => {
         return (
           <ADropdownButton
+            trigger={props.trigger}
             size={props.size}
-            class="action-dropdown"
+            class={['action-dropdown']}
             onSelect={(val) => handleSelect(val)}
             onClick={(e) => {
               e.stopPropagation();
@@ -68,7 +73,6 @@
               }
               handleClick(_.head(actions.value));
             }}
-            trigger="hover"
             v-slots={{
               icon: () => {
                 return slots.icon
