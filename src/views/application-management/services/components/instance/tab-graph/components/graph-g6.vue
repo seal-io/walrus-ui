@@ -894,9 +894,12 @@
 <style lang="less">
   @import url('../style/g6-component-tooltip.less');
 
-  .g6-component-contextmenu {
-    padding: 6px 8px;
-    border: none;
+  .graph-mount {
+    .g6-component-contextmenu {
+      padding: 6px 8px;
+      border: none;
+      box-shadow: rgba(174, 174, 174, 0.5) 0 0 10px !important;
+    }
   }
 
   .uml-comp-icon {

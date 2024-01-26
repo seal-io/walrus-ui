@@ -868,7 +868,7 @@
     return false;
   };
 
-  const parseBuiltDefinitionDefault = () => {
+  const parseBuiltinDefinitionDefault = () => {
     if (!props.builtin) return;
     const data = {};
     parseSchemaDefaultValue({
@@ -900,7 +900,7 @@
 
       setTemplateInfo(moduleData);
       initSelectors();
-      parseBuiltDefinitionDefault();
+      parseBuiltinDefinitionDefault();
     } else {
       formData.value.template.template.id = get(
         props.templateList,

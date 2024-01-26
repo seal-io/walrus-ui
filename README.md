@@ -23,7 +23,7 @@ git clone https://github.com/seal-io/walrus-ui/
 4. Install dependencies
 
 ```
-cd ui
+cd walrus-ui
 yarn install
 ```
 
