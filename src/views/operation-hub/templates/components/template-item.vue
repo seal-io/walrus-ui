@@ -3,7 +3,7 @@
     <div class="img-box">
       <span v-if="provider" class="icon-wrap">
         <span class="img">
-          <img :src="provider" alt="" />
+          <img :src="provider" alt="" @error="handleLoadImgError" />
         </span>
       </span>
       <span v-else class="icon-wrap">
@@ -84,6 +84,7 @@
 
 <script lang="ts" setup>
   import _, { toLower, get } from 'lodash';
+  import TemplateImg from '@/assets/images/template.png';
   import { PropType, computed, ref, watch } from 'vue';
   import { MoreAction } from '@/views/config/interface';
   import { useRouter } from 'vue-router';
@@ -147,6 +148,10 @@
       };
     });
   });
+
+  const handleLoadImgError = (e) => {
+    e.target.src = TemplateImg;
+  };
   const handleEditTemplate = () => {
     emits('edit');
   };
@@ -250,9 +255,8 @@
       }
 
       :deep(.arco-icon) {
-        color: var(--sealblue-6);
+        color: rgb(var(--primary-5));
         font-size: 46px;
-        opacity: 0.8;
       }
     }
 
