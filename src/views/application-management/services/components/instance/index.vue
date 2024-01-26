@@ -438,6 +438,7 @@
         props.serviceList,
         (item) => _.get(item, 'id') !== _.get(currentInfo.value, 'id')
       );
+      currentInfo.value = {} as ServiceRowData;
       const nextServiceId = _.get(list, '0.id');
       if (!nextServiceId) {
         router.back();

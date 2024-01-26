@@ -1,5 +1,6 @@
 <script lang="tsx">
   import i18n from '@/locale';
+  import _ from 'lodash';
   import { ref, provide, PropType, watch, defineComponent } from 'vue';
   import useBasicInfoData from '@/views/application-management/projects/hooks/use-basicInfo-data';
   import {
@@ -37,17 +38,23 @@
       const viewLogs = () => {
         showDetailModal.value = true;
       };
+      const debounceViewLatestLogs = _.debounce(
+        handleViewServiceLatestLogs,
+        500
+      );
+
       watch(
         () => props.serviceInfo,
         (data) => {
           if (data.id) {
-            handleViewServiceLatestLogs(data);
+            debounceViewLatestLogs(data);
           }
         },
         {
           immediate: true
         }
       );
+
       watch(
         () => showDetailModal.value,
         () => {

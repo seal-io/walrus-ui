@@ -381,7 +381,7 @@
     serviceSelectKeys.value = keys;
   };
 
-  const handleResourceSelectChange = (keys: string[], dataList) => {
+  const handleResourceSelectChange = (keys: string[]) => {
     resourceSelectKeys.value = keys;
   };
   const handleDeleted = (ids) => {

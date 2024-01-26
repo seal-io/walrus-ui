@@ -1,6 +1,7 @@
 import { watch, nextTick, ref } from 'vue';
 import _ from 'lodash';
 import { websocketEventType } from '@/views/config';
+import { SILENCEAPI } from '@/api/config';
 import {
   useSetChunkRequest,
   createAxiosToken
@@ -40,6 +41,7 @@ export default function useViewLatestLogs(defaultShow?: boolean) {
   };
   const createServiceRevisionChunkRequest = () => {
     axiosToken?.cancel?.();
+    if (!currentServiceInfo.value?.id) return;
     try {
       axiosToken = setChunkRequest({
         url: `${SERVICE_API_PREFIX()}${SERVICE_API}/${
@@ -54,12 +56,14 @@ export default function useViewLatestLogs(defaultShow?: boolean) {
 
   const handleViewServiceLatestLogs = async (row) => {
     revisionAxiosToken?.cancel?.();
+    if (!row?.id) return;
     revisionAxiosToken = createAxiosToken();
     try {
       const params = {
         page: 1,
         perPage: 1,
         sort: ['-createTime'],
+        _action: SILENCEAPI,
         serviceID: row.id
       };
       const { data } = await queryServiceRevisions(

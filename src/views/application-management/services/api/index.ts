@@ -264,14 +264,17 @@ interface ServiceRevisionParams extends Pagination {
 }
 
 export const queryServiceRevisions = (
-  params: ServiceRevisionParams,
+  params: ServiceRevisionParams & { _action?: string },
   token?
 ) => {
   return axios.get(
     `${SERVICE_API_PREFIX()}${SERVICE_API}/${params.serviceID}/revisions`,
     {
       params: {
-        ..._.omit(params, ['serviceID'])
+        ..._.omit(params, ['serviceID', '_action'])
+      },
+      headers: {
+        _action: params._action || ''
       },
       cancelToken: token,
       paramsSerializer: (obj) => {

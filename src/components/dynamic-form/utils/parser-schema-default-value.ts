@@ -13,6 +13,8 @@ export const parseSchemaDefaultValue = ({
   const properties = (schema.properties || {}) as FieldSchema;
   const keys = _.keys(properties);
 
+  if (!keys.length) return;
+
   _.each(keys, (key) => {
     const property = properties[key];
     const { type } = property;
@@ -34,20 +36,19 @@ export const parseSchemaDefaultValue = ({
         schema: fieldSchema as FieldSchema,
         formData
       });
-    } else if (type === FIELD_TYPE.ARRAY) {
-      if (
-        fieldSchema?.minItems &&
-        !_.get(formData, fieldSchema.fieldPath, []).length
-      ) {
-        for (let i = 0; i < fieldSchema.minItems; i += 1) {
-          parseSchemaDefaultValue({
-            schema: {
-              ...fieldSchema.items,
-              fieldPath: [...fieldSchema.fieldPath, `${i}`]
-            },
-            formData
-          });
-        }
+    } else if (
+      type === FIELD_TYPE.ARRAY &&
+      fieldSchema?.minItems &&
+      !_.get(formData, fieldSchema.fieldPath, []).length
+    ) {
+      for (let i = 0; i < fieldSchema.minItems; i += 1) {
+        parseSchemaDefaultValue({
+          schema: {
+            ...fieldSchema.items,
+            fieldPath: [...fieldSchema.fieldPath, `${i}`]
+          },
+          formData
+        });
       }
     }
   });

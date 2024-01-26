@@ -267,7 +267,8 @@
     CreatActions,
     ServiceDataType,
     StartableStatus,
-    ProvideServiceInfoKey
+    ProvideServiceInfoKey,
+    ServiceStatus
   } from '../config';
   import {
     queryServices,
@@ -442,12 +443,13 @@
       dataList.value = _.map(data.items || [], (item) => {
         return {
           ...item,
-          disabled: !userStore.hasProjectResourceActions({
-            projectID,
-            environmentID,
-            resource: Resources.Resources,
-            actions: [Actions.DELETE]
-          })
+          disabled:
+            !userStore.hasProjectResourceActions({
+              projectID,
+              environmentID,
+              resource: Resources.Resources,
+              actions: [Actions.DELETE]
+            }) || _.get(item, 'status.summaryStatus') === ServiceStatus.Deleting
         };
       });
       total.value = data?.pagination?.total || 0;
@@ -593,6 +595,7 @@
       execSucceed();
       selectedKeys.value = [];
       rowSelection.selectedRowKeys = [];
+      handleRowSelectChange([]);
       emits('deleted', ids);
     } catch (error) {
       loading.value = false;
