@@ -204,6 +204,7 @@
             })
           "
           :active-key="activeKey"
+          :default-active-key="activeKey"
           lazy-load
           class="page-line-tabs"
           @change="setPageTabActive"
@@ -270,6 +271,12 @@
             ></component>
           </a-tab-pane>
           <a-tab-pane
+            v-if="
+              userStore.hasRolesActionsPermission({
+                resource: Resources.ResourceDefinitions,
+                actions: [Actions.PUT]
+              })
+            "
             :key="DefinitionDetailTabs.DEFINITIONRESOURCES"
             :title="$t('resource.definition.detail.createdResource')"
           >
