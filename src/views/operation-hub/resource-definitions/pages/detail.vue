@@ -266,7 +266,14 @@
               :schema="deinitionSchema"
               :template-info="formData"
               page="definition"
-              :editable="!_.get(formData, 'builtin')"
+              :editable="
+                _.get(formData, 'builtin')
+                  ? false
+                  : userStore.hasRolesActionsPermission({
+                      resource: Resources.ResourceDefinitions,
+                      actions: [Actions.PUT]
+                    })
+              "
               @reset="handleResetUISchema"
             ></component>
           </a-tab-pane>
