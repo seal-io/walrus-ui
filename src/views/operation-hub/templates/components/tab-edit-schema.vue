@@ -1,10 +1,5 @@
 <template>
   <div>
-    <!-- <QuestionPopup :link="QAlinkMap.Definition" title="UISchema" class="m-b-20">
-      <span>自定义资源类型的配置</span>
-      <span>UISchema 是匹配规则的中多个模板的配置的交集</span>
-      <span>UISchema 中配置属性的类型可能于匹配规则的属性类型不同</span>
-    </QuestionPopup> -->
     <div ref="wrapper" class="wrap" :class="{ fullscreen: fullscreen }">
       <div class="flex">
         <a-space>
