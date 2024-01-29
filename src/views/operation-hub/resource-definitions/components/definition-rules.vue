@@ -929,13 +929,5 @@
         padding: 20px;
       }
     }
-
-    .group-form {
-      :deep(.label) {
-        .star {
-          display: none;
-        }
-      }
-    }
   }
 </style>
