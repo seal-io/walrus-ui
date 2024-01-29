@@ -439,9 +439,10 @@
     // });
   };
   const initEditor = () => {
-    const textarea = document.getElementById(
-      `${props.editorId}-${traceKey.value}`
-    ) as HTMLTextAreaElement;
+    // const textarea = document.getElementById(
+    //   `${props.editorId}-${traceKey.value}`
+    // ) as HTMLTextAreaElement;
+    const textarea = input.value;
     if (!textarea) return;
     textEditor = new TextareaEditor(textarea);
     textcomplete = new Textcomplete(textEditor, Strategy, options);
