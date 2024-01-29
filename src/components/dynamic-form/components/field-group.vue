@@ -30,7 +30,6 @@
       const status = ref(false);
       const hovered = ref(false);
       const groupHovered = ref(false);
-      const staticErrorFields = ref([]);
 
       const fieldPathData = computed(() => {
         return _.get(props.formData, props.fieldPath);
@@ -117,6 +116,15 @@
           }
         }
       };
+      const renderRequiredStar = () => {
+        if (
+          props.schema.isRequired &&
+          schemaFormStatus.value !== PageAction.VIEW
+        ) {
+          return <span class="error-star m-l-2">*</span>;
+        }
+        return null;
+      };
 
       initUnsetValue();
 
@@ -169,9 +177,10 @@
           >
             {props.schema.title || props.schema.name ? (
               <div class="title parent-name">
-                <div>
+                <div class="flex">
                   <>{renderNullableButton()}</>
                   <span>{props.schema.title || props.schema.name}</span>
+                  {renderRequiredStar()}
                 </div>
                 <div>{slots.buttons?.()}</div>
               </div>
@@ -187,9 +196,10 @@
             <>
               {props.schema.title || props.schema.name ? (
                 <div class="title parent-name">
-                  <div>
+                  <div class="flex">
                     <>{renderNullableButton()}</>
                     <span>{props.schema.title || props.schema.name}</span>
+                    {renderRequiredStar()}
                     {props.schema.description || props.schema.externalDocs ? (
                       <a-tooltip
                         content={props.schema.description}
@@ -265,9 +275,10 @@
               v-slots={{
                 title: () => {
                   return (
-                    <span>
+                    <span class="flex">
                       <>{renderNullableButton()}</>
                       <span>{props.schema.title || props.schema.name}</span>
+                      {renderRequiredStar()}
                     </span>
                   );
                 }
@@ -328,11 +339,15 @@
     box-shadow: 0 4px 3px -1px rgba(234, 236, 238, 1),
       0 1px 4px 0 rgba(169, 174, 184, 0.2);
 
-    // &:hover {
-    //   box-shadow: rgba(201, 205, 212, 0.2) 0 4px 6px -1px,
-    //     rgba(201, 205, 212, 0.8) 0 4px 6px 0;
-    //   transition: box-shadow 0.2s var(--seal-transition-func);
-    // }
+    .error-star {
+      position: relative;
+      top: 2px;
+      display: flex;
+      align-items: center;
+      color: rgb(var(--danger-6));
+      font-size: var(--font-size-small);
+    }
+
     &:hover {
       box-shadow: rgba(169, 174, 184, 1) 0 3px 6px -1px,
         rgba(169, 174, 184, 0.2) 0 3px 6px 0;

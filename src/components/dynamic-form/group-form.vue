@@ -120,11 +120,10 @@
   const validResult = ref<any>([]);
   const errorFields = ref<string[]>([]);
   const formKey = ref(Date.now());
-  const computedFormData = ref({});
-  const computedUiFormData = ref({});
 
   provide(InjectShowInputHintKey, true);
   provide(ProvideErrorFieldsKey, errorFields);
+
   const setRefMap = (el: any, name) => {
     if (el) {
       refMap.value[`${name}`] = el;
