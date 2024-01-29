@@ -38,13 +38,7 @@
             >{{ $t('operation.environments.create') }}</a-button
           >
           <a-button
-            v-if="
-              userStore.hasProjectResourceActions({
-                projectID,
-                resource: Resources.Environments,
-                actions: [Actions.DELETE]
-              })
-            "
+            v-if="hasDeletePermission"
             type="primary"
             status="warning"
             :disabled="!selectedKeys.length"
@@ -64,7 +58,7 @@
         :data="dataList"
         :pagination="false"
         row-key="id"
-        :row-selection="rowSelection"
+        :row-selection="hasDeletePermission ? rowSelection : null"
         @cell-click="handleCellClick"
         @sorter-change="handleSortChange"
         @selection-change="handleSelectChange"
@@ -256,7 +250,7 @@
   import { PROJECT } from '@/router/config';
   import { useUserStore, useAppStore, useProjectStore } from '@/store';
   import { Resources, Actions } from '@/permissions/config';
-  import { ref, reactive, onMounted, nextTick } from 'vue';
+  import { ref, reactive, onMounted, nextTick, computed } from 'vue';
   import useCallCommon from '@/hooks/use-call-common';
   import { useSetChunkRequest } from '@/api/axios-chunk-request';
   import { useUpdateChunkedList } from '@/views/commons/hooks/use-update-chunked-list';
@@ -313,6 +307,14 @@
   });
 
   const { updateChunkedList } = useUpdateChunkedList(dataList);
+
+  const hasDeletePermission = computed(() => {
+    return userStore.hasProjectResourceActions({
+      projectID,
+      resource: Resources.Environments,
+      actions: [Actions.DELETE]
+    });
+  });
   const genSummaryData = (row) => {
     return _.map(_.keys(row.statusSummary), (key) => {
       return {

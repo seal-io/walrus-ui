@@ -3,10 +3,7 @@
     <div>
       <a-spin :loading="loading" style="width: 100%">
         <div class="header">
-          <span
-            v-if="!userStore.isReadOnlyEnvironment(projectID, environmentID)"
-            class="ft-size0"
-          >
+          <span v-if="hasDeletePermission" class="ft-size0">
             <a-checkbox
               :model-value="
                 rowSelection.selectedRowKeys.length >= dataList.length &&
@@ -118,9 +115,7 @@
             :key="item.id"
             :row-data="item"
             :index="index"
-            :show-checkbox="
-              !userStore.isReadOnlyEnvironment(projectID, environmentID)
-            "
+            :show-checkbox="hasDeletePermission"
             :selected-row-keys="rowSelection.selectedRowKeys"
             @logs="handleViewLogs"
             @terminal="handleConnectTerminal"
@@ -233,7 +228,7 @@
 <script lang="ts" setup>
   import { PROJECT } from '@/router/config';
   import { Resources, Actions } from '@/permissions/config';
-  import _, { get, pickBy, filter } from 'lodash';
+  import _, { get, pickBy, filter, update } from 'lodash';
   import Autotip from '@arco-design/web-vue/es/_components/auto-tooltip/auto-tooltip';
   import CommentModal from '@/views/commons/components/comment-modal/index.vue';
   import dayjs from 'dayjs';
@@ -244,7 +239,8 @@
     onMounted,
     nextTick,
     provide,
-    watch
+    watch,
+    computed
   } from 'vue';
   import {
     useSetChunkRequest,
@@ -380,12 +376,23 @@
   const axiosInstance: any = null;
   const dataList = ref<ServiceRowData[]>([]);
 
+  const hasDeletePermission = computed(() => {
+    return userStore.hasProjectResourceActions({
+      projectID,
+      environmentID,
+      resource: Resources.Resources,
+      actions: [Actions.DELETE]
+    });
+  });
+
   const handleRowSelectChange = (list) => {
     handleSelectChange(list);
     emits('selectionChange', list, dataList.value);
   };
   const handleSelectAll = (checked) => {
-    const list = _.map(dataList.value, (item) => {
+    const list = _.filter(dataList.value, (o) => {
+      return !o.disabled;
+    }).map((item) => {
       return item.id;
     });
     if (checked) {
@@ -444,12 +451,8 @@
         return {
           ...item,
           disabled:
-            !userStore.hasProjectResourceActions({
-              projectID,
-              environmentID,
-              resource: Resources.Resources,
-              actions: [Actions.DELETE]
-            }) || _.get(item, 'status.summaryStatus') === ServiceStatus.Deleting
+            !hasDeletePermission.value ||
+            _.get(item, 'status.summaryStatus') === ServiceStatus.Deleting
         };
       });
       total.value = data?.pagination?.total || 0;
@@ -689,12 +692,9 @@
       const createList = _.map(newList, (o) => {
         return {
           ...o,
-          disabled: !userStore.hasProjectResourceActions({
-            projectID,
-            environmentID,
-            resource: Resources.Resources,
-            actions: [Actions.DELETE]
-          })
+          disabled:
+            !hasDeletePermission.value ||
+            _.get(o, 'status.summaryStatus') === ServiceStatus.Deleting
         };
       });
       dataList.value = _.concat(createList, dataList.value);
@@ -723,6 +723,9 @@
       );
       if (updateIndex > -1) {
         const updateItem = _.cloneDeep(item);
+        updateItem.disabled =
+          !hasDeletePermission.value ||
+          _.get(item, 'status.summaryStatus') === ServiceStatus.Deleting;
         dataList.value[updateIndex] = updateItem;
       }
     });

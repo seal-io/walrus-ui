@@ -39,6 +39,7 @@ export interface ServiceRowData {
   status: object;
   type?: string;
   description: string;
+  disabled?: boolean;
   environment: { id: string; name: string };
   project: { id: string };
   template: {

@@ -33,39 +33,13 @@
           #button-group
         >
           <a-button
-            v-if="
-              scope === scopeMap.GLOBAL
-                ? userStore.hasRolesActionsPermission({
-                    resource: Resources.Variables,
-                    actions: [Actions.POST]
-                  })
-                : userStore.hasProjectResourceActions({
-                    projectID: route.params.projectId,
-                    environmentID:
-                      scope === scopeMap.PROJECT ? '' : environmentId,
-                    resource: Resources.Variables,
-                    actions: [Actions.POST]
-                  })
-            "
+            v-if="hasPutPermission"
             type="primary"
             @click="handleCreate"
             >{{ $t('applications.secret.create') }}</a-button
           >
           <a-button
-            v-if="
-              scope === scopeMap.GLOBAL
-                ? userStore.hasRolesActionsPermission({
-                    resource: Resources.Variables,
-                    actions: [Actions.DELETE]
-                  })
-                : userStore.hasProjectResourceActions({
-                    projectID: route.params.projectId,
-                    environmentID:
-                      scope === scopeMap.PROJECT ? '' : environmentId,
-                    resource: Resources.Variables,
-                    actions: [Actions.DELETE]
-                  })
-            "
+            v-if="hasDeletePermission"
             type="primary"
             status="warning"
             :disabled="!selectedKeys.length"
@@ -85,14 +59,7 @@
         :data="dataList"
         :pagination="false"
         row-key="id"
-        :row-selection="
-          userStore.isReadOnlyEnvironment(
-            route.params.projectId,
-            route.params.environmentId
-          )
-            ? null
-            : rowSelectionStatue
-        "
+        :row-selection="hasDeletePermission ? rowSelectionStatue : null"
         @sorter-change="handleSortChange"
         @selection-change="handleSelectChange"
       >
@@ -172,20 +139,7 @@
             </template>
           </a-table-column>
           <a-table-column
-            v-if="
-              scope === scopeMap.GLOBAL
-                ? userStore.hasRolesActionsPermission({
-                    resource: Resources.Variables,
-                    actions: [Actions.PUT]
-                  })
-                : userStore.hasProjectResourceActions({
-                    projectID: route.params.projectId,
-                    environmentID:
-                      scope === scopeMap.PROJECT ? '' : environmentId,
-                    resource: Resources.Variables,
-                    actions: [Actions.PUT]
-                  })
-            "
+            v-if="hasPutPermission"
             align="left"
             :width="210"
             :title="$t('common.table.operation')"
@@ -283,6 +237,7 @@
   const total = ref(0);
   const projectId = route.params.projectId as string;
   const environmentId = route.params.environmentId as string;
+
   const scopeParams = reactive({
     project: {
       includeInherited: true
@@ -302,6 +257,32 @@
   });
   const dataList = ref<VariableRow[]>([]);
 
+  const hasPutPermission = computed(() => {
+    return props.scope === scopeMap.GLOBAL
+      ? userStore.hasRolesActionsPermission({
+          resource: Resources.Variables,
+          actions: [Actions.PUT]
+        })
+      : userStore.hasProjectResourceActions({
+          projectID: projectId,
+          environmentID: props.scope === scopeMap.PROJECT ? '' : environmentId,
+          resource: Resources.Variables,
+          actions: [Actions.PUT]
+        });
+  });
+  const hasDeletePermission = computed(() => {
+    return props.scope === scopeMap.GLOBAL
+      ? userStore.hasRolesActionsPermission({
+          resource: Resources.Variables,
+          actions: [Actions.DELETE]
+        })
+      : userStore.hasProjectResourceActions({
+          projectID: projectId,
+          environmentID: props.scope === scopeMap.PROJECT ? '' : environmentId,
+          resource: Resources.Variables,
+          actions: [Actions.DELETE]
+        });
+  });
   const modalTitle = computed(() => {
     if (action.value === 'create') {
       return t('applications.secret.create');
@@ -323,14 +304,7 @@
     const list = _.filter(actionList, (item) => {
       return visibleInScope(row);
     });
-    // const res = _.map(list, (o) => {
-    //   const item = _.cloneDeep(o);
-    //   item.disabled = _.isFunction(item.disabled)
-    //     ? item.disabled?.(row)
-    //     : item.disabled;
 
-    //   return item;
-    // });
     return list;
   };
   const rowSelectionStatue = computed(() => {
