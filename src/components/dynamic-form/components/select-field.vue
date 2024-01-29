@@ -100,7 +100,7 @@
 
       // do not handle nullable peroperty
       const handleInputChange = (val) => {
-        const isEmptyList = _.isArray(val) && !val.length;
+        const isEmptyList = _.isArray(val) && !val?.length;
         if (
           !props.required &&
           (isEmptyvalue(val) || isEmptyList) &&

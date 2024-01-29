@@ -38,8 +38,9 @@
       const items = props.schema.items || ({} as FieldSchema);
       const minItems = props.schema.minItems || 0;
       const maxItems = props.schema.maxItems || Infinity;
+
       const defaultItems =
-        _.get(props.defaultFormData, props.fieldPath).length ||
+        _.get(props.defaultFormData, props.fieldPath)?.length ||
         props.schema.default?.length ||
         0;
       let itemsProperties: FieldSchema[] = [];

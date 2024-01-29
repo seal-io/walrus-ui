@@ -449,6 +449,22 @@ export const serviceActions: MoreAction[] = [
     }
   },
   {
+    label: 'common.button.export',
+    value: serviceActionMap.export,
+    icon: 'icon-export',
+    handler: '',
+    status: 'normal',
+    disabled: false,
+    filterFun(currentInfo) {
+      return userStore.hasProjectResourceActions({
+        resource: Resources.Resources,
+        environmentID: get(currentInfo, 'environment.id'),
+        projectID: get(currentInfo, 'project.id'),
+        actions: [Actions.POST]
+      });
+    }
+  },
+  {
     label: 'applications.applications.history.running',
     value: serviceActionMap.logs,
     icon: 'icon-rizhi',

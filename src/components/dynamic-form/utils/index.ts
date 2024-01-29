@@ -704,7 +704,7 @@ export const genObjectFieldProperties = ({
     ) {
       defaultValue = property.default;
     } else {
-      defaultValue = _.cloneDeep(_.get(defaultFormData, [...fieldPath, key]));
+      defaultValue = _.get(defaultFormData, [...fieldPath, key]);
     }
 
     const fieldSchema = {
