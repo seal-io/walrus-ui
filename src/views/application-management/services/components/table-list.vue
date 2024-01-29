@@ -256,6 +256,8 @@
   import StatusLabel from '@/views/operation-hub/connectors/components/status-label.vue';
   import primaryButtonGroup from '@/components/drop-button-group/primary-button-group.vue';
   import { useUserStore, useAppStore } from '@/store';
+  import { exportEnvironment } from '@/views/application-management/environments/api';
+  import useDownload from '@/hooks/use-download';
   import { ServiceRowData, DriftDataItem } from '../config/interface';
   import {
     serviceActions,
@@ -310,6 +312,7 @@
     }
   });
   const emits = defineEmits(['selectionChange', 'deleted']);
+  const { download } = useDownload();
   const appStore = useAppStore();
   const userStore = useUserStore();
   const {
@@ -658,6 +661,23 @@
     await handleViewServiceLatestLogs(row);
     showDetailModal.value = true;
   };
+
+  const handleExportYaml = (row) => {
+    try {
+      const url = exportEnvironment({
+        id: environmentID,
+        data: {
+          id: [row.id]
+        }
+      });
+      download(url);
+      // execSucceed();
+    } catch (error) {
+      // eslint-disable-next-line no-console
+      console.log(error);
+    }
+  };
+
   const setActionHandler = () => {
     actionHandlerMap.set(serviceActionMap.upgrade, handleClickUpgrade);
     actionHandlerMap.set(serviceActionMap.rollback, handleClickRollback);
@@ -668,6 +688,7 @@
     actionHandlerMap.set(serviceActionMap.deploy, handleRedeployResource);
     actionHandlerMap.set(serviceActionMap.delete, handleDelete);
     actionHandlerMap.set(serviceActionMap.clone, handleCloneService);
+    actionHandlerMap.set(serviceActionMap.export, handleExportYaml);
   };
   const init = async () => {
     userStore.setInfo({ currentProject: projectID });

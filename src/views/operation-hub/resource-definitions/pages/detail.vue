@@ -320,7 +320,15 @@
 </template>
 
 <script lang="ts" setup>
-  import { ref, onMounted, computed, provide, markRaw, watch } from 'vue';
+  import {
+    ref,
+    onMounted,
+    computed,
+    provide,
+    markRaw,
+    watch,
+    nextTick
+  } from 'vue';
   import {
     PageAction,
     validateLabelNameRegx,
@@ -547,7 +555,6 @@
       activeViewRule.value = _.get(formData.value, 'matchingRules.0.id', '');
       activeRule.value = activeViewRule.value;
       deinitionSchema.value = data;
-      copyFormData = cloneDeep(formData.value);
     } catch (error) {
       formref.value.resetFields();
     } finally {
@@ -705,6 +712,7 @@
   );
 
   onBeforeRouteLeave(async (to, from) => {
+    if (pageAction.value === PageAction.VIEW) return true;
     if (!isEqual(copyFormData, formData.value)) {
       beforeLeaveCallback({
         to,
@@ -727,6 +735,7 @@
     getItemResourceDefinition();
     getVariablesCompleteData();
   };
+
   initData();
 </script>
 

@@ -204,6 +204,8 @@
   import useCallCommon from '@/hooks/use-call-common';
   import useBasicInfoData from '@/views/application-management/projects/hooks/use-basicInfo-data';
   import StatusLabel from '@/views/operation-hub/connectors/components/status-label.vue';
+  import { exportEnvironment } from '@/views/application-management/environments/api';
+  import useDownload from '@/hooks/use-download';
   import tabOutput from './tab-output.vue';
   import tabEndpoint from './tab-endpoint.vue';
   import tabResource from './tab-resource.vue';
@@ -250,6 +252,7 @@
   const showCommentModal = ref(false);
   const showDeleteModal = ref(false);
   const pageAction = ref(PageAction.VIEW);
+  const { download } = useDownload();
   const { setChunkRequest } = useSetChunkRequest();
   const userStore = useUserStore();
   const serviceStore = useServiceStore();
@@ -332,6 +335,22 @@
     isCollapsed.value = val;
   };
 
+  const handleExportYaml = () => {
+    try {
+      const url = exportEnvironment({
+        id: route.params.environmentId as string,
+        data: {
+          id: [currentInfo.value?.id]
+        }
+      });
+      download(url);
+      // execSucceed();
+    } catch (error) {
+      // eslint-disable-next-line no-console
+      console.log(error);
+    }
+  };
+
   const handleStopResource = async () => {
     try {
       await stopApplicationInstance({ id: route.query.id });
@@ -380,6 +399,7 @@
     actionMap.set(serviceActionMap.stop, handleStopModal);
     actionMap.set(serviceActionMap.deploy, handleUpgrade);
     actionMap.set(serviceActionMap.clone, handleCloneService);
+    actionMap.set(serviceActionMap.export, handleExportYaml);
   };
 
   const setInstanceTabList = () => {
