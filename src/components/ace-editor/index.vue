@@ -313,24 +313,24 @@
   };
   const setLanguageTools = () => {
     langTools.setCompleters();
-    langTools.addCompleter({
-      identifierRegexps: [identifer],
-      getCompletions(
-        editor: any,
-        session: any,
-        pos: Position,
-        prefix: any,
-        callback: any
-      ) {
-        const wordRange = editor.session.getTextRange({
-          start: { row: 0, column: 0 },
-          end: pos
-        });
-        const valuePath = getValuePath(wordRange) || '';
-        const list = getCompletionList(valuePath);
-        callback(null, list);
-      }
-    });
+    // langTools.addCompleter({
+    //   identifierRegexps: [identifer],
+    //   getCompletions(
+    //     editor: any,
+    //     session: any,
+    //     pos: Position,
+    //     prefix: any,
+    //     callback: any
+    //   ) {
+    //     const wordRange = editor.session.getTextRange({
+    //       start: { row: 0, column: 0 },
+    //       end: pos
+    //     });
+    //     const valuePath = getValuePath(wordRange) || '';
+    //     const list = getCompletionList(valuePath);
+    //     callback(null, list);
+    //   }
+    // });
   };
   const handleInput = (val) => {
     emits('change', val);

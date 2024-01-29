@@ -1,14 +1,27 @@
 <template>
   <div class="logs-wrap">
-    <div ref="scroller" class="log-text" :class="{ fullscreen: fullscreen }">
+    <div
+      ref="scroller"
+      class="log-text"
+      :class="{ fullscreen: fullscreen }"
+      @wheel="handleContentWheel"
+    >
       {{ content }}
     </div>
   </div>
 </template>
 
 <script lang="ts" setup>
+  import _ from 'lodash';
   import { useSetChunkRequest } from '@/api/axios-chunk-request';
-  import { ref, inject, watch } from 'vue';
+  import {
+    ref,
+    inject,
+    watch,
+    onBeforeUnmount,
+    onMounted,
+    nextTick
+  } from 'vue';
   import {
     SERVICE_API_PREFIX,
     SERVICE_API
@@ -43,13 +56,18 @@
   const emits = defineEmits(['close']);
   const content = ref('');
   const scroller = ref();
+  const isWheeled = ref(false);
   let axiosToken: any = null;
   const { setChunkRequest } = useSetChunkRequest();
+
+  const handleContentWheel = (e) => {
+    isWheeled.value = true;
+  };
 
   const updateScrollerPosition = () => {
     const scrollerContainer = scroller.value || {};
     const { scrollHeight, clientHeight, scrollTop } = scrollerContainer;
-    if (scrollHeight > clientHeight + scrollTop) {
+    if (!isWheeled.value && scrollHeight > clientHeight + scrollTop) {
       scroller.value.scrollTop += 5;
       window.requestAnimationFrame(updateScrollerPosition);
     }
@@ -57,10 +75,12 @@
 
   const updateContent = (newVal) => {
     content.value = `${newVal}`;
-    window.requestAnimationFrame(updateScrollerPosition);
+    if (!isWheeled.value) {
+      window.requestAnimationFrame(updateScrollerPosition);
+    }
   };
 
-  const createWebSockerConnection = () => {
+  const createWebSocketConnection = () => {
     if (!props.revisionId) return;
     axiosToken?.cancel?.();
     const jobType =
@@ -78,13 +98,10 @@
       handler: updateContent
     });
   };
-  const handleClose = () => {
-    emits('close');
-  };
 
   const init = () => {
     content.value = '';
-    createWebSockerConnection();
+    createWebSocketConnection();
   };
   watch(
     () => props.show,
@@ -100,6 +117,9 @@
       immediate: true
     }
   );
+  onBeforeUnmount(() => {
+    axiosToken?.cancel?.();
+  });
 </script>
 
 <style lang="less" scoped>
