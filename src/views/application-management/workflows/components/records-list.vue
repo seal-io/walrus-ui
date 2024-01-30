@@ -14,7 +14,6 @@
       <template #columns>
         <a-table-column
           ellipsis
-          tooltip
           :cell-style="{ minWidth: '40px' }"
           align="left"
           :width="60"

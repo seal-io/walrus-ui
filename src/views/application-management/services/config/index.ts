@@ -397,11 +397,11 @@ export const serviceActions: MoreAction[] = [
     handler: '',
     status: 'normal',
     disabled: false,
-    filterFun({ projectID, environmentID }) {
+    filterFun(currentInfo) {
       return userStore.hasProjectResourceActions({
         resource: Resources.Resources,
-        environmentID,
-        projectID,
+        environmentID: get(currentInfo, 'environment.id'),
+        projectID: get(currentInfo, 'project.id'),
         actions: [Actions.POST]
       });
     }

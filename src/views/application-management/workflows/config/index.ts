@@ -341,7 +341,11 @@ export const recordActions: MoreAction[] = [
     status: 'danger',
     disabled: false,
     filterFun(currentInfo) {
-      return true;
+      return userStore.hasProjectResourceActions({
+        resource: Resources.WorkflowExecutions,
+        projectID: _.get(currentInfo, 'project.id'),
+        actions: [Actions.DELETE]
+      });
     }
   }
 ];
