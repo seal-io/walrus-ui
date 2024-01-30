@@ -42,7 +42,7 @@
           v-model.trim="formData.name"
           :label="$t('profile.account.name')"
           :required="true"
-          :max-length="39"
+          :max-length="30"
           show-word-limit
           style="width: 100%"
           :disabled="action === 'edit'"

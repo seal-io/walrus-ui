@@ -5,6 +5,7 @@
   import { defineComponent, ref, h, compile, computed } from 'vue';
   import useCallCommon from '@/hooks/use-call-common';
   import BC from '@/hooks/broadcast-channel';
+  import Autotip from '@arco-design/web-vue/es/_components/auto-tooltip/auto-tooltip';
   import { RouteRecordRaw, RouteRecordNormalized } from 'vue-router';
   import {
     useAppVersion,
@@ -302,7 +303,19 @@
                         }
                       }),
                     'expand-icon-right': () => {},
-                    'title': () => h(compile(t(item.name || '')))
+                    'title': () => {
+                      return (
+                        <span>
+                          {item.key === 'Profile' ? (
+                            <Autotip style={{ maxWidth: '80px' }} class="flex">
+                              {userStore.name || t(item.name)}
+                            </Autotip>
+                          ) : (
+                            t(item.name || '')
+                          )}
+                        </span>
+                      );
+                    }
                   }}
                 >
                   {item.children?.map((cItem) => {
