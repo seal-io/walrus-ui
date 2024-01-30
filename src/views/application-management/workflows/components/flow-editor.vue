@@ -159,11 +159,14 @@
       const getData = async () => {
         const res = await formref.value.validate();
         const stages = _.filter(stageList.value, (item) => !!item.steps.length);
+
         if (!stages.length) {
           execError('workflow.task.run.stage');
           return null;
         }
-        if (res) return null;
+
+        if (res || _.some(stages, (item) => !item.name)) return null;
+
         return {
           stages,
           basic: {

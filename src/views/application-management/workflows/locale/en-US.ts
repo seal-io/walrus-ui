@@ -15,6 +15,7 @@ export default {
   'applications.workflow.table.update': 'Recent Start Time',
   'workflow.form.rules.displayName': 'Workflow name required',
   'workflow.form.rules.name': 'Workflow ID required',
+  'workflow.form.rules.stagename': 'Stage name is required',
   'workflow.form.displayName': 'Workflow Name',
   'workflow.form.name': 'Workflow ID',
   'workflow.form.timeout': 'Timeout',

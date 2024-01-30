@@ -7,7 +7,8 @@
     ref,
     PropType,
     provide,
-    computed
+    computed,
+    withModifiers
   } from 'vue';
   import useCallCommon from '@/hooks/use-call-common';
   import { deleteModal } from '@/utils/monitor';
@@ -49,7 +50,6 @@
       const activeIndex = ref(0);
       const action = ref<'create' | 'edit'>('create');
       const input = ref();
-      const valid = ref(false);
       provide('stageData', stageData);
 
       const deleteEnabled = computed(() => {
@@ -73,10 +73,7 @@
       };
 
       const handleInputBlur = () => {
-        valid.value = validateLabelNameRegx.test(stageData.value.name);
-        if (valid.value) {
-          nameEditable.value = false;
-        }
+        nameEditable.value = !stageData.value.name;
       };
 
       const renderModal = () => {
@@ -93,7 +90,6 @@
       };
 
       const handleSaveFlowTask = (data) => {
-        console.log('create task========', data);
         if (action.value === 'create') {
           stepList.value.push(_.cloneDeep(data));
         } else {
@@ -127,6 +123,9 @@
           }
         });
       };
+      const handleInputStageName = (val) => {
+        stageData.value.name = val;
+      };
       return () => (
         <div
           class="flow-stage"
@@ -137,21 +136,20 @@
             <div class="flex">
               {nameEditable.value ? (
                 <a-input
-                  v-model={stageData.value.name}
+                  model-value={stageData.value.name}
+                  onUpdate:modelValue={withModifiers(
+                    (val) => {
+                      handleInputStageName(val);
+                    },
+                    ['trim']
+                  )}
                   size="small"
                   ref={input}
-                  error={!valid.value}
+                  error={!stageData.value.name}
                   max-length={validateInputLength.NAME}
                   show-word-limit={true}
                   class={[{ 'border-less': !nameEditable.value }]}
                   onBlur={() => handleInputBlur()}
-                  v-slots={{
-                    prefix: () => (
-                      <a-tooltip content={t('common.validate.labelName')}>
-                        <i class="iconfont icon-ic-exclamation-circle color-text-3"></i>
-                      </a-tooltip>
-                    )
-                  }}
                 ></a-input>
               ) : (
                 <>
@@ -161,6 +159,11 @@
                   </a-link>
                 </>
               )}
+              {!stageData.value.name ? (
+                <span class="error-msg">
+                  {t('workflow.form.rules.stagename')}
+                </span>
+              ) : null}
             </div>
             {deleteEnabled.value ? (
               <a-link
@@ -242,9 +245,28 @@
         padding: 8px 11px;
       }
 
+      .flex {
+        position: relative;
+
+        .error-msg {
+          position: absolute;
+          bottom: -16px;
+          left: 0;
+          width: max-content;
+          color: rgb(var(--danger-6));
+        }
+      }
+
       .title {
         height: 28px;
+        font-weight: var(--font-weight-medium);
         line-height: 28px;
+      }
+
+      :deep(.arco-input) {
+        height: 26px;
+        font-weight: var(--font-weight-medium);
+        font-size: var(--font-size-small);
       }
 
       .arco-icon {
