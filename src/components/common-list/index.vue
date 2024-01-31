@@ -6,7 +6,7 @@
 
   export default defineComponent({
     name: 'CommonList',
-    emits: ['edit', 'delete', 'update:modelValue'],
+    emits: ['edit', 'delete', 'update:modelValue', 'change'],
     props: {
       modelValue: {
         type: Array as PropType<any[]>,
@@ -27,14 +27,17 @@
       const handleDelete = (index) => {
         dataList.value.splice(index, 1);
         ctx.emit('update:modelValue', _.cloneDeep(dataList.value));
+        ctx.emit('change', _.cloneDeep(dataList.value));
       };
       const handleAdd = () => {
         dataList.value.push('');
         ctx.emit('update:modelValue', _.cloneDeep(dataList.value));
+        ctx.emit('change', _.cloneDeep(dataList.value));
       };
       const handleInput = (val: any, index: number) => {
         dataList.value[index] = val;
         ctx.emit('update:modelValue', _.cloneDeep(dataList.value));
+        ctx.emit('change', _.cloneDeep(dataList.value));
       };
 
       const renderButtons = (index) => {
@@ -62,7 +65,7 @@
         return (
           <SealFormItemWrap
             style={{ width: ctx.attrs.style?.width }}
-            SealFormItemWraplabel={props.label}
+            label={props.label}
           >
             <a-link onClick={() => handleAdd()}>
               <icon-plus-circle-fill class="size-20"></icon-plus-circle-fill>
@@ -86,6 +89,7 @@
                     model-value={item}
                     viewStatus={!props.viewStatus}
                     onInput={(val) => handleInput(val, index)}
+                    onChange={(val) => handleInput(val, index)}
                   ></seal-input>
                   {renderButtons(index)}
                 </span>

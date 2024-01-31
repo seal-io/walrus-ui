@@ -2,7 +2,7 @@
   <div>
     <a-space class="m-b-10 flex-end" fill style="padding: 0 10px">
       <a-input-search
-        v-model="queryName"
+        v-model.trim="queryName"
         :placeholder="$t('common.filter.attrs')"
         style="width: 200px"
         allow-clear

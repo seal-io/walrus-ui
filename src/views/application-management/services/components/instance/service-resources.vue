@@ -6,7 +6,7 @@
     >
       <template #params>
         <a-input
-          v-model="query"
+          v-model.trim="query"
           :placeholder="$t('applications.instance.tab.resource.holder')"
           allow-clear
           style="width: 260px"

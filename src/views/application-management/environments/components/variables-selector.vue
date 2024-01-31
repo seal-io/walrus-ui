@@ -1,7 +1,7 @@
 <template>
   <div>
     <div style="display: flex; margin-bottom: 10px">
-      <a-input-search v-model="query" allow-clear></a-input-search>
+      <a-input-search v-model.trim="query" allow-clear></a-input-search>
     </div>
     <div class="connectors-list">
       <a-table
