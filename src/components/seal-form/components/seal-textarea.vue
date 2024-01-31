@@ -95,10 +95,8 @@
     emits('input', value, e);
   };
   const handleChange = (value, e) => {
-    const val = trim(value);
-
-    emits('update:modelValue', val);
-    emits('change', val, e);
+    emits('update:modelValue', value);
+    emits('change', value, e);
   };
   const handleFocus = (e) => {
     emits('focus', e);
