@@ -6,6 +6,22 @@
       ></Breadcrumb>
     </BreadWrapper>
     <ComCard>
+      <!-- <div class="wrap">
+        <div class="item" v-for="item in downloadConfig" :key="item.label">
+          <div class="img">
+            <img :src="item.img" alt="" />
+          </div>
+          <span class="type">
+            <span v-for="(val, index) in item.value" :key="val">
+              <a-link>{{ val }}</a-link>
+              <a-divider
+                direction="vertical"
+                v-if="index !== item.value.length - 1"
+              ></a-divider>
+            </span>
+          </span>
+        </div>
+      </div> -->
       <a-descriptions :data="downloadConfig" title="" bordered :column="1">
         <template #value="{ data, value }">
           <a-space :size="12">
@@ -22,8 +38,11 @@
             <span v-if="data.os === 'darwin'">
               <i
                 class="iconfont icon-macos mright-5 size-16"
-                style="color: #2d2d2d"
+                style="color: #000"
               ></i>
+            </span>
+            <span v-if="data.os === 'windows'">
+              <i class="iconfont icon-windows m-r-5" style="color: #0078d7"></i>
             </span>
             <span v-if="data.os === 'linux'" class="ft-size0">
               <img
@@ -91,7 +110,53 @@
     }
 
     .arco-descriptions-item-value-block {
+      padding: 10px 20px;
       font-weight: var(--font-weight-medium);
+    }
+  }
+
+  .wrap {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 30px;
+
+    .item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: space-between;
+      margin: 0 50px;
+      padding: 10px 0;
+      border-bottom: 1px solid var(--border-color);
+
+      &:last-child {
+        border-bottom: none;
+      }
+
+      .img {
+        width: 100px;
+        height: 100px;
+
+        img {
+          width: 100%;
+          height: 100%;
+        }
+      }
+
+      :deep(.arco-divider-vertical) {
+        border-color: var(--color-border-3);
+      }
+
+      .type {
+        display: flex;
+        align-items: center;
+        margin-top: 10px;
+
+        a {
+          margin-right: 10px;
+          font-size: var(--font-size-large);
+        }
+      }
     }
   }
 </style>

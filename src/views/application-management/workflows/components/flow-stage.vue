@@ -124,7 +124,7 @@
         });
       };
       const handleInputStageName = (val) => {
-        stageData.value.name = val;
+        stageData.value.name = _.trim(val);
       };
       return () => (
         <div
