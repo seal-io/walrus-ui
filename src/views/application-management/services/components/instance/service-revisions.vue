@@ -141,6 +141,7 @@
         </result-view>
       </template>
     </a-table>
+    <CodeDiffView :content="computedDiffContent"></CodeDiffView>
     <a-pagination
       size="small"
       :total="total"
@@ -175,6 +176,7 @@
   import { Resources } from '@/permissions/config';
   import { useUserStore } from '@/store';
   import dayjs from 'dayjs';
+  import CodeDiffView from '@/components/code-diff-view/index.vue';
   import _, {
     map,
     get,
