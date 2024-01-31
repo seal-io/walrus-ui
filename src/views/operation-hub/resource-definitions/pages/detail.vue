@@ -644,13 +644,17 @@
     router.back();
   };
   const handleCancel = () => {
-    beforeLeaveCallback({
-      isCancel: true,
-      onOk: () => {
-        copyFormData = cloneDeep(formData.value);
-        cancelCallback();
-      }
-    });
+    if (!isEqual(copyFormData, formData.value)) {
+      beforeLeaveCallback({
+        isCancel: true,
+        onOk: () => {
+          copyFormData = cloneDeep(formData.value);
+          cancelCallback();
+        }
+      });
+    } else {
+      cancelCallback();
+    }
   };
 
   const handleAddRule = () => {
@@ -734,6 +738,9 @@
     await getProjectList();
     getItemResourceDefinition();
     getVariablesCompleteData();
+    setTimeout(() => {
+      copyFormData = cloneDeep(formData.value);
+    }, 200);
   };
 
   initData();
