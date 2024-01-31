@@ -42,6 +42,7 @@
 </template>
 
 <script lang="ts" setup>
+  import { trim } from 'lodash';
   import { useAttrs, useSlots, ref } from 'vue';
   import Tooltip from '../_components/tooltip.vue';
 
@@ -84,8 +85,9 @@
     emits('input', value, e);
   };
   const handleChange = (value, e) => {
-    emits('update:modelValue', value);
-    emits('change', value, e);
+    const val = trim(value);
+    emits('update:modelValue', val);
+    emits('change', val, e);
   };
   const handleFocus = (e) => {
     emits('focus', e);

@@ -32,7 +32,7 @@
       <GroupTitle :title="title" :bordered="false"></GroupTitle>
       <a-space v-if="pagination && permissionList.length > 10" class="page">
         <a-input-search
-          v-model="query"
+          v-model.trim="query"
           allow-clear
           style="width: 220px; margin-left: 10px"
         ></a-input-search>

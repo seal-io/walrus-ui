@@ -3,7 +3,7 @@
     <FilterBox style="margin-bottom: 6px; padding-left: 0">
       <template #params>
         <a-input
-          v-model="queryParams.query"
+          v-model.trim="queryParams.query"
           allow-clear
           style="width: 240px"
           :placeholder="$t('common.search.name.placeholder')"
