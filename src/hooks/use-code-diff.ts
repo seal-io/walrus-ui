@@ -10,6 +10,7 @@ export default function useCodeDiff() {
     removed?: boolean;
     added?: boolean;
   }
+
   const removeLines = ref<number[]>([]);
   const addLines = ref<number[]>([]);
   const diffResult = ref<DiffItem[]>([]);
@@ -22,6 +23,7 @@ export default function useCodeDiff() {
 
   const setDiffResult = (oldStr, newStr) => {
     diffResult.value = Diff.diffLines(oldStr || '', newStr || '');
+
     console.log('diffResult==========', _.cloneDeep(diffResult.value));
   };
 
