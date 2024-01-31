@@ -80,32 +80,35 @@
         }
       };
 
-      initValue();
+      if (!showIf) {
+        initValue();
+      }
+
       // hidden field
       if (!component || hidden) return null;
 
       const renderComponent = () => {
         const Component = component;
+
+        // =============== showIf start =================
         if (showIf) {
-          return getShowIfValue(
+          const showIfValue = getShowIfValue(
             showIf,
             props.uiFormData,
             _.initial(fieldPath)
-          ) ? (
-            <Component
-              fieldPath={fieldPath}
-              formData={props.formData}
-              uiFormData={props.uiFormData}
-              defaultFormData={props.defaultFormData}
-              FieldPathMap={props.FieldPathMap}
-              schema={props.schema}
-              requiredFields={props.requiredFields}
-              onChange={(data) => handleChange(data)}
-            />
-          ) : (
-            setShowIfField()
           );
+
+          if (showIfValue) {
+            initValue();
+          }
+
+          if (!showIfValue) {
+            setShowIfField();
+            return null;
+          }
         }
+        // =============== showIf end =================
+
         return (
           <Component
             fieldPath={fieldPath}
