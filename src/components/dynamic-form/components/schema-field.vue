@@ -1,5 +1,5 @@
 <script lang="tsx">
-  import { defineComponent, inject, ref } from 'vue';
+  import { defineComponent, inject, ref, onMounted } from 'vue';
   import _ from 'lodash';
   import { InjectSchemaFormStatusKey, PageAction } from '@/views/config';
   import schemaFieldProps from '../fields/schema-field-props';
@@ -20,6 +20,8 @@
         InjectSchemaFormStatusKey,
         ref(PageAction.CREATE)
       );
+
+      let timer: any = null;
       // hidden
       const hidden = _.get(props.schema, ['x-walrus-ui', 'hidden'], false);
       // showIf
@@ -80,10 +82,12 @@
         }
       };
 
-      if (!showIf) {
-        initValue();
-      }
-
+      onMounted(() => {
+        if (!showIf) {
+          console.log('showIfValue===1', fieldPath);
+          initValue();
+        }
+      });
       // hidden field
       if (!component || hidden) return null;
 
@@ -99,7 +103,11 @@
           );
 
           if (showIfValue) {
-            initValue();
+            clearTimeout(timer);
+            timer = setTimeout(() => {
+              console.log('showIfValue===2', fieldPath);
+              initValue();
+            }, 100);
           }
 
           if (!showIfValue) {
