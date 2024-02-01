@@ -62,7 +62,7 @@
       >
         <a-input-group style="width: 100%">
           <seal-input-password
-            v-model.trim="formData.password"
+            v-model="formData.password"
             style="
               width: 100%;
               border-radius: var(--border-radius-small) 0 0
