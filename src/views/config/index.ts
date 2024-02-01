@@ -11,7 +11,8 @@ export const dateFormatMap = {
 
 export const ResourceSaveAction = {
   Draft: 'draft',
-  Deploy: 'deploy'
+  Deploy: 'deploy',
+  Preview: 'preview'
 };
 
 export const InjectCompleteDataKey = Symbol('InjectCompleteDataKey');
@@ -291,9 +292,15 @@ export const CommonButtonValue = {
 
 export const SaveActions: MoreAction[] = [
   {
+    label: 'common.button.savePreview',
+    value: ResourceSaveAction.Preview,
+    icon: 'icon-Cloud',
+    iconfont: true
+  },
+  {
     label: 'common.button.saveDeploy',
     value: ResourceSaveAction.Deploy,
-    icon: 'icon-Cloud',
+    icon: 'icon-sendfasong',
     iconfont: true
   },
   {

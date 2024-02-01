@@ -143,6 +143,7 @@ export default {
   'common.table.mark': '备注',
   'common.table.rollback.mark': '回滚备注',
   'common.button.saveDeploy': '保存并部署',
+  'common.button.savePreview': '保存并预览',
   'common.button.draft': '保存草稿',
   'common.button.stop': '停止',
   'common.button.start': '启动',
