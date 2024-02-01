@@ -28,7 +28,6 @@
         ref(PageAction.CREATE)
       );
 
-      let timer: any = null;
       // hidden
       const hidden = _.get(props.schema, ['x-walrus-ui', 'hidden'], false);
       // showIf
@@ -47,8 +46,6 @@
       };
       const unsetShowIfField = () => {
         _.unset(props.formData, props.fieldPath);
-        _.unset(props.uiFormData, props.fieldPath);
-        _.unset(props.defaultFormData, props.fieldPath);
         emit('change', props.formData);
         return null;
       };
@@ -99,19 +96,19 @@
       watch(
         () => showIfValue.value,
         () => {
-          if (showIfValue.value && showIf) {
-            clearTimeout(timer);
-            timer = setTimeout(() => {
+          // only used on showIf field
+          if (showIf) {
+            if (showIfValue.value) {
               initValue();
-            }, 100);
-          }
-          if (!showIfValue.value && showIf) {
-            unsetShowIfField();
+            } else {
+              unsetShowIfField();
+            }
           }
         },
         { immediate: true }
       );
 
+      // do not init value when field has configured showIf
       if (!showIf) {
         initValue();
       }
