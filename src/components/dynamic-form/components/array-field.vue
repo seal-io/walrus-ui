@@ -234,14 +234,11 @@
         }
         return (
           <span
-            onMouseover={withModifiers(
+            onMouseenter={withModifiers(
               () => handleButtonEnter(index),
-              ['stop', 'prevent']
+              ['stop']
             )}
-            onMouseout={withModifiers(
-              () => handleButtoneave(),
-              ['stop', 'prevent']
-            )}
+            onMouseleave={withModifiers(() => handleButtoneave(), ['stop'])}
           >
             <CommonButton
               class="delete-btn"
