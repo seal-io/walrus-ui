@@ -24,7 +24,7 @@
             ]"
           >
             <seal-input-password
-              v-model.trim="formData.newPassword"
+              v-model="formData.newPassword"
               style="width: 100%"
               size="large"
               :required="true"
@@ -49,7 +49,7 @@
             ]"
           >
             <seal-input-password
-              v-model.trim="formData.confirmPassword"
+              v-model="formData.confirmPassword"
               style="width: 100%"
               size="large"
               :required="true"
