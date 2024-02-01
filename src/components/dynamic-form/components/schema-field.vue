@@ -1,5 +1,12 @@
 <script lang="tsx">
-  import { defineComponent, inject, ref, onMounted } from 'vue';
+  import {
+    defineComponent,
+    inject,
+    ref,
+    onMounted,
+    computed,
+    watch
+  } from 'vue';
   import _ from 'lodash';
   import { InjectSchemaFormStatusKey, PageAction } from '@/views/config';
   import schemaFieldProps from '../fields/schema-field-props';
@@ -27,10 +34,18 @@
       // showIf
       const showIf = _.get(props.schema, ['x-walrus-ui', 'showIf'], '');
 
+      const showIfValue = computed(() => {
+        if (!showIf) return false;
+        return getShowIfValue(
+          showIf,
+          props.uiFormData,
+          _.initial(props.fieldPath)
+        );
+      });
       const handleChange = (data) => {
         emit('change', data);
       };
-      const setShowIfField = () => {
+      const unsetShowIfField = () => {
         _.unset(props.formData, props.fieldPath);
         _.unset(props.uiFormData, props.fieldPath);
         _.unset(props.defaultFormData, props.fieldPath);
@@ -81,13 +96,26 @@
           });
         }
       };
+      watch(
+        () => showIfValue.value,
+        () => {
+          if (showIfValue.value && showIf) {
+            clearTimeout(timer);
+            timer = setTimeout(() => {
+              initValue();
+            }, 100);
+          }
+          if (!showIfValue.value && showIf) {
+            unsetShowIfField();
+          }
+        },
+        { immediate: true }
+      );
 
-      onMounted(() => {
-        if (!showIf) {
-          console.log('showIfValue===1', fieldPath);
-          initValue();
-        }
-      });
+      if (!showIf) {
+        initValue();
+      }
+
       // hidden field
       if (!component || hidden) return null;
 
@@ -95,25 +123,8 @@
         const Component = component;
 
         // =============== showIf start =================
-        if (showIf) {
-          const showIfValue = getShowIfValue(
-            showIf,
-            props.uiFormData,
-            _.initial(fieldPath)
-          );
-
-          if (showIfValue) {
-            clearTimeout(timer);
-            timer = setTimeout(() => {
-              console.log('showIfValue===2', fieldPath);
-              initValue();
-            }, 100);
-          }
-
-          if (!showIfValue) {
-            setShowIfField();
-            return null;
-          }
+        if (showIf && !showIfValue.value) {
+          return null;
         }
         // =============== showIf end =================
 

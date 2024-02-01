@@ -300,14 +300,8 @@
               span={{ lg: props.schema.colSpan, md: 12, sm: 12, xs: 12 }}
             >
               <div
-                onMouseover={withModifiers(
-                  () => handleGroupEnter(),
-                  ['stop', 'prevent']
-                )}
-                onMouseout={withModifiers(
-                  () => handleGroupLeave(),
-                  ['stop', 'prevent']
-                )}
+                onMouseenter={withModifiers(() => handleGroupEnter(), ['stop'])}
+                onMouseleave={withModifiers(() => handleGroupLeave(), ['stop'])}
                 class={[
                   'field-group',
                   `level-${props.level}`,
