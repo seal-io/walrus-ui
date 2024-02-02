@@ -23,6 +23,7 @@
     >
       <div
         :id="`${editorId}-${traceKey}`"
+        ref="editorRef"
         :style="{
           minHeight: _.isNumber(height) ? `${height}px` : height
         }"
@@ -176,6 +177,7 @@
   let aceEditor: any = null;
   const isAce = ref(true);
   const inputVal = ref('');
+  const editorRef = ref();
   const isInitialValue = ref(true);
   const markerIdList = ref<number[]>([]);
   const backupAddlines = ref<number[]>([]);
@@ -356,7 +358,7 @@
     nextTick(() => {
       setLanguageTools();
 
-      aceEditor = ace.edit(`${props.editorId}-${traceKey.value}`);
+      aceEditor = ace.edit(editorRef.value);
 
       aceEditor.session.on('change', (args) => {
         // TODO

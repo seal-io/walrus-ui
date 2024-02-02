@@ -49,6 +49,7 @@ declare module 'vue' {
     ATableColumn: typeof import('@arco-design/web-vue')['TableColumn'];
     ATabPane: typeof import('@arco-design/web-vue')['TabPane'];
     ATabs: typeof import('@arco-design/web-vue')['Tabs'];
+    ATag: typeof import('@arco-design/web-vue')['Tag'];
     ATextarea: typeof import('@arco-design/web-vue')['Textarea'];
     ATooltip: typeof import('@arco-design/web-vue')['Tooltip'];
     AUpload: typeof import('@arco-design/web-vue')['Upload'];

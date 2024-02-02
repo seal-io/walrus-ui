@@ -149,10 +149,11 @@
           const jsonstr =
             props.schema.type === FIELD_TYPE.STRING
               ? fieldValue.value
-              : yaml2Json(fieldValue.value);
+              : yaml2Json(fieldValue.value, props.schema.type);
           _.set(props.formData, props.fieldPath, jsonstr);
           _.set(props.uiFormData, props.fieldPath, jsonstr);
         }
+
         handleChange(props.formData);
         validateField();
       };
@@ -171,13 +172,13 @@
           hide-label={true}
           label={props.schema.title}
           field={_.join(props.fieldPath, '.')}
-          validate-trigger={['blur']}
+          validate-trigger={['blur', 'change']}
           rules={[
-            ...rules,
             {
               required: fieldProps.required,
               validator
-            }
+            },
+            ...rules
           ]}
         >
           <AceEditor
@@ -186,6 +187,7 @@
             doc={props.schema.externalDocs}
             lang={lang.value}
             v-model={fieldValue.value}
+            required={fieldProps.required}
             label={props.schema.title || props.schema.name}
             popup-info={props.schema.description}
             editor-default-value={defaultValue.value}

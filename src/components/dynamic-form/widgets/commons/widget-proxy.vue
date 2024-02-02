@@ -58,6 +58,7 @@
               widget={widget}
               readonly={fieldProps.readonly}
               required={fieldProps.required}
+              requiredFields={props.requiredFields}
               formData={props.formData}
               uiFormData={props.uiFormData}
               defaultFormData={props.defaultFormData}

@@ -18,6 +18,7 @@ export const isBasicType = (type) => {
 export const isWidget = (schema) => {
   return _.get(schema, ['x-walrus-ui', 'widget']);
 };
+
 export const isEmptyvalue = (val) => {
   return val === '' || val === null || val === undefined;
 };
@@ -158,6 +159,16 @@ export const isYamlEditor = (schema: FieldSchema) => {
     return true;
   }
   return false;
+};
+
+export const isListMapBasicType = (schema: FieldSchema) => {
+  const { type, items } = schema;
+  return (
+    type === FIELD_TYPE.ARRAY &&
+    items?.type === FIELD_TYPE.OBJECT &&
+    !items?.properties &&
+    isBasicType(items?.additionalProperties?.type)
+  );
 };
 
 export const initFieldDefaultValue = (item) => {
@@ -693,7 +704,6 @@ export const genObjectFieldProperties = ({
       colSpan: property['x-walrus-ui']?.colSpan,
       parentHalfGrid: isHalfGrid(schema)
     });
-    // const required = _.includes(requiredFlag, key);
     const nullObj = setNullableValue(schema, property, parentNullableObj);
     let defaultValue = property.default;
 
@@ -796,18 +806,12 @@ export const genFieldPropsAndRules = ({
     description,
     items
   } = schema;
-  const {
-    required: requiredFlag,
-    immutable,
-    hidden,
-    showIf,
-    message,
-    widget
-  } = uiExtensions;
+  const { immutable, hidden, showIf, message, widget } = uiExtensions;
 
   const maxLength = schema?.maxLength || null;
   const minLength = schema.minLength || null;
   const required = _.includes(requiredFields, name);
+
   const commonProps = {
     label: title || name,
     disabled: false,
@@ -816,7 +820,7 @@ export const genFieldPropsAndRules = ({
     hidden: hidden || false,
     showIf: showIf || '',
     doc: externalDocs,
-    required: requiredFlag || required || false,
+    required: required || false,
     password: isPassword(schema),
     description
   };

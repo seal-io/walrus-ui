@@ -136,6 +136,7 @@
           ? props.schema.items?.default || null
           : null;
         list.value.push(item);
+        handleInputChange();
       };
 
       const handleDeleteClick = (index) => {

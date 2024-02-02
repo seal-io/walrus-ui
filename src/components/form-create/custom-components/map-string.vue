@@ -75,7 +75,7 @@
         handleAddLabel,
         handleDeleteLabel
       } = useMapString();
-      console.log('labelList===', labelList.value);
+
       const handleUpdateValue = (obj) => {
         console.log('handleUpdateValue===', obj);
         emit('update:value', obj);
@@ -84,6 +84,7 @@
         () => props.modelValue,
         (val) => {
           getLabelList(props.modelValue);
+          console.log('labelList===', labelList.value);
         },
         {
           immediate: true
