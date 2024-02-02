@@ -156,5 +156,7 @@ export default {
   'common.docs.link.tips': 'View Documentation',
   'common.docs.link': 'here',
   'common.result.nodata.subtitle': 'Please check if it has been created',
-  'common.result.nodata.title': '{type} not found'
+  'common.result.nodata.title': '{type} not found',
+  'common.rule.array': 'should be in array format',
+  'common.rule.object': 'should be in object format'
 };
