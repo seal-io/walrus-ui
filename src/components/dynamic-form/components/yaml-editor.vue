@@ -187,7 +187,9 @@
             doc={props.schema.externalDocs}
             lang={lang.value}
             v-model={fieldValue.value}
-            required={fieldProps.required}
+            required={
+              fieldProps.required && schemaFormStatus.value !== PageAction.VIEW
+            }
             label={props.schema.title || props.schema.name}
             popup-info={props.schema.description}
             editor-default-value={defaultValue.value}

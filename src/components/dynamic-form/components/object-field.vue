@@ -274,6 +274,7 @@
             isWidget(item)
           );
         });
+        if (!list.length) return null;
         return (
           <a-grid cols={12} col-gap={18} row-gap={0} style={{ width: '100%' }}>
             {_.map(list, (childSchema: FieldSchema) => {
@@ -308,8 +309,9 @@
             !isWidget(item)
           );
         });
+        if (!list.length) return null;
         return (
-          <>
+          <a-grid cols={12} col-gap={18} row-gap={0} style={{ width: '100%' }}>
             {_.map(list, (childSchema) => {
               return (
                 <SchemaField
@@ -329,7 +331,7 @@
                 />
               );
             })}
-          </>
+          </a-grid>
         );
       };
 
