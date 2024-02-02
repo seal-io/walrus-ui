@@ -14,6 +14,7 @@ import ArrayField from './array-field.vue';
 import SelectField from './select-field.vue';
 import BooleanField from './boolean-field.vue';
 import ObjectMap from './object-map.vue';
+import ListMapBasic from './list-map-basic/index.vue';
 
 export const CommonFieldMaps = {
   textArea: sealTextarea,
@@ -32,6 +33,7 @@ export const FieldMaps = {
   select: SelectField,
   checkbox: BooleanField,
   simpleObject: ObjectMap,
+  listMapBasic: ListMapBasic,
   stringField
 };
 

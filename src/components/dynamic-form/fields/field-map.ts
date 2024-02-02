@@ -9,6 +9,7 @@ import {
   isSelect,
   isMuliSelect,
   isYamlEditor,
+  isListMapBasicType,
   isAllowCreateSelect
 } from '../utils';
 
@@ -17,7 +18,7 @@ export const getSchemaFieldComponent = ({ schema, fieldPath }) => {
   const widget = _.get(schema, ['x-walrus-ui', 'widget'], '');
 
   const commonAttrs = {
-    key: Date.now()
+    // key: Date.now()
   };
   // build-in component
   if (widget) {
@@ -52,6 +53,15 @@ export const getSchemaFieldComponent = ({ schema, fieldPath }) => {
   if (isAllowCreateSelect(schema)) {
     return {
       component: ComponentsMap.ArrayBasicCreate,
+      fieldPath: [...fieldPath],
+      requiredFields,
+      commonAttrs
+    };
+  }
+
+  if (isListMapBasicType(schema)) {
+    return {
+      component: FieldMaps.listMapBasic,
       fieldPath: [...fieldPath],
       requiredFields,
       commonAttrs

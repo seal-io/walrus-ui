@@ -29,6 +29,10 @@
       hoverable: {
         type: Boolean,
         default: true
+      },
+      position: {
+        type: String,
+        default: 'top'
       }
     },
     setup(props, { slots, attrs, emit }) {
@@ -58,7 +62,9 @@
       return () => (
         <span class="common-button">
           {props.tooltip ? (
-            <a-tooltip content={props.title}>{renderBtn()}</a-tooltip>
+            <a-tooltip content={props.title} position={props.position}>
+              {renderBtn()}
+            </a-tooltip>
           ) : (
             renderBtn()
           )}

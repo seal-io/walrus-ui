@@ -388,6 +388,7 @@
   const $attrs = useAttrs();
   const isError = ref(false);
   const popupvisible = ref(false);
+  const listLengthCache = ref(props.labelList.length || 0);
   const getDataObj = (list) => {
     if (_.uniqBy(list, 'key').length !== list.length) {
       return;
@@ -395,7 +396,9 @@
     const result = reduce(
       list,
       (obj, item) => {
-        obj[item.key] = item.value;
+        if (item.key) {
+          obj[item.key] = item.value;
+        }
         return obj;
       },
       {}
@@ -412,7 +415,12 @@
     );
   };
   const handleAddLabel = () => {
-    const item = { key: `key${props.labelList.length + 1}`, value: '' };
+    listLengthCache.value += 1;
+    let key = `key${listLengthCache.value}`;
+    if (_.find(props.labelList, { key })) {
+      key = `key${listLengthCache.value + 1}`;
+    }
+    const item = { key, value: '' };
     emits('add', item);
     setTimeout(() => {
       getDataObj(props.labelList);

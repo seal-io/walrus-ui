@@ -12,6 +12,16 @@ const SealYamlType = new jsYaml.Type('!seal', {
 });
 const SEAL_SCHEMA = jsYaml.DEFAULT_SCHEMA.extend([SealYamlType]);
 
+const FIELD_TYPE = {
+  OBJECT: 'object',
+  ARRAY: 'array',
+  STRING: 'string',
+  NUMBER: 'number',
+  INTEGER: 'integer',
+  BOOLEAN: 'boolean',
+  NULL: 'null'
+};
+
 export const yamlLoad = (str) => {
   str = trim(str);
   const obj = jsYaml.load(str, { schema: SEAL_SCHEMA });
@@ -49,6 +59,22 @@ export const validateYaml = (str) => {
 };
 
 export const yaml2Json = (str, type?) => {
+  str = trim(str);
+  const obj = jsYaml.load(str, { schema: SEAL_SCHEMA });
+  if (!obj || !Object.keys(obj).length) {
+    let res: any = null;
+    if (type === FIELD_TYPE.ARRAY) {
+      res = [];
+    } else if (type === FIELD_TYPE.OBJECT) {
+      res = {};
+    }
+    return res;
+  }
+  const jsonStr = JSON.stringify(obj);
+  return JSON.parse(jsonStr);
+};
+
+export const yamlToJson = (str, type?) => {
   str = trim(str);
   const obj = jsYaml.load(str, { schema: SEAL_SCHEMA });
   if (!obj || !Object.keys(obj).length) {
