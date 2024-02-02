@@ -292,15 +292,15 @@ export const CommonButtonValue = {
 
 export const SaveActions: MoreAction[] = [
   {
-    label: 'common.button.savePreview',
-    value: ResourceSaveAction.Preview,
-    icon: 'icon-Cloud',
-    iconfont: true
-  },
-  {
     label: 'common.button.saveDeploy',
     value: ResourceSaveAction.Deploy,
     icon: 'icon-sendfasong',
+    iconfont: true
+  },
+  {
+    label: 'common.button.savePreview',
+    value: ResourceSaveAction.Preview,
+    icon: 'icon-Cloud',
     iconfont: true
   },
   {
@@ -442,4 +442,5 @@ export const pageLevelMap = {
   Pipeline: 'Pipeline',
   PipelineExcutions: 'PipelineExcutions'
 };
+
 export default {};
