@@ -147,9 +147,9 @@
       };
       return () => (
         <>
-          {props.pageAction === PageAction.EDIT
-            ? renderEditLabels()
-            : renderViewLabels()}
+          {props.pageAction === PageAction.VIEW
+            ? renderViewLabels()
+            : renderEditLabels()}
         </>
       );
     }
