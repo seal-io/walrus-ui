@@ -354,6 +354,10 @@
       @confirm="handleComfirmComment"
       @cancel="() => (submitLoading = false)"
     ></CommentModal>
+    <PreviewModal
+      v-model:show="showPreviewModal"
+      :title="$t('common.button.deployPreview')"
+    ></PreviewModal>
   </div>
 </template>
 
@@ -390,6 +394,7 @@
   import { projectEnvCtxInjectionKey } from '@/components/dynamic-form/widgets/config';
   import { BreadcrumbOptions } from '@/views/config/interface';
   import { beforeLeaveCallback } from '@/hooks/save-before-leave';
+  import PreviewModal from '../components/preview-modal/index.vue';
   import useProjectBreadcrumbData from '../../projects/hooks/use-project-breadcrumb-data';
   import {
     createService,
@@ -446,6 +451,7 @@
   } = useServiceData();
   const { setChunkRequest } = useSetChunkRequest();
   let copyFormData: any = null;
+  const showPreviewModal = ref(false);
   const isFormChange = ref(false);
   const showCommentModal = ref(false);
   const formref = ref();
@@ -779,6 +785,10 @@
     saveCallback();
   };
 
+  const handlePreview = () => {
+    showPreviewModal.value = true;
+  };
+
   const handleActionSelect = (value) => {
     setTimeout(() => {
       if (value === ResourceSaveAction.Deploy) {
@@ -786,6 +796,10 @@
       }
       if (value === ResourceSaveAction.Draft) {
         handleOk(true);
+      }
+
+      if (value === ResourceSaveAction.Preview) {
+        handlePreview();
       }
     }, 100);
   };

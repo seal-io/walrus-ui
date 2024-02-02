@@ -76,6 +76,7 @@ export enum Status {
   Stopped = 'stopped',
   Running = 'running'
 }
+
 export const setServiceStatus = (status) => {
   if (get(status, 'transitioning')) return Status.Warning;
   if (get(status, 'error')) return Status.Error;
@@ -126,6 +127,42 @@ export const latestRunConfig = [
     formatter(val) {
       return val ? dayjs(val).format('YYYY-MM-DD HH:mm:ss') : '';
     },
+    span: 1
+  },
+  {
+    label: 'dashboard.table.duration',
+    key: 'duration',
+    value: '',
+    formatter(val) {
+      return setDurationValue(val);
+    },
+    span: 1
+  },
+  {
+    label: 'common.table.mark',
+    key: 'changeComment',
+    value: '',
+    span: 2
+  }
+];
+
+export const runBasicConfig = [
+  {
+    label: 'ID',
+    key: 'id',
+    value: '',
+    span: 1
+  },
+  {
+    label: 'Change',
+    key: 'changes',
+    value: '',
+    span: 1
+  },
+  {
+    label: 'common.table.createdBy',
+    key: 'createdBy',
+    value: '',
     span: 1
   },
   {

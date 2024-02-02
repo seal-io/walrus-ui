@@ -27,6 +27,10 @@
         default() {
           return [];
         }
+      },
+      layout: {
+        type: String,
+        default: 'inline-vertical'
       }
     },
     setup(props, { slots, emit }) {
@@ -67,7 +71,7 @@
           <a-descriptions
             data={props.dataInfo}
             column={props.cols}
-            layout="inline-vertical"
+            layout={props.layout}
           >
             {_.map(props.dataInfo, (item, index) => {
               return (
