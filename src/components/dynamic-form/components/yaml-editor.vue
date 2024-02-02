@@ -95,6 +95,9 @@
 
         const data = yaml2Json(fieldValue.value, props.schema.type);
         if (props.schema.type === FIELD_TYPE.ARRAY) {
+          if (!_.isArray(data)) {
+            return callback(`${i18n.global.t('common.rule.array')}`);
+          }
           if (data.length === 0) {
             return callback(
               `${props.schema.name}${i18n.global.t('common.form.rule.input')}`
@@ -103,6 +106,9 @@
           return callback();
         }
 
+        if (!_.isObject(data)) {
+          return callback(`${i18n.global.t('common.rule.object')}`);
+        }
         if (Object.keys(data).length === 0) {
           return callback(
             `${props.schema.name}${i18n.global.t('common.form.rule.input')}`
@@ -191,13 +197,8 @@
 
       const debounceHandleInputChange = _.debounce(handleInputChange, 100);
 
-      watch(
-        () => _.get(props.uiFormData, props.fieldPath),
-        () => {
-          initDefaultValue();
-        },
-        { immediate: true }
-      );
+      initDefaultValue();
+
       const renderEditor = () => {
         return (
           <a-form-item
@@ -209,8 +210,7 @@
               {
                 required: fieldProps.required,
                 validator
-              },
-              ...rules
+              }
             ]}
           >
             <AceEditor

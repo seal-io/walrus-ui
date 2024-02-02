@@ -151,6 +151,13 @@
           fieldPath,
           _.cloneDeep(currentValue || defaultValue)
         );
+        if (schemaFormStatus.value === PageAction.CREATE) {
+          _.set(
+            props.formData,
+            fieldPath,
+            _.cloneDeep(currentValue || defaultValue)
+          );
+        }
       };
 
       // do not handle nullable peroperty
@@ -235,6 +242,7 @@
       const initFormFieldValue = () => {
         if (schemaFormStatus.value === PageAction.CREATE) {
           init();
+          handleChange(props.formData);
         } else {
           const value = _.get(props.uiFormData, props.fieldPath, []);
 
