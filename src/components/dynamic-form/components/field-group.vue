@@ -298,6 +298,7 @@
           ) : (
             <a-grid-item
               span={{ lg: props.schema.colSpan, md: 12, sm: 12, xs: 12 }}
+              style={{ marginBottom: '20px' }}
             >
               <div
                 onMouseenter={withModifiers(() => handleGroupEnter(), ['stop'])}
@@ -326,7 +327,7 @@
     z-index: 1;
     height: 100%;
     margin: 0 2px;
-    margin-bottom: 20px;
+    // margin-bottom: 20px;
     padding: 0 20px;
     padding-bottom: 10px;
     border-radius: 0 0 var(--border-radius-small) var(--border-radius-small);
@@ -356,7 +357,7 @@
     &.collapse {
       margin: 0;
       padding: 0;
-      padding-bottom: 20px;
+      // padding-bottom: 20px;
       border: none;
       box-shadow: none;
     }

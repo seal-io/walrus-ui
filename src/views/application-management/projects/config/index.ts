@@ -2,6 +2,7 @@ import dayjs from 'dayjs';
 import { useUserStore } from '@/store';
 import { ProjectTabs, CommonButtonValue } from '@/views/config';
 import { Resources, Actions } from '@/permissions/config';
+import { MoreAction } from '@/views/config/interface';
 
 const userStore = useUserStore();
 export enum ProjectRoles {

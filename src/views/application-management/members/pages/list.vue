@@ -49,7 +49,7 @@
           type="primary"
           status="warning"
           :disabled="!selectedKeys.length"
-          @click="handleDelete"
+          @click="() => handleDelete()"
           >{{ $t('common.button.delete')
           }}<span v-if="selectedKeys.length">{{
             `(${selectedKeys.length})`
@@ -98,6 +98,31 @@
             }}</span>
           </template>
         </a-table-column>
+        <a-table-column
+          v-if="
+            userStore.hasProjectResourceActions({
+              resource: Resources.ProjectSubjects,
+              projectID: route.params.projectId,
+              actions: [Actions.DELETE]
+            })
+          "
+          align="left"
+          :title="$t('common.table.operation')"
+          ellipsis
+          tooltip
+          :width="210"
+          :cell-style="{ minWidth: '40px' }"
+        >
+          <template #cell="{ record }">
+            <DropButtonGroup
+              :layout="
+                setActionList(record).length === 1 ? 'horizontal' : 'vertical'
+              "
+              :actions="setActionList(record)"
+              @select="(value) => handleClickAction(value, record)"
+            ></DropButtonGroup>
+          </template>
+        </a-table-column>
       </template>
     </a-table>
     <a-pagination
@@ -121,7 +146,9 @@
 
 <script lang="ts" setup>
   import _ from 'lodash';
+  import { CommonButtonValue } from '@/views/config';
   import { Resources, Actions } from '@/permissions/config';
+  import DropButtonGroup from '@/components/drop-button-group/index.vue';
   import { ref, reactive, PropType } from 'vue';
   import { useUserStore, useAppStore } from '@/store';
   import useCallCommon from '@/hooks/use-call-common';
@@ -136,6 +163,7 @@
   import { projectRoles } from '../../projects/config';
   import { ProjectRolesRowData } from '../../projects/config/interface';
   import AssignRoles from '../components/assign-roles.vue';
+  import { actionList } from '../config';
 
   const appStore = useAppStore();
   const { route } = useCallCommon();
@@ -158,6 +186,20 @@
     perPage: appStore.perPage || 10,
     query: ''
   });
+
+  const setActionList = (row) => {
+    const list = _.filter(actionList, (item) => {
+      return item.filterFun ? item.filterFun({ row }) : true;
+    });
+    const res = _.map(list, (o) => {
+      const item = _.cloneDeep(o);
+      item.disabled = _.isFunction(item.disabled)
+        ? item.disabled?.({ row })
+        : item.disabled;
+      return item;
+    });
+    return res;
+  };
 
   const fetchData = async () => {
     try {
@@ -203,9 +245,9 @@
     showModal.value = true;
   };
 
-  const handleDeleteConfirm = async () => {
+  const handleDeleteConfirm = async (delIds?: string[]) => {
     try {
-      const ids = _.map(selectedKeys.value, (val) => {
+      const ids = _.map(delIds || selectedKeys.value, (val) => {
         return {
           id: val
         };
@@ -220,8 +262,14 @@
     }
   };
 
-  const handleDelete = async (row) => {
-    deleteModal({ onOk: handleDeleteConfirm });
+  const handleDelete = async (ids?: string[]) => {
+    deleteModal({ onOk: () => handleDeleteConfirm(ids) });
+  };
+
+  const handleClickAction = (val, row) => {
+    if (CommonButtonValue.Delete === val) {
+      handleDelete([row.id]);
+    }
   };
   fetchData();
 </script>

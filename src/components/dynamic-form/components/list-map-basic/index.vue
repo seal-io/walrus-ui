@@ -331,6 +331,7 @@
                             PageAction.VIEW === schemaFormStatus.value ||
                             fieldProps.readonly
                           }
+                          pageAction={schemaFormStatus.value}
                           onUpdate:value={(val) => {
                             val = genObjValue(val);
                             if (!_.keys(val).length) {
