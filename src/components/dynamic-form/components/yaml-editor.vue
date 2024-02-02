@@ -32,6 +32,7 @@
     },
     emits: ['change'],
     setup(props, { emit, attrs }) {
+      const widget = _.get(props.schema, ['x-walrus-ui', 'widget'], '');
       const schemaFormStatus = inject(
         InjectSchemaFormStatusKey,
         ref(PageAction.CREATE)
@@ -72,18 +73,41 @@
       };
 
       const validator = (val, callback) => {
-        const result = validateYaml(val);
+        if (
+          ![FIELD_TYPE.OBJECT, FIELD_TYPE.ARRAY].includes(props.schema.type)
+        ) {
+          if (fieldProps.required && !fieldValue.value) {
+            return callback(
+              `${props.schema.name}${i18n.global.t('common.form.rule.input')}`
+            );
+          }
+          return callback();
+        }
+        const result = validateYaml(fieldValue.value);
+
         if (result.error) {
-          callback(`${result.error?.message}`);
-        } else if (!fieldProps.required) {
-          callback();
-        } else if (result?.empty) {
-          callback(
+          return callback(`${result.error?.message}`);
+        }
+        if (!fieldProps.required) {
+          return callback();
+        }
+
+        const data = yaml2Json(fieldValue.value, props.schema.type);
+        if (props.schema.type === FIELD_TYPE.ARRAY) {
+          if (data.length === 0) {
+            return callback(
+              `${props.schema.name}${i18n.global.t('common.form.rule.input')}`
+            );
+          }
+          return callback();
+        }
+
+        if (Object.keys(data).length === 0) {
+          return callback(
             `${props.schema.name}${i18n.global.t('common.form.rule.input')}`
           );
-        } else {
-          callback();
         }
+        return callback();
       };
 
       // init field value
@@ -95,10 +119,7 @@
         }
         if (
           schemaFormStatus.value === PageAction.CREATE &&
-          isRequiredInitField(
-            props.schema,
-            _.includes(props.requiredFields, props.schema.name)
-          )
+          fieldProps.required
         ) {
           const jsonStr = initFieldDefaultValue(props.schema);
           fieldValue.value = json2Yaml(jsonStr);
@@ -167,41 +188,59 @@
         },
         { immediate: true }
       );
+      const renderEditor = () => {
+        return (
+          <a-form-item
+            hide-label={true}
+            label={props.schema.title}
+            field={_.join(props.fieldPath, '.')}
+            validate-trigger={['blur', 'change']}
+            rules={[
+              {
+                required: fieldProps.required,
+                validator
+              },
+              ...rules
+            ]}
+          >
+            <AceEditor
+              key={`${_.join(props.fieldPath, '_')}`}
+              {...attrs}
+              doc={props.schema.externalDocs}
+              lang={lang.value}
+              v-model={fieldValue.value}
+              required={
+                fieldProps.required &&
+                schemaFormStatus.value !== PageAction.VIEW
+              }
+              label={props.schema.title || props.schema.name}
+              popup-info={props.schema.description}
+              editor-default-value={defaultValue.value}
+              readOnly={schemaFormStatus.value === PageAction.VIEW}
+              style={{ width: '100%' }}
+              height={300}
+              editor-id={`${_.join(props.fieldPath, '_')}`}
+              onBlur={() => {
+                handleInputChange();
+              }}
+            ></AceEditor>
+          </a-form-item>
+        );
+      };
+
       return () => (
-        <a-form-item
-          hide-label={true}
-          label={props.schema.title}
-          field={_.join(props.fieldPath, '.')}
-          validate-trigger={['blur', 'change']}
-          rules={[
-            {
-              required: fieldProps.required,
-              validator
-            },
-            ...rules
-          ]}
-        >
-          <AceEditor
-            key={`${_.join(props.fieldPath, '_')}`}
-            {...attrs}
-            doc={props.schema.externalDocs}
-            lang={lang.value}
-            v-model={fieldValue.value}
-            required={
-              fieldProps.required && schemaFormStatus.value !== PageAction.VIEW
-            }
-            label={props.schema.title || props.schema.name}
-            popup-info={props.schema.description}
-            editor-default-value={defaultValue.value}
-            readOnly={schemaFormStatus.value === PageAction.VIEW}
-            style={{ width: '100%' }}
-            height={300}
-            editor-id={`${_.join(props.fieldPath, '_')}`}
-            onBlur={() => {
-              handleInputChange();
-            }}
-          ></AceEditor>
-        </a-form-item>
+        <>
+          {widget ? (
+            renderEditor()
+          ) : (
+            <a-grid-item
+              class="y-d"
+              span={{ lg: props.schema.colSpan, md: 12, sm: 12, xs: 12 }}
+            >
+              {renderEditor()}
+            </a-grid-item>
+          )}
+        </>
       );
     }
   });
