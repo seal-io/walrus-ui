@@ -15,6 +15,7 @@
     initFieldDefaultValue,
     isRequiredInitField,
     isEmptyvalue,
+    isEmptyValueField,
     isEqualOn,
     unsetFieldValue,
     genFieldInFormData
@@ -176,7 +177,16 @@
         }
 
         handleChange(props.formData);
-        validateField();
+        setTimeout(() => {
+          if (
+            !isEmptyValueField(
+              props.schema,
+              _.get(props.formData, props.fieldPath)
+            )
+          ) {
+            formref.value?.validateField(_.join(props.fieldPath, '.'));
+          }
+        }, 100);
       };
 
       const debounceHandleInputChange = _.debounce(handleInputChange, 100);
