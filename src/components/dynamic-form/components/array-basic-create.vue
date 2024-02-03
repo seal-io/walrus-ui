@@ -121,7 +121,7 @@
         const val = _.filter(list.value, (item) => {
           return !isEmptyvalue(item);
         });
-        if (!props.required && !val?.length) {
+        if (!fieldProps.required && !val?.length) {
           _.unset(props.formData, props.fieldPath);
         } else {
           _.set(props.formData, props.fieldPath, val);
