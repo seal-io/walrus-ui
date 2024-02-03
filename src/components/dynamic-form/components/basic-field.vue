@@ -139,7 +139,7 @@
                   if (!value && value !== 0) {
                     callback(
                       `${i18n.global.t('common.form.rule.input', {
-                        name: props.schema.title
+                        name: props.schema.title || props.schema.name
                       })}`
                     );
                   } else {
@@ -158,7 +158,7 @@
               doc={props.doc}
               required={props.required}
               editorId={_.join(props.fieldPath, '.')}
-              label={props.label}
+              label={props.schema.title || props.schema.name}
               style="width: 100%"
               key={_.join(props.fieldPath, '.')}
               allow-search={false}

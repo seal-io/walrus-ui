@@ -15,6 +15,7 @@
     initFieldDefaultValue,
     isRequiredInitField,
     isEmptyvalue,
+    parentObjectExsits,
     isEmptyValueField,
     isEqualOn,
     unsetFieldValue,
@@ -74,6 +75,9 @@
       };
 
       const validator = (val, callback) => {
+        if (!parentObjectExsits(props.formData, props.fieldPath)) {
+          return callback();
+        }
         if (
           ![FIELD_TYPE.OBJECT, FIELD_TYPE.ARRAY].includes(props.schema.type)
         ) {
