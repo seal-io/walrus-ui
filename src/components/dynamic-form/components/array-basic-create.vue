@@ -197,7 +197,7 @@
                   if (!value || !value?.length) {
                     callback(
                       `${i18n.global.t('common.form.rule.input', {
-                        name: props.schema.title
+                        name: props.schema.title || props.schema.name
                       })}`
                     );
                   } else {

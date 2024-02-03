@@ -207,7 +207,8 @@ export const parentObjectExsitsInFormData = ({
 };
 
 export const parentObjectExsits = (formData, fieldPath: string[]) => {
-  return _.has(formData, fieldPath);
+  const initialPath = _.initial(fieldPath);
+  return _.has(formData, initialPath) || !initialPath.length;
 };
 
 export const initFieldValue = ({
@@ -246,6 +247,13 @@ export const initFieldValue = ({
   if (checkByValue && (checkByParentObject || isRequiredItemProperty)) {
     _.set(formData, fieldPath, _.cloneDeep(value));
   }
+  console.log(
+    'initFieldValue++++++++++++++',
+    fieldPath,
+    defaultFormData,
+
+    value
+  );
 };
 
 export const initFieldValueByNullable = ({

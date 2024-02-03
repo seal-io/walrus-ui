@@ -285,7 +285,7 @@
           <a-form-item
             hide-label={true}
             required={fieldProps.required}
-            label={`${props.schema.title}`}
+            label={`${props.schema.title || props.schema.name}`}
             field={_.join(props.fieldPath, '.')}
             validate-trigger={['change']}
             content-flex={false}
@@ -304,7 +304,7 @@
                   if (!value || !value?.length) {
                     callback(
                       `${i18n.global.t('common.form.rule.input', {
-                        name: props.schema.title
+                        name: props.schema.title || props.schema.name
                       })}`
                     );
                   } else {

@@ -76,7 +76,7 @@
                   if (!value && value !== 0) {
                     callback(
                       `${i18n.global.t('common.form.rule.input', {
-                        name: props.schema.title
+                        name: props.schema.title || props.schema.name
                       })}`
                     );
                   } else {
@@ -85,7 +85,7 @@
                 }
               }
             ]}
-            label={props.schema.title}
+            label={props.schema.title || props.schema.name}
             field={_.join(props.fieldPath, '.')}
             validate-trigger={['change']}
           >
