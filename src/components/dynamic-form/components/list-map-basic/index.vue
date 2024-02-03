@@ -151,13 +151,11 @@
           fieldPath,
           _.cloneDeep(currentValue || defaultValue)
         );
-        if (schemaFormStatus.value === PageAction.CREATE) {
-          _.set(
-            props.formData,
-            fieldPath,
-            _.cloneDeep(currentValue || defaultValue)
-          );
-        }
+        _.set(
+          props.formData,
+          fieldPath,
+          _.cloneDeep(currentValue || defaultValue)
+        );
       };
 
       // do not handle nullable peroperty
