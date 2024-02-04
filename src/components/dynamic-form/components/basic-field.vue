@@ -101,6 +101,7 @@
         _.set(props.uiFormData, props.fieldPath, val);
         if (!props.required && isEmptyvalue(val) && val !== 0) {
           _.unset(props.formData, props.fieldPath);
+          _.unset(props.uiFormData, props.fieldPath);
         }
         handleChange(props.formData);
       };

@@ -107,6 +107,7 @@
           val !== 0
         ) {
           _.unset(props.formData, props.fieldPath);
+          _.unset(props.uiFormData, props.fieldPath);
         } else {
           _.set(props.formData, props.fieldPath, val);
           _.set(props.uiFormData, props.fieldPath, val);

@@ -104,6 +104,7 @@
       const handleInputChangeCall = (val) => {
         if (!_.keys(val).length && props.schema.nullable) {
           _.unset(props.formData, props.fieldPath);
+          _.unset(props.uiFormData, props.fieldPath);
         }
 
         if (isEqualOn(val, _.get(props.defaultFormData, props.fieldPath))) {
@@ -132,6 +133,7 @@
       const handleInputChange = (val) => {
         if (!_.keys(val).length && !fieldProps.required) {
           _.unset(props.formData, props.fieldPath);
+          _.unset(props.uiFormData, props.fieldPath);
         }
       };
       const renderEdit = () => {

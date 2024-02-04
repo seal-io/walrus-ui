@@ -14,12 +14,15 @@
   import schemaFieldProps from '../fields/schema-field-props';
   import { ProvideErrorFieldsKey } from '../config';
   import FIELD_TYPE from '../config/field-type';
-  import { initFieldValue } from '../utils';
+  import { parentObjectExsits } from '../utils';
 
   export default defineComponent({
     props: schemaFieldProps,
     emits: ['change', 'unset'],
     setup(props, { slots, emit }) {
+      // hidden
+      const hidden = _.get(props.schema, ['x-walrus-ui', 'hidden'], false);
+
       const errorFields = inject(ProvideErrorFieldsKey, ref([]));
       const schemaFormStatus = inject(
         InjectSchemaFormStatusKey,
@@ -40,6 +43,7 @@
           return _.startsWith(item, fieldPath);
         });
       });
+
       const handleToggleField = (checked) => {
         if (!checked) {
           status.value = false;
@@ -48,13 +52,17 @@
         } else {
           status.value = true;
           isUnset.value = false;
-          if (_.has(props.uiFormData, props.fieldPath)) {
+
+          if (
+            _.has(props.uiFormData, props.fieldPath) &&
+            parentObjectExsits(props.formData, props.fieldPath)
+          ) {
             _.set(
               props.formData,
               props.fieldPath,
               _.cloneDeep(_.get(props.uiFormData, props.fieldPath))
             );
-          } else {
+          } else if (parentObjectExsits(props.formData, props.fieldPath)) {
             _.set(
               props.formData,
               props.fieldPath,

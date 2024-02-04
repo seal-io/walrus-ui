@@ -177,6 +177,7 @@
           (!fieldProps.required || !props.schema.isRequired)
         ) {
           _.unset(props.formData, props.fieldPath);
+          _.unset(props.uiFormData, props.fieldPath);
         } else {
           const jsonstr =
             props.schema.type === FIELD_TYPE.STRING

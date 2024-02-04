@@ -120,6 +120,7 @@
           props.schema.nullable
         ) {
           _.unset(props.formData, props.fieldPath);
+          _.unset(props.uiFormData, props.fieldPath);
         }
         // if (props.schema.isItemsProperty) {
         //   return;
@@ -141,6 +142,7 @@
           !props.schema.isRequired
         ) {
           _.unset(props.formData, props.fieldPath);
+          _.unset(props.uiFormData, props.fieldPath);
         }
       };
       const handleDeleteClick = (index) => {

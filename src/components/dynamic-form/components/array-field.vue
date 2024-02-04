@@ -188,6 +188,7 @@
           !_.get(props.uiFormData, props.fieldPath)?.length
         ) {
           _.unset(props.formData, props.fieldPath);
+          _.unset(props.uiFormData, props.fieldPath);
         }
 
         unsetFieldValue({
