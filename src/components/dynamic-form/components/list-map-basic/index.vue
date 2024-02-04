@@ -81,6 +81,7 @@
       const handleInputChange = (val) => {
         if (!_.keys(val).length && !fieldProps.required) {
           _.unset(props.formData, props.fieldPath);
+          _.unset(props.uiFormData, props.fieldPath);
         }
       };
 
@@ -174,6 +175,7 @@
           !_.get(props.uiFormData, props.fieldPath)?.length
         ) {
           _.unset(props.formData, props.fieldPath);
+          _.unset(props.uiFormData, props.fieldPath);
         }
         handleDeleteCallback();
       };
@@ -363,6 +365,7 @@
                               !_.get(props.formData, props.fieldPath)?.length
                             ) {
                               _.unset(props.formData, props.fieldPath);
+                              _.unset(props.uiFormData, props.fieldPath);
                             }
 
                             handleChange(props.formData);

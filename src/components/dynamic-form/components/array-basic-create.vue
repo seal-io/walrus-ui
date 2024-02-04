@@ -88,6 +88,7 @@
         _.set(props.uiFormData, props.fieldPath, res);
         if (!res.length && props.schema.nullable) {
           _.unset(props.formData, props.fieldPath);
+          _.unset(props.uiFormData, props.fieldPath);
         }
         // if (props.schema.isItemsProperty) {
         //   return;
@@ -123,6 +124,7 @@
         });
         if (!fieldProps.required && !val?.length) {
           _.unset(props.formData, props.fieldPath);
+          _.unset(props.uiFormData, props.fieldPath);
         } else {
           _.set(props.formData, props.fieldPath, val);
           _.set(props.uiFormData, props.fieldPath, val);

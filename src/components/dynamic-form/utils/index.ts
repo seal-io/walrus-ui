@@ -232,26 +232,27 @@ export const initFieldValue = ({
   const currentValue = _.get(uiFormData, fieldPath);
   const value = currentValue || defaultValue;
 
-  _.set(uiFormData, fieldPath, _.cloneDeep(value));
-  if (!_.has(defaultFormData, fieldPath)) {
+  if (!_.has(defaultFormData, fieldPath) && !isEmptyValueField(schema, value)) {
     _.set(defaultFormData, fieldPath, _.cloneDeep(value));
   }
   const isRequiredItemProperty = schema.arrayItemProperty;
   const checkByValue = required || !isEmptyValueField(schema, value);
-  const checkByParentObject = parentObjectExsitsInFormData({
-    formData,
-    fieldPath,
-    schema
-  });
+  const checkByParentObject = parentObjectExsits(formData, fieldPath);
 
   if (checkByValue && (checkByParentObject || isRequiredItemProperty)) {
     _.set(formData, fieldPath, _.cloneDeep(value));
   }
+  if (value && checkByParentObject) {
+    _.set(uiFormData, fieldPath, _.cloneDeep(value));
+  }
+
   console.log(
     'initFieldValue++++++++++++++',
     fieldPath,
-    defaultFormData,
-
+    isRequiredItemProperty,
+    checkByParentObject,
+    currentValue,
+    defaultValue,
     value
   );
 };
@@ -312,11 +313,7 @@ export const viewFieldValue = ({
 }) => {
   const defaultValue = initFieldDefaultValue(schema);
   const originValue = _.get(defaultFormData, fieldPath);
-  const checkByParentObject = parentObjectExsitsInFormData({
-    formData: uiFormData,
-    fieldPath,
-    schema
-  });
+  const checkByParentObject = parentObjectExsits(uiFormData, fieldPath);
   const checkByValue =
     required || !isEmptyValueField(schema, originValue || defaultValue);
 
@@ -327,14 +324,12 @@ export const viewFieldValue = ({
     _.set(uiFormData, fieldPath, _.cloneDeep(originValue || defaultValue));
   }
 
-  if (!_.has(defaultFormData, fieldPath)) {
-    if (!hidden || !isEmptyValueField(schema, originValue || defaultValue)) {
-      _.set(
-        defaultFormData,
-        fieldPath,
-        _.cloneDeep(originValue || defaultValue)
-      );
-    }
+  if (
+    !_.has(defaultFormData, fieldPath) &&
+    !isEmptyValueField(schema, originValue || defaultValue) &&
+    !hidden
+  ) {
+    _.set(defaultFormData, fieldPath, _.cloneDeep(originValue || defaultValue));
   }
 };
 

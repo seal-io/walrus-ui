@@ -46,6 +46,7 @@
       };
       const unsetShowIfField = () => {
         _.unset(props.formData, props.fieldPath);
+        _.unset(props.uiFormData, props.fieldPath);
         emit('change', props.formData);
         return null;
       };
