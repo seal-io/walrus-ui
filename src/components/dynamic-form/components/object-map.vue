@@ -15,8 +15,10 @@
     genFieldPropsAndRules,
     isEqualOn,
     genFieldInFormData,
-    unsetFieldValue
+    unsetFieldValue,
+    parentObjectExsits
   } from '../utils';
+  import { ProviderFormRefKey } from '../config';
 
   export default defineComponent({
     props: schemaFieldProps,
@@ -28,11 +30,19 @@
       );
 
       const schemaCustomMeta = inject(InjectSchemaCustomMetaKey, ref({}));
+      const formref = inject(ProviderFormRefKey, ref());
 
       const initialPath = _.initial(props.fieldPath);
+
+      const validateField = () => {
+        formref.value?.validateField(_.join(props.fieldPath, '.'));
+      };
+
       const handleChange = (data) => {
         emit('change', data);
       };
+
+      const debunceValidateField = _.debounce(validateField, 200);
 
       const { fieldProps, rules } = genFieldPropsAndRules({
         schema: props.schema,
@@ -136,19 +146,34 @@
               {
                 required: fieldProps.required,
                 validator: (value, callback) => {
-                  if (!validateLabels()) {
+                  if (
+                    !parentObjectExsits(props.formData, props.fieldPath) ||
+                    !fieldProps.required
+                  ) {
                     callback();
                     return;
                   }
-                  callback(i18n.global.t('common.rule.object.key'));
-                },
-                message: i18n.global.t('common.rule.object.key')
+                  if (!value || !_.keys(value).length) {
+                    callback(
+                      `${i18n.global.t('common.form.rule.input', {
+                        name: props.schema.title || props.schema.name
+                      })}`
+                    );
+                    return;
+                  }
+                  if (validateLabels()) {
+                    callback(i18n.global.t('common.rule.object.key'));
+                    return;
+                  }
+
+                  callback();
+                }
               }
             ]}
           >
             <SealFormItemWrap
               popupInfo={props.schema.description}
-              required={props.required}
+              required={fieldProps.required}
               label={`${props.schema.title || props.schema.name || ''}`}
               doc={props.schema.externalDocs}
               style="width: 100%"
@@ -171,6 +196,7 @@
                   _.set(props.uiFormData, props.fieldPath, _.clone(val));
                   handleInputChange(val);
                   handleChange(props.formData);
+                  debunceValidateField();
                 }}
               ></MapString>
             </SealFormItemWrap>
