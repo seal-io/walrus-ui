@@ -453,7 +453,8 @@
     InjectShowInputHintKey,
     InjectTraceKey,
     InjectSchemaFormStatusKey,
-    InjectSchemaCustomMetaKey
+    InjectSchemaCustomMetaKey,
+    InjectSchemaValidationTypeKey
   } from '@/views/config';
   import CommonList from '@/components/common-list/index.vue';
   import GroupForm from '@/components/dynamic-form/group-form.vue';
@@ -607,6 +608,7 @@
       immutable: false
     })
   );
+  provide(InjectSchemaValidationTypeKey, ref(false));
 
   const schemaVariables = ref<any>({});
 

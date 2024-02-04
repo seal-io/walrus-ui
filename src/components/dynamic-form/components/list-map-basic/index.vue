@@ -12,7 +12,8 @@
   import {
     InjectSchemaFormStatusKey,
     PageAction,
-    InjectSchemaCustomMetaKey
+    InjectSchemaCustomMetaKey,
+    InjectSchemaValidationTypeKey
   } from '@/views/config';
   import MapString from '@/components/form-create/custom-components/map-string.vue';
   import SealFormItemWrap from '@/components/seal-form/components/seal-form-item-wrap.vue';
@@ -37,6 +38,10 @@
       const schemaFormStatus = inject(
         InjectSchemaFormStatusKey,
         ref(PageAction.CREATE)
+      );
+      const InjectSchemaValidationType = inject(
+        InjectSchemaValidationTypeKey,
+        ref(true)
       );
       const schemaCustomMeta = inject(InjectSchemaCustomMetaKey, ref({}));
       const formref = inject(ProviderFormRefKey, ref());
@@ -296,6 +301,10 @@
               {
                 required: fieldProps.required,
                 validator: (value, callback) => {
+                  if (!InjectSchemaValidationType.value) {
+                    callback();
+                    return;
+                  }
                   if (
                     !parentObjectExsits(props.formData, props.fieldPath) ||
                     !fieldProps.required

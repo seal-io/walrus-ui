@@ -5,6 +5,7 @@
   import {
     InjectSchemaFormStatusKey,
     InjectSchemaCustomMetaKey,
+    InjectSchemaValidationTypeKey,
     PageAction
   } from '@/views/config';
   import MapString from '@/components/form-create/custom-components/map-string.vue';
@@ -27,6 +28,11 @@
       const schemaFormStatus = inject(
         InjectSchemaFormStatusKey,
         ref(PageAction.CREATE)
+      );
+
+      const InjectSchemaValidationType = inject(
+        InjectSchemaValidationTypeKey,
+        ref(true)
       );
 
       const schemaCustomMeta = inject(InjectSchemaCustomMetaKey, ref({}));
@@ -148,6 +154,10 @@
               {
                 required: fieldProps.required,
                 validator: (value, callback) => {
+                  if (!InjectSchemaValidationType.value) {
+                    callback();
+                    return;
+                  }
                   if (
                     !parentObjectExsits(props.formData, props.fieldPath) ||
                     !fieldProps.required

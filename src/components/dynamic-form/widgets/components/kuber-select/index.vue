@@ -5,6 +5,7 @@
   import {
     InputWidth,
     InjectSchemaFormStatusKey,
+    InjectSchemaValidationTypeKey,
     PageAction
   } from '@/views/config';
   import { parentObjectExsits } from '@/components/dynamic-form/utils';
@@ -46,6 +47,10 @@
       const schemaFormStatus = inject(
         InjectSchemaFormStatusKey,
         ref(PageAction.CREATE)
+      );
+      const InjectSchemaValidationType = inject(
+        InjectSchemaValidationTypeKey,
+        ref(true)
       );
       const {
         fetchConnectors,
@@ -96,6 +101,10 @@
               ...props.rules,
               {
                 validator: (value, callback) => {
+                  if (!InjectSchemaValidationType.value) {
+                    callback();
+                    return;
+                  }
                   if (
                     !parentObjectExsits(props.formData, props.fieldPath) ||
                     !props.required

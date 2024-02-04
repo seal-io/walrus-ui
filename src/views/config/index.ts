@@ -26,6 +26,10 @@ export const InjectSchemaFormStatusKey = Symbol('InjectSchemaFormStatusKey');
 
 export const InjectSchemaCustomMetaKey = Symbol('InjectSchemaCustomMeta');
 
+export const InjectSchemaValidationTypeKey = Symbol(
+  'InjectSchemaValidationTypeKey'
+);
+
 export const InjectTraceKey = Symbol('InjectTraceKey');
 
 export const setEndTimeAddDay = (time, mode) => {

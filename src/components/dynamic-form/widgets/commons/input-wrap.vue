@@ -2,7 +2,11 @@
   import _ from 'lodash';
   import { defineComponent, toRefs, inject, ref } from 'vue';
   import i18n from '@/locale';
-  import { InjectSchemaFormStatusKey, PageAction } from '@/views/config';
+  import {
+    InjectSchemaFormStatusKey,
+    InjectSchemaValidationTypeKey,
+    PageAction
+  } from '@/views/config';
   import SealViewItemWrap from '@/components/seal-form/components/seal-view-item-wrap.vue';
   import {
     parentObjectExsits,
@@ -32,6 +36,10 @@
         ref(PageAction.CREATE)
       );
       const formref = inject(ProviderFormRefKey, ref());
+      const InjectSchemaValidationType = inject(
+        InjectSchemaValidationTypeKey,
+        ref(true)
+      );
 
       const widget = _.get(props.schema, ['x-walrus-ui', 'widget'], '');
 
@@ -66,6 +74,10 @@
               ...props.rules,
               {
                 validator: (value, callback) => {
+                  if (!InjectSchemaValidationType.value) {
+                    callback();
+                    return;
+                  }
                   if (
                     !parentObjectExsits(props.formData, props.fieldPath) ||
                     !props.required
