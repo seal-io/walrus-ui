@@ -50,9 +50,10 @@
       };
 
       const validateField = () => {
-        formref.value.validateField(props.fieldPath);
+        formref.value?.validateField(_.join(props.fieldPath, '.'));
       };
 
+      const debunceValidateField = _.debounce(validateField, 200);
       // textarea
       if (type.value === 'string' && widget === 'TextArea') {
         Component = CommonFieldMaps.textArea;
@@ -64,7 +65,6 @@
 
       if (isPassword(props.schema)) {
         Component = CommonFieldMaps.password;
-        console.log('password++++++++++++++', props.schema);
       }
 
       const handleInputChangeCall = (val: any) => {
@@ -185,6 +185,7 @@
                 } else {
                   handleInputChange(val);
                 }
+                debunceValidateField();
               }}
               onInput={(val) => {
                 if (isNumber(props.schema)) {
@@ -192,11 +193,9 @@
                 } else {
                   handleInputChange(val);
                 }
-                validateField();
               }}
               onChange={(val) => {
                 handleInputChange(val);
-                validateField();
               }}
             ></Component>
           </a-form-item>
