@@ -5,6 +5,7 @@
   import {
     InjectSchemaFormStatusKey,
     InjectSchemaCustomMetaKey,
+    InjectSchemaValidationTypeKey,
     PageAction
   } from '@/views/config';
   import SealViewItemWrap from '@/components/seal-form/components/seal-view-item-wrap.vue';
@@ -34,6 +35,11 @@
       const schemaFormStatus = inject(
         InjectSchemaFormStatusKey,
         ref(PageAction.CREATE)
+      );
+
+      const InjectSchemaValidationType = inject(
+        InjectSchemaValidationTypeKey,
+        ref(true)
       );
       const formref = inject(ProviderFormRefKey, ref());
       const schemaCustomMeta = inject(InjectSchemaCustomMetaKey, ref({}));
@@ -194,6 +200,10 @@
               ...rules,
               {
                 validator: (value, callback) => {
+                  if (!InjectSchemaValidationType.value) {
+                    callback();
+                    return;
+                  }
                   if (
                     !parentObjectExsits(props.formData, props.fieldPath) ||
                     !fieldProps.required

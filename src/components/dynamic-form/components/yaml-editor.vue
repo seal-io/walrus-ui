@@ -6,6 +6,7 @@
   import {
     InjectSchemaFormStatusKey,
     InjectSchemaCustomMetaKey,
+    InjectSchemaValidationTypeKey,
     PageAction
   } from '@/views/config';
   import { ProviderFormRefKey } from '../config';
@@ -38,6 +39,10 @@
       const schemaFormStatus = inject(
         InjectSchemaFormStatusKey,
         ref(PageAction.CREATE)
+      );
+      const InjectSchemaValidationType = inject(
+        InjectSchemaValidationTypeKey,
+        ref(true)
       );
       const schemaCustomMeta = inject(InjectSchemaCustomMetaKey, ref({}));
       const formref = inject(ProviderFormRefKey, ref());
@@ -75,6 +80,9 @@
       };
 
       const validator = (val, callback) => {
+        if (!InjectSchemaValidationType.value) {
+          return callback();
+        }
         if (!parentObjectExsits(props.formData, props.fieldPath)) {
           return callback();
         }
