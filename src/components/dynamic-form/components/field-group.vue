@@ -5,7 +5,8 @@
     withModifiers,
     inject,
     computed,
-    watch
+    watch,
+    onBeforeUnmount
   } from 'vue';
   import _ from 'lodash';
   import i18n from '@/locale';
@@ -34,6 +35,7 @@
       const status = ref(false);
       const hovered = ref(false);
       const groupHovered = ref(false);
+      const isUnmounted = ref(false);
 
       const fieldPathData = computed(() => {
         return _.get(props.formData, props.fieldPath);
@@ -78,6 +80,7 @@
           }
         }
         props.cachedFormData.set(fullPath, isUnset.value);
+
         emit('unset', isUnset.value);
         emit('change', props.formData);
       };
@@ -112,14 +115,20 @@
       };
 
       const initCachedUnsetValue = () => {
+        if (isUnmounted.value) return;
         if (props.cachedFormData.get(fullPath) !== undefined) {
           isUnset.value = props.cachedFormData.get(fullPath);
-          if (!isUnset.value) {
+          status.value = !isUnset.value;
+          if (isUnset.value) {
             _.unset(props.formData, props.fieldPath);
           }
         }
         console.log('props.fieldPath======99', props.fieldPath, isUnset.value);
       };
+      const debounceInitCachedUnsetValue = _.debounce(
+        initCachedUnsetValue,
+        100
+      );
       const initUnsetValue = () => {
         if (schemaFormStatus.value === PageAction.CREATE) {
           return;
@@ -157,7 +166,11 @@
           } else {
             isUnset.value = true;
           }
-          initCachedUnsetValue();
+          console.log(
+            'props.fieldPath=====watch=',
+            props.fieldPath,
+            isUnset.value
+          );
         },
         { immediate: true }
       );
@@ -170,6 +183,7 @@
         },
         { immediate: true }
       );
+
       const renderNullableButton = () => {
         if (schemaFormStatus.value === PageAction.VIEW) {
           return null;
