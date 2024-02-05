@@ -25,6 +25,7 @@ export default {
   'common.button.export': 'Export',
   'common.button.import': 'Import',
   'common.button.retry': 'Retry',
+  'common.button.apply': 'Apply',
   'common.button.create.now': 'Create now',
   'common.button.refresh': 'Refresh',
   'common.button.delete': 'Delete',

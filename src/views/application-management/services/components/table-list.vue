@@ -184,6 +184,7 @@
         />
       </div>
     </div>
+
     <resourceControl
       v-model:visible="terminalShow"
       v-model:tabs="drawerTabs"

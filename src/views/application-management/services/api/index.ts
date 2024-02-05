@@ -268,7 +268,7 @@ export const queryServiceRevisions = (
   token?
 ) => {
   return axios.get(
-    `${SERVICE_API_PREFIX()}${SERVICE_API}/${params.serviceID}/revisions`,
+    `${SERVICE_API_PREFIX()}${SERVICE_API}/${params.serviceID}/runs`,
     {
       params: {
         ..._.omit(params, ['serviceID', '_action'])
@@ -283,38 +283,53 @@ export const queryServiceRevisions = (
     }
   );
 };
+
 export const queryServiceRevisionsDetail = (params: {
   id: string;
   serviceID: string;
 }) => {
   return axios.get(
-    `${SERVICE_API_PREFIX()}${SERVICE_API}/${params.serviceID}/revisions/${
+    `${SERVICE_API_PREFIX()}${SERVICE_API}/${params.serviceID}/runs/${
       params.id
     }`
   );
 };
 
 export const deleteApplicationRevisions = (data: DeletePayload) => {
-  return axios.delete(`${SERVICE_RESOURCE_API_PREFIX()}/revisions`, {
+  return axios.delete(`${SERVICE_RESOURCE_API_PREFIX()}/runs`, {
     data
   });
 };
 
 export const diffRevisionSpec = (params: { id: string; serviceID: string }) => {
   return axios.get(
-    `${SERVICE_API_PREFIX()}${SERVICE_API}/${params.serviceID}/revisions/${
+    `${SERVICE_API_PREFIX()}${SERVICE_API}/${params.serviceID}/runs/${
       params.id
     }/diff-latest`
   );
 };
+
 export const queryRevisionChange = (params: {
   id: string;
   serviceID: string;
 }) => {
   return axios.get(
-    `${SERVICE_API_PREFIX()}${SERVICE_API}/${params.serviceID}/revisions/${
+    `${SERVICE_API_PREFIX()}${SERVICE_API}/${params.serviceID}/runs/${
       params.id
     }/diff-previous`
+  );
+};
+
+export const applyResourceRun = (params: {
+  serviceID: string;
+  id: string;
+  data: any;
+}) => {
+  return axios.put(
+    `${SERVICE_API_PREFIX()}${SERVICE_API}/${params.serviceID}/runs/${
+      params.id
+    }/apply`,
+    params.data
   );
 };
 

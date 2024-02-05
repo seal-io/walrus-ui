@@ -1,6 +1,6 @@
 <template>
   <div class="container">
-    <a-card class="general-card q-s-w-card">
+    <div>
       <a-form
         :model="formData"
         auto-label-width
@@ -107,7 +107,7 @@
           }}</a-button>
         </div>
       </a-form>
-    </a-card>
+    </div>
   </div>
 </template>
 

@@ -21,6 +21,7 @@ export default {
   'common.button.export': '导出',
   'common.button.import': '导入',
   'common.button.retry': '重试',
+  'common.button.apply': '应用',
   'common.button.create.now': '立即创建',
   'common.button.refresh': '刷新',
   'common.button.enabled': '启用',

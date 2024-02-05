@@ -227,7 +227,11 @@ export const CreatActions = [
 export const RevisionStatus = {
   Succeeded: 'Succeeded',
   Running: 'Running',
-  Failed: 'Failed'
+  Failed: 'Failed',
+  Pending: 'Pending',
+  Plan: 'Plan',
+  Apply: 'Apply',
+  Canceled: 'Canceled'
 };
 
 export const StartableStatus = [
