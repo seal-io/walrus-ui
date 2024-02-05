@@ -47,6 +47,14 @@
         });
       });
 
+      const deleteCacheFormShowifKey = () => {
+        _.each([...props.cachedFormData.keys()], (key) => {
+          if (key.startsWith(_.join(props.fieldPath, '.'))) {
+            props.cachedFormData.delete(key);
+          }
+        });
+      };
+
       const handleToggleField = (checked) => {
         if (!checked) {
           status.value = false;
@@ -125,10 +133,7 @@
         }
         console.log('props.fieldPath======99', props.fieldPath, isUnset.value);
       };
-      const debounceInitCachedUnsetValue = _.debounce(
-        initCachedUnsetValue,
-        100
-      );
+
       const initUnsetValue = () => {
         if (schemaFormStatus.value === PageAction.CREATE) {
           return;
