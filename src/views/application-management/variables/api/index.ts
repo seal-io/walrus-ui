@@ -54,7 +54,7 @@ export const queryVariables = (params: QueryType) => {
 export const queryEnvironmentVariables = (
   params: QueryType & { projectID: string; environmentID: string }
 ) => {
-  const url = `/projects/${params.projectID}/environments/${params.environmentID}/${VARIABLE_API}`;
+  const url = `/projects/${params.projectID}/environments/${params.environmentID}${VARIABLE_API}`;
   return axios.get<ResultType>(`${url}`, {
     params: {
       ..._.omit(params, ['projectID', 'environmentID'])
