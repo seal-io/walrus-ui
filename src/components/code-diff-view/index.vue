@@ -1,12 +1,12 @@
 <script lang="tsx">
-  import { defineComponent, ref, watch, computed } from 'vue';
+  import { defineComponent, ref, watch, computed, PropType } from 'vue';
   import useCodeView from '@/hooks/use-code-view';
   import CodeChunk from './code-chunk.vue';
 
   export default defineComponent({
     props: {
       content: {
-        type: Object,
+        type: Object as PropType<{ old: string; new: string }>,
         default() {
           return {};
         }
@@ -31,7 +31,7 @@
         }
       );
       return () => (
-        <div class="box">
+        <div class="chunk-box">
           <CodeChunk
             class="left chunks"
             chunks={removeChunks.value}
@@ -45,7 +45,7 @@
 </script>
 
 <style lang="less" scoped>
-  .box {
+  .chunk-box {
     position: relative;
     display: flex;
     justify-content: space-between;

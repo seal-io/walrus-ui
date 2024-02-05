@@ -1,6 +1,8 @@
 <script lang="tsx">
   import _ from 'lodash';
+  import i18n from '@/locale';
   import { defineComponent, toRef } from 'vue';
+  import { StatusColor } from '@/views/config';
   import useBasicInfoData from '@/views/application-management/projects/hooks/use-basicInfo-data';
   import StatusLabel from '@/views/operation-hub/connectors/components/status-label.vue';
   import BasicInfo from '../basic-info.vue';
@@ -19,7 +21,8 @@
         default: 'horizontal'
       }
     },
-    setup(props, { slots }) {
+    emits: ['apply', 'cancel'],
+    setup(props, { slots, emit }) {
       const info = toRef(props, 'dataInfo');
       const basicDataList = useBasicInfoData(runBasicConfig, info);
 
@@ -41,6 +44,22 @@
           </>
         );
       };
+
+      const renderChanges = ({ data, value }) => {
+        return (
+          <div class="data">
+            <span class="add" style={{ color: StatusColor.success.color5 }}>
+              <icon-plus /> 8
+            </span>
+            <span class="update" style={{ color: StatusColor.warning.color5 }}>
+              <i class={['icon-wave-sine iconfont']}></i> 10
+            </span>
+            <span class="delete" style={{ color: StatusColor.error.color5 }}>
+              <icon-minus /> 2
+            </span>
+          </div>
+        );
+      };
       return () => (
         <div class="wrap">
           <div class="title">
@@ -53,13 +72,37 @@
             cols={2}
             layout={props.layout}
             v-slots={{
-              value: slots.value
-                ? (data) => {
-                    return slots.value?.(data);
-                  }
-                : null
+              value: ({ data, value }) => {
+                if (data.key === 'changes') {
+                  return renderChanges({ data, value });
+                }
+                return value;
+              }
             }}
           ></BasicInfo>
+          <a-space direction="vertical" size={20}>
+            <a-button
+              status="success"
+              type="primary"
+              style={{ width: '95px' }}
+              onClick={() => {
+                emit('apply', true);
+              }}
+            >
+              <i class={['iconfont icon-sendfasong m-r-5']}></i>
+              <span>{i18n.global.t('common.button.apply')}</span>
+            </a-button>
+            <a-button
+              type="outline"
+              style={{ width: '95px' }}
+              onClick={() => {
+                emit('apply', false);
+              }}
+            >
+              <icon-stop class="m-r-5" />
+              <span>{i18n.global.t('common.button.cancel')}</span>
+            </a-button>
+          </a-space>
         </div>
       );
     }
@@ -67,6 +110,17 @@
 </script>
 
 <style lang="less" scoped>
+  .data {
+    display: flex;
+    align-items: center;
+
+    .add,
+    .update,
+    .delete {
+      margin-right: 10px;
+    }
+  }
+
   .wrap {
     display: flex;
     padding: 10px 16px;

@@ -142,6 +142,7 @@
         </result-view>
       </template>
     </tableList>
+
     <deleteServiceModal
       v-model:show="showDeleteModal"
       :callback="handleDeleteConfirm"

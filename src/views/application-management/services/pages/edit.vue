@@ -269,16 +269,9 @@
         <template #save>
           <div>
             <GroupButtonMenu
-              v-if="
-                _.get(serviceInfo, 'status.summaryStatus') ===
-                  ServiceStatus.Undeployed ||
-                _.get(serviceInfo, 'status.summaryStatus') ===
-                  ServiceStatus.Stopped ||
-                !id
-              "
               trigger="hover"
               :loading="submitLoading"
-              :actions="SaveActions"
+              :actions="actionList"
               @select="handleActionSelect"
             >
               <template #default>
@@ -309,7 +302,7 @@
                 </a-popconfirm>
               </template>
             </GroupButtonMenu>
-            <a-popconfirm
+            <!-- <a-popconfirm
               v-else
               position="tr"
               trigger="hover"
@@ -334,7 +327,7 @@
                 @click="handleOkCallback"
                 >{{ $t('common.button.saveDeploy') }}</a-button
               >
-            </a-popconfirm>
+            </a-popconfirm> -->
           </div>
         </template>
         <template #cancel>
@@ -357,6 +350,7 @@
     <PreviewModal
       v-model:show="showPreviewModal"
       :title="$t('common.button.deployPreview')"
+      @save="doneCallback"
     ></PreviewModal>
   </div>
 </template>
@@ -485,6 +479,21 @@
 
   provide(InjectSchemaFormStatusKey, formAction);
   provide(InjectTraceKey, traceKey);
+
+  const actionList = computed(() => {
+    return _.filter(SaveActions, (item) => {
+      if (
+        _.get(serviceInfo.value, 'status.summaryStatus') ===
+          ServiceStatus.Undeployed ||
+        _.get(serviceInfo.value, 'status.summaryStatus') ===
+          ServiceStatus.Stopped ||
+        !id
+      ) {
+        return true;
+      }
+      return item.value !== ResourceSaveAction.Draft;
+    });
+  });
   const virtualListProps = computed(() => {
     if (templateList.value.length > 20) {
       return {
@@ -712,6 +721,25 @@
     });
   };
 
+  const doneCallback = () => {
+    if (!id) {
+      router.replace({
+        name: PROJECT.EnvDetail,
+        params: {
+          projectId: route.params.projectId,
+          environmentId: route.params.environmentId,
+          action: PageAction.VIEW
+        },
+        query: {
+          id: route.params.environmentId
+        }
+      });
+    } else if (props.pgType !== 'page') {
+      emits('save');
+    } else {
+      router.back();
+    }
+  };
   const saveCallback = async () => {
     const hiddenFormData = groupForm.value?.getHiddenData();
     copyFormData = _.cloneDeep(formData.value);
@@ -724,23 +752,11 @@
       await upgradeApplicationInstance(data);
     } else {
       await handleCreate(data);
-      router.replace({
-        name: PROJECT.EnvDetail,
-        params: {
-          projectId: route.params.projectId,
-          environmentId: route.params.environmentId,
-          action: PageAction.VIEW
-        },
-        query: {
-          id: route.params.environmentId
-        }
-      });
-      return;
     }
-    if (props.pgType !== 'page') {
-      emits('save');
+    if (formData.value.approvalRequired) {
+      handlePreview();
     } else {
-      router.back();
+      doneCallback();
     }
   };
   const handleOk = async (draft?: boolean) => {
@@ -791,6 +807,8 @@
 
   const handleActionSelect = (value) => {
     setTimeout(() => {
+      formData.value.approvalRequired = false;
+
       if (value === ResourceSaveAction.Deploy) {
         handleOk();
       }
@@ -799,7 +817,9 @@
       }
 
       if (value === ResourceSaveAction.Preview) {
-        handlePreview();
+        formData.value.approvalRequired = true;
+        handleOk();
+        // handlePreview();
       }
     }, 100);
   };
