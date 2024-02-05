@@ -231,30 +231,33 @@ export const initFieldValue = ({
   const defaultValue = initFieldDefaultValue(schema);
   const currentValue = _.get(uiFormData, fieldPath);
   const value = currentValue || defaultValue;
+  const isEmptyValue = isEmptyValueField(schema, value);
 
-  if (!_.has(defaultFormData, fieldPath) && !isEmptyValueField(schema, value)) {
+  if (!_.has(defaultFormData, fieldPath) && !isEmptyValue) {
     _.set(defaultFormData, fieldPath, _.cloneDeep(value));
   }
   const isRequiredItemProperty = schema.arrayItemProperty;
-  const checkByValue = required || !isEmptyValueField(schema, value);
+  const checkByValue = required || !isEmptyValue;
   const checkByParentObject = parentObjectExsits(formData, fieldPath);
 
   if (checkByValue && (checkByParentObject || isRequiredItemProperty)) {
     _.set(formData, fieldPath, _.cloneDeep(value));
   }
-  if (value && checkByParentObject) {
+  if (!isEmptyValue && checkByParentObject) {
     _.set(uiFormData, fieldPath, _.cloneDeep(value));
   }
 
-  console.log(
-    'initFieldValue++++++++++++++',
-    fieldPath,
-    isRequiredItemProperty,
-    checkByParentObject,
-    currentValue,
-    defaultValue,
-    value
-  );
+  // console.log(
+  //   'initFieldValue++++++++++++++',
+  //   fieldPath,
+  //   isRequiredItemProperty,
+  //   checkByParentObject,
+  //   currentValue,
+  //   defaultValue,
+  //   formData,
+  //   defaultFormData,
+  //   value
+  // );
 };
 
 export const initFieldValueByNullable = ({

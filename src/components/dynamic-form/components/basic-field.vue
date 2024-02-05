@@ -105,6 +105,9 @@
 
       // do not handle nullable peroperty
       const handleInputChange = (val) => {
+        if (isEmptyvalue(val) && val !== 0) {
+          val = null;
+        }
         _.set(props.formData, props.fieldPath, val);
         _.set(props.uiFormData, props.fieldPath, val);
         if (!props.required && isEmptyvalue(val) && val !== 0) {

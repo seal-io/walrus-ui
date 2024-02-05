@@ -4,7 +4,7 @@
       <a-space direction="vertical" :size="4">
         <a-space class="box">
           <a-link
-            v-for="(item, index) in footerLinks"
+            v-for="(item, index) in footerList"
             :key="index"
             :href="item.value"
             target="_blank"
@@ -26,7 +26,7 @@
 
 <script lang="ts" setup>
   import _, { get } from 'lodash';
-  import { ref, onMounted } from 'vue';
+  import { ref, onMounted, computed } from 'vue';
   import {
     useAppVersion,
     showVersionModal,
@@ -36,12 +36,26 @@
   import useCallCommon from '@/hooks/use-call-common';
   import { useUserStore } from '@/store';
 
-  const { route } = useCallCommon();
+  const { route, locale } = useCallCommon();
   const userStore = useUserStore();
   const versionInfo = ref({});
   const footerLinks = [
-    { label: 'settings.help', value: 'https://seal-io.github.io/docs/' }
+    {
+      'label': 'settings.help',
+      'value': 'https://seal-io.github.io/docs/',
+      'en-US': 'https://seal-io.github.io/docs/',
+      'zh-CN': 'https://seal-io.github.io/docs/zh/'
+    }
   ];
+
+  const footerList = computed(() => {
+    return footerLinks.map((item) => {
+      return {
+        label: item.label,
+        value: item[locale.value]
+      };
+    });
+  });
   const getAppVersion = async () => {
     versionInfo.value = await useAppVersion();
   };

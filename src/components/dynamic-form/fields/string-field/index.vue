@@ -48,6 +48,7 @@
               formData={props.formData}
               uiFormData={props.uiFormData}
               defaultFormData={props.defaultFormData}
+              cachedFormData={props.cachedFormData}
               FieldPathMap={props.FieldPathMap}
               fieldPath={props.fieldPath}
               schema={props.schema}

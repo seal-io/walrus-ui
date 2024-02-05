@@ -125,9 +125,15 @@
       };
 
       const handleInputChange = (val) => {
-        if (val === null && !fieldProps.required) {
+        const isNullValue = isEmptyvalue(
+          _.get(props.defaultFormData, props.fieldPath)
+        );
+        if (!val && isNullValue && !fieldProps.required) {
           _.unset(props.formData, props.fieldPath);
           _.unset(props.uiFormData, props.fieldPath);
+        } else if (!val && isNullValue && fieldProps.required) {
+          _.set(props.formData, props.fieldPath, null);
+          _.set(props.uiFormData, props.fieldPath, val);
         } else {
           _.set(props.formData, props.fieldPath, val);
           _.set(props.uiFormData, props.fieldPath, val);
@@ -173,9 +179,6 @@
               popupInfo={props.schema.description}
               modelValue={_.get(props.uiFormData, props.fieldPath)}
               onChange={(val) => {
-                if (_.get(props.defaultFormData, props.fieldPath) === null) {
-                  val = !val ? null : val;
-                }
                 handleInputChange(val);
                 handleChange(props.formData);
                 validateField();

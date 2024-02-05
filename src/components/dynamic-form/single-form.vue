@@ -94,6 +94,7 @@
               formData={formData.value}
               uiFormData={uiFormData.value}
               defaultFormData={props.defaultFormData}
+              cachedFormData={props.cachedFormData}
               FieldPathMap={props.FieldPathMap}
               onChange={(val) => {
                 handleChange(val);

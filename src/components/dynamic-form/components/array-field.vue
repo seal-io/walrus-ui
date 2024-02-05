@@ -307,6 +307,7 @@
           formData={props.formData}
           uiFormData={props.uiFormData}
           defaultFormData={props.defaultFormData}
+          cachedFormData={props.cachedFormData}
           FieldPathMap={props.FieldPathMap}
           requiredFields={props.requiredFields}
           onUnset={(isUnset) => {
@@ -346,6 +347,7 @@
                             formData={props.formData}
                             uiFormData={props.uiFormData}
                             defaultFormData={props.defaultFormData}
+                            cachedFormData={props.cachedFormData}
                             FieldPathMap={props.FieldPathMap}
                             fieldPath={[
                               ...props.fieldPath,

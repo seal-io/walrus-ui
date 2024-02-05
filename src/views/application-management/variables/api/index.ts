@@ -2,6 +2,7 @@ import axios from 'axios';
 import qs from 'query-string';
 import { Pagination } from '@/types/global';
 import router from '@/router';
+import _ from 'lodash';
 import { VariableRow, VariableFormData } from '../config/interface';
 
 export const VARIABLE_API = '/variables';
@@ -44,6 +45,20 @@ export const queryVariables = (params: QueryType) => {
   }
   return axios.get<ResultType>(`${url}`, {
     params,
+    paramsSerializer: (obj) => {
+      return qs.stringify(obj);
+    }
+  });
+};
+
+export const queryEnvironmentVariables = (
+  params: QueryType & { projectID: string; environmentID: string }
+) => {
+  const url = `/projects/${params.projectID}/environments/${params.environmentID}/${VARIABLE_API}`;
+  return axios.get<ResultType>(`${url}`, {
+    params: {
+      ..._.omit(params, ['projectID', 'environmentID'])
+    },
     paramsSerializer: (obj) => {
       return qs.stringify(obj);
     }

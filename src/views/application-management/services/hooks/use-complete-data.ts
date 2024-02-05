@@ -12,7 +12,7 @@ import useCallCommon from '@/hooks/use-call-common';
 import { queryResourceDefinitions } from '@/views/operation-hub/resource-definitions/api';
 import { HintKey } from '@/views/config/interface';
 import { HintKeyMaps } from '@/views/config';
-import { queryVariables } from '../../variables/api';
+import { queryVariables, queryEnvironmentVariables } from '../../variables/api';
 import { ServiceDataType, ProvideSetServiceInfoKey } from '../config';
 
 export default function useCompleteData(props?) {
@@ -178,8 +178,20 @@ export default function useCompleteData(props?) {
         page: -1,
         includeInherited: true
       };
-      const { data } = await queryVariables(params);
-      variableList.value = data.items || [];
+      const workflowParams = {
+        projectID: props.value?.flow?.projectId,
+        environmentID: props.value?.flow?.environmentId
+      };
+      if (props.value?.flow?.projectId) {
+        const { data } = await queryEnvironmentVariables({
+          ...params,
+          ...workflowParams
+        });
+        variableList.value = data.items || [];
+      } else {
+        const { data } = await queryVariables(params);
+        variableList.value = data.items || [];
+      }
     } catch (error) {
       variableList.value = [];
     }

@@ -23,6 +23,7 @@
           :internal-form-data="uiFormData"
           :origin-form-data="rootFormData"
           :default-form-data="defaultFormData"
+          :cached-form-data="cachedFormData"
           :field-path-map="FieldPathMap"
           :schema="item.schema"
           :action="action"
@@ -41,6 +42,7 @@
       :internal-form-data="uiFormData"
       :origin-form-data="rootFormData"
       :default-form-data="defaultFormData"
+      :cached-form-data="cachedFormData"
       :field-path-map="FieldPathMap"
       :schema="formGroup[0].schema"
       @change="handleChange"
@@ -113,6 +115,7 @@
   const schemaForm = ref();
   const rootFormData = ref({});
   const defaultFormData = ref({});
+  const cachedFormData = ref<any>(new Map());
   const FieldPathMap = ref<any>(new Map());
   const destroyed = ref<boolean>(false);
   const formGroup = ref<FormGroup[]>([]);
@@ -252,6 +255,7 @@
       FieldPathMap.value.clear();
       destroyed.value = true;
       defaultFormData.value = {};
+      cachedFormData.value.clear();
       refreshkey();
 
       handleChange({});
