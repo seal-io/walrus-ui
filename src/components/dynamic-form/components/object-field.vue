@@ -202,6 +202,7 @@
             formData={props.formData}
             uiFormData={props.uiFormData}
             defaultFormData={props.defaultFormData}
+            cachedFormData={props.cachedFormData}
             FieldPathMap={props.FieldPathMap}
             schema={item.schema}
             requiredFields={[]}
@@ -287,6 +288,7 @@
                   formData={props.formData}
                   uiFormData={props.uiFormData}
                   defaultFormData={props.defaultFormData}
+                  cachedFormData={props.cachedFormData}
                   FieldPathMap={props.FieldPathMap}
                   fieldPath={childSchema.fieldPath}
                   requiredFields={childSchema.parentRequired}
@@ -322,6 +324,7 @@
                   formData={props.formData}
                   uiFormData={props.uiFormData}
                   defaultFormData={props.defaultFormData}
+                  cachedFormData={props.cachedFormData}
                   FieldPathMap={props.FieldPathMap}
                   fieldPath={childSchema.fieldPath}
                   requiredFields={childSchema.parentRequired}
@@ -345,6 +348,7 @@
           formData={props.formData}
           uiFormData={props.uiFormData}
           defaultFormData={props.defaultFormData}
+          cachedFormData={props.cachedFormData}
           FieldPathMap={props.FieldPathMap}
           requiredFields={props.requiredFields}
           onChange={(val) => {

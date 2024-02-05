@@ -278,6 +278,7 @@
           required={fieldProps.required}
           uiFormData={props.uiFormData}
           defaultFormData={props.defaultFormData}
+          cachedFormData={props.cachedFormData}
           FieldPathMap={props.FieldPathMap}
           requiredFields={props.requiredFields}
           onUnset={(isUnset) => {

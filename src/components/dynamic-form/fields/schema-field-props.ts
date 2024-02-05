@@ -87,6 +87,12 @@ export default {
       return {};
     }
   },
+  cachedFormData: {
+    type: Object,
+    default() {
+      return new Map();
+    }
+  },
   FieldPathMap: {
     type: Object as PropType<any>,
     default() {

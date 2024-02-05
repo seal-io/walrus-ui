@@ -29,6 +29,7 @@
         ref(PageAction.CREATE)
       );
 
+      const fullPath = _.join(props.fieldPath, '.');
       const isUnset = ref(true);
       const status = ref(false);
       const hovered = ref(false);
@@ -52,8 +53,8 @@
         } else {
           status.value = true;
           isUnset.value = false;
-
           if (
+            // ========= uiFormData =========
             _.has(props.uiFormData, props.fieldPath) &&
             parentObjectExsits(props.formData, props.fieldPath)
           ) {
@@ -63,6 +64,7 @@
               _.cloneDeep(_.get(props.uiFormData, props.fieldPath))
             );
           } else if (parentObjectExsits(props.formData, props.fieldPath)) {
+            // ========= defaultFormData =========
             _.set(
               props.formData,
               props.fieldPath,
@@ -75,6 +77,7 @@
             );
           }
         }
+        props.cachedFormData.set(fullPath, isUnset.value);
         emit('unset', isUnset.value);
         emit('change', props.formData);
       };
@@ -108,6 +111,15 @@
         );
       };
 
+      const initCachedUnsetValue = () => {
+        if (props.cachedFormData.get(fullPath) !== undefined) {
+          isUnset.value = props.cachedFormData.get(fullPath);
+          if (!isUnset.value) {
+            _.unset(props.formData, props.fieldPath);
+          }
+        }
+        console.log('props.fieldPath======99', props.fieldPath, isUnset.value);
+      };
       const initUnsetValue = () => {
         if (schemaFormStatus.value === PageAction.CREATE) {
           return;
@@ -145,6 +157,7 @@
           } else {
             isUnset.value = true;
           }
+          initCachedUnsetValue();
         },
         { immediate: true }
       );

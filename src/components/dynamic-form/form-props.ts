@@ -37,6 +37,12 @@ export default {
       return {};
     }
   },
+  cachedFormData: {
+    type: Object as PropType<any>,
+    default() {
+      return new Map();
+    }
+  },
   FieldPathMap: {
     type: Object as PropType<any>,
     default() {

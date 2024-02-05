@@ -94,6 +94,15 @@
           });
         }
       };
+
+      const deleteCacheFormShowifKey = () => {
+        _.each([...props.cachedFormData.keys()], (key) => {
+          if (key.startsWith(_.join(props.fieldPath, '.'))) {
+            props.cachedFormData.delete(key);
+          }
+        });
+      };
+
       watch(
         () => showIfValue.value,
         () => {
@@ -103,6 +112,7 @@
               initValue();
             } else {
               unsetShowIfField();
+              deleteCacheFormShowifKey();
             }
           }
         },
@@ -132,6 +142,7 @@
             formData={props.formData}
             uiFormData={props.uiFormData}
             defaultFormData={props.defaultFormData}
+            cachedFormData={props.cachedFormData}
             FieldPathMap={props.FieldPathMap}
             schema={props.schema}
             requiredFields={props.requiredFields}
