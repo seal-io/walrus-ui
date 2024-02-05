@@ -6,6 +6,7 @@
     inject,
     computed,
     watch,
+    nextTick,
     onBeforeUnmount
   } from 'vue';
   import _ from 'lodash';
@@ -15,7 +16,7 @@
   import schemaFieldProps from '../fields/schema-field-props';
   import { ProvideErrorFieldsKey } from '../config';
   import FIELD_TYPE from '../config/field-type';
-  import { parentObjectExsits } from '../utils';
+  import { parentObjectExsits, initFieldDefaultValue } from '../utils';
 
   export default defineComponent({
     props: schemaFieldProps,
@@ -47,12 +48,37 @@
         });
       });
 
-      const deleteCacheFormShowifKey = () => {
-        _.each([...props.cachedFormData.keys()], (key) => {
-          if (key.startsWith(_.join(props.fieldPath, '.'))) {
-            props.cachedFormData.delete(key);
+      const unsetType = () => {
+        return (
+          props.schema.type === FIELD_TYPE.OBJECT ||
+          props.schema.type === FIELD_TYPE.ARRAY
+        );
+      };
+
+      const deleteCacheFormKey = () => {
+        _.each([...props.FieldPathMap.keys()], (key) => {
+          const keyPathSchema = props.FieldPathMap.get(key);
+          if (
+            key.startsWith(fullPath) &&
+            key !== fullPath &&
+            (!props.cachedFormData.has(key) || props.cachedFormData.get(key)) &&
+            (keyPathSchema.type === FIELD_TYPE.OBJECT ||
+              keyPathSchema.type === FIELD_TYPE.ARRAY) &&
+            !keyPathSchema.required
+          ) {
+            _.unset(props.formData, _.split(key, '.'));
           }
         });
+      };
+
+      const initCachedUnsetValue = () => {
+        if (props.cachedFormData.get(fullPath) !== undefined) {
+          isUnset.value = props.cachedFormData.get(fullPath);
+          status.value = !isUnset.value;
+          if (isUnset.value) {
+            _.unset(props.formData, props.fieldPath);
+          }
+        }
       };
 
       const handleToggleField = (checked) => {
@@ -60,11 +86,11 @@
           status.value = false;
           isUnset.value = true;
           _.unset(props.formData, props.fieldPath);
+          props.cachedFormData.set(fullPath, isUnset.value);
         } else {
           status.value = true;
           isUnset.value = false;
           if (
-            // ========= uiFormData =========
             _.has(props.uiFormData, props.fieldPath) &&
             parentObjectExsits(props.formData, props.fieldPath)
           ) {
@@ -74,7 +100,6 @@
               _.cloneDeep(_.get(props.uiFormData, props.fieldPath))
             );
           } else if (parentObjectExsits(props.formData, props.fieldPath)) {
-            // ========= defaultFormData =========
             _.set(
               props.formData,
               props.fieldPath,
@@ -86,8 +111,12 @@
               _.cloneDeep(_.get(props.defaultFormData, props.fieldPath))
             );
           }
+          props.cachedFormData.set(fullPath, isUnset.value);
+
+          setTimeout(() => {
+            deleteCacheFormKey();
+          }, 100);
         }
-        props.cachedFormData.set(fullPath, isUnset.value);
 
         emit('unset', isUnset.value);
         emit('change', props.formData);
@@ -115,24 +144,6 @@
       const handleGroupLeave = () => {
         groupHovered.value = false;
       };
-      const unsetType = () => {
-        return (
-          props.schema.type === FIELD_TYPE.OBJECT ||
-          props.schema.type === FIELD_TYPE.ARRAY
-        );
-      };
-
-      const initCachedUnsetValue = () => {
-        if (isUnmounted.value) return;
-        if (props.cachedFormData.get(fullPath) !== undefined) {
-          isUnset.value = props.cachedFormData.get(fullPath);
-          status.value = !isUnset.value;
-          if (isUnset.value) {
-            _.unset(props.formData, props.fieldPath);
-          }
-        }
-        console.log('props.fieldPath======99', props.fieldPath, isUnset.value);
-      };
 
       const initUnsetValue = () => {
         if (schemaFormStatus.value === PageAction.CREATE) {
@@ -150,6 +161,15 @@
           }
         }
       };
+      const handleWatchFieldValue = () => {
+        if (_.has(props.formData, props.fieldPath)) {
+          isUnset.value = false;
+          status.value = props.level < 2 ? true : status.value;
+        } else {
+          isUnset.value = true;
+        }
+      };
+      const debounceWatchFieldValue = _.debounce(handleWatchFieldValue, 200);
       const renderRequiredStar = () => {
         if (
           props.schema.isRequired &&
@@ -165,17 +185,7 @@
       watch(
         () => fieldPathData.value,
         () => {
-          if (_.has(props.formData, props.fieldPath)) {
-            isUnset.value = false;
-            status.value = props.level < 2 ? true : status.value;
-          } else {
-            isUnset.value = true;
-          }
-          console.log(
-            'props.fieldPath=====watch=',
-            props.fieldPath,
-            isUnset.value
-          );
+          handleWatchFieldValue();
         },
         { immediate: true }
       );
