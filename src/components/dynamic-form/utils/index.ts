@@ -211,6 +211,10 @@ export const parentObjectExsits = (formData, fieldPath: string[]) => {
   return _.has(formData, initialPath) || !initialPath.length;
 };
 
+const unsetType = (schema) => {
+  return schema.type === FIELD_TYPE.OBJECT || schema.type === FIELD_TYPE.ARRAY;
+};
+
 export const initFieldValue = ({
   defaultFormData,
   fieldPath,
@@ -242,6 +246,7 @@ export const initFieldValue = ({
   if (checkByValue && (checkByParentObject || isRequiredItemProperty)) {
     _.set(formData, fieldPath, _.cloneDeep(value));
   }
+
   if (!isEmptyValue && checkByParentObject) {
     _.set(uiFormData, fieldPath, _.cloneDeep(value));
   }
