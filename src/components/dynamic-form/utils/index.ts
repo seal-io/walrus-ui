@@ -232,7 +232,6 @@ export const initFieldValue = ({
   const currentValue = _.get(uiFormData, fieldPath);
   const value = currentValue || defaultValue;
   const isEmptyValue = isEmptyValueField(schema, value);
-
   if (!_.has(defaultFormData, fieldPath) && !isEmptyValue) {
     _.set(defaultFormData, fieldPath, _.cloneDeep(value));
   }
