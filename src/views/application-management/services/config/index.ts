@@ -155,7 +155,7 @@ export const runBasicConfig = [
   },
   {
     label: 'Change',
-    key: 'changes',
+    key: 'componentChangeSummary',
     value: '',
     span: 1
   },
@@ -229,9 +229,34 @@ export const RevisionStatus = {
   Running: 'Running',
   Failed: 'Failed',
   Pending: 'Pending',
+  Pend: 'Pend',
   Plan: 'Plan',
+  Planned: 'Planned',
+  Planning: 'Planning',
   Apply: 'Apply',
-  Canceled: 'Canceled'
+  Applying: 'Applying',
+  Canceled: 'Canceled',
+  Canceling: 'Canceling'
+};
+
+export const ApplyableStatus = [
+  RevisionStatus.Plan,
+  RevisionStatus.Planned,
+  RevisionStatus.Planning
+];
+
+export const RevisionWatchStatus = [
+  RevisionStatus.Running,
+  RevisionStatus.Planning
+];
+
+export const RevisionTypes = {
+  create: 'create',
+  upgrade: 'upgrade',
+  delete: 'delete',
+  start: 'start',
+  stop: 'stop',
+  rollback: 'rollback'
 };
 
 export const StartableStatus = [

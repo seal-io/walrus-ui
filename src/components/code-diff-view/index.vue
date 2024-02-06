@@ -10,6 +10,14 @@
         default() {
           return {};
         }
+      },
+      leftTitle: {
+        type: String,
+        default: ''
+      },
+      rightTitle: {
+        type: String,
+        default: ''
       }
     },
     setup(props, ctx) {
@@ -35,9 +43,28 @@
           <CodeChunk
             class="left chunks"
             chunks={removeChunks.value}
+            title={props.leftTitle}
+            v-slots={{
+              title: ctx.slots.leftTitle
+                ? (data) => ctx.slots.leftTitle?.(data)
+                : null
+            }}
           ></CodeChunk>
-          <div class="line"></div>
-          <CodeChunk class="right chunks" chunks={addChunks.value}></CodeChunk>
+          {ctx.slots.sperator ? (
+            () => ctx.slots.sperator?.()
+          ) : (
+            <div class="line"></div>
+          )}
+          <CodeChunk
+            class="right chunks"
+            chunks={addChunks.value}
+            title={props.leftTitle}
+            v-slots={{
+              title: ctx.slots.rightTitle
+                ? (data) => ctx.slots.rightTitle?.(data)
+                : null
+            }}
+          ></CodeChunk>
         </div>
       );
     }
@@ -60,7 +87,7 @@
     }
 
     .chunks {
-      flex: 1;
+      flex: 0 0 50%;
     }
   }
 </style>

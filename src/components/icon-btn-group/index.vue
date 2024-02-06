@@ -81,7 +81,6 @@
       // margin-right: 6px;
       color: var(--color-text-2);
       font-size: 16px;
-      border-radius: var(--border-radius-small);
       cursor: pointer;
 
       &:hover {

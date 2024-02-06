@@ -10,12 +10,6 @@
     </span>
   </span>
   <span v-else>
-    <!-- <a-tooltip :content="$t('common.copy.notSupport')">
-      <i
-        class="iconfont icon-warning-filling"
-        style="color: var(--seal-color-warning)"
-      ></i>
-    </a-tooltip> -->
     <clipboard :content="content"></clipboard>
   </span>
 </template>
@@ -44,6 +38,8 @@
 
 <style lang="less" scoped>
   .copy-btn {
+    line-height: 14px;
+
     .arco-link {
       padding: 1px;
       border: 1px solid var(--color-border-2);

@@ -59,7 +59,7 @@ export default {
   'applications.applications.instance.deleteTips': '不清理底层组件',
   'applications.applications.instance.application': '应用',
   'applications.applications.instance.status': '状态',
-  'applications.applications.instance.history': '历史版本',
+  'applications.applications.instance.history': '执行记录',
   'applications.applications.instance.accessUrl': '访问 URL',
   'applications.applications.instance.resource': '组件信息',
   'applications.applications.instance.resource.tips':
@@ -85,6 +85,7 @@ export default {
   'applications.applications.history.rollbackapp': '版本回滚',
   'applications.applications.history.rollbackinstance': '服务回滚',
   'applications.applications.history.deploymentTime': '部署时间',
+  'applications.applications.history.execTime': '执行时间',
   'applications.applications.history.createTime': '部署时间',
   'applications.applications.history.rollback': '回滚',
   'applications.applications.history.detail': '版本详情',

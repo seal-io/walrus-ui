@@ -61,7 +61,7 @@ export default {
     'Do not clean up underlying components',
   'applications.applications.instance.application': 'Application',
   'applications.applications.instance.status': 'Status',
-  'applications.applications.instance.history': 'Revisions',
+  'applications.applications.instance.history': 'Runs',
   'applications.applications.instance.accessUrl': 'Endpoints',
   'applications.applications.instance.resource': 'Component Information',
   'applications.applications.instance.resource.tips':
@@ -89,6 +89,7 @@ export default {
   'applications.applications.history.rollbackapp': 'Revision Rollback',
   'applications.applications.history.rollbackinstance': 'Service Rollback',
   'applications.applications.history.deploymentTime': 'Deployment Time',
+  'applications.applications.history.execTime': 'Execution Time',
   'applications.applications.history.rollback': 'Rollback',
   'applications.applications.history.detail': 'Revision Details',
   'applications.applications.history.changeList': 'Change History',

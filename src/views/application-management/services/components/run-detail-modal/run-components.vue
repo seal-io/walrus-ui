@@ -1,33 +1,44 @@
 <script lang="tsx">
-  import { defineComponent, ref } from 'vue';
+  import { defineComponent, ref, computed } from 'vue';
   import i18n from '@/locale';
   import FilterBox from '@/components/filter-box/index.vue';
   import ComponentList from './component-list.vue';
 
   export default defineComponent({
     name: 'RunComponents',
-    setup() {
-      const query = ref('');
-      const dataList = ref([
-        {
-          id: 1,
-          name: 'test1',
-          type: 'kubernetes',
-          changeType: 'update'
-        },
-        {
-          id: 2,
-          name: 'test2',
-          type: 'kubernetes',
-          changeType: 'change'
-        },
-        {
-          id: 3,
-          name: 'test3',
-          type: 'kubernetes',
-          changeType: 'remove'
+    props: {
+      runData: {
+        type: Object,
+        default() {
+          return {};
         }
-      ]);
+      }
+    },
+    setup(props, ctx) {
+      const query = ref('');
+      // const dataList = ref([
+      //   {
+      //     id: 1,
+      //     name: 'test1',
+      //     type: 'kubernetes',
+      //     changeType: 'update'
+      //   },
+      //   {
+      //     id: 2,
+      //     name: 'test2',
+      //     type: 'kubernetes',
+      //     changeType: 'change'
+      //   },
+      //   {
+      //     id: 3,
+      //     name: 'test3',
+      //     type: 'kubernetes',
+      //     changeType: 'remove'
+      //   }
+      // ]);
+      const dataList = computed(() => {
+        return props.runData?.componentChanges || [];
+      });
       const handleSearch = () => {
         console.log('search', query.value);
       };

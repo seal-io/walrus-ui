@@ -67,12 +67,12 @@
       </a-descriptions>
       <div class="logs-content" style="text-align: left">
         <div class="label">{{
-          initialStatus?.summaryStatus === RevisionStatus.Running
+          RevisionWatchStatus.includes(initialStatus?.summaryStatus)
             ? $t('applications.applications.logs.live')
             : $t('applications.applications.instance.log')
         }}</div>
         <revisionLogs
-          v-if="initialStatus?.summaryStatus === RevisionStatus.Running"
+          v-if="RevisionWatchStatus.includes(initialStatus?.summaryStatus)"
           :show="show"
           :fullscreen="fullscreen"
           :revision-id="get(revisionData, 'id')"
@@ -106,7 +106,11 @@
   import StatusLabel from '@/views/operation-hub/connectors/components/status-label.vue';
   import ClockTimer from '@/components/clock-timer/index.vue';
   import revisionLogs from './revision-logs.vue';
-  import { revisionDetailConfig, RevisionStatus } from '../config';
+  import {
+    revisionDetailConfig,
+    RevisionWatchStatus,
+    RevisionStatus
+  } from '../config';
   import { queryServiceRevisionsDetail } from '../api';
 
   const props = defineProps({

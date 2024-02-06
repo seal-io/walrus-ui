@@ -1,5 +1,60 @@
 <template>
   <div class="history-wrap">
+    <FilterBox style="margin-bottom: var(--filter-box-margin)">
+      <template #params>
+        <a-input
+          v-model.trim="queryParams.id"
+          allow-clear
+          style="width: 240px"
+          :placeholder="$t('common.search.id.placeholder')"
+          @clear="handleSearch"
+          @press-enter="handleSearch"
+        >
+          <template #prefix>
+            <icon-search />
+          </template>
+        </a-input>
+        <a-select
+          v-model="queryParams.type"
+          allow-search
+          style="width: 180px"
+          @clear="handleSearch"
+          @change="handleSearch"
+        >
+          <a-option value="" :label="$t('common.select.all')"></a-option>
+          <a-option
+            v-for="item in _.keys(RevisionTypes)"
+            :key="item"
+            :value="item"
+            :label="item"
+          >
+          </a-option>
+        </a-select>
+        <a-select
+          v-model="queryParams.status"
+          style="width: 180px"
+          @clear="handleSearch"
+          @change="handleSearch"
+        >
+          <a-option value="" :label="$t('common.select.all')"></a-option>
+          <a-option
+            v-for="item in _.keys(RevisionStatus)"
+            :key="item"
+            :value="item"
+            :label="item"
+          >
+          </a-option>
+        </a-select>
+        <a-space style="margin-left: 0" :size="10">
+          <a-button type="primary" @click="handleSearch">{{
+            $t('common.button.search')
+          }}</a-button>
+          <a-button type="outline" @click="handleReset">{{
+            $t('common.button.clear')
+          }}</a-button>
+        </a-space>
+      </template>
+    </FilterBox>
     <a-table
       :loading="loading"
       column-resizable
@@ -14,6 +69,24 @@
           ellipsis
           tooltip
           :cell-style="{ minWidth: '40px' }"
+          data-index="id"
+          align="left"
+          title="ID"
+        >
+        </a-table-column>
+        <a-table-column
+          ellipsis
+          tooltip
+          :cell-style="{ minWidth: '40px' }"
+          data-index="type"
+          align="left"
+          :title="$t('common.table.type')"
+        >
+        </a-table-column>
+        <a-table-column
+          ellipsis
+          tooltip
+          :cell-style="{ minWidth: '40px' }"
           :sortable="{
             sortDirections: ['ascend', 'descend'],
             defaultSortOrder: 'descend',
@@ -21,7 +94,7 @@
             sortOrder: sortOrder
           }"
           data-index="createTime"
-          :title="$t('applications.applications.history.deploymentTime')"
+          :title="$t('applications.applications.history.execTime')"
         >
           <template #cell="{ record }">
             <span>{{
@@ -29,7 +102,18 @@
             }}</span>
           </template>
         </a-table-column>
-
+        <a-table-column
+          ellipsis
+          tooltip
+          :cell-style="{ minWidth: '40px' }"
+          data-index="duration"
+          align="left"
+          :title="$t('dashboard.table.duration')"
+        >
+          <template #cell="{ record }">
+            <span>{{ setDurationValue(record.duration) }}</span>
+          </template>
+        </a-table-column>
         <a-table-column
           ellipsis
           tooltip
@@ -48,18 +132,7 @@
           :title="$t('common.table.mark')"
         >
         </a-table-column>
-        <a-table-column
-          ellipsis
-          tooltip
-          :cell-style="{ minWidth: '40px' }"
-          data-index="duration"
-          align="left"
-          :title="$t('dashboard.table.duration')"
-        >
-          <template #cell="{ record }">
-            <span>{{ setDurationValue(record.duration) }}</span>
-          </template>
-        </a-table-column>
+
         <a-table-column
           ellipsis
           tooltip
@@ -83,13 +156,13 @@
         <a-table-column align="left" :title="$t('common.table.operation')">
           <template #cell="{ record }">
             <a-space :size="20">
-              <a-tooltip :content="$t('common.button.logs')">
+              <a-tooltip :content="$t('common.button.detail')">
                 <a-link
                   type="text"
                   size="small"
                   @click="handleViewDetail(record)"
                 >
-                  <icon-font type="icon-rizhi" style="font-size: 16px" />
+                  <i class="iconfont icon-xiangqing"></i>
                 </a-link>
               </a-tooltip>
               <a-tooltip
@@ -152,12 +225,17 @@
       @change="handlePageChange"
       @page-size-change="handlePageSizeChange"
     />
-    <revisionDetail
+    <!-- <revisionDetail
       v-model:show="showDetailModal"
       :data-info="revisionData"
       :revision-id="revisionDetailId"
       :initial-status="initialStatus"
-    ></revisionDetail>
+    ></revisionDetail> -->
+    <RunDetailModal
+      v-model:show="showDetailModal"
+      title="Run Details"
+      :data="runData"
+    ></RunDetailModal>
     <serviceSpecDiff
       v-model:show="showDiffModal"
       :title="title"
@@ -172,6 +250,7 @@
 </template>
 
 <script lang="ts" setup>
+  import FilterBox from '@/components/filter-box/index.vue';
   import { Resources } from '@/permissions/config';
   import { useUserStore } from '@/store';
   import dayjs from 'dayjs';
@@ -209,7 +288,12 @@
   import { HistoryData } from '../../config/interface';
   import revisionDetail from '../revision-detail.vue';
   import serviceSpecDiff from '../service-spec-diff.vue';
-  import { RevisionStatus, ProvideServiceIDKey } from '../../config';
+  import RunDetailModal from '../run-detail-modal/index.vue';
+  import {
+    RevisionStatus,
+    RevisionTypes,
+    ProvideServiceIDKey
+  } from '../../config';
   import {
     queryServiceRevisions,
     deleteApplicationRevisions,
@@ -218,6 +302,7 @@
     SERVICE_RESOURCE_API_PREFIX
   } from '../../api';
 
+  let timer: any = null;
   let axiosListInstance = createAxiosToken();
   const userStore = useUserStore();
   const { t, route } = useCallCommon();
@@ -250,9 +335,14 @@
   const rollbackData = ref<any>({});
   const ids = ref<{ id: string }[]>([]);
   const dataList = ref<HistoryData[]>([]);
+  const runData = ref<any>({});
   const queryParams = reactive({
     page: 1,
-    perPage: 10
+    perPage: 10,
+    id: '',
+    type: '',
+    status: '',
+    sort: ''
   });
 
   const handleCompareChange = (val) => {
@@ -311,9 +401,12 @@
     axiosListInstance = createAxiosToken();
     try {
       loading.value = true;
+      const params: any = {
+        ..._.pickBy(queryParams, (val) => !!val)
+      };
       const { data } = await queryServiceRevisions(
         {
-          ...queryParams,
+          ...params,
           serviceID: serviceId.value,
           sort: [sort.value]
         },
@@ -329,6 +422,20 @@
   };
   const handleFilter = () => {
     fetchData();
+  };
+  const handleSearch = () => {
+    clearTimeout(timer);
+    timer = setTimeout(() => {
+      queryParams.page = 1;
+      handleFilter();
+    }, 100);
+  };
+  const handleReset = () => {
+    queryParams.id = '';
+    queryParams.status = '';
+    queryParams.type = '';
+    queryParams.page = 1;
+    handleFilter();
   };
   const handleSortChange = (dataIndex: string, direction: string) => {
     setSortDirection(dataIndex, direction);
@@ -365,6 +472,12 @@
     revisionDetailId.value = row.id;
     revisionData.value = row;
     initialStatus.value = row.status;
+    runData.value = {
+      runId: row.id,
+      serviceId: row.resource?.id,
+      projectId: row.project?.id,
+      environmentId: row.environment?.id
+    };
     setTimeout(() => {
       showDetailModal.value = true;
     }, 100);

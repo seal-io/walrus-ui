@@ -37,6 +37,7 @@
 
 <style lang="less" scoped>
   .high-light-wrapper {
+    text-align: left;
     // padding: 10px;
     // white-space: pre;
     // border: 1px solid var(--seal-border-gray-2);

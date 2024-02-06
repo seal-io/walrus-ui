@@ -347,11 +347,12 @@
       @confirm="handleComfirmComment"
       @cancel="() => (submitLoading = false)"
     ></CommentModal>
-    <PreviewModal
+    <RunDetailModal
       v-model:show="showPreviewModal"
+      v-model:data="deployData"
       :title="$t('common.button.deployPreview')"
       @save="doneCallback"
-    ></PreviewModal>
+    ></RunDetailModal>
   </div>
 </template>
 
@@ -388,7 +389,7 @@
   import { projectEnvCtxInjectionKey } from '@/components/dynamic-form/widgets/config';
   import { BreadcrumbOptions } from '@/views/config/interface';
   import { beforeLeaveCallback } from '@/hooks/save-before-leave';
-  import PreviewModal from '../components/preview-modal/index.vue';
+  import RunDetailModal from '../components/run-detail-modal/index.vue';
   import useProjectBreadcrumbData from '../../projects/hooks/use-project-breadcrumb-data';
   import {
     createService,
@@ -467,6 +468,7 @@
     environmentID: route.params.environmentId as string,
     connectors: []
   });
+  const deployData = ref<any>({});
   provide(InjectCompleteDataKey, completeData);
   provide(
     InjectProjectEnvironmentKey,
@@ -705,58 +707,77 @@
   };
 
   const handleCreate = async (formData) => {
-    const { data } = await createService(formData);
-    if (formData.draft) {
+    return createService(formData);
+  };
+
+  const doneCallback = (data) => {
+    if (formData.value.draft) {
       router.back();
       return;
     }
-    router.replace({
-      name: PROJECT.ServiceDetail,
-      params: {
-        ...route.params
-      },
-      query: {
-        id: data.id
-      }
-    });
-  };
-
-  const doneCallback = () => {
     if (!id) {
       router.replace({
-        name: PROJECT.EnvDetail,
+        name: PROJECT.ServiceDetail,
         params: {
-          projectId: route.params.projectId,
-          environmentId: route.params.environmentId,
-          action: PageAction.VIEW
+          ...route.params
         },
         query: {
-          id: route.params.environmentId
+          id: data.id
         }
       });
-    } else if (props.pgType !== 'page') {
-      emits('save');
-    } else {
-      router.back();
+      return;
     }
+
+    if (props.pgType !== 'page') {
+      emits('save');
+      return;
+    }
+    router.back();
+
+    // if (!id) {
+    //   router.replace({
+    //     name: PROJECT.EnvDetail,
+    //     params: {
+    //       projectId: route.params.projectId,
+    //       environmentId: route.params.environmentId,
+    //       action: PageAction.VIEW
+    //     },
+    //     query: {
+    //       id: route.params.environmentId
+    //     }
+    //   });
+    // } else if (props.pgType !== 'page') {
+    //   emits('save');
+    // } else {
+    //   router.back();
+    // }
   };
   const saveCallback = async () => {
     const hiddenFormData = groupForm.value?.getHiddenData();
     copyFormData = _.cloneDeep(formData.value);
-    const data = _.cloneDeep(formData.value);
-    data.attributes = {
-      ...data.attributes,
+    const submitdata = _.cloneDeep(formData.value);
+    submitdata.attributes = {
+      ...submitdata.attributes,
       ...hiddenFormData
     };
+    let res: any = null;
     if (id) {
-      await upgradeApplicationInstance(data);
+      const { data } = await upgradeApplicationInstance(submitdata);
+      res = data;
     } else {
-      await handleCreate(data);
+      const { data } = await handleCreate(submitdata);
+      res = data;
     }
     if (formData.value.approvalRequired) {
+      deployData.value = {
+        runId: res.run?.id,
+        serviceId: res.id,
+        environmentId: route.params.environmentId,
+        projectId: route.params.projectId
+      };
       handlePreview();
     } else {
-      doneCallback();
+      doneCallback(res);
     }
   };
   const handleOk = async (draft?: boolean) => {
