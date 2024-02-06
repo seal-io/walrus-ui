@@ -1,7 +1,14 @@
 <script lang="tsx">
   import i18n from '@/locale';
   import _ from 'lodash';
-  import { ref, provide, PropType, watch, defineComponent } from 'vue';
+  import {
+    ref,
+    provide,
+    PropType,
+    watch,
+    defineComponent,
+    computed
+  } from 'vue';
   import useBasicInfoData from '@/views/application-management/projects/hooks/use-basicInfo-data';
   import {
     latestRunConfig,
@@ -11,6 +18,7 @@
   import BasicInfo from '../basic-info.vue';
   import useViewLatestLogs from '../../hooks/use-view-latest-logs';
   import RevisionDetail from '../revision-detail.vue';
+  import RunDetailModal from '../run-detail-modal/index.vue';
 
   export default defineComponent({
     props: {
@@ -42,6 +50,15 @@
         handleViewServiceLatestLogs,
         300
       );
+
+      const runData = computed(() => {
+        return {
+          runId: revisionData.value.id,
+          serviceId: revisionData.value.resource?.id,
+          projectId: revisionData.value.project?.id,
+          environmentId: revisionData.value.environment?.id
+        };
+      });
 
       watch(
         () => props.serviceInfo,
@@ -86,12 +103,11 @@
         return (
           <div>
             <BasicInfo data-info={basicDataList.value} cols={2}></BasicInfo>
-            <RevisionDetail
+            <RunDetailModal
+              title="Latest Run Details"
               v-model:show={showDetailModal.value}
-              data-info={revisionData.value}
-              revision-id={revisionDetailId.value}
-              initial-status={initialStatus.value}
-            ></RevisionDetail>
+              data={runData.value}
+            ></RunDetailModal>
           </div>
         );
       };

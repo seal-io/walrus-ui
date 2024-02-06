@@ -11,7 +11,7 @@ import { queryServiceRevisions, SERVICE_API_PREFIX, SERVICE_API } from '../api';
 export default function useViewLatestLogs(defaultShow?: boolean) {
   const { setChunkRequest } = useSetChunkRequest();
   const revisionDetailId = ref('');
-  const revisionData = ref({});
+  const revisionData = ref<any>({});
   const showDetailModal = ref(false);
   const initialStatus = ref({});
   const currentServiceInfo = ref<any>({});

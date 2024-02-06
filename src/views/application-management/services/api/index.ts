@@ -17,6 +17,14 @@ export const SERVICE_API_PREFIX = (params?: {
   return `/projects/${projectId}/environments/${environmentId}`;
 };
 
+export const getResourceDetailsAPIPrefix = (params: {
+  projectID: string;
+  environmentID: string;
+  serviceID: string;
+}) => {
+  return `/projects/${params.projectID}/environments/${params.environmentID}${SERVICE_API}/${params.serviceID}`;
+};
+
 export const SERVICE_RESOURCE_API_PREFIX = () => {
   const { environmentId, projectId } = router.currentRoute.value.params;
   const { id } = router.currentRoute.value.query;

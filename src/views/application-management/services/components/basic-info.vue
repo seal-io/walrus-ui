@@ -118,6 +118,10 @@
         font-size: var(--font-size-small);
       }
 
+      .arco-descriptions-item-value-block {
+        min-width: 60px;
+      }
+
       .arco-descriptions-item,
       .arco-descriptions-item-label,
       .arco-descriptions-item-value {

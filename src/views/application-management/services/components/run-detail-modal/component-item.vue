@@ -14,6 +14,7 @@
   import Autotip from '@arco-design/web-vue/es/_components/auto-tooltip/auto-tooltip';
   import CodeDiffView from '@/components/code-diff-view/index.vue';
   import { StatusColor } from '@/views/config';
+  import Copy from '@/components/copy/copy-command.vue';
   import diffValue from './config/diff-content.json';
 
   export default defineComponent({
@@ -46,6 +47,7 @@
     emits: ['selectionChange', 'logs', 'terminal'],
     setup(props, { slots, emit }) {
       const collapse = ref(false);
+
       const diffContent = ref({
         old: '',
         new: ''
@@ -53,10 +55,10 @@
 
       const setDiffContent = () => {
         diffContent.value = {
-          old: diffValue.old?.computedAttributes
-            ? JSON.stringify(diffValue.old?.computedAttributes, null, 2)
+          old: props.rowData.change?.before
+            ? JSON.stringify(props.rowData.change?.before, null, 2)
             : '',
-          new: JSON.stringify(diffValue.new?.computedAttributes, null, 2)
+          new: JSON.stringify(props.rowData.change?.after, null, 2)
         };
       };
 
@@ -75,11 +77,38 @@
         setDiffContent();
       };
 
+      const renderLeftTitle = (data) => {
+        return (
+          <div class="title">
+            <span></span>
+            <Copy content={data}></Copy>
+          </div>
+        );
+      };
+      const renderRightTitle = (data) => {
+        return (
+          <div class="title">
+            <span></span>
+            <Copy content={data}></Copy>
+          </div>
+        );
+      };
+
       const renderComponents = () => {
         if (!collapse.value) return null;
         return (
           <div class="components-container">
-            <CodeDiffView content={diffContent.value}></CodeDiffView>
+            <CodeDiffView
+              content={diffContent.value}
+              v-slots={{
+                leftTitle: (data) => {
+                  return renderLeftTitle(data);
+                },
+                rightTitle: (data) => {
+                  return renderRightTitle(data);
+                }
+              }}
+            ></CodeDiffView>
           </div>
         );
       };
@@ -236,6 +265,12 @@
 
     .components-container {
       margin: 10px 15px 10px;
+    }
+
+    .title {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
     }
   }
 

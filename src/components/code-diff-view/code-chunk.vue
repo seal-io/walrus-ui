@@ -18,11 +18,18 @@
         default() {
           return [];
         }
+      },
+      title: {
+        type: String,
+        default: ''
       }
     },
     setup(props, ctx) {
       return () => (
         <div class="wrap">
+          <div class="title">
+            {ctx.slots.title?.(props.chunks) ?? props.title}
+          </div>
           {_.map(props.chunks, (item) => {
             return (
               <div class={['chunk-content', { collapse: item.collapsed }]}>
@@ -30,9 +37,9 @@
                   return (
                     <div class={['chunk', item.type]}>
                       <span class="line-num">{item.startLine + sIndex}</span>
-                      <span class="code">
+                      <div class="code">
                         <HLBlock code={sItem} lang="json"></HLBlock>
-                      </span>
+                      </div>
                     </div>
                   );
                 })}
@@ -47,7 +54,13 @@
 
 <style lang="less" scoped>
   .wrap {
-    padding: 10px 0;
+    .title {
+      padding: 8px 12px;
+    }
+
+    .chunk-content {
+      text-align: left;
+    }
 
     .collapse {
       background-color: var(--color-fill-2);
@@ -86,7 +99,7 @@
         flex: 1;
         min-height: 20px;
         margin: 0;
-        padding: 0 10px 0 20px;
+        padding-right: 10px;
         line-height: 20px;
         white-space: pre-wrap;
         word-break: break-all;
@@ -99,12 +112,20 @@
         }
       }
 
-      &.remove .code::before {
-        content: '-';
+      &.remove .code {
+        padding-left: 20px;
+
+        &::before {
+          content: '-';
+        }
       }
 
-      &.add .code::before {
-        content: '+';
+      &.add .code {
+        padding-left: 20px;
+
+        &::before {
+          content: '+';
+        }
       }
     }
 
@@ -116,6 +137,8 @@
 
       pre {
         margin: 0;
+        white-space: pre-wrap;
+        word-break: break-word;
       }
 
       .code.hljs {
