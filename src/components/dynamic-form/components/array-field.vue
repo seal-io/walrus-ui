@@ -150,8 +150,8 @@
           [...newProperties]
         ];
       };
-      const handleAddClick = () => {
-        setPropertiesList();
+
+      const initItemFieldDefaultValue = () => {
         const len = propertiesList.value.length;
 
         _.each(itemsProperties, (schema) => {
@@ -161,13 +161,16 @@
             schema.name
           ].filter((i) => i);
           const itemDefaultValue = initFieldDefaultValue(schema);
-          if (
-            schema.isRequired ||
-            !isEmptyValueField(schema, itemDefaultValue)
-          ) {
-            _.set(props.uiFormData, fieldPath, _.cloneDeep(itemDefaultValue));
+          const defaultValue = _.get(props.defaultFormData, fieldPath);
+          const value = defaultValue || itemDefaultValue;
+          if (schema.isRequired || !isEmptyValueField(schema, value)) {
+            _.set(props.uiFormData, fieldPath, _.cloneDeep(value));
           }
         });
+      };
+      const handleAddClick = () => {
+        setPropertiesList();
+        initItemFieldDefaultValue();
       };
       const handleAddClickCall = () => {
         setPropertiesList();
@@ -272,6 +275,7 @@
         if (counts) {
           for (let i = 0; i < counts; i += 1) {
             setPropertiesList();
+            initItemFieldDefaultValue();
           }
         }
       };
