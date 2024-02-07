@@ -67,6 +67,7 @@ export default {
   'common.button.next': 'Next',
   'common.button.prev': 'Previous',
   'common.button.back': 'Back',
+  'common.button.discardChange': 'Discard',
   'common.tips.save':
     'You have unsaved changes, leaving this page will discard changes.',
   'common.tips.cancel':

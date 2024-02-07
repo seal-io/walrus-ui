@@ -17,7 +17,6 @@
   } from '../../config';
   import BasicInfo from '../basic-info.vue';
   import useViewLatestLogs from '../../hooks/use-view-latest-logs';
-  import RevisionDetail from '../revision-detail.vue';
   import RunDetailModal from '../run-detail-modal/index.vue';
 
   export default defineComponent({
@@ -34,6 +33,7 @@
         showDetailModal,
         initialStatus,
         currentServiceInfo,
+        loading,
         handleViewServiceLatestLogs
       } = useViewLatestLogs(false);
 
@@ -48,7 +48,7 @@
       };
       const debounceViewLatestLogs = _.debounce(
         handleViewServiceLatestLogs,
-        300
+        200
       );
 
       const runData = computed(() => {
@@ -64,7 +64,7 @@
         () => props.serviceInfo,
         (data) => {
           if (data.id) {
-            debounceViewLatestLogs(data);
+            debounceViewLatestLogs(props.serviceInfo);
           }
         },
         {
@@ -112,11 +112,11 @@
         );
       };
       return () => (
-        <>
+        <a-spin style={{ width: '100%' }}>
           {props.serviceInfo?.status?.summaryStatus === ServiceStatus.Undeployed
             ? renderNoRunData()
             : renderLatestRun()}
-        </>
+        </a-spin>
       );
     }
   });

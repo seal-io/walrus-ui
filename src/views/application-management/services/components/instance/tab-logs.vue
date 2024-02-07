@@ -159,6 +159,13 @@
       border-radius: var(--border-radius-small);
 
       .content {
+        color: #ddd;
+        font-size: var(--font-size-small);
+        line-height: 22px;
+        white-space: pre-wrap;
+        word-wrap: break-word;
+        background-color: #181d28;
+
         &.line-break {
           word-wrap: break-word;
         }

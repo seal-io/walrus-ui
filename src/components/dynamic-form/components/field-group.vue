@@ -228,7 +228,7 @@
           >
             {props.schema.title || props.schema.name ? (
               <div class="title parent-name">
-                <div class="flex">
+                <div class="flex flex-align-center">
                   <>{renderNullableButton()}</>
                   <span>{props.schema.title || props.schema.name}</span>
                   {renderRequiredStar()}
@@ -247,7 +247,7 @@
             <>
               {props.schema.title || props.schema.name ? (
                 <div class="title parent-name">
-                  <div class="flex">
+                  <div class="flex flex-align-center">
                     <>{renderNullableButton()}</>
                     <span>{props.schema.title || props.schema.name}</span>
                     {renderRequiredStar()}
@@ -295,7 +295,7 @@
               v-slots={{
                 title: () => {
                   return (
-                    <span class="flex">
+                    <span class="flex flex-align-center">
                       <>{renderNullableButton()}</>
                       <span>{props.schema.title || props.schema.name}</span>
                       {renderRequiredStar()}

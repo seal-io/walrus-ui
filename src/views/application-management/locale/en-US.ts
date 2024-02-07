@@ -90,6 +90,7 @@ export default {
   'applications.applications.history.rollbackinstance': 'Service Rollback',
   'applications.applications.history.deploymentTime': 'Deployment Time',
   'applications.applications.history.execTime': 'Execution Time',
+  'applications.applications.history.changes': 'Changes',
   'applications.applications.history.rollback': 'Rollback',
   'applications.applications.history.detail': 'Revision Details',
   'applications.applications.history.changeList': 'Change History',
@@ -214,5 +215,7 @@ export default {
   'resource.outputs.result.subTitle': '',
   'resource.revisions.result.title': 'No revisions created yet',
   'resource.revisions.result.subTitle':
-    'Each deployment will generate a version, and the latest version cannot be deleted.'
+    'Each deployment will generate a version, and the latest version cannot be deleted.',
+  'resource.revisons.detail.components': 'Components Changes',
+  'resource.revisons.detail.attributes': 'Configuration'
 };

@@ -1,5 +1,6 @@
 <script lang="tsx">
   import i18n from '@/locale';
+  import _ from 'lodash';
   import { defineComponent, ref, PropType, computed, watch } from 'vue';
   import AceEditor from '@/components/ace-editor/index.vue';
   import CodeDiffView from '@/components/code-diff-view/index.vue';
@@ -9,7 +10,8 @@
     json2Yaml
   } from '@/components/form-create/config/yaml-parse';
   import Copy from '@/components/copy/copy-command.vue';
-  // import HighlightBlock from '@/components/highlight-block/index.vue';
+  import { queryRevisionChange } from '../../api';
+  import ServiceInfo from '../service-info.vue';
 
   export default defineComponent({
     name: 'AttributesContent',
@@ -19,10 +21,6 @@
         default() {
           return {};
         }
-      },
-      diffContent: {
-        type: Object as PropType<{ old: string; new: string }>,
-        default: () => ({})
       }
     },
     setup(props, ctx) {
@@ -39,20 +37,24 @@
 
       const iconList = [
         {
-          icon: 'icon-yaml',
-          view: 'yaml',
+          icon: 'icon-jibenxinxi',
+          view: 'form',
           iconfont: true
         },
         {
           icon: 'icon-code',
-          view: 'json',
+          view: 'yaml',
           iconfont: false
         }
       ];
 
       const type = ref('config');
-      const activeKey = ref('yaml');
+      const activeKey = ref('form');
       const yamlAttributes = ref('');
+      const diffContent = ref({
+        old: '',
+        new: ''
+      });
 
       watch(
         () => props.runData?.computedAttributes,
@@ -64,19 +66,32 @@
         }
       );
 
+      const getRevisionChange = async () => {
+        try {
+          const { data } = await queryRevisionChange({
+            id: props.runData.id,
+            serviceID: props.runData.resource?.id
+          });
+          diffContent.value = {
+            old: data?.old?.computedAttributes
+              ? JSON.stringify(data?.old?.computedAttributes, null, 2)
+              : '',
+            new: JSON.stringify(data?.new?.computedAttributes, null, 2)
+          };
+        } catch (error) {
+          diffContent.value = {
+            old: '',
+            new: ''
+          };
+        }
+      };
       const handleToggle = (val) => {
-        ctx.emit('change', val);
+        if (val === 'history') {
+          getRevisionChange();
+        }
       };
 
-      const renderLeftTitle = (data) => {
-        return (
-          <div class="title">
-            <span></span>
-            <Copy content={data}></Copy>
-          </div>
-        );
-      };
-      const renderRightTitle = (data) => {
+      const renderCopyButton = (data) => {
         return (
           <div class="title">
             <span></span>
@@ -92,7 +107,8 @@
               bordered={false}
               v-model={type.value}
               options={attributesOptions}
-              style={{ width: '160px' }}
+              style={{ width: '140px' }}
+              onChange={(val) => handleToggle(val)}
             ></a-select>
           </div>
           <a-tabs
@@ -102,13 +118,14 @@
           >
             <a-tab-pane key="config">
               <IconBtnGroup
-                class="m-b-10"
+                class="btn-group"
                 v-model:active={activeKey.value}
                 icon-list={iconList}
-                onChange={(val) => handleToggle(val)}
               ></IconBtnGroup>
               <div>
-                {activeKey.value === 'yaml' ? (
+                {activeKey.value === 'form' ? (
+                  <ServiceInfo></ServiceInfo>
+                ) : (
                   <AceEditor
                     ref="yaml_editor"
                     read-only
@@ -116,20 +133,6 @@
                     editorId="yaml_editor"
                     editor-default-value={yamlAttributes.value}
                     lang="yaml"
-                    height={380}
-                  ></AceEditor>
-                ) : (
-                  <AceEditor
-                    ref="json_editor"
-                    read-only
-                    key="json_editor"
-                    editorId="json_editor"
-                    editor-default-value={JSON.stringify(
-                      props.runData?.computedAttributes,
-                      null,
-                      2
-                    )}
-                    lang="json"
                     height={380}
                   ></AceEditor>
                 )}
@@ -143,15 +146,19 @@
                 {i18n.global.t('applications.applications.history.diff.same')}
               </a-alert>
               <CodeDiffView
-                content={props.diffContent}
+                content={diffContent.value}
                 class="m-t-10"
                 v-slots={{
-                  leftTitle: (data) => {
-                    return renderLeftTitle(data);
-                  },
-                  rightTitle: (data) => {
-                    return renderRightTitle(data);
-                  }
+                  leftTitle: diffContent.value.old
+                    ? () => {
+                        return renderCopyButton(diffContent.value.old);
+                      }
+                    : null,
+                  rightTitle: diffContent.value.new
+                    ? () => {
+                        return renderCopyButton(diffContent.value.new);
+                      }
+                    : null
                 }}
               ></CodeDiffView>
             </a-tab-pane>
@@ -171,6 +178,11 @@
     }
 
     .attributes-tabs {
+      .btn-group {
+        margin-top: 8px;
+        margin-bottom: 10px;
+      }
+
       :deep(.arco-tabs-content) {
         padding-top: 0;
       }

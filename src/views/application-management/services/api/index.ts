@@ -236,20 +236,6 @@ export const cloneApplicationInstance = (data: {
   );
 };
 
-export const diffServiceSpec = (params: { serviceID: string }) => {
-  return axios.get(
-    `${SERVICE_API_PREFIX()}${SERVICE_API}/${params.serviceID}/diff-latest`,
-    {
-      params: {
-        ...params
-      },
-      paramsSerializer: (obj) => {
-        return qs.stringify(obj);
-      }
-    }
-  );
-};
-
 export const queryServiceResourceGraph = (params: { serviceID: string }) => {
   return axios.get(
     `${SERVICE_API_PREFIX()}${SERVICE_API}/${params.serviceID}/graph`

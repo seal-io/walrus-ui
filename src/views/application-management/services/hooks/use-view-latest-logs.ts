@@ -16,6 +16,7 @@ export default function useViewLatestLogs(defaultShow?: boolean) {
   const initialStatus = ref({});
   const currentServiceInfo = ref<any>({});
   const isShow = ref(defaultShow ?? true);
+  const loading = ref(false);
   let axiosToken: any = null;
   let revisionAxiosToken: any = null;
 
@@ -59,6 +60,7 @@ export default function useViewLatestLogs(defaultShow?: boolean) {
     if (!row?.id) return;
     revisionAxiosToken = createAxiosToken();
     try {
+      loading.value = true;
       const params = {
         page: 1,
         perPage: 1,
@@ -81,6 +83,8 @@ export default function useViewLatestLogs(defaultShow?: boolean) {
     } catch (error) {
       // ignore
       revisionData.value = {};
+    } finally {
+      loading.value = false;
     }
   };
   watch(
@@ -100,6 +104,7 @@ export default function useViewLatestLogs(defaultShow?: boolean) {
     showDetailModal,
     initialStatus,
     currentServiceInfo,
+    loading,
     handleViewServiceLatestLogs
   };
 }

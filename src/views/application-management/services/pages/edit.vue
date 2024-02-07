@@ -398,7 +398,11 @@
     SERVICE_API_PREFIX
   } from '../api';
   import useServiceData from '../hooks/use-service-data';
-  import { ServiceDataType, ServiceStatus } from '../config';
+  import {
+    ServiceDataType,
+    ServiceStatus,
+    ProvideServiceInfoKey
+  } from '../config';
 
   const props = defineProps({
     // when in detail page
@@ -469,7 +473,9 @@
     connectors: []
   });
   const deployData = ref<any>({});
+  const serviceRes = ref<any>({});
   provide(InjectCompleteDataKey, completeData);
+  provide(ProvideServiceInfoKey, serviceRes);
   provide(
     InjectProjectEnvironmentKey,
     ref({
@@ -710,7 +716,8 @@
     return createService(formData);
   };
 
-  const doneCallback = (data) => {
+  const doneCallback = () => {
+    console.log('donecallback==============', serviceRes.value);
     if (formData.value.draft) {
       router.back();
       return;
@@ -722,7 +729,7 @@
           ...route.params
         },
         query: {
-          id: data.id
+          id: serviceRes.value?.id
         }
       });
       return;
@@ -768,6 +775,7 @@
       const { data } = await handleCreate(submitdata);
       res = data;
     }
+    serviceRes.value = res;
     if (formData.value.approvalRequired) {
       deployData.value = {
         runId: res.run?.id,
@@ -777,7 +785,7 @@
       };
       handlePreview();
     } else {
-      doneCallback(res);
+      doneCallback();
     }
   };
   const handleOk = async (draft?: boolean) => {

@@ -1,16 +1,18 @@
 <template>
   <div class="service">
-    <GroupForm
-      ref="groupForm"
-      style="padding: 0"
-      :ui-form-data="serviceInfo.attributes"
-      :form-data="serviceInfo.attributes"
-      :schema="schema"
-      :layout="{
-        direction: 'vertical',
-        type: 'rounded'
-      }"
-    ></GroupForm>
+    <a-spin :loading="loading" style="width: 100%">
+      <GroupForm
+        ref="groupForm"
+        style="padding: 0"
+        :ui-form-data="serviceInfo.attributes"
+        :form-data="serviceInfo.attributes"
+        :schema="schema"
+        :layout="{
+          direction: 'vertical',
+          type: 'rounded'
+        }"
+      ></GroupForm>
+    </a-spin>
   </div>
 </template>
 
@@ -49,6 +51,7 @@
   const loaded = ref(false);
   const templateList = ref<any[]>([]);
   const requestFlag = ref(true);
+  const loading = ref(false);
   provide(InjectSchemaFormStatusKey, ref(PageAction.VIEW));
 
   // template options
@@ -148,8 +151,10 @@
   };
   const init = async () => {
     schema.value = {};
+    loading.value = true;
     await initTemplateList();
     await getSchema();
+    loading.value = false;
   };
   watch(
     () => props.isCollapsed,
@@ -197,6 +202,9 @@
   @import url('@/components/form-create/style/side-menu.less');
 
   .service {
+    min-height: 160px;
+    text-align: left;
+
     :deep(.arco-tabs-nav-tab-list) {
       padding-left: 0;
     }

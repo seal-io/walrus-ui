@@ -87,6 +87,7 @@ export default {
   'applications.applications.history.deploymentTime': '部署时间',
   'applications.applications.history.execTime': '执行时间',
   'applications.applications.history.createTime': '部署时间',
+  'applications.applications.history.changes': '变更',
   'applications.applications.history.rollback': '回滚',
   'applications.applications.history.detail': '版本详情',
   'applications.applications.history.changeList': '历史变更',
@@ -199,5 +200,7 @@ export default {
   'resource.outputs.result.subTitle': '',
   'resource.revisions.result.title': '未产生版本',
   'resource.revisions.result.subTitle':
-    '每次部署都将生成一个版本，最新的版本不能被删除'
+    '每次部署都将生成一个版本，最新的版本不能被删除',
+  'resource.revisons.detail.components': '组件更新',
+  'resource.revisons.detail.attributes': '配置'
 };

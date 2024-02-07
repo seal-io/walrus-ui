@@ -4,6 +4,7 @@
       ref="scroller"
       class="log-text"
       :class="{ fullscreen: fullscreen }"
+      :style="{ maxHeight: maxHeight }"
       @wheel="handleContentWheel"
     >
       {{ content }}
@@ -33,6 +34,12 @@
       type: String,
       default() {
         return '';
+      }
+    },
+    maxHeight: {
+      type: String,
+      default() {
+        return '360px';
       }
     },
     title: {
@@ -126,7 +133,6 @@
   .logs-wrap {
     .log-text {
       min-height: 200px;
-      max-height: 360px;
       padding: 0 10px;
       overflow-y: auto;
       color: var(--color-logs-text);

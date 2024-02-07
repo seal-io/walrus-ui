@@ -80,6 +80,29 @@
     }
   }
 
+  &.arco-tabs-type-card {
+    .arco-tabs-tab {
+      border: none;
+      border-radius: var(--border-radius-small);
+
+      &:last-child {
+        border: none;
+      }
+    }
+
+    .arco-tabs-nav::before {
+      height: 0;
+    }
+
+    .arco-tabs-content {
+      border: none;
+    }
+
+    .arco-tabs-tab:hover {
+      background-color: var(--color-fill-1);
+    }
+  }
+
   &.arco-tabs-left.arco-tabs-vertical .arco-tabs-content {
     padding-left: 0;
   }

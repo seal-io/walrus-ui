@@ -16,9 +16,9 @@
         <div>
           <ComponentListHeader dataList={headerConfigs} />
           <a-space direction="vertical" size={20} fill>
-            {props.dataList.map((item) => (
-              <ComponentItem rowData={item} />
-            ))}
+            {props.dataList.length
+              ? props.dataList.map((item) => <ComponentItem rowData={item} />)
+              : ctx.slots.empty?.()}
           </a-space>
         </div>
       );

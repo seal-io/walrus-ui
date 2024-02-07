@@ -1,6 +1,6 @@
 <template>
   <div class="mo-wrap" :class="{ disabled }">
-    <div class="title" :class="{ 'no-del-btn': !showDelete }">
+    <div v-if="showTitle" class="title" :class="{ 'no-del-btn': !showDelete }">
       <div class="text-wrap" @click.stop="handleCollapse">
         <a-space>
           <span v-if="showArrow" class="text">
@@ -45,6 +45,12 @@
       type: String,
       default() {
         return '';
+      }
+    },
+    showTitle: {
+      type: Boolean,
+      default() {
+        return true;
       }
     },
     innerWrap: {

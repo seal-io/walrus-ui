@@ -192,7 +192,7 @@
         if (!props.showCheckbox) return null;
         return (
           <a-checkbox
-            clas="checkbox-wrap"
+            class="checkbox-wrap"
             onClick={withModifiers(() => {}, ['stop'])}
             model-value={_.includes(props.selectedRowKeys, props.rowData.id)}
             disabled={props.rowData.disabled}
