@@ -173,7 +173,7 @@
                   size="small"
                   @click="handleViewHistoryChange(record)"
                 >
-                  <icon-clock-circle class="size-16" />
+                  <icon-history class="size-16" />
                 </a-link>
               </a-tooltip>
               <a-tooltip
@@ -288,7 +288,7 @@
   import { HistoryData } from '../../config/interface';
   import revisionDetail from '../revision-detail.vue';
   import serviceSpecDiff from '../service-spec-diff.vue';
-  import RunDetailModal from '../run-detail-modal/index.vue';
+  import RunDetailModal from '../runs/detail-modal/index.vue';
   import {
     RevisionStatus,
     RevisionTypes,

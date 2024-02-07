@@ -24,7 +24,7 @@
     RevisionStatus,
     RevisionTypes,
     ProvideServiceInfoKey
-  } from '../config';
+  } from '@/views/application-management/services/config';
 
   const props = defineProps({
     runData: {
@@ -147,9 +147,9 @@
       min-height: 200px;
       padding: 0 10px;
       overflow-y: auto;
-      color: var(--color-logs-text);
+      color: #ddd;
       white-space: pre-wrap;
-      background-color: var(--color-logs-bg);
+      background-color: #181d28;
       border: 1px solid var(--color-border-2);
       border-radius: var(--border-radius-small);
 

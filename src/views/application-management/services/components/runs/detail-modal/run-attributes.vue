@@ -10,8 +10,8 @@
     json2Yaml
   } from '@/components/form-create/config/yaml-parse';
   import Copy from '@/components/copy/copy-command.vue';
-  import { queryRevisionChange } from '../../api';
-  import ServiceInfo from '../service-info.vue';
+  import { queryRevisionChange } from '@/views/application-management/services/api';
+  import ServiceInfo from '@/views/application-management/services/components/service-info.vue';
 
   export default defineComponent({
     name: 'AttributesContent',
@@ -51,6 +51,7 @@
       const type = ref('config');
       const activeKey = ref('form');
       const yamlAttributes = ref('');
+      const loading = ref(false);
       const diffContent = ref({
         old: '',
         new: ''
@@ -68,6 +69,7 @@
 
       const getRevisionChange = async () => {
         try {
+          loading.value = true;
           const { data } = await queryRevisionChange({
             id: props.runData.id,
             serviceID: props.runData.resource?.id
@@ -83,6 +85,8 @@
             old: '',
             new: ''
           };
+        } finally {
+          loading.value = false;
         }
       };
       const handleToggle = (val) => {
@@ -123,19 +127,18 @@
                 icon-list={iconList}
               ></IconBtnGroup>
               <div>
-                {activeKey.value === 'form' ? (
-                  <ServiceInfo></ServiceInfo>
-                ) : (
-                  <AceEditor
-                    ref="yaml_editor"
-                    read-only
-                    key="yaml_editor"
-                    editorId="yaml_editor"
-                    editor-default-value={yamlAttributes.value}
-                    lang="yaml"
-                    height={380}
-                  ></AceEditor>
-                )}
+                <ServiceInfo v-show={activeKey.value === 'form'}></ServiceInfo>
+
+                <AceEditor
+                  v-show={activeKey.value === 'yaml'}
+                  ref="yaml_editor"
+                  read-only
+                  key="yaml_editor"
+                  editorId="yaml_editor"
+                  editor-default-value={yamlAttributes.value}
+                  lang="yaml"
+                  height={380}
+                ></AceEditor>
               </div>
             </a-tab-pane>
             <a-tab-pane key="history">
@@ -145,22 +148,24 @@
               >
                 {i18n.global.t('applications.applications.history.diff.same')}
               </a-alert>
-              <CodeDiffView
-                content={diffContent.value}
-                class="m-t-10"
-                v-slots={{
-                  leftTitle: diffContent.value.old
-                    ? () => {
-                        return renderCopyButton(diffContent.value.old);
-                      }
-                    : null,
-                  rightTitle: diffContent.value.new
-                    ? () => {
-                        return renderCopyButton(diffContent.value.new);
-                      }
-                    : null
-                }}
-              ></CodeDiffView>
+              <a-spin loading={loading.value} style={{ width: '100%' }}>
+                <CodeDiffView
+                  content={diffContent.value}
+                  class="m-t-10 m-b-10"
+                  v-slots={{
+                    leftTitle: diffContent.value.old
+                      ? () => {
+                          return renderCopyButton(diffContent.value.old);
+                        }
+                      : null,
+                    rightTitle: diffContent.value.new
+                      ? () => {
+                          return renderCopyButton(diffContent.value.new);
+                        }
+                      : null
+                  }}
+                ></CodeDiffView>
+              </a-spin>
             </a-tab-pane>
           </a-tabs>
         </div>

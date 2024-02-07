@@ -39,31 +39,37 @@
         }
       );
       return () => (
-        <div class="chunk-box">
-          <CodeChunk
-            class="left chunks"
-            chunks={removeChunks.value}
-            title={props.leftTitle}
-            v-slots={{
-              title: ctx.slots.leftTitle ? () => ctx.slots.leftTitle?.() : null
-            }}
-          ></CodeChunk>
-          {ctx.slots.sperator ? (
-            () => ctx.slots.sperator?.()
-          ) : (
-            <div class="line"></div>
-          )}
-          <CodeChunk
-            class="right chunks"
-            chunks={addChunks.value}
-            title={props.leftTitle}
-            v-slots={{
-              title: ctx.slots.rightTitle
-                ? () => ctx.slots.rightTitle?.()
-                : null
-            }}
-          ></CodeChunk>
-        </div>
+        <>
+          {addChunks.value.length || removeChunks.value.length ? (
+            <div class="chunk-box">
+              <CodeChunk
+                class="left chunks"
+                chunks={removeChunks.value}
+                title={props.leftTitle}
+                v-slots={{
+                  title: ctx.slots.leftTitle
+                    ? () => ctx.slots.leftTitle?.()
+                    : null
+                }}
+              ></CodeChunk>
+              {ctx.slots.sperator ? (
+                () => ctx.slots.sperator?.()
+              ) : (
+                <div class="line"></div>
+              )}
+              <CodeChunk
+                class="right chunks"
+                chunks={addChunks.value}
+                title={props.leftTitle}
+                v-slots={{
+                  title: ctx.slots.rightTitle
+                    ? () => ctx.slots.rightTitle?.()
+                    : null
+                }}
+              ></CodeChunk>
+            </div>
+          ) : null}
+        </>
       );
     }
   });

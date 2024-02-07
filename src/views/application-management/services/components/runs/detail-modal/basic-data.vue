@@ -7,13 +7,13 @@
   import StatusLabel from '@/views/operation-hub/connectors/components/status-label.vue';
   import ClockTimer from '@/components/clock-timer/index.vue';
   import Copy from '@/components/copy/copy-command.vue';
-  import BasicInfo from '../basic-info.vue';
+  import BasicInfo from '@/views/application-management/services/components/basic-info.vue';
   import {
     runBasicConfig,
     ApplicableStatus,
     RevisionWatchStatus,
     RevisionStatus
-  } from '../../config';
+  } from '@/views/application-management/services/config';
 
   export default defineComponent({
     props: {

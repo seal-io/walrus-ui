@@ -1,8 +1,8 @@
 <script lang="tsx">
-  import { get } from 'lodash';
   import { defineComponent, computed, ref } from 'vue';
-  import RevisionLogs from '../revision-logs.vue';
-  import { RevisionWatchStatus } from '../../config';
+  import { RevisionWatchStatus } from '@/views/application-management/services/config';
+  import StaticLogs from '../logs/static-logs.vue';
+  import WatchLogs from '../logs/watch-logs.vue';
 
   export default defineComponent({
     name: 'RunLogs',
@@ -32,19 +32,18 @@
           {RevisionWatchStatus.includes(
             props.runData?.status?.summaryStatus
           ) ? (
-            <RevisionLogs
+            <WatchLogs
               maxHeight={maxHeight.value}
               show={props.show}
               fullscreen={props.fullscreen}
-              revision-id={props.runData?.id}
-            ></RevisionLogs>
+              runData={props.runData}
+            ></WatchLogs>
           ) : (
-            <div
-              class={[{ fullscreen: props.fullscreen }, 'content-wrap']}
-              style={{ maxHeight: maxHeight.value }}
-            >
-              {props.runData?.record || ''}
-            </div>
+            <StaticLogs
+              maxHeight={maxHeight.value}
+              record={props.runData?.record}
+              fullscreen={props.fullscreen}
+            ></StaticLogs>
           )}
         </div>
       );
