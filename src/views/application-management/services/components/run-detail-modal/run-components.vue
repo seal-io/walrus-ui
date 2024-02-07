@@ -1,4 +1,5 @@
 <script lang="tsx">
+  import _ from 'lodash';
   import { defineComponent, ref, computed } from 'vue';
   import i18n from '@/locale';
   import FilterBox from '@/components/filter-box/index.vue';
@@ -16,28 +17,14 @@
     },
     setup(props, ctx) {
       const query = ref('');
-      // const dataList = ref([
-      //   {
-      //     id: 1,
-      //     name: 'test1',
-      //     type: 'kubernetes',
-      //     changeType: 'update'
-      //   },
-      //   {
-      //     id: 2,
-      //     name: 'test2',
-      //     type: 'kubernetes',
-      //     changeType: 'change'
-      //   },
-      //   {
-      //     id: 3,
-      //     name: 'test3',
-      //     type: 'kubernetes',
-      //     changeType: 'remove'
-      //   }
-      // ]);
+
       const dataList = computed(() => {
-        return props.runData?.componentChanges || [];
+        if (!query.value) {
+          return props.runData?.componentChanges || [];
+        }
+        return _.filter(props.runData?.componentChanges || [], (item) => {
+          return item.name.includes(query.value);
+        });
       });
       const handleSearch = () => {
         console.log('search', query.value);
@@ -68,7 +55,44 @@
               }
             }}
           ></FilterBox>
-          <ComponentList dataList={dataList.value}></ComponentList>
+          <ComponentList
+            dataList={dataList.value}
+            v-slots={{
+              empty: () => {
+                return (
+                  <result-view
+                    v-slots={{
+                      icon: () => {
+                        return (
+                          <>
+                            {query.value ? (
+                              <icon-find-replace />
+                            ) : (
+                              <i class="iconfont icon-kaifazujian"></i>
+                            )}
+                          </>
+                        );
+                      }
+                    }}
+                    title={
+                      query.value
+                        ? i18n.global.t('common.result.nodata.title', {
+                            type: i18n.global.t(
+                              'applications.instance.tab.resource'
+                            )
+                          })
+                        : i18n.global.t('resource.components.result.title')
+                    }
+                    subtitle={
+                      query.value
+                        ? ' '
+                        : i18n.global.t('resource.components.result.subTitle')
+                    }
+                  ></result-view>
+                );
+              }
+            }}
+          ></ComponentList>
         </div>
       );
     }

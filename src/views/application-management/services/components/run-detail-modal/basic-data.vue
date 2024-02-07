@@ -6,10 +6,11 @@
   import useBasicInfoData from '@/views/application-management/projects/hooks/use-basicInfo-data';
   import StatusLabel from '@/views/operation-hub/connectors/components/status-label.vue';
   import ClockTimer from '@/components/clock-timer/index.vue';
+  import Copy from '@/components/copy/copy-command.vue';
   import BasicInfo from '../basic-info.vue';
   import {
     runBasicConfig,
-    ApplyableStatus,
+    ApplicableStatus,
     RevisionWatchStatus,
     RevisionStatus
   } from '../../config';
@@ -57,7 +58,7 @@
       };
 
       const renderActions = () => {
-        if (ApplyableStatus.includes(props.runData?.status?.summaryStatus)) {
+        if (ApplicableStatus.includes(props.runData?.status?.summaryStatus)) {
           return (
             <a-space
               direction="vertical"
@@ -83,7 +84,7 @@
                 }}
               >
                 <icon-stop class="m-r-5" />
-                <span>{i18n.global.t('common.button.cancel')}</span>
+                <span>{i18n.global.t('common.button.discardChange')}</span>
               </a-button>
             </a-space>
           );
@@ -134,6 +135,14 @@
                     ></ClockTimer>
                   );
                 }
+                if (data.key === 'id') {
+                  return (
+                    <span class="id-val">
+                      <span class="m-r-5">{value}</span>
+                      <Copy content={value}></Copy>
+                    </span>
+                  );
+                }
                 return value;
               }
             }}
@@ -177,6 +186,11 @@
 
     .basic-info {
       flex: 1;
+    }
+
+    .id-val {
+      display: flex;
+      align-items: center;
     }
 
     :deep(.arco-descriptions-row) {

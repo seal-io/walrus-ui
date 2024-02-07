@@ -1,8 +1,8 @@
 <script lang="tsx">
   import { get } from 'lodash';
-  import { defineComponent, ref } from 'vue';
+  import { defineComponent, computed, ref } from 'vue';
   import RevisionLogs from '../revision-logs.vue';
-  import { RevisionStatus, RevisionWatchStatus } from '../../config';
+  import { RevisionWatchStatus } from '../../config';
 
   export default defineComponent({
     name: 'RunLogs',
@@ -16,22 +16,33 @@
       show: {
         type: Boolean,
         default: false
+      },
+      fullscreen: {
+        type: Boolean,
+        default: false
       }
     },
     setup(props, { emit }) {
-      const fullscreen = ref(false);
+      const maxHeight = computed(() => {
+        return props.fullscreen ? 'calc(100vh - 310px)' : '310px';
+      });
+
       return () => (
         <div class="logs-content">
           {RevisionWatchStatus.includes(
             props.runData?.status?.summaryStatus
           ) ? (
             <RevisionLogs
+              maxHeight={maxHeight.value}
               show={props.show}
-              fullscreen={fullscreen.value}
+              fullscreen={props.fullscreen}
               revision-id={props.runData?.id}
             ></RevisionLogs>
           ) : (
-            <div class={[{ fullscreen: fullscreen.value }, 'content-wrap']}>
+            <div
+              class={[{ fullscreen: props.fullscreen }, 'content-wrap']}
+              style={{ maxHeight: maxHeight.value }}
+            >
               {props.runData?.record || ''}
             </div>
           )}
@@ -53,6 +64,7 @@
       color: #ddd;
       font-size: var(--font-size-small);
       white-space: pre-wrap;
+      word-wrap: break-word;
       background-color: #181d28;
       border: 1px solid var(--color-border-2);
       border-radius: var(--border-radius-small);

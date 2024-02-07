@@ -45,9 +45,7 @@
             chunks={removeChunks.value}
             title={props.leftTitle}
             v-slots={{
-              title: ctx.slots.leftTitle
-                ? (data) => ctx.slots.leftTitle?.(data)
-                : null
+              title: ctx.slots.leftTitle ? () => ctx.slots.leftTitle?.() : null
             }}
           ></CodeChunk>
           {ctx.slots.sperator ? (
@@ -61,7 +59,7 @@
             title={props.leftTitle}
             v-slots={{
               title: ctx.slots.rightTitle
-                ? (data) => ctx.slots.rightTitle?.(data)
+                ? () => ctx.slots.rightTitle?.()
                 : null
             }}
           ></CodeChunk>

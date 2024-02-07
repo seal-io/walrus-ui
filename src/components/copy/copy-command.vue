@@ -1,8 +1,8 @@
 <template>
   <span v-if="isSupported" class="copy-btn">
-    <span @click.stop="handleCopy">
+    <span class="flex" @click.stop="handleCopy">
       <a-link v-if="!copied"><icon-copy class="size-14" /></a-link>
-      <span v-else
+      <span v-else class="copied"
         ><icon-check-circle
           class="size-14 icon-blod"
           style="color: var(--seal-color-success)"
@@ -38,11 +38,16 @@
 
 <style lang="less" scoped>
   .copy-btn {
-    line-height: 14px;
+    display: flex;
+    width: 16px;
+    height: 16px;
+
+    .copied {
+      display: flex;
+      align-items: center;
+    }
 
     .arco-link {
-      padding: 1px;
-      border: 1px solid var(--color-border-2);
       border-radius: var(--border-radius-mini);
       transition: all 0.2s var(--seal-transition-func);
 

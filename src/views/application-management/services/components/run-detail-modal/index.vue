@@ -1,46 +1,74 @@
 <template>
   <a-modal
-    top="10%"
+    :top="fullscreen ? 0 : '10%'"
     :closable="true"
     :align-center="false"
     :width="900"
     :ok-text="$t('common.button.save')"
     :visible="show"
     :mask-closable="false"
-    :body-style="{ 'max-height': '500px', 'overflow': 'auto' }"
+    :body-style="{
+      height: fullscreen ? 'auto' : '560px',
+      overflow: 'auto'
+    }"
     modal-class="project-modal"
     :title="title"
     :footer="false"
-    :fullscreen="false"
+    :fullscreen="fullscreen"
     unmount-on-close
     @cancel="handleCancel"
     @ok="handleOk"
     @before-open="handleBeforeOpen"
     @before-close="handleBeforeClose"
   >
+    <template #title>
+      <div class="relative flex-1 align-center">
+        <a-link
+          class="icon iconfont full-btn size-16 absolute"
+          :class="{
+            'icon-fullscreen': !fullscreen,
+            'icon-fullscreen-exit': fullscreen
+          }"
+          style="left: 0"
+          @click="handleToggleFullScreen"
+        ></a-link>
+        <span>{{ title }}</span>
+      </div>
+    </template>
     <a-spin :loading="loading" style="width: 100%; text-align: center">
       <div>
         <BasicData
           :run-data="basicData"
           class="m-b-10"
-          @click="handleApplyResourceRun"
+          @apply="handleApplyResourceRun"
         >
         </BasicData>
         <a-tabs
           v-model:active-key="activeKey"
           lazy-load
           class="page-line-tabs"
+          :bordered="false"
           :default-active-key="activeKey"
           @change="handleTabChange"
         >
-          <a-tab-pane key="components" title="Components">
+          <a-tab-pane
+            key="components"
+            :title="$t('resource.revisons.detail.components')"
+          >
             <runComponents :run-data="basicData"></runComponents>
           </a-tab-pane>
-          <a-tab-pane key="attributes" title="Attributes">
+          <a-tab-pane
+            key="attributes"
+            :title="$t('resource.revisons.detail.attributes')"
+          >
             <runAttributes :run-data="basicData"></runAttributes>
           </a-tab-pane>
-          <a-tab-pane key="logs" title="Logs">
-            <runLogs :show="show" :run-data="basicData"></runLogs>
+          <a-tab-pane key="logs" :title="$t('applications.instance.tab.log')">
+            <runLogs
+              :show="show"
+              :run-data="basicData"
+              :fullscreen="fullscreen"
+            ></runLogs>
           </a-tab-pane>
         </a-tabs>
       </div>
@@ -92,7 +120,8 @@
   const basicData = ref<any>({});
   const emit = defineEmits(['save', 'update:show', 'update:data']);
   const loading = ref(false);
-  const activeKey = ref('components');
+  const activeKey = ref('logs');
+  const fullscreen = ref(false);
   let axiosChunkToken: any = null;
 
   const handleOk = () => {
@@ -100,8 +129,12 @@
   };
   const handleCancel = () => {
     emit('update:show', false);
+    emit('save');
   };
 
+  const handleToggleFullScreen = () => {
+    fullscreen.value = !fullscreen.value;
+  };
   const getResoureceRunDetail = async () => {
     try {
       loading.value = true;

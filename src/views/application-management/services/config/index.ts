@@ -154,7 +154,7 @@ export const runBasicConfig = [
     span: 1
   },
   {
-    label: 'Change',
+    label: 'applications.applications.history.changes',
     key: 'componentChangeSummary',
     value: '',
     span: 1
@@ -239,11 +239,7 @@ export const RevisionStatus = {
   Canceling: 'Canceling'
 };
 
-export const ApplyableStatus = [
-  RevisionStatus.Plan,
-  RevisionStatus.Planned,
-  RevisionStatus.Planning
-];
+export const ApplicableStatus = [RevisionStatus.Planned];
 
 export const RevisionWatchStatus = [
   RevisionStatus.Running,

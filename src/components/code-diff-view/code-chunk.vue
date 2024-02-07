@@ -27,18 +27,16 @@
     setup(props, ctx) {
       return () => (
         <div class="wrap">
-          <div class="title">
-            {ctx.slots.title?.(props.chunks) ?? props.title}
-          </div>
+          <div class="title">{ctx.slots.title?.() ?? props.title}</div>
           {_.map(props.chunks, (item) => {
             return (
               <div class={['chunk-content', { collapse: item.collapsed }]}>
-                {_.map(item.chunks, (sItem, sIndex) => {
+                {_.map(item.chunks, (code, sIndex) => {
                   return (
                     <div class={['chunk', item.type]}>
                       <span class="line-num">{item.startLine + sIndex}</span>
                       <div class="code">
-                        <HLBlock code={sItem} lang="json"></HLBlock>
+                        <HLBlock code={code} lang="json"></HLBlock>
                       </div>
                     </div>
                   );

@@ -1,21 +1,11 @@
 <script lang="tsx">
   import _ from 'lodash';
-  import dayjs from 'dayjs';
-  import i18n from '@/locale';
-  import {
-    defineComponent,
-    ref,
-    provide,
-    withModifiers,
-    toRef,
-    watch,
-    computed
-  } from 'vue';
+  import { defineComponent, ref, withModifiers } from 'vue';
   import Autotip from '@arco-design/web-vue/es/_components/auto-tooltip/auto-tooltip';
   import CodeDiffView from '@/components/code-diff-view/index.vue';
   import { StatusColor } from '@/views/config';
   import Copy from '@/components/copy/copy-command.vue';
-  import diffValue from './config/diff-content.json';
+  import ModuleWrapper from '@/components/module-wrapper/index.vue';
 
   export default defineComponent({
     props: {
@@ -44,10 +34,10 @@
         default: false
       }
     },
-    emits: ['selectionChange', 'logs', 'terminal'],
+    emits: ['selectionChange'],
     setup(props, { slots, emit }) {
       const collapse = ref(false);
-
+      const isOpened = ref(false);
       const diffContent = ref({
         old: '',
         new: ''
@@ -74,18 +64,13 @@
       };
       const handleToggle = () => {
         collapse.value = !collapse.value;
-        setDiffContent();
+        if (collapse.value && !isOpened.value) {
+          setDiffContent();
+          isOpened.value = true;
+        }
       };
 
-      const renderLeftTitle = (data) => {
-        return (
-          <div class="title">
-            <span></span>
-            <Copy content={data}></Copy>
-          </div>
-        );
-      };
-      const renderRightTitle = (data) => {
+      const renderCopyButton = (data) => {
         return (
           <div class="title">
             <span></span>
@@ -95,21 +80,33 @@
       };
 
       const renderComponents = () => {
-        if (!collapse.value) return null;
         return (
-          <div class="components-container">
-            <CodeDiffView
-              content={diffContent.value}
-              v-slots={{
-                leftTitle: (data) => {
-                  return renderLeftTitle(data);
-                },
-                rightTitle: (data) => {
-                  return renderRightTitle(data);
-                }
-              }}
-            ></CodeDiffView>
-          </div>
+          <ModuleWrapper
+            status={collapse.value}
+            showArrow={false}
+            showDelete={false}
+            innerWrap={true}
+            showTitle={false}
+            style={{ border: 'none' }}
+          >
+            <div class={['components-container']}>
+              <CodeDiffView
+                content={diffContent.value}
+                v-slots={{
+                  leftTitle: diffContent.value.old
+                    ? () => {
+                        return renderCopyButton(diffContent.value.old);
+                      }
+                    : null,
+                  rightTitle: diffContent.value.new
+                    ? () => {
+                        return renderCopyButton(diffContent.value.new);
+                      }
+                    : null
+                }}
+              ></CodeDiffView>
+            </div>
+          </ModuleWrapper>
         );
       };
       const renderCollapseButton = () => {
@@ -264,7 +261,16 @@
     }
 
     .components-container {
-      margin: 10px 15px 10px;
+      margin: 0;
+
+      &.show {
+        display: none;
+      }
+
+      .chunk-box {
+        border: none;
+        border-radius: 0;
+      }
     }
 
     .title {
