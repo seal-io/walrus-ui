@@ -389,7 +389,7 @@
   import { projectEnvCtxInjectionKey } from '@/components/dynamic-form/widgets/config';
   import { BreadcrumbOptions } from '@/views/config/interface';
   import { beforeLeaveCallback } from '@/hooks/save-before-leave';
-  import RunDetailModal from '../components/run-detail-modal/index.vue';
+  import RunDetailModal from '../components/runs/detail-modal/index.vue';
   import useProjectBreadcrumbData from '../../projects/hooks/use-project-breadcrumb-data';
   import {
     createService,

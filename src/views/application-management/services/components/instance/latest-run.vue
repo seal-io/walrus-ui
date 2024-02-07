@@ -17,7 +17,7 @@
   } from '../../config';
   import BasicInfo from '../basic-info.vue';
   import useViewLatestLogs from '../../hooks/use-view-latest-logs';
-  import RunDetailModal from '../run-detail-modal/index.vue';
+  import RunDetailModal from '../runs/detail-modal/index.vue';
 
   export default defineComponent({
     props: {

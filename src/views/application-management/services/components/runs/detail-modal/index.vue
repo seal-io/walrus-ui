@@ -85,7 +85,7 @@
     applyResourceRun,
     queryServiceRevisionsDetail,
     getResourceDetailsAPIPrefix
-  } from '../../api';
+  } from '@/views/application-management/services/api';
   import BasicData from './basic-data.vue';
   import runAttributes from './run-attributes.vue';
   import runComponents from './run-components.vue';
@@ -219,6 +219,7 @@
   };
   const handleBeforeClose = () => {
     axiosChunkToken?.cancel();
+    basicData.value = {};
   };
 </script>
 
