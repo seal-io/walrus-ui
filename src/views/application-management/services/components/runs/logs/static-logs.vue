@@ -18,7 +18,7 @@
     },
     setup(props, ctx) {
       return () => (
-        <div class="logs-content">
+        <div class="logs-content static">
           <div
             class={[{ fullscreen: props.fullscreen }, 'content-wrap']}
             style={{ maxHeight: props.maxHeight }}

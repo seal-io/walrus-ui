@@ -27,6 +27,27 @@
         return props.fullscreen ? 'calc(100vh - 310px)' : '310px';
       });
 
+      const renderStatusLogs = () => {
+        return (
+          <div>
+            {props.runData?.planRecord ? (
+              <StaticLogs
+                maxHeight={maxHeight.value}
+                record={props.runData?.planRecord}
+                fullscreen={props.fullscreen}
+              ></StaticLogs>
+            ) : null}
+            {props.runData?.record ? (
+              <StaticLogs
+                maxHeight={maxHeight.value}
+                record={props.runData?.record}
+                fullscreen={props.fullscreen}
+              ></StaticLogs>
+            ) : null}
+          </div>
+        );
+      };
+
       return () => (
         <div class="logs-content">
           {RevisionWatchStatus.includes(
@@ -39,11 +60,7 @@
               runData={props.runData}
             ></WatchLogs>
           ) : (
-            <StaticLogs
-              maxHeight={maxHeight.value}
-              record={props.runData?.record}
-              fullscreen={props.fullscreen}
-            ></StaticLogs>
+            <>{renderStatusLogs()}</>
           )}
         </div>
       );
@@ -51,33 +68,4 @@
   });
 </script>
 
-<style lang="less" scoped>
-  .logs-content {
-    text-align: left;
-
-    .content-wrap {
-      min-height: 200px;
-      max-height: 360px;
-      padding: 0 10px;
-      overflow-y: auto;
-      color: #ddd;
-      font-size: var(--font-size-small);
-      white-space: pre-wrap;
-      word-wrap: break-word;
-      background-color: #181d28;
-      border: 1px solid var(--color-border-2);
-      border-radius: var(--border-radius-small);
-
-      &.fullscreen {
-        max-height: calc(100vh - 270px);
-      }
-    }
-
-    .label {
-      margin-top: 10px;
-      margin-bottom: 10px;
-      color: var(--color-text-3);
-      font-size: var(--font-size-small);
-    }
-  }
-</style>
+<style lang="less" scoped></style>

@@ -78,7 +78,10 @@
 
 <script lang="ts" setup>
   import _ from 'lodash';
-  import { useSetChunkRequest } from '@/api/axios-chunk-request';
+  import {
+    useSetChunkRequest,
+    createAxiosToken
+  } from '@/api/axios-chunk-request';
   import { ref, PropType, watch, nextTick } from 'vue';
   import { websocketEventType } from '@/views/config';
   import {
@@ -123,6 +126,7 @@
   const activeKey = ref('logs');
   const fullscreen = ref(false);
   let axiosChunkToken: any = null;
+  let axiosRunDetailToken: any = null;
 
   const handleOk = () => {
     emit('save');
@@ -136,13 +140,18 @@
     fullscreen.value = !fullscreen.value;
   };
   const getResoureceRunDetail = async () => {
+    axiosRunDetailToken?.cancel();
+    axiosRunDetailToken = createAxiosToken();
     try {
       loading.value = true;
       const params = {
         id: props.data.runId,
         serviceID: props.data.serviceId
       };
-      const { data } = await queryServiceRevisionsDetail(params);
+      const { data } = await queryServiceRevisionsDetail(
+        params,
+        axiosRunDetailToken.token
+      );
       basicData.value = data;
     } catch (error) {
       // handle error
@@ -170,13 +179,13 @@
     });
   };
 
-  const handleApplyResourceRun = async (approval) => {
+  const handleApplyResourceRun = async (approve) => {
     try {
       const params = {
         id: props.data.runId,
         serviceID: props.data.serviceId,
         data: {
-          approval
+          approve
         }
       };
       await applyResourceRun(params);
@@ -219,6 +228,7 @@
   };
   const handleBeforeClose = () => {
     axiosChunkToken?.cancel();
+    axiosRunDetailToken?.cancel();
     basicData.value = {};
   };
 </script>

@@ -9,7 +9,7 @@
     :visible="show"
     :mask-closable="false"
     :body-style="{
-      height: fullscreen ? 'auto' : '500px',
+      maxHeight: fullscreen ? 'auto' : '500px',
       overflow: 'hidden',
       paddingBottom: 0
     }"
@@ -71,7 +71,7 @@
             ? $t('applications.applications.logs.live')
             : $t('applications.applications.instance.log')
         }}</div>
-        <revisionLogs
+        <!-- <revisionLogs
           v-if="RevisionWatchStatus.includes(initialStatus?.summaryStatus)"
           :show="show"
           :fullscreen="fullscreen"
@@ -79,7 +79,12 @@
         ></revisionLogs>
         <div v-else class="content-wrap" :class="{ fullscreen: fullscreen }">
           {{ get(revisionData, 'record') || '' }}
-        </div>
+        </div> -->
+        <runLogs
+          :run-data="revisionData"
+          :show="show"
+          :fullscreen="fullscreen"
+        ></runLogs>
       </div>
     </a-spin>
     <template #footer>
@@ -112,6 +117,7 @@
     RevisionStatus
   } from '../config';
   import { queryServiceRevisionsDetail } from '../api';
+  import runLogs from './runs/detail-modal/run-logs.vue';
 
   const props = defineProps({
     show: {
@@ -151,7 +157,7 @@
   });
   const isStopped = computed(() => {
     const status = get(revisionData.value, 'status.summaryStatus') || '';
-    return [RevisionStatus.Succeeded, RevisionStatus.Failed].includes(status);
+    return !RevisionWatchStatus.includes(status);
   });
   const dataList = computed(() => {
     const res = map(revisionDetailConfig, (item) => {
