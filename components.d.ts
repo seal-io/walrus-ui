@@ -48,18 +48,14 @@ declare module 'vue' {
     ASpace: typeof import('@arco-design/web-vue')['Space'];
     ASpin: typeof import('@arco-design/web-vue')['Spin'];
     AStatistic: typeof import('@arco-design/web-vue')['Statistic'];
-<<<<<<< HEAD
     AStep: typeof import('@arco-design/web-vue')['Step'];
     ASteps: typeof import('@arco-design/web-vue')['Steps'];
-=======
->>>>>>> d9e73c2d (chore: preview api)
     ASubMenu: typeof import('@arco-design/web-vue')['SubMenu'];
     ASwitch: typeof import('@arco-design/web-vue')['Switch'];
     ATable: typeof import('@arco-design/web-vue')['Table'];
     ATableColumn: typeof import('@arco-design/web-vue')['TableColumn'];
     ATabPane: typeof import('@arco-design/web-vue')['TabPane'];
     ATabs: typeof import('@arco-design/web-vue')['Tabs'];
-    ATag: typeof import('@arco-design/web-vue')['Tag'];
     ATextarea: typeof import('@arco-design/web-vue')['Textarea'];
     ATooltip: typeof import('@arco-design/web-vue')['Tooltip'];
     ATypographyParagraph: typeof import('@arco-design/web-vue')['TypographyParagraph'];

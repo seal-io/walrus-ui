@@ -1,5 +1,5 @@
 <template>
-  <div class="logs-wrap">
+  <div class="logs-wrap watch">
     <div
       ref="scroller"
       class="log-text"
@@ -36,7 +36,7 @@
     maxHeight: {
       type: String,
       default() {
-        return '360px';
+        return '310px';
       }
     },
     title: {
@@ -143,6 +143,8 @@
 
 <style lang="less" scoped>
   .logs-wrap {
+    text-align: left;
+
     .log-text {
       min-height: 200px;
       padding: 0 10px;

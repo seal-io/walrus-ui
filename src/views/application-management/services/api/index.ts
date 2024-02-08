@@ -278,14 +278,20 @@ export const queryServiceRevisions = (
   );
 };
 
-export const queryServiceRevisionsDetail = (params: {
-  id: string;
-  serviceID: string;
-}) => {
+export const queryServiceRevisionsDetail = (
+  params: {
+    id: string;
+    serviceID: string;
+  },
+  token?
+) => {
   return axios.get(
     `${SERVICE_API_PREFIX()}${SERVICE_API}/${params.serviceID}/runs/${
       params.id
-    }`
+    }`,
+    {
+      cancelToken: token
+    }
   );
 };
 
