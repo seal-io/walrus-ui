@@ -1,3 +1,4 @@
+import { line } from '@antv/x6/lib/registry/port-layout/line';
 import * as Diff from 'diff';
 import _ from 'lodash';
 import { ref } from 'vue';
@@ -19,22 +20,122 @@ export default function useCodeView() {
     collapsed?: boolean;
   }
 
+  interface DiffContent {
+    lineCounts: number;
+    chunks: DiffCodeItem[];
+  }
+
   const diffResult = ref<DiffItem[]>([]);
-  const removeChunks = ref<DiffCodeItem[]>([]);
-  const addChunks = ref<DiffCodeItem[]>([]);
+  const leftChunks = ref<DiffCodeItem[]>([]);
+  const rightChunks = ref<DiffCodeItem[]>([]);
   const unifiedChunks = ref<DiffCodeItem[]>([]);
   const collapseNum = ref<number>(10);
 
   const clearDiffLines = () => {
-    removeChunks.value = [];
-    addChunks.value = [];
+    leftChunks.value = [];
+    rightChunks.value = [];
     unifiedChunks.value = [];
   };
 
   const setDiffResult = (oldStr, newStr) => {
-    diffResult.value = Diff.diffLines(oldStr || '', newStr || '');
+    diffResult.value = Diff.diffLines(oldStr || '', newStr || '', {
+      ignoreWhitespace: false
+    });
   };
 
+  const shouldSetBlank = (type, index) => {
+    if (index === unifiedChunks.value.length - 1) {
+      return true;
+    }
+    index = type === 'remove' ? index + 1 : index - 1;
+
+    const chunk = unifiedChunks.value[index];
+    return !chunk || !chunk.type;
+  };
+
+  const createBlankChunk = (lineCounts) => {
+    return {
+      type: 'blank',
+      lineCounts,
+      chunks: new Array(lineCounts).fill('\n'),
+      lines: new Array(lineCounts).fill('\n'),
+      startLine: 1,
+      collapsed: false
+    };
+  };
+
+  const adaptSplitResult = (left, right) => {
+    _.each(left.chunks, (leftChunk, index) => {
+      const rightChunk = right.chunks[index];
+      if (leftChunk.collapsed && rightChunk.collapsed) {
+        // 记录下左右栏chunk index; 点击展开时，通过此index定位chunk进行展开。
+        leftChunk.leftIndex = leftChunks.value.length;
+        leftChunk.rightIndex = rightChunks.value.length;
+
+        rightChunk.leftIndex = leftChunks.value.length;
+        rightChunk.rightIndex = rightChunks.value.length;
+      }
+
+      leftChunks.value.push(_.cloneDeep(leftChunk));
+      rightChunks.value.push(_.cloneDeep(rightChunk));
+
+      // 修改的行数不一致时，补充空白块。例如：左栏删除 3行，右栏添加5行代码。则左栏需补充 2行空白，进行对齐。
+      if (leftChunk.type === 'remove' && rightChunk.type === 'add') {
+        const count = leftChunk.lineCount - rightChunk.lineCount;
+        if (count < 0) {
+          leftChunks.value.push(createBlankChunk(Math.abs(count)));
+        } else if (count > 0) {
+          rightChunks.value.push(createBlankChunk(count));
+        }
+      }
+    });
+  };
+
+  const setDiffChunks = () => {
+    const left: DiffContent = {
+      lineCounts: 1,
+      chunks: []
+    };
+    const right: DiffContent = {
+      lineCounts: 1,
+      chunks: []
+    };
+    const setChunkLineNumber = (item, lineNumer) => {
+      item.startLine = lineNumer;
+      return lineNumer + item.lineCounts;
+    };
+
+    _.each(unifiedChunks.value, (item, index) => {
+      if (!item.type) {
+        left.lineCounts = setChunkLineNumber(item, left.lineCounts);
+        left.chunks.push(item);
+
+        const clonedChunk = _.cloneDeep(item);
+        right.lineCounts = setChunkLineNumber(clonedChunk, right.lineCounts);
+        right.chunks.push(clonedChunk);
+      }
+
+      if (item.type === 'add') {
+        right.lineCounts = setChunkLineNumber(item, right.lineCounts);
+
+        right.chunks.push(_.cloneDeep(item));
+        if (shouldSetBlank(item.type, index)) {
+          left.chunks.push(createBlankChunk(item.lineCounts));
+        }
+      }
+
+      if (item.type === 'remove') {
+        left.lineCounts = setChunkLineNumber(item, left.lineCounts);
+        left.chunks.push(_.cloneDeep(item));
+
+        if (shouldSetBlank(item.type, index)) {
+          right.chunks.push(createBlankChunk(item.lineCounts));
+        }
+      }
+    });
+
+    adaptSplitResult(left, right);
+  };
   const getCodeDiffChunks = () => {
     unifiedChunks.value = _.map(diffResult.value, (item, index) => {
       let type = '';
@@ -44,46 +145,25 @@ export default function useCodeView() {
       if (item.removed) {
         type = 'remove';
       }
+      let lines = item.value.split('\n');
+      lines =
+        index === diffResult.value.length - 1
+          ? lines.slice(0)
+          : lines.slice(0, -1);
+
       return {
         type,
-        chunks: _.split(item.value, '\n'),
-        lineCounts: item.count,
-        startLine:
-          _.get(diffResult.value, [`${index - 1}`, 'startLine'], 0) + 1,
-        collapsed: item.count > collapseNum.value && type === ''
+        chunks: lines,
+        lineCounts: lines.length,
+        startLine: 1,
+        collapsed: lines.length > collapseNum.value && type === ''
       };
     });
-    _.each(unifiedChunks.value, (item, index) => {
-      if (!item.type) {
-        addChunks.value.push(_.cloneDeep(item));
-        removeChunks.value.push(_.cloneDeep(item));
-      }
-      if (item.type === 'add') {
-        addChunks.value.push(_.cloneDeep(item));
-        removeChunks.value.push({
-          type: '',
-          lineCounts: item.lineCounts,
-          chunks: Array(item.lineCounts).fill('\n'),
-          startLine: item.startLine,
-          collapsed: item.collapsed
-        });
-      }
-      if (item.type === 'remove') {
-        removeChunks.value.push(_.cloneDeep(item));
-        addChunks.value.push({
-          type: '',
-          lineCounts: item.lineCounts,
-          startLine: item.startLine,
-          chunks: Array(item.lineCounts).fill('\n'),
-          collapsed: item.collapsed
-        });
-      }
-    });
+    setDiffChunks();
   };
 
   const getDiffCodeResult = (content) => {
-    removeChunks.value = [];
-    addChunks.value = [];
+    clearDiffLines();
     if (!content?.old && !content?.new) {
       return;
     }
@@ -93,8 +173,8 @@ export default function useCodeView() {
     }, 100);
   };
   return {
-    removeChunks,
-    addChunks,
+    leftChunks,
+    rightChunks,
     unifiedChunks,
     diffResult,
     setDiffResult,

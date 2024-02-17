@@ -12,6 +12,7 @@
   }
 
   export default defineComponent({
+    emits: ['collapse'],
     props: {
       chunks: {
         type: Array as PropType<DiffCodeItem[]>,
@@ -25,22 +26,44 @@
       }
     },
     setup(props, ctx) {
+      const handleCollapse = (item: DiffCodeItem) => {
+        console.log('handleCollapse=======', item);
+        ctx.emit('collapse', item);
+      };
+      const renderItemChunks = (item) => {
+        if (item.collapsed) {
+          return (
+            <div class="collapse-text" onClick={() => handleCollapse(item)}>
+              <span>... 隐藏 {item.lineCounts} 行，点击展开 ...</span>
+            </div>
+          );
+        }
+        return (
+          <>
+            {_.map(item.chunks, (code, sIndex) => {
+              return (
+                <div class={['chunk', item.type]}>
+                  {item.type !== 'blank' ? (
+                    <span class="line-num">{item.startLine + sIndex}</span>
+                  ) : (
+                    <span class="line-num"></span>
+                  )}
+                  <div class="code">
+                    <HLBlock code={code} lang="json"></HLBlock>
+                  </div>
+                </div>
+              );
+            })}
+          </>
+        );
+      };
       return () => (
         <div class="wrap">
           <div class="title">{ctx.slots.title?.() ?? props.title}</div>
           {_.map(props.chunks, (item) => {
             return (
               <div class={['chunk-content', { collapse: item.collapsed }]}>
-                {_.map(item.chunks, (code, sIndex) => {
-                  return (
-                    <div class={['chunk', item.type]}>
-                      <span class="line-num">{item.startLine + sIndex}</span>
-                      <div class="code">
-                        <HLBlock code={code} lang="json"></HLBlock>
-                      </div>
-                    </div>
-                  );
-                })}
+                {renderItemChunks(item)}
               </div>
             );
           })}
@@ -58,6 +81,13 @@
 
     .chunk-content {
       text-align: left;
+    }
+
+    .collapse-text {
+      padding: 5px 0;
+      text-align: center;
+      background-color: var(--color-fill-2);
+      cursor: pointer;
     }
 
     .collapse {

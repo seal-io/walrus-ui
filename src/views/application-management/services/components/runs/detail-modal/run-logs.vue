@@ -1,6 +1,9 @@
 <script lang="tsx">
   import { defineComponent, computed, ref } from 'vue';
-  import { RevisionWatchStatus } from '@/views/application-management/services/config';
+  import {
+    RevisionStatus,
+    RevisionWatchStatus
+  } from '@/views/application-management/services/config';
   import StaticLogs from '../logs/static-logs.vue';
   import WatchLogs from '../logs/watch-logs.vue';
 
@@ -27,45 +30,81 @@
         return props.fullscreen ? 'calc(100vh - 310px)' : '310px';
       });
 
-      const renderStatusLogs = () => {
+      const renderStaticLogs = () => {
         return (
           <div>
             {props.runData?.planRecord ? (
-              <StaticLogs
-                maxHeight={maxHeight.value}
-                record={props.runData?.planRecord}
-                fullscreen={props.fullscreen}
-              ></StaticLogs>
+              <>
+                <div class="title">
+                  <i class="iconfont icon-rizhi"></i> <span>Planned Logs</span>
+                </div>
+                <StaticLogs
+                  maxHeight={maxHeight.value}
+                  record={props.runData?.planRecord}
+                  fullscreen={props.fullscreen}
+                ></StaticLogs>
+              </>
             ) : null}
             {props.runData?.record ? (
-              <StaticLogs
-                maxHeight={maxHeight.value}
-                record={props.runData?.record}
-                fullscreen={props.fullscreen}
-              ></StaticLogs>
+              <>
+                <div class="title">
+                  <i class="iconfont icon-rizhi"></i> <span>Apply Logs</span>
+                </div>
+                <StaticLogs
+                  maxHeight={maxHeight.value}
+                  record={props.runData?.record}
+                  fullscreen={props.fullscreen}
+                ></StaticLogs>
+              </>
             ) : null}
           </div>
         );
       };
 
+      const renderWatchLogs = () => {
+        return (
+          <>
+            {RevisionWatchStatus.includes(
+              props.runData?.status?.summaryStatus
+            ) ? (
+              <>
+                <div class="title">
+                  <i class="iconfont icon-rizhi m-r-5"></i>
+                  <span>
+                    {props.runData?.status?.summaryStatus ===
+                    RevisionStatus.Running
+                      ? 'Running Logs'
+                      : 'Planning Logs'}
+                  </span>
+                </div>
+                <WatchLogs
+                  maxHeight={maxHeight.value}
+                  show={props.show}
+                  fullscreen={props.fullscreen}
+                  runData={props.runData}
+                ></WatchLogs>
+              </>
+            ) : null}
+          </>
+        );
+      };
+
       return () => (
-        <div class="logs-content">
-          {RevisionWatchStatus.includes(
-            props.runData?.status?.summaryStatus
-          ) ? (
-            <WatchLogs
-              maxHeight={maxHeight.value}
-              show={props.show}
-              fullscreen={props.fullscreen}
-              runData={props.runData}
-            ></WatchLogs>
-          ) : (
-            <>{renderStatusLogs()}</>
-          )}
+        <div class="logs-box">
+          {renderStaticLogs()}
+          {renderWatchLogs()}
         </div>
       );
     }
   });
 </script>
 
-<style lang="less" scoped></style>
+<style lang="less" scoped>
+  .logs-box {
+    .title {
+      padding: 6px 0;
+      color: var(--color-text-3);
+      text-align: left;
+    }
+  }
+</style>
