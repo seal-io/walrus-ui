@@ -11,6 +11,10 @@
           return {};
         }
       },
+      bordered: {
+        type: Boolean,
+        default: true
+      },
       leftTitle: {
         type: String,
         default: ''
@@ -21,17 +25,15 @@
       }
     },
     setup(props, ctx) {
-      const { addChunks, removeChunks, clearDiffLines, getDiffCodeResult } =
-        useCodeView();
+      const { leftChunks, rightChunks, getDiffCodeResult } = useCodeView();
 
-      const init = () => {};
       watch(
         () => props.content,
         () => {
           getDiffCodeResult(props.content);
           console.log('codeview=========', {
-            addChunks: addChunks.value,
-            removeChunks: removeChunks.value
+            addChunks: rightChunks.value,
+            removeChunks: leftChunks.value
           });
         },
         {
@@ -40,12 +42,23 @@
       );
       return () => (
         <>
-          {addChunks.value.length || removeChunks.value.length ? (
-            <div class="chunk-box">
+          {rightChunks.value.length || leftChunks.value.length ? (
+            <div
+              class={[
+                'chunk-box',
+                {
+                  bordered: props.bordered
+                }
+              ]}
+            >
               <CodeChunk
                 class="left chunks"
-                chunks={removeChunks.value}
+                chunks={leftChunks.value}
                 title={props.leftTitle}
+                onCollapse={(item) => {
+                  leftChunks.value[item.leftIndex].collapsed = false;
+                  rightChunks.value[item.rightIndex].collapsed = false;
+                }}
                 v-slots={{
                   title: ctx.slots.leftTitle
                     ? () => ctx.slots.leftTitle?.()
@@ -59,8 +72,12 @@
               )}
               <CodeChunk
                 class="right chunks"
-                chunks={addChunks.value}
+                chunks={rightChunks.value}
                 title={props.leftTitle}
+                onCollapse={(item) => {
+                  leftChunks.value[item.leftIndex].collapsed = false;
+                  rightChunks.value[item.rightIndex].collapsed = false;
+                }}
                 v-slots={{
                   title: ctx.slots.rightTitle
                     ? () => ctx.slots.rightTitle?.()
@@ -82,8 +99,11 @@
     justify-content: space-between;
     overflow: hidden;
     font-size: var(--font-size-small);
-    border: 1px solid var(--color-border-2);
     border-radius: var(--border-radius-small);
+
+    &.bordered {
+      border: 1px solid var(--color-border-2);
+    }
 
     .line {
       width: 1px;

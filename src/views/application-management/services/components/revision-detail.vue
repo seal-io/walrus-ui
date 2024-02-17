@@ -10,7 +10,7 @@
     :mask-closable="false"
     :body-style="{
       maxHeight: fullscreen ? 'auto' : '500px',
-      overflow: 'hidden',
+      overflow: 'auto',
       paddingBottom: 0
     }"
     :esc-to-close="false"
@@ -66,11 +66,11 @@
         </a-descriptions-item>
       </a-descriptions>
       <div class="logs-content" style="text-align: left">
-        <div class="label">{{
+        <!-- <div class="label">{{
           RevisionWatchStatus.includes(initialStatus?.summaryStatus)
             ? $t('applications.applications.logs.live')
             : $t('applications.applications.instance.log')
-        }}</div>
+        }}</div> -->
         <!-- <revisionLogs
           v-if="RevisionWatchStatus.includes(initialStatus?.summaryStatus)"
           :show="show"

@@ -6,6 +6,7 @@
   import { StatusColor } from '@/views/config';
   import Copy from '@/components/copy/copy-command.vue';
   import ModuleWrapper from '@/components/module-wrapper/index.vue';
+  import testData from './config/test-data.json';
 
   export default defineComponent({
     props: {
@@ -50,6 +51,11 @@
             : '',
           new: JSON.stringify(props.rowData.change?.after, null, 2)
         };
+        // diffContent.value = {
+        //   old: JSON.stringify(testData.old?.computedAttributes, null, 2),
+
+        //   new: JSON.stringify(testData.new?.computedAttributes, null, 2)
+        // };
       };
 
       const handleCheckboxChange = (checked, id) => {
@@ -91,6 +97,7 @@
           >
             <div class={['components-container']}>
               <CodeDiffView
+                bordered={false}
                 content={diffContent.value}
                 v-slots={{
                   leftTitle: diffContent.value.old
