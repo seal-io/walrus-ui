@@ -1,5 +1,6 @@
 <script lang="tsx">
   import _ from 'lodash';
+  import i18n from '@/locale';
   import { defineComponent, PropType, ref, watch, computed } from 'vue';
   import HLBlock from '@/components/highlight-block/index.vue';
 
@@ -27,14 +28,17 @@
     },
     setup(props, ctx) {
       const handleCollapse = (item: DiffCodeItem) => {
-        console.log('handleCollapse=======', item);
         ctx.emit('collapse', item);
       };
       const renderItemChunks = (item) => {
         if (item.collapsed) {
           return (
             <div class="collapse-text" onClick={() => handleCollapse(item)}>
-              <span>... 隐藏 {item.lineCounts} 行，点击展开 ...</span>
+              <span>
+                {i18n.global.t('common.code.hide.tips', {
+                  rows: item.lineCounts
+                })}
+              </span>
             </div>
           );
         }

@@ -76,13 +76,12 @@ export default function useViewLatestLogs(defaultShow?: boolean) {
       revisionDetailId.value = _.get(revisionData.value, 'id') || '';
       initialStatus.value = _.get(revisionData.value, 'status') || {};
       currentServiceInfo.value = row;
-
       nextTick(() => {
         createServiceRevisionChunkRequest();
       });
     } catch (error) {
       // ignore
-      revisionData.value = {};
+      // revisionData.value = {};
     } finally {
       loading.value = false;
     }

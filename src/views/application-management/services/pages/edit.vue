@@ -717,7 +717,6 @@
   };
 
   const doneCallback = () => {
-    console.log('donecallback==============', serviceRes.value);
     if (formData.value.draft) {
       router.back();
       return;
@@ -740,24 +739,6 @@
       return;
     }
     router.back();
-
-    // if (!id) {
-    //   router.replace({
-    //     name: PROJECT.EnvDetail,
-    //     params: {
-    //       projectId: route.params.projectId,
-    //       environmentId: route.params.environmentId,
-    //       action: PageAction.VIEW
-    //     },
-    //     query: {
-    //       id: route.params.environmentId
-    //     }
-    //   });
-    // } else if (props.pgType !== 'page') {
-    //   emits('save');
-    // } else {
-    //   router.back();
-    // }
   };
   const saveCallback = async () => {
     const hiddenFormData = groupForm.value?.getHiddenData();
@@ -783,10 +764,8 @@
         environmentId: route.params.environmentId,
         projectId: route.params.projectId
       };
-      handlePreview();
-    } else {
-      doneCallback();
     }
+    doneCallback();
   };
   const handleOk = async (draft?: boolean) => {
     const res = await formref.value?.validate();
@@ -848,7 +827,6 @@
       if (value === ResourceSaveAction.Preview) {
         formData.value.approvalRequired = true;
         handleOk();
-        // handlePreview();
       }
     }, 100);
   };

@@ -33,6 +33,7 @@
         <a-select
           v-model="queryParams.status"
           style="width: 180px"
+          allow-search
           @clear="handleSearch"
           @change="handleSearch"
         >

@@ -121,7 +121,13 @@ export const latestRunConfig = [
     span: 1
   },
   {
-    label: 'applications.applications.history.deploymentTime',
+    label: 'applications.applications.history.changes',
+    key: 'componentChangeSummary',
+    value: '',
+    span: 1
+  },
+  {
+    label: 'applications.applications.history.execTime',
     key: 'createTime',
     value: '',
     formatter(val) {

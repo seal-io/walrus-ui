@@ -10,6 +10,7 @@
     computed
   } from 'vue';
   import useBasicInfoData from '@/views/application-management/projects/hooks/use-basicInfo-data';
+  import { StatusColor } from '@/views/config';
   import {
     latestRunConfig,
     ProvideServiceInfoKey,
@@ -99,10 +100,41 @@
           ></result-view>
         );
       };
+      const renderChanges = () => {
+        const value = revisionData.value.componentChangeSummary || {};
+
+        return (
+          <div class="data">
+            <span class="add" style={{ color: StatusColor.success.color5 }}>
+              <icon-plus class="m-r-5" />
+              <span>{value?.created}</span>
+            </span>
+            <span class="update" style={{ color: StatusColor.warning.color5 }}>
+              <i class={['icon-wave-sine iconfont m-r-5']}></i>
+              <span>{value?.updated}</span>
+            </span>
+            <span class="delete" style={{ color: StatusColor.error.color5 }}>
+              <icon-minus class="m-r-5" />
+              <span>{value?.deleted}</span>
+            </span>
+          </div>
+        );
+      };
       const renderLatestRun = () => {
         return (
           <div>
-            <BasicInfo data-info={basicDataList.value} cols={2}></BasicInfo>
+            <BasicInfo
+              data-info={basicDataList.value}
+              cols={3}
+              v-slots={{
+                value: ({ data, value }) => {
+                  if (data.key === 'componentChangeSummary') {
+                    return renderChanges();
+                  }
+                  return value;
+                }
+              }}
+            ></BasicInfo>
             <RunDetailModal
               title="Latest Run Details"
               v-model:show={showDetailModal.value}
@@ -121,3 +153,16 @@
     }
   });
 </script>
+
+<style lang="less" scoped>
+  .data {
+    display: flex;
+    align-items: center;
+
+    .add,
+    .update,
+    .delete {
+      margin-right: 10px;
+    }
+  }
+</style>
