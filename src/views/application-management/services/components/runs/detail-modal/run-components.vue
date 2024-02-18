@@ -4,6 +4,7 @@
   import i18n from '@/locale';
   import FilterBox from '@/components/filter-box/index.vue';
   import ComponentList from './component-list.vue';
+  import { RevisionStatus } from '../../../config';
 
   export default defineComponent({
     name: 'RunComponents',
@@ -28,6 +29,13 @@
       });
       const handleSearch = () => {
         console.log('search', query.value);
+      };
+
+      const renderNoChanges = () => {
+        if (props.runData.status?.summaryStatus === RevisionStatus.Planning) {
+          return i18n.global.t('resource.revisons.components.changes');
+        }
+        return i18n.global.t('resource.revisons.components.nochanges');
       };
       return () => (
         <div>
@@ -68,7 +76,7 @@
                             {query.value ? (
                               <icon-find-replace />
                             ) : (
-                              <i class="iconfont icon-kaifazujian"></i>
+                              <icon-subscribe-add />
                             )}
                           </>
                         );
@@ -81,12 +89,7 @@
                               'applications.instance.tab.resource'
                             )
                           })
-                        : i18n.global.t('resource.components.result.title')
-                    }
-                    subtitle={
-                      query.value
-                        ? ' '
-                        : i18n.global.t('resource.components.result.subTitle')
+                        : renderNoChanges()
                     }
                   ></result-view>
                 );

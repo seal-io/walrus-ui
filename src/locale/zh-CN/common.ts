@@ -23,6 +23,7 @@ export default {
   'common.button.retry': '重试',
   'common.button.apply': '应用',
   'common.button.create.now': '立即创建',
+  'common.button.add.now': '立即添加',
   'common.button.refresh': '刷新',
   'common.button.enabled': '启用',
   'common.button.disabled': '禁用',
@@ -83,7 +84,7 @@ export default {
   'common.data.none': '暂无',
   'common.action.none': '无',
   'common.checbox.all': '全选',
-  'common.select.all': '全部',
+  'common.select.all': '全部{type}',
   'common.button.addfile': '添加文件',
   'common.logout.msg': '登出成功',
   'common.button.logout': '登出',
@@ -163,5 +164,7 @@ export default {
   'common.rule.array': '必须为数组格式',
   'common.rule.object': '必须为对象格式',
   'common.rule.syntaxerror': '输入语法有误',
-  'common.code.hide.tips': '... 隐藏 {rows} 行，点击展开 ...'
+  'common.code.hide.tips': '... 隐藏 {rows} 行，点击展开 ...',
+  'common.nodata.created': '尚未创建{type}',
+  'common.nodata.added': '尚未添加{type}'
 };

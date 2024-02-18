@@ -136,6 +136,9 @@
           </template>
         </a-table-column>
       </template>
+      <template #empty>
+        <slot name="empty"></slot>
+      </template>
     </a-table>
   </div>
 </template>

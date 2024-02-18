@@ -259,6 +259,44 @@
             </template>
           </a-table-column>
         </template>
+        <template #empty>
+          <result-view
+            :loading="loading"
+            :title="
+              queryParams.query
+                ? $t('common.result.nodata.title', {
+                    type: $t('applications.workflow.name')
+                  })
+                : $t('project.environment.result.title.type', {
+                    type: $t('applications.workflow.name')
+                  })
+            "
+            :subtitle="
+              queryParams.query ? $t('common.result.nodata.subtitle') : ''
+            "
+          >
+            <template #icon>
+              <icon-find-replace v-if="queryParams.query" />
+              <i v-else class="iconfont icon-pipeline"></i>
+            </template>
+            <template #extra>
+              <a-button
+                v-if="
+                  userStore.hasProjectResourceActions({
+                    projectID,
+                    resource: Resources.Workflows,
+                    actions: [Actions.POST]
+                  })
+                "
+                type="outline"
+                @click="handleCreate"
+                ><icon-plus class="m-r-4" />{{
+                  $t('common.button.create.now')
+                }}</a-button
+              >
+            </template>
+          </result-view>
+        </template>
       </a-table>
       <a-pagination
         size="small"

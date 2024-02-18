@@ -1,5 +1,6 @@
 export default {
   'project.environment.result.title': '该项目尚未创建环境',
+  'project.environment.result.title.type': '该项目尚未创建{type}',
   'project.environment.result.subTitle':
     '环境是资源部署的目标，您可以在此创建环境',
   'project.environment.result.nodata.title': '未找到环境',

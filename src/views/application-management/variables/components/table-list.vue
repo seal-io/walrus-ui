@@ -159,6 +159,38 @@
             </template>
           </a-table-column>
         </template>
+        <template #empty>
+          <result-view
+            :loading="loading"
+            :title="
+              queryParams.query
+                ? $t('common.result.nodata.title', {
+                    type: $t('applications.applications.secret')
+                  })
+                : $t('common.nodata.created', {
+                    type: $t('applications.applications.secret')
+                  })
+            "
+            :subtitle="
+              queryParams.query ? $t('common.result.nodata.subtitle') : ''
+            "
+          >
+            <template #icon>
+              <icon-find-replace v-if="queryParams.query" />
+              <i v-else class="iconfont icon-variable"></i>
+            </template>
+            <template #extra>
+              <a-button
+                v-if="hasPutPermission && !queryParams.query"
+                type="outline"
+                @click="handleCreate"
+                ><icon-plus class="m-r-4" />{{
+                  $t('common.button.create.now')
+                }}</a-button
+              >
+            </template>
+          </result-view>
+        </template>
       </a-table>
       <a-pagination
         size="small"

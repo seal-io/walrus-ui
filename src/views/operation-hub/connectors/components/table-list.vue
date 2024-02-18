@@ -47,18 +47,7 @@
       </template>
       <template #button-group>
         <primaryButtonGroup
-          v-if="
-            route.params.projectId
-              ? userStore.hasProjectResourceActions({
-                  resource: Resources.Connectors,
-                  projectID: route.params.projectId,
-                  actions: [Actions.POST]
-                })
-              : userStore.hasRolesActionsPermission({
-                  resource: Resources.Connectors,
-                  actions: [Actions.POST]
-                })
-          "
+          v-if="hasPutPermission"
           size="medium"
           :actions="connectorTypeList"
           position="br"
@@ -72,18 +61,7 @@
           /></a-button>
         </primaryButtonGroup>
         <a-button
-          v-if="
-            route.params.projectId
-              ? userStore.hasProjectResourceActions({
-                  resource: Resources.Connectors,
-                  projectID: route.params.projectId,
-                  actions: [Actions.DELETE]
-                })
-              : userStore.hasRolesActionsPermission({
-                  resource: Resources.Connectors,
-                  actions: [Actions.DELETE]
-                })
-          "
+          v-if="hasDeletePermission"
           type="primary"
           status="warning"
           :disabled="!selectedKeys.length"
@@ -267,6 +245,45 @@
           </template>
         </a-table-column>
       </template>
+      <template #empty>
+        <result-view
+          :loading="loading"
+          :title="
+            queryParams.query
+              ? $t('common.result.nodata.title', {
+                  type: $t('operation.connectors.table.connector')
+                })
+              : $t('common.nodata.added', {
+                  type: $t('operation.connectors.table.connector')
+                })
+          "
+          :subtitle="
+            queryParams.query ? $t('common.result.nodata.subtitle') : ''
+          "
+        >
+          <template #icon>
+            <icon-find-replace v-if="queryParams.query" />
+            <icon-layers v-else />
+          </template>
+          <template #extra>
+            <primaryButtonGroup
+              v-if="hasPutPermission && !queryParams.query"
+              size="medium"
+              :actions="connectorTypeList"
+              position="br"
+              trigger="hover"
+              item-type="text"
+              @select="(value, item) => handleCreate(value, item)"
+            >
+              <a-button type="outline">
+                <icon-plus style="stroke-width: 5" class="font-14 mright-5" />
+                {{ $t('common.button.create.now')
+                }}<icon-down style="stroke-width: 5" class="font-14 mleft-5"
+              /></a-button>
+            </primaryButtonGroup>
+          </template>
+        </result-view>
+      </template>
     </a-table>
     <a-pagination
       size="small"
@@ -376,6 +393,31 @@
   });
   const dataList = ref<ConnectorRowData[]>([]);
 
+  const hasPutPermission = computed(() => {
+    return projectID
+      ? userStore.hasProjectResourceActions({
+          resource: Resources.Connectors,
+          projectID,
+          actions: [Actions.POST]
+        })
+      : userStore.hasRolesActionsPermission({
+          resource: Resources.Connectors,
+          actions: [Actions.POST]
+        });
+  });
+
+  const hasDeletePermission = computed(() => {
+    return projectID
+      ? userStore.hasProjectResourceActions({
+          resource: Resources.Connectors,
+          projectID,
+          actions: [Actions.DELETE]
+        })
+      : userStore.hasRolesActionsPermission({
+          resource: Resources.Connectors,
+          actions: [Actions.DELETE]
+        });
+  });
   const { updateChunkedList } = useUpdateChunkedList(dataList, {
     filterFun(item) {
       if (props.scope === 'global') {

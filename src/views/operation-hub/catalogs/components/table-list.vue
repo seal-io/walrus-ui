@@ -26,18 +26,7 @@
         </template>
         <template #button-group>
           <a-button
-            v-if="
-              route.params.projectId
-                ? userStore.hasProjectResourceActions({
-                    resource: Resources.Catalogs,
-                    projectID: route.params.projectId,
-                    actions: [Actions.POST]
-                  })
-                : userStore.hasRolesActionsPermission({
-                    resource: Resources.Catalogs,
-                    actions: [Actions.POST]
-                  })
-            "
+            v-if="hasPutPermission"
             type="primary"
             @click="handleCreate"
             >{{ $t('catalogs.list.button.add') }}</a-button
@@ -81,7 +70,40 @@
               :list="dataList"
               @edit="handleEditItem"
               @sort="handleSort"
-            ></ListView>
+            >
+              <template #empty>
+                <result-view
+                  :loading="loading"
+                  :title="
+                    queryParams.query
+                      ? $t('common.result.nodata.title', {
+                          type: $t('catalogs.list.name')
+                        })
+                      : $t('common.nodata.added', {
+                          type: $t('catalogs.list.name')
+                        })
+                  "
+                  :subtitle="
+                    queryParams.query ? $t('common.result.nodata.subtitle') : ''
+                  "
+                >
+                  <template #icon>
+                    <icon-find-replace v-if="queryParams.query" />
+                    <icon-layers v-else />
+                  </template>
+                  <template #extra>
+                    <a-button
+                      v-if="hasPutPermission && !queryParams.query"
+                      type="outline"
+                      @click="handleCreate"
+                      ><icon-plus class="m-r-4" />{{
+                        $t('common.button.add.now')
+                      }}</a-button
+                    >
+                  </template>
+                </result-view>
+              </template>
+            </ListView>
           </a-tab-pane>
         </a-tabs>
       </a-spin>
@@ -156,6 +178,7 @@
   const showModal = ref(false);
   const action = ref(ModalAction.CREATE);
   const dataInfo = ref<any>({});
+  const projectID = route.params.projectId as string;
   const queryParams = reactive({
     query: '',
     page: 1,
@@ -171,6 +194,18 @@
     }
   });
 
+  const hasPutPermission = computed(() => {
+    return projectID
+      ? userStore.hasProjectResourceActions({
+          resource: Resources.Catalogs,
+          projectID,
+          actions: [Actions.POST]
+        })
+      : userStore.hasRolesActionsPermission({
+          resource: Resources.Catalogs,
+          actions: [Actions.POST]
+        });
+  });
   const modalTitle = computed(() => {
     return action.value === ModalAction.CREATE
       ? t('catalogs.list.button.add')

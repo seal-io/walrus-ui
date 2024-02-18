@@ -23,11 +23,11 @@ export const getDashBoardOverview = (params) => {
 };
 
 export const queryApplicationRevisionsChart = (data: RevisionParams) => {
-  return axios.post('/dashboards/_/resource-revision-statistics', data);
+  return axios.post('/dashboards/_/resource-run-statistics', data);
 };
 
 export const queryLatestDeployments = (params) => {
-  return axios.get(`/dashboards/_/latest-resource-revisions`, {
+  return axios.get(`/dashboards/_/latest-resource-runs`, {
     params,
     paramsSerializer: (obj) => {
       return qs.stringify(obj);
