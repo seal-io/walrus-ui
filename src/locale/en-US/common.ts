@@ -27,6 +27,7 @@ export default {
   'common.button.retry': 'Retry',
   'common.button.apply': 'Apply',
   'common.button.create.now': 'Create now',
+  'common.button.add.now': 'Add now',
   'common.button.refresh': 'Refresh',
   'common.button.delete': 'Delete',
   'common.button.create': 'Create',
@@ -85,7 +86,7 @@ export default {
   'common.form.field.select.required': 'required',
   'common.select.option': 'All',
   'common.checbox.all': 'All',
-  'common.select.all': 'All',
+  'common.select.all': 'All {type}',
   'common.data.unkonwn': 'Unknown',
   'common.data.none': 'No Data',
   'common.action.none': 'Not Available',
@@ -167,5 +168,7 @@ export default {
   'common.rule.array': 'should be in array format',
   'common.rule.object': 'should be in object format',
   'common.rule.syntaxerror': 'syntax error',
-  'common.code.hide.tips': '... Hide {rows} lines, click to expand ...'
+  'common.code.hide.tips': '... Hide {rows} lines, click to expand ...',
+  'common.nodata.created': 'No {type} has been created yet',
+  'common.nodata.added': 'No {type} has been added yet'
 };

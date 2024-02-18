@@ -139,7 +139,7 @@
                   return (
                     <span class="id-val">
                       <span class="m-r-5">{value}</span>
-                      <Copy content={value}></Copy>
+                      <Copy content={props.runData.id}></Copy>
                     </span>
                   );
                 }

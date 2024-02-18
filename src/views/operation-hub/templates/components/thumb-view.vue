@@ -19,7 +19,7 @@
         ></templateItem>
       </a-grid-item>
     </a-grid>
-    <a-empty v-else></a-empty>
+    <slot v-else name="empty"></slot>
   </div>
 </template>
 

@@ -52,36 +52,14 @@
             <span>{{ $t('operation.templates.button.gpt') }}</span>
           </a-button>
           <a-button
-            v-if="
-              route.params.projectId
-                ? userStore.hasProjectResourceActions({
-                    resource: Resources.Templates,
-                    projectID: route.params.projectId,
-                    actions: [Actions.POST]
-                  })
-                : userStore.hasRolesActionsPermission({
-                    resource: Resources.Templates,
-                    actions: [Actions.POST]
-                  })
-            "
+            v-if="hasPutPermission"
             type="primary"
             @click="handleCreate"
             >{{ $t('operation.templates.detail.add') }}</a-button
           >
 
           <a-button
-            v-if="
-              route.params.projectId
-                ? userStore.hasProjectResourceActions({
-                    resource: Resources.Templates,
-                    projectID: route.params.projectId,
-                    actions: [Actions.DELETE]
-                  })
-                : userStore.hasRolesActionsPermission({
-                    resource: Resources.Templates,
-                    actions: [Actions.DELETE]
-                  })
-            "
+            v-if="hasDeletePermission"
             type="primary"
             status="warning"
             :disabled="!selectedKeys.length"
@@ -96,18 +74,7 @@
       <div class="pagination">
         <a-space class="sort" :size="20">
           <a-checkbox
-            v-if="
-              route.params.projectId
-                ? userStore.hasProjectResourceActions({
-                    resource: Resources.Templates,
-                    projectID: route.params.projectId,
-                    actions: [Actions.DELETE]
-                  })
-                : userStore.hasRolesActionsPermission({
-                    resource: Resources.Templates,
-                    actions: [Actions.DELETE]
-                  })
-            "
+            v-if="hasDeletePermission"
             :model-value="
               selectedKeys.length >= dataList.length && dataList.length > 0
             "
@@ -154,24 +121,47 @@
           <a-tab-pane key="thumb">
             <ThumbView
               :scope="scope"
+              :loading="loading"
               :list="dataList"
               :catalog-list="catalogList"
               :checked-list="selectedKeys"
-              :show-checkbox="
-                route.params.projectId
-                  ? userStore.hasProjectResourceActions({
-                      resource: Resources.Templates,
-                      projectID: route.params.projectId,
-                      actions: [Actions.DELETE]
-                    })
-                  : userStore.hasRolesActionsPermission({
-                      resource: Resources.Templates,
-                      actions: [Actions.DELETE]
-                    })
-              "
+              :show-checkbox="hasDeletePermission"
               @delete="handleCallDelete"
               @change="handleCheckChange"
-            ></ThumbView>
+            >
+              <template #empty>
+                <result-view
+                  :loading="loading"
+                  :title="
+                    queryParams.query
+                      ? $t('common.result.nodata.title', {
+                          type: $t('operation.templates.table.name')
+                        })
+                      : $t('common.nodata.created', {
+                          type: $t('operation.templates.table.name')
+                        })
+                  "
+                  :subtitle="
+                    queryParams.query ? $t('common.result.nodata.subtitle') : ''
+                  "
+                >
+                  <template #icon>
+                    <icon-find-replace v-if="queryParams.query" />
+                    <icon-layers v-else />
+                  </template>
+                  <template #extra>
+                    <a-button
+                      v-if="hasPutPermission && !queryParams.query"
+                      type="outline"
+                      @click="handleCreate"
+                      ><icon-plus class="m-r-4" />{{
+                        $t('common.button.create.now')
+                      }}</a-button
+                    >
+                  </template>
+                </result-view>
+              </template>
+            </ThumbView>
           </a-tab-pane>
         </a-tabs>
       </a-spin>
@@ -236,6 +226,7 @@
   >([]);
   const listViewRef = ref();
   const total = ref(0);
+  const projectID = route.params.projectId as string;
   const queryParams = reactive({
     query: '',
     catalogID: '',
@@ -244,6 +235,31 @@
     perPage: appStore.perPage || 20
   });
 
+  const hasPutPermission = computed(() => {
+    return projectID
+      ? userStore.hasProjectResourceActions({
+          resource: Resources.Templates,
+          projectID,
+          actions: [Actions.POST]
+        })
+      : userStore.hasRolesActionsPermission({
+          resource: Resources.Templates,
+          actions: [Actions.POST]
+        });
+  });
+
+  const hasDeletePermission = computed(() => {
+    return projectID
+      ? userStore.hasProjectResourceActions({
+          resource: Resources.Templates,
+          projectID,
+          actions: [Actions.DELETE]
+        })
+      : userStore.hasRolesActionsPermission({
+          resource: Resources.Templates,
+          actions: [Actions.DELETE]
+        });
+  });
   const catalogList = computed(() => {
     return [
       ...catalogs.value,

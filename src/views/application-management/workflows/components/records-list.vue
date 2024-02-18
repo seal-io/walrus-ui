@@ -146,6 +146,20 @@
           </template>
         </a-table-column>
       </template>
+      <template #empty>
+        <result-view
+          :loading="loading"
+          :title="
+            $t('common.result.nodata.title', {
+              type: $t('workflow.stage.records')
+            })
+          "
+        >
+          <template #icon>
+            <icon-find-replace />
+          </template>
+        </result-view>
+      </template>
     </a-table>
     <a-pagination
       size="small"

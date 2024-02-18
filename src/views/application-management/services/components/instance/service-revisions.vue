@@ -21,7 +21,10 @@
           @clear="handleSearch"
           @change="handleSearch"
         >
-          <a-option value="" :label="$t('common.select.all')"></a-option>
+          <a-option
+            value=""
+            :label="$t('resource.revisons.filter.types')"
+          ></a-option>
           <a-option
             v-for="item in _.keys(RevisionTypes)"
             :key="item"
@@ -37,7 +40,10 @@
           @clear="handleSearch"
           @change="handleSearch"
         >
-          <a-option value="" :label="$t('common.select.all')"></a-option>
+          <a-option
+            value=""
+            :label="$t('resource.revisons.filter.status')"
+          ></a-option>
           <a-option
             v-for="item in _.keys(RevisionStatus)"
             :key="item"
@@ -147,6 +153,7 @@
               :status="{
                 status: record.status?.summaryStatus,
                 text: record.status?.summaryStatus,
+                inactive: record.status?.inactive,
                 message: record.status?.summaryStatusMessage,
                 transitioning: record.status?.transitioning,
                 error: record.status?.error

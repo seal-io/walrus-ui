@@ -213,9 +213,13 @@ export default {
     'Configure ports in the template, and the access address will be automatically generated after deployment.',
   'resource.outputs.result.title': 'No outputs generated yet',
   'resource.outputs.result.subTitle': '',
-  'resource.revisions.result.title': 'No revisions created yet',
+  'resource.revisions.result.title': 'No run created yet',
   'resource.revisions.result.subTitle':
-    'Each deployment will generate a version, and the latest version cannot be deleted.',
+    'Each deployment will generate a run, and the latest run cannot be deleted.',
   'resource.revisons.detail.components': 'Components Changes',
-  'resource.revisons.detail.attributes': 'Configuration'
+  'resource.revisons.detail.attributes': 'Configuration',
+  'resource.revisons.filter.types': 'All Types',
+  'resource.revisons.filter.status': 'All Statuses',
+  'resource.revisons.components.changes': 'The task is running with no changes',
+  'resource.revisons.components.nochanges': 'No any changes'
 };

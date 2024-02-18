@@ -33,7 +33,7 @@
       const renderStaticLogs = () => {
         return (
           <div>
-            {props.runData?.planRecord ? (
+            {props.runData?.planRecord && !props.runData?.record ? (
               <>
                 <div class="title">
                   <i class="iconfont icon-rizhi"></i> <span>Planned Logs</span>
@@ -47,9 +47,6 @@
             ) : null}
             {props.runData?.record ? (
               <>
-                <div class="title">
-                  <i class="iconfont icon-rizhi"></i> <span>Apply Logs</span>
-                </div>
                 <StaticLogs
                   maxHeight={maxHeight.value}
                   record={props.runData?.record}
