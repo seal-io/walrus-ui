@@ -166,5 +166,6 @@ export default {
   'common.result.nodata.title': '{type} not found',
   'common.rule.array': 'should be in array format',
   'common.rule.object': 'should be in object format',
-  'common.rule.syntaxerror': 'syntax error'
+  'common.rule.syntaxerror': 'syntax error',
+  'common.code.hide.tips': '... Hide {rows} lines, click to expand ...'
 };

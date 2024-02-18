@@ -142,12 +142,14 @@
               </div>
             </a-tab-pane>
             <a-tab-pane key="history">
-              <a-alert
-                class="m-t-10"
-                style={{ color: 'var(--color-text-3)', textAlign: 'left' }}
-              >
-                {i18n.global.t('applications.applications.history.diff.same')}
-              </a-alert>
+              {_.isEqual(diffContent.value.old, diffContent.value.new) ? (
+                <a-alert
+                  class="m-t-10"
+                  style={{ color: 'var(--color-text-3)', textAlign: 'left' }}
+                >
+                  {i18n.global.t('applications.applications.history.diff.same')}
+                </a-alert>
+              ) : null}
               <a-spin loading={loading.value} style={{ width: '100%' }}>
                 <CodeDiffView
                   content={diffContent.value}
