@@ -55,7 +55,16 @@
             key="components"
             :title="$t('resource.revisons.detail.components')"
           >
-            <runComponents :run-data="basicData"></runComponents>
+            <a-spin
+              v-if="basicData.status?.summaryStatus === RevisionStatus.Planning"
+              dot
+              :tip="$t('resource.revisons.components.planning')"
+            />
+            <runComponents
+              v-else
+              :run-data="basicData"
+              :loading="loading"
+            ></runComponents>
           </a-tab-pane>
           <a-tab-pane
             key="attributes"
@@ -93,6 +102,7 @@
   import runAttributes from './run-attributes.vue';
   import runComponents from './run-components.vue';
   import runLogs from './run-logs.vue';
+  import { RevisionStatus } from '../../../config';
 
   const props = defineProps({
     show: {
@@ -123,7 +133,7 @@
   const basicData = ref<any>({});
   const emit = defineEmits(['save', 'update:show', 'update:data']);
   const loading = ref(false);
-  const activeKey = ref('logs');
+  const activeKey = ref('components');
   const fullscreen = ref(false);
   let axiosChunkToken: any = null;
   let axiosRunDetailToken: any = null;

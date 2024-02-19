@@ -268,30 +268,30 @@
       <EditPageFooter>
         <template #save>
           <div>
-            <GroupButtonMenu
+            <a-popconfirm
+              position="left"
               trigger="hover"
-              :loading="submitLoading"
-              :actions="actionList"
-              @select="handleActionSelect"
+              content-class="deploy-comment-popup"
             >
-              <template #default>
-                <a-popconfirm
-                  position="tr"
-                  trigger="hover"
-                  content-class="deploy-comment-popup"
-                >
-                  <template #icon>
-                    <span></span>
-                  </template>
-                  <template #content>
-                    <seal-textarea
-                      v-model="formData.changeComment"
-                      :label="$t('common.table.mark')"
-                      allow-clear
-                      style="width: 300px"
-                      :auto-size="{ minRows: 2, maxRows: 4 }"
-                    ></seal-textarea>
-                  </template>
+              <template #icon>
+                <span></span>
+              </template>
+              <template #content>
+                <seal-textarea
+                  v-model="formData.changeComment"
+                  :label="$t('common.table.mark')"
+                  allow-clear
+                  style="width: 300px"
+                  :auto-size="{ minRows: 2, maxRows: 4 }"
+                ></seal-textarea>
+              </template>
+              <GroupButtonMenu
+                trigger="hover"
+                :loading="submitLoading"
+                :actions="actionList"
+                @select="handleActionSelect"
+              >
+                <template #default>
                   <a-button
                     :loading="submitLoading"
                     type="primary"
@@ -299,9 +299,9 @@
                   >
                     {{ $t(_.get(_.head(SaveActions), 'label') || '') }}
                   </a-button>
-                </a-popconfirm>
-              </template>
-            </GroupButtonMenu>
+                </template>
+              </GroupButtonMenu>
+            </a-popconfirm>
             <!-- <a-popconfirm
               v-else
               position="tr"

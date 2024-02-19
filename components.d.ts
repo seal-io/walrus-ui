@@ -25,13 +25,11 @@ declare module 'vue' {
     AGridItem: typeof import('@arco-design/web-vue')['GridItem'];
     AIcon: typeof import('@arco-design/web-vue')['Icon'];
     AInput: typeof import('@arco-design/web-vue')['Input'];
-    AInputGroup: typeof import('@arco-design/web-vue')['InputGroup'];
     AInputNumber: typeof import('@arco-design/web-vue')['InputNumber'];
     AInputPassword: typeof import('@arco-design/web-vue')['InputPassword'];
     AInputSearch: typeof import('@arco-design/web-vue')['InputSearch'];
     ALayout: typeof import('@arco-design/web-vue')['Layout'];
     ALayoutContent: typeof import('@arco-design/web-vue')['LayoutContent'];
-    ALayoutFooter: typeof import('@arco-design/web-vue')['LayoutFooter'];
     ALayoutSider: typeof import('@arco-design/web-vue')['LayoutSider'];
     ALink: typeof import('@arco-design/web-vue')['Link'];
     AList: typeof import('@arco-design/web-vue')['List'];
@@ -56,6 +54,7 @@ declare module 'vue' {
     ATableColumn: typeof import('@arco-design/web-vue')['TableColumn'];
     ATabPane: typeof import('@arco-design/web-vue')['TabPane'];
     ATabs: typeof import('@arco-design/web-vue')['Tabs'];
+    ATag: typeof import('@arco-design/web-vue')['Tag'];
     ATextarea: typeof import('@arco-design/web-vue')['Textarea'];
     ATooltip: typeof import('@arco-design/web-vue')['Tooltip'];
     ATypographyParagraph: typeof import('@arco-design/web-vue')['TypographyParagraph'];

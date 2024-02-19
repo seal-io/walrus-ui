@@ -221,5 +221,8 @@ export default {
   'resource.revisons.filter.types': 'All Types',
   'resource.revisons.filter.status': 'All Statuses',
   'resource.revisons.components.changes': 'The task is running with no changes',
-  'resource.revisons.components.nochanges': 'No any changes'
+  'resource.revisons.components.nochanges': 'No any changes',
+  'resource.revisons.components.beforeChange': 'Before Change',
+  'resource.revisons.components.afterChange': 'After Change',
+  'resource.revisons.components.planning': 'The task is running...'
 };

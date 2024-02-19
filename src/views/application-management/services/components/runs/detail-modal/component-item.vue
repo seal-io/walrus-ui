@@ -1,5 +1,6 @@
 <script lang="tsx">
   import _ from 'lodash';
+  import i18n from '@/locale';
   import { defineComponent, ref, withModifiers } from 'vue';
   import Autotip from '@arco-design/web-vue/es/_components/auto-tooltip/auto-tooltip';
   import CodeDiffView from '@/components/code-diff-view/index.vue';
@@ -76,10 +77,10 @@
         }
       };
 
-      const renderCopyButton = (data) => {
+      const renderCopyButton = (text, data) => {
         return (
           <div class="title">
-            <span></span>
+            <span>{text}</span>
             <Copy content={data}></Copy>
           </div>
         );
@@ -102,12 +103,22 @@
                 v-slots={{
                   leftTitle: diffContent.value.old
                     ? () => {
-                        return renderCopyButton(diffContent.value.old);
+                        return renderCopyButton(
+                          i18n.global.t(
+                            'resource.revisons.components.beforeChange'
+                          ),
+                          diffContent.value.old
+                        );
                       }
                     : null,
                   rightTitle: diffContent.value.new
                     ? () => {
-                        return renderCopyButton(diffContent.value.new);
+                        return renderCopyButton(
+                          i18n.global.t(
+                            'resource.revisons.components.afterChange'
+                          ),
+                          diffContent.value.new
+                        );
                       }
                     : null
                 }}
@@ -153,7 +164,7 @@
         const changeType = props.rowData.changeType as string;
         if (changeType === 'update') {
           return (
-            <a-link
+            <a-tag
               type="outline"
               size="small"
               class="change-type"
@@ -166,12 +177,12 @@
               }}
             >
               <i class="iconfont icon-wave-sine m-r-5"></i>Update
-            </a-link>
+            </a-tag>
           );
         }
         if (changeType === 'remove') {
           return (
-            <a-link
+            <a-tag
               type="outline"
               size="small"
               class="change-type"
@@ -185,11 +196,11 @@
             >
               <icon-minus class="m-r-5" />
               Delete
-            </a-link>
+            </a-tag>
           );
         }
         return (
-          <a-link
+          <a-tag
             type="outline"
             size="small"
             class="change-type"
@@ -203,7 +214,7 @@
           >
             <icon-plus class="m-r-5" />
             Add
-          </a-link>
+          </a-tag>
         );
       };
       return () => (
