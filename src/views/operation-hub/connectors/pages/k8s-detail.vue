@@ -475,7 +475,7 @@
             top: 0;
             right: 16px;
             padding: 4px 0;
-            background-color: #fff;
+            background-color: var(--color-white);
           }
         }
       }

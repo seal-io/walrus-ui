@@ -155,19 +155,19 @@
     .wrap {
       padding: 5px 0 5px 10px;
       overflow: auto;
-      background-color: #181d28;
+      background-color: var(--color-logs-bg);
       border-radius: var(--border-radius-small);
 
       .content {
-        color: #ddd;
-        font-size: var(--font-size-small);
-        line-height: 22px;
-        white-space: pre-wrap;
-        background-color: #181d28;
-
         &.line-break {
           word-wrap: break-word;
         }
+        overflow: auto;
+        color: var(--color-logs-text);
+        font-size: var(--font-size-small);
+        line-height: 22px;
+        white-space: pre-wrap;
+        background-color: var(--color-logs-bg);
       }
     }
   }

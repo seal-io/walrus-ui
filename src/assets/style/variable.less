@@ -5,7 +5,7 @@ body {
   --seal-color-bg-3: #fdddc3;
   --seal-color-text-1: rgba(255, 255, 255, 0.6);
   --seal-color-text-6: #86909c;
-  --seal-active-text: #fff;
+  --seal-active-text: var(--color-white);
   --seal-border-gray: #f2f3f5;
   --seal-border-gray-2: #eaecee;
   // --seal-border-gray-2: #e5e6eb;
@@ -14,7 +14,7 @@ body {
   --seal-color-warning: #f7b357;
   --seal-color-warning-1: 247, 179, 87;
   --seal-color-error: rgb(var(--red-6));
-  --seal-color-mark: #fff3e8;
+  --seal-color-mark: var(--color-white) 3e8;
   --page-rest-value: '160px';
   --seal-color-bg: rgba(230, 244, 254, 0.5);
   --seal-color-success: #00bf72;
@@ -62,6 +62,14 @@ body {
   --font-weight-medium: 500;
   --font-weight-regular: 400;
   --font-weight-bold: 700;
+
+  // logs style
+  --color-logs-bg: #181d28;
+  --color-logs-text: #ddd;
+
+  // page header icon color
+  --color-header-icon: rgb(var(--arcoblue-5));
+
   // input
   .arco-input-wrapper,
   .arco-select-view-single,
@@ -69,12 +77,12 @@ body {
   .arco-picker,
   .arco-textarea-wrapper {
     font-size: var(--font-size-small);
-    background-color: #fff;
+    background-color: var(--color-white);
     border: 1px solid var(--color-border-2);
     transition: all 0.2s;
 
     &.border-less {
-      border: 1px solid #fff;
+      border: 1px solid var(--color-white);
     }
   }
 
@@ -91,7 +99,7 @@ body {
   .arco-select-view-single:not(.arco-select-view-disabled):hover,
   .arco-select-view-multiple:not(.arco-select-view-disabled):hover,
   .arco-textarea-wrapper:not(.arco-textarea-disabled):hover {
-    background-color: #fff;
+    background-color: var(--color-white);
     border: 1px solid var(--color-primary-light-2);
     box-shadow: 0 0 2px 0 var(--color-primary-light-2);
     transition: all 0.2s;
@@ -103,7 +111,7 @@ body {
       .arco-select-view-single:not(.arco-select-view-disabled),
       .arco-select-view-multiple:not(.arco-select-view-disabled),
       .arco-textarea-wrapper:not(.arco-textarea-disabled) {
-        background-color: #fff;
+        background-color: var(--color-white);
         border: 1px solid var(--color-primary-light-2);
         box-shadow: 0 0 2px 0 var(--color-primary-light-2);
         transition: all 0.2s;
@@ -126,7 +134,7 @@ body {
   }
 
   .arco-picker:hover {
-    background-color: #fff;
+    background-color: var(--color-white);
     border: 1px solid var(--color-primary-light-2);
     box-shadow: 0 0 2px 0 var(--color-primary-light-2);
     transition: all 0.2s;
@@ -154,6 +162,39 @@ body {
       background-color: var(--color-bg-2);
       border-color: rgb(var(--primary-6));
       box-shadow: 0 0 0 0 var(--color-primary-light-2);
+    }
+  }
+}
+
+html[color-theme='dark'] {
+  filter: invert(85%) hue-rotate(180deg);
+
+  body {
+    // logs style
+    --color-logs-bg: rgb(242, 243, 245);
+    --color-logs-text: var(--color-text-3);
+
+    // page header icon color
+    --color-header-icon: rgb(var(--arcoblue-6));
+
+    img,
+    .logo,
+    .logo-wrapper,
+    .iconfont,
+    .arco-icon,
+    svg {
+      filter: invert(100%) hue-rotate(180deg);
+    }
+    // no revert selectors
+    a,
+    .arco-link,
+    button,
+    .arco-btn,
+    .arco-btn-group,
+    .arco-tabs-nav-ink,
+    .arco-tabs-tab-active,
+    .tag {
+      filter: invert(100%) hue-rotate(180deg);
     }
   }
 }

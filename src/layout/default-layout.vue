@@ -153,11 +153,11 @@
       .arco-menu-item {
         &:hover {
           color: rgb(var(--arcoblue-6));
-          background-color: #fff;
+          background-color: var(--color-white);
         }
 
         &.arco-menu-selected {
-          color: #fff;
+          color: var(--color-white);
           background-color: rgba(var(--arcoblue-6), 1);
         }
       }
@@ -170,7 +170,7 @@
     left: 0;
     z-index: 1001;
     height: 100%;
-    background-color: #fff;
+    background-color: var(--color-white);
     transition: all 0.2s cubic-bezier(0.34, 0.69, 0.1, 1);
 
     .logo-wrapper {
@@ -238,7 +238,7 @@
   }
 
   .arco-layout-footer {
-    background-color: #fff;
+    background-color: var(--color-white);
   }
 
   .layout-content {
@@ -246,11 +246,11 @@
     min-height: 100vh;
     overflow-y: hidden;
     font-size: 0;
-    background-color: #fff;
+    background-color: var(--color-white);
     transition: padding 0.2s cubic-bezier(0.34, 0.69, 0.1, 1);
 
     .page-content-wrap {
-      background-color: #fff;
+      background-color: var(--color-white);
       border-radius: var(--border-radius-small);
     }
   }

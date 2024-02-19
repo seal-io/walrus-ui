@@ -14,7 +14,10 @@
         <template #icon>
           <i
             class="iconfont icon-pipeline"
-            style="color: #fff; background-color: rgb(var(--arcoblue-5))"
+            style="
+              color: var(--color-white);
+              background-color: rgb(var(--arcoblue-5));
+            "
           ></i>
         </template>
         <template #title>

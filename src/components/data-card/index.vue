@@ -15,7 +15,7 @@
     bgColor: {
       type: String,
       default() {
-        return '#fff';
+        return 'var(--color-white)';
       }
     }
   });

@@ -452,7 +452,7 @@
       align-items: center;
       justify-content: space-between;
       padding: 10px;
-      background-color: #fff;
+      background-color: var(--color-white);
       border: 1px solid var(--color-border-2);
       border-bottom: 0;
       border-radius: var(--border-radius-small) var(--border-radius-small) 0 0;
@@ -473,7 +473,7 @@
       flex: 1;
       padding: 10px;
       overflow: auto;
-      background-color: #fff;
+      background-color: var(--color-white);
       border: 1px solid var(--color-border-2);
       border-radius: 0 0 var(--border-radius-small) var(--border-radius-small);
 

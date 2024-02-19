@@ -151,7 +151,7 @@
     height: 220px;
     padding: 10px;
     overflow: hidden;
-    background-color: #fff;
+    background-color: var(--color-white);
     .thumbCard();
 
     &:hover {
@@ -183,7 +183,7 @@
       .icon-wrap {
         display: flex;
         padding: 0;
-        background-color: #fff;
+        background-color: var(--color-white);
       }
 
       :deep(.arco-icon) {

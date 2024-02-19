@@ -422,7 +422,7 @@
       border: none !important;
 
       .arco-table .arco-table-tr .arco-table-th {
-        background-color: #fff;
+        background-color: var(--color-white);
         border-bottom: 1px solid var(--color-border-2);
       }
 

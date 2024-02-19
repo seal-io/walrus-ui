@@ -252,7 +252,7 @@ export const defaultCombo = {
     lineWidth: 1.2,
     fill: 'transparent',
     lineDash: [6, 6],
-    shadowColor: '#fff'
+    shadowColor: 'var(--color-white)'
   },
   labelCfg: {
     refY: -20,

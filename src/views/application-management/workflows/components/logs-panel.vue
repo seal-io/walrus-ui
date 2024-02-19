@@ -181,7 +181,7 @@
     bottom: 0;
     left: 0;
     z-index: 3000;
-    background-color: #fff;
+    background-color: var(--color-white);
     border: 1px solid var(--color-border-2);
 
     :deep(.arco-tabs) {
@@ -190,7 +190,7 @@
       }
 
       .arco-tabs-content {
-        background-color: #fff;
+        background-color: var(--color-white);
       }
 
       .arco-tabs-tab {
@@ -199,7 +199,7 @@
       }
 
       .arco-tabs-tab-active {
-        background-color: #fff;
+        background-color: var(--color-white);
       }
     }
   }

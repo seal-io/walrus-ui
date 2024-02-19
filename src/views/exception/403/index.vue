@@ -39,7 +39,7 @@
 <style scoped lang="less">
   .content-wrap {
     height: calc(100vh - 48px);
-    background-color: #fff;
+    background-color: var(--color-white);
   }
 
   .content {

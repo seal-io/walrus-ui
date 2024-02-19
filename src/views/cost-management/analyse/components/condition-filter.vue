@@ -324,7 +324,7 @@
     }
 
     .readonly-view-label.bg {
-      background-color: #fff;
+      background-color: var(--color-white);
       border-radius: var(--border-radius-small);
     }
 

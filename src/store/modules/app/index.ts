@@ -24,14 +24,13 @@ const useAppStore = defineStore('app', {
 
     // Change theme color
     toggleTheme(dark: boolean) {
-      // if (dark) {
-      //   this.theme = 'dark';
-      //   document.body.setAttribute('arco-theme', 'dark');
-      // } else {
-      //   this.theme = 'light';
-      //   document.body.removeAttribute('arco-theme');
-      // }
-      document.body.removeAttribute('arco-theme');
+      if (dark) {
+        this.theme = 'dark';
+        document.documentElement.setAttribute('color-theme', 'dark');
+      } else {
+        this.theme = 'light';
+        document.documentElement.removeAttribute('color-theme');
+      }
     },
     toggleDevice(device: string) {
       this.device = device;

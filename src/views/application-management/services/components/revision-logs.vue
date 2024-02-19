@@ -109,9 +109,9 @@
       max-height: 360px;
       padding: 0 10px;
       overflow-y: auto;
-      color: #ddd;
+      color: var(--color-logs-text);
       white-space: pre-wrap;
-      background-color: #181d28;
+      background-color: var(--color-logs-bg);
       border: 1px solid var(--color-border-2);
       border-radius: var(--border-radius-small);
 

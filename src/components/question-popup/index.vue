@@ -68,7 +68,7 @@
       const renderHelpList = () => {
         if (props.link.length > 1) {
           <a-tooltip
-            background-color="#fff"
+            background-color="var(--color-white)"
             position="bottom"
             content-style={{
               border: '1px solid var(--color-border-1)',

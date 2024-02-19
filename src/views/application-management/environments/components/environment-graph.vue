@@ -215,7 +215,7 @@
       width: 0;
       height: @boxHeight;
       overflow: hidden;
-      background-color: #fff;
+      background-color: var(--color-white);
       border-radius: var(--border-radius-small);
       transition: all 0.3s var(--seal-transition-func);
 
@@ -229,7 +229,7 @@
       .title {
         width: @boxWidth;
         padding: 8px 10px;
-        color: #fff;
+        color: var(--color-white);
         background-color: rgba(var(--arcoblue-6), 0.9);
       }
 

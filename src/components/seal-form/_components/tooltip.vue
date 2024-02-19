@@ -25,7 +25,7 @@
                             href={attrs.doc?.url}
                             class="m-l-2"
                             target="_blank"
-                            style="background-color: #fff"
+                            style="background-color: var(--color-white)"
                           >
                             {i18n.global.t('common.docs.link.tips')}
                           </a-link>

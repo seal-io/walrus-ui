@@ -1,6 +1,5 @@
 <script lang="tsx">
   import _ from 'lodash';
-  import { Resources, Actions } from '@/permissions/config';
   import { PROJECT } from '@/router/config';
   import { defineComponent, ref, h, compile, computed } from 'vue';
   import useCallCommon from '@/hooks/use-call-common';
@@ -10,8 +9,7 @@
   import {
     useAppVersion,
     showVersionModal,
-    versionData,
-    getVersion
+    versionData
   } from '@/hooks/fetch-app-version';
 
   import {
@@ -25,8 +23,8 @@
   import useListenerRouteChange from '@/hooks/use-listener-route-change';
   import { listenerRouteChange } from '@/utils/route-listener';
   import useLocale from '@/hooks/locale';
-  import { PageAction } from '@/views/config';
   import useEnterApplication from '@/views/hooks/use-enter-application';
+  import { useDark, useToggle } from '@vueuse/core';
   import { profileMenu, avatarMenu } from './config';
 
   export default defineComponent({
@@ -45,6 +43,19 @@
       const permission = usePermission();
       const execListenerRouteChange = useListenerRouteChange();
       const versionInfo = ref({});
+
+      const isDark = useDark({
+        selector: 'html',
+        attribute: 'color-theme',
+        valueDark: 'dark',
+        valueLight: 'light',
+        storageKey: 'color-theme',
+        onChanged(dark: boolean) {
+          // overridded default behavior
+          appStore.toggleTheme(dark);
+        }
+      });
+      const toggleTheme = useToggle(isDark);
 
       // listener to  route change
       execListenerRouteChange();
@@ -384,6 +395,21 @@
               <div>
                 <div class="tools">{renderUserMenu(profileMenu)}</div>
                 <div class="account">{renderUserMenu(avatarMenu)}</div>
+                <div class="flex flex-center">
+                  <a-switch
+                    onChange={toggleTheme}
+                    v-model={isDark.value}
+                    checked-color="#000"
+                    v-slots={{
+                      'checked-icon': () => (
+                        <icon-moon style={{ fontSize: '16px' }} />
+                      ),
+                      'unchecked-icon': () => (
+                        <icon-sun style={{ fontSize: '16px' }} />
+                      )
+                    }}
+                  ></a-switch>
+                </div>
               </div>
             </div>
           </a-menu>

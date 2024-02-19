@@ -84,7 +84,7 @@
     // display: flex;
     // align-items: center;
     // justify-content: center;
-    background-color: #fff;
+    background-color: var(--color-white);
 
     .box {
     }

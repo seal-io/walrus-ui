@@ -85,7 +85,7 @@
       justify-content: space-between;
       width: 100%;
       padding-left: var(--card-content-padding);
-      background-color: #fff;
+      background-color: var(--color-white);
       border-radius: 24px 0 0 0;
     }
 

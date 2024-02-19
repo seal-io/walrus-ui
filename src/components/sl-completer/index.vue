@@ -234,7 +234,7 @@
     }
 
     .complete-item-active {
-      color: #fff;
+      color: var(--color-white);
       background-color: rgb(64, 128, 255);
     }
 

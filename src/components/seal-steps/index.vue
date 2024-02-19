@@ -54,7 +54,7 @@
       border-radius: var(--border-radius-mini);
 
       &.Ready {
-        color: #fff;
+        color: var(--color-white);
         // background-color: rgba(var(--green-6), 0.7);
 
         // &::after {
@@ -63,7 +63,7 @@
       }
 
       &.Error {
-        color: #fff;
+        color: var(--color-white);
         // background-color: rgba(var(--red-6), 0.7);
 
         // &::after {
@@ -72,7 +72,7 @@
       }
 
       &.Running {
-        color: #fff;
+        color: var(--color-white);
         // background-color: rgb(251, 222, 55);
 
         // &::after {
@@ -81,7 +81,7 @@
       }
 
       &.Pending {
-        color: #fff;
+        color: var(--color-white);
         // background-color: rgba(var(--gray-4), 0.9);
 
         // &::after {

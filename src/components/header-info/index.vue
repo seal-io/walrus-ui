@@ -53,7 +53,7 @@
     align-items: center;
     min-height: 112px;
     padding: 16px var(--card-content-padding);
-    background-color: #fff;
+    background-color: var(--color-white);
     border-radius: var(--border-radius-small);
 
     &.top-gap {
@@ -72,7 +72,7 @@
         background-color: transparent;
 
         :deep(.iconfont) {
-          color: rgb(var(--arcoblue-5));
+          color: var(--color-header-icon);
           font-size: 42px;
           background-color: transparent;
           // box-shadow: 0 0 16px 2px rgb(var(--arcoblue-4));
@@ -85,7 +85,7 @@
           justify-content: center;
           width: 56px;
           height: 56px;
-          color: #fff;
+          color: var(--color-white);
           background-color: rgb(var(--arcoblue-5));
           border-radius: 50%;
 

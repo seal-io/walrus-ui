@@ -6,6 +6,16 @@
   :deep(.arco-menu-inner) {
     padding: 0 0 4px 0;
 
+    .arco-switch-checked .arco-switch-handle {
+      color: var(--color-text-3);
+      background-color: transparent;
+
+      .arco-switch-handle-icon {
+        display: flex;
+        align-items: center;
+      }
+    }
+
     .arco-icon {
       margin-right: 0;
       font-size: 0;
@@ -27,13 +37,13 @@
       border-radius: 0;
 
       &:hover {
-        background-color: #fff;
+        background-color: var(--color-white);
         border-radius: var(--border-radius-small) 0 0 var(--border-radius-small);
         transition: background-color 0.2s;
       }
 
       &.arco-menu-selected {
-        background-color: #fff;
+        background-color: var(--color-white);
         border-radius: var(--border-radius-small) 0 0 var(--border-radius-small);
 
         // &::after {
@@ -82,13 +92,13 @@
       }
 
       &:hover {
-        background-color: #fff;
+        background-color: var(--color-white);
         border-radius: var(--border-radius-small) 0 0 var(--border-radius-small);
         transition: background-color 0.2s;
       }
 
       &.arco-menu-selected {
-        background-color: #fff;
+        background-color: var(--color-white);
         border-radius: var(--border-radius-small) 0 0 var(--border-radius-small);
 
         // &::after {

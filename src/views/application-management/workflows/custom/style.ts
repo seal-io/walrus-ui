@@ -13,7 +13,7 @@ export const setPipelineNodeStyle = (size) => {
         width:  24px;
         height: 24px;
         padding: 1px;
-        background-color: #fff;
+        background-color: var(--color-white);
         border-radius: 50%;
       }
       .user {
@@ -25,7 +25,7 @@ export const setPipelineNodeStyle = (size) => {
         box-shadow: 0px 0px 4px 0px rgba(var(--gray-5), 60%);
         align-items: center;
         justify-content: center;
-        color: #fff;
+        color: var(--color-white);
         font-size: 12px;
         .text {
           transform: scale(0.85);
@@ -35,7 +35,7 @@ export const setPipelineNodeStyle = (size) => {
         position: absolute;
         top: 13px;
         right: -9px;
-        background-color: #fff;
+        background-color: var(--color-white);
         border-radius: 50%;
         font-size: 10px;
         &.icon-correct {
@@ -70,7 +70,7 @@ export const setPipelineNodeStyle = (size) => {
       padding: 12px;
       width: ${size.width}px;
       height: ${size.height}px;
-      background-color: #fff;
+      background-color: var(--color-white);
       border-radius:  var(--border-radius-small);;
       box-shadow: 0px 2px 4px 0px rgba(var(--gray-5), 60%);
       &:hover {
@@ -83,7 +83,7 @@ export const setPipelineNodeStyle = (size) => {
         width: 18px;
         height: 18px;
         border-radius: 50%;
-        background-color: #fff;
+        background-color: var(--color-white);
         box-shadow: 0px 0px 4px 0px rgba(var(--gray-5), 60%);
         position: absolute;
         right: 8px;
@@ -133,7 +133,7 @@ export const setPipelineNodeStyle = (size) => {
             position: absolute;
             bottom: -12px;
             right: -4px;
-            background-color: #fff;
+            background-color: var(--color-white);
             border-radius: 50%;
             font-size: 12px;
             &.icon-correct {
@@ -152,7 +152,7 @@ export const setPipelineNodeStyle = (size) => {
               width:  24px;
               height: 24px;
               padding: 1px;
-              background-color: #fff;
+              background-color: var(--color-white);
               margin-left: -4px;
               border-radius: 50%;
             }
@@ -165,7 +165,7 @@ export const setPipelineNodeStyle = (size) => {
               box-shadow: 0px 0px 4px 0px rgba(var(--gray-5), 60%);
               align-items: center;
               justify-content: center;
-              color: #fff;
+              color: var(--color-white);
               font-size: 12px;
               .text {
                 transform: scale(0.85);

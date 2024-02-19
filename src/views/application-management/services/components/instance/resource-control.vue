@@ -210,7 +210,7 @@
     left: 0;
     z-index: 3000;
     overflow: hidden;
-    background-color: #fff;
+    background-color: var(--color-white);
     border: 1px solid var(--color-border-2);
     border-radius: var(--border-radius-small) var(--border-radius-small) 0 0;
 
@@ -220,7 +220,7 @@
       }
 
       .arco-tabs-content {
-        background-color: #fff;
+        background-color: var(--color-white);
       }
 
       .arco-tabs-tab {
@@ -228,12 +228,12 @@
         border-top: 0 solid transparent;
 
         &:hover {
-          background-color: #fff;
+          background-color: var(--color-white);
         }
       }
 
       .arco-tabs-tab-active {
-        background-color: #fff;
+        background-color: var(--color-white);
       }
     }
   }

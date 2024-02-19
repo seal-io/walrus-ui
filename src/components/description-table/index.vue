@@ -99,7 +99,7 @@
 
     :deep(.arco-table-tr) {
       .arco-table-th {
-        background-color: #fff;
+        background-color: var(--color-white);
         border-bottom: 1px solid var(--color-border-2);
 
         &::after {
@@ -114,7 +114,7 @@
       }
 
       .arco-table-td {
-        background-color: #fff;
+        background-color: var(--color-white);
       }
 
       .arco-table-cell {

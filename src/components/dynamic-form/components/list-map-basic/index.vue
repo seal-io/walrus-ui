@@ -439,7 +439,7 @@
       :deep(.seal-form-item-wrap) {
         position: relative;
         z-index: 5;
-        background-color: #fff;
+        background-color: var(--color-white);
       }
 
       &.active {
