@@ -253,7 +253,7 @@
           name: 'stroke',
           args: {
             attrs: {
-              fill: '#fff',
+              fill: 'var(--color-white)',
               stroke: '#31d0c6',
               strokeWidth: 4
             }

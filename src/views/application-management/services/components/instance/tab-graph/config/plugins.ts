@@ -25,7 +25,7 @@ export const legend = new G6.Legend({
     enable: false
   },
   containerStyle: {
-    fill: '#fff',
+    fill: 'var(--color-white)',
     color: 'red',
     radius: 2,
     lineWidth: 0

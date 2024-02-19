@@ -110,7 +110,7 @@
 
     &.is-detail {
       margin-bottom: 10px;
-      border-bottom: 1px solid #fff;
+      border-bottom: 1px solid var(--color-white);
     }
 
     &.flex-start {

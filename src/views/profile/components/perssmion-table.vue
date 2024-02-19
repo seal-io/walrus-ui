@@ -231,7 +231,7 @@
       display: inline-block;
       width: 14px;
       height: 14px;
-      color: #fff;
+      color: var(--color-white);
       line-height: 14px;
       text-align: center;
       border-radius: 50%;

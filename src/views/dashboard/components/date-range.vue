@@ -194,13 +194,13 @@
       cursor: pointer;
 
       &:hover {
-        color: #fff;
+        color: var(--color-white);
         background-color: var(--sealblue-6);
         border-color: transparent;
       }
 
       &.active {
-        color: #fff;
+        color: var(--color-white);
         background-color: var(--sealblue-6);
         border-color: transparent;
       }

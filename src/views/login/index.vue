@@ -31,7 +31,7 @@
                 $t(_.get(FirstLoginGetPassword, firstLoginStatus?.value) || '')
               "
               class="hl-code"
-              style="position: relative; background: #fff"
+              style="position: relative; background: var(--color-white)"
             >
               <copy
                 :content="
@@ -130,7 +130,7 @@
     background-size: cover;
 
     :deep(.hljs.bash) {
-      background-color: #fff;
+      background-color: var(--color-white);
     }
 
     :deep(.hljs) {
@@ -205,7 +205,7 @@
 
     .footer {
       width: 100%;
-      background-color: #fff;
+      background-color: var(--color-white);
     }
   }
 

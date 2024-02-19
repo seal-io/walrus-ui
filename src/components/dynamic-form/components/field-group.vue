@@ -269,7 +269,7 @@
                                     href={props.schema.externalDocs?.url}
                                     class="m-l-2"
                                     target="_blank"
-                                    style="background-color: #fff"
+                                    style="background-color: var(--color-white)"
                                   >
                                     {i18n.global.t('common.docs.link.tips')}
                                   </a-link>
@@ -426,7 +426,7 @@
         height: 52px;
         padding-right: 16px;
         font-size: 12px;
-        background-color: #fff;
+        background-color: var(--color-white);
       }
 
       &.disabled {

@@ -268,7 +268,7 @@
       flex-direction: column;
       align-items: center;
       margin-right: 5px;
-      color: #fff;
+      color: var(--color-white);
       font-size: 14px;
 
       .name {
@@ -323,11 +323,11 @@
     justify-content: space-between;
     height: 48px;
     margin: 0 auto;
-    background-color: #fff;
+    background-color: var(--color-white);
     border-bottom: 1px solid var(--color-border-1);
 
     :deep(.arco-typography) {
-      color: #fff;
+      color: var(--color-white);
     }
   }
 
@@ -395,11 +395,11 @@
 
     :deep(li.active) {
       .arco-btn-size-medium.arco-btn-shape-circle {
-        border-color: #fff;
+        border-color: var(--color-white);
         border-width: 2px;
 
         .arco-icon {
-          color: #fff;
+          color: var(--color-white);
           transform: scale(1.3);
         }
       }

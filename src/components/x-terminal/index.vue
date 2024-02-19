@@ -10,6 +10,7 @@
 
 <script lang="ts" setup>
   import qs from 'query-string';
+  import { useAppStore } from '@/store';
   import { useResizeObserver } from '@vueuse/core';
   import { ref, onMounted, onBeforeUnmount, watch, nextTick } from 'vue';
   import _, { trim, get, throttle } from 'lodash';
@@ -48,8 +49,10 @@
   const bufferLength = ref(0);
   const toRetry = ref(false);
   const RECONNECT_MSG = '--- press Y to reconnect! ---';
+  const appStore = useAppStore();
 
   const conReadyState = ref(0);
+
   const runRealTerminal = () => {
     term.value?.clear?.();
     loading.value = false;
@@ -211,7 +214,9 @@
       fontFamily:
         "monospace,Menlo,Courier,'Courier New',Consolas,Monaco, 'Liberation Mono'",
       theme: {
-        background: '#181d28'
+        background:
+          appStore.theme === 'dark' ? 'rgb(242, 243, 245)' : '#181d28',
+        foreground: appStore.theme === 'dark' ? '#1d2129' : '#fff'
       },
       cursorBlink: true,
       cursorStyle: 'underline',
@@ -338,7 +343,7 @@
       padding: 5px;
       overflow: hidden;
       overflow: hidden;
-      background-color: #181d28;
+      background-color: var(--color-logs-bg);
       border-radius: 0 0 8px 8px;
     }
 
@@ -349,7 +354,7 @@
       z-index: 100;
       display: flex;
       align-items: center;
-      color: #fff;
+      color: var(--color-white);
     }
   }
 </style>

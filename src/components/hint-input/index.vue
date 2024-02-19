@@ -33,7 +33,7 @@
                   :href="$attrs.doc?.url"
                   class="m-l-2"
                   target="_blank"
-                  style="background-color: #fff"
+                  style="background-color: var(--color-white)"
                   >{{ $t('common.docs.link.tips') }}</a-link
                 ></div
               >
@@ -636,11 +636,11 @@
     }
 
     .complete-item-active {
-      color: #fff;
+      color: var(--color-white);
       background-color: rgb(var(--primary-6));
 
       .type {
-        color: #fff;
+        color: var(--color-white);
       }
 
       .desc {

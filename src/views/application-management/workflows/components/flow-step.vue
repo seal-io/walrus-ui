@@ -248,7 +248,7 @@
         padding: 0 16px;
         padding-left: 30px;
         color: var(--color-text-2);
-        background-color: #fff;
+        background-color: var(--color-white);
         border: 1px solid var(--color-border-3);
         border-radius: 36px;
         box-shadow: 0 2px 4px 0 rgba(var(--gray-5), 60%);

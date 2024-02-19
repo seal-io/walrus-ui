@@ -250,7 +250,7 @@
 
     .arco-input-wrapper {
       width: 100%;
-      background-color: #fff;
+      background-color: var(--color-white);
     }
   }
 </style>

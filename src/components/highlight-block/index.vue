@@ -41,7 +41,7 @@
     // white-space: pre;
     // border: 1px solid var(--seal-border-gray-2);
     :deep(.hljs) {
-      background-color: #fff;
+      background-color: var(--color-white);
     }
   }
 </style>

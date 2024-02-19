@@ -195,7 +195,7 @@
     :deep(.filter-box-wrap) {
       padding-bottom: 10px;
       padding-left: 16px;
-      background-color: #fff;
+      background-color: var(--color-white);
     }
 
     :deep(.arco-tabs-nav-tab) {

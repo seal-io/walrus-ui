@@ -452,7 +452,7 @@
 
     &:hover {
       .icon-btn {
-        background-color: #fff;
+        background-color: var(--color-white);
         opacity: 1;
         transition: opacity 0.3s;
       }
@@ -463,7 +463,7 @@
       top: 1px;
       right: 1px;
       color: rgb(var(--arcoblue-4));
-      background-color: #fff;
+      background-color: var(--color-white);
       cursor: pointer;
       opacity: 0;
       transition: opacity 0.3s;

@@ -5,6 +5,19 @@
         <span v-show="!showModify">{{ $t('login.form.title') }}</span>
         <span v-show="showModify">{{ $t('login.form.login.update') }}</span>
         <div class="language">
+          <a-switch
+            v-model="isDark"
+            checked-color="#000"
+            unchecked-color="rgb(185, 207, 243)"
+            @change="toggleTheme"
+          >
+            <template #checked-icon>
+              <icon-moon class="size-16" />
+            </template>
+            <template #unchecked-icon>
+              <icon-sun class="size-16" />
+            </template>
+          </a-switch>
           <a-dropdown @select="changeLocale">
             <a-button shape="circle" type="text" size="mini"
               ><i class="iconfont icon-language size-18"
@@ -106,10 +119,11 @@
 
 <script lang="ts" setup>
   import _ from 'lodash';
+  import { useDark, useToggle } from '@vueuse/core';
   import { ref, reactive, onMounted } from 'vue';
   import { LOCALE_OPTIONS } from '@/locale';
   import useLocale from '@/hooks/locale';
-  import { useUserStore } from '@/store';
+  import { useUserStore, useAppStore } from '@/store';
   import useLoading from '@/hooks/loading';
   import useEnterPage from '@/hooks/use-enter-page';
   import { queryUserPartialSetting } from '@/views/system/api/setting';
@@ -140,6 +154,7 @@
   const errorMessage = ref('');
   const { loading, setLoading } = useLoading();
   const userStore = useUserStore();
+  const appStore = useAppStore();
   const rememberPassword = ref<boolean>(false);
   const settingsInfo = ref<any>({
     ServeUrl: window.location.origin,
@@ -151,6 +166,19 @@
     username: '',
     password: ''
   });
+
+  const isDark = useDark({
+    selector: 'html',
+    attribute: 'color-theme',
+    valueDark: 'dark',
+    valueLight: 'light',
+    storageKey: 'color-theme',
+    onChanged(dark: boolean) {
+      // overridded default behavior
+      appStore.toggleTheme(dark);
+    }
+  });
+  const toggleTheme = useToggle(isDark);
 
   const encryptPassword = (password) => {
     const psw = CryptoJS.AES?.encrypt?.(password, CRYPT_TEXT).toString();
@@ -291,8 +319,26 @@
         position: fixed;
         top: 20px;
         right: 30px;
+        display: flex;
+        align-items: center;
         height: 24px;
         font-size: 0;
+
+        .arco-switch {
+          margin-right: 20px;
+        }
+
+        :deep(.arco-switch-checked) {
+          .arco-switch-handle {
+            color: var(--color-text-3);
+            background-color: transparent;
+
+            .arco-switch-handle-icon {
+              display: flex;
+              align-items: center;
+            }
+          }
+        }
       }
     }
 
