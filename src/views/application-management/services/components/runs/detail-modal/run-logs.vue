@@ -31,31 +31,30 @@
       });
 
       const renderStaticLogs = () => {
-        return (
-          <div>
-            {props.runData?.planRecord && !props.runData?.record ? (
-              <>
-                <div class="title">
-                  <i class="iconfont icon-rizhi"></i> <span>Planned Logs</span>
-                </div>
-                <StaticLogs
-                  maxHeight={maxHeight.value}
-                  record={props.runData?.planRecord}
-                  fullscreen={props.fullscreen}
-                ></StaticLogs>
-              </>
-            ) : null}
-            {props.runData?.record ? (
-              <>
-                <StaticLogs
-                  maxHeight={maxHeight.value}
-                  record={props.runData?.record}
-                  fullscreen={props.fullscreen}
-                ></StaticLogs>
-              </>
-            ) : null}
-          </div>
-        );
+        if (props.runData?.record) {
+          return (
+            <StaticLogs
+              maxHeight={maxHeight.value}
+              record={props.runData?.record}
+              fullscreen={props.fullscreen}
+            ></StaticLogs>
+          );
+        }
+        if (props.runData?.planRecord) {
+          return (
+            <>
+              <div class="title">
+                <i class="iconfont icon-rizhi"></i> <span>Planned Logs</span>
+              </div>
+              <StaticLogs
+                maxHeight={maxHeight.value}
+                record={props.runData?.planRecord}
+                fullscreen={props.fullscreen}
+              ></StaticLogs>
+            </>
+          );
+        }
+        return null;
       };
 
       const renderWatchLogs = () => {

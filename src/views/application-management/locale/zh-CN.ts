@@ -206,5 +206,8 @@ export default {
   'resource.revisons.filter.types': '全部类型',
   'resource.revisons.filter.status': '全部状态',
   'resource.revisons.components.changes': '任务运行中，无任何变更',
-  'resource.revisons.components.nochanges': '无任何变更'
+  'resource.revisons.components.nochanges': '无任何变更',
+  'resource.revisons.components.beforeChange': '变更前',
+  'resource.revisons.components.afterChange': '变更后',
+  'resource.revisons.components.planning': '任务运行中...'
 };

@@ -9,6 +9,10 @@
   export default defineComponent({
     name: 'RunComponents',
     props: {
+      loading: {
+        type: Boolean,
+        default: false
+      },
       runData: {
         type: Object,
         default() {
@@ -69,6 +73,7 @@
               empty: () => {
                 return (
                   <result-view
+                    loading={props.loading}
                     v-slots={{
                       icon: () => {
                         return (
