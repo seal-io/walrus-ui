@@ -72,6 +72,10 @@ export const avatarMenu = [
     itemStyle: {},
     children: [
       {
+        name: 'darkMode',
+        key: 'darkMode'
+      },
+      {
         name: 'propfile.account.user.info',
         key: 'UserCenter',
         route: PROFILE.UserCenter,
