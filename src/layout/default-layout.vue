@@ -28,7 +28,7 @@
               <img
                 alt="logo"
                 class="logo"
-                src="../assets/images/walrus_logo.png"
+                :src="appStore.theme === 'dark' ? walrusLogoWhite : walrusLogo"
               />
             </div>
           </div>
@@ -56,6 +56,8 @@
   import TabBar from '@/components/tab-bar/index.vue';
   import usePermission from '@/hooks/permissions';
   import useResponsive from '@/hooks/responsive';
+  import walrusLogo from '@/assets/images/walrus_logo.png';
+  import walrusLogoWhite from '@/assets/images/walrus_logo_white.png';
   import PageLayout from './page-layout.vue';
 
   const drawerVisible = ref(false);

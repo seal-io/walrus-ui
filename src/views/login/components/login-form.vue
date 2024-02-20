@@ -7,7 +7,7 @@
         <div class="language">
           <a-switch
             v-model="isDark"
-            checked-color="#000"
+            checked-color="#fff"
             unchecked-color="rgb(185, 207, 243)"
             @change="toggleTheme"
           >

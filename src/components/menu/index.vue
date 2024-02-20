@@ -334,15 +334,37 @@
                       <a-menu-item
                         key={cItem.name}
                         v-slots={{
-                          icon: () => h(compile(cItem.icon))
+                          icon: cItem.icon ? () => h(compile(cItem.icon)) : null
                         }}
                         onClick={() => {
                           handleClickUserMenu(cItem);
                         }}
                       >
-                        <span class="title" style={{ fontSize: '12px' }}>
-                          {t(cItem.name)}
-                        </span>
+                        {cItem.key === 'darkMode' ? (
+                          <div
+                            class="flex flex-align-center"
+                            style={{ height: '36px', lineHeight: '36px' }}
+                          >
+                            <a-switch
+                              size="small"
+                              onChange={toggleTheme}
+                              v-model={isDark.value}
+                              checked-color="#f2f3f5"
+                              v-slots={{
+                                'checked-icon': () => (
+                                  <icon-moon style={{ fontSize: '16px' }} />
+                                ),
+                                'unchecked-icon': () => (
+                                  <icon-sun style={{ fontSize: '16px' }} />
+                                )
+                              }}
+                            ></a-switch>
+                          </div>
+                        ) : (
+                          <span class="title" style={{ fontSize: '12px' }}>
+                            {t(cItem.name)}
+                          </span>
+                        )}
                       </a-menu-item>
                     );
                   })}
@@ -395,21 +417,6 @@
               <div>
                 <div class="tools">{renderUserMenu(profileMenu)}</div>
                 <div class="account">{renderUserMenu(avatarMenu)}</div>
-                <div class="flex flex-center">
-                  <a-switch
-                    onChange={toggleTheme}
-                    v-model={isDark.value}
-                    checked-color="#000"
-                    v-slots={{
-                      'checked-icon': () => (
-                        <icon-moon style={{ fontSize: '16px' }} />
-                      ),
-                      'unchecked-icon': () => (
-                        <icon-sun style={{ fontSize: '16px' }} />
-                      )
-                    }}
-                  ></a-switch>
-                </div>
               </div>
             </div>
           </a-menu>
@@ -418,6 +425,8 @@
     }
   });
 </script>
+
+<style lang="less"></style>
 
 <style lang="less" scoped>
   @import url('./style.less');
