@@ -43,13 +43,14 @@
       const permission = usePermission();
       const execListenerRouteChange = useListenerRouteChange();
       const versionInfo = ref({});
+      const checkedColor = ref('var(--black-1)');
 
       const isDark = useDark({
-        selector: 'html',
-        attribute: 'color-theme',
+        selector: 'body',
+        attribute: 'arco-theme',
         valueDark: 'dark',
         valueLight: 'light',
-        storageKey: 'color-theme',
+        storageKey: 'arco-theme',
         onChanged(dark: boolean) {
           // overridded default behavior
           appStore.toggleTheme(dark);
@@ -344,18 +345,38 @@
                           <div
                             class="flex flex-align-center"
                             style={{ height: '36px', lineHeight: '36px' }}
+                            onMouseover={() => {
+                              checkedColor.value = isDark.value
+                                ? 'var(--black-2)'
+                                : 'var(--black-1)';
+                            }}
+                            onMouseout={() => {
+                              if (isDark.value) {
+                                checkedColor.value = 'var(--black-1)';
+                              }
+                            }}
                           >
                             <a-switch
                               size="small"
                               onChange={toggleTheme}
                               v-model={isDark.value}
-                              checked-color="#f2f3f5"
+                              checked-color={checkedColor.value}
                               v-slots={{
                                 'checked-icon': () => (
-                                  <icon-moon style={{ fontSize: '16px' }} />
+                                  <icon-moon
+                                    style={{
+                                      fontSize: '16px',
+                                      color: 'var(--color-text-2)'
+                                    }}
+                                  />
                                 ),
                                 'unchecked-icon': () => (
-                                  <icon-sun style={{ fontSize: '16px' }} />
+                                  <icon-sun
+                                    style={{
+                                      fontSize: '16px',
+                                      color: 'var(--color-text-2)'
+                                    }}
+                                  />
                                 )
                               }}
                             ></a-switch>
@@ -410,6 +431,9 @@
             collapsed-width={appStore.smallWidth}
             level-indent={20}
             style="height: 100%"
+            trigger-props={{
+              trigger: 'hover'
+            }}
             onCollapse={setCollapse}
           >
             <div class="box">

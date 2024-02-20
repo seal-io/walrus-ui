@@ -73,7 +73,7 @@
   .wrapper {
     padding: 10px;
     text-align: right;
-    background-color: rgba(230, 244, 254, 0.5);
+    background-color: var(--seal-color-bg);
     border-radius: var(--border-radius-small);
   }
 </style>

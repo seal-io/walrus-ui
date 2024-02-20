@@ -214,9 +214,9 @@
       fontFamily:
         "monospace,Menlo,Courier,'Courier New',Consolas,Monaco, 'Liberation Mono'",
       theme: {
-        background:
-          appStore.theme === 'dark' ? 'rgb(242, 243, 245)' : '#181d28',
-        foreground: appStore.theme === 'dark' ? '#1d2129' : '#fff'
+        background: appStore.theme === 'dark' ? '#373739' : '#181d28',
+        foreground:
+          appStore.theme === 'dark' ? 'rgba(255, 255, 255, 0.7)' : '#fff'
       },
       cursorBlink: true,
       cursorStyle: 'underline',

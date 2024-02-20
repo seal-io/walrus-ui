@@ -10,6 +10,7 @@
   } from 'vue';
   import _ from 'lodash';
   import i18n from '@/locale';
+  import { useAppStore } from '@/store';
   import resourceImages from '@/views/application-management/resource-images';
   import serviceImg from '@/assets/images/service.png';
   import resourceImg from '@/assets/images/resource.png';
@@ -97,6 +98,7 @@
       const toolTipRef = ref<any>({});
       const contextMenu = ref<any>({});
       const contextMenuNode: any = { value: null };
+      const appStore = useAppStore();
 
       contextMenu.value = new G6.Menu({
         trigger: 'click',
@@ -791,7 +793,13 @@
                   ref={(el) => {
                     graphMount.value = el;
                   }}
-                  class={['graph-mount', { isFullscreen: props.isFullscreen }]}
+                  class={[
+                    'graph-mount',
+                    {
+                      isFullscreen: props.isFullscreen,
+                      dark: appStore.theme === 'dark'
+                    }
+                  ]}
                 ></div>
                 <div class="legend">
                   <a-space size={20}>
@@ -853,7 +861,7 @@
       right: 10px;
       padding: 6px 8px;
       font-size: var(--font-size-small);
-      background-color: rgba(255, 255, 255, 0.8);
+      background-color: rgba(var(--color-background-1), 0.8);
       border-radius: 4px;
 
       .legend-item {
@@ -878,12 +886,16 @@
       top: 10px;
       left: 10px;
       color: var(--color-text-2);
-      background-color: rgba(255, 255, 255, 0.8);
+      background-color: rgba(var(--color-background-1), 0.8);
     }
 
     .graph-mount {
       position: relative;
       // height: @height;
+      &.dark {
+        filter: invert(0.85) hue-rotate(180deg);
+      }
+
       &.isFullscreen {
         height: 100vh;
       }

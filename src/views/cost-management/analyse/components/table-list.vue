@@ -201,7 +201,7 @@
 <style lang="less" scoped>
   .table-list-wrap {
     :deep(.arco-table-th) {
-      background-color: rgba(230, 244, 254, 0.5);
+      background-color: var(--seal-color-bg);
     }
   }
 </style>

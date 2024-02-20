@@ -395,7 +395,7 @@
 
       .type {
         margin-top: 6px;
-        color: rgba(78, 89, 105, 0.5);
+        color: var(--color-bread-type);
         font-weight: var(--font-weight-regular);
       }
 

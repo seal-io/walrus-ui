@@ -1,8 +1,11 @@
 <template>
   <div>
-    <div class="container login">
+    <div class="container login" :class="{ dark: appStore.theme === 'dark' }">
       <div class="logo">
-        <img alt="logo" src="../../assets/images/logo_02.png" />
+        <img
+          alt="logo"
+          :src="appStore.theme === 'dark' ? logodark : logolight"
+        />
       </div>
 
       <div class="content">
@@ -54,6 +57,8 @@
 
 <script lang="ts" setup>
   import _ from 'lodash';
+  import logolight from '@/assets/images/logo_02.png';
+  import logodark from '@/assets/images/logo_04.png';
   import { onMounted, ref } from 'vue';
   import { getFirstLoginStatus } from '@/api/user';
   import { useUserStore, useAppStore } from '@/store';
@@ -111,7 +116,7 @@
   };
   const init = async () => {
     userStore.resetInfo();
-    appStore.resetInfo();
+    // appStore.resetInfo();
     await getUserLoginStatus();
     enterPageForFree();
   };
@@ -128,6 +133,11 @@
     background-repeat: no-repeat;
     background-position: center center;
     background-size: cover;
+
+    &.dark {
+      background-color: rgb(var(--color-background-2));
+      background-image: none;
+    }
 
     :deep(.hljs.bash) {
       background-color: var(--color-white);
@@ -198,7 +208,7 @@
 
       .content-inner {
         padding: 20px;
-        background-color: rgba(255, 255, 255, 0.7);
+        background-color: rgba(var(--color-background-1), 0.7);
         border-radius: 8px;
       }
     }

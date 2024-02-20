@@ -7,7 +7,7 @@
         <div class="language">
           <a-switch
             v-model="isDark"
-            checked-color="#fff"
+            checked-color="var(--black-2)"
             unchecked-color="rgb(185, 207, 243)"
             @change="toggleTheme"
           >
@@ -168,11 +168,11 @@
   });
 
   const isDark = useDark({
-    selector: 'html',
-    attribute: 'color-theme',
+    selector: 'body',
+    attribute: 'arco-theme',
     valueDark: 'dark',
     valueLight: 'light',
-    storageKey: 'color-theme',
+    storageKey: 'arco-theme',
     onChanged(dark: boolean) {
       // overridded default behavior
       appStore.toggleTheme(dark);

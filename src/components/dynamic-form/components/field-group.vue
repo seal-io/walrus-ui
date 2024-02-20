@@ -381,8 +381,7 @@
     padding: 0 20px;
     padding-bottom: 10px;
     border-radius: 0 0 var(--border-radius-small) var(--border-radius-small);
-    box-shadow: 0 4px 3px -1px rgba(234, 236, 238, 1),
-      0 1px 4px 0 rgba(169, 174, 184, 0.2);
+    box-shadow: var(--color-form-card-shadow);
 
     .error-star {
       position: relative;
@@ -394,8 +393,7 @@
     }
 
     &:hover {
-      box-shadow: rgba(169, 174, 184, 1) 0 3px 6px -1px,
-        rgba(169, 174, 184, 0.2) 0 3px 6px 0;
+      box-shadow: var(--color-form-card-shadow-hover);
       transition: box-shadow 0.2s var(--seal-transition-func);
     }
 
