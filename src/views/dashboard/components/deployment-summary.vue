@@ -1,5 +1,11 @@
 <template>
-  <SpinCard :title="$t('dashboard.deployment.title')" borderless>
+  <SpinCard
+    :title="$t('dashboard.deployment.title')"
+    borderless
+    :card-style="{
+      borderRadius: 'var(--border-radius-small) var(--border-radius-small) 0 0'
+    }"
+  >
     <template #title>
       <div style="display: flex; justify-content: space-between">
         <span>{{ $t('dashboard.deployment.title') }}</span>
@@ -250,7 +256,7 @@
 
     .bar-item {
       padding: 10px;
-      background-color: rgba(230, 244, 254, 0.5);
+      background-color: var(--seal-color-bg);
       border-radius: var(--border-radius-small);
     }
   }

@@ -44,7 +44,7 @@ body {
     padding: 0 9px;
     line-height: 32px;
     text-align: left;
-    background: rgba(255, 255, 255, 0.8);
+    background: rgba(var(--color-background-1), 0.8);
     border-radius: var(--border-radius-small);
     box-shadow: 6px 0 20px rgba(34, 87, 188, 0.1);
 
@@ -211,11 +211,13 @@ body {
     }
 
     .arco-table-td {
+      color: var(--color-text-2);
       font-size: var(--font-size-small);
       line-height: 3.5;
     }
 
     .arco-table-th {
+      color: var(--color-text-2);
       font-size: var(--font-size-small);
     }
 

@@ -35,7 +35,7 @@
     padding: 10px;
     text-align: center;
     border-radius: var(--border-radius-small);
-    box-shadow: 0 0 6px rgba(229, 230, 235, 0.3);
+    box-shadow: var(--color-data-card-shadow);
 
     :deep(.arco-statistic-title) {
       font-size: var(--font-size-large);

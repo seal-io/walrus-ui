@@ -57,7 +57,7 @@
   .toolbar {
     :deep(.arco-space-item) {
       padding: 4px;
-      background-color: rgba(255, 255, 255, 0.8);
+      background-color: rgba(var(--color-background-1), 0.8);
       border-radius: 2px;
       cursor: pointer;
     }

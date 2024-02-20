@@ -1,5 +1,9 @@
 <template>
-  <div class="template-item" @click="handleView">
+  <div
+    class="template-item"
+    :class="{ dark: appStore.theme === 'dark' }"
+    @click="handleView"
+  >
     <div class="img-box">
       <span v-if="provider" class="icon-wrap">
         <span class="img">
@@ -88,6 +92,7 @@
   import { PropType, computed, ref, watch } from 'vue';
   import { MoreAction } from '@/views/config/interface';
   import { useRouter } from 'vue-router';
+  import { useAppStore } from '@/store';
   import { execSucceed } from '@/utils/monitor';
   import moreButtonActions from '@/components/drop-button-group/more-button-actions.vue';
   import StatusLabel from '../../connectors/components/status-label.vue';
@@ -128,7 +133,7 @@
   });
 
   const emits = defineEmits(['change', 'refresh', 'edit', 'view', 'delete']);
-  const router = useRouter();
+  const appStore = useAppStore();
 
   const selectActions = computed(() => {
     return props.actionList.map((item) => {
@@ -228,6 +233,12 @@
       top: -5px;
       right: 2px;
       margin-left: 10px;
+    }
+
+    &.dark {
+      .img {
+        filter: invert(1) hue-rotate(180deg);
+      }
     }
 
     .img-box {

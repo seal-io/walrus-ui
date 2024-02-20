@@ -36,7 +36,7 @@
     padding: 12px 10px;
     text-align: center;
     // background: linear-gradient(#ebfdff 0%, #e9f1fc 100%);
-    background: rgba(230, 244, 254, 0.5);
+    background: var(--seal-color-bg);
     border-radius: var(--border-radius-small);
 
     .content {

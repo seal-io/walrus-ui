@@ -1,16 +1,19 @@
 body {
+  --color-background-1: 255, 255, 255;
+  --color-background-2: 255, 255, 255;
+  --seal-border-color: #eaecee;
   --walrus-brand-color: #001b50;
-  --seal-color-bg-1: #214ac4;
+  --seal-color-bg-1: rgb(var(--arcoblue-6));
   --seal-color-bg-2: #e8f7ff;
   --seal-color-bg-3: #fdddc3;
   --seal-color-text-1: rgba(255, 255, 255, 0.6);
   --seal-color-text-6: #86909c;
   --seal-active-text: var(--color-white);
   --seal-border-gray: #f2f3f5;
-  --seal-border-gray-2: #eaecee;
+  --seal-border-gray-2: var(--seal-border-color);
   // --seal-border-gray-2: #e5e6eb;
   --color-menu-light-bg: 247, 248, 250;
-  --sealblue-6: #214ac4;
+  --sealblue-6: rgb(var(--arcoblue-6));
   --seal-color-warning: #f7b357;
   --seal-color-warning-1: 247, 179, 87;
   --seal-color-error: rgb(var(--red-6));
@@ -23,8 +26,8 @@ body {
   --seal-color-deep-red: #7d1600;
   --seal-color-green-1: #0da5aa;
   --seal-color-blue-green: #00bada;
-  --seal-color-table-border: #eaecee;
-  --color-neutral-3: #eaecee;
+  --seal-color-table-border: var(--seal-border-color);
+  --color-neutral-3: var(--seal-border-color);
   --color-fill-2: #f3f6fa;
   --color-fill-1: rgb(242, 243, 245);
   --arcoblue-7: 21, 52, 166;
@@ -34,6 +37,7 @@ body {
   --arcoblue-3: 142, 173, 231;
   --arcoblue-2: 185, 207, 243;
   --arcoblue-1: 232, 242, 255;
+  --color-bread-type: rgba(78, 89, 105, 0.5);
   --green-6: 0, 191, 114;
   --red-6: 245, 63, 63;
   --border-radius-small: 8px;
@@ -56,7 +60,7 @@ body {
   --card-content-padding: 26px;
   --filter-button-gap: 10px;
   --modal-body-padding: 20px 26px;
-  --color-text-2: #1d2129;
+  --color-text-2: var(--color-text-1);
 
   // font weight
   --font-weight-medium: 500;
@@ -69,6 +73,15 @@ body {
 
   // page header icon color
   --color-header-icon: rgb(var(--arcoblue-5));
+
+  // data card shadow
+  --color-data-card-shadow: 0 0 6px rgba(229, 230, 235, 0.3);
+
+  // form card shadow
+  --color-form-card-shadow: 0 4px 3px -1px rgba(234, 236, 238, 1),
+    0 1px 4px 0 rgba(169, 174, 184, 0.2);
+  --color-form-card-shadow-hover: rgba(169, 174, 184, 1) 0 3px 6px -1px,
+    rgba(169, 174, 184, 0.2) 0 3px 6px 0;
 
   // input
   .arco-input-wrapper,
@@ -166,40 +179,50 @@ body {
   }
 }
 
-html[color-theme='dark'] {
-  filter: invert(85%) hue-rotate(180deg);
+body[arco-theme='dark'] {
+  --color-background-1: 42, 42, 43;
+  --color-background-2: 55, 55, 57;
+  --black-1: #373739;
+  --black-2: #2a2a2b;
+  --color-white: var(--black-2);
+  --color-bg-white: var(--black-2);
+  --color-bg-2: var(--black-2);
+  --color-bg-5: var(--black-2);
+  --color-bg-popup: var(--black-2);
+  --color-fill-1: var(--black-1);
+  --color-menu-light-bg: var(--black-1);
+  --seal-border-color: var(--black-1);
+  --color-text-3: rgba(255, 255, 255, 0.3);
+  --color-text-1: rgba(255, 255, 255, 0.7);
+  --color-mask-bg: rgba(150, 150, 150, 0.5);
 
-  body {
-    // logs style
-    --color-logs-bg: rgb(242, 243, 245);
-    --color-logs-text: var(--color-text-3);
+  // logs style
+  --color-logs-bg: var(--black-1);
+  --color-logs-text: var(--color-text-3);
 
-    // page header icon color
-    --color-header-icon: rgb(var(--arcoblue-6));
+  // page header icon color
+  --color-header-icon: rgb(var(--arcoblue-6));
+  --color-bread-type: var(--color-text-4);
+  --seal-color-bg-1: rgb(var(--arcoblue-6));
 
-    img,
-    .logo,
-    .tag {
-      filter: invert(100%) hue-rotate(180deg);
-    }
-    // img,
-    // .logo,
-    // .logo-wrapper,
-    // .iconfont,
-    // .arco-icon,
-    // svg {
-    //   filter: invert(100%) hue-rotate(180deg);
-    // }
-    // // no revert selectors
-    // a,
-    // .arco-link,
-    // button,
-    // .arco-btn,
-    // .arco-btn-group,
-    // .arco-tabs-nav-ink,
-    // .arco-tabs-tab-active,
-    // .tag {
-    //   filter: invert(100%) hue-rotate(180deg);
-    // }
+  // data card shadow
+  --color-data-card-shadow: none;
+  --seal-color-bg: #373739;
+  --arcoblue-7: 21, 52, 166;
+  --arcoblue-6: 33, 74, 196; // primary-color rgb(17, 75, 163)
+  --arcoblue-5: 66, 106, 208; // hover-color
+  --arcoblue-4: 102, 139, 220;
+  --arcoblue-3: 142, 173, 231;
+  --arcoblue-2: 185, 207, 243;
+  --arcoblue-1: 232, 242, 255;
+
+  // form card shadow
+  --color-form-card-shadow: 0 4px 3px -1px rgba(120, 120, 122, 0.1),
+    0 1px 4px 0 rgba(169, 174, 184, 0.2);
+  --color-form-card-shadow-hover: rgba(120, 120, 122, 0.4) 0 3px 6px -1px,
+    rgba(169, 174, 184, 0.2) 0 3px 6px 0;
+
+  .arco-link:hover {
+    background-color: var(--color-fill-1);
   }
 }
