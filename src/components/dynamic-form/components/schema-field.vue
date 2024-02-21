@@ -70,28 +70,34 @@
         ])
       });
 
+      const initFieldValueInCreate = () => {
+        initFieldValue({
+          schema: props.schema,
+          defaultFormData: props.defaultFormData,
+          formData: props.formData,
+          uiFormData: props.uiFormData,
+          fieldPath,
+          required: _.includes(props.requiredFields, props.schema.name)
+        });
+        handleChange(props.formData);
+      };
+      const initFieldValueInView = () => {
+        viewFieldValue({
+          defaultFormData: props.defaultFormData,
+          schema: props.schema,
+          formData: props.formData,
+          uiFormData: props.uiFormData,
+          fieldPath,
+          hidden,
+          required: _.includes(props.requiredFields, props.schema.name)
+        });
+      };
       // init field value
       const initValue = () => {
         if (schemaFormStatus.value === PageAction.CREATE) {
-          initFieldValue({
-            schema: props.schema,
-            defaultFormData: props.defaultFormData,
-            formData: props.formData,
-            uiFormData: props.uiFormData,
-            fieldPath,
-            required: _.includes(props.requiredFields, props.schema.name)
-          });
-          handleChange(props.formData);
+          initFieldValueInCreate();
         } else {
-          viewFieldValue({
-            defaultFormData: props.defaultFormData,
-            schema: props.schema,
-            formData: props.formData,
-            uiFormData: props.uiFormData,
-            fieldPath,
-            hidden,
-            required: _.includes(props.requiredFields, props.schema.name)
-          });
+          initFieldValueInView();
         }
       };
 
@@ -109,7 +115,18 @@
           // only used on showIf field
           if (showIf) {
             if (showIfValue.value) {
-              initValue();
+              if (
+                schemaFormStatus.value !== PageAction.CREATE &&
+                !getShowIfValue(
+                  showIf,
+                  props.backupFormData,
+                  _.initial(props.fieldPath)
+                )
+              ) {
+                initFieldValueInCreate();
+              } else {
+                initValue();
+              }
             } else {
               unsetShowIfField();
               deleteCacheFormShowifKey();
@@ -142,6 +159,7 @@
             formData={props.formData}
             uiFormData={props.uiFormData}
             defaultFormData={props.defaultFormData}
+            backupFormData={props.backupFormData}
             cachedFormData={props.cachedFormData}
             FieldPathMap={props.FieldPathMap}
             schema={props.schema}

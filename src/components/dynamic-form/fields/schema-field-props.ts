@@ -93,6 +93,12 @@ export default {
       return new Map();
     }
   },
+  backupFormData: {
+    type: Object as PropType<any>,
+    default() {
+      return {};
+    }
+  },
   FieldPathMap: {
     type: Object as PropType<any>,
     default() {

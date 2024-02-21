@@ -311,6 +311,7 @@
           formData={props.formData}
           uiFormData={props.uiFormData}
           defaultFormData={props.defaultFormData}
+          backupFormData={props.backupFormData}
           cachedFormData={props.cachedFormData}
           FieldPathMap={props.FieldPathMap}
           requiredFields={props.requiredFields}
@@ -351,6 +352,7 @@
                             formData={props.formData}
                             uiFormData={props.uiFormData}
                             defaultFormData={props.defaultFormData}
+                            backupFormData={props.backupFormData}
                             cachedFormData={props.cachedFormData}
                             FieldPathMap={props.FieldPathMap}
                             fieldPath={[
