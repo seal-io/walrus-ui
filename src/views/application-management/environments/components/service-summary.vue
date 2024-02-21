@@ -38,7 +38,7 @@
     display: flex;
     align-items: center;
     padding: 0;
-    color: rgb(255 255 255 / 90%);
+    color: var(--color-text-white);
     font-weight: 700;
     font-size: 0;
     border-radius: 10px 10px;

@@ -17,6 +17,7 @@
     <div
       v-show="isAce"
       class="ace-box"
+      :class="{ dark: appStore.theme === 'dark' }"
       :style="{
         height: _.isNumber(height) ? `${height}px` : height
       }"
@@ -44,6 +45,7 @@
 </template>
 
 <script lang="ts" setup>
+  import { useAppStore } from '@/store';
   import _, { cloneDeep, each, get, isString, toString } from 'lodash';
   import Tooltip from '@/components/seal-form/_components/tooltip.vue';
   import {
@@ -55,7 +57,8 @@
     ref,
     useAttrs,
     inject,
-    useSlots
+    useSlots,
+    computed
   } from 'vue';
   import { InjectTraceKey } from '@/views/config';
   import ace, { Range, edit } from 'ace-builds';
@@ -168,6 +171,7 @@
   const defaultHolder = {
     yaml: '# yaml format'
   };
+  const appStore = useAppStore();
   const slots = useSlots();
   const traceKey = inject(InjectTraceKey, ref('traceKey'));
   const $attrs = useAttrs();
@@ -340,11 +344,25 @@
     { immediate: false }
   );
   watch(
-    () => props.theme,
+    () => props.theme, // monokai, twilight
     (newVal) => {
       aceEditor?.setOption('theme', `ace/theme/${newVal}`);
     },
     { immediate: false }
+  );
+  watch(
+    () => appStore.theme,
+    (val) => {
+      console.log('sysTheme', val);
+      if (val === 'dark') {
+        aceEditor?.setOption('theme', 'ace/theme/monokai');
+      } else {
+        aceEditor?.setOption('theme', '');
+      }
+    },
+    {
+      immediate: false
+    }
   );
   watch(
     () => props.readOnly,
@@ -383,7 +401,7 @@
         fontSize: 14,
         readOnly: props.readOnly,
         mode: `ace/mode/${props.lang}`,
-        theme: props.theme ? `ace/theme/${props.theme}` : '',
+        theme: appStore.theme === 'dark' ? `ace/theme/monokai` : '',
         enableSnippets: false,
         showGutter: props.showGutter,
         autoScrollEditorIntoView: false,
@@ -412,7 +430,7 @@
     position: relative;
     width: 100%;
     overflow: auto;
-    // height: 300px;
+    // height: 300px
   }
 
   #ace-editor {

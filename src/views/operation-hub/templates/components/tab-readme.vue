@@ -1,11 +1,16 @@
 <template>
-  <div class="tab-content-wrap markdown-body" :style="{ height }">
+  <div
+    class="tab-content-wrap markdown-body"
+    :style="{ height }"
+    :class="{ dark: appStore.theme === 'dark' }"
+  >
     <div v-html="content"></div>
   </div>
 </template>
 
 <script lang="ts" setup>
-  import 'github-markdown-css';
+  import 'github-markdown-css/github-markdown-light.css';
+  import { useAppStore } from '@/store';
   import { get } from 'lodash';
   import { PropType, computed, watch, ref } from 'vue';
   import { marked } from 'marked';
@@ -25,6 +30,7 @@
       }
     }
   });
+  const appStore = useAppStore();
   const content = ref('');
 
   watch(
@@ -56,7 +62,34 @@
     border-radius: var(--border-radius-small);
 
     &.markdown-body {
+      color: var(--color-text-2);
       font-family: 'noto sans', sans-serif;
+
+      &.dark {
+        :deep(h2),
+        :deep(h1),
+        :deep(h3),
+        :deep(h4),
+        :deep(h5),
+        :deep(h6) {
+          border-color: hsla(210, 18%, 87%, 0.2);
+        }
+
+        :deep(table) {
+          tr {
+            background-color: var(--color-white);
+          }
+
+          td,
+          th {
+            border-color: var(--color-border-2);
+          }
+        }
+
+        :deep(pre) {
+          background-color: var(--color-white) !important;
+        }
+      }
     }
   }
 </style>

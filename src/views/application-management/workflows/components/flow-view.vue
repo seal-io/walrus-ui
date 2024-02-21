@@ -1,5 +1,5 @@
 <template>
-  <div class="wrapper">
+  <div class="wrapper" :class="{ dark: appStore.theme === 'dark' }">
     <a-spin style="width: 100%" :loading="loading">
       <div
         ref="graphWrapper"
@@ -9,7 +9,12 @@
           width: '100%'
         }"
       >
-        <div ref="container" style="width: 100%; height: 100%"> </div>
+        <div
+          ref="container"
+          style="width: 100%; height: 100%"
+          class="content-container"
+        >
+        </div>
       </div>
     </a-spin>
     <LogsPanel
@@ -25,6 +30,7 @@
 
 <script lang="ts" setup>
   import _ from 'lodash';
+  import { useAppStore } from '@/store';
   import { websocketEventType } from '@/views/config';
   import { useSetChunkRequest } from '@/api/axios-chunk-request';
   import useCallCommon from '@/hooks/use-call-common';
@@ -36,7 +42,6 @@
   import { deleteModal, execSucceed } from '@/utils/monitor';
   import { querySubjects } from '@/views/system/api/users';
   import { queryItemServiceDetail } from '@/views/application-management/services/api';
-  import toolBar from './tool-bar.vue';
   import { setPipelineNodeStyle } from '../custom/style';
   import {
     NodeSize,
@@ -80,6 +85,7 @@
   let chunkRequestToken: any = null;
   const { setChunkRequest } = useSetChunkRequest();
   const { route, router } = useCallCommon();
+  const appStore = useAppStore();
   let graphIns: any = null;
   const showLogModal = ref(false);
   const updateActive = ref('');
@@ -504,6 +510,26 @@
     position: relative;
     font-size: 0;
     background-color: var(--color-fill-2);
+
+    &.dark {
+      padding: 0 var(--card-content-padding);
+      background-color: var(--color-white);
+
+      .graphWrapper {
+        filter: var(--color-filter-inverted);
+      }
+      // :deep(.content-container) {
+      //   a,
+      //   button,
+      //   .tag,
+      //   .iconfont,
+      //   .arco-icon,
+      //   .arco-btn,
+      //   .arco-link {
+      //     filter: invert(1) hue-rotate(180deg);
+      //   }
+      // }
+    }
 
     .tools {
       position: absolute;
