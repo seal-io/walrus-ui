@@ -24,22 +24,9 @@
         </a-space>
       </template>
       <template #button-group>
-        <a-button
-          v-if="
-            userStore.hasProjectResourceActions({
-              resource: Resources.ProjectSubjects,
-              projectID: route.params.projectId,
-              actions: [Actions.POST]
-            }) &&
-            userStore.hasRolesActionsPermission({
-              resource: Resources.Subjects,
-              actions: [Actions.GET]
-            })
-          "
-          type="primary"
-          @click="handleAdd"
-          >{{ $t('applications.applications.add.member') }}</a-button
-        >
+        <a-button v-if="hasPutPermission" type="primary" @click="handleAdd">{{
+          $t('applications.applications.add.member')
+        }}</a-button>
         <a-button
           v-permission-app="{
             projectID: route.params.projectId,
@@ -93,6 +80,21 @@
           :title="$t('profile.account.role')"
         >
           <template #cell="{ record }">
+            <!-- <a-select
+              v-if="hasPutPermission && record.subject?.id !== userStore?.id"
+              :model-value="record?.role?.id"
+              :style="{
+                width: '200px'
+              }"
+              @change="(val) => handleChangeRole(val, record)"
+            >
+              <a-option
+                v-for="item in projectRoles"
+                :value="item.value"
+                :key="item.value"
+                :label="$t(item.label)"
+              ></a-option>
+            </a-select> -->
             <span>{{
               $t(getListLabel(_.get(record, 'role.id'), projectRoles))
             }}</span>
@@ -149,7 +151,7 @@
   import { CommonButtonValue } from '@/views/config';
   import { Resources, Actions } from '@/permissions/config';
   import DropButtonGroup from '@/components/drop-button-group/index.vue';
-  import { ref, reactive, PropType } from 'vue';
+  import { ref, reactive, computed, PropType } from 'vue';
   import { useUserStore, useAppStore } from '@/store';
   import useCallCommon from '@/hooks/use-call-common';
   import FilterBox from '@/components/filter-box/index.vue';
@@ -158,7 +160,8 @@
   import { getListLabel } from '@/utils/func';
   import {
     queryProjectSubjects,
-    deleteProjectSubjects
+    deleteProjectSubjects,
+    addProjectSubjects
   } from '../../projects/api';
   import { projectRoles } from '../../projects/config';
   import { ProjectRolesRowData } from '../../projects/config/interface';
@@ -187,6 +190,34 @@
     query: ''
   });
 
+  const hasPutPermission = computed(() => {
+    return (
+      userStore.hasProjectResourceActions({
+        resource: Resources.ProjectSubjects,
+        projectID: route.params.projectId,
+        actions: [Actions.POST]
+      }) &&
+      userStore.hasRolesActionsPermission({
+        resource: Resources.Subjects,
+        actions: [Actions.GET]
+      })
+    );
+  });
+  const handleChangeRole = async (val, record) => {
+    try {
+      const data = [
+        {
+          project: { id: projectID },
+          subject: { id: record.subject.id },
+          role: { id: val }
+        }
+      ];
+      await addProjectSubjects({ items: data });
+      execSucceed();
+    } catch (error) {
+      //
+    }
+  };
   const setActionList = (row) => {
     const list = _.filter(actionList, (item) => {
       return item.filterFun ? item.filterFun({ row }) : true;
