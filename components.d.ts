@@ -24,6 +24,7 @@ declare module 'vue' {
     AGrid: typeof import('@arco-design/web-vue')['Grid'];
     AGridItem: typeof import('@arco-design/web-vue')['GridItem'];
     AInput: typeof import('@arco-design/web-vue')['Input'];
+    AInputGroup: typeof import('@arco-design/web-vue')['InputGroup'];
     AInputNumber: typeof import('@arco-design/web-vue')['InputNumber'];
     AInputPassword: typeof import('@arco-design/web-vue')['InputPassword'];
     AInputSearch: typeof import('@arco-design/web-vue')['InputSearch'];
@@ -39,9 +40,11 @@ declare module 'vue' {
     APagination: typeof import('@arco-design/web-vue')['Pagination'];
     APopconfirm: typeof import('@arco-design/web-vue')['Popconfirm'];
     AProgress: typeof import('@arco-design/web-vue')['Progress'];
+    ARangePicker: typeof import('@arco-design/web-vue')['RangePicker'];
     ASelect: typeof import('@arco-design/web-vue')['Select'];
     ASpace: typeof import('@arco-design/web-vue')['Space'];
     ASpin: typeof import('@arco-design/web-vue')['Spin'];
+    AStatistic: typeof import('@arco-design/web-vue')['Statistic'];
     AStep: typeof import('@arco-design/web-vue')['Step'];
     ASteps: typeof import('@arco-design/web-vue')['Steps'];
     ASubMenu: typeof import('@arco-design/web-vue')['SubMenu'];

@@ -25,6 +25,7 @@
           :default-form-data="defaultFormData"
           :cached-form-data="cachedFormData"
           :field-path-map="FieldPathMap"
+          :backup-form-data="backupFormData"
           :schema="item.schema"
           :action="action"
           @change="handleChange"
@@ -43,6 +44,7 @@
       :origin-form-data="rootFormData"
       :default-form-data="defaultFormData"
       :cached-form-data="cachedFormData"
+      :backup-form-data="backupFormData"
       :field-path-map="FieldPathMap"
       :schema="formGroup[0].schema"
       @change="handleChange"
@@ -112,6 +114,7 @@
   const emits = defineEmits(['update:formData', 'change', 'renderEnd']);
   const activeKey = ref<string>('schemaForm');
   const refMap = ref<any>({});
+  const backupFormData = ref({});
   const schemaForm = ref();
   const rootFormData = ref({});
   const defaultFormData = ref({});
@@ -269,6 +272,7 @@
         });
         activeKey.value = formGroup.value[0]?.group;
 
+        backupFormData.value = _.cloneDeep(props.uiFormData);
         getHiddenFormData(allGroups);
         emits('renderEnd');
       });

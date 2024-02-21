@@ -25,6 +25,12 @@ export default {
       return {};
     }
   },
+  backupFormData: {
+    type: Object as PropType<any>,
+    default() {
+      return {};
+    }
+  },
   internalFormData: {
     type: Object as PropType<any>,
     default() {

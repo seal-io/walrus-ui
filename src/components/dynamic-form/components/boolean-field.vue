@@ -12,12 +12,8 @@
   import schemaFieldProps from '../fields/schema-field-props';
   import {
     isEmptyvalue,
-    initFieldValue,
-    viewFieldValue,
     unsetFieldValue,
     parentObjectExsits,
-    isRequiredInitField,
-    initFieldDefaultValue,
     genFieldPropsAndRules,
     genFieldInFormData,
     isEqualOn
