@@ -226,7 +226,7 @@
     padding: 20px;
     font-weight: var(--font-weight-medium);
     font-size: var(--font-size-large);
-    border: 1px solid rgb(234 236 238 / 50%);
+    border: 1px solid var(--color-border-2);
     // background-color: rgb(243 246 250 / 50%);
     border-radius: var(--border-radius-small);
 

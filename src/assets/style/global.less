@@ -11,9 +11,29 @@ body {
   font-weight: var(--font-weight-medium);
   font-size: 12px;
   font-family: 'noto sans', sans-serif;
-  background-color: var(--color-fill-2);
+  background-color: var(--color-white);
   -moz-osx-font-smoothing: grayscale;
   -webkit-font-smoothing: antialiased;
+}
+
+html[arco-theme='dark'] {
+  ::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+  }
+
+  ::-webkit-scrollbar-track {
+    width: 10px;
+    height: 10px;
+    background: rgba(var(--color-background-1), 0.8);
+  }
+
+  ::-webkit-scrollbar-thumb {
+    width: 10px;
+    height: 10px;
+    background: rgb(var(--gray-5));
+    border-radius: 6px;
+  }
 }
 
 .echarts-tooltip-diy {
@@ -235,7 +255,7 @@ body {
         display: inline-block;
         width: 1px;
         height: 20px;
-        background-color: rgba(220, 220, 220, 0.4);
+        background-color: var(--color-table-header-separator);
         border-radius: 1px;
         content: '';
       }

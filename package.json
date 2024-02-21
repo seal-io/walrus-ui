@@ -60,7 +60,7 @@
     "driver.js": "^0.9.8",
     "echarts": "^5.2.2",
     "file-saver": "^2.0.5",
-    "github-markdown-css": "^5.2.0",
+    "github-markdown-css": "5.5.1",
     "has-ansi": "^5.0.1",
     "highlight.js": "^11.5.1",
     "insert-css": "^2.0.0",

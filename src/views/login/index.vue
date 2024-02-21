@@ -135,7 +135,7 @@
     background-size: cover;
 
     &.dark {
-      background-color: rgb(var(--color-background-2));
+      background-color: rgb(var(--color-background-1));
       background-image: none;
     }
 

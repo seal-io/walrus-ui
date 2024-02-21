@@ -68,7 +68,7 @@ export const avatarMenu = [
     name: 'mneu.user.account',
     key: 'Profile',
     icon: '<i class="iconfont icon-user-circle" />',
-    iconStyle: { color: 'rgb(var(--arcoblue-5))', opacity: 1 },
+    iconStyle: { color: 'rgb(var(--arcoblue-6))', opacity: 1 },
     itemStyle: {},
     children: [
       {

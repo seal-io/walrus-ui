@@ -893,7 +893,7 @@
       position: relative;
       // height: @height;
       &.dark {
-        filter: invert(0.85) hue-rotate(180deg);
+        filter: var(--color-filter-inverted);
       }
 
       &.isFullscreen {
