@@ -76,7 +76,10 @@
             <div class="close">
               <a-link @click="handleToggleReadme"><icon-close-circle /></a-link>
             </div>
-            <div class="readme-content" v-html="markdownConent"></div>
+            <markdownViewer
+              :md-str="markdownConent"
+              class="readme-content"
+            ></markdownViewer>
           </div>
         </div>
       </div>
@@ -107,7 +110,7 @@
 
 <script lang="ts" setup>
   import 'github-markdown-css';
-  import { ref, reactive, PropType, computed, nextTick } from 'vue';
+  import { ref, reactive, PropType, computed } from 'vue';
   import readBlob from '@/utils/readBlob';
   import _ from 'lodash';
   import AceEditor from '@/components/ace-editor/index.vue';
@@ -115,9 +118,9 @@
     validateYaml,
     yaml2Json
   } from '@/components/form-create/config/yaml-parse';
-  import { marked } from 'marked';
   import EditPageFooter from '@/components/edit-page-footer/index.vue';
   import { getWalrusFileHub } from '@/api/user';
+  import markdownViewer from '@/components/markdown-viewer/index.vue';
   import WalrusFilelist from './walrus-filelist.vue';
 
   interface InfoData {
@@ -172,7 +175,7 @@
   const handleSelectItem = (item) => {
     formData.value.yaml = item.content;
     defaultValue.value = item.content;
-    markdownConent.value = marked.parse(item.readme);
+    markdownConent.value = item.readme;
     selectedFile.value = true;
   };
 
@@ -180,20 +183,11 @@
     showReadme.value = false;
   };
 
-  const openNewTab = () => {
-    const aList = document.querySelectorAll('.readme-content a');
-    aList?.forEach((item) => {
-      item.setAttribute('target', '_blank');
-    });
-  };
   const handleShowReadme = (item) => {
     formData.value.yaml = item.content;
     defaultValue.value = item.content;
-    markdownConent.value = marked.parse(item.readme);
+    markdownConent.value = item.readme;
     showReadme.value = true;
-    nextTick(() => {
-      openNewTab();
-    });
   };
   const handleCancel = () => {
     formData.value.yaml = '';
