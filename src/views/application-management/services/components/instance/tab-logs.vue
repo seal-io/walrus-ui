@@ -131,6 +131,7 @@
   watch(
     () => props.dataList,
     (list) => {
+      console.log('list===========00', list);
       clearTimeout(timer);
       timer = setTimeout(() => {
         handleKeyChange(get(list, '0.value'));

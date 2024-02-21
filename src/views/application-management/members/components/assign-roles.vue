@@ -25,56 +25,29 @@
       <FilterBox style="margin-bottom: 15px">
         <template #params>
           <a-select
-            v-model="formData.subject.id"
+            v-model="subjectIds"
             allow-search
-            style="width: 220px; height: 36px"
+            multiple
+            :max-tag-count="2"
+            style="width: 300px; height: 36px"
             :placeholder="$t('applications.projects.authorize.account')"
-            @change="handleSubjectChange"
           >
-            <a-optgroup
-              v-if="userSubjectList.length"
-              :label="$t(getListLabel(AccountKind.USER, accountTypeList))"
+            <a-option
+              v-for="item in userSubjectList"
+              :key="item.id"
+              :value="item.id"
+              :disabled="userAssignChecked(item)"
             >
-              <template #label>
-                <a-divider orientation="left" :margin="10">{{
-                  $t(getListLabel(AccountKind.USER, accountTypeList))
-                }}</a-divider>
-              </template>
-              <a-option
-                v-for="item in userSubjectList"
-                :key="item.id"
-                :value="item.id"
-                :disabled="userAssignChecked(item)"
-              >
-                <i
-                  v-if="userAssignChecked(item)"
-                  class="iconfont icon-tianjiahaoyouchenggong_huaban1 mright-5"
-                  style="color: var(--seal-color-success)"
-                ></i>
-                <span>{{ item.name }}</span>
-              </a-option>
-            </a-optgroup>
-            <a-optgroup
-              v-if="groupSubjectList.length"
-              :label="$t(getListLabel(AccountKind.GROUP, accountTypeList))"
-            >
-              <template #label>
-                <a-divider orientation="left" :margin="10">{{
-                  $t(getListLabel(AccountKind.GROUP, accountTypeList))
-                }}</a-divider>
-              </template>
-              <a-option
-                v-for="item in groupSubjectList"
-                :key="item.id"
-                :value="item.id"
-                :disabled="userAssignChecked(item)"
-              >
-                <span>{{ item.name }}</span>
-              </a-option>
-            </a-optgroup>
+              <i
+                v-if="userAssignChecked(item)"
+                class="iconfont icon-tianjiahaoyouchenggong_huaban1 mright-5"
+                style="color: var(--seal-color-success)"
+              ></i>
+              <span>{{ item.name }}</span>
+            </a-option>
           </a-select>
           <a-select
-            v-model="formData.role.id"
+            v-model="roleId"
             allow-search
             style="width: 220px"
             :placeholder="$t('applications.projects.authorize.role')"
@@ -90,7 +63,7 @@
           <a-space style="margin-left: 0">
             <a-button
               type="primary"
-              :disabled="!formData.role.id || !formData.subject.id"
+              :disabled="!subjectIds.length || !roleId"
               @click="handleOk"
               >{{ $t('common.button.add') }}</a-button
             >
@@ -220,14 +193,12 @@
   const roleList = ref<{ label: string; value: string }[]>(
     _.cloneDeep(projectRoles)
   );
+  const subjectList = ref<RowData[]>([]);
   const userSubjectList = ref<RowData[]>([]);
   const groupSubjectList = ref<RowData[]>([]);
   const selectedList = ref<SelectedMember[]>([]);
-  const formData = reactive({
-    project: { id: '' },
-    subject: { id: '', name: '' },
-    role: { id: '' }
-  });
+  const subjectIds = ref<string[]>([]);
+  const roleId = ref('');
 
   const userAssignChecked = (subject) => {
     return (
@@ -241,12 +212,7 @@
       )
     );
   };
-  const handleSubjectChange = (val) => {
-    const data = _.find(userSubjectList.value, (item) => {
-      return item.id === val;
-    });
-    formData.subject.name = data?.name || '';
-  };
+
   const getProjectSubjects = async () => {
     try {
       loading.value = true;
@@ -267,6 +233,7 @@
         page: -1
       };
       const { data } = await querySubjects(params);
+      subjectList.value = data.items || [];
       userSubjectList.value = _.filter(data.items, (item) => {
         return item.kind === AccountKind.USER && item.name !== userStore.name;
       });
@@ -276,20 +243,31 @@
     } catch (error) {
       userSubjectList.value = [];
       groupSubjectList.value = [];
+      subjectList.value = [];
     }
   };
 
+  const setSelectedList = () => {
+    const list = _.map(subjectIds.value, (subjectId) => {
+      const subject = _.find(subjectList.value, (item) => {
+        return item.id === subjectId;
+      });
+      return {
+        project: { id: props.projectID },
+        subject: { id: subjectId, name: subject?.name || '' },
+        role: { id: roleId.value }
+      };
+    });
+    selectedList.value = _.concat(list, selectedList.value);
+  };
   const resetForm = () => {
-    formData.project.id = '';
-    formData.subject.id = '';
-    formData.subject.name = '';
-    formData.role.id = '';
+    subjectIds.value = [];
+    roleId.value = '';
   };
   const handleOk = async () => {
     try {
-      if (formData.subject.id && formData.role.id) {
-        formData.project.id = props.projectID;
-        selectedList.value.push(_.cloneDeep(formData));
+      if (subjectIds.value.length && roleId.value) {
+        setSelectedList();
         // reset form
         resetForm();
       }

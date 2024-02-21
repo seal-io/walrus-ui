@@ -36,11 +36,6 @@ export default function useResourceControl() {
     drawerTabs.value = [];
   });
   const handleConnectTerminal = (row) => {
-    // if (modalType.value === drawerType.LOGS) {
-    //   modalType.value = drawerType.TERMINAL;
-    //   drawerTabs.value = [];
-    //   terminalShow.value = false;
-    // }
     drawerTabs.value.push({
       dataList: getResourceKeyList({ ...row }, resourceAction.Executable),
       name: row.name,
@@ -57,11 +52,6 @@ export default function useResourceControl() {
     }, 100);
   };
   const handleViewLogs = (row) => {
-    // if (modalType.value === drawerType.TERMINAL) {
-    //   modalType.value = drawerType.LOGS;
-    //   drawerTabs.value = [];
-    //   terminalShow.value = false;
-    // }
     drawerTabs.value.push({
       dataList: getResourceKeyList({ ...row }, resourceAction.Loggable),
       name: row.name,

@@ -159,7 +159,7 @@
     }
   };
   const setRowClass = (record) => {
-    if (record.raw.isChilren) {
+    if (record.raw.isChildren) {
       return 'row-child';
     }
     return '';

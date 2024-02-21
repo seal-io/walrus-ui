@@ -34,7 +34,7 @@ export default function useFetchResource() {
     if (children.length) {
       _.each(children, (data) => {
         data.isLeaf = true;
-        data.isChilren = true;
+        data.isChildren = true;
         data.parentId = parent.id;
         data.key = parent.id;
         setChildDataProperties(data);
