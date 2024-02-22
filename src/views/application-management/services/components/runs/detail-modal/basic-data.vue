@@ -14,6 +14,7 @@
     RevisionWatchStatus,
     RevisionStatus
   } from '@/views/application-management/services/config';
+  import ProgressLoading from '@/components/progress-loading/index.vue';
 
   export default defineComponent({
     props: {
@@ -38,6 +39,25 @@
         const status = _.get(props.runData, 'status.summaryStatus', '');
         return !RevisionWatchStatus.includes(status);
       });
+      const renderStatusIcon = () => {
+        let type: any = '';
+        if (_.get(props.runData, 'status.transitioning')) {
+          type = 'warning';
+        } else if (_.get(props.runData, 'status.error')) {
+          type = 'error';
+        } else if (_.get(props.runData, 'status.summaryStatus')) {
+          type = 'success';
+        }
+        return (
+          <ProgressLoading
+            type={type}
+            size={32}
+            strokeWidth={3}
+            percent={0.6}
+            style={{ marginRight: '12px' }}
+          ></ProgressLoading>
+        );
+      };
       const renderStatus = () => {
         return (
           <>
@@ -47,8 +67,7 @@
                 status: _.get(props.runData, 'status.summaryStatus') || '',
                 inactive: _.get(props.runData, 'status.inactive'),
                 text: _.get(props.runData, 'status.summaryStatus'),
-                message:
-                  _.get(props.runData, 'status.summaryStatusMessage') || '',
+                message: '',
                 transitioning: _.get(props.runData, 'status.transitioning'),
                 error: _.get(props.runData, 'status.error')
               }}
@@ -94,60 +113,82 @@
       const renderChanges = () => {
         return (
           <div class="data">
-            <span class="add" style={{ color: StatusColor.success.color5 }}>
+            <span class="add" style={{ color: StatusColor.success.text }}>
               <icon-plus class="m-r-5" />
               <span>{props.runData.componentChangeSummary?.created}</span>
             </span>
-            <span class="update" style={{ color: StatusColor.warning.color5 }}>
+            <span class="update" style={{ color: StatusColor.warning.text }}>
               <i class={['icon-wave-sine iconfont m-r-5']}></i>
               <span>{props.runData.componentChangeSummary?.updated}</span>
             </span>
-            <span class="delete" style={{ color: StatusColor.error.color5 }}>
+            <span class="delete" style={{ color: StatusColor.error.text }}>
               <icon-minus class="m-r-5" />
               <span>{props.runData.componentChangeSummary?.deleted}</span>
             </span>
           </div>
         );
       };
-      return () => (
-        <div class="wrap">
-          <div class="title">
-            <span>{props.runData.resource?.name}</span>
-            <span class="status">{renderStatus()}</span>
-          </div>
-          <BasicInfo
-            class="basic-info"
-            data-info={basicDataList.value}
-            cols={2}
-            layout={props.layout}
-            v-slots={{
-              value: ({ data, value }) => {
-                if (data.key === 'componentChangeSummary') {
-                  return renderChanges();
-                }
-                if (data.key === 'duration') {
-                  return (
-                    <ClockTimer
-                      start-time={_.get(props.runData, 'createTime')}
-                      show={showTimer.value}
-                      value={data.value}
-                      stopped={isStopped.value}
-                    ></ClockTimer>
-                  );
-                }
-                if (data.key === 'id') {
-                  return (
-                    <span class="id-val">
-                      <span class="m-r-5">{value}</span>
-                      <Copy content={props.runData.id}></Copy>
-                    </span>
-                  );
-                }
-                return value;
-              }
+      const renderMessage = () => {
+        if (!_.get(props.runData, 'status.error')) return null;
+        return (
+          <div
+            class="message"
+            style={{
+              backgroundColor: StatusColor.error.bg,
+              color: StatusColor.error.text
             }}
-          ></BasicInfo>
-          {renderActions()}
+          >
+            {props.runData.status?.summaryStatusMessage}
+          </div>
+        );
+      };
+      return () => (
+        <div class="box">
+          <div class="wrap">
+            <div class="title-box">
+              {renderStatusIcon()}
+              <span class="title">
+                <span style={{ padding: '0 8px' }}>
+                  {props.runData.resource?.name}
+                </span>
+                <span class="status">{renderStatus()}</span>
+              </span>
+            </div>
+            <BasicInfo
+              class="basic-info"
+              data-info={basicDataList.value}
+              cols={2}
+              layout={props.layout}
+              v-slots={{
+                value: ({ data, value }) => {
+                  if (data.key === 'componentChangeSummary') {
+                    return renderChanges();
+                  }
+                  if (data.key === 'duration') {
+                    return (
+                      <ClockTimer
+                        start-time={_.get(props.runData, 'createTime')}
+                        show={showTimer.value}
+                        value={data.value}
+                        stopped={isStopped.value}
+                      ></ClockTimer>
+                    );
+                  }
+                  if (data.key === 'id') {
+                    return (
+                      <span class="id-val">
+                        <span class="m-r-5">{value}</span>
+                        <Copy content={props.runData.id}></Copy>
+                      </span>
+                    );
+                  }
+                  return value;
+                }
+              }}
+            ></BasicInfo>
+            {renderActions()}
+          </div>
+          {renderMessage()}
         </div>
       );
     }
@@ -166,18 +207,31 @@
     }
   }
 
-  .wrap {
-    display: flex;
+  .box {
     padding: 10px 16px;
+    font-size: var(--font-size-small);
     border: 1px solid var(--color-border-2);
     border-radius: var(--border-radius-small);
 
+    .message {
+      padding: 10px;
+      border-radius: var(--border-radius-small);
+    }
+  }
+
+  .wrap {
+    display: flex;
+
+    .title-box {
+      display: flex;
+      align-items: center;
+    }
+
     .title {
       display: flex;
-      flex-basis: 150px;
       flex-direction: column;
       align-items: flex-start;
-      margin-right: 20px;
+      margin-right: 22px;
 
       .status {
         margin-top: 10px;

@@ -52,11 +52,6 @@
             : '',
           new: JSON.stringify(props.rowData.change?.after, null, 2)
         };
-        // diffContent.value = {
-        //   old: JSON.stringify(testData.old?.computedAttributes, null, 2),
-
-        //   new: JSON.stringify(testData.new?.computedAttributes, null, 2)
-        // };
       };
 
       const handleCheckboxChange = (checked, id) => {
@@ -172,8 +167,8 @@
               style={{
                 padding: '4px 10px',
                 borderRadius: 'var(--border-radius-small)',
-                backgroundColor: StatusColor.warning.color1,
-                color: StatusColor.warning.color5
+                backgroundColor: StatusColor.warning.bg,
+                color: StatusColor.warning.text
               }}
             >
               <i class="iconfont icon-wave-sine m-r-5"></i>Update
@@ -190,8 +185,8 @@
               style={{
                 padding: '4px 10px',
                 borderRadius: 'var(--border-radius-small)',
-                backgroundColor: StatusColor.error.color1,
-                color: StatusColor.error.color5
+                backgroundColor: StatusColor.error.bg,
+                color: StatusColor.error.text
               }}
             >
               <icon-minus class="m-r-5" />
@@ -208,8 +203,8 @@
             style={{
               padding: '4px 10px',
               borderRadius: 'var(--border-radius-small)',
-              backgroundColor: StatusColor.success.color1,
-              color: StatusColor.success.color5
+              backgroundColor: StatusColor.success.bg,
+              color: StatusColor.success.text
             }}
           >
             <icon-plus class="m-r-5" />
@@ -295,6 +290,7 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
+      width: 100%;
     }
   }
 

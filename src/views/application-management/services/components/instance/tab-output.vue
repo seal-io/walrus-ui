@@ -113,7 +113,8 @@
     try {
       loading.value = true;
       const { data } = await queryInstanceOutputs({ id: serviceId.value });
-      dataList.value = _.map(data || [], (item) => {
+      dataList.value = _.map(data || [], (o) => {
+        const item = _.cloneDeep(o);
         item.id = `${item.moduleName}/${item.name}`;
         return item;
       });
@@ -124,7 +125,8 @@
     }
   };
   const updateChunkedList = (data) => {
-    const collections = _.map(data?.collection, (item) => {
+    const collections = _.map(data?.collection, (o) => {
+      const item = _.cloneDeep(o);
       item.id = `${item.moduleName}/${item.name}`;
       return item;
     });

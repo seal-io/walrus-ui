@@ -105,15 +105,15 @@
 
         return (
           <div class="data">
-            <span class="add" style={{ color: StatusColor.success.color5 }}>
+            <span class="add" style={{ color: StatusColor.success.text }}>
               <icon-plus class="m-r-5" />
               <span>{value?.created}</span>
             </span>
-            <span class="update" style={{ color: StatusColor.warning.color5 }}>
+            <span class="update" style={{ color: StatusColor.warning.text }}>
               <i class={['icon-wave-sine iconfont m-r-5']}></i>
               <span>{value?.updated}</span>
             </span>
-            <span class="delete" style={{ color: StatusColor.error.color5 }}>
+            <span class="delete" style={{ color: StatusColor.error.text }}>
               <icon-minus class="m-r-5" />
               <span>{value?.deleted}</span>
             </span>

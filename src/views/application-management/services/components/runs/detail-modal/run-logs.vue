@@ -1,5 +1,5 @@
 <script lang="tsx">
-  import { defineComponent, computed, ref } from 'vue';
+  import { defineComponent, computed, watch, ref } from 'vue';
   import {
     RevisionStatus,
     RevisionWatchStatus
@@ -30,6 +30,16 @@
         return props.fullscreen ? 'calc(100vh - 310px)' : '310px';
       });
 
+      // watch(
+      //   () => props.runData,
+      //   () => {
+      //     console.log('props.runData=============', props.runData);
+      //   },
+      //   {
+      //     immediate: true,
+      //     deep: true
+      //   }
+      // );
       const renderStaticLogs = () => {
         if (props.runData?.record) {
           return (

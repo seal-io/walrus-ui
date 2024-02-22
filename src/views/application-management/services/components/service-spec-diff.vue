@@ -51,7 +51,11 @@
               environmentID,
               resource: Resources.ResourceRevisions,
               actions: ['PUT']
-            })
+            }) &&
+            _.includes(
+              [RevisionTypes.create, RevisionTypes.upgrade],
+              serviceInfo.type
+            )
           "
           class="m-t-10"
         >
@@ -81,7 +85,11 @@
                 environmentID,
                 resource: Resources.ResourceRevisions,
                 actions: ['PUT']
-              })
+              }) &&
+              _.includes(
+                [RevisionTypes.create, RevisionTypes.upgrade],
+                serviceInfo.type
+              )
             "
             :disabled="
               _.get(serviceInfo, 'status.summaryStatus') ===
@@ -115,7 +123,10 @@
   import useCodeDiff from '@/hooks/use-code-diff';
   import EditPageFooter from '@/components/edit-page-footer/index.vue';
   import AceEditor from '@/components/ace-editor/index.vue';
-  import { RevisionStatus } from '@/views/application-management/services/config';
+  import {
+    RevisionStatus,
+    RevisionTypes
+  } from '@/views/application-management/services/config';
 
   const props = defineProps({
     title: String,

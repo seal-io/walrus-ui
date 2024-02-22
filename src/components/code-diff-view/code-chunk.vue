@@ -61,9 +61,13 @@
           </>
         );
       };
+      const renderTitle = () => {
+        if (!props.title && !ctx.slots.title) return null;
+        return <div class="title">{ctx.slots.title?.() ?? props.title}</div>;
+      };
       return () => (
         <div class="wrap">
-          <div class="title">{ctx.slots.title?.() ?? props.title}</div>
+          {renderTitle()}
           {_.map(props.chunks, (item) => {
             return (
               <div class={['chunk-content', { collapse: item.collapsed }]}>
