@@ -175,7 +175,7 @@ export default {
   'applications.resource.log.lastlines': '最新几行',
   'applications.resource.log.showtime': '显示时间',
   'applications.resource.log.lastlog': '上次运行日志',
-  'applications.resource.log.breakLine': '换行',
+  'applications.resource.log.breakLine': '自动换行',
   'applications.service.stop.tips': '停止{type}！',
   'applications.service.stop.env': '停止环境！',
   'applications.service.stop.confirm': '底层组件将被删除,是否确定停止?',
