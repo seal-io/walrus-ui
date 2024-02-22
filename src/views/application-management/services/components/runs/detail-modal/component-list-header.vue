@@ -53,16 +53,14 @@
                     <div class="sort-col">
                       {col.title}
                       <div class="sort-icon">
-                        <a-icon
-                          type="caret-up"
+                        <icon-caret-up
                           class={{
                             sorted:
                               sortDataIndex.value === col.key &&
                               sort.value === 'ascend'
                           }}
                         />
-                        <a-icon
-                          type="caret-down"
+                        <icon-caret-down
                           class={{
                             sorted:
                               sortDataIndex.value === col.key &&
