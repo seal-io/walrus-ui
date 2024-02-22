@@ -30,13 +30,18 @@
             $t('applications.resource.log.lastlog')
           }}</span>
         </a-checkbox>
+        <a-checkbox v-model="breakLine">
+          <span class="color-text-3">{{
+            $t('applications.resource.log.breakLine')
+          }}</span>
+        </a-checkbox>
         <a-button type="primary" class="m-l-10" @click="handleSearch">{{
           $t('common.button.search')
         }}</a-button>
       </template>
     </FilterBox>
     <div class="wrap" :style="{ height: `${height}px` }">
-      <div class="content">
+      <div class="content" :class="{ 'line-break': breakLine }">
         <div class="text" v-html="content"></div>
       </div>
     </div>
@@ -81,6 +86,7 @@
   const resourceId = ref('');
   const logKey = ref('');
   const content = ref('');
+  const breakLine = ref(false);
   let timer: any = null;
   const convert = new Convert();
   const filterParams = reactive({
@@ -153,12 +159,15 @@
       border-radius: var(--border-radius-small);
 
       .content {
-        overflow: auto;
         color: #ddd;
         font-size: var(--font-size-small);
         line-height: 22px;
         white-space: pre-wrap;
         background-color: #181d28;
+
+        &.line-break {
+          word-wrap: break-word;
+        }
       }
     }
   }

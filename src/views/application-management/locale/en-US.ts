@@ -186,6 +186,7 @@ export default {
   'applications.resource.log.lastlines': 'Last Lines',
   'applications.resource.log.showtime': 'Show Timestamp',
   'applications.resource.log.lastlog': 'Last Run Log',
+  'applications.resource.log.breakLine': 'Line Break',
   'applications.service.stop.tips': 'Stop the {type}!',
   'applications.service.stop.env': 'Stop the environment!',
   'applications.service.stop.confirm':
