@@ -6,6 +6,7 @@ declare module 'vue' {
   export interface GlobalComponents {
     AAffix: typeof import('@arco-design/web-vue')['Affix'];
     AAlert: typeof import('@arco-design/web-vue')['Alert'];
+    AAvatar: typeof import('@arco-design/web-vue')['Avatar'];
     ABreadcrumb: typeof import('@arco-design/web-vue')['Breadcrumb'];
     ABreadcrumbItem: typeof import('@arco-design/web-vue')['BreadcrumbItem'];
     AButton: typeof import('@arco-design/web-vue')['Button'];
