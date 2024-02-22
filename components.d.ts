@@ -30,6 +30,7 @@ declare module 'vue' {
     AInputSearch: typeof import('@arco-design/web-vue')['InputSearch'];
     ALayout: typeof import('@arco-design/web-vue')['Layout'];
     ALayoutContent: typeof import('@arco-design/web-vue')['LayoutContent'];
+    ALayoutFooter: typeof import('@arco-design/web-vue')['LayoutFooter'];
     ALayoutSider: typeof import('@arco-design/web-vue')['LayoutSider'];
     ALink: typeof import('@arco-design/web-vue')['Link'];
     AList: typeof import('@arco-design/web-vue')['List'];
@@ -59,6 +60,7 @@ declare module 'vue' {
     ATooltip: typeof import('@arco-design/web-vue')['Tooltip'];
     ATypographyParagraph: typeof import('@arco-design/web-vue')['TypographyParagraph'];
     ATypographyTitle: typeof import('@arco-design/web-vue')['TypographyTitle'];
+    ATypographyText: typeof import('@arco-design/web-vue')['TypographyText'];
     AUpload: typeof import('@arco-design/web-vue')['Upload'];
   }
 }

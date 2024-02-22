@@ -30,21 +30,15 @@
         v-else
         class="tag"
         :style="{
-          color: color.color5,
-          backgroundColor: color.color1
+          color: color.text,
+          backgroundColor: color.bg
         }"
       >
         <span v-if="status.error || status.transitioning" class="flex">
           <a-tooltip v-if="status.message" :content="status.message">
             <icon-info-circle-fill class="m-r-4" />
           </a-tooltip>
-          <!-- <span v-else class="m-r-4">
-            <component :is="color.icon"></component>
-          </span> -->
         </span>
-        <!-- <span v-else-if="color.icon" class="m-r-4">
-          <component :is="color.icon"></component>
-        </span> -->
         <span>{{ status.text }}</span>
       </span>
     </span>

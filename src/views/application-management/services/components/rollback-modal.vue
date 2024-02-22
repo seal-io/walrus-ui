@@ -236,6 +236,7 @@
       loading.value = true;
       const params = {
         page: -1,
+        rollback: true,
         serviceID: formData.serviceID
       };
       const { data } = await queryServiceRevisions(params);

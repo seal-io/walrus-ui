@@ -235,7 +235,6 @@ export const RevisionStatus = {
   Running: 'Running',
   Failed: 'Failed',
   Pending: 'Pending',
-  Pend: 'Pend',
   Plan: 'Plan',
   Planned: 'Planned',
   Planning: 'Planning',

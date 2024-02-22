@@ -68,35 +68,38 @@
         return <div class="val-content">{get(item, 'value')}</div>;
       };
       return () => (
-        <div class="basic-info">
-          <a-descriptions
-            data={props.dataInfo}
-            column={props.cols}
-            layout={props.layout}
-          >
-            {_.map(props.dataInfo, (item, index) => {
-              return (
-                <ADescriptionsItem
-                  key={index}
-                  label={item.label}
-                  span={item.span}
-                >
-                  {slots.value
-                    ? slots.value({ data: item, value: renderValue(item) })
-                    : renderValue(item)}
-                </ADescriptionsItem>
-              );
-            })}
-          </a-descriptions>
-          {props.actions.length ? (
-            <div class="dropdown">
-              <DropButtonGroup
-                actions={props.actions}
-                onClick={(val) => handleClick(val)}
-                onSelect={(val) => handleSelect(val)}
-              ></DropButtonGroup>
-            </div>
-          ) : null}
+        <div>
+          <div class="basic-info">
+            <a-descriptions
+              data={props.dataInfo}
+              column={props.cols}
+              layout={props.layout}
+            >
+              {_.map(props.dataInfo, (item, index) => {
+                return (
+                  <ADescriptionsItem
+                    key={index}
+                    label={item.label}
+                    span={item.span}
+                  >
+                    {slots.value
+                      ? slots.value({ data: item, value: renderValue(item) })
+                      : renderValue(item)}
+                  </ADescriptionsItem>
+                );
+              })}
+            </a-descriptions>
+            {props.actions.length ? (
+              <div class="dropdown">
+                <DropButtonGroup
+                  actions={props.actions}
+                  onClick={(val) => handleClick(val)}
+                  onSelect={(val) => handleSelect(val)}
+                ></DropButtonGroup>
+              </div>
+            ) : null}
+          </div>
+          {slots.default?.()}
         </div>
       );
     }

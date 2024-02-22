@@ -127,18 +127,19 @@
                 icon-list={iconList}
               ></IconBtnGroup>
               <div>
-                <ServiceInfo v-show={activeKey.value === 'form'}></ServiceInfo>
-
-                <AceEditor
-                  v-show={activeKey.value === 'yaml'}
-                  ref="yaml_editor"
-                  read-only
-                  key="yaml_editor"
-                  editorId="yaml_editor"
-                  editor-default-value={yamlAttributes.value}
-                  lang="yaml"
-                  height={380}
-                ></AceEditor>
+                {activeKey.value === 'form' ? (
+                  <ServiceInfo></ServiceInfo>
+                ) : (
+                  <AceEditor
+                    ref="yaml_editor"
+                    read-only
+                    key="yaml_editor"
+                    editorId="yaml_editor"
+                    editor-default-value={yamlAttributes.value}
+                    lang="yaml"
+                    height={380}
+                  ></AceEditor>
+                )}
               </div>
             </a-tab-pane>
             <a-tab-pane key="history">

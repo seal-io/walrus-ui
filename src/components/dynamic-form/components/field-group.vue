@@ -427,7 +427,7 @@
       margin-bottom: 10px;
       padding: 10px 0;
       font-weight: var(--font-weight-medium);
-      font-size: 14px;
+      font-size: var(--font-size-normal);
     }
 
     .description {

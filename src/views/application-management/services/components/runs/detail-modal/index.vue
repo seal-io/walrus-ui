@@ -9,7 +9,8 @@
     :mask-closable="false"
     :body-style="{
       height: fullscreen ? 'auto' : '560px',
-      overflow: 'auto'
+      overflow: 'auto',
+      fontSize: 'var(--font-size-small)'
     }"
     modal-class="project-modal"
     :title="title"

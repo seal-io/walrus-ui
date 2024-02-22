@@ -13,7 +13,9 @@
       },
       bordered: {
         type: Boolean,
-        default: true
+        default() {
+          return true;
+        }
       },
       leftTitle: {
         type: String,
@@ -21,7 +23,9 @@
       },
       rightTitle: {
         type: String,
-        default: ''
+        default() {
+          return '';
+        }
       }
     },
     setup(props, ctx) {
@@ -31,15 +35,19 @@
         () => props.content,
         () => {
           getDiffCodeResult(props.content);
-          console.log('codeview=========', {
-            addChunks: rightChunks.value,
-            removeChunks: leftChunks.value
-          });
         },
         {
           immediate: true
         }
       );
+      const renderTitle = () => {
+        return (
+          <div class="title-box">
+            <div class="left">{ctx.slots.leftTitle?.()}</div>
+            <div class="right">{ctx.slots.rightTitle?.()}</div>
+          </div>
+        );
+      };
       return () => (
         <>
           {rightChunks.value.length || leftChunks.value.length ? (
@@ -93,6 +101,24 @@
 </script>
 
 <style lang="less" scoped>
+  .title-box {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 8px 12px;
+    font-weight: bold;
+    font-size: var(--font-size-small);
+    border-bottom: 1px solid var(--color-border-2);
+
+    .left,
+    .right {
+      display: flex;
+      flex: 1;
+      align-items: center;
+      justify-content: space-between;
+    }
+  }
+
   .chunk-box {
     position: relative;
     display: flex;
