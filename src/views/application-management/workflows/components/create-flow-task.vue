@@ -502,7 +502,6 @@
       bottom: 0;
       left: @width + 16px;
       width: inherit;
-      background: var(--color-white-1);
       border-top: 1px solid var(--color-border-2);
     }
 
