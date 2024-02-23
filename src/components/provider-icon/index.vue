@@ -2,6 +2,7 @@
   <span class="provider-icon-wrap">
     <span
       class="icon"
+      :class="{ dark: appStore.theme === 'dark' }"
       :style="{
         'width': `${size}px`,
         'height': `${size}px`,
@@ -12,6 +13,7 @@
 </template>
 
 <script lang="ts" setup>
+  import { useAppStore } from '@/store';
   import { toLower } from 'lodash';
   import { repoIcon } from './config';
 
@@ -29,6 +31,7 @@
       }
     }
   });
+  const appStore = useAppStore();
 </script>
 
 <style lang="less" scoped>
@@ -43,6 +46,10 @@
       background-repeat: no-repeat;
       background-position: center center;
       background-size: contain;
+
+      &.dark {
+        filter: invert(1) hue-rotate(180deg);
+      }
     }
   }
 </style>
