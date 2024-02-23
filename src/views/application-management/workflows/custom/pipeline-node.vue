@@ -2,7 +2,7 @@
   import _ from 'lodash';
   import { defineComponent, inject, toRefs, ref, watch, onMounted } from 'vue';
   import i18n from '@/locale';
-  import { useUserStore } from '@/store';
+  import { useUserStore, useAppStore } from '@/store';
   import StatusLabel from '@/views/operation-hub/connectors/components/status-label.vue';
   import Autotip from '@arco-design/web-vue/es/_components/auto-tooltip/auto-tooltip';
   import { setDurationValue } from '@/views/config/utils';
@@ -27,6 +27,7 @@
     setup(props, { emit }) {
       const { t } = i18n.global;
       const userStore = useUserStore();
+      const appStore = useAppStore();
 
       const MAX_COUNT = 9;
       const getGraph = inject('getGraph');
@@ -275,7 +276,7 @@
       });
       getSubjects();
       return () => (
-        <div class="pipeline-node">
+        <div class={['pipeline-node', { dark: appStore.theme === 'dark' }]}>
           {renderStageName()}
           <span class="node-icon">
             <i
@@ -334,3 +335,9 @@
     }
   });
 </script>
+
+<style lang="less" scoped>
+  .pipeline-node {
+    background-color: var(--color-white);
+  }
+</style>

@@ -128,7 +128,7 @@
                     style="
                       height: 34px;
                       padding: 0 10px;
-                      color: var(--sealblue-6);
+                      color: var(--color-text-selected);
                       font-weight: var(--font-weight-medium);
                       font-size: 13px;
                       line-height: 34px;
@@ -146,7 +146,7 @@
           <span v-else class="label single">
             <a-link
               v-if="index !== items.length - 1"
-              style="color: var(--sealblue-6)"
+              style="color: var(--color-text-selected)"
               @click="handleClickItem(item)"
             >
               <!-- <component :is="item.icon" v-if="item.icon"></component> -->
@@ -347,7 +347,7 @@
 
           .arco-select-view-icon {
             padding: 3px;
-            color: var(--sealblue-6);
+            color: var(--color-text-selected);
             transition: transform 0.2s cubic-bezier(0, 0, 1, 1);
 
             &:hover {
@@ -361,7 +361,7 @@
 
         .arco-select-view-value {
           margin-right: 12px;
-          color: var(--sealblue-6);
+          color: var(--color-text-selected);
           font-weight: var(--font-weight-medium);
           font-size: 14px;
           transform: scale(1.05);

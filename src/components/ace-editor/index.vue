@@ -64,7 +64,10 @@
   import ace, { Range, edit } from 'ace-builds';
   import 'ace-builds/src-noconflict/ext-language_tools';
   import 'ace-builds/src-noconflict/ext-searchbox';
-  import 'ace-builds/src-noconflict/theme-monokai';
+  // import 'ace-builds/src-noconflict/theme-monokai';
+  // import 'ace-builds/src-noconflict/theme-solarized_dark';
+  // import 'ace-builds/src-noconflict/theme-dracula';
+  import 'ace-builds/src-noconflict/theme-nord_dark';
   import 'ace-builds/src-noconflict/mode-javascript';
   import 'ace-builds/src-noconflict/mode-text';
   import 'ace-builds/src-noconflict/mode-json';
@@ -179,6 +182,7 @@
 
   // let timer:any = null
   let aceEditor: any = null;
+  const darkTheme = 'nord_dark';
   const isAce = ref(true);
   const inputVal = ref('');
   const editorRef = ref();
@@ -355,7 +359,7 @@
     (val) => {
       console.log('sysTheme', val);
       if (val === 'dark') {
-        aceEditor?.setOption('theme', 'ace/theme/monokai');
+        aceEditor?.setOption('theme', `ace/theme/${darkTheme}`);
       } else {
         aceEditor?.setOption('theme', '');
       }
@@ -401,7 +405,7 @@
         fontSize: 14,
         readOnly: props.readOnly,
         mode: `ace/mode/${props.lang}`,
-        theme: appStore.theme === 'dark' ? `ace/theme/monokai` : '',
+        theme: appStore.theme === 'dark' ? `ace/theme/${darkTheme}` : '',
         enableSnippets: false,
         showGutter: props.showGutter,
         autoScrollEditorIntoView: false,
