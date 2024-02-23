@@ -1,16 +1,12 @@
 <script lang="tsx">
-  import i18n from '@/locale';
   import _ from 'lodash';
   import { defineComponent, ref, PropType, computed, watch } from 'vue';
   import AceEditor from '@/components/ace-editor/index.vue';
-  import CodeDiffView from '@/components/code-diff-view/index.vue';
   import IconBtnGroup from '@/components/icon-btn-group/index.vue';
   import {
     yaml2Json,
     json2Yaml
   } from '@/components/form-create/config/yaml-parse';
-  import Copy from '@/components/copy/copy-command.vue';
-  import { queryRevisionChange } from '@/views/application-management/services/api';
   import ServiceInfo from '@/views/application-management/services/components/service-info.vue';
 
   export default defineComponent({
@@ -24,17 +20,6 @@
       }
     },
     setup(props, ctx) {
-      const attributesOptions = [
-        {
-          label: 'Configuration',
-          value: 'config'
-        },
-        {
-          label: 'Change History',
-          value: 'history'
-        }
-      ];
-
       const iconList = [
         {
           icon: 'icon-jibenxinxi',
@@ -48,14 +33,8 @@
         }
       ];
 
-      const type = ref('config');
       const activeKey = ref('form');
       const yamlAttributes = ref('');
-      const loading = ref(false);
-      const diffContent = ref({
-        old: '',
-        new: ''
-      });
 
       watch(
         () => props.runData?.computedAttributes,
@@ -67,110 +46,28 @@
         }
       );
 
-      const getRevisionChange = async () => {
-        try {
-          loading.value = true;
-          const { data } = await queryRevisionChange({
-            id: props.runData.id,
-            serviceID: props.runData.resource?.id
-          });
-          diffContent.value = {
-            old: data?.old?.computedAttributes
-              ? JSON.stringify(data?.old?.computedAttributes, null, 2)
-              : '',
-            new: JSON.stringify(data?.new?.computedAttributes, null, 2)
-          };
-        } catch (error) {
-          diffContent.value = {
-            old: '',
-            new: ''
-          };
-        } finally {
-          loading.value = false;
-        }
-      };
-      const handleToggle = (val) => {
-        if (val === 'history') {
-          getRevisionChange();
-        }
-      };
-
-      const renderCopyButton = (data) => {
-        return (
-          <div class="title">
-            <span></span>
-            <Copy content={data}></Copy>
-          </div>
-        );
-      };
       return () => (
         <div class="content">
-          <div class="flex ">
-            <i class="iconfont icon-filter2"></i>
-            <a-select
-              bordered={false}
-              v-model={type.value}
-              options={attributesOptions}
-              style={{ width: '140px' }}
-              onChange={(val) => handleToggle(val)}
-            ></a-select>
+          <IconBtnGroup
+            class="btn-group m-b-10"
+            v-model:active={activeKey.value}
+            icon-list={iconList}
+          ></IconBtnGroup>
+          <div>
+            {activeKey.value === 'form' ? (
+              <ServiceInfo></ServiceInfo>
+            ) : (
+              <AceEditor
+                ref="yaml_editor"
+                read-only
+                key="yaml_editor"
+                editorId="yaml_editor"
+                editor-default-value={yamlAttributes.value}
+                lang="yaml"
+                height={380}
+              ></AceEditor>
+            )}
           </div>
-          <a-tabs
-            class="attributes-tabs"
-            default-active-key={type.value}
-            v-model:activeKey={type.value}
-          >
-            <a-tab-pane key="config">
-              <IconBtnGroup
-                class="btn-group"
-                v-model:active={activeKey.value}
-                icon-list={iconList}
-              ></IconBtnGroup>
-              <div>
-                {activeKey.value === 'form' ? (
-                  <ServiceInfo></ServiceInfo>
-                ) : (
-                  <AceEditor
-                    ref="yaml_editor"
-                    read-only
-                    key="yaml_editor"
-                    editorId="yaml_editor"
-                    editor-default-value={yamlAttributes.value}
-                    lang="yaml"
-                    height={380}
-                  ></AceEditor>
-                )}
-              </div>
-            </a-tab-pane>
-            <a-tab-pane key="history">
-              {_.isEqual(diffContent.value.old, diffContent.value.new) ? (
-                <a-alert
-                  class="m-t-10"
-                  style={{ color: 'var(--color-text-3)', textAlign: 'left' }}
-                >
-                  {i18n.global.t('applications.applications.history.diff.same')}
-                </a-alert>
-              ) : null}
-              <a-spin loading={loading.value} style={{ width: '100%' }}>
-                <CodeDiffView
-                  content={diffContent.value}
-                  class="m-t-10 m-b-10"
-                  v-slots={{
-                    leftTitle: diffContent.value.old
-                      ? () => {
-                          return renderCopyButton(diffContent.value.old);
-                        }
-                      : null,
-                    rightTitle: diffContent.value.new
-                      ? () => {
-                          return renderCopyButton(diffContent.value.new);
-                        }
-                      : null
-                  }}
-                ></CodeDiffView>
-              </a-spin>
-            </a-tab-pane>
-          </a-tabs>
         </div>
       );
     }

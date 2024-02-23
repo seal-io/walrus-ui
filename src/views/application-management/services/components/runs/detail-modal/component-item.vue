@@ -156,7 +156,7 @@
       };
 
       const renderChangeType = () => {
-        const changeType = props.rowData.changeType as string;
+        const changeType = props.rowData.change?.type as string;
         if (changeType === 'update') {
           return (
             <a-tag
@@ -171,11 +171,12 @@
                 color: StatusColor.warning.text
               }}
             >
-              <i class="iconfont icon-wave-sine m-r-5"></i>Update
+              <i class="iconfont icon-wave-sine m-r-5"></i>
+              {i18n.global.t('resource.revisons.components.change.update')}
             </a-tag>
           );
         }
-        if (changeType === 'remove') {
+        if (changeType === 'delete') {
           return (
             <a-tag
               type="outline"
@@ -190,10 +191,30 @@
               }}
             >
               <icon-minus class="m-r-5" />
-              Delete
+              {i18n.global.t('resource.revisons.components.change.delete')}
             </a-tag>
           );
         }
+        if (changeType === 'create') {
+          return (
+            <a-tag
+              type="outline"
+              size="small"
+              class="change-type"
+              status="success"
+              style={{
+                padding: '4px 10px',
+                borderRadius: 'var(--border-radius-small)',
+                backgroundColor: StatusColor.success.bg,
+                color: StatusColor.success.text
+              }}
+            >
+              <icon-plus class="m-r-5" />
+              {i18n.global.t('resource.revisons.components.change.create')}
+            </a-tag>
+          );
+        }
+        // no-change
         return (
           <a-tag
             type="outline"
@@ -203,12 +224,11 @@
             style={{
               padding: '4px 10px',
               borderRadius: 'var(--border-radius-small)',
-              backgroundColor: StatusColor.success.bg,
-              color: StatusColor.success.text
+              backgroundColor: StatusColor.inactive.bg,
+              color: StatusColor.inactive.text
             }}
           >
-            <icon-plus class="m-r-5" />
-            Add
+            {i18n.global.t('resource.revisons.components.change.noChange')}
           </a-tag>
         );
       };

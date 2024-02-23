@@ -38,11 +38,7 @@
     </template>
     <a-spin :loading="loading" style="width: 100%; text-align: center">
       <div>
-        <BasicData
-          :run-data="basicData"
-          class="m-b-10"
-          @apply="handleApplyResourceRun"
-        >
+        <BasicData :run-data="basicData" @apply="handleApplyResourceRun">
         </BasicData>
         <a-tabs
           v-model:active-key="activeKey"
@@ -80,6 +76,12 @@
               :fullscreen="fullscreen"
             ></runLogs>
           </a-tab-pane>
+          <a-tab-pane
+            key="history"
+            :title="$t('applications.applications.history.changeList')"
+          >
+            <runChangeHistory :run-data="basicData"></runChangeHistory>
+          </a-tab-pane>
         </a-tabs>
       </div>
     </a-spin>
@@ -103,6 +105,7 @@
   import runAttributes from './run-attributes.vue';
   import runComponents from './run-components.vue';
   import runLogs from './run-logs.vue';
+  import runChangeHistory from './run-change-history.vue';
   import { RevisionStatus } from '../../../config';
 
   const props = defineProps({

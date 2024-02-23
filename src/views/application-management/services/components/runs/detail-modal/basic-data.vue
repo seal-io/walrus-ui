@@ -7,6 +7,7 @@
   import StatusLabel from '@/views/operation-hub/connectors/components/status-label.vue';
   import ClockTimer from '@/components/clock-timer/index.vue';
   import Copy from '@/components/copy/copy-command.vue';
+  import Autotip from '@arco-design/web-vue/es/_components/auto-tooltip/auto-tooltip';
   import BasicInfo from '@/views/application-management/services/components/basic-info.vue';
   import {
     runBasicConfig,
@@ -148,9 +149,9 @@
             <div class="title-box">
               {renderStatusIcon()}
               <span class="title">
-                <span style={{ padding: '0 8px' }}>
-                  {props.runData.resource?.name}
-                </span>
+                <Autotip style={{ maxWidth: '130px' }}>
+                  <span class="text">{props.runData.resource?.name}</span>
+                </Autotip>
                 <span class="status">{renderStatus()}</span>
               </span>
             </div>
@@ -225,13 +226,19 @@
     .title-box {
       display: flex;
       align-items: center;
+      height: max-content;
     }
 
     .title {
       display: flex;
       flex-direction: column;
       align-items: flex-start;
-      margin-right: 22px;
+      margin-right: 30px;
+
+      .text {
+        padding: 0 8px;
+        font-size: var(--font-size-large);
+      }
 
       .status {
         margin-top: 10px;

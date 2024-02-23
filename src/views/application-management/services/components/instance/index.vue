@@ -72,8 +72,8 @@
                             }
                           "
                         >
-                          <icon-font type="icon-rizhi" class="size-16 m-r-5" />
-                          {{ $t('common.button.logs') }}</a-link
+                          <i class="size-16 m-r-5 iconfont icon-xiangqing"></i>
+                          {{ $t('common.button.detail') }}</a-link
                         >
                       </div>
                     </template>

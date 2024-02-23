@@ -125,6 +125,7 @@
           <div>
             <BasicInfo
               data-info={basicDataList.value}
+              tableLayout="fixed"
               cols={3}
               v-slots={{
                 value: ({ data, value }) => {
@@ -136,7 +137,7 @@
               }}
             ></BasicInfo>
             <RunDetailModal
-              title="Latest Run Details"
+              title={i18n.global.t('applications.applications.history.latest')}
               v-model:show={showDetailModal.value}
               data={runData.value}
             ></RunDetailModal>

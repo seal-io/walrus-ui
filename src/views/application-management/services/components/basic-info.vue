@@ -31,6 +31,10 @@
       layout: {
         type: String,
         default: 'inline-vertical'
+      },
+      tableLayout: {
+        type: String,
+        default: 'auto'
       }
     },
     setup(props, { slots, emit }) {
@@ -74,6 +78,7 @@
               data={props.dataInfo}
               column={props.cols}
               layout={props.layout}
+              table-layout={props.tableLayout}
             >
               {_.map(props.dataInfo, (item, index) => {
                 return (

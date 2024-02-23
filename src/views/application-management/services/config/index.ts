@@ -136,7 +136,7 @@ export const latestRunConfig = [
     span: 1
   },
   {
-    label: 'dashboard.table.duration',
+    label: 'resource.revisons.table.duration',
     key: 'duration',
     value: '',
     formatter(val) {
@@ -172,7 +172,7 @@ export const runBasicConfig = [
     span: 1
   },
   {
-    label: 'dashboard.table.duration',
+    label: 'resource.revisons.table.duration',
     key: 'duration',
     value: '',
     formatter(val) {
