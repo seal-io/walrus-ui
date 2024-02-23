@@ -124,6 +124,7 @@
   const selectedList = ref<string[]>([]);
   const inputValue = ref('');
   const { t } = useI18n();
+  const colorBackground1 = 'rgba(234, 236, 238,.1)';
 
   const showFilter = computed(() => {
     return props.data?.length >= props.maxLegend;
@@ -202,7 +203,8 @@
     }
     return result.join('');
   };
-  const { chartOption } = useChartOption((): any => {
+  const { chartOption } = useChartOption((isDark): any => {
+    console.log('isDark===========', isDark);
     let configData: DataConfigItem[] = [];
     let listData: ChartData[] = [];
     if (!selectedList.value.length) {
@@ -293,7 +295,7 @@
         axisPointer: {
           show: true,
           lineStyle: {
-            color: '#eaecee',
+            color: isDark ? colorBackground1 : '#eaecee',
             width: 1
           }
         }
@@ -312,7 +314,7 @@
         // },
         splitLine: {
           lineStyle: {
-            color: '#eaecee'
+            color: isDark ? colorBackground1 : '#eaecee'
           }
         }
       },

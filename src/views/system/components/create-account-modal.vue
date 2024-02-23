@@ -104,7 +104,7 @@
         >
           <template #prefix>
             <i
-              style="color: var(--sealblue-6)"
+              style="color: var(--color-text-selected)"
               class="iconfont size-14"
               :class="[
                 _.get(

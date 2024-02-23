@@ -58,7 +58,7 @@
 <script lang="ts" setup>
   import _ from 'lodash';
   import logolight from '@/assets/images/logo_02.png';
-  import logodark from '@/assets/images/logo_04.png';
+  import logodark from '@/assets/images/logo_05.png';
   import { onMounted, ref } from 'vue';
   import { getFirstLoginStatus } from '@/api/user';
   import { useUserStore, useAppStore } from '@/store';

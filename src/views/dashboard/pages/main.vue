@@ -39,13 +39,14 @@
             <span class="font-16" style="font-size: 16px">{{
               $t('dashboard.createProject.tips')
             }}</span>
-            <a-link
-              class="font-16 m-t-20"
+            <a-button
+              type="outline"
+              class="font-16 m-t-20 m-l-10"
               style="font-size: 16px"
               @click="handleCreateProject"
             >
               <icon-plus class="m-r-4"></icon-plus
-              >{{ $t('common.button.create.now') }}</a-link
+              >{{ $t('common.button.create.now') }}</a-button
             >
           </div>
         </a-empty>

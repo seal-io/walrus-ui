@@ -324,6 +324,10 @@
         height: 24px;
         font-size: 0;
 
+        .iconfont {
+          color: var(--color-text-selected);
+        }
+
         .arco-switch {
           margin-right: 20px;
         }

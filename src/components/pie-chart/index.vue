@@ -67,7 +67,8 @@
       tooltip: {
         show: true,
         trigger: 'item',
-        formatter: '{a}\n{b} : {c} ({d}%)'
+        formatter: '{a}\n{b} : {c} ({d}%)',
+        backgroundColor: 'var(--color-white-2)'
       },
       grid: {
         left: '0',

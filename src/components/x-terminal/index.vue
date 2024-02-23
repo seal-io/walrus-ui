@@ -53,6 +53,8 @@
 
   const conReadyState = ref(0);
 
+  const colorBg2 = 'rgb(0, 30, 35)';
+
   const runRealTerminal = () => {
     term.value?.clear?.();
     loading.value = false;
@@ -214,7 +216,7 @@
       fontFamily:
         "monospace,Menlo,Courier,'Courier New',Consolas,Monaco, 'Liberation Mono'",
       theme: {
-        background: appStore.theme === 'dark' ? '#373739' : '#181d28',
+        background: appStore.theme === 'dark' ? colorBg2 : '#181d28',
         foreground:
           appStore.theme === 'dark' ? 'rgba(255, 255, 255, 0.7)' : '#fff'
       },

@@ -891,11 +891,9 @@
 
     .graph-mount {
       position: relative;
-      // height: @height;
-      &.dark {
-        filter: var(--color-filter-inverted);
-      }
-
+      // &.dark {
+      //   filter: var(--color-filter-inverted);
+      // }
       &.isFullscreen {
         height: 100vh;
       }

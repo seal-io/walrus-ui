@@ -242,7 +242,7 @@
         eventTypes: ['leftMouseDown']
       },
       background: {
-        color: '#f3f6fa'
+        color: 'var(--color-workflow-bg)'
       },
       grid: {
         visible: false
@@ -508,16 +508,23 @@
 <style lang="less" scoped>
   .wrapper {
     position: relative;
+    padding: 0 var(--card-content-padding);
     font-size: 0;
     background-color: var(--color-fill-2);
+    background-color: var(--color-white);
+
+    .graphWrapper {
+      overflow: hidden;
+      border-radius: var(--border-radius-small);
+    }
 
     &.dark {
       padding: 0 var(--card-content-padding);
       background-color: var(--color-white);
 
-      .graphWrapper {
-        filter: var(--color-filter-inverted);
-      }
+      // .graphWrapper {
+      //   filter: var(--color-filter-inverted);
+      // }
       // :deep(.content-container) {
       //   a,
       //   button,
