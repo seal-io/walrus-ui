@@ -79,12 +79,6 @@
               :max-length="validateInputLength.NAME"
               show-word-limit
             ></seal-input>
-
-            <!-- <template v-if="pageAction === PageAction.EDIT" #extra>
-              <div :style="{ maxWidth: `${InputWidth.LARGE}px` }">{{
-                $t('common.validate.labelName')
-              }}</div>
-            </template> -->
           </a-form-item>
           <a-form-item
             :label="$t('operation.connectors.table.environmentType')"
@@ -107,9 +101,6 @@
               :options="EnvironmentTypeList"
               :style="{ width: `${InputWidth.LARGE}px` }"
             ></seal-select>
-            <!-- <span v-else class="readonly-view-label">{{
-              $t(EnvironmentTypeMap[formData.applicableEnvironmentType] || '')
-            }}</span> -->
           </a-form-item>
           <a-form-item
             :label="$t('operation.connectors.form.type')"
@@ -133,6 +124,38 @@
             ></seal-input>
           </a-form-item>
           <a-form-item
+            :label="$t('operation.connectors.detail.inputformat')"
+            hide-label
+            hide-asterisk
+            :disabled="!!id"
+          >
+            <seal-select
+              v-model="formData.configDataFormat"
+              :view-status="pageAction === PageAction.VIEW"
+              :label="$t('operation.connectors.detail.inputformat')"
+              :options="CustomInputFormats"
+              :style="{ width: `${InputWidth.LARGE}px` }"
+            ></seal-select>
+          </a-form-item>
+          <a-form-item
+            v-if="formData.configDataFormat === 'advanced'"
+            :style="{ width: `${InputWidth.LARGE}px` }"
+            hide-label
+            hide-asterisk
+          >
+            <AceEditor
+              v-model="formData.customConfig"
+              label="input the customized config(JSON) here"
+              :editor-default-value="formData.customConfig"
+              lang="json"
+              style="width: 100%"
+              :height="300"
+              :show-gutter="false"
+            ></AceEditor>
+          </a-form-item>
+
+          <a-form-item
+            v-if="formData.configDataFormat === 'basic'"
             :label="$t('operation.connectors.form.attribute')"
             hide-asterisk
             hide-label
@@ -279,6 +302,7 @@
     EnvironmentTypeMap,
     EnvironmentTypeOrder
   } from '@/views/config';
+  import AceEditor from '@/components/ace-editor/index.vue';
   import { OPERATIONHUB } from '@/router/config';
   import { Resources, Actions } from '@/permissions/config';
   import { useUserStore } from '@/store';
@@ -305,8 +329,13 @@
   import xInputGroup from '@/components/form-create/custom-components/x-input-group.vue';
   import useCallCommon from '@/hooks/use-call-common';
   import DescriptionTable from '@/components/description-table/index.vue';
+  import SealFormItemWrap from '@/components/seal-form/components/seal-form-item-wrap.vue';
   import { ConnectorFormData, CustomAttrbute } from '../config/interface';
-  import { operationRootBread, ConnectorCategory } from '../config';
+  import {
+    operationRootBread,
+    ConnectorCategory,
+    CustomInputFormats
+  } from '../config';
   import { createConnector, updateConnector, queryItemConnector } from '../api';
   import useConnectorBread from '../hooks/use-connector-bread';
 
@@ -335,8 +364,11 @@
   const submitLoading = ref(false);
   const triggerValidate = ref(false);
   let copyFormData: any = {};
+  const inputFormat = ref('basic'); // basic or advanced
   const formData: ConnectorFormData = reactive({
     name: '',
+    configDataFormat: 'basic',
+    customConfig: '',
     configData: {},
     description: '',
     configVersion: 'v1',
@@ -345,6 +377,16 @@
     category: ConnectorCategory.Custom,
     enableFinOps: false
   });
+
+  const attributeList = ref<CustomAttrbute[]>([
+    {
+      key: '',
+      value: '',
+      type: 'string',
+      visible: true,
+      ...labelOption
+    }
+  ]);
 
   const EnvironmentTypeList = computed(() => {
     return _.map(userStore.applicableEnvironmentTypes, (item) => {
@@ -368,15 +410,6 @@
       }
     ];
   });
-  const attributeList = ref<CustomAttrbute[]>([
-    {
-      key: '',
-      value: '',
-      type: 'string',
-      visible: true,
-      ...labelOption
-    }
-  ]);
 
   const title = computed(() => {
     if (id) {

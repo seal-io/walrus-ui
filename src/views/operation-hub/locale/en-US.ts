@@ -25,6 +25,7 @@ export default {
   'operation.connectors.title.view': '{type} Connector Details',
   'operation.connectors.title.new': 'New {type} Connector',
   'operation.connectors.detail.fileformat': 'File format: yaml or text file',
+  'operation.connectors.detail.inputformat': 'Input Format',
   'operation.connectors.detail.clusterName': 'Name',
   'operation.connectors.rules.name': 'Cluster name is required.',
   'operation.connectors.rules.kubeconfig': 'Kubeconfig is required.',

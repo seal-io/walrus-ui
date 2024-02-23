@@ -73,6 +73,10 @@ export const CloudProviderType = {
   Alibaba: 'Alibaba'
 };
 
+export const CustomInputFormats = [
+  { label: 'Basic', value: 'basic' },
+  { label: 'Advanced(JSON)', value: 'advanced' }
+];
 export const cutomeTypeOptions = [
   { label: 'Alibaba', value: CloudProviderType.Alibaba },
   { label: 'AWS', value: CloudProviderType.AWS }

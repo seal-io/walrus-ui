@@ -34,6 +34,8 @@ export interface ConnectorFormData {
   description?: string;
   type: string;
   applicableEnvironmentType: string;
+  configDataFormat: string;
+  customConfig: string;
   configData: {
     [k: string]: {
       visible?: boolean;
