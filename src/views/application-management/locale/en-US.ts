@@ -92,7 +92,8 @@ export default {
   'applications.applications.history.execTime': 'Execution Time',
   'applications.applications.history.changes': 'Changes',
   'applications.applications.history.rollback': 'Rollback',
-  'applications.applications.history.detail': 'Revision Details',
+  'applications.applications.history.detail': 'Run Details',
+  'applications.applications.history.latest': 'Latest Run Details',
   'applications.applications.history.changeList': 'Change History',
   'applications.applications.history.running': 'Deployment Logs',
   'applications.applications.history.diff.title':
@@ -220,9 +221,14 @@ export default {
   'resource.revisons.detail.attributes': 'Configuration',
   'resource.revisons.filter.types': 'All Types',
   'resource.revisons.filter.status': 'All Statuses',
+  'resource.revisons.table.duration': 'Duration',
   'resource.revisons.components.changes': 'The task is running with no changes',
   'resource.revisons.components.nochanges': 'No any changes',
   'resource.revisons.components.beforeChange': 'Before Change',
   'resource.revisons.components.afterChange': 'After Change',
+  'resource.revisons.components.change.create': 'Add',
+  'resource.revisons.components.change.delete': 'Delete',
+  'resource.revisons.components.change.update': 'Update',
+  'resource.revisons.components.change.nochange': 'No Change',
   'resource.revisons.components.planning': 'The task is running...'
 };

@@ -924,6 +924,7 @@
 
 <style lang="less">
   .arco-popconfirm-popup-content.deploy-comment-popup {
+    background-color: var(--color-white-1);
     border: none;
     border-radius: var(--border-radius-small);
 

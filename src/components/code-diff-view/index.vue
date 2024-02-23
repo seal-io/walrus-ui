@@ -123,7 +123,9 @@
     position: relative;
     display: flex;
     justify-content: space-between;
+    max-height: 300px;
     overflow: hidden;
+    overflow-y: auto;
     font-size: var(--font-size-small);
     border-radius: var(--border-radius-small);
 
