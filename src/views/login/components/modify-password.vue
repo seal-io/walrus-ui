@@ -26,7 +26,6 @@
             <seal-input-password
               v-model="formData.newPassword"
               style="width: 100%"
-              size="large"
               :required="true"
               :placeholder="$t('user.password.newPassword')"
               allow-clear
@@ -51,7 +50,6 @@
             <seal-input-password
               v-model="formData.confirmPassword"
               style="width: 100%"
-              size="large"
               :required="true"
               :placeholder="$t('user.password.confirmPassword')"
               allow-clear
@@ -79,7 +77,6 @@
               <seal-input
                 v-model.trim="formData.serverUrl"
                 style="width: 100%"
-                size="large"
                 :placeholder="$t('system.setting.serverurl')"
               >
                 <template #prefix>

@@ -475,7 +475,7 @@
       height: 36px;
       padding: 0 10px;
       color: var(--color-text-3);
-      border-bottom: 1px solid var(--color-border-2);
+      // border-bottom: 1px solid var(--color-border-2);
     }
 
     .title {
