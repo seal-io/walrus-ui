@@ -78,7 +78,7 @@
     <template #footer>
       <EditPageFooter style="margin-top: 0">
         <template #save>
-          <a-button
+          <GroupButtonMenu
             v-if="
               userStore.hasProjectResourceActions({
                 projectID,
@@ -95,11 +95,19 @@
               _.get(serviceInfo, 'status.summaryStatus') ===
               RevisionStatus.Running
             "
-            type="primary"
-            class="cap-title cancel-btn"
-            @click="handleOk"
-            >{{ $t('common.button.rollback') }}</a-button
+            trigger="hover"
+            :actions="rollbackPreviewActions"
+            @select="() => handleOk(true)"
           >
+            <template #default>
+              <a-button
+                type="primary"
+                class="cap-title cancel-btn"
+                @click="() => handleOk(false)"
+                >{{ $t('common.button.rollback') }}</a-button
+              >
+            </template>
+          </GroupButtonMenu>
         </template>
         <template #cancel>
           <a-button
@@ -125,8 +133,10 @@
   import AceEditor from '@/components/ace-editor/index.vue';
   import {
     RevisionStatus,
-    RevisionTypes
+    RevisionTypes,
+    rollbackPreviewActions
   } from '@/views/application-management/services/config';
+  import GroupButtonMenu from '@/components/drop-button-group/group-button-menu.vue';
 
   const props = defineProps({
     title: String,
@@ -194,9 +204,12 @@
   const handleCancel = () => {
     emit('update:show', false);
   };
-  const handleOk = async () => {
+  const handleOk = async (flag) => {
     emit('update:show', false);
-    emit('confirm', changeComment.value);
+    emit('confirm', {
+      changeComment: changeComment.value,
+      approvalRequired: flag
+    });
   };
   const reset = () => {
     codeResult.value = '';

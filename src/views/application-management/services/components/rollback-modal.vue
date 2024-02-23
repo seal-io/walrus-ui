@@ -115,13 +115,22 @@
     <template #footer>
       <EditPageFooter style="margin-top: 0; padding-top: 0">
         <template #save>
-          <a-button
+          <GroupButtonMenu
+            trigger="hover"
             :loading="submitLoading"
-            type="primary"
-            class="cap-title cancel-btn"
-            @click="handleOk"
-            >{{ $t('common.button.rollback') }}</a-button
+            :actions="rollbackPreviewActions"
+            @select="() => handleOk(true)"
           >
+            <template #default>
+              <a-button
+                :loading="submitLoading"
+                type="primary"
+                class="cap-title cancel-btn"
+                @click="() => handleOk(false)"
+                >{{ $t('common.button.rollback') }}</a-button
+              >
+            </template>
+          </GroupButtonMenu>
         </template>
         <template #cancel>
           <a-button
@@ -144,7 +153,9 @@
   import AceEditor from '@/components/ace-editor/index.vue';
   import { execSucceed } from '@/utils/monitor';
   import EditPageFooter from '@/components/edit-page-footer/index.vue';
+  import GroupButtonMenu from '@/components/drop-button-group/group-button-menu.vue';
   import { HistoryData } from '../config/interface';
+  import { rollbackPreviewActions } from '../config';
   import {
     queryServiceRevisions,
     diffRevisionSpec,
@@ -194,6 +205,7 @@
   const formref = ref();
   const attributesDiffContent = ref({});
   const computedDiffContent = ref({});
+  const isRollbackPreview = ref(false);
   const formData = reactive({
     projectID: props.projectID,
     serviceID: '',
@@ -223,7 +235,8 @@
       await rollbackService({
         revisionID: formData.id,
         serviceID: formData.serviceID,
-        changeComment: formData.changeComment
+        changeComment: formData.changeComment,
+        approvalRequired: isRollbackPreview.value
       });
       execSucceed();
     } catch (error) {
@@ -291,7 +304,8 @@
     await handleRollbackService();
     emit('update:show', false);
   };
-  const handleOk = async () => {
+  const handleOk = async (flag) => {
+    isRollbackPreview.value = flag;
     const res = await formref.value?.validate();
     if (!res) {
       try {

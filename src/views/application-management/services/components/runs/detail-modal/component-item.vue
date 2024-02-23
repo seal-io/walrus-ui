@@ -171,7 +171,6 @@
                 color: StatusColor.warning.text
               }}
             >
-              <i class="iconfont icon-wave-sine m-r-5"></i>
               {i18n.global.t('resource.revisons.components.change.update')}
             </a-tag>
           );
@@ -190,7 +189,6 @@
                 color: StatusColor.error.text
               }}
             >
-              <icon-minus class="m-r-5" />
               {i18n.global.t('resource.revisons.components.change.delete')}
             </a-tag>
           );
@@ -209,7 +207,6 @@
                 color: StatusColor.success.text
               }}
             >
-              <icon-plus class="m-r-5" />
               {i18n.global.t('resource.revisons.components.change.create')}
             </a-tag>
           );
@@ -228,7 +225,7 @@
               color: StatusColor.inactive.text
             }}
           >
-            {i18n.global.t('resource.revisons.components.change.noChange')}
+            {i18n.global.t('resource.revisons.components.change.nochange')}
           </a-tag>
         );
       };

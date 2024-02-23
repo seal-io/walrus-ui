@@ -293,6 +293,7 @@ export const serviceActionMap = {
   upgrade: 'upgrade',
   logs: 'logs',
   rollback: 'rollback',
+  preview: 'preview',
   delete: 'delete',
   clone: 'clone',
   deploy: 'deploy',
@@ -302,6 +303,21 @@ export const serviceActionMap = {
   stop: 'stop',
   start: 'start'
 };
+
+export const rollbackPreviewActions: MoreAction[] = [
+  {
+    label: 'common.button.rollback',
+    value: serviceActionMap.rollback,
+    icon: 'icon-Cloud',
+    iconfont: true
+  },
+  {
+    label: 'common.button.rollbackPreview',
+    value: serviceActionMap.preview,
+    icon: 'icon-Cloud',
+    iconfont: true
+  }
+];
 
 export const serviceBatchAction: MoreAction[] = [
   {
