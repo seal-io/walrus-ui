@@ -153,6 +153,7 @@ export default {
   'common.table.rollback.mark': 'Rollback Comment',
   'common.button.saveDeploy': 'Save and Deploy',
   'common.button.savePreview': 'Save and Preview',
+  'common.button.rollbackPreview': 'Rollback Preview',
   'common.button.deployPreview': 'Deployment Preview',
   'common.button.draft': 'Save Draft',
   'common.button.stop': 'Stop',

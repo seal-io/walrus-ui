@@ -360,12 +360,13 @@
       diffContent.value = computedDiffContent.value;
     }
   };
-  const handleRollbackService = async (comment) => {
+  const handleRollbackService = async (data) => {
     try {
       await rollbackService({
         revisionID: rollbackData.value.id,
         serviceID: serviceId.value,
-        changeComment: comment
+        changeComment: data.changeComment,
+        approvalRequired: data.approvalRequired
       });
       execSucceed();
     } catch (error) {
