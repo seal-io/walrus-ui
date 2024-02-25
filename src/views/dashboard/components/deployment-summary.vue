@@ -7,7 +7,13 @@
     }"
   >
     <template #title>
-      <div style="display: flex; justify-content: space-between">
+      <div
+        style="
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+        "
+      >
         <span>{{ $t('dashboard.deployment.title') }}</span>
         <DateRange
           v-model:start="queryParams.startTime"

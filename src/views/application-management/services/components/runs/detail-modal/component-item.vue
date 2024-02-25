@@ -38,6 +38,12 @@
     },
     emits: ['selectionChange'],
     setup(props, { slots, emit }) {
+      const ChangeTypeMap = {
+        'update': 'update',
+        'delete': 'delete',
+        'create': 'create',
+        'no-change': 'no-change'
+      };
       const collapse = ref(false);
       const isOpened = ref(false);
       const diffContent = ref({
@@ -157,7 +163,7 @@
 
       const renderChangeType = () => {
         const changeType = props.rowData.change?.type as string;
-        if (changeType === 'update') {
+        if (changeType === ChangeTypeMap.update) {
           return (
             <a-tag
               type="outline"
@@ -175,7 +181,7 @@
             </a-tag>
           );
         }
-        if (changeType === 'delete') {
+        if (changeType === ChangeTypeMap.delete) {
           return (
             <a-tag
               type="outline"
@@ -193,7 +199,7 @@
             </a-tag>
           );
         }
-        if (changeType === 'create') {
+        if (changeType === ChangeTypeMap.create) {
           return (
             <a-tag
               type="outline"
