@@ -41,6 +41,10 @@
       //   }
       // );
       const renderStaticLogs = () => {
+        if (props.runData?.status?.summaryStatus === RevisionStatus.Running) {
+          return null;
+        }
+
         if (props.runData?.record) {
           return (
             <StaticLogs

@@ -39,14 +39,12 @@ declare module 'vue' {
     APagination: typeof import('@arco-design/web-vue')['Pagination'];
     APopconfirm: typeof import('@arco-design/web-vue')['Popconfirm'];
     AProgress: typeof import('@arco-design/web-vue')['Progress'];
-<<<<<<< HEAD
     ARangePicker: typeof import('@arco-design/web-vue')['RangePicker'];
-=======
     AResult: typeof import('@arco-design/web-vue')['Result'];
->>>>>>> f7f123b7 (chore:  run detail  text)
     ASelect: typeof import('@arco-design/web-vue')['Select'];
     ASpace: typeof import('@arco-design/web-vue')['Space'];
     ASpin: typeof import('@arco-design/web-vue')['Spin'];
+    AStatistic: typeof import('@arco-design/web-vue')['Statistic'];
     ASubMenu: typeof import('@arco-design/web-vue')['SubMenu'];
     ASwitch: typeof import('@arco-design/web-vue')['Switch'];
     ATable: typeof import('@arco-design/web-vue')['Table'];
