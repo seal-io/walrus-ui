@@ -43,6 +43,7 @@ export interface ConnectorFormData {
       type?: string;
     };
   };
+  category?: string;
   configVersion: string;
   enableFinOps: boolean;
 }
@@ -55,4 +56,12 @@ export interface ConnectorTypeData {
   route: string;
   globalRoute: string;
   icon: string;
+}
+
+export interface ProviderKey {
+  label: string;
+  value: string;
+  key: string;
+  visible: boolean;
+  type: string;
 }

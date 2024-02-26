@@ -55,12 +55,12 @@ export const operationRootBread = {
   backAction: true,
   route: 'OperationMain'
 };
-export enum ConnectorCategory {
-  VersionControl = 'VersionControl',
-  Custom = 'Custom',
-  CloudProvider = 'CloudProvider',
-  Kubernetes = 'Kubernetes'
-}
+export const ConnectorCategory = {
+  VersionControl: 'VersionControl',
+  Custom: 'Custom',
+  CloudProvider: 'CloudProvider',
+  Kubernetes: 'Kubernetes'
+};
 
 export const ConnectorType = {
   AWS: 'AWS',
@@ -70,7 +70,9 @@ export const ConnectorType = {
 };
 export const CloudProviderType = {
   AWS: 'AWS',
-  Alibaba: 'Alibaba'
+  Alibaba: 'Alibaba',
+  AzureRM: 'AzureRM',
+  Google: 'Google'
 };
 
 export const CustomInputFormats = [
@@ -79,7 +81,89 @@ export const CustomInputFormats = [
 ];
 export const cutomeTypeOptions = [
   { label: 'Alibaba', value: CloudProviderType.Alibaba },
-  { label: 'AWS', value: CloudProviderType.AWS }
+  { label: 'AWS', value: CloudProviderType.AWS },
+  { label: 'AzureRM', value: CloudProviderType.AzureRM },
+  { label: 'Google', value: CloudProviderType.Google }
+];
+
+export const CommonCloudProviderKeys = [
+  {
+    label: 'AccessKey',
+    value: '',
+    key: 'access_key',
+    visible: true,
+    type: 'string'
+  },
+  {
+    label: 'SecretKey',
+    value: '',
+    key: 'secret_key',
+    visible: false,
+    type: 'string'
+  },
+  { label: 'Region', value: '', key: 'region', visible: true, type: 'string' }
+];
+
+export const AzureRMCloudProviderKeys = [
+  {
+    label: 'ClientID',
+    value: '',
+    key: 'clientID',
+    visible: true,
+    type: 'string'
+  },
+  {
+    label: 'ClientSecret',
+    value: '',
+    key: 'clientSecret',
+    visible: false,
+    type: 'string'
+  },
+  {
+    label: 'SubscriptionID',
+    value: '',
+    key: 'subscriptionID',
+    visible: true,
+    type: 'string'
+  },
+  {
+    label: 'TenantID',
+    value: '',
+    key: 'tenantID',
+    visible: true,
+    type: 'string'
+  }
+];
+
+export const GoogleCloudProviderKeys = [
+  {
+    label: 'applications.projects.table.project',
+    value: '',
+    key: 'project',
+    visible: true,
+    type: 'string'
+  },
+  {
+    label: 'operation.connectors.table.credentials',
+    value: '',
+    key: 'credentials',
+    visible: false,
+    type: 'string'
+  },
+  {
+    label: 'Region',
+    value: '',
+    key: 'region',
+    visible: true,
+    type: 'string'
+  },
+  {
+    label: 'Zone',
+    value: '',
+    key: 'zone',
+    visible: true,
+    type: 'string'
+  }
 ];
 
 export const finOpsStatus = [
