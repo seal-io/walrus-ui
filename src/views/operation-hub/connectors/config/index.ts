@@ -106,7 +106,13 @@ export const CommonCloudProviderKeys = [
     visible: false,
     type: 'string'
   },
-  { label: 'Region', value: '', key: 'region', visible: true, type: 'string' }
+  {
+    label: 'operation.connectors.table.region',
+    value: '',
+    key: 'region',
+    visible: true,
+    type: 'string'
+  }
 ];
 
 export const AzureRMCloudProviderKeys = [
@@ -157,14 +163,14 @@ export const GoogleCloudProviderKeys = [
     type: 'string'
   },
   {
-    label: 'Region',
+    label: 'operation.connectors.table.region',
     value: '',
     key: 'region',
     visible: true,
     type: 'string'
   },
   {
-    label: 'Zone',
+    label: 'operation.connectors.table.zones',
     value: '',
     key: 'zone',
     visible: true,

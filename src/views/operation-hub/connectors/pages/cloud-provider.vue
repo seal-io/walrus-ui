@@ -591,7 +591,7 @@
                               {
                                 required: true,
                                 message: t('common.form.rule.input', {
-                                  name: item.label
+                                  name: t(item.label)
                                 })
                               }
                             ]}
