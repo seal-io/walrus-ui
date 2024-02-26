@@ -8,6 +8,8 @@ export default {
   'operation.connectors.table.connector': '连接器',
   'operation.connectors.table.status': '状态',
   'operation.connectors.table.region': '区域',
+  'operation.connectors.table.zones': '可用区域',
+  'operation.connectors.table.credentials': '证书',
   'operation.connectors.finops.enable': '开启',
   'operation.connectors.finops.disable': '未开启',
   'operation.connectors.table.coststatus': '成本数据信息',

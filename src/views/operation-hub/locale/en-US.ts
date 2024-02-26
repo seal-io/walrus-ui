@@ -8,6 +8,8 @@ export default {
   'operation.connectors.table.connector': 'Connector',
   'operation.connectors.table.status': 'Status',
   'operation.connectors.table.region': 'Region',
+  'operation.connectors.table.zones': 'Zones',
+  'operation.connectors.table.credentials': 'Credentials',
   'operation.connectors.finops.enable': 'Enable',
   'operation.connectors.finops.disable': 'Disable',
   'operation.connectors.table.coststatus': 'Cost Data Information',

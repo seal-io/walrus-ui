@@ -121,6 +121,7 @@ export default {
   'applications.workflows.menu': '工作流',
   'applications.workflows.create': '新建流程',
   'applications.projects.menu': '项目',
+  'applications.projects.table.project': '项目',
   'applications.projects.authorize.title': '角色授权',
   'applications.projects.authorize.account': '请选择用户',
   'applications.projects.authorize.role': '请分配角色',
