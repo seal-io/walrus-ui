@@ -75,9 +75,14 @@ export const CloudProviderType = {
   Google: 'Google'
 };
 
+export const inputFormatMap = {
+  basic: 'basic',
+  advanced: 'advanced'
+};
+
 export const CustomInputFormats = [
-  { label: 'Basic', value: 'basic' },
-  { label: 'Advanced(JSON)', value: 'advanced' }
+  { label: 'Basic', value: inputFormatMap.basic },
+  { label: 'Advanced(JSON)', value: inputFormatMap.advanced }
 ];
 export const cutomeTypeOptions = [
   { label: 'Alibaba', value: CloudProviderType.Alibaba },
@@ -146,6 +151,7 @@ export const GoogleCloudProviderKeys = [
   {
     label: 'operation.connectors.table.credentials',
     value: '',
+    description: 'operation.connectors.table.credentials.desc',
     key: 'credentials',
     visible: false,
     type: 'string'

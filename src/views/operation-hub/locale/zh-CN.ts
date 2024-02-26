@@ -9,7 +9,10 @@ export default {
   'operation.connectors.table.status': '状态',
   'operation.connectors.table.region': '区域',
   'operation.connectors.table.zones': '可用区域',
-  'operation.connectors.table.credentials': '证书',
+  'operation.connectors.table.customconfig': '在此输入自定义配置（JSON）',
+  'operation.connectors.table.credentials': '凭据',
+  'operation.connectors.table.credentials.desc':
+    '将您的 GCP 帐户 JSON 凭据密钥粘贴到此处',
   'operation.connectors.finops.enable': '开启',
   'operation.connectors.finops.disable': '未开启',
   'operation.connectors.table.coststatus': '成本数据信息',

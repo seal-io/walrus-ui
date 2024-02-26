@@ -138,16 +138,17 @@
             ></seal-select>
           </a-form-item>
           <a-form-item
-            v-if="formData.configDataFormat === 'advanced'"
+            v-if="formData.configDataFormat === inputFormatMap.advanced"
             :style="{ width: `${InputWidth.LARGE}px` }"
             hide-label
             hide-asterisk
           >
             <AceEditor
               v-model="formData.customConfig"
-              label="input the customized config(JSON) here"
+              :label="$t('operation.connectors.table.customconfig')"
               :editor-default-value="formData.customConfig"
               lang="json"
+              :read-only="pageAction === PageAction.VIEW"
               style="width: 100%"
               :height="300"
               :show-gutter="false"
@@ -155,7 +156,7 @@
           </a-form-item>
 
           <a-form-item
-            v-if="formData.configDataFormat === 'basic'"
+            v-if="formData.configDataFormat === inputFormatMap.basic"
             :label="$t('operation.connectors.form.attribute')"
             hide-asterisk
             hide-label
@@ -334,7 +335,8 @@
   import {
     operationRootBread,
     ConnectorCategory,
-    CustomInputFormats
+    CustomInputFormats,
+    inputFormatMap
   } from '../config';
   import { createConnector, updateConnector, queryItemConnector } from '../api';
   import useConnectorBread from '../hooks/use-connector-bread';
@@ -364,10 +366,10 @@
   const submitLoading = ref(false);
   const triggerValidate = ref(false);
   let copyFormData: any = {};
-  const inputFormat = ref('basic'); // basic or advanced
+  const inputFormat = ref(inputFormatMap.basic); // basic or advanced
   const formData: ConnectorFormData = reactive({
     name: '',
-    configDataFormat: 'basic',
+    configDataFormat: inputFormatMap.basic,
     customConfig: '',
     configData: {},
     description: '',
@@ -437,12 +439,23 @@
   };
 
   const checkAttributeValid = () => {
+    if (formData.configDataFormat === inputFormatMap.advanced) {
+      return;
+    }
     triggerValidate.value = some(
       attributeList.value,
       (item) => item.key && !item.value
     );
   };
   const setAttributeList = () => {
+    formData.configDataFormat = _.keys(formData.configData).length
+      ? inputFormatMap.basic
+      : inputFormatMap.advanced;
+
+    if (formData.configDataFormat === inputFormatMap.advanced) {
+      formData.customConfig = JSON.stringify(formData.configData, null, 2);
+      return;
+    }
     const configData = formData.configData || {};
     attributeList.value = map(keys(configData), (key) => {
       return {
@@ -469,6 +482,9 @@
   };
 
   const setConfigData = () => {
+    if (formData.configDataFormat === inputFormatMap.advanced) {
+      return;
+    }
     const list = _.filter(
       attributeList.value,
       (item) => item.key
@@ -495,11 +511,15 @@
       try {
         submitLoading.value = true;
         setConfigData();
+        const data = cloneDeep(formData);
+        if (data.configDataFormat === inputFormatMap.advanced) {
+          data.customConfig = JSON.parse(data.customConfig);
+        }
         copyFormData = cloneDeep(formData);
         if (id) {
-          await updateConnector(formData);
+          await updateConnector(data);
         } else {
-          await createConnector(formData);
+          await createConnector(data);
         }
         router.back();
         submitLoading.value = false;
@@ -527,6 +547,7 @@
       setAttributeList();
       initConfigDataValue();
       copyFormData = cloneDeep(formData);
+      console.log('formData===', formData);
     } catch (error) {
       // ignore
     }

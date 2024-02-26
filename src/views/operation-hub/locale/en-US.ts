@@ -9,7 +9,11 @@ export default {
   'operation.connectors.table.status': 'Status',
   'operation.connectors.table.region': 'Region',
   'operation.connectors.table.zones': 'Zones',
+  'operation.connectors.table.customconfig':
+    'input the customized config(JSON) here',
   'operation.connectors.table.credentials': 'Credentials',
+  'operation.connectors.table.credentials.desc':
+    'Paste your GCP accout JSON credentials key here',
   'operation.connectors.finops.enable': 'Enable',
   'operation.connectors.finops.disable': 'Disable',
   'operation.connectors.table.coststatus': 'Cost Data Information',

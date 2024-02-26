@@ -322,6 +322,7 @@
           <seal-input-password
             v-model={formData.value.configData[item.key].value}
             label={t(item.label)}
+            popup-info={item.description ? t(item.description) : ''}
             required={true}
             style={{ width: `${InputWidth.LARGE}px` }}
           ></seal-input-password>
