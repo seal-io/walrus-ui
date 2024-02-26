@@ -366,7 +366,7 @@
         revisionID: rollbackData.value.id,
         serviceID: serviceId.value,
         changeComment: data.changeComment,
-        approvalRequired: data.approvalRequired
+        preview: data.preview
       });
       execSucceed();
     } catch (error) {

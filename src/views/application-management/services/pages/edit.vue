@@ -757,7 +757,7 @@
       res = data;
     }
     serviceRes.value = res;
-    if (formData.value.approvalRequired) {
+    if (formData.value.preview) {
       deployData.value = {
         runId: res.run?.id,
         serviceId: res.id,
@@ -815,7 +815,7 @@
 
   const handleActionSelect = (value) => {
     setTimeout(() => {
-      formData.value.approvalRequired = false;
+      formData.value.preview = false;
 
       if (value === ResourceSaveAction.Deploy) {
         handleOk();
@@ -825,7 +825,7 @@
       }
 
       if (value === ResourceSaveAction.Preview) {
-        formData.value.approvalRequired = true;
+        formData.value.preview = true;
         handleOk();
       }
     }, 100);

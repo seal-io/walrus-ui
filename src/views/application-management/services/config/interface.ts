@@ -9,7 +9,7 @@ export interface Variables {
 
 export interface ServiceFormData {
   draft?: boolean;
-  approvalRequired?: boolean;
+  preview?: boolean;
   projectID: string;
   project: {
     id: string;

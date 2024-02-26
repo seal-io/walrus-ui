@@ -167,5 +167,6 @@ export default {
   'common.rule.syntaxerror': '输入语法有误',
   'common.code.hide.tips': '... 隐藏 {rows} 行，点击展开 ...',
   'common.nodata.created': '尚未创建{type}',
-  'common.nodata.added': '尚未添加{type}'
+  'common.nodata.added': '尚未添加{type}',
+  'common.status.edited': '已编辑'
 };

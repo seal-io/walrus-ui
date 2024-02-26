@@ -171,5 +171,6 @@ export default {
   'common.rule.syntaxerror': 'syntax error',
   'common.code.hide.tips': '... Hide {rows} lines, click to expand ...',
   'common.nodata.created': 'No {type} has been created yet',
-  'common.nodata.added': 'No {type} has been added yet'
+  'common.nodata.added': 'No {type} has been added yet',
+  'common.status.edited': 'Edited'
 };

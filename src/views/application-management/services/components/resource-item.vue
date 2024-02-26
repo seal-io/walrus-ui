@@ -11,6 +11,7 @@
     watch,
     computed
   } from 'vue';
+  import StatusLabel from '@/views/operation-hub/connectors/components/status-label.vue';
   import Autotip from '@arco-design/web-vue/es/_components/auto-tooltip/auto-tooltip';
   import PrimaryButtonGroup from '@/components/drop-button-group/primary-button-group.vue';
   import { ProvideServiceIDKey, ServiceStatus } from '../config';
@@ -228,6 +229,23 @@
                         ? slots.name?.({ record: props.rowData })
                         : props.rowData.name}
                     </span>
+                    {props.rowData.isModified ? (
+                      <StatusLabel
+                        style={{
+                          transform: 'scale(0.8)',
+                          position: 'relative',
+                          left: '-5px'
+                        }}
+                        status={{
+                          status: i18n.global.t('common.status.edited'),
+                          inactive: false,
+                          text: i18n.global.t('common.status.edited'),
+                          message: '',
+                          transitioning: true,
+                          error: false
+                        }}
+                      ></StatusLabel>
+                    ) : null}
                   </span>
                 </Autotip>
                 {renderLinkButton()}

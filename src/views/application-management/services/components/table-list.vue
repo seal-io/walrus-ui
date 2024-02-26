@@ -122,7 +122,7 @@
             @selectionChange="handleRowSelectChange"
           >
             <template #name="{ record }">
-              <a-link
+              <span
                 v-if="
                   userStore.hasProjectResourceActions({
                     projectID,
@@ -130,10 +130,13 @@
                     actions: [Actions.GET]
                   })
                 "
-                style="display: inline"
-                @click.stop="handleClickViewDetail(record)"
-                >{{ record.name }}</a-link
               >
+                <a-link
+                  style="display: inline"
+                  @click.stop="handleClickViewDetail(record)"
+                  >{{ record.name }}</a-link
+                >
+              </span>
               <span v-else>{{ record.name }}</span>
             </template>
             <template #status="{ record }">
