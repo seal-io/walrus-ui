@@ -77,7 +77,7 @@ export default function useServiceData(props?) {
       id: route.params.environmentId as string
     },
     draft: false,
-    approvalRequired: false,
+    preview: false,
     description: '',
     labels: {},
     type: '',

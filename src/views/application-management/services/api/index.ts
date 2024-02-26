@@ -337,7 +337,7 @@ export const rollbackService = (data: {
   revisionID: string;
   serviceID: string;
   changeComment: string;
-  approvalRequired: boolean;
+  preview: boolean;
 }) => {
   return axios.post(
     `${SERVICE_API_PREFIX()}${SERVICE_API}/${
@@ -347,7 +347,7 @@ export const rollbackService = (data: {
     })}`,
     {
       changeComment: data.changeComment,
-      approvalRequired: data.approvalRequired
+      preview: data.preview
     }
   );
 };

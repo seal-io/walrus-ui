@@ -236,7 +236,7 @@
         revisionID: formData.id,
         serviceID: formData.serviceID,
         changeComment: formData.changeComment,
-        approvalRequired: isRollbackPreview.value
+        preview: isRollbackPreview.value
       });
       execSucceed();
     } catch (error) {

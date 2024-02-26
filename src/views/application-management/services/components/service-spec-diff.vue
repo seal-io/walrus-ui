@@ -208,7 +208,7 @@
     emit('update:show', false);
     emit('confirm', {
       changeComment: changeComment.value,
-      approvalRequired: flag
+      preview: flag
     });
   };
   const reset = () => {
