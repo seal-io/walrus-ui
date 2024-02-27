@@ -53,7 +53,7 @@
     handleBreadChange(value, item);
   };
   const handleSearch = async (item) => {
-    if (item.level !== pageLevelMap.Service || !item.inputValue) return;
+    if (item.level !== pageLevelMap.Service) return;
     const list = await getServiceList({
       page: 1,
       perPage: 10,

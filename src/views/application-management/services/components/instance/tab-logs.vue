@@ -162,7 +162,7 @@
         &.line-break {
           word-wrap: break-word;
         }
-        overflow: auto;
+
         color: var(--color-logs-text);
         font-size: var(--font-size-small);
         line-height: 22px;
