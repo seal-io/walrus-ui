@@ -36,6 +36,7 @@
   import usePageAction from '@/hooks/use-page-action';
   import ProviderIcon from '@/components/provider-icon/index.vue';
   import DescriptionTable from '@/components/description-table/index.vue';
+  import AutoReadfile from '@/components/seal-form/form-components/auto-readfile.vue';
   import { ConnectorFormData, ProviderKey } from '../config/interface';
   import StatusLabel from '../components/status-label.vue';
   import {
@@ -135,7 +136,6 @@
         const selectedRegion = _.find(regionOptions.value, (item) => {
           return item.value === formData.value.configData?.region?.value;
         });
-        console.log('selectedRegion===', selectedRegion);
         return selectedRegion?.zones || [];
       });
 
@@ -178,6 +178,7 @@
       };
       const handleTypeChange = () => {
         setProviderKeys();
+
         const configData = _.reduce(
           providerKeys.value,
           (obj, item) => {
@@ -198,7 +199,6 @@
       };
       const handleSubmit = async () => {
         const res = await formref.value?.validate();
-        console.log('res===', res, formref.value, formData.value);
         if (!res) {
           try {
             submitLoading.value = true;
@@ -226,6 +226,7 @@
         try {
           const { data } = await queryItemConnector({ id });
           formData.value = data;
+          setProviderKeys();
           copyFormData = cloneDeep(formData.value);
         } catch (error) {
           // ignore
@@ -257,17 +258,22 @@
       };
 
       const handleRegionChange = (val, item) => {
-        setTimeout(() => {
-          if (_.hasIn(formData.value.configData, 'zone')) {
+        formData.value.configData[item.key].value = val;
+        if (_.hasIn(formData.value.configData, 'zone')) {
+          setTimeout(() => {
             formData.value.configData.zone.value = _.get(
               zoneOptions.value[0],
               'value'
             );
-          }
-        }, 100);
+            formref.value?.validateField('configData.zone.value');
+          }, 100);
+        }
       };
 
       const renderProviderConfig = (item) => {
+        if (!formData.value.configData[item.key]) {
+          return null;
+        }
         if (item.key === 'region') {
           return (
             <seal-select
@@ -283,7 +289,7 @@
             >
               {_.map(regionOptions.value, (sItem, sIndex) => {
                 return (
-                  <a-option key={sIndex} value={sItem.value}>
+                  <a-option key={sIndex} value={sItem?.value}>
                     <span>
                       <span class="mright-5">{sItem.icon}</span>
                       {` ${sItem.label}`}
@@ -306,6 +312,20 @@
               popup-info={t('operation.connectors.form.region.tips')}
               style={{ width: `${InputWidth.LARGE}px` }}
             ></seal-select>
+          );
+        }
+        if (item.key === 'credentials') {
+          return (
+            <AutoReadfile
+              v-model={formData.value.configData[item.key].value}
+              label={t(item.label)}
+              placeholder={t(item.label)}
+              popup-info={item.description ? t(item.description) : ''}
+              required={true}
+              minWidth={InputWidth.LARGE}
+              tips={t('operation.connectors.detail.jsonformat')}
+              viewStatus={pageAction.value === PageAction.VIEW}
+            ></AutoReadfile>
           );
         }
         if (item.visible) {
@@ -596,7 +616,7 @@
                               }
                             ]}
                           >
-                            <div>{renderProviderConfig(item)}</div>
+                            {renderProviderConfig(item)}
                           </a-form-item>
                         </div>
                       );

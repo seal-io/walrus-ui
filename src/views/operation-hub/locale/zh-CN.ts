@@ -29,6 +29,7 @@ export default {
   'operation.connectors.detail.clusterName': '名称',
   'operation.connectors.detail.readfile': '从文件读取',
   'operation.connectors.detail.fileformat': '文件格式: yaml或文本文件',
+  'operation.connectors.detail.jsonformat': '文件格式：Google 凭据 .json 文件',
   'operation.connectors.detail.inputformat': '输入格式',
   'operation.connectors.rules.name': '集群名称必填',
   'operation.connectors.rules.kubeconfig': 'kubeconfig为必填',

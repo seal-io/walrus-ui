@@ -123,7 +123,7 @@
               :style="{ width: `${InputWidth.LARGE}px` }"
             ></seal-input>
           </a-form-item>
-          <a-form-item
+          <!-- <a-form-item
             :label="$t('operation.connectors.detail.inputformat')"
             hide-label
             hide-asterisk
@@ -136,8 +136,8 @@
               :options="CustomInputFormats"
               :style="{ width: `${InputWidth.LARGE}px` }"
             ></seal-select>
-          </a-form-item>
-          <a-form-item
+          </a-form-item> -->
+          <!-- <a-form-item
             v-if="formData.configDataFormat === inputFormatMap.advanced"
             :style="{ width: `${InputWidth.LARGE}px` }"
             hide-label
@@ -153,10 +153,9 @@
               :height="300"
               :show-gutter="false"
             ></AceEditor>
-          </a-form-item>
+          </a-form-item> -->
 
           <a-form-item
-            v-if="formData.configDataFormat === inputFormatMap.basic"
             :label="$t('operation.connectors.form.attribute')"
             hide-asterisk
             hide-label

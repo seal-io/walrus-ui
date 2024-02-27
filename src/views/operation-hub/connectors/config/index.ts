@@ -119,28 +119,28 @@ export const AzureRMCloudProviderKeys = [
   {
     label: 'ClientID',
     value: '',
-    key: 'clientID',
+    key: 'client_id',
     visible: true,
     type: 'string'
   },
   {
     label: 'ClientSecret',
     value: '',
-    key: 'clientSecret',
+    key: 'client_secret',
     visible: false,
     type: 'string'
   },
   {
     label: 'SubscriptionID',
     value: '',
-    key: 'subscriptionID',
+    key: 'subscription_id',
     visible: true,
     type: 'string'
   },
   {
     label: 'TenantID',
     value: '',
-    key: 'tenantID',
+    key: 'tenant_id',
     visible: true,
     type: 'string'
   }
