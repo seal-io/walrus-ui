@@ -41,19 +41,36 @@
                   <a-tag
                     v-if="getExpireStatus(item) === 2"
                     size="small"
-                    class="expired tag"
+                    class="tag"
+                    :style="{
+                      color: StatusColor.warning.color5,
+                      backgroundColor: StatusColor.warning.color1,
+                      border: `1px solid ${StatusColor.warning.color1}`
+                    }"
                     >{{ $t('account.settings.expireSoon') }}</a-tag
                   >
                   <a-tag
                     v-if="getExpireStatus(item) === 1"
                     size="small"
                     class="expired-soon tag"
+                    :style="{
+                      color: StatusColor.error.color5,
+                      backgroundColor: StatusColor.error.color1,
+                      border: `1px solid ${StatusColor.error.color1}`
+                    }"
                     >{{ $t('account.settings.expired') }}</a-tag
                   >
                 </div>
-                <span v-if="item.accessToken" class="copy-warn">{{
-                  $t('account.settings.token.tips')
-                }}</span>
+                <span
+                  v-if="item.accessToken"
+                  class="copy-warn"
+                  :style="{
+                    color: StatusColor.error.color5,
+                    backgroundColor: StatusColor.error.color1,
+                    border: `1px solid ${StatusColor.error.color1}`
+                  }"
+                  >{{ $t('account.settings.token.tips') }}</span
+                >
               </div>
             </template>
           </a-list-item-meta>
@@ -91,6 +108,7 @@
   import { get } from 'lodash';
   import dayjs from 'dayjs';
   import { useI18n } from 'vue-i18n';
+  import { StatusColor } from '@/views/config';
   import FilterBox from '@/components/filter-box/index.vue';
   import { deleteModal, execSucceed } from '@/utils/monitor';
   import copy from '@/components/copy/copy-command.vue';
@@ -190,32 +208,23 @@
 
     .tag {
       margin-left: 10px;
-      color: rgb(255, 125, 0);
-      background-color: rgba(255, 125, 0, 0.1);
-      border: 1px solid rgb(255, 125, 0);
-
-      &.expired-soon {
-        color: rgb(245, 63, 63);
-        background-color: rgba(245, 63, 63, 0.1);
-        border: 1px solid rgb(245, 63, 63);
-      }
+      border-radius: 4px;
     }
 
     .copy-warn {
       display: inline-block;
       padding: 12px 8px;
-      color: #f76560;
-      background-color: #ffece8;
-      border: 1px solid #fdcdc5;
       border-radius: 4px;
     }
 
     .arco-list-wrapper {
       margin-bottom: 12px;
+      overflow: hidden;
+      border-radius: var(--border-radius-small);
       transition: all 0.3s var(--seal-transition-func);
 
       &:hover {
-        background-color: var(--color-fill-2);
+        background-color: var(--color-fill-1);
         transition: all 0.2s var(--seal-transition-func);
       }
     }
@@ -232,6 +241,7 @@
       }
 
       .arco-list-item-meta-description {
+        color: var(--color-text-3);
         font-size: var(--font-size-small);
 
         .date {
@@ -241,7 +251,7 @@
 
       .arco-list-item-meta-title {
         width: 100%;
-        color: var(--sealblue-6);
+        color: var(--color-text-2);
         font-weight: 700;
 
         .token {

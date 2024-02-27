@@ -225,6 +225,7 @@
           >
             <SealFormItemWrap
               popupInfo={props.schema.description}
+              doc={props.schema.externalDocs}
               label={`${props.schema.title || props.schema.name || ''}`}
               style="width: 100%"
             >
