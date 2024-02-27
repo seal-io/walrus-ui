@@ -25,8 +25,10 @@
     ref,
     watch,
     inject,
+    onBeforeUnmount,
     computed
   } from 'vue';
+  import { createAxiosToken } from '@/api/axios-chunk-request';
   import useCallCommon from '@/hooks/use-call-common';
   import { InjectSchemaFormStatusKey, PageAction } from '@/views/config';
   import GroupForm from '@/components/dynamic-form/group-form.vue';
@@ -52,6 +54,9 @@
   const templateList = ref<any[]>([]);
   const requestFlag = ref(true);
   const loading = ref(false);
+  let templateToken = createAxiosToken();
+  let schemaToken = createAxiosToken();
+
   provide(InjectSchemaFormStatusKey, ref(PageAction.VIEW));
 
   // template options
@@ -62,7 +67,7 @@
         withGlobal: true,
         extract: ['-status']
       };
-      const { data } = await queryTemplates(params);
+      const { data } = await queryTemplates(params, templateToken.token);
       templateList.value = _.map(data?.items || [], (item) => {
         return {
           ...item,
@@ -78,9 +83,12 @@
   const getResourceDefinitions = async () => {
     try {
       const environmentID = route.params.environmentId as string;
-      const { data } = await queryEnvironmentAvailableDefinitions({
-        environmentID
-      });
+      const { data } = await queryEnvironmentAvailableDefinitions(
+        {
+          environmentID
+        },
+        templateToken.token
+      );
       templateList.value = _.map(data || [], (item) => {
         return {
           ...item,
@@ -95,6 +103,9 @@
   };
 
   const initTemplateList = async () => {
+    templateToken?.cancel?.();
+    templateToken = createAxiosToken();
+
     const type = serviceInfo.value.type
       ? ServiceDataType.resource
       : ServiceDataType.service;
@@ -117,9 +128,13 @@
     const resourceDefId = _.find(templateList.value, (item) => {
       return item.value === serviceInfo.value.type;
     })?.id;
-    const { data } = await queryItemResourceDefinition({
-      id: resourceDefId as string
-    });
+    if (!resourceDefId) return;
+    const { data } = await queryItemResourceDefinition(
+      {
+        id: resourceDefId as string
+      },
+      schemaToken.token
+    );
     setTemplateInfo(data);
   };
 
@@ -130,11 +145,17 @@
       isProjectTemplate: !!serviceInfo.value.template?.project?.id,
       query: serviceInfo.value.template.version
     };
-    const { data } = await queryItemTemplatesVersions(params);
+    const { data } = await queryItemTemplatesVersions(
+      params,
+      schemaToken.token
+    );
 
     setTemplateInfo(_.get(data, 'items.0', {}));
   };
   const getSchema = async () => {
+    schemaToken?.cancel?.();
+    schemaToken = createAxiosToken();
+
     const type = serviceInfo.value.type
       ? ServiceDataType.resource
       : ServiceDataType.service;
@@ -170,6 +191,7 @@
   watch(
     () => serviceInfo.value,
     () => {
+      console.log('serviceInfo.value.id', serviceInfo.value);
       if (serviceInfo.value.id && requestFlag.value) {
         requestFlag.value = false;
         init();
@@ -179,6 +201,10 @@
       immediate: true
     }
   );
+  onBeforeUnmount(() => {
+    templateToken?.cancel?.();
+    schemaToken?.cancel?.();
+  });
 </script>
 
 <style lang="less">

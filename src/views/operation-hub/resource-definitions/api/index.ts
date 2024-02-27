@@ -41,8 +41,13 @@ export function upateResourceDefinition(params: { id: string; data: any }) {
   return axios.put(`${RESOURCE_DEFINITION_API}/${params.id}`, params.data);
 }
 
-export function queryItemResourceDefinition(params: { id: string }) {
-  return axios.get(`${RESOURCE_DEFINITION_API}/${params.id}`);
+export function queryItemResourceDefinition(
+  params: { id: string },
+  token?: any
+) {
+  return axios.get(`${RESOURCE_DEFINITION_API}/${params.id}`, {
+    cancelToken: token
+  });
 }
 
 export function queryItemDefinitionResources(params: {

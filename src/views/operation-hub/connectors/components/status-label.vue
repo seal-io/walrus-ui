@@ -29,9 +29,12 @@
       <span
         v-else
         class="tag"
+        :class="{ bordered }"
+        :data-color="color"
         :style="{
           color: color.text,
-          backgroundColor: color.bg
+          border: bordered ? `1px solid ${color.text}` : 'none',
+          backgroundColor: !bordered ? color.bg : 'none'
         }"
       >
         <span v-if="status.error || status.transitioning" class="flex">
@@ -59,6 +62,12 @@
   }
   const props = defineProps({
     showLoading: {
+      type: Boolean,
+      default() {
+        return false;
+      }
+    },
+    bordered: {
       type: Boolean,
       default() {
         return false;

@@ -116,10 +116,13 @@ export function exportEnvironment(data: {
   return url;
 }
 
-export const queryEnvironmentAvailableDefinitions = (params: {
-  environmentID: string;
-  sort?: string[];
-}) => {
+export const queryEnvironmentAvailableDefinitions = (
+  params: {
+    environmentID: string;
+    sort?: string[];
+  },
+  token?
+) => {
   return axios.get(
     `${PROJECT_API_PREFIX()}${ENVIRONMENT_API}/${
       params.environmentID
@@ -128,6 +131,7 @@ export const queryEnvironmentAvailableDefinitions = (params: {
       params: {
         ..._.omit(params, ['environmentID'])
       },
+      cancelToken: token,
       paramsSerializer: (obj) => {
         return qs.stringify(obj);
       }

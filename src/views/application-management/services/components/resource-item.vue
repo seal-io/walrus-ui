@@ -229,26 +229,27 @@
                         ? slots.name?.({ record: props.rowData })
                         : props.rowData.name}
                     </span>
-                    {props.rowData.isModified ? (
-                      <StatusLabel
-                        style={{
-                          transform: 'scale(0.8)',
-                          position: 'relative',
-                          left: '-5px'
-                        }}
-                        status={{
-                          status: i18n.global.t('common.status.edited'),
-                          inactive: false,
-                          text: i18n.global.t('common.status.edited'),
-                          message: '',
-                          transitioning: true,
-                          error: false
-                        }}
-                      ></StatusLabel>
-                    ) : null}
                   </span>
                 </Autotip>
                 {renderLinkButton()}
+                <span class="edited">
+                  {props.rowData.isModified ? (
+                    <StatusLabel
+                      style={{
+                        transform: 'scale(0.8)'
+                      }}
+                      bordered={true}
+                      status={{
+                        status: i18n.global.t('common.status.edited'),
+                        inactive: false,
+                        text: i18n.global.t('common.status.edited'),
+                        message: '',
+                        transitioning: true,
+                        error: false
+                      }}
+                    ></StatusLabel>
+                  ) : null}
+                </span>
               </a-grid-item>
               <a-grid-item span={6}>
                 <Autotip>
@@ -336,6 +337,12 @@
     padding: 10px 15px;
     font-size: var(--font-size-small);
     line-height: 3;
+
+    .name-box {
+      .edited {
+        display: flex;
+      }
+    }
 
     .check-box {
       display: flex;
