@@ -226,6 +226,10 @@
       &:hover {
         background-color: var(--color-fill-1);
         transition: all 0.2s var(--seal-transition-func);
+
+        :deep(.arco-list-bordered) {
+          border-color: var(--color-fill-1);
+        }
       }
     }
 
