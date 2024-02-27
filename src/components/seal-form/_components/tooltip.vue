@@ -10,6 +10,7 @@
           {popupInfo || attrs.doc ? (
             <a-tooltip
               content={popupInfo}
+              trigger="hover"
               v-slots={{
                 content: () => {
                   if (!attrs.doc) {

@@ -13,6 +13,7 @@
   import i18n from '@/locale';
   import ModuleWrapper from '@/components/module-wrapper/index.vue';
   import { InjectSchemaFormStatusKey, PageAction } from '@/views/config';
+  import Tooltip from '@/components/seal-form/_components/tooltip.vue';
   import schemaFieldProps from '../fields/schema-field-props';
   import { ProvideErrorFieldsKey } from '../config';
   import FIELD_TYPE from '../config/field-type';
@@ -250,41 +251,10 @@
                     <>{renderNullableButton()}</>
                     <span>{props.schema.title || props.schema.name}</span>
                     {renderRequiredStar()}
-                    {props.schema.description || props.schema.externalDocs ? (
-                      <a-tooltip
-                        content={props.schema.description}
-                        v-slots={{
-                          content: () => {
-                            if (!props.schema.externalDocs) {
-                              return <span>{props.schema.description}</span>;
-                            }
-                            return (
-                              <>
-                                <div>{props.schema.description}</div>
-                                <div>
-                                  <div>
-                                    {props.schema.externalDocs?.description}
-                                  </div>
-                                  <a-link
-                                    href={props.schema.externalDocs?.url}
-                                    class="m-l-2"
-                                    target="_blank"
-                                    style="background-color: var(--color-white)"
-                                  >
-                                    {i18n.global.t('common.docs.link.tips')}
-                                  </a-link>
-                                </div>
-                              </>
-                            );
-                          }
-                        }}
-                      >
-                        <icon-info-circle
-                          style="stroke-linecap: initial; cursor: default;position: relative;top: 1px;"
-                          class="m-l-2"
-                        />
-                      </a-tooltip>
-                    ) : null}
+                    <Tooltip
+                      popup-info={props.schema.description}
+                      doc={props.schema.externalDocs}
+                    ></Tooltip>
                   </div>
                   <div>{slots.buttons?.()}</div>
                 </div>
