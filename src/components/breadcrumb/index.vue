@@ -55,7 +55,11 @@
                     content: data.label
                   }"
                 >
-                  <span style="font-weight: var(--font-weight-medium)">
+                  <span
+                    class="bread-item"
+                    style="font-weight: var(--font-weight-medium)"
+                    @click.stop="() => handleOption(data, item)"
+                  >
                     <span
                       v-if="item.level === pageLevelMap.Environment"
                       class="m-r-4"
@@ -107,6 +111,7 @@
                   <a-input
                     v-model="item.inputValue"
                     allow-clear
+                    @clear="(val) => handleClearSearch(item)"
                     @input="(val) => handleSearch(item)"
                   >
                     <template #prefix>
@@ -252,6 +257,11 @@
       }
     }, 500);
   };
+
+  const handleClearSearch = (item) => {
+    item.inputValue = '';
+    emits('search', item);
+  };
   const getVirtualListProps = (item) => {
     if (item?.options?.length > 50) {
       return {
@@ -262,6 +272,9 @@
   };
   const handleSelectChange = (value, item) => {
     emits('change', { value, item });
+  };
+  const handleOption = (data, item) => {
+    handleSelectChange(data.value, item);
   };
   const getContainer = (name) => {
     if (!name) return null;
@@ -311,7 +324,17 @@
 
 <style scoped lang="less">
   .container-breadcrumb {
-    // margin: 16px 0;
+    .bread-item {
+      &::before {
+        position: absolute;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        left: 0;
+        content: '';
+      }
+    }
+
     margin: 0;
     color: var(--color-text-2);
 
