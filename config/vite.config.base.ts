@@ -8,7 +8,7 @@ import { getBranchInfo } from './utils';
 
 const { argv } = require('yargs');
 
-const baseUrl = argv.base || './';
+const baseUrl = argv.base || '/';
 const mode = argv.mode || 'development';
 const versions = getBranchInfo();
 
@@ -51,7 +51,8 @@ export default defineConfig({
   },
   define: {
     'process.env': {
-      dev_mode: mode
+      dev_mode: mode,
+      BASE_URL: baseUrl
     },
     '_SEAL_': {
       commitId: versions.commitId
