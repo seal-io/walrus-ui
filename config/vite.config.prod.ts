@@ -23,7 +23,7 @@ export default mergeConfig(
       viteImageMin(),
       generateAceWorkerPlugin({
         from: 'src/assets/js/ace',
-        to: 'dist/js/ace'
+        to: 'dist/assets/js/ace'
       }),
       createHtmlPlugin({
         template: 'index.html',
