@@ -80,11 +80,15 @@
 
   const langTools = ace.require('ace/ext/language_tools');
 
+  const baseURL = _.endsWith(process.env.BASE_URL, '/')
+    ? process.env.BASE_URL
+    : `${process.env.BASE_URL}/`;
+
   if (process.env.NODE_ENV === 'development') {
     ace.require('ace/config').set('workerPath', 'src/assets/js/ace');
   }
   if (process.env.NODE_ENV === 'production') {
-    ace.require('ace/config').set('workerPath', 'assets/js/ace');
+    ace.require('ace/config').set('workerPath', `${baseURL}js/ace`);
   }
 
   const props = defineProps({
