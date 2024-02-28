@@ -111,7 +111,7 @@
         let list: any = [];
         if (formData.value.type === CloudProviderType.Google) {
           list = googleCloudRegions;
-        } else if (formData.value.type === CloudProviderType.AzureRM) {
+        } else if (formData.value.type === CloudProviderType.Azure) {
           list = [];
         } else if (formData.value.type === CloudProviderType.Alibaba) {
           list = alibabaCloudRegions;
@@ -161,7 +161,7 @@
       });
 
       const setProviderKeys = () => {
-        if (formData.value.type === CloudProviderType.AzureRM) {
+        if (formData.value.type === CloudProviderType.Azure) {
           providerKeys.value = _.cloneDeep(AzureRMCloudProviderKeys);
         } else if (formData.value.type === CloudProviderType.Google) {
           providerKeys.value = _.cloneDeep(GoogleCloudProviderKeys);

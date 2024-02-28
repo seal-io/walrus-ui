@@ -50,7 +50,7 @@
       },
       showGutter: {
         type: Boolean,
-        default: false
+        default: true
       },
       widget: {
         type: String as PropType<'textarea' | 'editor'>,
