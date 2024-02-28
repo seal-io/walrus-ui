@@ -84,7 +84,7 @@
     ace.require('ace/config').set('workerPath', 'src/assets/js/ace');
   }
   if (process.env.NODE_ENV === 'production') {
-    ace.require('ace/config').set('workerPath', 'js/ace');
+    ace.require('ace/config').set('workerPath', 'assets/js/ace');
   }
 
   const props = defineProps({
