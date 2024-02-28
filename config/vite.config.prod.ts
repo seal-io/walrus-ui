@@ -7,6 +7,7 @@ import configCompressPlugin from './plugin/compress';
 import configVisualizerPlugin from './plugin/visualizer';
 import configArcoResolverPlugin from './plugin/arcoResolver';
 import configStyleImportPlugin from './plugin/styleImport';
+import generateAceWorkerPlugin from './plugin/generate-ace-worker';
 import { getBranchInfo } from './utils';
 
 const versions = getBranchInfo();
@@ -20,6 +21,10 @@ export default mergeConfig(
       configArcoResolverPlugin(),
       configStyleImportPlugin(),
       viteImageMin(),
+      generateAceWorkerPlugin({
+        from: 'src/assets/js/ace',
+        to: 'dist/js/ace'
+      }),
       createHtmlPlugin({
         template: 'index.html',
         inject: {
