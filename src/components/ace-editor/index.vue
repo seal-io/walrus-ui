@@ -67,6 +67,7 @@
   // import 'ace-builds/src-noconflict/theme-monokai';
   // import 'ace-builds/src-noconflict/theme-solarized_dark';
   // import 'ace-builds/src-noconflict/theme-dracula';
+  import 'ace-builds/src-noconflict/mode-xml';
   import 'ace-builds/src-noconflict/theme-nord_dark';
   import 'ace-builds/src-noconflict/mode-javascript';
   import 'ace-builds/src-noconflict/mode-text';
@@ -74,10 +75,16 @@
   import 'ace-builds/src-noconflict/mode-terraform';
   import 'ace-builds/src-noconflict/mode-yaml';
   import 'ace-builds/src-noconflict/mode-sh';
-  import 'ace-builds/src-noconflict/mode-xml';
+  import 'ace-builds/src-noconflict/worker-json';
+  import 'ace-builds/src-noconflict/worker-yaml';
+
   import { Position, Completer } from './config/interface';
 
   const langTools = ace.require('ace/ext/language_tools');
+
+  ace
+    .require('ace/config')
+    .set('workerPath', '../node_modules/ace-builds/src-noconflict');
 
   const props = defineProps({
     modelValue: {
@@ -340,6 +347,7 @@
   const setValue = (val) => {
     aceEditor?.setValue(val, 1);
   };
+
   watch(
     () => props.lang,
     (newVal) => {
@@ -385,6 +393,7 @@
       aceEditor.session.on('change', (args) => {
         // TODO
       });
+
       aceEditor.on('change', function (args: any) {
         const val = aceEditor.getValue();
         inputVal.value = val;
@@ -392,6 +401,7 @@
         emits('input', val);
         emits('update:modelValue', val);
         clearDiffRowDecoration(args);
+        console.log('changes=====', aceEditor.session);
       });
       aceEditor.on('blur', function (args: any) {
         const val = aceEditor.getValue();
@@ -399,18 +409,21 @@
         emits('blur');
       });
       aceEditor.setOptions({
+        // maxLines: Infinity,
+        // minLines: 10,
         wrap: true,
-        useWorker: false,
+        useWorker: true,
         showPrintMargin: false,
         fontSize: 14,
         readOnly: props.readOnly,
         mode: `ace/mode/${props.lang}`,
         theme: appStore.theme === 'dark' ? `ace/theme/${darkTheme}` : '',
-        enableSnippets: false,
+        enableSnippets: true,
         showGutter: props.showGutter,
         autoScrollEditorIntoView: false,
         enableLiveAutocompletion: true,
         enableBasicAutocompletion: true,
+        useSvgGutterIcons: true,
         placeholder: get(defaultHolder, props.lang) || ''
       });
     });
