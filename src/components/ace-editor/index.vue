@@ -67,7 +67,7 @@
   // import 'ace-builds/src-noconflict/theme-monokai';
   // import 'ace-builds/src-noconflict/theme-solarized_dark';
   // import 'ace-builds/src-noconflict/theme-dracula';
-  import 'ace-builds/src-noconflict/mode-xml';
+  // import 'ace-builds/src-noconflict/mode-xml';
   import 'ace-builds/src-noconflict/theme-nord_dark';
   import 'ace-builds/src-noconflict/mode-javascript';
   import 'ace-builds/src-noconflict/mode-text';
@@ -75,14 +75,17 @@
   import 'ace-builds/src-noconflict/mode-terraform';
   import 'ace-builds/src-noconflict/mode-yaml';
   import 'ace-builds/src-noconflict/mode-sh';
-  import 'ace-builds/src-noconflict/worker-json';
-  import 'ace-builds/src-noconflict/worker-yaml';
 
   import { Position, Completer } from './config/interface';
 
   const langTools = ace.require('ace/ext/language_tools');
 
-  ace.require('ace/config').set('workerPath', '/src/assets/js/ace');
+  if (process.env.NODE_ENV === 'development') {
+    ace.require('ace/config').set('workerPath', 'src/assets/js/ace');
+  }
+  if (process.env.NODE_ENV === 'production') {
+    ace.require('ace/config').set('workerPath', 'js/ace');
+  }
 
   const props = defineProps({
     modelValue: {
