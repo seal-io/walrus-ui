@@ -82,9 +82,7 @@
 
   const langTools = ace.require('ace/ext/language_tools');
 
-  ace
-    .require('ace/config')
-    .set('workerPath', '../node_modules/ace-builds/src-noconflict');
+  ace.require('ace/config').set('workerPath', '/src/assets/js/ace');
 
   const props = defineProps({
     modelValue: {
@@ -394,6 +392,9 @@
         // TODO
       });
 
+      aceEditor.on('lint', (errors) => {
+        console.log('lint=====', errors);
+      });
       aceEditor.on('change', function (args: any) {
         const val = aceEditor.getValue();
         inputVal.value = val;
