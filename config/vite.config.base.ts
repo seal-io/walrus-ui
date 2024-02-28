@@ -38,6 +38,10 @@ export default defineConfig({
       {
         find: 'vue',
         replacement: 'vue/dist/vue.esm-bundler.js' // compile template
+      },
+      {
+        find: 'node_modules',
+        replacement: resolve(__dirname, '../node_modules')
       }
     ],
     extensions: ['.ts', '.js']

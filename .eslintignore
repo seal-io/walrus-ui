@@ -1,3 +1,4 @@
 /*.json
 /*.js
-dist
+/src/assets/js/ace/*.js
+DIST
