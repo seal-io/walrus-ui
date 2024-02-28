@@ -71,7 +71,7 @@ export const ConnectorType = {
 export const CloudProviderType = {
   AWS: 'AWS',
   Alibaba: 'Alibaba',
-  AzureRM: 'AzureRM',
+  Azure: 'Azure',
   Google: 'Google'
 };
 
@@ -87,7 +87,7 @@ export const CustomInputFormats = [
 export const cutomeTypeOptions = [
   { label: 'Alibaba', value: CloudProviderType.Alibaba },
   { label: 'AWS', value: CloudProviderType.AWS },
-  { label: 'AzureRM', value: CloudProviderType.AzureRM },
+  { label: 'Azure', value: CloudProviderType.Azure },
   { label: 'Google', value: CloudProviderType.Google }
 ];
 
@@ -155,14 +155,6 @@ export const GoogleCloudProviderKeys = [
     type: 'string'
   },
   {
-    label: 'operation.connectors.table.credentials',
-    value: '',
-    description: 'operation.connectors.table.credentials.desc',
-    key: 'credentials',
-    visible: false,
-    type: 'string'
-  },
-  {
     label: 'operation.connectors.table.region',
     value: '',
     key: 'region',
@@ -174,6 +166,14 @@ export const GoogleCloudProviderKeys = [
     value: '',
     key: 'zone',
     visible: true,
+    type: 'string'
+  },
+  {
+    label: 'operation.connectors.table.credentials',
+    value: '',
+    description: 'operation.connectors.table.credentials.desc',
+    key: 'credentials',
+    visible: false,
     type: 'string'
   }
 ];
