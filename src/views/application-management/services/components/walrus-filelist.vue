@@ -86,7 +86,7 @@
       height: 100px;
       margin-bottom: 10px;
       padding: 10px;
-      background-color: var(--color-white-2);
+      background-color: var(--color-white-1);
 
       .text {
         display: flex;

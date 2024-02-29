@@ -225,6 +225,10 @@
       padding: 0;
     }
 
+    :deep(.arco-card) {
+      background: none;
+    }
+
     :deep(.arco-divider-horizontal) {
       margin: 15px 0;
     }
@@ -240,8 +244,8 @@
     }
 
     .password-info-wrap {
-      padding: 10px;
-      background-color: var(--color-fill-2);
+      padding: 0;
+      background-color: transparent;
       border-radius: var(--border-radius-small);
     }
 
