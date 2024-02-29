@@ -18,8 +18,8 @@ export default mergeConfig(
         strict: true
       },
       https: true,
-      port: 5050,
-      proxy: createProxyTable('https://lmkcc.site/')
+      port: 4000,
+      proxy: createProxyTable('https://192.168.50.123')
     },
     plugins: [
       basicSsl(),
