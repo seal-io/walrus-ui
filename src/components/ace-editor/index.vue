@@ -64,7 +64,7 @@
   import ace, { Range, edit } from 'ace-builds';
   import 'ace-builds/src-noconflict/ext-language_tools';
   import 'ace-builds/src-noconflict/ext-searchbox';
-  // import 'ace-builds/src-noconflict/theme-monokai';
+  import 'ace-builds/src-noconflict/theme-monokai';
   // import 'ace-builds/src-noconflict/theme-solarized_dark';
   // import 'ace-builds/src-noconflict/theme-dracula';
   // import 'ace-builds/src-noconflict/mode-xml';
@@ -200,7 +200,7 @@
 
   // let timer:any = null
   let aceEditor: any = null;
-  const darkTheme = 'nord_dark';
+  const darkTheme = 'monokai';
   const isAce = ref(true);
   const inputVal = ref('');
   const editorRef = ref();

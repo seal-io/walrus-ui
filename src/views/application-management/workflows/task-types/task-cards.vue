@@ -39,7 +39,7 @@
     padding: 10px;
     color: var(--color-text-2);
     font-size: 12px;
-    background-color: var(--color-white-2);
+    background-color: var(--color-white-1);
     .thumbCard();
 
     &:hover {

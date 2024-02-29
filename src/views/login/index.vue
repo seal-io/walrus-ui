@@ -208,7 +208,7 @@
 
       .content-inner {
         padding: 20px;
-        background-color: rgba(var(--color-background-1), 0.7);
+        background-color: rgba(var(--color-background-2), 0.7);
         border-radius: 8px;
       }
     }
