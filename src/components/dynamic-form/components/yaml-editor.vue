@@ -49,6 +49,7 @@
       const fieldValue = ref('');
       const defaultValue = ref('');
       const lang = ref('yaml');
+      const editor = ref();
 
       const { fieldProps, rules } = genFieldPropsAndRules({
         schema: props.schema,
@@ -227,6 +228,9 @@
             ]}
           >
             <AceEditor
+              ref={(val) => {
+                editor.value = val;
+              }}
               key={`${_.join(props.fieldPath, '_')}`}
               {...attrs}
               doc={props.schema.externalDocs}

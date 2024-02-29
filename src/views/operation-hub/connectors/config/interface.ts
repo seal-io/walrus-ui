@@ -63,5 +63,6 @@ export interface ProviderKey {
   value: string;
   key: string;
   visible: boolean;
+  required: boolean;
   type: string;
 }

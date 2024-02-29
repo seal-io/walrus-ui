@@ -52,6 +52,10 @@
         type: Boolean,
         default: true
       },
+      showLineNumbers: {
+        type: Boolean,
+        default: true
+      },
       widget: {
         type: String as PropType<'textarea' | 'editor'>,
         default: 'editor'
@@ -78,6 +82,14 @@
         editor.value?.setValue?.(res);
       };
 
+      const validate = () => {
+        const errors = editor.value?.getAnnotations?.();
+        return errors;
+      };
+
+      ctx.expose({
+        validate
+      });
       const renderTextarea = () => {
         return (
           <div
@@ -109,10 +121,11 @@
       const renderEditor = () => {
         return (
           <AceEditor
-            v-model={props.modelValue}
-            ref={(val) => {
-              editor.value = val;
+            modelValue={props.modelValue}
+            ref={(el) => {
+              editor.value = el;
             }}
+            required={props.required}
             label={props.label}
             editor-default-value={props.defaultValue}
             lang={props.lang}
@@ -120,6 +133,10 @@
             style={{ width: '100%' }}
             height={textareaHeight.value}
             show-gutter={props.showGutter}
+            showLineNumbers={props.showLineNumbers}
+            onUpdate:modelValue={(val) => {
+              ctx.emit('update:modelValue', val);
+            }}
           ></AceEditor>
         );
       };

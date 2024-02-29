@@ -7,6 +7,7 @@
     :visible="show"
     width="auto"
     :mask-closable="false"
+    :esc-to-close="false"
     unmount-on-close
     :body-style="{ 'max-height': '600px', 'overflow': 'auto' }"
     modal-class="import-config-modal"
@@ -49,6 +50,12 @@
             :height="500"
           ></AceEditor>
         </div>
+        <span
+          v-if="showError?.error"
+          class="error-tips"
+          style="color: rgb(var(--red-6))"
+          >{{ showError?.error?.message }}</span
+        >
       </div>
 
       <div class="box" :class="{ show: showBox, readme: showReadme }">
@@ -159,6 +166,7 @@
   const showBox = ref<boolean>(true);
   const markdownConent = ref<string>('');
   const selectedFile = ref(false);
+  const showError = ref<any>();
   const refreshKey = ref(Date.now());
   const formData = ref<any>({
     yaml: ''
@@ -220,7 +228,9 @@
   };
   const handleOk = async () => {
     const res = validateYaml(formData.value.yaml);
-    if (!res.error) {
+    console.log('res', res);
+    showError.value = res;
+    if (!res?.error) {
       try {
         const data = _.cloneDeep(formData.value);
         emit('save', data);
