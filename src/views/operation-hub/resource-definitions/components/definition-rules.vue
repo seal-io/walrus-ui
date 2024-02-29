@@ -76,18 +76,20 @@
               }
             ]"
           >
-            <seal-select
-              v-model="formData.selector.projectNames"
-              :view-status="pageAction === PageAction.VIEW"
-              :options="projectList"
-              :required="true"
-              :multiple="true"
-              :max-tag-count="2"
-              :label="$t('resource.definition.detail.projectName')"
-              :style="{ width: `${InputWidth.LARGE}px` }"
-              @change="handleProjectChange"
-            >
-            </seal-select>
+            <div :style="{ width: `${InputWidth.LARGE}px` }">
+              <seal-select
+                v-model="formData.selector.projectNames"
+                :view-status="pageAction === PageAction.VIEW"
+                :options="projectList"
+                :required="true"
+                :multiple="true"
+                :max-tag-count="2"
+                :label="$t('resource.definition.detail.projectName')"
+                :style="{ width: `${InputWidth.LARGE}px` }"
+                @change="handleProjectChange"
+              >
+              </seal-select>
+            </div>
             <a-button
               v-if="pageAction === PageAction.EDIT"
               type="text"
