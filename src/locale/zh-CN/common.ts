@@ -155,5 +155,6 @@ export default {
   'common.result.nodata.subtitle': '请检查是否已创建',
   'common.result.nodata.title': '未找到{type}',
   'common.rule.array': '必须为数组格式',
-  'common.rule.object': '必须为对象格式'
+  'common.rule.object': '必须为对象格式',
+  'common.rule.syntaxerror': '输入语法有误'
 };

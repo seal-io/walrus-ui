@@ -97,6 +97,7 @@ export const CommonCloudProviderKeys = [
     value: '',
     key: 'access_key',
     visible: true,
+    required: true,
     type: 'string'
   },
   {
@@ -104,6 +105,7 @@ export const CommonCloudProviderKeys = [
     value: '',
     key: 'secret_key',
     visible: false,
+    required: true,
     type: 'string'
   },
   {
@@ -111,16 +113,33 @@ export const CommonCloudProviderKeys = [
     value: '',
     key: 'region',
     visible: true,
+    required: true,
     type: 'string'
   }
 ];
 
 export const AzureRMCloudProviderKeys = [
   {
+    label: 'applications.applications.detail.env',
+    value: '',
+    key: 'environment',
+    visible: true,
+    type: 'string',
+    required: false,
+    default: 'public',
+    options: [
+      { label: 'public', value: 'public' },
+      { label: 'usgovernment', value: 'usgovernment' },
+      { label: 'german', value: 'german' },
+      { label: 'china', value: 'china' }
+    ]
+  },
+  {
     label: 'ClientID',
     value: '',
     key: 'client_id',
     visible: true,
+    required: true,
     type: 'string'
   },
   {
@@ -128,6 +147,7 @@ export const AzureRMCloudProviderKeys = [
     value: '',
     key: 'client_secret',
     visible: false,
+    required: true,
     type: 'string'
   },
   {
@@ -135,6 +155,7 @@ export const AzureRMCloudProviderKeys = [
     value: '',
     key: 'subscription_id',
     visible: true,
+    required: true,
     type: 'string'
   },
   {
@@ -142,6 +163,7 @@ export const AzureRMCloudProviderKeys = [
     value: '',
     key: 'tenant_id',
     visible: true,
+    required: true,
     type: 'string'
   }
 ];
@@ -152,6 +174,7 @@ export const GoogleCloudProviderKeys = [
     value: '',
     key: 'project',
     visible: true,
+    required: true,
     type: 'string'
   },
   {
@@ -159,6 +182,7 @@ export const GoogleCloudProviderKeys = [
     value: '',
     key: 'region',
     visible: true,
+    required: true,
     type: 'string'
   },
   {
@@ -166,6 +190,7 @@ export const GoogleCloudProviderKeys = [
     value: '',
     key: 'zone',
     visible: true,
+    required: true,
     type: 'string'
   },
   {
@@ -174,6 +199,7 @@ export const GoogleCloudProviderKeys = [
     description: 'operation.connectors.table.credentials.desc',
     key: 'credentials',
     visible: false,
+    required: true,
     type: 'string'
   }
 ];

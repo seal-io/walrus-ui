@@ -170,6 +170,12 @@
         return true;
       }
     },
+    showLineNumbers: {
+      type: Boolean,
+      default() {
+        return true;
+      }
+    },
     removeLines: {
       type: Array as PropType<number[]>,
       default() {
@@ -334,6 +340,10 @@
     isAce.value = !isAce.value;
   };
 
+  const getAnnotations = () => {
+    return aceEditor?.getSession()?.getAnnotations();
+  };
+
   watch(
     () => props.editorDefaultValue,
     (nv) => {
@@ -399,9 +409,6 @@
         // TODO
       });
 
-      aceEditor.on('lint', (errors) => {
-        console.log('lint=====', errors);
-      });
       aceEditor.on('change', function (args: any) {
         const val = aceEditor.getValue();
         inputVal.value = val;
@@ -409,7 +416,7 @@
         emits('input', val);
         emits('update:modelValue', val);
         clearDiffRowDecoration(args);
-        console.log('changes=====', aceEditor.session);
+        console.log('editor=====', val);
       });
       aceEditor.on('blur', function (args: any) {
         const val = aceEditor.getValue();
@@ -428,6 +435,7 @@
         theme: appStore.theme === 'dark' ? `ace/theme/${darkTheme}` : '',
         enableSnippets: true,
         showGutter: props.showGutter,
+        showLineNumbers: props.showLineNumbers,
         autoScrollEditorIntoView: false,
         enableLiveAutocompletion: true,
         enableBasicAutocompletion: true,
@@ -438,7 +446,8 @@
   });
   defineExpose({
     clear,
-    setValue
+    setValue,
+    getAnnotations
   });
   onBeforeMount(() => {
     aceEditor?.destroy?.();

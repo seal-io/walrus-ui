@@ -68,6 +68,7 @@
       const allowCreate = ref(false);
       const regionSelect = ref();
       const providerKeys = ref<ProviderKey[]>([]);
+      const credentialsRef = ref();
       let copyFormData: any = {};
 
       const formData = ref<any>({
@@ -199,6 +200,7 @@
       };
       const handleSubmit = async () => {
         const res = await formref.value?.validate();
+        console.log('formdata===', formData.value);
         if (!res) {
           try {
             submitLoading.value = true;
@@ -257,6 +259,14 @@
         }
       };
 
+      const credentialsValidator = (val, callback) => {
+        const errors = credentialsRef.value?.validate?.();
+        if (errors) {
+          callback(errors[0]?.text);
+        } else {
+          callback();
+        }
+      };
       const handleRegionChange = (val, item) => {
         formData.value.configData[item.key].value = val;
         if (_.hasIn(formData.value.configData, 'zone')) {
@@ -282,7 +292,7 @@
               allow-create
               allow-search
               label={t('operation.connectors.table.region')}
-              required={true}
+              required={item.required}
               popup-info={t('operation.connectors.form.region.tips')}
               style={{ width: `${InputWidth.LARGE}px` }}
               onChange={(val) => handleRegionChange(val, item)}
@@ -308,7 +318,7 @@
               allow-search
               label={t('operation.connectors.table.zones')}
               options={zoneOptions.value}
-              required={true}
+              required={item.required}
               popup-info={t('operation.connectors.form.region.tips')}
               style={{ width: `${InputWidth.LARGE}px` }}
             ></seal-select>
@@ -317,15 +327,33 @@
         if (item.key === 'credentials') {
           return (
             <AutoReadfile
+              ref={(el) => {
+                credentialsRef.value = el;
+              }}
               v-model={formData.value.configData[item.key].value}
               label={t(item.label)}
               placeholder={t(item.label)}
               popup-info={item.description ? t(item.description) : ''}
-              required={true}
+              required={item.required}
               minWidth={InputWidth.LARGE}
               tips={t('operation.connectors.detail.jsonformat')}
               viewStatus={pageAction.value === PageAction.VIEW}
             ></AutoReadfile>
+          );
+        }
+        if (item.options) {
+          formData.value.configData[item.key].value = item.default;
+          return (
+            <seal-select
+              v-model={formData.value.configData[item.key].value}
+              allow-create
+              allow-search
+              allow-clear={!item.required}
+              label={t(item.label)}
+              options={item.options}
+              required={item.required}
+              style={{ width: `${InputWidth.LARGE}px` }}
+            ></seal-select>
           );
         }
         if (item.visible) {
@@ -333,7 +361,7 @@
             <seal-input
               v-model={formData.value.configData[item.key].value}
               label={t(item.label)}
-              required={true}
+              required={item.required}
               style={{ width: `${InputWidth.LARGE}px` }}
             />
           );
@@ -343,7 +371,7 @@
             v-model={formData.value.configData[item.key].value}
             label={t(item.label)}
             popup-info={item.description ? t(item.description) : ''}
-            required={true}
+            required={item.required}
             style={{ width: `${InputWidth.LARGE}px` }}
           ></seal-input-password>
         );
@@ -609,10 +637,16 @@
                             validate-trigger={['change']}
                             rules={[
                               {
-                                required: true,
+                                required: item.required,
                                 message: t('common.form.rule.input', {
                                   name: t(item.label)
                                 })
+                              },
+                              {
+                                validator:
+                                  item.key === 'credentials'
+                                    ? credentialsValidator
+                                    : null
                               }
                             ]}
                           >
