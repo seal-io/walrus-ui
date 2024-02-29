@@ -63,7 +63,7 @@
             _.startsWith(item.value, 'http') ||
             _.startsWith(item.value, 'https')
         );
-        return list;
+        return [{ label: 1, value: 2 }];
       });
 
       const handleCheckboxChange = (checked, id) => {
@@ -221,34 +221,39 @@
               {renderCollapseButton()}
             </span>
             <a-grid cols={24} style={{ width: '100%' }}>
-              <a-grid-item span={5} style="justify-content: space-between;">
-                <Autotip>
+              <a-grid-item span={5}>
+                <span class="name-wrap">
                   <span class="name-box">
-                    <span>
-                      {slots.name
-                        ? slots.name?.({ record: props.rowData })
-                        : props.rowData.name}
+                    <Autotip>
+                      <span>
+                        <span>
+                          {slots.name
+                            ? slots.name?.({ record: props.rowData })
+                            : props.rowData.name}
+                        </span>
+                      </span>
+                    </Autotip>
+                    <span class="edited">
+                      {props.rowData.isModified ? (
+                        <StatusLabel
+                          style={{
+                            transform: 'scale(0.8)',
+                            marginRight: '-6px'
+                          }}
+                          bordered={true}
+                          status={{
+                            status: i18n.global.t('common.status.edited'),
+                            inactive: false,
+                            text: i18n.global.t('common.status.edited'),
+                            message: '',
+                            transitioning: true,
+                            error: false
+                          }}
+                        ></StatusLabel>
+                      ) : null}
+                      {renderLinkButton()}
                     </span>
                   </span>
-                </Autotip>
-                {renderLinkButton()}
-                <span class="edited">
-                  {props.rowData.isModified ? (
-                    <StatusLabel
-                      style={{
-                        transform: 'scale(0.8)'
-                      }}
-                      bordered={true}
-                      status={{
-                        status: i18n.global.t('common.status.edited'),
-                        inactive: false,
-                        text: i18n.global.t('common.status.edited'),
-                        message: '',
-                        transitioning: true,
-                        error: false
-                      }}
-                    ></StatusLabel>
-                  ) : null}
                 </span>
               </a-grid-item>
               <a-grid-item span={6}>
@@ -338,7 +343,20 @@
     font-size: var(--font-size-small);
     line-height: 3;
 
-    .name-box {
+    .name-wrap {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      width: 100%;
+
+      .name-box {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        width: 100%;
+        line-height: 2;
+      }
+
       .edited {
         display: flex;
       }
