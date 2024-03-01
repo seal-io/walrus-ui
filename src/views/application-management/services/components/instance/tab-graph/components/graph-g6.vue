@@ -23,7 +23,13 @@
   import { defineCustomNode, defaultNode } from '../config/common';
   import { createToolTip } from '../config/plugins';
   import { fittingString } from '../config/utils';
-  import { statusMap, edgeType, nodeKindType, customeLegend } from '../config';
+  import {
+    statusMap,
+    edgeType,
+    nodeKindType,
+    customeLegend,
+    darkNodeStyle
+  } from '../config';
   import { ICombo, IEdge, INode } from '../config/interface';
   import { setServiceStatus, Status } from '../../../../config';
   import { getResourceKeyList } from '../../../../config/utils';
@@ -449,6 +455,21 @@
         setNodeList();
         setLinks();
       };
+      // update each node theme
+      const updateNodeTheme = () => {
+        _.each(graph?.getNodes(), (item) => {
+          const model = item.getModel();
+          console.log('model=============', model);
+          graph.updateItem(item, {
+            ...model,
+            style: {
+              ...model.style,
+              ...darkNodeStyle.style
+            }
+          });
+        });
+        graph?.changeData();
+      };
       const nodeFilter = (model) => {
         // service page
         if (props.pageType === pageTypeScope.SERVICE)
@@ -747,6 +768,17 @@
         fitView,
         toggleAllNodeShow
       });
+      // watch(
+      //   () => appStore.isDark,
+      //   () => {
+      //     if (graph && graphMount.value) {
+      //       updateNodeTheme();
+      //     }
+      //   },
+      //   {
+      //     immediate: false
+      //   }
+      // );
       watch(
         () => props.sourceData?.nodes,
         () => {

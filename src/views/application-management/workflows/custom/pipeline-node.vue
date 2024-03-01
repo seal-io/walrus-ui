@@ -339,5 +339,53 @@
 <style lang="less" scoped>
   .pipeline-node {
     background-color: var(--color-white);
+
+    &.dark {
+      color: rgba(255, 255, 255, 0.7);
+      background-color: var(--color-card-bg);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      box-shadow: none;
+
+      &:hover {
+        box-shadow: 0 6px 6px rgba(var(--color-background-3), 80%);
+      }
+
+      .arco-link {
+        height: 22px;
+        padding: 0 6px;
+        color: rgba(66, 106, 208, 1);
+        line-height: 22px;
+        background-color: rgba(33, 36, 39, 0.5);
+        border-radius: 12px;
+
+        &:hover {
+          color: rgba(66, 106, 208, 1);
+          background-color: rgba(33, 36, 39, 0.7);
+        }
+      }
+
+      .node-icon {
+        color: rgba(255, 255, 255, 0.5);
+        background-color: var(--color-card-bg);
+        box-shadow: none;
+      }
+
+      .info {
+        border-top: 1px solid rgba(255, 255, 255, 0.05);
+      }
+
+      .item .user-group {
+        .wp {
+          background-color: rgba(0, 0, 0, 0.2);
+        }
+
+        .user {
+          color: rgba(255, 255, 255, 0.7);
+          color: rgba(255, 255, 255, 0.7);
+          background-color: transparent !important;
+          box-shadow: none;
+        }
+      }
+    }
   }
 </style>
