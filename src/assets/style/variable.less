@@ -1,6 +1,7 @@
 body {
   --color-white-1: #fff;
   --color-white-2: #fff;
+  --color-white-3: #fff;
   --color-button-close: #fff;
   --color-border-input-disabled: #fff;
   --color-bg-input-disabled: var(--color-fill-1);
@@ -218,11 +219,14 @@ body {
 body[arco-theme='dark'] {
   --color-background-1: 33, 36, 39;
   --color-background-2: 21, 21, 21;
+  --color-background-3: 52, 62, 76;
   --color-modal-bg: 21, 21, 21;
   --black-1: rgb(var(--color-background-1));
   --black-2: rgb(var(--color-background-2));
+  --black-3: rgb(var(--color-background-3));
   --color-white-1: var(--black-1);
   --color-white-2: var(--black-2);
+  --color-white-3: var(--black-3);
   --color-white: var(--black-2);
   --color-bg-white: var(--black-2);
   --color-bg-2: var(--black-2);
@@ -299,6 +303,10 @@ body[arco-theme='dark'] {
   --color-filter-inverted: invert(0.85) hue-rotate(180deg);
   --color-primary-light-2: rgba(var(--primary-6), 0.85);
   --color-spin-layer-bg: rgba(255, 255, 255, 0.05);
+  --color-card-shadow: 0 0 6px rgba(0, 0, 0, 0.3);
+  --color-card-shadow-hover: 0 0 6px rgba(0, 0, 0, 0.5);
+  --color-card-bg: rgb(var(--color-background-3));
+  --color-card-boder: rgba(255, 255, 255, 0.1);
 
   .arco-link:hover {
     background-color: var(--color-fill-1);
