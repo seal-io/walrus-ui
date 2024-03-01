@@ -118,7 +118,7 @@
   import useCallCommon from '@/hooks/use-call-common';
   import { ServiceDataType } from '@/views/application-management/services/config';
   import StatusLabel from './status-label.vue';
-  import { statusColorMap } from '../config';
+  import useStatusConfig from '../hooks/use-status-config';
 
   const props = defineProps({
     loading: {
@@ -146,6 +146,7 @@
       }
     }
   });
+  const { statusColorMap } = useStatusConfig();
   const { router } = useCallCommon();
   const userStore = useUserStore();
   const projectStore = useProjectStore();

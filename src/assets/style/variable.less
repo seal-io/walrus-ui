@@ -1,6 +1,7 @@
 body {
   --color-white-1: #fff;
   --color-white-2: #fff;
+  --color-button-close: #fff;
   --color-border-input-disabled: #fff;
   --color-bg-input-disabled: var(--color-fill-1);
   --color-text-white: #fff;
@@ -16,7 +17,6 @@ body {
   --seal-border-gray: #f2f3f5;
   --seal-border-gray-2: var(--seal-border-color);
   --color-border-input: var(--color-border-2);
-  // --seal-border-gray-2: #e5e6eb;
   --color-menu-light-bg: 247, 248, 250;
   --seal-color-bg-1: rgb(var(--arcoblue-6));
   --sealblue-6: rgb(var(--arcoblue-6));
@@ -53,6 +53,7 @@ body {
   --font-size-small: 12px;
   --font-size-large: 14px;
   --font-size-mini: 10px;
+  --color-control-bg: var(--color-neutral-3);
 
   // avatar icon color
   --color-avatar-icon: rgb(var(--arcoblue-5));
@@ -216,9 +217,7 @@ body {
 
 body[arco-theme='dark'] {
   --color-background-1: 33, 36, 39;
-  --color-background-2: 21, 21, 21; // #2a2a2b
-  // --color-background-1: 20, 50, 60;
-  // --color-background-2: 0, 30, 35;
+  --color-background-2: 21, 21, 21;
   --color-modal-bg: 21, 21, 21;
   --black-1: rgb(var(--color-background-1));
   --black-2: rgb(var(--color-background-2));
@@ -233,14 +232,15 @@ body[arco-theme='dark'] {
   --color-tooltip-bg: var(--black-2);
   --color-fill-1: var(--black-1);
   --color-menu-light-bg: var(--black-1);
-  --seal-border-color: rgba(113, 113, 130, 0.25);
+  --seal-border-color: rgba(113, 113, 130, 0.2);
   --color-border-input: transparent;
   --color-text-3: rgba(255, 255, 255, 0.3);
   --color-text-1: rgba(255, 255, 255, 0.7);
   --color-text-2: var(--color-text-1);
-  --color-mask-bg: rgba(225, 225, 225, 0.5);
+  --color-mask-bg: rgba(112, 112, 112, 0.7);
   --color-border-input-disabled: rgba(255, 255, 255, 0.05);
   --color-bg-input-disabled: rgba(0, 0, 0, 0.7);
+  --color-control-bg: var(--black-1);
 
   // avatar icon color
   --color-avatar-icon: var(--color-text-2);
@@ -249,8 +249,8 @@ body[arco-theme='dark'] {
   --color-text-selected: rgb(var(--arcoblue-5));
 
   // logs style
-  --color-logs-bg: var(--black-2);
-  --color-logs-text: var(--color-text-3);
+  --color-logs-bg: var(--black-1);
+  --color-logs-text: rgba(255, 255, 255, 0.5);
 
   // page header icon color
   --color-header-icon: rgb(var(--arcoblue-6));
@@ -269,6 +269,10 @@ body[arco-theme='dark'] {
   --arcoblue-1: 232, 242, 255;
   --green-6: 39, 160, 70;
   --orange-6: 236, 150, 38;
+  --orange-5: 210, 141, 31;
+  --warning-3: var(--orange-5);
+  --red-6: 225, 105, 101;
+
   // --color-link-light-3: rgba(var(--arcoblue-4), 0.3);
   --color-link-light-3: rgba(var(--arcoblue-4), 0.5);
 
@@ -294,6 +298,7 @@ body[arco-theme='dark'] {
   // filter inverted color
   --color-filter-inverted: invert(0.85) hue-rotate(180deg);
   --color-primary-light-2: rgba(var(--primary-6), 0.85);
+  --color-spin-layer-bg: rgba(255, 255, 255, 0.05);
 
   .arco-link:hover {
     background-color: var(--color-fill-1);

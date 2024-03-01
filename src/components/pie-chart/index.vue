@@ -62,13 +62,23 @@
       }
     }
   });
-  const { chartOption } = useChartOption(() => {
+  const textColor = 'rgba(78,89,105,1)';
+  const textLightColor = 'rgba(29,33,41,.7)';
+  const splitLineColor = '#eaecee';
+  const titleColor = '#1d2129';
+
+  const { chartOption, isDark } = useChartOption((dark) => {
     return {
       tooltip: {
         show: true,
+        borderWidth: 0,
         trigger: 'item',
-        formatter: '{a}\n{b} : {c} ({d}%)',
-        backgroundColor: 'var(--color-white-2)'
+        alwaysShowContent: false,
+        // formatter: '{a}\n{b} : {c} ({d}%)',
+        formatter(params) {
+          return `<div class="content">${params.marker}${params.name} : ${params.value} (${params.percent}%)</div`;
+        },
+        className: 'pie-tooltip'
       },
       grid: {
         left: '0',
@@ -87,6 +97,11 @@
         // formatter(name) {
         //   return `${name}`;
         // },
+      },
+      label: {
+        color: dark ? 'rgba(255,255,255,.5)' : textLightColor,
+        fontWeight: '500',
+        fontSize: 12
       },
       series: [
         {

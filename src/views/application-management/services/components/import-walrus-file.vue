@@ -117,6 +117,7 @@
 
 <script lang="ts" setup>
   import 'github-markdown-css';
+  import i18n from '@/locale';
   import { ref, reactive, PropType, computed } from 'vue';
   import readBlob from '@/utils/readBlob';
   import _ from 'lodash';
@@ -228,9 +229,16 @@
   };
   const handleOk = async () => {
     const res = validateYaml(formData.value.yaml);
-    console.log('res', res);
+    if (!formData.value.yaml) {
+      showError.value = {
+        error: {
+          message: i18n.global.t('common.form.rule.input', { name: 'YAML' })
+        }
+      };
+      return;
+    }
     showError.value = res;
-    if (!res?.error) {
+    if (!res?.error && formData.value.yaml) {
       try {
         const data = _.cloneDeep(formData.value);
         emit('save', data);
@@ -247,6 +255,7 @@
     formData.value.yaml = '';
     defaultValue.value = '';
     showBox.value = true;
+    showError.value = {};
     editor?.value?.clear();
   };
   const handleBeforeClose = () => {
