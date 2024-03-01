@@ -342,7 +342,9 @@
           );
         }
         if (item.options) {
-          formData.value.configData[item.key].value = item.default;
+          if (!formData.value.configData[item.key].value && !id) {
+            formData.value.configData[item.key].value = item.default;
+          }
           return (
             <seal-select
               v-model={formData.value.configData[item.key].value}
