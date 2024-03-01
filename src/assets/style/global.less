@@ -36,6 +36,14 @@ html[arco-theme='dark'] {
   }
 }
 
+.pie-tooltip {
+  color: #1d2129 !important;
+  font-weight: var(--font-weight-medium) !important;
+  font-size: var(--font-size-small) !important;
+  background-color: rgba(230, 244, 254, 0.9) !important;
+  border-radius: 6px !important;
+}
+
 .echarts-tooltip-diy {
   background: linear-gradient(
     304.17deg,
@@ -50,8 +58,14 @@ html[arco-theme='dark'] {
   backdrop-filter: blur(10px) !important;
 
   .chart-tooltip-wrap {
+    font-size: var(--font-size-small);
+
     .content-wrap {
       column-gap: 10px;
+    }
+
+    .tooltip-title {
+      color: var(--color-text-2);
     }
   }
 
@@ -97,6 +111,12 @@ html[arco-theme='dark'] {
     margin: 0 0 10px 0;
   }
 
+  .tooltip-item-name {
+    color: var(--color-text-2);
+    font-weight: var(--font-weight-medium);
+    font-size: var(--font-size-small);
+  }
+
   p {
     margin: 0;
   }
@@ -106,9 +126,9 @@ html[arco-theme='dark'] {
     display: flex;
     align-items: center;
     margin-left: 5px;
-    color: #1d2129;
-    font-weight: bold;
-    font-size: 13px;
+    color: var(--color-text-2);
+    font-weight: var(--font-weight-medium);
+    font-size: var(--font-size-small);
     line-height: 15px;
     text-align: right;
   }

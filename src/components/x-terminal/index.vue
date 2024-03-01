@@ -53,7 +53,7 @@
 
   const conReadyState = ref(0);
 
-  const colorBg2 = 'rgb(0, 30, 35)';
+  const colorBg2 = 'rgb(33, 36, 39)';
 
   const runRealTerminal = () => {
     term.value?.clear?.();

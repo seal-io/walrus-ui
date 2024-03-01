@@ -1,5 +1,6 @@
 {
   "theme": "light",
+  "isDark": false,
   "colorWeek": false,
   "navbar": true,
   "menu": true,

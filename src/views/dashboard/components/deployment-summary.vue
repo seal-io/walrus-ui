@@ -76,6 +76,7 @@
 <script lang="ts" setup>
   import dayjs from 'dayjs';
   import { computed, ref } from 'vue';
+  import { useAppStore } from '@/store';
   import { useI18n } from 'vue-i18n';
   import { map, get, ceil, sortBy } from 'lodash';
   import StackLineChart from '@/components/stack-line-chart/index.vue';
@@ -85,16 +86,12 @@
   import { setEndTimeAddDay } from '@/views/config';
   import { getStackLineDataList } from '@/views/config/utils';
   import lastDeployApp from './last-deploy-app.vue';
-  import {
-    deployDataConfig,
-    statusColorMap,
-    DateShortCuts,
-    chartStatusColorMap
-  } from '../config';
+  import { DateShortCuts } from '../config';
   import {
     queryApplicationRevisionsChart,
     queryLatestDeployments
   } from '../api/dashboard';
+  import useStatusConfig from '../hooks/use-status-config';
 
   const pieStyleConfig = {
     label: {
@@ -116,15 +113,9 @@
     bottom: 0,
     containLabel: true
   };
-  const title = {
-    text: '',
-    left: 'auto',
-    top: 8,
-    textStyle: {
-      color: 'rgb(78,89,105)',
-      fontSize: 12
-    }
-  };
+
+  const { deployDataConfig, statusColorMap } = useStatusConfig();
+  const appStore = useAppStore();
   const height = '300px';
   const pieCenter = ['50%', '50%'];
   const pieRadius = ['0%', '80%'];
@@ -140,29 +131,35 @@
   const resourceList = ref([]);
   const summaryData = ref({});
   const dataList = ref<{ name: string; value: number[] }[]>([]);
+
   const dataConfig = computed(() => {
     return [
       {
         name: 'running',
         label: t('dashboard.deployment.running'),
-        color: statusColorMap.running
+        color: statusColorMap.value.running
       },
       {
         name: 'failed',
         label: t('dashboard.deployment.failed'),
-        color: statusColorMap.failed
+        color: statusColorMap.value.failed
       },
       {
         name: 'succeeded',
         label: t('dashboard.deployment.succeed'),
-        color: statusColorMap.succeed
+        color: statusColorMap.value.succeed
       }
     ];
   });
   const pieOptions = computed(() => {
     return {
       title: {
-        ...title,
+        left: 'auto',
+        top: 8,
+        textStyle: {
+          color: appStore.isDark ? 'rgba(255,255,255,.7)' : 'rgb(78,89,105)',
+          fontSize: 12
+        },
         text: t('dashboard.deployment.summary')
       },
       grid: {
@@ -179,7 +176,7 @@
     };
   });
   const pieDataList = computed(() => {
-    const list = map(deployDataConfig, (item) => {
+    const list = map(deployDataConfig.value, (item) => {
       return {
         ...item,
         ...pieStyleConfig,
@@ -199,7 +196,6 @@
       const { data } = await queryApplicationRevisionsChart(params);
       summaryData.value = get(data, 'statusCount') || {};
       const revisions = get(data, 'statusStats');
-      // revisions = sortBy(revisions, (s) => s.startTime);
       const result = getStackLineDataList(revisions, {
         fields: ['running', 'succeeded', 'failed'],
         xAxis: 'startTime'

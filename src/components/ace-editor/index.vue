@@ -1,5 +1,5 @@
 <template>
-  <div class="ace-wrapper">
+  <div class="ace-wrapper" :class="{ dark: appStore.theme === 'dark' }">
     <div v-if="$attrs.label || slots.label" class="label">
       <span>
         <slot name="label"
@@ -69,6 +69,7 @@
   // import 'ace-builds/src-noconflict/theme-dracula';
   // import 'ace-builds/src-noconflict/mode-xml';
   import 'ace-builds/src-noconflict/theme-nord_dark';
+  import 'ace-builds/src-noconflict/theme-one_dark';
   import 'ace-builds/src-noconflict/mode-javascript';
   import 'ace-builds/src-noconflict/mode-text';
   import 'ace-builds/src-noconflict/mode-json';
@@ -200,7 +201,7 @@
 
   // let timer:any = null
   let aceEditor: any = null;
-  const darkTheme = 'monokai';
+  const darkTheme = 'one_dark';
   const isAce = ref(true);
   const inputVal = ref('');
   const editorRef = ref();
@@ -481,6 +482,11 @@
     overflow: hidden;
     border: 1px solid var(--color-border-2);
     border-radius: var(--border-radius-small);
+
+    &.dark {
+      background-color: var(--color-fill-1);
+      border-color: transparent;
+    }
 
     .label {
       display: flex;

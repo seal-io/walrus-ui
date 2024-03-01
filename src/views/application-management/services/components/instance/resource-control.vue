@@ -52,6 +52,7 @@
             type="text"
             shape="circle"
             class="m-r-8"
+            style="color: var(--color-text-1)"
             @click="handleClose"
             ><icon-close
           /></a-button>
@@ -216,7 +217,11 @@
 
     :deep(.arco-tabs) {
       .arco-tabs-nav {
-        background-color: var(--color-neutral-3);
+        background-color: var(--color-control-bg);
+
+        &::before {
+          background-color: var(--color-control-bg);
+        }
       }
 
       .arco-tabs-content {

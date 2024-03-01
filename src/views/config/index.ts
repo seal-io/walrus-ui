@@ -320,6 +320,24 @@ export const StatusColorValueMap = {
   inactiveBg: '--gray-4'
 };
 
+export const StatusDarkColorValueMap = {
+  error: '225,105,101',
+  warningColor: '236,150,38',
+  warningBg: '210,141,31',
+  success: '39, 160, 70',
+  inactiveColor: '146,146,147',
+  inactiveBg: '95,95,96'
+};
+
+export const StatusLightColorValueMap = {
+  error: '245, 63, 63',
+  warningColor: '255,125,0',
+  warningBg: '255,207,139',
+  success: '0,191,114',
+  inactiveColor: '134,144,156',
+  inactiveBg: '201,205,212'
+};
+
 export const StatusColorBgMap = {
   ready: `rgba(var(${StatusColorValueMap.success}),0.7)`,
   error: `rgba(var(${StatusColorValueMap.error}),0.7)`,
@@ -327,6 +345,19 @@ export const StatusColorBgMap = {
   inactive: `rgba(var(${StatusColorValueMap.inactiveBg}),1)`
 };
 
+export const StatusDarkColorBgMap = {
+  ready: `rgba(${StatusDarkColorValueMap.success},0.7)`,
+  error: `rgba(${StatusDarkColorValueMap.error},0.7)`,
+  transitioning: `rgba(${StatusDarkColorValueMap.warningBg})`,
+  inactive: `rgba(${StatusDarkColorValueMap.inactiveBg},1)`
+};
+
+export const StatusLightColorBgMap = {
+  ready: `rgba(${StatusLightColorValueMap.success},0.7)`,
+  error: `rgba(${StatusLightColorValueMap.error},0.7)`,
+  transitioning: `rgba(${StatusLightColorValueMap.warningBg})`,
+  inactive: `rgba(${StatusLightColorValueMap.inactiveBg},1)`
+};
 // color1: background color; color5: font color
 export const StatusColor = {
   error: {
@@ -348,6 +379,52 @@ export const StatusColor = {
     color5: `rgba(var(${StatusColorValueMap.inactiveColor}), 1)`,
     color1: `rgba(var(${StatusColorValueMap.inactiveBg}), 0.3)`,
     icon: 'icon-minus-circle-fill'
+  }
+};
+
+export const StatusDarkColor = {
+  error: {
+    text: `rgba(${StatusDarkColorValueMap.error}, 0.8)`,
+    bg: `rgba(${StatusDarkColorValueMap.error}, 0.1)`,
+    icon: ''
+  },
+  warning: {
+    text: `rgba(${StatusDarkColorValueMap.warningColor})`, // color
+    bg: `rgba(${StatusDarkColorValueMap.warningBg},0.3)`, // backgroundColor #f9cc45
+    icon: ''
+  },
+  success: {
+    text: `rgba(${StatusDarkColorValueMap.success}, 0.9)`,
+    bg: `rgba(${StatusDarkColorValueMap.success}, 0.1)`,
+    icon: ''
+  },
+  inactive: {
+    text: `rgba(${StatusDarkColorValueMap.inactiveColor}, 1)`,
+    bg: `rgba(${StatusDarkColorValueMap.inactiveBg}, 0.3)`,
+    icon: ''
+  }
+};
+
+export const StatusLightColor = {
+  error: {
+    text: `rgba(${StatusLightColorValueMap.error}, 0.8)`,
+    bg: `rgba(${StatusLightColorValueMap.error}, 0.1)`,
+    icon: ''
+  },
+  warning: {
+    text: `rgba(${StatusLightColorValueMap.warningColor})`, // color
+    bg: `rgba(${StatusLightColorValueMap.warningBg},0.3)`, // backgroundColor #f9cc45
+    icon: ''
+  },
+  success: {
+    text: `rgba(${StatusLightColorValueMap.success}, 0.9)`,
+    bg: `rgba(${StatusLightColorValueMap.success}, 0.1)`,
+    icon: ''
+  },
+  inactive: {
+    text: `rgba(${StatusLightColorValueMap.inactiveColor}, 1)`,
+    bg: `rgba(${StatusLightColorValueMap.inactiveBg}, 0.3)`,
+    icon: ''
   }
 };
 

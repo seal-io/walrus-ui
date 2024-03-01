@@ -124,7 +124,12 @@
   const selectedList = ref<string[]>([]);
   const inputValue = ref('');
   const { t } = useI18n();
-  const colorBackground1 = 'rgba(234, 236, 238,.1)';
+  const splitLineDarkColor = 'rgba(234, 236, 238,.1)';
+  const textColor = 'rgba(78,89,105,1)';
+  const textLightColor = 'rgba(29,33,41,.7)';
+  const splitLineColor = '#eaecee';
+  const titleColor = '#1d2129';
+  const legendDarkColor = 'rgba(255,255,255,.7)';
 
   const showFilter = computed(() => {
     return props.data?.length >= props.maxLegend;
@@ -189,9 +194,11 @@
         <div class='series-name'>
           <span style="background-color: ${
             el.color
-          }" class="tooltip-item-icon"></span><span>${el.seriesName}</span>
+          };" class="tooltip-item-icon" ></span><span class="tooltip-item-name">${
+        el.seriesName
+      }</span>
         </div>
-        <span class="tooltip-value">${el.value?.toLocaleString()}</span>
+        <span class="tooltip-value" >${el.value?.toLocaleString()}</span>
       </div>`
     );
     if (items.length > maxCount) {
@@ -204,7 +211,6 @@
     return result.join('');
   };
   const { chartOption } = useChartOption((isDark): any => {
-    console.log('isDark===========', isDark);
     let configData: DataConfigItem[] = [];
     let listData: ChartData[] = [];
     if (!selectedList.value.length) {
@@ -231,7 +237,7 @@
         left: '0',
         top: 0,
         textStyle: {
-          color: 'rgb(78,89,105)',
+          color: isDark ? 'rgba(255,255,255,.7)' : titleColor,
           fontSize: 12
         },
         ...get(props.configOptions, 'title')
@@ -260,7 +266,7 @@
         align: 'auto',
         icon: 'circle',
         textStyle: {
-          color: '#4E5969'
+          color: isDark ? legendDarkColor : textLightColor
         },
         itemHeight: 6,
         itemWidth: 6,
@@ -273,7 +279,7 @@
         boundaryGap: false,
         axisLabel: {
           interval: 'auto',
-          color: '#4E5969',
+          color: isDark ? textColor : textLightColor,
           rotate: 30,
           formatter(value: number, idx: number) {
             if (props.xAxis?.length === 1) {
@@ -295,7 +301,7 @@
         axisPointer: {
           show: true,
           lineStyle: {
-            color: isDark ? colorBackground1 : '#eaecee',
+            color: isDark ? splitLineDarkColor : splitLineColor,
             width: 1
           }
         }
@@ -304,6 +310,9 @@
         type: 'value',
         axisLine: {
           show: false
+        },
+        axisLabel: {
+          color: isDark ? textColor : textLightColor
         },
         // axisLabel: {
         //   formatter(value: number, idx: number) {
@@ -314,12 +323,13 @@
         // },
         splitLine: {
           lineStyle: {
-            color: isDark ? colorBackground1 : '#eaecee'
+            color: isDark ? splitLineDarkColor : splitLineColor
           }
         }
       },
       tooltip: {
         trigger: 'axis',
+        alwaysShowContent: false,
         // position(point, params, dom, rect, size) {
         //   // 固定在顶部
         //   return [point[1], '10%'];

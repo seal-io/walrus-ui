@@ -53,6 +53,7 @@
         storageKey: 'arco-theme',
         onChanged(dark: boolean) {
           // overridded default behavior
+          console.log('dark==================', dark);
           appStore.toggleTheme(dark);
         }
       });
